@@ -77,6 +77,23 @@ weaker `a<ηn` form holds in the window for the empirically-binding low-exponent
 > correction `|S₁| ≤ max(k,a)`**. Branching `= 1`. Iterating down `v₂(a−b)` levels lands on a
 > monomial pair (list `≤2` each) ⟹ **`L = O(1)` for in-range words.**
 
+## 4b. Multi-agent cross-checks (`wf_444_descent_assault.js`, this session)
+
+- **Branching = 1, sharpest form (verified):** for the binding even worst words, **ALL** window
+  list members are even polynomials (`even = L/L` at every config: `n=16/32`, η=1/8,1/16). So the
+  single-fibre correction `S₁` is **empty** and `L(u,μ_n,k) = L(u_e,μ_{n/2},k/2)` is an **exact
+  bijection** — branching exactly 1, recursing to the base case. Confirmed exact down the tower:
+  `L=4` at `x^8+1/μ_32 = x^4+1/μ_16 = x^2+1/μ_8` (identical).
+- **G2 supported (Refuter A):** the true worst-case window list over ALL weight-3 and weight-4
+  words **exactly equals the weight-2 worst** — never strictly larger, never growing faster in
+  `n` (full exponent enumeration at `n=16,32`, two prize-shaped primes each). The worst word is
+  low-weight.
+- **Monomial constancy at scale (Refuter C):** the monomial window list is `N`-independent and
+  prime-independent up to `N=128`, over 4 primes per `N` including a minimal-`v₂` (odd-index) and
+  a `β≈5` prime. *Correction:* the exact value is not always `2` — at genuine window radii it is a
+  small constant depending on `j` and `η` (the `2^{Θ(1/η)}` law), not literally `2`. The
+  **constancy** is what the proof needs and it holds.
+
 ## 5. What is verified vs open
 
 **Verified (exact, multi-prime, p-independent):**
@@ -99,7 +116,36 @@ weaker `a<ηn` form holds in the window for the empirically-binding low-exponent
    is a genuine per-coordinate Hamming isometry, but reduces to a SHIFTED (generalized-RS /
    Laurent) code; the clean weight-2 descent above avoids needing it.
 
-## 6. Why this is not obviously the dead BGK wall
+## 5c. ⚠️ THE RIGOROUS OUTCOME — G1 ≡ the wall (no bypass; corrected)
+
+Pushing G1 to a rigorous conclusion **reconnects it to the known wall**. For the binding word
+`x^{n/4}+1` at the window radius `s = n/4 = deg(f−u)` (ρ=η=1/8), agreement `≥ s` forces `f−u`
+(degree exactly `n/4`, since `deg f < k = n/8`) to have **all `n/4` roots in `μ_n`** with the
+coefficients in degrees `[n/8, n/4−1]` equal to zero (because `deg f < n/8`). By Newton's
+identities the root set `T` (`|T|=n/4`) satisfies `e₁(T)=⋯=e_{n/8}(T)=0`, and every such `T`
+yields a valid `f ∈ RS[k]`. Therefore, **exactly** (verified n=16, two primes: list = count = 4):
+
+> `window-list(x^{n/4}+1) = #{ (n/4)-subsets T ⊆ μ_n : e₁(T)=⋯=e_{n/8}(T)=0 }`.
+
+This object **is** the campaign's `DyadicLacunaryFloor` (first `t−1` power sums vanishing on a
+2-power subset; `DyadicFourierUncertainty.lean`). Hence:
+- **Char 0:** the count is a closed **coset count** (constant) — already proven. ✅ but known.
+- **Char p:** `list = (char-0 coset count) + defect`, with the defect = non-coset mod-`p`
+  vanishing-power-sum solutions = the **additive-energy / mod-`q` defect = the BGK wall**. The
+  p-independence to `n=64` (§4b) is exactly the "defect = 0 at accessible scale" the campaign
+  already observed; prize `n = 2^30` is the open wall.
+
+**So G1 ≡ the char-p validity of the dyadic lacunary count = the wall.** The descent does NOT
+bypass the wall. (Earlier framing that closing G1 needs "no effective equidistribution" was an
+overclaim — corrected on issue #444, comment 4707955906.)
+
+**What genuinely stands (non-retracted):** (1) the descent identity (§1), axiom-clean formalized,
+a reusable tool; (2) a NEW derivation **from the list-decoding side** that the binding window list
+= the dyadic lacunary count — the sup-norm/BGK side and the list side provably reach the **same**
+object (the all-even branching makes this explicit), reunifying the two grand challenges from a new
+direction; (3) the char-0 constancy re-derived cleanly. No bypass.
+
+## 6. Why this is the dyadic lacunary count (not a NEW off-BGK object)
 
 The descent is **combinatorial and `p`-independent** (the monomial base case is governed by the
 quadratic character `y^{N/2}=±1`, structure-only, NOT a character-sum magnitude). It does NOT
