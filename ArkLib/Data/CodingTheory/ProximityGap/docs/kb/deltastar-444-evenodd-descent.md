@@ -175,6 +175,19 @@ This is the same wall, but a clean *algebraic* statement (gap-factors of `X^n−
 than an analytic one (character-sum √-cancellation) — possibly a more tractable lens for a future
 attack, though it does not, by itself, move the wall.
 
+**Sharpest algebraic form.** A gap-factor is `g = X^{n/4} + h(X)` with `deg h < n/8`; since
+`X^{n/4} ≡ −h (mod g)`, `g | X^n−1 ⟺ g | h⁴−1`. The binomials are `h = c ∈ μ_4` (constant). So:
+
+> **PRIZE DEFECT (sharpest form):** does there exist a **non-constant** `h ∈ F_p[X]`, `deg h < n/8`,
+> with `(X^{n/4} + h(X)) | (h(X)⁴ − 1)`?  Char-0: NO (only `h∈μ_4` constant). Char-`p` at
+> `n=2^30`: the open prize.
+
+Caveat (why this is still the wall, not a crack): on the roots `β` of `g`, the condition says the
+polynomial `−h` agrees with the group homomorphism `π:μ_n→μ_4`, `β↦β^{n/4}` (a *monomial*) on a
+size-`n/4` subset — i.e. it is **list-decoding the monomial `X^{n/4}` against `deg<n/8` polys**,
+the §2 monomial base case, on a self-referentially-chosen subset. The reduction closes into a
+fixed point — the signature of a genuine wall. Recorded as the actionable residual; not moved.
+
 ## 7. Reproduce
 ```
 python3 -u scripts/probes/probe_444_monomial_descent.py        # descent identity 200/200; monomial list=2 @N=16,32,64
