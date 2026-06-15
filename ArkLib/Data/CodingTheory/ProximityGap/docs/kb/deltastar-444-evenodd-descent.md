@@ -157,6 +157,24 @@ branching and worst-word-weight pieces close, this is a proof of the explicit-2-
 list-decoding bound — the grand list-decoding challenge — by elementary cyclotomic/quadratic-
 character means, with no appeal to effective Gauss-sum equidistribution.
 
+## 6b. Clean reformulation of the wall (the one genuinely useful lens this gives)
+
+Verified (n=16 exhaustive; n=32 binomial side): the size-`n/4` subsets `T⊆μ_n` with
+`e₁(T)=⋯=e_{n/8}(T)=0` are **exactly** the root-sets of the 4 binomials `X^{n/4}−c`, `c∈μ_4`
+(the 4 cosets of `μ_{n/4}`). Equivalently, a degree-`n/4` factor `g_T(X)=∏_{x∈T}(X−x)` of
+`X^n−1` has the "coefficient gap" (zero in degrees `[n/8, n/4−1]`, forced by `e₁..e_{n/8}=0`)
+iff `g_T = X^{n/4}−c`. Hence:
+
+> **PRIZE WALL, restated:** is the only way for a degree-`n/4` factor of `X^n−1` over `F_p`
+> (`p≡1 mod n`, `n=2^μ`) to have vanishing coefficients in degrees `[n/8, n/4−1]` to be a
+> binomial `X^{n/4}−c`? Char-0 YES (the 4 binomials). Char-`p` defect = extra non-binomial
+> gap-factors = the additive-energy / BGK wall. Verified defect `= 0` for `n≤64`; prize `n=2^30`
+> open.
+
+This is the same wall, but a clean *algebraic* statement (gap-factors of `X^n−1` mod `p`) rather
+than an analytic one (character-sum √-cancellation) — possibly a more tractable lens for a future
+attack, though it does not, by itself, move the wall.
+
 ## 7. Reproduce
 ```
 python3 -u scripts/probes/probe_444_monomial_descent.py        # descent identity 200/200; monomial list=2 @N=16,32,64
