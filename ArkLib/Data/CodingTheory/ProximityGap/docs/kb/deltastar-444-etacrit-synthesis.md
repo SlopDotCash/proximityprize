@@ -1,9 +1,54 @@
 # The η_crit synthesis: descent + Action–Orbit norm bound + the wall, unified (#444)
 
-*Status: ANALYSIS, pending rigorous verification (`wf_444_etacrit_synthesis.js` running). NOT
-claimed proven. The chain below has two named risk points (R1, R2) the workflow is adjudicating;
-if either fails, the δ*-lower-bound conclusion does not follow and this reduces to the known wall.
-Honesty contract: nothing here is a closure until the risk points are cleared.*
+*Status: ANALYSIS, workflow-verified with a KEY CORRECTION (see §0). NOT a closure. The
+δ*-lower-bound does NOT follow (R1 fails); this is a sharp re-confirmation of the wall from a new
+unified direction. Honesty contract held.*
+
+## 0. ⚠️ CORRECTION (workflow `wf_444_etacrit_synthesis` Verify-1): the exponent is `⌈c/2⌉`, not `c`
+
+My step "`c` vanishing power sums ⟹ `p^c | N(β_T)`" is **FALSE**. For `n = 2^μ`, the Galois group
+of `ℚ(ζ_n)/ℚ` is the **odd** residues mod `n` (units = odd numbers), so only **odd** indices `j`
+give genuine automorphisms `σ_j` and distinct primes. The first `c` power sums contain only
+`⌈c/2⌉` odd indices, so **`p^{⌈c/2⌉} | N(β_T) ≤ s^{n/2}`**, giving the corrected ceiling
+**`p ≤ s^{(n/2)/⌈c/2⌉} ≈ s^{n/c}`** (the *square* of the claimed `s^{n/(2c)}`). Verified exactly:
+`c=2 → v_p(N)=1` (15/15 defects), `c=3 → v_p=2` (12/12); `v_p ≥ c` held in 0/27. The Lean
+`badPrimeBound_core` (`Sweep_A10`) is itself sound — it binds `K = n/8` (the fixed Q1 odd-window
+count), and my error was plugging the descent's `c = ηn` into the `c`-exponent slot.
+
+**Corrected boundary:** `η_crit ≈ μ/(128+μ) ≈ 0.19` (μ=30) — *double* the earlier 0.095. Since the
+window width is `√ρ−ρ ≈ 0.19–0.23`, **`η_crit ≈ the window width`**: the clean region `η > η_crit`
+is **Johnson-adjacent** (a thin sliver at the window edge, or empty for `ρ=1/16` where
+`√ρ−ρ=0.1875 < η_crit`). The ENTIRE window interior — including all of δ* (`η ≈ 1/μ ≈ 0.033`) — is
+the **wall**. This *strengthens* the synthesis: it shows the norm bound barely reaches past
+Johnson, exactly matching "Johnson is the closed/open boundary." Also: "non-coset" should read
+**"non-antipodal-balanced"** (β_T = 0 ⟺ T is a union of `{x,−x}` pairs, Lam–Leung at 2).
+
+---
+
+## 0b. The two attack routes FAIL (workflow + direct verification) — the route is structurally insufficient
+
+- **Sharper-than-AM-GM norm bound → reduces to BGK, AND still insufficient.** The defect conjugates
+  have **√-cancellation**: `|σ_j(β_T)| ≈ √s` (measured n=32: mean 1.74–2.74 vs √s=2.45–3.16), so
+  `|N(β_T)| ≈ s^{n/4} ≪ s^{n/2}` — AM-GM is wildly loose. Sharpening `N ≤ s^{n/2}` to `s^{n/4}`
+  requires `|σ_j(β_T)| ≤ √s` on the **worst** defect, but `σ_j(β_T)=Σ_{x∈T}ζ^{j·idx(x)}` is an
+  **incomplete character sum** → that bound IS the BGK wall. **And even granting full √-cancellation,
+  the ceiling improves only to `η_crit' = μ/(2(128+μ)) ≈ 0.095`, STILL above δ*'s `η ≈ 1/μ ≈ 0.033`.**
+  So the norm route is structurally insufficient for δ* **even if BGK were solved**.
+- **2-power char-p rigidity → FAILS, defects exist mod p.** Concrete non-antipodal-balanced
+  vanishing-power-sum defects exist, e.g. `T(idx)=(0,1,2,8,12,30)` at `n=32, p=97` (and many more).
+  The char-0 cyclotomic rigidity does NOT transfer: it relies on the `Φ_d` being irreducible, but
+  `Φ_d` **splits** mod `p` (`p≡1 mod n`), letting subsets mix roots across `Φ_d`'s with vanishing
+  power sums. The powers-of-2 resultant coprimality is irrelevant (the issue is splitting, not
+  coprimality). This IS the additive-energy defect = the wall.
+
+**Net of §0–§0b:** every route in the descent / Action–Orbit / norm-bound family bounds the rigid,
+Johnson-adjacent **word-list** for `η > η_crit` (AM-GM `≈0.19`; idealized-BGK `≈0.095`), but δ*
+lives at `η = Θ(1/log n) ≈ 0.033`, structurally below even the idealized threshold. **No bypass; the
+wall stands. The prize core remains the open char-p defect at `η < η_crit'`.**
+
+---
+
+*(Original analysis below; the `η_crit` value is superseded by §0/§0b, but the structure stands.)*
 
 ## 1. The convergence
 
