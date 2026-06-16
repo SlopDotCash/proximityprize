@@ -11,8 +11,16 @@ calibration digit-for-digit):
   dilation invariants `J := γ^{n/d}`. In particular `#bad ≤ n·O_P + 1` (worst case `d = 1`).
 * **The remaining conjecture (open, evidence-backed):** `O_P ≤ C(n/2, r−1)` for every admissible
   line, all `n = 2^μ`. Verified exhaustively at `n = 16` (all lines, two primes, worst ratio 0.25),
-  `n = 32`, and all known maximizers to `n = 64`; **r = 3 is proven for all n** (`O_P = C(n/4, 2)`).
-  Sharpness is proven: any proof must use the index-2 squares subgroup `μ_{n/2}`.
+  `n = 32`, and all known maximizers to `n = 64`. It is **not proven for any `r` as a general-`n`
+  theorem**: `r = 3` is one lemma short (the inequality `O_P ≤ C(n/4, 2) ≤ C(n/2, 2)` follows from a
+  fixed-point-free negation involution *once* one proves `J = γ^{n/d}` factors through the
+  scale-invariant ratio `I₃ = e₁⁴/e₄` — verified only to `n ≤ 1024`; note the *equality*
+  `O_P = C(n/4, 2)` is FALSE for `n ≥ 2048`, where extra collisions shrink the count, so only the
+  inequality is the live claim). For `r ≥ 4` the single-coordinate structure breaks and it is wide
+  open; the residual is a per-fiber cyclotomic field-degree (eliminant degree of `J` on the variety).
+  Sharpness is proven: any proof must use the index-2 squares subgroup `μ_{n/2}` (a generic
+  codim-1 / Bézout count gives `C(n, ·)`, too weak by `2^r`); subset-valued descents to `μ_{n/2}`
+  provably do not exist (`J` carries finer field data than any roots-of-unity subset).
 
 This file formalizes the **PROVEN bridge**: the elementary clearance inequality and the consequent
 reduction `O_P ≤ C(n/2, r−1) ⟹ #bad ≤ K`. Hence the entire demand-side prize floor reduces to the
@@ -86,12 +94,16 @@ Schur-ratio variety on `μ_n`):
 
   **`OP ≤ C(n/2, r − 1)`   (`m = n/2`, the squares subgroup).**
 
-This is the single open input. It is PROVEN for `r = 3` (`OP = C(n/4, 2)`), verified exhaustively at
-`n = 16` (all lines, two primes, worst ratio `0.25`), `n = 32`, and every known maximizer to
-`n = 64`, with the ratio shrinking in `n`. Sharpness is proven: any proof must exploit the index-2
-squares subgroup `μ_{n/2}` — a generic codimension-1 / Bézout / Schwartz–Zippel count yields
-`C(n, ·)`, which fails to clear `K` by a factor `2^r`. (We deliberately do NOT encode this as a
-top-level `def … : Prop`, since the faithful statement quantifies over the witness's *actual* orbit
-count, not an arbitrary `OP`; stating it with a free `OP` would be a vacuous placeholder.) -/
+This is the single open input. It is verified exhaustively at `n = 16` (all lines, two primes, worst
+ratio `0.25`), `n = 32`, and every known maximizer to `n = 64`, with the ratio shrinking in `n`, but
+is **proven for no `r` as a general-`n` theorem**: `r = 3` is one factoring lemma short (and the
+clean *equality* `OP = C(n/4,2)` even fails for `n ≥ 2048` — only the inequality is live), and
+`r ≥ 4` is wide open with the residual a per-fiber cyclotomic field-degree. Sharpness is proven: any
+proof must exploit the index-2 squares subgroup `μ_{n/2}` — a generic codimension-1 / Bézout /
+Schwartz–Zippel count yields `C(n, ·)`, too weak by `2^r` — yet no subset-valued descent to `μ_{n/2}`
+exists (`J` carries finer field-arithmetic data than any roots-of-unity subset). (We deliberately do
+NOT encode this as a top-level `def … : Prop`, since the faithful statement quantifies over the
+witness's *actual* orbit count, not an arbitrary `OP`; stating it with a free `OP` would be a vacuous
+placeholder.) -/
 
 end ArkLib.ProximityGap.DemandFloorReduction
