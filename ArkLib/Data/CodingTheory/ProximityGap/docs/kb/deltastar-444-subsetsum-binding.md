@@ -75,3 +75,20 @@ follows by induction from a small base case. **This is a concrete proof ENGINE f
 persistence statement** — NOT a completed proof (it still needs: (i) the binding `d=2` direction's
 exact `(a,b)` and agreement; (ii) that its bad set is antipodal-symmetric with even `a−k,b−k`; (iii)
 the base case). Offered as a tool. (Johnson-proxy face; the BGK sup-norm prize stays separate/open.)
+
+## The binding O_P=1 configuration, PINNED (verified n=16)
+
+The far-line binding direction is **`x^{n/2+1} + γ·x^{n/2−1}`** (`a=n/2+1, b=n/2−1`, `d=gcd(a−b,n)=2`).
+Verified (n=16, k=4, p=65537): the γ-orbit count `O_P` collapses with agreement depth `c`:
+`c=1: O_P=196 → c=2: 9 → c=3: O_P=1 (#bad=9=1+8·1) → c=4: 1`. The binding is `c=m*=3`, where
+`O_P=1` and `#bad = 1 + (n/2)·1 = 9 ≤` budget (lalalune's benign-plateau / orbit law confirmed
+from the Schur-ratio side). `O_P=1` ⟺ **all bad `T` (size `s=k+c`) form a single dilation orbit**.
+
+**Obstruction for the descent proof (honest).** At the binding, `a−k = n/2+1−k` and `b−k = n/2−1−k`
+are both **ODD** (e.g. 5, 3 at n=16). For antipodal-symmetric `T`, `h_{odd}(T)=0`, so the Schur-ratio
+`−h_{a−k}(T)/h_{b−k}(T) = 0/0` is undefined — the bad `T` are therefore **non-antipodal-symmetric**.
+So the clean `h_{2j}(T)=h_j(H²)` engine (which needs even `a−k,b−k`) does NOT directly apply; proving
+`O_P=1` persistence requires the **full even/odd NON-symmetric descent** (`Sweep_A40`,
+`|S| = 2·#{P=Q=0} + #{Q≠0 ∧ P²=yQ²}`) applied to the bad-`T` orbit structure. That is the precise
+remaining gap for an `O_P=1` proof: show the single bad-`T` dilation orbit persists under the
+non-symmetric squaring descent. (Johnson-proxy face; BGK sup-norm prize separate/open.)
