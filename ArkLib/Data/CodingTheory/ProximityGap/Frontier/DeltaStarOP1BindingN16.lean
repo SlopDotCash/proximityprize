@@ -23,14 +23,18 @@ The remaining content is the FINITE combinatorial fact, certified here by `decid
 (NOT `native_decide` — axiom-clean): among the `e₂ = 0` 4-subsets of `ℤ/8`, the ones with
 nonzero sum form a single orbit under the dilation `J ↦ J + 1`. Hence `O_P = 1`.
 
-NOTE (honest scope — `O_P = 1` is `n = 16`-SPECIFIC, not a persistent law). The same `e₂ = 0`
-descent at `n = 32` (8-subsets of `μ_16`) has char-0 `O_P = 3`, NOT 1 (`probe_444_OP1_persistence.py`):
-the benign-plateau `O_P = 1` FAILS already in characteristic 0 by `n = 32` — it is an artifact of
-`μ_8` being too small. Separately, the char-`p` additive-energy defect (the BGK / prize wall) has
-its ONSET at `μ_16`: `e₂ = 0` on `μ_8` has zero defect at every prime, but on `μ_16` the char-`p`
-count exceeds the char-0 count at small `p` (150/118/86/70 at p = 97/193/257/65537). So this clean
-char-0 result does NOT establish `O_P = 1` for `n ≥ 32` — the result itself is false there. See
-`docs/kb/deltastar-444-subsetsum-binding.md` §"CORRECTION + CRACK".
+NOTE (honest scope — this is the `n = 16` binding; persistence to `n ≥ 32` is OPEN).
+Cross-validated: NubsCarson's direct sweep and lalalune/0xSolace's Schur-ratio dilation-eigenvector
+orbit law independently confirm `O_P = 1` at the binding rung for `n = 8, 16`. The direct sweep
+(`probe_444_OP_direct_sweep.py`) shows the `O_P = 1` ONSET coincides exactly with `level-set = n/2`
+(n=8 at c=2, n=16 at c=3), which is the configuration this descent encodes. Whether `O_P = 1`
+persists for `n ≥ 32` is NOT settled here: the `level-set = n/2` config at `n = 32` is rate-dependent
+in the model and its identification with the true `n = 32` binding rung is unvalidated (direct
+brute-force infeasible) — so neither "persists" nor "fails" is established at `n ≥ 32`. (An earlier
+note here over-claimed a refutation; corrected.) One model-independent fact does stand: the char-`p`
+additive-energy defect for `e₂ = 0` has its ONSET at `μ_16` (zero defect on `μ_8`; on `μ_16` the
+char-`p` count 150/118/86/70 at p = 97/193/257/65537 exceeds the char-0 value 70 at small `p`),
+a clean small-scale sighting of the BGK wall. See `docs/kb/deltastar-444-subsetsum-binding.md`.
 -/
 import Mathlib
 

@@ -184,20 +184,27 @@ char-0 (`M_r=M_{r+N/2}` balance) vs char-`p` (`e₂≡0 mod p`) across primes:
 | `n=16` (`μ_8`, 4-subsets) | 10 (= 2 triv + 8) | **1** | 10,10,10,10,10 (p=17..65537) | **none** |
 | `n=32` (`μ_16`, 8-subsets) | 70 (= 6 triv + 64) | **3** | 150,118,86,**70** (p=97,193,257,65537) | **yes (→0 by 65537)** |
 
-**Two model-independent conclusions:**
-1. **`O_P=1` is `n=16`-SPECIFIC — it fails in CHARACTERISTIC 0 by `n=32`** (char-0 `O_P = 3`, not 1).
-   The benign-plateau single-orbit is an artifact of `μ_8` being too small for the char-0 orbit
-   count to exceed 1. (This corrects the earlier "the wall intrudes" framing of Step 5: it is not
-   *only* a char-`p` effect — even the clean char-0 count of orbits grows `1 → 3`.)
-2. **The char-`p` additive-energy defect (the BGK wall) has its ONSET at `μ_16`.** On `μ_8`, `e₂=0`
-   has zero defect at every prime (char-0 = char-`p` = 10). On `μ_16` the char-`p` count exceeds
-   char-0 at small `p` (defect `{80,48,16,0}`), killed only once `p` is large enough — a clean
-   small-scale picture of the wall, with the defect-killing threshold = the norm bound (`Sweep_A10`).
+**One model-independent conclusion stands; the "refutation" framing is RETRACTED.**
+1. **(STANDS) The char-`p` additive-energy defect (the BGK wall) has its ONSET at `μ_16`.** On `μ_8`,
+   `e₂=0` has zero defect at every prime (char-0 = char-`p` = 10). On `μ_16` the char-`p` count
+   exceeds char-0 at small `p` (`70` char-0; char-`p` `150/118/86/70` at p=97/193/257/65537; defect
+   `{80,48,16,0}`), killed only once `p` is large enough — a clean small-scale picture of the wall,
+   with the defect-killing threshold = the norm bound (`Sweep_A10`).
+2. **(⚠️ RETRACTED) "`O_P=1` fails in char-0 by `n=32`" was OVERSTATED.** The `char-0 O_P = 3` figure
+   is for the `e₂=0` 8-subsets of `μ_16` — but that object is the **`J=1` / `level-set=n/2` config at
+   rate `ρ=3/8`** (the `J=1` instance drifts `ρ=1/4 → 3/8` as `n: 16 → 32`), **not** the prize-rate
+   `ρ=1/4` binding (which in the model is `J=3`, where the bad set *vanishes*, `O_P=0`). And crucially
+   the model's identification with the *true* `n=32` binding rung is unvalidated.
 
-**Significance.** The campaign's "p-independent proxy face vs p-dependent prize face" dichotomy is
-itself an `n=16` artifact: by `n=32` the proxy/benign structure both (a) loses `O_P=1` in char-0 and
-(b) acquires a char-`p` defect, so the two grand challenges collapse onto the *single* char-`p`
-additive-energy object in the actual prize regime. *Caveat unchanged:* the binding↔`e₂=0`
-correspondence is validated only at `n=16`; at `n≥32` the `e₂=0` counts are solid as statements about
-that cyclotomic object, but the identification with the true far-line binding incidence is not
-directly validated (infeasible brute-force). NO prize closure; the BGK wall stands.
+**Why the retraction (`probe_444_OP_direct_sweep.py`, direct, no model).** Direct `O_P(c)` sweeps:
+`n=8` (`x^5+γx^3`): `c=1` O_P=4 → `c=2` **O_P=1** (level-set=4=`n/2`, binding) → `c≥3` O_P=0 (bad set
+vanishes). `n=16` (`x^9+γx^7`): `c=1` O_P=196 → `c=2` O_P=9 → `c=3` **O_P=1** (level-set=8=`n/2`,
+binding) → `c=4` O_P=1 → `c=5` O_P=0. So **(a)** the `O_P=1` onset coincides exactly with
+`level-set = n/2` (the config this descent encodes — validating the `n=16` brick), **(b)** `O_P=1`
+holds on a finite `c`-window then the bad set vanishes (`O_P → 0`, not `> 1`), and **(c)** NubsCarson's
+direct sweep + lalalune/0xSolace's Schur-ratio orbit law independently confirm `O_P=1` at the binding
+for `n=8,16`. **Net honest status:** `O_P=1` at the binding is *directly confirmed* for `n ≤ 16`;
+persistence to `n ≥ 32` is **OPEN** (the descent model's `n=32` behavior is rate-dependent and not
+validated as the binding rung; direct brute-force is infeasible). The model-independent `μ_16` char-`p`
+defect onset is the one solid new fact, and it is consistent with the prize being the char-`p`
+additive-energy wall. NO prize closure; the BGK wall stands.
