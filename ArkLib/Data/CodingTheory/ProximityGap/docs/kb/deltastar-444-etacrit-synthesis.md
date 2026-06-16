@@ -117,3 +117,25 @@ python3 -u /tmp/condcount.py        # condition-count c vs list size vs norm cei
 ```
 In-tree: `Frontier/Sweep_A10_ActionOrbitBadPrime.lean` (badPrimeBound, p ≤ b²),
 `Frontier/Sweep_A40_EvenOddDescentIdentity.lean` (descent identity).
+
+## §0c. The UNIFYING META-THEOREM (the complete why-δ*-resists, after 6 directions)
+
+Every floor method this session — even/odd descent, Action–Orbit norm bound (η_crit), DFT/lacunary
+rigidity, binary-multiples/correlation-attack, and over-determination (C-NEW-1: defect dies for
+`c/s ≥ ~0.4–0.5`) — cleans the char-p defect only in a **constant-`η` regime** `η ≥ η_thresh`
+(η_crit ≈ 0.095–0.19; over-determination ≈ `ρ`). The reason is structural and uniform:
+
+> **The worst-case window list at radius `δ = capacity − η` = char-0 coset count (`poly(1/η)`,
+> closed) + char-p defect. The defect is provably 0 (list bounded) for every FIXED `η > 0` at
+> accessible scale, but δ* sits at `η = Θ(1/log n)` — at the precise ratio `c/s = η/(ρ+η)` where
+> the defect first reaches the budget `n`. Since `Θ(1/log n) < η_thresh` for every constant
+> `η_thresh` at prize scale (`μ=30`), δ* lies in the defect-PRESENT regime that no constant-`η`
+> floor method touches. Pinning δ* ⟺ bounding the char-p defect at `η → 0` ⟺ effective
+> thin-subgroup Gauss-sum equidistribution = the open BGK/Paley wall.**
+
+Verified pivot: at δ*'s ratio `c/s ≈ 0.35` defects EXIST (n=32: 15 non-coset defects at `c=2,s=6`);
+at `c/s ≥ 0.5` they vanish (the `x^{n/4}+1` case, proven cosets-only to n=64). So δ* is exactly the
+crossover, and it is `Θ(1/log n)`-deep — below every constant clean threshold. This subsumes the
+η_crit no-go (`Sweep_A43`) and explains, in one statement, why all six directions + the campaign's
+190+ conjectures + the parallel ceiling table (every √-cancellation method caps below `δ=1/2`)
+terminate at the same wall. No constant-`η` method can reach a `Θ(1/log n)`-deep threshold.
