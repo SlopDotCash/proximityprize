@@ -51,4 +51,23 @@ A bound on weight-`s` binary multiples of `g = ∏(X−ζ^j)` that is (i) above 
 factor through `max_b |Σ_{x∈μ_n} e_p(bx)|` (BGK). No such bound is known; the literature check
 determines whether the correlation-attack family contains one.
 
-(Reframing exact; verdict pending agent `aa984…`.)
+## VERDICT (literature mined + verified): reduce-to-wall — but with a NEW proof-complexity barrier
+
+The fast-correlation-attack / low-weight-multiple literature offers **NO** non-Johnson,
+non-character-sum handle (focused literature sweep). It bifurcates exactly into: (a) the **random
+heuristic** `C(n,s)/p^c` (used to *size attacks*, never proven; an underestimate blind to
+structure), and (b) **character-sum / Weil** bounds = the BGK wall. The single rigorous structured
+weight-count — **Sidelnikov (1971)**, the binomial approximation of the BCH weight distribution —
+is itself **proved via Gauss sums + the Weil bound**, i.e. it IS the character-sum wall, not an
+escape. Measured (n=32, exact): the actual binary-multiple count is `1.1–2.6×` the random model at
+small scale — the **structured-inflation factor IS the additive energy** = the wall.
+
+**The genuinely new finding (a barrier, not a lever):** the prize object — vanishing sums of
+roots of unity / "knapsack over roots of unity" — is **provably hard for Polynomial Calculus and
+Sum-of-Squares** (Dvir et al., *On Vanishing Sums of Roots of Unity in Polynomial Calculus and
+Sum-of-Squares*, MFCS 2022). And Bilu–Luca et al. (arXiv:2005.05500) give only finiteness/order
+structure, not a count. So the reframing supplies a **fourth independent confirmation** of the
+wall (after the even/odd descent, the η_crit no-go, and the DFT/lacunary identity), plus a
+**proof-system lower bound** suggesting the prize defect resists not just *known* techniques but
+broad classes of *algebraic certificates* — a meta-reason the 25-year wall is hard. No bypass; the
+prize remains the open additive-energy / Paley √-cancellation wall.
