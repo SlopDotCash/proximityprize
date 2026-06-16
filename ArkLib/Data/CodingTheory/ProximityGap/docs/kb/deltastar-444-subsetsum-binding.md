@@ -92,3 +92,22 @@ So the clean `h_{2j}(T)=h_j(H²)` engine (which needs even `a−k,b−k`) does N
 `|S| = 2·#{P=Q=0} + #{Q≠0 ∧ P²=yQ²}`) applied to the bad-`T` orbit structure. That is the precise
 remaining gap for an `O_P=1` proof: show the single bad-`T` dilation orbit persists under the
 non-symmetric squaring descent. (Johnson-proxy face; BGK sup-norm prize separate/open.)
+
+## The binding = character-twisted NODAL direction (structural insight + why easy descent fails)
+
+Since `x^{n/2} = χ(x)` (quadratic character, `±1`), the binding direction factors:
+> **`x^{n/2+1} + γ·x^{n/2−1} = χ(x)·(x + γ/x) = χ(x)·(x²+γ)/x`** — the **character-twisted nodal
+> direction** (`x+γ/x` = the campaign's nodal far-direction, `[[arklib-389-subjohnson-exact-line]]`).
+
+`x+γ/x` is ODD under `x→−x`; on a full fibre `{x,−x}` the agreement `f·x^{n/2+1}=x²+γ` forces
+`f(x)=−f(−x)`, i.e. `f` is an **odd** codeword `f=x·G(x²)`. The even/odd descent (`y=x²`,
+`χ(x)=χ'(y)=y^{n/4}`) then reduces the agreement to `G(y)·χ'(y)·y = y+γ` on `μ_{n/2}`, i.e. `G`
+agrees with the word **`χ'(y)·(1+γ/y)`** on `μ_{n/2}`.
+
+**Why the easy descent does NOT close `O_P=1` (honest).** The descended word `χ'(y)·(1+γ/y)` is
+NOT the same form as the original `χ(x)·(x+γ/x)` — the monomial part changed `x → 1` (`x+γ/x`
+became `1+γ/y`). So the recursion is **not self-similar**, and `O_P=1` does not follow by a naive
+induction `n→n/2`. A proof needs to track the changing word-form down the tower (or a direct
+single-orbit argument on the bad-`T` set). This is the precise remaining obstruction — a real
+sharpening of the open `O_P=1` statement, now reduced to "does the single bad-`T` orbit persist
+under the non-self-similar nodal descent `χ(x+γ/x) → χ'(1+γ/y)`." (Proxy face; BGK prize separate.)
