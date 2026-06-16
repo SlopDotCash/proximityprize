@@ -111,3 +111,65 @@ induction `n→n/2`. A proof needs to track the changing word-form down the towe
 single-orbit argument on the bad-`T` set). This is the precise remaining obstruction — a real
 sharpening of the open `O_P=1` statement, now reduced to "does the single bad-`T` orbit persist
 under the non-self-similar nodal descent `χ(x+γ/x) → χ'(1+γ/y)`." (Proxy face; BGK prize separate.)
+
+## CONFIRMED: binding bad-T are all non-symmetric ⟹ O_P=1 proof needs the single-fibre term
+
+Verified (n=16, binding `x^9+γx^7`, c=3, s=7): the 64 nonzero-bad `T` are **ALL non-antipodal-
+symmetric** (0 symmetric), giving 8 distinct bad γ = `(n/2)·O_P`, `O_P=1`. So the agreement sets are
+single-fibre. The clean full-fibre descent (odd word ⟹ `P=0` ⟹ odd codeword ⟹ collapse to a
+monomial pair, which would prove `O_P=1` trivially) **does NOT apply** — it requires full-fibre
+(symmetric) agreement, which these bad `T` are not. The proof of `O_P=1` therefore genuinely requires
+the **single-fibre `#{Q≠0 ∧ P²=yQ²}` term** of the even/odd descent (`Sweep_A40`): track how the
+non-symmetric bad-`T` orbit collapses to a single coset under the single-fibre map. This is the
+precise, confirmed remaining obstruction for an `O_P=1` proof — neither the clean symmetric descent
+(`h_{2j}=h_j(H²)`) nor naive self-similar induction closes it. (Proxy face; BGK sup-norm prize open.)
+
+## ⚠️ CORRECTION + CRACK: the obstruction above was WRONG — O_P=1 at n=16 is PROVEN (char-0)
+
+*The "non-symmetric T ⟹ need single-fibre term" note above looked at the WRONG object (the
+size-`s` agreement set `T`), not the natural invariant (the size-`s+1` LEVEL SET / the gapped
+polynomial). The level set IS antipodal-symmetric and descends cleanly. Below supersedes it.
+Probes: `probe_444_gapped_product.py`, `probe_444_gapped_structure.py`, `probe_444_odd_descent.py`,
+`probe_444_e2_reduction.py`, `probe_444_e2_charzero.py`, `probe_444_descent_n32.py`.*
+
+**Step 1 — the gapped-polynomial reformulation (verified 64/64, n=16).** Multiplying the binding
+agreement `f = χ(x)(x+γ/x)` by `x^{n/2+1}` (using `χ=x^{n/2}`, `χ²=1`) gives `ψ_f(x) := f(x)·x^{n/2+1}
+− x² = γ` on `T`. So **`T` is a level set of `ψ_f`**, and `ψ_f − γ = V_T·W` is a polynomial with
+support `{0,2} ∪ [n/2+1, n/2+k]` — heavily GAPPED. The full level set has size `s+1 = n/2 = 8`
+(`T` is any `s`-subset of it; `W` has 1 root in `μ_n`, explaining the `C(8,7)=8`-fold `T`-overcount:
+8 configs × 8 sub-`T` = 64 bad `T`).
+
+**Step 2 — bad `f` are ODD ⟹ even descent (verified 100%).** The support `{0,2,10,12}` is **all
+even** ⟹ `ψ_f − γ` is an even polynomial ⟹ **the bad `f` are exactly the ODD polynomials**
+`f = c₁x + c₃x³` (since `x^{n/2+1}` is odd, `f` odd makes `f·x^{n/2+1}` even, matching `−x²−γ`). The
+level set is therefore **antipodal-symmetric** and descends to `Φ_γ(y)` on `μ_{n/2}=μ_8` (`y=x²`).
+*This is the resolution of the bogus obstruction: the natural object is symmetric; only the chopped
+size-`s` `T` is not.*
+
+**Step 3 — the `e₂=0` Vieta reduction (verified MATCH=True vs direct).** Clearing `Φ_γ(y)=c₃y⁶+c₁y⁵
+−y−γ` by `y³` on `μ_8` (`y⁶=y⁻²,y⁵=y⁻³`) gives the **monic degree-`n/4=4`** polynomial
+`y⁴+γy³+0·y²−c₃y−c₁`, which must split completely over `μ_8`. By Vieta:
+> **bad γ ⟺ ∃ 4-subset `{η_j}⊆μ_8` with `e₂(η)=0`, and `γ = −e₁(η)`.**
+
+**Step 4 — `e₂=0` is CHAR-0, and the subsets form ONE shift-orbit (PROVEN).** `e₂=0` on `μ_8` is the
+cyclotomic vanishing `M_r=M_{r+4}` of pairwise-sum multiplicities (`ζ⁴=−1`), **p-independent**
+(verified identical at p=17,41,73,97,65537). The 10 such 4-subsets split as **2 with `e₁=0`** (the
+`μ_4`-cosets `{0,2,4,6},{1,3,5,7}` ⟹ trivial `γ=0`) **+ 8 with `e₁≠0`**, and those 8 are exactly the
+single shift-orbit `{0,1,2,5} + t (mod 8)`. One dilation orbit ⟹ **`O_P=1`, char-0. ∎**
+
+> **This is a genuine CLOSED proof of the binding `O_P=1` at n=16** (the Johnson-proxy face), via a
+> new mechanism: **odd-descent + `e₂=0` cyclotomic rigidity**. It does not use the size-`s` single-
+> fibre term at all.
+
+**Step 5 — HONEST boundary: it does NOT generalize cleanly; the wall intrudes at n=32.** The same
+reciprocal-to-monic descent for general `n` gives a monic degree-`n/4` poly over `μ_{n/2}` with
+`J = n/4 − 1 − k/2` forced-zero conditions `e₂=…=e_{J+1}=0`, `γ=−e₁`. At **n=32** (`μ_16`,
+8-subsets): the natural `J=1` object (`e₂=0`) is **char-`p` DEPENDENT** — counts 150/118/**70** and
+`O_P` = 9/7/**4** at p=97/193/65537 (NOT 1, and not p-independent); `J=2,3` over-constrain to only the
+2–6 trivial `e₁=0` subsets (`O_P=0`). So **no integer condition-depth lands a clean char-0 `O_P=1` at
+n=32** — the char-`p` defect (the BGK wall) is already present in the descended object. *Caveat: the
+n≥32 descent model is NOT yet validated against a direct computation (infeasible brute-force), so the
+"char-`p` at n=32" is a property of the natural descended object, not a proven statement about the true
+binding.* **Net:** the clean char-0 `O_P=1` is established at **n=16 only**; its persistence to all
+`n=2^μ` (the full proxy claim) is **not** closed by this descent, and the char-`p` intrusion at n=32
+is consistent with the prize being the char-`p` additive-energy defect. (BGK sup-norm prize: open.)
