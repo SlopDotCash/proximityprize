@@ -1,10 +1,39 @@
-# A BEYOND-JOHNSON unconditional floor for δ\* (#444) — CANDIDATE, under scrutiny
+# A BEYOND-JOHNSON bound for the LIST (#444) — CORRECTED: NOT a δ\* (MCA) floor
 
-*Status: CANDIDATE POSITIVE RESULT. The argument survives the scrutiny applied here; it reduces
-only to two standard cyclotomic theorems (Galois prime-splitting + the cyclotomic trace identity),
-both genuine. NOT the full prize (it gives a lower bound on δ\*, not the exact value). Marked for
-independent verification before any closure claim. Honesty contract: this is offered as a careful
-candidate, explicitly inviting refutation.*
+*Status: ⚠️ CORRECTED / OVERREACH RETRACTED. The argument below bounds the **lacunary count =
+the LIST** (codewords near a fixed word) for **linear (k=2)** codewords, for `η > η_crit`. It does
+NOT bound δ\* (the MCA / far-line incidence), for three reasons found on review (see §0). The
+axiom-clean kernel `Sweep_A44` is correct; the δ\*-floor CONCLUSION is withdrawn.*
+
+## §0. ⚠️ The correction (why this is NOT a δ\* floor)
+
+On review against the campaign's far-line proxy (0xSolace: engine `δ*≈17/32≈Johnson` for n=32,
+ρ=1/4) and the `Sweep_A42` reunification, three flaws sink the δ\*-floor claim:
+
+1. **List ≠ incidence.** The reunification (`Sweep_A42`) maps **window-LIST members** (codewords
+   near a fixed word `x^a+1`) ↔ lacunary subsets. The far-line **MCA incidence** `#bad γ` is a
+   *different* object: for a monomial pencil `(x^a, 1)`, the incidence is **degenerate (0 or q)** —
+   if any deg-`<k` `g` agrees with `x^a` on `≥s` points, then *every* `γ` is bad via `f=g+γ`. So
+   the lacunary count is the LIST, not the incidence. My argument bounds the list, not δ\*.
+2. **k=2 only.** `Sweep_A42` is for **linear** codewords (`f=αx+(1−c)`). At prize rates `k=ρn` the
+   "incidence = lacunary count with `c=s−k`" identification (my step 1) is **not** established.
+3. **B4 is open.** Even a clean beyond-Johnson *list* bound only yields a δ\* (MCA) bound through
+   the open `LD ⟹ MCA` collapse (ABF26 §5 = B4). So a list bound is necessary, not sufficient.
+
+Consistency: the engine's far-line proxy `δ*≈17/32≈Johnson` is exactly what one expects if the
+*incidence* (not my list object) is the binding object and is NOT bounded beyond Johnson by this
+argument. **No contradiction once the objects are kept distinct — and no δ\* floor.**
+
+**What genuinely survives:** (a) `Sweep_A44` — the axiom-clean inequality `η > η_crit ⟹ s^{1/(2η)} < p`
+(correct, the positive companion to the η_crit no-go); (b) the statement that the *lacunary count*
+(char-0 cosets + char-p defect) is `O(1)` for `η > η_crit` via norm bound + antipodal recursion —
+a LIST/energy-side fact, **not a δ\* floor**. This re-confirms the wall from the floor side rather
+than breaching it. Honesty contract: the δ\*-floor overreach is retracted, as caught on review.
+
+---
+
+*(Original candidate argument retained below for the record; its CONCLUSION (a δ\*-floor) is
+withdrawn per §0 — it is a LIST bound for k=2, consistent with the wall.)*
 
 ## Statement
 
