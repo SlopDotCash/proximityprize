@@ -1,0 +1,27 @@
+{
+ "id": "C082",
+ "rank": 82,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F12",
+  "F10",
+  "F3"
+ ],
+ "walls": [
+  "W-genericity"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/ComplementQuadric.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean"
+ ],
+ "title": "Complement-quadric duality: e2=0 on an a-subset ⟺ its (n−a)-complement satisfies S²=−Q, turning top rows into explicit c-variable quadric point counts where Weil/Deligne is the RIGHT tool",
+ "connection": "ComplementQuadric.e2Folded_eq_zero_iff_complement_quadric proves (above threshold) e2(A)=0 ⟺ (∑_{i∈T}g^i)²=−∑_{i∈T}g^{2i}, T=complement of A, using that the full domain has vanishing first AND second power sums (sum_pow_range_eq_zero, sum_pow_sq_range_eq_zero — themselves the F15 identity from SubsetSumEsymmVanishing). For top rows a=n−c (small c), the bad-scalar count at agreement a is the F_q-rational point count of an EXPLICIT c-variable quadric S²+Q=0 on c-subsets — a genuine AG object, not a character sum. Bridges F12 (e2 rigidity) to F10 (half-sum) and F3 (incidence) and exposes the count as a quadric point count where Weil/Deligne IS right (small fixed dimension, dodging W-largesieve's dimension obstruction).",
+ "why_insightful": "Flips the hard high-agreement rows (a close to n) into low-dimension (c small) quadric geometry where the point count is governed by classical quadratic-form theory over F_q — a tractable handle, the algebraic dual of the half-sum lemma.",
+ "attack_plan": "Lean/probe: for c=2,3 write the quadric S_T²+Q_T explicitly, count μ_n-points via the classical quadratic-form discriminant (Mathlib quadratic forms / Gauss-sum-of-quadratic). The a=n−3 row is probe-reported fully coset-decomposable; formalize its point count = the orbit census directly, giving an exact closed δ* value on the top rows independent of BGK."
+}

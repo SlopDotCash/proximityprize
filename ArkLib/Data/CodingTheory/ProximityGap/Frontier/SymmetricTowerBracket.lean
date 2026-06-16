@@ -239,6 +239,7 @@ theorem symmetric_mcaDeltaStar_le_of_bad (C : Set (ι → A)) (εstar : ℝ≥0�
     _root_.ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) C εstar ≤ δbad :=
   _root_.ProximityGap.MCAThresholdLedger.mcaDeltaStar_le_of_bad (F := F) C εstar hbad
 
+omit [Fintype A] in
 /-- **The symmetric `δ*` lower bracket (ledger instance).** Dually, any good radius `δ ≤ 1`
 (`ε_mca(C, δ) ≤ ε*`) lies below the formal threshold. Together with the upper bracket this is the
 two-sided sandwich `δgood ≤ δ* ≤ δbad`; the symmetric family contributes to the LOWER side trivially

@@ -1,0 +1,17 @@
+{
+  "id": "C092",
+  "title": "Energy chain q·E(H)=Σ‖η_b‖⁴ + dilation reduction E=|H|·T(H) wires F5↔F2↔F18 into one curve-incidence T(H)",
+  "verdict": "PARTIAL",
+  "method": "probe",
+  "evidence": "Probes scripts/probes/_407_conn/C092_energy_chain_THof.py and C092_fourthmoment_and_direction.py (exact integer + machine-precision complex arithmetic) at PROPER-subgroup PRIZE-regime primes n=8,16,32, q~n^4 and n^5, n^2<=q. PROVEN piece: all three chain identities verify exactly — (a) E(H)=|H|·T(H) with T(H)=#{(b,c)∈H²:1+b−c∈H} (True every row), (b) q·E(H)=Σ_b‖η_b‖⁴ to machine precision (n=8,q=73: both 12264; n=16,q=257: both 234384), (c) |H|∣E(H) (True every row). These match the in-tree axiom-clean bricks addEnergy_eq_card_mul_incidence / subgroup_gaussSum_fourthMoment / card_dvd_addEnergy. So the F5↔F2↔F18 unification through the single incidence T(H) is a genuine, correct, exact identity. REFUTED piece (the attack_plan's quantitative hope): the claim 'T(H)=(1+o(1))n²/q so T<=n²·polylog/q ⟹ √(n·polylog) target' is the FULL-GROUP value. At proper subgroups T(H)/n→const≈2.6–3 (off-diagonal part is Θ(n), NOT n²/q≈0): the ratio (T−n)/(n²/q) is 800 (n=8,q=4129) up to ~2e6 (n=32,q=33554593). E/n²≈2.6–2.9 is Θ(n²) Sidon order already (the consecutive-2^k-th-root additive coincidences of O30/O28), NOT the Weil n³/q. WRONG DIRECTION: the chain transports B→E (forward, addEnergy_le_of_charSum_bound) and E→B-from-below (converse, exists_charSum_ge_of_energy giving max‖η_b‖⁴≥(qE−n⁴)/(q−1)). Since E is already Sidon-order with NO input, a small-E/small-T bound does NOT cap sup_b‖η_b‖ above — it only reproduces the trivial √n LOWER floor (probe: floorB≈3.3,5.1 = the √n floor, B itself 1.7,2.3). The open scalar B(μ_n)=sup‖η_b‖ is untouched by any T(H) bound.",
+  "reduced_to": "",
+  "wall": "W-BGK (Paley-graph / sub-√q incomplete-character-sum eigenvalue): bounding T(H)=E/|H| above is the open sum-product additive-energy bound for 2^k-subgroups over F_q (O30 shows it has additive coincidences, NOT the char-0 minimal 3n² value), and even granting it, the chain's converse only floors B below at √n — it never caps the sup. The honest open core sup_b‖η_b‖≤C√n is exactly the Paley/BGK wall, unmoved.",
+  "honest_note": "The chain itself (three identities) was already proven in-tree before this attack; the probe re-confirms it exactly at the correct prize regime — that part is genuine and is the PROVEN content. The novel insight credited by the record (T(H)=autocorrelation sum = curve incidence = E/|H|, the literature's unwritten constant) is CORRECT and verified. But the attack_plan's path to the prize fails on two independent counts: (1) the n²/q heuristic for T is a full-group artifact false at proper subgroups (the very #400 trap the prompt warns about — full-group gives the false-positive), and (2) the logical direction is backwards (E/T small does not upper-bound the sup-norm B). No closure of BGK. PARTIAL = chain identities PROVEN, prize route REFUTED/welds-to-wall. Belongs in DISPROOF_LOG alongside O30 (T(H)-direct-Stepanov route).",
+  "evidence_files": [
+    "scripts/probes/_407_conn/C092_energy_chain_THof.py",
+    "scripts/probes/_407_conn/C092_fourthmoment_and_direction.py",
+    "ArkLib/Data/CodingTheory/ProximityGap/EnergyDilationReduction.lean",
+    "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean",
+    "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean"
+  ]
+}

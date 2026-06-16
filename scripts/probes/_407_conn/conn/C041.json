@@ -1,0 +1,25 @@
+{
+ "id": "C041",
+ "rank": 41,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F9"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAEquivariance.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAMonomialEquivariance.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WBPencilSymmetry.lean"
+ ],
+ "title": "The Möbius/inversion + rotation + monomial-twist generate the full PGL₂-normalizer; the worst-case δ* stack is a SINGLE orbit (reduces the sup to ONE representative)",
+ "connection": "mcaEvent_rs_rotate (x↦g·x, the torus) and the inversion x↦-1/x (via the reversal-twist (T u)(i)=(dom i)^{k-1}u(σi)) supply the two PGL₂(F_q) generators on the smooth RS domain; with affine reparametrizations and the diagonal MCAMonomialEquivariance twist they generate the full monomial normalizer of the GRS automorphism group. WBPencilSymmetry.mcaEvent_swap_inv acts as γ↦γ⁻¹ (the F2↔F3 self-duality). The decisive probe (MCAMonomialEquivariance docstring): at the first exact pin RS[F5,(1,2,4,3),2] the 100,000 worst-case stacks are TWO free orbits under affine+rotation but ONE single orbit of size 100,000 once the twisted inversion is added. So the entire ε_mca worst-case sup (already reduced to orbit transversals by epsMCA_eq_iSup_subtype_of_reps) collapses to a SINGLE PGL₂-normalizer orbit. The δ* extremizer is canonical.",
+ "why_insightful": "The literature uses only affine+permutation symmetry; the inversion (Möbius) generator + diagonal twist fuse the extremal set into one orbit — much stronger than 'extremal lines are monomial directions', giving a canonical extremizer to compute against.",
+ "attack_plan": "Lean: assemble mcaEvent_rs_rotate, inversion, monomial twist into mcaEvent_pgl2_normalizer_invariant, strengthen epsMCA_eq_iSup_subtype_of_reps to a sup over PGL₂-normalizer-orbit reps. Compute the orbit of the canonical (x^k,x^{k-1}) extremizer; show every window-extremal stack is in it (probe μ_8/μ_16 multiple primes). If unique, δ* is its single bad-coset count."
+}

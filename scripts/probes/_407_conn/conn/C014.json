@@ -1,0 +1,26 @@
+{
+ "id": "C014",
+ "rank": 14,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F3",
+  "F1"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MonomialLineListBridge.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAWitnessSpread.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMCACollapse.lean"
+ ],
+ "title": "The missing reverse bound is the witness-spread realizer of the super-code list; two in-tree lemmas already isolate its full content",
+ "connection": "The forward bridge badScalars_monomial_card_le_listSize builds an injection bad-γ ↦ lifted RS[k+1]-codeword (distinct because X^k-coeff=−γ, eval injective in degree<k+1), so I(δ)≤|list(RS[k+1],δ)|. The REVERSE (I(δ)≥poly·|list|) is missing, and MCAWitnessSpread.unique_bad_gamma_common_witness + common_witness_badGamma_set_card_le_one pin its exact content: distinct bad scalars FORCE distinct witness sets S_γ (a common S gives ≤1 bad scalar). So the reverse bound is 'the δ-list of RS[k+1] around u₀ is realized by a SPREAD of distinct (1−δ)n-agreement sets, one per leading coefficient.' The map bad-γ↦(c_γ=p−γ·X^k, agreement set S_γ) is a section of the list whose image must avoid the common-witness collapse.",
+ "why_insightful": "Reframes 'no matching reverse bound' (issue §3 face-1) from a vague gap into a precise, already-half-formalized obstruction: the list-to-incidence map fails not on cardinality but on witness-set distinctness. The two MCAWitnessSpread lemmas were filed as lower-bound necessity but are exactly the reverse-bridge skeleton.",
+ "attack_plan": "Lean: incidence_ge_list_of_distinct_witnesses — assume each RS[k+1] δ-list codeword has X^k-coeff giving distinct γ and a witness set S_γ failing pairJointAgreesOn; conclude |mcaBadSet|≥|list| by composing epsMCA_ge_card_div_of_mcaEvent_set with the contrapositive of common_witness_badGamma_set_card_le_one. Probe (μ_8/μ_16 over F12289): do the worst-line δ-list codewords realize distinct agreement sets at window radius, or cluster?"
+}

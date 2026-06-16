@@ -1,0 +1,29 @@
+{
+ "id": "C043",
+ "rank": 43,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F6",
+  "F19"
+ ],
+ "walls": [
+  "W-largesieve",
+  "W-anomaly",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumMoment.lean"
+ ],
+ "title": "The KU-barrier exponent 1/(d-1) and the moment crossover r*≈β+1 are the SAME conductor-in-the-denominator obstruction on dual faces (L^∞ vs L^{2r})",
+ "connection": "KU Lemma 3.9's Wasserstein decay q^{-1/(d-1)} is vacuous because d sits in the exponent's DENOMINATOR. The moment face (subgroup_gaussSum_moment: Σ_b‖η_b‖^{2r}=q·E_r) has the char-p anomaly forced once q·E_r^{char0}<n^{2r}, crossover r*≈β+1. Dual: equidistribution needs decay ≪ε* over the support (rate ∝1/size), the moment face needs validity to depth r∝log of the norm budget (2r)^{n/2}<q (n in the exponent). Both place subgroup-size n in an exponent that q=n^β (β=O(1)) cannot beat: β·log n on the right vs n on the left. The tangent/Jacobi face (T_h at q=nm, m≈2^128) inherits the SAME structure.",
+ "why_insightful": "Shows the equidistribution wall and the deep-moment-anomaly wall are not two barriers but one invariant (subgroup-size-in-exponent vs O(1)-power field) on the L^∞ (KU/Jacobi) and L^{2r} (moment) faces. Unifies W-largesieve, W-anomaly under one inequality n vs β log n.",
+ "attack_plan": "Lean: size_in_exponent_obstruction parameterizing both — given budget log q=β log n and a tool needing (size)·c≤log q, derive vacuity for size=n, d=2^32. Reuse the KU omega-style proof shape with the moment threshold r_max=2 log_n p. Probe: tabulate KU rate-exponent 1/(d-1) against moment crossover r* across the same (n,q) grid to confirm they cross the budget at the same scale."
+}

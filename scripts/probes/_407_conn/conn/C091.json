@@ -1,0 +1,28 @@
+{
+ "id": "C091",
+ "rank": 91,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F5",
+  "F15"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-Betti"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSpectral.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/ShawSecondMoment.lean"
+ ],
+ "title": "Collision Plancherel = Shaw second-moment: the moment-collision scalar (F5/F15) and the line-incidence Shaw error (F3) are the SAME spectral energy on a different group",
+ "connection": "plancherel_collision: collision·|A|=Σ_ψ‖Tψ‖² (Tψ=Σ_S ψ(stat S)). shawError_second_moment: Σ_{s0}‖𝒮‖²=|V|·Σ_{ψ⊥s1,ψ≠0}‖1̂_S(ψ)‖². The SAME Plancherel identity (energy=Σ squared Fourier coefficients) on two groups: A=(stat-target) for the moment-collision/list-supply face (F5/F15), V=(word space) for the line-incidence face (F3). plancherel_collision_main_term isolates (C(n,a))² exactly as incidence_eq_average_add_shaw isolates |S|. So the 'list supply' deep-moment object (F5: E_r as a collision count, F15: h_{b-k} vanishing) and the Shaw line-incidence object (F3) are ONE Plancherel energy — the off-diagonal Σ_{ψ≠0}‖Tψ‖² in MomentCollisionSpectral IS the Shaw operator's L² mass. Both bottom out in the same partial subgroup character sum.",
+ "why_insightful": "Unifies two faces worked SEPARATELY (#232 collision/moment scalar and #389 Shaw line-incidence) as a single Plancherel identity on different dual groups, showing the deep-moment wall and the line-incidence wall are not two walls but one off-diagonal spectral mass.",
+ "attack_plan": "Lean: a meta-lemma abstracting both plancherel_collision and shawError_second_moment as instances of one plancherel_energy(stat)=Σ_ψ‖charSum stat ψ‖² over an arbitrary finite abelian target; specialize to recover both. Lets any future bound on Σ_{ψ≠0}‖Tψ‖² feed BOTH the F5 and F3 consumers. Verify collision(μ_n,a,sum-stat)·q=(C(n,a))²+Σ_{b≠0}|elementary-symmetric-in-η|² at small n."
+}

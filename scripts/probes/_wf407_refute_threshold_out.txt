@@ -1,0 +1,12 @@
+==============================================================================
+REFUTATION pt4 — worst R along the near-threshold ridge, growing n
+==============================================================================
+  scanning ALL primes p=n*m+1 with shallow=p/n^2.5 in [0.3, 6], per n=2^mu
+  (this is the LOCUS where spikes were observed); does peak R grow with n?
+
+       n    peakR          B         p       m  shallow  #scan    p99R
+       8   1.2262      5.838       137      17    0.757     38  1.2262
+      16   1.3640      9.520       337      21    0.329     87  1.3640
+      32   1.5936     23.745     32993    1031    5.696    219  1.5139
+      64   2.0716     43.633     65537    1024    2.000    512  1.8435
+     128   1.9793     55.930     65537     512    0.354   1277  1.6031

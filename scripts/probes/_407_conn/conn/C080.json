@@ -1,0 +1,28 @@
+{
+ "id": "C080",
+ "rank": 80,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F7",
+  "F16"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/PaleySpectralFloor.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean"
+ ],
+ "title": "The proven coset count m=(q−1)/n forces log m not log q — the structural pin making the EVT floor √(n log m) ≠ Ramanujan 2√n",
+ "connection": "eta_image_card_mul_le proves rigorously #{distinct η-values over F^×}·|G|≤q−1, so B = max over at most m=(q−1)/n Gauss periods. Combined with the EXACT per-period variance (subgroup_gaussSum_secondMoment: (1/(q−1))Σ_{b≠0}‖η_b‖²=n), the worst case is the maximum of m mean-zero variance-n quasi-Gaussians, EVT-pinned at √(2n·log m), log m=log((q−1)/n). PaleySpectralFloor.ramanujan_implies_paleyFloor proves machine-checked that Ramanujan (B≤2√n) implies the floor only when L=log m≥4/C², certifying the correct target is √(n log m) and the Alon-Boppana/Ramanujan cap is FALSE in regime. The number of DISTINCT eigenvalues (the proven coset count) is the structural reason the prize target carries a logarithm — the count of i.i.d.-like samples in the EVT max.",
+ "why_insightful": "Most attacks chase a spectral-gap (Ramanujan) upper bound; the proven coset-count + second-moment variance explain WHY that is the wrong object (m distinct eigenvalues force a √log m excess by EVT) and why the constant is √2 not 2. The exact #values·|G|≤q−1 makes 'log((q-1)/n) not log q' a theorem.",
+ "attack_plan": "Lean: combine eta_image_card_mul_le (≤m values) with subgroup_gaussSum_secondMoment (variance n) into paleyFloor_from_evt: IF the m periods satisfy a sub-Gaussian tail with proxy n (the SalemZygmundChaining input) THEN PaleyFloorBound ψ G (√2)(log m). Probe: verify B/√(2n log m)→1 and B/(2√n)→∞ across growing m at fixed n."
+}

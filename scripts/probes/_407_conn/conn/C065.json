@@ -1,0 +1,30 @@
+{
+ "id": "C065",
+ "rank": 65,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F12",
+  "F16",
+  "F6"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean"
+ ],
+ "title": "The cyclotomic norm-defect threshold (2r)^{φ(n)}=p is the EXACT crossover where N₀, E_r, AND the tangent sum T_h all leave their char-0/Jacobi value",
+ "connection": "no_spurious_tuple_of_lt_prime proves: if (2r)^{φ(n)}<p, no signed sum of ≤2r n-th roots vanishes mod p, hence E_r(μ_n)=E_r^{(0)} exactly. This is the r-threshold below which N₀ (F16) equals its char-0 value and the moment ladder B^{2r}≤q·E_r is reliable. Via tangent I3 + tangentSum_mul_orderOf_eq_sum_jacobiSum, the SAME char-p coincidence makes the autocorrelation weight T_h=(1/m)Σ_i J(χ^i,χ^h) (F6) depart from its archimedean Jacobi-equidistributed value: a vanishing signed root-of-unity sum mod p IS a spurious Jacobi coincidence. So F12 (resultant threshold), F5 (deep-moment validity), F16 (N₀ defect), F6 (tangent flatness) all cross at (2r)^{φ(n)}=p.",
+ "why_insightful": "Three files describe the breakdown with three objects (cyclotomic resultant, additive energy, Jacobi average) and none cites the others; identifying (2r)^{φ(n)}=p as the COMMON crossover unifies the algebraic, combinatorial, and multiplicative descriptions, reframing 'why the moment route walls at r≈β' as 'when the first signed root-of-unity relation fits in the (2r)-box mod p'.",
+ "attack_plan": "Probe: for μ_n at large prime, correlate (a) smallest r with E_r>E_r^{(0)}, (b) smallest r with max_h|T_h| exceeding char-0 Jacobi value, (c) r where (2r)^{φ(n)} first exceeds p — verify coincidence. Lean: tangent_defect_iff_spurious_tuple stating T_h deviates from char-0 iff a spurious tuple exists mod p, connecting no_spurious_tuple_of_lt_prime to a tangent-sum clean range (hence to B via I3)."
+}

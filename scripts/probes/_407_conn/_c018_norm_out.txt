@@ -1,0 +1,41 @@
+####### C018 norm-spectrum: true onset = max prime(=1 mod n) | N(diff) #######
+
+mu=3 n=8 deg=phi=4 r=3: I_infty=40, #distinct-diffs=296
+   max |N(lambda_S - lambda_T)| = 144   resultant-thr (2n)^deg-scale n^deg=4096
+   #primes(=1 mod n) dividing some norm = 1
+   TRUE ONSET (max bad prime =1 mod n) = 17 = n^1.362
+      vs n^2=64, n^3=512, n^4(prize)=4096, n^5(prize)=32768
+      prize p~n^4=4096: ABOVE onset (census==I_infty, q-indep)
+      prize p~n^5=32768: ABOVE onset (census==I_infty, q-indep)
+
+mu=3 n=8 deg=phi=4 r=4: I_infty=41, #distinct-diffs=312
+   max |N(lambda_S - lambda_T)| = 144   resultant-thr (2n)^deg-scale n^deg=4096
+   #primes(=1 mod n) dividing some norm = 1
+   TRUE ONSET (max bad prime =1 mod n) = 17 = n^1.362
+      vs n^2=64, n^3=512, n^4(prize)=4096, n^5(prize)=32768
+      prize p~n^4=4096: ABOVE onset (census==I_infty, q-indep)
+      prize p~n^5=32768: ABOVE onset (census==I_infty, q-indep)
+
+mu=3 n=8 deg=phi=4 r=5: I_infty=40, #distinct-diffs=296
+   max |N(lambda_S - lambda_T)| = 144   resultant-thr (2n)^deg-scale n^deg=4096
+   #primes(=1 mod n) dividing some norm = 1
+   TRUE ONSET (max bad prime =1 mod n) = 17 = n^1.362
+      vs n^2=64, n^3=512, n^4(prize)=4096, n^5(prize)=32768
+      prize p~n^4=4096: ABOVE onset (census==I_infty, q-indep)
+      prize p~n^5=32768: ABOVE onset (census==I_infty, q-indep)
+
+mu=3 n=8 deg=phi=4 r=6: I_infty=25, #distinct-diffs=168
+   max |N(lambda_S - lambda_T)| = 64   resultant-thr (2n)^deg-scale n^deg=4096
+   #primes(=1 mod n) dividing some norm = 1
+   TRUE ONSET (max bad prime =1 mod n) = 17 = n^1.362
+      vs n^2=64, n^3=512, n^4(prize)=4096, n^5(prize)=32768
+      prize p~n^4=4096: ABOVE onset (census==I_infty, q-indep)
+      prize p~n^5=32768: ABOVE onset (census==I_infty, q-indep)
+
+mu=4 n=16 deg=phi=8 r=3: I_infty=464, #distinct-diffs=20624
+   max |N(lambda_S - lambda_T)| = 20736   resultant-thr (2n)^deg-scale n^deg=4294967296
+   #primes(=1 mod n) dividing some norm = 34
+   TRUE ONSET (max bad prime =1 mod n) = 4049 = n^2.996
+      vs n^2=256, n^3=4096, n^4(prize)=65536, n^5(prize)=1048576
+      prize p~n^4=65536: ABOVE onset (census==I_infty, q-indep)
+      prize p~n^5=1048576: ABOVE onset (census==I_infty, q-indep)

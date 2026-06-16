@@ -1,0 +1,30 @@
+==============================================================================
+REFUTATION pt2 — does the worst-case spike GROW with n?
+==============================================================================
+
+--- (A) Fermat prime p=65537=2^16+1: m pure power of 2, n=2^mu ---
+      n       m          B  sqrt(n ln m)        R  B/sqrt(n)
+      2   32768     2.0000        4.5601   0.4386     1.4142
+      4   16384     3.9997        6.2303   0.6420     1.9998
+      8    8192     7.8553        8.4904   0.9252     2.7773
+     16    4096    13.8375       11.5362   1.1995     3.4594
+     32    2048    25.2108       15.6201   1.6140     4.4567
+     64    1024    43.6330       21.0622   2.0716     5.4541
+    128     512    55.9303       28.2578   1.9793     4.9436
+    256     256    52.3146       37.6771   1.3885     3.2697
+    512     128    77.1845       49.8421   1.5486     3.4111
+   1024      64    77.5629       65.2587   1.1885     2.4238
+   2048      32   138.4714       84.2486   1.6436     3.0598
+   4096      16   125.9555      106.5670   1.1819     1.9681
+   8192       8   195.1358      130.5174   1.4951     2.1560
+  16384       4   154.9375      150.7085   1.0281     1.2104
+  32768       2   128.5010      150.7085   0.8526     0.7099
+
+  NOTE: F4=65537 is the LARGEST Fermat prime (F5..unknown all composite).
+        So 'p = 2^a+1 prime' gives NO larger n. The pure-power-of-2 m diagonal
+        must instead use Proth primes p=c*2^a+1, c>1 odd (m has odd part = c).
+
+--- (C) Proth diagonal: n=2^mu, minimal-odd-part m, p=c*2^a+1 ---
+  for each n, search c in {1,3,5,..} and a>mu for smallest prime keeping p small;
+  record R and whether it spikes. (worst over a small (c,a) window)
+      n     best_p         m oddpart(m)  v2(m)          B        R  shallow

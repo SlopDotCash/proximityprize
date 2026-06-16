@@ -1,0 +1,28 @@
+{
+ "id": "C037",
+ "rank": 37,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3",
+  "F4"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/GranularityLadderRS.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/StaircaseBandTheorem.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26CeilingMarch.lean"
+ ],
+ "title": "The granularity ladder (δ*=e/n, Λ linear) and the KKH26 march (δ*=1−r/2^μ, Λ super-poly) are the SAME I(δ) curve below vs above its super-polynomial knee; the prize is the unmapped knee",
+ "connection": "Two in-tree staircases pin δ* on disjoint regions of the SAME monotone I(δ). (i) Granularity ladder (mcaDeltaStar_rs_eq_granularity): for δ<(n−k)/3 the count is LINEAR Λ(e)=e, δ*=e/n on ε*·q∈[e,e+1) — sub-saturation BELOW Johnson, valid only e≲(n−k)/3. (ii) KKH26 march (kkh26_march_deltaStar_pin): near capacity δ=1−r/2^μ the count is SUPER-POLYNOMIAL. The same I(δ) rises from linear (low δ) to super-poly (high δ); δ*=I^{-1}(n) sits where it crosses the budget n. The ladder reaches I=e≈(n−k)/3<n (δ*<1−√ρ, below Johnson — a proof artifact); the march starts where I is already exponential. The PRIZE WINDOW is the unmapped knee region (1−√ρ,1−r/2^μ) where I(δ) transitions from O(n) to super-poly.",
+ "why_insightful": "Unifies the two separate 'pin' families as one I(δ) profile and LOCALIZES the open core to the knee: the prize is not the top (march, proven bad-side) nor the bottom (ladder, proven), but the single transition radius where I(δ) first exceeds n. A concrete geometric reframing of 'sup{δ:I(δ)≤n}' as 'locate the knee'.",
+ "attack_plan": "Probe: at a good prime (μ=5, β≈4) compute I(δ) at every grid radius, identify δ_knee where I first exceeds n=q·ε*; check whether it matches 1−ρ−H(ρ)/(β log n). Lean: prove I(δ) nondecreasing (epsMCA_mono) PLUS a single intermediate bracket I(1−√ρ)≤n (Johnson side) — combined with the march bad-side, bracket δ* into one rung [1−√ρ,1−r*/2^μ], r* smallest with 2^r·C(2^{μ-1},r)>n."
+}

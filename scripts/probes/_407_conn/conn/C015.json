@@ -1,0 +1,24 @@
+{
+ "id": "C015",
+ "rank": 15,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F3"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/ListMCAWiringNoGo.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/AveragingListLowerBoundRS.lean"
+ ],
+ "title": "degenerate_stack_no_mcaEvent is the exact countermodel to every list-LB→incidence-LB, pinning the reverse bound to OFF-DIAGONAL stacks",
+ "connection": "AveragingListLowerBoundRS.averaging_list_lower_bound is a genuine axiom-clean REVERSE bound: |{codewords agreeing with g on k+t points}|≥C(n,k+t)/q^t — a super-linear list LB for the super-code at radius 1−(k+t)/n. ListMCAWiringNoGo wires it to the line-witness count of the DEGENERATE stack (w,0), then proves degenerate_stack_no_mcaEvent: that stack fires ZERO bad scalars (every line point=w jointly matchable). So the only in-tree reverse bound on the F4 list lands on a stack contributing 0 to F3. The reverse-bound gap is precisely: replace (w,0) by a NON-degenerate (u₀,u₁) realizing the same C(n,k+t)/q^t list but with non-matchable rows.",
+ "why_insightful": "Shows the in-tree reverse list bound is real but mis-targeted, and identifies the single structural fix (non-degenerate stack, same averaging-list count). Sharper than 'no matching reverse bound' — a constructive demand, not an absence.",
+ "attack_plan": "Lift averaging_list_lower_bound from (g,0) to (u₀,X^k) via badScalars_monomial_eq_degreeLTSucc: demand the C(n,k+t)/q^t agreeing degree-<k+1 polynomials have DISTINCT X^k-coefficients (distinct bad γ) and non-matchable second row. Probe (μ_16/F12289): count how many averaging-class codewords have distinct leading coeff and fail joint-agreement — measure the loss from list-count to bad-scalar-count on a real non-degenerate stack."
+}

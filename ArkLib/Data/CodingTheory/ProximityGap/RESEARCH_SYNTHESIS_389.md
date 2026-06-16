@@ -353,3 +353,34 @@ wall `B(μ_n)=O(√n)`. The char-0 *arbitrary-word* floor is itself the grand ch
 list-decoding to capacity; the only proven every-word char-0 envelope, Corrádi/Fisher, is *strictly
 larger* than `N_fib`). The honest in-reach increment is `ladder_list_charZero_eq_fibre`
 (char-0+ladder-only, deletes the phantom citations, **not** prize progress). No fabrication.
+
+---
+
+## 9. (#407, 2026-06-14) The Gauss-period sharpening — law pinned to constant 1, residual = the period *house*
+
+A from-scratch re-derivation (independent probes `scripts/probes/probe_moment_growth_law_407.py`,
+results in `scripts/probes/RESULTS-407-GAUSS-PERIOD-LAW.md`) confirms the §7/§8 wall and sharpens it:
+
+- **New proven structural brick** (`GaussPeriodCosetReduction.lean`, axiom-clean): the frequency
+  function `b ↦ η_b` is **constant on μ_n-cosets** (`eta_mul_invariant`). So `B = max` over exactly
+  `m=(p−1)/n` values — the **Gauss periods** of the order-`n` subgroup (= generalized Paley-graph
+  eigenvalues). This is the rigorous reason the law carries `log((p−1)/n)`, **not** `log p`.
+- **Law sharpened to constant 1**: `B(μ_n) = (1+o(1))·√(n·log₂((p−1)/n))`; measured
+  `B/√(n·log₂(p/n)) ∈ [0.97, 1.07]`, `n=8..128`. (Sharpens `ShawGapLaw`: argument of the log is the
+  coset count `m`; constant ≈ 1.)
+- **Threshold law re-confirmed**: `E_r/(r!n^r)` matches the char-0 Gaussian `(2r−1)‼/r!` exactly for
+  `r ≤ r_max=2log_n p−3`, inflates beyond — the char-0→F_p energy transfer caps at `r_max ≈ 2 log_n p`
+  ≪ `r_opt ≈ ln q`.
+- **Moment-arrow NO-GO (quantitative)**: with true F_p moments, `min_r (p·E_r)^{1/2r}` is stuck at the
+  **trivial ≈ n**, and `arrow_min/trueB` **diverges** (1.20→2.92, n=8..128). The only elementary
+  handle provably cannot reach the prize bound.
+- **Residual named (classical)**: `B = ` the **house** (max conjugate modulus) of the order-`n` Gauss
+  period = the Paley eigenvalue. Fixed-`n` solved (Kowalski–Untrau hypocycloid); growing-`n`
+  quantitative tail = open (Wasserstein, arXiv:2505.22059), house/norm = Myerson/Habegger
+  (arXiv:1611.07287). 5 precise new papers cataloged in `PAPERS_NEEDED.md` §2026-06-14.
+
+**Net:** the conjecture's *statement* is now maximally sharp (closed-form `δ*`, constant-1 input,
+log-argument pinned to `m=(p−1)/n`), and its single open input is identified with a *named classical
+object* (the growing-`n` Gauss-period house / Paley eigenvalue). The proof of that input is the open
+prize; per the honesty contract it is named, not fabricated. No route in or out of this session's
+work crosses it.

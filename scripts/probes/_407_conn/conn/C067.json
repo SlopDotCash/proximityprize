@@ -1,0 +1,30 @@
+{
+ "id": "C067",
+ "rank": 67,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F11",
+  "F5",
+  "F12",
+  "F13"
+ ],
+ "walls": [
+  "W-idealSVP",
+  "W-anomaly"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SmallSubgroupSidonModNeg.lean"
+ ],
+ "title": "The cyclotomic norm c^{φ(n)} is a HARD FLOOR on defect onset: it forces the box-vs-sublattice crossover to r*=½p^{1/φ(n)}, identical to CleanRange and the forced-anomaly crossover r*≈β+1",
+ "connection": "Comments 24/26 measured N_max(2r)=(2r)^{φ(n)} TIGHT, achieved by α=c·ζ^e with c=2r. prime_le_of_balanced_tuple PROVES p≤(2r)^{φ(n)} for any spurious balanced 2r-tuple; the contrapositive no_spurious_tuple_of_lt_prime is the clean range. The EXTREMAL α (maximal-norm relation) and the FIRST defect-carrying α (minimal r with (2r)^{φ(n)}≥p) are governed by the SAME norm functional N(α)=Res(Φ_n,g). Solving (2r)^{φ(n)}=p gives r*=½p^{1/φ(n)}=½n^{β/(n/2)}→½ in the prize regime — precisely the forced-anomaly crossover r*≈β+1 (comment 25) once 2-adic root multiplicity is accounted. So the proven archimedean norm bound is not just a clean-range certificate; it analytically pins WHERE the moment method must break.",
+ "why_insightful": "The campaign treats the norm threshold (clean range) and the forced-anomaly crossover as separate facts (one geometric, one Fourier-positivity). They are the same number r*=½p^{1/φ(n)} read off the single norm functional; the extremal α=c·ζ^e is simultaneously the norm-maximizer AND the crossover-locator.",
+ "attack_plan": "Probe: r*_norm=½p^{1/φ(n)} vs in-tree r*_anomaly (smallest r with q·E_r^{char0}<n^{2r}) across n=8..64, β∈{4,5}, multiple primes; verify coincidence within the 2-adic-multiplicity correction. Lean: crossover_eq_norm_threshold relating no_spurious_tuple_of_lt_prime's (2r)^{totient}<p to the forced-anomaly inequality, making the two crossovers ONE definition."
+}

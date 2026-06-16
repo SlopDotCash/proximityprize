@@ -1,0 +1,29 @@
+{
+ "id": "C007",
+ "rank": 7,
+ "total": 26,
+ "scores": {
+  "insight": 9,
+  "research": 9,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3",
+  "F4"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-BGK",
+  "W-subspace"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26DeltaStarPinAllWitness.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/AllWitnessOwnershipFloor.lean"
+ ],
+ "title": "The prize wall is EXACTLY where the binomial budget-vs-supply inequality C(2N,r)<r·2^r·C(N,r) flips — a self-contained crossover at r*≈0.3n, no open analysis in its statement",
+ "connection": "kkh26_deltaStar_pin_lowdegree pins δ*=1−r/2^μ UNCONDITIONALLY (no CensusDomination, no BGK) whenever choose_bulk holds: C(2N,r)<r·2^r·C(N,r) (proven by falling-factorial induction for r²≤2N+1, i.e. r≤√n). Numerically the all-witness budget vs the KKH26 antipodal supply (2^r·C(n/2,r)) flips from PIN to WALL at r*≈0.27–0.34·n (r=11 at n=32, 17 at 64, 27 at 128, 41 at 256, 93 at 1024) and stays WALL with growing gap through r=n/2. That crossover band sits inside the beyond-Johnson window. So the open core, on the combinatorial face, is literally a binomial inequality C(n,(r−2)m+2)/C(rm,(r−2)m+1)<2^r·C(2^{μ−1},r) failing in a specific r-band.",
+ "why_insightful": "Relocates the open analytic wall onto a fully explicit finite binomial inequality whose low-degree half is already PROVEN (descFact_bulk). The wall is not 'an open theorem about character sums' here — it is 'a binomial ratio exceeds 2^r·C(N,r) once r>~0.3n', checkable and decidable per (n,r).",
+ "attack_plan": "Probe: sweep (n=2^μ, r) over window radii r≈ρn, tabulate budget/supply; attempt to PROVE the crossover r*(n) in Lean by extending the falling-factorial induction of descFact_bulk past r=√n. Even a non-tight r*(n)≤c·n shows the bulk pin extends below c·n, shrinking the open window. If r* provably above the window edge for some rate, that rate's δ* is pinned outright."
+}

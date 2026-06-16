@@ -1,0 +1,29 @@
+{
+ "id": "C047",
+ "rank": 47,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F1",
+  "F4"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-genericity"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/LineFirstMomentBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityLowerBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacitySharpSpread.lean"
+ ],
+ "title": "Why NO union/Chernoff bridges average→worst on the line family: MDS first moment ≪n, so the floor is a measure-zero outlier (witness spread exponentially rare)",
+ "connection": "LineFirstMomentBound.line_first_moment_bound proves (∑_γ|Λ(γ,a)|)·a≤|C|·n: per-line first moment is tiny (field-size-independent ~poly(n)/a). MCANearCapacityLowerBound.epsMCA_constCode_ge and MCANearCapacitySharpSpread.epsMCA_sharp_ge realize EXPLICIT spreads of n−1 (resp. (k+1)(n−k−1)+1=Θ(n²)) DISTINCT witness sets — the most the single-line method gives. The floor needs I(δ)≈q·ε*≈n bad scalars in the window, but the explicit constructions cap at Θ(n²)/q≪ε* AND the MDS first moment E_line[I]=q^{k+1}V_{δn}/q^n is astronomically below n. So the worst far-line incidence is a measure-zero outlier against an average exponentially smaller — a Chernoff/union bound on the n²-monomial-line family cannot bridge it because the tail to order log n IS the deep-moment input.",
+ "why_insightful": "Connects F3 (line incidence) to F4 (list size) by exhibiting IN CODE that the maximizer is structurally rare relative to the MDS average, so the 'average→worst is the crux' clause (§7.3) is a genuine extreme-value obstruction, made concrete by the explicit Θ(n²) spread sitting astronomically below the q·ε* budget.",
+ "attack_plan": "Lean: firstMoment_vs_floor_gap combining line_first_moment_bound (avg≈poly(n)/q) with the explicit spread bounds to state E_line[I]≪I(δ*)≈n, certifying no Chebyshev concentration can certify the floor. Probe: at q=12289, μ_8/μ_16, tabulate avg vs max line incidence over primitive monomial directions, confirm max/avg→∞."
+}

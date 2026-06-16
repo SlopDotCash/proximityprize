@@ -9060,3 +9060,240 @@ descent content. Honesty contract holds; no closure.
 Probes: `scripts/probes/wf407_T13-dyadic_deviation_decay.py`, `wf407_T13-dyadic_cocycle_cos_persistence.py`.
 Lean: `Frontier/WF407_T13DyadicDeviation.lean` (`doublingRatio_eq`, `deviation_decomp`,
 `deviation_not_sign_definite`; `[propext, Classical.choice, Quot.sound]`). KB: `docs/kb/wf407-T13-dyadic-deviation-decay.md`.
+
+## #444 CRACK-D refuted-as-bypass: the non-symmetric tower recursion DESCENDS TO THE WALL (2026-06-15)
+
+**Attempt (the last surviving "off-BGK" floor hope).** Close the list-decoding challenge via the
+dyadic-squaring tower extended to NON-symmetric agreement sets — the only crack the route-elimination
+had not closed. Hope: the worst-case window word has O(1) "singleton fibers" (cross-parity constant
+κ=O(1)), so the symmetric tower recursion applies up to a bounded additive correction ⟹ list constant
+in n ⟹ floor.
+
+**Disproof (axiom-clean + probe).** Squaring map σ: x↦x², fibers {x,−x} over z=x²∈μ_{n/2}; even/odd
+split g(x)=e(x²)+x·f(x²). Fiber-decomposition identity (proven, `Frontier/_S2NonSymTower.lean`,
+7 thms, `[propext,Classical.choice,Quot.sound]`, passes real `lake build`):
+  `agreement a = 2|B| + s(S)`, `s(S)=|O₁|` = singleton-fiber count, `s(S)=0 ⟺ S=−S` (symmetric).
+Singletons sit on the curve `R := P²−X·Q²` (P=e−w_e, Q=f−w_o), so `s(S) ≤ deg R ≤ n−1`.
+
+- **κ=O(1) is a WINDOW-MIDPOINT ARTIFACT.** At η≈ρ (midpoint), worst word = consecutive `x^a+x^{a−1}`,
+  `s(S)≤1`, list constant (κ=3, confirmed n=16,32,64 via `probe_wfS1_*`). But at the PRIZE-relevant
+  window EDGE (δ near capacity 1−ρ), worst word becomes non-consecutive (`x^15+x^4`, **list 273 at
+  n=16 ≈ n²**), and `s(S)` reaches 5, bounded only by `O(n)` — NOT O(1). The κ=O(1) hope (campaign
+  item N10) is REFUTED at the edge (`probe_444_singleton_fiber_scaling.py`).
+- **Even bounded s(S) wouldn't help:** `singleton_stratum_unique` shows codewords are pinned by the
+  pattern `(B,O₁,σ)` for ANY s(S), so the binding quantity is the PATTERN COUNT
+  `L* = #{(B,O₁,σ): 2|B|+|O₁|≥k}` = beyond-Johnson smooth-domain RS list decoding = DISPROOF_LOG O15
+  ⟺ GS99 = the open core.
+
+**Net.** REFUTED as a bypass. The non-symmetric recursion is real and now axiom-clean, but it
+**relocates to the same BGK/pattern-count wall** as the symmetric tower. Both surviving cracks (D
+combinatorial, P phase/Stickelberger) now provably descend to `M(n) ≤ C√(n log m)`. Window interior is
+also empirically unreachable: it is EMPTY for n ≤ ~64 (Johnson∩capacity collide; the cushion c/log n at
+n=16 ρ=1/4 lands AT Johnson 0.5), and infeasible to compute at n≥256 (C(256,128)~10⁷⁵) — confirming
+"numerics cannot answer it; it requires a proof." Honesty contract holds; no closure.
+KB: `docs/kb/deltastar-444-S1-nonsym-recursion-2026-06-15.md`,
+`docs/kb/deltastar-444-S1-list-growth-VERDICT-2026-06-15.md`.
+
+## #444 NEW closed no-go: moment-method DEPTH obstruction (completes the moment-family trilogy, 2026-06-15)
+
+Landed `Frontier/MomentMethodPrizeDepthNoGo.lean` (axiom-clean, `pg-iterate` + autoImplicit-safe):
+the moment method's optimal depth `r_opt = log₂ m = 128` is UNREACHABLE in char-p because the
+char-0→char-p energy transfer (`CleanRegime β r := r ≤ rMax β`, `rMax β = 2β`) caps at `r ≤ 8–10` at
+prize β∈[4,5]. `moment_method_no_go : ¬ CleanRegime prize_β (rOpt prize_mBits)` (16× overshoot,
+`prize_depth_ratio : rOpt = 16·rMax`). NOT a claim M is large — a proof the moment route's required
+hypothesis is unsatisfiable at prize depth. Trilogy now exhausts the moment family:
+defect (`WF407_DeepMomentDefectWall`) / cancellation (`CumulantOnsetNoGo`) / **depth** (new).
+PLUS a fresh bracket-gap-constant no-go (`bracket_cannot_pinch`: the two-sided δ* bracket width is a
+uniform positive constant in n ⟹ the bracket alone can never pinch δ*) — not previously in-tree.
+KB: `docs/kb/deltastar-444-S5-moment-nogo-2026-06-15.md`.
+
+## #444 NEW closed no-go: N13 phase-aware transfer operator — worst-b is the PHASE-ALIGNMENT direction (2026-06-15)
+
+The latest MCA-side audit (wf-AUDIT issue comment) ranked **N13** (phase-aware contractive transfer
+operator `(𝒯f)(b)=f(b)+e^{iθ_b}f(ζb)`) as the #1 untried survivor: the magnitude recursion
+`M(n)²≤2M(n/2)²` is false because it drops the relative phase `θ_b`; retaining it MIGHT give spectral
+radius `<√2` (⟹ `M(n)≤O(√n)` = Ramanujan = the prize). REFUTED by direct measurement.
+
+**Exact transfer:** since `μ_{2n}=μ_n ⊔ ζ·μ_n` (`ζ=ζ_{2n}`), `η^{(2n)}_b = η^{(n)}_b + η^{(n)}_{ζb}`
+exactly (verified |sum|=chk). **Decisive measurement (clean single-prime tower `p≡1 mod 128`,
+`μ_8⊂…⊂μ_128 ⊂ F_p`):** at the WORST `b` of every level `2n`, the cosine between the two summands
+`η^{(n)}_b` and `η^{(n)}_{ζb}` is **+1.000** at EVERY level (8→16→32→64→128) — perfectly CONSTRUCTIVE,
+zero cancellation. The worst-case `b` is precisely the phase-*alignment* direction, so retaining the
+phase yields NO gap there: `|η^{(2n)}_b| = |η^{(n)}_b| + |η^{(n)}_{ζb}|` (full triangle equality at the
+sup). `M(n)/√n` GROWS (2.75→3.56→3.03→3.36→3.50 ≈ the `√log` factor), not Ramanujan-bounded.
+
+**Net.** N13 COLLAPSES with a sharp mechanism: the "RS-restricted sector where `spec(𝒯)<√2`" does NOT
+contain the worst `b`; the worst `b` is the maximally-constructive (`cos=+1`) direction, so the
+phase-aware operator has effective radius `=2` (not `<√2`) at the sup. This is WHY every phase/`[Φ]`
+method fails — the sup-norm is attained where phases align, and aligned phases carry no cancellation.
+Probe: `scripts/probes/probe_444_n13_phase_transfer.py` (reproducible: clean tower, `p=186113`). Confirms the BGK/Paley wall from
+the MCA side; no closure.
+
+## #444 MCA-survivor sweep: N13 sharpened (norm mismatch) + N7 killed (valuation ⊥ house) — 2026-06-15
+
+Completing the wf-AUDIT survivor list (N7, N10, N13, E12) with rigorous reasons.
+
+**N13 sharpened — ℓ^∞ vs ℓ² norm mismatch (provable kill).** The N13 hope `spec(𝒯)<√2` is a claim
+about the **ℓ² spectral radius** of `𝒯f(b)=f(b)+e^{iθ_b}f(ζb)` in a "restricted sector." But the house
+`M(n)=max_{b≠0}|η_b|` is an **ℓ^∞** functional, and `‖𝒯‖_{ℓ^∞→ℓ^∞}=2` *exactly*
+(`|f(b)+f(ζb)|≤2‖f‖_∞`, equality at `f(b)=f(ζb)`). So even if `𝒯` has an ℓ²-eigenspace with radius
+`<√2`, that does NOT bound the house, which is governed by the ℓ^∞ norm `=2` ⟹ `M(2n)≤2M(n)` (trivial
+triangle), never `<√2·M(n)`. The measured `cos=+1` at the worst `b` (above) is the explicit witness that
+the ℓ^∞ bound is *attained* at the sup. N13 controls the wrong norm. DEAD.
+
+**N7 (2-adic Newton polygon of the period pencil) — valuation ⊥ house (structural kill).** N7 injects
+genuine `[π]` info (`v₂(η_b)` is not a function of the archimedean moments), but the target — the house
+`max_σ|σ(η_b)|` — is **archimedean**, and `v₂` (2-adic) is *independent* of archimedean magnitude: an
+algebraic integer can be large-house and a 2-adic unit (`v₂=0`), or small-house and highly 2-divisible.
+`v₂(N(η_b))` constrains only the 2-divisibility of the integer norm `N=∏_σ σ(η_b)`, never `max_σ|σ|`.
+Stickelberger pins the valuation, not the house — the audit's own catch, here made decisive: N7 bounds
+the WRONG quantity (same failure mode as the lattice/theta geometric lane: `p`-blind / archimedean-blind).
+DEAD.
+
+**Status of the 4 survivors:** N13 DEAD (norm mismatch), N7 DEAD (valuation⊥house). N10 (structured
+chaining entropy) and E12 (three-gap/vdC) remain conditionally-open — both need the explicit
+covering-number / van-der-Corput computation, which the audit notes historically reproduces W4 (Johnson)
+unless the structured net is `o(generic)`; that computation is the only remaining MCA-side probe.
+Net: the MCA frontier is down to two conditionally-open routes, both expected to collapse to Johnson.
+The wall (thin-subgroup BGK/Paley house bound) stands. No closure.
+
+## #444 MCA-survivor sweep COMPLETE: N10 + E12 also eliminated — the ranked frontier is empty (2026-06-15)
+
+**N10 (RS-structured chaining entropy `∫√(log N(ε))dε`) — collapses to generic (Johnson-side).** The
+survival condition was that the structured dilation-tower covering number `N(ε)` be `o(generic)`. It is
+NOT: the in-tree `SalemZygmundChaining.chernoff_max_re_le` already gives the *generic* sub-Gaussian
+ceiling `√(2n log m)`, and the #407 EVT data shows `B/√(n ln m) ≈ 1.0–1.2` **stable** across
+`p=257…65537` (`WorstPeriodLowerBound` floor matches). So the house EQUALS the generic max-of-`m`
+sub-Gaussians — chaining reproduces `√(n log m)` (Johnson-side), the structured net is not smaller. DEAD.
+
+**E12 (three-gap / van der Corput) — vacuous input.** The discrete logs of `μ_n` base `g` are
+`{0, m, 2m, …, (n−1)m}` mod `(p−1)` — an EXACT arithmetic progression (a single gap length `m`), so the
+three-gap theorem (which yields ≤3 gaps for `{jα}` orbits) is vacuous here. And the period sum runs over
+the *values* `g^{jm}` (not an AP — exponentiation scrambles ordering), so the 3-gap positional rigidity
+does not transfer to the value-sum; vdC on it is a first-difference second moment landing at `√n`. DEAD.
+
+**FRONTIER EXHAUSTED.** All four wf-AUDIT ranked survivors are now eliminated with reasons:
+N13 (ℓ^∞-vs-ℓ² norm mismatch, `cos=+1` at the sup), N7 (valuation ⊥ house), N10 (structured chaining =
+generic = Johnson), E12 (discrete-log AP makes 3-gap vacuous). Combined with the prior 120+ routes and
+two 50-conjecture sweeps, the current MCA-side ranked attack surface is empty. The unified `defect=0`
+conjecture (= the thin-subgroup BGK/Paley house bound) stands as the recognized open core. No closure.
+
+## #444 lens [determinant-method] — Bombieri–Pila height collapse (2026-06-15)
+
+**The lens.** Bombieri–Pila–Heath-Brown determinant method bounds the count of height-`≤H` integer
+points on a variety by a quantity scaling with `log H`. Sparse `±1` defects `g` (`≤2r` terms,
+`g(ζ)=0` in `F_p`) have height `H=2r`. Hope: a defect count `≤poly(log H)` dodges the `(2r)^{φ(n)}`
+norm wall (`CyclotomicNormDefectThreshold`).
+
+**REFUTED (horn ii — the determinant of monomials over μ_n re-introduces the full height).** To
+certify `g(ζ)=0` over `μ_n` by a determinant you must separate all `φ(n)=n/2` archimedean conjugates
+`g(ω)`, so the auxiliary system is forced to `s=φ(n)` monomial rows. The resulting `s×s` monomial
+Vandermonde `det(ω_i^{e_j})` is — up to the unit Vandermonde of the roots — exactly the cyclotomic
+resultant `Res(Φ_n,g)=∏_ω g(ω)`, whose realized magnitude is the block witness `2^{n/2−1}` and whose
+worst-case bound is `(2r)^{φ(n)}`. The per-entry `log H` Bombieri–Pila saving is multiplied back up
+by the `φ(n)=n/2` forced rows, so the determinant-method exponent `detExp = φ(n)·log₂H` equals the
+norm-wall exponent `normExp = φ(n)·log₂(2r)` EXACTLY. Axiom-clean
+(`Frontier/DeterminantMethodHeightCollapse.lean`, `detExp_eq_normExp`,
+`determinantDodgesHeight_REFUTED`, `detExp_prize_point` at `n=2^30`). Numeric companion
+`scripts/probes/probe_444_determinant_method_defect.py`: exact `φ×φ` monomial Vandermonde `log₂|det|`
+matches Hadamard `½φ log₂φ` (`n=4,8,16,32 → 1,4,12,32`); Part 3 tabulates `detExp≈normExp` to `n=2^30`.
+DEAD. The wall (thin-subgroup BGK/Paley house) stands. No closure.
+
+## #444 LOOP ITER 2 (Workflow, 20 agents): 8 fresh lenses → 0 survivors; + an HONEST SCOPING CORRECTION to the moment-depth no-go (2026-06-15)
+
+A structured propose→shred→prove→completeness-critic fan-out across **8 lenses deliberately OUTSIDE
+the 12 dead ones**. All 8 killed, each with a machine-verified probe + axiom-clean no-go Lean file:
+- **secretly-open (6)** — automatic-seq (`arg τ(χ^j)` is Katz white noise, NOT 2-automatic; only the
+  p-adic *valuation* is 2-automatic — REEF i), padic-baker (Yu p-adic logs bound `v_p` the WRONG
+  direction, the only forbidding inequality is the dead `(2r)^{n/2}` archimedean height), determinant-method
+  (`detExp = normExp = (n/2)log₂(2r)` EXACTLY — Bombieri-Pila saving cancelled by the φ(n) forced rows,
+  = norm wall in geometry-of-numbers clothing), binding-restriction (worst coset is GENERIC, escapes any
+  O(n) monomial subset in ~half of primes, `M_Da/M_all→0.26` — so `log m` NOT `log n`), newton-polygon
+  (p-adic & 2-adic polygons both VACUOUS, all μ_n-roots are slope-0 units; the surviving discriminant
+  `SpreadHypothesis` IS the prize restated), geometric-incomplete (worst-word sum is COMPLETE over the
+  full subgroup via `x↦x^t` onto-map — no proper arc for Korobov/Gabdullin).
+- **refuted (2)** — iwasawa-tower (`M(2n)²/M(n)² > 3` violated at p=65537 n=8,16 and clean tower
+  p=186113 — the Iwasawa norm `|N|^{1/m}≈0.5√n` is tower-stable but the house/mean INFLATION grows,
+  and the char. ideal is blind to it), free-prob-spike (3-moment atom FREEZES at ≈1.90σ bulk-edge while
+  true house/√n GROWS as √log m — low moments cannot see the depth-`r≈log m` tail).
+
+**Banked axiom-clean (2 related-quantities, neither tightens the core):** `SymmetricTowerBracket.lean`
+(closed self-similar transport `L_sym(μ_n,k,s)=L_sym(μ_{n/2},⌈k/2⌉,⌈s/2⌉)` — but the symmetric/even
+sub-family is EMPTY at prize window radii; all KKH26 bad mass is non-symmetric ⟹ vacuous in-window),
+`DeltaStarTableN16Fermat.lean` (first consolidated exact `mcaDeltaStar` table at n=16 on F4=65537, all
+four rates — strictly sub-Johnson sanity anchor).
+
+### ⚠️ HONEST SCOPING CORRECTION (completeness critic, credited)
+The iter-1 `MomentMethodPrizeDepthNoGo.lean` is axiom-clean and its Lean docstring is *correctly*
+scoped — but the iter-1 issue-comment / ledger phrasing **"completes the moment-family trilogy /
+exhausts the moment family" was STRONGER than what is proven.** Precisely: `CleanRegime β r := r ≤ rMax β`
+is a *definition*, so `cleanRegime_iff_le_rMax` is `Iff.rfl` and `moment_method_no_go` is a clean
+*arithmetic* fact `r_max < r_opt` over the **height-route model**. The substantive number theory (the
+norm gate `(2r)^{n/2}<p ⟺ r≤2β`, block-witness `2^{n/2−1}`) is genuinely proven in `HeightGateNormBound`.
+**What the no-go proves:** every moment method that routes char-0 energy through the `(2r)^{n/2}` norm
+gate fails at prize depth. **What it does NOT prove:** that NO char-p energy bound at depth `r≈log m`
+exists by some *non-height* route. No such route is known (it would be the prize), so the no-go covers
+all KNOWN moment methods — but "all conceivable" is the open core, not a theorem.
+
+### The critic's two candidate "surviving doors" — resolved, both reduce to the wall
+- **Deterministic sub-Gaussian MGF** (`SubGaussianMGF`, survives the EVT-crown kill): `Σ_c e^{λη_c}`.
+  The Chernoff optimum `λ* = √(2 log m / n)` gives `λ*·house ≈ 2 log m`, so the Taylor series is
+  dominated by moment orders `r ≈ log m` — i.e. the MGF ⟺ the moment method at depth `log m` = the
+  **same** char-p energy wall (with the same height-route scoping caveat). Not easier.
+- **Discriminant lower bound** `disc(Ψ)=∏_{i<j}(η_i−η_j)²`: (i) WRONG SIGN — a disc lower bound forces
+  root *separation* / large Mahler measure, which pushes house UP or sideways, and cannot *upper*-bound
+  `max_j|η_j|` (a few large + many tiny roots give the same disc — the newton-polygon shred's point);
+  (ii) as a symmetric function it needs power sums to order `2m−2 ≈ 2^129 ≫ log m`, i.e. FAR higher
+  moments. Dead as an upper-bound route.
+
+**Net iter 2:** 0 closures (honest). The open core is now stated as sharply as possible: a **char-p
+additive-energy bound for μ_n at depth `r ≈ log m`** — every route (moments, MGF, disc, Newton spread)
+funnels here; the height no-go bolts the one *known* transfer mechanism; no non-height route is known.
+Synthesis: `docs/kb/deltastar-444-loop2-synthesis-2026-06-15.md`.
+
+### iter 3 — the DC-subtracted-energy OVERSHOOT direction also reduces to the wall (scoping gap closed honestly)
+The iter-2 scoping caveat raised a hope: maybe the DC-subtracted energy `A_r := E_r − n^{2r}/p`
+*overshoots* the char-0 Wick ceiling `(2r−1)!!·n^r` at `r ≈ log m` (extra `±1`-relations clustering
+mod p beyond the `n^{2r}/p` mean), making the moment method's energy INPUT genuinely **false** there
+(dead by ALL routes, not just height). Tested and resolved — **NO free overshoot; it reduces to the wall.**
+
+- **Numerics REFUTE "onset at rMax≈2β"** (`scripts/probes/probe_wfL3_defect_onset.py`, EXACT `E_r` over
+  PROPER subgroups μ_n≤𝔽_p* never the full group, n=8/16/32, β=3.5/3.8/4.0, each swept past r_opt=13/14):
+  `A_r/Wick` is `<1` and **monotonically DECREASING** in r (n=16,β=4: 0.9998→0.94→0.82→…→0.0029 at r=13),
+  tracking just BELOW the char-0 ratio `E_r^{(0)}/Wick`. 87/87 spectral cross-checks
+  `A_r=(1/p)Σ_{t≠0}|η_t|^{2r}` exact-match; **0 onset across all 7 configs.** DC-subtraction kills exactly
+  the trivial saturation; what remains never reaches Wick. The "onset at rMax≈2β" claim is FALSE — there
+  is no onset at any reachable depth.
+- **The reduction (axiom-clean, `Frontier/_DefectOnsetOvershoot.lean`, 9 thms):** the EXACT spectral
+  sandwich `house^{2r}/p ≤ A_r ≤ (#ι/p)·house^{2r} < house^{2r}` (since `#ι=p−1<p`) gives, for ANY
+  threshold W, `W < A_r ⟹ W < house^{2r}` (`overshoot_imp_house_pow_gt`). With `W=Wick`:
+  `A_r > Wick ⟹ house = M(n) > ((2r−1)!!)^{1/2r}·√n` (`overshoot_imp_house_gt_prizeForm`). At `r=r_opt≈log m`
+  the RHS is the prize floor `≈√(2n log m)`, so **proving overshoot at r_opt ≡ proving M(n) exceeds the
+  prize bound** (`overshoot_refutes_prize`; symmetric `prizeBound_imp_no_overshoot`). The hoped asymmetry —
+  "a single explicit over-clustering family LOWER-bounds the count cheaply" — does NOT exist: by the
+  sandwich the full nontrivial moment `Σ_{t≠0}|η_t|^{2r}` can exceed `p·Wick` only if the single largest
+  eigenvalue `M(n)` itself exceeds `Wick^{1/2r}` (one dominant term ≤ A_r ≤ p·that term). The overshoot
+  lower bound and the BGK upper bound live at the SAME object `M(n)` at the SAME depth — neither is easier.
+- **VERDICT — reduces-to-wall (clean negative).** The moment-method energy input is TRUE at every
+  reachable depth (numerically `A_r<Wick` monotone), so the iter-1/2 no-go is a *transfer/proof*
+  obstruction, NOT an *energy-falsity* one; and the dual hope (energy-falsity via overshoot) is
+  provably no-easier-than the wall. The scoping gap "does a non-height char-p energy bound at r≈log m
+  exist?" is unchanged-open, but the overshoot escape hatch is closed.
+
+## #444 NEW dead lens: BCH-code / Delsarte-LP framing of the char-p defect (2026-06-15)
+
+Examined a genuinely-untried lens (not in the prior ledger): reframe the char-`p` defect as a coding
+quantity. The defect = non-coset lacunary subsets `S ⊆ μ_{2^μ}` with `Σ_{i∈S} ζ^{ki} = 0` for `k=1..t`.
+A `{0,1}`-indicator vector `v` of such `S` is exactly a **binary codeword** of the `F_p`-cyclic code `C`
+with defining zeros `{ζ¹,…,ζᵗ}` — i.e. a **BCH code** of designed distance `t+1`. So the defect equals
+the count of weight-`w` *binary* codewords of a BCH code. Natural hope: bound it by Delsarte LP /
+MacWilliams (weight-enumerator) machinery.
+
+**Verdict: DEAD, clean reason.** Delsarte LP and MacWilliams bound the weight distribution of the
+**full `F_p`-linear** code `C`. The defect restricts to vectors with entries in `{0,1} ⊂ F_p` — a
+**non-linear** sub-condition the LP/duality framework does not see (the `{0,1}`-restricted set is not a
+subspace). The binary-codeword count IS the additive-energy / vanishing-power-sum count = the wall, and
+the BCH relabeling supplies no leverage precisely because the only nontrivial content (the `{0,1}`
+restriction) is the part LP drops. Same failure mode as the moment/energy lane: the linear/`ℓ²`
+machinery is blind to the `ℓ^∞`/combinatorial `{0,1}` structure that carries the defect. Adds to the
+dead ledger; the wall (thin-subgroup BGK/Paley √-cancellation) is unchanged. No closure.

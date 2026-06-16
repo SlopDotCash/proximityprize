@@ -1,0 +1,28 @@
+{
+ "id": "C075",
+ "rank": 75,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F13",
+  "F7"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSixthMoment.lean"
+ ],
+ "title": "The cumulant κ_r is platykurtic (kurtosis→3 from BELOW): a one-sided Markov-Krein with the WRONG-SIGN constraint the SOS no-go ignored",
+ "connection": "The measured normalized period distribution X=η/√n has κ_2≈0.94, μ_4=E_2/n²=3−3/n<3 (proven in-tree via E_2=3n²−3n), kurtosis approaching Gaussian 3 from BELOW (platykurtic), κ_r≤1 monotone DECREASING. The in-tree 4th/6th-moment identities prove μ_4<3 and μ_6<Gaussian-15 EXACTLY for every n (E_3=15n³−45n²+40n gives μ_6=15−45/n+40/n²<15). The Markov-Krein/SOS no-go computes the sharp far-out atom from moments WITHOUT the platykurtic sign constraint — it treats the measure as kurtosis-exactly-3. But a measure with μ_4 strictly BELOW 3 and bounded support |X|≤√n is sub-Gaussian (Marcinkiewicz), and the largest atom for a negatively-kurtotic compactly-supported symmetric measure is provably smaller. The no-go rests on 'kurtosis 3 admits a far atom' — but the proven kurtosis is <3.",
+ "why_insightful": "Both refutations ASSUME kurtosis 3 to manufacture the far atom, yet the in-tree moments PROVE kurtosis <3 strictly. A one-sided (μ_4≤3−c) extremal problem is a genuinely different LP than the two-sided one solved, and nobody has run it.",
+ "attack_plan": "Run the Chebyshev-Markov extremal LP for the largest support atom of a symmetric mean-0 measure on [−√n,√n] subject to μ_2=1 AND μ_4≤3−3/n (inequality), at m atoms. Compare to the equality-μ_4=3 bound. If the strict-below + compact support pulls the bound below n^{1−ε} at fixed R, formalize the LP-dual certificate. Probe first: extend probe_407_markovkrein_sharp.py to impose μ_4 as an upper-bound constraint, sweep the gap c=3/n."
+}

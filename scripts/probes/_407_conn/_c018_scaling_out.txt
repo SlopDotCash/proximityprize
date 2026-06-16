@@ -1,0 +1,41 @@
+####### onset scaling vs n, n^2, archimedean diameter, resultant threshold #######
+
+mu=3 n=8 r=3: I_infty=40 (char-0 distinct=40)
+   archimedean diameter (max |lam_S-lam_T|) = 4.828  (~0.60 n)
+   resultant threshold (2^mu)^(2^(mu-1)) = 4096
+   last census!=I_infty: p=17  = 2.12 n  = 0.266 n^2  = 3.52 x diameter
+   resultant threshold / true onset = 2.409e+02
+      prize p~n^4=4096: ABOVE onset -> census==I_infty (q-indep)
+      prize p~n^5=32768: ABOVE onset -> census==I_infty (q-indep)
+
+mu=3 n=8 r=4: I_infty=41 (char-0 distinct=41)
+   archimedean diameter (max |lam_S-lam_T|) = 5.226  (~0.65 n)
+   resultant threshold (2^mu)^(2^(mu-1)) = 4096
+   last census!=I_infty: p=17  = 2.12 n  = 0.266 n^2  = 3.25 x diameter
+   resultant threshold / true onset = 2.409e+02
+      prize p~n^4=4096: ABOVE onset -> census==I_infty (q-indep)
+      prize p~n^5=32768: ABOVE onset -> census==I_infty (q-indep)
+
+mu=4 n=16 r=3: I_infty=464 (char-0 distinct=464)
+   archimedean diameter (max |lam_S-lam_T|) = 5.696  (~0.36 n)
+   resultant threshold (2^mu)^(2^(mu-1)) = 4294967296
+   last census!=I_infty: p=4049  = 253.06 n  = 15.816 n^2  = 710.91 x diameter
+   resultant threshold / true onset = 1.061e+06
+      prize p~n^4=65536: ABOVE onset -> census==I_infty (q-indep)
+      prize p~n^5=1048576: ABOVE onset -> census==I_infty (q-indep)
+
+mu=4 n=16 r=4: I_infty=1233 (char-0 distinct=1233)
+   archimedean diameter (max |lam_S-lam_T|) = 7.249  (~0.45 n)
+   resultant threshold (2^mu)^(2^(mu-1)) = 4294967296
+   last census!=I_infty: p=5009  = 313.06 n  = 19.566 n^2  = 690.99 x diameter
+   resultant threshold / true onset = 8.575e+05
+      prize p~n^4=65536: ABOVE onset -> census==I_infty (q-indep)
+      prize p~n^5=1048576: ABOVE onset -> census==I_infty (q-indep)
+
+mu=5 n=32 r=3: I_infty=4512 (char-0 distinct=4512)
+   archimedean diameter (max |lam_S-lam_T|) = 5.923  (~0.19 n)
+   resultant threshold (2^mu)^(2^(mu-1)) = 1208925819614629174706176
+   last census!=I_infty: p=25537  = 798.03 n  = 24.938 n^2  = 4311.39 x diameter
+   resultant threshold / true onset = 4.734e+19
+      prize p~n^4=1048576: ABOVE onset -> census==I_infty (q-indep)
+      prize p~n^5=33554432: ABOVE onset -> census==I_infty (q-indep)

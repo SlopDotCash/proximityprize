@@ -34,25 +34,31 @@ into:
 ## What is PROVEN here (axiom-clean), building on `DescentKernel`
 
 * `singletonCount` / `doubleCount` — the `O₁` / `B` cardinalities of a codeword's agreement.
-* `agreement_eq_double_double_plus_singleton` — the **cross-parity budget identity**
+* `agreement_eq_two_double_plus_singleton` — the **cross-parity budget identity**
   `agreement = 2·doubleCount + singletonCount` (= `2|B| + s(S)`). This is the exact form of
   `DescentKernel.agreement_count`: the symmetric (double) fibers carry weight 2, the
   non-symmetric (singleton) fibers carry weight 1.
+* `singletonSet_eq_empty_of_symmetric` / `singletonCount_eq_zero_of_symmetric` — `S = -S` (the
+  symmetric/tower-captured case) is exactly the `s(S) = 0` stratum.
 * `singleton_stratum_unique` — the **key non-symmetric rigidity**: ANY two degree-`<2κ` codewords
   with the SAME fiber pattern `(B, O₁, σ)` whose weighted agreement `2|B| + |O₁| ≥ 2κ` coincide.
   So the singleton count `s(S)` is UNBOUNDED-allowed: it does not obstruct uniqueness; the
   recursion's list count is `#patterns`, the singletons just shift budget from weight-2 to weight-1.
-* `symmetric_is_zero_singleton` — `S = -S` (the symmetric/tower-captured case) is exactly the
-  `s(S) = 0` stratum.
+* `singleton_curve_parity` / `singleton_mem_curve` / `singletonCount_le_curve_degree` — the
+  singleton set is `μ_{n/2} ∩ {z : P(z)² = z·Q(z)²}` (a curve of degree `deg R`); `R = 0 ⟺ P=Q=0`;
+  and `s(S) ≤ deg R` (`≤ 2κ−1` only in the homogeneous codeword-difference case).
 
 ## Honest scope (NOT a closure)
 
 This converts the empirical "cross-parity constant `κ`" into the precise structural statement:
 the non-symmetric recursion is `L*(n) = #{consistent (B,O₁,σ) patterns}`, with the singleton count
 `s(S)` the only non-symmetric datum, and codeword-uniqueness-per-pattern is UNCONDITIONAL
-(`DescentKernel.pattern_rigidity`). It does NOT prove the list is constant in `n`: that needs the
-number of consistent patterns to be bounded, which (as the empirical probes show `s(S) ≤ 2` for
-the worst words at reachable `n`, but not provably for all `2^μ`) is the genuine open residual.
+(`DescentKernel.pattern_rigidity`). It does NOT prove the list is constant in `n`: (1) `s(S)` is
+itself only `O(deg R) = O(n)`-bounded for a codeword against a high-degree word, NOT `O(1)` — the
+`κ=O(1)` floor hope holds only at the window MIDPOINT and is REFUTED at the window edge (probe
+`probe_444_refuter_D_singlefiber.py`: `s(S)=5` at `n=16, k=4`); and (2) even a singleton bound would
+not bound the binding quantity, the pattern count (= beyond-Johnson smooth-domain RS list decoding,
+the known open core). See `docs/kb/deltastar-444-S1-nonsym-recursion-2026-06-15.md`.
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`.
 -/

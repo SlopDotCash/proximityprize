@@ -1,0 +1,51 @@
+
+### A33 REALIZABILITY PROBE: does the deg-<k (Hankel/rank) constraint beat sqrt(n*k)?
+
+====================================================================================
+n = 8 = 2^3
+====================================================================================
+
+  rho = 0.5, k = 4,  sqrt(n*k) = 5.657,  Johnson 1-sqrt(rho) agree band ~ 5.7
+       d  s=n/d     (a,b)         q |  true|S|  sqrt(nk)  beats?  orbit-inc
+       1      8     (5,4)        41 |        5     5.657     YES       8.00
+       2      4     (6,4)        41 |        6     5.657      no       6.00
+
+  rho = 0.25, k = 2,  sqrt(n*k) = 4.000,  Johnson 1-sqrt(rho) agree band ~ 4.0
+       d  s=n/d     (a,b)         q |  true|S|  sqrt(nk)  beats?  orbit-inc
+       1      8     (3,2)        41 |        3     4.000     YES       8.00
+       2      4     (4,2)        41 |        4     4.000      no       4.83
+       4      2     (6,2)        41 |        4     4.000      no       3.65
+
+  [char-dependence @ n=8, rho=0.25, k=2] worst-ish d=2, s=4, (a,b)=(4,2), sqrt(nk)=4.000
+      q=       41  true|S|=4  beats sqrt(nk)=no
+      q=       73  true|S|=4  beats sqrt(nk)=no
+      q=       89  true|S|=4  beats sqrt(nk)=no
+      q=       97  true|S|=4  beats sqrt(nk)=no
+      q=      113  true|S|=4  beats sqrt(nk)=no
+      q=      137  true|S|=4  beats sqrt(nk)=no
+      -> char-INDEPENDENT (values [4])
+====================================================================================
+n = 16 = 2^4
+====================================================================================
+
+  rho = 0.5, k = 8,  sqrt(n*k) = 11.314,  Johnson 1-sqrt(rho) agree band ~ 11.3
+       d  s=n/d     (a,b)         q |  true|S|  sqrt(nk)  beats?  orbit-inc
+       1     16     (9,8)       113 |        9    11.314     YES      16.00
+       2      8    (10,8)       113 |       10    11.314     YES      12.49
+       4      4    (12,8)       113 |       12    11.314      no      11.38
+
+  rho = 0.25, k = 4,  sqrt(n*k) = 8.000,  Johnson 1-sqrt(rho) agree band ~ 8.0
+       d  s=n/d     (a,b)         q |  true|S|  sqrt(nk)  beats?  orbit-inc
+       1     16     (5,4)       113 |        5     8.000     YES      16.00
+       2      8     (6,4)       113 |        6     8.000     YES      10.32
+       4      4     (8,4)       113 |        8     8.000      no       8.32
+       8      2    (12,4)       113 |        8     8.000      no       7.56
+
+  rho = 0.125, k = 2,  sqrt(n*k) = 5.657,  Johnson 1-sqrt(rho) agree band ~ 5.7
+       d  s=n/d     (a,b)         q |  true|S|  sqrt(nk)  beats?  orbit-inc
+       1     16     (3,2)       113 |        3     5.657     YES      16.00
+       2      8     (4,2)       113 |        4     5.657     YES       8.90
+       4      4     (6,2)       113 |        4     5.657     YES       6.00
+       8      2    (10,2)       113 |        8     5.657      no       4.87
+
+  [char-dependence @ n=16, rho=0.25, k=4] worst-ish d=4, s=4, (a,b)=(8,4), sqrt(nk)=8.000

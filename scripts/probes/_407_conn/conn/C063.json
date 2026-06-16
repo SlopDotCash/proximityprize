@@ -1,0 +1,27 @@
+{
+ "id": "C063",
+ "rank": 63,
+ "total": 22,
+ "scores": {
+  "insight": 7,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F2",
+  "F7"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodSidonBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean"
+ ],
+ "title": "Sidon-at-r=2 gives sub-√q but tops out at q^{1/4}√n: the q^{1/4} surplus over √(n log m) quantifies exactly the marginal-vs-extreme-value (max-of-m) deficit",
+ "connection": "WorstPeriodSidonBound.worst_period_sidon_le proves ‖η_b‖⁴≤3q|G|², i.e. max_b‖η_b‖≤(3q)^{1/4}√n — sub-√q but carrying q^{1/4} because it bounds EVERY single period by the GLOBAL 4th moment (a per-period/marginal argument). The target √(n·log m) has NO q-power. The gap (3q)^{1/4}√n vs √(n log m) is exactly q^{1/4}/√(log m) — the price of a per-period bound vs the max-over-m extreme-value decorrelation. The m periods sharing the L² budget √(qn) must be spread, not concentrated. The fix is the max-of-m maximal inequality chernoff_max_re_le, converting q^{1/4} into √(log m).",
+ "why_insightful": "Quantifies the marginal-method ceiling exactly: a per-period bound costs q^{1/4}; only the joint max-of-m removes it. Makes 'decorrelation' concrete as the q^{1/4}→√(log m) improvement, connecting the proven Sidon energy bound to why no single-frequency estimate suffices.",
+ "attack_plan": "Lean: sidon_perPeriod_vs_extremeValue_gap stating (3q)^{1/4}√n exceeds √(2n log m) by q^{1/4}/√(log m), framing the missing piece as chernoff_max_re_le. Probe: at proper subgroups compare (3q)^{1/4}√n against measured max_b‖η_b‖ to show the latter is √(log m)-scale, not q^{1/4}-scale."
+}

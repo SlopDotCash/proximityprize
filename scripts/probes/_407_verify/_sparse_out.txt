@@ -1,0 +1,54 @@
+====================================================================================================
+ #407 SPARSE-SUPPORT IDEAL-SVP (split prime).  T=distinct sparse defect pts; mass=E_r-E_r^(0).
+====================================================================================================
+ Levers tested: support-sparsity count T, its 1/p density, min house vs (2r)^φ wall & λ_1~√(n/2).
+
+--- n=8 (D=4)  p=4129 (2^12.0, beta_eff=4.00); λ_1(wr)~2.00; sqrt(n)~2.83 ---
+     r  2r | T(distinct)     mass      |T_r|  T*p/|Tr| | minHouse      (2r)^φ     minNorm
+     2   4 |           0        0         36     0.000 |      nan    2.56e+02         nan
+     3   6 |           0        0        120     0.000 |      nan    1.30e+03         nan
+     4   8 |           0        0        330     0.000 |      nan    4.10e+03         nan
+     5  10 |           0        0        792     0.000 |      nan    1.00e+04         nan
+
+--- n=8 (D=4)  p=32801 (2^15.0, beta_eff=5.00); λ_1(wr)~2.00; sqrt(n)~2.83 ---
+     r  2r | T(distinct)     mass      |T_r|  T*p/|Tr| | minHouse      (2r)^φ     minNorm
+     2   4 |           0        0         36     0.000 |      nan    2.56e+02         nan
+     3   6 |           0        0        120     0.000 |      nan    1.30e+03         nan
+     4   8 |           0        0        330     0.000 |      nan    4.10e+03         nan
+     5  10 |           0        0        792     0.000 |      nan    1.00e+04         nan
+
+--- n=16 (D=8)  p=65617 (2^16.0, beta_eff=4.00); λ_1(wr)~2.83; sqrt(n)~4.00 ---
+     r  2r | T(distinct)     mass      |T_r|  T*p/|Tr| | minHouse      (2r)^φ     minNorm
+     2   4 |           0        0        136     0.000 |      nan    6.55e+04         nan
+     3   6 |           0        0        816     0.000 |      nan    1.68e+06         nan
+     4   8 |           0        0       3876     0.000 |      nan    1.68e+07         nan
+     5  10 |           8      288      15504    33.858 |     9.09    1.00e+08    262468.0
+
+--- n=16 (D=8)  p=1048609 (2^20.0, beta_eff=5.00); λ_1(wr)~2.83; sqrt(n)~4.00 ---
+     r  2r | T(distinct)     mass      |T_r|  T*p/|Tr| | minHouse      (2r)^φ     minNorm
+     2   4 |           0        0        136     0.000 |      nan    6.55e+04         nan
+     3   6 |           0        0        816     0.000 |      nan    1.68e+06         nan
+     4   8 |           0        0       3876     0.000 |      nan    1.68e+07         nan
+     5  10 |           0        0      15504     0.000 |      nan    1.00e+08         nan
+
+--- n=32 (D=16)  p=1048609 (2^20.0, beta_eff=4.00); λ_1(wr)~4.00; sqrt(n)~5.66 ---
+     r  2r | T(distinct)     mass      |T_r|  T*p/|Tr| | minHouse      (2r)^φ     minNorm
+     2   4 |           0        0        528     0.000 |      nan    4.29e+09         nan
+     3   6 |           0        0       5984     0.000 |      nan    2.82e+12         nan
+     4   8 |          16     1600      52360   320.431 |     5.11    2.81e+14   2097218.0
+     5  10 |         208   117888     376992   578.555 |     5.11    1.00e+16   2097218.0
+
+--- n=32 (D=16)  p=33554593 (2^25.0, beta_eff=5.00); λ_1(wr)~4.00; sqrt(n)~5.66 ---
+     r  2r | T(distinct)     mass      |T_r|  T*p/|Tr| | minHouse      (2r)^φ     minNorm
+     2   4 |           0        0        528     0.000 |      nan    4.29e+09         nan
+     3   6 |           0        0       5984     0.000 |      nan    2.82e+12         nan
+     4   8 |           0        0      52360     0.000 |      nan    2.81e+14         nan
+     5  10 |           0        0     376992     0.000 |      nan    1.00e+16         nan
+
+KEY READINGS:
+ - T(distinct) = # sparse-support ideal-SVP points (house<=2r AND signed-sum-of-<=2r-roots).
+ - mass = exact E_r - E_r^(0) (the actual energy defect these contribute).
+ - T*p/|T_r| ~ 1  => sparse defects obey the random 1/p density (no structured excess).
+ - minHouse vs λ_1(wr)~√(n/2): is the SHORTEST sparse defect near the well-rounded minimum,
+   or strictly longer (sparsity forces a longer shortest vector)?
+ - minNorm vs (2r)^φ: where the norm-wall sits; minNorm >= p always (𝔭-membership).

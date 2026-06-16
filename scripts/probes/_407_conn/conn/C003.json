@@ -1,0 +1,26 @@
+{
+ "id": "C003",
+ "rank": 3,
+ "total": 27,
+ "scores": {
+  "insight": 9,
+  "research": 9,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F10",
+  "F15"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TopDirectionLineCount.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean"
+ ],
+ "title": "The lacunary variety is a coset-UNION, so I(δ) is an EXACT binomial C(n/2^L, (k+t)/2^L) — not the exponential tower budget",
+ "connection": "DyadicLacunaryFloor bounds #vanishingVariety μ_n (k+t) t = {S⊆μ_n : |S|=k+t, e_1=…=e_{t-1}=0}. By full_tower (LamLeungTwoPow) any such S is μ_{2^L}-closed, L=⌈log₂ t⌉, a UNION of 2^L-cosets. By loc_coset_union/coset_union_esymm_zero (TopDirectionLineCount) a union of m distinct cosets of μ_{2^L} automatically has e_j=0 for all j not divisible by 2^L. So these subsets are EXACTLY unions of (k+t)/2^L cosets chosen from the n/2^L available, giving I(δ)=C(n/2^L,(k+t)/2^L) EXACTLY — NOT the loose 2^{n/2^s} tower_count. The floor #lacBad≤C·n becomes the decidable q-independent inequality C(n/2^L,(k+t)/2^L)≤C·n.",
+ "why_insightful": "The campaign conflated the exponential tower_count free-set bound with the EXACT polynomial coset-union count. The floor only needs the latter, and the coset-union characterization makes #lacBad an exact closed binomial — the open core becomes a binomial inequality in the window, not an analytic cancellation.",
+ "attack_plan": "Lean: prove vanishingVariety μ_n (k+t) t.card = (n/2^L).choose((k+t)/2^L), L=⌈log₂ t⌉, via full_tower + the 2^L-power bijection (cosetunion ↔ a (k+t)/2^L-subset of μ_{n/2^L}). Pure-arithmetic probe: tabulate C(n/2^L,(k+t)/2^L) vs C·n at window-interior gaps t≈H(ρ)n/log₂(qε*) for μ=10..32, ρ∈{1/2..1/16}; check O(n) vs super-poly. Fully decidable, off the analytic wall."
+}

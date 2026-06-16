@@ -1,0 +1,26 @@
+{
+ "id": "C098",
+ "rank": 98,
+ "total": 21,
+ "scores": {
+  "insight": 7,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": false,
+ "forms": [
+  "F8",
+  "F2"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicHalvingRecursion.lean"
+ ],
+ "title": "Lyapunov (geometric-mean) bound on ∏r_j escapes the refuted strict-per-level descent: needs only average log r_j ≤ ½log(2 log)+o, WEAKER than the falsified r_j≤√2 at every j",
+ "connection": "DISPROOF_LOG kills the STRICT per-level M(n)²≤2M(n/2)² (ratios spike to 2.68, mean 2.1). But the telescoped target needs only the Lyapunov average: M(n)²=M(1)²·∏_{j=1}^{μ}r_j², r_j=M(2^j)/M(2^{j-1}), and the floor M(n)~√(n log(q/n)) corresponds to (1/μ)Σlog r_j²→log 2. An individual r_j can exceed √2 (refuting strict descent) while the geometric mean still tends to √2 — exactly the soft (2+o(1)) form. A genuine logical gap between the refuted ∀j r_j≤√2 and the live limsup of the running geometric mean ≤√2. Azuma fails (bounds each increment in L∞ and sums); Lyapunov multiplies per-level RATIOS, controlled on average, absorbing spikes.",
+ "why_insightful": "Reframes the open core as a Lyapunov-exponent/large-deviation statement (limsup running geometric mean), strictly weaker than the in-tree refuted per-level descent and distinct from the just-refuted Azuma sum-of-L∞ — a distinct, untried inequality shape.",
+ "attack_plan": "Probe: compute r_j across the full tower j=1..μ for several large primes, plot running geometric mean ∏_{i≤j}r_i^{1/j}; test convergence to √2 from above despite per-level spikes (predict yes, matching mean-2.1). Lean: towerLyapunov=(1/μ)·Σ log(M(2^j)²/M(2^{j-1})²), state the live conjecture towerLyapunov→log 2 with the strict-descent refutation recorded as why per-level fails."
+}

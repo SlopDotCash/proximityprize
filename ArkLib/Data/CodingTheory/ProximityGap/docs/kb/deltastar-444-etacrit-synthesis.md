@@ -139,3 +139,21 @@ crossover, and it is `Θ(1/log n)`-deep — below every constant clean threshold
 η_crit no-go (`Sweep_A43`) and explains, in one statement, why all six directions + the campaign's
 190+ conjectures + the parallel ceiling table (every √-cancellation method caps below `δ=1/2`)
 terminate at the same wall. No constant-`η` method can reach a `Θ(1/log n)`-deep threshold.
+
+## §0d. HARDENED: the η_crit no-go survives the trace-identity √-cancellation (robust disproof)
+
+Critical re-verification of the disproof of the leading candidate. The Action–Orbit route uses the
+**cyclotomic trace identity** `Tr(β_T·β̄_T) = M·|T|` (M=φ(n)=n/2), which — for an **antipodal-free**
+`T` (the Q1 object) — gives `Σ_{j odd}|σ_j(β_T)|² = M·s` EXACTLY (verified n=32: p=97/449 match;
+p=193/257 differ by `2M·#antipodal-pairs`, i.e. the identity holds iff antipodal-free). This yields
+the √-cancellation `|N(β_T)| ≤ s^{M/2} = s^{n/4}` **for free (proven, not conjectured)**, tighter
+than the crude `s^{n/2}`. Re-deriving the ceiling: `p^{c/2} ≤ s^{n/4} ⟹ p ≤ s^{1/(2η)}`, so
+
+> `η_crit' = μ/(2(128+μ)) ≈ 0.095` (μ=30) — and `η_{δ*} = 1/μ ≈ 0.033 < η_crit'` (verified
+> δ*-in-wall for μ=25,30,35).
+
+So the Action–Orbit route, **even with its trace identity fully exploited (the free √-cancellation),
+reaches only `η ≈ 0.095`, short of δ* at `η ≈ 0.033`.** Tightening beyond the 2nd moment (trace)
+requires the 4th+ moments = the additive energy = the BGK wall (`Sweep_A43` formalizes the kernel).
+**The disproof of the leading candidate for the prize regime is robust — not an artifact of a loose
+norm bound.** This is the independent verification the prize sponsor requested. No closure; δ* open.

@@ -1,0 +1,30 @@
+{
+ "id": "C066",
+ "rank": 66,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F6",
+  "F7",
+  "F2",
+  "F19"
+ ],
+ "walls": [
+  "W-largesieve",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean"
+ ],
+ "title": "Kowalski-Untrau vacuity localizes the missing tool to an EFFECTIVE Jacobi-average MGF, not a Wasserstein bound — re-pointing F6/F7 onto the monodromy surface (F19)",
+ "connection": "ku_bound_vacuous_at_prize proves the SOTA growing-subgroup equidistribution (KU25 W₁≤2^12 d² q^{−1/(d−1)}) is vacuous by ~2^30 at prize scale because d=|H| sits in the exponent DENOMINATOR. But the SalemZygmundChaining route does NOT need full equidistribution — only ONE exponential moment (the MGF) of the directional projection. Via tangentSum_mul_orderOf_eq_sum_jacobiSum, that projection's fluctuation is governed by T_h=(1/m)Σ_i J(χ^i,χ^h). So the genuinely missing input is an EFFECTIVE upper-tail/MGF bound for the Jacobi-sum average over the m index-m characters — strictly weaker than KU's Wasserstein metric, on the Deligne-Katz monodromy surface (F19), not the BGK surface. The barrier certifies an overkill tool.",
+ "why_insightful": "KU vacuity is read as 'no tool reaches the prize'; cross-referencing with the chaining route (one MGF) and the Jacobi identity shows the needed object is weaker and on a different surface — redirecting effort off the dead Wasserstein/BGK lane onto F19.",
+ "attack_plan": "Lean: state EffectiveJacobiAverageMGF (the empirical MGF of Re(ζ̄·T_h) over h∈[m] is ≤exp(σ²λ²/2), σ²=O(p/m)) and prove it IMPLIES SalemZygmundChaining.SubGaussianMGF via I3 (τ_h flat). Probe: measure the Jacobi-average tail constant (proper subgroups, multiple primes) to check it stays O(1) where the Wasserstein bound is vacuous."
+}

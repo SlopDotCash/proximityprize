@@ -1,0 +1,29 @@
+{
+ "id": "C021",
+ "rank": 21,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F18",
+  "F5",
+  "F16"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/AutocorrelationMax.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/PrizeSpectralLevelSetSharp.lean"
+ ],
+ "title": "Autocorrelation r(h)=|μ_n∩(μ_n+h)| IS the Fourier square of η_b: F18 flatness ⟺ F2 sup-norm by Parseval, with the diagonal cap already proven",
+ "connection": "For G=μ_n, r(h)=#{(x,y)∈G²:x−y=h}=Σ_x 1_G(x)1_G(x−h) has Fourier transform r̂(b)=|η_b|² EXACTLY (η_b=FT of 1_G). So F18 ('max Fourier coeff of r(h)≤n·log(p/n)') is LITERALLY max_b|η_b|²≤n·log(p/n)=F2 squared. autocorr_le_autocorr_zero proves the elementary diagonal cap r(h)≤r(0)=n on the SPATIAL side; the open content is the FREQUENCY-side flatness of the SAME r(h). card_resonant_ge (Paley-Zygmund) gives the matching level-set lower bound, bracketing the spectrum at √n typically. The honest content of F18 fails for the proven nonneg-weight brick because the prize signed autocorrelation r(h)=Σ_j τ_j conj(τ_{j+h}) is NOT nonnegative — the exact gap between autocorr_le_autocorr_zero (nonneg, gives the floor) and the signed case is precisely the Gauss-sum-phase cancellation = BGK.",
+ "why_insightful": "Identifies F18 as the EXACT Fourier transform of F2 with the spatial-side bound already landed, making the duality a precise Parseval statement; and pinpoints why the proven dead-simple Cauchy-Schwarz lemma does NOT close the prize: the weight's sign.",
+ "attack_plan": "Lean: autocorr_fourier_eq_eta_sq: r̂(b)=‖η_b‖² (orthogonality), then F18 as max_b r̂(b)≤n·L ⟺ PaleyFloorBound. Probe: compute r(h), verify r̂(b)=|η_b|² to machine precision; state the open flatness as max_h|Σ_j τ_j conj(τ_{j+h})|≤√p·√(m log m), citing autocorr_le_autocorr_zero as the nonneg-weight degenerate case it fails to reach."
+}

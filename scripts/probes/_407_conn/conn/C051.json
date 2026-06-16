@@ -1,0 +1,28 @@
+{
+ "id": "C051",
+ "rank": 51,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F3",
+  "F2"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/GG25NonCovering.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GG25SpreadBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GG25MCAFromCurveDecodability.lean"
+ ],
+ "title": "Curve-decodability ⟹ MCA is char-sum-FREE root counting, so the entire open content is displaced into the close-set cardinality a = the incidence I(δ) (the wall is conserved, not escaped)",
+ "connection": "The GG25/Jo26 chain eq_zero_of_curve_agree_many (degree-ℓ vector polynomial killed by dual separation + Polynomial.card_roots') → disagree_spread_bound ((t−ℓ)|T|≤t·D) → all_seeds_close_of_curveDecodable turns curve-decodability into MCA using ONLY root counting of an F-polynomial of degree ≤ℓ — no Gauss sum M(n) (F2), no energy E_r (F5). The catch the in-tree files make explicit: the substantive hypothesis is the close-set threshold a≤#curveCloseSet. So the reduction is exact and char-sum-free, but does NOT remove the wall: it relocates it entirely into proving the close-set cardinality (= the bad/incidence count I(δ), F3) is ≤ budget. The map F4→F3 is an IDENTITY-level reduction (no analytic slack lost).",
+ "why_insightful": "Pinpoints WHY the curve route is not a free escape from BGK even though it never touches a character sum: the degree-ℓ root bound is exact and lossless, so the wall is conserved and reappears as the close-set count. Contradicts the natural hope that an algebraic MCA proof sidesteps the analytic core.",
+ "attack_plan": "Lean: curveCloseSet δ u f (GG25CurveDecodability) = badScalars-style object for ℓ=1, show its card equals I(δ) of F1. Then a named Prop CurveCloseBudget:=a≤q·ε*; all_seeds_close_of_curveDecodable already discharges downstream, so the only open input is CurveCloseBudget=F3=the wall. Probe (μ_8/μ_16): tabulate #curveCloseSet at window radius for monomial stacks, confirm it equals the spectral incidence count."
+}
