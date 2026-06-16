@@ -173,3 +173,31 @@ n≥32 descent model is NOT yet validated against a direct computation (infeasib
 binding.* **Net:** the clean char-0 `O_P=1` is established at **n=16 only**; its persistence to all
 `n=2^μ` (the full proxy claim) is **not** closed by this descent, and the char-`p` intrusion at n=32
 is consistent with the prize being the char-`p` additive-energy defect. (BGK sup-norm prize: open.)
+
+## Step 6 — DECISIVE: `O_P=1` FAILS in char-0 by n=32; defect onset at μ₁₆ (`probe_444_OP1_persistence.py`)
+
+Settling Step 5 at the cyclotomic (model-independent) level — the `e₂=0` object compared
+char-0 (`M_r=M_{r+N/2}` balance) vs char-`p` (`e₂≡0 mod p`) across primes:
+
+| `n` (descent group) | char-0 `e₂=0` count | char-0 `O_P` | char-`p` counts (small→large `p`) | defect onset |
+|---|---|---|---|---|
+| `n=16` (`μ_8`, 4-subsets) | 10 (= 2 triv + 8) | **1** | 10,10,10,10,10 (p=17..65537) | **none** |
+| `n=32` (`μ_16`, 8-subsets) | 70 (= 6 triv + 64) | **3** | 150,118,86,**70** (p=97,193,257,65537) | **yes (→0 by 65537)** |
+
+**Two model-independent conclusions:**
+1. **`O_P=1` is `n=16`-SPECIFIC — it fails in CHARACTERISTIC 0 by `n=32`** (char-0 `O_P = 3`, not 1).
+   The benign-plateau single-orbit is an artifact of `μ_8` being too small for the char-0 orbit
+   count to exceed 1. (This corrects the earlier "the wall intrudes" framing of Step 5: it is not
+   *only* a char-`p` effect — even the clean char-0 count of orbits grows `1 → 3`.)
+2. **The char-`p` additive-energy defect (the BGK wall) has its ONSET at `μ_16`.** On `μ_8`, `e₂=0`
+   has zero defect at every prime (char-0 = char-`p` = 10). On `μ_16` the char-`p` count exceeds
+   char-0 at small `p` (defect `{80,48,16,0}`), killed only once `p` is large enough — a clean
+   small-scale picture of the wall, with the defect-killing threshold = the norm bound (`Sweep_A10`).
+
+**Significance.** The campaign's "p-independent proxy face vs p-dependent prize face" dichotomy is
+itself an `n=16` artifact: by `n=32` the proxy/benign structure both (a) loses `O_P=1` in char-0 and
+(b) acquires a char-`p` defect, so the two grand challenges collapse onto the *single* char-`p`
+additive-energy object in the actual prize regime. *Caveat unchanged:* the binding↔`e₂=0`
+correspondence is validated only at `n=16`; at `n≥32` the `e₂=0` counts are solid as statements about
+that cyclotomic object, but the identification with the true far-line binding incidence is not
+directly validated (infeasible brute-force). NO prize closure; the BGK wall stands.

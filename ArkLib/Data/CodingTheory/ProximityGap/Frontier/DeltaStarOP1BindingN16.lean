@@ -23,9 +23,13 @@ The remaining content is the FINITE combinatorial fact, certified here by `decid
 (NOT `native_decide` — axiom-clean): among the `e₂ = 0` 4-subsets of `ℤ/8`, the ones with
 nonzero sum form a single orbit under the dilation `J ↦ J + 1`. Hence `O_P = 1`.
 
-NOTE (honest scope): this is the `n = 16` proxy face. The same descent at `n = 32` makes the
-analogous descended object char-`p` DEPENDENT (the BGK additive-energy defect — the prize wall),
-so this clean char-0 argument does NOT establish `O_P = 1` for all `n = 2^μ`. See
+NOTE (honest scope — `O_P = 1` is `n = 16`-SPECIFIC, not a persistent law). The same `e₂ = 0`
+descent at `n = 32` (8-subsets of `μ_16`) has char-0 `O_P = 3`, NOT 1 (`probe_444_OP1_persistence.py`):
+the benign-plateau `O_P = 1` FAILS already in characteristic 0 by `n = 32` — it is an artifact of
+`μ_8` being too small. Separately, the char-`p` additive-energy defect (the BGK / prize wall) has
+its ONSET at `μ_16`: `e₂ = 0` on `μ_8` has zero defect at every prime, but on `μ_16` the char-`p`
+count exceeds the char-0 count at small `p` (150/118/86/70 at p = 97/193/257/65537). So this clean
+char-0 result does NOT establish `O_P = 1` for `n ≥ 32` — the result itself is false there. See
 `docs/kb/deltastar-444-subsetsum-binding.md` §"CORRECTION + CRACK".
 -/
 import Mathlib
