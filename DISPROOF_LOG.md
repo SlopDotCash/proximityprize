@@ -12889,3 +12889,31 @@ corrected candidate (n−1 / inverse-character localization at k=2) is itself un
 NOT claimed as a lever.
 No CORE / cancellation / completion / moment / anti-concentration / capacity claim. CORE OPEN.
 Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_n16_g0adjacency_numpy.py.
+
+## [door-iv-c71-no-nstable-support-localization] NO fixed-degree support-localization is n-stable; strict multi-term dominance is low-n only (k=2) (2026-06-22, sol)
+Lane: door-(iv) support-side structure of the C71 multi-term worst case. Follow-up to
+[door-iv-c71-g0-adjacency-n8-artifact]; closes the support-localization sub-direction.
+
+Probe: scripts/probes/probe_c71_support_localization_nstable.py (numpy-vectorized EXACT
+max-agreement; reproduces published n=8 numbers bit-for-bit). Thin μ_n, g0=X^{k+1}, NEVER n=q-1,
+multiple structured 1-mod-n primes per n. PRIME-INDEPENDENT at every n.
+
+(A) Worst k=2 multi-term winning support, localization-hypothesis hit-fractions:
+  n=8  (p∈{17,41,73}):  winners {(1,3,4),(2,3,6),(3,4)};  ∋deg(g0)=3:1.00  ∋(n−1)=7:0.00  ∋(n/2)=4:0.67
+  n=16 (p∈{97,113,193}): winners {(1,5,15),(3,5,15),(5,15)}; ∋deg(g0)=3:0.33 ∋(n−1)=15:1.00 ∋(n/2)=8:0.00
+  n=32 (p∈{97,193}):    22 scattered winners (centred on exps 11,27); ∋deg(g0)=3:0.09 ∋(n−1)=31:0.00 ∋(n/2)=16:0.23
+=> deg(g0)-localization holds ONLY at n=8, (n−1) ONLY at n=16, neither (nor n/2) at n=32. NO
+fixed-degree named-exponent localization survives all three scales. The support-side lever for a
+non-orbit incidence bound is DEAD; any incidence bound must be intrinsic/scale-relative.
+
+(B) Strict multi-term dominance gap s23max−s1max is NOT n-monotone at k=2:
+  n=8: +1   n=16: +5   n=32: +0 (MONOMIAL TIES — multi-term advantage vanishes), prime-independent.
+=> the strict-multi-term-dominance that motivated the C71 orbit-escape line (s23max>s1max) is a LOW-n
+phenomenon at k=2: it peaks at n=16 then COLLAPSES to 0 by n=32. Does not contradict the n=8/16
+multiterm_not_orbit_eligible theorem (structural escape at those n) but shows its worst-case ADVANTAGE
+is not n-robust at k=2.
+
+SURVIVING characterization: the coefficient-interference object (3591ed7c8, axiom-clean) — multi-term
+adversary is coeff-sensitive + ratio-uniform — but is NOT support-localizable and NOT uniformly
+strictly-dominant. No CORE/cancellation/completion/moment/anti-concentration/capacity claim. CORE OPEN.
+Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_support_localization_nstable.py.
