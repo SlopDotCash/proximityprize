@@ -12844,3 +12844,14 @@ this is n=8-only — a compute-heavier worker should confirm across n=16+ before
 
 No CORE / cancellation / completion / moment / anti-concentration / capacity claim. CORE OPEN.
 Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_g0adjacency_structured.py.
+
+## [door-iv-c71-g0-adjacency-k2] SHARPENING (selectivity, 2026-06-22, sol)
+The g0-adjacency is NON-VACUOUS / selective, not a pigeonhole artifact (at n=8,k=2):
+- only 36/56 = 64% of ALL <=3-term supports touch the band {deg(g0),deg(g0)+1}={3,4}, but 3/3=100% of
+  WINNERS do (selective concentration).
+- TIGHTER: all 3 winners contain the exponent deg(g0)=k+1=3 EXACTLY, while only 21/56=38% of all
+  supports contain 3. So the sharp k=2 rule is "the worst multi-term adversary support always INCLUDES
+  the non-codeword's own degree deg(g0)=k+1" — a strong selective concentration (100% vs 38% baseline).
+This is the candidate clean support-side lever: worst-support ∋ deg(g0). Still n=8/k=2; the k-law of
+"deg(g0) vs deg(g0)+1" is unpinned (k=3 winners clustered on deg(g0)+1=5 not deg(g0)=4), so the exact
+universal rule needs n=16+ confirmation before formalization. NOT a closure. CORE OPEN.
