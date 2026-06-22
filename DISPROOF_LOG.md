@@ -12792,3 +12792,30 @@ completion / moment / anti-concentration / capacity claim. CORE OPEN.
 
 Evidence (reproducible probe, no new .lean — honest refutation of a numeric structure hypothesis, not
 larped into a fake general theorem): scripts/probes/probe_c71_coeff_ratio_locus.py.
+
+## [door-iv-c71-dominance-k2-specific] the C71 strict multi-term dominance (s23max>s1max) is k=2-specific; vanishes at k=3 (coeff-interference persists) (2026-06-22, sol)
+
+Lane: door-(iv) k-robustness stress of the C71 multi-term line (5dd3a409e + 3591ed7c8/769d6177f/
+73575c7e9). The whole "worst <=3-sparse adversary is STRICTLY multi-term, not a monomial" claim rests
+on s23max=9 > s1max=8 at n=8, k=2. This probe stresses the k-axis.
+
+PROBE scripts/probes/probe_c71_krobustness.py (EXACT full-alpha-sweep, EXACT max-agreement, thin mu_n
+n=8, Johnson thr=ceil(sqrt(k/n)*n), NEVER n=q-1, p in {17,41}, exhaustive over ALL <=3-term supports,
+unit + non-unit coeffs):
+  k=2 (thr=4/8): s1max=8, s23max=9 => gap=+1  STRICT multi-term dominance (both primes)
+  k=3 (thr=5/8): s1max=8, s23max=8 => gap= 0  dominance VANISHES — monomial TIES (both primes)
+
+VERDICT (constraint): the STRICT s23>s1 dominance is k=2-SPECIFIC at n=8; at k=3 a monomial achieves
+the same worst-case strength, so the "strictly multi-term, escapes the orbit pin" gap is NOT
+k-uniform. This BOUNDS how strongly C71's strict-dominance can be leaned on as a structural lever:
+the multi-term ESCAPE from the orbit pin is real (proven in C71SparseOrbitGap), but its STRICT
+worst-case ADVANTAGE over monomials is a low-rho (k=2) phenomenon, not a property of every Johnson
+radius.
+
+HOWEVER the [T4] COEFFICIENT-INTERFERENCE signal PERSISTS at both k: only 3/9, 3/10 (k=2) and 3/13,
+4/18 (k=3) of the winning (support,coeff) pairs use unit coeffs. So even where monomials TIE on
+strength, the multi-term worst case is still attained predominantly at NON-UNIT ratios — the
+coeff-interference constraint (3591ed7c8) is k-robust even though the strict dominance is not.
+
+No CORE / cancellation / completion / moment / anti-concentration / capacity claim. CORE OPEN.
+Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_krobustness.py.
