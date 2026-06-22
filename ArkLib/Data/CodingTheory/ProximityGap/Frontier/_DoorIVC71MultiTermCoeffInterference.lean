@@ -122,8 +122,26 @@ theorem multiterm_coeff_ratio_is_free
   refine twoTerm_ratio_distinguishes (1 : F) 1 1 c hij ?_
   simpa using hc
 
+/-- **The coefficient ratio injects into projective direction-space (the counting engine).**
+For a fixed support `{i, j}` (`i ≠ j`), DISTINCT coefficient ratios `r₁ ≠ r₂` give the two
+unit-leading-term directions `X^i + r₁·X^j` and `X^i + r₂·X^j` that are NOT scalar multiples of each
+other. Hence `r ↦ [X^i + r·X^j]` is injective into projective direction-space: the worst-case
+multi-term adversary family genuinely contains a `1`-parameter (ratio) sub-family inside each fixed
+support, so its size is strictly larger than the support count. This is the rigorous cardinality
+content behind `multiterm_coeff_ratio_is_free` and the probe's `[T4]` (worst case at non-unit ratio,
+and `769d6177f`: the worst-ratio locus is a DENSE generic subset of `F_p*`). A support-only
+incidence count provably undercounts the adversary along this ratio axis. -/
+theorem distinct_ratios_not_proportional
+    {i j : ℕ} (hij : i ≠ j) (r₁ r₂ : F) (hr : r₁ ≠ r₂) :
+    ¬ ∃ s : F, (C 1 * X ^ i + C r₁ * X ^ j : F[X])
+              = C s * (C 1 * X ^ i + C r₂ * X ^ j) := by
+  -- ratio test with (c₁,c₂)=(1,r₁), (d₁,d₂)=(1,r₂): gap `1*r₂ ≠ r₁*1` ⇔ `r₁ ≠ r₂`.
+  refine twoTerm_ratio_distinguishes (1 : F) r₁ 1 r₂ hij ?_
+  simpa [eq_comm] using hr
+
 end ArkLib.ProximityGap.C71MultiTermCoeffInterference
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.C71MultiTermCoeffInterference.twoTerm_ratio_distinguishes
 #print axioms ArkLib.ProximityGap.C71MultiTermCoeffInterference.multiterm_coeff_ratio_is_free
+#print axioms ArkLib.ProximityGap.C71MultiTermCoeffInterference.distinct_ratios_not_proportional
