@@ -7639,6 +7639,45 @@ theorem doorIV_not_realised_specMaxSq_lt_parseval_floor_export
 #print axioms doorIV_realised_specMaxSq_ge_parseval_floor_export
 #print axioms doorIV_not_realised_specMaxSq_lt_parseval_floor_export
 
+/-- **[Lane 3 resonance spectral-floor endpoint]** If a realised worst spectral mass is capped by
+`m−1`, then it is exactly `m−1`. The endpoint is rigid: a worst frequency may touch the Parseval
+floor, but cannot sit below it. -/
+theorem doorIV_realised_specMaxSq_eq_parseval_floor_of_le_floor_export
+    {m : ℕ} [NeZero m] (u : ZMod m → ℂ) (hu : ∀ l : ZMod m, ‖u l‖ = 1)
+    (hm : 2 ≤ m) (b₀ : ZMod m)
+    (hb₀ : ∀ k : ZMod m,
+      ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+          (ArkLib.ProximityGap.GaussPhaseResonance.dftChar k) u‖ ^ 2 ≤
+        ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+          (ArkLib.ProximityGap.GaussPhaseResonance.dftChar b₀) u‖ ^ 2)
+    (hle : ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+        (ArkLib.ProximityGap.GaussPhaseResonance.dftChar b₀) u‖ ^ 2 ≤ (m : ℝ) - 1) :
+    ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+        (ArkLib.ProximityGap.GaussPhaseResonance.dftChar b₀) u‖ ^ 2 = (m : ℝ) - 1 :=
+  ArkLib.ProximityGap.GaussPhaseResonance.realised_specMaxSq_eq_parseval_floor_of_le_floor
+    u hu hm b₀ hb₀ hle
+
+/-- **[Lane 3 resonance spectral-floor endpoint]** Realised mean-cap tower rigidity: if an actual
+worst frequency is already capped by the Parseval mean, every consecutive tower ratio equals
+`m−1`. Thus nontrivial ratio slack forces the realised worst spectral mass above the mean. -/
+theorem doorIV_resonance_ratio_eq_floor_of_realised_specMaxSq_le_floor_export
+    {m : ℕ} [NeZero m] (u : ZMod m → ℂ) (hu : ∀ l : ZMod m, ‖u l‖ = 1)
+    (hm : 2 ≤ m) (r : ℕ) (b₀ : ZMod m)
+    (hb₀ : ∀ k : ZMod m,
+      ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+          (ArkLib.ProximityGap.GaussPhaseResonance.dftChar k) u‖ ^ 2 ≤
+        ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+          (ArkLib.ProximityGap.GaussPhaseResonance.dftChar b₀) u‖ ^ 2)
+    (hle : ‖ArkLib.ProximityGap.GaussPhaseResonance.kernelSpectrum
+        (ArkLib.ProximityGap.GaussPhaseResonance.dftChar b₀) u‖ ^ 2 ≤ (m : ℝ) - 1) :
+    ArkLib.ProximityGap.GaussPhaseResonance.resonanceMoment u (r + 1) /
+        ArkLib.ProximityGap.GaussPhaseResonance.resonanceMoment u r = (m : ℝ) - 1 :=
+  ArkLib.ProximityGap.GaussPhaseResonance.resonanceMoment_ratio_eq_base_of_realised_specMaxSq_le_base
+    u hu hm r b₀ hb₀ hle
+
+#print axioms doorIV_realised_specMaxSq_eq_parseval_floor_of_le_floor_export
+#print axioms doorIV_resonance_ratio_eq_floor_of_realised_specMaxSq_le_floor_export
+
 /-- **[Lane 3 resonance two-sided off-diagonal constraint]** A one-step squared-spectrum dip `d`
 below the Parseval mean also forces `d² ≤ m · Re Off(2)`.  Near-flatness must therefore control
 both upward spikes and downward holes; either kind of deviation consumes the same named depth-two

@@ -197,6 +197,29 @@ theorem not_realised_specMaxSq_lt_parseval_floor (u : ZMod m → ℂ)
     ¬ ‖kernelSpectrum (dftChar b₀) u‖ ^ 2 < (m : ℝ) - 1 := by
   exact not_lt_of_ge (realised_specMaxSq_ge_parseval_floor u hu hm b₀ hb₀)
 
+/-- **Realised mean-cap rigidity.** If a realised spectral maximum is capped by the Parseval mean,
+then that maximum is exactly the mean. This is the pointwise endpoint behind the tower rigidity:
+a worst frequency can touch the floor, but cannot cross below it. -/
+theorem realised_specMaxSq_eq_parseval_floor_of_le_floor (u : ZMod m → ℂ)
+    (hu : ∀ l : ZMod m, ‖u l‖ = 1) (hm : 2 ≤ m) (b₀ : ZMod m)
+    (hb₀ : ∀ k : ZMod m, ‖kernelSpectrum (dftChar k) u‖ ^ 2 ≤
+      ‖kernelSpectrum (dftChar b₀) u‖ ^ 2)
+    (hle : ‖kernelSpectrum (dftChar b₀) u‖ ^ 2 ≤ (m : ℝ) - 1) :
+    ‖kernelSpectrum (dftChar b₀) u‖ ^ 2 = (m : ℝ) - 1 := by
+  exact le_antisymm hle (realised_specMaxSq_ge_parseval_floor u hu hm b₀ hb₀)
+
+/-- **Realised mean-cap tower rigidity.** If an actual worst frequency is already capped by the
+Parseval mean, then every consecutive tower ratio equals `m−1`. Equivalently, any nontrivial ratio
+slack forces the realised worst spectral mass strictly above the mean. -/
+theorem resonanceMoment_ratio_eq_base_of_realised_specMaxSq_le_base
+    (u : ZMod m → ℂ) (hu : ∀ l : ZMod m, ‖u l‖ = 1) (hm : 2 ≤ m) (r : ℕ)
+    (b₀ : ZMod m)
+    (hb₀ : ∀ k : ZMod m, ‖kernelSpectrum (dftChar k) u‖ ^ 2 ≤
+      ‖kernelSpectrum (dftChar b₀) u‖ ^ 2)
+    (hle : ‖kernelSpectrum (dftChar b₀) u‖ ^ 2 ≤ (m : ℝ) - 1) :
+    resonanceMoment u (r + 1) / resonanceMoment u r = (m : ℝ) - 1 := by
+  exact resonanceMoment_ratio_eq_base_of_specMaxSq_le_base u hu hm r (fun k => le_trans (hb₀ k) hle)
+
 end ArkLib.ProximityGap.GaussPhaseResonance
 
 -- Axiom audit: must be `{propext, Classical.choice, Quot.sound}` only.
@@ -207,3 +230,5 @@ end ArkLib.ProximityGap.GaussPhaseResonance
 #print axioms ArkLib.ProximityGap.GaussPhaseResonance.resonanceMoment_ratio_eq_base_of_specMaxSq_le_base
 #print axioms ArkLib.ProximityGap.GaussPhaseResonance.realised_specMaxSq_ge_parseval_floor
 #print axioms ArkLib.ProximityGap.GaussPhaseResonance.not_realised_specMaxSq_lt_parseval_floor
+#print axioms ArkLib.ProximityGap.GaussPhaseResonance.realised_specMaxSq_eq_parseval_floor_of_le_floor
+#print axioms ArkLib.ProximityGap.GaussPhaseResonance.resonanceMoment_ratio_eq_base_of_realised_specMaxSq_le_base
