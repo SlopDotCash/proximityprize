@@ -37,6 +37,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBSidonNoEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVHalfMassEquivalence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeBddAbove
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeShawTetrachotomySynthesis
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCoherenceDeficitQuantitative
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMultiPieceDeficitQuantitative
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitPairwiseSandwich
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueLandauBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleDispersion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCocycleNoRandomEdge
@@ -7953,5 +7956,24 @@ theorem doorIV_shawFamilyBound_iff_prizeFamilyBound_export {ι : Type*} (M n m :
 
 #print axioms doorIV_shawValueBound_iff_prizeScalarBound_export
 #print axioms doorIV_shawFamilyBound_iff_prizeFamilyBound_export
+
+/-- Door-IV coherence-deficit QUANTITATIVE capstone export: in a real inner product space the
+multi-piece coherence deficit `1 − ρ_multi` is SANDWICHED (up to a factor `2`) by the total pairwise
+misalignment `S(A) = Σ_{j<k}(‖A j‖‖A k‖ − ⟪A j,A k⟫_ℝ)` over the squared total piece mass:
+`S/M² ≤ 1 − ρ_multi ≤ 2·S/M²`.  This upgrades the qualitative `ρ=1 ⟺ same-ray` obstruction to a
+two-sided quantitative one.  Constraint lemma — CORE `M(μ_n)` is NOT discharged here. -/
+theorem doorIV_coherenceDeficit_pairwiseSandwich_export {F : Type*} [NormedAddCommGroup F]
+    [InnerProductSpace ℝ F] {ι : Type*} (s : Finset ι) (A : ι → F)
+    (hden : 0 < ∑ i ∈ s, ‖A i‖) :
+    ProximityGap.Frontier.DoorIVDeficitPairwiseSandwich.totalPairwiseMisalign s A
+        / (∑ i ∈ s, ‖A i‖) ^ 2
+      ≤ 1 - ProximityGap.Frontier.DoorIVMultiPieceDeficitQuantitative.multiPieceNormCoherence s A
+    ∧ 1 - ProximityGap.Frontier.DoorIVMultiPieceDeficitQuantitative.multiPieceNormCoherence s A
+        ≤ 2 * ProximityGap.Frontier.DoorIVDeficitPairwiseSandwich.totalPairwiseMisalign s A
+          / (∑ i ∈ s, ‖A i‖) ^ 2 :=
+  ProximityGap.Frontier.DoorIVDeficitPairwiseSandwich.coherence_deficit_pairwise_sandwich
+    s A hden
+
+#print axioms doorIV_coherenceDeficit_pairwiseSandwich_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
