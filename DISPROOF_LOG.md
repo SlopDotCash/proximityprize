@@ -12819,3 +12819,28 @@ coeff-interference constraint (3591ed7c8) is k-robust even though the strict dom
 
 No CORE / cancellation / completion / moment / anti-concentration / capacity claim. CORE OPEN.
 Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_krobustness.py.
+
+## [door-iv-c71-g0-adjacency-k2] the C71 multi-term winning supports all TOUCH the {deg(g0),deg(g0)+1} band — prime-independent incl. Fermat prime (2026-06-22, sol)
+
+Lane: door-(iv) support-side structure of the C71 multi-term worst case (positive structural handle,
+pairs with the ratio-uniformity refutation [door-iv-c71-worst-ratio-locus-generic]).
+
+The winning multi-term supports at n=8,k=2 are prime-independent {(1,3,4),(2,3,6),(3,4)} (confirmed
+across p in {17,41,521} earlier, and now p=257=2^8+1, a FERMAT prime — the brief's rule-2 structured-
+prime stress). PROBE scripts/probes/probe_c71_g0adjacency_structured.py at the Fermat prime:
+  s1max=8 s23max=9 gap=+1 STRICT multi-term (dominance holds at the structured prime)
+  winning supports = {(1,3,4),(2,3,6),(3,4)} IDENTICAL to the other primes
+  [g0-adjacency] ALL 3 winners TOUCH the band {deg(g0), deg(g0)+1} = {3,4}: 3/3 HOLDS
+  [T4] coeff-interference persists (3/8 unit winners)
+(g0 = X^{k+1} is the non-codeword the affine pencil perturbs; deg(g0)=k+1=3 at k=2.)
+
+VERDICT (structural handle, NOT a closure): the worst multi-term adversary support is LOCALIZED to
+the {deg(g0), deg(g0)+1} band — it lives adjacent to the non-codeword's degree, prime-independently
+(incl. a Fermat prime). This is the SUPPORT-SIDE input a coefficient-sensitive non-orbit incidence
+bound could use: the support search is NOT over all of {1..n-1}^s but concentrates on band-touching
+supports. Pairs with the ratio-UNIFORMITY (769d6177f): support localized + ratio dense. CAVEAT: the
+exact band rule's k-dependence is not yet pinned (at k=3 the analogous band was {deg(g0)+1}=5, 4/4) and
+this is n=8-only — a compute-heavier worker should confirm across n=16+ before leaning on it as a lever.
+
+No CORE / cancellation / completion / moment / anti-concentration / capacity claim. CORE OPEN.
+Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_g0adjacency_structured.py.
