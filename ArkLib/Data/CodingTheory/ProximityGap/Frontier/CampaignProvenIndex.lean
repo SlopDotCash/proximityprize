@@ -55,6 +55,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvDil_MultEnergyStepDiago
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CoreReductionNecessity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDecompositionInvariantCoherence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMultiPieceSignCoherence
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMultiPieceSameRayConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSixthCumulantVanishes
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVTripleCorrelationVanishes
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCorrelationHierarchyCapstone
