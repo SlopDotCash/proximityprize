@@ -1782,6 +1782,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DividedDifferenceDilation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DonohoStarkTight
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVAlgebraicFloorCyclotomicWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVArgmaxDecouplingNoControl
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVC71MultiTermCoeffInterference
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCanonicalHalfCoherenceQuantized
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCocycleNoRandomEdge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCoherenceDeficitThicknessInvariant
