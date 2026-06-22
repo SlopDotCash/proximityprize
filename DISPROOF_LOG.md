@@ -12855,3 +12855,37 @@ The g0-adjacency is NON-VACUOUS / selective, not a pigeonhole artifact (at n=8,k
 This is the candidate clean support-side lever: worst-support ∋ deg(g0). Still n=8/k=2; the k-law of
 "deg(g0) vs deg(g0)+1" is unpinned (k=3 winners clustered on deg(g0)+1=5 not deg(g0)=4), so the exact
 universal rule needs n=16+ confirmation before formalization. NOT a closure. CORE OPEN.
+
+## [door-iv-c71-g0-adjacency-n8-artifact] the "worst-support ∋ deg(g0)" handle is an n=8 ARTIFACT at k=2 — REFUTED at n=16 (2026-06-22, sol)
+Lane: door-(iv) support-side structure of the C71 multi-term worst case. Resolves the n=16+ confirmation
+the prior entry [door-iv-c71-g0-adjacency-k2] flagged as OPEN ("needs n=16+ confirmation before
+formalization"). VERDICT: REFUTED as an n-stable lever.
+
+Method: scripts/probes/probe_c71_n16_g0adjacency_numpy.py — numpy-vectorized EXACT max-agreement
+(alpha-sweep + agreement counts vectorized over F_p), making n=16 EXACT tractable (the prior worker
+flagged pure-Python n=16 as too slow). Sanity: reproduces the published n=8,k=2 numbers bit-for-bit
+(s1max=8, s23max=9, winners {(1,3,4),(2,3,6),(3,4)}, g0-adjacency 0.38 baseline / 1.00 winners).
+
+n=16, k=2 (thin μ_16, ρ=0.125, Johnson thr=6/16), PRIME-INDEPENDENT over p∈{97,113,193,241}:
+  s1max=2, s23max=7, gap=+5 (strict multi-term dominance PERSISTS and WIDENS, +1→+5);
+  winning supports = {(1,5,15),(3,5,15),(5,15)} (IDENTICAL across all four primes);
+  g0-adjacency: deg(g0)=3, baseline 0.19, WINNERS contain deg(g0) = 0.33 (NOT 1.00), band {3,4} = 0.33.
+=> "worst-support ∋ deg(g0)" is FALSE at n=16,k=2. The dominant winner (5,15) contains NO deg(g0)=3.
+
+Corrected invariant: every n=16,k=2 winner contains the pair {5, 15}, and 15 = n−1. On μ_n,
+X^{n−1}=X^{−1} (inverse character). The worst k=2 multi-term adversary localizes at the TOP exponent
+n−1, NOT at the low non-codeword degree deg(g0)=k+1. The hoped-for low-degree support-localization
+lever is exactly inverted at n=16.
+
+(k,n)-dependence: g0-adjacency HOLDS at k=3,n=16 (winners {(1,4,10),(2,4,10),(4,6,14),(4,10)}, all
+contain deg(g0)=4, p∈{97,113}) but FAILS at k=2,n=16. So the rule is (k AND n)-dependent, not a stable
+handle — a support-incidence bound CANNOT key on "support ∋ deg(g0)" across the (k,n) the prize regime
+ranges over.
+
+Consequence: the support-side sub-handle from [door-iv-c71-g0-adjacency-k2] is DEAD as an n-stable
+lever. The strict multi-term DOMINANCE and the coefficient-interference characterization (3591ed7c8)
+are UNAFFECTED (dominance widens at n=16) — only the deg(g0) support-localization is refuted. The
+corrected candidate (n−1 / inverse-character localization at k=2) is itself unconfirmed at n=32+ and
+NOT claimed as a lever.
+No CORE / cancellation / completion / moment / anti-concentration / capacity claim. CORE OPEN.
+Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_n16_g0adjacency_numpy.py.
