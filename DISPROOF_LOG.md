@@ -12760,3 +12760,35 @@ Formal kernel: ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceDiagonal
 GaussPhaseResonance only). Theorems: resonanceDiag, normSq_phaseSum_eq_double,
 resonanceMoment_eq_agreement_double, resonanceDiag_unit. Axiom-clean ({propext, Classical.choice,
 Quot.sound}). Pushed 59a928f3a.
+
+## [door-iv-c71-worst-ratio-locus-generic] the worst-case COEFFICIENT-RATIO locus fills F_p* densely with NO multiplicative structure (2026-06-22, sol)
+
+Lane: door-(iv) Lane 1/3 FOLLOW-ON to [_DoorIVC71MultiTermCoeffInterference] (3591ed7c8). That result
+proved the C71 multi-term worst case is a coefficient-interference object ([T4]: worst case at NON-UNIT
+ratios). The tempting next lever: maybe the worst RATIO set R* = {r : strength(X^i + r·X^j) = max} is
+arithmetically STRUCTURED (roots of unity / powers of the dilation mu / a subgroup coset), giving a
+coefficient-sensitive incidence bound a structured handle to grip.
+
+PROBE scripts/probes/probe_c71_coeff_ratio_locus.py (EXACT full-alpha-sweep bad-strength over the FULL
+ratio r in F_p*, winning 2-term support (3,4) from the prime-independent winning set, thin mu_n n=8 k=2
+Johnson thr=4/8, NEVER n=q-1, p in {17,41,113}):
+  p=17:  |R*|=8/16  — APPARENT index-2 coset (dlog-gaps all =2). SMALL-PRIME ARTIFACT.
+  p=41:  |R*|=32/40 — index 1, NO fine structure, NOT r->1/r closed.
+  p=113: |R*|=104/112 (93%) — index 1, NO fine structure, NOT r->1/r closed.
+The trend is unambiguous: as p grows the worst-ratio locus R* fills F_p* DENSELY (93% at p=113) with NO
+multiplicative-coset structure; the apparent index-2 structure at p=17 is a small-prime coincidence that
+EVAPORATES at larger p. R* is also NOT inverse-closed (so not symmetric under the i<->j support swap) and
+NOT concentrated on powers of the dilation mu or small-order roots of unity (only the trivial r=1 and a
+handful of incidental hits, no pattern). [S2]/[S3]/[S4] all NEGATIVE at p>=41.
+
+VERDICT (constraint): the worst-coefficient-ratio locus is GENERIC. A coefficient-sensitive non-orbit
+incidence bound on the C71 multi-term strata CANNOT exploit a structured ratio set — the worst case is
+attained over a dense, multiplicatively-unstructured ratio family, so the bound must hold UNIFORMLY in r
+(no QR/coset/root-of-unity restriction to lean on). This REFUTES the "structured worst-ratio locus"
+sub-lever and tightens the open residual one notch further: the needed bound is coefficient-sensitive
+(from 3591ed7c8) AND ratio-uniform (from here) — i.e. it must control the genuine 2-parameter
+(support × dense-ratio) interference, not any sparse algebraic slice of it. No CORE / cancellation /
+completion / moment / anti-concentration / capacity claim. CORE OPEN.
+
+Evidence (reproducible probe, no new .lean — honest refutation of a numeric structure hypothesis, not
+larped into a fake general theorem): scripts/probes/probe_c71_coeff_ratio_locus.py.
