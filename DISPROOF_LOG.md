@@ -13279,3 +13279,18 @@ exact `√(log(q/n))` multiplier until the open door-(iv) arithmetic input absor
 
 VERDICT: PURE algebra over the existing consumer identity. NO new cancellation, completion, moment,
 anti-concentration, capacity, or CORE claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-synthesis-gap-inverse-nogo] prize-floor bound plus positive Shaw floor forces the √log gap bounded (2026-06-23, g55)
+Lane: Lane-2 capstone hardening, inverse no-go for the scale bridge.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) in `_ShawScaleDoorScaleBridge.lean`, exported as
+`CampaignProvenIndex.gap_le_prizeFloorBound_div_shawFloor_export`:
+if `c > 0`, `c ≤ shawValue q n M`, and the genuine prize-floor ratio is bounded by `B`, then
+`√(log(q/n)) ≤ B/c`.
+
+WHY IT MATTERS: a constant bound against the genuine prize floor `√n` cannot coexist with a nonvanishing
+Shaw value unless the exact synthesis gap factor is itself controlled. So any proof that silently turns
+`Sh = O(1)` into a prize-floor `O(1)` claim has already smuggled in the open door-(iv) arithmetic input.
+
+VERDICT: PURE algebra over the scale bridge. NO new CORE/cancellation/completion/moment/anti-concentration
+or capacity claim. CORE remains OPEN.

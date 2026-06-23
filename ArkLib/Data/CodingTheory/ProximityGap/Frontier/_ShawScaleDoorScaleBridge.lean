@@ -139,7 +139,27 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound {ι : Type*} {q n M : ι �
   exact prizeFloorRatio_le_shawBound_mul_gap (q i) (n i) (M i) C (hn i) (hnq i) (hSh i)
 
 
+/-- **A prize-floor bound plus a positive Shaw floor forces the gap itself to be bounded.**  If
+`c ≤ shawValue q n M` with `c > 0`, and the genuine prize-floor ratio is bounded by `B`, then the
+synthesis gap factor must obey `√(log(q/n)) ≤ B/c`.  This is the inverse no-go form of the bridge:
+a genuine `O(1)` prize-floor bound cannot coexist with a positive Shaw floor unless the open door-(iv)
+`√log` gap has been absorbed. -/
+theorem gap_le_prizeFloorBound_div_shawFloor (q n M B c : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hc : 0 < c) (hfloor : c ≤ shawValue q n M) (hPrize : M / prizeScale n ≤ B) :
+    Real.sqrt (Real.log (q / n)) ≤ B / c := by
+  have hgap_nonneg : 0 ≤ Real.sqrt (Real.log (q / n)) := Real.sqrt_nonneg _
+  have hcg_le : c * Real.sqrt (Real.log (q / n))
+      ≤ shawValue q n M * Real.sqrt (Real.log (q / n)) :=
+    mul_le_mul_of_nonneg_right hfloor hgap_nonneg
+  have hbridge := prizeFloorRatio_eq_shawValue_mul_gap q n M hn hnq
+  have hcg_le_B : c * Real.sqrt (Real.log (q / n)) ≤ B := by
+    exact le_trans hcg_le (by simpa [hbridge.symm] using hPrize)
+  have hdiv := div_le_div_of_nonneg_right hcg_le_B hc.le
+  simpa [mul_div_cancel_left₀ (Real.sqrt (Real.log (q / n))) (ne_of_gt hc)] using hdiv
+
+
 end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_le_shawBound_mul_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_family_le_of_uniformShawBound

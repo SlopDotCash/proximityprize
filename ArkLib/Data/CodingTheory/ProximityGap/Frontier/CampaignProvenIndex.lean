@@ -8580,4 +8580,18 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M
 
 #print axioms prizeFloorRatio_family_le_of_uniformShawBound_export
 
+
+/-- Synthesis-gap INVERSE NO-GO export: if a prize-regime instance has a positive Shaw-value floor
+`c ≤ shawValue q n M` and a genuine prize-floor ratio bound `M/√n ≤ B`, then the gap factor itself is
+bounded by `√(log(q/n)) ≤ B/c`.  Thus any constant prize-floor bound with nonvanishing Shaw value has
+already absorbed the open door-(iv) gap. -/
+theorem gap_le_prizeFloorBound_div_shawFloor_export (q n M B c : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hc : 0 < c) (hfloor : _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M ≥ c)
+    (hPrize : M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n ≤ B) :
+    Real.sqrt (Real.log (q / n)) ≤ B / c :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor
+    q n M B c hn hnq hc hfloor hPrize
+
+#print axioms gap_le_prizeFloorBound_div_shawFloor_export
+
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
