@@ -13373,3 +13373,11 @@ correlator anywhere in the moment hierarchy.
 VERDICT: STRUCTURAL consolidation capstone (composition of proven kernel facts). NO CORE / cancellation
 / completion / moment-saving / anti-concentration / capacity / asymptotic claim. CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-shaw-gap-drift-contrapositive] Unbounded √log gap forces unbounded prize-floor ratio under a Shaw floor (2026-06-23, g55)
+Lane: Lane-2 capstone hardening / Shaw-scale bridge contrapositive.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) in `_ShawGapDriftContrapositive.lean`, exported as `CampaignProvenIndex.prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export`:
+if `√(log(qᵢ/nᵢ))` drifts past every rescaled target and every Shaw value stays above a fixed `c>0`, then the genuine prize-floor ratios `Mᵢ/√nᵢ` also drift past every target.
+
+WHY IT MATTERS: this is the explicit failure/drift contrapositive of the exact identity `M/√n = Sh·√log`. It pins the no-go: a uniform prize-floor bound with nonvanishing Shaw value already requires controlling the open door-(iv) `√log` gap. Pure algebra; no CORE/cancellation/completion/moment/anti-concentration/capacity claim. CORE remains OPEN.

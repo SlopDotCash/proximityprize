@@ -77,6 +77,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedBaseThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstCosetCountSingleton
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGrandSynthesis
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawScaleDoorScaleBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGapDriftContrapositive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GKPhaseCoboundaryNonLinear
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AttackMarkoffCouplingNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvTannakianNonTorsionPump
@@ -8679,6 +8680,24 @@ theorem gap_family_le_prizeFloorBound_div_shawFloor_export {ι : Type*} {q n M :
     hn hnq hc hfloor hPrize
 
 #print axioms gap_family_le_prizeFloorBound_div_shawFloor_export
+
+/-- Synthesis-gap UNBOUNDED-DRIFT export: if the exact gap factors `√(log(qᵢ/nᵢ))` drift past every
+rescaled target and every Shaw value stays above a fixed positive floor `c`, then the genuine
+prize-floor ratios `Mᵢ/√nᵢ` also drift past every target.  This is the explicit contrapositive
+pressure behind the gap no-go: a constant prize-floor bound with nonvanishing Shaw value already
+requires controlling the open door-(iv) `√log` gap.  Pure algebra over `M/√n = Sh·√log`; no CORE or
+cancellation claim. -/
+theorem prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export {ι : Type*}
+    {q n M : ι → ℝ} {c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i))
+    (hgapDrift : ∀ B : ℝ, ∃ i : ι, B / c < Real.sqrt (Real.log (q i / n i))) :
+    ∀ B : ℝ, ∃ i : ι,
+      B < M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) :=
+  ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor
+    hn hnq hc hfloor hgapDrift
+
+#print axioms prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
