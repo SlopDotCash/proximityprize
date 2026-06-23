@@ -187,6 +187,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVEvenMomentPhaseVacu
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomentCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauchy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEnergyDominated
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentEnergyFloorOvershoot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -8883,6 +8884,29 @@ theorem doorIV_momentHierarchy_energy_dominated_export
     s η
 
 #print axioms doorIV_momentHierarchy_energy_dominated_export
+
+/-- Door-IV Lane-3 MOMENT-DOOR OVERSHOOT export (INTERNAL discharge of the tetrachotomy's door-(i)).
+The no-fifth-door tetrachotomy discharges the moment door (i) overshoot from the EXTERNAL SOTA exponent
+`n^{1-δ}`. This export gives the INTERNAL, proof-backed reason, using only the real-field facts:
+because every `η_b` is REAL the only objects a moment mechanism can access are the energy moments
+`E_r = Σ_c (η_c)^{2r}` (by `doorIV_momentHierarchy_energy_dominated_export`); and the energy-moment
+scale never drops below the L²/Plancherel rms floor. Concretely, for a finite real field `η`:
+(1) `E_1/card ≤ (max_c |η_c|)²` — the sup sits ABOVE rms (the wrong-side Plancherel floor); and
+(2) `(E_1/card)² ≤ E_2/card` — the normalized L⁴ energy moment dominates the squared normalized L²
+moment, i.e. the energy-moment scale a moment mechanism extracts is itself ABOVE rms. Hence the
+energy/moment route is confined to `[rms, max|η|]`: it OVERSHOOTS the prize floor `√n = rms` and is
+dominated by the sup. The moment door cannot certify a sup bound below `rms` — a kernel-proven overshoot
+from `η` being REAL, with NO SOTA exponent cited. Constraint capstone — NO CORE / cancellation /
+completion / anti-concentration / capacity claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_momentDoor_overshoots_rms_export
+    {ι : Type*} (f : ι → ℝ) (s : Finset ι) (hs : s.Nonempty) :
+    ((∑ c ∈ s, (f c) ^ (2 * 1)) / (s.card : ℝ) ≤ (s.sup' hs (fun c => |f c|)) ^ 2) ∧
+    (((∑ c ∈ s, (f c) ^ (2 * 1)) / (s.card : ℝ)) ^ 2
+        ≤ (∑ c ∈ s, (f c) ^ (2 * 2)) / (s.card : ℝ)) := by
+  simpa [ArkLib.ProximityGap.Frontier.DoorIVMomentEnergyFloorOvershoot.energyMoment] using
+    ArkLib.ProximityGap.Frontier.DoorIVMomentEnergyFloorOvershoot.momentDoor_overshoots_rms f s hs
+
+#print axioms doorIV_momentDoor_overshoots_rms_export
 
 /-- Door-IV Lane-2 FAMILY sharpened Shaw-value FLOOR export: the family companion of
 `doorIV_shawValueSuperDiagonalFloor_export`.  A uniform super-diagonal period floor `c₀·√nᵢ ≤ Mᵢ`

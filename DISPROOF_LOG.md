@@ -13704,3 +13704,24 @@ CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIn
 WHY IT MATTERS: the raw index-2 split has an exact same-sign saturation branch (`ρ=1`). A door-(iv) coset-half anti-concentration theorem must either exclude same-sign adversarial frequencies or refine the decomposition; the formal two-half split alone cannot provide any positive saving there.
 
 VERDICT: exact two-piece real-algebra no-go only. NO CORE upper bound, cancellation, completion, moment, capacity, or asymptotic claim; CORE remains OPEN.
+
+## [doorIV-moment-door-overshoots-rms-internal] the moment door (i) overshoots the prize floor INTERNALLY — no SOTA exponent (sol subagent, 2026-06-23)
+Lane: Lane-3 tetrachotomy hardening. INTERNAL, proof-backed discharge of the no-fifth-door tetrachotomy's door-(i) overshoot.
+
+GAP CLOSED: `_NoFifthDoorTetrachotomy` discharges the moment/EVT door (i)/(iii) overshoot from the EXTERNAL SOTA exponent `n^{1-δ}` (`δ≈0.011`): the literature's guaranteed per-frequency value eventually exceeds `√(n·L)`. That is a citation, not a proof from the object. Meanwhile TODAY's `_DoorIVMomentHierarchyEnergyDominated` capstone proves the entire mixed-conjugate correlator lattice collapses to the energy moments `E_r = Σ_c (η_c)^{2r}` because every `η_b` is REAL — but it was NOT wired into the tetrachotomy. Nobody connected the two.
+
+CONSTRAINT CAPSTONE (axiom-clean, real proof, NO sorry) added in `_DoorIVMomentEnergyFloorOvershoot.lean`, exported as `CampaignProvenIndex.doorIV_momentDoor_overshoots_rms_export`:
+for a finite real field `η = f` (the real period field of the negation-closed thin subgroup):
+- `normEnergyMoment_one_le_sq_max`: `E_1/card ≤ (max_c |η_c|)²` — the sup sits ABOVE rms (the wrong-side Plancherel floor; moments push the sup DOWN only to rms);
+- `sq_energyMoment_one_le_card_mul_energyMoment_two`: `(E_1)² ≤ card·E_2` (Cauchy–Schwarz, root-free);
+- `normSq_energyMoment_one_le_normEnergyMoment_two`: `(E_1/card)² ≤ E_2/card` — the normalized L⁴ energy moment dominates the squared normalized L² (rms) moment, i.e. the energy-moment scale a moment mechanism extracts is itself ABOVE rms (the `r=2` rung of power-mean);
+- `momentDoor_overshoots_rms` (HEADLINE): bundles both — the energy/moment route is confined to `[rms, max|η|]`;
+- `mixedCorrelator_is_energyMoment`: ties the overshoot to the only objects a moment mechanism can touch (every even correlator IS an energy moment).
+
+WHY IT MATTERS: the moment method's only accessible sup-certificate is the energy-moment scale `(E_r/card)^{1/(2r)}`, which never drops below the L²/Plancherel rms floor. So a moment mechanism's certified scale is ALWAYS ≥ rms = √n: it can only OVERSHOOT the prize floor, never reach below it. Combined with the proven `M ≥ rms` (`_DoorIVSupRmsGaussianSaturation.max_ge_rms`), the energy/moment route brackets `M` only from the floor `M` already sits on. This makes door-(i)'s death a STRUCTURAL consequence of `η` being real, INDEPENDENT of the SOTA exponent — replacing a literature citation with a kernel-checked proof.
+
+VERDICT: constraint capstone (composition + power-mean rung). It proves the moment door overshoots the prize floor; it gives NO CORE upper bound, NO cancellation / completion / anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentEnergyFloorOvershoot.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}). Index export `doorIV_momentDoor_overshoots_rms_export`.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
