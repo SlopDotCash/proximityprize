@@ -13665,3 +13665,12 @@ CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIn
 WHY IT MATTERS: this exposes the direct no-co-peak conclusion in the main citable index rather than only the ratio equivalence. A sub-doubling factor is exactly a certificate that the two halves do not jointly hit the marginal maximum.
 
 VERDICT: finite two-dilate bookkeeping only. It does not prove the arithmetic `√2` gate, does not close CORE, and makes no cancellation / completion / moment / capacity claim.
+## [doorIV-family-prize-constant-strictly-above-one] any valid family floor-scale constant satisfies 1 < K (2026-06-23, g55)
+Lane: Lane-3 constraint consumer, positive-direction form of the super-diagonal family lower bound.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_DoorIVPrizeConstantSuperDiagonalFloorFamily.lean`, exported as `CampaignProvenIndex.doorIV_familyPrizeConstantStrictlyAboveOne_export`:
+- `familyPrizeFloorConstant_gt_one`: over a nonempty family with positive `nᵢ`, a uniform super-diagonal floor `c₀·√nᵢ ≤ Mᵢ`, and a uniform floor-scale bound `Mᵢ ≤ K·√nᵢ`, the constant satisfies `1 < K`.
+
+WHY IT MATTERS: previous exports packaged `c₀ ≤ K ∧ 1<c₀ ∧ 1<K` and ruled out `K≤1`; this gives the direct positive certificate `1<K` in the exact form consumed by Lane-3 prose.
+
+VERDICT: PURE lower-bound bookkeeping for the prize constant. It proves no upper bound and makes no CORE / cancellation / anti-concentration / capacity claim. CORE remains OPEN.

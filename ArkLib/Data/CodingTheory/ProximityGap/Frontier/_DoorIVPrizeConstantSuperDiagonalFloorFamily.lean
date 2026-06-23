@@ -120,4 +120,14 @@ theorem not_familyPrizeFloorConstant_one [Nonempty ι]
   simpa using (not_familyPrizeFloorConstant_le_one (M := M) (n := n) (K := (1 : ℝ))
     hn hfloor le_rfl)
 
+/-- **Any valid family floor-scale prize constant is strictly above one.**  Consumer form of the
+family package: under a uniform super-diagonal floor, a uniform bound with constant `K` forces
+`1 < K`.  This records the positive-direction statement complementary to the `K ≤ 1` no-go. -/
+theorem familyPrizeFloorConstant_gt_one [Nonempty ι]
+    (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hbound : ∀ i, M i ≤ K * NoFifthDoorTetrachotomy.prizeScale (n i)) :
+    (1 : ℝ) < K :=
+  (familyPrizeFloorConstant_ge_superDiagonal_gt_one hn hfloor hbound).2.2
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
