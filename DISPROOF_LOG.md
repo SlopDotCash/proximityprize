@@ -13008,3 +13008,13 @@ sub-(log2/2)·a through a=8, so the exp-relaxed budget cannot reach the √n pri
 need a SUSTAINED Ω(1)-per-level deficit summing to ≥(log2/2)·a, which the measured worst-b descent does
 not supply at any tested thinness. No CORE upper bound, cancellation, completion, moment-saving,
 anti-concentration, or capacity claim. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
+
+### a=9 confirmation (2026-06-23, sol — same probe, extends the table)
+/tmp/aT2.c at a=9 n=512 p=467381249 (β=3.2, FULL F_p* coset-deduped worst-b):
+  deficits SCATTERED @ levels 4,5,8 (NOT a leading block); T=4, a−T=5; S=1.4853 vs (log2/2)·a=3.1192.
+Full table S vs threshold:
+  a=5 S=0.00 / 1.73   a=6 S=0.88 / 2.08   a=7 S=1.62 / 2.43   a=8 S=1.03 / 2.77   a=9 S=1.49 / 3.12
+S stays BOUNDED ~O(1) (0.88–1.62, non-monotone, no upward trend) while the linear threshold grows, so
+the SLACK (threshold−S) GROWS with a (1.20→0.80→1.74→1.63). The exp-relaxed dilation budget is walled
+with INCREASING margin; the route would need S to grow LINEARLY to (log2/2)·a, which it does not. The
+landed structure-free floor deficit_budget_ge_sqrt_scale_of_measured_sum applies at every a=5..9. CORE OPEN.
