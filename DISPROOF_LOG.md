@@ -13926,3 +13926,21 @@ VERDICT: SHARP form of the exact two-sided off-DC peak band, axiom-clean. Lower 
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakBracketSharp.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-subgroup-dc-offdc-gap] the DC / off-DC spectral gap for the thin-subgroup indicator (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 substrate — the structural separation between the DC coefficient and the off-DC peak (a genuinely different lever from the floor/ceiling/bracket arc: a RATIO, not a one-sided fence).
+
+CONTEXT: the off-DC arc floors/ceilings the off-DC peak M(mu_n) but never evaluated the DC coefficient or stated the DC/off-DC gap. By direct evaluation of the subgroup-indicator DFT at k=0 (stdAddChar 0 = 1 selects the (d:C) branch), the DC coefficient is exactly d.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupDCOffDCGap.lean`, for the order-d subgroup indicator 1_{mu_d} (d ∣ N):
+- subgroupIndicator_dc_value: `F 1_{mu_d} 0 = d` (DC coefficient = subgroup order).
+- subgroupIndicator_dc_norm: `||F 1_{mu_d} 0|| = d`.
+- offDC_peak_sq_le_gap_mul_dc_sq (HEADLINE): for any off-DC k0 != 0, `||F 1_{mu_d} k0||^2 <= ((N-d)/d)*||F 1_{mu_d} 0||^2`, i.e. M <= sqrt(N/d - 1)*||DC||. Composes the off-DC ceiling M^2 <= N*d-d^2 with ||DC||^2 = d^2 via ((N-d)/d)*d^2 = N*d-d^2.
+
+WHY IT MATTERS: in the prize regime N = q ≈ d^beta the gap factor sqrt(N/d - 1) ≈ sqrt(q/n) = n^{(beta-1)/2}, so the off-DC peak is POLYNOMIALLY below the DC coefficient. This is the honest reason CORE localizes on the off-DC frequencies (the all-frequency max is the trivially huge DC term d >> sqrt(d)). It certifies the DC/off-DC separation on the concrete object.
+
+VERDICT: structural DC/off-DC SEPARATION (an upper bound on the off-DC peak in terms of the DC coefficient), axiom-clean. The gap factor sqrt((N-d)/d) is the trivial completion gap, recorded as the upper fence, NOT a CORE bound (CORE asks for a sqrt(N/d)-times STRONGER ceiling). No cancellation, anti-concentration, moment-saving, or capacity claim. CORE remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupDCOffDCGap.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
