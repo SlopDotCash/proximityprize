@@ -13311,7 +13311,6 @@ the reduction cannot hide that obligation in asymptotic notation.
 VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
 anti-concentration / capacity claim, and NO claim the hypotheses hold. CORE remains OPEN.
 
-<<<<<<< Updated upstream
 ## [doorIV-odd-signed-moment-cauchy] the odd signed moment routes back to the energy face (2026-06-23, sol)
 Lane: Lane-1 phase-vacuity EXTENSION (closes the odd endpoint of the mixed-conjugate moment ladder).
 
@@ -13339,7 +13338,7 @@ parities; every functional in the mixed-conjugate lattice routes back to the dea
 VERDICT: STRUCTURAL constraint lemma (kernel-checked Cauchy-Schwarz). NO CORE / cancellation /
 completion / moment-saving / anti-concentration / capacity / asymptotic claim. CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
-=======
+
 ## [doorIV-synthesis-gap-inverse-consumer-family] Shaw value is prize-floor ratio divided by √log pointwise (2026-06-23, g55)
 Lane: Lane-2 capstone hardening, family inverse consumer for the exact Shaw/prize-floor normalization.
 
@@ -13354,4 +13353,3 @@ It makes the reduction chain citable in both directions without hiding the open 
 
 VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
 anti-concentration / capacity claim. CORE remains OPEN.
->>>>>>> Stashed changes
