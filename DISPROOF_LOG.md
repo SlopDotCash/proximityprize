@@ -13451,3 +13451,33 @@ VERDICT: PURE pointwise lift of established single-instance theorems. The BGK ce
 hypothesis (`Mᵢ ≤ √(nᵢ·Lᵢ)`), NOT an unconditional cancellation theorem, and is asserted at NO instance.
 NO CORE / cancellation / completion / moment / anti-concentration / capacity / asymptotic claim. CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-shawvalue-two-sided-sharp-corridor-family] capstone: the two-sided sharpened corridor [c₀/√Lᵢ, 1] at family granularity (2026-06-23, sol)
+Lane: Lane-2 capstone — weld the two sharpened family endpoints into ONE citable statement.
+
+CONTEXT: `[doorIV-shawvalue-sharpened-floor-family]` lifted the sharpened LOWER endpoint `c₀/√Lᵢ`
+(super-diagonal, `c₀ = (5/4)^{1/4}`) to the prize family; `[doorIV-shawvalue-bgk-sharp-bracket-family]`
+lifted the conditional BGK UPPER endpoint (`Sh ≤ 1`) to the family. No file imported BOTH sharpened
+family endpoints — there was no single statement trapping the family Shaw value in the two-sided
+sharpened corridor.
+
+CAPSTONE LEMMAS (axiom-clean, real proofs, NO sorry) in `_DoorIVShawValueTwoSidedSharpCorridorFamily.lean`,
+exported as `CampaignProvenIndex.doorIV_shawValueFamilyTwoSidedSharpCorridor_export`:
+- `plancherel_floor_of_superDiagonal_floor`: `c₀·√nᵢ ≤ Mᵢ` ⟹ `√nᵢ ≤ Mᵢ` (since `c₀ > 1`), so ONE
+  super-diagonal floor hypothesis consistently drives both sharpened endpoints.
+- `shawValueFamily_twoSided_sharp_corridor`: under a uniform super-diagonal floor `c₀·√nᵢ ≤ Mᵢ` AND a
+  uniform BGK-shaped ceiling `Mᵢ ≤ √(nᵢ·Lᵢ)`, every Shaw value is trapped in `[c₀/√Lᵢ, 1]` pointwise.
+- `shawValueFamily_corridor_strictly_inside_bare`: the sharpened lower end strictly exceeds the bare
+  `1/√Lᵢ`.
+- `shawValueFamily_twoSided_sharp_corridor_package`: corridor + lower-end gap + BGK width `√Lᵢ < √nᵢ`,
+  bundled into one citable family capstone.
+
+WHY IT MATTERS: the prize family's Shaw-value corridor is now kernel-checked + citable on BOTH ends in
+ONE statement — lower raised from bare `1/√Lᵢ` to `c₀/√Lᵢ`, upper lowered from trivial `√(nᵢ/Lᵢ)` to the
+BGK ceiling `1`. The open prize, in family Shaw-value language, is to collapse `[c₀/√Lᵢ, 1]` to an
+absolute constant.
+
+VERDICT: PURE conjunction of the two established sharpened family endpoints. The BGK ceiling is a
+SUPPLIED hypothesis (`Mᵢ ≤ √(nᵢ·Lᵢ)`), NOT unconditional cancellation, asserted at NO instance. NO CORE /
+cancellation / completion / moment / anti-concentration / capacity / asymptotic claim. CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.

@@ -190,6 +190,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEner
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSharpCorridorFamily
 
 set_option linter.style.longFile 9000
 
@@ -8866,5 +8867,22 @@ theorem doorIV_shawValueFamilyBGKSharpWidth_export {ι : Type*} {n L : ι → �
     ShawValueBGKBracket.shawValueFamily_sharp_width_lt_trivial hL0 hLn i⟩
 
 #print axioms doorIV_shawValueFamilyBGKSharpWidth_export
+
+/-- Door-IV Lane-2 CAPSTONE export: the TWO-SIDED sharpened Shaw-value corridor `[c₀/√Lᵢ, 1]` at family
+granularity.  Welds the sharpened LOWER endpoint (super-diagonal floor `c₀/√Lᵢ`) and the conditional
+BGK UPPER endpoint (`≤ 1`) into one statement: under a uniform super-diagonal floor `c₀·√nᵢ ≤ Mᵢ` and a
+uniform BGK-shaped ceiling `Mᵢ ≤ √(nᵢ·Lᵢ)`, every Shaw value is trapped in `[c₀/√Lᵢ, 1]` — strictly
+inside the bare `[1/√Lᵢ, √(nᵢ/Lᵢ)]`.  Conditional on the supplied BGK ceiling; CORE not discharged. -/
+theorem doorIV_shawValueFamilyTwoSidedSharpCorridor_export {ι : Type*} {M n L : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hL : ∀ i, 0 < L i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hceil : ∀ i, M i ≤ ShawValueCapstone.prizeScale (n i) (L i)) :
+    ∀ i, ShawValueCapstone.superDiagonalFloorConst / Real.sqrt (L i)
+          ≤ ShawValueCapstone.shawValue (M i) (n i) (L i)
+      ∧ ShawValueCapstone.shawValue (M i) (n i) (L i) ≤ 1 :=
+  DoorIVShawValueTwoSidedSharpCorridorFamily.shawValueFamily_twoSided_sharp_corridor
+    hn hL hfloor hceil
+
+#print axioms doorIV_shawValueFamilyTwoSidedSharpCorridor_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
