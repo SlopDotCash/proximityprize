@@ -167,6 +167,36 @@ theorem shawValue_family_eq_prizeFloorRatio_div_gap {ι : Type*} {q n M : ι →
   intro i
   exact shawValue_eq_prizeFloorRatio_div_gap (q i) (n i) (M i) (hn i) (hnq i) (hL i)
 
+/-- **A prize-floor bound only gives Shaw-value control after dividing by the exact gap.**  This is
+the one-sided bound form of `shawValue_eq_prizeFloorRatio_div_gap`: if the genuine square-root ratio
+`M / prizeScale n` is at most `B`, then the Shaw value is at most
+`B / √(log(q/n))` under positive logarithmic thinness.
+
+This is deliberately an algebraic normalization statement, not a CORE/cancellation claim: a
+prize-floor bound transports into the Shaw normalization by paying the displayed `√log` denominator,
+while the forward direction pays the same factor as a multiplier. -/
+theorem shawValue_le_prizeFloorBound_div_gap (q n M B : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hL : 0 < Real.log (q / n))
+    (hPrize : M / prizeScale n ≤ B) :
+    shawValue q n M ≤ B / Real.sqrt (Real.log (q / n)) := by
+  rw [shawValue_eq_prizeFloorRatio_div_gap q n M hn hnq hL]
+  exact div_le_div_of_nonneg_right hPrize (Real.sqrt_nonneg _)
+
+/-- **Family form: prize-floor bounds transport to Shaw bounds with the pointwise gap denominator.**
+For a positive-thinness family, a uniform genuine square-root ratio bound `Mᵢ/√nᵢ ≤ B` implies the
+pointwise Shaw-value envelope `Shᵢ ≤ B / √(log(qᵢ/nᵢ))`.
+
+This is the inverse one-sided companion to `prizeFloorRatio_family_le_of_uniformShawBound`; together
+the two lemmas make the exact `√log` conversion between the two normalizations explicit. -/
+theorem shawValue_family_le_prizeFloorBound_div_gap {ι : Type*} {q n M : ι → ℝ} {B : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i)
+    (hL : ∀ i, 0 < Real.log (q i / n i))
+    (hPrize : ∀ i, M i / prizeScale (n i) ≤ B) :
+    ∀ i, shawValue (q i) (n i) (M i) ≤ B / Real.sqrt (Real.log (q i / n i)) := by
+  intro i
+  exact shawValue_le_prizeFloorBound_div_gap (q i) (n i) (M i) B (hn i) (hnq i) (hL i)
+    (hPrize i)
+
 /-- **A prize-floor bound plus a positive Shaw floor forces the gap itself to be bounded.**  If
 `c ≤ shawValue q n M` with `c > 0`, and the genuine prize-floor ratio is bounded by `B`, then the
 synthesis gap factor must obey `√(log(q/n)) ≤ B/c`.  This is the inverse no-go form of the bridge:
@@ -217,3 +247,5 @@ end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_family_le_prizeFloorBound_div_shawFloor
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_eq_prizeFloorRatio_div_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_eq_prizeFloorRatio_div_gap
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_le_prizeFloorBound_div_gap
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_le_prizeFloorBound_div_gap
