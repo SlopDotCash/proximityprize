@@ -174,6 +174,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceOffDiagSpikeCost
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceTowerLogConvex
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceTowerRatioSpectralCap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVUniformDeficitThreshold
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -7992,5 +7994,26 @@ theorem doorIV_dilationDeficitBudget_export (M : ℕ → ℝ) (δ : ℕ → ℝ)
     M δ hδ0 hδ1 hM hstep a
 
 #print axioms doorIV_dilationDeficitBudget_export
+
+/-- Door-IV Lane-3 uniform-deficit THRESHOLD export: for a uniform per-level coherence deficit `δ*`,
+the EXACT telescoped per-level factor `2·(1−δ*)` reaches the prize per-level threshold `√2` iff
+`δ* ≥ (2−√2)/2` — the SAME constant the weld named.  Unifies the deficit budget with the per-level
+weld threshold.  Constraint lemma; CORE not discharged. -/
+theorem doorIV_uniformDeficitReachesSqrt2_iff_export (δstar : ℝ) :
+    2 * (1 - δstar) ≤ Real.sqrt 2 ↔ δstar ≥ (2 - Real.sqrt 2) / 2 :=
+  ProximityGap.Frontier.DoorIVUniformDeficitThreshold.uniform_deficit_reaches_sqrt2_iff δstar
+
+/-- Door-IV Lane-3 sublinear-budget CONVERSE export: if the total deficit budget is sub-average
+`S ≤ ε·a` with `ε < (log 2)/2`, the exp budget bound stays at/above the `√(2^a)·M₀` Plancherel scale:
+`(√2)^a·M₀ ≤ 2^a·exp(−S)·M₀`.  So the exp-relaxed dilation budget cannot witness a `√n` bound unless
+the average per-level deficit reaches `(log 2)/2` (a sustained, linear-in-`a` floor).  Constraint lemma. -/
+theorem doorIV_deficitBudgetSublinearFloor_export {ε S M0 : ℝ} (a : ℕ)
+    (hε : ε < Real.log 2 / 2) (hS : S ≤ ε * a) (hM0 : 0 ≤ M0) :
+    (Real.sqrt 2) ^ a * M0 ≤ 2 ^ a * Real.exp (-S) * M0 :=
+  ProximityGap.Frontier.DoorIVDeficitBudgetSublinearFloor.deficit_budget_ge_sqrt_scale_of_sublinear
+    a hε hS hM0
+
+#print axioms doorIV_uniformDeficitReachesSqrt2_iff_export
+#print axioms doorIV_deficitBudgetSublinearFloor_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
