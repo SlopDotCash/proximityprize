@@ -8432,6 +8432,31 @@ theorem doorIV_perLevelFactorPointwiseSqrtTwoTelescope_export (M c : ℕ → ℝ
 
 #print axioms doorIV_perLevelFactorPointwiseSqrtTwoTelescope_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR obstruction export: if a finite product of nonnegative measured
+rung factors exceeds the `√2` product budget, then some individual rung is strictly super-`√2`.  Thus
+finite product-gate failure is locally witnessed; it is not hidden in a mean statistic. -/
+theorem doorIV_perLevelFactorProductFailureLocalizes_export {c : ℕ → ℝ} {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k)
+    (hprod : (Real.sqrt 2) ^ a < ∏ k ∈ Finset.range a, c k) :
+    ∃ k ∈ Finset.range a, Real.sqrt 2 < c k :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_factor_gt_sqrtTwo_of_factorProduct_gt
+    hc0 hprod
+
+#print axioms doorIV_perLevelFactorProductFailureLocalizes_export
+
+/-- Door-IV Lane-3 PER-LEVEL FACTOR counterexample-localization export: any finite top-level excess
+over the `√2` telescope budget forces an explicitly bad dyadic rung `√2 < c_k`.  This pins the exact
+local obstruction the door-(iv) arithmetic must rule out or compensate. -/
+theorem doorIV_perLevelFactorCounterexampleHasSuperSqrtTwoRung_export (M c : ℕ → ℝ) {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k) (hM0 : 0 < M 0)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k)
+    (hcounter : (Real.sqrt 2) ^ a * M 0 < M a) :
+    ∃ k ∈ Finset.range a, Real.sqrt 2 < c k :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_super_sqrtTwo_factor_of_telescope_counterexample
+    M c hc0 hM0 hstep hcounter
+
+#print axioms doorIV_perLevelFactorCounterexampleHasSuperSqrtTwoRung_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
 factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
 identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.

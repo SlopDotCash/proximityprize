@@ -136,6 +136,51 @@ theorem telescope_of_pointwise_sqrtTwo_factors (M c : ℕ → ℝ) {a : ℕ}
     M a ≤ (Real.sqrt 2) ^ a * M 0 := by
   exact telescope_of_factorProduct_le M c hc0 hM0 (factorProduct_le_sqrtTwo_pow hc0 hc2) hstep
 
+/-- **Failure of the finite `√2` product gate is localized at a bad rung.**  If the product of the
+nonnegative measured per-level factors exceeds `(√2)^a`, then at least one finite rung has factor
+strictly bigger than `√2`.  This is the exact obstruction certificate for a finite telescope: any
+failure of the product gate must be witnessed locally, rather than hidden in an average. -/
+theorem exists_factor_gt_sqrtTwo_of_factorProduct_gt {c : ℕ → ℝ} {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k)
+    (hprod : (Real.sqrt 2) ^ a < ∏ k ∈ Finset.range a, c k) :
+    ∃ k ∈ Finset.range a, Real.sqrt 2 < c k := by
+  by_contra hnone
+  have hall : ∀ k ∈ Finset.range a, c k ≤ Real.sqrt 2 := by
+    intro k hk
+    exact le_of_not_gt (by
+      intro hgt
+      exact hnone ⟨k, hk, hgt⟩)
+  have hle := factorProduct_le_sqrtTwo_pow (c := c) (a := a) hc0 hall
+  linarith
+
+/-- **A top-level excess over the `√2` telescope forces product-gate failure.**  If the top level is
+strictly larger than `(√2)^a M(0)` while the variable-factor telescope already bounds it by
+`(∏ c_k) M(0)` and the base is positive, then the finite product of the measured factors must exceed
+`(√2)^a`.  No arithmetic estimate is asserted; this only localizes where a counterexample must live. -/
+theorem factorProduct_gt_of_telescope_counterexample {M c : ℕ → ℝ} {a : ℕ}
+    (hM0 : 0 < M 0)
+    (htelescope : M a ≤ (∏ k ∈ Finset.range a, c k) * M 0)
+    (hcounter : (Real.sqrt 2) ^ a * M 0 < M a) :
+    (Real.sqrt 2) ^ a < ∏ k ∈ Finset.range a, c k := by
+  by_contra hnot
+  have hprod_le : (∏ k ∈ Finset.range a, c k) ≤ (Real.sqrt 2) ^ a := le_of_not_gt hnot
+  have hmul : (∏ k ∈ Finset.range a, c k) * M 0 ≤ (Real.sqrt 2) ^ a * M 0 := by
+    exact mul_le_mul_of_nonneg_right hprod_le (le_of_lt hM0)
+  linarith
+
+/-- **A finite counterexample to the `√2` telescope has a local super-`√2` rung.**  Combining the
+variable-factor telescope with the preceding two lemmas: if `M(a)` beats the `√2` tower budget, then
+some measured rung in `0,…,a-1` satisfies `√2 < c_k`.  This is a Lane-3 constraint on the recursion:
+the missing door-(iv) arithmetic input is exactly to rule out (or compensate) those super-`√2` rungs. -/
+theorem exists_super_sqrtTwo_factor_of_telescope_counterexample (M c : ℕ → ℝ) {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k) (hM0 : 0 < M 0)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k)
+    (hcounter : (Real.sqrt 2) ^ a * M 0 < M a) :
+    ∃ k ∈ Finset.range a, Real.sqrt 2 < c k := by
+  have ht := telescope_variable_perLevelFactors M c hc0 hstep a
+  have hprod := factorProduct_gt_of_telescope_counterexample (M := M) (c := c) hM0 ht hcounter
+  exact exists_factor_gt_sqrtTwo_of_factorProduct_gt (c := c) (a := a) hc0 hprod
+
 /-- **Prize budget from the normalized `√2` per-level factor.**  This restates the existing corrected
 x-gate capstone in the per-level-factor language: once the single open arithmetic gate supplies
 `LevelRatioBoundNZ … √2`, the telescope and base estimate yield `C√(nL)`.  It deliberately contains no
@@ -161,4 +206,7 @@ end ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_factorProduct_le
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.factorProduct_le_sqrtTwo_pow
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_pointwise_sqrtTwo_factors
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_factor_gt_sqrtTwo_of_factorProduct_gt
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.factorProduct_gt_of_telescope_counterexample
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_super_sqrtTwo_factor_of_telescope_counterexample
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor

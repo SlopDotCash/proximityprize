@@ -1,3 +1,16 @@
+## [doorIV-per-level-factor-super-sqrt2-localization] finite sqrt-two telescope failure must have a local super-sqrt2 rung (2026-06-23, g55)
+
+Lane: door-(iv) Lane-3, extending the per-level-factor algebra around the measured two-dilate recursion `c_k = M(k+1)/M(k)`. The prior bricks proved the variable product telescope and the pointwise `√2` gate. This entry locks the contrapositive obstruction: a finite failure of the `√2` telescope cannot be hidden in a mean or product statistic.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPerLevelFactorSubTwo.lean`, new theorems:
+- `exists_factor_gt_sqrtTwo_of_factorProduct_gt`: if nonnegative finite rung factors satisfy `(√2)^a < ∏_{k<a} c_k`, then some `k<a` has `√2 < c_k`.
+- `factorProduct_gt_of_telescope_counterexample`: if `M(a)` exceeds `(√2)^a M(0)` while the measured variable-factor telescope bounds `M(a) ≤ (∏ c_k)M(0)` and `M(0)>0`, then the finite product gate fails.
+- `exists_super_sqrtTwo_factor_of_telescope_counterexample`: combining the two, any finite top-level counterexample to the `√2` telescope has a local super-`√2` rung.
+
+Exports added to `CampaignProvenIndex`: `doorIV_perLevelFactorProductFailureLocalizes_export` and `doorIV_perLevelFactorCounterexampleHasSuperSqrtTwoRung_export`.
+
+VERDICT: the door-(iv) per-level obstruction is local at finite height: a failure of the prize-shaped `√2` recursion must exhibit at least one explicit super-`√2` dyadic rung. This does NOT prove the arithmetic `√2` gate, does NOT claim CORE, and does NOT use moments/completion/capacity. It only pins the exact finite place where any counterexample to the per-level telescope must live.
+
 ## [doorIV-coset-resonator-route-localized] the coset-multiplicative (Montgomery loglog) resonator route reduces ENTIRELY to the numerator off-diagonal — kernel-checked (2026-06-22, sol)
 
 Lane: door-(iv) Lane 2/3 capstone. The coset-multiplicative resonator route feeds weights
