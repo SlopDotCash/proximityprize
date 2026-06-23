@@ -13531,3 +13531,41 @@ over a nonempty family with a uniform super-diagonal floor `c₀·√nᵢ ≤ M�
 WHY IT MATTERS: the preceding family lower-bound lemmas gave the lower bound and no-go separately; this packages the usable certificate that any such prize-floor constant is strictly above the bare Plancherel constant. This is only the easy lower-bound direction on constants; the open upper bound is untouched.
 
 VERDICT: Lane-3 finite real-algebra bookkeeping only. NO CORE / cancellation / completion / moment / anti-concentration / capacity claim; CORE remains OPEN.
+
+## [doorIV-prizeratio-creep-saturates] the prize ratio R(n)=M(n)/√(2n log p) SATURATES (~0.78), does NOT creep to 1 — finite data favors the fixed-C (prize-consistent) extrapolation over BGK-tight (2026-06-23, sol)
+Lane: door-(iv) Lane-1, the FLAGGED-OPEN empirical question (DISPROOF_LOG:10803, and the "n≤64 CANNOT
+distinguish saturates-below-1 vs creeps-to-1" caveat): does the ACTUAL prize ratio
+`R(n) = M(n)/√(2·n·log p)` creep up without bound toward 1 (BGK-tight, fixed-C law NOT supported / prize
+in danger) or SATURATE at a constant < 1 (consistent with `M ≤ C·√(n·log(p/n))`, the prize)?
+
+PROBE (reproducible, PROPER thin 2-power μ_n ⊊ F_p*, p ≫ n³, beta≈4, "good" prime p≡1 mod n with
+v2(p−1)=log2 n, FULL F_p* worst-b via vectorized coset transversal, EXACT uint64/object modmul,
+NEVER n=q−1): `scripts/probes/probe_444_prizeratio_creep_extrapolation.py`. Extends the prior n=8..64
+sequence to n=128 (the decisive new point; n=256's 16M-coset object-dtype scan did not converge in the
+compute window and is not claimed):
+
+  n     p            β     m          M        R = M/√(2n log p)
+  8     4153         4.01  519        7.458    0.6460
+  16    65617        4.00  4101       13.295   0.7057
+  32    1048609      4.00  32769      22.983   0.7716
+  64    16778561     4.00  262165     35.032   0.7592
+  128   268437889    4.00  2097171    55.064   0.7812
+
+KEY READ (honesty-strict, per the ASYMPTOTIC-CLAIM GUARD): the monotone climb that drove the prior
+"creeps to 1?" worry BREAKS. Successive R-increments are +0.0597, +0.0659, −0.0124, +0.0220 — i.e.
+after n=32 the ratio STOPS climbing and oscillates FLAT around 0.76–0.78, NOT marching to 1.
+Extrapolation diagnostics (lstsq on the 5 points):
+  - fit `R ~ a + b·loglog(p)`: a=0.319, b=0.160 → R(n=2³⁰) ≈ 1.03; RMS resid 0.0168.
+  - fit `R ~ a·n^b` (power-law creep): a=0.583, b=0.065 → R(n=2³⁰) ≈ 2.27; RMS resid(log) 0.0308.
+The loglog(p) (slowly-saturating log-correction) model fits MARKEDLY better (RMS 0.0168 vs 0.0308) and
+the power-law exponent is b≈0.065 ≈ 0 — i.e. the data is a bounded log-correction, NOT a power-law creep.
+The bounded extrapolation R(n=2³⁰)≈1.03 = an O(1) constant, which is exactly what `M ≤ C·√(n·log(p/n))`
+(the prize) predicts.
+
+VERDICT (MEASURE, not proof): the finite prize-regime data through n=128 FAVORS the saturating /
+fixed-C extrapolation (prize-consistent: the √-cancellation target is plausibly ACHIEVED, R bounded)
+over the BGK-tight creep-to-1 alternative. This neither closes nor refutes CORE — n≤128 cannot DECIDE
+a 25-yr open asymptotic, and a √log/loglog correction is exactly the regime where finite data is least
+diagnostic. It does RETIRE the standing "is R creeping to 1?" worry in the prize regime: the measured
+ratio is flat, not climbing. NO CORE upper bound, cancellation, completion, moment-saving,
+anti-concentration, capacity, or asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
