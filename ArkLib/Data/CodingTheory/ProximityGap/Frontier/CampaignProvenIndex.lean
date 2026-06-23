@@ -162,6 +162,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentTele
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationTowerSaturates
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationTowerConcrete
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPooledTailConstantBoundedBelow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBParticipationGeneric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBCoherentImbalance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBImbalanceBand
@@ -205,7 +206,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSh
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
-set_option linter.style.longFile 9700
+set_option linter.style.longFile 9900
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -9667,5 +9668,36 @@ theorem doorIV_dilation_tower_overshoots_prizeScale_export {K M0 : ℝ} {a : ℕ
     hM0 hover
 
 #print axioms doorIV_dilation_tower_overshoots_prizeScale_export
+
+/-- Door-IV Lane-2/3 pooled-tail threshold export: a positive uniform lower bound `c₀` on the pooled
+extreme-tail constant gives a uniform prize-scale inflation factor `1 / sqrt c₀`.  This is the citable
+one-direction reduction from a bounded-below pooled tail constant to the prize-shaped sup scale.  The
+uniform lower bound itself remains the open door-(iv) object. -/
+theorem doorIV_pooledTail_boundedBelow_gives_prizeScale_export
+    (m c c₀ : ℝ) (hc₀ : 0 < c₀) (hcc : c₀ ≤ c) (hm : 1 ≤ m) :
+    Real.sqrt (Real.log m / c) ≤ (1 / Real.sqrt c₀) * Real.sqrt (Real.log m) :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.boundedBelow_tailConst_gives_prize_scale
+    m c c₀ hc₀ hcc hm
+
+#print axioms doorIV_pooledTail_boundedBelow_gives_prizeScale_export
+
+/-- Door-IV Lane-1/2 pooled-tail probe anchor export: the rational measured pooled-tail model
+`11/20` is strictly below the Gaussian-modulus reference constant `1`, recording the heavier-than-iid
+pooled extreme tail as a kernel-checked numeric comparison. -/
+theorem doorIV_pooledTail_heavier_than_gaussian_export :
+    _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst <
+      _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.gaussianModulusTailConst :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.pooled_tailConst_heavier_than_gaussian
+
+#print axioms doorIV_pooledTail_heavier_than_gaussian_export
+
+/-- Door-IV Lane-1/2 pooled-tail positivity export: the same rational measured pooled-tail model is
+strictly positive, so its associated prize-scale inflation factor is finite.  Numeric probe anchor only;
+it does not prove a uniform lower bound for the real family. -/
+theorem doorIV_measuredPooledTailConst_pos_export :
+    0 < _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst_pos
+
+#print axioms doorIV_measuredPooledTailConst_pos_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

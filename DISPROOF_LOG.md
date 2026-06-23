@@ -14170,6 +14170,7 @@ VERDICT: citable no-sqrt-saving arithmetic for the dyadic-recursion route only. 
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
 
+<<<<<<< Updated upstream
 ## [doorIV-pooled-tail-shape-n-independent] REFINEMENT of pooled-tail-constant lock: c(t) is n-independent, t-decreasing (2026-06-23, sol)
 
 Refines the immediately-preceding pooled-tail entry. Followup probe of the LOCAL tail exponent
@@ -14227,3 +14228,18 @@ PURE phase-alignment / EVT effect on a nearly-equidistributed set, NOT a spacing
 the cancellation cannot be extracted from spacing structure — it lives in the pooled phase-alignment tail
 (the c₀ object of the pooled-tail lock). No new Lean (empirical refuted-lever). No completion/moment/
 anti-concentration-beats-energy claim. CORE stays OPEN; door (iv) the only live door.
+=======
+## [doorIV-pooled-tail-constant-exports] stable exports for pooled tail constant reduction (g55, 2026-06-23)
+Lane: Door (iv), Lane 1/2 citable indexing of the pooled extreme-tail open object.
+
+CONSTRAINT EXPORTS added to `CampaignProvenIndex`:
+- `doorIV_pooledTail_boundedBelow_gives_prizeScale_export`: a positive uniform lower bound on the pooled tail constant gives a bounded prize-scale inflation factor `1/sqrt(c0)`.
+- `doorIV_pooledTail_heavier_than_gaussian_export`: the rational measured model `11/20` is strictly below the Gaussian-modulus reference constant `1`.
+- `doorIV_measuredPooledTailConst_pos_export`: the same rational measured model is strictly positive.
+
+WHY IT MATTERS: the concurrent pooled-tail file localizes door (iv) to the scalar pooled extreme-tail constant. These exports make the reduction and numeric probe anchors citable from the permanent index while preserving the honest status: the uniform lower bound itself is still open.
+
+VERDICT: stable export/indexing only. No proof of a uniform tail lower bound, no CORE upper bound, no cancellation, no completion, no moment-saving, and no capacity claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
+>>>>>>> Stashed changes
