@@ -13655,3 +13655,13 @@ CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIn
 WHY IT MATTERS: the compensation law already had one-bad-rung, two-bad-rung, super-budget-block, and scaled-uncompensated exports. This wires the unscaled uncompensated block no-go into the citable index too: a bad block cannot be ignored unless some other block pays a strict deficit.
 
 VERDICT: finite bookkeeping constraint only. It does not prove the arithmetic `√2` gate, does not close CORE, and makes no cancellation / completion / moment / capacity claim.
+
+## [doorIV-per-level-factor-no-copeak-export] sub-doubling normalized factors certify no co-peak (2026-06-23, g55)
+Lane: door-(iv) Lane-3, citable consumer for the per-level-factor sub-two obstruction.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_perLevelFactorNoCopeak_export`: if a two-dilate frequency is normalized as `twoDilate = c·Smax` with `c < 2` and `Smax>0`, then the two-dilate sum is strictly below the perfect joint extreme `2·Smax`.
+
+WHY IT MATTERS: this exposes the direct no-co-peak conclusion in the main citable index rather than only the ratio equivalence. A sub-doubling factor is exactly a certificate that the two halves do not jointly hit the marginal maximum.
+
+VERDICT: finite two-dilate bookkeeping only. It does not prove the arithmetic `√2` gate, does not close CORE, and makes no cancellation / completion / moment / capacity claim.

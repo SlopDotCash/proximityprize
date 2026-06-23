@@ -8417,6 +8417,20 @@ theorem doorIV_perLevelFactorSubTwo_export
 
 #print axioms doorIV_perLevelFactorSubTwo_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR no-co-peak export: once a two-dilate frequency is normalized
+as `twoDilate = c·Smax` with `c < 2`, it is strictly below the perfect joint marginal extreme
+`2·Smax`.  This is a citable consumer form of the sub-doubling factor certificate; it asserts no
+arithmetic `√2` gate and no CORE upper bound. -/
+theorem doorIV_perLevelFactorNoCopeak_export
+    {ι : Type*} {s : ι → ℝ} {σ : ι → ι} {Smax c : ℝ} {b : ι}
+    (hc : c < 2) (hSmax : 0 < Smax)
+    (hfactor : ProximityGap.Frontier.DoorIVTwoDilateNoJointExtreme.twoDilate s σ b = c * Smax) :
+    s b + s (σ b) < 2 * Smax :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.no_copeak_of_perLevelFactor_lt_two
+    hc hSmax hfactor
+
+#print axioms doorIV_perLevelFactorNoCopeak_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR product-telescope export: a variable list of measured dyadic
 multipliers controls the top level by their product.  This is pure bookkeeping for the per-level factor
 probe: if `M(k+1) ≤ c_k M(k)` and `∏ c_k ≤ B`, then `M(a) ≤ B M(0)`.  No empirical product bound,
