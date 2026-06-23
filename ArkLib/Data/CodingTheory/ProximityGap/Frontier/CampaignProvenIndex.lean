@@ -76,6 +76,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPerLevelFactorSubTw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedBaseThresholdConcrete
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstCosetCountSingleton
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGrandSynthesis
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawScaleDoorScaleBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GKPhaseCoboundaryNonLinear
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AttackMarkoffCouplingNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvTannakianNonTorsionPump
@@ -8500,5 +8501,27 @@ theorem doorIV_perLevelFactorSqrtTwoPrizeBudget_export
     hr h_dim h_base hC hL hn
 
 #print axioms doorIV_perLevelFactorSqrtTwoPrizeBudget_export
+
+/-- Synthesis-scale BRIDGE export: the reduction-half normalization scale `shawScale q n` is the
+door-half BGK scale at the concrete thinness index `L = log(q/n)`, so the two `_ShawGrandSynthesis`
+halves live over the SAME scale once the index is named.  Pure definitional identity; no CORE claim. -/
+theorem shawScale_eq_bgkScale_export (q n : ℝ) :
+    ProximityGap.Frontier.ShawValueCapstone.shawScale q n
+      = ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.bgkScale n (Real.log (q / n)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_eq_bgkScale q n
+
+#print axioms shawScale_eq_bgkScale_export
+
+/-- Synthesis-gap CLOSED-FORM export: in the prize regime `q > n > 0`, the reduction target
+`shawScale q n` exceeds the genuine prize floor `prizeScale n = √n` by EXACTLY the factor
+`√(log(q/n))` — the kernel-checked form of `_ShawGrandSynthesis`'s prose "open `√L`-gap".  Asserts
+NOTHING about whether the factor is bounded; absorbing it is exactly the open door-(iv) problem. -/
+theorem shawScale_div_prizeScale_export (q n : ℝ) (hn : 0 < n) (hnq : n < q) :
+    ProximityGap.Frontier.ShawValueCapstone.shawScale q n
+      / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
+      = Real.sqrt (Real.log (q / n)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale_of_pos_lt q n hn hnq
+
+#print axioms shawScale_div_prizeScale_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

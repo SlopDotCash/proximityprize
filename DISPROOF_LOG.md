@@ -13204,3 +13204,31 @@ then the remaining product must be strictly below `(√2)^b`.  This extends the 
 compensation lemma from a single obstruction to a clustered obstruction.  Scope: finite real-algebra
 bookkeeping only; no empirical product bound, no arithmetic `√2` gate, no moment/completion route, and
 no CORE upper-bound claim.
+
+## [doorIV-synthesis-scale-bridge] the reduction/door-half scale gap is EXACTLY √(log(q/n)) (2026-06-23, sol)
+Lane: Lane-2 capstone hardening — close the one bookkeeping rung `_ShawGrandSynthesis` left as prose.
+
+CONTEXT: `_ShawGrandSynthesis` conjoins the reduction half (normalized by `shawScale q n = √(n·log(q/n))`,
+`_ShawValueCapstone`) with the no-fifth-door half (separating `prizeScale n = √n` from
+`bgkScale n L = √(n·L)`, `_NoFifthDoorTetrachotomy`), but explicitly states it "does NOT identify" the
+two scales: "Identifying the two scales is exactly the open `√L`-gap that door (iv) must close, and
+which this file makes no claim about." No file imported BOTH halves' scale defs and tied them together;
+the synthesis's "open `√L`-gap" lived only as narrative, not as a kernel quantity.
+
+BRIDGE LEMMAS (axiom-clean, real proofs, NO sorry) in `_ShawScaleDoorScaleBridge.lean`,
+exported as `CampaignProvenIndex.{shawScale_eq_bgkScale_export, shawScale_div_prizeScale_export}`:
+- `shawScale_eq_bgkScale`: `shawScale q n = bgkScale n (log(q/n))` (definitional `rfl`) — the two
+  synthesis halves live over the SAME scale once the thinness index `L = log(q/n)` is named.
+- `shawScale_div_prizeScale{,_of_pos_lt}`: in the prize regime `q > n > 0`, the reduction target
+  exceeds the genuine prize floor by EXACTLY `shawScale q n / prizeScale n = √(log(q/n))` — the
+  kernel-checked closed form of the synthesis's prose "√L-gap" (instance of `bgkScale_div_prizeScale`
+  under the identification). Asserts NOTHING about the factor being bounded.
+- `prizeScale_lt_shawScale_of_one_lt_log`: in the thin regime `log(q/n) > 1` (q/n > e) the gap is
+  genuinely strict (`prizeScale n < shawScale q n`). HONEST hypothesis: the strict gap needs `L > 1`,
+  NOT merely `n < q` (`√n < √(n·L)` ⟺ `L > 1`); at `n < q ≤ e·n` the factor `√(log(q/n)) ≤ 1` and the
+  scales can coincide/invert.
+
+VERDICT: PURE definitional/algebraic bookkeeping — renders the synthesis's open gap as a single
+kernel-checked quantity `√(log(q/n))`. NO new mathematical content: no CORE / cancellation / completion
+/ moment / anti-concentration / capacity / asymptotic claim, and NO claim the gap factor is bounded
+(absorbing it IS the open door-(iv) problem). CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
