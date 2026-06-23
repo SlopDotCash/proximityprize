@@ -576,6 +576,33 @@ theorem floorUnit_unconditional_bracket {M n : ℝ} (hn : 0 < n)
   ⟨superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor hn hfloor,
     floorPrizeRatio_le_sqrtN_of_trivial_ceiling hn hceil⟩
 
+/-- **The conditional `√L` ceiling sits strictly below the unconditional `√n` ceiling.**  In the
+prize regime `L = log(p/n) ≪ n`, in particular `1 < L < n`, the BGK/Shaw thinness factor satisfies
+`√L < √n`.  This is the kernel-checked content of "a classical door strictly improves the
+unconditional cardinality ceiling but cannot reach an absolute constant": the door buys the gap
+`[√L, √n)` for free, yet `√L → ∞` as `n → ∞` (the open `√log` overshoot), so no classical door caps
+the floor-ratio at an absolute `C`. -/
+theorem sqrtL_lt_sqrtN_of_lt {L n : ℝ} (hL : 1 < L) (hLn : L < n) :
+    Real.sqrt L < Real.sqrt n :=
+  Real.sqrt_lt_sqrt (le_of_lt (lt_trans one_pos hL)) hLn
+
+/-- **Strict floor-unit corridor nesting `[c₀, √L] ⊊ [c₀, √n]` in the prize regime.**  Combines the
+proven super-diagonal floor lower end `c₀ ≤ M/√n` (shared by both corridors) with the strict ceiling
+separation `√L < √n` (`1 < L < n`): the conditional Shaw/BGK floor-unit corridor `[c₀, √L]` is
+contained in, and has a strictly lower ceiling than, the unconditional bracket `[c₀, √n]`.  This locks
+the decomposition of the prize gap: the classical door shaves `[√L, √n]` off the ceiling for free,
+leaving the residual `[c₀, √L]` (still unbounded as `n → ∞`) as the door-(iv)-only frontier. -/
+theorem floorUnit_corridor_strict_nesting {M n L : ℝ} (hn : 0 < n)
+    (hL : 1 < L) (hLn : L < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
+    (hceilL : M ≤ NoFifthDoorTetrachotomy.bgkScale n L) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ floorPrizeRatio M n ∧
+      floorPrizeRatio M n ≤ Real.sqrt L ∧
+      Real.sqrt L < Real.sqrt n :=
+  ⟨superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor hn hfloor,
+    floorPrizeRatio_le_sqrtL_of_bgk_ceiling hn hceilL,
+    sqrtL_lt_sqrtN_of_lt hL hLn⟩
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.one_le_prizeFloorConstant_of_plancherel_floor
@@ -584,4 +611,6 @@ end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorRatio_bracketed_prize_iff_and_doorIV_only
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio_le_sqrtN_of_trivial_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sqrtL_lt_sqrtN_of_lt
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorUnit_corridor_strict_nesting
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket

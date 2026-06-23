@@ -8125,6 +8125,25 @@ theorem doorIV_floorUnitUnconditionalBracket_export {M n : ℝ} (hn : 0 < n)
 
 #print axioms doorIV_floorUnitUnconditionalBracket_export
 
+/-- Door-IV Lane-2 STRICT floor-unit corridor nesting export `[c₀,√L] ⊊ [c₀,√n]` in the prize
+regime `1 < L < n`.  Locks the gap decomposition behind the unconditional bracket
+(`doorIV_floorUnitUnconditionalBracket_export`): with the shared proven super-diagonal floor lower end
+`c₀ ≤ M/√n` and the classical-door BGK ceiling `M ≤ √(n·L)` giving the conditional ceiling `M/√n ≤ √L`,
+the strict separation `√L < √n` (`L < n`) certifies that a classical door shaves `[√L, √n]` off the
+unconditional ceiling for free, leaving the residual `[c₀, √L]` (still unbounded as `√L = √log(p/n) → ∞`)
+as the door-(iv)-only frontier.  CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_floorUnitCorridorStrictNesting_export {M n L : ℝ} (hn : 0 < n)
+    (hL : 1 < L) (hLn : L < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
+    (hceilL : M ≤ NoFifthDoorTetrachotomy.bgkScale n L) :
+    ShawValueCapstone.superDiagonalFloorConst ≤
+        DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M n ∧
+      DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M n ≤ Real.sqrt L ∧
+      Real.sqrt L < Real.sqrt n :=
+  DoorIVPrizeShawTetrachotomySynthesis.floorUnit_corridor_strict_nesting hn hL hLn hfloor hceilL
+
+#print axioms doorIV_floorUnitCorridorStrictNesting_export
+
 /-- Door-IV Lane-3 BOUNDED-EXCEPTION deficit-budget √-floor export: sharpens the sub-`(log2)/2`
 average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
 split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep
