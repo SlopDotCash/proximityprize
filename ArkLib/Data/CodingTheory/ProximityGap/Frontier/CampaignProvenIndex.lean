@@ -8081,6 +8081,30 @@ theorem doorIV_prizeFloorConstant_ge_superDiagonal_export
 
 #print axioms doorIV_prizeFloorConstant_ge_superDiagonal_export
 
+/-- Door-IV Lane-2 SHARPENED floor-normalized SYNTHESIS BUNDLE export: the single citable `√n`-unit
+statement with lower end lifted from bare `1` to `c₀ = (5/4)^{1/4}`.  Given the proven super-diagonal
+period floor `c₀·√n ≤ M` and the classical-overshoot refutations: (1) `c₀ ≤ M/√n`; (2) the prize-floor
+bound `M ≤ C·√n` is exactly `M/√n ≤ C`; (3) any prize-floor-certifying mechanism is door-(iv).  The
+`√n`-unit sibling of the sharpened Shaw bracket, one theorem for the prose "the prize must clear `c₀`
+and only door (iv) can cap it."  Capstone bundle; CORE not discharged. -/
+theorem doorIV_sharpenedFloorRatioBracketedSynthesis_export
+    {M nref Lref C : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ M)
+    (hclassicalOvershoots :
+      ∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+        m'.door.isClassical → m'.OvershootsBGK nref Lref) :
+    (ShawValueCapstone.superDiagonalFloorConst ≤
+          DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M nref) ∧
+      (M ≤ C * NoFifthDoorTetrachotomy.prizeScale nref ↔
+          DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M nref ≤ C) ∧
+      (∀ m : NoFifthDoorTetrachotomy.Mechanism,
+        m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref →
+        m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) :=
+  DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorRatio_bracketed_prize_iff_and_doorIV_only
+    hnref hLref hfloor hclassicalOvershoots
+
+#print axioms doorIV_sharpenedFloorRatioBracketedSynthesis_export
+
 /-- Door-IV Lane-3 BOUNDED-EXCEPTION deficit-budget √-floor export: sharpens the sub-`(log2)/2`
 average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
 split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep

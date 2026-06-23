@@ -516,9 +516,37 @@ theorem sharpenedFloorUnit_corridor_doorIV_only
   · exact ShawValueCapstone.superDiagonalFloorConst_gt_one
   · exact NoFifthDoorTetrachotomy.prizeCertifying_subset_doorIV hnref hLref hclassicalOvershoots
 
+/-- **Sharpened floor-normalized synthesis bundle (single citable statement).**  The unified
+`floorRatio_bracketed_prize_iff_and_doorIV_only` with its lower end lifted from the bare Plancherel `1`
+to the proven super-diagonal constant `c₀ = (5/4)^{1/4}`.  Given the proven super-diagonal period floor
+`c₀·√n ≤ M` and the classical-overshoot refutations, at the reference instance:
+(1) the floor-normalized ratio satisfies `c₀ ≤ M/√n` (sharper than the bare `1`);
+(2) the floor-scale prize bound `M ≤ C·√n` is exactly `M/√n ≤ C`; and
+(3) every mechanism reaching the prize floor is door-(iv) `newEvaluation`.
+This is the `√n`-unit sibling of the sharpened Shaw bracket, packaged as one statement a citation can
+point at for "the prize must clear `c₀` in `√n` units and only door (iv) can cap it."  Bundles
+`superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor`,
+`prizeFloorBound_iff_floorPrizeRatio_le`, and `prizeCertifying_subset_doorIV`. -/
+theorem sharpenedFloorRatio_bracketed_prize_iff_and_doorIV_only
+    {M nref Lref C : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ M)
+    (hclassicalOvershoots :
+      ∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+        m'.door.isClassical → m'.OvershootsBGK nref Lref) :
+    (ShawValueCapstone.superDiagonalFloorConst ≤ floorPrizeRatio M nref) ∧
+      (M ≤ C * NoFifthDoorTetrachotomy.prizeScale nref ↔ floorPrizeRatio M nref ≤ C) ∧
+      (∀ m : NoFifthDoorTetrachotomy.Mechanism,
+        m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref →
+        m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) := by
+  refine ⟨?_, ?_, ?_⟩
+  · exact superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor hnref hfloor
+  · exact prizeFloorBound_iff_floorPrizeRatio_le hnref
+  · exact NoFifthDoorTetrachotomy.prizeCertifying_subset_doorIV hnref hLref hclassicalOvershoots
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.one_le_prizeFloorConstant_of_plancherel_floor
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorUnit_corridor_doorIV_only
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorRatio_bracketed_prize_iff_and_doorIV_only
