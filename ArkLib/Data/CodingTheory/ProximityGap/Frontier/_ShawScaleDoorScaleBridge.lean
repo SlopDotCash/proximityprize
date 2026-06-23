@@ -173,14 +173,37 @@ theorem gap_le_prizeFloorBound_div_shawFloor (q n M B c : ℝ) (hn : 0 < n) (hnq
   have hdiv := div_le_div_of_nonneg_right hcg_le_B hc.le
   simpa [mul_div_cancel_left₀ (Real.sqrt (Real.log (q / n))) (ne_of_gt hc)] using hdiv
 
+/-- **Family inverse no-go: uniform prize-floor control plus a positive Shaw floor bounds every gap.**
+This is the pointwise-family version of `gap_le_prizeFloorBound_div_shawFloor`.  If a whole
+prize-regime family has genuine square-root ratios bounded by `B` and its Shaw values are uniformly
+bounded below by a fixed positive `c`, then every synthesis gap factor must satisfy
+`√(log(qᵢ/nᵢ)) ≤ B/c`.
+
+Scope: this is pure algebra over the scale bridge.  It proves no new cancellation and makes no
+claim that the hypotheses hold; it records exactly the obstruction a putative `O(1)` prize-floor
+bound must overcome in the Shaw-value normalization. -/
+theorem gap_family_le_prizeFloorBound_div_shawFloor {ι : Type*} {q n M : ι → ℝ} {B c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ shawValue (q i) (n i) (M i))
+    (hPrize : ∀ i, M i / prizeScale (n i) ≤ B) :
+    ∀ i, Real.sqrt (Real.log (q i / n i)) ≤ B / c := by
+  intro i
+  exact gap_le_prizeFloorBound_div_shawFloor (q i) (n i) (M i) B c (hn i) (hnq i) hc
+    (hfloor i) (hPrize i)
+
 
 end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 
+<<<<<<< Updated upstream
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_eq_bgkScale
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale_of_pos_lt
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeScale_lt_shawScale_of_one_lt_log
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_eq_shawValue_mul_gap
+=======
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_family_le_prizeFloorBound_div_shawFloor
+>>>>>>> Stashed changes
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_le_shawBound_mul_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_family_le_of_uniformShawBound
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor

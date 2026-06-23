@@ -13294,3 +13294,19 @@ Shaw value unless the exact synthesis gap factor is itself controlled. So any pr
 
 VERDICT: PURE algebra over the scale bridge. NO new CORE/cancellation/completion/moment/anti-concentration
 or capacity claim. CORE remains OPEN.
+
+## [doorIV-synthesis-gap-family-inverse] uniform prize-floor control plus positive Shaw floor bounds every √log gap (2026-06-23, g55)
+Lane: Lane-2 capstone hardening, family inverse form of `[doorIV-synthesis-gap-consumer]`.
+
+CONSTRAINT/IDENTITY LEMMA (axiom-clean, real proof, NO sorry) in `_ShawScaleDoorScaleBridge.lean`,
+exported as `CampaignProvenIndex.gap_family_le_prizeFloorBound_div_shawFloor_export`:
+if a prize-regime family has a uniform genuine square-root-cancellation ratio bound `Mᵢ/√nᵢ ≤ B` and a
+uniform positive Shaw-value floor `c ≤ Sh(qᵢ,nᵢ,Mᵢ)`, `c>0`, then every synthesis gap factor satisfies
+`√(log(qᵢ/nᵢ)) ≤ B/c` pointwise.
+
+WHY IT MATTERS: this is the family-level inverse no-go for the Shaw normalization. A putative constant
+prize-floor bound in a family with nonvanishing Shaw value has already absorbed the exact `√log` gap;
+the reduction cannot hide that obligation in asymptotic notation.
+
+VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
+anti-concentration / capacity claim, and NO claim the hypotheses hold. CORE remains OPEN.

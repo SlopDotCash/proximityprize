@@ -8594,4 +8594,18 @@ theorem gap_le_prizeFloorBound_div_shawFloor_export (q n M B c : ℝ) (hn : 0 < 
 
 #print axioms gap_le_prizeFloorBound_div_shawFloor_export
 
+/-- Synthesis-gap FAMILY INVERSE NO-GO export: if a prize-regime family has uniformly bounded genuine
+prize-floor ratios and every Shaw value stays above a fixed positive floor `c`, then every gap factor is
+pointwise bounded by the same quotient `B/c`.  This is only algebra over the Shaw-scale bridge; it makes
+no cancellation, anti-concentration, or CORE claim. -/
+theorem gap_family_le_prizeFloorBound_div_shawFloor_export {ι : Type*} {q n M : ι → ℝ} {B c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i) ≥ c)
+    (hPrize : ∀ i, M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B) :
+    ∀ i, Real.sqrt (Real.log (q i / n i)) ≤ B / c :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_family_le_prizeFloorBound_div_shawFloor
+    hn hnq hc hfloor hPrize
+
+#print axioms gap_family_le_prizeFloorBound_div_shawFloor_export
+
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
