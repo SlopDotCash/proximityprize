@@ -1,3 +1,13 @@
+## [doorIV-per-level-factor-bad-rung-compensation] a super-sqrt-two rung requires strict residual product slack (2026-06-23, g55)
+
+Lane: door-(iv) Lane-3, continuing the finite per-level-factor localization after `[doorIV-per-level-factor-super-sqrt2-localization]`.
+
+Formal kernel: `_DoorIVPerLevelFactorSubTwo.lean`, theorem `remainderProduct_lt_sqrtTwo_pow_pred_of_bad_rung`, exported as `doorIV_perLevelFactorBadRungNeedsCompensation_export`.
+
+Statement: for a positive-height finite tower, if an isolated rung has `c_bad > √2` and the total product still satisfies the finite `√2` budget `c_bad·R ≤ (√2)^a`, then the remaining product must be strictly below `(√2)^(a-1)`. Thus any bad rung must be paid for by genuine slack elsewhere; it cannot be absorbed for free.
+
+VERDICT: this pins the exact finite compensation law for super-`√2` rungs in the door-(iv) dyadic recursion. It does NOT prove the arithmetic `√2` gate, does NOT close CORE, and does not route through moment/completion/capacity.
+
 ## [doorIV-per-level-factor-super-sqrt2-localization] finite sqrt-two telescope failure must have a local super-sqrt2 rung (2026-06-23, g55)
 
 Lane: door-(iv) Lane-3, extending the per-level-factor algebra around the measured two-dilate recursion `c_k = M(k+1)/M(k)`. The prior bricks proved the variable product telescope and the pointwise `√2` gate. This entry locks the contrapositive obstruction: a finite failure of the `√2` telescope cannot be hidden in a mean or product statistic.

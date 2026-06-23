@@ -181,6 +181,28 @@ theorem exists_super_sqrtTwo_factor_of_telescope_counterexample (M c : ℕ → �
   have hprod := factorProduct_gt_of_telescope_counterexample (M := M) (c := c) hM0 ht hcounter
   exact exists_factor_gt_sqrtTwo_of_factorProduct_gt (c := c) (a := a) hc0 hprod
 
+/-- **A super-`√2` rung requires strict compensation from the remaining product.**  If a tower of
+positive height still satisfies the total `√2` product budget and one isolated rung has factor
+`c_bad > √2`, then the product of all other rungs, represented here by `R`, must be strictly below the
+remaining `(√2)^(a-1)` budget.  This is the finite compensation law behind the localization theorem. -/
+theorem remainderProduct_lt_sqrtTwo_pow_pred_of_bad_rung {a : ℕ} {cBad R : ℝ}
+    (ha : 0 < a) (hR : 0 ≤ R) (hbad : Real.sqrt 2 < cBad)
+    (htotal : cBad * R ≤ (Real.sqrt 2) ^ a) :
+    R < (Real.sqrt 2) ^ (a - 1) := by
+  have hspos : 0 < Real.sqrt 2 := Real.sqrt_pos_of_pos (by norm_num : (0 : ℝ) < 2)
+  obtain ⟨b, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt ha)
+  rw [Nat.succ_sub_one]
+  by_contra hnot
+  have hRge : (Real.sqrt 2) ^ b ≤ R := le_of_not_gt hnot
+  have hpow_pos : 0 < (Real.sqrt 2) ^ b := pow_pos hspos b
+  have hcb_nonneg : 0 ≤ cBad := le_of_lt (lt_trans hspos hbad)
+  have hstrict : Real.sqrt 2 * (Real.sqrt 2) ^ b < cBad * R := by
+    exact mul_lt_mul hbad hRge hpow_pos hcb_nonneg
+  have hpow : (Real.sqrt 2) ^ (b + 1) = Real.sqrt 2 * (Real.sqrt 2) ^ b := by
+    rw [pow_succ']
+  rw [hpow] at htotal
+  linarith
+
 /-- **Prize budget from the normalized `√2` per-level factor.**  This restates the existing corrected
 x-gate capstone in the per-level-factor language: once the single open arithmetic gate supplies
 `LevelRatioBoundNZ … √2`, the telescope and base estimate yield `C√(nL)`.  It deliberately contains no
@@ -209,4 +231,5 @@ end ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_factor_gt_sqrtTwo_of_factorProduct_gt
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.factorProduct_gt_of_telescope_counterexample
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_super_sqrtTwo_factor_of_telescope_counterexample
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_pred_of_bad_rung
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor
