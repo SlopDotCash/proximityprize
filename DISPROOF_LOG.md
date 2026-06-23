@@ -13159,3 +13159,16 @@ to the master growth law. It deliberately asserts NO empirical product bound and
 VERDICT: does NOT close CORE. No cancellation, completion, moment, anti-concentration, capacity, or
 asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN; the open arithmetic content remains a
 non-moment/non-completion proof that the relevant product/geometric mean of door-(iv) factors is `√2`-scale.
+
+## [doorIV-per-level-factor-pointwise-sqrt2-telescope] pointwise `√2` factors give the finite `√2^a` tower bound (2026-06-23, g55)
+Lane: door-(iv) Lane-3 constraint lemma, sharpening the variable product telescope into the finite `√2` gate form.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry):
+`_DoorIVPerLevelFactorSubTwo.{factorProduct_le_sqrtTwo_pow,telescope_of_pointwise_sqrtTwo_factors}`,
+exported as `CampaignProvenIndex.doorIV_perLevelFactorPointwiseSqrtTwoTelescope_export`.  If the finite
+measured factors satisfy `0≤c_k≤√2` for all `k<a`, then `∏_{k<a} c_k≤(√2)^a`, hence any tower with
+`M(k+1)≤c_k M(k)` obeys `M(a)≤(√2)^a M(0)`.
+
+VERDICT: this is only finite product/telescope algebra for the door-(iv) per-level object.  It proves no
+arithmetic `√2` gate, no monomial-sum cancellation, no completion, no moment saving, no anti-concentration,
+and no CORE upper bound.  CORE remains OPEN.

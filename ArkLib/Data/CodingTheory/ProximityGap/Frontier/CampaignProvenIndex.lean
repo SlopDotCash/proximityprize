@@ -8418,6 +8418,20 @@ theorem doorIV_perLevelFactorProductTelescope_export (M c : ℕ → ℝ) {a : �
 
 #print axioms doorIV_perLevelFactorProductTelescope_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR pointwise-`√2` export: if every explicitly measured finite
+per-level factor in the dyadic tower is bounded by `√2`, the tower satisfies
+`M(a) ≤ (√2)^a M(0)`.  This is only the finite product/telescope algebra; it does not prove the
+arithmetic `√2` gate for the monomial sums. -/
+theorem doorIV_perLevelFactorPointwiseSqrtTwoTelescope_export (M c : ℕ → ℝ) {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k) (hM0 : 0 ≤ M 0)
+    (hc2 : ∀ k ∈ Finset.range a, c k ≤ Real.sqrt 2)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k) :
+    M a ≤ (Real.sqrt 2) ^ a * M 0 :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_pointwise_sqrtTwo_factors
+    M c hc0 hM0 hc2 hstep
+
+#print axioms doorIV_perLevelFactorPointwiseSqrtTwoTelescope_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
 factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
 identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.

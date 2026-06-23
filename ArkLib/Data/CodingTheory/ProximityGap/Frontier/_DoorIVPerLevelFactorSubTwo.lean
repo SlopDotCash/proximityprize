@@ -114,6 +114,28 @@ theorem telescope_of_factorProduct_le (M c : ℕ → ℝ) {a : ℕ} {B : ℝ}
   have hB_nonneg : 0 ≤ B := le_trans hprod_nonneg hprod
   exact le_trans ht (mul_le_mul_of_nonneg_right hprod hM0)
 
+/-- **Pointwise `√2` factor gate controls the product.**  If every measured per-level factor in the
+finite tower is at most `√2`, then their product is at most `(√2)^a`.  This is deliberately only a
+finite product lemma: the arithmetic proof of the pointwise `√2` gate is not supplied here. -/
+theorem factorProduct_le_sqrtTwo_pow {c : ℕ → ℝ} {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k) (hc2 : ∀ k ∈ Finset.range a, c k ≤ Real.sqrt 2) :
+    (∏ k ∈ Finset.range a, c k) ≤ (Real.sqrt 2) ^ a := by
+  calc (∏ k ∈ Finset.range a, c k)
+      ≤ ∏ _k ∈ Finset.range a, Real.sqrt 2 :=
+        Finset.prod_le_prod (by intro k _hk; exact hc0 k) (by intro k hk; exact hc2 k hk)
+    _ = (Real.sqrt 2) ^ a := by
+        rw [Finset.prod_const, Finset.card_range]
+
+/-- **Variable-factor `√2` telescope.**  A pointwise `√2` bound on every finite per-level multiplier
+implies the expected `M(a) ≤ (√2)^a M(0)` tower bound.  This is the product form of the existing
+`LevelRatioBoundNZ … √2` capstone, specialized to explicitly measured factors. -/
+theorem telescope_of_pointwise_sqrtTwo_factors (M c : ℕ → ℝ) {a : ℕ}
+    (hc0 : ∀ k, 0 ≤ c k) (hM0 : 0 ≤ M 0)
+    (hc2 : ∀ k ∈ Finset.range a, c k ≤ Real.sqrt 2)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k) :
+    M a ≤ (Real.sqrt 2) ^ a * M 0 := by
+  exact telescope_of_factorProduct_le M c hc0 hM0 (factorProduct_le_sqrtTwo_pow hc0 hc2) hstep
+
 /-- **Prize budget from the normalized `√2` per-level factor.**  This restates the existing corrected
 x-gate capstone in the per-level-factor language: once the single open arithmetic gate supplies
 `LevelRatioBoundNZ … √2`, the telescope and base estimate yield `C√(nL)`.  It deliberately contains no
@@ -137,4 +159,6 @@ end ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.sqrt_two_lt_two
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_variable_perLevelFactors
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_factorProduct_le
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.factorProduct_le_sqrtTwo_pow
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_pointwise_sqrtTwo_factors
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor
