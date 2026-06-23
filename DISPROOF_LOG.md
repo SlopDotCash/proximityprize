@@ -14001,3 +14001,43 @@ WHY IT MATTERS: the prior theorem stated the DC/off-DC separation only in square
 VERDICT: square-root packaging of the trivial DC/off-DC completion gap only. NO CORE upper bound, no anti-concentration, no moment-saving, no capacity claim. CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## door-(iv) the iterated dilation tower SATURATES the trivial ceiling — factor-2 recursion is saving-free (2026-06-23, sol)
+
+Lane: Door-(iv) Lane-3 refuted-lever lock + ASYMPTOTIC-CLAIM GUARD constraint. Continues the dilation
+thread (`_DoorIVDilationDescentRecursion`, single step `M(μ_n) ≤ 2·M(μ_{n/2})`).
+
+The single-step descent recursion was kernel-anchored, but its docstring argued IN PROSE ONLY that
+iterating it `a = log₂ n` times down the dyadic tower `μ_{2^a} ⊃ ... ⊃ μ_1` gives only
+`M(μ_{2^a}) ≤ 2^a·M(μ_1) = n`, the TRIVIAL ceiling with NO √-saving. This file LOCKS that iteration
+as kernel-checked theorems (no prose-only leap), so the "the 2-adic factor-2 recursion is saving-free"
+constraint is backed by proofs.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVDilationTowerSaturates.lean`:
+- `descent_tower_le` (HEADLINE, abstract): `∀k, M(k+1) ≤ c·M k` (with `0 ≤ c`) ⟹ `M a ≤ c^a·M 0`.
+  The kernel form of the prose "iterate the factor-c recursion `log₂ n` times" argument.
+- `dilation_tower_le_two_pow`: factor-2 specialization, `M a ≤ 2^a·M 0`.
+- `dilation_tower_saturates_trivial`: with base mass `M 0 ≤ 1` (singleton `μ_1` has worst period ≤ 1),
+  `M a ≤ 2^a`, i.e. the trivial `M ≤ n` ceiling reproduced with NO improvement.
+- `tower_reaches_prizeScale_forces_c_le`: if the iterated bound reaches the prize scale `K·2^(a/2)`
+  against positive base mass, the per-level factor is constrained by `c^a ≤ (K·2^(a/2))/M 0`.
+- `dilation_tower_overshoots_prizeScale`: contrapositive `√n`-overshoot form.
+
+WHY IT MATTERS: combined with the probed FACT (`_DoorIVTwoDilateNoJointExtreme`) that the per-level
+dilation factor is forced to be EXACTLY 2 at the worst frequency (the two index-2 dilates co-ray,
+`ρ(b*)=1`, `norm_eta_eq_two_dilate_of_coherent` ⇒ split is an EQUALITY at b*, factor 2 unshaveable),
+these lemmas pin that iterating the dilation recursion gives `2^a = n` (the trivial ceiling), NOT the
+prize order `2^(a/2)·√log = √(n·log)`. To even REACH the prize scale by iteration one would need a
+per-level factor `c ≤ √2`, which the probe refuted. The 2-adic descent route is therefore dead BY
+ITERATION, now kernel-checked rather than prose-asserted — exactly the brief's ASYMPTOTIC-CLAIM GUARD
+(the factor-2 dyadic recursion saturates, no sub-linear law from the stalls).
+
+VERDICT: a refuted-lever CONSTRAINT LOCK. It is a thinness-AGNOSTIC fact about iterating any factor-c
+recursion (a constraint on the route, not a CORE bound). No CORE / cancellation / completion / moment /
+anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN; door (iv) stays the
+only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerSaturates.lean`,
+axiom-clean (all 5 theorems' axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
