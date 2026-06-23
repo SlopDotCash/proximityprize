@@ -249,6 +249,9 @@ anything here; this index does not claim otherwise.
 | `coeff_route_loose_export` | obstruction | G3 |
 | `roughness_does_not_add_bad_primes_export` | obstruction | G4 |
 | `prizeBound_iff_shawValue_le_export` | capstone | ShawValue |
+| `rawPrizeFamilyBound_iff_shawValueFamilyBound_export` | capstone | ShawValue |
+| `exists_rawPrizeFamilyBound_iff_exists_shawValueFamilyBound_export` | capstone | ShawValue |
+| `not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_export` | capstone | ShawValue |
 | `strictPrizeBound_iff_shawValue_lt_export` | capstone | ShawValue |
 | `strictRawPrizeFamilyBound_iff_strictShawValueFamilyBound_export` | capstone | ShawValue |
 | `exists_strictRawPrizeFamilyBound_iff_exists_strictShawValueFamilyBound_export` | capstone | ShawValue |
@@ -901,6 +904,43 @@ estimate is hidden. -/
 theorem prizeBound_iff_shawValue_le_export {M C n L : ℝ} (hs : 0 < prizeScale n L) :
     M ≤ C * prizeScale n L ↔ shawValue M n L ≤ C :=
   prizeBound_iff_shawValue_le hs
+
+/-- **[capstone, ShawValue]** Uniform non-strict family form of the Lane-2 reduction: with positive
+pointwise prize scale, a raw prize bound by the same constant throughout a family is exactly a
+Shaw-value bound by that constant throughout the family. This is the direct `Sh(n)=O(1)` wrapper,
+not a cancellation estimate. -/
+theorem rawPrizeFamilyBound_iff_shawValueFamilyBound_export
+    {ι : Type*} {M n L : ι → ℝ} {C : ℝ}
+    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i)) :
+    _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C ↔
+      _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C :=
+  _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound_iff_shawValueFamilyBound hs
+
+#print axioms rawPrizeFamilyBound_iff_shawValueFamilyBound_export
+
+/-- **[capstone, ShawValue]** Existential non-strict family form of the Lane-2 reduction: existence
+of one absolute raw-prize constant is exactly existence of one absolute Shaw-value constant. This is
+the Big-O form of the citable normalization equivalence. -/
+theorem exists_rawPrizeFamilyBound_iff_exists_shawValueFamilyBound_export
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i)) :
+    (∃ C, _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
+      (∃ C, _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C) :=
+  _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.exists_rawPrizeFamilyBound_iff_exists_shawValueFamilyBound hs
+
+#print axioms exists_rawPrizeFamilyBound_iff_exists_shawValueFamilyBound_export
+
+/-- **[capstone, ShawValue]** Wall-facing non-strict existential form: failure of every absolute
+raw-prize constant is exactly failure of every absolute Shaw-value constant. Pure normalization
+bookkeeping for the obstruction side of `prize ⇔ Sh(n)=O(1)`. -/
+theorem not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_export
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i)) :
+    ¬ (∃ C, _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
+      ¬ (∃ C, _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C) :=
+  _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound hs
+
+#print axioms not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_export
 
 /-- **[capstone, ShawValue]** Strict prize normalization equivalence: under a positive prize scale,
 a strict raw prize-shaped bound `M < C·√(nL)` is exactly the statement that the normalized Shaw
