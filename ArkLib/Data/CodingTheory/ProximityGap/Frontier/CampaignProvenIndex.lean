@@ -8704,6 +8704,33 @@ theorem shawScale_div_prizeScale_export (q n : ℝ) (hn : 0 < n) (hnq : n < q) :
 
 #print axioms shawScale_div_prizeScale_export
 
+
+/-- Synthesis-gap SCALE-BOUND export: comparing the Shaw/BGK scale to the genuine prize floor by a
+constant `K` is equivalent to bounding the exact gap factor `√log(q/n)` by `K`.  Scale-only bookkeeping;
+no CORE/cancellation claim. -/
+theorem shawScale_le_const_mul_prizeScale_iff_gap_le_export (q n K : ℝ) (hn : 0 < n)
+    (hnq : n < q) :
+    _root_.ProximityGap.Frontier.ShawValueCapstone.shawScale q n
+      ≤ K * ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n ↔
+      Real.sqrt (Real.log (q / n)) ≤ K :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_le_const_mul_prizeScale_iff_gap_le
+    q n K hn hnq
+
+#print axioms shawScale_le_const_mul_prizeScale_iff_gap_le_export
+
+/-- Synthesis-gap FAMILY SCALE-BOUND export: a uniform scale comparison
+`shawScaleᵢ ≤ K·prizeScaleᵢ` over a prize-regime family is exactly the pointwise bound
+`√log(qᵢ/nᵢ) ≤ K`.  This isolates the scale gap itself, before any value estimate enters. -/
+theorem shawScale_family_le_const_mul_prizeScale_iff_gap_le_export {ι : Type*} {q n : ι → ℝ}
+    (K : ℝ) (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∀ i, _root_.ProximityGap.Frontier.ShawValueCapstone.shawScale (q i) (n i)
+      ≤ K * ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i)) ↔
+      (∀ i, Real.sqrt (Real.log (q i / n i)) ≤ K) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_family_le_const_mul_prizeScale_iff_gap_le
+    K hn hnq
+
+#print axioms shawScale_family_le_const_mul_prizeScale_iff_gap_le_export
+
 /-- Synthesis-gap CONSUMER export: in the prize regime `q > n > 0`, the genuine cancellation ratio
 `M / prizeScale n = M/√n` equals the campaign Shaw value `shawValue q n M` amplified by EXACTLY the gap
 factor `√(log(q/n))`.  This is the precise reason `Sh = O(1)` (the reduction) does NOT by itself bound

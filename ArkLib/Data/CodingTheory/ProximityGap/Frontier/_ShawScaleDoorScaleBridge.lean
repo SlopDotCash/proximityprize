@@ -92,6 +92,36 @@ theorem prizeScale_lt_shawScale_of_one_lt_log (q n : ℝ) (hn : 0 < n)
   rw [shawScale_eq_bgkScale]
   exact prizeScale_lt_bgkScale hn hL
 
+
+/-- **Scale-gap bound equivalence.**  In the prize regime, bounding the reduction scale
+`shawScale q n` by `K` times the genuine floor `prizeScale n` is exactly the same as bounding the
+closed-form gap factor `√(log(q/n))` by `K`.  This is the scale-only companion to the value identity
+`M/√n = Sh·√log`; it makes no assertion that such a `K` is uniform. -/
+theorem shawScale_le_const_mul_prizeScale_iff_gap_le (q n K : ℝ) (hn : 0 < n) (hnq : n < q) :
+    shawScale q n ≤ K * prizeScale n ↔ Real.sqrt (Real.log (q / n)) ≤ K := by
+  have hp : 0 < prizeScale n := prizeScale_pos hn
+  constructor
+  · intro h
+    have hdiv : shawScale q n / prizeScale n ≤ K := (div_le_iff₀ hp).2 h
+    simpa [shawScale_div_prizeScale_of_pos_lt q n hn hnq] using hdiv
+  · intro h
+    have hdiv : shawScale q n / prizeScale n ≤ K := by
+      simpa [shawScale_div_prizeScale_of_pos_lt q n hn hnq] using h
+    exact (div_le_iff₀ hp).1 hdiv
+
+/-- **Family scale-gap bound equivalence.**  A uniform multiplicative comparison
+`shawScale qᵢ nᵢ ≤ K·prizeScale nᵢ` over a prize-regime family is equivalent to the pointwise gap-factor
+bound `√(log(qᵢ/nᵢ)) ≤ K`.  Pure scale bookkeeping; no CORE/cancellation claim. -/
+theorem shawScale_family_le_const_mul_prizeScale_iff_gap_le {ι : Type*} {q n : ι → ℝ} (K : ℝ)
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∀ i, shawScale (q i) (n i) ≤ K * prizeScale (n i)) ↔
+      (∀ i, Real.sqrt (Real.log (q i / n i)) ≤ K) := by
+  constructor
+  · intro h i
+    exact (shawScale_le_const_mul_prizeScale_iff_gap_le (q i) (n i) K (hn i) (hnq i)).mp (h i)
+  · intro h i
+    exact (shawScale_le_const_mul_prizeScale_iff_gap_le (q i) (n i) K (hn i) (hnq i)).mpr (h i)
+
 /-- **The genuine cancellation ratio is the Shaw value times the gap factor.**  Write the genuine
 square-root-cancellation ratio as `M / prizeScale n = M / √n` (how far below the trivial `n` bound the
 sup norm cancels, measured against the prize floor `√n`).  In the prize regime `q > n > 0`, this ratio
@@ -299,6 +329,8 @@ end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale_of_pos_lt
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeScale_lt_shawScale_of_one_lt_log
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_le_const_mul_prizeScale_iff_gap_le
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_family_le_const_mul_prizeScale_iff_gap_le
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_eq_shawValue_mul_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_le_shawBound_mul_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_family_le_of_uniformShawBound
