@@ -189,6 +189,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauc
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEnergyDominated
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
 
 set_option linter.style.longFile 9000
 
@@ -8820,5 +8821,34 @@ theorem doorIV_shawValueFamilyRefinedWindowWidth_export {ι : Type*} {n L : ι �
   ShawValueCapstone.shawValueFamily_refined_window_width_eq hn hL
 
 #print axioms doorIV_shawValueFamilyRefinedWindowWidth_export
+
+/-- Door-IV Lane-2 FAMILY conditional BGK SHARP BRACKET export: the upper-end family companion of the
+sharpened floor family.  Under a uniform Plancherel floor `√nᵢ ≤ Mᵢ` and a uniform BGK-shaped ceiling
+`Mᵢ ≤ √(nᵢ·Lᵢ)`, every normalized Shaw value lies in the sharp bracket `[1/√Lᵢ, 1]` pointwise across the
+family.  Conditional on the supplied BGK ceiling (NOT an unconditional cancellation theorem);
+CORE not discharged. -/
+theorem doorIV_shawValueFamilyBGKSharpBracket_export {ι : Type*} {M n L : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hL : ∀ i, 0 < L i)
+    (hfloor : ∀ i, Real.sqrt (n i) ≤ M i)
+    (hceil : ∀ i, M i ≤ ShawValueCapstone.prizeScale (n i) (L i)) :
+    ∀ i, Real.sqrt (n i) / ShawValueCapstone.prizeScale (n i) (L i)
+          ≤ ShawValueCapstone.shawValue (M i) (n i) (L i)
+      ∧ ShawValueCapstone.shawValue (M i) (n i) (L i) ≤ 1 :=
+  ShawValueBGKBracket.shawValueFamily_sharp_bracket_of_pos hn hL hfloor hceil
+
+#print axioms doorIV_shawValueFamilyBGKSharpBracket_export
+
+/-- Door-IV Lane-2 FAMILY BGK sharp WIDTH export: the conditional BGK family bracket has width `√Lᵢ` at
+every instance, strictly below the trivial-ceiling width `√nᵢ` in the prize regime `Lᵢ < nᵢ`.  Family
+companion of the pointwise width/improvement statements. -/
+theorem doorIV_shawValueFamilyBGKSharpWidth_export {ι : Type*} {n L : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hL0 : ∀ i, 0 ≤ L i) (hLn : ∀ i, L i < n i) :
+    ∀ i, ((1 : ℝ) / (Real.sqrt (n i) / ShawValueCapstone.prizeScale (n i) (L i))
+          = Real.sqrt (L i))
+      ∧ Real.sqrt (L i) < Real.sqrt (n i) := fun i =>
+  ⟨ShawValueBGKBracket.shawValueFamily_sharp_bracket_width hn i,
+    ShawValueBGKBracket.shawValueFamily_sharp_width_lt_trivial hL0 hLn i⟩
+
+#print axioms doorIV_shawValueFamilyBGKSharpWidth_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

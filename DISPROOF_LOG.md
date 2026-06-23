@@ -13420,3 +13420,34 @@ VERDICT: PURE pointwise lift of the established single-instance sharpened floor.
 content beyond the family quantification: no CORE / cancellation / completion / moment /
 anti-concentration / capacity / asymptotic claim, and the upper bracket endpoint is unchanged (still the
 trivial `√(nᵢ/Lᵢ)`). CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-shawvalue-bgk-sharp-bracket-family] the upper-end family companion: conditional BGK bracket [1/√Lᵢ, 1] (2026-06-23, sol)
+Lane: Lane-2 capstone hardening — lift the single-instance conditional BGK sharp bracket to the prize family + wire the (previously unindexed) `_ShawValueBGKBracket` source into the citable index.
+
+CONTEXT: `_ShawValueBGKBracket` proved the POINTWISE conditional BGK sharp bracket — under the Plancherel
+floor `√n ≤ M` and a BGK-shaped ceiling `M ≤ √(n·L) = prizeScale n L`, the Shaw value sits in `[1/√L, 1]`
+of width `√L`, strictly narrower (prize regime `L < n`) than the trivial `[1/√L, √(n/L)]` of width `√n`.
+But (a) that file was NOT imported into `CampaignProvenIndex`, and (b) only the POINTWISE bracket existed
+— the Lane-2 family reduction chain had no family-level conditional BGK bracket. This is the upper-end
+companion of `[doorIV-shawvalue-sharpened-floor-family]` (which lifted the sharpened LOWER endpoint
+`c₀/√Lᵢ` to the family).
+
+CONSTRAINT/IDENTITY LEMMAS (axiom-clean, real proofs, NO sorry) in `_ShawValueBGKBracketFamily.lean`,
+exported as `CampaignProvenIndex.{doorIV_shawValueFamilyBGKSharpBracket_export,
+doorIV_shawValueFamilyBGKSharpWidth_export}`:
+- `shawValueFamily_sharp_bracket{,_of_pos}`: a uniform Plancherel floor + uniform BGK-shaped ceiling
+  sandwiches every Shaw value in `[1/√Lᵢ, 1]` pointwise across the family.
+- `shawValueFamily_sharp_bracket_width`: the sharp family bracket has width `√Lᵢ` at every instance.
+- `shawValueFamily_sharp_width_lt_trivial`: that width `√Lᵢ` is strictly below the trivial `√nᵢ` at every
+  prize-regime instance (`Lᵢ < nᵢ`).
+- `shawValueFamily_sharp_bracket_package`: the three bundled into one citable family statement.
+
+WHY IT MATTERS: together with `_DoorIVShawValueSharpFloorFamily` the prize family now has a kernel-checked
+TWO-SIDED sharpened corridor at family granularity — lower end `c₀/√Lᵢ` (super-diagonal), upper end `1`
+(BGK), width `√Lᵢ`, in place of the bare `[1/√Lᵢ, √(nᵢ/Lᵢ)]` of width `√nᵢ`. Also wires the previously
+unindexed `_ShawValueBGKBracket` into the citable index transitively.
+
+VERDICT: PURE pointwise lift of established single-instance theorems. The BGK ceiling is a SUPPLIED
+hypothesis (`Mᵢ ≤ √(nᵢ·Lᵢ)`), NOT an unconditional cancellation theorem, and is asserted at NO instance.
+NO CORE / cancellation / completion / moment / anti-concentration / capacity / asymptotic claim. CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
