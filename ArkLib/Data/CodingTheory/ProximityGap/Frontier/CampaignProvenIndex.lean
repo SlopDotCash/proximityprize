@@ -160,6 +160,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCoherenceTowerColla
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVTowerSlackNonAssemblable
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentTelescope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentRecursion
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationTowerSaturates
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationTowerConcrete
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBParticipationGeneric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBCoherentImbalance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBImbalanceBand
@@ -9589,5 +9591,58 @@ theorem doorIV_shawValueFamilySharpenedBGKCorridorPackage_export {ι : Type*} {M
     hn hL hfloor hceil hLn
 
 #print axioms doorIV_shawValueFamilySharpenedBGKCorridorPackage_export
+
+/-- Door-IV Lane-3 DILATION-TOWER abstract export: any fixed per-level descent factor `c` iterates as
+`c^a`.  In the dilation route the proven factor is `2`, so the recursion reproduces the trivial
+`2^a = n` ceiling rather than the prize `2^(a/2)` scale.  Constraint packaging only; no CORE upper
+bound or cancellation claim. -/
+theorem doorIV_descent_tower_le_export {M : ℕ → ℝ} {c : ℝ} (hc : 0 ≤ c)
+    (hstep : ∀ k, M (k + 1) ≤ c * M k) :
+    ∀ a, M a ≤ c ^ a * M 0 :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.descent_tower_le hc hstep
+
+#print axioms doorIV_descent_tower_le_export
+
+/-- Door-IV Lane-3 DILATION-TOWER trivial-saturation export: the factor-`2` recursion plus singleton
+base mass `≤ 1` gives `M a ≤ 2^a`, exactly the trivial cardinality ceiling.  This is the stable citable
+form of the no-√-saving lock for the iterated dyadic descent route. -/
+theorem doorIV_dilation_tower_saturates_trivial_export {M : ℕ → ℝ}
+    (hstep : ∀ k, M (k + 1) ≤ 2 * M k) (hbase : M 0 ≤ 1) :
+    ∀ a, M a ≤ 2 ^ a :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.dilation_tower_saturates_trivial
+    hstep hbase
+
+#print axioms doorIV_dilation_tower_saturates_trivial_export
+
+/-- Door-IV Lane-3 CONCRETE dilation-tower export: along a descending dyadic chain of actual finite
+sets, iterating `worstPeriod ψ (G k) ≤ 2 * worstPeriod ψ (G(k+1))` gives
+`worstPeriod ψ (G 0) ≤ 2^a * worstPeriod ψ (G a)`.  This realizes the saving-free tower on the prize
+object itself, not just an abstract sequence. -/
+theorem doorIV_worstPeriodChain_le_two_pow_export {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    {ψ : AddChar F ℂ} (hne : (_root_.ArkLib.ProximityGap.I031DilationOrbitReduction.nonzeroFreqs F).Nonempty)
+    (G : ℕ → Finset F) (g : ℕ → F) (hg : ∀ k, g k ≠ 0)
+    (hdisj : ∀ k, Disjoint (G (k + 1)) ((G (k + 1)).image (fun y => g k * y)))
+    (hchain : ∀ k, G k = G (k + 1) ∪ (G (k + 1)).image (fun y => g k * y)) :
+    ∀ a, _root_.ProximityGap.Frontier.ConcreteMomentAssembly.worstPeriod ψ (G 0) hne
+        ≤ 2 ^ a * _root_.ProximityGap.Frontier.ConcreteMomentAssembly.worstPeriod ψ (G a) hne :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerConcrete.worstPeriodChain_le_two_pow
+    hne G g hg hdisj hchain
+
+#print axioms doorIV_worstPeriodChain_le_two_pow_export
+
+/-- Door-IV Lane-3 CONCRETE trivial-saturation export: if the bottom of the dyadic chain has worst
+period `≤ 1`, the actual top object satisfies only `≤ 2^a` by iterating the factor-`2` recursion.  This
+is a constraint/no-go for the dilation route, not a prize bound. -/
+theorem doorIV_worstPeriodChain_saturates_trivial_export {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    {ψ : AddChar F ℂ} (hne : (_root_.ArkLib.ProximityGap.I031DilationOrbitReduction.nonzeroFreqs F).Nonempty)
+    (G : ℕ → Finset F) (g : ℕ → F) (hg : ∀ k, g k ≠ 0)
+    (hdisj : ∀ k, Disjoint (G (k + 1)) ((G (k + 1)).image (fun y => g k * y)))
+    (hchain : ∀ k, G k = G (k + 1) ∪ (G (k + 1)).image (fun y => g k * y))
+    {a : ℕ} (hbase : _root_.ProximityGap.Frontier.ConcreteMomentAssembly.worstPeriod ψ (G a) hne ≤ 1) :
+    _root_.ProximityGap.Frontier.ConcreteMomentAssembly.worstPeriod ψ (G 0) hne ≤ 2 ^ a :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerConcrete.worstPeriodChain_saturates_trivial
+    hne G g hg hdisj hchain hbase
+
+#print axioms doorIV_worstPeriodChain_saturates_trivial_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

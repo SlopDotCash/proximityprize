@@ -14098,3 +14098,18 @@ WHY IT MATTERS: the prior stable export recorded the additive gap. This one reco
 VERDICT: normalized no-go packaging only. No CORE upper bound, no cancellation, no anti-concentration, no capacity claim. CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-dilation-tower-saturation-exports] stable CampaignProvenIndex exports for saving-free dyadic descent (g55, 2026-06-23)
+Lane: Door (iv), Lane 3 refuted-lever indexing.
+
+CONSTRAINT EXPORTS added to `CampaignProvenIndex`:
+- `doorIV_descent_tower_le_export`: abstract fixed-factor descent iterates as `c^a`.
+- `doorIV_dilation_tower_saturates_trivial_export`: factor-2 descent with base mass `≤1` gives only `2^a`.
+- `doorIV_worstPeriodChain_le_two_pow_export`: the same iteration on the concrete `worstPeriod` chain.
+- `doorIV_worstPeriodChain_saturates_trivial_export`: concrete bottom mass `≤1` yields only the trivial `2^a` ceiling.
+
+WHY IT MATTERS: the dyadic dilation route's single-step factor is 2 at the worst frequency, so iterating the recursion down a 2-power tower reproduces the trivial cardinality ceiling instead of the prize `√n` scale. These exports make the abstract and concrete no-√-saving locks citable from the permanent campaign index.
+
+VERDICT: stable export/indexing of the dilation-tower no-go only. No CORE upper bound, cancellation, anti-concentration, completion, moment-saving, or capacity claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
