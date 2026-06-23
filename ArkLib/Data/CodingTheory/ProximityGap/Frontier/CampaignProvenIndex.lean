@@ -176,6 +176,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceTowerRatioSpectr
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVUniformDeficitThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -8015,5 +8016,25 @@ theorem doorIV_deficitBudgetSublinearFloor_export {ε S M0 : ℝ} (a : ℕ)
 
 #print axioms doorIV_uniformDeficitReachesSqrt2_iff_export
 #print axioms doorIV_deficitBudgetSublinearFloor_export
+
+/-- Door-IV Lane-2 SHARPENED Shaw-value FLOOR export: the proven unconditional super-diagonal period
+floor `(5/4)^{1/4}·√n ≤ M` lifts the Shaw value strictly above the bare `1/√L` bracket floor to
+`(5/4)^{1/4}/√L ≤ Sh(M)`.  The super-diagonal constant `c₀ = (5/4)^{1/4} > 1`, so the prize's `O(1)`
+target must clear a floor strictly above the bare Parseval scale.  Normalization rung; CORE not
+discharged. -/
+theorem doorIV_shawValueSuperDiagonalFloor_export {M n L : ℝ} (hn : 0 < n) (hL : 0 < L)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M) :
+    ShawValueCapstone.superDiagonalFloorConst / Real.sqrt L ≤ ShawValueCapstone.shawValue M n L :=
+  ShawValueCapstone.shawValue_ge_superDiagonal_floor hn hL hfloor
+
+/-- Door-IV Lane-2 refined window WIDTH export: under the sharpened floor the trivial Shaw-value
+window narrows from `√n` to `√n / c₀`, strictly below `√n` since `c₀ > 1`. -/
+theorem doorIV_shawValueRefinedWindowWidth_export {n L : ℝ} (hn : 0 < n) (hL : 0 < L) :
+    Real.sqrt (n / L) / (ShawValueCapstone.superDiagonalFloorConst / Real.sqrt L)
+      = Real.sqrt n / ShawValueCapstone.superDiagonalFloorConst :=
+  ShawValueCapstone.refined_window_width_eq hn hL
+
+#print axioms doorIV_shawValueSuperDiagonalFloor_export
+#print axioms doorIV_shawValueRefinedWindowWidth_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
