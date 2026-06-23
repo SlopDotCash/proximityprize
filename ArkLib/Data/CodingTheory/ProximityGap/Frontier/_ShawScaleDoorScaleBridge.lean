@@ -234,6 +234,49 @@ theorem gap_family_le_prizeFloorBound_div_shawFloor {ι : Type*} {q n M : ι →
     (hfloor i) (hPrize i)
 
 
+/-- **Exact boundedness equivalence for the gap-amplified Shaw value.**  Over a prize-regime family,
+uniform boundedness of the genuine prize-floor ratios `Mᵢ/√nᵢ` is exactly uniform boundedness of the
+Shaw values after multiplying by the displayed synthesis gap `√(log(qᵢ/nᵢ))`.  This is the boundedness
+form of `prizeFloorRatio_eq_shawValue_mul_gap`: the reduction's `Sh=O(1)` is not the same as a
+floor-scale prize theorem unless the gap-amplified quantity is bounded.  Pure normalization algebra;
+no CORE/cancellation claim. -/
+theorem prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove {ι : Type*} {q n M : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∃ B : ℝ, ∀ i, M i / prizeScale (n i) ≤ B) ↔
+      (∃ B : ℝ, ∀ i,
+        shawValue (q i) (n i) (M i) * Real.sqrt (Real.log (q i / n i)) ≤ B) := by
+  constructor
+  · rintro ⟨B, hB⟩
+    refine ⟨B, ?_⟩
+    intro i
+    simpa [prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)] using hB i
+  · rintro ⟨B, hB⟩
+    refine ⟨B, ?_⟩
+    intro i
+    simpa [prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)] using hB i
+
+/-- **Exact unboundedness equivalence for the gap-amplified Shaw value.**  The genuine floor-scale
+ratios drift past every proposed bound iff the Shaw values multiplied by the exact gap factors drift
+past every proposed bound.  This is the wall-facing companion to
+`prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove`, recording the same normalization identity in
+the form used when the Shaw side is unbounded.  Pure scale bookkeeping; no CORE/cancellation claim. -/
+theorem prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded {ι : Type*} {q n M : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∀ B : ℝ, ∃ i : ι, B < M i / prizeScale (n i)) ↔
+      (∀ B : ℝ, ∃ i : ι,
+        B < shawValue (q i) (n i) (M i) * Real.sqrt (Real.log (q i / n i))) := by
+  constructor
+  · intro h B
+    rcases h B with ⟨i, hi⟩
+    refine ⟨i, ?_⟩
+    simpa [prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)] using hi
+  · intro h B
+    rcases h B with ⟨i, hi⟩
+    refine ⟨i, ?_⟩
+    simpa [prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)] using hi
+
+
+
 end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_eq_bgkScale
@@ -249,3 +292,5 @@ end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_eq_prizeFloorRatio_div_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_le_prizeFloorBound_div_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_le_prizeFloorBound_div_gap
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded

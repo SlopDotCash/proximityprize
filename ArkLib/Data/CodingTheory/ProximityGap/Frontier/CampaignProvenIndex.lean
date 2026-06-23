@@ -8746,6 +8746,38 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M
 
 #print axioms prizeFloorRatio_family_le_of_uniformShawBound_export
 
+
+/-- Synthesis-gap EXACT BOUNDEDNESS export: over a prize-regime family, boundedness of the genuine
+floor-scale ratios `Mᵢ/√nᵢ` is exactly boundedness of the Shaw values after multiplying by the displayed
+`√log` gap factor.  This is the citable boundedness form of `M/√n = Sh·√log`: a Shaw `O(1)` statement
+becomes a floor-scale prize `O(1)` statement only for the gap-amplified Shaw quantity. -/
+theorem prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove_export {ι : Type*}
+    {q n M : ι → ℝ} (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∃ B : ℝ, ∀ i,
+      M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B) ↔
+      (∃ B : ℝ, ∀ i,
+        _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i)
+          * Real.sqrt (Real.log (q i / n i)) ≤ B) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove
+    hn hnq
+
+#print axioms prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove_export
+
+/-- Synthesis-gap EXACT UNBOUNDEDNESS export: the wall-facing companion to the boundedness equivalence.
+The floor-scale ratios drift beyond every proposed bound iff the gap-amplified Shaw values do.  Pure
+scale algebra over the exact `√log` bridge; no CORE/cancellation claim. -/
+theorem prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded_export {ι : Type*}
+    {q n M : ι → ℝ} (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∀ B : ℝ, ∃ i : ι,
+      B < M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i)) ↔
+      (∀ B : ℝ, ∃ i : ι,
+        B < _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i)
+          * Real.sqrt (Real.log (q i / n i))) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded
+    hn hnq
+
+#print axioms prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded_export
+
 /-- Synthesis-gap INVERSE CONSUMER export: under positive logarithmic thinness, the Shaw value is the
 genuine prize-floor ratio divided by the exact gap factor.  This is a normalization identity only, not
 an upper or lower bound. -/
