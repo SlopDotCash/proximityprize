@@ -5,6 +5,7 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -438,6 +439,68 @@ theorem prize_iff_shawBounded_nonneg_and_floorPrizeRatio
     · exact le_trans (le_max_right _ _) hn
   exact hfloorPack nref hnfloor hq hrespAll M K hfloor
 
+/-! ## Sharpening the floor-unit corridor lower end from `1` to `(5/4)^{1/4}`
+
+The corridor `floorUnit_corridor_one_sqrtL_doorIV_only` pins the floor-normalized ratio `M/√n` in
+`[1, √L]`, wiring the *lower* end to the bare Plancherel/Parseval floor `√n ≤ M` (ratio `≥ 1`).  But
+the repository proves a *strictly stronger* unconditional period floor, the super-diagonal
+Wick-permutation bound `(5/4)^{1/4}·√n ≤ M` (`ShawValueCapstone.superDiagonalFloorConst`, the constant
+from `BGKFloorSharp.worstPeriod_ge_const_sqrt`, `≈ 1.0574 > 1`).  The Shaw-value (`√(n·L)`-unit) bracket
+already absorbed this sharpening (`ShawValueCapstone.shawValue_ge_superDiagonal_floor`), but the
+*floor-unit* (`√n`-unit) corridor in this synthesis still rested on the bare `1`.  These rungs lift the
+floor-unit corridor lower end to the proven super-diagonal constant, so the `√n`-unit corridor sharpens
+from `[1, √L]` to `[(5/4)^{1/4}, √L]`.  This is pure normalization chaining of two proven facts; it
+adds no cancellation/anti-concentration estimate and leaves the open door-(iv) problem exactly as open
+(the upper end `√L` — the thinness factor only door (iv) can shave — is unchanged). -/
+
+/-- **Super-diagonal floor lands the floor-normalized ratio at `(5/4)^{1/4}`.**  Whenever the proven
+unconditional super-diagonal period floor `(5/4)^{1/4}·√n ≤ M` holds, the floor-normalized prize ratio
+`M/√n` is at least `(5/4)^{1/4} ≈ 1.0574`, strictly above the bare Plancherel value `1`.  This is the
+`√n`-unit (floor-unit) analogue of `ShawValueCapstone.shawValue_ge_superDiagonal_floor`. -/
+theorem superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor
+    {M n : ℝ} (hn : 0 < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ floorPrizeRatio M n := by
+  unfold floorPrizeRatio NoFifthDoorTetrachotomy.prizeScale
+  rw [le_div_iff₀ (Real.sqrt_pos.2 hn)]
+  exact hfloor
+
+/-- **The sharpened floor-unit lower end strictly exceeds the bare Plancherel `1`.**  Records that the
+super-diagonal floor constant `(5/4)^{1/4}` genuinely raises the corridor floor above the bare value
+`1`, so the sharpening is non-vacuous. -/
+theorem one_lt_superDiagonalFloorConst_floorUnit :
+    (1 : ℝ) < ShawValueCapstone.superDiagonalFloorConst :=
+  ShawValueCapstone.superDiagonalFloorConst_gt_one
+
+/-- **Sharpened floor-unit corridor `[(5/4)^{1/4}, √L]`, door-(iv)-only.**  Given the proven
+super-diagonal period floor `(5/4)^{1/4}·√n ≤ M`, a classical-door BGK ceiling `M ≤ √(n·L)`, and the
+classical-overshoot refutations, the floor-normalized worst-frequency ratio `M/√n` lives in the
+corridor `[(5/4)^{1/4}, √L]` — strictly narrower at the bottom than the bare `[1, √L]` of
+`floorUnit_corridor_one_sqrtL_doorIV_only`, since `(5/4)^{1/4} > 1`.  As before, the prize is the demand
+to collapse the corridor to `[(5/4)^{1/4}, C]` for an absolute `C`, and only door (iv) can shave the
+`√L`.  This is the floor-unit (`√n`-unit) sibling of the sharpened Shaw bracket
+`[(5/4)^{1/4}/√L, √(n/L)]`. -/
+theorem sharpenedFloorUnit_corridor_doorIV_only
+    {M nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ M)
+    (hceil : M ≤ NoFifthDoorTetrachotomy.bgkScale nref Lref)
+    (hclassicalOvershoots :
+      ∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+        m'.door.isClassical → m'.OvershootsBGK nref Lref) :
+    (ShawValueCapstone.superDiagonalFloorConst ≤ floorPrizeRatio M nref
+        ∧ floorPrizeRatio M nref ≤ Real.sqrt Lref)
+      ∧ (1 < ShawValueCapstone.superDiagonalFloorConst)
+      ∧ (∀ m : NoFifthDoorTetrachotomy.Mechanism,
+          m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref →
+          m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) := by
+  refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
+  · exact superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor hnref hfloor
+  · exact floorPrizeRatio_le_sqrtL_of_bgk_ceiling hnref hceil
+  · exact ShawValueCapstone.superDiagonalFloorConst_gt_one
+  · exact NoFifthDoorTetrachotomy.prizeCertifying_subset_doorIV hnref hLref hclassicalOvershoots
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.one_le_prizeFloorConstant_of_plancherel_floor
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorUnit_corridor_doorIV_only

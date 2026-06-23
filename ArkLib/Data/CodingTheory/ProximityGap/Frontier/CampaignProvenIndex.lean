@@ -8039,6 +8039,32 @@ theorem doorIV_shawValueRefinedWindowWidth_export {n L : ℝ} (hn : 0 < n) (hL :
 #print axioms doorIV_shawValueSuperDiagonalFloor_export
 #print axioms doorIV_shawValueRefinedWindowWidth_export
 
+/-- Door-IV Lane-2 SHARPENED FLOOR-UNIT CORRIDOR export: lifts the floor-normalized (`√n`-unit) prize
+corridor lower end from the bare Plancherel `1` to the proven super-diagonal constant
+`c₀ = (5/4)^{1/4} > 1`.  Given the proven super-diagonal period floor `c₀·√n ≤ M`, a classical-door
+BGK ceiling `M ≤ √(n·L)`, and the classical-overshoot refutations, the floor-normalized ratio `M/√n`
+lives in `[c₀, √L]` (strictly narrower at the bottom than the bare `[1, √L]`), and any prize-floor
+certifying mechanism is door-(iv) `newEvaluation`.  This is the `√n`-unit sibling of the sharpened
+Shaw bracket `[c₀/√L, √(n/L)]`.  Normalization rung; CORE not discharged. -/
+theorem doorIV_sharpenedFloorUnitCorridor_export
+    {M nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ M)
+    (hceil : M ≤ NoFifthDoorTetrachotomy.bgkScale nref Lref)
+    (hclassicalOvershoots :
+      ∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+        m'.door.isClassical → m'.OvershootsBGK nref Lref) :
+    (ShawValueCapstone.superDiagonalFloorConst ≤
+          DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M nref
+        ∧ DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M nref ≤ Real.sqrt Lref)
+      ∧ (1 < ShawValueCapstone.superDiagonalFloorConst)
+      ∧ (∀ m : NoFifthDoorTetrachotomy.Mechanism,
+          m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref →
+          m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) :=
+  DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorUnit_corridor_doorIV_only
+    hnref hLref hfloor hceil hclassicalOvershoots
+
+#print axioms doorIV_sharpenedFloorUnitCorridor_export
+
 /-- Door-IV Lane-3 BOUNDED-EXCEPTION deficit-budget √-floor export: sharpens the sub-`(log2)/2`
 average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
 split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep
