@@ -13645,3 +13645,13 @@ over a nonempty family with positive `nᵢ` and a uniform super-diagonal floor `
 WHY IT MATTERS: the previous `K≤1` no-go rules out all constants at or below the Plancherel baseline. This pins the most cited concrete endpoint, `K=1`, as its own export: any uniform prize constant must be strictly above the bare Plancherel unit.
 
 VERDICT: PURE lower-bound/no-go bookkeeping for prize constants. It proves no upper bound and makes no CORE / cancellation / anti-concentration / capacity claim. CORE remains OPEN.
+
+## [doorIV-per-level-factor-uncompensated-block-export] uncompensated bad blocks break the finite sqrt-two budget (2026-06-23, g55)
+Lane: door-(iv) Lane-3, export hardening for the finite per-level-factor compensation ledger.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_perLevelFactorUncompensatedBlockBreaksBudget_export`: if a block product is strictly above its own `(√2)^r` budget and the complementary product is still at or above `(√2)^b`, then the total product is strictly above `(√2)^(b+r)`.
+
+WHY IT MATTERS: the compensation law already had one-bad-rung, two-bad-rung, super-budget-block, and scaled-uncompensated exports. This wires the unscaled uncompensated block no-go into the citable index too: a bad block cannot be ignored unless some other block pays a strict deficit.
+
+VERDICT: finite bookkeeping constraint only. It does not prove the arithmetic `√2` gate, does not close CORE, and makes no cancellation / completion / moment / capacity claim.

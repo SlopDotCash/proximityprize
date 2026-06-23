@@ -8509,6 +8509,19 @@ theorem doorIV_perLevelFactorSuperBudgetBlockNeedsCompensation_export {b r : ℕ
 
 #print axioms doorIV_perLevelFactorSuperBudgetBlockNeedsCompensation_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR uncompensated-block export: if a bad block is already above
+its own `(√2)^r` budget and the complementary product is still at or above its own `(√2)^b` budget,
+then the total product strictly exceeds the height-`b+r` `√2` budget.  Pure finite algebra; no
+arithmetic `√2` gate or CORE claim. -/
+theorem doorIV_perLevelFactorUncompensatedBlockBreaksBudget_export {b r : ℕ}
+    {badBlock R : ℝ} (hbad : (Real.sqrt 2) ^ r < badBlock)
+    (hR : (Real.sqrt 2) ^ b ≤ R) :
+    (Real.sqrt 2) ^ (b + r) < badBlock * R :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.totalProduct_gt_sqrtTwo_pow_of_uncompensated_superBudget_block
+    hbad hR
+
+#print axioms doorIV_perLevelFactorUncompensatedBlockBreaksBudget_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR scaled uncompensated-block export: if a bad block is a factor
 `K` above its own `(√2)^r` budget, then the complementary product must fall strictly below the
 reciprocal `1/K` share of its own `(√2)^b` budget.  Equivalently, a `K`-overshoot block paired with an
