@@ -13116,3 +13116,26 @@ manufactures a new object. Lean (axiom-clean ⊆{propext,Classical.choice,Quot.s
 `CampaignProvenIndex.doorIV_mixedConjugateMoment_splitIndependent_anyDegree_export`.
 VERDICT: completes the mixed-conjugate vacuity to the FULL moment ladder. No CORE/cancellation/
 completion/capacity claim. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
+
+## [doorIV-per-level-factor-subtwo] two-dilate no-co-peak is exactly the normalized sub-doubling factor (2026-06-23, g55)
+Lane: door-(iv) Lane-3 constraint lemma, formalizing the per-level factor algebra prompted by the per-level-factor probe.
+
+PROBE CONTEXT (from `scripts/probes/probe_dooriv_perlevel_factor_law.py`, report 1782300000): for proper thin
+2-power subgroups and full worst-frequency scans through n=128, the same-prime in-tree descent factor
+`c(n)=M(n)/M(n/2)` is stable near `√2` and strictly below the trivial co-peak ceiling `2`.  This entry
+kernels only the algebraic interpretation of that probe, not its empirical constants.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry):
+`_DoorIVPerLevelFactorSubTwo.{perLevelFactor_le_two_of_dilate_le_two_mul,
+perLevelFactor_lt_two_iff_dilate_lt_two_mul,no_copeak_of_perLevelFactor_lt_two,sqrt_two_lt_two,
+prizeBudget_of_sqrtTwo_perLevelFactor}`, exported in `CampaignProvenIndex` as
+`doorIV_perLevelFactorSubTwo_export` and `doorIV_perLevelFactorSqrtTwoPrizeBudget_export`.
+If the two-dilate maximum is normalized as `H = c·Smax` with `Smax>0`, then `H≤2·Smax` gives `c≤2`, and
+strict no-co-peak `H<2·Smax` is equivalent to `c<2`.  The theorem also pins the target separation
+`√2<2` and restates that a supplied `LevelRatioBoundNZ … √2` gate telescopes to the `C√(nL)` prize-shaped
+budget.  Thus the empirical per-level factor is now tied to the kernel-checked no-co-peak obstruction:
+sub-doubling is the normalized form of the strict two-dilate gap, while the real open arithmetic content
+remains the stronger `√2` gate.
+
+VERDICT: does NOT close CORE.  No cancellation, completion, moment, anti-concentration, or capacity claim.
+CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.

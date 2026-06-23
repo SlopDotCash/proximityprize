@@ -72,6 +72,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVEighthCumulantSignU
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedPrizeReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedTelescopeBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatePrizeBudget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPerLevelFactorSubTwo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedBaseThresholdConcrete
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstCosetCountSingleton
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGrandSynthesis
@@ -8388,5 +8389,37 @@ theorem doorIV_mixedConjugateMoment_splitIndependent_anyDegree_export
     s η hreal a₁ b₁ a₂ b₂ h
 
 #print axioms doorIV_mixedConjugateMoment_splitIndependent_anyDegree_export
+
+/-- Door-IV Lane-3 PER-LEVEL FACTOR export: normalizes the two-dilate recursion by the thinner-level
+marginal maximum.  If the two-dilate maximum is written `H = c·Smax` with `Smax > 0`, then the strict
+no-co-peak gap `H < 2·Smax` is EQUIVALENT to the strict sub-doubling per-level factor `c < 2`.  This is
+pure bookkeeping for the empirical law `c(n)=M(n)/M(n/2)`: the probe-localized observation "factor below
+2" is exactly the normalized form of the already-kernelled no-co-peak obstruction, while the prize gate
+remains the stronger open target `c≤√2`.  No empirical numeric claim, CORE upper bound, cancellation,
+completion, moment, anti-concentration, or capacity claim is made here. -/
+theorem doorIV_perLevelFactorSubTwo_export
+    {H Smax c : ℝ} (hSmax : 0 < Smax) (hH : H = c * Smax) :
+    c < 2 ↔ H < 2 * Smax :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.perLevelFactor_lt_two_iff_dilate_lt_two_mul hSmax hH
+
+#print axioms doorIV_perLevelFactorSubTwo_export
+
+/-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
+factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
+identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.
+The open arithmetic content is precisely the `√2` gate; this theorem only composes the telescope and
+real-algebra budget conversion. -/
+theorem doorIV_perLevelFactorSqrtTwoPrizeBudget_export
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] [Nontrivial F]
+    {ψ : AddChar F ℂ} {G : Finset F} {ζ : F} {C L n : ℝ} {μ : ℕ}
+    (hr : SubgroupGaussSumSecondMoment.LevelRatioBoundNZ ψ G ζ μ (Real.sqrt 2))
+    (h_dim : (Real.sqrt 2) ^ μ ≤ Real.sqrt n)
+    (h_base : ProximityGap.Frontier.DoorIVXGatedTelescopeBridge.levelWorst ψ G ζ 0 ≤ C * Real.sqrt L)
+    (hC : 0 ≤ C) (hL : 0 ≤ L) (hn : 0 ≤ n) :
+    ProximityGap.Frontier.DoorIVXGatedTelescopeBridge.levelWorst ψ G ζ μ ≤ C * Real.sqrt (n * L) :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor
+    hr h_dim h_base hC hL hn
+
+#print axioms doorIV_perLevelFactorSqrtTwoPrizeBudget_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
