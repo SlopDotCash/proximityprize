@@ -183,7 +183,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVLeadingZeroDeficitF
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitSumScatteredFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVEvenMomentPhaseVacuity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomentCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauchy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
+
+set_option linter.style.longFile 8800
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -8607,5 +8610,44 @@ theorem gap_family_le_prizeFloorBound_div_shawFloor_export {ι : Type*} {q n M :
     hn hnq hc hfloor hPrize
 
 #print axioms gap_family_le_prizeFloorBound_div_shawFloor_export
+
+/-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
+`A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
+`(Σ_b (η_b)^D)² ≤ card(s) · Σ_b (η_b)^{2D}`.  So the last named "different object" the moment-collapse
+leaves standing (real, sign-sensitive, unlike the even modulus moments) is dominated by `√card` times
+the refuted order-`2D` even/energy moment.  Combined with `_DoorIVEvenMomentPhaseVacuity` +
+`_DoorIVMixedConjugateMomentCollapse`, this forecloses the Lane-1 "phase-carrying moment" door at BOTH
+parities: every functional in the `Σ η^a conj(η)^b` lattice routes back to the dead modulus/energy face.
+Constraint lemma — NO CORE / cancellation / completion / anti-concentration / capacity claim;
+CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_sq_signedMoment_le_card_mul_evenMoment_export
+    {β : Type*} (s : Finset β) (η : β → ℝ) (D : ℕ) :
+    (∑ b ∈ s, (η b) ^ D) ^ 2 ≤ (s.card : ℝ) * ∑ b ∈ s, (η b) ^ (2 * D) :=
+  ArkLib.ProximityGap.Frontier.DoorIVOddSignedMomentCauchy.sq_signedMoment_le_card_mul_evenMoment
+    s η D
+
+/-- Door-IV Lane-1 ODD SIGNED-MOMENT magnitude export: `|A_D| ≤ √(card · energy_{2D})`.  The signed odd
+moment's magnitude cannot exceed the `√card`-scaled square root of the (refuted) even/energy moment. -/
+theorem doorIV_abs_signedMoment_le_sqrt_card_mul_evenMoment_export
+    {β : Type*} (s : Finset β) (η : β → ℝ) (D : ℕ) :
+    |∑ b ∈ s, (η b) ^ D| ≤ Real.sqrt ((s.card : ℝ) * ∑ b ∈ s, (η b) ^ (2 * D)) :=
+  ArkLib.ProximityGap.Frontier.DoorIVOddSignedMomentCauchy.abs_signedMoment_le_sqrt_card_mul_evenMoment
+    s η D
+
+/-- Door-IV Lane-1 ODD SIGNED-MOMENT no-go export (energy budget controls the signed moment): if the
+energy moment is below `E₀` and `card(s)·E₀ < T²` (with `T ≥ 0`), the signed `D`-moment cannot reach `T`
+in magnitude.  A prize-scale signed-moment certificate already forces a matching energy expenditure;
+the odd signed moment carries no cancellation independent of the dead energy face. -/
+theorem doorIV_not_abs_signedMoment_ge_of_energy_budget_export
+    {β : Type*} (s : Finset β) (η : β → ℝ) (D : ℕ) {E₀ T : ℝ}
+    (hE : ∑ b ∈ s, (η b) ^ (2 * D) ≤ E₀) (hT : 0 ≤ T)
+    (hbudget : (s.card : ℝ) * E₀ < T ^ 2) :
+    |∑ b ∈ s, (η b) ^ D| < T :=
+  ArkLib.ProximityGap.Frontier.DoorIVOddSignedMomentCauchy.not_abs_signedMoment_ge_of_energy_budget
+    s η D hE hT hbudget
+
+#print axioms doorIV_sq_signedMoment_le_card_mul_evenMoment_export
+#print axioms doorIV_abs_signedMoment_le_sqrt_card_mul_evenMoment_export
+#print axioms doorIV_not_abs_signedMoment_ge_of_energy_budget_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

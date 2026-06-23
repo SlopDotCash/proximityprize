@@ -13310,3 +13310,31 @@ the reduction cannot hide that obligation in asymptotic notation.
 
 VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
 anti-concentration / capacity claim, and NO claim the hypotheses hold. CORE remains OPEN.
+
+## [doorIV-odd-signed-moment-cauchy] the odd signed moment routes back to the energy face (2026-06-23, sol)
+Lane: Lane-1 phase-vacuity EXTENSION (closes the odd endpoint of the mixed-conjugate moment ladder).
+
+CONSTRAINT LEMMAS (axiom-clean, real Cauchy-Schwarz proof, NO sorry) in `_DoorIVOddSignedMomentCauchy.lean`,
+exported as `CampaignProvenIndex.{doorIV_sq_signedMoment_le_card_mul_evenMoment_export,
+doorIV_abs_signedMoment_le_sqrt_card_mul_evenMoment_export,
+doorIV_not_abs_signedMoment_ge_of_energy_budget_export}`:
+- `sq_signedMoment_le_card_mul_evenMoment`: for any finite real-valued period field `η : β → ℝ` and
+  degree `D`, `(Σ_b (η_b)^D)² ≤ card(s) · Σ_b (η_b)^{2D}` (Cauchy-Schwarz / power-mean,
+  `sq_sum_le_card_mul_sum_sq`). The signed `D`-moment's square is bounded by `card` times the order-`2D`
+  even/energy moment.
+- `abs_signedMoment_le_sqrt_card_mul_evenMoment`: magnitude form `|A_D| ≤ √(card · energy_{2D})`.
+- `not_abs_signedMoment_ge_of_energy_budget` + `evenMoment_ge_of_abs_signedMoment_ge`: consumer no-go /
+  energy-floor contrapositive — a signed-moment spike of height `T` already forces energy ≥ `T²/card`.
+
+WHY IT MATTERS: `_DoorIVMixedConjugateMomentCollapse` proved the whole `Σ η^a conj(η)^b` lattice is
+split-independent at every total degree — EVEN total degree lands on the energy moment `E_r` (already
+refuted, door (i)/BGK), ODD total degree `D` lands on the real SIGNED moment `A_D = Σ_b (η_b)^D`. `A_D`
+was the LAST named "different object" the collapse left standing: it is real and sign-sensitive, unlike
+the even modulus moments, so a priori it could carry door-(iv) content. This entry forecloses it: `A_D`
+is Cauchy-dominated by the energy face, so a prize-scale signed-moment certificate already forces a
+matching energy expenditure. The Lane-1 "phase-carrying moment" door is now fully closed at BOTH
+parities; every functional in the mixed-conjugate lattice routes back to the dead modulus/energy face.
+
+VERDICT: STRUCTURAL constraint lemma (kernel-checked Cauchy-Schwarz). NO CORE / cancellation /
+completion / moment-saving / anti-concentration / capacity / asymptotic claim. CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
