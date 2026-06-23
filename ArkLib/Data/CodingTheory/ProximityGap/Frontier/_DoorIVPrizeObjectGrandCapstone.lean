@@ -125,6 +125,68 @@ theorem object_trapped_and_corridor
       (gap_momentSourced hEdge hExcess),
    realSup_in_moment_corridor hEdge hExcess⟩
 
+/-- **Four-pillar grand capstone — adds the unconditional floor envelope.**
+
+The three-pillar capstone `prize_iff_shawBounded_doorIV_only_and_object_moment_trapped` carries the
+reduction, the mechanism exclusion, and the object moment-trap, but it says nothing about *where the
+prize constant can live*.  The campaign's most recent landings
+(`floorUnit_unconditional_bracket`) pinned that down with **no door hypothesis at all**: from the
+proven super-diagonal period floor `c₀·√n ≤ M` (`c₀ = (5/4)^{1/4}`, the sharp Wick-permutation
+4th-moment constant) together with the trivial cardinality ceiling `M ≤ nref`, the floor-normalized
+worst-frequency ratio `M/√nref` lives unconditionally in `[c₀, √nref]`.
+
+This theorem fuses that bedrock envelope onto the three pillars, so the single citable statement now
+also records the **bracket inside which the entire open problem lives**: the prize is the demand to
+collapse the *unconditional* `√nref` ceiling down to an absolute constant `C`, and the conditional
+door ceiling `√L` (`< √nref` for `1 < L < nref`) sits strictly inside this bracket — the gap
+`[√L, √nref]` is what a classical door buys for free, the residual `[C, √L]` is the door-(iv)-only
+frontier.  Nothing new is proven about CORE; this is a *packaging* extension that consumes the
+unconditional-bracket landing into the grand statement.  No cancellation / anti-concentration estimate
+is asserted; CORE stays open. -/
+theorem prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < ShawValueCapstone.prizeScale (n i) (L i))
+    {nref Lref : ℝ} (hnref : 0 < nref) (hLref : 1 < Lref)
+    (hclassicalOvershoots :
+      ∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+        m'.door.isClassical → m'.OvershootsBGK nref Lref)
+    {iidSup realSup Δ : ℝ}
+    (hEdge : SurrogateLeReal iidSup realSup)
+    (hExcess : gap iidSup realSup ≤ Δ)
+    {Mref : ℝ}
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ Mref)
+    (hceil : Mref ≤ nref) :
+    -- (1) reduction
+    ((∃ C, 0 ≤ C ∧ ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
+        (∃ C, 0 ≤ C ∧ ShawValueCapstone.shawValueFamilyBound M n L C)) ∧
+      -- (2) door-(iv)-only mechanism exclusion
+      (∀ m : NoFifthDoorTetrachotomy.Mechanism,
+        m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref →
+        m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
+      -- (3) the door-(iv) object's sup is pinned to the moment-corridor
+      (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
+      -- (4) the unconditional floor envelope: the prize constant lives in [c₀, √nref]
+      (ShawValueCapstone.superDiagonalFloorConst ≤
+          DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ∧
+        DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ≤ Real.sqrt nref) := by
+  obtain ⟨hred, hexcl, htrap⟩ :=
+    prize_iff_shawBounded_doorIV_only_and_object_moment_trapped
+      hs hnref hLref hclassicalOvershoots hEdge hExcess
+  exact ⟨hred, hexcl, htrap,
+    DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hnref hfloor hceil⟩
+
+/-- **The floor envelope is independent of the reduction/exclusion** (modularity witness): the
+unconditional bracket `[c₀, √nref]` holds from the proven floor + trivial ceiling alone, referencing
+neither the Shaw-value reduction nor the tetrachotomy.  Pillar (4) is a free-standing quantitative
+envelope, corroborating the other three from an independent input. -/
+theorem floor_bracketed_independent {Mref nref : ℝ} (hnref : 0 < nref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ Mref)
+    (hceil : Mref ≤ nref) :
+    ShawValueCapstone.superDiagonalFloorConst ≤
+        DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ∧
+      DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ≤ Real.sqrt nref :=
+  DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hnref hfloor hceil
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 
 -- Axiom audit: all theorems must be ⊆ {propext, Classical.choice, Quot.sound}
@@ -133,4 +195,6 @@ open ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 #print axioms prize_iff_shawBounded_doorIV_only_and_object_moment_trapped
 #print axioms object_moment_trapped_independent
 #print axioms object_trapped_and_corridor
+#print axioms prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed
+#print axioms floor_bracketed_independent
 end AxiomAudit
