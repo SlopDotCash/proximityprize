@@ -231,6 +231,29 @@ theorem remainderProduct_lt_sqrtTwo_pow_of_two_bad_rungs {b : ℕ} {cBad₁ cBad
   rw [hpow] at htotal
   linarith
 
+
+/-- **Any super-budget block requires matching strict compensation.**  This packages the finite
+cluster law behind the one- and two-bad-rung lemmas.  If a block of rungs has product `badBlock`
+strictly larger than its own `√2` budget `(√2)^r`, while the total height `b+r` product still meets the
+`√2` budget, then the complementary product must be strictly below `(√2)^b`.  This is pure
+bookkeeping: proving that the door-(iv) arithmetic supplies such compensated blocks remains open. -/
+theorem remainderProduct_lt_sqrtTwo_pow_of_superBudget_block {b r : ℕ} {badBlock R : ℝ}
+    (hR : 0 ≤ R) (hbad : (Real.sqrt 2) ^ r < badBlock)
+    (htotal : badBlock * R ≤ (Real.sqrt 2) ^ (b + r)) :
+    R < (Real.sqrt 2) ^ b := by
+  have hspos : 0 < Real.sqrt 2 := Real.sqrt_pos_of_pos (by norm_num : (0 : ℝ) < 2)
+  by_contra hnot
+  have hRge : (Real.sqrt 2) ^ b ≤ R := le_of_not_gt hnot
+  have hpowb_pos : 0 < (Real.sqrt 2) ^ b := pow_pos hspos b
+  have hbad_nonneg : 0 ≤ badBlock := le_of_lt (lt_trans (pow_pos hspos r) hbad)
+  have hstrict : (Real.sqrt 2) ^ r * (Real.sqrt 2) ^ b < badBlock * R := by
+    exact mul_lt_mul hbad hRge hpowb_pos hbad_nonneg
+  have hpow : (Real.sqrt 2) ^ (b + r) = (Real.sqrt 2) ^ r * (Real.sqrt 2) ^ b := by
+    rw [pow_add]
+    ring
+  rw [hpow] at htotal
+  linarith
+
 /-- **Prize budget from the normalized `√2` per-level factor.**  This restates the existing corrected
 x-gate capstone in the per-level-factor language: once the single open arithmetic gate supplies
 `LevelRatioBoundNZ … √2`, the telescope and base estimate yield `C√(nL)`.  It deliberately contains no
@@ -261,4 +284,5 @@ end ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.exists_super_sqrtTwo_factor_of_telescope_counterexample
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_pred_of_bad_rung
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_of_two_bad_rungs
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_of_superBudget_block
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor

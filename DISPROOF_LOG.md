@@ -13205,6 +13205,7 @@ compensation lemma from a single obstruction to a clustered obstruction.  Scope:
 bookkeeping only; no empirical product bound, no arithmetic `√2` gate, no moment/completion route, and
 no CORE upper-bound claim.
 
+<<<<<<< Updated upstream
 ## [doorIV-synthesis-scale-bridge] the reduction/door-half scale gap is EXACTLY √(log(q/n)) (2026-06-23, sol)
 Lane: Lane-2 capstone hardening — close the one bookkeeping rung `_ShawGrandSynthesis` left as prose.
 
@@ -13232,3 +13233,12 @@ VERDICT: PURE definitional/algebraic bookkeeping — renders the synthesis's ope
 kernel-checked quantity `√(log(q/n))`. NO new mathematical content: no CORE / cancellation / completion
 / moment / anti-concentration / capacity / asymptotic claim, and NO claim the gap factor is bounded
 (absorbing it IS the open door-(iv) problem). CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+=======
+### [doorIV-per-level-factor-superbudget-block-compensation] (2026-06-23, g55)
+Formalized the general clustered compensation law in `_DoorIVPerLevelFactorSubTwo.lean`:
+`remainderProduct_lt_sqrtTwo_pow_of_superBudget_block`.  If a finite block of rungs has product
+strictly above its own `(√2)^r` budget, and the total height-`b+r` product still satisfies the `√2`
+budget, then the complementary product is strictly below `(√2)^b`.  This generalizes the one- and
+two-bad-rung compensation statements into a reusable block certificate.  Scope: finite real-algebra
+bookkeeping only; no arithmetic `√2` gate, no empirical claim, no moment/completion route, no CORE bound.
+>>>>>>> Stashed changes

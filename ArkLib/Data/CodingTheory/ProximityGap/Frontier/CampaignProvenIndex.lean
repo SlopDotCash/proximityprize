@@ -8484,6 +8484,19 @@ theorem doorIV_perLevelFactorTwoBadRungsNeedCompensation_export {b : ℕ} {cBad�
 
 #print axioms doorIV_perLevelFactorTwoBadRungsNeedCompensation_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR super-budget block compensation export: any finite block whose
+product is strictly above its own `(√2)^r` budget forces the complementary product in a still-good
+height-`b+r` tower to lie strictly below `(√2)^b`.  This is the general finite slack-accounting law for
+clustered bad rungs, not an arithmetic proof of the `√2` gate. -/
+theorem doorIV_perLevelFactorSuperBudgetBlockNeedsCompensation_export {b r : ℕ} {badBlock R : ℝ}
+    (hR : 0 ≤ R) (hbad : (Real.sqrt 2) ^ r < badBlock)
+    (htotal : badBlock * R ≤ (Real.sqrt 2) ^ (b + r)) :
+    R < (Real.sqrt 2) ^ b :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_of_superBudget_block
+    hR hbad htotal
+
+#print axioms doorIV_perLevelFactorSuperBudgetBlockNeedsCompensation_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
 factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
 identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.
