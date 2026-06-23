@@ -13381,3 +13381,11 @@ CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) in `_ShawGapDriftContraposi
 if `√(log(qᵢ/nᵢ))` drifts past every rescaled target and every Shaw value stays above a fixed `c>0`, then the genuine prize-floor ratios `Mᵢ/√nᵢ` also drift past every target.
 
 WHY IT MATTERS: this is the explicit failure/drift contrapositive of the exact identity `M/√n = Sh·√log`. It pins the no-go: a uniform prize-floor bound with nonvanishing Shaw value already requires controlling the open door-(iv) `√log` gap. Pure algebra; no CORE/cancellation/completion/moment/anti-concentration/capacity claim. CORE remains OPEN.
+
+
+## [doorIV-shaw-gap-bddAbove-no-go] bounded prize-floor ratios force bounded √log gap under a Shaw floor (2026-06-23, g55)
+Lane: Lane-2 capstone hardening / boundedness wrapper for the Shaw-scale inverse no-go.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) in `_ShawGapBddAboveNoGo.lean`, exported as `CampaignProvenIndex.gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export`: if a prize-regime family has some uniform bound on `Mᵢ/√nᵢ` and every Shaw value stays above a fixed `c>0`, then the exact gap factors `√(log(qᵢ/nᵢ))` are uniformly bounded.
+
+WHY IT MATTERS: this is the existential boundedness form of the pointwise gap no-go. Any `O(1)` prize-floor theorem in a family with nonvanishing Shaw value has already absorbed the open door-(iv) `√log` gap. Pure algebra; no CORE/cancellation/completion/moment/anti-concentration/capacity claim. CORE remains OPEN.

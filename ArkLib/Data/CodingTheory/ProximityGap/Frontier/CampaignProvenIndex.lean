@@ -78,6 +78,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstCosetCountSing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGrandSynthesis
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawScaleDoorScaleBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGapDriftContrapositive
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawGapBddAboveNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GKPhaseCoboundaryNonLinear
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AttackMarkoffCouplingNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvTannakianNonTorsionPump
@@ -8698,6 +8699,23 @@ theorem prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export {ι : Ty
     hn hnq hc hfloor hgapDrift
 
 #print axioms prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor_export
+
+/-- Synthesis-gap BOUNDEDNESS NO-GO export: if genuine prize-floor ratios are uniformly bounded and
+every Shaw value stays above a fixed positive floor `c`, then the exact `√log` gap factors are uniformly
+bounded too.  This existential wrapper is the boundedness-form companion to the pointwise inverse no-go;
+it makes explicit that an `O(1)` prize-floor theorem with nonvanishing Shaw value already controls the
+open door-(iv) gap. -/
+theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type*}
+    {q n M : ι → ℝ} {c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i))
+    (hPrizeBdd : ∃ B : ℝ, ∀ i,
+      M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B) :
+    ∃ G : ℝ, ∀ i, Real.sqrt (Real.log (q i / n i)) ≤ G :=
+  ArkLib.ProximityGap.Frontier.ShawGapBddAboveNoGo.gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor
+    hn hnq hc hfloor hPrizeBdd
+
+#print axioms gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
