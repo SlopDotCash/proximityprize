@@ -13880,3 +13880,20 @@ VERDICT: SHARPNESS of the Plancherel floor (lower endpoint of the Shaw bracket),
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCMeanFloorSharp.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-peak-floor-sharp] the off-DC peak floor against the SHARP closed-form floor (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 floor-substrate composition — chains two separately-proven rungs that were never composed, flooring the prize object directly against the sharp `d·(1−o(1))` closed form.
+
+CONTEXT: `_DoorIVSubgroupOffDCPeakFloor.exists_offDC_peak_sq_ge_mean` proved `M(μ_d)² ≥ (N·d−d²)/(N−1)` (peak² ≥ exact off-DC mean energy). `_DoorIVSubgroupOffDCMeanFloorSharp.subgroupIndicator_offDC_mean_ge` proved `(N·d−d²)/(N−1) ≥ d·(1−(d−1)/(N−1))` (mean ≥ sharp closed form). MISSING: the transitive composition flooring the PEAK directly against the sharp form, so the `→ √n` convergence is explicit without unfolding the raw quotient.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupOffDCPeakFloorSharp.lean`, for the order-d subgroup indicator 1_{μ_d} (d ∣ N, 1 < N):
+- exists_offDC_peak_sq_ge_sharpFloor (HEADLINE): ∃ off-DC argmax k₀ ≠ 0 with `d·(1 − (d−1)/(N−1)) ≤ ‖𝓕 1_{μ_d} k₀‖²` (peak² ≥ sharp closed-form floor, by transitivity of the two proven rungs).
+- exists_offDC_peak_ge_sqrt_sharpFloor (HEADLINE, norm form): `√(d·(1 − (d−1)/(N−1))) ≤ ‖𝓕 1_{μ_d} k₀‖`.
+
+WHY IT MATTERS: in the prize regime `N = q ≈ d^β` (β≈4-5) the relative defect `(d−1)/(N−1) ≈ d^{1−β} → 0`, so the off-DC peak floor is `√(d·(1−o(1))) = √n·(1−o(1))` — the honest Plancherel `√n` floor on the CORRECT off-DC object, now stated against the SHARP form whose convergence to `√n` is manifest (no quotient-unfolding). The lower endpoint of the Shaw bracket is thus pinned on the prize object itself in its tightest form; the door-(iv) gap is the multiplicative `√(log(p/n))` factor strictly ABOVE this floor.
+
+VERDICT: SHARP form of the off-DC peak FLOOR (lower bound, the EASY direction / lower endpoint of the Shaw bracket), axiom-clean. It is NOT the open CORE upper bound `M(μ_n) ≤ C·√(n·log(p/n))` (the off-DC peak from ABOVE). No cancellation, completion, anti-concentration, moment-saving, or capacity claim. CORE remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakFloorSharp.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
