@@ -14114,6 +14114,7 @@ VERDICT: stable export/indexing of the dilation-tower no-go only. No CORE upper 
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
 
+<<<<<<< Updated upstream
 ## door-(iv) the pooled extreme-tail constant is the open object; bounded-below ⟺ prize (2026-06-23, sol)
 
 Lane: Door-(iv) Lane-1 PROBE → Lane-3 constraint lock. Refines the EVT picture of
@@ -14154,5 +14155,17 @@ only live door; the open object is now the single scalar c₀.
 
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPooledTailConstantBoundedBelow.lean`,
 axiom-clean (all 7 theorems' axioms ⊆ {propext, Classical.choice, Quot.sound}).
+=======
+## [doorIV-dilation-tower-prize-scale-forcing-exports] stable exports for the sqrt2 requirement (g55, 2026-06-23)
+Lane: Door (iv), Lane 3 refuted-lever indexing.
+
+CONSTRAINT EXPORTS added to `CampaignProvenIndex`:
+- `doorIV_tower_reaches_prizeScale_forces_c_le_export`: if an iterated factor-`c` tower reaches the `K*2^(a/2)` prize scale at depth `a`, then `c^a <= (K*2^(a/2))/M0`.
+- `doorIV_dilation_tower_overshoots_prizeScale_export`: contrapositive overshoot form for the forced factor-2 tower.
+
+WHY IT MATTERS: the abstract/concrete tower exports say factor-2 iteration gives `2^a`. These two exports record the prize-scale comparison directly: a tower proof would need product growth on the order of `2^(a/2)`, i.e. average factor sqrt2 up to constants, while the measured worst-frequency dilation step forces factor `2`.
+
+VERDICT: citable no-sqrt-saving arithmetic for the dyadic-recursion route only. No CORE upper bound, cancellation, anti-concentration, completion, moment-saving, or capacity claim; CORE remains OPEN.
+>>>>>>> Stashed changes
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>

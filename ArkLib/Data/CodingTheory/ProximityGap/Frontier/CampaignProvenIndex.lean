@@ -9645,4 +9645,27 @@ theorem doorIV_worstPeriodChain_saturates_trivial_export {F : Type*} [Field F] [
 
 #print axioms doorIV_worstPeriodChain_saturates_trivial_export
 
+/-- Door-IV Lane-3 prize-scale forcing export: if a fixed per-level factor `c` were enough for the
+iterated tower to reach the prize `2^(a/2)` scale at depth `a`, then the finite witness inequality
+`c^a ≤ (K * 2^(a/2)) / M0` is forced.  This is the quantitative form of why any successful tower
+recursion must average near `√2`, not `2`.  Constraint only; no asymptotic or CORE claim. -/
+theorem doorIV_tower_reaches_prizeScale_forces_c_le_export {c K M0 : ℝ} {a : ℕ}
+    (hM0 : 0 < M0) (hreach : c ^ a * M0 ≤ K * 2 ^ (a / 2 : ℝ)) :
+    c ^ a ≤ (K * 2 ^ (a / 2 : ℝ)) / M0 :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.tower_reaches_prizeScale_forces_c_le
+    hM0 hreach
+
+#print axioms doorIV_tower_reaches_prizeScale_forces_c_le_export
+
+/-- Door-IV Lane-3 prize-scale overshoot export: when the forced factor-`2` tower budget exceeds
+`K * 2^(a/2)` after normalizing by base mass, the iterated factor-`2` descent cannot be a prize-scale
+argument at that depth.  This is the contrapositive no-√-saving lock for the dyadic recursion. -/
+theorem doorIV_dilation_tower_overshoots_prizeScale_export {K M0 : ℝ} {a : ℕ}
+    (hM0 : 0 < M0) (hover : (K * 2 ^ (a / 2 : ℝ)) / M0 < 2 ^ a) :
+    K * 2 ^ (a / 2 : ℝ) < 2 ^ a * M0 :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVDilationTowerSaturates.dilation_tower_overshoots_prizeScale
+    hM0 hover
+
+#print axioms doorIV_dilation_tower_overshoots_prizeScale_export
+
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
