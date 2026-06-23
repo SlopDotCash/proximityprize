@@ -6732,6 +6732,20 @@ theorem doorIV_cosetHalf_sameSign_coherence_eq_one_export {A B : ℝ}
   _root_.ProximityGap.Frontier.DoorIVCosetHalfCoherence.twoPieceCoherence_eq_one_of_sameSign
     hsign hsum
 
+/-- **[Lane 1/3 raw coset-half same-sign no-go]** Same-sign real halves saturate the raw index-2
+coherence at `1`, so no positive `ε` saving certificate `ρ ≤ 1-ε` can hold in this branch. Any door-(iv)
+coset-half theorem must first exclude same-sign adversarial frequencies or refine the split. -/
+theorem doorIV_cosetHalf_noPositiveSaving_of_sameSign_export {A B ε : ℝ}
+    (hsign : (0 ≤ A ∧ 0 ≤ B) ∨ (A ≤ 0 ∧ B ≤ 0)) (hsum : A + B ≠ 0)
+    (hε : 0 < ε) :
+    ¬ _root_.ProximityGap.Frontier.DoorIVCosetHalfCoherence.twoPieceCoherence A B ≤ 1 - ε := by
+  intro hsave
+  have heq := doorIV_cosetHalf_sameSign_coherence_eq_one_export hsign hsum
+  rw [heq] at hsave
+  linarith
+
+#print axioms doorIV_cosetHalf_noPositiveSaving_of_sameSign_export
+
 /-- **[Lane 1/3 raw coset-half obstruction]** In the opposite-sign case, a non-strict `ε` coherence
 saving is equivalent to the minority half carrying the corresponding `ε/2` share of the total
 absolute half-mass. Opposite signs alone do not prove the missing anti-concentration input. -/

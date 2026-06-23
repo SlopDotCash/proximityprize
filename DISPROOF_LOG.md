@@ -13694,3 +13694,13 @@ CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIn
 WHY IT MATTERS: this is the contrapositive form used by probes and prose. A raw index-2 coset-half method cannot certify strict door-(iv) coherence drop unless it first proves the proportional minority-mass threshold. The obstruction is exact algebra, not heuristic.
 
 VERDICT: exact two-piece real-algebra no-go only. NO CORE upper bound, cancellation, completion, moment, capacity, or asymptotic claim; CORE remains OPEN.
+
+## [doorIV-coset-half-samesign-no-positive-saving] same-sign raw coset-half branch admits no positive coherence saving (2026-06-23, g55)
+Lane: door-(iv) Lane-1/3, direct no-go consumer of same-sign coset-half coherence saturation.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_cosetHalf_noPositiveSaving_of_sameSign_export`: if two real half-period pieces have the same sign and nonzero total, then for every `ε>0` the certificate `twoPieceCoherence A B ≤ 1-ε` is impossible.
+
+WHY IT MATTERS: the raw index-2 split has an exact same-sign saturation branch (`ρ=1`). A door-(iv) coset-half anti-concentration theorem must either exclude same-sign adversarial frequencies or refine the decomposition; the formal two-half split alone cannot provide any positive saving there.
+
+VERDICT: exact two-piece real-algebra no-go only. NO CORE upper bound, cancellation, completion, moment, capacity, or asymptotic claim; CORE remains OPEN.
