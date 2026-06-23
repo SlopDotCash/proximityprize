@@ -8371,4 +8371,22 @@ theorem doorIV_mixedConjugateMomentCollapse_export
 
 #print axioms doorIV_mixedConjugateMomentCollapse_export
 
+/-- Door-IV Lane-1 FULL-LADDER split-independence (any total degree, even OR odd): completes the
+mixed-conjugate collapse to EVERY order.  The even collapse needs `a+b` even (squaring the sign away,
+landing on `E_r`); the weaker identity `η_c^a·conj(η_c)^b = η_c^{a+b}` (conjugation is the identity on
+the real axis) holds at every total degree.  So any two splits with the SAME total `a₁+b₁ = a₂+b₂`
+(no evenness) give the same averaged correlator: even total to energy `E_r`, ODD total to the signed
+moment `A_D = Σ η_c^D` (real, sign-sensitive).  Probe `probe_odd_mixed_split.py` confirmed odd totals
+D∈{3,5} collapse split-uniformly.  Conjugation is a complete red herring at ALL orders; no parity of
+total degree lets an asymmetric split make a new object.  Constraint lemma; CORE remains OPEN. -/
+theorem doorIV_mixedConjugateMoment_splitIndependent_anyDegree_export
+    {β : Type*} (s : Finset β) (η : β → ℂ) (hreal : ∀ c ∈ s, (η c).im = 0)
+    (a₁ b₁ a₂ b₂ : ℕ) (h : a₁ + b₁ = a₂ + b₂) :
+    (∑ c ∈ s, (η c) ^ a₁ * ((starRingEnd ℂ) (η c)) ^ b₁)
+      = ∑ c ∈ s, (η c) ^ a₂ * ((starRingEnd ℂ) (η c)) ^ b₂ :=
+  ProximityGap.Frontier.DoorIVMixedConjugateMomentCollapse.mixedMoment_any_two_splits_eq_any_degree
+    s η hreal a₁ b₁ a₂ b₂ h
+
+#print axioms doorIV_mixedConjugateMoment_splitIndependent_anyDegree_export
+
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

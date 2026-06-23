@@ -148,4 +148,44 @@ theorem mixedMoment_eq_modulusMoment
       = ∑ c ∈ s, ((‖η c‖ : ℝ) : ℂ) ^ (2 * r) := by
   rw [mixedMoment_split_independent s η hreal a b r hab, hab]
 
+/-! ## Full-ladder split-independence (any total degree, even OR odd)
+
+The collapse `z^a·conj(z)^b = (‖z‖)^{a+b}` needs `a+b` even (to square the sign away). But the WEAKER
+identity `z^a·conj(z)^b = z^{a+b}` — the conjugation is the identity on the real axis, so the split is
+irrelevant — holds at EVERY total degree, even or odd. This pins the mixed-conjugate ladder to a single
+value `Σ_c η_c^{a+b}` at every order: even total → the (≥ 0) energy `E_r`, odd total → the SIGNED moment
+`A_D = Σ_c η_c^D` (real but sign-sensitive). Probe (`probe_odd_mixed_split.py`, n=8..64) confirmed odd
+totals D∈{3,5}: every split collapses to one real signed value (deviation = FP noise). So conjugation is a
+complete red herring at ALL orders — no parity of total degree lets an asymmetric split make a new object. -/
+
+/-- **Conjugation is a red herring (any total degree).** For real `z` and ANY exponents `a, b`, the mixed
+monomial `z^a·conj(z)^b` equals `z^{a+b}` — the split `(a,b)` is irrelevant, only the total degree matters.
+No evenness hypothesis: this is the merge step alone, valid at every order. -/
+theorem mixed_pow_eq_total_pow (z : ℂ) (hz : z.im = 0) (a b : ℕ) :
+    z ^ a * ((starRingEnd ℂ) z) ^ b = z ^ (a + b) := by
+  rw [conj_eq_self_of_im_zero z hz, ← pow_add]
+
+/-- **Full-ladder split-independence (averaged, any total degree).** For a real-valued field and any
+split `(a,b)`, the averaged mixed correlator `Σ_c η_c^a·conj(η_c)^b` equals `Σ_c η_c^{a+b}` — depending
+ONLY on the total `a+b`, NOT the split, at EVERY total degree (even or odd). Even total lands on the
+energy `E_r`; odd total lands on the signed moment `A_{a+b}`. -/
+theorem mixedMoment_split_independent_any_degree
+    {β : Type*} (s : Finset β) (η : β → ℂ) (hreal : ∀ c ∈ s, (η c).im = 0) (a b : ℕ) :
+    ∑ c ∈ s, (η c) ^ a * ((starRingEnd ℂ) (η c)) ^ b = ∑ c ∈ s, (η c) ^ (a + b) := by
+  apply Finset.sum_congr rfl
+  intro c hc
+  exact mixed_pow_eq_total_pow (η c) (hreal c hc) a b
+
+/-- **Any two splits of the same total degree coincide (any parity).** The full-ladder unification: for a
+real-valued field, any two conjugate splits with the SAME total degree (`a₁+b₁ = a₂+b₂`, no evenness)
+give the same averaged correlator. Subsumes `mixedMoment_any_two_splits_eq` (the even case) and extends
+it to ODD totals (the signed moment ladder). -/
+theorem mixedMoment_any_two_splits_eq_any_degree
+    {β : Type*} (s : Finset β) (η : β → ℂ) (hreal : ∀ c ∈ s, (η c).im = 0)
+    (a₁ b₁ a₂ b₂ : ℕ) (h : a₁ + b₁ = a₂ + b₂) :
+    (∑ c ∈ s, (η c) ^ a₁ * ((starRingEnd ℂ) (η c)) ^ b₁)
+      = ∑ c ∈ s, (η c) ^ a₂ * ((starRingEnd ℂ) (η c)) ^ b₂ := by
+  rw [mixedMoment_split_independent_any_degree s η hreal a₁ b₁,
+      mixedMoment_split_independent_any_degree s η hreal a₂ b₂, h]
+
 end ArkLib.ProximityGap.Frontier.DoorIVMixedConjugateMomentCollapse

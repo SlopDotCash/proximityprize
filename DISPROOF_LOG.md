@@ -13100,3 +13100,19 @@ z^a·conj(z)^b = (‖z‖)^{a+b}), `mixedMoment_split_independent` (the averaged
 for any split), `mixedMoment_any_two_splits_eq` (any two splits of equal even total coincide — the
 T=E₂=Z₄ identity, split-uniform), `mixedMoment_eq_modulusMoment`. Export
 `CampaignProvenIndex.doorIV_mixedConjugateMomentCollapse_export`. No CORE/cancellation/completion/capacity claim.
+
+### FULL-LADDER extension (any total degree, even OR odd) — conjugation is a red herring at ALL orders (2026-06-23, sol)
+The even collapse needs a+b even (to square the sign away, landing on the energy E_r). But the WEAKER
+identity η_c^a·conj(η_c)^b = η_c^{a+b} (conjugation is the identity on the real axis) holds at EVERY total
+degree. So any two splits with the SAME total a₁+b₁=a₂+b₂ (no evenness) give the same averaged correlator:
+even total → energy E_r (≥0), ODD total → the signed moment A_D = Σ η_c^D (real, sign-sensitive, the object
+mapped at L2427). PROBE (`scripts/probes/probe_dooriv_mixed_conjugate_odd_split.py`, proper thin μ_n⊊F_p*,
+n=8..64, structured p, never n=q-1): odd totals D∈{3,5} confirmed — every split collapses to ONE real
+signed value A_D (maxdev over splits = FP noise, ≤1.3e-11; max|imag| = FP noise). So the conjugation buys
+NOTHING at any order: there is no parity of total degree at which distributing the conjugates unevenly
+manufactures a new object. Lean (axiom-clean ⊆{propext,Classical.choice,Quot.sound}, same file):
+`mixed_pow_eq_total_pow` (real z, any a,b ⟹ z^a·conj(z)^b = z^{a+b}; NO evenness),
+`mixedMoment_split_independent_any_degree`, `mixedMoment_any_two_splits_eq_any_degree`. Export
+`CampaignProvenIndex.doorIV_mixedConjugateMoment_splitIndependent_anyDegree_export`.
+VERDICT: completes the mixed-conjugate vacuity to the FULL moment ladder. No CORE/cancellation/
+completion/capacity claim. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
