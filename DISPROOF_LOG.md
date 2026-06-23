@@ -14243,3 +14243,25 @@ VERDICT: stable export/indexing only. No proof of a uniform tail lower bound, no
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
 >>>>>>> Stashed changes
+
+## [doorIV-worstb-subiid-extreme] the worst-b max is SUPPRESSED below the iid-EVT extrapolation — negative extreme dependence (2026-06-23, sol)
+
+Lane: Door-(iv) Lane-1 PROBE. The most prize-FAVORABLE structural finding of the session; connects the
+pooled-tail constant to the existing negative-association substrate (_ShawNegativeDependence.lean).
+
+PROBE: with the mid-tail pooled constant c≈0.58–0.61 (stable, matches the pooled-tail lock), the iid-Rayleigh
+EVT prediction for the max over m=(q−1)/n frequencies is √(log m / c). Measured M/√n vs this prediction:
+- n=32:  c=0.607, M/√n=4.290, iid-pred=4.470, ratio=0.960
+- n=64:  c=0.602, M/√n=4.302, iid-pred=4.916, ratio=0.875
+- n=128: c=0.577, M/√n=4.499, iid-pred=5.426, ratio=0.829
+- n=256: c=0.584, M/√n=4.615, iid-pred=5.766, ratio=0.800
+The iid extrapolation OVERSHOOTS the true max, and the gap GROWS with n (ratio 0.96→0.80).
+
+VERDICT: the fat MID-tail (c<1) does NOT extrapolate to an equally fat EXTREME — the very largest |η_b|
+are SUPPRESSED relative to the iid model. This is NEGATIVE dependence at the extreme (anti-clustering of the
+largest values), the regime the NA / negative-association substrate (_ShawNegativeDependence) targets. It is
+strongly prize-favorable: M sits BELOW the naive fat-tail extrapolation, so the effective extreme-value
+constant is even more bounded than c₀ alone implies. CONSTRAINT: any wall (M ≫ prize scale) would require
+POSITIVE extreme dependence among the worst frequencies; the data shows the opposite (negative, growing in n).
+No new Lean (the NA substrate already exists; this is the empirical motivation + a sub-iid constraint). No
+completion/moment/anti-concentration-beats-energy claim. CORE stays OPEN; door (iv) the only live door.
