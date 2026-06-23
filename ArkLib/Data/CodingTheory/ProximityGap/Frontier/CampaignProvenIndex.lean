@@ -189,6 +189,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauc
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEnergyDominated
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentEnergyFloorOvershoot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentFloorTetrachotomyBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupParsevalEnergyExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -196,7 +197,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSh
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
-set_option linter.style.longFile 9200
+set_option linter.style.longFile 9500
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -9000,6 +9001,50 @@ theorem not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export {ι :
     hn hnq hc hfloor hgapDrift
 
 #print axioms not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export
+
+/-- Door-IV Lane-2 EXACT SUBGROUP PARSEVAL ENERGY export: for the order-`d` subgroup
+indicator `1_{μ_d}` in `ZMod N`, the full DFT spectral energy is exactly `N·d`.  This is
+the kernel-checked Plancherel normalization substrate behind the Shaw-value floor, not a
+per-frequency peak bound and not CORE cancellation. -/
+theorem doorIV_subgroupIndicator_total_energy_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
+    (∑ k : ZMod N,
+        ‖(ZMod.dft
+          (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+            (N := N) d)) k‖ ^ 2)
+      = (N : ℝ) * d :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupParsevalEnergyExact.subgroupIndicator_total_energy hd
+
+#print axioms doorIV_subgroupIndicator_total_energy_export
+
+/-- Door-IV Lane-2 DC-SUBTRACTED PARSEVAL export: subtracting the DC term from the exact
+subgroup indicator energy gives the #444 master-chain identity `Σ_{k≠0}|η_k|² = N·d − d²`.
+This pins the exact mean-energy floor/normalization used by the reduction chain; it makes no
+sup-norm, anti-concentration, completion, moment-saving, or capacity claim. -/
+theorem doorIV_subgroupIndicator_offDC_energy_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
+    (∑ k ∈ (Finset.univ.erase (0 : ZMod N)),
+        ‖(ZMod.dft
+          (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+            (N := N) d)) k‖ ^ 2)
+      = (N : ℝ) * d - (d : ℝ) ^ 2 :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupParsevalEnergyExact.subgroupIndicator_offDC_energy hd
+
+#print axioms doorIV_subgroupIndicator_offDC_energy_export
+
+/-- Door-IV Lane-2 OFF-DC MEAN FLOOR export: for `1 < N`, the average off-DC
+subgroup-indicator spectral energy is at most the subgroup order `d`.  This permanently exports
+the proven `E₁/card ≤ n` normalization substrate for the Shaw reduction, while explicitly leaving
+the open per-frequency CORE peak bound untouched. -/
+theorem doorIV_subgroupIndicator_offDC_mean_le_order_export {N : ℕ} [NeZero N] {d : ℕ}
+    (hd : d ∣ N) (hN1 : 1 < N) :
+    (∑ k ∈ (Finset.univ.erase (0 : ZMod N)),
+        ‖(ZMod.dft
+          (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+            (N := N) d)) k‖ ^ 2)
+        / ((N : ℝ) - 1) ≤ (d : ℝ) :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupParsevalEnergyExact.subgroupIndicator_offDC_mean_le_order
+    hd hN1
+
+#print axioms doorIV_subgroupIndicator_offDC_mean_le_order_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
