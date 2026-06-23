@@ -191,6 +191,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSharpCorridorFamily
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 
 set_option linter.style.longFile 9000
 
@@ -8884,5 +8885,34 @@ theorem doorIV_shawValueFamilyTwoSidedSharpCorridor_export {ι : Type*} {M n L :
     hn hL hfloor hceil
 
 #print axioms doorIV_shawValueFamilyTwoSidedSharpCorridor_export
+
+/-- Door-IV Lane-3 FAMILY PRIZE-CONSTANT lower-bound export: the family companion of the pointwise
+prize-constant lower bound.  Over a NONEMPTY admissible thin family with a uniform super-diagonal floor
+`c₀·√nᵢ ≤ Mᵢ` (`c₀ = (5/4)^{1/4}`), any single uniform floor-scale prize constant `K` (`Mᵢ ≤ K·√nᵢ`)
+satisfies `c₀ ≤ K`.  So the achievable prize constant is bounded BELOW by the super-diagonal floor,
+strictly above the bare Plancherel `1`, uniformly across the family.  Constraint lemma (bounds the prize
+constant from below, the easy direction); CORE upper bound not discharged. -/
+theorem doorIV_familyPrizeConstantSuperDiagonalLowerBound_export {ι : Type*} [Nonempty ι]
+    {M n : ι → ℝ} {K : ℝ} (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hbound : ∀ i, M i ≤ K * NoFifthDoorTetrachotomy.prizeScale (n i)) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ K :=
+  DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_familyPrizeFloorConstant
+    hn hfloor hbound
+
+#print axioms doorIV_familyPrizeConstantSuperDiagonalLowerBound_export
+
+/-- Door-IV Lane-3 FAMILY PRIZE-CONSTANT no-go export: over a nonempty admissible family with a uniform
+super-diagonal floor, no uniform floor-scale prize constant `K < c₀` can hold.  Contrapositive form of
+the family lower bound. -/
+theorem doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export {ι : Type*} [Nonempty ι]
+    {M n : ι → ℝ} {K : ℝ} (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hlt : K < ShawValueCapstone.superDiagonalFloorConst) :
+    ¬ (∀ i, M i ≤ K * NoFifthDoorTetrachotomy.prizeScale (n i)) :=
+  DoorIVPrizeShawTetrachotomySynthesis.not_familyPrizeFloorConstant_lt_superDiagonal
+    hn hfloor hlt
+
+#print axioms doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

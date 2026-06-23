@@ -13481,3 +13481,32 @@ VERDICT: PURE conjunction of the two established sharpened family endpoints. The
 SUPPLIED hypothesis (`Mᵢ ≤ √(nᵢ·Lᵢ)`), NOT unconditional cancellation, asserted at NO instance. NO CORE /
 cancellation / completion / moment / anti-concentration / capacity / asymptotic claim. CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-prize-constant-superdiagonal-floor-family] the family prize-constant lower bound c₀ ≤ K (2026-06-23, sol)
+Lane: Lane-3 constraint lemma — lift the pointwise prize-constant lower bound to the ∀-family prize statement.
+
+CONTEXT: `_DoorIVPrizeShawTetrachotomySynthesis` proved the POINTWISE prize-constant lower bound
+`superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor` — if the proven super-diagonal
+floor `c₀·√n ≤ M` (`c₀ = (5/4)^{1/4} > 1`) holds and `M ≤ K·√n`, then `c₀ ≤ K`. But the prize is an
+∀-family statement (one absolute constant valid across the whole thin family); only the pointwise
+constant lower bound existed, with no family-level version forcing the uniform prize constant `K ≥ c₀`.
+
+CONSTRAINT LEMMAS (axiom-clean, real proofs, NO sorry) in
+`_DoorIVPrizeConstantSuperDiagonalFloorFamily.lean`, exported as
+`CampaignProvenIndex.{doorIV_familyPrizeConstantSuperDiagonalLowerBound_export,
+doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export}`:
+- `superDiagonalFloorConst_le_familyPrizeFloorConstant` [Nonempty ι]: a uniform super-diagonal floor
+  `c₀·√nᵢ ≤ Mᵢ` + a uniform floor-scale prize constant `Mᵢ ≤ K·√nᵢ` ⟹ `c₀ ≤ K`.
+- `not_familyPrizeFloorConstant_lt_superDiagonal`: contrapositive — no uniform `K < c₀` can hold over
+  such a family.
+- `familyPrizeFloorConstant_ge_superDiagonal_gt_one`: packaged `c₀ ≤ K ∧ 1 < c₀ ∧ 1 < K`.
+
+WHY IT MATTERS: this is the family-level lower bound on the ACHIEVABLE prize constant itself. The prize
+asks for an absolute `C` with `Mᵢ ≤ C·√nᵢ` uniformly; this certifies any such `C ≥ c₀ = (5/4)^{1/4} > 1`
+given the unconditional super-diagonal floor over the family — the prize constant is bounded away from
+the bare Plancherel `1` from below, uniformly. Nonemptiness is required (no instances ⟹ no constraint).
+
+VERDICT: PURE pointwise lift of the established single-instance prize-constant lower bound. It bounds the
+prize constant from BELOW (the easy direction — the open problem is the UPPER bound `C = O(1)`); asserts
+the super-diagonal floor at NO instance. NO CORE / cancellation / completion / moment /
+anti-concentration / capacity / asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
