@@ -193,6 +193,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupParsevalEne
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakBracket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOffDCCeilingDominatesBGKTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCMeanFloorSharp
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakFloorSharp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -9129,6 +9130,38 @@ theorem doorIV_subgroupIndicator_offDC_mean_two_sided_export {N : ℕ} [NeZero N
     hd hN1
 
 #print axioms doorIV_subgroupIndicator_offDC_mean_two_sided_export
+
+/-- Door-IV Lane-2 SHARP OFF-DC PEAK FLOOR export: an off-DC frequency has squared
+magnitude at least the sharp closed-form floor `d*(1-(d-1)/(N-1))`.  This composes
+the exact off-DC peak floor with mean-floor sharpness; lower endpoint only, no CORE
+upper-bound claim. -/
+theorem doorIV_exists_offDC_peak_sq_ge_sharpFloor_export {N : ℕ} [NeZero N]
+    {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
+    ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
+      (d : ℝ) * (1 - ((d : ℝ) - 1) / ((N : ℝ) - 1))
+        ≤ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖ ^ 2 :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCPeakFloorSharp.exists_offDC_peak_sq_ge_sharpFloor
+    hd hN1
+
+#print axioms doorIV_exists_offDC_peak_sq_ge_sharpFloor_export
+
+/-- Door-IV Lane-2 SHARP OFF-DC PEAK FLOOR export, norm form: an off-DC DFT coefficient
+has magnitude at least `sqrt(d*(1-(d-1)/(N-1)))`.  This pins the Plancherel floor on
+the prize object in its sharp `sqrt(d*(1-o(1)))` form; no cancellation or CORE
+upper-bound claim. -/
+theorem doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export {N : ℕ} [NeZero N]
+    {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
+    ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
+      Real.sqrt ((d : ℝ) * (1 - ((d : ℝ) - 1) / ((N : ℝ) - 1)))
+        ≤ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖ :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCPeakFloorSharp.exists_offDC_peak_ge_sqrt_sharpFloor
+    hd hN1
+
+#print axioms doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:

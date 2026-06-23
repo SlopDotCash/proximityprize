@@ -13944,3 +13944,16 @@ VERDICT: structural DC/off-DC SEPARATION (an upper bound on the off-DC peak in t
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupDCOffDCGap.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-peak-sharp-floor-exports] stable exports for the sharp off-DC peak floor (2026-06-23, g55)
+Lane: door-(iv) Lane-2/3 floor-substrate indexing, stable consumers for the sharp peak-floor composition.
+
+CONSTRAINT EXPORTS (axiom-clean, real proofs, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_exists_offDC_peak_sq_ge_sharpFloor_export`: an off-DC frequency has squared DFT magnitude at least `d*(1-(d-1)/(N-1))`.
+- `doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export`: norm form, magnitude at least `sqrt(d*(1-(d-1)/(N-1)))`.
+
+WHY IT MATTERS: the kernel `_DoorIVSubgroupOffDCPeakFloorSharp` composed the off-DC peak floor with the sharp mean-floor closed form. These exports make that tight lower endpoint citable from the permanent campaign index: in the prize regime the off-DC prize object is floored by `sqrt(d*(1-o(1)))`, so the remaining open door-(iv) gap is above this Plancherel floor.
+
+VERDICT: stable export/indexing of a sharp FLOOR only. It proves no CORE upper bound and makes no cancellation, completion, anti-concentration, moment, capacity, or asymptotic claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
