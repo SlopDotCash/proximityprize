@@ -8747,6 +8747,21 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M
 #print axioms prizeFloorRatio_family_le_of_uniformShawBound_export
 
 
+
+/-- Synthesis-gap SAME-CONSTANT FAMILY export: for any proposed constant `C`, the genuine floor-scale
+family bound `Mᵢ/√nᵢ ≤ C` is equivalent to the gap-amplified Shaw bound `Shᵢ·√log(qᵢ/nᵢ) ≤ C` with
+the SAME `C`.  This is the exact constant-preserving form of the Shaw-scale bridge after the open gap
+factor is displayed. -/
+theorem prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound_export {ι : Type*}
+    {q n M : ι → ℝ} (C : ℝ) (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∀ i, M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ C) ↔
+      (∀ i, _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i)
+        * Real.sqrt (Real.log (q i / n i)) ≤ C) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound
+    C hn hnq
+
+#print axioms prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound_export
+
 /-- Synthesis-gap EXACT BOUNDEDNESS export: over a prize-regime family, boundedness of the genuine
 floor-scale ratios `Mᵢ/√nᵢ` is exactly boundedness of the Shaw values after multiplying by the displayed
 `√log` gap factor.  This is the citable boundedness form of `M/√n = Sh·√log`: a Shaw `O(1)` statement

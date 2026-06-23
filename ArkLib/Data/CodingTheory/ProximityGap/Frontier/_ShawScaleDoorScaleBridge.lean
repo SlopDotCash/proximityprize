@@ -234,6 +234,22 @@ theorem gap_family_le_prizeFloorBound_div_shawFloor {ι : Type*} {q n M : ι →
     (hfloor i) (hPrize i)
 
 
+
+/-- **Same-constant family equivalence for the gap-amplified Shaw value.**  For any proposed constant
+`C`, the genuine floor-scale bound `Mᵢ/√nᵢ ≤ C` is pointwise equivalent to bounding the exact
+ gap-amplified Shaw value `Shᵢ·√(log(qᵢ/nᵢ)) ≤ C`.  This is the constant-level form of the scale bridge;
+it exposes that the Shaw reduction preserves constants only after the open `√log` gap has been
+included on the Shaw side.  Pure normalization algebra; no CORE/cancellation claim. -/
+theorem prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound {ι : Type*}
+    {q n M : ι → ℝ} (C : ℝ) (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) :
+    (∀ i, M i / prizeScale (n i) ≤ C) ↔
+      (∀ i, shawValue (q i) (n i) (M i) * Real.sqrt (Real.log (q i / n i)) ≤ C) := by
+  constructor
+  · intro h i
+    simpa [prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)] using h i
+  · intro h i
+    simpa [prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)] using h i
+
 /-- **Exact boundedness equivalence for the gap-amplified Shaw value.**  Over a prize-regime family,
 uniform boundedness of the genuine prize-floor ratios `Mᵢ/√nᵢ` is exactly uniform boundedness of the
 Shaw values after multiplying by the displayed synthesis gap `√(log(qᵢ/nᵢ))`.  This is the boundedness
@@ -292,5 +308,6 @@ end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_eq_prizeFloorRatio_div_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_le_prizeFloorBound_div_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_le_prizeFloorBound_div_gap
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_familyBound_iff_gapAmplifiedShaw_familyBound
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_bddAbove_iff_gapAmplifiedShaw_bddAbove
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_unbounded_iff_gapAmplifiedShaw_unbounded
