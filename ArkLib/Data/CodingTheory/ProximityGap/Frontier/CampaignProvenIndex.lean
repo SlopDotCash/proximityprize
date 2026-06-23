@@ -6755,6 +6755,21 @@ theorem doorIV_cosetHalf_strictSaving_iff_strictMinorityMass_export {P N ε : �
 
 #print axioms doorIV_cosetHalf_strictSaving_iff_strictMinorityMass_export
 
+/-- **[Lane 1/3 raw coset-half strict no-go]** If the strict minority-mass threshold fails, then
+strict `ε` coherence saving is impossible for the raw index-2 opposite-sign split. This is the direct
+contrapositive consumer of the strict iff: below proportional minority-mass participation, the split
+cannot certify door-(iv) anti-concentration. -/
+theorem doorIV_cosetHalf_noStrictSaving_of_minorityMass_le_export {P N ε : ℝ}
+    (hP : 0 ≤ P) (hN : 0 ≤ N) (htotal : 0 < P + N)
+    (hmass : 2 * min P N ≤ ε * (P + N)) :
+    ¬ _root_.ProximityGap.Frontier.DoorIVCosetHalfCoherence.twoPieceCoherence P (-N) < 1 - ε := by
+  intro hsave
+  have hlt : ε * (P + N) < 2 * min P N :=
+    (doorIV_cosetHalf_strictSaving_iff_strictMinorityMass_export hP hN htotal).mp hsave
+  exact (not_lt_of_ge hmass) hlt
+
+#print axioms doorIV_cosetHalf_noStrictSaving_of_minorityMass_le_export
+
 /-- **[Lane 1/3 transverse-spread geometry]** In a unit direction frame, projection and transverse
 components decompose the squared norm exactly. This names the geometric content a door-(iv) angular
 spread certificate must control. -/

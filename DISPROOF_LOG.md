@@ -13684,3 +13684,13 @@ CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIn
 WHY IT MATTERS: the index-2 coset-half split itself supplies no strict anti-concentration. Any strict door-(iv) saving at the adversarial frequency must prove proportional minority-mass participation; same-sign halves saturate coherence at `1`, and opposite signs save only by the exact minority-mass amount.
 
 VERDICT: exact two-piece real-algebra constraint only. NO CORE upper bound, cancellation, completion, moment, capacity, or asymptotic claim; CORE remains OPEN.
+
+## [doorIV-coset-half-no-strict-saving-below-threshold] below minority-mass threshold, raw index-2 strict saving is impossible (2026-06-23, g55)
+Lane: door-(iv) Lane-1/3, direct no-go consumer for the strict coset-half minority-mass equivalence.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_cosetHalf_noStrictSaving_of_minorityMass_le_export`: for opposite-sign real half-period pieces `P` and `-N`, if `2*min(P,N) ≤ ε*(P+N)`, then the strict saving `twoPieceCoherence P (-N) < 1-ε` is impossible.
+
+WHY IT MATTERS: this is the contrapositive form used by probes and prose. A raw index-2 coset-half method cannot certify strict door-(iv) coherence drop unless it first proves the proportional minority-mass threshold. The obstruction is exact algebra, not heuristic.
+
+VERDICT: exact two-piece real-algebra no-go only. NO CORE upper bound, cancellation, completion, moment, capacity, or asymptotic claim; CORE remains OPEN.
