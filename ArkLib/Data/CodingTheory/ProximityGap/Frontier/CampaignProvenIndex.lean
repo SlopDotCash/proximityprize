@@ -192,6 +192,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentFloorTetracho
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupParsevalEnergyExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakBracket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOffDCCeilingDominatesBGKTarget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCMeanFloorSharp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -9102,6 +9103,20 @@ theorem doorIV_offDC_band_contains_bgkTarget_export {n p L : ℝ} (hn : 1 ≤ n)
     hn hp hL1 hL2
 
 #print axioms doorIV_offDC_band_contains_bgkTarget_export
+
+/-- Door-IV Lane-2 OFF-DC MEAN FLOOR SHARPNESS export: the exact off-DC mean
+energy is trapped between `d·(1 - (d - 1)/(N - 1))` and `d`.  Thus the Plancherel
+floor is asymptotically sharp in the thin prize regime; the open gap is above the
+floor, in the off-DC peak upper bound, not in the normalization. -/
+theorem doorIV_subgroupIndicator_offDC_mean_two_sided_export {N : ℕ} [NeZero N]
+    {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
+    (d : ℝ) * (1 - ((d : ℝ) - 1) / ((N : ℝ) - 1))
+        ≤ ((N : ℝ) * d - (d : ℝ) ^ 2) / ((N : ℝ) - 1)
+      ∧ ((N : ℝ) * d - (d : ℝ) ^ 2) / ((N : ℝ) - 1) ≤ (d : ℝ) :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCMeanFloorSharp.subgroupIndicator_offDC_mean_two_sided
+    hd hN1
+
+#print axioms doorIV_subgroupIndicator_offDC_mean_two_sided_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
