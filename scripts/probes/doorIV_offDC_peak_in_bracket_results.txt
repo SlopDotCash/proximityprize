@@ -1,0 +1,25 @@
+    n         p  beta         M     floor      ceil  M/floor   M/ceil  M/sqrt(n)     prize  M/prize
+    8        73  2.06     4.789     2.687    22.804    1.782    0.210      1.693     4.206    1.139
+    8       193  2.53     6.007     2.776    38.471    2.164    0.156      2.124     5.046    1.190
+    8       521  3.01     6.562     2.809    64.062    2.336    0.102      2.320     5.780    1.135
+   16       257  2.00     9.229     3.881    62.097    2.378    0.149      2.307     6.665    1.385
+   16      1153  2.54     9.980     3.974   134.878    2.511    0.074      2.495     8.273    1.206
+   16      4129  3.00    11.140     3.993   256.531    2.790    0.043      2.785     9.426    1.182
+   32      1153  2.03    13.924     5.580   189.399    2.495    0.074      2.461    10.710    1.300
+   32      5857  2.50    20.027     5.642   431.741    3.550    0.046      3.540    12.912    1.551
+   32     32801  3.00    16.965     5.654  1024.016    3.000    0.017      2.999    14.894    1.139
+   64      4289  2.01    19.211     7.941   520.000    2.419    0.037      2.401    16.405    1.171
+   64     32833  2.50    32.551     7.992  1448.177    4.073    0.022      4.069    19.984    1.629
+  128     17921  2.02    34.684    11.274  1509.140    3.077    0.023      3.066    25.150    1.379
+
+SUMMARY (over instances):
+  M/floor   : min=1.782 max=4.073 mean=2.715
+  M/ceil    : min=0.017 max=0.210 mean=0.079
+  M/sqrt(n) : min=1.693 max=4.069 mean=2.688
+  M/prize   : min=1.135 max=1.629 mean=1.284
+
+INTERPRETATION:
+  M/floor near 1  => peak HUGS the Plancherel floor (potential door-iv slack to exploit).
+  M/ceil near 1   => peak near l2-completion ceiling (no slack, wall confirmed).
+  M/prize bounded => CORE-consistent on these (small) instances; NOT a proof (n small,
+                     beta below prize beta~4-5, and abs constant C absorbs O(1)).

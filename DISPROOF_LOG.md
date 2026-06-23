@@ -13827,3 +13827,18 @@ VERDICT: exact two-sided floor/ceiling band on the off-DC peak, axiom-clean. BOT
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakBracket.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-peak-in-bracket] Lane-1 probe: the off-DC peak hugs the FLOOR end, not the ceiling (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-1 empirical characterization of the prize object inside the just-proven exact bracket.
+
+PROBE: for thin 2-power subgroups mu_n (n=2^a, a=3..7) of F_p* in the prize regime (n | p-1, beta=log p/log n in {2.0,2.5,3.0}), computed EXACTLY the off-DC peak M = max_{b!=0}|Sum_{x in mu_n} e_p(b*x)| and located it inside the proven bracket `sqrt((N*d-d^2)/(N-1)) <= M <= sqrt(N*d-d^2)` (_DoorIVSubgroupOffDCPeakFloor / _DoorIVSubgroupOffDCPeakBracket, N=p, d=n). Script: `scripts/probes/_doorIV_offDC_peak_in_bracket.py`; results: `scripts/probes/doorIV_offDC_peak_in_bracket_results.txt`.
+
+FINDINGS (12 instances, n=8..128):
+- M/ceil = 0.017..0.210 (mean 0.079): the off-DC peak sits in the BOTTOM ~2-21% of the bracket. The l2-completion CEILING `sqrt(p*n)` (door (ii)) is wildly loose — confirms door (ii) overshoots by a large factor (the ceiling slack is NOT exploitable; the peak is nowhere near it).
+- M/floor = 1.78..4.07 (mean 2.72): the peak sits a small slowly-growing constant ABOVE the Plancherel floor `sqrt((N*d-d^2)/(N-1)) ~ sqrt(n)`. NOT hugging it (M/floor -> 1 would be a crack); the multiplicative ~2.7 gap IS the door-(iv) sqrt(log) factor.
+- M/sqrt(n) = 1.69..4.07 (mean 2.69): tracks M/floor (floor ~ sqrt(n) in this regime).
+- M/prize = 1.14..1.63 (mean 1.28, BOUNDED): M tracks the CORE target `sqrt(n*log(p/n))` within a small bounded constant across ALL instances. Empirically CORE-consistent.
+
+VERDICT (probe, NOT a formalized claim): the action is entirely at the FLOOR end of the bracket (ceiling has huge unexploited slack -> door (ii) dead, reconfirmed empirically on the concrete object). M tracks prize sqrt(n*log) with a bounded constant on these small instances — consistent with CORE but NOT a proof (n small, beta below prize beta~4-5, abs constant C absorbs the O(1); the M/prize ratio drifts upward slowly with beta, the known sqrt(log)-type creep, NOT a refutation). NO exploitable floor-hugging slack observed (M/floor stays ~2-4, no instance near 1). This DOES NOT crack door (iv); it characterizes the bracket as floor-dominated and reconfirms the ceiling is loose. NO CORE upper bound, NO cancellation/anti-concentration/moment/capacity claim. CORE OPEN; door (iv) the only live door.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
