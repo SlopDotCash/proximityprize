@@ -12947,3 +12947,27 @@ VERDICT: a thin set of deep deficit spikes cannot drag the dilation budget down 
 Ω(a)-many Ω(1)-deficit levels, which the measured same-ray-at-b* descent does not supply. No CORE upper
 bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim. CORE
 M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
+
+## [doorIV-dilation-leading-zero-block] worst-b descent saving is confined to an O(1) tail (2026-06-23, sol)
+Lane: door-(iv) Lane-3 dilation-descent route, structural confinement of the saving budget.
+
+PROBE (reproducible, proper thin μ_n ⊊ F_p*, p≈n^3.2 and n^4.0, FULL F_p* worst-b argmax, NEVER n=q-1):
+`scripts/probes/probe_dooriv_leading_zero_block.py`. Counted the leading block T of zero-deficit levels
+(δ_k=0, coset halves EXACTLY same-ray ρ=1) along the 2-dilation descent at the adversarial worst b*:
+  a=3 n=8   T=2 (a-T=1)     a=4 n=16  T=3 (a-T=1)
+  a=5 n=32  T=4 (a-T=1)     a=6 n=64  T=3 (a-T=3)
+across both β=3.2 and β=4.0 primes. The leading zero block is T ≈ a − O(1): essentially the ENTIRE
+descent is the trivial factor-2 doubling, with all coherence-deficit saving (the exp(−S) factor)
+confined to the bottom a−T = O(1) levels.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry):
+`_DoorIVLeadingZeroDeficitFloor.{tail_card_le_of_leading_zero, budget_ge_sqrt_scale_of_leading_zero_block}`,
+registered as `doorIV_leadingZeroDeficitBlockFloor_export` in CampaignProvenIndex. Specialises the
+bounded-exception floor at ε=0 (good levels carry ZERO deficit): if δ_k=0 on the top T levels, δ_k≤1
+elsewhere, and the block is large enough that (a:ℝ)−T ≤ ((log2)/2)·a (i.e. T ≥ (1−(log2)/2)·a ≈ 0.6534·a,
+satisfied with room by the measured a−T=O(1)), the exp-relaxed dilation budget stays AT/ABOVE the
+√(2^a)·M₀ Plancherel scale.
+VERDICT: a descent whose coherence saving is confined to a sub-((log2)/2)·a tail cannot reach the √n
+prize scale. The measured worst-b descent has its saving in an O(1) tail — far below the linear-in-a
+sustained deficit the route would need. No CORE upper bound, cancellation, completion, moment-saving,
+anti-concentration, or capacity claim. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.

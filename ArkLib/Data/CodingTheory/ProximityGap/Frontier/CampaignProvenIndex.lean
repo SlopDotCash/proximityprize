@@ -177,6 +177,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudg
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVUniformDeficitThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetBoundedExceptions
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVLeadingZeroDeficitFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 /-!
@@ -8060,5 +8061,27 @@ theorem doorIV_deficitBudgetBoundedExceptions_export {a : ℕ} {ε M0 : ℝ}
     δ E hE hgood hbad hεthr hdensity hM0
 
 #print axioms doorIV_deficitBudgetBoundedExceptions_export
+
+/-- Door-IV Lane-3 LEADING-ZERO-BLOCK √-floor export: the measured worst-`b` 2-dilation descent has a
+leading block of `T` zero-deficit levels (coset halves exactly same-ray, `δ_k = 0` for `k < T`, with
+`T ≈ a − O(1)` numerically).  All the `exp(−S)` saving is confined to the thin tail of the bottom
+`a − T` levels.  Specialising the bounded-exception floor at `ε = 0`: if the leading zero block is large
+enough that the tail fits the budget threshold `(a : ℝ) − T ≤ ((log2)/2)·a` (i.e. `T ≥ (1−(log2)/2)·a
+≈ 0.6534·a`, satisfied with room to spare by the measured `a−T = O(1)`), then the exp-relaxed dilation
+budget stays AT/ABOVE the `√(2^a)·M₀` Plancherel/prize scale.  A descent whose coherence saving is
+confined to a sub-`((log2)/2)·a` tail cannot reach the `√n` prize scale.  Constraint lemma; CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_leadingZeroDeficitBlockFloor_export {a T : ℕ} {M0 : ℝ}
+    (δ : ℕ → ℝ) (hT : T ≤ a)
+    (hzero : ∀ k, k < T → δ k = 0)
+    (hbad : ∀ k ∈ Finset.range a, δ k ≤ 1)
+    (hblock : (a : ℝ) - T ≤ (Real.log 2 / 2) * a)
+    (hM0 : 0 ≤ M0) :
+    (Real.sqrt 2) ^ a * M0
+      ≤ 2 ^ a * Real.exp (-(∑ k ∈ Finset.range a, δ k)) * M0 :=
+  ProximityGap.Frontier.DoorIVLeadingZeroDeficitFloor.budget_ge_sqrt_scale_of_leading_zero_block
+    δ hT hzero hbad hblock hM0
+
+#print axioms doorIV_leadingZeroDeficitBlockFloor_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
