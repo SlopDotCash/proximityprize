@@ -173,6 +173,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorBadDefectTowerInvari
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceOffDiagSpikeCost
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceTowerLogConvex
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceTowerRatioSpectralCap
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudget
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -7975,5 +7976,21 @@ theorem doorIV_coherenceDeficit_pairwiseSandwich_export {F : Type*} [NormedAddCo
     s A hden
 
 #print axioms doorIV_coherenceDeficit_pairwiseSandwich_export
+
+/-- Door-IV Lane-3 dilation-deficit BUDGET capstone export: the 2-dilation descent with a VARIABLE
+per-level coherence deficit `δ_k ∈ [0,1]` (the level-`k` factor `c_k ≤ 2 − 2δ_k`, from the weld) gives
+the telescoped budget bound `M_a ≤ 2^a · exp(−∑_{k<a} δ_k) · M_0`.  The trivial doubling ceiling `2^a`
+improves only by `exp(−S)` where `S = ∑ δ_k` is the total coherence-deficit budget spent over the
+`a = log₂ n` levels.  Constraint lemma — it prices the dilation route's exact budget; the open
+monomial-sum anti-concentration (a SUSTAINED, linear-in-`a` deficit budget) is NOT discharged here.
+CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_dilationDeficitBudget_export (M : ℕ → ℝ) (δ : ℕ → ℝ)
+    (hδ0 : ∀ k, 0 ≤ δ k) (hδ1 : ∀ k, δ k ≤ 1) (hM : ∀ k, 0 ≤ M k)
+    (hstep : ∀ k, M (k + 1) ≤ (2 - 2 * δ k) * M k) (a : ℕ) :
+    M a ≤ 2 ^ a * Real.exp (-(∑ k ∈ Finset.range a, δ k)) * M 0 :=
+  ProximityGap.Frontier.DoorIVDilationDeficitBudget.telescope_deficit_budget
+    M δ hδ0 hδ1 hM hstep a
+
+#print axioms doorIV_dilationDeficitBudget_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
