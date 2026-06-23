@@ -2154,6 +2154,47 @@ theorem prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed_expo
   _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone.prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed
     hs hLnn hLref hC hδ hEdge hExcess hnref hfloor hceil
 
+/-- **[capstone, DoorIVObject]** The WALL-FACING (contrapositive) discharged grand four-pillar
+statement: (1') the negated reduction `¬ prizeBound ↔ ¬ shawBound` (the prize is impossible iff the
+Shaw value is unbounded), with (2) the theorem-backed discharged door-(iv)-only exclusion past `N₀`,
+(3) the object moment-corridor, and (4) the unconditional floor envelope `[c₀, √nref]`.  The
+contrapositive companion of `..._reduction_dischargedDoorIV_..._export`, suitable for the "why the
+prize is hard" citation.  CORE stays open. -/
+theorem no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed_export
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i))
+    {Lref q C δ : ℝ} (hLnn : 0 ≤ Lref) (hLref : 1 < Lref) (hC : 0 < C) (hδ : δ < 1 / 2)
+    {iidSup realSup Δ : ℝ}
+    (hEdge : _root_.ArkLib.ProximityGap.Frontier.DoorIVCocycleNoRandomEdge.SurrogateLeReal
+      iidSup realSup)
+    (hExcess :
+      _root_.ArkLib.ProximityGap.Frontier.DoorIVObjectMomentCorridor.gap iidSup realSup ≤ Δ)
+    {Mref nref : ℝ} (hnref : 0 < nref)
+    (hfloor : _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst *
+      Real.sqrt nref ≤ Mref)
+    (hceil : Mref ≤ nref) :
+    ∃ N₀ : ℝ,
+      (¬ (∃ K, 0 ≤ K ∧
+          _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L K) ↔
+          ¬ (∃ K, 0 ≤ K ∧
+            _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L K)) ∧
+        (∀ nref' : ℝ, max N₀ 1 ≤ nref' → nref' * Lref ≤ q →
+          (∀ m' : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
+            m'.door.isClassical → m'.RespectsProvenScale q C δ nref') →
+          ∀ m : _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism,
+            m.certScale ≤
+              _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale nref' →
+            m.door =
+              _root_.ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
+        (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
+        (_root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.superDiagonalFloorConst ≤
+            _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
+              Mref nref ∧
+          _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio
+              Mref nref ≤ Real.sqrt nref) :=
+  _root_.ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone.no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed
+    hs hLnn hLref hC hδ hEdge hExcess hnref hfloor hceil
+
 /-! ## DoorIVSignedDeepSumAbsLeak — the absolute-value leak made permanent.
 Scope: **obstruction / positive localization**. The signed deep period-power probe found the
 thinness-essential signal in `Σ η_b^r`, while all moment / energy packages pass through
@@ -3001,6 +3042,7 @@ namespace ArkLib.ProximityGap.Frontier.CampaignProvenIndex
 #print axioms prize_iff_shawBounded_doorIV_only_and_object_moment_trapped_export
 #print axioms prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed_export
 #print axioms prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed_export
+#print axioms no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed_export
 #print axioms doorIV_abs_signed_le_abs_moment_export
 #print axioms doorIV_leak_nonneg_export
 #print axioms doorIV_abs_moment_bound_transfers_export

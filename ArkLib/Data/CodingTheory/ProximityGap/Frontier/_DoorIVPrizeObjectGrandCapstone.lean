@@ -238,6 +238,53 @@ theorem prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed
   exact ⟨N₀, hred, hdoor, realSup_in_moment_corridor hEdge hExcess,
     DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hnref hfloor hceil⟩
 
+/-- **WALL-FACING discharged four-pillar grand capstone (contrapositive citation form).**
+
+The prize-facing capstone `prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed` reads
+"a uniform prize bound exists iff a uniform Shaw bound exists".  The way the result is actually cited
+in the wall framing is the CONTRAPOSITIVE: "the prize is *impossible* (no uniform raw bound) iff the
+Shaw value is *unbounded* (no uniform Shaw bound)", together with the same discharged door-(iv)-only
+exclusion, the object moment-trap, and the floor envelope.  The synthesis file proves the negated
+reduction (`no_prizeBound_iff_no_shawBound_nonneg_and_discharged_doorIV_only`) but it was never fused
+into a grand statement with the object-trap and floor envelope.
+
+This is that wall-facing grand capstone: it carries (1') the negated reduction `¬ prizeBound ↔ ¬
+shawBound`, (2) the discharged door-(iv)-only exclusion, (3) the object moment-corridor, (4) the
+unconditional floor envelope — the contrapositive companion of the prize-facing capstone, suitable for
+the "why the prize is hard" citation.  Packaging extension; no estimate; CORE stays open. -/
+theorem no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < ShawValueCapstone.prizeScale (n i) (L i))
+    {Lref q C δ : ℝ} (hLnn : 0 ≤ Lref) (hLref : 1 < Lref) (hC : 0 < C) (hδ : δ < 1 / 2)
+    {iidSup realSup Δ : ℝ}
+    (hEdge : SurrogateLeReal iidSup realSup)
+    (hExcess : gap iidSup realSup ≤ Δ)
+    {Mref nref : ℝ} (hnref : 0 < nref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ Mref)
+    (hceil : Mref ≤ nref) :
+    ∃ N₀ : ℝ,
+      -- (1') negated reduction: prize impossible ↔ Shaw value unbounded
+      (¬ (∃ K, 0 ≤ K ∧ ShawValueCapstone.rawPrizeFamilyBound M n L K) ↔
+          ¬ (∃ K, 0 ≤ K ∧ ShawValueCapstone.shawValueFamilyBound M n L K)) ∧
+        -- (2) door-(iv)-only mechanism exclusion, DISCHARGED past N₀
+        (∀ nref' : ℝ, max N₀ 1 ≤ nref' → nref' * Lref ≤ q →
+          (∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+            m'.door.isClassical → m'.RespectsProvenScale q C δ nref') →
+          ∀ m : NoFifthDoorTetrachotomy.Mechanism,
+            m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref' →
+            m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
+        -- (3) the door-(iv) object's sup is pinned to the moment-corridor
+        (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
+        -- (4) the unconditional floor envelope: the prize constant lives in [c₀, √nref]
+        (ShawValueCapstone.superDiagonalFloorConst ≤
+            DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ∧
+          DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ≤ Real.sqrt nref) := by
+  obtain ⟨N₀, hred, hdoor⟩ :=
+    DoorIVPrizeShawTetrachotomySynthesis.no_prizeBound_iff_no_shawBound_nonneg_and_discharged_doorIV_only
+      hs hLnn hLref hC hδ
+  exact ⟨N₀, hred, hdoor, realSup_in_moment_corridor hEdge hExcess,
+    DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hnref hfloor hceil⟩
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 
 -- Axiom audit: all theorems must be ⊆ {propext, Classical.choice, Quot.sound}
@@ -249,4 +296,5 @@ open ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 #print axioms prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed
 #print axioms floor_bracketed_independent
 #print axioms prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed
+#print axioms no_prizeBound_dischargedDoorIV_object_trapped_and_floor_bracketed
 end AxiomAudit
