@@ -13018,3 +13018,46 @@ S stays BOUNDED ~O(1) (0.88–1.62, non-monotone, no upward trend) while the lin
 the SLACK (threshold−S) GROWS with a (1.20→0.80→1.74→1.63). The exp-relaxed dilation budget is walled
 with INCREASING margin; the route would need S to grow LINEARLY to (log2/2)·a, which it does not. The
 landed structure-free floor deficit_budget_ge_sqrt_scale_of_measured_sum applies at every a=5..9. CORE OPEN.
+
+## [door-iv-even-moment-phase-vacuous] the phase-carrying EVEN-order moment escape is VACUOUS — η_b is REAL so E_b[η_b^{2r}] = E_b[|η_b|^{2r}] (the refuted energy object); the campaign's last explicit higher-order escape is foreclosed (sol, 2026-06-23)
+
+Door-(iv) Lane 1. Discharges the ONE explicit escape left open by `_DoorIVFourthMomentEnergyCollapse`
+(DISPROOF L960): its closing note said "a surviving door-(iv) crack must be a higher-order functional
+that does NOT reduce to E₂ — it must use the PHASE the modulus 4th moment |η_b|⁴ discards — a 4-point
+object that is NOT the additive-quadruple count." The candidate phase-carrying object is the UNMODULATED
+even moment E_b[η_b^{2r}] (vs the dead modulus moment E_b[|η_b|^{2r}] = additive (2r)-energy).
+
+PROBE (`scripts/probes/probe_dooriv_phase_carrying_even_moment.py` + `probe_dooriv_mun_negation_closed.py`,
+EXACT integer additive-count arithmetic, PROPER thin μ_n ⊊ F_p* multiplicative subgroup of order n
+(primitive-order verified), p ≈ n^{3.2}, NEVER n=q−1). By character orthogonality over F_p, with S=μ_n:
+  E2 = (1/p)Σ_b|η_b|⁴ = #{x₁+x₂=x₃+x₄}   (modulus, = additive energy, DEAD)
+  Z4 = (1/p)Σ_b η_b⁴  = #{x₁+x₂+x₃+x₄≡0}  (PHASE-carrying)
+  T  = (1/p)Σ_b η_b³·conj η_b = #{x₁+x₂+x₃=x₄} (mixed)
+| n   | p        | E2     | Z4(phase) | T      |
+|-----|----------|--------|-----------|--------|
+| 8   | 809      | 168    | 168       | 168    |
+| 16  | 7121     | 720    | 720       | 720    |
+| 32  | 65537    | 3360   | 3360      | 3360   |
+| 64  | 602689   | 12096  | 12096     | 12096  |
+| 128 | 5534593  | 48768  | 48768     | 48768  |
+Z4 = E2 = T EXACTLY at every n. Verified −1∈μ_n and μ_n negation-closed (n even ⟹ order-n subgroup
+contains the order-2 element −1) at n=8,16,32,64.
+
+MECHANISM: μ_n is negation-closed, so the involution x↦−x pairs e_p(b·x) with conj e_p(b·x) ⟹ η_b is
+REAL. For a REAL z (z.im=0), z^{2r} = (‖z‖)^{2r} — the "phase the modulus discards" is identically ZERO.
+Hence EVERY even-order phase-carrying functional E_b[η_b^{2r}] collapses onto its modulus E_b[|η_b|^{2r}],
+the refuted moment/energy object. The "go to a phase-sensitive EVEN-order object" door-(iv) escape is
+therefore VACUOUS, not merely dead. (Odd orders carry SIGN, not phase = the odd/signed object already
+mapped at L2427.)
+
+VERDICT: does NOT close CORE. Locks the no-fifth-door tetrachotomy tighter — the only higher-order escape
+the campaign left explicitly open is foreclosed at the source by negation-closure. CORE M(μ_n) ≤
+C·√(n·log(p/n)) remains OPEN.
+
+Lean (axiom-clean, ⊆{propext,Classical.choice,Quot.sound}):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVEvenMomentPhaseVacuity.lean` — theorems
+`real_even_pow_eq_norm_pow` (real z ⟹ z^{2r}=(‖z‖:ℂ)^{2r}), `evenMoment_phase_vacuous` /
+`unmodulated_even_moment_eq_modulus` (Σ_b η_b^{2r} = Σ_b (‖η_b‖:ℂ)^{2r} for a real-valued field),
+`field_real_of_negation_closed` (a sum over a set carrying a conjugate-symmetric involution is real ⟹
+derives the reality hypothesis from negation-closure). Export
+`CampaignProvenIndex.doorIV_evenMomentPhaseVacuity_export`. No CORE/cancellation/completion/capacity claim.

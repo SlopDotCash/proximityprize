@@ -179,6 +179,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetBoundedExceptions
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVLeadingZeroDeficitFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitSumScatteredFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVEvenMomentPhaseVacuity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 /-!
@@ -8332,5 +8333,21 @@ theorem doorIV_deficitSumScatteredFloor_export {S M0 : ℝ} (a : ℕ)
     a ha hS hM0
 
 #print axioms doorIV_deficitSumScatteredFloor_export
+
+/-- Door-IV Lane-1 EVEN-MOMENT PHASE-VACUITY export: the campaign's `_DoorIVFourthMomentEnergyCollapse`
+closing note left ONE explicit escape — "a surviving door-(iv) crack must be a higher-order functional
+that does NOT reduce to `E₂`; it must use the PHASE the modulus `|η_b|⁴` discards."  This forecloses it.
+The candidate phase-carrying object is the UNMODULATED even moment `Σ_b (η_b)^{2r}` (vs the dead modulus
+moment `Σ_b ‖η_b‖^{2r}`).  Since `μ_n` is negation-closed (`−1 ∈ μ_n`, `n` even), each `η_b` is REAL, and
+for a real `z`, `z^{2r} = ‖z‖^{2r}` — the discarded phase is identically ZERO.  Hence the phase-carrying
+even moment EQUALS the modulus even moment (the refuted energy object), at every order `r`.  The
+"phase-sensitive even-order escape" is VACUOUS, not merely dead.  Stated for any finite real-valued field
+`η : β → ℂ` with `(η b).im = 0`.  Constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_evenMomentPhaseVacuity_export
+    {β : Type*} (s : Finset β) (η : β → ℂ) (hreal : ∀ b ∈ s, (η b).im = 0) (r : ℕ) :
+    (∑ b ∈ s, (η b) ^ (2 * r)) = (∑ b ∈ s, ((‖η b‖ : ℝ) : ℂ) ^ (2 * r)) :=
+  ProximityGap.Frontier.DoorIVEvenMomentPhaseVacuity.unmodulated_even_moment_eq_modulus s η hreal r
+
+#print axioms doorIV_evenMomentPhaseVacuity_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
