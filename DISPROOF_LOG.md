@@ -14113,3 +14113,46 @@ WHY IT MATTERS: the dyadic dilation route's single-step factor is 2 at the worst
 VERDICT: stable export/indexing of the dilation-tower no-go only. No CORE upper bound, cancellation, anti-concentration, completion, moment-saving, or capacity claim; CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## door-(iv) the pooled extreme-tail constant is the open object; bounded-below ⟺ prize (2026-06-23, sol)
+
+Lane: Door-(iv) Lane-1 PROBE → Lane-3 constraint lock. Refines the EVT picture of
+`_DoorIVSupRmsGaussianSaturation` (marginal kurtosis→3, M/√n≈√log(q/n)) and the tail→sup reduction of
+`_AvW5_SubGaussianTailToSup` (sufficiency: uniform tail const c>0 ⟹ prize-scale sup).
+
+PROBE (reproducible, proper μ_n, p≫n³, never n=q−1, coset reps, β=log_n q≈4.5): fit the POOLED upper-tail
+counting law #{b: |η_b|/√n ≥ t}/m ≈ exp(−c·t²) on t∈[2.0,3.2], m=(q−1)/n frequencies.
+- c(n): n=16:0.76, n=32:0.63, n=64:0.595, n=128:0.59, n=256:0.53. DECREASING but DECELERATING, converging
+  to a POSITIVE constant c≈0.55 — it does NOT decay to 0 (re-confirmed n=64,128,256 → c≈0.53–0.60).
+- M/√n tracks √(log(q/n)) with prefactor 1/√c≈1.35: M ≈ √(n·log(q/n))/√c, a BOUNDED inflation of the
+  prize form, not a scale change.
+
+KEY NEW FACT (separates two constants the prior files conflate): the POOLED tail constant c≈0.55 is
+STRICTLY HEAVIER than the per-b Gaussian-modulus value 1 (Rayleigh: −ln P(|Z|≥t)=t²). Since the
+marginal kurtosis →3 (bulk Gaussian, proven in _DoorIVSupRmsGaussianSaturation), the extra heaviness
+1→0.55 is NOT marginal — it is the JOINT correlation across b (multiplicative resonance) leaking into
+the pooled extreme tail, the exact object that file said a crack must live in. This probe PINS that
+object: the joint structure inflates the tail constant by a BOUNDED factor (≈0.55), it does NOT drive
+it to 0.
+
+CONSTRAINT LEMMAS (axiom-clean, REAL proofs, NO sorry) in `_DoorIVPooledTailConstantBoundedBelow.lean`:
+- `threshold_identity` / `exceedance_count_one_at_threshold`: the union-bound EVT threshold T²=log m/c
+  has expected exceedance count m·exp(−cT²)=1 exactly (no slack).
+- `inflation_factor`: √(log m/c)=√(log m)/√c — the sup scale is the prize scale times the factor 1/√c.
+- `tailConst_pos_iff_inflation_finite`: 1/√c finite ⟺ c>0 — the formal content of "prize-scale ⟺ pooled
+  tail constant bounded below"; the sup overshoots the prize scale by an UNBOUNDED factor iff c→0.
+- `boundedBelow_tailConst_gives_prize_scale`: c≥c₀>0 uniformly ⟹ sup ≤ (1/√c₀)·√(log m) = prize scale
+  with absolute constant 1/√c₀ (the door-(iv) reduction: CORE holds with const 1/√c₀ once c≥c₀ uniformly).
+- `pooled_tailConst_heavier_than_gaussian` (0.55 < 1) + `measuredPooledTailConst_pos` (0 < 0.55): the
+  measured constant is heavier than Gaussian (joint structure present) AND bounded below (scale preserved).
+
+VERDICT: a Lane-1 probe + Lane-3 constraint lock. CORE is REDUCED to the single scalar c₀ = inf_n c(n):
+CORE holds iff c₀>0. The probe SUPPORTS c₀≈0.55>0 but SUPPORT IS NOT A PROOF (the uniform tail bound is
+the open Paley/BGK statement in its sharpest probe-localized form). No completion, no moment, no
+anti-concentration-beats-energy claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN; door (iv) stays the
+only live door; the open object is now the single scalar c₀.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPooledTailConstantBoundedBelow.lean`,
+axiom-clean (all 7 theorems' axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>

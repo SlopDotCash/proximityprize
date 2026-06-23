@@ -1831,6 +1831,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPerFrequencyLocaliz
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPhaseBlindRadialStats
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPhaseCurvatureGeneric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPhaseSetDilationInvariant
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPooledTailConstantBoundedBelow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeBddAbove
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeObjectGrandCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeShawTetrachotomySynthesis
