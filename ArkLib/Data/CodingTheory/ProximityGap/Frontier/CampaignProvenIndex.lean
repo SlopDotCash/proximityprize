@@ -190,6 +190,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEner
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentEnergyFloorOvershoot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentFloorTetrachotomyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupParsevalEnergyExact
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakBracket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -9045,6 +9046,48 @@ theorem doorIV_subgroupIndicator_offDC_mean_le_order_export {N : ℕ} [NeZero N]
     hd hN1
 
 #print axioms doorIV_subgroupIndicator_offDC_mean_le_order_export
+
+/-- Door-IV Lane-2 EXACT OFF-DC PEAK BRACKET export (squared form): there is an off-DC
+frequency whose squared subgroup-indicator DFT magnitude lies between the exact off-DC mean
+`(N·d - d²)/(N - 1)` and the exact off-DC total energy `N·d - d²`.  This is the honest
+Plancherel-floor-to-completion-ceiling bracket on the concrete prize object.
+It is a floor/ceiling
+substrate only: no CORE upper bound, cancellation, anti-concentration, moment-saving, or capacity
+claim. -/
+theorem doorIV_exists_offDC_peak_sq_bracket_export {N : ℕ} [NeZero N] {d : ℕ}
+    (hd : d ∣ N) (hN1 : 1 < N) :
+    ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
+      ((N : ℝ) * d - (d : ℝ) ^ 2) / ((N : ℝ) - 1)
+          ≤ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖ ^ 2
+      ∧ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖ ^ 2 ≤ (N : ℝ) * d - (d : ℝ) ^ 2 :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCPeakBracket.exists_offDC_peak_sq_bracket
+    hd hN1
+
+#print axioms doorIV_exists_offDC_peak_sq_bracket_export
+
+/-- Door-IV Lane-2 EXACT OFF-DC PEAK BRACKET export (norm form): the same concrete off-DC
+frequency has norm between `sqrt((N·d - d²)/(N - 1))` and `sqrt(N·d - d²)`.  The lower endpoint is
+only the Plancherel floor and the upper endpoint is only the trivial `√(N·d)` completion fence;
+CORE remains the missing descent to `C·sqrt(d·log(N/d))`. -/
+theorem doorIV_exists_offDC_peak_bracket_export {N : ℕ} [NeZero N] {d : ℕ}
+    (hd : d ∣ N) (hN1 : 1 < N) :
+    ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
+      Real.sqrt (((N : ℝ) * d - (d : ℝ) ^ 2) / ((N : ℝ) - 1))
+          ≤ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖
+      ∧ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖
+          ≤ Real.sqrt ((N : ℝ) * d - (d : ℝ) ^ 2) :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCPeakBracket.exists_offDC_peak_bracket
+    hd hN1
+
+#print axioms doorIV_exists_offDC_peak_bracket_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
