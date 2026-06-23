@@ -13957,3 +13957,22 @@ WHY IT MATTERS: the kernel `_DoorIVSubgroupOffDCPeakFloorSharp` composed the off
 VERDICT: stable export/indexing of a sharp FLOOR only. It proves no CORE upper bound and makes no cancellation, completion, anti-concentration, moment, capacity, or asymptotic claim; CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-dc-offdc-gap-exports] stable CampaignProvenIndex exports for DC/off-DC separation (g55, 2026-06-23)
+Lane: door-(iv) Lane-2 capstone hardening.  The concrete subgroup-indicator substrate already proved
+`F(1_mu_d)(0)=d`, `||F(1_mu_d)(0)||=d`, and the DC/off-DC gap
+`||F(1_mu_d)(k)||^2 <= ((N-d)/d) * ||F(1_mu_d)(0)||^2` for off-DC `k`.
+
+CONSTRAINT EXPORTS added to `CampaignProvenIndex`:
+- `doorIV_subgroupIndicator_dc_value_export`
+- `doorIV_subgroupIndicator_dc_norm_export`
+- `doorIV_offDC_peak_sq_le_gap_mul_dc_sq_export`
+
+WHY IT MATTERS: this packages the reason the prize object is the off-DC maximum instead of the
+DC-dominated all-frequency maximum.  The gap factor is the trivial completion fence, not the CORE
+bound; no cancellation, anti-concentration, moment-saving, or capacity claim is made.
+
+VERDICT: axiom-clean normalization/separation capstone only.  CORE remains OPEN; door (iv) remains
+the only live door.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>

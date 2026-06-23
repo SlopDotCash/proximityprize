@@ -191,6 +191,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentEnergyFloorOv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentFloorTetrachotomyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupParsevalEnergyExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakBracket
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupDCOffDCGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOffDCCeilingDominatesBGKTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCMeanFloorSharp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakFloorSharp
@@ -9061,6 +9062,46 @@ theorem doorIV_subgroupIndicator_offDC_mean_le_order_export {N : ℕ} [NeZero N]
     hd hN1
 
 #print axioms doorIV_subgroupIndicator_offDC_mean_le_order_export
+
+
+/-- Door-IV Lane-2 DC VALUE export: for the order-`d` subgroup indicator, the zero-frequency
+coefficient is exactly the subgroup order.  This is the DC term that must be removed before the
+prize object is the off-DC maximum; it is normalization bookkeeping, not cancellation. -/
+theorem doorIV_subgroupIndicator_dc_value_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
+    (ZMod.dft
+      (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+        (N := N) d)) 0 = (d : ℂ) :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap.subgroupIndicator_dc_value hd
+
+#print axioms doorIV_subgroupIndicator_dc_value_export
+
+/-- Door-IV Lane-2 DC NORM export: the magnitude of the zero-frequency subgroup-indicator DFT
+coefficient is exactly `d`.  This pins the DC-dominated all-frequency maximum separately from the
+off-DC prize maximum. -/
+theorem doorIV_subgroupIndicator_dc_norm_export {N : ℕ} [NeZero N] {d : ℕ} (hd : d ∣ N) :
+    ‖(ZMod.dft
+      (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+        (N := N) d)) 0‖ = (d : ℝ) :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap.subgroupIndicator_dc_norm hd
+
+#print axioms doorIV_subgroupIndicator_dc_norm_export
+
+/-- Door-IV Lane-2 DC/OFF-DC SPECTRAL GAP export: every off-DC coefficient is bounded by the
+trivial completion gap relative to the DC coefficient, `M² ≤ ((N-d)/d)·|DC|²`.  This formally
+separates the off-DC prize object from the DC term; the factor is the completion fence, not CORE. -/
+theorem doorIV_offDC_peak_sq_le_gap_mul_dc_sq_export {N : ℕ} [NeZero N] {d : ℕ}
+    (hd : d ∣ N) {k₀ : ZMod N} (hk₀ : k₀ ∈ (Finset.univ.erase (0 : ZMod N)))
+    (hd0 : 0 < d) :
+    ‖(ZMod.dft
+      (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+        (N := N) d)) k₀‖ ^ 2
+      ≤ (((N : ℝ) - d) / d) * ‖(ZMod.dft
+        (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+          (N := N) d)) 0‖ ^ 2 :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap.offDC_peak_sq_le_gap_mul_dc_sq
+    hd hk₀ hd0
+
+#print axioms doorIV_offDC_peak_sq_le_gap_mul_dc_sq_export
 
 /-- Door-IV Lane-2 EXACT OFF-DC PEAK BRACKET export (squared form): there is an off-DC
 frequency whose squared subgroup-indicator DFT magnitude lies between the exact off-DC mean
