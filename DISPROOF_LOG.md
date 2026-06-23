@@ -13205,7 +13205,6 @@ compensation lemma from a single obstruction to a clustered obstruction.  Scope:
 bookkeeping only; no empirical product bound, no arithmetic `√2` gate, no moment/completion route, and
 no CORE upper-bound claim.
 
-<<<<<<< Updated upstream
 ## [doorIV-synthesis-scale-bridge] the reduction/door-half scale gap is EXACTLY √(log(q/n)) (2026-06-23, sol)
 Lane: Lane-2 capstone hardening — close the one bookkeeping rung `_ShawGrandSynthesis` left as prose.
 
@@ -13233,7 +13232,7 @@ VERDICT: PURE definitional/algebraic bookkeeping — renders the synthesis's ope
 kernel-checked quantity `√(log(q/n))`. NO new mathematical content: no CORE / cancellation / completion
 / moment / anti-concentration / capacity / asymptotic claim, and NO claim the gap factor is bounded
 (absorbing it IS the open door-(iv) problem). CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
-=======
+
 ### [doorIV-per-level-factor-superbudget-block-compensation] (2026-06-23, g55)
 Formalized the general clustered compensation law in `_DoorIVPerLevelFactorSubTwo.lean`:
 `remainderProduct_lt_sqrtTwo_pow_of_superBudget_block`.  If a finite block of rungs has product
@@ -13241,4 +13240,23 @@ strictly above its own `(√2)^r` budget, and the total height-`b+r` product sti
 budget, then the complementary product is strictly below `(√2)^b`.  This generalizes the one- and
 two-bad-rung compensation statements into a reusable block certificate.  Scope: finite real-algebra
 bookkeeping only; no arithmetic `√2` gate, no empirical claim, no moment/completion route, no CORE bound.
->>>>>>> Stashed changes
+
+## [doorIV-synthesis-gap-consumer] genuine cancellation ratio M/√n = Sh-value · √(log(q/n)) (2026-06-23, sol)
+Lane: Lane-2 capstone hardening, consumer form of the scale bridge `[doorIV-synthesis-scale-bridge]`.
+
+CONSTRAINT/IDENTITY LEMMA (axiom-clean, real proof, NO sorry) in `_ShawScaleDoorScaleBridge.lean`,
+exported as `CampaignProvenIndex.prizeFloorRatio_eq_shawValue_mul_gap_export`:
+`prizeFloorRatio_eq_shawValue_mul_gap`: in the prize regime `q > n > 0`, the genuine
+square-root-cancellation ratio `M / prizeScale n = M/√n` equals the campaign Shaw value
+`shawValue q n M = M / shawScale q n` AMPLIFIED by EXACTLY the gap factor `√(log(q/n))`:
+`M/√n = shawValue q n M · √(log(q/n))`.
+
+WHY IT MATTERS (the precise no-go): this pins, as a kernel identity, the reason the reduction half
+(`Sh = O(1)`) does NOT by itself bound the genuine `M/√n` cancellation: the two normalizations differ
+by exactly the `√(log(q/n))` gap factor, and absorbing that factor IS the open door-(iv) content. So
+the standing reduction cannot be silently upgraded to a prize-floor cancellation bound — the gap is
+quantified, not hand-waved.
+
+VERDICT: PURE algebra over the definitional scale bridge. NO new mathematical content beyond the
+identity: no CORE / cancellation / completion / moment / anti-concentration / capacity / asymptotic
+claim, and NO claim that either side is bounded. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.

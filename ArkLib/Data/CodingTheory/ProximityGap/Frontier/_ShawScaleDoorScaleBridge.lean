@@ -92,4 +92,27 @@ theorem prizeScale_lt_shawScale_of_one_lt_log (q n : ℝ) (hn : 0 < n)
   rw [shawScale_eq_bgkScale]
   exact prizeScale_lt_bgkScale hn hL
 
+/-- **The genuine cancellation ratio is the Shaw value times the gap factor.**  Write the genuine
+square-root-cancellation ratio as `M / prizeScale n = M / √n` (how far below the trivial `n` bound the
+sup norm cancels, measured against the prize floor `√n`).  In the prize regime `q > n > 0`, this ratio
+equals the campaign's Shaw value `shawValue q n M = M / shawScale q n` AMPLIFIED by exactly the gap
+factor `√(log(q/n))`:
+`M / prizeScale n = shawValue q n M · √(log(q/n))`.
+
+This is the *consumer* form of the scale bridge and the precise reason the reduction half and the door
+half are not the same statement: bounding the Shaw value by an absolute constant (`Sh = O(1)`, the
+reduction) does NOT bound the genuine cancellation ratio `M/√n` unless the `√(log(q/n))` gap factor is
+absorbed — which is exactly the open door-(iv) content.  Pure algebra over the definitional bridge; no
+claim that either side is bounded. -/
+theorem prizeFloorRatio_eq_shawValue_mul_gap (q n M : ℝ) (hn : 0 < n) (hnq : n < q) :
+    M / prizeScale n
+      = shawValue q n M * Real.sqrt (Real.log (q / n)) := by
+  have hsp : 0 < shawScale q n := shawScale_pos_of_pos_lt hn hnq
+  have hpp : 0 < prizeScale n := prizeScale_pos hn
+  have hgap : shawScale q n / prizeScale n = Real.sqrt (Real.log (q / n)) :=
+    shawScale_div_prizeScale_of_pos_lt q n hn hnq
+  unfold shawValue
+  rw [← hgap]
+  field_simp
+
 end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge

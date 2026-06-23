@@ -8537,4 +8537,18 @@ theorem shawScale_div_prizeScale_export (q n : ℝ) (hn : 0 < n) (hnq : n < q) :
 
 #print axioms shawScale_div_prizeScale_export
 
+/-- Synthesis-gap CONSUMER export: in the prize regime `q > n > 0`, the genuine cancellation ratio
+`M / prizeScale n = M/√n` equals the campaign Shaw value `shawValue q n M` amplified by EXACTLY the gap
+factor `√(log(q/n))`.  This is the precise reason `Sh = O(1)` (the reduction) does NOT by itself bound
+the genuine `M/√n` cancellation: the `√(log(q/n))` factor must be absorbed, which is the open door-(iv)
+content.  Pure algebra over the definitional bridge; no boundedness claim. -/
+theorem prizeFloorRatio_eq_shawValue_mul_gap_export (q n M : ℝ) (hn : 0 < n) (hnq : n < q) :
+    M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
+      = _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M
+          * Real.sqrt (Real.log (q / n)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_eq_shawValue_mul_gap
+    q n M hn hnq
+
+#print axioms prizeFloorRatio_eq_shawValue_mul_gap_export
+
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
