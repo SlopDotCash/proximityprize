@@ -14086,4 +14086,15 @@ stays the only live door.
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerConcrete.lean`,
 axiom-clean (all 3 theorems' axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
+## [doorIV-worstB-coherent-imbalance-normalized-export] stable normalized-ratio export (2026-06-23, g55)
+Lane: Door (iv), Lane 3 refuted-lever indexing.
+
+CONSTRAINT EXPORT added to `CampaignProvenIndex`:
+- `doorIV_worstB_coherent_imbalance_normalized_ratio_export` packages the exact ratio
+  `||A+B||/(2 max(||A||,||B||)) = (1 + min/max)/2` and its strict `< 1` consequence under imbalance.
+
+WHY IT MATTERS: the prior stable export recorded the additive gap. This one records the scale-free ratio form used in the dyadic-recursion discussion: coherence `rho=1` is insufficient for a balanced `÷2` recursion unless the two half norms are also equal.
+
+VERDICT: normalized no-go packaging only. No CORE upper bound, no cancellation, no anti-concentration, no capacity claim. CORE remains OPEN.
+
 Co-authored-by: wakesync <shadow@shad0w.xyz>

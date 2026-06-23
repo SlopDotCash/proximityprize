@@ -7512,6 +7512,23 @@ theorem doorIV_worstB_coherent_imbalance_breaks_symmetric_descent_export
 
 #print axioms doorIV_worstB_coherent_imbalance_breaks_symmetric_descent_export
 
+/-- **[obstruction, DoorIVWorstBCoherentImbalance — normalized ratio form]** Scale-free companion to
+`doorIV_worstB_coherent_imbalance_breaks_symmetric_descent_export`: under coherence and a positive
+heavier half, the ratio to the balanced symmetric ceiling is exactly
+`(1 + min/max)/2`; if the halves are imbalanced, this ratio is strictly below `1`.  This is the
+citable normalized form of the true-worst-`b` verdict: coherence `ρ=1` does not authorize the balanced
+`÷2` recursion unless the magnitudes are also equal. No CORE upper bound. -/
+theorem doorIV_worstB_coherent_imbalance_normalized_ratio_export
+    {E : Type*} [SeminormedAddCommGroup E] {A B : E}
+    (hcoh : ‖A + B‖ = ‖A‖ + ‖B‖) (hmax : 0 < max ‖A‖ ‖B‖) (hne : ‖A‖ ≠ ‖B‖) :
+    (‖A + B‖ / (2 * max ‖A‖ ‖B‖)
+        = (1 + min ‖A‖ ‖B‖ / max ‖A‖ ‖B‖) / 2) ∧
+      ‖A + B‖ / (2 * max ‖A‖ ‖B‖) < 1 :=
+  ⟨DoorIVWorstBCoherentImbalance.coherent_norm_div_two_mul_max_eq_avg_ratio hcoh hmax,
+   DoorIVWorstBCoherentImbalance.coherent_imbalanced_ratio_lt_one hcoh hmax hne⟩
+
+#print axioms doorIV_worstB_coherent_imbalance_normalized_ratio_export
+
 /-- **[obstruction, DoorIVWorstBImbalanceBand — door-(iv) Lane-1/3]** If the coherent worst-frequency
 half split sits in a stationary balance band `rlo·H ≤ min ≤ rhi·H`, then it has proportional gaps from
 BOTH dead endpoints: it exceeds the single heavier-half model by at least `rlo·H`, and the symmetric
