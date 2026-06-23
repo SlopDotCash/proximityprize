@@ -8065,6 +8065,22 @@ theorem doorIV_sharpenedFloorUnitCorridor_export
 
 #print axioms doorIV_sharpenedFloorUnitCorridor_export
 
+/-- Door-IV Lane-3 PRIZE-CONSTANT lower-bound export: any achievable floor-scale prize constant `K`
+must clear the proven super-diagonal floor `c₀ = (5/4)^{1/4} ≈ 1.0574 > 1`.  Sharpens the bare
+`1 ≤ K` baseline (`doorIV_floorPrizeConstant_ge_one_export`): if `c₀·√n ≤ M` (proven super-diagonal
+period floor) and `M ≤ K·√n`, then `c₀ ≤ K`.  A floor-normalized certificate cannot have a constant
+below `c₀`; the prize must clear a constant strictly above the bare Plancherel `1`.  Constraint rung on
+the achievable prize constant itself; CORE not discharged. -/
+theorem doorIV_prizeFloorConstant_ge_superDiagonal_export
+    {M n K : ℝ} (hn : 0 < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
+    (hbound : M ≤ K * NoFifthDoorTetrachotomy.prizeScale n) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ K :=
+  DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor
+    hn hfloor hbound
+
+#print axioms doorIV_prizeFloorConstant_ge_superDiagonal_export
+
 /-- Door-IV Lane-3 BOUNDED-EXCEPTION deficit-budget √-floor export: sharpens the sub-`(log2)/2`
 average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
 split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep

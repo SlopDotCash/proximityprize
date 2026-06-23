@@ -472,6 +472,23 @@ theorem one_lt_superDiagonalFloorConst_floorUnit :
     (1 : ℝ) < ShawValueCapstone.superDiagonalFloorConst :=
   ShawValueCapstone.superDiagonalFloorConst_gt_one
 
+/-- **Any floor-scale prize constant must clear the super-diagonal floor `(5/4)^{1/4}`.**  Sharpens
+`one_le_prizeFloorConstant_of_plancherel_floor` (which gives only `1 ≤ K`): if the proven super-diagonal
+floor `(5/4)^{1/4}·√n ≤ M` holds and `M ≤ K·√n`, then necessarily `(5/4)^{1/4} ≤ K`.  So a
+floor-normalized certificate cannot have a constant below `(5/4)^{1/4} ≈ 1.0574` — strictly above the
+bare Plancherel `1`.  This is the floor-unit lower bound on the *achievable prize constant itself*
+(not just the ratio), the citable strengthening of the constant-baseline constraint. -/
+theorem superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor
+    {M n K : ℝ} (hn : 0 < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
+    (hbound : M ≤ K * NoFifthDoorTetrachotomy.prizeScale n) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ K := by
+  have hratio_floor : ShawValueCapstone.superDiagonalFloorConst ≤ floorPrizeRatio M n :=
+    superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor hn hfloor
+  have hratio_bound : floorPrizeRatio M n ≤ K :=
+    (prizeFloorBound_iff_floorPrizeRatio_le hn).mp hbound
+  exact le_trans hratio_floor hratio_bound
+
 /-- **Sharpened floor-unit corridor `[(5/4)^{1/4}, √L]`, door-(iv)-only.**  Given the proven
 super-diagonal period floor `(5/4)^{1/4}·√n ≤ M`, a classical-door BGK ceiling `M ≤ √(n·L)`, and the
 classical-overshoot refutations, the floor-normalized worst-frequency ratio `M/√n` lives in the
@@ -504,3 +521,4 @@ end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.one_le_prizeFloorConstant_of_plancherel_floor
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorUnit_corridor_doorIV_only
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor
