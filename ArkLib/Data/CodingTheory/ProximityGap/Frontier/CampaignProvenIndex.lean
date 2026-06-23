@@ -8969,6 +8969,23 @@ theorem shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound_export 
 
 #print axioms shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound_export
 
+/-- Synthesis-gap POSITIVE-SHAW-FLOOR NO-GO export: if genuine prize-floor ratios stay bounded by a
+nonnegative constant while the exact gap factors `√(log(qᵢ/nᵢ))` drift past every target, then there is
+no fixed positive constant below all Shaw values.  This is the existential consumer form of the
+arbitrary-small Shaw theorem: bounded `Mᵢ/√nᵢ` over an unbounded synthesis-gap regime forces the Shaw
+values to vanish along a subsequence.  Pure normalization algebra; no CORE/cancellation claim. -/
+theorem not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_export {ι : Type*}
+    {q n M : ι → ℝ} {B : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hB : 0 ≤ B)
+    (hPrize : ∀ i, M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B)
+    (hgapDrift : ∀ T : ℝ, ∃ i : ι, T < Real.sqrt (Real.log (q i / n i))) :
+    ¬ ∃ c : ℝ, 0 < c ∧ ∀ i : ι,
+      c ≤ _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i) :=
+  ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound
+    hn hnq hB hPrize hgapDrift
+
+#print axioms not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_export
+
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
 `(Σ_b (η_b)^D)² ≤ card(s) · Σ_b (η_b)^{2D}`.  So the last named "different object" the moment-collapse

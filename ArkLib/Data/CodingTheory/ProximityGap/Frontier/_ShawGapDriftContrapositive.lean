@@ -96,7 +96,26 @@ theorem shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound {ι : T
     exact (div_lt_iff₀ hgap_pos).2 hB_lt_eps_gap
   exact lt_of_le_of_lt hSh_le hB_div_gap_lt
 
+/-- **No positive uniform Shaw floor over an unbounded synthesis-gap regime with bounded prize
+ratios.**  This is the existential no-go consumer of
+`shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound`: if `Mᵢ/√nᵢ` is bounded while the
+exact door-(iv) gap factors `√(log(qᵢ/nᵢ))` drift without bound, then no fixed `c>0` can sit below every
+Shaw value.  Equivalently, a bounded prize-floor theorem in an unbounded `√log` regime must have
+`Shᵢ → 0` along a subsequence unless it also controls the door-(iv) gap.  Pure normalization algebra;
+no CORE cancellation, completion, or anti-concentration estimate is asserted. -/
+theorem not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound {ι : Type*}
+    {q n M : ι → ℝ} {B : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hB : 0 ≤ B)
+    (hPrize : ∀ i, M i / prizeScale (n i) ≤ B)
+    (hgapDrift : ∀ T : ℝ, ∃ i : ι, T < Real.sqrt (Real.log (q i / n i))) :
+    ¬ ∃ c : ℝ, 0 < c ∧ ∀ i : ι, c ≤ shawValue (q i) (n i) (M i) := by
+  rintro ⟨c, hc, hfloor⟩
+  rcases shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound
+      hn hnq hB hPrize hgapDrift c hc with ⟨i, hi⟩
+  exact (not_lt_of_ge (hfloor i)) hi
+
 end ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive
 
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound
+#print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound

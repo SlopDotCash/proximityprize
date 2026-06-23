@@ -13745,3 +13745,15 @@ VERDICT: honest connector/constraint capstone. It proves the moment door cannot 
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentFloorTetrachotomyBridge.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-shawgap-positive-floor-nogo] bounded prize ratios over unbounded √log gaps force no positive Shaw floor (2026-06-23, g55)
+Lane: door-(iv) Lane-2 reduction-chain hardening, direct existential no-go consumer for Shaw-value floors.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_ShawGapDriftContrapositive.lean`, exported as `CampaignProvenIndex.not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_export`:
+- if `Mᵢ/prizeScale(nᵢ)` is uniformly bounded by a nonnegative constant while the exact synthesis gaps `√(log(qᵢ/nᵢ))` drift past every target, then there is no `c>0` with `c ≤ Sh(qᵢ,nᵢ,Mᵢ)` for every family member.
+
+WHY IT MATTERS: upstream had the arbitrary-small Shaw-value subsequence conclusion. This packages the form used in reduction prose: a bounded prize-floor theorem in an unbounded `√log` regime cannot coexist with a nonvanishing Shaw floor. Thus either the Shaw values vanish along a subsequence, or the proof has already controlled the door-(iv) synthesis gap. Pure normalization algebra over `M/√n = Sh·√log`.
+
+VERDICT: Lane-2 citable no-go packaging only. NO CORE upper bound, cancellation, completion, moment, anti-concentration, capacity, or asymptotic claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
