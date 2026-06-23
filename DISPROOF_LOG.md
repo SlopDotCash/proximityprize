@@ -14169,3 +14169,19 @@ VERDICT: citable no-sqrt-saving arithmetic for the dyadic-recursion route only. 
 >>>>>>> Stashed changes
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-pooled-tail-shape-n-independent] REFINEMENT of pooled-tail-constant lock: c(t) is n-independent, t-decreasing (2026-06-23, sol)
+
+Refines the immediately-preceding pooled-tail entry. Followup probe of the LOCAL tail exponent
+c(t) := −ln P(|η_b|/√n ≥ t)/t² (not a single fitted slope):
+- c(t) = 0.89, 0.78, 0.70, 0.66, 0.65 at t=1.5,2.0,2.5,3.0,3.5 — MONOTONE DECREASING in t (tail fatter
+  than pure Gaussian c=1 at the extreme), and these curves COINCIDE across n=64,128,256 to ~1%.
+- Far tail (n=128, 300k samples): c(3.0)=0.662, c(3.3)=0.641, c(3.6)=0.628, c(3.9)=0.608 — still slowly
+  declining but DECELERATING (per-0.3-step drop 0.021→0.013→0.020), not yet provably plateaued.
+CORRECTION to the prior entry's framing: the "decreasing c(n)" reported there is largely an ARTIFACT of
+M/√n growing with n (a fixed fit-window catches a lower-c far-tail regime at larger n). The TRUE object
+is the n-INDEPENDENT shape function c(t). So the open scalar is c₀ = lim_{t→∞} c(t), a property of the
+LIMITING pooled law of |η_b|/√n, NOT a property of n. Whether c₀>0 (prize) is unresolved — the decline is
+decelerating but not flattened at t=3.9. No new Lean (avoids a redundant single-theorem file); the cycle-1
+kernel's equivalence "prize ⟺ tail constant bounded below" stands and now reads with c₀ as the
+n-independent far-tail exponent. CORE stays OPEN; door (iv) the only live door.
