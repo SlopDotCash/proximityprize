@@ -13061,3 +13061,42 @@ Lean (axiom-clean, ⊆{propext,Classical.choice,Quot.sound}):
 `field_real_of_negation_closed` (a sum over a set carrying a conjugate-symmetric involution is real ⟹
 derives the reality hypothesis from negation-closure). Export
 `CampaignProvenIndex.doorIV_evenMomentPhaseVacuity_export`. No CORE/cancellation/completion/capacity claim.
+
+## [door-iv-mixed-conjugate-moment-collapse] the ASYMMETRIC mixed-conjugate moment escape is VACUOUS — for real η_b, EVERY conjugate split Σ_c η_c^a·conj(η_c)^b (a+b=2r) collapses to ONE value, the modulus moment E_r; strictly generalises the even-moment vacuity (sol subagent, 2026-06-23)
+
+Door-(iv) Lane 1. After `_DoorIVEvenMomentPhaseVacuity` killed the SYMMETRIC even-order phase escape
+(`Σ_b η_b^{2r} = Σ_b |η_b|^{2r} = E_r`), exactly ONE finer higher-order route remained explicitly open:
+an ASYMMETRIC / mixed-conjugate correlator that distributes the conjugations UNEVENLY across a degree-2r
+monomial — `M(a,b) = Σ_c η_c^a · conj(η_c)^b` with `a+b=2r`, `a≠b` (e.g. the 3-to-1 functional
+`T = Σ η³·conj η` the campaign had measured `= E₂` but never proved split-uniform). The hope: an
+unbalanced split carries arithmetic the symmetric `η^{2r}=|η|^{2r}` discards.
+
+PROBE (`/tmp/probe_mixed_moment_collapse.py` → `scripts/probes/probe_dooriv_mixed_conjugate_moment_collapse.py`,
+proper thin μ_n ⊊ F_p* negation-closed, primitive order n verified, structured primes p=k·n+1≈n^{3.2},
+NEVER n=q−1; n=8,16,32,64). For EVERY total order 2r∈{2,4,6} and EVERY conjugate split (a,2r−a),
+a=0..2r, measured M(a,2r−a):
+  n=8  p=809:    E_r = 7.92 / 162.94 / 4795.97   max|M(a,2r−a)−E_r| over all a ≤ 2.4e-12
+  n=16 p=7121:   E_r = 15.96 / 710.80 / 48204.0   ≤ 3.0e-11
+  n=32 p=65537:  E_r = 31.98 / 3344.0 / 687136.   ≤ 5.1e-10
+  n=64 p=602689: E_r = 63.99 / 12068.2 / 3.73e6   ≤ 2.7e-09
+M(a,2r−a) = E_r EXACTLY for ALL splits a, at every n and order r (max deviation is FP noise; all real).
+The asymmetric mixed-conjugate moment gives NO new object at ANY split.
+
+MECHANISM: μ_n is negation-closed ⟹ η_c is REAL ⟹ conj(η_c)=η_c, so
+`η_c^a · conj(η_c)^b = η_c^{a+b} = (‖η_c‖)^{a+b}` (the conjugation is the identity on the real axis, and
+an EVEN total power of a real z squares its sign away). The right side depends ONLY on the total degree
+`a+b`, NOT on the split — so the entire (2r+1)-element conjugate ladder {M(a,2r−a) : a=0..2r} is pinned
+to the single modulus / energy value E_r. This STRICTLY GENERALISES the even-moment vacuity (the case
+b=0, or a=b=r): not just the symmetric η^{2r}, but every asymmetric mixed-conjugate distribution is dead.
+
+VERDICT: does NOT close CORE. Forecloses the asymmetric mixed-conjugate higher-order escape, locking the
+no-fifth-door tetrachotomy tighter: there is no way to distribute conjugates over a degree-2r monomial
+that escapes the refuted energy lane. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
+
+Lean (axiom-clean, ⊆{propext,Classical.choice,Quot.sound}):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMixedConjugateMomentCollapse.lean` — theorems
+`conj_eq_self_of_im_zero` (real z ⟹ conj z = z), `mixed_pow_eq_norm_pow` (real z, a+b=2r ⟹
+z^a·conj(z)^b = (‖z‖)^{a+b}), `mixedMoment_split_independent` (the averaged correlator = modulus moment
+for any split), `mixedMoment_any_two_splits_eq` (any two splits of equal even total coincide — the
+T=E₂=Z₄ identity, split-uniform), `mixedMoment_eq_modulusMoment`. Export
+`CampaignProvenIndex.doorIV_mixedConjugateMomentCollapse_export`. No CORE/cancellation/completion/capacity claim.

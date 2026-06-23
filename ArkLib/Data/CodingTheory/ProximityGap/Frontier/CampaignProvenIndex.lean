@@ -180,6 +180,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetBounde
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVLeadingZeroDeficitFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitSumScatteredFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVEvenMomentPhaseVacuity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomentCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 /-!
@@ -8349,5 +8350,25 @@ theorem doorIV_evenMomentPhaseVacuity_export
   ProximityGap.Frontier.DoorIVEvenMomentPhaseVacuity.unmodulated_even_moment_eq_modulus s η hreal r
 
 #print axioms doorIV_evenMomentPhaseVacuity_export
+
+/-- Door-IV Lane-1 ASYMMETRIC MIXED-CONJUGATE MOMENT COLLAPSE export: STRICTLY GENERALISES the
+even-moment vacuity above.  The finer escape route left after the symmetric `Σ_b η_b^{2r}` died is an
+asymmetric / mixed-conjugate correlator `Σ_c η_c^a · conj(η_c)^b` with `a + b = 2r` and `a ≠ b` (e.g.
+the `3-to-1` functional `Σ η³·conj η`).  Since `μ_n` is negation-closed each `η_c` is REAL, so
+`conj η_c = η_c` and `η_c^a · conj(η_c)^b = η_c^{a+b} = ‖η_c‖^{a+b}` — the conjugate SPLIT is irrelevant,
+only the total degree matters, and it lands on the refuted modulus / energy moment.  Hence the ENTIRE
+`(2r+1)`-element conjugate ladder `{Σ_c η_c^a · conj(η_c)^{2r−a} : a = 0..2r}` is pinned to one value:
+the asymmetric mixed-conjugate door-(iv) escape is VACUOUS at every split.  This proves the campaign's
+measured `T = E₂ = Z₄` identity (`probe_dooriv_mixed_conjugate_moment_collapse.py`) split-uniformly.
+Stated for any finite real-valued field `η : β → ℂ`.  Constraint lemma; CORE remains OPEN. -/
+theorem doorIV_mixedConjugateMomentCollapse_export
+    {β : Type*} (s : Finset β) (η : β → ℂ) (hreal : ∀ c ∈ s, (η c).im = 0)
+    (a b r : ℕ) (hab : a + b = 2 * r) :
+    ∑ c ∈ s, (η c) ^ a * ((starRingEnd ℂ) (η c)) ^ b
+      = ∑ c ∈ s, ((‖η c‖ : ℝ) : ℂ) ^ (2 * r) :=
+  ProximityGap.Frontier.DoorIVMixedConjugateMomentCollapse.mixedMoment_eq_modulusMoment
+    s η hreal a b r hab
+
+#print axioms doorIV_mixedConjugateMomentCollapse_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
