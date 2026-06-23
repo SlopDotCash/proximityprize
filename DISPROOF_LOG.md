@@ -14204,3 +14204,26 @@ structured prime where the worst-b coherence is heavier — there isn't one", an
 ambient prime. So the open scalar c₀ (=lim_{t→∞}c(t)) cannot be driven down by choosing a structured prime.
 No new Lean (empirical refuted-lever; the constraint is the invariance itself). No completion/moment/
 anti-concentration claim. CORE stays OPEN; door (iv) the only live door.
+
+## [doorIV-worstb-phaseset-equidistributes] worst-b phase set clustering DECAYS to Poisson — no spacing-rigidity lever (2026-06-23, sol)
+
+Lane: Door-(iv) Lane-1 PROBE, refuted-lever (the "worst-b phase set is clustered → a Littlewood-Offord /
+small-ball / spacing-rigidity bound grips it" lever). Closes a door-(iii)-adjacent equidistribution escape.
+
+PROBE: at frequency b the phase set is {b·x mod p : x ∈ μ_n} (the m-th-power residues scaled by b). Measure
+its normalized consecutive-gap variance (Poisson/Exp=1.0, perfectly rigid=0). At fixed n the WORST-b set
+looks clustered (n=64: gapvar≈3.0, 44% small gaps), suggesting a spacing lever. BUT across n it DECAYS:
+- n=32: worstb_gapvar=8.64,  M/√n=4.04
+- n=64: worstb_gapvar=2.52,  M/√n=3.92
+- n=128: worstb_gapvar=1.78, M/√n=4.28
+- n=256: worstb_gapvar=1.13, M/√n=4.07   (→ Poisson value 1.0)
+Crucially M/√n is NOT ∝ √(gapvar): √gv decreases 2.94→1.06 while M/√n stays ≈4 (tracking √log(q/n)).
+
+VERDICT: the worst-b phase set EQUIDISTRIBUTES asymptotically (gap variance → Poisson), so the n=64
+clustering is a finite-size artifact, NOT a mechanism. The √(n·log(q/n)) largeness of the worst-b sum is a
+PURE phase-alignment / EVT effect on a nearly-equidistributed set, NOT a spacing-clustering effect. This
+(a) kills the "worst-b spacing rigidity → small-ball bound" lever, and (b) re-confirms door-(iii)
+(equidistribution) is dead at the worst frequency: even the adversarial b equidistributes its phase set, so
+the cancellation cannot be extracted from spacing structure — it lives in the pooled phase-alignment tail
+(the c₀ object of the pooled-tail lock). No new Lean (empirical refuted-lever). No completion/moment/
+anti-concentration-beats-energy claim. CORE stays OPEN; door (iv) the only live door.
