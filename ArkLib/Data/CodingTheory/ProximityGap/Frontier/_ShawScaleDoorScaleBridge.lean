@@ -138,6 +138,22 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound {ι : Type*} {q n M : ι �
   intro i
   exact prizeFloorRatio_le_shawBound_mul_gap (q i) (n i) (M i) C (hn i) (hnq i) (hSh i)
 
+/-- **Inverse consumer form: Shaw value is the prize-floor ratio divided by the gap.**  Once the
+thinness logarithm is strictly positive, the preceding identity can be solved for the normalized Shaw
+value:
+`shawValue q n M = (M / prizeScale n) / √(log(q/n))`.
+
+This is often the safer way to cite the reduction chain: a bounded genuine `M/√n` ratio would force an
+even smaller Shaw value after paying the positive `√L` denominator, while a bounded Shaw value alone
+still leaves the `√L` amplification in the forward direction.  Again this is only algebraic scale
+bookkeeping, not a bound on either ratio. -/
+theorem shawValue_eq_prizeFloorRatio_div_gap (q n M : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hL : 0 < Real.log (q / n)) :
+    shawValue q n M = (M / prizeScale n) / Real.sqrt (Real.log (q / n)) := by
+  have hratio := prizeFloorRatio_eq_shawValue_mul_gap q n M hn hnq
+  have hgap_pos : 0 < Real.sqrt (Real.log (q / n)) := Real.sqrt_pos_of_pos hL
+  rw [hratio]
+  field_simp [ne_of_gt hgap_pos]
 
 /-- **A prize-floor bound plus a positive Shaw floor forces the gap itself to be bounded.**  If
 `c ≤ shawValue q n M` with `c > 0`, and the genuine prize-floor ratio is bounded by `B`, then the
@@ -160,6 +176,12 @@ theorem gap_le_prizeFloorBound_div_shawFloor (q n M B c : ℝ) (hn : 0 < n) (hnq
 
 end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 
-#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_eq_bgkScale
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawScale_div_prizeScale_of_pos_lt
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeScale_lt_shawScale_of_one_lt_log
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_eq_shawValue_mul_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_le_shawBound_mul_gap
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_family_le_of_uniformShawBound
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_eq_prizeFloorRatio_div_gap
