@@ -144,6 +144,41 @@ structure present) but bounded below (prize scale preserved with finite constant
 theorem measuredPooledTailConst_pos : 0 < measuredPooledTailConst := by
   unfold measuredPooledTailConst; norm_num
 
+/-- **The prize-shape capstone (proven, abstract): `c₀ > 0` ⟹ the prize bound with constant `1/√c₀`.**
+This is the self-contained statement connecting the pooled tail constant directly to the prize bound's
+exact `√(n·log(q/n))` shape. Suppose the worst-frequency sup `M`, written in `√n` units, is at most the
+union-bound EVT scale at a tail constant `c ≥ c₀ > 0` over `m = q/n` frequencies — i.e.
+`M ≤ √n · √(log (q/n) / c)` (the conclusion `_AvW5` delivers from a uniform sub-Gaussian tail). Then
+`M ≤ (1/√c₀) · √(n · log (q/n))` — the prize bound `M ≤ C·√(n·log(p/n))` with the ABSOLUTE constant
+`C = 1/√c₀`. So a uniform positive lower bound on the pooled tail constant gives CORE outright; the prize
+constant is exactly `1/√c₀`. (Hypotheses: `1 ≤ q/n` so the log is `≥ 0`, `0 < n` for the `√n` split.) -/
+theorem prize_bound_of_tailConst_boundedBelow
+    (M n q c c₀ : ℝ) (hn : 0 < n) (hqn : 1 ≤ q / n) (hc₀ : 0 < c₀) (hcc : c₀ ≤ c)
+    (hM : M ≤ Real.sqrt n * Real.sqrt (Real.log (q / n) / c)) :
+    M ≤ (1 / Real.sqrt c₀) * Real.sqrt (n * Real.log (q / n)) := by
+  have hc : 0 < c := lt_of_lt_of_le hc₀ hcc
+  have hlog : 0 ≤ Real.log (q / n) := Real.log_nonneg hqn
+  -- bound the EVT scale by the prize scale times 1/√c₀
+  have hstep : Real.sqrt n * Real.sqrt (Real.log (q / n) / c)
+      ≤ (1 / Real.sqrt c₀) * Real.sqrt (n * Real.log (q / n)) := by
+    rw [inflation_factor (q / n) c hc hqn]
+    rw [Real.sqrt_mul (le_of_lt hn) (Real.log (q / n))]
+    -- goal: √n · (√(log)/√c) ≤ (1/√c₀) · (√n · √(log))
+    have hsc : (0:ℝ) < Real.sqrt c := Real.sqrt_pos.mpr hc
+    have hsc₀ : (0:ℝ) < Real.sqrt c₀ := Real.sqrt_pos.mpr hc₀
+    have hinv : (Real.sqrt c)⁻¹ ≤ (Real.sqrt c₀)⁻¹ :=
+      inv_anti₀ hsc₀ (Real.sqrt_le_sqrt hcc)
+    have hL : Real.sqrt n * (Real.sqrt (Real.log (q / n)) / Real.sqrt c)
+        = (Real.sqrt n * Real.sqrt (Real.log (q / n))) * (Real.sqrt c)⁻¹ := by
+      rw [div_eq_mul_inv]; ring
+    have hR : (1 / Real.sqrt c₀) * (Real.sqrt n * Real.sqrt (Real.log (q / n)))
+        = (Real.sqrt n * Real.sqrt (Real.log (q / n))) * (Real.sqrt c₀)⁻¹ := by
+      rw [one_div]; ring
+    rw [hL, hR]
+    apply mul_le_mul_of_nonneg_left hinv
+    positivity
+  exact le_trans hM hstep
+
 end ArkLib.ProximityGap.Frontier.DoorIVPooledTail
 
 /-! ## Axiom audit (expected: only `propext, Classical.choice, Quot.sound`; no `sorryAx`) -/
@@ -154,3 +189,4 @@ end ArkLib.ProximityGap.Frontier.DoorIVPooledTail
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPooledTail.boundedBelow_tailConst_gives_prize_scale
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPooledTail.pooled_tailConst_heavier_than_gaussian
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPooledTail.measuredPooledTailConst_pos
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPooledTail.prize_bound_of_tailConst_boundedBelow
