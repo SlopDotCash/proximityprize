@@ -13579,3 +13579,13 @@ under a uniform super-diagonal floor, a supplied BGK-shaped ceiling, and the pri
 WHY IT MATTERS: upstream had the component corridor and width facts; this export packages the full sharpened-BGK corridor with both width comparisons into one citable capstone theorem for Lane-2 reduction prose. The BGK ceiling remains an explicit hypothesis.
 
 VERDICT: Lane-2 normalization/corridor bookkeeping only. NO CORE / cancellation / completion / moment / anti-concentration / capacity claim; CORE remains OPEN.
+
+## [doorIV-prize-constant-unit-family-nogo] no uniform unit prize constant under the super-diagonal floor (2026-06-23, g55)
+Lane: Lane-3 constraint consumer — sharpen the family prize-constant lower bound into the unit-baseline no-go.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_DoorIVPrizeConstantSuperDiagonalFloorFamily.lean`, exported as `CampaignProvenIndex.doorIV_noFamilyPrizeConstantAtMostOne_export`:
+- `not_familyPrizeFloorConstant_le_one`: over a nonempty family with positive `nᵢ` and a uniform super-diagonal floor `c₀·√nᵢ ≤ Mᵢ`, no floor-scale prize bound `Mᵢ ≤ K·√nᵢ` can hold with `K ≤ 1`.
+
+WHY IT MATTERS: the upstream family lower bound `c₀ ≤ K` now has its clean consumer form against the bare Plancherel unit constant. Any uniform prize constant must clear not only `1` but the strict super-diagonal floor `c₀ > 1`.
+
+VERDICT: PURE lower-bound/no-go bookkeeping for the prize constant. It proves no upper bound and makes no CORE / cancellation / anti-concentration / capacity claim. CORE remains OPEN.

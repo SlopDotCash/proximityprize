@@ -97,4 +97,17 @@ theorem familyPrizeFloorConstant_ge_superDiagonal_gt_one [Nonempty ι]
     lt_of_lt_of_le ShawValueCapstone.superDiagonalFloorConst_gt_one
       (superDiagonalFloorConst_le_familyPrizeFloorConstant hn hfloor hbound)⟩
 
+/-- **No uniform unit prize constant.**  Over a nonempty admissible family with a uniform
+super-diagonal floor, a floor-scale prize constant at or below the bare Plancherel value `1` cannot
+hold.  This is the `K ≤ 1` consumer of the family lower bound `c₀ ≤ K` and the strict fact `1 < c₀`. -/
+theorem not_familyPrizeFloorConstant_le_one [Nonempty ι]
+    (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hK : K ≤ 1) :
+    ¬ (∀ i, M i ≤ K * NoFifthDoorTetrachotomy.prizeScale (n i)) := by
+  intro hbound
+  have hle : ShawValueCapstone.superDiagonalFloorConst ≤ K :=
+    superDiagonalFloorConst_le_familyPrizeFloorConstant hn hfloor hbound
+  exact not_lt_of_ge (le_trans hle hK) ShawValueCapstone.superDiagonalFloorConst_gt_one
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
