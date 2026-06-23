@@ -56,6 +56,47 @@ theorem prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor {ι : Type*}
   have hbridge := prizeFloorRatio_eq_shawValue_mul_gap (q i) (n i) (M i) (hn i) (hnq i)
   exact lt_of_lt_of_le hB_lt_cgap (by simpa [hbridge] using hcg_le_shg)
 
+/-- **Bounded prize-floor ratios plus an unbounded gap force Shaw values to vanish along a
+subsequence.**  This is the complementary drift/no-go form of the Shaw-scale bridge.  If the genuine
+prize-floor ratios `Mᵢ/√nᵢ` stay below one nonnegative constant `B`, while the exact synthesis gaps
+`√(log(qᵢ/nᵢ))` drift past every target, then the Shaw values become arbitrarily small: for every
+positive `ε` there is an index with `Shᵢ < ε`.
+
+Thus a bounded prize-floor family over an unbounded `√log` regime cannot also have a nonvanishing
+Shaw-value floor.  This is pure normalization algebra over `Sh = (M/√n)/√log`; it proves no CORE
+cancellation and makes no anti-concentration claim. -/
+theorem shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound {ι : Type*}
+    {q n M : ι → ℝ} {B : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hB : 0 ≤ B)
+    (hPrize : ∀ i, M i / prizeScale (n i) ≤ B)
+    (hgapDrift : ∀ T : ℝ, ∃ i : ι, T < Real.sqrt (Real.log (q i / n i))) :
+    ∀ ε : ℝ, 0 < ε → ∃ i : ι, shawValue (q i) (n i) (M i) < ε := by
+  intro ε hε
+  rcases hgapDrift (B / ε) with ⟨i, hgap⟩
+  refine ⟨i, ?_⟩
+  have hgap_nonneg_target : 0 ≤ B / ε := div_nonneg hB hε.le
+  have hgap_pos : 0 < Real.sqrt (Real.log (q i / n i)) :=
+    lt_of_le_of_lt hgap_nonneg_target hgap
+  have hlog_nonneg : 0 ≤ Real.log (q i / n i) := by
+    apply Real.log_nonneg
+    have hdiv : n i / n i ≤ q i / n i :=
+      div_le_div_of_nonneg_right (le_of_lt (hnq i)) (le_of_lt (hn i))
+    simpa [div_self (ne_of_gt (hn i))] using hdiv
+  have hL : 0 < Real.log (q i / n i) := by
+    have hsqpos : 0 < (Real.sqrt (Real.log (q i / n i))) ^ 2 := sq_pos_of_pos hgap_pos
+    simpa [Real.sq_sqrt hlog_nonneg] using hsqpos
+  have hSh_le := shawValue_le_prizeFloorBound_div_gap (q i) (n i) (M i) B
+    (hn i) (hnq i) hL (hPrize i)
+  have hB_lt_eps_gap : B < ε * Real.sqrt (Real.log (q i / n i)) := by
+    have hmul := mul_lt_mul_of_pos_left hgap hε
+    have hleft : ε * (B / ε) = B := by
+      field_simp [ne_of_gt hε]
+    simpa [hleft] using hmul
+  have hB_div_gap_lt : B / Real.sqrt (Real.log (q i / n i)) < ε := by
+    exact (div_lt_iff₀ hgap_pos).2 hB_lt_eps_gap
+  exact lt_of_le_of_lt hSh_le hB_div_gap_lt
+
 end ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive
 
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor
+#print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound

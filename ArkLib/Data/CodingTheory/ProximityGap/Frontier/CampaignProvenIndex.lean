@@ -8717,6 +8717,22 @@ theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type
     hn hnq hc hfloor hPrizeBdd
 
 #print axioms gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export
+/-- Synthesis-gap VANISHING-SHAW export: if genuine prize-floor ratios stay bounded by a nonnegative
+constant `B` while the exact gap factors `√(log(qᵢ/nᵢ))` drift past every target, then the Shaw values
+become arbitrarily small along a subsequence.  This is the complementary no-go to the positive-Shaw
+floor drift theorem: over an unbounded `√log` regime, bounded `Mᵢ/√nᵢ` cannot coexist with a
+nonvanishing Shaw-value floor.  Pure normalization algebra; no CORE/cancellation claim. -/
+theorem shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound_export {ι : Type*}
+    {q n M : ι → ℝ} {B : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hB : 0 ≤ B)
+    (hPrize : ∀ i, M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B)
+    (hgapDrift : ∀ T : ℝ, ∃ i : ι, T < Real.sqrt (Real.log (q i / n i))) :
+    ∀ ε : ℝ, 0 < ε → ∃ i : ι,
+      _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i) < ε :=
+  ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound
+    hn hnq hB hPrize hgapDrift
+
+#print axioms shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
