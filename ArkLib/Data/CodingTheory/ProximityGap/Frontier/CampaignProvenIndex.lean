@@ -2939,6 +2939,7 @@ theorem doorIV_jacobiCocycle_characterization_export
 
 #print axioms doorIV_jacobiCocycle_characterization_export
 
+
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
 
 /-! ## Cone axiom audit — every permanent export above is axiom-clean
@@ -8550,5 +8551,33 @@ theorem prizeFloorRatio_eq_shawValue_mul_gap_export (q n M : ℝ) (hn : 0 < n) (
     q n M hn hnq
 
 #print axioms prizeFloorRatio_eq_shawValue_mul_gap_export
+
+
+/-- Synthesis-gap ONE-SIDED BOUND export: a pointwise Shaw-value bound `shawValue q n M ≤ C` gives a
+genuine prize-floor cancellation bound only after paying the displayed `√(log(q/n))` multiplier.  This
+is the operational no-go form of the scale bridge: the reduction's constant bound does not silently
+become an `O(1)` bound against `√n`; the exact gap factor remains. -/
+theorem prizeFloorRatio_le_shawBound_mul_gap_export (q n M C : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hSh : _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M ≤ C) :
+    M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
+      ≤ C * Real.sqrt (Real.log (q / n)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_le_shawBound_mul_gap
+    q n M C hn hnq hSh
+
+#print axioms prizeFloorRatio_le_shawBound_mul_gap_export
+
+/-- Synthesis-gap FAMILY BOUND export: a uniform Shaw-value bound over a prize-regime family transports
+to pointwise prize-floor ratios with the exact logarithmic envelope
+`Mᵢ/√nᵢ ≤ C·√(log(qᵢ/nᵢ))`.  No CORE/cancellation claim is made; this records exactly what the
+reduction alone buys before the open door-(iv) gap is absorbed. -/
+theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M : ι → ℝ} {C : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i)
+    (hSh : _root_.ProximityGap.Frontier.ShawValueCapstone.UniformShawBound q n M C) :
+    ∀ i, M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i)
+      ≤ C * Real.sqrt (Real.log (q i / n i)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_family_le_of_uniformShawBound
+    hn hnq hSh
+
+#print axioms prizeFloorRatio_family_le_of_uniformShawBound_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

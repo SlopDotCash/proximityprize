@@ -13260,3 +13260,22 @@ quantified, not hand-waved.
 VERDICT: PURE algebra over the definitional scale bridge. NO new mathematical content beyond the
 identity: no CORE / cancellation / completion / moment / anti-concentration / capacity / asymptotic
 claim, and NO claim that either side is bounded. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-synthesis-gap-bound-envelope] uniform Shaw bounds transport to prize-floor ratios only with the exact √log envelope (2026-06-23, g55)
+Lane: Lane-2 capstone hardening, one-sided bound consumer for `[doorIV-synthesis-gap-consumer]`.
+
+CONSTRAINT/IDENTITY LEMMAS (axiom-clean, real proofs, NO sorry) in `_ShawScaleDoorScaleBridge.lean`,
+exported as `CampaignProvenIndex.{prizeFloorRatio_le_shawBound_mul_gap_export,
+prizeFloorRatio_family_le_of_uniformShawBound_export}`:
+- `prizeFloorRatio_le_shawBound_mul_gap`: if a single prize-regime instance has `shawValue q n M ≤ C`,
+  then its genuine square-root-cancellation ratio satisfies
+  `M / prizeScale n ≤ C · √(log(q/n))`.
+- `prizeFloorRatio_family_le_of_uniformShawBound`: a uniform family Shaw bound transports pointwise to
+  the logarithmic envelope `Mᵢ/√nᵢ ≤ C·√(log(qᵢ/nᵢ))`.
+
+WHY IT MATTERS: this is the operational no-go form of the scale bridge. The reduction's `Sh = O(1)`
+constant does not silently become an `O(1)` bound against the genuine prize floor `√n`; it carries the
+exact `√(log(q/n))` multiplier until the open door-(iv) arithmetic input absorbs that gap.
+
+VERDICT: PURE algebra over the existing consumer identity. NO new cancellation, completion, moment,
+anti-concentration, capacity, or CORE claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.

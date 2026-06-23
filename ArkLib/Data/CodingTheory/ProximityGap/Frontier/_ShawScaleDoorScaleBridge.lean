@@ -115,4 +115,31 @@ theorem prizeFloorRatio_eq_shawValue_mul_gap (q n M : ℝ) (hn : 0 < n) (hnq : n
   rw [← hgap]
   field_simp
 
+/-- **A Shaw-value bound only gives a logarithm-amplified prize-floor bound.**  This is the
+one-sided operational form of `prizeFloorRatio_eq_shawValue_mul_gap`: if a single instance satisfies
+`shawValue q n M ≤ C`, then its genuine square-root-cancellation ratio is bounded only by
+`C · √(log(q/n))` against the prize floor.  Thus a constant Shaw bound transports to the prize-floor
+normalization with the exact `√log` loss displayed, not silently as an `O(1)` prize-floor bound. -/
+theorem prizeFloorRatio_le_shawBound_mul_gap (q n M C : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hSh : shawValue q n M ≤ C) :
+    M / prizeScale n ≤ C * Real.sqrt (Real.log (q / n)) := by
+  rw [prizeFloorRatio_eq_shawValue_mul_gap q n M hn hnq]
+  exact mul_le_mul_of_nonneg_right hSh (Real.sqrt_nonneg _)
+
+/-- **Family form: `Sh(n)=O(1)` consumers pay the displayed `√log` factor pointwise.**  A uniform
+Shaw-value bound `UniformShawBound q n M C` over a prize-regime family implies the genuine
+prize-floor ratios obey the pointwise envelope
+`Mᵢ/√nᵢ ≤ C · √(log(qᵢ/nᵢ))`.  This is deliberately NOT an `O(1)` prize-floor statement unless an
+additional door-(iv) input controls the gap factor; it records exactly what the reduction alone buys. -/
+theorem prizeFloorRatio_family_le_of_uniformShawBound {ι : Type*} {q n M : ι → ℝ} {C : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i)
+    (hSh : UniformShawBound q n M C) :
+    ∀ i, M i / prizeScale (n i) ≤ C * Real.sqrt (Real.log (q i / n i)) := by
+  intro i
+  exact prizeFloorRatio_le_shawBound_mul_gap (q i) (n i) (M i) C (hn i) (hnq i) (hSh i)
+
+
 end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
+
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_le_shawBound_mul_gap
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeFloorRatio_family_le_of_uniformShawBound
