@@ -8718,6 +8718,22 @@ theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type
     hn hnq hc hfloor hPrizeBdd
 
 #print axioms gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export
+
+/-- Synthesis-gap UNBOUNDEDNESS CONTRADICTION export: uniformly bounded genuine prize-floor ratios
+and a fixed positive Shaw-value floor forbid the exact `√log` gap from drifting past every proposed
+bound.  This is the direct contradiction form of the boundedness no-go; pure scale algebra, no CORE
+claim. -/
+theorem not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor_export {ι : Type*}
+    {q n M : ι → ℝ} {c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i))
+    (hPrizeBdd : ∃ B : ℝ, ∀ i,
+      M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B) :
+    ¬ (∀ G : ℝ, ∃ i : ι, G < Real.sqrt (Real.log (q i / n i))) :=
+  ArkLib.ProximityGap.Frontier.ShawGapBddAboveNoGo.not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor
+    hn hnq hc hfloor hPrizeBdd
+
+#print axioms not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor_export
 /-- Synthesis-gap VANISHING-SHAW export: if genuine prize-floor ratios stay bounded by a nonnegative
 constant `B` while the exact gap factors `√(log(qᵢ/nᵢ))` drift past every target, then the Shaw values
 become arbitrarily small along a subsequence.  This is the complementary no-go to the positive-Shaw

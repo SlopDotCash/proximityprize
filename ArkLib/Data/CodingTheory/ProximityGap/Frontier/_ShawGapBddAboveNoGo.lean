@@ -34,6 +34,24 @@ theorem gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor {ι : Type*}
   rcases hPrizeBdd with ⟨B, hB⟩
   exact ⟨B / c, gap_family_le_prizeFloorBound_div_shawFloor hn hnq hc hfloor hB⟩
 
+/-- **Contradiction form: bounded prize-floor ratios and a positive Shaw floor forbid unbounded
+`√log` gaps.**  This is the direct no-go wrapper around
+`gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor`: a family whose exact synthesis gaps drift
+past every proposed bound cannot simultaneously have uniformly bounded genuine prize-floor ratios and
+a nonvanishing Shaw-value floor.  Pure order algebra; no CORE estimate or cancellation theorem. -/
+theorem not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor {ι : Type*}
+    {q n M : ι → ℝ} {c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ shawValue (q i) (n i) (M i))
+    (hPrizeBdd : ∃ B : ℝ, ∀ i, M i / prizeScale (n i) ≤ B) :
+    ¬ (∀ G : ℝ, ∃ i : ι, G < Real.sqrt (Real.log (q i / n i))) := by
+  intro hgapUnbounded
+  rcases gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor hn hnq hc hfloor hPrizeBdd
+    with ⟨G, hG⟩
+  rcases hgapUnbounded G with ⟨i, hi⟩
+  exact (not_lt_of_ge (hG i)) hi
+
 end ArkLib.ProximityGap.Frontier.ShawGapBddAboveNoGo
 
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapBddAboveNoGo.gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor
+#print axioms ArkLib.ProximityGap.Frontier.ShawGapBddAboveNoGo.not_gap_unbounded_of_prizeFloorRatio_bddAbove_and_shawFloor
