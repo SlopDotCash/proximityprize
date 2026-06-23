@@ -13757,3 +13757,24 @@ WHY IT MATTERS: upstream had the arbitrary-small Shaw-value subsequence conclusi
 VERDICT: Lane-2 citable no-go packaging only. NO CORE upper bound, cancellation, completion, moment, anti-concentration, capacity, or asymptotic claim; CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-subgroup-parseval-energy-exact] discharge the moment-floor bridge's hPlancherel from EXACT subgroup Parseval (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 capstone hardening. Turns an ASSUMED hypothesis (`hPlancherel : E_1/card = n`) into a PROVEN exact spectral-energy equality from the actual Parseval substrate, for the thin subgroup indicator.
+
+CONTEXT: `_DoorIVMomentFloorTetrachotomyBridge` (push b0df8f5d3) discharges its moment-floor headline from a *hypothesis* `hPlancherel : E_1/card = n`. The substrate already lands the analytic input (`_ZModDFTParseval.dft_parseval`, `_ZModSubgroupSaturation` indicator ℓ²-mass=d + geometric-sum DFT, `_ZModDonohoStark.sum_sq_eq_supp`) but NOBODY specialized Parseval to the indicator to land the EXACT energy as an EQUALITY (only the one-sided L∞-L² floor in `_ZModDFTLinftyFloor`), and nobody landed the DC-subtracted off-frequency form (the §2 master identity Σ_{b≠0}|η_b|² = p·n − n²).
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupParsevalEnergyExact.lean`, for the order-d subgroup indicator 1_{μ_d} (d ∣ N):
+- `subgroupIndicator_total_energy`:      Σ_k ‖𝓕 1_{μ_d} k‖² = N·d            (Parseval ∘ ℓ²-mass=d)
+- `dft_subgroupIndicator_zero`:          𝓕 1_{μ_d} 0 = d                     (DC value, geom sum at k=0)
+- `dft_subgroupIndicator_zero_normSq`:   ‖𝓕 1_{μ_d} 0‖² = d²
+- `subgroupIndicator_offDC_energy`:      Σ_{k≠0} ‖𝓕 1_{μ_d} k‖² = N·d − d²   (= §2 master identity p·n−n²)
+- `subgroupIndicator_offDC_energy_le`:   off-DC energy ≤ N·d
+- `subgroupIndicator_offDC_mean_le_order`: (N·d − d²)/(N−1) ≤ d              (the hPlancherel floor, PROVEN)
+
+WHY IT MATTERS: the moment-floor bridge ASSUMED `E_1/card = n` to conclude the moment door cannot descend below the prize floor √n. This lands the concrete-model content of that assumption from the actual Parseval substrate — an EXACT energy equality (+ its DC-subtracted §2 master-chain form) for the thin subgroup indicator, with the bridge's normalization PROVEN as the floor inequality `mean off-DC energy ≤ d`. It is the floor/normalization substrate (lower endpoint of the Shaw bracket), NOT the open CORE off-DC PEAK upper bound.
+
+VERDICT: exact Plancherel energy equality + DC-subtracted §2 identity + the bridge's hPlancherel floor, axiom-clean. It proves NO CORE upper bound and makes NO cancellation, completion, anti-concentration, moment-saving, or capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupParsevalEnergyExact.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
