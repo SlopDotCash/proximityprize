@@ -192,6 +192,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSharpCorridorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
 set_option linter.style.longFile 9000
 
@@ -8914,5 +8915,28 @@ theorem doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export {ι : Type*} [None
     hn hfloor hlt
 
 #print axioms doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export
+
+/-- Door-IV Lane-2 FAMILY sharpened-BGK width export: the exact sharpened corridor width is `√Lᵢ/c₀`,
+strictly below the bare conditional BGK width `√Lᵢ` and, in the prize regime `Lᵢ<nᵢ`, below the trivial
+width `√nᵢ`.  Pure corridor bookkeeping; CORE remains open. -/
+theorem doorIV_shawValueFamilySharpenedBGKWidth_export {ι : Type*} {n L : ι → ℝ}
+    (hL : ∀ i, 0 < L i) (hLn : ∀ i, L i < n i) :
+    ∀ i, ((1 : ℝ) /
+          (ShawValueCapstone.superDiagonalFloorConst / Real.sqrt (L i))
+          = Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst)
+      ∧ Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst < Real.sqrt (L i)
+      ∧ Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst < Real.sqrt (n i) := by
+  intro i
+  have hwL : Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst < Real.sqrt (L i) :=
+    ShawValueSharpenedBGKCorridorFamily.shawValueFamily_sharpened_bgk_width_lt_bgk_width hL i
+  have hLn_sqrt : Real.sqrt (L i) < Real.sqrt (n i) :=
+    ShawValueBGKBracket.shawValueFamily_sharp_width_lt_trivial (fun j => (hL j).le) hLn i
+  exact ⟨ShawValueSharpenedBGKCorridorFamily.shawValueFamily_sharpened_bgk_width hL i,
+    hwL,
+    lt_trans hwL hLn_sqrt⟩
+
+#print axioms doorIV_shawValueFamilySharpenedBGKWidth_export
+
+
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

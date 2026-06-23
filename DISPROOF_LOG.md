@@ -13510,3 +13510,14 @@ VERDICT: PURE pointwise lift of the established single-instance prize-constant l
 prize constant from BELOW (the easy direction — the open problem is the UPPER bound `C = O(1)`); asserts
 the super-diagonal floor at NO instance. NO CORE / cancellation / completion / moment /
 anti-concentration / capacity / asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-sharpened-bgk-corridor-width-family] exact width of the sharpened corridor is √Lᵢ/c₀ (2026-06-23, g55)
+Lane: Lane-2 capstone hardening, width refinement for `[doorIV-shawvalue-two-sided-sharp-corridor-family]`.
+
+CONSTRAINT/WIDTH LEMMAS (axiom-clean, real proofs, NO sorry) in `_ShawValueSharpenedBGKCorridorFamily.lean`, exported as `CampaignProvenIndex.doorIV_shawValueFamilySharpenedBGKWidth_export`:
+- the two-sided sharpened corridor `[c₀/√Lᵢ, 1]` has exact multiplicative width `√Lᵢ/c₀`;
+- this is strictly below the bare conditional BGK width `√Lᵢ` and, when `Lᵢ<nᵢ`, below the trivial width `√nᵢ`.
+
+WHY IT MATTERS: the prior capstone trapped Shaw values in `[c₀/√Lᵢ, 1]`; this pins the actual remaining corridor width, showing the super-diagonal floor shrinks the conditional BGK window by the explicit constant factor `c₀=(5/4)^{1/4}`. The BGK ceiling is still an explicit hypothesis; no ceiling/cancellation/anti-concentration theorem is asserted.
+
+VERDICT: Lane-2 normalization bookkeeping only. NO CORE / cancellation / completion / moment / anti-concentration / capacity claim; CORE remains OPEN.
