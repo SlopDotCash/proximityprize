@@ -87,6 +87,35 @@ theorem offDC_peak_sq_le_gap_mul_dc_sq {d : ℕ} (hd : d ∣ N)
   rw [hrhs]
   exact hceil
 
+
+/-- **The DC / off-DC spectral gap (norm form).**  Taking square roots in
+`offDC_peak_sq_le_gap_mul_dc_sq`, every off-DC coefficient is at most
+`√((N-d)/d)` times the DC magnitude.  This is still the trivial completion gap,
+not a CORE bound. -/
+theorem offDC_peak_le_sqrt_gap_mul_dc {d : ℕ} (hd : d ∣ N)
+    {k₀ : ZMod N} (hk₀ : k₀ ∈ (univ.erase (0 : ZMod N))) (hd0 : 0 < d) :
+    ‖(𝓕 (subgroupIndicator (N := N) d)) k₀‖
+      ≤ Real.sqrt (((N : ℝ) - d) / d)
+        * ‖(𝓕 (subgroupIndicator (N := N) d)) 0‖ := by
+  have hsq := offDC_peak_sq_le_gap_mul_dc_sq hd hk₀ hd0
+  have hk_nonneg : 0 ≤ ‖(𝓕 (subgroupIndicator (N := N) d)) k₀‖ := norm_nonneg _
+  have hNpos : 0 < N := NeZero.pos N
+  have hdleN_nat : d ≤ N := Nat.le_of_dvd hNpos hd
+  have hgap_nonneg : 0 ≤ (((N : ℝ) - d) / d) := by
+    have hdleN : (d : ℝ) ≤ (N : ℝ) := by exact_mod_cast hdleN_nat
+    have hdpos : (0 : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd0.le
+    exact div_nonneg (sub_nonneg.mpr hdleN) hdpos
+  calc
+    ‖(𝓕 (subgroupIndicator (N := N) d)) k₀‖
+        = Real.sqrt (‖(𝓕 (subgroupIndicator (N := N) d)) k₀‖ ^ 2) := by
+          rw [Real.sqrt_sq hk_nonneg]
+    _ ≤ Real.sqrt ((((N : ℝ) - d) / d)
+          * ‖(𝓕 (subgroupIndicator (N := N) d)) 0‖ ^ 2) := Real.sqrt_le_sqrt hsq
+    _ = Real.sqrt (((N : ℝ) - d) / d)
+          * ‖(𝓕 (subgroupIndicator (N := N) d)) 0‖ := by
+          rw [Real.sqrt_mul hgap_nonneg]
+          rw [Real.sqrt_sq (norm_nonneg _)]
+
 end ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap
 
 open ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap in
@@ -95,3 +124,5 @@ open ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap in
 #print axioms subgroupIndicator_dc_norm
 open ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap in
 #print axioms offDC_peak_sq_le_gap_mul_dc_sq
+open ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap in
+#print axioms offDC_peak_le_sqrt_gap_mul_dc

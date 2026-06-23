@@ -13989,3 +13989,15 @@ WHY IT MATTERS: the kernel `_DoorIVSubgroupOffDCPeakBracketSharp` composed the s
 VERDICT: stable export/indexing of a sharp FLOOR-TO-FENCE band only.  It proves no CORE upper bound and makes no cancellation, completion improvement, anti-concentration, moment, capacity, or asymptotic claim; CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-dc-offdc-gap-norm-form] square-root DC/off-DC spectral gap (2026-06-23, g55)
+Lane: door-(iv) Lane-2/3 concrete subgroup-indicator capstone.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_DoorIVSubgroupDCOffDCGap.lean` and exported in `CampaignProvenIndex` as `doorIV_offDC_peak_le_sqrt_gap_mul_dc_export`:
+- for any off-DC frequency `k0`, `||F 1_{mu_d}(k0)|| <= sqrt((N-d)/d) * ||F 1_{mu_d}(0)||`.
+
+WHY IT MATTERS: the prior theorem stated the DC/off-DC separation only in squared form. This lands the exact norm form used in prose: the off-DC prize object is separated from the DC coefficient by the square-root thickness/completion factor. It is a localization/separation statement, not a cancellation theorem.
+
+VERDICT: square-root packaging of the trivial DC/off-DC completion gap only. NO CORE upper bound, no anti-concentration, no moment-saving, no capacity claim. CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>

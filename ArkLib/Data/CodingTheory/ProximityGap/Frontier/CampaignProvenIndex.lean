@@ -203,7 +203,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSh
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
-set_option linter.style.longFile 9500
+set_option linter.style.longFile 9700
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -9103,6 +9103,24 @@ theorem doorIV_offDC_peak_sq_le_gap_mul_dc_sq_export {N : ℕ} [NeZero N] {d : �
     hd hk₀ hd0
 
 #print axioms doorIV_offDC_peak_sq_le_gap_mul_dc_sq_export
+
+
+/-- Door-IV Lane-2 DC/OFF-DC SPECTRAL GAP export, norm form: every off-DC coefficient is
+bounded by `sqrt((N-d)/d)` times the DC magnitude.  This is just the square-root form of the
+trivial completion gap relative to DC, not the CORE upper bound. -/
+theorem doorIV_offDC_peak_le_sqrt_gap_mul_dc_export {N : ℕ} [NeZero N] {d : ℕ}
+    (hd : d ∣ N) {k₀ : ZMod N} (hk₀ : k₀ ∈ (Finset.univ.erase (0 : ZMod N)))
+    (hd0 : 0 < d) :
+    ‖(ZMod.dft
+      (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+        (N := N) d)) k₀‖
+      ≤ Real.sqrt (((N : ℝ) - d) / d) * ‖(ZMod.dft
+        (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+          (N := N) d)) 0‖ :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupDCOffDCGap.offDC_peak_le_sqrt_gap_mul_dc
+    hd hk₀ hd0
+
+#print axioms doorIV_offDC_peak_le_sqrt_gap_mul_dc_export
 
 /-- Door-IV Lane-2 EXACT OFF-DC PEAK BRACKET export (squared form): there is an off-DC
 frequency whose squared subgroup-indicator DFT magnitude lies between the exact off-DC mean
