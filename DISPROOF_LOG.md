@@ -13353,3 +13353,23 @@ It makes the reduction chain citable in both directions without hiding the open 
 
 VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
 anti-concentration / capacity claim. CORE remains OPEN.
+
+## [doorIV-moment-hierarchy-energy-dominated] capstone: the WHOLE mixed-conjugate hierarchy is energy-dominated at both parities (2026-06-23, sol)
+Lane: Lane-1 CONSOLIDATION capstone (composition of three proven phase-vacuity facts; no new probe).
+
+CONSTRAINT CAPSTONE (axiom-clean, real proof, NO sorry) in `_DoorIVMomentHierarchyEnergyDominated.lean`,
+exported as `CampaignProvenIndex.doorIV_momentHierarchy_energy_dominated_export`:
+for any finite real-valued period field `η : β → ℝ`,
+  (1) ∀ even total degree 2r, every split: `Σ_c (η_c)^a (η_c)^b = Σ_c (η_c)^{2r}` (energy moment);
+  (2) ∀ total degree D: `(Σ_c (η_c)^D)² ≤ card · Σ_c (η_c)^{2D}` (Cauchy-Schwarz energy domination).
+
+WHY IT MATTERS: bundles `_DoorIVEvenMomentPhaseVacuity` + `_DoorIVMixedConjugateMomentCollapse`
+(even-total correlator = energy moment) with `_DoorIVOddSignedMomentCauchy` (odd-total → signed moment
+→ energy-dominated) into ONE citable "no-fifth-door in the moment hierarchy" statement: EVERY functional
+in the entire `Σ η^a conj(η)^b` correlator lattice — at every total degree, every conjugate split, BOTH
+parities — collapses onto / is controlled by the refuted even/energy face. There is no phase-carrying
+correlator anywhere in the moment hierarchy.
+
+VERDICT: STRUCTURAL consolidation capstone (composition of proven kernel facts). NO CORE / cancellation
+/ completion / moment-saving / anti-concentration / capacity / asymptotic claim. CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.

@@ -184,6 +184,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitSumScattered
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVEvenMomentPhaseVacuity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomentCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauchy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEnergyDominated
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 set_option linter.style.longFile 8800
@@ -8675,5 +8676,27 @@ theorem doorIV_not_abs_signedMoment_ge_of_energy_budget_export
 #print axioms doorIV_sq_signedMoment_le_card_mul_evenMoment_export
 #print axioms doorIV_abs_signedMoment_le_sqrt_card_mul_evenMoment_export
 #print axioms doorIV_not_abs_signedMoment_ge_of_energy_budget_export
+
+/-- Door-IV Lane-1 MOMENT-HIERARCHY CAPSTONE export: the ENTIRE mixed-conjugate correlator hierarchy of
+the real period field is energy-dominated at BOTH parities. For a finite real-valued field `η : β → ℝ`
+(the real period field of negation-closed `μ_n`): (1) every EVEN-total-degree `2r` real correlator
+`Σ_c (η_c)^a (η_c)^b` (`a+b=2r`, any split) equals the modulus/energy moment `Σ_c (η_c)^{2r}` exactly; and
+(2) every total-degree `D` signed correlator `Σ_c (η_c)^D` has `(Σ_c (η_c)^D)² ≤ card · Σ_c (η_c)^{2D}`
+(Cauchy-Schwarz). This CONSOLIDATES `_DoorIVEvenMomentPhaseVacuity` + `_DoorIVMixedConjugateMomentCollapse`
+(even-total = energy) with `_DoorIVOddSignedMomentCauchy` (odd-total → signed moment → energy-dominated)
+into ONE "no-fifth-door in the moment hierarchy" statement: there is no phase-carrying correlator
+anywhere in the `Σ η^a conj(η)^b` lattice — all collapse onto the refuted even/energy face. Constraint
+capstone — NO CORE / cancellation / completion / anti-concentration / capacity claim; CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_momentHierarchy_energy_dominated_export
+    {β : Type*} (s : Finset β) (η : β → ℝ) :
+    (∀ a b r : ℕ, a + b = 2 * r →
+        ∑ c ∈ s, (η c) ^ a * (η c) ^ b = ∑ c ∈ s, (η c) ^ (2 * r))
+      ∧ (∀ D : ℕ,
+        (∑ c ∈ s, (η c) ^ D) ^ 2 ≤ (s.card : ℝ) * ∑ c ∈ s, (η c) ^ (2 * D)) :=
+  ArkLib.ProximityGap.Frontier.DoorIVMomentHierarchyEnergyDominated.momentHierarchy_energy_dominated
+    s η
+
+#print axioms doorIV_momentHierarchy_energy_dominated_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
