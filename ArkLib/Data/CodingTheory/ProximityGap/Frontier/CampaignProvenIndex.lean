@@ -194,7 +194,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSh
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
-set_option linter.style.longFile 9000
+set_option linter.style.longFile 9100
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -8953,6 +8953,27 @@ theorem doorIV_shawValueFamilySharpenedBGKWidth_export {ι : Type*} {n L : ι �
 
 #print axioms doorIV_shawValueFamilySharpenedBGKWidth_export
 
+/-- Door-IV Lane-2 FAMILY sharpened-BGK corridor package export: under a uniform super-diagonal floor,
+a supplied BGK-shaped ceiling, and the prize-regime comparison `Lᵢ<nᵢ`, every Shaw value lies in the
+sharpened conditional corridor `[c₀/√Lᵢ, 1]`, whose exact multiplicative width is `√Lᵢ/c₀`; this width
+is strictly below both the bare conditional-BGK width `√Lᵢ` and the trivial width `√nᵢ`.  This is a
+single citable package for the sharpened-BGK family corridor.  Conditional bookkeeping only; no CORE
+cancellation claim. -/
+theorem doorIV_shawValueFamilySharpenedBGKCorridorPackage_export {ι : Type*} {M n L : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hL : ∀ i, 0 < L i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hceil : ∀ i, M i ≤ ShawValueCapstone.prizeScale (n i) (L i))
+    (hLn : ∀ i, L i < n i) :
+    ∀ i, (ShawValueCapstone.superDiagonalFloorConst / Real.sqrt (L i)
+          ≤ ShawValueCapstone.shawValue (M i) (n i) (L i)
+        ∧ ShawValueCapstone.shawValue (M i) (n i) (L i) ≤ 1)
+      ∧ (1 : ℝ) / (ShawValueCapstone.superDiagonalFloorConst / Real.sqrt (L i))
+        = Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst
+      ∧ Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst < Real.sqrt (L i)
+      ∧ Real.sqrt (L i) / ShawValueCapstone.superDiagonalFloorConst < Real.sqrt (n i) :=
+  ShawValueSharpenedBGKCorridorFamily.shawValueFamily_sharpened_bgk_corridor_package
+    hn hL hfloor hceil hLn
 
+#print axioms doorIV_shawValueFamilySharpenedBGKCorridorPackage_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

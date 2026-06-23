@@ -13569,3 +13569,13 @@ a 25-yr open asymptotic, and a √log/loglog correction is exactly the regime wh
 diagnostic. It does RETIRE the standing "is R creeping to 1?" worry in the prize regime: the measured
 ratio is flat, not climbing. NO CORE upper bound, cancellation, completion, moment-saving,
 anti-concentration, capacity, or asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-sharpened-bgk-corridor-package-family] packaged sharpened-BGK family corridor plus exact width (2026-06-23, g55)
+Lane: Lane-2 capstone hardening, citable package export for the sharpened-BGK family corridor.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) in `CampaignProvenIndex.doorIV_shawValueFamilySharpenedBGKCorridorPackage_export`:
+under a uniform super-diagonal floor, a supplied BGK-shaped ceiling, and the prize-regime comparison `Lᵢ<nᵢ`, every family Shaw value lies in `[c₀/√Lᵢ, 1]`; the exact multiplicative width is `√Lᵢ/c₀`, strictly below both the bare conditional-BGK width `√Lᵢ` and the trivial width `√nᵢ`.
+
+WHY IT MATTERS: upstream had the component corridor and width facts; this export packages the full sharpened-BGK corridor with both width comparisons into one citable capstone theorem for Lane-2 reduction prose. The BGK ceiling remains an explicit hypothesis.
+
+VERDICT: Lane-2 normalization/corridor bookkeeping only. NO CORE / cancellation / completion / moment / anti-concentration / capacity claim; CORE remains OPEN.
