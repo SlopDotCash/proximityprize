@@ -13139,3 +13139,23 @@ remains the stronger `√2` gate.
 
 VERDICT: does NOT close CORE.  No cancellation, completion, moment, anti-concentration, or capacity claim.
 CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+
+## [doorIV-per-level-factor-product-telescope] variable per-level factors telescope exactly by product (2026-06-23, g55)
+Lane: door-(iv) Lane-3 constraint lemma, continuing the per-level-factor algebra from the measured two-dilate recursion.
+
+CONTEXT: report `prize-grind-1782300000-doorIV-perlevel-factor-law.md` extracted the empirical ratios
+`c_k = M(2^{k+1})/M(2^k)` and the prior `doorIV-per-level-factor-subtwo` entry normalized the strict
+sub-doubling/no-co-peak ceiling. The missing bookkeeping rung was the exact variable-factor telescope:
+the whole dyadic tower is controlled by the PRODUCT of the measured per-level factors, not by any single
+sampled level.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry):
+`_DoorIVPerLevelFactorSubTwo.{telescope_variable_perLevelFactors,telescope_of_factorProduct_le}`,
+exported as `CampaignProvenIndex.doorIV_perLevelFactorProductTelescope_export`. If every level satisfies
+`M(k+1) ≤ c_k M(k)` with `c_k ≥ 0`, then `M(a) ≤ (∏_{k<a} c_k) M(0)`; if that product is `≤ B` and
+`M(0)≥0`, then `M(a)≤B M(0)`. This is pure telescope algebra tying the empirical per-level-factor probe
+to the master growth law. It deliberately asserts NO empirical product bound and NO `√2` gate.
+
+VERDICT: does NOT close CORE. No cancellation, completion, moment, anti-concentration, capacity, or
+asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN; the open arithmetic content remains a
+non-moment/non-completion proof that the relevant product/geometric mean of door-(iv) factors is `√2`-scale.

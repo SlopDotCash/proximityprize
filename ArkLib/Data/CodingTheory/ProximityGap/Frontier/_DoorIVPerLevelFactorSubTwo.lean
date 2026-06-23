@@ -43,6 +43,8 @@ open ArkLib.ProximityGap.Frontier.DoorIVTwoDilateNoJointExtreme
 open ArkLib.ProximityGap.Frontier.DoorIVXGatePrizeBudget
 open ArkLib.ProximityGap.Frontier.DoorIVXGatedTelescopeBridge
 
+open scoped BigOperators
+
 /-- **Per-level factor ceiling from the two-dilate envelope.**  If the measured two-dilate maximum is
 written as `H = c·Smax` with positive thinner-level maximum `Smax`, then the unconditional envelope
 `H ≤ 2·Smax` is exactly the normalized ceiling `c ≤ 2`.  This packages the probe's ratio
@@ -80,6 +82,38 @@ per-level-factor probe localizes: the prize gate `√2` is genuinely below the c
 theorem sqrt_two_lt_two : Real.sqrt 2 < (2 : ℝ) := by
   nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
 
+/-- **Variable per-level-factor telescope.**  If `M (k+1) ≤ c k · M k` at each dyadic level,
+with nonnegative factors, then the whole tower is bounded by the product of the measured factors.  This
+is the exact algebra behind reading the probe's list of ratios `c(k)=M(2^{k+1})/M(2^k)` as a growth law;
+it makes no claim about the arithmetic size of any `c k`. -/
+theorem telescope_variable_perLevelFactors (M c : ℕ → ℝ)
+    (hc : ∀ k, 0 ≤ c k)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k) (a : ℕ) :
+    M a ≤ (∏ k ∈ Finset.range a, c k) * M 0 := by
+  induction a with
+  | zero => simp
+  | succ n ih =>
+    calc M (n + 1) ≤ c n * M n := hstep n
+      _ ≤ c n * ((∏ k ∈ Finset.range n, c k) * M 0) :=
+          mul_le_mul_of_nonneg_left ih (hc n)
+      _ = (∏ k ∈ Finset.range (n + 1), c k) * M 0 := by
+          rw [Finset.prod_range_succ]
+          ring
+
+/-- **Product gate for the variable per-level factors.**  Once the product of the level ratios is bounded
+by some budget `B`, the same budget controls the top level.  The theorem separates the honest empirical
+question (`∏ c_k ≤ B`) from the kernel-checked telescope algebra. -/
+theorem telescope_of_factorProduct_le (M c : ℕ → ℝ) {a : ℕ} {B : ℝ}
+    (hc : ∀ k, 0 ≤ c k) (hM0 : 0 ≤ M 0)
+    (hprod : (∏ k ∈ Finset.range a, c k) ≤ B)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k) :
+    M a ≤ B * M 0 := by
+  have ht := telescope_variable_perLevelFactors M c hc hstep a
+  have hprod_nonneg : 0 ≤ ∏ k ∈ Finset.range a, c k := by
+    exact Finset.prod_nonneg (by intro k _hk; exact hc k)
+  have hB_nonneg : 0 ≤ B := le_trans hprod_nonneg hprod
+  exact le_trans ht (mul_le_mul_of_nonneg_right hprod hM0)
+
 /-- **Prize budget from the normalized `√2` per-level factor.**  This restates the existing corrected
 x-gate capstone in the per-level-factor language: once the single open arithmetic gate supplies
 `LevelRatioBoundNZ … √2`, the telescope and base estimate yield `C√(nL)`.  It deliberately contains no
@@ -101,4 +135,6 @@ end ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.perLevelFactor_lt_two_iff_dilate_lt_two_mul
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.no_copeak_of_perLevelFactor_lt_two
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.sqrt_two_lt_two
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_variable_perLevelFactors
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_factorProduct_le
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor

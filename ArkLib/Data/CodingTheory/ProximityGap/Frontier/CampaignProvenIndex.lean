@@ -8404,6 +8404,20 @@ theorem doorIV_perLevelFactorSubTwo_export
 
 #print axioms doorIV_perLevelFactorSubTwo_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR product-telescope export: a variable list of measured dyadic
+multipliers controls the top level by their product.  This is pure bookkeeping for the per-level factor
+probe: if `M(k+1) ≤ c_k M(k)` and `∏ c_k ≤ B`, then `M(a) ≤ B M(0)`.  No empirical product bound,
+CORE upper bound, cancellation, moment, completion, or anti-concentration estimate is asserted. -/
+theorem doorIV_perLevelFactorProductTelescope_export (M c : ℕ → ℝ) {a : ℕ} {B : ℝ}
+    (hc : ∀ k, 0 ≤ c k) (hM0 : 0 ≤ M 0)
+    (hprod : (∏ k ∈ Finset.range a, c k) ≤ B)
+    (hstep : ∀ k, M (k + 1) ≤ c k * M k) :
+    M a ≤ B * M 0 :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.telescope_of_factorProduct_le
+    M c hc hM0 hprod hstep
+
+#print axioms doorIV_perLevelFactorProductTelescope_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
 factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
 identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.
