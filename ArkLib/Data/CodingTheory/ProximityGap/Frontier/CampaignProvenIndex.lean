@@ -8105,6 +8105,26 @@ theorem doorIV_sharpenedFloorRatioBracketedSynthesis_export
 
 #print axioms doorIV_sharpenedFloorRatioBracketedSynthesis_export
 
+/-- Door-IV Lane-2 UNCONDITIONAL floor-unit bracket export `[c₀, √n]`, NO door assumption.  Combines
+the proven super-diagonal period floor `c₀·√n ≤ M` (`c₀ = (5/4)^{1/4}`, the sharp Wick-permutation
+4th-moment constant) with the trivial cardinality ceiling `M ≤ n` (triangle inequality on a sum of `n`
+unit phases) to bracket the floor-normalized worst-frequency ratio `M/√n ∈ [c₀, √n]` with NO BGK /
+completion / classical-door hypothesis whatsoever.  This is the bedrock unconditional envelope of the
+conditional `[c₀, √L]` corridor (`doorIV_sharpenedFloorUnitCorridor_export`): the conditional Shaw/BGK
+ceiling `√L` (`< √n` for `1 < L < n`) sits strictly inside, the gap `[√L, √n]` is what a classical
+door buys for free, and the residual `[C, √L]` is the door-(iv)-only frontier.  Isolates the entire
+prize content as collapsing the unconditional `√n` ceiling to an absolute constant.  CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_floorUnitUnconditionalBracket_export {M n : ℝ} (hn : 0 < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
+    (hceil : M ≤ n) :
+    ShawValueCapstone.superDiagonalFloorConst ≤
+        DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M n ∧
+      DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio M n ≤ Real.sqrt n :=
+  DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hn hfloor hceil
+
+#print axioms doorIV_floorUnitUnconditionalBracket_export
+
 /-- Door-IV Lane-3 BOUNDED-EXCEPTION deficit-budget √-floor export: sharpens the sub-`(log2)/2`
 average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
 split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep

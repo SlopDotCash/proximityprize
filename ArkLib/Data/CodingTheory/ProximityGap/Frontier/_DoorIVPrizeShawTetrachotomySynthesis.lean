@@ -543,6 +543,39 @@ theorem sharpenedFloorRatio_bracketed_prize_iff_and_doorIV_only
   · exact prizeFloorBound_iff_floorPrizeRatio_le hnref
   · exact NoFifthDoorTetrachotomy.prizeCertifying_subset_doorIV hnref hLref hclassicalOvershoots
 
+/-- **Unconditional outer ceiling `M/√n ≤ √n` from the trivial `M ≤ n` bound.**  The triangle
+inequality gives `M = max_b |Σ_{x∈μ_n} e_p(bx)| ≤ |μ_n| = n` with NO door / BGK / completion
+hypothesis (it is the bare cardinality ceiling on a sum of `n` unit phases).  In `√n` units this is
+`floorPrizeRatio M n = M/√n ≤ √n`, the *unconditional* upper bracket — the highest the floor-ratio
+can sit before any cancellation argument is invoked.  Complementary to
+`floorPrizeRatio_le_sqrtL_of_bgk_ceiling`, which only gives the sharper `√L` end *under* the
+classical-door BGK ceiling `M ≤ √(n·L)`. -/
+theorem floorPrizeRatio_le_sqrtN_of_trivial_ceiling {M n : ℝ} (hn : 0 < n)
+    (hceil : M ≤ n) :
+    floorPrizeRatio M n ≤ Real.sqrt n := by
+  unfold floorPrizeRatio NoFifthDoorTetrachotomy.prizeScale
+  rw [div_le_iff₀ (Real.sqrt_pos.2 hn)]
+  calc M ≤ n := hceil
+    _ = Real.sqrt n * Real.sqrt n := (Real.mul_self_sqrt (le_of_lt hn)).symm
+
+/-- **Unconditional floor-unit bracket `[c₀, √n]`, no door assumption.**  Combining the proven
+super-diagonal period floor `c₀·√n ≤ M` (`c₀ = (5/4)^{1/4}`, the sharp Wick-permutation 4th-moment
+constant) with the trivial cardinality ceiling `M ≤ n`, the floor-normalized worst-frequency ratio
+`M/√n` lives in the corridor `[c₀, √n]` **with no BGK / completion / door hypothesis whatsoever**.
+This is the bedrock unconditional bracket: it isolates the entire prize content as the demand to
+collapse the *unconditional* `√n` ceiling all the way down to an absolute constant `C`.  The
+conditional Shaw/BGK ceiling `√L` (`< √n` for `1 < L < n`) sits strictly inside this bracket; the
+gap `[√L, √n]` is exactly what a classical door buys for free, and the residual `[C, √L]` is the
+door-(iv)-only frontier.  Pairs with `floorUnit_corridor_one_sqrtL_doorIV_only` (the conditional
+`√L`-end refinement) as its unconditional outer envelope. -/
+theorem floorUnit_unconditional_bracket {M n : ℝ} (hn : 0 < n)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt n ≤ M)
+    (hceil : M ≤ n) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ floorPrizeRatio M n ∧
+      floorPrizeRatio M n ≤ Real.sqrt n :=
+  ⟨superDiagonalFloorConst_le_floorPrizeRatio_of_superDiagonal_floor hn hfloor,
+    floorPrizeRatio_le_sqrtN_of_trivial_ceiling hn hceil⟩
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.one_le_prizeFloorConstant_of_plancherel_floor
@@ -550,3 +583,5 @@ end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorUnit_corridor_doorIV_only
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.superDiagonalFloorConst_le_prizeFloorConstant_of_superDiagonal_floor
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.sharpenedFloorRatio_bracketed_prize_iff_and_doorIV_only
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio_le_sqrtN_of_trivial_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket
