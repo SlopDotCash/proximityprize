@@ -6742,6 +6742,19 @@ theorem doorIV_cosetHalf_saving_iff_minority_mass_export {P N ε : ℝ}
   _root_.ProximityGap.Frontier.DoorIVCosetHalfCoherence.twoPieceCoherence_pos_neg_le_one_sub_iff_min_mass
     hP hN htotal
 
+/-- **[Lane 1/3 raw coset-half strict obstruction]** Strict `ε` coherence saving in the raw index-2
+opposite-sign split is EXACTLY strict minority-mass participation after clearing the positive denominator.
+So a strict door-(iv) anti-concentration theorem cannot come from the formal split alone: it must prove
+`ε*(P+N) < 2*min(P,N)` at the adversarial frequency. -/
+theorem doorIV_cosetHalf_strictSaving_iff_strictMinorityMass_export {P N ε : ℝ}
+    (hP : 0 ≤ P) (hN : 0 ≤ N) (htotal : 0 < P + N) :
+    _root_.ProximityGap.Frontier.DoorIVCosetHalfCoherence.twoPieceCoherence P (-N) < 1 - ε ↔
+      ε * (P + N) < 2 * min P N :=
+  _root_.ProximityGap.Frontier.DoorIVCosetHalfCoherence.twoPieceCoherence_pos_neg_lt_one_sub_iff_min_mass
+    hP hN htotal
+
+#print axioms doorIV_cosetHalf_strictSaving_iff_strictMinorityMass_export
+
 /-- **[Lane 1/3 transverse-spread geometry]** In a unit direction frame, projection and transverse
 components decompose the squared norm exactly. This names the geometric content a door-(iv) angular
 spread certificate must control. -/

@@ -13674,3 +13674,13 @@ CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_DoorIVPrizeConst
 WHY IT MATTERS: previous exports packaged `c₀ ≤ K ∧ 1<c₀ ∧ 1<K` and ruled out `K≤1`; this gives the direct positive certificate `1<K` in the exact form consumed by Lane-3 prose.
 
 VERDICT: PURE lower-bound bookkeeping for the prize constant. It proves no upper bound and makes no CORE / cancellation / anti-concentration / capacity claim. CORE remains OPEN.
+
+## [doorIV-coset-half-strict-minority-mass] strict raw coset-half saving is exactly strict minority-mass participation (2026-06-23, g55)
+Lane: door-(iv) Lane-1/3, citable strict counterpart to the raw index-2 coset-half coherence obstruction.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_cosetHalf_strictSaving_iff_strictMinorityMass_export`: for opposite-sign real half-period pieces `P` and `-N` with `P,N≥0` and `P+N>0`, a strict coherence saving `twoPieceCoherence P (-N) < 1-ε` is equivalent to the strict denominator-cleared minority-mass inequality `ε*(P+N) < 2*min(P,N)`.
+
+WHY IT MATTERS: the index-2 coset-half split itself supplies no strict anti-concentration. Any strict door-(iv) saving at the adversarial frequency must prove proportional minority-mass participation; same-sign halves saturate coherence at `1`, and opposite signs save only by the exact minority-mass amount.
+
+VERDICT: exact two-piece real-algebra constraint only. NO CORE upper bound, cancellation, completion, moment, capacity, or asymptotic claim; CORE remains OPEN.
