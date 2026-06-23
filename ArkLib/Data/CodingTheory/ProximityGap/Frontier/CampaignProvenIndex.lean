@@ -176,6 +176,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceTowerRatioSpectr
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDeficitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVUniformDeficitThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetBoundedExceptions
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 /-!
@@ -8036,5 +8037,28 @@ theorem doorIV_shawValueRefinedWindowWidth_export {n L : ℝ} (hn : 0 < n) (hL :
 
 #print axioms doorIV_shawValueSuperDiagonalFloor_export
 #print axioms doorIV_shawValueRefinedWindowWidth_export
+
+/-- Door-IV Lane-3 BOUNDED-EXCEPTION deficit-budget √-floor export: sharpens the sub-`(log2)/2`
+average-deficit converse into a per-level structural statement.  If the `a = log₂n` dilation levels
+split into good levels (coherence deficit `δ_k ≤ ε`, `ε < (log2)/2`) and an exceptional set `E` of deep
+spikes (`δ_k ≤ 1`) whose count respects the positive-density floor `(1−ε)·|E| ≤ ((log2)/2 − ε)·a`,
+then the exp-relaxed dilation budget bound stays AT/ABOVE the `√(2^a)·M₀` Plancherel/prize scale.
+Mechanism: a thin (sublinear) set of deep deficit spikes cannot drag the dilation budget down to the
+√n prize scale — the route needs `Ω(a)`-many `Ω(1)`-deficit levels, which the same-ray-at-`b*`
+geometry (measured `δ_k ≈ 0` on the dominant top levels) does not supply.  Constraint lemma; CORE
+`M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_deficitBudgetBoundedExceptions_export {a : ℕ} {ε M0 : ℝ}
+    (δ : ℕ → ℝ) (E : Finset ℕ) (hE : E ⊆ Finset.range a)
+    (hgood : ∀ k ∈ Finset.range a, k ∉ E → δ k ≤ ε)
+    (hbad : ∀ k ∈ Finset.range a, k ∈ E → δ k ≤ 1)
+    (hεthr : ε < Real.log 2 / 2)
+    (hdensity : (1 - ε) * (E.card : ℝ) ≤ (Real.log 2 / 2 - ε) * a)
+    (hM0 : 0 ≤ M0) :
+    (Real.sqrt 2) ^ a * M0
+      ≤ 2 ^ a * Real.exp (-(∑ k ∈ Finset.range a, δ k)) * M0 :=
+  ProximityGap.Frontier.DoorIVDeficitBudgetBoundedExceptions.budget_ge_sqrt_scale_of_bounded_exceptions
+    δ E hE hgood hbad hεthr hdensity hM0
+
+#print axioms doorIV_deficitBudgetBoundedExceptions_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex

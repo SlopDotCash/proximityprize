@@ -12917,3 +12917,33 @@ SURVIVING characterization: the coefficient-interference object (3591ed7c8, axio
 adversary is coeff-sensitive + ratio-uniform — but is NOT support-localizable and NOT uniformly
 strictly-dominant. No CORE/cancellation/completion/moment/anti-concentration/capacity claim. CORE OPEN.
 Evidence (reproducible probe, no new .lean): scripts/probes/probe_c71_support_localization_nstable.py.
+
+## [doorIV-dilation-realized-deficit-bounded-exceptions] worst-b descent deficit is sub-threshold + a thin spike set cannot rescue the route (2026-06-23, sol)
+Lane: door-(iv) Lane-3 dilation-descent route, constraint sharpening of `_DoorIVDeficitBudgetSublinearFloor`.
+
+PROBE (reproducible, no false positive — PROPER thin 2-power subgroups mu_n ⊊ F_p*, p ≈ n^3.2, FULL
+F_p* worst-b argmax via mu_n-orbit marking, NEVER n=q-1):
+`scripts/probes/probe_dooriv_realized_deficit_descent.py`. Measured the per-level coherence deficit
+δ_k = 1 − ρ_k along the 2-dilation descent AT the adversarial worst frequency b*:
+  a=3 n=8   p=809    avg_delta=0.1315  deltas=[0.0, 0.0, 0.3945]
+  a=4 n=16  p=7297   avg_delta=0.0014  deltas=[0.0, 0.0, 0.0, 0.0056]
+  a=5 n=32  p=65537  avg_delta=0.0000  deltas=[0.0, 0.0, 0.0, 0.0, 0.0]
+  a=6 n=64  p=602689 avg_delta=0.1473  deltas=[0.0, 0.0, 0.0, 0.5571, 0.0, 0.3265]
+MECHANISM: at b* the coset halves are EXACTLY same-ray (ρ=1, δ_k=0) on the dominant TOP levels — the
+adversary selects b* precisely to keep the index-2 halves collinear — with only sporadic deep-level
+spikes. The realized AVERAGE per-level deficit stays WELL BELOW the proven prize threshold
+(log2)/2 ≈ 0.3466 that `deficit_budget_ge_sqrt_scale_of_sublinear` requires. So the dilation-descent
+route does not realize the sustained Ω(1)-per-level deficit it would need to reach the √n scale.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry):
+`_DoorIVDeficitBudgetBoundedExceptions.budget_ge_sqrt_scale_of_bounded_exceptions` +
+`sum_le_avg_exceptions`, registered as `doorIV_deficitBudgetBoundedExceptions_export` in
+CampaignProvenIndex. Sharpens the average-deficit converse into a per-level STRUCTURAL statement: split
+the a=log₂n levels into good levels (δ_k ≤ ε, ε<(log2)/2) and an exceptional set E of deep spikes
+(δ_k ≤ 1). If |E| respects the positive-density floor (1−ε)·|E| ≤ ((log2)/2−ε)·a (in particular any
+SUBLINEAR |E|=o(a)), the exp-relaxed dilation budget bound stays AT/ABOVE the √(2^a)·M₀ Plancherel
+scale. Verified numerically (`scripts/probes/probe_dooriv_bounded_exception_floor.py`, 0 fails / 200k).
+VERDICT: a thin set of deep deficit spikes cannot drag the dilation budget down to √n; the route needs
+Ω(a)-many Ω(1)-deficit levels, which the measured same-ray-at-b* descent does not supply. No CORE upper
+bound, cancellation, completion, moment-saving, anti-concentration, or capacity claim. CORE
+M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
