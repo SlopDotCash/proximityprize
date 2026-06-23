@@ -13909,3 +13909,20 @@ WHY IT MATTERS: the scale bridge already identified `shawScale q n / prizeScale 
 VERDICT: pure scale separation / normalization bookkeeping only. It proves no CORE upper bound and makes no cancellation, completion, anti-concentration, moment, capacity, or asymptotic claim; CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-peak-bracket-sharp] the exact two-sided off-DC peak band in SHARP form (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 floor-substrate composition — states the proven two-sided off-DC peak band with the SHARP closed-form floor as its lower endpoint (manifest sqrt(n) limit).
+
+CONTEXT: `_DoorIVSubgroupOffDCPeakBracket` pins M² ∈ [(N·d−d²)/(N−1), N·d−d²] (raw-quotient floor → trivial completion ceiling). `_DoorIVSubgroupOffDCPeakFloorSharp` re-expressed the floor against the sharp closed form `d·(1−(d−1)/(N−1))`. MISSING: the two-sided BAND stated with that sharp floor as its lower endpoint.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupOffDCPeakBracketSharp.lean`, for the order-d subgroup indicator 1_{μ_d} (d ∣ N, 1 < N):
+- exists_offDC_peak_sq_bracket_sharp (HEADLINE): ∃ off-DC argmax k₀ ≠ 0 with `d·(1−(d−1)/(N−1)) ≤ ‖𝓕 1_{μ_d} k₀‖² ≤ N·d−d²` (sharp floor → trivial ceiling), composing the sharp floor with the existing ceiling `offDC_peak_sq_le_offDC_energy`.
+- exists_offDC_peak_bracket_sharp (HEADLINE, norm form): `√(d·(1−(d−1)/(N−1))) ≤ ‖𝓕 1_{μ_d} k₀‖ ≤ √(N·d−d²)`.
+
+WHY IT MATTERS: in the prize regime `N = q ≈ d^β`, the band is `[d·(1−o(1)), p·n−n²]` — from the SHARP Plancherel floor `≈ √n` (explicit `o(1)` convergence, relative defect `(d−1)/(N−1) → 0`) to the trivial ℓ²-completion ceiling `√(p·n)`. CORE asks for `M ≤ C·√(n·log(p/n))`, strictly inside the band's lower portion; band width = door-(iv) gap.
+
+VERDICT: SHARP form of the exact two-sided off-DC peak band, axiom-clean. Lower endpoint = SHARP Plancherel floor (easy direction); upper endpoint = trivial completion ceiling (door (ii), the upper fence, NOT a CORE bound). No CORE upper bound, no cancellation, anti-concentration, moment-saving, or capacity claim. CORE remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakBracketSharp.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
