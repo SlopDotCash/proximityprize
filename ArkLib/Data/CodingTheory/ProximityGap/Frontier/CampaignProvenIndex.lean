@@ -252,6 +252,8 @@ anything here; this index does not claim otherwise.
 | `rawPrizeFamilyBound_iff_shawValueFamilyBound_export` | capstone | ShawValue |
 | `exists_rawPrizeFamilyBound_iff_exists_shawValueFamilyBound_export` | capstone | ShawValue |
 | `not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_export` | capstone | ShawValue |
+| `exists_nonneg_rawPrizeFamilyBound_iff_exists_nonneg_shawValueFamilyBound_export` | capstone | ShawValue |
+| `not_exists_nonneg_rawPrizeFamilyBound_iff_not_exists_nonneg_shawValueFamilyBound_export` | capstone | ShawValue |
 | `strictPrizeBound_iff_shawValue_lt_export` | capstone | ShawValue |
 | `strictRawPrizeFamilyBound_iff_strictShawValueFamilyBound_export` | capstone | ShawValue |
 | `exists_strictRawPrizeFamilyBound_iff_exists_strictShawValueFamilyBound_export` | capstone | ShawValue |
@@ -941,6 +943,34 @@ theorem not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_expor
   _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound hs
 
 #print axioms not_exists_rawPrizeFamilyBound_iff_not_exists_shawValueFamilyBound_export
+
+/-- **[capstone, ShawValue]** Nonnegative-constant non-strict family form of the Lane-2 reduction:
+with positive pointwise prize scale, existence of a nonnegative absolute raw-prize constant is exactly
+existence of a nonnegative absolute Shaw-value constant. This pins the usual Big-O constant domain. -/
+theorem exists_nonneg_rawPrizeFamilyBound_iff_exists_nonneg_shawValueFamilyBound_export
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i)) :
+    (∃ C, 0 ≤ C ∧
+        _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
+      (∃ C, 0 ≤ C ∧
+        _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C) :=
+  _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.exists_nonneg_rawPrizeFamilyBound_iff_exists_nonneg_shawValueFamilyBound hs
+
+#print axioms exists_nonneg_rawPrizeFamilyBound_iff_exists_nonneg_shawValueFamilyBound_export
+
+/-- **[capstone, ShawValue]** Wall-facing nonnegative non-strict family form: failure of every
+nonnegative raw-prize Big-O constant is exactly failure of every nonnegative Shaw-value Big-O
+constant. Pure normalization bookkeeping; no Door-IV anti-concentration is asserted. -/
+theorem not_exists_nonneg_rawPrizeFamilyBound_iff_not_exists_nonneg_shawValueFamilyBound_export
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale (n i) (L i)) :
+    ¬ (∃ C, 0 ≤ C ∧
+        _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.rawPrizeFamilyBound M n L C) ↔
+      ¬ (∃ C, 0 ≤ C ∧
+        _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.shawValueFamilyBound M n L C) :=
+  _root_.ArkLib.ProximityGap.Frontier.ShawValueCapstone.not_exists_nonneg_rawPrizeFamilyBound_iff_not_exists_nonneg_shawValueFamilyBound hs
+
+#print axioms not_exists_nonneg_rawPrizeFamilyBound_iff_not_exists_nonneg_shawValueFamilyBound_export
 
 /-- **[capstone, ShawValue]** Strict prize normalization equivalence: under a positive prize scale,
 a strict raw prize-shaped bound `M < C·√(nL)` is exactly the statement that the normalized Shaw
