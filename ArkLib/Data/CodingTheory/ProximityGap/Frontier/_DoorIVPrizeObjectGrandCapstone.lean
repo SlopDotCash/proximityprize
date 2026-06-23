@@ -7,6 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeShawTetrachoto
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVObjectMomentTrappedCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVObjectMomentCorridor
 
+
 set_option autoImplicit false
 set_option linter.style.longLine false
 
@@ -187,6 +188,56 @@ theorem floor_bracketed_independent {Mref nref : ℝ} (hnref : 0 < nref)
       DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ≤ Real.sqrt nref :=
   DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hnref hfloor hceil
 
+/-- **DISCHARGED four-pillar grand capstone — pillars (1)+(2) theorem-backed, no abstract overshoot
+hypothesis.**
+
+The four-pillar capstone `prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed` takes
+the mechanism exclusion's classical-overshoot input as an *abstract hypothesis* `hclassicalOvershoots`.
+The campaign separately PROVED the reduction+exclusion DISCHARGED form
+(`_DoorIVPrizeShawTetrachotomySynthesis.prize_iff_shawBounded_nonneg_and_discharged_doorIV_only`),
+where the classical-overshoot input is discharged from
+`NoFifthDoorTetrachotomy.forces_doorIV_ceilingRespecting` (the SOTA eventual-domination theorem) and
+the only surviving premise is the honest anti-degenerate `RespectsProvenScale` guard.
+
+This variant is the FIRST to fuse that DISCHARGED reduction+exclusion (pillars 1+2) together with the
+object moment-trap (pillar 3) and the unconditional floor envelope (pillar 4) into ONE grand
+statement.  It is strictly stronger and more citable than the abstract-hypothesis four-pillar capstone:
+pillar (2) is now a kernel-checked consequence of the proven SOTA scales past the threshold `N₀`, not
+an assumption.  Still a packaging extension; no cancellation / anti-concentration estimate; CORE stays
+open. -/
+theorem prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed
+    {ι : Type*} {M n L : ι → ℝ}
+    (hs : ∀ i, 0 < ShawValueCapstone.prizeScale (n i) (L i))
+    {Lref q C δ : ℝ} (hLnn : 0 ≤ Lref) (hLref : 1 < Lref) (hC : 0 < C) (hδ : δ < 1 / 2)
+    {iidSup realSup Δ : ℝ}
+    (hEdge : SurrogateLeReal iidSup realSup)
+    (hExcess : gap iidSup realSup ≤ Δ)
+    {Mref nref : ℝ} (hnref : 0 < nref)
+    (hfloor : ShawValueCapstone.superDiagonalFloorConst * Real.sqrt nref ≤ Mref)
+    (hceil : Mref ≤ nref) :
+    ∃ N₀ : ℝ,
+      -- (1) reduction (discharged form)
+      ((∃ K, 0 ≤ K ∧ ShawValueCapstone.rawPrizeFamilyBound M n L K) ↔
+          (∃ K, 0 ≤ K ∧ ShawValueCapstone.shawValueFamilyBound M n L K)) ∧
+        -- (2) door-(iv)-only mechanism exclusion, DISCHARGED past N₀ (no abstract overshoot hypothesis)
+        (∀ nref' : ℝ, max N₀ 1 ≤ nref' → nref' * Lref ≤ q →
+          (∀ m' : NoFifthDoorTetrachotomy.Mechanism,
+            m'.door.isClassical → m'.RespectsProvenScale q C δ nref') →
+          ∀ m : NoFifthDoorTetrachotomy.Mechanism,
+            m.certScale ≤ NoFifthDoorTetrachotomy.prizeScale nref' →
+            m.door = NoFifthDoorTetrachotomy.DoorType.newEvaluation) ∧
+        -- (3) the door-(iv) object's sup is pinned to the moment-corridor
+        (iidSup ≤ realSup ∧ realSup ≤ iidSup + Δ) ∧
+        -- (4) the unconditional floor envelope: the prize constant lives in [c₀, √nref]
+        (ShawValueCapstone.superDiagonalFloorConst ≤
+            DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ∧
+          DoorIVPrizeShawTetrachotomySynthesis.floorPrizeRatio Mref nref ≤ Real.sqrt nref) := by
+  obtain ⟨N₀, hred, hdoor⟩ :=
+    DoorIVPrizeShawTetrachotomySynthesis.prize_iff_shawBounded_nonneg_and_discharged_doorIV_only
+      hs hLnn hLref hC hδ
+  exact ⟨N₀, hred, hdoor, realSup_in_moment_corridor hEdge hExcess,
+    DoorIVPrizeShawTetrachotomySynthesis.floorUnit_unconditional_bracket hnref hfloor hceil⟩
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 
 -- Axiom audit: all theorems must be ⊆ {propext, Classical.choice, Quot.sound}
@@ -197,4 +248,5 @@ open ArkLib.ProximityGap.Frontier.DoorIVPrizeObjectGrandCapstone
 #print axioms object_trapped_and_corridor
 #print axioms prize_iff_shawBounded_doorIV_only_object_trapped_and_floor_bracketed
 #print axioms floor_bracketed_independent
+#print axioms prize_reduction_dischargedDoorIV_object_trapped_and_floor_bracketed
 end AxiomAudit
