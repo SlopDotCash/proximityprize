@@ -13976,3 +13976,16 @@ VERDICT: axiom-clean normalization/separation capstone only.  CORE remains OPEN;
 the only live door.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-peak-bracket-sharp-exports] stable exports for the sharp off-DC peak bracket (g55, 2026-06-23)
+Lane: door-(iv) Lane-2/3 floor-substrate indexing, stable consumers for the sharp two-sided off-DC peak band.
+
+CONSTRAINT EXPORTS (axiom-clean, real proofs, NO sorry) added to `CampaignProvenIndex`:
+- `doorIV_exists_offDC_peak_sq_bracket_sharp_export`: sharp Plancherel floor to trivial completion ceiling, squared form.
+- `doorIV_exists_offDC_peak_bracket_sharp_export`: the corresponding norm-form bracket.
+
+WHY IT MATTERS: the kernel `_DoorIVSubgroupOffDCPeakBracketSharp` composed the sharp floor with the elementary off-DC energy ceiling.  These exports make the final closed sharp bracket citable from the permanent campaign index: in the prize regime the lower endpoint is `sqrt(d*(1-o(1)))`, while the upper endpoint remains the dead completion fence.
+
+VERDICT: stable export/indexing of a sharp FLOOR-TO-FENCE band only.  It proves no CORE upper bound and makes no cancellation, completion improvement, anti-concentration, moment, capacity, or asymptotic claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>

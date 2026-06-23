@@ -195,6 +195,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupDCOffDCGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOffDCCeilingDominatesBGKTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCMeanFloorSharp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakFloorSharp
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakBracketSharp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -9203,6 +9204,44 @@ theorem doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export {N : ℕ} [NeZero N]
     hd hN1
 
 #print axioms doorIV_exists_offDC_peak_ge_sqrt_sharpFloor_export
+
+
+/-- Door-IV Lane-2 SHARP OFF-DC PEAK BRACKET export, squared form: the concrete off-DC
+prize object lies between the sharp Plancherel floor `d*(1-(d-1)/(N-1))` and the
+trivial completion ceiling `N*d-d^2`.  This is a floor-to-fence bracket, not CORE. -/
+theorem doorIV_exists_offDC_peak_sq_bracket_sharp_export {N : ℕ} [NeZero N]
+    {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
+    ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
+      (d : ℝ) * (1 - ((d : ℝ) - 1) / ((N : ℝ) - 1))
+        ≤ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖ ^ 2
+      ∧ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖ ^ 2 ≤ (N : ℝ) * d - (d : ℝ) ^ 2 :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCPeakBracketSharp.exists_offDC_peak_sq_bracket_sharp
+    hd hN1
+
+#print axioms doorIV_exists_offDC_peak_sq_bracket_sharp_export
+
+/-- Door-IV Lane-2 SHARP OFF-DC PEAK BRACKET export, norm form: the off-DC peak is bracketed
+between `sqrt(d*(1-(d-1)/(N-1)))` and `sqrt(N*d-d^2)`.  The upper endpoint is still only the
+completion fence; the missing CORE theorem is the descent to `C*sqrt(d*log(N/d))`. -/
+theorem doorIV_exists_offDC_peak_bracket_sharp_export {N : ℕ} [NeZero N]
+    {d : ℕ} (hd : d ∣ N) (hN1 : 1 < N) :
+    ∃ k₀ ∈ (Finset.univ.erase (0 : ZMod N)),
+      Real.sqrt ((d : ℝ) * (1 - ((d : ℝ) - 1) / ((N : ℝ) - 1)))
+        ≤ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖
+      ∧ ‖(ZMod.dft
+            (_root_.ProximityGap.Frontier.ZModSubgroupSaturation.subgroupIndicator
+              (N := N) d)) k₀‖
+          ≤ Real.sqrt ((N : ℝ) * d - (d : ℝ) ^ 2) :=
+  _root_.ProximityGap.Frontier.DoorIVSubgroupOffDCPeakBracketSharp.exists_offDC_peak_bracket_sharp
+    hd hN1
+
+#print axioms doorIV_exists_offDC_peak_bracket_sharp_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
