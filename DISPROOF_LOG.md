@@ -13589,3 +13589,49 @@ CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_DoorIVPrizeConst
 WHY IT MATTERS: the upstream family lower bound `c₀ ≤ K` now has its clean consumer form against the bare Plancherel unit constant. Any uniform prize constant must clear not only `1` but the strict super-diagonal floor `c₀ > 1`.
 
 VERDICT: PURE lower-bound/no-go bookkeeping for the prize constant. It proves no upper bound and makes no CORE / cancellation / anti-concentration / capacity claim. CORE remains OPEN.
+
+## [doorIV-prizeratio-thinness-signature] the prize normalization M/√(n·log(p/n)) is THINNESS-INVARIANT while bare M/√n is THICKNESS-MONOTONE — direct evidence the prize denominator is the thinness-essential one (2026-06-23, sol)
+Lane: door-(iv) Lane-1, thinness-essentiality follow-up to [doorIV-prizeratio-creep-saturates] (push 6f2e557a2).
+
+CONTEXT + HARD RULE 3: the prize bound `M ≤ C·√(n·log(p/n))` MUST be thinness-essential (it is FALSE in
+the thick β≈2.3-3.2 window; any thickness-monotone method is wrong). The natural test: at FIXED n, sweep
+β = log_n(p) (the subgroup μ_n gets THINNER relative to F_p* as β grows) and compare the BARE ratio
+`M/√n` against the PRIZE-normalized ratio `R' = M/√(n·log(p/n))`. The thinness-essential normalization
+is the one that stays INVARIANT as β grows; a thickness-monotone proxy grows.
+
+PROBE (reproducible, PROPER thin μ_n ⊊ F_p*, good prime p≡1 mod n with v2(p−1)=log2 n, FULL F_p* worst-b
+via vectorized exact coset transversal, NEVER n=q−1; p<2^32 caps the thin window):
+`scripts/probes/probe_444_prizeratio_beta_thinness_signature.py`. n∈{16,32,64} × β∈{3.0,3.5,4.0,4.5,5.0}
+(n=64 β=5.0's 33M-coset scan did not converge in window; 14 points landed):
+
+  n   β     M/√n (bare)   R'=M/√(n·log(p/n))
+  16  3.01  2.736         1.1597
+  16  3.50  3.037         1.1533
+  16  4.00  3.324         1.1524
+  16  4.50  3.554         1.1408
+  16  5.00  3.700         1.1109
+  32  3.00  2.999         1.1390
+  32  3.50  4.024         1.3669
+  32  4.00  4.063         1.2600
+  32  4.50  4.168         1.1967
+  32  5.00  4.523         1.2149
+  64  3.00  3.341         1.1584
+  64  3.50  4.338         1.3455
+  64  4.00  4.379         1.2397
+  64  4.50  5.076         1.3303
+
+KEY READ (quantitative): the BARE ratio M/√n GROWS strongly with thinness — per-n slopes d(M/√n)/dβ =
++0.49 (n=16), +0.64 (n=32), +1.05 (n=64); pooled +0.57/β. The PRIZE-normalized R' is essentially FLAT —
+per-n slopes dR'/dβ = −0.022, −0.004, +0.082; pooled −0.003/β ≈ 0. Coefficient of variation: bare CV =
+0.171 vs R' CV = 0.067 (R' is 2.5× tighter). The √(log(p/n)) factor in the prize denominator EXACTLY
+ABSORBS the thinness-driven growth of the bare ratio.
+
+VERDICT (MEASURE, not proof): the prize normalization `M/√(n·log(p/n))` is approximately THINNESS-
+INVARIANT across the thin β∈[3,5] window, whereas the bare Plancherel ratio `M/√n` is THICKNESS-MONOTONE
+(grows ~linearly in β). This is direct empirical evidence that the prize denominator is the correct
+thinness-essential normalization (HARD RULE 3): a thickness-monotone method would track the growing bare
+ratio and OVERSHOOT, while the prize bound tracks the flat R'. It does NOT prove R' is bounded
+asymptotically (finite n≤64, p<2^32 caps the thin window — n≤64 cannot decide a 25-yr open asymptotic),
+and is least-diagnostic exactly in this √log regime. NO CORE upper bound, cancellation, completion,
+moment-saving, anti-concentration, capacity, or asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))`
+remains OPEN.
