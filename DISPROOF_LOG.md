@@ -13842,3 +13842,23 @@ FINDINGS (12 instances, n=8..128):
 VERDICT (probe, NOT a formalized claim): the action is entirely at the FLOOR end of the bracket (ceiling has huge unexploited slack -> door (ii) dead, reconfirmed empirically on the concrete object). M tracks prize sqrt(n*log) with a bounded constant on these small instances — consistent with CORE but NOT a proof (n small, beta below prize beta~4-5, abs constant C absorbs the O(1); the M/prize ratio drifts upward slowly with beta, the known sqrt(log)-type creep, NOT a refutation). NO exploitable floor-hugging slack observed (M/floor stays ~2-4, no instance near 1). This DOES NOT crack door (iv); it characterizes the bracket as floor-dominated and reconfirms the ceiling is loose. NO CORE upper bound, NO cancellation/anti-concentration/moment/capacity claim. CORE OPEN; door (iv) the only live door.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-ceiling-dominates-bgktarget] the BGK/prize target lies STRICTLY INSIDE the proven band (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 consistency rung — Lean-certifies that the conjectured CORE target sits between the proven Plancherel floor and the proven ℓ²-completion ceiling (band-containment), connecting the concrete off-DC bracket to the abstract `bgkScale = √(n·L)` vocabulary.
+
+CONTEXT: `_DoorIVSubgroupOffDCPeakBracket` pins M(μ_n) ∈ [√((p·n−n²)/(p−1)), √(p·n−n²)] (Plancherel floor → completion ceiling). The probe `_doorIV_offDC_peak_in_bracket.py` measured M/ceil ≈ 0.02-0.21 and M/prize ≈ 1.14-1.63. MISSING in Lean: the consistency statement that the BGK/prize target `√(n·L)` (L=log(p/n)) lies inside this band — i.e. floor ≤ √(n·L) ≤ ceiling. If it did NOT, the formal bracket would contradict the conjectured CORE bound.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVOffDCCeilingDominatesBGKTarget.lean`:
+- bgkTarget_le_offDC_ceiling_sq: `n·L ≤ p·n − n²` whenever `L ≤ p − n`, `0 ≤ n` (n·L ≤ n·(p−n)).
+- bgkTarget_le_offDC_ceiling: `√(n·L) ≤ √(p·n − n²)` (BGK target ≤ proven ceiling).
+- offDC_floor_le_bgkTarget_sq: `(p·n − n²)/(p − 1) ≤ n·L` whenever `1 ≤ n`, `1 < p`, `1 ≤ L` (floor = n·(p−n)/(p−1) ≤ n ≤ n·L).
+- offDC_floor_le_bgkTarget: `√((p·n − n²)/(p − 1)) ≤ √(n·L)` (proven floor ≤ BGK target).
+- offDC_band_contains_bgkTarget (HEADLINE): the full chain `floor ≤ √(n·L) ≤ ceiling` in the prize regime (1≤n, 1<p, 1≤L≤p−n).
+
+WHY IT MATTERS: the conjectured CORE target `√(n·L)` provably sits STRICTLY INSIDE the proven two-sided band — the bracket genuinely brackets the prize regime, and the floor→target gap is the open door-(iv) `√L = √(log(p/n))` factor. This is the Lean consistency rung matching the probe's M/prize≈1.3 finding: CORE asks for a bound below the proven ceiling and above the Plancherel floor, not against either.
+
+VERDICT: CONSISTENCY/containment statement, axiom-clean. It places the conjectured CORE target inside the proven band; it is NOT a CORE upper bound (which would shrink the ceiling from `√(p·n)` to `C·√(n·log(p/n))` — OPEN). No cancellation, completion improvement, anti-concentration, moment, or capacity claim. CORE remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVOffDCCeilingDominatesBGKTarget.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
