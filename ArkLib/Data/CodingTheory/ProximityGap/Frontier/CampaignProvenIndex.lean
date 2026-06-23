@@ -8502,6 +8502,20 @@ theorem doorIV_perLevelFactorSuperBudgetBlockNeedsCompensation_export {b r : ℕ
 
 #print axioms doorIV_perLevelFactorSuperBudgetBlockNeedsCompensation_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR scaled uncompensated-block export: if a bad block is a factor
+`K` above its own `(√2)^r` budget, then the complementary product must fall strictly below the
+reciprocal `1/K` share of its own `(√2)^b` budget.  Equivalently, a `K`-overshoot block paired with an
+uncompensated `1/K` remainder already breaks the height-`b+r` telescope budget.  Pure finite algebra;
+no arithmetic `√2` gate or CORE claim. -/
+theorem doorIV_perLevelFactorScaledUncompensatedBlockBreaksBudget_export {b r : ℕ}
+    {K badBlock R : ℝ} (hK : 0 < K) (hbad : K * (Real.sqrt 2) ^ r < badBlock)
+    (hR : (1 / K) * (Real.sqrt 2) ^ b ≤ R) :
+    (Real.sqrt 2) ^ (b + r) < badBlock * R :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.totalProduct_gt_sqrtTwo_pow_of_scaled_uncompensated_block
+    hK hbad hR
+
+#print axioms doorIV_perLevelFactorScaledUncompensatedBlockBreaksBudget_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
 factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
 identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.

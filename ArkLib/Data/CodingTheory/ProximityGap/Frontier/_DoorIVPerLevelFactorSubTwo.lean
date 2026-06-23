@@ -273,6 +273,32 @@ theorem totalProduct_gt_sqrtTwo_pow_of_uncompensated_superBudget_block {b r : �
     ring
   rwa [hpow]
 
+/-- **Scaled uncompensated super-budget blocks also break the finite `√2` telescope.**  The previous
+lemma is the special case `K = 1`.  More generally, if a block is a factor `K` above its own `√2`
+budget and the complementary product is still at least the reciprocal `1/K` of its own budget, then
+the total product is strictly above the height-`b+r` `√2` budget.  This is the exact quantitative
+compensation ledger for localized bad blocks: every `K` units of block overshoot require more than
+`1/K` units of deficit outside the block. -/
+theorem totalProduct_gt_sqrtTwo_pow_of_scaled_uncompensated_block {b r : ℕ}
+    {K badBlock R : ℝ} (hK : 0 < K) (hbad : K * (Real.sqrt 2) ^ r < badBlock)
+    (hR : (1 / K) * (Real.sqrt 2) ^ b ≤ R) :
+    (Real.sqrt 2) ^ (b + r) < badBlock * R := by
+  have hspos : 0 < Real.sqrt 2 := Real.sqrt_pos_of_pos (by norm_num : (0 : ℝ) < 2)
+  have hpowb_pos : 0 < (Real.sqrt 2) ^ b := pow_pos hspos b
+  have hscaled_pos : 0 < (1 / K) * (Real.sqrt 2) ^ b := by
+    positivity
+  have hbad_nonneg : 0 ≤ badBlock := by
+    have hpos : 0 < K * (Real.sqrt 2) ^ r := mul_pos hK (pow_pos hspos r)
+    exact le_of_lt (lt_trans hpos hbad)
+  have hstrict : (K * (Real.sqrt 2) ^ r) * ((1 / K) * (Real.sqrt 2) ^ b) <
+      badBlock * R := by
+    exact mul_lt_mul hbad hR hscaled_pos hbad_nonneg
+  have hleft : (K * (Real.sqrt 2) ^ r) * ((1 / K) * (Real.sqrt 2) ^ b) =
+      (Real.sqrt 2) ^ (b + r) := by
+    rw [pow_add]
+    field_simp [ne_of_gt hK]
+  rwa [hleft] at hstrict
+
 /-- **Prize budget from the normalized `√2` per-level factor.**  This restates the existing corrected
 x-gate capstone in the per-level-factor language: once the single open arithmetic gate supplies
 `LevelRatioBoundNZ … √2`, the telescope and base estimate yield `C√(nL)`.  It deliberately contains no
@@ -305,4 +331,5 @@ end ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_of_two_bad_rungs
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_of_superBudget_block
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.totalProduct_gt_sqrtTwo_pow_of_uncompensated_superBudget_block
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.totalProduct_gt_sqrtTwo_pow_of_scaled_uncompensated_block
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.prizeBudget_of_sqrtTwo_perLevelFactor
