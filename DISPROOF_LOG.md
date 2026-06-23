@@ -13725,3 +13725,23 @@ VERDICT: constraint capstone (composition + power-mean rung). It proves the mome
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentEnergyFloorOvershoot.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}). Index export `doorIV_momentDoor_overshoots_rms_export`.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-moment-floor-tetrachotomy-bridge] internal energy floor wires into the tetrachotomy at the PRIZE floor, not the BGK ceiling (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-3 tetrachotomy hardening. Connects the just-landed internal moment-energy floor (`_DoorIVMomentEnergyFloorOvershoot`, push 7a425f2cb) to the no-fifth-door tetrachotomy's `Mechanism`/`prizeScale`/`bgkScale` vocabulary (`_NoFifthDoorTetrachotomy`), which previously discharged door (i) ONLY from the third-party SOTA exponent `δ<1/2`.
+
+BRIDGE (axiom-clean, real proof, NO sorry) in `_DoorIVMomentFloorTetrachotomyBridge.lean`:
+- `rmsScale f s := √(E_1/card)` — the smallest scale the energy hierarchy affords (r=1 / Plancherel rung).
+- `rmsScale_eq_prizeScale`: under the Plancherel normalization `E_1/card = n`, `rmsScale = prizeScale n = √n`.
+- `rmsScale_le_sup`: `rmsScale ≤ max_c |η_c|` (root form of the wrong-side Plancherel floor).
+- `momentMechanism_certScale_ge_prizeScale` (headline): a REAL moment mechanism (certScale ≥ its accessible rms scale) has `prizeScale n ≤ certScale` — the moment door cannot descend BELOW the prize floor √n, derived from η real (energy-moment domination), with NO SOTA exponent.
+- `momentMechanism_not_subPrize`: contrapositive — no strictly sub-prize moment certificate.
+- `internalFloor_strictly_below_bgkCeiling`: `prizeScale n < bgkScale n L` (L>1) — the HONEST GAP.
+- `momentDoor_internalFloor_bridge`: bundles the SOTA-free floor `√n ≤ certScale` WITH the gap `√n < √(n·L)`.
+
+WHY IT MATTERS: the tetrachotomy's `forces_doorIV` consumes `OvershootsBGK` = `√(n·L) ≤ certScale` (a floor at the BGK ceiling). The internal energy floor proves only `√n ≤ certScale` (the prize floor itself) — STRICTLY WEAKER by the `√L` factor when `L>1`. This bridge states EXACTLY that: it supplies the SOTA-free half of the door-(i) obstruction (the moment door cannot go below √n) and records, as a kernel statement (`internalFloor_strictly_below_bgkCeiling`), that this does NOT discharge `OvershootsBGK`. The residual `√L` factor up to the BGK ceiling — the door-(iv) gap — is what the SOTA citation currently fills inside the tetrachotomy; replacing it with an internal proof remains OPEN.
+
+VERDICT: honest connector/constraint capstone. It proves the moment door cannot certify a sub-prize bound (internally, no δ) and pins the precise gap that keeps the internal floor from replacing the SOTA citation. NO CORE upper bound, NO cancellation / anti-concentration / completion / capacity / asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentFloorTetrachotomyBridge.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>

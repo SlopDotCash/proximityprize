@@ -188,6 +188,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomen
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauchy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEnergyDominated
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentEnergyFloorOvershoot
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentFloorTetrachotomyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -8907,6 +8908,35 @@ theorem doorIV_momentDoor_overshoots_rms_export
     ArkLib.ProximityGap.Frontier.DoorIVMomentEnergyFloorOvershoot.momentDoor_overshoots_rms f s hs
 
 #print axioms doorIV_momentDoor_overshoots_rms_export
+
+/-- Door-IV Lane-3 BRIDGE export: the INTERNAL moment-energy floor wired into the no-fifth-door
+tetrachotomy's `Mechanism`/`prizeScale`/`bgkScale` vocabulary AT THE PRIZE FLOOR (not the BGK ceiling).
+The tetrachotomy previously discharged door (i) only from the third-party SOTA exponent `δ<1/2` (a moment
+mechanism `RespectsProvenScale` certifies `C·n^{1−δ}`, which eventually exceeds `√(n·L)`).  This export
+gives the SOTA-FREE half: for a real period field `η = f` with Plancherel normalization `E_1/card = n`,
+a real moment mechanism (certifying at least its accessible rms scale `√(E_1/card)`) has certified scale
+`≥ prizeScale n = √n` — the moment door cannot descend BELOW the prize floor, derived from `η` being
+REAL (energy-moment domination), with NO SOTA exponent.  The bundle ALSO records the honest gap
+`prizeScale n < bgkScale n L` (`L>1`): the internal floor sits at `√n`, a strict `√L` factor BELOW the
+BGK ceiling `√(n·L)` that `OvershootsBGK` requires — so it does NOT discharge `OvershootsBGK` and does
+NOT replace the SOTA citation; that residual `√L` factor IS the open door-(iv) gap.  Honest
+connector/constraint capstone — NO CORE / cancellation / anti-concentration / completion / capacity
+claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_momentFloorTetrachotomyBridge_export
+    {ι : Type*} (f : ι → ℝ) (s : Finset ι) {n L : ℝ}
+    (m : ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.Mechanism)
+    (hn : 0 < n) (hL : 1 < L)
+    (hPlancherel : (∑ c ∈ s, (f c) ^ (2 * 1)) / (s.card : ℝ) = n)
+    (hreal :
+      ArkLib.ProximityGap.Frontier.DoorIVMomentFloorTetrachotomyBridge.rmsScale f s ≤ m.certScale) :
+    ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n ≤ m.certScale ∧
+    ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
+      < ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.bgkScale n L := by
+  refine ArkLib.ProximityGap.Frontier.DoorIVMomentFloorTetrachotomyBridge.momentDoor_internalFloor_bridge
+    f s m hn hL ?_ hreal
+  simpa [ArkLib.ProximityGap.Frontier.DoorIVMomentEnergyFloorOvershoot.energyMoment] using hPlancherel
+
+#print axioms doorIV_momentFloorTetrachotomyBridge_export
 
 /-- Door-IV Lane-2 FAMILY sharpened Shaw-value FLOOR export: the family companion of
 `doorIV_shawValueSuperDiagonalFloor_export`.  A uniform super-diagonal period floor `c₀·√nᵢ ≤ Mᵢ`
