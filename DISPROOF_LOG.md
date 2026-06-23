@@ -13389,3 +13389,34 @@ Lane: Lane-2 capstone hardening / boundedness wrapper for the Shaw-scale inverse
 CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) in `_ShawGapBddAboveNoGo.lean`, exported as `CampaignProvenIndex.gap_bddAbove_of_prizeFloorRatio_bddAbove_and_shawFloor_export`: if a prize-regime family has some uniform bound on `Mᵢ/√nᵢ` and every Shaw value stays above a fixed `c>0`, then the exact gap factors `√(log(qᵢ/nᵢ))` are uniformly bounded.
 
 WHY IT MATTERS: this is the existential boundedness form of the pointwise gap no-go. Any `O(1)` prize-floor theorem in a family with nonvanishing Shaw value has already absorbed the open door-(iv) `√log` gap. Pure algebra; no CORE/cancellation/completion/moment/anti-concentration/capacity claim. CORE remains OPEN.
+
+## [doorIV-shawvalue-sharpened-floor-family] the family companion of the sharpened Shaw-value floor c₀/√Lᵢ (2026-06-23, sol)
+Lane: Lane-2 capstone hardening — lift the single-instance sharpened floor to the admissible prize family.
+
+CONTEXT: `_DoorIVShawValueSharpFloor` proved the POINTWISE sharpened floor — a super-diagonal period
+floor `c₀·√n ≤ M` (with the proven Wick-permutation constant `c₀ = (5/4)^{1/4} ≈ 1.0574 > 1`) pushes to
+`c₀/√L ≤ Sh(M)`, narrowing the trivial Shaw-value window from `√n` to `√n/c₀`. But the Lane-2 reduction
+chain is used over an `ι`-indexed family, and only the BARE family bracket
+(`ShawValueCapstone.shawValueFamily_bracket`, lower endpoint `1/√Lᵢ`) was wired in. No statement lifted
+the sharpened constant `c₀` to the family level.
+
+CONSTRAINT/IDENTITY LEMMAS (axiom-clean, real proofs, NO sorry) in `_DoorIVShawValueSharpFloorFamily.lean`,
+exported as `CampaignProvenIndex.{doorIV_shawValueFamilySuperDiagonalFloor_export,
+doorIV_shawValueFamilyRefinedWindowWidth_export}`:
+- `shawValueFamily_ge_superDiagonal_floor`: a uniform super-diagonal family floor `c₀·√nᵢ ≤ Mᵢ` pushes
+  to `c₀/√Lᵢ ≤ Sh(Mᵢ)` pointwise across the family.
+- `shawValueFamily_sharpened_strictly_above_bare`: each member's sharpened floor strictly exceeds the
+  bare `1/√Lᵢ`.
+- `shawValueFamily_refined_window_width_eq` / `..._lt_sqrt`: the refined family window is `√nᵢ/c₀` at
+  every instance, strictly below the bare `√nᵢ` (since `c₀ > 1`).
+- `shawValueFamily_sharpened_floor_package`: the three facts bundled into one citable family statement.
+
+WHY IT MATTERS: makes the sharpened super-diagonal floor citable at the SAME granularity as the bare
+family bracket. The prize's uniform `O(1)` target must clear not the bare `1/√Lᵢ` but the strictly
+larger `c₀/√Lᵢ` at every family member; the trivial window the prize must collapse is uniformly
+`√nᵢ/c₀ < √nᵢ`, not `√nᵢ`.
+
+VERDICT: PURE pointwise lift of the established single-instance sharpened floor. NO new mathematical
+content beyond the family quantification: no CORE / cancellation / completion / moment /
+anti-concentration / capacity / asymptotic claim, and the upper bracket endpoint is unchanged (still the
+trivial `√(nᵢ/Lᵢ)`). CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.

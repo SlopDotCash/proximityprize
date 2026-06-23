@@ -188,8 +188,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomen
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauchy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentHierarchyEnergyDominated
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 
-set_option linter.style.longFile 8800
+set_option linter.style.longFile 9000
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -8777,5 +8778,31 @@ theorem doorIV_momentHierarchy_energy_dominated_export
     s η
 
 #print axioms doorIV_momentHierarchy_energy_dominated_export
+
+/-- Door-IV Lane-2 FAMILY sharpened Shaw-value FLOOR export: the family companion of
+`doorIV_shawValueSuperDiagonalFloor_export`.  A uniform super-diagonal period floor `c₀·√nᵢ ≤ Mᵢ`
+(`c₀ = (5/4)^{1/4}`) over an admissible prize family lifts every normalized Shaw value strictly above
+the bare `1/√Lᵢ` bracket floor to `c₀/√Lᵢ ≤ Sh(Mᵢ)`, pointwise across the family.  Normalization rung;
+CORE not discharged. -/
+theorem doorIV_shawValueFamilySuperDiagonalFloor_export {ι : Type*} {M n L : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hL : ∀ i, 0 < L i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i) :
+    ∀ i, ShawValueCapstone.superDiagonalFloorConst / Real.sqrt (L i)
+      ≤ ShawValueCapstone.shawValue (M i) (n i) (L i) :=
+  ShawValueCapstone.shawValueFamily_ge_superDiagonal_floor hn hL hfloor
+
+#print axioms doorIV_shawValueFamilySuperDiagonalFloor_export
+
+/-- Door-IV Lane-2 FAMILY refined window WIDTH export: under a uniform super-diagonal family floor
+the trivial Shaw-value window narrows from `√nᵢ` to `√nᵢ/c₀` at every instance, strictly below
+`√nᵢ` since `c₀ > 1`.  Family companion of `doorIV_shawValueRefinedWindowWidth_export`. -/
+theorem doorIV_shawValueFamilyRefinedWindowWidth_export {ι : Type*} {n L : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hL : ∀ i, 0 < L i) :
+    ∀ i, Real.sqrt (n i / L i) /
+        (ShawValueCapstone.superDiagonalFloorConst / Real.sqrt (L i))
+      = Real.sqrt (n i) / ShawValueCapstone.superDiagonalFloorConst :=
+  ShawValueCapstone.shawValueFamily_refined_window_width_eq hn hL
+
+#print axioms doorIV_shawValueFamilyRefinedWindowWidth_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
