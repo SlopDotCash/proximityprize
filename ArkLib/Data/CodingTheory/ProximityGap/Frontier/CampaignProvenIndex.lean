@@ -8583,6 +8583,32 @@ theorem prizeFloorRatio_family_le_of_uniformShawBound_export {ι : Type*} {q n M
 
 #print axioms prizeFloorRatio_family_le_of_uniformShawBound_export
 
+/-- Synthesis-gap INVERSE CONSUMER export: under positive logarithmic thinness, the Shaw value is the
+genuine prize-floor ratio divided by the exact gap factor.  This is a normalization identity only, not
+an upper or lower bound. -/
+theorem shawValue_eq_prizeFloorRatio_div_gap_export (q n M : ℝ) (hn : 0 < n) (hnq : n < q)
+    (hL : 0 < Real.log (q / n)) :
+    _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue q n M
+      = (M / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n) /
+        Real.sqrt (Real.log (q / n)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_eq_prizeFloorRatio_div_gap
+    q n M hn hnq hL
+
+#print axioms shawValue_eq_prizeFloorRatio_div_gap_export
+
+/-- Synthesis-gap FAMILY INVERSE CONSUMER export: every member of a positive-thinness family satisfies
+`Shᵢ = (Mᵢ/√nᵢ)/√(log(qᵢ/nᵢ))` pointwise.  This records the exact normalization conversion and makes
+no CORE/cancellation claim. -/
+theorem shawValue_family_eq_prizeFloorRatio_div_gap_export {ι : Type*} {q n M : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i)
+    (hL : ∀ i, 0 < Real.log (q i / n i)) :
+    ∀ i, _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i)
+      = (M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i)) /
+        Real.sqrt (Real.log (q i / n i)) :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_eq_prizeFloorRatio_div_gap
+    hn hnq hL
+
+#print axioms shawValue_family_eq_prizeFloorRatio_div_gap_export
 
 /-- Synthesis-gap INVERSE NO-GO export: if a prize-regime instance has a positive Shaw-value floor
 `c ≤ shawValue q n M` and a genuine prize-floor ratio bound `M/√n ≤ B`, then the gap factor itself is

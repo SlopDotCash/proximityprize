@@ -13311,6 +13311,7 @@ the reduction cannot hide that obligation in asymptotic notation.
 VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
 anti-concentration / capacity claim, and NO claim the hypotheses hold. CORE remains OPEN.
 
+<<<<<<< Updated upstream
 ## [doorIV-odd-signed-moment-cauchy] the odd signed moment routes back to the energy face (2026-06-23, sol)
 Lane: Lane-1 phase-vacuity EXTENSION (closes the odd endpoint of the mixed-conjugate moment ladder).
 
@@ -13338,3 +13339,19 @@ parities; every functional in the mixed-conjugate lattice routes back to the dea
 VERDICT: STRUCTURAL constraint lemma (kernel-checked Cauchy-Schwarz). NO CORE / cancellation /
 completion / moment-saving / anti-concentration / capacity / asymptotic claim. CORE
 `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
+=======
+## [doorIV-synthesis-gap-inverse-consumer-family] Shaw value is prize-floor ratio divided by √log pointwise (2026-06-23, g55)
+Lane: Lane-2 capstone hardening, family inverse consumer for the exact Shaw/prize-floor normalization.
+
+CONSTRAINT/IDENTITY LEMMAS (axiom-clean, real proofs, NO sorry) in `_ShawScaleDoorScaleBridge.lean`,
+exported as `CampaignProvenIndex.{shawValue_eq_prizeFloorRatio_div_gap_export,
+shawValue_family_eq_prizeFloorRatio_div_gap_export}`:
+under positive logarithmic thinness, `Sh(q,n,M) = (M/√n)/√(log(q/n))`, and pointwise over any family
+`Shᵢ = (Mᵢ/√nᵢ)/√(log(qᵢ/nᵢ))`.
+
+WHY IT MATTERS: this is the exact inverse normalization of the forward consumer `M/√n = Sh·√log`.
+It makes the reduction chain citable in both directions without hiding the open door-(iv) gap in prose.
+
+VERDICT: PURE algebra over the scale bridge. NO CORE / cancellation / completion / moment /
+anti-concentration / capacity claim. CORE remains OPEN.
+>>>>>>> Stashed changes

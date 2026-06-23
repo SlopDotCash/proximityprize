@@ -155,6 +155,18 @@ theorem shawValue_eq_prizeFloorRatio_div_gap (q n M : ℝ) (hn : 0 < n) (hnq : n
   rw [hratio]
   field_simp [ne_of_gt hgap_pos]
 
+/-- **Family inverse consumer: Shaw value equals prize-floor ratio divided by the pointwise gap.**
+This is the family form of `shawValue_eq_prizeFloorRatio_div_gap`: under positive logarithmic
+thinness at every index, each Shaw value is exactly the genuine `Mᵢ/√nᵢ` ratio divided by its own
+`√(log(qᵢ/nᵢ))` gap factor.  It is a normalization identity only, not a bound. -/
+theorem shawValue_family_eq_prizeFloorRatio_div_gap {ι : Type*} {q n M : ι → ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i)
+    (hL : ∀ i, 0 < Real.log (q i / n i)) :
+    ∀ i, shawValue (q i) (n i) (M i)
+      = (M i / prizeScale (n i)) / Real.sqrt (Real.log (q i / n i)) := by
+  intro i
+  exact shawValue_eq_prizeFloorRatio_div_gap (q i) (n i) (M i) (hn i) (hnq i) (hL i)
+
 /-- **A prize-floor bound plus a positive Shaw floor forces the gap itself to be bounded.**  If
 `c ≤ shawValue q n M` with `c > 0`, and the genuine prize-floor ratio is bounded by `B`, then the
 synthesis gap factor must obey `√(log(q/n)) ≤ B/c`.  This is the inverse no-go form of the bridge:
@@ -204,3 +216,4 @@ end ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_le_prizeFloorBound_div_shawFloor
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.gap_family_le_prizeFloorBound_div_shawFloor
 #print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_eq_prizeFloorRatio_div_gap
+#print axioms ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.shawValue_family_eq_prizeFloorRatio_div_gap
