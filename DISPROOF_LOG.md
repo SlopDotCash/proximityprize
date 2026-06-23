@@ -13635,3 +13635,13 @@ asymptotically (finite n≤64, p<2^32 caps the thin window — n≤64 cannot dec
 and is least-diagnostic exactly in this √log regime. NO CORE upper bound, cancellation, completion,
 moment-saving, anti-concentration, capacity, or asymptotic claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))`
 remains OPEN.
+
+## [doorIV-family-prize-constant-one-nogo] no bare Plancherel-unit family prize certificate (2026-06-23, g55)
+Lane: Lane-3 constraint consumer — concrete `K = 1` specialization of the family prize-constant no-go.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_DoorIVPrizeConstantSuperDiagonalFloorFamily.lean`, exported as `CampaignProvenIndex.doorIV_noFamilyPrizeConstantOne_export`:
+over a nonempty family with positive `nᵢ` and a uniform super-diagonal floor `c₀·√nᵢ ≤ Mᵢ`, the bare Plancherel-unit certificate `Mᵢ ≤ √nᵢ` cannot hold uniformly.
+
+WHY IT MATTERS: the previous `K≤1` no-go rules out all constants at or below the Plancherel baseline. This pins the most cited concrete endpoint, `K=1`, as its own export: any uniform prize constant must be strictly above the bare Plancherel unit.
+
+VERDICT: PURE lower-bound/no-go bookkeeping for prize constants. It proves no upper bound and makes no CORE / cancellation / anti-concentration / capacity claim. CORE remains OPEN.

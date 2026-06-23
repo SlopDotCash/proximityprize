@@ -110,4 +110,14 @@ theorem not_familyPrizeFloorConstant_le_one [Nonempty ι]
     superDiagonalFloorConst_le_familyPrizeFloorConstant hn hfloor hbound
   exact not_lt_of_ge (le_trans hle hK) ShawValueCapstone.superDiagonalFloorConst_gt_one
 
+/-- **No uniform Plancherel-unit prize certificate.**  The concrete `K = 1` specialization of the
+unit-baseline no-go: under a uniform super-diagonal floor, the family cannot be bounded by the bare
+floor-scale `√nᵢ` at every instance.  Any valid uniform prize constant must be strictly above `1`. -/
+theorem not_familyPrizeFloorConstant_one [Nonempty ι]
+    (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i) :
+    ¬ (∀ i, M i ≤ NoFifthDoorTetrachotomy.prizeScale (n i)) := by
+  simpa using (not_familyPrizeFloorConstant_le_one (M := M) (n := n) (K := (1 : ℝ))
+    hn hfloor le_rfl)
+
 end ArkLib.ProximityGap.Frontier.DoorIVPrizeShawTetrachotomySynthesis

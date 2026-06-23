@@ -194,7 +194,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSh
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
-set_option linter.style.longFile 9100
+set_option linter.style.longFile 9200
 
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
@@ -8945,6 +8945,18 @@ theorem doorIV_noFamilyPrizeConstantAtMostOne_export {ι : Type*} [Nonempty ι]
     hn hfloor hK
 
 #print axioms doorIV_noFamilyPrizeConstantAtMostOne_export
+
+/-- Door-IV Lane-3 concrete unit no-go export: over a nonempty family with positive `nᵢ` and a uniform
+super-diagonal floor, the bare Plancherel-unit floor-scale certificate `Mᵢ ≤ √nᵢ` cannot hold uniformly.
+This is the `K = 1` specialization of the family constant lower bound; it is only a lower-bound
+constraint on prize constants, not the open upper-bound direction. -/
+theorem doorIV_noFamilyPrizeConstantOne_export {ι : Type*} [Nonempty ι]
+    {M n : ι → ℝ} (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i) :
+    ¬ (∀ i, M i ≤ NoFifthDoorTetrachotomy.prizeScale (n i)) :=
+  DoorIVPrizeShawTetrachotomySynthesis.not_familyPrizeFloorConstant_one hn hfloor
+
+#print axioms doorIV_noFamilyPrizeConstantOne_export
 
 /-- Door-IV Lane-2 FAMILY sharpened-BGK width export: the exact sharpened corridor width is `√Lᵢ/c₀`,
 strictly below the bare conditional BGK width `√Lᵢ` and, in the prize regime `Lᵢ<nᵢ`, below the trivial
