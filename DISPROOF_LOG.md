@@ -13521,3 +13521,13 @@ CONSTRAINT/WIDTH LEMMAS (axiom-clean, real proofs, NO sorry) in `_ShawValueSharp
 WHY IT MATTERS: the prior capstone trapped Shaw values in `[c₀/√Lᵢ, 1]`; this pins the actual remaining corridor width, showing the super-diagonal floor shrinks the conditional BGK window by the explicit constant factor `c₀=(5/4)^{1/4}`. The BGK ceiling is still an explicit hypothesis; no ceiling/cancellation/anti-concentration theorem is asserted.
 
 VERDICT: Lane-2 normalization bookkeeping only. NO CORE / cancellation / completion / moment / anti-concentration / capacity claim; CORE remains OPEN.
+
+## [doorIV-family-prize-constant-superdiagonal-package] c₀ ≤ K and 1 < K packaged (2026-06-23, g55)
+Lane: Lane-3 constraint lemma export, package the family prize-constant lower bound with strictness.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) in `CampaignProvenIndex.doorIV_familyPrizeConstantSuperDiagonalPackage_export`:
+over a nonempty family with a uniform super-diagonal floor `c₀·√nᵢ ≤ Mᵢ` and a uniform floor-scale bound `Mᵢ ≤ K·√nᵢ`, the constant satisfies `c₀ ≤ K`, `1 < c₀`, and hence `1 < K`.
+
+WHY IT MATTERS: the preceding family lower-bound lemmas gave the lower bound and no-go separately; this packages the usable certificate that any such prize-floor constant is strictly above the bare Plancherel constant. This is only the easy lower-bound direction on constants; the open upper bound is untouched.
+
+VERDICT: Lane-3 finite real-algebra bookkeeping only. NO CORE / cancellation / completion / moment / anti-concentration / capacity claim; CORE remains OPEN.

@@ -8916,6 +8916,22 @@ theorem doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export {ι : Type*} [None
 
 #print axioms doorIV_noFamilyPrizeConstantBelowSuperDiagonal_export
 
+/-- Door-IV Lane-3 FAMILY PRIZE-CONSTANT packaged lower-bound export: any uniform floor-scale prize
+constant over a nonempty family with a uniform super-diagonal floor satisfies `c₀ ≤ K`, with
+`1 < c₀`, hence `1 < K`.  This packages the lower-bound and strict-above-one facts; it is only the easy
+lower bound on the achievable constant, not the open upper-bound direction. -/
+theorem doorIV_familyPrizeConstantSuperDiagonalPackage_export {ι : Type*} [Nonempty ι]
+    {M n : ι → ℝ} {K : ℝ} (hn : ∀ i, 0 < n i)
+    (hfloor : ∀ i, ShawValueCapstone.superDiagonalFloorConst * Real.sqrt (n i) ≤ M i)
+    (hbound : ∀ i, M i ≤ K * NoFifthDoorTetrachotomy.prizeScale (n i)) :
+    ShawValueCapstone.superDiagonalFloorConst ≤ K
+      ∧ (1 : ℝ) < ShawValueCapstone.superDiagonalFloorConst
+      ∧ (1 : ℝ) < K :=
+  DoorIVPrizeShawTetrachotomySynthesis.familyPrizeFloorConstant_ge_superDiagonal_gt_one
+    hn hfloor hbound
+
+#print axioms doorIV_familyPrizeConstantSuperDiagonalPackage_export
+
 /-- Door-IV Lane-2 FAMILY sharpened-BGK width export: the exact sharpened corridor width is `√Lᵢ/c₀`,
 strictly below the bare conditional BGK width `√Lᵢ` and, in the prize regime `Lᵢ<nᵢ`, below the trivial
 width `√nᵢ`.  Pure corridor bookkeeping; CORE remains open. -/
