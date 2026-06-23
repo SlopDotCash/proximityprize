@@ -13791,3 +13791,21 @@ WHY IT MATTERS: this is the existential boundedness version of the prior drift t
 VERDICT: Lane-2 citable no-go packaging only. NO CORE upper bound, cancellation, completion, moment, anti-concentration, capacity, or asymptotic claim; CORE remains OPEN.
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-subgroup-offDC-peak-floor] the EXACT off-DC peak floor for the thin-subgroup indicator (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 capstone hardening — lands the lower endpoint of the Shaw bracket on the CORRECT prize object (the off-DC peak), built directly on the just-landed exact off-DC energy equality.
+
+CONTEXT: `_DoorIVSubgroupParsevalEnergyExact` (push 5beab4b2c) lands the EXACT off-DC spectral energy equality `Σ_{k≠0} ‖𝓕 1_{μ_d} k‖² = N·d − d²` (the #444 §2 master identity `p·n − n²`) and the off-DC mean floor `(N·d − d²)/(N−1) ≤ d`. What was still MISSING on the concrete indicator object: the off-DC PEAK floor. The prize object `M(μ_n)` is the *off-DC* maximum `max_{k≠0} ‖𝓕 1_{μ_d} k‖`, NOT the all-frequency maximum (which is the DC value `d ≫ √d` and is CORE-irrelevant). The existing `L∞`-`L²` floor (`_ZModDFTLinftyFloor.exists_dft_peak_sq_ge_l2`) maximizes over ALL frequencies and is dominated by the trivial DC term — it gives NO floor on the off-DC peak.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupOffDCPeakFloor.lean`, for the order-d subgroup indicator 1_{μ_d} (d ∣ N, 1 < N):
+- `offDC_nonempty` / `offDC_card_eq`: the off-DC set `univ.erase 0` is nonempty with real card `N − 1`.
+- `exists_offDC_peak_sq_ge_mean` (HEADLINE): ∃ off-DC argmax `k₀ ≠ 0` with `(N·d − d²)/(N − 1) ≤ ‖𝓕 1_{μ_d} k₀‖²` — the off-DC peak squared is at least the EXACT off-DC mean energy, one averaging step off the companion's energy equality.
+- `exists_offDC_peak_ge_sqrt_mean` (HEADLINE, norm form): `√((N·d − d²)/(N − 1)) ≤ ‖𝓕 1_{μ_d} k₀‖`.
+
+WHY IT MATTERS: this lands the honest Plancherel floor on the *correct off-DC object* (no DC contamination), derived from the EXACT off-DC energy equality (not a hypothesis). In the prize regime `N = q ≈ d^β`, `(N·d − d²)/(N−1) → d`, so the floor is `≈ √d = √n` — the lower endpoint of the Shaw bracket, now on the off-DC peak rather than the DC-dominated all-frequency peak. The previous `L∞`-`L²` floor floored only the all-frequency peak (= DC = d, CORE-useless); this floors the actual prize object.
+
+VERDICT: exact off-DC peak FLOOR (lower bound), the EASY direction / lower endpoint of the Shaw bracket on the correct object, axiom-clean. It proves NO CORE upper bound and makes NO cancellation, completion, anti-concentration, moment-saving, or capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` — the off-DC peak UPPER bound — remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakFloor.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
