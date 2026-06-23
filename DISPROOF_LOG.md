@@ -13862,3 +13862,21 @@ VERDICT: CONSISTENCY/containment statement, axiom-clean. It places the conjectur
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVOffDCCeilingDominatesBGKTarget.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-offDC-mean-floor-sharp] the off-DC mean-energy floor is two-sided sharp → converges to subgroup order (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 floor-substrate sharpening — adds the MATCHING lower bound to the companion's one-sided `mean ≤ d`, pinning the Plancherel floor in a tight band that → d (so the floor is √n to leading order).
+
+CONTEXT: `_DoorIVSubgroupParsevalEnergyExact.subgroupIndicator_offDC_mean_le_order` proves only the ONE-sided `(N·d − d²)/(N − 1) ≤ d`. MISSING: the matching lower bound, which makes the floor two-sided sharp.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupOffDCMeanFloorSharp.lean`:
+- subgroupIndicator_offDC_mean_eq: closed form `(N·d − d²)/(N − 1) = d·(N − d)/(N − 1)`.
+- subgroupIndicator_offDC_mean_ge: `d·(1 − (d − 1)/(N − 1)) ≤ (N·d − d²)/(N − 1)` (matching lower bound; in fact equality at this endpoint via (N−d)/(N−1) = 1 − (d−1)/(N−1)).
+- subgroupIndicator_offDC_mean_two_sided (HEADLINE): the tight band `d·(1 − (d−1)/(N−1)) ≤ mean ≤ d`.
+
+WHY IT MATTERS: the relative defect `(d − 1)/(N − 1) → 0` in the prize regime `N = q ≈ d^β` (β≈4-5; defect ≈ d^{1−β}), so the off-DC mean floor is `d·(1 − o(1))` and the Plancherel floor `√(mean) = √n·(1 − o(1))` is asymptotically EXACTLY the prize scale √n. This certifies the lower endpoint of the Shaw bracket is TIGHT: the prize bound (if it holds) sits just above √n, with the door-(iv) gap being the multiplicative √(log(p/n)) factor ABOVE the floor and NOTHING inside the floor itself.
+
+VERDICT: SHARPNESS of the Plancherel floor (lower endpoint of the Shaw bracket), axiom-clean. It pins the floor in a relative band of width (d−1)/(N−1) → 0. It is NOT the open CORE upper bound (the off-DC PEAK, not the mean). No cancellation, completion, anti-concentration, moment, or capacity claim. CORE remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCMeanFloorSharp.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
