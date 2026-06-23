@@ -89,4 +89,29 @@ theorem bare_floor_lt_superDiagonal_floor (hL : 0 < L) :
   have hsL : 0 < Real.sqrt L := Real.sqrt_pos.2 hL
   exact div_lt_div_of_pos_right superDiagonalFloorConst_gt_one hsL
 
+/-- **Refined window width under the sharpened floor.**  The bare two-sided window has width
+`bracket_width_eq_sqrt = √n` (upper `√(n/L)` over lower `1/√L`).  Replacing the bare lower end
+`1/√L` by the proven sharpened lower end `c₀/√L` narrows the window the prize must collapse to
+`(√(n/L)) / (c₀/√L) = √n / c₀`, strictly below the bare `√n` (since `c₀ > 1`).  So the
+super-diagonal floor shrinks the trivial Shaw-value window by the constant factor `c₀`. -/
+theorem refined_window_width_eq (hn : 0 < n) (hL : 0 < L) :
+    Real.sqrt (n / L) / (superDiagonalFloorConst / Real.sqrt L)
+      = Real.sqrt n / superDiagonalFloorConst := by
+  have hsn : (0:ℝ) ≤ n := le_of_lt hn
+  have hsLp : Real.sqrt L ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hL)
+  have hc0 : superDiagonalFloorConst ≠ 0 := by
+    have := superDiagonalFloorConst_gt_one; positivity
+  rw [Real.sqrt_div hsn]
+  field_simp
+
+/-- The refined window width `√n/c₀` is strictly below the bare window width `√n` whenever the
+subgroup is nontrivial (`0 < n`): the sharpened floor genuinely narrows the trivial window. -/
+theorem refined_window_width_lt_sqrt (hn : 0 < n) :
+    Real.sqrt n / superDiagonalFloorConst < Real.sqrt n := by
+  have hsnpos : 0 < Real.sqrt n := Real.sqrt_pos.2 hn
+  have hc0 : 1 < superDiagonalFloorConst := superDiagonalFloorConst_gt_one
+  calc Real.sqrt n / superDiagonalFloorConst < Real.sqrt n / 1 :=
+        div_lt_div_of_pos_left hsnpos (by norm_num) hc0
+    _ = Real.sqrt n := by rw [div_one]
+
 end ArkLib.ProximityGap.Frontier.ShawValueCapstone
