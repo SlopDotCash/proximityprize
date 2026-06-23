@@ -8986,6 +8986,21 @@ theorem not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_expor
 
 #print axioms not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound_export
 
+/-- Synthesis-gap PRIZE-RATIO BOUNDEDNESS NO-GO export: a positive uniform Shaw floor plus unbounded
+exact gap factors forbids any uniform upper bound on the genuine ratios `Mᵢ/√nᵢ`.  This is the
+existential boundedness consumer of the drift theorem; pure scale algebra, no CORE/cancellation claim. -/
+theorem not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export {ι : Type*}
+    {q n M : ι → ℝ} {c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ _root_.ProximityGap.Frontier.ShawValueCapstone.shawValue (q i) (n i) (M i))
+    (hgapDrift : ∀ B : ℝ, ∃ i : ι, B / c < Real.sqrt (Real.log (q i / n i))) :
+    ¬ ∃ B : ℝ, ∀ i : ι,
+      M i / ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale (n i) ≤ B :=
+  ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor
+    hn hnq hc hfloor hgapDrift
+
+#print axioms not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export
+
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
 `(Σ_b (η_b)^D)² ≤ card(s) · Σ_b (η_b)^{2D}`.  So the last named "different object" the moment-collapse

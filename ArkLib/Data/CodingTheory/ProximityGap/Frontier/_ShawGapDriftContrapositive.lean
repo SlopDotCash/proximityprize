@@ -114,8 +114,26 @@ theorem not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound {ι :
       hn hnq hB hPrize hgapDrift c hc with ⟨i, hi⟩
   exact (not_lt_of_ge (hfloor i)) hi
 
+/-- **Positive Shaw floor plus unbounded synthesis gap forbids bounded prize ratios.**
+This is the boundedness no-go consumer of
+`prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor`: if every Shaw value is bounded below by
+one fixed `c>0` and the exact gap factors drift past every rescaled target, then the genuine ratios
+`Mᵢ/√nᵢ` cannot be uniformly bounded.  Pure scale algebra; no CORE cancellation theorem. -/
+theorem not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor {ι : Type*}
+    {q n M : ι → ℝ} {c : ℝ}
+    (hn : ∀ i, 0 < n i) (hnq : ∀ i, n i < q i) (hc : 0 < c)
+    (hfloor : ∀ i, c ≤ shawValue (q i) (n i) (M i))
+    (hgapDrift : ∀ B : ℝ, ∃ i : ι, B / c < Real.sqrt (Real.log (q i / n i))) :
+    ¬ ∃ B : ℝ, ∀ i : ι, M i / prizeScale (n i) ≤ B := by
+  intro hBdd
+  rcases hBdd with ⟨B, hB⟩
+  rcases prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor
+      hn hnq hc hfloor hgapDrift B with ⟨i, hi⟩
+  exact (not_lt_of_ge (hB i)) hi
+
 end ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive
 
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.prizeFloorRatio_unbounded_of_gap_unbounded_and_shawFloor
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.shawValue_arbitrarily_small_of_gap_unbounded_and_prizeFloorBound
 #print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.not_exists_positive_shawFloor_of_gap_unbounded_and_prizeFloorBound
+#print axioms ArkLib.ProximityGap.Frontier.ShawGapDriftContrapositive.not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor

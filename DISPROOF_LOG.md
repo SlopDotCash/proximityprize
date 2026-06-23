@@ -13778,3 +13778,16 @@ VERDICT: exact Plancherel energy equality + DC-subtracted §2 identity + the bri
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupParsevalEnergyExact.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+
+## [doorIV-shawgap-prize-ratio-bdd-no-go] positive Shaw floor plus unbounded √log gap forbids bounded prize ratios (2026-06-23, g55)
+Lane: door-(iv) Lane-2 reduction-chain hardening, direct boundedness no-go consumer.
+
+CONSTRAINT LEMMA (axiom-clean, real proof, NO sorry) added to `_ShawGapDriftContrapositive.lean`, exported as `CampaignProvenIndex.not_prizeFloorRatio_bddAbove_of_gap_unbounded_and_shawFloor_export`:
+- if all family Shaw values are bounded below by one `c>0` and the exact synthesis gap factors `√(log(qᵢ/nᵢ))` drift beyond every `B/c`, then there is no uniform upper bound `B` for the genuine prize-floor ratios `Mᵢ/prizeScale(nᵢ)`.
+
+WHY IT MATTERS: this is the existential boundedness version of the prior drift theorem. It locks the converse-facing bookkeeping: a nonvanishing door-(iv) Shaw floor over unbounded synthesis gaps necessarily makes the prize-scale ratio unbounded. Therefore any claimed bounded prize-ratio theorem must either lose the uniform Shaw floor or control the door-(iv) gap.
+
+VERDICT: Lane-2 citable no-go packaging only. NO CORE upper bound, cancellation, completion, moment, anti-concentration, capacity, or asymptotic claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
