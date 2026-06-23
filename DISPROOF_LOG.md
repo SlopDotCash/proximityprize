@@ -13195,3 +13195,12 @@ measured factors satisfy `0≤c_k≤√2` for all `k<a`, then `∏_{k<a} c_k≤(
 VERDICT: this is only finite product/telescope algebra for the door-(iv) per-level object.  It proves no
 arithmetic `√2` gate, no monomial-sum cancellation, no completion, no moment saving, no anti-concentration,
 and no CORE upper bound.  CORE remains OPEN.
+
+### [doorIV-per-level-factor-two-bad-rung-compensation] (2026-06-23, g55)
+Formalized the two-rung clustered-bad-factor slack law in `_DoorIVPerLevelFactorSubTwo.lean`:
+`remainderProduct_lt_sqrtTwo_pow_of_two_bad_rungs`.  If two isolated per-level factors are both
+strictly larger than `√2`, and the total height-`b+2` product still satisfies the `√2` product budget,
+then the remaining product must be strictly below `(√2)^b`.  This extends the one-bad-rung
+compensation lemma from a single obstruction to a clustered obstruction.  Scope: finite real-algebra
+bookkeeping only; no empirical product bound, no arithmetic `√2` gate, no moment/completion route, and
+no CORE upper-bound claim.

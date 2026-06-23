@@ -8470,6 +8470,19 @@ theorem doorIV_perLevelFactorBadRungNeedsCompensation_export {a : ℕ} {cBad R :
 
 #print axioms doorIV_perLevelFactorBadRungNeedsCompensation_export
 
+/-- Door-IV Lane-3 PER-LEVEL FACTOR two-bad-rung compensation export: if two finite rungs are
+strictly super-`√2` yet the total height-`b+2` product still meets the `√2` product budget, then the
+remaining product must be strictly below `(√2)^b`.  This is pure slack accounting for clustered bad
+rungs; it makes no claim that the arithmetic gate or CORE bound holds. -/
+theorem doorIV_perLevelFactorTwoBadRungsNeedCompensation_export {b : ℕ} {cBad₁ cBad₂ R : ℝ}
+    (hR : 0 ≤ R) (hbad₁ : Real.sqrt 2 < cBad₁) (hbad₂ : Real.sqrt 2 < cBad₂)
+    (htotal : cBad₁ * cBad₂ * R ≤ (Real.sqrt 2) ^ (b + 2)) :
+    R < (Real.sqrt 2) ^ b :=
+  ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo.remainderProduct_lt_sqrtTwo_pow_of_two_bad_rungs
+    hR hbad₁ hbad₂ htotal
+
+#print axioms doorIV_perLevelFactorTwoBadRungsNeedCompensation_export
+
 /-- Door-IV Lane-3 PER-LEVEL FACTOR prize-budget export: the corrected `√2` per-level gate is the exact
 factor target singled out by the recursion probe.  Supplying `LevelRatioBoundNZ … √2`, the dyadic tower
 identity `(√2)^μ ≤ √n`, and a base `C√L` estimate yields the citable prize-shaped budget `C√(nL)`.
