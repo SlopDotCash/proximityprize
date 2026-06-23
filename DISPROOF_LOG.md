@@ -12971,3 +12971,40 @@ VERDICT: a descent whose coherence saving is confined to a sub-((log2)/2)·a tai
 prize scale. The measured worst-b descent has its saving in an O(1) tail — far below the linear-in-a
 sustained deficit the route would need. No CORE upper bound, cancellation, completion, moment-saving,
 anti-concentration, or capacity claim. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.
+
+## [doorIV-dilation-scattered-deficit-sum] worst-b descent deficit is SCATTERED (not a leading block) yet its SUM stays sub-(log2/2)·a through a=8 — route walled structure-free (2026-06-23, sol)
+Lane: door-(iv) Lane-3 dilation-descent route, structure-free converse via the raw deficit sum.
+
+PROBE (reproducible, proper thin μ_n ⊊ F_p*, p≈n^3.2 & n^4.0, FULL F_p* coset-deduped worst-b argmax,
+NEVER n=q-1): /tmp/aT.c + /tmp/aT2.c (EXACT cos/sin double, worst-b brute over coset reps). Measured at
+the adversarial worst b* the per-level coherence deficit δ_k = 1−ρ_k along the 2-dilation descent, and
+both the leading-zero-block depth T and the RAW total S = Σ_k δ_k:
+
+  a=5 n=32   S=0.0000  threshold (log2/2)·a=1.7329   deficits: all zero (T=4, a−T=1)
+  a=6 n=64   S=0.8836  threshold            =2.0794   deficits at levels 3,5 (T=3, a−T=3)
+  a=7 n=128  S=1.6232  threshold            =2.4260   deficits at levels 3,4,5 (T=3, a−T=4)
+  a=8 n=256  S=1.0307  threshold            =2.7726   deficits at levels 4,5,7 (T=4, a−T=4)
+
+KEY CORRECTION to the prior [doorIV-dilation-leading-zero-block] read (which stopped at a=6, single
+prime, and framed the wall as "a−T = O(1)" leading block): at a≥6 the nonzero deficits are SCATTERED
+through the descent (a=8: levels 4,5,7 with zeros interspersed — NOT a contiguous leading block), so
+the leading-zero-block hypothesis (δ_k=0 on a TOP run of length T) is VIOLATED, and a−T drifts up to
+≈4. The invariant that actually survives is NOT the block depth but the raw deficit SUM S, which stays
+strictly below the linear-in-a budget threshold (log2/2)·a at every measured a=5..8, with slack. The
+realized prize ratio M/√n stays FLAT (≈4.0–4.9 across a=5..8, β=3.2 & 4.0), NOT growing like
+√log(p/n) — consistent with the route walled.
+
+CONSTRAINT LEMMA (axiom-clean {propext,Classical.choice,Quot.sound}, real proof, NO sorry):
+`_DoorIVDeficitSumScatteredFloor.deficit_budget_ge_sqrt_scale_of_measured_sum`, exported as
+`doorIV_deficitSumScatteredFloor_export` in CampaignProvenIndex. STRUCTURE-FREE strict measured form:
+if S < (log2/2)·a (a≥1) and M0≥0, then (√2)^a·M0 ≤ 2^a·exp(−S)·M0 — i.e. the exp-relaxed dilation
+budget stays AT/ABOVE the √(2^a)·M0 = √n·M0 Plancherel/prize scale. NO assumption on how the deficit
+is distributed (no leading block, contiguity, or per-level cap), unlike the leading-zero-block floor —
+only the total S matters. Strict-form corollary of deficit_budget_ge_sqrt_scale_of_sublinear with
+ε = S/a, eliminating the auxiliary ε witness. This is the form the MEASURED descent satisfies (S
+scattered but sub-budget at a=5..8).
+VERDICT: the 2-dilation descent's realized coherence saving — wherever it sits across levels — sums to
+sub-(log2/2)·a through a=8, so the exp-relaxed budget cannot reach the √n prize scale. The route would
+need a SUSTAINED Ω(1)-per-level deficit summing to ≥(log2/2)·a, which the measured worst-b descent does
+not supply at any tested thinness. No CORE upper bound, cancellation, completion, moment-saving,
+anti-concentration, or capacity claim. CORE M(μ_n) ≤ C·√(n·log(p/n)) remains OPEN.

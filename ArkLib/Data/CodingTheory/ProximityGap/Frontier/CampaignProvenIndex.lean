@@ -178,6 +178,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVUniformDeficitThres
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetBoundedExceptions
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVLeadingZeroDeficitFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitSumScatteredFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 
 /-!
@@ -8314,5 +8315,22 @@ theorem doorIV_leadingZeroDeficitBlockFloor_export {a T : ℕ} {M0 : ℝ}
     δ hT hzero hbad hblock hM0
 
 #print axioms doorIV_leadingZeroDeficitBlockFloor_export
+
+/-- Door-IV Lane-3 SCATTERED-deficit sum floor export (structure-free, strict measured form): if the
+RAW total coherence deficit `S = ∑_{k<a} δ_k` over the `a`-level 2-dilation descent is strictly below
+the linear-in-`a` threshold `S < (log 2 / 2)·a` (with `a ≥ 1`), then for `M₀ ≥ 0` the exp-relaxed
+deficit-budget bound stays AT/ABOVE the `√(2^a)·M₀` Plancherel/prize scale.  Unlike the leading-zero-
+block floor, NO assumption is made on how the deficit is distributed: no leading block, contiguity, or
+per-level cap — only the total `S`.  This is the invariant that survives in the measured worst-`b`
+descent, where the nonzero deficits are SCATTERED (a=8: levels 4,5,7 with zeros interspersed, NOT a
+leading block), yet `S < (log2/2)·a` holds with slack at a=5..8 (S = 0, 0.88, 1.62, 1.03 vs threshold
+1.73, 2.08, 2.43, 2.77).  Constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN. -/
+theorem doorIV_deficitSumScatteredFloor_export {S M0 : ℝ} (a : ℕ)
+    (ha : 1 ≤ a) (hS : S < Real.log 2 / 2 * a) (hM0 : 0 ≤ M0) :
+    (Real.sqrt 2) ^ a * M0 ≤ 2 ^ a * Real.exp (-S) * M0 :=
+  ProximityGap.Frontier.DoorIVDeficitSumScatteredFloor.deficit_budget_ge_sqrt_scale_of_measured_sum
+    a ha hS hM0
+
+#print axioms doorIV_deficitSumScatteredFloor_export
 
 end ArkLib.ProximityGap.Frontier.CampaignProvenIndex
