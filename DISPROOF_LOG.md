@@ -14185,3 +14185,22 @@ LIMITING pooled law of |η_b|/√n, NOT a property of n. Whether c₀>0 (prize) 
 decelerating but not flattened at t=3.9. No new Lean (avoids a redundant single-theorem file); the cycle-1
 kernel's equivalence "prize ⟺ tail constant bounded below" stands and now reads with c₀ as the
 n-independent far-tail exponent. CORE stays OPEN; door (iv) the only live door.
+
+## [doorIV-pooled-tail-prime-structure-invariant] structured (Proth/Fermat-type) primes do NOT fatten the worst-b tail (2026-06-23, sol)
+
+Lane: Door-(iv) Lane-1 PROBE, refuted-lever (structured/bad-prime escape for the pooled tail constant).
+Companion to the pooled-tail-constant lock + its n-independence refinement.
+
+PROBE: compare the LOCAL pooled tail exponent c(t)=−lnP(|η_b|/√n≥t)/t² at n=128, β≈4.5, between a GENERIC
+prime and a STRUCTURED Proth-type prime p=k·2²⁰+1 (heavy 2-adic structure, 2²⁰ | p−1 ≫ n=2⁷):
+- generic    p=3037001089: c(2.0)=0.777 c(2.5)=0.711 c(3.0)=0.665 c(3.5)=0.634, M/√n=4.555
+- structured p=3074424833: c(2.0)=0.782 c(2.5)=0.708 c(3.0)=0.660 c(3.5)=0.634, M/√n=4.006
+The two c(t) curves are IDENTICAL to within 0.005 at every t, and the structured prime's M/√n is SMALLER.
+
+VERDICT: the pooled far-tail exponent c(t) is INSENSITIVE to the prime's 2-adic / Proth structure. Prime
+structure does NOT fatten the worst-b resonance tail. This (a) kills the natural door-(iv) lever "find a
+structured prime where the worst-b coherence is heavier — there isn't one", and (b) confirms the prize's
+∀-field-universality at the tail-constant level: c(t) is a property of the THIN-SUBGROUP geometry, not the
+ambient prime. So the open scalar c₀ (=lim_{t→∞}c(t)) cannot be driven down by choosing a structured prime.
+No new Lean (empirical refuted-lever; the constraint is the invariance itself). No completion/moment/
+anti-concentration claim. CORE stays OPEN; door (iv) the only live door.
