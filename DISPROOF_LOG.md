@@ -13809,3 +13809,21 @@ VERDICT: exact off-DC peak FLOOR (lower bound), the EASY direction / lower endpo
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakFloor.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-subgroup-offDC-peak-bracket] the EXACT two-sided off-DC peak band for the thin-subgroup indicator (sol subagent, 2026-06-23)
+Lane: door-(iv) Lane-2/3 capstone hardening — pins the prize object `M(μ_n)² = max_{k≠0}‖𝓕 1_{μ_d} k‖²` EXACTLY inside the closed band between the Plancherel floor and the trivial ℓ²-completion ceiling.
+
+CONTEXT: `_DoorIVSubgroupParsevalEnergyExact` (5beab4b2c) lands the exact off-DC energy equality `Σ_{k≠0}‖𝓕 1_{μ_d} k‖² = N·d − d²`; `_DoorIVSubgroupOffDCPeakFloor` (26b4f6451) lands the off-DC peak floor `M² ≥ (N·d − d²)/(N − 1)`. MISSING: the matching trivial off-DC peak CEILING and the resulting two-sided bracket.
+
+CONSTRAINT CAPSTONE (axiom-clean, REAL proofs, NO sorry) in `_DoorIVSubgroupOffDCPeakBracket.lean`, for the order-d subgroup indicator 1_{μ_d} (d ∣ N, 1 < N):
+- `offDC_peak_sq_le_offDC_energy`: trivial ceiling `‖𝓕 1_{μ_d} k₀‖² ≤ N·d − d²` (single nonneg term ≤ whole nonneg sum).
+- `exists_offDC_peak_sq_bracket` (HEADLINE): ∃ off-DC argmax k₀ ≠ 0 with `(N·d − d²)/(N − 1) ≤ ‖𝓕 1_{μ_d} k₀‖² ≤ N·d − d²` — the EXACT two-sided band.
+- `exists_offDC_peak_bracket` (HEADLINE, norm form): `√((N·d − d²)/(N − 1)) ≤ ‖𝓕 1_{μ_d} k₀‖ ≤ √(N·d − d²)`.
+
+WHY IT MATTERS: in the prize regime `N = q ≈ d^β`, the band is `[√n·(1+o(1)), √(p·n)]` — exactly the Plancherel floor `√n` to the trivial ℓ²-completion ceiling `√(p·n)`. CORE asks for `M ≤ C·√(n·log(p/n))`, strictly inside this band's lower portion; the band WIDTH is the door-(iv) gap and CORE lives at its bottom. The ceiling is the `√(p·n)` completion (door (ii)) the brief flags as OVERSHOOTING — recorded here ONLY as the upper fence whose distance to the floor is the open gap, NOT as a CORE bound.
+
+VERDICT: exact two-sided floor/ceiling band on the off-DC peak, axiom-clean. BOTH endpoints elementary (Plancherel floor + trivial completion ceiling). It proves NO CORE upper bound and makes NO cancellation, anti-concentration, moment-saving, or capacity claim; door (ii) completion recorded as the upper fence, not as CORE. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN; door (iv) remains the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakBracket.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
