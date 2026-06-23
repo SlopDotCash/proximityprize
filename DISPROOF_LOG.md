@@ -14054,3 +14054,36 @@ Added two axiom-clean constraint lemmas strengthening the existing coherent-but-
 
 Mechanism: worst-b half coherence alone does not justify the symmetric `÷2` dyadic descent. The descent is tight only under perfect balance; strict imbalance creates a quantified normalized deficit below the balanced ceiling. This is a constraint/no-go for the balanced-recursion lever, not a CORE upper bound or cancellation theorem.
 
+## door-(iv) the CONCRETE dilation tower on worstPeriod — saving-free descent realized on the prize object (2026-06-23, sol)
+
+Lane: Door-(iv) Lane-3 refuted-lever lock. Bridges the abstract iteration
+(`_DoorIVDilationTowerSaturates`, `descent_tower_le`) to the CONCRETE prize object `worstPeriod`.
+
+The single-step recursion (`worstPeriod_union_le_two_mul_worstPeriod`) and the abstract iteration
+(`M a ≤ 2^a·M 0`) were both anchored; the bridge — running the abstract tower on the ACTUAL
+`worstPeriod` sequence along a real descending dyadic subgroup chain — was missing. This file lands it.
+
+CONSTRAINT LEMMAS (axiom-clean, REAL proofs, NO sorry) in `_DoorIVDilationTowerConcrete.lean`, for a
+descending chain `G : ℕ → Finset F` with each level the index-2 dilate of the next
+(`G k = G(k+1) ∪ (g k)·G(k+1)`, `g k ≠ 0`, halves disjoint):
+- `worstPeriodChain_step`: per-level `M(G k) ≤ 2·M(G(k+1))`.
+- `worstPeriodChain_le_two_pow` (HEADLINE): `M(G 0) ≤ 2^a · M(G a)` (the iterated tower on the real object).
+- `worstPeriodChain_saturates_trivial`: with bottom worst period `M(G a) ≤ 1`, `M(G 0) ≤ 2^a` = the
+  trivial `M ≤ n` ceiling, reproduced with NO √-saving on the prize object.
+
+WHY IT MATTERS: this realizes the prose "iterate the recursion `log₂ n` times down the tower" on the
+concrete `worstPeriod`, not just an abstract `M : ℕ → ℝ`. Combined with the probed FACT that the
+per-level factor is forced to be EXACTLY 2 at the worst frequency (`_DoorIVTwoDilateNoJointExtreme`,
+co-ray `ρ(b*)=1`), the iterated bound on the real object is `2^a = n` (trivial ceiling), not the prize
+order `2^(a/2)·√log = √(n·log)`. The dyadic descent route is therefore dead by iteration ON THE PRIZE
+OBJECT, kernel-checked. The 2-power subgroup tower `μ_{2^a} ⊃ ... ⊃ μ_1` satisfies the chain hypotheses,
+so the statement is non-vacuous (it instantiates on the actual prize-regime tower).
+
+VERDICT: a refuted-lever CONSTRAINT LOCK on the concrete object. No CORE / cancellation / completion /
+moment / anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN; door (iv)
+stays the only live door.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerConcrete.lean`,
+axiom-clean (all 3 theorems' axioms ⊆ {propext, Classical.choice, Quot.sound}).
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
