@@ -14041,3 +14041,16 @@ Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTo
 axiom-clean (all 5 theorems' axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## 2026-06-23 — Door-IV worst-b balanced descent: normalized imbalance ratio locked
+
+Lane: Door (iv), Lane 3 refuted-lever constraint.
+File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVWorstBCoherentImbalance.lean`.
+
+Added two axiom-clean constraint lemmas strengthening the existing coherent-but-imbalanced half-mass obstruction:
+- `coherent_norm_div_two_mul_max_eq_avg_ratio` proves the exact normalized identity
+  `‖A+B‖/(2 max(‖A‖,‖B‖)) = (1 + min(‖A‖,‖B‖)/max(‖A‖,‖B‖))/2` under full coherence and positive heavier half.
+- `coherent_imbalanced_ratio_lt_one` proves this ratio is strictly `< 1` whenever the halves are imbalanced.
+
+Mechanism: worst-b half coherence alone does not justify the symmetric `÷2` dyadic descent. The descent is tight only under perfect balance; strict imbalance creates a quantified normalized deficit below the balanced ceiling. This is a constraint/no-go for the balanced-recursion lever, not a CORE upper bound or cancellation theorem.
+

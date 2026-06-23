@@ -94,6 +94,28 @@ theorem norm_lt_two_mul_max_of_coherent_imbalanced {A B : E}
     two_mul_max_sub_norm_eq_imbalance hcoh
   linarith
 
+/-- **Normalized imbalance identity.**  At full coherence, the ratio of the true period norm to the
+balanced symmetric ceiling `2·max(‖A‖,‖B‖)` is exactly the average of `1` and the lighter/heavier ratio:
+`‖A+B‖/(2 max) = (1 + min/max)/2`.  This is the scale-free form of the probe mechanism: any strict
+half-mass imbalance creates a concrete deficit below the balanced `÷2` descent ceiling. -/
+theorem coherent_norm_div_two_mul_max_eq_avg_ratio {A B : E}
+    (hcoh : ‖A + B‖ = ‖A‖ + ‖B‖) (hmax : 0 < max ‖A‖ ‖B‖) :
+    ‖A + B‖ / (2 * max ‖A‖ ‖B‖) =
+      (1 + min ‖A‖ ‖B‖ / max ‖A‖ ‖B‖) / 2 := by
+  have hmax_ne : max ‖A‖ ‖B‖ ≠ 0 := ne_of_gt hmax
+  rw [coherent_norm_eq_max_add_min hcoh]
+  field_simp [hmax_ne]
+
+/-- **Strict imbalance gives a strict normalized deficit.**  Under coherence and a positive heavier
+half, unequal half-norms force the normalized period norm below `1` relative to the balanced symmetric
+ceiling `2·max(‖A‖,‖B‖)`.  This is the dimensionless no-go for any descent that silently replaces the
+asymmetric split by a perfectly balanced one. -/
+theorem coherent_imbalanced_ratio_lt_one {A B : E}
+    (hcoh : ‖A + B‖ = ‖A‖ + ‖B‖) (hmax : 0 < max ‖A‖ ‖B‖) (hne : ‖A‖ ≠ ‖B‖) :
+    ‖A + B‖ / (2 * max ‖A‖ ‖B‖) < 1 := by
+  have hlt := norm_lt_two_mul_max_of_coherent_imbalanced hcoh hne
+  exact (div_lt_one (mul_pos (by norm_num) hmax)).2 hlt
+
 /-- **The balanced-symmetric descent hypothesis is falsified at the true worst frequency.**  Contrapositive
 packaging for the probe interface: if a descent argument relies on the symmetric identity
 `‖A + B‖ = 2 · max(‖A‖,‖B‖)` while the halves are coherent, then it has implicitly assumed perfect
@@ -110,5 +132,7 @@ end ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance
 -- Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}).
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance.norm_lt_two_mul_max_of_coherent_imbalanced
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance.two_mul_max_sub_norm_eq_imbalance
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance.coherent_norm_div_two_mul_max_eq_avg_ratio
+#print axioms ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance.coherent_imbalanced_ratio_lt_one
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance.coherent_norm_eq_two_mul_max_forces_balance
 #print axioms ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance.coherent_norm_eq_max_add_min
