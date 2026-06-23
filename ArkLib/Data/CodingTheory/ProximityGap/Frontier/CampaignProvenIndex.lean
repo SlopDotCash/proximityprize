@@ -8708,6 +8708,18 @@ theorem shawScale_div_prizeScale_export (q n : ℝ) (hn : 0 < n) (hnq : n < q) :
 
 #print axioms shawScale_div_prizeScale_export
 
+/-- Synthesis-gap STRICT-SEPARATION export: in the thin regime `log(q/n)>1`, the Shaw/BGK
+normalization scale strictly exceeds the genuine prize floor.  This is the positive-form guard for the
+open door-(iv) gap: the two scales are not accidentally identical once the logarithmic factor bites.
+Pure scale bookkeeping; no CORE/cancellation claim. -/
+theorem prizeScale_lt_shawScale_of_one_lt_log_export (q n : ℝ) (hn : 0 < n)
+    (hL : 1 < Real.log (q / n)) :
+    ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale n
+      < ProximityGap.Frontier.ShawValueCapstone.shawScale q n :=
+  ArkLib.ProximityGap.Frontier.ShawScaleDoorScaleBridge.prizeScale_lt_shawScale_of_one_lt_log
+    q n hn hL
+
+#print axioms prizeScale_lt_shawScale_of_one_lt_log_export
 
 /-- Synthesis-gap SCALE-BOUND export: comparing the Shaw/BGK scale to the genuine prize floor by a
 constant `K` is equivalent to bounding the exact gap factor `√log(q/n)` by `K`.  Scale-only bookkeeping;

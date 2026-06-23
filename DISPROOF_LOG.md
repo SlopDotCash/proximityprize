@@ -13897,3 +13897,15 @@ VERDICT: SHARP form of the off-DC peak FLOOR (lower bound, the EASY direction / 
 Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVSubgroupOffDCPeakFloorSharp.lean`, axiom-clean (axioms ⊆ {propext, Classical.choice, Quot.sound}).
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
+
+## [doorIV-shaw-scale-strict-separation-export] thin logarithmic gap makes Shaw/BGK scale strictly above the prize floor (2026-06-23, g55)
+Lane: door-(iv) Lane-2 reduction-chain hardening, positive strict-separation guard for the synthesis scale bridge.
+
+CONSTRAINT EXPORT (axiom-clean, real proof, NO sorry) added to `CampaignProvenIndex`:
+- `prizeScale_lt_shawScale_of_one_lt_log_export`: if `0<n` and `1 < log(q/n)`, then the genuine prize floor `prizeScale n = sqrt n` is strictly below the Shaw/BGK normalization `shawScale q n = sqrt(n*log(q/n))`.
+
+WHY IT MATTERS: the scale bridge already identified `shawScale q n / prizeScale n = sqrt(log(q/n))`. This export packages the direct positive form used in prose: once the logarithmic thinness factor exceeds one, the reduction scale and the genuine prize floor are separated by a real door-(iv) gap, not just a definitional notational mismatch.
+
+VERDICT: pure scale separation / normalization bookkeeping only. It proves no CORE upper bound and makes no cancellation, completion, anti-concentration, moment, capacity, or asymptotic claim; CORE remains OPEN.
+
+Co-authored-by: wakesync <shadow@shad0w.xyz>
