@@ -191,6 +191,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentEnergyFloorOv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMomentFloorTetrachotomyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupParsevalEnergyExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVSubgroupOffDCPeakBracket
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOffDCCeilingDominatesBGKTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueSharpFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracketFamily
@@ -9088,6 +9089,19 @@ theorem doorIV_exists_offDC_peak_bracket_export {N : ℕ} [NeZero N] {d : ℕ}
     hd hN1
 
 #print axioms doorIV_exists_offDC_peak_bracket_export
+
+/-- Door-IV Lane-2 BGK-IN-BRACKET export: in the prize-regime inequalities
+`1 ≤ n`, `1 < p`, and `1 ≤ L ≤ p - n`, the BGK target `sqrt(n·L)` lies between the
+exact off-DC Plancherel floor and the exact off-DC completion ceiling.  This is a
+consistency/containment capstone for the proven bracket, not a CORE upper bound. -/
+theorem doorIV_offDC_band_contains_bgkTarget_export {n p L : ℝ} (hn : 1 ≤ n)
+    (hp : 1 < p) (hL1 : 1 ≤ L) (hL2 : L ≤ p - n) :
+    Real.sqrt ((p * n - n ^ 2) / (p - 1)) ≤ Real.sqrt (n * L)
+      ∧ Real.sqrt (n * L) ≤ Real.sqrt (p * n - n ^ 2) :=
+  _root_.ProximityGap.Frontier.DoorIVOffDCCeilingDominatesBGKTarget.offDC_band_contains_bgkTarget
+    hn hp hL1 hL2
+
+#print axioms doorIV_offDC_band_contains_bgkTarget_export
 
 /-- Door-IV Lane-1 ODD SIGNED-MOMENT CAUCHY export: the real sign-sensitive signed moment
 `A_D = Σ_b (η_b)^D` (the odd endpoint of the mixed-conjugate ladder) is CONTROLLED by the energy face:
