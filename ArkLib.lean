@@ -2150,6 +2150,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PencilAutocorrLambdaRootB
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PencilAutocorrRMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PencilSunflowerCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PerCosetDichotomy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PerLineOverlapMultiplicityConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PerLineUnionCountBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PeriodAutocovariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PhaseAlignmentReality
