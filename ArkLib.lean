@@ -2175,6 +2175,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcrete
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcreteDC
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuadraticGaussFraction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientExponentialTailGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientFiberConstancyGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientScaledLogTailGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientTailSupConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch
@@ -2185,6 +2186,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RThinSparseRealizability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RThinSqrtNKRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RUD_MathlibAssessment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RaggedRootBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomDomainTransferGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementFlatnessCriterion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagCorridor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagNonneg
@@ -2248,6 +2250,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondDescentParity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondMomentExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondMomentGapQuantified
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SemiprimitiveSplitPrimeFieldGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawCancellationLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawDepletionTheorem
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawFallingCoeffLaw
