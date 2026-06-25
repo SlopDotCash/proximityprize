@@ -1636,6 +1636,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BridgeJointSumProduct
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BridgeOneWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BudgetedMomentTailCountGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BudgetedPropagationMomentGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BurgessBoxCoverExponentGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BurgessShiftHolderExponentGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._C2WeilDeligneParamFamilyNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._C5MonodromyMaxControlScissors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CLTDecorrelatedCeiling
