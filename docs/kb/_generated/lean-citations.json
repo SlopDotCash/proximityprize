@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 359,
-    "keys_cited": 30,
-    "total_citation_edges": 407
+    "files_with_citations": 383,
+    "keys_cited": 31,
+    "total_citation_edges": 434
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -76,6 +76,9 @@
     "ArkLib/CommitmentScheme/KZG/HardnessAssumptions.lean": [
       "CGKY25"
     ],
+    "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Data/CodingTheory/DivergenceOfSets.lean": [
       "BCIKS20"
     ],
@@ -104,6 +107,7 @@
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/GuruswamiSudan/PerPairCoverData.lean": [
+      "BCHKS25",
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/GuruswamiSudan/TrivariateDivisibility.lean": [
@@ -170,6 +174,7 @@
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Arith.lean": [
+      "BCHKS25",
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Bundle.lean": [
@@ -323,8 +328,32 @@
     "ArkLib/Data/CodingTheory/ProximityGap/BoundaryThresholdFloorCell.lean": [
       "BCIKS20"
     ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CircleMethodFreeSetSupport.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicConvolution.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicDescent.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicSplitExact.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Data/CodingTheory/ProximityGap/DeepQuotientTransfer.lean": [
       "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/E2SquaringRecursion.lean": [
+      "BCHKS25"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Errors.lean": [
       "ACFY24",
@@ -334,6 +363,24 @@
     "ArkLib/Data/CodingTheory/ProximityGap/Folding.lean": [
       "ACFY24"
     ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossCellCircleMethodSplit.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CollisionExcessPartition.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf2NG_partition_rank_vacuous.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellDichotomyWiring.lean": [
       "BCIKS20"
     ],
@@ -341,6 +388,7 @@
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean": [
+      "BCHKS25",
       "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Hab25FactorBudgetSupply.lean": [
@@ -410,11 +458,29 @@
       "BCIKS20",
       "PS94"
     ],
+    "ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityLowerBound.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/MCAPlateauWindow.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Data/CodingTheory/ProximityGap/MCAUDR2Bound.lean": [
       "BCIKS20"
     ],
+    "ArkLib/Data/CodingTheory/ProximityGap/MCAWitnessSpread.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/MonomialSubgroupCorrelated.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Data/CodingTheory/ProximityGap/ProximityGapP.lean": [
       "ACFY24"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/R4LaneDCosetPoint.lean": [
+      "BCHKS25"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/TheoremQAssembly.lean": [
       "BCIKS20"
@@ -435,6 +501,9 @@
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/VandermondeMCAExtract.lean": [
       "ACFY24"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/_E2SquaringRecursion.lean": [
+      "BCHKS25"
     ],
     "ArkLib/Data/CodingTheory/ReedSolomon.lean": [
       "ACFY24"
@@ -706,6 +775,9 @@
     "ArkLib/ToMathlib/BCIKS20StrictDataFinOn.lean": [
       "BCIKS20"
     ],
+    "ArkLib/ToMathlib/BadLineWitnessProof.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/ToMathlib/BasefoldSingleRoundSoundness.lean": [
       "BCIKS20"
     ],
@@ -756,6 +828,9 @@
     ],
     "ArkLib/ToMathlib/BranchValuePigeonhole.lean": [
       "BCIKS20"
+    ],
+    "ArkLib/ToMathlib/Bridge2BCHKS25.lean": [
+      "BCHKS25"
     ],
     "ArkLib/ToMathlib/CentreVanishingSupply.lean": [
       "BCIKS20"
@@ -1187,6 +1262,35 @@
     ],
     "BBS24": [
       "ArkLib/ProofSystem/Sumcheck/Spec/General.lean"
+    ],
+    "BCHKS25": [
+      "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+      "ArkLib/Data/CodingTheory/GuruswamiSudan/PerPairCoverData.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Arith.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CircleMethodFreeSetSupport.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicConvolution.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicDescent.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicSplitExact.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/E2SquaringRecursion.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossCellCircleMethodSplit.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CollisionExcessPartition.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf2NG_partition_rank_vacuous.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/MCANearCapacityLowerBound.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/MCAPlateauWindow.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/MCAWitnessSpread.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/MonomialSubgroupCorrelated.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/R4LaneDCosetPoint.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/_E2SquaringRecursion.lean",
+      "ArkLib/ToMathlib/BadLineWitnessProof.lean",
+      "ArkLib/ToMathlib/Bridge2BCHKS25.lean"
     ],
     "BCIKS20": [
       "ArkLib/Data/CodingTheory/DivergenceOfSets.lean",

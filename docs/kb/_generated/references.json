@@ -1,5 +1,5 @@
 {
-  "count": 52,
+  "count": 54,
   "entries": {
     "ACFY24": {
       "authors": [
@@ -231,6 +231,30 @@
       "venue": "",
       "year": "2018"
     },
+    "BCHKS25": {
+      "authors": [
+        "Ben-Sasson, Eli",
+        "Carmon, Dan",
+        "Hab{\\\"o}ck, Ulrich",
+        "Kopparty, Swastik",
+        "Saraf, Shubhangi"
+      ],
+      "authors_text": "Ben-Sasson, Eli and Carmon, Dan and Hab{\\\"o}ck, Ulrich and Kopparty, Swastik and Saraf, Shubhangi",
+      "doi": "",
+      "entry_type": "misc",
+      "fields": {
+        "author": "Ben-Sasson, Eli and Carmon, Dan and Hab{\\\"o}ck, Ulrich and Kopparty, Swastik and Saraf, Shubhangi",
+        "howpublished": "Cryptology ePrint Archive, Paper 2025/2055",
+        "title": "On Proximity Gaps for {Reed--Solomon} Codes",
+        "url": "https://eprint.iacr.org/2025/2055",
+        "year": "2025"
+      },
+      "key": "BCHKS25",
+      "title": "On Proximity Gaps for {Reed--Solomon} Codes",
+      "url": "https://eprint.iacr.org/2025/2055",
+      "venue": "",
+      "year": "2025"
+    },
     "BCIKS20": {
       "authors": [
         "Eli Ben-Sasson",
@@ -398,6 +422,27 @@
       "url": "https://eprint.iacr.org/2025/536",
       "venue": "",
       "year": "2025"
+    },
+    "ChaiFan26": {
+      "authors": [
+        "Chai, Raullen",
+        "Fan, Xinxin"
+      ],
+      "authors_text": "Chai, Raullen and Fan, Xinxin",
+      "doi": "",
+      "entry_type": "misc",
+      "fields": {
+        "author": "Chai, Raullen and Fan, Xinxin",
+        "howpublished": "Cryptology ePrint Archive, Paper 2026/858",
+        "title": "{FRI} Soundness Above the {Johnson} Bound via Threshold Halving",
+        "url": "https://eprint.iacr.org/2026/858",
+        "year": "2026"
+      },
+      "key": "ChaiFan26",
+      "title": "{FRI} Soundness Above the {Johnson} Bound via Threshold Halving",
+      "url": "https://eprint.iacr.org/2026/858",
+      "venue": "",
+      "year": "2026"
     },
     "ChiesaYogev2024": {
       "authors": [
