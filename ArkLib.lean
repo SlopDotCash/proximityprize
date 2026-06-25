@@ -1751,6 +1751,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DeltaStarDefinitive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DeltaStarDeterminability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DeltaStarPinsConsistent
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DeployedOnsetCertifications
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DeploymentLocalCertificateUniformityGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DepthGradedConductor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DepthThresholdReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiBenedettoBetaFourResolution
@@ -2148,6 +2149,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P7HGGCrossCorrNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P7VanishingMarginBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PIndependenceLangWeil
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PaleyCayleyEigenvalue
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PaleyDoubleSumSingletonGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PencilAutocorrLambdaRootBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PencilAutocorrRMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PencilSunflowerCore
@@ -2251,6 +2253,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RudnevDilutionFixedSaving
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RungListBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG2
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SampledOctaveUniformityGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondDescentParity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondMomentExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondMomentGapQuantified
@@ -2302,6 +2305,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StickelbergerPrizeClassNo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StructuredFloorRateQuarter
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SubconvexityAmplifyOffDiagonal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SubgroupConvolutionIdempotent
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SubgroupExpSumPSavingGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SubgroupVsGenericEnergyReconcile
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SubsetSumSpectrumClosedForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SubsetSumSpectrumPeak
