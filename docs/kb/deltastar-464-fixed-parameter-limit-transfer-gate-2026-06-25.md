@@ -10,7 +10,7 @@ Date: 2026-06-25
 ## Inputs checked
 
 - Live issue #464 still asks for the finite prize diagonal: explicit smooth-domain RS at
-  `p ≈ n^β`, not a two-stage limit with `p -> ∞` after fixing `n`.
+  `p approx n^beta`, not a two-stage limit with `p -> infinity` after fixing `n`.
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md` lists effective vertical Sato-Tate / Katz monodromy
   as a possible language for the wall, but it explicitly requires a finite, effective, worst-case
   conclusion at the growing conductor.
@@ -87,6 +87,6 @@ tail-to-sup atom-scale contract.
 
 A theorem of the form "for each fixed subgroup order, the family becomes equidistributed as the
 field grows" is not usable until it comes with a quantitative threshold below the prize field size.
-For the prize diagonal this means an explicit `P0(n)` satisfying `P0(n) <= n^β` (or below the chosen
+For the prize diagonal this means an explicit `P0(n)` satisfying `P0(n) <= n^beta` (or below the chosen
 split prime-field representative near that scale).  Without that inequality, the fixed-parameter
 theorem may become true only after the prize point has already passed.

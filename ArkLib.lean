@@ -2039,6 +2039,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiFermatCohomology
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiFermatPointCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiFinitePrefixTurnoverGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiKatzEquidist
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiLocalSlopeTurnoverGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiMomentIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiNewRelations
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26s128ThornerZamanBridge
@@ -2165,6 +2166,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PigeonholeWraparoundOnset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PlateauObjectDisentangle
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PlateauWidthImprimitivityMonotone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PolynomialPrimeExponentialHeightGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PolynomialThresholdDiagonalGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PowerfulTZThetaGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrimeCapacityJohnsonGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrimeCapacityUncertainty
