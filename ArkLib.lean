@@ -1955,6 +1955,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FIResolventEdgePerturbati
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FallingFactorialDecay
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FarLineProxyTowerN32Corrected
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FiniteFreeConvRotationAverageNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FixedParameterLimitTransferGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorBadDefectTowerInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorBadRamificationDisjoint
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorClosureContract
