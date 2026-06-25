@@ -274,10 +274,10 @@ lemma firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency
         exact h_ℓ_lt_r
       rw [h_jLast_val, zero_mul, zero_add]
       exact h_ϑ_lt_r⟩
-    let challengesLast : Fin ϑ → L := fun cId =>
-      stmtOut.challenges ⟨↑jLast * ϑ + ↑cId, by
-        simp only [h_jLast_eq_zero, Fin.coe_ofNat_eq_mod, toOutCodewordsCount_last, h_ℓ_eq_ϑ,
-          Nat.zero_mod, zero_mul, zero_add, Fin.val_last, cId.isLt]⟩
+    let challengesLast : Fin ϑ → L :=
+      getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ) (i := Fin.last ℓ)
+        (challenges := stmtOut.challenges) (k := ↑jLast * ϑ) (h := by
+          rw [h_jLast_val]; simpa using h_le)
     have h_zeroIdxLast : zeroIdxLast.val = 0 := by
       simp [zeroIdxLast, h_jLast_eq_zero]
     have h_zeroIdxLast_eq : zeroIdxLast = 0 := Fin.eq_of_val_eq h_zeroIdxLast
@@ -299,7 +299,7 @@ lemma firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency
           (f_i_plus_steps := fun _ => stmtOut.final_constant)
           (challenges := challengesLast) := by
       have h_final_cons' := h_final_cons
-      simp only [jLast, zeroIdxLast, destIdxLast, challengesLast] at h_final_cons' ⊢
+      simp only [jLast, zeroIdxLast, destIdxLast, challengesLast, id_eq] at h_final_cons' ⊢
       exact h_final_cons'
     rcases h_compl0 with ⟨h_fw_dist_lt, _, _⟩
     have h_close :=
