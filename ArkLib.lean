@@ -1986,6 +1986,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FrontierSheafConductor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FrontierSubconvexity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FrontierSwanConductor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FrontierWildcard2
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullFieldNoisyCharacterTransferGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullLengthCharacterSumScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullRankLatticeTransferenceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
