@@ -50,6 +50,7 @@ lineHeavyIncidences_card_le_puncturedZeroStratifiedLineWeight
 and the new conditional discount is:
 
 ```lean
+not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
 lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
@@ -75,7 +76,8 @@ for every bad γ, # { codewords c : c is heavy at γ } >= R.
 ```
 
 If `R > 1`, the budget can be divided by `R`.  If no such multiplicity floor exists, the theorem
-collapses to the old union-bound route at `R = 1`.
+collapses to the old union-bound route at `R = 1`.  The negated-floor theorem makes the failure
+scanner-facing by producing a bad scalar whose witness-codeword fiber has cardinality `< R`.
 
 ## Companion: Exact Appearance Fibers
 

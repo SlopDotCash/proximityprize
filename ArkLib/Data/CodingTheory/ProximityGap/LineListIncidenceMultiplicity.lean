@@ -292,6 +292,22 @@ def LineBadScalarMultiplicityFloor
     R ≤ (badScalarWitnessCodewords dom k a u₀ u₁ γ).card
 
 open Classical in
+/-- Failure of a multiplicity floor is exactly a bad scalar with too few witnessing codewords. -/
+theorem not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
+    (dom : Fin n ↪ F) (k a R : ℕ) (u₀ u₁ : Fin n → F) :
+    ¬ LineBadScalarMultiplicityFloor dom k a u₀ u₁ R ↔
+      ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+        (badScalarWitnessCodewords dom k a u₀ u₁ γ).card < R := by
+  constructor
+  · intro h
+    by_contra hnone
+    apply h
+    intro γ hγ
+    exact le_of_not_gt (fun hlt => hnone ⟨γ, hγ, hlt⟩)
+  · rintro ⟨γ, hγ, hlt⟩ hmult
+    exact (not_lt_of_ge (hmult γ hγ)) hlt
+
+open Classical in
 /-- Multiplicity converts the incidence identity into `#badScalars * R ≤ #incidences`. -/
 theorem lineBadScalars_card_mul_le_lineHeavyIncidences_card_of_multiplicityFloor
     (dom : Fin n ↪ F) (k a R : ℕ) (u₀ u₁ : Fin n → F)
@@ -360,6 +376,7 @@ section SourceAudit
 #print axioms lineHeavyIncidences_card_eq_sum_codewordHeavyScalars
 #print axioms lineHeavyIncidences_card_le_puncturedZeroStratifiedLineWeight
 #print axioms LineBadScalarMultiplicityFloor
+#print axioms not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
 #print axioms lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
