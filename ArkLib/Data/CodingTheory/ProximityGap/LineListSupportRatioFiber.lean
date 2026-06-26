@@ -24,6 +24,7 @@ zero-direction agreement profile.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.style.longLine false
 
 open Finset
 
@@ -195,8 +196,7 @@ open Classical in
 production, support arithmetic, zero-safety, and the weighted arithmetic fit are fixed, failed
 bad-scalar production exposes a large-zero safe support-ratio-heavy coordinate fiber exceeding the
 proposed envelope. -/
-theorem
-    exists_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+theorem exists_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
     (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
@@ -225,8 +225,7 @@ open Classical in
 /-- Full failure split for the support-ratio-heavy route.  Without assuming zero-direction safety
 up front, failure returns either zero-direction saturation or an overfull support-ratio-heavy
 coordinate fiber. -/
-theorem
-    unsafe_or_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+theorem unsafe_or_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
     (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
@@ -275,8 +274,7 @@ open Classical in
 /-- Scanner-facing full failure split with high support-ratio-heavy coordinate fibers discharged
 by RS uniqueness.  Once `M t ≥ 1` for every high `k ≤ t < a`, a failed uniform bad-scalar budget
 must expose either zero-direction saturation or a large-zero safe low support-ratio-heavy fiber. -/
-theorem
-    unsafe_or_largeZero_safe_low_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+theorem unsafe_or_largeZero_safe_low_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
     (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
