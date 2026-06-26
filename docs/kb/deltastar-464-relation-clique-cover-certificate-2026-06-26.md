@@ -57,17 +57,28 @@ covers from bounded invariants:
 
 ```lean
 scalarRelationColorForcesEdges
+scalarRelationColorFailure
 scalarRelationCliqueCover_of_colorForcesEdges
+relationColorBudgeted_iff_codewordSingletonBudgeted_of_forbidden_of_forcesEdges
+not_relationColorBudgeted_iff_exists_singleton_card_gt_of_forbidden_of_forcesEdges
 UniformLargeZeroSafeCodewordRelationColorBudgeted
 uniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted_of_relationColorBudgeted
 uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationColorBudgeted
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationColorBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationColorBudgeted
+exists_largeZero_safe_codewordRelationColorRouteObstruction_of_not_budgeted
 ```
 
 If equal colors force relation edges on the singleton-witness fiber, then color fibers are
 relation-cliques.  Bounding the number of colors therefore bounds the witness-local independence
-number.
+number.  If the route fails, the color scanner returns too many colors or a same-color non-edge
+on a concrete large-zero safe appearing codeword.
+
+The first naive color specialization has now been ruled out.  In
+`LineListCodewordSingletonRelationColorNoGo.lean`, taking the relation itself to be equality of
+colors forces the color map to be injective on every singleton-witness fiber under the
+forbidden-edge hypothesis.  The resulting certificate is equivalent to the original direct
+singleton cap, so it cannot supply a smaller clique cover.
 
 ## Consequence
 

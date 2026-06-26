@@ -66,12 +66,14 @@ uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationCliqueCover
 exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgeted
 scalarRelationColorForcesEdges
+scalarRelationColorFailure
 scalarRelationCliqueCover_of_colorForcesEdges
 UniformLargeZeroSafeCodewordRelationColorBudgeted
 uniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted_of_relationColorBudgeted
 uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationColorBudgeted
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationColorBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationColorBudgeted
+exists_largeZero_safe_codewordRelationColorRouteObstruction_of_not_budgeted
 ```
 
 The relation has type:
@@ -142,7 +144,9 @@ exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgete
 `LineListCodewordSingletonRelationColorCover.lean` gives an ergonomic way to construct clique
 covers from bounded invariants.  If equal colors force relation edges on the singleton-witness
 fiber, then the color fibers are relation-cliques.  Bounding the color image bounds the
-clique-cover size and therefore the witness-local independence number.
+clique-cover size and therefore the witness-local independence number.  Its scanner returns
+finite failures: too many colors on one fiber, a same-color pair that is not related, a forbidden
+relation edge, or the arithmetic production obstruction.
 
 The consumer is exact:
 
@@ -213,8 +217,20 @@ is automatic and the witness-local budget again collapses to the original single
 endpointSecondWitnessRelationWitnessBudgeted_iff_codewordSingletonBudgeted
 ```
 
-These two specific equivalences are instances of the generic forbidden-edge collapse above: once
-a relation has no forbidden singleton edges, the witness-local graph budget is not a smaller
+The same phenomenon hits the naive color route.  If the proposed relation is simply
+same-color equality for an invariant `chi`, then forbidden edges make `chi` injective on every
+singleton-witness fiber.  The Lean theorem
+
+```lean
+sameColorRelationColorBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+```
+
+states that the bounded-color certificate is then equivalent to the original singleton cap, and
+`not_sameColorRelationColorBudgeted_iff_exists_singleton_card_gt_of_forbidden` gives the matching
+failure form.
+
+These specific equivalences are instances of the generic forbidden-edge collapse above: once a
+relation has no forbidden singleton edges, the witness-local graph budget is not a smaller
 statement than the singleton cap.  Any progress has to come from a genuinely new proof of that
 budget, not from the interface itself.
 

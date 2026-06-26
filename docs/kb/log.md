@@ -887,3 +887,29 @@ clique cover.  The uniform wrapper
 actual singleton-witness fiber plus the equal-color edge theorem.  This is still only a proof
 method: the missing object is a nontrivial interpolation or exceptional-pencil invariant with a
 small image.
+
+Follow-up: the color-cover route now has exact failure scanners.
+`scalarRelationColorFailure` packages the two local obstructions: too many colors on the fiber,
+or a same-color pair that is not related.  The uniform iff
+`not_uniformLargeZeroSafeCodewordRelationColorBudgeted_iff_exists_colorFailure` and scanner
+`exists_largeZero_safe_codewordRelationColorRouteObstruction_of_not_budgeted` expose finite
+witnesses for any proposed invariant: a forbidden relation edge, the usual arithmetic failure, or
+a concrete color-certificate failure.
+
+Follow-up: the color-cover route now has the generic injectivity collapse.  If the singleton
+relation is forbidden on true singleton witnesses and a color really forces relation edges, then
+`scalarRelationColor_image_card_eq_of_independent_of_forcesEdges` makes the color image exactly as
+large as the singleton fiber.  Uniformly,
+`relationColorBudgeted_iff_codewordSingletonBudgeted_of_forbidden_of_forcesEdges` and its negated
+form show that a fixed edge-forcing color certificate is equivalent to the original singleton cap.
+
+Follow-up: `LineListCodewordSingletonRelationColorNoGo.lean` rules out the naive same-color
+specialization of the color route.  `scalarRelationIndependent_sameColorRelation_iff_injOn`
+identifies independence for `R gamma gamma' := chi gamma = chi gamma'` with injectivity of `chi`
+on the finite scalar set, and
+`sameColorRelationColorBudgeted_iff_codewordSingletonBudgeted_of_forbidden` shows that, under
+forbidden same-color edges, the bounded-color certificate is exactly the original singleton
+budget.  The companion failure theorem
+`not_sameColorRelationColorBudgeted_iff_exists_singleton_card_gt_of_forbidden` returns exactly
+the old overfull singleton fiber.  Companion note:
+`deltastar-464-same-color-relation-no-go-2026-06-26.md`.
