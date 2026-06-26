@@ -63,8 +63,8 @@ witnesses are defined by the absence of such endpoints.
 The generic reason is now recorded in the base interface:
 
 ```lean
-uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
-not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
+relationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+not_relationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
 ```
 
 Under any forbidden-edge theorem, a witness-local graph budget is extensionally the same

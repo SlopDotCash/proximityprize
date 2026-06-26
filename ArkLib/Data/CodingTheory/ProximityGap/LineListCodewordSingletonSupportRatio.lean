@@ -1082,7 +1082,7 @@ theorem uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndepend
 equivalent to the direct per-codeword singleton cap.  The graph formulation can still be a useful
 proof method, but it is not a weaker theorem statement. -/
 theorem
-    uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+    relationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
     (dom : Fin n ↪ F) (k a S : ℕ)
     (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
     (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) :
@@ -1102,7 +1102,7 @@ open Classical in
 witness-local independence budget is exactly failing the original singleton-fiber cardinality
 cap on one large-zero safe appearing codeword. -/
 theorem
-    not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
+    not_relationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
     (dom : Fin n ↪ F) (k a S : ℕ)
     (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
     (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) :
@@ -1117,14 +1117,14 @@ theorem
         ¬ UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
       intro hsingle
       exact hnot
-        ((uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+        ((relationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
           dom k a S R hforbid).mpr hsingle)
     exact (not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
       dom k a S).mp hnotSingleton
   · intro hex hind
     have hsingle :
         UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S :=
-      (uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+      (relationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
         dom k a S R hforbid).mp hind
     exact
       ((not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
@@ -1397,9 +1397,9 @@ section SourceAudit
 #print axioms
   uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
 #print axioms
-  uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+  relationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
 #print axioms
-  not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
+  not_relationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
 #print axioms

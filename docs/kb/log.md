@@ -854,11 +854,11 @@ Companion note:
 `deltastar-464-weighted-denominator-term-obstruction-2026-06-26.md`.
 
 Follow-up: the singleton graph interface now records the generic forbidden-edge collapse.
-`uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden`
+`relationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden`
 says that once singleton witnesses are independent for a proposed relation, the witness-local
 independence budget is equivalent as a theorem statement to the original per-codeword singleton
 cap.  The companion failure iff
-`not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden`
+`not_relationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden`
 returns exactly the old overfull singleton fiber under forbidden edges.  This keeps future graph
 attempts honest: the relation can be a proof method, but the witness-local formulation is not a
 weaker target.
