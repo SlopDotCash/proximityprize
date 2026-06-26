@@ -2887,6 +2887,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineListDimensionLift
 import ArkLib.Data.CodingTheory.ProximityGap.LineListIncidenceMultiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.LineListJohnsonClosure
 import ArkLib.Data.CodingTheory.ProximityGap.LineListReduction
+import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonDefectGeometry
 import ArkLib.Data.CodingTheory.ProximityGap.LinePairCooccurrenceBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineSecondMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineSecondMomentSharp

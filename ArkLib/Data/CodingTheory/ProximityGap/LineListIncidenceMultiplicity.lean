@@ -727,6 +727,266 @@ theorem singletonBadScalarDefect_le_lineBadScalars_card
   exact Finset.card_filter_le _ _
 
 open Classical in
+/-- Zero singleton defect is exactly the no-unique-witness condition. -/
+theorem singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalarDefect dom k a u₀ u₁ = 0 ↔
+      NoUniqueBadScalarWitness dom k a u₀ u₁ := by
+  constructor
+  · intro hzero γ hγ hcard
+    have hmem : γ ∈ singletonBadScalars dom k a u₀ u₁ :=
+      (mem_singletonBadScalars dom k a u₀ u₁ γ).mpr ⟨hγ, hcard⟩
+    have hpos : 0 < singletonBadScalarDefect dom k a u₀ u₁ := by
+      rw [singletonBadScalarDefect]
+      exact Finset.card_pos.mpr ⟨γ, hmem⟩
+    omega
+  · intro hno
+    rw [singletonBadScalarDefect, Finset.card_eq_zero]
+    ext γ
+    constructor
+    · intro hγ
+      rcases (mem_singletonBadScalars dom k a u₀ u₁ γ).mp hγ with ⟨hbad, hcard⟩
+      exact False.elim (hno γ hbad hcard)
+    · intro hγ
+      simp at hγ
+
+open Classical in
+/-- Zero singleton defect is equivalently the constructive second-witness condition. -/
+theorem singletonBadScalarDefect_eq_zero_iff_secondWitnessProperty
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalarDefect dom k a u₀ u₁ = 0 ↔
+      BadScalarSecondWitnessProperty dom k a u₀ u₁ := by
+  rw [singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness,
+    noUniqueBadScalarWitness_iff_secondWitnessProperty]
+
+open Classical in
+/-- Positive singleton defect is exactly failure of the no-unique-witness condition. -/
+theorem singletonBadScalarDefect_pos_iff_not_noUniqueBadScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    0 < singletonBadScalarDefect dom k a u₀ u₁ ↔
+      ¬ NoUniqueBadScalarWitness dom k a u₀ u₁ := by
+  constructor
+  · intro hpos hno
+    have hzero :=
+      (singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+        dom k a u₀ u₁).mpr hno
+    omega
+  · intro hnot
+    by_contra hnotpos
+    have hzero : singletonBadScalarDefect dom k a u₀ u₁ = 0 := by
+      omega
+    exact hnot
+      ((singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+        dom k a u₀ u₁).mp hzero)
+
+open Classical in
+/-- Positive singleton defect is exactly a bad scalar with an explicitly unique witness codeword. -/
+theorem singletonBadScalarDefect_pos_iff_exists_uniqueWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    0 < singletonBadScalarDefect dom k a u₀ u₁ ↔
+      ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+        ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  rw [singletonBadScalarDefect_pos_iff_not_noUniqueBadScalarWitness,
+    not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword]
+
+open Classical in
+/-- In the strict unique-decoding regime, every bad scalar is a singleton bad scalar. -/
+theorem singletonBadScalars_eq_lineBadScalars_of_uniqueDecoding
+    (dom : Fin n ↪ F) (k a d : ℕ) (u₀ u₁ : Fin n → F)
+    (hdist : ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      ∀ c' ∈ (rsCode dom k : Submodule F (Fin n → F)), c ≠ c' →
+        d ≤ hammingDist c c')
+    (h2a : Fintype.card (Fin n) + (Fintype.card (Fin n) - d) < 2 * a) :
+    singletonBadScalars dom k a u₀ u₁ = lineBadScalars dom k a u₀ u₁ := by
+  ext γ
+  constructor
+  · intro hγ
+    exact singletonBadScalars_subset_lineBadScalars dom k a u₀ u₁ hγ
+  · intro hγ
+    exact (mem_singletonBadScalars dom k a u₀ u₁ γ).mpr
+      ⟨hγ,
+        badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding
+          dom k a d u₀ u₁ γ hγ hdist h2a⟩
+
+open Classical in
+/-- In the strict unique-decoding regime, the singleton defect is maximal: it is the whole
+bad-scalar count. -/
+theorem singletonBadScalarDefect_eq_lineBadScalars_card_of_uniqueDecoding
+    (dom : Fin n ↪ F) (k a d : ℕ) (u₀ u₁ : Fin n → F)
+    (hdist : ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      ∀ c' ∈ (rsCode dom k : Submodule F (Fin n → F)), c ≠ c' →
+        d ≤ hammingDist c c')
+    (h2a : Fintype.card (Fin n) + (Fintype.card (Fin n) - d) < 2 * a) :
+    singletonBadScalarDefect dom k a u₀ u₁ =
+      (lineBadScalars dom k a u₀ u₁).card := by
+  rw [singletonBadScalarDefect,
+    singletonBadScalars_eq_lineBadScalars_of_uniqueDecoding
+      dom k a d u₀ u₁ hdist h2a]
+
+open Classical in
+/-- Scalars for which a fixed codeword is the unique witness to a singleton bad-scalar fiber. -/
+noncomputable def codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (c : Fin n → F) : Finset F :=
+  (lineBadScalars dom k a u₀ u₁).filter
+    (fun γ => IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c)
+
+theorem mem_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (c : Fin n → F) (γ : F) :
+    γ ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c ↔
+      γ ∈ lineBadScalars dom k a u₀ u₁ ∧
+        IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  classical
+  rw [codewordSingletonWitnessScalars, Finset.mem_filter]
+
+theorem codewordSingletonWitnessScalars_subset_lineBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (c : Fin n → F) :
+    codewordSingletonWitnessScalars dom k a u₀ u₁ c ⊆
+      lineBadScalars dom k a u₀ u₁ := by
+  intro γ hγ
+  exact ((mem_codewordSingletonWitnessScalars dom k a u₀ u₁ c γ).mp hγ).1
+
+open Classical in
+/-- A codeword-singleton scalar is heavy for that codeword. -/
+theorem codewordSingletonWitnessScalars_subset_codewordHeavyScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (c : Fin n → F) :
+    codewordSingletonWitnessScalars dom k a u₀ u₁ c ⊆
+      codewordHeavyScalars (F := F) (n := n) a c u₀ u₁ := by
+  intro γ hγ
+  rcases (mem_codewordSingletonWitnessScalars dom k a u₀ u₁ c γ).mp hγ with
+    ⟨_hbad, hcUnique⟩
+  rw [mem_codewordHeavyScalars]
+  exact ((mem_badScalarWitnessCodewords dom k a u₀ u₁ γ c).mp hcUnique.1).2
+
+open Classical in
+/-- A codeword-singleton scalar is a singleton bad scalar. -/
+theorem codewordSingletonWitnessScalars_subset_singletonBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (c : Fin n → F) :
+    codewordSingletonWitnessScalars dom k a u₀ u₁ c ⊆
+      singletonBadScalars dom k a u₀ u₁ := by
+  intro γ hγ
+  rcases (mem_codewordSingletonWitnessScalars dom k a u₀ u₁ c γ).mp hγ with
+    ⟨hbad, hcUnique⟩
+  exact (mem_singletonBadScalars_iff_exists_uniqueWitnessCodeword
+    dom k a u₀ u₁ γ).mpr ⟨hbad, c, hcUnique⟩
+
+open Classical in
+/-- If a codeword uniquely witnesses a scalar, then it appears somewhere on the line. -/
+theorem lineAppearingCodewords_mem_of_isUniqueBadScalarWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {γ : F} {c : Fin n → F}
+    (hcUnique : IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c) :
+    c ∈ lineAppearingCodewords dom k a u₀ u₁ := by
+  have hmem := (mem_badScalarWitnessCodewords dom k a u₀ u₁ γ c).mp hcUnique.1
+  rw [lineAppearingCodewords, Finset.mem_filter]
+  exact ⟨Finset.mem_univ _, hmem.1, γ, hmem.2⟩
+
+open Classical in
+/-- Different codewords have disjoint singleton-witness scalar fibers. -/
+theorem disjoint_codewordSingletonWitnessScalars_of_ne
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {c c' : Fin n → F}
+    (hne : c ≠ c') :
+    Disjoint (codewordSingletonWitnessScalars dom k a u₀ u₁ c)
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c') := by
+  rw [Finset.disjoint_left]
+  intro γ hγ hγ'
+  rcases (mem_codewordSingletonWitnessScalars dom k a u₀ u₁ c γ).mp hγ with
+    ⟨_hbad, hcUnique⟩
+  rcases (mem_codewordSingletonWitnessScalars dom k a u₀ u₁ c' γ).mp hγ' with
+    ⟨_hbad', hc'Unique⟩
+  exact hne ((hcUnique.2 c' hc'Unique.1).symm)
+
+open Classical in
+/-- The per-codeword singleton-witness scalar fibers are pairwise disjoint. -/
+theorem pairwiseDisjoint_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    (lineAppearingCodewords dom k a u₀ u₁ : Set (Fin n → F)).PairwiseDisjoint
+      (fun c => codewordSingletonWitnessScalars dom k a u₀ u₁ c) := by
+  intro c _hc c' _hc' hne
+  exact disjoint_codewordSingletonWitnessScalars_of_ne dom k a u₀ u₁ hne
+
+open Classical in
+/-- Singleton bad scalars are covered by the per-codeword singleton-witness scalar fibers. -/
+theorem singletonBadScalars_subset_biUnion_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalars dom k a u₀ u₁ ⊆
+      (lineAppearingCodewords dom k a u₀ u₁).biUnion
+        (fun c => codewordSingletonWitnessScalars dom k a u₀ u₁ c) := by
+  intro γ hγ
+  rcases (mem_singletonBadScalars_iff_exists_uniqueWitnessCodeword
+    dom k a u₀ u₁ γ).mp hγ with ⟨hbad, c, hcUnique⟩
+  exact Finset.mem_biUnion.mpr
+    ⟨c, lineAppearingCodewords_mem_of_isUniqueBadScalarWitnessCodeword
+        dom k a u₀ u₁ hcUnique,
+      (mem_codewordSingletonWitnessScalars dom k a u₀ u₁ c γ).mpr ⟨hbad, hcUnique⟩⟩
+
+open Classical in
+/-- The per-codeword singleton-witness scalar fibers exactly partition singleton bad scalars. -/
+theorem biUnion_codewordSingletonWitnessScalars_eq_singletonBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    (lineAppearingCodewords dom k a u₀ u₁).biUnion
+        (fun c => codewordSingletonWitnessScalars dom k a u₀ u₁ c) =
+      singletonBadScalars dom k a u₀ u₁ := by
+  ext γ
+  constructor
+  · intro hγ
+    rcases Finset.mem_biUnion.mp hγ with ⟨c, _hcApp, hγc⟩
+    exact codewordSingletonWitnessScalars_subset_singletonBadScalars
+      dom k a u₀ u₁ c hγc
+  · intro hγ
+    exact singletonBadScalars_subset_biUnion_codewordSingletonWitnessScalars
+      dom k a u₀ u₁ hγ
+
+open Classical in
+/-- Exact codeword-indexed decomposition of the singleton defect. -/
+theorem singletonBadScalarDefect_eq_sum_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalarDefect dom k a u₀ u₁ =
+      ∑ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  rw [singletonBadScalarDefect]
+  rw [← biUnion_codewordSingletonWitnessScalars_eq_singletonBadScalars]
+  exact Finset.card_biUnion (pairwiseDisjoint_codewordSingletonWitnessScalars dom k a u₀ u₁)
+
+open Classical in
+/-- Union-bound form of the singleton-defect problem, indexed by the unique witnessing codeword. -/
+theorem singletonBadScalarDefect_le_sum_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalarDefect dom k a u₀ u₁
+      ≤ ∑ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card :=
+  le_of_eq (singletonBadScalarDefect_eq_sum_codewordSingletonWitnessScalars dom k a u₀ u₁)
+
+open Classical in
+/-- Singleton-defect bound from per-codeword singleton-witness scalar budgets. -/
+theorem singletonBadScalarDefect_le_of_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hbudget : ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card ≤ B) :
+    singletonBadScalarDefect dom k a u₀ u₁
+      ≤ (lineAppearingCodewords dom k a u₀ u₁).card * B := by
+  refine le_trans
+    (singletonBadScalarDefect_le_sum_codewordSingletonWitnessScalars dom k a u₀ u₁) ?_
+  calc
+    ∑ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card
+        ≤ ∑ _c ∈ lineAppearingCodewords dom k a u₀ u₁, B :=
+          Finset.sum_le_sum hbudget
+    _ = (lineAppearingCodewords dom k a u₀ u₁).card * B := by
+      rw [Finset.sum_const, smul_eq_mul]
+
+open Classical in
+/-- Defect cap from a line-list cap and a uniform per-codeword singleton-scalar cap. -/
+theorem singletonBadScalarDefect_le_of_lineListBudgeted_and_codewordSingletonWitnessScalars
+    (dom : Fin n ↪ F) (k a L S : ℕ) (u₀ u₁ : Fin n → F)
+    (hlist : LineListBudgeted dom k a u₀ u₁ L)
+    (hperCode : ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card ≤ S) :
+    singletonBadScalarDefect dom k a u₀ u₁ ≤ L * S :=
+  le_trans
+    (singletonBadScalarDefect_le_of_codewordSingletonWitnessScalars
+      dom k a S u₀ u₁ hperCode)
+    (Nat.mul_le_mul_right S hlist)
+
+open Classical in
 /-- Defect version of the factor-two incidence count.  Non-singleton bad scalars pay for two
 incidences; singleton bad scalars pay for one incidence and one defect unit. -/
 theorem lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
@@ -803,6 +1063,45 @@ theorem lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
   omega
 
 open Classical in
+/-- Bad-scalar budget from a per-codeword singleton-scalar cap and combined arithmetic. -/
+theorem lineBadScalars_card_le_of_weight_add_codewordSingletonBudget_le_two_mul
+    (dom : Fin n ↪ F) (k a S B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hperCode : ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card ≤ S)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + (lineAppearingCodewords dom k a u₀ u₁).card * S ≤ 2 * B) :
+    (lineBadScalars dom k a u₀ u₁).card ≤ B :=
+  lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
+    dom k a B u₀ u₁ hsafe
+    (le_trans
+      (Nat.add_le_add_left
+        (singletonBadScalarDefect_le_of_codewordSingletonWitnessScalars
+          dom k a S u₀ u₁ hperCode)
+        (puncturedZeroStratifiedLineWeight dom k a u₀ u₁))
+      hbudget)
+
+open Classical in
+/-- Bad-scalar budget from a line-list cap, per-codeword singleton-scalar cap, and combined
+arithmetic. -/
+theorem lineBadScalars_card_le_of_weight_add_lineListSingletonBudget_le_two_mul
+    (dom : Fin n ↪ F) (k a L S B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hlist : LineListBudgeted dom k a u₀ u₁ L)
+    (hperCode : ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card ≤ S)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁ + L * S ≤ 2 * B) :
+    (lineBadScalars dom k a u₀ u₁).card ≤ B :=
+  lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
+    dom k a B u₀ u₁ hsafe
+    (le_trans
+      (Nat.add_le_add_left
+        (singletonBadScalarDefect_le_of_lineListBudgeted_and_codewordSingletonWitnessScalars
+          dom k a L S u₀ u₁ hlist hperCode)
+        (puncturedZeroStratifiedLineWeight dom k a u₀ u₁))
+      hbudget)
+
+open Classical in
 /-- Failure of the named no-unique-witness condition is exactly a bad scalar with one witnessing
 codeword. -/
 theorem not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
@@ -875,6 +1174,38 @@ theorem uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty
   · intro hsecond u₀ u₁ hnotEligible hsafe
     exact (noUniqueBadScalarWitness_iff_secondWitnessProperty
       dom k a u₀ u₁).mpr (hsecond u₀ u₁ hnotEligible hsafe)
+
+/-- Uniform zero singleton-defect condition on the large-zero safe residual branch. -/
+def UniformLargeZeroSafeSingletonDefectZero
+    (dom : Fin n ↪ F) (k a : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      singletonBadScalarDefect dom k a u₀ u₁ = 0
+
+open Classical in
+/-- The uniform no-unique-witness branch is exactly zero singleton defect on every large-zero safe
+line. -/
+theorem uniformLargeZeroSafeNoUnique_iff_singletonDefectZero
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    UniformLargeZeroSafeNoUniqueBadScalarWitness dom k a ↔
+      UniformLargeZeroSafeSingletonDefectZero dom k a := by
+  constructor
+  · intro hno u₀ u₁ hnotEligible hsafe
+    exact (singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+      dom k a u₀ u₁).mpr (hno u₀ u₁ hnotEligible hsafe)
+  · intro hzero u₀ u₁ hnotEligible hsafe
+    exact (singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+      dom k a u₀ u₁).mp (hzero u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- The uniform constructive second-witness branch is exactly zero singleton defect on every
+large-zero safe line. -/
+theorem uniformLargeZeroSafeSecondWitness_iff_singletonDefectZero
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    UniformLargeZeroSafeSecondWitnessProperty dom k a ↔
+      UniformLargeZeroSafeSingletonDefectZero dom k a := by
+  rw [← uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty,
+    uniformLargeZeroSafeNoUnique_iff_singletonDefectZero]
 
 /-- Uniform half-weight arithmetic budget for the factor-two multiplicity route on the large-zero
 safe residual branch. -/
@@ -1139,16 +1470,41 @@ section SourceAudit
 #print axioms singletonBadScalarDefect
 #print axioms singletonBadScalarDefect_eq_sum_indicator
 #print axioms singletonBadScalarDefect_le_lineBadScalars_card
+#print axioms singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+#print axioms singletonBadScalarDefect_eq_zero_iff_secondWitnessProperty
+#print axioms singletonBadScalarDefect_pos_iff_not_noUniqueBadScalarWitness
+#print axioms singletonBadScalarDefect_pos_iff_exists_uniqueWitnessCodeword
+#print axioms singletonBadScalars_eq_lineBadScalars_of_uniqueDecoding
+#print axioms singletonBadScalarDefect_eq_lineBadScalars_card_of_uniqueDecoding
+#print axioms codewordSingletonWitnessScalars
+#print axioms mem_codewordSingletonWitnessScalars
+#print axioms codewordSingletonWitnessScalars_subset_lineBadScalars
+#print axioms codewordSingletonWitnessScalars_subset_codewordHeavyScalars
+#print axioms codewordSingletonWitnessScalars_subset_singletonBadScalars
+#print axioms lineAppearingCodewords_mem_of_isUniqueBadScalarWitnessCodeword
+#print axioms disjoint_codewordSingletonWitnessScalars_of_ne
+#print axioms pairwiseDisjoint_codewordSingletonWitnessScalars
+#print axioms singletonBadScalars_subset_biUnion_codewordSingletonWitnessScalars
+#print axioms biUnion_codewordSingletonWitnessScalars_eq_singletonBadScalars
+#print axioms singletonBadScalarDefect_eq_sum_codewordSingletonWitnessScalars
+#print axioms singletonBadScalarDefect_le_sum_codewordSingletonWitnessScalars
+#print axioms singletonBadScalarDefect_le_of_codewordSingletonWitnessScalars
+#print axioms singletonBadScalarDefect_le_of_lineListBudgeted_and_codewordSingletonWitnessScalars
 #print axioms lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
 #print axioms lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
 #print axioms lineBadScalars_card_le_puncturedWeight_add_singletonDefect_div_two
 #print axioms lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
+#print axioms lineBadScalars_card_le_of_weight_add_codewordSingletonBudget_le_two_mul
+#print axioms lineBadScalars_card_le_of_weight_add_lineListSingletonBudget_le_two_mul
 #print axioms not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
 #print axioms exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
 #print axioms exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
 #print axioms UniformLargeZeroSafeNoUniqueBadScalarWitness
 #print axioms UniformLargeZeroSafeSecondWitnessProperty
 #print axioms uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty
+#print axioms UniformLargeZeroSafeSingletonDefectZero
+#print axioms uniformLargeZeroSafeNoUnique_iff_singletonDefectZero
+#print axioms uniformLargeZeroSafeSecondWitness_iff_singletonDefectZero
 #print axioms UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
 #print axioms UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo

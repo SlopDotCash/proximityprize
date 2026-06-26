@@ -78,6 +78,19 @@ mem_singletonBadScalars_iff_exists_uniqueWitnessCodeword
 singletonBadScalarDefect
 singletonBadScalarDefect_eq_sum_indicator
 singletonBadScalarDefect_le_lineBadScalars_card
+singletonBadScalarDefect_eq_zero_iff_noUniqueBadScalarWitness
+singletonBadScalarDefect_eq_zero_iff_secondWitnessProperty
+singletonBadScalarDefect_pos_iff_not_noUniqueBadScalarWitness
+singletonBadScalarDefect_pos_iff_exists_uniqueWitnessCodeword
+singletonBadScalars_eq_lineBadScalars_of_uniqueDecoding
+singletonBadScalarDefect_eq_lineBadScalars_card_of_uniqueDecoding
+codewordSingletonWitnessScalars
+mem_codewordSingletonWitnessScalars
+codewordSingletonWitnessScalars_subset_codewordHeavyScalars
+codewordSingletonWitnessScalars_subset_singletonBadScalars
+biUnion_codewordSingletonWitnessScalars_eq_singletonBadScalars
+singletonBadScalarDefect_eq_sum_codewordSingletonWitnessScalars
+singletonBadScalarDefect_le_of_codewordSingletonWitnessScalars
 lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
 lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
 lineBadScalars_card_le_puncturedWeight_add_singletonDefect_div_two
@@ -88,6 +101,9 @@ exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
 UniformLargeZeroSafeNoUniqueBadScalarWitness
 UniformLargeZeroSafeSecondWitnessProperty
 uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty
+UniformLargeZeroSafeSingletonDefectZero
+uniformLargeZeroSafeNoUnique_iff_singletonDefectZero
+uniformLargeZeroSafeSecondWitness_iff_singletonDefectZero
 UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
 UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
 largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
@@ -197,6 +213,21 @@ punctured weight + singleton defect <= 2B.
 
 The matching scanner localizes any failed uniform budget to either a combined
 weight-plus-defect arithmetic failure or a concrete witness with no distinct second witness.
+
+The defect endpoints are exact: zero singleton defect is equivalent to the `R = 2` floor /
+second-witness property, while strict unique decoding makes the defect maximal
+(`singletonBadScalarDefect = #badScalars`).  So the defect fallback is useful only in the
+beyond-unique-decoding region where singleton witnesses exist but are sparse.
+
+`LineListSingletonDefectGeometry.lean` then localizes the singleton defect by exact
+zero-direction agreement profiles.  It turns the defect into a filtered incidence graph and bounds
+each exact-profile slice by the corresponding exact appearance fiber times the usual moving-support
+denominator.
+
+The defect also has a codeword-indexed partition: `codewordSingletonWitnessScalars` are disjoint
+over appearing codewords and their cardinals sum exactly to `singletonBadScalarDefect`.  This
+separates the remaining problem into per-codeword unique-witness scalar budgets plus an appearing
+codeword count.
 
 The factor-two branch now also reaches the same production layer used by the support/large-zero
 split:

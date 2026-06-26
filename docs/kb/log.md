@@ -495,6 +495,24 @@ budget on punctured weight plus singleton defect, with scanners for both defect-
 a concrete witness without a second witness.  Companion note:
 `docs/kb/deltastar-464-singleton-defect-2026-06-26.md`.
 
+Follow-up: the singleton defect endpoints are now exact.  Zero singleton defect is equivalent to
+`NoUniqueBadScalarWitness` and to the constructive second-witness property; positive defect is
+equivalent to an explicitly unique witness codeword; and
+`UniformLargeZeroSafeSingletonDefectZero` packages the zero-defect condition on the large-zero safe
+branch.  Strict Johnson unique decoding makes the singleton defect equal the full bad-scalar count,
+so the defect route is a possible beyond-unique-decoding sparseness problem, not an improvement in
+the ordinary unique-decoding zone.
+
+Follow-up: `LineListSingletonDefectGeometry.lean` now turns singleton defects into their own
+filtered incidence graph and slices them by exact zero-direction agreement set.  Each exact-profile
+slice is bounded by the corresponding exact appearance fiber times the moving-support denominator,
+so singleton-defect estimates can be attacked profile-by-profile rather than only globally.
+
+Follow-up: singleton defects now also have a codeword-indexed partition.  The sets
+`codewordSingletonWitnessScalars` are disjoint over appearing codewords, their `biUnion` is exactly
+`singletonBadScalars`, and `singletonBadScalarDefect` is the corresponding sum.  A per-codeword
+budget therefore bounds the whole defect by `#lineAppearingCodewords * B`.
+
 Follow-up: `LineListIncidenceMultiplicity.lean` now has the uniform converse scanner
 `exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted`.  Once the
 support branch, support arithmetic, zero-direction safety, and half-weight arithmetic are fixed,
