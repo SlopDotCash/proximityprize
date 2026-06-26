@@ -473,6 +473,20 @@ failed half-weight bad-scalar budget.  The uniform large-zero safe wrapper packa
 support-eligible branch plus no-unique-witness half-weight branch; it is still a conditional route,
 not a floor proof.
 
+Follow-up: `LineListIncidenceMultiplicity.lean` now has the positive equivalent of the
+no-unique-witness condition: `BadScalarSecondWitnessProperty` says every witness to every bad
+scalar has a distinct second witness, and
+`noUniqueBadScalarWitness_iff_secondWitnessProperty` proves it is exactly the `R = 2` floor socket.
+The factor-two discount can now be consumed through either the negative no-unique condition or this
+constructive second-witness obligation.
+
+Follow-up: `LineListIncidenceMultiplicity.lean` now has the uniform converse scanner
+`exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted`.  Once the
+support branch, support arithmetic, zero-direction safety, and half-weight arithmetic are fixed,
+any failed uniform bad-scalar budget must exhibit a large-zero safe line with a bad scalar and its
+unique witnessing codeword.  This makes the factor-two route refutable at the same production layer
+where it is consumed.
+
 Follow-up: `SumsetExtremalityGuard.lean` records the corrected guarded form of the
 sumset-extremality reduction.  A selected representative family proves the open-core incidence
 budget only after a real split: domination on the guarded branch plus a separate budget for the

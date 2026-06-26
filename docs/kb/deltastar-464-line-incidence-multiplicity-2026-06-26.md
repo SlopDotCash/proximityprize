@@ -58,18 +58,23 @@ not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
 NoUniqueBadScalarWitness
 IsUniqueBadScalarWitnessCodeword
 badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+BadScalarSecondWitnessProperty
+noUniqueBadScalarWitness_iff_secondWitnessProperty
 not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
 not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword
 lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
 lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
+lineBadScalars_card_le_weightDivTwo_of_secondWitness
+lineBadScalars_card_le_of_secondWitness_and_weightDivTwo_le
 not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
 exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
 exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
 UniformLargeZeroSafeNoUniqueBadScalarWitness
 UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
-largeZeroSafeLineBadScalarsBudgeted_of_uniformNoUniqueBadScalarWitness_and_puncturedWeightDivTwo
-uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_noUniqueWitnessPuncturedWeightDivTwo
+largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
+exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted
 lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
@@ -127,6 +132,19 @@ failed factor-two budget
 This is the right shape for the next geometric attack: analyze the single codeword's agreement
 set, zero-direction stratum, and appearance fiber directly.
 
+Conversely, the positive proof socket is now explicit:
+
+```text
+for every bad scalar gamma and every witness c,
+produce a distinct second witness c'
+<=> NoUniqueBadScalarWitness
+=> factor-two incidence discount
+```
+
+This is stronger as a workbench obligation than the negative formulation.  A future proof can try
+to manufacture `c'` by symmetry, ownership transfer, or stack geometry; a refutation can exhibit a
+single `(gamma, c)` with no second witness.
+
 The factor-two branch now also reaches the same production layer used by the support/large-zero
 split:
 
@@ -142,6 +160,12 @@ UniformSupportLineListBudgeted
 This is still conditional.  The substantive new hard input is a uniform proof that large-zero safe
 lines have no unique-witness bad scalar, plus the arithmetic proof that the punctured weight divided
 by two fits the target budget.
+
+The converse scanner is now uniform as well: after the support branch, support arithmetic,
+zero-direction safety, and half-weight arithmetic are fixed, failure of
+`UniformLineBadScalarsBudgeted` produces a large-zero safe line, a bad scalar, and the unique
+witnessing codeword.  This removes the remaining ambiguity about where the factor-two route can
+break.
 
 ## Companion: Exact Appearance Fibers
 
