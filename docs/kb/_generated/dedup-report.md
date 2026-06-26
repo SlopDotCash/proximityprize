@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4893 files, 52104 declarations
+- `ArkLib` — 4894 files, 52120 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -12139,4 +12139,3 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L55)
     - a: A one-stack incidence budget for the actual MCA bad-scalar count.
     - b: A one-stack incidence budget for the actual MCA bad-scalar count.
-
