@@ -399,6 +399,35 @@ exactly `z` zero coordinates and support `n-z`.  Therefore `a <= z`, `t < a`, `a
 positive route must count appearance-filtered coordinate fibers, not arbitrary affine
 interpolation fibers.
 
+Follow-up: `LineListAppearanceFiber.lean` now defines `appearingCoordinateAgreementFiber`, the
+intersection of a coordinate fiber with `lineAppearingCodewords`.  It proves the same zero-stratum
+cover, cardinal union bound, and punctured-budget consumer for these appearance-filtered fibers.
+This does not prove a saving, but it moves the next proof obligation to the right object.
+
+Follow-up: the appearance-filtered route now has its own arithmetic socket,
+`ZeroAppearingCoordinateFiberBudgetFits` / `UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits`,
+plus raw-to-appearance bridge lemmas.  The old coordinate-fiber fit is only a fallback; a positive
+route can now plug in a genuinely smaller appearance-count envelope without being forced through
+the refuted field-power arithmetic.
+
+Follow-up: the appearance-filtered API now reaches the full line-list production wrapper via
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_appearingCoordinateFibers`.  Its
+scanner forms show that, after the support-eligible line-list theorem, support arithmetic, and
+appearance-fit arithmetic are fixed, any failed uniform bad-scalar budget must be either
+zero-direction saturation or an overfull large-zero safe appearance fiber; with the high range
+`M(t) >= 1`, the latter is forced into the low range `t < k`.
+
+Follow-up: `Frontier/PowMapFiberCard.lean` records the finite-set constant-fiber regrouping lemma
+behind the complete power-map lift.  It isolates the no-go mechanism for Deligne-style complete
+sum lifts: the exact regrouping is elementary, but the complete source sum inherits the high
+degree of the power map.  The finite commutative group form removes the supplied fiber hypothesis,
+and the cyclic form identifies the multiplicity as `gcd(#G,e)`.
+
+Follow-up: added `docs/kb/deltastar-464-bounded-complexity-powmap-2026-06-26.md`, tying the local
+PDF check, the pow-map regrouping brick, and the appearance-filtered line-list replacement into one
+bounded-complexity critique.  Verdict: interface progress only; the floor still needs global stack
+domination or the thin-subgroup Paley/BGK sup bound.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:
@@ -421,3 +450,17 @@ Follow-up: `_FloorClosureContract.lean` now also names the sharp one-representat
 listed representative that is both within budget and globally worst is enough for
 `WorstCaseIncidenceBounded`; failure says every proposed representative is either above budget or
 beaten by another stack.
+
+Follow-up: `LineListIncidenceMultiplicity.lean` now records the exact bipartite incidence graph
+between bad scalars and witnessing codewords.  The first and second projections recover
+`lineBadScalars` and `lineAppearingCodewords`, while the incidence cardinality decomposes as a sum
+over either bad-scalar witness multiplicities or per-codeword heavy-scalar counts.  Consequently a
+new conditional socket is available: if every bad scalar has at least `R` codeword witnesses, then
+`#badScalars * R <= puncturedZeroStratifiedLineWeight`.  This is interface progress only; the
+remaining hard input is a real multiplicity floor, or a sparse-witness counterexample.
+
+Follow-up: `LineListAppearanceFiber.lean` now also has exact zero-agreement appearance fibers.
+The previous appearance-coordinate object covered a `t`-stratum by all zero-subsets; the exact
+fiber requires `directionZeroAgreementSet(c,u0,u1) = S`, so the stratum cardinality is an exact
+sum over `S` in `powersetCard t`.  This removes a cover looseness while preserving the same
+punctured-budget consumer, but it still leaves the substantive exact-fiber bound open.

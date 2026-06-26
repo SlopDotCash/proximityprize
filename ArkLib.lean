@@ -1179,6 +1179,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PinnedBandReaching
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PinnedScalarMultDivision
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PoissonAveragedMGF
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PowerSumLogConvexSpacing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PowerSumMaxBracket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PowerSumRatioMeanFloor
@@ -2879,9 +2880,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.LineFirstMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineHeavySetBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
+import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiber
 import ArkLib.Data.CodingTheory.ProximityGap.LineListArithmeticObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.LineListDimensionLift
+import ArkLib.Data.CodingTheory.ProximityGap.LineListIncidenceMultiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.LineListJohnsonClosure
 import ArkLib.Data.CodingTheory.ProximityGap.LineListReduction
 import ArkLib.Data.CodingTheory.ProximityGap.LinePairCooccurrenceBound

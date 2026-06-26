@@ -67,6 +67,21 @@ B < choose(z,t) * |F|^(k-t)
 
 under those simple inequalities refutes the raw field-power coordinate-fiber fit.
 
+Follow-up module `LineListAppearanceFiber.lean` now formalizes the replacement object:
+
+```lean
+appearingCoordinateAgreementFiber
+zeroAgreementStratum_subset_appearingCoordinateAgreementFiber_biUnion
+zeroAgreementStratum_card_le_choose_mul_appearingCoordinateFiberBound
+puncturedZeroStratifiedLineBudgeted_of_appearingCoordinateFiberBudgeted
+uniformPuncturedZeroStratifiedLineBudgeted_of_uniformAppearingCoordinateFiberBudgeted
+```
+
+These theorems prove that the same punctured-budget reduction works with
+`coordinateAgreementFiber(S) ∩ lineAppearingCodewords`, a subset of the raw affine fiber.  The
+numerical saving is still open; the point is that future positive estimates can now target the
+right finite set without redoing the line-list plumbing.
+
 ## Critique of the Previous Hope
 
 The previous optimistic reading was:

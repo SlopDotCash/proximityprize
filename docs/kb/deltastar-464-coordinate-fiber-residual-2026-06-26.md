@@ -170,6 +170,10 @@ The follow-up module `LineListArithmeticObstruction.lean` gives the sharper `z,t
 for any `z <= n`, there is a direction with exactly `z` zero coordinates and support `n-z`, so
 whenever `a <= z`, `t < a`, `a - t <= n - z`, and
 `B < choose(z,t) * |F|^(k-t)`, the raw field-power fit is impossible.
+`LineListAppearanceFiber.lean` now supplies the corresponding positive API: replace each raw
+`coordinateAgreementFiber` by its intersection with `lineAppearingCodewords`, and the stratum cover
+plus punctured-budget consumer still go through.  The next hard estimate is therefore a bound on
+these appearance-filtered fibers, not on all affine interpolation completions.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target
