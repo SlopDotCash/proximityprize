@@ -2054,6 +2054,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiLocalSlopeTurnoverG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiMomentIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiNewRelations
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JohnsonOverheadTightBudgetGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26ThornerZamanTightBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26s128ThornerZamanBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KelleyOwenDilationPencil
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KuriharaDiscriminantShiftBlind

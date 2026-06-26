@@ -139,6 +139,18 @@ kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound
 kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log
 ```
 
+`Frontier/_KKH26ThornerZamanTightBridge.lean` now composes the generic
+`ThornerZamanPNT -> TZPrimeSupply` reduction with that normalized tight square-budget consumer:
+
+```lean
+kkh26_ceiling_of_thornerZamanPNT_tight_square_bound_log
+kkh26_ceiling_of_thornerZamanPNT_natFloor_tight_square_bound_log
+kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log
+```
+
+The last form is the canonical floor-supply consumer: its bad-prime budget is compared directly
+against `⌊tzDensityLB n β ε⌋₊`, with no separate `supply` witness.
+
 At `s = 128`, the tight variants replace the coarse `448*log 2` factor by either
 `log((2r)^64)` or the normalized form `64*log(2r)`.  This is only an arithmetic relaxation of
 the bad-prime budget; the polynomial-modulus prime-count input remains the analytic wall.
@@ -152,6 +164,7 @@ field size. Honest partial progress: the exact open statement is pinned as a cit
 `Prop`, the reduction is proven axiom-clean, and the Myerson/Lehmer alternative is refuted.
 
 **Artifacts:** `Frontier/WF407_B3_s128.lean`,
+`Frontier/_KKH26ThornerZamanTightBridge.lean`,
 `scripts/probes/wf407_B3-s128_{budget,verdict,myerson}.py`.
 **What remains:** formalize/cite `EffectiveTZLowerBound` (= [TZ24]); or, for *non*-prize
 fixed-|F| rows, push the Parseval/Myerson census-coverage route (A) further. Neither closes the
