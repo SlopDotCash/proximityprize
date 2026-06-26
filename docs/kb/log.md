@@ -459,13 +459,20 @@ new conditional socket is available: if every bad scalar has at least `R` codewo
 `#badScalars * R <= puncturedZeroStratifiedLineWeight`.  This is interface progress only; the
 remaining hard input is a real multiplicity floor, or a sparse-witness counterexample.
 
+Follow-up: `LineListIncidenceMultiplicity.lean` now pins the first multiplicity threshold exactly:
+the `R = 1` floor is automatic, while failure of the `R = 2` floor is equivalent to a bad scalar
+with a unique witnessing codeword.  Any nontrivial multiplicity-discount route must therefore
+prove no unique-witness bad scalar exists on the relevant hard lines, or exhibit one as a refuter.
+
 Follow-up: `SumsetExtremalityGuard.lean` records the corrected guarded form of the
 sumset-extremality reduction.  A selected representative family proves the open-core incidence
 budget only after a real split: domination on the guarded branch plus a separate budget for the
 complement.  The file also adds exact scanner forms: failed guarded budget, failed guarded
 extremality, and failed `WorstCaseIncidenceBounded` are all exposed as explicit counterexamples;
 with the selected family budgeted, any full-budget failure is either an outside-guard over-budget
-stack or a guarded stack that strictly beats every selected representative.
+stack or a guarded stack that strictly beats every selected representative.  The same consumers
+and scanners are packaged for explicit finite catalogues (`Finset` representative lists), matching
+the probe-facing workflow.
 
 Follow-up: `LineListAppearanceFiber.lean` now also has exact zero-agreement appearance fibers.
 The previous appearance-coordinate object covered a `t`-stratum by all zero-subsets; the exact

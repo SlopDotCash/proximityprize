@@ -264,6 +264,134 @@ theorem not_worstCaseIncidenceBounded_of_counterexample
   intro hbounded
   exact (not_lt_of_ge (hbounded u trivial)) hgt
 
+/-! ## Finite-family scanner surface -/
+
+open Classical in
+/-- Finite-family form of the selected-family budget.  This is the scanner-facing version of
+`MonomialIncidenceBounded` when the proposed extremal catalogue is an explicit `Finset`. -/
+theorem monomialIncidenceBounded_finset_coe_iff
+    (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : Finset (WordStack A (Fin 2) ι)) :
+    MonomialIncidenceBounded (F := F) C δ B (R : Set (WordStack A (Fin 2) ι)) ↔
+      ∀ r : WordStack A (Fin 2) ι, r ∈ R → incCount (F := F) C δ r ≤ B := by
+  constructor
+  · intro h r hr
+    exact h r (by simpa using hr)
+  · intro h r hr
+    exact h r (by simpa using hr)
+
+open Classical in
+/-- Finite-family form of guarded extremality.  A guarded stack must be dominated by one member of
+the explicit catalogue `R`. -/
+theorem familyExtremalOn_finset_coe_iff
+    (C : Set (ι → A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (G : WordStack A (Fin 2) ι → Prop) :
+    FamilyExtremalOn (F := F) C δ (R : Set (WordStack A (Fin 2) ι)) G ↔
+      ∀ u : WordStack A (Fin 2) ι, G u →
+        ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧
+          incCount (F := F) C δ u ≤ incCount (F := F) C δ r := by
+  constructor
+  · intro h u hu
+    rcases h u hu with ⟨r, hr, hle⟩
+    exact ⟨r, by simpa using hr, hle⟩
+  · intro h u hu
+    rcases h u hu with ⟨r, hr, hle⟩
+    exact ⟨r, by simpa using hr, hle⟩
+
+open Classical in
+/-- Finite-family guarded consumer: a budget on an explicit catalogue and guarded domination by
+that catalogue budget every stack satisfying the guard. -/
+theorem stackIncidenceBoundedOn_of_finsetFamilyExtremalOn
+    (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : Finset (WordStack A (Fin 2) ι)) (G : WordStack A (Fin 2) ι → Prop)
+    (hR : ∀ r : WordStack A (Fin 2) ι, r ∈ R → incCount (F := F) C δ r ≤ B)
+    (hext : ∀ u : WordStack A (Fin 2) ι, G u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r) :
+    StackIncidenceBoundedOn (F := F) C δ B G := by
+  intro u hu
+  rcases hext u hu with ⟨r, hr, hle⟩
+  exact le_trans hle (hR r hr)
+
+open Classical in
+/-- Split consumer for an explicit finite catalogue.  The full open-core incidence budget follows
+from finite-family domination on the guarded branch and a separate complement budget. -/
+theorem worstCaseIncidenceBounded_of_split_finsetFamilyExtremalOn
+    (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : Finset (WordStack A (Fin 2) ι)) (G : WordStack A (Fin 2) ι → Prop)
+    (hR : ∀ r : WordStack A (Fin 2) ι, r ∈ R → incCount (F := F) C δ r ≤ B)
+    (hext : ∀ u : WordStack A (Fin 2) ι, G u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r)
+    (houtside : StackIncidenceBoundedOn (F := F) C δ B (fun u => ¬ G u)) :
+    WorstCaseIncidenceBounded (F := F) (A := A) C δ B := by
+  exact worstCaseIncidenceBounded_of_split_familyExtremalOn
+    C δ B (R : Set (WordStack A (Fin 2) ι)) G
+    ((monomialIncidenceBounded_finset_coe_iff C δ B R).mpr hR)
+    ((familyExtremalOn_finset_coe_iff C δ R G).mpr hext)
+    houtside
+
+/-- The finite-catalogue guarded split plugged into the conditional `δ*` pin. -/
+theorem mcaDeltaStar_pin_of_split_finsetFamilyExtremalOn
+    (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (R : Finset (WordStack A (Fin 2) ι)) (G : WordStack A (Fin 2) ι → Prop)
+    (hδ : δ ≤ 1)
+    (hR : ∀ r : WordStack A (Fin 2) ι, r ∈ R → incCount (F := F) C δ r ≤ B)
+    (hext : ∀ u : WordStack A (Fin 2) ι, G u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r)
+    (houtside : StackIncidenceBoundedOn (F := F) C δ B (fun u => ¬ G u))
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  worstCaseIncidence_pin (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_split_finsetFamilyExtremalOn
+      C δ B R G hR hext houtside)
+    hbudget
+
+open Classical in
+/-- Failure of finite-catalogue guarded domination is exactly a guarded stack that strictly beats
+every catalogue member. -/
+theorem not_finsetFamilyExtremalOn_iff_exists_strict_counterexample
+    (C : Set (ι → A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (G : WordStack A (Fin 2) ι → Prop) :
+    (¬ ∀ u : WordStack A (Fin 2) ι, G u →
+        ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧
+          incCount (F := F) C δ u ≤ incCount (F := F) C δ r) ↔
+      ∃ u : WordStack A (Fin 2) ι, G u ∧
+        ∀ r : WordStack A (Fin 2) ι, r ∈ R →
+          incCount (F := F) C δ r < incCount (F := F) C δ u := by
+  rw [← familyExtremalOn_finset_coe_iff C δ R G]
+  constructor
+  · intro hnot
+    rcases (not_familyExtremalOn_iff_exists_strict_counterexample
+      C δ (R : Set (WordStack A (Fin 2) ι)) G).mp hnot with ⟨u, hu, hbeat⟩
+    exact ⟨u, hu, fun r hr => hbeat r (by simpa using hr)⟩
+  · rintro ⟨u, hu, hbeat⟩
+    exact (not_familyExtremalOn_iff_exists_strict_counterexample
+      C δ (R : Set (WordStack A (Fin 2) ι)) G).mpr
+      ⟨u, hu, fun r hr => hbeat r (by simpa using hr)⟩
+
+open Classical in
+/-- Scanner form for a failed guarded split with an explicit finite catalogue.  Once every
+catalogue member is budgeted, a full open-core counterexample is either outside the guard or is a
+guarded stack beating every catalogue member. -/
+theorem outside_or_guarded_strict_counterexample_of_not_worstCaseIncidenceBounded_finset
+    (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : Finset (WordStack A (Fin 2) ι)) (G : WordStack A (Fin 2) ι → Prop)
+    (hR : ∀ r : WordStack A (Fin 2) ι, r ∈ R → incCount (F := F) C δ r ≤ B)
+    (hnot : ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ B) :
+    (∃ u : WordStack A (Fin 2) ι, ¬ G u ∧ B < incCount (F := F) C δ u) ∨
+      ∃ u : WordStack A (Fin 2) ι, G u ∧
+        ∀ r : WordStack A (Fin 2) ι, r ∈ R →
+          incCount (F := F) C δ r < incCount (F := F) C δ u := by
+  rcases outside_or_guarded_strict_counterexample_of_not_worstCaseIncidenceBounded
+      C δ B (R : Set (WordStack A (Fin 2) ι)) G
+      ((monomialIncidenceBounded_finset_coe_iff C δ B R).mpr hR) hnot with
+    houtside | hinside
+  · exact Or.inl houtside
+  · rcases hinside with ⟨u, hu, hbeat⟩
+    exact Or.inr ⟨u, hu, fun r hr => hbeat r (by simpa using hr)⟩
+
 section SourceAudit
 
 #print axioms StackIncidenceBoundedOn
@@ -282,6 +410,13 @@ section SourceAudit
 #print axioms not_familyExtremalOn_of_strict_counterexample
 #print axioms not_sumsetExtremal_of_strict_counterexample
 #print axioms not_worstCaseIncidenceBounded_of_counterexample
+#print axioms monomialIncidenceBounded_finset_coe_iff
+#print axioms familyExtremalOn_finset_coe_iff
+#print axioms stackIncidenceBoundedOn_of_finsetFamilyExtremalOn
+#print axioms worstCaseIncidenceBounded_of_split_finsetFamilyExtremalOn
+#print axioms mcaDeltaStar_pin_of_split_finsetFamilyExtremalOn
+#print axioms not_finsetFamilyExtremalOn_iff_exists_strict_counterexample
+#print axioms outside_or_guarded_strict_counterexample_of_not_worstCaseIncidenceBounded_finset
 
 end SourceAudit
 

@@ -83,6 +83,30 @@ inside guard:   ∃ u, G u ∧ ∀ v ∈ M, incCount(v) < incCount(u)
 A proposed guard is only viable if the outside branch is budgeted and the inside branch has no
 strict representative-beater.
 
+The finite-catalogue surface is now exposed directly for scanner outputs whose representative
+family is an explicit `Finset`:
+
+```lean
+monomialIncidenceBounded_finset_coe_iff
+familyExtremalOn_finset_coe_iff
+stackIncidenceBoundedOn_of_finsetFamilyExtremalOn
+worstCaseIncidenceBounded_of_split_finsetFamilyExtremalOn
+mcaDeltaStar_pin_of_split_finsetFamilyExtremalOn
+not_finsetFamilyExtremalOn_iff_exists_strict_counterexample
+outside_or_guarded_strict_counterexample_of_not_worstCaseIncidenceBounded_finset
+```
+
+This is just a finite `R` specialization of the guarded API; it adds no extremality theorem.  Its
+value is removing a translation step for computational certificates:
+
+```text
+finite R budgeted + guarded domination by R + outside budget
+=> WorstCaseIncidenceBounded
+
+budgeted R + failed WorstCaseIncidenceBounded
+=> outside over-budget stack OR guarded stack beating every r ∈ R
+```
+
 ## What This Changes
 
 This does not supply a finite-field counterexample and does not prove a windowed extremality

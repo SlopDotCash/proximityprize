@@ -308,6 +308,47 @@ theorem not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_
     exact (not_lt_of_ge (hmult γ hγ)) hlt
 
 open Classical in
+/-- Every bad scalar has at least one witnessing codeword. -/
+theorem badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {γ : F}
+    (hγ : γ ∈ lineBadScalars dom k a u₀ u₁) :
+    0 < (badScalarWitnessCodewords dom k a u₀ u₁ γ).card := by
+  rw [lineBadScalars, Finset.mem_filter] at hγ
+  rcases hγ with ⟨_, c, hcCode, hheavy⟩
+  exact Finset.card_pos.mpr ⟨c, (mem_badScalarWitnessCodewords dom k a u₀ u₁ γ c).mpr
+    ⟨hcCode, hheavy⟩⟩
+
+open Classical in
+/-- The `R = 1` multiplicity floor is automatic and gives no genuine discount. -/
+theorem lineBadScalarMultiplicityFloor_one
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    LineBadScalarMultiplicityFloor dom k a u₀ u₁ 1 := by
+  intro γ hγ
+  exact badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars dom k a u₀ u₁ hγ
+
+open Classical in
+/-- Failure of the first nontrivial multiplicity floor (`R = 2`) is exactly a bad scalar with a
+unique witnessing codeword. -/
+theorem not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    ¬ LineBadScalarMultiplicityFloor dom k a u₀ u₁ 2 ↔
+      ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+        (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 := by
+  constructor
+  · intro hnot
+    rcases (not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
+      dom k a 2 u₀ u₁).mp hnot with ⟨γ, hγ, hlt⟩
+    refine ⟨γ, hγ, ?_⟩
+    have hpos := badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
+      dom k a u₀ u₁ hγ
+    omega
+  · rintro ⟨γ, hγ, hcard⟩
+    apply (not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
+      dom k a 2 u₀ u₁).mpr
+    refine ⟨γ, hγ, ?_⟩
+    omega
+
+open Classical in
 /-- Multiplicity converts the incidence identity into `#badScalars * R ≤ #incidences`. -/
 theorem lineBadScalars_card_mul_le_lineHeavyIncidences_card_of_multiplicityFloor
     (dom : Fin n ↪ F) (k a R : ℕ) (u₀ u₁ : Fin n → F)
@@ -377,6 +418,9 @@ section SourceAudit
 #print axioms lineHeavyIncidences_card_le_puncturedZeroStratifiedLineWeight
 #print axioms LineBadScalarMultiplicityFloor
 #print axioms not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
+#print axioms badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
+#print axioms lineBadScalarMultiplicityFloor_one
+#print axioms not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
 #print axioms lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
