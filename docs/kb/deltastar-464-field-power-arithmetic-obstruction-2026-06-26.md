@@ -101,20 +101,51 @@ unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
 
+`LineListSupportRatioFiber.lean` now makes the next replacement object explicit:
+
+```lean
+supportRatioFiber
+exists_supportRatioFiber_card_ge_sub_of_mem_lineAppearingCodewords
+exists_supportRatioFiber_card_ge_sub_of_mem_exactAppearingZeroAgreementFiber
+supportRatioHeavyCoordinateFiber
+exactAppearingZeroAgreementFiber_subset_supportRatioHeavyCoordinateFiber
+zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+unsafe_or_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_low_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+```
+
+For an appearing codeword, the moving-support ratios
+`(c i - u0 i) / u1 i` must have a fiber of size at least `a - t`, where `t` is the exact
+zero-direction agreement count.  Hence an exact appearance fiber over `S` is contained in the raw
+coordinate fiber over `S` plus the extra condition that one support-ratio fiber has size
+`a - #S`.  This is still not a bound, but it is the first target that actually uses appearance on
+the affine line before paying the raw field-power count.
+
 `LineListSingletonArithmeticObstruction.lean` records the corresponding raw singleton arithmetic
 no-go:
 
 ```lean
 rawFieldPowSingletonProfileBudget_term_le
 not_uniformWeightPlusExactSingletonProfileBudgeted_of_rawFieldPow_term_gt
+exists_rawFieldPowSingletonProfileBudget_term_gt_of_two_mul_le
 not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
+fieldPow_le_two_mul_of_lowRawSingletonBudget
+not_uniformWeightPlusExactSingletonProfileBudgeted_lowRaw_of_two_mul_le
+unsafe_or_not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
 ```
 
 The combined `puncturedWeight + profile <= 2B` budget contains each raw weighted singleton summand.
 If `D` dominates `|F|^(k-t) * support/(a-t)` on the large-zero branch, any summand above `2B`
 refutes the combined budget.  In the common `2a <= n`, `t = 0` case, this gives no fit whenever
-`2B < |F|^k` under zero-direction safety.  Thus the raw exact singleton route is a control/no-go
-baseline, not a floor proof.
+`2B < |F|^k` under zero-direction safety; without assuming zero-safety first, the wrapper exposes
+the standard zero-direction saturation branch or combined-budget failure.  Thus the raw exact
+singleton route is a control/no-go baseline, not a floor proof.  The split low-raw/high-support
+variant has the same low-end obstruction when `0 < k`: the `t = 0` profile is already low and
+forces `|F|^k <= 2B` if the combined profile budget holds.
+The same arithmetic now explicitly covers the split low-raw/high-support certificate: for `0 < k`,
+the low raw assumption at `t = 0` and the combined singleton-profile budget imply
+`|F|^k <= 2B`, so high-profile support-only savings cannot repair a raw low-profile envelope.
 
 These theorems prove that the same punctured-budget reduction works with
 `coordinateAgreementFiber(S) ∩ lineAppearingCodewords`, a subset of the raw affine fiber.  The
@@ -187,6 +218,10 @@ It should be an appearance-filtered fiber such as:
 or a stronger ratio-profile partition of that set.  The code already has the per-codeword
 heavy-scalar denominator; the remaining saving must happen before summing over the whole affine
 fiber.
+
+`LineListSupportRatioFiber.lean` formalizes exactly that stronger partition target.  The next
+positive estimate should count codewords in a coordinate fiber whose support-ratio map has a heavy
+fiber, rather than all codewords in the coordinate fiber.
 
 ## Consequence
 

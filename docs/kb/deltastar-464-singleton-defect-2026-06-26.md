@@ -145,17 +145,45 @@ unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
 
+`LineListSupportRatioFiber.lean` inserts the missing structural filter between exact appearance
+and raw interpolation:
+
+```lean
+supportRatioFiber
+exists_supportRatioFiber_card_ge_sub_of_mem_lineAppearingCodewords
+exists_supportRatioFiber_card_ge_sub_of_mem_exactAppearingZeroAgreementFiber
+supportRatioHeavyCoordinateFiber
+exactAppearingZeroAgreementFiber_subset_supportRatioHeavyCoordinateFiber
+zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+unsafe_or_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_low_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+```
+
+An exact appearance witness over a zero set `S` must have some support-ratio fiber of size at least
+`a - #S`.  Thus the exact appearance budget can be proved by counting only coordinate-fiber
+codewords with a heavy support-ratio fiber.  Failed production localizes, after high profiles are
+discharged by RS uniqueness, to a low `t < k` support-ratio-heavy coordinate fiber.
+
 `LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
 
 ```lean
 rawFieldPowSingletonProfileBudget_term_le
 not_uniformWeightPlusExactSingletonProfileBudgeted_of_rawFieldPow_term_gt
+exists_rawFieldPowSingletonProfileBudget_term_gt_of_two_mul_le
 not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
+fieldPow_le_two_mul_of_lowRawSingletonBudget
+not_uniformWeightPlusExactSingletonProfileBudgeted_lowRaw_of_two_mul_le
+unsafe_or_not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
 ```
 
 It proves the combined exact singleton-profile budget contains every raw weighted singleton summand.
 If the raw envelope already exceeds `2B` at one summand, the combined budget is impossible; under
-`2a <= n`, the `t = 0` direction gives this obstruction from `2B < |F|^k`.
+`2a <= n`, the `t = 0` direction gives this obstruction from `2B < |F|^k`.  The unsafe-or wrapper
+removes the need to assume zero-direction safety before using the obstruction.
+The split low-raw/high-support variant does not evade this: when `0 < k`, the low-side hypothesis
+at `t = 0` plus the combined profile budget already forces `|F|^k <= 2B`, so the same target
+range is impossible even though high profiles use only the support-denominator cap.
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
 Bounding singleton defects can now be attempted profile-by-profile over exact zero-direction
@@ -234,7 +262,12 @@ The split converse makes the residual sharper: after zero-safety, failure is eit
 is the usual saturating-codeword branch.
 The standalone raw singleton arithmetic obstruction then shows this raw envelope cannot be the
 final floor route in the common `2a <= n`, `2B < |F|^k` range; a positive proof needs an
-appearance-filtered or ratio-profile saving.
+appearance-filtered or ratio-profile saving.  The low-raw obstruction pins this even for the
+split certificate: `t = 0` is already a low profile when `0 < k`, so high-profile support-only
+arithmetic cannot rescue a raw low-profile envelope.
+The support-ratio-heavy coordinate-fiber interface is the next non-raw target: it asks for a bound
+on interpolation completions that also concentrate `a - t` moving-support coordinates at one
+scalar.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

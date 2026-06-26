@@ -623,3 +623,25 @@ no-go.  The combined `puncturedWeight + profile <= 2B` budget contains each raw 
 summand; if `D` dominates `|F|^(k-t) * support/(a-t)`, any summand above `2B` refutes the route.
 In the common `2a <= n` range the `t = 0` direction already rules out any target with
 `2B < |F|^k`, so the raw exact-singleton envelope is only a baseline obstruction.
+
+Follow-up: `_RefinedProfileFloorBridge.lean` now specializes Linnik/TZ field-certificate failures
+to used fine-profile labels.  After exact singleton candidate lists and Linnik/TZ field supply kill
+the arithmetic floor-bad branch, a failed refined-profile field certificate returns either an
+above-budget used representative or a beating stack for each used fine-profile representative.
+
+Follow-up: the raw exact-singleton no-go now exposes its concrete scanner surface:
+`exists_rawFieldPowSingletonProfileBudget_term_gt_of_two_mul_le` gives the explicit `t = 0`
+weighted summand above `2B`, and
+`unsafe_or_not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le` removes
+the zero-safety assumption by returning either zero-direction saturation or failure of the combined
+exact singleton-profile budget.
+The companion `fieldPow_le_two_mul_of_lowRawSingletonBudget` and
+`not_uniformWeightPlusExactSingletonProfileBudgeted_lowRaw_of_two_mul_le` show the split
+low-raw/high-support certificate cannot avoid this obstruction: for `0 < k` and `2a <= n`, `t = 0`
+is already low and forces `|F|^k <= 2B` under any combined profile budget.
+
+Follow-up: `LineListSupportRatioFiber.lean` exposes the first non-raw exact-appearance target.
+Every appearing codeword has a support-ratio fiber of size at least `a - t`, where `t` is its exact
+zero-direction agreement count; therefore exact appearance fibers are contained in coordinate
+fibers whose support-ratio map has a heavy fiber.  The new scanner localizes failed production to
+zero-direction saturation or a large-zero safe low support-ratio-heavy coordinate fiber.

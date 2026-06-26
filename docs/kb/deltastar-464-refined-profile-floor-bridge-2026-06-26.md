@@ -138,6 +138,19 @@ Failure of max-containment for the full image is exactly the ability to beat eve
 for actually attained fine-profile labels.  This is the scanner refutation surface for any proposed
 refined catalogue.
 
+The Linnik/TZ field-certificate failures are now specialized to the same used fine-profile labels:
+
+```lean
+not_linnikUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
+not_linnikUsedFineClosureField_iff_used_above_or_each_beaten
+not_tzUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
+not_tzUsedFineClosureField_iff_used_above_or_each_beaten
+```
+
+These remove the generic arithmetic `FloorBad (2^a) |F|` branch using the Linnik/TZ inputs and
+translate the remaining `Finset` member failures into profile-local scanner output: an above-budget
+used fine-profile representative, or a beating stack for each used fine-profile representative.
+
 ## Critical Verdict
 
 This turns an iterative classification search into a precise floor-facing certificate:

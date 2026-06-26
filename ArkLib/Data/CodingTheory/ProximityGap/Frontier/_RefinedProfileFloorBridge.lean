@@ -714,6 +714,218 @@ theorem deltaStar_pin_of_refinedBudgetScanner_of_tzInputs
     δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
   deltaStar_pin_of_refinedScannerBudget C εstar hδ hnoMaxBad hnoBudgetBad hbudget
 
+/-- Linnik field-certificate failure specialized to the used fine-profile family, in the sharp
+budgeted-global-max form.  The arithmetic floor-bad branch is already contradicted by the Linnik
+inputs, so each used representative is either above budget or beaten by some stack. -/
+theorem not_linnikUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {Q : Type} [Fintype Q]
+    {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FloorClosureBudgetedMaxAtField
+        (F := F) (A := A) FloorBad a C δ (usedFineProfileRepFamily fine rep) B) ↔
+      ∀ q : Q, StackProfileRefinement.UsedProfile fine q →
+        B < StackProfileRefinement.StackBadCount F C δ (rep q) ∨
+          ∃ u : WordStack A (Fin 2) ι,
+            StackProfileRefinement.StackBadCount F C δ (rep q) <
+              StackProfileRefinement.StackBadCount F C δ u := by
+  have hiff :=
+    FloorClosureContract.not_linnikBudgetedMaxField_iff_each_member_above_or_beaten
+      (F := F) (A := A) FloorBad hexact hLeast a ha
+      hcardPrime hcardMod hcardPrize C δ (usedFineProfileRepFamily fine rep) B
+  constructor
+  · intro hnot q hused
+    rcases hiff.mp hnot (rep q)
+        (mem_usedFineProfileRepFamily.mpr ⟨q, hused, rfl⟩) with habove | hbeat
+    · exact Or.inl (by
+        simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+          habove)
+    · rcases hbeat with ⟨u, hlt⟩
+      exact Or.inr ⟨u, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+          hlt⟩
+  · intro hfail
+    exact hiff.mpr (by
+      intro r hr
+      rcases mem_usedFineProfileRepFamily.mp hr with ⟨q, hused, rfl⟩
+      rcases hfail q hused with habove | hbeat
+      · exact Or.inl (by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            habove)
+      · rcases hbeat with ⟨u, hlt⟩
+        exact Or.inr ⟨u, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hlt⟩)
+
+/-- Linnik field-certificate failure specialized to the used fine-profile family, in the
+bounded-family/domination form.  Failure is exactly an above-budget used representative or a
+beating witness for every used representative. -/
+theorem not_linnikUsedFineClosureField_iff_used_above_or_each_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {Q : Type} [Fintype Q]
+    {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FloorClosureAtField
+        (F := F) (A := A) FloorBad a C δ (usedFineProfileRepFamily fine rep) B) ↔
+      (∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
+        B < StackProfileRefinement.StackBadCount F C δ (rep q)) ∨
+        ∀ q : Q, StackProfileRefinement.UsedProfile fine q →
+          ∃ u : WordStack A (Fin 2) ι,
+            StackProfileRefinement.StackBadCount F C δ (rep q) <
+              StackProfileRefinement.StackBadCount F C δ u := by
+  have hiff :=
+    FloorClosureContract.not_linnikClosureField_iff_member_above_or_each_beaten
+      (F := F) (A := A) FloorBad hexact hLeast a ha
+      hcardPrime hcardMod hcardPrize C δ (usedFineProfileRepFamily fine rep) B
+  constructor
+  · intro hnot
+    rcases hiff.mp hnot with hmember | hbeat
+    · rcases hmember with ⟨r, hr, hgt⟩
+      rcases mem_usedFineProfileRepFamily.mp hr with ⟨q, hused, rfl⟩
+      exact Or.inl ⟨q, hused, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+          hgt⟩
+    · exact Or.inr (by
+        intro q hused
+        rcases hbeat (rep q) (mem_usedFineProfileRepFamily.mpr ⟨q, hused, rfl⟩) with
+          ⟨u, hlt⟩
+        exact ⟨u, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hlt⟩)
+  · rintro (hmember | hbeat)
+    · rcases hmember with ⟨q, hused, hgt⟩
+      exact hiff.mpr (Or.inl ⟨rep q,
+        mem_usedFineProfileRepFamily.mpr ⟨q, hused, rfl⟩, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hgt⟩)
+    · exact hiff.mpr (Or.inr (by
+        intro r hr
+        rcases mem_usedFineProfileRepFamily.mp hr with ⟨q, hused, rfl⟩
+        rcases hbeat q hused with ⟨u, hlt⟩
+        exact ⟨u, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hlt⟩))
+
+/-- TZ field-certificate failure specialized to the used fine-profile family, in the sharp
+budgeted-global-max form. -/
+theorem not_tzUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {Q : Type} [Fintype Q]
+    {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FloorClosureBudgetedMaxAtField
+        (F := F) (A := A) FloorBad a C δ (usedFineProfileRepFamily fine rep) B) ↔
+      ∀ q : Q, StackProfileRefinement.UsedProfile fine q →
+        B < StackProfileRefinement.StackBadCount F C δ (rep q) ∨
+          ∃ u : WordStack A (Fin 2) ι,
+            StackProfileRefinement.StackBadCount F C δ (rep q) <
+              StackProfileRefinement.StackBadCount F C δ u := by
+  have hiff :=
+    FloorClosureContract.not_tzBudgetedMaxField_iff_each_member_above_or_beaten
+      (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+      hcardPrime hcardMod hcardPrize C δ (usedFineProfileRepFamily fine rep) B
+  constructor
+  · intro hnot q hused
+    rcases hiff.mp hnot (rep q)
+        (mem_usedFineProfileRepFamily.mpr ⟨q, hused, rfl⟩) with habove | hbeat
+    · exact Or.inl (by
+        simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+          habove)
+    · rcases hbeat with ⟨u, hlt⟩
+      exact Or.inr ⟨u, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+          hlt⟩
+  · intro hfail
+    exact hiff.mpr (by
+      intro r hr
+      rcases mem_usedFineProfileRepFamily.mp hr with ⟨q, hused, rfl⟩
+      rcases hfail q hused with habove | hbeat
+      · exact Or.inl (by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            habove)
+      · rcases hbeat with ⟨u, hlt⟩
+        exact Or.inr ⟨u, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hlt⟩)
+
+/-- TZ field-certificate failure specialized to the used fine-profile family, in the
+bounded-family/domination form. -/
+theorem not_tzUsedFineClosureField_iff_used_above_or_each_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {Q : Type} [Fintype Q]
+    {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FloorClosureAtField
+        (F := F) (A := A) FloorBad a C δ (usedFineProfileRepFamily fine rep) B) ↔
+      (∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
+        B < StackProfileRefinement.StackBadCount F C δ (rep q)) ∨
+        ∀ q : Q, StackProfileRefinement.UsedProfile fine q →
+          ∃ u : WordStack A (Fin 2) ι,
+            StackProfileRefinement.StackBadCount F C δ (rep q) <
+              StackProfileRefinement.StackBadCount F C δ u := by
+  have hiff :=
+    FloorClosureContract.not_tzClosureField_iff_member_above_or_each_beaten
+      (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+      hcardPrime hcardMod hcardPrize C δ (usedFineProfileRepFamily fine rep) B
+  constructor
+  · intro hnot
+    rcases hiff.mp hnot with hmember | hbeat
+    · rcases hmember with ⟨r, hr, hgt⟩
+      rcases mem_usedFineProfileRepFamily.mp hr with ⟨q, hused, rfl⟩
+      exact Or.inl ⟨q, hused, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+          hgt⟩
+    · exact Or.inr (by
+        intro q hused
+        rcases hbeat (rep q) (mem_usedFineProfileRepFamily.mpr ⟨q, hused, rfl⟩) with
+          ⟨u, hlt⟩
+        exact ⟨u, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hlt⟩)
+  · rintro (hmember | hbeat)
+    · rcases hmember with ⟨q, hused, hgt⟩
+      exact hiff.mpr (Or.inl ⟨rep q,
+        mem_usedFineProfileRepFamily.mpr ⟨q, hused, rfl⟩, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hgt⟩)
+    · exact hiff.mpr (Or.inr (by
+        intro r hr
+        rcases mem_usedFineProfileRepFamily.mp hr with ⟨q, hused, rfl⟩
+        rcases hbeat q hused with ⟨u, hlt⟩
+        exact ⟨u, by
+          simpa [FloorClosureContract.StackBadCount, StackProfileRefinement.StackBadCount] using
+            hlt⟩))
+
 end ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge
 
 /-! ## Axiom audit -/
@@ -745,3 +957,9 @@ end ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_refinedScannerContract
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_refinedBudgetScannerContract
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_refinedBudgetScanner_of_tzInputs
+namespace ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge
+#print axioms not_linnikUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
+#print axioms not_linnikUsedFineClosureField_iff_used_above_or_each_beaten
+#print axioms not_tzUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
+#print axioms not_tzUsedFineClosureField_iff_used_above_or_each_beaten
+end ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge

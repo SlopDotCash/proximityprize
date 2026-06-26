@@ -203,6 +203,8 @@ exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadSca
 unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
 exists_lowRaw_or_highSupportFailure_of_not_budgeted
 unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted
+fieldPow_le_two_mul_of_lowRawSingletonBudget
+not_uniformWeightPlusExactSingletonProfileBudgeted_lowRaw_of_two_mul_le
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
@@ -223,6 +225,9 @@ The direct raw-envelope scanner now localizes failed production to a specific la
 stratum whose weighted field-power term is already above `D t`.
 The split scanner separates this into the actual low/high obligations: a low `t < k` raw
 field-power overrun or a high `k <= t` support-denominator overrun.
+The split raw route is still arithmetically blocked in the common range: at `t = 0`, the low raw
+obligation alone forces `|F|^k <= 2B`, so `2B < |F|^k` requires a genuine appearance-filtered
+saving rather than only moving high profiles to the support-denominator bound.
 
 ## Next Target
 
