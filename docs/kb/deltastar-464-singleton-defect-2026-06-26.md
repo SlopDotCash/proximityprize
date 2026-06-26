@@ -86,11 +86,43 @@ singletonBadScalarDefect_le_puncturedZeroStratifiedLineWeight
 singletonBadScalarIncidencesInExactZeroAgreementFiber
 snd_mem_exactAppearingZeroAgreementFiber_of_mem_singletonBadScalarIncidencesInExact
 singletonBadScalarIncidencesInExact_card_le_exactFiber_card_mul_support_div
+ZeroExactSingletonDefectProfileBudgeted
+ZeroExactSingletonDefectProfileBudgetFits
+UniformLargeZeroSafeExactSingletonDefectProfileBudgeted
+UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted
+singletonBadScalarIncidences_subset_biUnion_exactProfiles
+singletonBadScalarDefect_le_sum_exactSingletonProfiles
+singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted
+singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted_and_fits
+lineBadScalars_card_le_of_weight_add_exactSingletonProfileBudget_le_two_mul
+largeZeroSafeLineBadScalarsBudgeted_of_exactSingletonProfileBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
+exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 ```
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
 Bounding singleton defects can now be attempted profile-by-profile over exact zero-direction
 agreement sets.
+
+The profile-budget consumer makes this actionable.  A proposed envelope `D t` for singleton-defect
+incidences in every exact zero-agreement profile gives:
+
+```text
+singletonBadScalarDefect <= sum_{t<a} choose(#zeroSet(u1), t) * D(t).
+```
+
+The corresponding production wrapper discharges the large-zero safe branch from the combined
+arithmetic:
+
+```text
+puncturedZeroStratifiedLineWeight
++ sum_{t<a} choose(#zeroSet(u1), t) * D(t)
+<= 2B.
+```
+
+The converse scanner now localizes any failed uniform bad-scalar budget, after support arithmetic,
+zero-safety, and the profile envelope are fixed, to a large-zero safe line whose combined
+profile-budget arithmetic is false.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

@@ -508,6 +508,13 @@ filtered incidence graph and slices them by exact zero-direction agreement set. 
 slice is bounded by the corresponding exact appearance fiber times the moving-support denominator,
 so singleton-defect estimates can be attacked profile-by-profile rather than only globally.
 
+Follow-up: the exact-profile singleton route now has a production-grade budget interface.
+`ZeroExactSingletonDefectProfileBudgeted` bounds each exact zero-agreement singleton slice by
+`D t`, yielding `singletonBadScalarDefect <= sum choose(#zeroSet,u1,t) * D t`; the matching
+uniform wrapper consumes
+`puncturedZeroStratifiedLineWeight + sum choose(#zeroSet,u1,t) * D t <= 2B`.  The converse scanner
+returns a large-zero safe line where that combined profile arithmetic fails.
+
 Follow-up: singleton defects now also have a codeword-indexed partition.  The sets
 `codewordSingletonWitnessScalars` are disjoint over appearing codewords, their `biUnion` is exactly
 `singletonBadScalars`, and `singletonBadScalarDefect` is the corresponding sum.  A per-codeword
