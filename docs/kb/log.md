@@ -1042,3 +1042,12 @@ GR08 geometric folded-RS T4.14 routes.  The wrappers compose the existing `t <= 
 frontiers with `FRSEpsMCACapacityGG25TLeFrontier.toFrontier`, so the raw `hBound` field is
 derived by the checked arithmetic bridge rather than added as a new assumption.  Companion note:
 `deltastar-464-folded-frs-capacity-route-pin-2026-06-26.md`.
+
+## [2026-06-26] refute | Krawtchouk LP domain-blind certificate
+
+Extended `DelsarteLPNoGo.lean` with domain-blind certificate transfer lemmas and added:
+
+- `docs/kb/deltastar-464-krawtchouk-lp-certificate-verdict-2026-06-26.md`
+
+to record that the Krawtchouk/MacWilliams/Levenshtein LP route is a Johnson/Parseval no-go unless
+it imports domain-sensitive smooth-subgroup phase data, which is precisely the Paley/BGK wall.

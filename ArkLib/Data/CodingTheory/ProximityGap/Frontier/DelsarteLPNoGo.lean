@@ -73,4 +73,46 @@ theorem parseval_lp_extremal (hm : 0 < m) (S : ℝ) (hS : 0 ≤ S) :
     · show (if (⟨0, hm⟩ : Fin m) = ⟨0, hm⟩ then S else 0) = S
       simp
 
+/-! ## Domain-blind certificate transfer
+
+The Krawtchouk / MacWilliams weight-distribution variant of the LP idea has a second
+obstruction: for Reed-Solomon codes over any `n` distinct evaluation points, the MDS weight
+enumerator, and therefore its MacWilliams/Krawtchouk transform, depends only on `(n, k, q)`.
+Any certificate whose input is only such an invariant transfers unchanged to every evaluation
+domain with the same invariant.  Thus it cannot prove a smooth-subgroup-only floor unless the
+same certified ceiling is valid for all domains sharing the invariant.
+-/
+
+/-- A certificate using only an invariant transfers its bound across domains with the same
+invariant.  This is the formal core of the MacWilliams/Krawtchouk domain-blind no-go: once the
+weight enumerator has forgotten the evaluation points, the produced ceiling is identical for the
+smooth subgroup, a random domain, or an arithmetic-progression domain with the same MDS
+parameters. -/
+theorem domainBlind_bound_transfers
+    {Domain Invariant : Type*} (inv : Domain → Invariant) (target : Domain → ℝ)
+    (ceiling : Invariant → ℝ)
+    (hcert : ∀ D, target D ≤ ceiling (inv D))
+    {smooth reference : Domain} (hsame : inv smooth = inv reference) :
+    target smooth ≤ ceiling (inv reference) := by
+  simpa [hsame] using hcert smooth
+
+/-- If one domain sharing the invariant violates the proposed ceiling, then no certificate that
+uses only that invariant can be a valid uniform upper-bound proof.  For the RS weight-distribution
+route, `inv` is the MDS/MacWilliams/Krawtchouk data, so a past-Johnson proof must add
+domain-sensitive information beyond the weight enumerator. -/
+theorem domainBlind_counterexample_refutes
+    {Domain Invariant : Type*} (inv : Domain → Invariant) (target : Domain → ℝ)
+    (ceiling : Invariant → ℝ)
+    {smooth reference : Domain} (hsame : inv smooth = inv reference)
+    (hbad : ceiling (inv smooth) < target reference) :
+    ¬ ∀ D, target D ≤ ceiling (inv D) := by
+  intro hcert
+  have hle : target reference ≤ ceiling (inv reference) := hcert reference
+  rw [← hsame] at hle
+  exact not_lt_of_ge hle hbad
+
 end ArkLib.ProximityGap.DelsarteLPNoGo
+
+#print axioms ArkLib.ProximityGap.DelsarteLPNoGo.parseval_lp_extremal
+#print axioms ArkLib.ProximityGap.DelsarteLPNoGo.domainBlind_bound_transfers
+#print axioms ArkLib.ProximityGap.DelsarteLPNoGo.domainBlind_counterexample_refutes
