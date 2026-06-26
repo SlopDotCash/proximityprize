@@ -27,7 +27,7 @@ The new Lean interface makes that idea falsifiable.  It separates the proof into
    true singleton scalars form an independent set for the proposed relation.
 
 2. Independence-number theorem:
-   every independent scalar set for that relation has size at most S.
+   every independent subset of the singleton-witness set has size at most S.
 ```
 
 Together those imply the existing per-codeword singleton cap, and therefore plug into the current
@@ -41,10 +41,16 @@ support-adjusted production route.
 scalarRelationIndependent
 UniformLargeZeroSafeCodewordSingletonRelationForbidden
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
+UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationIndependence
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
+uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationWitnessIndependence
+exists_largeZero_safe_codewordRelationWitnessIndependent_gt_of_not_relationWitnessIndependence
 exists_largeZero_safe_codewordRelationIndependent_gt_of_not_codewordSingletonBudgeted
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
 ```
 
 The relation has type:
@@ -58,10 +64,21 @@ deliberately broad.  A useful relation might be an interpolation determinant edg
 second-witness forcing edge, or an exceptional-pencil exclusion edge.  The interface does not
 pretend to know which one is true.
 
+There are two independence budgets.  The global one asks for every independent scalar finset to
+be small.  That is often stronger than the mathematics should need.  The witness-local one only
+asks for independent subsets of
+
+```text
+codewordSingletonWitnessScalars(dom,k,a,u0,u1,c)
+```
+
+and is the intended target for future graph theorems.  The global budget still implies the
+witness-local budget, so it remains a convenient sufficient condition.
+
 The consumer is exact:
 
 ```text
-forbidden singleton graph + independence cap
+forbidden singleton graph + witness-local independence cap
   -> UniformLargeZeroSafeCodewordSingletonBudgeted
   -> existing singleton-cap production route.
 ```
@@ -71,8 +88,8 @@ available, and production still fails, Lean returns either:
 
 ```text
 1. the usual punctured-weight plus appearing-codeword arithmetic failure, or
-2. one large-zero safe line, one appearing codeword, and an independent singleton-scalar set
-   above the proposed cap S.
+2. one large-zero safe line, one appearing codeword, and an independent subset of that
+   codeword's singleton scalars above the proposed cap S.
 ```
 
 That second object is the right counterexample to any proposed interpolation graph.
@@ -96,6 +113,8 @@ Counting subsets cannot normally deliver that.  A scalar graph can: if many sing
 exist, the graph theorem must produce an edge among them, and the forbidden-edge theorem then
 forces a second witness or an exceptional certificate.  This is the first interface in this lane
 that attacks scalars directly instead of paying for their possible support subsets.
+The witness-local budget is important here: it avoids proving a graph theorem for arbitrary field
+subsets when the production route only needs subsets of the actual singleton-witness set.
 
 ## Immediate Refutation Pressure
 
@@ -149,7 +168,7 @@ quantity.  A graph relation avoids that only if it proves both halves:
 
 ```text
 forbidden edges among singleton witnesses
-small independent sets for the relation
+small independent subsets of the singleton-witness set for the relation
 ```
 
 Proving only the first half is cheap if the relation is too dense or semantically impossible.
@@ -164,5 +183,6 @@ future scalar-rigidity proposal now has a Lean-facing consumer and a Lean-facing
 
 ```text
 either prove the relation has small independent sets and forbidden singleton edges,
-or produce an overlarge independent singleton-scalar set and learn exactly why the graph failed.
+or produce an overlarge independent subset of singleton scalars and learn exactly why the graph
+failed.
 ```

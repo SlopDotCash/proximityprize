@@ -775,6 +775,16 @@ production yields either the usual arithmetic failure or a concrete overlarge in
 singleton scalars for one appearing codeword.  Companion note:
 `deltastar-464-singleton-independence-graph-2026-06-26.md`.
 
+Follow-up: the singleton-scalar graph interface now has the weaker witness-local independence
+budget `UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted`.  It only asks to bound
+independent subsets of the actual `codewordSingletonWitnessScalars` fiber, while the earlier
+global budget remains a sufficient shortcut via
+`uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationIndependence`.  The
+new consumer and scanner,
+`uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationWitnessIndependence` and
+`exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted`, make the
+next graph target narrower and more honest.
+
 Follow-up: `LineListCodewordSupportChooseArithmeticObstruction.lean` now names the arithmetic
 obstruction for that support-choose baseline.  A uniform support-choose budget contains every
 concrete term `choose(#support(u1), a - #zeroAgreement(c,u0,u1))`; conversely an exact profile or
