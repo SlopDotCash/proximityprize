@@ -1082,9 +1082,9 @@ so D1 is a consumer of a Paley-strength input rather than an independent floor p
 ## [2026-06-26] reduce | fixed-r KKH26 s=128 square budget
 
 Follow-up: the s=128 KKH26 consumer now exposes the sharper fixed-`r` resultant-size budget.
-`KKH26TightCeiling.lean` already proves the generic `log((2r)^(2^(μ-1)))` route; the s=128
-surface now adds `s128_tightResultantLog_eq`, `kkh26_mcaDeltaStar_le_s128_tight_square_bound`,
-and the normalized `kkh26_mcaDeltaStar_le_s128_tight_square_bound_log`.  The named
-Thorner-Zaman bridge and AvD1 regime-correct count layer export matching tight-square consumers.
-This relaxes the bad-prime budget but does not remove the named polynomial-modulus prime-count
-input.
+`KKH26TightCeiling.lean` proves the generic `log((2r)^(2^(μ-1)))` route plus the normalized
+`tightResultantLog_eq` / `kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log` form; the s=128
+surface adds `s128_tightResultantLog_eq`, `kkh26_mcaDeltaStar_le_s128_tight_square_bound`, and
+the normalized `kkh26_mcaDeltaStar_le_s128_tight_square_bound_log`.  The named Thorner-Zaman
+bridge and AvD1 regime-correct count layer export matching tight-square consumers.  This relaxes
+the bad-prime budget but does not remove the named polynomial-modulus prime-count input.

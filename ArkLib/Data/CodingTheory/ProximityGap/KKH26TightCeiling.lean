@@ -24,6 +24,8 @@ whose only-unproven input (`hcount`) is **strictly weaker**: the supply must mer
 `log(2r)/log(2^μ) = (1 + log₂ r)/μ < 1`, relaxing the [TZ24] prime-supply
 requirement the prize rows need.  No new analysis -- only the already-proven
 sharper resultant bound, wired through the already-proven good-prime existence.
+The normalized square-budget wrapper additionally exposes the same condition as
+`2^(μ-1) * log(2r)`.
 Issue #334.
 -/
 
@@ -47,6 +49,13 @@ lemma tightResultantLogRatio_nonneg {n : ℕ} {β : ℝ} (μ r : ℕ) (hr0 : 0 <
     Real.log_nonneg hMone
   have hden : 0 < Real.log ((n : ℝ) ^ β) := Real.log_pos (by linarith)
   exact div_nonneg hnum hden.le
+
+/-- The sharp fixed-`r` resultant-size log in normalized form:
+`log((2r)^(2^(μ-1))) = 2^(μ-1) * log(2r)`. -/
+theorem tightResultantLog_eq (μ r : ℕ) :
+    Real.log (((2 * r) ^ 2 ^ (μ - 1) : ℕ) : ℝ) =
+      (((2 ^ (μ - 1) : ℕ) : ℝ) * Real.log (((2 * r : ℕ) : ℝ))) := by
+  rw [Nat.cast_pow, Real.log_pow]
 
 /-- **Good prime avoiding all collision resultants, with the sharp `(2r)` budget.**  Identical
 to `kkh26_good_prime_avoids_collisions_of_TZ` except the bad-prime budget uses the fixed-`r`
@@ -174,10 +183,37 @@ theorem kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound {n : ℕ} {β : ℝ} {sup
     (mul_le_mul_of_nonneg_right hcard
       (tightResultantLogRatio_nonneg μ r (by omega) hx)) hcount
 
+/-- **The sharp fixed-`r` [KKH26] δ* ceiling in normalized log form.**  This is the same
+consumer as `kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound`, but callers may supply the
+paper-facing budget with `log((2r)^(2^(μ-1)))` rewritten as `2^(μ-1) * log(2r)`. -/
+theorem kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log {n : ℕ} {β : ℝ} {supply : ℕ}
+    [NeZero n] (hTZ : TZPrimeSupply n β supply) {μ m r : ℕ}
+    (hμ : 1 ≤ μ) (hm : 1 ≤ m) (hn : n = 2 ^ μ * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (μ - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ μ : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * (2 ^ (μ - 1)).choose r) ^ 2 : ℕ) : ℝ) *
+        ((((2 ^ (μ - 1) : ℕ) : ℝ) * Real.log (((2 * r : ℕ) : ℝ))) /
+          Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (μ - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ μ) := by
+  refine kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound
+    (μ := μ) (m := m) (r := r) hTZ hμ hm hn hr2 hr hx hpl ?_
+  rwa [tightResultantLog_eq]
+
 end ArkLib.ProximityGap.KKH26
 
 #print axioms ArkLib.ProximityGap.KKH26.tightResultantLogRatio_nonneg
+#print axioms ArkLib.ProximityGap.KKH26.tightResultantLog_eq
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_good_prime_avoids_collisions_of_TZ_tight
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_good_prime_avoids_collisions_of_TZ_tight_square_bound
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_of_TZ_tight
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log

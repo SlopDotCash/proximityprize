@@ -133,8 +133,10 @@ for the sharper `(2r)^(2^(μ-1))` resultant-size budget:
 
 ```lean
 tightResultantLogRatio_nonneg
+tightResultantLog_eq
 kkh26_good_prime_avoids_collisions_of_TZ_tight_square_bound
 kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound
+kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log
 ```
 
 At `s = 128`, the tight variants replace the coarse `448*log 2` factor by either
