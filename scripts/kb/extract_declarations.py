@@ -26,8 +26,9 @@ current `namespace`/`section`/`end` stack to attach fully-qualified names.
 
 Caveats:
 
-* Multi-line declarations are recognised by their opening line only; the
-  signature snippet is truncated to the first line after the name.
+* Multi-line declarations are recognised by their opening line, with a small
+  lookahead for names wrapped onto the next line. The signature snippet is
+  truncated to the first line after the name.
 * Anonymous instances (``instance : Foo where ...``) are recorded under the
   synthetic name ``_anon_instance_<lineno>``.
 * `where`-clauses, `theorem ... :=`, `by`-blocks etc. are not parsed beyond
@@ -62,6 +63,11 @@ DECL_RE = re.compile(
     """,
     re.VERBOSE,
 )
+WRAPPED_NAME_RE = re.compile(r"^\s*(?P<name>[A-Za-z_][\w.'']*)(?P<tail>.*)$")
+WRAPPED_NAME_KINDS = {
+    "theorem", "lemma", "def", "abbrev", "alias", "structure", "inductive",
+    "opaque", "axiom",
+}
 
 NAMESPACE_RE = re.compile(r"^\s*namespace\s+([A-Za-z_][\w.]*)\s*$")
 SECTION_RE = re.compile(r"^\s*section(?:\s+([A-Za-z_][\w.]*))?\s*$")
@@ -114,6 +120,36 @@ def parse_file(path: Path) -> list[dict]:
     def current_namespace() -> str:
         return ".".join(name for kind, name in stack if kind == "ns")
 
+    def wrapped_decl_name(line_index: int, kind: str) -> tuple[str, str] | None:
+        """Return a declaration name wrapped onto the next source line, if any."""
+        if kind not in WRAPPED_NAME_KINDS or line_index >= len(lines):
+            return None
+        raw_next = lines[line_index]
+        if not raw_next.startswith((" ", "\t")):
+            return None
+        stripped = raw_next.strip()
+        if not stripped or stripped.startswith(("--", "/-", "@[", ":=", "where")):
+            return None
+        m_name = WRAPPED_NAME_RE.match(raw_next)
+        if not m_name:
+            return None
+        name = m_name.group("name")
+        tail = m_name.group("tail").strip()
+        header_starters = ("(", "{", "[", ":", ":=", "where")
+        if tail:
+            if not tail.startswith(header_starters):
+                return None
+        elif line_index + 1 >= len(lines):
+            return None
+        else:
+            raw_after_name = lines[line_index + 1]
+            if not raw_after_name.startswith((" ", "\t")):
+                return None
+            after_name = raw_after_name.strip()
+            if not after_name.startswith(header_starters):
+                return None
+        return name, tail
+
     for idx, raw in enumerate(lines, start=1):
         # Track docstring buffer.
         if in_doc:
@@ -164,8 +200,13 @@ def parse_file(path: Path) -> list[dict]:
             name = m_decl.group("name")
             tail = m_decl.group("tail").strip()
             if name is None:
-                name = f"_anon_{kind}_{idx}"
-                tail_for_sig = raw.strip()
+                wrapped = wrapped_decl_name(idx, kind) if not tail else None
+                if wrapped is None:
+                    name = f"_anon_{kind}_{idx}"
+                    tail_for_sig = raw.strip()
+                else:
+                    name, wrapped_tail = wrapped
+                    tail_for_sig = (name + " " + wrapped_tail).strip()
             else:
                 tail_for_sig = (name + " " + tail).strip()
             namespace = current_namespace()
