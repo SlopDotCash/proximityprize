@@ -84,6 +84,7 @@ singletonBadScalarIncidences_card_eq_singletonBadScalarDefect
 singletonBadScalarDefect_le_lineHeavyIncidences_card
 singletonBadScalarDefect_le_puncturedZeroStratifiedLineWeight
 singletonBadScalarIncidencesInExactZeroAgreementFiber
+disjoint_singletonBadScalarIncidencesInExactZeroAgreementFiber_of_ne
 snd_mem_exactAppearingZeroAgreementFiber_of_mem_singletonBadScalarIncidencesInExact
 singletonBadScalarIncidencesInExact_card_le_exactFiber_card_mul_support_div
 ZeroExactSingletonDefectProfileBudgeted
@@ -106,7 +107,7 @@ lineBadScalars_card_le_of_weight_add_exactSingletonProfileBudget_le_two_mul
 largeZeroSafeLineBadScalarsBudgeted_of_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
-exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScalarsBudgeted
@@ -132,11 +133,12 @@ puncturedZeroStratifiedLineWeight
 <= 2B.
 ```
 
-The exact-profile sum is a cover bound.  That is enough for production: if every exact profile is
-below `D t`, the total singleton defect fits the binomial sum above.  The converse scanners
-localize any failed uniform bad-scalar budget, after support arithmetic, zero-safety, and the
-relevant profile envelope are fixed, either to failed combined profile arithmetic or to a concrete
-exact profile whose singleton-defect or exact-appearance weighted size exceeds `D t`.
+The exact-profile sum is a cover bound, with distinct exact profile slices disjoint when their
+zero-agreement sets differ.  That is enough for production: if every exact profile is below `D t`,
+the total singleton defect fits the binomial sum above.  The converse scanners localize any failed
+uniform bad-scalar budget, after support arithmetic, zero-safety, and the relevant profile envelope
+are fixed, either to failed combined profile arithmetic or to a concrete exact profile whose
+singleton-defect or exact-appearance weighted size exceeds `D t`.
 
 The exact-appearance bridge is the new attack surface.  It is enough to bound
 `exactAppearingZeroAgreementFiber` by profile and multiply by the moving-support denominator
