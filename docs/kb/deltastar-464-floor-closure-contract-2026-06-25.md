@@ -461,6 +461,10 @@ worstCaseIncidenceBounded_of_containsBudgetedGlobalMax
 deltaStar_pin_of_containsBudgetedGlobalMax
 FloorClosureBudgetedMaxAtField
 floorClosureBudgetedMaxAtField_of_floorGood_containsBudgetedGlobalMax
+floorClosureBudgetedMaxAtField_of_floorClosureAtField
+floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded
+not_floorClosureAtField_of_not_floorClosureBudgetedMaxAtField
+not_floorClosureAtField_iff_not_floorClosureBudgetedMaxAtField_or_not_familyBounded
 worstCaseIncidenceBounded_of_floorClosureBudgetedMaxAtField
 deltaStar_pin_of_floorClosureBudgetedMaxAtField
 ```
@@ -473,6 +477,12 @@ r in R
 StackBadCount(r) <= B
 forall u, StackBadCount(u) <= StackBadCount(r).
 ```
+
+The older `FloorClosureAtField` contract now factors through this sharp certificate.  It is exactly
+`FloorClosureBudgetedMaxAtField` plus the auxiliary requirement that every listed family member is
+within budget.  Therefore failure of the sharp budgeted-global-max certificate already refutes the
+old field closure contract; the only extra old-style failure is a non-maximal listed member whose
+budget is too large.
 
 This is the cleanest positive scanner certificate for a compressed floor family.  It also exposes
 why the off-BGK arithmetic layer cannot be the main proof by itself: least-prime localization can
@@ -540,3 +550,47 @@ incidence:
 
 The old `FloorGoodFamilyBudget + FamilyContainsGlobalMax` shape is still sufficient, but it is not
 the irreducible target.  The irreducible target is a budgeted worst representative.
+
+## Continuation: old closure factors through the sharp endpoint
+
+The two field-level contracts now have an exact comparison theorem:
+
+```lean
+floorClosureBudgetedMaxAtField_of_floorClosureAtField
+floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded
+not_floorClosureAtField_of_not_floorClosureBudgetedMaxAtField
+not_floorClosureAtField_iff_not_floorClosureBudgetedMaxAtField_or_not_familyBounded
+```
+
+This proves that the older closure certificate is not a different route to the prize.  It is exactly:
+
+```text
+FloorClosureBudgetedMaxAtField FloorBad a C delta R B
+and
+FamilyBounded F C delta R B.
+```
+
+The first conjunct is the sharp prize-facing certificate.  It already implies
+`WorstCaseIncidenceBounded` and the delta-star lower pin.  The second conjunct only says that every
+listed family member is budgeted, including non-maximal representatives that the final incidence
+consumer does not need.
+
+The failure split is therefore:
+
+```text
+not FloorClosureAtField
+iff
+  not FloorClosureBudgetedMaxAtField
+  or not FamilyBounded.
+```
+
+This is a useful honesty gate for the remaining floor campaign.  If the sharp certificate fails,
+we are missing real prize content: either the field is floor-bad, or every candidate representative
+is above budget or beatable.  If only `FamilyBounded` fails while the sharp certificate holds, the
+old closure form failed for an auxiliary reason that does not obstruct the open-core incidence
+consumer.
+
+The mathematical verdict is narrower than the earlier Linnik/TZ optimism.  Sub-prize least-prime
+supply can erase the arithmetic `FloorBad` branch.  It cannot manufacture the budgeted global
+maximizer.  The remaining proof must either find a canonical worst stack in the floor catalogue or
+prove a new invariant whose level set contains a budgeted global maximizer for `StackBadCount`.

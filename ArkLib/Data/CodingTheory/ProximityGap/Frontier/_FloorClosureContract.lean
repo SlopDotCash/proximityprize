@@ -8,6 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
 set_option autoImplicit false
 set_option linter.style.longLine false
+set_option linter.style.longFile 1600
 
 /-!
 # The full off-BGK floor closure contract
@@ -504,6 +505,75 @@ theorem floorClosureBudgetedMaxAtField_of_floorGood_containsBudgetedGlobalMax
     (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
     FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B :=
   ⟨hgood, hmax⟩
+
+/-- The older field closure certificate factors through the sharp budgeted-global-max certificate.
+Its domination and family-budget hypotheses first produce one budgeted true maximizer; the
+universal incidence consumer only needs that representative. -/
+theorem floorClosureBudgetedMaxAtField_of_floorClosureAtField
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcert : FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) :
+    FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B :=
+  ⟨hcert.1,
+    familyContainsBudgetedGlobalMax_of_familyBounded_containsGlobalMax C δ hcert.2.1
+      ((familyDominates_iff_containsGlobalMax C δ R).mp hcert.2.2)⟩
+
+/-- Exact comparison of the two field closure contracts.  The older bounded-family-plus-domination
+form is the sharp budgeted-global-max certificate together with the extra requirement that every
+listed family member, including non-maximal ones, is within budget. -/
+theorem floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B ↔
+      FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B ∧
+        FamilyBounded F C δ R B := by
+  constructor
+  · intro hcert
+    exact ⟨floorClosureBudgetedMaxAtField_of_floorClosureAtField
+      (F := F) (A := A) FloorBad a C δ hcert, hcert.2.1⟩
+  · rintro ⟨hsharp, hbounded⟩
+    refine ⟨hsharp.1, hbounded, ?_⟩
+    rcases hsharp.2 with ⟨r, hr, _hbudget, hdom⟩
+    exact familyDominates_of_containsGlobalMax C δ ⟨r, hr, hdom⟩
+
+/-- Scanner-facing contrapositive of the factorization: once the sharp budgeted-max certificate
+fails, the older field closure contract is impossible too. -/
+theorem not_floorClosureAtField_of_not_floorClosureBudgetedMaxAtField
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hnot : ¬ FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B) :
+    ¬ FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B := by
+  intro hcert
+  exact hnot (floorClosureBudgetedMaxAtField_of_floorClosureAtField
+    (F := F) (A := A) FloorBad a C δ hcert)
+
+/-- Exact failure form for the comparison: an old-style field closure failure is either a failure
+of the sharp budgeted-global-max certificate or a merely auxiliary failure to bound a non-maximal
+listed family member. -/
+theorem not_floorClosureAtField_iff_not_floorClosureBudgetedMaxAtField_or_not_familyBounded
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      (¬ FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B) ∨
+        ¬ FamilyBounded F C δ R B := by
+  constructor
+  · intro hnot
+    by_cases hsharp :
+        FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B
+    · refine Or.inr ?_
+      intro hbounded
+      exact hnot
+        ((floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded
+          (F := F) (A := A) FloorBad a C δ R B).mpr ⟨hsharp, hbounded⟩)
+    · exact Or.inl hsharp
+  · rintro (hnotSharp | hnotBounded) hcert
+    · exact hnotSharp (floorClosureBudgetedMaxAtField_of_floorClosureAtField
+        (F := F) (A := A) FloorBad a C δ hcert)
+    · exact hnotBounded hcert.2.1
 
 /-- The sharp concrete field-level certificate gives the universal incidence hypothesis. -/
 theorem worstCaseIncidenceBounded_of_floorClosureBudgetedMaxAtField
@@ -1405,6 +1475,10 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_of_floorGoodFamilyBudget
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_floorClosureAtField
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_floorGood_containsBudgetedGlobalMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_floorClosureAtField
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorClosureAtField_of_not_floorClosureBudgetedMaxAtField
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorClosureAtField_iff_not_floorClosureBudgetedMaxAtField_or_not_familyBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_floorClosureBudgetedMaxAtField
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_floorClosureAtField
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_floorClosureBudgetedMaxAtField
