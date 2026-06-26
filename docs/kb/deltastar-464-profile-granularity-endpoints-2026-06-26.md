@@ -68,12 +68,12 @@ That last line is the only place where the route can still contain new mathemati
 profile must merge distinct stacks while retaining enough algebraic structure to prove that all
 same-profile bad-scalar counts stay within the advertised slack.
 
-## Literature/PDF Check
+## Literature Status
 
-The local PDF corpus still points back to the usual Paley/character-sum faces: generalized Paley
-spectra, Gaussian periods, Burgess/subgroup estimates, high moments, and large-value tails.  Those
-papers motivate possible profile features, but they do not currently provide a theorem with output
-type:
+The current literature trail still points back to the usual Paley/character-sum faces: generalized
+Paley spectra, Gaussian periods, Burgess/subgroup estimates, high moments, and large-value tails.
+Those inputs motivate possible profile features, but they do not currently provide a theorem with
+output type:
 
 ```text
 same profile u v -> StackBadCount u <= StackBadCount v + slack(profile u).
