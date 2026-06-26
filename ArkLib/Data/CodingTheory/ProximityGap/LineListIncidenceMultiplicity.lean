@@ -64,6 +64,16 @@ theorem mem_badScalarWitnessCodewords
   rw [badScalarWitnessCodewords, Finset.mem_filter]
   simp
 
+open Classical in
+/-- Any witnessing codeword makes the scalar bad. -/
+theorem lineBadScalars_mem_of_mem_badScalarWitnessCodewords
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {γ : F} {c : Fin n → F}
+    (hc : c ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ) :
+    γ ∈ lineBadScalars dom k a u₀ u₁ := by
+  rw [mem_badScalarWitnessCodewords] at hc
+  rw [lineBadScalars, Finset.mem_filter]
+  exact ⟨Finset.mem_univ _, c, hc.1, hc.2⟩
+
 theorem mem_codewordHeavyScalars
     (a : ℕ) (c u₀ u₁ : Fin n → F) (γ : F) :
     γ ∈ codewordHeavyScalars (F := F) (n := n) a c u₀ u₁ ↔
@@ -355,6 +365,84 @@ def NoUniqueBadScalarWitness
   ∀ γ ∈ lineBadScalars dom k a u₀ u₁,
     (badScalarWitnessCodewords dom k a u₀ u₁ γ).card ≠ 1
 
+/-- A codeword is the unique witness for a fixed bad scalar. -/
+def IsUniqueBadScalarWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (γ : F)
+    (c : Fin n → F) : Prop :=
+  c ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ ∧
+    ∀ c' ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ, c' = c
+
+open Classical in
+/-- A singleton witness-codeword fiber is the same as an explicitly unique witness codeword. -/
+theorem badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (γ : F) :
+    (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 ↔
+      ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  constructor
+  · intro hcard
+    rcases Finset.card_eq_one.mp hcard with ⟨c, hfiber⟩
+    refine ⟨c, ?_⟩
+    constructor
+    · rw [hfiber]
+      exact Finset.mem_singleton_self c
+    · intro c' hc'
+      rw [hfiber] at hc'
+      exact Finset.mem_singleton.mp hc'
+  · rintro ⟨c, hc, huniq⟩
+    apply Finset.card_eq_one.mpr
+    refine ⟨c, ?_⟩
+    ext c'
+    constructor
+    · intro hc'
+      rw [Finset.mem_singleton]
+      exact huniq c' hc'
+    · intro hc'
+      rw [Finset.mem_singleton] at hc'
+      subst c'
+      exact hc
+
+open Classical in
+/-- Failure of the factor-two floor is equivalently an explicitly unique witness codeword. -/
+theorem not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    ¬ LineBadScalarMultiplicityFloor dom k a u₀ u₁ 2 ↔
+      ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+        ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  constructor
+  · intro hnot
+    rcases (not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+      dom k a u₀ u₁).mp hnot with ⟨γ, hγ, hcard⟩
+    rcases (badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+      dom k a u₀ u₁ γ).mp hcard with ⟨c, hc⟩
+    exact ⟨γ, hγ, c, hc⟩
+  · rintro ⟨γ, hγ, c, hc⟩
+    apply (not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+      dom k a u₀ u₁).mpr
+    refine ⟨γ, hγ, ?_⟩
+    exact (badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+      dom k a u₀ u₁ γ).mpr ⟨c, hc⟩
+
+open Classical in
+/-- Negating `NoUniqueBadScalarWitness` produces an explicitly unique witness codeword. -/
+theorem not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    ¬ NoUniqueBadScalarWitness dom k a u₀ u₁ ↔
+      ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+        ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro γ hγ hcard
+    apply hnone
+    rcases (badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+      dom k a u₀ u₁ γ).mp hcard with ⟨c, hc⟩
+    exact ⟨γ, hγ, c, hc⟩
+  · rintro ⟨γ, hγ, c, hc⟩ hno
+    exact hno γ hγ
+      ((badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+        dom k a u₀ u₁ γ).mpr ⟨c, hc⟩)
+
 open Classical in
 /-- Having no unique-witness bad scalar is exactly the `R = 2` multiplicity floor. -/
 theorem lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
@@ -443,6 +531,98 @@ theorem lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
     hbudget
 
 open Classical in
+/-- Failure of the named no-unique-witness condition is exactly a bad scalar with one witnessing
+codeword. -/
+theorem not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    ¬ NoUniqueBadScalarWitness dom k a u₀ u₁ ↔
+      ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+        (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 := by
+  rw [← lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness]
+  exact not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+    dom k a u₀ u₁
+
+open Classical in
+/-- Scanner form for the factor-two route.  If the line is safe and the half-weight budget fits,
+then any failure of the bad-scalar budget forces a unique-witness bad scalar. -/
+theorem exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁ / 2 ≤ B)
+    (hnot : ¬ (lineBadScalars dom k a u₀ u₁).card ≤ B) :
+    ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+      (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 := by
+  by_contra hnone
+  apply hnot
+  have hno : NoUniqueBadScalarWitness dom k a u₀ u₁ := by
+    intro γ hγ hcard
+    exact hnone ⟨γ, hγ, hcard⟩
+  exact lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
+    dom k a B u₀ u₁ hsafe hno hbudget
+
+open Classical in
+/-- Stronger scanner form for the factor-two route, returning the actual unique witness codeword. -/
+theorem exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁ / 2 ≤ B)
+    (hnot : ¬ (lineBadScalars dom k a u₀ u₁).card ≤ B) :
+    ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+      ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  rcases exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
+    dom k a B u₀ u₁ hsafe hbudget hnot with ⟨γ, hγ, hcard⟩
+  rcases (badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+    dom k a u₀ u₁ γ).mp hcard with ⟨c, hc⟩
+  exact ⟨γ, hγ, c, hc⟩
+
+/-- Uniform no-unique-witness condition on the large-zero safe residual branch. -/
+def UniformLargeZeroSafeNoUniqueBadScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      NoUniqueBadScalarWitness dom k a u₀ u₁
+
+/-- Uniform half-weight arithmetic budget for the factor-two multiplicity route on the large-zero
+safe residual branch. -/
+def UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      puncturedZeroStratifiedLineWeight dom k a u₀ u₁ / 2 ≤ B
+
+open Classical in
+/-- The no-unique-witness condition plus the half punctured-weight budget discharges the large-zero
+safe residual. -/
+theorem
+    largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hno : UniformLargeZeroSafeNoUniqueBadScalarWitness dom k a)
+    (hbudget : UniformLargeZeroSafePuncturedWeightDivTwoBudgeted dom k a B) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
+    dom k a B u₀ u₁ hsafe
+    (hno u₀ u₁ hnotEligible hsafe)
+    (hbudget u₀ u₁ hnotEligible hsafe)
+
+/-- Production wrapper for the factor-two no-unique-witness route.  The support-eligible branch is
+handled by the existing support-adjusted line-list budget; the large-zero safe branch uses
+no-unique witnesses plus the half punctured-weight arithmetic budget. -/
+theorem
+    uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hno : UniformLargeZeroSafeNoUniqueBadScalarWitness dom k a)
+    (hbudget : UniformLargeZeroSafePuncturedWeightDivTwoBudgeted dom k a B) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+    dom k a L B hSupport hFits hZeroSafe
+    (largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+      dom k a B hno hbudget)
+
+open Classical in
 /-- Budget consumer for the multiplicity-discounted punctured weight. -/
 theorem lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
     (dom : Fin n ↪ F) (k a R B : ℕ) (u₀ u₁ : Fin n → F)
@@ -468,14 +648,26 @@ section SourceAudit
 #print axioms lineHeavyIncidences_card_le_puncturedZeroStratifiedLineWeight
 #print axioms LineBadScalarMultiplicityFloor
 #print axioms not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
+#print axioms lineBadScalars_mem_of_mem_badScalarWitnessCodewords
 #print axioms badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
 #print axioms lineBadScalarMultiplicityFloor_one
 #print axioms not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
 #print axioms NoUniqueBadScalarWitness
+#print axioms IsUniqueBadScalarWitnessCodeword
+#print axioms badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+#print axioms not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
+#print axioms not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword
 #print axioms lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
 #print axioms
   lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
 #print axioms lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
+#print axioms not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
+#print axioms exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
+#print axioms exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
+#print axioms UniformLargeZeroSafeNoUniqueBadScalarWitness
+#print axioms UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
 #print axioms lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le

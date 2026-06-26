@@ -466,6 +466,13 @@ prove no unique-witness bad scalar exists on the relevant hard lines, or exhibit
 The no-unique-witness branch is now also named as `NoUniqueBadScalarWitness`, equivalent to the
 `R = 2` multiplicity floor, and plugged into a factor-two bad-scalar budget consumer.
 
+Follow-up: the factor-two multiplicity route is now scanner-facing at the codeword level:
+`IsUniqueBadScalarWitnessCodeword` turns the singleton witness fiber into an actual unique codeword,
+and `exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le` extracts that codeword from any
+failed half-weight bad-scalar budget.  The uniform large-zero safe wrapper packages this as a
+support-eligible branch plus no-unique-witness half-weight branch; it is still a conditional route,
+not a floor proof.
+
 Follow-up: `SumsetExtremalityGuard.lean` records the corrected guarded form of the
 sumset-extremality reduction.  A selected representative family proves the open-core incidence
 budget only after a real split: domination on the guarded branch plus a separate budget for the
@@ -475,6 +482,13 @@ with the selected family budgeted, any full-budget failure is either an outside-
 stack or a guarded stack that strictly beats every selected representative.  The same consumers
 and scanners are packaged for explicit finite catalogues (`Finset` representative lists), matching
 the probe-facing workflow.
+
+Follow-up: `SumsetExtremalityGuard.lean` now also supports finite guard covers.  Instead of one
+global guard and one catalogue, a proof may cover stack space by guard cells `G s`, give each cell
+its own finite representative list `R s`, and plug the cover into `WorstCaseIncidenceBounded` and
+the conditional `mcaDeltaStar` pin.  The failure scanner localizes a failed budget to either an
+outside over-budget stack or a specific guard cell containing a stack that beats every listed
+representative for that cell.
 
 Follow-up: `LineListAppearanceFiber.lean` now also has exact zero-agreement appearance fibers.
 The previous appearance-coordinate object covered a `t`-stratum by all zero-subsets; the exact

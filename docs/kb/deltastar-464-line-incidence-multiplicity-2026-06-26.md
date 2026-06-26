@@ -51,13 +51,25 @@ and the new conditional discount is:
 
 ```lean
 not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
+lineBadScalars_mem_of_mem_badScalarWitnessCodewords
 badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
 lineBadScalarMultiplicityFloor_one
 not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
 NoUniqueBadScalarWitness
+IsUniqueBadScalarWitnessCodeword
+badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
+not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword
 lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
 lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
+not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
+exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
+exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
+UniformLargeZeroSafeNoUniqueBadScalarWitness
+UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
+largeZeroSafeLineBadScalarsBudgeted_of_uniformNoUniqueBadScalarWitness_and_puncturedWeightDivTwo
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_noUniqueWitnessPuncturedWeightDivTwo
 lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
@@ -105,6 +117,32 @@ NoUniqueBadScalarWitness
 => #badScalars <= puncturedZeroStratifiedLineWeight / 2
 ```
 
+The scanner now exposes the obstruction as data, not only as a cardinal equality:
+
+```text
+failed factor-two budget
+=> bad scalar gamma + unique witnessing codeword c
+```
+
+This is the right shape for the next geometric attack: analyze the single codeword's agreement
+set, zero-direction stratum, and appearance fiber directly.
+
+The factor-two branch now also reaches the same production layer used by the support/large-zero
+split:
+
+```text
+UniformSupportLineListBudgeted
++ SupportAdjustedBudgetFits
++ UniformZeroDirectionSafe
++ UniformLargeZeroSafeNoUniqueBadScalarWitness
++ UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
+=> UniformLineBadScalarsBudgeted
+```
+
+This is still conditional.  The substantive new hard input is a uniform proof that large-zero safe
+lines have no unique-witness bad scalar, plus the arithmetic proof that the punctured weight divided
+by two fits the target budget.
+
 ## Companion: Exact Appearance Fibers
 
 `LineListAppearanceFiber.lean` now also splits the appearance-filtered coordinate object by the
@@ -140,7 +178,8 @@ geometry or a separate ownership law.
 
 ## Next Test
 
-The next nonredundant scanner should look for large-zero safe lines where a bad scalar has exactly
-one or very few witnessing codewords.  Such a counterexample would refute the multiplicity route in
-the same way `LineListArithmeticObstruction.lean` refuted the raw field-power coordinate-fiber
-envelope.
+The next nonredundant scanner should consume the actual unique witness codeword and force one of
+its geometric profiles: exact zero-agreement fiber, support denominator, or stack-ownership
+collision.  If this scanner can construct a large-zero safe line with a genuine singleton witness,
+it refutes the factor-two multiplicity route; if every such singleton is geometrically impossible,
+the no-unique-witness socket becomes a real discount.

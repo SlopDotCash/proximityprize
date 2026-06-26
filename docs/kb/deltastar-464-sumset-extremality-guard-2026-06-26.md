@@ -107,6 +107,31 @@ budgeted R + failed WorstCaseIncidenceBounded
 => outside over-budget stack OR guarded stack beating every r ∈ R
 ```
 
+The finite guard-cover surface generalizes this to a family of guard cells, each with its own
+catalogue:
+
+```lean
+worstCaseIncidenceBounded_of_finsetGuardCover
+worstCaseIncidenceBounded_of_finsetGuardCover_orOutside
+mcaDeltaStar_pin_of_finsetGuardCover
+mcaDeltaStar_pin_of_finsetGuardCover_orOutside
+guarded_catalogue_beater_of_not_worstCaseIncidenceBounded_finsetCover
+outside_or_guarded_catalogue_beater_of_not_worstCaseIncidenceBounded_finsetCover
+```
+
+This supports scanner output of the form:
+
+```text
+cover stack space by guard cells G s
+budget every representative in R s
+show every stack in G s is dominated by some representative in R s
+=> WorstCaseIncidenceBounded
+
+failed WorstCaseIncidenceBounded
+=> specific cell s + stack beating every r ∈ R s
+   OR, with an outside branch, outside over-budget stack
+```
+
 ## What This Changes
 
 This does not supply a finite-field counterexample and does not prove a windowed extremality

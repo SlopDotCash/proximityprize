@@ -392,6 +392,131 @@ theorem outside_or_guarded_strict_counterexample_of_not_worstCaseIncidenceBounde
   · rcases hinside with ⟨u, hu, hbeat⟩
     exact Or.inr ⟨u, hu, fun r hr => hbeat r (by simpa using hr)⟩
 
+/-! ## Finite guard-cover scanner surface -/
+
+/-- Finite-catalogue consumer over a guard cover.  Each guard cell `G s` has its own explicit
+representative catalogue `R s`; if the guards cover all stacks, catalogue budgets and in-cell
+domination imply the full open-core incidence budget. -/
+theorem worstCaseIncidenceBounded_of_finsetGuardCover
+    {κ : Type} (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : κ → Finset (WordStack A (Fin 2) ι))
+    (G : κ → WordStack A (Fin 2) ι → Prop)
+    (hcover : ∀ u : WordStack A (Fin 2) ι, ∃ s : κ, G s u)
+    (hR : ∀ s : κ, ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+      incCount (F := F) C δ r ≤ B)
+    (hext : ∀ s : κ, ∀ u : WordStack A (Fin 2) ι, G s u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R s ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r) :
+    WorstCaseIncidenceBounded (F := F) (A := A) C δ B := by
+  intro u
+  rcases hcover u with ⟨s, hs⟩
+  rcases hext s u hs with ⟨r, hr, hle⟩
+  exact le_trans hle (hR s r hr)
+
+/-- Guard-cover consumer with an explicit outside branch.  This is the scanner shape for a
+partition-like attack where some stacks are handled by a direct outside theorem and the remaining
+stacks are covered by guard-indexed finite catalogues. -/
+theorem worstCaseIncidenceBounded_of_finsetGuardCover_orOutside
+    {κ : Type} (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : κ → Finset (WordStack A (Fin 2) ι))
+    (G : κ → WordStack A (Fin 2) ι → Prop)
+    (G₀ : WordStack A (Fin 2) ι → Prop)
+    (hcover : ∀ u : WordStack A (Fin 2) ι, G₀ u ∨ ∃ s : κ, G s u)
+    (houtside : StackIncidenceBoundedOn (F := F) C δ B G₀)
+    (hR : ∀ s : κ, ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+      incCount (F := F) C δ r ≤ B)
+    (hext : ∀ s : κ, ∀ u : WordStack A (Fin 2) ι, G s u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R s ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r) :
+    WorstCaseIncidenceBounded (F := F) (A := A) C δ B := by
+  intro u
+  rcases hcover u with h0 | ⟨s, hs⟩
+  · exact houtside u h0
+  · rcases hext s u hs with ⟨r, hr, hle⟩
+    exact le_trans hle (hR s r hr)
+
+/-- The finite guard-cover route plugged into the conditional `δ*` pin. -/
+theorem mcaDeltaStar_pin_of_finsetGuardCover
+    {κ : Type} (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (R : κ → Finset (WordStack A (Fin 2) ι))
+    (G : κ → WordStack A (Fin 2) ι → Prop)
+    (hδ : δ ≤ 1)
+    (hcover : ∀ u : WordStack A (Fin 2) ι, ∃ s : κ, G s u)
+    (hR : ∀ s : κ, ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+      incCount (F := F) C δ r ≤ B)
+    (hext : ∀ s : κ, ∀ u : WordStack A (Fin 2) ι, G s u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R s ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  worstCaseIncidence_pin (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_finsetGuardCover C δ B R G hcover hR hext)
+    hbudget
+
+/-- The finite guard-cover plus outside-branch route plugged into the conditional `δ*` pin. -/
+theorem mcaDeltaStar_pin_of_finsetGuardCover_orOutside
+    {κ : Type} (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (R : κ → Finset (WordStack A (Fin 2) ι))
+    (G : κ → WordStack A (Fin 2) ι → Prop)
+    (G₀ : WordStack A (Fin 2) ι → Prop)
+    (hδ : δ ≤ 1)
+    (hcover : ∀ u : WordStack A (Fin 2) ι, G₀ u ∨ ∃ s : κ, G s u)
+    (houtside : StackIncidenceBoundedOn (F := F) C δ B G₀)
+    (hR : ∀ s : κ, ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+      incCount (F := F) C δ r ≤ B)
+    (hext : ∀ s : κ, ∀ u : WordStack A (Fin 2) ι, G s u →
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R s ∧
+        incCount (F := F) C δ u ≤ incCount (F := F) C δ r)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  worstCaseIncidence_pin (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_finsetGuardCover_orOutside
+      C δ B R G G₀ hcover houtside hR hext)
+    hbudget
+
+open Classical in
+/-- Scanner form for a failed finite guard cover.  If all listed representatives in every guard
+cell are budgeted, any full open-core counterexample yields a concrete guard cell and a stack in
+that cell beating every listed representative for that cell. -/
+theorem guarded_catalogue_beater_of_not_worstCaseIncidenceBounded_finsetCover
+    {κ : Type} (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : κ → Finset (WordStack A (Fin 2) ι))
+    (G : κ → WordStack A (Fin 2) ι → Prop)
+    (hcover : ∀ u : WordStack A (Fin 2) ι, ∃ s : κ, G s u)
+    (hR : ∀ s : κ, ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+      incCount (F := F) C δ r ≤ B)
+    (hnot : ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ B) :
+    ∃ s : κ, ∃ u : WordStack A (Fin 2) ι, G s u ∧
+      ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+        incCount (F := F) C δ r < incCount (F := F) C δ u := by
+  rcases (not_worstCaseIncidenceBounded_iff_exists_counterexample C δ B).mp hnot with
+    ⟨u, hgt⟩
+  rcases hcover u with ⟨s, hs⟩
+  exact ⟨s, u, hs, fun r hr => lt_of_le_of_lt (hR s r hr) hgt⟩
+
+open Classical in
+/-- Scanner form for a failed finite guard cover with an outside branch.  A failed open-core
+budget is either an outside over-budget stack or a stack in a specific guard cell beating every
+budgeted representative for that cell. -/
+theorem outside_or_guarded_catalogue_beater_of_not_worstCaseIncidenceBounded_finsetCover
+    {κ : Type} (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ)
+    (R : κ → Finset (WordStack A (Fin 2) ι))
+    (G : κ → WordStack A (Fin 2) ι → Prop)
+    (G₀ : WordStack A (Fin 2) ι → Prop)
+    (hcover : ∀ u : WordStack A (Fin 2) ι, G₀ u ∨ ∃ s : κ, G s u)
+    (hR : ∀ s : κ, ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+      incCount (F := F) C δ r ≤ B)
+    (hnot : ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ B) :
+    (∃ u : WordStack A (Fin 2) ι, G₀ u ∧ B < incCount (F := F) C δ u) ∨
+      ∃ s : κ, ∃ u : WordStack A (Fin 2) ι, G s u ∧
+        ∀ r : WordStack A (Fin 2) ι, r ∈ R s →
+          incCount (F := F) C δ r < incCount (F := F) C δ u := by
+  rcases (not_worstCaseIncidenceBounded_iff_exists_counterexample C δ B).mp hnot with
+    ⟨u, hgt⟩
+  rcases hcover u with houtside | ⟨s, hs⟩
+  · exact Or.inl ⟨u, houtside, hgt⟩
+  · exact Or.inr ⟨s, u, hs, fun r hr => lt_of_le_of_lt (hR s r hr) hgt⟩
+
 section SourceAudit
 
 #print axioms StackIncidenceBoundedOn
@@ -417,6 +542,13 @@ section SourceAudit
 #print axioms mcaDeltaStar_pin_of_split_finsetFamilyExtremalOn
 #print axioms not_finsetFamilyExtremalOn_iff_exists_strict_counterexample
 #print axioms outside_or_guarded_strict_counterexample_of_not_worstCaseIncidenceBounded_finset
+#print axioms worstCaseIncidenceBounded_of_finsetGuardCover
+#print axioms worstCaseIncidenceBounded_of_finsetGuardCover_orOutside
+#print axioms mcaDeltaStar_pin_of_finsetGuardCover
+#print axioms mcaDeltaStar_pin_of_finsetGuardCover_orOutside
+#print axioms guarded_catalogue_beater_of_not_worstCaseIncidenceBounded_finsetCover
+#print axioms
+  outside_or_guarded_catalogue_beater_of_not_worstCaseIncidenceBounded_finsetCover
 
 end SourceAudit
 
