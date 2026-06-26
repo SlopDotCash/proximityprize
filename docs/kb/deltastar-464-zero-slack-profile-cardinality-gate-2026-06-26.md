@@ -49,6 +49,9 @@ not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
 ProfileBadCountImageCovered
 stackBadCountImage_card_le_sum_profileBadCountCover
 not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
+profileBadCountImageCovered_of_profileFiberOscillation
+stackBadCountImage_card_le_sum_profileFiberOscillationIntervals
+not_profileFiberOscillationBounded_of_sum_intervalCard_lt_stackBadCountImage
 ```
 
 The central theorem is:
@@ -74,6 +77,18 @@ The cover form is the positive-slack analogue.  If each profile label `p` suppli
 
 Thus finite positive-slack explanations also face an image-size test: if the total cover size is
 smaller than the realized bad-count image, the proposed fiber-count cover is false.
+
+For the existing oscillation certificate, representatives in their fibers plus
+`ProfileFiberOscillationBounded` produce the concrete cover
+
+```text
+Icc (StackBadCount (rep p) - slack p) (StackBadCount (rep p) + slack p)
+```
+
+for each profile `p`.  The theorem
+`stackBadCountImage_card_le_sum_profileFiberOscillationIntervals` records the resulting global
+bound, and the negated interval theorem refutes a proposed oscillation certificate when those
+intervals have too little total cardinality.
 
 ## Consequence
 

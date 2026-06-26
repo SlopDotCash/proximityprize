@@ -1015,3 +1015,10 @@ Follow-up: the profile image gate now has a positive-slack cover form.
 bad-count values, and `stackBadCountImage_card_le_sum_profileBadCountCover` bounds the global
 bad-count image by the sum of those cover sizes.  The negated theorem gives a finite refuter for
 any interval/cover explanation whose total size is too small.
+
+Follow-up: the cover gate is now instantiated for the existing same-profile oscillation certificate.
+If representatives lie in their fibers, `ProfileFiberOscillationBounded` covers each profile's
+bad-count values by the interval centered at the representative count with radius `slack p`.
+`stackBadCountImage_card_le_sum_profileFiberOscillationIntervals` is the resulting image-size
+pressure, and the negated theorem refutes oscillation certificates whose intervals are too small in
+aggregate.
