@@ -81,5 +81,5 @@ the smooth subgroup test is pseudorandom in the first place.
 The convolution-squaring Fourier bootstrap is a valid consumer of a Paley-strength starting
 estimate and a useful conceptual template for random-linear-code discrepancy.  For plain
 smooth-domain RS, it does not bypass the wall: the starting `α` is exactly the normalized
-Gauss-period house.  Any winning D1 variant must add an independent proof that `1_{μ_n}/n` is already
-`O(√(log(p/n)/n))`-Fourier-concentrated, which is the original open core.
+Gauss-period house.  Any winning D1 variant must add an independent proof that
+`1_{μ_n}/n` is already `O(√(log(p/n)/n))`-Fourier-concentrated, which is the original open core.

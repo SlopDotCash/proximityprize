@@ -34,11 +34,12 @@ So the *only* unproven input of the entire s=128 lane is the asymptotic supply
 ## The exact statement needed (the wall)
 
 **`EffectiveTZLowerBound n β c`** (new brick `Frontier/WF407_B3_s128.lean`):
-`c · n^{β−1} ≤ (tzWindow n β).card`, i.e. the window `[n^β, 2n^β]` of primes `≡ 1 (mod n)`
-has `≥ c·n^{β−1}` elements. This is the explicit-constant form of **[TZ24] Cor 3.1**
-(Thorner–Zaman, *Refinements to the prime number theorem in arithmetic progressions*): via
-partial summation over the short interval, `π(2x;n,1) − π(x;n,1) ≳ x/(φ(n)·log x)` at `x = n^β`,
-unconditional for **β > 12/5**, conditional on Montgomery for β > 1.
+`c · n^{β−1} ≤ (tzWindow n β).card`, i.e. the window `[n^β, 2n^β]` of primes
+`≡ 1 (mod n)` has `≥ c·n^{β−1}` elements. This is the explicit-constant form of
+**[TZ24] Cor 3.1** (Thorner–Zaman, *Refinements to the prime number theorem in
+arithmetic progressions*): via partial summation over the short interval,
+`π(2x;n,1) − π(x;n,1) ≳ x/(φ(n)·log x)` at `x = n^β`, unconditional for **β > 12/5**,
+conditional on Montgomery for β > 1.
 
 - **Formalizable?** Not with present Mathlib. It rests on *log-free zero-density estimates* for
   Dirichlet L-functions (Linnik-type), which Mathlib does not have (Mathlib has Dirichlet
@@ -62,9 +63,10 @@ Two *different* "s-thresholds" were being conflated under "Parseval opened s=64"
 
 **Finding (numerically exact, `wf407_B3-s128_{budget,verdict,myerson}.py`):** for route (B) at
 the prize regime (n ~ 2^{2^μ}, so log₂ n = 2^μ = s), the bad-prime budget
-`m·logM/log(n^β) ~ 2^{O(s)}` is **dwarfed** by the supply `n^{β−1} = 2^{(β−1)·s}` for *every*
-ρ∈{1/2,1/4,1/8,1/16} and *every* β>~2.4, for **both** the coarse `M = s^{s/2}` and the Parseval
-`M = 2^{3n/4}`. The resultant-bound choice only lowers an already-dominated term. Indeed at
+`m·logM/log(n^β) ~ 2^{O(s)}` is **dwarfed** by the supply
+`n^{β−1} = 2^{(β−1)·s}` for *every* ρ∈{1/2,1/4,1/8,1/16} and *every* β>~2.4,
+for **both** the coarse `M = s^{s/2}` and the Parseval `M = 2^{3n/4}`. The
+resultant-bound choice only lowers an already-dominated term. Indeed at
 prize scale `M_parseval = n^{3/4} < n ≤ p`, so the Parseval threshold `p > M` is *automatically*
 met — the Parseval halving is **irrelevant to route (B)**. The gate is purely prime *existence*.
 
@@ -96,6 +98,9 @@ Thorner–Zaman. (It *can* further improve the s=128 census-coverage route (A) a
 collisionPairs_eq_offDiag
 card_collisionPairs
 card_collisionPairs_le_square
+coarseResultantLogRatio_nonneg
+kkh26_good_prime_avoids_collisions_of_TZ_square_bound
+kkh26_mcaDeltaStar_le_of_TZ_square_bound
 ```
 
 `KKH26S128Ceiling.lean` specializes those to `s = 128` and adds the paper-facing wrappers:
@@ -105,14 +110,36 @@ s128_collisionPairs_card
 s128_collisionPairs_card_le_square
 s128_supply_beats_budget_of_square_bound
 kkh26_mcaDeltaStar_le_s128_of_square_bound
+s128_tightResultantLog_eq
+kkh26_mcaDeltaStar_le_s128_tight_square_bound
+kkh26_mcaDeltaStar_le_s128_tight_square_bound_log
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
 kkh26_s128_of_polyModulusCount_square
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
+kkh26_s128_of_polyModulusCount_tight_square
+kkh26_s128_of_polyModulusCount_tight_square_log
 ```
 
 The new wrapper lets callers supply the familiar square budget
 `(2^r * C(64,r))^2 * 448*log 2 / log(n^β) < supply` directly.  It does not remove the named
 `EffectivePNTinAP` / `TZPrimeSupply` wall; it only removes a small arithmetic mismatch between the
 paper estimate and the exact `collisionPairs 7 r` budget used by the Lean consumer.
+
+The general μ-level square-budget consumer is now available directly in
+`KKH26PolyFieldCeiling.lean`, so callers no longer need to specialize `s = 128` to use the
+`A^2` collision-family upper bound.  `KKH26TightCeiling.lean` also has the fixed-`r` counterparts
+for the sharper `(2r)^(2^(μ-1))` resultant-size budget:
+
+```lean
+tightResultantLogRatio_nonneg
+kkh26_good_prime_avoids_collisions_of_TZ_tight_square_bound
+kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound
+```
+
+At `s = 128`, the tight variants replace the coarse `448*log 2` factor by either
+`log((2r)^64)` or the normalized form `64*log(2r)`.  This is only an arithmetic relaxation of
+the bad-prime budget; the polynomial-modulus prime-count input remains the analytic wall.
 
 ## Verdict
 
@@ -122,6 +149,8 @@ the resultant bound (Parseval/Landau/Myerson-Lehmer), only by prime existence at
 field size. Honest partial progress: the exact open statement is pinned as a citable named
 `Prop`, the reduction is proven axiom-clean, and the Myerson/Lehmer alternative is refuted.
 
-**Artifacts:** `Frontier/WF407_B3_s128.lean`, `scripts/probes/wf407_B3-s128_{budget,verdict,myerson}.py`.
-**What remains:** formalize/cite `EffectiveTZLowerBound` (= [TZ24]); or, for *non*-prize fixed-|F|
-rows, push the Parseval/Myerson census-coverage route (A) further. Neither closes the prize core.
+**Artifacts:** `Frontier/WF407_B3_s128.lean`,
+`scripts/probes/wf407_B3-s128_{budget,verdict,myerson}.py`.
+**What remains:** formalize/cite `EffectiveTZLowerBound` (= [TZ24]); or, for *non*-prize
+fixed-|F| rows, push the Parseval/Myerson census-coverage route (A) further. Neither closes the
+prize core.

@@ -39,10 +39,12 @@ gaps close to capacity*, ePrint 2026/782 — also real and confirmed.
 **Quantitative form — the decisive regime mismatch.** The `s = 128` budget needs a *positive
 lower bound on the COUNT* of primes `p ≡ 1 (mod n)` in the polynomial window `[n^β, 2·n^β]`,
 with modulus `q = n` and `x = n^β`, i.e. `x = q^β` for a **fixed** `β` (the probe gives
-`β ≈ 7.28` for ρ=1/4 / `r=33`, `β ≈ 5.53` for ρ=1/8, `β ≈ 3.98` for ρ=1/16 at `n = 2^30`).
+`β ≈ 7.28` for ρ=1/4 / `r=33`, `β ≈ 5.53` for ρ=1/8, and `β ≈ 3.98`
+for ρ=1/16 at `n = 2^30`).
 
 Thorner–Zaman Theorem 1.1's *asymptotic / positive-count* conclusion
-`Σ_{x−h<p≤x, p≡a(q)} log p ∼ λh/φ(q)` is proved (paper §1, the "q large" paragraph) under
+`Σ_{x−h<p≤x, p≡a(q)} log p ∼ λh/φ(q)` is proved under the paper's
+"q large" paragraph conditions:
 `λh/φ(q) ≥ x^{4/5}` **and** `(log x)/(log q) → ∞`. That last condition forces the modulus to
 be **sub-polynomial** in `x` (`q = x^{o(1)}`). For our parameters `log x / log q = β`, a FIXED
 constant — so `(log x)/(log q) ↛ ∞`, and the positive-count half of Theorem 1.1 **does NOT
@@ -86,7 +88,9 @@ namespace ProximityGap.Frontier.AvD1KKH26S128
 open ArkLib.ProximityGap.KKH26 (TZPrimeSupply collisionPairs evalCode)
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge
   (tzDensityLB ThornerZamanPNTinAP kkh26_s128_ceiling_of_thornerZamanPNTinAP'
-   kkh26_s128_ceiling_of_thornerZamanPNTinAP_square)
+   kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
+   kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
+   kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log)
 
 /-- **The regime-correct named analytic input** (`Hab25Johnson` named-hypothesis pattern; never
 an axiom).  `PolyModulusPrimeCount n β supply` asserts the **lower bound on the COUNT** of primes
@@ -94,10 +98,10 @@ an axiom).  `PolyModulusPrimeCount n β supply` asserts the **lower bound on the
 `x = n^β = q^β`, `β` FIXED): the window has at least `supply` such primes.  This is
 *definitionally* `TZPrimeSupply n β supply`; it is recorded under this name to make explicit the
 finding of this lane — that for fixed `β` (so `log x / log q = β ↛ ∞`) this is the
-**Linnik-density count** for polynomial moduli, which lies *outside* the
-positive-count range of Thorner–Zaman Theorem 1.1 (that needs `(log x)/(log q) → ∞`).  TZ gives
-this regime only Linnik *existence* (one prime) and a Brun–Titchmarsh *upper* bound, not the
-*lower bound on the count* the `s = 128` budget consumes.  Open in the required effective form. -/
+**Linnik-density count** for polynomial moduli, which lies *outside* Thorner–Zaman
+Theorem 1.1's positive-count range (that needs `(log x)/(log q) → ∞`).  TZ gives this
+regime only Linnik *existence* and a Brun–Titchmarsh *upper* bound, not the *lower bound on
+the count* the `s = 128` budget consumes.  Open in the required effective form. -/
 abbrev PolyModulusPrimeCount (n : ℕ) (β : ℝ) (supply : ℕ) : Prop := TZPrimeSupply n β supply
 
 /-- **`PolyModulusPrimeCount` is the density form too.**  If the [TZ]-style effective density
@@ -162,6 +166,56 @@ theorem kkh26_s128_of_polyModulusCount_square {n : ℕ} {β ε : ℝ} {supply : 
             ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) :=
   kkh26_s128_ceiling_of_thornerZamanPNTinAP_square hTZ hm hn hr2 hr hx hpl hsupply hcount
 
+/-- **The s = 128 `δ*` ceiling from the regime-correct count input, tight square-budget form.**
+This uses the same collision-family square as `kkh26_s128_of_polyModulusCount_square`, but with
+the sharper fixed-`r` resultant-size log `log((2r)^64)` in place of `448*log 2`. -/
+theorem kkh26_s128_of_polyModulusCount_tight_square
+    {n : ℕ} {β ε : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * (Real.log (((2 * r) ^ 2 ^ (7 - 1) : ℕ) : ℝ) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) :=
+  kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
+    hTZ hm hn hr2 hr hx hpl hsupply hcount
+
+/-- **The s = 128 `δ*` ceiling from the regime-correct count input, tight square-budget
+`64*log(2r)` form.**  This is the log-normalized form of
+`kkh26_s128_of_polyModulusCount_tight_square`. -/
+theorem kkh26_s128_of_polyModulusCount_tight_square_log
+    {n : ℕ} {β ε : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) :=
+  kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
+    hTZ hm hn hr2 hr hx hpl hsupply hcount
+
 end ProximityGap.Frontier.AvD1KKH26S128
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -171,3 +225,7 @@ open ProximityGap.Frontier.AvD1KKH26S128 in
 #print axioms kkh26_s128_of_polyModulusCount
 open ProximityGap.Frontier.AvD1KKH26S128 in
 #print axioms kkh26_s128_of_polyModulusCount_square
+open ProximityGap.Frontier.AvD1KKH26S128 in
+#print axioms kkh26_s128_of_polyModulusCount_tight_square
+open ProximityGap.Frontier.AvD1KKH26S128 in
+#print axioms kkh26_s128_of_polyModulusCount_tight_square_log

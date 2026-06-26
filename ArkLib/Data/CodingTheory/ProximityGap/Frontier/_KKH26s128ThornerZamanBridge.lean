@@ -30,7 +30,8 @@ The honest open input is the **effective prime number theorem in arithmetic prog
 `n = 2^μ·m`, as [KKH26] Theorem 1 demands). Applied via partial summation to that interval it
 gives the **effective density lower bound**
 
-  `π(2·n^β; n, 1) − π(n^β; n, 1)  ≥  (1 − ε) · n^β / (φ(n) · log(n^β))`,            (TZ)
+  `π(2·n^β; n, 1) − π(n^β; n, 1)
+     ≥ (1 − ε) · n^β / (φ(n) · log(n^β))`,                         (TZ)
 
 where `π(x; n, 1) = #{p ≤ x : p prime, p ≡ 1 (mod n)}` is the prime-counting function in the
 progression and `ε = ε(n, β) = o(1)` is the explicit (effective) TZ error term. On paper this
@@ -47,9 +48,10 @@ We name `(TZ)` as the `Prop`-valued hypothesis `ThornerZamanPNTinAP n β ε`. Th
   `primeCountAPone`;
 * its range `[n^β, 2·n^β]` is the *polynomial* window the `s = 128` ceiling consumes
   (`p = Θ(n^β)`), matching [KKH26] Thm 1; and
-* the density expression `(1 − ε)·n^β/(φ(n)·log(n^β))` is precisely what the `s = 128` budget
-  `|collisionPairs 7 r| · 448·log 2 / log(n^β)` must be compared against — the comparison is
-  the elementary side condition, the *only* non-analytic ingredient, and is discharged here.
+* the density expression `(1 − ε)·n^β/(φ(n)·log(n^β))` is precisely what the
+  `s = 128` budget `|collisionPairs 7 r| · 448·log 2 / log(n^β)` must be
+  compared against.  This comparison is the elementary side condition, the
+  *only* non-analytic ingredient, and is discharged here.
 
 ## Main results
 
@@ -66,10 +68,15 @@ We name `(TZ)` as the `Prop`-valued hypothesis `ThornerZamanPNTinAP n β ε`. Th
   `ThornerZamanPNTinAP n β ε`, the smooth-modulus decomposition `n = 2^7·m`, the degree budget
   `2 ≤ r ≤ 2^6`, the field-size lower bound `2^7 < n^β`, and the elementary side conditions
   (the supply count `supply` fits under the TZ density, and beats the `s = 128` bad-prime
-  budget), there is a prime `p ≡ 1 (mod n)`, `p ∈ [n^β, 2·n^β]` (so `p = Θ(n^β)`), and a smooth
-  evaluation domain `⟨g⟩ ⊆ F_p^×` of order `n`, with `mcaDeltaStar(C, ε*) ≤ 1 − r/128`.
+  budget), there is a prime `p ≡ 1 (mod n)`, `p ∈ [n^β, 2·n^β]`, so
+  `p = Θ(n^β)`, and a smooth evaluation domain `⟨g⟩ ⊆ F_p^×` of order `n`,
+  with `mcaDeltaStar(C, ε*) ≤ 1 − r/128`.
 * `kkh26_s128_ceiling_of_thornerZamanPNTinAP_square` — the same bridge with the paper-facing
   square budget `(2^r*C(64,r))^2 * 448*log 2 / log(n^β) < supply`.
+* `kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square` — the fixed-`r` square-budget
+  bridge with the sharper resultant log `log((2r)^64)`.
+* `kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log` — the same fixed-`r` bridge
+  with that logarithm normalized to `64 * log(2r)`.
 
 ## Honesty
 
@@ -94,7 +101,8 @@ namespace ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 
 open ArkLib.ProximityGap.KKH26
   (tzWindow TZPrimeSupply collisionPairs evalCode
-   kkh26_mcaDeltaStar_le_s128 s128_resultantLog_eq)
+   kkh26_mcaDeltaStar_le_s128 kkh26_mcaDeltaStar_le_s128_tight_square_bound
+   s128_resultantLog_eq)
 
 /-! ### The prime-counting function in the arithmetic progression `1 (mod n)` -/
 
@@ -106,10 +114,10 @@ noncomputable def primeCountAPone (n x : ℕ) : ℕ :=
   ((Finset.range (x + 1)).filter (fun p => p.Prime ∧ p ≡ 1 [MOD n])).card
 
 /-- **The short-interval identity.**  The Thorner–Zaman window count equals the difference of
-two prime-counting-in-AP values, `π(⌊2·n^β⌋; n, 1) − π((⌈n^β⌉−1); n, 1)` — exactly the
-short-interval quantity that partial summation over `[n^β, 2·n^β]` produces in [TZ24] Cor 3.1.
-This makes precise that `tzWindow` is a difference of the genuine counting function
-`primeCountAPone`, not a bespoke set. -/
+two prime-counting-in-AP values, `π(⌊2·n^β⌋; n, 1) − π((⌈n^β⌉−1); n, 1)`.
+This is exactly the short-interval quantity that partial summation over `[n^β, 2·n^β]`
+produces in [TZ24] Cor 3.1.  Thus `tzWindow` is a difference of the genuine
+counting function `primeCountAPone`, not a bespoke set. -/
 theorem tzWindow_card_eq_primeCountAPone_diff (n : ℕ) (β : ℝ) :
     (tzWindow n β).card
       = primeCountAPone n ⌊2 * (n : ℝ) ^ β⌋₊
@@ -179,8 +187,8 @@ noncomputable def tzDensityLB (n : ℕ) (β ε : ℝ) : ℝ :=
 /-- **The named [TZ24] effective PNT-in-AP input** `(TZ)` (the `Hab25Johnson` /
 `TZPrimeSupply` named-hypothesis pattern; **never an axiom, never a `sorry`**).
 `ThornerZamanPNTinAP n β ε` asserts the *effective density lower bound* of Thorner–Zaman's
-refined prime number theorem in arithmetic progressions (Cor 3.1 of [TZ24], applied via partial
-summation to the polynomial short interval `[n^β, 2·n^β]`): the window `[n^β, 2·n^β]` of primes
+refined prime number theorem in arithmetic progressions (Cor 3.1 of [TZ24], applied via
+partial summation to the polynomial short interval `[n^β, 2·n^β]`): the window of primes
 `p ≡ 1 (mod n)` has cardinality at least the density expression
 `tzDensityLB n β ε = (1 − ε) · n^β / (φ(n) · log(n^β))`.
 
@@ -192,12 +200,12 @@ downstream by an explicit hypothesis.  It is **not** an `axiom` and is **not** p
 def ThornerZamanPNTinAP (n : ℕ) (β ε : ℝ) : Prop :=
   tzDensityLB n β ε ≤ ((tzWindow n β).card : ℝ)
 
-/-- **`ThornerZamanPNTinAP` is exactly the paper's `π(x; n, 1)` statement `(TZ)`.**  Unfolding
-the window cardinality via the short-interval identity, `ThornerZamanPNTinAP n β ε` says
-precisely that the prime-counting difference `π(⌊2·n^β⌋; n, 1) − π((⌈n^β⌉−1); n, 1)` is at least
-the [TZ24] density expression — i.e. the displayed bound `(TZ)` in terms of the genuine counting
-function `primeCountAPone`.  This confirms the named hypothesis is the literature statement, not
-a bespoke window predicate. -/
+/-- **`ThornerZamanPNTinAP` is exactly the paper's `π(x; n, 1)` statement `(TZ)`.**
+Unfolding the window cardinality via the short-interval identity,
+`ThornerZamanPNTinAP n β ε` says precisely that the prime-counting difference
+`π(⌊2·n^β⌋; n, 1) − π((⌈n^β⌉−1); n, 1)` is at least the [TZ24] density expression.
+So the named hypothesis is the literature statement in terms of the genuine counting function
+`primeCountAPone`, not a bespoke window predicate. -/
 theorem thornerZamanPNTinAP_iff_primeCountAPone (n : ℕ) (β ε : ℝ) :
     ThornerZamanPNTinAP n β ε ↔
       tzDensityLB n β ε
@@ -211,8 +219,8 @@ theorem thornerZamanPNTinAP_iff_primeCountAPone (n : ℕ) (β ε : ℝ) :
 named literature bound `ThornerZamanPNTinAP n β ε` (the deep analytic input) and the elementary
 arithmetic fact that the requested `supply` does not exceed the [TZ24] density expression
 `tzDensityLB n β ε`, the in-tree named hypothesis `TZPrimeSupply n β supply` consumed by the
-`s = 128` ceiling holds.  Chain `supply ≤ tzDensityLB ≤ #window` over `ℝ`, then descend to `ℕ`;
-the deep analytic content stays packaged in `hTZ`. -/
+`s = 128` ceiling holds.  Chain `supply ≤ tzDensityLB ≤ #window` over `ℝ`, then descend
+to `ℕ`; the deep analytic content stays packaged in `hTZ`. -/
 theorem tzPrimeSupply_of_thornerZamanPNTinAP {n : ℕ} {β ε : ℝ} {supply : ℕ}
     (hTZ : ThornerZamanPNTinAP n β ε) (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε) :
     TZPrimeSupply n β supply := by
@@ -234,8 +242,9 @@ the field-size lower bound `2^7 < n^β`, and the two **elementary** side conditi
 * `hcount`  — that supply count strictly beats the `s = 128` bad-prime budget
   `|collisionPairs 7 r| · log(s^{s/2}) / log(n^β)`  (with `s^{s/2} = (2^7)^{2^6} = 2^448`),
 
-there is a prime `p ≡ 1 (mod n)`, `p ∈ [n^β, 2·n^β]` (so `p = Θ(n^β)`, **polynomial** in the
-domain size `n`), and a smooth evaluation domain `⟨g⟩ ⊆ F_p^×` of order `n`, such that for every
+there is a prime `p ≡ 1 (mod n)`, `p ∈ [n^β, 2·n^β]`, so `p = Θ(n^β)`
+and is **polynomial** in the domain size `n`; and a smooth evaluation domain
+`⟨g⟩ ⊆ F_p^×` of order `n`, such that for every
 target error `ε* < 2^r·C(2^6, r)/p` the formal MCA threshold of the explicit evaluation code
 satisfies
 
@@ -321,6 +330,62 @@ theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
     (n := n) (β := β) (supply := supply) (m := m) (r := r)
     hSupply hm hn hr2 hr hx hpl hcount
 
+/-- **The bridge in the sharp fixed-`r` square-budget form.**  This consumes the common
+collision-family square `(2^r*C(64,r))^2`, but with the already-proven sharper fixed-`r`
+resultant-size log `log((2r)^64)` instead of the coarse `448*log 2`. -/
+theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
+    {n : ℕ} {β ε : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * (Real.log (((2 * r) ^ 2 ^ (7 - 1) : ℕ) : ℝ) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  have hSupply : TZPrimeSupply n β supply :=
+    tzPrimeSupply_of_thornerZamanPNTinAP hTZ hsupply
+  exact kkh26_mcaDeltaStar_le_s128_tight_square_bound
+    (n := n) (β := β) (supply := supply) (m := m) (r := r)
+    hSupply hm hn hr2 hr hx hpl hcount
+
+/-- **The sharp fixed-`r` bridge in `64*log(2r)` form.**  This is the same bridge as
+`kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square`, with
+`log((2r)^64)` rewritten by `s128_tightResultantLog_eq`. -/
+theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
+    {n : ℕ} {β ε : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  have hSupply : TZPrimeSupply n β supply :=
+    tzPrimeSupply_of_thornerZamanPNTinAP hTZ hsupply
+  exact ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128_tight_square_bound_log
+    (n := n) (β := β) (supply := supply) (m := m) (r := r)
+    hSupply hm hn hr2 hr hx hpl hcount
+
 end ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -336,3 +401,7 @@ open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP'
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
+open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
+#print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
+open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
+#print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log

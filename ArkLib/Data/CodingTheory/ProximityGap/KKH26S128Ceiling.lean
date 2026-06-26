@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26PolyFieldCeiling
+import ArkLib.Data.CodingTheory.ProximityGap.KKH26TightCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZamanConstructor
 
 /-!
@@ -54,6 +55,8 @@ it (plus the s=128 budget) into the ceiling.
 * `s128_supply_beats_budget_of_square_bound` /
   `kkh26_mcaDeltaStar_le_s128_of_square_bound` — paper-facing square-budget wrappers using
   `(2^r * C(64,r))^2`; the exact collision-pair family is bounded by that square.
+* `kkh26_mcaDeltaStar_le_s128_tight_square_bound` — the same square-family wrapper with the
+  sharper fixed-`r` resultant log `log((2r)^64)` in place of the coarse `448*log 2`.
 
 ## Honesty
 
@@ -69,8 +72,9 @@ namespace ArkLib.ProximityGap.KKH26
 
 /-- **The named [TZ24] analytic input, under its PNT-in-APs name.**  `EffectivePNTinAP n β
 supply` asserts that the window `[n^β, 2·n^β]` contains at least `supply` primes
-`p ≡ 1 (mod n)` — i.e. `π(2n^β; n, 1) − π(n^β; n, 1) ≥ supply`.  This is *definitionally*
-`TZPrimeSupply n β supply`; it is recorded here under the analytic name so that the s = 128
+`p ≡ 1 (mod n)`, i.e. `π(2n^β; n, 1) − π(n^β; n, 1) ≥ supply`.  This is
+*definitionally* `TZPrimeSupply n β supply`; it is recorded here under the analytic name
+so that the s = 128
 consumer states its single obligation as "effective PNT in arithmetic progressions", the
 honest open input.  On paper [TZ24] Cor 3.1 supplies `~ n^{β−1−o(1)}` for every fixed
 `β > 12/5`. -/
@@ -86,6 +90,15 @@ theorem s128_resultantLog_eq :
   rw [hnat, Nat.cast_pow, Nat.cast_ofNat, Real.log_pow]
   push_cast
   ring
+
+/-- The sharp fixed-`r` s = 128 resultant-size log:
+`log((2r)^64) = 64 * log(2r)`. -/
+theorem s128_tightResultantLog_eq (r : ℕ) :
+    Real.log (((2 * r) ^ 2 ^ (7 - 1) : ℕ) : ℝ) =
+      64 * Real.log (((2 * r : ℕ) : ℝ)) := by
+  have hpow : 2 ^ (7 - 1) = 64 := by norm_num
+  rw [hpow, Nat.cast_pow, Real.log_pow]
+  norm_num
 
 /-- Exact s = 128 collision-pair count in the paper's `A(A-1)` form, where
 `A = 2^r * C(64, r)` is the number of signed data. -/
@@ -195,13 +208,65 @@ theorem kkh26_mcaDeltaStar_le_s128_of_square_bound {n : ℕ} {β : ℝ} {supply 
   exact s128_supply_beats_budget_of_square_bound (n := n) (β := β) (r := r)
     (S := supply) (supply := supply) hx le_rfl hcount
 
+/-- **The s = 128 `δ*` ceiling from the sharp fixed-`r` square budget.**
+This is the `μ = 7` specialization of `kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound`.
+It consumes the same paper-facing collision-family square `(2^r*C(64,r))^2`, but uses the
+sharper resultant-size logarithm `log((2r)^64)` instead of the coarse `448*log 2`. -/
+theorem kkh26_mcaDeltaStar_le_s128_tight_square_bound
+    {n : ℕ} {β : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : EffectivePNTinAP n β supply) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * (Real.log (((2 * r) ^ 2 ^ (7 - 1) : ℕ) : ℝ) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) :=
+  kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound
+    (μ := 7) (m := m) (r := r) hTZ (by norm_num) hm hn hr2 hr hx hpl hcount
+
+/-- **The s = 128 sharp fixed-`r` square budget, in `64*log(2r)` form.**  This is the same
+consumer as `kkh26_mcaDeltaStar_le_s128_tight_square_bound`, with
+`log((2r)^64)` rewritten by `s128_tightResultantLog_eq`. -/
+theorem kkh26_mcaDeltaStar_le_s128_tight_square_bound_log
+    {n : ℕ} {β : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : EffectivePNTinAP n β supply) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ) *
+        ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  refine kkh26_mcaDeltaStar_le_s128_tight_square_bound hTZ hm hn hr2 hr hx hpl ?_
+  rwa [s128_tightResultantLog_eq]
+
 end ArkLib.ProximityGap.KKH26
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.KKH26.s128_resultantLog_eq
+#print axioms ArkLib.ProximityGap.KKH26.s128_tightResultantLog_eq
 #print axioms ArkLib.ProximityGap.KKH26.s128_collisionPairs_card
 #print axioms ArkLib.ProximityGap.KKH26.s128_collisionPairs_card_le_square
 #print axioms ArkLib.ProximityGap.KKH26.s128_supply_beats_budget_of
 #print axioms ArkLib.ProximityGap.KKH26.s128_supply_beats_budget_of_square_bound
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128_of_square_bound
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128_tight_square_bound
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128_tight_square_bound_log

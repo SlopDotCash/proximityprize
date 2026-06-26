@@ -1079,14 +1079,12 @@ concentration but, for the smooth-subgroup test `1_{μ_n}/n`, the starting conce
 `M(μ_n)/n`.  The iterated squared target is therefore equivalent to the original Paley house bound,
 so D1 is a consumer of a Paley-strength input rather than an independent floor proof.
 
-## [2026-06-26] refute | Rogers-Siegel variance prime-coupling gate
+## [2026-06-26] reduce | fixed-r KKH26 s=128 square budget
 
-Added:
-
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D2RogersSiegelVarianceGate.lean`
-- `docs/kb/deltastar-464-rogers-siegel-prime-variance-gate-2026-06-26.md`
-
-to record that arXiv:2606.27020 random-lattice/Siegel-transform moments do not decide the
-prime-indexed good-prime sliver without a pointwise prime-to-lattice coupling.  If such a coupling is
-supplied, the route still passes through the existing `_AvBV2` prime-variance certification-deficit
-gate.
+Follow-up: the s=128 KKH26 consumer now exposes the sharper fixed-`r` resultant-size budget.
+`KKH26TightCeiling.lean` already proves the generic `log((2r)^(2^(μ-1)))` route; the s=128
+surface now adds `s128_tightResultantLog_eq`, `kkh26_mcaDeltaStar_le_s128_tight_square_bound`,
+and the normalized `kkh26_mcaDeltaStar_le_s128_tight_square_bound_log`.  The named
+Thorner-Zaman bridge and AvD1 regime-correct count layer export matching tight-square consumers.
+This relaxes the bad-prime budget but does not remove the named polynomial-modulus prime-count
+input.

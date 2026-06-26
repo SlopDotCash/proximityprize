@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4896 files, 52221 declarations
+- `ArkLib` — 4896 files, 52231 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -7957,7 +7957,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `primeCountAPone` (2 declarations, 2 files)
 
-- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.primeCountAPone` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L105) — The **prime-counting function in the progression `1 (mod n)`**: `primeCountAPone n x = π(x; n, 1) =
+- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.primeCountAPone` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:113](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L113) — The **prime-counting function in the progression `1 (mod n)`**: `primeCountAPone n x = π(x; n, 1) =
 - `def ProximityGap.Frontier.ThornerZamanPNTStatement.primeCountAPone` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean#L85) — The **prime-counting function in the arithmetic progression `1 (mod n)`**: `primeCountAPone n x = π(
 
 ### `primitive_no_extra_rung` (2 declarations, 2 files)
@@ -8762,12 +8762,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `tzDensityLB` (2 declarations, 2 files)
 
-- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzDensityLB` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:176](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L176) — The **[TZ24] density expression** `(1 − ε) · n^β / (φ(n) · log(n^β))` — the explicit, effective lowe
+- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzDensityLB` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:184](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L184) — The **[TZ24] density expression** `(1 − ε) · n^β / (φ(n) · log(n^β))` — the explicit, effective lowe
 - `def ProximityGap.Frontier.ThornerZamanPNTStatement.tzDensityLB` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean#L161) — The **[TZ24] density expression** `(1 − ε) · n^β / (φ(n) · log(n^β))` — the explicit, effective lowe
 
 ### `tzWindow_card_eq_primeCountAPone_diff` (2 declarations, 2 files)
 
-- `theorem ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzWindow_card_eq_primeCountAPone_diff` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:113](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L113) — **The short-interval identity.**  The Thorner–Zaman window count equals the difference of two prime-
+- `theorem ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzWindow_card_eq_primeCountAPone_diff` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:121](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L121) — **The short-interval identity.**  The Thorner–Zaman window count equals the difference of two prime-
 - `theorem ProximityGap.Frontier.ThornerZamanPNTStatement.tzWindow_card_eq_primeCountAPone_diff` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean:93](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean#L93) — **The short-interval identity.**  The Thorner–Zaman window count equals the difference of two prime-
 
 ### `umCode` (2 declarations, 2 files)
@@ -11896,7 +11896,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.XiCertReduction.xi_ne_zero` [ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean:188](../../../ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean#L188) — **`ξ ≠ 0` holds unconditionally** (from `embeddingOf𝒪Into𝕃_ξ_ne_zero`): the `hξ` hypothesis of the t
 - `theorem ArkLib.XiCertReduction.xi_ne_zero` [ArkLib/ToMathlib/XiCertReduction.lean:219](../../../ArkLib/ToMathlib/XiCertReduction.lean#L219) — **`ξ ≠ 0` holds unconditionally** (from `embeddingOf𝒪Into𝕃_ξ_ne_zero`): the `hξ` hypothesis of the t
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 548 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 547 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 
