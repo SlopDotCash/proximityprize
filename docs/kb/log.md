@@ -605,8 +605,3 @@ interface can consume the raw weighted MDS envelope, while keeping that envelope
 case rather than the desired improvement.  The split form
 `uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` uses the raw term only
 for low profiles `t < k` and the singleton support-denominator cap for high profiles.
-
-Follow-up: the positive raw-envelope baseline now has the same low/high split as the scanners.
-`uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` needs the raw
-`|F|^(k-t) * support/(a-t)` term only for `t < k`; high `k <= t` profiles use the sharper
-support-denominator singleton term.
