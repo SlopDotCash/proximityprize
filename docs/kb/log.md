@@ -841,3 +841,33 @@ returns the smaller denominator-weight obstruction, while
 `codewordSupportDivWeight_le_codewordSupportChooseWeight_of_zeroSafe` records that weighted
 support-choose only implies this baseline.  Companion note:
 `deltastar-464-weighted-denominator-baseline-2026-06-26.md`.
+
+Follow-up: `LineListCodewordSupportDivArithmeticObstruction.lean` gives the denominator baseline
+its one-term arithmetic no-go surface.  `codewordSupportDivWeight_term_le` bounds every concrete
+appearing-codeword denominator term by the weighted sum, and the three refuters
+`not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_exists_term_gt`,
+`not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_exists_profile_term_gt`, and
+`not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_exists_support_lower_term_gt`
+turn explicit support/zero-agreement profiles into failure of the uniform weighted denominator
+budget.  This is one-way certification, not a claim that every failed sum has a single bad term.
+Companion note:
+`deltastar-464-weighted-denominator-term-obstruction-2026-06-26.md`.
+
+Follow-up: the singleton graph interface now records the generic forbidden-edge collapse.
+`uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden`
+says that once singleton witnesses are independent for a proposed relation, the witness-local
+independence budget is equivalent as a theorem statement to the original per-codeword singleton
+cap.  The companion failure iff
+`not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden`
+returns exactly the old overfull singleton fiber under forbidden edges.  This keeps future graph
+attempts honest: the relation can be a proof method, but the witness-local formulation is not a
+weaker target.
+
+Follow-up: `LineListCodewordSingletonRelationCliqueCover.lean` adds a positive certificate form
+for the graph route.  `scalarRelationIndependent_card_le_of_cliqueCover` proves that an
+independent singleton set meets each relation clique at most once, and
+`UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted` packages the uniform witness-local
+cover obligation.  The scanner
+`exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgeted` returns an
+actual forbidden edge, the usual arithmetic failure, or a singleton fiber with no at-most-`S`
+relation-clique cover.  This gives future interpolation relations a finite certificate target.

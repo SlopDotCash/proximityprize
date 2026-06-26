@@ -45,6 +45,20 @@ codewordSupportDivWeight_le_codewordSupportChooseWeight_of_zeroSafe
 uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_codewordSupportChooseWeightBudget
 ```
 
+`LineListCodewordSupportDivArithmeticObstruction.lean` adds the one-term arithmetic no-go:
+
+```lean
+codewordSupportDivWeight_term_le
+not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_exists_term_gt
+not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_exists_profile_term_gt
+not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_exists_support_lower_term_gt
+```
+
+This does not claim that every failed denominator sum has one over-budget term.  It records the
+useful certificate in the other direction: if one concrete appearing codeword profile already
+makes `2B < puncturedWeight + support / (a - zeroAgreement)`, the uniform weighted denominator
+budget is impossible.
+
 ## Consequence
 
 The next scalar theorem should beat `codewordSupportDivWeight`, not merely the

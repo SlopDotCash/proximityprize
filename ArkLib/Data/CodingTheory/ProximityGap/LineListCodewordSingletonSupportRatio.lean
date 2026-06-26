@@ -20,6 +20,7 @@ large moving-support subfiber for that same scalar.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.style.longLine false
 
 open Finset
 
@@ -1077,6 +1078,58 @@ theorem uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndepend
     (fun _ hγ => hγ)
     (hforbid u₀ u₁ hnotEligible hsafe c hc)
 
+/-- Once the forbidden-edge half is known, the witness-local graph budget is extensionally
+equivalent to the direct per-codeword singleton cap.  The graph formulation can still be a useful
+proof method, but it is not a weaker theorem statement. -/
+theorem
+    uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) :
+    UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted dom k a R S ↔
+      UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+  constructor
+  · intro hind
+    exact uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
+      dom k a S R hforbid hind
+  · intro hbudget
+    exact
+      uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
+        dom k a S R hbudget
+
+open Classical in
+/-- Exact failure form of the previous equivalence: under a forbidden-edge theorem, failing the
+witness-local independence budget is exactly failing the original singleton-fiber cardinality
+cap on one large-zero safe appearing codeword. -/
+theorem
+    not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) :
+    (¬ UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted dom k a R S) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  constructor
+  · intro hnot
+    have hnotSingleton :
+        ¬ UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+      intro hsingle
+      exact hnot
+        ((uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+          dom k a S R hforbid).mpr hsingle)
+    exact (not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+      dom k a S).mp hnotSingleton
+  · intro hex hind
+    have hsingle :
+        UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S :=
+      (uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+        dom k a S R hforbid).mp hind
+    exact
+      ((not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+        dom k a S).mpr hex) hsingle
+
 /-- Production wrapper for the relation-independence route to per-codeword singleton caps. -/
 theorem
     uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
@@ -1343,6 +1396,10 @@ section SourceAudit
   uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationIndependence
 #print axioms
   uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
+#print axioms
+  uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+#print axioms
+  not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
 #print axioms

@@ -45,6 +45,9 @@ not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
 uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationIndependence
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
@@ -77,6 +80,49 @@ codewordSingletonWitnessScalars(dom,k,a,u0,u1,c)
 
 and is the intended target for future graph theorems.  The global budget still implies the
 witness-local budget, so it remains a convenient sufficient condition.
+
+The generic collapse theorem is important for reading the interface correctly:
+
+```lean
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+```
+
+Once the forbidden-edge half is proved, the witness-local graph budget is equivalent as a Prop to
+the original per-codeword singleton cap.  The graph relation can still be a proof method, but it
+does not create a weaker target theorem.  Its exact failure form is also exposed:
+
+```lean
+not_uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_iff_exists_singleton_card_gt_of_forbidden
+```
+
+So under forbidden edges, a failed witness-local graph theorem returns precisely the old
+overfull singleton fiber, not merely an arbitrary independent subset.
+
+`LineListCodewordSingletonRelationCliqueCover.lean` adds a positive certificate for proving the
+witness-local graph budget.  A scalar set is a clique when every distinct pair is related, and a
+clique cover of the singleton-witness fiber bounds every independent subset by the number of
+cliques:
+
+```lean
+scalarRelationClique
+scalarRelationCliqueCover
+scalarRelationIndependent_inter_clique_card_le_one
+scalarRelationIndependent_card_le_of_cliqueCover
+UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationCliqueCover
+uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationCliqueCover
+```
+
+Thus a future algebraic relation can aim for a finite clique cover instead of proving an abstract
+independence-number theorem directly.  The corresponding scanner returns either the usual
+arithmetic failure or a concrete singleton-witness fiber that admits no at-most-`S` clique cover:
+
+```lean
+not_uniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted_iff_exists_no_cover
+exists_largeZero_safe_codewordRelationCliqueCoverRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgeted
+```
 
 The consumer is exact:
 
@@ -146,6 +192,11 @@ is automatic and the witness-local budget again collapses to the original single
 ```lean
 endpointSecondWitnessRelationWitnessBudgeted_iff_codewordSingletonBudgeted
 ```
+
+These two specific equivalences are instances of the generic forbidden-edge collapse above: once
+a relation has no forbidden singleton edges, the witness-local graph budget is not a smaller
+statement than the singleton cap.  Any progress has to come from a genuinely new proof of that
+budget, not from the interface itself.
 
 So a viable relation must be genuinely algebraic.  It has to spend information that coordinate
 packing throws away:
