@@ -154,16 +154,25 @@ exists_supportRatioFiber_card_ge_sub_of_mem_lineAppearingCodewords
 exists_supportRatioFiber_card_ge_sub_of_mem_exactAppearingZeroAgreementFiber
 supportRatioHeavyCoordinateFiber
 exactAppearingZeroAgreementFiber_subset_supportRatioHeavyCoordinateFiber
+supportRatioLineFiberCover
+supportRatioHeavyCoordinateFiber_subset_supportRatioLineFiberCover
+supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
-unsafe_or_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
-unsafe_or_largeZero_safe_low_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
+unsafe_or_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 An exact appearance witness over a zero set `S` must have some support-ratio fiber of size at least
 `a - #S`.  Thus the exact appearance budget can be proved by counting only coordinate-fiber
-codewords with a heavy support-ratio fiber.  Failed production localizes, after high profiles are
-discharged by RS uniqueness, to a low `t < k` support-ratio-heavy coordinate fiber.
+codewords with a heavy support-ratio fiber.  The new cover extracts a heavy scalar `γ` and an
+`(a - #S)`-subset `T` of its moving support fiber, then covers the codeword by the ordinary
+coordinate-agreement fiber for the line word `u0 + γ*u1` on `S ∪ T`; the file also records the
+direct union-bound sum over these `(γ, T)` covers.  Failed production localizes, after high profiles
+are discharged by RS uniqueness, to a low `t < k` support-ratio-heavy coordinate fiber.
 
 `LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
 

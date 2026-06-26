@@ -645,3 +645,9 @@ Every appearing codeword has a support-ratio fiber of size at least `a - t`, whe
 zero-direction agreement count; therefore exact appearance fibers are contained in coordinate
 fibers whose support-ratio map has a heavy fiber.  The new scanner localizes failed production to
 zero-direction saturation or a large-zero safe low support-ratio-heavy coordinate fiber.
+
+Follow-up: the support-ratio-heavy target now has an explicit finite cover.  For each zero profile
+`S`, `supportRatioLineFiberCover` chooses a heavy scalar `γ` and an `(a - #S)`-element moving
+subfiber `T`, then covers by the ordinary coordinate-agreement fiber for `u0 + γ*u1` on `S ∪ T`.
+The next positive estimate is therefore a concrete improvement over the crude union-bound sum
+recorded by `supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers`.

@@ -109,18 +109,27 @@ exists_supportRatioFiber_card_ge_sub_of_mem_lineAppearingCodewords
 exists_supportRatioFiber_card_ge_sub_of_mem_exactAppearingZeroAgreementFiber
 supportRatioHeavyCoordinateFiber
 exactAppearingZeroAgreementFiber_subset_supportRatioHeavyCoordinateFiber
+supportRatioLineFiberCover
+supportRatioHeavyCoordinateFiber_subset_supportRatioLineFiberCover
+supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
-unsafe_or_largeZero_safe_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
-unsafe_or_largeZero_safe_low_supportRatioHeavyCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
+unsafe_or_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 For an appearing codeword, the moving-support ratios
 `(c i - u0 i) / u1 i` must have a fiber of size at least `a - t`, where `t` is the exact
 zero-direction agreement count.  Hence an exact appearance fiber over `S` is contained in the raw
 coordinate fiber over `S` plus the extra condition that one support-ratio fiber has size
-`a - #S`.  This is still not a bound, but it is the first target that actually uses appearance on
-the affine line before paying the raw field-power count.
+`a - #S`.  The explicit cover `supportRatioLineFiberCover` then chooses a heavy scalar `γ` and an
+`(a - #S)`-element moving-support subfiber `T`, reducing membership to an ordinary coordinate
+agreement fiber over `S ∪ T` for the line word `u0 + γ*u1`; the file also records the crude finite
+union-bound sum over `(γ, T)`.  This is still not a winning bound, but it is the first target that
+actually uses appearance on the affine line before paying the raw field-power count.
 
 `LineListSingletonArithmeticObstruction.lean` records the corresponding raw singleton arithmetic
 no-go:
@@ -220,8 +229,8 @@ heavy-scalar denominator; the remaining saving must happen before summing over t
 fiber.
 
 `LineListSupportRatioFiber.lean` formalizes exactly that stronger partition target.  The next
-positive estimate should count codewords in a coordinate fiber whose support-ratio map has a heavy
-fiber, rather than all codewords in the coordinate fiber.
+positive estimate should improve the explicit `(γ, T)` cover sum for codewords in a coordinate
+fiber whose support-ratio map has a heavy fiber, rather than all codewords in the coordinate fiber.
 
 ## Consequence
 
