@@ -7,6 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileDominationInt
 
 set_option autoImplicit false
 set_option linter.style.longLine false
+set_option linter.style.longFile 1600
 
 /-!
 # Slackened profile-fiber dominance
@@ -778,6 +779,55 @@ theorem not_profileFiberOscillationBounded_of_profileCard_mul_uniformSlack_lt_st
     (stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
       C δ hosc hrep hslack)) hsmall
 
+/-- Bundled-certificate form of the summed-slack image-size pressure. -/
+theorem stackBadCountImage_card_le_sum_profileFiberOscillationCertificateSlack
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ} {B : ℕ}
+    (hcert : ProfileFiberOscillationCertificate F C δ profile rep slack B) :
+    (StackBadCountImage F C δ).card ≤ ∑ p : P, (2 * slack p + 1) :=
+  stackBadCountImage_card_le_sum_profileFiberOscillationSlack C δ hcert.2.1 hcert.1
+
+/-- Bundled-certificate form of the uniform-slack image-size pressure. -/
+theorem stackBadCountImage_card_le_profileCard_mul_uniformOscillationCertificateSlack
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ} {B : ℕ}
+    (hcert : ProfileFiberOscillationCertificate F C δ profile rep slack B)
+    {S : ℕ} (hslack : ∀ p : P, slack p ≤ S) :
+    (StackBadCountImage F C δ).card ≤ Fintype.card P * (2 * S + 1) :=
+  stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
+    C δ hcert.2.1 hcert.1 hslack
+
+/-- Certificate-level refutation socket using only the summed slack budget. -/
+theorem not_profileFiberOscillationCertificate_of_sum_slack_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ} {B : ℕ}
+    (hsmall : (∑ p : P, (2 * slack p + 1)) < (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberOscillationCertificate F C δ profile rep slack B := by
+  intro hcert
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_sum_profileFiberOscillationCertificateSlack
+      C δ hcert)) hsmall
+
+/-- Certificate-level refutation socket using a uniform slack cap. -/
+theorem not_profileFiberOscillationCertificate_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ} {B : ℕ}
+    {S : ℕ} (hslack : ∀ p : P, slack p ≤ S)
+    (hsmall : Fintype.card P * (2 * S + 1) < (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberOscillationCertificate F C δ profile rep slack B := by
+  intro hcert
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_profileCard_mul_uniformOscillationCertificateSlack
+      C δ hcert hslack)) hsmall
+
 /-! ## Endpoint sanity checks for coarse profiles -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
@@ -1448,6 +1498,10 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_of_sum_slack_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileFiberOscillationCertificateSlack
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_profileCard_mul_uniformOscillationCertificateSlack
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationCertificate_of_sum_slack_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationCertificate_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound

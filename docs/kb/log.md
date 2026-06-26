@@ -1029,3 +1029,9 @@ Follow-up: the interval cover now has summed-slack and uniform-slack corollaries
 `stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack`.  The negated sockets refute
 oscillation certificates from only a summed slack budget, or from profile count times a uniform
 slack cap.
+
+Follow-up: the summed-slack and uniform-slack image gates now have direct bundled-certificate
+forms for `ProfileFiberOscillationCertificate`.  The certificate-level negated sockets refute the
+full structured certificate when the bad-count image is too large for the advertised summed or
+uniform slack budget, without separately unpacking the representative-in-fiber and oscillation
+components.

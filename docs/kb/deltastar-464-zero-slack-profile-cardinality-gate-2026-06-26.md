@@ -57,6 +57,10 @@ stackBadCountImage_card_le_sum_profileFiberOscillationSlack
 stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
 not_profileFiberOscillationBounded_of_sum_slack_lt_stackBadCountImage
 not_profileFiberOscillationBounded_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
+stackBadCountImage_card_le_sum_profileFiberOscillationCertificateSlack
+stackBadCountImage_card_le_profileCard_mul_uniformOscillationCertificateSlack
+not_profileFiberOscillationCertificate_of_sum_slack_lt_stackBadCountImage
+not_profileFiberOscillationCertificate_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
 ```
 
 The central theorem is:
@@ -109,6 +113,10 @@ and, if every `slack p <= S`, the uniform form gives
 
 Thus a scanner can refute a same-profile oscillation certificate from only the profile count and
 slack budget, without evaluating each representative-centered interval.
+
+The certificate-level forms package the same tests for the bundled
+`ProfileFiberOscillationCertificate`, so consumers can refute the full structured certificate
+directly when the summed or uniform slack budget is smaller than the realized bad-count image.
 
 ## Consequence
 
