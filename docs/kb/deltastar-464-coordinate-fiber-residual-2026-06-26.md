@@ -199,6 +199,8 @@ zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget
 zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget
 uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
 uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
+exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
@@ -215,6 +217,8 @@ weighted field-power term.  The converse consumer is also formalized: if that ra
 field-power term fits below `D t` profile-wise, the exact singleton-profile route can consume it
 directly.  The split consumer separates low raw interpolation from the high support-only term,
 matching the scanner shape.
+The direct raw-envelope scanner now localizes failed production to a specific large-zero safe
+stratum whose weighted field-power term is already above `D t`.
 
 ## Next Target
 

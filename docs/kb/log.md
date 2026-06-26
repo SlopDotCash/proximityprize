@@ -605,3 +605,9 @@ interface can consume the raw weighted MDS envelope, while keeping that envelope
 case rather than the desired improvement.  The split form
 `uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` uses the raw term only
 for low profiles `t < k` and the singleton support-denominator cap for high profiles.
+
+Follow-up: the raw-envelope baseline now has a direct production-layer converse:
+`exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted`
+and `unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted`.  Failed uniform
+production exposes either zero-direction saturation or a large-zero safe stratum where the raw
+weighted field-power envelope is already above `D t`.

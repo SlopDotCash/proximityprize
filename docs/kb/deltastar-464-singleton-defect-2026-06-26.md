@@ -129,6 +129,8 @@ zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget
 zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget
 uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
 uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
+exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
 exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
@@ -210,6 +212,9 @@ The sharper positive form is split at `k`: low profiles `t < k` carry the raw MD
 `|F|^(k-t) * support/(a-t)`, while high profiles `k <= t` only need the support-denominator term.
 The theorem `uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` packages
 exactly that contract.
+The direct converse scanner exposes a failed production attempt as either zero-direction
+saturation or a large-zero safe profile where the raw weighted field-power term itself exceeds
+`D t`.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

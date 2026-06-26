@@ -93,6 +93,8 @@ zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget
 zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget
 uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
 uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
+exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
@@ -108,7 +110,8 @@ low-profile failure after the high range is discharged can be converted into
 `D t < |F|^(k-t) * support/(a-t)`.  Conversely, if that weighted field-power envelope is already
 below `D t` for every exact profile, the raw-envelope consumer feeds the exact singleton-profile
 production wrapper directly; the split consumer lets callers provide the low raw interpolation
-bound and the high support-only bound separately.
+bound and the high support-only bound separately.  The direct converse scanner records the same
+field-power obstruction without first passing through a profile-cardinality witness.
 
 ## Critique of the Previous Hope
 
