@@ -422,7 +422,10 @@ not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
 not_zeroAgreementStrataBudgetFits_iff_sum_gt
 not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
 not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
+exists_eligible_or_unsafe_or_largeZero_stratum_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_zeroAgreementStrata
+exists_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 The main inequality is:
@@ -485,8 +488,17 @@ not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
 not_zeroAgreementStrataBudgetFits_iff_sum_gt
 not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
 not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
+exists_eligible_or_unsafe_or_largeZero_stratum_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 Thus a failed zero-strata proof reports either an overfull `t`-stratum or an arithmetic envelope
 whose weighted sum already exceeds `B`.  With the arithmetic fit fixed, any punctured-budget failure
 forces an overfull stratum.
+
+The newest scanner composition moves this up to the full line-list route.  With the large-zero
+`N(t)` arithmetic fit fixed, a failed uniform bad-scalar budget has to be eligible-line overbudget,
+zero-direction saturation, or a concrete overfull large-zero stratum.  If the support-eligible
+line-list theorem, support arithmetic, and zero-direction safety are also fixed, only the overfull
+large-zero stratum can remain.

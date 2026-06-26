@@ -68,6 +68,9 @@ not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
 not_zeroAgreementStrataBudgetFits_iff_sum_gt
 not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
 not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
+exists_eligible_or_unsafe_or_largeZero_stratum_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 The key bound is:
@@ -176,6 +179,12 @@ a stratum whose actual cardinality exceeds `N(t)`, or the proposed envelope fits
 weighted arithmetic sum is already too large for the target budget.  If the arithmetic fit is known
 and the punctured theorem still fails, the culprit must be an overfull zero-agreement stratum.
 
+The scanner bridge now starts from the production failure itself.  With the arithmetic fit for
+`N(t)` fixed, a failed uniform bad-scalar budget reports either an eligible support-line
+overbudget, an unsafe zero-direction witness, or an overfull large-zero safe stratum.  Once the
+eligible route and zero-direction safety are separately discharged, the same failure necessarily
+exhibits a concrete `t < a` with `N(t) < #zeroAgreementStratum(t)`.
+
 If this theorem is true, it is a genuine coding-theoretic route around the blunt Paley/BGK route for
 this branch.  If it is false, the counterexample should be highly structured: many RS codewords
 nearly agree with `u0` on the zero set, none reaches `a`, and their moving-support fibers still
@@ -216,3 +225,37 @@ N(t) < #zeroAgreementStratum(t).
 This is the next target to probe or prove.  The prize is still open, but the large-zero branch is no
 longer an undefined exception; it has a computable summation certificate and a stratum-level
 counterexample format.
+
+## Continuation: end-to-end stratum failure socket
+
+The stratum envelope now composes with the full support/large-zero trichotomy:
+
+```lean
+exists_eligible_or_unsafe_or_largeZero_stratum_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+```
+
+The first theorem says that if the large-zero `N(t)` arithmetic fit is fixed, any failed uniform
+bad-scalar budget must report one of three witnesses:
+
+```text
+support-eligible line over budget,
+zero-direction saturation,
+large-zero safe line with an overfull zero-agreement stratum.
+```
+
+The second theorem is the sharper production-mode scanner.  Once the support-eligible line-list
+theorem, support arithmetic fit, uniform zero-direction safety, and large-zero `N(t)` arithmetic fit
+are all assumed, any remaining failure of `UniformLineBadScalarsBudgeted` must be:
+
+```text
+not support eligible,
+zero-direction safe,
+t < a,
+N(t) < #zeroAgreementStratum(t).
+```
+
+So the line-list branch is now factored down to an actual near-code packing statement.  A successful
+next proof must bound these strata.  A successful refutation must produce the concrete overfull
+stratum, not just a raw bad-scalar excess.

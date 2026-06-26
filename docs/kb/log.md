@@ -350,6 +350,12 @@ budget returns a large-zero safe line and a concrete overfull zero-agreement str
 arithmetic fit returns a large-zero direction whose weighted `N(t)` sum already exceeds `B`.  If the
 arithmetic fit is fixed, any failed punctured budget must come from an overfull stratum.
 
+Follow-up: the `N(t)` envelope now composes with the full line-list trichotomy.  With large-zero
+stratum arithmetic fixed, a uniform bad-scalar budget failure is eligible overbudget, zero-direction
+saturation, or an overfull large-zero stratum.  If the support-eligible line-list theorem,
+support-fit arithmetic, and zero-direction safety are also fixed, the only remaining witness is the
+overfull large-zero stratum itself.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:
