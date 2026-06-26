@@ -381,6 +381,24 @@ direction violating this zero-term inequality refutes the raw field-power coordi
 If a large-zero direction also has support at least `a`, the fit already forces `|F|^k <= B`; thus
 `B < |F|^k` refutes the naive interpolation envelope whenever such a direction exists.
 
+Follow-up: that witness now exists under the simple parameter inequality `2a <= n`.  The direction
+with `a` zero coordinates and value `1` elsewhere is large-zero but still has support at least `a`.
+Consequently the raw field-power coordinate-fiber fit is formally impossible whenever
+`2a <= n` and `B < |F|^k`; future progress must beat the unconstrained affine fiber count using
+support/appearance geometry.
+
+Follow-up: the obstruction is now per-summand, not only `t = 0`.  Any field-power fit must satisfy
+each weighted term individually, and if the support covers `a - t`, it already forces
+`choose(#zeroSet(u1), t) * |F|^(k-t) <= B`.  This gives a sharper arithmetic scanner for refuting
+candidate low-stratum envelopes before returning to geometric codeword structure.
+
+Follow-up: added `docs/kb/deltastar-464-field-power-arithmetic-obstruction-2026-06-26.md` and
+`LineListArithmeticObstruction.lean`.  For every `z <= n`, the source constructs a direction with
+exactly `z` zero coordinates and support `n-z`.  Therefore `a <= z`, `t < a`, `a - t <= n-z`, and
+`B < choose(z,t) * |F|^(k-t)` refute the raw field-power coordinate-fiber fit.  The remaining
+positive route must count appearance-filtered coordinate fibers, not arbitrary affine
+interpolation fibers.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:

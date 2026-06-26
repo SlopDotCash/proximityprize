@@ -513,10 +513,18 @@ coordinateAgreementFiber_card_le_one_of_k_le
 coordinateAgreementFiber_card_le_field_pow_sub_card
 zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
 uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+uniformFieldPowCoordinateAgreementFiberBudgetFits_term_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_term_gt
+fieldPowCoordinateAgreementFiberBudgetFits_choosePow_le_of_support_ge_sub
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_choosePow_gt
 uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
 uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
+exists_direction_zero_card_eq_support_card_eq
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_zero_count_choosePow_gt
+exists_largeZero_direction_support_ge_of_two_mul_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_two_mul_le
 zeroAgreementStratum_card_le_choose_of_k_le_t
 unsafe_or_largeZero_safe_low_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
@@ -533,7 +541,13 @@ affine interpolation count is also formalized as
 remaining `N(t)` problem is no longer the basic fiber count; it is whether the induced low-range
 weighted binomial arithmetic fits, or whether a support-aware refinement is needed.  If the
 field-power weighted fit does hold, any remaining uniform-budget failure is forced into
-zero-direction saturation.  The same arithmetic fit must already pass the `t = 0` test
+zero-direction saturation.  The same arithmetic fit must already pass every individual summand
+test; under support at least `a - t`, the `t` term alone forces
+`choose(#zeroSet(u1), t) * |F|^(k-t) <= B`.  In particular, the `t = 0` test forces
 `|F|^k * support(u1) / a <= B` on every large-zero direction; with support at least `a`, this
-already forces `|F|^k <= B`.  If a weaker proposed envelope fails, the new scanner returns an
-explicit low stratum or low overfull coordinate fiber.
+already forces `|F|^k <= B`.  Since such a direction exists whenever `2a <= n`, the raw field-power
+fit is formally impossible in that regime for any `B < |F|^k`.  The parameterized obstruction is
+sharper: a direction with exactly `z` zeros and support `n-z` exists for every `z <= n`, so any
+single term with `a <= z`, `t < a`, `a - t <= n-z`, and
+`B < choose(z,t) * |F|^(k-t)` refutes the raw field-power fit.  If a weaker proposed envelope
+fails, the new scanner returns an explicit low stratum or low overfull coordinate fiber.

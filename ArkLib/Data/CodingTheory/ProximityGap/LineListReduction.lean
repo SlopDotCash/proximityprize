@@ -35,7 +35,7 @@ target the incidence skeleton produces.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 1900
+set_option linter.style.longFile 2000
 
 open Finset
 open scoped NNReal ENNReal
@@ -1154,6 +1154,100 @@ theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_su
     exact (not_lt_of_ge (hfits u₁ hnotEligible)) hgt
 
 omit [Fintype F] in
+/-- The coordinate-fiber arithmetic fit contains every individual `t` summand.  This is the
+per-stratum version of the zero-term obstruction. -/
+theorem zeroCoordinateAgreementFiberBudgetFits_term_le
+    (a B t : ℕ) (u₁ : Fin n → F) (M : ℕ → ℕ) (ht : t < a)
+    (hFits : ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁ M) :
+    ((directionZeroSet u₁).card.choose t * M t) *
+        ((directionSupportSet u₁).card / (a - t)) ≤ B := by
+  have hmem : t ∈ Finset.range a := Finset.mem_range.mpr ht
+  have hterm :
+      ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)) ≤
+        ∑ t ∈ Finset.range a,
+          ((directionZeroSet u₁).card.choose t * M t) *
+            ((directionSupportSet u₁).card / (a - t)) := by
+    exact Finset.single_le_sum
+      (f := fun t =>
+        ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)))
+      (fun _ _ => Nat.zero_le _) hmem
+  exact le_trans hterm hFits
+
+/-- Field-power specialization of the per-`t` arithmetic obstruction. -/
+theorem fieldPowCoordinateAgreementFiberBudgetFits_term_le
+    (k a B t : ℕ) (u₁ : Fin n → F) (ht : t < a)
+    (hFits : ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁
+      (fun t => Fintype.card F ^ (k - t))) :
+    ((directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t)) *
+        ((directionSupportSet u₁).card / (a - t)) ≤ B := by
+  exact zeroCoordinateAgreementFiberBudgetFits_term_le
+    (F := F) (n := n) a B t u₁ (fun t => Fintype.card F ^ (k - t)) ht hFits
+
+/-- Uniform per-`t` obstruction for the field-power coordinate-fiber fit. -/
+theorem uniformFieldPowCoordinateAgreementFiberBudgetFits_term_le
+    (k a B t : ℕ) (ht : t < a)
+    (hFits : UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t))) :
+    ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ((directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t)) *
+        ((directionSupportSet u₁).card / (a - t)) ≤ B := by
+  intro u₁ hnotEligible
+  exact fieldPowCoordinateAgreementFiberBudgetFits_term_le
+    (F := F) (n := n) k a B t u₁ ht (hFits u₁ hnotEligible)
+
+/-- One over-budget `t` summand refutes the uniform field-power coordinate-fiber fit. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_term_gt
+    (k a B : ℕ)
+    (hgt : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧
+        B < ((directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t)) *
+          ((directionSupportSet u₁).card / (a - t))) :
+    ¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t)) := by
+  intro hFits
+  rcases hgt with ⟨u₁, hnotEligible, t, ht, hgt⟩
+  exact (not_lt_of_ge
+    (uniformFieldPowCoordinateAgreementFiberBudgetFits_term_le
+      (F := F) (n := n) k a B t ht hFits u₁ hnotEligible)) hgt
+
+/-- If the moving support is at least `a - t`, the per-`t` field-power fit already forces the
+unweighted binomial-interpolation term under budget. -/
+theorem fieldPowCoordinateAgreementFiberBudgetFits_choosePow_le_of_support_ge_sub
+    (k a B t : ℕ) (u₁ : Fin n → F) (ht : t < a)
+    (hsupport : a - t ≤ (directionSupportSet u₁).card)
+    (hFits : ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁
+      (fun t => Fintype.card F ^ (k - t))) :
+    (directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t) ≤ B := by
+  have hterm :=
+    fieldPowCoordinateAgreementFiberBudgetFits_term_le
+      (F := F) (n := n) k a B t u₁ ht hFits
+  have hdenpos : 0 < a - t := Nat.sub_pos_of_lt ht
+  have hdiv : 1 ≤ (directionSupportSet u₁).card / (a - t) :=
+    Nat.div_pos hsupport hdenpos
+  have hmono : (directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t)
+      ≤ ((directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t)) *
+          ((directionSupportSet u₁).card / (a - t)) := by
+    exact Nat.le_mul_of_pos_right _ (lt_of_lt_of_le Nat.zero_lt_one hdiv)
+  exact le_trans hmono hterm
+
+/-- A large-zero direction whose support covers `a - t` and whose unweighted `t` term already
+exceeds `B` refutes the field-power coordinate-fiber fit. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_choosePow_gt
+    (k a B : ℕ)
+    (hgt : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧ a - t ≤ (directionSupportSet u₁).card ∧
+        B < (directionZeroSet u₁).card.choose t * Fintype.card F ^ (k - t)) :
+    ¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t)) := by
+  intro hFits
+  rcases hgt with ⟨u₁, hnotEligible, t, ht, hsupport, hgt⟩
+  exact (not_lt_of_ge
+    (fieldPowCoordinateAgreementFiberBudgetFits_choosePow_le_of_support_ge_sub
+      (F := F) (n := n) k a B t u₁ ht hsupport (hFits u₁ hnotEligible))) hgt
+
+omit [Fintype F] in
 /-- The coordinate-fiber arithmetic fit contains its `t = 0` summand.  This exposes the first
 arithmetic obstruction before any higher-stratum information is used. -/
 theorem zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
@@ -1281,7 +1375,8 @@ theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_of_not_uniformP
   intro hFiber
   exact hnot
     (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformCoordinateAgreementFiberBudgeted
-      dom k a B M hFiber hFits)
+      dom k a B M
+      hFiber hFits)
 
 open Classical in
 /-- Direct scanner witness: if the coordinate-fiber arithmetic fit is fixed, any failed punctured
@@ -1843,6 +1938,14 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms not_zeroCoordinateAgreementFiberBudgetFits_iff_sum_gt
 #print axioms
   not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_sum_gt
+#print axioms zeroCoordinateAgreementFiberBudgetFits_term_le
+#print axioms fieldPowCoordinateAgreementFiberBudgetFits_term_le
+#print axioms uniformFieldPowCoordinateAgreementFiberBudgetFits_term_le
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_term_gt
+#print axioms fieldPowCoordinateAgreementFiberBudgetFits_choosePow_le_of_support_ge_sub
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_choosePow_gt
 #print axioms zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
 #print axioms fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
 #print axioms uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le

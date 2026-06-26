@@ -40,6 +40,12 @@ not_zeroCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
 not_zeroCoordinateAgreementFiberBudgetFits_iff_sum_gt
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_sum_gt
+zeroCoordinateAgreementFiberBudgetFits_term_le
+fieldPowCoordinateAgreementFiberBudgetFits_term_le
+uniformFieldPowCoordinateAgreementFiberBudgetFits_term_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_term_gt
+fieldPowCoordinateAgreementFiberBudgetFits_choosePow_le_of_support_ge_sub
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_choosePow_gt
 zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
 fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
 uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
@@ -47,6 +53,10 @@ not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_ze
 fieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_support_ge
 uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
+exists_direction_zero_card_eq_support_card_eq
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_zero_count_choosePow_gt
+exists_largeZero_direction_support_ge_of_two_mul_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_two_mul_le
 exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformPunctured
 not_zeroAgreementStrataCardBudgeted_iff_exists_low_stratum_gt_of_high_choose
 unsafe_or_largeZero_safe_low_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
@@ -148,8 +158,18 @@ uniform bad-scalar budget must be zero-direction saturation.
 The same arithmetic layer now exposes its first obstruction: the `t = 0` term alone forces
 `|F|^k * support(u1) / a <= B`.  Thus the raw field-power route can be refuted before any
 higher-stratum information is considered if a large-zero direction violates that zero-term bound.
+More generally, every individual summand is now available as a necessary condition; if a direction
+and stratum have support at least `a - t`, the fit already forces
+`choose(#zeroSet(u1), t) * |F|^(k-t) <= B`.
 In particular, a large-zero direction with `support(u1) >= a` forces `|F|^k <= B`; if the target
 budget is below `|F|^k`, the naive field-power envelope is arithmetically impossible.
+This is now parameter-free in the common `2a <= n` regime: choose `a` zero coordinates and set the
+direction to `1` elsewhere, giving a large-zero direction whose support is still at least `a`.
+Thus `2a <= n` and `B < |F|^k` refute the raw field-power coordinate-fiber arithmetic fit outright.
+The follow-up module `LineListArithmeticObstruction.lean` gives the sharper `z,t` obstruction:
+for any `z <= n`, there is a direction with exactly `z` zero coordinates and support `n-z`, so
+whenever `a <= z`, `t < a`, `a - t <= n - z`, and
+`B < choose(z,t) * |F|^(k-t)`, the raw field-power fit is impossible.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target

@@ -273,10 +273,18 @@ coordinateAgreementFiber_card_le_one_of_k_le
 coordinateAgreementFiber_card_le_field_pow_sub_card
 zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
 uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+uniformFieldPowCoordinateAgreementFiberBudgetFits_term_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_term_gt
+fieldPowCoordinateAgreementFiberBudgetFits_choosePow_le_of_support_ge_sub
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_choosePow_gt
 uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
 uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
+exists_direction_zero_card_eq_support_card_eq
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_zero_count_choosePow_gt
+exists_largeZero_direction_support_ge_of_two_mul_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_two_mul_le
 zeroAgreementStratum_card_le_choose_of_k_le_t
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
@@ -301,6 +309,11 @@ of size `t` and `M(t) < #coordinateAgreementFiber(S)`.  The affine RS fiber boun
 `#coordinateAgreementFiber(S) <= |F|^(k - #S)` with only the standard Lean axioms.  Therefore the
 field-power production wrapper leaves only the weighted binomial arithmetic fit; if that fit fails,
 the next theorem must exploit extra support/appearance geometry beyond the raw affine fiber count.
-The `t = 0` summand already forces the necessary inequality
+Each summand is now exposed as a necessary condition.  Under support at least `a - t`, the `t`
+summand alone forces `choose(#zeroSet(u1), t) * |F|^(k-t) <= B`; in particular, `t = 0` forces
 `|F|^k * support(u1) / a <= B` on every large-zero direction.  For any such direction with support
-at least `a`, this collapses to the necessary condition `|F|^k <= B`.
+at least `a`, this collapses to `|F|^k <= B`.  The source now constructs such a direction from
+`2a <= n`, so the naive field-power fit is dead in that parameter range when `B < |F|^k`.
+The arithmetic-obstruction module generalizes this witness: for every `z <= n`, there is a
+direction with exactly `z` zeros and support `n-z`, so any single term with `a <= z`, `t < a`,
+`a - t <= n-z`, and `B < choose(z,t) * |F|^(k-t)` refutes the raw field-power fit.
