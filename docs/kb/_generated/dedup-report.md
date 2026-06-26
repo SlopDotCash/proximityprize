@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4875 files, 51481 declarations
+- `ArkLib` — 4875 files, 51503 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -5936,7 +5936,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `deltaStar_pin_of_familyDominates` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:229](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L229) — Delta-star consumer for a dominating finite family.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:303](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L303) — Delta-star consumer for a dominating finite family.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.deltaStar_pin_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:269](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L269) — Delta-star consumer in finite-family form: a dominating family plus a budget on every representative
 
 ### `desc_ratio` (2 declarations, 2 files)
@@ -6376,12 +6376,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `familyBounded_and_counterStack_not_worstCaseIncidenceBounded` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_and_counterStack_not_worstCaseIncidenceBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:292](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L292) — A stack above budget refutes the full worst-case incidence hypothesis.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_and_counterStack_not_worstCaseIncidenceBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:366](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L366) — A stack above budget refutes the full worst-case incidence hypothesis.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.familyBounded_and_counterStack_not_worstCaseIncidenceBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:201](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L201) — Bounding a convenient finite family is compatible with failure of the universal incidence bound if s
 
 ### `familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:322](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L322) — A bounded family beaten by one outside stack is not a domination proof.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:396](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L396) — A bounded family beaten by one outside stack is not a domination proof.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:216](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L216) — If one stack beats every member of a bounded candidate family, then the family-bound proof is not a
 
 ### `farLineProxy` (2 declarations, 2 files)
@@ -7646,7 +7646,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `not_familyDominates_of_exists_strictly_larger_than_all` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:268](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L268) — A stack beating every family member refutes finite-family domination.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:342](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L342) — A stack beating every family member refutes finite-family domination.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.not_familyDominates_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:157](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L157) — Explicit-witness form of `not_familyDominates_of_counterexample`.
 
 ### `not_johnson_at_quarter` (2 declarations, 2 files)
@@ -9036,7 +9036,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `worstCaseIncidenceBounded_of_familyDominates` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:217](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L217) — Bounding a dominating finite family gives the full worst-case incidence hypothesis.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:291](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L291) — Bounding a dominating finite family gives the full worst-case incidence hypothesis.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L166) — Bounding a dominating finite family gives the full worst-case incidence hypothesis.
 
 ### `worstCaseIncompleteSumBound_of_bgk` (2 declarations, 2 files)
@@ -12055,7 +12055,7 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.DCSubtractedDeep.wickℝ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DE_DCSubtractedDeep.lean:86](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DE_DCSubtractedDeep.lean#L86) vs `ArkLib.ProximityGap.Frontier.SOSCorrectObject.wickℝ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean#L87)
     - a: The Wick ceiling as a real number, `Wick_K = (2K−1)‼·n^K` with `n = 2m`.
     - b: The Wick ceiling as a real number, `Wick_K = (2K−1)‼·n^K` with `n = 2m`.
-- **1.00** `ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:217](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L217) vs `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L166)
+- **1.00** `ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:291](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L291) vs `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L166)
     - a: Bounding a dominating finite family gives the full worst-case incidence hypothesis.
     - b: Bounding a dominating finite family gives the full worst-case incidence hypothesis.
 - **1.00** `ArkLib.ProximityGap.Frontier.FloorDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean#L45) vs `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:50](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L50)

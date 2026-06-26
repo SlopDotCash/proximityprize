@@ -256,6 +256,13 @@ to state `FloorClosureAtField` directly in max-containment form.  The concrete f
 now equivalent to floor-goodness, a bounded candidate family, and `FamilyContainsGlobalMax`; its
 failure is exactly a bad prime, a budget-missing representative, or lack of global-max containment.
 
+Follow-up: `_FloorClosureContract.lean` now exposes the sharper
+`FamilyContainsBudgetedGlobalMax` and `FloorClosureBudgetedMaxAtField` normal forms.  One listed
+representative that is both within budget and globally worst is sufficient for the universal
+incidence bound; budgeting every nonmaximal family member is stronger than necessary.  Failure is
+exactly a bad floor prime, or every listed representative being either above budget or beatable by
+another stack.
+
 ## [2026-06-26] refine | norm-factorization smooth scanner
 
 Added:
@@ -300,6 +307,12 @@ zero-coordinate agreements between a codeword and the line offset; if that count
 `lineBadScalars = univ`.  Thus any nontrivial line bad-scalar bound must rule out such
 zero-direction near-code witnesses.
 
+Follow-up: the same zero-direction branch is now packaged as a necessary condition for production
+budgets.  `UniformLineBadScalarsBudgeted dom k a B` with `B < |F|` forces
+`UniformZeroDirectionSafe dom k a`; conversely, any unsafe zero-direction line refutes every uniform
+budget below field size.  This matches the prize polarity, where the desired budget is near `n` and
+the field is much larger.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:
@@ -316,3 +329,9 @@ adjacent-rung counterexample.
 Follow-up: `_AssaultV2_FloorLocalizationN32.lean` now exposes the finite split-prime mismatch
 witnesses directly: a missing true floor-bad prime, a spurious listed prime, a uniform
 least-prime-characterization mismatch, or a least split prime that is not below prize scale.
+
+Follow-up: `_FloorClosureContract.lean` now also names the sharp one-representative certificate
+`FamilyContainsBudgetedGlobalMax` and field-level wrapper `FloorClosureBudgetedMaxAtField`.  One
+listed representative that is both within budget and globally worst is enough for
+`WorstCaseIncidenceBounded`; failure says every proposed representative is either above budget or
+beaten by another stack.

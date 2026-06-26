@@ -64,7 +64,6 @@ These coordinates agree with every scalar on the affine line. -/
 noncomputable def directionZeroAgreementSet (c u₀ u₁ : Fin n → F) : Finset (Fin n) :=
   (directionZeroSet u₁).filter (fun i => c i = u₀ i)
 
-omit [Fintype F] in
 /-- Zero-direction agreements are contained in every scalar agreement set along the line. -/
 theorem directionZeroAgreementSet_subset_agreeSet_line
     (c u₀ u₁ : Fin n → F) (γ : F) :
@@ -81,7 +80,6 @@ theorem directionZeroAgreementSet_subset_agreeSet_line
   rw [hbase, hzero]
   simp
 
-omit [Fintype F] in
 /-- Cardinal form of `directionZeroAgreementSet_subset_agreeSet_line`. -/
 theorem directionZeroAgreementSet_card_le_agreeSet_line
     (c u₀ u₁ : Fin n → F) (γ : F) :
@@ -117,7 +115,6 @@ theorem heavyScalarSet_card_eq_field_card_of_directionZeroAgreement_ge (a : ℕ)
   rw [heavyScalarSet_eq_univ_of_directionZeroAgreement_ge a c u₀ u₁ hzero,
     Finset.card_univ]
 
-omit [Fintype F] in
 /-- The agreement set of a fixed `c` with the line word `w_γ` is the `γ`-fiber of the
 pointwise slope `i ↦ (c i − u₀ i)/u₁ i` (when `u₁` is nonvanishing). -/
 theorem agreeSet_line_eq_fiber (c u₀ u₁ : Fin n → F) (hu₁ : ∀ i, u₁ i ≠ 0) (γ : F) :
@@ -180,7 +177,6 @@ theorem codeword_heavy_scalar_card_le (a : ℕ) (ha : 1 ≤ a)
   have hfin : H.card * a ≤ n := le_trans hlb hub
   exact (Nat.le_div_iff_mul_le ha).mpr hfin
 
-omit [Fintype F] in
 /-- Agreement with a fixed codeword is bounded by the zero-direction coordinates plus one moving
 fiber of the pointwise scalar map on the nonzero support.  This is the support-aware replacement
 for the everywhere-nonzero direction hypothesis. -/

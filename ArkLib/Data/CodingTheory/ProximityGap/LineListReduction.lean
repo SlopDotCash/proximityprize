@@ -69,6 +69,22 @@ noncomputable def lineAppearingCodewords (dom : Fin n ↪ F) (k a : ℕ) (u₀ u
 def LineListBudgeted (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (L : ℕ) : Prop :=
   (lineAppearingCodewords dom k a u₀ u₁).card ≤ L
 
+/-- A line is safe from zero-direction saturation when no codeword already agrees with the offset
+on `a` zero-direction coordinates.  Without this condition, the bad-scalar set can be the entire
+field independently of the moving support. -/
+def ZeroDirectionSafeLine (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) : Prop :=
+  ∀ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) →
+    (directionZeroAgreementSet c u₀ u₁).card < a
+
+/-- Uniform zero-direction safety over all affine lines.  This is a necessary side condition for
+any production bad-scalar budget below the full field size. -/
+def UniformZeroDirectionSafe (dom : Fin n ↪ F) (k a : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ZeroDirectionSafeLine dom k a u₀ u₁
+
+/-- A uniform bad-scalar budget over every affine line in the named-set model. -/
+def UniformLineBadScalarsBudgeted (dom : Fin n ↪ F) (k a B : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, (lineBadScalars dom k a u₀ u₁).card ≤ B
+
 /-- A line direction is eligible for the support-aware line-list bound when its zero-coordinate set
 is smaller than the agreement threshold.  If the zero set already has size at least `a`, then a
 single fixed agreement on those coordinates can make every scalar look heavy and the fiber argument
@@ -249,6 +265,97 @@ theorem directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
   rw [hcard] at hsmall
   exact (Nat.lt_irrefl (Fintype.card F)) hsmall
 
+omit [Fintype F] in
+/-- Failure of zero-direction safety is exactly a codeword that already reaches the agreement
+threshold on the zero-direction coordinates. -/
+theorem not_zeroDirectionSafeLine_iff_exists_codeword_zeroAgreement_ge
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    (¬ ZeroDirectionSafeLine dom k a u₀ u₁) ↔
+      ∃ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card := by
+  classical
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro c hc
+    by_contra hlt
+    exact hnone ⟨c, hc, Nat.le_of_not_gt hlt⟩
+  · rintro ⟨c, hc, hge⟩ hsafe
+    exact (not_lt_of_ge hge) (hsafe c hc)
+
+open Classical in
+/-- A zero-direction safety failure saturates the whole scalar field. -/
+theorem lineBadScalars_eq_univ_of_not_zeroDirectionSafeLine
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F)
+    (hunsafe : ¬ ZeroDirectionSafeLine dom k a u₀ u₁) :
+    lineBadScalars dom k a u₀ u₁ = Finset.univ := by
+  rcases (not_zeroDirectionSafeLine_iff_exists_codeword_zeroAgreement_ge
+    dom k a u₀ u₁).mp hunsafe with ⟨c, hc, hzero⟩
+  exact lineBadScalars_eq_univ_of_codeword_directionZeroAgreement_ge
+    dom k a u₀ u₁ hc hzero
+
+open Classical in
+/-- Cardinal form: an unsafe zero-direction line has field-size bad-scalar count. -/
+theorem lineBadScalars_card_eq_field_card_of_not_zeroDirectionSafeLine
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F)
+    (hunsafe : ¬ ZeroDirectionSafeLine dom k a u₀ u₁) :
+    (lineBadScalars dom k a u₀ u₁).card = Fintype.card F := by
+  rw [lineBadScalars_eq_univ_of_not_zeroDirectionSafeLine dom k a u₀ u₁ hunsafe,
+    Finset.card_univ]
+
+open Classical in
+/-- Any subfield-size bad-scalar bound for one line forces zero-direction safety on that line. -/
+theorem zeroDirectionSafeLine_of_lineBadScalars_budget_lt_field
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {B : ℕ}
+    (hbudget : (lineBadScalars dom k a u₀ u₁).card ≤ B)
+    (hB : B < Fintype.card F) :
+    ZeroDirectionSafeLine dom k a u₀ u₁ :=
+  directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
+    dom k a u₀ u₁ (lt_of_le_of_lt hbudget hB)
+
+open Classical in
+/-- A uniform bad-scalar budget below field size forces zero-direction safety for every line. -/
+theorem uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hbudget : UniformLineBadScalarsBudgeted dom k a B)
+    (hB : B < Fintype.card F) :
+    UniformZeroDirectionSafe dom k a := by
+  intro u₀ u₁
+  exact zeroDirectionSafeLine_of_lineBadScalars_budget_lt_field
+    dom k a u₀ u₁ (hbudget u₀ u₁) hB
+
+omit [Fintype F] in
+/-- Exact family failure form for zero-direction safety. -/
+theorem not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    (¬ UniformZeroDirectionSafe dom k a) ↔
+      ∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card := by
+  classical
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ c hc
+    by_contra hlt
+    exact hnone ⟨u₀, u₁, c, hc, Nat.le_of_not_gt hlt⟩
+  · rintro ⟨u₀, u₁, c, hc, hge⟩ hsafe
+    exact (not_lt_of_ge hge) (hsafe u₀ u₁ c hc)
+
+open Classical in
+/-- If zero-direction safety fails anywhere, no uniform bad-scalar budget below field size can
+hold. -/
+theorem not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hB : B < Fintype.card F)
+    (hunsafe : ¬ UniformZeroDirectionSafe dom k a) :
+    ¬ UniformLineBadScalarsBudgeted dom k a B := by
+  intro hbudget
+  exact hunsafe
+    (uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
+      dom k a B hbudget hB)
+
 open Classical in
 /-- Uniform support-aware line-list control gives the corresponding support-adjusted bad-scalar
 budget for every eligible affine-line direction. -/
@@ -376,6 +483,13 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms lineBadScalars_eq_univ_of_codeword_directionZeroAgreement_ge
 #print axioms lineBadScalars_card_eq_field_card_of_codeword_directionZeroAgreement_ge
 #print axioms directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
+#print axioms not_zeroDirectionSafeLine_iff_exists_codeword_zeroAgreement_ge
+#print axioms lineBadScalars_eq_univ_of_not_zeroDirectionSafeLine
+#print axioms lineBadScalars_card_eq_field_card_of_not_zeroDirectionSafeLine
+#print axioms zeroDirectionSafeLine_of_lineBadScalars_budget_lt_field
+#print axioms uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
+#print axioms not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+#print axioms not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
 #print axioms supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
 #print axioms not_uniformSupportLineListBudgeted_iff_exists_eligible_lineAppearing_gt
 #print axioms not_supportAdjustedLineBadScalarsBudgeted_iff_exists_eligible_lineBadScalars_gt

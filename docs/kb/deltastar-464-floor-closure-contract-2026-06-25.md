@@ -191,6 +191,21 @@ not_candidateListExactSmallestFamily_of_next_failure
 So a scanner can now falsify the uniform list by one bad rung, or falsify successor propagation by
 one adjacent exact-then-failing pair.
 
+The latest refinement also names the sharp one-representative version of the global-max contract:
+
+```lean
+FamilyContainsBudgetedGlobalMax
+FloorClosureBudgetedMaxAtField
+worstCaseIncidenceBounded_of_containsBudgetedGlobalMax
+deltaStar_pin_of_containsBudgetedGlobalMax
+not_familyContainsBudgetedGlobalMax_iff_each_member_above_budget_or_beaten
+not_floorClosureBudgetedMaxAtField_iff_bad_or_each_member_above_budget_or_beaten
+```
+
+This is the smallest positive floor certificate: one listed representative is within budget and
+dominates all stacks.  It is weaker than bounding every member of a finite family, but its failure
+surface is sharper: each proposed representative is either above budget or beaten by another stack.
+
 ## Continuation: exhaustive-family calibration
 
 The contract also names the tautological all-stack endpoint:
@@ -433,3 +448,53 @@ not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
 So `WorstCaseIncidenceBounded C delta B` fails exactly when some stack has bad-scalar count above
 `B`.  This pins every floor-prize failure back to the same concrete scanner obligation: exclude all
 above-budget stacks, not only the representatives in a proposed compressed family.
+
+## Continuation: budgeted global maximizer normal form
+
+The closure contract has now been sharpened to the single witness that the incidence consumer
+actually needs:
+
+```lean
+FamilyContainsBudgetedGlobalMax
+familyContainsBudgetedGlobalMax_of_familyBounded_containsGlobalMax
+worstCaseIncidenceBounded_of_containsBudgetedGlobalMax
+deltaStar_pin_of_containsBudgetedGlobalMax
+FloorClosureBudgetedMaxAtField
+floorClosureBudgetedMaxAtField_of_floorGood_containsBudgetedGlobalMax
+worstCaseIncidenceBounded_of_floorClosureBudgetedMaxAtField
+deltaStar_pin_of_floorClosureBudgetedMaxAtField
+```
+
+`FamilyBounded R B` plus `FamilyContainsGlobalMax R` is sufficient, but stronger than logically
+necessary.  The universal incidence bound follows from one listed representative `r` such that:
+
+```text
+r in R
+StackBadCount(r) <= B
+forall u, StackBadCount(u) <= StackBadCount(r).
+```
+
+This is the cleanest positive scanner certificate for a compressed floor family.  It also exposes
+why the off-BGK arithmetic layer cannot be the main proof by itself: least-prime localization can
+justify why a candidate representative belongs to the floor catalogue, but the prize-facing
+incidence theorem is exactly the statement that this representative is a budgeted global maximizer.
+
+The negative form is equally sharp:
+
+```lean
+not_familyContainsBudgetedGlobalMax_iff_each_member_above_budget_or_beaten
+not_floorClosureBudgetedMaxAtField_iff_bad_or_each_member_above_budget_or_beaten
+```
+
+So failure of the sharp field certificate is precisely:
+
+```text
+FloorBad(2^a, |F|)
+or for every r in R:
+     B < StackBadCount(r)
+     or exists u, StackBadCount(r) < StackBadCount(u).
+```
+
+This is the next scanner contract.  A proposed floor catalogue no longer has to budget every
+nonmaximal representative to be useful, but it must contain one representative that is both within
+budget and globally worst.  Otherwise each member is either already too expensive or beatable.

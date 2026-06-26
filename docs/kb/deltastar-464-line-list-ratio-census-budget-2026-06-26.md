@@ -230,6 +230,16 @@ directionZeroAgreementSet_subset_agreeSet_line
 heavyScalarSet_eq_univ_of_directionZeroAgreement_ge
 lineBadScalars_eq_univ_of_codeword_directionZeroAgreement_ge
 directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
+ZeroDirectionSafeLine
+UniformZeroDirectionSafe
+UniformLineBadScalarsBudgeted
+not_zeroDirectionSafeLine_iff_exists_codeword_zeroAgreement_ge
+lineBadScalars_eq_univ_of_not_zeroDirectionSafeLine
+lineBadScalars_card_eq_field_card_of_not_zeroDirectionSafeLine
+zeroDirectionSafeLine_of_lineBadScalars_budget_lt_field
+uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
+not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
 ```
 
 If a codeword already agrees with the offset `u0` on at least `a` coordinates where `u1 = 0`, then
@@ -251,3 +261,27 @@ for every codeword c in rsCode dom k,
 This turns the zero-direction branch into a clean near-code residual.  It does not help prove the
 floor directly; it prevents a false proof from smuggling a large zero-coordinate agreement set
 through the support-adjusted denominator.
+
+The newest socket packages that residual as a production-side necessity.  Define:
+
+```lean
+ZeroDirectionSafeLine dom k a u0 u1
+UniformZeroDirectionSafe dom k a
+UniformLineBadScalarsBudgeted dom k a B
+```
+
+If `B < |F|`, then:
+
+```lean
+uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
+```
+
+says any uniform bad-scalar budget `B` forces zero-direction safety for every line.  Conversely:
+
+```lean
+not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
+```
+
+says one unsafe zero-direction line refutes every uniform budget below field size.  In the prize
+regime this is the right polarity: the desired budget is near `n`, while the field has size near
+`n * 2^128`, so zero-direction saturation is an immediate blocker for any floor proof.
