@@ -577,3 +577,8 @@ incidence graph is exactly the biUnion of exact zero-agreement profile slices, a
 `singletonBadScalarDefect` is the corresponding double sum.  The profile budget therefore has no
 overlap slack: bounding each exact slice by `D t` is precisely a disjoint partition estimate before
 the binomial summation.
+
+Follow-up: the low exact singleton-profile scanners now have full failure split wrappers.  Without
+assuming zero-direction safety up front, a failed uniform bad-scalar budget exposes either a
+zero-direction saturating codeword or a large-zero safe low exact singleton/exact appearance profile
+with `t < k`.

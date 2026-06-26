@@ -916,6 +916,63 @@ theorem exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budget
     exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
       dom hk a u₀ u₁ D (hHigh u₁ hnotEligible) hgt⟩
 
+open Classical in
+/-- Scanner-facing full failure split for the low exact singleton-profile route.  Without
+assuming zero-direction safety in advance, a failed uniform bad-scalar budget must expose either
+zero-direction saturation or a large-zero safe low exact singleton profile `t < k`. -/
+theorem unsafe_or_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            D t < (singletonBadScalarIncidencesInExactZeroAgreementFiber
+              dom k a u₀ u₁ S).card) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+        dom hk a L B D hSupport hFits hZeroSafe hbudget hHigh hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
+/-- Scanner-facing full failure split for the low exact appearance-fiber singleton route.
+Without assuming zero-direction safety in advance, a failed uniform bad-scalar budget must expose
+either zero-direction saturation or a large-zero safe low exact appearance profile `t < k`. -/
+theorem unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            D t <
+              (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card *
+                ((directionSupportSet u₁).card / (a - t))) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+        dom hk a L B D hSupport hFits hZeroSafe hbudget hHigh hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
 section SourceAudit
 
 #print axioms singletonBadScalarIncidences
@@ -976,6 +1033,10 @@ section SourceAudit
   exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
   exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+#print axioms
+  unsafe_or_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
 
 end SourceAudit
 

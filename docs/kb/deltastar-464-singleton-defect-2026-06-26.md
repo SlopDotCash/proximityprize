@@ -125,6 +125,8 @@ exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+unsafe_or_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
 ```
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
@@ -173,6 +175,10 @@ appearance profile and the exact singleton-defect incidence slice are bounded by
 `support/(a-t)`.  Consequently, once the proposed envelope `D t` already dominates that
 support-denominator term on all high levels, any overfull exact singleton or exact appearance
 profile must occur in the low interpolation range `t < k`.
+
+The low-profile scanners also have full failure split forms.  Without assuming zero-direction
+safety in advance, a failed uniform bad-scalar budget now returns either a zero-direction
+saturating codeword or a large-zero safe low exact singleton/exact appearance profile.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the
