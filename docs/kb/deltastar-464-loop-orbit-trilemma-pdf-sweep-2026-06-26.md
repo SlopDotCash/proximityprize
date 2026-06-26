@@ -136,20 +136,33 @@ They are not paper citations or prime-localization statements; they are global c
 theorems about all `WordStack`s.  If such a theorem is false, the counterexample has a precise shape
 and should be found by the scanner interfaces now present in Lean.
 
-## Next Lean Target
+## Follow-up Lean Target
 
-The best next formal target is a scanner-facing theorem for any proposed floor/profile catalogue:
+The next formal target from this sweep was to specialize the generic scanner failures to the
+floor-localization lane, so a proposed floor/profile catalogue fails by an incidence certificate
+once arithmetic floor-goodness has already been supplied:
 
 ```text
-not StackDominatingRepresentativeCover
-  iff there is a stack whose bad count beats every proposed representative.
+not FloorClosureBudgetedMaxAtField
+  iff every proposed representative is above budget or beaten
 ```
 
-This is already proven at the generic representative-cover level.  The next useful specialization is
-to instantiate it for the profile and refined-profile representative families, so a failed floor
-catalogue produces an explicit outside stack rather than a vague "classification gap."
+This is now machine-checked in
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean`:
 
-Until that specialization survives, the prize remains open and the correct honesty label is:
+```lean
+not_linnikBudgetedMaxField_iff_each_member_above_or_beaten
+not_linnikClosureField_iff_member_above_or_each_beaten
+not_tzBudgetedMaxField_iff_each_member_above_or_beaten
+not_tzClosureField_iff_member_above_or_each_beaten
+```
+
+The point is modest but useful: under exact singleton candidate lists plus Linnik/TZ field supply,
+the generic `FloorBad (2^a) |F|` branch is contradicted by the existing floor-closure lemmas.  A
+failed certificate therefore has only the real incidence branches left: an above-budget selected
+stack, or selected representatives that can all be beaten by some stack.
+
+Even with this specialization, the prize remains open and the correct honesty label is:
 
 ```text
 interface progress; no delta-star pin.

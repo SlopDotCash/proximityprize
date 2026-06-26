@@ -988,6 +988,70 @@ theorem deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
       hcardPrime hcardMod hcardPrize C δ hmax)
     hbudget
 
+/-- Under Linnik candidate-list hypotheses, the arithmetic floor-bad branch in the sharp field
+certificate is already impossible.  Failure is exactly an incidence scanner outcome: every proposed
+representative is either above budget or can be beaten by another stack. -/
+theorem not_linnikBudgetedMaxField_iff_each_member_above_or_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      ∀ r ∈ R, B < StackBadCount F C δ r ∨
+        ∃ u : WordStack A (Fin 2) ι,
+          StackBadCount F C δ r < StackBadCount F C δ u := by
+  have hgood : ¬ FloorBad (2 ^ a) (Fintype.card F) :=
+    floor_closes_by_linnik FloorBad
+      (floorLocalizationUniform_of_candidateListExactSmallestFamily FloorBad hexact)
+      hLeast a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
+  constructor
+  · intro hnot
+    rcases (not_floorClosureBudgetedMaxAtField_iff_bad_or_each_member_above_budget_or_beaten
+      (F := F) (A := A) FloorBad a C δ R B).mp hnot with hbad | hfail
+    · exact False.elim (hgood hbad)
+    · exact hfail
+  · intro hfail
+    exact
+      (not_floorClosureBudgetedMaxAtField_iff_bad_or_each_member_above_budget_or_beaten
+        (F := F) (A := A) FloorBad a C δ R B).mpr (Or.inr hfail)
+
+/-- Under Linnik candidate-list hypotheses, failure of the bounded-family/domination field
+certificate has no remaining arithmetic branch: it is exactly an above-budget representative or a
+beaten representative. -/
+theorem not_linnikClosureField_iff_member_above_or_each_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      (∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r) ∨
+        ∀ r ∈ R, ∃ u : WordStack A (Fin 2) ι,
+          StackBadCount F C δ r < StackBadCount F C δ u := by
+  have hgood : ¬ FloorBad (2 ^ a) (Fintype.card F) :=
+    floor_closes_by_linnik FloorBad
+      (floorLocalizationUniform_of_candidateListExactSmallestFamily FloorBad hexact)
+      hLeast a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
+  constructor
+  · intro hnot
+    rcases (not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
+      (F := F) (A := A) FloorBad a C δ R B).mp hnot with hbad | hfail
+    · exact False.elim (hgood hbad)
+    · exact hfail
+  · intro hfail
+    exact
+      (not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
+        (F := F) (A := A) FloorBad a C δ R B).mpr (Or.inr hfail)
+
 /-- TZ-form localization plus the floor-to-family bridge gives a bounded candidate family. -/
 theorem familyBounded_of_tz_floorGood
     (FloorBad : ℕ -> ℕ -> Prop)
@@ -1203,6 +1267,72 @@ theorem deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
       hcardPrime hcardMod hcardPrize C δ hmax)
     hbudget
 
+/-- Under TZ candidate-list hypotheses, the arithmetic floor-bad branch in the sharp field
+certificate is already impossible.  Failure is exactly an incidence scanner outcome: every proposed
+representative is either above budget or can be beaten by another stack. -/
+theorem not_tzBudgetedMaxField_iff_each_member_above_or_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      ∀ r ∈ R, B < StackBadCount F C δ r ∨
+        ∃ u : WordStack A (Fin 2) ι,
+          StackBadCount F C δ r < StackBadCount F C δ u := by
+  have hgood : ¬ FloorBad (2 ^ a) (Fintype.card F) :=
+    floor_closes_by_tzSupplyFamily FloorBad
+      (floorLocalizationUniform_of_candidateListExactSmallestFamily FloorBad hexact)
+      hβ hTZfam a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
+  constructor
+  · intro hnot
+    rcases (not_floorClosureBudgetedMaxAtField_iff_bad_or_each_member_above_budget_or_beaten
+      (F := F) (A := A) FloorBad a C δ R B).mp hnot with hbad | hfail
+    · exact False.elim (hgood hbad)
+    · exact hfail
+  · intro hfail
+    exact
+      (not_floorClosureBudgetedMaxAtField_iff_bad_or_each_member_above_budget_or_beaten
+        (F := F) (A := A) FloorBad a C δ R B).mpr (Or.inr hfail)
+
+/-- Under TZ candidate-list hypotheses, failure of the bounded-family/domination field certificate
+has no remaining arithmetic branch: it is exactly an above-budget representative or a beaten
+representative. -/
+theorem not_tzClosureField_iff_member_above_or_each_beaten
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      (∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r) ∨
+        ∀ r ∈ R, ∃ u : WordStack A (Fin 2) ι,
+          StackBadCount F C δ r < StackBadCount F C δ u := by
+  have hgood : ¬ FloorBad (2 ^ a) (Fintype.card F) :=
+    floor_closes_by_tzSupplyFamily FloorBad
+      (floorLocalizationUniform_of_candidateListExactSmallestFamily FloorBad hexact)
+      hβ hTZfam a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
+  constructor
+  · intro hnot
+    rcases (not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
+      (F := F) (A := A) FloorBad a C δ R B).mp hnot with hbad | hfail
+    · exact False.elim (hgood hbad)
+    · exact hfail
+  · intro hfail
+    exact
+      (not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
+        (F := F) (A := A) FloorBad a C δ R B).mpr (Or.inr hfail)
+
 /-- A scanner witness that beats every member of the floor-good family refutes the domination part
 of the closure contract. -/
 theorem floorGood_familyBudget_not_dominationProof_of_larger_than_all
@@ -1293,6 +1423,10 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
+namespace ArkLib.ProximityGap.Frontier.FloorClosureContract
+#print axioms not_linnikBudgetedMaxField_iff_each_member_above_or_beaten
+#print axioms not_linnikClosureField_iff_member_above_or_each_beaten
+end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_candidateListExactSmallestMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_tz_floorGood
@@ -1305,6 +1439,10 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
+namespace ArkLib.ProximityGap.Frontier.FloorClosureContract
+#print axioms not_tzBudgetedMaxField_iff_each_member_above_or_beaten
+#print axioms not_tzClosureField_iff_member_above_or_each_beaten
+end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorGood_familyBudget_not_dominationProof_of_larger_than_all
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_of_each_member_beaten
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorGood_familyBudget_not_dominationProof_of_each_member_beaten
