@@ -1735,6 +1735,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclotomicConcentration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclotomicLatticeWrapOnset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D1ConvolutionSquaringReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D2LargeDeviationRateFunction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D2RogersSiegelVarianceGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D3FiniteFreeFallingFactorial
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectMomentCeilingAtFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectNecessitySufficiencyGap

@@ -1078,3 +1078,15 @@ to record that the arXiv:2606.24471 mirrored self-convolution bootstrap squares 
 concentration but, for the smooth-subgroup test `1_{μ_n}/n`, the starting concentration is exactly
 `M(μ_n)/n`.  The iterated squared target is therefore equivalent to the original Paley house bound,
 so D1 is a consumer of a Paley-strength input rather than an independent floor proof.
+
+## [2026-06-26] refute | Rogers-Siegel variance prime-coupling gate
+
+Added:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D2RogersSiegelVarianceGate.lean`
+- `docs/kb/deltastar-464-rogers-siegel-prime-variance-gate-2026-06-26.md`
+
+to record that arXiv:2606.27020 random-lattice/Siegel-transform moments do not decide the
+prime-indexed good-prime sliver without a pointwise prime-to-lattice coupling.  If such a coupling is
+supplied, the route still passes through the existing `_AvBV2` prime-variance certification-deficit
+gate.
