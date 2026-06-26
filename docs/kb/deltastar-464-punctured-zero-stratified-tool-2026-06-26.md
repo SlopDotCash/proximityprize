@@ -273,6 +273,10 @@ coordinateAgreementFiber_card_le_one_of_k_le
 coordinateAgreementFiber_card_le_field_pow_sub_card
 zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
 uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
+uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
 zeroAgreementStratum_card_le_choose_of_k_le_t
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
@@ -294,7 +298,9 @@ zero-direction safety, high-binomial stratum domination, and coordinate-fiber ar
 a failed uniform bad-scalar budget must produce a large-zero safe line and a low stratum `t < k`.
 With coordinate-fiber arithmetic fixed, it can be sharpened further to a zero-coordinate subset `S`
 of size `t` and `M(t) < #coordinateAgreementFiber(S)`.  The affine RS fiber bound is now proved as
-`#coordinateAgreementFiber(S) <= |F|^(k - #S)`, modulo the existing vanishing-kernel cardinality
-substrate.  Therefore the field-power production wrapper leaves only the weighted binomial
-arithmetic fit; if that fit fails, the next theorem must exploit extra support/appearance geometry
-beyond the raw affine fiber count.
+`#coordinateAgreementFiber(S) <= |F|^(k - #S)` with only the standard Lean axioms.  Therefore the
+field-power production wrapper leaves only the weighted binomial arithmetic fit; if that fit fails,
+the next theorem must exploit extra support/appearance geometry beyond the raw affine fiber count.
+The `t = 0` summand already forces the necessary inequality
+`|F|^k * support(u1) / a <= B` on every large-zero direction.  For any such direction with support
+at least `a`, this collapses to the necessary condition `|F|^k <= B`.

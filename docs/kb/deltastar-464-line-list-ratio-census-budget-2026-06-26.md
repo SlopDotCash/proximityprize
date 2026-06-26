@@ -513,6 +513,10 @@ coordinateAgreementFiber_card_le_one_of_k_le
 coordinateAgreementFiber_card_le_field_pow_sub_card
 zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
 uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
+uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
 zeroAgreementStratum_card_le_choose_of_k_le_t
 unsafe_or_largeZero_safe_low_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
@@ -525,9 +529,11 @@ zero-coordinate subset `S`; summing over all `t`-subsets covers the exact `t`-st
 has the endpoint theorem that a fiber over `#S >= k` has size at most one, and this now lifts to
 the stratum bound `#zeroAgreementStratum(t) <= choose(#zeroSet(u1), t)` for `k <= t`.  The raw
 affine interpolation count is also formalized as
-`#coordinateAgreementFiber(S) <= |F|^(k - #S)`, inheriting `sorryAx` only from the existing
-vanishing-kernel cardinality substrate.  Thus the remaining `N(t)` problem is no longer the basic
-fiber count; it is whether the induced low-range weighted binomial arithmetic fits, or whether a
-support-aware refinement is needed.  If the field-power weighted fit does hold, any remaining
-uniform-budget failure is forced into zero-direction saturation.  If a weaker proposed envelope
-fails, the new scanner returns an explicit low stratum or low overfull coordinate fiber.
+`#coordinateAgreementFiber(S) <= |F|^(k - #S)` with only the standard Lean axioms.  Thus the
+remaining `N(t)` problem is no longer the basic fiber count; it is whether the induced low-range
+weighted binomial arithmetic fits, or whether a support-aware refinement is needed.  If the
+field-power weighted fit does hold, any remaining uniform-budget failure is forced into
+zero-direction saturation.  The same arithmetic fit must already pass the `t = 0` test
+`|F|^k * support(u1) / a <= B` on every large-zero direction; with support at least `a`, this
+already forces `|F|^k <= B`.  If a weaker proposed envelope fails, the new scanner returns an
+explicit low stratum or low overfull coordinate fiber.

@@ -40,6 +40,13 @@ not_zeroCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
 not_zeroCoordinateAgreementFiberBudgetFits_iff_sum_gt
 not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_sum_gt
+zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
+fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
+fieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_support_ge
+uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
+not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
 exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformPunctured
 not_zeroAgreementStrataCardBudgeted_iff_exists_low_stratum_gt_of_high_choose
 unsafe_or_largeZero_safe_low_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
@@ -138,6 +145,11 @@ failure of the weighted binomial sum or a need for a stronger, support-aware low
 Under the support-line-list and support-fit hypotheses plus that weighted field-power coordinate
 fit, `unsafe_of_not_uniformLineBadScalarsBudgeted_with_fieldPowCoordinateFibers` says a failed
 uniform bad-scalar budget must be zero-direction saturation.
+The same arithmetic layer now exposes its first obstruction: the `t = 0` term alone forces
+`|F|^k * support(u1) / a <= B`.  Thus the raw field-power route can be refuted before any
+higher-stratum information is considered if a large-zero direction violates that zero-term bound.
+In particular, a large-zero direction with `support(u1) >= a` forces `|F|^k <= B`; if the target
+budget is below `|F|^k`, the naive field-power envelope is arithmetically impossible.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target
@@ -154,6 +166,7 @@ Test the induced low-range arithmetic:
 sum_{t<a} choose(#zeroSet(u1), t) * |F|^(k-t) * support(u1)/(a-t) <= B
 ```
 
-on large-zero safe directions.  If this sum misses the #464 budget, the next real theorem must use
-extra geometry of appearing codewords or the support/zero pattern instead of the raw affine-fiber
-count.
+on large-zero safe directions, starting with the necessary zero-term inequality
+`|F|^k * support(u1) / a <= B` and its support-large corollary `|F|^k <= B`.  If either already
+misses the #464 budget, the next real theorem must use extra geometry of appearing codewords or the
+support/zero pattern instead of the raw affine-fiber count.

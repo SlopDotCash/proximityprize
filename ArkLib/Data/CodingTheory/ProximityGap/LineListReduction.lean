@@ -316,7 +316,7 @@ theorem coordinateAgreementFiber_card_le_field_pow_sub_card
           ArkLib.CS25.natCard_ker_evalOnS_general]
       rw [← hshift_card]
       exact le_trans (Finset.card_le_card hshift_subset) (le_of_eq hker_card)
-    · exact le_trans (by simpa [Finset.not_nonempty_iff_eq_empty.mp hnonempty]) (Nat.zero_le _)
+    · exact le_trans (by simp [Finset.not_nonempty_iff_eq_empty.mp hnonempty]) (Nat.zero_le _)
   exact le_trans (le_trans (Finset.card_le_card hcover) Finset.card_image_le) hpoly
 
 open Classical in
@@ -1153,6 +1153,108 @@ theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_su
   · rintro ⟨u₁, hnotEligible, hgt⟩ hfits
     exact (not_lt_of_ge (hfits u₁ hnotEligible)) hgt
 
+omit [Fintype F] in
+/-- The coordinate-fiber arithmetic fit contains its `t = 0` summand.  This exposes the first
+arithmetic obstruction before any higher-stratum information is used. -/
+theorem zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
+    (a B : ℕ) (u₁ : Fin n → F) (M : ℕ → ℕ) (ha : 0 < a)
+    (hFits : ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁ M) :
+    M 0 * ((directionSupportSet u₁).card / a) ≤ B := by
+  have hmem : 0 ∈ Finset.range a := Finset.mem_range.mpr ha
+  have hterm :
+      ((directionZeroSet u₁).card.choose 0 * M 0) *
+          ((directionSupportSet u₁).card / (a - 0)) ≤
+        ∑ t ∈ Finset.range a,
+          ((directionZeroSet u₁).card.choose t * M t) *
+            ((directionSupportSet u₁).card / (a - t)) := by
+    exact Finset.single_le_sum
+      (f := fun t =>
+        ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)))
+      (fun _ _ => Nat.zero_le _) hmem
+  exact le_trans (by simpa using hterm) hFits
+
+/-- For the raw MDS field-power envelope, the `t = 0` term alone forces
+`|F|^k * support(u₁)/a ≤ B`. -/
+theorem fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+    (k a B : ℕ) (u₁ : Fin n → F) (ha : 0 < a)
+    (hFits : ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁
+      (fun t => Fintype.card F ^ (k - t))) :
+    Fintype.card F ^ k * ((directionSupportSet u₁).card / a) ≤ B := by
+  simpa using
+    (zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
+      (F := F) (n := n) a B u₁ (fun t => Fintype.card F ^ (k - t)) ha hFits)
+
+/-- Uniform version of the field-power zero-term obstruction on large-zero directions. -/
+theorem uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+    (k a B : ℕ) (ha : 0 < a)
+    (hFits : UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t))) :
+    ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      Fintype.card F ^ k * ((directionSupportSet u₁).card / a) ≤ B := by
+  intro u₁ hnotEligible
+  exact fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+    (F := F) (n := n) k a B u₁ ha (hFits u₁ hnotEligible)
+
+/-- A single large-zero direction whose `t = 0` field-power term exceeds `B` refutes the raw
+field-power coordinate-fiber fit. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
+    (k a B : ℕ) (ha : 0 < a)
+    (hgt : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      B < Fintype.card F ^ k * ((directionSupportSet u₁).card / a)) :
+    ¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t)) := by
+  intro hFits
+  rcases hgt with ⟨u₁, hnotEligible, hgt⟩
+  exact (not_lt_of_ge
+    (uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+      (F := F) (n := n) k a B ha hFits u₁ hnotEligible)) hgt
+
+/-- If the direction support has size at least `a`, the field-power fit already forces the full
+`|F|^k` term under budget. -/
+theorem fieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_support_ge
+    (k a B : ℕ) (u₁ : Fin n → F) (ha : 0 < a)
+    (hsupport : a ≤ (directionSupportSet u₁).card)
+    (hFits : ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁
+      (fun t => Fintype.card F ^ (k - t))) :
+    Fintype.card F ^ k ≤ B := by
+  have hzero :=
+    fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+      (F := F) (n := n) k a B u₁ ha hFits
+  have hdiv : 1 ≤ (directionSupportSet u₁).card / a :=
+    Nat.div_pos hsupport ha
+  have hterm : Fintype.card F ^ k
+      ≤ Fintype.card F ^ k * ((directionSupportSet u₁).card / a) := by
+    exact Nat.le_mul_of_pos_right _ (lt_of_lt_of_le Nat.zero_lt_one hdiv)
+  exact le_trans hterm hzero
+
+/-- Uniform field-power fit on a large-zero direction with support at least `a` forces
+`|F|^k ≤ B`. -/
+theorem uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
+    (k a B : ℕ) (ha : 0 < a)
+    (hwitness : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      a ≤ (directionSupportSet u₁).card)
+    (hFits : UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t))) :
+    Fintype.card F ^ k ≤ B := by
+  rcases hwitness with ⟨u₁, hnotEligible, hsupport⟩
+  exact fieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_support_ge
+    (F := F) (n := n) k a B u₁ ha hsupport (hFits u₁ hnotEligible)
+
+/-- If `B < |F|^k` and there is a large-zero direction with support at least `a`, the raw
+field-power coordinate-fiber arithmetic fit is impossible. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
+    (k a B : ℕ) (ha : 0 < a)
+    (hB : B < Fintype.card F ^ k)
+    (hwitness : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      a ≤ (directionSupportSet u₁).card) :
+    ¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F ^ (k - t)) := by
+  intro hFits
+  exact (not_lt_of_ge
+    (uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
+      (F := F) (n := n) k a B ha hwitness hFits)) hB
+
 open Classical in
 /-- If a proposed stratum budget fits arithmetically, any punctured-budget failure must come from
 an overfull zero-agreement stratum. -/
@@ -1741,6 +1843,15 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms not_zeroCoordinateAgreementFiberBudgetFits_iff_sum_gt
 #print axioms
   not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_sum_gt
+#print axioms zeroCoordinateAgreementFiberBudgetFits_zeroTerm_le
+#print axioms fieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+#print axioms uniformFieldPowCoordinateAgreementFiberBudgetFits_zeroTerm_le
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_zeroTerm_gt
+#print axioms fieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_support_ge
+#print axioms uniformFieldPowCoordinateAgreementFiberBudgetFits_cardPow_le_of_exists_support_ge
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_exists_support_ge
 #print axioms
   not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
 #print axioms

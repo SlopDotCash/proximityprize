@@ -368,13 +368,18 @@ whose envelope already covers this binomial ceiling must live in the low interpo
 `t < k`; the full production scanner now has the same low-stratum refinement.
 
 Follow-up: the raw coordinate-fiber interpolation count is now formalized:
-`#coordinateAgreementFiber(S) <= |F|^(k - #S)`, inheriting `sorryAx` from the existing
-vanishing-kernel count substrate.  The coordinate-fiber scanner also has a low-range form: if
-`M(t) >= 1` on `k <= t < a`, then a failed production budget reports either zero-direction
-saturation or a large-zero safe overfull coordinate fiber with `t < k`.  The remaining question is
-the weighted binomial arithmetic or a stronger support-aware low-fiber theorem.  A field-power
-production wrapper now shows that, once this arithmetic fit is fixed, a uniform bad-scalar failure
-can only be zero-direction saturation.
+`#coordinateAgreementFiber(S) <= |F|^(k - #S)` with only the standard Lean axioms.  The
+coordinate-fiber scanner also has a low-range form: if `M(t) >= 1` on `k <= t < a`, then a failed
+production budget reports either zero-direction saturation or a large-zero safe overfull coordinate
+fiber with `t < k`.  The remaining question is the weighted binomial arithmetic or a stronger
+support-aware low-fiber theorem.  A field-power production wrapper now shows that, once this
+arithmetic fit is fixed, a uniform bad-scalar failure can only be zero-direction saturation.
+
+Follow-up: the field-power arithmetic fit now exposes its first necessary condition.  The
+`t = 0` summand alone forces `|F|^k * support(u1) / a <= B` on every large-zero direction, and one
+direction violating this zero-term inequality refutes the raw field-power coordinate-fiber fit.
+If a large-zero direction also has support at least `a`, the fit already forces `|F|^k <= B`; thus
+`B < |F|^k` refutes the naive interpolation envelope whenever such a direction exists.
 
 ## [2026-06-26] refine | floor successor propagation gate
 
