@@ -161,8 +161,8 @@ packing count; it must use RS interpolation uniqueness across overlapping fibers
 {(γ,T) : γ is singleton for c, T ⊆ supportRatioFiber(c,u0,u1,γ), #T = a-t}
 ```
 
-The module `LineListCodewordSingletonSupportRatio.lean` now proves the exact projection/fiber
-identities:
+The support-ratio module and its small route modules now provide the exact projection/fiber
+identities, weighted consumers, and scanners:
 
 ```lean
 codewordSingletonSupportRatioCover
@@ -178,8 +178,15 @@ codewordSingletonSupportRatioCover_snd_injOn
 codewordSingletonSupportRatioCover_card_le_support_choose
 UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
 UniformLargeZeroSafeCodewordSupportChooseBudgeted
+codewordSupportDivWeight
+UniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted
+singletonBadScalarDefect_le_codewordSupportDivWeight_of_zeroSafe
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportDivWeightBudget
+exists_largeZero_safe_codewordSupportDivWeight_gt_of_not_uniformLineBadScalarsBudgeted
 codewordSupportChooseWeight
 UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted
+codewordSupportDivWeight_le_codewordSupportChooseWeight_of_zeroSafe
+uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_codewordSupportChooseWeightBudget
 singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
 codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget
@@ -201,6 +208,7 @@ UniformLargeZeroSafeCodewordSingletonRelationForbidden
 not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationWitnessIndependence
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
@@ -225,21 +233,28 @@ failure form: an exact or lower-bound support profile `s` and zero-agreement pro
 those profile parameters explicitly.  The weighted
 support-choose route now goes one step further: it pays the actual cap for each appearing codeword,
 `sum_c choose(#support(u1), a - #zeroAgreement(c))`, and scans failed production as an over-budget
-`puncturedWeight + codewordSupportChooseWeight` line.
+`puncturedWeight + codewordSupportChooseWeight` line.  The weighted denominator route is the
+scalar-sharper version: `codewordSupportDivWeight` pays
+`sum_c #support(u1)/(a - #zeroAgreement(c))`, controls singleton defects directly, and follows
+from the weighted support-choose budget.
 
 2. Treat weighted support-choose as a cover-control baseline unless it beats the denominator
 scalar obstruction.  The fixed-codeword cover already injects into moving-support subsets, and the
 weighted route removes the worst-cap multiplication, but
 `codewordSingletonWitnessScalars_card_le_support_choose_via_denominator` says the old denominator
-scalar cap lies below the support-choose cap on zero-safe appearing codewords.  A further
-improvement must make the weighted sum small enough in the relevant range or use RS/second-witness
-structure beyond coordinate packing.
+scalar cap lies below the support-choose cap on zero-safe appearing codewords.  The new weighted
+denominator route packages that fact over appearing codewords.  A further improvement must make
+the denominator sum small enough in the relevant range or use RS/second-witness structure beyond
+coordinate packing.
 
 3. Try the scalar independence-graph interface.  A proposed interpolation relation must prove that
 singleton scalars are independent and that independent subsets of the singleton-witness set are
 small; the witness-local scanner returns an overlarge independent singleton subset when this route
 is the missing input.  The full scanner also returns an actual relation edge among singleton
-witnesses when the forbidden-edge half itself is false.
+witnesses when the forbidden-edge half itself is false.  The naive endpoint second-witness
+relation is now formally classified as a no-go: it satisfies the forbidden-edge half only because
+it has no edges on singleton witnesses, so its witness-local budget is equivalent to the original
+per-codeword singleton cap.
 
 4. If no support-choose arithmetic fit or sharper rigidity theorem emerges, use the support-choose
 scanner to extract a counterexample shape:

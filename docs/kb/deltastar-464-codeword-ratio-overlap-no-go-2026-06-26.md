@@ -83,6 +83,11 @@ codewordSupportChooseWeight
 exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted
 scalarRelationIndependent
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
+supportRatioFiberOverlapRelation
+not_supportRatioFiberOverlapRelation_of_ne
+scalarRelationIndependent_supportRatioFiberOverlapRelation
+uniformLargeZeroSafeCodewordSingletonRelationForbidden_supportRatioFiberOverlap
+uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted
 ```
 
 When `a - #zeroAgreement(c) > 0`, the selected set `T` is nonempty, so `T` itself determines
@@ -95,9 +100,16 @@ obstruction: any appearing codeword with support size `s`, zero-agreement size `
 `S < choose(s, a - z)` already rules out the uniform support-choose cap.
 The weighted support-choose route refines the arithmetic side by summing the actual binomial caps
 over appearing codewords instead of paying a single worst cap times `#appearingCodewords`.
+The new weighted denominator route is sharper for scalar accounting:
+`codewordSupportDivWeight` pays the actual
+`#support(u1)/(a - #zeroAgreement(c))` term per appearing codeword, controls singleton defects
+directly, and is implied by `codewordSupportChooseWeight` on safe lines.
 The new scalar relation-independence interface is the proposed escape from this subset-counting
 ceiling: a future interpolation graph must prove both forbidden singleton edges and a small
 independence number, or the scanner returns an overlarge independent singleton-scalar set.
+The first second-witness graph test is also classified: endpoint second-witness adjacency is
+forbidden only tautologically, and its witness-local independence budget is exactly the original
+per-codeword singleton cap.
 
 ## Critique of the Previous Hope
 

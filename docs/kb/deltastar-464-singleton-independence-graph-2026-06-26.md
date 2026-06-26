@@ -133,7 +133,19 @@ subsets when the production route only needs subsets of the actual singleton-wit
 The empty relation is useless: every set is independent, so the independence-number theorem would
 be as hard as the original singleton cap.  The coordinate-overlap relation is also useless for a
 fixed codeword, because distinct support-ratio fibers are disjoint.  That failure is already
-formalized by the support-ratio partition lemmas.
+formalized by the support-ratio partition lemmas and now by the explicit graph no-go
+
+```lean
+uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted
+```
+
+The endpoint second-witness relation fails in the opposite but equally vacuous way: singleton
+witnesses rule out second witnesses at each endpoint by definition, so the forbidden-edge theorem
+is automatic and the witness-local budget again collapses to the original singleton cap:
+
+```lean
+endpointSecondWitnessRelationWitnessBudgeted_iff_codewordSingletonBudgeted
+```
 
 So a viable relation must be genuinely algebraic.  It has to spend information that coordinate
 packing throws away:

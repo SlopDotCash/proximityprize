@@ -1037,6 +1037,18 @@ theorem uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relat
   intro u₀ u₁ hnotEligible hsafe c hc Γ _hsubset hindΓ
   exact hind u₀ u₁ hnotEligible hsafe c hc Γ hindΓ
 
+/-- A direct per-codeword singleton cap supplies every witness-local relation-independence
+budget.  Thus a witness-local graph route is only a new route when its independence theorem is
+proved without first bounding the whole singleton-witness set. -/
+theorem
+    uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hbudget : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S) :
+    UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted dom k a R S := by
+  intro u₀ u₁ hnotEligible hsafe c hc Γ hsubset _hindΓ
+  exact (Finset.card_le_card hsubset).trans (hbudget u₀ u₁ hnotEligible hsafe c hc)
+
 /-- A forbidden-edge theorem plus an independence-number theorem gives the direct per-codeword
 singleton cap. -/
 theorem uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
@@ -1329,6 +1341,8 @@ section SourceAudit
 #print axioms UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
 #print axioms
   uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationIndependence
+#print axioms
+  uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
 #print axioms
@@ -1345,7 +1359,6 @@ section SourceAudit
   exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
 #print axioms
   exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
-
 end SourceAudit
 
 end ProximityGap.Ownership

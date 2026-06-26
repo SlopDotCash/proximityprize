@@ -93,8 +93,9 @@ exists_largeZero_safe_lineListSingletonCap_gt_of_not_uniformLineBadScalarsBudget
 exists_largeZero_safe_lineListSingletonRouteFailure_of_not_uniformLineBadScalarsBudgeted
 ```
 
-`LineListCodewordSingletonSupportRatio.lean` fixes the first concrete target from the
-singleton-cap critique by attaching support-ratio fibers to one appearing codeword:
+`LineListCodewordSingletonSupportRatio.lean` and its small route modules fix the first concrete
+target from the singleton-cap critique by attaching support-ratio fibers to one appearing
+codeword:
 
 ```lean
 codewordSingletonSupportRatioCover
@@ -124,8 +125,18 @@ codewordSingletonSupportRatioCover_card_le_support_choose
 codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
 UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
 UniformLargeZeroSafeCodewordSupportChooseBudgeted
+codewordSupportDivWeight
+UniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted
+singletonBadScalarDefect_le_codewordSupportDivWeight_of_zeroSafe
+lineBadScalars_card_le_of_weight_add_codewordSupportDiv_le_two_mul
+largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportDivWeightBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportDivWeightBudget
+not_uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_iff_exists_weight_gt
+exists_largeZero_safe_codewordSupportDivWeight_gt_of_not_uniformLineBadScalarsBudgeted
 codewordSupportChooseWeight
 UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted
+codewordSupportDivWeight_le_codewordSupportChooseWeight_of_zeroSafe
+uniformLargeZeroSafeWeightPlusCodewordSupportDivBudgeted_of_codewordSupportChooseWeightBudget
 singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
 codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
 lineBadScalars_card_le_of_weight_add_codewordSupportChoose_le_two_mul
@@ -153,6 +164,7 @@ UniformLargeZeroSafeCodewordSingletonRelationForbidden
 not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationWitnessIndependence
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
@@ -197,7 +209,11 @@ turns any concrete support/zero-agreement profile with
 support-choose route then removes the uniform worst-cap multiplication by bounding the singleton
 defect directly by
 `sum_c choose(#support(u1), a - #zeroAgreement(c))` over appearing codewords; its scanner exposes
-an over-budget weighted line if this refined arithmetic still cannot fit.
+an over-budget weighted line if this refined arithmetic still cannot fit.  The sharper weighted
+denominator route now pays
+`sum_c #support(u1)/(a - #zeroAgreement(c))`, controls the singleton defect directly, and is
+implied by the weighted support-choose route on safe lines.  It is the scalar baseline the next
+rigidity theorem has to beat.
 The scalar graph interface now has both a global independence budget and a witness-local budget;
 the latter is the intended target because it only asks to bound independent subsets of the actual
 singleton-witness fiber.  Its full scanner needs no forbidden-edge assumption: it returns either

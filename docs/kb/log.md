@@ -785,8 +785,9 @@ new consumer and scanner,
 `exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted`, make the
 next graph target narrower and more honest.
 
-Follow-up: the scalar graph route now has exact forbidden-edge failure forms.  `not_scalarRelationIndependent_iff_exists_edge`
-and `not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge` turn a failed
+Follow-up: the scalar graph route now has exact forbidden-edge failure forms.
+`not_scalarRelationIndependent_iff_exists_edge` and
+`not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge` turn a failed
 forbidden-edge theorem into two distinct singleton scalars connected by the proposed relation.
 The full scanner
 `exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted` no longer assumes
@@ -819,3 +820,24 @@ scans failed production with
 `exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted`.  This
 is a real accounting refinement but still spends only coordinate-packing information; the next
 nonredundant target remains profile concentration or scalar-level second-witness rigidity.
+
+Follow-up: two naive singleton graph candidates are now formally refuted.  The coordinate-overlap
+relation `supportRatioFiberOverlapRelation` has no distinct-scalar edges for one fixed codeword,
+so `uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted`
+shows its witness-local graph budget is exactly the original singleton cap.  The endpoint
+second-witness relation in `LineListCodewordSingletonSecondWitnessRelation.lean` is also vacuous
+on singleton witnesses, with
+`endpointSecondWitnessRelationWitnessBudgeted_iff_codewordSingletonBudgeted` proving the same
+collapse.  Essay: `deltastar-464-graph-candidates-refuted-2026-06-26.md`.
+
+Follow-up: `LineListCodewordSingletonSupportDivWeight.lean` now has the scalar-sharper weighted
+denominator route.  `codewordSupportDivWeight` pays the actual
+`#support(u1)/(a - #zeroAgreement(c))` cap for each appearing codeword, and
+`singletonBadScalarDefect_le_codewordSupportDivWeight_of_zeroSafe` feeds the same factor-two
+production wrapper through
+`uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportDivWeightBudget`.  The
+scanner `exists_largeZero_safe_codewordSupportDivWeight_gt_of_not_uniformLineBadScalarsBudgeted`
+returns the smaller denominator-weight obstruction, while
+`codewordSupportDivWeight_le_codewordSupportChooseWeight_of_zeroSafe` records that weighted
+support-choose only implies this baseline.  Companion note:
+`deltastar-464-weighted-denominator-baseline-2026-06-26.md`.
