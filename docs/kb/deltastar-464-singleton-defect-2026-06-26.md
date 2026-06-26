@@ -98,6 +98,11 @@ uniformExactSingletonProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
 zeroExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
 uniformExactAppearanceFiberSingletonBudgeted_of_exactAppearingFiberBudgeted
 singletonBadScalarIncidences_subset_biUnion_exactProfiles
+singletonBadScalarIncidencesInExact_subset_singletonBadScalarIncidences
+biUnion_exactSingletonProfiles_subset_singletonBadScalarIncidences
+singletonBadScalarIncidences_eq_biUnion_exactProfiles
+singletonBadScalarIncidences_card_eq_sum_exactSingletonProfiles
+singletonBadScalarDefect_eq_sum_exactSingletonProfiles
 singletonBadScalarDefect_le_sum_exactSingletonProfiles
 singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted
 singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted_and_fits
@@ -107,10 +112,19 @@ lineBadScalars_card_le_of_weight_add_exactSingletonProfileBudget_le_two_mul
 largeZeroSafeLineBadScalarsBudgeted_of_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
+uniformLineBadScalarsBudgeted_of_exactAppearingFiberBudget
 exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
+exists_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
 exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScalarsBudgeted
+exactAppearingZeroAgreementFiber_card_le_one_of_k_le
+exactAppearanceFiberSingleton_weighted_le_support_div_of_k_le
+singletonBadScalarIncidencesInExact_card_le_support_div_of_k_le
+exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
+exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
+exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
 ```
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
@@ -133,9 +147,10 @@ puncturedZeroStratifiedLineWeight
 <= 2B.
 ```
 
-The exact-profile sum is a cover bound, with distinct exact profile slices disjoint when their
-zero-agreement sets differ.  That is enough for production: if every exact profile is below `D t`,
-the total singleton defect fits the binomial sum above.  The converse scanners localize any failed
+The exact-profile split is now an equality on zero-safe lines: the singleton-defect incidence graph
+is exactly the biUnion of exact zero-agreement profile slices, and `singletonBadScalarDefect` is the
+corresponding double sum.  Thus if every exact profile is below `D t`, the total singleton defect
+fits the binomial sum above without union-overlap slack.  The converse scanners localize any failed
 uniform bad-scalar budget, after support arithmetic, zero-safety, and the relevant profile envelope
 are fixed, either to failed combined profile arithmetic or to a concrete exact profile whose
 singleton-defect or exact-appearance weighted size exceeds `D t`.
@@ -144,6 +159,20 @@ The exact-appearance bridge is the new attack surface.  It is enough to bound
 `exactAppearingZeroAgreementFiber` by profile and multiply by the moving-support denominator
 `support/(a-t)`; that yields the singleton-defect profile budget and the older combined
 weight-plus-singleton-defect budget.
+
+The direct exact-appearing-fiber production wrapper now exposes that route in one theorem:
+given an exact appearance-fiber envelope `M`, denominator arithmetic
+`M(t) * support/(a-t) <= D(t)`, and the combined profile budget using `D`, the uniform
+bad-scalar budget follows.  The matching scanner says that, with `M` and the combined `D`
+arithmetic fixed, any failed uniform bad-scalar budget must produce a large-zero safe line and
+profile where `D(t) < M(t) * support/(a-t)`.
+
+The high profile range is now discharged by RS uniqueness plus support arithmetic.  If `k <= t`,
+then every exact appearing zero-agreement fiber has size at most one, so both the weighted exact
+appearance profile and the exact singleton-defect incidence slice are bounded by
+`support/(a-t)`.  Consequently, once the proposed envelope `D t` already dominates that
+support-denominator term on all high levels, any overfull exact singleton or exact appearance
+profile must occur in the low interpolation range `t < k`.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

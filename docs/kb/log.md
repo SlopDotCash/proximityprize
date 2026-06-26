@@ -565,3 +565,15 @@ The previous appearance-coordinate object covered a `t`-stratum by all zero-subs
 fiber requires `directionZeroAgreementSet(c,u0,u1) = S`, so the stratum cardinality is an exact
 sum over `S` in `powersetCard t`.  This removes a cover looseness while preserving the same
 punctured-budget consumer, but it still leaves the substantive exact-fiber bound open.
+
+Follow-up: `LineListSingletonDefectGeometry.lean` now localizes exact singleton-profile failures to
+the low interpolation range.  RS uniqueness bounds every exact appearing fiber by one when
+`k <= t`, and the singleton incidence slice then inherits the support-denominator cap.  With that
+cap below `D t` on high levels, the scanners return only overfull exact singleton or exact
+appearance profiles with `t < k`.
+
+Follow-up: the exact singleton-profile split is now an equality on zero-safe lines.  The singleton
+incidence graph is exactly the biUnion of exact zero-agreement profile slices, and
+`singletonBadScalarDefect` is the corresponding double sum.  The profile budget therefore has no
+overlap slack: bounding each exact slice by `D t` is precisely a disjoint partition estimate before
+the binomial summation.
