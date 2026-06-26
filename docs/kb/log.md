@@ -1035,3 +1035,10 @@ forms for `ProfileFiberOscillationCertificate`.  The certificate-level negated s
 full structured certificate when the bad-count image is too large for the advertised summed or
 uniform slack budget, without separately unpacking the representative-in-fiber and oscillation
 components.
+
+Follow-up: `CapacityBoundsAdmissible.lean` now exposes raw-bound
+`FRSEpsMCACapacityGG25Frontier` wrappers for the direct order/inter-orbit, coset-separation, and
+GR08 geometric folded-RS T4.14 routes.  The wrappers compose the existing `t <= 2 / eta`
+frontiers with `FRSEpsMCACapacityGG25TLeFrontier.toFrontier`, so the raw `hBound` field is
+derived by the checked arithmetic bridge rather than added as a new assumption.  Companion note:
+`deltastar-464-folded-frs-capacity-route-pin-2026-06-26.md`.
