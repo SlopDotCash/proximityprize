@@ -242,7 +242,8 @@ Added:
 and updated `_NextNormFactorizationClustering.lean` with exact scanner forms for smooth norm
 persistence and above-threshold shared prime factors.  Smooth persistence now implies empty
 above-`B` supports, pairwise disjoint thresholded supports, and zero thresholded cluster rate; failure
-returns either a large prime factor or a shared large prime.
+returns either a large prime factor or a shared large prime.  The off-diagonal domination bridge is
+also sharper: it no longer needs a separate `0 <= c` hypothesis.
 
 ## [2026-06-26] refine | line-list ratio-census budget gate
 

@@ -29,6 +29,11 @@ clusterRate_threshold_eq_zero_of_smooth
 not_thresholdSupports_disjoint_iff_exists_pair_large_common_prime
 ```
 
+The off-diagonal domination bridge was also sharpened: `offDiag_le_of_shareDominated`,
+`offDiagCancellation_of_disjoint`, and `prize_via_smooth_norms` no longer require a separate
+`0 <= c` assumption.  Once non-sharing pairs are literally zero and sharing pairs are bounded by
+`c`, the finite sum comparison works for any real `c`.
+
 So the residual is no longer phrased as a vague "norms stay smooth" hope.  It has two direct
 failure predicates:
 
