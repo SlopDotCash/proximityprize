@@ -160,6 +160,27 @@ theorem not_floorFamilyContainsGlobalMax_of_each_profile_rep_beaten
   rcases hbeat p with ⟨u, hlt⟩
   exact (not_lt_of_ge (hdom u)) hlt
 
+/-- Exact refutation certificate for the full representative image.  This checks every profile
+label, including labels not attained by any stack, because the image contains `rep p` for every
+`p : P`. -/
+theorem not_floorFamilyContainsGlobalMax_profileRepImage_iff_each_rep_beaten
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {rep : P -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FamilyContainsGlobalMax F C δ
+      ((Finset.univ : Finset P).image rep)) ↔
+      ∀ p : P, ∃ u : WordStack A (Fin 2) ι,
+        FloorClosureContract.StackBadCount F C δ (rep p) <
+          FloorClosureContract.StackBadCount F C δ u := by
+  constructor
+  · intro hno p
+    have hbeat :=
+      (FloorClosureContract.not_familyContainsGlobalMax_iff_each_member_beaten
+        (F := F) (A := A) C δ ((Finset.univ : Finset P).image rep)).mp hno
+    exact hbeat (rep p) (Finset.mem_image.mpr ⟨p, Finset.mem_univ p, rfl⟩)
+  · intro hbeat
+    exact not_floorFamilyContainsGlobalMax_of_each_profile_rep_beaten C δ hbeat
+
 /-- If every used profile representative is beaten by some stack, then the used-profile
 representative family cannot contain a global maximizer in the floor contract. -/
 theorem not_floorFamilyContainsGlobalMax_of_each_used_profile_rep_beaten
@@ -199,6 +220,75 @@ theorem not_floorFamilyContainsGlobalMax_usedProfileFamily_iff_each_used_rep_bea
     exact hbeat (rep p) (mem_usedProfileRepFamily.mpr ⟨p, hused, rfl⟩)
   · intro hbeat
     exact not_floorFamilyContainsGlobalMax_of_each_used_profile_rep_beaten C δ hbeat
+
+/-- Exact budget certificate for the full representative image.  The full image is bounded iff no
+profile representative, including representatives for unattained profile labels, exceeds the
+target budget. -/
+theorem familyBounded_profileRepImage_iff_no_profile_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} [Fintype P]
+    {rep : P -> WordStack A (Fin 2) ι} :
+    FloorClosureContract.FamilyBounded F C δ ((Finset.univ : Finset P).image rep) B ↔
+      ¬ ∃ p : P, B < StackProfileFiberMax.StackBadCount F C δ (rep p) := by
+  constructor
+  · intro hbounded hbad
+    rcases hbad with ⟨p, hgt⟩
+    have hle :
+        StackProfileFiberMax.StackBadCount F C δ (rep p) ≤ B := by
+      simpa [FloorClosureContract.StackBadCount, StackProfileFiberMax.StackBadCount] using
+        hbounded (rep p) (Finset.mem_image.mpr ⟨p, Finset.mem_univ p, rfl⟩)
+    exact (not_lt_of_ge hle) hgt
+  · intro hno r hr
+    rcases Finset.mem_image.mp hr with ⟨p, _hp, rfl⟩
+    exact le_of_not_gt (fun hgt =>
+      hno ⟨p, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileFiberMax.StackBadCount] using
+          hgt⟩)
+
+/-- Exact local form of the floor-good family budget for the full representative image.  Unlike
+the used-profile family, this requires a budget proof for every representative label in `P`. -/
+theorem floorGoodFamilyBudget_profileRepImage_iff_no_profile_budget_lt
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} [Fintype P]
+    {rep : P -> WordStack A (Fin 2) ι} :
+    FloorClosureContract.FloorGoodFamilyBudget
+        (F := F) (A := A) FloorBad a C δ ((Finset.univ : Finset P).image rep) B
+      ↔ (¬ FloorBad (2 ^ a) (Fintype.card F) →
+        ¬ ∃ p : P, B < StackProfileFiberMax.StackBadCount F C δ (rep p)) := by
+  constructor
+  · intro hfloor hgood
+    exact (familyBounded_profileRepImage_iff_no_profile_budget_lt C δ).mp
+      (hfloor hgood)
+  · intro hlocal hgood
+    exact (familyBounded_profileRepImage_iff_no_profile_budget_lt C δ).mpr
+      (hlocal hgood)
+
+/-- Exact negative form for the full representative image: the floor-good family-budget theorem
+fails precisely when the floor predicate is good at the field prime and some representative label is
+above budget. -/
+theorem not_floorGoodFamilyBudget_profileRepImage_iff_floorGood_and_exists_profile_budget_lt
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} [Fintype P]
+    {rep : P -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FloorGoodFamilyBudget
+        (F := F) (A := A) FloorBad a C δ ((Finset.univ : Finset P).image rep) B)
+      ↔ ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
+        ∃ p : P, B < StackProfileFiberMax.StackBadCount F C δ (rep p) := by
+  constructor
+  · intro hnot
+    rcases (FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+      (F := F) (A := A) FloorBad a C δ ((Finset.univ : Finset P).image rep) B).mp hnot with
+      ⟨hgood, r, hr, hgt⟩
+    rcases Finset.mem_image.mp hr with ⟨p, _hp, rfl⟩
+    exact ⟨hgood, ⟨p, by
+      simpa [FloorClosureContract.StackBadCount, StackProfileFiberMax.StackBadCount] using hgt⟩⟩
+  · rintro ⟨hgood, p, hgt⟩
+    exact (FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+      (F := F) (A := A) FloorBad a C δ ((Finset.univ : Finset P).image rep) B).mpr
+      ⟨hgood, rep p, Finset.mem_image.mpr ⟨p, Finset.mem_univ p, rfl⟩, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileFiberMax.StackBadCount] using hgt⟩
 
 /-- A local scanner certificate that no used profile representative exceeds `B` gives a
 floor-contract family budget for the used-profile representative family. -/
@@ -272,6 +362,34 @@ theorem floorGoodFamilyBudget_usedProfileRepFamily_iff_no_usedProfile_budget_lt
   · intro hlocal hgood
     exact (familyBounded_usedProfileRepFamily_iff_no_usedProfile_budget_lt C δ).mpr
       (hlocal hgood)
+
+/-- Exact negative form for the used-profile representative family.  The missing floor-to-count
+budget theorem fails exactly when the floor predicate is good at the field prime and an actually
+used representative is above budget. -/
+theorem not_floorGoodFamilyBudget_usedProfileRepFamily_iff_floorGood_and_exists_usedProfile_budget_lt
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} :
+    (¬ FloorClosureContract.FloorGoodFamilyBudget
+        (F := F) (A := A) FloorBad a C δ (usedProfileRepFamily profile rep) B)
+      ↔ ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
+        ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
+          B < StackProfileFiberMax.StackBadCount F C δ (rep p) := by
+  constructor
+  · intro hnot
+    rcases (FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+      (F := F) (A := A) FloorBad a C δ (usedProfileRepFamily profile rep) B).mp hnot with
+      ⟨hgood, r, hr, hgt⟩
+    rcases mem_usedProfileRepFamily.mp hr with ⟨p, hused, rfl⟩
+    exact ⟨hgood, ⟨p, hused, by
+      simpa [FloorClosureContract.StackBadCount, StackProfileFiberMax.StackBadCount] using hgt⟩⟩
+  · rintro ⟨hgood, p, hused, hgt⟩
+    exact (FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+      (F := F) (A := A) FloorBad a C δ (usedProfileRepFamily profile rep) B).mpr
+      ⟨hgood, rep p, mem_usedProfileRepFamily.mpr ⟨p, hused, rfl⟩, by
+        simpa [FloorClosureContract.StackBadCount, StackProfileFiberMax.StackBadCount] using hgt⟩
 
 /-- A profile-fiber classification plus a floor-good family budget gives the universal incidence
 bound.  This is the profile form of the floor contract's max-containment consumer. -/
@@ -664,12 +782,17 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.floorFamilyContainsGlobalMax_of_no_bad_used_profile
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.floorFamilyContainsGlobalMax_of_no_bad_used_profile_usedProfileFamily
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.not_floorFamilyContainsGlobalMax_of_each_profile_rep_beaten
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.not_floorFamilyContainsGlobalMax_profileRepImage_iff_each_rep_beaten
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.not_floorFamilyContainsGlobalMax_of_each_used_profile_rep_beaten
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.not_floorFamilyContainsGlobalMax_usedProfileFamily_iff_each_used_rep_beaten
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.familyBounded_profileRepImage_iff_no_profile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.floorGoodFamilyBudget_profileRepImage_iff_no_profile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.not_floorGoodFamilyBudget_profileRepImage_iff_floorGood_and_exists_profile_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.familyBounded_of_no_usedProfile_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.familyBounded_usedProfileRepFamily_iff_no_usedProfile_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.floorGoodFamilyBudget_of_no_usedProfile_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.floorGoodFamilyBudget_usedProfileRepFamily_iff_no_usedProfile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.not_floorGoodFamilyBudget_usedProfileRepFamily_iff_floorGood_and_exists_usedProfile_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.worstCaseIncidenceBounded_of_profileFiberMax_floorFamilyBounded
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.worstCaseIncidenceBounded_of_profileFiberMax_usedProfileFloorFamilyBounded
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.worstCaseIncidenceBounded_of_no_bad_used_profile_floorFamilyBounded

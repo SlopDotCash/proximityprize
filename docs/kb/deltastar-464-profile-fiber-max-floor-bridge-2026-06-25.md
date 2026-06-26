@@ -69,10 +69,14 @@ representative image contains a global maximizer.
 The floor consumers are:
 
 ```lean
+familyBounded_profileRepImage_iff_no_profile_budget_lt
+floorGoodFamilyBudget_profileRepImage_iff_no_profile_budget_lt
+not_floorGoodFamilyBudget_profileRepImage_iff_floorGood_and_exists_profile_budget_lt
 familyBounded_of_no_usedProfile_budget_lt
 familyBounded_usedProfileRepFamily_iff_no_usedProfile_budget_lt
 floorGoodFamilyBudget_of_no_usedProfile_budget_lt
 floorGoodFamilyBudget_usedProfileRepFamily_iff_no_usedProfile_budget_lt
+not_floorGoodFamilyBudget_usedProfileRepFamily_iff_floorGood_and_exists_usedProfile_budget_lt
 worstCaseIncidenceBounded_of_profileFiberMax_floorFamilyBounded
 worstCaseIncidenceBounded_of_no_bad_used_profile_floorFamilyBounded
 worstCaseIncidenceBounded_of_profileFiberMax_usedProfileFloorFamilyBounded
@@ -94,6 +98,10 @@ deltaStar_pin_of_profileBudgetScanner_of_tzInputs
 So a profile classification can now feed the Linnik/TZ floor contracts without restating a
 domination theorem.
 
+The full-image certificates quantify over every profile label `p : P`, including labels that no stack
+attains.  The used-profile certificates are the sharper scanner interface when budgets should only
+cover representatives of actually attained profiles.
+
 The budget scanner is exact for the used-profile family: the family is bounded iff no used
 representative is above budget.  The `floorGoodFamilyBudget_of_no_usedProfile_budget_lt` bridge is
 diagnostic.  If a scanner already controls actual bad-scalar counts for all used representatives,
@@ -101,6 +109,10 @@ then floor-goodness is not doing the counting work; a genuinely off-BGK closure 
 separate theorem that floor-goodness itself budgets the chosen representatives.
 The exact iff `floorGoodFamilyBudget_usedProfileRepFamily_iff_no_usedProfile_budget_lt` isolates
 that remaining burden under the floor-good premise.
+The negative iff
+`not_floorGoodFamilyBudget_usedProfileRepFamily_iff_floorGood_and_exists_usedProfile_budget_lt`
+is the matching refutation socket: floor-goodness plus an above-budget used representative is
+exactly a failure of the proposed floor-good family-budget theorem.
 
 The two `*_of_linnikInputs` / `*_of_tzInputs` wrappers make that diagnostic explicit: once the
 profile scanner already proves max-containment and the used-profile budget, the same delta-star pin
@@ -141,6 +153,7 @@ The negative bridge is:
 
 ```lean
 not_floorFamilyContainsGlobalMax_of_each_profile_rep_beaten
+not_floorFamilyContainsGlobalMax_profileRepImage_iff_each_rep_beaten
 not_floorFamilyContainsGlobalMax_of_each_used_profile_rep_beaten
 not_floorFamilyContainsGlobalMax_usedProfileFamily_iff_each_used_rep_beaten
 ```
@@ -168,3 +181,19 @@ exact singleton floor-bad scanner evidence
 This does not prove the floor.  It removes an interface gap: a future scanner or classification
 proof can target exact fiber maxima and feed the existing floor contract with either the full image
 or the tighter used-profile family, without restating the global domination argument.
+
+## Continuation: full-image exactness
+
+The full representative image now has the same exact local sockets:
+
+```lean
+not_floorFamilyContainsGlobalMax_profileRepImage_iff_each_rep_beaten
+familyBounded_profileRepImage_iff_no_profile_budget_lt
+floorGoodFamilyBudget_profileRepImage_iff_no_profile_budget_lt
+not_floorGoodFamilyBudget_profileRepImage_iff_floorGood_and_exists_profile_budget_lt
+```
+
+These quantify over every profile label `p : P`, including labels that no stack actually attains.
+That makes the tradeoff explicit.  The full image is easier to state, but its budget/refutation
+certificates must cover all labels; the used-profile family is sharper and only asks for labels
+with a realized stack.

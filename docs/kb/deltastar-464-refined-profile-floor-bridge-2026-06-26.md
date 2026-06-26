@@ -57,6 +57,8 @@ be passed directly into `FamilyContainsGlobalMax`.
 The budget scanner is also packaged:
 
 ```lean
+familyBounded_fineProfileRepImage_iff_no_fineProfile_budget_lt
+floorGoodFamilyBudget_fineProfileRepImage_iff_no_fineProfile_budget_lt
 familyBounded_of_no_usedFineProfile_budget_lt
 familyBounded_usedFineProfileRepFamily_iff_no_usedFineProfile_budget_lt
 floorGoodFamilyBudget_of_no_usedFineProfile_budget_lt
@@ -65,9 +67,13 @@ worstCaseIncidenceBounded_of_no_bad_fineProfile_budgetScanner
 deltaStar_pin_of_refinedScannerBudget
 ```
 
-This is the fully local form: the used fine-profile representative family is bounded iff no used
-representative is above budget.  Together with no bad fine-profile representative and the scaled MCA
-budget, this implies the delta-star lower pin.
+The full-image certificates quantify over every fine-profile label `q : Q`, including labels that no
+stack attains.  The used fine-profile certificates remain the sharper scanner interface when budgets
+should only cover representatives of actually attained fine profiles.
+
+The used-family budget iff is the fully local scanner form: the used fine-profile representative
+family is bounded iff no used representative is above budget.  Together with no bad fine-profile
+representative and the scaled MCA budget, this implies the delta-star lower pin.
 
 The Linnik/TZ floor consumers are:
 
@@ -113,12 +119,15 @@ theorem is proved.
 The local negative bridge is:
 
 ```lean
+not_floorFamilyContainsGlobalMax_of_each_fineProfile_rep_beaten
+not_floorFamilyContainsGlobalMax_fineProfileRepImage_iff_each_rep_beaten
 not_floorFamilyContainsGlobalMax_of_each_used_fineProfile_rep_beaten
 not_floorFamilyContainsGlobalMax_usedFineProfileFamily_iff_each_used_rep_beaten
 ```
 
-Failure of max-containment for the used representative family is now exactly the ability to beat
-every used fine-profile representative.  This is the scanner refutation surface for any proposed
+Failure of max-containment for the full image is exactly the ability to beat every representative
+`rep q`.  Failure for the used representative family is sharper: it only asks for beating witnesses
+for actually attained fine-profile labels.  This is the scanner refutation surface for any proposed
 refined catalogue.
 
 ## Critical Verdict

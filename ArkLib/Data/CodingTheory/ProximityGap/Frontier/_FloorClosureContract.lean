@@ -64,6 +64,21 @@ def FamilyBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ∀ r ∈ R, StackBadCount K C δ r ≤ B
 
+/-- Failure of a finite-family budget is exactly an above-budget member. -/
+theorem not_familyBounded_iff_exists_member_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FamilyBounded F C δ R B) ↔
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro r hr
+    exact le_of_not_gt (fun hgt => hnone ⟨r, hr, hgt⟩)
+  · rintro ⟨r, hr, hgt⟩ hbounded
+    exact (not_lt_of_ge (hbounded r hr)) hgt
+
 /-- A finite floor family dominates if every stack is no worse than some family member. -/
 def FamilyDominates (K : Type) [Field K] [Fintype K] [DecidableEq K]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -305,6 +320,48 @@ def FloorGoodFamilyBudget (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ¬ FloorBad (2 ^ a) (Fintype.card F) ->
     FamilyBounded F C δ R B
+
+/-- Failure of the floor-good-to-family-budget bridge means the modeled floor predicate is good at
+the field prime, while the selected family is not actually within budget. -/
+theorem not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorGoodFamilyBudget (F := F) (A := A) FloorBad a C δ R B) ↔
+      ¬ FloorBad (2 ^ a) (Fintype.card F) ∧ ¬ FamilyBounded F C δ R B := by
+  constructor
+  · intro hnot
+    by_cases hgood : ¬ FloorBad (2 ^ a) (Fintype.card F)
+    · refine ⟨hgood, ?_⟩
+      intro hbounded
+      exact hnot (fun _ => hbounded)
+    · exfalso
+      apply hnot
+      intro hgood'
+      exact False.elim (hgood hgood')
+  · rintro ⟨hgood, hnotBounded⟩ hfloorBudget
+    exact hnotBounded (hfloorBudget hgood)
+
+/-- Exact scanner refutation for the missing floor-to-family budget theorem: it fails precisely
+when the modeled floor predicate is good at the field prime and some selected representative is
+above the target budget. -/
+theorem not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorGoodFamilyBudget (F := F) (A := A) FloorBad a C δ R B) ↔
+      ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
+        ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    rcases (not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
+      (F := F) (A := A) FloorBad a C δ R B).mp hnot with
+      ⟨hgood, hnotBounded⟩
+    exact ⟨hgood, (not_familyBounded_iff_exists_member_budget_lt C δ R B).mp hnotBounded⟩
+  · rintro ⟨hgood, hmember⟩
+    exact (not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
+      (F := F) (A := A) FloorBad a C δ R B).mpr
+      ⟨hgood, (not_familyBounded_iff_exists_member_budget_lt C δ R B).mpr hmember⟩
 
 /-- Scanner-facing singleton exactness at every dyadic rung.  This is stronger than saying a
 candidate list matches the least-prime rule: it identifies the true floor-bad predicate with that
@@ -720,6 +777,7 @@ theorem floorGood_familyBudget_not_worstCaseIncidenceBounded_of_counterStack
 end ArkLib.ProximityGap.Frontier.FloorClosureContract
 
 /-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyBounded_iff_exists_member_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyDominates_of_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.containsGlobalMax_of_familyDominates
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyDominates_iff_containsGlobalMax
@@ -732,6 +790,8 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_base_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_prefix_and_successor
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_linnik_floorGood
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorLocalizationUniform_of_candidateListExactSmallestFamily
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_linnik_candidateListExactSmallest

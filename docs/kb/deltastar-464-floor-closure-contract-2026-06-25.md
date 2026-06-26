@@ -326,3 +326,23 @@ or every representative can be beaten by an explicit outside stack.
 This is the cleanest scanner interface so far.  It turns the next computational attack into a
 finite, local certificate problem over the proposed representatives instead of a vague search for
 "a better stack."
+
+## Continuation: floor-good budget failure is exact
+
+The budget side now has the same scanner-facing exactness:
+
+```lean
+not_familyBounded_iff_exists_member_budget_lt
+not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
+not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+```
+
+So failure of the missing floor-to-family budget theorem is not vague.  It is exactly:
+
+```text
+the modeled floor predicate is good at the field prime
+and some selected representative r in R has StackBadCount r > B.
+```
+
+This isolates the off-BGK floor burden.  Least-prime localization may prove floor-goodness, but the
+remaining budget theorem is a concrete above-budget-member exclusion for the chosen family.
