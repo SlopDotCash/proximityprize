@@ -595,6 +595,52 @@ theorem not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountI
     C δ hcard)
     (profileBadCountFiberConstant_of_zero_oscillation C δ hosc)
 
+/-- A profile-indexed finite cover for the realized bad-count values.  This is the positive-slack
+version of the zero-slack image gate: a profile need not make counts constant, but it must explain
+which finite set of counts can occur in each fiber. -/
+def ProfileBadCountImageCovered (K : Type) [Field K] [Fintype K] [DecidableEq K]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
+    {P : Type} (C : Set (ι -> A)) (δ : ℝ≥0)
+    (profile : WordStack A (Fin 2) ι -> P) (cover : P -> Finset ℕ) : Prop :=
+  ∀ u : WordStack A (Fin 2) ι, StackBadCount K C δ u ∈ cover (profile u)
+
+open Classical in
+/-- If profile fibers have finite bad-count covers, the global bad-count image is bounded by the
+sum of the cover sizes. -/
+theorem stackBadCountImage_card_le_sum_profileBadCountCover
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P} {cover : P -> Finset ℕ}
+    (hcover : ProfileBadCountImageCovered F C δ profile cover) :
+    (StackBadCountImage F C δ).card ≤ ∑ p : P, (cover p).card := by
+  have hsubset :
+      StackBadCountImage F C δ ⊆ (Finset.univ : Finset P).biUnion cover := by
+    intro b hb
+    change b ∈ (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
+      (fun u => StackBadCount F C δ u) at hb
+    rcases Finset.mem_image.mp hb with ⟨u, _hu, hu⟩
+    exact Finset.mem_biUnion.mpr
+      ⟨profile u, Finset.mem_univ _, by
+        rw [← hu]
+        exact hcover u⟩
+  calc
+    (StackBadCountImage F C δ).card ≤ ((Finset.univ : Finset P).biUnion cover).card :=
+      Finset.card_le_card hsubset
+    _ ≤ ∑ p ∈ (Finset.univ : Finset P), (cover p).card := Finset.card_biUnion_le
+    _ = ∑ p : P, (cover p).card := by simp
+
+/-- Refutation socket for profile-indexed finite bad-count covers. -/
+theorem not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P} {cover : P -> Finset ℕ}
+    (hsmall : (∑ p : P, (cover p).card) < (StackBadCountImage F C δ).card) :
+    ¬ ProfileBadCountImageCovered F C δ profile cover := by
+  intro hcover
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_sum_profileBadCountCover C δ hcover)) hsmall
+
 /-! ## Endpoint sanity checks for coarse profiles -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
@@ -1254,6 +1300,9 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_of_profileCard_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.ProfileBadCountImageCovered
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileBadCountCover
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound

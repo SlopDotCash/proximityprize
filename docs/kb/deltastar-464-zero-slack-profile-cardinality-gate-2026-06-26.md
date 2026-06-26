@@ -46,6 +46,9 @@ stackBadCountImage_card_le_profileCard_of_profileBadCountFiberConstant
 not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
 not_profileBadCountRepresented_of_profileCard_lt_stackBadCountImage
 not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
+ProfileBadCountImageCovered
+stackBadCountImage_card_le_sum_profileBadCountCover
+not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
 ```
 
 The central theorem is:
@@ -62,6 +65,16 @@ bad-count factorization, and zero same-profile oscillation all fail for that pro
 The global theorem replaces `U.card` by `(StackBadCountImage F C delta).card` and gives the same
 three refutations.  This is the exact profile-label lower bound forced by a zero-slack invariant.
 
+The cover form is the positive-slack analogue.  If each profile label `p` supplies a finite
+`cover p : Finset Nat` containing every bad-count value realized by stacks with profile `p`, then
+
+```text
+(StackBadCountImage F C delta).card <= sum_p (cover p).card
+```
+
+Thus finite positive-slack explanations also face an image-size test: if the total cover size is
+smaller than the realized bad-count image, the proposed fiber-count cover is false.
+
 ## Consequence
 
 This is a finite refutation socket for concrete profile proposals.  A scanner no longer has to find
@@ -69,5 +82,6 @@ two same-profile stacks with different counts directly.  It can first produce mo
 bad-count values than the candidate profile has labels; that already proves the profile cannot be a
 zero-slack invariant.
 
-Positive-slack profiles are not refuted by this gate.  They still need a genuine oscillation theorem
+Positive-slack profiles are not refuted by the zero-slack label gate alone.  They now need either a
+finite cover large enough to account for the global bad-count image, or a genuine oscillation theorem
 that pays for the count variation inside the large fibers.

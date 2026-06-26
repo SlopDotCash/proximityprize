@@ -1009,3 +1009,9 @@ Follow-up: the same zero-slack cardinality gate now has a global bad-count-image
 profile needs at least that many labels.  The matching negated theorems refute fiber constancy,
 representative bad-count factorization, and zero same-profile oscillation directly from
 `Fintype.card P < (StackBadCountImage F C delta).card`.
+
+Follow-up: the profile image gate now has a positive-slack cover form.
+`ProfileBadCountImageCovered` asks each profile label to provide a finite set of allowed realized
+bad-count values, and `stackBadCountImage_card_le_sum_profileBadCountCover` bounds the global
+bad-count image by the sum of those cover sizes.  The negated theorem gives a finite refuter for
+any interval/cover explanation whose total size is too small.
