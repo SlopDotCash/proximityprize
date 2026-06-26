@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4870 files, 51171 declarations
+- `ArkLib` — 4870 files, 51184 declarations
 
 ## Same short-name across multiple files (2140 groups)
 
@@ -1848,7 +1848,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `natDegree_eval_lt` (4 declarations, 4 files)
 
 - `theorem GSHasse.natDegree_eval_lt` [ArkLib/Data/CodingTheory/ProximityGap/GSHasseMultiplicity.lean:381](../../../ArkLib/Data/CodingTheory/ProximityGap/GSHasseMultiplicity.lean#L381) — Weighted-degree transfer (as in the multiplicity-1 brick): the support-form weighted degree bound gi
-- `theorem GSRootOrder.natDegree_eval_lt` [ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean:24](../../../ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean#L24) — **Weighted-degree transfer.** If every `Y`-coefficient of `Q : (F[X])[Y]` obeys the `(1, k−1)`-weigh
+- `theorem GSRootOrder.natDegree_eval_lt` [ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean:24](../../../ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean#L24) — **Weighted-degree transfer.** If every outer coefficient of `Q : Polynomial (Polynomial F)` obeys th
 - `theorem R15.natDegree_eval_lt` [ArkLib/Data/CodingTheory/ProximityGap/SudanListBound.lean:211](../../../ArkLib/Data/CodingTheory/ProximityGap/SudanListBound.lean#L211) — Weighted-degree transfer: the univariate restriction `Q(X, f(X))` has degree `< D`.
 - `theorem R15.natDegree_eval_lt` [ArkLib/Data/CodingTheory/ProximityGap/SudanListBoundFull.lean:211](../../../ArkLib/Data/CodingTheory/ProximityGap/SudanListBoundFull.lean#L211) — Weighted-degree transfer: the univariate restriction `Q(X, f(X))` has degree `< D`.
 
@@ -3926,7 +3926,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `factor_of_agreement` (3 declarations, 3 files)
 
-- `theorem GSRootOrder.factor_of_agreement` [ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean:52](../../../ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean#L52) — **The root-order / factor step (Sudan, multiplicity 1).**  Let `Q : (F[X])[Y]` satisfy the `(1, k−1)
+- `theorem GSRootOrder.factor_of_agreement` [ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/GSRootOrderStep.lean#L53) — **The root-order / factor step (Sudan, multiplicity 1).**  Let `Q : Polynomial (Polynomial F)` satis
 - `theorem R15.factor_of_agreement` [ArkLib/Data/CodingTheory/ProximityGap/SudanListBound.lean:233](../../../ArkLib/Data/CodingTheory/ProximityGap/SudanListBound.lean#L233) — **Root-order / factor step (multiplicity 1).** `≥ D` vanishing points of the degree-`< D` univariate
 - `theorem R15.factor_of_agreement` [ArkLib/Data/CodingTheory/ProximityGap/SudanListBoundFull.lean:233](../../../ArkLib/Data/CodingTheory/ProximityGap/SudanListBoundFull.lean#L233) — **Root-order / factor step (multiplicity 1).** `≥ D` vanishing points of the degree-`< D` univariate
 
@@ -6368,12 +6368,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `familyBounded_and_counterStack_not_worstCaseIncidenceBounded` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_and_counterStack_not_worstCaseIncidenceBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:211](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L211) — A stack above budget refutes the full worst-case incidence hypothesis.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_and_counterStack_not_worstCaseIncidenceBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:236](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L236) — A stack above budget refutes the full worst-case incidence hypothesis.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.familyBounded_and_counterStack_not_worstCaseIncidenceBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:186](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L186) — Bounding a convenient finite family is compatible with failure of the universal incidence bound if s
 
 ### `familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:225](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L225) — A bounded family beaten by one outside stack is not a domination proof.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:250](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L250) — A bounded family beaten by one outside stack is not a domination proof.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.familyBounded_not_dominationProof_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:201](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L201) — If one stack beats every member of a bounded candidate family, then the family-bound proof is not a
 
 ### `farLineProxy` (2 declarations, 2 files)
@@ -7638,7 +7638,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `not_familyDominates_of_exists_strictly_larger_than_all` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:187](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L187) — A stack beating every family member refutes finite-family domination.
+- `theorem ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:212](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L212) — A stack beating every family member refutes finite-family domination.
 - `theorem ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.not_familyDominates_of_exists_strictly_larger_than_all` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L142) — Explicit-witness form of `not_familyDominates_of_counterexample`.
 
 ### `not_johnson_at_quarter` (2 declarations, 2 files)
