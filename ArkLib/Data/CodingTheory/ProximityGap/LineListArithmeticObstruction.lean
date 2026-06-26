@@ -32,7 +32,6 @@ omit [Fintype F] in
 theorem exists_direction_zero_card_eq_support_card_eq (z : ℕ) (hz : z ≤ n) :
     ∃ u₁ : Fin n → F,
       (directionZeroSet u₁).card = z ∧ (directionSupportSet u₁).card = n - z := by
-  classical
   have hz_card : z ≤ (Finset.univ : Finset (Fin n)).card := by
     rw [Finset.card_univ, Fintype.card_fin]
     exact hz
@@ -53,7 +52,7 @@ open Classical in
 large-zero direction can have `z` zero coordinates and still has enough support to activate the
 `t` summand, then the field-power fit forces
 `choose(z, t) * |F|^(k - t) ≤ B`. -/
-theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_zero_count_choosePow_gt
+theorem not_fieldPowFiberFit_of_zeroCount_choosePow_gt
     (k a B z t : ℕ) (hz : z ≤ n) (hlarge : a ≤ z) (ht : t < a)
     (hsupport : a - t ≤ n - z)
     (hB : B < z.choose t * Fintype.card F ^ (k - t)) :
@@ -80,7 +79,6 @@ omit [Fintype F] in
 theorem exists_largeZero_direction_support_ge_of_two_mul_le (a : ℕ) (h2a : 2 * a ≤ n) :
     ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection (F := F) (n := n) a u₁ ∧
       a ≤ (directionSupportSet u₁).card := by
-  classical
   have ha_le_n : a ≤ n := by omega
   rcases exists_direction_zero_card_eq_support_card_eq (F := F) (n := n) a ha_le_n with
     ⟨u₁, hzero, hsupport⟩
@@ -105,8 +103,7 @@ theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_t
 section SourceAudit
 
 #print axioms exists_direction_zero_card_eq_support_card_eq
-#print axioms
-  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_zero_count_choosePow_gt
+#print axioms not_fieldPowFiberFit_of_zeroCount_choosePow_gt
 #print axioms exists_largeZero_direction_support_ge_of_two_mul_le
 #print axioms not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_two_mul_le
 
