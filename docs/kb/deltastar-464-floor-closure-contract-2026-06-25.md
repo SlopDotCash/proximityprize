@@ -361,6 +361,36 @@ So the loop is no longer rhetorically ambiguous.  A future floor attempt must ei
 certificate or land in one of the three scanner-refutable buckets: the prime is still floor-bad, the
 candidate family misses the advertised budget, or the family contains no global maximizer.
 
+## Continuation: field-level max-containment normal form
+
+The concrete certificate itself now has the max-containment normal form:
+
+```lean
+floorClosureAtField_iff_floorGood_familyBounded_containsGlobalMax
+floorClosureAtField_of_floorGood_familyBounded_containsGlobalMax
+not_floorClosureAtField_iff_bad_or_member_budget_lt_or_not_containsGlobalMax
+```
+
+So `FloorClosureAtField` can be read equivalently as:
+
+```text
+not FloorBad(2^a, |F|)
+and every listed representative is within budget
+and the listed family contains a true global maximizer.
+```
+
+The scanner failure surface can also be stated without the derived domination predicate:
+
+```text
+FloorBad(2^a, |F|)
+or exists r in R, B < StackBadCount(r)
+or not FamilyContainsGlobalMax R.
+```
+
+This is the most direct form for the off-BGK floor lane.  Least-prime/TZ arithmetic can only
+discharge the first line.  The remaining proof has to show budgeted max-containment for the actual
+MCA bad-scalar order.
+
 ## Continuation: floor-good budget failure is exact
 
 The budget side now has the same scanner-facing exactness:

@@ -46,6 +46,30 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 open Classical in
+/-- The scalars whose line word `u₀ + γ • u₁` is agreed with by some codeword on at least
+`a` coordinates.  This is the line-list bad-scalar set used by
+`badScalar_card_le_lineList_mul`. -/
+noncomputable def lineBadScalars (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    Finset F :=
+  (Finset.univ : Finset F).filter
+    (fun γ => ∃ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      a ≤ (agreeSet c (fun i => u₀ i + γ • u₁ i)).card)
+
+open Classical in
+/-- The codewords that appear somewhere along the affine line `u₀ + γ • u₁` with agreement
+at least `a`.  Bounding this finite set is the line-list-size input left after the per-codeword
+heavy-scalar bound. -/
+noncomputable def lineAppearingCodewords (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    Finset (Fin n → F) :=
+  (Finset.univ : Finset (Fin n → F)).filter
+    (fun c => c ∈ (rsCode dom k : Submodule F (Fin n → F))
+      ∧ ∃ γ : F, a ≤ (agreeSet c (fun i => u₀ i + γ • u₁ i)).card)
+
+/-- A budgeted line list: at most `L` codewords appear with agreement `a` somewhere on the line. -/
+def LineListBudgeted (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (L : ℕ) : Prop :=
+  (lineAppearingCodewords dom k a u₀ u₁).card ≤ L
+
+open Classical in
 /-- **The line-list reduction.** With nonvanishing direction `u₁`, the scalars whose line
 word `w_γ` is agreed with by some codeword on `≥ a` points are covered by the appearing
 codewords, each contributing `≤ ⌊n/a⌋` of them: `#badScalars ≤ Λ · ⌊n/a⌋`. -/
@@ -84,8 +108,59 @@ theorem badScalar_card_le_lineList_mul (dom : Fin n ↪ F) (k a : ℕ) (ha : 1 �
         Finset.sum_le_sum fun c _ => codeword_heavy_scalar_card_le a ha c u₀ u₁ hu₁
     _ = appC.card * (n / a) := by rw [Finset.sum_const, smul_eq_mul]
 
+open Classical in
+/-- Named-set form of `badScalar_card_le_lineList_mul`. -/
+theorem lineBadScalars_card_le_lineAppearingCodewords_card_mul
+    (dom : Fin n ↪ F) (k a : ℕ) (ha : 1 ≤ a)
+    (u₀ u₁ : Fin n → F) (hu₁ : ∀ i, u₁ i ≠ 0) :
+    (lineBadScalars dom k a u₀ u₁).card
+      ≤ (lineAppearingCodewords dom k a u₀ u₁).card * (n / a) := by
+  simpa [lineBadScalars, lineAppearingCodewords]
+    using badScalar_card_le_lineList_mul dom k a ha u₀ u₁ hu₁
+
+open Classical in
+/-- Budgeted line-list consumer: if the line has at most `L` appearing codewords, then its
+bad-scalar set is bounded by `L * ⌊n/a⌋`.  This isolates the remaining positive-side obligation
+as a line-list-size theorem. -/
+theorem lineBadScalars_card_le_of_lineListBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (ha : 1 ≤ a)
+    (u₀ u₁ : Fin n → F) (hu₁ : ∀ i, u₁ i ≠ 0) {L : ℕ}
+    (hL : LineListBudgeted dom k a u₀ u₁ L) :
+    (lineBadScalars dom k a u₀ u₁).card ≤ L * (n / a) := by
+  exact le_trans
+    (lineBadScalars_card_le_lineAppearingCodewords_card_mul dom k a ha u₀ u₁ hu₁)
+    (Nat.mul_le_mul_right (n / a) hL)
+
+open Classical in
+/-- Scanner-facing contrapositive: if a line has more bad scalars than `L * ⌊n/a⌋`, then the
+line-list budget `L` is false.  The per-codeword ratio-census layer cannot be blamed; the
+obstruction is an oversized appearing-codeword list. -/
+theorem not_lineListBudgeted_of_lineBadScalars_card_gt
+    (dom : Fin n ↪ F) (k a : ℕ) (ha : 1 ≤ a)
+    (u₀ u₁ : Fin n → F) (hu₁ : ∀ i, u₁ i ≠ 0) {L : ℕ}
+    (hgt : L * (n / a) < (lineBadScalars dom k a u₀ u₁).card) :
+    ¬ LineListBudgeted dom k a u₀ u₁ L := by
+  intro hL
+  exact (not_lt_of_ge
+    (lineBadScalars_card_le_of_lineListBudgeted dom k a ha u₀ u₁ hu₁ hL)) hgt
+
+open Classical in
+/-- Equivalent numeric witness form of the previous theorem: an over-budget bad-scalar count
+forces the appearing-codeword list itself to have more than `L` members. -/
+theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
+    (dom : Fin n ↪ F) (k a : ℕ) (ha : 1 ≤ a)
+    (u₀ u₁ : Fin n → F) (hu₁ : ∀ i, u₁ i ≠ 0) {L : ℕ}
+    (hgt : L * (n / a) < (lineBadScalars dom k a u₀ u₁).card) :
+    L < (lineAppearingCodewords dom k a u₀ u₁).card := by
+  exact lt_of_not_ge
+    (not_lineListBudgeted_of_lineBadScalars_card_gt dom k a ha u₀ u₁ hu₁ hgt)
+
 /-! ## Source audit -/
 
 #print axioms badScalar_card_le_lineList_mul
+#print axioms lineBadScalars_card_le_lineAppearingCodewords_card_mul
+#print axioms lineBadScalars_card_le_of_lineListBudgeted
+#print axioms not_lineListBudgeted_of_lineBadScalars_card_gt
+#print axioms lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 
 end ProximityGap.Ownership

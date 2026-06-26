@@ -422,6 +422,71 @@ theorem deltaStar_pin_of_floorClosureAtField
     δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
   deltaStar_pin_of_familyDominates C εstar hδ hcert.2.2 hcert.2.1 hbudget
 
+/-- Equivalent max-containment normal form for a concrete field-level floor certificate.  The
+family-domination field is not extra magic: it says exactly that the proposed floor family contains
+a true global maximizer for the actual bad-scalar count. -/
+theorem floorClosureAtField_iff_floorGood_familyBounded_containsGlobalMax
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B ↔
+      ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
+        FamilyBounded F C δ R B ∧ FamilyContainsGlobalMax F C δ R := by
+  constructor
+  · intro hcert
+    exact ⟨hcert.1, hcert.2.1,
+      (familyDominates_iff_containsGlobalMax C δ R).mp hcert.2.2⟩
+  · rintro ⟨hgood, hbounded, hmax⟩
+    exact ⟨hgood, hbounded,
+      (familyDominates_iff_containsGlobalMax C δ R).mpr hmax⟩
+
+/-- Concrete field-level floor closure can be supplied directly by a bounded family that contains a
+true global maximizer. -/
+theorem floorClosureAtField_of_floorGood_familyBounded_containsGlobalMax
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {R : Finset (WordStack A (Fin 2) ι)} {B : ℕ}
+    (hgood : ¬ FloorBad (2 ^ a) (Fintype.card F))
+    (hbounded : FamilyBounded F C δ R B)
+    (hmax : FamilyContainsGlobalMax F C δ R) :
+    FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B :=
+  (floorClosureAtField_iff_floorGood_familyBounded_containsGlobalMax
+    (F := F) (A := A) FloorBad a C δ R B).mpr ⟨hgood, hbounded, hmax⟩
+
+/-- Exact max-containment scanner form for the concrete floor-closure certificate.  It fails
+precisely when the floor predicate is bad at the field size, or a proposed family member is above
+budget, or the family does not contain a true global maximizer. -/
+theorem not_floorClosureAtField_iff_bad_or_member_budget_lt_or_not_containsGlobalMax
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      FloorBad (2 ^ a) (Fintype.card F) ∨
+        (∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r) ∨
+          ¬ FamilyContainsGlobalMax F C δ R := by
+  constructor
+  · intro hnot
+    by_cases hbad : FloorBad (2 ^ a) (Fintype.card F)
+    · exact Or.inl hbad
+    · have hnotBudgetOrMax :
+          ¬ (FamilyBounded F C δ R B ∧ FamilyContainsGlobalMax F C δ R) := by
+        intro hpair
+        exact hnot
+          ((floorClosureAtField_iff_floorGood_familyBounded_containsGlobalMax
+            (F := F) (A := A) FloorBad a C δ R B).mpr ⟨hbad, hpair⟩)
+      rw [not_and_or] at hnotBudgetOrMax
+      rcases hnotBudgetOrMax with hnotBudget | hnotMax
+      · exact Or.inr <| Or.inl
+          ((not_familyBounded_iff_exists_member_budget_lt C δ R B).mp hnotBudget)
+      · exact Or.inr <| Or.inr hnotMax
+  · rintro (hbad | hbudgetOrMax) hcert
+    · exact hcert.1 hbad
+    · rcases hbudgetOrMax with hmember | hnotMax
+      · exact ((not_familyBounded_iff_exists_member_budget_lt C δ R B).mpr hmember)
+          hcert.2.1
+      · exact hnotMax
+          ((familyDominates_iff_containsGlobalMax C δ R).mp hcert.2.2)
+
 /-- Exact scanner form for the concrete floor-closure certificate.  It fails precisely when the
 floor predicate is still bad at the current field size, or some selected representative is above
 budget, or every selected representative can be beaten by another stack. -/
@@ -889,6 +954,9 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_of_floorGoodFamilyBudget
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_floorClosureAtField
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_floorClosureAtField
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_iff_floorGood_familyBounded_containsGlobalMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_of_floorGood_familyBounded_containsGlobalMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorClosureAtField_iff_bad_or_member_budget_lt_or_not_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_linnik_floorGood
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorLocalizationUniform_of_candidateListExactSmallestFamily

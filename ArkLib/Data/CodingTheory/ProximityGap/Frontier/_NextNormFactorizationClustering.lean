@@ -410,6 +410,39 @@ chain. -/
 def SmoothNormPersistence (Rel : Finset ι) (Fac : ι → Finset ℕ) (B : ℕ) : Prop :=
   ∀ T ∈ Rel, ∀ p ∈ Fac T, p ≤ B
 
+/-- Exact scanner form for the smooth-norm residual: it fails precisely when one relation has a
+prime factor above the advertised smoothness bound. -/
+theorem not_SmoothNormPersistence_iff_exists_large_prime
+    (Rel : Finset ι) (Fac : ι → Finset ℕ) (B : ℕ) :
+    (¬ SmoothNormPersistence Rel Fac B) ↔
+      ∃ T : ι, T ∈ Rel ∧ ∃ p : ℕ, p ∈ Fac T ∧ B < p := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro T hT p hp
+    exact le_of_not_gt (fun hgt => hnone ⟨T, hT, p, hp, hgt⟩)
+  · rintro ⟨T, hT, p, hp, hgt⟩ hsmooth
+    exact (not_lt_of_ge (hsmooth T hT p hp)) hgt
+
+/-- Smooth persistence is equivalent to saying every above-`B` thresholded support is empty. -/
+theorem SmoothNormPersistence_iff_threshold_supports_empty
+    (Rel : Finset ι) (Fac : ι → Finset ℕ) (B : ℕ) :
+    SmoothNormPersistence Rel Fac B ↔
+      ∀ T ∈ Rel, (Fac T).filter (fun p => B < p) = ∅ := by
+  constructor
+  · intro hsmooth T hT
+    rw [Finset.filter_eq_empty_iff]
+    intro p hp
+    exact not_lt.mpr (hsmooth T hT p hp)
+  · intro hempty T hT p hp
+    exact le_of_not_gt (fun hgt => by
+      have hp_filter : p ∈ (Fac T).filter (fun q => B < q) := by
+        exact Finset.mem_filter.mpr ⟨hp, hgt⟩
+      have hp_empty : p ∈ (∅ : Finset ℕ) := by
+        simpa [hempty T hT] using hp_filter
+      simpa using hp_empty)
+
 /-- **`disjoint_of_smooth_below_prime`** — the *mechanism* of the residual made precise: if every
 carrier norm is `B`-smooth (`SmoothNormPersistence` with bound `B`) and we threshold the supports to
 primes `> B` (so `Fac' T = ∅`), the supports are trivially disjoint and clustering is `0`.  Thus
@@ -419,9 +452,50 @@ theorem disjoint_of_smooth_below_prime (Rel : Finset ι) (Fac : ι → Finset �
     (hsmooth : SmoothNormPersistence Rel Fac B) :
     ∀ T ∈ Rel, (Fac T).filter (fun p => B < p) = ∅ := by
   intro T hT
-  rw [Finset.filter_eq_empty_iff]
-  intro p hp
-  exact not_lt.mpr (hsmooth T hT p hp)
+  exact (SmoothNormPersistence_iff_threshold_supports_empty Rel Fac B).mp hsmooth T hT
+
+/-- Smooth persistence gives pairwise disjointness of the above-`B` thresholded supports. -/
+theorem thresholdSupports_disjoint_of_smooth
+    (Rel : Finset ι) (Fac : ι → Finset ℕ) (B : ℕ)
+    (hsmooth : SmoothNormPersistence Rel Fac B) :
+    ∀ T ∈ Rel, ∀ T' ∈ Rel, T ≠ T' →
+      (Fac T).filter (fun p => B < p) ∩ (Fac T').filter (fun p => B < p) = ∅ := by
+  intro T hT T' _hT' _hne
+  rw [disjoint_of_smooth_below_prime Rel Fac B hsmooth T hT, Finset.empty_inter]
+
+/-- The thresholded clustering rate is zero under smooth persistence. -/
+theorem clusterRate_threshold_eq_zero_of_smooth
+    (Rel : Finset ι) (Fac : ι → Finset ℕ) (B : ℕ)
+    (hsmooth : SmoothNormPersistence Rel Fac B) :
+    ClusterRate Rel (fun T => (Fac T).filter (fun p => B < p)) = 0 :=
+  clusterRate_eq_zero_of_disjoint Rel (fun T => (Fac T).filter (fun p => B < p))
+    (thresholdSupports_disjoint_of_smooth Rel Fac B hsmooth)
+
+/-- Failure of above-threshold support disjointness is exactly a pair of distinct relations sharing
+a prime factor above the threshold. -/
+theorem not_thresholdSupports_disjoint_iff_exists_pair_large_common_prime
+    (Rel : Finset ι) (Fac : ι → Finset ℕ) (B : ℕ) :
+    (¬ ∀ T ∈ Rel, ∀ T' ∈ Rel, T ≠ T' →
+        (Fac T).filter (fun p => B < p) ∩ (Fac T').filter (fun p => B < p) = ∅) ↔
+      ∃ T : ι, T ∈ Rel ∧ ∃ T' : ι, T' ∈ Rel ∧ T ≠ T' ∧
+        ∃ p : ℕ, p ∈ Fac T ∧ p ∈ Fac T' ∧ B < p := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro T hT T' hT' hne
+    rw [Finset.eq_empty_iff_forall_notMem]
+    intro p hp
+    rw [Finset.mem_inter, Finset.mem_filter, Finset.mem_filter] at hp
+    exact hnone ⟨T, hT, T', hT', hne, p, hp.1.1, hp.2.1, hp.1.2⟩
+  · rintro ⟨T, hT, T', hT', hne, p, hpT, hpT', hpB⟩ hdisj
+    have hp_mem :
+        p ∈ (Fac T).filter (fun p => B < p) ∩
+          (Fac T').filter (fun p => B < p) := by
+      rw [Finset.mem_inter, Finset.mem_filter, Finset.mem_filter]
+      exact ⟨⟨hpT, hpB⟩, ⟨hpT', hpB⟩⟩
+    rw [hdisj T hT T' hT' hne] at hp_mem
+    simpa using hp_mem
 
 end ArkLib.ProximityGap.Frontier.NormFactorizationClustering
 
@@ -436,4 +510,9 @@ end ArkLib.ProximityGap.Frontier.NormFactorizationClustering
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.offDiag_le_of_shareDominated
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.offDiagCancellation_of_disjoint
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.prize_via_smooth_norms
+#print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.not_SmoothNormPersistence_iff_exists_large_prime
+#print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.SmoothNormPersistence_iff_threshold_supports_empty
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.disjoint_of_smooth_below_prime
+#print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.thresholdSupports_disjoint_of_smooth
+#print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.clusterRate_threshold_eq_zero_of_smooth
+#print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.not_thresholdSupports_disjoint_iff_exists_pair_large_common_prime

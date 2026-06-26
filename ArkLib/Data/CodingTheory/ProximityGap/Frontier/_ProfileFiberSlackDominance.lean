@@ -141,6 +141,168 @@ theorem profileFiberSlackCertificate_of_profileFiberOscillationCertificate
     ProfileFiberSlackCertificate F C δ profile rep slack B :=
   ⟨profileFiberSlackDominates_of_fiberOscillation C δ hcert.2.1 hcert.1, hcert.2.2⟩
 
+/-! ## Zero-slack factorization route -/
+
+/-- The bad-scalar count factors through the chosen representative of the profile.  This is the
+exact zero-slack object a compressed profile would have to prove: every stack has the same bad-count
+as its selected profile representative. -/
+def ProfileBadCountRepresented (K : Type) [Field K] [Fintype K] [DecidableEq K]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
+    {P : Type} (C : Set (ι -> A)) (δ : ℝ≥0)
+    (profile : WordStack A (Fin 2) ι -> P)
+    (rep : P -> WordStack A (Fin 2) ι) : Prop :=
+  ∀ u : WordStack A (Fin 2) ι,
+    StackBadCount K C δ u = StackBadCount K C δ (rep (profile u))
+
+/-- Zero same-profile oscillation plus in-fiber representatives forces the bad-count to factor
+through the representative of each profile. -/
+theorem profileBadCountRepresented_of_zero_oscillation
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hosc : ProfileFiberOscillationBounded F C δ profile (fun _ => 0))
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileBadCountRepresented F C δ profile rep := by
+  intro u
+  apply le_antisymm
+  · have hsame : profile u = profile (rep (profile u)) :=
+      (hrep (profile u) ⟨u, rfl⟩).symm
+    simpa using hosc u (rep (profile u)) hsame
+  · have hsame : profile (rep (profile u)) = profile u :=
+      hrep (profile u) ⟨u, rfl⟩
+    simpa using hosc (rep (profile u)) u hsame
+
+/-- If bad-counts factor through profile representatives, then zero same-profile oscillation holds:
+same-profile stacks have equal represented counts. -/
+theorem profileFiberOscillationBounded_zero_of_profileBadCountRepresented
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hfactor : ProfileBadCountRepresented F C δ profile rep) :
+    ProfileFiberOscillationBounded F C δ profile (fun _ => 0) := by
+  intro u v hsame
+  have hrepEq : rep (profile u) = rep (profile v) := congrArg rep hsame
+  have hcount : StackBadCount F C δ u = StackBadCount F C δ v := by
+    calc
+      StackBadCount F C δ u = StackBadCount F C δ (rep (profile u)) := hfactor u
+      _ = StackBadCount F C δ (rep (profile v)) := by rw [hrepEq]
+      _ = StackBadCount F C δ v := (hfactor v).symm
+  simp [hcount]
+
+/-- With in-fiber representatives, zero same-profile oscillation is exactly representative
+bad-count factorization.  This is the zero-slack middle-case target for a compressed profile. -/
+theorem profileFiberOscillationBounded_zero_iff_profileBadCountRepresented_of_repInFiber
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileFiberOscillationBounded F C δ profile (fun _ => 0) ↔
+      ProfileBadCountRepresented F C δ profile rep := by
+  constructor
+  · intro hosc
+    exact profileBadCountRepresented_of_zero_oscillation C δ hosc hrep
+  · intro hfactor
+    exact profileFiberOscillationBounded_zero_of_profileBadCountRepresented C δ hfactor
+
+/-- Representative factorization plus used-profile budget gives the actual open-core incidence
+hypothesis. -/
+theorem worstCaseIncidenceBounded_of_profileBadCountRepresented_budget
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hfactor : ProfileBadCountRepresented F C δ profile rep)
+    (hbudget : ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  intro u
+  have hrepBudget : StackBadCount F C δ (rep (profile u)) ≤ B := by
+    simpa using hbudget (profile u) ⟨u, rfl⟩
+  calc
+    StackBadCount F C δ u = StackBadCount F C δ (rep (profile u)) := hfactor u
+    _ ≤ B := hrepBudget
+
+/-- Delta-star consumer for the representative-factorization route. -/
+theorem deltaStar_pin_of_profileBadCountRepresented_budget
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hfactor : ProfileBadCountRepresented F C δ profile rep)
+    (hbudgeted : ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
+    (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_profileBadCountRepresented_budget C δ hfactor hbudgeted)
+    hbudget
+
+/-- With in-fiber representatives, the zero-slack oscillation certificate is exactly bad-count
+factorization plus the used-representative budget. -/
+theorem profileFiberOscillationCertificate_zero_iff_profileBadCountRepresented_and_budget
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileFiberOscillationCertificate F C δ profile rep (fun _ => 0) B ↔
+      ProfileBadCountRepresented F C δ profile rep ∧
+        ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B := by
+  constructor
+  · intro hcert
+    exact ⟨(profileFiberOscillationBounded_zero_iff_profileBadCountRepresented_of_repInFiber
+      C δ hcert.1).mp hcert.2.1, hcert.2.2⟩
+  · rintro ⟨hfactor, hbudget⟩
+    exact ⟨hrep,
+      (profileFiberOscillationBounded_zero_iff_profileBadCountRepresented_of_repInFiber
+        C δ hrep).mpr hfactor, hbudget⟩
+
+/-- Failure of representative bad-count factorization is exactly a stack whose bad count differs
+from that of its selected profile representative. -/
+theorem not_profileBadCountRepresented_iff_exists_stack_count_ne
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} (profile : WordStack A (Fin 2) ι -> P)
+    (rep : P -> WordStack A (Fin 2) ι) :
+    (¬ ProfileBadCountRepresented F C δ profile rep) ↔
+      ∃ u : WordStack A (Fin 2) ι,
+        StackBadCount F C δ u ≠ StackBadCount F C δ (rep (profile u)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u
+    by_contra hne
+    exact hnone ⟨u, hne⟩
+  · rintro ⟨u, hne⟩ hfactor
+    exact hne (hfactor u)
+
+/-- Exact failure surface for the zero-slack factorization-plus-budget certificate. -/
+theorem not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_or_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} (profile : WordStack A (Fin 2) ι -> P)
+    (rep : P -> WordStack A (Fin 2) ι) (B : ℕ) :
+    (¬ (ProfileBadCountRepresented F C δ profile rep ∧
+        ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B)) ↔
+      (∃ u : WordStack A (Fin 2) ι,
+        StackBadCount F C δ u ≠ StackBadCount F C δ (rep (profile u))) ∨
+        ∃ p : P, UsedProfile profile p ∧ B < StackBadCount F C δ (rep p) := by
+  rw [not_and_or]
+  constructor
+  · rintro (hfactor | hbudget)
+    · exact Or.inl
+        ((not_profileBadCountRepresented_iff_exists_stack_count_ne C δ profile rep).mp
+          hfactor)
+    · by_contra hnone
+      apply hbudget
+      intro p hused
+      exact le_of_not_gt (fun hgt => hnone (Or.inr ⟨p, hused, hgt⟩))
+  · rintro (hfactor | hbudget)
+    · exact Or.inl
+        ((not_profileBadCountRepresented_iff_exists_stack_count_ne C δ profile rep).mpr
+          hfactor)
+    · rcases hbudget with ⟨p, hused, hgt⟩
+      exact Or.inr (fun hbudgeted =>
+        (not_lt_of_ge (by simpa using hbudgeted p hused)) hgt)
+
 /-! ## Endpoint sanity checks for coarse profiles -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
@@ -772,6 +934,14 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_of_fiberOscillation
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackCertificate_of_profileFiberOscillationCertificate
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountRepresented_of_zero_oscillation
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_of_profileBadCountRepresented
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_iff_profileBadCountRepresented_of_repInFiber
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.worstCaseIncidenceBounded_of_profileBadCountRepresented_budget
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.deltaStar_pin_of_profileBadCountRepresented_budget
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationCertificate_zero_iff_profileBadCountRepresented_and_budget
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_iff_exists_stack_count_ne
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_or_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound

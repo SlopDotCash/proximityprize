@@ -181,6 +181,21 @@ profile collapses oscillation back to a global pairwise bad-count diameter bound
 profile, and more generally any injective profile with zero slack and in-fiber representatives, are
 exactly the original all-stack incidence theorem.
 
+## [2026-06-26] prove | slack-profile floor contract
+
+Added:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackFloorBridge.lean`
+- `docs/kb/deltastar-464-profile-slack-floor-contract-2026-06-26.md`
+
+The new bridge states the exact floor-facing contract for slack profiles.  A floor-localization
+proof may now feed `ProfileFiberSlackBudgeted` directly through
+`FloorGoodProfileSlackBudget`; together with independent slack domination this gives
+`WorstCaseIncidenceBounded` and the usual delta-star pin.  The failure surface is exact: floor still
+bad, some stack exceeds its representative-plus-slack allowance, or some used profile's
+representative-plus-slack allowance is above budget.  This keeps the off-BGK floor lane useful as an
+obstruction-removal tool without laundering it into a proof of the universal #464 floor.
+
 ## [2026-06-26] refine | profile granularity endpoints
 
 Added:
@@ -191,3 +206,52 @@ to tie the stack-profile cardinality tradeoff to the slack-profile proof obligat
 records the two dead endpoints: constant profiles require global pairwise oscillation control, while
 injective profiles are just relabelings of the all-stack theorem.  The remaining live target is a
 genuinely non-injective profile with a real same-fiber oscillation theorem.
+
+## [2026-06-26] refine | zero-slack profile factorization
+
+Added:
+
+- `docs/kb/deltastar-464-zero-slack-profile-factorization-2026-06-26.md`
+
+and extended:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`
+
+with `ProfileBadCountRepresented` and exact consumers/falsifiers.  With in-fiber representatives,
+zero same-profile oscillation is equivalent to exact bad-count factorization through the chosen
+profile representative.  The zero-slack certificate now fails exactly by a stack whose count differs
+from its representative, or by an above-budget used representative.
+
+## [2026-06-26] refine | floor closure max normal form
+
+Updated:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean`
+- `docs/kb/deltastar-464-floor-closure-contract-2026-06-25.md`
+
+to state `FloorClosureAtField` directly in max-containment form.  The concrete floor certificate is
+now equivalent to floor-goodness, a bounded candidate family, and `FamilyContainsGlobalMax`; its
+failure is exactly a bad prime, a budget-missing representative, or lack of global-max containment.
+
+## [2026-06-26] refine | norm-factorization smooth scanner
+
+Added:
+
+- `docs/kb/deltastar-464-norm-factorization-smooth-support-scanner-2026-06-26.md`
+
+and updated `_NextNormFactorizationClustering.lean` with exact scanner forms for smooth norm
+persistence and above-threshold shared prime factors.  Smooth persistence now implies empty
+above-`B` supports, pairwise disjoint thresholded supports, and zero thresholded cluster rate; failure
+returns either a large prime factor or a shared large prime.
+
+## [2026-06-26] refine | line-list ratio-census budget gate
+
+Added:
+
+- `docs/kb/deltastar-464-line-list-ratio-census-budget-2026-06-26.md`
+
+and updated `LineListReduction.lean` with named local sets for the affine-line bad scalars and
+appearing codewords.  A budgeted line list now directly gives
+`lineBadScalars.card <= L * floor(n/a)`, while any over-budget bad-scalar count refutes the proposed
+line-list budget by forcing more than `L` appearing codewords.  The residual is therefore a genuine
+line-list-size theorem, not another per-codeword ratio-census identity.
