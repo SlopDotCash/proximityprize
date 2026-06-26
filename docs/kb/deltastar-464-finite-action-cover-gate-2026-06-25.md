@@ -33,6 +33,7 @@ stackActionRel_fiber_card_le_card
 stackUniverse_card_le_reps_mul_actionCard
 no_stackActionRepresentativeCover_of_card_lt
 stackSingletonActionCover_card_le_actionCard
+not_stackActionRepresentativeCover_iff_exists_uncovered
 ```
 
 For any finite transformation parameter type `G` and representative set `R`, if every stack is
@@ -49,6 +50,16 @@ Fintype.card (WordStack A (Fin 2) iota) <= R.card * Fintype.card G.
 ```
 
 No freeness is assumed.  Collisions only make the image smaller.
+
+The exact negative form is also formalized: finite-action coverage fails precisely when there is a
+stack `u` such that
+
+```text
+forall r in R, forall g : G, act g r != u.
+```
+
+This turns a failed affine-orbit quotient into a concrete uncovered-stack search target, not just a
+cardinality objection.
 
 ## Why this matters
 

@@ -38,6 +38,21 @@ then #WordStack <= #R * K.
 
 Equivalently, if `#R * K < #WordStack`, then `R` is not a representative cover.
 
+The file now also exposes the exact scanner failures:
+
+```lean
+not_stackRelRepresentativeCover_iff_exists_uncovered
+not_stackRelFiberCap_iff_exists_large_fiber
+not_stackRelRepresentativeCover_and_fiberCap_iff_exists_uncovered_or_large_fiber
+```
+
+So a failed quotient certificate produces one of two concrete witnesses:
+
+```text
+1. an uncovered stack u: forall r in R, not Rel u r;
+2. a representative r whose relation fiber has size > K.
+```
+
 For the two-row MCA stacks used by `WorstCaseIncidenceBounded`, Lean also records the explicit size
 
 ```text
@@ -56,6 +71,15 @@ For a singleton binder representative, this becomes
 ```text
 |A|^(2*|iota|) <= #G.
 ```
+
+In action form, the exact uncovered-stack scanner is:
+
+```lean
+not_stackActionRepresentativeCover_iff_exists_uncovered
+```
+
+which says a finite-action cover fails exactly when some stack is outside every transformed
+representative orbit.
 
 ## Why This Matters
 

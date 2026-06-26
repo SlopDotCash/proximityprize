@@ -26,6 +26,7 @@ The key theorem is:
 
 ```lean
 worstCaseIncidenceBounded_of_stackDomination
+worstCaseIncidenceBounded_iff_stackBounded_of_stackDomination
 ```
 
 It proves that a distinguished stack `uStar` can feed
@@ -37,6 +38,41 @@ forall u, StackBadCount F C delta u <= StackBadCount F C delta uStar
 
 Together with a budget on `uStar`, this is sufficient for the existing delta-star lower pin via
 `deltaStar_pin_of_stackDomination`.
+
+## 2026-06-26 exact scanner surface
+
+The interface now also has exact negative forms:
+
+```lean
+not_stackBounded_iff_budget_lt_stackBadCount
+not_stackDominates_iff_exists_strictly_larger
+not_singleStackDominationCertificate_iff_exists_larger_or_budget_lt
+not_worstCaseIncidenceBounded_of_budget_lt_stackBadCount
+not_worstCaseIncidenceBounded_iff_exists_budget_lt_stackBadCount
+not_worstCaseIncidenceBounded_iff_budget_lt_stackBadCount_of_stackDomination
+```
+
+These are small finite-order lemmas, but they matter operationally.  A proposed binder/floor
+stack is not merely "unproved" as a dominator; it has a falsification predicate:
+
+```text
+exists u, StackBadCount F C delta uStar < StackBadCount F C delta u
+```
+
+The combined scanner form says the whole local certificate
+`StackDominates F C delta uStar ∧ StackBounded F C delta uStar B` fails exactly by either that
+larger-stack witness or by `B < StackBadCount F C delta uStar`.
+
+Under a true domination theorem, the universal incidence hypothesis has the exact same failure
+threshold as the one distinguished stack:
+
+```text
+not WorstCaseIncidenceBounded C delta B
+iff B < StackBadCount F C delta uStar
+```
+
+So the floor route now exposes both sides of the contract: prove domination and one budget to feed
+the prize pin, or find one larger stack to refute the proposed dominator.
 
 ## Why this matters
 
