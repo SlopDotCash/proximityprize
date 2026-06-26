@@ -927,6 +927,67 @@ theorem deltaStar_pin_of_linnik_candidateListExactSmallestMaxContract
     hcardPrime hcardMod hcardPrize C εstar hδ hfloorBudget
     (familyDominates_of_containsGlobalMax C δ hmax) hbudget
 
+/-- Sharp scanner-facing Linnik field certificate: exact singleton floor-bad lists and the
+least-prime premise supply floor-goodness; the incidence content is exactly one budgeted global
+maximizer in the candidate family. -/
+theorem floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
+    FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B := by
+  have hgood : ¬ FloorBad (2 ^ a) (Fintype.card F) :=
+    floor_closes_by_linnik FloorBad
+      (floorLocalizationUniform_of_candidateListExactSmallestFamily FloorBad hexact)
+      hLeast a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
+  exact ⟨hgood, hmax⟩
+
+/-- Linnik candidate-list contract in the sharp budgeted-global-max form. -/
+theorem worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  worstCaseIncidenceBounded_of_floorClosureBudgetedMaxAtField FloorBad a C δ
+    (floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+      (F := F) (A := A) FloorBad hexact hLeast a ha
+      hcardPrime hcardMod hcardPrize C δ hmax)
+
+/-- Linnik candidate-list delta-star consumer in the sharp budgeted-global-max form. -/
+theorem deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    (hLeast : LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  deltaStar_pin_of_floorClosureBudgetedMaxAtField FloorBad a C εstar hδ
+    (floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+      (F := F) (A := A) FloorBad hexact hLeast a ha
+      hcardPrime hcardMod hcardPrize C δ hmax)
+    hbudget
+
 /-- TZ-form localization plus the floor-to-family bridge gives a bounded candidate family. -/
 theorem familyBounded_of_tz_floorGood
     (FloorBad : ℕ -> ℕ -> Prop)
@@ -1079,6 +1140,69 @@ theorem deltaStar_pin_of_tz_candidateListExactSmallestMaxContract
     hcardPrime hcardMod hcardPrize C εstar hδ hfloorBudget
     (familyDominates_of_containsGlobalMax C δ hmax) hbudget
 
+/-- Sharp scanner-facing TZ field certificate: exact singleton floor-bad lists and TZ supply give
+floor-goodness; the incidence content is exactly one budgeted global maximizer. -/
+theorem floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
+    FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B := by
+  have hgood : ¬ FloorBad (2 ^ a) (Fintype.card F) :=
+    floor_closes_by_tzSupplyFamily FloorBad
+      (floorLocalizationUniform_of_candidateListExactSmallestFamily FloorBad hexact)
+      hβ hTZfam a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
+  exact ⟨hgood, hmax⟩
+
+/-- TZ candidate-list contract in the sharp budgeted-global-max form. -/
+theorem worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  worstCaseIncidenceBounded_of_floorClosureBudgetedMaxAtField FloorBad a C δ
+    (floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+      (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+      hcardPrime hcardMod hcardPrize C δ hmax)
+
+/-- TZ candidate-list delta-star consumer in the sharp budgeted-global-max form. -/
+theorem deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  deltaStar_pin_of_floorClosureBudgetedMaxAtField FloorBad a C εstar hδ
+    (floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+      (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+      hcardPrime hcardMod hcardPrize C δ hmax)
+    hbudget
+
 /-- A scanner witness that beats every member of the floor-good family refutes the domination part
 of the closure contract. -/
 theorem floorGood_familyBudget_not_dominationProof_of_larger_than_all
@@ -1166,6 +1290,9 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_floorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_candidateListExactSmallestContract
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_candidateListExactSmallestMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_tz_floorGood
@@ -1175,6 +1302,9 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_tz_candidateListExactSmallestContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_tz_candidateListExactSmallestMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_tz_candidateListExactSmallestMaxContract
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorGood_familyBudget_not_dominationProof_of_larger_than_all
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_of_each_member_beaten
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorGood_familyBudget_not_dominationProof_of_each_member_beaten

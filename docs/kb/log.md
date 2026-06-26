@@ -263,6 +263,11 @@ incidence bound; budgeting every nonmaximal family member is stronger than neces
 exactly a bad floor prime, or every listed representative being either above budget or beatable by
 another stack.
 
+Follow-up: the Linnik and Thorner-Zaman candidate-list wrappers now consume
+`FamilyContainsBudgetedGlobalMax` directly.  Exact singleton floor-bad lists plus least-prime supply
+only discharge field floor-goodness; the remaining incidence proof is the single budgeted global
+maximizer certificate.
+
 ## [2026-06-26] refine | norm-factorization smooth scanner
 
 Added:
@@ -312,6 +317,18 @@ budgets.  `UniformLineBadScalarsBudgeted dom k a B` with `B < |F|` forces
 `UniformZeroDirectionSafe dom k a`; conversely, any unsafe zero-direction line refutes every uniform
 budget below field size.  This matches the prize polarity, where the desired budget is near `n` and
 the field is much larger.
+
+Follow-up: the line-list route now has a complete support/large-zero decomposition.  A uniform
+bad-scalar budget follows from a support-eligible line-list theorem, an arithmetic
+`SupportAdjustedBudgetFits` check, uniform zero-direction safety, and a separate
+`LargeZeroSafeLineBadScalarsBudgeted` theorem.  The large-zero safe residual is now the exact
+remaining branch rather than an informal exception to the support-fiber argument.
+
+Follow-up: `not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe` now gives
+the exact subfield-budget failure trichotomy: eligible overbudget, zero-direction saturation, or
+large-zero safe overbudget.  Added `docs/kb/deltastar-464-large-zero-trichotomy-2026-06-26.md`,
+which criticizes the previous line-list optimism and identifies the next possible tool as a
+punctured zero-stratified line-list theorem.
 
 ## [2026-06-26] refine | floor successor propagation gate
 

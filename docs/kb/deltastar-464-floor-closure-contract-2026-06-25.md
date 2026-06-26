@@ -498,3 +498,45 @@ or for every r in R:
 This is the next scanner contract.  A proposed floor catalogue no longer has to budget every
 nonmaximal representative to be useful, but it must contain one representative that is both within
 budget and globally worst.  Otherwise each member is either already too expensive or beatable.
+
+## Continuation: Linnik/TZ wrappers use the sharp endpoint
+
+The Linnik and Thorner-Zaman floor-localization wrappers now expose the same budgeted-global-max
+endpoint directly:
+
+```lean
+floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
+deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
+floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
+deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
+```
+
+This removes another source of proof-shape inflation.  The least-prime/TZ arithmetic layer proves:
+
+```text
+not FloorBad(2^a, |F|)
+```
+
+under exact singleton candidate-list evidence and the relevant least-prime supply.  It does not have
+to prove, or even mention, that every member of the proposed family is budgeted.  The coding-theory
+payload is now exactly:
+
+```text
+FamilyContainsBudgetedGlobalMax F C delta R B.
+```
+
+That means a floor-localization proof can be split cleanly:
+
+```text
+arithmetic:
+  exact floor-bad singleton lists + sub-prize least-prime supply -> field is floor-good
+
+incidence:
+  proposed family R contains one representative with StackBadCount <= B
+  and every stack has count <= that representative
+```
+
+The old `FloorGoodFamilyBudget + FamilyContainsGlobalMax` shape is still sufficient, but it is not
+the irreducible target.  The irreducible target is a budgeted worst representative.

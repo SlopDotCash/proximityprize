@@ -106,6 +106,21 @@ def SupportAdjustedLineBadScalarsBudgeted (dom : Fin n ↪ F) (k a L : ℕ) : Pr
     (lineBadScalars dom k a u₀ u₁).card
       ≤ L * ((directionSupportSet u₁).card / (a - (directionZeroSet u₁).card))
 
+/-- The support-adjusted line-list budget fits inside a uniform target `B` on every eligible
+direction.  This is the arithmetic side condition needed to turn the direction-dependent bound into
+a production budget. -/
+def SupportAdjustedBudgetFits (a L B : ℕ) : Prop :=
+  ∀ u₁ : Fin n → F, SupportEligibleLineDirection a u₁ →
+    L * ((directionSupportSet u₁).card / (a - (directionZeroSet u₁).card)) ≤ B
+
+/-- The residual large-zero safe branch: directions whose zero set already has size at least `a`
+but which do not saturate by a codeword-zero-agreement witness.  The support-fiber denominator no
+longer helps here, so this branch must be handled by a separate theorem. -/
+def LargeZeroSafeLineBadScalarsBudgeted (dom : Fin n ↪ F) (k a B : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      (lineBadScalars dom k a u₀ u₁).card ≤ B
+
 open Classical in
 /-- **The line-list reduction.** With nonvanishing direction `u₁`, the scalars whose line
 word `w_γ` is agreed with by some codeword on `≥ a` points are covered by the appearing
@@ -357,6 +372,79 @@ theorem not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_fie
       dom k a B hbudget hB)
 
 open Classical in
+/-- Exact failure form for a uniform bad-scalar budget in the named-set model. -/
+theorem not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+    (dom : Fin n ↪ F) (k a B : ℕ) :
+    (¬ UniformLineBadScalarsBudgeted dom k a B) ↔
+      ∃ u₀ u₁ : Fin n → F, B < (lineBadScalars dom k a u₀ u₁).card := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁
+    exact le_of_not_gt (fun hgt => hnone ⟨u₀, u₁, hgt⟩)
+  · rintro ⟨u₀, u₁, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget u₀ u₁)) hgt
+
+open Classical in
+/-- Exact failure form for the large-zero safe residual. -/
+theorem not_largeZeroSafeLineBadScalarsBudgeted_iff_exists_largeZero_safe_lineBadScalars_gt
+    (dom : Fin n ↪ F) (k a B : ℕ) :
+    (¬ LargeZeroSafeLineBadScalarsBudgeted dom k a B) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          B < (lineBadScalars dom k a u₀ u₁).card := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩)
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩ hlarge
+    exact (not_lt_of_ge (hlarge u₀ u₁ hnotEligible hsafe)) hgt
+
+open Classical in
+/-- Exact subfield-budget failure trichotomy for the line-list route.  If the target budget is
+below field size, then a uniform bad-scalar budget fails for exactly one of three scanner-visible
+reasons: an eligible direction is over budget; a zero-direction saturation witness exists; or the
+large-zero safe residual is over budget. -/
+theorem not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hB : B < Fintype.card F) :
+    (¬ UniformLineBadScalarsBudgeted dom k a B) ↔
+      (∃ u₀ u₁ : Fin n → F, SupportEligibleLineDirection a u₁ ∧
+        B < (lineBadScalars dom k a u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ ZeroDirectionSafeLine dom k a u₀ u₁) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          B < (lineBadScalars dom k a u₀ u₁).card) := by
+  constructor
+  · intro hnot
+    rcases (not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+      dom k a B).mp hnot with ⟨u₀, u₁, hgt⟩
+    by_cases heligible : SupportEligibleLineDirection a u₁
+    · exact Or.inl ⟨u₀, u₁, heligible, hgt⟩
+    · by_cases hsafe : ZeroDirectionSafeLine dom k a u₀ u₁
+      · exact Or.inr <| Or.inr ⟨u₀, u₁, heligible, hsafe, hgt⟩
+      · exact Or.inr <| Or.inl ⟨u₀, u₁, hsafe⟩
+  · rintro (hEligible | hRest)
+    · rcases hEligible with ⟨u₀, u₁, _heligible, hgt⟩
+      exact (not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+        dom k a B).mpr ⟨u₀, u₁, hgt⟩
+    · rcases hRest with hUnsafe | hLarge
+      · rcases hUnsafe with ⟨u₀, u₁, hunsafe⟩
+        have hcard :
+            (lineBadScalars dom k a u₀ u₁).card = Fintype.card F :=
+          lineBadScalars_card_eq_field_card_of_not_zeroDirectionSafeLine
+            dom k a u₀ u₁ hunsafe
+        exact (not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+          dom k a B).mpr ⟨u₀, u₁, by simpa [hcard] using hB⟩
+      · rcases hLarge with ⟨u₀, u₁, _hnotEligible, _hsafe, hgt⟩
+        exact (not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+          dom k a B).mpr ⟨u₀, u₁, hgt⟩
+
+open Classical in
 /-- Uniform support-aware line-list control gives the corresponding support-adjusted bad-scalar
 budget for every eligible affine-line direction. -/
 theorem supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
@@ -366,6 +454,26 @@ theorem supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
   intro u₀ u₁ hz
   exact lineBadScalars_card_le_of_lineListBudgeted_support_div_sub_zero
     dom k a u₀ u₁ hz (hL u₀ u₁ hz)
+
+open Classical in
+/-- The complete support/large-zero decomposition for the named-set line-list model.  A uniform
+bad-scalar budget follows from: a uniform line-list budget on support-eligible directions; an
+arithmetic check that the support-adjusted bound fits under `B`; zero-direction safety; and a
+separate bound for the large-zero safe residual. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hLarge : LargeZeroSafeLineBadScalarsBudgeted dom k a B) :
+    UniformLineBadScalarsBudgeted dom k a B := by
+  intro u₀ u₁
+  by_cases heligible : SupportEligibleLineDirection a u₁
+  · exact le_trans
+      ((supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
+        dom k a L hSupport) u₀ u₁ heligible)
+      (hFits u₁ heligible)
+  · exact hLarge u₀ u₁ heligible (hZeroSafe u₀ u₁)
 
 open Classical in
 /-- Exact failure form for the uniform support-aware line-list budget: it fails precisely when some
@@ -490,7 +598,11 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
 #print axioms not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
 #print axioms not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
+#print axioms not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+#print axioms not_largeZeroSafeLineBadScalarsBudgeted_iff_exists_largeZero_safe_lineBadScalars_gt
+#print axioms not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
 #print axioms supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
 #print axioms not_uniformSupportLineListBudgeted_iff_exists_eligible_lineAppearing_gt
 #print axioms not_supportAdjustedLineBadScalarsBudgeted_iff_exists_eligible_lineBadScalars_gt
 #print axioms not_uniformSupportLineListBudgeted_of_exists_eligible_lineBadScalars_gt

@@ -233,6 +233,8 @@ directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
 ZeroDirectionSafeLine
 UniformZeroDirectionSafe
 UniformLineBadScalarsBudgeted
+SupportAdjustedBudgetFits
+LargeZeroSafeLineBadScalarsBudgeted
 not_zeroDirectionSafeLine_iff_exists_codeword_zeroAgreement_ge
 lineBadScalars_eq_univ_of_not_zeroDirectionSafeLine
 lineBadScalars_card_eq_field_card_of_not_zeroDirectionSafeLine
@@ -240,6 +242,10 @@ zeroDirectionSafeLine_of_lineBadScalars_budget_lt_field
 uniformZeroDirectionSafe_of_uniformLineBadScalarsBudgeted_lt_field
 not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
 not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
+not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
+not_largeZeroSafeLineBadScalarsBudgeted_iff_exists_largeZero_safe_lineBadScalars_gt
+not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
 ```
 
 If a codeword already agrees with the offset `u0` on at least `a` coordinates where `u1 = 0`, then
@@ -285,3 +291,59 @@ not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
 says one unsafe zero-direction line refutes every uniform budget below field size.  In the prize
 regime this is the right polarity: the desired budget is near `n`, while the field has size near
 `n * 2^128`, so zero-direction saturation is an immediate blocker for any floor proof.
+
+## Continuation: support/large-zero trichotomy
+
+The uniform line-list route now has a complete named-set decomposition:
+
+```lean
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+```
+
+It proves `UniformLineBadScalarsBudgeted dom k a B` from four explicit inputs:
+
+```text
+1. UniformSupportLineListBudgeted dom k a L
+2. SupportAdjustedBudgetFits a L B
+3. UniformZeroDirectionSafe dom k a
+4. LargeZeroSafeLineBadScalarsBudgeted dom k a B
+```
+
+The first input is the production line-list theorem on support-eligible directions.  The second is
+only arithmetic: the direction-dependent support-adjusted bound must fit under the target `B`.  The
+third rules out zero-direction saturation.  The fourth is now the exact remaining branch:
+
+```text
+#directionZeroSet(u1) >= a,
+zero-direction safe,
+but still possibly many bad scalars.
+```
+
+Its falsifier is:
+
+```lean
+not_largeZeroSafeLineBadScalarsBudgeted_iff_exists_largeZero_safe_lineBadScalars_gt
+```
+
+So the line-list lane is no longer a single vague "bound the affine-line list" task.  It is a
+four-part production contract, and the genuinely new piece is the large-zero safe residual.  That
+residual is not solved here; it is isolated as the next place where near-code geometry or a
+pair-joint argument has to do real work.
+
+The latest failure theorem makes the negative side exact when the target budget is below field size:
+
+```lean
+not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
+```
+
+So any failed production line-list budget must now surface as one of:
+
+```text
+1. support-eligible direction over budget,
+2. zero-direction saturation,
+3. large-zero, zero-safe direction over budget.
+```
+
+This is the useful scanner form.  It separates the arithmetic support-fit problem, the near-code
+saturation obstruction, and the residual large-zero geometry instead of letting them blur into one
+"line-list failed" message.
