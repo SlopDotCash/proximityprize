@@ -362,6 +362,20 @@ covers each stratum by `t`-subsets of `directionZeroSet(u1)` and proves the endp
 `#S >= k -> card <= 1`.  With coordinate-fiber arithmetic fixed, a failed uniform bad-scalar budget
 now reports an overfull coordinate fiber, not just an overfull stratum.
 
+Follow-up: the high zero-agreement range is now discharged at stratum level.  If `k <= t`, then
+`#zeroAgreementStratum(t) <= choose(#directionZeroSet(u1), t)`.  Therefore any overfull stratum
+whose envelope already covers this binomial ceiling must live in the low interpolation range
+`t < k`; the full production scanner now has the same low-stratum refinement.
+
+Follow-up: the raw coordinate-fiber interpolation count is now formalized:
+`#coordinateAgreementFiber(S) <= |F|^(k - #S)`, inheriting `sorryAx` from the existing
+vanishing-kernel count substrate.  The coordinate-fiber scanner also has a low-range form: if
+`M(t) >= 1` on `k <= t < a`, then a failed production budget reports either zero-direction
+saturation or a large-zero safe overfull coordinate fiber with `t < k`.  The remaining question is
+the weighted binomial arithmetic or a stronger support-aware low-fiber theorem.  A field-power
+production wrapper now shows that, once this arithmetic fit is fixed, a uniform bad-scalar failure
+can only be zero-direction saturation.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:

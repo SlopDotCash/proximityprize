@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CodewordHeavyScalar
+import ArkLib.Data.CodingTheory.RSWeightEnumerator
 
 /-!
 # The line-list reduction: bad scalars ≤ (affine-line list size) · ⌊n/a⌋
@@ -34,6 +35,7 @@ target the incidence skeleton produces.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.style.longFile 1900
 
 open Finset
 open scoped NNReal ENNReal
@@ -234,6 +236,108 @@ theorem coordinateAgreementFiber_card_le_one_of_k_le
   have hsmall : (agreeSet c c').card ≤ k - 1 :=
     rsCode_pairwise_agreeSet_card_le dom hk hc.2.1 hc'.2.1 hne
   omega
+
+open Classical in
+/-- Quantitative MDS bound for a coordinate-agreement fiber.  Prescribing the values on `S`
+leaves at most `|F|^(k - #S)` degree-`< k` RS codewords.  For `#S >= k` this recovers the
+rigidity endpoint `<= 1`; for smaller `S` it exposes the exact interpolation-scale envelope needed
+by the zero-agreement stratum budget. -/
+theorem coordinateAgreementFiber_card_le_field_pow_sub_card
+    (dom : Fin n ↪ F) (k : ℕ) (u₀ : Fin n → F) (S : Finset (Fin n)) :
+    (coordinateAgreementFiber dom k u₀ S).card ≤ Fintype.card F ^ (k - S.card) := by
+  classical
+  haveI : Fintype (Polynomial.degreeLT F k) :=
+    Fintype.ofEquiv (Fin k → F) (Polynomial.degreeLTEquiv F k).symm.toEquiv
+  let polyFiber : Finset (Polynomial.degreeLT F k) :=
+    (Finset.univ : Finset (Polynomial.degreeLT F k)).filter
+      (fun P : Polynomial.degreeLT F k => ∀ i ∈ S, (P : Polynomial F).eval (dom i) = u₀ i)
+  have hcover :
+      coordinateAgreementFiber dom k u₀ S ⊆
+        polyFiber.image (fun P : Polynomial.degreeLT F k =>
+          fun i : Fin n => (P : Polynomial F).eval (dom i)) := by
+    intro c hc
+    rw [coordinateAgreementFiber, Finset.mem_filter] at hc
+    rcases hc.2.1 with ⟨P, hPdeg, hc_eq⟩
+    let Pdeg : Polynomial.degreeLT F k := ⟨P, Polynomial.mem_degreeLT.mpr hPdeg⟩
+    refine Finset.mem_image.mpr ⟨Pdeg, ?_, ?_⟩
+    · change Pdeg ∈ (Finset.univ : Finset (Polynomial.degreeLT F k)).filter
+        (fun P : Polynomial.degreeLT F k =>
+          ∀ i ∈ S, (P : Polynomial F).eval (dom i) = u₀ i)
+      rw [Finset.mem_filter]
+      refine ⟨Finset.mem_univ _, ?_⟩
+      intro i hi
+      exact (congrFun hc_eq i).symm.trans (hc.2.2 i hi)
+    · exact hc_eq.symm
+  have hpoly :
+      polyFiber.card ≤ Fintype.card F ^ (k - S.card) := by
+    by_cases hnonempty : polyFiber.Nonempty
+    · rcases hnonempty with ⟨P₀, hP₀⟩
+      haveI : Fintype (LinearMap.ker (ArkLib.CS25.evalOnS dom k S)) := Fintype.ofFinite _
+      let kerFiber : Finset (Polynomial.degreeLT F k) :=
+        (Finset.univ : Finset (Polynomial.degreeLT F k)).filter
+          (fun P : Polynomial.degreeLT F k =>
+            P ∈ LinearMap.ker (ArkLib.CS25.evalOnS dom k S))
+      let shifted : Finset (Polynomial.degreeLT F k) :=
+        polyFiber.image (fun P : Polynomial.degreeLT F k => P - P₀)
+      have hshift_card : shifted.card = polyFiber.card := by
+        change (polyFiber.image (fun P : Polynomial.degreeLT F k => P - P₀)).card =
+          polyFiber.card
+        exact Finset.card_image_of_injOn
+          (fun P hP Q hQ heq => by
+            have h := congrArg (fun R : Polynomial.degreeLT F k => R + P₀) heq
+            simpa [sub_add_cancel] using h)
+      have hshift_subset : shifted ⊆ kerFiber := by
+        intro Q hQ
+        change Q ∈ polyFiber.image (fun P : Polynomial.degreeLT F k => P - P₀) at hQ
+        rw [Finset.mem_image] at hQ
+        rcases hQ with ⟨P, hP, rfl⟩
+        change P - P₀ ∈ (Finset.univ : Finset (Polynomial.degreeLT F k)).filter
+          (fun P : Polynomial.degreeLT F k =>
+            P ∈ LinearMap.ker (ArkLib.CS25.evalOnS dom k S))
+        rw [Finset.mem_filter]
+        refine ⟨Finset.mem_univ _, ?_⟩
+        rw [LinearMap.mem_ker]
+        ext i
+        have hP' := (Finset.mem_filter.mp hP).2 i i.2
+        have hP₀' := (Finset.mem_filter.mp hP₀).2 i i.2
+        change ((P : Polynomial F) - (P₀ : Polynomial F)).eval (dom (i : Fin n)) = 0
+        rw [Polynomial.eval_sub, hP', hP₀', sub_self]
+      have hker_card :
+          kerFiber.card = Fintype.card F ^ (k - S.card) := by
+        have hker_card' :
+            kerFiber.card =
+              Fintype.card (LinearMap.ker (ArkLib.CS25.evalOnS dom k S)) := by
+          change ((Finset.univ : Finset (Polynomial.degreeLT F k)).filter
+            (fun P : Polynomial.degreeLT F k =>
+              P ∈ LinearMap.ker (ArkLib.CS25.evalOnS dom k S))).card =
+              Fintype.card (LinearMap.ker (ArkLib.CS25.evalOnS dom k S))
+          rw [← Fintype.card_subtype]
+        rw [hker_card', ← Nat.card_eq_fintype_card,
+          ArkLib.CS25.natCard_ker_evalOnS_general]
+      rw [← hshift_card]
+      exact le_trans (Finset.card_le_card hshift_subset) (le_of_eq hker_card)
+    · exact le_trans (by simpa [Finset.not_nonempty_iff_eq_empty.mp hnonempty]) (Nat.zero_le _)
+  exact le_trans (le_trans (Finset.card_le_card hcover) Finset.card_image_le) hpoly
+
+open Classical in
+/-- The MDS interpolation envelope supplies a coordinate-fiber budget with
+`M t = |F|^(k - t)` on every line. -/
+theorem zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    ZeroCoordinateAgreementFiberBudgeted dom k a u₀ u₁
+      (fun t => Fintype.card F ^ (k - t)) := by
+  intro t _ht S hS
+  have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+  simpa [hScard] using coordinateAgreementFiber_card_le_field_pow_sub_card dom k u₀ S
+
+open Classical in
+/-- Uniform large-zero-safe coordinate-fiber budget from the MDS interpolation envelope. -/
+theorem uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    UniformLargeZeroSafeCoordinateAgreementFiberBudgeted dom k a
+      (fun t => Fintype.card F ^ (k - t)) := by
+  intro u₀ u₁ _hnotEligible _hsafe
+  exact zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card dom k a u₀ u₁
 
 open Classical in
 /-- **The line-list reduction.** With nonvanishing direction `u₁`, the scalars whose line
@@ -515,6 +619,26 @@ theorem zeroAgreementStratum_card_le_choose_mul_coordinateAgreementFiberBound
         rw [Finset.card_powersetCard]
 
 open Classical in
+/-- High zero-agreement strata are automatically binomially bounded.  Once `k ≤ t`, each fixed
+`t`-subset of zero coordinates determines at most one RS codeword, so the whole exact
+zero-agreement stratum has size at most the number of such subsets. -/
+theorem zeroAgreementStratum_card_le_choose_of_k_le_t
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) {t : ℕ} (hkt : k ≤ t) :
+    (zeroAgreementStratum dom k a u₀ u₁ t).card
+      ≤ (directionZeroSet u₁).card.choose t := by
+  calc
+    (zeroAgreementStratum dom k a u₀ u₁ t).card
+        ≤ (directionZeroSet u₁).card.choose t * 1 :=
+          zeroAgreementStratum_card_le_choose_mul_coordinateAgreementFiberBound
+            dom k a u₀ u₁ t 1 (by
+              intro S hS
+              have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+              exact coordinateAgreementFiber_card_le_one_of_k_le dom hk u₀
+                (by rw [hScard]; exact hkt))
+    _ = (directionZeroSet u₁).card.choose t := by rw [Nat.mul_one]
+
+open Classical in
 /-- Coordinate-fiber budgets imply the corresponding zero-agreement stratum-cardinality budgets. -/
 theorem zeroAgreementStrataCardBudgeted_of_coordinateAgreementFiberBudgeted
     (dom : Fin n ↪ F) (k a : ℕ)
@@ -527,6 +651,23 @@ theorem zeroAgreementStrataCardBudgeted_of_coordinateAgreementFiberBudgeted
     (zeroAgreementStratum_card_le_choose_mul_coordinateAgreementFiberBound
       dom k a u₀ u₁ t (M t) (hFiber t ht))
     (hN t ht)
+
+open Classical in
+/-- A mixed low/high stratum budget: low strata are supplied directly, while strata with `t ≥ k`
+use the singleton coordinate-fiber envelope. -/
+theorem zeroAgreementStrataCardBudgeted_of_lowStrata_and_highChoose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) (N : ℕ → ℕ)
+    (hlow : ∀ t : ℕ, t < a → t < k →
+      (zeroAgreementStratum dom k a u₀ u₁ t).card ≤ N t)
+    (hhigh : ∀ t : ℕ, t < a → k ≤ t → (directionZeroSet u₁).card.choose t ≤ N t) :
+    ZeroAgreementStrataCardBudgeted dom k a u₀ u₁ N := by
+  intro t ht
+  by_cases htk : t < k
+  · exact hlow t ht htk
+  · exact le_trans
+      (zeroAgreementStratum_card_le_choose_of_k_le_t dom hk a u₀ u₁ (Nat.le_of_not_gt htk))
+      (hhigh t ht (Nat.le_of_not_gt htk))
 
 open Classical in
 /-- A stratum-cardinality budget bounds the punctured line weight by the corresponding weighted
@@ -863,6 +1004,45 @@ theorem not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
     exact (not_lt_of_ge (hbudget t ht)) hgt
 
 open Classical in
+/-- If `N` already dominates the automatic binomial ceiling in every high stratum `k ≤ t`, then
+any overfull zero-agreement stratum must lie in the low interpolation range `t < k`. -/
+theorem exists_low_zeroAgreementStratum_gt_of_exists_stratum_gt_and_high_choose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) (N : ℕ → ℕ)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → (directionZeroSet u₁).card.choose t ≤ N t)
+    (hgt : ∃ t : ℕ, t < a ∧ N t < (zeroAgreementStratum dom k a u₀ u₁ t).card) :
+    ∃ t : ℕ, t < a ∧ t < k ∧ N t < (zeroAgreementStratum dom k a u₀ u₁ t).card := by
+  rcases hgt with ⟨t, ht, hgt⟩
+  by_cases hlow : t < k
+  · exact ⟨t, ht, hlow, hgt⟩
+  · have hkt : k ≤ t := le_of_not_gt hlow
+    have hstratum :
+        (zeroAgreementStratum dom k a u₀ u₁ t).card ≤ N t :=
+      le_trans
+        (zeroAgreementStratum_card_le_choose_of_k_le_t dom hk a u₀ u₁ hkt)
+        (hHigh t ht hkt)
+    exact False.elim ((not_lt_of_ge hstratum) hgt)
+
+open Classical in
+/-- Failure form of a single stratum-cardinality budget, with high strata discharged by the
+automatic binomial ceiling. -/
+theorem not_zeroAgreementStrataCardBudgeted_iff_exists_low_stratum_gt_of_high_choose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) (N : ℕ → ℕ)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → (directionZeroSet u₁).card.choose t ≤ N t) :
+    (¬ ZeroAgreementStrataCardBudgeted dom k a u₀ u₁ N) ↔
+      ∃ t : ℕ, t < a ∧ t < k ∧
+        N t < (zeroAgreementStratum dom k a u₀ u₁ t).card := by
+  constructor
+  · intro hnot
+    exact exists_low_zeroAgreementStratum_gt_of_exists_stratum_gt_and_high_choose
+      dom hk a u₀ u₁ N hHigh
+      ((not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+        dom k a u₀ u₁ N).mp hnot)
+  · rintro ⟨t, ht, _hlt, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget t ht)) hgt
+
+open Classical in
 /-- Exact failure form for the uniform large-zero safe stratum-cardinality budget. -/
 theorem not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
     (dom : Fin n ↪ F) (k a : ℕ) (N : ℕ → ℕ) :
@@ -909,6 +1089,71 @@ theorem not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
     exact (not_lt_of_ge (hfits u₁ hnotEligible)) hgt
 
 open Classical in
+/-- Exact failure form for one line's coordinate-fiber budget. -/
+theorem not_zeroCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ) :
+    (¬ ZeroCoordinateAgreementFiberBudgeted dom k a u₀ u₁ M) ↔
+      ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+        M t < (coordinateAgreementFiber dom k u₀ S).card := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro t ht S hS
+    exact le_of_not_gt (fun hgt => hnone ⟨t, ht, S, hS, hgt⟩)
+  · rintro ⟨t, ht, S, hS, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget t ht S hS)) hgt
+
+open Classical in
+/-- Exact failure form for the uniform large-zero safe coordinate-fiber budget. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
+    (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ) :
+    (¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgeted dom k a M) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < (coordinateAgreementFiber dom k u₀ S).card := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe t ht S hS
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩)
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget u₀ u₁ hnotEligible hsafe t ht S hS)) hgt
+
+omit [Fintype F] in
+/-- Exact failure form for one line's coordinate-fiber arithmetic fit. -/
+theorem not_zeroCoordinateAgreementFiberBudgetFits_iff_sum_gt
+    (a B : ℕ) (u₁ : Fin n → F) (M : ℕ → ℕ) :
+    (¬ ZeroCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B u₁ M) ↔
+      B < ∑ t ∈ Finset.range a,
+        ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)) := by
+  rw [ZeroCoordinateAgreementFiberBudgetFits]
+  exact not_le
+
+omit [Fintype F] in
+/-- Exact failure form for the uniform large-zero coordinate-fiber arithmetic fit. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_sum_gt
+    (a B : ℕ) (M : ℕ → ℕ) :
+    (¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B M) ↔
+      ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        B < ∑ t ∈ Finset.range a,
+          ((directionZeroSet u₁).card.choose t * M t) *
+            ((directionSupportSet u₁).card / (a - t)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₁ hnotEligible
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₁, hnotEligible, hgt⟩)
+  · rintro ⟨u₁, hnotEligible, hgt⟩ hfits
+    exact (not_lt_of_ge (hfits u₁ hnotEligible)) hgt
+
+open Classical in
 /-- If a proposed stratum budget fits arithmetically, any punctured-budget failure must come from
 an overfull zero-agreement stratum. -/
 theorem not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
@@ -921,6 +1166,37 @@ theorem not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPu
   exact hnot
     (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
       dom k a B N hStrata hFits)
+
+open Classical in
+/-- If a proposed coordinate-fiber budget fits arithmetically, any punctured-budget failure must
+come from an overfull coordinate-agreement fiber. -/
+theorem not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_of_not_uniformPunctured
+    (dom : Fin n ↪ F) (k a B : ℕ) (M : ℕ → ℕ)
+    (hFits :
+      UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B M)
+    (hnot : ¬ UniformPuncturedZeroStratifiedLineBudgeted dom k a B) :
+    ¬ UniformLargeZeroSafeCoordinateAgreementFiberBudgeted dom k a M := by
+  intro hFiber
+  exact hnot
+    (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformCoordinateAgreementFiberBudgeted
+      dom k a B M hFiber hFits)
+
+open Classical in
+/-- Direct scanner witness: if the coordinate-fiber arithmetic fit is fixed, any failed punctured
+budget produces an explicit overfull fiber in the large-zero safe branch. -/
+theorem exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformPunctured
+    (dom : Fin n ↪ F) (k a B : ℕ) (M : ℕ → ℕ)
+    (hFits :
+      UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B M)
+    (hnot : ¬ UniformPuncturedZeroStratifiedLineBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          M t < (coordinateAgreementFiber dom k u₀ S).card :=
+  (not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
+    dom k a M).mp
+    (not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_of_not_uniformPunctured
+      dom k a B M hFits hnot)
 
 open Classical in
 /-- Exact subfield-budget failure trichotomy for the line-list route.  If the target budget is
@@ -1056,6 +1332,24 @@ theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinat
     (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformCoordinateAgreementFiberBudgeted
       dom k a B M hFiber hFiberFits)
 
+/-- Production wrapper using the explicit MDS coordinate-fiber envelope
+`M t = |F|^(k - t)`.  The remaining obligation is purely arithmetic: this envelope must fit the
+large-zero weighted budget. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hFiberFits :
+      UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+        (fun t => Fintype.card F ^ (k - t))) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
+    dom k a L B (fun t => Fintype.card F ^ (k - t))
+    hSupport hFits hZeroSafe
+    (uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card dom k a)
+    hFiberFits
+
 /-- Production wrapper using explicit zero-agreement stratum cardinality budgets for the
 large-zero safe branch. -/
 theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_zeroAgreementStrata
@@ -1121,6 +1415,59 @@ theorem unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadSc
         dom k a).mp hZeroSafe)
 
 open Classical in
+/-- Scanner-facing full failure split with high zero-agreement strata discharged by their
+automatic binomial ceiling.  Once `N` dominates `choose(#zeroSet(u₁), t)` for every high
+`k ≤ t < a`, a failed uniform bad-scalar budget must expose either zero-direction saturation or a
+large-zero safe **low** stratum `t < k`. -/
+theorem unsafe_or_largeZero_safe_low_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (N : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hStrataFits :
+      UniformLargeZeroSafeZeroAgreementStrataBudgetFits (F := F) (n := n) a B N)
+    (hHigh :
+      ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+        ∀ t : ℕ, t < a → k ≤ t → (directionZeroSet u₁).card.choose t ≤ N t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧
+            N t < (zeroAgreementStratum dom k a u₀ u₁ t).card) := by
+  rcases (unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+      dom k a L B N hSupport hFits hStrataFits hnot) with hUnsafe | hStratum
+  · exact Or.inl hUnsafe
+  · rcases hStratum with ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩
+    exact Or.inr ⟨u₀, u₁, hnotEligible, hsafe,
+      exists_low_zeroAgreementStratum_gt_of_exists_stratum_gt_and_high_choose
+        dom hk a u₀ u₁ N (hHigh u₁ hnotEligible) hgt⟩
+
+open Classical in
+/-- If `M` is at least one in every high range `k ≤ t < a`, then any overfull
+coordinate-agreement fiber must lie in the low interpolation range `t < k`. -/
+theorem exists_low_coordinateAgreementFiber_gt_of_exists_fiber_gt_and_high_one
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ M t)
+    (hgt : ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+      M t < (coordinateAgreementFiber dom k u₀ S).card) :
+    ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+      M t < (coordinateAgreementFiber dom k u₀ S).card := by
+  rcases hgt with ⟨t, ht, S, hS, hgt⟩
+  by_cases hlow : t < k
+  · exact ⟨t, ht, hlow, S, hS, hgt⟩
+  · have hkt : k ≤ t := le_of_not_gt hlow
+    have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+    have hfiber :
+        (coordinateAgreementFiber dom k u₀ S).card ≤ 1 :=
+      coordinateAgreementFiber_card_le_one_of_k_le dom hk u₀
+        (by rw [hScard]; exact hkt)
+    have hle : (coordinateAgreementFiber dom k u₀ S).card ≤ M t :=
+      le_trans hfiber (hHigh t ht hkt)
+    exact False.elim ((not_lt_of_ge hle) hgt)
+
+open Classical in
 /-- If the support-eligible line-list route, support arithmetic, zero-direction safety, and
 coordinate-fiber arithmetic fit are fixed, then any failed uniform bad-scalar budget must exhibit a
 large-zero safe coordinate-agreement fiber whose size exceeds the proposed `M t`. -/
@@ -1169,6 +1516,54 @@ theorem unsafe_or_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineB
   · exact Or.inl
       ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
         dom k a).mp hZeroSafe)
+
+open Classical in
+/-- With the explicit MDS coordinate-fiber envelope `M t = |F|^(k - t)` and its arithmetic fit,
+the only possible failure of the uniform bad-scalar budget is zero-direction saturation. -/
+theorem unsafe_of_not_uniformLineBadScalarsBudgeted_with_fieldPowCoordinateFibers
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B
+        (fun t => Fintype.card F ^ (k - t)))
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+      a ≤ (directionZeroAgreementSet c u₀ u₁).card := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact False.elim
+      (hnot
+        (uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
+          dom k a L B hSupport hFits hZeroSafe hFiberFits))
+  · exact (not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+      dom k a).mp hZeroSafe
+
+open Classical in
+/-- Scanner-facing full failure split with high coordinate fibers discharged by RS uniqueness.
+Once `M t ≥ 1` for every high `k ≤ t < a`, a failed uniform bad-scalar budget must expose either
+zero-direction saturation or a large-zero safe **low** coordinate fiber `t < k`. -/
+theorem
+    unsafe_or_largeZero_safe_low_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n) a B M)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ M t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < (coordinateAgreementFiber dom k u₀ S).card) := by
+  rcases (unsafe_or_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
+      dom k a L B M hSupport hFits hFiberFits hnot) with hUnsafe | hFiber
+  · exact Or.inl hUnsafe
+  · rcases hFiber with ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩
+    exact Or.inr ⟨u₀, u₁, hnotEligible, hsafe,
+      exists_low_coordinateAgreementFiber_gt_of_exists_fiber_gt_and_high_one
+        dom hk a u₀ u₁ M hHigh hgt⟩
 
 open Classical in
 /-- Exact failure form for the uniform support-aware line-list budget: it fails precisely when some
@@ -1290,6 +1685,9 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms ZeroCoordinateAgreementFiberBudgetFits
 #print axioms UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits
 #print axioms coordinateAgreementFiber_card_le_one_of_k_le
+#print axioms coordinateAgreementFiber_card_le_field_pow_sub_card
+#print axioms zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
+#print axioms uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
 #print axioms puncturedZeroStratifiedLineWeight
 #print axioms PuncturedZeroStratifiedLineBudgeted
 #print axioms UniformPuncturedZeroStratifiedLineBudgeted
@@ -1302,7 +1700,9 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms zeroAgreementStratum_subset_coordinateAgreementFiber_biUnion
 #print axioms zeroAgreementStratum_card_le_sum_coordinateAgreementFibers
 #print axioms zeroAgreementStratum_card_le_choose_mul_coordinateAgreementFiberBound
+#print axioms zeroAgreementStratum_card_le_choose_of_k_le_t
 #print axioms zeroAgreementStrataCardBudgeted_of_coordinateAgreementFiberBudgeted
+#print axioms zeroAgreementStrataCardBudgeted_of_lowStrata_and_highChoose
 #print axioms puncturedZeroStratifiedLineWeight_le_of_zeroAgreementStrataCardBudgeted
 #print axioms puncturedZeroStratifiedLineBudgeted_of_zeroAgreementStrataCardBudgeted
 #print axioms puncturedZeroStratifiedLineBudgeted_of_coordinateAgreementFiberBudgeted
@@ -1330,11 +1730,22 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms
   not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineBadScalarsBudgeted
 #print axioms not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+#print axioms exists_low_zeroAgreementStratum_gt_of_exists_stratum_gt_and_high_choose
+#print axioms not_zeroAgreementStrataCardBudgeted_iff_exists_low_stratum_gt_of_high_choose
 #print axioms not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
 #print axioms not_zeroAgreementStrataBudgetFits_iff_sum_gt
 #print axioms not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
+#print axioms not_zeroCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_iff_exists_fiber_gt
+#print axioms not_zeroCoordinateAgreementFiberBudgetFits_iff_sum_gt
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_iff_exists_sum_gt
 #print axioms
   not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
+#print axioms
+  not_uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_of_not_uniformPunctured
+#print axioms exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformPunctured
 #print axioms not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
 #print axioms exists_eligible_or_unsafe_or_largeZero_stratum_of_not_uniformLineBadScalarsBudgeted
 #print axioms supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
@@ -1342,12 +1753,20 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
 #print axioms
   uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
+#print axioms
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_zeroAgreementStrata
 #print axioms exists_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms unsafe_or_largeZero_safe_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  unsafe_or_largeZero_safe_low_zeroAgreementStratum_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms exists_low_coordinateAgreementFiber_gt_of_exists_fiber_gt_and_high_one
 #print axioms exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
   unsafe_or_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms unsafe_of_not_uniformLineBadScalarsBudgeted_with_fieldPowCoordinateFibers
+#print axioms
+  unsafe_or_largeZero_safe_low_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms not_uniformSupportLineListBudgeted_iff_exists_eligible_lineAppearing_gt
 #print axioms not_supportAdjustedLineBadScalarsBudgeted_iff_exists_eligible_lineBadScalars_gt
 #print axioms not_uniformSupportLineListBudgeted_of_exists_eligible_lineBadScalars_gt

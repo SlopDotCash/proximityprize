@@ -270,20 +270,31 @@ coordinateAgreementFiber
 ZeroCoordinateAgreementFiberBudgeted
 ZeroCoordinateAgreementFiberBudgetFits
 coordinateAgreementFiber_card_le_one_of_k_le
+coordinateAgreementFiber_card_le_field_pow_sub_card
+zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
+uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+zeroAgreementStratum_card_le_choose_of_k_le_t
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
+unsafe_of_not_uniformLineBadScalarsBudgeted_with_fieldPowCoordinateFibers
 exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_low_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 The coordinate-fiber route covers a `t`-stratum by the raw RS fibers indexed by `t`-subsets of
 `directionZeroSet(u1)`: how many degree-`< k` codewords can agree with `u0` on a prescribed
 zero-subset.  It already proves the rigid endpoint
 `coordinateAgreementFiber_card_le_one_of_k_le`: once the prescribed subset has size at least `k`,
-there is at most one codeword.
+there is at most one codeword.  The endpoint now lifts to the stratum-level ceiling
+`#zeroAgreementStratum(t) <= choose(#directionZeroSet(u1), t)` for every `k <= t`.
 
 The new production scanner says that, after support-line-list control, support arithmetic,
-zero-direction safety, and coordinate-fiber arithmetic are fixed, a failed uniform bad-scalar budget
-must produce a large-zero safe line, a `t < a`, a zero-coordinate subset `S` of size `t`, and
-`M(t) < #coordinateAgreementFiber(S)`.  The next mathematical target is therefore the interpolation
-count for fibers with `t < k`, expected to look like an affine RS fiber of size at most
-`|F|^(k-t)` when the constraints are independent.
+zero-direction safety, high-binomial stratum domination, and coordinate-fiber arithmetic are fixed,
+a failed uniform bad-scalar budget must produce a large-zero safe line and a low stratum `t < k`.
+With coordinate-fiber arithmetic fixed, it can be sharpened further to a zero-coordinate subset `S`
+of size `t` and `M(t) < #coordinateAgreementFiber(S)`.  The affine RS fiber bound is now proved as
+`#coordinateAgreementFiber(S) <= |F|^(k - #S)`, modulo the existing vanishing-kernel cardinality
+substrate.  Therefore the field-power production wrapper leaves only the weighted binomial
+arithmetic fit; if that fit fails, the next theorem must exploit extra support/appearance geometry
+beyond the raw affine fiber count.

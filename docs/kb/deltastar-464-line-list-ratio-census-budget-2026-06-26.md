@@ -510,12 +510,24 @@ coordinateAgreementFiber
 ZeroCoordinateAgreementFiberBudgeted
 ZeroCoordinateAgreementFiberBudgetFits
 coordinateAgreementFiber_card_le_one_of_k_le
+coordinateAgreementFiber_card_le_field_pow_sub_card
+zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card
+uniformLargeZeroSafeCoordinateAgreementFiberBudgeted_field_pow_sub_card
+zeroAgreementStratum_card_le_choose_of_k_le_t
+unsafe_or_largeZero_safe_low_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_fieldPowCoordinateFibers
+unsafe_of_not_uniformLineBadScalarsBudgeted_with_fieldPowCoordinateFibers
 ```
 
 `coordinateAgreementFiber` is the raw RS fiber of all codewords agreeing with `u0` on a fixed
 zero-coordinate subset `S`; summing over all `t`-subsets covers the exact `t`-stratum.  It already
-has the endpoint theorem that a fiber over `#S >= k` has size at most one.  Thus the remaining
-`N(t)` problem can be attacked as a finite-field interpolation count for fibers with `t < k`; if
-that count and the binomial/summation arithmetic fit, the large-zero branch is discharged.  If it
-fails, the new scanner returns an explicit overfull coordinate fiber.
+has the endpoint theorem that a fiber over `#S >= k` has size at most one, and this now lifts to
+the stratum bound `#zeroAgreementStratum(t) <= choose(#zeroSet(u1), t)` for `k <= t`.  The raw
+affine interpolation count is also formalized as
+`#coordinateAgreementFiber(S) <= |F|^(k - #S)`, inheriting `sorryAx` only from the existing
+vanishing-kernel cardinality substrate.  Thus the remaining `N(t)` problem is no longer the basic
+fiber count; it is whether the induced low-range weighted binomial arithmetic fits, or whether a
+support-aware refinement is needed.  If the field-power weighted fit does hold, any remaining
+uniform-budget failure is forced into zero-direction saturation.  If a weaker proposed envelope
+fails, the new scanner returns an explicit low stratum or low overfull coordinate fiber.
