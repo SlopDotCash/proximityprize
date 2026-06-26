@@ -511,7 +511,9 @@ so singleton-defect estimates can be attacked profile-by-profile rather than onl
 Follow-up: singleton defects now also have a codeword-indexed partition.  The sets
 `codewordSingletonWitnessScalars` are disjoint over appearing codewords, their `biUnion` is exactly
 `singletonBadScalars`, and `singletonBadScalarDefect` is the corresponding sum.  A per-codeword
-budget therefore bounds the whole defect by `#lineAppearingCodewords * B`.
+budget therefore bounds the whole defect by `#lineAppearingCodewords * B`; the production wrappers
+can consume either that appearing-codeword count or a `LineListBudgeted` cap to prove the final
+bad-scalar budget from a combined weight-plus-singleton-cap inequality.
 
 Follow-up: `LineListIncidenceMultiplicity.lean` now has the uniform converse scanner
 `exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted`.  Once the
