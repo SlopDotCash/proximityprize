@@ -50,11 +50,24 @@ zeroAgreementStratum
 puncturedZeroStratifiedLineWeight
 PuncturedZeroStratifiedLineBudgeted
 UniformPuncturedZeroStratifiedLineBudgeted
+ZeroAgreementStrataCardBudgeted
+ZeroAgreementStrataBudgetFits
+UniformLargeZeroSafeZeroAgreementStrataCardBudgeted
+UniformLargeZeroSafeZeroAgreementStrataBudgetFits
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
 lineBadScalars_card_le_of_puncturedZeroStratifiedLineBudgeted
 puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata
+puncturedZeroStratifiedLineWeight_le_of_zeroAgreementStrataCardBudgeted
+puncturedZeroStratifiedLineBudgeted_of_zeroAgreementStrataCardBudgeted
+uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
 largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_zeroAgreementStrata
+not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+not_zeroAgreementStrataBudgetFits_iff_sum_gt
+not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
+not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
 ```
 
 The key bound is:
@@ -84,6 +97,16 @@ sum_{t=0}^{a-1}
 So the word "stratified" is not only descriptive.  The Lean object can be attacked either as a
 weighted appearing-codeword list or as a family of exact `t`-strata.
 
+The newest consumer takes that literally:
+
+```lean
+uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
+```
+
+It reduces the punctured-weight theorem to two inputs: a cardinality bound `N t` for every
+zero-agreement stratum on every large-zero safe line, and the arithmetic fit
+`sum_t N t * support/(a-t) <= B`.
+
 ## What is still missing
 
 The new residual is:
@@ -98,12 +121,14 @@ with exact failure form:
 not_uniformPuncturedZeroStratifiedLineBudgeted_iff_exists_largeZero_safe_weight_gt
 puncturedZeroStratifiedLineWeight_gt_of_lineBadScalars_card_gt
 not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineBadScalarsBudgeted
+not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
 ```
 
 So the next proof or counterexample has a concrete target: find or rule out a large-zero safe line
 whose punctured weight exceeds the production budget.  The last bridge says any failed
 `LargeZeroSafeLineBadScalarsBudgeted` instance already refutes this stronger punctured-weight
-budget.
+budget.  With a proposed `N(t)` envelope whose weighted sum fits under `B`, any punctured-budget
+failure refutes the stratum-cardinality budget itself.
 
 The promising mathematical direction is a stratum bound.  Let:
 
@@ -127,6 +152,30 @@ ZeroAgreementStratumListBound:
   because many zero agreements already impose a high-codimension RS restriction.
 ```
 
+The Lean socket for this theorem now exists.  `ZeroAgreementStrataCardBudgeted` states
+`#zeroAgreementStratum(t) <= N(t)`, while `ZeroAgreementStrataBudgetFits` is the arithmetic check:
+
+```text
+sum_{t < a} N(t) * support(u1)/(a-t) <= B.
+```
+
+The uniform large-zero versions imply `UniformPuncturedZeroStratifiedLineBudgeted`.
+
+The scanner side is now equally explicit:
+
+```lean
+not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+not_zeroAgreementStrataBudgetFits_iff_sum_gt
+not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
+not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
+```
+
+So a failed `N(t)` route separates into two concrete defects.  Either some large-zero safe line has
+a stratum whose actual cardinality exceeds `N(t)`, or the proposed envelope fits the strata but its
+weighted arithmetic sum is already too large for the target budget.  If the arithmetic fit is known
+and the punctured theorem still fails, the culprit must be an overfull zero-agreement stratum.
+
 If this theorem is true, it is a genuine coding-theoretic route around the blunt Paley/BGK route for
 this branch.  If it is false, the counterexample should be highly structured: many RS codewords
 nearly agree with `u0` on the zero set, none reaches `a`, and their moving-support fibers still
@@ -141,7 +190,7 @@ The tool can fail in two ways:
 2. The weight may be small for natural monomial directions but large for arbitrary `WordStack`
    directions.  Then the same global-max problem reappears under a different name.
 
-The scanner obligation is now clear:
+The scanner obligation is now two-level.  Raw failure is:
 
 ```text
 not support eligible,
@@ -149,5 +198,21 @@ zero-direction safe,
 puncturedZeroStratifiedLineWeight > B.
 ```
 
+After proposing an `N(t)` envelope, the sharper failure is either:
+
+```text
+sum_{t < a} N(t) * support(u1)/(a-t) > B,
+```
+
+or a concrete stratum witness:
+
+```text
+not support eligible,
+zero-direction safe,
+t < a,
+N(t) < #zeroAgreementStratum(t).
+```
+
 This is the next target to probe or prove.  The prize is still open, but the large-zero branch is no
-longer an undefined exception; it has a computable summation certificate.
+longer an undefined exception; it has a computable summation certificate and a stratum-level
+counterexample format.

@@ -340,6 +340,16 @@ sum over `t < a` zero-agreement strata.  Added
 `docs/kb/deltastar-464-punctured-zero-stratified-tool-2026-06-26.md`; the remaining theorem is now
 a uniform bound on that punctured weight, or a scanner counterexample to it.
 
+Follow-up: `LineListReduction.lean` now exposes the `N(t)` envelope theorem directly.
+`ZeroAgreementStrataCardBudgeted` plus `ZeroAgreementStrataBudgetFits` bound the punctured weight,
+and the uniform large-zero versions imply `UniformPuncturedZeroStratifiedLineBudgeted`.  The next
+non-analytic theorem is an actual cardinality envelope for the exact zero-agreement strata.
+
+Follow-up: the `N(t)` envelope now has exact scanner-facing failures.  A failed stratum-cardinality
+budget returns a large-zero safe line and a concrete overfull zero-agreement stratum; a failed
+arithmetic fit returns a large-zero direction whose weighted `N(t)` sum already exceeds `B`.  If the
+arithmetic fit is fixed, any failed punctured budget must come from an overfull stratum.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:

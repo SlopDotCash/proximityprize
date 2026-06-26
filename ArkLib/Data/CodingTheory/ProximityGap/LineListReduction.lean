@@ -19,10 +19,10 @@ single line list size**:
 > codewords that come within agreement `a` of *some* word on the line.
 
 This is structurally better than the per-word list-decoding the supply naively asks for: it
-replaces the worst-case-over-`q`-words list size with **one** list — the codewords near the
-whole affine line `{u₀ + γ·u₁}`. The wall now reads "bound `Λ` (the line list) sub-trivially";
-`Λ ≤ q · (worst per-word list)` always, but `Λ` can be far smaller, and for `u₁ = xᵏ` far from
-the code the line is a genuinely 1-parameter family whose list size is the natural object of
+replaces the worst-case-over-`q`-words list size with **one** list — the codewords near the whole
+affine line `{u₀ + γ·u₁}`. The wall now reads "bound the line list sub-trivially"; that list is
+always at most `q` times the worst per-word list, but it can be far smaller.  For `u₁ = xᵏ` far
+from the code, the line is a genuinely 1-parameter family whose list size is the natural object of
 affine-subspace list decoding (Guruswami–Xing and successors). It is the cleanest positive-side
 target the incidence skeleton produces.
 
@@ -152,6 +152,31 @@ def UniformPuncturedZeroStratifiedLineBudgeted
     ZeroDirectionSafeLine dom k a u₀ u₁ →
       PuncturedZeroStratifiedLineBudgeted dom k a u₀ u₁ B
 
+/-- A per-line cardinality budget for every zero-agreement stratum.  The function `N` is the
+candidate upper bound for the number of appearing codewords with exactly `t` zero-direction
+agreements. -/
+def ZeroAgreementStrataCardBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (N : ℕ → ℕ) : Prop :=
+  ∀ t : ℕ, t < a → (zeroAgreementStratum dom k a u₀ u₁ t).card ≤ N t
+
+/-- Arithmetic fit condition for a proposed zero-agreement stratum cardinality budget. -/
+def ZeroAgreementStrataBudgetFits (a B : ℕ) (u₁ : Fin n → F) (N : ℕ → ℕ) : Prop :=
+  ∑ t ∈ Finset.range a,
+    N t * ((directionSupportSet u₁).card / (a - t)) ≤ B
+
+/-- Uniform stratum-cardinality budget on the large-zero safe branch. -/
+def UniformLargeZeroSafeZeroAgreementStrataCardBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (N : ℕ → ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ZeroAgreementStrataCardBudgeted dom k a u₀ u₁ N
+
+/-- Uniform arithmetic fit for a zero-agreement stratum budget on large-zero directions. -/
+def UniformLargeZeroSafeZeroAgreementStrataBudgetFits
+    (a B : ℕ) (N : ℕ → ℕ) : Prop :=
+  ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroAgreementStrataBudgetFits (F := F) (n := n) a B u₁ N
+
 open Classical in
 /-- **The line-list reduction.** With nonvanishing direction `u₁`, the scalars whose line
 word `w_γ` is agreed with by some codeword on `≥ a` points are covered by the appearing
@@ -203,8 +228,8 @@ theorem lineBadScalars_card_le_lineAppearingCodewords_card_mul
 
 open Classical in
 /-- Support-aware line-list reduction.  If the zero set of `u₁` has size `z < a`, then each
-appearing codeword contributes at most `support(u₁)/(a-z)` heavy scalars, so the line's bad scalars
-are bounded by the line-list size times that corrected per-codeword budget. -/
+appearing codeword contributes at most `support(u₁)/(a-z)` heavy scalars, so the line's bad
+scalars are bounded by the line-list size times that corrected per-codeword budget. -/
 theorem lineBadScalars_card_le_lineAppearingCodewords_card_mul_support_div_sub_zero
     (dom : Fin n ↪ F) (k a : ℕ)
     (u₀ u₁ : Fin n → F) (hz : (directionZeroSet u₁).card < a) :
@@ -267,10 +292,10 @@ theorem lineBadScalars_card_le_of_lineListBudgeted_support_div_sub_zero
       ((directionSupportSet u₁).card / (a - (directionZeroSet u₁).card)) hL)
 
 open Classical in
-/-- Punctured zero-stratified line reduction.  For a zero-safe line, the bad scalars are bounded by
-the sum over appearing codewords of the corrected moving-support budget
-`support(u₁)/(a - #zeroAgreement(c,u₀,u₁))`.  Unlike the support-eligible theorem, this remains
-useful when the full zero set of `u₁` has size at least `a`. -/
+/-- Punctured zero-stratified line reduction.  For a zero-safe line, the bad scalars are bounded
+by the sum over appearing codewords of the corrected moving-support budget using the denominator
+`a - #zeroAgreement(c,u₀,u₁)`.  Unlike the support-eligible theorem, this still works when the full
+zero set of `u₁` has size at least `a`. -/
 theorem lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
     (dom : Fin n ↪ F) (k a : ℕ)
     (u₀ u₁ : Fin n → F) (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁) :
@@ -356,6 +381,51 @@ theorem puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata
     _ = (appC.filter (fun c => (directionZeroAgreementSet c u₀ u₁).card = t)).card *
         ((directionSupportSet u₁).card / (a - t)) := by
           rw [Finset.sum_const, smul_eq_mul]
+
+open Classical in
+/-- A stratum-cardinality budget bounds the punctured line weight by the corresponding weighted
+budget sum. -/
+theorem puncturedZeroStratifiedLineWeight_le_of_zeroAgreementStrataCardBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (u₀ u₁ : Fin n → F) (N : ℕ → ℕ)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hStrata : ZeroAgreementStrataCardBudgeted dom k a u₀ u₁ N) :
+    puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+      ≤ ∑ t ∈ Finset.range a,
+        N t * ((directionSupportSet u₁).card / (a - t)) := by
+  rw [puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata dom k a u₀ u₁ hsafe]
+  exact Finset.sum_le_sum fun t ht =>
+    Nat.mul_le_mul_right
+      ((directionSupportSet u₁).card / (a - t))
+      (hStrata t (Finset.mem_range.mp ht))
+
+/-- A stratum-cardinality budget plus the arithmetic fit condition gives the punctured line
+budget. -/
+theorem puncturedZeroStratifiedLineBudgeted_of_zeroAgreementStrataCardBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (u₀ u₁ : Fin n → F) (N : ℕ → ℕ)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hStrata : ZeroAgreementStrataCardBudgeted dom k a u₀ u₁ N)
+    (hFits : ZeroAgreementStrataBudgetFits (F := F) (n := n) a B u₁ N) :
+    PuncturedZeroStratifiedLineBudgeted dom k a u₀ u₁ B :=
+  le_trans
+    (puncturedZeroStratifiedLineWeight_le_of_zeroAgreementStrataCardBudgeted
+      dom k a u₀ u₁ N hsafe hStrata)
+    hFits
+
+/-- Uniform stratum-cardinality bounds plus their fit condition discharge the punctured
+large-zero safe budget. -/
+theorem uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ) (N : ℕ → ℕ)
+    (hStrata : UniformLargeZeroSafeZeroAgreementStrataCardBudgeted dom k a N)
+    (hFits :
+      UniformLargeZeroSafeZeroAgreementStrataBudgetFits (F := F) (n := n) a B N) :
+    UniformPuncturedZeroStratifiedLineBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact puncturedZeroStratifiedLineBudgeted_of_zeroAgreementStrataCardBudgeted
+    dom k a B u₀ u₁ N hsafe
+    (hStrata u₀ u₁ hnotEligible hsafe)
+    (hFits u₁ hnotEligible)
 
 /-- Consumer form of the punctured zero-stratified line reduction. -/
 theorem lineBadScalars_card_le_of_puncturedZeroStratifiedLineBudgeted
@@ -599,6 +669,82 @@ theorem not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineB
           dom k a B u₀ u₁ hsafe hgt⟩
 
 open Classical in
+/-- Exact failure form for one line's zero-agreement stratum cardinality budget. -/
+theorem not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (N : ℕ → ℕ) :
+    (¬ ZeroAgreementStrataCardBudgeted dom k a u₀ u₁ N) ↔
+      ∃ t : ℕ, t < a ∧ N t < (zeroAgreementStratum dom k a u₀ u₁ t).card := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro t ht
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨t, ht, hgt⟩)
+  · rintro ⟨t, ht, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget t ht)) hgt
+
+open Classical in
+/-- Exact failure form for the uniform large-zero safe stratum-cardinality budget. -/
+theorem not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+    (dom : Fin n ↪ F) (k a : ℕ) (N : ℕ → ℕ) :
+    (¬ UniformLargeZeroSafeZeroAgreementStrataCardBudgeted dom k a N) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ N t < (zeroAgreementStratum dom k a u₀ u₁ t).card := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe t ht
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hgt⟩)
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget u₀ u₁ hnotEligible hsafe t ht)) hgt
+
+omit [Fintype F] in
+/-- Exact failure form for one line's arithmetic stratum-budget fit. -/
+theorem not_zeroAgreementStrataBudgetFits_iff_sum_gt
+    (a B : ℕ) (u₁ : Fin n → F) (N : ℕ → ℕ) :
+    (¬ ZeroAgreementStrataBudgetFits (F := F) (n := n) a B u₁ N) ↔
+      B < ∑ t ∈ Finset.range a,
+        N t * ((directionSupportSet u₁).card / (a - t)) := by
+  rw [ZeroAgreementStrataBudgetFits]
+  exact not_le
+
+omit [Fintype F] in
+/-- Exact failure form for the uniform large-zero arithmetic stratum-budget fit. -/
+theorem not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
+    (a B : ℕ) (N : ℕ → ℕ) :
+    (¬ UniformLargeZeroSafeZeroAgreementStrataBudgetFits (F := F) (n := n) a B N) ↔
+      ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        B < ∑ t ∈ Finset.range a,
+          N t * ((directionSupportSet u₁).card / (a - t)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₁ hnotEligible
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₁, hnotEligible, hgt⟩)
+  · rintro ⟨u₁, hnotEligible, hgt⟩ hfits
+    exact (not_lt_of_ge (hfits u₁ hnotEligible)) hgt
+
+open Classical in
+/-- If a proposed stratum budget fits arithmetically, any punctured-budget failure must come from
+an overfull zero-agreement stratum. -/
+theorem not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
+    (dom : Fin n ↪ F) (k a B : ℕ) (N : ℕ → ℕ)
+    (hFits :
+      UniformLargeZeroSafeZeroAgreementStrataBudgetFits (F := F) (n := n) a B N)
+    (hnot : ¬ UniformPuncturedZeroStratifiedLineBudgeted dom k a B) :
+    ¬ UniformLargeZeroSafeZeroAgreementStrataCardBudgeted dom k a N := by
+  intro hStrata
+  exact hnot
+    (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
+      dom k a B N hStrata hFits)
+
+open Classical in
 /-- Exact subfield-budget failure trichotomy for the line-list route.  If the target budget is
 below field size, then a uniform bad-scalar budget fails for exactly one of three scanner-visible
 reasons: an eligible direction is over budget; a zero-direction saturation witness exists; or the
@@ -682,6 +828,22 @@ theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_punctured
     dom k a L B hSupport hFits hZeroSafe
     (largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
       dom k a B hPunctured)
+
+/-- Production wrapper using explicit zero-agreement stratum cardinality budgets for the
+large-zero safe branch. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_zeroAgreementStrata
+    (dom : Fin n ↪ F) (k a L B : ℕ) (N : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hStrata : UniformLargeZeroSafeZeroAgreementStrataCardBudgeted dom k a N)
+    (hStrataFits :
+      UniformLargeZeroSafeZeroAgreementStrataBudgetFits (F := F) (n := n) a B N) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
+    dom k a L B hSupport hFits hZeroSafe
+    (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
+      dom k a B N hStrata hStrataFits)
 
 open Classical in
 /-- Exact failure form for the uniform support-aware line-list budget: it fails precisely when some
@@ -800,8 +962,16 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms puncturedZeroStratifiedLineWeight
 #print axioms PuncturedZeroStratifiedLineBudgeted
 #print axioms UniformPuncturedZeroStratifiedLineBudgeted
+#print axioms ZeroAgreementStrataCardBudgeted
+#print axioms ZeroAgreementStrataBudgetFits
+#print axioms UniformLargeZeroSafeZeroAgreementStrataCardBudgeted
+#print axioms UniformLargeZeroSafeZeroAgreementStrataBudgetFits
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
 #print axioms puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata
+#print axioms puncturedZeroStratifiedLineWeight_le_of_zeroAgreementStrataCardBudgeted
+#print axioms puncturedZeroStratifiedLineBudgeted_of_zeroAgreementStrataCardBudgeted
+#print axioms
+  uniformPuncturedZeroStratifiedLineBudgeted_of_uniformZeroAgreementStrataCardBudgeted
 #print axioms lineBadScalars_card_le_of_puncturedZeroStratifiedLineBudgeted
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
 #print axioms lineBadScalars_eq_univ_of_codeword_directionZeroAgreement_ge
@@ -821,10 +991,18 @@ theorem lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
 #print axioms puncturedZeroStratifiedLineWeight_gt_of_lineBadScalars_card_gt
 #print axioms
   not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineBadScalarsBudgeted
+#print axioms not_zeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+#print axioms not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_iff_exists_stratum_gt
+#print axioms not_zeroAgreementStrataBudgetFits_iff_sum_gt
+#print axioms
+  not_uniformLargeZeroSafeZeroAgreementStrataBudgetFits_iff_exists_sum_gt
+#print axioms
+  not_uniformLargeZeroSafeZeroAgreementStrataCardBudgeted_of_not_uniformPunctured
 #print axioms not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
 #print axioms supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_zeroAgreementStrata
 #print axioms not_uniformSupportLineListBudgeted_iff_exists_eligible_lineAppearing_gt
 #print axioms not_supportAdjustedLineBadScalarsBudgeted_iff_exists_eligible_lineBadScalars_gt
 #print axioms not_uniformSupportLineListBudgeted_of_exists_eligible_lineBadScalars_gt
