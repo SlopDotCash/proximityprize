@@ -68,6 +68,8 @@ We name `(TZ)` as the `Prop`-valued hypothesis `ThornerZamanPNTinAP n β ε`. Th
   (the supply count `supply` fits under the TZ density, and beats the `s = 128` bad-prime
   budget), there is a prime `p ≡ 1 (mod n)`, `p ∈ [n^β, 2·n^β]` (so `p = Θ(n^β)`), and a smooth
   evaluation domain `⟨g⟩ ⊆ F_p^×` of order `n`, with `mcaDeltaStar(C, ε*) ≤ 1 − r/128`.
+* `kkh26_s128_ceiling_of_thornerZamanPNTinAP_square` — the same bridge with the paper-facing
+  square budget `(2^r*C(64,r))^2 * 448*log 2 / log(n^β) < supply`.
 
 ## Honesty
 
@@ -291,6 +293,34 @@ theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP' {n : ℕ} {β ε : ℝ} {supp
   rw [s128_resultantLog_eq]
   exact hcount
 
+/-- **The bridge in the paper-facing square-budget form.**  This variant consumes the common
+analytic side condition
+`(2^r*C(64,r))^2 * 448*log 2 / log(n^β) < supply`; the exact collision-pair budget is
+smaller, so the proven s = 128 ceiling applies. -/
+theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
+    {n : ℕ} {β ε : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((448 * Real.log 2) / Real.log ((n : ℝ) ^ β)) < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  have hSupply : TZPrimeSupply n β supply :=
+    tzPrimeSupply_of_thornerZamanPNTinAP hTZ hsupply
+  exact ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128_of_square_bound
+    (n := n) (β := β) (supply := supply) (m := m) (r := r)
+    hSupply hm hn hr2 hr hx hpl hcount
+
 end ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -304,3 +334,5 @@ open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP'
+open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
+#print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_square

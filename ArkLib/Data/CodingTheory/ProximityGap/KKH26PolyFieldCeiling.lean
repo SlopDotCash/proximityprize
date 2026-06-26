@@ -43,6 +43,11 @@ under Montgomery's conjecture), which dwarfs the budget
 
 * `collisionPairs` — the index set of collision resultants (ordered pairs of distinct
   signed data).
+* `card_collisionPairs` / `card_collisionPairs_le_square` — the exact `A(A - 1)` count and
+  the coarse `A^2` upper bound for `A = 2^r * (2^(μ - 1)).choose r`.
+* `coarseResultantLogRatio_nonneg` / `kkh26_mcaDeltaStar_le_of_TZ_square_bound` — a reusable
+  square-budget consumer: it is enough for the prime supply to beat the common upper bound
+  `A^2 * log((2^μ)^(2^(μ-1))) / log(n^β)`.
 * `kkh26_good_prime_avoids_collisions_of_TZ` — **conditional [KKH26] Lemma 2,
   instantiated**: given the [TZ24] supply and the budget inequality, some prime
   `p ≡ 1 (mod n)`, `p ∈ [n^β, 2n^β]`, divides no collision resultant.
@@ -83,6 +88,43 @@ lemma mem_collisionPairs {μ r : ℕ}
   simp only [collisionPairs, Finset.mem_filter, Finset.mem_product]
   tauto
 
+/-- The collision-pair index set is the off-diagonal of the signed-data set. -/
+lemma collisionPairs_eq_offDiag (μ r : ℕ) :
+    collisionPairs μ r = (sigData (2 ^ (μ - 1)) r).offDiag := by
+  ext q
+  rw [mem_collisionPairs, Finset.mem_offDiag]
+
+/-- Exact cardinality of the collision-resultant family:
+`|collisionPairs μ r| = A(A - 1)` with `A = 2^r * C(2^(μ-1), r)`. -/
+lemma card_collisionPairs (μ r : ℕ) :
+    (collisionPairs μ r).card =
+      (2 ^ r * (2 ^ (μ - 1)).choose r) *
+        (2 ^ r * (2 ^ (μ - 1)).choose r - 1) := by
+  rw [collisionPairs_eq_offDiag, Finset.offDiag_card, card_sigData]
+  rw [Nat.mul_sub_one]
+
+/-- The coarse square upper bound on collision pairs used in the [KKH26] prime budget. -/
+lemma card_collisionPairs_le_square (μ r : ℕ) :
+    (collisionPairs μ r).card ≤ (2 ^ r * (2 ^ (μ - 1)).choose r) ^ 2 := by
+  rw [card_collisionPairs, pow_two]
+  exact Nat.mul_le_mul_left _ (Nat.sub_le _ _)
+
+/-- The logarithmic resultant-budget factor used by the coarse KKH26 bound is nonnegative
+whenever the prime window starts at `n^β ≥ 2`. -/
+lemma coarseResultantLogRatio_nonneg {n : ℕ} {β : ℝ} (μ : ℕ)
+    (hx : 2 ≤ (n : ℝ) ^ β) :
+    0 ≤
+      Real.log (((((2 : ℕ) ^ μ) ^ 2 ^ (μ - 1) : ℕ) : ℝ)) /
+        Real.log ((n : ℝ) ^ β) := by
+  have hMpos : 0 < (((2 : ℕ) ^ μ) ^ 2 ^ (μ - 1)) :=
+    pow_pos (Nat.two_pow_pos μ) _
+  have hMone : (1 : ℝ) ≤ (((((2 : ℕ) ^ μ) ^ 2 ^ (μ - 1) : ℕ) : ℝ)) := by
+    exact_mod_cast Nat.succ_le_of_lt hMpos
+  have hnum : 0 ≤ Real.log (((((2 : ℕ) ^ μ) ^ 2 ^ (μ - 1) : ℕ) : ℝ)) :=
+    Real.log_nonneg hMone
+  have hden : 0 < Real.log ((n : ℝ) ^ β) := Real.log_pos (by linarith)
+  exact div_nonneg hnum hden.le
+
 /-- **Conditional [KKH26] Lemma 2, instantiated at the collision resultants.**  Given the
 named [TZ24] supply `TZPrimeSupply n β supply` and the budget inequality (the supply
 strictly exceeds `|collisionPairs μ r| · log(s^{s/2}) / log(n^β)` with `s = 2^μ`), some
@@ -117,11 +159,32 @@ theorem kkh26_good_prime_avoids_collisions_of_TZ {n : ℕ} {β : ℝ} {supply : 
   have h := hgood ((collisionPairs μ r).equivFin ⟨(d₁, d₂), hq⟩)
   rwa [Equiv.symm_apply_apply] at h
 
+/-- **Square-budget version of the conditional good-prime step.**  It is enough for the
+Thorner-Zaman supply to beat the coarse paper budget
+`(2^r * C(2^(μ-1), r))^2 * log((2^μ)^(2^(μ-1))) / log(n^β)`; the exact collision-pair
+budget is smaller by `card_collisionPairs_le_square`. -/
+theorem kkh26_good_prime_avoids_collisions_of_TZ_square_bound {n : ℕ} {β : ℝ} {supply : ℕ}
+    (hTZ : TZPrimeSupply n β supply) {μ r : ℕ} (hμ : 1 ≤ μ) (hr : r ≤ 2 ^ (μ - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * (2 ^ (μ - 1)).choose r) ^ 2 : ℕ) : ℝ) *
+        (Real.log (((((2 : ℕ) ^ μ) ^ 2 ^ (μ - 1) : ℕ) : ℝ)) /
+          Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧ (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∀ d₁ ∈ sigData (2 ^ (μ - 1)) r, ∀ d₂ ∈ sigData (2 ^ (μ - 1)) r, d₁ ≠ d₂ →
+        ¬ (p : ℤ) ∣ collisionResultant μ d₁ d₂ := by
+  refine kkh26_good_prime_avoids_collisions_of_TZ hTZ hμ hr hx ?_
+  have hcard : ((collisionPairs μ r).card : ℝ) ≤
+      (((2 ^ r * (2 ^ (μ - 1)).choose r) ^ 2 : ℕ) : ℝ) := by
+    exact_mod_cast card_collisionPairs_le_square μ r
+  exact lt_of_le_of_lt
+    (mul_le_mul_of_nonneg_right hcard (coarseResultantLogRatio_nonneg μ hx)) hcount
+
 /-! ### A smooth domain inside the good prime field -/
 
 /-- `p ≡ 1 (mod n)` gives an element of multiplicative order `n` in `F_p` (the unit group
 is cyclic of order `p − 1` and `n ∣ p − 1`). -/
-private lemma exists_orderOf_eq_of_modEq {p : ℕ} [Fact p.Prime] {n : ℕ} (hn : 0 < n)
+private lemma exists_orderOf_eq_of_modEq {p : ℕ} [Fact p.Prime] {n : ℕ} (_hn : 0 < n)
     (hmod : p ≡ 1 [MOD n]) : ∃ g : ZMod p, orderOf g = n := by
   have hp2 : 2 ≤ p := (Fact.out : p.Prime).two_le
   have hdvd : n ∣ p - 1 := (Nat.modEq_iff_dvd' (by omega)).mp hmod.symm
@@ -177,9 +240,44 @@ theorem kkh26_mcaDeltaStar_le_of_TZ {n : ℕ} {β : ℝ} {supply : ℕ} [NeZero 
   exact kkh26_mcaDeltaStar_le_of_not_dvd hμ hm hn (hn ▸ hg) hplp hr2 hr hndvd
     εstar hεstar
 
+/-- **The [KKH26] `δ*` ceiling at polynomial field size from the coarse square budget.**
+This is the same conditional headline as `kkh26_mcaDeltaStar_le_of_TZ`, but callers may provide
+the common paper-side upper bound
+`(2^r * C(2^(μ-1), r))^2 * log((2^μ)^(2^(μ-1))) / log(n^β) < supply` directly. -/
+theorem kkh26_mcaDeltaStar_le_of_TZ_square_bound {n : ℕ} {β : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : TZPrimeSupply n β supply) {μ m r : ℕ}
+    (hμ : 1 ≤ μ) (hm : 1 ≤ m) (hn : n = 2 ^ μ * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (μ - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ μ : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * (2 ^ (μ - 1)).choose r) ^ 2 : ℕ) : ℝ) *
+        (Real.log (((((2 : ℕ) ^ μ) ^ 2 ^ (μ - 1) : ℕ) : ℝ)) /
+          Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (μ - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ μ) := by
+  refine kkh26_mcaDeltaStar_le_of_TZ hTZ hμ hm hn hr2 hr hx hpl ?_
+  have hcard : ((collisionPairs μ r).card : ℝ) ≤
+      (((2 ^ r * (2 ^ (μ - 1)).choose r) ^ 2 : ℕ) : ℝ) := by
+    exact_mod_cast card_collisionPairs_le_square μ r
+  exact lt_of_le_of_lt
+    (mul_le_mul_of_nonneg_right hcard (coarseResultantLogRatio_nonneg μ hx)) hcount
+
 end ArkLib.ProximityGap.KKH26
 
 /-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.KKH26.collisionPairs_eq_offDiag
+#print axioms ArkLib.ProximityGap.KKH26.card_collisionPairs
+#print axioms ArkLib.ProximityGap.KKH26.card_collisionPairs_le_square
+#print axioms ArkLib.ProximityGap.KKH26.coarseResultantLogRatio_nonneg
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_good_prime_avoids_collisions_of_TZ
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_good_prime_avoids_collisions_of_TZ_square_bound
 #print axioms ArkLib.ProximityGap.KKH26.exists_orderOf_eq_of_modEq
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_of_TZ
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_of_TZ_square_bound

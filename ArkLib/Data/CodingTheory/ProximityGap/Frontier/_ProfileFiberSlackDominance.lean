@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileDominationInt
 
 set_option autoImplicit false
 set_option linter.style.longLine false
-set_option linter.style.longFile 1600
+set_option linter.style.longFile 1800
 
 /-!
 # Slackened profile-fiber dominance
@@ -641,6 +641,97 @@ theorem not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
   intro hcover
   exact (not_lt_of_ge
     (stackBadCountImage_card_le_sum_profileBadCountCover C δ hcover)) hsmall
+
+/-- Plain slack domination gives a coarse one-sided cover: every stack in profile `p` has bad-count
+at most the representative count plus the profile slack.  This does not require the representative
+to lie in the fiber, so the interval starts at zero rather than around the representative. -/
+theorem profileBadCountImageCovered_of_profileFiberSlackDominates
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hdom : ProfileFiberSlackDominates F C δ profile rep slack) :
+    ProfileBadCountImageCovered F C δ profile
+      (fun p => Finset.Icc 0 (StackBadCount F C δ (rep p) + slack p)) := by
+  intro u
+  exact Finset.mem_Icc.mpr ⟨Nat.zero_le _, hdom u⟩
+
+/-- Image-size pressure for an unstructured slack-domination theorem.  Since domination is only
+one-sided, the profile fiber is covered by `[0, bad(rep p) + slack p]`. -/
+theorem stackBadCountImage_card_le_sum_profileFiberSlackDominationCaps
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hdom : ProfileFiberSlackDominates F C δ profile rep slack) :
+    (StackBadCountImage F C δ).card ≤
+      ∑ p : P, (Finset.Icc 0
+        (StackBadCount F C δ (rep p) + slack p)).card := by
+  exact stackBadCountImage_card_le_sum_profileBadCountCover C δ
+    (profileBadCountImageCovered_of_profileFiberSlackDominates C δ hdom)
+
+/-- Refutation socket for plain slack domination: if the one-sided profile cap intervals have too
+little total size, then the advertised domination theorem is false. -/
+theorem not_profileFiberSlackDominates_of_sum_capIntervalCard_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hsmall :
+      (∑ p : P, (Finset.Icc 0
+        (StackBadCount F C δ (rep p) + slack p)).card) <
+        (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberSlackDominates F C δ profile rep slack := by
+  intro hdom
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_sum_profileFiberSlackDominationCaps
+      C δ hdom)) hsmall
+
+/-- A budgeted slack certificate bounds the whole bad-count image by `[0, B]`.  This is weaker
+than the oscillation-specific `2 * slack + 1` tests, but it applies to any slack certificate. -/
+theorem stackBadCountImage_card_le_budget_add_one_of_profileFiberSlack
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hdom : ProfileFiberSlackDominates F C δ profile rep slack)
+    (hbudget : ProfileFiberSlackBudgeted F C δ profile rep slack B) :
+    (StackBadCountImage F C δ).card ≤ B + 1 := by
+  have hsubset : StackBadCountImage F C δ ⊆ Finset.Icc 0 B := by
+    intro b hb
+    change b ∈ (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
+      (fun u => StackBadCount F C δ u) at hb
+    rcases Finset.mem_image.mp hb with ⟨u, _hu, hu⟩
+    rw [← hu]
+    exact Finset.mem_Icc.mpr
+      ⟨Nat.zero_le _,
+        le_trans (hdom u) (hbudget (profile u) ⟨u, rfl⟩)⟩
+  calc
+    (StackBadCountImage F C δ).card ≤ (Finset.Icc 0 B).card :=
+      Finset.card_le_card hsubset
+    _ = B + 1 := by
+      rw [Nat.card_Icc]
+      omega
+
+/-- Bundled-certificate form of the budget image-size pressure. -/
+theorem stackBadCountImage_card_le_budget_add_one_of_profileFiberSlackCertificate
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hcert : ProfileFiberSlackCertificate F C δ profile rep slack B) :
+    (StackBadCountImage F C δ).card ≤ B + 1 :=
+  stackBadCountImage_card_le_budget_add_one_of_profileFiberSlack C δ hcert.1 hcert.2
+
+/-- Certificate-level budget refuter: a certificate with budget `B` cannot realize more than
+`B + 1` distinct bad-count values. -/
+theorem not_profileFiberSlackCertificate_of_budget_add_one_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hsmall : B + 1 < (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberSlackCertificate F C δ profile rep slack B := by
+  intro hcert
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_budget_add_one_of_profileFiberSlackCertificate
+      C δ hcert)) hsmall
 
 /-- Same-profile oscillation gives a concrete finite bad-count cover: each profile fiber's counts
 lie in the interval of radius `slack p` around the representative's bad count. -/
@@ -1490,6 +1581,12 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.ProfileBadCountImageCovered
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileBadCountCover
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountImageCovered_of_profileFiberSlackDominates
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileFiberSlackDominationCaps
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberSlackDominates_of_sum_capIntervalCard_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_budget_add_one_of_profileFiberSlack
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_budget_add_one_of_profileFiberSlackCertificate
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberSlackCertificate_of_budget_add_one_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountImageCovered_of_profileFiberOscillation
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileFiberOscillationIntervals
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_of_sum_intervalCard_lt_stackBadCountImage

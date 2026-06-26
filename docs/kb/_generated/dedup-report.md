@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4894 files, 52193 declarations
+- `ArkLib` — 4894 files, 52210 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -3992,6 +3992,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `axiom audit` [ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.lean:95](../../../ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.lean#L95) — (no docstring)
 - `axiom audit` [ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean:84](../../../ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean#L84) — (no docstring)
 
+### `cannot` (3 declarations, 3 files)
+
+- `class cannot` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/DelsarteLPNoGo.lean:26](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/DelsarteLPNoGo.lean#L26) — (no docstring)
+- `class cannot` [ArkLib/Data/CodingTheory/ProximityGap/Jo26MissingLineSmallSeed.lean:34](../../../ArkLib/Data/CodingTheory/ProximityGap/Jo26MissingLineSmallSeed.lean#L34) — (no docstring)
+- `structure cannot` [ArkLib/Data/CodingTheory/ProximityGap/ListInteriorQDependenceNoGo.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/ListInteriorQDependenceNoGo.lean#L69) — (no docstring)
+
 ### `composedPSpec_dir_seam` (3 declarations, 3 files)
 
 - `theorem Spartan.Spec.Bricks.composedPSpec_dir_seam` [ArkLib/ProofSystem/Spartan/ComposedCompleteness.lean:428](../../../ArkLib/ProofSystem/Spartan/ComposedCompleteness.lean#L428) — Seam-direction fact for `firstMessage ▷ sfx1`: the combined spec (= `composedPSpec`) at the seam ind
@@ -7951,7 +7957,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `primeCountAPone` (2 declarations, 2 files)
 
-- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.primeCountAPone` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:103](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L103) — The **prime-counting function in the progression `1 (mod n)`**: `primeCountAPone n x = π(x; n, 1) =
+- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.primeCountAPone` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L105) — The **prime-counting function in the progression `1 (mod n)`**: `primeCountAPone n x = π(x; n, 1) =
 - `def ProximityGap.Frontier.ThornerZamanPNTStatement.primeCountAPone` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean#L85) — The **prime-counting function in the arithmetic progression `1 (mod n)`**: `primeCountAPone n x = π(
 
 ### `primitive_no_extra_rung` (2 declarations, 2 files)
@@ -8756,12 +8762,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `tzDensityLB` (2 declarations, 2 files)
 
-- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzDensityLB` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:174](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L174) — The **[TZ24] density expression** `(1 − ε) · n^β / (φ(n) · log(n^β))` — the explicit, effective lowe
+- `def ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzDensityLB` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:176](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L176) — The **[TZ24] density expression** `(1 − ε) · n^β / (φ(n) · log(n^β))` — the explicit, effective lowe
 - `def ProximityGap.Frontier.ThornerZamanPNTStatement.tzDensityLB` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean#L161) — The **[TZ24] density expression** `(1 − ε) · n^β / (φ(n) · log(n^β))` — the explicit, effective lowe
 
 ### `tzWindow_card_eq_primeCountAPone_diff` (2 declarations, 2 files)
 
-- `theorem ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzWindow_card_eq_primeCountAPone_diff` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L111) — **The short-interval identity.**  The Thorner–Zaman window count equals the difference of two prime-
+- `theorem ProximityGap.Frontier.KKH26s128ThornerZamanBridge.tzWindow_card_eq_primeCountAPone_diff` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean:113](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean#L113) — **The short-interval identity.**  The Thorner–Zaman window count equals the difference of two prime-
 - `theorem ProximityGap.Frontier.ThornerZamanPNTStatement.tzWindow_card_eq_primeCountAPone_diff` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean:93](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean#L93) — **The short-interval identity.**  The Thorner–Zaman window count equals the difference of two prime-
 
 ### `umCode` (2 declarations, 2 files)
@@ -9529,11 +9535,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem DuplexSpongeFS.EagerLazyDS.cacheFold_pair_mem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/CacheProvenance.lean:190](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/CacheProvenance.lean#L190) — Every cached permutation pair in a fold of `ℓ` over `c₀` either was in `c₀` or comes from a forward
 - `theorem DuplexSpongeFS.EagerLazyDS.cacheFold_pair_mem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58CacheProvenance.lean:190](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58CacheProvenance.lean#L190) — Every cached permutation pair in a fold of `ℓ` over `c₀` either was in `c₀` or comes from a forward
-
-### `cannot` (2 declarations, 2 files)
-
-- `class cannot` [ArkLib/Data/CodingTheory/ProximityGap/Jo26MissingLineSmallSeed.lean:34](../../../ArkLib/Data/CodingTheory/ProximityGap/Jo26MissingLineSmallSeed.lean#L34) — (no docstring)
-- `structure cannot` [ArkLib/Data/CodingTheory/ProximityGap/ListInteriorQDependenceNoGo.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/ListInteriorQDependenceNoGo.lean#L69) — (no docstring)
 
 ### `capacitySegmentDupPermInv_of_inv_mem` (2 declarations, 2 files)
 

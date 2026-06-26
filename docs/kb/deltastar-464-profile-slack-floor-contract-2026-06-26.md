@@ -50,6 +50,8 @@ ProfileSlackClosureAtField
 profileSlackClosureAtField_of_floorGoodProfileSlackBudget
 worstCaseIncidenceBounded_of_profileSlackClosureAtField
 deltaStar_pin_of_profileSlackClosureAtField
+stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
+not_profileSlackClosureAtField_of_budget_add_one_lt_stackBadCountImage
 ```
 
 The Linnik/TZ-facing consumers are:
@@ -91,6 +93,17 @@ not_floorGoodProfileSlackBudget_iff_floorGood_and_exists_usedProfile_budget_lt
 That is the critical no-laundering guardrail.  If floor-goodness is true but a used profile's
 representative-plus-slack allowance is above budget, then the proposed off-BGK floor theorem has
 failed exactly there.
+
+There is also a budget image-size guardrail.  Any field-level slack closure certificate with budget
+`B` forces all realized bad-count values into `Icc 0 B`, hence:
+
+```text
+(StackBadCountImage F C delta).card <= B + 1.
+```
+
+So if a scanner computes more than `B + 1` distinct realized bad-count values, the proposed
+field-level slack closure is false before one has to diagnose whether the failure came from the
+floor predicate, the domination theorem, or the used-profile budget.
 
 ## Critique Of The Route
 

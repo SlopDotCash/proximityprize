@@ -158,6 +158,48 @@ theorem deltaStar_pin_of_profileSlackClosureAtField
   ProfileFiberSlackDominance.deltaStar_pin_of_profileFiberSlack
     C εstar hδ hcert.2.1 hcert.2.2 hbudget
 
+/-- A field-level slack closure certificate bounds the realized bad-count image by `[0, B]`. -/
+theorem stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hcert : ProfileSlackClosureAtField (F := F) (A := A)
+      FloorBad a C δ profile rep slack B) :
+    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ B + 1 := by
+  have hsubset :
+      ProfileFiberSlackDominance.StackBadCountImage F C δ ⊆ Finset.Icc 0 B := by
+    intro b hb
+    change b ∈ (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
+      (fun u => ProfileFiberSlackDominance.StackBadCount F C δ u) at hb
+    rcases Finset.mem_image.mp hb with ⟨u, _hu, hu⟩
+    rw [← hu]
+    exact Finset.mem_Icc.mpr
+      ⟨Nat.zero_le _,
+        le_trans (hcert.2.1 u) (hcert.2.2 (profile u) ⟨u, rfl⟩)⟩
+  calc
+    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ (Finset.Icc 0 B).card :=
+      Finset.card_le_card hsubset
+    _ = B + 1 := by
+      rw [Nat.card_Icc]
+      omega
+
+/-- Image-size refuter for field-level slack closure: no closure certificate with budget `B` can
+explain more than `B + 1` distinct realized bad-count values. -/
+theorem not_profileSlackClosureAtField_of_budget_add_one_lt_stackBadCountImage
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hsmall : B + 1 <
+      (ProfileFiberSlackDominance.StackBadCountImage F C δ).card) :
+    ¬ ProfileSlackClosureAtField (F := F) (A := A)
+      FloorBad a C δ profile rep slack B := by
+  intro hcert
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
+      FloorBad a C δ hcert)) hsmall
+
 /-- Exact scanner form for the field-level slack closure certificate.  It fails precisely when the
 floor predicate is still bad, a stack exceeds its representative-plus-slack allowance, or a used
 profile's allowance exceeds budget. -/
@@ -413,6 +455,8 @@ theorem deltaStar_pin_of_tz_candidateListExactSmallest_profileSlackContract
 #print axioms profileSlackClosureAtField_of_floorGoodProfileSlackBudget
 #print axioms worstCaseIncidenceBounded_of_profileSlackClosureAtField
 #print axioms deltaStar_pin_of_profileSlackClosureAtField
+#print axioms stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
+#print axioms not_profileSlackClosureAtField_of_budget_add_one_lt_stackBadCountImage
 #print axioms not_profileSlackClosureAtField_iff_bad_or_stack_exceeds_slack_or_usedProfile_budget_lt
 #print axioms profileFiberSlackBudgeted_of_linnik_candidateListExactSmallest
 #print axioms worstCaseIncidenceBounded_of_linnik_candidateListExactSmallest_profileSlackContract

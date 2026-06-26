@@ -18,6 +18,10 @@ The whole B3 chain is built and wired, conditional on ONE named hypothesis:
   + the budget inequality `m·logM/log(n^β) < supply`).
 - `KKH26PolyFieldCeiling.lean` — `kkh26_mcaDeltaStar_le_of_TZ`: the conditional headline,
   `δ* ≤ 1 − r/2^μ` at `p = Θ(n^β)`, conditional only on `TZPrimeSupply` + budget.
+- `KKH26PolyFieldCeiling.lean` also records the collision-pair budget in paper form:
+  `card_collisionPairs` proves `|collisionPairs μ r| = A(A-1)` and
+  `card_collisionPairs_le_square` gives the common `A^2` upper bound, where
+  `A = 2^r * C(2^(μ-1), r)`.
 - `KKH26ThornerZamanConstructor.lean` — `tzPrimeSupply_of_subset`: discharge `TZPrimeSupply`
   from an *explicit finite list* of window primes (option (ii)). `KKH26ConcreteCeiling.lean` —
   full end-to-end at `n=4` with explicit primes, **no analytic NT**, axiom-clean.
@@ -83,6 +87,32 @@ Thorner–Zaman. (It *can* further improve the s=128 census-coverage route (A) a
 - `effectiveTZ_dominates_polyBudget` — **the s=128 reduction**: given `EffectiveTZLowerBound`
   and the polynomial margin `m·logM/log(n^β) < c·n^{β−1}` (true at prize scale for both M's),
   the good prime exists. The whole chain runs the moment `EffectiveTZLowerBound` lands.
+
+## 2026-06-26 follow-up: square-budget consumer
+
+`KKH26PolyFieldCeiling.lean` now exposes the exact collision-pair cardinality and square bound:
+
+```lean
+collisionPairs_eq_offDiag
+card_collisionPairs
+card_collisionPairs_le_square
+```
+
+`KKH26S128Ceiling.lean` specializes those to `s = 128` and adds the paper-facing wrappers:
+
+```lean
+s128_collisionPairs_card
+s128_collisionPairs_card_le_square
+s128_supply_beats_budget_of_square_bound
+kkh26_mcaDeltaStar_le_s128_of_square_bound
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
+kkh26_s128_of_polyModulusCount_square
+```
+
+The new wrapper lets callers supply the familiar square budget
+`(2^r * C(64,r))^2 * 448*log 2 / log(n^β) < supply` directly.  It does not remove the named
+`EffectivePNTinAP` / `TZPrimeSupply` wall; it only removes a small arithmetic mismatch between the
+paper estimate and the exact `collisionPairs 7 r` budget used by the Lean consumer.
 
 ## Verdict
 

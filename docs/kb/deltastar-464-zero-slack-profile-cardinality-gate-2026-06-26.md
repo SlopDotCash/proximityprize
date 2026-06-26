@@ -49,6 +49,12 @@ not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
 ProfileBadCountImageCovered
 stackBadCountImage_card_le_sum_profileBadCountCover
 not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
+profileBadCountImageCovered_of_profileFiberSlackDominates
+stackBadCountImage_card_le_sum_profileFiberSlackDominationCaps
+not_profileFiberSlackDominates_of_sum_capIntervalCard_lt_stackBadCountImage
+stackBadCountImage_card_le_budget_add_one_of_profileFiberSlack
+stackBadCountImage_card_le_budget_add_one_of_profileFiberSlackCertificate
+not_profileFiberSlackCertificate_of_budget_add_one_lt_stackBadCountImage
 profileBadCountImageCovered_of_profileFiberOscillation
 stackBadCountImage_card_le_sum_profileFiberOscillationIntervals
 not_profileFiberOscillationBounded_of_sum_intervalCard_lt_stackBadCountImage
@@ -86,6 +92,23 @@ The cover form is the positive-slack analogue.  If each profile label `p` suppli
 
 Thus finite positive-slack explanations also face an image-size test: if the total cover size is
 smaller than the realized bad-count image, the proposed fiber-count cover is false.
+
+Plain one-sided slack domination also gives a coarse cover:
+
+```text
+StackBadCount u in Icc 0 (StackBadCount (rep (profile u)) + slack (profile u)).
+```
+
+This yields the refuter
+`not_profileFiberSlackDominates_of_sum_capIntervalCard_lt_stackBadCountImage`.  If the full
+slack certificate is budgeted by `B`, the entire realized image lies in `Icc 0 B`, so
+
+```text
+(StackBadCountImage F C delta).card <= B + 1.
+```
+
+The corresponding certificate refuter is
+`not_profileFiberSlackCertificate_of_budget_add_one_lt_stackBadCountImage`.
 
 For the existing oscillation certificate, representatives in their fibers plus
 `ProfileFiberOscillationBounded` produce the concrete cover
@@ -128,3 +151,7 @@ zero-slack invariant.
 Positive-slack profiles are not refuted by the zero-slack label gate alone.  They now need either a
 finite cover large enough to account for the global bad-count image, or a genuine oscillation theorem
 that pays for the count variation inside the large fibers.
+
+The budget image gate is weaker than the oscillation-specific `2 * slack + 1` test, but it applies
+to any slack certificate.  It prevents a scanner from accepting a proposed budget `B` when the
+realized bad-count image already contains more than `B + 1` values.

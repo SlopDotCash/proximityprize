@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26s128ThornerZamanBridge
 
 /-!
-# B3 — s = 128 ceiling: the analytic input, RE-CLASSIFIED against the real Thorner–Zaman (#444, AvD1)
+# B3 — s = 128 ceiling: analytic input reclassified
+
+Issue #444, AvD1.
 
 This lane revisits **Route D** (B3 `s = 128` via Thorner–Zaman) with one job: *verify the
 cited analytic input against the actual literature* and record the honest classification.
@@ -83,7 +85,8 @@ namespace ProximityGap.Frontier.AvD1KKH26S128
 
 open ArkLib.ProximityGap.KKH26 (TZPrimeSupply collisionPairs evalCode)
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge
-  (tzDensityLB ThornerZamanPNTinAP kkh26_s128_ceiling_of_thornerZamanPNTinAP')
+  (tzDensityLB ThornerZamanPNTinAP kkh26_s128_ceiling_of_thornerZamanPNTinAP'
+   kkh26_s128_ceiling_of_thornerZamanPNTinAP_square)
 
 /-- **The regime-correct named analytic input** (`Hab25Johnson` named-hypothesis pattern; never
 an axiom).  `PolyModulusPrimeCount n β supply` asserts the **lower bound on the COUNT** of primes
@@ -136,6 +139,29 @@ theorem kkh26_s128_of_polyModulusCount {n : ℕ} {β ε : ℝ} {supply : ℕ} [N
             ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) :=
   kkh26_s128_ceiling_of_thornerZamanPNTinAP' hTZ hm hn hr2 hr hx hpl hsupply hcount
 
+/-- **The s = 128 `δ*` ceiling from the regime-correct count input, square-budget form.**
+This is the same reclassified analytic route as `kkh26_s128_of_polyModulusCount`, but with the
+paper-facing side condition `(2^r*C(64,r))^2 * 448*log 2 / log(n^β) < supply`; the exact
+collision-pair budget is smaller. -/
+theorem kkh26_s128_of_polyModulusCount_square {n : ℕ} {β ε : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hsupply : (supply : ℝ) ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((448 * Real.log 2) / Real.log ((n : ℝ) ^ β)) < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) :=
+  kkh26_s128_ceiling_of_thornerZamanPNTinAP_square hTZ hm hn hr2 hr hx hpl hsupply hcount
+
 end ProximityGap.Frontier.AvD1KKH26S128
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -143,3 +169,5 @@ open ProximityGap.Frontier.AvD1KKH26S128 in
 #print axioms polyModulusCount_of_thornerZamanPNTinAP
 open ProximityGap.Frontier.AvD1KKH26S128 in
 #print axioms kkh26_s128_of_polyModulusCount
+open ProximityGap.Frontier.AvD1KKH26S128 in
+#print axioms kkh26_s128_of_polyModulusCount_square

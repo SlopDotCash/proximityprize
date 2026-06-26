@@ -1036,18 +1036,33 @@ full structured certificate when the bad-count image is too large for the advert
 uniform slack budget, without separately unpacking the representative-in-fiber and oscillation
 components.
 
+Follow-up: the slack image gate now also covers the unstructured domination route.
+`profileBadCountImageCovered_of_profileFiberSlackDominates` covers each profile by the one-sided
+interval `[0, StackBadCount(rep p) + slack p]`, with
+`not_profileFiberSlackDominates_of_sum_capIntervalCard_lt_stackBadCountImage` as the finite
+refuter.  A full budgeted slack certificate forces the global bad-count image into `[0, B]`,
+recorded by `stackBadCountImage_card_le_budget_add_one_of_profileFiberSlackCertificate` and the
+matching certificate/field-closure refuters.
+
+Follow-up: the KKH26 s=128 ceiling consumer now accepts the paper-facing square collision budget.
+`card_collisionPairs` identifies the collision-resultant family as `A(A-1)` and
+`card_collisionPairs_le_square` gives the coarse `A^2` estimate; the s=128 wrappers
+`s128_supply_beats_budget_of_square_bound` and
+`kkh26_mcaDeltaStar_le_s128_of_square_bound`, plus the named-PNT bridge
+`kkh26_s128_ceiling_of_thornerZamanPNTinAP_square` and the regime-correct count wrapper
+`kkh26_s128_of_polyModulusCount_square`, compose that estimate into the existing named
+`TZPrimeSupply` / `ThornerZamanPNTinAP` consumers.  Companion note updated:
+`wf407-B3-s128-thorner-zaman-ceiling.md`.
+
+Follow-up: the Krawtchouk/MacWilliams LP-certificate route is now recorded as a domain-blind no-go.
+`DelsarteLPNoGo.domainBlind_bound_transfers` shows that any invariant-only ceiling transfers across
+same-invariant domains, while `domainBlind_counterexample_refutes` packages the matching
+counterexample criterion.  Companion note:
+`deltastar-464-krawtchouk-lp-certificate-verdict-2026-06-26.md`.
+
 Follow-up: `CapacityBoundsAdmissible.lean` now exposes raw-bound
 `FRSEpsMCACapacityGG25Frontier` wrappers for the direct order/inter-orbit, coset-separation, and
 GR08 geometric folded-RS T4.14 routes.  The wrappers compose the existing `t <= 2 / eta`
 frontiers with `FRSEpsMCACapacityGG25TLeFrontier.toFrontier`, so the raw `hBound` field is
 derived by the checked arithmetic bridge rather than added as a new assumption.  Companion note:
 `deltastar-464-folded-frs-capacity-route-pin-2026-06-26.md`.
-
-## [2026-06-26] refute | Krawtchouk LP domain-blind certificate
-
-Extended `DelsarteLPNoGo.lean` with domain-blind certificate transfer lemmas and added:
-
-- `docs/kb/deltastar-464-krawtchouk-lp-certificate-verdict-2026-06-26.md`
-
-to record that the Krawtchouk/MacWilliams/Levenshtein LP route is a Johnson/Parseval no-go unless
-it imports domain-sensitive smooth-subgroup phase data, which is precisely the Paley/BGK wall.

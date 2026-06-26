@@ -51,6 +51,9 @@ it (plus the s=128 budget) into the ceiling.
   `mcaDeltaStar(C, ε*) ≤ 1 − r/128`.
 * `s128_supply_beats_budget_of` — a sufficient-condition reformulation of (★) isolating
   the analytic supply lower bound `supply ≥ S` from the (provable) budget upper bound.
+* `s128_supply_beats_budget_of_square_bound` /
+  `kkh26_mcaDeltaStar_le_s128_of_square_bound` — paper-facing square-budget wrappers using
+  `(2^r * C(64,r))^2`; the exact collision-pair family is bounded by that square.
 
 ## Honesty
 
@@ -84,6 +87,18 @@ theorem s128_resultantLog_eq :
   push_cast
   ring
 
+/-- Exact s = 128 collision-pair count in the paper's `A(A-1)` form, where
+`A = 2^r * C(64, r)` is the number of signed data. -/
+theorem s128_collisionPairs_card (r : ℕ) :
+    (collisionPairs 7 r).card =
+      (2 ^ r * ((64 : ℕ).choose r)) * (2 ^ r * ((64 : ℕ).choose r) - 1) := by
+  simpa using card_collisionPairs 7 r
+
+/-- The coarse square bound on s = 128 collision pairs used in analytic budget estimates. -/
+theorem s128_collisionPairs_card_le_square (r : ℕ) :
+    (collisionPairs 7 r).card ≤ (2 ^ r * ((64 : ℕ).choose r)) ^ 2 := by
+  simpa using card_collisionPairs_le_square 7 r
+
 /-- **A sufficient condition for the s = 128 budget (★).**  If the named TZ supply count
 `supply` is at least `S`, and `S` already exceeds the provable budget
 `|collisionPairs 7 r| · 448·log 2 / log(n^β)`, then the budget inequality (★) of
@@ -99,6 +114,29 @@ theorem s128_supply_beats_budget_of {n : ℕ} {β : ℝ} {r S supply : ℕ}
       < (supply : ℝ) := by
   rw [s128_resultantLog_eq]
   exact lt_of_lt_of_le hbudget (by exact_mod_cast hS)
+
+/-- **Square-budget sufficient condition for s = 128.**  It is enough to beat the common paper
+upper bound `(2^r*C(64,r))^2 * 448*log 2 / log(n^β)`; the exact collision-pair budget is smaller
+by `s128_collisionPairs_card_le_square`. -/
+theorem s128_supply_beats_budget_of_square_bound {n : ℕ} {β : ℝ} {r S supply : ℕ}
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hS : S ≤ supply)
+    (hbudget : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((448 * Real.log 2) / Real.log ((n : ℝ) ^ β)) < (S : ℝ)) :
+    ((collisionPairs 7 r).card : ℝ)
+        * (Real.log ((((((2 : ℕ) ^ 7) ^ 2 ^ (7 - 1) : ℕ)) : ℝ)) / Real.log ((n : ℝ) ^ β))
+      < (supply : ℝ) := by
+  refine s128_supply_beats_budget_of hS ?_
+  have hcard : ((collisionPairs 7 r).card : ℝ) ≤
+      (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ) := by
+    exact_mod_cast s128_collisionPairs_card_le_square r
+  have hratio_nonneg :
+      0 ≤ (448 * Real.log 2) / Real.log ((n : ℝ) ^ β) := by
+    have hlog2 : 0 ≤ Real.log 2 := (Real.log_pos (by norm_num : (1 : ℝ) < 2)).le
+    have hden : 0 < Real.log ((n : ℝ) ^ β) :=
+      Real.log_pos (by linarith)
+    exact div_nonneg (mul_nonneg (by norm_num) hlog2) hden.le
+  exact lt_of_le_of_lt (mul_le_mul_of_nonneg_right hcard hratio_nonneg) hbudget
 
 /-- **The s = 128 `δ*` ceiling, conditional on the named [TZ24] supply** (#334, B3 / E1).
 This is the `μ = 7` (`s = 2^7 = 128`) specialisation of `kkh26_mcaDeltaStar_le_of_TZ`:
@@ -133,9 +171,37 @@ theorem kkh26_mcaDeltaStar_le_s128 {n : ℕ} {β : ℝ} {supply : ℕ} [NeZero n
   kkh26_mcaDeltaStar_le_of_TZ (μ := 7) (m := m) (r := r) hTZ
     (by norm_num) hm hn hr2 hr hx hpl hcount
 
+/-- **The s = 128 `δ*` ceiling from the paper-facing square budget.**  It is enough for the
+analytic supply to beat the common upper bound
+`(2^r*C(64,r))^2 * 448*log 2 / log(n^β)`: the exact collision-pair budget is smaller by
+`s128_collisionPairs_card_le_square`, and `kkh26_mcaDeltaStar_le_s128` then applies. -/
+theorem kkh26_mcaDeltaStar_le_s128_of_square_bound {n : ℕ} {β : ℝ} {supply : ℕ} [NeZero n]
+    (hTZ : EffectivePNTinAP n β supply) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((448 * Real.log 2) / Real.log ((n : ℝ) ^ β)) < (supply : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  refine kkh26_mcaDeltaStar_le_s128 hTZ hm hn hr2 hr hx hpl ?_
+  exact s128_supply_beats_budget_of_square_bound (n := n) (β := β) (r := r)
+    (S := supply) (supply := supply) hx le_rfl hcount
+
 end ArkLib.ProximityGap.KKH26
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.KKH26.s128_resultantLog_eq
+#print axioms ArkLib.ProximityGap.KKH26.s128_collisionPairs_card
+#print axioms ArkLib.ProximityGap.KKH26.s128_collisionPairs_card_le_square
 #print axioms ArkLib.ProximityGap.KKH26.s128_supply_beats_budget_of
+#print axioms ArkLib.ProximityGap.KKH26.s128_supply_beats_budget_of_square_bound
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_s128_of_square_bound
