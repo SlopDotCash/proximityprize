@@ -143,6 +143,7 @@ theorem profileFiberSlackCertificate_of_profileFiberOscillationCertificate
 
 /-! ## Endpoint sanity checks for coarse profiles -/
 
+omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
 /-- If the profile map is constant, every used profile's representative automatically lies in its
 fiber.  This is not useful compression: all stacks occupy the same fiber. -/
 theorem profileRepresentativeInFiber_of_constant
@@ -208,6 +209,202 @@ theorem not_profileFiberOscillationBounded_constant_iff_exists_global_pair_excee
     exact le_of_not_gt (fun hgt => hnone ⟨u, v, hgt⟩)
   · rintro ⟨u, v, hgt⟩ hglobal
     exact (not_lt_of_ge (hglobal u v)) hgt
+
+/-! ## Identity-profile endpoint -/
+
+omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
+/-- The identity profile with identity representatives and zero slack has the representative in its
+own fiber. -/
+theorem profileRepresentativeInFiber_identity :
+    ProfileRepresentativeInFiber
+      (fun u : WordStack A (Fin 2) ι => u)
+      (fun u : WordStack A (Fin 2) ι => u) := by
+  intro p _hp
+  rfl
+
+/-- The identity profile with identity representatives and zero slack trivially satisfies slack
+domination. -/
+theorem profileFiberSlackDominates_identity_zero
+    (C : Set (ι -> A)) (δ : ℝ≥0) :
+    ProfileFiberSlackDominates F C δ
+      (fun u : WordStack A (Fin 2) ι => u)
+      (fun u : WordStack A (Fin 2) ι => u) (fun _ => 0) := by
+  intro u
+  simp
+
+/-- The identity profile with zero slack has zero same-fiber oscillation: same profile means the
+same stack. -/
+theorem profileFiberOscillationBounded_identity_zero
+    (C : Set (ι -> A)) (δ : ℝ≥0) :
+    ProfileFiberOscillationBounded F C δ
+      (fun u : WordStack A (Fin 2) ι => u) (fun _ => 0) := by
+  intro u v hsame
+  change u = v at hsame
+  cases hsame
+  simp
+
+/-- For the identity profile with zero slack, slack budgeting is exactly the original all-stack
+worst-case incidence bound.  Thus the finest profile recreates the target theorem pointwise. -/
+theorem profileFiberSlackBudgeted_identity_zero_iff_worstCaseIncidenceBounded
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ} :
+    ProfileFiberSlackBudgeted F C δ
+        (fun u : WordStack A (Fin 2) ι => u)
+        (fun u : WordStack A (Fin 2) ι => u) (fun _ => 0) B ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  constructor
+  · intro hbudget u
+    simpa [StackBadCount] using hbudget u ⟨u, rfl⟩
+  · intro hbound u _hu
+    simpa [StackBadCount] using hbound u
+
+/-- The identity/zero-slack certificate is equivalent to the original worst-case incidence bound. -/
+theorem profileFiberSlackCertificate_identity_zero_iff_worstCaseIncidenceBounded
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ} :
+    ProfileFiberSlackCertificate F C δ
+        (fun u : WordStack A (Fin 2) ι => u)
+        (fun u : WordStack A (Fin 2) ι => u) (fun _ => 0) B ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  constructor
+  · intro hcert u
+    have hle : StackBadCount F C δ u ≤ B :=
+      le_trans (hcert.1 u) (hcert.2 u ⟨u, rfl⟩)
+    simpa [StackBadCount] using hle
+  · intro hbound
+    exact ⟨profileFiberSlackDominates_identity_zero C δ,
+      (profileFiberSlackBudgeted_identity_zero_iff_worstCaseIncidenceBounded C δ).mpr hbound⟩
+
+/-- The structured identity/zero-slack oscillation certificate is also equivalent to the original
+worst-case incidence bound. -/
+theorem profileFiberOscillationCertificate_identity_zero_iff_worstCaseIncidenceBounded
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ} :
+    ProfileFiberOscillationCertificate F C δ
+        (fun u : WordStack A (Fin 2) ι => u)
+        (fun u : WordStack A (Fin 2) ι => u) (fun _ => 0) B ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  constructor
+  · intro hcert u
+    have hdom : ProfileFiberSlackDominates F C δ
+        (fun u : WordStack A (Fin 2) ι => u)
+        (fun u : WordStack A (Fin 2) ι => u) (fun _ => 0) :=
+      profileFiberSlackDominates_of_fiberOscillation C δ hcert.2.1 hcert.1
+    have hle : StackBadCount F C δ u ≤ B :=
+      le_trans (hdom u) (hcert.2.2 u ⟨u, rfl⟩)
+    simpa [StackBadCount] using hle
+  · intro hbound
+    exact ⟨profileRepresentativeInFiber_identity,
+      profileFiberOscillationBounded_identity_zero C δ,
+      (profileFiberSlackBudgeted_identity_zero_iff_worstCaseIncidenceBounded C δ).mpr hbound⟩
+
+/-! ## Injective-profile endpoint -/
+
+omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
+/-- If the profile map is injective and representatives lie in used fibers, the selected
+representative of `profile u` is exactly `u`.  Thus an injective profile is only a relabeling of the
+stack universe. -/
+theorem rep_profile_eq_of_injective
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hinj : Function.Injective profile)
+    (hrep : ProfileRepresentativeInFiber profile rep)
+    (u : WordStack A (Fin 2) ι) :
+    rep (profile u) = u :=
+  hinj (hrep (profile u) ⟨u, rfl⟩)
+
+/-- An injective profile has zero same-fiber oscillation: equal profiles force equal stacks. -/
+theorem profileFiberOscillationBounded_zero_of_injective
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    (hinj : Function.Injective profile) :
+    ProfileFiberOscillationBounded F C δ profile (fun _ => 0) := by
+  intro u v hsame
+  have huv : u = v := hinj hsame
+  cases huv
+  simp
+
+/-- An injective profile with representatives in their fibers trivially satisfies zero-slack
+domination. -/
+theorem profileFiberSlackDominates_zero_of_injective
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hinj : Function.Injective profile)
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileFiberSlackDominates F C δ profile rep (fun _ => 0) := by
+  intro u
+  have hrep_u : rep (profile u) = u :=
+    rep_profile_eq_of_injective hinj hrep u
+  simp [hrep_u]
+
+/-- For an injective profile with zero slack, used-profile budgeting is exactly the original
+all-stack worst-case incidence bound.  The profile is fine enough that it has not reduced the
+target theorem. -/
+theorem profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hinj : Function.Injective profile)
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  constructor
+  · intro hbudget u
+    have hrep_u : rep (profile u) = u :=
+      rep_profile_eq_of_injective hinj hrep u
+    have hb : StackBadCount F C δ u ≤ B := by
+      have hbudget_u : StackBadCount F C δ (rep (profile u)) ≤ B := by
+        simpa using hbudget (profile u) ⟨u, rfl⟩
+      simpa [hrep_u] using hbudget_u
+    simpa [StackBadCount] using hb
+  · intro hbound p _hp
+    simpa [StackBadCount] using hbound (rep p)
+
+/-- The zero-slack certificate for an injective profile is equivalent to the original open-core
+incidence hypothesis. -/
+theorem profileFiberSlackCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hinj : Function.Injective profile)
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileFiberSlackCertificate F C δ profile rep (fun _ => 0) B ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  constructor
+  · intro hcert u
+    have hle : StackBadCount F C δ u ≤ B :=
+      le_trans (hcert.1 u) (hcert.2 (profile u) ⟨u, rfl⟩)
+    simpa [StackBadCount] using hle
+  · intro hbound
+    exact ⟨profileFiberSlackDominates_zero_of_injective C δ hinj hrep,
+      (profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
+        C δ hinj hrep).mpr hbound⟩
+
+/-- The structured zero-slack oscillation certificate for an injective profile is also equivalent
+to the original open-core incidence hypothesis. -/
+theorem profileFiberOscillationCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hinj : Function.Injective profile)
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileFiberOscillationCertificate F C δ profile rep (fun _ => 0) B ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  constructor
+  · intro hcert u
+    have hdom : ProfileFiberSlackDominates F C δ profile rep (fun _ => 0) :=
+      profileFiberSlackDominates_of_fiberOscillation C δ hcert.2.1 hcert.1
+    have hle : StackBadCount F C δ u ≤ B :=
+      le_trans (hdom u) (hcert.2.2 (profile u) ⟨u, rfl⟩)
+    simpa [StackBadCount] using hle
+  · intro hbound
+    exact ⟨hrep, profileFiberOscillationBounded_zero_of_injective C δ hinj,
+      (profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
+        C δ hinj hrep).mpr hbound⟩
 
 /-! ## Relation to the profile/cap interface -/
 
@@ -579,6 +776,18 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_constant_iff_exists_global_pair_exceeds_slack
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_identity
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_identity_zero
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_identity_zero
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackBudgeted_identity_zero_iff_worstCaseIncidenceBounded
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackCertificate_identity_zero_iff_worstCaseIncidenceBounded
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationCertificate_identity_zero_iff_worstCaseIncidenceBounded
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.rep_profile_eq_of_injective
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_of_injective
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_zero_of_injective
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileCaps_slackCap_iff_profileFiberSlackDominates
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.usedProfileBudgeted_slackCap_iff_profileFiberSlackBudgeted
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackCertificate_iff_slackCap_profileCaps_usedBudgeted

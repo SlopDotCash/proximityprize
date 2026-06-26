@@ -73,11 +73,50 @@ profileRepresentativeInFiber_of_constant
 profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 profileFiberOscillationBounded_constant_iff_global_pairwise_bound
 not_profileFiberOscillationBounded_constant_iff_exists_global_pair_exceeds_slack
+profileRepresentativeInFiber_identity
+profileFiberSlackDominates_identity_zero
+profileFiberOscillationBounded_identity_zero
+profileFiberSlackBudgeted_identity_zero_iff_worstCaseIncidenceBounded
+profileFiberSlackCertificate_identity_zero_iff_worstCaseIncidenceBounded
+profileFiberOscillationCertificate_identity_zero_iff_worstCaseIncidenceBounded
+rep_profile_eq_of_injective
+profileFiberOscillationBounded_zero_of_injective
+profileFiberSlackDominates_zero_of_injective
+profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
+profileFiberSlackCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
+profileFiberOscillationCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
 ```
 
 This is the formal warning that the coarsest possible profile recreates the global
 representative/dominator problem: oscillation inside the one profile fiber is just a global pairwise
 bad-count diameter bound.
+
+The opposite endpoint is also formalized:
+
+```lean
+profileRepresentativeInFiber_identity
+profileFiberSlackDominates_identity_zero
+profileFiberOscillationBounded_identity_zero
+profileFiberSlackBudgeted_identity_zero_iff_worstCaseIncidenceBounded
+profileFiberSlackCertificate_identity_zero_iff_worstCaseIncidenceBounded
+profileFiberOscillationCertificate_identity_zero_iff_worstCaseIncidenceBounded
+```
+
+There is also a general injective-profile endpoint:
+
+```lean
+rep_profile_eq_of_injective
+profileFiberOscillationBounded_zero_of_injective
+profileFiberSlackDominates_zero_of_injective
+profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
+profileFiberSlackCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
+profileFiberOscillationCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
+```
+
+So the identity profile, and more generally any injective profile with representatives in used
+fibers and zero slack, is exactly the original all-stack incidence problem.  The two endpoints now
+bracket the search: a profile that is too coarse requires global pairwise oscillation control, while
+a profile that is too fine simply restates the target theorem stack by stack.
 
 ## 2026-06-26 Red-Team Correction: Slack Is A Cap Choice
 
@@ -155,6 +194,12 @@ So the coarsest profile does not compress the problem.  It asks for a global bad
 bound, and the failure certificate is just a pair of arbitrary stacks whose gap exceeds the single
 slack allowance.
 
+The fine-profile endpoint is formal as well.  With identity representatives and zero slack, slack
+budgeting and both slack/oscillation certificates are equivalent to the original
+`WorstCaseIncidenceBounded` theorem.  More generally, any injective profile with in-fiber
+representatives and zero slack has the same equivalence, so fine relabelings also do not simplify
+#464; they merely rename the all-stack incidence problem.
+
 ## Why This Is A Different Attack
 
 Earlier profile files formalize exact fiber maximizers.  Those are enough, but a scanner can refute
@@ -165,7 +210,7 @@ by more than the declared slack.  This gives a potential middle path between:
 
 ```text
 constant profile -> global maximizer problem returns;
-identity profile -> all-stack budget problem returns;
+identity or injective profile -> all-stack budget problem returns;
 exact fiber maxima -> too rigid for coarse analytic profiles.
 ```
 
@@ -246,8 +291,8 @@ A proposed profile must now pass three checks:
 3. budget: rep p plus slack p is below the MCA budget for every used profile.
 ```
 
-If (1) fails, the profile is the identity route in disguise.  If (2) fails, scanners should return a
-stack exceeding its allowance via
+If (1) fails, the profile is the identity/injective route in disguise.  If (2) fails, scanners
+should return a stack exceeding its allowance via
 `not_profileFiberSlackDominates_iff_exists_stack_exceeds_slack`.  If (3) fails, the route is just an
 above-budget representative.
 

@@ -176,5 +176,18 @@ with `ProfileRepresentativeInFiber`, `ProfileFiberOscillationBounded`, and
 `ProfileFiberOscillationCertificate`.  The new certificate proves the existing slack certificate,
 feeds the same open-core and delta-star consumers, and has an exact three-way failure surface:
 representative misses its used fiber, same-profile oscillation exceeds slack, or the
-representative-plus-slack budget is above `B`.  Constant-profile endpoint lemmas make explicit that
-the coarsest profile collapses oscillation back to a global pairwise bad-count diameter bound.
+representative-plus-slack budget is above `B`.  Endpoint lemmas make explicit that the coarsest
+profile collapses oscillation back to a global pairwise bad-count diameter bound, while the identity
+profile, and more generally any injective profile with zero slack and in-fiber representatives, are
+exactly the original all-stack incidence theorem.
+
+## [2026-06-26] refine | profile granularity endpoints
+
+Added:
+
+- `docs/kb/deltastar-464-profile-granularity-endpoints-2026-06-26.md`
+
+to tie the stack-profile cardinality tradeoff to the slack-profile proof obligations.  The note
+records the two dead endpoints: constant profiles require global pairwise oscillation control, while
+injective profiles are just relabelings of the all-stack theorem.  The remaining live target is a
+genuinely non-injective profile with a real same-fiber oscillation theorem.
