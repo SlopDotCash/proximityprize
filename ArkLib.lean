@@ -3603,6 +3603,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SudanListBoundFull
 import ArkLib.Data.CodingTheory.ProximityGap.SumProductBridge
 import ArkLib.Data.CodingTheory.ProximityGap.SumZeroSubsetsBound
 import ArkLib.Data.CodingTheory.ProximityGap.SumsetDistinctDissociation
+import ArkLib.Data.CodingTheory.ProximityGap.SumsetExtremalityGuard
 import ArkLib.Data.CodingTheory.ProximityGap.SumsetExtremalityReduction
 import ArkLib.Data.CodingTheory.ProximityGap.SumsetLowerBoundMuN
 import ArkLib.Data.CodingTheory.ProximityGap.SupNormBracket
