@@ -305,6 +305,68 @@ theorem
     (codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
       dom k a u₀ u₁ c)
 
+/-- Elementary comparison between the denominator count and the subset-packing count. -/
+theorem support_div_le_choose_of_pos_le {s m : ℕ} (hmpos : 0 < m) (hms : m ≤ s) :
+    s / m ≤ s.choose m := by
+  cases m with
+  | zero => exact (Nat.lt_irrefl 0 hmpos).elim
+  | succ m =>
+    cases s with
+    | zero => exact (Nat.not_succ_le_zero m hms).elim
+    | succ s =>
+      have hms' : m ≤ s := Nat.succ_le_succ_iff.mp hms
+      have hchoose_pos : 0 < s.choose m := Nat.choose_pos hms'
+      have hle_lhs : s + 1 ≤ (s + 1) * s.choose m :=
+        Nat.le_mul_of_pos_right _ hchoose_pos
+      have hidentity := Nat.add_one_mul_choose_eq s m
+      have hle_prod :
+          s + 1 ≤ (m + 1) * (s + 1).choose (m + 1) := by
+        simpa [Nat.mul_comm] using hle_lhs.trans_eq hidentity
+      exact (Nat.div_le_iff_le_mul_add_pred (Nat.succ_pos m)).mpr
+        (le_trans hle_prod (Nat.le_add_right _ _))
+
+open Classical in
+/-- On an actual appearing codeword in the zero-safe branch, the denominator scalar cap is no
+larger than the support-choose cover cap. -/
+theorem support_div_sub_zeroAgreement_le_support_choose_of_zeroSafe
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hc : c ∈ lineAppearingCodewords dom k a u₀ u₁) :
+    (directionSupportSet u₁).card /
+        (a - (directionZeroAgreementSet c u₀ u₁).card) ≤
+      (directionSupportSet u₁).card.choose
+        (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  have hcCode : c ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    rw [lineAppearingCodewords, Finset.mem_filter] at hc
+    exact hc.2.1
+  have hpos : 0 < a - (directionZeroAgreementSet c u₀ u₁).card :=
+    Nat.sub_pos_of_lt (hsafe c hcCode)
+  rcases exists_supportRatioFiber_card_ge_sub_of_mem_lineAppearingCodewords
+      dom k a u₀ u₁ c hc with ⟨γ, hγ⟩
+  have hfiber_le :
+      (supportRatioFiber c u₀ u₁ γ).card ≤ (directionSupportSet u₁).card :=
+    supportRatioFiber_card_le_directionSupportSet_card c u₀ u₁ γ
+  exact support_div_le_choose_of_pos_le hpos (le_trans hγ hfiber_le)
+
+open Classical in
+/-- The support-choose cap is a cover-control baseline rather than a scalar improvement: the
+older denominator scalar cap already lies below it on every zero-safe appearing codeword. -/
+theorem codewordSingletonWitnessScalars_card_le_support_choose_via_denominator
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hc : c ∈ lineAppearingCodewords dom k a u₀ u₁) :
+    (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card ≤
+      (directionSupportSet u₁).card.choose
+        (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  have hcCode : c ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    rw [lineAppearingCodewords, Finset.mem_filter] at hc
+    exact hc.2.1
+  exact le_trans
+    (codewordSingletonWitnessScalars_card_le_support_div_of_zeroSafe
+      dom k a u₀ u₁ c hsafe hcCode)
+    (support_div_sub_zeroAgreement_le_support_choose_of_zeroSafe
+      dom k a u₀ u₁ c hsafe hc)
+
 open Classical in
 /-- Crude scalar-fiber-count control for the codeword-indexed support-ratio cover. -/
 theorem codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
@@ -442,6 +504,169 @@ def UniformLargeZeroSafeCodewordSupportChooseBudgeted
       ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
         (directionSupportSet u₁).card.choose
           (a - (directionZeroAgreementSet c u₀ u₁).card) ≤ S
+
+open Classical in
+/-- The weighted support-choose cost of all codeword-indexed singleton cover caps on one line.
+Unlike the uniform `S` route, this keeps the actual zero-agreement profile of each appearing
+codeword. -/
+noncomputable def codewordSupportChooseWeight
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) : ℕ :=
+  ∑ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+    (directionSupportSet u₁).card.choose
+      (a - (directionZeroAgreementSet c u₀ u₁).card)
+
+/-- Uniform combined arithmetic budget using the weighted support-choose cost rather than a
+single worst per-codeword cap. -/
+def UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + codewordSupportChooseWeight dom k a u₀ u₁ ≤ 2 * B
+
+open Classical in
+/-- The singleton defect is bounded by the weighted support-choose cost on safe lines. -/
+theorem singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁) :
+    singletonBadScalarDefect dom k a u₀ u₁
+      ≤ codewordSupportChooseWeight dom k a u₀ u₁ := by
+  rw [singletonBadScalarDefect_eq_sum_codewordSingletonWitnessScalars,
+    codewordSupportChooseWeight]
+  refine Finset.sum_le_sum ?_
+  intro c hc
+  have hcCode : c ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    rw [lineAppearingCodewords, Finset.mem_filter] at hc
+    exact hc.2.1
+  exact
+    (codewordSingletonWitnessScalars_card_le_supportRatioCover_card dom k a u₀ u₁ c).trans
+      (codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
+        dom k a u₀ u₁ c hsafe hcCode)
+
+open Classical in
+/-- The weighted support-choose cost is bounded by the older uniform cap times the number of
+appearing codewords. -/
+theorem codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
+    (dom : Fin n ↪ F) (k a S : ℕ) (u₀ u₁ : Fin n → F)
+    (hchoose : ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+      (directionSupportSet u₁).card.choose
+        (a - (directionZeroAgreementSet c u₀ u₁).card) ≤ S) :
+    codewordSupportChooseWeight dom k a u₀ u₁
+      ≤ (lineAppearingCodewords dom k a u₀ u₁).card * S := by
+  rw [codewordSupportChooseWeight]
+  calc
+    ∑ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (directionSupportSet u₁).card.choose
+          (a - (directionZeroAgreementSet c u₀ u₁).card)
+        ≤ ∑ _c ∈ lineAppearingCodewords dom k a u₀ u₁, S :=
+          Finset.sum_le_sum hchoose
+    _ = (lineAppearingCodewords dom k a u₀ u₁).card * S := by
+          rw [Finset.sum_const, smul_eq_mul]
+
+open Classical in
+/-- Fixed-line consumer for the weighted support-choose singleton route. -/
+theorem lineBadScalars_card_le_of_weight_add_codewordSupportChoose_le_two_mul
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + codewordSupportChooseWeight dom k a u₀ u₁ ≤ 2 * B) :
+    (lineBadScalars dom k a u₀ u₁).card ≤ B :=
+  lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
+    dom k a B u₀ u₁ hsafe
+    (le_trans
+      (Nat.add_le_add_left
+        (singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
+          dom k a u₀ u₁ hsafe)
+        (puncturedZeroStratifiedLineWeight dom k a u₀ u₁))
+      hbudget)
+
+open Classical in
+/-- The weighted support-choose budget discharges the large-zero safe residual. -/
+theorem largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseWeightBudget
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hbudget :
+      UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted dom k a B) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact lineBadScalars_card_le_of_weight_add_codewordSupportChoose_le_two_mul
+    dom k a B u₀ u₁ hsafe (hbudget u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Production wrapper for the weighted support-choose route. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget :
+      UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted dom k a B) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+    dom k a L B hSupport hFits hZeroSafe
+    (largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseWeightBudget
+      dom k a B hbudget)
+
+open Classical in
+/-- The older uniform support-choose route implies the weighted support-choose arithmetic budget
+whenever its direct appearing-codeword arithmetic budget fits. -/
+theorem
+    uniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted_of_codewordSupportChooseBudget
+    (dom : Fin n ↪ F) (k a S B : ℕ)
+    (hchoose : UniformLargeZeroSafeCodewordSupportChooseBudgeted dom k a S)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S) :
+    UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact le_trans
+    (Nat.add_le_add_left
+      (codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
+        dom k a S u₀ u₁ (hchoose u₀ u₁ hnotEligible hsafe))
+      (puncturedZeroStratifiedLineWeight dom k a u₀ u₁))
+    (hbudget u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Exact failure form for the weighted support-choose arithmetic budget. -/
+theorem
+    not_uniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted_iff_exists_weight_gt
+    (dom : Fin n ↪ F) (k a B : ℕ) :
+    (¬ UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted dom k a B) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          2 * B < puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+            + codewordSupportChooseWeight dom k a u₀ u₁ := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩)
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget u₀ u₁ hnotEligible hsafe)) hgt
+
+open Classical in
+/-- Scanner for the weighted support-choose route.  Once support-side hypotheses are fixed,
+failed production exposes a large-zero safe line where the actual weighted support-choose
+arithmetic is above budget. -/
+theorem
+    exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        2 * B < puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+          + codewordSupportChooseWeight dom k a u₀ u₁ := by
+  have hnotBudget :
+      ¬ UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted dom k a B := by
+    intro hbudget
+    exact hnot
+      (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget
+        dom k a L B hSupport hFits hZeroSafe hbudget)
+  exact
+    (not_uniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted_iff_exists_weight_gt
+      dom k a B).mp hnotBudget
 
 /-- A support-ratio cover cap implies the direct singleton-witness scalar cap for each appearing
 codeword. -/
@@ -713,6 +938,120 @@ theorem exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
       ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
     exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr ⟨c, hc, hgt⟩⟩
 
+/-- A finite scalar set is independent for a binary scalar relation.  The intended relation is a
+future interpolation edge: if two singleton scalars are connected, they cannot both stay unique
+unless a second witness or an exceptional-pencil certificate appears. -/
+def scalarRelationIndependent (R : F → F → Prop) (Γ : Finset F) : Prop :=
+  ∀ γ ∈ Γ, ∀ γ' ∈ Γ, γ ≠ γ' → ¬ R γ γ'
+
+/-- The singleton scalars for every large-zero safe line and appearing codeword form an
+independent set for the proposed interpolation relation.  This is the "edge kills coexistence"
+half of a future scalar-rigidity theorem. -/
+def UniformLargeZeroSafeCodewordSingletonRelationForbidden
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ')
+          (codewordSingletonWitnessScalars dom k a u₀ u₁ c)
+
+/-- Uniform independence-number bound for a proposed codeword-indexed scalar relation.  This is
+the "graph has no large independent set" half of a future scalar-rigidity theorem. -/
+def UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop) (S : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        ∀ Γ : Finset F,
+          scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ') Γ →
+            Γ.card ≤ S
+
+/-- A forbidden-edge theorem plus an independence-number theorem gives the direct per-codeword
+singleton cap. -/
+theorem uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R)
+    (hind : UniformLargeZeroSafeCodewordRelationIndependenceBudgeted dom k a R S) :
+    UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+  intro u₀ u₁ hnotEligible hsafe c hc
+  exact hind u₀ u₁ hnotEligible hsafe c hc
+    (codewordSingletonWitnessScalars dom k a u₀ u₁ c)
+    (hforbid u₀ u₁ hnotEligible hsafe c hc)
+
+/-- Production wrapper for the relation-independence route to per-codeword singleton caps. -/
+theorem
+    uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R)
+    (hind : UniformLargeZeroSafeCodewordRelationIndependenceBudgeted dom k a R S)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSingletonBudget
+    dom k a L S B hSupport hFits hZeroSafe
+    (uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
+      dom k a S R hforbid hind)
+    hbudget
+
+open Classical in
+/-- If the direct singleton cap fails but singleton scalars are forbidden to contain relation
+edges, then the proposed scalar relation has a concrete independent set above the cap. -/
+theorem exists_largeZero_safe_codewordRelationIndependent_gt_of_not_codewordSingletonBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R)
+    (hnot : ¬ UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+          scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ')
+            (codewordSingletonWitnessScalars dom k a u₀ u₁ c) ∧
+            S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  rcases
+      (not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+        dom k a S).mp hnot with
+    ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
+  exact ⟨u₀, u₁, hnotEligible, hsafe, c, hc,
+    hforbid u₀ u₁ hnotEligible hsafe c hc, hgt⟩
+
+open Classical in
+/-- Scanner for the relation-independence route.  Once support-side hypotheses and the
+forbidden-edge half are fixed, failed production exposes either the usual arithmetic failure or
+a concrete overlarge independent set of singleton scalars for one appearing codeword. -/
+theorem exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        (¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+            + (lineAppearingCodewords dom k a u₀ u₁).card * S ≤ 2 * B ∨
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ')
+              (codewordSingletonWitnessScalars dom k a u₀ u₁ c) ∧
+              S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card) := by
+  by_cases hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S
+  · rcases
+      exists_largeZero_safe_codewordSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+        dom k a L S B hSupport hFits hZeroSafe hperCode hnot with
+      ⟨u₀, u₁, hnotEligible, hsafe, hfail⟩
+    exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inl hfail⟩
+  · rcases
+      exists_largeZero_safe_codewordRelationIndependent_gt_of_not_codewordSingletonBudgeted
+        dom k a S R hforbid hperCode with
+      ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hind, hgt⟩
+    exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr ⟨c, hc, hind, hgt⟩⟩
+
 section SourceAudit
 
 #print axioms codewordSingletonSupportRatioCover
@@ -732,6 +1071,9 @@ section SourceAudit
 #print axioms codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
 #print axioms
   codewordSingletonWitnessScalars_card_le_support_div_sub_zeroAgreement_of_ratioPartition
+#print axioms support_div_le_choose_of_pos_le
+#print axioms support_div_sub_zeroAgreement_le_support_choose_of_zeroSafe
+#print axioms codewordSingletonWitnessScalars_card_le_support_choose_via_denominator
 #print axioms codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
 #print axioms codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
 #print axioms codewordSingletonSupportRatioCover_snd_injOn
@@ -740,6 +1082,20 @@ section SourceAudit
 #print axioms codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
 #print axioms UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
 #print axioms UniformLargeZeroSafeCodewordSupportChooseBudgeted
+#print axioms codewordSupportChooseWeight
+#print axioms UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted
+#print axioms singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
+#print axioms codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
+#print axioms lineBadScalars_card_le_of_weight_add_codewordSupportChoose_le_two_mul
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseWeightBudget
+#print axioms
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget
+#print axioms
+  uniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted_of_codewordSupportChooseBudget
+#print axioms
+  not_uniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted_iff_exists_weight_gt
+#print axioms
+  exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
 #print axioms
   not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
@@ -763,6 +1119,16 @@ section SourceAudit
   exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
 #print axioms
   exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
+#print axioms scalarRelationIndependent
+#print axioms UniformLargeZeroSafeCodewordSingletonRelationForbidden
+#print axioms UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
+#print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationIndependence
+#print axioms
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
+#print axioms
+  exists_largeZero_safe_codewordRelationIndependent_gt_of_not_codewordSingletonBudgeted
+#print axioms
+  exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 
 end SourceAudit
 

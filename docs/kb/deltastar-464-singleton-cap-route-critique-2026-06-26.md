@@ -125,9 +125,11 @@ That is exactly the hard line-list region, not an elementary side case.
 
 The support-ratio cover work gives another warning.  Its ambient scalar-times-binomial envelope
 already fails arithmetically at the prize scale; improving it requires exploiting overlap inside
-the finite `(γ,T)` cover before collapsing to `|F| * choose(n, a-t)`.  The singleton-cap route is
-the same phenomenon in incidence language: it asks for a structural overlap theorem saying that
-many heavy scalars for one codeword cannot all be unique.
+the finite `(γ,T)` cover before collapsing to `|F| * choose(n, a-t)`.  The support-choose packing
+cap removes that scalar/field factor, but the denominator scalar cap is already no larger on
+zero-safe appearing codewords.  The singleton-cap route is the same phenomenon in incidence
+language: it asks for a structural theorem saying that many heavy scalars for one codeword cannot
+all be unique.
 
 ## The missing mathematics
 
@@ -168,10 +170,20 @@ codewordSingletonWitnessScalars_eq_image_fst_supportRatioCover
 codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
 codewordSingletonSupportRatioCover_card_eq_sum_choose
 codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
+codewordSingletonWitnessScalars_card_le_support_div_sub_zeroAgreement_of_ratioPartition
+support_div_le_choose_of_pos_le
+support_div_sub_zeroAgreement_le_support_choose_of_zeroSafe
+codewordSingletonWitnessScalars_card_le_support_choose_via_denominator
 codewordSingletonSupportRatioCover_snd_injOn
 codewordSingletonSupportRatioCover_card_le_support_choose
 UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
 UniformLargeZeroSafeCodewordSupportChooseBudgeted
+codewordSupportChooseWeight
+UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted
+singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
+codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget
+exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
 uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
 uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
@@ -182,6 +194,12 @@ uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
 exists_largeZero_safe_codewordSupportRatioCoverFieldChoose_gt_of_not_coverBudgeted
 exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordSupportChooseRouteProfileFailure_of_not_budgeted
+scalarRelationIndependent
+UniformLargeZeroSafeCodewordSingletonRelationForbidden
+UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
+exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 ```
 
 So every singleton scalar for `c` contributes a nonempty fiber of eligible moving-support
@@ -193,14 +211,30 @@ codeword-indexed cover when that cap is the missing input.  The crude fallback
 beat, not the final estimate.  In the positive-deficit case the selected `T` determines `gamma`,
 so the cover also has the sharper pure packing cap
 `choose(#support(u1), a - #zeroAgreement(c))`; this still counts subsets rather than proving the
-needed scalar cap.
+needed scalar cap.  The new comparison theorem records that the old denominator scalar cap is
+already no larger on zero-safe appearing codewords.
+`LineListCodewordSupportChooseArithmeticObstruction.lean` now gives this cap its named arithmetic
+failure form: an exact or lower-bound support profile `s` and zero-agreement profile `z` with
+`S < choose(s, a - z)` refutes the uniform support-choose budget, and the route scanner returns
+those profile parameters explicitly.  The weighted
+support-choose route now goes one step further: it pays the actual cap for each appearing codeword,
+`sum_c choose(#support(u1), a - #zeroAgreement(c))`, and scans failed production as an over-budget
+`puncturedWeight + codewordSupportChooseWeight` line.
 
-2. Fit or beat the support-choose packing cap in production arithmetic.  The fixed-codeword cover
-already injects into moving-support subsets; the next improvement must either make that choose
-term small enough in the relevant range or use RS/second-witness structure beyond the packing cap.
+2. Treat weighted support-choose as a cover-control baseline unless it beats the denominator
+scalar obstruction.  The fixed-codeword cover already injects into moving-support subsets, and the
+weighted route removes the worst-cap multiplication, but
+`codewordSingletonWitnessScalars_card_le_support_choose_via_denominator` says the old denominator
+scalar cap lies below the support-choose cap on zero-safe appearing codewords.  A further
+improvement must make the weighted sum small enough in the relevant range or use RS/second-witness
+structure beyond coordinate packing.
 
-3. If no support-choose fit or sharper rigidity theorem emerges, use the support-choose scanner to
-extract a counterexample shape:
+3. Try the scalar independence-graph interface.  A proposed interpolation relation must prove that
+singleton scalars are independent and that independent scalar sets are small; the new scanner
+returns an overlarge independent singleton set when this route is the missing input.
+
+4. If no support-choose arithmetic fit or sharper rigidity theorem emerges, use the support-choose
+scanner to extract a counterexample shape:
 a large-zero safe line and one appearing codeword with too many uniquely witnessed singleton
 scalars.  That object is worth probing computationally, because it is much smaller than the full
 worst-stack search.
@@ -211,5 +245,6 @@ The singleton-cap route is a sharpened microscope, not a solved theorem.  It con
 "maybe singleton defects are sparse" hope into exact Lean obligations and exact failure witnesses.
 It does not bypass the BGK/Paley wall unless it can be upgraded to a universal worst-stack
 domination theorem.  The codeword-indexed support-ratio cover is now formalized and its
-support-choose packing cap is known; the most honest next move is to fit that cap or prove a
-saving beyond it.
+support-choose packing cap is known to sit above the old denominator scalar cap.  The most honest
+next move is to prove a scalar saving beyond the denominator cap, or use the support-choose
+scanner to extract the concrete obstruction shape.

@@ -46,6 +46,18 @@ Thus
 
 which is exactly the old support-denominator obstruction in partition form.
 
+The support-choose comparison is now explicit too:
+
+```lean
+support_div_le_choose_of_pos_le
+support_div_sub_zeroAgreement_le_support_choose_of_zeroSafe
+codewordSingletonWitnessScalars_card_le_support_choose_via_denominator
+```
+
+On every zero-safe appearing codeword, the denominator scalar cap is already no larger than the
+ambient support-choose cover cap.  Thus support-choose is a useful cover-control baseline, but it
+does not improve the scalar count by itself.
+
 The same module also has the raw cover envelope:
 
 ```lean
@@ -66,6 +78,11 @@ codewordSingletonSupportRatioCover_image_snd_subset_support_powerset
 codewordSingletonSupportRatioCover_card_le_support_choose
 codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
 exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordSupportChooseRouteProfileFailure_of_not_budgeted
+codewordSupportChooseWeight
+exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted
+scalarRelationIndependent
+exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 ```
 
 When `a - #zeroAgreement(c) > 0`, the selected set `T` is nonempty, so `T` itself determines
@@ -73,6 +90,14 @@ When `a - #zeroAgreement(c) > 0`, the selected set `T` is nonempty, so `T` itsel
 `(a - #zeroAgreement(c))`-subsets of `support(u1)`.  This removes the extra scalar/field factor
 from the cover cap; the route scanner packages failure of that cap as a concrete large-zero safe
 line and codeword.  It is still a packing bound on subsets, not the needed scalar cap.
+`LineListCodewordSupportChooseArithmeticObstruction.lean` records the corresponding profile
+obstruction: any appearing codeword with support size `s`, zero-agreement size `z`, and
+`S < choose(s, a - z)` already rules out the uniform support-choose cap.
+The weighted support-choose route refines the arithmetic side by summing the actual binomial caps
+over appearing codewords instead of paying a single worst cap times `#appearingCodewords`.
+The new scalar relation-independence interface is the proposed escape from this subset-counting
+ceiling: a future interpolation graph must prove both forbidden singleton edges and a small
+independence number, or the scanner returns an overlarge independent singleton-scalar set.
 
 ## Critique of the Previous Hope
 
@@ -151,7 +176,8 @@ allowed scalar budget.  The graph should attack scalars directly.
 
 The fixed-codeword support-ratio cover remains the right finite object, and its pure coordinate
 packing theory is now essentially complete: ratio fibers partition the moving support, and
-nonempty selected subfibers inject into support subsets.  The next attack should be an
+nonempty selected subfibers inject into support subsets.  The new comparison also pins the
+support-choose cap above the old denominator scalar cap, so the next attack should be an
 interpolation-rigidity or second-witness theorem on singleton scalars, not a coordinate-packing
 estimate.
 

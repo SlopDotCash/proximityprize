@@ -761,3 +761,43 @@ argument, not reuse of moving coordinates.  The support-choose consumer/scanner 
 `exists_largeZero_safe_codewordSupportRatioCoverChoose_gt_of_not_coverBudgeted`, together with
 `exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted`, make this the active
 baseline cap and production failure witness.
+
+Follow-up: `LineListCodewordSingletonSupportRatio.lean` now exposes the scalar-level graph
+interface that the last critique asked for.  `scalarRelationIndependent`,
+`UniformLargeZeroSafeCodewordSingletonRelationForbidden`, and
+`UniformLargeZeroSafeCodewordRelationIndependenceBudgeted` split any future interpolation graph
+into two honest obligations: singleton scalars contain no relation edge, and the relation has no
+large independent set.  The consumer
+`uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence` plugs those
+obligations into the existing singleton-cap production route.  The scanner
+`exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted` says failed
+production yields either the usual arithmetic failure or a concrete overlarge independent set of
+singleton scalars for one appearing codeword.  Companion note:
+`deltastar-464-singleton-independence-graph-2026-06-26.md`.
+
+Follow-up: `LineListCodewordSupportChooseArithmeticObstruction.lean` now names the arithmetic
+obstruction for that support-choose baseline.  A uniform support-choose budget contains every
+concrete term `choose(#support(u1), a - #zeroAgreement(c,u0,u1))`; conversely an exact profile or
+support-lower-bound profile with `S < choose(s, a-z)` refutes the budget.  The route-level scanner
+now has a profile form,
+`exists_largeZero_safe_codewordSupportChooseRouteProfileFailure_of_not_budgeted`, returning the
+usual combined arithmetic failure or an appearing codeword with explicit `(support, zeroAgreement)`
+data whose binomial term is already over cap.
+
+Follow-up: the support-choose baseline is now compared directly to the old denominator scalar cap.
+`support_div_le_choose_of_pos_le` proves the elementary arithmetic comparison, and
+`codewordSingletonWitnessScalars_card_le_support_choose_via_denominator` records that on every
+zero-safe appearing codeword the denominator route already bounds singleton-witness scalars by the
+support-choose term.  This pins support-choose as cover control and obstruction localization, not
+by itself a scalar-level improvement toward the floor.
+
+Essay: `deltastar-464-weighted-support-choose-route-2026-06-26.md` records the next refinement.
+The uniform support-choose cap paid `#appearingCodewords * S`; the new
+`codewordSupportChooseWeight` pays
+`sum_c choose(#support(u1), a - #zeroAgreement(c))` over actual appearing codewords.  Lean now
+proves `singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe`, consumes the budget
+via `uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget`, and
+scans failed production with
+`exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted`.  This
+is a real accounting refinement but still spends only coordinate-packing information; the next
+nonredundant target remains profile concentration or scalar-level second-witness rigidity.

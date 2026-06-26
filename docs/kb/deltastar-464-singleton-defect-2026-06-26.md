@@ -113,6 +113,9 @@ directionSupportSet_card_eq_sum_supportRatioFiber
 sum_supportRatioFiber_card_le_directionSupportSet_card
 codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
 codewordSingletonWitnessScalars_card_le_support_div_sub_zeroAgreement_of_ratioPartition
+support_div_le_choose_of_pos_le
+support_div_sub_zeroAgreement_le_support_choose_of_zeroSafe
+codewordSingletonWitnessScalars_card_le_support_choose_via_denominator
 codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
 codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
 codewordSingletonSupportRatioCover_snd_injOn
@@ -121,6 +124,15 @@ codewordSingletonSupportRatioCover_card_le_support_choose
 codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
 UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
 UniformLargeZeroSafeCodewordSupportChooseBudgeted
+codewordSupportChooseWeight
+UniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted
+singletonBadScalarDefect_le_codewordSupportChooseWeight_of_zeroSafe
+codewordSupportChooseWeight_le_lineAppearingCodewords_card_mul
+lineBadScalars_card_le_of_weight_add_codewordSupportChoose_le_two_mul
+largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseWeightBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseWeightBudget
+not_uniformLargeZeroSafeWeightPlusCodewordSupportChooseBudgeted_iff_exists_weight_gt
+exists_largeZero_safe_codewordSupportChooseWeight_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
 not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
 uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
@@ -135,6 +147,23 @@ uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportRatioCoverBu
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
 exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
+scalarRelationIndependent
+UniformLargeZeroSafeCodewordSingletonRelationForbidden
+UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
+exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
+```
+
+`LineListCodewordSupportChooseArithmeticObstruction.lean` packages the same support-choose cap
+as an arithmetic no-go surface:
+
+```lean
+codewordSupportChooseBudget_term_le
+not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_of_exists_choose_gt
+not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_of_exists_profile_choose_gt
+not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_of_exists_support_lower_choose_gt
+exists_codewordSupportChooseProfile_gt_of_not_uniformLargeZeroSafeBudgeted
+exists_largeZero_safe_codewordSupportChooseRouteProfileFailure_of_not_budgeted
 ```
 
 For fixed `c`, the finite cover consists of pairs `(gamma, T)` where `gamma` is uniquely
@@ -153,8 +182,16 @@ The sharper positive-deficit packing cap removes the scalar/field factor:
 `codewordSingletonSupportRatioCover_snd_injOn` shows that a nonempty selected `T` determines
 `gamma`, so the cover injects into `powersetCard support (a - #zeroAgreement(c))`.  This completes
 the pure coordinate-packing side; the remaining gap is a scalar-level interpolation-rigidity or
-second-witness theorem.  The support-choose consumer and route-failure scanner now make this the
-active baseline to fit or beat in the production arithmetic.
+second-witness theorem.  `codewordSingletonWitnessScalars_card_le_support_choose_via_denominator`
+also records that the old denominator scalar cap already sits below the support-choose cover cap
+on zero-safe appearing codewords.  The support-choose consumer and route-failure scanner therefore
+make this a cover-control baseline, not a scalar improvement.  The profile obstruction module
+turns any concrete support/zero-agreement profile with
+`S < choose(support, a - zeroAgreement)` into immediate failure of that baseline.  The weighted
+support-choose route then removes the uniform worst-cap multiplication by bounding the singleton
+defect directly by
+`sum_c choose(#support(u1), a - #zeroAgreement(c))` over appearing codewords; its scanner exposes
+an over-budget weighted line if this refined arithmetic still cannot fit.
 
 `LineListSingletonDefectGeometry.lean` refines the same defect into an incidence graph and exact
 zero-agreement profiles:
