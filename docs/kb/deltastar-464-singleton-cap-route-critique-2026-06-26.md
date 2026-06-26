@@ -167,22 +167,40 @@ codewordSingletonSupportRatioCover
 codewordSingletonWitnessScalars_eq_image_fst_supportRatioCover
 codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
 codewordSingletonSupportRatioCover_card_eq_sum_choose
+codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
+codewordSingletonSupportRatioCover_snd_injOn
+codewordSingletonSupportRatioCover_card_le_support_choose
 UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
+UniformLargeZeroSafeCodewordSupportChooseBudgeted
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
+uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
+uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+exists_largeZero_safe_codewordSupportRatioCoverChoose_gt_of_not_coverBudgeted
+not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_iff_exists_choose_gt
+largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
+exists_largeZero_safe_codewordSupportRatioCoverFieldChoose_gt_of_not_coverBudgeted
 exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
 ```
 
 So every singleton scalar for `c` contributes a nonempty fiber of eligible moving-support
 subsets, and the cover decomposes as a sum of
 `choose(#supportRatioFiber(c,γ), a - #zeroAgreement(c))`.  The uniform cover cap also feeds the
 existing singleton-cap production route, with a scanner that returns an overfull concrete
-codeword-indexed cover when that cap is the missing input.
+codeword-indexed cover when that cap is the missing input.  The crude fallback
+`|F| * choose(#support(u1), a - #zeroAgreement(c))` is now formalized too; it is the baseline to
+beat, not the final estimate.  In the positive-deficit case the selected `T` determines `gamma`,
+so the cover also has the sharper pure packing cap
+`choose(#support(u1), a - #zeroAgreement(c))`; this still counts subsets rather than proving the
+needed scalar cap.
 
-2. Prove a multiplicity lower bound: if the same codeword contributes many `(γ,T)` incidences,
-then either the scalar set is small or a second witness exists.  This is the first place where a
-new theorem could beat the current ambient cover.
+2. Fit or beat the support-choose packing cap in production arithmetic.  The fixed-codeword cover
+already injects into moving-support subsets; the next improvement must either make that choose
+term small enough in the relevant range or use RS/second-witness structure beyond the packing cap.
 
-3. If the multiplicity theorem fails, use the combined scanner to extract a counterexample shape:
+3. If no support-choose fit or sharper rigidity theorem emerges, use the support-choose scanner to
+extract a counterexample shape:
 a large-zero safe line and one appearing codeword with too many uniquely witnessed singleton
 scalars.  That object is worth probing computationally, because it is much smaller than the full
 worst-stack search.
@@ -192,5 +210,6 @@ worst-stack search.
 The singleton-cap route is a sharpened microscope, not a solved theorem.  It converts a vague
 "maybe singleton defects are sparse" hope into exact Lean obligations and exact failure witnesses.
 It does not bypass the BGK/Paley wall unless it can be upgraded to a universal worst-stack
-domination theorem.  The codeword-indexed support-ratio cover is now formalized; the most honest
-next move is to prove or refute the overlap-multiplicity claim inside that cover.
+domination theorem.  The codeword-indexed support-ratio cover is now formalized and its
+support-choose packing cap is known; the most honest next move is to fit that cap or prove a
+saving beyond it.

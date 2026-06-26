@@ -106,13 +106,35 @@ codewordSingletonWitnessScalars_card_le_supportRatioCover_card
 codewordSingletonSupportRatioCover_fst_fiber_eq
 codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
 codewordSingletonSupportRatioCover_card_eq_sum_choose
+supportRatioFiber_card_le_directionSupportSet_card
+disjoint_supportRatioFiber_of_ne
+pairwiseDisjoint_supportRatioFiber
+directionSupportSet_card_eq_sum_supportRatioFiber
+sum_supportRatioFiber_card_le_directionSupportSet_card
+codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
+codewordSingletonWitnessScalars_card_le_support_div_sub_zeroAgreement_of_ratioPartition
+codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
+codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
+codewordSingletonSupportRatioCover_snd_injOn
+codewordSingletonSupportRatioCover_image_snd_subset_support_powerset
+codewordSingletonSupportRatioCover_card_le_support_choose
+codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
 UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
+UniformLargeZeroSafeCodewordSupportChooseBudgeted
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
 not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
+uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
+uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+exists_largeZero_safe_codewordSupportRatioCoverChoose_gt_of_not_coverBudgeted
+not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_iff_exists_choose_gt
+exists_largeZero_safe_codewordSupportRatioCoverFieldChoose_gt_of_not_coverBudgeted
 exists_largeZero_safe_codewordSupportRatioCover_gt_of_not_codewordSingletonBudgeted
 largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonSupportRatioCoverBudget
+largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportRatioCoverBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
 exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
 ```
 
 For fixed `c`, the finite cover consists of pairs `(gamma, T)` where `gamma` is uniquely
@@ -122,8 +144,17 @@ witnessed by `c` and `T` is an `(a - #zeroAgreement(c))`-subset of
 `choose(#supportRatioFiber(c,gamma), a - #zeroAgreement(c))`, and the whole cover decomposes as
 the corresponding sum.  A uniform cover cap now feeds the existing per-codeword singleton route,
 and the scanner localizes failed production to either the usual arithmetic failure or one
-overfull codeword-indexed support-ratio cover.  The open work is the overlap-multiplicity theorem
-needed to beat this raw cover count.
+overfull codeword-indexed support-ratio cover.
+The ambient baseline is also explicit: since every support-ratio fiber is contained in
+`directionSupportSet u1`, the cover is bounded by
+`|F| * choose(#support(u1), a - #zeroAgreement(c))`.  This is a control envelope and an obstruction
+scanner, not a winning estimate; a floor proof still needs a saving inside the `(gamma,T)` cover.
+The sharper positive-deficit packing cap removes the scalar/field factor:
+`codewordSingletonSupportRatioCover_snd_injOn` shows that a nonempty selected `T` determines
+`gamma`, so the cover injects into `powersetCard support (a - #zeroAgreement(c))`.  This completes
+the pure coordinate-packing side; the remaining gap is a scalar-level interpolation-rigidity or
+second-witness theorem.  The support-choose consumer and route-failure scanner now make this the
+active baseline to fit or beat in the production arithmetic.
 
 `LineListSingletonDefectGeometry.lean` refines the same defect into an incidence graph and exact
 zero-agreement profiles:

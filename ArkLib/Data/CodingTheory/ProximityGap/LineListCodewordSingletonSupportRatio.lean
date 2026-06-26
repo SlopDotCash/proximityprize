@@ -194,6 +194,237 @@ theorem codewordSingletonSupportRatioCover_card_eq_sum_choose
         exact codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
           dom k a u₀ u₁ c (by simpa [S] using hγ)
 
+omit [Fintype F] in
+open Classical in
+/-- A support-ratio fiber is a subfiber of the moving support. -/
+theorem supportRatioFiber_card_le_directionSupportSet_card
+    (c u₀ u₁ : Fin n → F) (γ : F) :
+    (supportRatioFiber c u₀ u₁ γ).card ≤ (directionSupportSet u₁).card :=
+  Finset.card_le_card (Finset.filter_subset _ _)
+
+omit [Fintype F] in
+open Classical in
+/-- Distinct support-ratio fibers for one fixed codeword are disjoint: every moving coordinate
+has exactly one ratio `(c i - u₀ i) / u₁ i`. -/
+theorem disjoint_supportRatioFiber_of_ne
+    (c u₀ u₁ : Fin n → F) {γ γ' : F} (hne : γ ≠ γ') :
+    Disjoint (supportRatioFiber c u₀ u₁ γ) (supportRatioFiber c u₀ u₁ γ') := by
+  rw [Finset.disjoint_left]
+  intro i hi hi'
+  have hγ := (mem_supportRatioFiber c u₀ u₁ γ i).mp hi |>.2
+  have hγ' := (mem_supportRatioFiber c u₀ u₁ γ' i).mp hi' |>.2
+  exact hne (hγ.symm.trans hγ')
+
+open Classical in
+/-- The support-ratio fibers of one fixed codeword are pairwise disjoint. -/
+theorem pairwiseDisjoint_supportRatioFiber
+    (c u₀ u₁ : Fin n → F) :
+    ((Finset.univ : Finset F) : Set F).PairwiseDisjoint
+      (fun γ => supportRatioFiber c u₀ u₁ γ) := by
+  intro γ _hγ γ' _hγ' hne
+  exact disjoint_supportRatioFiber_of_ne c u₀ u₁ hne
+
+open Classical in
+/-- The moving support is exactly partitioned by the support-ratio fibers of a fixed codeword. -/
+theorem directionSupportSet_card_eq_sum_supportRatioFiber
+    (c u₀ u₁ : Fin n → F) :
+    (directionSupportSet u₁).card =
+      ∑ γ : F, (supportRatioFiber c u₀ u₁ γ).card := by
+  simpa [supportRatioFiber] using
+    (Finset.card_eq_sum_card_fiberwise
+      (f := fun i => (c i - u₀ i) / u₁ i)
+      (s := directionSupportSet u₁) (t := (Finset.univ : Finset F))
+      (fun i _hi => Finset.mem_univ _))
+
+omit [Fintype F] in
+open Classical in
+/-- Any subfamily of support-ratio fibers has total size at most the moving support. -/
+theorem sum_supportRatioFiber_card_le_directionSupportSet_card
+    (c u₀ u₁ : Fin n → F) (Γ : Finset F) :
+    ∑ γ ∈ Γ, (supportRatioFiber c u₀ u₁ γ).card ≤
+      (directionSupportSet u₁).card := by
+  have hdisj :
+      (Γ : Set F).PairwiseDisjoint (fun γ => supportRatioFiber c u₀ u₁ γ) := by
+    intro γ _hγ γ' _hγ' hne
+    exact disjoint_supportRatioFiber_of_ne c u₀ u₁ hne
+  have hUsub :
+      (Γ.biUnion fun γ => supportRatioFiber c u₀ u₁ γ) ⊆ directionSupportSet u₁ := by
+    intro i hi
+    rw [Finset.mem_biUnion] at hi
+    rcases hi with ⟨γ, _hγ, hiγ⟩
+    exact (mem_supportRatioFiber c u₀ u₁ γ i).mp hiγ |>.1
+  calc
+    ∑ γ ∈ Γ, (supportRatioFiber c u₀ u₁ γ).card =
+        (Γ.biUnion fun γ => supportRatioFiber c u₀ u₁ γ).card := by
+      symm
+      rw [Finset.card_biUnion hdisj]
+    _ ≤ (directionSupportSet u₁).card := Finset.card_le_card hUsub
+
+open Classical in
+/-- The singleton-witness scalars for a fixed codeword consume disjoint moving support-ratio
+fibers.  This is the exact accounting reason the coordinate-overlap route recovers only the
+ordinary support-denominator cap unless it uses additional RS or second-witness structure. -/
+theorem codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F) :
+    (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card *
+        (a - (directionZeroAgreementSet c u₀ u₁).card) ≤
+      (directionSupportSet u₁).card := by
+  let Γ := codewordSingletonWitnessScalars dom k a u₀ u₁ c
+  have hmem :
+      ∀ γ ∈ Γ,
+        a - (directionZeroAgreementSet c u₀ u₁).card
+          ≤ (supportRatioFiber c u₀ u₁ γ).card := by
+    intro γ hγ
+    exact supportRatioFiber_card_ge_sub_of_mem_codewordSingletonWitnessScalars
+      dom k a u₀ u₁ c hγ
+  have hlb :
+      Γ.card * (a - (directionZeroAgreementSet c u₀ u₁).card) ≤
+        ∑ γ ∈ Γ, (supportRatioFiber c u₀ u₁ γ).card := by
+    calc
+      Γ.card * (a - (directionZeroAgreementSet c u₀ u₁).card)
+          = ∑ _γ ∈ Γ, (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+            rw [Finset.sum_const, smul_eq_mul]
+      _ ≤ ∑ γ ∈ Γ, (supportRatioFiber c u₀ u₁ γ).card :=
+        Finset.sum_le_sum hmem
+  exact le_trans hlb (sum_supportRatioFiber_card_le_directionSupportSet_card c u₀ u₁ Γ)
+
+open Classical in
+/-- Denominator form of the fixed-codeword support-ratio partition bound.  This restates the
+old heavy-scalar denominator cap through singleton support-ratio fibers, making clear that
+coordinate overlap inside one fixed codeword cannot by itself improve the bound. -/
+theorem
+    codewordSingletonWitnessScalars_card_le_support_div_sub_zeroAgreement_of_ratioPartition
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F)
+    (hpos : (directionZeroAgreementSet c u₀ u₁).card < a) :
+    (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card
+      ≤ (directionSupportSet u₁).card /
+        (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  have hb : 1 ≤ a - (directionZeroAgreementSet c u₀ u₁).card :=
+    Nat.succ_le_iff.mpr (Nat.sub_pos_of_lt hpos)
+  exact (Nat.le_div_iff_mul_le hb).mpr
+    (codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
+      dom k a u₀ u₁ c)
+
+open Classical in
+/-- Crude scalar-fiber-count control for the codeword-indexed support-ratio cover. -/
+theorem codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F) :
+    (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).card ≤
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card *
+        (directionSupportSet u₁).card.choose
+          (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  rw [codewordSingletonSupportRatioCover_card_eq_sum_choose]
+  calc
+    (∑ γ ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c,
+        (supportRatioFiber c u₀ u₁ γ).card.choose
+          (a - (directionZeroAgreementSet c u₀ u₁).card))
+        ≤ ∑ _γ ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c,
+            (directionSupportSet u₁).card.choose
+              (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+          refine Finset.sum_le_sum fun γ _hγ => ?_
+          exact Nat.choose_le_choose
+            (a - (directionZeroAgreementSet c u₀ u₁).card)
+            (supportRatioFiber_card_le_directionSupportSet_card c u₀ u₁ γ)
+    _ = (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card *
+          (directionSupportSet u₁).card.choose
+            (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+          rw [Finset.sum_const, smul_eq_mul]
+
+open Classical in
+/-- Ambient scalar-times-binomial control for the codeword-indexed support-ratio cover.  This is a
+baseline envelope; beating it requires structure beyond fixed-codeword coordinate overlap, since
+those ratio fibers are already disjoint. -/
+theorem codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F) :
+    (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).card ≤
+      Fintype.card F * (directionSupportSet u₁).card.choose
+        (a - (directionZeroAgreementSet c u₀ u₁).card) :=
+  (codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
+    dom k a u₀ u₁ c).trans
+    (Nat.mul_le_mul_right _
+      (Finset.card_le_univ (codewordSingletonWitnessScalars dom k a u₀ u₁ c)))
+
+open Classical in
+/-- On a positive moving-support deficit, the selected subfiber `T` determines the scalar `γ`.
+This is the exact packing fact behind the codeword-indexed support-ratio cover. -/
+theorem codewordSingletonSupportRatioCover_snd_injOn
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F)
+    (hpos : 0 < a - (directionZeroAgreementSet c u₀ u₁).card) :
+    Set.InjOn Prod.snd
+      (codewordSingletonSupportRatioCover dom k a u₀ u₁ c : Set (F × Finset (Fin n))) := by
+  intro e he e' he' hsnd
+  rcases e with ⟨γ, T⟩
+  rcases e' with ⟨γ', T'⟩
+  dsimp at hsnd
+  have hcover :=
+    (mem_codewordSingletonSupportRatioCover dom k a u₀ u₁ c (γ, T)).mp he
+  have hcover' :=
+    (mem_codewordSingletonSupportRatioCover dom k a u₀ u₁ c (γ', T')).mp he'
+  obtain ⟨hTsub, hTcard⟩ := Finset.mem_powersetCard.mp hcover.2
+  obtain ⟨hT'sub, _hT'card⟩ := Finset.mem_powersetCard.mp hcover'.2
+  have hTpos : 0 < T.card := by
+    rw [hTcard]
+    exact hpos
+  obtain ⟨i, hiT⟩ := Finset.card_pos.mp hTpos
+  have hiT' : i ∈ T' := by simpa [hsnd] using hiT
+  have hratio := (mem_supportRatioFiber c u₀ u₁ γ i).mp (hTsub hiT)
+  have hratio' := (mem_supportRatioFiber c u₀ u₁ γ' i).mp (hT'sub hiT')
+  have hγ : γ = γ' := hratio.2.symm.trans hratio'.2
+  cases hγ
+  cases hsnd
+  rfl
+
+open Classical in
+/-- The second projection of the codeword-indexed support-ratio cover lands in the ambient
+`(a - #zeroAgreement(c))`-subsets of the moving support. -/
+theorem codewordSingletonSupportRatioCover_image_snd_subset_support_powerset
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F) :
+    (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).image Prod.snd ⊆
+      (directionSupportSet u₁).powersetCard
+        (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  intro T hT
+  rcases Finset.mem_image.mp hT with ⟨⟨γ, T'⟩, hpair, hT'⟩
+  dsimp at hT'
+  subst T'
+  have hcover :=
+    (mem_codewordSingletonSupportRatioCover dom k a u₀ u₁ c (γ, T)).mp hpair
+  obtain ⟨hsub, hcard⟩ := Finset.mem_powersetCard.mp hcover.2
+  refine Finset.mem_powersetCard.mpr ⟨?_, hcard⟩
+  intro i hi
+  exact ((mem_supportRatioFiber c u₀ u₁ γ i).mp (hsub hi)).1
+
+open Classical in
+/-- Positive-deficit packing cap for the codeword-indexed support-ratio cover: once `T` is
+nonempty, the cover injects into the ambient family of moving-support subsets of that size. -/
+theorem codewordSingletonSupportRatioCover_card_le_support_choose
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F)
+    (hpos : 0 < a - (directionZeroAgreementSet c u₀ u₁).card) :
+    (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).card ≤
+      (directionSupportSet u₁).card.choose
+        (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  have hcardImage :
+      ((codewordSingletonSupportRatioCover dom k a u₀ u₁ c).image Prod.snd).card =
+        (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).card := by
+    exact Finset.card_image_of_injOn
+      (codewordSingletonSupportRatioCover_snd_injOn dom k a u₀ u₁ c hpos)
+  rw [← hcardImage]
+  simpa [Finset.card_powersetCard] using
+    Finset.card_le_card
+      (codewordSingletonSupportRatioCover_image_snd_subset_support_powerset
+        dom k a u₀ u₁ c)
+
+open Classical in
+/-- Zero-safe line form of the support-choose packing cap. -/
+theorem codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ c : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hc : c ∈ (rsCode dom k : Submodule F (Fin n → F))) :
+    (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).card ≤
+      (directionSupportSet u₁).card.choose
+        (a - (directionZeroAgreementSet c u₀ u₁).card) :=
+  codewordSingletonSupportRatioCover_card_le_support_choose
+    dom k a u₀ u₁ c (Nat.sub_pos_of_lt (hsafe c hc))
+
 /-- Uniform cap on the codeword-indexed support-ratio cover attached to every appearing codeword
 on every large-zero safe line. -/
 def UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
@@ -202,6 +433,15 @@ def UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
     ZeroDirectionSafeLine dom k a u₀ u₁ →
       ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
         (codewordSingletonSupportRatioCover dom k a u₀ u₁ c).card ≤ S
+
+/-- Uniform field-factor-free support-choose cap for the codeword-indexed support-ratio cover. -/
+def UniformLargeZeroSafeCodewordSupportChooseBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (directionSupportSet u₁).card.choose
+          (a - (directionZeroAgreementSet c u₀ u₁).card) ≤ S
 
 /-- A support-ratio cover cap implies the direct singleton-witness scalar cap for each appearing
 codeword. -/
@@ -233,6 +473,97 @@ theorem not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_e
       (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩)
   · rintro ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩ hbudget
     exact (not_lt_of_ge (hbudget u₀ u₁ hnotEligible hsafe c hc)) hgt
+
+open Classical in
+/-- A uniform support-choose cap supplies the codeword-indexed support-ratio cover budget on
+large-zero safe lines. -/
+theorem uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (hchoose : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+          (directionSupportSet u₁).card.choose
+            (a - (directionZeroAgreementSet c u₀ u₁).card) ≤ S) :
+    UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted dom k a S := by
+  intro u₀ u₁ hnotEligible hsafe c hc
+  have hcCode : c ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    rw [lineAppearingCodewords, Finset.mem_filter] at hc
+    exact hc.2.1
+  exact
+    (codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
+      dom k a u₀ u₁ c hsafe hcCode).trans
+      (hchoose u₀ u₁ hnotEligible hsafe c hc)
+
+/-- Named-budget form of the support-choose-to-cover bridge. -/
+theorem uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (hchoose : UniformLargeZeroSafeCodewordSupportChooseBudgeted dom k a S) :
+    UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted dom k a S :=
+  uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
+    dom k a S hchoose
+
+open Classical in
+/-- If a uniform codeword-indexed support-ratio cover cap fails, then the support-choose packing
+envelope is already above that cap for a concrete appearing codeword. -/
+theorem exists_largeZero_safe_codewordSupportRatioCoverChoose_gt_of_not_coverBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (hnot : ¬ UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted dom k a S) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+          S < (directionSupportSet u₁).card.choose
+            (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  rcases
+      (not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
+        dom k a S).mp hnot with
+    ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
+  have hcCode : c ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    rw [lineAppearingCodewords, Finset.mem_filter] at hc
+    exact hc.2.1
+  exact ⟨u₀, u₁, hnotEligible, hsafe, c, hc,
+    lt_of_lt_of_le hgt
+      (codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
+        dom k a u₀ u₁ c hsafe hcCode)⟩
+
+open Classical in
+/-- Exact failure form for the named support-choose cap. -/
+theorem not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_iff_exists_choose_gt
+    (dom : Fin n ↪ F) (k a S : ℕ) :
+    (¬ UniformLargeZeroSafeCodewordSupportChooseBudgeted dom k a S) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            S < (directionSupportSet u₁).card.choose
+              (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe c hc
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩)
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩ hbudget
+    exact (not_lt_of_ge (hbudget u₀ u₁ hnotEligible hsafe c hc)) hgt
+
+open Classical in
+/-- If a uniform codeword-indexed support-ratio cover cap fails, then the ambient
+scalar-times-binomial envelope is already above that cap for a concrete appearing codeword. -/
+theorem exists_largeZero_safe_codewordSupportRatioCoverFieldChoose_gt_of_not_coverBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (hnot : ¬ UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted dom k a S) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+          S < Fintype.card F * (directionSupportSet u₁).card.choose
+            (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  rcases
+      (not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
+        dom k a S).mp hnot with
+    ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
+  exact ⟨u₀, u₁, hnotEligible, hsafe, c, hc,
+    lt_of_lt_of_le hgt
+      (codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
+        dom k a u₀ u₁ c)⟩
 
 open Classical in
 /-- If the direct singleton cap fails, then the codeword-indexed support-ratio cover is already
@@ -267,6 +598,19 @@ theorem largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonSupportRatioCove
       dom k a S hcover)
     hbudget
 
+/-- The field-factor-free support-choose cap can be consumed by the direct per-codeword
+singleton production route. -/
+theorem largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseBudget
+    (dom : Fin n ↪ F) (k a S B : ℕ)
+    (hchoose : UniformLargeZeroSafeCodewordSupportChooseBudgeted dom k a S)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B :=
+  largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonSupportRatioCoverBudget
+    dom k a S B
+    (uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+      dom k a S hchoose)
+    hbudget
+
 /-- Production wrapper for the support-ratio cover route to per-codeword singleton caps. -/
 theorem
     uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportRatioCoverBudget
@@ -282,6 +626,22 @@ theorem
     dom k a L S B hSupport hFits hZeroSafe
     (uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
       dom k a S hcover)
+    hbudget
+
+/-- Production wrapper for the field-factor-free support-choose route. -/
+theorem
+    uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hchoose : UniformLargeZeroSafeCodewordSupportChooseBudgeted dom k a S)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportRatioCoverBudget
+    dom k a L S B hSupport hFits hZeroSafe
+    (uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+      dom k a S hchoose)
     hbudget
 
 open Classical in
@@ -318,6 +678,41 @@ theorem
       ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
     exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr ⟨c, hc, hgt⟩⟩
 
+open Classical in
+/-- Scanner for the support-choose route.  Once support-side hypotheses are fixed, failed
+production forces either the usual appearing-codeword arithmetic failure or a concrete appearing
+codeword whose field-factor-free support-choose cap is too small. -/
+theorem exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        (¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+            + (lineAppearingCodewords dom k a u₀ u₁).card * S ≤ 2 * B ∨
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            S < (directionSupportSet u₁).card.choose
+              (a - (directionZeroAgreementSet c u₀ u₁).card)) := by
+  by_cases hchoose : UniformLargeZeroSafeCodewordSupportChooseBudgeted dom k a S
+  · have hcover :
+        UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted dom k a S :=
+      uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+        dom k a S hchoose
+    rcases
+      exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
+        dom k a L S B hSupport hFits hZeroSafe hnot with
+      ⟨u₀, u₁, hnotEligible, hsafe, hfail | hgt⟩
+    · exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inl hfail⟩
+    · rcases hgt with ⟨c, hc, hgt⟩
+      exact False.elim (not_lt_of_ge (hcover u₀ u₁ hnotEligible hsafe c hc) hgt)
+  · rcases
+      (not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_iff_exists_choose_gt
+        dom k a S).mp hchoose with
+      ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
+    exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr ⟨c, hc, hgt⟩⟩
+
 section SourceAudit
 
 #print axioms codewordSingletonSupportRatioCover
@@ -329,17 +724,45 @@ section SourceAudit
 #print axioms codewordSingletonSupportRatioCover_fst_fiber_eq
 #print axioms codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
 #print axioms codewordSingletonSupportRatioCover_card_eq_sum_choose
+#print axioms supportRatioFiber_card_le_directionSupportSet_card
+#print axioms disjoint_supportRatioFiber_of_ne
+#print axioms pairwiseDisjoint_supportRatioFiber
+#print axioms directionSupportSet_card_eq_sum_supportRatioFiber
+#print axioms sum_supportRatioFiber_card_le_directionSupportSet_card
+#print axioms codewordSingletonWitnessScalars_card_mul_sub_zeroAgreement_le_support
+#print axioms
+  codewordSingletonWitnessScalars_card_le_support_div_sub_zeroAgreement_of_ratioPartition
+#print axioms codewordSingletonSupportRatioCover_card_le_singletonWitness_card_mul_choose
+#print axioms codewordSingletonSupportRatioCover_card_le_field_card_mul_choose
+#print axioms codewordSingletonSupportRatioCover_snd_injOn
+#print axioms codewordSingletonSupportRatioCover_image_snd_subset_support_powerset
+#print axioms codewordSingletonSupportRatioCover_card_le_support_choose
+#print axioms codewordSingletonSupportRatioCover_card_le_support_choose_of_zeroSafe
 #print axioms UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
+#print axioms UniformLargeZeroSafeCodewordSupportChooseBudgeted
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
 #print axioms
   not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
+#print axioms uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose
+#print axioms uniformCodewordSupportRatioCoverBudgeted_of_supportChooseBudgeted
+#print axioms
+  exists_largeZero_safe_codewordSupportRatioCoverChoose_gt_of_not_coverBudgeted
+#print axioms
+  not_uniformLargeZeroSafeCodewordSupportChooseBudgeted_iff_exists_choose_gt
+#print axioms
+  exists_largeZero_safe_codewordSupportRatioCoverFieldChoose_gt_of_not_coverBudgeted
 #print axioms
   exists_largeZero_safe_codewordSupportRatioCover_gt_of_not_codewordSingletonBudgeted
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonSupportRatioCoverBudget
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_codewordSupportChooseBudget
 #print axioms
   uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportRatioCoverBudget
 #print axioms
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
+#print axioms
   exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
+#print axioms
+  exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
 
 end SourceAudit
 

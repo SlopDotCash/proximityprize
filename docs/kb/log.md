@@ -735,3 +735,29 @@ fixed codeword as a finite family of moving-support subfibers.  The new uniform 
 the existing per-codeword singleton production route, and its scanner exposes either the usual
 combined arithmetic failure or one overfull codeword-indexed support-ratio cover.  The next hard
 target is still an overlap-multiplicity theorem that beats the resulting raw cover count.
+
+Essay: `deltastar-464-codeword-ratio-overlap-no-go-2026-06-26.md` records the next critique.
+For one fixed codeword, support-ratio fibers for distinct singleton scalars are disjoint, so
+coordinate overlap inside the codeword-indexed cover is exhausted and recovers only the old
+support-denominator bound.  Any remaining saving must use RS interpolation rigidity or the
+second-witness/uniqueness condition, not raw moving-coordinate overlap.
+
+Follow-up: the codeword-indexed cover now has its ambient scalar-times-binomial control envelope.
+`supportRatioFiber_card_le_directionSupportSet_card` gives
+`codewordSingletonSupportRatioCover_card_le_field_card_mul_choose`, and
+`exists_largeZero_safe_codewordSupportRatioCoverFieldChoose_gt_of_not_coverBudgeted` records that
+a failed uniform cover cap already beats `|F| * choose(#support(u1), a - #zeroAgreement(c))` on a
+specific large-zero safe line and appearing codeword.  This is a baseline obstruction, not a floor
+proof; the live target remains overlap saving inside the `(gamma,T)` cover.
+
+Correction/refinement: the pure coordinate-packing side of that cover is sharper than the
+scalar-times-binomial fallback.  `codewordSingletonSupportRatioCover_snd_injOn` proves that when
+`a - #zeroAgreement(c) > 0`, the selected nonempty `T` determines `gamma`; hence
+`codewordSingletonSupportRatioCover_card_le_support_choose` injects the cover into
+`powersetCard support (a - #zeroAgreement(c))`.  This exhausts fixed-codeword coordinate overlap:
+the remaining possible saving must be scalar-level RS interpolation rigidity or a second-witness
+argument, not reuse of moving coordinates.  The support-choose consumer/scanner pair
+`uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_of_supportChoose` and
+`exists_largeZero_safe_codewordSupportRatioCoverChoose_gt_of_not_coverBudgeted`, together with
+`exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted`, make this the active
+baseline cap and production failure witness.
