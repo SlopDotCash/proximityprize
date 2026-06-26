@@ -863,6 +863,13 @@ returns exactly the old overfull singleton fiber under forbidden edges.  This ke
 attempts honest: the relation can be a proof method, but the witness-local formulation is not a
 weaker target.
 
+Follow-up: `LineListCodewordSingletonRelationColorCover.lean` adds a bounded-invariant route into
+the clique-cover certificate.  `scalarRelationColorForcesEdges` says equal colors force relation
+edges on the singleton-witness fiber; `scalarRelationCliqueCover_of_colorForcesEdges` turns color
+fibers into cliques; and
+`uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationColorBudgeted` plugs a
+uniform color-image bound into the witness-local graph budget.
+
 Follow-up: `LineListCodewordSingletonRelationCliqueCover.lean` adds a positive certificate form
 for the graph route.  `scalarRelationIndependent_card_le_of_cliqueCover` proves that an
 independent singleton set meets each relation clique at most once, and
@@ -871,3 +878,12 @@ cover obligation.  The scanner
 `exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgeted` returns an
 actual forbidden edge, the usual arithmetic failure, or a singleton fiber with no at-most-`S`
 relation-clique cover.  This gives future interpolation relations a finite certificate target.
+
+Follow-up: `LineListCodewordSingletonRelationColorCover.lean` turns that finite certificate into
+a bounded-invariant target.  `scalarRelationCliqueCover_of_colorForcesEdges` proves that if equal
+color values inside a singleton scalar set force relation edges, then the color fibers form a
+clique cover.  The uniform wrapper
+`UniformLargeZeroSafeCodewordRelationColorBudgeted` asks for at most `S` color values on each
+actual singleton-witness fiber plus the equal-color edge theorem.  This is still only a proof
+method: the missing object is a nontrivial interpolation or exceptional-pencil invariant with a
+small image.

@@ -52,12 +52,30 @@ Failed production now exposes one of three objects:
 3. a large-zero safe appearing codeword whose singleton-witness fiber has no at-most-S clique cover.
 ```
 
+`LineListCodewordSingletonRelationColorCover.lean` adds a convenient way to build such clique
+covers from bounded invariants:
+
+```lean
+scalarRelationColorForcesEdges
+scalarRelationCliqueCover_of_colorForcesEdges
+UniformLargeZeroSafeCodewordRelationColorBudgeted
+uniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted_of_relationColorBudgeted
+uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationColorBudgeted
+uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationColorBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationColorBudgeted
+```
+
+If equal colors force relation edges on the singleton-witness fiber, then color fibers are
+relation-cliques.  Bounding the number of colors therefore bounds the witness-local independence
+number.
+
 ## Consequence
 
 The graph interface is still not a proof by itself.  The generic forbidden-edge collapse says the
 witness-local graph budget is equivalent to the original singleton cap once forbidden edges are
 known.  The clique-cover certificate is useful because it is a possible proof method for that
-budget: find a relation whose singleton vertices can be covered by few algebraic cliques.
+budget: find a relation whose singleton vertices can be covered by few algebraic cliques, or find
+a bounded invariant whose fibers are those cliques.
 
 The live target is now sharper: produce a non-vacuous pairwise interpolation relation and prove a
-small clique cover for the actual singleton-witness fibers.
+small clique/color cover for the actual singleton-witness fibers.
