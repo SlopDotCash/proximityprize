@@ -55,6 +55,17 @@ the average score over signings is small enough to pay for one atom.
 
 Each is compatible with the all-ones signing being the unique spike above the target.
 
+The positive last-mile condition is also formalized:
+
+```lean
+all_bounded_of_badSignCount_zero
+all_bounded_of_badSignCount_lt_one
+allOnes_bounded_of_badSignCount_lt_one
+```
+
+A random-sign tail theorem becomes deterministic only when the exceptional count is forced to zero,
+equivalently when the finite exceptional budget is strictly below one atom.
+
 ## Consequence For #464
 
 A random-sign operator-norm theorem reaches the prize only after a separate deterministic step:

@@ -84,6 +84,41 @@ theorem badSignCount_singletonSpike
   rw [hfilter]
   simp
 
+/-- If the bad-sign count is zero, every signing is bounded by the threshold. -/
+theorem all_bounded_of_badSignCount_zero
+    [Fintype S] (score : S -> ℝ) {B : ℝ}
+    (hzero : badSignCount score B = 0) :
+    ∀ σ : S, score σ <= B := by
+  classical
+  intro σ
+  by_contra hnot
+  have hlt : B < score σ := lt_of_not_ge hnot
+  have hmem : σ ∈ Finset.univ.filter (fun (τ : S) => B < score τ) := by
+    simp [hlt]
+  have hpos : 0 < (Finset.univ.filter (fun (τ : S) => B < score τ)).card :=
+    Finset.card_pos.mpr ⟨σ, hmem⟩
+  unfold badSignCount at hzero
+  rw [hzero] at hpos
+  omega
+
+/-- A strict sub-one exceptional-count theorem bounds every signing.  This is the finite form of
+the "exceptional probability below one atom" last mile. -/
+theorem all_bounded_of_badSignCount_lt_one
+    [Fintype S] (score : S -> ℝ) {B : ℝ}
+    (hcount : badSignCount score B < 1) :
+    ∀ σ : S, score σ <= B := by
+  have hzero : badSignCount score B = 0 := by
+    omega
+  exact all_bounded_of_badSignCount_zero score hzero
+
+/-- In particular, a sub-one exceptional-count theorem controls the distinguished all-ones
+signing. -/
+theorem allOnes_bounded_of_badSignCount_lt_one
+    [Fintype S] (score : S -> ℝ) (allOnes : S) {B : ℝ}
+    (hcount : badSignCount score B < 1) :
+    score allOnes <= B :=
+  all_bounded_of_badSignCount_lt_one score hcount allOnes
+
 /-- A theorem bounding every signing except the distinguished all-ones signing is compatible with
 the all-ones signing being a spike. -/
 theorem goodOn_erased_allows_allOnes_spike
@@ -134,6 +169,9 @@ theorem average_budget_allows_allOnes_spike
 #print axioms singletonSpike_nonneg
 #print axioms signAverage_singletonSpike
 #print axioms badSignCount_singletonSpike
+#print axioms all_bounded_of_badSignCount_zero
+#print axioms all_bounded_of_badSignCount_lt_one
+#print axioms allOnes_bounded_of_badSignCount_lt_one
 #print axioms goodOn_erased_allows_allOnes_spike
 #print axioms one_exception_budget_allows_allOnes_spike
 #print axioms average_budget_allows_allOnes_spike

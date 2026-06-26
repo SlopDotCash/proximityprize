@@ -204,25 +204,6 @@ or prove that a much smaller floor/profile family dominates the all-stack family
 Anything in between is only evidence.  A candidate floor family that is bounded but not known to
 dominate all stacks cannot feed `mcaDeltaStar`.
 
-## Continuation: domination means global maximizer containment
-
-The contract now also gives the finite-family interpretation of domination:
-
-```lean
-FamilyContainsGlobalMax
-familyDominates_iff_containsGlobalMax
-not_familyDominates_of_each_member_beaten
-```
-
-For a finite candidate family `R`, `FamilyDominates F C delta R` is equivalent to saying `R`
-contains a true global maximizer for the actual bad-scalar count.  This sharpens the scanner
-interface: a compressed floor catalogue is not merely a set of plausible bad examples.  It must
-contain, or be proved equivalent to, a worst stack.
-
-The local falsifier is also weaker than the old "one witness beats all" test.  If every candidate
-family member is beaten by some stack, possibly depending on the member, then the family contains no
-global maximizer and cannot dominate.
-
 ## Continuation: domination means containing a global maximizer
 
 The finite-family condition has now been sharpened again:
@@ -232,7 +213,10 @@ FamilyContainsGlobalMax
 familyDominates_of_containsGlobalMax
 containsGlobalMax_of_familyDominates
 familyDominates_iff_containsGlobalMax
+worstCaseIncidenceBounded_of_containsGlobalMax
+deltaStar_pin_of_containsGlobalMax
 not_familyDominates_of_each_member_beaten
+floorGood_familyBudget_not_dominationProof_of_each_member_beaten
 ```
 
 For this actual `StackBadCount` order, `FamilyDominates C delta R` is equivalent to saying that
@@ -257,3 +241,55 @@ It is enough to show:
 That is the scanner target to falsify a proposed compressed floor catalogue.  It also clarifies why
 least-prime floor-goodness is only obstruction removal: it can budget a family, but unless that
 family contains a global worst stack, it is not a `WorstCaseIncidenceBounded` proof.
+
+The Linnik and Thorner-Zaman candidate-list contracts now have equivalent global-max forms:
+
+```lean
+worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestMaxContract
+deltaStar_pin_of_linnik_candidateListExactSmallestMaxContract
+worstCaseIncidenceBounded_of_tz_candidateListExactSmallestMaxContract
+deltaStar_pin_of_tz_candidateListExactSmallestMaxContract
+```
+
+So the floor lane can state its final combinatorial obligation either as `FamilyDominates` or as
+`FamilyContainsGlobalMax`; they are mathematically equivalent, but the latter is the clearer scanner
+target.
+
+## Continuation: max-containment consumers
+
+The contract now lets downstream scanners or classification proofs feed the strongest operational
+condition directly:
+
+```lean
+worstCaseIncidenceBounded_of_containsGlobalMax
+deltaStar_pin_of_containsGlobalMax
+worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestMaxContract
+deltaStar_pin_of_linnik_candidateListExactSmallestMaxContract
+worstCaseIncidenceBounded_of_tz_candidateListExactSmallestMaxContract
+deltaStar_pin_of_tz_candidateListExactSmallestMaxContract
+floorGood_familyBudget_not_dominationProof_of_each_member_beaten
+```
+
+This removes the last ambiguity in the floor contract.  The positive route can be stated without
+the softer word "domination":
+
+```text
+exact singleton scanner evidence
++ sub-4 least-prime supply
++ floor-good -> family budget
++ the family contains a true global bad-scalar maximizer
++ scaled MCA budget
+=> delta-star lower pin
+```
+
+The negative route is equally local:
+
+```text
+for every proposed representative r, find some stack u_r with a larger bad-scalar count
+=> the family contains no global maximizer
+=> the bounded floor family is not a prize proof.
+```
+
+This is still not a proof of the floor.  It is a cleaner attack socket: the next scanner pass should
+either certify that the proposed floor/profile family contains a global maximizer, or produce the
+memberwise beating witnesses that refute that compressed family.
