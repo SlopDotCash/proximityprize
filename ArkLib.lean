@@ -1997,6 +1997,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GKPhaseCoboundaryNonLinea
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussPeriodFirstMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussPeriodMomentCensus
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussPeriodRealValued
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussianSupCouplingErrorGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GeneralizedPaleyNatureWaringGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GoodPrimeFamilyDensity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GrossKoblitzPhaseNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H1MahlerHouseDominantConjugate
@@ -2047,6 +2049,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiKatzEquidist
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiLocalSlopeTurnoverGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiMomentIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiNewRelations
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JohnsonOverheadTightBudgetGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26s128ThornerZamanBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KelleyOwenDilationPencil
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KuriharaDiscriminantShiftBlind
@@ -2197,6 +2200,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RThinSqrtNKRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RUD_MathlibAssessment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RaggedRootBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomDomainTransferGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomSignTypicalNotAllOnesGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementFlatnessCriterion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagCorridor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagNonneg

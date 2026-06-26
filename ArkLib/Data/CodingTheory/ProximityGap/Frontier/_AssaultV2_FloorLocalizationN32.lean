@@ -9,11 +9,14 @@ import Mathlib.Tactic.NormNum
 set_option autoImplicit false
 
 /-!
-# FLOOR_A1 (#464): off-BGK floor — bad-prime localization characterization (n=16 proven; n=32 numeric)
+# FLOOR_A1 (#464): off-BGK floor localization
+
+Bad-prime localization characterization (`n=16` proven; `n=32` numeric).
 
 ## Context (dossier §9, KB `bad-prime-localization-theorem-2026-06-19` §12)
 
-The δ* **floor** asks whether δ* enters the window interior `(1−√ρ, 1−ρ−Θ(1/log n))`. The
+The δ* **floor** asks whether δ* enters the window interior
+`(1−√ρ, 1−ρ−Θ(1/log n))`. The
 campaign isolated one genuinely off-BGK *obstruction-removal* lane: bad primes for a distinguished
 binder-family floor predicate are the prime divisors of a **FIXED, p-independent cyclotomic
 resultant** (a 0-dimensional / height question, NOT a `√p` character sum). This can certify that
@@ -28,7 +31,8 @@ The KB §1 setup: `μ_n` = `n`-th roots of unity (`n = 2^a`) in `F_p`, `p ≡ 1 
 > **floor-bad(n) = { the single smallest prime `p ≡ 1 mod n` }.**
 
 Verified `n=16 → {17}` exhaustively (15.4M-pattern Rust); `n=32 → {97}` (adjacent, exhaustive).
-Both equal the *smallest* prime `≡ 1 mod n` (17 smallest `≡1 mod 16`; 97 smallest `≡1 mod 32`).
+Both equal the *smallest* prime `≡ 1 mod n`
+(17 smallest `≡1 mod 16`; 97 smallest `≡1 mod 32`).
 
 **The payoff (if uniform in `μ`):** the modeled binder floor predicate closes once the least prime
 `≡ 1 mod n` is below prize scale `n^4`. Classical Linnik with exponent `5` is NOT enough for this
@@ -72,7 +76,8 @@ def smallestPrime1ModN (n bound : ℕ) : ℕ :=
 /-- `n=16`: smallest prime `≡ 1 mod 16` is `17`. (`17 % 16 = 1`, prime; nothing smaller.) -/
 example : smallestPrime1ModN 16 100 = 17 := by decide
 
-/-- `n=32`: smallest prime `≡ 1 mod 32` is `97`. (`33,65` composite; `97` prime, `97 % 32 = 1`.) -/
+/-- `n=32`: smallest prime `≡ 1 mod 32` is `97`.  Here `33,65` are composite,
+`97` is prime, and `97 % 32 = 1`. -/
 example : smallestPrime1ModN 32 200 = 97 := by decide
 
 /-- The CHARACTERIZATION predicate (clean, decidable for a concrete finite `badPrimes` list):
@@ -110,7 +115,8 @@ theorem floorBad16_isSmallestPrime : FloorBadIsSmallestPrime 16 100 floorBad16 :
 theorem floorBad16_below_prize : (17 : ℕ) < 16 ^ 4 := by decide
 
 /-- **PROVEN (n=16, floor closed).** Combining: the floor-bad set is the singleton smallest prime
-`≡ 1 mod 16`, that prime is `17`, and `17 < 16^4` — so every prize-regime prime `p ~ 16^4` is GOOD
+`≡ 1 mod 16`, that prime is `17`, and `17 < 16^4` — so every prize-regime
+prime `p ~ 16^4` is GOOD
 and the off-BGK floor is closed at `n=16`. -/
 theorem floor_closed_n16 :
     FloorBadIsSmallestPrime 16 100 floorBad16
@@ -128,19 +134,78 @@ matches the smallest-prime predicate. -/
 theorem floorBad32_matches_smallestPrime :
     FloorBadIsSmallestPrime 32 200 floorBad32Conjectured := by decide
 
+/-! ## Candidate-list semantics: matching the least-prime rule is not extensional floor-badness -/
+
+/-- Soundness of a finite candidate list for a concrete floor-bad predicate inside the split
+prime family: every true floor-bad split prime is listed. -/
+def CandidateListSoundInAP
+    (FloorBad : ℕ → ℕ → Prop) (n : ℕ) (candidates : List ℕ) : Prop :=
+  ∀ p : ℕ, p.Prime → p % n = 1 → FloorBad n p → p ∈ candidates
+
+/-- Completeness of a finite candidate list for a concrete floor-bad predicate inside the split
+prime family: every listed split prime is genuinely floor-bad. -/
+def CandidateListCompleteInAP
+    (FloorBad : ℕ → ℕ → Prop) (n : ℕ) (candidates : List ℕ) : Prop :=
+  ∀ p : ℕ, p.Prime → p % n = 1 → p ∈ candidates → FloorBad n p
+
+/-- Extensional equality between the true floor-bad predicate and a finite candidate list,
+restricted to the split prime family.  This is the proof obligation supplied by the exhaustive
+rank scanner; it is strictly stronger than `FloorBadIsSmallestPrime`, which only compares two
+lists. -/
+def CandidateListExactInAP
+    (FloorBad : ℕ → ℕ → Prop) (n : ℕ) (candidates : List ℕ) : Prop :=
+  ∀ p : ℕ, p.Prime → p % n = 1 → (FloorBad n p ↔ p ∈ candidates)
+
+/-- Exactness is precisely soundness plus completeness. -/
+theorem candidateListExactInAP_iff_sound_complete
+    (FloorBad : ℕ → ℕ → Prop) (n : ℕ) (candidates : List ℕ) :
+    CandidateListExactInAP FloorBad n candidates ↔
+      CandidateListSoundInAP FloorBad n candidates ∧
+        CandidateListCompleteInAP FloorBad n candidates := by
+  constructor
+  · intro hexact
+    refine ⟨?_, ?_⟩
+    · intro p hp hmod hbad
+      exact (hexact p hp hmod).mp hbad
+    · intro p hp hmod hmem
+      exact (hexact p hp hmod).mpr hmem
+  · rintro ⟨hsound, hcomplete⟩ p hp hmod
+    exact ⟨hsound p hp hmod, hcomplete p hp hmod⟩
+
+/-- The `n=32` candidate list matching the least-prime rule does not, by logic alone, prove that the
+list is extensionally equal to the true floor-bad predicate.  The empty predicate is a countermodel:
+`[97]` still matches the least-prime rule, but completeness fails at the split prime `97`.
+
+This theorem formalizes the warning in the module docstring: the exhaustive `F_p` rank
+computation is the missing semantic input, not the `by decide` check that `[97]` is the
+least-prime singleton. -/
+theorem floorBad32_candidate_match_not_extensional_evidence :
+    ∃ FloorBad : ℕ → ℕ → Prop,
+      FloorBadIsSmallestPrime 32 200 floorBad32Conjectured ∧
+        ¬ CandidateListExactInAP FloorBad 32 floorBad32Conjectured := by
+  refine ⟨fun _ _ => False, floorBad32_matches_smallestPrime, ?_⟩
+  intro hexact
+  have hprime : Nat.Prime 97 := by decide
+  have hmod : (97 : ℕ) % 32 = 1 := by decide
+  have hmem : (97 : ℕ) ∈ floorBad32Conjectured := by decide
+  exact (hexact 97 hprime hmod).mpr hmem
+
 /-! ## The uniform-in-μ statement and the Linnik closure (named open Props) -/
 
-/- The realizability oracle `FloorBad : ℕ → ℕ → Prop`: `FloorBad n p` means prime `p ≡ 1 mod n` is
-floor-bad (some adjacent 7th-type pattern realizable over `F_p`). It is left abstract — introduced as
-an EXPLICIT predicate PARAMETER of the statements below, NOT a bodyless `opaque`. Every result is
+/- The realizability oracle `FloorBad : ℕ → ℕ → Prop`: `FloorBad n p` means prime
+`p ≡ 1 mod n` is floor-bad (some adjacent 7th-type pattern realizable over `F_p`). It is
+left abstract — introduced as an EXPLICIT predicate PARAMETER of the statements below, NOT
+a bodyless `opaque`. Every result is
 proven *for an arbitrary* such predicate, so nothing is asserted to exist with magic content (a
-bodyless `opaque` would axiom-launder an unproven inhabitant of `ℕ → ℕ → Prop`, which CI rightly
+bodyless `opaque` would axiom-launder an unproven inhabitant of `ℕ → ℕ → Prop`,
+which CI rightly
 rejects). Quantifying over `FloorBad` is strictly more honest and equally usable: the conditional
 closure `floor_closes_by_linnik` holds whatever the concrete realizability predicate turns out to be
 (its concrete content is the `F_p`-rank computation of KB §1). -/
 
 /-- **OPEN (uniform-in-μ characterization).** For all `a ≥ 4`, with `n = 2^a`, the floor-bad
-primes (per the abstract predicate `FloorBad`) are exactly the singleton smallest prime `≡ 1 mod n`.
+primes (per the abstract predicate `FloorBad`) are exactly the singleton smallest prime
+`≡ 1 mod n`.
 This is the genuinely-off-BGK binder-predicate conjecture: it is a 0-dimensional / height statement
 on a fixed cyclotomic resultant, NOT a character sum. Proven `a=4` (`floor_closed_n16`); `a=5`
 numerically supported (`{97}`). It is necessary evidence for the prize floor, not a replacement for
@@ -148,6 +213,19 @@ numerically supported (`{97}`). It is necessary evidence for the prize floor, no
 def FloorLocalizationUniform (FloorBad : ℕ → ℕ → Prop) : Prop :=
   ∀ a : ℕ, 4 ≤ a → ∀ p : ℕ, p.Prime → p % (2 ^ a) = 1 →
     (FloorBad (2 ^ a) p ↔ p = smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)))
+
+/-- If each dyadic rung has an exact candidate list consisting of the least split prime, then the
+abstract uniform localization predicate follows.  This is the honest bridge from scanner evidence
+to `FloorLocalizationUniform`. -/
+theorem floorLocalizationUniform_of_candidateListExactSmallest
+    (FloorBad : ℕ → ℕ → Prop)
+    (hexact : ∀ a : ℕ, 4 ≤ a →
+      CandidateListExactInAP FloorBad (2 ^ a)
+        [smallestPrime1ModN (2 ^ a) (2 ^ (5 * a))]) :
+    FloorLocalizationUniform FloorBad := by
+  intro a ha p hp hmod
+  have h := hexact a ha p hp hmod
+  simpa using h
 
 /-- The exact least-prime input needed by the floor closure: the least prime `≡ 1 mod n` is below
 prize scale `n^4`.
@@ -160,8 +238,9 @@ universal statement remains an explicit input. -/
 def LinnikLeastPrimeBelowPrize : Prop :=
   ∀ a : ℕ, 4 ≤ a → smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) < (2 ^ a) ^ 4
 
-/-- **Binder-predicate closure (conditional, off-BGK).** If the floor-bad characterization is uniform in `μ`
-AND the least prime `≡ 1 mod n` is below prize scale, THEN every prize-regime prime `p` with
+/-- **Binder-predicate closure (conditional, off-BGK).** If the floor-bad characterization is
+uniform in `μ` AND the least prime `≡ 1 mod n` is below prize scale, THEN every prize-regime
+prime `p` with
 `(2^a)^4 ≤ p` is floor-GOOD. This is the dossier §9 actionable target, but its least-prime
 input is exactly `LinnikLeastPrimeBelowPrize`; ordinary exponent-5 Linnik does not discharge it.
 This theorem proves only `¬ FloorBad (2^a) p` for the supplied predicate; it does not prove the
@@ -188,15 +267,17 @@ theorem floor_closes_by_linnik
 /-! ## Capstone export -/
 
 /-- **The harvest.** Bundles the proven `n=16` binder-predicate closure with the conditional uniform
-closure: this abstract floor-bad predicate is *closed at `n=16`* and *reduces, for all `a ≥ 4`, to
-two named external inputs* — the uniform localization characterization (`FloorLocalizationUniform`,
-a height/0-dim statement on a fixed cyclotomic resultant) and the exact sub-prize least-prime premise
+closure: this abstract floor-bad predicate is *closed at `n=16`* and *reduces, for all
+`a ≥ 4`, to two named external inputs* — the uniform localization characterization
+(`FloorLocalizationUniform`, a height/0-dim statement on a fixed cyclotomic resultant) and
+the exact sub-prize least-prime premise
 (`LinnikLeastPrimeBelowPrize`). Neither input is the BGK/Paley sup-norm wall, but neither is
 silently discharged here, and the result does not prove δ*. -/
 theorem floor_localization_capstone :
     (FloorBadIsSmallestPrime 16 100 floorBad16
       ∧ smallestPrime1ModN 16 100 = 17 ∧ (17 : ℕ) < 16 ^ 4)
-    ∧ (∀ FloorBad : ℕ → ℕ → Prop, FloorLocalizationUniform FloorBad → LinnikLeastPrimeBelowPrize →
+    ∧ (∀ FloorBad : ℕ → ℕ → Prop,
+        FloorLocalizationUniform FloorBad → LinnikLeastPrimeBelowPrize →
         ∀ a : ℕ, 4 ≤ a → ∀ p : ℕ, p.Prime → p % (2 ^ a) = 1 → (2 ^ a) ^ 4 ≤ p →
           ¬ FloorBad (2 ^ a) p) := by
   exact ⟨floor_closed_n16, fun FB hU hL => floor_closes_by_linnik FB hU hL⟩
@@ -205,6 +286,9 @@ theorem floor_localization_capstone :
 #print axioms floorBad16_isSmallestPrime
 #print axioms floor_closed_n16
 #print axioms floorBad32_matches_smallestPrime
+#print axioms candidateListExactInAP_iff_sound_complete
+#print axioms floorBad32_candidate_match_not_extensional_evidence
+#print axioms floorLocalizationUniform_of_candidateListExactSmallest
 #print axioms floor_closes_by_linnik
 #print axioms floor_localization_capstone
 
