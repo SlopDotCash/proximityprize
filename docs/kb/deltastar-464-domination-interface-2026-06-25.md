@@ -26,7 +26,9 @@ The key theorem is:
 
 ```lean
 worstCaseIncidenceBounded_of_stackDomination
+worstCaseIncidenceBounded_of_singleStackDominationCertificate
 worstCaseIncidenceBounded_iff_stackBounded_of_stackDomination
+deltaStar_pin_of_singleStackDominationCertificate
 ```
 
 It proves that a distinguished stack `uStar` can feed
@@ -72,7 +74,15 @@ iff B < StackBadCount F C delta uStar
 ```
 
 So the floor route now exposes both sides of the contract: prove domination and one budget to feed
-the prize pin, or find one larger stack to refute the proposed dominator.
+the prize pin, or find one larger stack to refute the proposed dominator.  The bundled certificate
+form is deliberately just the conjunction
+
+```text
+StackDominates F C delta uStar and StackBounded F C delta uStar B.
+```
+
+It introduces no new mathematics; it gives scanners and essays a single object whose failure is
+exactly "larger stack or budget miss."
 
 ## Why this matters
 

@@ -94,7 +94,7 @@ negative side is now exact too:
 
 ```lean
 not_stackDominates_iff_exists_strictly_larger
-not_stackDominates_and_stackBounded_iff_exists_larger_or_budget_lt
+not_singleStackDominationCertificate_iff_exists_larger_or_budget_lt
 not_worstCaseIncidenceBounded_iff_exists_budget_lt_stackBadCount
 ```
 
