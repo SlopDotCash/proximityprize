@@ -20,6 +20,7 @@ from the existing appearance-fiber and line-list-size budgets.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.style.longFile 1700
 
 open Finset
 
