@@ -52,6 +52,11 @@ not_profileBadCountImageCovered_of_sum_cover_lt_stackBadCountImage
 profileBadCountImageCovered_of_profileFiberOscillation
 stackBadCountImage_card_le_sum_profileFiberOscillationIntervals
 not_profileFiberOscillationBounded_of_sum_intervalCard_lt_stackBadCountImage
+card_Icc_sub_add_le_two_mul_add_one
+stackBadCountImage_card_le_sum_profileFiberOscillationSlack
+stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
+not_profileFiberOscillationBounded_of_sum_slack_lt_stackBadCountImage
+not_profileFiberOscillationBounded_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
 ```
 
 The central theorem is:
@@ -89,6 +94,21 @@ for each profile `p`.  The theorem
 `stackBadCountImage_card_le_sum_profileFiberOscillationIntervals` records the resulting global
 bound, and the negated interval theorem refutes a proposed oscillation certificate when those
 intervals have too little total cardinality.
+
+The interval-card follow-up removes the representative-count centers from the budget:
+
+```text
+(StackBadCountImage F C delta).card <= sum_p (2 * slack p + 1)
+```
+
+and, if every `slack p <= S`, the uniform form gives
+
+```text
+(StackBadCountImage F C delta).card <= Fintype.card P * (2 * S + 1).
+```
+
+Thus a scanner can refute a same-profile oscillation certificate from only the profile count and
+slack budget, without evaluating each representative-centered interval.
 
 ## Consequence
 

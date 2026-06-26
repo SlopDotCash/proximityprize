@@ -700,6 +700,84 @@ theorem not_profileFiberOscillationBounded_of_sum_intervalCard_lt_stackBadCountI
     (stackBadCountImage_card_le_sum_profileFiberOscillationIntervals
       C δ hosc hrep)) hsmall
 
+/-- A natural-number interval centered at `m` with radius `s` has at most `2 * s + 1` values.
+The lower endpoint is truncated at zero, so this is only an upper bound. -/
+theorem card_Icc_sub_add_le_two_mul_add_one (m s : ℕ) :
+    (Finset.Icc (m - s) (m + s)).card ≤ 2 * s + 1 := by
+  rw [Nat.card_Icc]
+  omega
+
+/-- Same-profile oscillation forces the global bad-count image to fit inside the total
+`2 * slack + 1` interval budget. -/
+theorem stackBadCountImage_card_le_sum_profileFiberOscillationSlack
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hosc : ProfileFiberOscillationBounded F C δ profile slack)
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    (StackBadCountImage F C δ).card ≤ ∑ p : P, (2 * slack p + 1) := by
+  calc
+    (StackBadCountImage F C δ).card ≤
+        ∑ p : P, (Finset.Icc
+          (StackBadCount F C δ (rep p) - slack p)
+          (StackBadCount F C δ (rep p) + slack p)).card :=
+      stackBadCountImage_card_le_sum_profileFiberOscillationIntervals C δ hosc hrep
+    _ ≤ ∑ p : P, (2 * slack p + 1) := by
+      exact Finset.sum_le_sum (fun p _ =>
+        card_Icc_sub_add_le_two_mul_add_one
+          (StackBadCount F C δ (rep p)) (slack p))
+
+/-- Uniform-slack form of the same image-size pressure. -/
+theorem stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hosc : ProfileFiberOscillationBounded F C δ profile slack)
+    (hrep : ProfileRepresentativeInFiber profile rep)
+    {S : ℕ} (hslack : ∀ p : P, slack p ≤ S) :
+    (StackBadCountImage F C δ).card ≤ Fintype.card P * (2 * S + 1) := by
+  calc
+    (StackBadCountImage F C δ).card ≤ ∑ p : P, (2 * slack p + 1) :=
+      stackBadCountImage_card_le_sum_profileFiberOscillationSlack C δ hosc hrep
+    _ ≤ ∑ p : P, (2 * S + 1) := by
+      exact Finset.sum_le_sum (fun p _ => by
+        have hp : slack p ≤ S := hslack p
+        omega)
+    _ = Fintype.card P * (2 * S + 1) := by
+      rw [Finset.sum_const, Finset.card_univ, smul_eq_mul]
+
+/-- Refutation socket using only the summed slack budget. -/
+theorem not_profileFiberOscillationBounded_of_sum_slack_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hrep : ProfileRepresentativeInFiber profile rep)
+    (hsmall : (∑ p : P, (2 * slack p + 1)) < (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberOscillationBounded F C δ profile slack := by
+  intro hosc
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_sum_profileFiberOscillationSlack
+      C δ hosc hrep)) hsmall
+
+/-- Uniform-slack refutation socket: too few profiles times too little slack cannot explain all
+realized bad-count values. -/
+theorem not_profileFiberOscillationBounded_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
+    (hrep : ProfileRepresentativeInFiber profile rep)
+    {S : ℕ} (hslack : ∀ p : P, slack p ≤ S)
+    (hsmall : Fintype.card P * (2 * S + 1) < (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberOscillationBounded F C δ profile slack := by
+  intro hosc
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
+      C δ hosc hrep hslack)) hsmall
+
 /-! ## Endpoint sanity checks for coarse profiles -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
@@ -1365,6 +1443,11 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountImageCovered_of_profileFiberOscillation
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileFiberOscillationIntervals
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_of_sum_intervalCard_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.card_Icc_sub_add_le_two_mul_add_one
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_sum_profileFiberOscillationSlack
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_of_sum_slack_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_of_profileCard_mul_uniformSlack_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound

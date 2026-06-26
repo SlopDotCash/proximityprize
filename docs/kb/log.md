@@ -1022,3 +1022,10 @@ bad-count values by the interval centered at the representative count with radiu
 `stackBadCountImage_card_le_sum_profileFiberOscillationIntervals` is the resulting image-size
 pressure, and the negated theorem refutes oscillation certificates whose intervals are too small in
 aggregate.
+
+Follow-up: the interval cover now has summed-slack and uniform-slack corollaries.
+`card_Icc_sub_add_le_two_mul_add_one` bounds each representative-centered count interval by
+`2 * slack p + 1`, giving `stackBadCountImage_card_le_sum_profileFiberOscillationSlack` and
+`stackBadCountImage_card_le_profileCard_mul_uniformOscillationSlack`.  The negated sockets refute
+oscillation certificates from only a summed slack budget, or from profile count times a uniform
+slack cap.
