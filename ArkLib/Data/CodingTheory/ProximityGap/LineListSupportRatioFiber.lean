@@ -546,6 +546,69 @@ theorem
     (uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
       dom hk hka L B hSupport hFits hZeroSafe hFiberFits)
 
+/-- Per-summand form of the ambient-binomial support-ratio line-cover arithmetic fit. -/
+theorem lineFiberCoverChooseBudgetFits_term_le
+    (a B t : ℕ) (u₁ : Fin n → F) (ht : t < a)
+    (hFits : ZeroAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B u₁
+      (fun t => Fintype.card F * n.choose (a - t))) :
+    ((directionZeroSet u₁).card.choose t * (Fintype.card F * n.choose (a - t))) *
+        ((directionSupportSet u₁).card / (a - t)) ≤ B := by
+  have hmem : t ∈ Finset.range a := Finset.mem_range.mpr ht
+  have hterm :
+      ((directionZeroSet u₁).card.choose t * (Fintype.card F * n.choose (a - t))) *
+          ((directionSupportSet u₁).card / (a - t)) ≤
+        ∑ t ∈ Finset.range a,
+          ((directionZeroSet u₁).card.choose t *
+            (Fintype.card F * n.choose (a - t))) *
+            ((directionSupportSet u₁).card / (a - t)) := by
+    exact Finset.single_le_sum
+      (f := fun t =>
+        ((directionZeroSet u₁).card.choose t *
+          (Fintype.card F * n.choose (a - t))) *
+          ((directionSupportSet u₁).card / (a - t)))
+      (fun _ _ => Nat.zero_le _) hmem
+  exact le_trans hterm hFits
+
+/-- One over-budget weighted ambient-binomial summand refutes the support-ratio cover fit. -/
+theorem not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
+    (a B : ℕ)
+    (hgt : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧
+        B <
+          ((directionZeroSet u₁).card.choose t *
+              (Fintype.card F * n.choose (a - t))) *
+            ((directionSupportSet u₁).card / (a - t))) :
+    ¬ UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B
+      (fun t => Fintype.card F * n.choose (a - t)) := by
+  intro hFits
+  rcases hgt with ⟨u₁, hnotEligible, t, ht, hgt⟩
+  exact (not_lt_of_ge
+    (lineFiberCoverChooseBudgetFits_term_le
+      (F := F) (n := n) a B t u₁ ht (hFits u₁ hnotEligible))) hgt
+
+open Classical in
+/-- Failed production under the ambient support-ratio cover envelope exposes an over-budget
+weighted binomial sum for some large-zero direction. -/
+theorem exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a) (L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      B < ∑ t ∈ Finset.range a,
+        ((directionZeroSet u₁).card.choose t *
+            (Fintype.card F * n.choose (a - t))) *
+          ((directionSupportSet u₁).card / (a - t)) := by
+  have hnotFits :=
+    not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
+      dom hk hka L B hSupport hFits hZeroSafe hnot
+  by_contra hnone
+  apply hnotFits
+  intro u₁ hnotEligible
+  exact le_of_not_gt
+    (fun hgt => hnone ⟨u₁, hnotEligible, hgt⟩)
+
 open Classical in
 /-- Production wrapper for the explicit support-ratio cover-sum route. -/
 theorem uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
@@ -781,6 +844,10 @@ section SourceAudit
 #print axioms
   uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
 #print axioms not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
+#print axioms lineFiberCoverChooseBudgetFits_term_le
+#print axioms not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
+#print axioms
+  exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 #print axioms
   exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted

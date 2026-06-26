@@ -177,7 +177,8 @@ theorem zeroExactAppearingZeroAgreementFiberBudgeted_of_appearingCoordinateFiber
 open Classical in
 /-- Uniform version: the exact zero-agreement route strictly generalizes the coarser
 appearance-coordinate route. -/
-theorem uniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted_of_appearingCoordinateFiberBudgeted
+theorem
+    uniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted_of_appearingCoordinateFiberBudgeted
     (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ)
     (hFiber : UniformLargeZeroSafeAppearingCoordinateFiberBudgeted dom k a M) :
     UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a M := by
@@ -348,6 +349,72 @@ def UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits
   ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
     ZeroAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B u₁ M
 
+omit [Fintype F] in
+/-- Exact failure form for one line's appearance-filtered coordinate-fiber arithmetic fit. -/
+theorem not_zeroAppearingCoordinateFiberBudgetFits_iff_sum_gt
+    (a B : ℕ) (u₁ : Fin n → F) (M : ℕ → ℕ) :
+    (¬ ZeroAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B u₁ M) ↔
+      B < ∑ t ∈ Finset.range a,
+        ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)) := by
+  rw [ZeroAppearingCoordinateFiberBudgetFits]
+  exact not_le
+
+omit [Fintype F] in
+/-- Exact failure form for the uniform large-zero appearance-filtered arithmetic fit. -/
+theorem not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_iff_exists_sum_gt
+    (a B : ℕ) (M : ℕ → ℕ) :
+    (¬ UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M) ↔
+      ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        B < ∑ t ∈ Finset.range a,
+          ((directionZeroSet u₁).card.choose t * M t) *
+            ((directionSupportSet u₁).card / (a - t)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₁ hnotEligible
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₁, hnotEligible, hgt⟩)
+  · rintro ⟨u₁, hnotEligible, hgt⟩ hfits
+    exact (not_lt_of_ge (hfits u₁ hnotEligible)) hgt
+
+omit [Fintype F] in
+/-- The appearance-filtered arithmetic fit contains every individual `t` summand. -/
+theorem zeroAppearingCoordinateFiberBudgetFits_term_le
+    (a B t : ℕ) (u₁ : Fin n → F) (M : ℕ → ℕ) (ht : t < a)
+    (hFits : ZeroAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B u₁ M) :
+    ((directionZeroSet u₁).card.choose t * M t) *
+        ((directionSupportSet u₁).card / (a - t)) ≤ B := by
+  have hmem : t ∈ Finset.range a := Finset.mem_range.mpr ht
+  have hterm :
+      ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)) ≤
+        ∑ t ∈ Finset.range a,
+          ((directionZeroSet u₁).card.choose t * M t) *
+            ((directionSupportSet u₁).card / (a - t)) := by
+    exact Finset.single_le_sum
+      (f := fun t =>
+        ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t)))
+      (fun _ _ => Nat.zero_le _) hmem
+  exact le_trans hterm hFits
+
+omit [Fintype F] in
+/-- One over-budget `t` summand refutes the uniform appearance-filtered arithmetic fit. -/
+theorem not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_of_exists_term_gt
+    (a B : ℕ) (M : ℕ → ℕ)
+    (hgt : ∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧
+        B < ((directionZeroSet u₁).card.choose t * M t) *
+          ((directionSupportSet u₁).card / (a - t))) :
+    ¬ UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M := by
+  intro hFits
+  rcases hgt with ⟨u₁, hnotEligible, t, ht, hgt⟩
+  exact (not_lt_of_ge
+    (zeroAppearingCoordinateFiberBudgetFits_term_le
+      (F := F) (n := n) a B t u₁ M ht (hFits u₁ hnotEligible))) hgt
+
 set_option linter.unusedFintypeInType false in
 /-- The raw coordinate-fiber fit can be consumed as an appearance-filtered fit for the same
 numeric envelope. -/
@@ -450,7 +517,8 @@ theorem uniformPuncturedZeroStratifiedLineBudgeted_of_uniformAppearingCoordinate
 
 /-- Uniform exact zero-agreement appearance-fiber bounds plus the arithmetic fit discharge the
 punctured large-zero safe budget. -/
-theorem uniformPuncturedZeroStratifiedLineBudgeted_of_uniformExactAppearingZeroAgreementFiberBudgeted
+theorem
+    uniformPuncturedZeroStratifiedLineBudgeted_of_uniformExactAppearingZeroAgreementFiberBudgeted
     (dom : Fin n ↪ F) (k a B : ℕ) (M : ℕ → ℕ)
     (hFiber : UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a M)
     (hFits :
@@ -585,7 +653,8 @@ open Classical in
 /-- Scanner-facing full failure split with high appearance-filtered fibers discharged by RS
 uniqueness. Once `M t ≥ 1` for every high `k ≤ t < a`, a failed uniform bad-scalar budget must
 expose either zero-direction saturation or a large-zero safe **low** appearance fiber `t < k`. -/
-theorem unsafe_or_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+theorem
+    unsafe_or_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
     (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
@@ -761,6 +830,10 @@ section SourceAudit
 #print axioms zeroAgreementStratum_card_le_choose_mul_appearingCoordinateFiberBound
 #print axioms zeroAgreementStratum_card_eq_sum_exactAppearingZeroAgreementFibers
 #print axioms zeroAgreementStratum_card_le_choose_mul_exactAppearingZeroAgreementFiberBound
+#print axioms not_zeroAppearingCoordinateFiberBudgetFits_iff_sum_gt
+#print axioms not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_iff_exists_sum_gt
+#print axioms zeroAppearingCoordinateFiberBudgetFits_term_le
+#print axioms not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_of_exists_term_gt
 #print axioms zeroAppearingCoordinateFiberBudgetFits_of_coordinateAgreementFiberBudgetFits
 #print axioms
   uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_of_coordinateAgreementFiberBudgetFits

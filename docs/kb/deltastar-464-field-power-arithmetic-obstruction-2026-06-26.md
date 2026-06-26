@@ -76,6 +76,10 @@ zeroAgreementStratum_subset_appearingCoordinateAgreementFiber_biUnion
 zeroAgreementStratum_card_le_choose_mul_appearingCoordinateFiberBound
 zeroAgreementStratum_card_eq_sum_exactAppearingZeroAgreementFibers
 zeroAgreementStratum_card_le_choose_mul_exactAppearingZeroAgreementFiberBound
+not_zeroAppearingCoordinateFiberBudgetFits_iff_sum_gt
+not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_iff_exists_sum_gt
+zeroAppearingCoordinateFiberBudgetFits_term_le
+not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_of_exists_term_gt
 puncturedZeroStratifiedLineBudgeted_of_appearingCoordinateFiberBudgeted
 puncturedZeroStratifiedLineBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
 uniformPuncturedZeroStratifiedLineBudgeted_of_uniformAppearingCoordinateFiberBudgeted
@@ -131,6 +135,13 @@ uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverCh
 uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
 not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
+lineFiberCoverChooseBudgetFits_term_le
+not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
+lineFiberCoverChooseBudgetFits_zeroTerm_le
+lineFiberCoverChooseBudgetFits_choose_le_of_support_ge
+not_lineFiberCoverChooseBudgetFits_of_exists_support_ge
+not_lineFiberCoverChooseBudgetFits_of_two_mul_le
+exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
@@ -154,7 +165,28 @@ the first target that actually uses appearance on the affine line before paying 
 count.  The ambient-length corollary replaces `#directionSupportSet(u1)` by `n` when a coarser
 line-independent expression is useful.  The same file also packages the finite `(γ, T)` sum itself
 as a production route: uniform cover-sum budgets imply support-ratio-heavy budgets,
-exact-appearance budgets, and a full failure scanner returning an overfull cover sum.
+exact-appearance budgets, and a full failure scanner returning an overfull cover sum.  Failed
+production under the ambient-binomial cover route now returns a concrete over-budget weighted
+`∑_t` expression, and a single over-budget profile term refutes the fit.  The same file also
+records the simple `t = 0` obstruction: if a large-zero direction still has at least `a`
+moving-support coordinates, the ambient cover fit forces `|F| * choose(n, a) <= B`; in the common
+`2a <= n` range such a direction exists.
+
+`LineListSupportRatioArithmeticObstruction.lean` builds on those fit-term lemmas and records the
+parameter-only zero-count obstruction for the ambient support-ratio envelope:
+
+```lean
+lineFiberCoverChooseBudgetFits_choose_le_of_support_ge_sub
+not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_lineCoverChoose_of_exists_choose_gt
+not_lineFiberCoverChooseFit_of_zeroCount_choose_gt
+not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_lineCoverChoose_of_two_mul_le
+```
+
+The fit with `M(t) = |F| * choose(n, a - t)` contains every individual weighted profile summand.
+If a possible direction has `z` zero coordinates and enough remaining moving support to activate
+profile `t`, the fit forces `choose(z, t) * |F| * choose(n, a - t) <= B`.  Therefore this ambient
+line-cover envelope can only close targets above its scalar-times-binomial control surface; below
+that threshold, the arithmetic fit itself is refuted before any δ* conclusion.
 
 `LineListSingletonArithmeticObstruction.lean` records the corresponding raw singleton arithmetic
 no-go:

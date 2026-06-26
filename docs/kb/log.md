@@ -666,3 +666,13 @@ The direct ambient-binomial consumer is
 `uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n`; conversely,
 failed production under the support and zero-safety hypotheses refutes that arithmetic fit through
 `not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted`.
+
+Follow-up: `LineListSupportRatioArithmeticObstruction.lean` records the arithmetic caveat for the
+ambient support-ratio envelope, while `LineListSupportRatioFiber.lean` now exposes the concrete
+sum and single-term scanners for that envelope.  The fit with
+`M(t) = |F| * choose(n, a - t)` contains every individual weighted profile term; if a possible
+direction has `z` zeros and enough moving support for profile `t`, it forces
+`choose(z, t) * |F| * choose(n, a - t) <= B`, with the `t = 0`, `z = a` case giving the familiar
+`|F| * choose(n, a) <= B` obstruction in the `2a <= n` range.  Hence the ambient-binomial cover is
+a baseline/control envelope; a floor proof must improve the finite cover sum before collapsing to
+this bound.

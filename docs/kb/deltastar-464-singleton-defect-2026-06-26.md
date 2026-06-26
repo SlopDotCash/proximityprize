@@ -176,6 +176,13 @@ uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverCh
 uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
 not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
+lineFiberCoverChooseBudgetFits_term_le
+not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
+lineFiberCoverChooseBudgetFits_zeroTerm_le
+lineFiberCoverChooseBudgetFits_choose_le_of_support_ge
+not_lineFiberCoverChooseBudgetFits_of_exists_support_ge
+not_lineFiberCoverChooseBudgetFits_of_two_mul_le
+exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
@@ -196,7 +203,27 @@ fiber at zero-profile size `t`, with a coarser ambient variant using `n.choose (
 production localizes, after high profiles are discharged by RS uniqueness, to a low `t < k`
 support-ratio-heavy coordinate fiber.  The finite `(γ, T)` cover sum is also exposed as its own
 budget interface and scanner, so a future improvement can attack overlap or structure inside the
-cover before collapsing to the scalar-times-binomial envelope.
+cover before collapsing to the scalar-times-binomial envelope.  The ambient-binomial route now has
+exact arithmetic scanners: failed production returns an over-budget weighted `∑_t`, a single
+over-budget weighted profile refutes the fit, and the `t = 0` support-ge case gives the immediate
+`|F| * choose(n, a) <= B` control surface whenever a large-zero direction has at least `a`
+moving-support coordinates.
+
+`LineListSupportRatioArithmeticObstruction.lean` adds the parameter-only zero-count no-go for the
+ambient support-ratio envelope:
+
+```lean
+lineFiberCoverChooseBudgetFits_choose_le_of_support_ge_sub
+not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_lineCoverChoose_of_exists_choose_gt
+not_lineFiberCoverChooseFit_of_zeroCount_choose_gt
+not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_lineCoverChoose_of_two_mul_le
+```
+
+If a possible large-zero direction has `z` zero coordinates and enough moving support to activate
+profile `t`, the ambient-binomial appearance-fiber fit forces
+`choose(z, t) * |F| * choose(n, a - t) <= B`.  Thus the ambient support-ratio envelope is a
+control surface, not the final floor estimate; a winning proof still has to beat that
+scalar-times-binomial arithmetic.
 
 `LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
 
