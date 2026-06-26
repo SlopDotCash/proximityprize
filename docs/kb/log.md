@@ -923,3 +923,31 @@ ambient fiber needs at least one clique per vertex.  Uniformly,
 clique-cover certificate equivalent to the original singleton budget under forbidden edges.
 Companion note:
 `deltastar-464-clique-cover-collapse-2026-06-26.md`.
+
+Follow-up: `LineListSupportRatioFiber.lean` now localizes explicit support-ratio cover-sum
+failures to the low interpolation range once the high profiles are paid for.  The new theorem
+`supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card` bounds a high zero-profile cover sum
+by `|F| * choose(#support(u1), a - t)`, and
+`unsafe_or_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted` turns
+failed production into either zero-direction saturation or a large-zero safe low cover-sum witness.
+Companion note:
+`deltastar-464-support-ratio-cover-sum-low-scanner-2026-06-26.md`.
+
+Follow-up: `LineListCodewordSingletonRelationException.lean` adds the honest exceptional-set
+variant of the singleton graph route.  Outside the classified exceptional set the relation must be
+forbidden/independent, while the exceptional singleton scalars get their own budget.  Production
+uses the cap `S + E`; scanners expose an outside edge, an overlarge good independent subset, the
+usual arithmetic failure, or an overlarge exceptional residue.  Companion note:
+`deltastar-464-exceptional-relation-route-2026-06-26.md`.
+
+Follow-up: `LineListCodewordSingletonSupportOverlapRelation.lean` now refutes every relation whose
+edges factor through fixed-codeword support-ratio fiber overlap.  Such subrelations have no
+distinct-scalar edges, so their witness-local independence budget is equivalent to the original
+singleton cap; the negated form returns the same overfull singleton fiber.  Companion note:
+`deltastar-464-support-overlap-subrelation-no-go-2026-06-26.md`.
+
+Follow-up: `Frontier/_FloorClosureContract.lean` now compares the old field closure certificate
+with the sharp budgeted-global-max certificate.  `FloorClosureAtField` is exactly
+`FloorClosureBudgetedMaxAtField` plus `FamilyBounded`; failure of the sharp certificate already
+refutes the old contract, while the only extra old-style failure is an over-budget non-maximal
+listed family member.

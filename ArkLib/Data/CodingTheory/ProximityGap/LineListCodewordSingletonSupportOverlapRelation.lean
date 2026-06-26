@@ -51,6 +51,32 @@ theorem scalarRelationIndependent_supportRatioFiberOverlapRelation
   intro γ _hγ γ' _hγ' hne
   exact not_supportRatioFiberOverlapRelation_of_ne c u₀ u₁ hne
 
+/-- A codeword-indexed scalar relation is support-overlap-local if every edge is witnessed by
+an overlap of the two support-ratio fibers. -/
+def CodewordRelationImpliesSupportRatioOverlap
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop) : Prop :=
+  ∀ u₀ u₁ c : Fin n → F, ∀ γ γ' : F,
+    R u₀ u₁ c γ γ' → supportRatioFiberOverlapRelation c u₀ u₁ γ γ'
+
+/-- A support-overlap-local relation has no edge between distinct scalars. -/
+theorem not_codewordRelation_of_supportRatioOverlap_of_ne
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hsub : CodewordRelationImpliesSupportRatioOverlap R)
+    (u₀ u₁ c : Fin n → F) {γ γ' : F} (hne : γ ≠ γ') :
+    ¬ R u₀ u₁ c γ γ' := by
+  intro hR
+  exact not_supportRatioFiberOverlapRelation_of_ne c u₀ u₁ hne
+    (hsub u₀ u₁ c γ γ' hR)
+
+/-- Every scalar set is independent for a support-overlap-local relation. -/
+theorem scalarRelationIndependent_of_supportRatioOverlapSubrelation
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hsub : CodewordRelationImpliesSupportRatioOverlap R)
+    (u₀ u₁ c : Fin n → F) (Γ : Finset F) :
+    scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ') Γ := by
+  intro γ _hγ γ' _hγ' hne
+  exact not_codewordRelation_of_supportRatioOverlap_of_ne R hsub u₀ u₁ c hne
+
 variable [Fintype F]
 
 open Classical in
@@ -64,6 +90,70 @@ theorem
   intro u₀ u₁ _hnotEligible _hsafe c _hc
   exact scalarRelationIndependent_supportRatioFiberOverlapRelation c u₀ u₁
     (codewordSingletonWitnessScalars dom k a u₀ u₁ c)
+
+open Classical in
+/-- Any support-overlap-local codeword relation satisfies the singleton forbidden-edge half. -/
+theorem uniformSingletonRelationForbidden_of_supportRatioOverlapSubrelation
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hsub : CodewordRelationImpliesSupportRatioOverlap R) :
+    UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R := by
+  intro u₀ u₁ _hnotEligible _hsafe c _hc
+  exact scalarRelationIndependent_of_supportRatioOverlapSubrelation R hsub u₀ u₁ c
+    (codewordSingletonWitnessScalars dom k a u₀ u₁ c)
+
+open Classical in
+/-- If every proposed edge factors through support-ratio fiber overlap, the witness-local graph
+budget is exactly the original singleton cap.  This rules out coordinate-local pairwise
+interpolation relations as a source of graph compression. -/
+theorem supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hsub : CodewordRelationImpliesSupportRatioOverlap R) :
+    UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted dom k a R S ↔
+      UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+  constructor
+  · intro hind
+    exact
+      uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationWitnessIndependence
+        dom k a S R
+        (uniformSingletonRelationForbidden_of_supportRatioOverlapSubrelation
+          dom k a R hsub)
+        hind
+  · intro hsingle
+    exact
+      uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_codewordSingletonBudgeted
+        dom k a S R hsingle
+
+open Classical in
+/-- Negated form of the support-overlap-local collapse. -/
+theorem not_supportRatioOverlapSubrelationWitnessBudgeted_iff_exists_singleton_card_gt
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hsub : CodewordRelationImpliesSupportRatioOverlap R) :
+    (¬ UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted dom k a R S) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  constructor
+  · intro hnot
+    have hnotSingleton :
+        ¬ UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+      intro hsingle
+      exact hnot
+        ((supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+          dom k a S R hsub).mpr hsingle)
+    exact (not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+      dom k a S).mp hnotSingleton
+  · intro hex hind
+    have hsingle :
+        UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S :=
+      (supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+        dom k a S R hsub).mp hind
+    exact
+      ((not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+        dom k a S).mpr hex) hsingle
 
 open Classical in
 /-- For the coordinate-overlap relation, the witness-local independence budget is exactly the
@@ -94,8 +184,15 @@ section SourceAudit
 #print axioms supportRatioFiberOverlapRelation
 #print axioms not_supportRatioFiberOverlapRelation_of_ne
 #print axioms scalarRelationIndependent_supportRatioFiberOverlapRelation
+#print axioms CodewordRelationImpliesSupportRatioOverlap
+#print axioms not_codewordRelation_of_supportRatioOverlap_of_ne
+#print axioms scalarRelationIndependent_of_supportRatioOverlapSubrelation
 #print axioms
   uniformLargeZeroSafeCodewordSingletonRelationForbidden_supportRatioFiberOverlap
+#print axioms uniformSingletonRelationForbidden_of_supportRatioOverlapSubrelation
+#print axioms supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+#print axioms
+  not_supportRatioOverlapSubrelationWitnessBudgeted_iff_exists_singleton_card_gt
 #print axioms
   uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted
 

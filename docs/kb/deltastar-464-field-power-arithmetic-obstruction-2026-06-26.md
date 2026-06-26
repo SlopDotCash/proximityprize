@@ -121,6 +121,7 @@ supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 supportRatioCoverSum_le_field_card_mul_choose
+supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
 supportRatioLineFiberCover_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
@@ -150,6 +151,8 @@ exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalar
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
+unsafe_or_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
 unsafe_or_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
@@ -176,6 +179,10 @@ over-budget weighted `∑_t` expression, and a single over-budget profile term r
 cover-sum budget itself also has exact failure forms, so future attacks on overlap can start from
 an explicit large-zero safe line, zero profile `S`, and overfull finite `(γ, T)` sum without
 carrying the full production wrapper.
+The cover-sum scanner now has the same low-profile refinement as the heavy-fiber route: if the
+candidate envelope dominates
+`|F| * choose(#directionSupportSet(u1), a - t)` on every high profile `k <= t < a`, then any
+overfull finite cover sum must occur at `t < k`.
 
 `LineListSupportRatioArithmeticObstruction.lean` builds on those fit-term lemmas and records the
 parameter-only zero-count obstruction for the ambient support-ratio envelope:

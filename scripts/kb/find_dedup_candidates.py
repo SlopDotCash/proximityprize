@@ -251,6 +251,8 @@ def build_report(
     lines.extend(render_stats(data))
     lines.extend(render_short_name_report(groups, min_group))
     lines.extend(render_doc_similarity_report(data, doc_threshold))
+    while lines and lines[-1] == "":
+        lines.pop()
     return "\n".join(lines)
 
 

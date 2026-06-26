@@ -322,6 +322,35 @@ theorem supportRatioCoverSum_le_field_card_mul_choose
         rw [Finset.sum_const, smul_eq_mul, Finset.card_univ]
 
 open Classical in
+/-- High zero profiles have the same scalar-times-support-binomial cover-sum ceiling without
+using the exact threshold equality `k ≤ a`.  It is enough that the fixed zero-profile `S` already
+has at least `k` coordinates. -/
+theorem supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)} (hSlarge : k ≤ S.card) :
+    (∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - S.card),
+      (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) ≤
+      Fintype.card F * (directionSupportSet u₁).card.choose (a - S.card) := by
+  calc
+    (∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - S.card),
+        (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card)
+        ≤ ∑ _γ : F, ∑ _T ∈ (directionSupportSet u₁).powersetCard (a - S.card), 1 := by
+        refine Finset.sum_le_sum fun γ _ => ?_
+        refine Finset.sum_le_sum fun T _hT => ?_
+        have hSsubUnion : S ⊆ S ∪ T := by
+          intro i hi
+          exact Finset.mem_union_left T hi
+        have hlarge : k ≤ (S ∪ T).card :=
+          le_trans hSlarge (Finset.card_le_card hSsubUnion)
+        exact coordinateAgreementFiber_card_le_one_of_k_le
+          dom hk (fun i => u₀ i + γ • u₁ i) hlarge
+    _ = ∑ _γ : F, (directionSupportSet u₁).card.choose (a - S.card) := by
+        refine Finset.sum_congr rfl fun _γ _ => ?_
+        rw [Finset.sum_const, smul_eq_mul, Finset.card_powersetCard, Nat.mul_one]
+    _ = Fintype.card F * (directionSupportSet u₁).card.choose (a - S.card) := by
+        rw [Finset.sum_const, smul_eq_mul, Finset.card_univ]
+
+open Classical in
 /-- If the agreement threshold is at least the RS dimension, each member of the explicit
 support-ratio line-fiber cover is singleton-bounded by RS uniqueness.  The cover therefore costs
 only one candidate for each scalar and moving-support subfiber. -/
@@ -865,6 +894,75 @@ theorem
         dom k a).mp hZeroSafe)
 
 open Classical in
+/-- If `M` dominates the scalar-times-support-binomial cover-sum ceiling in every high range
+`k ≤ t < a`, then any overfull explicit cover-sum witness must lie in the low interpolation range
+`t < k`. -/
+theorem exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hHigh :
+      ∀ t : ℕ, t < a → k ≤ t →
+        Fintype.card F * (directionSupportSet u₁).card.choose (a - t) ≤ M t)
+    (hgt : ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+      M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+        (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) :
+    ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+      M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+        (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
+  rcases hgt with ⟨t, ht, S, hS, hgt⟩
+  by_cases hlow : t < k
+  · exact ⟨t, ht, hlow, S, hS, hgt⟩
+  · have hkt : k ≤ t := le_of_not_gt hlow
+    have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+    have hcover :
+        (∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+          (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) ≤
+          Fintype.card F * (directionSupportSet u₁).card.choose (a - t) := by
+      have hcoverS :=
+        supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
+          dom hk a u₀ u₁ (by rw [hScard]; exact hkt)
+      rwa [hScard] at hcoverS
+    have hle :
+        (∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+          (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) ≤
+          M t :=
+      le_trans hcover (hHigh t ht hkt)
+    exact False.elim ((not_lt_of_ge hle) hgt)
+
+open Classical in
+/-- Scanner-facing full failure split with high explicit support-ratio cover sums discharged by
+the scalar-times-support-binomial ceiling.  Failed uniform production must expose either
+zero-direction saturation or a large-zero safe low cover-sum witness. -/
+theorem
+    unsafe_or_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hHigh :
+      ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+        ∀ t : ℕ, t < a → k ≤ t →
+          Fintype.card F * (directionSupportSet u₁).card.choose (a - t) ≤ M t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+              (coordinateAgreementFiber dom k
+                (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) := by
+  rcases
+      (unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+        dom k a L B M hSupport hFits hFiberFits hnot) with hUnsafe | hCover
+  · exact Or.inl hUnsafe
+  · rcases hCover with ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩
+    exact Or.inr ⟨u₀, u₁, hnotEligible, hsafe,
+      exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
+        dom hk a u₀ u₁ M (hHigh u₁ hnotEligible) hgt⟩
+
+open Classical in
 /-- If `M` is at least one in every high range `k ≤ t < a`, then any overfull
 support-ratio-heavy coordinate fiber must lie in the low interpolation range `t < k`. -/
 theorem exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
@@ -934,6 +1032,7 @@ section SourceAudit
 #print axioms supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 #print axioms supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 #print axioms supportRatioCoverSum_le_field_card_mul_choose
+#print axioms supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
 #print axioms supportRatioLineFiberCover_card_le_field_card_mul_choose
 #print axioms supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
 #print axioms supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
@@ -976,6 +1075,10 @@ section SourceAudit
   unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
   unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
+#print axioms
+  unsafe_or_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
   exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
 #print axioms

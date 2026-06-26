@@ -220,6 +220,17 @@ formalized by the support-ratio partition lemmas and now by the explicit graph n
 uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted
 ```
 
+The coordinate-overlap no-go now has a generic subrelation form:
+
+```lean
+supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+```
+
+Thus any relation whose edges imply support-ratio fiber overlap is also edgeless on distinct
+scalars and collapses to the direct singleton cap.  A viable edge cannot be merely
+coordinate-local; it must come from RS interpolation, a non-endpoint second witness, or an
+exceptional-pencil classification.
+
 The endpoint second-witness relation fails in the opposite but equally vacuous way: singleton
 witnesses rule out second witnesses at each endpoint by definition, so the forbidden-edge theorem
 is automatic and the witness-local budget again collapses to the original singleton cap:

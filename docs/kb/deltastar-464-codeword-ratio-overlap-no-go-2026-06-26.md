@@ -86,7 +86,13 @@ exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 supportRatioFiberOverlapRelation
 not_supportRatioFiberOverlapRelation_of_ne
 scalarRelationIndependent_supportRatioFiberOverlapRelation
+CodewordRelationImpliesSupportRatioOverlap
+not_codewordRelation_of_supportRatioOverlap_of_ne
+scalarRelationIndependent_of_supportRatioOverlapSubrelation
 uniformLargeZeroSafeCodewordSingletonRelationForbidden_supportRatioFiberOverlap
+uniformSingletonRelationForbidden_of_supportRatioOverlapSubrelation
+supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+not_supportRatioOverlapSubrelationWitnessBudgeted_iff_exists_singleton_card_gt
 uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted
 ```
 
@@ -107,6 +113,10 @@ directly, and is implied by `codewordSupportChooseWeight` on safe lines.
 The new scalar relation-independence interface is the proposed escape from this subset-counting
 ceiling: a future interpolation graph must prove both forbidden singleton edges and a small
 independence number, or the scanner returns an overlarge independent singleton-scalar set.
+The overlap no-go is now generic: if every edge of a proposed codeword relation implies
+support-ratio fiber overlap, then every finite scalar set is independent and the graph budget is
+again equivalent to the direct singleton cap.  Coordinate-local pairwise evidence is therefore
+exhausted as a class, not only for the literal overlap predicate.
 The first second-witness graph test is also classified: endpoint second-witness adjacency is
 forbidden only tautologically, and its witness-local independence budget is exactly the original
 per-codeword singleton cap.

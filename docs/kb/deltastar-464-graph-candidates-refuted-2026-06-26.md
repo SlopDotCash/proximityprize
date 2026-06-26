@@ -36,7 +36,13 @@ per-codeword singleton cap.
 supportRatioFiberOverlapRelation
 not_supportRatioFiberOverlapRelation_of_ne
 scalarRelationIndependent_supportRatioFiberOverlapRelation
+CodewordRelationImpliesSupportRatioOverlap
+not_codewordRelation_of_supportRatioOverlap_of_ne
+scalarRelationIndependent_of_supportRatioOverlapSubrelation
 uniformLargeZeroSafeCodewordSingletonRelationForbidden_supportRatioFiberOverlap
+uniformSingletonRelationForbidden_of_supportRatioOverlapSubrelation
+supportRatioOverlapSubrelationWitnessBudgeted_iff_singletonBudgeted
+not_supportRatioOverlapSubrelationWitnessBudgeted_iff_exists_singleton_card_gt
 uniformRelationWitnessIndependenceBudgeted_supportRatioFiberOverlap_iff_singletonBudgeted
 ```
 
@@ -44,6 +50,12 @@ The last theorem is the important no-go statement.  For this relation, the witne
 independence budget is exactly equivalent to the original
 `UniformLargeZeroSafeCodewordSingletonBudgeted` obligation.  The relation has no distinct-scalar
 edges, so the graph theorem would only reprove the cap it was meant to replace.
+
+`deltastar-464-support-overlap-subrelation-no-go-2026-06-26.md` records the generic
+strengthening.  Any proposed relation whose edges imply support-ratio fiber overlap is edgeless
+on distinct scalars, so its witness-local graph budget again collapses to the original singleton
+cap.  This rules out every coordinate-local pairwise relation, not just the literal overlap
+predicate.
 
 `LineListCodewordSingletonSecondWitnessRelation.lean` records the analogous endpoint
 second-witness no-go:
@@ -77,6 +89,7 @@ These failures are good filters.  A useful singleton graph cannot be:
 
 ```text
 - raw coordinate overlap inside one fixed support-ratio partition, or
+- any relation whose edge certificate factors through such overlap, or
 - a predicate that is already pointwise false for every singleton endpoint.
 ```
 
