@@ -1088,3 +1088,11 @@ surface adds `s128_tightResultantLog_eq`, `kkh26_mcaDeltaStar_le_s128_tight_squa
 the normalized `kkh26_mcaDeltaStar_le_s128_tight_square_bound_log`.  The named Thorner-Zaman
 bridge and AvD1 regime-correct count layer export matching tight-square consumers.  This relaxes
 the bad-prime budget but does not remove the named polynomial-modulus prime-count input.
+
+## [2026-06-26] refute | homological vanishing prime-field transfer gate
+
+Added:
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D0HomologicalVanishingTransferGate.lean`
+- `docs/kb/deltastar-464-homological-vanishing-transfer-gate-2026-06-26.md`
+
+to record that arXiv:2606.26440-style homological vanishing over function-field/configuration-space models only affects the plain-RS prime-field floor through a pointwise, depth-uniform comparison at the actual prize statistic. Without that transfer, a bounded auxiliary homological model is compatible with an arbitrary prime spike.
