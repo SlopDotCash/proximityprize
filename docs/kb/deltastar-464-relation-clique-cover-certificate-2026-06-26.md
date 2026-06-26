@@ -25,6 +25,8 @@ scalarRelationClique
 scalarRelationCliqueCover
 scalarRelationIndependent_inter_clique_card_le_one
 scalarRelationIndependent_card_le_of_cliqueCover
+scalarRelationCliqueCover_singletons
+scalarRelationCliqueCover_card_ge_of_independent
 ```
 
 and the uniform singleton-route certificate:
@@ -33,6 +35,9 @@ and the uniform singleton-route certificate:
 UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted
 uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationCliqueCover
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
+uniformRelationCliqueCoverBudgeted_of_codewordSingletonBudgeted
+relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+not_relationCliqueCoverBudgeted_iff_exists_singleton_card_gt_of_forbidden
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationCliqueCover
 ```
 
@@ -51,6 +56,12 @@ Failed production now exposes one of three objects:
 2. the usual combined arithmetic failure, or
 3. a large-zero safe appearing codeword whose singleton-witness fiber has no at-most-S clique cover.
 ```
+
+`deltastar-464-clique-cover-collapse-2026-06-26.md` records the matching collapse theorem.  Under
+forbidden edges, every clique intersects the singleton-witness fiber in at most one scalar, while
+the singleton cover always exists if the direct scalar cap is already true.  Hence the
+clique-cover budget is equivalent to the original singleton-fiber budget once forbidden edges are
+fixed.
 
 `LineListCodewordSingletonRelationColorCover.lean` adds a convenient way to build such clique
 covers from bounded invariants:

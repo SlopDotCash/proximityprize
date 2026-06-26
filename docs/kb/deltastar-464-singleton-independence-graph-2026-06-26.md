@@ -60,9 +60,14 @@ exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
 scalarRelationClique
 scalarRelationCliqueCover
 scalarRelationIndependent_card_le_of_cliqueCover
+scalarRelationCliqueCover_singletons
+scalarRelationCliqueCover_card_ge_of_independent
 UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted
 uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationCliqueCover
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
+uniformRelationCliqueCoverBudgeted_of_codewordSingletonBudgeted
+relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+not_relationCliqueCoverBudgeted_iff_exists_singleton_card_gt_of_forbidden
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationCliqueCover
 exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgeted
 scalarRelationColorForcesEdges
@@ -140,6 +145,12 @@ not_uniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted_iff_exists_no_cover
 exists_largeZero_safe_codewordRelationCliqueCoverRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordRelationCliqueCoverRouteObstruction_of_not_budgeted
 ```
+
+The clique-cover certificate is also now pinned down extensionally.  Under forbidden singleton
+edges, `relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden` says the uniform
+clique-cover budget is equivalent to the original per-codeword singleton cap.  The singleton
+cover gives the easy reverse direction; independence of the actual singleton fiber forces any
+relation-clique cover to use at least one clique per singleton scalar.
 
 `LineListCodewordSingletonRelationColorCover.lean` gives an ergonomic way to construct clique
 covers from bounded invariants.  If equal colors force relation edges on the singleton-witness
@@ -228,6 +239,15 @@ sameColorRelationColorBudgeted_iff_codewordSingletonBudgeted_of_forbidden
 states that the bounded-color certificate is then equivalent to the original singleton cap, and
 `not_sameColorRelationColorBudgeted_iff_exists_singleton_card_gt_of_forbidden` gives the matching
 failure form.
+
+The same collapse has now been recorded directly for clique-cover certificates:
+
+```lean
+relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+```
+
+So a small clique cover under forbidden edges is not a relaxed target; it is exactly the singleton
+cap in certificate form.
 
 These specific equivalences are instances of the generic forbidden-edge collapse above: once a
 relation has no forbidden singleton edges, the witness-local graph budget is not a smaller

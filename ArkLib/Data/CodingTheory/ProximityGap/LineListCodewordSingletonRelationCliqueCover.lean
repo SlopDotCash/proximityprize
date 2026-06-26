@@ -79,6 +79,36 @@ theorem scalarRelationIndependent_card_le_of_cliqueCover
     _ = cover.card := by
       simpa using (Finset.card_eq_sum_ones cover).symm
 
+/-- The singleton cover is always a clique cover, for any scalar relation. -/
+theorem scalarRelationCliqueCover_singletons
+    (R : F → F → Prop) (Ω : Finset F) :
+    ∃ cover : Finset (Finset F), cover.card ≤ Ω.card ∧
+      scalarRelationCliqueCover R Ω cover := by
+  let cover : Finset (Finset F) := Ω.image (fun γ => ({γ} : Finset F))
+  refine ⟨cover, ?_, ?_⟩
+  · exact Finset.card_image_le
+  · constructor
+    · intro γ hγ
+      rw [Finset.mem_biUnion]
+      exact ⟨{γ}, Finset.mem_image.mpr ⟨γ, hγ, rfl⟩, by simp⟩
+    · intro K hK
+      rw [Finset.mem_image] at hK
+      rcases hK with ⟨γ, _hγ, rfl⟩
+      intro x hx y hy hne
+      rw [Finset.mem_singleton] at hx hy
+      subst x
+      subst y
+      exact (hne rfl).elim
+
+/-- If the ambient scalar set is independent, every clique cover of it has at least as many
+cliques as vertices. -/
+theorem scalarRelationCliqueCover_card_ge_of_independent
+    (R : F → F → Prop) (Ω : Finset F) {cover : Finset (Finset F)}
+    (hind : scalarRelationIndependent R Ω)
+    (hcover : scalarRelationCliqueCover R Ω cover) :
+    Ω.card ≤ cover.card :=
+  scalarRelationIndependent_card_le_of_cliqueCover R (by intro γ hγ; exact hγ) hind hcover
+
 variable [Field F] [Fintype F]
 variable {n : ℕ} [NeZero n]
 
@@ -119,6 +149,69 @@ theorem uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
     dom k a S R hforbid
     (uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationCliqueCover
       dom k a S R hcover)
+
+open Classical in
+/-- A direct singleton-fiber budget always gives a clique-cover certificate, by covering with
+singletons. -/
+theorem uniformRelationCliqueCoverBudgeted_of_codewordSingletonBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hbudget : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S) :
+    UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted dom k a R S := by
+  intro u₀ u₁ hnotEligible hsafe c hc
+  rcases
+    scalarRelationCliqueCover_singletons
+      (fun γ γ' => R u₀ u₁ c γ γ')
+      (codewordSingletonWitnessScalars dom k a u₀ u₁ c) with
+    ⟨cover, hcard, hcover⟩
+  exact ⟨cover, hcard.trans (hbudget u₀ u₁ hnotEligible hsafe c hc), hcover⟩
+
+/-- With forbidden edges fixed, a clique-cover certificate is extensionally equivalent to the
+original singleton-fiber budget.  The clique cover can still be a proof method, but it is not a
+weaker theorem statement. -/
+theorem relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) :
+    UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted dom k a R S ↔
+      UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+  constructor
+  · intro hcover
+    exact uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
+      dom k a S R hforbid hcover
+  · intro hbudget
+    exact uniformRelationCliqueCoverBudgeted_of_codewordSingletonBudgeted
+      dom k a S R hbudget
+
+open Classical in
+/-- Negated form of the clique-cover collapse under forbidden edges. -/
+theorem not_relationCliqueCoverBudgeted_iff_exists_singleton_card_gt_of_forbidden
+    (dom : Fin n ↪ F) (k a S : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) :
+    (¬ UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted dom k a R S) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  constructor
+  · intro hnot
+    have hnotSingleton :
+        ¬ UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+      intro hbudget
+      exact hnot
+        ((relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+          dom k a S R hforbid).mpr hbudget)
+    exact (not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+      dom k a S).mp hnotSingleton
+  · intro hex hcover
+    have hsingle :
+        UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S :=
+      (relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+        dom k a S R hforbid).mp hcover
+    exact
+      ((not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+        dom k a S).mpr hex) hsingle
 
 /-- Production wrapper for the relation clique-cover route. -/
 theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationCliqueCover
@@ -239,10 +332,15 @@ section SourceAudit
 #print axioms scalarRelationCliqueCover
 #print axioms scalarRelationIndependent_inter_clique_card_le_one
 #print axioms scalarRelationIndependent_card_le_of_cliqueCover
+#print axioms scalarRelationCliqueCover_singletons
+#print axioms scalarRelationCliqueCover_card_ge_of_independent
 #print axioms UniformLargeZeroSafeCodewordRelationCliqueCoverBudgeted
 #print axioms
   uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationCliqueCover
 #print axioms uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationCliqueCover
+#print axioms uniformRelationCliqueCoverBudgeted_of_codewordSingletonBudgeted
+#print axioms relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden
+#print axioms not_relationCliqueCoverBudgeted_iff_exists_singleton_card_gt_of_forbidden
 #print axioms
   uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationCliqueCover
 #print axioms

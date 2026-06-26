@@ -913,3 +913,13 @@ budget.  The companion failure theorem
 `not_sameColorRelationColorBudgeted_iff_exists_singleton_card_gt_of_forbidden` returns exactly
 the old overfull singleton fiber.  Companion note:
 `deltastar-464-same-color-relation-no-go-2026-06-26.md`.
+
+Follow-up: `LineListCodewordSingletonRelationCliqueCover.lean` now has the direct clique-cover
+collapse.  `scalarRelationCliqueCover_singletons` builds a singleton cover from any direct
+singleton cap, while `scalarRelationCliqueCover_card_ge_of_independent` shows an independent
+ambient fiber needs at least one clique per vertex.  Uniformly,
+`relationCliqueCoverBudgeted_iff_codewordSingletonBudgeted_of_forbidden` and
+`not_relationCliqueCoverBudgeted_iff_exists_singleton_card_gt_of_forbidden` make the
+clique-cover certificate equivalent to the original singleton budget under forbidden edges.
+Companion note:
+`deltastar-464-clique-cover-collapse-2026-06-26.md`.
