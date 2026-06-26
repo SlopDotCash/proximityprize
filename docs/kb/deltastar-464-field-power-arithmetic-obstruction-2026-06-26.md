@@ -89,6 +89,10 @@ unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalars
 exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
 exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
 singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget
+zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget
+uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
+uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
@@ -101,7 +105,10 @@ has the matching scanner: with high exact fibers bounded by uniqueness, any fail
 must return either zero-direction saturation or an overfull low exact appearance fiber.
 The singleton-defect layer also exposes the raw field-power obstruction directly: any remaining
 low-profile failure after the high range is discharged can be converted into
-`D t < |F|^(k-t) * support/(a-t)`.
+`D t < |F|^(k-t) * support/(a-t)`.  Conversely, if that weighted field-power envelope is already
+below `D t` for every exact profile, the raw-envelope consumer feeds the exact singleton-profile
+production wrapper directly; the split consumer lets callers provide the low raw interpolation
+bound and the high support-only bound separately.
 
 ## Critique of the Previous Hope
 

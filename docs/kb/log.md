@@ -592,5 +592,21 @@ failed uniform budgets to zero-direction saturation or a large-zero safe low exa
 Follow-up: `LineListSingletonDefectGeometry.lean` now exposes the raw MDS barrier for the exact
 singleton route.  Exact appearance profiles and exact singleton-defect slices are bounded by
 `|F|^(k-t) * support/(a-t)`, and the new scanners localize failed budgets to low profiles where the
-proposed `D t` falls below that raw interpolation term.  The lesson is precise: the singleton route
-must improve the low exact-appearance envelope, not just reuse the field-power coordinate fiber.
+proposed `D t` falls below that raw interpolation term.  The matching consumer proves that, if this
+weighted raw envelope is already below `D t`, the exact singleton-profile production wrapper can use
+it directly.  The lesson is precise: the singleton route must improve the low exact-appearance
+envelope, not just reuse the field-power coordinate fiber.
+
+Follow-up: the same singleton file now packages the positive raw-envelope baseline through
+`zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget`,
+`zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget`, and
+`uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget`.  This proves the exact singleton
+interface can consume the raw weighted MDS envelope, while keeping that envelope as the control
+case rather than the desired improvement.  The split form
+`uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` uses the raw term only
+for low profiles `t < k` and the singleton support-denominator cap for high profiles.
+
+Follow-up: the positive raw-envelope baseline now has the same low/high split as the scanners.
+`uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` needs the raw
+`|F|^(k-t) * support/(a-t)` term only for `t < k`; high `k <= t` profiles use the sharper
+support-denominator singleton term.

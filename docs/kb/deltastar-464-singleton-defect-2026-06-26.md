@@ -125,6 +125,10 @@ singletonBadScalarIncidencesInExact_card_le_support_div_of_k_le
 exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
 exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
 singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget
+zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget
+uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
+uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
 exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
@@ -196,8 +200,16 @@ The raw interpolation barrier is now explicit for this route.  Exact appearance 
 `#fiber <= |F|^(k-t)`, and both the exact appearance singleton term and the exact singleton-defect
 slice are bounded by `|F|^(k-t) * support/(a-t)`.  Therefore a failed production attempt whose high
 profiles are already covered can be localized to a low profile where the proposed `D t` sits below
-the raw MDS singleton term.  This does not prove the floor; it says the singleton route must beat
-the raw coordinate-fiber envelope in the low interpolation range rather than merely repackage it.
+the raw MDS singleton term.  Conversely, if that raw weighted envelope is below `D t` for every
+profile and the combined profile arithmetic fits, the raw-envelope production wrapper discharges
+the uniform bad-scalar budget.  This does not prove the floor; it says the singleton route must
+beat the raw coordinate-fiber envelope in the low interpolation range rather than merely repackage
+it.
+
+The sharper positive form is split at `k`: low profiles `t < k` carry the raw MDS term
+`|F|^(k-t) * support/(a-t)`, while high profiles `k <= t` only need the support-denominator term.
+The theorem `uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget` packages
+exactly that contract.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

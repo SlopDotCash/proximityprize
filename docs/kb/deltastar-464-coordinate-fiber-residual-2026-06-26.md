@@ -195,6 +195,10 @@ unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalars
 exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
 exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
 singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+zeroExactAppearanceFiberSingletonBudgeted_of_rawFieldPowBudget
+zeroExactSingletonDefectProfileBudgeted_of_rawFieldPowBudget
+uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
+uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
@@ -207,7 +211,10 @@ so a field-power route must now check the weighted binomial fit or replace the r
 stronger support-aware estimate.
 The singleton-defect scanners now make this explicit: after the high range is discharged, a failed
 low-profile budget can be localized to a profile where `D t` is already smaller than the raw
-weighted field-power term.
+weighted field-power term.  The converse consumer is also formalized: if that raw weighted
+field-power term fits below `D t` profile-wise, the exact singleton-profile route can consume it
+directly.  The split consumer separates low raw interpolation from the high support-only term,
+matching the scanner shape.
 
 ## Next Target
 
