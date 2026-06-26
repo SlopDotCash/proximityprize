@@ -611,3 +611,15 @@ Follow-up: the raw-envelope baseline now has a direct production-layer converse:
 and `unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted`.  Failed uniform
 production exposes either zero-direction saturation or a large-zero safe stratum where the raw
 weighted field-power envelope is already above `D t`.
+
+Follow-up: the split raw/high-support certificate now has matching converse scanners:
+`exists_lowRaw_or_highSupportFailure_of_not_budgeted` and
+`unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted`.  Failed production is exactly separated
+into zero-direction saturation, a low `t < k` raw field-power overrun, or a high `k <= t`
+support-denominator overrun.
+
+Follow-up: `LineListSingletonArithmeticObstruction.lean` records the raw exact-singleton arithmetic
+no-go.  The combined `puncturedWeight + profile <= 2B` budget contains each raw weighted singleton
+summand; if `D` dominates `|F|^(k-t) * support/(a-t)`, any summand above `2B` refutes the route.
+In the common `2a <= n` range the `t = 0` direction already rules out any target with
+`2B < |F|^k`, so the raw exact-singleton envelope is only a baseline obstruction.

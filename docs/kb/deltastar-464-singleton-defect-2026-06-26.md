@@ -131,6 +131,8 @@ uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
 uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
 exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
+exists_lowRaw_or_highSupportFailure_of_not_budgeted
+unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted
 exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
@@ -142,6 +144,18 @@ exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
+
+`LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
+
+```lean
+rawFieldPowSingletonProfileBudget_term_le
+not_uniformWeightPlusExactSingletonProfileBudgeted_of_rawFieldPow_term_gt
+not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
+```
+
+It proves the combined exact singleton-profile budget contains every raw weighted singleton summand.
+If the raw envelope already exceeds `2B` at one summand, the combined budget is impossible; under
+`2a <= n`, the `t = 0` direction gives this obstruction from `2B < |F|^k`.
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
 Bounding singleton defects can now be attempted profile-by-profile over exact zero-direction
@@ -215,6 +229,12 @@ exactly that contract.
 The direct converse scanner exposes a failed production attempt as either zero-direction
 saturation or a large-zero safe profile where the raw weighted field-power term itself exceeds
 `D t`.
+The split converse makes the residual sharper: after zero-safety, failure is either a low
+`t < k` raw MDS overrun or a high `k <= t` support-denominator overrun; without zero-safety there
+is the usual saturating-codeword branch.
+The standalone raw singleton arithmetic obstruction then shows this raw envelope cannot be the
+final floor route in the common `2a <= n`, `2B < |F|^k` range; a positive proof needs an
+appearance-filtered or ratio-profile saving.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

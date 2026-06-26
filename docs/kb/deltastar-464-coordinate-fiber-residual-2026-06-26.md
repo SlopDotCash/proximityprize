@@ -201,6 +201,8 @@ uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
 uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
 exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
+exists_lowRaw_or_highSupportFailure_of_not_budgeted
+unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
@@ -219,6 +221,8 @@ directly.  The split consumer separates low raw interpolation from the high supp
 matching the scanner shape.
 The direct raw-envelope scanner now localizes failed production to a specific large-zero safe
 stratum whose weighted field-power term is already above `D t`.
+The split scanner separates this into the actual low/high obligations: a low `t < k` raw
+field-power overrun or a high `k <= t` support-denominator overrun.
 
 ## Next Target
 

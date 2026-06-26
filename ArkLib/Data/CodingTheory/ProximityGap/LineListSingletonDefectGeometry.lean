@@ -1000,6 +1000,68 @@ theorem unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budget
         dom k a).mp hZeroSafe)
 
 open Classical in
+/-- Converse scanner for the split raw/high-support singleton certificate.  With zero-direction
+safety fixed, failed production means either the low raw weighted MDS envelope is too large for
+`D`, or the high support-denominator singleton term is too large for `D`. -/
+theorem exists_lowRaw_or_highSupportFailure_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧ t < k ∧
+        D t < Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t))) ∨
+    (∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧ k ≤ t ∧
+        D t < (directionSupportSet u₁).card / (a - t)) := by
+  by_contra hnone
+  have hLow : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → t < k →
+        Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t)) ≤ D t := by
+    intro u₁ hnotEligible t ht hlt
+    exact le_of_not_gt
+      (fun hgt => hnone (Or.inl ⟨u₁, hnotEligible, t, ht, hlt, hgt⟩))
+  have hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t := by
+    intro u₁ hnotEligible t ht hkt
+    exact le_of_not_gt
+      (fun hgt => hnone (Or.inr ⟨u₁, hnotEligible, t, ht, hkt, hgt⟩))
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
+      dom a L B D hSupport hFits hZeroSafe hLow hHigh hbudget)
+
+open Classical in
+/-- Full failure split for the split raw/high-support singleton certificate.  Without assuming
+zero-direction safety in advance, failed production exposes zero-direction saturation, a low raw
+weighted MDS overrun, or a high support-denominator overrun. -/
+theorem unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+    (∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧ t < k ∧
+        D t < Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t))) ∨
+    (∃ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ∃ t : ℕ, t < a ∧ k ≤ t ∧
+        D t < (directionSupportSet u₁).card / (a - t)) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · rcases
+      exists_lowRaw_or_highSupportFailure_of_not_budgeted
+        dom a L B D hSupport hFits hZeroSafe hbudget hnot with hLow | hHigh
+    · exact Or.inr (Or.inl hLow)
+    · exact Or.inr (Or.inr hHigh)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
 /-- If the support-denominator cap is already under `D` on every high level `k ≤ t < a`, then
 any overfull exact singleton-defect profile must lie in the low interpolation range `t < k`. -/
 theorem exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
@@ -1346,6 +1408,8 @@ section SourceAudit
 #print axioms
   exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 #print axioms unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
+#print axioms exists_lowRaw_or_highSupportFailure_of_not_budgeted
+#print axioms unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted
 #print axioms exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 #print axioms exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 #print axioms

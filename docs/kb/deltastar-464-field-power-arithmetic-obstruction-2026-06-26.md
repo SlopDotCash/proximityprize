@@ -95,9 +95,26 @@ uniformLineBadScalarsBudgeted_of_rawFieldPowSingletonBudget
 uniformLineBadScalarsBudgeted_of_lowRawFieldPow_highSupportSingletonBudget
 exists_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_rawFieldPowSingletonBudgetFailure_of_not_budgeted
+exists_lowRaw_or_highSupportFailure_of_not_budgeted
+unsafe_or_lowRaw_or_highSupportFailure_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
+
+`LineListSingletonArithmeticObstruction.lean` records the corresponding raw singleton arithmetic
+no-go:
+
+```lean
+rawFieldPowSingletonProfileBudget_term_le
+not_uniformWeightPlusExactSingletonProfileBudgeted_of_rawFieldPow_term_gt
+not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
+```
+
+The combined `puncturedWeight + profile <= 2B` budget contains each raw weighted singleton summand.
+If `D` dominates `|F|^(k-t) * support/(a-t)` on the large-zero branch, any summand above `2B`
+refutes the combined budget.  In the common `2a <= n`, `t = 0` case, this gives no fit whenever
+`2B < |F|^k` under zero-direction safety.  Thus the raw exact singleton route is a control/no-go
+baseline, not a floor proof.
 
 These theorems prove that the same punctured-budget reduction works with
 `coordinateAgreementFiber(S) ∩ lineAppearingCodewords`, a subset of the raw affine fiber.  The
@@ -112,6 +129,8 @@ below `D t` for every exact profile, the raw-envelope consumer feeds the exact s
 production wrapper directly; the split consumer lets callers provide the low raw interpolation
 bound and the high support-only bound separately.  The direct converse scanner records the same
 field-power obstruction without first passing through a profile-cardinality witness.
+The split converse refines that obstruction into low raw interpolation failure versus high
+support-denominator failure, plus the standard zero-direction saturation branch.
 
 ## Critique of the Previous Hope
 
