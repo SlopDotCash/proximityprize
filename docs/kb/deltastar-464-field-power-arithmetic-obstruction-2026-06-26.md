@@ -118,13 +118,19 @@ supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 supportRatioLineFiberCover_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
 zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 ZeroSupportRatioCoverSumBudgeted
 zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
 UniformLargeZeroSafeSupportRatioCoverSumBudgeted
 uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
@@ -145,9 +151,10 @@ not merely one-sided.  If `k <= a`, RS uniqueness bounds every `(γ, T)` coordin
 giving the per-profile envelope
 `|F| * choose(#directionSupportSet(u1), a - #S)`.  This is still not a closed prize bound, but it is
 the first target that actually uses appearance on the affine line before paying the raw field-power
-count.  The same file also packages the finite `(γ, T)` sum itself as a production route:
-uniform cover-sum budgets imply support-ratio-heavy budgets, exact-appearance budgets, and a
-full failure scanner returning an overfull cover sum.
+count.  The ambient-length corollary replaces `#directionSupportSet(u1)` by `n` when a coarser
+line-independent expression is useful.  The same file also packages the finite `(γ, T)` sum itself
+as a production route: uniform cover-sum budgets imply support-ratio-heavy budgets,
+exact-appearance budgets, and a full failure scanner returning an overfull cover sum.
 
 `LineListSingletonArithmeticObstruction.lean` records the corresponding raw singleton arithmetic
 no-go:

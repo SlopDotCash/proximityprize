@@ -163,13 +163,19 @@ supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 supportRatioLineFiberCover_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
 zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 ZeroSupportRatioCoverSumBudgeted
 zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
 UniformLargeZeroSafeSupportRatioCoverSumBudgeted
 uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
@@ -186,10 +192,11 @@ codewords with a heavy support-ratio fiber.  The new cover extracts a heavy scal
 coordinate-agreement fiber for the line word `u0 + γ*u1` on `S ∪ T`.  On zero profiles this cover
 is exact, and when `k <= a` RS uniqueness bounds each `(γ, T)` coordinate fiber by one.  This gives
 the concrete budget `|F| * choose(#directionSupportSet(u1), a - t)` for the support-ratio-heavy
-fiber at zero-profile size `t`.  Failed production localizes, after high profiles are discharged by
-RS uniqueness, to a low `t < k` support-ratio-heavy coordinate fiber.  The finite `(γ, T)` cover sum
-is also exposed as its own budget interface and scanner, so a future improvement can attack overlap
-or structure inside the cover before collapsing to the scalar-times-binomial envelope.
+fiber at zero-profile size `t`, with a coarser ambient variant using `n.choose (a - t)`.  Failed
+production localizes, after high profiles are discharged by RS uniqueness, to a low `t < k`
+support-ratio-heavy coordinate fiber.  The finite `(γ, T)` cover sum is also exposed as its own
+budget interface and scanner, so a future improvement can attack overlap or structure inside the
+cover before collapsing to the scalar-times-binomial envelope.
 
 `LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
 

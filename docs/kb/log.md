@@ -657,6 +657,12 @@ non-raw envelope is now formalized.  Under `k <= a`, each `(γ, T)` cover fiber 
 codeword, yielding
 `supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose` and the per-line budget
 `zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose`.
+The coarser `supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n` replaces the moving
+support size by `n` for line-independent arithmetic envelopes.
 The finite cover sum is also a first-class route via `ZeroSupportRatioCoverSumBudgeted`,
 `uniformLineBadScalarsBudgeted_of_supportRatioCoverSums`, and
 `unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted`.
+The direct ambient-binomial consumer is
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n`; conversely,
+failed production under the support and zero-safety hypotheses refutes that arithmetic fit through
+`not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted`.

@@ -340,6 +340,24 @@ theorem supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
       dom hk hka u₀ u₁ hSzero)
 
 open Classical in
+/-- Uniform-domain version of
+`supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose`, replacing the line support size
+by the ambient block length. -/
+theorem supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card ≤
+      Fintype.card F * n.choose (a - S.card) := by
+  have hsupp : (directionSupportSet u₁).card ≤ n := by
+    simpa using (Finset.card_le_univ (directionSupportSet u₁))
+  exact le_trans
+    (supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+      dom hk hka u₀ u₁ hSzero)
+    (Nat.mul_le_mul_left (Fintype.card F)
+      (Nat.choose_le_choose (a - S.card) hsupp))
+
+open Classical in
 /-- Support-ratio-heavy coordinate fibers are still contained in the raw coordinate fiber. -/
 theorem supportRatioHeavyCoordinateFiber_subset_coordinateAgreementFiber
     (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (S : Finset (Fin n)) :
@@ -379,6 +397,20 @@ theorem zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
   obtain ⟨hSsub, hScard⟩ := Finset.mem_powersetCard.mp hS
   simpa [hScard] using
     supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+      dom hk hka u₀ u₁ hSsub
+
+open Classical in
+/-- Ambient-length variant of
+`zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose`. -/
+theorem zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a)
+    (u₀ u₁ : Fin n → F) :
+    ZeroSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁
+      (fun t => Fintype.card F * n.choose (a - t)) := by
+  intro t _ht S hS
+  obtain ⟨hSsub, hScard⟩ := Finset.mem_powersetCard.mp hS
+  simpa [hScard] using
+    supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
       dom hk hka u₀ u₁ hSsub
 
 /-- A per-line union-bound budget for the explicit support-ratio line-fiber cover. -/
@@ -457,6 +489,62 @@ theorem uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoor
   intro u₀ u₁ hnotEligible hsafe
   exact zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
     dom k a u₀ u₁ M (hFiber u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- The scalar-times-ambient-binomial line-cover envelope is a uniform support-ratio-heavy
+budget. -/
+theorem uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a) :
+    UniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted dom k a
+      (fun t => Fintype.card F * n.choose (a - t)) := by
+  intro u₀ u₁ _hnotEligible _hsafe
+  exact zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+    dom hk hka u₀ u₁
+
+open Classical in
+/-- The ambient-binomial line-cover envelope gives a uniform exact-appearance-fiber budget. -/
+theorem uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a) :
+    UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a
+      (fun t => Fintype.card F * n.choose (a - t)) :=
+  uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+    dom k a (fun t => Fintype.card F * n.choose (a - t))
+    (uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+      dom hk hka)
+
+open Classical in
+/-- Direct production wrapper for the ambient-binomial support-ratio line-cover envelope. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a) (L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hFiberFits : UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits
+      (F := F) (n := n) a B (fun t => Fintype.card F * n.choose (a - t))) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+    dom k a L B (fun t => Fintype.card F * n.choose (a - t))
+    hSupport hFits hZeroSafe
+    (uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
+      dom hk hka)
+    hFiberFits
+
+open Classical in
+/-- If uniform bad-scalar production fails after the support-side hypotheses, then the
+ambient-binomial line-cover arithmetic fit is impossible. -/
+theorem
+    not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a) (L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ¬ UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits
+      (F := F) (n := n) a B (fun t => Fintype.card F * n.choose (a - t)) := by
+  intro hFiberFits
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+      dom hk hka L B hSupport hFits hZeroSafe hFiberFits)
 
 open Classical in
 /-- Production wrapper for the explicit support-ratio cover-sum route. -/
@@ -674,9 +762,11 @@ section SourceAudit
 #print axioms supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 #print axioms supportRatioLineFiberCover_card_le_field_card_mul_choose
 #print axioms supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+#print axioms supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
 #print axioms supportRatioHeavyCoordinateFiber_subset_coordinateAgreementFiber
 #print axioms supportRatioHeavyCoordinateFiber_card_le_one_of_k_le
 #print axioms zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+#print axioms zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 #print axioms ZeroSupportRatioCoverSumBudgeted
 #print axioms zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
 #print axioms UniformLargeZeroSafeSupportRatioCoverSumBudgeted
@@ -685,6 +775,12 @@ section SourceAudit
   zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 #print axioms
   uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+#print axioms
+  uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
+#print axioms uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
+#print axioms
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+#print axioms not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
 #print axioms uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 #print axioms
   exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
