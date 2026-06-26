@@ -90,14 +90,26 @@ ZeroExactSingletonDefectProfileBudgeted
 ZeroExactSingletonDefectProfileBudgetFits
 UniformLargeZeroSafeExactSingletonDefectProfileBudgeted
 UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted
+ZeroExactAppearanceFiberSingletonBudgeted
+UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted
+zeroExactSingletonDefectProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+uniformLargeZeroSafeExactSingletonDefectProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+zeroExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
+uniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
 singletonBadScalarIncidences_subset_biUnion_exactProfiles
 singletonBadScalarDefect_le_sum_exactSingletonProfiles
 singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted
 singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted_and_fits
+uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactSingletonProfileBudget
+uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactAppearanceFiberSingletonBudget
 lineBadScalars_card_le_of_weight_add_exactSingletonProfileBudget_le_two_mul
 largeZeroSafeLineBadScalarsBudgeted_of_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactAppearanceFiberSingletonBudget
 exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
@@ -120,9 +132,16 @@ puncturedZeroStratifiedLineWeight
 <= 2B.
 ```
 
-The converse scanner now localizes any failed uniform bad-scalar budget, after support arithmetic,
-zero-safety, and the profile envelope are fixed, to a large-zero safe line whose combined
-profile-budget arithmetic is false.
+The exact-profile sum is a cover bound.  That is enough for production: if every exact profile is
+below `D t`, the total singleton defect fits the binomial sum above.  The converse scanners
+localize any failed uniform bad-scalar budget, after support arithmetic, zero-safety, and the
+relevant profile envelope are fixed, either to failed combined profile arithmetic or to a concrete
+exact profile whose singleton-defect or exact-appearance weighted size exceeds `D t`.
+
+The exact-appearance bridge is the new attack surface.  It is enough to bound
+`exactAppearingZeroAgreementFiber` by profile and multiply by the moving-support denominator
+`support/(a-t)`; that yields the singleton-defect profile budget and the older combined
+weight-plus-singleton-defect budget.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the

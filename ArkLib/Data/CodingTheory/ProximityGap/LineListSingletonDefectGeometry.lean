@@ -21,6 +21,7 @@ singleton defect by exact-fiber or ownership-profile estimates.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.style.longLine false
 
 open Finset
 
@@ -254,6 +255,80 @@ def UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted
       puncturedZeroStratifiedLineWeight dom k a u₀ u₁
         + ∑ t ∈ Finset.range a, (directionZeroSet u₁).card.choose t * D t ≤ 2 * B
 
+/-- Per-line exact-appearance-fiber budget strong enough for singleton-defect slices.  For each
+exact zero-agreement profile of size `t`, the exact appearance fiber times the usual
+moving-support denominator is bounded by `D t`. -/
+def ZeroExactAppearanceFiberSingletonBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (D : ℕ → ℕ) : Prop :=
+  ∀ t : ℕ, t < a → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+    (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card *
+      ((directionSupportSet u₁).card / (a - t)) ≤ D t
+
+/-- Uniform exact-appearance-fiber budget for singleton-defect slices on the large-zero safe
+branch. -/
+def UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (D : ℕ → ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ZeroExactAppearanceFiberSingletonBudgeted dom k a u₀ u₁ D
+
+open Classical in
+/-- An exact appearance-fiber budget, after multiplying by the support denominator, gives the
+singleton-defect profile budget. -/
+theorem zeroExactSingletonDefectProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (D : ℕ → ℕ)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hAppearance : ZeroExactAppearanceFiberSingletonBudgeted dom k a u₀ u₁ D) :
+    ZeroExactSingletonDefectProfileBudgeted dom k a u₀ u₁ D := by
+  intro t ht S hS
+  exact le_trans
+    (singletonBadScalarIncidencesInExact_card_le_exactFiber_card_mul_support_div
+      dom k a u₀ u₁ hsafe hS)
+    (hAppearance t ht S hS)
+
+open Classical in
+/-- Uniform version of the exact-appearance-fiber to singleton-profile bridge. -/
+theorem
+    uniformExactSingletonProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (D : ℕ → ℕ)
+    (hAppearance : UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D) :
+    UniformLargeZeroSafeExactSingletonDefectProfileBudgeted dom k a D := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact zeroExactSingletonDefectProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+    dom k a u₀ u₁ D hsafe (hAppearance u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Existing exact appearance-fiber caps imply the singleton-fiber cap once their moving-support
+denominator arithmetic fits inside `D`. -/
+theorem zeroExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M D : ℕ → ℕ)
+    (hFiber : ZeroExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ M)
+    (hMul : ∀ t : ℕ, t < a →
+      M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t) :
+    ZeroExactAppearanceFiberSingletonBudgeted dom k a u₀ u₁ D := by
+  intro t ht S hS
+  exact le_trans
+    (Nat.mul_le_mul_right ((directionSupportSet u₁).card / (a - t))
+      (hFiber t ht S hS))
+    (hMul t ht)
+
+open Classical in
+/-- Uniform exact appearance-fiber caps imply the singleton-fiber cap once their moving-support
+denominator arithmetic fits uniformly. -/
+theorem
+    uniformExactAppearanceFiberSingletonBudgeted_of_exactAppearingFiberBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M D : ℕ → ℕ)
+    (hFiber : UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a M)
+    (hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t) :
+    UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact zeroExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
+    dom k a u₀ u₁ M D (hFiber u₀ u₁ hnotEligible hsafe)
+    (hMul u₀ u₁ hnotEligible hsafe)
+
 open Classical in
 /-- On a zero-safe line, singleton-defect incidences are covered by their exact zero-agreement
 profiles of size `t < a`. -/
@@ -355,6 +430,36 @@ theorem singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted_and_fits
     hFits
 
 open Classical in
+/-- Exact singleton-profile budgets imply the older combined singleton-defect arithmetic budget. -/
+theorem uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactSingletonProfileBudget
+    (dom : Fin n ↪ F) (k a B : ℕ) (D : ℕ → ℕ)
+    (hProfile : UniformLargeZeroSafeExactSingletonDefectProfileBudgeted dom k a D)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D) :
+    UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact le_trans
+    (Nat.add_le_add_left
+      (singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted
+        dom k a u₀ u₁ D hsafe (hProfile u₀ u₁ hnotEligible hsafe))
+      (puncturedZeroStratifiedLineWeight dom k a u₀ u₁))
+    (hbudget u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Exact appearance-fiber singleton budgets imply the older combined singleton-defect arithmetic
+budget. -/
+theorem
+    uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactAppearanceFiberSingletonBudget
+    (dom : Fin n ↪ F) (k a B : ℕ) (D : ℕ → ℕ)
+    (hAppearance : UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D) :
+    UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted dom k a B :=
+  uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactSingletonProfileBudget
+    dom k a B D
+    (uniformExactSingletonProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+      dom k a D hAppearance)
+    hbudget
+
+open Classical in
 /-- Bad-scalar budget from exact singleton-defect profile budgets and combined arithmetic. -/
 theorem lineBadScalars_card_le_of_weight_add_exactSingletonProfileBudget_le_two_mul
     (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F) (D : ℕ → ℕ)
@@ -401,6 +506,22 @@ theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfi
       dom k a B D hProfile hbudget)
 
 open Classical in
+/-- Uniform production wrapper from exact appearance-fiber singleton budgets. -/
+theorem uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
+    (dom : Fin n ↪ F) (k a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hAppearance : UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
+    dom k a L B D hSupport hFits hZeroSafe
+    (uniformExactSingletonProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+      dom k a D hAppearance)
+    hbudget
+
+open Classical in
 /-- Converse scanner for the exact singleton-defect profile route.  Once support, zero-safety,
 profile budgets, and support arithmetic are fixed, any failed uniform bad-scalar budget violates
 the combined punctured-weight plus profile-defect arithmetic on a large-zero safe line. -/
@@ -425,6 +546,82 @@ theorem
     (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
       dom k a L B D hSupport hFits hZeroSafe hProfile hbudget)
 
+open Classical in
+/-- Converse scanner for the exact appearance-fiber singleton route.  Once support arithmetic,
+zero-safety, and exact appearance-fiber singleton bounds are fixed, any failed uniform bad-scalar
+budget violates the combined punctured-weight plus profile arithmetic on a large-zero safe line. -/
+theorem
+    exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hAppearance : UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+          + ∑ t ∈ Finset.range a, (directionZeroSet u₁).card.choose t * D t ≤ 2 * B :=
+  exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+    dom k a L B D hSupport hFits hZeroSafe
+    (uniformExactSingletonProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+      dom k a D hAppearance)
+    hnot
+
+open Classical in
+/-- Converse scanner for the profile envelope itself.  Once support, zero-safety, support
+arithmetic, and the combined weight-plus-profile arithmetic are fixed, any failed uniform
+bad-scalar budget exposes an overfull exact singleton-defect profile. -/
+theorem
+    exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          D t < (singletonBadScalarIncidencesInExactZeroAgreementFiber
+            dom k a u₀ u₁ S).card := by
+  by_contra hnone
+  have hProfile : UniformLargeZeroSafeExactSingletonDefectProfileBudgeted dom k a D := by
+    intro u₀ u₁ hnotEligible hsafe t ht S hS
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
+      dom k a L B D hSupport hFits hZeroSafe hProfile hbudget)
+
+open Classical in
+/-- Converse scanner for the exact appearance-fiber singleton envelope.  Once support,
+zero-safety, support arithmetic, and the combined profile arithmetic are fixed, any failed uniform
+bad-scalar budget exposes an exact appearance profile whose support-denominator weighted size
+exceeds the proposed singleton cap. -/
+theorem
+    exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          D t <
+            (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card *
+              ((directionSupportSet u₁).card / (a - t)) := by
+  by_contra hnone
+  have hAppearance : UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D := by
+    intro u₀ u₁ hnotEligible hsafe t ht S hS
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
+      dom k a L B D hSupport hFits hZeroSafe hAppearance hbudget)
+
 section SourceAudit
 
 #print axioms singletonBadScalarIncidences
@@ -440,6 +637,17 @@ section SourceAudit
 #print axioms ZeroExactSingletonDefectProfileBudgetFits
 #print axioms UniformLargeZeroSafeExactSingletonDefectProfileBudgeted
 #print axioms UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted
+#print axioms ZeroExactAppearanceFiberSingletonBudgeted
+#print axioms UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted
+#print axioms zeroExactSingletonDefectProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+#print axioms
+  uniformExactSingletonProfileBudgeted_of_exactAppearanceFiberSingletonBudgeted
+#print axioms zeroExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
+#print axioms
+  uniformExactAppearanceFiberSingletonBudgeted_of_exactAppearingFiberBudgeted
+#print axioms uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactSingletonProfileBudget
+#print axioms
+  uniformLargeZeroSafeWeightPlusSingletonDefectBudgeted_of_exactAppearanceFiberSingletonBudget
 #print axioms singletonBadScalarIncidences_subset_biUnion_exactProfiles
 #print axioms singletonBadScalarDefect_le_sum_exactSingletonProfiles
 #print axioms singletonBadScalarDefect_le_of_exactSingletonProfileBudgeted
@@ -447,8 +655,15 @@ section SourceAudit
 #print axioms lineBadScalars_card_le_of_weight_add_exactSingletonProfileBudget_le_two_mul
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_exactSingletonProfileBudget
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
+#print axioms uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
 #print axioms
   exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
+#print axioms
+  exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScalarsBudgeted
 
 end SourceAudit
 

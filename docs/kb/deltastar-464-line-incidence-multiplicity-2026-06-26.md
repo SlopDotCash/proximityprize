@@ -229,6 +229,14 @@ zero-direction agreement profiles.  It turns the defect into a filtered incidenc
 each exact-profile slice by the corresponding exact appearance fiber times the usual moving-support
 denominator.
 
+That profile split is a cover bound strong enough for production: if every exact singleton slice is
+bounded by `D t`, then `singletonBadScalarDefect` is bounded by the corresponding binomial profile
+sum.  The bridge `ZeroExactAppearanceFiberSingletonBudgeted` packages the concrete obligation
+`#exactAppearingFiber(S) * support/(a-t) <= D t`, and its uniform wrappers feed both the
+exact-profile production route and the older weight-plus-singleton-defect route.  The scanners can
+now return a specific overfull exact singleton profile, or a specific exact appearance profile
+whose support-denominator weighted size exceeds `D t`.
+
 The defect also has a codeword-indexed partition: `codewordSingletonWitnessScalars` are disjoint
 over appearing codewords and their cardinals sum exactly to `singletonBadScalarDefect`.  This
 separates the remaining problem into per-codeword unique-witness scalar budgets plus an appearing

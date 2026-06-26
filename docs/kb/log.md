@@ -515,6 +515,13 @@ uniform wrapper consumes
 `puncturedZeroStratifiedLineWeight + sum choose(#zeroSet,u1,t) * D t <= 2B`.  The converse scanner
 returns a large-zero safe line where that combined profile arithmetic fails.
 
+Follow-up: the exact-profile singleton cover now has an exact-appearance-fiber front door.
+`ZeroExactAppearanceFiberSingletonBudgeted` asks for
+`#exactAppearingFiber(S) * support/(a-t) <= D t`, which implies the singleton profile budget and
+feeds the production wrappers.  New scanners return either an overfull singleton profile or an
+overfull exact appearance profile when the aggregate uniform budget fails despite fixed support,
+zero-safety, and profile arithmetic.
+
 Follow-up: singleton defects now also have a codeword-indexed partition.  The sets
 `codewordSingletonWitnessScalars` are disjoint over appearing codewords, their `biUnion` is exactly
 `singletonBadScalars`, and `singletonBadScalarDefect` is the corresponding sum.  A per-codeword
