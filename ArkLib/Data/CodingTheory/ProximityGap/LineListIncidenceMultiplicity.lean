@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.LineListReduction
+import ArkLib.Data.CodingTheory.ProximityGap.JohnsonListBound
 
 /-!
 # Incidence multiplicity for the line-list route
@@ -440,6 +441,82 @@ theorem noUniqueBadScalarWitness_iff_secondWitnessProperty
     exact hne (huniq c' hc')
 
 open Classical in
+/-- In the strict unique-decoding regime, every nonempty per-scalar witness fiber is a singleton. -/
+theorem badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding
+    (dom : Fin n ↪ F) (k a d : ℕ) (u₀ u₁ : Fin n → F) (γ : F)
+    (hγ : γ ∈ lineBadScalars dom k a u₀ u₁)
+    (hdist : ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      ∀ c' ∈ (rsCode dom k : Submodule F (Fin n → F)), c ≠ c' →
+        d ≤ hammingDist c c')
+    (h2a : Fintype.card (Fin n) + (Fintype.card (Fin n) - d) < 2 * a) :
+    (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 := by
+  have hfiberNonempty :
+      (badScalarWitnessCodewords dom k a u₀ u₁ γ).Nonempty := by
+    rw [lineBadScalars, Finset.mem_filter] at hγ
+    rcases hγ with ⟨_, c, hc, hheavy⟩
+    refine ⟨c, ?_⟩
+    rw [mem_badScalarWitnessCodewords]
+    exact ⟨hc, hheavy⟩
+  refine ArkLib.JohnsonList.johnson_unique_decoding_eq_one
+    (f := fun i : Fin n => u₀ i + γ • u₁ i)
+    (L := badScalarWitnessCodewords dom k a u₀ u₁ γ)
+    (a := a) (b := Fintype.card (Fin n) - d) hfiberNonempty ?_ ?_ h2a
+  · intro c hc
+    exact ((mem_badScalarWitnessCodewords dom k a u₀ u₁ γ c).mp hc).2
+  · intro c hc c' hc' hne
+    have hcCode := ((mem_badScalarWitnessCodewords dom k a u₀ u₁ γ c).mp hc).1
+    have hc'Code := ((mem_badScalarWitnessCodewords dom k a u₀ u₁ γ c').mp hc').1
+    exact ArkLib.JohnsonList.agree_card_le_card_sub_of_hammingDist_ge
+      (hdist c hcCode c' hc'Code hne)
+
+open Classical in
+/-- A bad scalar in the strict unique-decoding regime gives an explicit unique witness codeword. -/
+theorem exists_uniqueWitnessCodeword_of_mem_lineBadScalars_uniqueDecoding
+    (dom : Fin n ↪ F) (k a d : ℕ) (u₀ u₁ : Fin n → F) {γ : F}
+    (hγ : γ ∈ lineBadScalars dom k a u₀ u₁)
+    (hdist : ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      ∀ c' ∈ (rsCode dom k : Submodule F (Fin n → F)), c ≠ c' →
+        d ≤ hammingDist c c')
+    (h2a : Fintype.card (Fin n) + (Fintype.card (Fin n) - d) < 2 * a) :
+    ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c :=
+  (badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
+    dom k a u₀ u₁ γ).mp
+    (badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding
+      dom k a d u₀ u₁ γ hγ hdist h2a)
+
+open Classical in
+/-- Any nonempty bad-scalar set in the strict unique-decoding regime refutes the no-unique route. -/
+theorem not_noUniqueBadScalarWitness_of_nonempty_uniqueDecoding
+    (dom : Fin n ↪ F) (k a d : ℕ) (u₀ u₁ : Fin n → F)
+    (hbad : (lineBadScalars dom k a u₀ u₁).Nonempty)
+    (hdist : ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      ∀ c' ∈ (rsCode dom k : Submodule F (Fin n → F)), c ≠ c' →
+        d ≤ hammingDist c c')
+    (h2a : Fintype.card (Fin n) + (Fintype.card (Fin n) - d) < 2 * a) :
+    ¬ NoUniqueBadScalarWitness dom k a u₀ u₁ := by
+  rcases hbad with ⟨γ, hγ⟩
+  intro hno
+  exact hno γ hγ
+    (badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding
+      dom k a d u₀ u₁ γ hγ hdist h2a)
+
+open Classical in
+/-- The constructive second-witness route is impossible in a nonempty strict unique-decoding
+regime. -/
+theorem not_secondWitnessProperty_of_nonempty_uniqueDecoding
+    (dom : Fin n ↪ F) (k a d : ℕ) (u₀ u₁ : Fin n → F)
+    (hbad : (lineBadScalars dom k a u₀ u₁).Nonempty)
+    (hdist : ∀ c ∈ (rsCode dom k : Submodule F (Fin n → F)),
+      ∀ c' ∈ (rsCode dom k : Submodule F (Fin n → F)), c ≠ c' →
+        d ≤ hammingDist c c')
+    (h2a : Fintype.card (Fin n) + (Fintype.card (Fin n) - d) < 2 * a) :
+    ¬ BadScalarSecondWitnessProperty dom k a u₀ u₁ := by
+  intro hsecond
+  exact not_noUniqueBadScalarWitness_of_nonempty_uniqueDecoding
+    dom k a d u₀ u₁ hbad hdist h2a
+    ((noUniqueBadScalarWitness_iff_secondWitnessProperty dom k a u₀ u₁).mpr hsecond)
+
+open Classical in
 /-- Failure of the factor-two floor is equivalently an explicitly unique witness codeword. -/
 theorem not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
     (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
@@ -594,6 +671,138 @@ theorem lineBadScalars_card_le_of_secondWitness_and_weightDivTwo_le
     hbudget
 
 open Classical in
+/-- Bad scalars whose witness-codeword fiber is a singleton.  These are exactly the obstruction to
+the factor-two incidence floor. -/
+noncomputable def singletonBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) : Finset F :=
+  (lineBadScalars dom k a u₀ u₁).filter
+    (fun γ => (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1)
+
+theorem mem_singletonBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (γ : F) :
+    γ ∈ singletonBadScalars dom k a u₀ u₁ ↔
+      γ ∈ lineBadScalars dom k a u₀ u₁ ∧
+        (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 := by
+  classical
+  rw [singletonBadScalars, Finset.mem_filter]
+
+theorem singletonBadScalars_subset_lineBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalars dom k a u₀ u₁ ⊆ lineBadScalars dom k a u₀ u₁ := by
+  intro γ hγ
+  exact ((mem_singletonBadScalars dom k a u₀ u₁ γ).mp hγ).1
+
+open Classical in
+/-- Singleton bad scalars are exactly the bad scalars with an explicitly unique witness codeword. -/
+theorem mem_singletonBadScalars_iff_exists_uniqueWitnessCodeword
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (γ : F) :
+    γ ∈ singletonBadScalars dom k a u₀ u₁ ↔
+      γ ∈ lineBadScalars dom k a u₀ u₁ ∧
+        ∃ c : Fin n → F, IsUniqueBadScalarWitnessCodeword dom k a u₀ u₁ γ c := by
+  rw [mem_singletonBadScalars,
+    badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword]
+
+/-- The number of singleton bad-scalar fibers.  This is the exact additive defect in the weakened
+factor-two incidence bound. -/
+noncomputable def singletonBadScalarDefect
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) : ℕ :=
+  (singletonBadScalars dom k a u₀ u₁).card
+
+open Classical in
+/-- The singleton defect as an indicator sum over the bad scalars. -/
+theorem singletonBadScalarDefect_eq_sum_indicator
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalarDefect dom k a u₀ u₁ =
+      ∑ γ ∈ lineBadScalars dom k a u₀ u₁,
+        if (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 then 1 else 0 := by
+  rw [singletonBadScalarDefect, singletonBadScalars, Finset.card_filter]
+
+/-- The singleton defect is bounded by the total number of bad scalars. -/
+theorem singletonBadScalarDefect_le_lineBadScalars_card
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    singletonBadScalarDefect dom k a u₀ u₁
+      ≤ (lineBadScalars dom k a u₀ u₁).card := by
+  classical
+  rw [singletonBadScalarDefect, singletonBadScalars]
+  exact Finset.card_filter_le _ _
+
+open Classical in
+/-- Defect version of the factor-two incidence count.  Non-singleton bad scalars pay for two
+incidences; singleton bad scalars pay for one incidence and one defect unit. -/
+theorem lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    (lineBadScalars dom k a u₀ u₁).card * 2
+      ≤ (lineHeavyIncidences dom k a u₀ u₁).card
+        + singletonBadScalarDefect dom k a u₀ u₁ := by
+  rw [lineHeavyIncidences_card_eq_sum_badScalarWitnessCodewords,
+    singletonBadScalarDefect_eq_sum_indicator]
+  calc
+    (lineBadScalars dom k a u₀ u₁).card * 2
+        = ∑ _γ ∈ lineBadScalars dom k a u₀ u₁, 2 := by
+          rw [Finset.sum_const, smul_eq_mul]
+    _ ≤ ∑ γ ∈ lineBadScalars dom k a u₀ u₁,
+          ((badScalarWitnessCodewords dom k a u₀ u₁ γ).card +
+            (if (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 then 1 else 0)) := by
+        refine Finset.sum_le_sum ?_
+        intro γ hγ
+        have hpos := badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
+          dom k a u₀ u₁ hγ
+        by_cases hcard : (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1
+        · simp [hcard]
+        · have htwo : 2 ≤ (badScalarWitnessCodewords dom k a u₀ u₁ γ).card := by
+            omega
+          simpa [hcard] using htwo
+    _ = (∑ γ ∈ lineBadScalars dom k a u₀ u₁,
+          (badScalarWitnessCodewords dom k a u₀ u₁ γ).card) +
+        ∑ γ ∈ lineBadScalars dom k a u₀ u₁,
+          if (badScalarWitnessCodewords dom k a u₀ u₁ γ).card = 1 then 1 else 0 := by
+        rw [Finset.sum_add_distrib]
+
+open Classical in
+/-- Defect version of the factor-two punctured-weight bound on safe lines. -/
+theorem lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁) :
+    (lineBadScalars dom k a u₀ u₁).card * 2
+      ≤ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + singletonBadScalarDefect dom k a u₀ u₁ :=
+  le_trans
+    (lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
+      dom k a u₀ u₁)
+    (Nat.add_le_add_right
+      (lineHeavyIncidences_card_le_puncturedZeroStratifiedLineWeight
+        dom k a u₀ u₁ hsafe)
+      (singletonBadScalarDefect dom k a u₀ u₁))
+
+open Classical in
+/-- Division form of the singleton-defect incidence discount. -/
+theorem lineBadScalars_card_le_puncturedWeight_add_singletonDefect_div_two
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁) :
+    (lineBadScalars dom k a u₀ u₁).card
+      ≤ (puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+          + singletonBadScalarDefect dom k a u₀ u₁) / 2 :=
+  (Nat.le_div_iff_mul_le (by omega : 1 ≤ 2)).mpr
+    (lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
+      dom k a u₀ u₁ hsafe)
+
+open Classical in
+/-- Budget consumer for the singleton-defect route. -/
+theorem lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + singletonBadScalarDefect dom k a u₀ u₁ ≤ 2 * B) :
+    (lineBadScalars dom k a u₀ u₁).card ≤ B := by
+  have htwice :
+      (lineBadScalars dom k a u₀ u₁).card * 2 ≤ 2 * B :=
+    le_trans
+      (lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
+        dom k a u₀ u₁ hsafe)
+      hbudget
+  omega
+
+open Classical in
 /-- Failure of the named no-unique-witness condition is exactly a bad scalar with one witnessing
 codeword. -/
 theorem not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
@@ -645,6 +854,28 @@ def UniformLargeZeroSafeNoUniqueBadScalarWitness
     ZeroDirectionSafeLine dom k a u₀ u₁ →
       NoUniqueBadScalarWitness dom k a u₀ u₁
 
+/-- Uniform constructive second-witness condition on the large-zero safe residual branch. -/
+def UniformLargeZeroSafeSecondWitnessProperty
+    (dom : Fin n ↪ F) (k a : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      BadScalarSecondWitnessProperty dom k a u₀ u₁
+
+open Classical in
+/-- The uniform no-unique-witness branch is exactly the uniform constructive second-witness
+branch. -/
+theorem uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    UniformLargeZeroSafeNoUniqueBadScalarWitness dom k a ↔
+      UniformLargeZeroSafeSecondWitnessProperty dom k a := by
+  constructor
+  · intro hno u₀ u₁ hnotEligible hsafe
+    exact (noUniqueBadScalarWitness_iff_secondWitnessProperty
+      dom k a u₀ u₁).mp (hno u₀ u₁ hnotEligible hsafe)
+  · intro hsecond u₀ u₁ hnotEligible hsafe
+    exact (noUniqueBadScalarWitness_iff_secondWitnessProperty
+      dom k a u₀ u₁).mpr (hsecond u₀ u₁ hnotEligible hsafe)
+
 /-- Uniform half-weight arithmetic budget for the factor-two multiplicity route on the large-zero
 safe residual branch. -/
 def UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
@@ -652,6 +883,15 @@ def UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
   ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
     ZeroDirectionSafeLine dom k a u₀ u₁ →
       puncturedZeroStratifiedLineWeight dom k a u₀ u₁ / 2 ≤ B
+
+/-- Uniform combined arithmetic budget for the singleton-defect route on the large-zero safe
+residual branch. -/
+def UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + singletonBadScalarDefect dom k a u₀ u₁ ≤ 2 * B
 
 open Classical in
 /-- The no-unique-witness condition plus the half punctured-weight budget discharges the large-zero
@@ -667,6 +907,20 @@ theorem
     dom k a B u₀ u₁ hsafe
     (hno u₀ u₁ hnotEligible hsafe)
     (hbudget u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- The constructive second-witness condition plus the half punctured-weight budget discharges the
+large-zero safe residual. -/
+theorem
+    largeZeroSafeLineBadScalarsBudgeted_of_secondWitness_and_weightDivTwo
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hsecond : UniformLargeZeroSafeSecondWitnessProperty dom k a)
+    (hbudget : UniformLargeZeroSafePuncturedWeightDivTwoBudgeted dom k a B) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B :=
+  largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+    dom k a B
+    ((uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty dom k a).mpr hsecond)
+    hbudget
 
 /-- Production wrapper for the factor-two no-unique-witness route.  The support-eligible branch is
 handled by the existing support-adjusted line-list budget; the large-zero safe branch uses
@@ -684,6 +938,98 @@ theorem
     dom k a L B hSupport hFits hZeroSafe
     (largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
       dom k a B hno hbudget)
+
+open Classical in
+/-- Production wrapper for the constructive second-witness route. -/
+theorem
+    uniformLineBadScalarsBudgeted_of_supportAdjusted_and_secondWitnessWeightDivTwo
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hsecond : UniformLargeZeroSafeSecondWitnessProperty dom k a)
+    (hbudget : UniformLargeZeroSafePuncturedWeightDivTwoBudgeted dom k a B) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
+    dom k a L B hSupport hFits hZeroSafe
+    ((uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty dom k a).mpr hsecond)
+    hbudget
+
+open Classical in
+/-- The combined punctured-weight plus singleton-defect budget discharges the large-zero safe
+residual. -/
+theorem largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hbudget : UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted dom k a B) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
+    dom k a B u₀ u₁ hsafe (hbudget u₀ u₁ hnotEligible hsafe)
+
+/-- Production wrapper for the singleton-defect route.  Instead of proving all singleton fibers
+absent, it is enough to bound their total defect together with the punctured line weight. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted dom k a B) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+    dom k a L B hSupport hFits hZeroSafe
+    (largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
+      dom k a B hbudget)
+
+open Classical in
+/-- Converse scanner for the singleton-defect route.  If support, zero-safety, and support
+arithmetic are fixed, any failed uniform bad-scalar budget must violate the combined
+punctured-weight plus singleton-defect budget on a large-zero safe line. -/
+theorem
+    exists_largeZero_safe_singletonDefectBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+          + singletonBadScalarDefect dom k a u₀ u₁ ≤ 2 * B := by
+  by_contra hnone
+  have hbudget : UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted dom k a B := by
+    intro u₀ u₁ hnotEligible hsafe
+    by_contra hfail
+    exact hnone ⟨u₀, u₁, hnotEligible, hsafe, hfail⟩
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
+      dom k a L B hSupport hFits hZeroSafe hbudget)
+
+open Classical in
+/-- Failure of the uniform constructive second-witness branch is exactly a large-zero safe line
+with a bad scalar witness that has no distinct second witness. -/
+theorem
+    not_uniformLargeZeroSafeSecondWitnessProperty_iff_exists_witness_without_second
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    ¬ UniformLargeZeroSafeSecondWitnessProperty dom k a ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+            ∃ c ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ,
+              ∀ c' ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ, c' = c := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe γ hγ c hc
+    by_contra hnotSecond
+    apply hnone
+    exact ⟨u₀, u₁, hnotEligible, hsafe, γ, hγ, c, hc,
+      fun c' hc' => by
+        by_contra hne
+        exact hnotSecond ⟨c', hc', hne⟩⟩
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, γ, hγ, c, hc, huniq⟩ hsecond
+    rcases hsecond u₀ u₁ hnotEligible hsafe γ hγ c hc with ⟨c', hc', hne⟩
+    exact hne (huniq c' hc')
 
 open Classical in
 /-- Uniform scanner for the factor-two route.  Once the support branch, support arithmetic,
@@ -709,6 +1055,35 @@ theorem exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalars
   exact hnot
     (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
       dom k a L B hSupport hFits hZeroSafe hno hbudget)
+
+open Classical in
+/-- Constructive scanner for the factor-two route.  Once the support branch, support arithmetic,
+zero-direction safety, and half punctured-weight arithmetic are fixed, any failed uniform
+bad-scalar budget yields a concrete witness codeword with no distinct second witness. -/
+theorem exists_largeZero_safe_witness_without_second_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafePuncturedWeightDivTwoBudgeted dom k a B)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ γ ∈ lineBadScalars dom k a u₀ u₁,
+          ∃ c ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ,
+            ∀ c' ∈ badScalarWitnessCodewords dom k a u₀ u₁ γ, c' = c := by
+  by_contra hnone
+  have hsecond : UniformLargeZeroSafeSecondWitnessProperty dom k a := by
+    intro u₀ u₁ hnotEligible hsafe γ hγ c hc
+    by_contra hnotSecond
+    apply hnone
+    exact ⟨u₀, u₁, hnotEligible, hsafe, γ, hγ, c, hc,
+      fun c' hc' => by
+        by_contra hne
+        exact hnotSecond ⟨c', hc', hne⟩⟩
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_secondWitnessWeightDivTwo
+      dom k a L B hSupport hFits hZeroSafe hsecond hbudget)
 
 open Classical in
 /-- Budget consumer for the multiplicity-discounted punctured weight. -/
@@ -745,6 +1120,10 @@ section SourceAudit
 #print axioms badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
 #print axioms BadScalarSecondWitnessProperty
 #print axioms noUniqueBadScalarWitness_iff_secondWitnessProperty
+#print axioms badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding
+#print axioms exists_uniqueWitnessCodeword_of_mem_lineBadScalars_uniqueDecoding
+#print axioms not_noUniqueBadScalarWitness_of_nonempty_uniqueDecoding
+#print axioms not_secondWitnessProperty_of_nonempty_uniqueDecoding
 #print axioms not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
 #print axioms not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword
 #print axioms lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
@@ -753,14 +1132,37 @@ section SourceAudit
 #print axioms lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
 #print axioms lineBadScalars_card_le_weightDivTwo_of_secondWitness
 #print axioms lineBadScalars_card_le_of_secondWitness_and_weightDivTwo_le
+#print axioms singletonBadScalars
+#print axioms mem_singletonBadScalars
+#print axioms singletonBadScalars_subset_lineBadScalars
+#print axioms mem_singletonBadScalars_iff_exists_uniqueWitnessCodeword
+#print axioms singletonBadScalarDefect
+#print axioms singletonBadScalarDefect_eq_sum_indicator
+#print axioms singletonBadScalarDefect_le_lineBadScalars_card
+#print axioms lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
+#print axioms lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
+#print axioms lineBadScalars_card_le_puncturedWeight_add_singletonDefect_div_two
+#print axioms lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
 #print axioms not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
 #print axioms exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
 #print axioms exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
 #print axioms UniformLargeZeroSafeNoUniqueBadScalarWitness
+#print axioms UniformLargeZeroSafeSecondWitnessProperty
+#print axioms uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty
 #print axioms UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
+#print axioms UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_secondWitness_and_weightDivTwo
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_secondWitnessWeightDivTwo
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
+#print axioms
+  exists_largeZero_safe_singletonDefectBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+#print axioms not_uniformLargeZeroSafeSecondWitnessProperty_iff_exists_witness_without_second
 #print axioms exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_witness_without_second_of_not_uniformLineBadScalarsBudgeted
 #print axioms lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le

@@ -60,6 +60,10 @@ IsUniqueBadScalarWitnessCodeword
 badScalarWitnessCodewords_card_eq_one_iff_exists_isUniqueBadScalarWitnessCodeword
 BadScalarSecondWitnessProperty
 noUniqueBadScalarWitness_iff_secondWitnessProperty
+badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding
+exists_uniqueWitnessCodeword_of_mem_lineBadScalars_uniqueDecoding
+not_noUniqueBadScalarWitness_of_nonempty_uniqueDecoding
+not_secondWitnessProperty_of_nonempty_uniqueDecoding
 not_lineBadScalarMultiplicityFloor_two_iff_exists_uniqueWitnessCodeword
 not_noUniqueBadScalarWitness_iff_exists_uniqueWitnessCodeword
 lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
@@ -67,14 +71,35 @@ lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadS
 lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
 lineBadScalars_card_le_weightDivTwo_of_secondWitness
 lineBadScalars_card_le_of_secondWitness_and_weightDivTwo_le
+singletonBadScalars
+mem_singletonBadScalars
+singletonBadScalars_subset_lineBadScalars
+mem_singletonBadScalars_iff_exists_uniqueWitnessCodeword
+singletonBadScalarDefect
+singletonBadScalarDefect_eq_sum_indicator
+singletonBadScalarDefect_le_lineBadScalars_card
+lineBadScalars_card_mul_two_le_lineHeavyIncidences_card_add_singletonDefect
+lineBadScalars_card_mul_two_le_puncturedWeight_add_singletonDefect
+lineBadScalars_card_le_puncturedWeight_add_singletonDefect_div_two
+lineBadScalars_card_le_of_weight_add_singletonDefect_le_two_mul
 not_noUniqueBadScalarWitness_iff_exists_unique_badScalarWitness
 exists_unique_badScalarWitness_of_not_lineBadScalars_card_le
 exists_uniqueWitnessCodeword_of_not_lineBadScalars_card_le
 UniformLargeZeroSafeNoUniqueBadScalarWitness
+UniformLargeZeroSafeSecondWitnessProperty
+uniformLargeZeroSafeNoUnique_iff_secondWitnessProperty
 UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
+UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
 largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
+largeZeroSafeLineBadScalarsBudgeted_of_secondWitness_and_weightDivTwo
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_secondWitnessWeightDivTwo
+largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
+exists_largeZero_safe_singletonDefectBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+not_uniformLargeZeroSafeSecondWitnessProperty_iff_exists_witness_without_second
 exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_witness_without_second_of_not_uniformLineBadScalarsBudgeted
 lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
@@ -145,6 +170,34 @@ This is stronger as a workbench obligation than the negative formulation.  A fut
 to manufacture `c'` by symmetry, ownership transfer, or stack geometry; a refutation can exhibit a
 single `(gamma, c)` with no second witness.
 
+There is now also a hard fence around that obligation: in the strict unique-decoding regime, any
+nonempty witness fiber is forced to be a singleton by the existing Johnson API.  So the
+second-witness route cannot be used in half-distance slices where pairwise codeword distance gives
+
+```text
+|domain| + (|domain| - d) < 2a.
+```
+
+In that regime, any bad scalar directly produces an explicit unique witness codeword and refutes
+`NoUniqueBadScalarWitness` / `BadScalarSecondWitnessProperty`.
+
+The route also has a softer fallback that does not require eliminating singleton fibers.  Let
+`singletonBadScalarDefect` count bad scalars with exactly one witnessing codeword.  Then:
+
+```text
+2 * #badScalars <= puncturedZeroStratifiedLineWeight + singletonBadScalarDefect
+```
+
+So a factor-two-style budget can still work if the singleton defect is itself small enough.  This
+turns the hard boolean condition "no singleton witnesses" into a quantitative obligation:
+
+```text
+punctured weight + singleton defect <= 2B.
+```
+
+The matching scanner localizes any failed uniform budget to either a combined
+weight-plus-defect arithmetic failure or a concrete witness with no distinct second witness.
+
 The factor-two branch now also reaches the same production layer used by the support/large-zero
 split:
 
@@ -157,9 +210,27 @@ UniformSupportLineListBudgeted
 => UniformLineBadScalarsBudgeted
 ```
 
+Equivalently, the large-zero branch can be supplied as
+`UniformLargeZeroSafeSecondWitnessProperty`, so the production proof obligation can be stated in
+the constructive form rather than the negative no-unique form.
+
+There is also a weaker production branch:
+
+```text
+UniformSupportLineListBudgeted
++ SupportAdjustedBudgetFits
++ UniformZeroDirectionSafe
++ UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
+=> UniformLineBadScalarsBudgeted
+```
+
+This branch permits singleton witness fibers, but charges their total count against the same
+factor-two budget.
+
 This is still conditional.  The substantive new hard input is a uniform proof that large-zero safe
 lines have no unique-witness bad scalar, plus the arithmetic proof that the punctured weight divided
-by two fits the target budget.
+by two fits the target budget; or, in the softer branch, a combined bound on punctured weight plus
+singleton defect.
 
 The converse scanner is now uniform as well: after the support branch, support arithmetic,
 zero-direction safety, and half-weight arithmetic are fixed, failure of

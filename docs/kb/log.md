@@ -480,12 +480,34 @@ scalar has a distinct second witness, and
 The factor-two discount can now be consumed through either the negative no-unique condition or this
 constructive second-witness obligation.
 
+Follow-up: the second-witness route is now fenced by unique decoding:
+`badScalarWitnessCodewords_card_eq_one_of_uniqueDecoding` shows that in the strict half-distance
+regime any bad scalar has a singleton witness fiber.  Consequently
+`not_secondWitnessProperty_of_nonempty_uniqueDecoding` refutes the constructive route whenever the
+bad-scalar set is nonempty and pairwise codeword distance supplies the Johnson unique-decoding
+inequality.  This prevents misusing multiplicity in the ordinary unique-decoding zone.
+
+Follow-up: `LineListIncidenceMultiplicity.lean` also has a quantitative singleton-defect fallback.
+`singletonBadScalarDefect` counts bad scalars with a singleton witness fiber, and the new defect
+bound proves `2 * #badScalars <= puncturedZeroStratifiedLineWeight + singletonBadScalarDefect`.
+Thus the factor-two route can be weakened from "no singleton witnesses" to a combined arithmetic
+budget on punctured weight plus singleton defect, with scanners for both defect-budget failure and
+a concrete witness without a second witness.  Companion note:
+`docs/kb/deltastar-464-singleton-defect-2026-06-26.md`.
+
 Follow-up: `LineListIncidenceMultiplicity.lean` now has the uniform converse scanner
 `exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted`.  Once the
 support branch, support arithmetic, zero-direction safety, and half-weight arithmetic are fixed,
 any failed uniform bad-scalar budget must exhibit a large-zero safe line with a bad scalar and its
 unique witnessing codeword.  This makes the factor-two route refutable at the same production layer
 where it is consumed.
+
+Follow-up: the constructive second-witness socket now reaches the same production layer through
+`UniformLargeZeroSafeSecondWitnessProperty`,
+`uniformLineBadScalarsBudgeted_of_supportAdjusted_and_secondWitnessWeightDivTwo`, and the scanner
+`exists_largeZero_safe_witness_without_second_of_not_uniformLineBadScalarsBudgeted`.  This lets a
+future proof state the hard branch as "construct a distinct second witness for each bad-scalar
+witness" and lets a failed production budget return the exact witness with no such second witness.
 
 Follow-up: `SumsetExtremalityGuard.lean` records the corrected guarded form of the
 sumset-extremality reduction.  A selected representative family proves the open-core incidence
