@@ -1002,3 +1002,10 @@ and `card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn` fo
 factorization, and zero oscillation whenever a proposed compressed profile has too few labels.
 Companion note:
 `deltastar-464-zero-slack-profile-cardinality-gate-2026-06-26.md`.
+
+Follow-up: the same zero-slack cardinality gate now has a global bad-count-image form.
+`StackBadCountImage` is the finite image of `StackBadCount` over all stacks, and
+`stackBadCountImage_card_le_profileCard_of_profileBadCountFiberConstant` proves every zero-slack
+profile needs at least that many labels.  The matching negated theorems refute fiber constancy,
+representative bad-count factorization, and zero same-profile oscillation directly from
+`Fintype.card P < (StackBadCountImage F C delta).card`.

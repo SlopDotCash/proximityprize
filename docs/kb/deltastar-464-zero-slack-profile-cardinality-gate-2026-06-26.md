@@ -18,6 +18,18 @@ bad-scalar counts are pairwise distinct, then any zero-slack profile must be inj
 
 So a proposed profile with fewer labels than `#U` cannot support zero-slack bad-count constancy.
 
+The follow-up globalizes this scanner.  Let `StackBadCountImage F C delta` be the finite image of
+`StackBadCount` over the whole stack universe.  Any zero-slack profile must have at least that many
+labels:
+
+```text
+ProfileBadCountFiberConstant F C delta profile
+=> (StackBadCountImage F C delta).card <= Fintype.card P
+```
+
+Thus a profile whose type has fewer labels than the number of realized bad-count values is refuted
+without first choosing a separate scanner subset `U`.
+
 ## Lean Surface
 
 In `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`:
@@ -29,6 +41,11 @@ card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn
 not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
 not_profileBadCountRepresented_of_profileCard_lt_badCountInjectiveOn
 not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInjectiveOn
+StackBadCountImage
+stackBadCountImage_card_le_profileCard_of_profileBadCountFiberConstant
+not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
+not_profileBadCountRepresented_of_profileCard_lt_stackBadCountImage
+not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
 ```
 
 The central theorem is:
@@ -41,6 +58,9 @@ ProfileBadCountFiberConstant F C delta profile
 
 Equivalently, if `Fintype.card P < U.card`, then zero-slack fiber constancy, representative
 bad-count factorization, and zero same-profile oscillation all fail for that profile.
+
+The global theorem replaces `U.card` by `(StackBadCountImage F C delta).card` and gives the same
+three refutations.  This is the exact profile-label lower bound forced by a zero-slack invariant.
 
 ## Consequence
 

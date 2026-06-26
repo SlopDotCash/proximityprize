@@ -508,6 +508,93 @@ theorem not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInject
     C δ hsep hcard)
     (profileBadCountFiberConstant_of_zero_oscillation C δ hosc)
 
+open Classical in
+/-- The finite image of actual bad-scalar counts across the whole stack universe. -/
+noncomputable def StackBadCountImage (K : Type) [Field K] [Fintype K] [DecidableEq K]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
+    (C : Set (ι -> A)) (δ : ℝ≥0) : Finset ℕ :=
+  (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
+    (fun u => StackBadCount K C δ u)
+
+open Classical in
+/-- Global bad-count image pressure: a zero-slack profile needs at least as many profile labels as
+there are distinct realized `StackBadCount` values. -/
+theorem stackBadCountImage_card_le_profileCard_of_profileBadCountFiberConstant
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    (hconst : ProfileBadCountFiberConstant F C δ profile) :
+    (StackBadCountImage F C δ).card ≤ Fintype.card P := by
+  let countOfProfile : P -> ℕ := fun p =>
+    if hused : UsedProfile profile p then
+      StackBadCount F C δ (Classical.choose hused)
+    else
+      0
+  have hfactor : ∀ u : WordStack A (Fin 2) ι,
+      StackBadCount F C δ u = countOfProfile (profile u) := by
+    intro u
+    have hused : UsedProfile profile (profile u) := ⟨u, rfl⟩
+    dsimp [countOfProfile]
+    rw [dif_pos hused]
+    exact hconst u (Classical.choose hused) (Classical.choose_spec hused).symm
+  have hsubset :
+      StackBadCountImage F C δ ⊆
+        (Finset.univ : Finset P).image countOfProfile := by
+    intro b hb
+    change b ∈ (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
+      (fun u => StackBadCount F C δ u) at hb
+    rcases Finset.mem_image.mp hb with ⟨u, _hu, hu⟩
+    exact Finset.mem_image.mpr
+      ⟨profile u, Finset.mem_univ _, by
+        calc
+          countOfProfile (profile u) = StackBadCount F C δ u := (hfactor u).symm
+          _ = b := hu⟩
+  calc
+    (StackBadCountImage F C δ).card ≤
+        ((Finset.univ : Finset P).image countOfProfile).card :=
+      Finset.card_le_card hsubset
+    _ ≤ (Finset.univ : Finset P).card := Finset.card_image_le
+    _ = Fintype.card P := by simp
+
+/-- Global cardinality refutation for zero-slack profile constancy.  If there are more distinct
+bad-scalar counts than profile labels, bad counts cannot be constant on profile fibers. -/
+theorem not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    (hcard : Fintype.card P < (StackBadCountImage F C δ).card) :
+    ¬ ProfileBadCountFiberConstant F C δ profile := by
+  intro hconst
+  exact (not_lt_of_ge
+    (stackBadCountImage_card_le_profileCard_of_profileBadCountFiberConstant
+      C δ hconst)) hcard
+
+/-- Global cardinality refutation for representative bad-count factorization. -/
+theorem not_profileBadCountRepresented_of_profileCard_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hcard : Fintype.card P < (StackBadCountImage F C δ).card) :
+    ¬ ProfileBadCountRepresented F C δ profile rep := by
+  intro hfactor
+  exact (not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
+    C δ hcard)
+    (profileBadCountFiberConstant_of_profileBadCountRepresented C δ hfactor)
+
+/-- Global cardinality refutation for zero same-profile oscillation. -/
+theorem not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    (hcard : Fintype.card P < (StackBadCountImage F C δ).card) :
+    ¬ ProfileFiberOscillationBounded F C δ profile (fun _ => 0) := by
+  intro hosc
+  exact (not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
+    C δ hcard)
+    (profileBadCountFiberConstant_of_zero_oscillation C δ hosc)
+
 /-! ## Endpoint sanity checks for coarse profiles -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
@@ -1162,6 +1249,11 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_of_profileCard_lt_badCountInjectiveOn
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInjectiveOn
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.stackBadCountImage_card_le_profileCard_of_profileBadCountFiberConstant
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountFiberConstant_of_profileCard_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_of_profileCard_lt_stackBadCountImage
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_zero_of_profileCard_lt_stackBadCountImage
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound
