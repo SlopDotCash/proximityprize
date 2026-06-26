@@ -25,8 +25,14 @@ linear energy that drives the period moment.
 
 - `strict_count_le_linear_count`: the strict linear-plus-quadratic count is always at most the
   linear count.
+- `LinearOnlyWitness`: the explicit obstruction, a configuration satisfying the linear balance but
+  not the added quadratic equation.
+- `extraEquationComplete_iff_no_linearOnlyWitness`: the transfer theorem is exactly the absence of
+  such witnesses.
 - `linear_bound_of_quadratic_bound_and_extra_complete`: a strict-system bound transfers to the
   linear bound only when every relevant linear solution satisfies the added quadratic equation.
+- `linear_bound_of_quadratic_bound_and_no_linearOnlyWitness`: the same consumer stated in witness
+  form.
 - `quadratic_bound_not_force_linear_bound`: a finite countermodel shows the strict-system bound can
   hold while the linear bound fails.
 - `quadraticVinogradov_wrongSystem_gate`: packages the positive transfer consumer and the
@@ -35,5 +41,6 @@ linear energy that drives the period moment.
 ## Consequence
 
 A quadratic-VMVT theorem can still be useful if paired with a real transfer theorem from the #464
-linear solution set into the stricter quadratic system.  Without that extra-equation completeness,
-the theorem controls a different count and does not close the period-moment floor.
+linear solution set into the stricter quadratic system.  Equivalently, it must prove that there are
+no linear-only witnesses.  Without that theorem, the VMVT input controls a different count and does
+not close the period-moment floor.

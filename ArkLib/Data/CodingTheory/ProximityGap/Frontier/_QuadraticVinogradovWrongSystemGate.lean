@@ -50,6 +50,22 @@ route would have to supply. -/
 def ExtraEquationComplete {Ω : Type} (Linear Quadratic : Ω -> Prop) : Prop :=
   ∀ ω : Ω, Linear ω -> Quadratic ω
 
+/-- A witness satisfying the original linear balance but not the added quadratic constraint. -/
+def LinearOnlyWitness {Ω : Type} (Linear Quadratic : Ω -> Prop) : Prop :=
+  ∃ ω : Ω, Linear ω ∧ ¬ Quadratic ω
+
+/-- The extra-equation transfer theorem is exactly absence of a linear-only witness. -/
+theorem extraEquationComplete_iff_no_linearOnlyWitness {Ω : Type}
+    (Linear Quadratic : Ω -> Prop) :
+    ExtraEquationComplete Linear Quadratic ↔ ¬ LinearOnlyWitness Linear Quadratic := by
+  constructor
+  · intro hcomplete hbad
+    rcases hbad with ⟨ω, hlin, hnotquad⟩
+    exact hnotquad (hcomplete ω hlin)
+  · intro hno ω hlin
+    by_contra hnotquad
+    exact hno ⟨ω, hlin, hnotquad⟩
+
 /-- The strict system is always a subset of the linear system.  This is the direction supplied for
 free by adding equations; it is not the direction needed to bound the linear energy. -/
 theorem strict_count_le_linear_count {Ω : Type} [Fintype Ω]
@@ -95,6 +111,17 @@ theorem linear_bound_of_quadratic_bound_and_extra_complete {Ω : Type} [Fintype 
   rw [← strict_count_eq_linear_count_of_extra_complete Linear Quadratic hcomplete]
   exact hquad
 
+/-- Equivalent positive consumer in witness form: a quadratic-system bound controls the original
+linear energy only after ruling out linear-only witnesses. -/
+theorem linear_bound_of_quadratic_bound_and_no_linearOnlyWitness
+    {Ω : Type} [Fintype Ω]
+    (Linear Quadratic : Ω -> Prop) {B : ℕ}
+    (hquad : QuadraticSystemBound Linear Quadratic B)
+    (hno : ¬ LinearOnlyWitness Linear Quadratic) :
+    LinearEnergyBound Linear B :=
+  linear_bound_of_quadratic_bound_and_extra_complete Linear Quadratic hquad
+    ((extraEquationComplete_iff_no_linearOnlyWitness Linear Quadratic).mpr hno)
+
 /-- Countermodel: a strict-system bound alone does not force a linear-energy bound.  Take every
 ambient configuration to satisfy the linear equation and none to satisfy the added quadratic
 equation.  Then the quadratic count is zero, while the linear count is the whole ambient size. -/
@@ -126,9 +153,11 @@ theorem quadraticVinogradov_wrongSystem_gate {Ω : Type} [Fintype Ω] {B : ℕ}
   · exact quadratic_bound_not_force_linear_bound hB
 
 /-! ## Axiom audit -/
+#print axioms extraEquationComplete_iff_no_linearOnlyWitness
 #print axioms strict_count_le_linear_count
 #print axioms strict_count_eq_linear_count_of_extra_complete
 #print axioms linear_bound_of_quadratic_bound_and_extra_complete
+#print axioms linear_bound_of_quadratic_bound_and_no_linearOnlyWitness
 #print axioms quadratic_bound_not_force_linear_bound
 #print axioms quadraticVinogradov_wrongSystem_gate
 

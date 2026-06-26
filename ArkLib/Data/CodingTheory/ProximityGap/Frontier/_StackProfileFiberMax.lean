@@ -82,13 +82,14 @@ def UsedProfile {P : Type}
   ∃ u : WordStack A (Fin 2) ι, profile u = p
 
 /-- The finite fiber of stacks with profile `p`. -/
-noncomputable def profileFiber {P : Type} [DecidableEq P]
+noncomputable def profileFiber {P : Type}
     (profile : WordStack A (Fin 2) ι -> P) (p : P) :
     Finset (WordStack A (Fin 2) ι) := by
   classical
   exact Finset.univ.filter (fun u => profile u = p)
 
-@[simp] theorem mem_profileFiber {P : Type} [DecidableEq P]
+omit [Nonempty ι] [DecidableEq A] [AddCommGroup A] [Module F A] in
+@[simp] theorem mem_profileFiber {P : Type}
     {profile : WordStack A (Fin 2) ι -> P} {p : P}
     {u : WordStack A (Fin 2) ι} :
     u ∈ profileFiber profile p ↔ profile u = p := by
@@ -127,14 +128,14 @@ def ProfileFiberMaxesBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
 /-- Every used profile fiber has an exact bad-scalar maximizer. -/
 theorem exists_profileFiberMax_of_used
     (C : Set (ι -> A)) (δ : ℝ≥0)
-    {P : Type} [DecidableEq P]
+    {P : Type}
     {profile : WordStack A (Fin 2) ι -> P} {p : P}
     (hused : UsedProfile profile p) :
     ∃ uMax : WordStack A (Fin 2) ι, ProfileFiberMax F C δ profile p uMax := by
   classical
   rcases hused with ⟨u₀, hu₀⟩
   have hfiber : (profileFiber (A := A) profile p).Nonempty :=
-    ⟨u₀, by simpa [profileFiber, hu₀]⟩
+    ⟨u₀, by simp [profileFiber, hu₀]⟩
   obtain ⟨uMax, huMax, hmax⟩ :=
     (profileFiber (A := A) profile p).exists_max_image
       (fun u : WordStack A (Fin 2) ι => StackBadCount F C δ u) hfiber
@@ -182,7 +183,7 @@ theorem worstCaseIncidenceBounded_iff_profileFiberMaxesBounded
 /-- If the profile space is finite, profile-fiber maximizers form a finite dominating family. -/
 theorem familyDominates_of_profileFiberMaxReps
     (C : Set (ι -> A)) (δ : ℝ≥0)
-    {P : Type} [Fintype P] [DecidableEq P]
+    {P : Type} [Fintype P]
     {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι}
     (hmax : ProfileFiberMaxReps F C δ profile rep) :
@@ -191,10 +192,43 @@ theorem familyDominates_of_profileFiberMaxReps
   refine ⟨rep (profile u), ?_, stackBadCount_le_profileFiberMaxRep C δ hmax u⟩
   exact Finset.mem_image.mpr ⟨profile u, Finset.mem_univ _, rfl⟩
 
+/-- Exact fiber-max representatives contain a true global maximizer.  Pick a global maximizer
+`uMax`; the representative of its profile dominates `uMax`'s fiber, hence has bad-scalar count at
+least `uMax`, and therefore dominates every stack. -/
+theorem exists_usedProfile_stackDominates_of_profileFiberMaxReps
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hmax : ProfileFiberMaxReps F C δ profile rep) :
+    ∃ p : P, UsedProfile profile p ∧ StackDominates F C δ (rep p) := by
+  classical
+  obtain ⟨uMax, hglobal⟩ :=
+    Finite.exists_max (fun u : WordStack A (Fin 2) ι => StackBadCount F C δ u)
+  refine ⟨profile uMax, ⟨uMax, rfl⟩, ?_⟩
+  intro u
+  exact le_trans (hglobal u) ((hmax (profile uMax) ⟨uMax, rfl⟩).2 uMax rfl)
+
+/-- If every selected representative of a used profile is beaten by some stack, then the selected
+representatives cannot be exact profile-fiber maximizers.  This is the profile version of the
+memberwise beating refutation used in the floor contract. -/
+theorem not_profileFiberMaxReps_of_each_used_rep_beaten
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hbeat : ∀ p : P, UsedProfile profile p →
+      ∃ u : WordStack A (Fin 2) ι,
+        StackBadCount F C δ (rep p) < StackBadCount F C δ u) :
+    ¬ ProfileFiberMaxReps F C δ profile rep := by
+  intro hmax
+  rcases exists_usedProfile_stackDominates_of_profileFiberMaxReps C δ hmax with
+    ⟨p, hused, hdom⟩
+  rcases hbeat p hused with ⟨u, hlt⟩
+  exact (not_lt_of_ge (hdom u)) hlt
+
 /-- A finite family of bounded profile-fiber maximizers gives the universal incidence bound. -/
 theorem worstCaseIncidenceBounded_of_profileFiberMaxFamilyBounded
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
-    {P : Type} [Fintype P] [DecidableEq P]
+    {P : Type} [Fintype P]
     {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι}
     (hmax : ProfileFiberMaxReps F C δ profile rep)
@@ -230,7 +264,7 @@ theorem profileFiberMaxReps_identity
   intro p _hused
   refine ⟨rfl, ?_⟩
   intro u hu
-  simpa [hu]
+  simp [hu]
 
 /-- For the identity profile, bounding the chosen fiber maximizers is exactly the original
 universal incidence bound. -/
@@ -275,6 +309,54 @@ theorem not_profileFiberMax_of_sameProfile_strictly_larger
   intro hmax
   exact (not_lt_of_ge (hmax.2 uWitness hwitness)) hgt
 
+/-- Exact scanner certificate for failed profile representatives.  A profile-indexed representative
+function fails to choose fiber maximizers iff some used profile has either a representative outside
+its fiber or a same-profile stack with a strictly larger bad-scalar count. -/
+theorem not_profileFiberMaxReps_iff_exists_bad_used_profile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} :
+    (¬ ProfileFiberMaxReps F C δ profile rep) ↔
+      ∃ p : P, UsedProfile profile p ∧
+        (profile (rep p) ≠ p ∨
+          ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
+            StackBadCount F C δ (rep p) < StackBadCount F C δ u) := by
+  constructor
+  · intro hnot
+    classical
+    by_contra hnone
+    apply hnot
+    intro p hused
+    refine ⟨?_, ?_⟩
+    · by_contra hne
+      exact hnone ⟨p, hused, Or.inl hne⟩
+    · intro u hu
+      by_contra hle
+      exact hnone ⟨p, hused, Or.inr ⟨u, hu, Nat.lt_of_not_ge hle⟩⟩
+  · rintro ⟨p, hused, hbad⟩ hmax
+    rcases hbad with houtside | ⟨u, hu, hlt⟩
+    · exact houtside (hmax p hused).1
+    · exact (not_lt_of_ge ((hmax p hused).2 u hu)) hlt
+
+/-- Positive scanner form.  A representative catalogue chooses exact fiber maximizers iff the
+scanner finds no used profile where the representative is outside the advertised fiber and no
+same-profile stack beats the representative. -/
+theorem profileFiberMaxReps_iff_no_bad_used_profile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} :
+    ProfileFiberMaxReps F C δ profile rep ↔
+      ¬ ∃ p : P, UsedProfile profile p ∧
+        (profile (rep p) ≠ p ∨
+          ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
+            StackBadCount F C δ (rep p) < StackBadCount F C δ u) := by
+  constructor
+  · intro hmax hbad
+    exact (not_profileFiberMaxReps_iff_exists_bad_used_profile C δ).mpr hbad hmax
+  · intro hno
+    by_contra hnot
+    exact hno ((not_profileFiberMaxReps_iff_exists_bad_used_profile C δ).mp hnot)
+
 /-- A used profile whose selected fiber representative exceeds the budget refutes the universal
 incidence hypothesis at that budget. -/
 theorem not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt
@@ -296,10 +378,14 @@ end ArkLib.ProximityGap.Frontier.StackProfileFiberMax
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_profileFiberMaxesBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_iff_profileFiberMaxesBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.familyDominates_of_profileFiberMaxReps
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.exists_usedProfile_stackDominates_of_profileFiberMaxReps
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxReps_of_each_used_rep_beaten
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_profileFiberMaxFamilyBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.stackDominates_of_profileFiberMax_constant
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxReps_identity
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxesBounded_identity_iff_worstCaseIncidenceBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.deltaStar_pin_of_profileFiberMaxesBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMax_of_sameProfile_strictly_larger
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxReps_iff_exists_bad_used_profile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxReps_iff_no_bad_used_profile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt

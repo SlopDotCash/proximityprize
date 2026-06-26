@@ -43,6 +43,8 @@ worstCaseIncidenceBounded_iff_profileFiberMaxesBounded
 familyDominates_of_profileFiberMaxReps
 deltaStar_pin_of_profileFiberMaxesBounded
 not_profileFiberMax_of_sameProfile_strictly_larger
+not_profileFiberMaxReps_iff_exists_bad_used_profile
+profileFiberMaxReps_iff_no_bad_used_profile
 ```
 
 ## The Exact Reduction
@@ -93,3 +95,54 @@ Too fine a profile gives no compression; it merely restates the all-stack bound.
 
 So the mathematical burden is now precise.  A useful floor/binder profile must make the worst stack
 in every fiber structurally forced, not merely enumerable or aesthetically natural.
+
+## Continuation: fiber representatives contain a global maximizer
+
+The profile route now connects directly to the max-containment floor contract:
+
+```lean
+exists_usedProfile_stackDominates_of_profileFiberMaxReps
+not_profileFiberMaxReps_of_each_used_rep_beaten
+```
+
+If `rep p` is an exact fiber maximizer for every used profile, then one used profile representative
+is a true global maximizer of the actual bad-scalar count.  The proof is finite but important:
+choose a global stack maximizer `uMax`; the representative of `profile uMax` dominates that fiber,
+so it has count at least `uMax` and therefore dominates every stack.
+
+The refutation side is also now local:
+
+```text
+for every used profile p, find a stack u with
+StackBadCount(rep p) < StackBadCount(u).
+```
+
+That rules out the claim that the selected representatives are exact profile-fiber maximizers.
+Thus a profile proof cannot stop at choosing natural representatives; it must prove those
+representatives are actual fiber maxima, or the scanner can refute the choice profile-by-profile.
+
+## Continuation: exact scanner iff
+
+The profile representative check is now an exact finite certificate:
+
+```lean
+not_profileFiberMaxReps_iff_exists_bad_used_profile
+profileFiberMaxReps_iff_no_bad_used_profile
+```
+
+A representative catalogue fails precisely when some used profile has either:
+
+```text
+profile(rep p) != p
+```
+
+or a same-profile witness `u` with larger bad-scalar count:
+
+```text
+profile u = p
+StackBadCount(rep p) < StackBadCount(u).
+```
+
+Equivalently, exact fiber-max representatives are certified by the absence of these bad used
+profiles.  This turns the profile route into a scanner-facing finite proof obligation rather than a
+qualitative classification slogan.
