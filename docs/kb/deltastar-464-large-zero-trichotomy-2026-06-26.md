@@ -136,4 +136,4 @@ bad scalar count > B.
 
 If such a witness exists, the line-list route reduces back to global worst-case incidence.  If it
 does not, the missing theorem is not a character-sum bound but a punctured near-code packing theorem.
-That is the next non-larp mathematical question.
+That is the next precise mathematical question.
