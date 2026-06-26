@@ -726,3 +726,12 @@ Follow-up: the support-ratio cover-sum route now feeds the singleton-defect prof
 envelope `M` plus the multiplier arithmetic `M(t) * support/(a-t) <= D(t)` into the exact
 singleton-profile production wrapper.  The matching scanners expose either an overfull finite
 `(gamma, T)` cover sum or the large-zero safe profile where that moving-support multiplier breaks.
+
+Follow-up: `LineListCodewordSingletonSupportRatio.lean` now formalizes the codeword-indexed
+support-ratio singleton cover proposed by the singleton-cap critique.  The projection theorem
+`codewordSingletonWitnessScalars_eq_image_fst_supportRatioCover` and fiber cardinality theorem
+`codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose` package each singleton scalar for a
+fixed codeword as a finite family of moving-support subfibers.  The new uniform cover cap feeds
+the existing per-codeword singleton production route, and its scanner exposes either the usual
+combined arithmetic failure or one overfull codeword-indexed support-ratio cover.  The next hard
+target is still an overlap-multiplicity theorem that beats the resulting raw cover count.

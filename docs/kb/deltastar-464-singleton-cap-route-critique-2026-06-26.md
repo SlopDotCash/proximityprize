@@ -153,13 +153,30 @@ packing count; it must use RS interpolation uniqueness across overlapping fibers
 
 ## Next formal targets
 
-1. Define a codeword-indexed support-ratio singleton cover:
+1. **Done in Lean:** define a codeword-indexed support-ratio singleton cover:
 
 ```text
 {(γ,T) : γ is singleton for c, T ⊆ supportRatioFiber(c,u0,u1,γ), #T = a-t}
 ```
 
-and prove the exact projection/fiber identities.
+The module `LineListCodewordSingletonSupportRatio.lean` now proves the exact projection/fiber
+identities:
+
+```lean
+codewordSingletonSupportRatioCover
+codewordSingletonWitnessScalars_eq_image_fst_supportRatioCover
+codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
+codewordSingletonSupportRatioCover_card_eq_sum_choose
+UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
+uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
+exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
+```
+
+So every singleton scalar for `c` contributes a nonempty fiber of eligible moving-support
+subsets, and the cover decomposes as a sum of
+`choose(#supportRatioFiber(c,γ), a - #zeroAgreement(c))`.  The uniform cover cap also feeds the
+existing singleton-cap production route, with a scanner that returns an overfull concrete
+codeword-indexed cover when that cap is the missing input.
 
 2. Prove a multiplicity lower bound: if the same codeword contributes many `(γ,T)` incidences,
 then either the scalar set is small or a second witness exists.  This is the first place where a
@@ -175,5 +192,5 @@ worst-stack search.
 The singleton-cap route is a sharpened microscope, not a solved theorem.  It converts a vague
 "maybe singleton defects are sparse" hope into exact Lean obligations and exact failure witnesses.
 It does not bypass the BGK/Paley wall unless it can be upgraded to a universal worst-stack
-domination theorem.  The most honest next move is to formalize the codeword-indexed
-support-ratio singleton cover and then try to prove or refute the overlap-multiplicity claim.
+domination theorem.  The codeword-indexed support-ratio cover is now formalized; the most honest
+next move is to prove or refute the overlap-multiplicity claim inside that cover.

@@ -1448,7 +1448,8 @@ open Classical in
 /-- Low-profile raw-envelope barrier for the exact appearance-fiber singleton scanner.  A failed
 budget can only be blamed on a low exact appearance profile after `D` has gone below the raw MDS
 interpolation term for that profile. -/
-theorem exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+theorem
+    exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
     (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
@@ -1502,7 +1503,8 @@ theorem unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt
 open Classical in
 /-- Full failure split with the low exact appearance-fiber singleton raw-envelope barrier and
 without assuming zero-direction safety in advance. -/
-theorem unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+theorem
+    unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
     (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)

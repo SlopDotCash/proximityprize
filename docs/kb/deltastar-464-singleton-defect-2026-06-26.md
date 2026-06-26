@@ -93,6 +93,38 @@ exists_largeZero_safe_lineListSingletonCap_gt_of_not_uniformLineBadScalarsBudget
 exists_largeZero_safe_lineListSingletonRouteFailure_of_not_uniformLineBadScalarsBudgeted
 ```
 
+`LineListCodewordSingletonSupportRatio.lean` fixes the first concrete target from the
+singleton-cap critique by attaching support-ratio fibers to one appearing codeword:
+
+```lean
+codewordSingletonSupportRatioCover
+mem_codewordSingletonSupportRatioCover
+supportRatioFiber_card_ge_sub_of_mem_codewordSingletonWitnessScalars
+exists_mem_codewordSingletonSupportRatioCover_of_mem_singletonWitness
+codewordSingletonWitnessScalars_eq_image_fst_supportRatioCover
+codewordSingletonWitnessScalars_card_le_supportRatioCover_card
+codewordSingletonSupportRatioCover_fst_fiber_eq
+codewordSingletonSupportRatioCover_fst_fiber_card_eq_choose
+codewordSingletonSupportRatioCover_card_eq_sum_choose
+UniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted
+uniformLargeZeroSafeCodewordSingletonBudgeted_of_supportRatioCoverBudgeted
+not_uniformLargeZeroSafeCodewordSingletonSupportRatioCoverBudgeted_iff_exists_cover_gt
+exists_largeZero_safe_codewordSupportRatioCover_gt_of_not_codewordSingletonBudgeted
+largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonSupportRatioCoverBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportRatioCoverBudget
+exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
+```
+
+For fixed `c`, the finite cover consists of pairs `(gamma, T)` where `gamma` is uniquely
+witnessed by `c` and `T` is an `(a - #zeroAgreement(c))`-subset of
+`supportRatioFiber c u0 u1 gamma`.  Its first projection is exactly
+`codewordSingletonWitnessScalars`, each scalar fiber has cardinal
+`choose(#supportRatioFiber(c,gamma), a - #zeroAgreement(c))`, and the whole cover decomposes as
+the corresponding sum.  A uniform cover cap now feeds the existing per-codeword singleton route,
+and the scanner localizes failed production to either the usual arithmetic failure or one
+overfull codeword-indexed support-ratio cover.  The open work is the overlap-multiplicity theorem
+needed to beat this raw cover count.
+
 `LineListSingletonDefectGeometry.lean` refines the same defect into an incidence graph and exact
 zero-agreement profiles:
 

@@ -2883,6 +2883,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
 import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiber
 import ArkLib.Data.CodingTheory.ProximityGap.LineListArithmeticObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonSupportRatio
 import ArkLib.Data.CodingTheory.ProximityGap.LineListDimensionLift
 import ArkLib.Data.CodingTheory.ProximityGap.LineListIncidenceMultiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.LineListJohnsonClosure
