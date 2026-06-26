@@ -148,13 +148,16 @@ uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSupportChooseBudget
 exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
 scalarRelationIndependent
+not_scalarRelationIndependent_iff_exists_edge
 UniformLargeZeroSafeCodewordSingletonRelationForbidden
+not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationWitnessIndependence
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
 ```
 
 `LineListCodewordSupportChooseArithmeticObstruction.lean` packages the same support-choose cap
@@ -197,7 +200,9 @@ defect directly by
 an over-budget weighted line if this refined arithmetic still cannot fit.
 The scalar graph interface now has both a global independence budget and a witness-local budget;
 the latter is the intended target because it only asks to bound independent subsets of the actual
-singleton-witness fiber.
+singleton-witness fiber.  Its full scanner needs no forbidden-edge assumption: it returns either
+an actual relation edge among singleton witnesses, the standard arithmetic failure, or an
+overlarge independent witness subset.
 
 `LineListSingletonDefectGeometry.lean` refines the same defect into an incidence graph and exact
 zero-agreement profiles:

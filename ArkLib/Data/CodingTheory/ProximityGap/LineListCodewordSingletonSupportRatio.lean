@@ -938,11 +938,28 @@ theorem exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
       ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
     exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr ⟨c, hc, hgt⟩⟩
 
+omit [Field F] [Fintype F] [DecidableEq F] in
 /-- A finite scalar set is independent for a binary scalar relation.  The intended relation is a
 future interpolation edge: if two singleton scalars are connected, they cannot both stay unique
 unless a second witness or an exceptional-pencil certificate appears. -/
 def scalarRelationIndependent (R : F → F → Prop) (Γ : Finset F) : Prop :=
   ∀ γ ∈ Γ, ∀ γ' ∈ Γ, γ ≠ γ' → ¬ R γ γ'
+
+omit [Field F] [Fintype F] [DecidableEq F] in
+open Classical in
+/-- Exact failure form for finite scalar-relation independence. -/
+theorem not_scalarRelationIndependent_iff_exists_edge
+    (R : F → F → Prop) (Γ : Finset F) :
+    (¬ scalarRelationIndependent R Γ) ↔
+      ∃ γ ∈ Γ, ∃ γ' ∈ Γ, γ ≠ γ' ∧ R γ γ' := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro γ hγ γ' hγ' hne hR
+    exact hnone ⟨γ, hγ, γ', hγ', hne, hR⟩
+  · rintro ⟨γ, hγ, γ', hγ', hne, hR⟩ hind
+    exact (hind γ hγ γ' hγ' hne) hR
 
 /-- The singleton scalars for every large-zero safe line and appearing codeword form an
 independent set for the proposed interpolation relation.  This is the "edge kills coexistence"
@@ -955,6 +972,33 @@ def UniformLargeZeroSafeCodewordSingletonRelationForbidden
       ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
         scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ')
           (codewordSingletonWitnessScalars dom k a u₀ u₁ c)
+
+open Classical in
+/-- Exact failure form for the forbidden-edge half of the singleton scalar graph route. -/
+theorem not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop) :
+    (¬ UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R) ↔
+      ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            ∃ γ ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c,
+              ∃ γ' ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c,
+                γ ≠ γ' ∧ R u₀ u₁ c γ γ' := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u₀ u₁ hnotEligible hsafe c hc
+    by_contra hnotInd
+    rcases
+        (not_scalarRelationIndependent_iff_exists_edge
+          (fun γ γ' => R u₀ u₁ c γ γ')
+          (codewordSingletonWitnessScalars dom k a u₀ u₁ c)).mp hnotInd with
+      ⟨γ, hγ, γ', hγ', hne, hR⟩
+    exact hnone ⟨u₀, u₁, hnotEligible, hsafe, c, hc, γ, hγ, γ', hγ', hne, hR⟩
+  · rintro ⟨u₀, u₁, hnotEligible, hsafe, c, hc, γ, hγ, γ', hγ', hne, hR⟩ hforbid
+    exact (hforbid u₀ u₁ hnotEligible hsafe c hc γ hγ γ' hγ' hne) hR
 
 /-- Uniform independence-number bound for a proposed codeword-indexed scalar relation.  This is
 the "graph has no large independent set" half of a future scalar-rigidity theorem. -/
@@ -1173,6 +1217,43 @@ theorem exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_
       ⟨u₀, u₁, hnotEligible, hsafe, Or.inr
         ⟨c, hc, Γ, hsubset, hindΓ, hgt⟩⟩
 
+open Classical in
+/-- Full scanner for the witness-local relation route.  Without assuming the forbidden-edge half,
+failed production exposes either an actual relation edge among singleton witnesses, the usual
+arithmetic failure, or an over-cap independent subset of singleton scalars. -/
+theorem exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (R : (Fin n → F) → (Fin n → F) → (Fin n → F) → F → F → Prop)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ((∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+            ∃ γ ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c,
+              ∃ γ' ∈ codewordSingletonWitnessScalars dom k a u₀ u₁ c,
+                γ ≠ γ' ∧ R u₀ u₁ c γ γ') ∨
+          (¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+              + (lineAppearingCodewords dom k a u₀ u₁).card * S ≤ 2 * B ∨
+            ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁, ∃ Γ : Finset F,
+              Γ ⊆ codewordSingletonWitnessScalars dom k a u₀ u₁ c ∧
+                scalarRelationIndependent (fun γ γ' => R u₀ u₁ c γ γ') Γ ∧
+                  S < Γ.card)) := by
+  by_cases hforbid : UniformLargeZeroSafeCodewordSingletonRelationForbidden dom k a R
+  · rcases
+      exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
+        dom k a L S B R hSupport hFits hZeroSafe hforbid hnot with
+      ⟨u₀, u₁, hnotEligible, hsafe, hfail⟩
+    exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr hfail⟩
+  · rcases
+      (not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
+        dom k a R).mp hforbid with
+      ⟨u₀, u₁, hnotEligible, hsafe, c, hc, γ, hγ, γ', hγ', hne, hR⟩
+    exact
+      ⟨u₀, u₁, hnotEligible, hsafe, Or.inl
+        ⟨c, hc, γ, hγ, γ', hγ', hne, hR⟩⟩
+
 section SourceAudit
 
 #print axioms codewordSingletonSupportRatioCover
@@ -1241,7 +1322,9 @@ section SourceAudit
 #print axioms
   exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
 #print axioms scalarRelationIndependent
+#print axioms not_scalarRelationIndependent_iff_exists_edge
 #print axioms UniformLargeZeroSafeCodewordSingletonRelationForbidden
+#print axioms not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 #print axioms UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 #print axioms UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
 #print axioms
@@ -1260,6 +1343,8 @@ section SourceAudit
   exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 #print axioms
   exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
+#print axioms
+  exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
 
 end SourceAudit
 

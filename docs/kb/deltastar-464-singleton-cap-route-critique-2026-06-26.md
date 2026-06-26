@@ -196,13 +196,16 @@ exists_largeZero_safe_codewordSupportRatioCoverRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordSupportChooseRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordSupportChooseRouteProfileFailure_of_not_budgeted
 scalarRelationIndependent
+not_scalarRelationIndependent_iff_exists_edge
 UniformLargeZeroSafeCodewordSingletonRelationForbidden
+not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationIndependence
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationWitnessIndependence
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
 ```
 
 So every singleton scalar for `c` contributes a nonempty fiber of eligible moving-support
@@ -235,7 +238,8 @@ structure beyond coordinate packing.
 3. Try the scalar independence-graph interface.  A proposed interpolation relation must prove that
 singleton scalars are independent and that independent subsets of the singleton-witness set are
 small; the witness-local scanner returns an overlarge independent singleton subset when this route
-is the missing input.
+is the missing input.  The full scanner also returns an actual relation edge among singleton
+witnesses when the forbidden-edge half itself is false.
 
 4. If no support-choose arithmetic fit or sharper rigidity theorem emerges, use the support-choose
 scanner to extract a counterexample shape:

@@ -785,6 +785,14 @@ new consumer and scanner,
 `exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted`, make the
 next graph target narrower and more honest.
 
+Follow-up: the scalar graph route now has exact forbidden-edge failure forms.  `not_scalarRelationIndependent_iff_exists_edge`
+and `not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge` turn a failed
+forbidden-edge theorem into two distinct singleton scalars connected by the proposed relation.
+The full scanner
+`exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted` no longer assumes
+the forbidden half: failed production yields either such an edge, the usual arithmetic failure, or
+an over-cap independent subset of the singleton-witness fiber.
+
 Follow-up: `LineListCodewordSupportChooseArithmeticObstruction.lean` now names the arithmetic
 obstruction for that support-choose baseline.  A uniform support-choose budget contains every
 concrete term `choose(#support(u1), a - #zeroAgreement(c,u0,u1))`; conversely an exact profile or

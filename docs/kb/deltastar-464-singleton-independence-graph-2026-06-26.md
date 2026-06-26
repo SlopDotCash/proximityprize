@@ -39,7 +39,9 @@ support-adjusted production route.
 
 ```lean
 scalarRelationIndependent
+not_scalarRelationIndependent_iff_exists_edge
 UniformLargeZeroSafeCodewordSingletonRelationForbidden
+not_uniformLargeZeroSafeCodewordSingletonRelationForbidden_iff_exists_edge
 UniformLargeZeroSafeCodewordRelationIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted
 uniformLargeZeroSafeCodewordRelationWitnessIndependenceBudgeted_of_relationIndependence
@@ -51,6 +53,7 @@ exists_largeZero_safe_codewordRelationWitnessIndependent_gt_of_not_relationWitne
 exists_largeZero_safe_codewordRelationIndependent_gt_of_not_codewordSingletonBudgeted
 exists_largeZero_safe_codewordRelationIndependentRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordRelationWitnessIndependentRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
 ```
 
 The relation has type:
@@ -93,6 +96,15 @@ available, and production still fails, Lean returns either:
 ```
 
 That second object is the right counterexample to any proposed interpolation graph.
+The full scanner removes the forbidden-edge assumption:
+
+```lean
+exists_largeZero_safe_codewordRelationWitnessRouteObstruction_of_not_budgeted
+```
+
+It returns one of three concrete obstructions: an actual relation edge between two singleton
+witness scalars, the usual arithmetic failure, or an over-cap independent subset of singleton
+scalars.  Thus a proposed relation has both halves exposed by finite witnesses.
 
 ## Why This Is Better Than Another Cover Bound
 
@@ -136,6 +148,8 @@ packing throws away:
 If a proposed relation cannot prove a small independence number without reusing the BGK/Paley
 sup-norm bound, it is only a renamed wall.  The new scanner will expose this by returning a large
 independent set of singleton scalars.
+If the relation is too dense or semantically wrong, the forbidden-edge iff exposes the other
+failure mode by returning two distinct singleton scalars that are connected by the relation.
 
 ## Candidate Relations To Attack
 
@@ -184,5 +198,5 @@ future scalar-rigidity proposal now has a Lean-facing consumer and a Lean-facing
 ```text
 either prove the relation has small independent sets and forbidden singleton edges,
 or produce an overlarge independent subset of singleton scalars and learn exactly why the graph
-failed.
+failed; if the forbidden-edge half is false, produce an actual edge among singleton witnesses.
 ```
