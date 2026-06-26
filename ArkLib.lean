@@ -2187,6 +2187,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcrete
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcreteDC
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuadraticGaussFraction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuadraticVinogradovWrongSystemGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientExponentialTailGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientFiberConstancyGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientScaledLogTailGate

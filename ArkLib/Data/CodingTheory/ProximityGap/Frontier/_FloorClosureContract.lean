@@ -120,6 +120,47 @@ theorem familyDominates_iff_containsGlobalMax
   ⟨containsGlobalMax_of_familyDominates C δ,
     familyDominates_of_containsGlobalMax C δ⟩
 
+/-- Failure to contain a global maximizer is exactly memberwise beatability: every proposed
+representative has some stack with strictly larger bad-scalar count.  This is the exact scanner
+certificate for refuting max containment. -/
+theorem not_familyContainsGlobalMax_iff_each_member_beaten
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) :
+    (¬ FamilyContainsGlobalMax F C δ R) ↔
+      ∀ r ∈ R, ∃ u : WordStack A (Fin 2) ι,
+        StackBadCount F C δ r < StackBadCount F C δ u := by
+  constructor
+  · intro hno r hr
+    by_contra hnone
+    have hdom : ∀ u : WordStack A (Fin 2) ι,
+        StackBadCount F C δ u ≤ StackBadCount F C δ r := by
+      intro u
+      exact le_of_not_gt (by
+        intro hgt
+        exact hnone ⟨u, hgt⟩)
+    exact hno ⟨r, hr, hdom⟩
+  · intro hbeat hmax
+    rcases hmax with ⟨r, hr, hdom⟩
+    rcases hbeat r hr with ⟨u, hlt⟩
+    exact (not_lt_of_ge (hdom u)) hlt
+
+/-- Failure of finite-family domination is exactly memberwise beatability.  A scanner that can beat
+each proposed floor/profile representative has fully refuted that compressed catalogue; no single
+stack has to beat the entire family at once. -/
+theorem not_familyDominates_iff_each_member_beaten
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) :
+    (¬ FamilyDominates F C δ R) ↔
+      ∀ r ∈ R, ∃ u : WordStack A (Fin 2) ι,
+        StackBadCount F C δ r < StackBadCount F C δ u := by
+  constructor
+  · intro hnot
+    exact (not_familyContainsGlobalMax_iff_each_member_beaten C δ R).mp
+      (fun hmax => hnot ((familyDominates_iff_containsGlobalMax C δ R).mpr hmax))
+  · intro hbeat hdom
+    exact (not_familyContainsGlobalMax_iff_each_member_beaten C δ R).mpr hbeat
+      ((familyDominates_iff_containsGlobalMax C δ R).mp hdom)
+
 /-- The exhaustive family of all stacks dominates tautologically.  This is the calibration point for
 the floor route: any smaller floor/binder catalogue must prove a genuine compression theorem beyond
 this all-stack baseline. -/
@@ -682,6 +723,8 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyDominates_of_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.containsGlobalMax_of_familyDominates
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyDominates_iff_containsGlobalMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyContainsGlobalMax_iff_each_member_beaten
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_iff_each_member_beaten
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyDominates_univ
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_iff_familyBounded_univ
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_exhaustiveFamilyBounded

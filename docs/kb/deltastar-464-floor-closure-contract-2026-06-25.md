@@ -293,3 +293,36 @@ for every proposed representative r, find some stack u_r with a larger bad-scala
 This is still not a proof of the floor.  It is a cleaner attack socket: the next scanner pass should
 either certify that the proposed floor/profile family contains a global maximizer, or produce the
 memberwise beating witnesses that refute that compressed family.
+
+## Continuation: memberwise beating is an exact iff
+
+The scanner refutation target has been tightened from a sufficient condition to an exact
+characterization:
+
+```lean
+not_familyContainsGlobalMax_iff_each_member_beaten
+not_familyDominates_iff_each_member_beaten
+```
+
+For a finite candidate family `R`,
+
+```text
+¬ FamilyDominates F C delta R
+```
+
+is equivalent to
+
+```text
+∀ r ∈ R, ∃ u, StackBadCount F C delta r < StackBadCount F C delta u.
+```
+
+So there are now only two outcomes for a proposed compressed floor catalogue:
+
+```text
+some representative is a true global maximizer,
+or every representative can be beaten by an explicit outside stack.
+```
+
+This is the cleanest scanner interface so far.  It turns the next computational attack into a
+finite, local certificate problem over the proposed representatives instead of a vague search for
+"a better stack."

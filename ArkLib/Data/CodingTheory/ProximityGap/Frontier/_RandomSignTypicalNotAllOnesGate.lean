@@ -111,6 +111,28 @@ theorem all_bounded_of_badSignCount_lt_one
     omega
   exact all_bounded_of_badSignCount_zero score hzero
 
+/-- Zero allowed exceptions are exactly a uniform deterministic bound over every signing. -/
+theorem atMostBadSignCount_zero_iff_all_bounded
+    [Fintype S] (score : S -> ℝ) {B : ℝ} :
+    AtMostBadSignCount score B 0 ↔ ∀ σ : S, score σ <= B := by
+  constructor
+  · intro hcount
+    unfold AtMostBadSignCount at hcount
+    have hzero : badSignCount score B = 0 := by
+      omega
+    exact all_bounded_of_badSignCount_zero score hzero
+  · intro hall
+    unfold AtMostBadSignCount
+    have hzero : badSignCount score B = 0 := by
+      classical
+      unfold badSignCount
+      apply Nat.eq_zero_of_not_pos
+      intro hpos
+      rcases Finset.card_pos.mp hpos with ⟨σ, hmem⟩
+      have hlt : B < score σ := (Finset.mem_filter.mp hmem).2
+      exact (not_lt_of_ge (hall σ)) hlt
+    omega
+
 /-- In particular, a sub-one exceptional-count theorem controls the distinguished all-ones
 signing. -/
 theorem allOnes_bounded_of_badSignCount_lt_one
@@ -171,6 +193,7 @@ theorem average_budget_allows_allOnes_spike
 #print axioms badSignCount_singletonSpike
 #print axioms all_bounded_of_badSignCount_zero
 #print axioms all_bounded_of_badSignCount_lt_one
+#print axioms atMostBadSignCount_zero_iff_all_bounded
 #print axioms allOnes_bounded_of_badSignCount_lt_one
 #print axioms goodOn_erased_allows_allOnes_spike
 #print axioms one_exception_budget_allows_allOnes_spike

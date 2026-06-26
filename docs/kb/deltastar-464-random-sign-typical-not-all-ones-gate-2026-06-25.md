@@ -60,11 +60,13 @@ The positive last-mile condition is also formalized:
 ```lean
 all_bounded_of_badSignCount_zero
 all_bounded_of_badSignCount_lt_one
+atMostBadSignCount_zero_iff_all_bounded
 allOnes_bounded_of_badSignCount_lt_one
 ```
 
 A random-sign tail theorem becomes deterministic only when the exceptional count is forced to zero,
-equivalently when the finite exceptional budget is strictly below one atom.
+equivalently when the finite exceptional budget is strictly below one atom.  The zero-exception case
+is not just sufficient: it is exactly the uniform deterministic bound over every signing.
 
 ## Consequence For #464
 
