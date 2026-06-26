@@ -157,11 +157,24 @@ exactAppearingZeroAgreementFiber_subset_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover
 supportRatioHeavyCoordinateFiber_subset_supportRatioLineFiberCover
 supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
+supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
+supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
+supportRatioLineFiberCover_card_le_field_card_mul_choose
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+ZeroSupportRatioCoverSumBudgeted
+zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
+UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
 unsafe_or_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
@@ -170,9 +183,13 @@ An exact appearance witness over a zero set `S` must have some support-ratio fib
 `a - #S`.  Thus the exact appearance budget can be proved by counting only coordinate-fiber
 codewords with a heavy support-ratio fiber.  The new cover extracts a heavy scalar `γ` and an
 `(a - #S)`-subset `T` of its moving support fiber, then covers the codeword by the ordinary
-coordinate-agreement fiber for the line word `u0 + γ*u1` on `S ∪ T`; the file also records the
-direct union-bound sum over these `(γ, T)` covers.  Failed production localizes, after high profiles
-are discharged by RS uniqueness, to a low `t < k` support-ratio-heavy coordinate fiber.
+coordinate-agreement fiber for the line word `u0 + γ*u1` on `S ∪ T`.  On zero profiles this cover
+is exact, and when `k <= a` RS uniqueness bounds each `(γ, T)` coordinate fiber by one.  This gives
+the concrete budget `|F| * choose(#directionSupportSet(u1), a - t)` for the support-ratio-heavy
+fiber at zero-profile size `t`.  Failed production localizes, after high profiles are discharged by
+RS uniqueness, to a low `t < k` support-ratio-heavy coordinate fiber.  The finite `(γ, T)` cover sum
+is also exposed as its own budget interface and scanner, so a future improvement can attack overlap
+or structure inside the cover before collapsing to the scalar-times-binomial envelope.
 
 `LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
 

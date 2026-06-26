@@ -651,3 +651,12 @@ Follow-up: the support-ratio-heavy target now has an explicit finite cover.  For
 subfiber `T`, then covers by the ordinary coordinate-agreement fiber for `u0 + γ*u1` on `S ∪ T`.
 The next positive estimate is therefore a concrete improvement over the crude union-bound sum
 recorded by `supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers`.
+
+Follow-up: the support-ratio line-fiber cover is exact on zero profiles, and the first reusable
+non-raw envelope is now formalized.  Under `k <= a`, each `(γ, T)` cover fiber has at most one RS
+codeword, yielding
+`supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose` and the per-line budget
+`zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose`.
+The finite cover sum is also a first-class route via `ZeroSupportRatioCoverSumBudgeted`,
+`uniformLineBadScalarsBudgeted_of_supportRatioCoverSums`, and
+`unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted`.

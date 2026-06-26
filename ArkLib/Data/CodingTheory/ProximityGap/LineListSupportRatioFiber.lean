@@ -194,6 +194,73 @@ theorem supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
       dom k a u₀ u₁ hSzero)
 
 open Classical in
+/-- Conversely, the explicit support-ratio line-fiber cover contains only support-ratio-heavy
+coordinate-fiber codewords when the base profile `S` lies in the zero-direction set. -/
+theorem supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    supportRatioLineFiberCover dom k a u₀ u₁ S ⊆
+      supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S := by
+  intro c hc
+  rw [supportRatioLineFiberCover] at hc
+  rcases Finset.mem_biUnion.mp hc with ⟨γ, _hγ, hcγ⟩
+  rcases Finset.mem_biUnion.mp hcγ with ⟨T, hTmem, hcLine⟩
+  rw [mem_supportRatioHeavyCoordinateFiber]
+  rw [coordinateAgreementFiber, Finset.mem_filter] at hcLine ⊢
+  rcases hcLine with ⟨_hmem, hcCode, hagreeLine⟩
+  have hTsub : T ⊆ directionSupportSet u₁ := (Finset.mem_powersetCard.mp hTmem).1
+  have hTcard : T.card = a - S.card := (Finset.mem_powersetCard.mp hTmem).2
+  refine ⟨?_, γ, ?_⟩
+  · refine ⟨Finset.mem_univ _, hcCode, ?_⟩
+    intro i hiS
+    have hzero : u₁ i = 0 := by
+      simpa [directionZeroSet] using hSzero hiS
+    have hline : c i = u₀ i + γ • u₁ i :=
+      hagreeLine i (Finset.mem_union.mpr (Or.inl hiS))
+    calc
+      c i = u₀ i + γ • u₁ i := hline
+      _ = u₀ i := by
+        rw [hzero]
+        simp
+  · rw [← hTcard]
+    refine Finset.card_le_card ?_
+    intro i hiT
+    rw [mem_supportRatioFiber]
+    refine ⟨hTsub hiT, ?_⟩
+    have hline : c i = u₀ i + γ • u₁ i :=
+      hagreeLine i (Finset.mem_union.mpr (Or.inr hiT))
+    have hnonzero : u₁ i ≠ 0 := by
+      simpa [directionSupportSet] using hTsub hiT
+    rw [hline, smul_eq_mul]
+    field_simp [hnonzero]
+    ring
+
+open Classical in
+/-- On zero-direction profiles, the explicit line-fiber cover is exactly the
+support-ratio-heavy coordinate fiber. -/
+theorem supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    supportRatioLineFiberCover dom k a u₀ u₁ S =
+      supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S := by
+  ext c
+  constructor
+  · exact fun hc => supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
+      dom k a u₀ u₁ hSzero hc
+  · exact fun hc => supportRatioHeavyCoordinateFiber_subset_supportRatioLineFiberCover
+      dom k a u₀ u₁ hSzero hc
+
+open Classical in
+/-- Cardinal equality form of `supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber`. -/
+theorem supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    (supportRatioLineFiberCover dom k a u₀ u₁ S).card =
+      (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card := by
+  rw [supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
+    dom k a u₀ u₁ hSzero]
+
+open Classical in
 /-- Crude union-bound cardinal estimate for the explicit support-ratio line-fiber cover. -/
 theorem supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
     (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (S : Finset (Fin n)) :
@@ -214,6 +281,63 @@ theorem supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
             (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
         exact Finset.sum_le_sum fun γ _ =>
           Finset.card_biUnion_le
+
+open Classical in
+/-- If the agreement threshold is at least the RS dimension, each member of the explicit
+support-ratio line-fiber cover is singleton-bounded by RS uniqueness.  The cover therefore costs
+only one candidate for each scalar and moving-support subfiber. -/
+theorem supportRatioLineFiberCover_card_le_field_card_mul_choose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    (supportRatioLineFiberCover dom k a u₀ u₁ S).card ≤
+      Fintype.card F * (directionSupportSet u₁).card.choose (a - S.card) := by
+  calc
+    (supportRatioLineFiberCover dom k a u₀ u₁ S).card
+        ≤ ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - S.card),
+            (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card :=
+          supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
+            dom k a u₀ u₁ S
+    _ ≤ ∑ _γ : F, ∑ _T ∈ (directionSupportSet u₁).powersetCard (a - S.card), 1 := by
+        refine Finset.sum_le_sum fun γ _ => ?_
+        refine Finset.sum_le_sum fun T hT => ?_
+        obtain ⟨hTsub, hTcard⟩ := Finset.mem_powersetCard.mp hT
+        have hdisj : Disjoint S T := by
+          rw [Finset.disjoint_left]
+          intro i hiS hiT
+          have hzero : u₁ i = 0 := by
+            simpa [directionZeroSet] using hSzero hiS
+          have hsupport : u₁ i ≠ 0 := by
+            simpa [directionSupportSet] using hTsub hiT
+          exact hsupport hzero
+        have hcard :
+            (S ∪ T).card = S.card + (a - S.card) := by
+          rw [Finset.card_union_of_disjoint hdisj, hTcard]
+        have hlarge : k ≤ (S ∪ T).card := by
+          rw [hcard]
+          omega
+        exact coordinateAgreementFiber_card_le_one_of_k_le
+          dom hk (fun i => u₀ i + γ • u₁ i) hlarge
+    _ = ∑ _γ : F, (directionSupportSet u₁).card.choose (a - S.card) := by
+        refine Finset.sum_congr rfl fun _γ _ => ?_
+        rw [Finset.sum_const, smul_eq_mul, Finset.card_powersetCard, Nat.mul_one]
+    _ = Fintype.card F * (directionSupportSet u₁).card.choose (a - S.card) := by
+        rw [Finset.sum_const, smul_eq_mul, Finset.card_univ]
+
+open Classical in
+/-- Support-ratio-heavy coordinate fibers inherit the scalar-times-binomial bound from the
+explicit line-fiber cover. -/
+theorem supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card ≤
+      Fintype.card F * (directionSupportSet u₁).card.choose (a - S.card) :=
+  le_trans
+    (supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+      dom k a u₀ u₁ hSzero)
+    (supportRatioLineFiberCover_card_le_field_card_mul_choose
+      dom hk hka u₀ u₁ hSzero)
 
 open Classical in
 /-- Support-ratio-heavy coordinate fibers are still contained in the raw coordinate fiber. -/
@@ -243,12 +367,72 @@ def ZeroSupportRatioHeavyCoordinateFiberBudgeted
   ∀ t : ℕ, t < a → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
     (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card ≤ M t
 
+open Classical in
+/-- The explicit support-ratio line-fiber cover supplies a per-line support-ratio-heavy budget:
+one candidate for each scalar and each moving-support subfiber of size `a - t`. -/
+theorem zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) {a : ℕ} (hka : k ≤ a)
+    (u₀ u₁ : Fin n → F) :
+    ZeroSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁
+      (fun t => Fintype.card F * (directionSupportSet u₁).card.choose (a - t)) := by
+  intro t _ht S hS
+  obtain ⟨hSsub, hScard⟩ := Finset.mem_powersetCard.mp hS
+  simpa [hScard] using
+    supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+      dom hk hka u₀ u₁ hSsub
+
+/-- A per-line union-bound budget for the explicit support-ratio line-fiber cover. -/
+def ZeroSupportRatioCoverSumBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ) : Prop :=
+  ∀ t : ℕ, t < a → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+    (∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+      (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) ≤ M t
+
+open Classical in
+/-- The explicit cover-sum budget implies the support-ratio-heavy coordinate-fiber budget. -/
+theorem zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hCover : ZeroSupportRatioCoverSumBudgeted dom k a u₀ u₁ M) :
+    ZeroSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁ M := by
+  intro t ht S hS
+  have hSzero : S ⊆ directionZeroSet u₁ := (Finset.mem_powersetCard.mp hS).1
+  have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+  calc
+    (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card
+        ≤ (supportRatioLineFiberCover dom k a u₀ u₁ S).card :=
+          supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+            dom k a u₀ u₁ hSzero
+    _ ≤ ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - S.card),
+          (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card :=
+        supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers dom k a u₀ u₁ S
+    _ = ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+          (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
+        simp [hScard]
+    _ ≤ M t := hCover t ht S hS
+
 /-- Uniform support-ratio-heavy coordinate-fiber budget on the large-zero safe branch. -/
 def UniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted
     (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ) : Prop :=
   ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
     ZeroDirectionSafeLine dom k a u₀ u₁ →
       ZeroSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁ M
+
+/-- Uniform explicit cover-sum budgets on the large-zero safe branch. -/
+def UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ZeroSupportRatioCoverSumBudgeted dom k a u₀ u₁ M
+
+open Classical in
+/-- Uniform version of `zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted`. -/
+theorem uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ)
+    (hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M) :
+    UniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted dom k a M := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
+    dom k a u₀ u₁ M (hCover u₀ u₁ hnotEligible hsafe)
 
 open Classical in
 /-- Support-ratio-heavy coordinate-fiber budgets imply exact appearance-fiber budgets. -/
@@ -273,6 +457,24 @@ theorem uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoor
   intro u₀ u₁ hnotEligible hsafe
   exact zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
     dom k a u₀ u₁ M (hFiber u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Production wrapper for the explicit support-ratio cover-sum route. -/
+theorem uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+    dom k a L B M hSupport hFits hZeroSafe
+    (uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+      dom k a M
+      (uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted dom k a M hCover))
+    hFiberFits
 
 open Classical in
 /-- Scanner-facing converse for the support-ratio-heavy coordinate-fiber route.  Once support-side
@@ -306,6 +508,48 @@ theorem
       hFiberFits)
 
 open Classical in
+/-- Scanner-facing converse for the explicit support-ratio cover-sum route.  Failed bad-scalar
+production exposes a large-zero safe zero-profile whose finite `(γ, T)` cover sum exceeds the
+proposed envelope. -/
+theorem
+    exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+            (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
+  rcases
+      (exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+          dom k a L B M hSupport hFits hZeroSafe hFiberFits hnot) with
+    ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩
+  refine ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, ?_⟩
+  have hSzero : S ⊆ directionZeroSet u₁ := (Finset.mem_powersetCard.mp hS).1
+  have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+  have hle :
+      (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card
+        ≤ ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+            (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
+    calc
+      (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card
+          ≤ (supportRatioLineFiberCover dom k a u₀ u₁ S).card :=
+            supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+              dom k a u₀ u₁ hSzero
+      _ ≤ ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - S.card),
+            (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card :=
+          supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers dom k a u₀ u₁ S
+      _ = ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+            (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
+          simp [hScard]
+  exact lt_of_lt_of_le hgt hle
+
+open Classical in
 /-- Full failure split for the support-ratio-heavy route.  Without assuming zero-direction safety
 up front, failure returns either zero-direction saturation or an overfull support-ratio-heavy
 coordinate fiber. -/
@@ -327,6 +571,34 @@ theorem
   · exact Or.inr
       (exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
           dom k a L B M hSupport hFits hZeroSafe hFiberFits hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
+/-- Full failure split for the explicit support-ratio cover-sum route.  Without assuming
+zero-direction safety up front, failure returns either zero-direction saturation or an overfull
+finite `(γ, T)` cover sum. -/
+theorem
+    unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+              (coordinateAgreementFiber dom k
+                (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+        dom k a L B M hSupport hFits hZeroSafe hFiberFits hnot)
   · exact Or.inl
       ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
         dom k a).mp hZeroSafe)
@@ -396,17 +668,32 @@ section SourceAudit
 #print axioms supportRatioLineFiberCover
 #print axioms supportRatioHeavyCoordinateFiber_subset_supportRatioLineFiberCover
 #print axioms supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+#print axioms supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
+#print axioms supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
+#print axioms supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 #print axioms supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
+#print axioms supportRatioLineFiberCover_card_le_field_card_mul_choose
+#print axioms supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
 #print axioms supportRatioHeavyCoordinateFiber_subset_coordinateAgreementFiber
 #print axioms supportRatioHeavyCoordinateFiber_card_le_one_of_k_le
+#print axioms zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+#print axioms ZeroSupportRatioCoverSumBudgeted
+#print axioms zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
+#print axioms UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+#print axioms uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 #print axioms
   zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 #print axioms
   uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+#print axioms uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 #print axioms
   exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
+  exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
   unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
   exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
 #print axioms

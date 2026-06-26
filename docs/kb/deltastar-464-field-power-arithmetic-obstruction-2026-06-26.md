@@ -112,11 +112,24 @@ exactAppearingZeroAgreementFiber_subset_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover
 supportRatioHeavyCoordinateFiber_subset_supportRatioLineFiberCover
 supportRatioHeavyCoordinateFiber_card_le_supportRatioLineFiberCover_card
+supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
+supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
+supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
+supportRatioLineFiberCover_card_le_field_card_mul_choose
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
+zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
+ZeroSupportRatioCoverSumBudgeted
+zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
+UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 exists_low_supportRatioHeavyCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
 unsafe_or_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
@@ -127,9 +140,14 @@ zero-direction agreement count.  Hence an exact appearance fiber over `S` is con
 coordinate fiber over `S` plus the extra condition that one support-ratio fiber has size
 `a - #S`.  The explicit cover `supportRatioLineFiberCover` then chooses a heavy scalar `γ` and an
 `(a - #S)`-element moving-support subfiber `T`, reducing membership to an ordinary coordinate
-agreement fiber over `S ∪ T` for the line word `u0 + γ*u1`; the file also records the crude finite
-union-bound sum over `(γ, T)`.  This is still not a winning bound, but it is the first target that
-actually uses appearance on the affine line before paying the raw field-power count.
+agreement fiber over `S ∪ T` for the line word `u0 + γ*u1`.  On zero profiles this cover is exact,
+not merely one-sided.  If `k <= a`, RS uniqueness bounds every `(γ, T)` coordinate fiber by one,
+giving the per-profile envelope
+`|F| * choose(#directionSupportSet(u1), a - #S)`.  This is still not a closed prize bound, but it is
+the first target that actually uses appearance on the affine line before paying the raw field-power
+count.  The same file also packages the finite `(γ, T)` sum itself as a production route:
+uniform cover-sum budgets imply support-ratio-heavy budgets, exact-appearance budgets, and a
+full failure scanner returning an overfull cover sum.
 
 `LineListSingletonArithmeticObstruction.lean` records the corresponding raw singleton arithmetic
 no-go:
