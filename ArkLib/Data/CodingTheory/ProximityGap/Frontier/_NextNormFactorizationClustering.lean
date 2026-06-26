@@ -498,7 +498,7 @@ theorem not_thresholdSupports_disjoint_iff_exists_pair_large_common_prime
 
 end ArkLib.ProximityGap.Frontier.NormFactorizationClustering
 
-/-! ## Axiom audit (expected ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+/-! ## Axiom audit (expected ⊆ {propext, Classical.choice, Quot.sound}; no proof holes) -/
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.perT_shared_le
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.sharedPairs_le_poissonShared
 #print axioms ArkLib.ProximityGap.Frontier.NormFactorizationClustering.clusterRate_le_poissonNull
