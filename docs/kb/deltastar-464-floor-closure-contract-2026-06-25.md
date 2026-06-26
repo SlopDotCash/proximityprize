@@ -328,6 +328,39 @@ This is the cleanest scanner interface so far.  It turns the next computational 
 finite, local certificate problem over the proposed representatives instead of a vague search for
 "a better stack."
 
+## Continuation: concrete field-level trichotomy
+
+The contract now has a concrete field-level certificate:
+
+```lean
+FloorClosureAtField
+floorClosureAtField_of_floorGoodFamilyBudget
+worstCaseIncidenceBounded_of_floorClosureAtField
+deltaStar_pin_of_floorClosureAtField
+not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
+```
+
+`FloorClosureAtField FloorBad a C delta R B` is the post-arithmetic state at the actual field size:
+
+```text
+not FloorBad(2^a, |F|)
+and FamilyBounded F C delta R B
+and FamilyDominates F C delta R.
+```
+
+This is the exact object the off-BGK route must hand to the delta-star consumer after Linnik/TZ or
+the scanner has discharged floor-goodness.  Its failure has a three-way exact form:
+
+```text
+FloorBad(2^a, |F|)
+or exists r in R, B < StackBadCount(r)
+or forall r in R, exists u, StackBadCount(r) < StackBadCount(u).
+```
+
+So the loop is no longer rhetorically ambiguous.  A future floor attempt must either produce this
+certificate or land in one of the three scanner-refutable buckets: the prime is still floor-bad, the
+candidate family misses the advertised budget, or the family contains no global maximizer.
+
 ## Continuation: floor-good budget failure is exact
 
 The budget side now has the same scanner-facing exactness:

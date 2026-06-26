@@ -66,12 +66,26 @@ not_familyBounded_iff_exists_member_budget_lt
 not_profileCaps_iff_exists_counterexample
 not_profileBudgeted_iff_exists_counterprofile
 not_profileRealizedByFamily_iff_exists_counterprofile
+not_profileRealizedByReps_iff_exists_counterprofile
+not_profileCaps_and_profileBudgeted_iff_exists_counterexample_or_counterprofile
+not_profileCaps_and_profileRealizedByFamily_and_familyBounded_iff_exists_counterexample_or_counterprofile_or_member_budget_lt
+not_profileCaps_and_profileRealizedByReps_and_familyBounded_iff_exists_counterexample_or_counterprofile_or_member_budget_lt
 ```
 
 These say respectively: a family budget fails by an above-budget representative; the profile cap
 theorem fails by a stack above its assigned cap; the direct profile budget fails by a profile whose
 cap exceeds `B`; and representative realization fails by a used profile whose cap is larger than
 every representative's bad-scalar count.
+
+The combined forms package the full certificate failures as scanner-facing alternatives.  The
+direct profile route fails exactly by either a stack above its profile cap or a profile cap above
+budget.  The representative route fails exactly by one of:
+
+```text
+1. a stack above its assigned profile cap;
+2. a used profile whose cap is not reached by the proposed representatives;
+3. an above-budget representative.
+```
 
 ## Critical Verdict
 

@@ -379,6 +379,83 @@ theorem not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
       (F := F) (A := A) FloorBad a C δ R B).mpr
       ⟨hgood, (not_familyBounded_iff_exists_member_budget_lt C δ R B).mpr hmember⟩
 
+/-- Concrete field-level floor closure certificate.  This is the state after the arithmetic
+localization step has already produced floor-goodness at the current field size: the floor predicate
+is good at `|F|`, the selected family is budgeted, and the family dominates every stack. -/
+def FloorClosureAtField (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
+  ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
+    FamilyBounded F C δ R B ∧ FamilyDominates F C δ R
+
+/-- Floor-goodness plus the floor-to-family budget bridge and domination produce the concrete
+field-level certificate. -/
+theorem floorClosureAtField_of_floorGoodFamilyBudget
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {R : Finset (WordStack A (Fin 2) ι)} {B : ℕ}
+    (hgood : ¬ FloorBad (2 ^ a) (Fintype.card F))
+    (hfloorBudget : FloorGoodFamilyBudget (F := F) (A := A) FloorBad a C δ R B)
+    (hdom : FamilyDominates F C δ R) :
+    FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B :=
+  ⟨hgood, hfloorBudget hgood, hdom⟩
+
+/-- A concrete field-level floor closure certificate gives the actual universal incidence
+hypothesis. -/
+theorem worstCaseIncidenceBounded_of_floorClosureAtField
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcert : FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  worstCaseIncidenceBounded_of_familyDominates C δ hcert.2.2 hcert.2.1
+
+/-- Delta-star consumer for a concrete field-level floor closure certificate. -/
+theorem deltaStar_pin_of_floorClosureAtField
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcert : FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  deltaStar_pin_of_familyDominates C εstar hδ hcert.2.2 hcert.2.1 hbudget
+
+/-- Exact scanner form for the concrete floor-closure certificate.  It fails precisely when the
+floor predicate is still bad at the current field size, or some selected representative is above
+budget, or every selected representative can be beaten by another stack. -/
+theorem not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B) ↔
+      FloorBad (2 ^ a) (Fintype.card F) ∨
+        (∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r) ∨
+          ∀ r ∈ R, ∃ u : WordStack A (Fin 2) ι,
+            StackBadCount F C δ r < StackBadCount F C δ u := by
+  classical
+  unfold FloorClosureAtField
+  constructor
+  · intro hnot
+    by_cases hbad : FloorBad (2 ^ a) (Fintype.card F)
+    · exact Or.inl hbad
+    · have hnotBudgetOrDom :
+          ¬ (FamilyBounded F C δ R B ∧ FamilyDominates F C δ R) := by
+        intro hpair
+        exact hnot ⟨hbad, hpair⟩
+      rw [not_and_or] at hnotBudgetOrDom
+      rcases hnotBudgetOrDom with hnotBudget | hnotDom
+      · exact Or.inr <| Or.inl
+          ((not_familyBounded_iff_exists_member_budget_lt C δ R B).mp hnotBudget)
+      · exact Or.inr <| Or.inr
+          ((not_familyDominates_iff_each_member_beaten C δ R).mp hnotDom)
+  · rintro (hbad | hbudgetOrDom) hcert
+    · exact hcert.1 hbad
+    · rcases hbudgetOrDom with hmember | hbeat
+      · exact ((not_familyBounded_iff_exists_member_budget_lt C δ R B).mpr hmember) hcert.2.1
+      · exact ((not_familyDominates_iff_each_member_beaten C δ R).mpr hbeat) hcert.2.2
+
 /-- Scanner-facing singleton exactness at every dyadic rung.  This is stronger than saying a
 candidate list matches the least-prime rule: it identifies the true floor-bad predicate with that
 singleton inside the split-prime family. -/
@@ -809,6 +886,10 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_prefix_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_of_floorGoodFamilyBudget
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_floorClosureAtField
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_floorClosureAtField
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorClosureAtField_iff_bad_or_member_budget_lt_or_each_member_beaten
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_linnik_floorGood
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorLocalizationUniform_of_candidateListExactSmallestFamily
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyBounded_of_linnik_candidateListExactSmallest

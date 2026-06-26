@@ -75,6 +75,28 @@ per-period sub-Gaussian tail — the BGK/Lamzouri short-character-sum wall. -/
 def SubGaussianTailBound (S : Finset ℝ) (C m : ℝ) : Prop :=
   ∀ s : ℝ, 0 < s → ((S.filter (fun v => s < v)).card : ℝ) ≤ m * Real.exp (-(s ^ 2) / (2 * C))
 
+/-! ## 1a. Exact falsification certificate for the named input -/
+
+/-- **Exact failure certificate for `SubGaussianTailBound`.** The full sub-Gaussian tail input
+fails if and only if there is a concrete positive threshold `s` whose empirical tail count beats
+the Gaussian envelope `m·exp(-s²/(2C))`.
+
+This is the scanner-facing form of the BGK/Lamzouri wall: a counterexample to the named input is
+not an amorphous negation, but a threshold/count certificate. -/
+theorem not_SubGaussianTailBound_iff_exists_tail_count_gt
+    (S : Finset ℝ) (C m : ℝ) :
+    (¬ SubGaussianTailBound S C m) ↔
+      ∃ s : ℝ, 0 < s ∧
+        m * Real.exp (-(s ^ 2) / (2 * C)) < ((S.filter (fun v => s < v)).card : ℝ) := by
+  constructor
+  · intro hfail
+    by_contra hnone
+    apply hfail
+    intro s hs
+    exact le_of_not_gt (fun hgt => hnone ⟨s, hs, hgt⟩)
+  · rintro ⟨s, hs, hgt⟩ htail
+    exact not_lt_of_ge (htail s hs) hgt
+
 /-! ## 2. The conditional bridge (proven, axiom-clean) -/
 
 /-- **The conditional sub-Gaussian max bridge.** From the tail bound, with `0 < C` and `1 ≤ m`,
@@ -141,6 +163,19 @@ distinct magnitudes; `m` is the union-bound count. -/
 noncomputable def periodMagnitudes (ψ : AddChar F ℂ) (G : Finset F) : Finset ℝ :=
   (Finset.univ.image (eta ψ G)).image (fun z => ‖z‖)
 
+/-- Period-specialized failure certificate for the named sub-Gaussian input. To refute the
+period tail assumption it is enough, and necessary, to exhibit a threshold whose period-magnitude
+tail count exceeds the Gaussian envelope. -/
+theorem not_periodSubGaussianTailBound_iff_exists_tail_count_gt
+    (ψ : AddChar F ℂ) (G : Finset F) (C m : ℝ) :
+    (¬ SubGaussianTailBound (periodMagnitudes ψ G) C m) ↔
+      ∃ s : ℝ, 0 < s ∧
+        m * Real.exp (-(s ^ 2) / (2 * C)) <
+          (((periodMagnitudes ψ G).filter (fun v => s < v)).card : ℝ) := by
+  simpa using
+    (not_SubGaussianTailBound_iff_exists_tail_count_gt
+      (S := periodMagnitudes ψ G) (C := C) (m := m))
+
 /-- Every period magnitude `‖η_b‖` lies in `periodMagnitudes`. -/
 theorem norm_eta_mem_periodMagnitudes (ψ : AddChar F ℂ) (G : Finset F) (b : F) :
     ‖eta ψ G b‖ ∈ periodMagnitudes ψ G := by
@@ -166,6 +201,8 @@ theorem i031_norm_eta_le_of_subGaussian (ψ : AddChar F ℂ) (G : Finset F) {C�
 end ArkLib.ProximityGap.I031SubGaussianMaxBridge
 
 /-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.not_SubGaussianTailBound_iff_exists_tail_count_gt
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.subgaussian_max_le
+#print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.not_periodSubGaussianTailBound_iff_exists_tail_count_gt
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.norm_eta_mem_periodMagnitudes
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.i031_norm_eta_le_of_subGaussian

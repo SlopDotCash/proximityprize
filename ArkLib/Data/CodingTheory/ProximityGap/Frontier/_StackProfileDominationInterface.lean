@@ -276,6 +276,23 @@ theorem not_profileBudgeted_iff_exists_counterprofile
     exact le_of_not_gt (fun hgt => hnone ⟨p, hgt⟩)
   · exact not_profileBudgeted_of_counterprofile
 
+/-- Exact negative form for the direct profile-cap certificate: either some stack is above its
+assigned profile cap, or some profile cap is above the advertised budget. -/
+theorem not_profileCaps_and_profileBudgeted_iff_exists_counterexample_or_counterprofile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ} {B : ℕ} :
+    (¬ (ProfileCaps F C δ profile cap ∧ ProfileBudgeted cap B)) ↔
+      (∃ u : WordStack A (Fin 2) ι, cap (profile u) < StackBadCount F C δ u) ∨
+        ∃ p : P, B < cap p := by
+  rw [not_and_or]
+  constructor
+  · rintro (hcap | hbudget)
+    · exact Or.inl ((not_profileCaps_iff_exists_counterexample C δ).mp hcap)
+    · exact Or.inr (not_profileBudgeted_iff_exists_counterprofile.mp hbudget)
+  · rintro (hcounter | hbudget)
+    · exact Or.inl ((not_profileCaps_iff_exists_counterexample C δ).mpr hcounter)
+    · exact Or.inr (not_profileBudgeted_iff_exists_counterprofile.mpr hbudget)
+
 /-- A used profile whose cap is larger than every representative's bad count refutes realization by
 that representative family. -/
 theorem not_profileRealizedByFamily_of_counterprofile
@@ -311,6 +328,102 @@ theorem not_profileRealizedByFamily_iff_exists_counterprofile
   · rintro ⟨p, hused, hcounter⟩
     exact not_profileRealizedByFamily_of_counterprofile C δ hused hcounter
 
+/-- A used profile whose chosen representative does not reach its cap refutes realization by a
+profile-indexed representative map. -/
+theorem not_profileRealizedByReps_of_counterprofile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ}
+    {rep : P -> WordStack A (Fin 2) ι} {p : P}
+    (hused : UsedProfile profile p)
+    (hcounter : StackBadCount F C δ (rep p) < cap p) :
+    ¬ ProfileRealizedByReps F C δ profile cap rep := by
+  intro hrep
+  exact (not_lt_of_ge (hrep p hused)) hcounter
+
+/-- Exact negative form for profile realization by indexed representatives. -/
+theorem not_profileRealizedByReps_iff_exists_counterprofile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ}
+    {rep : P -> WordStack A (Fin 2) ι} :
+    (¬ ProfileRealizedByReps F C δ profile cap rep) ↔
+      ∃ p : P, UsedProfile profile p ∧ StackBadCount F C δ (rep p) < cap p := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro p hused
+    exact le_of_not_gt (fun hgt => hnone ⟨p, hused, hgt⟩)
+  · rintro ⟨p, hused, hcounter⟩
+    exact not_profileRealizedByReps_of_counterprofile C δ hused hcounter
+
+/-- Exact negative form for the finite-family profile certificate: failure is precisely a stack
+above its cap, a used profile whose cap is not realized by the proposed family, or an above-budget
+representative. -/
+theorem not_profileCaps_and_profileRealizedByFamily_and_familyBounded_iff_exists_counterexample_or_counterprofile_or_member_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)} {B : ℕ} :
+    (¬ (ProfileCaps F C δ profile cap ∧
+          ProfileRealizedByFamily F C δ profile cap R ∧
+          FamilyBounded F C δ R B)) ↔
+      (∃ u : WordStack A (Fin 2) ι, cap (profile u) < StackBadCount F C δ u) ∨
+        (∃ p : P, UsedProfile profile p ∧
+          ∀ r, r ∈ R -> StackBadCount F C δ r < cap p) ∨
+        ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    by_cases hcap : ProfileCaps F C δ profile cap
+    · by_cases hreal : ProfileRealizedByFamily F C δ profile cap R
+      · have hfamily : ¬ FamilyBounded F C δ R B := by
+          intro hbounded
+          exact hnot ⟨hcap, hreal, hbounded⟩
+        exact Or.inr <| Or.inr <|
+          (not_familyBounded_iff_exists_member_budget_lt C δ R B).mp hfamily
+      · exact Or.inr <| Or.inl <|
+          (not_profileRealizedByFamily_iff_exists_counterprofile C δ).mp hreal
+    · exact Or.inl ((not_profileCaps_iff_exists_counterexample C δ).mp hcap)
+  · rintro (hcap | hreal | hfamily) hcert
+    · exact ((not_profileCaps_iff_exists_counterexample C δ).mpr hcap) hcert.1
+    · exact ((not_profileRealizedByFamily_iff_exists_counterprofile C δ).mpr hreal)
+        hcert.2.1
+    · exact ((not_familyBounded_iff_exists_member_budget_lt C δ R B).mpr hfamily)
+        hcert.2.2
+
+/-- Exact negative form for the profile-indexed representative certificate: failure is precisely a
+stack above its cap, a used profile whose chosen representative misses the cap, or an above-budget
+member of the finite representative image. -/
+theorem not_profileCaps_and_profileRealizedByReps_and_familyBounded_iff_exists_counterexample_or_counterprofile_or_member_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ}
+    {rep : P -> WordStack A (Fin 2) ι} {B : ℕ} :
+    (¬ (ProfileCaps F C δ profile cap ∧
+          ProfileRealizedByReps F C δ profile cap rep ∧
+          FamilyBounded F C δ ((Finset.univ : Finset P).image rep) B)) ↔
+      (∃ u : WordStack A (Fin 2) ι, cap (profile u) < StackBadCount F C δ u) ∨
+        (∃ p : P, UsedProfile profile p ∧ StackBadCount F C δ (rep p) < cap p) ∨
+        ∃ r : WordStack A (Fin 2) ι, r ∈ (Finset.univ : Finset P).image rep ∧
+          B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    by_cases hcap : ProfileCaps F C δ profile cap
+    · by_cases hrep : ProfileRealizedByReps F C δ profile cap rep
+      · have hfamily :
+            ¬ FamilyBounded F C δ ((Finset.univ : Finset P).image rep) B := by
+          intro hbounded
+          exact hnot ⟨hcap, hrep, hbounded⟩
+        exact Or.inr <| Or.inr <|
+          (not_familyBounded_iff_exists_member_budget_lt
+            C δ ((Finset.univ : Finset P).image rep) B).mp hfamily
+      · exact Or.inr <| Or.inl <|
+          (not_profileRealizedByReps_iff_exists_counterprofile C δ).mp hrep
+    · exact Or.inl ((not_profileCaps_iff_exists_counterexample C δ).mp hcap)
+  · rintro (hcap | hrep | hfamily) hcert
+    · exact ((not_profileCaps_iff_exists_counterexample C δ).mpr hcap) hcert.1
+    · exact ((not_profileRealizedByReps_iff_exists_counterprofile C δ).mpr hrep) hcert.2.1
+    · exact ((not_familyBounded_iff_exists_member_budget_lt
+          C δ ((Finset.univ : Finset P).image rep) B).mpr hfamily) hcert.2.2
+
 end ArkLib.ProximityGap.Frontier.StackProfileDominationInterface
 
 /-! ## Axiom audit -/
@@ -326,5 +439,10 @@ end ArkLib.ProximityGap.Frontier.StackProfileDominationInterface
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileCaps_iff_exists_counterexample
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileBudgeted_of_counterprofile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileBudgeted_iff_exists_counterprofile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileCaps_and_profileBudgeted_iff_exists_counterexample_or_counterprofile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileRealizedByFamily_of_counterprofile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileRealizedByFamily_iff_exists_counterprofile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileRealizedByReps_of_counterprofile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileRealizedByReps_iff_exists_counterprofile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileCaps_and_profileRealizedByFamily_and_familyBounded_iff_exists_counterexample_or_counterprofile_or_member_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileCaps_and_profileRealizedByReps_and_familyBounded_iff_exists_counterexample_or_counterprofile_or_member_budget_lt

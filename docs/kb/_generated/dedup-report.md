@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4873 files, 51330 declarations
+- `ArkLib` — 4874 files, 51359 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -188,6 +188,18 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ToyProblem.Spec.verifier` [ArkLib/ProofSystem/ToyProblem/Spec/General.lean:485](../../../ArkLib/ProofSystem/ToyProblem/Spec/General.lean#L485) — Honest verifier for Construction 6.2. Takes the bundled input `(stmt, oStmt) = ((v, μ₁, μ₂), (f₁, f₂
 - `def ToyProblem.SimplifiedIOR.verifier` [ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean:157](../../../ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean#L157) — Honest verifier for Construction 6.9. Reads `γ` from the transcript and produces the new statement `
 
+### `StackBadCount` (9 declarations, 9 files)
+
+- `def ArkLib.ProximityGap.Frontier.FloorClosureContract.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:52](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L52) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.  This local copy keeps the con
+- `def ArkLib.ProximityGap.Frontier.FloorDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean#L45) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- `def ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- `def ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- `def ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L47) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- `def ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L68) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.  This file keeps a local copy
+- `def ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L47) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- `def ArkLib.ProximityGap.Frontier.StackProfileFiberMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L38) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- `def ArkLib.ProximityGap.Frontier.StackProfileRefinement.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L38) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+
 ### `eta_zero` (9 declarations, 9 files)
 
 - `theorem ArkLib.ProximityGap.CumulantGaussPeriodBound.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean:71](../../../ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean#L71) — **The principal frequency.** `η_0 = ∑_{y∈G} ψ(0·y) = ∑_{y∈G} 1 = \|G\|`.
@@ -284,17 +296,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.PigeonholeWraparoundOnset.InIdeal` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PigeonholeWraparoundOnset.lean:108](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PigeonholeWraparoundOnset.lean#L108) — **`𝔭₀` membership as a residue-zero predicate.** `InIdeal g c` ↔ `r(c) = 0` in `ZMod p`, i.e. `∑_k c
 - `def ArkLib.ProximityGap.Frontier.ThetaPoissonNormMismatchNoGo.InIdeal` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThetaPoissonNormMismatchNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThetaPoissonNormMismatchNoGo.lean#L91) — Membership in the index-`p` `q`-ary ideal lattice `P = ker(ζ ↦ g)`: the `g`-evaluation vanishes mod
 - `def ArkLib.ProximityGap.IdealSVPGirthVerdict.InIdeal` [ArkLib/Data/CodingTheory/ProximityGap/IdealSVPGirthVerdict.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/IdealSVPGirthVerdict.lean#L85) — The degree-1 prime ideal `𝔭₀` above `p` (embedding `ζ ↦ g`), as a coefficient predicate: `∑_k c_k g^
-
-### `StackBadCount` (8 declarations, 8 files)
-
-- `def ArkLib.ProximityGap.Frontier.FloorClosureContract.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:52](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L52) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.  This local copy keeps the con
-- `def ArkLib.ProximityGap.Frontier.FloorDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean#L45) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- `def ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- `def ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L47) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- `def ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L68) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.  This file keeps a local copy
-- `def ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L47) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- `def ArkLib.ProximityGap.Frontier.StackProfileFiberMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L38) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- `def ArkLib.ProximityGap.Frontier.StackProfileRefinement.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L38) — The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
 
 ### `outputRelation` (10 declarations, 7 files)
 
@@ -647,6 +648,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.LadderSaddle.NoWraparound` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean#L139) — `NoWraparound`: every char-`p` collision is already a char-`0` collision (`W_r = 0`).
 - `def ArkLib.ProximityGap.UniformNoWraparoundObligation.NoWraparound` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean#L124) — `NoWraparound (depth r)`: every char-`p` collision is already a char-`0` collision (`W_r = 0`).
 - `def ArkLib.ProximityGap.NoExcessOnset.NoWraparound` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean#L166) — **`NoWraparound`** — the property that *every* char-`p` collision is already a char-`0` collision. E
+
+### `UsedProfile` (4 declarations, 4 files)
+
+- `def ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:52](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L52) — A profile value is used when at least one stack has that profile.
+- `def ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L95) — The profile value is actually attained by at least one stack.
+- `def ArkLib.ProximityGap.Frontier.StackProfileFiberMax.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L80) — The profile value is actually attained by at least one stack.
+- `def ArkLib.ProximityGap.Frontier.StackProfileRefinement.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L54) — The profile value is actually attained by at least one stack.
 
 ### `agreeCount` (4 declarations, 4 files)
 
@@ -2171,12 +2179,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.UniformNoWraparoundTheory.UniformNoWraparoundUpTo` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean:192](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean#L192) — **`UniformNoWraparoundUpTo` — THE single open obligation of the good-prime prize.** At a fixed good
 - `def ArkLib.ProximityGap.LadderSaddle.UniformNoWraparoundUpTo` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean:168](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean#L168) — **Uniform no-wraparound up to the saddle.** The good-prime prize input: no depth-`r` wraparound for
 - `def ArkLib.ProximityGap.UniformNoWraparoundObligation.UniformNoWraparoundUpTo` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean:159](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean#L159) — **`UniformNoWraparoundUpTo` — the single open obligation of the good-prime prize.** At a fixed good
-
-### `UsedProfile` (3 declarations, 3 files)
-
-- `def ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L95) — The profile value is actually attained by at least one stack.
-- `def ArkLib.ProximityGap.Frontier.StackProfileFiberMax.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L80) — The profile value is actually attained by at least one stack.
-- `def ArkLib.ProximityGap.Frontier.StackProfileRefinement.UsedProfile` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L54) — The profile value is actually attained by at least one stack.
 
 ### `Verifier` (3 declarations, 3 files)
 
@@ -8535,7 +8537,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `subgaussian_max_le` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.WfT11.subgaussian_max_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT11_min_entropy_levelset.lean:154](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT11_min_entropy_levelset.lean#L154) — (no docstring)
-- `theorem ArkLib.ProximityGap.I031SubGaussianMaxBridge.subgaussian_max_le` [ArkLib/Data/CodingTheory/ProximityGap/I031SubGaussianMaxBridge.lean:89](../../../ArkLib/Data/CodingTheory/ProximityGap/I031SubGaussianMaxBridge.lean#L89) — **The conditional sub-Gaussian max bridge.** From the tail bound, with `0 < C` and `1 ≤ m`, every ma
+- `theorem ArkLib.ProximityGap.I031SubGaussianMaxBridge.subgaussian_max_le` [ArkLib/Data/CodingTheory/ProximityGap/I031SubGaussianMaxBridge.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/I031SubGaussianMaxBridge.lean#L111) — **The conditional sub-Gaussian max bridge.** From the tail bound, with `0 < C` and `1 ≤ m`, every ma
 
 ### `subgroup_gaussSum_firstMoment` (2 declarations, 2 files)
 
@@ -11893,7 +11895,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.XiCertReduction.xi_ne_zero` [ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean:188](../../../ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean#L188) — **`ξ ≠ 0` holds unconditionally** (from `embeddingOf𝒪Into𝕃_ξ_ne_zero`): the `hξ` hypothesis of the t
 - `theorem ArkLib.XiCertReduction.xi_ne_zero` [ArkLib/ToMathlib/XiCertReduction.lean:219](../../../ArkLib/ToMathlib/XiCertReduction.lean#L219) — **`ξ ≠ 0` holds unconditionally** (from `embeddingOf𝒪Into𝕃_ξ_ne_zero`): the `hξ` hypothesis of the t
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 543 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 549 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 
@@ -12056,6 +12058,9 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean:217](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorClosureContract.lean#L217) vs `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.worstCaseIncidenceBounded_of_familyDominates` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L166)
     - a: Bounding a dominating finite family gives the full worst-case incidence hypothesis.
     - b: Bounding a dominating finite family gives the full worst-case incidence hypothesis.
+- **1.00** `ArkLib.ProximityGap.Frontier.FloorDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean#L45) vs `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44)
+    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
 - **1.00** `ArkLib.ProximityGap.Frontier.FloorDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorDominationInterface.lean#L45) vs `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39)
     - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
     - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
@@ -12095,6 +12100,21 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.PhasePairwiseToSubGaussian.expt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairwiseToSubGaussian.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairwiseToSubGaussian.lean#L101) vs `ArkLib.ProximityGap.Frontier.ShawNegativeDependence.expt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawNegativeDependence.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawNegativeDependence.lean#L92)
     - a: The uniform expectation `E[X] = (∑_ω X ω) / |Ω|` of a real random variable on a finite space.
     - b: The uniform expectation `E[X] = (∑_ω X ω) / |Ω|` of a real random variable on a finite space.
+- **1.00** `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44) vs `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39)
+    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- **1.00** `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44) vs `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L47)
+    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- **1.00** `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44) vs `ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L47)
+    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- **1.00** `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44) vs `ArkLib.ProximityGap.Frontier.StackProfileFiberMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L38)
+    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+- **1.00** `ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean#L44) vs `ArkLib.ProximityGap.Frontier.StackProfileRefinement.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L38)
+    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
+    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
 - **1.00** `ArkLib.ProximityGap.Frontier.QuotientExponentialTailGate.one_le_mul_exponentialTail_of_log_budget_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientExponentialTailGate.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientExponentialTailGate.lean#L61) vs `ArkLib.ProximityGap.Frontier.QuotientScaledLogTailGate.one_le_mul_exponentialTail_of_log_budget_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientScaledLogTailGate.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_QuotientScaledLogTailGate.lean#L61)
     - a: If the exponential rate is no larger than `log N + log A`, then the exponential budget can pay for a
     - b: If the exponential rate is no larger than `log N + log A`, then the exponential budget can pay for a
@@ -12119,22 +12139,4 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L55)
     - a: A one-stack incidence budget for the actual MCA bad-scalar count.
     - b: A one-stack incidence budget for the actual MCA bad-scalar count.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L76)
-    - a: A one-stack incidence budget for the actual MCA bad-scalar count.
-    - b: A one-stack incidence budget for the actual MCA bad-scalar count.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L55)
-    - a: A one-stack incidence budget for the actual MCA bad-scalar count.
-    - b: A one-stack incidence budget for the actual MCA bad-scalar count.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackProfileFiberMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L46)
-    - a: A one-stack incidence budget for the actual MCA bad-scalar count.
-    - b: A one-stack incidence budget for the actual MCA bad-scalar count.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackProfileRefinement.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L46)
-    - a: A one-stack incidence budget for the actual MCA bad-scalar count.
-    - b: A one-stack incidence budget for the actual MCA bad-scalar count.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L47)
-    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackProfileFiberMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L38)
-    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
 

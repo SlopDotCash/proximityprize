@@ -146,6 +146,27 @@ theorem subgaussian_max_le_above
     ∀ v ∈ S, v ≤ Real.sqrt (2 * C * Real.log m) :=
   (subGaussianTailBoundAbove_iff_forall_le hC hm).mp h
 
+/-- **Exact failure certificate for the genuinely-needed above-threshold tail.** Under the same
+positivity hypotheses as the I031 bridge, `SubGaussianTailBoundAbove` fails if and only if one
+member of `S` exceeds the union-bound threshold `√(2·C·log m)`.
+
+So any distributional / EVT route that cannot rule out a single oversized period has not reached
+the corrected I031 interface. -/
+theorem not_SubGaussianTailBoundAbove_iff_exists_gt
+    {S : Finset ℝ} {C m : ℝ} (hC : 0 < C) (hm : 1 ≤ m) :
+    (¬ SubGaussianTailBoundAbove S C m) ↔
+      ∃ v ∈ S, Real.sqrt (2 * C * Real.log m) < v := by
+  constructor
+  · intro hfail
+    by_contra hnone
+    apply hfail
+    exact (subGaussianTailBoundAbove_iff_forall_le hC hm).mpr
+      (by
+        intro v hv
+        exact le_of_not_gt (fun hgt => hnone ⟨v, hv, hgt⟩))
+  · rintro ⟨v, hv, hgt⟩ htail
+    exact not_lt_of_ge ((subGaussianTailBoundAbove_iff_forall_le hC hm).mp htail v hv) hgt
+
 /-- **The full tail Prop implies the above-threshold one** (it is strictly stronger; the small-`s`
 content is the redundant part the I031 consumer never uses). Needs `1 < m` so that
 `s* = √(2C·log m) > 0`, hence the inherited threshold `s ≥ s*` gives `0 < s` for the full Prop. -/
@@ -175,6 +196,8 @@ open ArkLib.ProximityGap.I031TailFromPointwise in
 #print axioms subGaussianTailBoundAbove_iff_forall_le
 open ArkLib.ProximityGap.I031TailFromPointwise in
 #print axioms subgaussian_max_le_above
+open ArkLib.ProximityGap.I031TailFromPointwise in
+#print axioms not_SubGaussianTailBoundAbove_iff_exists_gt
 open ArkLib.ProximityGap.I031TailFromPointwise in
 #print axioms subGaussianTailBoundAbove_of_subGaussianTailBound
 open ArkLib.ProximityGap.I031TailFromPointwise in
