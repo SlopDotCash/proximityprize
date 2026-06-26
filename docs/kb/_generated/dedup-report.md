@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4871 files, 51196 declarations
+- `ArkLib` — 4872 files, 51226 declarations
 
 ## Same short-name across multiple files (2140 groups)
 
@@ -7369,7 +7369,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `mem_profileFiber` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.StackProfileCompressionTradeoff.mem_profileFiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileCompressionTradeoff.lean:50](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileCompressionTradeoff.lean#L50) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.StackProfileFiberMax.mem_profileFiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L91) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.StackProfileFiberMax.mem_profileFiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L92) — (no docstring)
 
 ### `mem_support_oracleVerifier_run_oStmt` (2 declarations, 2 files)
 
