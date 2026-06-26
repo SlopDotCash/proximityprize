@@ -120,6 +120,7 @@ supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
+supportRatioCoverSum_le_field_card_mul_choose
 supportRatioLineFiberCover_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
@@ -128,6 +129,11 @@ zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 ZeroSupportRatioCoverSumBudgeted
 zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
 UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
+uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
+not_zeroSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt
+not_uniformLargeZeroSafeSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt
 uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
@@ -139,6 +145,7 @@ lineFiberCoverChooseBudgetFits_term_le
 not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
 exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coverSum_lineFiberCoverChoose_n
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
@@ -161,9 +168,14 @@ the first target that actually uses appearance on the affine line before paying 
 count.  The ambient-length corollary replaces `#directionSupportSet(u1)` by `n` when a coarser
 line-independent expression is useful.  The same file also packages the finite `(γ, T)` sum itself
 as a production route: uniform cover-sum budgets imply support-ratio-heavy budgets,
-exact-appearance budgets, and a full failure scanner returning an overfull cover sum.  Failed
-production under the ambient-binomial cover route now returns a concrete over-budget weighted
-`∑_t` expression, and a single over-budget profile term refutes the fit.
+exact-appearance budgets, and a full failure scanner returning an overfull cover sum.  The
+scalar-times-binomial bound is now stated directly on that finite cover sum, with an ambient
+uniform wrapper, so the cover-sum route has a named control case before any improvement is
+attempted.  Failed production under the ambient-binomial cover route now returns a concrete
+over-budget weighted `∑_t` expression, and a single over-budget profile term refutes the fit.  The
+cover-sum budget itself also has exact failure forms, so future attacks on overlap can start from
+an explicit large-zero safe line, zero profile `S`, and overfull finite `(γ, T)` sum without
+carrying the full production wrapper.
 
 `LineListSupportRatioArithmeticObstruction.lean` builds on those fit-term lemmas and records the
 parameter-only zero-count obstruction for the ambient support-ratio envelope:

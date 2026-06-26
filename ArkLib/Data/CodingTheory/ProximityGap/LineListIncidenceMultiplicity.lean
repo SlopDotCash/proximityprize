@@ -20,7 +20,7 @@ from the existing appearance-fiber and line-list-size budgets.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 1800
 
 open Finset
 
@@ -1225,6 +1225,40 @@ def UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
       puncturedZeroStratifiedLineWeight dom k a u₀ u₁
         + singletonBadScalarDefect dom k a u₀ u₁ ≤ 2 * B
 
+/-- Uniform cap on singleton bad scalars uniquely witnessed by any one appearing codeword on the
+large-zero safe branch. -/
+def UniformLargeZeroSafeCodewordSingletonBudgeted
+    (dom : Fin n ↪ F) (k a S : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      ∀ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card ≤ S
+
+/-- Combined arithmetic budget using the actual number of appearing codewords and a uniform
+per-codeword singleton cap. -/
+def UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted
+    (dom : Fin n ↪ F) (k a B S : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+        + (lineAppearingCodewords dom k a u₀ u₁).card * S ≤ 2 * B
+
+/-- Uniform line-list cap on the large-zero safe branch.  This is separate from
+`UniformSupportLineListBudgeted`, which only controls support-eligible directions. -/
+def UniformLargeZeroSafeLineListBudgeted
+    (dom : Fin n ↪ F) (k a L : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      LineListBudgeted dom k a u₀ u₁ L
+
+/-- Combined arithmetic budget using a large-zero-safe line-list cap and a per-codeword singleton
+cap. -/
+def UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted
+    (dom : Fin n ↪ F) (k a L S B : ℕ) : Prop :=
+  ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+    ZeroDirectionSafeLine dom k a u₀ u₁ →
+      puncturedZeroStratifiedLineWeight dom k a u₀ u₁ + L * S ≤ 2 * B
+
 open Classical in
 /-- The no-unique-witness condition plus the half punctured-weight budget discharges the large-zero
 safe residual. -/
@@ -1313,6 +1347,66 @@ theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudg
       dom k a B hbudget)
 
 open Classical in
+/-- A per-codeword singleton cap plus the direct appearing-codeword arithmetic budget discharges
+the large-zero safe residual. -/
+theorem largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonBudget
+    (dom : Fin n ↪ F) (k a S B : ℕ)
+    (hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact lineBadScalars_card_le_of_weight_add_codewordSingletonBudget_le_two_mul
+    dom k a S B u₀ u₁ hsafe
+    (hperCode u₀ u₁ hnotEligible hsafe)
+    (hbudget u₀ u₁ hnotEligible hsafe)
+
+/-- Production wrapper for the direct per-codeword singleton-cap route. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSingletonBudget
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+    dom k a L B hSupport hFits hZeroSafe
+    (largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonBudget
+      dom k a S B hperCode hbudget)
+
+open Classical in
+/-- A large-zero-safe line-list cap, a per-codeword singleton cap, and the combined arithmetic
+budget discharge the large-zero safe residual. -/
+theorem largeZeroSafeLineBadScalarsBudgeted_of_lineListSingletonBudget
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (hlist : UniformLargeZeroSafeLineListBudgeted dom k a L)
+    (hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S)
+    (hbudget : UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted dom k a L S B) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a B := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact lineBadScalars_card_le_of_weight_add_lineListSingletonBudget_le_two_mul
+    dom k a L S B u₀ u₁ hsafe
+    (hlist u₀ u₁ hnotEligible hsafe)
+    (hperCode u₀ u₁ hnotEligible hsafe)
+    (hbudget u₀ u₁ hnotEligible hsafe)
+
+/-- Production wrapper for the line-list plus per-codeword singleton-cap route. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjusted_and_lineListSingletonBudget
+    (dom : Fin n ↪ F) (k a L Lzero S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hlist : UniformLargeZeroSafeLineListBudgeted dom k a Lzero)
+    (hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S)
+    (hbudget :
+      UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted dom k a Lzero S B) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
+    dom k a L B hSupport hFits hZeroSafe
+    (largeZeroSafeLineBadScalarsBudgeted_of_lineListSingletonBudget
+      dom k a Lzero S B hlist hperCode hbudget)
+
+open Classical in
 /-- Converse scanner for the singleton-defect route.  If support, zero-safety, and support
 arithmetic are fixed, any failed uniform bad-scalar budget must violate the combined
 punctured-weight plus singleton-defect budget on a large-zero safe line. -/
@@ -1335,6 +1429,102 @@ theorem
   exact hnot
     (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
       dom k a L B hSupport hFits hZeroSafe hbudget)
+
+open Classical in
+/-- Scanner for the direct per-codeword singleton-cap route.  If the per-codeword cap is fixed,
+failed production exposes failure of the direct appearing-codeword arithmetic budget. -/
+theorem exists_largeZero_safe_codewordSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+          + (lineAppearingCodewords dom k a u₀ u₁).card * S ≤ 2 * B := by
+  by_contra hnone
+  have hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S := by
+    intro u₀ u₁ hnotEligible hsafe
+    by_contra hfail
+    exact hnone ⟨u₀, u₁, hnotEligible, hsafe, hfail⟩
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSingletonBudget
+      dom k a L S B hSupport hFits hZeroSafe hperCode hbudget)
+
+open Classical in
+/-- Complementary scanner for the direct per-codeword singleton-cap route.  If the direct
+appearing-codeword arithmetic budget is fixed, failed production exposes a concrete appearing
+codeword whose singleton-witness scalar fiber exceeds the proposed cap. -/
+theorem exists_largeZero_safe_codewordSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted dom k a B S)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+          S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  by_contra hnone
+  have hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+    intro u₀ u₁ hnotEligible hsafe c hc
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSingletonBudget
+      dom k a L S B hSupport hFits hZeroSafe hperCode hbudget)
+
+open Classical in
+/-- Scanner for the line-list singleton route.  With the large-zero-safe line-list and per-codeword
+caps fixed, failed production exposes failure of the `puncturedWeight + Lzero * S` arithmetic. -/
+theorem exists_largeZero_safe_lineListSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L Lzero S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hlist : UniformLargeZeroSafeLineListBudgeted dom k a Lzero)
+    (hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ¬ puncturedZeroStratifiedLineWeight dom k a u₀ u₁ + Lzero * S ≤ 2 * B := by
+  by_contra hnone
+  have hbudget :
+      UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted dom k a Lzero S B := by
+    intro u₀ u₁ hnotEligible hsafe
+    by_contra hfail
+    exact hnone ⟨u₀, u₁, hnotEligible, hsafe, hfail⟩
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_lineListSingletonBudget
+      dom k a L Lzero S B hSupport hFits hZeroSafe hlist hperCode hbudget)
+
+open Classical in
+/-- Complementary scanner for the line-list singleton route.  With line-list and arithmetic fixed,
+failed production exposes a codeword whose singleton-witness scalar fiber exceeds the cap. -/
+theorem exists_largeZero_safe_lineListSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L Lzero S B : ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hlist : UniformLargeZeroSafeLineListBudgeted dom k a Lzero)
+    (hbudget :
+      UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted dom k a Lzero S B)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+          S < (codewordSingletonWitnessScalars dom k a u₀ u₁ c).card := by
+  by_contra hnone
+  have hperCode : UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S := by
+    intro u₀ u₁ hnotEligible hsafe c hc
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjusted_and_lineListSingletonBudget
+      dom k a L Lzero S B hSupport hFits hZeroSafe hlist hperCode hbudget)
 
 open Classical in
 /-- Failure of the uniform constructive second-witness branch is exactly a large-zero safe line
@@ -1508,14 +1698,30 @@ section SourceAudit
 #print axioms uniformLargeZeroSafeSecondWitness_iff_singletonDefectZero
 #print axioms UniformLargeZeroSafePuncturedWeightDivTwoBudgeted
 #print axioms UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
+#print axioms UniformLargeZeroSafeCodewordSingletonBudgeted
+#print axioms UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted
+#print axioms UniformLargeZeroSafeLineListBudgeted
+#print axioms UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_secondWitness_and_weightDivTwo
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_secondWitnessWeightDivTwo
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonBudget
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSingletonBudget
+#print axioms largeZeroSafeLineBadScalarsBudgeted_of_lineListSingletonBudget
+#print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_lineListSingletonBudget
 #print axioms
   exists_largeZero_safe_singletonDefectBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_codewordSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_codewordSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_lineListSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  exists_largeZero_safe_lineListSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms not_uniformLargeZeroSafeSecondWitnessProperty_iff_exists_witness_without_second
 #print axioms exists_largeZero_safe_uniqueWitnessCodeword_of_not_uniformLineBadScalarsBudgeted
 #print axioms

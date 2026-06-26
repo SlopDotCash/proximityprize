@@ -70,9 +70,21 @@ UniformLargeZeroSafeSingletonDefectZero
 uniformLargeZeroSafeNoUnique_iff_singletonDefectZero
 uniformLargeZeroSafeSecondWitness_iff_singletonDefectZero
 UniformLargeZeroSafeWeightPlusSingletonDefectBudgeted
+UniformLargeZeroSafeCodewordSingletonBudgeted
+UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted
+UniformLargeZeroSafeLineListBudgeted
+UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted
 largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
+largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordSingletonBudget
+largeZeroSafeLineBadScalarsBudgeted_of_lineListSingletonBudget
+uniformLineBadScalarsBudgeted_of_supportAdjusted_and_lineListSingletonBudget
 exists_largeZero_safe_singletonDefectBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_codewordSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_codewordSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_lineListSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_lineListSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 `LineListSingletonDefectGeometry.lean` refines the same defect into an incidence graph and exact
@@ -161,6 +173,7 @@ supportRatioLineFiberCover_subset_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover_eq_supportRatioHeavyCoordinateFiber
 supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
+supportRatioCoverSum_le_field_card_mul_choose
 supportRatioLineFiberCover_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
@@ -169,6 +182,11 @@ zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 ZeroSupportRatioCoverSumBudgeted
 zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
 UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
+uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
+not_zeroSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt
+not_uniformLargeZeroSafeSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt
 uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
@@ -180,6 +198,7 @@ lineFiberCoverChooseBudgetFits_term_le
 not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
 exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coverSum_lineFiberCoverChoose_n
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
@@ -199,10 +218,14 @@ fiber at zero-profile size `t`, with a coarser ambient variant using `n.choose (
 production localizes, after high profiles are discharged by RS uniqueness, to a low `t < k`
 support-ratio-heavy coordinate fiber.  The finite `(γ, T)` cover sum is also exposed as its own
 budget interface and scanner, so a future improvement can attack overlap or structure inside the
-cover before collapsing to the scalar-times-binomial envelope.  The ambient-binomial route now has
-exact arithmetic scanners: failed production returns an over-budget weighted `∑_t`, a single
-over-budget weighted profile refutes the fit, and the separate arithmetic-obstruction module
-turns zero/support count witnesses into scalar-times-binomial no-go statements.
+cover before collapsing to the scalar-times-binomial envelope.  The scalar-times-binomial baseline
+is now proved directly for that cover sum, with an ambient uniform wrapper feeding the same
+production route.  The ambient-binomial route now has exact arithmetic scanners: failed production
+returns an over-budget weighted `∑_t`, a single over-budget weighted profile refutes the fit, and
+the separate arithmetic-obstruction module turns zero/support count witnesses into
+scalar-times-binomial no-go statements.  The cover-sum budget itself now has exact failure forms,
+so the next structural-overlap attack can start from a specific overfull large-zero safe
+`(u0,u1,t,S)` cover sum.
 
 `LineListSupportRatioArithmeticObstruction.lean` adds the parameter-only zero-count no-go for the
 ambient support-ratio envelope:
@@ -332,6 +355,12 @@ number of scalars uniquely witnessed by each codeword, then sum over appearing c
 The production wrappers consume either the appearing-codeword count directly or a `LineListBudgeted`
 cap, giving bad-scalar bounds from
 `puncturedZeroStratifiedLineWeight + #appearing * perCodewordSingletonCap`.
+The uniform API is now explicit: `UniformLargeZeroSafeCodewordSingletonBudgeted` supplies the
+per-codeword cap, while
+`UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted` uses the actual appearing-codeword count
+and `UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted` uses a large-zero-safe line-list cap.
+The two scanners localize failed production either to failure of the combined arithmetic or to a
+concrete appearing codeword with too many uniquely witnessed singleton scalars.
 
 ## Consequence
 

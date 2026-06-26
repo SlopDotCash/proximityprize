@@ -676,3 +676,27 @@ direction has `z` zeros and enough moving support for profile `t`, it forces
 `|F| * choose(n, a) <= B` obstruction in the `2a <= n` range.  Hence the ambient-binomial cover is
 a baseline/control envelope; a floor proof must improve the finite cover sum before collapsing to
 this bound.
+
+Follow-up: the finite support-ratio cover-sum budget now has its direct scalar-times-binomial
+control case and exact failure forms.  `supportRatioCoverSum_le_field_card_mul_choose`,
+`zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n`, and
+`uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n` name the baseline
+before collapsing to the ambient arithmetic obstruction; the failure forms
+`not_zeroSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt` and
+`not_uniformLargeZeroSafeSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt` expose a specific
+overfull large-zero safe line, zero profile `S`, and finite `(γ, T)` cover sum before any ambient
+scalar-times-binomial collapse.
+
+Follow-up: `LineListIncidenceMultiplicity.lean` now has a per-codeword singleton-cap route in
+addition to the total singleton-defect fallback.  A uniform cap on
+`codewordSingletonWitnessScalars` plus either the actual appearing-codeword count or a
+large-zero-safe line-list cap feeds the same factor-two production wrapper, and the scanners split
+failed production into arithmetic-budget failure versus a concrete appearing codeword whose
+singleton-witness scalar fiber exceeds the proposed cap.
+
+Follow-up: the singleton-defect route now has uniform per-codeword singleton-cap wrappers.
+`UniformLargeZeroSafeCodewordSingletonBudgeted` controls the number of singleton bad scalars
+uniquely witnessed by each appearing codeword; production can use either the actual appearing count
+or a separate large-zero-safe `LineListBudgeted` cap.  The matching scanners return either combined
+arithmetic failure or a concrete appearing codeword whose singleton-witness scalar fiber exceeds
+the proposed cap.
