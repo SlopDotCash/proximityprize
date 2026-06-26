@@ -20,9 +20,9 @@ single line list size**:
 
 This is structurally better than the per-word list-decoding the supply naively asks for: it
 replaces the worst-case-over-`q`-words list size with **one** list — the codewords near the whole
-affine line `{u₀ + γ·u₁}`. The wall now reads "bound the line list sub-trivially"; that list is at
-most `q` times the worst per-word list, but it can be far smaller.  For directions far from the
-code, the line is a genuinely 1-parameter family whose list size is the natural object of
+affine line `{u₀ + γ·u₁}`. The wall now reads "bound the line list sub-trivially"; the list is
+at most `q` times the worst per-word list, but it can be far smaller.  For directions far from
+the code, the line is a genuinely 1-parameter family whose list size is the natural object of
 affine-subspace list decoding (Guruswami–Xing and successors). It is the cleanest positive-side
 target the incidence skeleton produces.
 
