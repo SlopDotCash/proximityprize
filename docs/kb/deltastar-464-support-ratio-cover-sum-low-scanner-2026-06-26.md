@@ -32,11 +32,19 @@ ceiling for every high profile `k <= t < a`, an overfull cover-sum witness must 
 ```lean
 ZeroLowSupportRatioCoverSumBudgeted
 UniformLargeZeroSafeLowSupportRatioCoverSumBudgeted
+ZeroLowSupportRatioHeavyCoordinateFiberBudgeted
+UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted
 supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
+zeroSupportRatioHeavyCoordinateFiberBudgeted_of_low_and_high_one
+uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_low_and_high_one
 zeroSupportRatioCoverSumBudgeted_of_low_and_high_choose
 uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_low_and_high_choose
+not_zeroLowSupportRatioHeavyBudgeted_iff_exists_low_fiber_gt
+not_uniformLargeZeroSafeLowSupportRatioHeavyBudgeted_iff_exists_low_fiber_gt
 not_zeroLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
 not_uniformLargeZeroSafeLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers
+exists_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums
 exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
@@ -61,9 +69,15 @@ high-profile cover-sum ceiling fixed,
 `exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted` gives the
 same witness directly from failed bad-scalar production.
 
+The support-ratio-heavy coordinate-fiber route now has the same positive split.  Low heavy fibers
+are the only nontrivial estimates; high heavy fibers are bounded by one via RS uniqueness, so the
+high envelope is just `1 <= M(t)` for `k <= t < a`.
+
 ## Consequence
 
 The support-ratio cover-sum route is now aligned with the other low-profile scanners.  High
 profiles are no longer part of the residual once the envelope pays the explicit
 `|F| * choose(#support, a - t)` cost.  Any future improvement has to beat the finite cover sum in
-the low range `t < k`, where RS uniqueness alone does not collapse the coordinate fibers.
+the low range `t < k`, where RS uniqueness alone does not collapse the coordinate fibers.  The
+heavy-fiber variant makes the same residual even sharper: once high profiles pay only one, any
+remaining failure must be a low support-ratio-heavy fiber.

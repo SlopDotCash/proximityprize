@@ -975,11 +975,24 @@ cover-sum low-profile split.  `ZeroLowSupportRatioCoverSumBudgeted` and
 high-profile scalar-times-support-binomial ceiling.  The matching negated iff exposes an overfull
 low cover-sum witness exactly when the low-budget assumption fails.
 
+Follow-up: the same file now mirrors that split for support-ratio-heavy coordinate fibers.
+`ZeroLowSupportRatioHeavyCoordinateFiberBudgeted` isolates the low `t < k` heavy-fiber estimates;
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers` combines them with the
+high-profile RS-uniqueness ceiling `1 <= M t`; and
+`exists_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_budgeted` exposes the exact
+zero-safe low-heavy obstruction under failed production.
+
 Follow-up: the same support-ratio split now has a direct production converse:
 `exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted` returns an
 overfull large-zero safe low cover sum when support-side production, zero-direction safety,
 arithmetic fit, and the high-profile cover-sum ceiling are fixed but the bad-scalar budget still
 fails.
+
+Follow-up: the support-ratio-heavy coordinate-fiber route now has the same positive low/high
+production wrapper.  `uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers` combines
+low heavy-fiber bounds with the high-profile singleton ceiling, and
+`exists_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_budgeted` extracts a low heavy
+fiber overflow from failed production under those fixed side hypotheses.
 
 Follow-up: `Frontier/_ProfileFiberSlackDominance.lean` now adds the zero-slack profile cardinality
 gate.  `BadCountInjectiveOn` names a finite scanner family with pairwise distinct bad-scalar
