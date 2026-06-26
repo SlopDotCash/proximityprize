@@ -64,6 +64,12 @@ profileFiberOscillationCertificate_zero_iff_profileBadCountRepresented_and_budge
 not_profileBadCountFiberConstant_iff_exists_sameProfile_count_ne
 not_profileBadCountRepresented_iff_exists_stack_count_ne
 not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_or_budget_lt
+BadCountInjectiveOn
+profile_injOn_of_profileBadCountFiberConstant_of_badCountInjectiveOn
+card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn
+not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
+not_profileBadCountRepresented_of_profileCard_lt_badCountInjectiveOn
+not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInjectiveOn
 ```
 
 The representative-free central equivalence is:
@@ -130,6 +136,27 @@ StackBadCount u != StackBadCount (rep (profile u)).
 
 If that witness exists, the zero-slack middle case is dead for that profile.
 
+## Continuation: cardinality gate for distinct bad counts
+
+The zero-slack route now also has a profile-cardinality refutation:
+
+```lean
+BadCountInjectiveOn
+profile_injOn_of_profileBadCountFiberConstant_of_badCountInjectiveOn
+card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn
+not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
+not_profileBadCountRepresented_of_profileCard_lt_badCountInjectiveOn
+not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInjectiveOn
+```
+
+If a finite scanner family `U` has pairwise distinct bad-scalar counts, then any zero-slack profile
+must be injective on `U`.  Therefore `U.card <= Fintype.card P`.  If a proposed compressed profile
+has fewer labels than the distinct-count family, fiberwise bad-count constancy and representative
+factorization are both impossible.
+
+This gives a cheaper first-pass falsifier for concrete profiles: find more distinct bad-count values
+than the profile has labels before searching for a same-profile unequal-count pair.
+
 ## Critical Consequence
 
 This does not close the floor.  It removes one possible ambiguity in the profile route.
@@ -152,6 +179,22 @@ large slack:
 The current literature/PDF trail still does not provide a theorem of any of these three forms.  The
 new socket is useful because it gives the next probe loop a crisp falsifier: if a proposed algebraic
 profile is meant to be zero-slack, one unequal same-profile representative count refutes it.
+
+## Continuation: cardinality pressure
+
+The zero-slack route now has a finite cardinality obstruction.  If a scanner family `U` has
+pairwise distinct bad-scalar counts, recorded as `BadCountInjectiveOn`, then any zero-slack profile
+must be injective on `U`.  Consequently:
+
+```text
+U.card <= Fintype.card P.
+```
+
+So a proposed compressed profile with fewer labels than such a family cannot have zero slack.
+The new refuters kill all three zero-slack formulations: representative-free fiber constancy,
+representative factorization, and zero same-profile oscillation.  This does not touch positive
+slack, but it gives probes a cheap size test before trying to prove a delicate same-fiber
+oscillation theorem.
 
 ## Next Attack
 

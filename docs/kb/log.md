@@ -960,3 +960,32 @@ non-exceptional cap with the exceptional cap to recover the `S + E` singleton bu
 production scanner `exists_largeZero_safe_codewordPartitionRouteFailure_of_not_budgeted` returns
 either the usual punctured-weight arithmetic failure or one appearing codeword where the
 non-exceptional or exceptional side overruns its budget.
+
+Follow-up: `Frontier/_FloorClosureContract.lean` now records the exhaustive-family endpoint:
+`familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded` and
+`floorClosureBudgetedMaxAtField_univ_iff_floorGood_and_worstCaseIncidenceBounded`.  The all-stack
+sharp certificate is just floor-goodness plus the original open-core incidence bound; the only
+mathematical content in a smaller floor catalogue is proving that it still contains a budgeted
+global maximizer.
+
+Follow-up: `LineListSupportRatioFiber.lean` now has the positive half of the support-ratio
+cover-sum low-profile split.  `ZeroLowSupportRatioCoverSumBudgeted` and
+`UniformLargeZeroSafeLowSupportRatioCoverSumBudgeted` isolate the `t < k` obligations, while
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums` combines those low estimates with the
+high-profile scalar-times-support-binomial ceiling.  The matching negated iff exposes an overfull
+low cover-sum witness exactly when the low-budget assumption fails.
+
+Follow-up: the same support-ratio split now has a direct production converse:
+`exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted` returns an
+overfull large-zero safe low cover sum when support-side production, zero-direction safety,
+arithmetic fit, and the high-profile cover-sum ceiling are fixed but the bad-scalar budget still
+fails.
+
+Follow-up: `Frontier/_ProfileFiberSlackDominance.lean` now adds the zero-slack profile cardinality
+gate.  `BadCountInjectiveOn` names a finite scanner family with pairwise distinct bad-scalar
+counts; if bad counts are constant on profile fibers, then `profile` is injective on that family
+and `card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn` forces
+`U.card <= Fintype.card P`.  The negated forms refute zero-slack fiber constancy, representative
+factorization, and zero oscillation whenever a proposed compressed profile has too few labels.
+Companion note:
+`deltastar-464-zero-slack-profile-cardinality-gate-2026-06-26.md`.

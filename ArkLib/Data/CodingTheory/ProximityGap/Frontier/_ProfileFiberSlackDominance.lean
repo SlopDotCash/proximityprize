@@ -420,6 +420,94 @@ theorem not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_o
       exact Or.inr (fun hbudgeted =>
         (not_lt_of_ge (by simpa using hbudgeted p hused)) hgt)
 
+/-! ## Zero-slack profile cardinality pressure -/
+
+/-- A finite scanner family has pairwise distinct bad-scalar counts. -/
+def BadCountInjectiveOn (K : Type) [Field K] [Fintype K] [DecidableEq K]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (U : Finset (WordStack A (Fin 2) ι)) : Prop :=
+  Set.InjOn (fun u : WordStack A (Fin 2) ι => StackBadCount K C δ u) (↑U : Set _)
+
+/-- If bad counts are constant on profile fibers, then the profile is injective on any finite
+scanner family whose bad counts are pairwise distinct.  Otherwise two distinct-count stacks would
+land in one fiber, contradicting fiberwise constancy. -/
+theorem profile_injOn_of_profileBadCountFiberConstant_of_badCountInjectiveOn
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {U : Finset (WordStack A (Fin 2) ι)}
+    (hconst : ProfileBadCountFiberConstant F C δ profile)
+    (hsep : BadCountInjectiveOn F C δ U) :
+    Set.InjOn profile (↑U : Set (WordStack A (Fin 2) ι)) := by
+  intro u hu v hv hprofile
+  exact hsep hu hv (hconst u v hprofile)
+
+/-- Zero-slack fiber constancy forces enough profile labels to separate every finite scanner family
+with pairwise distinct bad-scalar counts.  A compressed profile with fewer labels than such a family
+cannot be a zero-slack invariant. -/
+theorem card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    (U : Finset (WordStack A (Fin 2) ι))
+    (hconst : ProfileBadCountFiberConstant F C δ profile)
+    (hsep : BadCountInjectiveOn F C δ U) :
+    U.card ≤ Fintype.card P := by
+  classical
+  have hinj : Set.InjOn profile (↑U : Set (WordStack A (Fin 2) ι)) :=
+    profile_injOn_of_profileBadCountFiberConstant_of_badCountInjectiveOn C δ hconst hsep
+  calc
+    U.card = (U.image profile).card := (Finset.card_image_of_injOn hinj).symm
+    _ ≤ Fintype.card P := Finset.card_le_univ _
+
+/-- Cardinality refutation for zero-slack profile constancy: a finite set of stacks with pairwise
+distinct bad counts and cardinality larger than the profile space kills the proposed invariant. -/
+theorem not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {U : Finset (WordStack A (Fin 2) ι)}
+    (hsep : BadCountInjectiveOn F C δ U)
+    (hcard : Fintype.card P < U.card) :
+    ¬ ProfileBadCountFiberConstant F C δ profile := by
+  intro hconst
+  exact (not_lt_of_ge
+    (card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn
+      C δ U hconst hsep)) hcard
+
+/-- Cardinality refutation for representative bad-count factorization.  If the profile type is too
+small to separate a finite family of distinct bad counts, no representative map can make bad counts
+factor through the profile. -/
+theorem not_profileBadCountRepresented_of_profileCard_lt_badCountInjectiveOn
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    {U : Finset (WordStack A (Fin 2) ι)}
+    (hsep : BadCountInjectiveOn F C δ U)
+    (hcard : Fintype.card P < U.card) :
+    ¬ ProfileBadCountRepresented F C δ profile rep := by
+  intro hfactor
+  exact (not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
+    C δ hsep hcard)
+    (profileBadCountFiberConstant_of_profileBadCountRepresented C δ hfactor)
+
+/-- Cardinality refutation for zero same-profile oscillation.  A zero-slack oscillation theorem
+also forces the profile to separate every finite family of distinct bad-count stacks. -/
+theorem not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInjectiveOn
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} [Fintype P]
+    {profile : WordStack A (Fin 2) ι -> P}
+    {U : Finset (WordStack A (Fin 2) ι)}
+    (hsep : BadCountInjectiveOn F C δ U)
+    (hcard : Fintype.card P < U.card) :
+    ¬ ProfileFiberOscillationBounded F C δ profile (fun _ => 0) := by
+  intro hosc
+  exact (not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
+    C δ hsep hcard)
+    (profileBadCountFiberConstant_of_zero_oscillation C δ hosc)
+
 /-! ## Endpoint sanity checks for coarse profiles -/
 
 omit [Fintype ι] [Nonempty ι] [DecidableEq ι] [Fintype A] [DecidableEq A] [AddCommGroup A] in
@@ -1068,6 +1156,12 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountFiberConstant_iff_exists_sameProfile_count_ne
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_iff_exists_stack_count_ne
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_or_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.BadCountInjectiveOn
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profile_injOn_of_profileBadCountFiberConstant_of_badCountInjectiveOn
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.card_le_profileCard_of_profileBadCountFiberConstant_badCountInjectiveOn
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountFiberConstant_of_profileCard_lt_badCountInjectiveOn
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_of_profileCard_lt_badCountInjectiveOn
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileFiberOscillationBounded_zero_of_profileCard_lt_badCountInjectiveOn
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_constant_iff_global_pairwise_bound

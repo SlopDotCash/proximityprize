@@ -30,7 +30,15 @@ ceiling for every high profile `k <= t < a`, an overfull cover-sum witness must 
 `LineListSupportRatioFiber.lean` now records:
 
 ```lean
+ZeroLowSupportRatioCoverSumBudgeted
+UniformLargeZeroSafeLowSupportRatioCoverSumBudgeted
 supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
+zeroSupportRatioCoverSumBudgeted_of_low_and_high_choose
+uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_low_and_high_choose
+not_zeroLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
+not_uniformLargeZeroSafeLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
+uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums
+exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
 unsafe_or_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 ```
@@ -42,6 +50,16 @@ The second theorem is the pure extractor: any cover-sum overflow under the high-
 has a low-profile overflow.  The third theorem plugs this into the uniform production scanner, so a
 failed bad-scalar budget now returns either zero-direction saturation or a large-zero safe low
 cover-sum witness.
+
+Follow-up: the positive split is now named too.  A caller can prove the finite cover-sum budget
+only for low profiles `t < k`, separately prove the high-profile envelope
+`|F| * choose(#support, a - t) <= M(t)` for `k <= t < a`, and then feed
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums`.  The negated low-budget iff gives the
+matching finite obstruction: an overfull low profile is exactly the failure of the low-cover
+assumption.  With the support-side production, zero-direction safety, arithmetic fit, and
+high-profile cover-sum ceiling fixed,
+`exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted` gives the
+same witness directly from failed bad-scalar production.
 
 ## Consequence
 
