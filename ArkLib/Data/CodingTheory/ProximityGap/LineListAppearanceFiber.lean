@@ -608,6 +608,141 @@ theorem unsafe_or_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformL
       exists_low_appearingCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
         dom hk a u₀ u₁ M hHigh hgt⟩
 
+open Classical in
+/-- Production wrapper using exact zero-agreement appearance-fiber budgets for the large-zero safe
+branch.  This is the exact-profile version of
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_appearingCoordinateFibers`: the
+`t`-stratum is split exactly by its zero-agreement set before the arithmetic fit is applied. -/
+theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hFiber : UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a M)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
+    dom k a L B hSupport hFits hZeroSafe
+    (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformExactAppearingZeroAgreementFiberBudgeted
+      dom k a B M hFiber hFiberFits)
+
+open Classical in
+/-- If the support-eligible line-list route, support arithmetic, zero-direction safety, and exact
+appearance-fiber arithmetic fit are fixed, then any failed uniform bad-scalar budget must exhibit
+a large-zero safe exact zero-agreement appearance fiber whose size exceeds the proposed `M t`. -/
+theorem exists_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          M t < (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card := by
+  by_contra hnone
+  have hFiber : UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a M := by
+    intro u₀ u₁ hnotEligible hsafe t ht S hS
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+      dom k a L B M hSupport hFits hZeroSafe hFiber hFiberFits)
+
+open Classical in
+/-- Scanner-facing full failure split for the exact appearance-fiber route. Without assuming
+zero-direction safety in advance, a failed uniform bad-scalar budget must expose either a
+saturating zero-direction codeword or an overfull exact zero-agreement appearance fiber in the
+large-zero safe branch. -/
+theorem unsafe_or_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+        dom k a L B M hSupport hFits hZeroSafe hFiberFits hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
+/-- Exact appearance fibers are singleton-bounded in high zero-profile levels.  This is the
+appearance-filtered version of Reed--Solomon uniqueness: if the prescribed zero set has size at
+least `k`, the raw coordinate-agreement fiber has at most one codeword. -/
+theorem exactAppearingZeroAgreementFiber_card_le_one_of_k_le
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)} (hS : k ≤ S.card) :
+    (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card ≤ 1 :=
+  le_trans
+    (exactAppearingZeroAgreementFiber_card_le_appearingCoordinateAgreementFiber_card
+      dom k a u₀ u₁ S)
+    (appearingCoordinateAgreementFiber_card_le_one_of_k_le dom hk a u₀ u₁ hS)
+
+open Classical in
+/-- If `M` is at least one in every high range `k ≤ t < a`, then any overfull exact
+zero-agreement appearance fiber must lie in the low interpolation range `t < k`. -/
+theorem exists_low_exactAppearingFiber_gt_of_exists_fiber_gt_and_high_one
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
+    (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ M t)
+    (hgt : ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+      M t < (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card) :
+    ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+      M t < (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card := by
+  rcases hgt with ⟨t, ht, S, hS, hgt⟩
+  by_cases hlow : t < k
+  · exact ⟨t, ht, hlow, S, hS, hgt⟩
+  · have hkt : k ≤ t := le_of_not_gt hlow
+    have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+    have hfiber :
+        (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card ≤ 1 :=
+      exactAppearingZeroAgreementFiber_card_le_one_of_k_le dom hk a u₀ u₁
+        (by rw [hScard]; exact hkt)
+    have hle : (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card ≤ M t :=
+      le_trans hfiber (hHigh t ht hkt)
+    exact False.elim ((not_lt_of_ge hle) hgt)
+
+open Classical in
+/-- Scanner-facing full failure split with high exact appearance fibers discharged by RS
+uniqueness. Once `M t ≥ 1` for every high `k ≤ t < a`, a failed uniform bad-scalar budget must
+expose either zero-direction saturation or a large-zero safe **low** exact appearance fiber
+`t < k`. -/
+theorem unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ M t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card) := by
+  rcases
+      (unsafe_or_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+        dom k a L B M hSupport hFits hFiberFits hnot) with hUnsafe | hFiber
+  · exact Or.inl hUnsafe
+  · rcases hFiber with ⟨u₀, u₁, hnotEligible, hsafe, hgt⟩
+    exact Or.inr ⟨u₀, u₁, hnotEligible, hsafe,
+      exists_low_exactAppearingFiber_gt_of_exists_fiber_gt_and_high_one
+        dom hk a u₀ u₁ M hHigh hgt⟩
+
 section SourceAudit
 
 #print axioms appearingCoordinateAgreementFiber
@@ -647,6 +782,16 @@ section SourceAudit
 #print axioms exists_low_appearingCoordinateFiber_gt_of_exists_fiber_gt_and_high_one
 #print axioms
   unsafe_or_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+#print axioms
+  exists_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms
+  unsafe_or_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms exactAppearingZeroAgreementFiber_card_le_one_of_k_le
+#print axioms exists_low_exactAppearingFiber_gt_of_exists_fiber_gt_and_high_one
+#print axioms
+  unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
 
 end SourceAudit
 

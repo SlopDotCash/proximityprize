@@ -703,6 +703,32 @@ theorem exists_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
       dom k a L B M D hSupport hFits hZeroSafe hFiber hMul hbudget)
 
 open Classical in
+/-- Full failure split for the exact appearance-fiber multiplier route.  Without assuming
+zero-direction safety in advance, a failed uniform bad-scalar budget exposes either zero-direction
+saturation or a large-zero safe line where the moving-support multiplication from `M` to `D`
+breaks. -/
+theorem unsafe_or_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiber : UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a M)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧
+            D t < M t * ((directionSupportSet u₁).card / (a - t))) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
+        dom k a L B M D hSupport hFits hZeroSafe hFiber hbudget hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
 /-- Converse scanner for the profile envelope itself.  Once support, zero-safety, support
 arithmetic, and the combined weight-plus-profile arithmetic are fixed, any failed uniform
 bad-scalar budget exposes an overfull exact singleton-defect profile. -/
@@ -753,19 +779,6 @@ theorem exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLin
   exact hnot
     (uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
       dom k a L B D hSupport hFits hZeroSafe hAppearance hbudget)
-
-open Classical in
-/-- Exact appearance fibers are singleton-bounded in high zero-profile levels.  This is the
-appearance-filtered version of Reed--Solomon uniqueness: if the prescribed zero set has size at
-least `k`, the raw coordinate-agreement fiber has at most one codeword. -/
-theorem exactAppearingZeroAgreementFiber_card_le_one_of_k_le
-    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ)
-    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)} (hS : k ≤ S.card) :
-    (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card ≤ 1 :=
-  le_trans
-    (exactAppearingZeroAgreementFiber_card_le_appearingCoordinateAgreementFiber_card
-      dom k a u₀ u₁ S)
-    (appearingCoordinateAgreementFiber_card_le_one_of_k_le dom hk a u₀ u₁ hS)
 
 open Classical in
 /-- In high zero-profile levels, the exact appearance-fiber singleton budget is bounded by the
@@ -1020,6 +1033,8 @@ section SourceAudit
   exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
 #print axioms
   exists_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
+#print axioms
+  unsafe_or_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
 #print axioms
   exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms

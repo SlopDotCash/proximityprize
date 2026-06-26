@@ -116,6 +116,7 @@ uniformLineBadScalarsBudgeted_of_exactAppearingFiberBudget
 exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
+unsafe_or_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
 exists_largeZero_safe_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScalarsBudgeted
 exactAppearingZeroAgreementFiber_card_le_one_of_k_le
@@ -168,6 +169,10 @@ given an exact appearance-fiber envelope `M`, denominator arithmetic
 bad-scalar budget follows.  The matching scanner says that, with `M` and the combined `D`
 arithmetic fixed, any failed uniform bad-scalar budget must produce a large-zero safe line and
 profile where `D(t) < M(t) * support/(a-t)`.
+
+The multiplier scanner also has the full failure split: without assuming zero-direction safety
+first, the same hypotheses return either a saturating zero-direction codeword or the large-zero
+safe multiplier overrun.
 
 The high profile range is now discharged by RS uniqueness plus support arithmetic.  If `k <= t`,
 then every exact appearing zero-agreement fiber has size at most one, so both the weighted exact

@@ -582,3 +582,9 @@ Follow-up: the low exact singleton-profile scanners now have full failure split 
 assuming zero-direction safety up front, a failed uniform bad-scalar budget exposes either a
 zero-direction saturating codeword or a large-zero safe low exact singleton/exact appearance profile
 with `t < k`.
+
+Follow-up: `LineListAppearanceFiber.lean` now owns the exact appearance-fiber production route.
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers` consumes exact
+zero-agreement appearance-fiber budgets directly, and the scanner
+`unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted` localizes
+failed uniform budgets to zero-direction saturation or a large-zero safe low exact appearance fiber.

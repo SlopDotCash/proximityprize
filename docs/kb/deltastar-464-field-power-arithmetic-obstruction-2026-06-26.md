@@ -75,12 +75,16 @@ zeroAgreementStratum_subset_appearingCoordinateAgreementFiber_biUnion
 zeroAgreementStratum_card_le_choose_mul_appearingCoordinateFiberBound
 puncturedZeroStratifiedLineBudgeted_of_appearingCoordinateFiberBudgeted
 uniformPuncturedZeroStratifiedLineBudgeted_of_uniformAppearingCoordinateFiberBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 These theorems prove that the same punctured-budget reduction works with
 `coordinateAgreementFiber(S) ∩ lineAppearingCodewords`, a subset of the raw affine fiber.  The
 numerical saving is still open; the point is that future positive estimates can now target the
-right finite set without redoing the line-list plumbing.
+right finite set without redoing the line-list plumbing.  The exact-fiber production wrapper also
+has the matching scanner: with high exact fibers bounded by uniqueness, any failed uniform budget
+must return either zero-direction saturation or an overfull low exact appearance fiber.
 
 ## Critique of the Previous Hope
 

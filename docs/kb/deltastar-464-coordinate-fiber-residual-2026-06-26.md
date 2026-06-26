@@ -174,6 +174,12 @@ whenever `a <= z`, `t < a`, `a - t <= n - z`, and
 `coordinateAgreementFiber` by its intersection with `lineAppearingCodewords`, and the stratum cover
 plus punctured-budget consumer still go through.  The next hard estimate is therefore a bound on
 these appearance-filtered fibers, not on all affine interpolation completions.
+The exact-profile version is now available at the same production layer:
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers` consumes
+exact zero-agreement appearance-fiber budgets directly, and
+`unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted` reduces
+any failed budget to either zero-direction saturation or a low exact appearance fiber with
+`t < k`, after the high range is discharged by Reed--Solomon uniqueness.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target
