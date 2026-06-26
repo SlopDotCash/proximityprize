@@ -180,6 +180,17 @@ CandidateListExactAt a
 That successor step is the missing tower/renormalization mathematics for the floor scanner.  Without
 it, finite-rung evidence remains finite-rung evidence.
 
+The continuation pass on 2026-06-26 added the matching negative gates:
+
+```lean
+not_candidateListExactSmallestFamily_iff_exists_rung_not_exact
+not_candidateListExactSuccessor_iff_exists_exact_rung_next_fails
+not_candidateListExactSmallestFamily_of_next_failure
+```
+
+So a scanner can now falsify the uniform list by one bad rung, or falsify successor propagation by
+one adjacent exact-then-failing pair.
+
 ## Continuation: exhaustive-family calibration
 
 The contract also names the tautological all-stack endpoint:

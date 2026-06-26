@@ -562,6 +562,52 @@ theorem candidateListExactSmallestFamily_of_prefix_and_successor
   candidateListExactSmallestFamily_of_base_and_successor FloorBad
     (hprefix 4 le_rfl hcutoff) hstep
 
+/-- Uniform singleton exactness fails exactly when some dyadic rung at or above `a = 4` fails the
+scanner exactness test. -/
+theorem not_candidateListExactSmallestFamily_iff_exists_rung_not_exact
+    (FloorBad : ℕ -> ℕ -> Prop) :
+    (¬ CandidateListExactSmallestFamily FloorBad) ↔
+      ∃ a : ℕ, 4 ≤ a ∧ ¬ CandidateListExactAt FloorBad a := by
+  unfold CandidateListExactSmallestFamily CandidateListExactAt
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro a ha
+    by_contra hbad
+    exact hnone ⟨a, ha, hbad⟩
+  · rintro ⟨a, ha, hbad⟩ hsmall
+    exact hbad (hsmall a ha)
+
+/-- Failure of the successor propagation theorem is exactly an exact rung whose successor is not
+exact.  This is the refutable form of the tower step: a scanner can kill the step by finding one
+such adjacent pair. -/
+theorem not_candidateListExactSuccessor_iff_exists_exact_rung_next_fails
+    (FloorBad : ℕ -> ℕ -> Prop) :
+    (¬ CandidateListExactSuccessor FloorBad) ↔
+      ∃ a : ℕ, 4 ≤ a ∧ CandidateListExactAt FloorBad a ∧
+        ¬ CandidateListExactAt FloorBad (a + 1) := by
+  unfold CandidateListExactSuccessor
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro a ha hexact
+    by_contra hnext
+    exact hnone ⟨a, ha, hexact, hnext⟩
+  · rintro ⟨a, ha, hexact, hnext⟩ hstep
+    exact hnext (hstep a ha hexact)
+
+/-- A failed successor rung rules out the uniform singleton exactness hypothesis needed by the
+off-BGK floor-localization lane. -/
+theorem not_candidateListExactSmallestFamily_of_next_failure
+    (FloorBad : ℕ -> ℕ -> Prop) {a : ℕ}
+    (ha : 4 ≤ a)
+    (hfail : ¬ CandidateListExactAt FloorBad (a + 1)) :
+    ¬ CandidateListExactSmallestFamily FloorBad := by
+  intro hsmall
+  exact hfail (hsmall (a + 1) (Nat.le_trans ha (Nat.le_succ a)))
+
 /-- Exact singleton candidate lists are the scanner-facing route to `FloorLocalizationUniform`. -/
 theorem floorLocalizationUniform_of_candidateListExactSmallestFamily
     (FloorBad : ℕ -> ℕ -> Prop)
@@ -949,6 +995,9 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_base_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_prefix_and_successor
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_candidateListExactSmallestFamily_iff_exists_rung_not_exact
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_candidateListExactSuccessor_iff_exists_exact_rung_next_fails
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_candidateListExactSmallestFamily_of_next_failure
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_of_floorGoodFamilyBudget

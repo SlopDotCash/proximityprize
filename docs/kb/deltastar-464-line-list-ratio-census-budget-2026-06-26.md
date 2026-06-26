@@ -8,8 +8,10 @@ Status: **scanner-interface progress**, not a delta-star proof.
 
 The ratio-census and per-codeword heavy-scalar files already prove the local part of the affine-line
 story: a fixed codeword can be close to only `floor(n/a)` scalars on a line when the direction is
-nonzero coordinatewise.  The remaining positive obligation is not another ratio identity.  It is a
-line-list-size theorem: how many codewords appear anywhere along the affine line.
+nonzero coordinatewise.  The support-aware follow-up removes that artificial hypothesis: if
+`z = #{i : u1 i = 0}` and `z < a`, the per-codeword budget becomes
+`support(u1)/(a-z)`.  The remaining positive obligation is still not another ratio identity.  It is
+a line-list-size theorem: how many codewords appear anywhere along the affine line.
 
 This pass names that boundary directly in:
 
@@ -22,15 +24,22 @@ ArkLib/Data/CodingTheory/ProximityGap/LineListReduction.lean
 The local sets are now first-class declarations:
 
 ```lean
+directionZeroSet
+directionSupportSet
+directionZeroAgreementSet
 lineBadScalars
 lineAppearingCodewords
 LineListBudgeted
+SupportEligibleLineDirection
+UniformSupportLineListBudgeted
+SupportAdjustedLineBadScalarsBudgeted
 ```
 
 The positive consumer is:
 
 ```lean
 lineBadScalars_card_le_of_lineListBudgeted
+lineBadScalars_card_le_of_lineListBudgeted_support_div_sub_zero
 ```
 
 It states the exact budget law:
@@ -40,9 +49,39 @@ lineAppearingCodewords.card <= L
 => lineBadScalars.card <= L * floor(n/a)
 ```
 
+The support-aware version says:
+
+```text
+z = directionZeroSet(u1).card
+z < a
+lineAppearingCodewords.card <= L
+=> lineBadScalars.card <= L * (directionSupportSet(u1).card / (a-z)).
+```
+
+It is backed by the per-codeword local bounds:
+
+```lean
+directionZeroAgreementSet_subset_agreeSet_line
+heavyScalarSet_eq_univ_of_directionZeroAgreement_ge
+heavyScalarSet_card_eq_field_card_of_directionZeroAgreement_ge
+lineBadScalars_eq_univ_of_codeword_directionZeroAgreement_ge
+lineBadScalars_card_eq_field_card_of_codeword_directionZeroAgreement_ge
+directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
+agreeSet_line_card_le_zero_add_movingFiber
+codeword_heavy_scalar_card_le_support_div_sub_zero
+lineBadScalars_card_le_lineAppearingCodewords_card_mul_support_div_sub_zero
+```
+
+The zero-direction branch is sharp: if the fixed codeword already agrees with the offset on at
+least `a` zero-direction coordinates, then every scalar is heavy for that codeword.  If that
+codeword is in `rsCode dom k`, then the whole line bad-scalar set is `univ`.  Conversely, any line
+whose bad-scalar set is smaller than the whole field rules out this saturation branch for every
+appearing codeword.  The support-adjusted budget is therefore only useful after excluding that
+branch, or after proving it cannot occur for the deployed line/codeword family.
+
 The old theorem `badScalar_card_le_lineList_mul` already contained this argument internally.  The
-new form is meant for downstream scanners and proof attempts that want to supply a candidate
-line-list bound without unfolding the bipartite cover proof.
+new forms are meant for downstream scanners and proof attempts that want to supply a candidate
+line-list bound without unfolding the bipartite cover proof or assuming a nowhere-zero direction.
 
 ## Refutation Surface
 
@@ -51,6 +90,11 @@ The scanner-facing contrapositives are:
 ```lean
 not_lineListBudgeted_of_lineBadScalars_card_gt
 lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt
+not_lineListBudgeted_of_lineBadScalars_card_gt_support_div_sub_zero
+lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt_support_div_sub_zero
+not_uniformSupportLineListBudgeted_iff_exists_eligible_lineAppearing_gt
+not_supportAdjustedLineBadScalarsBudgeted_iff_exists_eligible_lineBadScalars_gt
+not_uniformSupportLineListBudgeted_of_exists_eligible_lineBadScalars_gt
 ```
 
 So any over-budget line:
@@ -85,3 +129,125 @@ Littlewood-Offord, character-sum, and list-decoding notes keep returning to the 
 anti-concentration controls one line/codeword interaction, while the prize-scale closure still
 needs a production line-list bound.  No paper in this pass supplied that missing bound as a theorem
 ready to plug into `LineListBudgeted`.
+
+Filename hits around the line-list/list-decoding lane included:
+
+```text
+BCIKS20-proximity-gaps.pdf
+BermanShanyTamo-ExplicitSubcodesRSCapacity.pdf
+LiShagrithaya-ListRecoveryLinearCodes.pdf
+LiShagrithaya-NearOptimalListRecoveryLinearCodeFamilies-2502.13877.pdf
+LeviMosheiffShagrithaya-RandomRSRandomLinearLocallyEquivalent-2406.02238.pdf
+arxiv-2603.03841-AdvancesListDecodingPolynomialCodes.pdf
+arxiv-2605.07595-SyndromeSpaceProximityGapsRandomLinearCodes.pdf
+eprint-2026-782-HKK-FailureProximityGaps.pdf
+```
+
+These are still valuable references, but this pass did not find a statement with the exact
+production shape:
+
+```text
+LineListBudgeted dom k a u0 u1 L
+```
+
+for the deployed affine lines and prize-scale thresholds.
+
+## Continuation: support-aware directions
+
+The first line-list split assumed the direction `u₁` was nonzero on every coordinate.  That is a
+clean special case, but it is stronger than the affine-line geometry needs.  The support-aware
+update adds:
+
+```lean
+directionZeroSet
+directionSupportSet
+agreeSet_line_card_le_zero_add_movingFiber
+codeword_heavy_scalar_card_le_support_div_sub_zero
+lineBadScalars_card_le_lineAppearingCodewords_card_mul_support_div_sub_zero
+lineBadScalars_card_le_of_lineListBudgeted_support_div_sub_zero
+not_lineListBudgeted_of_lineBadScalars_card_gt_support_div_sub_zero
+lineAppearingCodewords_card_gt_of_lineBadScalars_card_gt_support_div_sub_zero
+```
+
+If `z = #directionZeroSet u₁` and `z < a`, a fixed codeword is heavy for at most
+
+```text
+#directionSupportSet(u₁) / (a - z)
+```
+
+scalars.  The line-list gate therefore works for directions with zeros, as long as the zero support
+does not already meet the agreement threshold.  The residual is still the same line-list-size
+theorem; the per-codeword layer is no longer blocked by an artificial nowhere-zero assumption.
+
+The excluded case is now explicit rather than hidden: if the zero-direction set already has
+`a <= z`, then the line can be heavy for reasons unrelated to moving scalar fibers.  That branch has
+to be handled by the near-code/zero-direction machinery or by a separate pair-joint argument.  The
+support-aware lemma only closes the small-zero-set side of the split.
+
+## Continuation: uniform eligible-line budget
+
+The route is now family-facing.  A line-list proof for one affine line is only a local certificate;
+the production target must quantify over every eligible affine line:
+
+```lean
+UniformSupportLineListBudgeted dom k a L
+```
+
+This says that every `u0,u1` with `#directionZeroSet(u1) < a` has at most `L` appearing codewords.
+The consumer is:
+
+```lean
+supportAdjustedLineBadScalarsBudgeted_of_uniformSupportLineListBudgeted
+```
+
+and it gives the support-adjusted bad-scalar budget on every eligible line:
+
+```text
+lineBadScalars.card <=
+  L * floor(#directionSupportSet(u1) / (a - #directionZeroSet(u1))).
+```
+
+The new failure witnesses are exact:
+
+```lean
+not_uniformSupportLineListBudgeted_iff_exists_eligible_lineAppearing_gt
+not_supportAdjustedLineBadScalarsBudgeted_iff_exists_eligible_lineBadScalars_gt
+not_uniformSupportLineListBudgeted_of_exists_eligible_lineBadScalars_gt
+```
+
+So a scanner can now refute a proposed uniform line-list theorem by one eligible line with too many
+appearing codewords, or by one eligible line whose bad-scalar count beats the support-adjusted
+budget.  This is still not a proof of the #464 floor; it is the exact all-eligible-line production
+obligation that would have to be compared to the canonical worst-case incidence core.
+
+## Continuation: zero-direction saturation
+
+The complement of the support-aware condition is sharp.  The new zero-direction socket adds:
+
+```lean
+directionZeroAgreementSet
+directionZeroAgreementSet_subset_agreeSet_line
+heavyScalarSet_eq_univ_of_directionZeroAgreement_ge
+lineBadScalars_eq_univ_of_codeword_directionZeroAgreement_ge
+directionZeroAgreement_lt_of_lineBadScalars_card_lt_field_card
+```
+
+If a codeword already agrees with the offset `u0` on at least `a` coordinates where `u1 = 0`, then
+those coordinates agree for every scalar `gamma`.  The fixed-codeword heavy-scalar set is all of
+`F`, and if that codeword is in `rsCode dom k`, then:
+
+```text
+lineBadScalars dom k a u0 u1 = univ.
+```
+
+So the excluded branch is not an artifact of the proof.  It can saturate the scalar field.  Any
+nontrivial bad-scalar upper bound for a line must therefore prove:
+
+```text
+for every codeword c in rsCode dom k,
+#directionZeroAgreementSet(c,u0,u1) < a.
+```
+
+This turns the zero-direction branch into a clean near-code residual.  It does not help prove the
+floor directly; it prevents a false proof from smuggling a large zero-coordinate agreement set
+through the support-adjusted denominator.

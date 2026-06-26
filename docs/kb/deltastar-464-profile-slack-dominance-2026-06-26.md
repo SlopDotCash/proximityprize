@@ -86,12 +86,22 @@ profileFiberSlackBudgeted_zero_iff_worstCaseIncidenceBounded_of_injective
 profileFiberSlackCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
 profileFiberOscillationCertificate_zero_iff_worstCaseIncidenceBounded_of_injective
 ProfileBadCountRepresented
+ProfileBadCountFiberConstant
+profileBadCountFiberConstant_of_zero_oscillation
+profileFiberOscillationBounded_zero_of_profileBadCountFiberConstant
+profileFiberOscillationBounded_zero_iff_profileBadCountFiberConstant
+profileBadCountRepresented_of_profileBadCountFiberConstant
+profileBadCountFiberConstant_of_profileBadCountRepresented
+profileBadCountRepresented_iff_profileBadCountFiberConstant_of_repInFiber
 profileBadCountRepresented_of_zero_oscillation
 profileFiberOscillationBounded_zero_of_profileBadCountRepresented
 profileFiberOscillationBounded_zero_iff_profileBadCountRepresented_of_repInFiber
 worstCaseIncidenceBounded_of_profileBadCountRepresented_budget
 deltaStar_pin_of_profileBadCountRepresented_budget
+worstCaseIncidenceBounded_of_profileBadCountFiberConstant_budget
+deltaStar_pin_of_profileBadCountFiberConstant_budget
 profileFiberOscillationCertificate_zero_iff_profileBadCountRepresented_and_budget
+not_profileBadCountFiberConstant_iff_exists_sameProfile_count_ne
 not_profileBadCountRepresented_iff_exists_stack_count_ne
 not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_or_budget_lt
 ```
@@ -209,8 +219,9 @@ budgeting and both slack/oscillation certificates are equivalent to the original
 representatives and zero slack has the same equivalence, so fine relabelings also do not simplify
 #464; they merely rename the all-stack incidence problem.
 
-The zero-slack middle case is now explicit too.  With in-fiber representatives, zero same-profile
-oscillation is equivalent to exact bad-count factorization through the selected representative:
+The zero-slack middle case is now explicit too.  Representative-free, zero same-profile oscillation
+is equivalent to bad-count constancy on profile fibers.  With in-fiber representatives, this is
+equivalent to exact bad-count factorization through the selected representative:
 `StackBadCount u = StackBadCount (rep (profile u))`.  See
 `docs/kb/deltastar-464-zero-slack-profile-factorization-2026-06-26.md`.
 

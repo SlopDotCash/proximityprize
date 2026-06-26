@@ -155,6 +155,89 @@ def ProfileBadCountRepresented (K : Type) [Field K] [Fintype K] [DecidableEq K]
   ∀ u : WordStack A (Fin 2) ι,
     StackBadCount K C δ u = StackBadCount K C δ (rep (profile u))
 
+/-- The representative-free zero-slack profile condition: bad-scalar counts are constant on every
+profile fiber.  This is the actual invariant a compressed zero-slack profile must satisfy. -/
+def ProfileBadCountFiberConstant (K : Type) [Field K] [Fintype K] [DecidableEq K]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
+    {P : Type} (C : Set (ι -> A)) (δ : ℝ≥0)
+    (profile : WordStack A (Fin 2) ι -> P) : Prop :=
+  ∀ u v : WordStack A (Fin 2) ι, profile u = profile v ->
+    StackBadCount K C δ u = StackBadCount K C δ v
+
+/-- Zero one-sided oscillation is exactly fiberwise constancy of the bad-scalar count. -/
+theorem profileBadCountFiberConstant_of_zero_oscillation
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    (hosc : ProfileFiberOscillationBounded F C δ profile (fun _ => 0)) :
+    ProfileBadCountFiberConstant F C δ profile := by
+  intro u v hsame
+  apply le_antisymm
+  · simpa using hosc u v hsame
+  · simpa using hosc v u hsame.symm
+
+/-- Fiberwise bad-count constancy gives zero one-sided oscillation. -/
+theorem profileFiberOscillationBounded_zero_of_profileBadCountFiberConstant
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    (hconst : ProfileBadCountFiberConstant F C δ profile) :
+    ProfileFiberOscillationBounded F C δ profile (fun _ => 0) := by
+  intro u v hsame
+  have hcount : StackBadCount F C δ u = StackBadCount F C δ v := hconst u v hsame
+  simp [hcount]
+
+/-- Representative-free normal form for zero slack: zero oscillation is equivalent to bad-count
+constancy on profile fibers. -/
+theorem profileFiberOscillationBounded_zero_iff_profileBadCountFiberConstant
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} :
+    ProfileFiberOscillationBounded F C δ profile (fun _ => 0) ↔
+      ProfileBadCountFiberConstant F C δ profile := by
+  constructor
+  · exact profileBadCountFiberConstant_of_zero_oscillation C δ
+  · exact profileFiberOscillationBounded_zero_of_profileBadCountFiberConstant C δ
+
+/-- If bad counts are constant on fibers and representatives are in used fibers, then bad counts
+factor through the chosen representatives. -/
+theorem profileBadCountRepresented_of_profileBadCountFiberConstant
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hconst : ProfileBadCountFiberConstant F C δ profile)
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileBadCountRepresented F C δ profile rep := by
+  intro u
+  exact hconst u (rep (profile u)) (hrep (profile u) ⟨u, rfl⟩).symm
+
+/-- Representative factorization implies fiberwise bad-count constancy, regardless of whether the
+representatives lie in their fibers. -/
+theorem profileBadCountFiberConstant_of_profileBadCountRepresented
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hfactor : ProfileBadCountRepresented F C δ profile rep) :
+    ProfileBadCountFiberConstant F C δ profile := by
+  intro u v hsame
+  have hrepEq : rep (profile u) = rep (profile v) := congrArg rep hsame
+  calc
+    StackBadCount F C δ u = StackBadCount F C δ (rep (profile u)) := hfactor u
+    _ = StackBadCount F C δ (rep (profile v)) := by rw [hrepEq]
+    _ = StackBadCount F C δ v := (hfactor v).symm
+
+/-- With in-fiber representatives, representative bad-count factorization is exactly fiberwise
+bad-count constancy. -/
+theorem profileBadCountRepresented_iff_profileBadCountFiberConstant_of_repInFiber
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hrep : ProfileRepresentativeInFiber profile rep) :
+    ProfileBadCountRepresented F C δ profile rep ↔
+      ProfileBadCountFiberConstant F C δ profile := by
+  constructor
+  · exact profileBadCountFiberConstant_of_profileBadCountRepresented C δ
+  · intro hconst
+    exact profileBadCountRepresented_of_profileBadCountFiberConstant C δ hconst hrep
+
 /-- Zero same-profile oscillation plus in-fiber representatives forces the bad-count to factor
 through the representative of each profile. -/
 theorem profileBadCountRepresented_of_zero_oscillation
@@ -164,14 +247,8 @@ theorem profileBadCountRepresented_of_zero_oscillation
     (hosc : ProfileFiberOscillationBounded F C δ profile (fun _ => 0))
     (hrep : ProfileRepresentativeInFiber profile rep) :
     ProfileBadCountRepresented F C δ profile rep := by
-  intro u
-  apply le_antisymm
-  · have hsame : profile u = profile (rep (profile u)) :=
-      (hrep (profile u) ⟨u, rfl⟩).symm
-    simpa using hosc u (rep (profile u)) hsame
-  · have hsame : profile (rep (profile u)) = profile u :=
-      hrep (profile u) ⟨u, rfl⟩
-    simpa using hosc (rep (profile u)) u hsame
+  exact profileBadCountRepresented_of_profileBadCountFiberConstant C δ
+    (profileBadCountFiberConstant_of_zero_oscillation C δ hosc) hrep
 
 /-- If bad-counts factor through profile representatives, then zero same-profile oscillation holds:
 same-profile stacks have equal represented counts. -/
@@ -181,14 +258,25 @@ theorem profileFiberOscillationBounded_zero_of_profileBadCountRepresented
     {rep : P -> WordStack A (Fin 2) ι}
     (hfactor : ProfileBadCountRepresented F C δ profile rep) :
     ProfileFiberOscillationBounded F C δ profile (fun _ => 0) := by
-  intro u v hsame
-  have hrepEq : rep (profile u) = rep (profile v) := congrArg rep hsame
-  have hcount : StackBadCount F C δ u = StackBadCount F C δ v := by
-    calc
-      StackBadCount F C δ u = StackBadCount F C δ (rep (profile u)) := hfactor u
-      _ = StackBadCount F C δ (rep (profile v)) := by rw [hrepEq]
-      _ = StackBadCount F C δ v := (hfactor v).symm
-  simp [hcount]
+  exact profileFiberOscillationBounded_zero_of_profileBadCountFiberConstant C δ
+    (profileBadCountFiberConstant_of_profileBadCountRepresented C δ hfactor)
+
+/-- Failure of fiberwise bad-count constancy is exactly a same-profile pair with unequal counts. -/
+theorem not_profileBadCountFiberConstant_iff_exists_sameProfile_count_ne
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} (profile : WordStack A (Fin 2) ι -> P) :
+    (¬ ProfileBadCountFiberConstant F C δ profile) ↔
+      ∃ u v : WordStack A (Fin 2) ι, profile u = profile v ∧
+        StackBadCount F C δ u ≠ StackBadCount F C δ v := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u v hsame
+    by_contra hne
+    exact hnone ⟨u, v, hsame, hne⟩
+  · rintro ⟨u, v, hsame, hne⟩ hconst
+    exact hne (hconst u v hsame)
 
 /-- With in-fiber representatives, zero same-profile oscillation is exactly representative
 bad-count factorization.  This is the zero-slack middle-case target for a compressed profile. -/
@@ -236,6 +324,35 @@ theorem deltaStar_pin_of_profileBadCountRepresented_budget
     (F := F) (A := A) C εstar hδ
     (worstCaseIncidenceBounded_of_profileBadCountRepresented_budget C δ hfactor hbudgeted)
     hbudget
+
+/-- Representative-free zero-slack consumer: fiberwise bad-count constancy, an in-fiber
+representative section, and a used-representative budget imply the open-core incidence bound. -/
+theorem worstCaseIncidenceBounded_of_profileBadCountFiberConstant_budget
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hconst : ProfileBadCountFiberConstant F C δ profile)
+    (hrep : ProfileRepresentativeInFiber profile rep)
+    (hbudget : ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  worstCaseIncidenceBounded_of_profileBadCountRepresented_budget C δ
+    (profileBadCountRepresented_of_profileBadCountFiberConstant C δ hconst hrep) hbudget
+
+/-- Delta-star consumer for the representative-free zero-slack fiber-constancy route. -/
+theorem deltaStar_pin_of_profileBadCountFiberConstant_budget
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hconst : ProfileBadCountFiberConstant F C δ profile)
+    (hrep : ProfileRepresentativeInFiber profile rep)
+    (hbudgeted : ProfileFiberSlackBudgeted F C δ profile rep (fun _ => 0) B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  deltaStar_pin_of_profileBadCountRepresented_budget C εstar hδ
+    (profileBadCountRepresented_of_profileBadCountFiberConstant C δ hconst hrep)
+    hbudgeted hbudget
 
 /-- With in-fiber representatives, the zero-slack oscillation certificate is exactly bad-count
 factorization plus the used-representative budget. -/
@@ -934,12 +1051,21 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackDominates_of_fiberOscillation
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberSlackCertificate_of_profileFiberOscillationCertificate
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountFiberConstant_of_zero_oscillation
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_of_profileBadCountFiberConstant
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_iff_profileBadCountFiberConstant
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountRepresented_of_profileBadCountFiberConstant
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountFiberConstant_of_profileBadCountRepresented
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountRepresented_iff_profileBadCountFiberConstant_of_repInFiber
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileBadCountRepresented_of_zero_oscillation
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_of_profileBadCountRepresented
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationBounded_zero_iff_profileBadCountRepresented_of_repInFiber
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.worstCaseIncidenceBounded_of_profileBadCountRepresented_budget
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.deltaStar_pin_of_profileBadCountRepresented_budget
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.worstCaseIncidenceBounded_of_profileBadCountFiberConstant_budget
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.deltaStar_pin_of_profileBadCountFiberConstant_budget
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileFiberOscillationCertificate_zero_iff_profileBadCountRepresented_and_budget
+#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountFiberConstant_iff_exists_sameProfile_count_ne
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_iff_exists_stack_count_ne
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.not_profileBadCountRepresented_and_zeroBudgeted_iff_exists_factor_miss_or_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberSlackDominance.profileRepresentativeInFiber_of_constant

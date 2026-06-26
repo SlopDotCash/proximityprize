@@ -172,6 +172,29 @@ theorem candidateListExactInAP_iff_sound_complete
   · rintro ⟨hsound, hcomplete⟩ p hp hmod
     exact ⟨hsound p hp hmod, hcomplete p hp hmod⟩
 
+/-- Exact scanner form for a failed split-prime candidate list: either a true floor-bad split prime
+is missing from the list, or the list contains a split prime that is not floor-bad. -/
+theorem not_candidateListExactInAP_iff_exists_split_prime_mismatch
+    (FloorBad : ℕ → ℕ → Prop) (n : ℕ) (candidates : List ℕ) :
+    (¬ CandidateListExactInAP FloorBad n candidates) ↔
+      ∃ p : ℕ, p.Prime ∧ p % n = 1 ∧
+        ((FloorBad n p ∧ p ∉ candidates) ∨ (p ∈ candidates ∧ ¬ FloorBad n p)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro p hp hmod
+    constructor
+    · intro hbad
+      by_contra hmem
+      exact hnone ⟨p, hp, hmod, Or.inl ⟨hbad, hmem⟩⟩
+    · intro hmem
+      by_contra hbad
+      exact hnone ⟨p, hp, hmod, Or.inr ⟨hmem, hbad⟩⟩
+  · rintro ⟨p, hp, hmod, (⟨hbad, hnotMem⟩ | ⟨hmem, hnotBad⟩)⟩ hexact
+    · exact hnotMem ((hexact p hp hmod).mp hbad)
+    · exact hnotBad ((hexact p hp hmod).mpr hmem)
+
 /-- The `n=32` candidate list matching the least-prime rule does not, by logic alone, prove that the
 list is extensionally equal to the true floor-bad predicate.  The empty predicate is a countermodel:
 `[97]` still matches the least-prime rule, but completeness fails at the split prime `97`.
@@ -214,6 +237,33 @@ def FloorLocalizationUniform (FloorBad : ℕ → ℕ → Prop) : Prop :=
   ∀ a : ℕ, 4 ≤ a → ∀ p : ℕ, p.Prime → p % (2 ^ a) = 1 →
     (FloorBad (2 ^ a) p ↔ p = smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)))
 
+/-- Exact scanner form for failure of the uniform floor-localization characterization: at some
+dyadic rung and split prime, either a floor-bad prime is not the least split prime, or the least
+split prime is not floor-bad. -/
+theorem not_floorLocalizationUniform_iff_exists_rung_prime_mismatch
+    (FloorBad : ℕ → ℕ → Prop) :
+    (¬ FloorLocalizationUniform FloorBad) ↔
+      ∃ a : ℕ, 4 ≤ a ∧ ∃ p : ℕ, p.Prime ∧ p % (2 ^ a) = 1 ∧
+        ((FloorBad (2 ^ a) p ∧
+            p ≠ smallestPrime1ModN (2 ^ a) (2 ^ (5 * a))) ∨
+          (p = smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) ∧
+            ¬ FloorBad (2 ^ a) p)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro a ha p hp hmod
+    constructor
+    · intro hbad
+      by_contra hne
+      exact hnone ⟨a, ha, p, hp, hmod, Or.inl ⟨hbad, hne⟩⟩
+    · intro heq
+      by_contra hbad
+      exact hnone ⟨a, ha, p, hp, hmod, Or.inr ⟨heq, hbad⟩⟩
+  · rintro ⟨a, ha, p, hp, hmod, (⟨hbad, hne⟩ | ⟨heq, hnotBad⟩)⟩ hunif
+    · exact hne ((hunif a ha p hp hmod).mp hbad)
+    · exact hnotBad ((hunif a ha p hp hmod).mpr heq)
+
 /-- If each dyadic rung has an exact candidate list consisting of the least split prime, then the
 abstract uniform localization predicate follows.  This is the honest bridge from scanner evidence
 to `FloorLocalizationUniform`. -/
@@ -237,6 +287,20 @@ input, or a dyadic-special theorem. Verified rungs include `17 < 16^4` and `97 <
 universal statement remains an explicit input. -/
 def LinnikLeastPrimeBelowPrize : Prop :=
   ∀ a : ℕ, 4 ≤ a → smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) < (2 ^ a) ^ 4
+
+/-- Exact scanner form for failure of the least-prime input: some dyadic rung has its searched least
+split prime at or above prize scale. -/
+theorem not_LinnikLeastPrimeBelowPrize_iff_exists_rung_prize_le
+    : (¬ LinnikLeastPrimeBelowPrize) ↔
+      ∃ a : ℕ, 4 ≤ a ∧ (2 ^ a) ^ 4 ≤ smallestPrime1ModN (2 ^ a) (2 ^ (5 * a)) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro a ha
+    exact lt_of_not_ge (fun hge => hnone ⟨a, ha, hge⟩)
+  · rintro ⟨a, ha, hge⟩ hleast
+    exact (not_lt_of_ge hge) (hleast a ha)
 
 /-- **Binder-predicate closure (conditional, off-BGK).** If the floor-bad characterization is
 uniform in `μ` AND the least prime `≡ 1 mod n` is below prize scale, THEN every prize-regime
@@ -287,8 +351,11 @@ theorem floor_localization_capstone :
 #print axioms floor_closed_n16
 #print axioms floorBad32_matches_smallestPrime
 #print axioms candidateListExactInAP_iff_sound_complete
+#print axioms not_candidateListExactInAP_iff_exists_split_prime_mismatch
 #print axioms floorBad32_candidate_match_not_extensional_evidence
+#print axioms not_floorLocalizationUniform_iff_exists_rung_prime_mismatch
 #print axioms floorLocalizationUniform_of_candidateListExactSmallest
+#print axioms not_LinnikLeastPrimeBelowPrize_iff_exists_rung_prize_le
 #print axioms floor_closes_by_linnik
 #print axioms floor_localization_capstone
 

@@ -41,6 +41,42 @@ theorem allDirectionsBounded_implies_one {ι γ : Type*} {bad : ι -> Finset γ}
     OneDirectionBounded bad i0 B :=
   h i0
 
+/-- A distinguished direction is a true global maximizer for the bad-scalar count.  This is the
+missing bridge that would make a singleton binder/floor family sufficient for a worst-case bound. -/
+def OneDirectionMaximizes {ι γ : Type*} (bad : ι -> Finset γ) (i0 : ι) : Prop :=
+  forall i : ι, Finset.card (bad i) <= Finset.card (bad i0)
+
+/-- The singleton-maximizer condition is exactly the all-directions bound at the singleton's own
+count. -/
+theorem oneDirectionMaximizes_iff_allDirectionsBounded_at_own_card
+    {ι γ : Type*} {bad : ι -> Finset γ} {i0 : ι} :
+    OneDirectionMaximizes bad i0 ↔ AllDirectionsBounded bad (Finset.card (bad i0)) := by
+  rfl
+
+/-- A one-direction budget becomes a worst-case budget only after a global-maximizer proof. -/
+theorem allDirectionsBounded_of_oneDirectionBounded_and_maximizes
+    {ι γ : Type*} {bad : ι -> Finset γ} {i0 : ι} {B : Nat}
+    (hone : OneDirectionBounded bad i0 B)
+    (hmax : OneDirectionMaximizes bad i0) :
+    AllDirectionsBounded bad B := by
+  intro i
+  exact le_trans (hmax i) hone
+
+/-- Scanner-facing failure form: a proposed singleton floor representative is not a global maximizer
+precisely when some other direction has a strictly larger bad-scalar count. -/
+theorem not_oneDirectionMaximizes_iff_exists_larger
+    {ι γ : Type*} {bad : ι -> Finset γ} {i0 : ι} :
+    (¬ OneDirectionMaximizes bad i0) ↔
+      ∃ i : ι, Finset.card (bad i0) < Finset.card (bad i) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro i
+    exact le_of_not_gt (fun hgt => hnone ⟨i, hgt⟩)
+  · rintro ⟨i, hgt⟩ hmax
+    exact (not_lt_of_ge (hmax i)) hgt
+
 /-- Toy counterexample: the distinguished family is empty, while another family has one bad scalar. -/
 def toyBad : Bool -> Finset Unit
   | false => ∅
@@ -54,7 +90,7 @@ theorem toy_oneDirectionBounded : OneDirectionBounded toyBad false 0 := by
 theorem toy_not_allDirectionsBounded : Not (AllDirectionsBounded toyBad 0) := by
   intro h
   have htrue := h true
-  simp [AllDirectionsBounded, toyBad] at htrue
+  simp [toyBad] at htrue
 
 /-- Therefore a one-family bound is not a theorem-level substitute for a worst-case bound. -/
 theorem oneDirectionBounded_not_sufficient :
@@ -86,6 +122,9 @@ theorem lowerBoundOnly_not_upperBound :
 /-! ## Axiom audit -/
 
 #print axioms allDirectionsBounded_implies_one
+#print axioms oneDirectionMaximizes_iff_allDirectionsBounded_at_own_card
+#print axioms allDirectionsBounded_of_oneDirectionBounded_and_maximizes
+#print axioms not_oneDirectionMaximizes_iff_exists_larger
 #print axioms toy_oneDirectionBounded
 #print axioms toy_not_allDirectionsBounded
 #print axioms oneDirectionBounded_not_sufficient

@@ -196,6 +196,22 @@ bad, some stack exceeds its representative-plus-slack allowance, or some used pr
 representative-plus-slack allowance is above budget.  This keeps the off-BGK floor lane useful as an
 obstruction-removal tool without laundering it into a proof of the universal #464 floor.
 
+## [2026-06-26] refine | singleton floor dominator gate
+
+Added:
+
+- `docs/kb/deltastar-464-singleton-dominator-gate-2026-06-26.md`
+
+and extended:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorNecessaryNotSufficient.lean`
+
+with `OneDirectionMaximizes`, the exact positive singleton bridge
+`allDirectionsBounded_of_oneDirectionBounded_and_maximizes`, and the falsifier
+`not_oneDirectionMaximizes_iff_exists_larger`.  This isolates the missing theorem behind the
+off-BGK floor route: a bounded binder/floor direction can control the MCA supremum only if it is a
+true global bad-count maximizer.
+
 ## [2026-06-26] refine | profile granularity endpoints
 
 Added:
@@ -221,6 +237,13 @@ with `ProfileBadCountRepresented` and exact consumers/falsifiers.  With in-fiber
 zero same-profile oscillation is equivalent to exact bad-count factorization through the chosen
 profile representative.  The zero-slack certificate now fails exactly by a stack whose count differs
 from its representative, or by an above-budget used representative.
+
+Follow-up: the same file now exposes the representative-free invariant
+`ProfileBadCountFiberConstant`.  Zero same-profile oscillation is equivalent to fiberwise bad-count
+constancy, and representative factorization is just the in-fiber-section form of that invariant.
+The representative-free consumer feeds this invariant plus an in-fiber section and used-representative
+budget directly to the incidence bound and delta-star pin.  Failure is exactly a same-profile pair
+with unequal bad counts.
 
 ## [2026-06-26] refine | floor closure max normal form
 
@@ -256,3 +279,40 @@ appearing codewords.  A budgeted line list now directly gives
 `lineBadScalars.card <= L * floor(n/a)`, while any over-budget bad-scalar count refutes the proposed
 line-list budget by forcing more than `L` appearing codewords.  The residual is therefore a genuine
 line-list-size theorem, not another per-codeword ratio-census identity.
+
+Follow-up: `CodewordHeavyScalar.lean` and `LineListReduction.lean` now include the support-aware
+variant.  If the direction has `z` zero coordinates and `z < a`, each codeword contributes at most
+`directionSupportSet.card / (a - z)` heavy scalars, with matching line-list consumers and
+contrapositives.  This removes the nowhere-zero direction assumption without changing the residual:
+the open work is still bounding the number of appearing codewords.  The complementary
+`a <= z` branch is now an explicit near-code/zero-direction residual instead of a hidden
+nowhere-zero hypothesis.
+
+Follow-up: `LineListReduction.lean` now exposes the family-level production target
+`UniformSupportLineListBudgeted` and the consumer `SupportAdjustedLineBadScalarsBudgeted`.  A
+uniform eligible-line list bound gives the support-adjusted bad-scalar budget on every eligible
+affine line.  The exact falsifiers are an eligible line with more than `L` appearing codewords, or
+an eligible line whose bad-scalar count beats the support-adjusted budget.
+
+Follow-up: the zero-direction complement is now sharp.  `directionZeroAgreementSet` records
+zero-coordinate agreements between a codeword and the line offset; if that count already reaches
+`a`, then the fixed-codeword heavy-scalar set is all of `F`, and a codeword in `rsCode dom k` forces
+`lineBadScalars = univ`.  Thus any nontrivial line bad-scalar bound must rule out such
+zero-direction near-code witnesses.
+
+## [2026-06-26] refine | floor successor propagation gate
+
+Added:
+
+- `docs/kb/deltastar-464-floor-successor-propagation-gate-2026-06-26.md`
+
+and updated `_FloorClosureContract.lean` with scanner-facing negative forms for the uniform singleton
+floor list and the successor step.  Uniform candidate-list exactness now fails exactly by a dyadic
+rung `a >= 4` where exactness fails.  The successor theorem fails exactly by an adjacent pair where
+`CandidateListExactAt a` holds but `CandidateListExactAt (a + 1)` does not.  This keeps the finite
+`a = 4,5` floor evidence honest: it is useful only with a real successor theorem, or refutable by an
+adjacent-rung counterexample.
+
+Follow-up: `_AssaultV2_FloorLocalizationN32.lean` now exposes the finite split-prime mismatch
+witnesses directly: a missing true floor-bad prime, a spurious listed prime, a uniform
+least-prime-characterization mismatch, or a least split prime that is not below prize scale.
