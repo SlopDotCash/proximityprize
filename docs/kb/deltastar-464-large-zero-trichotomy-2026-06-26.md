@@ -137,3 +137,75 @@ bad scalar count > B.
 If such a witness exists, the line-list route reduces back to global worst-case incidence.  If it
 does not, the missing theorem is not a character-sum bound but a punctured near-code packing theorem.
 That is the next precise mathematical question.
+
+## Continuation: punctured weight socket landed
+
+The next tool is now a Lean interface rather than just an essay proposal.  `CodewordHeavyScalar.lean`
+adds the punctured per-codeword bound:
+
+```lean
+agreeSet_line_card_le_zeroAgreement_add_movingFiber
+codeword_heavy_scalar_card_le_support_div_sub_zeroAgreement
+```
+
+For a fixed codeword, the denominator is now corrected by
+
+```text
+t = #directionZeroAgreementSet(c,u0,u1)
+```
+
+instead of by the full zero set of `u1`.  Thus if `t < a`, that codeword can feed at most
+
+```text
+#directionSupportSet(u1) / (a - t)
+```
+
+bad scalars.  This is exactly the local inequality needed in the large-zero safe case: the full
+zero set may have size at least `a`, but zero-direction safety keeps every individual codeword's
+zero-agreement count below `a`.
+
+`LineListReduction.lean` packages the line-level socket as:
+
+```lean
+zeroAgreementStratum
+puncturedZeroStratifiedLineWeight
+PuncturedZeroStratifiedLineBudgeted
+UniformPuncturedZeroStratifiedLineBudgeted
+lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
+puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata
+lineBadScalars_card_le_of_puncturedZeroStratifiedLineBudgeted
+largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
+```
+
+The weight is the sum over appearing codewords of
+
+```text
+#directionSupportSet(u1) / (a - #directionZeroAgreementSet(c,u0,u1)).
+```
+
+Under `ZeroDirectionSafeLine`, `puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata`
+regroups the same weight as the exact sum over `t < a` zero-agreement strata:
+
+```text
+sum_t #zeroAgreementStratum(t) * #directionSupportSet(u1)/(a - t).
+```
+
+So a uniform bound on that punctured weight discharges the large-zero safe residual and combines
+with the existing support-eligible line-list theorem.  This still is not a proof of the #464 floor.
+It names the remaining theorem more sharply: prove that the punctured zero-agreement weighted line
+list is small on every large-zero safe line, or exhibit one large-zero safe line whose weight is too
+large.
+
+The new negative forms are:
+
+```lean
+not_puncturedZeroStratifiedLineBudgeted_iff_weight_gt
+not_uniformPuncturedZeroStratifiedLineBudgeted_iff_exists_largeZero_safe_weight_gt
+puncturedZeroStratifiedLineWeight_gt_of_lineBadScalars_card_gt
+not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineBadScalarsBudgeted
+```
+
+Thus the next scanner target is no longer just a raw bad-scalar overcount.  It can look for a
+large-zero safe line whose punctured weighted appearing-codeword list exceeds the proposed budget;
+any raw large-zero safe bad-scalar counterexample already gives such a weighted-cost witness.

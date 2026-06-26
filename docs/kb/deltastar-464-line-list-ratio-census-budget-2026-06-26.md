@@ -245,6 +245,19 @@ not_uniformLineBadScalarsBudgeted_of_not_uniformZeroDirectionSafe_lt_field
 not_uniformLineBadScalarsBudgeted_iff_exists_lineBadScalars_gt
 not_largeZeroSafeLineBadScalarsBudgeted_iff_exists_largeZero_safe_lineBadScalars_gt
 not_uniformLineBadScalarsBudgeted_iff_eligible_or_unsafe_or_largeZero_safe
+zeroAgreementStratum
+puncturedZeroStratifiedLineWeight
+PuncturedZeroStratifiedLineBudgeted
+UniformPuncturedZeroStratifiedLineBudgeted
+lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
+puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata
+lineBadScalars_card_le_of_puncturedZeroStratifiedLineBudgeted
+largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
+not_puncturedZeroStratifiedLineBudgeted_iff_weight_gt
+not_uniformPuncturedZeroStratifiedLineBudgeted_iff_exists_largeZero_safe_weight_gt
+puncturedZeroStratifiedLineWeight_gt_of_lineBadScalars_card_gt
+not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineBadScalarsBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_largeZeroSafe
 ```
 
@@ -347,3 +360,65 @@ So any failed production line-list budget must now surface as one of:
 This is the useful scanner form.  It separates the arithmetic support-fit problem, the near-code
 saturation obstruction, and the residual large-zero geometry instead of letting them blur into one
 "line-list failed" message.
+
+## Continuation: punctured zero-stratified large-zero socket
+
+The large-zero safe residual now has a positive consumer instead of only a name.  The new
+codeword-level lemmas are:
+
+```lean
+agreeSet_line_card_le_zeroAgreement_add_movingFiber
+codeword_heavy_scalar_card_le_support_div_sub_zeroAgreement
+```
+
+They replace the old denominator `a - #directionZeroSet(u1)` with
+
+```text
+a - #directionZeroAgreementSet(c,u0,u1)
+```
+
+for each codeword `c`.  This is the right correction in the large-zero branch: even when
+`#directionZeroSet(u1) >= a`, a zero-safe line still gives
+`#directionZeroAgreementSet(c,u0,u1) < a` for every codeword in the RS code.
+
+The line-level declarations are:
+
+```lean
+zeroAgreementStratum
+puncturedZeroStratifiedLineWeight
+PuncturedZeroStratifiedLineBudgeted
+UniformPuncturedZeroStratifiedLineBudgeted
+lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
+puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata
+lineBadScalars_card_le_of_puncturedZeroStratifiedLineBudgeted
+largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_puncturedZeroStratified
+not_puncturedZeroStratifiedLineBudgeted_iff_weight_gt
+not_uniformPuncturedZeroStratifiedLineBudgeted_iff_exists_largeZero_safe_weight_gt
+puncturedZeroStratifiedLineWeight_gt_of_lineBadScalars_card_gt
+not_uniformPuncturedZeroStratifiedLineBudgeted_of_not_largeZeroSafeLineBadScalarsBudgeted
+```
+
+The main inequality is:
+
+```text
+lineBadScalars.card
+  <= sum over appearing codewords c
+       #directionSupportSet(u1) /
+         (a - #directionZeroAgreementSet(c,u0,u1)).
+```
+
+The exact regrouping theorem rewrites that weight as:
+
+```text
+sum_{t < a}
+  #zeroAgreementStratum(dom,k,a,u0,u1,t) *
+    #directionSupportSet(u1)/(a-t).
+```
+
+A proof of `UniformPuncturedZeroStratifiedLineBudgeted` now plugs directly into the production
+wrapper together with the support-eligible line-list theorem and the arithmetic support-fit check.
+Conversely, any large-zero safe raw bad-scalar counterexample also overbudgets the punctured weight,
+so scanners can target the stronger weighted certificate directly.
+The field is still open here: the hard part is bounding this weighted appearing-codeword list, not
+the local per-codeword scalar count.

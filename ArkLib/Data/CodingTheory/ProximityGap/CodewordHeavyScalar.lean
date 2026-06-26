@@ -214,6 +214,43 @@ theorem agreeSet_line_card_le_zero_add_movingFiber
           (fun i => (c i - u₀ i) / u₁ i = γ)).card :=
           Finset.card_union_le _ _
 
+/-- Sharper support-aware agreement bound: zero-direction coordinates only matter when the fixed
+codeword already agrees with the offset there.  This is the punctured replacement needed in the
+large-zero safe branch, where the full zero set may have size at least `a`. -/
+theorem agreeSet_line_card_le_zeroAgreement_add_movingFiber
+    (c u₀ u₁ : Fin n → F) (γ : F) :
+    (agreeSet c (fun i => u₀ i + γ • u₁ i)).card
+      ≤ (directionZeroAgreementSet c u₀ u₁).card +
+        ((directionSupportSet u₁).filter
+          (fun i => (c i - u₀ i) / u₁ i = γ)).card := by
+  classical
+  have hsub :
+      agreeSet c (fun i => u₀ i + γ • u₁ i) ⊆
+        directionZeroAgreementSet c u₀ u₁ ∪
+          ((directionSupportSet u₁).filter
+            (fun i => (c i - u₀ i) / u₁ i = γ)) := by
+    intro i hi
+    rw [agreeSet, Finset.mem_filter] at hi
+    by_cases hzero : u₁ i = 0
+    · exact Finset.mem_union.mpr <| Or.inl <| by
+        simp [directionZeroAgreementSet, directionZeroSet, hzero, hi.2]
+    · exact Finset.mem_union.mpr <| Or.inr <| by
+        rw [Finset.mem_filter]
+        refine ⟨?_, ?_⟩
+        · simp [directionSupportSet, hzero]
+        · rw [div_eq_iff hzero]
+          rw [show c i - u₀ i = γ * u₁ i from by rw [hi.2]; ring]
+  calc
+    (agreeSet c (fun i => u₀ i + γ • u₁ i)).card
+        ≤ (directionZeroAgreementSet c u₀ u₁ ∪
+            ((directionSupportSet u₁).filter
+              (fun i => (c i - u₀ i) / u₁ i = γ))).card :=
+          Finset.card_le_card hsub
+    _ ≤ (directionZeroAgreementSet c u₀ u₁).card +
+        ((directionSupportSet u₁).filter
+          (fun i => (c i - u₀ i) / u₁ i = γ)).card :=
+          Finset.card_union_le _ _
+
 open Classical in
 /-- **Support-aware heavy-scalar bound.**  Let `z` be the number of zero coordinates of the
 direction `u₁`.  If the agreement threshold `a` is larger than `z`, then a fixed codeword can be
@@ -260,6 +297,52 @@ theorem codeword_heavy_scalar_card_le_support_div_sub_zero (a : ℕ)
   have hfin : H.card * b ≤ (directionSupportSet u₁).card := le_trans hlb hub
   exact (Nat.le_div_iff_mul_le hb).mpr hfin
 
+open Classical in
+/-- **Punctured support-aware heavy-scalar bound.**  Let `t` be the number of zero-direction
+coordinates where the fixed codeword already agrees with the offset.  If `t < a`, then the fixed
+codeword can be heavy for at most `support(u₁) / (a - t)` scalars, even when the full zero set of
+`u₁` is larger than `a`. -/
+theorem codeword_heavy_scalar_card_le_support_div_sub_zeroAgreement (a : ℕ)
+    (c u₀ u₁ : Fin n → F) (hz : (directionZeroAgreementSet c u₀ u₁).card < a) :
+    ((Finset.univ : Finset F).filter
+        (fun γ => a ≤ (agreeSet c (fun i => u₀ i + γ • u₁ i)).card)).card
+      ≤ (directionSupportSet u₁).card / (a - (directionZeroAgreementSet c u₀ u₁).card) := by
+  classical
+  set z : ℕ := (directionZeroAgreementSet c u₀ u₁).card with hzdef
+  set b : ℕ := a - z with hbdef
+  have hbpos : 0 < b := by
+    rw [hbdef, hzdef]
+    exact Nat.sub_pos_of_lt hz
+  have hb : 1 ≤ b := Nat.succ_le_iff.mpr hbpos
+  set H : Finset F := (Finset.univ : Finset F).filter
+    (fun γ => a ≤ (agreeSet c (fun i => u₀ i + γ • u₁ i)).card) with hH
+  let fiber : F → Finset (Fin n) := fun γ =>
+    (directionSupportSet u₁).filter (fun i => (c i - u₀ i) / u₁ i = γ)
+  have hpart : (directionSupportSet u₁).card =
+      ∑ γ ∈ (Finset.univ : Finset F), (fiber γ).card := by
+    exact Finset.card_eq_sum_card_fiberwise
+      (f := fun i => (c i - u₀ i) / u₁ i)
+      (s := directionSupportSet u₁) (t := (Finset.univ : Finset F))
+      (fun i _ => Finset.mem_univ _)
+  have hmem : ∀ γ ∈ H, b ≤ (fiber γ).card := by
+    intro γ hγ
+    rw [hH] at hγ
+    have hheavy : a ≤ (agreeSet c (fun i => u₀ i + γ • u₁ i)).card :=
+      (Finset.mem_filter.mp hγ).2
+    have hcard := agreeSet_line_card_le_zeroAgreement_add_movingFiber c u₀ u₁ γ
+    have hle : a ≤ z + (fiber γ).card := by
+      rw [hzdef]
+      exact le_trans hheavy hcard
+    rw [hbdef]
+    exact (Nat.sub_le_iff_le_add).mpr (by simpa [add_comm] using hle)
+  have hlb : H.card * b ≤ ∑ γ ∈ H, (fiber γ).card := by
+    calc H.card * b = ∑ _γ ∈ H, b := by rw [Finset.sum_const, smul_eq_mul]
+      _ ≤ ∑ γ ∈ H, (fiber γ).card := Finset.sum_le_sum hmem
+  have hub : ∑ γ ∈ H, (fiber γ).card ≤ (directionSupportSet u₁).card :=
+    le_trans (Finset.sum_le_sum_of_subset (hH ▸ Finset.filter_subset _ _)) (le_of_eq hpart.symm)
+  have hfin : H.card * b ≤ (directionSupportSet u₁).card := le_trans hlb hub
+  exact (Nat.le_div_iff_mul_le hb).mpr hfin
+
 /-! ## Source audit -/
 
 #print axioms directionZeroSet
@@ -273,5 +356,7 @@ theorem codeword_heavy_scalar_card_le_support_div_sub_zero (a : ℕ)
 #print axioms codeword_heavy_scalar_card_le
 #print axioms agreeSet_line_card_le_zero_add_movingFiber
 #print axioms codeword_heavy_scalar_card_le_support_div_sub_zero
+#print axioms agreeSet_line_card_le_zeroAgreement_add_movingFiber
+#print axioms codeword_heavy_scalar_card_le_support_div_sub_zeroAgreement
 
 end ProximityGap.Ownership

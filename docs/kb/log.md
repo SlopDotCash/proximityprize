@@ -330,6 +330,16 @@ large-zero safe overbudget.  Added `docs/kb/deltastar-464-large-zero-trichotomy-
 which criticizes the previous line-list optimism and identifies the next possible tool as a
 punctured zero-stratified line-list theorem.
 
+Follow-up: the punctured zero-stratified tool is now formalized.  `CodewordHeavyScalar.lean` proves
+the per-codeword denominator `support(u1)/(a - #zeroAgreement(c,u0,u1))`, and
+`LineListReduction.lean` lifts it to `puncturedZeroStratifiedLineWeight` plus consumers for
+`LargeZeroSafeLineBadScalarsBudgeted` and `UniformLineBadScalarsBudgeted`, plus a bridge from
+large-zero safe bad-scalar failure to punctured-weight failure.  The exact regrouping
+`puncturedZeroStratifiedLineWeight_eq_sum_zeroAgreementStrata` rewrites the same weight as a
+sum over `t < a` zero-agreement strata.  Added
+`docs/kb/deltastar-464-punctured-zero-stratified-tool-2026-06-26.md`; the remaining theorem is now
+a uniform bound on that punctured weight, or a scanner counterexample to it.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:
