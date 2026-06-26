@@ -214,6 +214,7 @@ theorem agreeSet_line_card_le_zero_add_movingFiber
           (fun i => (c i - u₀ i) / u₁ i = γ)).card :=
           Finset.card_union_le _ _
 
+omit [Fintype F] in
 /-- Sharper support-aware agreement bound: zero-direction coordinates only matter when the fixed
 codeword already agrees with the offset there.  This is the punctured replacement needed in the
 large-zero safe branch, where the full zero set may have size at least `a`. -/
