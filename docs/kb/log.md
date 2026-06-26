@@ -1066,3 +1066,15 @@ GR08 geometric folded-RS T4.14 routes.  The wrappers compose the existing `t <= 
 frontiers with `FRSEpsMCACapacityGG25TLeFrontier.toFrontier`, so the raw `hBound` field is
 derived by the checked arithmetic bridge rather than added as a new assumption.  Companion note:
 `deltastar-464-folded-frs-capacity-route-pin-2026-06-26.md`.
+
+## [2026-06-26] refute | convolution-squaring bootstrap start condition
+
+Added:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D1ConvolutionSquaringReduction.lean`
+- `docs/kb/deltastar-464-convolution-squaring-bootstrap-verdict-2026-06-26.md`
+
+to record that the arXiv:2606.24471 mirrored self-convolution bootstrap squares Fourier
+concentration but, for the smooth-subgroup test `1_{μ_n}/n`, the starting concentration is exactly
+`M(μ_n)/n`.  The iterated squared target is therefore equivalent to the original Paley house bound,
+so D1 is a consumer of a Paley-strength input rather than an independent floor proof.

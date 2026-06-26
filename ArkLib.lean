@@ -1733,6 +1733,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclicPowerFiber
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclicPowerRangeTorsion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclotomicConcentration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclotomicLatticeWrapOnset
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D1ConvolutionSquaringReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D2LargeDeviationRateFunction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D3FiniteFreeFallingFactorial
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectMomentCeilingAtFloor
