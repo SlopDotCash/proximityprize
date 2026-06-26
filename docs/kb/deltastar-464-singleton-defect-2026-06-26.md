@@ -74,6 +74,9 @@ UniformLargeZeroSafeCodewordSingletonBudgeted
 UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted
 UniformLargeZeroSafeLineListBudgeted
 UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted
+not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
+not_uniformLargeZeroSafeLineListBudgeted_iff_exists_lineAppearing_gt
+exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformLargeZeroSafeCodewordSingletonBudgeted
 largeZeroSafeLineBadScalarsBudgeted_of_singletonDefectBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_singletonDefectBudget
 largeZeroSafeLineBadScalarsBudgeted_of_codewordSingletonBudget
@@ -83,8 +86,11 @@ uniformLineBadScalarsBudgeted_of_supportAdjusted_and_lineListSingletonBudget
 exists_largeZero_safe_singletonDefectBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_codewordSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_codewordSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_codewordSingletonRouteFailure_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_codewordSingletonRouteSupportDivFailure_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_lineListSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_lineListSingletonCap_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_lineListSingletonRouteFailure_of_not_uniformLineBadScalarsBudgeted
 ```
 
 `LineListSingletonDefectGeometry.lean` refines the same defect into an incidence graph and exact
@@ -125,6 +131,14 @@ largeZeroSafeLineBadScalarsBudgeted_of_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
 uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
 uniformLineBadScalarsBudgeted_of_exactAppearingFiberBudget
+zeroExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioCoverSumBudgeted
+uniformLineBadScalarsBudgeted_of_supportRatioCoverSumSingletonBudget
+exists_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+exists_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
+unsafe_or_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+unsafe_or_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
 exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactAppearanceFiberSingletonBudgetFailure_of_not_budgeted
 exists_largeZero_safe_exactAppearingFiberMultiplier_gt_of_not_budgeted
@@ -308,6 +322,14 @@ The multiplier scanner also has the full failure split: without assuming zero-di
 first, the same hypotheses return either a saturating zero-direction codeword or the large-zero
 safe multiplier overrun.
 
+The support-ratio cover is now wired into the singleton-defect route, not only the punctured
+weight route.  A cover-sum envelope `M` bounds exact appearance fibers through
+`supportRatioHeavyCoordinateFiber`; after multiplying by `support/(a-t)` into a singleton-profile
+envelope `D`, it feeds the same exact singleton-defect production wrapper.  The new converse
+scanners split failed production into either a concrete overfull finite `(γ, T)` cover sum or a
+large-zero safe profile where the moving-support multiplication `M(t) * support/(a-t) <= D(t)`
+was too optimistic.
+
 The high profile range is now discharged by RS uniqueness plus support arithmetic.  If `k <= t`,
 then every exact appearing zero-agreement fiber has size at most one, so both the weighted exact
 appearance profile and the exact singleton-defect incidence slice are bounded by
@@ -353,13 +375,18 @@ The per-codeword partition is exact too: singleton bad scalars are the disjoint 
 sum of those codeword-indexed singleton fibers.  This gives a second attack surface: bound the
 number of scalars uniquely witnessed by each codeword, then sum over appearing codewords.
 The production wrappers consume either the appearing-codeword count directly or a `LineListBudgeted`
+cap.  The baseline cap is not new magic: each codeword-singleton scalar is heavy for that codeword,
+so zero-safe lines bound it by `support(u1)/(a - #zeroAgreement(c))`.  The support-div scanner
+therefore says any failed uniform per-codeword cap already forces an ordinary
+support-denominator overrun for a concrete appearing codeword.
 cap, giving bad-scalar bounds from
 `puncturedZeroStratifiedLineWeight + #appearing * perCodewordSingletonCap`.
 The uniform API is now explicit: `UniformLargeZeroSafeCodewordSingletonBudgeted` supplies the
 per-codeword cap, while
 `UniformLargeZeroSafeWeightPlusCodewordSingletonBudgeted` uses the actual appearing-codeword count
 and `UniformLargeZeroSafeWeightPlusLineListSingletonBudgeted` uses a large-zero-safe line-list cap.
-The two scanners localize failed production either to failure of the combined arithmetic or to a
+The exact failure forms and combined route scanners localize failed production to one of the
+remaining obligations: combined arithmetic failure, large-zero-safe line-list failure, or a
 concrete appearing codeword with too many uniquely witnessed singleton scalars.
 
 ## Consequence

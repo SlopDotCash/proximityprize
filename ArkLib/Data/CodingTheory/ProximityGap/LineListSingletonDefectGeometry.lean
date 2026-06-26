@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.LineListIncidenceMultiplicity
-import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiber
+import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioFiber
 
 /-!
 # Geometry of singleton witness defects
@@ -22,6 +22,7 @@ singleton defect by exact-fiber or ownership-profile estimates.
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
 set_option linter.style.longLine false
+set_option linter.style.longFile 1800
 
 open Finset
 
@@ -627,6 +628,189 @@ theorem uniformLineBadScalarsBudgeted_of_exactAppearingFiberBudget
     (uniformExactAppearanceFiberSingletonBudgeted_of_exactAppearingFiberBudgeted
       dom k a M D hFiber hMul)
     hbudget
+
+open Classical in
+/-- Support-ratio-heavy coordinate-fiber budgets imply the exact-appearance singleton budget once
+the moving-support denominator multiplication fits inside `D`. -/
+theorem zeroExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M D : ℕ → ℕ)
+    (hFiber : ZeroSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁ M)
+    (hMul : ∀ t : ℕ, t < a →
+      M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t) :
+    ZeroExactAppearanceFiberSingletonBudgeted dom k a u₀ u₁ D :=
+  zeroExactAppearanceFiberSingletonBudgeted_of_exactAppearingZeroAgreementFiberBudgeted
+    dom k a u₀ u₁ M D
+    (zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+      dom k a u₀ u₁ M hFiber)
+    hMul
+
+open Classical in
+/-- Uniform support-ratio-heavy coordinate-fiber budgets imply the exact-appearance singleton
+budget once the moving-support denominator multiplication fits uniformly. -/
+theorem
+    uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M D : ℕ → ℕ)
+    (hFiber : UniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted dom k a M)
+    (hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t) :
+    UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact zeroExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+    dom k a u₀ u₁ M D
+    (hFiber u₀ u₁ hnotEligible hsafe)
+    (hMul u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Uniform explicit support-ratio cover-sum budgets imply the exact-appearance singleton budget
+once the moving-support denominator multiplication fits uniformly. -/
+theorem uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioCoverSumBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M D : ℕ → ℕ)
+    (hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M)
+    (hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t) :
+    UniformLargeZeroSafeExactAppearanceFiberSingletonBudgeted dom k a D :=
+  uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+    dom k a M D
+    (uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted dom k a M hCover)
+    hMul
+
+open Classical in
+/-- Production wrapper for the singleton-defect route fed by explicit support-ratio cover sums.
+The cover sum bounds exact appearance fibers; the extra `M * support/(a-t) <= D` arithmetic turns
+those fiber caps into singleton-defect profile caps. -/
+theorem uniformLineBadScalarsBudgeted_of_supportRatioCoverSumSingletonBudget
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M)
+    (hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
+    dom k a L B D hSupport hFits hZeroSafe
+    (uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioCoverSumBudgeted
+      dom k a M D hCover hMul)
+    hbudget
+
+open Classical in
+/-- Converse scanner for the support-ratio-cover singleton route.  With the multiplier and
+combined singleton-profile arithmetic fixed, failed bad-scalar production exposes an overfull
+explicit support-ratio cover sum. -/
+theorem exists_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+            (coordinateAgreementFiber dom k (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card := by
+  by_contra hnone
+  have hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M := by
+    intro u₀ u₁ hnotEligible hsafe t ht S hS
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, S, hS, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportRatioCoverSumSingletonBudget
+      dom k a L B M D hSupport hFits hZeroSafe hCover hMul hbudget)
+
+open Classical in
+/-- Converse scanner for the support-ratio-cover singleton route.  With cover sums and combined
+singleton-profile arithmetic fixed, failed production exposes a line/profile where the
+moving-support denominator multiplication from `M` to `D` is too large. -/
+theorem exists_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧
+          D t < M t * ((directionSupportSet u₁).card / (a - t)) := by
+  by_contra hnone
+  have hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t := by
+    intro u₀ u₁ hnotEligible hsafe t ht
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_supportRatioCoverSumSingletonBudget
+      dom k a L B M D hSupport hFits hZeroSafe hCover hMul hbudget)
+
+open Classical in
+/-- Full failure split for the support-ratio-cover singleton budget route.  Without assuming
+zero-direction safety up front, failed production exposes either zero-direction saturation or an
+overfull explicit support-ratio cover sum. -/
+theorem unsafe_or_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hMul : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a →
+          M t * ((directionSupportSet u₁).card / (a - t)) ≤ D t)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            M t < ∑ γ : F, ∑ T ∈ (directionSupportSet u₁).powersetCard (a - t),
+              (coordinateAgreementFiber dom k
+                (fun i => u₀ i + γ • u₁ i) (S ∪ T)).card) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+        dom k a L B M D hSupport hFits hZeroSafe hMul hbudget hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
+/-- Full failure split for the support-ratio-cover singleton multiplier route.  Without assuming
+zero-direction safety up front, failed production exposes either zero-direction saturation or a
+large-zero safe profile where the moving-support multiplication from `M` to `D` breaks. -/
+theorem unsafe_or_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) (k a L B : ℕ) (M D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hCover : UniformLargeZeroSafeSupportRatioCoverSumBudgeted dom k a M)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧
+            D t < M t * ((directionSupportSet u₁).card / (a - t))) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
+        dom k a L B M D hSupport hFits hZeroSafe hCover hbudget hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
 
 open Classical in
 /-- Converse scanner for the exact singleton-defect profile route.  Once support, zero-safety,
@@ -1383,6 +1567,20 @@ section SourceAudit
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_exactSingletonProfileBudget
 #print axioms uniformLineBadScalarsBudgeted_of_exactAppearanceFiberSingletonBudget
 #print axioms uniformLineBadScalarsBudgeted_of_exactAppearingFiberBudget
+#print axioms
+  zeroExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+#print axioms
+  uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+#print axioms uniformExactAppearanceFiberSingletonBudgeted_of_supportRatioCoverSumBudgeted
+#print axioms uniformLineBadScalarsBudgeted_of_supportRatioCoverSumSingletonBudget
+#print axioms
+  exists_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+#print axioms
+  exists_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
+#print axioms
+  unsafe_or_largeZero_safe_supportRatioCoverSumSingletonBudgetFailure_of_not_budgeted
+#print axioms
+  unsafe_or_largeZero_safe_supportRatioCoverSumSingletonMultiplier_gt_of_not_budgeted
 #print axioms
   exists_largeZero_safe_exactSingletonProfileBudgetFailure_of_not_budgeted
 #print axioms

@@ -700,3 +700,29 @@ uniquely witnessed by each appearing codeword; production can use either the act
 or a separate large-zero-safe `LineListBudgeted` cap.  The matching scanners return either combined
 arithmetic failure or a concrete appearing codeword whose singleton-witness scalar fiber exceeds
 the proposed cap.
+
+Follow-up: the per-codeword singleton route now has exact failure forms and combined scanners.
+`not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt` and
+`not_uniformLargeZeroSafeLineListBudgeted_iff_exists_lineAppearing_gt` expose the two missing
+uniform caps directly.  The route-level scanners then split failed production into a finite
+checklist: combined arithmetic failure, large-zero-safe line-list cap failure, or a concrete
+appearing codeword with too many uniquely witnessed singleton scalars.
+
+Essay: `deltastar-464-singleton-cap-route-critique-2026-06-26.md` records the current verdict on
+this attack.  The new scanner is useful because it returns a finite line/codeword/scalar
+counterexample, but it does not prove the floor until a support-ratio overlap-multiplicity theorem
+bounds `codewordSingletonWitnessScalars` uniformly or a domination theorem lifts the local route to
+the worst-stack MCA bound.
+
+Follow-up: the per-codeword singleton-cap route now has its baseline support-denominator
+obstruction.  `codewordSingletonWitnessScalars` is contained in `codewordHeavyScalars`, so on
+zero-safe lines it is bounded by `support(u1)/(a - #zeroAgreement(c))`.  Consequently
+`exists_largeZero_safe_codewordSingletonRouteSupportDivFailure_of_not_uniformLineBadScalarsBudgeted`
+says a failed singleton-cap production attempt yields either combined arithmetic failure or a
+concrete appearing codeword whose ordinary support-denominator capacity already exceeds the cap.
+
+Follow-up: the support-ratio cover-sum route now feeds the singleton-defect profile route directly.
+`uniformLineBadScalarsBudgeted_of_supportRatioCoverSumSingletonBudget` turns a finite cover-sum
+envelope `M` plus the multiplier arithmetic `M(t) * support/(a-t) <= D(t)` into the exact
+singleton-profile production wrapper.  The matching scanners expose either an overfull finite
+`(gamma, T)` cover sum or the large-zero safe profile where that moving-support multiplier breaks.
