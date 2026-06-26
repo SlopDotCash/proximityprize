@@ -828,6 +828,54 @@ theorem uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiber
     hFiberFits
 
 open Classical in
+/-- Production wrapper for the low/high split support-ratio-heavy coordinate-fiber route.  Low
+profiles `t < k` are supplied by the caller; high profiles are discharged by RS uniqueness. -/
+theorem uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hLow : UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a M)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ M t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+    dom k a L B M hSupport hFits hZeroSafe
+    (uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+      dom k a M
+      (uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_low_and_high_one
+        dom hk a M hLow hHigh))
+    hFiberFits
+
+open Classical in
+/-- If support-side production, zero-direction safety, arithmetic fit, and the high-profile
+singleton ceiling are fixed, failed bad-scalar production exposes an overfull low-profile
+support-ratio-heavy coordinate fiber. -/
+theorem exists_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (M : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B M)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ M t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          M t < (supportRatioHeavyCoordinateFiber dom k a u₀ u₁ S).card := by
+  by_contra hnone
+  have hLow :
+      UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a M := by
+    intro u₀ u₁ hnotEligible hsafe t ht hlow S hS
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hlow, S, hS, hgt⟩)
+  exact hnot
+    (uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers
+      dom hk a L B M hSupport hFits hZeroSafe hLow hHigh hFiberFits)
+
+open Classical in
 /-- If uniform bad-scalar production fails after the support-side hypotheses, then the
 ambient-binomial line-cover arithmetic fit is impossible. -/
 theorem
@@ -1270,16 +1318,21 @@ section SourceAudit
 #print axioms supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
 #print axioms supportRatioHeavyCoordinateFiber_subset_coordinateAgreementFiber
 #print axioms supportRatioHeavyCoordinateFiber_card_le_one_of_k_le
+#print axioms ZeroLowSupportRatioHeavyCoordinateFiberBudgeted
 #print axioms zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose
 #print axioms zeroSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 #print axioms ZeroSupportRatioCoverSumBudgeted
 #print axioms ZeroLowSupportRatioCoverSumBudgeted
 #print axioms zeroSupportRatioHeavyBudgeted_of_coverSumBudgeted
 #print axioms UniformLargeZeroSafeSupportRatioCoverSumBudgeted
+#print axioms UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted
 #print axioms UniformLargeZeroSafeLowSupportRatioCoverSumBudgeted
 #print axioms zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose
 #print axioms zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
 #print axioms uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
+#print axioms zeroSupportRatioHeavyCoordinateFiberBudgeted_of_low_and_high_one
+#print axioms
+  uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_low_and_high_one
 #print axioms zeroSupportRatioCoverSumBudgeted_of_low_and_high_choose
 #print axioms
   uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_low_and_high_choose
@@ -1289,6 +1342,9 @@ section SourceAudit
 #print axioms not_zeroLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
 #print axioms
   not_uniformLargeZeroSafeLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
+#print axioms not_zeroLowSupportRatioHeavyBudgeted_iff_exists_low_fiber_gt
+#print axioms
+  not_uniformLargeZeroSafeLowSupportRatioHeavyBudgeted_iff_exists_low_fiber_gt
 #print axioms uniformSupportRatioHeavyBudgeted_of_coverSumBudgeted
 #print axioms
   zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
@@ -1299,6 +1355,8 @@ section SourceAudit
 #print axioms uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
 #print axioms
   uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+#print axioms uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers
+#print axioms exists_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_budgeted
 #print axioms not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
 #print axioms lineFiberCoverChooseBudgetFits_term_le
 #print axioms not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
