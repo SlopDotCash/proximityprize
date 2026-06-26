@@ -20,9 +20,9 @@ single line list size**:
 
 This is structurally better than the per-word list-decoding the supply naively asks for: it
 replaces the worst-case-over-`q`-words list size with **one** list — the codewords near the whole
-affine line `{u₀ + γ·u₁}`. The wall now reads "bound the line list sub-trivially"; that list is
-always at most `q` times the worst per-word list, but it can be far smaller.  For `u₁ = xᵏ` far
-from the code, the line is a genuinely 1-parameter family whose list size is the natural object of
+affine line `{u₀ + γ·u₁}`. The wall now reads "bound the line list sub-trivially"; that list is at
+most `q` times the worst per-word list, but it can be far smaller.  For `u₁ = xᵏ` far from the
+code, the line is a genuinely 1-parameter family whose list size is the natural object of
 affine-subspace list decoding (Guruswami–Xing and successors). It is the cleanest positive-side
 target the incidence skeleton produces.
 
@@ -294,8 +294,8 @@ theorem lineBadScalars_card_le_of_lineListBudgeted_support_div_sub_zero
 open Classical in
 /-- Punctured zero-stratified line reduction.  For a zero-safe line, the bad scalars are bounded
 by the sum over appearing codewords of the corrected moving-support budget using the denominator
-`a - #zeroAgreement(c,u₀,u₁)`.  Unlike the support-eligible theorem, this still works when the full
-zero set of `u₁` has size at least `a`. -/
+`a - #zeroAgreement(c,u₀,u₁)`.  Unlike the support-eligible theorem, this still works when the
+full zero set of `u₁` has size at least `a`. -/
 theorem lineBadScalars_card_le_puncturedZeroStratifiedLineWeight
     (dom : Fin n ↪ F) (k a : ℕ)
     (u₀ u₁ : Fin n → F) (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁) :
