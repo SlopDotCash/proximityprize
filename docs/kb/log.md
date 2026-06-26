@@ -151,3 +151,30 @@ Added:
 to record the exact all-`k` power-word sub-Johnson list identity from
 `PowerWordListBound.lean`, its ten connections to the #389/#371 supply programme, and the
 next symmetric-function fiber targets.
+
+## [2026-06-26] refine | delta-star slack-profile cap equivalence
+
+Updated:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`
+- `docs/kb/deltastar-464-profile-slack-dominance-2026-06-26.md`
+- `docs/kb/deltastar-464-profile-slack-cap-collapse-2026-06-26.md`
+
+to record that a slack-profile representative scheme is exactly the existing profile-cap interface
+with the induced cap `bad(rep p) + slack p`.  The update adds axiom-clean equivalence lemmas and
+preserves the critical conclusion: only a genuine compressed-profile stability theorem would make
+the route mathematically stronger than direct profile caps.
+
+## [2026-06-26] prove | profile-fiber oscillation certificate
+
+Extended:
+
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean`
+- `docs/kb/deltastar-464-profile-slack-dominance-2026-06-26.md`
+
+with `ProfileRepresentativeInFiber`, `ProfileFiberOscillationBounded`, and
+`ProfileFiberOscillationCertificate`.  The new certificate proves the existing slack certificate,
+feeds the same open-core and delta-star consumers, and has an exact three-way failure surface:
+representative misses its used fiber, same-profile oscillation exceeds slack, or the
+representative-plus-slack budget is above `B`.  Constant-profile endpoint lemmas make explicit that
+the coarsest profile collapses oscillation back to a global pairwise bad-count diameter bound.

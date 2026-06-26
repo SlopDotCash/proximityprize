@@ -76,10 +76,10 @@ equivalent to the *pointwise* max bound `∀ v ∈ S, v ≤ √(2·C·log m)`. S
 
 *Proof.* (⟸) If every `v ≤ s*` then for any `s ≥ s*` the filter `{v ∈ S : s < v}` is EMPTY (no `v`
 exceeds `s ≥ s* ≥ v`), so its card is `0 ≤ m·exp(…)` (the RHS is `≥ 0`). (⟹) Given the tail at the
-single threshold `s = s*`: `#{v > s*} ≤ m·exp(−(s*)²/2C) = m·exp(−log m) = 1`. We show `#{v > s*}`
-is in fact `0`: if some `v > s*` then `#{v > s*} ≥ 1`; but pushing to a strictly larger `s ∈ (s*, v)`
-makes the RHS `< 1` while `v` is still counted — contradiction (this is exactly the
-`subgaussian_max_le` mechanism). Hence no `v` exceeds `s*`. -/
+single threshold `s = s*`: `#{v > s*} ≤ m·exp(−(s*)²/2C) = m·exp(−log m) = 1`. We show
+`#{v > s*}` is in fact `0`: if some `v > s*` then `#{v > s*} ≥ 1`; but pushing to a
+strictly larger `s ∈ (s*, v)` makes the RHS `< 1` while `v` is still counted —
+contradiction (this is exactly the `subgaussian_max_le` mechanism). Hence no `v` exceeds `s*`. -/
 theorem subGaussianTailBoundAbove_iff_forall_le
     {S : Finset ℝ} {C m : ℝ} (hC : 0 < C) (hm : 1 ≤ m) :
     SubGaussianTailBoundAbove S C m ↔

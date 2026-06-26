@@ -35,6 +35,9 @@ It introduces:
 ProfileFiberSlackDominates
 ProfileFiberSlackBudgeted
 ProfileFiberSlackCertificate
+ProfileRepresentativeInFiber
+ProfileFiberOscillationBounded
+ProfileFiberOscillationCertificate
 ```
 
 The main consumers are:
@@ -42,9 +45,70 @@ The main consumers are:
 ```lean
 worstCaseIncidenceBounded_of_profileFiberSlack
 worstCaseIncidenceBounded_of_profileFiberSlackCertificate
+worstCaseIncidenceBounded_of_profileFiberOscillationCertificate
 deltaStar_pin_of_profileFiberSlack
 deltaStar_pin_of_profileFiberSlackCertificate
+deltaStar_pin_of_profileFiberOscillationCertificate
 ```
+
+The structured oscillation route proves:
+
+```lean
+profileFiberSlackDominates_of_fiberOscillation
+profileFiberSlackCertificate_of_profileFiberOscillationCertificate
+```
+
+So a proof can now enter through same-profile oscillation:
+
+```text
+1. used representatives are actually in their profile fibers;
+2. same-profile bad-scalar counts differ by at most slack p, one-sided;
+3. representative bad count plus slack is within B.
+```
+
+The file also records the constant-profile endpoint:
+
+```lean
+profileRepresentativeInFiber_of_constant
+profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
+profileFiberOscillationBounded_constant_iff_global_pairwise_bound
+not_profileFiberOscillationBounded_constant_iff_exists_global_pair_exceeds_slack
+```
+
+This is the formal warning that the coarsest possible profile recreates the global
+representative/dominator problem: oscillation inside the one profile fiber is just a global pairwise
+bad-count diameter bound.
+
+## 2026-06-26 Red-Team Correction: Slack Is A Cap Choice
+
+The file now also formalizes the exact relation to the older profile-cap interface.  A slack
+representative scheme induces the profile cap
+
+```lean
+slackCap C delta rep slack p =
+  StackBadCount F C delta (rep p) + slack p
+```
+
+and proves:
+
+```lean
+profileCaps_slackCap_iff_profileFiberSlackDominates
+usedProfileBudgeted_slackCap_iff_profileFiberSlackBudgeted
+profileFiberSlackCertificate_iff_slackCap_profileCaps_usedBudgeted
+profileBudgeted_slackCap_iff_profileFiberSlackBudgeted_of_all_used
+```
+
+So the slack route does not create a stronger theorem form.  It is a structured way to choose a
+profile cap and then ask for the same two facts as before:
+
+```text
+1. every stack is below its assigned cap;
+2. every used cap is within the incidence budget.
+```
+
+The only genuine mathematical gain can come from proving a useful stability theorem that produces
+small slack for a compressed profile.  Without that theorem, the slack certificate is just the direct
+profile-cap certificate written in representative-plus-error coordinates.
 
 The exact scanner/refutation forms are:
 
@@ -54,6 +118,14 @@ profileFiberSlackDominates_iff_no_stack_exceeds_slack
 not_profileFiberSlackBudgeted_iff_exists_usedProfile_budget_lt
 profileFiberSlackBudgeted_iff_no_usedProfile_budget_lt
 not_profileFiberSlackCertificate_iff_exists_stack_exceeds_slack_or_budget_lt
+not_profileRepresentativeInFiber_iff_exists_usedProfile_rep_misses
+not_profileFiberOscillationBounded_iff_exists_sameProfile_exceeds_slack
+profileFiberOscillationBounded_iff_no_sameProfile_exceeds_slack
+not_profileFiberOscillationCertificate_iff_exists_rep_misses_or_sameProfile_exceeds_or_budget_lt
+profileRepresentativeInFiber_of_constant
+profileFiberSlackDominates_constant_iff_forall_le_rep_add_slack
+profileFiberOscillationBounded_constant_iff_global_pairwise_bound
+not_profileFiberOscillationBounded_constant_iff_exists_global_pair_exceeds_slack
 ```
 
 So the slack-profile certificate fails for exactly two concrete reasons:
@@ -62,6 +134,26 @@ So the slack-profile certificate fails for exactly two concrete reasons:
 1. some stack exceeds rep(profile u) plus the advertised slack;
 2. some used profile has rep p plus slack p above B.
 ```
+
+The stronger oscillation certificate fails for exactly three concrete reasons:
+
+```text
+1. a used profile's representative is not actually in that profile fiber;
+2. a same-profile pair has bad-count gap above the advertised slack;
+3. a used representative-plus-slack allowance is above B.
+```
+
+The constant-profile endpoint is now formal too.  If `profile u = p0` for every stack, then
+`ProfileFiberOscillationBounded` is exactly:
+
+```text
+for all stacks u v,
+  StackBadCount(v) + slack(p0) >= StackBadCount(u).
+```
+
+So the coarsest profile does not compress the problem.  It asks for a global bad-count diameter
+bound, and the failure certificate is just a pair of arbitrary stacks whose gap exceeds the single
+slack allowance.
 
 ## Why This Is A Different Attack
 
@@ -77,7 +169,7 @@ identity profile -> all-stack budget problem returns;
 exact fiber maxima -> too rigid for coarse analytic profiles.
 ```
 
-The hoped-for new theorem would be a **fiber oscillation bound**:
+The formalized missing theorem is now a **fiber oscillation bound**:
 
 ```text
 inside each profile fiber, bad-scalar counts have small diameter.
@@ -141,6 +233,9 @@ stable inside each fiber up to slack o(B), or at least up to the remaining floor
 This would let the proof tolerate local profile imperfections and still feed the delta-star pin via
 `ProfileFiberSlackCertificate`.
 
+The Lean route now factors that statement explicitly through
+`ProfileFiberOscillationCertificate`, then down to `ProfileFiberSlackCertificate`.
+
 ## Next Red-Team Test
 
 A proposed profile must now pass three checks:
@@ -156,5 +251,17 @@ stack exceeding its allowance via
 `not_profileFiberSlackDominates_iff_exists_stack_exceeds_slack`.  If (3) fails, the route is just an
 above-budget representative.
 
+There is also a coarse-profile failure mode: if the profile forgets too much, the formal endpoint
+`profileFiberOscillationBounded_constant_iff_global_pairwise_bound` shows the route has become a
+global pairwise diameter theorem.  That is not simpler than the original worst-stack bound unless a
+new invariant explains why the diameter is small.
+
 This does not close the floor.  It sharpens the next mathematical target from "find exact
 representatives" to "prove a fiber oscillation theorem with enough slack margin."
+
+## Follow-up: cap collapse
+
+`docs/kb/deltastar-464-profile-slack-cap-collapse-2026-06-26.md` records the formal critique:
+the slack certificate is exactly the profile-cap interface with the induced cap
+`bad(rep p) + slack p`, budgeted only on used profile labels.  The slack vocabulary is useful for
+scanner design, but it is not a new proof principle.
