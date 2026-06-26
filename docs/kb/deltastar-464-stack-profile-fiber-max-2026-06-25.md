@@ -45,6 +45,10 @@ deltaStar_pin_of_profileFiberMaxesBounded
 not_profileFiberMax_of_sameProfile_strictly_larger
 not_profileFiberMaxReps_iff_exists_bad_used_profile
 profileFiberMaxReps_iff_no_bad_used_profile
+not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
+profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
+worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
+deltaStar_pin_of_no_bad_used_profile_scanner
 ```
 
 ## The Exact Reduction
@@ -146,3 +150,32 @@ StackBadCount(rep p) < StackBadCount(u).
 Equivalently, exact fiber-max representatives are certified by the absence of these bad used
 profiles.  This turns the profile route into a scanner-facing finite proof obligation rather than a
 qualitative classification slogan.
+
+The budget side has the same exact scanner shape: chosen used-profile representatives are bounded by
+`B` iff the scanner finds no used representative with `B < StackBadCount(rep p)`.  Combining the
+max-side and budget-side positive scanners gives the direct incidence consumer
+`worstCaseIncidenceBounded_of_no_bad_used_profile_scanner`, before any floor-localization contract is
+introduced.  With the scaled MCA budget, `deltaStar_pin_of_no_bad_used_profile_scanner` then gives
+the corresponding lower pin directly from scanner evidence.
+
+## Continuation: budget scanner iff
+
+The budget side now has the same exact scanner shape:
+
+```lean
+not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
+profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
+worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
+deltaStar_pin_of_no_bad_used_profile_scanner
+```
+
+So a profile catalogue gives the universal incidence bound from two local absence certificates:
+
+```text
+no used profile has an invalid or beaten representative;
+no used profile representative has bad-scalar count above B.
+```
+
+This is the plain-profile analogue of the refined-profile scanner route.  It still does not choose
+the right profile or prove the count bound; it makes the certificate exact once such a profile is
+proposed.

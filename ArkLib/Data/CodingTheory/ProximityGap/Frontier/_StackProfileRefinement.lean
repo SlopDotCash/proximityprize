@@ -111,6 +111,10 @@ theorem stackBadCount_le_fineFiberMaxRep
     StackBadCount F C δ u ≤ StackBadCount F C δ (rep (fine u)) := by
   exact (hmax (fine u) ⟨u, rfl⟩).2 u rfl
 
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 /-- The fine representative of any stack belongs to the finite representative set over its coarse
 profile. -/
 theorem fineRep_mem_fineRepsOver_of_coarse
@@ -123,7 +127,11 @@ theorem fineRep_mem_fineRepsOver_of_coarse
     rep (fine u) ∈ fineRepsOver (A := A) project rep (coarse u) := by
   classical
   exact Finset.mem_image.mpr
-    ⟨fine u, by simpa [fineRepsOver, hrefine u], rfl⟩
+    ⟨fine u, by simp [hrefine u], rfl⟩
+
+set_option linter.unusedSectionVars true
+set_option linter.unusedDecidableInType true
+set_option linter.unusedFintypeInType true
 
 /-- If the fine representatives over a coarse profile are bounded, then every stack in that coarse
 profile is bounded. -/
@@ -185,6 +193,148 @@ theorem worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
   ⟨refinedProfileMaxesBounded_of_worstCaseIncidenceBounded C δ,
     worstCaseIncidenceBounded_of_refinedProfileMaxesBounded C δ hrefine hmax⟩
 
+/-! ## Scanner-facing forms -/
+
+/-- Exact scanner certificate for failed fine-profile representatives.  A representative function
+fails to choose fine-fiber maximizers iff some used fine profile has either a representative outside
+the advertised fine fiber or a same-fine-profile stack with a strictly larger bad-scalar count. -/
+theorem not_fineFiberMaxReps_iff_exists_bad_used_fineProfile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} :
+    (¬ FineFiberMaxReps F C δ fine rep) ↔
+      ∃ q : Q, UsedProfile fine q ∧
+        (fine (rep q) ≠ q ∨
+          ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
+            StackBadCount F C δ (rep q) < StackBadCount F C δ u) := by
+  constructor
+  · intro hnot
+    classical
+    by_contra hnone
+    apply hnot
+    intro q hused
+    refine ⟨?_, ?_⟩
+    · by_contra hne
+      exact hnone ⟨q, hused, Or.inl hne⟩
+    · intro u hu
+      by_contra hle
+      exact hnone ⟨q, hused, Or.inr ⟨u, hu, Nat.lt_of_not_ge hle⟩⟩
+  · rintro ⟨q, hused, hbad⟩ hmax
+    rcases hbad with houtside | ⟨u, hu, hlt⟩
+    · exact houtside (hmax q hused).1
+    · exact (not_lt_of_ge ((hmax q hused).2 u hu)) hlt
+
+/-- Positive scanner form for fine-profile representatives.  A representative catalogue chooses
+fine-fiber maximizers iff the scanner finds no used fine profile whose representative is outside its
+fiber and no same-fine-profile stack beating the representative. -/
+theorem fineFiberMaxReps_iff_no_bad_used_fineProfile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} :
+    FineFiberMaxReps F C δ fine rep ↔
+      ¬ ∃ q : Q, UsedProfile fine q ∧
+        (fine (rep q) ≠ q ∨
+          ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
+            StackBadCount F C δ (rep q) < StackBadCount F C δ u) := by
+  constructor
+  · intro hmax hbad
+    exact (not_fineFiberMaxReps_iff_exists_bad_used_fineProfile C δ).mpr hbad hmax
+  · intro hno
+    by_contra hnot
+    exact hno ((not_fineFiberMaxReps_iff_exists_bad_used_fineProfile C δ).mp hnot)
+
+/-- Refined-profile boundedness fails exactly when some used fine-profile representative exceeds
+the budget.  The refinement hypothesis turns a used fine profile into a used coarse profile lying
+over it, so the grouped boundedness condition has no hidden global content. -/
+theorem not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project) :
+    (¬ RefinedProfileMaxesBounded F C δ fine coarse project rep B) ↔
+      ∃ q : Q, UsedProfile fine q ∧ B < StackBadCount F C δ (rep q) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro p _hp q _hq hused
+    exact le_of_not_gt (fun hgt => hnone ⟨q, hused, hgt⟩)
+  · rintro ⟨q, hused, hgt⟩ hbounded
+    rcases hused with ⟨u, hu⟩
+    have hp : UsedProfile coarse (project q) := by
+      refine ⟨u, ?_⟩
+      rw [← hrefine u, hu]
+    exact (not_lt_of_ge (hbounded (project q) hp q rfl ⟨u, hu⟩)) hgt
+
+/-- Positive scanner form for refined-profile boundedness.  Bounding the grouped fine-profile
+representatives is exactly the absence of a used fine-profile representative above budget. -/
+theorem refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project) :
+    RefinedProfileMaxesBounded F C δ fine coarse project rep B ↔
+      ¬ ∃ q : Q, UsedProfile fine q ∧ B < StackBadCount F C δ (rep q) := by
+  constructor
+  · intro hbounded hbad
+    exact (not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+      C δ hrefine).mpr hbad hbounded
+  · intro hno
+    by_contra hnot
+    exact hno
+      ((not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+        C δ hrefine).mp hnot)
+
+/-- Scanner-facing refined-profile incidence consumer.  If no used fine profile has a bad
+representative and no used fine-profile representative exceeds the budget, then the universal
+incidence hypothesis follows. -/
+theorem worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project)
+    (hnoMaxBad : ¬ ∃ q : Q, UsedProfile fine q ∧
+      (fine (rep q) ≠ q ∨
+        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
+          StackBadCount F C δ (rep q) < StackBadCount F C δ u))
+    (hnoBudgetBad : ¬ ∃ q : Q, UsedProfile fine q ∧
+      B < StackBadCount F C δ (rep q)) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  worstCaseIncidenceBounded_of_refinedProfileMaxesBounded C δ hrefine
+    ((fineFiberMaxReps_iff_no_bad_used_fineProfile C δ).mpr hnoMaxBad)
+    ((refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
+      C δ hrefine).mpr hnoBudgetBad)
+
+/-- Direct delta-star consumer for the fully scanner-facing refined-profile route. -/
+theorem deltaStar_pin_of_no_bad_fineProfile_scanner
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project)
+    (hnoMaxBad : ¬ ∃ q : Q, UsedProfile fine q ∧
+      (fine (rep q) ≠ q ∨
+        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
+          StackBadCount F C δ (rep q) < StackBadCount F C δ u))
+    (hnoBudgetBad : ¬ ∃ q : Q, UsedProfile fine q ∧
+      B < StackBadCount F C δ (rep q))
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
+    (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
+      C δ hrefine hnoMaxBad hnoBudgetBad)
+    hbudget
+
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 /-- Refining any coarse profile all the way to the identity stack profile is a valid refinement, but
 it carries no compression. -/
 theorem profileRefines_identity_fine
@@ -192,6 +342,10 @@ theorem profileRefines_identity_fine
     ProfileRefines (fun u : WordStack A (Fin 2) ι => u) coarse coarse := by
   intro u
   rfl
+
+set_option linter.unusedSectionVars true
+set_option linter.unusedDecidableInType true
+set_option linter.unusedFintypeInType true
 
 /-- The identity fine profile has the tautological fine-fiber representative: every stack represents
 its own singleton fine fiber. -/
@@ -203,7 +357,7 @@ theorem fineFiberMaxReps_identity
   intro q _hused
   refine ⟨rfl, ?_⟩
   intro u hu
-  simpa [hu]
+  simp [hu]
 
 /-- If the fine profile is the identity stack profile, refined-profile boundedness is exactly the
 original universal incidence hypothesis, no matter which coarse profile it lies over.  Thus
@@ -282,6 +436,12 @@ end ArkLib.ProximityGap.Frontier.StackProfileRefinement
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.worstCaseIncidenceBounded_of_refinedProfileMaxesBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.refinedProfileMaxesBounded_of_worstCaseIncidenceBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.not_fineFiberMaxReps_iff_exists_bad_used_fineProfile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.fineFiberMaxReps_iff_no_bad_used_fineProfile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.deltaStar_pin_of_no_bad_fineProfile_scanner
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.profileRefines_identity_fine
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.fineFiberMaxReps_identity
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.refinedProfileMaxesBounded_identity_iff_worstCaseIncidenceBounded

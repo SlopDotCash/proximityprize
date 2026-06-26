@@ -2203,6 +2203,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RUD_MathlibAssessment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RaggedRootBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomDomainTransferGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomSignTypicalNotAllOnesGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RefinedProfileFloorBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementFlatnessCriterion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagCorridor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagNonneg

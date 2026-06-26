@@ -357,6 +357,78 @@ theorem profileFiberMaxReps_iff_no_bad_used_profile
     by_contra hnot
     exact hno ((not_profileFiberMaxReps_iff_exists_bad_used_profile C δ).mp hnot)
 
+/-- Profile-fiber boundedness fails exactly when some used profile representative is above budget.
+This is the budget-side scanner certificate matching
+`not_profileFiberMaxReps_iff_exists_bad_used_profile`. -/
+theorem not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} :
+    (¬ ProfileFiberMaxesBounded F C δ profile rep B) ↔
+      ∃ p : P, UsedProfile profile p ∧ B < StackBadCount F C δ (rep p) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro p hused
+    exact le_of_not_gt (fun hgt => hnone ⟨p, hused, hgt⟩)
+  · rintro ⟨p, hused, hgt⟩ hbounded
+    exact (not_lt_of_ge (hbounded p hused)) hgt
+
+/-- Positive budget scanner form for profile-fiber maximizers.  Bounding all chosen used-profile
+representatives is equivalent to the scanner finding no used representative above budget. -/
+theorem profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι} :
+    ProfileFiberMaxesBounded F C δ profile rep B ↔
+      ¬ ∃ p : P, UsedProfile profile p ∧ B < StackBadCount F C δ (rep p) := by
+  constructor
+  · intro hbounded hbad
+    exact (not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt C δ).mpr hbad hbounded
+  · intro hno
+    by_contra hnot
+    exact hno ((not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt C δ).mp hnot)
+
+/-- Fully scanner-facing profile incidence consumer.  If no used profile has an invalid or beaten
+representative, and no used representative is above budget, then the universal incidence bound
+follows. -/
+theorem worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hnoMaxBad : ¬ ∃ p : P, UsedProfile profile p ∧
+      (profile (rep p) ≠ p ∨
+        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
+          StackBadCount F C δ (rep p) < StackBadCount F C δ u))
+    (hnoBudgetBad : ¬ ∃ p : P, UsedProfile profile p ∧
+      B < StackBadCount F C δ (rep p)) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  worstCaseIncidenceBounded_of_profileFiberMaxesBounded C δ
+    ((profileFiberMaxReps_iff_no_bad_used_profile C δ).mpr hnoMaxBad)
+    ((profileFiberMaxesBounded_iff_no_usedProfile_budget_lt C δ).mpr hnoBudgetBad)
+
+/-- Direct delta-star consumer for the fully scanner-facing profile route. -/
+theorem deltaStar_pin_of_no_bad_used_profile_scanner
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hnoMaxBad : ¬ ∃ p : P, UsedProfile profile p ∧
+      (profile (rep p) ≠ p ∨
+        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
+          StackBadCount F C δ (rep p) < StackBadCount F C δ u))
+    (hnoBudgetBad : ¬ ∃ p : P, UsedProfile profile p ∧
+      B < StackBadCount F C δ (rep p))
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
+    (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
+      C δ hnoMaxBad hnoBudgetBad)
+    hbudget
+
 /-- A used profile whose selected fiber representative exceeds the budget refutes the universal
 incidence hypothesis at that budget. -/
 theorem not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt
@@ -388,4 +460,8 @@ end ArkLib.ProximityGap.Frontier.StackProfileFiberMax
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMax_of_sameProfile_strictly_larger
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxReps_iff_exists_bad_used_profile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxReps_iff_no_bad_used_profile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.deltaStar_pin_of_no_bad_used_profile_scanner
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt

@@ -35,6 +35,12 @@ Lean proves the main consumer:
 ```lean
 worstCaseIncidenceBounded_of_refinedProfileMaxesBounded
 worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
+not_fineFiberMaxReps_iff_exists_bad_used_fineProfile
+fineFiberMaxReps_iff_no_bad_used_fineProfile
+not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
+worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
+deltaStar_pin_of_no_bad_fineProfile_scanner
 deltaStar_pin_of_refinedProfileMaxesBounded
 not_refinedProfileMaxesBounded_of_counterStack
 not_fineFiberMaxRep_of_sameFineProfile_strictly_larger
@@ -72,3 +78,48 @@ find a same-fine-profile stack with a larger bad-scalar count than the proposed 
 
 Either witness kills the proposed refined-profile route at the exact point where it claims to have
 compressed the worst-case stack search.
+
+## Continuation: exact scanner certificates
+
+The refinement route now has the same scanner-facing shape as the profile-fiber route:
+
+```lean
+not_fineFiberMaxReps_iff_exists_bad_used_fineProfile
+fineFiberMaxReps_iff_no_bad_used_fineProfile
+```
+
+Failure to choose exact fine-fiber representatives is equivalent to finding a used fine profile
+where either:
+
+```text
+fine (rep q) != q
+```
+
+or a same-fine-profile stack has a larger bad-scalar count than `rep q`.
+
+The grouped budget condition is also exact:
+
+```lean
+not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
+```
+
+So a refined profile proof can now be certified by two finite absence checks:
+
+```text
+no used fine profile has an invalid or beaten representative;
+no used fine-profile representative exceeds the budget.
+```
+
+Lean packages that as:
+
+```lean
+worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
+deltaStar_pin_of_no_bad_fineProfile_scanner
+```
+
+This does not prove the floor.  It removes ambiguity from iterative classification searches:
+after splitting a hard coarse profile into finer fibers, the remaining task is an explicit local
+scanner certificate, not another global worst-case argument.  Once that certificate includes the
+scaled MCA budget, the delta-star lower pin follows directly at the substrate layer; any later
+floor-localization wrapper is only useful if it supplies the budget without assuming this scanner.
