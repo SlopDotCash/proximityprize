@@ -502,3 +502,20 @@ The newest scanner composition moves this up to the full line-list route.  With 
 zero-direction saturation, or a concrete overfull large-zero stratum.  If the support-eligible
 line-list theorem, support arithmetic, and zero-direction safety are also fixed, only the overfull
 large-zero stratum can remain.
+
+The latest refinement opens that stratum through a raw coordinate-fiber API:
+
+```lean
+coordinateAgreementFiber
+ZeroCoordinateAgreementFiberBudgeted
+ZeroCoordinateAgreementFiberBudgetFits
+coordinateAgreementFiber_card_le_one_of_k_le
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
+```
+
+`coordinateAgreementFiber` is the raw RS fiber of all codewords agreeing with `u0` on a fixed
+zero-coordinate subset `S`; summing over all `t`-subsets covers the exact `t`-stratum.  It already
+has the endpoint theorem that a fiber over `#S >= k` has size at most one.  Thus the remaining
+`N(t)` problem can be attacked as a finite-field interpolation count for fibers with `t < k`; if
+that count and the binomial/summation arithmetic fit, the large-zero branch is discharged.  If it
+fails, the new scanner returns an explicit overfull coordinate fiber.

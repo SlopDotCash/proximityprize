@@ -259,3 +259,31 @@ N(t) < #zeroAgreementStratum(t).
 So the line-list branch is now factored down to an actual near-code packing statement.  A successful
 next proof must bound these strata.  A successful refutation must produce the concrete overfull
 stratum, not just a raw bad-scalar excess.
+
+## Continuation: coordinate-fiber route
+
+The stratum target is no longer opaque.  `LineListReduction.lean` now splits it through a
+lower-level coordinate-fiber cover:
+
+```lean
+coordinateAgreementFiber
+ZeroCoordinateAgreementFiberBudgeted
+ZeroCoordinateAgreementFiberBudgetFits
+coordinateAgreementFiber_card_le_one_of_k_le
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coordinateAgreementFibers
+exists_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_coordinateAgreementFiber_gt_of_not_uniformLineBadScalarsBudgeted
+```
+
+The coordinate-fiber route covers a `t`-stratum by the raw RS fibers indexed by `t`-subsets of
+`directionZeroSet(u1)`: how many degree-`< k` codewords can agree with `u0` on a prescribed
+zero-subset.  It already proves the rigid endpoint
+`coordinateAgreementFiber_card_le_one_of_k_le`: once the prescribed subset has size at least `k`,
+there is at most one codeword.
+
+The new production scanner says that, after support-line-list control, support arithmetic,
+zero-direction safety, and coordinate-fiber arithmetic are fixed, a failed uniform bad-scalar budget
+must produce a large-zero safe line, a `t < a`, a zero-coordinate subset `S` of size `t`, and
+`M(t) < #coordinateAgreementFiber(S)`.  The next mathematical target is therefore the interpolation
+count for fibers with `t < k`, expected to look like an affine RS fiber of size at most
+`|F|^(k-t)` when the constraints are independent.

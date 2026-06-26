@@ -356,6 +356,12 @@ saturation, or an overfull large-zero stratum.  If the support-eligible line-lis
 support-fit arithmetic, and zero-direction safety are also fixed, the only remaining witness is the
 overfull large-zero stratum itself.
 
+Follow-up: the overfull stratum target now splits into raw fixed zero-subset coordinate fibers.
+Added `docs/kb/deltastar-464-coordinate-fiber-residual-2026-06-26.md`.  `coordinateAgreementFiber`
+covers each stratum by `t`-subsets of `directionZeroSet(u1)` and proves the endpoint
+`#S >= k -> card <= 1`.  With coordinate-fiber arithmetic fixed, a failed uniform bad-scalar budget
+now reports an overfull coordinate fiber, not just an overfull stratum.
+
 ## [2026-06-26] refine | floor successor propagation gate
 
 Added:
