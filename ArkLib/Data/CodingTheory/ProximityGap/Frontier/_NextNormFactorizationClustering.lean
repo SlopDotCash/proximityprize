@@ -334,9 +334,9 @@ variable {Ω : Type*}
 
 /-- **`offDiag_le_of_shareDominated`** — if the per-pair correlation `g T T'` is `0` whenever
 `T, T'` do NOT share a prime (the covariance is supported on the prime-sharing event) and is
-`≤ c` (with `0 ≤ c`) when they do, then the off-diagonal sum is bounded by `c · sharedPairs`. -/
+`≤ c` when they do, then the off-diagonal sum is bounded by `c · sharedPairs`. -/
 theorem offDiag_le_of_shareDominated (Rel : Finset ι) (Fac : ι → Finset ℕ)
-    (g : ι → ι → ℝ) (c : ℝ) (hc : 0 ≤ c)
+    (g : ι → ι → ℝ) (c : ℝ)
     (hzero : ∀ T ∈ Rel, ∀ T' ∈ Rel.erase T, ¬ SharesPrime Fac T T' → g T T' = 0)
     (hbound : ∀ T ∈ Rel, ∀ T' ∈ Rel.erase T, SharesPrime Fac T T' → g T T' ≤ c) :
     ∑ T ∈ Rel, ∑ T' ∈ Rel.erase T, g T T' ≤ c * (sharedPairs Rel Fac : ℝ) := by
@@ -370,12 +370,12 @@ covariance is supported on the prime-sharing event, then the off-diagonal pair-c
 `≤ 0` — exactly `OffDiagonalPairCancellation` from `_CreateWraparoundVariance`, which discharges the
 last open hypothesis of the prize chain. -/
 theorem offDiagCancellation_of_disjoint (Rel : Finset ι) (Fac : ι → Finset ℕ)
-    (g : ι → ι → ℝ) (c : ℝ) (hc : 0 ≤ c)
+    (g : ι → ι → ℝ) (c : ℝ)
     (hdisj : ∀ T ∈ Rel, ∀ T' ∈ Rel, T ≠ T' → Fac T ∩ Fac T' = ∅)
     (hzero : ∀ T ∈ Rel, ∀ T' ∈ Rel.erase T, ¬ SharesPrime Fac T T' → g T T' = 0)
     (hbound : ∀ T ∈ Rel, ∀ T' ∈ Rel.erase T, SharesPrime Fac T T' → g T T' ≤ c) :
     ∑ T ∈ Rel, ∑ T' ∈ Rel.erase T, g T T' ≤ 0 := by
-  have h := offDiag_le_of_shareDominated Rel Fac g c hc hzero hbound
+  have h := offDiag_le_of_shareDominated Rel Fac g c hzero hbound
   rw [sharedPairs_eq_zero_of_disjoint Rel Fac hdisj] at h
   simpa using h
 
@@ -392,12 +392,12 @@ supported on prime-sharing, then off-diagonal cancellation holds, so the
 `_CreateWraparoundVariance` prize chain closes.  We expose the discharged off-diagonal bound as the
 conclusion (its consumer is `prize_from_named_open`). -/
 theorem prize_via_smooth_norms (Rel : Finset ι) (Fac : ι → Finset ℕ)
-    (g : ι → ι → ℝ) (c : ℝ) (hc : 0 ≤ c)
+    (g : ι → ι → ℝ) (c : ℝ)
     (hsmooth : ∀ T ∈ Rel, ∀ T' ∈ Rel, T ≠ T' → Fac T ∩ Fac T' = ∅)
     (hzero : ∀ T ∈ Rel, ∀ T' ∈ Rel.erase T, ¬ SharesPrime Fac T T' → g T T' = 0)
     (hbound : ∀ T ∈ Rel, ∀ T' ∈ Rel.erase T, SharesPrime Fac T T' → g T T' ≤ c) :
     (∑ T ∈ Rel, ∑ T' ∈ Rel.erase T, g T T' ≤ 0) ∧ ClusterRate Rel Fac = 0 :=
-  ⟨offDiagCancellation_of_disjoint Rel Fac g c hc hsmooth hzero hbound,
+  ⟨offDiagCancellation_of_disjoint Rel Fac g c hsmooth hzero hbound,
    clusterRate_eq_zero_of_disjoint Rel Fac hsmooth⟩
 
 /-- **`SmoothNormPersistence`** — the NAMED OPEN residual: for the `2^μ`-th-root wraparound carriers,
@@ -439,9 +439,8 @@ theorem SmoothNormPersistence_iff_threshold_supports_empty
     exact le_of_not_gt (fun hgt => by
       have hp_filter : p ∈ (Fac T).filter (fun q => B < q) := by
         exact Finset.mem_filter.mpr ⟨hp, hgt⟩
-      have hp_empty : p ∈ (∅ : Finset ℕ) := by
-        simpa [hempty T hT] using hp_filter
-      simpa using hp_empty)
+      rw [hempty T hT] at hp_filter
+      cases hp_filter)
 
 /-- **`disjoint_of_smooth_below_prime`** — the *mechanism* of the residual made precise: if every
 carrier norm is `B`-smooth (`SmoothNormPersistence` with bound `B`) and we threshold the supports to
@@ -495,7 +494,7 @@ theorem not_thresholdSupports_disjoint_iff_exists_pair_large_common_prime
       rw [Finset.mem_inter, Finset.mem_filter, Finset.mem_filter]
       exact ⟨⟨hpT, hpB⟩, ⟨hpT', hpB⟩⟩
     rw [hdisj T hT T' hT' hne] at hp_mem
-    simpa using hp_mem
+    cases hp_mem
 
 end ArkLib.ProximityGap.Frontier.NormFactorizationClustering
 
