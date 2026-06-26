@@ -274,6 +274,28 @@ theorem worstCaseIncidenceBounded_iff_familyBounded_univ
   · intro hR u
     exact hR u (Finset.mem_univ u)
 
+/-- The exhaustive family contains a budgeted global maximizer exactly when the original universal
+incidence budget holds.  The forward direction is the usual budgeted-max consumer; the reverse
+direction chooses an actual maximizer from the finite all-stack family. -/
+theorem familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ) :
+    FamilyContainsBudgetedGlobalMax F C δ
+        (Finset.univ : Finset (WordStack A (Fin 2) ι)) B
+      ↔ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+          (F := F) (A := A) C δ B := by
+  constructor
+  · intro hmax
+    exact worstCaseIncidenceBounded_of_containsBudgetedGlobalMax C δ hmax
+  · intro hbounded
+    classical
+    let U : Finset (WordStack A (Fin 2) ι) := Finset.univ
+    have hU : U.Nonempty := ⟨0, by simp [U]⟩
+    obtain ⟨rMax, hrMax, hmax⟩ :=
+      U.exists_max_image (fun r : WordStack A (Fin 2) ι => StackBadCount F C δ r) hU
+    refine ⟨rMax, by simp [U] at hrMax ⊢, hbounded rMax, ?_⟩
+    intro u
+    exact hmax u (by simp [U])
+
 /-- Delta-star consumer for a literal exhaustive all-stack certificate.  This is deliberately not a
 compressed floor proof; it records the baseline that a scanner would have to certify directly if no
 dominating smaller family is available. -/
@@ -393,6 +415,23 @@ theorem not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
   · rintro ⟨u, hgt⟩ hI
     exact (not_lt_of_ge (hI u)) hgt
 
+/-- Exact failure form for the exhaustive budgeted-max certificate: even the all-stack family lacks
+a budgeted maximizer precisely when some stack is above budget. -/
+theorem not_familyContainsBudgetedGlobalMax_univ_iff_exists_stack_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ) :
+    (¬ FamilyContainsBudgetedGlobalMax F C δ
+        (Finset.univ : Finset (WordStack A (Fin 2) ι)) B)
+      ↔ ∃ u : WordStack A (Fin 2) ι, B < StackBadCount F C δ u := by
+  constructor
+  · intro hnot
+    exact (not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt C δ B).mp
+      (fun hbounded => hnot
+        ((familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded
+          C δ B).mpr hbounded))
+  · intro hgt hmax
+    exact ((not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt C δ B).mpr hgt)
+      ((familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded C δ B).mp hmax)
+
 /-- A bounded family beaten by one outside stack is not a domination proof. -/
 theorem familyBounded_not_dominationProof_of_exists_strictly_larger_than_all
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
@@ -471,6 +510,29 @@ def FloorClosureBudgetedMaxAtField (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
     FamilyContainsBudgetedGlobalMax F C δ R B
+
+/-- Over the literal all-stack family, the sharp field closure certificate is exactly the split
+between arithmetic floor-goodness and the original universal incidence budget.  Thus the all-stack
+version contains no compression theorem; compression enters only when replacing `univ` by a
+smaller family that still contains a budgeted global maximizer. -/
+theorem floorClosureBudgetedMaxAtField_univ_iff_floorGood_and_worstCaseIncidenceBounded
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ) :
+    FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ
+        (Finset.univ : Finset (WordStack A (Fin 2) ι)) B ↔
+      ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
+        ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+          (F := F) (A := A) C δ B := by
+  unfold FloorClosureBudgetedMaxAtField
+  constructor
+  · rintro ⟨hgood, hmax⟩
+    exact ⟨hgood,
+      (familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded
+        C δ B).mp hmax⟩
+  · rintro ⟨hgood, hbounded⟩
+    exact ⟨hgood,
+      (familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded
+        C δ B).mpr hbounded⟩
 
 /-- Floor-goodness plus the floor-to-family budget bridge and domination produce the concrete
 field-level certificate. -/
@@ -1461,10 +1523,12 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyDominates_iff_each_member_beaten
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyDominates_univ
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_iff_familyBounded_univ
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_exhaustiveFamilyBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_familyContainsBudgetedGlobalMax_univ_iff_exists_stack_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_base_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_prefix_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_candidateListExactSmallestFamily_iff_exists_rung_not_exact
@@ -1472,6 +1536,7 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_candidateListExactSmallestFamily_of_next_failure
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_exists_member_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_univ_iff_floorGood_and_worstCaseIncidenceBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureAtField_of_floorGoodFamilyBudget
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_floorClosureAtField
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_floorGood_containsBudgetedGlobalMax

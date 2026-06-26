@@ -594,3 +594,36 @@ The mathematical verdict is narrower than the earlier Linnik/TZ optimism.  Sub-p
 supply can erase the arithmetic `FloorBad` branch.  It cannot manufacture the budgeted global
 maximizer.  The remaining proof must either find a canonical worst stack in the floor catalogue or
 prove a new invariant whose level set contains a budgeted global maximizer for `StackBadCount`.
+
+## Continuation: exhaustive budgeted max is just incidence
+
+The all-stack endpoint now has its own exact normal forms:
+
+```lean
+familyContainsBudgetedGlobalMax_univ_iff_worstCaseIncidenceBounded
+not_familyContainsBudgetedGlobalMax_univ_iff_exists_stack_budget_lt
+floorClosureBudgetedMaxAtField_univ_iff_floorGood_and_worstCaseIncidenceBounded
+```
+
+Because the stack universe is finite, a universal incidence bound can choose an actual maximizer
+from `Finset.univ`; conversely a budgeted global maximizer immediately gives the universal
+incidence bound.  Therefore the exhaustive-family sharp certificate is not new mathematics:
+
+```text
+FamilyContainsBudgetedGlobalMax F C delta Finset.univ B
+iff
+WorstCaseIncidenceBounded C delta B.
+```
+
+At field level, the sharp all-stack closure splits exactly into:
+
+```text
+not FloorBad(2^a, |F|)
+and
+WorstCaseIncidenceBounded C delta B.
+```
+
+The failure form is the same scanner as the open core: some stack has `StackBadCount > B`.  This
+is the important compression gate.  A proposed floor catalogue is useful only if it replaces the
+trivial all-stack argmax with a smaller/invariant-defined family that still contains a budgeted
+global maximizer.
