@@ -463,6 +463,8 @@ Follow-up: `LineListIncidenceMultiplicity.lean` now pins the first multiplicity 
 the `R = 1` floor is automatic, while failure of the `R = 2` floor is equivalent to a bad scalar
 with a unique witnessing codeword.  Any nontrivial multiplicity-discount route must therefore
 prove no unique-witness bad scalar exists on the relevant hard lines, or exhibit one as a refuter.
+The no-unique-witness branch is now also named as `NoUniqueBadScalarWitness`, equivalent to the
+`R = 2` multiplicity floor, and plugged into a factor-two bad-scalar budget consumer.
 
 Follow-up: `SumsetExtremalityGuard.lean` records the corrected guarded form of the
 sumset-extremality reduction.  A selected representative family proves the open-core incidence

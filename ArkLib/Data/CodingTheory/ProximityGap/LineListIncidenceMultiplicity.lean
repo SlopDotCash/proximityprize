@@ -348,6 +348,29 @@ theorem not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitnes
     refine ⟨γ, hγ, ?_⟩
     omega
 
+/-- No bad scalar has a unique witnessing codeword.  This is the exact first nontrivial
+multiplicity-discount condition. -/
+def NoUniqueBadScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) : Prop :=
+  ∀ γ ∈ lineBadScalars dom k a u₀ u₁,
+    (badScalarWitnessCodewords dom k a u₀ u₁ γ).card ≠ 1
+
+open Classical in
+/-- Having no unique-witness bad scalar is exactly the `R = 2` multiplicity floor. -/
+theorem lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    LineBadScalarMultiplicityFloor dom k a u₀ u₁ 2 ↔
+      NoUniqueBadScalarWitness dom k a u₀ u₁ := by
+  constructor
+  · intro hfloor γ hγ hcard
+    have hge := hfloor γ hγ
+    omega
+  · intro hno
+    by_contra hnot
+    rcases (not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+      dom k a u₀ u₁).mp hnot with ⟨γ, hγ, hcard⟩
+    exact hno γ hγ hcard
+
 open Classical in
 /-- Multiplicity converts the incidence identity into `#badScalars * R ≤ #incidences`. -/
 theorem lineBadScalars_card_mul_le_lineHeavyIncidences_card_of_multiplicityFloor
@@ -393,6 +416,33 @@ theorem lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multipli
       dom k a R u₀ u₁ hsafe hmult)
 
 open Classical in
+/-- Factor-two incidence discount from the no-unique-witness condition. -/
+theorem
+    lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hno : NoUniqueBadScalarWitness dom k a u₀ u₁) :
+    (lineBadScalars dom k a u₀ u₁).card
+      ≤ puncturedZeroStratifiedLineWeight dom k a u₀ u₁ / 2 :=
+  lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
+    dom k a 2 u₀ u₁ (by omega) hsafe
+    ((lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
+      dom k a u₀ u₁).mpr hno)
+
+open Classical in
+/-- Budget consumer for the factor-two no-unique-witness route. -/
+theorem lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hno : NoUniqueBadScalarWitness dom k a u₀ u₁)
+    (hbudget : puncturedZeroStratifiedLineWeight dom k a u₀ u₁ / 2 ≤ B) :
+    (lineBadScalars dom k a u₀ u₁).card ≤ B :=
+  le_trans
+    (lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
+      dom k a u₀ u₁ hsafe hno)
+    hbudget
+
+open Classical in
 /-- Budget consumer for the multiplicity-discounted punctured weight. -/
 theorem lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
     (dom : Fin n ↪ F) (k a R B : ℕ) (u₀ u₁ : Fin n → F)
@@ -421,6 +471,11 @@ section SourceAudit
 #print axioms badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
 #print axioms lineBadScalarMultiplicityFloor_one
 #print axioms not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+#print axioms NoUniqueBadScalarWitness
+#print axioms lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
+#print axioms
+  lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
+#print axioms lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
 #print axioms lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le

@@ -54,6 +54,10 @@ not_lineBadScalarMultiplicityFloor_iff_exists_badScalarWitnessCodewords_card_lt
 badScalarWitnessCodewords_card_pos_of_mem_lineBadScalars
 lineBadScalarMultiplicityFloor_one
 not_lineBadScalarMultiplicityFloor_two_iff_exists_unique_badScalarWitness
+NoUniqueBadScalarWitness
+lineBadScalarMultiplicityFloor_two_iff_noUniqueBadScalarWitness
+lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_two_of_noUniqueBadScalarWitness
+lineBadScalars_card_le_of_noUniqueBadScalarWitness_and_weight_div_two_le
 lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
@@ -91,6 +95,15 @@ R = 2 fails iff some bad scalar has exactly one witnessing codeword.
 
 So the multiplicity route has a sharp first obstruction: rule out unique-witness bad scalars, or
 the route cannot buy even a factor of two.
+
+This first obstruction is named directly as `NoUniqueBadScalarWitness`, with consumers for the
+factor-two route:
+
+```text
+NoUniqueBadScalarWitness
+<=> LineBadScalarMultiplicityFloor ... 2
+=> #badScalars <= puncturedZeroStratifiedLineWeight / 2
+```
 
 ## Companion: Exact Appearance Fibers
 
