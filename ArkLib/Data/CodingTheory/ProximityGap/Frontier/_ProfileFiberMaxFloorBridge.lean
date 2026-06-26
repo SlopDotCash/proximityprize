@@ -376,11 +376,8 @@ theorem deltaStar_pin_of_profileScannerBudget
       B < StackProfileFiberMax.StackBadCount F C δ (rep p))
     (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
     δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
-  ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
-    (F := F) (A := A) C εstar hδ
-    (worstCaseIncidenceBounded_of_no_bad_used_profile_budgetScanner
-      C δ hnoMaxBad hnoBudgetBad)
-    hbudget
+  StackProfileFiberMax.deltaStar_pin_of_no_bad_used_profile_scanner
+    C εstar hδ hnoMaxBad hnoBudgetBad hbudget
 
 /-- Linnik-form floor closure with profile-fiber representatives as the max-containment certificate. -/
 theorem deltaStar_pin_of_linnik_candidateListExactSmallest_profileFiberMaxContract
