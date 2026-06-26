@@ -178,10 +178,6 @@ uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverCho
 not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
 lineFiberCoverChooseBudgetFits_term_le
 not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
-lineFiberCoverChooseBudgetFits_zeroTerm_le
-lineFiberCoverChooseBudgetFits_choose_le_of_support_ge
-not_lineFiberCoverChooseBudgetFits_of_exists_support_ge
-not_lineFiberCoverChooseBudgetFits_of_two_mul_le
 exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 exists_largeZero_safe_supportRatioHeavyCoordFiber_gt_of_not_uniformLineBadScalarsBudgeted
@@ -205,9 +201,8 @@ support-ratio-heavy coordinate fiber.  The finite `(γ, T)` cover sum is also ex
 budget interface and scanner, so a future improvement can attack overlap or structure inside the
 cover before collapsing to the scalar-times-binomial envelope.  The ambient-binomial route now has
 exact arithmetic scanners: failed production returns an over-budget weighted `∑_t`, a single
-over-budget weighted profile refutes the fit, and the `t = 0` support-ge case gives the immediate
-`|F| * choose(n, a) <= B` control surface whenever a large-zero direction has at least `a`
-moving-support coordinates.
+over-budget weighted profile refutes the fit, and the separate arithmetic-obstruction module
+turns zero/support count witnesses into scalar-times-binomial no-go statements.
 
 `LineListSupportRatioArithmeticObstruction.lean` adds the parameter-only zero-count no-go for the
 ambient support-ratio envelope:
@@ -221,9 +216,10 @@ not_uniformLargeZeroSafeAppearingCoordinateFiberBudgetFits_lineCoverChoose_of_tw
 
 If a possible large-zero direction has `z` zero coordinates and enough moving support to activate
 profile `t`, the ambient-binomial appearance-fiber fit forces
-`choose(z, t) * |F| * choose(n, a - t) <= B`.  Thus the ambient support-ratio envelope is a
-control surface, not the final floor estimate; a winning proof still has to beat that
-scalar-times-binomial arithmetic.
+`choose(z, t) * |F| * choose(n, a - t) <= B`.  The `z = a`, `t = 0` instance gives the familiar
+`|F| * choose(n, a) <= B` obstruction in the common `2a <= n` range.  Thus the ambient
+support-ratio envelope is a control surface, not the final floor estimate; a winning proof still
+has to beat that scalar-times-binomial arithmetic.
 
 `LineListSingletonArithmeticObstruction.lean` adds the raw singleton arithmetic no-go:
 
