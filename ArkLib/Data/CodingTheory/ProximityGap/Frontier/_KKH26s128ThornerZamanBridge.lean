@@ -77,6 +77,8 @@ We name `(TZ)` as the `Prop`-valued hypothesis `ThornerZamanPNTinAP n β ε`. Th
   bridge with the sharper resultant log `log((2r)^64)`.
 * `kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log` — the same fixed-`r` bridge
   with that logarithm normalized to `64 * log(2r)`.
+* `kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log` — the canonical floor-supply
+  form comparing the normalized budget directly against `⌊tzDensityLB n β ε⌋₊`.
 
 ## Honesty
 
@@ -386,6 +388,32 @@ theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
     (n := n) (β := β) (supply := supply) (m := m) (r := r)
     hSupply hm hn hr2 hr hx hpl hcount
 
+/-- **The sharp fixed-`r` s = 128 bridge in canonical floor-supply form.**  This removes the
+auxiliary `supply` witness from `kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log`:
+the normalized bad-prime budget is compared directly against `⌊tzDensityLB n β ε⌋₊`. -/
+theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
+    {n : ℕ} {β ε : ℝ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hpos : 0 ≤ tzDensityLB n β ε)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β))
+      < ((⌊tzDensityLB n β ε⌋₊ : ℕ) : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  refine kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
+    (supply := ⌊tzDensityLB n β ε⌋₊) hTZ hm hn hr2 hr hx hpl ?_ hcount
+  exact Nat.floor_le hpos
+
 end ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -405,3 +433,5 @@ open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
+open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
+#print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log

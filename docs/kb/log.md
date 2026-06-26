@@ -1089,10 +1089,25 @@ the normalized `kkh26_mcaDeltaStar_le_s128_tight_square_bound_log`.  The named T
 bridge and AvD1 regime-correct count layer export matching tight-square consumers.  This relaxes
 the bad-prime budget but does not remove the named polynomial-modulus prime-count input.
 
+Follow-up: the s=128 named Thorner-Zaman bridge now has the canonical floor-supply wrapper
+`kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log`, and the AvD1
+regime-correct consumer exposes
+`kkh26_s128_of_polyModulusCount_floor_tight_square_log`.  The bad-prime budget is compared
+directly against `⌊tzDensityLB n β ε⌋₊`.
+
 Follow-up: `_KKH26ThornerZamanTightBridge.lean` now exposes the same normalized tight square
 budget without specializing to `s = 128`, composing the generic `ThornerZamanPNT` statement with
 `kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log` in real-bound, natural-floor, and canonical
 `floor(tzDensityLB)` forms.
+
+## [2026-06-26] refute | Tsang high-moment range is constant-depth here
+
+Added `_D3TsangHighMomentRangeGate.lean` and companion note
+`deltastar-464-tsang-high-moment-range-gate-2026-06-26.md`.  The arXiv:2606.10242
+Tsang/Soundararajan high-moment template is useful as a stress test, but its usable range is
+range-limited.  The finite-field diagonal analogue `n^(2r) <= q` becomes `2r <= beta` at
+`q = n^beta`, so fixed polynomial field size supplies only constant-depth control while the
+prize needs Paley-saddle depth growing like `log q`.
 
 ## [2026-06-26] refute | homological vanishing without prime-field transfer
 

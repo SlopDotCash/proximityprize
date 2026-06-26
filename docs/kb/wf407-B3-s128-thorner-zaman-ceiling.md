@@ -117,8 +117,10 @@ kkh26_s128_ceiling_of_thornerZamanPNTinAP_square
 kkh26_s128_of_polyModulusCount_square
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
 kkh26_s128_of_polyModulusCount_tight_square
 kkh26_s128_of_polyModulusCount_tight_square_log
+kkh26_s128_of_polyModulusCount_floor_tight_square_log
 ```
 
 The new wrapper lets callers supply the familiar square budget
@@ -152,8 +154,16 @@ The last form is the canonical floor-supply consumer: its bad-prime budget is co
 against `⌊tzDensityLB n β ε⌋₊`, with no separate `supply` witness.
 
 At `s = 128`, the tight variants replace the coarse `448*log 2` factor by either
-`log((2r)^64)` or the normalized form `64*log(2r)`.  This is only an arithmetic relaxation of
-the bad-prime budget; the polynomial-modulus prime-count input remains the analytic wall.
+`log((2r)^64)` or the normalized form `64*log(2r)`.  The canonical s=128 floor-supply wrappers
+are:
+
+```lean
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
+kkh26_s128_of_polyModulusCount_floor_tight_square_log
+```
+
+These are only arithmetic relaxations of the bad-prime budget; the polynomial-modulus prime-count
+input remains the analytic wall.
 
 ## Verdict
 
