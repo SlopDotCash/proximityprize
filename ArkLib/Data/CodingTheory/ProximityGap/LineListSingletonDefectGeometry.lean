@@ -817,6 +817,59 @@ theorem singletonBadScalarIncidencesInExact_card_le_support_div_of_k_le
       dom hk a u₀ u₁ hS hkt)
 
 open Classical in
+/-- Exact appearance fibers inherit the raw MDS interpolation envelope.  This is only an upper
+barrier: improving the singleton route below the raw coordinate-fiber obstruction has to exploit
+the appearance condition itself. -/
+theorem exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (u₀ u₁ : Fin n → F) (S : Finset (Fin n)) :
+    (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card
+      ≤ Fintype.card F ^ (k - S.card) :=
+  le_trans
+    (exactAppearingZeroAgreementFiber_card_le_appearingCoordinateAgreementFiber_card
+      dom k a u₀ u₁ S)
+    (le_trans
+      (appearingCoordinateAgreementFiber_card_le_coordinateAgreementFiber_card
+        dom k a u₀ u₁ S)
+      (coordinateAgreementFiber_card_le_field_pow_sub_card dom k u₀ S))
+
+open Classical in
+/-- Raw MDS interpolation upper bound for an exact appearance-fiber singleton term. -/
+theorem exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)} {t : ℕ}
+    (hS : S ∈ (directionZeroSet u₁).powersetCard t) :
+    (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card *
+        ((directionSupportSet u₁).card / (a - t))
+      ≤ Fintype.card F ^ (k - t) *
+        ((directionSupportSet u₁).card / (a - t)) := by
+  have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+  calc
+    (exactAppearingZeroAgreementFiber dom k a u₀ u₁ S).card *
+        ((directionSupportSet u₁).card / (a - t))
+        ≤ Fintype.card F ^ (k - S.card) *
+          ((directionSupportSet u₁).card / (a - t)) :=
+      Nat.mul_le_mul_right _
+        (exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card dom k a u₀ u₁ S)
+    _ = Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t)) := by
+      rw [hScard]
+
+open Classical in
+/-- Raw MDS interpolation upper bound for exact singleton-defect incidences in one profile. -/
+theorem singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+    (dom : Fin n ↪ F) (k a : ℕ)
+    (u₀ u₁ : Fin n → F) {S : Finset (Fin n)} {t : ℕ}
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hS : S ∈ (directionZeroSet u₁).powersetCard t) :
+    (singletonBadScalarIncidencesInExactZeroAgreementFiber dom k a u₀ u₁ S).card
+      ≤ Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t)) :=
+  le_trans
+    (singletonBadScalarIncidencesInExact_card_le_exactFiber_card_mul_support_div
+      dom k a u₀ u₁ hsafe hS)
+    (exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+      dom k a u₀ u₁ hS)
+
+open Classical in
 /-- If the support-denominator cap is already under `D` on every high level `k ≤ t < a`, then
 any overfull exact singleton-defect profile must lie in the low interpolation range `t < k`. -/
 theorem exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
@@ -986,6 +1039,119 @@ theorem unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_bud
       ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
         dom k a).mp hZeroSafe)
 
+open Classical in
+/-- Low-profile raw-envelope barrier for the exact singleton-profile scanner.  If the production
+route fails after the high profiles are covered, the reported low profile is one where the proposed
+`D` cuts below the raw interpolation singleton term
+`|F|^(k-t) * support/(a-t)`. -/
+theorem exists_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          D t <
+            Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t)) := by
+  rcases
+      (exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
+        dom hk a L B D hSupport hFits hZeroSafe hbudget hHigh hnot) with
+    ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hlow, S, hS, hgt⟩
+  exact ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hlow, S, hS,
+    lt_of_lt_of_le hgt
+      (singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+        dom k a u₀ u₁ hsafe hS)⟩
+
+open Classical in
+/-- Low-profile raw-envelope barrier for the exact appearance-fiber singleton scanner.  A failed
+budget can only be blamed on a low exact appearance profile after `D` has gone below the raw MDS
+interpolation term for that profile. -/
+theorem
+    exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+      ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+        ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+          D t <
+            Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t)) := by
+  rcases
+      (exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+        dom hk a L B D hSupport hFits hZeroSafe hbudget hHigh hnot) with
+    ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hlow, S, hS, hgt⟩
+  exact ⟨u₀, u₁, hnotEligible, hsafe, t, ht, hlow, S, hS,
+    lt_of_lt_of_le hgt
+      (exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+        dom k a u₀ u₁ hS)⟩
+
+open Classical in
+/-- Full failure split with the low exact singleton-profile raw-envelope barrier and without
+assuming zero-direction safety in advance. -/
+theorem unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            D t <
+              Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t))) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+        dom hk a L B D hSupport hFits hZeroSafe hbudget hHigh hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
+open Classical in
+/-- Full failure split with the low exact appearance-fiber singleton raw-envelope barrier and
+without assuming zero-direction safety in advance. -/
+theorem
+    unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (D : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hbudget : UniformLargeZeroSafeWeightPlusExactSingletonProfileBudgeted dom k a B D)
+    (hHigh : ∀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ∀ t : ℕ, t < a → k ≤ t →
+        (directionSupportSet u₁).card / (a - t) ≤ D t)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
+        ZeroDirectionSafeLine dom k a u₀ u₁ ∧
+          ∃ t : ℕ, t < a ∧ t < k ∧ ∃ S ∈ (directionZeroSet u₁).powersetCard t,
+            D t <
+              Fintype.card F ^ (k - t) * ((directionSupportSet u₁).card / (a - t))) := by
+  by_cases hZeroSafe : UniformZeroDirectionSafe dom k a
+  · exact Or.inr
+      (exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+        dom hk a L B D hSupport hFits hZeroSafe hbudget hHigh hnot)
+  · exact Or.inl
+      ((not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge
+        dom k a).mp hZeroSafe)
+
 section SourceAudit
 
 #print axioms singletonBadScalarIncidences
@@ -1042,6 +1208,9 @@ section SourceAudit
 #print axioms exactAppearingZeroAgreementFiber_card_le_one_of_k_le
 #print axioms exactAppearanceFiberSingleton_weighted_le_support_div_of_k_le
 #print axioms singletonBadScalarIncidencesInExact_card_le_support_div_of_k_le
+#print axioms exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
+#print axioms exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+#print axioms singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
 #print axioms exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 #print axioms exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 #print axioms
@@ -1052,6 +1221,14 @@ section SourceAudit
   unsafe_or_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms
   unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+#print axioms
+  exists_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+#print axioms
+  exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+#print axioms
+  unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+#print axioms
+  unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 
 end SourceAudit
 

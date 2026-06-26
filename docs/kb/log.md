@@ -588,3 +588,9 @@ Follow-up: `LineListAppearanceFiber.lean` now owns the exact appearance-fiber pr
 zero-agreement appearance-fiber budgets directly, and the scanner
 `unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted` localizes
 failed uniform budgets to zero-direction saturation or a large-zero safe low exact appearance fiber.
+
+Follow-up: `LineListSingletonDefectGeometry.lean` now exposes the raw MDS barrier for the exact
+singleton route.  Exact appearance profiles and exact singleton-defect slices are bounded by
+`|F|^(k-t) * support/(a-t)`, and the new scanners localize failed budgets to low profiles where the
+proposed `D t` falls below that raw interpolation term.  The lesson is precise: the singleton route
+must improve the low exact-appearance envelope, not just reuse the field-power coordinate fiber.

@@ -181,12 +181,33 @@ exact zero-agreement appearance-fiber budgets directly, and
 any failed budget to either zero-direction saturation or a low exact appearance fiber with
 `t < k`, after the high range is discharged by Reed--Solomon uniqueness.
 
+The relevant exact declarations are:
+
+```lean
+exactAppearingZeroAgreementFiber
+zeroAgreementStratum_card_eq_sum_exactAppearingZeroAgreementFibers
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+exists_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exactAppearingZeroAgreementFiber_card_le_one_of_k_le
+exists_low_exactAppearingFiber_gt_of_exists_fiber_gt_and_high_one
+unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
+exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+```
+
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target
 budget for the hard parameters.  That would be an arithmetic failure, not a Lean-interface failure.
 The new API is useful because it separates the remaining questions: the raw fiber count is proved,
 so a field-power route must now check the weighted binomial fit or replace the raw count with a
 stronger support-aware estimate.
+The singleton-defect scanners now make this explicit: after the high range is discharged, a failed
+low-profile budget can be localized to a profile where `D t` is already smaller than the raw
+weighted field-power term.
 
 ## Next Target
 

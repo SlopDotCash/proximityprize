@@ -295,6 +295,17 @@ exactAppearingZeroAgreementFiber
 ZeroExactAppearingZeroAgreementFiberBudgeted
 UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted
 zeroAgreementStratum_card_eq_sum_exactAppearingZeroAgreementFibers
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_exactAppearingFibers
+exists_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exactAppearingZeroAgreementFiber_card_le_one_of_k_le
+exists_low_exactAppearingFiber_gt_of_exists_fiber_gt_and_high_one
+unsafe_or_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
+exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
+unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
 
 The previous `appearingCoordinateAgreementFiber` gives a cover indexed by subsets of the zero
@@ -306,6 +317,12 @@ directionZeroAgreementSet(c,u0,u1) = S
 
 so the `t`-stratum is partitioned by the exact `S` rather than merely covered.  This removes one
 combinatorial looseness, but it still needs a real bound on the exact fibers to improve the budget.
+The exact-fiber production wrapper now consumes exact appearance-fiber budgets directly, and the
+scanner route pushes failed uniform budgets to either zero-direction saturation or a large-zero
+safe low exact appearance fiber once high fibers are discharged by RS uniqueness.
+The singleton-defect layer additionally records the raw `|F|^(k-t)` envelope for exact profiles,
+so failed low-profile budgets can be tested against the weighted raw interpolation term before
+looking for a sharper appearance-aware estimate.
 
 ## Critique
 

@@ -122,12 +122,19 @@ exists_largeZero_safe_exactAppearanceFiberSingleton_gt_of_not_uniformLineBadScal
 exactAppearingZeroAgreementFiber_card_le_one_of_k_le
 exactAppearanceFiberSingleton_weighted_le_support_div_of_k_le
 singletonBadScalarIncidencesInExact_card_le_support_div_of_k_le
+exactAppearingZeroAgreementFiber_card_le_field_pow_sub_card
+exactAppearanceFiberSingleton_weighted_le_field_pow_mul_support_div
+singletonBadScalarIncidencesInExact_card_le_field_pow_mul_support_div
 exists_low_exactSingletonProfile_gt_of_exists_profile_gt_and_high_support
 exists_low_exactAppearanceFiberSingleton_gt_of_exists_profile_gt_and_high_support
 exists_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 exists_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
 unsafe_or_largeZero_safe_low_exactSingletonProfile_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_gt_of_not_budgeted
+exists_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+exists_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
+unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_budgeted
+unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
 
 This is the bridge from the additive defect to the existing exact appearance-fiber surface.
@@ -184,6 +191,13 @@ profile must occur in the low interpolation range `t < k`.
 The low-profile scanners also have full failure split forms.  Without assuming zero-direction
 safety in advance, a failed uniform bad-scalar budget now returns either a zero-direction
 saturating codeword or a large-zero safe low exact singleton/exact appearance profile.
+
+The raw interpolation barrier is now explicit for this route.  Exact appearance fibers inherit
+`#fiber <= |F|^(k-t)`, and both the exact appearance singleton term and the exact singleton-defect
+slice are bounded by `|F|^(k-t) * support/(a-t)`.  Therefore a failed production attempt whose high
+profiles are already covered can be localized to a low profile where the proposed `D t` sits below
+the raw MDS singleton term.  This does not prove the floor; it says the singleton route must beat
+the raw coordinate-fiber envelope in the low interpolation range rather than merely repackage it.
 
 The per-codeword partition is exact too: singleton bad scalars are the disjoint union of
 `codewordSingletonWitnessScalars` over appearing codewords, so the defect can be rewritten as the
