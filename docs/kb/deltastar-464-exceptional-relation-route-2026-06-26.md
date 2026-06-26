@@ -28,13 +28,21 @@ scalarRelation_card_le_goodIndependence_add_exception
 UniformLargeZeroSafeCodewordRelationForbiddenOutside
 UniformLargeZeroSafeCodewordRelationGoodIndependenceBudgeted
 UniformLargeZeroSafeCodewordRelationExceptionBudgeted
+UniformLargeZeroSafeCodewordGoodOutsideBudgeted
+uniformLargeZeroSafeCodewordRelationGoodIndependenceBudgeted_of_goodOutsideBudgeted
+uniformLargeZeroSafeCodewordGoodOutsideBudgeted_of_relationGoodIndependence
+relationGoodIndependenceBudgeted_iff_goodOutsideBudgeted_of_forbiddenOutside
+uniformLargeZeroSafeCodewordSingletonBudgeted_of_goodOutside_and_exception
 uniformLargeZeroSafeCodewordSingletonBudgeted_of_relationGoodIndependenceOutside
 not_uniformLargeZeroSafeCodewordRelationForbiddenOutside_iff_exists_edge
 exists_largeZero_safe_codewordRelationGoodIndependent_gt_of_not_goodIndependence
 not_uniformLargeZeroSafeCodewordRelationExceptionBudgeted_iff_exists_card_gt
+not_uniformLargeZeroSafeCodewordGoodOutsideBudgeted_iff_exists_card_gt
+exists_largeZero_safe_codewordPartitionBudgetFailure_of_not_codewordSingletonBudgeted
 exists_largeZero_safe_codewordRelationException_gt_of_not_codewordSingletonBudgeted
 uniformLineBadScalarsBudgeted_of_supportAdjusted_and_codewordRelationException
 exists_largeZero_safe_codewordRelationExceptionRouteFailure_of_not_budgeted
+exists_largeZero_safe_codewordPartitionRouteFailure_of_not_budgeted
 exists_largeZero_safe_codewordRelationExceptionRouteObstruction_of_not_budgeted
 ```
 
@@ -47,9 +55,30 @@ The scanner exposes four finite failure modes:
 4. too many exceptional singleton scalars for one appearing codeword.
 ```
 
+The good-side independence budget also has a direct collapse theorem.  Once outside edges are
+forbidden, bounding all independent good subsets is equivalent to directly bounding the
+non-exceptional singleton set `codewordSingletonWitnessScalars \ Xi`.  The partition theorem
+`uniformLargeZeroSafeCodewordSingletonBudgeted_of_goodOutside_and_exception` records the resulting
+direct `good + exception` cap without mentioning a relation.
+
+The direct partition split has its own exact scanner:
+
+```lean
+not_uniformLargeZeroSafeCodewordGoodOutsideBudgeted_iff_exists_card_gt
+exists_largeZero_safe_codewordPartitionBudgetFailure_of_not_codewordSingletonBudgeted
+exists_largeZero_safe_codewordPartitionRouteFailure_of_not_budgeted
+```
+
+So for any fixed exceptional set `Xi`, failure of the `S + E` singleton cap forces a concrete
+appearing codeword whose non-exceptional part exceeds `S` or whose exceptional part exceeds `E`.
+This removes the relation from the last accounting step; after the outside edge condition is
+known, the route is just a finite partition budget.  At the line-budget production layer, the same
+scanner exposes this partition failure or the usual punctured-weight arithmetic failure.
+
 ## Consequence
 
 This does not close the singleton branch, but it makes the next possible graph theorem precise.
 A useful relation must now classify and budget the exceptions that were previously hidden inside
 the forbidden-edge hypothesis.  Pure graph packaging still does not help unless the exceptional
-set is algebraically small.
+set is algebraically small and the complementary singleton set has its own genuine cardinality
+bound.

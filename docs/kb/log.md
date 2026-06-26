@@ -951,3 +951,18 @@ with the sharp budgeted-global-max certificate.  `FloorClosureAtField` is exactl
 `FloorClosureBudgetedMaxAtField` plus `FamilyBounded`; failure of the sharp certificate already
 refutes the old contract, while the only extra old-style failure is an over-budget non-maximal
 listed family member.
+
+Follow-up: `LineListCodewordSingletonRelationException.lean` now exposes the relation-free
+partition baseline behind the exceptional-set route.  Under outside-forbidden edges,
+`UniformLargeZeroSafeCodewordRelationGoodIndependenceBudgeted` is equivalent to directly bounding
+`codewordSingletonWitnessScalars \ Xi`, and the production scanner
+`exists_largeZero_safe_codewordPartitionRouteFailure_of_not_budgeted` returns either the usual
+punctured-weight arithmetic failure or a concrete appearing codeword where the non-exceptional or
+exceptional side overruns its budget.
+
+Follow-up: `LineListCodewordSingletonRelationException.lean` now also records the direct good-part
+collapse.  Under outside-forbidden edges, the relation-good independence budget is equivalent to
+bounding `codewordSingletonWitnessScalars \ Xi` itself, and the direct partition theorem combines
+that non-exceptional cap with the exceptional cap to recover the `S + E` singleton budget.
+The partition scanner returns one appearing codeword whose outside part exceeds `S` or exceptional
+part exceeds `E`.
