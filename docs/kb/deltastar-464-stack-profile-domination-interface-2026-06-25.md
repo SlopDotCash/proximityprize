@@ -59,14 +59,19 @@ nice examples; it must realize the numerical caps assigned to all used stack pro
 
 ## Refutation Tests
 
-The file also records two ways to kill a proposed profile scheme:
+The file also records exact ways to kill a proposed profile scheme:
 
-```text
-1. find u with cap(profile(u)) < StackBadCount(u);
-2. find a used profile p such that every r in R has StackBadCount(r) < cap(p).
+```lean
+not_familyBounded_iff_exists_member_budget_lt
+not_profileCaps_iff_exists_counterexample
+not_profileBudgeted_iff_exists_counterprofile
+not_profileRealizedByFamily_iff_exists_counterprofile
 ```
 
-The first refutes the cap theorem.  The second refutes the representative realization theorem.
+These say respectively: a family budget fails by an above-budget representative; the profile cap
+theorem fails by a stack above its assigned cap; the direct profile budget fails by a profile whose
+cap exceeds `B`; and representative realization fails by a used profile whose cap is larger than
+every representative's bad-scalar count.
 
 ## Critical Verdict
 

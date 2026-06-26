@@ -40,6 +40,7 @@ IsFamilyMax
 and proves:
 
 ```lean
+not_familyBounded_iff_exists_member_budget_lt
 exists_familyMax_of_nonempty
 familyDominates_iff_familyMax_dominates
 worstCaseIncidenceBounded_of_familyDominates
@@ -61,16 +62,23 @@ member of the family or to bounding just `rMax`.
 
 The file also gives the clean falsification API:
 
-```text
-if there exists u such that every r in R has
-StackBadCount(r) < StackBadCount(u),
-then R does not dominate.
+```lean
+not_familyBounded_iff_exists_member_budget_lt
+not_familyDominates_of_exists_strictly_larger_than_all
 ```
 
-So a finite binder catalogue can be killed by a single outside stack that beats every catalogue
-entry on the actual MCA bad-scalar count.  A separate counter-stack whose bad count exceeds the
-budget kills the universal incidence hypothesis even if every listed catalogue member is already
-bounded by that budget.
+So a finite binder catalogue has two exact failure modes:
+
+```text
+FamilyBounded R B fails
+  iff some listed representative r in R is above budget B.
+
+FamilyDominates R fails by scanner witness
+  if some outside stack u beats every listed representative.
+```
+
+A separate counter-stack whose bad count exceeds the budget kills the universal incidence hypothesis
+even if every listed catalogue member is already bounded by that budget.
 
 ## Critical Verdict
 

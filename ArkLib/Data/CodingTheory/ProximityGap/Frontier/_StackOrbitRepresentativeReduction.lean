@@ -92,10 +92,69 @@ def StackRelRepresentativeCover
     (Rel : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop) : Prop :=
   ∀ u : WordStack A (Fin 2) ι, ∃ r ∈ R, Rel u r
 
+/-- Failure of a literal representative cover is exactly an uncovered stack. -/
+theorem not_stackRelRepresentativeCover_iff_exists_uncovered
+    (R : Finset (WordStack A (Fin 2) ι))
+    (Rel : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop) :
+    (¬ StackRelRepresentativeCover R Rel) ↔
+      ∃ u : WordStack A (Fin 2) ι, ∀ r, r ∈ R -> ¬ Rel u r := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u
+    by_contra hno
+    have huncovered : ∀ r, r ∈ R -> ¬ Rel u r := by
+      intro r hr hrel
+      exact hno ⟨r, hr, hrel⟩
+    exact hnone ⟨u, huncovered⟩
+  · rintro ⟨u, huncovered⟩ hcover
+    rcases hcover u with ⟨r, hr, hrel⟩
+    exact huncovered r hr hrel
+
 /-- Representative stacks are within the requested incidence budget. -/
 def RepresentativeStacksBounded (C : Set (ι -> A)) (δ : ℝ≥0)
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ∀ r ∈ R, StackBounded F C δ r B
+
+/-- Failure of representative boundedness is exactly an above-budget representative. -/
+theorem not_representativeStacksBounded_iff_exists_representative_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ RepresentativeStacksBounded (F := F) (A := A) C δ R B) ↔
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro r hr
+    exact le_of_not_gt (fun hgt => hnone ⟨r, hr, hgt⟩)
+  · rintro ⟨r, hr, hgt⟩ hbounded
+    exact (not_lt_of_ge (hbounded r hr)) hgt
+
+/-- Failure of the local representative scanner certificate is exactly an uncovered stack or an
+above-budget representative.  Invariance is a separate proof obligation; this theorem isolates the
+two finite-search failures for the cover/budget half of the quotient route. -/
+theorem not_stackRelRepresentativeCover_and_representativeStacksBounded_iff_exists_uncovered_or_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ)
+    (Rel : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop) :
+    (¬ (StackRelRepresentativeCover R Rel ∧
+      RepresentativeStacksBounded (F := F) (A := A) C δ R B)) ↔
+      (∃ u : WordStack A (Fin 2) ι, ∀ r, r ∈ R -> ¬ Rel u r) ∨
+        ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  rw [not_and_or]
+  constructor
+  · rintro (hcover | hbounded)
+    · exact Or.inl ((not_stackRelRepresentativeCover_iff_exists_uncovered R Rel).mp hcover)
+    · exact Or.inr
+        ((not_representativeStacksBounded_iff_exists_representative_budget_lt C δ R B).mp
+          hbounded)
+  · rintro (huncovered | hbudget)
+    · exact Or.inl ((not_stackRelRepresentativeCover_iff_exists_uncovered R Rel).mpr huncovered)
+    · exact Or.inr
+        ((not_representativeStacksBounded_iff_exists_representative_budget_lt C δ R B).mpr
+          hbudget)
 
 /-- Direct domination by a finite representative set.  This is weaker than exact equivalence and is
 often the right target for sparse-dominance claims. -/
@@ -103,6 +162,53 @@ def StackDominatingRepresentativeCover (C : Set (ι -> A)) (δ : ℝ≥0)
     (R : Finset (WordStack A (Fin 2) ι)) : Prop :=
   ∀ u : WordStack A (Fin 2) ι,
     ∃ r ∈ R, StackBadCount F C δ u ≤ StackBadCount F C δ r
+
+/-- Failure of a dominating representative cover is exactly a stack that beats every proposed
+representative. -/
+theorem not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) :
+    (¬ StackDominatingRepresentativeCover (F := F) (A := A) C δ R) ↔
+      ∃ u : WordStack A (Fin 2) ι,
+        ∀ r, r ∈ R -> StackBadCount F C δ r < StackBadCount F C δ u := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u
+    by_contra hno
+    have hbeats : ∀ r, r ∈ R -> StackBadCount F C δ r < StackBadCount F C δ u := by
+      intro r hr
+      exact lt_of_not_ge (fun hle => hno ⟨r, hr, hle⟩)
+    exact hnone ⟨u, hbeats⟩
+  · rintro ⟨u, hbeats⟩ hcover
+    rcases hcover u with ⟨r, hr, hur⟩
+    exact (not_lt_of_ge hur) (hbeats r hr)
+
+/-- Failure of the direct sparse-domination scanner certificate is exactly a stack beating every
+representative or an above-budget representative. -/
+theorem not_stackDominatingRepresentativeCover_and_representativeStacksBounded_iff_exists_beater_or_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ (StackDominatingRepresentativeCover (F := F) (A := A) C δ R ∧
+      RepresentativeStacksBounded (F := F) (A := A) C δ R B)) ↔
+      (∃ u : WordStack A (Fin 2) ι,
+        ∀ r, r ∈ R -> StackBadCount F C δ r < StackBadCount F C δ u) ∨
+        ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  rw [not_and_or]
+  constructor
+  · rintro (hcover | hbounded)
+    · exact Or.inl
+        ((not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all C δ R).mp hcover)
+    · exact Or.inr
+        ((not_representativeStacksBounded_iff_exists_representative_budget_lt C δ R B).mp
+          hbounded)
+  · rintro (hbeater | hbudget)
+    · exact Or.inl
+        ((not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all C δ R).mpr hbeater)
+    · exact Or.inr
+        ((not_representativeStacksBounded_iff_exists_representative_budget_lt C δ R B).mpr
+          hbudget)
 
 /-- Invariance plus a representative cover gives a dominating representative cover. -/
 theorem dominatingCover_of_invariantRel_cover
@@ -151,6 +257,60 @@ theorem representativeStacksBounded_of_worstCaseIncidenceBounded
     RepresentativeStacksBounded (F := F) (A := A) C δ R B := by
   intro r _hr
   exact hI r
+
+/-- Under a dominating representative cover, the full open-core incidence hypothesis is equivalent
+to checking the representative set. -/
+theorem worstCaseIncidenceBounded_iff_representativeStacksBounded_of_dominatingCover
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcover : StackDominatingRepresentativeCover (F := F) (A := A) C δ R) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B
+      ↔ RepresentativeStacksBounded (F := F) (A := A) C δ R B :=
+  ⟨representativeStacksBounded_of_worstCaseIncidenceBounded C δ,
+    worstCaseIncidenceBounded_of_dominatingRepresentativeCover C δ hcover⟩
+
+/-- Under a dominating representative cover, failure of the full incidence bound is exactly an
+above-budget representative. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_dominatingCover
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcover : StackDominatingRepresentativeCover (F := F) (A := A) C δ R) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  rw [worstCaseIncidenceBounded_iff_representativeStacksBounded_of_dominatingCover
+    C δ B hcover]
+  exact not_representativeStacksBounded_iff_exists_representative_budget_lt C δ R B
+
+/-- Delta-star consumer for a direct dominating representative cover.  This is the sparse-dominance
+route without packaging the cover as an invariant relation. -/
+theorem deltaStar_pin_of_dominatingRepresentativeCover
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcover : StackDominatingRepresentativeCover (F := F) (A := A) C δ R)
+    (hR : RepresentativeStacksBounded (F := F) (A := A) C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
+    (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_dominatingRepresentativeCover C δ hcover hR)
+    hbudget
+
+/-- Under an invariant representative cover, failure of the full incidence bound is exactly an
+above-budget representative. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_invariantRel_cover
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    {Rel : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop}
+    (hinv : StackCountInvariantRel (F := F) (A := A) C δ Rel)
+    (hcover : StackRelRepresentativeCover R Rel) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r :=
+  not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_dominatingCover
+    C δ B (dominatingCover_of_invariantRel_cover C δ hinv hcover)
 
 /-- Under an invariant representative cover, checking all representatives is equivalent to checking
 all stacks.  This is the stack-side analogue of the frequency-side quotient collapse. -/
@@ -322,10 +482,19 @@ end ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.card_filter_comp_equiv
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_stackRelRepresentativeCover_iff_exists_uncovered
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_representativeStacksBounded_iff_exists_representative_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_stackRelRepresentativeCover_and_representativeStacksBounded_iff_exists_uncovered_or_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_stackDominatingRepresentativeCover_and_representativeStacksBounded_iff_exists_beater_or_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.dominatingCover_of_invariantRel_cover
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.worstCaseIncidenceBounded_of_dominatingRepresentativeCover
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.worstCaseIncidenceBounded_of_representativeStacksBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.representativeStacksBounded_of_worstCaseIncidenceBounded
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.worstCaseIncidenceBounded_iff_representativeStacksBounded_of_dominatingCover
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_dominatingCover
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.deltaStar_pin_of_dominatingRepresentativeCover
+#print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_invariantRel_cover
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.worstCaseIncidenceBounded_iff_representativeStacksBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.deltaStar_pin_of_representativeStacksBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.stackBadCount_smul_right

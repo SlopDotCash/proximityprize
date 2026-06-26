@@ -302,6 +302,22 @@ theorem familyBounded_and_counterStack_not_worstCaseIncidenceBounded
   intro hI
   exact (not_lt_of_ge (hI uWitness)) hgt
 
+/-- Exact refutation form of the universal incidence budget: it fails precisely when some stack is
+above the target bad-scalar budget. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) (B : ℕ) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ u : WordStack A (Fin 2) ι, B < StackBadCount F C δ u := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u
+    exact le_of_not_gt (fun hgt => hnone ⟨u, hgt⟩)
+  · rintro ⟨u, hgt⟩ hI
+    exact (not_lt_of_ge (hI u)) hgt
+
 /-- A bounded family beaten by one outside stack is not a domination proof. -/
 theorem familyBounded_not_dominationProof_of_exists_strictly_larger_than_all
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
@@ -788,6 +804,7 @@ end ArkLib.ProximityGap.Frontier.FloorClosureContract
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_exhaustiveFamilyBounded
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_containsGlobalMax
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_containsGlobalMax
+#print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_base_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.candidateListExactSmallestFamily_of_prefix_and_successor
 #print axioms ArkLib.ProximityGap.Frontier.FloorClosureContract.not_floorGoodFamilyBudget_iff_floorGood_and_not_familyBounded

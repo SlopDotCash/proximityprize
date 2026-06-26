@@ -67,6 +67,21 @@ def FamilyBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ∀ r ∈ R, StackBounded K C δ r B
 
+/-- Failure of a finite profile-route family budget is exactly an above-budget member. -/
+theorem not_familyBounded_iff_exists_member_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FamilyBounded F C δ R B) ↔
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro r hr
+    exact le_of_not_gt (fun hgt => hnone ⟨r, hr, hgt⟩)
+  · rintro ⟨r, hr, hgt⟩ hbounded
+    exact (not_lt_of_ge (hbounded r hr)) hgt
+
 /-- A finite family dominates if every stack is bounded by some representative's bad-scalar count. -/
 def FamilyDominates (K : Type) [Field K] [Fintype K] [DecidableEq K]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -225,6 +240,21 @@ theorem not_profileCaps_of_counterexample
   rcases hcounter with ⟨u, hu⟩
   exact (not_lt_of_ge (hcap u)) hu
 
+/-- Exact negative form for profile caps: the cap theorem fails precisely when some stack is above
+its assigned profile cap. -/
+theorem not_profileCaps_iff_exists_counterexample
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ} :
+    (¬ ProfileCaps F C δ profile cap) ↔
+      ∃ u : WordStack A (Fin 2) ι, cap (profile u) < StackBadCount F C δ u := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro u
+    exact le_of_not_gt (fun hgt => hnone ⟨u, hgt⟩)
+  · exact not_profileCaps_of_counterexample C δ
+
 /-- A profile above budget refutes the direct profile-budget route. -/
 theorem not_profileBudgeted_of_counterprofile
     {P : Type} {cap : P -> ℕ} {B : ℕ}
@@ -233,6 +263,18 @@ theorem not_profileBudgeted_of_counterprofile
   intro hbudget
   rcases hcounter with ⟨p, hp⟩
   exact (not_lt_of_ge (hbudget p)) hp
+
+/-- Exact negative form for profile budgets. -/
+theorem not_profileBudgeted_iff_exists_counterprofile
+    {P : Type} {cap : P -> ℕ} {B : ℕ} :
+    (¬ ProfileBudgeted cap B) ↔ ∃ p : P, B < cap p := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro p
+    exact le_of_not_gt (fun hgt => hnone ⟨p, hgt⟩)
+  · exact not_profileBudgeted_of_counterprofile
 
 /-- A used profile whose cap is larger than every representative's bad count refutes realization by
 that representative family. -/
@@ -247,9 +289,32 @@ theorem not_profileRealizedByFamily_of_counterprofile
   rcases hreal p hused with ⟨r, hr, hcap⟩
   exact (not_lt_of_ge hcap) (hcounter r hr)
 
+/-- Exact negative form for profile realization by a finite family: failure means some used profile
+has no representative whose bad-scalar count reaches its cap. -/
+theorem not_profileRealizedByFamily_iff_exists_counterprofile
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P} {cap : P -> ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)} :
+    (¬ ProfileRealizedByFamily F C δ profile cap R) ↔
+      ∃ p : P, UsedProfile profile p ∧
+        ∀ r, r ∈ R -> StackBadCount F C δ r < cap p := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro p hused
+    by_contra hno
+    have hcounter : ∀ r, r ∈ R -> StackBadCount F C δ r < cap p := by
+      intro r hr
+      exact lt_of_not_ge (fun hle => hno ⟨r, hr, hle⟩)
+    exact hnone ⟨p, hused, hcounter⟩
+  · rintro ⟨p, hused, hcounter⟩
+    exact not_profileRealizedByFamily_of_counterprofile C δ hused hcounter
+
 end ArkLib.ProximityGap.Frontier.StackProfileDominationInterface
 
 /-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_familyBounded_iff_exists_member_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.worstCaseIncidenceBounded_of_profileCaps_budget
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.familyDominates_of_profileCaps_realized
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.worstCaseIncidenceBounded_of_profileCaps_realized_familyBounded
@@ -258,5 +323,8 @@ end ArkLib.ProximityGap.Frontier.StackProfileDominationInterface
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.deltaStar_pin_of_profileCaps_budget
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.deltaStar_pin_of_profileReps_familyBounded
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileCaps_of_counterexample
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileCaps_iff_exists_counterexample
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileBudgeted_of_counterprofile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileBudgeted_iff_exists_counterprofile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileRealizedByFamily_of_counterprofile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.not_profileRealizedByFamily_iff_exists_counterprofile

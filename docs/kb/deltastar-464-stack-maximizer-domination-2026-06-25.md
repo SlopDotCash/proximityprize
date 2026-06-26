@@ -43,14 +43,26 @@ deltaStar_pin_of_stackMaximizer
 The file also records the refutation interface:
 
 ```lean
+not_stackBounded_iff_budget_lt_stackBadCount
 not_stackDominates_of_exists_strictly_larger
 not_worstCaseIncidenceBounded_of_budget_lt_stackBadCount
+not_worstCaseIncidenceBounded_iff_exists_budget_lt_stackBadCount
 candidateBounded_and_counterStack_not_worstCaseIncidenceBounded
 candidateBounded_not_dominationProof_of_strictly_larger
 ```
 
 So an exact scanner can kill a proposed binder/floor dominator by exhibiting one stack with strictly
 larger bad-scalar count, or kill a proposed budget by exhibiting one stack above it.
+
+The negative open-core statement is now exact, not merely one-way:
+
+```text
+not WorstCaseIncidenceBounded C delta B
+  iff some stack has StackBadCount above B.
+```
+
+This is the formal shape of every failed floor-prize attempt: the missing theorem is precisely the
+exclusion of all above-budget stacks.
 
 I also added the finite-family version:
 

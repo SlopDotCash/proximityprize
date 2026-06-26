@@ -59,6 +59,7 @@ These are exactly the algebra/incidence and sparse-domination bridges missing fr
 The file also records two direct falsification tests:
 
 ```lean
+not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
 floorGood_familyBudget_not_dominationProof_of_larger_than_all
 floorGood_familyBudget_not_worstCaseIncidenceBounded_of_counterStack
 ```
@@ -75,8 +76,8 @@ which refutes `FamilyDominates`, or:
 find uWitness with StackBadCount(uWitness) > B
 ```
 
-which refutes the universal incidence conclusion at budget `B`, even if floor-goodness bounded the
-listed floor family.
+which is now exactly equivalent to failure of the universal incidence conclusion at budget `B`.
+This refutes the floor route even if floor-goodness bounded the listed floor family.
 
 ## Critical Verdict
 
@@ -346,3 +347,15 @@ and some selected representative r in R has StackBadCount r > B.
 
 This isolates the off-BGK floor burden.  Least-prime localization may prove floor-goodness, but the
 remaining budget theorem is a concrete above-budget-member exclusion for the chosen family.
+
+## Continuation: universal budget failure is exact
+
+The open-core incidence budget now has the same exact negative form:
+
+```lean
+not_worstCaseIncidenceBounded_iff_exists_stack_budget_lt
+```
+
+So `WorstCaseIncidenceBounded C delta B` fails exactly when some stack has bad-scalar count above
+`B`.  This pins every floor-prize failure back to the same concrete scanner obligation: exclude all
+above-budget stacks, not only the representatives in a proposed compressed family.

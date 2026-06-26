@@ -59,6 +59,21 @@ def FamilyBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ∀ r ∈ R, StackBounded K C δ r B
 
+/-- Failure of a finite candidate-family budget is exactly an above-budget representative. -/
+theorem not_familyBounded_iff_exists_member_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ FamilyBounded F C δ R B) ↔
+      ∃ r : WordStack A (Fin 2) ι, r ∈ R ∧ B < StackBadCount F C δ r := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro r hr
+    exact le_of_not_gt (fun hgt => hnone ⟨r, hr, hgt⟩)
+  · rintro ⟨r, hr, hgt⟩ hbounded
+    exact (not_lt_of_ge (hbounded r hr)) hgt
+
 /-- A finite family dominates if every stack is bounded by some representative's bad-scalar count. -/
 def FamilyDominates (K : Type) [Field K] [Fintype K] [DecidableEq K]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -267,6 +282,7 @@ theorem deltaStar_pin_of_familyDominates
 end ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax
 
 /-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.not_familyBounded_iff_exists_member_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.exists_familyMax_of_nonempty
 #print axioms ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.familyDominates_of_familyMax_dominates
 #print axioms ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.familyMax_dominates_of_familyDominates

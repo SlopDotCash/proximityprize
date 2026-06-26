@@ -59,10 +59,12 @@ The budget scanner is also packaged:
 ```lean
 familyBounded_fineProfileRepImage_iff_no_fineProfile_budget_lt
 floorGoodFamilyBudget_fineProfileRepImage_iff_no_fineProfile_budget_lt
+not_floorGoodFamilyBudget_fineProfileRepImage_iff_floorGood_and_exists_fineProfile_budget_lt
 familyBounded_of_no_usedFineProfile_budget_lt
 familyBounded_usedFineProfileRepFamily_iff_no_usedFineProfile_budget_lt
 floorGoodFamilyBudget_of_no_usedFineProfile_budget_lt
 floorGoodFamilyBudget_usedFineProfileRepFamily_iff_no_usedFineProfile_budget_lt
+not_floorGoodFamilyBudget_usedFineProfileRepFamily_iff_floorGood_and_exists_usedFineProfile_budget_lt
 worstCaseIncidenceBounded_of_no_bad_fineProfile_budgetScanner
 deltaStar_pin_of_refinedScannerBudget
 ```
@@ -74,6 +76,8 @@ should only cover representatives of actually attained fine profiles.
 The used-family budget iff is the fully local scanner form: the used fine-profile representative
 family is bounded iff no used representative is above budget.  Together with no bad fine-profile
 representative and the scaled MCA budget, this implies the delta-star lower pin.
+The negative budget iff forms say the floor-to-family budget bridge fails exactly when the floor
+predicate is good at the field prime and a full-image or used representative exceeds budget.
 
 The Linnik/TZ floor consumers are:
 
@@ -107,6 +111,10 @@ theorem that floor-goodness itself budgets the chosen representative family when
 control is unavailable.
 The exact iff `floorGoodFamilyBudget_usedFineProfileRepFamily_iff_no_usedFineProfile_budget_lt`
 isolates that remaining burden under the floor-good premise.
+The negative iff
+`not_floorGoodFamilyBudget_usedFineProfileRepFamily_iff_floorGood_and_exists_usedFineProfile_budget_lt`
+is the matching refutation socket: floor-goodness plus an above-budget used fine-profile
+representative is exactly a failure of the proposed floor-good family-budget theorem.
 
 The two `*_of_linnikInputs` / `*_of_tzInputs` theorems are the no-laundering guardrails: once the
 direct refined scanner proves max-containment and budget, the same delta-star pin follows without

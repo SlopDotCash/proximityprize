@@ -1,0 +1,8 @@
+bibkey: BCHKS25
+source_kind: paper
+canonical_url: https://eprint.iacr.org/2025/2055
+alternate_urls:
+  - https://eccc.weizmann.ac.il/report/2025/169/download
+  - https://askcryp.to/t/resource-topic-2025-2055-on-proximity-gaps-for-reed-solomon-codes/25386
+committed_artifacts: []
+notes: "Seeded from references.bib and ECCC TR25-169 for On Proximity Gaps for Reed-Solomon Codes."

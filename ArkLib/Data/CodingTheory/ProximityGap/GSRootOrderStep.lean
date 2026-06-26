@@ -18,8 +18,8 @@ namespace GSRootOrder
 
 variable {F : Type*} [Field F]
 
-/-- **Weighted-degree transfer.** If every `Y`-coefficient of `Q : (F[X])[Y]` obeys the
-`(1, k−1)`-weighted degree bound `deg_X(coeff_j) + j·(k−1) < D`, and `deg f ≤ k−1`, then the
+/-- **Weighted-degree transfer.** If every outer coefficient of `Q : Polynomial (Polynomial F)`
+obeys the weighted-degree bound `deg_X(coeff_j) + j·(k−1) < D`, and `deg f ≤ k−1`, then the
 univariate restriction `Q(X, f(X)) = Q.eval f` has degree `< D`. -/
 theorem natDegree_eval_lt {Q : Polynomial (Polynomial F)} {f : Polynomial F} {k D : ℕ}
     (hD : 0 < D)
@@ -41,11 +41,12 @@ theorem natDegree_eval_lt {Q : Polynomial (Polynomial F)} {f : Polynomial F} {k 
     _ ≤ D - 1 := natDegree_sum_le_of_forall_le _ _ hterm
     _ < D := by omega
 
-/-- **The root-order / factor step (Sudan, multiplicity 1).**  Let `Q : (F[X])[Y]` satisfy the
-`(1, k−1)`-weighted degree bound `< D`, and let `f` be a polynomial of degree `≤ k−1` such that
+/-- **The root-order / factor step (Sudan, multiplicity 1).**  Let
+`Q : Polynomial (Polynomial F)` satisfy the weighted-degree bound `< D`, and let `f` be a
+polynomial of degree `≤ k−1` such that
 `Q(α, f(α)) = 0` for all `α` in a set `A` of at least `D` points (the **agreement points**: at each
 the received word equals `f`, and `Q` vanishes there).  Then the univariate `Q(X, f(X))` has `≥ D`
-roots but degree `< D`, hence is zero — so **`(Y − f) ∣ Q`** in `(F[X])[Y]`.
+roots but degree `< D`, hence is zero — so **`(Y − f) ∣ Q`** in the outer polynomial ring.
 
 This is the middle step of the Guruswami–Sudan pipeline, in general form: it converts an agreement
 count into a polynomial factor, feeding the `Y`-degree list cap. -/

@@ -46,10 +46,36 @@ There is also a weaker direct target:
 
 ```lean
 StackDominatingRepresentativeCover
+worstCaseIncidenceBounded_iff_representativeStacksBounded_of_dominatingCover
+not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_dominatingCover
+deltaStar_pin_of_dominatingRepresentativeCover
+not_worstCaseIncidenceBounded_iff_exists_representative_budget_lt_of_invariantRel_cover
 ```
 
 where each stack's bad count is at most the count of some representative.  This is the exact shape
-of a sparse-dominance theorem.
+of a sparse-dominance theorem.  Under such a cover, full worst-case incidence is equivalent to
+bounding the representatives, failure is exactly an above-budget representative, and the scaled
+budget feeds `mcaDeltaStar` directly.  The same negative form is packaged for the named
+invariant-relation cover route.
+
+The negative scanner surface is now exact:
+
+```lean
+not_stackRelRepresentativeCover_iff_exists_uncovered
+not_representativeStacksBounded_iff_exists_representative_budget_lt
+not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all
+not_stackRelRepresentativeCover_and_representativeStacksBounded_iff_exists_uncovered_or_budget_lt
+not_stackDominatingRepresentativeCover_and_representativeStacksBounded_iff_exists_beater_or_budget_lt
+```
+
+So a proposed quotient can fail in three clean ways: a stack has no representative under `Rel`, a
+listed representative is above the budget, or a stack beats every representative and refutes the
+dominating-cover route.  This keeps orbit quotient claims honest at the same level as the
+finite-family and stack-maximizer interfaces.  The combined scanner forms package the two local
+certificate failures directly: a relation-cover plus representative-budget certificate fails
+exactly by an uncovered stack or an above-budget representative, while a direct domination plus
+representative-budget certificate fails exactly by a stack beating every representative or an
+above-budget representative.  Count invariance remains a separate theorem, as it should.
 
 ## Follow-up: a real count-invariance generator
 
