@@ -2289,6 +2289,7 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms isPrimitiveRoot_3_16_ratio_zmod17
 #print axioms invariantRatio_3_sq_pow16_eq_one_zmod17
 #print axioms polynomial_eq_3_sq_pow16_zmod17
+#print axioms invariant_collision_scalar_5_zmod17
 #print axioms exists_invariant_collision_mu16_zmod17_3
 #print axioms not_invariantPairNonCollision_mu16_zmod17_3
 #print axioms not_forall_primitive_pairNonCollision_zmod17_mu16
