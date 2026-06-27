@@ -1664,8 +1664,7 @@ work is now an explicit resultant-size bound for the prize parameters.
 Follow-up: a bad-prime collapse is now recorded for the same canonical pair.  In `F_17`, Lean proves
 that `3` is a primitive 16-th root but `invariantRatio 3 (3^2)^16 = 1`, equivalently the
 denominator-cleared polynomial equality holds.  The theorem
-`invariant_collision_scalar_5_zmod17` checks the scalar `5`,
-`exists_invariant_collision_mu16_zmod17_3` packages it as a collision witness, and
+`exists_invariant_collision_mu16_zmod17_3` packages the scalar `5` as a collision witness, and
 `not_forall_primitive_pairNonCollision_zmod17_mu16` refutes the uniform finite-field statement
 without bad-prime exclusions.
 

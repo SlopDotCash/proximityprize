@@ -100,7 +100,6 @@ orderOf_3_ratio_zmod17
 isPrimitiveRoot_3_16_ratio_zmod17
 invariantRatio_3_sq_pow16_eq_one_zmod17
 polynomial_eq_3_sq_pow16_zmod17
-invariant_collision_scalar_5_zmod17
 exists_invariant_collision_mu16_zmod17_3
 not_invariantPairNonCollision_mu16_zmod17_3
 not_forall_primitive_pairNonCollision_zmod17_mu16
@@ -309,8 +308,8 @@ for that concrete subgroup.
 
 There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is a primitive
 16-th root, but `invariantRatio 3 (3^2)^16 = 1` and the denominator-cleared polynomial equality
-holds.  The theorem `invariant_collision_scalar_5_zmod17` checks the scalar `5` directly,
-`exists_invariant_collision_mu16_zmod17_3` packages it as a root-of-unity collision, and
+holds.  The theorem `exists_invariant_collision_mu16_zmod17_3` packages a root-of-unity collision,
+and
 `not_forall_primitive_pairNonCollision_zmod17_mu16` refutes any uniform finite-field version of the
 canonical pairwise residual without excluding bad primes.
 

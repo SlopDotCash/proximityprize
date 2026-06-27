@@ -1909,27 +1909,27 @@ theorem polynomial_eq_3_sq_pow16_zmod17 :
     ((3 : ZMod 17) ^ 4 + 1) ^ 16 = ((3 : ZMod 17) ^ 2 + 1) ^ 16 := by
   decide
 
+/-- The concrete collision scalar in `F₁₇` is `5`. -/
+theorem invariant_collision_scalar_5_zmod17 :
+    (3 : ZMod 17) ^ 2 + ((3 : ZMod 17) ^ 2)⁻¹ =
+      (5 : ZMod 17) * ((3 : ZMod 17) + (3 : ZMod 17)⁻¹) := by
+  have h32 : ((3 : ZMod 17) ^ 2)⁻¹ = 2 := by
+    apply inv_eq_of_mul_eq_one_right
+    decide
+  have h3 : ((3 : ZMod 17) : ZMod 17)⁻¹ = 6 := by
+    apply inv_eq_of_mul_eq_one_right
+    decide
+  rw [h32, h3]
+  decide
+
 /-- The local pairwise residual fails concretely in `F₁₇`: a collision scalar exists. -/
 theorem exists_invariant_collision_mu16_zmod17_3 :
     ∃ u ∈ Polynomial.nthRootsFinset 16 (1 : ZMod 17),
       (3 : ZMod 17) ^ 2 + ((3 : ZMod 17) ^ 2)⁻¹ =
         u * ((3 : ZMod 17) + (3 : ZMod 17)⁻¹) := by
-  have hc : (3 : ZMod 17) + (3 : ZMod 17)⁻¹ ≠ 0 := by
-    simpa [pow_one] using
-      primRoot_pow_add_inv_ne_zero_of_four_mul_lt (F := ZMod 17) (ζ := (3 : ZMod 17))
-        (k := 1) (by norm_num : 0 < 16) isPrimitiveRoot_3_16_ratio_zmod17
-        one_ne_zero (by omega : 1 * 4 < 16)
-  have hnotPair :
-      ¬ InvariantPairNonCollision (Polynomial.nthRootsFinset 16 (1 : ZMod 17))
-        (3 : ZMod 17) ((3 : ZMod 17) ^ 2) :=
-    (not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
-      (F := ZMod 17) (n := 16) (by norm_num : 0 < 16)
-      (t := (3 : ZMod 17)) (t' := ((3 : ZMod 17) ^ 2)) hc).mpr
-      invariantRatio_3_sq_pow16_eq_one_zmod17
-  exact
-    (not_invariantPairNonCollision_iff_exists_collision (F := ZMod 17)
-      (Polynomial.nthRootsFinset 16 (1 : ZMod 17)) (3 : ZMod 17)
-      ((3 : ZMod 17) ^ 2)).mp hnotPair
+  refine ⟨5, ?_, invariant_collision_scalar_5_zmod17⟩
+  rw [Polynomial.mem_nthRootsFinset (by norm_num : 0 < 16)]
+  decide
 
 /-- Hence the canonical pairwise non-collision residual is false in this bad-prime instance. -/
 theorem not_invariantPairNonCollision_mu16_zmod17_3 :
