@@ -297,6 +297,60 @@ theorem mcaDeltaStar_eq_twoFifth :
   mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
     fiveEleven_le_half half_lt_sixEleven
 
+/-! ## The bottom band: `mcaDeltaStar(C, ε*) = 0` for `ε* < 1/11` -/
+
+/-- The zero-band bad stack: first row is the zero codeword, second row is a non-codeword. -/
+def ubadZero : WordStack F11 (Fin 2) (Fin 5) := ![lineEval 0 0, u₁]
+
+@[simp] theorem ubadZero_zero : ubadZero 0 = lineEval 0 0 := rfl
+@[simp] theorem ubadZero_one : ubadZero 1 = u₁ := rfl
+
+/-- The witness-cardinality clause at `δ = 0`, `n = 5`, for the full domain. -/
+theorem card_cond_zero :
+    (((Finset.univ : Finset (Fin 5)).card : ℝ≥0) ≥
+      ((1 : ℝ≥0) - 0) * (Fintype.card (Fin 5) : ℝ≥0)) := by
+  norm_num [Fintype.card_fin]
+
+/-- `γ = 0` is already bad at `δ = 0`: the first row is the zero codeword on the full domain,
+while the second row is not explainable by any degree-`< 2` codeword. -/
+theorem mcaEvent_zero_g0 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) 0 (lineEval 0 0) u₁ (0 : F11) := by
+  refine ⟨Finset.univ, card_cond_zero, ⟨lineEval 0 0, lineEval_mem 0 0, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- The zero-band bad-scalar set: one scalar out of eleven. -/
+def GbadZero : Finset F11 := {0}
+
+theorem mcaEvent_zero_of_mem_GbadZero :
+    ∀ γ ∈ GbadZero,
+      mcaEvent (F := F11) (C : Set (Fin 5 → F11)) 0 (ubadZero 0) (ubadZero 1) γ := by
+  intro γ hγ
+  rw [ubadZero_zero, ubadZero_one]
+  simp only [GbadZero, Finset.mem_singleton] at hγ
+  rw [hγ]
+  exact mcaEvent_zero_g0
+
+/-- **Bad side (zero band):** `ε_mca(C, 0) ≥ 1/11`. -/
+theorem epsMCA_zero_ge :
+    (1 : ℝ≥0∞) / 11 ≤ epsMCA (F := F11) (A := F11) (C : Set (Fin 5 → F11)) 0 := by
+  have h := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
+    (C : Set (Fin 5 → F11)) 0 ubadZero GbadZero mcaEvent_zero_of_mem_GbadZero
+  have hG : (GbadZero.card : ℝ≥0∞) = 1 := by
+    rw [show GbadZero.card = 1 from by decide]; norm_num
+  have hF : ((Fintype.card F11 : ℕ) : ℝ≥0∞) = 11 := by
+    rw [show Fintype.card F11 = 11 from by simp [ZMod.card]]; norm_num
+  rwa [hG, hF] at h
+
+/-- **Interval pin (bottom band):** if the threshold is below the unavoidable one-scalar event,
+then no positive radius is good and `mcaDeltaStar(C, ε*) = 0`. -/
+theorem mcaDeltaStar_eq_zero_of_lt_oneEleven {εstar : ℝ≥0∞}
+    (hhi : εstar < 1 / 11) :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar = 0 := by
+  refine le_antisymm ?_ (zero_le _)
+  exact MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _
+    (lt_of_lt_of_le hhi epsMCA_zero_ge)
+
 /-! ## The lower jump: `mcaDeltaStar(C, ε*) = 1/5` for `ε* ∈ [1/11, 2/11)`
 
 Completing the threshold characterization of `C`: the step function `ε_mca(C, ·)` has its first
@@ -417,6 +471,8 @@ theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0�
 #print axioms epsMCA_le_of_lt_twoFifth
 #print axioms mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
 #print axioms mcaDeltaStar_eq_twoFifth
+#print axioms epsMCA_zero_ge
+#print axioms mcaDeltaStar_eq_zero_of_lt_oneEleven
 #print axioms epsMCA_fifth_ge
 #print axioms mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven
 

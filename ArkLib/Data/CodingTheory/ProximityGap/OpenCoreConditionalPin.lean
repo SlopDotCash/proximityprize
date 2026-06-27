@@ -54,10 +54,14 @@ Johnson→capacity gap for explicit fixed Reed–Solomon codes; it is the prize 
 * **`worstCaseIncidence_pin_budget`** — the budget specialization: with `ε* = E/q` for a natural
   budget `E` (the prize's `q·ε* ≈ n`), the open core `I(δ) ≤ E` alone implies `δ ≤ δ*`.
 
-* **`worstCaseIncidence_pin_of_orbitCount`** — the ORBIT-COUNT face: combining the open core with
-  the axiom-clean Action–Orbit crossing law (`OrbitCountCrossingLaw.crossing_law`), the budget test
-  `I(δ) ≤ n` is the orbit-count test `N_pencil(δ) ≤ gcd(b−a, n)`; supplying that (per stack) plus
-  `n/q ≤ ε*` pins `δ ≤ δ*`.
+* **`worstCaseIncidenceBounded_of_orbitCount`** — the ORBIT-COUNT face at the open-core layer:
+  the axiom-clean Action–Orbit crossing law (`OrbitCountCrossingLaw.crossing_law`) turns a
+  per-stack factorization `I_u = N_u·S` plus the orbit-count test `N_u ≤ d`, `S·d = n`, into the
+  incidence bound `WorstCaseIncidenceBounded C δ n`.
+
+* **`worstCaseIncidence_pin_of_orbitCount`** — the same certificate composed with
+  `worstCaseIncidence_pin`: supplying the per-stack orbit-count test plus `n/q ≤ ε*` pins
+  `δ ≤ δ*`.
 
 ## Honest scope
 
@@ -150,15 +154,33 @@ theorem worstCaseIncidence_pin_budget (C : Set (ι → A)) {δ : ℝ≥0} {E : �
 /-! ## The orbit-count face of the conditional pin -/
 
 open Classical in
-/-- **The orbit-count face of the conditional pin (Action–Orbit reformulation).**
+/-- **The orbit-count face of the open core (Action–Orbit reformulation).**
 
 The governing-law budget test `I(δ) ≤ n` is, by the axiom-clean crossing law
 `OrbitCountCrossingLaw.crossing_law`, equivalent to the orbit-count test
 `N_pencil(δ) ≤ gcd(b−a, n)`.  Concretely: if for every stack `u` the bad-scalar count factors as
 `N_u · S` (constant orbit size `S > 0`, `S · d = n`) with the **orbit-count test** `N_u ≤ d`, then
-the open core `I(δ) ≤ n` holds, and (with `n/q ≤ ε*`) the `δ*` lower pin follows.
+the open core `I(δ) ≤ n` holds.
 
-This routes the orbit-count form of the open core into `worstCaseIncidence_pin`. -/
+This is the standalone interface the R4 coset-rigidity route must feed: prove the orbit-count
+certificate, and the raw incidence hypothesis is discharged. -/
+theorem worstCaseIncidenceBounded_of_orbitCount
+    (C : Set (ι → A)) {δ : ℝ≥0} {S d n : ℕ}
+    (hS : 0 < S) (hsupply : S * d = n)
+    (horbit : ∀ u : WordStack A (Fin 2) ι,
+      ∃ N : ℕ,
+        (Finset.univ.filter (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card = N * S
+        ∧ N ≤ d) :
+    WorstCaseIncidenceBounded (F := F) (A := A) C δ n := by
+  intro u
+  obtain ⟨N, hid, hNd⟩ := horbit u
+  exact (ArkLib.ProximityGap.OrbitCountCrossingLaw.crossing_law hS hsupply hid).2 hNd
+
+open Classical in
+/-- **The orbit-count face of the conditional pin.**
+
+The standalone orbit-count certificate gives `WorstCaseIncidenceBounded C δ n`; if the normalized
+budget `n/q` is at most `ε*`, the governing-law threshold reaches `δ`. -/
 theorem worstCaseIncidence_pin_of_orbitCount
     (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {S d n : ℕ}
     (hδ : δ ≤ 1) (hS : 0 < S) (hsupply : S * d = n)
@@ -167,11 +189,27 @@ theorem worstCaseIncidence_pin_of_orbitCount
         (Finset.univ.filter (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card = N * S
         ∧ N ≤ d)
     (hbudget : (n : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ mcaDeltaStar (F := F) (A := A) C εstar := by
-  refine worstCaseIncidence_pin (F := F) (A := A) C εstar hδ ?_ hbudget
-  intro u
-  obtain ⟨N, hid, hNd⟩ := horbit u
-  exact (ArkLib.ProximityGap.OrbitCountCrossingLaw.crossing_law hS hsupply hid).2 hNd
+    δ ≤ mcaDeltaStar (F := F) (A := A) C εstar :=
+  worstCaseIncidence_pin (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_orbitCount (F := F) (A := A) C hS hsupply horbit)
+    hbudget
+
+/-- **Budget-specialized orbit-count pin.**
+
+If the target error is exactly the natural budget ratio `n/q`, the per-stack orbit-count
+certificate pins `δ ≤ mcaDeltaStar C (n/q)` with no separate budget side condition. -/
+open Classical in
+theorem worstCaseIncidence_pin_budget_of_orbitCount
+    (C : Set (ι → A)) {δ : ℝ≥0} {S d n : ℕ}
+    (hδ : δ ≤ 1) (hS : 0 < S) (hsupply : S * d = n)
+    (horbit : ∀ u : WordStack A (Fin 2) ι,
+      ∃ N : ℕ,
+        (Finset.univ.filter (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card = N * S
+        ∧ N ≤ d) :
+    δ ≤ mcaDeltaStar (F := F) (A := A) C
+      ((n : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) :=
+  worstCaseIncidence_pin_budget (F := F) (A := A) C hδ
+    (worstCaseIncidenceBounded_of_orbitCount (F := F) (A := A) C hS hsupply horbit)
 
 end ProximityGap.OpenCoreConditionalPin
 
@@ -179,4 +217,6 @@ end ProximityGap.OpenCoreConditionalPin
 #print axioms ProximityGap.OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence
 #print axioms ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
 #print axioms ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin_budget
+#print axioms ProximityGap.OpenCoreConditionalPin.worstCaseIncidenceBounded_of_orbitCount
 #print axioms ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin_of_orbitCount
+#print axioms ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin_budget_of_orbitCount

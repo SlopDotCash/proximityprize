@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4929 files, 53043 declarations
+- `ArkLib` — 4932 files, 53092 declarations
 
 ## Same short-name across multiple files (2178 groups)
 
@@ -12070,7 +12070,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 689 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 625 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 
@@ -12305,12 +12305,12 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_beta4` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L129) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ8192.exists_tzWindow_mu8192_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ8192.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ8192.lean#L46)
     - a: Concrete β=4 TZ-window refuter for the canonical `n = 32` width-four lane.
     - b: Concrete β=2 TZ-window refuter for the canonical `n = 8192` width-four lane.
-- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L140) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ1024.exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean#L30)
-    - a: Fully explicit β=4 witness: `1048609 ∈ [32⁴, 2 * 32⁴]` refutes the canonical `n = 32` width-four bud
-    - b: Fully explicit β=2 witness: `1053697 ∈ [1024^2, 2 * 1024^2]` refutes the canonical `n = 1024` width-
-- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L140) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ128.exists_tzWindow_mu128_width4_refuter_zmod17921_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ128.lean:29](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ128.lean#L29)
-    - a: Fully explicit β=4 witness: `1048609 ∈ [32⁴, 2 * 32⁴]` refutes the canonical `n = 32` width-four bud
-    - b: Fully explicit β=2 witness: `17921 ∈ [128², 2 * 128²]` refutes the canonical `n = 128` width-four bu
-- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L140) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ16384.exists_tzWindow_mu16384_width4_refuter_zmod268730369_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ16384.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ16384.lean#L30)
-    - a: Fully explicit β=4 witness: `1048609 ∈ [32⁴, 2 * 32⁴]` refutes the canonical `n = 32` width-four bud
-    - b: Fully explicit β=2 witness: `268730369 ∈ [16384^2, 2 * 16384^2]` refutes the canonical `n = 16384` w
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ1024.exists_tzWindow_mu1024_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean#L45) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ128.exists_tzWindow_mu128_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ128.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ128.lean#L44)
+    - a: Concrete β=2 TZ-window refuter for the canonical `n = 1024` width-four lane.
+    - b: Concrete β=2 TZ-window refuter for the canonical `n = 128` width-four lane.
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ1024.exists_tzWindow_mu1024_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean#L45) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ16384.exists_tzWindow_mu16384_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ16384.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ16384.lean#L46)
+    - a: Concrete β=2 TZ-window refuter for the canonical `n = 1024` width-four lane.
+    - b: Concrete β=2 TZ-window refuter for the canonical `n = 16384` width-four lane.
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ1024.exists_tzWindow_mu1024_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ1024.lean#L45) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ2048.exists_tzWindow_mu2048_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ2048.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ2048.lean#L46)
+    - a: Concrete β=2 TZ-window refuter for the canonical `n = 1024` width-four lane.
+    - b: Concrete β=2 TZ-window refuter for the canonical `n = 2048` width-four lane.

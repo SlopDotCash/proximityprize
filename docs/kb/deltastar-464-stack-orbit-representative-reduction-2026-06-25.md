@@ -89,14 +89,31 @@ bounding the representatives, failure is exactly an above-budget representative,
 budget feeds `mcaDeltaStar` directly.  The same negative form is packaged for the named
 invariant-relation cover route.
 
+The direct domination route has also been sharpened to the same budgeted-global-max normal form as
+the floor-closure contract:
+
+```lean
+RepresentativeContainsGlobalMax
+RepresentativeContainsBudgetedGlobalMax
+stackDominatingRepresentativeCover_iff_containsGlobalMax
+worstCaseIncidenceBounded_of_representativeContainsBudgetedGlobalMax
+deltaStar_pin_of_representativeContainsBudgetedGlobalMax
+not_representativeContainsBudgetedGlobalMax_iff_each_member_above_or_beaten
+```
+
+This matters because a large representative catalogue does not need every entry to be budgeted once
+one can identify the true maximizer inside it.  The sharp certificate is now: some listed
+representative is globally worst and under budget.  Its exact refutation is also local: every listed
+representative is either over budget or beaten by some stack.
+
 The negative scanner surface is now exact:
 
 ```lean
 not_stackRelRepresentativeCover_iff_exists_uncovered
 not_representativeStacksBounded_iff_exists_representative_budget_lt
 not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all
-not_stackRelRepresentativeCover_and_representativeStacksBounded_iff_exists_uncovered_or_budget_lt
-not_stackDominatingRepresentativeCover_and_representativeStacksBounded_iff_exists_beater_or_budget_lt
+not_representativeCoverBudget_iff_exists_uncovered_or_budget_lt
+not_dominatingCoverBudget_iff_exists_beater_or_budget_lt
 ```
 
 So a proposed quotient can fail in three clean ways: a stack has no representative under `Rel`, a
