@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Refining stack profiles
 
@@ -23,6 +20,9 @@ bound is equivalent to bounding those fine-profile maximizers, grouped over the 
 profiles.  This is the exact output type for an iterative classification search: split a hard
 coarse fiber into finer fibers, then prove the maximizer in each fine fiber is within budget.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
 
 open Finset
 open scoped NNReal ENNReal ProbabilityTheory
@@ -331,6 +331,89 @@ theorem deltaStar_pin_of_no_bad_fineProfile_scanner
       C δ hrefine hnoMaxBad hnoBudgetBad)
     hbudget
 
+/-- Under exact fine-fiber representatives, the universal incidence budget is exactly the local
+scanner statement that no used fine-profile representative exceeds the budget. -/
+theorem worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_fineFiberMaxReps
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project)
+    (hmax : FineFiberMaxReps F C δ fine rep) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B
+      ↔ ¬ ∃ q : Q, UsedProfile fine q ∧
+        B < StackBadCount F C δ (rep q) := by
+  exact (worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
+    C δ hrefine hmax).trans
+    (refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt C δ hrefine)
+
+/-- Under exact fine-fiber representatives, failure of the universal incidence budget is exactly a
+used fine-profile representative above budget. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_fineFiberMaxReps
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project)
+    (hmax : FineFiberMaxReps F C δ fine rep) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ q : Q, UsedProfile fine q ∧
+        B < StackBadCount F C δ (rep q) := by
+  constructor
+  · intro hnot
+    exact (not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+      C δ hrefine).mp
+      (fun hbounded => hnot
+        ((worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
+          C δ hrefine hmax).mpr hbounded))
+  · intro hbad hI
+    exact ((not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+      C δ hrefine).mpr hbad)
+      ((worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
+        C δ hrefine hmax).mp hI)
+
+/-- Scanner-positive form of
+`worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_fineFiberMaxReps`: once no used
+fine profile has an invalid or beaten representative, the remaining incidence question is exactly
+the used-fine-profile budget scanner. -/
+theorem worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_no_bad_fineProfile
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project)
+    (hnoMaxBad : ¬ ∃ q : Q, UsedProfile fine q ∧
+      (fine (rep q) ≠ q ∨
+        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
+          StackBadCount F C δ (rep q) < StackBadCount F C δ u)) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B
+      ↔ ¬ ∃ q : Q, UsedProfile fine q ∧
+        B < StackBadCount F C δ (rep q) :=
+  worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_fineFiberMaxReps
+    C δ hrefine ((fineFiberMaxReps_iff_no_bad_used_fineProfile C δ).mpr hnoMaxBad)
+
+/-- Scanner-negative form: after the fine-fiber max scanner has passed, a universal incidence
+failure is equivalent to a single used fine-profile representative above budget. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_no_bad_fineProfile
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {coarse : WordStack A (Fin 2) ι -> P} {project : Q -> P}
+    {rep : Q -> WordStack A (Fin 2) ι}
+    (hrefine : ProfileRefines fine coarse project)
+    (hnoMaxBad : ¬ ∃ q : Q, UsedProfile fine q ∧
+      (fine (rep q) ≠ q ∨
+        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
+          StackBadCount F C δ (rep q) < StackBadCount F C δ u)) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ q : Q, UsedProfile fine q ∧
+        B < StackBadCount F C δ (rep q) :=
+  not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_fineFiberMaxReps
+    C δ hrefine ((fineFiberMaxReps_iff_no_bad_used_fineProfile C δ).mpr hnoMaxBad)
+
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option linter.unusedFintypeInType false
@@ -414,6 +497,19 @@ theorem not_refinedProfileMaxesBounded_of_counterStack
       C δ hrefine hmax hbounded uWitness
   exact (not_lt_of_ge hle) hgt
 
+/-- A used fine profile whose selected representative exceeds the budget refutes the universal
+incidence hypothesis at that budget. -/
+theorem not_worstCaseIncidenceBounded_of_fineProfile_budget_lt
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {Q : Type} {fine : WordStack A (Fin 2) ι -> Q}
+    {rep : Q -> WordStack A (Fin 2) ι} {q : Q}
+    (_hused : UsedProfile fine q)
+    (hgt : B < StackBadCount F C δ (rep q)) :
+    ¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  intro hI
+  exact (not_lt_of_ge (hI (rep q))) hgt
+
 /-- A same-fine-profile stack with a larger bad-scalar count refutes the proposed fine-fiber
 maximizer. -/
 theorem not_fineFiberMaxRep_of_sameFineProfile_strictly_larger
@@ -430,21 +526,34 @@ theorem not_fineFiberMaxRep_of_sameFineProfile_strictly_larger
 end ArkLib.ProximityGap.Frontier.StackProfileRefinement
 
 /-! ## Axiom audit -/
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.stackBadCount_le_fineFiberMaxRep
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.fineRep_mem_fineRepsOver_of_coarse
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.stackBounded_of_fineRepsOverBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.worstCaseIncidenceBounded_of_refinedProfileMaxesBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.refinedProfileMaxesBounded_of_worstCaseIncidenceBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.not_fineFiberMaxReps_iff_exists_bad_used_fineProfile
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.fineFiberMaxReps_iff_no_bad_used_fineProfile
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.deltaStar_pin_of_no_bad_fineProfile_scanner
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.profileRefines_identity_fine
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.fineFiberMaxReps_identity
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.refinedProfileMaxesBounded_identity_iff_worstCaseIncidenceBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.deltaStar_pin_of_refinedProfileMaxesBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.not_refinedProfileMaxesBounded_of_counterStack
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileRefinement.not_fineFiberMaxRep_of_sameFineProfile_strictly_larger
+namespace ArkLib.ProximityGap.Frontier.StackProfileRefinement
+
+#print axioms stackBadCount_le_fineFiberMaxRep
+#print axioms fineRep_mem_fineRepsOver_of_coarse
+#print axioms stackBounded_of_fineRepsOverBounded
+#print axioms worstCaseIncidenceBounded_of_refinedProfileMaxesBounded
+#print axioms refinedProfileMaxesBounded_of_worstCaseIncidenceBounded
+#print axioms worstCaseIncidenceBounded_iff_refinedProfileMaxesBounded
+#print axioms not_fineFiberMaxReps_iff_exists_bad_used_fineProfile
+#print axioms fineFiberMaxReps_iff_no_bad_used_fineProfile
+#print axioms not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
+#print axioms refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
+#print axioms worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
+#print axioms deltaStar_pin_of_no_bad_fineProfile_scanner
+#print axioms
+  worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_fineFiberMaxReps
+#print axioms
+  not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_fineFiberMaxReps
+#print axioms
+  worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_no_bad_fineProfile
+#print axioms
+  not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_no_bad_fineProfile
+#print axioms profileRefines_identity_fine
+#print axioms fineFiberMaxReps_identity
+#print axioms refinedProfileMaxesBounded_identity_iff_worstCaseIncidenceBounded
+#print axioms deltaStar_pin_of_refinedProfileMaxesBounded
+#print axioms not_refinedProfileMaxesBounded_of_counterStack
+#print axioms not_worstCaseIncidenceBounded_of_fineProfile_budget_lt
+#print axioms not_fineFiberMaxRep_of_sameFineProfile_strictly_larger
+
+end ArkLib.ProximityGap.Frontier.StackProfileRefinement

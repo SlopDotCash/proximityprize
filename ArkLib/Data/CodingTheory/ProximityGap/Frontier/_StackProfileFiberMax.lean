@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Profile fibers have exact maximizers
 
@@ -23,6 +20,9 @@ profile is sufficient only if it is such a fiber maximizer, or at least dominate
 The refutation API is local: a single stack in the same profile with a larger bad-scalar count kills
 the claim that the chosen representative is the profile-fiber maximizer.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
 
 open Finset
 open scoped NNReal ENNReal ProbabilityTheory
@@ -67,7 +67,7 @@ def FamilyBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
   ∀ r ∈ R, StackBounded K C δ r B
 
-/-- A finite family dominates if every stack is bounded by some representative's bad-scalar count. -/
+/-- A finite family dominates if every stack is bounded by one representative's bad-scalar count. -/
 def FamilyDominates (K : Type) [Field K] [Fintype K] [DecidableEq K]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
@@ -517,27 +517,38 @@ theorem not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt
 end ArkLib.ProximityGap.Frontier.StackProfileFiberMax
 
 /-! ## Axiom audit -/
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.exists_profileFiberMax_of_used
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.stackBadCount_le_profileFiberMaxRep
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_profileFiberMaxesBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_iff_profileFiberMaxesBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.familyDominates_of_profileFiberMaxReps
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.exists_usedProfile_stackDominates_of_profileFiberMaxReps
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxReps_of_each_used_rep_beaten
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_profileFiberMaxFamilyBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.stackDominates_of_profileFiberMax_constant
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxReps_identity
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxesBounded_identity_iff_worstCaseIncidenceBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.deltaStar_pin_of_profileFiberMaxesBounded
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMax_of_sameProfile_strictly_larger
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxReps_iff_exists_bad_used_profile
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxReps_iff_no_bad_used_profile
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_profileFiberMaxReps
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_no_bad_used_profile
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_no_bad_used_profile
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.deltaStar_pin_of_no_bad_used_profile_scanner
-#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt
+
+namespace ArkLib.ProximityGap.Frontier.StackProfileFiberMax
+
+#print axioms exists_profileFiberMax_of_used
+#print axioms stackBadCount_le_profileFiberMaxRep
+#print axioms worstCaseIncidenceBounded_of_profileFiberMaxesBounded
+#print axioms worstCaseIncidenceBounded_iff_profileFiberMaxesBounded
+#print axioms familyDominates_of_profileFiberMaxReps
+#print axioms exists_usedProfile_stackDominates_of_profileFiberMaxReps
+#print axioms not_profileFiberMaxReps_of_each_used_rep_beaten
+#print axioms worstCaseIncidenceBounded_of_profileFiberMaxFamilyBounded
+#print axioms stackDominates_of_profileFiberMax_constant
+#print axioms profileFiberMaxReps_identity
+#print axioms
+  profileFiberMaxesBounded_identity_iff_worstCaseIncidenceBounded
+#print axioms deltaStar_pin_of_profileFiberMaxesBounded
+#print axioms not_profileFiberMax_of_sameProfile_strictly_larger
+#print axioms not_profileFiberMaxReps_iff_exists_bad_used_profile
+#print axioms profileFiberMaxReps_iff_no_bad_used_profile
+#print axioms not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
+#print axioms profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
+#print axioms
+  worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps
+#print axioms
+  not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_profileFiberMaxReps
+#print axioms
+  worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_no_bad_used_profile
+#print axioms
+  not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_no_bad_used_profile
+#print axioms worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
+#print axioms deltaStar_pin_of_no_bad_used_profile_scanner
+#print axioms
+  not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt
+
+end ArkLib.ProximityGap.Frontier.StackProfileFiberMax

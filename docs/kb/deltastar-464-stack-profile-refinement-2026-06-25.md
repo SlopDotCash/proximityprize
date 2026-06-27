@@ -41,8 +41,13 @@ not_refinedProfileMaxesBounded_iff_exists_usedFineProfile_budget_lt
 refinedProfileMaxesBounded_iff_no_usedFineProfile_budget_lt
 worstCaseIncidenceBounded_of_no_bad_fineProfile_scanner
 deltaStar_pin_of_no_bad_fineProfile_scanner
+worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_fineFiberMaxReps
+not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_fineFiberMaxReps
+worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_no_bad_fineProfile
+not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_no_bad_fineProfile
 deltaStar_pin_of_refinedProfileMaxesBounded
 not_refinedProfileMaxesBounded_of_counterStack
+not_worstCaseIncidenceBounded_of_fineProfile_budget_lt
 not_fineFiberMaxRep_of_sameFineProfile_strictly_larger
 ```
 
@@ -123,3 +128,33 @@ after splitting a hard coarse profile into finer fibers, the remaining task is a
 scanner certificate, not another global worst-case argument.  Once that certificate includes the
 scaled MCA budget, the delta-star lower pin follows directly at the substrate layer; any later
 floor-localization wrapper is only useful if it supplies the budget without assuming this scanner.
+
+## Continuation: universal incidence iff after fine max scanner
+
+The refined route now has the same exact post-max form as the plain profile route:
+
+```lean
+worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_fineFiberMaxReps
+not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_fineFiberMaxReps
+worstCaseIncidenceBounded_iff_no_usedFineProfile_budget_lt_of_no_bad_fineProfile
+not_worstCaseIncidenceBounded_iff_exists_usedFineProfile_budget_lt_of_no_bad_fineProfile
+```
+
+After the fine-fiber representative scanner has passed, the original universal stack incidence
+budget is equivalent to the absence of an above-budget used fine-profile representative.  The
+negative direction is equally local: a failed universal budget is exactly one used fine-profile
+label `q` with
+
+```text
+B < StackBadCount(rep q).
+```
+
+The single-label refuter
+
+```lean
+not_worstCaseIncidenceBounded_of_fineProfile_budget_lt
+```
+
+packages the same obstruction without needing the grouped refinement hypotheses.  This is still a
+reduction, not the floor proof: it says precisely what a successful refined catalogue must certify
+after the representative-max step.

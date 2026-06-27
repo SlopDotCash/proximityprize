@@ -482,6 +482,59 @@ theorem n_lt_badScalarSet_card_of_two_muOrbits {n : ℕ} {ζ : F}
       (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
       (nthRootsFinset_finSubgroup (F := F) hn) hB0 hBstable horbits)
 
+/-! ## Concrete `e₂ = 0` bad-scalar image consumers over `μ_n` -/
+
+/-- **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup
+`μ_n = nthRootsFinset n 1`, the finite image `S ↦ -1/e₁(S)` from the `e₂ = 0`, `e₁ ≠ 0` locus
+satisfies `#bad ≤ C n` exactly when it occupies at most `C` full `μ_n`-orbits. -/
+theorem e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le {n C : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ) :
+    (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ C * n ↔
+      ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card ≤ C := by
+  simpa [hζ.card_nthRootsFinset] using
+    (e2BadScalarSet_card_le_mul_iff_orbitCount_le
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) w C)
+
+/-- **Concrete `e₂ = 0` prize-budget specialization.** The literal `n` budget for the
+`e₂ = 0` bad-scalar image over `μ_n` is equivalent to at most one full `μ_n`-orbit. -/
+theorem e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ) :
+    (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ n ↔
+      ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card ≤ 1 := by
+  simpa [one_mul] using
+    (e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le
+      (F := F) (n := n) (C := 1) hn hζ w)
+
+/-- **Concrete `e₂ = 0` prize scanner form.** The `e₂ = 0` image fails the literal `n` budget
+exactly when it contains at least two full `μ_n`-orbits. -/
+theorem not_e2BadScalarSet_mu_card_le_n_iff_two_orbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ) :
+    (¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ n) ↔
+      2 ≤ ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card := by
+  rw [e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one hn hζ w]
+  omega
+
+/-- **Two concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This packages the
+scanner obstruction directly for the finite image over `μ_n`. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_orbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ)
+    (horbits : 2 ≤
+      ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card := by
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_badScalarSet_card_of_two_orbits
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn)
+      (zero_notMem_e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+      (e2BadScalarSet_stable
+        (nthRootsFinset_finSubgroup (F := F) hn) w)
+      horbits)
+
 end ArkLib.ProximityGap.E2DilationDirectCount
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
@@ -516,5 +569,9 @@ namespace ArkLib.ProximityGap.E2DilationDirectCount
 #print axioms badScalarSet_card_le_n_iff_muOrbitCount_le_one
 #print axioms not_badScalarSet_card_le_n_iff_two_muOrbits
 #print axioms n_lt_badScalarSet_card_of_two_muOrbits
+#print axioms e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le
+#print axioms e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one
+#print axioms not_e2BadScalarSet_mu_card_le_n_iff_two_orbits
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_orbits
 
 end ArkLib.ProximityGap.E2DilationDirectCount

@@ -35,6 +35,11 @@ mapping `(k+2)`-subsets to `(k+2)`-subsets), this says the bad-scalar set is a *
 
 `badScalarSet_card_eq_orbit_mul` formalises the count form (over a finite scalar group `G` acting
 freely on the bad-scalar set: `#bad = |G| · #orbits`).
+The budget consumers `badScalarSet_card_le_mul_iff_orbitCount_le`,
+`badScalarSet_card_le_group_card_iff_orbitCount_le_one`, and
+`group_card_lt_badScalarSet_card_of_two_orbits` turn this exact count into the prize-facing
+contract: a `C·n` bad-scalar budget is equivalent to at most `C` full `μ_n`-cosets, and at the
+`n` budget two cosets are already fatal.
 
 ## The honest verdict (the precise obstruction)
 
@@ -61,7 +66,9 @@ combinatorial twin).
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 
 ## References
-- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
+- [ABF26] Arnon, Boneh, Fenzi.
+  *Open Problems in List Decoding and Correlated Agreement*. 2026.
+  #407.
 - Chai–Fan. *Action–Orbit FRI Soundness Above the Johnson Radius*. eprint 2026/861.
 -/
 set_option linter.style.longLine false
@@ -157,6 +164,23 @@ structure FinSubgroup (G : Finset F) : Prop where
   inv_mem : ∀ a ∈ G, a⁻¹ ∈ G
   zero_notMem : (0 : F) ∉ G
 
+/-- **The concrete prize subgroup `μ_n = nthRootsFinset n 1` is a `FinSubgroup`.** This turns
+the abstract orbit-budget lemmas below into statements about the actual smooth-domain
+roots-of-unity finset used throughout the δ* cone. -/
+theorem nthRootsFinset_finSubgroup {n : ℕ} (hn : 0 < n) :
+    FinSubgroup (Polynomial.nthRootsFinset n (1 : F)) where
+  one_mem := Polynomial.one_mem_nthRootsFinset hn
+  mul_mem := by
+    intro a ha b hb
+    simpa [one_mul] using Polynomial.mul_mem_nthRootsFinset ha hb
+  inv_mem := by
+    intro a ha
+    rw [Polynomial.mem_nthRootsFinset hn] at ha ⊢
+    rw [inv_pow, ha, inv_one]
+  zero_notMem := by
+    intro hzero
+    exact (Polynomial.ne_zero_of_mem_nthRootsFinset one_ne_zero hzero) rfl
+
 /-- **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`. -/
 noncomputable def orbit (G : Finset F) (x : F) : Finset F := G.image (fun u => u * x)
 
@@ -194,7 +218,8 @@ theorem orbit_eq_of_mem {G : Finset F} (hG : FinSubgroup G) {x y : F} (hy : y �
   · rintro ⟨v, hv, rfl⟩
     exact ⟨v * u, hG.mul_mem _ hv _ hu, by ring⟩
   · rintro ⟨v, hv, rfl⟩
-    -- z = v * x ; write x = u⁻¹ * (u * x), so z = (v * u⁻¹) * (u * x)
+    -- z = v * x; write x = u⁻¹ * (u * x),
+    -- so z = (v * u⁻¹) * (u * x).
     refine ⟨v * u⁻¹, hG.mul_mem _ hv _ (hG.inv_mem _ hu), ?_⟩
     have hune : u ≠ 0 := fun h => hG.zero_notMem (h ▸ hu)
     field_simp
@@ -250,20 +275,303 @@ theorem badScalarSet_card_dvd {G : Finset F} (hG : FinSubgroup G) {B : Finset F}
   rw [badScalarSet_card_eq_orbit_mul hG hB0 hBstable]
   exact Dvd.intro_left _ rfl
 
+/-- **Budget iff orbit budget.** For a nonzero bad-scalar set `B` stable under a finite
+multiplicative subgroup `G`, the exact orbit decomposition upgrades to the inequality form
+
+  `#B ≤ C · #G  ↔  #(G-orbits in B) ≤ C`.
+
+For `G = μ_n`, this is the direct `O(n)` coset-rigidity consumer: proving that the symmetric
+function locus occupies at most `C` `μ_n`-cosets is exactly the same as proving the bad-scalar
+budget `≤ C n`. -/
+theorem badScalarSet_card_le_mul_iff_orbitCount_le {G : Finset F} (hG : FinSubgroup G)
+    {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B) (C : ℕ) :
+    B.card ≤ C * G.card ↔ (B.image (fun x => orbit G x)).card ≤ C := by
+  have hcard := badScalarSet_card_eq_orbit_mul hG hB0 hBstable
+  have hGpos : 0 < G.card := Finset.card_pos.mpr ⟨1, hG.one_mem⟩
+  constructor
+  · intro h
+    rw [hcard] at h
+    exact Nat.le_of_mul_le_mul_right h hGpos
+  · intro h
+    rw [hcard]
+    exact Nat.mul_le_mul_right G.card h
+
+/-- **Prize-budget specialization.** At the natural subgroup budget `#G` (for `G = μ_n`, the
+`q·ε* = n` budget), a stable bad-scalar set is within budget iff it has at most one full orbit.
+This is the exact formal version of "pinning the R4 direct count at the prize budget means proving
+one `μ_n`-coset, not merely a vague linear bound." -/
+theorem badScalarSet_card_le_group_card_iff_orbitCount_le_one {G : Finset F}
+    (hG : FinSubgroup G) {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B) :
+    B.card ≤ G.card ↔ (B.image (fun x => orbit G x)).card ≤ 1 := by
+  simpa [one_mul] using badScalarSet_card_le_mul_iff_orbitCount_le hG hB0 hBstable 1
+
+/-- **Scanner failure form.** A stable bad-scalar set fails the `C · #G` budget exactly when its
+orbit count is strictly larger than `C`. This is often the form produced by brute-force or exact
+symbolic scans: find `C+1` distinct full cosets, and the direct-count budget is refuted. -/
+theorem not_badScalarSet_card_le_mul_iff_orbitCount_gt {G : Finset F} (hG : FinSubgroup G)
+    {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B) (C : ℕ) :
+    (¬ B.card ≤ C * G.card) ↔ C < (B.image (fun x => orbit G x)).card := by
+  rw [badScalarSet_card_le_mul_iff_orbitCount_le hG hB0 hBstable C]
+  omega
+
+/-- **Prize scanner form.** At the subgroup-size budget, failure is exactly the presence of at
+least two full orbits. For `G = μ_n`, this is the precise yes/no target for the R4 direct
+bad-scalar count: one `μ_n`-coset is budget-compatible; two are not. -/
+theorem not_badScalarSet_card_le_group_card_iff_two_orbits {G : Finset F}
+    (hG : FinSubgroup G) {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B) :
+    (¬ B.card ≤ G.card) ↔ 2 ≤ (B.image (fun x => orbit G x)).card := by
+  rw [badScalarSet_card_le_group_card_iff_orbitCount_le_one hG hB0 hBstable]
+  omega
+
+/-- If a stable bad-scalar set is nonempty and fits in the subgroup-size budget, then it is
+exactly one full orbit. This is the nonempty form consumed by scanners: once a witness exists, the
+`n`-budget can only survive if all bad scalars lie in a single `μ_n`-coset. -/
+theorem orbitCount_eq_one_of_nonempty_card_le_group_card {G : Finset F} (hG : FinSubgroup G)
+    {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B) (hBne : B.Nonempty)
+    (hbudget : B.card ≤ G.card) :
+    (B.image (fun x => orbit G x)).card = 1 := by
+  have hle : (B.image (fun x => orbit G x)).card ≤ 1 :=
+    (badScalarSet_card_le_group_card_iff_orbitCount_le_one hG hB0 hBstable).mp hbudget
+  have hpos : 0 < (B.image (fun x => orbit G x)).card :=
+    Finset.card_pos.mpr (hBne.image _)
+  omega
+
+/-- **Two full orbits already break the subgroup-size budget.** If the orbit count is at least two,
+then `#B > #G`. For `G = μ_n`, this is the sharp obstruction at the deployed `q·ε* = n` budget:
+two distinct `μ_n`-cosets of bad scalars are already too many. -/
+theorem group_card_lt_badScalarSet_card_of_two_orbits {G : Finset F} (hG : FinSubgroup G)
+    {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B)
+    (horbits : 2 ≤ (B.image (fun x => orbit G x)).card) :
+    G.card < B.card := by
+  rw [badScalarSet_card_eq_orbit_mul hG hB0 hBstable]
+  have hGpos : 0 < G.card := Finset.card_pos.mpr ⟨1, hG.one_mem⟩
+  have hone : 1 < (B.image (fun x => orbit G x)).card := by omega
+  simpa [one_mul] using Nat.mul_lt_mul_of_pos_right hone hGpos
+
+/-! ## The `e₂ = 0` bad-scalar image is automatically subgroup-stable -/
+
+/-- The direct-count bad-scalar image of the eligible `e₂ = 0`, `e₁ ≠ 0`, fixed-cardinality
+subsets of a finite subgroup `G`. This is the exact finite combinatorial locus exposed by
+`badScalar_of_energy`: `S ↦ -1/e₁(S)`. -/
+noncomputable def e2BadScalarSet (G : Finset F) (w : ℕ) : Finset F :=
+  ((G.powersetCard w).filter (fun S : Finset F => e2 S = 0 ∧ e1 S ≠ 0)).image
+    (fun S => -(e1 S)⁻¹)
+
+/-- The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has
+`e₁(S) ≠ 0`. -/
+theorem zero_notMem_e2BadScalarSet (G : Finset F) (w : ℕ) :
+    (0 : F) ∉ e2BadScalarSet G w := by
+  classical
+  intro hzero
+  unfold e2BadScalarSet at hzero
+  rw [Finset.mem_image] at hzero
+  obtain ⟨S, hS, hα⟩ := hzero
+  rw [Finset.mem_filter] at hS
+  have hinv0 : (e1 S)⁻¹ = 0 := by simpa using hα
+  exact (inv_ne_zero hS.2.2) hinv0
+
+/-- The `e₂ = 0` bad-scalar image is stable under multiplication by the subgroup.  Mechanism:
+for `g ∈ G`, the subset `S` is sent to `g⁻¹ • S`; the subgroup axioms keep it inside `G`, `dil_card`
+preserves its cardinality, `e2_zero_smul`/`e1_ne_zero_smul` preserve eligibility, and
+`badScalar_smul` sends `-1/e₁(S)` to `g · (-1/e₁(S))`. -/
+theorem e2BadScalarSet_stable {G : Finset F} (hG : FinSubgroup G) (w : ℕ) :
+    ∀ g ∈ G, ∀ x ∈ e2BadScalarSet G w, g * x ∈ e2BadScalarSet G w := by
+  classical
+  intro g hg α hα
+  have hg0 : g ≠ 0 := fun h => hG.zero_notMem (h ▸ hg)
+  have hginv0 : g⁻¹ ≠ 0 := inv_ne_zero hg0
+  unfold e2BadScalarSet at hα ⊢
+  rw [Finset.mem_image] at hα ⊢
+  obtain ⟨S, hS, rfl⟩ := hα
+  rw [Finset.mem_filter] at hS
+  obtain ⟨hSsub, hScard⟩ := Finset.mem_powersetCard.mp hS.1
+  let S' := dil g⁻¹ S
+  refine ⟨S', ?_, ?_⟩
+  · rw [Finset.mem_filter]
+    refine ⟨?_, ?_⟩
+    · rw [Finset.mem_powersetCard]
+      refine ⟨?_, ?_⟩
+      · intro x hx
+        unfold S' dil at hx
+        rw [Finset.mem_image] at hx
+        obtain ⟨s, hs, rfl⟩ := hx
+        exact hG.mul_mem _ (hG.inv_mem _ hg) _ (hSsub hs)
+      · unfold S'
+        rw [dil_card hginv0, hScard]
+    · exact ⟨e2_zero_smul hginv0 hS.2.1, e1_ne_zero_smul hginv0 hS.2.2⟩
+  · unfold S'
+    simpa [inv_inv] using badScalar_smul hginv0 S
+
+/-- Exact orbit decomposition for the concrete `e₂ = 0` direct-count bad-scalar image. -/
+theorem e2BadScalarSet_card_eq_orbit_mul {G : Finset F} (hG : FinSubgroup G) (w : ℕ) :
+    (e2BadScalarSet G w).card =
+      ((e2BadScalarSet G w).image (fun x => orbit G x)).card * G.card :=
+  badScalarSet_card_eq_orbit_mul hG
+    (zero_notMem_e2BadScalarSet G w)
+    (e2BadScalarSet_stable hG w)
+
+/-- Budget iff orbit budget for the concrete `e₂ = 0` bad-scalar image. -/
+theorem e2BadScalarSet_card_le_mul_iff_orbitCount_le {G : Finset F}
+    (hG : FinSubgroup G) (w C : ℕ) :
+    (e2BadScalarSet G w).card ≤ C * G.card ↔
+      ((e2BadScalarSet G w).image (fun x => orbit G x)).card ≤ C :=
+  badScalarSet_card_le_mul_iff_orbitCount_le hG
+    (zero_notMem_e2BadScalarSet G w)
+    (e2BadScalarSet_stable hG w) C
+
+/-! ## Concrete `μ_n` consumers
+
+When a primitive `n`-th root exists, `Polynomial.nthRootsFinset n 1` has cardinality exactly `n`.
+The next lemmas specialize the abstract direct-count contract to the literal prize-domain budget.
+-/
+
+/-- **Concrete `μ_n` budget iff orbit budget.** If `ζ` is a primitive `n`-th root, then a
+`μ_n`-stable nonzero bad-scalar set satisfies `#B ≤ C n` exactly when it occupies at most `C`
+full `μ_n`-orbits. -/
+theorem badScalarSet_card_le_mul_n_iff_muOrbitCount_le {n C : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) {B : Finset F}
+    (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ Polynomial.nthRootsFinset n (1 : F), ∀ x ∈ B, g * x ∈ B) :
+    B.card ≤ C * n ↔
+      (B.image (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card ≤ C := by
+  simpa [hζ.card_nthRootsFinset] using
+    (badScalarSet_card_le_mul_iff_orbitCount_le
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hB0 hBstable C)
+
+/-- **Concrete prize-budget specialization.** Under a primitive `n`-th root, the natural
+`μ_n` budget `#B ≤ n` is equivalent to at most one full `μ_n`-orbit. -/
+theorem badScalarSet_card_le_n_iff_muOrbitCount_le_one {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) {B : Finset F}
+    (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ Polynomial.nthRootsFinset n (1 : F), ∀ x ∈ B, g * x ∈ B) :
+    B.card ≤ n ↔
+      (B.image (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card ≤ 1 := by
+  simpa [one_mul] using
+    (badScalarSet_card_le_mul_n_iff_muOrbitCount_le
+      (F := F) (n := n) (C := 1) hn hζ hB0 hBstable)
+
+/-- **Concrete prize scanner form.** At the literal `μ_n` budget, failure is exactly the presence
+of at least two full `μ_n`-orbits. -/
+theorem not_badScalarSet_card_le_n_iff_two_muOrbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) {B : Finset F}
+    (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ Polynomial.nthRootsFinset n (1 : F), ∀ x ∈ B, g * x ∈ B) :
+    (¬ B.card ≤ n) ↔
+      2 ≤ (B.image (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card := by
+  rw [badScalarSet_card_le_n_iff_muOrbitCount_le_one hn hζ hB0 hBstable]
+  omega
+
+/-- **Two concrete `μ_n`-orbits already exceed the literal `n` budget.** This is the deployed
+scanner obstruction in its smooth-domain form. -/
+theorem n_lt_badScalarSet_card_of_two_muOrbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) {B : Finset F}
+    (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ Polynomial.nthRootsFinset n (1 : F), ∀ x ∈ B, g * x ∈ B)
+    (horbits : 2 ≤
+      (B.image (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card) :
+    n < B.card := by
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_badScalarSet_card_of_two_orbits
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hB0 hBstable horbits)
+
+/-! ## Concrete `e₂ = 0` bad-scalar image consumers over `μ_n` -/
+
+/-- **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup
+`μ_n = nthRootsFinset n 1`, the finite image `S ↦ -1/e₁(S)` from the `e₂ = 0`, `e₁ ≠ 0` locus
+satisfies `#bad ≤ C n` exactly when it occupies at most `C` full `μ_n`-orbits. -/
+theorem e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le {n C : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ) :
+    (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ C * n ↔
+      ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card ≤ C := by
+  simpa [hζ.card_nthRootsFinset] using
+    (e2BadScalarSet_card_le_mul_iff_orbitCount_le
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) w C)
+
+/-- **Concrete `e₂ = 0` prize-budget specialization.** The literal `n` budget for the
+`e₂ = 0` bad-scalar image over `μ_n` is equivalent to at most one full `μ_n`-orbit. -/
+theorem e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ) :
+    (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ n ↔
+      ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card ≤ 1 := by
+  simpa [one_mul] using
+    (e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le
+      (F := F) (n := n) (C := 1) hn hζ w)
+
+/-- **Concrete `e₂ = 0` prize scanner form.** The `e₂ = 0` image fails the literal `n` budget
+exactly when it contains at least two full `μ_n`-orbits. -/
+theorem not_e2BadScalarSet_mu_card_le_n_iff_two_orbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ) :
+    (¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ n) ↔
+      2 ≤ ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card := by
+  rw [e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one hn hζ w]
+  omega
+
+/-- **Two concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This packages the
+scanner obstruction directly for the finite image over `μ_n`. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_orbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ)
+    (horbits : 2 ≤
+      ((e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).image
+        (fun x => orbit (Polynomial.nthRootsFinset n (1 : F)) x)).card) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card := by
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_badScalarSet_card_of_two_orbits
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn)
+      (zero_notMem_e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+      (e2BadScalarSet_stable
+        (nthRootsFinset_finSubgroup (F := F) hn) w)
+      horbits)
+
 end ArkLib.ProximityGap.E2DilationDirectCount
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.dil_card
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.mem_dil
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.e1_smul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.p2_smul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.e2_smul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.e2_zero_smul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.e1_ne_zero_smul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.badScalar_smul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.orbit_card
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul
-#print axioms ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd
+namespace ArkLib.ProximityGap.E2DilationDirectCount
+
+#print axioms dil_card
+#print axioms mem_dil
+#print axioms e1_smul
+#print axioms p2_smul
+#print axioms e2_smul
+#print axioms e2_zero_smul
+#print axioms e1_ne_zero_smul
+#print axioms badScalar_smul
+#print axioms nthRootsFinset_finSubgroup
+#print axioms orbit_card
+#print axioms self_mem_orbit
+#print axioms smul_mem_orbit
+#print axioms orbit_eq_of_mem
+#print axioms badScalarSet_card_eq_orbit_mul
+#print axioms badScalarSet_card_dvd
+#print axioms badScalarSet_card_le_mul_iff_orbitCount_le
+#print axioms badScalarSet_card_le_group_card_iff_orbitCount_le_one
+#print axioms not_badScalarSet_card_le_mul_iff_orbitCount_gt
+#print axioms not_badScalarSet_card_le_group_card_iff_two_orbits
+#print axioms orbitCount_eq_one_of_nonempty_card_le_group_card
+#print axioms group_card_lt_badScalarSet_card_of_two_orbits
+#print axioms zero_notMem_e2BadScalarSet
+#print axioms e2BadScalarSet_stable
+#print axioms e2BadScalarSet_card_eq_orbit_mul
+#print axioms e2BadScalarSet_card_le_mul_iff_orbitCount_le
+#print axioms badScalarSet_card_le_mul_n_iff_muOrbitCount_le
+#print axioms badScalarSet_card_le_n_iff_muOrbitCount_le_one
+#print axioms not_badScalarSet_card_le_n_iff_two_muOrbits
+#print axioms n_lt_badScalarSet_card_of_two_muOrbits
+#print axioms e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le
+#print axioms e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one
+#print axioms not_e2BadScalarSet_mu_card_le_n_iff_two_orbits
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_orbits
+
+end ArkLib.ProximityGap.E2DilationDirectCount

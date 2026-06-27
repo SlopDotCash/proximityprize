@@ -1427,6 +1427,15 @@ survives exactly when there is at most one full orbit.  The scanner forms
 full dilation orbits are already over budget.  This is still a reduction tool, not a δ* floor
 proof; the hard content remains bounding the orbit count itself.
 
+Follow-up: the same orbit-budget surface is now specialized to the concrete `e₂ = 0` bad-scalar
+image over `μ_n = nthRootsFinset n 1`.  The wrappers
+`e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le`,
+`e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one`,
+`not_e2BadScalarSet_mu_card_le_n_iff_two_orbits`, and
+`n_lt_e2BadScalarSet_mu_card_of_two_orbits` remove the remaining subgroup-parameter plumbing from
+callers: over the actual smooth-domain subgroup, the literal `n` budget fails exactly when the
+finite image contains at least two full dilation orbits.
+
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 
 Renamed the finite-rung floor-localization guardrail from the scratch file
@@ -1479,3 +1488,11 @@ profile representative above budget, and failure of the universal incidence boun
 one used profile label with `B < StackBadCount (rep p)`.  The same pair is available from the
 scanner-positive `no bad used profile` certificate.  This does not prove the budget; it makes the
 post-max-scanner residual exactly local.
+
+Follow-up: `Frontier/_StackProfileRefinement.lean` now exposes the same exact post-max scanner
+surface for refined profiles.  Under `FineFiberMaxReps`, or under the scanner-positive
+`no bad used fine profile` certificate, `WorstCaseIncidenceBounded` is equivalent to no used
+fine-profile representative above budget; failure is exactly one used fine-profile label `q` with
+`B < StackBadCount (rep q)`.  The single-label refuter
+`not_worstCaseIncidenceBounded_of_fineProfile_budget_lt` packages that obstruction without the
+grouped refinement hypotheses.
