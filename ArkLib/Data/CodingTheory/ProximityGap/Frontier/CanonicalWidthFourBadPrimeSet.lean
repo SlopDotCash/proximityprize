@@ -164,12 +164,13 @@ def CanonicalWidthFourGoodPrimeSupply (m : ℕ) : Prop :=
 private lemma exists_isPrimitiveRoot_zmod_of_modEq
     {p : ℕ} [Fact p.Prime] {n : ℕ} (_hn : 0 < n) (hmod : p ≡ 1 [MOD n]) :
     ∃ ζ : ZMod p, IsPrimitiveRoot ζ n := by
-  have hdvd : n ∣ p - 1 := (Nat.modEq_iff_dvd' (by omega : 1 ≤ p)).mp hmod.symm
+  have hp1 : 1 ≤ p := (Fact.out : Nat.Prime p).one_le
+  have hdvd : n ∣ p - 1 := (Nat.modEq_iff_dvd' hp1).mp hmod.symm
   obtain ⟨u, hu⟩ := IsCyclic.exists_generator (α := (ZMod p)ˣ)
   have hord : orderOf u = p - 1 := by
     rw [orderOf_eq_card_of_forall_mem_zpowers hu, Nat.card_eq_fintype_card, ZMod.card_units]
   have hdvd' : n ∣ orderOf u := hord ▸ hdvd
-  have hne : orderOf u ≠ 0 := by omega
+  have hne : orderOf u ≠ 0 := (orderOf_pos u).ne'
   refine ⟨((u ^ (orderOf u / n) : (ZMod p)ˣ) : ZMod p), ?_⟩
   rw [IsPrimitiveRoot.iff_orderOf, orderOf_units, orderOf_pow_orderOf_div hne hdvd']
 
@@ -183,12 +184,8 @@ theorem exists_tzWindow_notMem_canonicalRatioBadPrimes
   classical
   have hcardW : (canonicalRatioBadPrimes n).card < (tzWindow n β).card :=
     hcard.trans_le hTZ.le_card
-  have hne : (tzWindow n β \ canonicalRatioBadPrimes n).Nonempty := by
-    rw [← Finset.card_pos]
-    have h := Finset.le_card_sdiff (canonicalRatioBadPrimes n) (tzWindow n β)
-    omega
-  obtain ⟨p, hp⟩ := hne
-  exact ⟨p, (Finset.mem_sdiff.mp hp).1, (Finset.mem_sdiff.mp hp).2⟩
+  obtain ⟨p, hpW, hpnot⟩ := Finset.exists_mem_notMem_of_card_lt_card hcardW
+  exact ⟨p, hpW, hpnot⟩
 
 /-- Thorner-Zaman window supply form: if the prime supply for `2^m` exceeds the finite canonical
 bad-prime set, then the named canonical good-prime supply holds. -/
