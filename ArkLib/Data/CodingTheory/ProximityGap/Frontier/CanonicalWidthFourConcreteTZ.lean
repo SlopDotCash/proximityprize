@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.E2W4CyclotomicConcreteWitnesses
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ThornerZamanInstance
 
 /-!
@@ -24,6 +25,9 @@ open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
+
+local instance fact_prime_1217_concrete_tz : Fact (Nat.Prime 1217) := ⟨by norm_num⟩
+local instance fact_prime_1048609_concrete_tz : Fact (Nat.Prime 1048609) := ⟨by norm_num⟩
 
 /-- The exact primitive-root-compatible exceptional characteristics for the canonical `n = 32`
 denominator-cleared collision. -/
@@ -78,6 +82,22 @@ theorem exists_tzWindow_mu32_width4_refuter_beta2 :
     rw [canonicalN32PrimitiveBadPrimes_card]
     norm_num)
 
+/-- Fully explicit β=2 witness: `1217 ∈ [32², 2 * 32²]` refutes the canonical `n = 32`
+width-four budget. -/
+theorem exists_tzWindow_mu32_width4_refuter_zmod1217_beta2 :
+    ∃ ζ : ZMod 1217,
+      1217 ∈ tzWindow 32 (2 : ℝ) ∧
+        IsPrimitiveRoot ζ 32 ∧
+          ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod 1217)) 4).card ≤ 32 := by
+  have hpow : ((32 : ℕ) : ℝ) ^ (2 : ℝ) = 1024 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+    norm_num
+  have hpW : 1217 ∈ tzWindow 32 (2 : ℝ) := by
+    rw [mem_tzWindow]
+    exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  obtain ⟨ζ, hζ32, hnot⟩ := exists_mu32_width4_refuter_zmod1217
+  exact ⟨ζ, hpW, hζ32, hnot⟩
+
 /-- Concrete β=3 TZ-window refuter for the canonical `n = 32` width-four lane. -/
 theorem exists_tzWindow_mu32_width4_refuter_beta3 :
     ∃ (p : ℕ) (_ : Fact p.Prime) (ζ : ZMod p),
@@ -98,6 +118,22 @@ theorem exists_tzWindow_mu32_width4_refuter_beta4 :
     rw [canonicalN32PrimitiveBadPrimes_card]
     norm_num)
 
+/-- Fully explicit β=4 witness: `1048609 ∈ [32⁴, 2 * 32⁴]` refutes the canonical `n = 32`
+width-four budget. -/
+theorem exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4 :
+    ∃ ζ : ZMod 1048609,
+      1048609 ∈ tzWindow 32 (4 : ℝ) ∧
+        IsPrimitiveRoot ζ 32 ∧
+          ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod 1048609)) 4).card ≤ 32 := by
+  have hpow : ((32 : ℕ) : ℝ) ^ (4 : ℝ) = 1048576 := by
+    rw [show (4 : ℝ) = ((4 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+    norm_num
+  have hpW : 1048609 ∈ tzWindow 32 (4 : ℝ) := by
+    rw [mem_tzWindow]
+    exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  obtain ⟨ζ, hζ32, hnot⟩ := exists_mu32_width4_refuter_zmod1048609
+  exact ⟨ζ, hpW, hζ32, hnot⟩
+
 end ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
@@ -105,7 +141,9 @@ namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
 #print axioms canonicalN32PrimitiveBadPrimes_card
 #print axioms exists_tzWindow_mu32_width4_refuter_of_TZ
 #print axioms exists_tzWindow_mu32_width4_refuter_beta2
+#print axioms exists_tzWindow_mu32_width4_refuter_zmod1217_beta2
 #print axioms exists_tzWindow_mu32_width4_refuter_beta3
 #print axioms exists_tzWindow_mu32_width4_refuter_beta4
+#print axioms exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4
 
 end ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ

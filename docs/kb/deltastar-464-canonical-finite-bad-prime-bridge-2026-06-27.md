@@ -110,6 +110,9 @@ rows in `Frontier/CanonicalWidthFourConcreteTZ.lean`.  The generic theorem
 literal width-four `<= 32` budget.  The concrete wrappers
 `exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and `_beta4` instantiate this for the
 existing `tzPrimeSupply_32_two`, `tzPrimeSupply_32_three`, and `tzPrimeSupply_32_four` rows.
+The fully explicit wrappers `exists_tzWindow_mu32_width4_refuter_zmod1217_beta2` and
+`exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` record the concrete primes in their
+corresponding windows, avoiding the pigeonhole step when a named prime is desired.
 
 ## Why this does not close the prize
 

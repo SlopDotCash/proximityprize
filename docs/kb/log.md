@@ -1777,3 +1777,8 @@ certificate from one explicit prime to the concrete TZ-window rows.  The theorem
 `4 < supply`, avoids the exact primitive-compatible bad set `{97, 641, 673, 1153}`, and returns a
 window prime/refuter.  The wrappers `exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and
 `_beta4` instantiate the existing concrete β=2,3,4 supply rows.
+
+Follow-up: `exists_tzWindow_mu32_width4_refuter_zmod1217_beta2` and
+`exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` now attach the two explicit concrete
+refuter primes to their TZ windows directly, so the named `1217` and `1048609` witnesses are
+available without the finite-exception pigeonhole step.

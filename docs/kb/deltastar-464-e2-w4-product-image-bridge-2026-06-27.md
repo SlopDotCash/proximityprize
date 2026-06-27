@@ -140,8 +140,10 @@ exists_mu32_width4_refuter_zmod1048609
 canonicalN32PrimitiveBadPrimes
 exists_tzWindow_mu32_width4_refuter_of_TZ
 exists_tzWindow_mu32_width4_refuter_beta2
+exists_tzWindow_mu32_width4_refuter_zmod1217_beta2
 exists_tzWindow_mu32_width4_refuter_beta3
 exists_tzWindow_mu32_width4_refuter_beta4
+exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -454,6 +456,9 @@ any `TZPrimeSupply 32 beta supply` with `4 < supply`, avoids
 `canonicalN32PrimitiveBadPrimes = {97, 641, 673, 1153}`, and returns a TZ-window prime/refuter.
 The concrete wrappers `exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and `_beta4`
 instantiate the existing β=2,3,4 supply rows.
+The fixed-prime wrappers `exists_tzWindow_mu32_width4_refuter_zmod1217_beta2` and
+`exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` additionally attach the explicit primes
+`1217` and `1048609` to their respective windows.
 
 There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is a primitive
 16-th root, but `invariantRatio 3 (3^2)^16 = 1` and the denominator-cleared polynomial equality
