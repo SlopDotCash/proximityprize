@@ -103,11 +103,11 @@ theorem norm_eval_cyclotomic_le {m : ℕ} (hm : 1 ≤ m) (β : ℂ) :
 
 /-! ## The sharp resultant bound -/
 
--- The Landau l2-sharpening: `|Res_Z(R, Phi_{2^m})|^2` is at most
--- `4^{deg R} * (sum_i |R_i|^2)^{2^{m-1}}`.
 set_option maxHeartbeats 1600000 in
 -- The Mahler-measure proof expands resultants, roots, and coefficient norms;
 -- the default heartbeat limit is too low after those normal forms unfold.
+/-- The Landau `l2`-sharpening: `|Res_Z(R, Phi_{2^m})|^2` is at most
+`4^{deg R} * (sum_i |R_i|^2)^{2^{m-1}}`. -/
 theorem natAbs_resultant_cyclotomic_sq_le {m : ℕ} (hm : 1 ≤ m) (R : Polynomial ℤ) :
     (Polynomial.resultant R (cyclotomic (2 ^ m) ℤ)).natAbs ^ 2
       ≤ 4 ^ R.natDegree
