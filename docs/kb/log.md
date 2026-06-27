@@ -1601,6 +1601,24 @@ sign-separation obligations from primitive-root lemmas.  The companion
 scanner-failure form.  The only remaining input in this fixed-witness width-4 lane is now the
 repaired residual `Cd₀NonCollisionModSign mu_n`.
 
+Follow-up: the fixed-witness lane now has a strictly local algebraic residual.  The new
+`InvariantPairNonCollision` surface is equivalent to nonmembership of
+`invariantRatio t t' = (t' + t'^-1) * (t + t^-1)^-1`; over
+`mu_n = nthRootsFinset n 1`, this is exactly the single inequality
+`invariantRatio t t' ^ n != 1`.  The primitive wrappers
+`n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne` and
+`not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne` reduce the canonical
+`quadT 1 ζ`, `quadT 1 ζ^2` scanner failure to that one ratio-power test.  This is a sharpening of
+the residual into a polynomial/norm-style check, not a delta-star closure.
+
+Follow-up: the converse direction is now packaged.  Under the same even `n > 8` primitive-root
+hypotheses, a literal budget success `#(e2BadScalarSet mu_n 4) <= n` forces the displayed
+pointwise collision `ζ^2 + ζ^-2 = u * (ζ + ζ^-1)` for some `u ∈ mu_n`, and equivalently forces
+`invariantRatio ζ (ζ^2) ^ n = 1`.  The wrappers
+`not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` and
+`exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` also expose this
+as failure of the repaired sign-quotiented residual with an exact finite collision witness.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with

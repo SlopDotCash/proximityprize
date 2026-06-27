@@ -59,8 +59,21 @@ n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
+n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_pairNonCollision
+not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_pairNonCollision
+invariantRatio
+invariantPairNonCollision_iff_ratio_notMem
+not_invariantPairNonCollision_iff_ratio_mem
+invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_ne_one
+not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
+n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
+not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
+exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 ```
 
 ## The Bridge
@@ -176,3 +189,44 @@ root facts.  The wrappers
 `n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision` and
 `not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision` reduce the concrete
 width-4 scanner failure to the repaired residual `Cd₀NonCollisionModSign mu_n` alone.
+
+Sharper local specialization: the global repaired residual is stronger than the fixed canonical
+pair actually needs.  The pointwise residual `InvariantPairNonCollision G t t'` says only that the
+second invariant is not in the first invariant's `G`-orbit.  Lean now identifies this with a single
+ratio-membership test:
+
+```lean
+InvariantPairNonCollision G t t' ↔ invariantRatio t t' ∉ G
+```
+
+assuming `t + t^-1 != 0`, where
+
+```lean
+invariantRatio t t' = (t' + t'^-1) * (t + t^-1)^-1.
+```
+
+For `G = mu_n`, this becomes the algebraic root test
+
+```lean
+InvariantPairNonCollision mu_n t t' ↔ invariantRatio t t' ^ n != 1.
+```
+
+The canonical wrappers
+`n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne` and
+`not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne` reduce the fixed
+`quadT 1 ζ`, `quadT 1 ζ^2` scanner failure to proving
+`invariantRatio ζ (ζ^2) ^ n != 1`.  This is a narrower polynomial/norm-style residual, not a
+delta-star proof.
+
+The backwards direction is now explicit too.  If the literal budget
+`#(e2BadScalarSet mu_n 4) <= n` holds in the canonical fixed-witness lane, Lean derives both the
+pointwise collision
+`exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` and the
+ratio obstruction
+`invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even`.  The global
+residual converse
+`not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` and exact
+failure extractor
+`exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` package the
+same outcome against `Cd₀NonCollisionModSign mu_n`: a successful literal `n` budget now forces an
+explicit nonzero, sign-distinct invariant collision.
