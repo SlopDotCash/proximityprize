@@ -1566,3 +1566,18 @@ and the width-4 `*_of_mem` / `*_mem_nonCollision` / `*_even_nonCollision` wrappe
 This corrects the width-4 route: future noncollision statements must quotient the antipodal sign
 class before feeding the product-image scanner.  The result is a guardrail/refutation of an
 over-strong hypothesis, not a delta-star floor proof.
+
+## [2026-06-27] repair | sign-quotiented width-4 noncollision bridge
+
+`E2W4CyclotomicNonCollision.lean` now names the corrected residual
+`Cd₀NonCollisionModSign`.  It excludes only collisions between invariants that are distinct both
+literally and after antipodal sign quotienting.  The theorem
+`not_cd0NonCollisionModSign_iff_exists_collision` gives the exact finite scanner failure form,
+while `not_cd0NonCollisionModSign_of_collision` and
+`cd0NonCollisionModSign_of_no_collision` provide the one-way refuter/certificate wrappers.
+
+The repaired orbit bridges `orbits_distinct_of_nonCollisionModSign` and
+`badScalar_orbits_distinct_of_nonCollisionModSign` show that the product-form width-4 bad scalars
+land in distinct dilation orbits once their invariants are sign-distinct.  This replaces the raw
+`Cd₀NonCollision` bridge with the correct quotient-aware statement; proving the repaired residual
+remains an explicit finite collision/primality obligation.

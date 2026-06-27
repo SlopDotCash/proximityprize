@@ -30,12 +30,19 @@ badScalar_quadT_mem_e2BadScalarSet_of_mem
 not_cd0NonCollision_iff_exists_collision
 not_cd0NonCollision_of_collision
 cd0NonCollision_of_no_collision
+Cd₀NonCollisionModSign
+cd0NonCollisionModSign_of_cd0NonCollision
+not_cd0NonCollisionModSign_iff_exists_collision
+not_cd0NonCollisionModSign_of_collision
+cd0NonCollisionModSign_of_no_collision
 invariant_neg_eq_neg_invariant
 invariant_ne_neg_of_two_ne_zero
 not_cd0NonCollision_of_antipodal_collision
 not_cd0NonCollision_of_neg_mem
 not_cd0NonCollision_nthRootsFinset_of_even
 not_cd0NonCollision_nthRootsFinset_of_even_charZero
+orbits_distinct_of_nonCollisionModSign
+badScalar_orbits_distinct_of_nonCollisionModSign
 group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
 group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
@@ -132,3 +139,13 @@ invariants related by multiplication by `-1`.  Lean now proves this as
 `not_cd0NonCollision_nthRootsFinset_of_even_charZero`.  The correct future bridge must quotient the
 antipodal sign class before asserting non-collision.  This is a refutation of an over-strong
 scanner hypothesis, not a delta-star floor proof.
+
+Follow-up: the repaired residual is now named `Cd₀NonCollisionModSign`.  It permits the trivial
+equality and antipodal sign classes, and only forbids collisions when `c != c'` and `c != -c'`.
+Lean exposes the exact failure scanner
+`not_cd0NonCollisionModSign_iff_exists_collision`, the scanner-positive wrapper
+`cd0NonCollisionModSign_of_no_collision`, and the usable orbit bridges
+`orbits_distinct_of_nonCollisionModSign` /
+`badScalar_orbits_distinct_of_nonCollisionModSign`.  This restores the width-4 bridge in the
+correct sign-quotiented form; it still leaves the sign-quotiented non-collision proof as the real
+finite/primality residual.

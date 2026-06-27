@@ -543,6 +543,19 @@ theorem orbits_distinct_of_nonCollision {G : Finset F} (hG : FinSubgroup G)
   rintro ⟨v, hvG, heq⟩
   exact hNC t htG t' ht'G hc hc' hne v hvG heq
 
+/-- **The repaired sign-quotiented orbit bridge.** Granting `Cd₀NonCollisionModSign G`, two
+width-4 invariants give distinct bad-scalar orbits once they are nonzero and distinct modulo the
+antipodal sign quotient: `c ≠ c'` and `c ≠ -c'`. -/
+theorem orbits_distinct_of_nonCollisionModSign {G : Finset F} (hG : FinSubgroup G)
+    (hNC : Cd₀NonCollisionModSign G) {t t' : F} (htG : t ∈ G) (ht'G : t' ∈ G)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    ¬ (∃ u ∈ G, -(t' + t'⁻¹)⁻¹ = u * (-(t + t⁻¹)⁻¹)) := by
+  rw [orbit_collision_iff hG hc hc']
+  rintro ⟨v, hvG, heq⟩
+  exact hNC t htG t' ht'G hc hc' hne hsign v hvG heq
+
 /-- **The full bad-set form of the reduction.** Two width-4 product-form bad sets `quadT x t`,
 `quadT x' t'` (centres `x, x' ≠ 0`, factors `t, t' ∈ G = μ_n`, all four-element-distinctness
 hypotheses) produce bad scalars `−1/e₁` in DISTINCT `G`-orbits whenever their invariants
@@ -575,6 +588,35 @@ theorem badScalar_orbits_distinct_of_nonCollision {G : Finset F} (hG : FinSubgro
   apply orbits_distinct_of_nonCollision hG hNC htG ht'G hc hc' hne
   refine ⟨u * (x' * x⁻¹), hG.mul_mem _ huG _ (hG.mul_mem _ hx'G _ (hG.inv_mem _ hxG)), ?_⟩
   -- `heq : x'⁻¹·(−c'⁻¹) = u·(x⁻¹·(−c⁻¹))`.  Multiply both sides by `x'` and regroup.
+  have key : -(t' + t'⁻¹)⁻¹ = x' * (u * (x⁻¹ * -(t + t⁻¹)⁻¹)) := by
+    rw [← heq, ← mul_assoc, mul_inv_cancel₀ hx'ne, one_mul]
+  rw [key]; ring
+
+/-- **The repaired full bad-set form of the reduction.** This is the usable sign-quotiented
+version: two product-form witnesses give distinct bad-scalar orbits when their invariants are
+distinct and not antipodal. -/
+theorem badScalar_orbits_distinct_of_nonCollisionModSign {G : Finset F} (hG : FinSubgroup G)
+    (hNC : Cd₀NonCollisionModSign G) {x x' t t' : F}
+    (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    ¬ (∃ u ∈ G, -(e1 (quadT x' t'))⁻¹ = u * (-(e1 (quadT x t))⁻¹)) := by
+  intro hcoll
+  obtain ⟨u, huG, heq⟩ := hcoll
+  have hxne : x ≠ 0 := fun h => hG.zero_notMem (h ▸ hxG)
+  have hx'ne : x' ≠ 0 := fun h => hG.zero_notMem (h ▸ hx'G)
+  rw [badScalar_quadT x' hy1 hy2 hy3 hy4 hy5 hy6,
+      badScalar_quadT x hx1 hx2 hx3 hx4 hx5 hx6] at heq
+  apply orbits_distinct_of_nonCollisionModSign hG hNC htG ht'G hc hc' hne hsign
+  refine ⟨u * (x' * x⁻¹), hG.mul_mem _ huG _ (hG.mul_mem _ hx'G _ (hG.inv_mem _ hxG)), ?_⟩
   have key : -(t' + t'⁻¹)⁻¹ = x' * (u * (x⁻¹ * -(t + t⁻¹)⁻¹)) := by
     rw [← heq, ← mul_assoc, mul_inv_cancel₀ hx'ne, one_mul]
   rw [key]; ring
@@ -639,6 +681,67 @@ theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision {G : Finset 
   exact group_card_lt_badScalarSet_card_of_two_orbits hG
     (zero_notMem_e2BadScalarSet G 4) (e2BadScalarSet_stable hG 4) horbits
 
+/-- **Sign-quotiented two-witness budget refuter.** This is the corrected version of
+`group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision`: the two invariants must be
+distinct modulo sign, and the non-collision hypothesis is the repaired
+`Cd₀NonCollisionModSign`. -/
+theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision {G : Finset F}
+    (hG : FinSubgroup G) (hNC : Cd₀NonCollisionModSign G) {x x' t t' : F}
+    (hsub : quadT x t ⊆ G) (hsub' : quadT x' t' ⊆ G)
+    (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    G.card < (e2BadScalarSet G 4).card := by
+  classical
+  let α : F := -(e1 (quadT x t))⁻¹
+  let β : F := -(e1 (quadT x' t'))⁻¹
+  have hα : α ∈ e2BadScalarSet G 4 := by
+    dsimp [α]
+    rw [badScalar_quadT x hx1 hx2 hx3 hx4 hx5 hx6]
+    exact badScalar_quadT_mem_e2BadScalarSet hsub ht0 hx1 hx2 hx3 hx4 hx5 hx6 hc
+  have hβ : β ∈ e2BadScalarSet G 4 := by
+    dsimp [β]
+    rw [badScalar_quadT x' hy1 hy2 hy3 hy4 hy5 hy6]
+    exact badScalar_quadT_mem_e2BadScalarSet hsub' ht'0 hy1 hy2 hy3 hy4 hy5 hy6 hc'
+  have hnotcoll : ¬ (∃ u ∈ G, β = u * α) := by
+    dsimp [α, β]
+    exact badScalar_orbits_distinct_of_nonCollisionModSign hG hNC hxG hx'G htG ht'G
+      hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne hsign
+  have horbit_ne : orbit G β ≠ orbit G α := by
+    intro heq
+    have hmem : β ∈ orbit G α := by
+      simpa [heq] using self_mem_orbit hG β
+    unfold orbit at hmem
+    rw [Finset.mem_image] at hmem
+    obtain ⟨u, huG, hmul⟩ := hmem
+    exact hnotcoll ⟨u, huG, hmul.symm⟩
+  have hpair_subset :
+      ({orbit G α, orbit G β} : Finset (Finset F)) ⊆
+        (e2BadScalarSet G 4).image (fun y => orbit G y) := by
+    intro O hO
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hO
+    rcases hO with rfl | rfl
+    · exact Finset.mem_image_of_mem _ hα
+    · exact Finset.mem_image_of_mem _ hβ
+  have hpair_card : ({orbit G α, orbit G β} : Finset (Finset F)).card = 2 := by
+    simp [horbit_ne.symm]
+  have horbits : 2 ≤ ((e2BadScalarSet G 4).image (fun y => orbit G y)).card := by
+    calc
+      2 = ({orbit G α, orbit G β} : Finset (Finset F)).card := hpair_card.symm
+      _ ≤ ((e2BadScalarSet G 4).image (fun y => orbit G y)).card :=
+        Finset.card_le_card hpair_subset
+  exact group_card_lt_badScalarSet_card_of_two_orbits hG
+    (zero_notMem_e2BadScalarSet G 4) (e2BadScalarSet_stable hG 4) horbits
+
 /-- Two non-colliding product-form witnesses break the subgroup-size budget, using only subgroup
 membership of the centres/factors plus `-1 ∈ G`. -/
 theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision {G : Finset F}
@@ -661,6 +764,30 @@ theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision {G : Fin
     hxG hx'G htG ht'G (ne_zero_of_mem_finSubgroup hG htG)
     (ne_zero_of_mem_finSubgroup hG ht'G) hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
     hy4 hy5 hy6 hc hc' hne
+
+/-- Sign-quotiented two-witness budget refuter using only subgroup membership of the
+centres/factors plus `-1 ∈ G`. -/
+theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision {G : Finset F}
+    (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) (hNC : Cd₀NonCollisionModSign G)
+    {x x' t t' : F}
+    (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    G.card < (e2BadScalarSet G 4).card :=
+  group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision hG hNC
+    (quadT_subset_of_mem hG hneg hxG htG)
+    (quadT_subset_of_mem hG hneg hx'G ht'G)
+    hxG hx'G htG ht'G (ne_zero_of_mem_finSubgroup hG htG)
+    (ne_zero_of_mem_finSubgroup hG ht'G) hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
+    hy4 hy5 hy6 hc hc' hne hsign
 
 /-- **Concrete `μ_n` width-4 refuter.** For the actual smooth-domain subgroup
 `μ_n = nthRootsFinset n 1`, two non-colliding product-form width-4 witnesses force the concrete
@@ -840,6 +967,10 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms not_cd0NonCollision_iff_exists_collision
 #print axioms not_cd0NonCollision_of_collision
 #print axioms cd0NonCollision_of_no_collision
+#print axioms cd0NonCollisionModSign_of_cd0NonCollision
+#print axioms not_cd0NonCollisionModSign_iff_exists_collision
+#print axioms not_cd0NonCollisionModSign_of_collision
+#print axioms cd0NonCollisionModSign_of_no_collision
 #print axioms invariant_neg_eq_neg_invariant
 #print axioms invariant_ne_neg_of_two_ne_zero
 #print axioms not_cd0NonCollision_of_antipodal_collision
@@ -847,7 +978,9 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms not_cd0NonCollision_nthRootsFinset_of_even
 #print axioms not_cd0NonCollision_nthRootsFinset_of_even_charZero
 #print axioms orbits_distinct_of_nonCollision
+#print axioms orbits_distinct_of_nonCollisionModSign
 #print axioms badScalar_orbits_distinct_of_nonCollision
+#print axioms badScalar_orbits_distinct_of_nonCollisionModSign
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
