@@ -6,10 +6,10 @@ Status: **interface progress with a warning**, not a delta-star proof.
 
 ## What was formalized
 
-I added:
+The landed module is:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackMaximizerDomination.lean
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/StackMaximizerDomination.lean
 ```
 
 The file defines the actual stack bad-scalar count again, locally and standalone:
@@ -32,6 +32,7 @@ For such a stack, the universal open-core bound is equivalent to bounding that o
 
 ```lean
 worstCaseIncidenceBounded_iff_stackBounded_of_stackDominates
+exists_singleStackDominationCertificate_iff_worstCaseIncidenceBounded
 ```
 
 and the delta-star consumer is:
@@ -47,6 +48,7 @@ not_stackBounded_iff_budget_lt_stackBadCount
 not_stackDominates_of_exists_strictly_larger
 not_worstCaseIncidenceBounded_of_budget_lt_stackBadCount
 not_worstCaseIncidenceBounded_iff_exists_budget_lt_stackBadCount
+not_exists_singleStackDominationCertificate_iff_exists_budget_lt_stackBadCount
 candidateBounded_and_counterStack_not_worstCaseIncidenceBounded
 candidateBounded_not_dominationProof_of_strictly_larger
 ```
@@ -63,6 +65,17 @@ not WorstCaseIncidenceBounded C delta B
 
 This is the formal shape of every failed floor-prize attempt: the missing theorem is precisely the
 exclusion of all above-budget stacks.
+
+The exact certificate theorem says there is no gap between the universal incidence hypothesis and
+a bounded true maximizer:
+
+```text
+exists uMax, StackDominates uMax and StackBounded uMax B
+  iff WorstCaseIncidenceBounded C delta B.
+```
+
+Thus a one-stack certificate can be complete, but only if its stack is genuinely a global maximizer.
+Failure of every such certificate is equivalently an above-budget stack.
 
 I also added the finite-family version:
 

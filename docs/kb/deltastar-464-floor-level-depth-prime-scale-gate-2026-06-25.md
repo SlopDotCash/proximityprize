@@ -36,12 +36,20 @@ The file proves the scale gate and its exact iff forms:
 - `dyadic_prize_lt_level_power_iff_mul_lt`: it overshoots iff `4 * a < k * e`.
 - `level_witness_le_prize_of_mul_le`: any prime witness below the level/exponent scale is below
   prize scale once the exponent-product gate holds.
+- `mul_lt_of_prize_lt_level_witness`: any supplied witness that is still above prize scale proves
+  the exponent-product gate failed.
+- `not_prize_lt_level_witness_of_mul_le`: contrapositively, the exponent-product gate forbids
+  above-prize supplied witnesses.
 - `fifth_power_deeper_level_above_prize`: classical exponent-5 Linnik scale overshoots the
   `(2^a)^4` prize scale for every deeper level `k >= a`.
 - `cubic_deeper_level_le_prize_of_depth`: cubic supply at level `a + d` fits while `3d <= a`.
 - `cubic_deeper_level_le_prize_iff_depth`: the cubic fit is exact; it holds iff `3d <= a`.
 - `prize_lt_cubic_deeper_level_of_depth_too_large`: cubic supply overshoots when `a < 3d`.
 - `prize_lt_cubic_deeper_level_iff_depth_too_large`: the strict cubic overshoot is exact.
+- `depth_too_large_of_prize_lt_cubic_level_witness`: an above-prize cubic supplied witness forces
+  `a < 3d`.
+- `not_prize_lt_cubic_level_witness_of_depth`: the allowed cubic-depth range forbids above-prize
+  witnesses.
 - `level_depth_prime_scale_summary`: the bundled depth/exponent verdict.
 
 ## Consequence for #464

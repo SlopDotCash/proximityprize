@@ -224,9 +224,14 @@ appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_s
 appearingCoordinateAgreementFiber_subset_safeExactSuperset_biUnion
 appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_safeSupersets
 appearingCoordinateAgreementFiber_card_le_sum_exactAppearingBudget_safeSupersets
+powersetCard_superset_card_le_choose_sdiff
+sum_safeSupersets_le_sum_choose_sdiff
 appearingCoordinateAgreementFiber_card_le_sum_zeroExactAppearingBudget_safeSupersets
+appearingCoordinateAgreementFiber_card_le_chooseProfile_exactBudget_safeSupersets
 zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums
 uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_exactBudgeted_safeSupersetSums
+zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_chooseProfileSums
+uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_exactBudgeted_chooseProfileSums
 zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
 uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
 not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted
@@ -270,6 +275,12 @@ an appearing codeword whose exact zero-agreement profile has size at least `a` w
 `ZeroDirectionSafeLine`.  The new `*_safeSupersets` wrappers package this as a direct consumer:
 a full exact-profile budget `Mexact` yields a coarse appearance-coordinate budget `Mcoarse` once
 every zero-safe superset sum of `Mexact` is bounded by `Mcoarse`.
+The safe superset sum now has a closed cardinality-profile envelope:
+`powersetCard_superset_card_le_choose_sdiff` injects `r`-element supersets of `S` inside `Z` into
+subsets of `Z \ S`, and `sum_safeSupersets_le_sum_choose_sdiff` bounds the whole safe sum by
+`sum_{r<a} choose(#Z - #S, r - #S) * M r`.  Therefore the exact-to-coarse budget transfer can now
+be discharged by the numeric profile condition packaged in
+`zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_chooseProfileSums`.
 
 The negated low-budget forms are now exact scanners too: per-line failure exposes a low profile
 `t < k`, zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`; uniform failure

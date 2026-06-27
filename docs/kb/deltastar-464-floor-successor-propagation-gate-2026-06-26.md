@@ -50,6 +50,25 @@ floorLocalizationUniform_of_candidateListExactSmallestFamily
 Together, these say that a base rung plus a real successor theorem gives the uniform
 floor-localization input consumed by the Linnik and Thorner-Zaman floor contracts.
 
+The promoted bridge module
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorClosureSuccessorScanner.lean` now connects the
+generic finite-rung scanner from `FloorFiniteRungUniformityBarrier.lean` back to this concrete
+floor-closure predicate:
+
+```lean
+candidateListExactSmallestFamily_iff_uniformFrom_candidateListExactAt
+candidateListExactSuccessor_iff_successorStep_candidateListExactAt
+candidateListExactSmallestFamily_of_verifiedPrefix_and_successorStep
+candidateListExactSmallestFamily_of_verifiedOn_Icc_and_successorStep
+not_candidateListExactSuccessor_of_verifiedPrefix_of_not_candidateListExactSmallestFamily
+not_candidateListExactSuccessor_of_verifiedOn_Icc_of_not_candidateListExactSmallestFamily
+exists_exact_rung_next_fails_of_verifiedPrefix_of_not_candidateListExactSmallestFamily
+exists_exact_rung_next_fails_of_verifiedOn_Icc_of_not_candidateListExactSmallestFamily
+```
+
+Thus finite verified-prefix evidence has one precise escape hatch: if it does not extend to
+uniform singleton exactness, the concrete successor theorem must fail at an adjacent rung.
+
 ## Refutation Surface
 
 Uniform singleton exactness now fails exactly by a concrete rung:

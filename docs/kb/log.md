@@ -1293,6 +1293,25 @@ Follow-up zero-safe wrappers
 sum to exact profiles of size `< a` on safe lines and package the resulting exact-to-coarse budget
 consumer.
 
+## [2026-06-27] reduce | binomial envelope for safe exact supersets
+
+Closed the safe exact-superset sum by cardinality profile in `LineListAppearanceFiber.lean`.
+`powersetCard_superset_card_le_choose_sdiff` injects fixed-size supersets `T` of a coarse profile
+`S` inside `Z` into subsets of `Z \ S`, giving the cost
+`choose(#Z - #S, #T - #S)`.  `sum_safeSupersets_le_sum_choose_sdiff` sums this over `#T < a`, and
+`zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_chooseProfileSums` packages the
+new exact-to-coarse budget transfer: an exact profile budget `M` recovers a coarse budget after
+paying `sum_{r<a} choose(#Z - t, r - t) * M r`.
+
+## [2026-06-27] reduce | concrete floor successor scanner bridge
+
+Added `Frontier/FloorClosureSuccessorScanner.lean`, connecting the generic `UniformFrom` /
+`SuccessorStep` finite-rung scanner to the concrete `CandidateListExactAt FloorBad` predicate in
+`_FloorClosureContract.lean`.  A verified concrete prefix plus `CandidateListExactSuccessor` now
+yields `CandidateListExactSmallestFamily`; conversely, if a verified prefix does not extend to
+uniform singleton exactness, the bridge returns an adjacent rung where exactness holds at `a` and
+fails at `a + 1`.
+
 ## [2026-06-27] reduce | low exact appearance collapses to low support-ratio-heavy
 
 Extended `LineListSupportRatioFiber.lean` with low-profile support-ratio-heavy to exact-appearance
@@ -1342,3 +1361,10 @@ product comparison `k * e <= 4a`.  The cubic specializations
 `3d <= a` versus `a < 3d`.  The helper `level_witness_le_prize_of_mul_le` packages the reusable
 witness transfer below prize scale, and fifth-power Linnik scale remains ruled out at every
 nontrivial deeper level.
+
+Follow-up witness scanners
+`mul_lt_of_prize_lt_level_witness`, `not_prize_lt_level_witness_of_mul_le`,
+`depth_too_large_of_prize_lt_cubic_level_witness`, and
+`not_prize_lt_cubic_level_witness_of_depth` make the gate refutable at the supplied-prime level:
+if a prime witness lies under the level/exponent supply but still above the base prize scale, the
+exponent product has already failed; in the cubic case the extra depth must satisfy `a < 3d`.

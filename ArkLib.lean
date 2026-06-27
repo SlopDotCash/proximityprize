@@ -1104,6 +1104,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarLineProxyBelowJohnson
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherRSListCap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorAsymptoticRadius
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorClosureSuccessorScanner
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorLevelDepthPrimeScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorNecessaryNotSufficient
@@ -1231,6 +1232,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.SpectrumGFFunctionalEquati
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.SpurBadPrimeCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.SpurBadPrimeChebotarev
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.SpurSuccessiveMinimaCount
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.StackMaximizerDomination
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.StepanovStructuredVacuous
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.StepanovWeilQVacuous
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.StructuredUncertaintySharpFloor
@@ -2314,7 +2316,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SpectrumClosedFormWiring
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SpurEvenValuationTwoSquares
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SqrtFreeRSBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackCandidateFamilyMax
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackMaximizerDomination
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackOrbitRepresentativeReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileCompressionTradeoff
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileDominationInterface

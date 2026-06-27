@@ -79,6 +79,27 @@ theorem level_witness_le_prize_of_mul_le
     q <= (2 ^ a) ^ 4 :=
   le_trans hq (dyadic_level_power_le_prize_of_mul_le hscale)
 
+/-- If a supplied level/exponent witness is above the base prize scale, then the
+level/exponent product gate has failed. -/
+theorem mul_lt_of_prize_lt_level_witness
+    {a k e q : ℕ}
+    (hq : q <= (2 ^ k) ^ e)
+    (hprize : (2 ^ a) ^ 4 < q) :
+    a * 4 < k * e := by
+  by_contra hnot
+  have hscale : k * e <= a * 4 := le_of_not_gt hnot
+  exact (not_lt_of_ge (level_witness_le_prize_of_mul_le hq hscale)) hprize
+
+/-- Under the exponent-product gate, no level/exponent witness below the supplied scale can sit
+above the base prize scale. -/
+theorem not_prize_lt_level_witness_of_mul_le
+    {a k e q : ℕ}
+    (hq : q <= (2 ^ k) ^ e)
+    (hscale : k * e <= a * 4) :
+    ¬ (2 ^ a) ^ 4 < q := by
+  intro hprize
+  exact (not_lt_of_ge (level_witness_le_prize_of_mul_le hq hscale)) hprize
+
 /-- Fifth-power least-prime scale is above the prize scale at every nontrivial deeper level
 `k >= a`.  Thus an `O((2^k)^5)` theorem cannot close a base-level `(2^a)^4` prize window. -/
 theorem fifth_power_deeper_level_above_prize
@@ -125,6 +146,24 @@ theorem cubic_level_witness_le_prize
     q <= (2 ^ a) ^ 4 :=
   level_witness_le_prize_of_mul_le hq (by nlinarith)
 
+/-- If a cubic level-`a+d` witness is above base prize scale, then the depth is too large. -/
+theorem depth_too_large_of_prize_lt_cubic_level_witness
+    {a d q : ℕ}
+    (hq : q <= (2 ^ (a + d)) ^ 3)
+    (hprize : (2 ^ a) ^ 4 < q) :
+    a < 3 * d := by
+  have hmul : a * 4 < (a + d) * 3 :=
+    mul_lt_of_prize_lt_level_witness hq hprize
+  nlinarith
+
+/-- In the allowed cubic-depth range, no cubic level witness can exceed base prize scale. -/
+theorem not_prize_lt_cubic_level_witness_of_depth
+    {a d q : ℕ}
+    (hq : q <= (2 ^ (a + d)) ^ 3)
+    (hdepth : 3 * d <= a) :
+    ¬ (2 ^ a) ^ 4 < q :=
+  not_prize_lt_level_witness_of_mul_le hq (by nlinarith)
+
 /-- Same-level cubic supply is always sub-prize. -/
 theorem cubic_same_level_le_prize (a : ℕ) :
     (2 ^ a) ^ 3 <= (2 ^ a) ^ 4 := by
@@ -149,12 +188,16 @@ theorem level_depth_prime_scale_summary
 #print axioms dyadic_level_power_le_prize_iff_mul_le
 #print axioms dyadic_prize_lt_level_power_iff_mul_lt
 #print axioms level_witness_le_prize_of_mul_le
+#print axioms mul_lt_of_prize_lt_level_witness
+#print axioms not_prize_lt_level_witness_of_mul_le
 #print axioms fifth_power_deeper_level_above_prize
 #print axioms cubic_deeper_level_le_prize_of_depth
 #print axioms cubic_deeper_level_le_prize_iff_depth
 #print axioms prize_lt_cubic_deeper_level_of_depth_too_large
 #print axioms prize_lt_cubic_deeper_level_iff_depth_too_large
 #print axioms cubic_level_witness_le_prize
+#print axioms depth_too_large_of_prize_lt_cubic_level_witness
+#print axioms not_prize_lt_cubic_level_witness_of_depth
 #print axioms cubic_same_level_le_prize
 #print axioms level_depth_prime_scale_summary
 
