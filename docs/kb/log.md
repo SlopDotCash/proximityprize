@@ -1897,3 +1897,18 @@ effective (no GRH).  Since `2.4 < 4`, the off-BGK binder-floor obstruction-remov
 floor is necessary-not-sufficient (dossier §16A) and δ\* stays gated on the BGK/Paley wall.
 New note: `deltastar-464-thorner-zaman-subquartic-CONFIRMED-2026-06-27.md`; dossier §16(C)
 corrected.
+
+## [2026-06-27] probe | exact canonicalRatioBadPrimes(64) and (128) + height-crosses-n^4
+
+Computed `canonicalRatioBadPrimes(2^m) = primeFactors(Res(Φ_n, (X^4+1)^n − (X^2+1)^n))` exactly
+for `n = 64, 128` via the order-norm `det(mult-by-g)` in `ℤ[X]/(X^{n/2}+1)` (negacyclic,
+pure-integer Bareiss + Pollard-rho; `scripts/probes/canon_badprimes.py`).  Validated against the
+in-tree exact theorems: `n=16 → {17}`, `n=32 → {97,641,673,1153}` reproduced exactly.  New:
+`n=64` primitive-root lane = 16 primes (min `193`), `n=128` = 41 primes (min `257`).  Two findings:
+(1) `min(bad) = smallestPrime(1 mod n)` exactly at `n=16,32,64,128` (`17,97,193,257`), reinforcing
+the floor-singleton characterization on the canonical set; (2) the MAX bad prime is exponential
+(`ln(max)/n → ~0.26`) and **crosses `n^4` between n=64 (8.0e6 < 1.68e7) and n=128 (2.0e14 ≫
+2.68e8)** — so a polynomial-height "all bad primes < n^4" floor closure FAILS, independently
+confirming the floor route's correct tool is least-prime-in-AP (TZ 12/5), not a resultant-height
+bound (the §9 conjugate-count no-go).  New note:
+`deltastar-464-canonical-badprimes-n64-exact-2026-06-27.md`.  Not a δ\* proof; core OPEN/ON-BGK.

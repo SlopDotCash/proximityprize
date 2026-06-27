@@ -27,23 +27,28 @@ determinant + Pollard-rho factorization (`scripts/probes/canon_badprimes.py`, in
 
 Structural facts:
 1. **Smallest bad prime = 193 = the smallest prime `≡ 1 (mod 64)`.** The floor-singleton pattern
-   `smallestPrime(1 mod n)` ∈ bad and = min(bad) persists across `n = 16, 32, 64` (`17, 97, 193`).
+   `min(bad) = smallestPrime(1 mod n)` persists exactly across `n = 16, 32, 64, 128`
+   (`17, 97, 193, 257`; the n=128 lane was computed exactly, 41 primes, min `257`).
 2. **The set grows** (`1 → 4 → 16` primes). The canonical width-four bad set is therefore a
    strictly *larger* predicate than the floor-bad singleton `{97}` (n=32) — consistent with the
    in-tree `canonicalN32PrimitiveBadPrimes_ne_singleton97`. Future floor arguments must not
    substitute the canonical local set for the modeled floor-bad predicate.
 3. **`97 ∉ bad(64)`** correctly: `97 mod 64 = 33`, so `F_97` carries no primitive 64th root.
 
-## The decision-relevant finding: max bad prime is exponential, crosses n⁴
+## The decision-relevant finding: max bad prime is exponential, crosses n⁴ (EXACT)
 
-Max bad prime: `17, 1153, 7987009` at `n = 16, 32, 64`. `ln(max) = 2.83, 7.05, 15.9`, so
-`ln(max)/n ≈ 0.18, 0.22, 0.25` — i.e. **max bad prime ≈ exp(≈¼·n)**, *exponential* in `n`
-(matching the dossier's "height is the crude `2^n`" obstruction, §6.4/§9).
+Also computed exactly at `n = 128` (full factorization; the primitive-root lane has **41** primes,
+smallest `257 = smallestPrime(1 mod 128)`, largest `203712052621057`).
 
-Consequence for the floor route, made concrete:
-- At `n = 64`, `max = 7.99×10⁶ < 64⁴ = 1.68×10⁷` (ratio 0.48, climbing fast from 0.0003, 0.001).
-- Extrapolating `ln(max) ≈ 0.25·n`: at `n = 128`, `max ≈ e^{36} ≈ 4×10¹⁵ ≫ 128⁴ ≈ 2.7×10⁸`.
-  **So the max bad prime crosses `n⁴` between `n=64` and `n=128`.**
+Max bad prime: `17, 1153, 7987009, 203712052621057` at `n = 16, 32, 64, 128`.
+`ln(max) = 2.83, 7.05, 15.9, 33.0`, so `ln(max)/n ≈ 0.18, 0.22, 0.25, 0.258` — i.e.
+**max bad prime ≈ exp(≈0.26·n)**, *exponential* in `n` (matching the dossier's "height is the
+crude `2^n`" obstruction, §6.4/§9). Set sizes grow `1, 4, 16, 41`.
+
+Consequence for the floor route, made concrete and **exactly confirmed** (no extrapolation):
+- `n = 64`: `max = 7.99×10⁶ < 64⁴ = 1.68×10⁷` (ratio 0.48, up from 0.0003, 0.001).
+- `n = 128`: `max = 2.04×10¹⁴ ≫ 128⁴ = 2.68×10⁸` (ratio ≈ 7.6×10⁵).
+  **So the max bad prime crosses `n⁴` between `n=64` and `n=128` — confirmed by exact computation.**
 
 ⟹ A "every bad prime `< n⁴`" (polynomial-height) floor closure **fails**. Only the
 **smallest** bad prime stays `< n⁴` — and that smallest bad prime is exactly
@@ -58,5 +63,5 @@ divisibility/existence question is tractable).
 This neither closes the prize nor proves the uniform-in-μ smallest-prime characterization (the
 floor-bad *adjacency* predicate of §15 is a different, smaller object than this canonical
 width-four resultant set; the pattern `min(bad) = smallestPrime(1 mod n)` is verified for the
-canonical set at `n=16,32,64` but remains an empirical regularity, not a theorem). The δ\* core
-stays OPEN and ON-BGK.
+canonical set at `n=16,32,64,128` but remains an empirical regularity, not a theorem). The δ\*
+core stays OPEN and ON-BGK.
