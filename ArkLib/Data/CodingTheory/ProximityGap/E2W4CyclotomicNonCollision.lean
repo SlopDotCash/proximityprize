@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2DilationDirectCount
-import Mathlib.Tactic
 
 /-!
 # The width-4 cyclotomic non-collision: when the combinatorial model `K = n/4 − 1` equals the
@@ -68,7 +67,9 @@ The allowed `d₀` (forced by `a, b ∉ {x, −x}`, `a ≠ b`, `a + b ≠ 0`) ra
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 
 ## References
-- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
+- [ABF26] Arnon, Boneh, Fenzi.
+  *Open Problems in List Decoding and Correlated Agreement*. 2026.
+  #407.
 - Chai–Fan. *Action–Orbit FRI Soundness Above the Johnson Radius*. eprint 2026/861.
 - Kronecker (1857); Lam–Leung, *On vanishing sums of roots of unity*, J. Algebra 224 (2000).
 -/
@@ -102,6 +103,23 @@ product parametrisation. -/
 theorem quadT_prod_eq (x : F) {t : F} (ht : t ≠ 0) : (x * t) * (x * t⁻¹) = x ^ 2 := by
   field_simp
 
+/-- **The product-form quadruple has cardinality four.** The six distinctness hypotheses are
+exactly the insert obligations for `{x, -x, x·t, x·t⁻¹}`. -/
+theorem quadT_card (x : F) {t : F}
+    (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
+    (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹) :
+    (quadT x t).card = 4 := by
+  classical
+  unfold quadT
+  rw [Finset.card_insert_of_notMem, Finset.card_insert_of_notMem,
+      Finset.card_insert_of_notMem, Finset.card_singleton]
+  · simp only [Finset.mem_singleton]
+    exact h6
+  · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨fun hc => h3 hc.symm, fun hc => h5 hc.symm⟩
+  · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨h1, fun hc => h2 hc.symm, fun hc => h4 hc.symm⟩
+
 /-- **The width-4 `e₁` law in product form (the algebraic core).** For the bad set
 `{x, −x, x·t, x·t⁻¹}` with the four elements distinct, the first power sum is
 `e₁ = x·t + x·t⁻¹ = x·(t + t⁻¹)`. The antipodal pair `x + (−x) = 0` cancels, leaving the
@@ -121,6 +139,41 @@ theorem e1_quadT (x : F) {t : F}
   · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
     exact ⟨h1, fun hc => h2 hc.symm, fun hc => h4 hc.symm⟩
 
+/-- **The product-form `p₂` law.** The antipodal pair contributes two copies of `x²`, and the
+remaining pair contributes `(x·t)² + (x·t⁻¹)²`. -/
+theorem p2_quadT (x : F) {t : F}
+    (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
+    (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹) :
+    p2 (quadT x t) = x ^ 2 + (-x) ^ 2 + (x * t) ^ 2 + (x * t⁻¹) ^ 2 := by
+  classical
+  unfold p2 quadT
+  rw [Finset.sum_insert, Finset.sum_insert, Finset.sum_insert, Finset.sum_singleton]
+  · ring
+  · simp only [Finset.mem_singleton]; exact h6
+  · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨fun hc => h3 hc.symm, fun hc => h5 hc.symm⟩
+  · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨h1, fun hc => h2 hc.symm, fun hc => h4 hc.symm⟩
+
+/-- **The product-form energy identity.** If `t ≠ 0`, then `p₂(quadT x t) = e₁(quadT x t)²`.
+This is the algebraic reason product-form width-4 quadruples lie on the `e₂ = 0` locus. -/
+theorem p2_quadT_eq_e1_sq (x : F) {t : F} (ht : t ≠ 0)
+    (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
+    (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹) :
+    p2 (quadT x t) = (e1 (quadT x t)) ^ 2 := by
+  rw [p2_quadT x h1 h2 h3 h4 h5 h6, e1_quadT x h1 h2 h3 h4 h5 h6]
+  field_simp [ht]
+  ring
+
+/-- **Product-form width-4 quadruples satisfy `e₂ = 0`.** This packages the product-square
+parametrisation directly in the symmetric-function language used by `e2BadScalarSet`. -/
+theorem e2_quadT_zero (x : F) {t : F} (ht : t ≠ 0)
+    (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
+    (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹) :
+    e2 (quadT x t) = 0 := by
+  rw [e2_eq, p2_quadT_eq_e1_sq x ht h1 h2 h3 h4 h5 h6]
+  ring
+
 /-- **The bad scalar of the product-form quadruple.** `α = −1/e₁ = −(x·(t+t⁻¹))⁻¹`. The point is
 that the orbit of `α` under `μ_n`-dilation of the *centre* `x` is governed by the factor
 `c := t + t⁻¹`: dilating `x ↦ u·x` sends `α ↦ u⁻¹·α`, so the orbit `μ_n·α` equals `μ_n·(−(c)⁻¹)`,
@@ -131,6 +184,32 @@ theorem badScalar_quadT (x : F) {t : F}
     -(e1 (quadT x t))⁻¹ = x⁻¹ * (-(t + t⁻¹)⁻¹) := by
   rw [e1_quadT x h1 h2 h3 h4 h5 h6, mul_inv]
   ring
+
+/-- **Product-form witnesses land in the concrete `e₂ = 0` bad-scalar image.** If `quadT x t`
+is a four-subset of the ambient subgroup `G`, `t ≠ 0`, and the invariant `t+t⁻¹` is nonzero, then
+its bad scalar belongs to `e2BadScalarSet G 4`. This is the missing wiring from the width-4
+product parametrisation to the exact direct-count image used by `E2DilationDirectCount`. -/
+theorem badScalar_quadT_mem_e2BadScalarSet {G : Finset F} {x t : F}
+    (hsub : quadT x t ⊆ G) (ht : t ≠ 0)
+    (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
+    (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) :
+    x⁻¹ * (-(t + t⁻¹)⁻¹) ∈ e2BadScalarSet G 4 := by
+  classical
+  rw [← badScalar_quadT x h1 h2 h3 h4 h5 h6]
+  unfold e2BadScalarSet
+  rw [Finset.mem_image]
+  refine ⟨quadT x t, ?_, rfl⟩
+  rw [Finset.mem_filter, Finset.mem_powersetCard]
+  have hx : x ≠ 0 := by
+    intro hx0
+    exact h1 (by rw [hx0, neg_zero])
+  have hcard : (quadT x t).card = 4 := quadT_card x h1 h2 h3 h4 h5 h6
+  have hE2 : e2 (quadT x t) = 0 := e2_quadT_zero x ht h1 h2 h3 h4 h5 h6
+  have hE1 : e1 (quadT x t) ≠ 0 := by
+    rw [e1_quadT x h1 h2 h3 h4 h5 h6]
+    exact mul_ne_zero hx hc
+  exact ⟨⟨hsub, hcard⟩, hE2, hE1⟩
 
 /-! ## Part 2 — the orbit-collision reduction (the bridge to the combinatorial model)
 
@@ -176,8 +255,9 @@ elementary cosine monotonicity (`Real.strictAntiOn_cos`), NOT Kronecker / Lam–
 
 We isolate the q-independent mathematical heart as a standalone ℝ statement: the map
 `d ↦ 2·cos(2π d/n)` is injective (indeed strictly decreasing, with positive values) on the
-allowed window `0 < d`, `2·d ≤ ⌊n/2⌋ − 1 < n/2` (equivalently `θ_d < π/2`). The `c`-collision in
-char 0 would force two such cosines to be equal (up to the `μ_n` modulus, which is 1), impossible. -/
+allowed window `0 < d`, `2·d ≤ ⌊n/2⌋ − 1 < n/2` (equivalently `θ_d < π/2`).
+The `c`-collision in char 0 would force two such cosines to be equal, up to the `μ_n` modulus,
+which is 1. That is impossible. -/
 
 open Real in
 /-- **The char-0 cyclotomic non-collision core (the cosine separation).** For real angles
@@ -274,14 +354,84 @@ theorem badScalar_orbits_distinct_of_nonCollision {G : Finset F} (hG : FinSubgro
     rw [← heq, ← mul_assoc, mul_inv_cancel₀ hx'ne, one_mul]
   rw [key]; ring
 
+/-- **Two non-colliding product-form width-4 witnesses break the subgroup-size budget.** Once the
+two product-form witnesses are certified as members of `e2BadScalarSet G 4`, the non-collision
+theorem gives two distinct full `G`-orbits inside that image. The direct-count consumer from
+`E2DilationDirectCount` then converts this into `#G < #e2BadScalarSet`. -/
+theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision {G : Finset F}
+    (hG : FinSubgroup G) (hNC : Cd₀NonCollision G) {x x' t t' : F}
+    (hsub : quadT x t ⊆ G) (hsub' : quadT x' t' ⊆ G)
+    (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    G.card < (e2BadScalarSet G 4).card := by
+  classical
+  let α : F := -(e1 (quadT x t))⁻¹
+  let β : F := -(e1 (quadT x' t'))⁻¹
+  have hα : α ∈ e2BadScalarSet G 4 := by
+    dsimp [α]
+    rw [badScalar_quadT x hx1 hx2 hx3 hx4 hx5 hx6]
+    exact badScalar_quadT_mem_e2BadScalarSet hsub ht0 hx1 hx2 hx3 hx4 hx5 hx6 hc
+  have hβ : β ∈ e2BadScalarSet G 4 := by
+    dsimp [β]
+    rw [badScalar_quadT x' hy1 hy2 hy3 hy4 hy5 hy6]
+    exact badScalar_quadT_mem_e2BadScalarSet hsub' ht'0 hy1 hy2 hy3 hy4 hy5 hy6 hc'
+  have hnotcoll : ¬ (∃ u ∈ G, β = u * α) := by
+    dsimp [α, β]
+    exact badScalar_orbits_distinct_of_nonCollision hG hNC hxG hx'G htG ht'G
+      hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne
+  have horbit_ne : orbit G β ≠ orbit G α := by
+    intro heq
+    have hmem : β ∈ orbit G α := by
+      simpa [heq] using self_mem_orbit hG β
+    unfold orbit at hmem
+    rw [Finset.mem_image] at hmem
+    obtain ⟨u, huG, hmul⟩ := hmem
+    exact hnotcoll ⟨u, huG, hmul.symm⟩
+  have hpair_subset :
+      ({orbit G α, orbit G β} : Finset (Finset F)) ⊆
+        (e2BadScalarSet G 4).image (fun y => orbit G y) := by
+    intro O hO
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hO
+    rcases hO with rfl | rfl
+    · exact Finset.mem_image_of_mem _ hα
+    · exact Finset.mem_image_of_mem _ hβ
+  have hpair_card : ({orbit G α, orbit G β} : Finset (Finset F)).card = 2 := by
+    simp [horbit_ne.symm]
+  have horbits : 2 ≤ ((e2BadScalarSet G 4).image (fun y => orbit G y)).card := by
+    calc
+      2 = ({orbit G α, orbit G β} : Finset (Finset F)).card := hpair_card.symm
+      _ ≤ ((e2BadScalarSet G 4).image (fun y => orbit G y)).card :=
+        Finset.card_le_card hpair_subset
+  exact group_card_lt_badScalarSet_card_of_two_orbits hG
+    (zero_notMem_e2BadScalarSet G 4) (e2BadScalarSet_stable hG 4) horbits
+
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.quadT_prod_eq
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.e1_quadT
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.badScalar_quadT
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.orbit_collision_iff
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_strict_anti
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.orbits_distinct_of_nonCollision
-#print axioms ArkLib.ProximityGap.E2W4CyclotomicNonCollision.badScalar_orbits_distinct_of_nonCollision
+namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
+
+#print axioms quadT_prod_eq
+#print axioms quadT_card
+#print axioms e1_quadT
+#print axioms p2_quadT
+#print axioms p2_quadT_eq_e1_sq
+#print axioms e2_quadT_zero
+#print axioms badScalar_quadT
+#print axioms badScalar_quadT_mem_e2BadScalarSet
+#print axioms orbit_collision_iff
+#print axioms cos_invariant_strict_anti
+#print axioms cos_invariant_injOn
+#print axioms orbits_distinct_of_nonCollision
+#print axioms badScalar_orbits_distinct_of_nonCollision
+#print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
+
+end ArkLib.ProximityGap.E2W4CyclotomicNonCollision

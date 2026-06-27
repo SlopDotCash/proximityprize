@@ -1436,6 +1436,16 @@ image over `μ_n = nthRootsFinset n 1`.  The wrappers
 callers: over the actual smooth-domain subgroup, the literal `n` budget fails exactly when the
 finite image contains at least two full dilation orbits.
 
+Follow-up: `E2W4CyclotomicNonCollision.lean` now wires the width-4 product-form witnesses into
+the concrete image.  The new local algebra proves `quadT_card`, `p2_quadT`,
+`p2_quadT_eq_e1_sq`, and `e2_quadT_zero`; the bridge
+`badScalar_quadT_mem_e2BadScalarSet` says that any distinct product-form quadruple inside a
+subgroup `G`, with `t ≠ 0` and `t + t⁻¹ ≠ 0`, contributes the bad scalar
+`x⁻¹ * (-(t + t⁻¹)⁻¹)` to `e2BadScalarSet G 4`.  This removes another informal handoff between
+the width-4 collision model and the exact direct-count scanner.
+The packaged refuter `group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision` then turns two
+non-colliding product witnesses into a literal failure of the subgroup-size image budget.
+
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 
 Renamed the finite-rung floor-localization guardrail from the scratch file
