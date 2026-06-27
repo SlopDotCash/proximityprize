@@ -1876,3 +1876,17 @@ selector.  Theorems `exists_not_dvd_of_primeFactors_card_lt`,
 `bad_card_le_primeFactors_card_of_bad_dvd_obstruction` formalize the good-prime pigeonhole once a
 route has a nonzero obstruction integer `D`; they do not supply the obstruction or analytic prime
 density.
+
+## [2026-06-27] research | Thorner-Zaman sub-quartic least-prime exponent CONFIRMED
+
+Resolved the §16(C) "UNCONFIRMED" flag of `deltastar-DOSSIER-v2-2026-06-22.md` by reading the
+verbatim text of Thorner-Zaman (arXiv:2108.10878).  Theorem 1.1 has `θ = 7/12` when no Siegel
+zero `β₁` exists, and eq (1.8)'s coefficient `3/2` drops to `1` in that case, so the PNT-in-AP
+asymptotic over `(x−h, x]` with `h=x` is valid for `x ≥ q^{12/5}`.  For `q = 2^a` the squarefree
+part `d = 2` is fixed, so `β₁` is eliminated for all large `a` (§3.1 eq 3.1 + [15, Lem 6.2]),
+giving least prime `≡ 1 (mod 2^a) ≪_ε (2^a)^{12/5+ε} = (2^a)^{2.4+ε}`, unconditional and
+effective (no GRH).  Since `2.4 < 4`, the off-BGK binder-floor obstruction-removal route is now
+**unconditional** (was GRH-conditional / TZ-unconfirmed).  This does not close the prize: the
+floor is necessary-not-sufficient (dossier §16A) and δ\* stays gated on the BGK/Paley wall.
+New note: `deltastar-464-thorner-zaman-subquartic-CONFIRMED-2026-06-27.md`; dossier §16(C)
+corrected.
