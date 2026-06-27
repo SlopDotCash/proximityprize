@@ -82,7 +82,7 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 - Kronecker (1857); Lam–Leung, *On vanishing sums of roots of unity*, J. Algebra 224 (2000).
 -/
 set_option linter.style.longLine false
-set_option linter.style.longFile 2200
+set_option linter.style.longFile 2400
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option autoImplicit false
@@ -2289,7 +2289,6 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms isPrimitiveRoot_3_16_ratio_zmod17
 #print axioms invariantRatio_3_sq_pow16_eq_one_zmod17
 #print axioms polynomial_eq_3_sq_pow16_zmod17
-#print axioms invariant_collision_scalar_5_zmod17
 #print axioms exists_invariant_collision_mu16_zmod17_3
 #print axioms not_invariantPairNonCollision_mu16_zmod17_3
 #print axioms not_forall_primitive_pairNonCollision_zmod17_mu16
