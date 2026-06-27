@@ -1635,6 +1635,14 @@ lemmas rule out both cases for `8 < n`.  The wrappers
 image-budget conclusions in characteristic zero.  This is not a finite-field prize discharge, but
 it closes the local canonical lane over `ℂ`.
 
+Follow-up: the canonical ratio residual also has a denominator-free polynomial form.  For primitive
+`ζ` with `8 < n`, Lean proves
+`invariantRatio ζ (ζ^2)^n != 1 ↔ (ζ^4 + 1)^n != (ζ^2 + 1)^n` after discharging
+`ζ^2 + 1 != 0`.  The wrappers
+`n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe` and
+`not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe` make this polynomial
+nonvanishing statement the finite-field/norm-facing scanner target.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with

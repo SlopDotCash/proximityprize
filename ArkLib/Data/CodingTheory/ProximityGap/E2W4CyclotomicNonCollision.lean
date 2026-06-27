@@ -81,7 +81,7 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 - Kronecker (1857); Lam–Leung, *On vanishing sums of roots of unity*, J. Algebra 224 (2000).
 -/
 set_option linter.style.longLine false
-set_option linter.style.longFile 2000
+set_option linter.style.longFile 2200
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option autoImplicit false
@@ -1606,6 +1606,79 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
     (n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
       hn heven hn8 hζ hratio)
 
+/-! ### Polynomial form of the fixed canonical ratio residual -/
+
+/-- **Denominator-cleared canonical ratio obstruction.** For a primitive `n`-th root `ζ`, once
+`ζ² + 1` is nonzero, the local ratio-root obstruction is exactly the polynomial equality
+`(ζ⁴ + 1)^n = (ζ² + 1)^n`.  This removes inverses from the fixed `quadT 1 ζ`, `quadT 1 ζ²`
+scanner residual and is the finite-field/norm target. -/
+theorem invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (hden : ζ ^ 2 + 1 ≠ 0) :
+    invariantRatio ζ (ζ ^ 2) ^ n = 1 ↔ (ζ ^ 4 + 1) ^ n = (ζ ^ 2 + 1) ^ n := by
+  have hζ0 : ζ ≠ 0 := primRoot_ne_zero hn hζ
+  have hζn : ζ ^ n = 1 := hζ.pow_eq_one
+  have hdenpow : (ζ ^ 2 + 1) ^ n ≠ 0 := pow_ne_zero n hden
+  have hratio :
+      invariantRatio ζ (ζ ^ 2) = (ζ ^ 4 + 1) * ζ⁻¹ * (ζ ^ 2 + 1)⁻¹ := by
+    rw [invariantRatio]
+    field_simp [hζ0, hden, pow_ne_zero 2 hζ0]
+  have hpow :
+      invariantRatio ζ (ζ ^ 2) ^ n = (ζ ^ 4 + 1) ^ n * ((ζ ^ 2 + 1) ^ n)⁻¹ := by
+    rw [hratio, mul_pow, mul_pow]
+    simp [inv_pow, hζn]
+  rw [hpow]
+  constructor
+  · intro h
+    have hmul := congrArg (fun y : F => y * (ζ ^ 2 + 1) ^ n) h
+    simpa [mul_assoc, hdenpow] using hmul
+  · intro h
+    rw [h]
+    exact mul_inv_cancel₀ hdenpow
+
+/-- Negated denominator-cleared form of the canonical ratio obstruction. -/
+theorem invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (hden : ζ ^ 2 + 1 ≠ 0) :
+    invariantRatio ζ (ζ ^ 2) ^ n ≠ 1 ↔ (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n := by
+  constructor
+  · intro hne hpoly
+    exact hne ((invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq hn hζ hden).mpr hpoly)
+  · intro hne hratio
+    exact hne ((invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq hn hζ hden).mp hratio)
+
+/-- For the canonical even `n > 8` primitive-root lane, the ratio-power residual is equivalent to
+one denominator-free polynomial nonvanishing statement. -/
+theorem invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hn8 : 8 < n) (hζ : IsPrimitiveRoot ζ n) :
+    invariantRatio ζ (ζ ^ 2) ^ n ≠ 1 ↔ (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n := by
+  have hζ2neneg1 : ζ ^ 2 ≠ -1 :=
+    primRoot_pow_ne_neg_one_of_two_mul_lt (F := F) (ζ := ζ) (k := 2) hζ
+      (by norm_num : (2 : ℕ) ≠ 0) (by omega : 2 * 2 < n)
+  have hden : ζ ^ 2 + 1 ≠ 0 := by
+    intro h
+    exact hζ2neneg1 (eq_neg_of_add_eq_zero_left h)
+  exact invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne hn hζ hden
+
+/-- Scanner-failure wrapper using the denominator-free polynomial residual for the fixed
+primitive witnesses. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
+    {n : ℕ} {ζ : F} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n)
+    (hpoly : (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card :=
+  n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
+    hn heven hn8 hζ
+    ((invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne hn hn8 hζ).mpr hpoly)
+
+/-- Literal-budget refuter using the denominator-free polynomial residual. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+    {n : ℕ} {ζ : F} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n)
+    (hpoly : (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
+      hn heven hn8 hζ hpoly)
+
 /-! ### Complex discharge of the fixed canonical ratio residual -/
 
 /-- Over `ℂ`, the fixed canonical invariant ratio for `ζ, ζ²` is not an `n`-th root when
@@ -1927,6 +2000,11 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_pairNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
+#print axioms invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq
+#print axioms invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne
+#print axioms invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
+#print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
 #print axioms invariantRatio_pow_ne_one_complex_primitive_zeta_sq
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even

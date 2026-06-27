@@ -68,6 +68,11 @@ invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_ne_one
 not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
+invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq
+invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne
+invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
+n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
+not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
 complex_root_of_unity_real_eq_one_or_neg_one
 complex_root_add_inv_im_eq_zero
 invariantPairNonCollision_complex_primitive_zeta_sq
@@ -228,6 +233,19 @@ The canonical wrappers
 `quadT 1 ζ`, `quadT 1 ζ^2` scanner failure to proving
 `invariantRatio ζ (ζ^2) ^ n != 1`.  This is a narrower polynomial/norm-style residual, not a
 delta-star proof.
+
+The same residual now has a denominator-cleared polynomial form.  For primitive `ζ` with `8 < n`,
+Lean proves that
+
+```lean
+invariantRatio ζ (ζ^2)^n != 1
+  ↔ (ζ^4 + 1)^n != (ζ^2 + 1)^n
+```
+
+after clearing the nonzero denominator `ζ^2 + 1`.  The wrappers
+`n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe` and
+`not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe` expose this
+denominator-free polynomial nonvanishing statement as the scanner-facing target.
 
 Over `ℂ`, this fixed canonical ratio residual is now discharged unconditionally for primitive
 `ζ` with `8 < n`.  The theorem `invariantPairNonCollision_complex_primitive_zeta_sq` proves that
