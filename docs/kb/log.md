@@ -1100,6 +1100,16 @@ budget without specializing to `s = 128`, composing the generic `ThornerZamanPNT
 `kkh26_mcaDeltaStar_le_of_TZ_tight_square_bound_log` in real-bound, natural-floor, and canonical
 `floor(tzDensityLB)` forms.
 
+Follow-up: the generic floor-supply wrapper now has
+`kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log_auto_nonneg`.  Because the normalized
+tight KKH budget is nonnegative under the existing `r >= 2` and `n^beta >= 2` hypotheses, a strict
+comparison against `⌊tzDensityLB n beta eps⌋₊` already implies the density nonnegativity side
+condition.
+
+Follow-up: the s=128 bridge and AvD1 count layer expose the matching automatic-nonnegativity forms
+`kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg` and
+`kkh26_s128_of_polyModulusCount_floor_tight_square_log_auto_nonneg`.
+
 ## [2026-06-26] refute | Tsang high-moment range is constant-depth here
 
 Added `_D3TsangHighMomentRangeGate.lean` and companion note
@@ -1116,6 +1126,15 @@ Added `_D4MacMahonMarginEncodingGate.lean` and companion note
 MacMahon/matrix-pair margin decomposition can transfer a prize bound only after supplying an
 actual total margin-fiber budget, or a uniform fiber cap times a margin-count bound.  Coarse margin
 support alone remains compatible with an arbitrarily large one-margin spike.
+
+## [2026-06-26] reduce | permutation-insdel random-RS rank needs smooth transfer
+
+Added `_D4PermutationInsdelRankTransferGate.lean` and companion note
+`deltastar-464-permutation-insdel-rank-transfer-gate-2026-06-26.md`.  The arXiv:2606.22344
+random-RS permutation/insdel rank method transfers to the prize only after a pointwise certificate:
+either the fixed dyadic smooth domain lies in the generic-good locus, or every actual smooth-domain
+extremal configuration is covered by the generic symbolic model.  The countermodels show generic
+rank/SZ control alone remains compatible with a smooth-domain spike.
 
 ## [2026-06-26] refute | homological vanishing without prime-field transfer
 

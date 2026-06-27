@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26S128Ceiling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26ThornerZamanTightBridge
 import Mathlib.Data.Nat.Totient
 
 /-!
@@ -79,6 +80,8 @@ We name `(TZ)` as the `Prop`-valued hypothesis `ThornerZamanPNTinAP n β ε`. Th
   with that logarithm normalized to `64 * log(2r)`.
 * `kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log` — the canonical floor-supply
   form comparing the normalized budget directly against `⌊tzDensityLB n β ε⌋₊`.
+* `kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg` — the same
+  floor form with the density nonnegativity side condition derived from the budget comparison.
 
 ## Honesty
 
@@ -104,7 +107,9 @@ namespace ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 open ArkLib.ProximityGap.KKH26
   (tzWindow TZPrimeSupply collisionPairs evalCode
    kkh26_mcaDeltaStar_le_s128 kkh26_mcaDeltaStar_le_s128_tight_square_bound
-   s128_resultantLog_eq)
+   s128_resultantLog_eq s128_tightResultantLog_eq tightResultantLogRatio_nonneg)
+open ProximityGap.Frontier.KKH26ThornerZamanTightBridge
+  (real_nonneg_of_nonneg_lt_natFloor)
 
 /-! ### The prime-counting function in the arithmetic progression `1 (mod n)` -/
 
@@ -414,6 +419,41 @@ theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
     (supply := ⌊tzDensityLB n β ε⌋₊) hTZ hm hn hr2 hr hx hpl ?_ hcount
   exact Nat.floor_le hpos
 
+/-- **The sharp fixed-`r` s = 128 bridge in floor-supply form, with automatic density
+nonnegativity.**  Since the normalized `64*log(2r)` budget is nonnegative under `r ≥ 2` and
+`n^β ≥ 2`, the comparison against `⌊tzDensityLB n β ε⌋₊` already proves
+`0 ≤ tzDensityLB n β ε`. -/
+theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg
+    {n : ℕ} {β ε : ℝ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β))
+      < ((⌊tzDensityLB n β ε⌋₊ : ℕ) : ℝ)) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  have hratio_nonneg :
+      0 ≤ ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β)) := by
+    simpa [s128_tightResultantLog_eq] using
+      (tightResultantLogRatio_nonneg (n := n) (β := β) 7 r (by omega) hx)
+  have hbudget_nonneg :
+      0 ≤ (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β)) := by
+    exact mul_nonneg (by positivity) hratio_nonneg
+  have hpos : 0 ≤ tzDensityLB n β ε :=
+    real_nonneg_of_nonneg_lt_natFloor hbudget_nonneg hcount
+  exact kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
+    hTZ hm hn hr2 hr hx hpl hpos hcount
+
 end ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -435,3 +475,5 @@ open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
+open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
+#print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg
