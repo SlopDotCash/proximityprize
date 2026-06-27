@@ -1152,3 +1152,14 @@ exact pointwise pullback needed to turn a homological/function-field model bound
 bound.  The countermodels show that bounded auxiliary homological statistics, fixed-depth
 vanishing, or a convexity-scale envelope remain compatible with prime-field spikes unless a
 growing-depth prime comparison and budget improvement are supplied.
+
+## [2026-06-26] route | non-Paley sweep and folded transfer threshold no-go
+
+Added `deltastar-464-every-nonpaley-angle-2026-06-26.md`, filling the KB path named by the
+latest issue sweep.  The note routes folded-RS/subspace-design capacity MCA to the existing
+T4.13-backed FRS surfaces, routes Krawtchouk/LP and monodromy ideas to their existing no-go gates,
+and records the honest plain-RS conclusion: adjacent-code wins do not prove the smooth-domain
+floor without a new transfer theorem.  `FoldingTransferNoGo.lean` now names that simple transfer
+shape as `PlainToFoldAgreementTransfer` / `UniversalPlainToFoldAgreementTransfer` and refutes every
+nonzero folded threshold below the one-corruption-per-orbit plain-agreement witness via
+`not_plainToFoldAgreementTransfer_of_A_le_N_mul_d_of_T_pos`.

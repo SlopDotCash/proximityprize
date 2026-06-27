@@ -119,10 +119,12 @@ kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_tight_square_log
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_density_margin_tight_square_log
 kkh26_s128_of_polyModulusCount_tight_square
 kkh26_s128_of_polyModulusCount_tight_square_log
 kkh26_s128_of_polyModulusCount_floor_tight_square_log
 kkh26_s128_of_polyModulusCount_floor_tight_square_log_auto_nonneg
+kkh26_s128_of_polyModulusCount_density_margin_tight_square_log
 ```
 
 The new wrapper lets callers supply the familiar square budget
@@ -151,11 +153,13 @@ kkh26_ceiling_of_thornerZamanPNT_tight_square_bound_log
 kkh26_ceiling_of_thornerZamanPNT_natFloor_tight_square_bound_log
 kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log
 kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log_auto_nonneg
+kkh26_ceiling_of_thornerZamanPNT_density_margin_tight_square_bound_log
 ```
 
 The auto-nonneg floor form is the canonical consumer: its bad-prime budget is compared directly
 against `⌊tzDensityLB n β ε⌋₊`, with neither a separate `supply` witness nor a separate
-`0 ≤ tzDensityLB n β ε` side condition.
+`0 ≤ tzDensityLB n β ε` side condition.  The density-margin form is one step more paper-facing:
+it replaces the floor comparison by the real sufficient condition `budget + 1 ≤ tzDensityLB`.
 
 At `s = 128`, the tight variants replace the coarse `448*log 2` factor by either
 `log((2r)^64)` or the normalized form `64*log(2r)`.  The canonical s=128 floor-supply wrappers
@@ -164,8 +168,10 @@ are:
 ```lean
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
 kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg
+kkh26_s128_ceiling_of_thornerZamanPNTinAP_density_margin_tight_square_log
 kkh26_s128_of_polyModulusCount_floor_tight_square_log
 kkh26_s128_of_polyModulusCount_floor_tight_square_log_auto_nonneg
+kkh26_s128_of_polyModulusCount_density_margin_tight_square_log
 ```
 
 These are only arithmetic relaxations of the bad-prime budget; the polynomial-modulus prime-count

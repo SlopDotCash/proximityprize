@@ -75,6 +75,22 @@ def oneCorruptionPerOrbit (N d : ℕ) (F : Type*) [Zero F] [One F] :
     Fin N × Fin (d + 1) → F :=
   fun x => if x.2 = (0 : Fin (d + 1)) then 1 else 0
 
+/-- A proposed downward transfer from plain agreement to folded agreement at thresholds `A,T`
+over one alphabet.
+This is the exact extra theorem a folded-code capacity bound would need before it could control
+plain-close words: every pair with at least `A` unfolded agreeing coordinates would have to agree
+on at least `T` whole folded orbits. -/
+def PlainToFoldAgreementTransfer (G : Type*) [Zero G] [One G] [DecidableEq G]
+    (N d A T : ℕ) : Prop :=
+  ∀ w v : Fin N × Fin (d + 1) → G, A ≤ plainAgree w v → T ≤ foldedAgree w v
+
+/-- Alphabet-uniform form of `PlainToFoldAgreementTransfer`.  Refuting this is enough to show that
+there is no bare agreement-threshold theorem that can transfer folded capacity bounds down to the
+plain word metric. -/
+def UniversalPlainToFoldAgreementTransfer (N d A T : ℕ) : Prop :=
+  ∀ (G : Type) [Zero G] [One G] [DecidableEq G], (0 : G) ≠ 1 →
+    PlainToFoldAgreementTransfer G N d A T
+
 /-- **THE FOLDING-TRANSFER NO-GO.**  Over any type with `0 ≠ 1`, the word corrupted at one position
 per orbit has:
 
@@ -116,10 +132,9 @@ theorem folding_transfer_no_go (N d : ℕ) (F : Type*) [Zero F] [One F]
         Finset.card_univ, Fintype.card_fin, Nat.add_sub_cancel]
   · -- folded agreement: every orbit fails at position 0 (where the word is 1 ≠ 0)
     rw [foldedAgree, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-    intro o _
-    intro hall
+    intro o _ hall
     have h := hall (0 : Fin (d + 1))
-    simp only [oneCorruptionPerOrbit, Pi.zero_apply, if_pos rfl] at h
+    simp only [oneCorruptionPerOrbit, Pi.zero_apply] at h
     exact h01 h.symm
 
 /-- Non-vacuity at concrete scale: `N = 8` orbits of size `4` (`d = 3`) over `ZMod 5` — plain
@@ -130,9 +145,29 @@ theorem no_go_concrete :
   have h := folding_transfer_no_go 8 3 (ZMod 5) (by decide)
   simpa using h
 
+/-- **Threshold form of the no-go.**  No nonzero folded-agreement conclusion follows from any
+plain-agreement threshold at or below the one-corruption-per-orbit witness `N*d`.  Thus a folded
+capacity/list bound can affect the plain smooth-domain prize only after a stronger theorem than a
+bare plain-to-fold agreement transfer is supplied. -/
+theorem not_plainToFoldAgreementTransfer_of_A_le_N_mul_d_of_T_pos
+    {A T : ℕ} (hA : A ≤ N * d) (hT : 0 < T) :
+    ¬ UniversalPlainToFoldAgreementTransfer N d A T := by
+  intro htransfer
+  have hno := folding_transfer_no_go N d (ZMod 5) (by decide)
+  have hplain : A ≤
+      plainAgree (oneCorruptionPerOrbit N d (ZMod 5)) (0 : Fin N × Fin (d + 1) → ZMod 5) := by
+    simpa [hno.1] using hA
+  have hfold : T ≤
+      foldedAgree (oneCorruptionPerOrbit N d (ZMod 5)) (0 : Fin N × Fin (d + 1) → ZMod 5) :=
+    htransfer (ZMod 5) (by decide)
+      (oneCorruptionPerOrbit N d (ZMod 5)) (0 : Fin N × Fin (d + 1) → ZMod 5) hplain
+  omega
+
 end ArkLib.CodingTheory.FoldingTransferNoGo
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.CodingTheory.FoldingTransferNoGo.foldedAgree_mul_le_plainAgree
 #print axioms ArkLib.CodingTheory.FoldingTransferNoGo.folding_transfer_no_go
 #print axioms ArkLib.CodingTheory.FoldingTransferNoGo.no_go_concrete
+open ArkLib.CodingTheory.FoldingTransferNoGo in
+#print axioms not_plainToFoldAgreementTransfer_of_A_le_N_mul_d_of_T_pos

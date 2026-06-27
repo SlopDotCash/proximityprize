@@ -49,6 +49,13 @@ lemma real_nonneg_of_nonneg_lt_natFloor {x budget : ℝ}
   have hx_one : (1 : ℝ) ≤ x := Nat.floor_pos.mp hfloor_pos
   exact le_trans (by norm_num : (0 : ℝ) ≤ 1) hx_one
 
+/-- A real margin of one unit over the budget implies the strict natural-floor comparison. -/
+lemma real_lt_natFloor_of_add_one_le {x budget : ℝ} (hmargin : budget + 1 ≤ x) :
+    budget < ((⌊x⌋₊ : ℕ) : ℝ) := by
+  have hxlt : x < ((⌊x⌋₊ : ℕ) : ℝ) + 1 := Nat.lt_floor_add_one x
+  have hbudget_lt : budget + 1 < ((⌊x⌋₊ : ℕ) : ℝ) + 1 := lt_of_le_of_lt hmargin hxlt
+  linarith
+
 /-- **Generic Thorner-Zaman -> KKH26 tight ceiling bridge.**
 
 If the named TZ density statement supplies enough primes in the progression `1 mod n`, and that
@@ -179,6 +186,37 @@ theorem kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log_auto_nonne
   exact kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log
     hTZ hmu hm hn hr2 hr hx hpl hpos hcount
 
+/-- **Generic tight square bridge from a real density margin.**
+
+Instead of proving a strict comparison against `⌊tzDensityLB n beta eps⌋₊`, callers may prove the
+paper-facing real inequality that the normalized bad-prime budget plus one is at most the TZ
+density lower bound. -/
+theorem kkh26_ceiling_of_thornerZamanPNT_density_margin_tight_square_bound_log
+    {n : ℕ} {beta eps : ℝ} [NeZero n]
+    (hTZ : ThornerZamanPNT n beta eps) {mu m r : ℕ}
+    (hmu : 1 ≤ mu) (hm : 1 ≤ m) (hn : n = 2 ^ mu * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (mu - 1))
+    (hx : 2 ≤ (n : ℝ) ^ beta)
+    (hpl : (((2 : ℕ) ^ mu : ℕ) : ℝ) < (n : ℝ) ^ beta)
+    (hmargin : (((2 ^ r * (2 ^ (mu - 1)).choose r) ^ 2 : ℕ) : ℝ) *
+        ((((2 ^ (mu - 1) : ℕ) : ℝ) * Real.log (((2 * r : ℕ) : ℝ))) /
+          Real.log ((n : ℝ) ^ beta)) + 1 ≤ tzDensityLB n beta eps) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ beta ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ beta ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ epsStar : ℝ≥0∞,
+          epsStar < ((2 ^ r * (2 ^ (mu - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) epsStar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ mu) := by
+  have hcount : (((2 ^ r * (2 ^ (mu - 1)).choose r) ^ 2 : ℕ) : ℝ) *
+        ((((2 ^ (mu - 1) : ℕ) : ℝ) * Real.log (((2 * r : ℕ) : ℝ))) /
+          Real.log ((n : ℝ) ^ beta))
+      < ((⌊tzDensityLB n beta eps⌋₊ : ℕ) : ℝ) :=
+    real_lt_natFloor_of_add_one_le hmargin
+  exact kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log_auto_nonneg
+    hTZ hmu hm hn hr2 hr hx hpl hcount
+
 end ProximityGap.Frontier.KKH26ThornerZamanTightBridge
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -190,3 +228,5 @@ open ProximityGap.Frontier.KKH26ThornerZamanTightBridge in
 #print axioms kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log
 open ProximityGap.Frontier.KKH26ThornerZamanTightBridge in
 #print axioms kkh26_ceiling_of_thornerZamanPNT_floor_tight_square_bound_log_auto_nonneg
+open ProximityGap.Frontier.KKH26ThornerZamanTightBridge in
+#print axioms kkh26_ceiling_of_thornerZamanPNT_density_margin_tight_square_bound_log

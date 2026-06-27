@@ -109,7 +109,7 @@ open ArkLib.ProximityGap.KKH26
    kkh26_mcaDeltaStar_le_s128 kkh26_mcaDeltaStar_le_s128_tight_square_bound
    s128_resultantLog_eq s128_tightResultantLog_eq tightResultantLogRatio_nonneg)
 open ProximityGap.Frontier.KKH26ThornerZamanTightBridge
-  (real_nonneg_of_nonneg_lt_natFloor)
+  (real_nonneg_of_nonneg_lt_natFloor real_lt_natFloor_of_add_one_le)
 
 /-! ### The prime-counting function in the arithmetic progression `1 (mod n)` -/
 
@@ -454,6 +454,35 @@ theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_no
   exact kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
     hTZ hm hn hr2 hr hx hpl hpos hcount
 
+/-- **The sharp fixed-`r` s = 128 bridge from a real density margin.**
+
+This is the paper-facing sufficient condition for the canonical floor-supply theorem: the
+normalized `64*log(2r)` bad-prime budget plus one is at most the TZ density lower bound. -/
+theorem kkh26_s128_ceiling_of_thornerZamanPNTinAP_density_margin_tight_square_log
+    {n : ℕ} {β ε : ℝ} [NeZero n]
+    (hTZ : ThornerZamanPNTinAP n β ε) {m r : ℕ}
+    (hm : 1 ≤ m) (hn : n = 2 ^ 7 * m)
+    (hr2 : 2 ≤ r) (hr : r ≤ 2 ^ (7 - 1))
+    (hx : 2 ≤ (n : ℝ) ^ β)
+    (hpl : (((2 : ℕ) ^ 7 : ℕ) : ℝ) < (n : ℝ) ^ β)
+    (hmargin : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β)) + 1
+      ≤ tzDensityLB n β ε) :
+    ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD n] ∧
+      (n : ℝ) ^ β ≤ p ∧ (p : ℝ) ≤ 2 * (n : ℝ) ^ β ∧
+      ∃ (_ : Fact p.Prime) (g : ZMod p), orderOf g = n ∧
+        ∀ εstar : ℝ≥0∞,
+          εstar < ((2 ^ r * (2 ^ (7 - 1)).choose r : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) →
+          ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+              (evalCode g n ((r - 2) * m)) εstar
+            ≤ 1 - (r : ℝ≥0) / ((2 : ℝ≥0) ^ 7) := by
+  have hcount : (((2 ^ r * ((64 : ℕ).choose r)) ^ 2 : ℕ) : ℝ)
+        * ((64 * Real.log (((2 * r : ℕ) : ℝ))) / Real.log ((n : ℝ) ^ β))
+      < ((⌊tzDensityLB n β ε⌋₊ : ℕ) : ℝ) :=
+    real_lt_natFloor_of_add_one_le hmargin
+  exact kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg
+    hTZ hm hn hr2 hr hx hpl hcount
+
 end ProximityGap.Frontier.KKH26s128ThornerZamanBridge
 
 /-! ## Axiom audit (expected: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) -/
@@ -477,3 +506,5 @@ open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log
 open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
 #print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_floor_tight_square_log_auto_nonneg
+open ProximityGap.Frontier.KKH26s128ThornerZamanBridge in
+#print axioms kkh26_s128_ceiling_of_thornerZamanPNTinAP_density_margin_tight_square_log

@@ -80,3 +80,22 @@ T4.13 subspace-design MCA residual
 
 This is the correct route to cite for "folded/subspace-design capacity-MCA is banked modulo
 T4.13".  It should not be cited as a Paley bypass for plain smooth RS.
+
+Follow-up: `FoldingTransferNoGo.lean` now also names the exact downward transfer predicate
+
+```lean
+PlainToFoldAgreementTransfer
+UniversalPlainToFoldAgreementTransfer
+```
+
+and proves
+
+```lean
+not_plainToFoldAgreementTransfer_of_A_le_N_mul_d_of_T_pos
+```
+
+The first predicate is alphabet-specific; the second is the alphabet-uniform theorem shape needed
+for a generic folded-to-plain transfer.  The theorem says that no alphabet-uniform positive
+folded-orbit agreement threshold follows from any plain agreement threshold at or below the
+one-corruption-per-orbit witness `N*d`.  Thus a future unfolding theorem must use stronger
+structure than a bare plain-to-fold agreement implication.
