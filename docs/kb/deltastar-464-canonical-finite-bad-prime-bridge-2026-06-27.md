@@ -93,6 +93,23 @@ primes above the largest factor.  The sharper theorem
 `97, 641, 673, 1153` inside the primitive-root lane.  The scanner wrapper
 `not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153` is the corresponding
 finite-exclusion good-prime form.
+The list is also sharp: `exists_primitive_polynomial_eq_zmod32_badPrimes` packages concrete
+primitive-root collapses at all four remaining characteristics, witnessed by
+`28 : ZMod 97`, `25 : ZMod 641`, `149 : ZMod 673`, and `439 : ZMod 1153`.
+
+The concrete TZ ladder now feeds this exact row directly at two closed finite-field witnesses:
+`exists_mu32_width4_refuter_zmod1217` uses the small `β = 2` row and
+`exists_mu32_width4_refuter_zmod1048609` uses the `β = 4` row.  In both cases Lean supplies an
+explicit primitive 32nd root and uses `p > 1153` to refute the literal width-four `<= 32` budget.
+These close concrete canonical `n = 32` witnesses without asserting a general prime-supply theorem.
+
+The same exact four-prime exception list is now also composed with the concrete TZ-window supply
+rows in `Frontier/CanonicalWidthFourConcreteTZ.lean`.  The generic theorem
+`exists_tzWindow_mu32_width4_refuter_of_TZ` says any `TZPrimeSupply 32 β supply` with
+`4 < supply` contains a window prime outside `{97, 641, 673, 1153}` and therefore refutes the
+literal width-four `<= 32` budget.  The concrete wrappers
+`exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and `_beta4` instantiate this for the
+existing `tzPrimeSupply_32_two`, `tzPrimeSupply_32_three`, and `tzPrimeSupply_32_four` rows.
 
 ## Why this does not close the prize
 

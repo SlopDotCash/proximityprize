@@ -1729,6 +1729,11 @@ characteristics `97, 641, 673, 1153`.  The wrappers
 `not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153` give the scanner-facing
 good-prime form outside that exact finite list.
 
+Follow-up: that exact finite list is now proved sharp in the primitive-root lane.  The theorem
+`exists_primitive_polynomial_eq_zmod32_badPrimes` packages concrete denominator-cleared
+collisions at `28 : ZMod 97`, `25 : ZMod 641`, `149 : ZMod 673`, and
+`439 : ZMod 1153`.
+
 Follow-up: `Frontier/CanonicalWidthFourBadPrimeSet.lean` now packages the canonical resultant lane
 as a finite bad-prime set.  `canonicalRatioBadPrimes n` is the set of prime factors of the
 canonical obstruction resultant, and any surviving literal width-4 budget over `ZMod p` puts `p`
@@ -1758,3 +1763,17 @@ Follow-up: the high-exponent concrete ladder now includes
 `tzPrimeSupply_32_four : TZPrimeSupply 32 4 16`, witnessed by sixteen explicit primes in
 `[32^4, 2*32^4]` congruent to `1 mod 32`.  This extends the β=4 finite-prime option-(ii) route
 from `n=16` to `n=32`; it remains a concrete discharge, not the general analytic TZ theorem.
+
+Follow-up: the canonical `n = 32` finite-exception row now has two direct finite-field witnesses.
+`exists_mu32_width4_refuter_zmod1217` and `exists_mu32_width4_refuter_zmod1048609` use explicit
+primitive 32nd roots in `ZMod 1217` and `ZMod 1048609`, respectively, then apply
+`not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153` to refute the literal width-four
+`<= 32` budget.  These are closed concrete witnesses for the canonical lane, not a general
+delta-star floor proof.
+
+Follow-up: `Frontier/CanonicalWidthFourConcreteTZ.lean` now lifts the `n = 32` finite-exception
+certificate from one explicit prime to the concrete TZ-window rows.  The theorem
+`exists_tzWindow_mu32_width4_refuter_of_TZ` consumes any `TZPrimeSupply 32 beta supply` with
+`4 < supply`, avoids the exact primitive-compatible bad set `{97, 641, 673, 1153}`, and returns a
+window prime/refuter.  The wrappers `exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and
+`_beta4` instantiate the existing concrete β=2,3,4 supply rows.

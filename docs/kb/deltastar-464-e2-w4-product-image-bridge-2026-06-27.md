@@ -130,6 +130,18 @@ not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
 prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32
 polynomial_ne_zmod32_of_prime_not_97_641_673_1153
 not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153
+polynomial_eq_28_sq_pow32_zmod97
+polynomial_eq_25_sq_pow32_zmod641
+polynomial_eq_149_sq_pow32_zmod673
+polynomial_eq_439_sq_pow32_zmod1153
+exists_primitive_polynomial_eq_zmod32_badPrimes
+exists_mu32_width4_refuter_zmod1217
+exists_mu32_width4_refuter_zmod1048609
+canonicalN32PrimitiveBadPrimes
+exists_tzWindow_mu32_width4_refuter_of_TZ
+exists_tzWindow_mu32_width4_refuter_beta2
+exists_tzWindow_mu32_width4_refuter_beta3
+exists_tzWindow_mu32_width4_refuter_beta4
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -426,6 +438,22 @@ prime.  Lean packages the resulting classification as
 `polynomial_ne_zmod32_of_prime_not_97_641_673_1153` and
 `not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153` refute the canonical
 `n = 32` lane outside that four-prime list.
+The four-prime list is sharp in the primitive-root lane: Lean checks concrete primitive roots
+`28 ∈ F_97`, `25 ∈ F_641`, `149 ∈ F_673`, and `439 ∈ F_1153` where the denominator-cleared
+obstruction vanishes.  The combined theorem is
+`exists_primitive_polynomial_eq_zmod32_badPrimes`.
+
+The concrete TZ rows now also have direct existential refuters:
+`exists_mu32_width4_refuter_zmod1217` and `exists_mu32_width4_refuter_zmod1048609`.  They use
+explicit primitive 32nd roots `21 ∈ ZMod 1217` and `57211 ∈ ZMod 1048609`, respectively, then
+apply the `p > 1153` good-prime theorem.  These are fully closed finite-field witnesses for the
+canonical `n = 32` lane, not a general prime-supply theorem.
+The follow-up module `Frontier/CanonicalWidthFourConcreteTZ.lean` lifts this from one explicit
+prime to a finite-exception window argument: `exists_tzWindow_mu32_width4_refuter_of_TZ` consumes
+any `TZPrimeSupply 32 beta supply` with `4 < supply`, avoids
+`canonicalN32PrimitiveBadPrimes = {97, 641, 673, 1153}`, and returns a TZ-window prime/refuter.
+The concrete wrappers `exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and `_beta4`
+instantiate the existing β=2,3,4 supply rows.
 
 There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is a primitive
 16-th root, but `invariantRatio 3 (3^2)^16 = 1` and the denominator-cleared polynomial equality

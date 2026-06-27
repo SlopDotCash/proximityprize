@@ -161,7 +161,7 @@ def CanonicalWidthFourGoodPrimeSupply (m : ℕ) : Prop :=
 
 /-- A prime `p ≡ 1 (mod n)` carries an element of multiplicative order `n` in `F_p`
 (`(ZMod p)ˣ` is cyclic of order `p − 1`, and `n ∣ p − 1`). -/
-private lemma exists_isPrimitiveRoot_zmod_of_modEq
+theorem exists_isPrimitiveRoot_zmod_of_modEq
     {p : ℕ} [Fact p.Prime] {n : ℕ} (_hn : 0 < n) (hmod : p ≡ 1 [MOD n]) :
     ∃ ζ : ZMod p, IsPrimitiveRoot ζ n := by
   have hp1 : 1 ≤ p := (Fact.out : Nat.Prime p).one_le
@@ -288,6 +288,7 @@ namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 #print axioms canonicalRatioBadPrimes_card_le_crude
 #print axioms not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes
 #print axioms canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp
+#print axioms exists_isPrimitiveRoot_zmod_of_modEq
 #print axioms exists_tzWindow_notMem_canonicalRatioBadPrimes
 #print axioms canonicalWidthFourGoodPrimeSupply_of_TZ
 #print axioms canonicalWidthFourGoodPrimeSupply_of_TZ_crude
