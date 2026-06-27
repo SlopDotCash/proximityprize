@@ -1625,6 +1625,16 @@ Follow-up: the ratio obstruction is now discharged in one concrete large-field i
 `16 < #(e2BadScalarSet (nthRootsFinset 16 1) 4)`.  This is a finite counter-budget witness for
 the local width-4 scanner, not a uniform δ* proof.
 
+Follow-up: the same fixed canonical ratio residual is now unconditionally discharged over `ℂ`.
+The theorem `invariantPairNonCollision_complex_primitive_zeta_sq` proves that any collision
+scalar for `ζ` and `ζ^2` must be real, hence `±1`, and the existing primitive-root separation
+lemmas rule out both cases for `8 < n`.  The wrappers
+`invariantRatio_pow_ne_one_complex_primitive_zeta_sq`,
+`n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even`, and
+`not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even` expose the ratio and
+image-budget conclusions in characteristic zero.  This is not a finite-field prize discharge, but
+it closes the local canonical lane over `ℂ`.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with

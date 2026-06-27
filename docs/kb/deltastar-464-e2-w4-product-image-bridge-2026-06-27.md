@@ -68,6 +68,12 @@ invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_ne_one
 not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
+complex_root_of_unity_real_eq_one_or_neg_one
+complex_root_add_inv_im_eq_zero
+invariantPairNonCollision_complex_primitive_zeta_sq
+invariantRatio_pow_ne_one_complex_primitive_zeta_sq
+n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
+not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
 isPrimitiveRoot_4134_16_ratio
 invariantRatio_4134_sq_pow16_ne_one
@@ -222,6 +228,17 @@ The canonical wrappers
 `quadT 1 ζ`, `quadT 1 ζ^2` scanner failure to proving
 `invariantRatio ζ (ζ^2) ^ n != 1`.  This is a narrower polynomial/norm-style residual, not a
 delta-star proof.
+
+Over `ℂ`, this fixed canonical ratio residual is now discharged unconditionally for primitive
+`ζ` with `8 < n`.  The theorem `invariantPairNonCollision_complex_primitive_zeta_sq` proves that
+any collision scalar would be real, hence `±1`, using
+`complex_root_of_unity_real_eq_one_or_neg_one` and `complex_root_add_inv_im_eq_zero`; the existing
+primitive-root separation lemmas rule out both signs.  The wrappers
+`invariantRatio_pow_ne_one_complex_primitive_zeta_sq`,
+`n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even`, and
+`not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even` expose the corresponding
+ratio and image-budget conclusions over `ℂ`.  This is characteristic-zero evidence for the local
+lane, not a finite-field discharge for the prize prime.
 
 The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
 witness at `n = 16`.  Lean proves `4134` has order `16`, checks
