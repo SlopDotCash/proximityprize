@@ -1,3 +1,25 @@
+## [e2-w4-raw-noncollision-refuted] quotient-free width-4 `Cd₀NonCollision` is false on even domains (2026-06-27)
+
+Lane: #464 width-4 product-image/orbit scanner. The raw non-collision hypothesis
+`Cd₀NonCollision G` asked distinct nonzero invariants `t + t⁻¹` and `t' + t'⁻¹` to never lie in
+the same `G`-multiplicative orbit. That statement forgot the antipodal sign quotient already
+described by the width-4 model.
+
+Refutation: if `-1 ∈ G`, `2 != 0`, and `t + t⁻¹ != 0`, then `t' = -t` and `u = -1` give
+
+`(-t) + (-t)⁻¹ = -(t + t⁻¹) = (-1) * (t + t⁻¹)`.
+
+Taking `t = 1` gives a witness in every even odd-characteristic subgroup. For
+`G = nthRootsFinset n 1`, the concrete wrappers refute the raw hypothesis whenever `2 ∣ n`.
+
+Formal kernel: `ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean`, theorems
+`invariant_neg_eq_neg_invariant`, `not_cd0NonCollision_of_antipodal_collision`,
+`not_cd0NonCollision_of_neg_mem`, `not_cd0NonCollision_nthRootsFinset_of_even`, and
+`not_cd0NonCollision_nthRootsFinset_of_even_charZero`. Axioms are contained in `{propext,
+Classical.choice, Quot.sound}`. Verdict: future width-4 non-collision bridges must quotient the
+antipodal sign class before feeding the product-image scanner. This refutes an over-strong
+scanner hypothesis; it is not a delta-star floor proof.
+
 ## [floorbad-defect-ramification-tower-invariant] §9 defect ramification locus {17,257} is TOWER-INVARIANT, forced by the unit constant term (2026-06-22, sol)
 
 Lane: door-(iv) is DEAD; this is the ONE off-BGK lever (§9 bad-prime localization / least-prime-in-AP,

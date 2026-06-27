@@ -30,6 +30,12 @@ badScalar_quadT_mem_e2BadScalarSet_of_mem
 not_cd0NonCollision_iff_exists_collision
 not_cd0NonCollision_of_collision
 cd0NonCollision_of_no_collision
+invariant_neg_eq_neg_invariant
+invariant_ne_neg_of_two_ne_zero
+not_cd0NonCollision_of_antipodal_collision
+not_cd0NonCollision_of_neg_mem
+not_cd0NonCollision_nthRootsFinset_of_even
+not_cd0NonCollision_nthRootsFinset_of_even_charZero
 group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
 group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
@@ -117,3 +123,12 @@ are `t,t',u ∈ G` with nonzero distinct invariants `t + t^-1`, `t' + t'^-1` and
 `not_cd0NonCollision_of_collision` and `cd0NonCollision_of_no_collision` expose the two one-way
 forms for callers that have either a concrete collision witness or a no-collision scanner
 certificate.
+
+Critical correction: the quotient-free `Cd₀NonCollision` residual is false on the even smooth
+domains used by the prize.  If `-1 ∈ G` and `2 != 0`, the antipodal pair `t` and `-t` has
+invariants related by multiplication by `-1`.  Lean now proves this as
+`not_cd0NonCollision_of_antipodal_collision`, with the concrete smooth-domain wrappers
+`not_cd0NonCollision_nthRootsFinset_of_even` and
+`not_cd0NonCollision_nthRootsFinset_of_even_charZero`.  The correct future bridge must quotient the
+antipodal sign class before asserting non-collision.  This is a refutation of an over-strong
+scanner hypothesis, not a delta-star floor proof.

@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4908 files, 52655 declarations
+- `ArkLib` — 4908 files, 52661 declarations
 
 ## Same short-name across multiple files (2170 groups)
 
@@ -5736,7 +5736,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `cos_invariant_injOn` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean:325](../../../ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean#L325) — **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).** For distinc
+- `theorem ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean:332](../../../ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean#L332) — **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).** For distinc
 - `theorem ArkLib.ProximityGap.BridgeB45.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB45.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB45.lean#L78) — **The cosine invariant is injective on the edge representatives.**  For `n > 0` and `1 ≤ i, j ≤ n/2
 
 ### `coset` (2 declarations, 2 files)

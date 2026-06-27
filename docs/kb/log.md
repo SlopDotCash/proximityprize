@@ -1550,3 +1550,19 @@ than first constructing an orbit-count lower bound.
 Follow-up: `ne_zero_of_mem_finSubgroup` now packages the standard subgroup-member nonzero fact,
 and the width-4 `*_of_mem` / `*_mem_nonCollision` / `*_even_nonCollision` wrappers derive
 `t != 0` and `t' != 0` from membership instead of requiring callers to pass those side conditions.
+
+## [2026-06-27] refute | quotient-free width-4 noncollision
+
+`E2W4CyclotomicNonCollision.lean` now records that the raw, quotient-free
+`Cd₀NonCollision` residual is false on the even smooth domains relevant to the prize.  The theorem
+`invariant_neg_eq_neg_invariant` identifies the antipodal symmetry
+`(-t) + (-t)^-1 = -(t + t^-1)`, and
+`not_cd0NonCollision_of_antipodal_collision` turns this into a concrete collision whenever
+`-1 ∈ G`, `2 != 0`, and `t + t^-1 != 0`.  The wrappers
+`not_cd0NonCollision_of_neg_mem`, `not_cd0NonCollision_nthRootsFinset_of_even`, and
+`not_cd0NonCollision_nthRootsFinset_of_even_charZero` specialize the refuter to even
+`mu_n = nthRootsFinset n 1`.
+
+This corrects the width-4 route: future noncollision statements must quotient the antipodal sign
+class before feeding the product-image scanner.  The result is a guardrail/refutation of an
+over-strong hypothesis, not a delta-star floor proof.

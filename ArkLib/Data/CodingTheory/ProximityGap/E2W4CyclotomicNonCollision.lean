@@ -19,11 +19,11 @@ ACTUAL `F_q` dilation-orbit count (#407 — closing the open part of D1)
 > exponent-orbits give distinct `e₁`-VALUE dilation orbits in `F_q`?
 
 This file states that bridge precisely, proves the **unconditional algebraic core** (the real-
-cyclotomic structure of `e₁` at width 4), reduces the bridge to a single named cyclotomic
-non-collision `Prop`, and proves the **char-0 (ℂ) instance unconditionally** by an elementary
-cosine-monotonicity argument (NOT Kronecker). The char-`p` instance is shown to be **NOT
-`q`-independent**: there is a finite, small set of "bad primes" (the prime divisors of explicit
-nonzero cyclotomic norms), characterised exactly.
+cyclotomic structure of `e₁` at width 4), and reduces the bridge to a named cyclotomic
+non-collision `Prop`. The cosine-monotonicity core proves separation only after the standard
+antipodal sign collapse. The quotient-free `Cd₀NonCollision` stated below is now explicitly
+refuted on every even odd-characteristic domain: `t` and `-t` have invariants in the same
+`μ_n`-orbit. This is an honest failure of the over-strong bridge, not a delta-star proof.
 
 ## The clean structure (the algebraic core)
 
@@ -48,15 +48,22 @@ The allowed `d₀` (forced by `a, b ∉ {x, −x}`, `a ≠ b`, `a + b ≠ 0`) ra
 
 ## The verdict (precise obstruction)
 
-* **char 0 (ℂ): UNCONDITIONAL.** `c_{d₀} = 2 cos(2π d₀/n)`; for `d₀ ∈ {1,…,n/4−1}` the values
-  `|c_{d₀}|` are *strictly decreasing* (cos strictly monotone on `[0, π/2]`), and `|ζ^u·c_{d₀}|
-  = |c_{d₀}|`, so distinct `d₀`-classes give distinct orbit moduli — no collision. **This file
-  proves the cosine-monotonicity core (`cos_lt_cos_of_…` over ℝ) and the modulus-injectivity, so
-  `K = n/4 − 1` over ℂ is fully discharged here.** (Probe: `n=8,16,32,64`, 100% match.)
-* **char `p`: NOT `q`-independent.** Collision `c_{d₀'} = ζ^u c_{d₀}` over `F_p` happens iff
-  `p ∣ Norm_{ℚ(ζ_n)/ℚ}(c_{d₀'} − ζ^u c_{d₀})`, a **nonzero** integer (by the ℂ result), so its
-  prime divisors are finite. Probe-measured bad primes: `n=16 → {17}`, `n=32 → {97,…,2113}`
-  (largest `2113`). **They are real and small but `q`-DEPENDENT.** The crude norm bound
+* **char 0 (ℂ), sign-quotiented core: UNCONDITIONAL.** `c_{d₀} = 2 cos(2π d₀/n)`; for
+  `d₀ ∈ {1,…,n/4−1}` the values `|c_{d₀}|` are *strictly decreasing* (cos strictly monotone on
+  `[0, π/2]`), and `|ζ^u·c_{d₀}| = |c_{d₀}|`, so distinct sign-quotiented `d₀`-classes give
+  distinct orbit moduli. This file proves the cosine-monotonicity core (`cos_lt_cos_of_…` over ℝ)
+  and the modulus-injectivity.
+* **quotient-free `Cd₀NonCollision`: REFUTED.** If `-1 ∈ G` and the characteristic is not `2`,
+  then `t' = -t`, `u = -1` gives
+  `t' + t'⁻¹ = -1 * (t + t⁻¹)`. Thus the stated `Cd₀NonCollision` cannot hold in the even
+  smooth-domain regime. A corrected bridge must quotient the antipodal sign class before asking
+  for non-collision.
+* **char `p`: NOT `q`-independent after the sign quotient.** Collision
+  `c_{d₀'} = ζ^u c_{d₀}` over `F_p`, away from the antipodal class, happens iff
+  `p ∣ Norm_{ℚ(ζ_n)/ℚ}(c_{d₀'} − ζ^u c_{d₀})`, a **nonzero** integer (by the ℂ sign-quotiented
+  result), so its prime divisors are finite. Probe-measured bad primes: `n=16 → {17}`,
+  `n=32 → {97,…,2113}` (largest `2113`).
+  **They are real and small but `q`-DEPENDENT.** The crude norm bound
   `|Norm| ≤ 4^{φ(n)} = 2^n` is *vacuous at the prize point* `n = 2^30` (`2^{2^30} ≫ 2^158`), so
   the existence of the prize prime as a *good* prime is **NOT** delivered by the norm bound — it
   holds for *every prime above the (small, measured) bad-prime threshold*, which is the SAME
@@ -388,12 +395,145 @@ theorem cd0NonCollision_of_no_collision {G : Finset F}
   intro t htG t' ht'G hc hc' hne u huG
   exact fun hcollision => hno ⟨t, htG, t', ht'G, hc, hc', hne, u, huG, hcollision⟩
 
+/-! ### The repaired sign-quotiented non-collision statement -/
+
+/-- **Sign-quotiented width-4 cyclotomic non-collision.** This is the repaired residual after
+the antipodal collapse `t ↦ -t`: two nonzero invariants are required not to collide only when
+they are distinct even after quotienting by sign. Equivalently, the only permitted collisions are
+the trivial equality class and the antipodal sign class. -/
+def Cd₀NonCollisionModSign (G : Finset F) : Prop :=
+  ∀ t ∈ G, ∀ t' ∈ G,
+    (t + t⁻¹) ≠ 0 →
+    (t' + t'⁻¹) ≠ 0 →
+    (t + t⁻¹) ≠ (t' + t'⁻¹) →
+    (t + t⁻¹) ≠ -(t' + t'⁻¹) →
+      ∀ u ∈ G, (t' + t'⁻¹) ≠ u * (t + t⁻¹)
+
+/-- The quotient-free residual implies the repaired sign-quotiented residual. -/
+theorem cd0NonCollisionModSign_of_cd0NonCollision {G : Finset F}
+    (hNC : Cd₀NonCollision G) :
+    Cd₀NonCollisionModSign G := by
+  intro t htG t' ht'G hc hc' hne _hsign u huG
+  exact hNC t htG t' ht'G hc hc' hne u huG
+
+open Classical in
+/-- **Exact scanner-failure form for `Cd₀NonCollisionModSign`.** The repaired residual fails
+precisely when a concrete pair of nonzero invariants, distinct modulo the sign quotient, collides
+under multiplication by some subgroup element. -/
+theorem not_cd0NonCollisionModSign_iff_exists_collision (G : Finset F) :
+    (¬ Cd₀NonCollisionModSign (F := F) G) ↔
+      ∃ t ∈ G, ∃ t' ∈ G,
+        (t + t⁻¹) ≠ 0 ∧
+        (t' + t'⁻¹) ≠ 0 ∧
+        (t + t⁻¹) ≠ (t' + t'⁻¹) ∧
+        (t + t⁻¹) ≠ -(t' + t'⁻¹) ∧
+        ∃ u ∈ G, (t' + t'⁻¹) = u * (t + t⁻¹) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro t htG t' ht'G hc hc' hne hsign u huG
+    exact fun hcollision =>
+      hnone ⟨t, htG, t', ht'G, hc, hc', hne, hsign, u, huG, hcollision⟩
+  · rintro ⟨t, htG, t', ht'G, hc, hc', hne, hsign, u, huG, hcollision⟩ hNC
+    exact hNC t htG t' ht'G hc hc' hne hsign u huG hcollision
+
+/-- A concrete sign-distinct invariant collision refutes `Cd₀NonCollisionModSign`. -/
+theorem not_cd0NonCollisionModSign_of_collision {G : Finset F} {t t' u : F}
+    (htG : t ∈ G) (ht'G : t' ∈ G)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) (huG : u ∈ G)
+    (hcollision : (t' + t'⁻¹) = u * (t + t⁻¹)) :
+    ¬ Cd₀NonCollisionModSign G := by
+  intro hNC
+  exact hNC t htG t' ht'G hc hc' hne hsign u huG hcollision
+
+/-- A no-collision scanner certificate proves `Cd₀NonCollisionModSign`. -/
+theorem cd0NonCollisionModSign_of_no_collision {G : Finset F}
+    (hno :
+      ¬ ∃ t ∈ G, ∃ t' ∈ G,
+        (t + t⁻¹) ≠ 0 ∧
+        (t' + t'⁻¹) ≠ 0 ∧
+        (t + t⁻¹) ≠ (t' + t'⁻¹) ∧
+        (t + t⁻¹) ≠ -(t' + t'⁻¹) ∧
+        ∃ u ∈ G, (t' + t'⁻¹) = u * (t + t⁻¹)) :
+    Cd₀NonCollisionModSign G := by
+  intro t htG t' ht'G hc hc' hne hsign u huG
+  exact fun hcollision => hno ⟨t, htG, t', ht'G, hc, hc', hne, hsign, u, huG, hcollision⟩
+
+/-! ### Antipodal refutation of the quotient-free non-collision statement -/
+
+/-- Negating the factor negates the width-4 invariant `t + t⁻¹`. -/
+theorem invariant_neg_eq_neg_invariant (t : F) :
+    -t + (-t)⁻¹ = -(t + t⁻¹) := by
+  rw [inv_neg]
+  ring
+
+/-- In odd characteristic, a nonzero invariant is not equal to its own negative. -/
+theorem invariant_ne_neg_of_two_ne_zero {c : F} (h2 : (2 : F) ≠ 0) (hc : c ≠ 0) :
+    c ≠ -c := by
+  intro h
+  have hadd : c + c = 0 := by
+    exact (congrArg (fun x : F => x + c) h).trans (neg_add_cancel c)
+  have hmul : (2 : F) * c = 0 := by
+    simpa [two_mul] using hadd
+  exact (mul_ne_zero h2 hc) hmul
+
+/-- **Antipodal collision refutes quotient-free `Cd₀NonCollision`.** If `-1 ∈ G`, then every
+factor with nonzero invariant gives a collision between `t` and `-t`; the subgroup multiplier is
+`u = -1`. This is the formal reason the raw non-collision statement must be sign-quotiented before
+it can model the width-4 orbit count. -/
+theorem not_cd0NonCollision_of_antipodal_collision {G : Finset F}
+    (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) (h2 : (2 : F) ≠ 0)
+    {t : F} (htG : t ∈ G) (hc : (t + t⁻¹) ≠ 0) :
+    ¬ Cd₀NonCollision G := by
+  have hneg_tG : -t ∈ G := by
+    simpa using hG.mul_mem (-1 : F) hneg t htG
+  have hc' : (-t + (-t)⁻¹) ≠ 0 := by
+    rw [invariant_neg_eq_neg_invariant]
+    exact neg_ne_zero.mpr hc
+  have hne : (t + t⁻¹) ≠ (-t + (-t)⁻¹) := by
+    rw [invariant_neg_eq_neg_invariant]
+    exact invariant_ne_neg_of_two_ne_zero h2 hc
+  have hcollision : (-t + (-t)⁻¹) = (-1 : F) * (t + t⁻¹) := by
+    rw [invariant_neg_eq_neg_invariant]
+    ring
+  exact not_cd0NonCollision_of_collision htG hneg_tG hc hc' hne hneg hcollision
+
+/-- **Any even odd-characteristic subgroup refutes quotient-free `Cd₀NonCollision`.** Taking
+`t = 1` gives the invariant `2`, so no extra witness search is needed. -/
+theorem not_cd0NonCollision_of_neg_mem {G : Finset F}
+    (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) (h2 : (2 : F) ≠ 0) :
+    ¬ Cd₀NonCollision G := by
+  refine not_cd0NonCollision_of_antipodal_collision hG hneg h2 hG.one_mem ?_
+  have htwo : (1 : F) + 1 = (2 : F) := by ring
+  rw [inv_one, htwo]
+  exact h2
+
+/-- **Concrete even-`μ_n` refuter for quotient-free `Cd₀NonCollision`.** This closes the scanner
+audit for the raw hypothesis: it is false in every even smooth-domain subgroup over odd
+characteristic. -/
+theorem not_cd0NonCollision_nthRootsFinset_of_even {n : ℕ}
+    (hn : 0 < n) (heven : 2 ∣ n) (h2 : (2 : F) ≠ 0) :
+    ¬ Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)) :=
+  not_cd0NonCollision_of_neg_mem
+    (nthRootsFinset_finSubgroup (F := F) hn)
+    (neg_one_mem_nthRootsFinset_of_even (F := F) hn heven) h2
+
+/-- Characteristic-zero specialization of the concrete even-`μ_n` refuter. -/
+theorem not_cd0NonCollision_nthRootsFinset_of_even_charZero [CharZero F] {n : ℕ}
+    (hn : 0 < n) (heven : 2 ∣ n) :
+    ¬ Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)) :=
+  not_cd0NonCollision_nthRootsFinset_of_even hn heven two_ne_zero
+
 /-- **The bridge `K = Kmodel` from non-collision (the reduction theorem).** Granting the named
 `Cd₀NonCollision G`, two width-4 product-form bad sets with distinct nonzero invariants
 `c = t+t⁻¹ ≠ c' = t'+t'⁻¹` produce bad scalars in **distinct** `G`-orbits. This is the exact
-content of "distinct width-4 exponent-orbits give distinct `F_q` orbits", i.e. the actual count
-equals the combinatorial model. The hypothesis is discharged unconditionally over ℂ
-(`cos_invariant_injOn`) and holds over `F_p` for every good prime. -/
+content of "distinct quotient-free width-4 exponent-orbits give distinct `F_q` orbits". The
+hypothesis is now known to be over-strong in the even domain by
+`not_cd0NonCollision_nthRootsFinset_of_even`; future callers should use a sign-quotiented
+replacement. -/
 theorem orbits_distinct_of_nonCollision {G : Finset F} (hG : FinSubgroup G)
     (hNC : Cd₀NonCollision G) {t t' : F} (htG : t ∈ G) (ht'G : t' ∈ G)
     (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
@@ -700,6 +840,12 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms not_cd0NonCollision_iff_exists_collision
 #print axioms not_cd0NonCollision_of_collision
 #print axioms cd0NonCollision_of_no_collision
+#print axioms invariant_neg_eq_neg_invariant
+#print axioms invariant_ne_neg_of_two_ne_zero
+#print axioms not_cd0NonCollision_of_antipodal_collision
+#print axioms not_cd0NonCollision_of_neg_mem
+#print axioms not_cd0NonCollision_nthRootsFinset_of_even
+#print axioms not_cd0NonCollision_nthRootsFinset_of_even_charZero
 #print axioms orbits_distinct_of_nonCollision
 #print axioms badScalar_orbits_distinct_of_nonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
