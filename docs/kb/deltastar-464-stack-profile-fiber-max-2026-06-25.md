@@ -179,3 +179,27 @@ no used profile representative has bad-scalar count above B.
 This is the plain-profile analogue of the refined-profile scanner route.  It still does not choose
 the right profile or prove the count bound; it makes the certificate exact once such a profile is
 proposed.
+
+## Continuation: universal incidence iff after max scanner
+
+The universal incidence layer now has direct exact iff wrappers once the profile-fiber max scanner
+has passed:
+
+```lean
+worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps
+not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_profileFiberMaxReps
+worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_no_bad_used_profile
+not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_no_bad_used_profile
+```
+
+So after exact profile-fiber representatives are known, the original universal `WordStack` budget is
+equivalent to a purely local used-profile budget scan:
+
+```text
+no used profile representative has bad-scalar count above B.
+```
+
+Conversely, a failed universal incidence bound is exactly one used profile label whose
+representative is above `B`.  This sharpens the profile route's residual: the global quantifier is
+gone only after the max-representative scanner is accepted; the remaining mathematical work is still
+to produce a useful profile catalogue and prove its local budget.

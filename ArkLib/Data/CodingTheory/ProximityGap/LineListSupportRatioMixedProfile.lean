@@ -345,6 +345,50 @@ theorem unsafe_or_largeZero_safe_low_supportRatioMixedChooseProfileTop_gt_of_not
     hHigh hFiberFits hnot
 
 open Classical in
+/-- Named top-fit version of
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileTopSums`. -/
+theorem uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileTopSumsFit
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mheavy Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hHeavyLow :
+      UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a Mheavy)
+    (hProfileTopFit : LowMixedChooseProfileTopSumsFit (n := n) a k Mheavy Mcoarse)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileTopSumsFit
+    dom hk a L B Mheavy Mcoarse hSupport hFits hZeroSafe
+    (uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+      dom k a Mheavy hHeavyLow)
+    hProfileTopFit hHigh hFiberFits
+
+open Classical in
+/-- Scanner-facing named top-fit residual with abstract low support-ratio-heavy inputs. -/
+theorem unsafe_or_not_lowSupportRatioMixedChooseProfileTopSumsFit_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mheavy Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hHeavyLow :
+      UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a Mheavy)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      ¬ LowMixedChooseProfileTopSumsFit (n := n) a k Mheavy Mcoarse :=
+  unsafe_or_not_lowMixedChooseProfileTopSumsFit_of_not_budgeted
+    dom hk a L B Mheavy Mcoarse hSupport hFits
+    (uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+      dom k a Mheavy hHeavyLow)
+    hHigh hFiberFits hnot
+
+open Classical in
 /-- Full top-cardinality mixed consumer with abstract low support-ratio-heavy inputs. -/
 theorem uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileTopSums
     (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
@@ -391,6 +435,48 @@ theorem unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfileTop_gt_of_not
       dom k a Mheavy hHeavyLow)
     hFiberFits hnot
 
+open Classical in
+/-- Named top-fit version of the full top-cardinality mixed consumer with abstract support-ratio
+inputs. -/
+theorem uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileTopSumsFit
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mheavy Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hHeavyLow :
+      UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a Mheavy)
+    (hProfileTopFit : FullMixedChooseProfileTopSumsFit (n := n) a k Mheavy Mcoarse)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileTopSumsFit
+    dom hk a L B Mheavy Mcoarse hSupport hFits hZeroSafe
+    (uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+      dom k a Mheavy hHeavyLow)
+    hProfileTopFit hFiberFits
+
+open Classical in
+/-- Scanner-facing named full top-fit residual with abstract low support-ratio-heavy inputs. -/
+theorem unsafe_or_not_fullSupportRatioMixedChooseProfileTopSumsFit_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mheavy Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hHeavyLow :
+      UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a Mheavy)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      ¬ FullMixedChooseProfileTopSumsFit (n := n) a k Mheavy Mcoarse :=
+  unsafe_or_not_fullMixedChooseProfileTopSumsFit_of_not_budgeted
+    dom hk a L B Mheavy Mcoarse hSupport hFits
+    (uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+      dom k a Mheavy hHeavyLow)
+    hFiberFits hnot
+
 section SourceAudit
 
 #print axioms uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSums
@@ -405,8 +491,13 @@ section SourceAudit
 #print axioms unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfileCard_gt_of_not_budgeted
 #print axioms uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileTopSums
 #print axioms unsafe_or_largeZero_safe_low_supportRatioMixedChooseProfileTop_gt_of_not_budgeted
+#print axioms uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileTopSumsFit
+#print axioms unsafe_or_not_lowSupportRatioMixedChooseProfileTopSumsFit_of_not_budgeted
 #print axioms uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileTopSums
 #print axioms unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfileTop_gt_of_not_budgeted
+#print axioms
+  uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileTopSumsFit
+#print axioms unsafe_or_not_fullSupportRatioMixedChooseProfileTopSumsFit_of_not_budgeted
 
 end SourceAudit
 

@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4908 files, 52530 declarations
+- `ArkLib` — 4908 files, 52588 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -9168,7 +9168,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `FinSubgroup` (2 declarations, 2 files)
 
 - `structure ArkLib.ProximityGap.E2DilationDirectCount.FinSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:154](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L154) — A finite multiplicative subgroup of `F`, recorded as a `Finset F` with the group axioms. `one_mem`,
-- `structure ArkLib.ProximityGap.E2DilationDirectCount.FinSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:154](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L154) — A finite multiplicative subgroup of `F`, recorded as a `Finset F` with the group axioms. `one_mem`,
+- `structure ArkLib.ProximityGap.E2DilationDirectCount.FinSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L161) — A finite multiplicative subgroup of `F`, recorded as a `Finset F` with the group axioms. `one_mem`,
 
 ### `FwdKeysNodup` (2 declarations, 2 files)
 
@@ -9464,17 +9464,17 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `badScalarSet_card_dvd` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:247](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L247) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:247](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L247) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:272](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L272) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
 
 ### `badScalarSet_card_eq_orbit_mul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:212](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L212) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:212](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L212) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:237](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L237) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
 
 ### `badScalar_smul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalar_smul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L138) — **The bad scalar transforms multiplicatively:** `α(u • S) = u⁻¹ · α(S)`, where `α(S) := −1/e₁(S)` is
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalar_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L138) — **The bad scalar transforms multiplicatively:** `α(u • S) = u⁻¹ · α(S)`, where `α(S) := −1/e₁(S)` is
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalar_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:145](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L145) — **The bad scalar transforms multiplicatively:** `α(u • S) = u⁻¹ · α(S)`, where `α(S) := −1/e₁(S)` is
 
 ### `base_earlier_fwd_slots` (2 declarations, 2 files)
 
@@ -9669,12 +9669,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `dil` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.E2DilationDirectCount.dil` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L81) — **Dilation of a finite node set.** `u • S := S.image (u * ·)`, the image of `S` under multiplication
-- `def ArkLib.ProximityGap.E2DilationDirectCount.dil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L81) — **Dilation of a finite node set.** `u • S := S.image (u * ·)`, the image of `S` under multiplication
+- `def ArkLib.ProximityGap.E2DilationDirectCount.dil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:88](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L88) — **Dilation of a finite node set.** `u • S := S.image (u * ·)`, the image of `S` under multiplication
 
 ### `dil_card` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.dil_card` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L85) — For `u ≠ 0`, dilation preserves the cardinality: `#(u • S) = #S` (multiplication by a unit is inject
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.dil_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L85) — For `u ≠ 0`, dilation preserves the cardinality: `#(u • S) = #S` (multiplication by a unit is inject
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.dil_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L92) — For `u ≠ 0`, dilation preserves the cardinality: `#(u • S) = #S` (multiplication by a unit is inject
 
 ### `div_card_pow_C_le_stepBound` (2 declarations, 2 files)
 
@@ -9724,22 +9724,22 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `e1_ne_zero_smul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.e1_ne_zero_smul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L129) — **`e₁ ≠ 0` is scale-invariant** (for `u ≠ 0`): the nonvanishing of the first power sum (the eligibil
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e1_ne_zero_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L129) — **`e₁ ≠ 0` is scale-invariant** (for `u ≠ 0`): the nonvanishing of the first power sum (the eligibil
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e1_ne_zero_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:136](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L136) — **`e₁ ≠ 0` is scale-invariant** (for `u ≠ 0`): the nonvanishing of the first power sum (the eligibil
 
 ### `e1_smul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.e1_smul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:102](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L102) — **`e₁` scales linearly:** `e₁(u • S) = u · e₁(S)`. The first power sum is degree-1 homogeneous. Need
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e1_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:102](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L102) — **`e₁` scales linearly:** `e₁(u • S) = u · e₁(S)`. The first power sum is degree-1 homogeneous. Need
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e1_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:109](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L109) — **`e₁` scales linearly:** `e₁(u • S) = u · e₁(S)`. The first power sum is degree-1 homogeneous. Need
 
 ### `e2_smul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2_smul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:117](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L117) — **`e₂` scales quadratically:** `e₂(u • S) = u² · e₂(S)`. The second elementary symmetric is degree-2
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:117](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L117) — **`e₂` scales quadratically:** `e₂(u • S) = u² · e₂(S)`. The second elementary symmetric is degree-2
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L124) — **`e₂` scales quadratically:** `e₂(u • S) = u² · e₂(S)`. The second elementary symmetric is degree-2
 
 ### `e2_zero_smul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2_zero_smul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L124) — **The `e₂ = 0` locus is scale-invariant.** If `e₂(S) = 0` then `e₂(u • S) = 0` for every `u ≠ 0`: di
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2_zero_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L124) — **The `e₂ = 0` locus is scale-invariant.** If `e₂(S) = 0` then `e₂(u • S) = 0` for every `u ≠ 0`: di
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2_zero_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:131](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L131) — **The `e₂ = 0` locus is scale-invariant.** If `e₂(S) = 0` then `e₂(u • S) = 0` for every `u ≠ 0`: di
 
 ### `ePaperReduction_holds` (2 declarations, 2 files)
 
@@ -10916,7 +10916,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `mem_dil` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.mem_dil` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:90](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L90) — For `u ≠ 0`, membership in the dilate: `x ∈ u • S ↔ u⁻¹ x ∈ S`.
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.mem_dil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:90](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L90) — For `u ≠ 0`, membership in the dilate: `x ∈ u • S ↔ u⁻¹ x ∈ S`.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.mem_dil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:97](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L97) — For `u ≠ 0`, membership in the dilate: `x ∈ u • S ↔ u⁻¹ x ∈ S`.
 
 ### `mem_imp_sameClass_mem_removeRedundant` (2 declarations, 2 files)
 
@@ -11156,22 +11156,22 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `orbit` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L161) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
-- `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L161) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
+- `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:185](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L185) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
 
 ### `orbit_card` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L166) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:166](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L166) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:190](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L190) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
 
 ### `orbit_eq_of_mem` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:186](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L186) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:186](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L186) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:210](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L210) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
 
 ### `p2_smul` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.p2_smul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:109](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L109) — **`p₂` scales quadratically:** `p₂(u • S) = u² · p₂(S)`. The second power sum is degree-2 homogeneou
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.p2_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:109](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L109) — **`p₂` scales quadratically:** `p₂(u • S) = u² · p₂(S)`. The second power sum is degree-2 homogeneou
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.p2_smul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:116](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L116) — **`p₂` scales quadratically:** `p₂(u • S) = u² · p₂(S)`. The second power sum is degree-2 homogeneou
 
 ### `pairKey_isSome_foldl_mono` (2 declarations, 2 files)
 
@@ -11444,7 +11444,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `self_mem_orbit` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:171](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L171) — `x` itself lies in its orbit (`1 ∈ G`).
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:171](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L171) — `x` itself lies in its orbit (`1 ∈ G`).
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L195) — `x` itself lies in its orbit (`1 ∈ G`).
 
 ### `seqC` (2 declarations, 2 files)
 
@@ -11489,7 +11489,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `smul_mem_orbit` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:177](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L177) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:177](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L177) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:201](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L201) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
 
 ### `split_branch_radical` (2 declarations, 2 files)
 

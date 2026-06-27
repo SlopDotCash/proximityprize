@@ -390,6 +390,78 @@ theorem profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
     by_contra hnot
     exact hno ((not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt C δ).mp hnot)
 
+/-- Under exact profile-fiber representatives, the universal incidence budget is exactly the local
+scanner statement that no used profile representative exceeds the budget.  This removes the last
+global quantifier from the profile route once the max-representative scanner has passed. -/
+theorem worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hmax : ProfileFiberMaxReps F C δ profile rep) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B
+      ↔ ¬ ∃ p : P, UsedProfile profile p ∧
+        B < StackBadCount F C δ (rep p) := by
+  exact (worstCaseIncidenceBounded_iff_profileFiberMaxesBounded C δ hmax).trans
+    (profileFiberMaxesBounded_iff_no_usedProfile_budget_lt C δ)
+
+/-- Under exact profile-fiber representatives, failure of the universal incidence budget is exactly
+a used profile representative above budget.  In this form a counterexample scanner only has to
+return the offending used profile label. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_profileFiberMaxReps
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hmax : ProfileFiberMaxReps F C δ profile rep) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ p : P, UsedProfile profile p ∧
+        B < StackBadCount F C δ (rep p) := by
+  constructor
+  · intro hnot
+    exact (not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt C δ).mp
+      (fun hbounded => hnot
+        ((worstCaseIncidenceBounded_iff_profileFiberMaxesBounded C δ hmax).mpr hbounded))
+  · intro hbad hI
+    exact ((not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt C δ).mpr hbad)
+      ((worstCaseIncidenceBounded_iff_profileFiberMaxesBounded C δ hmax).mp hI)
+
+/-- Scanner-positive form of
+`worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps`: once no used
+profile has an invalid or beaten representative, the remaining universal incidence question is
+exactly the used-profile budget scanner. -/
+theorem worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_no_bad_used_profile
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hnoMaxBad : ¬ ∃ p : P, UsedProfile profile p ∧
+      (profile (rep p) ≠ p ∨
+        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
+          StackBadCount F C δ (rep p) < StackBadCount F C δ u)) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B
+      ↔ ¬ ∃ p : P, UsedProfile profile p ∧
+        B < StackBadCount F C δ (rep p) :=
+  worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps
+    C δ ((profileFiberMaxReps_iff_no_bad_used_profile C δ).mpr hnoMaxBad)
+
+/-- Scanner-negative form: after the max-representative scanner has passed, a universal incidence
+failure is equivalent to a single used profile representative above budget. -/
+theorem not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_no_bad_used_profile
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {P : Type} {profile : WordStack A (Fin 2) ι -> P}
+    {rep : P -> WordStack A (Fin 2) ι}
+    (hnoMaxBad : ¬ ∃ p : P, UsedProfile profile p ∧
+      (profile (rep p) ≠ p ∨
+        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
+          StackBadCount F C δ (rep p) < StackBadCount F C δ u)) :
+    (¬ ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B)
+      ↔ ∃ p : P, UsedProfile profile p ∧
+        B < StackBadCount F C δ (rep p) :=
+  not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_profileFiberMaxReps
+    C δ ((profileFiberMaxReps_iff_no_bad_used_profile C δ).mpr hnoMaxBad)
+
 /-- Fully scanner-facing profile incidence consumer.  If no used profile has an invalid or beaten
 representative, and no used representative is above budget, then the universal incidence bound
 follows. -/
@@ -462,6 +534,10 @@ end ArkLib.ProximityGap.Frontier.StackProfileFiberMax
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxReps_iff_no_bad_used_profile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_profileFiberMaxesBounded_iff_exists_usedProfile_budget_lt
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.profileFiberMaxesBounded_iff_no_usedProfile_budget_lt
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_profileFiberMaxReps
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_profileFiberMaxReps
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_iff_no_usedProfile_budget_lt_of_no_bad_used_profile
+#print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_iff_exists_usedProfile_budget_lt_of_no_bad_used_profile
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.worstCaseIncidenceBounded_of_no_bad_used_profile_scanner
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.deltaStar_pin_of_no_bad_used_profile_scanner
 #print axioms ArkLib.ProximityGap.Frontier.StackProfileFiberMax.not_worstCaseIncidenceBounded_of_profileFiberMax_budget_lt

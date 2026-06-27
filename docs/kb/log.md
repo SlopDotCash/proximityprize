@@ -1401,6 +1401,31 @@ fixed exact-profile envelope, and the `*_mixedChooseProfileTopSums` wrappers exp
 `t` arithmetic residual for the same production scanners.
 `LineListAppearanceFiberMixedProfileFit.lean` specializes that contraction to the field-power
 envelope via `FieldPowMixedProfileTopFit` / `FieldPowFullMixedProfileTopFit`.
+Follow-up: the generic top-cardinality residuals are now named too:
+`LowMixedChooseProfileTopSumsFit` and `FullMixedChooseProfileTopSumsFit` package the one-variable
+`z = n` arithmetic contracts for arbitrary exact-profile envelopes.  Their production/scanner
+wrappers feed the low-exact and support-ratio-heavy routes directly, while the exact/high term
+refuters expose single-summand failures before expanding the whole top sum.
+Follow-up: those top fits now have term-level necessary conditions and refuters, mirroring the
+card-fit layer.  The `fieldPow*TopFit_*_le` lemmas expose the exact same-profile field-power term
+and high singleton binomial term, and `not_fieldPow*TopFit_of_*_gt` turns either overrun into a
+failed one-variable top-fit contract.
+The bridge lemmas `fieldPowMixedProfileCardFit_of_topFit` and
+`fieldPowFullMixedProfileCardFit_of_topFit` also record that the top-cardinality field-power
+contract supplies the all-cardinality card fit, so card-fit obstructions refute the top fit by
+contraposition.
+
+## [2026-06-27] reduce | orbit-budget scanner for E2 dilation direct count
+
+Extended the tracked frontier scratch module `_E2DilationDirectCount.lean` with budget-facing
+orbit-count consumers.  From the existing free-orbit identity `#bad = #G * #orbits`,
+`badScalarSet_card_le_mul_iff_orbitCount_le` proves that a `C * #G` bad-scalar budget is exactly
+an orbit budget `#orbits <= C`; the subgroup-size specialization says the natural `n` budget
+survives exactly when there is at most one full orbit.  The scanner forms
+`not_badScalarSet_card_le_group_card_iff_two_orbits` and
+`group_card_lt_badScalarSet_card_of_two_orbits` make the refutation criterion sharp: two distinct
+full dilation orbits are already over budget.  This is still a reduction tool, not a δ* floor
+proof; the hard content remains bounding the orbit count itself.
 
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 
@@ -1445,3 +1470,12 @@ Follow-up witness scanners
 `not_prize_lt_cubic_level_witness_of_depth` make the gate refutable at the supplied-prime level:
 if a prime witness lies under the level/exponent supply but still above the base prize scale, the
 exponent product has already failed; in the cubic case the extra depth must satisfy `a < 3d`.
+
+## [2026-06-27] reduce | exact profile incidence iff after max scanner
+
+`Frontier/_StackProfileFiberMax.lean` now exposes direct iff wrappers for the profile-fiber route:
+under `ProfileFiberMaxReps`, `WorstCaseIncidenceBounded` is equivalent to the absence of a used
+profile representative above budget, and failure of the universal incidence bound is equivalent to
+one used profile label with `B < StackBadCount (rep p)`.  The same pair is available from the
+scanner-positive `no bad used profile` certificate.  This does not prove the budget; it makes the
+post-max-scanner residual exactly local.

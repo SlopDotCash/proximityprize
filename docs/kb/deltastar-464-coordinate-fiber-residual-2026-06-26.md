@@ -406,6 +406,17 @@ or one oversized top-cardinality `t` profile.
 the concrete field-power envelope through `FieldPowMixedProfileTopFit` and
 `FieldPowFullMixedProfileTopFit`, so the fallback field-power route can be checked as a
 one-variable `t` inequality at `z = n`.
+The fit module also names the generic top-cardinality contracts
+`LowMixedChooseProfileTopSumsFit` and `FullMixedChooseProfileTopSumsFit`, with exact failure forms,
+production wrappers, and scanners that return negation of those named fits rather than an expanded
+sum.  These top fits expose term-level obstructions too: the generic exact-profile term and each
+high singleton binomial term are necessary, and the matching `not_*TopSumsFit_of_*_gt` lemmas
+refute the one-variable fit from a single over-budget term.
+For the concrete field-power specialization, `fieldPow*TopFit_*_le` gives the same same-profile
+field-power and high-binomial obstructions.  The new `fieldPow*CardFit_of_topFit` bridge records
+that a top-cardinality field-power fit is strong enough to supply the all-cardinality fit; hence
+any card-fit obstruction also refutes the one-variable top contract via
+`not_fieldPow*TopFit_of_not_cardFit`.
 The sibling `LineListSupportRatioMixedProfile.lean` keeps the abstract support-ratio-heavy version:
 low support-ratio-heavy budgets feed the same mixed-profile sockets before choosing any particular
 field-power envelope.  Its cardinal-profile variants expose the same pure `a <= z <= n`

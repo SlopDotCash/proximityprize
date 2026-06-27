@@ -97,6 +97,16 @@ uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit
 unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted
 FieldPowMixedProfileTopFit
 FieldPowFullMixedProfileTopFit
+LowMixedChooseProfileTopSumsFit
+FullMixedChooseProfileTopSumsFit
+uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileTopSumsFit
+unsafe_or_not_lowMixedChooseProfileTopSumsFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileTopSumsFit
+unsafe_or_not_fullMixedChooseProfileTopSumsFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileTopSumsFit
+unsafe_or_not_lowSupportRatioMixedChooseProfileTopSumsFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileTopSumsFit
+unsafe_or_not_fullSupportRatioMixedChooseProfileTopSumsFit_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileTopFit
 unsafe_or_not_fieldPow_mixedProfileTopFit_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileTopFit
@@ -151,6 +161,14 @@ production wrappers and scanners therefore let callers work directly at the wors
 when a top-cardinality arithmetic envelope is easier to prove than all `a <= z <= n` cases.
 `LineListAppearanceFiberMixedProfileFit.lean` records the corresponding field-power top-fit
 predicates and scanners.
+It now also records named generic top-sum predicates
+`LowMixedChooseProfileTopSumsFit` / `FullMixedChooseProfileTopSumsFit`; both the low-exact route
+and the support-ratio-heavy route consume those named fits directly.  Their scanners report
+zero-direction saturation or negation of the named top fit, and the term/refuter API shows that one
+over-budget exact-profile term or high singleton binomial term already kills the top fit.
+For the field-power specialization, `fieldPow*CardFit_of_topFit` records that a top-cardinality
+fit implies the all-cardinality fit, so any card-fit obstruction transfers back to the one-variable
+top contract.
 
 The support-ratio-heavy coordinate-fiber route now has the same positive split.  Low heavy fibers
 are the only nontrivial estimates; high heavy fibers are bounded by one via RS uniqueness, so the
