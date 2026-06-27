@@ -129,8 +129,8 @@ an `n = 64` canonical refuter through the finite-bad-prime pigeonhole.
 The β=2 supply side now also reaches the same large concrete rungs as the fixed-prime refuter
 ladder: `tzPrimeSupply_512_two`, `tzPrimeSupply_1024_two`, `tzPrimeSupply_2048_two`,
 `tzPrimeSupply_4096_two`, `tzPrimeSupply_8192_two`, `tzPrimeSupply_16384_two`, and
-`tzPrimeSupply_32768_two` each provide
-twenty explicit primes in `[n^2, 2*n^2]` congruent to `1 mod n`.  These rows verify
+`tzPrimeSupply_32768_two` each provide twenty explicit primes in `[n^2, 2*n^2]` congruent to
+`1 mod n`.  These rows verify
 polynomial-size prime supply at `n = 512` through `n = 32768`; they still do not classify the
 corresponding finite bad-prime sets.
 

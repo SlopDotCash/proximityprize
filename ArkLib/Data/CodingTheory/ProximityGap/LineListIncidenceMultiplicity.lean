@@ -33,6 +33,9 @@ open ProximityGap.SpikeFloor ProximityGap
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
+local instance instNonemptyFinOfNeZero : Nonempty (Fin n) :=
+  ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne n)⟩⟩
+
 open Classical in
 /-- Codewords witnessing that a fixed scalar is bad on the affine line. -/
 noncomputable def badScalarWitnessCodewords
@@ -1334,7 +1337,7 @@ open Classical in
 /-- If a uniform per-codeword singleton cap fails, then the usual support-denominator bound is
 already above that cap for a concrete appearing codeword. -/
 theorem
-    exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformLargeZeroSafeCodewordSingletonBudgeted
+    exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformSingletonBudgeted
     (dom : Fin n ↪ F) (k a S : ℕ)
     (hnot : ¬ UniformLargeZeroSafeCodewordSingletonBudgeted dom k a S) :
     ∃ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ ∧
@@ -1606,7 +1609,7 @@ open Classical in
 per-codeword route fails and the combined arithmetic side is not the reason, then some appearing
 codeword has support-denominator capacity above the proposed singleton cap. -/
 theorem
-    exists_largeZero_safe_codewordSingletonRouteSupportDivFailure_of_not_uniformLineBadScalarsBudgeted
+    exists_largeZero_safe_codewordSingletonRouteSupportDivFailure
     (dom : Fin n ↪ F) (k a L S B : ℕ)
     (hSupport : UniformSupportLineListBudgeted dom k a L)
     (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
@@ -1626,7 +1629,7 @@ theorem
       ⟨u₀, u₁, hnotEligible, hsafe, hfail⟩
     exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inl hfail⟩
   · rcases
-      exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformLargeZeroSafeCodewordSingletonBudgeted
+      exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformSingletonBudgeted
         dom k a S hperCode with
       ⟨u₀, u₁, hnotEligible, hsafe, c, hc, hgt⟩
     exact ⟨u₀, u₁, hnotEligible, hsafe, Or.inr ⟨c, hc, hgt⟩⟩
@@ -1965,7 +1968,7 @@ section SourceAudit
 #print axioms not_uniformLargeZeroSafeCodewordSingletonBudgeted_iff_exists_card_gt
 #print axioms not_uniformLargeZeroSafeLineListBudgeted_iff_exists_lineAppearing_gt
 #print axioms
-  exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformLargeZeroSafeCodewordSingletonBudgeted
+  exists_largeZero_safe_codewordSingletonSupportDiv_gt_of_not_uniformSingletonBudgeted
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_noUnique_and_weightDivTwo
 #print axioms largeZeroSafeLineBadScalarsBudgeted_of_secondWitness_and_weightDivTwo
 #print axioms uniformLineBadScalarsBudgeted_of_supportAdjusted_and_noUniqueWeightDivTwo
@@ -1985,7 +1988,7 @@ section SourceAudit
 #print axioms
   exists_largeZero_safe_codewordSingletonRouteFailure_of_not_uniformLineBadScalarsBudgeted
 #print axioms
-  exists_largeZero_safe_codewordSingletonRouteSupportDivFailure_of_not_uniformLineBadScalarsBudgeted
+  exists_largeZero_safe_codewordSingletonRouteSupportDivFailure
 #print axioms
   exists_largeZero_safe_lineListSingletonBudgetFailure_of_not_uniformLineBadScalarsBudgeted
 #print axioms

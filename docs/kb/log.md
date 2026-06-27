@@ -1865,8 +1865,8 @@ the same large rungs.  Theorems `tzPrimeSupply_512_two : TZPrimeSupply 512 2 20`
 `tzPrimeSupply_1024_two : TZPrimeSupply 1024 2 20`, and
 `tzPrimeSupply_2048_two : TZPrimeSupply 2048 2 20`, plus the new `tzPrimeSupply_4096_two`,
 `tzPrimeSupply_8192_two`, `tzPrimeSupply_16384_two`, and `tzPrimeSupply_32768_two`, each list
-twenty explicit primes in
-`[n^2, 2*n^2]`, all congruent to `1 mod n`.  These are axiom-clean finite discharges of the named
+twenty explicit primes in `[n^2, 2*n^2]`, all congruent to `1 mod n`.  These are axiom-clean
+finite discharges of the named
 B3 `TZPrimeSupply` input at seven more smooth moduli; the general Thorner-Zaman density theorem is
 still the analytic open input.
 
