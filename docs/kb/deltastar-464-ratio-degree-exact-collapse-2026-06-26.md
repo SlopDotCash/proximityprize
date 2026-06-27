@@ -25,6 +25,8 @@ This pass adds:
 
 ```lean
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badScalars_empty_of_degree_of_not_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact_of_not_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_subset_degenerate_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_subset_badWeight
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_degenerate_of_degree_exact
@@ -83,6 +85,11 @@ max(deg P, deg Q)
 
 So the exact zero-`Q`/nonzero-`P` correction survives all the way into the polynomial-line
 degree-collapse API.
+
+There is also a direct non-scalar-multiple front door.  Instead of supplying the per-scalar
+nondegeneracy hypothesis `∀ gamma, P + gamma*Q != 0`, callers may supply the single condition
+`¬ ∃ c, P = c*Q`; this implies the needed nondegeneracy and feeds both the ratio-fibre collapse
+and the exact low-weight empty-set theorem.
 
 There is also a degenerate-scalar version without the global nondegeneracy hypothesis.  Under the
 same exact degree inequality, the low-weight bad-scalar set is exactly
