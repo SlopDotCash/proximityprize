@@ -97,6 +97,37 @@ factor `t` (`t ≠ ±1` and `t² ≠ −1` for genuine 4 distinct elements), the
 `{x, −x, x·t, x·t⁻¹}`. Its product-pair is `a = x·t`, `b = x·t⁻¹`, with `a·b = x²` automatic. -/
 noncomputable def quadT (x t : F) : Finset F := {x, -x, x * t, x * t⁻¹}
 
+/-- **Product-form subgroup containment.** If `G` is multiplicatively closed, contains `-1`, and
+contains the centre/factor `x,t`, then the whole product-form quadruple lies in `G`. -/
+theorem quadT_subset_of_mem {G : Finset F} (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G)
+    {x t : F} (hxG : x ∈ G) (htG : t ∈ G) :
+    quadT x t ⊆ G := by
+  intro y hy
+  simp only [quadT, Finset.mem_insert, Finset.mem_singleton] at hy
+  rcases hy with rfl | rfl | rfl | rfl
+  · exact hxG
+  · simpa using hG.mul_mem (-1 : F) hneg x hxG
+  · exact hG.mul_mem x hxG t htG
+  · exact hG.mul_mem x hxG t⁻¹ (hG.inv_mem t htG)
+
+/-- **`-1` lies in `μ_n` when `n` is even.** This is the only extra subgroup fact needed for the
+product-form subset proof over the smooth dyadic domain. -/
+theorem neg_one_mem_nthRootsFinset_of_even {n : ℕ} (hn : 0 < n) (heven : 2 ∣ n) :
+    (-1 : F) ∈ Polynomial.nthRootsFinset n (1 : F) := by
+  rw [Polynomial.mem_nthRootsFinset hn]
+  obtain ⟨k, rfl⟩ := heven
+  rw [pow_mul, show (-1 : F) ^ 2 = 1 by ring, one_pow]
+
+/-- **Concrete even-`μ_n` subset proof.** For even `n`, if `x,t ∈ μ_n`, then the whole
+product-form quadruple `quadT x t` lies in `μ_n`. -/
+theorem quadT_subset_nthRootsFinset_of_even {n : ℕ} (hn : 0 < n) (heven : 2 ∣ n)
+    {x t : F} (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F)) :
+    quadT x t ⊆ Polynomial.nthRootsFinset n (1 : F) :=
+  quadT_subset_of_mem
+    (nthRootsFinset_finSubgroup (F := F) hn)
+    (neg_one_mem_nthRootsFinset_of_even (F := F) hn heven) hxG htG
+
 /-- **The product-square condition is automatic.** `a · b = (x·t)·(x·t⁻¹) = x²` for any `t ≠ 0`:
 the `e₂ = 0` constraint `a·b = x²` of `_E2VanishWidthFourLaw` holds *by construction* in the
 product parametrisation. -/
@@ -210,6 +241,17 @@ theorem badScalar_quadT_mem_e2BadScalarSet {G : Finset F} {x t : F}
     rw [e1_quadT x h1 h2 h3 h4 h5 h6]
     exact mul_ne_zero hx hc
   exact ⟨⟨hsub, hcard⟩, hE2, hE1⟩
+
+/-- Product-form image membership using only subgroup membership of `x,t` plus `-1 ∈ G`. -/
+theorem badScalar_quadT_mem_e2BadScalarSet_of_mem {G : Finset F}
+    (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) {x t : F}
+    (hxG : x ∈ G) (htG : t ∈ G) (ht : t ≠ 0)
+    (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
+    (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) :
+    x⁻¹ * (-(t + t⁻¹)⁻¹) ∈ e2BadScalarSet G 4 :=
+  badScalar_quadT_mem_e2BadScalarSet
+    (quadT_subset_of_mem hG hneg hxG htG) ht h1 h2 h3 h4 h5 h6 hc
 
 /-! ## Part 2 — the orbit-collision reduction (the bridge to the combinatorial model)
 
@@ -414,11 +456,196 @@ theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision {G : Finset 
   exact group_card_lt_badScalarSet_card_of_two_orbits hG
     (zero_notMem_e2BadScalarSet G 4) (e2BadScalarSet_stable hG 4) horbits
 
+/-- Two non-colliding product-form witnesses break the subgroup-size budget, using only subgroup
+membership of the centres/factors plus `-1 ∈ G`. -/
+theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision {G : Finset F}
+    (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) (hNC : Cd₀NonCollision G)
+    {x x' t t' : F}
+    (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    G.card < (e2BadScalarSet G 4).card :=
+  group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision hG hNC
+    (quadT_subset_of_mem hG hneg hxG htG)
+    (quadT_subset_of_mem hG hneg hx'G ht'G)
+    hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6
+    hc hc' hne
+
+/-- **Concrete `μ_n` width-4 refuter.** For the actual smooth-domain subgroup
+`μ_n = nthRootsFinset n 1`, two non-colliding product-form width-4 witnesses force the concrete
+`e₂ = 0` bad-scalar image to exceed the literal `n` budget. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)))
+    (hsub : quadT x t ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (hsub' : quadT x' t' ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card := by
+  have hxG : x ∈ Polynomial.nthRootsFinset n (1 : F) := hsub (by simp [quadT])
+  have hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F) := hsub' (by simp [quadT])
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hNC hsub hsub' hxG hx'G htG ht'G
+      ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne)
+
+/-- Concrete `μ_n` width-4 refuter using membership of `x,x',t,t'` plus `-1 ∈ μ_n`, instead of
+manual subset proofs for both product-form quadruples. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hneg : (-1 : F) ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hNC : Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card := by
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hneg hNC hxG hx'G htG ht'G
+      ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne)
+
+/-- **Concrete `μ_n` scanner-failure form.** The same two-witness certificate refutes the literal
+`n` budget for the width-4 `e₂ = 0` bad-scalar image over `μ_n`. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)))
+    (hsub : quadT x t ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (hsub' : quadT x' t' ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision hn hζ hNC hsub hsub'
+      htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc'
+      hne)
+
+/-- Concrete `μ_n` scanner-failure form using subgroup membership plus `-1 ∈ μ_n`. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hneg : (-1 : F) ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hNC : Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+      hn hζ hneg hNC hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2
+      hy3 hy4 hy5 hy6 hc hc' hne)
+
+/-- Concrete even-`μ_n` width-4 refuter using only membership of `x,x',t,t'`.  For even `n`,
+the hypothesis `-1 ∈ μ_n` required by the membership wrapper is automatic. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (heven : 2 ∣ n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card :=
+  n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+    hn hζ (neg_one_mem_nthRootsFinset_of_even (F := F) hn heven) hNC
+    hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6
+    hc hc' hne
+
+/-- Concrete even-`μ_n` scanner-failure form using only membership of `x,x',t,t'`. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (heven : 2 ∣ n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollision (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
+      hn heven hζ hNC hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1
+      hy2 hy3 hy4 hy5 hy6 hc hc' hne)
+
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
 namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
+#print axioms quadT_subset_of_mem
+#print axioms neg_one_mem_nthRootsFinset_of_even
+#print axioms quadT_subset_nthRootsFinset_of_even
 #print axioms quadT_prod_eq
 #print axioms quadT_card
 #print axioms e1_quadT
@@ -427,11 +654,19 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms e2_quadT_zero
 #print axioms badScalar_quadT
 #print axioms badScalar_quadT_mem_e2BadScalarSet
+#print axioms badScalar_quadT_mem_e2BadScalarSet_of_mem
 #print axioms orbit_collision_iff
 #print axioms cos_invariant_strict_anti
 #print axioms cos_invariant_injOn
 #print axioms orbits_distinct_of_nonCollision
 #print axioms badScalar_orbits_distinct_of_nonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
+#print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
 
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision

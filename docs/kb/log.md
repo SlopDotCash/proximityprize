@@ -1445,6 +1445,8 @@ subgroup `G`, with `t ≠ 0` and `t + t⁻¹ ≠ 0`, contributes the bad scalar
 the width-4 collision model and the exact direct-count scanner.
 The packaged refuter `group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision` then turns two
 non-colliding product witnesses into a literal failure of the subgroup-size image budget.
+The follow-up `quadT_subset_of_mem` and `*_mem_nonCollision` wrappers remove the remaining manual
+subset proof whenever `-1`, the centre, and the factor are already known to lie in the subgroup.
 
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 
@@ -1506,3 +1508,18 @@ fine-profile representative above budget; failure is exactly one used fine-profi
 `B < StackBadCount (rep q)`.  The single-label refuter
 `not_worstCaseIncidenceBounded_of_fineProfile_budget_lt` packages that obstruction without the
 grouped refinement hypotheses.
+
+## [2026-06-27] reduce | width-4 product refuter specialized to mu_n
+
+`E2W4CyclotomicNonCollision.lean` now has concrete smooth-domain wrappers for the width-4
+product-image bridge.  `n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision` specializes the
+two-product-witness refuter to `Polynomial.nthRootsFinset n 1`, using a primitive-root cardinality
+witness to conclude
+`n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card`.  The companion
+`not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision` packages the literal scanner failure
+`¬ #e2BadScalarSet ≤ n`.  The `*_mem_nonCollision` variants consume only membership of
+`x,x',t,t'` and `-1 ∈ G`; for even smooth domains, `neg_one_mem_nthRootsFinset_of_even` and
+`quadT_subset_nthRootsFinset_of_even` discharge that subset plumbing directly.  This is still a
+width-4 negative scanner brick, not a delta-star proof.
+Follow-up: the `_even_nonCollision` variants now consume `2 ∣ n` directly, so dyadic callers no
+longer have to pass `-1 ∈ nthRootsFinset n 1` explicitly.

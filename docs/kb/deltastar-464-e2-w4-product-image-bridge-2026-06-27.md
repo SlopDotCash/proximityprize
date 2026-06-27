@@ -19,11 +19,22 @@ New theorem surface:
 
 ```lean
 quadT_card
+quadT_subset_of_mem
+neg_one_mem_nthRootsFinset_of_even
+quadT_subset_nthRootsFinset_of_even
 p2_quadT
 p2_quadT_eq_e1_sq
 e2_quadT_zero
 badScalar_quadT_mem_e2BadScalarSet
+badScalar_quadT_mem_e2BadScalarSet_of_mem
 group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
+group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
+n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
+n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision
+not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
+n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
+not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
 ```
 
 ## The Bridge
@@ -69,3 +80,24 @@ proof.
 The theorem `group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision` packages the negative
 scanner direction: two product-form witnesses with distinct non-colliding invariants force two
 bad-scalar orbits in the image, hence the subgroup-size budget already fails.
+
+Follow-up: the same refuter is now specialized to the actual smooth-domain subgroup
+`mu_n = nthRootsFinset n 1`.  The theorem
+`n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision` removes the final abstract subgroup-card
+rewrite, using `IsPrimitiveRoot.card_nthRootsFinset` to state the conclusion as
+
+```lean
+n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card
+```
+
+and `not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision` packages the corresponding literal
+budget failure.
+
+The follow-up `*_of_mem` / `*_mem_nonCollision` wrappers remove the manual subset argument.  Given
+`-1 ∈ G` and `x,t ∈ G`, `quadT_subset_of_mem` proves `quadT x t ⊆ G`; the concrete `mu_n`
+wrappers take `-1 ∈ nthRootsFinset n 1` as an explicit reusable hypothesis.  For even/dyadic
+domains, `neg_one_mem_nthRootsFinset_of_even` and `quadT_subset_nthRootsFinset_of_even` discharge
+that containment bridge directly.  The final even wrappers
+`n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision` and
+`not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision` consume only `2 ∣ n` and
+membership of `x,x',t,t'` in `mu_n`.
