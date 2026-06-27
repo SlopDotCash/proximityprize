@@ -219,17 +219,27 @@ uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_low_and_high_one
 uniformLineBadScalarsBudgeted_of_lowAppearingCoordinateFibers
 ZeroLowExactAppearingZeroAgreementFiberBudgeted
 UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
+appearingCoordinateAgreementFiber_subset_exactAppearingZeroAgreementFiber_superset_biUnion
+appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_supersets
 zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
 uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
 not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted
 not_uniformLowAppearingBudgeted_of_not_uniformLowExactAppearingBudgeted
+zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted
+uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+not_zeroLowSupportRatioHeavyBudgeted_of_not_zeroLowExactAppearingBudgeted
+not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
 uniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
 uniformLineBadScalarsBudgeted_of_lowExactAppearingFibers
+exists_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted
+exists_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted
 not_zeroLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt
 not_uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt
 not_zeroLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt
 not_uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt
+exists_low_appearingCoordinateFiber_gt_of_exists_low_exactAppearingFiber_gt
+exists_uniformLow_appearingCoordinateFiber_gt_of_exists_uniformLow_exactAppearingFiber_gt
 ```
 
 These wrappers let a future positive proof provide only the low-profile estimates `t < k`, while
@@ -241,11 +251,27 @@ socket, because exact zero-agreement appearance fibers are subsets of the corres
 appearance-coordinate fibers.  Thus one low-profile appearance estimate now serves both the coarse
 and exact production routes.  Conversely, if the low exact route fails, then the coarser low
 appearance-coordinate route already fails; the exact route has no separate failure mode.
+The support-ratio-heavy route sharpens this further: if the low exact route fails, the low
+support-ratio-heavy budget already fails too.
+
+The reverse direction is now explicit but lossy.  A coarse appearance-coordinate fiber over
+`S ⊆ directionZeroSet u1` is covered by exact zero-agreement fibers over all exact profiles
+`T` with `S ⊆ T ⊆ directionZeroSet u1`; cardinally this costs the full sum over those supersets.
+Therefore exact-profile estimates recover coarse appearance estimates only after paying this
+superset combinatorial factor.
 
 The negated low-budget forms are now exact scanners too: per-line failure exposes a low profile
 `t < k`, zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`; uniform failure
 additionally exposes the large-zero safe line carrying that overrun.  This avoids redoing the same
 `by_contra` unpacking in downstream probes.
+When zero-direction safety is already part of the caller's hypotheses, the direct production
+scanners
+`exists_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted` and
+`exists_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted` remove the
+unsafe branch entirely and return the low large-zero safe witness.
+The low exact-overrun witnesses also convert directly to the coarser low appearance-coordinate
+overrun witnesses, so exact-budget failure can be compared with the original appearance route
+without rebuilding the existential payload.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target

@@ -43,6 +43,10 @@ not_zeroLowSupportRatioHeavyBudgeted_iff_exists_low_fiber_gt
 not_uniformLargeZeroSafeLowSupportRatioHeavyBudgeted_iff_exists_low_fiber_gt
 not_zeroLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
 not_uniformLargeZeroSafeLowSupportRatioCoverSumBudgeted_iff_exists_low_coverSum_gt
+zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted
+uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+not_zeroLowSupportRatioHeavyBudgeted_of_not_zeroLowExactAppearingBudgeted
+not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers
 exists_largeZero_safe_low_supportRatioHeavyCoordFiber_gt_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums
@@ -72,6 +76,10 @@ same witness directly from failed bad-scalar production.
 The support-ratio-heavy coordinate-fiber route now has the same positive split.  Low heavy fibers
 are the only nontrivial estimates; high heavy fibers are bounded by one via RS uniqueness, so the
 high envelope is just `1 <= M(t)` for `k <= t < a`.
+
+The low support-ratio-heavy socket also feeds the low exact-appearance socket directly.  Thus a
+failed low exact-appearance budget is not a separate residual: by the contrapositive wrappers, it
+already refutes the sharper low support-ratio-heavy budget.
 
 ## Consequence
 

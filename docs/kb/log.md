@@ -1260,3 +1260,42 @@ and `not_uniformLowAppearingBudgeted_of_not_uniformLowExactAppearingBudgeted` re
 contrapositive collapse: if the low exact appearance route fails, the coarser low
 appearance-coordinate route already fails.  The exact socket is therefore a refinement, not an
 independent residual.
+
+Follow-up overrun converters
+`exists_low_appearingCoordinateFiber_gt_of_exists_low_exactAppearingFiber_gt` and
+`exists_uniformLow_appearingCoordinateFiber_gt_of_exists_uniformLow_exactAppearingFiber_gt`
+make the witness-level collapse explicit: a strict low exact appearance-fiber overflow is already
+a strict overflow for the coarser appearance-coordinate fiber, with the same `t < k` and subset
+payload.
+
+Follow-up direct scanners
+`exists_largeZero_safe_low_appearingCoordinateFiber_gt_of_not_uniformLineBadScalarsBudgeted` and
+`exists_largeZero_safe_low_exactAppearingFiber_gt_of_not_uniformLineBadScalarsBudgeted` cover the
+common zero-safety-fixed production case: once support-side production, support arithmetic,
+appearance-fiber arithmetic, and the high `M(t) >= 1` ceiling are fixed, failed bad-scalar
+production directly returns a large-zero safe low overrun witness, without the unsafe disjunction.
+
+## [2026-06-27] reduce | exact supersets cover coarse appearance fibers
+
+Added
+`appearingCoordinateAgreementFiber_subset_exactAppearingZeroAgreementFiber_superset_biUnion`
+and
+`appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_supersets`.
+For `S ⊆ directionZeroSet u1`, every coarse appearance-coordinate fiber over `S` is covered by
+exact zero-agreement appearance fibers over all exact profiles `T` satisfying
+`S ⊆ T ⊆ directionZeroSet u1`.  Thus exact-profile estimates can recover a coarse appearance
+estimate, but only after summing over all such supersets; the combinatorial loss is now a named
+interface rather than an implicit obstacle.
+
+## [2026-06-27] reduce | low exact appearance collapses to low support-ratio-heavy
+
+Extended `LineListSupportRatioFiber.lean` with low-profile support-ratio-heavy to exact-appearance
+bridges:
+`zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted`
+and
+`uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted`.
+The contrapositive wrappers
+`not_zeroLowSupportRatioHeavyBudgeted_of_not_zeroLowExactAppearingBudgeted` and
+`not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted` record that a
+failed low exact appearance budget is already a failure of the sharper low support-ratio-heavy
+coordinate-fiber budget.

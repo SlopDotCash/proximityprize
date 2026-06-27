@@ -758,6 +758,58 @@ theorem uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoor
     dom k a u₀ u₁ M (hFiber u₀ u₁ hnotEligible hsafe)
 
 open Classical in
+/-- Low-profile support-ratio-heavy coordinate-fiber budgets imply low-profile exact
+appearance-fiber budgets. -/
+theorem
+    zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hFiber : ZeroLowSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁ M) :
+    ZeroLowExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ M := by
+  intro t ht hlow S hS
+  exact le_trans
+    (exactAppearingZeroAgreementFiber_card_le_supportRatioHeavyCoordinateFiber_card
+      dom k a u₀ u₁ S)
+    (hFiber t ht hlow S hS)
+
+open Classical in
+/-- Uniform low-profile version: low support-ratio-heavy budgets feed the low exact appearance
+socket directly. -/
+theorem
+    uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ)
+    (hFiber :
+      UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a M) :
+    UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a M := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact
+    zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted
+      dom k a u₀ u₁ M (hFiber u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Contrapositive: a failed low exact appearance budget already refutes the sharper low
+support-ratio-heavy coordinate-fiber budget. -/
+theorem not_zeroLowSupportRatioHeavyBudgeted_of_not_zeroLowExactAppearingBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hnot : ¬ ZeroLowExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ M) :
+    ¬ ZeroLowSupportRatioHeavyCoordinateFiberBudgeted dom k a u₀ u₁ M := by
+  intro hFiber
+  exact hnot
+    (zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted
+      dom k a u₀ u₁ M hFiber)
+
+open Classical in
+/-- Uniform contrapositive: the low exact appearance route cannot fail unless the sharper low
+support-ratio-heavy route fails. -/
+theorem not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ)
+    (hnot : ¬ UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a M) :
+    ¬ UniformLargeZeroSafeLowSupportRatioHeavyCoordinateFiberBudgeted dom k a M := by
+  intro hFiber
+  exact hnot
+    (uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+      dom k a M hFiber)
+
+open Classical in
 /-- The scalar-times-ambient-binomial line-cover envelope is a uniform support-ratio-heavy
 budget. -/
 theorem uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
@@ -1350,6 +1402,12 @@ section SourceAudit
   zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 #print axioms
   uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
+#print axioms
+  zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyCoordinateFiberBudgeted
+#print axioms
+  uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowSupportRatioHeavyBudgeted
+#print axioms not_zeroLowSupportRatioHeavyBudgeted_of_not_zeroLowExactAppearingBudgeted
+#print axioms not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted
 #print axioms
   uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 #print axioms uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
