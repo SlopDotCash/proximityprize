@@ -114,6 +114,19 @@ The fully explicit wrappers `exists_tzWindow_mu32_width4_refuter_zmod1217_beta2`
 `exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` record the concrete primes in their
 corresponding windows, avoiding the pigeonhole step when a named prime is desired.
 
+The concrete Thorner-Zaman supply ladder has also been extended one smooth-domain rung beyond the
+current exact finite-exception row.  `tzPrimeSupply_64_three` proves that `[64^3, 2*64^3]`
+contains at least twenty primes congruent to `1 mod 64`, and `tzPrimeSupply_64_four` proves that
+`[64^4, 2*64^4]` contains at least sixteen such primes.  These are supply-side certificates only:
+they do not by themselves classify `canonicalRatioBadPrimes 64`, and therefore do not yet produce
+an `n = 64` canonical refuter through the finite-bad-prime pigeonhole.
+
+A separate direct witness does produce one closed `n = 64` canonical refuter:
+`exists_mu64_width4_refuter_zmod4289` uses the primitive 64th root `56 : ZMod 4289` and a
+direct nonzero denominator-free obstruction check, while
+`exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` records that `4289 ∈ [64^2, 2*64^2]`.
+This is a named concrete witness, not an exact `n = 64` finite-exception classification.
+
 This also gives a small but useful refutation of an over-identification.  The Lean theorem
 `canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime` exhibits `641`: it is prime, satisfies
 `641 % 32 = 1`, belongs to the canonical primitive-compatible exception set, and is not `97`.

@@ -137,6 +137,10 @@ polynomial_eq_439_sq_pow32_zmod1153
 exists_primitive_polynomial_eq_zmod32_badPrimes
 exists_mu32_width4_refuter_zmod1217
 exists_mu32_width4_refuter_zmod1048609
+orderOf_56_ratio_zmod4289
+isPrimitiveRoot_56_64_ratio_zmod4289
+polynomial_56_sq_pow64_ne_zmod4289
+exists_mu64_width4_refuter_zmod4289
 canonicalN32PrimitiveBadPrimes
 exists_tzWindow_mu32_width4_refuter_of_TZ
 exists_tzWindow_mu32_width4_refuter_beta2
@@ -144,6 +148,8 @@ exists_tzWindow_mu32_width4_refuter_zmod1217_beta2
 exists_tzWindow_mu32_width4_refuter_beta3
 exists_tzWindow_mu32_width4_refuter_beta4
 exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4
+exists_tzWindow_mu64_width4_refuter_zmod4289_beta2
+exists_tzWindow_mu64_width4_refuter_beta2
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -450,6 +456,16 @@ The concrete TZ rows now also have direct existential refuters:
 explicit primitive 32nd roots `21 ∈ ZMod 1217` and `57211 ∈ ZMod 1048609`, respectively, then
 apply the `p > 1153` good-prime theorem.  These are fully closed finite-field witnesses for the
 canonical `n = 32` lane, not a general prime-supply theorem.
+The same support module now contains a direct `n = 64` witness:
+`orderOf_56_ratio_zmod4289` and `isPrimitiveRoot_56_64_ratio_zmod4289` make `56 : ZMod 4289`
+a primitive 64th root, `polynomial_56_sq_pow64_ne_zmod4289` checks the denominator-free
+canonical obstruction is nonzero, and `exists_mu64_width4_refuter_zmod4289` packages the literal
+width-4 budget refuter.  The follow-up module `Frontier/CanonicalWidthFourConcreteTZ64.lean`
+records the window form:
+`exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` proves `4289 ∈ [64^2, 2*64^2]`, and
+`exists_tzWindow_mu64_width4_refuter_beta2` packages the existential prime/refuter statement.
+This is a concrete witness at the next smooth-domain rung, not an exact finite-exception theorem
+for all `n = 64` primes.
 The follow-up module `Frontier/CanonicalWidthFourConcreteTZ.lean` lifts this from one explicit
 prime to a finite-exception window argument: `exists_tzWindow_mu32_width4_refuter_of_TZ` consumes
 any `TZPrimeSupply 32 beta supply` with `4 < supply`, avoids

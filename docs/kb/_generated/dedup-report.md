@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4911 files, 52843 declarations
+- `ArkLib` — 4912 files, 52851 declarations
 
 ## Same short-name across multiple files (2170 groups)
 
@@ -12021,7 +12021,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 547 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 552 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 
@@ -12175,6 +12175,21 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.AAPKernelCountermodel.excess_numerator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_AAPKernelCountermodel.lean:99](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_AAPKernelCountermodel.lean#L99) vs `ArkLib.ProximityGap.Frontier.N32DensityGrows.excess_numerator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_N32DensityGrows.lean:90](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_N32DensityGrows.lean#L90)
     - a: Exact excess numerator (audit): `A_num − besselE_val·p = 25739402810624 > 0`.
     - b: Exact excess numerator (audit): `A_num − besselE_val·p = 11201981696 > 0`.
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:93](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L93) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64.exists_tzWindow_mu64_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean#L45)
+    - a: Concrete β=2 TZ-window refuter for the canonical `n = 32` width-four lane.
+    - b: Concrete β=2 TZ-window refuter for the canonical `n = 64` width-four lane.
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_beta3` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:119](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L119) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64.exists_tzWindow_mu64_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean#L45)
+    - a: Concrete β=3 TZ-window refuter for the canonical `n = 32` width-four lane.
+    - b: Concrete β=2 TZ-window refuter for the canonical `n = 64` width-four lane.
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_beta4` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L129) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64.exists_tzWindow_mu64_width4_refuter_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean#L45)
+    - a: Concrete β=4 TZ-window refuter for the canonical `n = 32` width-four lane.
+    - b: Concrete β=2 TZ-window refuter for the canonical `n = 64` width-four lane.
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L140) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64.exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean#L30)
+    - a: Fully explicit β=4 witness: `1048609 ∈ [32⁴, 2 * 32⁴]` refutes the canonical `n = 32` width-four bud
+    - b: Fully explicit β=2 witness: `4289 ∈ [64², 2 * 64²]` refutes the canonical `n = 64` width-four budget
+- **1.00** `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ.exists_tzWindow_mu32_width4_refuter_zmod1217_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ.lean#L104) vs `ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64.exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CanonicalWidthFourConcreteTZ64.lean#L30)
+    - a: Fully explicit β=2 witness: `1217 ∈ [32², 2 * 32²]` refutes the canonical `n = 32` width-four budget
+    - b: Fully explicit β=2 witness: `4289 ∈ [64², 2 * 64²]` refutes the canonical `n = 64` width-four budget
 - **1.00** `ArkLib.ProximityGap.Frontier.CharZeroEnergyFive.B10_eq_E5_anchor` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergyFiveExact.lean:93](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergyFiveExact.lean#L93) vs `ArkLib.ProximityGap.Frontier.CharZeroEnergySix.B12_eq_E6_anchor` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergySixExact.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergySixExact.lean#L91)
     - a: **The exact anchor `E₅(μ_16) = 514031616`** (`m = 8`), matching the closed form + probe.
     - b: **The exact anchor `E₆(μ_16) = 64941883776`** (`m = 8`), matching the closed form + probe.
@@ -12250,18 +12265,3 @@ Each pair has docstrings sharing a high fraction of (4+-letter) words, in differ
 - **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.FamilyBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L55) vs `ArkLib.ProximityGap.Frontier.StackProfileFiberMax.FamilyBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:63](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L63)
     - a: Every representative in a finite family satisfies the one-stack budget.
     - b: Every representative in a finite family satisfies the one-stack budget.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39) vs `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/StackMaximizerDomination.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/StackMaximizerDomination.lean#L47)
-    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39) vs `ArkLib.ProximityGap.Frontier.StackProfileDominationInterface.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileDominationInterface.lean#L47)
-    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39) vs `ArkLib.ProximityGap.Frontier.StackProfileFiberMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileFiberMax.lean#L38)
-    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L39) vs `ArkLib.ProximityGap.Frontier.StackProfileRefinement.StackBadCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackProfileRefinement.lean#L38)
-    - a: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-    - b: The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.
-- **1.00** `ArkLib.ProximityGap.Frontier.StackCandidateFamilyMax.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackCandidateFamilyMax.lean#L47) vs `ArkLib.ProximityGap.Frontier.StackMaximizerDomination.StackBounded` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/StackMaximizerDomination.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/StackMaximizerDomination.lean#L55)
-    - a: A one-stack incidence budget for the actual MCA bad-scalar count.
-    - b: A one-stack incidence budget for the actual MCA bad-scalar count.

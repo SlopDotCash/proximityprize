@@ -49,6 +49,44 @@ theorem exists_mu32_width4_refuter_zmod1217 :
 
 end Concrete1217Ratio
 
+section Concrete4289Ratio
+
+local instance fact_prime_4289_ratio : Fact (Nat.Prime 4289) := ⟨by norm_num⟩
+
+/-- A concrete primitive 64-th root in `F_4289`. -/
+theorem orderOf_56_ratio_zmod4289 : orderOf (56 : ZMod 4289) = 64 := by
+  have h32 : ¬ (56 : ZMod 4289) ^ (2 : ℕ) ^ 5 = 1 := by decide
+  have h64 : (56 : ZMod 4289) ^ (2 : ℕ) ^ 6 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (56 : ZMod 4289)) h32 h64
+  norm_num at h
+  exact h
+
+/-- `56` is a primitive 64-th root in `F_4289`. -/
+theorem isPrimitiveRoot_56_64_ratio_zmod4289 :
+    IsPrimitiveRoot (56 : ZMod 4289) 64 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_56_ratio_zmod4289
+
+/-- The denominator-free canonical width-four obstruction is nonzero for the concrete
+`n = 64` Thorner-Zaman β=2 witness. -/
+theorem polynomial_56_sq_pow64_ne_zmod4289 :
+    ((56 : ZMod 4289) ^ 4 + 1) ^ 64 ≠
+      ((56 : ZMod 4289) ^ 2 + 1) ^ 64 := by
+  decide
+
+/-- Concrete `n = 64` width-4 refuter in the small `β = 2` Thorner-Zaman row. -/
+theorem exists_mu64_width4_refuter_zmod4289 :
+    ∃ ζ : ZMod 4289, IsPrimitiveRoot ζ 64 ∧
+      ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 64 (1 : ZMod 4289)) 4).card ≤ 64 := by
+  exact ⟨56, isPrimitiveRoot_56_64_ratio_zmod4289,
+    not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+      (F := ZMod 4289) (n := 64) (ζ := (56 : ZMod 4289))
+      (by norm_num) (by norm_num) (by norm_num)
+      isPrimitiveRoot_56_64_ratio_zmod4289
+      polynomial_56_sq_pow64_ne_zmod4289⟩
+
+end Concrete4289Ratio
+
 section Concrete1048609Ratio
 
 local instance fact_prime_1048609_ratio : Fact (Nat.Prime 1048609) := ⟨by norm_num⟩
@@ -219,6 +257,10 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms orderOf_21_ratio_zmod1217
 #print axioms isPrimitiveRoot_21_32_ratio_zmod1217
 #print axioms exists_mu32_width4_refuter_zmod1217
+#print axioms orderOf_56_ratio_zmod4289
+#print axioms isPrimitiveRoot_56_64_ratio_zmod4289
+#print axioms polynomial_56_sq_pow64_ne_zmod4289
+#print axioms exists_mu64_width4_refuter_zmod4289
 #print axioms orderOf_57211_ratio_zmod1048609
 #print axioms isPrimitiveRoot_57211_32_ratio_zmod1048609
 #print axioms exists_mu32_width4_refuter_zmod1048609

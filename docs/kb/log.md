@@ -1790,3 +1790,20 @@ exhibits `641` as a prime with `641 % 32 = 1`, membership in `{97, 641, 673, 115
 canonical primitive-compatible exception set is not `{97}`.  This refutes a tempting identification
 with the n=32 floor-localization candidate while leaving the separate adjacent-realizability
 floor-bad predicate untouched.
+
+Follow-up: `Frontier/ThornerZamanInstance.lean` now pushes the concrete supply ladder to
+`n = 64` in the faithful high-exponent rows.  The new theorems
+`tzPrimeSupply_64_three : TZPrimeSupply 64 3 20` and
+`tzPrimeSupply_64_four : TZPrimeSupply 64 4 16` witness explicit primes in
+`[64^3, 2*64^3]` and `[64^4, 2*64^4]`, respectively, all congruent to `1 mod 64`.  These are
+arithmetic supply certificates for future finite-bad-prime consumers, not an `n = 64` canonical
+bad-prime classification or a delta-star floor proof.
+
+Follow-up: the canonical width-four lane now has a direct closed `n = 64` β=2 witness.
+`orderOf_56_ratio_zmod4289`, `isPrimitiveRoot_56_64_ratio_zmod4289`, and
+`polynomial_56_sq_pow64_ne_zmod4289` certify the primitive-root/noncollision input in
+`ZMod 4289`; `exists_mu64_width4_refuter_zmod4289` packages the literal-budget refuter.  The new
+module `Frontier/CanonicalWidthFourConcreteTZ64.lean` records the TZ-window form via
+`exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` and the existential wrapper
+`exists_tzWindow_mu64_width4_refuter_beta2`.  This is still a concrete witness, not an exact
+finite-exception classification at `n = 64`.

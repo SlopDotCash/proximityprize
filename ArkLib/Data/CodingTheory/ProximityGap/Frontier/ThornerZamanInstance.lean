@@ -175,6 +175,28 @@ theorem tzPrimeSupply_32_three : TZPrimeSupply 32 (3 : ℝ) 12 := by
           Finset ℕ).card := by decide
     _ ≤ (tzWindow 32 (3 : ℝ)).card := Finset.card_le_card hsub
 
+/-- **Concrete discharge for `n = 64, β = 3`.**  The window `[64³, 2·64³] =
+`[262144, 524288]` contains the twenty primes listed below, all `≡ 1 (mod 64)`.  This extends
+the faithful `β > 12/5` concrete ladder one smooth-domain rung past the `n = 32` row used by the
+current canonical finite-exception bridge. -/
+theorem tzPrimeSupply_64_three : TZPrimeSupply 64 (3 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((64 : ℕ) : ℝ) ^ (3 : ℝ) = 262144 := by
+    rw [show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({262337, 262657, 263489, 264577, 264769, 264961, 265729, 265921, 266177, 266369,
+          266689, 267521, 267649, 267713, 268993, 269057, 269377, 269441, 269761, 269953} :
+          Finset ℕ) ⊆ tzWindow 64 (3 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({262337, 262657, 263489, 264577, 264769, 264961, 265729, 265921, 266177, 266369,
+          266689, 267521, 267649, 267713, 268993, 269057, 269377, 269441, 269761, 269953} :
+          Finset ℕ).card := by decide
+    _ ≤ (tzWindow 64 (3 : ℝ)).card := Finset.card_le_card hsub
+
 /-- **Concrete discharge for `n = 8, β = 4`** — deep in the faithful unconditional regime
 `β > 12/5` of [TZ24] (the highest exponent in the concrete ladder).  The window
 `[8⁴, 2·8⁴] = [4096, 8192]` contains the eight primes
@@ -238,6 +260,28 @@ theorem tzPrimeSupply_32_four : TZPrimeSupply 32 (4 : ℝ) 16 := by
           Finset ℕ).card := by decide
     _ ≤ (tzWindow 32 (4 : ℝ)).card := Finset.card_le_card hsub
 
+/-- **Concrete discharge for `n = 64, β = 4`.**  The window
+`[64⁴, 2·64⁴] = [16777216, 33554432]` contains the sixteen primes listed below, all
+`≡ 1 (mod 64)`.  This pushes the concrete high-exponent TZ ladder beyond the current exact
+`n = 32` finite-exception row. -/
+theorem tzPrimeSupply_64_four : TZPrimeSupply 64 (4 : ℝ) 16 := by
+  refine ⟨?_⟩
+  have hpow : ((64 : ℕ) : ℝ) ^ (4 : ℝ) = 16777216 := by
+    rw [show (4 : ℝ) = ((4 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({16777601, 16777729, 16778497, 16778561, 16778689, 16779713, 16780289, 16780417,
+          16780609, 16780801, 16781441, 16781953, 16782209, 16782401, 16783873, 16784513} :
+          Finset ℕ) ⊆ tzWindow 64 (4 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (16 : ℕ)
+      = ({16777601, 16777729, 16778497, 16778561, 16778689, 16779713, 16780289, 16780417,
+          16780609, 16780801, 16781441, 16781953, 16782209, 16782401, 16783873, 16784513} :
+          Finset ℕ).card := by decide
+    _ ≤ (tzWindow 64 (4 : ℝ)).card := Finset.card_le_card hsub
+
 /-- **Concrete discharge for `n = 8, β = 5`** — completes the `β = 2, 3, 4, 5` tower for
 the modulus `n = 8`.  The window `[8⁵, 2·8⁵] = [32768, 65536]` contains the eight primes
 `32801, 32833, 32969, 32993, 33049, 33073, 33113, 33161`, all `≡ 1 (mod 8)`. -/
@@ -257,6 +301,8 @@ theorem tzPrimeSupply_8_five : TZPrimeSupply 8 (5 : ℝ) 8 := by
 
 /-! ## Axiom audit -/
 
+#print axioms tzPrimeSupply_64_three
 #print axioms tzPrimeSupply_32_four
+#print axioms tzPrimeSupply_64_four
 
 end ArkLib.ProximityGap.KKH26
