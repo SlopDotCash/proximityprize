@@ -73,9 +73,11 @@ Two concrete witnesses now encode the bracket in Lean (both self-contained, `dec
 Together they bracket the structure: `min(bad)` is the AP-controlled least prime (TZ 12/5),
 `max(bad)` exceeds `n⁴`. Both are off-wall substrate, not a δ\* proof.
 
-Note (n=256 added): the exact primitive-root lane min at `n=256` is also `257`
-(`257 = 256+1 ≡ 1 mod 256`), so the `min(bad)=smallestPrime(1 mod n)` pattern holds at five rungs
-`n=16,32,64,128,256`.
+Note (n=256, 512 added): the exact primitive-root lane min at `n=256` is also `257`
+(`257 = 256+1 ≡ 1 mod 256`); and a direct check (no full determinant needed) confirms
+`7681 = smallestPrime(1 mod 512)` is canonical-bad (24 colliding primitive 512th roots, smallest
+`ζ = 62`). So the `min(bad) = smallestPrime(1 mod n)` lower-containment pattern holds at **six rungs**
+`n = 16, 32, 64, 128, 256, 512` (`17, 97, 193, 257, 257, 7681`).
 
 This is exactly the §9 "conjugate-count no-go": the height is exponential, so only a
 divisibility/existence question (does a *small* good/bad prime exist?) is tractable — never a
