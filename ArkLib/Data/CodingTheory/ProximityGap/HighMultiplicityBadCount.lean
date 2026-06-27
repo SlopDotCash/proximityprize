@@ -130,6 +130,56 @@ pigeonhole bound a genuine bad-scalar-by-weight bound — with no dependence on 
 `{e₁ = 0 ∧ e₀ = 0}` count (it cancels). -/
 
 omit [DecidableEq ι] [Fintype F] in
+/-- **Exact affine-line weight decomposition.**  For every scalar `γ`, the line-word weight plus
+the root multiplicity on `supp e₁` is constant:
+
+`weight(e₀ + γ·e₁) + mult(γ) = weight(e₁) + #{i : e₁ i = 0 ∧ e₀ i ≠ 0}`.
+
+On coordinates where `e₁ ≠ 0`, each position contributes either to the root multiplicity or to
+the line weight, but not both; on coordinates where `e₁ = 0`, the line contributes exactly the
+fixed `e₀ ≠ 0` positions. This is the ratio-census identity behind the high-multiplicity
+incidence bounds below. -/
+theorem weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero (e₀ e₁ : ι → F) (γ : F) :
+    (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card + mult e₀ e₁ γ =
+      (univ.filter (fun i => e₁ i ≠ 0)).card +
+        (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card := by
+  classical
+  let Z : Finset ι := univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)
+  let S : Finset ι := univ.filter (fun i => e₁ i ≠ 0)
+  let R : Finset ι := univ.filter (fun i => e₁ i ≠ 0 ∧ e₀ i + γ * e₁ i = 0)
+  let NZ : Finset ι := univ.filter (fun i => e₁ i ≠ 0 ∧ e₀ i + γ * e₁ i ≠ 0)
+  have hline : univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0) = Z ∪ NZ := by
+    ext i
+    by_cases h1 : e₁ i = 0
+    · simp [Z, NZ, h1]
+    · simp [Z, NZ, h1]
+  have hdisj_line : Disjoint Z NZ := by
+    rw [Finset.disjoint_left]
+    intro i hiZ hiNZ
+    have hz : e₁ i = 0 ∧ e₀ i ≠ 0 := by simpa [Z] using hiZ
+    have hnz : e₁ i ≠ 0 ∧ e₀ i + γ * e₁ i ≠ 0 := by simpa [NZ] using hiNZ
+    exact hnz.1 hz.1
+  have hS : S = R ∪ NZ := by
+    ext i
+    by_cases hzero : e₀ i + γ * e₁ i = 0
+    · simp [S, R, NZ, hzero]
+    · simp [S, R, NZ, hzero]
+  have hdisj_S : Disjoint R NZ := by
+    rw [Finset.disjoint_left]
+    intro i hiR hiNZ
+    have hr : e₁ i ≠ 0 ∧ e₀ i + γ * e₁ i = 0 := by simpa [R] using hiR
+    have hnz : e₁ i ≠ 0 ∧ e₀ i + γ * e₁ i ≠ 0 := by simpa [NZ] using hiNZ
+    exact hnz.2 hr.2
+  have hlinecard : (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card =
+      Z.card + NZ.card := by
+    rw [hline, Finset.card_union_of_disjoint hdisj_line]
+  have hScard : S.card = R.card + NZ.card := by
+    rw [hS, Finset.card_union_of_disjoint hdisj_S]
+  change (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card + R.card = S.card + Z.card
+  rw [hlinecard, hScard]
+  ac_rfl
+
+omit [DecidableEq ι] [Fintype F] in
 /-- **The agreement identity (one inequality).**  The weight of `e₁` is at most the multiplicity
 plus the weight of the line word: `weight(e₁) ≤ mult(γ) + weight(e₀ + γ·e₁)`.  Within `supp e₁`,
 every coordinate is either a root of the line word (counted by `mult`) or a nonzero of the line
@@ -185,5 +235,7 @@ theorem badWeight_card_mul_le (e₀ e₁ : ι → F) (w : ℕ) :
   intro γ hγ
   simp only [mem_filter, mem_univ, true_and] at hγ ⊢
   exact weightLine_le_imp_highMult e₀ e₁ w γ hγ
+
+#print axioms weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero
 
 end ArkLib.ProximityGap.HighMultiplicity

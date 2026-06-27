@@ -1163,3 +1163,21 @@ floor without a new transfer theorem.  `FoldingTransferNoGo.lean` now names that
 shape as `PlainToFoldAgreementTransfer` / `UniversalPlainToFoldAgreementTransfer` and refutes every
 nonzero folded threshold below the one-corruption-per-orbit plain-agreement witness via
 `not_plainToFoldAgreementTransfer_of_A_le_N_mul_d_of_T_pos`.
+
+## [2026-06-26] reduce | exact high-multiplicity weight decomposition
+
+Added `deltastar-464-high-multiplicity-weight-decomposition-2026-06-26.md` and
+`weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero` in `HighMultiplicityBadCount.lean`.  The new
+identity proves that, for each affine error line, line-word weight plus root multiplicity equals
+`weight(e1)` plus the fixed `e1 = 0, e0 != 0` correction.  This removes a bookkeeping ambiguity in
+the per-line bad-scalar count, but still leaves the global in-window codeword-pair/list supply as
+the open sub-Johnson step.
+
+## [2026-06-26] landed | exact affine-line weight/multiplicity identity
+
+Added `deltastar-464-high-multiplicity-weight-decomposition-2026-06-26.md`.
+`HighMultiplicityBadCount.lean` now exposes
+`weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero`, the exact decomposition
+`weight(e₀ + γ·e₁) + mult(γ) = weight(e₁) + #{i : e₁ i = 0 ∧ e₀ i ≠ 0}`.  This strengthens the
+existing one-sided `weight_e1_le_mult_add_weightLine` bridge with the full ratio-census identity
+behind the high-multiplicity bad-scalar bound, without changing the downstream API.

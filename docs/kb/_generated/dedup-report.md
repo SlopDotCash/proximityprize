@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4902 files, 52272 declarations
+- `ArkLib` — 4902 files, 52274 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -5232,7 +5232,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `badWeight_card_mul_le` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.badWeight_card_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:114](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L114) — **The bad-scalar count bound** `(s − w) · #{bad γ} ≤ s` (`s = weight e₁`).  The right side `s` is th
-- `theorem ArkLib.ProximityGap.HighMultiplicity.badWeight_card_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:175](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L175) — **The bad-scalar-by-weight bound (per error line).**  Writing `s = weight(e₁)` and `μ₀ = s − w > 0`,
+- `theorem ArkLib.ProximityGap.HighMultiplicity.badWeight_card_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:225](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L225) — **The bad-scalar-by-weight bound (per error line).**  Writing `s = weight(e₁)` and `μ₀ = s − w > 0`,
 
 ### `bad_count_clean` (2 declarations, 2 files)
 
@@ -8883,12 +8883,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `weightLine_le_imp_highMult` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.weightLine_le_imp_highMult` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:106](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L106) — Weight-bad ⟹ high multiplicity.
-- `theorem ArkLib.ProximityGap.HighMultiplicity.weightLine_le_imp_highMult` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:162](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L162) — **Bad-by-weight ⟹ high multiplicity.**  If the line word `e₀ + γ·e₁` has weight `≤ w`, then its mult
+- `theorem ArkLib.ProximityGap.HighMultiplicity.weightLine_le_imp_highMult` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:212](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L212) — **Bad-by-weight ⟹ high multiplicity.**  If the line word `e₀ + γ·e₁` has weight `≤ w`, then its mult
 
 ### `weight_e1_le_mult_add_weightLine` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.weight_e1_le_mult_add_weightLine` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:86](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L86) — The support-weight side: within `supp e₁` each coordinate is either a line-root (counted by `mult`)
-- `theorem ArkLib.ProximityGap.HighMultiplicity.weight_e1_le_mult_add_weightLine` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:137](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L137) — **The agreement identity (one inequality).**  The weight of `e₁` is at most the multiplicity plus th
+- `theorem ArkLib.ProximityGap.HighMultiplicity.weight_e1_le_mult_add_weightLine` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:187](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L187) — **The agreement identity (one inequality).**  The weight of `e₁` is at most the multiplicity plus th
 
 ### `weight_Λ_C_mul_X_pow_le` (2 declarations, 2 files)
 
