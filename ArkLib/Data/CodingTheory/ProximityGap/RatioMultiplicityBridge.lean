@@ -107,6 +107,91 @@ theorem badWeight_empty_of_degree_exact (dom : ι → F) (hdom : Function.Inject
     (fun i => P.eval (dom i)) (fun i => Q.eval (dom i))
     (fun γ => mult_poly_le_max dom hdom P Q (hnz γ)) hdeg
 
+omit [DecidableEq ι] in
+/-- **Exact degree-collapse, degenerate-scalar containment form.**  Without assuming
+`P + γ·Q` is nonzero for every scalar, the exact degree condition still forces every low-weight
+bad scalar into the degenerate set where the whole line polynomial vanishes identically:
+
+`{γ : weight(P(dom)+γQ(dom)) ≤ w} ⊆ {γ : P + γQ = 0}`.
+
+Thus the only possible survivors of the structured polynomial-line gate are constant-ratio
+degeneracies. -/
+theorem badWeight_subset_degenerate_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
+    univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)
+      ⊆ univ.filter (fun γ : F => P + C γ * Q = 0) := by
+  intro γ hγ
+  rw [Finset.mem_filter] at hγ ⊢
+  refine ⟨Finset.mem_univ γ, ?_⟩
+  by_contra hnonzero
+  have hcap : mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ
+      ≤ max P.natDegree Q.natDegree :=
+    mult_poly_le_max dom hdom P Q hnonzero
+  have hge := weightLine_le_imp_highMult_exact
+    (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) w γ hγ.2
+  exact (not_lt.mpr hcap) (lt_of_lt_of_le hdeg hge)
+
+omit [DecidableEq ι] in
+/-- **Exact degree-collapse, cardinal containment form.**  Under the exact degree condition, the
+number of low-weight bad scalars is at most the number of degenerate scalars with
+`P + γ·Q = 0`. -/
+theorem badWeight_card_le_degenerate_card_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card
+      ≤ (univ.filter (fun γ : F => P + C γ * Q = 0)).card :=
+  Finset.card_le_card (badWeight_subset_degenerate_of_degree_exact dom hdom P Q hdeg)
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **There is at most one degenerate scalar** when `Q ≠ 0`: two identities
+`P + γQ = 0` and `P + δQ = 0` force `(γ-δ)Q = 0`, hence `γ = δ`. -/
+theorem degenerateScalars_card_le_one (P Q : F[X]) (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F => P + C γ * Q = 0)).card ≤ 1 := by
+  classical
+  refine Finset.card_le_one.mpr ?_
+  intro γ hγ δ hδ
+  rw [Finset.mem_filter] at hγ hδ
+  have hz : C (γ - δ) * Q = 0 := by
+    calc
+      C (γ - δ) * Q = C γ * Q - C δ * Q := by rw [map_sub, sub_mul]
+      _ = (P + C γ * Q) - (P + C δ * Q) := by abel
+      _ = 0 := by rw [hγ.2, hδ.2, sub_self]
+  rcases mul_eq_zero.mp hz with hC | hQ0
+  · exact sub_eq_zero.mp (Polynomial.C_eq_zero.mp hC)
+  · exact absurd hQ0 hQ
+
+omit [DecidableEq ι] in
+/-- **Exact degree-collapse leaves at most one low-weight scalar.**  For a nonzero denominator
+polynomial `Q`, the exact degree condition forces every low-weight scalar into the degenerate set,
+and that degenerate set has cardinality at most one. -/
+theorem badWeight_card_le_one_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card
+      ≤ 1 :=
+  (badWeight_card_le_degenerate_card_of_degree_exact dom hdom P Q hdeg).trans
+    (degenerateScalars_card_le_one P Q hQ)
+
 end ArkLib.ProximityGap.RatioMultiplicity
 
-#print axioms ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_empty_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_subset_degenerate_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_le_degenerate_card_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_card_le_one
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_le_one_of_degree_exact

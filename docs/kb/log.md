@@ -1186,4 +1186,6 @@ high-multiplicity cap gate with `mult_poly_le_max`: for polynomial error coordin
 `P(dom i), Q(dom i)`, the low-weight bad-scalar set is empty once
 `max(deg P, deg Q) < #{Q ≠ 0 on dom} + #{Q = 0 ∧ P ≠ 0 on dom} - w`, assuming no scalar makes
 `P + γQ` identically zero.  This closes the structured polynomial-line local case at the exact
-threshold, while leaving the arbitrary-stack structural reduction open.
+threshold.  Follow-up in the same bridge: without the nondegeneracy hypothesis, the bad set is
+contained in the degenerate scalar set `{γ : P + γQ = 0}`, and this set has size at most one when
+`Q ≠ 0`.  The arbitrary-stack structural reduction remains open.

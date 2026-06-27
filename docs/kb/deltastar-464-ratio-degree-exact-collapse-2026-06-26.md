@@ -25,6 +25,10 @@ This pass adds:
 
 ```lean
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_subset_degenerate_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_degenerate_card_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_le_one
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
 ```
 
 ## Content
@@ -53,6 +57,16 @@ max(deg P, deg Q)
 So the exact zero-`Q`/nonzero-`P` correction survives all the way into the polynomial-line
 degree-collapse API.
 
+There is also a degenerate-scalar version without the global nondegeneracy hypothesis.  Under the
+same exact degree inequality, every low-weight bad scalar is contained in
+
+```text
+{gamma : P + gamma*Q = 0 as a polynomial}.
+```
+
+If `Q != 0`, that degenerate set has cardinality at most one.  Thus exact degree collapse leaves
+either no scalar after the `hnz` hypothesis, or at most the single constant-ratio scalar without it.
+
 ## Prize Impact
 
 This closes the **structured polynomial error-line** case at the exact threshold.  If a future
@@ -71,5 +85,5 @@ consumer for a future structural reduction, not that reduction itself.
 ./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.RatioMultiplicityBridge
 ```
 
-The theorem audit reports only the standard Lean axioms:
+The theorem audits report only the standard Lean axioms:
 `propext`, `Classical.choice`, and `Quot.sound`.
