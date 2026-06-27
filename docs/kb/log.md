@@ -1177,3 +1177,13 @@ ratio-function degree cap can close a fixed error line by proving
 `D < weight(e1) + #{i : e1 i = 0 ∧ e0 i ≠ 0} - w`.  This removes a bookkeeping ambiguity in the
 per-line count, but still leaves the global in-window codeword-pair/list supply as the open
 sub-Johnson step.
+
+## [2026-06-26] reduce | exact ratio-degree collapse for weight-bad polynomial lines
+
+Added `deltastar-464-ratio-degree-exact-collapse-2026-06-26.md` and
+`RatioMultiplicity.badWeight_empty_of_degree_exact`.  The theorem composes the exact
+high-multiplicity cap gate with `mult_poly_le_max`: for polynomial error coordinates
+`P(dom i), Q(dom i)`, the low-weight bad-scalar set is empty once
+`max(deg P, deg Q) < #{Q ≠ 0 on dom} + #{Q = 0 ∧ P ≠ 0 on dom} - w`, assuming no scalar makes
+`P + γQ` identically zero.  This closes the structured polynomial-line local case at the exact
+threshold, while leaving the arbitrary-stack structural reduction open.

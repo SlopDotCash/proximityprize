@@ -84,4 +84,29 @@ theorem badScalars_empty_of_degree (dom : ι → F) (hdom : Function.Injective d
         μ₀ ≤ mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ) = ∅ :=
   highMult_empty_of_lt _ _ (fun γ => mult_poly_le_max dom hdom P Q (hnz γ)) hμ
 
+omit [DecidableEq ι] in
+/-- **Exact degree-collapse for weight-thresholded polynomial error lines.**  If the error
+coordinates are polynomial evaluations and every ratio fibre has multiplicity at most
+`max(deg P, deg Q)`, then the actual low-weight bad-scalar set is empty as soon as that degree is
+below the exact required multiplicity
+
+`#{Q ≠ 0 on dom} + #{Q = 0 ∧ P ≠ 0 on dom} - w`.
+
+This composes `mult_poly_le_max` with
+`HighMultiplicity.badWeight_empty_of_mult_cap_exact`, retaining the fixed zero-`Q` correction that
+the older `badScalars_empty_of_degree` high-multiplicity form did not expose. -/
+theorem badWeight_empty_of_degree_exact (dom : ι → F) (hdom : Function.Injective dom)
+    (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hnz : ∀ γ : F, P + C γ * Q ≠ 0) :
+    univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) = ∅ :=
+  badWeight_empty_of_mult_cap_exact
+    (fun i => P.eval (dom i)) (fun i => Q.eval (dom i))
+    (fun γ => mult_poly_le_max dom hdom P Q (hnz γ)) hdeg
+
 end ArkLib.ProximityGap.RatioMultiplicity
+
+#print axioms ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact

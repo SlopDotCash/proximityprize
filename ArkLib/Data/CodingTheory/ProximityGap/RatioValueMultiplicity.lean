@@ -52,7 +52,7 @@ theorem value_mult_le_natDegree (P Q : F[X]) (c : F) (h : P - C c * Q ≠ 0) (S 
     rw [Finset.mem_val, Finset.mem_filter] at hx
     rw [Polynomial.mem_roots']
     refine ⟨h, ?_⟩
-    show (P - C c * Q).eval x = 0
+    change (P - C c * Q).eval x = 0
     rw [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C, hx.2, sub_self]
   exact Polynomial.card_le_degree_of_subset_roots hsub
 
@@ -80,3 +80,7 @@ theorem highValue_forces_collusion (P Q : F[X]) (c : F) (S : Finset F)
   exact absurd (value_mult_le_max P Q c h S) (not_le.mpr hlarge)
 
 end ArkLib.ProximityGap.RatioMultiplicity
+
+#print axioms ArkLib.ProximityGap.RatioMultiplicity.value_mult_le_natDegree
+#print axioms ArkLib.ProximityGap.RatioMultiplicity.value_mult_le_max
+#print axioms ArkLib.ProximityGap.RatioMultiplicity.highValue_forces_collusion
