@@ -47,6 +47,18 @@ FamilyContainsBudgetedGlobalMax F C delta R B
 from `_FloorClosureContract.lean`.  It means the proposed floor/profile family `R` contains one
 actual global maximizer of the real `StackBadCount`, and that maximizer is within budget.
 
+One reusable good-side substrate is now checked in `MCAWitnessSpread.lean`:
+
+```lean
+badScalar_card_le_largeSubsets_of_forced_pred
+epsMCA_le_largeSubsets_div_of_forced_pred
+```
+
+These turn any radius/cardinality side condition that forces legal witness sets to have size
+`≥ m` into a uniform bad-scalar bound by the number of coordinate subsets of size `≥ m`.  This is
+the higher-granularity version of the codimension-one forced-predicate barrier; it does not
+identify the sharp floor family, but it removes a recurring counting lemma from the open part.
+
 ## New tool proposal A: successor-renormalization
 
 The finite-rung floor evidence is now clean:
@@ -156,12 +168,20 @@ Two auxiliary facts pin down the exact search surface:
 ```lean
 maximizersReachFamily_of_stacksReachFamilyByImprovement
 not_maximizersReachFamilyByImprovement_iff_exists_uncarried_maximizer
+someMaximizerReachesFamily_iff_containsGlobalMax
+not_someMaximizerReachesFamilyByImprovement_iff_all_maximizers_uncarried
 ```
 
 So an all-stack normal form remains a sufficient route, but the real target can be strictly smaller.
 Conversely, failure of the universal maximizer-carrying hypothesis is exactly a true global
 maximizer that cannot reach any listed representative by the proposed improvement chain.  That is
 the scanner certificate to ask for when a candidate move system stalls.
+
+The backwards critique is now formal too: under count-nondecreasing steps, the existential
+maximizer-carrying certificate is equivalent to `FamilyContainsGlobalMax`.  Thus the tool is not a
+logical weakening of the floor-closure contract.  It is useful only if it gives a constructive way to
+find or normalize a true maximizer.  The sharp refutation certificate is that every true maximizer is
+uncarried by the proposed improvement relation.
 
 ### Backwards attack on B
 

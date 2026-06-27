@@ -102,6 +102,17 @@ def SomeMaximizerReachesFamilyByImprovement (C : Set (ι -> A)) (δ : ℝ≥0)
   ∃ uMax : WordStack A (Fin 2) ι, IsStackMax (F := F) C δ uMax ∧
     ∃ r ∈ R, ImprovementChain Step uMax r
 
+/-- If the family already contains a global maximizer, the existential improvement certificate is
+available by the reflexive chain, independently of the proposed primitive steps. -/
+theorem someMaximizerReachesFamily_of_containsGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {Step : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsGlobalMax F C δ R) :
+    SomeMaximizerReachesFamilyByImprovement (F := F) C δ Step R := by
+  rcases hmax with ⟨r, hr, hdom⟩
+  exact ⟨r, hdom, r, hr, ImprovementChain.refl r⟩
+
 /-- The all-stack improvement route implies the weaker maximizer-only route. -/
 theorem maximizersReachFamily_of_stacksReachFamilyByImprovement
     (C : Set (ι -> A)) (δ : ℝ≥0)
@@ -192,6 +203,35 @@ theorem familyContainsGlobalMax_of_someMaximizerReachesFamily
   intro u
   exact le_trans (huMax u) hur
 
+/-- Under count-nondecreasing steps, the existential improvement certificate is exactly another
+presentation of global-max containment.  Its value is constructive: it can prove containment by
+normalizing a maximizer, but it does not weaken the logical target. -/
+theorem someMaximizerReachesFamily_iff_containsGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {Step : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmono : StepNondecreasing (F := F) C δ Step) :
+    SomeMaximizerReachesFamilyByImprovement (F := F) C δ Step R ↔
+      FamilyContainsGlobalMax F C δ R :=
+  ⟨familyContainsGlobalMax_of_someMaximizerReachesFamily C δ hmono,
+    someMaximizerReachesFamily_of_containsGlobalMax C δ⟩
+
+/-- Exact scanner form for failure of the sharp existential certificate: every true global
+maximizer is uncarried by the proposed finite family. -/
+theorem not_someMaximizerReachesFamilyByImprovement_iff_all_maximizers_uncarried
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (Step : WordStack A (Fin 2) ι -> WordStack A (Fin 2) ι -> Prop)
+    (R : Finset (WordStack A (Fin 2) ι)) :
+    (¬ SomeMaximizerReachesFamilyByImprovement (F := F) C δ Step R) ↔
+      ∀ uMax : WordStack A (Fin 2) ι, IsStackMax (F := F) C δ uMax →
+        ∀ r : WordStack A (Fin 2) ι, r ∈ R → ¬ ImprovementChain Step uMax r := by
+  constructor
+  · intro hnot uMax hmax r hr hchain
+    exact hnot ⟨uMax, hmax, r, hr, hchain⟩
+  · intro huncarried hsome
+    rcases hsome with ⟨uMax, hmax, r, hr, hchain⟩
+    exact huncarried uMax hmax r hr hchain
+
 /-- A bounded family reached from a true maximizer contains a budgeted global maximizer. -/
 theorem familyContainsBudgetedGlobalMax_of_maximizersReachFamily
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
@@ -278,5 +318,7 @@ theorem deltaStar_pin_of_someMaximizerReachesFamily
 #print axioms deltaStar_pin_of_someMaximizerReachesFamily
 #print axioms maximizersReachFamily_of_stacksReachFamilyByImprovement
 #print axioms not_maximizersReachFamilyByImprovement_iff_exists_uncarried_maximizer
+#print axioms someMaximizerReachesFamily_iff_containsGlobalMax
+#print axioms not_someMaximizerReachesFamilyByImprovement_iff_all_maximizers_uncarried
 
 end ArkLib.ProximityGap.Frontier.MaximizerCarryingReduction

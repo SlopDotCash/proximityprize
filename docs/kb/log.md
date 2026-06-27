@@ -1912,3 +1912,16 @@ the floor-singleton characterization on the canonical set; (2) the MAX bad prime
 confirming the floor route's correct tool is least-prime-in-AP (TZ 12/5), not a resultant-height
 bound (the §9 conjugate-count no-go).  New note:
 `deltastar-464-canonical-badprimes-n64-exact-2026-06-27.md`.  Not a δ\* proof; core OPEN/ON-BGK.
+
+## [2026-06-27] formalization | higher-band witness barrier + maximizer-carrying bridge
+
+Added a reusable good-side counting lemma in `MCAWitnessSpread.lean`:
+`badScalar_card_le_largeSubsets_of_forced_pred` injects bad scalars into witness subsets of size
+`≥ m`, and `epsMCA_le_largeSubsets_div_of_forced_pred` converts that into an `ε_mca` bound.  This
+generalizes the codimension-one forced-predicate barrier to deeper granularity bands.
+
+Added `Frontier/_MaximizerCarryingReduction.lean` as a checked socket for the post-TZ floor route.
+The strongest consumer, `deltaStar_pin_of_someMaximizerReachesFamily`, says it is enough to move
+some true global bad-scalar maximizer by count-nondecreasing improvement steps into a finite
+budgeted family.  This is not the missing monotone-normalization theorem, but it lowers the target
+from all-stack domination to an extremal/maximizer-carrying statement.

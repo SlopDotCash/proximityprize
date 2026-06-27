@@ -249,12 +249,37 @@ theorem epsMCA_twoFifth_gt :
     (1 / 2 : ℝ≥0∞) < epsMCA (F := F11) (A := F11) (C : Set (Fin 5 → F11)) (2/5) :=
   lt_of_lt_of_le half_lt_sixEleven epsMCA_twoFifth_ge
 
+/-- **Good-radius membership, interval form:** every `δ < 2/5` is a good radius for any threshold
+`ε* ≥ 5/11`. -/
+theorem mem_goodRadii_of_lt_twoFifth_of_fiveEleven_le {δ : ℝ≥0} (hδ : δ < 2 / 5)
+    {εstar : ℝ≥0∞} (hε : (5 / 11 : ℝ≥0∞) ≤ εstar) :
+    δ ∈ MCAThresholdLedger.mcaGoodRadii (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar := by
+  refine ⟨le_of_lt (lt_of_lt_of_le hδ twoFifth_le_one), ?_⟩
+  exact le_trans (epsMCA_le_of_lt_twoFifth hδ) hε
+
 /-- **Good-radius membership:** every `δ < 2/5` is a good radius at `ε* = 1/2`. -/
 theorem mem_goodRadii_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2 / 5) :
     δ ∈ MCAThresholdLedger.mcaGoodRadii (F := F11) (A := F11)
-      (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) := by
-  refine ⟨le_of_lt (lt_of_lt_of_le hδ twoFifth_le_one), ?_⟩
-  exact le_trans (epsMCA_le_of_lt_twoFifth hδ) fiveEleven_le_half
+      (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) :=
+  mem_goodRadii_of_lt_twoFifth_of_fiveEleven_le hδ fiveEleven_le_half
+
+/-- **Interval pin:** the exact value persists for every threshold in the whole bracket
+`5/11 ≤ ε* < 6/11`. -/
+theorem mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven {εstar : ℝ≥0∞}
+    (hlo : (5 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 6 / 11) :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar = 2/5 := by
+  refine le_antisymm
+    (MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _ (lt_of_lt_of_le hhi epsMCA_twoFifth_ge))
+    ?_
+  by_contra h
+  push Not at h
+  obtain ⟨c, hc1, hc2⟩ := exists_between h
+  have hmem := mem_goodRadii_of_lt_twoFifth_of_fiveEleven_le hc2 hlo
+  have hle := MCAThresholdLedger.le_mcaDeltaStar_of_good (F := F11) (A := F11)
+    (C : Set (Fin 5 → F11)) εstar hmem.1 hmem.2
+  exact absurd hle (not_le.mpr hc1)
 
 /-- **THE PIN — an exact `δ*` value strictly above the Johnson radius.**
 
@@ -268,21 +293,15 @@ densely ordered, so the supremum reaches `2/5`.  Since `Johnson = 1 − √(2/5)
 this is an exact `δ*` above the Johnson list-decoding radius. -/
 theorem mcaDeltaStar_eq_twoFifth :
     MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
-      (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) = 2/5 := by
-  refine le_antisymm
-    (MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _ epsMCA_twoFifth_gt) ?_
-  by_contra h
-  push Not at h
-  obtain ⟨c, hc1, hc2⟩ := exists_between h
-  have hmem := mem_goodRadii_of_lt_twoFifth hc2
-  have hle := MCAThresholdLedger.le_mcaDeltaStar_of_good (F := F11) (A := F11)
-    (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) hmem.1 hmem.2
-  exact absurd hle (not_le.mpr hc1)
+      (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) = 2/5 :=
+  mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
+    fiveEleven_le_half half_lt_sixEleven
 
 /-! ## Source audit -/
 
 #print axioms epsMCA_twoFifth_ge
 #print axioms epsMCA_le_of_lt_twoFifth
+#print axioms mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
 #print axioms mcaDeltaStar_eq_twoFifth
 
 end ProximityGap.DeltaStarPinF11H5
