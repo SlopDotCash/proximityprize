@@ -97,6 +97,10 @@ natAbs_resultant_canonicalRatioPoly_comm
 natAbs_resultant_canonicalRatioPoly_twoPow_sq_le
 prime_sq_le_canonicalRatioPolySharpBound_of_e2BadScalarSet_mu_card_le_twoPow_zmod
 not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq
+canonicalRatioPoly16_reduction_zmod
+canonicalRatioPoly16_bezout
+polynomial_ne_zmod16_of_prime_gt17
+not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -330,6 +334,15 @@ forces `p^2 <= canonicalRatioPolySharpBound m`; the scanner-facing contrapositiv
 `not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq`.  This is
 the current explicit finite arithmetic target for this width-four resultant lane.
 
+The `n = 16` canonical obstruction also has an exact good-prime certificate.  The theorem
+`canonicalRatioPoly16_reduction_zmod` reduces the denominator-free obstruction modulo
+`ζ^8 = -1` to an explicit `17 * 48` multiple of a cubic in `ζ^2`, and
+`canonicalRatioPoly16_bezout` gives a Bezout identity showing that this cubic is incompatible with
+`(ζ^2)^4 + 1 = 0` unless `7 = 0`.  Lean packages the consequence as
+`polynomial_ne_zmod16_of_prime_gt17` and the scanner-facing budget refuter
+`not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17`: for every prime `p > 17`, the canonical
+primitive-root width-4 lane cannot satisfy the literal `<= 16` image budget.
+
 The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
 witness at `n = 16`.  Lean proves `4134` has order `16`, checks the denominator-free
 `polynomial_4134_sq_pow16_ne`, derives `invariantRatio 4134 (4134^2)^16 != 1`, and derives
@@ -346,7 +359,7 @@ canonical pairwise residual without excluding bad primes.  The follow-up declara
 `seventeen_dvd_resultant_canonicalRatioPoly_16` and
 `seventeen_le_natAbs_resultant_canonicalRatioPoly_16` route this same bad prime through the
 canonical integer resultant, confirming that the abstract bad-prime certificate detects the first
-measured collapse.
+measured collapse and matching the exact `p > 17` good-prime certificate above.
 
 The backwards direction is now explicit too.  If the literal budget
 `#(e2BadScalarSet mu_n 4) <= n` holds in the canonical fixed-witness lane, Lean derives both the

@@ -1694,6 +1694,13 @@ Follow-up: the same bad prime is now wired into the resultant certificate.  The 
 `17` to divide the canonical integer resultant and hence pins the first resultant threshold at
 least at `17`.
 
+Follow-up: the matching exact `n = 16` good-prime certificate is now recorded.  Lean reduces the
+denominator-cleared canonical obstruction modulo `ζ^8 = -1` with
+`canonicalRatioPoly16_reduction_zmod`, discharges the remaining cubic by the Bezout identity
+`canonicalRatioPoly16_bezout`, and packages the result as
+`not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17`: every prime `p > 17` refutes the literal
+width-4 `<= 16` budget in this canonical primitive-root lane.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with

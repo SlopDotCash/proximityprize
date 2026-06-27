@@ -35,7 +35,6 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
 
 set_option linter.unusedSectionVars false
-set_option maxHeartbeats 1600000
 
 open Polynomial Finset Real
 
@@ -46,7 +45,7 @@ namespace ArkLib.ProximityGap.SharpResultantBound
 private theorem norm_multiset_prod_eq (s : Multiset ℂ) : ‖s.prod‖ = (s.map norm).prod := by
   induction s using Multiset.induction with
   | empty => simp
-  | cons a s ih => simp [norm_mul, ih]
+  | cons a s ih => simp [ih]
 
 private theorem multiset_prod_map_le {α : Type} (s : Multiset α) (f g : α → ℝ)
     (h0 : ∀ a ∈ s, 0 ≤ f a) (h : ∀ a ∈ s, f a ≤ g a) :
@@ -104,9 +103,11 @@ theorem norm_eval_cyclotomic_le {m : ℕ} (hm : 1 ≤ m) (β : ℂ) :
 
 /-! ## The sharp resultant bound -/
 
-open Classical in
-/-- **The Landau ℓ²-sharpening (squared form)**:
-`|Res_ℤ(R, Φ_{2^m})|² ≤ 4^{deg R} · (∑_i |R_i|²)^{2^{m−1}}`. -/
+-- The Landau l2-sharpening: `|Res_Z(R, Phi_{2^m})|^2` is at most
+-- `4^{deg R} * (sum_i |R_i|^2)^{2^{m-1}}`.
+set_option maxHeartbeats 1600000 in
+-- The Mahler-measure proof expands resultants, roots, and coefficient norms;
+-- the default heartbeat limit is too low after those normal forms unfold.
 theorem natAbs_resultant_cyclotomic_sq_le {m : ℕ} (hm : 1 ≤ m) (R : Polynomial ℤ) :
     (Polynomial.resultant R (cyclotomic (2 ^ m) ℤ)).natAbs ^ 2
       ≤ 4 ^ R.natDegree
@@ -220,13 +221,13 @@ theorem natAbs_resultant_cyclotomic_sq_le {m : ℕ} (hm : 1 ≤ m) (R : Polynomi
     push_cast
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Polynomial.coeff_map]
-    show ‖((R.coeff i : ℤ) : ℂ)‖ ^ 2 = ((R.coeff i).natAbs : ℝ) ^ 2
-    rw [Complex.norm_intCast, ← Int.cast_abs, ← Int.cast_natAbs]
+    change ‖((R.coeff i : ℤ) : ℂ)‖ ^ 2 = ((R.coeff i).natAbs : ℝ) ^ 2
+    rw [Complex.norm_intCast, ← Int.cast_abs, ← Nat.cast_natAbs]
   -- square the combined bound and finish over ℝ
   have hres_norm : ‖ι (Polynomial.resultant R Φ)‖
       = (((Polynomial.resultant R Φ).natAbs : ℝ)) := by
-    show ‖((Polynomial.resultant R Φ : ℤ) : ℂ)‖ = _
-    rw [Complex.norm_intCast, ← Int.cast_abs, ← Int.cast_natAbs]
+    change ‖((Polynomial.resultant R Φ : ℤ) : ℂ)‖ = _
+    rw [Complex.norm_intCast, ← Int.cast_abs, ← Nat.cast_natAbs]
   have hsq : ‖ι (Polynomial.resultant R Φ)‖ ^ 2
       ≤ (2 ^ R.natDegree * (R.map ι).mahlerMeasure ^ h) ^ 2 :=
     pow_le_pow_left₀ (norm_nonneg _) hcomb 2

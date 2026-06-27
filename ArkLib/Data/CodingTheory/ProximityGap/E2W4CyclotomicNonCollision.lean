@@ -1877,6 +1877,102 @@ theorem not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime
     hn heven hn8 hζ
     (polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime hn hn8 hζ hlarge)
 
+/-! ### Exact `n = 16` good-prime certificate -/
+
+/-- Exact reduction of the denominator-free canonical obstruction at order `16`.
+Modulo `ζ⁸ = -1`, the obstruction carries an explicit factor `17 * 48` times a cubic in `ζ²`. -/
+theorem canonicalRatioPoly16_reduction_zmod {p : ℕ} [Fact p.Prime] {ζ : ZMod p}
+    (h8 : ζ ^ 8 = -1) :
+    (ζ ^ 4 + 1) ^ 16 - (ζ ^ 2 + 1) ^ 16 =
+      (17 : ZMod p) * 48 * (8 * ζ ^ 6 - 8 * ζ ^ 2 - 11) := by
+  rw [show
+      (ζ ^ 4 + 1) ^ 16 - (ζ ^ 2 + 1) ^ 16 =
+        (17 : ZMod p) * 48 * (8 * ζ ^ 6 - 8 * ζ ^ 2 - 11) +
+        (ζ ^ 8 + 1) *
+          (8976 + 6512 * ζ ^ 2 - 104 * ζ ^ 4 - 7088 * ζ ^ 6 -
+            10676 * ζ ^ 8 - 10880 * ζ ^ 10 - 7344 * ζ ^ 12 -
+            4352 * ζ ^ 14 - 374 * ζ ^ 16 - 560 * ζ ^ 18 +
+            3704 * ζ ^ 20 - 16 * ζ ^ 22 + 6562 * ζ ^ 24 +
+            7616 * ζ ^ 28 + 6307 * ζ ^ 32 + 3824 * ζ ^ 36 +
+            1701 * ζ ^ 40 + 544 * ζ ^ 44 + 119 * ζ ^ 48 +
+            16 * ζ ^ 52 + ζ ^ 56) by ring]
+  rw [h8]
+  ring
+
+/-- Bezout certificate for the reduced `n = 16` obstruction.
+Together with `y⁴ + 1 = 0`, a vanishing reduced cubic would force `7 = 0`. -/
+theorem canonicalRatioPoly16_bezout {R : Type*} [CommRing R] (y : R) :
+    (128 - 64 * y ^ 2) * (y ^ 4 + 1) +
+      (11 - 8 * y + 8 * y ^ 3) * (8 * y ^ 3 - 8 * y - 11) = 7 := by
+  ring
+
+/-- Exact `n = 16` good-prime form: above the unique small obstruction prime `17`, the
+denominator-free canonical collision cannot occur. -/
+theorem polynomial_ne_zmod16_of_prime_gt17
+    {p : ℕ} [Fact p.Prime] (hp17 : 17 < p) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 16) :
+    (ζ ^ 4 + 1) ^ 16 ≠ (ζ ^ 2 + 1) ^ 16 := by
+  intro hpoly
+  have h8 : ζ ^ 8 = -1 :=
+    primRoot_pow_half_eq_neg_one_of_even (F := ZMod p) (ζ := ζ) (n := 16) (h := 8)
+      hζ (by norm_num) (by norm_num)
+  have hdiff : (ζ ^ 4 + 1) ^ 16 - (ζ ^ 2 + 1) ^ 16 = 0 := sub_eq_zero.mpr hpoly
+  have hred := canonicalRatioPoly16_reduction_zmod (p := p) (ζ := ζ) h8
+  have hprod : (17 : ZMod p) * 48 * (8 * ζ ^ 6 - 8 * ζ ^ 2 - 11) = 0 := by
+    rw [← hred]
+    exact hdiff
+  have h17nz : (17 : ZMod p) ≠ 0 := by
+    change ¬ (((17 : ℕ) : ZMod p) = 0)
+    rw [ZMod.natCast_eq_zero_iff]
+    exact Nat.not_dvd_of_pos_of_lt (by norm_num : 0 < 17) hp17
+  have h48nz : (48 : ZMod p) ≠ 0 := by
+    change ¬ (((48 : ℕ) : ZMod p) = 0)
+    rw [ZMod.natCast_eq_zero_iff]
+    intro hdvd
+    have hp : Nat.Prime p := Fact.out
+    have h48 : (48 : ℕ) = 3 * 2 ^ 4 := by norm_num
+    have hdvd' : p ∣ 3 * 2 ^ 4 := by
+      simpa [← h48] using hdvd
+    rcases (Nat.Prime.dvd_mul hp).mp hdvd' with h3 | h2pow
+    · have hp_eq3 : p = 3 := (Nat.prime_dvd_prime_iff_eq hp Nat.prime_three).mp h3
+      omega
+    · have hp_dvd2 : p ∣ 2 := hp.dvd_of_dvd_pow h2pow
+      have hp_eq2 : p = 2 := (Nat.prime_dvd_prime_iff_eq hp Nat.prime_two).mp hp_dvd2
+      omega
+  have hcoeff : (17 : ZMod p) * 48 ≠ 0 := mul_ne_zero h17nz h48nz
+  have hcubic : 8 * ζ ^ 6 - 8 * ζ ^ 2 - 11 = 0 :=
+    (mul_eq_zero.mp hprod).resolve_left hcoeff
+  have hy4 : (ζ ^ 2) ^ 4 + 1 = 0 := by
+    have hy4' : (ζ ^ 2) ^ 4 = -1 := by
+      calc
+        (ζ ^ 2) ^ 4 = ζ ^ 8 := by ring
+        _ = -1 := h8
+    rw [hy4']
+    ring
+  have hcubic_y : 8 * (ζ ^ 2) ^ 3 - 8 * (ζ ^ 2) - 11 = 0 := by
+    convert hcubic using 1
+    ring
+  have h7zero : (7 : ZMod p) = 0 := by
+    rw [← canonicalRatioPoly16_bezout (R := ZMod p) (ζ ^ 2)]
+    rw [hy4, hcubic_y]
+    ring
+  have h7nz : (7 : ZMod p) ≠ 0 := by
+    change ¬ (((7 : ℕ) : ZMod p) = 0)
+    rw [ZMod.natCast_eq_zero_iff]
+    exact Nat.not_dvd_of_pos_of_lt (by norm_num : 0 < 7) (by omega : 7 < p)
+  exact h7nz h7zero
+
+/-- Scanner-facing exact `n = 16` good-prime form: for every prime `p > 17`, the literal
+width-4 `≤ 16` budget is impossible in the canonical primitive-root lane. -/
+theorem not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
+    {p : ℕ} [Fact p.Prime] (hp17 : 17 < p) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 16) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod p)) 4).card ≤ 16 :=
+  not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+    (F := ZMod p) (n := 16) (ζ := ζ)
+    (by norm_num) (by norm_num) (by norm_num) hζ
+    (polynomial_ne_zmod16_of_prime_gt17 hp17 hζ)
+
 
 /-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
 theorem n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
@@ -2438,6 +2534,10 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms polynomial_ne_zmod_of_resultant_natAbs_lt_prime
 #print axioms polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime
 #print axioms not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime
+#print axioms canonicalRatioPoly16_reduction_zmod
+#print axioms canonicalRatioPoly16_bezout
+#print axioms polynomial_ne_zmod16_of_prime_gt17
+#print axioms not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 #print axioms orderOf_4134_ratio
