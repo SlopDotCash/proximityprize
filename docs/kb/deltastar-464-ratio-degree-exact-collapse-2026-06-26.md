@@ -42,6 +42,7 @@ ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_mem_iff
 ArkLib.ProximityGap.RatioMultiplicity.degenerate_exists_iff_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_nonempty_iff_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_mem_iff_eq_neg_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_iff_scalarMultiple
@@ -59,6 +60,7 @@ ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_or_one_of_degree_ex
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_nonempty_iff_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_if_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact
@@ -126,6 +128,11 @@ The degeneracy test is also recorded in scalar-multiple form: such a scalar exis
 `P = c*Q` for some field scalar `c`.  Thus, under the same exact degree hypothesis and `Q != 0`,
 the low-weight set is empty iff `P` is not a scalar multiple of `Q`, and has cardinality `1` iff
 `P` is a scalar multiple of `Q`.
+
+The same classification is exposed as nonempty tests.  The degenerate scalar set is nonempty iff
+`P` is a scalar multiple of `Q`; under the exact degree inequality, the low-weight bad-scalar set
+is also nonempty iff `P` is a scalar multiple of `Q`.  These nonempty criteria do not require
+`Q != 0`.
 
 There are direct singleton consumers for this form as well: if `P = c*Q` and `Q != 0`, the
 degenerate scalar set is exactly `{-c}`, and under the exact degree inequality the low-weight

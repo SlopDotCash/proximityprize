@@ -1203,6 +1203,19 @@ Added `deltastar-464-arbitrary-ratio-profile-obstruction-2026-06-26.md` and the
 `RatioCensus.ratioSeq_negProfile_one` / `ratioMult_negProfile_one` /
 `not_uniform_ratioMult_cap_of_fiber_gt` obstruction layer.  For any map `r : ι → F`, the
 full-support line `s₁ ≡ 1`, `s₀ = -r` realizes that exact ratio profile, and its low-weight
-incidence is the large-fibre count of `r`.  Thus the ratio-degree collapse cannot be promoted to
-arbitrary stacks by support counting alone; a floor proof using this lane still needs polynomial
-domination or a global list-supply theorem.
+incidence is the large-fibre count of `r`.  Follow-up theorems
+`fiberLevel_subtypeProd_profile_eq` and `farIncidence_subtypeProd_profile_card_eq` show that any
+nonempty finite set of bad scalars can be prescribed exactly with positive multiplicity.  Thus the
+ratio-degree collapse cannot be promoted to arbitrary stacks by support counting alone; a floor
+proof using this lane still needs polynomial domination or a global list-supply theorem.
+
+## [2026-06-27] refute | one-spike profiles force numerator degree
+
+Added `Frontier/RatioProfileDegreeObstruction.lean` and companion note
+`deltastar-464-ratio-profile-degree-obstruction-2026-06-27.md`.  The theorem
+`spike_profile_numerator_degree_ge` proves that a represented one-spike ratio profile over an
+injective domain forces numerator degree at least `|ι| - 1`; the sparse variant
+`sparse_profile_numerator_degree_ge` forces degree at least the complement size `|ι| - #support`.
+This blocks any blanket reduction from arbitrary ratio profiles to uniformly bounded-degree
+polynomial lines; the actual δ* floor still needs a structural domination theorem or a global
+list-supply bound.

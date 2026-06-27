@@ -362,6 +362,87 @@ theorem not_uniform_ratioMult_cap_of_fiber_gt (r : ι → F) {γ : F} {m : ℕ}
   intro hcap
   exact (not_lt.mpr ((ratioMult_negProfile_one r γ).symm ▸ hcap γ)) hγ
 
+omit [Field F] in
+/-- **Exact fibres for a prescribed bad-scalar set.**  On the index type
+`{γ // γ ∈ S} × Fin μ`, the profile `r(γ, j) = γ` has fibre size `μ` over scalars in
+`S` and fibre size `0` elsewhere. -/
+theorem fiber_card_subtypeProd_profile (S : Finset F) (μ : ℕ) (γ : F) :
+    (univ.filter (fun i : {x // x ∈ S} × Fin μ => (i.1 : F) = γ)).card =
+      if γ ∈ S then μ else 0 := by
+  classical
+  by_cases hγ : γ ∈ S
+  · rw [if_pos hγ]
+    have hfilter : (univ.filter (fun i : {x // x ∈ S} × Fin μ => (i.1 : F) = γ))
+        = (univ : Finset (Fin μ)).image (fun j => (⟨γ, hγ⟩, j)) := by
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
+      constructor
+      · intro hi
+        refine ⟨i.2, ?_⟩
+        apply Prod.ext
+        · exact Subtype.ext hi.symm
+        · rfl
+      · rintro ⟨j, hji⟩
+        rw [← hji]
+    rw [hfilter]
+    rw [Finset.card_image_of_injOn]
+    · simp
+    · intro x _hx y _hy hxy
+      exact congrArg Prod.snd hxy
+  · rw [if_neg hγ]
+    apply Finset.card_eq_zero.mpr
+    ext i
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · intro hi
+      exact False.elim (hγ (by
+        rw [← hi]
+        exact i.1.property))
+    · intro hfalse
+      cases hfalse
+
+omit [Field F] in
+/-- **Large-fibre scalars can be prescribed exactly.**  For positive multiplicity `μ`, the
+large-fibre level set of the profile `r(γ, j) = γ` is exactly `S`. -/
+theorem fiberLevel_subtypeProd_profile_eq [Fintype F] (S : Finset F) {μ : ℕ} (hμ : 0 < μ) :
+    (univ.filter (fun γ : F =>
+      μ ≤ (univ.filter (fun i : {x // x ∈ S} × Fin μ => (i.1 : F) = γ)).card)) = S := by
+  classical
+  ext γ
+  by_cases hγ : γ ∈ S
+  · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    rw [fiber_card_subtypeProd_profile, if_pos hγ]
+    exact ⟨fun _ => hγ, fun _ => le_rfl⟩
+  · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    rw [fiber_card_subtypeProd_profile, if_neg hγ]
+    exact ⟨fun hle => False.elim ((not_le_of_gt hμ) hle), fun hs => False.elim (hγ hs)⟩
+
+/-- **Any nonempty finite set of bad scalars is realizable by a full-support line.**  For
+`S.Nonempty` and `0 < μ`, take the full-support line indexed by `{γ // γ ∈ S} × Fin μ` with
+profile `r(γ, j) = γ`.  At radius `n - μ`, the low-weight bad-scalar set has cardinality exactly
+`S.card`.  Thus the ratio-census formalism alone can realize arbitrary finite bad-scalar sets;
+only extra structure such as a low-degree polynomial law can force the collapse proved in
+`RatioMultiplicityBridge.lean`. -/
+theorem farIncidence_subtypeProd_profile_card_eq [Fintype F] (S : Finset F) {μ : ℕ}
+    (hS : S.Nonempty) (hμ : 0 < μ) :
+    (univ.filter (fun γ : F =>
+      hammingNorm
+        ((fun i : {x // x ∈ S} × Fin μ => -((i.1 : F))) +
+          γ • (fun _ : {x // x ∈ S} × Fin μ => (1 : F)))
+        ≤ Fintype.card ({x // x ∈ S} × Fin μ) - μ)).card = S.card := by
+  classical
+  rw [farIncidence_negProfile_one_eq_fiberLevel]
+  have hcard : Fintype.card ({x // x ∈ S} × Fin μ) = S.card * μ := by
+    simp [Fintype.card_prod]
+  have hle : μ ≤ Fintype.card ({x // x ∈ S} × Fin μ) := by
+    rw [hcard]
+    exact Nat.le_mul_of_pos_left μ (Finset.card_pos.mpr hS)
+  have hthreshold : Fintype.card ({x // x ∈ S} × Fin μ) -
+      (Fintype.card ({x // x ∈ S} × Fin μ) - μ) = μ := by
+    omega
+  rw [hthreshold]
+  exact congrArg Finset.card (fiberLevel_subtypeProd_profile_eq S hμ)
+
 end ArkLib.ProximityGap.RatioCensus
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -380,3 +461,6 @@ end ArkLib.ProximityGap.RatioCensus
 #print axioms ArkLib.ProximityGap.RatioCensus.ratioMult_negProfile_one
 #print axioms ArkLib.ProximityGap.RatioCensus.farIncidence_negProfile_one_eq_fiberLevel
 #print axioms ArkLib.ProximityGap.RatioCensus.not_uniform_ratioMult_cap_of_fiber_gt
+#print axioms ArkLib.ProximityGap.RatioCensus.fiber_card_subtypeProd_profile
+#print axioms ArkLib.ProximityGap.RatioCensus.fiberLevel_subtypeProd_profile_eq
+#print axioms ArkLib.ProximityGap.RatioCensus.farIncidence_subtypeProd_profile_card_eq

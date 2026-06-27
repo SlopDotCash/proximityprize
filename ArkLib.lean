@@ -1202,6 +1202,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyTwoCharFreeFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyTwoEqAdditiveEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.RatioImagePermInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.RatioLevelSet
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.RatioProfileDegreeObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.RealizerL2NotSup
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ResolveFieldIndependent

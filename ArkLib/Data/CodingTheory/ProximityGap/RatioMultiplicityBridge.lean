@@ -373,6 +373,22 @@ theorem degenerate_exists_iff_scalarMultiple (P Q : F[X]) :
     exact add_neg_cancel _
 
 omit [Fintype ι] [DecidableEq ι] in
+/-- **Degenerate nonempty criterion, scalar-multiple form.**  The degenerate-scalar set is
+nonempty exactly when `P` is a scalar multiple of `Q`. -/
+theorem degenerateScalars_nonempty_iff_scalarMultiple (P Q : F[X]) :
+    (univ.filter (fun γ : F => P + C γ * Q = 0)).Nonempty
+      ↔ ∃ c : F, P = C c * Q := by
+  constructor
+  · rintro ⟨γ, hγmem⟩
+    exact (degenerate_exists_iff_scalarMultiple P Q).1
+      ⟨γ, (Finset.mem_filter.mp hγmem).2⟩
+  · intro hscalar
+    rcases (degenerate_exists_iff_scalarMultiple P Q).2 hscalar with ⟨γ, hγ⟩
+    refine ⟨γ, ?_⟩
+    rw [Finset.mem_filter]
+    exact ⟨Finset.mem_univ γ, hγ⟩
+
+omit [Fintype ι] [DecidableEq ι] in
 /-- **Scalar-multiple singleton form for degenerate scalars.**  If `Q ≠ 0` and
 `P = c·Q`, then the unique scalar making `P + γ·Q = 0` is `γ = -c`. -/
 theorem degenerateScalars_eq_singleton_of_scalarMultiple (P Q : F[X]) {c : F}
@@ -690,6 +706,22 @@ theorem badWeight_empty_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
     degenerateScalars_empty_iff_not_scalarMultiple P Q]
 
 omit [DecidableEq ι] in
+/-- **Exact nonempty criterion, scalar-multiple form.**  Under the exact degree condition, the
+low-weight bad-scalar set is nonempty exactly when `P` is a scalar multiple of `Q`.  This is the
+nonempty counterpart to `badWeight_empty_iff_not_scalarMultiple_of_degree_exact`, and does not
+require `Q ≠ 0`. -/
+theorem badWeight_nonempty_iff_scalarMultiple_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).Nonempty
+      ↔ ∃ c : F, P = C c * Q := by
+  rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg,
+    degenerateScalars_nonempty_iff_scalarMultiple P Q]
+
+omit [DecidableEq ι] in
 /-- **Exact cardinal-zero criterion, scalar-multiple form.**  Under the exact degree condition,
 the low-weight bad-scalar count is zero iff `P` is not a scalar multiple of `Q`. -/
 theorem badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
@@ -785,6 +817,8 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerate_exists_iff_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_nonempty_iff_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_singleton_of_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_mem_iff_eq_neg_scalarMultiple
@@ -818,6 +852,8 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_nonempty_iff_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
