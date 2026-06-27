@@ -78,8 +78,31 @@ onset, (ii) explains quantitatively why good primes are abundant (generic margin
 the algebraic (Norm) and analytic (BGK) pictures on the same object. The honest residual is
 unchanged: prove the prize prime (or a window prime usable by the prize) is lattice-non-anomalous.
 
-## Landable Lean increment
+## Unification with the `land-exhaust` resultant thread (verified)
 
-The clean axiom-clean brick is the **Norm bound** (Lemma B): for `α ∈ ℤ[ζ_n]` nonzero with `℘ | α`,
-`p ≤ |Norm_{ℚ(ζ_n)/ℚ}(α)|`, via `Int.le_of_dvd` + ideal-norm multiplicativity. The `ℤ[ζ_n] ≅ ℤ^{n/2}`
-signed-basis-vector identification of roots is a second clean combinatorial brick.
+Every nonzero `v ∈ L_p` gives the integer polynomial `P_v(x) = Σ v_i x^i` with `P_v(ω) ≡ 0 (mod p)`,
+i.e. `ω` is a root of `P_v` mod the split prime, hence **`p | Res(Φ_n, P_v)`** (verified on
+n=16: every shortest `v` satisfies `P_v(ω) ≡ 0`, e.g. p=257 `v=(2,0,0,−1,0,…)` → `2 − ω³ ≡ 0`).
+Therefore the complete bad-prime set, to depth `r`, is
+
+```
+   BadPrimes(n, ≤r) = ⋃_{0≠v∈ℤ^{n/2}, ‖v‖₁ ≤ 2r}  primeFactors( Res(Φ_n, P_v) ),
+```
+
+and the onset `r₀(p)` is governed by the **shortest** relation `v` with `p | Res(Φ_n, P_v)`. This
+**generalizes** the `land-exhaust` `canonicalRatioBadPrimes(n) = primeFactors Res(Φ_n,(X⁴+1)ⁿ−(X²+1)ⁿ)`:
+the canonical width-four resultant is the special case of **one** structured relation `v`; the full
+bad set ranges over **all** short `v`. Actionable consequence for the floor program: a complete
+good-prime-existence argument needs a window with more primes than `#BadPrimes(n, ≤ ln p)` summed
+over **all** short relations — not just the canonical one. The count is finite (relations of
+`ℓ₁ ≤ 2 ln p` in dimension `n/2`, each resultant with `O(φ(n)·log)` prime factors); the
+Thorner–Zaman/Linnik window must beat that total. The lattice/Minkowski genericity (shortest
+relation length `≈ n/2`) is what makes this total sparse relative to a polynomial-size window.
+
+## Landable Lean increments
+
+1. **Norm bound** (Lemma B): for `α ∈ ℤ[ζ_n]` nonzero with `℘ | α`, `p ≤ |Norm_{ℚ(ζ_n)/ℚ}(α)|`,
+   via `Int.le_of_dvd` + ideal-norm multiplicativity.
+2. The `ℤ[ζ_n] ≅ ℤ^{n/2}` signed-basis-vector identification of the `n`-th roots (combinatorial).
+3. The **lattice→resultant bridge**: `v ∈ L_p ⟹ p | Res(Φ_n, P_v)` (`P_v(ω) ≡ 0` is the eval form),
+   generalizing the canonical width-four resultant gate to arbitrary relations.

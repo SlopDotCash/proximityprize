@@ -86,9 +86,10 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
+attribute [local instance] Classical.propDecidable
+
 /-! ## The single open core `Prop` -/
 
-open Classical in
 /-- **THE SINGLE OPEN CORE, stated as one explicit `Prop`.**
 
 `WorstCaseIncidenceBounded C δ B` says: for **every** stack `u = (u₀, u₁)`, the number of *bad*
@@ -107,7 +108,6 @@ def WorstCaseIncidenceBounded (C : Set (ι → A)) (δ : ℝ≥0) (B : ℕ) : Pr
 
 /-! ## The exact per-stack probability identity ⟹ supremum bound -/
 
-open Classical in
 /-- **From the open core to the MCA error bound.**  If the worst-case far-line incidence is at
 most `B` at radius `δ`, then `ε_mca(C, δ) ≤ B / q`.  Uses the exact per-stack probability identity
 `Pr_γ[mcaEvent] = (#bad-scalars)/q` (`prob_uniform_eq_card_filter_div_card`) and takes the
@@ -153,7 +153,6 @@ theorem worstCaseIncidence_pin_budget (C : Set (ι → A)) {δ : ℝ≥0} {E : �
 
 /-! ## The orbit-count face of the conditional pin -/
 
-open Classical in
 /-- **The orbit-count face of the open core (Action–Orbit reformulation).**
 
 The governing-law budget test `I(δ) ≤ n` is, by the axiom-clean crossing law
@@ -176,7 +175,6 @@ theorem worstCaseIncidenceBounded_of_orbitCount
   obtain ⟨N, hid, hNd⟩ := horbit u
   exact (ArkLib.ProximityGap.OrbitCountCrossingLaw.crossing_law hS hsupply hid).2 hNd
 
-open Classical in
 /-- **The orbit-count face of the conditional pin.**
 
 The standalone orbit-count certificate gives `WorstCaseIncidenceBounded C δ n`; if the normalized
@@ -198,7 +196,6 @@ theorem worstCaseIncidence_pin_of_orbitCount
 
 If the target error is exactly the natural budget ratio `n/q`, the per-stack orbit-count
 certificate pins `δ ≤ mcaDeltaStar C (n/q)` with no separate budget side condition. -/
-open Classical in
 theorem worstCaseIncidence_pin_budget_of_orbitCount
     (C : Set (ι → A)) {δ : ℝ≥0} {S d n : ℕ}
     (hδ : δ ≤ 1) (hS : 0 < S) (hsupply : S * d = n)
