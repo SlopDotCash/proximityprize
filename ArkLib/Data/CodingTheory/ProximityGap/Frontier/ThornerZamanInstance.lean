@@ -138,6 +138,155 @@ theorem tzPrimeSupply_256_two : TZPrimeSupply 256 (2 : ℝ) 10 := by
         Finset ℕ).card := by decide
     _ ≤ (tzWindow 256 (2 : ℝ)).card := Finset.card_le_card hsub
 
+/-- **Concrete discharge for `n = 512, β = 2`.**  The window `[512², 2·512²] =
+`[262144, 524288]` contains the twenty primes listed below, all `≡ 1 (mod 512)`.  This extends
+the explicit β=2 supply ladder to the same smooth-domain rung as the concrete width-four
+refuter `ZMod 262657`. -/
+theorem tzPrimeSupply_512_two : TZPrimeSupply 512 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((512 : ℕ) : ℝ) ^ (2 : ℝ) = 262144 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({262657, 265729, 270337, 275969, 278017, 279553, 284161, 285697, 286721, 287233,
+          288257, 295937, 299521, 301057, 302593, 303617, 306689, 307201, 310273, 319489} :
+          Finset ℕ) ⊆ tzWindow 512 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({262657, 265729, 270337, 275969, 278017, 279553, 284161, 285697, 286721, 287233,
+          288257, 295937, 299521, 301057, 302593, 303617, 306689, 307201, 310273, 319489} :
+          Finset ℕ).card := by decide
+    _ ≤ (tzWindow 512 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/-- **Concrete discharge for `n = 1024, β = 2`.**  The window `[1024², 2·1024²] =
+`[1048576, 2097152]` contains the twenty primes listed below, all `≡ 1 (mod 1024)`.  This keeps
+the explicit β=2 supply ladder aligned with the `n = 1024` concrete width-four refuter. -/
+theorem tzPrimeSupply_1024_two : TZPrimeSupply 1024 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((1024 : ℕ) : ℝ) ^ (2 : ℝ) = 1048576 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({1051649, 1053697, 1054721, 1062913, 1067009, 1070081, 1072129, 1073153, 1075201,
+          1079297, 1082369, 1093633, 1094657, 1097729, 1103873, 1108993, 1113089, 1124353,
+          1130497, 1139713} : Finset ℕ) ⊆ tzWindow 1024 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({1051649, 1053697, 1054721, 1062913, 1067009, 1070081, 1072129, 1073153, 1075201,
+          1079297, 1082369, 1093633, 1094657, 1097729, 1103873, 1108993, 1113089, 1124353,
+          1130497, 1139713} : Finset ℕ).card := by decide
+    _ ≤ (tzWindow 1024 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/-- **Concrete discharge for `n = 2048, β = 2`.**  The window `[2048², 2·2048²] =
+`[4194304, 8388608]` contains the twenty primes listed below, all `≡ 1 (mod 2048)`.  This extends
+the explicit β=2 supply ladder to the same rung as the concrete `ZMod 4206593` width-four
+refuter. -/
+theorem tzPrimeSupply_2048_two : TZPrimeSupply 2048 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((2048 : ℕ) : ℝ) ^ (2 : ℝ) = 4194304 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({4206593, 4208641, 4263937, 4270081, 4274177, 4294657, 4300801, 4304897, 4319233,
+          4323329, 4360193, 4366337, 4384769, 4417537, 4421633, 4423681, 4427777, 4435969,
+          4452353, 4458497} : Finset ℕ) ⊆ tzWindow 2048 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({4206593, 4208641, 4263937, 4270081, 4274177, 4294657, 4300801, 4304897, 4319233,
+          4323329, 4360193, 4366337, 4384769, 4417537, 4421633, 4423681, 4427777, 4435969,
+          4452353, 4458497} : Finset ℕ).card := by decide
+    _ ≤ (tzWindow 2048 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/-- **Concrete discharge for `n = 4096, β = 2`.**  The window `[4096², 2·4096²] =
+`[16777216, 33554432]` contains the twenty primes listed below, all `≡ 1 (mod 4096)`. -/
+theorem tzPrimeSupply_4096_two : TZPrimeSupply 4096 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((4096 : ℕ) : ℝ) ^ (2 : ℝ) = 16777216 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({16801793, 16863233, 16900097, 16957441, 16986113, 17006593, 17010689, 17059841,
+          17129473, 17182721, 17231873, 17252353, 17264641, 17276929, 17367041, 17375233,
+          17391617, 17416193, 17440769, 17448961} : Finset ℕ) ⊆ tzWindow 4096 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({16801793, 16863233, 16900097, 16957441, 16986113, 17006593, 17010689, 17059841,
+          17129473, 17182721, 17231873, 17252353, 17264641, 17276929, 17367041, 17375233,
+          17391617, 17416193, 17440769, 17448961} : Finset ℕ).card := by decide
+    _ ≤ (tzWindow 4096 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/-- **Concrete discharge for `n = 8192, β = 2`.**  The window `[8192², 2·8192²] =
+`[67108864, 134217728]` contains the twenty primes listed below, all `≡ 1 (mod 8192)`. -/
+theorem tzPrimeSupply_8192_two : TZPrimeSupply 8192 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((8192 : ℕ) : ℝ) ^ (2 : ℝ) = 67108864 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({67239937, 67280897, 67411969, 67452929, 67502081, 67510273, 67584001, 67649537,
+          67657729, 67731457, 67903489, 68018177, 68190209, 68362241, 68485121, 68558849,
+          68567041, 68640769, 68681729, 68853761} : Finset ℕ) ⊆ tzWindow 8192 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({67239937, 67280897, 67411969, 67452929, 67502081, 67510273, 67584001, 67649537,
+          67657729, 67731457, 67903489, 68018177, 68190209, 68362241, 68485121, 68558849,
+          68567041, 68640769, 68681729, 68853761} : Finset ℕ).card := by decide
+    _ ≤ (tzWindow 8192 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/-- **Concrete discharge for `n = 16384, β = 2`.**  The window `[16384², 2·16384²] =
+`[268435456, 536870912]` contains the twenty primes listed below, all `≡ 1 (mod 16384)`. -/
+theorem tzPrimeSupply_16384_two : TZPrimeSupply 16384 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((16384 : ℕ) : ℝ) ^ (2 : ℝ) = 268435456 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({268582913, 268664833, 268730369, 268779521, 268861441, 269221889, 269402113,
+          269844481, 269991937, 270237697, 270450689, 270499841, 270532609, 270581761,
+          270794753, 271286273, 271532033, 271564801, 271728641, 271761409} : Finset ℕ)
+        ⊆ tzWindow 16384 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({268582913, 268664833, 268730369, 268779521, 268861441, 269221889, 269402113,
+          269844481, 269991937, 270237697, 270450689, 270499841, 270532609, 270581761,
+          270794753, 271286273, 271532033, 271564801, 271728641, 271761409} : Finset ℕ).card :=
+        by decide
+    _ ≤ (tzWindow 16384 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/-- **Concrete discharge for `n = 32768, β = 2`.**  The window `[32768², 2·32768²] =
+`[1073741824, 2147483648]` contains the twenty primes listed below, all `≡ 1 (mod 32768)`. -/
+theorem tzPrimeSupply_32768_two : TZPrimeSupply 32768 (2 : ℝ) 20 := by
+  refine ⟨?_⟩
+  have hpow : ((32768 : ℕ) : ℝ) ^ (2 : ℝ) = 1073741824 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({1073872897, 1073971201, 1074266113, 1074429953, 1075937281, 1076002817,
+          1076789249, 1076920321, 1077477377, 1077706753, 1077903361, 1077968897,
+          1078296577, 1079443457, 1079672833, 1080360961, 1081212929, 1081507841,
+          1081638913, 1082982401} : Finset ℕ) ⊆ tzWindow 32768 (2 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (20 : ℕ)
+      = ({1073872897, 1073971201, 1074266113, 1074429953, 1075937281, 1076002817,
+          1076789249, 1076920321, 1077477377, 1077706753, 1077903361, 1077968897,
+          1078296577, 1079443457, 1079672833, 1080360961, 1081212929, 1081507841,
+          1081638913, 1082982401} : Finset ℕ).card := by decide
+    _ ≤ (tzWindow 32768 (2 : ℝ)).card := Finset.card_le_card hsub
+
 /-- **Concrete discharge for `n = 16, β = 3`** — in the faithful unconditional regime
 `β > 12/5` of [TZ24].  The window `[16³, 2·16³] = [4096, 8192]` contains the ten primes
 `4129, 4177, 4241, 4273, 4289, 4337, 4481, 4513, 4561, 4657`, all `≡ 1 (mod 16)`. -/
@@ -304,5 +453,12 @@ theorem tzPrimeSupply_8_five : TZPrimeSupply 8 (5 : ℝ) 8 := by
 #print axioms tzPrimeSupply_64_three
 #print axioms tzPrimeSupply_32_four
 #print axioms tzPrimeSupply_64_four
+#print axioms tzPrimeSupply_512_two
+#print axioms tzPrimeSupply_1024_two
+#print axioms tzPrimeSupply_2048_two
+#print axioms tzPrimeSupply_4096_two
+#print axioms tzPrimeSupply_8192_two
+#print axioms tzPrimeSupply_16384_two
+#print axioms tzPrimeSupply_32768_two
 
 end ArkLib.ProximityGap.KKH26

@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.LineListReduction
 import ArkLib.Data.CodingTheory.ProximityGap.JohnsonListBound
+import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
 
 /-!
 # Incidence multiplicity for the line-list route
@@ -23,6 +24,7 @@ set_option linter.unusedSectionVars false
 set_option linter.style.longFile 2100
 
 open Finset
+open scoped NNReal ENNReal
 
 namespace ProximityGap.Ownership
 
@@ -1808,6 +1810,75 @@ theorem lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
       dom k a R u₀ u₁ hR hsafe hmult)
     hbudget
 
+open Classical in
+/-- Every MCA-bad scalar lies in the line-list bad-scalar set once the real radius has crossed the
+integer agreement threshold `a`.  The `mcaEvent` no-joint clause is discarded here; only the
+existence of a codeword agreeing on a witness set is used. -/
+theorem mcaEvent_badScalars_subset_lineBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) {δ : ℝ≥0}
+    (hlo : ((a - 1 : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0))
+    (u₀ u₁ : Fin n → F) :
+    (Finset.univ.filter (fun γ : F => mcaEvent (F := F)
+        ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₀ u₁ γ))
+      ⊆ lineBadScalars dom k a u₀ u₁ := by
+  intro γ hγ
+  rw [Finset.mem_filter] at hγ
+  rcases hγ with ⟨_, S, hS, hline, _hnoJoint⟩
+  rcases hline with ⟨c, hc, hagree⟩
+  have haS : a ≤ S.card := by
+    have hlt : ((a - 1 : ℕ) : ℝ≥0) < (S.card : ℝ≥0) :=
+      lt_of_lt_of_le hlo hS
+    have hltNat : a - 1 < S.card := by exact_mod_cast hlt
+    omega
+  have hSsub : S ⊆ agreeSet c (fun i => u₀ i + γ • u₁ i) := by
+    intro i hi
+    rw [agreeSet, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hagree i hi⟩
+  rw [lineBadScalars, Finset.mem_filter]
+  exact ⟨Finset.mem_univ _, c, hc, le_trans haS (Finset.card_le_card hSsub)⟩
+
+open Classical in
+/-- Cardinal form of `mcaEvent_badScalars_subset_lineBadScalars`. -/
+theorem mcaEvent_badScalars_card_le_lineBadScalars
+    (dom : Fin n ↪ F) (k a : ℕ) {δ : ℝ≥0}
+    (hlo : ((a - 1 : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0))
+    (u₀ u₁ : Fin n → F) :
+    (Finset.univ.filter (fun γ : F => mcaEvent (F := F)
+        ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₀ u₁ γ)).card
+      ≤ (lineBadScalars dom k a u₀ u₁).card :=
+  Finset.card_le_card
+    (mcaEvent_badScalars_subset_lineBadScalars dom k a hlo u₀ u₁)
+
+open Classical in
+/-- A uniform line-list bad-scalar budget supplies the open-core incidence bound consumed by the
+`δ*` lower pin. -/
+theorem worstCaseIncidenceBounded_of_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ) {δ : ℝ≥0}
+    (hlo : ((a - 1 : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0))
+    (hB : UniformLineBadScalarsBudgeted dom k a B) :
+    OpenCoreConditionalPin.WorstCaseIncidenceBounded (F := F) (A := F)
+      (((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F))) δ B := by
+  intro u
+  exact le_trans
+    (mcaEvent_badScalars_card_le_lineBadScalars dom k a hlo (u 0) (u 1))
+    (hB (u 0) (u 1))
+
+open Classical in
+/-- Direct `δ*` floor from a uniform line-list bad-scalar budget.  The remaining inputs are exactly
+the radius-in-window inequality and the normalized budget fit. -/
+theorem mcaDeltaStar_floor_of_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ) (εstar : ℝ≥0∞) {δ : ℝ≥0}
+    (hδ : δ ≤ 1)
+    (hlo : ((a - 1 : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0))
+    (hB : UniformLineBadScalarsBudgeted dom k a B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ MCAThresholdLedger.mcaDeltaStar (F := F) (A := F)
+      (((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F))) εstar :=
+  OpenCoreConditionalPin.worstCaseIncidence_pin (F := F) (A := F)
+    (((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F))) εstar hδ
+    (worstCaseIncidenceBounded_of_uniformLineBadScalarsBudgeted dom k a B hlo hB)
+    hbudget
+
 section SourceAudit
 
 #print axioms badScalarWitnessCodewords
@@ -1928,6 +1999,10 @@ section SourceAudit
 #print axioms lineBadScalars_card_mul_le_puncturedZeroStratifiedLineWeight_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_puncturedZeroStratifiedLineWeight_div_of_multiplicityFloor
 #print axioms lineBadScalars_card_le_of_multiplicityFloor_and_weight_div_le
+#print axioms mcaEvent_badScalars_subset_lineBadScalars
+#print axioms mcaEvent_badScalars_card_le_lineBadScalars
+#print axioms worstCaseIncidenceBounded_of_uniformLineBadScalarsBudgeted
+#print axioms mcaDeltaStar_floor_of_uniformLineBadScalarsBudgeted
 
 end SourceAudit
 

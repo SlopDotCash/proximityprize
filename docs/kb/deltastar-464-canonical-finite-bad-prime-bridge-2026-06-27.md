@@ -78,6 +78,12 @@ versions of that comparison into `CanonicalWidthFourGoodPrimeSupply`.  The direc
 `refuter_of_TZ_canonicalBadPrimeCount`, `refuter_of_TZ_canonicalCrudeBadPrimeCount`, and
 `refuter_of_TZ_canonicalSharpBadPrimeCount` compose that supply with the scanner refuter.
 
+The reusable selector behind this pattern is now isolated in
+`Frontier/FiniteObstructionGoodPrime.lean`: if all bad candidate primes divide a nonzero integer
+obstruction `D` and the candidate set has more primes than `D.primeFactors.card`, then one
+candidate prime is good.  This is only the finite combinatorial step after a route has supplied its
+obstruction integer and prime window.
+
 Worked finite-exception example: the same principle now has a fully explicit `n = 32` refinement
 in `E2W4CyclotomicNonCollision.lean`.  The reduced Bezout constant factors as
 
@@ -120,6 +126,13 @@ contains at least twenty primes congruent to `1 mod 64`, and `tzPrimeSupply_64_f
 `[64^4, 2*64^4]` contains at least sixteen such primes.  These are supply-side certificates only:
 they do not by themselves classify `canonicalRatioBadPrimes 64`, and therefore do not yet produce
 an `n = 64` canonical refuter through the finite-bad-prime pigeonhole.
+The β=2 supply side now also reaches the same large concrete rungs as the fixed-prime refuter
+ladder: `tzPrimeSupply_512_two`, `tzPrimeSupply_1024_two`, `tzPrimeSupply_2048_two`,
+`tzPrimeSupply_4096_two`, `tzPrimeSupply_8192_two`, `tzPrimeSupply_16384_two`, and
+`tzPrimeSupply_32768_two` each provide
+twenty explicit primes in `[n^2, 2*n^2]` congruent to `1 mod n`.  These rows verify
+polynomial-size prime supply at `n = 512` through `n = 32768`; they still do not classify the
+corresponding finite bad-prime sets.
 
 A separate direct witness does produce one closed `n = 64` canonical refuter:
 `exists_mu64_width4_refuter_zmod4289` uses the primitive 64th root `56 : ZMod 4289` and a
@@ -142,7 +155,18 @@ the complete `n = 128` bad-prime set.  The next rung is also explicit:
 `exists_mu1024_width4_refuter_zmod1053697` uses `80 : ZMod 1053697` as a primitive 1024th root,
 and `exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2` records
 `1053697 ∈ [1024^2, 2*1024^2]`.  This extends the concrete β=2 ladder without classifying all
-`n = 1024` finite exceptions.
+`n = 1024` finite exceptions.  The next finite rung is also closed:
+`exists_mu2048_width4_refuter_zmod4206593` uses `207446 : ZMod 4206593` as a primitive 2048th
+root, and `exists_tzWindow_mu2048_width4_refuter_zmod4206593_beta2` records
+`4206593 ∈ [2048^2, 2*2048^2]`.  This remains a named concrete witness, not an exact
+`n = 2048` finite-exception classification.  The same direct-witness pattern has now been checked
+at `n = 4096`, `n = 8192`, and `n = 16384` via the named witnesses
+`exists_mu4096_width4_refuter_zmod16957441`, `exists_mu8192_width4_refuter_zmod67731457`, and
+`exists_mu16384_width4_refuter_zmod268730369`, with corresponding β=2 TZ-window wrappers.
+One more finite rung is also checked:
+`exists_mu32768_width4_refuter_zmod1073872897` uses the primitive root
+`2521228 : ZMod 1073872897`, and `CanonicalWidthFourConcreteTZ32768` packages the β=2
+TZ-window form.  These are still concrete rungs, not exact finite-exception classifications.
 
 This also gives a small but useful refutation of an over-identification.  The Lean theorem
 `canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime` exhibits `641`: it is prime, satisfies

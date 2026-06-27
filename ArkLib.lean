@@ -996,9 +996,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourBadPrime
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ1024
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ128
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ16384
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ2048
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ256
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ32768
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ4096
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ512
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ8192
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CensusBudgetInfeasibleDeepBand
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CensusCapForbidsLargeAligned
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CensusCapForcedBelow
@@ -1109,6 +1114,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.F6CliffInstantiationJohnso
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarCosetCardDvd
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarCosetCardLower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarLineProxyBelowJohnson
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FiniteObstructionGoodPrime
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherRSListCap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorAsymptoticRadius

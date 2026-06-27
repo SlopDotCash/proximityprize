@@ -1843,3 +1843,36 @@ The new module `Frontier/CanonicalWidthFourConcreteTZ1024.lean` records the TZ-w
 `exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2` and the existential wrapper
 `exists_tzWindow_mu1024_width4_refuter_beta2`.  This is still a named concrete witness, not an
 exact finite-exception classification at `n = 1024` or a delta-star floor proof.
+
+Follow-up: the same direct-witness ladder now reaches `n = 2048`.
+`orderOf_207446_ratio_zmod4206593`, `isPrimitiveRoot_207446_2048_ratio_zmod4206593`, and
+`polynomial_207446_sq_pow2048_ne_zmod4206593` certify the primitive-root/noncollision input in
+`ZMod 4206593`; `exists_mu2048_width4_refuter_zmod4206593` packages the literal-budget refuter.
+The new module `Frontier/CanonicalWidthFourConcreteTZ2048.lean` records the TZ-window form via
+`exists_tzWindow_mu2048_width4_refuter_zmod4206593_beta2` and the existential wrapper
+`exists_tzWindow_mu2048_width4_refuter_beta2`.  This is still a named concrete witness, not an
+exact finite-exception classification at `n = 2048` or a delta-star floor proof.
+
+Follow-up: the direct-witness ladder now continues through `n = 32768`.
+`exists_mu4096_width4_refuter_zmod16957441`, `exists_mu8192_width4_refuter_zmod67731457`, and
+`exists_mu16384_width4_refuter_zmod268730369` package three power-of-two rungs; the newest
+literal-budget refuter is `exists_mu32768_width4_refuter_zmod1073872897`, with wrapper module
+`CanonicalWidthFourConcreteTZ32768`.  These are concrete β=2 TZ-window witnesses, not exact
+finite-exception classifications.
+
+Follow-up: `Frontier/ThornerZamanInstance.lean` now extends the β=2 concrete supply side through
+the same large rungs.  Theorems `tzPrimeSupply_512_two : TZPrimeSupply 512 2 20`,
+`tzPrimeSupply_1024_two : TZPrimeSupply 1024 2 20`, and
+`tzPrimeSupply_2048_two : TZPrimeSupply 2048 2 20`, plus the new `tzPrimeSupply_4096_two`,
+`tzPrimeSupply_8192_two`, `tzPrimeSupply_16384_two`, and `tzPrimeSupply_32768_two`, each list
+twenty explicit primes in
+`[n^2, 2*n^2]`, all congruent to `1 mod n`.  These are axiom-clean finite discharges of the named
+B3 `TZPrimeSupply` input at seven more smooth moduli; the general Thorner-Zaman density theorem is
+still the analytic open input.
+
+Follow-up: `Frontier/FiniteObstructionGoodPrime.lean` now isolates the reusable finite-obstruction
+selector.  Theorems `exists_not_dvd_of_primeFactors_card_lt`,
+`exists_not_mem_bad_of_bad_dvd_obstruction`, and
+`bad_card_le_primeFactors_card_of_bad_dvd_obstruction` formalize the good-prime pigeonhole once a
+route has a nonzero obstruction integer `D`; they do not supply the obstruction or analytic prime
+density.

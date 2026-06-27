@@ -26,7 +26,7 @@ The whole B3 chain is built and wired, conditional on ONE named hypothesis:
   from an *explicit finite list* of window primes (option (ii)). `KKH26ConcreteCeiling.lean` —
   full end-to-end at `n=4` with explicit primes, **no analytic NT**, axiom-clean.
 - `Frontier/ThornerZamanInstance.lean` — concrete `TZPrimeSupply` rows such as
-  `tzPrimeSupply_{8,16,32,64,128,256}_two`, the `β = 3` rows through `n = 32`, and small
+  `tzPrimeSupply_{8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768}_two`, the `β = 3` rows through `n = 32`, and small
   higher-`β` rows (explicit primes in `[n^β, 2n^β]`).  As of 2026-06-27 the high-exponent
   concrete ladder includes `tzPrimeSupply_32_four : TZPrimeSupply 32 4 16`, witnessed by
   sixteen explicit primes in `[32^4, 2*32^4]`.
@@ -188,6 +188,18 @@ input remains the analytic wall.
 with `norm_num`/`decide`.  This is still a finite concrete discharge, not the general [TZ24]
 analytic density theorem, but it demonstrates that the high-exponent supply interface continues
 cleanly past the previous `n=16, β=4` row.
+
+## 2026-06-27 follow-up: concrete β=2 rows through n=32768
+
+`Frontier/ThornerZamanInstance.lean` now aligns the explicit β=2 supply ladder with the concrete
+canonical width-four refuter ladder through `n = 32768`.  The new rows
+`tzPrimeSupply_512_two : TZPrimeSupply 512 (2 : ℝ) 20`,
+`tzPrimeSupply_1024_two : TZPrimeSupply 1024 (2 : ℝ) 20`, and
+`tzPrimeSupply_2048_two : TZPrimeSupply 2048 (2 : ℝ) 20`, with matching rows at `n = 4096`,
+`n = 8192`, `n = 16384`, and `n = 32768`, each list twenty explicit primes in `[n^2, 2*n^2]`,
+all congruent to `1 mod n`, and verify membership with `norm_num`/`decide`.  These are finite option-(ii)
+discharges of the named `TZPrimeSupply` hypothesis; the general effective [TZ24] density theorem
+remains the analytic wall.
 
 ## Verdict
 
