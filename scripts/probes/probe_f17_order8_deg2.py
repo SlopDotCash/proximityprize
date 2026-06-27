@@ -32,10 +32,15 @@ for size in range(K+1, N+1):
     SUBSETS.extend(combinations(range(N), size))
 SUB_LEN = {i: len(S) for i, S in enumerate(SUBSETS)}
 
+_EXT_CACHE = {}
 def ext_mask(word):
     """bitmask over SUBSETS: bit set iff word explainable on that subset."""
+    key = tuple(w % P for w in word)
+    c = _EXT_CACHE.get(key)
+    if c is not None:
+        return c
     mask = 0
-    wm = [w % P for w in word]
+    wm = list(key)
     for bit, S in enumerate(SUBSETS):
         # explainable iff some codeword agrees on S
         for cw in CODEWORDS:
@@ -45,6 +50,7 @@ def ext_mask(word):
                     ok = False; break
             if ok:
                 mask |= 1 << bit; break
+    _EXT_CACHE[key] = mask
     return mask
 
 def adm_mask(m):
@@ -126,7 +132,7 @@ for u0 in cands_u0:
 print(f"  scanned {cnt}")
 
 # Family 3: randomized search to push the worst case
-for _ in range(60000):
+for _ in range(8000):
     u0 = [random.randrange(P) for _ in range(N)]
     u1 = [random.randrange(P) for _ in range(N)]
     consider(u0, u1)

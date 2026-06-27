@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4932 files, 53092 declarations
+- `ArkLib` — 4957 files, 53266 declarations
 
-## Same short-name across multiple files (2178 groups)
+## Same short-name across multiple files (2181 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -1013,6 +1013,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.DiffTraceShawValue.shawValue` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiffTraceShawValue.lean:44](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiffTraceShawValue.lean#L44) — **`shawValue`** — the square-root-normalized dimensionless aggregate phase value: `Sh(Rel) = sqrt(ρ_
 - `def ProximityGap.Frontier.ShawValueCapstone.shawValue` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawValueCapstone.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawValueCapstone.lean#L43) — The Shaw value: the Gauss-period sup norm divided by the prize scale.
 - `def ArkLib.ProximityGap.Frontier.ShawValueScalarEquivalence.shawValue` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawValueScalarEquivalence.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawValueScalarEquivalence.lean#L43) — The dimensionless Shaw value: worst scalar divided by the prize floor.
+
+### `spike` (4 declarations, 4 files)
+
+- `def ProximityGap.Frontier.MacWilliamsFloorCeiling.spike` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMacWilliamsFloorCeilingDuality.lean:120](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMacWilliamsFloorCeilingDuality.lean#L120) — A single-orbit **spike spectrum**: value `v` at `b₀`, zero elsewhere. The proven ceiling exhibits ex
+- `def ProximityGap.Frontier.WfT19DimSpectrumDuality.spike` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT19_dim_spectrum_duality.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT19_dim_spectrum_duality.lean#L104) — The single-support "spike" family: value `v` at `b₀`, zero elsewhere.
+- `def ProximityGap.MCABandTwoExact.spike` [ArkLib/Data/CodingTheory/ProximityGap/MCABandTwoExact.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/MCABandTwoExact.lean#L59) — The double-spike stack: `u₀ = single i₁ a`, `u₁ = single i₂ a − single i₁ a`.
+- `def ProximityGap.MetaTheoremSecondOrderCap.spike` [ArkLib/Data/CodingTheory/ProximityGap/MetaTheoremSecondOrderCap.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/MetaTheoremSecondOrderCap.lean#L80) — The single-support "spike" family: value `v` at `b₀`, `0` elsewhere.
 
 ### `sum_char_eq_ite` (4 declarations, 4 files)
 
@@ -2558,6 +2565,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma DeBruijnWeightedCardTwoPrime.exp_twelfth_primitive` [ArkLib/Data/CodingTheory/ProximityGap/DeBruijnWeightedCardTwoPrime.lean:97](../../../ArkLib/Data/CodingTheory/ProximityGap/DeBruijnWeightedCardTwoPrime.lean#L97) — (no docstring)
 - `lemma ThreadSplit.exp_twelfth_primitive` [ArkLib/Data/CodingTheory/ProximityGap/ThreadSplit.lean:297](../../../ArkLib/Data/CodingTheory/ProximityGap/ThreadSplit.lean#L297) — (no docstring)
 
+### `factorial_two_mul_eq` (3 declarations, 3 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.CharZeroEnergyProfileFiber.factorial_two_mul_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergyProfileFiber.lean:103](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergyProfileFiber.lean#L103) — **The per-profile fiber identity (factorial form).** For a profile `a : Fin h → ℕ` summing to `r`, t
+- `theorem ProximityGap.Frontier.PoissonAveragedMGF.factorial_two_mul_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/PoissonAveragedMGF.lean:103](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/PoissonAveragedMGF.lean#L103) — **The factorial bridge `(2r)! = 2^r · r! · (2r-1)‼`.** Composes Mathlib's `Nat.factorial_eq_mul_doub
+- `theorem ProximityGap.Frontier.WickMGFFromTermwise.factorial_two_mul_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/WickMGFFromTermwise.lean:82](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/WickMGFFromTermwise.lean#L82) — **The coefficient identity** `(2r)! = 2^r · r! · (2r−1)‼` (as naturals). For `r ≥ 1`, write `2r = (2
+
 ### `fiber_card` (3 declarations, 3 files)
 
 - `theorem E3Shape21Scratch.fiber_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean:23](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean#L23) — The per-`P` fiber count: tuples `c : Fin 6 → F` that are `±x` on `P` (balanced: `\|P\|/2` x's) and `±y
@@ -3025,12 +3038,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.Ownership.smoothDom` [ArkLib/Data/CodingTheory/ProximityGap/KKH26AlignmentSupply.lean:71](../../../ArkLib/Data/CodingTheory/ProximityGap/KKH26AlignmentSupply.lean#L71) — The smooth domain embedding `i ↦ g^i`.
 - `def ProximityGap.MCADeltaStarLiteralEps.smoothDom` [ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarLiteralEps.lean:159](../../../ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarLiteralEps.lean#L159) — The smooth evaluation domain of the prize's shape: the cyclic 2-power group `⟨g⟩ ≤ F_pˣ` of order `n
 - `def ProximityGap.SmoothLadderInstance.smoothDom` [ArkLib/Data/CodingTheory/ProximityGap/SmoothLadderInstance.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/SmoothLadderInstance.lean#L59) — The smooth domain: the cyclic group `⟨γ⟩` in generator order.
-
-### `spike` (3 declarations, 3 files)
-
-- `def ProximityGap.Frontier.WfT19DimSpectrumDuality.spike` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT19_dim_spectrum_duality.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT19_dim_spectrum_duality.lean#L104) — The single-support "spike" family: value `v` at `b₀`, zero elsewhere.
-- `def ProximityGap.MCABandTwoExact.spike` [ArkLib/Data/CodingTheory/ProximityGap/MCABandTwoExact.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/MCABandTwoExact.lean#L59) — The double-spike stack: `u₀ = single i₁ a`, `u₁ = single i₂ a − single i₁ a`.
-- `def ProximityGap.MetaTheoremSecondOrderCap.spike` [ArkLib/Data/CodingTheory/ProximityGap/MetaTheoremSecondOrderCap.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/MetaTheoremSecondOrderCap.lean#L80) — The single-support "spike" family: value `v` at `b₀`, `0` elsewhere.
 
 ### `squares` (3 declarations, 3 files)
 
@@ -6389,11 +6396,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `instance ArkLib.CodingTheory.TinyInteriorF11.fact_prime_eleven` [ArkLib/Data/CodingTheory/ProximityGap/ListInteriorPinF11.lean:58](../../../ArkLib/Data/CodingTheory/ProximityGap/ListInteriorPinF11.lean#L58) — `11` is prime, so `ZMod 11` is a field, making `RS[F₁₁, F₁₁, 2]` a genuine Reed–Solomon code.
 - `instance ArkLib.CodingTheory.TinyInteriorK3.fact_prime_eleven` [ArkLib/Data/CodingTheory/ProximityGap/ListInteriorPinF11K3.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/ListInteriorPinF11K3.lean#L81) — `11` is prime, so `ZMod 11` is a field. This is what makes `RS[F₁₁, F₁₁, 3]` a genuine Reed–Solomon
 
-### `factorial_two_mul_eq` (2 declarations, 2 files)
-
-- `theorem ProximityGap.Frontier.PoissonAveragedMGF.factorial_two_mul_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/PoissonAveragedMGF.lean:103](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/PoissonAveragedMGF.lean#L103) — **The factorial bridge `(2r)! = 2^r · r! · (2r-1)‼`.** Composes Mathlib's `Nat.factorial_eq_mul_doub
-- `theorem ProximityGap.Frontier.WickMGFFromTermwise.factorial_two_mul_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/WickMGFFromTermwise.lean:82](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/WickMGFFromTermwise.lean#L82) — **The coefficient identity** `(2r)! = 2^r · r! · (2r−1)‼` (as naturals). For `r ≥ 1`, write `2r = (2
-
 ### `failureProbability` (2 declarations, 2 files)
 
 - `abbrev DuplexSpongeFS.NARG.failureProbability` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean:132](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean#L132) — Paper-facing alias for CO25 Definition 3.7 failure probability.
@@ -7114,6 +7116,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.GrowthVsBudgetMStar.johnson` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvC3_GrowthVsBudgetMStar.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvC3_GrowthVsBudgetMStar.lean#L72) — Johnson radius `1 − √ρ = 1/2` at `ρ = 1/4`.
 - `def ProximityGap.Frontier.DeltaStarClosedFormsRefuted.johnson` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeltaStarClosedFormsRefuted.lean:86](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeltaStarClosedFormsRefuted.lean#L86) — The Johnson radius `1 − √ρ` (the proven FLOOR `δ* ≥ 1 − √ρ`, ACFY24/Hab25).
 
+### `johnsonRadius` (2 declarations, 2 files)
+
+- `def ProximityGap.Frontier.Attack10.johnsonRadius` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack10LDtoMCAJohnsonCeiling.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack10LDtoMCAJohnsonCeiling.lean#L43) — The Johnson radius of an RS code of rate `ρ`: `1 − √ρ`.
+- `def ProximityGap.ThresholdHalvingWindow.johnsonRadius` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingWindow.lean:58](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThresholdHalvingWindow.lean#L58) — The **Johnson radius** for relative rate `ρ`, in the normalized form `δ_J(ρ) = 1 − √ρ`.
+
 ### `johnson_radius_lt_capacity` (2 declarations, 2 files)
 
 - `theorem ProximityGap.johnson_radius_lt_capacity` [ArkLib/Data/CodingTheory/ProximityGap/RSListDecodingFrontier.lean:62](../../../ArkLib/Data/CodingTheory/ProximityGap/RSListDecodingFrontier.lean#L62) — **The Johnson radius is strictly below the list-decoding capacity radius.** For a Reed–Solomon code
@@ -7749,6 +7756,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem Round28FullWindow.odd_psum_vanish` [ArkLib/Data/CodingTheory/ProximityGap/RigidityFullWindow.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/RigidityFullWindow.lean#L54) — **Odd power sums vanish identically on antipodally-closed sets** (the Round-8 engine at `ω = −1`): p
 - `theorem Round26Recursion.odd_psum_vanish` [ArkLib/Data/CodingTheory/ProximityGap/RigidityWindowHalving.lean:52](../../../ArkLib/Data/CodingTheory/ProximityGap/RigidityWindowHalving.lean#L52) — **Odd power sums vanish identically on antipodally-closed sets** (the Round-8 engine at `ω = −1`): p
 
+### `omega` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.NovelCrossPrimeSieve.omega` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NovelCrossPrimeSieve.lean:200](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NovelCrossPrimeSieve.lean#L200) — `ω(N) = #` distinct prime factors of `\|N\|`. For a fixed nonzero integer this is a finite constant, t
+- `abbrev ArkLib.ProximityGap.Frontier.UniversalObstructionOmegaBudget.omega` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_UniversalObstructionOmegaBudget.lean:65](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_UniversalObstructionOmegaBudget.lean#L65) — `omega(n) := n.primeFactors.card`, the number of distinct prime factors.
+
 ### `one_le_Lambda_of_nonempty` (2 declarations, 2 files)
 
 - `theorem CodingTheory.one_le_Lambda_of_nonempty` [ArkLib/Data/CodingTheory/ListSizeVolumeBound.lean:184](../../../ArkLib/Data/CodingTheory/ListSizeVolumeBound.lean#L184) — **List-size lower bound `1 ≤ \|Λ(C,δ)\|` for a nonempty code and `δ ≥ 0`.** Any codeword is `0`-close
@@ -7953,6 +7965,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.ProveAssemblyConcrete.period_le_prizeFloor` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProveAssemblyConcrete.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProveAssemblyConcrete.lean#L104) — **★ The prize floor for the actual period, from one energy inequality.** For the concrete Gauss peri
 - `theorem ArkLib.ProximityGap.Frontier.ThesisCapstone.period_le_prizeFloor` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThesisCapstone.lean:165](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThesisCapstone.lean#L165) — **The concrete prize floor from one energy bound.** For the concrete Gauss period `η_b = ∑_{y∈G} ψ(b
+
+### `period_parallelogram` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.DyadicTowerRecursion.period_parallelogram` [ArkLib/Data/CodingTheory/ProximityGap/DyadicTowerRecursion.lean:52](../../../ArkLib/Data/CodingTheory/ProximityGap/DyadicTowerRecursion.lean#L52) — **Period parallelogram law.** For the level-μ period `η = a + b` and its χ-twist `η̃ = a − b` (where
+- `theorem ArkLib.ProximityGap.Attack09.period_parallelogram` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack09NormRegimeBootstrap.lean:88](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack09NormRegimeBootstrap.lean#L88) — **Second-moment conservation (parallelogram).** For the period `η = a + b` and its twist `η̃ = a − b
 
 ### `permAction` (2 declarations, 2 files)
 

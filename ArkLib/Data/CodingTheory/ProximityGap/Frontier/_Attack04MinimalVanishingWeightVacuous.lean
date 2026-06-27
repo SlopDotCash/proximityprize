@@ -85,7 +85,7 @@ theorem prizeWeight2_gate_vacuous
     {p : ℕ} (hp : p < 2 ^ 158) :
     p ≤ 2 ^ (2 ^ 29) := by
   have h158 : (2 : ℕ) ^ 158 ≤ 2 ^ (2 ^ 29) := Nat.pow_le_pow_right (by norm_num) (by norm_num)
-  omega
+  exact le_trans (le_of_lt hp) h158
 
 /-- **Bit-length gap quantification.**  The weight-2 norm budget has bit-exponent `2^29`; the prize
 prime has bit-exponent `≤ 158`.  Their ratio is `2^29 / 158 > 3·10⁶`: the algebraic gate is vacuous

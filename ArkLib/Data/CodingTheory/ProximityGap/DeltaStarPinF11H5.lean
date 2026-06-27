@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS
+import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdBudgetMono
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 
 /-!
@@ -493,6 +494,18 @@ theorem oneEleven_lt_twoEleven : (1 / 11 : ℝ≥0∞) < 2 / 11 := by
   simp only [ENNReal.toReal_div, ENNReal.toReal_ofNat, ENNReal.toReal_one]
   norm_num
 
+/-- `2/11 < 3/11` in `ℝ≥0∞`. -/
+theorem twoEleven_lt_threeEleven : (2 / 11 : ℝ≥0∞) < 3 / 11 := by
+  rw [← ENNReal.toReal_lt_toReal (ENNReal.div_ne_top (by simp) (by simp))
+        (ENNReal.div_ne_top (by simp) (by simp))]
+  simp only [ENNReal.toReal_div, ENNReal.toReal_ofNat, ENNReal.toReal_one]
+  norm_num
+
+/-- `2/11 ≤ 1/2` in `ℝ≥0∞`. -/
+theorem twoEleven_le_half : (2 / 11 : ℝ≥0∞) ≤ 1 / 2 := by
+  exact le_trans (le_of_lt twoEleven_lt_threeEleven)
+    (le_trans (by norm_num : (3 / 11 : ℝ≥0∞) ≤ 5 / 11) fiveEleven_le_half)
+
 /-- **Interval pin (first jump):** `mcaDeltaStar(C, ε*) = 1/5` for every `ε* ∈ [1/11, 2/11)`. -/
 theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0∞}
     (hlo : (1 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 2 / 11) :
@@ -535,6 +548,36 @@ theorem mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven {εstar : ℝ
       (F := F11) (n := 5) (dom := domEmb) (k := 2) (j := 2)
       (by norm_num) (by norm_num) (by norm_num) (by norm_num) hlo' hhi')
 
+/-! ## The closed middle band: `mcaDeltaStar(C, ε*) = 2/5` for `ε* ∈ [2/11, 6/11)`
+
+The ladder pin at the left endpoint `ε* = 2/11` lower-bounds every looser budget by threshold
+monotonicity.  The existing explicit six-scalar bad stack at radius `2/5` upper-bounds every budget
+below `6/11`. -/
+
+/-- **Interval pin (closed middle band):** `mcaDeltaStar(C, ε*) = 2/5` for every
+`ε* ∈ [2/11, 6/11)`. -/
+theorem mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_sixEleven {εstar : ℝ≥0∞}
+    (hlo : (2 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 6 / 11) :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar = 2/5 := by
+  have hpin :
+      MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+        (C : Set (Fin 5 → F11)) (2 / 11 : ℝ≥0∞) = 2/5 :=
+    mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven
+      (εstar := (2 / 11 : ℝ≥0∞)) le_rfl twoEleven_lt_threeEleven
+  refine le_antisymm
+    (MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _ (lt_of_lt_of_le hhi epsMCA_twoFifth_ge)) ?_
+  rw [← hpin]
+  exact MCAThresholdLedger.mcaDeltaStar_mono (F := F11) (A := F11)
+    (C := (C : Set (Fin 5 → F11))) hlo
+
+/-- The above-Johnson point pin also follows from the closed middle band. -/
+theorem mcaDeltaStar_eq_twoFifth_via_middle_band :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) = 2/5 :=
+  mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_sixEleven
+    twoEleven_le_half half_lt_sixEleven
+
 /-! ## Source audit -/
 
 #print axioms epsMCA_twoFifth_ge
@@ -547,5 +590,7 @@ theorem mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven {εstar : ℝ
 #print axioms mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven
 #print axioms C_eq_rsCode_two
 #print axioms mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven
+#print axioms mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_sixEleven
+#print axioms mcaDeltaStar_eq_twoFifth_via_middle_band
 
 end ProximityGap.DeltaStarPinF11H5

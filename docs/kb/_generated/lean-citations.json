@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 383,
+    "files_with_citations": 384,
     "keys_cited": 31,
-    "total_citation_edges": 434
+    "total_citation_edges": 435
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -365,6 +365,9 @@
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossCellCircleMethodSplit.lean": [
       "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean": [
+      "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean": [
       "BCHKS25"
@@ -1371,6 +1374,7 @@
       "ArkLib/Data/CodingTheory/ProximityGap/BoundaryThresholdFloorCell.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/DeepQuotientTransfer.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Errors.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellDichotomyWiring.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25CoordinateUpgradeWeld.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean",

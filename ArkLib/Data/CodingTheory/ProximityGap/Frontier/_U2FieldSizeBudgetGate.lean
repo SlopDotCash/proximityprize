@@ -104,32 +104,7 @@ threshold `(2·33)^(2^6) = 66^64 ≥ 2^(6·64) = 2^384` is astronomically above 
 `2^128 · 2^33 · C(64,33) ≤ 2^(128+33+64) = 2^225`, so no prize-budget good prime exists on the
 divisibility route at `μ = 7` — and this holds regardless of any prime-counting input. -/
 theorem s128_mu7_infeasible : ¬ U2FieldSizeFeasible 7 33 := by
-  unfold U2FieldSizeFeasible divisibilityThreshold budgetCap
-  -- threshold = 66^64 ≥ 2^384;  cap = 2^128 · 2^33 · C(64,33) ≤ 2^225.
-  have hthr : (2 ^ 384 : ℕ) ≤ (2 * 33) ^ 2 ^ (7 - 1) := by
-    have h66 : (2 : ℕ) ^ 6 ≤ 2 * 33 := by norm_num
-    have hexp : (2 : ℕ) ^ (7 - 1) = 64 := by norm_num
-    have hpow : ((2 : ℕ) ^ 6) ^ (64 : ℕ) = 2 ^ 384 := by
-      rw [← pow_mul]
-      norm_num
-    calc (2 ^ 384 : ℕ)
-        = (2 ^ 6) ^ (64 : ℕ) := hpow.symm
-      _ = (2 ^ 6) ^ 2 ^ (7 - 1) := by rw [hexp]
-      _ ≤ (2 * 33) ^ 2 ^ (7 - 1) := Nat.pow_le_pow_left h66 _
-  have hchoose : (2 ^ (7 - 1)).choose 33 ≤ 2 ^ 64 := by
-    have h := Nat.choose_le_two_pow (2 ^ (7 - 1)) 33
-    simpa using h
-  have hcap : (2 ^ 128 * (2 ^ 33 * (2 ^ (7 - 1)).choose 33) : ℕ) ≤ 2 ^ 225 := by
-    calc (2 ^ 128 * (2 ^ 33 * (2 ^ (7 - 1)).choose 33) : ℕ)
-        ≤ 2 ^ 128 * (2 ^ 33 * 2 ^ 64) :=
-          Nat.mul_le_mul_left _ (Nat.mul_le_mul_left _ hchoose)
-      _ = 2 ^ 225 := by
-          rw [← Nat.pow_add, ← Nat.pow_add]
-  intro hfeas
-  have hlt : (2 ^ 384 : ℕ) < 2 ^ 225 :=
-    lt_of_lt_of_le (lt_trans (Nat.lt_succ_of_le hthr) hfeas) hcap
-  have : (384 : ℕ) < 225 := (Nat.pow_lt_pow_iff_right (by norm_num)).mp hlt
-  omega
+  decide
 
 /-- **The gate is genuinely two-sided: `μ = 4`, `r = 5` IS feasible.** The divisibility
 threshold `(2·5)^(2^3) = 10^8 < 2^27` sits below the budget cap `2^128 · 2^5 · C(8,5) = 2^133 · 56`,
@@ -137,7 +112,18 @@ so a prize-budget good prime slot exists at `μ = 4` — supplied unconditionall
 NO Linnik/TZ input needed for existence. This certifies that the wall is a real `μ`-cap, not a
 vacuous obligation. -/
 theorem mu4_r5_feasible : U2FieldSizeFeasible 4 5 := by
-  native_decide
+  decide
+
+/-- **The prize window is reachable unconditionally at `μ = 6`, `r = 17`.** This is the binding
+finding: `μ = 6` gives ceiling grid `1 − r/64`, finer than the window slack `Θ(1/log n) ≈ 1/30`,
+so a ceiling `1 − 17/64` sits strictly inside the `ρ = 1/4` prize window — and `μ = 6` is FEASIBLE
+(threshold `34^32 ≈ 2^163` below the budget cap `2^128·2^17·C(32,17) ≈ 2^175`). Hence the [KKH26]
+ceiling for the prize window can be obtained with a Dirichlet good prime alone, with **no Linnik /
+Thorner–Zaman input required for the ceiling** — the U2 "field size" obligation is discharged
+unconditionally in the regime the route actually reaches. (The finer `s = 128` row `μ = 7` is the
+INFEASIBLE one, `s128_mu7_infeasible`, but it is not needed to land a window-interior ceiling.) -/
+theorem mu6_r17_prize_window_feasible : U2FieldSizeFeasible 6 17 := by
+  decide
 
 end ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate
 
@@ -145,3 +131,4 @@ end ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate
 #print axioms ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate.u2_feasible_iff
 #print axioms ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate.s128_mu7_infeasible
 #print axioms ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate.mu4_r5_feasible
+#print axioms ArkLib.ProximityGap.Frontier.U2FieldSizeBudgetGate.mu6_r17_prize_window_feasible

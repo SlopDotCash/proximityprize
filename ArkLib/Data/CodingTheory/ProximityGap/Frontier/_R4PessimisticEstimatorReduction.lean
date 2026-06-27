@@ -122,8 +122,7 @@ theorem worstCaseIncompleteSumBound_of_R4Certificate {ψ : AddChar F ℂ} (hψ :
     eta_pow_le_energyR hψ G r b hb
   have hηMr : ‖eta ψ G b‖ ^ (2 * r) ≤ M ^ r := le_trans hηbound hcert
   -- rewrite `‖η_b‖^{2r} = (‖η_b‖²)^r`
-  have hrw : ‖eta ψ G b‖ ^ (2 * r) = (‖eta ψ G b‖ ^ 2) ^ r := by
-    rw [← pow_mul]; ring_nf
+  have hrw : ‖eta ψ G b‖ ^ (2 * r) = (‖eta ψ G b‖ ^ 2) ^ r := pow_mul _ 2 r
   rw [hrw] at hηMr
   -- `(‖η_b‖²)^r ≤ M^r`, both bases nonnegative, `r ≥ 1` ⟹ `‖η_b‖² ≤ M`
   have hbase : (0 : ℝ) ≤ ‖eta ψ G b‖ ^ 2 := sq_nonneg _

@@ -106,6 +106,22 @@ one can identify the true maximizer inside it.  The sharp certificate is now: so
 representative is globally worst and under budget.  Its exact refutation is also local: every listed
 representative is either over budget or beaten by some stack.
 
+Follow-up: `_StackOrbitFloorClosureBridge.lean` now proves this is not just an analogy.  The local
+stack-orbit predicates are definitionally the floor-closure predicates after unfolding the two local
+copies of `StackBadCount`:
+
+```lean
+representativeStacksBounded_iff_familyBounded
+stackDominatingRepresentativeCover_iff_familyDominates
+representativeContainsGlobalMax_iff_familyContainsGlobalMax
+representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax
+deltaStar_pin_of_stackOrbitRepresentativeBudgetedMax
+```
+
+So the quotient/representative route and the off-BGK floor-closure route now share one mathematical
+obligation: find a listed representative that is the true budgeted global maximizer, or produce a
+stack that beats every listed representative.
+
 The negative scanner surface is now exact:
 
 ```lean

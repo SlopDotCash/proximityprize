@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
+import Lean.Elab.Tactic.Omega
+import Mathlib.Tactic.NormNum
 
 /-!
 # The exact per-configuration inclusion–exclusion for the wraparound surplus `W_r` (#464)
@@ -179,7 +180,8 @@ theorem nonzero_total_eq :
     ∑ c ∈ univ.filter (fun c => ¬ D.isZero c), D.mult c = D.total - D.charZeroEnergy := by
   have hsplit : univ.filter (fun c => D.isZero c) ∪ univ.filter (fun c => ¬ D.isZero c) = univ := by
     ext c; simp only [mem_union, mem_filter, mem_univ, true_and, em, or_true]
-  have hdisj : Disjoint (univ.filter (fun c => D.isZero c)) (univ.filter (fun c => ¬ D.isZero c)) := by
+  have hdisj : Disjoint (univ.filter (fun c => D.isZero c))
+      (univ.filter (fun c => ¬ D.isZero c)) := by
     rw [Finset.disjoint_filter]; intro c _ hz; exact not_not_intro hz
   have hsum : ∑ c ∈ univ.filter (fun c => D.isZero c), D.mult c
       + ∑ c ∈ univ.filter (fun c => ¬ D.isZero c), D.mult c = D.total := by
@@ -247,7 +249,7 @@ and a good prime forces the wrap to zero, collapsing the energy onto the char-0 
 theorem wraparound_exact_law :
     (D.modPEnergy = D.charZeroEnergy + D.wrapCount) ∧
     (D.wrapCount ≤ D.total - D.charZeroEnergy) ∧
-    (∀ (hgood : ∀ c, ¬ D.isZero c → D.chi c = false),
+    ((∀ c, ¬ D.isZero c → D.chi c = false) →
       D.wrapCount = 0 ∧ D.modPEnergy ≤ D.wick) :=
   ⟨modPEnergy_eq D, wrap_le_nonzero_total D,
     fun hgood => ⟨goodPrime_wrap_eq_zero D hgood, goodPrime_modPEnergy_le_wick D hgood⟩⟩
