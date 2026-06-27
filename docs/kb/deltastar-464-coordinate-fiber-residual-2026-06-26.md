@@ -219,14 +219,30 @@ uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_low_and_high_one
 uniformLineBadScalarsBudgeted_of_lowAppearingCoordinateFibers
 ZeroLowExactAppearingZeroAgreementFiberBudgeted
 UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
+zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
+uniformLowExactAppearingBudgeted_of_lowAppearingBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
 uniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
 uniformLineBadScalarsBudgeted_of_lowExactAppearingFibers
+not_zeroLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt
+not_uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt
+not_zeroLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt
+not_uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt
 ```
 
 These wrappers let a future positive proof provide only the low-profile estimates `t < k`, while
 the high range `k <= t < a` is discharged by Reed--Solomon uniqueness as soon as the envelope
 satisfies `1 <= M t` there.
+
+The low exact-appearance socket can also be fed directly from the coarser low appearance-coordinate
+socket, because exact zero-agreement appearance fibers are subsets of the corresponding
+appearance-coordinate fibers.  Thus one low-profile appearance estimate now serves both the coarse
+and exact production routes.
+
+The negated low-budget forms are now exact scanners too: failure of a low appearance-coordinate or
+low exact appearance budget is equivalent to a concrete large-zero safe line, low profile `t < k`,
+zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`.  This avoids redoing the same
+`by_contra` unpacking in downstream probes.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target

@@ -1236,3 +1236,19 @@ wrappers for both ordinary and exact appearance fibers.  Callers can now supply 
 low-range estimates `t < k`; the high range `k <= t < a` is discharged by RS uniqueness whenever
 the envelope has `1 <= M t`.  This makes the remaining positive #464 line-list target exactly a
 low appearance-fiber saving, not another high-stratum bookkeeping obligation.
+
+## [2026-06-27] reduce | low appearance feeds low exact appearance
+
+Added
+`zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted` and its
+uniform version `uniformLowExactAppearingBudgeted_of_lowAppearingBudgeted`.
+Since exact zero-agreement appearance fibers sit inside the corresponding coarse
+appearance-coordinate fibers, a single low-profile appearance estimate now feeds both the ordinary
+and exact low/high production wrappers.  The same pass added exact negated forms for the low
+appearance-coordinate and low exact appearance budgets:
+`not_zeroLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt`,
+`not_uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt`,
+`not_zeroLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt`, and
+`not_uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt`.
+Any failed low-profile budget now unpacks to a concrete large-zero safe line, `t < k`, subset `S`,
+and strict overrun `M t < #fiber(S)`.
