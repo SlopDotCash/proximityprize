@@ -209,6 +209,25 @@ unsafe_or_largeZero_safe_low_exactSingletonProfile_rawFieldPowBarrier_gt_of_not_
 unsafe_or_largeZero_safe_low_exactAppearanceFiberSingleton_rawFieldPowBarrier_gt_of_not_budgeted
 ```
 
+Follow-up low/high production wrappers are now available for both appearance-fiber sockets:
+
+```lean
+ZeroLowAppearingCoordinateFiberBudgeted
+UniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted
+zeroAppearingCoordinateFiberBudgeted_of_low_and_high_one
+uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_low_and_high_one
+uniformLineBadScalarsBudgeted_of_lowAppearingCoordinateFibers
+ZeroLowExactAppearingZeroAgreementFiberBudgeted
+UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
+zeroExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
+uniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
+uniformLineBadScalarsBudgeted_of_lowExactAppearingFibers
+```
+
+These wrappers let a future positive proof provide only the low-profile estimates `t < k`, while
+the high range `k <= t < a` is discharged by Reed--Solomon uniqueness as soon as the envelope
+satisfies `1 <= M t` there.
+
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target
 budget for the hard parameters.  That would be an arithmetic failure, not a Lean-interface failure.

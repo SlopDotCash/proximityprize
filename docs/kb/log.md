@@ -1219,3 +1219,20 @@ injective domain forces numerator degree at least `|ι| - 1`; the sparse variant
 This blocks any blanket reduction from arbitrary ratio profiles to uniformly bounded-degree
 polynomial lines; the actual δ* floor still needs a structural domination theorem or a global
 list-supply bound.
+
+## [2026-06-27] reduce | support-degree scanner for sparse represented profiles
+
+Extended `Frontier/RatioProfileDegreeObstruction.lean` with
+`sparse_profile_support_card_add_natDegree_ge` and
+`not_sparse_profile_of_support_card_add_natDegree_lt`.  The sparse ratio-profile obstruction is
+now available in subtraction-free form: any represented nonzero profile supported on `S` satisfies
+`|ι| <= #S + deg(P)`, so scanners can refute a proposed low-degree representation directly from
+`#S + deg(P) < |ι|`.
+
+## [2026-06-27] reduce | low/high appearance-fiber production wrappers
+
+Extended `LineListAppearanceFiber.lean` with low-profile budget predicates and production
+wrappers for both ordinary and exact appearance fibers.  Callers can now supply only the hard
+low-range estimates `t < k`; the high range `k <= t < a` is discharged by RS uniqueness whenever
+the envelope has `1 <= M t`.  This makes the remaining positive #464 line-list target exactly a
+low appearance-fiber saving, not another high-stratum bookkeeping obligation.

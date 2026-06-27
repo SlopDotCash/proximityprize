@@ -126,6 +126,22 @@ theorem sparse_profile_numerator_degree_ge [DecidableEq ι] (dom : ι → F)
     rw [hprofile i, if_neg hi, zero_mul]
   · rw [hprofile i0, if_pos hi0, hr]
 
+/-- **Support-degree necessary condition for sparse represented profiles.**  If a represented
+ratio profile is supported on `support` and is nonzero at one supported point where `Q` is
+nonzero, then the support size plus the numerator degree must cover the whole domain:
+`|ι| ≤ #support + deg(P)`.  This is the subtraction-free form of
+`sparse_profile_numerator_degree_ge`. -/
+theorem sparse_profile_support_card_add_natDegree_ge [DecidableEq ι] (dom : ι → F)
+    (hdom : Function.Injective dom) (support : Finset ι) (i0 : ι) (hi0 : i0 ∈ support)
+    (P Q : F[X]) (r : ι → F) {a : F} (ha : a ≠ 0)
+    (hQ0 : Q.eval (dom i0) ≠ 0) (hr : r i0 = a)
+    (hprofile : ∀ i, P.eval (dom i) =
+      (if i ∈ support then r i else 0) * Q.eval (dom i)) :
+    Fintype.card ι ≤ support.card + P.natDegree := by
+  have hdeg :=
+    sparse_profile_numerator_degree_ge dom hdom support i0 hi0 P Q r ha hQ0 hr hprofile
+  simpa [Nat.add_comm] using (Nat.sub_le_iff_le_add.mp hdeg)
+
 /-- Contrapositive scanner form: a numerator of degree `< |ι| - 1` cannot realize a nonzero
 one-spike ratio profile over an injective domain. -/
 theorem not_spike_profile_of_natDegree_lt [DecidableEq ι] (dom : ι → F)
@@ -150,12 +166,32 @@ theorem not_sparse_profile_of_natDegree_lt [DecidableEq ι] (dom : ι → F)
     (sparse_profile_numerator_degree_ge dom hdom support i0 hi0 P Q r ha hQ0 hr
       hprofile)) hdeg
 
+/-- Contrapositive support-degree scanner: a represented nonzero profile supported on `support`
+is impossible when `#support + deg(P) < |ι|`. -/
+theorem not_sparse_profile_of_support_card_add_natDegree_lt [DecidableEq ι] (dom : ι → F)
+    (hdom : Function.Injective dom) (support : Finset ι) (i0 : ι) (hi0 : i0 ∈ support)
+    (P Q : F[X]) (r : ι → F) {a : F} (ha : a ≠ 0)
+    (hQ0 : Q.eval (dom i0) ≠ 0) (hr : r i0 = a)
+    (hsmall : support.card + P.natDegree < Fintype.card ι) :
+    ¬ ∀ i, P.eval (dom i) =
+      (if i ∈ support then r i else 0) * Q.eval (dom i) := by
+  intro hprofile
+  exact (not_lt_of_ge
+    (sparse_profile_support_card_add_natDegree_ge dom hdom support i0 hi0 P Q r ha hQ0 hr
+      hprofile)) hsmall
+
 end ProximityGap.RatioProfileDegreeObstruction
 
 /-! ## Axiom audit — kernel-clean. -/
-#print axioms ProximityGap.RatioProfileDegreeObstruction.spike_numerator_degree_ge
-#print axioms ProximityGap.RatioProfileDegreeObstruction.sparse_numerator_degree_ge
-#print axioms ProximityGap.RatioProfileDegreeObstruction.spike_profile_numerator_degree_ge
-#print axioms ProximityGap.RatioProfileDegreeObstruction.sparse_profile_numerator_degree_ge
-#print axioms ProximityGap.RatioProfileDegreeObstruction.not_spike_profile_of_natDegree_lt
-#print axioms ProximityGap.RatioProfileDegreeObstruction.not_sparse_profile_of_natDegree_lt
+namespace ProximityGap.RatioProfileDegreeObstruction
+
+#print axioms spike_numerator_degree_ge
+#print axioms sparse_numerator_degree_ge
+#print axioms spike_profile_numerator_degree_ge
+#print axioms sparse_profile_numerator_degree_ge
+#print axioms sparse_profile_support_card_add_natDegree_ge
+#print axioms not_spike_profile_of_natDegree_lt
+#print axioms not_sparse_profile_of_natDegree_lt
+#print axioms not_sparse_profile_of_support_card_add_natDegree_lt
+
+end ProximityGap.RatioProfileDegreeObstruction
