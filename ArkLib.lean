@@ -1739,6 +1739,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D2LargeDeviationRateFunct
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D2RogersSiegelVarianceGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D3FiniteFreeFallingFactorial
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D3TsangHighMomentRangeGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D4MacMahonMarginEncodingGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectMomentCeilingAtFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectNecessitySufficiencyGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectSupCapstone

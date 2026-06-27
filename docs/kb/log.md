@@ -1109,6 +1109,14 @@ range-limited.  The finite-field diagonal analogue `n^(2r) <= q` becomes `2r <= 
 `q = n^beta`, so fixed polynomial field size supplies only constant-depth control while the
 prize needs Paley-saddle depth growing like `log q`.
 
+## [2026-06-26] refute | MacMahon margin encoding without fiber budget
+
+Added `_D4MacMahonMarginEncodingGate.lean` and companion note
+`deltastar-464-macmahon-margin-encoding-gate-2026-06-26.md`.  The gate records that a
+MacMahon/matrix-pair margin decomposition can transfer a prize bound only after supplying an
+actual total margin-fiber budget, or a uniform fiber cap times a margin-count bound.  Coarse margin
+support alone remains compatible with an arbitrarily large one-margin spike.
+
 ## [2026-06-26] refute | homological vanishing without prime-field transfer
 
 Added `_D0HomologicalVanishingTransferGate.lean` and companion note
