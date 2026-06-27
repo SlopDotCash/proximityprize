@@ -294,6 +294,52 @@ theorem badWeight_eq_singleton_of_degree_exact_of_degenerate (dom : ι → F)
     rw [hzero, Finset.card_empty]
     exact Nat.zero_le w
 
+omit [DecidableEq ι] in
+/-- **Empty-or-singleton dichotomy for structured polynomial lines.**  Under the exact degree
+condition and `Q ≠ 0`, the weight-`≤ w` scalar set is either empty or exactly one singleton
+`{γ₀}`, where `γ₀` is the unique scalar with `P + γ₀·Q = 0`. -/
+theorem badWeight_eq_empty_or_singleton_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) = ∅)
+      ∨ ∃ γ₀ : F, P + C γ₀ * Q = 0 ∧
+        univ.filter (fun γ : F =>
+          (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) = {γ₀} := by
+  classical
+  by_cases hdegenerate : ∃ γ₀ : F, P + C γ₀ * Q = 0
+  · rcases hdegenerate with ⟨γ₀, hγ₀⟩
+    exact Or.inr ⟨γ₀, hγ₀,
+      badWeight_eq_singleton_of_degree_exact_of_degenerate dom hdom P Q hdeg hQ hγ₀⟩
+  · left
+    rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg]
+    rw [Finset.filter_eq_empty_iff]
+    intro γ _ hγ
+    exact hdegenerate ⟨γ, hγ⟩
+
+omit [DecidableEq ι] in
+/-- **Cardinality dichotomy for structured polynomial lines.**  Under the exact degree condition
+and `Q ≠ 0`, the low-weight scalar count is exactly `0` or exactly `1`. -/
+theorem badWeight_card_eq_zero_or_one_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card = 0
+      ∨ (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card = 1 := by
+  rcases badWeight_eq_empty_or_singleton_of_degree_exact dom hdom P Q hdeg hQ with h | h
+  · left
+    rw [h, Finset.card_empty]
+  · rcases h with ⟨γ₀, _, hset⟩
+    right
+    rw [hset, Finset.card_singleton]
+
 end ArkLib.ProximityGap.RatioMultiplicity
 
 open ArkLib.ProximityGap.RatioMultiplicity in
@@ -316,3 +362,7 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_singleton_of
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_singleton_of_degree_exact_of_degenerate
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_eq_empty_or_singleton_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_eq_zero_or_one_of_degree_exact

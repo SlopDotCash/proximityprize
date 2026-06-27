@@ -34,6 +34,8 @@ ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_le_one
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_degenerate
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_or_one_of_degree_exact
 ```
 
 ## Content
@@ -79,6 +81,10 @@ The singleton form is now exact: if a scalar `gamma0` satisfies `P + gamma0*Q = 
 then the degenerate set is exactly `{gamma0}`, and the low-weight bad-scalar set is exactly
 `{gamma0}` under the same exact degree inequality.  The reverse inclusion is automatic because
 `P(dom) + gamma0*Q(dom)` is the zero word, hence has weight `0 <= w`.
+
+Equivalently, under the exact degree inequality and `Q != 0`, the structured polynomial line has a
+complete dichotomy: the low-weight scalar set is either empty or exactly one singleton.  Its
+cardinality is therefore exactly `0` or exactly `1`.
 
 ## Prize Impact
 

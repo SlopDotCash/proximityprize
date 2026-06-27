@@ -1188,7 +1188,10 @@ high-multiplicity cap gate with `mult_poly_le_max`: for polynomial error coordin
 `P + γQ` identically zero.  This closes the structured polynomial-line local case at the exact
 threshold.  Follow-up in the same bridge: without the nondegeneracy hypothesis, the bad set is
 contained in the degenerate scalar set `{γ : P + γQ = 0}`, and this set has size at most one when
-`Q ≠ 0`.  The arbitrary-stack structural reduction remains open.
+`Q ≠ 0`.  The final structured-line package is an exact empty-or-singleton dichotomy:
+`badWeight_eq_empty_or_singleton_of_degree_exact` and
+`badWeight_card_eq_zero_or_one_of_degree_exact`.  The arbitrary-stack structural reduction remains
+open.
 
 ## [2026-06-26] refute | arbitrary ratio profiles block support-only caps
 
