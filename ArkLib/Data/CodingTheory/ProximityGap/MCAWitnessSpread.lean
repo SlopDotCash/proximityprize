@@ -340,6 +340,79 @@ theorem badScalar_card_le_card_of_forced_codimOne
   exact hcard
 
 open Classical in
+/-- **General forced-predicate witness barrier.** If the radius/cardinality side condition forces
+every legal `mcaEvent` witness set to have cardinality at least `m`, then every stack has at most
+as many bad scalars as there are coordinate subsets of size `≥ m`.
+
+This strictly generalizes `badScalar_card_le_card_of_forced_codimOne` (which is the special case
+`m = |ι| − 1`, where the `≥ m` subsets are exactly `univ` and the `|ι|` all-but-one sets, with the
+sharper bound `|ι|`).  The proof is the clean injection `γ ↦ S_γ`: a bad scalar's chosen witness
+set has size `≥ m` by `hforce`, and two bad scalars sharing a witness set are identified by
+`unique_bad_gamma_common_witness`.  Use it for the higher granularity bands where the codimension is
+larger than one and the omitted-coordinate charging of the codim-one proof no longer applies. -/
+theorem badScalar_card_le_largeSubsets_of_forced_pred
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) (m : ℕ)
+    (hforce : ∀ T : Finset ι,
+      ((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0) ≤ (T.card : ℝ≥0) → m ≤ T.card)
+    (u : WordStack A (Fin 2) ι) :
+    (Finset.filter
+      (fun γ : F => mcaEvent (F := F) (C : Set (ι → A)) δ (u 0) (u 1) γ)
+      Finset.univ).card
+      ≤ (Finset.univ.filter (fun S : Finset ι => m ≤ S.card)).card := by
+  classical
+  set B : Finset F :=
+    Finset.filter (fun γ : F => mcaEvent (F := F) (C : Set (ι → A)) δ (u 0) (u 1) γ)
+      Finset.univ with hBdef
+  set T : Finset (Finset ι) :=
+    Finset.univ.filter (fun S : Finset ι => m ≤ S.card) with hTdef
+  let f : F → Finset ι := fun γ =>
+    if h : mcaEvent (F := F) (C : Set (ι → A)) δ (u 0) (u 1) γ then Classical.choose h else ∅
+  have f_spec : ∀ γ ∈ B,
+      ((f γ).card : ℝ≥0) ≥ ((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0) ∧
+      (∃ w ∈ C, ∀ i ∈ f γ, w i = u 0 i + γ • u 1 i) ∧
+      ¬ pairJointAgreesOn (C : Set (ι → A)) (f γ) (u 0) (u 1) := by
+    intro γ hγ
+    have hev : mcaEvent (F := F) (C : Set (ι → A)) δ (u 0) (u 1) γ :=
+      (Finset.mem_filter.mp hγ).2
+    have hfeq : f γ = Classical.choose hev := by simp only [f, hev, dif_pos]
+    rw [hfeq]
+    exact Classical.choose_spec hev
+  have hmaps : ∀ γ ∈ B, f γ ∈ T := by
+    intro γ hγ
+    rw [hTdef, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hforce (f γ) (f_spec γ hγ).1⟩
+  have hinj : Set.InjOn f ↑B := by
+    intro γ hγ γ' hγ' hff
+    have hγB : γ ∈ B := Finset.mem_coe.mp hγ
+    have hγ'B : γ' ∈ B := Finset.mem_coe.mp hγ'
+    have hno := (f_spec γ hγB).2.2
+    have hclose := (f_spec γ hγB).2.1
+    have hclose' : ∃ w ∈ C, ∀ i ∈ f γ, w i = u 0 i + γ' • u 1 i := by
+      have h := (f_spec γ' hγ'B).2.1
+      rwa [← hff] at h
+    exact unique_bad_gamma_common_witness C (f γ) (u 0) (u 1) hno hclose hclose'
+  exact Finset.card_le_card_of_injOn f hmaps hinj
+
+open Classical in
+/-- **Probability form of the general forced-predicate witness barrier.** If every legal
+`mcaEvent` witness set is forced to have size at least `m`, then `ε_mca ≤ N_m/|F|`, where `N_m`
+is the number of coordinate subsets of size at least `m`.  This is the good-side upper bound for
+the deeper granularity bands beyond the first jump. -/
+theorem epsMCA_le_largeSubsets_div_of_forced_pred
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) (m : ℕ)
+    (hforce : ∀ T : Finset ι,
+      ((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0) ≤ (T.card : ℝ≥0) → m ≤ T.card) :
+    epsMCA (F := F) (A := A) (C : Set (ι → A)) δ
+      ≤ ((Finset.univ.filter (fun S : Finset ι => m ≤ S.card)).card : ℝ≥0∞)
+          / (Fintype.card F : ℝ≥0∞) := by
+  unfold epsMCA
+  refine iSup_le fun u => ?_
+  rw [prob_uniform_eq_card_filter_div_card]
+  simp only [ENNReal.coe_natCast]
+  gcongr
+  exact_mod_cast badScalar_card_le_largeSubsets_of_forced_pred C δ m hforce u
+
+open Classical in
 /-- A finite subset of a nonempty finite type with cardinality at least `n - 1` is either the
 whole type or the complement of one point. This is the pure combinatorial classifier behind the
 codimension-one witness barrier. -/
@@ -482,6 +555,8 @@ theorem epsMCA_le_card_div_of_granularity_radius (C : Submodule F (ι → A)) :
 #print axioms common_witness_badGamma_card_le_one
 #print axioms common_witness_badGamma_set_card_le_one
 #print axioms badScalar_card_le_one_of_forced_univ
+#print axioms badScalar_card_le_largeSubsets_of_forced_pred
+#print axioms epsMCA_le_largeSubsets_div_of_forced_pred
 #print axioms badScalar_card_le_card_of_forced_codimOne
 #print axioms eq_univ_or_eq_univ_erase_of_pred_le
 #print axioms badScalar_card_le_card_of_forced_pred
