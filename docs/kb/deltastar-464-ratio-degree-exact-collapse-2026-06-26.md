@@ -36,6 +36,8 @@ ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
 ArkLib.ProximityGap.RatioMultiplicity.degenerate_exists_iff_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_iff_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_empty_iff_not_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_empty_or_singleton_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_degenerate
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_iff_scalarMultiple_of_degree_exact
@@ -44,6 +46,7 @@ ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_or_one_of_degree_ex
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact
 ```
 
 ## Content
@@ -107,6 +110,11 @@ bad-scalar set is exactly `{-c}`.
 The singleton consumers are also bidirectional: for `Q != 0`, the degenerate scalar set is exactly
 `{-c}` iff `P = c*Q`; under the exact degree inequality, the same iff holds for the low-weight
 bad-scalar set.
+
+The final set-level scalar form packages this as a direct dichotomy.  The degenerate set is empty
+iff there is no scalar multiple `P = c*Q`; when `Q != 0`, it is either empty or exactly `{-c}` for
+a scalar multiple.  Under the exact degree inequality, the low-weight bad-scalar set has the same
+empty-or-`{-c}` scalar-multiple dichotomy.
 
 ## Prize Impact
 

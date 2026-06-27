@@ -290,6 +290,37 @@ theorem degenerateScalars_eq_singleton_iff_scalarMultiple (P Q : F[X]) {c : F}
   · intro hP
     exact degenerateScalars_eq_singleton_of_scalarMultiple P Q hQ hP
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Degenerate empty criterion, scalar-multiple form.**  The degenerate-scalar set is empty
+iff `P` is not a scalar multiple of `Q`. -/
+theorem degenerateScalars_empty_iff_not_scalarMultiple (P Q : F[X]) :
+    univ.filter (fun γ : F => P + C γ * Q = 0) = ∅
+      ↔ ¬ ∃ c : F, P = C c * Q := by
+  constructor
+  · intro hempty hscalar
+    rcases (degenerate_exists_iff_scalarMultiple P Q).2 hscalar with ⟨γ, hγ⟩
+    have hmem : γ ∈ univ.filter (fun γ : F => P + C γ * Q = 0) := by
+      rw [Finset.mem_filter]
+      exact ⟨Finset.mem_univ γ, hγ⟩
+    rw [hempty] at hmem
+    simp at hmem
+  · intro hnot
+    rw [Finset.filter_eq_empty_iff]
+    intro γ _ hγ
+    exact hnot ((degenerate_exists_iff_scalarMultiple P Q).1 ⟨γ, hγ⟩)
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Degenerate empty-or-scalar-singleton dichotomy.**  If `Q ≠ 0`, then the degenerate-scalar
+set is either empty or exactly `{-c}` for the unique scalar multiple `P = c·Q`. -/
+theorem degenerateScalars_eq_empty_or_singleton_scalarMultiple (P Q : F[X]) (hQ : Q ≠ 0) :
+    univ.filter (fun γ : F => P + C γ * Q = 0) = ∅
+      ∨ ∃ c : F, P = C c * Q ∧
+        univ.filter (fun γ : F => P + C γ * Q = 0) = {-c} := by
+  by_cases hscalar : ∃ c : F, P = C c * Q
+  · rcases hscalar with ⟨c, hP⟩
+    exact Or.inr ⟨c, hP, degenerateScalars_eq_singleton_of_scalarMultiple P Q hQ hP⟩
+  · exact Or.inl ((degenerateScalars_empty_iff_not_scalarMultiple P Q).2 hscalar)
+
 omit [DecidableEq ι] in
 /-- **Exact degree-collapse leaves at most one low-weight scalar.**  For a nonzero denominator
 polynomial `Q`, the exact degree condition forces every low-weight scalar into the degenerate set,
@@ -492,6 +523,28 @@ theorem badWeight_empty_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
     intro γ _ hγ
     exact hnot ((degenerate_exists_iff_scalarMultiple P Q).1 ⟨γ, hγ⟩)
 
+omit [DecidableEq ι] in
+/-- **Exact empty-or-scalar-singleton dichotomy.**  Under the exact degree condition and `Q ≠ 0`,
+the low-weight bad-scalar set is either empty or exactly `{-c}` for a scalar multiple `P = c·Q`. -/
+theorem badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) = ∅)
+      ∨ ∃ c : F, P = C c * Q ∧
+        univ.filter (fun γ : F =>
+          (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)
+          = {-c} := by
+  by_cases hscalar : ∃ c : F, P = C c * Q
+  · rcases hscalar with ⟨c, hP⟩
+    exact Or.inr ⟨c, hP,
+      badWeight_eq_singleton_of_degree_exact_of_scalarMultiple dom hdom P Q hdeg hQ hP⟩
+  · exact Or.inl
+      ((badWeight_empty_iff_not_scalarMultiple_of_degree_exact dom hdom P Q hdeg hQ).2 hscalar)
+
 end ArkLib.ProximityGap.RatioMultiplicity
 
 open ArkLib.ProximityGap.RatioMultiplicity in
@@ -519,6 +572,10 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_singleton_iff_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_empty_iff_not_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_eq_empty_or_singleton_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_singleton_of_degree_exact_of_degenerate
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_singleton_of_degree_exact_of_scalarMultiple
@@ -534,3 +591,5 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact
