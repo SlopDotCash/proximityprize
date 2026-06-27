@@ -992,6 +992,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.C1SecondMomentBGKGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.C4PoissonAdmissibilityWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CStarExtrapolationUnderdetermined
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CampaignProvenIndex
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CensusBudgetInfeasibleDeepBand
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CensusCapForbidsLargeAligned
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CensusCapForcedBelow

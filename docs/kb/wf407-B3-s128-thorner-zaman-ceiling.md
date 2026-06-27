@@ -27,7 +27,9 @@ The whole B3 chain is built and wired, conditional on ONE named hypothesis:
   full end-to-end at `n=4` with explicit primes, **no analytic NT**, axiom-clean.
 - `Frontier/ThornerZamanInstance.lean` — concrete `TZPrimeSupply` rows such as
   `tzPrimeSupply_{8,16,32,64,128,256}_two`, the `β = 3` rows through `n = 32`, and small
-  higher-`β` rows (explicit primes in `[n^β, 2n^β]`).
+  higher-`β` rows (explicit primes in `[n^β, 2n^β]`).  As of 2026-06-27 the high-exponent
+  concrete ladder includes `tzPrimeSupply_32_four : TZPrimeSupply 32 4 16`, witnessed by
+  sixteen explicit primes in `[32^4, 2*32^4]`.
 
 So the *only* unproven input of the entire s=128 lane is the asymptotic supply
 `(tzWindow n β).card ≥ n^{β−1−o(1)}`.
@@ -177,6 +179,15 @@ kkh26_s128_of_polyModulusCount_density_margin_tight_square_log
 
 These are only arithmetic relaxations of the bad-prime budget; the polynomial-modulus prime-count
 input remains the analytic wall.
+
+## 2026-06-27 follow-up: concrete β=4 row at n=32
+
+`Frontier/ThornerZamanInstance.lean` now extends the explicit-prime option-(ii) ladder with
+`tzPrimeSupply_32_four : TZPrimeSupply 32 (4 : ℝ) 16`.  The proof lists sixteen primes in
+`[32^4, 2*32^4]`, all congruent to `1 mod 32`, and verifies the window membership kernel-side
+with `norm_num`/`decide`.  This is still a finite concrete discharge, not the general [TZ24]
+analytic density theorem, but it demonstrates that the high-exponent supply interface continues
+cleanly past the previous `n=16, β=4` row.
 
 ## Verdict
 

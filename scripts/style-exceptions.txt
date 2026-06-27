@@ -7,7 +7,7 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean : line 1 : ER
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean : line 1 : ERR_NUM_LIN : 7600 file contains 7418 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/CurvesBridge.lean : line 1 : ERR_NUM_LIN : 1900 file contains 1581 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1540 lines, try to split it up
-ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean : line 1 : ERR_NUM_LIN : 2600 file contains 2462 lines, try to split it up
+ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean : line 1 : ERR_NUM_LIN : 3000 file contains 2821 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/Errors.lean : line 1 : ERR_NUM_LIN : 1900 file contains 1762 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/GrandChallengesLattice.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1541 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/LineListAppearanceFiber.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1606 lines, try to split it up

@@ -1701,6 +1701,34 @@ denominator-cleared canonical obstruction modulo `ζ^8 = -1` with
 `not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17`: every prime `p > 17` refutes the literal
 width-4 `<= 16` budget in this canonical primitive-root lane.
 
+Follow-up: the canonical finite-field witness list now includes a compact `n = 32` instance.
+Lean proves `orderOf (19 : ZMod 97) = 32`, checks the denominator-cleared obstruction
+`polynomial_19_sq_pow32_ne_zmod97`, and packages the scanner refuter as
+`not_e2BadScalarSet_mu32_card_le_32_zmod97_width4`.
+
+Follow-up: the exact `n = 16` bad-prime classification is now packaged.  The theorem
+`prime_eq_seventeen_of_polynomial_eq_zmod16` proves that any primitive 16-th-root
+denominator-cleared collision forces `p = 17`; the complementary wrappers
+`polynomial_ne_zmod16_of_prime_ne17` and
+`not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_ne17` make the scanner-facing good-prime form
+usable with the single hypothesis `p != 17`.
+
+Follow-up: the canonical `n = 32` lane now has an exact finite-threshold certificate too.  Lean
+reduces the obstruction in `y = ζ^2` modulo `y^8 + 1` via
+`canonicalRatioPoly32_reduction`, discharges the primitive reduced carrier with
+`canonicalRatioPoly32_bezout`, proves the Bezout constant has no prime factor above `1153`, and
+packages the scanner refuter
+`not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153`.
+
+Follow-up: `Frontier/CanonicalWidthFourBadPrimeSet.lean` now packages the canonical resultant lane
+as a finite bad-prime set.  `canonicalRatioBadPrimes n` is the set of prime factors of the
+canonical obstruction resultant, and any surviving literal width-4 budget over `ZMod p` puts `p`
+in that set.  Outside the set, the scanner budget is refuted; the file also records crude and sharp
+cardinality bounds plus the named supply hypothesis `CanonicalWidthFourGoodPrimeSupply` for the
+remaining arithmetic prime-production step.  The companion note
+`deltastar-464-canonical-finite-bad-prime-bridge-2026-06-27.md` records why this improves the
+resultant lane but still falls short of the delta-star floor.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with
@@ -1708,3 +1736,8 @@ width-4 `<= 16` budget in this canonical primitive-root lane.
 `[32^3, 2*32^3]` congruent to `1 mod 32`.  This is another axiom-clean concrete discharge of the
 B3 named supply hypothesis; the general s=128 route still depends on the analytic
 Thorner-Zaman PNT-in-AP input.
+
+Follow-up: the high-exponent concrete ladder now includes
+`tzPrimeSupply_32_four : TZPrimeSupply 32 4 16`, witnessed by sixteen explicit primes in
+`[32^4, 2*32^4]` congruent to `1 mod 32`.  This extends the β=4 finite-prime option-(ii) route
+from `n=16` to `n=32`; it remains a concrete discharge, not the general analytic TZ theorem.

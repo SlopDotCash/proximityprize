@@ -83,7 +83,7 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 - Kronecker (1857); Lam–Leung, *On vanishing sums of roots of unity*, J. Algebra 224 (2000).
 -/
 set_option linter.style.longLine false
-set_option linter.style.longFile 2600
+set_option linter.style.longFile 3000
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option autoImplicit false
@@ -1962,6 +1962,39 @@ theorem polynomial_ne_zmod16_of_prime_gt17
     exact Nat.not_dvd_of_pos_of_lt (by norm_num : 0 < 7) (by omega : 7 < p)
   exact h7nz h7zero
 
+/-- A prime field containing a primitive 16-th root has characteristic at least `17`. -/
+private theorem seventeen_le_prime_of_primitive_zmod16
+    {p : ℕ} [Fact p.Prime] {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ 16) : 17 ≤ p := by
+  have hζ0 : ζ ≠ 0 := hζ.ne_zero (by norm_num)
+  have horder : orderOf ζ = 16 := hζ.eq_orderOf.symm
+  have hdvd : 16 ∣ p - 1 := by
+    simpa [horder] using ZMod.orderOf_dvd_card_sub_one (p := p) hζ0
+  have hp1pos : 0 < p - 1 := by
+    have hpgt1 : 1 < p := (Fact.out : Nat.Prime p).one_lt
+    omega
+  have hle : 16 ≤ p - 1 := Nat.le_of_dvd hp1pos hdvd
+  omega
+
+/-- Exact bad-prime classification for the canonical `n = 16` polynomial obstruction:
+if the denominator-free canonical collision happens at a primitive 16-th root, then the
+prime is the unique bad characteristic `17`. -/
+theorem prime_eq_seventeen_of_polynomial_eq_zmod16
+    {p : ℕ} [Fact p.Prime] {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ 16)
+    (hpoly : (ζ ^ 4 + 1) ^ 16 = (ζ ^ 2 + 1) ^ 16) : p = 17 := by
+  by_contra hpne
+  have hle : 17 ≤ p := seventeen_le_prime_of_primitive_zmod16 hζ
+  have hpgt : 17 < p := lt_of_le_of_ne hle (Ne.symm hpne)
+  exact (polynomial_ne_zmod16_of_prime_gt17 hpgt hζ) hpoly
+
+/-- Exact `n = 16` good-prime form with the bad prime removed by equality rather than
+an external lower bound. -/
+theorem polynomial_ne_zmod16_of_prime_ne17
+    {p : ℕ} [Fact p.Prime] (hp17 : p ≠ 17) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 16) :
+    (ζ ^ 4 + 1) ^ 16 ≠ (ζ ^ 2 + 1) ^ 16 := by
+  intro hpoly
+  exact hp17 (prime_eq_seventeen_of_polynomial_eq_zmod16 hζ hpoly)
+
 /-- Scanner-facing exact `n = 16` good-prime form: for every prime `p > 17`, the literal
 width-4 `≤ 16` budget is impossible in the canonical primitive-root lane. -/
 theorem not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
@@ -1972,6 +2005,161 @@ theorem not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
     (F := ZMod p) (n := 16) (ζ := ζ)
     (by norm_num) (by norm_num) (by norm_num) hζ
     (polynomial_ne_zmod16_of_prime_gt17 hp17 hζ)
+
+/-- Scanner-facing exact `n = 16` good-prime form with the bad prime removed by equality:
+every prime `p ≠ 17` refutes the literal width-4 `≤ 16` budget in the canonical
+primitive-root lane. -/
+theorem not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_ne17
+    {p : ℕ} [Fact p.Prime] (hp17 : p ≠ 17) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 16) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod p)) 4).card ≤ 16 :=
+  not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+    (F := ZMod p) (n := 16) (ζ := ζ)
+    (by norm_num) (by norm_num) (by norm_num) hζ
+    (polynomial_ne_zmod16_of_prime_ne17 hp17 hζ)
+
+/-! ### Exact `n = 32` good-prime certificate for the canonical pair -/
+
+/-- Primitive reduced carrier for the denominator-free canonical obstruction at order `32`.
+Writing `y = ζ²`, the obstruction `(ζ⁴+1)^32 - (ζ²+1)^32` reduces modulo `y⁸+1` to
+`272 * canonicalRatioPoly32ReducedPrimitive y`. -/
+def canonicalRatioPoly32ReducedPrimitive {R : Type*} [CommRing R] (y : R) : R :=
+  1964368 * y ^ 7 + 1049576 * y ^ 6 + 802032 * y ^ 5 -
+    802032 * y ^ 3 - 1049576 * y ^ 2 - 1964368 * y - 1505825
+
+/-- Exact reduction of the denominator-free canonical obstruction at order `32`.
+Modulo `y⁸ = -1`, the obstruction carries the explicit content factor `272 = 16 * 17`
+times `canonicalRatioPoly32ReducedPrimitive y`. -/
+theorem canonicalRatioPoly32_reduction {R : Type*} [CommRing R] (y : R) (hy8 : y ^ 8 = -1) :
+    (y ^ 2 + 1) ^ 32 - (y + 1) ^ 32 =
+      (272 : R) * canonicalRatioPoly32ReducedPrimitive y := by
+  rw [show
+      (y ^ 2 + 1) ^ 32 - (y + 1) ^ 32 =
+        (272 : R) * canonicalRatioPoly32ReducedPrimitive y + (y ^ 8 + 1) *
+          (y ^ 56 + 32 * y ^ 54 + 496 * y ^ 52 + 4960 * y ^ 50 +
+            35959 * y ^ 48 + 201344 * y ^ 46 + 905696 * y ^ 44 +
+            3360896 * y ^ 42 + 10482341 * y ^ 40 + 27847456 * y ^ 38 +
+            63606544 * y ^ 36 + 125663584 * y ^ 34 + 215310499 * y ^ 32 +
+            319526144 * y ^ 30 + 407829056 * y ^ 28 + 440059136 * y ^ 26 +
+            385769890 * y ^ 24 - 32 * y ^ 23 + 246196080 * y ^ 22 -
+            4960 * y ^ 21 + 63570584 * y ^ 20 - 201376 * y ^ 19 -
+            93591728 * y ^ 18 - 3365856 * y ^ 17 - 170495350 * y ^ 16 -
+            28048768 * y ^ 15 - 181683840 * y ^ 14 - 129019520 * y ^ 13 -
+            224851184 * y ^ 12 - 347172224 * y ^ 11 - 349795072 * y ^ 10 -
+            562356864 * y ^ 9 - 420066740 * y ^ 8 - 537673952 * y ^ 7 -
+            286385904 * y ^ 6 - 218354080 * y ^ 5 - 35464 * y ^ 4 +
+            218147744 * y ^ 3 + 285484208 * y ^ 2 + 534308064 * y + 409584400) by
+    unfold canonicalRatioPoly32ReducedPrimitive
+    ring]
+  rw [hy8]
+  ring
+
+/-- Bezout certificate for the reduced `n = 32` obstruction.
+Together with `y⁸ + 1 = 0`, a vanishing primitive reduced obstruction would force
+`430704758627551 = 0`.  The constant factors as `79 * 97 * 113 * 641 * 673 * 1153`. -/
+theorem canonicalRatioPoly32_bezout {R : Type*} [CommRing R] (y : R) :
+    (755345968715505608448 * y ^ 6 + 1799291556649182355200 * y ^ 5 -
+        769431597628567601216 * y ^ 4 - 404492580664015250176 * y ^ 3 +
+        770622375121631540480 * y ^ 2 - 1394798975985167105024 * y -
+        1513073492417139095424) * (y ^ 8 + 1) +
+      (-384523657845936 * y ^ 7 - 710510838061848 * y ^ 6 +
+        928322493212912 * y ^ 5 - 928322493212912 * y ^ 3 +
+        710510838061848 * y ^ 2 + 384523657845936 * y - 1004813921353343) *
+          canonicalRatioPoly32ReducedPrimitive y =
+        (430704758627551 : R) := by
+  unfold canonicalRatioPoly32ReducedPrimitive
+  ring
+
+/-- No prime above `1153` divides the Bezout constant for the reduced `n = 32` obstruction. -/
+theorem prime_not_dvd_canonicalRatioPoly32_bezout_const
+    {p : ℕ} [Fact p.Prime] (hp1153 : 1153 < p) :
+    ¬ p ∣ 430704758627551 := by
+  intro hdvd
+  have hp : Nat.Prime p := Fact.out
+  have hfac :
+      (430704758627551 : ℕ) = 79 * (97 * (113 * (641 * (673 * 1153)))) := by
+    norm_num
+  have hdvd' : p ∣ 79 * (97 * (113 * (641 * (673 * 1153)))) := by
+    simpa [← hfac] using hdvd
+  rcases (Nat.Prime.dvd_mul hp).mp hdvd' with h79 | hrest
+  · have hp_eq : p = 79 :=
+      (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 79)).mp h79
+    omega
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h97 | hrest
+  · have hp_eq : p = 97 :=
+      (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 97)).mp h97
+    omega
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h113 | hrest
+  · have hp_eq : p = 113 :=
+      (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 113)).mp h113
+    omega
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h641 | hrest
+  · have hp_eq : p = 641 :=
+      (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 641)).mp h641
+    omega
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h673 | h1153
+  · have hp_eq : p = 673 :=
+      (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 673)).mp h673
+    omega
+  · have hp_eq : p = 1153 :=
+      (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 1153)).mp h1153
+    omega
+
+/-- Exact `n = 32` good-prime form: above the reduced Bezout threshold `1153`, the
+denominator-free canonical collision cannot occur. -/
+theorem polynomial_ne_zmod32_of_prime_gt1153
+    {p : ℕ} [Fact p.Prime] (hp1153 : 1153 < p) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 32) :
+    (ζ ^ 4 + 1) ^ 32 ≠ (ζ ^ 2 + 1) ^ 32 := by
+  intro hpoly
+  have h16 : ζ ^ 16 = -1 :=
+    primRoot_pow_half_eq_neg_one_of_even (F := ZMod p) (ζ := ζ) (n := 32) (h := 16)
+      hζ (by norm_num) (by norm_num)
+  have hy8 : (ζ ^ 2) ^ 8 = -1 := by
+    calc
+      (ζ ^ 2) ^ 8 = ζ ^ 16 := by ring
+      _ = -1 := h16
+  have hdiff : (ζ ^ 4 + 1) ^ 32 - (ζ ^ 2 + 1) ^ 32 = 0 :=
+    sub_eq_zero.mpr hpoly
+  have hred_y := canonicalRatioPoly32_reduction (R := ZMod p) (ζ ^ 2) hy8
+  have hred :
+      (ζ ^ 4 + 1) ^ 32 - (ζ ^ 2 + 1) ^ 32 =
+        (272 : ZMod p) * canonicalRatioPoly32ReducedPrimitive (ζ ^ 2) := by
+    convert hred_y using 1
+    · ring
+  have hprod :
+      (272 : ZMod p) * canonicalRatioPoly32ReducedPrimitive (ζ ^ 2) = 0 := by
+    rw [← hred]
+    exact hdiff
+  have h272nz : (272 : ZMod p) ≠ 0 := by
+    change ¬ (((272 : ℕ) : ZMod p) = 0)
+    rw [ZMod.natCast_eq_zero_iff]
+    exact Nat.not_dvd_of_pos_of_lt (by norm_num : 0 < 272) (by omega : 272 < p)
+  have hRzero : canonicalRatioPoly32ReducedPrimitive (ζ ^ 2) = 0 :=
+    (mul_eq_zero.mp hprod).resolve_left h272nz
+  have hy8zero : (ζ ^ 2) ^ 8 + 1 = 0 := by
+    rw [hy8]
+    ring
+  have hBzero : (430704758627551 : ZMod p) = 0 := by
+    rw [← canonicalRatioPoly32_bezout (R := ZMod p) (ζ ^ 2)]
+    rw [hy8zero, hRzero]
+    ring
+  have hBnz : (430704758627551 : ZMod p) ≠ 0 := by
+    change ¬ (((430704758627551 : ℕ) : ZMod p) = 0)
+    rw [ZMod.natCast_eq_zero_iff]
+    exact prime_not_dvd_canonicalRatioPoly32_bezout_const hp1153
+  exact hBnz hBzero
+
+/-- Scanner-facing exact `n = 32` good-prime form: for every prime `p > 1153`, the literal
+width-4 `≤ 32` budget is impossible in the canonical primitive-root lane. -/
+theorem not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
+    {p : ℕ} [Fact p.Prime] (hp1153 : 1153 < p) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 32) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod p)) 4).card ≤ 32 :=
+  not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+    (F := ZMod p) (n := 32) (ζ := ζ)
+    (by norm_num) (by norm_num) (by norm_num) hζ
+    (polynomial_ne_zmod32_of_prime_gt1153 hp1153 hζ)
 
 
 /-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
@@ -2040,6 +2228,55 @@ theorem not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4 :
   not_le.mpr sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 
 end Concrete12289Ratio
+
+/-! ### A concrete finite-field ratio obstruction (`n = 32`, `p = 97`) -/
+
+section Concrete97Ratio
+
+local instance fact_prime_97_ratio : Fact (Nat.Prime 97) := ⟨by norm_num⟩
+
+/-- A small primitive 32-th root in `F₉₇`. -/
+theorem orderOf_19_ratio_zmod97 : orderOf (19 : ZMod 97) = 32 := by
+  have h16 : ¬ (19 : ZMod 97) ^ (2 : ℕ) ^ 4 = 1 := by decide
+  have h32 : (19 : ZMod 97) ^ (2 : ℕ) ^ 5 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (19 : ZMod 97)) h16 h32
+  norm_num at h
+  exact h
+
+/-- `19` is a primitive 32-th root in `F₉₇`. -/
+theorem isPrimitiveRoot_19_32_ratio_zmod97 : IsPrimitiveRoot (19 : ZMod 97) 32 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_19_ratio_zmod97
+
+/-- The denominator-free polynomial obstruction holds for the canonical pair in `F₉₇`. -/
+theorem polynomial_19_sq_pow32_ne_zmod97 :
+    ((19 : ZMod 97) ^ 4 + 1) ^ 32 ≠
+      ((19 : ZMod 97) ^ 2 + 1) ^ 32 := by
+  decide
+
+/-- The canonical pair `ζ, ζ²` fails the ratio-root condition in `F₉₇`. -/
+theorem invariantRatio_19_sq_pow32_ne_one_zmod97 :
+    invariantRatio (19 : ZMod 97) ((19 : ZMod 97) ^ 2) ^ 32 ≠ 1 :=
+  (invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
+    (F := ZMod 97) (n := 32) (ζ := (19 : ZMod 97))
+    (by norm_num) (by norm_num) isPrimitiveRoot_19_32_ratio_zmod97).mpr
+    polynomial_19_sq_pow32_ne_zmod97
+
+/-- Concrete width-4 scanner failure for the 32-point subgroup of `F₉₇`. -/
+theorem thirtytwo_lt_e2BadScalarSet_mu32_card_zmod97_width4 :
+    32 < (e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod 97)) 4).card :=
+  n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
+    (F := ZMod 97) (n := 32) (ζ := (19 : ZMod 97))
+    (by norm_num) (by norm_num) (by norm_num)
+    isPrimitiveRoot_19_32_ratio_zmod97
+    invariantRatio_19_sq_pow32_ne_one_zmod97
+
+/-- The literal `≤ n` width-4 scanner budget is false in the same 32-point instance. -/
+theorem not_e2BadScalarSet_mu32_card_le_32_zmod97_width4 :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod 97)) 4).card ≤ 32 :=
+  not_le.mpr thirtytwo_lt_e2BadScalarSet_mu32_card_zmod97_width4
+
+end Concrete97Ratio
 
 /-! ### A bad-prime collapse of the fixed ratio residual (`n = 16`, `p = 17`) -/
 
@@ -2537,7 +2774,15 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms canonicalRatioPoly16_reduction_zmod
 #print axioms canonicalRatioPoly16_bezout
 #print axioms polynomial_ne_zmod16_of_prime_gt17
+#print axioms prime_eq_seventeen_of_polynomial_eq_zmod16
+#print axioms polynomial_ne_zmod16_of_prime_ne17
 #print axioms not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
+#print axioms not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_ne17
+#print axioms canonicalRatioPoly32_reduction
+#print axioms canonicalRatioPoly32_bezout
+#print axioms prime_not_dvd_canonicalRatioPoly32_bezout_const
+#print axioms polynomial_ne_zmod32_of_prime_gt1153
+#print axioms not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 #print axioms orderOf_4134_ratio
@@ -2546,6 +2791,12 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms invariantRatio_4134_sq_pow16_ne_one
 #print axioms sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 #print axioms not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
+#print axioms orderOf_19_ratio_zmod97
+#print axioms isPrimitiveRoot_19_32_ratio_zmod97
+#print axioms polynomial_19_sq_pow32_ne_zmod97
+#print axioms invariantRatio_19_sq_pow32_ne_one_zmod97
+#print axioms thirtytwo_lt_e2BadScalarSet_mu32_card_zmod97_width4
+#print axioms not_e2BadScalarSet_mu32_card_le_32_zmod97_width4
 #print axioms orderOf_3_ratio_zmod17
 #print axioms isPrimitiveRoot_3_16_ratio_zmod17
 #print axioms invariantRatio_3_sq_pow16_eq_one_zmod17

@@ -97,10 +97,29 @@ natAbs_resultant_canonicalRatioPoly_comm
 natAbs_resultant_canonicalRatioPoly_twoPow_sq_le
 prime_sq_le_canonicalRatioPolySharpBound_of_e2BadScalarSet_mu_card_le_twoPow_zmod
 not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq
+canonicalRatioResultant
+canonicalRatioBadPrimes
+mem_canonicalRatioBadPrimes
+canonicalRatioBadPrimes_card_le_natLog
+canonicalRatioBadPrimes_card_le_crude
+mem_canonicalRatioBadPrimes_of_e2BadScalarSet_mu_card_le_n_zmod
+not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes
+canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp
+CanonicalWidthFourGoodPrimeSupply
+refuter_of_canonicalWidthFourGoodPrimeSupply
 canonicalRatioPoly16_reduction_zmod
 canonicalRatioPoly16_bezout
 polynomial_ne_zmod16_of_prime_gt17
+prime_eq_seventeen_of_polynomial_eq_zmod16
+polynomial_ne_zmod16_of_prime_ne17
 not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17
+not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_ne17
+canonicalRatioPoly32ReducedPrimitive
+canonicalRatioPoly32_reduction
+canonicalRatioPoly32_bezout
+prime_not_dvd_canonicalRatioPoly32_bezout_const
+polynomial_ne_zmod32_of_prime_gt1153
+not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -109,6 +128,12 @@ polynomial_4134_sq_pow16_ne
 invariantRatio_4134_sq_pow16_ne_one
 sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
+orderOf_19_ratio_zmod97
+isPrimitiveRoot_19_32_ratio_zmod97
+polynomial_19_sq_pow32_ne_zmod97
+invariantRatio_19_sq_pow32_ne_one_zmod97
+thirtytwo_lt_e2BadScalarSet_mu32_card_zmod97_width4
+not_e2BadScalarSet_mu32_card_le_32_zmod97_width4
 orderOf_3_ratio_zmod17
 isPrimitiveRoot_3_16_ratio_zmod17
 invariantRatio_3_sq_pow16_eq_one_zmod17
@@ -334,6 +359,17 @@ forces `p^2 <= canonicalRatioPolySharpBound m`; the scanner-facing contrapositiv
 `not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq`.  This is
 the current explicit finite arithmetic target for this width-four resultant lane.
 
+`Frontier/CanonicalWidthFourBadPrimeSet.lean` packages the same resultant obstruction as an
+actual finite set.  `canonicalRatioBadPrimes n` is the prime-factor set of
+`canonicalRatioResultant n`, and
+`mem_canonicalRatioBadPrimes_of_e2BadScalarSet_mu_card_le_n_zmod` proves that any surviving
+canonical literal budget over `ZMod p` puts `p` in that set.  The contrapositive
+`not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes` is the finite-set
+scanner form, while `canonicalRatioBadPrimes_card_le_crude` and
+`canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp` give crude and sharp divisor-count bounds.
+The named hypothesis `CanonicalWidthFourGoodPrimeSupply` isolates the remaining arithmetic input:
+produce a primitive-root prime outside this finite set in the desired range.
+
 The `n = 16` canonical obstruction also has an exact good-prime certificate.  The theorem
 `canonicalRatioPoly16_reduction_zmod` reduces the denominator-free obstruction modulo
 `ζ^8 = -1` to an explicit `17 * 48` multiple of a cubic in `ζ^2`, and
@@ -342,6 +378,11 @@ The `n = 16` canonical obstruction also has an exact good-prime certificate.  Th
 `polynomial_ne_zmod16_of_prime_gt17` and the scanner-facing budget refuter
 `not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_gt17`: for every prime `p > 17`, the canonical
 primitive-root width-4 lane cannot satisfy the literal `<= 16` image budget.
+The follow-up theorem `prime_eq_seventeen_of_polynomial_eq_zmod16` removes the external lower
+bound: a primitive 16-th-root denominator-free collision forces `p = 17`.  Equivalently,
+`polynomial_ne_zmod16_of_prime_ne17` and
+`not_e2BadScalarSet_mu16_card_le_16_zmod_of_prime_ne17` refute the same canonical lane for every
+prime `p != 17`.
 
 The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
 witness at `n = 16`.  Lean proves `4134` has order `16`, checks the denominator-free
@@ -349,6 +390,22 @@ witness at `n = 16`.  Lean proves `4134` has order `16`, checks the denominator-
 `16 < #(e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod 12289)) 4)`.  The declaration
 `not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4` is the corresponding literal budget refuter
 for that concrete subgroup.
+
+The same concrete finite-field lane now has a smaller `n = 32` check.  In `ZMod 97`, Lean proves
+that `19` has order `32`, checks
+`((19 : ZMod 97)^4 + 1)^32 != ((19 : ZMod 97)^2 + 1)^32`, and derives
+`32 < #(e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod 97)) 4)`.  The packaged literal
+budget refuter is `not_e2BadScalarSet_mu32_card_le_32_zmod97_width4`.
+
+The `n = 32` canonical obstruction now also has an exact generic good-prime certificate above a
+finite threshold.  With `y = ζ^2`, Lean reduces
+`(ζ^4 + 1)^32 - (ζ^2 + 1)^32` modulo `y^8 + 1` to
+`272 * canonicalRatioPoly32ReducedPrimitive y`, then uses `canonicalRatioPoly32_bezout` to show
+that a primitive reduced collision forces `430704758627551 = 0`.  Since this Bezout constant has
+prime factors only `79, 97, 113, 641, 673, 1153`, the theorem
+`polynomial_ne_zmod32_of_prime_gt1153` refutes the denominator-cleared collision for every prime
+`p > 1153`, and `not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153` packages the literal
+width-4 scanner refuter.
 
 There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is a primitive
 16-th root, but `invariantRatio 3 (3^2)^16 = 1` and the denominator-cleared polynomial equality
@@ -381,3 +438,16 @@ surviving literal budget forces `p` to divide, hence be bounded by, the same non
 The contrapositive
 `not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime` is the scanner-facing finite
 field certificate once an explicit resultant bound is available.
+
+The resultant lane now also has a finite bad-prime API in
+`Frontier/CanonicalWidthFourBadPrimeSet.lean` and the companion KB note
+`deltastar-464-canonical-finite-bad-prime-bridge-2026-06-27.md`.  The definitions
+`canonicalRatioResultant n` and `canonicalRatioBadPrimes n` package the prime factors of
+`Res_Z(Phi_n, canonicalRatioPoly n)`.  The key scanner-facing theorem is
+`not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes`: a prime carrying a
+primitive `n`-th root and lying outside this finite factor set refutes the literal width-4
+`<= n` budget.  The count bounds `canonicalRatioBadPrimes_card_le_crude` and
+`canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp` convert the crude and sharp resultant
+envelopes into bad-prime cardinality bounds.  This improves the arithmetic residual from
+`|resultant| < p` to prime-factor avoidance, but it remains a canonical local lane rather than a
+delta-star floor proof.

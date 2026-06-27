@@ -214,6 +214,30 @@ theorem tzPrimeSupply_16_four : TZPrimeSupply 16 (4 : ℝ) 10 := by
         Finset ℕ).card := by decide
     _ ≤ (tzWindow 16 (4 : ℝ)).card := Finset.card_le_card hsub
 
+/-- **Concrete discharge for `n = 32, β = 4`.**  The window
+`[32⁴, 2·32⁴] = [1048576, 2097152]` contains the sixteen primes
+`1048609, 1048897, 1049057, 1049089,
+1049281, 1049473, 1049537, 1049569, 1049857, 1049953, 1050241, 1050337, 1050593, 1050817,
+1050913, 1050977`, all `≡ 1 (mod 32)`.  This extends the concrete high-exponent
+Thorner-Zaman supply ladder beyond the `n = 16` β=4 row. -/
+theorem tzPrimeSupply_32_four : TZPrimeSupply 32 (4 : ℝ) 16 := by
+  refine ⟨?_⟩
+  have hpow : ((32 : ℕ) : ℝ) ^ (4 : ℝ) = 1048576 := by
+    rw [show (4 : ℝ) = ((4 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hsub :
+      ({1048609, 1048897, 1049057, 1049089, 1049281, 1049473, 1049537, 1049569,
+          1049857, 1049953, 1050241, 1050337, 1050593, 1050817, 1050913, 1050977} :
+          Finset ℕ) ⊆ tzWindow 32 (4 : ℝ) := by
+    intro p hp
+    rw [mem_tzWindow]
+    fin_cases hp <;>
+      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+  calc (16 : ℕ)
+      = ({1048609, 1048897, 1049057, 1049089, 1049281, 1049473, 1049537, 1049569,
+          1049857, 1049953, 1050241, 1050337, 1050593, 1050817, 1050913, 1050977} :
+          Finset ℕ).card := by decide
+    _ ≤ (tzWindow 32 (4 : ℝ)).card := Finset.card_le_card hsub
+
 /-- **Concrete discharge for `n = 8, β = 5`** — completes the `β = 2, 3, 4, 5` tower for
 the modulus `n = 8`.  The window `[8⁵, 2·8⁵] = [32768, 65536]` contains the eight primes
 `32801, 32833, 32969, 32993, 33049, 33073, 33113, 33161`, all `≡ 1 (mod 8)`. -/
@@ -230,5 +254,9 @@ theorem tzPrimeSupply_8_five : TZPrimeSupply 8 (5 : ℝ) 8 := by
   calc (8 : ℕ)
       = ({32801, 32833, 32969, 32993, 33049, 33073, 33113, 33161} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8 (5 : ℝ)).card := Finset.card_le_card hsub
+
+/-! ## Axiom audit -/
+
+#print axioms tzPrimeSupply_32_four
 
 end ArkLib.ProximityGap.KKH26
