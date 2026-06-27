@@ -1190,7 +1190,9 @@ threshold.  Follow-up in the same bridge: without the nondegeneracy hypothesis, 
 contained in the degenerate scalar set `{γ : P + γQ = 0}`, and this set has size at most one when
 `Q ≠ 0`.  The final structured-line package is an exact empty-or-singleton dichotomy:
 `badWeight_eq_empty_or_singleton_of_degree_exact` and
-`badWeight_card_eq_zero_or_one_of_degree_exact`.  The arbitrary-stack structural reduction remains
+`badWeight_card_eq_zero_or_one_of_degree_exact`, with
+`badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact` identifying the count-one branch
+exactly with existence of a degenerate scalar.  The arbitrary-stack structural reduction remains
 open.
 
 ## [2026-06-26] refute | arbitrary ratio profiles block support-only caps

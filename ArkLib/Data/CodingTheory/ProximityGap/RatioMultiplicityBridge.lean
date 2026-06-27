@@ -340,6 +340,34 @@ theorem badWeight_card_eq_zero_or_one_of_degree_exact (dom : ι → F)
     right
     rw [hset, Finset.card_singleton]
 
+omit [DecidableEq ι] in
+/-- **Cardinality-one criterion for structured polynomial lines.**  Under the exact degree
+condition and `Q ≠ 0`, the low-weight scalar count is exactly one iff a degenerate scalar exists.
+Combined with `badWeight_card_eq_zero_or_one_of_degree_exact`, this is the exact binary
+classification of the structured polynomial-line local gate. -/
+theorem badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card = 1
+      ↔ ∃ γ₀ : F, P + C γ₀ * Q = 0 := by
+  constructor
+  · intro hcard
+    rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg] at hcard
+    rw [Finset.card_eq_one] at hcard
+    rcases hcard with ⟨γ₀, hset⟩
+    refine ⟨γ₀, ?_⟩
+    have hmem : γ₀ ∈ univ.filter (fun γ : F => P + C γ * Q = 0) := by
+      rw [hset]
+      simp
+    exact (Finset.mem_filter.mp hmem).2
+  · rintro ⟨γ₀, hγ₀⟩
+    rw [badWeight_eq_singleton_of_degree_exact_of_degenerate dom hdom P Q hdeg hQ hγ₀]
+    exact Finset.card_singleton γ₀
+
 end ArkLib.ProximityGap.RatioMultiplicity
 
 open ArkLib.ProximityGap.RatioMultiplicity in
@@ -366,3 +394,5 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_empty_or_singleton_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_eq_zero_or_one_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact
