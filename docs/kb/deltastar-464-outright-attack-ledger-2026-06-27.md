@@ -145,6 +145,36 @@ Backwards refutation:
 Verdict: **not a proof, but a precise off-BGK theorem to try**. The missing theorem is not the
 selector; it is universal single-obstruction compression with a small prime-factor count.
 
+### Attempt 4b: local-obstruction universalization tax
+
+The finite selector now has a checked multi-obstruction form:
+
+```text
+bad_filter_card_le_sum_primeFactors_card_of_local_obstructions
+exists_not_bad_of_local_obstructions_sum_lt
+```
+
+These theorems prove the exact arithmetic price of trying to universalize a binder-local
+bad-prime argument without true compression. If every bad candidate prime divides one of many
+local obstruction integers `D_i`, then the number of bad candidates is bounded by
+
+```text
+sum_i omega(D_i),
+```
+
+not by `omega(product_i D_i)` as a useful black box and not by any single small obstruction.
+Consequently, a local-resultant approach can still prove a good prime if the prime window beats
+this summed count, but it cannot be sold as a universal floor proof until the index set of local
+obstructions and their prime-factor budgets are both controlled.
+
+Backwards refutation: the naive product-over-all-stacks approach is exactly the wrong scale. It
+is formally valid, but it replaces the needed `omega(D)` by a sum over all profiles/configurations.
+If that sum is exponential or even too large polynomially, TZ/Linnik prime supply cannot clear it.
+
+Verdict: **formal progress, negative pressure on naive universalization**. The off-BGK route now
+has a precise subgoal: compress the universal bad-stack predicate to a small obstruction family,
+or prove a domination theorem that reduces the family to a sparse/profile representative set.
+
 ## Attempt 5: vector hyperplane cancellation
 
 The workbench warns that a bare pointwise Gauss-period bound pays the naive `q * B` conversion and
@@ -171,7 +201,8 @@ Verdict: **a real prize-facing route, but it is the analytic wall in incidence f
 1. `SparseDominanceForWorstStack`: prove a `ProfileFiberSlackCertificate` for a concrete sparse
    profile scheme, or produce a larger-stack counterexample.
 2. `UniversalSingleObstruction`: define the universal bad-stack failure predicate and prove it
-   divides one integer obstruction `D` with `omega(D)` below a TZ/Linnik prime-window count.
+   divides one integer obstruction `D`, or a local obstruction family with
+   `sum_i omega(D_i)` below a TZ/Linnik prime-window count.
 3. `HyperplaneIncidenceSubGaussian`: bypass scalar `M(mu_n)` and prove the BCHKS-style
    annihilator-hyperplane cancellation consumed by `WorstCaseIncidenceBounded`.
 4. `LamzouriQuotientTail`: turn the quotient entropy reduction into a theorem only if it includes

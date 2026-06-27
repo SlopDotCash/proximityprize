@@ -876,6 +876,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarConcretePinF17
 import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarConstantGapBelowCapacity
 import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarExactCrossoverF17
 import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarExactPinF5
+import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinF11H5
 import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinMu8F4129
 import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarPinchBracketD3
 import ArkLib.Data.CodingTheory.ProximityGap.DeltaStarSecondPinF17
@@ -1142,6 +1143,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031TransversalConcreteCov
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ImprimitiveSpikeStructure
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.IncidenceDevL2Offset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.IsSidonSetProperties
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Issue407FiniteObstructionBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Issue407SaturatedIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.JohnsonCountFromNonprincipalWick
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.K2Affine

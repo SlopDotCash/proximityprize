@@ -1877,6 +1877,13 @@ selector.  Theorems `exists_not_dvd_of_primeFactors_card_lt`,
 route has a nonzero obstruction integer `D`; they do not supply the obstruction or analytic prime
 density.
 
+Follow-up: `Frontier/Issue407FiniteObstructionBridge.lean` composes that selector with the
+`Issue407SaturatedIncidence` bad-prime consumer.  The new bridge theorems select a candidate prime
+outside a finite bad-prime certificate once the certificate divides a nonzero obstruction `D` with
+fewer prime factors than the candidate window, then transfer the saturated-threshold and
+max-good-agreement certificates at that prime.  This still leaves the small-obstruction theorem as
+the load-bearing input.
+
 ## [2026-06-27] research | Thorner-Zaman sub-quartic least-prime exponent CONFIRMED
 
 Resolved the §16(C) "UNCONFIRMED" flag of `deltastar-DOSSIER-v2-2026-06-22.md` by reading the

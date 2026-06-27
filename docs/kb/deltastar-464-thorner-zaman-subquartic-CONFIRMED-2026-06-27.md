@@ -25,9 +25,9 @@ h ≥ x^{1−δ₁},  q ≤ x^{δ₂},  δ₁ + (3/2)·δ₂ ≤ 1 − θ − ε
 ```
 and the paper states: **"If β₁ does not exist, then the 3/2 can be replaced by 1."**
 
-- **General Cor 1.4** (h=x, β₁ may exist, θ=32/37): `(3/2)δ₂ ≤ 1−32/37 = 5/37`, so
-  `δ₂ ≤ 10/111`, `q ≤ x^{10/111}` ⟹ **x ≥ q^{111/10} = q^{11.1}** (rounded to `q^12`).
-  Insufficient (matches the dossier).
+- **General Cor 1.4** (h=x, β₁ may exist): the paper states the usable unconditional
+  corollary with **`x ≥ q^12`**.  This exceeds the quartic target and is insufficient
+  (matching the dossier).
 - **Powerful case** (§3.1, Iwaniec eq 3.1 + [15, Lem 6.2]): for a modulus `q` with fixed
   squarefree part `d = ∏_{p|q} p`, the exceptional zero `β₁` satisfies
   `β₁ < 1 − c₁₀/(√d (log d)²)`, hence **β₁ does not exist once `q > exp(√d(log d)²/(50c₁₀))`**.
@@ -54,7 +54,7 @@ exists in the AP below `q^{2.4+ε}`.) Effective and unconditional — **no GRH**
 unconditional discharge for the dyadic family at any β ∈ (12/5, 4]**. Concretely:
 - the floor-good closure `smallestPrime(1 mod 2^a) < (2^a)^4 ⟹ every prize prime good for the
   binder predicate` is now **unconditional** (was GRH-conditional / TZ-unconfirmed);
-- the concrete `tzPrimeSupply_*_two` ladder (β=2, n=32…16384) lives strictly *below* the general
+- the concrete `tzPrimeSupply_*_two` ladder (β=2, n=32…32768) lives strictly *below* the general
   guarantee β=12/5 — those are explicit β=2 witnesses, consistent with (not implied by) the
   general β=2.4 theorem;
 - formalizing TZ Cor 3.1 in Lean remains a large analytic-NT project; the honest in-tree status
