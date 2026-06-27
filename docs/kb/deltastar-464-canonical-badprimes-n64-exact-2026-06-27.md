@@ -55,8 +55,31 @@ Consequence for the floor route, made concrete and **exactly confirmed** (no ext
 `smallestPrime(1 mod 2^a)`, whose `< (2^a)^{12/5}` bound is the Thorner–Zaman result confirmed in
 `deltastar-464-thorner-zaman-subquartic-CONFIRMED-2026-06-27.md`. This is an **independent
 confirmation** that the floor route's correct analytic tool is least-prime-in-AP (TZ 12/5), not a
-resultant-height bound — exactly the §9 "conjugate-count no-go" (height exponential, only a
-divisibility/existence question is tractable).
+resultant-height bound.
+
+## Landed Lean bricks (axiom-clean, 2026-06-27)
+
+Two concrete witnesses now encode the bracket in Lean (both self-contained, `decide`-based):
+- `Frontier/CanonicalBadPrimeHeightNoGoN128.lean` —
+  `exists_canonical_badPrime_gt_n4_n128`: an explicit prime `p = 423237889 > 128⁴` with
+  `128 ∣ p−1` and a primitive 128th root `ζ = 90645509` at which the canonical collision
+  `(ζ⁴+1)¹²⁸ = (ζ²+1)¹²⁸` holds. **Refutes any polynomial-height floor closure.**
+- `Frontier/CanonicalSmallestBadPrimeWitness.lean` —
+  `smallest_ap_prime_is_canonical_bad`: at `n = 64, 128, 256` the least prime `≡ 1 (mod n)`
+  (`193, 257, 257`) carries a primitive `n`-th root (`ζ = 39, 18, 3`) with the canonical
+  collision, and the smallness `smallestPrime(1 mod n) = 193/257` is fully `decide`-checked.
+  **Witnesses the floor-singleton lower containment** (least AP prime ∈ bad set).
+
+Together they bracket the structure: `min(bad)` is the AP-controlled least prime (TZ 12/5),
+`max(bad)` exceeds `n⁴`. Both are off-wall substrate, not a δ\* proof.
+
+Note (n=256 added): the exact primitive-root lane min at `n=256` is also `257`
+(`257 = 256+1 ≡ 1 mod 256`), so the `min(bad)=smallestPrime(1 mod n)` pattern holds at five rungs
+`n=16,32,64,128,256`.
+
+This is exactly the §9 "conjugate-count no-go": the height is exponential, so only a
+divisibility/existence question (does a *small* good/bad prime exist?) is tractable — never a
+height bound on all bad primes.
 
 ## Honesty
 
