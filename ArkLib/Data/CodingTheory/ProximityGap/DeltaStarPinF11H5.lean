@@ -297,11 +297,127 @@ theorem mcaDeltaStar_eq_twoFifth :
   mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
     fiveEleven_le_half half_lt_sixEleven
 
+/-! ## The lower jump: `mcaDeltaStar(C, ε*) = 1/5` for `ε* ∈ [1/11, 2/11)`
+
+Completing the threshold characterization of `C`: the step function `ε_mca(C, ·)` has its first
+jump at `δ = 1/5` (from `1/11` to `2/11`).  So for thresholds in the first band the exact `δ*`
+sits at `1/5` (below the unique-decoding radius `0.3`), the complement of the above-Johnson pin. -/
+
+/-- `(1/5 : ℝ≥0) ≤ 1`. -/
+theorem fifth_le_one : (1/5 : ℝ≥0) ≤ 1 := by
+  rw [div_le_one (by norm_num : (0 : ℝ≥0) < 5)]; norm_num
+
+/-- Second row of the first-jump bad stack (the line row `u₀ = (0,0,0,0,1)` is shared). -/
+def u₁' : Fin 5 → F11 := ![2, 4, 8, 3, 10]
+
+/-- The first-jump bad stack. -/
+def ubad' : WordStack F11 (Fin 2) (Fin 5) := ![u₀, u₁']
+
+@[simp] theorem ubad'_zero : ubad' 0 = u₀ := rfl
+@[simp] theorem ubad'_one : ubad' 1 = u₁' := rfl
+
+/-- Witness-cardinality clause at `δ = 1/5`, `n = 5`, for a 4-element set. -/
+theorem card_cond' {S : Finset (Fin 5)} (h : S.card = 4) :
+    (S.card : ℝ≥0) ≥ ((1 : ℝ≥0) - (1/5 : ℝ≥0)) * (Fintype.card (Fin 5) : ℝ≥0) := by
+  have h45 : ((1 : ℝ≥0) - (1/5 : ℝ≥0)) * (Fintype.card (Fin 5) : ℝ≥0) = 4 := by
+    apply NNReal.coe_injective
+    rw [NNReal.coe_mul, NNReal.coe_sub fifth_le_one]
+    push_cast [Fintype.card_fin]; norm_num
+  rw [ge_iff_le, h45, h]; norm_num
+
+/-- `γ = 0` is bad at `δ = 1/5`: witness set `{0,1,2,3}`, interpolating codeword `0`. -/
+theorem mcaEvent'_g0 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (1/5) u₀ u₁' (0 : F11) := by
+  refine ⟨{0, 1, 2, 3}, card_cond' (by decide), ⟨lineEval 0 0, lineEval_mem 0 0, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 2` is bad at `δ = 1/5`: witness set `{0,2,3,4}`, interpolating codeword `1 + 3X`. -/
+theorem mcaEvent'_g2 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (1/5) u₀ u₁' (2 : F11) := by
+  refine ⟨{0, 2, 3, 4}, card_cond' (by decide), ⟨lineEval 1 3, lineEval_mem 1 3, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- The first-jump bad-scalar set: 2 of the 11 scalars. -/
+def Gbad' : Finset F11 := {0, 2}
+
+theorem mcaEvent'_of_mem_Gbad' :
+    ∀ γ ∈ Gbad', mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (1/5) (ubad' 0) (ubad' 1) γ := by
+  intro γ hγ
+  rw [ubad'_zero, ubad'_one]
+  simp only [Gbad', Finset.mem_insert, Finset.mem_singleton] at hγ
+  rcases hγ with rfl | rfl
+  · exact mcaEvent'_g0
+  · exact mcaEvent'_g2
+
+/-- **Bad side (first jump):** `ε_mca(C, 1/5) ≥ 2/11`. -/
+theorem epsMCA_fifth_ge :
+    (2 : ℝ≥0∞) / 11 ≤ epsMCA (F := F11) (A := F11) (C : Set (Fin 5 → F11)) (1/5) := by
+  have h := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
+    (C : Set (Fin 5 → F11)) (1/5) ubad' Gbad' mcaEvent'_of_mem_Gbad'
+  have hG : (Gbad'.card : ℝ≥0∞) = 2 := by rw [show Gbad'.card = 2 from by decide]; norm_num
+  have hF : ((Fintype.card F11 : ℕ) : ℝ≥0∞) = 11 := by
+    rw [show Fintype.card F11 = 11 from by simp [ZMod.card]]; norm_num
+  rwa [hG, hF] at h
+
+/-- Below `δ = 1/5` the witness set is forced to be all of `Fin 5`. -/
+theorem forced_univ_of_lt_fifth {δ : ℝ≥0} (hδ : δ < 1 / 5) :
+    ∀ T : Finset (Fin 5),
+      ((1 : ℝ≥0) - δ) * (Fintype.card (Fin 5) : ℝ≥0) ≤ (T.card : ℝ≥0) → T = Finset.univ := by
+  intro T hT
+  have hδ1 : δ ≤ 1 := le_of_lt (lt_of_lt_of_le hδ fifth_le_one)
+  have hδR : (δ : ℝ) < 1/5 := by exact_mod_cast hδ
+  have hT' : ((1 : ℝ) - (δ : ℝ)) * 5 ≤ (T.card : ℝ) := by
+    have h := NNReal.coe_le_coe.mpr hT
+    rwa [NNReal.coe_mul, NNReal.coe_sub hδ1, NNReal.coe_one,
+      show ((Fintype.card (Fin 5) : ℝ≥0) : ℝ) = 5 by norm_num [Fintype.card_fin]] at h
+  have h4 : (4 : ℝ) < (T.card : ℝ) := by nlinarith
+  have h5 : 5 ≤ T.card := by
+    have : 4 < T.card := by exact_mod_cast h4
+    omega
+  apply Finset.eq_univ_of_card
+  have hle : T.card ≤ 5 := by
+    simpa [Finset.card_univ, Fintype.card_fin] using Finset.card_le_univ T
+  simp only [Fintype.card_fin]; omega
+
+/-- **Good side (first band):** `ε_mca(C, δ) ≤ 1/11` for every `δ < 1/5`. -/
+theorem epsMCA_le_of_lt_fifth {δ : ℝ≥0} (hδ : δ < 1 / 5) :
+    epsMCA (F := F11) (A := F11) (C : Set (Fin 5 → F11)) δ ≤ 1 / 11 := by
+  have h := MCAWitnessSpread.epsMCA_le_inv_card_of_forced_univ C δ (forced_univ_of_lt_fifth hδ)
+  rwa [show ((Fintype.card F11 : ℕ) : ℝ≥0∞) = 11 from by
+    rw [show Fintype.card F11 = 11 from by simp [ZMod.card]]; norm_num] at h
+
+/-- `1/11 < 2/11` in `ℝ≥0∞`. -/
+theorem oneEleven_lt_twoEleven : (1 / 11 : ℝ≥0∞) < 2 / 11 := by
+  rw [← ENNReal.toReal_lt_toReal (ENNReal.div_ne_top (by simp) (by simp))
+        (ENNReal.div_ne_top (by simp) (by simp))]
+  simp only [ENNReal.toReal_div, ENNReal.toReal_ofNat, ENNReal.toReal_one]
+  norm_num
+
+/-- **Interval pin (first jump):** `mcaDeltaStar(C, ε*) = 1/5` for every `ε* ∈ [1/11, 2/11)`. -/
+theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0∞}
+    (hlo : (1 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 2 / 11) :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar = 1/5 := by
+  refine le_antisymm
+    (MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _ (lt_of_lt_of_le hhi epsMCA_fifth_ge)) ?_
+  by_contra h
+  push Not at h
+  obtain ⟨c, hc1, hc2⟩ := exists_between h
+  have hmem : c ∈ MCAThresholdLedger.mcaGoodRadii (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar := by
+    refine ⟨le_of_lt (lt_of_lt_of_le hc2 fifth_le_one), ?_⟩
+    exact le_trans (epsMCA_le_of_lt_fifth hc2) hlo
+  have hle := MCAThresholdLedger.le_mcaDeltaStar_of_good (F := F11) (A := F11)
+    (C : Set (Fin 5 → F11)) εstar hmem.1 hmem.2
+  exact absurd hle (not_le.mpr hc1)
+
 /-! ## Source audit -/
 
 #print axioms epsMCA_twoFifth_ge
 #print axioms epsMCA_le_of_lt_twoFifth
 #print axioms mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
 #print axioms mcaDeltaStar_eq_twoFifth
+#print axioms epsMCA_fifth_ge
+#print axioms mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven
 
 end ProximityGap.DeltaStarPinF11H5

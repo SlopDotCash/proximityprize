@@ -42,6 +42,37 @@ and feeds the existing delta-star pin through:
 deltaStar_pin_of_representativeStacksBounded
 ```
 
+## Primitive-move quotient socket
+
+The interface now also supports generated quotient relations.  Instead of proving invariance for a
+large, already-closed relation in one shot, an attack can give primitive stack moves `Step` and prove:
+
+```lean
+StackCountInvariantRel C delta Step
+StackRelRepresentativeCover R (StackRelChain Step)
+RepresentativeStacksBounded C delta R B
+```
+
+The new checked consumers are:
+
+```lean
+stackCountInvariantRel_chain
+not_stackRelChainRepresentativeCover_iff_exists_chain_uncovered
+not_chainRepresentativeCoverBudget_iff_exists_chain_uncovered_or_budget_lt
+dominatingCover_of_invariantStep_chainCover
+worstCaseIncidenceBounded_of_chainRepresentativeStacksBounded
+worstCaseIncidenceBounded_iff_chainRepresentativeStacksBounded
+not_worstCaseIncidenceBounded_iff_exists_chainRepresentative_budget_lt
+deltaStar_pin_of_chainRepresentativeStacksBounded
+```
+
+This is the natural socket for a rewrite-system or normal-form attack: prove each local move
+preserves `StackBadCount`, prove every stack reaches a representative by finitely many moves, and
+then budget only the representatives.  It still does not prove the missing classification theorem;
+it makes the exact classification obligation compositional.  The failure certificate is equally
+explicit: either a stack is not connected to the representative catalogue by the generated moves, or
+one of the representatives already exceeds the budget.
+
 There is also a weaker direct target:
 
 ```lean

@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4925 files, 52999 declarations
+- `ArkLib` — 4928 files, 53033 declarations
 
 ## Same short-name across multiple files (2178 groups)
 
@@ -4874,7 +4874,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `StackRelRepresentativeCover` (2 declarations, 2 files)
 
-- `def ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackRelRepresentativeCover` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:90](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L90) — `R` contains a representative for every stack modulo `Rel`.
+- `def ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackRelRepresentativeCover` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L112) — `R` contains a representative for every stack modulo `Rel`.
 - `def ArkLib.ProximityGap.Frontier.StackRepresentativeCoverCardinality.StackRelRepresentativeCover` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean:66](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean#L66) — `R` contains a representative for every stack modulo `Rel`. This is kept local rather than imported
 
 ### `SubGaussianTailBound` (2 declarations, 2 files)
@@ -7721,7 +7721,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `not_stackRelRepresentativeCover_iff_exists_uncovered` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_stackRelRepresentativeCover_iff_exists_uncovered` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L96) — Failure of a literal representative cover is exactly an uncovered stack.
+- `theorem ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.not_stackRelRepresentativeCover_iff_exists_uncovered` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean:118](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean#L118) — Failure of a literal representative cover is exactly an uncovered stack.
 - `theorem ArkLib.ProximityGap.Frontier.StackRepresentativeCoverCardinality.not_stackRelRepresentativeCover_iff_exists_uncovered` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean#L72) — Failure of a literal representative cover is exactly an uncovered stack.
 
 ### `not_uniformEpsMCAgsPrizeBoundConjecture` (2 declarations, 2 files)
