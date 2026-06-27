@@ -37,6 +37,35 @@ open ArkLib.ProximityGap.HighMultiplicity
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
+omit [Fintype ι] [DecidableEq ι] [Fintype F] [DecidableEq F] in
+/-- **Line nondegeneracy from non-scalar-multiple form.**  If `P` is not a scalar multiple of
+`Q`, then no scalar `γ` makes `P + γ·Q` vanish identically. -/
+theorem linePolynomial_ne_zero_of_not_scalarMultiple (P Q : F[X])
+    (hnot : ¬ ∃ c : F, P = C c * Q) (γ : F) :
+    P + C γ * Q ≠ 0 := by
+  intro hγ
+  apply hnot
+  refine ⟨-γ, ?_⟩
+  have hP : P = -(C γ * Q) := by
+    rw [eq_neg_iff_add_eq_zero]
+    exact hγ
+  rw [hP, map_neg, neg_mul]
+
+omit [Fintype ι] [DecidableEq ι] [Fintype F] [DecidableEq F] in
+/-- **Per-scalar nondegeneracy iff non-scalar-multiple.**  The older hypothesis
+`∀ γ, P + γ·Q ≠ 0` is equivalent to the structural condition that `P` is not a scalar multiple
+of `Q`. -/
+theorem forall_linePolynomial_ne_zero_iff_not_scalarMultiple (P Q : F[X]) :
+    (∀ γ : F, P + C γ * Q ≠ 0) ↔ ¬ ∃ c : F, P = C c * Q := by
+  constructor
+  · intro hnz hscalar
+    rcases hscalar with ⟨c, hP⟩
+    exact (hnz (-c)) (by
+      rw [hP, map_neg, neg_mul]
+      exact add_neg_cancel _)
+  · intro hnot γ
+    exact linePolynomial_ne_zero_of_not_scalarMultiple P Q hnot γ
+
 omit [DecidableEq ι] [Fintype F] in
 /-- **A polynomial error line has degree-bounded multiplicity.**  If the error coordinates are
 evaluations `e₀ i = P(dom i)`, `e₁ i = Q(dom i)` of polynomials on an injective domain `dom`, then
@@ -94,14 +123,8 @@ theorem badScalars_empty_of_degree_of_not_scalarMultiple (dom : ι → F)
     (hnot : ¬ ∃ c : F, P = C c * Q) :
     univ.filter (fun γ : F =>
         μ₀ ≤ mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ) = ∅ := by
-  refine badScalars_empty_of_degree dom hdom P Q hμ ?_
-  intro γ hγ
-  apply hnot
-  refine ⟨-γ, ?_⟩
-  have hP : P = -(C γ * Q) := by
-    rw [eq_neg_iff_add_eq_zero]
-    exact hγ
-  rw [hP, map_neg, neg_mul]
+  exact badScalars_empty_of_degree dom hdom P Q hμ
+    ((forall_linePolynomial_ne_zero_iff_not_scalarMultiple P Q).2 hnot)
 
 omit [DecidableEq ι] [Fintype F] in
 /-- **Pointwise high-multiplicity collapse from non-scalar-multiple form.**  Under the degree
@@ -112,14 +135,7 @@ theorem mult_poly_lt_of_degree_of_not_scalarMultiple (dom : ι → F)
     (hμ : max P.natDegree Q.natDegree < μ₀)
     (hnot : ¬ ∃ c : F, P = C c * Q) (γ : F) :
     mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ < μ₀ := by
-  have hnonzero : P + C γ * Q ≠ 0 := by
-    intro hγ
-    apply hnot
-    refine ⟨-γ, ?_⟩
-    have hP : P = -(C γ * Q) := by
-      rw [eq_neg_iff_add_eq_zero]
-      exact hγ
-    rw [hP, map_neg, neg_mul]
+  have hnonzero := linePolynomial_ne_zero_of_not_scalarMultiple P Q hnot γ
   exact lt_of_le_of_lt (mult_poly_le_max dom hdom P Q hnonzero) hμ
 
 omit [DecidableEq ι] in
@@ -157,14 +173,8 @@ theorem badWeight_empty_of_degree_exact_of_not_scalarMultiple (dom : ι → F)
     (hnot : ¬ ∃ c : F, P = C c * Q) :
     univ.filter (fun γ : F =>
         (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) = ∅ :=
-  badWeight_empty_of_degree_exact dom hdom P Q hdeg (by
-    intro γ hγ
-    apply hnot
-    refine ⟨-γ, ?_⟩
-    have hP : P = -(C γ * Q) := by
-      rw [eq_neg_iff_add_eq_zero]
-      exact hγ
-    rw [hP, map_neg, neg_mul])
+  badWeight_empty_of_degree_exact dom hdom P Q hdeg
+    ((forall_linePolynomial_ne_zero_iff_not_scalarMultiple P Q).2 hnot)
 
 omit [DecidableEq ι] [Fintype F] in
 /-- **Pointwise exact weight lower bound from non-scalar-multiple form.**  Under the exact degree
@@ -179,14 +189,7 @@ theorem weightLine_card_gt_of_degree_exact_of_not_scalarMultiple (dom : ι → F
     w < (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card := by
   refine lt_of_not_ge ?_
   intro hle
-  have hnonzero : P + C γ * Q ≠ 0 := by
-    intro hγ
-    apply hnot
-    refine ⟨-γ, ?_⟩
-    have hP : P = -(C γ * Q) := by
-      rw [eq_neg_iff_add_eq_zero]
-      exact hγ
-    rw [hP, map_neg, neg_mul]
+  have hnonzero := linePolynomial_ne_zero_of_not_scalarMultiple P Q hnot γ
   have hcap : mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ
       ≤ max P.natDegree Q.natDegree :=
     mult_poly_le_max dom hdom P Q hnonzero
@@ -745,6 +748,10 @@ theorem badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact (dom : ι
 
 end ArkLib.ProximityGap.RatioMultiplicity
 
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms linePolynomial_ne_zero_of_not_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms forall_linePolynomial_ne_zero_iff_not_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badScalars_empty_of_degree_of_not_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
