@@ -17,7 +17,7 @@ Status: **off-BGK arithmetic guardrail**, not a delta-star proof.
 The file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLevelDepthPrimeScaleGate.lean
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorLevelDepthPrimeScaleGate.lean
 ```
 
 formalizes the scale condition for using least-prime-in-AP input at deeper 2-power levels.
@@ -29,12 +29,19 @@ exponent-`e` prime supply at that deeper level fits below the original prize sca
 k * e <= 4 * a.
 ```
 
-The file proves three useful guardrails:
+The file proves the scale gate and its exact iff forms:
 
+- `dyadic_level_power_le_prize_iff_mul_le`: a level-`k`, exponent-`e` supply fits below
+  `(2^a)^4` iff `k * e <= 4 * a`.
+- `dyadic_prize_lt_level_power_iff_mul_lt`: it overshoots iff `4 * a < k * e`.
+- `level_witness_le_prize_of_mul_le`: any prime witness below the level/exponent scale is below
+  prize scale once the exponent-product gate holds.
 - `fifth_power_deeper_level_above_prize`: classical exponent-5 Linnik scale overshoots the
   `(2^a)^4` prize scale for every deeper level `k >= a`.
 - `cubic_deeper_level_le_prize_of_depth`: cubic supply at level `a + d` fits while `3d <= a`.
+- `cubic_deeper_level_le_prize_iff_depth`: the cubic fit is exact; it holds iff `3d <= a`.
 - `prize_lt_cubic_deeper_level_of_depth_too_large`: cubic supply overshoots when `a < 3d`.
+- `prize_lt_cubic_deeper_level_iff_depth_too_large`: the strict cubic overshoot is exact.
 - `level_depth_prime_scale_summary`: the bundled depth/exponent verdict.
 
 ## Consequence for #464

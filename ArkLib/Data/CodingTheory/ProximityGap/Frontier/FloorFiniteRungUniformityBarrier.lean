@@ -169,6 +169,60 @@ theorem uniformFrom_of_verifiedPrefix_and_successorStep
     UniformFrom start R :=
   uniformFrom_of_verifiedPrefix_and_successor_step hsc hprefix hstep
 
+/-- Interval-finset version of the positive replacement: verified interval evidence plus a
+successor step proves uniformity. -/
+theorem uniformFrom_of_verifiedOn_Icc_and_successorStep
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hverified : VerifiedOn (Finset.Icc start cutoff) R)
+    (hstep : SuccessorStep start R) :
+    UniformFrom start R :=
+  uniformFrom_of_verifiedPrefix_and_successorStep hsc
+    ((verifiedOn_Icc_iff_verifiedPrefix start cutoff R).mp hverified) hstep
+
+/-- Once a prefix has been verified, any failure of uniformity refutes the successor step. -/
+theorem not_successorStep_of_verifiedPrefix_of_not_uniformFrom
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hprefix : VerifiedPrefix start cutoff R)
+    (hnot : ¬ UniformFrom start R) :
+    ¬ SuccessorStep start R := by
+  intro hstep
+  exact hnot (uniformFrom_of_verifiedPrefix_and_successorStep hsc hprefix hstep)
+
+/-- Interval-finset version: checked interval evidence plus failed uniformity forces the successor
+step itself to fail. -/
+theorem not_successorStep_of_verifiedOn_Icc_of_not_uniformFrom
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hverified : VerifiedOn (Finset.Icc start cutoff) R)
+    (hnot : ¬ UniformFrom start R) :
+    ¬ SuccessorStep start R :=
+  not_successorStep_of_verifiedPrefix_of_not_uniformFrom hsc
+    ((verifiedOn_Icc_iff_verifiedPrefix start cutoff R).mp hverified) hnot
+
+/-- Scanner form: if a verified prefix does not extend to uniformity, some verified rung fails to
+propagate to its successor. -/
+theorem exists_next_failure_of_verifiedPrefix_of_not_uniformFrom
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hprefix : VerifiedPrefix start cutoff R)
+    (hnot : ¬ UniformFrom start R) :
+    ∃ a : ℕ, start ≤ a ∧ R a ∧ ¬ R (a + 1) :=
+  (not_successorStep_iff_exists_next_failure start R).mp
+    (not_successorStep_of_verifiedPrefix_of_not_uniformFrom hsc hprefix hnot)
+
+/-- Interval-finset scanner form of
+`exists_next_failure_of_verifiedPrefix_of_not_uniformFrom`. -/
+theorem exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hverified : VerifiedOn (Finset.Icc start cutoff) R)
+    (hnot : ¬ UniformFrom start R) :
+    ∃ a : ℕ, start ≤ a ∧ R a ∧ ¬ R (a + 1) :=
+  exists_next_failure_of_verifiedPrefix_of_not_uniformFrom hsc
+    ((verifiedOn_Icc_iff_verifiedPrefix start cutoff R).mp hverified) hnot
+
 #print axioms verifiedOn_not_force_uniform
 #print axioms verifiedOn_Icc_iff_verifiedPrefix
 #print axioms prefixModel_verifiedPrefix
@@ -181,5 +235,10 @@ theorem uniformFrom_of_verifiedPrefix_and_successorStep
 #print axioms uniformFrom_of_verifiedPrefix_and_successor_step
 #print axioms uniformFrom_of_base_and_successorStep
 #print axioms uniformFrom_of_verifiedPrefix_and_successorStep
+#print axioms uniformFrom_of_verifiedOn_Icc_and_successorStep
+#print axioms not_successorStep_of_verifiedPrefix_of_not_uniformFrom
+#print axioms not_successorStep_of_verifiedOn_Icc_of_not_uniformFrom
+#print axioms exists_next_failure_of_verifiedPrefix_of_not_uniformFrom
+#print axioms exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
 
 end ArkLib.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier

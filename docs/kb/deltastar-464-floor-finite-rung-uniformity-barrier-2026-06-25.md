@@ -84,6 +84,7 @@ uniformFrom_of_base_and_successor_step
 uniformFrom_of_verifiedPrefix_and_successor_step
 uniformFrom_of_base_and_successorStep
 uniformFrom_of_verifiedPrefix_and_successorStep
+uniformFrom_of_verifiedOn_Icc_and_successorStep
 ```
 
 These prove that a base verified rung plus a successor theorem
@@ -99,6 +100,16 @@ The missing successor theorem is also scanner-facing:
 ```text
 not SuccessorStep start R
   iff exists a >= start, R(a) and not R(a + 1).
+```
+
+With a verified prefix already in hand, failed uniformity now returns that same adjacent-rung
+witness directly:
+
+```lean
+not_successorStep_of_verifiedPrefix_of_not_uniformFrom
+not_successorStep_of_verifiedOn_Icc_of_not_uniformFrom
+exists_next_failure_of_verifiedPrefix_of_not_uniformFrom
+exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
 ```
 
 For the floor lane, this is the refutable form of the proposed tower/renormalization law: either

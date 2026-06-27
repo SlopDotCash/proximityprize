@@ -1320,3 +1320,38 @@ guardrail for `VerifiedOn (Finset.Icc 4 5)`.  `SuccessorStep`,
 `not_uniformFrom_iff_exists_failure`, and `not_successorStep_iff_exists_next_failure` expose the
 missing all-rungs propagation as a scanner target: either prove the successor step or find a
 checked rung where propagation fails.
+
+Follow-up: the finite-rung barrier now has prefix-consumer scanners.  The wrappers
+`not_successorStep_of_verifiedPrefix_of_not_uniformFrom`,
+`not_successorStep_of_verifiedOn_Icc_of_not_uniformFrom`,
+`exists_next_failure_of_verifiedPrefix_of_not_uniformFrom`, and
+`exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom` say that once the checked prefix is
+accepted, any remaining failure of all-rungs uniformity must produce an adjacent rung where
+`R(a)` holds but `R(a+1)` fails.
+
+## [2026-06-27] reduce | exact floor depth scale gates
+
+Promoted `_FloorLevelDepthPrimeScaleGate.lean` to the landed Frontier module
+`FloorLevelDepthPrimeScaleGate.lean` and sharpened the arithmetic surface.  The exact gates
+`dyadic_level_power_le_prize_iff_mul_le` and `dyadic_prize_lt_level_power_iff_mul_lt` state that
+level/exponent supply fits or overshoots the base quartic prize window exactly according to the
+product comparison `k * e <= 4a`.  The cubic specializations
+`cubic_deeper_level_le_prize_iff_depth` and
+`prize_lt_cubic_deeper_level_iff_depth_too_large` isolate the depth condition as precisely
+`3d <= a` versus `a < 3d`.
+
+## [2026-06-27] reduce | promote floor level-depth prime-scale gate
+
+Renamed `_FloorLevelDepthPrimeScaleGate.lean` to the landed Frontier module
+`FloorLevelDepthPrimeScaleGate.lean` and narrowed its import from `Mathlib.Tactic` to
+`Mathlib.Tactic.Linarith`.  The gate still packages the off-BGK arithmetic constraint:
+least-prime input at level `k` with exponent `e` fits the base `(2^a)^4` prize scale only when
+`k * e <= 4 * a`, with cubic depth allowed up to `3d <= a` and fifth-power Linnik scale ruled out
+at every nontrivial deeper level.
+
+Follow-up exact forms `dyadic_level_power_le_prize_iff_mul_le` and
+`dyadic_prize_lt_level_power_iff_mul_lt` make the exponent-product gate bidirectional.
+Specializing them gives `cubic_deeper_level_le_prize_iff_depth` and
+`prize_lt_cubic_deeper_level_iff_depth_too_large`: cubic supply at level `a+d` fits exactly when
+`3d <= a` and overshoots exactly when `a < 3d`.  The helper
+`level_witness_le_prize_of_mul_le` packages the reusable witness transfer below prize scale.

@@ -1105,6 +1105,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherRSListCap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorAsymptoticRadius
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorLevelDepthPrimeScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorNecessaryNotSufficient
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.GaussPeriodR2CeilingGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthThree
@@ -1973,7 +1974,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorBadDefectTowerInvari
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorBadRamificationDisjoint
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorClosureContract
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorDominationInterface
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLevelDepthPrimeScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikExponentGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikRungInstances
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikTZClosure

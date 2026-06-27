@@ -163,7 +163,7 @@ Local surfaces:
 - `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLinnikTZClosure.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PowerfulTZThetaGate.lean`.
-- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorLevelDepthPrimeScaleGate.lean`.
+- `ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorLevelDepthPrimeScaleGate.lean`.
 
 Verdict: a sub-4 dyadic least-prime theorem would close a useful obstruction-removal lane, not the
 delta-star prize.
