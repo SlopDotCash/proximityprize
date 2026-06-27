@@ -103,6 +103,25 @@ theorem badScalars_empty_of_degree_of_not_scalarMultiple (dom : ι → F)
     exact hγ
   rw [hP, map_neg, neg_mul]
 
+omit [DecidableEq ι] [Fintype F] in
+/-- **Pointwise high-multiplicity collapse from non-scalar-multiple form.**  Under the degree
+threshold and `P` not a scalar multiple of `Q`, every scalar has incidence multiplicity below the
+threshold `μ₀`. -/
+theorem mult_poly_lt_of_degree_of_not_scalarMultiple (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {μ₀ : ℕ}
+    (hμ : max P.natDegree Q.natDegree < μ₀)
+    (hnot : ¬ ∃ c : F, P = C c * Q) (γ : F) :
+    mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ < μ₀ := by
+  have hnonzero : P + C γ * Q ≠ 0 := by
+    intro hγ
+    apply hnot
+    refine ⟨-γ, ?_⟩
+    have hP : P = -(C γ * Q) := by
+      rw [eq_neg_iff_add_eq_zero]
+      exact hγ
+    rw [hP, map_neg, neg_mul]
+  exact lt_of_le_of_lt (mult_poly_le_max dom hdom P Q hnonzero) hμ
+
 omit [DecidableEq ι] in
 /-- **Exact degree-collapse for weight-thresholded polynomial error lines.**  If the error
 coordinates are polynomial evaluations and every ratio fibre has multiplicity at most
@@ -146,6 +165,34 @@ theorem badWeight_empty_of_degree_exact_of_not_scalarMultiple (dom : ι → F)
       rw [eq_neg_iff_add_eq_zero]
       exact hγ
     rw [hP, map_neg, neg_mul])
+
+omit [DecidableEq ι] [Fintype F] in
+/-- **Pointwise exact weight lower bound from non-scalar-multiple form.**  Under the exact degree
+threshold and `P` not a scalar multiple of `Q`, every scalar line word has Hamming weight strictly
+larger than `w`. -/
+theorem weightLine_card_gt_of_degree_exact_of_not_scalarMultiple (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hnot : ¬ ∃ c : F, P = C c * Q) (γ : F) :
+    w < (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card := by
+  refine lt_of_not_ge ?_
+  intro hle
+  have hnonzero : P + C γ * Q ≠ 0 := by
+    intro hγ
+    apply hnot
+    refine ⟨-γ, ?_⟩
+    have hP : P = -(C γ * Q) := by
+      rw [eq_neg_iff_add_eq_zero]
+      exact hγ
+    rw [hP, map_neg, neg_mul]
+  have hcap : mult (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) γ
+      ≤ max P.natDegree Q.natDegree :=
+    mult_poly_le_max dom hdom P Q hnonzero
+  have hge := weightLine_le_imp_highMult_exact
+    (fun i => P.eval (dom i)) (fun i => Q.eval (dom i)) w γ hle
+  exact (not_lt.mpr hcap) (lt_of_lt_of_le hdeg hge)
 
 omit [DecidableEq ι] in
 /-- **Exact degree-collapse, degenerate-scalar containment form.**  Without assuming
@@ -701,9 +748,13 @@ end ArkLib.ProximityGap.RatioMultiplicity
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badScalars_empty_of_degree_of_not_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms mult_poly_lt_of_degree_of_not_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_empty_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_empty_of_degree_exact_of_not_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms weightLine_card_gt_of_degree_exact_of_not_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_subset_degenerate_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in

@@ -26,7 +26,9 @@ This pass adds:
 ```lean
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badScalars_empty_of_degree_of_not_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.mult_poly_lt_of_degree_of_not_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact_of_not_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.weightLine_card_gt_of_degree_exact_of_not_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_subset_degenerate_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_subset_badWeight
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_degenerate_of_degree_exact
@@ -90,6 +92,9 @@ There is also a direct non-scalar-multiple front door.  Instead of supplying the
 nondegeneracy hypothesis `∀ gamma, P + gamma*Q != 0`, callers may supply the single condition
 `¬ ∃ c, P = c*Q`; this implies the needed nondegeneracy and feeds both the ratio-fibre collapse
 and the exact low-weight empty-set theorem.
+
+The same front door is exposed pointwise: every scalar has multiplicity `< μ0` in the
+high-multiplicity form, and every scalar line word has weight `> w` in the exact low-weight form.
 
 There is also a degenerate-scalar version without the global nondegeneracy hypothesis.  Under the
 same exact degree inequality, the low-weight bad-scalar set is exactly
