@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2W4CyclotomicNonCollision
+import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AlmostAllPrimesWick
 
 /-!
@@ -30,6 +31,8 @@ point of the packaging is to make that remaining arithmetic input explicit and c
 * `canonicalRatioBadPrimes_card_le_crude` and
   `canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp` — divisor-count bounds from the crude and
   sharp resultant envelopes.
+* `canonicalWidthFourGoodPrimeSupply_of_TZ` — a Thorner-Zaman window supply larger than the
+  finite bad-prime set produces the named canonical good-prime supply.
 -/
 
 set_option autoImplicit false
@@ -39,6 +42,7 @@ open Finset
 open ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick
 open ArkLib.ProximityGap.E2DilationDirectCount
 open ArkLib.ProximityGap.E2W4CyclotomicNonCollision
+open ArkLib.ProximityGap.KKH26
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 
@@ -155,6 +159,73 @@ def CanonicalWidthFourGoodPrimeSupply (m : ℕ) : Prop :=
   ∃ p : ℕ, ∃ _ : Fact p.Prime, ∃ ζ : ZMod p,
     IsPrimitiveRoot ζ (2 ^ m) ∧ p ∉ canonicalRatioBadPrimes (2 ^ m)
 
+/-- A prime `p ≡ 1 (mod n)` carries an element of multiplicative order `n` in `F_p`
+(`(ZMod p)ˣ` is cyclic of order `p − 1`, and `n ∣ p − 1`). -/
+private lemma exists_isPrimitiveRoot_zmod_of_modEq
+    {p : ℕ} [Fact p.Prime] {n : ℕ} (_hn : 0 < n) (hmod : p ≡ 1 [MOD n]) :
+    ∃ ζ : ZMod p, IsPrimitiveRoot ζ n := by
+  have hdvd : n ∣ p - 1 := (Nat.modEq_iff_dvd' (by omega : 1 ≤ p)).mp hmod.symm
+  obtain ⟨u, hu⟩ := IsCyclic.exists_generator (α := (ZMod p)ˣ)
+  have hord : orderOf u = p - 1 := by
+    rw [orderOf_eq_card_of_forall_mem_zpowers hu, Nat.card_eq_fintype_card, ZMod.card_units]
+  have hdvd' : n ∣ orderOf u := hord ▸ hdvd
+  have hne : orderOf u ≠ 0 := by omega
+  refine ⟨((u ^ (orderOf u / n) : (ZMod p)ˣ) : ZMod p), ?_⟩
+  rw [IsPrimitiveRoot.iff_orderOf, orderOf_units, orderOf_pow_orderOf_div hne hdvd']
+
+/-- Pigeonhole form: if a Thorner-Zaman window contains more primes than the canonical finite
+bad-prime set, at least one window prime avoids that set. -/
+theorem exists_tzWindow_notMem_canonicalRatioBadPrimes
+    {n : ℕ} {β : ℝ} {supply : ℕ}
+    (hTZ : TZPrimeSupply n β supply)
+    (hcard : (canonicalRatioBadPrimes n).card < supply) :
+    ∃ p : ℕ, p ∈ tzWindow n β ∧ p ∉ canonicalRatioBadPrimes n := by
+  classical
+  have hcardW : (canonicalRatioBadPrimes n).card < (tzWindow n β).card :=
+    hcard.trans_le hTZ.le_card
+  have hne : (tzWindow n β \ canonicalRatioBadPrimes n).Nonempty := by
+    rw [← Finset.card_pos]
+    have h := Finset.le_card_sdiff (canonicalRatioBadPrimes n) (tzWindow n β)
+    omega
+  obtain ⟨p, hp⟩ := hne
+  exact ⟨p, (Finset.mem_sdiff.mp hp).1, (Finset.mem_sdiff.mp hp).2⟩
+
+/-- Thorner-Zaman window supply form: if the prime supply for `2^m` exceeds the finite canonical
+bad-prime set, then the named canonical good-prime supply holds. -/
+theorem canonicalWidthFourGoodPrimeSupply_of_TZ
+    {m : ℕ} {β : ℝ} {supply : ℕ}
+    (hTZ : TZPrimeSupply (2 ^ m) β supply)
+    (hcard : (canonicalRatioBadPrimes (2 ^ m)).card < supply) :
+    CanonicalWidthFourGoodPrimeSupply m := by
+  obtain ⟨p, hpW, hpnot⟩ := exists_tzWindow_notMem_canonicalRatioBadPrimes hTZ hcard
+  obtain ⟨hpprime, hpmod, _hlb, _hub⟩ := mem_tzWindow.mp hpW
+  haveI : Fact p.Prime := ⟨hpprime⟩
+  obtain ⟨ζ, hζ⟩ := exists_isPrimitiveRoot_zmod_of_modEq (by positivity : 0 < 2 ^ m) hpmod
+  exact ⟨p, inferInstance, ζ, hζ, hpnot⟩
+
+/-- Crude-count Thorner-Zaman consumer for the canonical width-four lane. -/
+theorem canonicalWidthFourGoodPrimeSupply_of_TZ_crude
+    {m : ℕ} {β : ℝ} {supply : ℕ} (hm : 4 ≤ m)
+    (hTZ : TZPrimeSupply (2 ^ m) β supply)
+    (hcard : (2 ^ m).totient * (2 ^ m + 1) < supply) :
+    CanonicalWidthFourGoodPrimeSupply m := by
+  refine canonicalWidthFourGoodPrimeSupply_of_TZ hTZ ?_
+  have hn : 0 < 2 ^ m := by positivity
+  have hn8 : 8 < 2 ^ m := by
+    calc
+      8 = 2 ^ 3 := by norm_num
+      _ < 2 ^ m := Nat.pow_lt_pow_right (by norm_num : 1 < 2) (by omega : 3 < m)
+  exact (canonicalRatioBadPrimes_card_le_crude hn hn8).trans_lt hcard
+
+/-- Sharp-count Thorner-Zaman consumer for the canonical width-four two-power lane. -/
+theorem canonicalWidthFourGoodPrimeSupply_of_TZ_sharp
+    {m : ℕ} {β : ℝ} {supply : ℕ} (hm : 4 ≤ m)
+    (hTZ : TZPrimeSupply (2 ^ m) β supply)
+    (hcard : Nat.log 2 (canonicalRatioPolySharpBound m) < supply) :
+    CanonicalWidthFourGoodPrimeSupply m :=
+  canonicalWidthFourGoodPrimeSupply_of_TZ hTZ
+    ((canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp hm).trans_lt hcard)
+
 /-- If the canonical good-prime supply holds at `2^m`, the literal width-four `≤ 2^m` budget is
 refuted for one supplied prime. -/
 theorem refuter_of_canonicalWidthFourGoodPrimeSupply {m : ℕ} (hm : 4 ≤ m)
@@ -175,6 +246,43 @@ theorem refuter_of_canonicalWidthFourGoodPrimeSupply {m : ℕ} (hm : 4 ≤ m)
     not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes
       hn heven hn8 hζ hpnot⟩
 
+/-- Direct Thorner-Zaman consumer: enough window supply beyond the canonical finite bad-prime set
+produces a prime/refuter for the literal width-four budget. -/
+theorem refuter_of_TZ_canonicalBadPrimeCount
+    {m : ℕ} {β : ℝ} {supply : ℕ} (hm : 4 ≤ m)
+    (hTZ : TZPrimeSupply (2 ^ m) β supply)
+    (hcard : (canonicalRatioBadPrimes (2 ^ m)).card < supply) :
+    ∃ (p : ℕ) (_ : Fact p.Prime) (ζ : ZMod p),
+      IsPrimitiveRoot ζ (2 ^ m) ∧
+        ¬ (e2BadScalarSet (Polynomial.nthRootsFinset (2 ^ m) (1 : ZMod p)) 4).card
+          ≤ 2 ^ m :=
+  refuter_of_canonicalWidthFourGoodPrimeSupply hm
+    (canonicalWidthFourGoodPrimeSupply_of_TZ hTZ hcard)
+
+/-- Crude-count direct Thorner-Zaman consumer for the canonical width-four lane. -/
+theorem refuter_of_TZ_canonicalCrudeBadPrimeCount
+    {m : ℕ} {β : ℝ} {supply : ℕ} (hm : 4 ≤ m)
+    (hTZ : TZPrimeSupply (2 ^ m) β supply)
+    (hcard : (2 ^ m).totient * (2 ^ m + 1) < supply) :
+    ∃ (p : ℕ) (_ : Fact p.Prime) (ζ : ZMod p),
+      IsPrimitiveRoot ζ (2 ^ m) ∧
+        ¬ (e2BadScalarSet (Polynomial.nthRootsFinset (2 ^ m) (1 : ZMod p)) 4).card
+          ≤ 2 ^ m :=
+  refuter_of_canonicalWidthFourGoodPrimeSupply hm
+    (canonicalWidthFourGoodPrimeSupply_of_TZ_crude hm hTZ hcard)
+
+/-- Sharp-count direct Thorner-Zaman consumer for the canonical width-four two-power lane. -/
+theorem refuter_of_TZ_canonicalSharpBadPrimeCount
+    {m : ℕ} {β : ℝ} {supply : ℕ} (hm : 4 ≤ m)
+    (hTZ : TZPrimeSupply (2 ^ m) β supply)
+    (hcard : Nat.log 2 (canonicalRatioPolySharpBound m) < supply) :
+    ∃ (p : ℕ) (_ : Fact p.Prime) (ζ : ZMod p),
+      IsPrimitiveRoot ζ (2 ^ m) ∧
+        ¬ (e2BadScalarSet (Polynomial.nthRootsFinset (2 ^ m) (1 : ZMod p)) 4).card
+          ≤ 2 ^ m :=
+  refuter_of_canonicalWidthFourGoodPrimeSupply hm
+    (canonicalWidthFourGoodPrimeSupply_of_TZ_sharp hm hTZ hcard)
+
 end ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
@@ -183,6 +291,13 @@ namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 #print axioms canonicalRatioBadPrimes_card_le_crude
 #print axioms not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes
 #print axioms canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp
+#print axioms exists_tzWindow_notMem_canonicalRatioBadPrimes
+#print axioms canonicalWidthFourGoodPrimeSupply_of_TZ
+#print axioms canonicalWidthFourGoodPrimeSupply_of_TZ_crude
+#print axioms canonicalWidthFourGoodPrimeSupply_of_TZ_sharp
 #print axioms refuter_of_canonicalWidthFourGoodPrimeSupply
+#print axioms refuter_of_TZ_canonicalBadPrimeCount
+#print axioms refuter_of_TZ_canonicalCrudeBadPrimeCount
+#print axioms refuter_of_TZ_canonicalSharpBadPrimeCount
 
 end ArkLib.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet

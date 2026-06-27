@@ -2105,6 +2105,112 @@ theorem prime_not_dvd_canonicalRatioPoly32_bezout_const
       (Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 1153)).mp h1153
     omega
 
+/-- A primitive 32-th root in `ZMod p` forces `32 ∣ p - 1`. -/
+private theorem thirtytwo_dvd_prime_sub_one_of_primitive_zmod32
+    {p : ℕ} [Fact p.Prime] {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ 32) : 32 ∣ p - 1 := by
+  have hζ0 : ζ ≠ 0 := hζ.ne_zero (by norm_num)
+  have horder : orderOf ζ = 32 := hζ.eq_orderOf.symm
+  simpa [horder] using ZMod.orderOf_dvd_card_sub_one (p := p) hζ0
+
+/-- The content factor `272` is nonzero at any prime admitting a primitive 32-th root. -/
+private theorem prime_not_dvd_272_of_primitive_zmod32
+    {p : ℕ} [Fact p.Prime] {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ 32) : ¬ p ∣ 272 := by
+  intro hdvd
+  have hp : Nat.Prime p := Fact.out
+  have hdvd32 : 32 ∣ p - 1 := thirtytwo_dvd_prime_sub_one_of_primitive_zmod32 hζ
+  have h272 : (272 : ℕ) = 17 * 2 ^ 4 := by norm_num
+  have hdvd' : p ∣ 17 * 2 ^ 4 := by
+    simpa [← h272] using hdvd
+  rcases (Nat.Prime.dvd_mul hp).mp hdvd' with h17 | h2pow
+  · have hp_eq17 : p = 17 := (Nat.prime_dvd_prime_iff_eq hp (by norm_num)).mp h17
+    subst p
+    norm_num at hdvd32
+  · have hp_dvd2 : p ∣ 2 := hp.dvd_of_dvd_pow h2pow
+    have hp_eq2 : p = 2 := (Nat.prime_dvd_prime_iff_eq hp Nat.prime_two).mp hp_dvd2
+    subst p
+    norm_num at hdvd32
+
+/-- Prime divisors of the `n = 32` Bezout constant are exactly the displayed six primes. -/
+private theorem prime_eq_factor_of_dvd_canonicalRatioPoly32_bezout_const
+    {p : ℕ} [Fact p.Prime] (hdvd : p ∣ 430704758627551) :
+    p = 79 ∨ p = 97 ∨ p = 113 ∨ p = 641 ∨ p = 673 ∨ p = 1153 := by
+  have hp : Nat.Prime p := Fact.out
+  have hfac :
+      (430704758627551 : ℕ) = 79 * (97 * (113 * (641 * (673 * 1153)))) := by
+    norm_num
+  have hdvd' : p ∣ 79 * (97 * (113 * (641 * (673 * 1153)))) := by
+    simpa [← hfac] using hdvd
+  rcases (Nat.Prime.dvd_mul hp).mp hdvd' with h79 | hrest
+  · exact Or.inl ((Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 79)).mp h79)
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h97 | hrest
+  · exact Or.inr <| Or.inl
+      ((Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 97)).mp h97)
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h113 | hrest
+  · exact Or.inr <| Or.inr <| Or.inl
+      ((Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 113)).mp h113)
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h641 | hrest
+  · exact Or.inr <| Or.inr <| Or.inr <| Or.inl
+      ((Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 641)).mp h641)
+  rcases (Nat.Prime.dvd_mul hp).mp hrest with h673 | h1153
+  · exact Or.inr <| Or.inr <| Or.inr <| Or.inr <| Or.inl
+      ((Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 673)).mp h673)
+  · exact Or.inr <| Or.inr <| Or.inr <| Or.inr <| Or.inr
+      ((Nat.prime_dvd_prime_iff_eq hp (by norm_num : Nat.Prime 1153)).mp h1153)
+
+/-- Exact finite-exception classification for the canonical `n = 32` polynomial obstruction:
+if the denominator-free canonical collision happens at a primitive 32-th root, then the prime is
+one of the four primitive-root-compatible prime factors of the reduced Bezout constant. -/
+theorem prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32
+    {p : ℕ} [Fact p.Prime] {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ 32)
+    (hpoly : (ζ ^ 4 + 1) ^ 32 = (ζ ^ 2 + 1) ^ 32) :
+    p = 97 ∨ p = 641 ∨ p = 673 ∨ p = 1153 := by
+  have h16 : ζ ^ 16 = -1 :=
+    primRoot_pow_half_eq_neg_one_of_even (F := ZMod p) (ζ := ζ) (n := 32) (h := 16)
+      hζ (by norm_num) (by norm_num)
+  have hy8 : (ζ ^ 2) ^ 8 = -1 := by
+    calc
+      (ζ ^ 2) ^ 8 = ζ ^ 16 := by ring
+      _ = -1 := h16
+  have hdiff : (ζ ^ 4 + 1) ^ 32 - (ζ ^ 2 + 1) ^ 32 = 0 :=
+    sub_eq_zero.mpr hpoly
+  have hred_y := canonicalRatioPoly32_reduction (R := ZMod p) (ζ ^ 2) hy8
+  have hred :
+      (ζ ^ 4 + 1) ^ 32 - (ζ ^ 2 + 1) ^ 32 =
+        (272 : ZMod p) * canonicalRatioPoly32ReducedPrimitive (ζ ^ 2) := by
+    convert hred_y using 1
+    · ring
+  have hprod :
+      (272 : ZMod p) * canonicalRatioPoly32ReducedPrimitive (ζ ^ 2) = 0 := by
+    rw [← hred]
+    exact hdiff
+  have h272nz : (272 : ZMod p) ≠ 0 := by
+    change ¬ (((272 : ℕ) : ZMod p) = 0)
+    rw [ZMod.natCast_eq_zero_iff]
+    exact prime_not_dvd_272_of_primitive_zmod32 hζ
+  have hRzero : canonicalRatioPoly32ReducedPrimitive (ζ ^ 2) = 0 :=
+    (mul_eq_zero.mp hprod).resolve_left h272nz
+  have hy8zero : (ζ ^ 2) ^ 8 + 1 = 0 := by
+    rw [hy8]
+    ring
+  have hBzero : (430704758627551 : ZMod p) = 0 := by
+    rw [← canonicalRatioPoly32_bezout (R := ZMod p) (ζ ^ 2)]
+    rw [hy8zero, hRzero]
+    ring
+  have hBdvd : p ∣ 430704758627551 := by
+    change (((430704758627551 : ℕ) : ZMod p) = 0) at hBzero
+    rwa [ZMod.natCast_eq_zero_iff] at hBzero
+  have hdvd32 : 32 ∣ p - 1 := thirtytwo_dvd_prime_sub_one_of_primitive_zmod32 hζ
+  rcases prime_eq_factor_of_dvd_canonicalRatioPoly32_bezout_const hBdvd with
+    hp79 | hp97 | hp113 | hp641 | hp673 | hp1153
+  · subst p
+    norm_num at hdvd32
+  · exact Or.inl hp97
+  · subst p
+    norm_num at hdvd32
+  · exact Or.inr <| Or.inl hp641
+  · exact Or.inr <| Or.inr <| Or.inl hp673
+  · exact Or.inr <| Or.inr <| Or.inr hp1153
+
 /-- Exact `n = 32` good-prime form: above the reduced Bezout threshold `1153`, the
 denominator-free canonical collision cannot occur. -/
 theorem polynomial_ne_zmod32_of_prime_gt1153
@@ -2160,6 +2266,33 @@ theorem not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
     (F := ZMod p) (n := 32) (ζ := ζ)
     (by norm_num) (by norm_num) (by norm_num) hζ
     (polynomial_ne_zmod32_of_prime_gt1153 hp1153 hζ)
+
+/-- Exact `n = 32` good-prime form with finite exceptions instead of a size threshold. -/
+theorem polynomial_ne_zmod32_of_prime_not_97_641_673_1153
+    {p : ℕ} [Fact p.Prime] (hp97 : p ≠ 97) (hp641 : p ≠ 641)
+    (hp673 : p ≠ 673) (hp1153 : p ≠ 1153) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 32) :
+    (ζ ^ 4 + 1) ^ 32 ≠ (ζ ^ 2 + 1) ^ 32 := by
+  intro hpoly
+  rcases prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32 hζ hpoly with
+    hp | hp | hp | hp
+  · exact hp97 hp
+  · exact hp641 hp
+  · exact hp673 hp
+  · exact hp1153 hp
+
+/-- Scanner-facing exact `n = 32` good-prime form with the finite bad-prime list removed:
+away from `97, 641, 673, 1153`, the literal width-4 `≤ 32` budget is impossible in the
+canonical primitive-root lane. -/
+theorem not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153
+    {p : ℕ} [Fact p.Prime] (hp97 : p ≠ 97) (hp641 : p ≠ 641)
+    (hp673 : p ≠ 673) (hp1153 : p ≠ 1153) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ 32) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 32 (1 : ZMod p)) 4).card ≤ 32 :=
+  not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+    (F := ZMod p) (n := 32) (ζ := ζ)
+    (by norm_num) (by norm_num) (by norm_num) hζ
+    (polynomial_ne_zmod32_of_prime_not_97_641_673_1153 hp97 hp641 hp673 hp1153 hζ)
 
 
 /-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
@@ -2783,6 +2916,9 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms prime_not_dvd_canonicalRatioPoly32_bezout_const
 #print axioms polynomial_ne_zmod32_of_prime_gt1153
 #print axioms not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
+#print axioms prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32
+#print axioms polynomial_ne_zmod32_of_prime_not_97_641_673_1153
+#print axioms not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 #print axioms orderOf_4134_ratio

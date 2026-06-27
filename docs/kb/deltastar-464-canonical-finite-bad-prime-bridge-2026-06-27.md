@@ -68,6 +68,32 @@ there exists a prime carrying a primitive `2^m`-th root and avoiding
 `refuter_of_canonicalWidthFourGoodPrimeSupply` consumes exactly that input and returns a
 literal width-four budget refuter for one supplied prime.
 
+Follow-up: the prime-window pigeonhole is now wired too.  The theorem
+`exists_tzWindow_notMem_canonicalRatioBadPrimes` says that a Thorner-Zaman window with more
+primes than the finite canonical bad-prime set contains a prime outside that set.  The wrappers
+`canonicalWidthFourGoodPrimeSupply_of_TZ`,
+`canonicalWidthFourGoodPrimeSupply_of_TZ_crude`, and
+`canonicalWidthFourGoodPrimeSupply_of_TZ_sharp` turn the raw, crude-count, and sharp-count
+versions of that comparison into `CanonicalWidthFourGoodPrimeSupply`.  The direct wrappers
+`refuter_of_TZ_canonicalBadPrimeCount`, `refuter_of_TZ_canonicalCrudeBadPrimeCount`, and
+`refuter_of_TZ_canonicalSharpBadPrimeCount` compose that supply with the scanner refuter.
+
+Worked finite-exception example: the same principle now has a fully explicit `n = 32` refinement
+in `E2W4CyclotomicNonCollision.lean`.  The reduced Bezout constant factors as
+
+```text
+430704758627551 = 79 * 97 * 113 * 641 * 673 * 1153.
+```
+
+The threshold theorem `polynomial_ne_zmod32_of_prime_gt1153` was already enough to refute all
+primes above the largest factor.  The sharper theorem
+`prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32` uses the primitive-root condition
+`32 | p - 1` to eliminate `79` and `113`, and uses the same condition to make the content factor
+`272` nonzero.  Thus the canonical `n = 32` denominator-cleared collision can occur only at
+`97, 641, 673, 1153` inside the primitive-root lane.  The scanner wrapper
+`not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153` is the corresponding
+finite-exclusion good-prime form.
+
 ## Why this does not close the prize
 
 The new theorem changes the shape of the residual from a size inequality to a finite-set
@@ -98,16 +124,16 @@ The bridge is therefore useful substrate, not the floor.
 ## Critical takeaway
 
 The height-only attack was the wrong stopping criterion.  The right arithmetic object is the
-prime-factor set of the obstruction resultant.  The next useful theorem should not try to shrink
-`|Res|` below `p`; it should combine a prime-window supply with a bad-set cardinality bound:
+prime-factor set of the obstruction resultant.  The next useful theorem was not to shrink
+`|Res|` below `p`, but to combine a prime-window supply with a bad-set cardinality bound:
 
 ```text
 # primes in window and congruence class > # canonicalRatioBadPrimes (2^m)
 ```
 
-would give an existential canonical good prime in that window.  This is the same shape as the
-KKH26/BCHKS good-prime residual, but now attached directly to the width-four canonical
-resultant lane.
+The new TZ wrappers prove exactly this existential canonical good-prime step.  This is the same
+shape as the KKH26/BCHKS good-prime residual, but now attached directly to the width-four
+canonical resultant lane.
 
 The hard open question is whether this existential canonical refuter can be upgraded to the
 specific field used by the prize, or to a universal stack-domination theorem.  Without one of

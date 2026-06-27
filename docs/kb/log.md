@@ -1720,6 +1720,15 @@ reduces the obstruction in `y = ζ^2` modulo `y^8 + 1` via
 packages the scanner refuter
 `not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153`.
 
+Follow-up: the same `n = 32` certificate is now finite-exception rather than only threshold-based.
+Lean proves
+`prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32`: any primitive 32-th-root
+denominator-cleared collision must occur in one of the four primitive-root-compatible
+characteristics `97, 641, 673, 1153`.  The wrappers
+`polynomial_ne_zmod32_of_prime_not_97_641_673_1153` and
+`not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153` give the scanner-facing
+good-prime form outside that exact finite list.
+
 Follow-up: `Frontier/CanonicalWidthFourBadPrimeSet.lean` now packages the canonical resultant lane
 as a finite bad-prime set.  `canonicalRatioBadPrimes n` is the set of prime factors of the
 canonical obstruction resultant, and any surviving literal width-4 budget over `ZMod p` puts `p`
@@ -1728,6 +1737,14 @@ cardinality bounds plus the named supply hypothesis `CanonicalWidthFourGoodPrime
 remaining arithmetic prime-production step.  The companion note
 `deltastar-464-canonical-finite-bad-prime-bridge-2026-06-27.md` records why this improves the
 resultant lane but still falls short of the delta-star floor.
+
+Follow-up: the same finite bad-prime file now wires the Thorner-Zaman pigeonhole consumer.
+`exists_tzWindow_notMem_canonicalRatioBadPrimes` finds a TZ-window prime outside the finite
+canonical bad set when the window supply beats the bad-set cardinality, and
+`canonicalWidthFourGoodPrimeSupply_of_TZ`, `_crude`, and `_sharp` turn the raw, crude-count, and
+sharp-count comparisons into the named `CanonicalWidthFourGoodPrimeSupply` input.  The direct
+wrappers `refuter_of_TZ_canonicalBadPrimeCount`, `_canonicalCrudeBadPrimeCount`, and
+`_canonicalSharpBadPrimeCount` compose the same input with the scanner refuter.
 
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 

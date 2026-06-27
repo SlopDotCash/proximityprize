@@ -106,7 +106,14 @@ mem_canonicalRatioBadPrimes_of_e2BadScalarSet_mu_card_le_n_zmod
 not_e2BadScalarSet_mu_card_le_n_zmod_of_not_mem_canonicalRatioBadPrimes
 canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp
 CanonicalWidthFourGoodPrimeSupply
+exists_tzWindow_notMem_canonicalRatioBadPrimes
+canonicalWidthFourGoodPrimeSupply_of_TZ
+canonicalWidthFourGoodPrimeSupply_of_TZ_crude
+canonicalWidthFourGoodPrimeSupply_of_TZ_sharp
 refuter_of_canonicalWidthFourGoodPrimeSupply
+refuter_of_TZ_canonicalBadPrimeCount
+refuter_of_TZ_canonicalCrudeBadPrimeCount
+refuter_of_TZ_canonicalSharpBadPrimeCount
 canonicalRatioPoly16_reduction_zmod
 canonicalRatioPoly16_bezout
 polynomial_ne_zmod16_of_prime_gt17
@@ -120,6 +127,9 @@ canonicalRatioPoly32_bezout
 prime_not_dvd_canonicalRatioPoly32_bezout_const
 polynomial_ne_zmod32_of_prime_gt1153
 not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153
+prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32
+polynomial_ne_zmod32_of_prime_not_97_641_673_1153
+not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -368,7 +378,10 @@ canonical literal budget over `ZMod p` puts `p` in that set.  The contrapositive
 scanner form, while `canonicalRatioBadPrimes_card_le_crude` and
 `canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp` give crude and sharp divisor-count bounds.
 The named hypothesis `CanonicalWidthFourGoodPrimeSupply` isolates the remaining arithmetic input:
-produce a primitive-root prime outside this finite set in the desired range.
+produce a primitive-root prime outside this finite set in the desired range.  The bridge theorems
+`exists_tzWindow_notMem_canonicalRatioBadPrimes` and `canonicalWidthFourGoodPrimeSupply_of_TZ`
+now consume a Thorner-Zaman window supply larger than the bad-prime count, with crude and sharp
+count variants plus direct scanner refuter wrappers.
 
 The `n = 16` canonical obstruction also has an exact good-prime certificate.  The theorem
 `canonicalRatioPoly16_reduction_zmod` reduces the denominator-free obstruction modulo
@@ -406,6 +419,13 @@ prime factors only `79, 97, 113, 641, 673, 1153`, the theorem
 `polynomial_ne_zmod32_of_prime_gt1153` refutes the denominator-cleared collision for every prime
 `p > 1153`, and `not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_gt1153` packages the literal
 width-4 scanner refuter.
+The finite-exception refinement is sharper: a primitive 32-th root forces `32 | p - 1`, which
+rules out the factors `79` and `113`, while the content factor `272` is nonzero for every such
+prime.  Lean packages the resulting classification as
+`prime_eq_97_or_641_or_673_or_1153_of_polynomial_eq_zmod32`; the complementary wrappers
+`polynomial_ne_zmod32_of_prime_not_97_641_673_1153` and
+`not_e2BadScalarSet_mu32_card_le_32_zmod_of_prime_not_97_641_673_1153` refute the canonical
+`n = 32` lane outside that four-prime list.
 
 There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is a primitive
 16-th root, but `invariantRatio 3 (3^2)^16 = 1` and the denominator-cleared polynomial equality
@@ -448,6 +468,9 @@ The resultant lane now also has a finite bad-prime API in
 primitive `n`-th root and lying outside this finite factor set refutes the literal width-4
 `<= n` budget.  The count bounds `canonicalRatioBadPrimes_card_le_crude` and
 `canonicalRatioBadPrimes_twoPow_card_le_natLog_sharp` convert the crude and sharp resultant
-envelopes into bad-prime cardinality bounds.  This improves the arithmetic residual from
-`|resultant| < p` to prime-factor avoidance, but it remains a canonical local lane rather than a
-delta-star floor proof.
+envelopes into bad-prime cardinality bounds.  The TZ consumers
+`exists_tzWindow_notMem_canonicalRatioBadPrimes`,
+`canonicalWidthFourGoodPrimeSupply_of_TZ`, and their crude/sharp/direct-refuter wrappers turn
+enough prime-window supply into the named good-prime input.  This improves the arithmetic residual
+from `|resultant| < p` to prime-factor avoidance, but it remains a canonical local lane rather
+than a delta-star floor proof.
