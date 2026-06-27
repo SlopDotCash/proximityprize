@@ -38,6 +38,23 @@ theorem canonicalN32PrimitiveBadPrimes_card :
     canonicalN32PrimitiveBadPrimes.card = 4 := by
   decide
 
+/-- The canonical primitive-compatible `n = 32` exception set contains a non-least split prime.
+This blocks the naive identification of this local width-four collision predicate with the
+conjectural singleton floor-bad list `{97}`. -/
+theorem canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime :
+    ∃ p : ℕ, p.Prime ∧ p % 32 = 1 ∧ p ∈ canonicalN32PrimitiveBadPrimes ∧ p ≠ 97 := by
+  exact ⟨641, by norm_num, by norm_num, by simp [canonicalN32PrimitiveBadPrimes], by norm_num⟩
+
+/-- The exact canonical primitive-compatible `n = 32` exception set is not the singleton `{97}`. -/
+theorem canonicalN32PrimitiveBadPrimes_ne_singleton97 :
+    canonicalN32PrimitiveBadPrimes ≠ ({97} : Finset ℕ) := by
+  intro hsingle
+  obtain ⟨p, _hpPrime, _hpMod, hpMem, hpNe⟩ :=
+    canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime
+  have hpSingleton : p ∈ ({97} : Finset ℕ) := by
+    simpa [hsingle] using hpMem
+  exact hpNe (by simpa using Finset.mem_singleton.mp hpSingleton)
+
 /-- A TZ supply for `n = 32` larger than the four exact primitive-compatible exceptions produces
 a window prime/refuter for the literal canonical width-four `≤ 32` budget. -/
 theorem exists_tzWindow_mu32_width4_refuter_of_TZ
@@ -139,6 +156,8 @@ end ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
 namespace ArkLib.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
 
 #print axioms canonicalN32PrimitiveBadPrimes_card
+#print axioms canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime
+#print axioms canonicalN32PrimitiveBadPrimes_ne_singleton97
 #print axioms exists_tzWindow_mu32_width4_refuter_of_TZ
 #print axioms exists_tzWindow_mu32_width4_refuter_beta2
 #print axioms exists_tzWindow_mu32_width4_refuter_zmod1217_beta2

@@ -114,6 +114,15 @@ The fully explicit wrappers `exists_tzWindow_mu32_width4_refuter_zmod1217_beta2`
 `exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` record the concrete primes in their
 corresponding windows, avoiding the pigeonhole step when a named prime is desired.
 
+This also gives a small but useful refutation of an over-identification.  The Lean theorem
+`canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime` exhibits `641`: it is prime, satisfies
+`641 % 32 = 1`, belongs to the canonical primitive-compatible exception set, and is not `97`.
+Consequently `canonicalN32PrimitiveBadPrimes_ne_singleton97` proves that the canonical width-four
+local collision set is not the singleton least split prime.  This does not contradict the separate
+floor-localization scanner claim that the adjacent-realizability floor-bad set is `{97}`; it says
+those are different predicates, so future floor arguments cannot silently substitute the canonical
+local set for the modeled floor-bad predicate.
+
 ## Why this does not close the prize
 
 The new theorem changes the shape of the residual from a size inequality to a finite-set

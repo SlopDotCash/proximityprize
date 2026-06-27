@@ -1782,3 +1782,11 @@ Follow-up: `exists_tzWindow_mu32_width4_refuter_zmod1217_beta2` and
 `exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4` now attach the two explicit concrete
 refuter primes to their TZ windows directly, so the named `1217` and `1048609` witnesses are
 available without the finite-exception pigeonhole step.
+
+Follow-up: the same file now records the non-singleton obstruction for using the canonical local
+collision set as the floor-bad set.  `canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime`
+exhibits `641` as a prime with `641 % 32 = 1`, membership in `{97, 641, 673, 1153}`, and
+`641 != 97`; `canonicalN32PrimitiveBadPrimes_ne_singleton97` packages the resulting proof that the
+canonical primitive-compatible exception set is not `{97}`.  This refutes a tempting identification
+with the n=32 floor-localization candidate while leaving the separate adjacent-realizability
+floor-bad predicate untouched.
