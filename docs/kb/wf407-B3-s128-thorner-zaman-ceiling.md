@@ -25,8 +25,9 @@ The whole B3 chain is built and wired, conditional on ONE named hypothesis:
 - `KKH26ThornerZamanConstructor.lean` — `tzPrimeSupply_of_subset`: discharge `TZPrimeSupply`
   from an *explicit finite list* of window primes (option (ii)). `KKH26ConcreteCeiling.lean` —
   full end-to-end at `n=4` with explicit primes, **no analytic NT**, axiom-clean.
-- `Frontier/ThornerZamanInstance.lean` — concrete `tzPrimeSupply_{8,16,32,64}_{two,three}`
-  (explicit primes in `[n^β, 2n^β]`).
+- `Frontier/ThornerZamanInstance.lean` — concrete `TZPrimeSupply` rows such as
+  `tzPrimeSupply_{8,16,32,64,128,256}_two`, the `β = 3` rows through `n = 32`, and small
+  higher-`β` rows (explicit primes in `[n^β, 2n^β]`).
 
 So the *only* unproven input of the entire s=128 lane is the asymptotic supply
 `(tzWindow n β).card ≥ n^{β−1−o(1)}`.

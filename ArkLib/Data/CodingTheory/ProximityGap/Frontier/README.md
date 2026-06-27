@@ -12,6 +12,6 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 
 | file | target | status | blocker |
 |------|--------|--------|---------|
-| `B3_ThornerZaman_s128.lean` | discharge `TZPrimeSupply` (PNT-in-APs) → s=128 prize rows | OPEN, concrete | analytic NT only |
-| `B2_CurveDecodability.lean`  | [GG25] Def 3.1 curve decodability → [Jo26] half | OPEN, multi-brick | from scratch |
-| `A5_EquivariancePin.lean`    | Lean equivariance pin for the n=12 orbit reduction | LANDED → `../MCAEquivariance.lean` (engine) + `../MCAEigenstackOrbitLaw.lean` (orbit law, counting) | — |
+| `ThornerZamanS128.lean` + `ThornerZamanInstance.lean` | discharge `TZPrimeSupply` (PNT-in-APs) → s=128 prize rows; concrete finite rows live in `ThornerZamanInstance.lean` | OPEN, concrete | analytic NT only |
+| `CurveDecodability.lean` | [GG25] Def 3.1 curve decodability → [Jo26] half | OPEN, multi-brick | from scratch |
+| `EquivariancePin.lean` | Lean equivariance pin for the n=12 orbit reduction | LANDED → `../MCAEquivariance.lean` (engine) + `../MCAEigenstackOrbitLaw.lean` (orbit law, counting) | — |

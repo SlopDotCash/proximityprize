@@ -1600,3 +1600,11 @@ sign-separation obligations from primitive-root lemmas.  The companion
 `not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision` is the direct
 scanner-failure form.  The only remaining input in this fixed-witness width-4 lane is now the
 repaired residual `Cd₀NonCollisionModSign mu_n`.
+
+## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
+
+`Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with
+`tzPrimeSupply_32_three : TZPrimeSupply 32 3 12`, witnessed by twelve explicit primes in
+`[32^3, 2*32^3]` congruent to `1 mod 32`.  This is another axiom-clean concrete discharge of the
+B3 named supply hypothesis; the general s=128 route still depends on the analytic
+Thorner-Zaman PNT-in-AP input.
