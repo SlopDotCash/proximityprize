@@ -1361,6 +1361,25 @@ failure to either zero-direction saturation or one oversized mixed choose-profil
 The same file also records `*_fullMixedChooseProfileSums` variants for callers willing to pay the
 mixed profile inequality for every coarse `t < a` rather than only the low coarse range.
 
+Follow-up: `LineListAppearanceFiberMixedProfile.lean` now composes the support-ratio
+`lineFiberCoverFieldPow` exact budget into both mixed-profile sockets.  The new
+`uniformLineBadScalarsBudgeted_of_lineFiberCoverFieldPow_mixedChooseProfileSums` and
+`uniformLineBadScalarsBudgeted_of_lineFiberCoverFieldPow_fullMixedChooseProfileSums` wrappers
+instantiate the exact-profile budget as `|F| * choose(n, a-r) * |F|^(k-a)`, and their scanner
+forms expose either zero-direction saturation or an oversized mixed profile sum.  The staged
+`LineListSupportRatioMixedProfile.lean` sibling records the abstract version for arbitrary low
+support-ratio-heavy budgets through
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSums` and its full-profile
+variant.
+
+Follow-up: the mixed-profile arithmetic residual is now named by
+`ZeroLowMixedChooseProfileSumsFit` and
+`UniformLargeZeroSafeLowMixedChooseProfileSumsFit`.  Its exact failure form is one oversized mixed
+sum, and `lowMixedChooseProfileSumsFit_term_le` exposes single-summand necessary conditions.  In
+particular, both the same-profile low exact term and every high singleton binomial term must fit
+under `Mcoarse t`; one over-budget high binomial contribution refutes the mixed route.  The
+cardinal-profile wrappers reduce this arithmetic to inequalities in `a <= z <= n`.
+
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 
 Renamed the finite-rung floor-localization guardrail from the scratch file

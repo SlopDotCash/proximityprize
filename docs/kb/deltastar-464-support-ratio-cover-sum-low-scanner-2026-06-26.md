@@ -67,6 +67,22 @@ not_lineFiberCoverFieldPowBudgetFits_of_not_uniformLineBadScalarsBudgeted
 lineFiberCoverFieldPowBudgetFits_term_le
 not_lineFiberCoverFieldPowBudgetFits_of_exists_term_gt
 exists_lineFiberCoverFieldPowBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSums
+unsafe_or_largeZero_safe_low_supportRatioMixedChooseProfile_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileSums
+unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfile_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileCardSums
+unsafe_or_largeZero_safe_low_supportRatioMixedChooseProfileCard_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileCardSums
+unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfileCard_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lineFiberCoverFieldPow_mixedChooseProfileSums
+unsafe_or_largeZero_safe_fieldPow_mixedProfile_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_lineFiberCoverFieldPow_fullMixedChooseProfileSums
+unsafe_or_largeZero_safe_fieldPow_fullMixedProfile_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardSums
+unsafe_or_largeZero_safe_fieldPow_mixedProfileCard_gt_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardSums
+unsafe_or_largeZero_safe_fieldPow_fullMixedProfileCard_gt_of_not_budgeted
 ```
 
 The first theorem is the local high-profile estimate.  It does not need the global `k <= a`
@@ -86,6 +102,15 @@ assumption.  With the support-side production, zero-direction safety, arithmetic
 high-profile cover-sum ceiling fixed,
 `exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted` gives the
 same witness directly from failed bad-scalar production.
+
+The all-threshold `lineFiberCoverFieldPow` exact budget now also feeds the mixed exact-to-coarse
+profile route directly.  The composed `lineFiberCoverFieldPow_*MixedChooseProfile*` wrappers leave
+only the explicit mixed binomial arithmetic and the weighted coarse fit as caller obligations.
+The abstract support-ratio-heavy composition is split out in `LineListSupportRatioMixedProfile.lean`;
+it lets callers provide sharper low support-ratio-heavy budgets before committing to the
+field-power envelope.  The `*CardSums` variants remove the dummy subset witness from the residual:
+the mixed profile sum depends only on `z = #zeroSet(u1)` and `t`, so failed production is localized
+to zero-direction saturation or one pure cardinal inequality over `a <= z <= n`.
 
 The support-ratio-heavy coordinate-fiber route now has the same positive split.  Low heavy fibers
 are the only nontrivial estimates; high heavy fibers are bounded by one via RS uniqueness, so the

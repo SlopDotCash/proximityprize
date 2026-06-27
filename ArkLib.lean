@@ -2913,6 +2913,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonArithmeticObstruct
 import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonDefectGeometry
 import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioArithmeticObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioFiber
+import ArkLib.Data.CodingTheory.ProximityGap.LineListSupportRatioMixedProfile
 import ArkLib.Data.CodingTheory.ProximityGap.LinePairCooccurrenceBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineSecondMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineSecondMomentSharp
