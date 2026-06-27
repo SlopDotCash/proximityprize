@@ -47,6 +47,26 @@ noncomputable def dcMomentScale (G : Finset F) (r : ℕ) : ℝ :=
   ((Fintype.card F : ℝ) *
       ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)) ^ ((r : ℝ)⁻¹)
 
+/-- The real optimization input for the DC-moment route: the explicit moment scale must fit the
+near-Ramanujan `C * |G| * log(|F| / |G|)` envelope. -/
+def DCMomentScaleFits (G : Finset F) (r : ℕ) (C : ℝ) : Prop :=
+  dcMomentScale G r ≤
+    C * (G.card : ℝ) * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ))
+
+/-- The complete certificate for the DC-moment route to the generalized-Paley target at a chosen
+moment order `r`: usable order, DC-subtracted moment bound, and scale fit. -/
+def DCMomentNearRamanujanCertificate (G : Finset F) (r : ℕ) (C : ℝ) : Prop :=
+  1 ≤ r ∧ DCEnergyBound G r ∧ DCMomentScaleFits G r C
+
+/-- Exact scanner form for the DC-moment certificate: a failed attempt is precisely a bad moment
+order, a missing DC-subtracted energy bound, or a failed scale fit. -/
+theorem not_dcMomentNearRamanujanCertificate_iff_no_order_or_no_energy_or_scale
+    (G : Finset F) (r : ℕ) (C : ℝ) :
+    (¬ DCMomentNearRamanujanCertificate G r C) ↔
+      ¬ 1 ≤ r ∨ ¬ DCEnergyBound G r ∨ ¬ DCMomentScaleFits G r C := by
+  unfold DCMomentNearRamanujanCertificate
+  tauto
+
 /-- **DC-subtracted moment to worst-case incomplete-sum bound.**
 
 For `r >= 1`, `DCEnergyBound G r` gives the nonzero-frequency bound
@@ -86,6 +106,14 @@ theorem nearRamanujan_of_dcEnergyBound_and_scale {ψ : AddChar F ℂ} (hψ : ψ.
   intro b hb
   exact le_trans (worstCaseIncompleteSumBound_of_dcEnergyBound hψ hr henergy b hb) hscale
 
+/-- Certificate form of the DC-subtracted moment route to the near-Ramanujan/Paley target. -/
+theorem nearRamanujan_of_dcMomentCertificate {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {G : Finset F} {r : ℕ} {C : ℝ}
+    (hcert : DCMomentNearRamanujanCertificate G r C) :
+    GeneralizedPaleyNearRamanujan C ψ G := by
+  rcases hcert with ⟨hr, henergy, hscale⟩
+  exact nearRamanujan_of_dcEnergyBound_and_scale hψ hr henergy hscale
+
 /-- **DC-subtracted moment to the existing additive-energy consumer.**
 
 This is the same downstream API as `GeneralizedPaleyRamanujan.addEnergy_le_of_nearRamanujan`, but
@@ -105,9 +133,25 @@ theorem addEnergy_le_of_dcEnergyBound_and_scale {ψ : AddChar F ℂ} (hψ : ψ.I
   addEnergy_le_of_nearRamanujan hψ hcard hC
     (nearRamanujan_of_dcEnergyBound_and_scale hψ hr henergy hscale)
 
+/-- Certificate form of the DC-subtracted moment route to the existing additive-energy consumer. -/
+theorem addEnergy_le_of_dcMomentCertificate {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {G : Finset F} {r : ℕ} {C : ℝ}
+    (hcard : (G.card : ℝ) ≤ Fintype.card F)
+    (hC : 0 ≤ C)
+    (hcert : DCMomentNearRamanujanCertificate G r C) :
+    (Fintype.card F : ℝ) * (addEnergy G : ℝ)
+      ≤ (G.card : ℝ) ^ 4
+        + (C * (G.card : ℝ) * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+          * ((Fintype.card F : ℝ) * G.card) :=
+  addEnergy_le_of_nearRamanujan hψ hcard hC
+    (nearRamanujan_of_dcMomentCertificate hψ hcert)
+
 /-! ## Axiom audit -/
 #print axioms worstCaseIncompleteSumBound_of_dcEnergyBound
 #print axioms nearRamanujan_of_dcEnergyBound_and_scale
+#print axioms nearRamanujan_of_dcMomentCertificate
 #print axioms addEnergy_le_of_dcEnergyBound_and_scale
+#print axioms addEnergy_le_of_dcMomentCertificate
+#print axioms not_dcMomentNearRamanujanCertificate_iff_no_order_or_no_energy_or_scale
 
 end ArkLib.ProximityGap.Frontier.PrizeRegimeDCEnergyBridge

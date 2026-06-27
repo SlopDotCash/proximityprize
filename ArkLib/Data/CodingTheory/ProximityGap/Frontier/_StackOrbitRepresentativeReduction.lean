@@ -209,6 +209,54 @@ def StackDominatingRepresentativeCover (C : Set (ι -> A)) (δ : ℝ≥0)
   ∀ u : WordStack A (Fin 2) ι,
     ∃ r ∈ R, StackBadCount F C δ u ≤ StackBadCount F C δ r
 
+/-- The representative set contains a true global maximizer for the actual bad-scalar count. -/
+def RepresentativeContainsGlobalMax (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) : Prop :=
+  ∃ r ∈ R, ∀ u : WordStack A (Fin 2) ι,
+    StackBadCount F C δ u ≤ StackBadCount F C δ r
+
+/-- The representative set contains a true global maximizer that is within the incidence budget. -/
+def RepresentativeContainsBudgetedGlobalMax (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) : Prop :=
+  ∃ r ∈ R, StackBadCount F C δ r ≤ B ∧
+    ∀ u : WordStack A (Fin 2) ι,
+      StackBadCount F C δ u ≤ StackBadCount F C δ r
+
+/-- A representative global maximizer gives a dominating representative cover. -/
+theorem stackDominatingRepresentativeCover_of_containsGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : RepresentativeContainsGlobalMax (F := F) (A := A) C δ R) :
+    StackDominatingRepresentativeCover (F := F) (A := A) C δ R := by
+  rcases hmax with ⟨r, hr, hdom⟩
+  intro u
+  exact ⟨r, hr, hdom u⟩
+
+/-- A dominating representative cover contains a true global maximizer. -/
+theorem containsGlobalMax_of_stackDominatingRepresentativeCover
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hcover : StackDominatingRepresentativeCover (F := F) (A := A) C δ R) :
+    RepresentativeContainsGlobalMax (F := F) (A := A) C δ R := by
+  classical
+  rcases hcover (0 : WordStack A (Fin 2) ι) with ⟨r₀, hr₀, _hr₀⟩
+  have hR : R.Nonempty := ⟨r₀, hr₀⟩
+  obtain ⟨rMax, hrMax, hmax⟩ :=
+    R.exists_max_image (fun r : WordStack A (Fin 2) ι => StackBadCount F C δ r) hR
+  refine ⟨rMax, hrMax, ?_⟩
+  intro u
+  rcases hcover u with ⟨r, hr, hur⟩
+  exact le_trans hur (hmax r hr)
+
+/-- Direct representative domination is exactly containment of a representative global maximizer. -/
+theorem stackDominatingRepresentativeCover_iff_containsGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) :
+    StackDominatingRepresentativeCover (F := F) (A := A) C δ R ↔
+      RepresentativeContainsGlobalMax (F := F) (A := A) C δ R :=
+  ⟨containsGlobalMax_of_stackDominatingRepresentativeCover C δ,
+    stackDominatingRepresentativeCover_of_containsGlobalMax C δ⟩
+
 /-- Failure of a dominating representative cover is exactly a stack that beats every proposed
 representative. -/
 theorem not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all
@@ -255,6 +303,69 @@ theorem not_dominatingCoverBudget_iff_exists_beater_or_budget_lt
     · exact Or.inr
         ((not_representativeStacksBounded_iff_exists_representative_budget_lt C δ R B).mpr
           hbudget)
+
+/-- A bounded representative family containing a global maximizer contains a budgeted global
+maximizer. -/
+theorem representativeContainsBudgetedGlobalMax_of_bounded_containsGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hR : RepresentativeStacksBounded (F := F) (A := A) C δ R B)
+    (hmax : RepresentativeContainsGlobalMax (F := F) (A := A) C δ R) :
+    RepresentativeContainsBudgetedGlobalMax (F := F) (A := A) C δ R B := by
+  rcases hmax with ⟨r, hr, hdom⟩
+  exact ⟨r, hr, hR r hr, hdom⟩
+
+/-- A budgeted representative global maximizer proves the actual open-core incidence hypothesis.
+This is sharper than bounding every representative in a large cover. -/
+theorem worstCaseIncidenceBounded_of_representativeContainsBudgetedGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : RepresentativeContainsBudgetedGlobalMax (F := F) (A := A) C δ R B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B := by
+  intro u
+  rcases hmax with ⟨r, _hr, hrB, hdom⟩
+  exact le_trans (hdom u) hrB
+
+/-- Delta-star consumer for a budgeted representative global maximizer. -/
+theorem deltaStar_pin_of_representativeContainsBudgetedGlobalMax
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : RepresentativeContainsBudgetedGlobalMax (F := F) (A := A) C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ProximityGap.OpenCoreConditionalPin.worstCaseIncidence_pin
+    (F := F) (A := A) C εstar hδ
+    (worstCaseIncidenceBounded_of_representativeContainsBudgetedGlobalMax C δ hmax)
+    hbudget
+
+/-- Exact scanner form for failure of the sharp representative certificate: every listed
+representative is either above budget or beaten by some stack. -/
+theorem not_representativeContainsBudgetedGlobalMax_iff_each_member_above_or_beaten
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    (¬ RepresentativeContainsBudgetedGlobalMax (F := F) (A := A) C δ R B) ↔
+      ∀ r ∈ R, B < StackBadCount F C δ r ∨
+        ∃ u : WordStack A (Fin 2) ι,
+          StackBadCount F C δ r < StackBadCount F C δ u := by
+  constructor
+  · intro hnot r hr
+    by_cases hbudget : StackBadCount F C δ r ≤ B
+    · refine Or.inr ?_
+      by_contra hnone
+      have hdom : ∀ u : WordStack A (Fin 2) ι,
+          StackBadCount F C δ u ≤ StackBadCount F C δ r := by
+        intro u
+        exact le_of_not_gt (fun hgt => hnone ⟨u, hgt⟩)
+      exact hnot ⟨r, hr, hbudget, hdom⟩
+    · exact Or.inl (Nat.lt_of_not_ge hbudget)
+  · intro hfail hmax
+    rcases hmax with ⟨r, hr, hbudget, hdom⟩
+    rcases hfail r hr with habove | hbeat
+    · exact (not_lt_of_ge hbudget) habove
+    · rcases hbeat with ⟨u, hlt⟩
+      exact (not_lt_of_ge (hdom u)) hlt
 
 /-- Invariance plus a representative cover gives a dominating representative cover. -/
 theorem dominatingCover_of_invariantRel_cover
@@ -599,8 +710,15 @@ theorem stackBadCount_affine_rotate
 #print axioms not_representativeCoverBudget_iff_exists_uncovered_or_budget_lt
 #print axioms not_stackRelChainRepresentativeCover_iff_exists_chain_uncovered
 #print axioms not_chainRepresentativeCoverBudget_iff_exists_chain_uncovered_or_budget_lt
+#print axioms stackDominatingRepresentativeCover_of_containsGlobalMax
+#print axioms containsGlobalMax_of_stackDominatingRepresentativeCover
+#print axioms stackDominatingRepresentativeCover_iff_containsGlobalMax
 #print axioms not_stackDominatingRepresentativeCover_iff_exists_stack_beats_all
 #print axioms not_dominatingCoverBudget_iff_exists_beater_or_budget_lt
+#print axioms representativeContainsBudgetedGlobalMax_of_bounded_containsGlobalMax
+#print axioms worstCaseIncidenceBounded_of_representativeContainsBudgetedGlobalMax
+#print axioms deltaStar_pin_of_representativeContainsBudgetedGlobalMax
+#print axioms not_representativeContainsBudgetedGlobalMax_iff_each_member_above_or_beaten
 #print axioms stackCountInvariantRel_chain
 #print axioms dominatingCover_of_invariantRel_cover
 #print axioms dominatingCover_of_invariantStep_chainCover

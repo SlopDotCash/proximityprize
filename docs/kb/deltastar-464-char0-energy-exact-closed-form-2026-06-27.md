@@ -86,3 +86,26 @@ content is (i) the exact multinomial closed form for the balanced-tuple count, a
 elementary `≤ (2r−1)!! n^r` bound on that multinomial sum (no Lam–Leung needed for (ii)). Brick:
 `charZeroEnergy_eq_multinomialSum` (needs the in-tree Lam–Leung + a `Nat.multinomial` fiber count)
 and the self-contained `multinomialSum_le_wick`.
+
+## Continuation: DC-moment certificate
+
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/PrizeRegimeDCEnergyBridge.lean` now packages the
+prize-regime spectral branch as one explicit certificate:
+
+```lean
+DCMomentNearRamanujanCertificate G r C
+nearRamanujan_of_dcMomentCertificate
+addEnergy_le_of_dcMomentCertificate
+not_dcMomentNearRamanujanCertificate_iff_no_order_or_no_energy_or_scale
+```
+
+The certificate has exactly three inputs:
+
+1. `1 <= r`;
+2. `DCEnergyBound G r`;
+3. `dcMomentScale G r <= C * |G| * log(|F| / |G|)`.
+
+This closes no analytic gap by itself.  Its point is auditability: a failed DC-moment attack is now
+precisely a bad moment order, a missing DC-subtracted energy theorem, or a failed real scale
+optimization.  The char-0 multinomial count closes the no-wraparound half; the remaining prize
+content is still the DC/wraparound bound at prize depth plus the scale fit.

@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-!
 # Height no-go: a canonical width-four bad prime above `n^4` at `n = 128`
@@ -35,8 +34,6 @@ maximum.
 -/
 
 set_option autoImplicit false
-set_option maxRecDepth 262144
-set_option maxHeartbeats 2000000
 
 namespace ArkLib.ProximityGap.Frontier.CanonicalBadPrimeHeightNoGoN128
 
@@ -58,6 +55,8 @@ theorem zeta_pow64_ne : ((90645509 : ZMod 423237889)) ^ 64 ≠ 1 := by decide
 
 /-- The canonical denominator-cleared collision holds at `ζ`: this is what makes `p` a *bad* prime
 for the width-four lane. -/
+set_option maxRecDepth 262144 in
+set_option maxHeartbeats 2000000 in
 theorem canonical_collision :
     ((90645509 : ZMod 423237889) ^ 4 + 1) ^ 128 =
       ((90645509 : ZMod 423237889) ^ 2 + 1) ^ 128 := by

@@ -2042,7 +2042,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H8DiscriminantGeomeanColl
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDCocyclePhaseCoupling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HankelPronyCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HeightGateConjTightAtSmallN
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HeightNoGoTest
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._I031OrbitQuotient
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._IdealLatticeMinkowskiCorrected
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._IdealSVPGirthVerdict
