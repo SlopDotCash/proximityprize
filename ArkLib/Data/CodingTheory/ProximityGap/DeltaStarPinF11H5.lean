@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 
 /-!
@@ -55,6 +56,7 @@ namespace ProximityGap.DeltaStarPinF11H5
 
 open scoped NNReal ProbabilityTheory ENNReal
 open ProximityGap Code
+open Polynomial
 
 /-! ## The concrete code `RS[F₁₁, H₅, 2]` -/
 
@@ -70,6 +72,9 @@ theorem twoFifth_le_one : (2/5 : ℝ≥0) ≤ 1 := by
 /-- The smooth evaluation domain `H₅ = ⟨4⟩ = (4⁰, 4¹, 4², 4³, 4⁴) = (1, 4, 5, 9, 3)`, the unique
 order-`5` multiplicative subgroup of `F₁₁*`. -/
 def dom : Fin 5 → F11 := ![1, 4, 5, 9, 3]
+
+/-- The same domain packaged as an injection, for the generic Reed–Solomon ladder. -/
+def domEmb : Fin 5 ↪ F11 := ⟨dom, by decide⟩
 
 /-- The codeword of the polynomial `a + b·X`, evaluated on `dom`. -/
 def lineEval (a b : F11) : Fin 5 → F11 := fun i => a + b * dom i
@@ -92,6 +97,47 @@ def C : Submodule F11 (Fin 5 → F11) where
     simp only [lineEval, smul_eq_mul]; ring
 
 theorem lineEval_mem (a b : F11) : lineEval a b ∈ (C : Set (Fin 5 → F11)) := ⟨a, b, rfl⟩
+
+/-- Affine words are exactly degree-`< 2` Reed–Solomon evaluations on `dom`. -/
+theorem lineEval_mem_rsCode (a b : F11) :
+    lineEval a b ∈
+      (ProximityGap.SpikeFloor.rsCode domEmb 2 : Submodule F11 (Fin 5 → F11)) := by
+  refine ⟨Polynomial.C a + Polynomial.C b * Polynomial.X, ?_, ?_⟩
+  · have h1 : (Polynomial.C a + Polynomial.C b * Polynomial.X).degree ≤ 1 := by
+      refine le_trans (Polynomial.degree_add_le _ _) ?_
+      refine max_le (le_trans Polynomial.degree_C_le (by norm_num)) ?_
+      refine le_trans (Polynomial.degree_mul_le _ _) ?_
+      refine le_trans (add_le_add Polynomial.degree_C_le Polynomial.degree_X_le) ?_
+      norm_num
+    exact lt_of_le_of_lt h1 (by norm_num)
+  · funext i
+    simp [lineEval, domEmb, dom, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+      Polynomial.eval_X]
+
+/-- A degree-`< 2` polynomial evaluation is one of the affine words defining `C`. -/
+theorem rsEval_mem_C_of_degree_lt_two (P : Polynomial F11) (hP : P.degree < (2 : ℕ)) :
+    (fun i : Fin 5 => P.eval (domEmb i)) ∈ (C : Set (Fin 5 → F11)) := by
+  have hle : P.degree ≤ (1 : WithBot ℕ) := by
+    by_cases h0 : P = 0
+    · rw [h0]
+      exact bot_le
+    · have hnat : P.natDegree < 2 := (Polynomial.natDegree_lt_iff_degree_lt h0).mpr hP
+      exact Polynomial.degree_le_of_natDegree_le (Nat.le_of_lt_succ hnat)
+  refine ⟨P.coeff 0, P.coeff 1, ?_⟩
+  funext i
+  rw [Polynomial.eq_X_add_C_of_degree_le_one hle]
+  simp [lineEval, domEmb, dom, eval_add, eval_mul, eval_C, eval_X]
+  ring
+
+/-- The hand-written affine code `C` is the generic `rsCode domEmb 2`. -/
+theorem C_eq_rsCode_two :
+    C = ProximityGap.SpikeFloor.rsCode domEmb 2 := by
+  ext w
+  constructor
+  · rintro ⟨a, b, rfl⟩
+    exact lineEval_mem_rsCode a b
+  · rintro ⟨P, hP, rfl⟩
+    exact rsEval_mem_C_of_degree_lt_two P hP
 
 /-- Explainability of a single row on a coordinate set (decidable finite search). -/
 def ExplainableOn (S : Finset (Fin 5)) (w : Fin 5 → F11) : Prop :=
@@ -465,6 +511,30 @@ theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0�
     (C : Set (Fin 5 → F11)) εstar hmem.1 hmem.2
   exact absurd hle (not_le.mpr hc1)
 
+/-! ## The first middle granularity band: `mcaDeltaStar(C, ε*) = 2/5` for
+`ε* ∈ [2/11, 3/11)`
+
+The generic Reed–Solomon granularity ladder applies to the concrete affine presentation of `C`
+after the local equality `C_eq_rsCode_two`.  This discharges the first missing middle band without
+adding a new scalar enumeration. -/
+
+/-- **Interval pin (granularity band):** `mcaDeltaStar(C, ε*) = 2/5` for every
+`ε* ∈ [2/11, 3/11)`. -/
+theorem mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven {εstar : ℝ≥0∞}
+    (hlo : (2 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 3 / 11) :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar = 2/5 := by
+  have hlo' : ((2 : ℕ) : ℝ≥0∞) / (Fintype.card F11 : ℝ≥0∞) ≤ εstar := by
+    simpa [F11, ZMod.card] using hlo
+  have hhi' :
+      εstar < (((2 + 1 : ℕ) : ℝ≥0∞) / (Fintype.card F11 : ℝ≥0∞)) := by
+    simpa [F11, ZMod.card] using hhi
+  rw [C_eq_rsCode_two]
+  simpa [Fintype.card_fin] using
+    (ProximityGap.SpikeFloor.mcaDeltaStar_rs_eq_granularity
+      (F := F11) (n := 5) (dom := domEmb) (k := 2) (j := 2)
+      (by norm_num) (by norm_num) (by norm_num) (by norm_num) hlo' hhi')
+
 /-! ## Source audit -/
 
 #print axioms epsMCA_twoFifth_ge
@@ -475,5 +545,7 @@ theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0�
 #print axioms mcaDeltaStar_eq_zero_of_lt_oneEleven
 #print axioms epsMCA_fifth_ge
 #print axioms mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven
+#print axioms C_eq_rsCode_two
+#print axioms mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven
 
 end ProximityGap.DeltaStarPinF11H5
