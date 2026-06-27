@@ -43,8 +43,8 @@ The allowed `d₀` (forced by `a, b ∉ {x, −x}`, `a ≠ b`, `a + b ≠ 0`) ra
 `{1,…,n−1} \ {0, h, n/4, 3n/4}`, and `c_{d₀} = c_{−d₀} = −c_{d₀+h}` collapses them to exactly
 `n/4 − 1` classes (`= Kmodel`). So:
 
-> `K = Kmodel(n) = n/4 − 1`   ⟺   `Cd₀NonCollision` :
-> for distinct allowed `d₀, d₀'`, `c_{d₀'} ∉ μ_n · c_{d₀}`.
+> `K = Kmodel(n) = n/4 − 1`   ⟺   sign-quotiented non-collision:
+> away from the equality and antipodal classes, `c_{d₀'} ∉ μ_n · c_{d₀}`.
 
 ## The verdict (precise obstruction)
 
@@ -327,8 +327,9 @@ theorem cos_invariant_strict_anti {θ θ' : ℝ} (h0 : 0 ≤ θ) (hlt : θ < θ'
 /-- **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).**
 For distinct `d, d'` in the allowed range — both giving angles in `[0, π/2]` — the real invariants
 `2 cos θ_d` are distinct. This is the contrapositive packaging of `cos_invariant_strict_anti`:
-equal invariants force equal angles. It is the **unconditional char-0 instance** of the named
-cyclotomic non-collision `Cd₀NonCollision` below: over ℂ, `K = Kmodel = n/4 − 1`. -/
+equal invariants force equal angles on the sign-quotiented window. It is the char-0 separation
+core for the repaired non-collision statement, not a proof of the quotient-free
+`Cd₀NonCollision` below. -/
 theorem cos_invariant_injOn {θ θ' : ℝ} (h0 : 0 ≤ θ) (h0' : 0 ≤ θ')
     (hpi : θ ≤ Real.pi / 2) (hpi' : θ' ≤ Real.pi / 2) (hne : θ ≠ θ') :
     2 * Real.cos θ ≠ 2 * Real.cos θ' := by
@@ -338,11 +339,9 @@ theorem cos_invariant_injOn {θ θ' : ℝ} (h0 : 0 ≤ θ) (h0' : 0 ≤ θ')
 
 /-! ## Part 4 — the named cyclotomic non-collision `Prop` and the verdict
 
-We package the char-`p` collision question as ONE named `Prop` over the working field, so the
-bridge "`K = Kmodel`" becomes "this `Prop` holds". The `Prop` says: for distinct allowed factors
-`t, t'` (roots of unity in `F`), the invariants `c = t + t⁻¹`, `c' = t' + t'⁻¹` do not lie in the
-same `μ_n`-orbit (`c' ≠ ζ^u·c` for all `u`). The char-0 instance is discharged above; the char-`p`
-instance is NOT `q`-independent (finite small bad primes; see header). -/
+We keep the original quotient-free `Prop` as a documented failed scanner hypothesis, then introduce
+the repaired sign-quotiented residual. The quotient-free form is useful as a guardrail because the
+antipodal refuter below shows exactly why it is too strong in even domains. -/
 
 /-- **The width-4 cyclotomic non-collision hypothesis.** Over a field `F` carrying the subgroup
 `G = μ_n`, for any two factors `t, t' ∈ G` whose invariants `c = t + t⁻¹`, `c' = t' + t'⁻¹` are
@@ -474,10 +473,10 @@ theorem invariant_neg_eq_neg_invariant (t : F) :
 theorem invariant_ne_neg_of_two_ne_zero {c : F} (h2 : (2 : F) ≠ 0) (hc : c ≠ 0) :
     c ≠ -c := by
   intro h
-  have hadd : c + c = 0 := by
-    exact (congrArg (fun x : F => x + c) h).trans (neg_add_cancel c)
+  have hsub : c - (-c) = 0 := sub_eq_zero.mpr h
   have hmul : (2 : F) * c = 0 := by
-    simpa [two_mul] using hadd
+    rw [← hsub]
+    ring
   exact (mul_ne_zero h2 hc) hmul
 
 /-- **Antipodal collision refutes quotient-free `Cd₀NonCollision`.** If `-1 ∈ G`, then every
@@ -507,9 +506,9 @@ theorem not_cd0NonCollision_of_neg_mem {G : Finset F}
     (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) (h2 : (2 : F) ≠ 0) :
     ¬ Cd₀NonCollision G := by
   refine not_cd0NonCollision_of_antipodal_collision hG hneg h2 hG.one_mem ?_
-  have htwo : (1 : F) + 1 = (2 : F) := by ring
-  rw [inv_one, htwo]
-  exact h2
+  rw [show (1 : F)⁻¹ = 1 by simp]
+  convert h2 using 1
+  ring
 
 /-- **Concrete even-`μ_n` refuter for quotient-free `Cd₀NonCollision`.** This closes the scanner
 audit for the raw hypothesis: it is false in every even smooth-domain subgroup over odd
@@ -561,9 +560,8 @@ theorem orbits_distinct_of_nonCollisionModSign {G : Finset F} (hG : FinSubgroup 
 hypotheses) produce bad scalars `−1/e₁` in DISTINCT `G`-orbits whenever their invariants
 `c = t+t⁻¹`, `c' = t'+t'⁻¹` are distinct (and nonzero), granting `Cd₀NonCollision G`. Combined
 with `E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` (`#bad = #G · K`), this is the
-statement "`K = #{distinct invariant-classes} = Kmodel = n/4 − 1`": the actual `F_q` orbit count
-equals the combinatorial model exactly when `Cd₀NonCollision` holds (char 0 always; char `p` for
-good primes). -/
+quotient-free version of the orbit-count bridge. The hypothesis is intentionally retained for
+backward compatibility, but it is over-strong in even domains. -/
 theorem badScalar_orbits_distinct_of_nonCollision {G : Finset F} (hG : FinSubgroup G)
     (hNC : Cd₀NonCollision G) {x x' t t' : F}
     (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
@@ -789,6 +787,134 @@ theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision {
     (ne_zero_of_mem_finSubgroup hG ht'G) hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
     hy4 hy5 hy6 hc hc' hne hsign
 
+/-! ## Part 5 — primitive-root plumbing for fixed width-4 witnesses -/
+
+/-- A primitive `n`-th root lies in the concrete `μ_n` finset. -/
+theorem primRoot_mem_nthRootsFinset {n : ℕ} (hn : 0 < n) {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) :
+    ζ ∈ Polynomial.nthRootsFinset n (1 : F) := by
+  rw [Polynomial.mem_nthRootsFinset hn]
+  exact hζ.pow_eq_one
+
+/-- Powers of a primitive `n`-th root lie in `μ_n`. -/
+theorem primRoot_pow_mem_nthRootsFinset {n k : ℕ} (hn : 0 < n) {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) :
+    ζ ^ k ∈ Polynomial.nthRootsFinset n (1 : F) := by
+  rw [Polynomial.mem_nthRootsFinset hn]
+  rw [← pow_mul, Nat.mul_comm, pow_mul, hζ.pow_eq_one, one_pow]
+
+/-- A primitive root in a field is nonzero. -/
+theorem primRoot_ne_zero {n : ℕ} (hn : 0 < n) {ζ : F} (hζ : IsPrimitiveRoot ζ n) :
+    ζ ≠ 0 :=
+  Polynomial.ne_zero_of_mem_nthRootsFinset one_ne_zero (primRoot_mem_nthRootsFinset hn hζ)
+
+/-- Low nonzero powers below the primitive order are not `1`. -/
+theorem primRoot_pow_ne_one_of_lt {n k : ℕ} {ζ : F} (hζ : IsPrimitiveRoot ζ n)
+    (hk0 : k ≠ 0) (hklt : k < n) : ζ ^ k ≠ 1 :=
+  hζ.pow_ne_one_of_pos_of_lt hk0 hklt
+
+/-- If `2k < n`, a primitive `n`-th root cannot have `ζ^k = -1`. -/
+theorem primRoot_pow_ne_neg_one_of_two_mul_lt {n k : ℕ} {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (hk0 : k ≠ 0) (hklt : k * 2 < n) :
+    ζ ^ k ≠ -1 := by
+  intro h
+  have hpow : ζ ^ (k * 2) = 1 := by
+    rw [pow_mul ζ k 2, h]
+    ring
+  exact hζ.pow_ne_one_of_pos_of_lt (by omega : k * 2 ≠ 0) hklt hpow
+
+/-- If `2k < n`, the power `ζ^k` is not its own inverse. -/
+theorem primRoot_pow_ne_inv_of_two_mul_lt {n k : ℕ} (hn : 0 < n) {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (hk0 : k ≠ 0) (hklt : k * 2 < n) :
+    ζ ^ k ≠ (ζ ^ k)⁻¹ := by
+  intro h
+  have hz0 : ζ ^ k ≠ 0 := pow_ne_zero k (primRoot_ne_zero hn hζ)
+  have hpow : ζ ^ (k * 2) = 1 := by
+    rw [pow_mul ζ k 2, pow_two]
+    nth_rw 2 [h]
+    rw [mul_inv_cancel₀ hz0]
+  exact hζ.pow_ne_one_of_pos_of_lt (by omega : k * 2 ≠ 0) hklt hpow
+
+/-- If `4k < n`, the width-4 invariant `ζ^k + (ζ^k)⁻¹` is nonzero. -/
+theorem primRoot_pow_add_inv_ne_zero_of_four_mul_lt {n k : ℕ} (hn : 0 < n) {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (hk0 : k ≠ 0) (hklt : k * 4 < n) :
+    ζ ^ k + (ζ ^ k)⁻¹ ≠ 0 := by
+  intro h
+  let z : F := ζ ^ k
+  have hz0 : z ≠ 0 := pow_ne_zero k (primRoot_ne_zero hn hζ)
+  have hz2 : z ^ 2 = -1 := by
+    dsimp [z] at h hz0 ⊢
+    field_simp [hz0] at h
+    linear_combination h
+  have hz4 : z ^ 4 = 1 := by
+    rw [show z ^ 4 = (z ^ 2) ^ 2 by ring, hz2]
+    ring
+  have hpow : ζ ^ (k * 4) = 1 := by
+    rw [pow_mul ζ k 4]
+    exact hz4
+  exact hζ.pow_ne_one_of_pos_of_lt (by omega : k * 4 ≠ 0) hklt hpow
+
+/-- In a field, the half-power of a primitive even-order root is `-1`. -/
+theorem primRoot_pow_half_eq_neg_one_of_even {n h : ℕ} {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (hnh : n = 2 * h) (hh : h ≠ 0) : ζ ^ h = -1 := by
+  have hsq : ζ ^ h * ζ ^ h = 1 := by
+    rw [← pow_add, ← two_mul, ← hnh]
+    exact hζ.pow_eq_one
+  rcases mul_self_eq_one_iff.mp hsq with h1 | h1
+  · exact absurd h1 (hζ.pow_ne_one_of_pos_of_lt hh (by omega))
+  · exact h1
+
+/-- A field carrying a primitive even-order root has `1 ≠ -1`. -/
+theorem one_ne_neg_one_of_primRoot_even {n h : ℕ} {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (hnh : n = 2 * h) (hh : h ≠ 0) : (1 : F) ≠ -1 := by
+  intro hchar
+  have hz : ζ ^ h = 1 := by
+    rw [primRoot_pow_half_eq_neg_one_of_even hζ hnh hh]
+    exact hchar.symm
+  exact hζ.pow_ne_one_of_pos_of_lt hh (by omega) hz
+
+/-- The two canonical invariants `ζ + ζ⁻¹` and `ζ² + ζ⁻²` are distinct when `3 < n`. -/
+theorem primRoot_add_inv_ne_sq_add_inv {n : ℕ} (hn : 0 < n) {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (h1lt : 1 < n) (h3lt : 3 < n) :
+    ζ + ζ⁻¹ ≠ ζ ^ 2 + (ζ ^ 2)⁻¹ := by
+  intro h
+  have hz0 : ζ ≠ 0 := primRoot_ne_zero hn hζ
+  have hpoly : ζ ^ 4 - ζ ^ 3 - ζ + 1 = 0 := by
+    field_simp [hz0] at h
+    linear_combination -h
+  have hfac : (ζ - 1) * (ζ ^ 3 - 1) = 0 := by
+    linear_combination hpoly
+  rcases mul_eq_zero.mp hfac with hleft | hright
+  · have hz1 : ζ ^ 1 = 1 := by
+      rw [pow_one]
+      linear_combination hleft
+    exact hζ.pow_ne_one_of_pos_of_lt one_ne_zero h1lt hz1
+  · exact hζ.pow_ne_one_of_pos_of_lt (by norm_num : (3 : ℕ) ≠ 0) h3lt
+      (by linear_combination hright)
+
+/-- The two canonical invariants are also distinct after the sign quotient when `6 < n`. -/
+theorem primRoot_add_inv_ne_neg_sq_add_inv {n : ℕ} (hn : 0 < n) {ζ : F}
+    (hζ : IsPrimitiveRoot ζ n) (h2lt : 2 < n) (h6lt : 6 < n) :
+    ζ + ζ⁻¹ ≠ -(ζ ^ 2 + (ζ ^ 2)⁻¹) := by
+  intro h
+  have hz0 : ζ ≠ 0 := primRoot_ne_zero hn hζ
+  have hpoly : ζ ^ 4 + ζ ^ 3 + ζ + 1 = 0 := by
+    field_simp [hz0] at h
+    linear_combination h
+  have hfac : (ζ + 1) * (ζ ^ 3 + 1) = 0 := by
+    linear_combination hpoly
+  rcases mul_eq_zero.mp hfac with hleft | hright
+  · have hz2 : ζ ^ 2 = 1 := by
+      rw [show ζ ^ 2 = (ζ + 1) * (ζ - 1) + 1 by ring]
+      rw [hleft]
+      ring
+    exact hζ.pow_ne_one_of_pos_of_lt (by norm_num : (2 : ℕ) ≠ 0) h2lt hz2
+  · have hz6 : ζ ^ 6 = 1 := by
+      have hz3 : ζ ^ 3 = -1 := by linear_combination hright
+      rw [show ζ ^ 6 = (ζ ^ 3) ^ 2 by ring, hz3]
+      ring
+    exact hζ.pow_ne_one_of_pos_of_lt (by norm_num : (6 : ℕ) ≠ 0) h6lt hz6
+
 /-- **Concrete `μ_n` width-4 refuter.** For the actual smooth-domain subgroup
 `μ_n = nthRootsFinset n 1`, two non-colliding product-form width-4 witnesses force the concrete
 `e₂ = 0` bad-scalar image to exceed the literal `n` budget. -/
@@ -818,6 +944,36 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision {n : ℕ} {ζ x x'
       (nthRootsFinset_finSubgroup (F := F) hn) hNC hsub hsub' hxG hx'G htG ht'G
       ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne)
 
+/-- Concrete `μ_n` width-4 refuter under the repaired sign-quotiented non-collision residual. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F)))
+    (hsub : quadT x t ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (hsub' : quadT x' t' ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card := by
+  have hxG : x ∈ Polynomial.nthRootsFinset n (1 : F) := hsub (by simp [quadT])
+  have hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F) := hsub' (by simp [quadT])
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hNC hsub hsub' hxG hx'G htG ht'G
+      ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne
+      hsign)
+
 /-- Concrete `μ_n` width-4 refuter using membership of `x,x',t,t'` plus `-1 ∈ μ_n`, instead of
 manual subset proofs for both product-form quadruples. -/
 theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
@@ -845,6 +1001,34 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
       (nthRootsFinset_finSubgroup (F := F) hn) hneg hNC hxG hx'G htG ht'G
       hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne)
 
+/-- Concrete `μ_n` width-4 refuter under the repaired residual, using membership of
+`x,x',t,t'` plus `-1 ∈ μ_n`. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hneg : (-1 : F) ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card := by
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hneg hNC hxG hx'G htG ht'G
+      hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne hsign)
+
 /-- **Concrete `μ_n` scanner-failure form.** The same two-witness certificate refutes the literal
 `n` budget for the width-4 `e₂ = 0` bad-scalar image over `μ_n`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision {n : ℕ} {ζ x x' t t' : F}
@@ -869,6 +1053,32 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision {n : ℕ} {ζ 
     (n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision hn hζ hNC hsub hsub'
       htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc'
       hne)
+
+/-- Concrete `μ_n` scanner-failure form under the repaired sign-quotiented residual. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_modSignNonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F)))
+    (hsub : quadT x t ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (hsub' : quadT x' t' ⊆ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision
+      hn hζ hNC hsub hsub' htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1
+      hy2 hy3 hy4 hy5 hy6 hc hc' hne hsign)
 
 /-- Concrete `μ_n` scanner-failure form using subgroup membership plus `-1 ∈ μ_n`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
@@ -895,6 +1105,33 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
       hn hζ hneg hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4
       hy5 hy6 hc hc' hne)
 
+/-- Concrete `μ_n` scanner-failure form under the repaired residual, using subgroup membership
+plus `-1 ∈ μ_n`. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_modSignNonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n)
+    (hneg : (-1 : F) ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision
+      hn hζ hneg hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
+      hy4 hy5 hy6 hc hc' hne hsign)
+
 /-- Concrete even-`μ_n` width-4 refuter using only membership of `x,x',t,t'`.  For even `n`,
 the hypothesis `-1 ∈ μ_n` required by the membership wrapper is automatic. -/
 theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
@@ -920,6 +1157,31 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
     hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc'
     hne
 
+/-- Concrete even-`μ_n` width-4 refuter under the repaired sign-quotiented residual. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (heven : 2 ∣ n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card :=
+  n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision
+    hn hζ (neg_one_mem_nthRootsFinset_of_even (F := F) hn heven) hNC
+    hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc'
+    hne hsign
+
 /-- Concrete even-`μ_n` scanner-failure form using only membership of `x,x',t,t'`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
     {n : ℕ} {ζ x x' t t' : F}
@@ -943,6 +1205,31 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
     (n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
       hn heven hζ hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
       hy4 hy5 hy6 hc hc' hne)
+
+/-- Concrete even-`μ_n` scanner-failure form under the repaired sign-quotiented residual. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
+    {n : ℕ} {ζ x x' t t' : F}
+    (hn : 0 < n) (heven : 2 ∣ n) (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F)))
+    (hxG : x ∈ Polynomial.nthRootsFinset n (1 : F))
+    (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
+    (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
+    (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
+    -- distinctness for `quadT x t`:
+    (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
+    (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
+    -- distinctness for `quadT x' t'`:
+    (hy1 : x' ≠ -x') (hy2 : x' * t' ≠ x') (hy3 : x' * t' ≠ -x')
+    (hy4 : x' * t'⁻¹ ≠ x') (hy5 : x' * t'⁻¹ ≠ -x')
+    (hy6 : x' * t' ≠ x' * t'⁻¹)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹))
+    (hsign : (t + t⁻¹) ≠ -(t' + t'⁻¹)) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
+      hn heven hζ hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
+      hy4 hy5 hy6 hc hc' hne hsign)
 
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
@@ -982,12 +1269,20 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms badScalar_orbits_distinct_of_nonCollision
 #print axioms badScalar_orbits_distinct_of_nonCollisionModSign
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
+#print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
+#print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_modSignNonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_modSignNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
 
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision

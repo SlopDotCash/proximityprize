@@ -1581,3 +1581,14 @@ The repaired orbit bridges `orbits_distinct_of_nonCollisionModSign` and
 land in distinct dilation orbits once their invariants are sign-distinct.  This replaces the raw
 `Cd₀NonCollision` bridge with the correct quotient-aware statement; proving the repaired residual
 remains an explicit finite collision/primality obligation.
+
+Follow-up: the repaired bridge now reaches the literal image-budget scanner.  The group-level
+`group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision` and membership-only
+`group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision` conclude
+`#G < #(e2BadScalarSet G 4)`.  The smooth-domain wrappers
+`n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision` and
+`n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision` specialize this to
+`mu_n = nthRootsFinset n 1`, giving the exact `n < #image` scanner conclusion under the corrected
+sign-quotiented residual.
+The matching `not_e2BadScalarSet_mu_card_le_n_*_modSignNonCollision` wrappers expose the literal
+negated-budget form, and the even variants discharge `-1 ∈ mu_n` from `2 ∣ n`.

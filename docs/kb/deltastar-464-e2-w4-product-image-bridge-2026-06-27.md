@@ -44,13 +44,21 @@ not_cd0NonCollision_nthRootsFinset_of_even_charZero
 orbits_distinct_of_nonCollisionModSign
 badScalar_orbits_distinct_of_nonCollisionModSign
 group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
+group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision
 group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
+group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
+n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
+n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_nonCollision
+not_e2BadScalarSet_mu_card_le_n_of_two_quadT_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
+not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_modSignNonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
+n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
+not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
 ```
 
 ## The Bridge
@@ -149,3 +157,13 @@ Lean exposes the exact failure scanner
 `badScalar_orbits_distinct_of_nonCollisionModSign`.  This restores the width-4 bridge in the
 correct sign-quotiented form; it still leaves the sign-quotiented non-collision proof as the real
 finite/primality residual.
+
+The repaired bridge also has budget-consumer wrappers.  The group-level
+`group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision` and membership-only
+`group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision` feed the existing
+two-orbit image-budget refuter.  The concrete smooth-domain wrappers
+`n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision` and
+`n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_modSignNonCollision` state the conclusion directly
+as `n < #(e2BadScalarSet mu_n 4)` under sign-distinct invariants.
+The matching `not_e2BadScalarSet_mu_card_le_n_*_modSignNonCollision` wrappers package the literal
+budget failure, and the even-`mu_n` wrappers discharge `-1 ∈ mu_n` from `2 ∣ n`.
