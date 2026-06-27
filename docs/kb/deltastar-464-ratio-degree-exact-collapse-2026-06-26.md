@@ -34,7 +34,11 @@ ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_le_one
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
 ArkLib.ProximityGap.RatioMultiplicity.degenerate_exists_iff_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_iff_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_degenerate
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_iff_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_or_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact
@@ -95,6 +99,14 @@ The degeneracy test is also recorded in scalar-multiple form: such a scalar exis
 `P = c*Q` for some field scalar `c`.  Thus, under the same exact degree hypothesis and `Q != 0`,
 the low-weight set is empty iff `P` is not a scalar multiple of `Q`, and has cardinality `1` iff
 `P` is a scalar multiple of `Q`.
+
+There are direct singleton consumers for this form as well: if `P = c*Q` and `Q != 0`, the
+degenerate scalar set is exactly `{-c}`, and under the exact degree inequality the low-weight
+bad-scalar set is exactly `{-c}`.
+
+The singleton consumers are also bidirectional: for `Q != 0`, the degenerate scalar set is exactly
+`{-c}` iff `P = c*Q`; under the exact degree inequality, the same iff holds for the low-weight
+bad-scalar set.
 
 ## Prize Impact
 
