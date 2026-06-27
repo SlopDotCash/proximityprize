@@ -503,8 +503,10 @@ theorem twoEleven_lt_threeEleven : (2 / 11 : ℝ≥0∞) < 3 / 11 := by
 
 /-- `2/11 ≤ 1/2` in `ℝ≥0∞`. -/
 theorem twoEleven_le_half : (2 / 11 : ℝ≥0∞) ≤ 1 / 2 := by
-  exact le_trans (le_of_lt twoEleven_lt_threeEleven)
-    (le_trans (by norm_num : (3 / 11 : ℝ≥0∞) ≤ 5 / 11) fiveEleven_le_half)
+  rw [← ENNReal.toReal_le_toReal (ENNReal.div_ne_top (by simp) (by simp))
+        (ENNReal.div_ne_top (by simp) (by simp))]
+  simp only [ENNReal.toReal_div, ENNReal.toReal_ofNat, ENNReal.toReal_one]
+  norm_num
 
 /-- **Interval pin (first jump):** `mcaDeltaStar(C, ε*) = 1/5` for every `ε* ∈ [1/11, 2/11)`. -/
 theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0∞}
