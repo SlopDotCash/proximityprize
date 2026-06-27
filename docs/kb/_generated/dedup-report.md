@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4908 files, 52749 declarations
+- `ArkLib` — 4908 files, 52762 declarations
 
 ## Same short-name across multiple files (2170 groups)
 
@@ -5736,7 +5736,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `cos_invariant_injOn` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean:335](../../../ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean#L335) — **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).** For distinc
+- `theorem ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean:337](../../../ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean#L337) — **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).** For distinc
 - `theorem ArkLib.ProximityGap.BridgeB45.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB45.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB45.lean#L78) — **The cosine invariant is injective on the edge representatives.**  For `n > 0` and `1 ≤ i, j ≤ n/2
 
 ### `coset` (2 declarations, 2 files)
@@ -7507,7 +7507,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `natAbs_resultant_cyclotomic_le` (2 declarations, 2 files)
 
-- `theorem natAbs_resultant_cyclotomic_le` [ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean:117](../../../ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean#L117) — **The integer cyclotomic-resultant magnitude bound.** If `g : ℤ[X]` evaluates with norm `≤ 4` at eve
+- `theorem natAbs_resultant_cyclotomic_le` [ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean:184](../../../ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean#L184) — **The integer cyclotomic-resultant magnitude bound.** If `g : ℤ[X]` evaluates with norm `≤ 4` at eve
 - `theorem ArkLib.ProximityGap.KKH26.natAbs_resultant_cyclotomic_le` [ArkLib/Data/CodingTheory/ProximityGap/KKH26SumsOfRootsOfUnity.lean:172](../../../ArkLib/Data/CodingTheory/ProximityGap/KKH26SumsOfRootsOfUnity.lean#L172) — **Archimedean bound for the cyclotomic resultant.** For `R : ℤ[X]` of degree `< 2^{m-1} = deg Φ_{2^m
 
 ### `natDegree_lt_of_mem_degreeLT` (2 declarations, 2 files)

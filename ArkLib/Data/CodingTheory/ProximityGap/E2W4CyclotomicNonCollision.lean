@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2DilationDirectCount
 import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicResultantBound
+import ArkLib.Data.CodingTheory.ProximityGap.SharpResultantBound
 
 /-!
 # The width-4 cyclotomic non-collision: when the combinatorial model `K = n/4 − 1` equals the
@@ -82,12 +83,13 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 - Kronecker (1857); Lam–Leung, *On vanishing sums of roots of unity*, J. Algebra 224 (2000).
 -/
 set_option linter.style.longLine false
-set_option linter.style.longFile 2400
+set_option linter.style.longFile 2600
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option autoImplicit false
 
 open Finset
+open scoped NNReal
 open ArkLib.ProximityGap.E2VanishEnergy
 open ArkLib.ProximityGap.E2DilationDirectCount
 
@@ -1799,6 +1801,47 @@ theorem prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
     resultant_canonicalRatioPoly_ne_zero hn hn8
   exact Nat.le_of_dvd (Int.natAbs_pos.mpr hne) (Int.natAbs_dvd_natAbs.mpr hdvd)
 
+/-- Crude archimedean bound for the canonical obstruction polynomial on `n`-th roots of unity. -/
+theorem canonicalRatioPoly_eval_nnnorm_le_two_pow_succ {n : ℕ} (hn : n ≠ 0) {ω : ℂ}
+    (hω : ω ^ n = 1) :
+    ‖((canonicalRatioPoly n).map (Int.castRingHom ℂ)).eval ω‖₊
+      ≤ ((2 ^ (n + 1) : ℕ) : ℝ≥0) := by
+  have hnormω : ‖ω‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hω hn
+  have h4 : ‖ω ^ 4 + 1‖ ≤ (2 : ℝ) := by
+    calc ‖ω ^ 4 + 1‖
+        ≤ ‖ω ^ 4‖ + ‖(1 : ℂ)‖ := norm_add_le _ _
+      _ = 2 := by rw [norm_pow, hnormω, one_pow, norm_one]; norm_num
+  have h2 : ‖ω ^ 2 + 1‖ ≤ (2 : ℝ) := by
+    calc ‖ω ^ 2 + 1‖
+        ≤ ‖ω ^ 2‖ + ‖(1 : ℂ)‖ := norm_add_le _ _
+      _ = 2 := by rw [norm_pow, hnormω, one_pow, norm_one]; norm_num
+  have h4pow : ‖(ω ^ 4 + 1) ^ n‖ ≤ (2 : ℝ) ^ n := by
+    rw [norm_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) h4 n
+  have h2pow : ‖(ω ^ 2 + 1) ^ n‖ ≤ (2 : ℝ) ^ n := by
+    rw [norm_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) h2 n
+  have hreal : ‖(ω ^ 4 + 1) ^ n - (ω ^ 2 + 1) ^ n‖ ≤ (2 : ℝ) ^ (n + 1) := by
+    calc ‖(ω ^ 4 + 1) ^ n - (ω ^ 2 + 1) ^ n‖
+        ≤ ‖(ω ^ 4 + 1) ^ n‖ + ‖(ω ^ 2 + 1) ^ n‖ := norm_sub_le _ _
+      _ ≤ (2 : ℝ) ^ n + (2 : ℝ) ^ n := add_le_add h4pow h2pow
+      _ = (2 : ℝ) ^ (n + 1) := by rw [pow_succ']; ring
+  have heval :
+      ((canonicalRatioPoly n).map (Int.castRingHom ℂ)).eval ω =
+        (ω ^ 4 + 1) ^ n - (ω ^ 2 + 1) ^ n :=
+    canonicalRatioPoly_eval_map n ω
+  rw [heval]
+  exact_mod_cast hreal
+
+/-- Explicit crude upper bound for the canonical width-4 obstruction resultant. -/
+theorem natAbs_resultant_canonicalRatioPoly_le_two_pow_succ_totient {n : ℕ} (hn : n ≠ 0) :
+    (Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+      (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree).natAbs
+      ≤ (2 ^ (n + 1)) ^ n.totient :=
+  _root_.natAbs_resultant_cyclotomic_le_of_bound n (2 ^ (n + 1)) (canonicalRatioPoly n)
+    (fun _ hω => by
+      simpa [Nat.cast_pow] using canonicalRatioPoly_eval_nnnorm_le_two_pow_succ hn hω)
+
 /-- Contrapositive polynomial form: above the canonical obstruction resultant, the denominator-free
 polynomial collision cannot occur. -/
 theorem polynomial_ne_zmod_of_resultant_natAbs_lt_prime
@@ -1812,6 +1855,28 @@ theorem polynomial_ne_zmod_of_resultant_natAbs_lt_prime
   exact not_lt_of_ge
     (prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
       hn hn8 hζ hpoly) hsmall
+
+/-- Crude explicit good-prime form: if `p` exceeds the elementary archimedean bound for the
+canonical obstruction resultant, the denominator-free collision cannot occur. -/
+theorem polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (hn8 : 8 < n) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ n)
+    (hlarge : (2 ^ (n + 1)) ^ n.totient < p) :
+    (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n :=
+  polynomial_ne_zmod_of_resultant_natAbs_lt_prime hn hn8 hζ
+    ((natAbs_resultant_canonicalRatioPoly_le_two_pow_succ_totient hn.ne').trans_lt hlarge)
+
+/-- Scanner-facing crude good-prime form: the elementary archimedean bound alone is enough to refute
+the literal width-4 `≤ n` budget once `(2^(n+1))^φ(n) < p`. -/
+theorem not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ n)
+    (hlarge : (2 ^ (n + 1)) ^ n.totient < p) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : ZMod p)) 4).card ≤ n :=
+  not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+    hn heven hn8 hζ
+    (polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime hn hn8 hζ hlarge)
+
 
 /-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
 theorem n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
@@ -1948,6 +2013,23 @@ theorem not_forall_primitive_pairNonCollision_zmod17_mu16 :
   intro h
   exact not_invariantPairNonCollision_mu16_zmod17_3
     (h (3 : ZMod 17) isPrimitiveRoot_3_16_ratio_zmod17)
+
+/-- The bad prime `17` is detected by the canonical cyclotomic resultant. -/
+theorem seventeen_dvd_resultant_canonicalRatioPoly_16 :
+    (17 : ℤ) ∣ Polynomial.resultant (Polynomial.cyclotomic 16 ℤ) (canonicalRatioPoly 16)
+      (Polynomial.cyclotomic 16 ℤ).natDegree (canonicalRatioPoly 16).natDegree :=
+  prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+    (p := 17) (n := 16) (by norm_num) isPrimitiveRoot_3_16_ratio_zmod17
+    polynomial_eq_3_sq_pow16_zmod17
+
+/-- Consequently the canonical resultant threshold is at least `17` in the first bad-prime
+instance. -/
+theorem seventeen_le_natAbs_resultant_canonicalRatioPoly_16 :
+    17 ≤ (Polynomial.resultant (Polynomial.cyclotomic 16 ℤ) (canonicalRatioPoly 16)
+      (Polynomial.cyclotomic 16 ℤ).natDegree (canonicalRatioPoly 16).natDegree).natAbs :=
+  prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+    (p := 17) (n := 16) (by norm_num) (by norm_num) isPrimitiveRoot_3_16_ratio_zmod17
+    polynomial_eq_3_sq_pow16_zmod17
 
 end Concrete17RatioCollapse
 
@@ -2137,6 +2219,81 @@ theorem not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime
     (prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
       hn heven hn8 hζ hbudget) hsmall
 
+/-! ### Sharp Landau-bound scanner gate for two-power domains -/
+
+/-- The squared Landau/Mahler coefficient bound for the canonical width-4 obstruction
+`canonicalRatioPoly (2^m)` against `Φ_{2^m}`. -/
+noncomputable def canonicalRatioPolySharpBound (m : ℕ) : ℕ :=
+  4 ^ (canonicalRatioPoly (2 ^ m)).natDegree
+    * (∑ i ∈ (canonicalRatioPoly (2 ^ m)).support,
+        ((canonicalRatioPoly (2 ^ m)).coeff i).natAbs ^ 2) ^ 2 ^ (m - 1)
+
+/-- The canonical obstruction resultant has the same absolute value in either polynomial order. -/
+theorem natAbs_resultant_canonicalRatioPoly_comm (n : ℕ) :
+    (Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+      (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree).natAbs =
+    (Polynomial.resultant (canonicalRatioPoly n) (Polynomial.cyclotomic n ℤ)
+      (canonicalRatioPoly n).natDegree (Polynomial.cyclotomic n ℤ).natDegree).natAbs := by
+  rw [Polynomial.resultant_comm]
+  rw [Int.natAbs_mul]
+  simp
+
+/-- The sharp squared Landau/Mahler bound specialized to the canonical width-4 obstruction. -/
+theorem natAbs_resultant_canonicalRatioPoly_twoPow_sq_le {m : ℕ} (hm : 1 ≤ m) :
+    (Polynomial.resultant (Polynomial.cyclotomic (2 ^ m) ℤ) (canonicalRatioPoly (2 ^ m))
+        (Polynomial.cyclotomic (2 ^ m) ℤ).natDegree
+        (canonicalRatioPoly (2 ^ m)).natDegree).natAbs ^ 2
+      ≤ canonicalRatioPolySharpBound m := by
+  unfold canonicalRatioPolySharpBound
+  rw [natAbs_resultant_canonicalRatioPoly_comm]
+  exact ArkLib.ProximityGap.SharpResultantBound.natAbs_resultant_cyclotomic_sq_le hm _
+
+/-- If the literal width-4 budget survives over `ZMod p` at `n = 2^m`, then `p²` is bounded by
+the sharp coefficient-sum obstruction. -/
+theorem prime_sq_le_canonicalRatioPolySharpBound_of_e2BadScalarSet_mu_card_le_twoPow_zmod
+    {p m : ℕ} [Fact p.Prime] (hm : 4 ≤ m) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ (2 ^ m))
+    (hbudget : (e2BadScalarSet (Polynomial.nthRootsFinset (2 ^ m) (1 : ZMod p)) 4).card
+      ≤ 2 ^ m) :
+    p ^ 2 ≤ canonicalRatioPolySharpBound m := by
+  have hm1 : 1 ≤ m := by omega
+  have hn : 0 < 2 ^ m := by positivity
+  have heven : 2 ∣ 2 ^ m := by
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : m ≠ 0)
+    refine ⟨2 ^ k, ?_⟩
+    rw [pow_succ]
+    omega
+  have hn8 : 8 < 2 ^ m := by
+    calc
+      8 = 2 ^ 3 := by norm_num
+      _ < 2 ^ m := Nat.pow_lt_pow_right (by norm_num : 1 < 2) (by omega : 3 < m)
+  have hleRes :
+      p ≤ (Polynomial.resultant (Polynomial.cyclotomic (2 ^ m) ℤ)
+        (canonicalRatioPoly (2 ^ m))
+        (Polynomial.cyclotomic (2 ^ m) ℤ).natDegree
+        (canonicalRatioPoly (2 ^ m)).natDegree).natAbs :=
+    prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+      (p := p) (n := 2 ^ m) hn heven hn8 hζ hbudget
+  have hleSq :
+      p ^ 2 ≤ (Polynomial.resultant (Polynomial.cyclotomic (2 ^ m) ℤ)
+        (canonicalRatioPoly (2 ^ m))
+        (Polynomial.cyclotomic (2 ^ m) ℤ).natDegree
+        (canonicalRatioPoly (2 ^ m)).natDegree).natAbs ^ 2 :=
+    Nat.pow_le_pow_left hleRes 2
+  exact le_trans hleSq (natAbs_resultant_canonicalRatioPoly_twoPow_sq_le hm1)
+
+/-- Scanner-facing contrapositive: if the sharp coefficient-sum obstruction is already below
+`p²`, the literal width-4 `≤ n` budget cannot survive at `n = 2^m`. -/
+theorem not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq
+    {p m : ℕ} [Fact p.Prime] (hm : 4 ≤ m) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ (2 ^ m))
+    (hsmall : canonicalRatioPolySharpBound m < p ^ 2) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset (2 ^ m) (1 : ZMod p)) 4).card ≤ 2 ^ m := by
+  intro hbudget
+  exact not_lt_of_ge
+    (prime_sq_le_canonicalRatioPolySharpBound_of_e2BadScalarSet_mu_card_le_twoPow_zmod
+      hm hζ hbudget) hsmall
+
 /-- Fixed primitive-root scanner-failure form for the canonical witnesses
 `quadT 1 ζ` and `quadT 1 ζ²`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
@@ -2276,7 +2433,11 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms resultant_canonicalRatioPoly_ne_zero
 #print axioms prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
 #print axioms prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+#print axioms canonicalRatioPoly_eval_nnnorm_le_two_pow_succ
+#print axioms natAbs_resultant_canonicalRatioPoly_le_two_pow_succ_totient
 #print axioms polynomial_ne_zmod_of_resultant_natAbs_lt_prime
+#print axioms polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime
+#print axioms not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 #print axioms orderOf_4134_ratio
@@ -2293,6 +2454,8 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms exists_invariant_collision_mu16_zmod17_3
 #print axioms not_invariantPairNonCollision_mu16_zmod17_3
 #print axioms not_forall_primitive_pairNonCollision_zmod17_mu16
+#print axioms seventeen_dvd_resultant_canonicalRatioPoly_16
+#print axioms seventeen_le_natAbs_resultant_canonicalRatioPoly_16
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
@@ -2300,6 +2463,10 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms prime_dvd_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
 #print axioms prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
 #print axioms not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime
+#print axioms natAbs_resultant_canonicalRatioPoly_comm
+#print axioms natAbs_resultant_canonicalRatioPoly_twoPow_sq_le
+#print axioms prime_sq_le_canonicalRatioPolySharpBound_of_e2BadScalarSet_mu_card_le_twoPow_zmod
+#print axioms not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even

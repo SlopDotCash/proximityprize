@@ -71,6 +71,33 @@ theorem nnnorm_prod_eval_cyclotomic_roots_le (n : ℕ) (g : ℂ[X])
         Multiset.prod_le_pow_card _ 4 hb
     _ = 4 ^ n.totient := by rw [Multiset.card_map, Multiset.card_map, hcard]
 
+/-- General bounded-factor form of `nnnorm_prod_eval_cyclotomic_roots_le`.  If every primitive
+factor has norm at most `B`, then the cyclotomic product has norm at most `B^φ(n)`. -/
+theorem nnnorm_prod_eval_cyclotomic_roots_le_of_bound (n B : ℕ) (g : ℂ[X])
+    (hg : ∀ ω : ℂ, ω ^ n = 1 → ‖g.eval ω‖₊ ≤ B) :
+    ‖((cyclotomic n ℂ).roots.map g.eval).prod‖₊ ≤ (B : ℝ≥0) ^ n.totient := by
+  have hcard : (cyclotomic n ℂ).roots.card = n.totient := by
+    rw [← (IsAlgClosed.splits (cyclotomic n ℂ)).natDegree_eq_card_roots, natDegree_cyclotomic]
+  have hroot : ∀ ω ∈ (cyclotomic n ℂ).roots, ω ^ n = 1 := by
+    intro ω hω
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [cyclotomic_zero] at hω
+    · haveI : NeZero (n : ℂ) := ⟨Nat.cast_ne_zero.mpr (by omega)⟩
+      exact (isRoot_cyclotomic_iff.mp (isRoot_of_mem_roots hω)).pow_eq_one
+  have hb :
+      ∀ x ∈ ((cyclotomic n ℂ).roots.map g.eval).map (‖·‖₊), x ≤ (B : ℝ≥0) := by
+    intro x hx
+    rw [Multiset.map_map, Multiset.mem_map] at hx
+    obtain ⟨ω, hω, rfl⟩ := hx
+    exact hg ω (hroot ω hω)
+  calc ‖((cyclotomic n ℂ).roots.map g.eval).prod‖₊
+      ≤ (((cyclotomic n ℂ).roots.map g.eval).map (‖·‖₊)).prod :=
+        nnnorm_multiset_prod_le_ring _
+    _ ≤ (B : ℝ≥0) ^
+          (((cyclotomic n ℂ).roots.map g.eval).map (‖·‖₊)).card :=
+        Multiset.prod_le_pow_card _ (B : ℝ≥0) hb
+    _ = (B : ℝ≥0) ^ n.totient := by rw [Multiset.card_map, Multiset.card_map, hcard]
+
 /-- A concrete four-term parallelogram polynomial has norm at most `4` on every nonzero-order
 root of unity. This discharges the side condition of
 `nnnorm_prod_eval_cyclotomic_roots_le` for `X^i + X^j - X^k - X^l`. -/
@@ -107,17 +134,17 @@ theorem nnnorm_prod_eval_cyclotomic_roots_fourTerm_le (n i j k l : ℕ) (hn : n 
       (fun ω hω => fourTerm_eval_nnnorm_le_four hn hω)
 
 /-! ## Axiom audit -/
+#print axioms nnnorm_prod_eval_cyclotomic_roots_le_of_bound
 #print axioms fourTerm_eval_nnnorm_le_four
 #print axioms nnnorm_prod_eval_cyclotomic_roots_fourTerm_le
 
-/-- **The integer cyclotomic-resultant magnitude bound.** If `g : ℤ[X]` evaluates with norm `≤ 4`
-at every `n`-th root of unity in `ℂ`, then the integer resultant `Res(Φ_n, g)` satisfies
-`|Res| ≤ 4^{φ(n)} = 2^n` (for `n = 2^m`).  The archimedean half of the small-subgroup Sidon
-keystone, now over `ℤ`. -/
-theorem natAbs_resultant_cyclotomic_le (n : ℕ) (g : ℤ[X])
-    (hg : ∀ ω : ℂ, ω ^ n = 1 → ‖(g.map (Int.castRingHom ℂ)).eval ω‖₊ ≤ 4) :
+/-- **Generic integer cyclotomic-resultant magnitude bound.** If `g : ℤ[X]` evaluates with norm
+`≤ B` at every `n`-th root of unity in `ℂ`, then the integer resultant `Res(Φ_n, g)` satisfies
+`|Res| ≤ B^{φ(n)}`. -/
+theorem natAbs_resultant_cyclotomic_le_of_bound (n B : ℕ) (g : ℤ[X])
+    (hg : ∀ ω : ℂ, ω ^ n = 1 → ‖(g.map (Int.castRingHom ℂ)).eval ω‖₊ ≤ B) :
     (resultant (cyclotomic n ℤ) g (cyclotomic n ℤ).natDegree g.natDegree).natAbs
-      ≤ 4 ^ n.totient := by
+      ≤ B ^ n.totient := by
   set R : ℤ := resultant (cyclotomic n ℤ) g (cyclotomic n ℤ).natDegree g.natDegree with hR
   have hdeg : (cyclotomic n ℤ).natDegree = (cyclotomic n ℂ).natDegree := by
     rw [natDegree_cyclotomic, natDegree_cyclotomic]
@@ -134,20 +161,34 @@ theorem natAbs_resultant_cyclotomic_le (n : ℕ) (g : ℤ[X])
       resultant_eq_prod_eval (cyclotomic n ℂ) _ g.natDegree (natDegree_map_le)
         (IsAlgClosed.splits _),
       (cyclotomic.monic n ℂ).leadingCoeff, one_pow, one_mul]
-  -- take norms: |R| = ‖(R:ℂ)‖ ≤ 4^φ(n)
-  have hnormR : (R.natAbs : ℝ) ≤ (4 : ℝ) ^ n.totient := by
-    have h1 : ‖((R : ℤ) : ℂ)‖ ≤ (4 : ℝ) ^ n.totient := by
+  -- take norms: |R| = ‖(R:ℂ)‖ ≤ B^φ(n)
+  have hnormR : (R.natAbs : ℝ) ≤ (B : ℝ) ^ n.totient := by
+    have h1 : ‖((R : ℤ) : ℂ)‖ ≤ (B : ℝ) ^ n.totient := by
       rw [hprodC]
-      have hb := nnnorm_prod_eval_cyclotomic_roots_le n (g.map (Int.castRingHom ℂ)) hg
+      have hb := nnnorm_prod_eval_cyclotomic_roots_le_of_bound n B
+        (g.map (Int.castRingHom ℂ)) hg
       calc ‖((cyclotomic n ℂ).roots.map (g.map (Int.castRingHom ℂ)).eval).prod‖
-          = ((‖((cyclotomic n ℂ).roots.map (g.map (Int.castRingHom ℂ)).eval).prod‖₊ : ℝ≥0) : ℝ) :=
-            rfl
-        _ ≤ (((4 : ℝ≥0) ^ n.totient : ℝ≥0) : ℝ) := by exact_mod_cast hb
-        _ = (4 : ℝ) ^ n.totient := by push_cast; ring
+          = ((‖((cyclotomic n ℂ).roots.map (g.map (Int.castRingHom ℂ)).eval).prod‖₊ :
+              ℝ≥0) : ℝ) := rfl
+        _ ≤ (((B : ℝ≥0) ^ n.totient : ℝ≥0) : ℝ) := by exact_mod_cast hb
+        _ = (B : ℝ) ^ n.totient := by push_cast; ring
     rw [Complex.norm_intCast, ← Int.cast_abs, Int.abs_eq_natAbs] at h1
     exact_mod_cast h1
-  have : (R.natAbs : ℝ) ≤ ((4 ^ n.totient : ℕ) : ℝ) := by push_cast; exact hnormR
+  have : (R.natAbs : ℝ) ≤ ((B ^ n.totient : ℕ) : ℝ) := by push_cast; exact hnormR
   exact_mod_cast this
+
+/-- **The integer cyclotomic-resultant magnitude bound.** If `g : ℤ[X]` evaluates with norm `≤ 4`
+at every `n`-th root of unity in `ℂ`, then the integer resultant `Res(Φ_n, g)` satisfies
+`|Res| ≤ 4^{φ(n)} = 2^n` (for `n = 2^m`).  The archimedean half of the small-subgroup Sidon
+keystone, now over `ℤ`. -/
+theorem natAbs_resultant_cyclotomic_le (n : ℕ) (g : ℤ[X])
+    (hg : ∀ ω : ℂ, ω ^ n = 1 → ‖(g.map (Int.castRingHom ℂ)).eval ω‖₊ ≤ 4) :
+    (resultant (cyclotomic n ℤ) g (cyclotomic n ℤ).natDegree g.natDegree).natAbs
+      ≤ 4 ^ n.totient :=
+  natAbs_resultant_cyclotomic_le_of_bound n 4 g hg
+
+#print axioms natAbs_resultant_cyclotomic_le_of_bound
+#print axioms natAbs_resultant_cyclotomic_le
 
 /-- **The `p ∣ Res` lift.** If `g : ℤ[X]` (with leading coefficient surviving mod `p`) has a
 primitive `n`-th root `ζ` of `ZMod p` as a root mod `p`, then `p ∣ Res(Φ_n, g)`: mod `p` the

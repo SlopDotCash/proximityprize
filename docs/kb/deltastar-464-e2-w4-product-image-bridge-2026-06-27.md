@@ -87,7 +87,16 @@ polynomial_ne_complex_primitive_zeta_sq
 resultant_canonicalRatioPoly_ne_zero
 prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
 prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+canonicalRatioPoly_eval_nnnorm_le_two_pow_succ
+natAbs_resultant_canonicalRatioPoly_le_two_pow_succ_totient
 polynomial_ne_zmod_of_resultant_natAbs_lt_prime
+polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime
+not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime
+canonicalRatioPolySharpBound
+natAbs_resultant_canonicalRatioPoly_comm
+natAbs_resultant_canonicalRatioPoly_twoPow_sq_le
+prime_sq_le_canonicalRatioPolySharpBound_of_e2BadScalarSet_mu_card_le_twoPow_zmod
+not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -104,6 +113,8 @@ invariant_collision_scalar_5_zmod17
 exists_invariant_collision_mu16_zmod17_3
 not_invariantPairNonCollision_mu16_zmod17_3
 not_forall_primitive_pairNonCollision_zmod17_mu16
+seventeen_dvd_resultant_canonicalRatioPoly_16
+seventeen_le_natAbs_resultant_canonicalRatioPoly_16
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
@@ -298,7 +309,26 @@ integer resultant of `cyclotomic n` and `canonicalRatioPoly n` is nonzero, then 
 vanishing of the denominator-cleared obstruction forces `p` to divide that resultant and hence
 `p <= |resultant|`.  The contrapositive theorem
 `polynomial_ne_zmod_of_resultant_natAbs_lt_prime` turns an explicit resultant bound into the
-polynomial nonvanishing needed by the scanner lane.
+polynomial nonvanishing needed by the scanner lane.  The shared resultant helper in
+`CyclotomicResultantBound.lean` now also has the generic forms
+`nnnorm_prod_eval_cyclotomic_roots_le_of_bound` and
+`natAbs_resultant_cyclotomic_le_of_bound`, so future canonical-polynomial height estimates can
+plug in an arbitrary per-root bound `B` instead of the original four-term constant `4`.
+The first plugged-in canonical estimate is intentionally crude:
+`canonicalRatioPoly_eval_nnnorm_le_two_pow_succ` bounds each root evaluation by `2^(n+1)`,
+`natAbs_resultant_canonicalRatioPoly_le_two_pow_succ_totient` turns this into
+`|resultant| <= (2^(n+1))^phi(n)`, and
+`polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime` packages the resulting good-prime
+contrapositive.  The direct scanner wrapper is
+`not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime`.
+
+For two-power domains there is also a sharper coefficient-side Landau/Mahler gate.  The explicit
+quantity `canonicalRatioPolySharpBound m` is
+`4^deg(canonicalRatioPoly (2^m)) * (sum_i |coeff_i|^2)^(2^(m-1))`.  Lean proves
+`natAbs_resultant_canonicalRatioPoly_twoPow_sq_le`, so a surviving literal budget over `ZMod p`
+forces `p^2 <= canonicalRatioPolySharpBound m`; the scanner-facing contrapositive is
+`not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq`.  This is
+the current explicit finite arithmetic target for this width-four resultant lane.
 
 The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
 witness at `n = 16`.  Lean proves `4134` has order `16`, checks the denominator-free
@@ -312,7 +342,11 @@ There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is 
 holds.  The theorem `invariant_collision_scalar_5_zmod17` checks the scalar `5` directly,
 `exists_invariant_collision_mu16_zmod17_3` packages it as a root-of-unity collision, and
 `not_forall_primitive_pairNonCollision_zmod17_mu16` refutes any uniform finite-field version of the
-canonical pairwise residual without excluding bad primes.
+canonical pairwise residual without excluding bad primes.  The follow-up declarations
+`seventeen_dvd_resultant_canonicalRatioPoly_16` and
+`seventeen_le_natAbs_resultant_canonicalRatioPoly_16` route this same bad prime through the
+canonical integer resultant, confirming that the abstract bad-prime certificate detects the first
+measured collapse.
 
 The backwards direction is now explicit too.  If the literal budget
 `#(e2BadScalarSet mu_n 4) <= n` holds in the canonical fixed-witness lane, Lean derives both the

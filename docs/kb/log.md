@@ -1661,6 +1661,25 @@ canonical polynomial obstruction vanishes, and packages the scanner-facing contr
 `not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime`.  The remaining finite-field
 work is now an explicit resultant-size bound for the prize parameters.
 
+The underlying resultant helper is now parameterized by an arbitrary per-root bound:
+`nnnorm_prod_eval_cyclotomic_roots_le_of_bound` and `natAbs_resultant_cyclotomic_le_of_bound`
+give `B^φ(n)` instead of only the four-term `4^φ(n)` specialization.
+
+Follow-up: the generic bound is now instantiated for the canonical obstruction polynomial.
+`canonicalRatioPoly_eval_nnnorm_le_two_pow_succ` proves the elementary per-root bound
+`2^(n+1)`, `natAbs_resultant_canonicalRatioPoly_le_two_pow_succ_totient` lifts it to an explicit
+resultant bound, and `polynomial_ne_zmod_of_two_pow_succ_totient_lt_prime` packages the crude
+good-prime corollary.  The scanner-facing wrapper is
+`not_e2BadScalarSet_mu_card_le_n_zmod_of_two_pow_succ_totient_lt_prime`.  This is not prize-scale,
+but it closes the first end-to-end archimedean resultant route for the width-4 carrier.
+
+Follow-up: the two-power lane now has a sharper Landau/Mahler coefficient gate.  The explicit
+quantity `canonicalRatioPolySharpBound m` bounds the squared canonical resultant, and
+`not_e2BadScalarSet_mu_card_le_twoPow_zmod_of_canonicalRatioPolySharpBound_lt_prime_sq` says the
+literal width-4 budget is impossible once this bound is below `p^2`.  The remaining arithmetic
+target in this lane is now the concrete inequality `canonicalRatioPolySharpBound m < p^2` for the
+chosen prize-scale prime.
+
 Follow-up: a bad-prime collapse is now recorded for the same canonical pair.  In `F_17`, Lean proves
 that `3` is a primitive 16-th root but `invariantRatio 3 (3^2)^16 = 1`, equivalently the
 denominator-cleared polynomial equality holds.  The theorem
@@ -1668,6 +1687,12 @@ denominator-cleared polynomial equality holds.  The theorem
 `exists_invariant_collision_mu16_zmod17_3` packages it as a collision witness, and
 `not_forall_primitive_pairNonCollision_zmod17_mu16` refutes the uniform finite-field statement
 without bad-prime exclusions.
+
+Follow-up: the same bad prime is now wired into the resultant certificate.  The declarations
+`seventeen_dvd_resultant_canonicalRatioPoly_16` and
+`seventeen_le_natAbs_resultant_canonicalRatioPoly_16` prove that the `F_17` collapse forces
+`17` to divide the canonical integer resultant and hence pins the first resultant threshold at
+least at `17`.
 
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
