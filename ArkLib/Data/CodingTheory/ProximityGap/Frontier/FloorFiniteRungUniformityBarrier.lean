@@ -3,10 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
-
-set_option autoImplicit false
-set_option linter.style.longLine false
+import Mathlib.Order.Interval.Finset.Nat
 
 /-!
 # Finite floor rungs do not prove uniform localization
@@ -26,6 +23,9 @@ It also records the positive shape of such a theorem: a base rung plus a success
 new mathematics: a tower/renormalization proof that the least-prime characterization propagates.
 -/
 
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 namespace ArkLib.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier
 
 /-- A predicate `R` has been verified on the finite set of rungs `S`. -/
@@ -39,6 +39,20 @@ def VerifiedPrefix (start cutoff : ℕ) (R : ℕ -> Prop) : Prop :=
 /-- The uniform statement needed by the floor-localization lane. -/
 def UniformFrom (start : ℕ) (R : ℕ -> Prop) : Prop :=
   ∀ a : ℕ, start ≤ a -> R a
+
+/-- A successor propagation theorem for a predicate from a starting rung onward. -/
+def SuccessorStep (start : ℕ) (R : ℕ -> Prop) : Prop :=
+  ∀ a : ℕ, start ≤ a -> R a -> R (a + 1)
+
+/-- Verification on the interval finset is exactly prefix verification. -/
+theorem verifiedOn_Icc_iff_verifiedPrefix
+    (start cutoff : ℕ) (R : ℕ -> Prop) :
+    VerifiedOn (Finset.Icc start cutoff) R ↔ VerifiedPrefix start cutoff R := by
+  constructor
+  · intro h a hstart hcutoff
+    exact h a (Finset.mem_Icc.mpr ⟨hstart, hcutoff⟩)
+  · intro h a ha
+    exact h a (Finset.mem_Icc.mp ha).1 (Finset.mem_Icc.mp ha).2
 
 /-- Finite verification on `S` cannot force uniformity past an unverified future rung. -/
 theorem verifiedOn_not_force_uniform
@@ -72,13 +86,51 @@ theorem verifiedPrefix_not_force_uniform {start cutoff : ℕ}
     prefixModel_verifiedPrefix start cutoff
   have huniform : UniformFrom start (PrefixModel cutoff) := h (PrefixModel cutoff) hverified
   have hbad : cutoff + 1 ≤ cutoff := huniform (cutoff + 1) hnext
-  omega
+  exact (Nat.not_succ_le_self cutoff) hbad
 
 /-- The concrete `a = 4, 5` floor evidence, by itself, does not force uniformity for all `a >= 4`.
 -/
 theorem two_rung_floor_evidence_not_uniform :
     ¬ (∀ R : ℕ -> Prop, VerifiedPrefix 4 5 R -> UniformFrom 4 R) :=
-  verifiedPrefix_not_force_uniform (start := 4) (cutoff := 5) (by norm_num)
+  verifiedPrefix_not_force_uniform (start := 4) (cutoff := 5) (by decide)
+
+/-- The same concrete guardrail phrased as finite-set evidence on the checked interval
+`{4, 5}`. -/
+theorem two_rung_floor_interval_evidence_not_uniform :
+    ¬ (∀ R : ℕ -> Prop, VerifiedOn (Finset.Icc 4 5) R -> UniformFrom 4 R) := by
+  intro h
+  exact two_rung_floor_evidence_not_uniform
+    (fun R hprefix =>
+      h R ((verifiedOn_Icc_iff_verifiedPrefix 4 5 R).mpr hprefix))
+
+/-- Uniformity fails exactly when some rung at or after `start` fails. -/
+theorem not_uniformFrom_iff_exists_failure
+    (start : ℕ) (R : ℕ -> Prop) :
+    (¬ UniformFrom start R) ↔ ∃ a : ℕ, start ≤ a ∧ ¬ R a := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro a ha
+    by_contra hfail
+    exact hnone ⟨a, ha, hfail⟩
+  · rintro ⟨a, ha, hfail⟩ huniform
+    exact hfail (huniform a ha)
+
+/-- A successor theorem fails exactly when some verified rung does not propagate to the next
+rung. -/
+theorem not_successorStep_iff_exists_next_failure
+    (start : ℕ) (R : ℕ -> Prop) :
+    (¬ SuccessorStep start R) ↔ ∃ a : ℕ, start ≤ a ∧ R a ∧ ¬ R (a + 1) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro a ha hR
+    by_contra hnext
+    exact hnone ⟨a, ha, hR, hnext⟩
+  · rintro ⟨a, ha, hR, hnext⟩ hstep
+    exact hnext (hstep a ha hR)
 
 /-- Positive replacement: a base rung plus a successor propagation theorem proves uniformity. -/
 theorem uniformFrom_of_base_and_successor_step
@@ -100,11 +152,34 @@ theorem uniformFrom_of_verifiedPrefix_and_successor_step
   uniformFrom_of_base_and_successor_step
     (R := R) (start := start) (hprefix start le_rfl hsc) hstep
 
+/-- Positive replacement stated with the named successor-step predicate. -/
+theorem uniformFrom_of_base_and_successorStep
+    {R : ℕ -> Prop} {start : ℕ}
+    (hbase : R start)
+    (hstep : SuccessorStep start R) :
+    UniformFrom start R :=
+  uniformFrom_of_base_and_successor_step hbase hstep
+
+/-- Prefix version stated with the named successor-step predicate. -/
+theorem uniformFrom_of_verifiedPrefix_and_successorStep
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hprefix : VerifiedPrefix start cutoff R)
+    (hstep : SuccessorStep start R) :
+    UniformFrom start R :=
+  uniformFrom_of_verifiedPrefix_and_successor_step hsc hprefix hstep
+
 #print axioms verifiedOn_not_force_uniform
+#print axioms verifiedOn_Icc_iff_verifiedPrefix
 #print axioms prefixModel_verifiedPrefix
 #print axioms verifiedPrefix_not_force_uniform
 #print axioms two_rung_floor_evidence_not_uniform
+#print axioms two_rung_floor_interval_evidence_not_uniform
+#print axioms not_uniformFrom_iff_exists_failure
+#print axioms not_successorStep_iff_exists_next_failure
 #print axioms uniformFrom_of_base_and_successor_step
 #print axioms uniformFrom_of_verifiedPrefix_and_successor_step
+#print axioms uniformFrom_of_base_and_successorStep
+#print axioms uniformFrom_of_verifiedPrefix_and_successorStep
 
 end ArkLib.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier

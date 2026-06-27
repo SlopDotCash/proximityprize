@@ -36,7 +36,7 @@ for every a >= 4, floor-bad(2^a) = {least prime p == 1 mod 2^a}.
 The frontier file
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorFiniteRungUniformityBarrier.lean
+ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorFiniteRungUniformityBarrier.lean
 ```
 
 records the logical gap in the remaining off-BGK floor-localization lane.
@@ -53,14 +53,19 @@ and defines:
 VerifiedOn
 VerifiedPrefix
 UniformFrom
+SuccessorStep
 ```
 
 The negative guardrails are:
 
 ```lean
 verifiedOn_not_force_uniform
+verifiedOn_Icc_iff_verifiedPrefix
 verifiedPrefix_not_force_uniform
 two_rung_floor_evidence_not_uniform
+two_rung_floor_interval_evidence_not_uniform
+not_uniformFrom_iff_exists_failure
+not_successorStep_iff_exists_next_failure
 ```
 
 The theorem `two_rung_floor_evidence_not_uniform` states that verifying rungs `a = 4, 5` cannot,
@@ -77,6 +82,8 @@ The file also records the positive replacement:
 ```lean
 uniformFrom_of_base_and_successor_step
 uniformFrom_of_verifiedPrefix_and_successor_step
+uniformFrom_of_base_and_successorStep
+uniformFrom_of_verifiedPrefix_and_successorStep
 ```
 
 These prove that a base verified rung plus a successor theorem
@@ -87,10 +94,21 @@ R(a) -> R(a + 1)
 
 does give uniformity.
 
+The missing successor theorem is also scanner-facing:
+
+```text
+not SuccessorStep start R
+  iff exists a >= start, R(a) and not R(a + 1).
+```
+
+For the floor lane, this is the refutable form of the proposed tower/renormalization law: either
+prove the successor step for the actual floor-localization predicate, or find an adjacent rung
+where the least-prime rule stops propagating.
+
 Validation:
 
 ```text
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorFiniteRungUniformityBarrier.lean
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorFiniteRungUniformityBarrier.lean
 ```
 
 passed.

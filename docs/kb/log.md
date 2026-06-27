@@ -1286,6 +1286,12 @@ exact zero-agreement appearance fibers over all exact profiles `T` satisfying
 `S ⊆ T ⊆ directionZeroSet u1`.  Thus exact-profile estimates can recover a coarse appearance
 estimate, but only after summing over all such supersets; the combinatorial loss is now a named
 interface rather than an implicit obstacle.
+Follow-up zero-safe wrappers
+`appearingCoordinateAgreementFiber_subset_safeExactSuperset_biUnion`,
+`appearingCoordinateAgreementFiber_card_le_sum_exactAppearingBudget_safeSupersets`, and
+`zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums` restrict the
+sum to exact profiles of size `< a` on safe lines and package the resulting exact-to-coarse budget
+consumer.
 
 ## [2026-06-27] reduce | low exact appearance collapses to low support-ratio-heavy
 
@@ -1299,3 +1305,18 @@ The contrapositive wrappers
 `not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted` record that a
 failed low exact appearance budget is already a failure of the sharper low support-ratio-heavy
 coordinate-fiber budget.
+
+## [2026-06-27] reduce | promote finite-rung floor barrier
+
+Renamed the finite-rung floor-localization guardrail from the scratch file
+`_FloorFiniteRungUniformityBarrier.lean` to the landed Frontier module
+`FloorFiniteRungUniformityBarrier.lean`.  The theorem surface now also includes
+`verifiedOn_Icc_iff_verifiedPrefix`, so callers can switch between interval-finset evidence and
+prefix evidence without reproving the bridge.
+
+`two_rung_floor_evidence_not_uniform` still records that the checked `a = 4, 5` rungs alone do
+not imply `UniformFrom 4 R`, and `two_rung_floor_interval_evidence_not_uniform` states the same
+guardrail for `VerifiedOn (Finset.Icc 4 5)`.  `SuccessorStep`,
+`not_uniformFrom_iff_exists_failure`, and `not_successorStep_iff_exists_next_failure` expose the
+missing all-rungs propagation as a scanner target: either prove the successor step or find a
+checked rung where propagation fails.

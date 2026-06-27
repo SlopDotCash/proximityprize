@@ -7,7 +7,7 @@ Status: **off-BGK arithmetic guardrail**, not a delta-star proof.
 ## Inputs Checked
 
 - Live issue #464, especially the off-BGK least-prime floor-localization lane.
-- `_FloorFiniteRungUniformityBarrier.lean`, which separates finite rung evidence from all-rung
+- `FloorFiniteRungUniformityBarrier.lean`, which separates finite rung evidence from all-rung
   uniformity.
 - `_FloorLinnikExponentGate.lean`, `_FloorLinnikThornerZamanArrow.lean`, and
   `_FloorLinnikTZClosure.lean`, which package prime-supply assumptions for the floor route.

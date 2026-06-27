@@ -162,6 +162,88 @@ theorem appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreemen
         (exactAppearingZeroAgreementFiber dom k a u₀ u₁ T).card :=
       Finset.card_biUnion_le
 
+open Classical in
+/-- In the zero-safe branch, the exact-profile superset cover only needs profiles of size `< a`.
+Profiles with `a ≤ #T` cannot contain appearing codewords because every appearing codeword is a
+Reed--Solomon codeword and zero-direction safety bounds its zero-agreement count. -/
+theorem appearingCoordinateAgreementFiber_subset_safeExactSuperset_biUnion
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    appearingCoordinateAgreementFiber dom k a u₀ u₁ S ⊆
+      (((directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a)).biUnion
+        (fun T => exactAppearingZeroAgreementFiber dom k a u₀ u₁ T)) := by
+  intro c hc
+  have hcApp := (mem_appearingCoordinateAgreementFiber dom k a u₀ u₁ c S).mp hc
+  have hcoord := hcApp.1
+  rw [coordinateAgreementFiber, Finset.mem_filter] at hcoord
+  have hcCode : c ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    have hcLine := hcApp.2
+    rw [lineAppearingCodewords, Finset.mem_filter] at hcLine
+    exact hcLine.2.1
+  refine Finset.mem_biUnion.mpr
+    ⟨directionZeroAgreementSet c u₀ u₁, ?_, ?_⟩
+  · rw [Finset.mem_filter]
+    constructor
+    · rw [Finset.mem_powerset]
+      intro i hi
+      rw [directionZeroAgreementSet, Finset.mem_filter] at hi
+      exact hi.1
+    · constructor
+      · intro i hiS
+        rw [directionZeroAgreementSet, Finset.mem_filter]
+        exact ⟨hSzero hiS, hcoord.2.2 i hiS⟩
+      · exact hsafe c hcCode
+  · rw [mem_exactAppearingZeroAgreementFiber]
+    exact ⟨hcApp.2, rfl⟩
+
+open Classical in
+/-- Cardinal form of the zero-safe exact-profile superset cover. -/
+theorem appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_safeSupersets
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hSzero : S ⊆ directionZeroSet u₁) :
+    (appearingCoordinateAgreementFiber dom k a u₀ u₁ S).card ≤
+      ∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+        (exactAppearingZeroAgreementFiber dom k a u₀ u₁ T).card := by
+  calc
+    (appearingCoordinateAgreementFiber dom k a u₀ u₁ S).card
+        ≤ (((directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a)).biUnion
+            (fun T => exactAppearingZeroAgreementFiber dom k a u₀ u₁ T)).card :=
+      Finset.card_le_card
+        (appearingCoordinateAgreementFiber_subset_safeExactSuperset_biUnion
+          dom k a u₀ u₁ hsafe hSzero)
+    _ ≤ ∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+        (exactAppearingZeroAgreementFiber dom k a u₀ u₁ T).card :=
+      Finset.card_biUnion_le
+
+open Classical in
+/-- Full exact-profile estimates bound a coarse appearance-coordinate fiber by the zero-safe
+restricted sum over exact supersets. -/
+theorem appearingCoordinateAgreementFiber_card_le_sum_exactAppearingBudget_safeSupersets
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (M : ℕ → ℕ)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hSzero : S ⊆ directionZeroSet u₁)
+    (hExact : ∀ t : ℕ, t < a → ∀ T ∈ (directionZeroSet u₁).powersetCard t,
+      (exactAppearingZeroAgreementFiber dom k a u₀ u₁ T).card ≤ M t) :
+    (appearingCoordinateAgreementFiber dom k a u₀ u₁ S).card ≤
+      ∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+        M T.card := by
+  calc
+    (appearingCoordinateAgreementFiber dom k a u₀ u₁ S).card
+        ≤ ∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+          (exactAppearingZeroAgreementFiber dom k a u₀ u₁ T).card :=
+      appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_safeSupersets
+        dom k a u₀ u₁ hsafe hSzero
+    _ ≤ ∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+        M T.card := by
+      refine Finset.sum_le_sum ?_
+      intro T hT
+      rcases Finset.mem_filter.mp hT with ⟨hTpow, _hST, hTcard⟩
+      exact hExact T.card hTcard T
+        (Finset.mem_powersetCard.mpr ⟨Finset.mem_powerset.mp hTpow, rfl⟩)
+
 /-- A per-line budget for appearance-filtered coordinate fibers. -/
 def ZeroAppearingCoordinateFiberBudgeted
     (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ) : Prop :=
@@ -217,6 +299,57 @@ def UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
   ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
     ZeroDirectionSafeLine dom k a u₀ u₁ →
       ZeroLowExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ M
+
+open Classical in
+/-- Named-budget wrapper for the zero-safe exact-profile superset-sum bound. -/
+theorem appearingCoordinateAgreementFiber_card_le_sum_zeroExactAppearingBudget_safeSupersets
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) {S : Finset (Fin n)}
+    (M : ℕ → ℕ)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hSzero : S ⊆ directionZeroSet u₁)
+    (hExact : ZeroExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ M) :
+    (appearingCoordinateAgreementFiber dom k a u₀ u₁ S).card ≤
+      ∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+        M T.card :=
+  appearingCoordinateAgreementFiber_card_le_sum_exactAppearingBudget_safeSupersets
+    dom k a u₀ u₁ M hsafe hSzero hExact
+
+open Classical in
+/-- A full exact-profile budget gives a coarse appearance-coordinate budget once the caller pays
+the zero-safe superset sum for every coarse profile. -/
+theorem zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (Mexact Mcoarse : ℕ → ℕ)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hExact : ZeroExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ Mexact)
+    (hSupersets : ∀ t : ℕ, t < a → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+      (∑ T ∈ (directionZeroSet u₁).powerset.filter (fun T => S ⊆ T ∧ T.card < a),
+        Mexact T.card) ≤ Mcoarse t) :
+    ZeroAppearingCoordinateFiberBudgeted dom k a u₀ u₁ Mcoarse := by
+  intro t ht S hS
+  exact le_trans
+    (appearingCoordinateAgreementFiber_card_le_sum_zeroExactAppearingBudget_safeSupersets
+      dom k a u₀ u₁ Mexact hsafe (Finset.mem_powersetCard.mp hS).1 hExact)
+    (hSupersets t ht S hS)
+
+open Classical in
+/-- Uniform version of
+`zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums`. -/
+theorem
+    uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_exactBudgeted_safeSupersetSums
+    (dom : Fin n ↪ F) (k a : ℕ) (Mexact Mcoarse : ℕ → ℕ)
+    (hExact : UniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted dom k a Mexact)
+    (hSupersets :
+      ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+        ZeroDirectionSafeLine dom k a u₀ u₁ →
+          ∀ t : ℕ, t < a → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+            (∑ T ∈ (directionZeroSet u₁).powerset.filter
+              (fun T => S ⊆ T ∧ T.card < a), Mexact T.card) ≤ Mcoarse t) :
+    UniformLargeZeroSafeAppearingCoordinateFiberBudgeted dom k a Mcoarse := by
+  intro u₀ u₁ hnotEligible hsafe
+  exact zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums
+    dom k a u₀ u₁ Mexact Mcoarse hsafe
+    (hExact u₀ u₁ hnotEligible hsafe)
+    (hSupersets u₀ u₁ hnotEligible hsafe)
 
 /-- A raw coordinate-fiber budget immediately gives an appearance-filtered fiber budget. -/
 theorem zeroAppearingCoordinateFiberBudgeted_of_coordinateAgreementFiberBudgeted
@@ -1213,10 +1346,22 @@ section SourceAudit
   appearingCoordinateAgreementFiber_subset_exactAppearingZeroAgreementFiber_superset_biUnion
 #print axioms
   appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_supersets
+#print axioms
+  appearingCoordinateAgreementFiber_subset_safeExactSuperset_biUnion
+#print axioms
+  appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_safeSupersets
+#print axioms
+  appearingCoordinateAgreementFiber_card_le_sum_exactAppearingBudget_safeSupersets
 #print axioms ZeroLowAppearingCoordinateFiberBudgeted
 #print axioms ZeroLowExactAppearingZeroAgreementFiberBudgeted
 #print axioms UniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted
 #print axioms UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
+#print axioms
+  appearingCoordinateAgreementFiber_card_le_sum_zeroExactAppearingBudget_safeSupersets
+#print axioms
+  zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums
+#print axioms
+  uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_exactBudgeted_safeSupersetSums
 #print axioms zeroAppearingCoordinateFiberBudgeted_of_coordinateAgreementFiberBudgeted
 #print axioms
   uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_coordinateAgreementFiberBudgeted

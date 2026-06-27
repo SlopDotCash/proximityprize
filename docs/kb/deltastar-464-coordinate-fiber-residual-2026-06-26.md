@@ -221,6 +221,12 @@ ZeroLowExactAppearingZeroAgreementFiberBudgeted
 UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
 appearingCoordinateAgreementFiber_subset_exactAppearingZeroAgreementFiber_superset_biUnion
 appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_supersets
+appearingCoordinateAgreementFiber_subset_safeExactSuperset_biUnion
+appearingCoordinateAgreementFiber_card_le_sum_exactAppearingZeroAgreementFiber_safeSupersets
+appearingCoordinateAgreementFiber_card_le_sum_exactAppearingBudget_safeSupersets
+appearingCoordinateAgreementFiber_card_le_sum_zeroExactAppearingBudget_safeSupersets
+zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_safeSupersetSums
+uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_exactBudgeted_safeSupersetSums
 zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
 uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
 not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted
@@ -259,6 +265,11 @@ The reverse direction is now explicit but lossy.  A coarse appearance-coordinate
 `T` with `S ⊆ T ⊆ directionZeroSet u1`; cardinally this costs the full sum over those supersets.
 Therefore exact-profile estimates recover coarse appearance estimates only after paying this
 superset combinatorial factor.
+On the zero-safe branch the superset sum can be restricted to exact profiles with `#T < a`, since
+an appearing codeword whose exact zero-agreement profile has size at least `a` would violate
+`ZeroDirectionSafeLine`.  The new `*_safeSupersets` wrappers package this as a direct consumer:
+a full exact-profile budget `Mexact` yields a coarse appearance-coordinate budget `Mcoarse` once
+every zero-safe superset sum of `Mexact` is bounded by `Mcoarse`.
 
 The negated low-budget forms are now exact scanners too: per-line failure exposes a low profile
 `t < k`, zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`; uniform failure
