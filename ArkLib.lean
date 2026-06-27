@@ -994,6 +994,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.C4PoissonAdmissibilityWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CStarExtrapolationUnderdetermined
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CampaignProvenIndex
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalBadPrimeHeightNoGoN128
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalSmallestBadPrimeWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourBadPrimeSet
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ1024
