@@ -1523,3 +1523,30 @@ witness to conclude
 width-4 negative scanner brick, not a delta-star proof.
 Follow-up: the `_even_nonCollision` variants now consume `2 ∣ n` directly, so dyadic callers no
 longer have to pass `-1 ∈ nthRootsFinset n 1` explicitly.
+
+## [2026-06-27] reduce | exact width-4 noncollision witness scanner
+
+`E2W4CyclotomicNonCollision.lean` now exposes the failure of the named char-`p`
+`Cd₀NonCollision` residual as a concrete finite witness.  The theorem
+`not_cd0NonCollision_iff_exists_collision` states that the residual fails exactly when there are
+`t,t',u ∈ G` such that both invariants are nonzero, the two invariants are distinct, and
+`t' + t'^-1 = u * (t + t^-1)`.  The one-way wrappers
+`not_cd0NonCollision_of_collision` and `cd0NonCollision_of_no_collision` package the concrete
+refuter and the scanner-positive certificate.  This keeps the width-4 route honest: the good-prime
+input is still a residual, but its obstruction is now the exact collision a finite scanner must
+find.
+
+## [2026-06-27] reduce | pointwise two-orbit direct-count scanner
+
+`E2DilationDirectCount.lean` and the Frontier mirror now expose the direct-count obstruction in
+pointwise form.  `group_card_lt_badScalarSet_card_of_distinct_orbits` says that a stable nonzero
+bad-scalar set containing two displayed elements with distinct dilation orbits already has
+`#G < #B`; the smooth-domain wrapper
+`n_lt_badScalarSet_card_of_distinct_muOrbits` states the same as `n < #B` over `μ_n`.  For the
+concrete `e₂ = 0` image, `n_lt_e2BadScalarSet_mu_card_of_distinct_orbits` and
+`not_e2BadScalarSet_mu_card_le_n_of_distinct_orbits` let future witness sources feed the literal
+`n`-budget refuter by proving only membership of two bad scalars plus orbit inequality, rather
+than first constructing an orbit-count lower bound.
+Follow-up: `ne_zero_of_mem_finSubgroup` now packages the standard subgroup-member nonzero fact,
+and the width-4 `*_of_mem` / `*_mem_nonCollision` / `*_even_nonCollision` wrappers derive
+`t != 0` and `t' != 0` from membership instead of requiring callers to pass those side conditions.

@@ -27,6 +27,9 @@ p2_quadT_eq_e1_sq
 e2_quadT_zero
 badScalar_quadT_mem_e2BadScalarSet
 badScalar_quadT_mem_e2BadScalarSet_of_mem
+not_cd0NonCollision_iff_exists_collision
+not_cd0NonCollision_of_collision
+cd0NonCollision_of_no_collision
 group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision
 group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
@@ -101,3 +104,16 @@ that containment bridge directly.  The final even wrappers
 `n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision` and
 `not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision` consume only `2 ∣ n` and
 membership of `x,x',t,t'` in `mu_n`.
+
+Follow-up: `E2DilationDirectCount.ne_zero_of_mem_finSubgroup` packages the reusable fact that
+members of a finite multiplicative subgroup are nonzero.  The `*_of_mem`, `*_mem_nonCollision`,
+and `*_even_nonCollision` product wrappers now derive `t != 0` and `t' != 0` from membership, so
+callers no longer pass those nonzero side conditions separately.
+
+The non-collision residual itself now has an exact scanner-facing failure form.  The theorem
+`not_cd0NonCollision_iff_exists_collision` says that `Cd₀NonCollision G` fails exactly when there
+are `t,t',u ∈ G` with nonzero distinct invariants `t + t^-1`, `t' + t'^-1` and
+`t' + t'^-1 = u * (t + t^-1)`.  The companion wrappers
+`not_cd0NonCollision_of_collision` and `cd0NonCollision_of_no_collision` expose the two one-way
+forms for callers that have either a concrete collision witness or a no-collision scanner
+certificate.

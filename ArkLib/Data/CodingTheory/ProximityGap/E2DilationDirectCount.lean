@@ -164,6 +164,11 @@ structure FinSubgroup (G : Finset F) : Prop where
   inv_mem : ∀ a ∈ G, a⁻¹ ∈ G
   zero_notMem : (0 : F) ∉ G
 
+/-- Members of a finite multiplicative subgroup are nonzero. -/
+theorem ne_zero_of_mem_finSubgroup {G : Finset F} (hG : FinSubgroup G) {x : F}
+    (hx : x ∈ G) : x ≠ 0 :=
+  fun hx0 => hG.zero_notMem (hx0 ▸ hx)
+
 /-- **The concrete prize subgroup `μ_n = nthRootsFinset n 1` is a `FinSubgroup`.** This turns
 the abstract orbit-budget lemmas below into statements about the actual smooth-domain
 roots-of-unity finset used throughout the δ* cone. -/
@@ -354,6 +359,31 @@ theorem group_card_lt_badScalarSet_card_of_two_orbits {G : Finset F} (hG : FinSu
   have hone : 1 < (B.image (fun x => orbit G x)).card := by omega
   simpa [one_mul] using Nat.mul_lt_mul_of_pos_right hone hGpos
 
+/-- **Two displayed points in distinct orbits break the subgroup-size budget.** This is the
+pointwise scanner form of `group_card_lt_badScalarSet_card_of_two_orbits`: a caller only needs to
+exhibit two bad scalars in `B` whose dilation orbits differ. -/
+theorem group_card_lt_badScalarSet_card_of_distinct_orbits {G : Finset F}
+    (hG : FinSubgroup G) {B : Finset F} (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ G, ∀ x ∈ B, g * x ∈ B)
+    {α β : F} (hα : α ∈ B) (hβ : β ∈ B) (horbit_ne : orbit G α ≠ orbit G β) :
+    G.card < B.card := by
+  classical
+  have hpair_subset :
+      ({orbit G α, orbit G β} : Finset (Finset F)) ⊆
+        B.image (fun x => orbit G x) := by
+    intro O hO
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hO
+    rcases hO with rfl | rfl
+    · exact Finset.mem_image_of_mem _ hα
+    · exact Finset.mem_image_of_mem _ hβ
+  have hpair_card : ({orbit G α, orbit G β} : Finset (Finset F)).card = 2 := by
+    simp [horbit_ne]
+  have horbits : 2 ≤ (B.image (fun x => orbit G x)).card := by
+    calc
+      2 = ({orbit G α, orbit G β} : Finset (Finset F)).card := hpair_card.symm
+      _ ≤ (B.image (fun x => orbit G x)).card := Finset.card_le_card hpair_subset
+  exact group_card_lt_badScalarSet_card_of_two_orbits hG hB0 hBstable horbits
+
 /-! ## The `e₂ = 0` bad-scalar image is automatically subgroup-stable -/
 
 /-- The direct-count bad-scalar image of the eligible `e₂ = 0`, `e₁ ≠ 0`, fixed-cardinality
@@ -482,6 +512,22 @@ theorem n_lt_badScalarSet_card_of_two_muOrbits {n : ℕ} {ζ : F}
       (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
       (nthRootsFinset_finSubgroup (F := F) hn) hB0 hBstable horbits)
 
+/-- **Two displayed `μ_n`-orbits exceed the literal `n` budget.** A caller can refute the
+smooth-domain budget by exhibiting two bad scalars whose `μ_n`-orbits are distinct. -/
+theorem n_lt_badScalarSet_card_of_distinct_muOrbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) {B : Finset F}
+    (hB0 : (0 : F) ∉ B)
+    (hBstable : ∀ g ∈ Polynomial.nthRootsFinset n (1 : F), ∀ x ∈ B, g * x ∈ B)
+    {α β : F} (hα : α ∈ B) (hβ : β ∈ B)
+    (horbit_ne :
+      orbit (Polynomial.nthRootsFinset n (1 : F)) α ≠
+        orbit (Polynomial.nthRootsFinset n (1 : F)) β) :
+    n < B.card := by
+  simpa [hζ.card_nthRootsFinset] using
+    (group_card_lt_badScalarSet_card_of_distinct_orbits
+      (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
+      (nthRootsFinset_finSubgroup (F := F) hn) hB0 hBstable hα hβ horbit_ne)
+
 /-! ## Concrete `e₂ = 0` bad-scalar image consumers over `μ_n` -/
 
 /-- **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup
@@ -535,6 +581,36 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_orbits {n : ℕ} {ζ : F}
         (nthRootsFinset_finSubgroup (F := F) hn) w)
       horbits)
 
+/-- **Two displayed concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This is the
+pointwise scanner form for the finite image over `μ_n`. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_distinct_orbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ)
+    {α β : F}
+    (hα : α ∈ e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+    (hβ : β ∈ e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+    (horbit_ne :
+      orbit (Polynomial.nthRootsFinset n (1 : F)) α ≠
+        orbit (Polynomial.nthRootsFinset n (1 : F)) β) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card :=
+  n_lt_badScalarSet_card_of_distinct_muOrbits hn hζ
+    (zero_notMem_e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+    (e2BadScalarSet_stable (nthRootsFinset_finSubgroup (F := F) hn) w)
+    hα hβ horbit_ne
+
+/-- **Concrete `e₂ = 0` pointwise scanner-failure form.** Two elements of the image in distinct
+`μ_n`-orbits refute the literal `n` budget. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_distinct_orbits {n : ℕ} {ζ : F}
+    (hn : 0 < n) (hζ : IsPrimitiveRoot ζ n) (w : ℕ)
+    {α β : F}
+    (hα : α ∈ e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+    (hβ : β ∈ e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w)
+    (horbit_ne :
+      orbit (Polynomial.nthRootsFinset n (1 : F)) α ≠
+        orbit (Polynomial.nthRootsFinset n (1 : F)) β) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) w).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_distinct_orbits hn hζ w hα hβ horbit_ne)
+
 end ArkLib.ProximityGap.E2DilationDirectCount
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
@@ -548,6 +624,7 @@ namespace ArkLib.ProximityGap.E2DilationDirectCount
 #print axioms e2_zero_smul
 #print axioms e1_ne_zero_smul
 #print axioms badScalar_smul
+#print axioms ne_zero_of_mem_finSubgroup
 #print axioms nthRootsFinset_finSubgroup
 #print axioms orbit_card
 #print axioms self_mem_orbit
@@ -561,6 +638,7 @@ namespace ArkLib.ProximityGap.E2DilationDirectCount
 #print axioms not_badScalarSet_card_le_group_card_iff_two_orbits
 #print axioms orbitCount_eq_one_of_nonempty_card_le_group_card
 #print axioms group_card_lt_badScalarSet_card_of_two_orbits
+#print axioms group_card_lt_badScalarSet_card_of_distinct_orbits
 #print axioms zero_notMem_e2BadScalarSet
 #print axioms e2BadScalarSet_stable
 #print axioms e2BadScalarSet_card_eq_orbit_mul
@@ -569,9 +647,12 @@ namespace ArkLib.ProximityGap.E2DilationDirectCount
 #print axioms badScalarSet_card_le_n_iff_muOrbitCount_le_one
 #print axioms not_badScalarSet_card_le_n_iff_two_muOrbits
 #print axioms n_lt_badScalarSet_card_of_two_muOrbits
+#print axioms n_lt_badScalarSet_card_of_distinct_muOrbits
 #print axioms e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le
 #print axioms e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one
 #print axioms not_e2BadScalarSet_mu_card_le_n_iff_two_orbits
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_orbits
+#print axioms n_lt_e2BadScalarSet_mu_card_of_distinct_orbits
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_distinct_orbits
 
 end ArkLib.ProximityGap.E2DilationDirectCount

@@ -245,13 +245,14 @@ theorem badScalar_quadT_mem_e2BadScalarSet {G : Finset F} {x t : F}
 /-- Product-form image membership using only subgroup membership of `x,t` plus `-1 ∈ G`. -/
 theorem badScalar_quadT_mem_e2BadScalarSet_of_mem {G : Finset F}
     (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) {x t : F}
-    (hxG : x ∈ G) (htG : t ∈ G) (ht : t ≠ 0)
+    (hxG : x ∈ G) (htG : t ∈ G)
     (h1 : x ≠ -x) (h2 : x * t ≠ x) (h3 : x * t ≠ -x) (h4 : x * t⁻¹ ≠ x)
     (h5 : x * t⁻¹ ≠ -x) (h6 : x * t ≠ x * t⁻¹)
     (hc : (t + t⁻¹) ≠ 0) :
     x⁻¹ * (-(t + t⁻¹)⁻¹) ∈ e2BadScalarSet G 4 :=
   badScalar_quadT_mem_e2BadScalarSet
-    (quadT_subset_of_mem hG hneg hxG htG) ht h1 h2 h3 h4 h5 h6 hc
+    (quadT_subset_of_mem hG hneg hxG htG) (ne_zero_of_mem_finSubgroup hG htG)
+    h1 h2 h3 h4 h5 h6 hc
 
 /-! ## Part 2 — the orbit-collision reduction (the bridge to the combinatorial model)
 
@@ -344,6 +345,48 @@ hence for the actual orbit count `K` to equal the combinatorial model `Kmodel = 
 def Cd₀NonCollision (G : Finset F) : Prop :=
   ∀ t ∈ G, ∀ t' ∈ G, (t + t⁻¹) ≠ 0 → (t' + t'⁻¹) ≠ 0 → (t + t⁻¹) ≠ (t' + t'⁻¹) →
     ∀ u ∈ G, (t' + t'⁻¹) ≠ u * (t + t⁻¹)
+
+open Classical in
+/-- **Exact scanner-failure form for `Cd₀NonCollision`.** The named char-`p` residual fails
+precisely when a concrete pair of nonzero, distinct invariants collides under multiplication by
+some subgroup element. This is the finite witness shape used by the width-4 orbit scanner. -/
+theorem not_cd0NonCollision_iff_exists_collision (G : Finset F) :
+    (¬ Cd₀NonCollision (F := F) G) ↔
+      ∃ t ∈ G, ∃ t' ∈ G,
+        (t + t⁻¹) ≠ 0 ∧
+        (t' + t'⁻¹) ≠ 0 ∧
+        (t + t⁻¹) ≠ (t' + t'⁻¹) ∧
+        ∃ u ∈ G, (t' + t'⁻¹) = u * (t + t⁻¹) := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro t htG t' ht'G hc hc' hne u huG
+    exact fun hcollision => hnone ⟨t, htG, t', ht'G, hc, hc', hne, u, huG, hcollision⟩
+  · rintro ⟨t, htG, t', ht'G, hc, hc', hne, u, huG, hcollision⟩ hNC
+    exact hNC t htG t' ht'G hc hc' hne u huG hcollision
+
+/-- A concrete invariant collision refutes `Cd₀NonCollision`. -/
+theorem not_cd0NonCollision_of_collision {G : Finset F} {t t' u : F}
+    (htG : t ∈ G) (ht'G : t' ∈ G)
+    (hc : (t + t⁻¹) ≠ 0) (hc' : (t' + t'⁻¹) ≠ 0)
+    (hne : (t + t⁻¹) ≠ (t' + t'⁻¹)) (huG : u ∈ G)
+    (hcollision : (t' + t'⁻¹) = u * (t + t⁻¹)) :
+    ¬ Cd₀NonCollision G := by
+  intro hNC
+  exact hNC t htG t' ht'G hc hc' hne u huG hcollision
+
+/-- A no-collision scanner certificate proves `Cd₀NonCollision`. -/
+theorem cd0NonCollision_of_no_collision {G : Finset F}
+    (hno :
+      ¬ ∃ t ∈ G, ∃ t' ∈ G,
+        (t + t⁻¹) ≠ 0 ∧
+        (t' + t'⁻¹) ≠ 0 ∧
+        (t + t⁻¹) ≠ (t' + t'⁻¹) ∧
+        ∃ u ∈ G, (t' + t'⁻¹) = u * (t + t⁻¹)) :
+    Cd₀NonCollision G := by
+  intro t htG t' ht'G hc hc' hne u huG
+  exact fun hcollision => hno ⟨t, htG, t', ht'G, hc, hc', hne, u, huG, hcollision⟩
 
 /-- **The bridge `K = Kmodel` from non-collision (the reduction theorem).** Granting the named
 `Cd₀NonCollision G`, two width-4 product-form bad sets with distinct nonzero invariants
@@ -462,7 +505,6 @@ theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision {G : Fin
     (hG : FinSubgroup G) (hneg : (-1 : F) ∈ G) (hNC : Cd₀NonCollision G)
     {x x' t t' : F}
     (hxG : x ∈ G) (hx'G : x' ∈ G) (htG : t ∈ G) (ht'G : t' ∈ G)
-    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
     -- distinctness for `quadT x t`:
     (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
     (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
@@ -476,8 +518,9 @@ theorem group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision {G : Fin
   group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision hG hNC
     (quadT_subset_of_mem hG hneg hxG htG)
     (quadT_subset_of_mem hG hneg hx'G ht'G)
-    hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6
-    hc hc' hne
+    hxG hx'G htG ht'G (ne_zero_of_mem_finSubgroup hG htG)
+    (ne_zero_of_mem_finSubgroup hG ht'G) hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
+    hy4 hy5 hy6 hc hc' hne
 
 /-- **Concrete `μ_n` width-4 refuter.** For the actual smooth-domain subgroup
 `μ_n = nthRootsFinset n 1`, two non-colliding product-form width-4 witnesses force the concrete
@@ -519,7 +562,6 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
     (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
     (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
     (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
-    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
     -- distinctness for `quadT x t`:
     (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
     (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
@@ -534,7 +576,7 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
     (group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
       (F := F) (G := Polynomial.nthRootsFinset n (1 : F))
       (nthRootsFinset_finSubgroup (F := F) hn) hneg hNC hxG hx'G htG ht'G
-      ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne)
+      hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc' hne)
 
 /-- **Concrete `μ_n` scanner-failure form.** The same two-witness certificate refutes the literal
 `n` budget for the width-4 `e₂ = 0` bad-scalar image over `μ_n`. -/
@@ -571,7 +613,6 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
     (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
     (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
     (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
-    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
     -- distinctness for `quadT x t`:
     (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
     (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
@@ -584,8 +625,8 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_mem_nonCollision
     ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
   not_le.mpr
     (n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
-      hn hζ hneg hNC hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2
-      hy3 hy4 hy5 hy6 hc hc' hne)
+      hn hζ hneg hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4
+      hy5 hy6 hc hc' hne)
 
 /-- Concrete even-`μ_n` width-4 refuter using only membership of `x,x',t,t'`.  For even `n`,
 the hypothesis `-1 ∈ μ_n` required by the membership wrapper is automatic. -/
@@ -597,7 +638,6 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
     (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
     (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
     (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
-    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
     -- distinctness for `quadT x t`:
     (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
     (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
@@ -610,8 +650,8 @@ theorem n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
     n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card :=
   n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
     hn hζ (neg_one_mem_nthRootsFinset_of_even (F := F) hn heven) hNC
-    hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6
-    hc hc' hne
+    hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3 hy4 hy5 hy6 hc hc'
+    hne
 
 /-- Concrete even-`μ_n` scanner-failure form using only membership of `x,x',t,t'`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
@@ -622,7 +662,6 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
     (hx'G : x' ∈ Polynomial.nthRootsFinset n (1 : F))
     (htG : t ∈ Polynomial.nthRootsFinset n (1 : F))
     (ht'G : t' ∈ Polynomial.nthRootsFinset n (1 : F))
-    (ht0 : t ≠ 0) (ht'0 : t' ≠ 0)
     -- distinctness for `quadT x t`:
     (hx1 : x ≠ -x) (hx2 : x * t ≠ x) (hx3 : x * t ≠ -x) (hx4 : x * t⁻¹ ≠ x)
     (hx5 : x * t⁻¹ ≠ -x) (hx6 : x * t ≠ x * t⁻¹)
@@ -635,8 +674,8 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
     ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
   not_le.mpr
     (n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
-      hn heven hζ hNC hxG hx'G htG ht'G ht0 ht'0 hx1 hx2 hx3 hx4 hx5 hx6 hy1
-      hy2 hy3 hy4 hy5 hy6 hc hc' hne)
+      hn heven hζ hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
+      hy4 hy5 hy6 hc hc' hne)
 
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
@@ -658,6 +697,9 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms orbit_collision_iff
 #print axioms cos_invariant_strict_anti
 #print axioms cos_invariant_injOn
+#print axioms not_cd0NonCollision_iff_exists_collision
+#print axioms not_cd0NonCollision_of_collision
+#print axioms cd0NonCollision_of_no_collision
 #print axioms orbits_distinct_of_nonCollision
 #print axioms badScalar_orbits_distinct_of_nonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_nonCollision

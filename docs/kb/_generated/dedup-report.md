@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4908 files, 52640 declarations
+- `ArkLib` — 4908 files, 52655 declarations
 
-## Same short-name across multiple files (2165 groups)
+## Same short-name across multiple files (2170 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -5736,7 +5736,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `cos_invariant_injOn` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean:324](../../../ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean#L324) — **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).** For distinc
+- `theorem ArkLib.ProximityGap.E2W4CyclotomicNonCollision.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean:325](../../../ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean#L325) — **The char-0 invariant is injective on the allowed window (no orbit collision over ℂ).** For distinc
 - `theorem ArkLib.ProximityGap.BridgeB45.cos_invariant_injOn` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB45.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB45.lean#L78) — **The cosine invariant is injective on the edge representatives.**  For `n > 0` and `1 ≤ i, j ≤ n/2
 
 ### `coset` (2 declarations, 2 files)
@@ -9463,33 +9463,33 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `badScalarSet_card_dvd` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:272](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L272) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:272](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L272) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:277](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L277) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_dvd` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:277](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L277) — **`#G ∣ #B`** — the divisibility corollary: the size of the bad-scalar set is divisible by the order
 
 ### `badScalarSet_card_eq_orbit_mul` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:237](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L237) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:237](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L237) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:242](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L242) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:242](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L242) — **The exact direct count: `#B = #G · K`.** Let `B` be a `Finset F` of *nonzero* scalars that is **cl
 
 ### `badScalarSet_card_le_group_card_iff_orbitCount_le_one` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_group_card_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:304](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L304) — **Prize-budget specialization.** At the natural subgroup budget `#G` (for `G = μ_n`, the `q·ε* = n`
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_group_card_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:304](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L304) — **Prize-budget specialization.** At the natural subgroup budget `#G` (for `G = μ_n`, the `q·ε* = n`
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_group_card_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:309](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L309) — **Prize-budget specialization.** At the natural subgroup budget `#G` (for `G = μ_n`, the `q·ε* = n`
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_group_card_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:309](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L309) — **Prize-budget specialization.** At the natural subgroup budget `#G` (for `G = μ_n`, the `q·ε* = n`
 
 ### `badScalarSet_card_le_mul_iff_orbitCount_le` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:286](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L286) — **Budget iff orbit budget.** For a nonzero bad-scalar set `B` stable under a finite multiplicative s
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:286](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L286) — **Budget iff orbit budget.** For a nonzero bad-scalar set `B` stable under a finite multiplicative s
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:291](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L291) — **Budget iff orbit budget.** For a nonzero bad-scalar set `B` stable under a finite multiplicative s
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:291](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L291) — **Budget iff orbit budget.** For a nonzero bad-scalar set `B` stable under a finite multiplicative s
 
 ### `badScalarSet_card_le_mul_n_iff_muOrbitCount_le` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_n_iff_muOrbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:437](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L437) — **Concrete `μ_n` budget iff orbit budget.** If `ζ` is a primitive `n`-th root, then a `μ_n`-stable n
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_n_iff_muOrbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:437](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L437) — **Concrete `μ_n` budget iff orbit budget.** If `ζ` is a primitive `n`-th root, then a `μ_n`-stable n
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_n_iff_muOrbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:467](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L467) — **Concrete `μ_n` budget iff orbit budget.** If `ζ` is a primitive `n`-th root, then a `μ_n`-stable n
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_mul_n_iff_muOrbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:467](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L467) — **Concrete `μ_n` budget iff orbit budget.** If `ζ` is a primitive `n`-th root, then a `μ_n`-stable n
 
 ### `badScalarSet_card_le_n_iff_muOrbitCount_le_one` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_n_iff_muOrbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:450](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L450) — **Concrete prize-budget specialization.** Under a primitive `n`-th root, the natural `μ_n` budget `#
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_n_iff_muOrbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:450](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L450) — **Concrete prize-budget specialization.** Under a primitive `n`-th root, the natural `μ_n` budget `#
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_n_iff_muOrbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:480](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L480) — **Concrete prize-budget specialization.** Under a primitive `n`-th root, the natural `μ_n` budget `#
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.badScalarSet_card_le_n_iff_muOrbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:480](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L480) — **Concrete prize-budget specialization.** Under a primitive `n`-th root, the natural `μ_n` budget `#
 
 ### `badScalar_smul` (2 declarations, 2 files)
 
@@ -9753,33 +9753,33 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `e2BadScalarSet` (2 declarations, 2 files)
 
-- `def ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:362](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L362) — The direct-count bad-scalar image of the eligible `e₂ = 0`, `e₁ ≠ 0`, fixed-cardinality subsets of a
-- `def ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:362](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L362) — The direct-count bad-scalar image of the eligible `e₂ = 0`, `e₁ ≠ 0`, fixed-cardinality subsets of a
+- `def ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:392](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L392) — The direct-count bad-scalar image of the eligible `e₂ = 0`, `e₁ ≠ 0`, fixed-cardinality subsets of a
+- `def ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:392](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L392) — The direct-count bad-scalar image of the eligible `e₂ = 0`, `e₁ ≠ 0`, fixed-cardinality subsets of a
 
 ### `e2BadScalarSet_card_eq_orbit_mul` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:412](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L412) — Exact orbit decomposition for the concrete `e₂ = 0` direct-count bad-scalar image.
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:412](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L412) — Exact orbit decomposition for the concrete `e₂ = 0` direct-count bad-scalar image.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:442](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L442) — Exact orbit decomposition for the concrete `e₂ = 0` direct-count bad-scalar image.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_eq_orbit_mul` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:442](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L442) — Exact orbit decomposition for the concrete `e₂ = 0` direct-count bad-scalar image.
 
 ### `e2BadScalarSet_card_le_mul_iff_orbitCount_le` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:420](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L420) — Budget iff orbit budget for the concrete `e₂ = 0` bad-scalar image.
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:420](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L420) — Budget iff orbit budget for the concrete `e₂ = 0` bad-scalar image.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:450](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L450) — Budget iff orbit budget for the concrete `e₂ = 0` bad-scalar image.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_card_le_mul_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:450](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L450) — Budget iff orbit budget for the concrete `e₂ = 0` bad-scalar image.
 
 ### `e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:490](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L490) — **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup `μ_n = nt
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:490](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L490) — **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup `μ_n = nt
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:536](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L536) — **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup `μ_n = nt
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_mul_n_iff_orbitCount_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:536](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L536) — **Concrete `e₂ = 0` image budget iff orbit budget.** For the actual smooth-domain subgroup `μ_n = nt
 
 ### `e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:502](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L502) — **Concrete `e₂ = 0` prize-budget specialization.** The literal `n` budget for the `e₂ = 0` bad-scala
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:502](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L502) — **Concrete `e₂ = 0` prize-budget specialization.** The literal `n` budget for the `e₂ = 0` bad-scala
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:548](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L548) — **Concrete `e₂ = 0` prize-budget specialization.** The literal `n` budget for the `e₂ = 0` bad-scala
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_mu_card_le_n_iff_orbitCount_le_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:548](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L548) — **Concrete `e₂ = 0` prize-budget specialization.** The literal `n` budget for the `e₂ = 0` bad-scala
 
 ### `e2BadScalarSet_stable` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_stable` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:383](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L383) — The `e₂ = 0` bad-scalar image is stable under multiplication by the subgroup.  Mechanism: for `g ∈ G
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_stable` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:383](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L383) — The `e₂ = 0` bad-scalar image is stable under multiplication by the subgroup.  Mechanism: for `g ∈ G
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_stable` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:413](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L413) — The `e₂ = 0` bad-scalar image is stable under multiplication by the subgroup.  Mechanism: for `g ∈ G
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.e2BadScalarSet_stable` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:413](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L413) — The `e₂ = 0` bad-scalar image is stable under multiplication by the subgroup.  Mechanism: for `g ∈ G
 
 ### `e2_smul` (2 declarations, 2 files)
 
@@ -10308,10 +10308,15 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma DuplexSpongeFS.Sponge316.get_eraseIdx_before` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/HonestConsistency.lean:60](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/HonestConsistency.lean#L60) — (no docstring)
 - `lemma DuplexSpongeFS.Sponge316.get_eraseIdx_before` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512Honest.lean:60](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512Honest.lean#L60) — (no docstring)
 
+### `group_card_lt_badScalarSet_card_of_distinct_orbits` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.group_card_lt_badScalarSet_card_of_distinct_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:365](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L365) — **Two displayed points in distinct orbits break the subgroup-size budget.** This is the pointwise sc
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.group_card_lt_badScalarSet_card_of_distinct_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:365](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L365) — **Two displayed points in distinct orbits break the subgroup-size budget.** This is the pointwise sc
+
 ### `group_card_lt_badScalarSet_card_of_two_orbits` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.group_card_lt_badScalarSet_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:347](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L347) — **Two full orbits already break the subgroup-size budget.** If the orbit count is at least two, then
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.group_card_lt_badScalarSet_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:347](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L347) — **Two full orbits already break the subgroup-size budget.** If the orbit count is at least two, then
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.group_card_lt_badScalarSet_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:352](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L352) — **Two full orbits already break the subgroup-size budget.** If the orbit count is at least two, then
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.group_card_lt_badScalarSet_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:352](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L352) — **Two full orbits already break the subgroup-size budget.** If the orbit count is at least two, then
 
 ### `hasCapBeforeInverseAnswerPaper_of_first` (2 declarations, 2 files)
 
@@ -11053,15 +11058,25 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.RadicalWire304.mpFin_of_decoded_roots_radical_mapped` [ArkLib/ToMathlib/MinimalSurfaceChain.lean:449](../../../ArkLib/ToMathlib/MinimalSurfaceChain.lean#L449) — **The `mpFin` family from the RADICAL split, on the consolidated separability hypothesis** — `Decode
 - `def ArkLib.RadicalWire304.mpFin_of_decoded_roots_radical_mapped` [ArkLib/ToMathlib/RadicalAssembler.lean:468](../../../ArkLib/ToMathlib/RadicalAssembler.lean#L468) — **The `mpFin` family from the RADICAL split, on the consolidated separability hypothesis** — `Decode
 
+### `n_lt_badScalarSet_card_of_distinct_muOrbits` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_badScalarSet_card_of_distinct_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:517](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L517) — **Two displayed `μ_n`-orbits exceed the literal `n` budget.** A caller can refute the smooth-domain
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_badScalarSet_card_of_distinct_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:517](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L517) — **Two displayed `μ_n`-orbits exceed the literal `n` budget.** A caller can refute the smooth-domain
+
 ### `n_lt_badScalarSet_card_of_two_muOrbits` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_badScalarSet_card_of_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:473](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L473) — **Two concrete `μ_n`-orbits already exceed the literal `n` budget.** This is the deployed scanner ob
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_badScalarSet_card_of_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:473](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L473) — **Two concrete `μ_n`-orbits already exceed the literal `n` budget.** This is the deployed scanner ob
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_badScalarSet_card_of_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:503](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L503) — **Two concrete `μ_n`-orbits already exceed the literal `n` budget.** This is the deployed scanner ob
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_badScalarSet_card_of_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:503](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L503) — **Two concrete `μ_n`-orbits already exceed the literal `n` budget.** This is the deployed scanner ob
+
+### `n_lt_e2BadScalarSet_mu_card_of_distinct_orbits` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_e2BadScalarSet_mu_card_of_distinct_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:586](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L586) — **Two displayed concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This is the pointwis
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_e2BadScalarSet_mu_card_of_distinct_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:586](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L586) — **Two displayed concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This is the pointwis
 
 ### `n_lt_e2BadScalarSet_mu_card_of_two_orbits` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_e2BadScalarSet_mu_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:523](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L523) — **Two concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This packages the scanner obst
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_e2BadScalarSet_mu_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:523](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L523) — **Two concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This packages the scanner obst
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_e2BadScalarSet_mu_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:569](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L569) — **Two concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This packages the scanner obst
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.n_lt_e2BadScalarSet_mu_card_of_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:569](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L569) — **Two concrete `e₂ = 0` image orbits exceed the literal `n` budget.** This packages the scanner obst
 
 ### `natCast_sub_le_ennreal` (2 declarations, 2 files)
 
@@ -11087,6 +11102,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.RadicalWire304.natDegree_radical_fiber_le` [ArkLib/ToMathlib/MinimalSurfaceChain.lean:84](../../../ArkLib/ToMathlib/MinimalSurfaceChain.lean#L84) — Degree budget: the radical of the fiber has no larger degree than the fiber.
 - `theorem ArkLib.RadicalWire304.natDegree_radical_fiber_le` [ArkLib/ToMathlib/RadicalAssembler.lean:103](../../../ArkLib/ToMathlib/RadicalAssembler.lean#L103) — Degree budget: the radical of the fiber has no larger degree than the fiber.
+
+### `ne_zero_of_mem_finSubgroup` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.ne_zero_of_mem_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:168](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L168) — Members of a finite multiplicative subgroup are nonzero.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.ne_zero_of_mem_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:168](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L168) — Members of a finite multiplicative subgroup are nonzero.
 
 ### `noRedundant_pairwise_classDistinct` (2 declarations, 2 files)
 
@@ -11130,23 +11150,28 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `not_badScalarSet_card_le_group_card_iff_two_orbits` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_group_card_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:323](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L323) — **Prize scanner form.** At the subgroup-size budget, failure is exactly the presence of at least two
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_group_card_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:323](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L323) — **Prize scanner form.** At the subgroup-size budget, failure is exactly the presence of at least two
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_group_card_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:328](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L328) — **Prize scanner form.** At the subgroup-size budget, failure is exactly the presence of at least two
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_group_card_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:328](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L328) — **Prize scanner form.** At the subgroup-size budget, failure is exactly the presence of at least two
 
 ### `not_badScalarSet_card_le_mul_iff_orbitCount_gt` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_mul_iff_orbitCount_gt` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:313](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L313) — **Scanner failure form.** A stable bad-scalar set fails the `C · #G` budget exactly when its orbit c
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_mul_iff_orbitCount_gt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:313](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L313) — **Scanner failure form.** A stable bad-scalar set fails the `C · #G` budget exactly when its orbit c
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_mul_iff_orbitCount_gt` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:318](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L318) — **Scanner failure form.** A stable bad-scalar set fails the `C · #G` budget exactly when its orbit c
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_mul_iff_orbitCount_gt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:318](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L318) — **Scanner failure form.** A stable bad-scalar set fails the `C · #G` budget exactly when its orbit c
 
 ### `not_badScalarSet_card_le_n_iff_two_muOrbits` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_n_iff_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:462](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L462) — **Concrete prize scanner form.** At the literal `μ_n` budget, failure is exactly the presence of at
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_n_iff_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:462](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L462) — **Concrete prize scanner form.** At the literal `μ_n` budget, failure is exactly the presence of at
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_n_iff_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:492](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L492) — **Concrete prize scanner form.** At the literal `μ_n` budget, failure is exactly the presence of at
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_badScalarSet_card_le_n_iff_two_muOrbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:492](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L492) — **Concrete prize scanner form.** At the literal `μ_n` budget, failure is exactly the presence of at
 
 ### `not_e2BadScalarSet_mu_card_le_n_iff_two_orbits` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_e2BadScalarSet_mu_card_le_n_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:513](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L513) — **Concrete `e₂ = 0` prize scanner form.** The `e₂ = 0` image fails the literal `n` budget exactly wh
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_e2BadScalarSet_mu_card_le_n_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:513](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L513) — **Concrete `e₂ = 0` prize scanner form.** The `e₂ = 0` image fails the literal `n` budget exactly wh
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_e2BadScalarSet_mu_card_le_n_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:559](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L559) — **Concrete `e₂ = 0` prize scanner form.** The `e₂ = 0` image fails the literal `n` budget exactly wh
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_e2BadScalarSet_mu_card_le_n_iff_two_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:559](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L559) — **Concrete `e₂ = 0` prize scanner form.** The `e₂ = 0` image fails the literal `n` budget exactly wh
+
+### `not_e2BadScalarSet_mu_card_le_n_of_distinct_orbits` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_e2BadScalarSet_mu_card_le_n_of_distinct_orbits` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:602](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L602) — **Concrete `e₂ = 0` pointwise scanner-failure form.** Two elements of the image in distinct `μ_n`-or
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.not_e2BadScalarSet_mu_card_le_n_of_distinct_orbits` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:602](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L602) — **Concrete `e₂ = 0` pointwise scanner-failure form.** Two elements of the image in distinct `μ_n`-or
 
 ### `not_e_time_h_honest_of_not_E` (2 declarations, 2 files)
 
@@ -11225,8 +11250,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `nthRootsFinset_finSubgroup` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.nthRootsFinset_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:170](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L170) — **The concrete prize subgroup `μ_n = nthRootsFinset n 1` is a `FinSubgroup`.** This turns the abstra
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.nthRootsFinset_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:170](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L170) — **The concrete prize subgroup `μ_n = nthRootsFinset n 1` is a `FinSubgroup`.** This turns the abstra
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.nthRootsFinset_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:175](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L175) — **The concrete prize subgroup `μ_n = nthRootsFinset n 1` is a `FinSubgroup`.** This turns the abstra
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.nthRootsFinset_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:175](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L175) — **The concrete prize subgroup `μ_n = nthRootsFinset n 1` is a `FinSubgroup`.** This turns the abstra
 
 ### `optionT_bind_pure_some` (2 declarations, 2 files)
 
@@ -11245,23 +11270,23 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `orbit` (2 declarations, 2 files)
 
-- `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:185](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L185) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
-- `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:185](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L185) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
+- `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:190](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L190) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
+- `def ArkLib.ProximityGap.E2DilationDirectCount.orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:190](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L190) — **The orbit of `x` under the dilation action of `G`:** `G • x = {u·x : u ∈ G}`.
 
 ### `orbitCount_eq_one_of_nonempty_card_le_group_card` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbitCount_eq_one_of_nonempty_card_le_group_card` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:333](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L333) — If a stable bad-scalar set is nonempty and fits in the subgroup-size budget, then it is exactly one
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbitCount_eq_one_of_nonempty_card_le_group_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:333](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L333) — If a stable bad-scalar set is nonempty and fits in the subgroup-size budget, then it is exactly one
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbitCount_eq_one_of_nonempty_card_le_group_card` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:338](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L338) — If a stable bad-scalar set is nonempty and fits in the subgroup-size budget, then it is exactly one
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbitCount_eq_one_of_nonempty_card_le_group_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:338](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L338) — If a stable bad-scalar set is nonempty and fits in the subgroup-size budget, then it is exactly one
 
 ### `orbit_card` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:190](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L190) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:190](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L190) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L195) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L195) — **Each orbit has exactly `#G` elements** (free action). For `x ≠ 0`, `u ↦ u·x` is injective on `G`,
 
 ### `orbit_eq_of_mem` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:210](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L210) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:210](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L210) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:215](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L215) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.orbit_eq_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:215](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L215) — **Orbits coincide or are disjoint — equality form.** If `y ∈ orbit G x` then `orbit G y = orbit G x`
 
 ### `p2_smul` (2 declarations, 2 files)
 
@@ -11538,8 +11563,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `self_mem_orbit` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L195) — `x` itself lies in its orbit (`1 ∈ G`).
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L195) — `x` itself lies in its orbit (`1 ∈ G`).
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:200](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L200) — `x` itself lies in its orbit (`1 ∈ G`).
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.self_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:200](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L200) — `x` itself lies in its orbit (`1 ∈ G`).
 
 ### `seqC` (2 declarations, 2 files)
 
@@ -11583,8 +11608,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `smul_mem_orbit` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:201](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L201) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:201](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L201) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:206](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L206) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.smul_mem_orbit` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:206](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L206) — **Orbits are `G`-stable**: if `g ∈ G` then `g · y ∈ orbit G x` whenever `y ∈ orbit G x`.
 
 ### `split_branch_radical` (2 declarations, 2 files)
 
@@ -11993,8 +12018,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `zero_notMem_e2BadScalarSet` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:368](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L368) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
-- `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:368](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L368) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
+- `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
 ## Near-duplicate docstrings (Jaccard ≥ 0.85, 547 cross-file pairs)
 
