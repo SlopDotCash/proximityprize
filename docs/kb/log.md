@@ -1592,3 +1592,11 @@ Follow-up: the repaired bridge now reaches the literal image-budget scanner.  Th
 sign-quotiented residual.
 The matching `not_e2BadScalarSet_mu_card_le_n_*_modSignNonCollision` wrappers expose the literal
 negated-budget form, and the even variants discharge `-1 ∈ mu_n` from `2 ∣ n`.
+
+Follow-up: the canonical primitive-root witnesses are now packaged.  For even `n > 8`,
+`n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision` uses
+`quadT 1 ζ` and `quadT 1 ζ^2`, discharging all smooth-domain membership, nonzero, distinctness, and
+sign-separation obligations from primitive-root lemmas.  The companion
+`not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision` is the direct
+scanner-failure form.  The only remaining input in this fixed-witness width-4 lane is now the
+repaired residual `Cd₀NonCollisionModSign mu_n`.

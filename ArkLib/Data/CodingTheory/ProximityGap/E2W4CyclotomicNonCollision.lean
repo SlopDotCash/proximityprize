@@ -1231,6 +1231,96 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
       hn heven hζ hNC hxG hx'G htG ht'G hx1 hx2 hx3 hx4 hx5 hx6 hy1 hy2 hy3
       hy4 hy5 hy6 hc hc' hne hsign)
 
+/-- **Fixed primitive-root width-4 refuter.** For even `n > 8`, the canonical witnesses
+`quadT 1 ζ` and `quadT 1 ζ²` satisfy all membership, nonzero, distinctness, and sign-quotiented
+invariant-separation obligations automatically. Thus the remaining scanner-failure input is the
+repaired cyclotomic residual `Cd₀NonCollisionModSign μ_n`. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
+    {n : ℕ} {ζ : F} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F))) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card := by
+  have heven0 : 2 ∣ n := heven
+  obtain ⟨h, hnh⟩ := heven
+  have hh : h ≠ 0 := by omega
+  have hone : (1 : F) ≠ -1 := one_ne_neg_one_of_primRoot_even hζ hnh hh
+  have h1G : (1 : F) ∈ Polynomial.nthRootsFinset n (1 : F) :=
+    Polynomial.one_mem_nthRootsFinset hn
+  have hζG : ζ ∈ Polynomial.nthRootsFinset n (1 : F) :=
+    primRoot_mem_nthRootsFinset hn hζ
+  have hζ2G : ζ ^ 2 ∈ Polynomial.nthRootsFinset n (1 : F) :=
+    primRoot_pow_mem_nthRootsFinset (k := 2) hn hζ
+  have hζne1 : ζ ≠ 1 := by
+    simpa [pow_one] using
+      primRoot_pow_ne_one_of_lt (F := F) (ζ := ζ) hζ one_ne_zero (by omega : 1 < n)
+  have hζneneg1 : ζ ≠ -1 := by
+    simpa [pow_one] using
+      primRoot_pow_ne_neg_one_of_two_mul_lt (F := F) (ζ := ζ) (k := 1) hζ one_ne_zero
+        (by omega : 1 * 2 < n)
+  have hζinvne1 : ζ⁻¹ ≠ 1 := by
+    intro h
+    exact hζne1 (inv_eq_one.mp h)
+  have hζinvneneg1 : ζ⁻¹ ≠ -1 := by
+    intro h
+    exact hζneneg1 (by simpa [inv_neg, inv_one] using congrArg (fun y : F => y⁻¹) h)
+  have hζneinv : ζ ≠ ζ⁻¹ := by
+    simpa [pow_one] using
+      primRoot_pow_ne_inv_of_two_mul_lt (F := F) (ζ := ζ) (k := 1) hn hζ one_ne_zero
+        (by omega : 1 * 2 < n)
+  have hζ2ne1 : ζ ^ 2 ≠ 1 :=
+    primRoot_pow_ne_one_of_lt (F := F) (ζ := ζ) (k := 2) hζ
+      (by norm_num : (2 : ℕ) ≠ 0) (by omega : 2 < n)
+  have hζ2neneg1 : ζ ^ 2 ≠ -1 :=
+    primRoot_pow_ne_neg_one_of_two_mul_lt (F := F) (ζ := ζ) (k := 2) hζ
+      (by norm_num : (2 : ℕ) ≠ 0) (by omega : 2 * 2 < n)
+  have hζ2invne1 : (ζ ^ 2)⁻¹ ≠ 1 := by
+    intro h
+    exact hζ2ne1 (inv_eq_one.mp h)
+  have hζ2invneneg1 : (ζ ^ 2)⁻¹ ≠ -1 := by
+    intro h
+    exact hζ2neneg1 (by simpa [inv_neg, inv_one] using congrArg (fun y : F => y⁻¹) h)
+  have hζ2neinv : ζ ^ 2 ≠ (ζ ^ 2)⁻¹ :=
+    primRoot_pow_ne_inv_of_two_mul_lt (F := F) (ζ := ζ) (k := 2) hn hζ
+      (by norm_num : (2 : ℕ) ≠ 0) (by omega : 2 * 2 < n)
+  have hc : ζ + ζ⁻¹ ≠ 0 := by
+    simpa [pow_one] using
+      primRoot_pow_add_inv_ne_zero_of_four_mul_lt (F := F) (ζ := ζ) (k := 1) hn hζ
+        one_ne_zero (by omega : 1 * 4 < n)
+  have hc' : ζ ^ 2 + (ζ ^ 2)⁻¹ ≠ 0 :=
+    primRoot_pow_add_inv_ne_zero_of_four_mul_lt (F := F) (ζ := ζ) (k := 2) hn hζ
+      (by norm_num : (2 : ℕ) ≠ 0) (by omega : 2 * 4 < n)
+  have hne : ζ + ζ⁻¹ ≠ ζ ^ 2 + (ζ ^ 2)⁻¹ :=
+    primRoot_add_inv_ne_sq_add_inv hn hζ (by omega : 1 < n) (by omega : 3 < n)
+  have hsign : ζ + ζ⁻¹ ≠ -(ζ ^ 2 + (ζ ^ 2)⁻¹) :=
+    primRoot_add_inv_ne_neg_sq_add_inv hn hζ (by omega : 2 < n) (by omega : 6 < n)
+  exact n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
+    (F := F) (n := n) (ζ := ζ) (x := (1 : F)) (x' := (1 : F)) (t := ζ)
+    (t' := ζ ^ 2) hn heven0 hζ hNC h1G h1G hζG hζ2G
+    hone
+    (by simpa using hζne1)
+    (by simpa using hζneneg1)
+    (by simpa using hζinvne1)
+    (by simpa using hζinvneneg1)
+    (by simpa using hζneinv)
+    hone
+    (by simpa using hζ2ne1)
+    (by simpa using hζ2neneg1)
+    (by simpa using hζ2invne1)
+    (by simpa using hζ2invneneg1)
+    (by simpa using hζ2neinv)
+    hc hc' hne hsign
+
+/-- Fixed primitive-root scanner-failure form for the canonical witnesses
+`quadT 1 ζ` and `quadT 1 ζ²`. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
+    {n : ℕ} {ζ : F} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n)
+    (hNC : Cd₀NonCollisionModSign (Polynomial.nthRootsFinset n (1 : F))) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
+      hn heven hn8 hζ hNC)
+
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
@@ -1272,6 +1362,17 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_modSignNonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_nonCollision
 #print axioms group_card_lt_e2BadScalarSet_card_of_two_quadT_mem_modSignNonCollision
+#print axioms primRoot_mem_nthRootsFinset
+#print axioms primRoot_pow_mem_nthRootsFinset
+#print axioms primRoot_ne_zero
+#print axioms primRoot_pow_ne_one_of_lt
+#print axioms primRoot_pow_ne_neg_one_of_two_mul_lt
+#print axioms primRoot_pow_ne_inv_of_two_mul_lt
+#print axioms primRoot_pow_add_inv_ne_zero_of_four_mul_lt
+#print axioms primRoot_pow_half_eq_neg_one_of_even
+#print axioms one_ne_neg_one_of_primRoot_even
+#print axioms primRoot_add_inv_ne_sq_add_inv
+#print axioms primRoot_add_inv_ne_neg_sq_add_inv
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
@@ -1284,5 +1385,7 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
+#print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 
 end ArkLib.ProximityGap.E2W4CyclotomicNonCollision

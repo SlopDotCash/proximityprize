@@ -59,6 +59,8 @@ n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_nonCollision
 n_lt_e2BadScalarSet_mu_card_of_two_quadT_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_nonCollision
 not_e2BadScalarSet_mu_card_le_n_of_two_quadT_even_modSignNonCollision
+n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
+not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 ```
 
 ## The Bridge
@@ -167,3 +169,10 @@ two-orbit image-budget refuter.  The concrete smooth-domain wrappers
 as `n < #(e2BadScalarSet mu_n 4)` under sign-distinct invariants.
 The matching `not_e2BadScalarSet_mu_card_le_n_*_modSignNonCollision` wrappers package the literal
 budget failure, and the even-`mu_n` wrappers discharge `-1 ∈ mu_n` from `2 ∣ n`.
+
+Final specialization: for even `n > 8`, the canonical witnesses `quadT 1 ζ` and `quadT 1 ζ^2`
+discharge the membership, nonzero, distinctness, and sign-separation side conditions from primitive
+root facts.  The wrappers
+`n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision` and
+`not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision` reduce the concrete
+width-4 scanner failure to the repaired residual `Cd₀NonCollisionModSign mu_n` alone.
