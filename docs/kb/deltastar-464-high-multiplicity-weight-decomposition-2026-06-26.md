@@ -30,6 +30,11 @@ This pass adds:
 
 ```lean
 ArkLib.ProximityGap.HighMultiplicity.weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero
+ArkLib.ProximityGap.HighMultiplicity.weightLine_le_imp_highMult_exact
+ArkLib.ProximityGap.HighMultiplicity.zeroE1Nonzero_card_le_weightLine
+ArkLib.ProximityGap.HighMultiplicity.badWeight_empty_of_w_lt_zeroE1Nonzero
+ArkLib.ProximityGap.HighMultiplicity.badWeight_card_mul_le_exact
+ArkLib.ProximityGap.HighMultiplicity.badWeight_empty_of_mult_cap_exact
 ```
 
 ## Content
@@ -54,9 +59,31 @@ This sharpens the bookkeeping behind `weight_e1_le_mult_add_weightLine` and
 zero-fiber term.  The only extra term is the fixed `e1 = 0, e0 != 0` contribution, so the
 per-error-line bad-scalar count remains a clean ratio-census problem.
 
+The exact consumer is:
+
+```text
+(weight(e1) + #{i : e1 i = 0 and e0 i != 0} - w)
+  * #{gamma : weight(e0 + gamma*e1) <= w}
+  <= weight(e1).
+```
+
+This is strictly stronger than the earlier `weight(e1) - w` threshold whenever the fixed
+zero-`e1`/nonzero-`e0` correction is positive.
+
+The direct empty-set consumer is:
+
+```text
+if every mult(gamma) <= D
+and D < weight(e1) + #{i : e1 i = 0 and e0 i != 0} - w,
+then #{gamma : weight(e0 + gamma*e1) <= w} = 0.
+```
+
+There is also a cap-free empty case: if `w < #{i : e1 i = 0 and e0 i != 0}`, every affine line
+word already has too much fixed weight to be bad.
+
 It does **not** close the smooth-domain floor.  The open step is still global: after applying the
-per-line incidence bound, one must control the in-window codeword-pair/list supply, or prove a
-structural multiplicity cap strong enough to make the bad-scalar set empty at the prize radius.
+per-line incidence bound, one must control the in-window codeword-pair/list supply, or prove the
+structural multiplicity cap needed by `badWeight_empty_of_mult_cap_exact` at the prize radius.
 
 ## Validation
 
@@ -65,5 +92,5 @@ scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadC
 ./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.HighMultiplicityBadCount
 ```
 
-The new theorem's audit line reports only the standard Lean axioms:
+The new theorem audit lines report only the standard Lean axioms:
 `propext`, `Classical.choice`, and `Quot.sound`.

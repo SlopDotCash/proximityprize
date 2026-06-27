@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4902 files, 52274 declarations
+- `ArkLib` — 4902 files, 52281 declarations
 
 ## Same short-name across multiple files (2145 groups)
 
@@ -515,7 +515,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.CircleMethodFreeSetSupport.mult` [ArkLib/Data/CodingTheory/ProximityGap/CircleMethodFreeSetSupport.lean:103](../../../ArkLib/Data/CodingTheory/ProximityGap/CircleMethodFreeSetSupport.lean#L103) — **The `ℓ`-subset-sum multiplicity.**  `mult E ℓ h` counts the `ℓ`-element subsets `S ⊆ E` whose sum
 - `def ProximityGap.Frontier.PencilPairwiseBonferroni.mult` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilPairwiseBonferroni.lean:121](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilPairwiseBonferroni.lean#L121) — The multiplicity of `x` in a finite family `C : Fin r → Finset G`: the number of indices `i` with `x
 - `def ProximityGap.Frontier.ResolveFieldIndependent.mult` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:40](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L40) — The **multiplicity** of a scalar `γ` on the affine error line `e₀ + γ·e₁`: the number of support coo
-- `def ArkLib.ProximityGap.HighMultiplicity.mult` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:58](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L58) — The **multiplicity** of a scalar `γ` on the affine error line `e₀ + γ·e₁`: the number of support coo
+- `def ArkLib.ProximityGap.HighMultiplicity.mult` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:64](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L64) — The **multiplicity** of a scalar `γ` on the affine error line `e₀ + γ·e₁`: the number of support coo
 
 ### `oracleVerifier_rbrKnowledgeSoundness` (5 declarations, 5 files)
 
@@ -5232,7 +5232,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `badWeight_card_mul_le` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.badWeight_card_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:114](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L114) — **The bad-scalar count bound** `(s − w) · #{bad γ} ≤ s` (`s = weight e₁`).  The right side `s` is th
-- `theorem ArkLib.ProximityGap.HighMultiplicity.badWeight_card_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:225](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L225) — **The bad-scalar-by-weight bound (per error line).**  Writing `s = weight(e₁)` and `μ₀ = s − w > 0`,
+- `theorem ArkLib.ProximityGap.HighMultiplicity.badWeight_card_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:268](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L268) — **The bad-scalar-by-weight bound (per error line).**  Writing `s = weight(e₁)` and `μ₀ = s − w > 0`,
 
 ### `bad_count_clean` (2 declarations, 2 files)
 
@@ -5397,7 +5397,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `card_highMult_mul_le` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.card_highMult_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:70](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L70) — **Pigeonhole (multiplicative form).** `μ₀ · #{γ : mult(γ) ≥ μ₀} ≤ weight(e₁)`.  The RHS is the suppo
-- `theorem ArkLib.ProximityGap.HighMultiplicity.card_highMult_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L98) — **Pigeonhole (multiplicative form).**  `μ₀ · #{γ : mult(γ) ≥ μ₀} ≤ weight(e₁)`.
+- `theorem ArkLib.ProximityGap.HighMultiplicity.card_highMult_mul_le` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L104) — **Pigeonhole (multiplicative form).**  `μ₀ · #{γ : mult(γ) ≥ μ₀} ≤ weight(e₁)`.
 
 ### `card_le` (2 declarations, 2 files)
 
@@ -5412,7 +5412,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `card_root_eq_one` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.card_root_eq_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L45) — For a support coordinate `i` (`e₁ i ≠ 0`), exactly one `γ` zeroes the line word at `i`.
-- `theorem ArkLib.ProximityGap.HighMultiplicity.card_root_eq_one` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:64](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L64) — For a fixed support coordinate `i` with `e₁ i ≠ 0`, exactly one scalar `γ` makes the line word vanis
+- `theorem ArkLib.ProximityGap.HighMultiplicity.card_root_eq_one` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:70](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L70) — For a fixed support coordinate `i` with `e₁ i ≠ 0`, exactly one scalar `γ` makes the line word vanis
 
 ### `card_wordStack_eq` (2 declarations, 2 files)
 
@@ -8583,7 +8583,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `sum_mult_eq_weight` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.sum_mult_eq_weight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L57) — **Conservation law.** `∑_γ mult(γ) = weight(e₁)` — the RHS is combinatorial (no `\|F\|`).
-- `theorem ArkLib.ProximityGap.HighMultiplicity.sum_mult_eq_weight` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L83) — **Conservation law.**  Summed over all scalars, the multiplicity totals the Hamming weight of `e₁`:
+- `theorem ArkLib.ProximityGap.HighMultiplicity.sum_mult_eq_weight` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:89](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L89) — **Conservation law.**  Summed over all scalars, the multiplicity totals the Hamming weight of `e₁`:
 
 ### `sum_sq_le_max_mul_sum` (2 declarations, 2 files)
 
@@ -8883,12 +8883,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `weightLine_le_imp_highMult` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.weightLine_le_imp_highMult` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:106](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L106) — Weight-bad ⟹ high multiplicity.
-- `theorem ArkLib.ProximityGap.HighMultiplicity.weightLine_le_imp_highMult` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:212](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L212) — **Bad-by-weight ⟹ high multiplicity.**  If the line word `e₀ + γ·e₁` has weight `≤ w`, then its mult
+- `theorem ArkLib.ProximityGap.HighMultiplicity.weightLine_le_imp_highMult` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:218](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L218) — **Bad-by-weight ⟹ high multiplicity.**  If the line word `e₀ + γ·e₁` has weight `≤ w`, then its mult
 
 ### `weight_e1_le_mult_add_weightLine` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.ResolveFieldIndependent.weight_e1_le_mult_add_weightLine` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean:86](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ResolveFieldIndependent.lean#L86) — The support-weight side: within `supp e₁` each coordinate is either a line-root (counted by `mult`)
-- `theorem ArkLib.ProximityGap.HighMultiplicity.weight_e1_le_mult_add_weightLine` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:187](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L187) — **The agreement identity (one inequality).**  The weight of `e₁` is at most the multiplicity plus th
+- `theorem ArkLib.ProximityGap.HighMultiplicity.weight_e1_le_mult_add_weightLine` [ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean:193](../../../ArkLib/Data/CodingTheory/ProximityGap/HighMultiplicityBadCount.lean#L193) — **The agreement identity (one inequality).**  The weight of `e₁` is at most the multiplicity plus th
 
 ### `weight_Λ_C_mul_X_pow_le` (2 declarations, 2 files)
 

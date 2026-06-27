@@ -35,6 +35,12 @@ line word `e₀ + γ·e₁` vanishes (each such `i` pins the unique root `γ = �
   `D` = the degree of the ratio rational function `i ↦ −e₀ i / e₁ i` on a structured domain), then
   `μ₀ > D ⟹ no scalar has multiplicity ≥ μ₀`.  This is the face-(iv) vanishing criterion: when the
   required agreement exceeds the ratio-function degree, the per-codeword-pair bad set is empty.
+* `weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero` and
+  `badWeight_card_mul_le_exact` — the weight-phrased bad-scalar count with the exact
+  `#{e₁ = 0 ∧ e₀ ≠ 0}` correction retained.
+* `badWeight_empty_of_mult_cap_exact` — the direct consumer for any structural multiplicity cap:
+  if every scalar has multiplicity at most `D` and the exact required threshold exceeds `D`, then
+  the bad-scalar set is empty.
 
 These are bounds **per fixed error line** `(e₀, e₁)` — i.e. per pair of nearby codewords.  Summed
 over the list of codeword pairs within the radius they give the bad-scalar count; that list size is
@@ -215,6 +221,43 @@ theorem weightLine_le_imp_highMult (e₀ e₁ : ι → F) (w : ℕ) (γ : F)
   have h := weight_e1_le_mult_add_weightLine e₀ e₁ γ
   omega
 
+omit [DecidableEq ι] [Fintype F] in
+/-- **Bad-by-weight ⟹ high multiplicity, exact correction form.**  The exact decomposition gives a
+stronger threshold than `weightLine_le_imp_highMult`: the fixed coordinates with
+`e₁ = 0 ∧ e₀ ≠ 0` also contribute to the constant side, so a line word of weight `≤ w` forces
+`mult(γ) ≥ weight(e₁) + #{e₁ = 0 ∧ e₀ ≠ 0} - w`. -/
+theorem weightLine_le_imp_highMult_exact (e₀ e₁ : ι → F) (w : ℕ) (γ : F)
+    (hw : (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card ≤ w) :
+    (univ.filter (fun i => e₁ i ≠ 0)).card
+        + (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card - w
+      ≤ mult e₀ e₁ γ := by
+  have h := weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero e₀ e₁ γ
+  omega
+
+omit [DecidableEq ι] [Fintype F] in
+/-- The fixed coordinates with `e₁ = 0 ∧ e₀ ≠ 0` are present in every affine line word, for every
+scalar `γ`.  This is the pointwise lower bound underlying the exact correction term. -/
+theorem zeroE1Nonzero_card_le_weightLine (e₀ e₁ : ι → F) (γ : F) :
+    (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card
+      ≤ (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card := by
+  classical
+  apply Finset.card_le_card
+  intro i hi
+  simp only [mem_filter, mem_univ, true_and] at hi ⊢
+  rw [hi.1, mul_zero, add_zero]
+  exact hi.2
+
+omit [DecidableEq ι] in
+/-- If the weight threshold `w` is below the fixed `e₁ = 0 ∧ e₀ ≠ 0` contribution, no scalar can
+be bad. -/
+theorem badWeight_empty_of_w_lt_zeroE1Nonzero (e₀ e₁ : ι → F) {w : ℕ}
+    (hw : w < (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card) :
+    univ.filter (fun γ : F =>
+      (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card ≤ w) = ∅ := by
+  rw [Finset.filter_eq_empty_iff]
+  intro γ _ hγ
+  exact (not_lt.mpr (le_trans (zeroE1Nonzero_card_le_weightLine e₀ e₁ γ) hγ)) hw
+
 omit [DecidableEq ι] in
 /-- **The bad-scalar-by-weight bound (per error line).**  Writing `s = weight(e₁)` and
 `μ₀ = s − w > 0`, the scalars `γ` for which the line word `e₀ + γ·e₁` has weight `≤ w` number at
@@ -236,6 +279,53 @@ theorem badWeight_card_mul_le (e₀ e₁ : ι → F) (w : ℕ) :
   simp only [mem_filter, mem_univ, true_and] at hγ ⊢
   exact weightLine_le_imp_highMult e₀ e₁ w γ hγ
 
+omit [DecidableEq ι] in
+/-- **The bad-scalar-by-weight bound with the exact zero-`e₁` correction retained.**  This is the
+same per-error-line incidence bound as `badWeight_card_mul_le`, but it uses the sharper threshold
+from `weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero`:
+
+`(weight(e₁) + #{e₁ = 0 ∧ e₀ ≠ 0} - w) · #{γ : weight(e₀+γ·e₁) ≤ w} ≤ weight(e₁)`.
+
+When the correction term is large, this immediately shrinks the bad-scalar count and can even make
+the event empty after combining with a structural multiplicity cap. -/
+theorem badWeight_card_mul_le_exact (e₀ e₁ : ι → F) (w : ℕ) :
+    ((univ.filter (fun i => e₁ i ≠ 0)).card
+        + (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card - w)
+        * (univ.filter (fun γ : F =>
+            (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card ≤ w)).card
+      ≤ (univ.filter (fun i => e₁ i ≠ 0)).card := by
+  classical
+  set s := (univ.filter (fun i => e₁ i ≠ 0)).card with hs
+  set z := (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card with hz
+  refine le_trans ?_ (card_highMult_mul_le e₀ e₁ (s + z - w))
+  refine Nat.mul_le_mul_left _ ?_
+  apply Finset.card_le_card
+  intro γ hγ
+  simp only [mem_filter, mem_univ, true_and] at hγ ⊢
+  simpa [s, z] using weightLine_le_imp_highMult_exact e₀ e₁ w γ hγ
+
+omit [DecidableEq ι] in
+/-- **Exact threshold plus structural multiplicity cap ⇒ no bad scalars.**  This is the direct
+consumer form for a ratio-function degree bound: if every scalar has multiplicity at most `D`, and
+the exact required multiplicity `weight(e₁) + #{e₁ = 0 ∧ e₀ ≠ 0} - w` exceeds `D`, then the
+weight-`≤ w` bad-scalar set is empty. -/
+theorem badWeight_empty_of_mult_cap_exact (e₀ e₁ : ι → F) {D w : ℕ}
+    (hD : ∀ γ : F, mult e₀ e₁ γ ≤ D)
+    (hμ : D <
+      (univ.filter (fun i => e₁ i ≠ 0)).card
+        + (univ.filter (fun i => e₁ i = 0 ∧ e₀ i ≠ 0)).card - w) :
+    univ.filter (fun γ : F =>
+      (univ.filter (fun i => e₀ i + γ * e₁ i ≠ 0)).card ≤ w) = ∅ := by
+  rw [Finset.filter_eq_empty_iff]
+  intro γ _ hγ
+  have hge := weightLine_le_imp_highMult_exact e₀ e₁ w γ hγ
+  exact (not_lt.mpr (hD γ)) (lt_of_lt_of_le hμ hge)
+
 #print axioms weightLine_add_mult_eq_weightE1_add_zeroE1Nonzero
+#print axioms weightLine_le_imp_highMult_exact
+#print axioms zeroE1Nonzero_card_le_weightLine
+#print axioms badWeight_empty_of_w_lt_zeroE1Nonzero
+#print axioms badWeight_card_mul_le_exact
+#print axioms badWeight_empty_of_mult_cap_exact
 
 end ArkLib.ProximityGap.HighMultiplicity
