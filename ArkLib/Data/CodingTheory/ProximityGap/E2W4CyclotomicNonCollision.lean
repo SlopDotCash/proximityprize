@@ -1909,20 +1909,27 @@ theorem polynomial_eq_3_sq_pow16_zmod17 :
     ((3 : ZMod 17) ^ 4 + 1) ^ 16 = ((3 : ZMod 17) ^ 2 + 1) ^ 16 := by
   decide
 
-/-- The concrete collision scalar in `F₁₇` is `5`. -/
-theorem invariant_collision_scalar_5_zmod17 :
-    (3 : ZMod 17) ^ 2 + ((3 : ZMod 17) ^ 2)⁻¹ =
-      (5 : ZMod 17) * ((3 : ZMod 17) + (3 : ZMod 17)⁻¹) := by
-  decide
-
 /-- The local pairwise residual fails concretely in `F₁₇`: a collision scalar exists. -/
 theorem exists_invariant_collision_mu16_zmod17_3 :
     ∃ u ∈ Polynomial.nthRootsFinset 16 (1 : ZMod 17),
       (3 : ZMod 17) ^ 2 + ((3 : ZMod 17) ^ 2)⁻¹ =
         u * ((3 : ZMod 17) + (3 : ZMod 17)⁻¹) := by
-  refine ⟨5, ?_, invariant_collision_scalar_5_zmod17⟩
-  rw [Polynomial.mem_nthRootsFinset (by norm_num : 0 < 16)]
-  decide
+  have hc : (3 : ZMod 17) + (3 : ZMod 17)⁻¹ ≠ 0 := by
+    simpa [pow_one] using
+      primRoot_pow_add_inv_ne_zero_of_four_mul_lt (F := ZMod 17) (ζ := (3 : ZMod 17))
+        (k := 1) (by norm_num : 0 < 16) isPrimitiveRoot_3_16_ratio_zmod17
+        one_ne_zero (by omega : 1 * 4 < 16)
+  have hnotPair :
+      ¬ InvariantPairNonCollision (Polynomial.nthRootsFinset 16 (1 : ZMod 17))
+        (3 : ZMod 17) ((3 : ZMod 17) ^ 2) :=
+    (not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
+      (F := ZMod 17) (n := 16) (by norm_num : 0 < 16)
+      (t := (3 : ZMod 17)) (t' := ((3 : ZMod 17) ^ 2)) hc).mpr
+      invariantRatio_3_sq_pow16_eq_one_zmod17
+  exact
+    (not_invariantPairNonCollision_iff_exists_collision (F := ZMod 17)
+      (Polynomial.nthRootsFinset 16 (1 : ZMod 17)) (3 : ZMod 17)
+      ((3 : ZMod 17) ^ 2)).mp hnotPair
 
 /-- Hence the canonical pairwise non-collision residual is false in this bad-prime instance. -/
 theorem not_invariantPairNonCollision_mu16_zmod17_3 :
@@ -2258,10 +2265,18 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq
 #print axioms invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne
 #print axioms invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
+#print axioms canonicalRatioPoly_eval_map
+#print axioms canonicalRatioPoly_monic
+#print axioms canonicalRatioPoly_natDegree_map_zmod
+#print axioms canonicalRatioPoly_eval_zmod_eq_zero_of_polynomial_eq
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
 #print axioms invariantRatio_pow_ne_one_complex_primitive_zeta_sq
 #print axioms polynomial_ne_complex_primitive_zeta_sq
+#print axioms resultant_canonicalRatioPoly_ne_zero
+#print axioms prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+#print axioms prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+#print axioms polynomial_ne_zmod_of_resultant_natAbs_lt_prime
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 #print axioms orderOf_4134_ratio
@@ -2282,6 +2297,9 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+#print axioms prime_dvd_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+#print axioms prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+#print axioms not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
