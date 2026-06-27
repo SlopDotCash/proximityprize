@@ -151,6 +151,18 @@ turns three inputs into the delta-star consumer:
 This does not prove the missing monotone-normalization theorem, but it removes the need to prove an
 all-stack domination theorem when the attack can instead identify the maximizer locus.
 
+Two auxiliary facts pin down the exact search surface:
+
+```lean
+maximizersReachFamily_of_stacksReachFamilyByImprovement
+not_maximizersReachFamilyByImprovement_iff_exists_uncarried_maximizer
+```
+
+So an all-stack normal form remains a sufficient route, but the real target can be strictly smaller.
+Conversely, failure of the universal maximizer-carrying hypothesis is exactly a true global
+maximizer that cannot reach any listed representative by the proposed improvement chain.  That is
+the scanner certificate to ask for when a candidate move system stalls.
+
 ### Backwards attack on B
 
 Finite-action and literal quotient versions are already blocked:
