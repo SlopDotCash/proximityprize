@@ -136,6 +136,59 @@ theorem badWeight_subset_degenerate_of_degree_exact (dom : ι → F)
   exact (not_lt.mpr hcap) (lt_of_lt_of_le hdeg hge)
 
 omit [DecidableEq ι] in
+/-- **Degenerate polynomials always give low-weight scalars.**  If `P + γ·Q = 0` as a polynomial,
+then the evaluated line word is identically zero, hence it lies in every weight-`≤ w` ball. -/
+theorem degenerateScalars_subset_badWeight (dom : ι → F) (P Q : F[X]) {w : ℕ} :
+    univ.filter (fun γ : F => P + C γ * Q = 0)
+      ⊆ univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) := by
+  intro γ hγ
+  rw [Finset.mem_filter] at hγ ⊢
+  refine ⟨Finset.mem_univ γ, ?_⟩
+  have hzero : univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0) = ∅ := by
+    rw [Finset.filter_eq_empty_iff]
+    intro i _ hi
+    have heval : P.eval (dom i) + γ * Q.eval (dom i) = 0 := by
+      have hpoly := congrArg (fun R : F[X] => R.eval (dom i)) hγ.2
+      simpa [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] using hpoly
+    exact hi heval
+  rw [hzero, Finset.card_empty]
+  exact Nat.zero_le w
+
+omit [DecidableEq ι] in
+/-- **Exact degree-collapse equality.**  Under the exact degree condition, the low-weight scalar set
+is precisely the degenerate polynomial set:
+
+`{γ : weight(P(dom)+γQ(dom)) ≤ w} = {γ : P + γQ = 0}`.
+
+The forward inclusion is the degree-collapse argument; the reverse inclusion is the trivial zero
+line word at every degenerate scalar. -/
+theorem badWeight_eq_degenerate_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
+    univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)
+      = univ.filter (fun γ : F => P + C γ * Q = 0) :=
+  Finset.Subset.antisymm
+    (badWeight_subset_degenerate_of_degree_exact dom hdom P Q hdeg)
+    (degenerateScalars_subset_badWeight dom P Q)
+
+omit [DecidableEq ι] in
+/-- **Exact cardinal form of degree-collapse equality.**  Under the exact degree condition, the
+number of low-weight scalars equals the number of degenerate scalars. -/
+theorem badWeight_card_eq_degenerate_card_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card
+      = (univ.filter (fun γ : F => P + C γ * Q = 0)).card := by
+  rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg]
+
+omit [DecidableEq ι] in
 /-- **Exact degree-collapse, cardinal containment form.**  Under the exact degree condition, the
 number of low-weight bad scalars is at most the number of degenerate scalars with
 `P + γ·Q = 0`. -/
@@ -167,6 +220,29 @@ theorem degenerateScalars_card_le_one (P Q : F[X]) (hQ : Q ≠ 0) :
   · exact sub_eq_zero.mp (Polynomial.C_eq_zero.mp hC)
   · exact absurd hQ0 hQ
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- **A witnessed degenerate scalar is the unique degenerate scalar.**  If `Q ≠ 0` and
+`P + γ₀·Q = 0`, then the degenerate-scalar set is exactly `{γ₀}`. -/
+theorem degenerateScalars_eq_singleton_of (P Q : F[X]) {γ₀ : F}
+    (hQ : Q ≠ 0) (hγ₀ : P + C γ₀ * Q = 0) :
+    univ.filter (fun γ : F => P + C γ * Q = 0) = {γ₀} := by
+  classical
+  ext γ
+  simp only [mem_filter, mem_univ, true_and, mem_singleton]
+  constructor
+  · intro hγ
+    have hz : C (γ - γ₀) * Q = 0 := by
+      calc
+        C (γ - γ₀) * Q = C γ * Q - C γ₀ * Q := by rw [map_sub, sub_mul]
+        _ = (P + C γ * Q) - (P + C γ₀ * Q) := by abel
+        _ = 0 := by rw [hγ, hγ₀, sub_self]
+    rcases mul_eq_zero.mp hz with hC | hQ0
+    · exact sub_eq_zero.mp (Polynomial.C_eq_zero.mp hC)
+    · exact absurd hQ0 hQ
+  · intro hγ
+    subst hγ
+    exact hγ₀
+
 omit [DecidableEq ι] in
 /-- **Exact degree-collapse leaves at most one low-weight scalar.**  For a nonzero denominator
 polynomial `Q`, the exact degree condition forces every low-weight scalar into the degenerate set,
@@ -183,6 +259,41 @@ theorem badWeight_card_le_one_of_degree_exact (dom : ι → F)
   (badWeight_card_le_degenerate_card_of_degree_exact dom hdom P Q hdeg).trans
     (degenerateScalars_card_le_one P Q hQ)
 
+omit [DecidableEq ι] in
+/-- **Exact singleton form of polynomial-line degree collapse.**  Under the exact degree
+condition, if a constant-ratio scalar `γ₀` exists (`P + γ₀·Q = 0`) and `Q ≠ 0`, then the
+weight-`≤ w` bad-scalar set is exactly `{γ₀}`.  The forward inclusion is the degree-collapse
+containment; the reverse inclusion holds because the line word is identically zero at `γ₀`. -/
+theorem badWeight_eq_singleton_of_degree_exact_of_degenerate (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ} {γ₀ : F}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) (hγ₀ : P + C γ₀ * Q = 0) :
+    univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)
+      = {γ₀} := by
+  classical
+  apply Finset.Subset.antisymm
+  · intro γ hγ
+    have hsub := badWeight_subset_degenerate_of_degree_exact dom hdom P Q hdeg hγ
+    rw [degenerateScalars_eq_singleton_of P Q hQ hγ₀] at hsub
+    exact hsub
+  · intro γ hγ
+    rw [Finset.mem_singleton] at hγ
+    subst hγ
+    rw [Finset.mem_filter]
+    refine ⟨Finset.mem_univ _, ?_⟩
+    have hzero : univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0) = ∅ := by
+      rw [Finset.filter_eq_empty_iff]
+      intro i _ hi
+      have heval : P.eval (dom i) + γ * Q.eval (dom i) = 0 := by
+        have hpoly := congrArg (fun R : F[X] => R.eval (dom i)) hγ₀
+        simpa [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] using hpoly
+      exact hi heval
+    rw [hzero, Finset.card_empty]
+    exact Nat.zero_le w
+
 end ArkLib.ProximityGap.RatioMultiplicity
 
 open ArkLib.ProximityGap.RatioMultiplicity in
@@ -190,8 +301,18 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_subset_degenerate_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_subset_badWeight
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_eq_degenerate_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_eq_degenerate_card_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_le_degenerate_card_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_card_le_one
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_le_one_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_eq_singleton_of
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_eq_singleton_of_degree_exact_of_degenerate

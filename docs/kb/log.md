@@ -1189,3 +1189,13 @@ high-multiplicity cap gate with `mult_poly_le_max`: for polynomial error coordin
 threshold.  Follow-up in the same bridge: without the nondegeneracy hypothesis, the bad set is
 contained in the degenerate scalar set `{γ : P + γQ = 0}`, and this set has size at most one when
 `Q ≠ 0`.  The arbitrary-stack structural reduction remains open.
+
+## [2026-06-26] refute | arbitrary ratio profiles block support-only caps
+
+Added `deltastar-464-arbitrary-ratio-profile-obstruction-2026-06-26.md` and the
+`RatioCensus.ratioSeq_negProfile_one` / `ratioMult_negProfile_one` /
+`not_uniform_ratioMult_cap_of_fiber_gt` obstruction layer.  For any map `r : ι → F`, the
+full-support line `s₁ ≡ 1`, `s₀ = -r` realizes that exact ratio profile, and its low-weight
+incidence is the large-fibre count of `r`.  Thus the ratio-degree collapse cannot be promoted to
+arbitrary stacks by support counting alone; a floor proof using this lane still needs polynomial
+domination or a global list-supply theorem.

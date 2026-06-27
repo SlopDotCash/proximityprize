@@ -311,6 +311,57 @@ theorem farIncidence_le_card_div_of_fullSupport [Fintype F] (s₀ s₁ : ι → 
   exact (Nat.le_div_iff_mul_le hpos).2
     (farIncidence_mul_le_card_of_fullSupport s₀ s₁ w hfull)
 
+/-! ### Arbitrary ratio profiles: why a structural cap is necessary
+
+The polynomial-degree collapse in `RatioMultiplicityBridge.lean` is a genuine structural input.
+For arbitrary stack/error lines there is no support-only multiplicity cap: choosing the full-support
+direction `s₁ ≡ 1` and offset `s₀ = -r` realizes any prescribed ratio map `r : ι → F`.
+Thus a future floor proof must either prove polynomial/structured domination or control the global
+codeword-pair/list supply; it cannot infer a degree-like cap from the ratio-census identities alone.
+-/
+
+omit [Fintype ι] [DecidableEq F] in
+/-- **Any ratio map is realizable by a full-support affine line.**  With `s₁ ≡ 1` and
+`s₀ i = -r i`, the ratio sequence is exactly `r`. -/
+theorem ratioSeq_negProfile_one (r : ι → F) :
+    ratioSeq (fun i => -r i) (fun _ => (1 : F)) = r := by
+  funext i
+  simp [ratioSeq]
+
+/-- **Any ratio multiplicity profile is realizable.**  The line `(-r) + γ·1` has ratio
+multiplicity at `γ` equal to the fibre size of the arbitrary map `r`. -/
+theorem ratioMult_negProfile_one (r : ι → F) (γ : F) :
+    ratioMult (fun i => -r i) (fun _ => (1 : F)) γ =
+      (univ.filter (fun i => r i = γ)).card := by
+  classical
+  unfold ratioMult
+  congr 1
+  ext i
+  simp [ratioSeq]
+
+/-- **The low-weight incidence of an arbitrary full-support profile is exactly its large-fibre
+count.**  For `s₁ ≡ 1`, `s₀ = -r`, the bad scalars at weight threshold `w` are precisely the
+values whose fibre under `r` has size at least `|ι| - w`. -/
+theorem farIncidence_negProfile_one_eq_fiberLevel [Fintype F] (r : ι → F) (w : ℕ) :
+    (univ.filter (fun γ : F =>
+        hammingNorm ((fun i => -r i) + γ • (fun _ => (1 : F))) ≤ w)).card
+      = (univ.filter (fun γ : F =>
+          Fintype.card ι - w ≤ (univ.filter (fun i => r i = γ)).card)).card := by
+  rw [farIncidence_eq_ratioMult_level]
+  congr 1
+  ext γ
+  simp [ratioMult_negProfile_one]
+
+/-- **No support-only cap exists for arbitrary lines.**  If an arbitrary profile `r` has a fibre
+larger than `m`, then the corresponding full-support line has a scalar whose ratio multiplicity
+exceeds `m`.  Any useful cap must therefore come from extra structure such as low-degree polynomial
+coordinates, not from the ratio-census formalism alone. -/
+theorem not_uniform_ratioMult_cap_of_fiber_gt (r : ι → F) {γ : F} {m : ℕ}
+    (hγ : m < (univ.filter (fun i => r i = γ)).card) :
+    ¬ ∀ δ : F, ratioMult (fun i => -r i) (fun _ => (1 : F)) δ ≤ m := by
+  intro hcap
+  exact (not_lt.mpr ((ratioMult_negProfile_one r γ).symm ▸ hcap γ)) hγ
+
 end ArkLib.ProximityGap.RatioCensus
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -325,3 +376,7 @@ end ArkLib.ProximityGap.RatioCensus
 #print axioms ArkLib.ProximityGap.RatioCensus.farIncidence_mul_le_card_of_fullSupport
 #print axioms ArkLib.ProximityGap.RatioCensus.farIncidence_le_support_div
 #print axioms ArkLib.ProximityGap.RatioCensus.farIncidence_le_card_div_of_fullSupport
+#print axioms ArkLib.ProximityGap.RatioCensus.ratioSeq_negProfile_one
+#print axioms ArkLib.ProximityGap.RatioCensus.ratioMult_negProfile_one
+#print axioms ArkLib.ProximityGap.RatioCensus.farIncidence_negProfile_one_eq_fiberLevel
+#print axioms ArkLib.ProximityGap.RatioCensus.not_uniform_ratioMult_cap_of_fiber_gt

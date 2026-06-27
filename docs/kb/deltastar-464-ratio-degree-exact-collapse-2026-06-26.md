@@ -26,9 +26,14 @@ This pass adds:
 ```lean
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_subset_degenerate_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_subset_badWeight
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_degenerate_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_degenerate_card_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_degenerate_card_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_le_one
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_degenerate
 ```
 
 ## Content
@@ -58,14 +63,22 @@ So the exact zero-`Q`/nonzero-`P` correction survives all the way into the polyn
 degree-collapse API.
 
 There is also a degenerate-scalar version without the global nondegeneracy hypothesis.  Under the
-same exact degree inequality, every low-weight bad scalar is contained in
+same exact degree inequality, the low-weight bad-scalar set is exactly
 
 ```text
 {gamma : P + gamma*Q = 0 as a polynomial}.
 ```
 
+One direction is the degree-collapse argument; the reverse direction is automatic because a
+degenerate polynomial line evaluates to the zero word and therefore has weight `0 <= w`.
+
 If `Q != 0`, that degenerate set has cardinality at most one.  Thus exact degree collapse leaves
 either no scalar after the `hnz` hypothesis, or at most the single constant-ratio scalar without it.
+
+The singleton form is now exact: if a scalar `gamma0` satisfies `P + gamma0*Q = 0` and `Q != 0`,
+then the degenerate set is exactly `{gamma0}`, and the low-weight bad-scalar set is exactly
+`{gamma0}` under the same exact degree inequality.  The reverse inclusion is automatic because
+`P(dom) + gamma0*Q(dom)` is the zero word, hence has weight `0 <= w`.
 
 ## Prize Impact
 
