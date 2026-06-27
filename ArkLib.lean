@@ -1741,6 +1741,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D3FiniteFreeFallingFactor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D3TsangHighMomentRangeGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D4MacMahonMarginEncodingGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D4PermutationInsdelRankTransferGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._D5RandomOperatorChainingTransferGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectMomentCeilingAtFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectNecessitySufficiencyGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectSupCapstone

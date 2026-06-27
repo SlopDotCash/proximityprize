@@ -1136,6 +1136,14 @@ either the fixed dyadic smooth domain lies in the generic-good locus, or every a
 extremal configuration is covered by the generic symbolic model.  The countermodels show generic
 rank/SZ control alone remains compatible with a smooth-domain spike.
 
+## [2026-06-26] refute | random-operator chaining without deterministic transfer
+
+Added `_D5RandomOperatorChainingTransferGate.lean` and companion note
+`deltastar-464-random-operator-chaining-transfer-gate-2026-06-26.md`.  The gate records that a
+random multiplier/operator norm or generic-chaining theorem transfers to the fixed smooth-domain
+period process only through pointwise domination or a genuine bad-event cover.  Without that
+deterministic transfer, a bounded random model remains compatible with a smooth-domain spike.
+
 ## [2026-06-26] refute | homological vanishing without prime-field transfer
 
 Added `_D0HomologicalVanishingTransferGate.lean` and companion note
