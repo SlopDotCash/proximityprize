@@ -1650,6 +1650,25 @@ exact denominator-free obstruction to return.
 The concrete `F_12289`, `n = 16` witness now includes `polynomial_4134_sq_pow16_ne`, and the
 finite ratio obstruction is derived through that denominator-free certificate.
 
+Follow-up: the denominator-free obstruction is now carried by the integer polynomial
+`canonicalRatioPoly n = (X^4 + 1)^n - (X^2 + 1)^n`.  Lean records its evaluation formula over any
+commutative ring, monicity for `0 < n`, degree preservation after mapping to `ZMod p`, and the
+root bridge `canonicalRatioPoly_eval_zmod_eq_zero_of_polynomial_eq`.
+
+Follow-up: the canonical resultant bridge is now formalized.  Lean proves
+`resultant_canonicalRatioPoly_ne_zero`, derives divisibility and size bounds for primes where the
+canonical polynomial obstruction vanishes, and packages the scanner-facing contrapositive
+`not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime`.  The remaining finite-field
+work is now an explicit resultant-size bound for the prize parameters.
+
+Follow-up: a bad-prime collapse is now recorded for the same canonical pair.  In `F_17`, Lean proves
+that `3` is a primitive 16-th root but `invariantRatio 3 (3^2)^16 = 1`, equivalently the
+denominator-cleared polynomial equality holds.  The theorem
+`invariant_collision_scalar_5_zmod17` checks the scalar `5`,
+`exists_invariant_collision_mu16_zmod17_3` packages it as a collision witness, and
+`not_forall_primitive_pairNonCollision_zmod17_mu16` refutes the uniform finite-field statement
+without bad-prime exclusions.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with

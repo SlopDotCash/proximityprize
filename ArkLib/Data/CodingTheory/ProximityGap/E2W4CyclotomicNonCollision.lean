@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2DilationDirectCount
+import ArkLib.Data.CodingTheory.ProximityGap.CyclotomicResultantBound
 
 /-!
 # The width-4 cyclotomic non-collision: when the combinatorial model `K = n/4 − 1` equals the
@@ -1608,6 +1609,58 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
 
 /-! ### Polynomial form of the fixed canonical ratio residual -/
 
+/-- **Integer carrier for the fixed canonical denominator-cleared obstruction.** A primitive
+finite-field root `ζ` satisfies the local width-4 ratio obstruction exactly when this polynomial
+vanishes at `ζ`. -/
+noncomputable def canonicalRatioPoly (n : ℕ) : Polynomial ℤ :=
+  (Polynomial.X ^ 4 + Polynomial.C 1) ^ n - (Polynomial.X ^ 2 + Polynomial.C 1) ^ n
+
+/-- Evaluation form of `canonicalRatioPoly` after mapping coefficients to any commutative ring. -/
+theorem canonicalRatioPoly_eval_map {R : Type*} [CommRing R] (n : ℕ) (z : R) :
+    ((canonicalRatioPoly n).map (Int.castRingHom R)).eval z =
+      (z ^ 4 + 1) ^ n - (z ^ 2 + 1) ^ n := by
+  simp [canonicalRatioPoly]
+
+/-- The canonical obstruction polynomial is monic for positive `n`. -/
+theorem canonicalRatioPoly_monic {n : ℕ} (hn : 0 < n) : (canonicalRatioPoly n).Monic := by
+  unfold canonicalRatioPoly
+  apply Polynomial.Monic.sub_of_left
+  · exact (Polynomial.monic_X_pow_add_C (R := ℤ) (a := 1)
+      (by norm_num : (4 : ℕ) ≠ 0)).pow n
+  · let hmon2 : (Polynomial.X ^ 2 + Polynomial.C 1 : Polynomial ℤ).Monic :=
+      Polynomial.monic_X_pow_add_C (R := ℤ) (a := 1) (by norm_num : (2 : ℕ) ≠ 0)
+    let hmon4 : (Polynomial.X ^ 4 + Polynomial.C 1 : Polynomial ℤ).Monic :=
+      Polynomial.monic_X_pow_add_C (R := ℤ) (a := 1) (by norm_num : (4 : ℕ) ≠ 0)
+    rw [Polynomial.degree_eq_natDegree (hmon2.pow n).ne_zero,
+      Polynomial.degree_eq_natDegree (hmon4.pow n).ne_zero]
+    have hleft :
+        ((Polynomial.X ^ 4 + Polynomial.C 1 : Polynomial ℤ) ^ n).natDegree = n * 4 := by
+      rw [Polynomial.natDegree_pow]
+      congr
+      simpa using (Polynomial.natDegree_X_pow_add_C (R := ℤ) (n := 4) (r := 1))
+    have hright :
+        ((Polynomial.X ^ 2 + Polynomial.C 1 : Polynomial ℤ) ^ n).natDegree = n * 2 := by
+      rw [Polynomial.natDegree_pow]
+      congr
+      simpa using (Polynomial.natDegree_X_pow_add_C (R := ℤ) (n := 2) (r := 1))
+    rw [hleft, hright]
+    exact_mod_cast (Nat.mul_lt_mul_of_pos_left (by norm_num : 2 < 4) hn)
+
+/-- Mapping the canonical obstruction polynomial to `ZMod p` preserves degree. -/
+theorem canonicalRatioPoly_natDegree_map_zmod {p n : ℕ} [Fact p.Prime] (hn : 0 < n) :
+    ((canonicalRatioPoly n).map (Int.castRingHom (ZMod p))).natDegree =
+      (canonicalRatioPoly n).natDegree := by
+  rw [Polynomial.natDegree_map_eq_of_isUnit_leadingCoeff]
+  rw [(canonicalRatioPoly_monic hn).leadingCoeff]
+  exact isUnit_one
+
+/-- A denominator-cleared polynomial equality is exactly a root of `canonicalRatioPoly`. -/
+theorem canonicalRatioPoly_eval_zmod_eq_zero_of_polynomial_eq {p n : ℕ} [Fact p.Prime]
+    {ζ : ZMod p} (hpoly : (ζ ^ 4 + 1) ^ n = (ζ ^ 2 + 1) ^ n) :
+    ((canonicalRatioPoly n).map (Int.castRingHom (ZMod p))).eval ζ = 0 := by
+  rw [canonicalRatioPoly_eval_map]
+  exact sub_eq_zero.mpr hpoly
+
 /-- **Denominator-cleared canonical ratio obstruction.** For a primitive `n`-th root `ζ`, once
 `ζ² + 1` is nonzero, the local ratio-root obstruction is exactly the polynomial equality
 `(ζ⁴ + 1)^n = (ζ² + 1)^n`.  This removes inverses from the fixed `quadT 1 ζ`, `quadT 1 ζ²`
@@ -1705,6 +1758,61 @@ theorem polynomial_ne_complex_primitive_zeta_sq {n : ℕ} {ζ : ℂ}
     (F := ℂ) hn hn8 hζ).mp
     (invariantRatio_pow_ne_one_complex_primitive_zeta_sq hn hn8 hζ)
 
+/-- The canonical width-4 obstruction resultant is nonzero in characteristic zero. -/
+theorem resultant_canonicalRatioPoly_ne_zero {n : ℕ} (hn : 0 < n) (hn8 : 8 < n) :
+    Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+        (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree ≠ 0 := by
+  apply _root_.resultant_cyclotomic_ne_zero_of_forall_root_ne n (canonicalRatioPoly n)
+  intro ω hω
+  haveI : NeZero (n : ℂ) := ⟨Nat.cast_ne_zero.mpr hn.ne'⟩
+  have hprim : IsPrimitiveRoot ω n :=
+    Polynomial.isRoot_cyclotomic_iff.mp (Polynomial.isRoot_of_mem_roots hω)
+  have hne : (ω ^ 4 + 1) ^ n ≠ (ω ^ 2 + 1) ^ n :=
+    polynomial_ne_complex_primitive_zeta_sq hn hn8 hprim
+  rw [canonicalRatioPoly_eval_map]
+  exact sub_ne_zero.mpr hne
+
+/-- If the canonical denominator-cleared obstruction vanishes in `ZMod p`, then `p` divides the
+nonzero cyclotomic resultant of the integer carrier polynomial. -/
+theorem prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ n)
+    (hpoly : (ζ ^ 4 + 1) ^ n = (ζ ^ 2 + 1) ^ n) :
+    (p : ℤ) ∣ Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+      (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree :=
+  _root_.dvd_resultant_of_isPrimitiveRoot_isRoot hn (canonicalRatioPoly n)
+    (canonicalRatioPoly_natDegree_map_zmod hn) hζ
+    (canonicalRatioPoly_eval_zmod_eq_zero_of_polynomial_eq hpoly)
+
+/-- If the canonical polynomial obstruction vanishes in `ZMod p`, then `p` is bounded by the
+absolute value of the nonzero integer resultant. -/
+theorem prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (hn8 : 8 < n) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ n)
+    (hpoly : (ζ ^ 4 + 1) ^ n = (ζ ^ 2 + 1) ^ n) :
+    p ≤ (Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+      (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree).natAbs := by
+  have hdvd :=
+    prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod hn hζ hpoly
+  have hne : Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+        (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree ≠ 0 :=
+    resultant_canonicalRatioPoly_ne_zero hn hn8
+  exact Nat.le_of_dvd (Int.natAbs_pos.mpr hne) (Int.natAbs_dvd_natAbs.mpr hdvd)
+
+/-- Contrapositive polynomial form: above the canonical obstruction resultant, the denominator-free
+polynomial collision cannot occur. -/
+theorem polynomial_ne_zmod_of_resultant_natAbs_lt_prime
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (hn8 : 8 < n) {ζ : ZMod p}
+    (hζ : IsPrimitiveRoot ζ n)
+    (hsmall :
+      (Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+        (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree).natAbs < p) :
+    (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n := by
+  intro hpoly
+  exact not_lt_of_ge
+    (prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+      hn hn8 hζ hpoly) hsmall
+
 /-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
 theorem n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
     {n : ℕ} {ζ : ℂ} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
@@ -1771,6 +1879,70 @@ theorem not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4 :
   not_le.mpr sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 
 end Concrete12289Ratio
+
+/-! ### A bad-prime collapse of the fixed ratio residual (`n = 16`, `p = 17`) -/
+
+section Concrete17RatioCollapse
+
+local instance fact_prime_17_ratio : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+
+/-- `3` has order `16` in `F₁₇`. -/
+theorem orderOf_3_ratio_zmod17 : orderOf (3 : ZMod 17) = 16 := by
+  have h8 : ¬ (3 : ZMod 17) ^ (2 : ℕ) ^ 3 = 1 := by decide
+  have h16 : (3 : ZMod 17) ^ (2 : ℕ) ^ 4 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (3 : ZMod 17)) h8 h16
+  norm_num at h
+  exact h
+
+/-- `3` is a primitive 16-th root in `F₁₇`. -/
+theorem isPrimitiveRoot_3_16_ratio_zmod17 : IsPrimitiveRoot (3 : ZMod 17) 16 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_3_ratio_zmod17
+
+/-- At the bad prime `17`, the canonical ratio for `ζ = 3` is itself a 16-th root. -/
+theorem invariantRatio_3_sq_pow16_eq_one_zmod17 :
+    invariantRatio (3 : ZMod 17) ((3 : ZMod 17) ^ 2) ^ 16 = 1 := by
+  decide
+
+/-- Equivalently, the denominator-cleared polynomial obstruction vanishes in `F₁₇`. -/
+theorem polynomial_eq_3_sq_pow16_zmod17 :
+    ((3 : ZMod 17) ^ 4 + 1) ^ 16 = ((3 : ZMod 17) ^ 2 + 1) ^ 16 := by
+  decide
+
+/-- The concrete collision scalar in `F₁₇` is `5`. -/
+theorem invariant_collision_scalar_5_zmod17 :
+    (3 : ZMod 17) ^ 2 + ((3 : ZMod 17) ^ 2)⁻¹ =
+      (5 : ZMod 17) * ((3 : ZMod 17) + (3 : ZMod 17)⁻¹) := by
+  decide
+
+/-- The local pairwise residual fails concretely in `F₁₇`: a collision scalar exists. -/
+theorem exists_invariant_collision_mu16_zmod17_3 :
+    ∃ u ∈ Polynomial.nthRootsFinset 16 (1 : ZMod 17),
+      (3 : ZMod 17) ^ 2 + ((3 : ZMod 17) ^ 2)⁻¹ =
+        u * ((3 : ZMod 17) + (3 : ZMod 17)⁻¹) := by
+  refine ⟨5, ?_, invariant_collision_scalar_5_zmod17⟩
+  rw [Polynomial.mem_nthRootsFinset (by norm_num : 0 < 16)]
+  decide
+
+/-- Hence the canonical pairwise non-collision residual is false in this bad-prime instance. -/
+theorem not_invariantPairNonCollision_mu16_zmod17_3 :
+    ¬ InvariantPairNonCollision (Polynomial.nthRootsFinset 16 (1 : ZMod 17))
+      (3 : ZMod 17) ((3 : ZMod 17) ^ 2) := by
+  exact
+    (not_invariantPairNonCollision_iff_exists_collision (F := ZMod 17)
+      (Polynomial.nthRootsFinset 16 (1 : ZMod 17)) (3 : ZMod 17)
+      ((3 : ZMod 17) ^ 2)).mpr exists_invariant_collision_mu16_zmod17_3
+
+/-- Therefore the fixed canonical residual is not a uniform finite-field theorem without excluding
+bad primes. -/
+theorem not_forall_primitive_pairNonCollision_zmod17_mu16 :
+    ¬ ∀ ζ : ZMod 17, IsPrimitiveRoot ζ 16 →
+      InvariantPairNonCollision (Polynomial.nthRootsFinset 16 (1 : ZMod 17)) ζ (ζ ^ 2) := by
+  intro h
+  exact not_invariantPairNonCollision_mu16_zmod17_3
+    (h (3 : ZMod 17) isPrimitiveRoot_3_16_ratio_zmod17)
+
+end Concrete17RatioCollapse
 
 /-- **Fixed primitive-root width-4 refuter.** For even `n > 8`, the canonical witnesses
 `quadT 1 ζ` and `quadT 1 ζ²` satisfy all membership, nonzero, distinctness, and sign-quotiented
@@ -1915,6 +2087,49 @@ theorem polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
     exact hζ2neneg1 (eq_neg_of_add_eq_zero_left h)
   exact (invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq hn hζ hden).mp hratio
 
+/-- A surviving literal `n` budget in the canonical `ZMod p` width-4 lane forces `p` to divide
+the canonical obstruction resultant. -/
+theorem prime_dvd_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ n)
+    (hbudget : (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : ZMod p)) 4).card ≤ n) :
+    (p : ℤ) ∣ Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+      (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree :=
+  prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod hn hζ
+    (polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+      (F := ZMod p) hn heven hn8 hζ hbudget)
+
+/-- Resultant bad-prime certificate for the canonical width-4 lane: if the literal `n` budget
+survives over `ZMod p`, then `p` is at most the absolute value of one explicit nonzero integer
+resultant. -/
+theorem prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ n)
+    (hbudget : (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : ZMod p)) 4).card ≤ n) :
+    p ≤ (Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+      (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree).natAbs := by
+  have hdvd :=
+    prime_dvd_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+      hn heven hn8 hζ hbudget
+  have hne : Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+        (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree ≠ 0 :=
+    resultant_canonicalRatioPoly_ne_zero hn hn8
+  exact Nat.le_of_dvd (Int.natAbs_pos.mpr hne) (Int.natAbs_dvd_natAbs.mpr hdvd)
+
+/-- Contrapositive scanner form: once the prize prime exceeds the canonical obstruction
+resultant, the canonical width-4 literal `n` budget is impossible. -/
+theorem not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime
+    {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ n)
+    (hsmall :
+      (Polynomial.resultant (Polynomial.cyclotomic n ℤ) (canonicalRatioPoly n)
+        (Polynomial.cyclotomic n ℤ).natDegree (canonicalRatioPoly n).natDegree).natAbs < p) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : ZMod p)) 4).card ≤ n := by
+  intro hbudget
+  exact not_lt_of_ge
+    (prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+      hn heven hn8 hζ hbudget) hsmall
+
 /-- Fixed primitive-root scanner-failure form for the canonical witnesses
 `quadT 1 ζ` and `quadT 1 ζ²`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
@@ -2055,6 +2270,14 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms invariantRatio_4134_sq_pow16_ne_one
 #print axioms sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 #print axioms not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
+#print axioms orderOf_3_ratio_zmod17
+#print axioms isPrimitiveRoot_3_16_ratio_zmod17
+#print axioms invariantRatio_3_sq_pow16_eq_one_zmod17
+#print axioms polynomial_eq_3_sq_pow16_zmod17
+#print axioms invariant_collision_scalar_5_zmod17
+#print axioms exists_invariant_collision_mu16_zmod17_3
+#print axioms not_invariantPairNonCollision_mu16_zmod17_3
+#print axioms not_forall_primitive_pairNonCollision_zmod17_mu16
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even

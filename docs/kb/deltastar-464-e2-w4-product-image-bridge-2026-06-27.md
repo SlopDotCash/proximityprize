@@ -68,6 +68,11 @@ invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_ne_one
 not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
+canonicalRatioPoly
+canonicalRatioPoly_eval_map
+canonicalRatioPoly_monic
+canonicalRatioPoly_natDegree_map_zmod
+canonicalRatioPoly_eval_zmod_eq_zero_of_polynomial_eq
 invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq
 invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne
 invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
@@ -79,6 +84,10 @@ complex_root_add_inv_im_eq_zero
 invariantPairNonCollision_complex_primitive_zeta_sq
 invariantRatio_pow_ne_one_complex_primitive_zeta_sq
 polynomial_ne_complex_primitive_zeta_sq
+resultant_canonicalRatioPoly_ne_zero
+prime_dvd_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+prime_le_natAbs_resultant_canonicalRatioPoly_of_polynomial_eq_zmod
+polynomial_ne_zmod_of_resultant_natAbs_lt_prime
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -87,10 +96,21 @@ polynomial_4134_sq_pow16_ne
 invariantRatio_4134_sq_pow16_ne_one
 sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
+orderOf_3_ratio_zmod17
+isPrimitiveRoot_3_16_ratio_zmod17
+invariantRatio_3_sq_pow16_eq_one_zmod17
+polynomial_eq_3_sq_pow16_zmod17
+invariant_collision_scalar_5_zmod17
+exists_invariant_collision_mu16_zmod17_3
+not_invariantPairNonCollision_mu16_zmod17_3
+not_forall_primitive_pairNonCollision_zmod17_mu16
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+prime_dvd_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod
+not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime
 not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 ```
@@ -253,6 +273,12 @@ denominator-free polynomial nonvanishing statement as the scanner-facing target.
 `n` budget in the canonical lane forces the polynomial equality
 `(ζ^4 + 1)^n = (ζ^2 + 1)^n`.
 
+The denominator-cleared obstruction is also packaged as the integer polynomial
+`canonicalRatioPoly n = (X^4 + 1)^n - (X^2 + 1)^n`.  Lean records its evaluation formula over any
+commutative ring, proves it is monic for `0 < n`, proves mapping to `ZMod p` preserves its degree,
+and exposes `canonicalRatioPoly_eval_zmod_eq_zero_of_polynomial_eq` as the bridge from the
+finite-field polynomial equality back to a root of the integer carrier.
+
 Over `ℂ`, this fixed canonical ratio residual is now discharged unconditionally for primitive
 `ζ` with `8 < n`.  The theorem `invariantPairNonCollision_complex_primitive_zeta_sq` proves that
 any collision scalar would be real, hence `±1`, using
@@ -267,12 +293,26 @@ nonvanishing theorem is the exact nonzero input for a cyclotomic-resultant bad-p
 This is characteristic-zero evidence for the local lane, not a finite-field discharge for the prize
 prime.
 
+That bad-prime route is now formalized for the canonical polynomial carrier.  Lean proves the
+integer resultant of `cyclotomic n` and `canonicalRatioPoly n` is nonzero, then shows a finite-field
+vanishing of the denominator-cleared obstruction forces `p` to divide that resultant and hence
+`p <= |resultant|`.  The contrapositive theorem
+`polynomial_ne_zmod_of_resultant_natAbs_lt_prime` turns an explicit resultant bound into the
+polynomial nonvanishing needed by the scanner lane.
+
 The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
 witness at `n = 16`.  Lean proves `4134` has order `16`, checks the denominator-free
 `polynomial_4134_sq_pow16_ne`, derives `invariantRatio 4134 (4134^2)^16 != 1`, and derives
 `16 < #(e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod 12289)) 4)`.  The declaration
 `not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4` is the corresponding literal budget refuter
 for that concrete subgroup.
+
+There is also a deliberately recorded bad-prime collapse.  In `ZMod 17`, `3` is a primitive
+16-th root, but `invariantRatio 3 (3^2)^16 = 1` and the denominator-cleared polynomial equality
+holds.  The theorem `invariant_collision_scalar_5_zmod17` checks the scalar `5` directly,
+`exists_invariant_collision_mu16_zmod17_3` packages it as a root-of-unity collision, and
+`not_forall_primitive_pairNonCollision_zmod17_mu16` refutes any uniform finite-field version of the
+canonical pairwise residual without excluding bad primes.
 
 The backwards direction is now explicit too.  If the literal budget
 `#(e2BadScalarSet mu_n 4) <= n` holds in the canonical fixed-witness lane, Lean derives both the
@@ -286,3 +326,11 @@ failure extractor
 `exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` package the
 same outcome against `Cd₀NonCollisionModSign mu_n`: a successful literal `n` budget now forces an
 explicit nonzero, sign-distinct invariant collision.
+
+For `ZMod p`, this converse also has a resultant form.  The theorems
+`prime_dvd_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod` and
+`prime_le_natAbs_resultant_canonicalRatioPoly_of_e2BadScalarSet_mu_card_le_n_zmod` state that a
+surviving literal budget forces `p` to divide, hence be bounded by, the same nonzero resultant.
+The contrapositive
+`not_e2BadScalarSet_mu_card_le_n_zmod_of_resultant_natAbs_lt_prime` is the scanner-facing finite
+field certificate once an explicit resultant bound is available.
