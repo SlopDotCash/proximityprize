@@ -1192,8 +1192,10 @@ contained in the degenerate scalar set `{γ : P + γQ = 0}`, and this set has si
 `badWeight_eq_empty_or_singleton_of_degree_exact` and
 `badWeight_card_eq_zero_or_one_of_degree_exact`, with
 `badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact` identifying the count-one branch
-exactly with existence of a degenerate scalar.  The arbitrary-stack structural reduction remains
-open.
+exactly with existence of a degenerate scalar.  Follow-up: `degenerate_exists_iff_scalarMultiple`
+and its consumers rewrite that branch as the ordinary scalar-multiple condition `P = cQ`; under
+`Q ≠ 0`, the structured low-weight set is empty iff `P` is not a scalar multiple of `Q`.  The
+arbitrary-stack structural reduction remains open.
 
 ## [2026-06-26] refute | arbitrary ratio profiles block support-only caps
 

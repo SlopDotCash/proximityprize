@@ -33,10 +33,13 @@ ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_degenerate_card_of_degre
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_le_one
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
+ArkLib.ProximityGap.RatioMultiplicity.degenerate_exists_iff_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_degenerate
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_or_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_iff_not_scalarMultiple_of_degree_exact
 ```
 
 ## Content
@@ -87,6 +90,11 @@ Equivalently, under the exact degree inequality and `Q != 0`, the structured pol
 complete dichotomy: the low-weight scalar set is either empty or exactly one singleton.  Its
 cardinality is therefore exactly `0` or exactly `1`, and the count is `1` iff a degenerate scalar
 `gamma0` with `P + gamma0*Q = 0` exists.
+
+The degeneracy test is also recorded in scalar-multiple form: such a scalar exists iff
+`P = c*Q` for some field scalar `c`.  Thus, under the same exact degree hypothesis and `Q != 0`,
+the low-weight set is empty iff `P` is not a scalar multiple of `Q`, and has cardinality `1` iff
+`P` is a scalar multiple of `Q`.
 
 ## Prize Impact
 
