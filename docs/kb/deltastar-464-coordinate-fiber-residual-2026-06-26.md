@@ -253,13 +253,19 @@ exists_low_appearingCoordinateFiber_gt_of_exists_low_exactAppearingFiber_gt
 exists_uniformLow_appearingCoordinateFiber_gt_of_exists_uniformLow_exactAppearingFiber_gt
 zeroLowAppearingCoordinateFiberBudgeted_of_lowExactBudgeted_mixedChooseProfileSums
 uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_of_lowExact_mixedChooseProfileSums
+uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_of_lowExact_mixedChooseProfileSumsFit
 uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSums
+uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSumsFit
+not_uniformLowMixedChooseProfileSumsFit_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_not_uniformLowMixedChooseProfileSumsFit_of_not_budgeted
 exists_largeZero_safe_low_mixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted
 unsafe_or_largeZero_safe_low_mixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_lowExact_fullMixedChooseProfileSums
 uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileSums
 unsafe_or_largeZero_safe_fullMixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSums
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSumsFit
+unsafe_or_not_uniformLowSupportRatioMixedChooseProfileSumsFit_of_not_budgeted
 unsafe_or_largeZero_safe_low_supportRatioMixedChooseProfile_gt_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileSums
 unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfile_gt_of_not_budgeted
@@ -288,6 +294,39 @@ uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardSums
 unsafe_or_largeZero_safe_fieldPow_mixedProfileCard_gt_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardSums
 unsafe_or_largeZero_safe_fieldPow_fullMixedProfileCard_gt_of_not_budgeted
+fieldPowMixedProfileCardSum
+FieldPowMixedProfileCardFit
+FieldPowFullMixedProfileCardFit
+not_fieldPowMixedProfileCardFit_iff_exists_sum_gt
+not_fieldPowFullMixedProfileCardFit_iff_exists_sum_gt
+fieldPowMixedProfileCardFit_term_le
+fieldPowFullMixedProfileCardFit_term_le
+fieldPowMixedProfileCardFit_exact_le
+fieldPowMixedProfileCardFit_high_choose_le
+not_fieldPowMixedProfileCardFit_of_exact_gt
+not_fieldPowMixedProfileCardFit_of_high_choose_gt
+fieldPowFullMixedProfileCardFit_exact_le
+fieldPowFullMixedProfileCardFit_high_choose_le
+not_fieldPowFullMixedProfileCardFit_of_exact_gt
+not_fieldPowFullMixedProfileCardFit_of_high_choose_gt
+uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardFit
+unsafe_or_not_fieldPow_mixedProfileCardFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit
+unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted
+mixedChooseProfileCardSum_le_topCard
+uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileTopSums
+unsafe_or_largeZero_safe_low_mixedChooseProfileTop_gt_of_not_uniformLineBadScalarsBudgeted
+uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileTopSums
+unsafe_or_largeZero_safe_fullMixedChooseProfileTop_gt_of_not_uniformLineBadScalarsBudgeted
+fieldPowMixedProfileCardSum_le_topCard
+FieldPowMixedProfileTopFit
+FieldPowFullMixedProfileTopFit
+not_fieldPowMixedProfileTopFit_iff_exists_sum_gt
+not_fieldPowFullMixedProfileTopFit_iff_exists_sum_gt
+uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileTopFit
+unsafe_or_not_fieldPow_mixedProfileTopFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileTopFit
+unsafe_or_not_fieldPow_fullMixedProfileTopFit_of_not_budgeted
 ```
 
 These wrappers let a future positive proof provide only the low-profile estimates `t < k`, while
@@ -337,15 +376,45 @@ envelope `Mexact t` and each high singleton binomial contribution
 wrappers remove the dummy subset parameter: because the sum depends only on
 `z = #directionZeroSet(u1)`, the remaining check can be stated as a pure inequality for
 `a <= z <= n`.
+The named-fit route is now wired into production and scanning directly:
+`uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSumsFit` consumes the uniform mixed
+fit, while `unsafe_or_not_uniformLowMixedChooseProfileSumsFit_of_not_budgeted` turns failed
+bad-scalar production into either zero-direction saturation or negation of that named arithmetic
+fit.
 The support-ratio field-power budget is now composed directly into this route: the
 `lineFiberCoverFieldPow_*MixedChooseProfile*` theorems instantiate `Mexact r` with
 `|F| * choose(n, a-r) * |F|^(k-a)`, so downstream callers no longer have to separately pass a low
 exact-appearance budget before checking the mixed profile arithmetic.
+The concrete field-power cardinal arithmetic is also packaged by
+`fieldPowMixedProfileCardSum`, `FieldPowMixedProfileCardFit`, and
+`FieldPowFullMixedProfileCardFit`.  The wrappers
+`uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardFit` and
+`uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit` consume those named fits, and
+their scanners `unsafe_or_not_fieldPow_mixedProfileCardFit_of_not_budgeted` /
+`unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted` strip failed production down to
+zero-direction saturation or failure of a finite `(z,t)` arithmetic contract.
+The field-power card fit also exposes its single-term obstructions: the same-profile field-power
+term and every high singleton binomial term must each fit below `Mcoarse t`; the corresponding
+`not_fieldPow*CardFit_of_*_gt` lemmas refute the route from either over-budget term alone.
+Monotonicity in the zero-set cardinality is now explicit at the generic mixed-profile level:
+`mixedChooseProfileCardSum_le_topCard` reduces any card-profile mixed sum with fixed `Mexact` to
+the worst case `z = n`.  The `uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileTopSums`
+and `uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileTopSums` wrappers consume
+those top-cardinality inequalities directly, and their scanners return zero-direction saturation
+or one oversized top-cardinality `t` profile.
+`LineListAppearanceFiberMixedProfileFit.lean` specializes the same top-cardinality contraction to
+the concrete field-power envelope through `FieldPowMixedProfileTopFit` and
+`FieldPowFullMixedProfileTopFit`, so the fallback field-power route can be checked as a
+one-variable `t` inequality at `z = n`.
 The sibling `LineListSupportRatioMixedProfile.lean` keeps the abstract support-ratio-heavy version:
 low support-ratio-heavy budgets feed the same mixed-profile sockets before choosing any particular
 field-power envelope.  Its cardinal-profile variants expose the same pure `a <= z <= n`
 arithmetic residual while keeping `Mheavy` abstract, so a future sharper support-ratio-heavy bound
 can bypass the ambient field-power envelope without changing the downstream mixed-profile scanner.
+It also has named-fit wrappers
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSumsFit` and
+`unsafe_or_not_uniformLowSupportRatioMixedChooseProfileSumsFit_of_not_budgeted`, so abstract
+support-ratio-heavy inputs share the same residual predicate as the low-exact route.
 
 The negated low-budget forms are now exact scanners too: per-line failure exposes a low profile
 `t < k`, zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`; uniform failure

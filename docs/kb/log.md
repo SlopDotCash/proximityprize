@@ -1380,6 +1380,28 @@ particular, both the same-profile low exact term and every high singleton binomi
 under `Mcoarse t`; one over-budget high binomial contribution refutes the mixed route.  The
 cardinal-profile wrappers reduce this arithmetic to inequalities in `a <= z <= n`.
 
+Follow-up: the named-fit layer now reaches the concrete field-power cardinal route.  Generic
+wrappers `uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSumsFit` and
+`unsafe_or_not_uniformLowMixedChooseProfileSumsFit_of_not_budgeted` consume or refute the uniform
+mixed-profile fit directly.  The support-ratio-heavy sibling mirrors this through
+`uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSumsFit` and
+`unsafe_or_not_uniformLowSupportRatioMixedChooseProfileSumsFit_of_not_budgeted`.  The field-power
+specializations
+`fieldPowMixedProfileCardSum`, `FieldPowMixedProfileCardFit`, and
+`FieldPowFullMixedProfileCardFit` package the remaining finite `(z,t)` arithmetic, with production
+wrappers and scanners reducing failed bad-scalar production to zero-direction saturation or
+negation of that named card-fit contract.
+The field-power card fit now has direct single-term obstructions:
+`fieldPowMixedProfileCardFit_exact_le`, `fieldPowMixedProfileCardFit_high_choose_le`, and the
+matching `not_fieldPow*CardFit_of_*_gt` refuters show that either an over-budget same-profile
+field-power term or one high singleton binomial term kills the route before any geometry is used.
+The generic mixed-card route now contracts further to the top-cardinality case:
+`mixedChooseProfileCardSum_le_topCard` reduces `a <= z <= n` to the worst case `z = n` for any
+fixed exact-profile envelope, and the `*_mixedChooseProfileTopSums` wrappers expose a one-variable
+`t` arithmetic residual for the same production scanners.
+`LineListAppearanceFiberMixedProfileFit.lean` specializes that contraction to the field-power
+envelope via `FieldPowMixedProfileTopFit` / `FieldPowFullMixedProfileTopFit`.
+
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 
 Renamed the finite-rung floor-localization guardrail from the scratch file

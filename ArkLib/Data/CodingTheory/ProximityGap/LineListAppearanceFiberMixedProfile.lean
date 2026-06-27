@@ -571,6 +571,343 @@ theorem
       simpa using (Finset.card_le_univ (directionZeroSet u₁))
     exact Or.inr ⟨u₁, hnotEligible, hzlo, hzhi, t, ht, hgt⟩
 
+omit [Fintype F] [DecidableEq F] [NeZero n] in
+/-- The mixed choose-profile cardinal sum is monotone in the zero-set cardinality.  Thus the
+worst large-zero cardinal residual occurs at the ambient maximum `z = n`. -/
+theorem mixedChooseProfileCardSum_le_topCard
+    (a k t z : ℕ) (Mexact : ℕ → ℕ) (hz : z ≤ n) :
+    (∑ r ∈ Finset.range a,
+      (z - t).choose (r - t) * (if r < k then Mexact r else 1)) ≤
+      ∑ r ∈ Finset.range a,
+        (n - t).choose (r - t) * (if r < k then Mexact r else 1) := by
+  refine Finset.sum_le_sum ?_
+  intro r _hr
+  exact Nat.mul_le_mul_right (if r < k then Mexact r else 1)
+    (Nat.choose_le_choose (r - t) (Nat.sub_le_sub_right hz t))
+
+open Classical in
+/-- Top-cardinality version of the low mixed-profile consumer.  Since the profile sum is monotone
+in `#zeroSet(u₁)`, it is enough to check the pure arithmetic envelope at `z = n`. -/
+theorem uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileTopSums
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mexact Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hExactLow :
+      UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a Mexact)
+    (hProfileTop :
+      ∀ t : ℕ, t < a → t < k →
+        (∑ r ∈ Finset.range a,
+          (n - t).choose (r - t) * (if r < k then Mexact r else 1)) ≤ Mcoarse t)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileCardSums
+    dom hk a L B Mexact Mcoarse hSupport hFits hZeroSafe hExactLow
+    (by
+      intro z t _hzlo hzhi ht htk
+      exact le_trans (mixedChooseProfileCardSum_le_topCard a k t z Mexact hzhi)
+        (hProfileTop t ht htk))
+    hHigh hFiberFits
+
+open Classical in
+/-- Scanner-facing top-cardinality version of the low mixed-profile route.  Failed production
+exposes either zero-direction saturation or a single low profile whose ambient worst-case mixed
+sum exceeds `Mcoarse`. -/
+theorem
+    unsafe_or_largeZero_safe_low_mixedChooseProfileTop_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mexact Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hExactLow :
+      UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a Mexact)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ t : ℕ, t < a ∧ t < k ∧
+        Mcoarse t <
+          ∑ r ∈ Finset.range a,
+            (n - t).choose (r - t) * (if r < k then Mexact r else 1)) := by
+  rcases
+      (unsafe_or_largeZero_safe_low_mixedChooseProfileCard_gt_of_not_uniformLineBadScalarsBudgeted
+        dom hk a L B Mexact Mcoarse hSupport hFits hExactLow hHigh hFiberFits hnot) with
+    hUnsafe | hProfile
+  · exact Or.inl hUnsafe
+  · rcases hProfile with ⟨u₁, _hnotEligible, _hzlo, hzhi, t, ht, htk, hgt⟩
+    have hle := mixedChooseProfileCardSum_le_topCard
+      (n := n) a k t (directionZeroSet u₁).card Mexact hzhi
+    exact Or.inr ⟨t, ht, htk, lt_of_lt_of_le hgt hle⟩
+
+open Classical in
+/-- Top-cardinality version of the full mixed-profile consumer. -/
+theorem uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileTopSums
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mexact Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hLowExact :
+      UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a Mexact)
+    (hProfileTop :
+      ∀ t : ℕ, t < a →
+        (∑ r ∈ Finset.range a,
+          (n - t).choose (r - t) * (if r < k then Mexact r else 1)) ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileCardSums
+    dom hk a L B Mexact Mcoarse hSupport hFits hZeroSafe hLowExact
+    (by
+      intro z t _hzlo hzhi ht
+      exact le_trans (mixedChooseProfileCardSum_le_topCard a k t z Mexact hzhi)
+        (hProfileTop t ht))
+    hFiberFits
+
+open Classical in
+/-- Scanner-facing top-cardinality version of the full mixed-profile route. -/
+theorem
+    unsafe_or_largeZero_safe_fullMixedChooseProfileTop_gt_of_not_uniformLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ)
+    (Mexact Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hLowExact :
+      UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a Mexact)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      (∃ t : ℕ, t < a ∧
+        Mcoarse t <
+          ∑ r ∈ Finset.range a,
+            (n - t).choose (r - t) * (if r < k then Mexact r else 1)) := by
+  rcases
+      (unsafe_or_largeZero_safe_fullMixedChooseProfileCard_gt_of_not_uniformLineBadScalarsBudgeted
+        dom hk a L B Mexact Mcoarse hSupport hFits hLowExact hFiberFits hnot) with
+    hUnsafe | hProfile
+  · exact Or.inl hUnsafe
+  · rcases hProfile with ⟨u₁, _hnotEligible, _hzlo, hzhi, t, ht, hgt⟩
+    have hle := mixedChooseProfileCardSum_le_topCard
+      (n := n) a k t (directionZeroSet u₁).card Mexact hzhi
+    exact Or.inr ⟨t, ht, lt_of_lt_of_le hgt hle⟩
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+/-- Concrete field-power mixed-profile card sum.  For exact profiles below `k` it charges the
+support-ratio field-power envelope, and for profiles at least `k` it charges the RS singleton
+ceiling. -/
+def fieldPowMixedProfileCardSum (n a k z t : ℕ) : ℕ :=
+  ∑ r ∈ Finset.range a,
+    (z - t).choose (r - t) *
+      (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+      else 1)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+/-- Pure arithmetic fit for the low field-power mixed-profile card sums. -/
+def FieldPowMixedProfileCardFit (a k : ℕ) (Mcoarse : ℕ → ℕ) : Prop :=
+  ∀ z t : ℕ, a ≤ z → z ≤ n → t < a → t < k →
+    fieldPowMixedProfileCardSum (F := F) n a k z t ≤ Mcoarse t
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+/-- Pure arithmetic fit for the full field-power mixed-profile card sums. -/
+def FieldPowFullMixedProfileCardFit (a k : ℕ) (Mcoarse : ℕ → ℕ) : Prop :=
+  ∀ z t : ℕ, a ≤ z → z ≤ n → t < a →
+    fieldPowMixedProfileCardSum (F := F) n a k z t ≤ Mcoarse t
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- Exact failure form for the low field-power mixed-profile card fit. -/
+theorem not_fieldPowMixedProfileCardFit_iff_exists_sum_gt
+    (a k : ℕ) (Mcoarse : ℕ → ℕ) :
+    (¬ FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse) ↔
+      ∃ z t : ℕ, a ≤ z ∧ z ≤ n ∧ t < a ∧ t < k ∧
+        Mcoarse t < fieldPowMixedProfileCardSum (F := F) n a k z t := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro z t hzlo hzhi ht htk
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨z, t, hzlo, hzhi, ht, htk, hgt⟩)
+  · rintro ⟨z, t, hzlo, hzhi, ht, htk, hgt⟩ hFit
+    exact not_lt_of_ge (hFit z t hzlo hzhi ht htk) hgt
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- Exact failure form for the full field-power mixed-profile card fit. -/
+theorem not_fieldPowFullMixedProfileCardFit_iff_exists_sum_gt
+    (a k : ℕ) (Mcoarse : ℕ → ℕ) :
+    (¬ FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse) ↔
+      ∃ z t : ℕ, a ≤ z ∧ z ≤ n ∧ t < a ∧
+        Mcoarse t < fieldPowMixedProfileCardSum (F := F) n a k z t := by
+  constructor
+  · intro hnot
+    by_contra hnone
+    apply hnot
+    intro z t hzlo hzhi ht
+    exact le_of_not_gt
+      (fun hgt => hnone ⟨z, t, hzlo, hzhi, ht, hgt⟩)
+  · rintro ⟨z, t, hzlo, hzhi, ht, hgt⟩ hFit
+    exact not_lt_of_ge (hFit z t hzlo hzhi ht) hgt
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- Every summand in a fitted low field-power mixed card sum is below the coarse budget. -/
+theorem fieldPowMixedProfileCardFit_term_le
+    {a k z t r : ℕ} {Mcoarse : ℕ → ℕ}
+    (hFit : FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k) (hr : r < a) :
+    (z - t).choose (r - t) *
+        (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+        else 1) ≤ Mcoarse t := by
+  have hterm :
+      (z - t).choose (r - t) *
+          (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+          else 1) ≤ fieldPowMixedProfileCardSum (F := F) n a k z t := by
+    exact Finset.single_le_sum
+      (f := fun r =>
+        (z - t).choose (r - t) *
+          (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+          else 1))
+      (fun _ _ => Nat.zero_le _) (Finset.mem_range.mpr hr)
+  exact le_trans hterm (hFit z t hzlo hzhi ht htk)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- Every summand in a fitted full field-power mixed card sum is below the coarse budget. -/
+theorem fieldPowFullMixedProfileCardFit_term_le
+    {a k z t r : ℕ} {Mcoarse : ℕ → ℕ}
+    (hFit : FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (hr : r < a) :
+    (z - t).choose (r - t) *
+        (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+        else 1) ≤ Mcoarse t := by
+  have hterm :
+      (z - t).choose (r - t) *
+          (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+          else 1) ≤ fieldPowMixedProfileCardSum (F := F) n a k z t := by
+    exact Finset.single_le_sum
+      (f := fun r =>
+        (z - t).choose (r - t) *
+          (if r < k then Fintype.card F * (n.choose (a - r) * Fintype.card F ^ (k - a))
+          else 1))
+      (fun _ _ => Nat.zero_le _) (Finset.mem_range.mpr hr)
+  exact le_trans hterm (hFit z t hzlo hzhi ht)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- The same-profile low exact field-power term is necessary for a fitted low mixed card sum. -/
+theorem fieldPowMixedProfileCardFit_exact_le
+    {a k z t : ℕ} {Mcoarse : ℕ → ℕ}
+    (hFit : FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k) :
+    Fintype.card F * (n.choose (a - t) * Fintype.card F ^ (k - a)) ≤ Mcoarse t := by
+  simpa [htk] using
+    (fieldPowMixedProfileCardFit_term_le
+      (F := F) (n := n) hFit hzlo hzhi ht htk ht)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- Every high-profile singleton binomial term is necessary for a fitted low mixed card sum. -/
+theorem fieldPowMixedProfileCardFit_high_choose_le
+    {a k z t r : ℕ} {Mcoarse : ℕ → ℕ}
+    (hFit : FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k)
+    (hr : r < a) (hkr : k ≤ r) :
+    (z - t).choose (r - t) ≤ Mcoarse t := by
+  simpa [not_lt_of_ge hkr] using
+    (fieldPowMixedProfileCardFit_term_le
+      (F := F) (n := n) hFit hzlo hzhi ht htk hr)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- If the low exact field-power term is already over budget, the low field-power card fit fails. -/
+theorem not_fieldPowMixedProfileCardFit_of_exact_gt
+    {a k z t : ℕ} {Mcoarse : ℕ → ℕ}
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k)
+    (hgt :
+      Mcoarse t < Fintype.card F * (n.choose (a - t) * Fintype.card F ^ (k - a))) :
+    ¬ FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse := by
+  intro hFit
+  exact not_lt_of_ge
+    (fieldPowMixedProfileCardFit_exact_le
+      (F := F) (n := n) hFit hzlo hzhi ht htk)
+    hgt
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- If one high singleton binomial term is over budget, the low field-power card fit fails. -/
+theorem not_fieldPowMixedProfileCardFit_of_high_choose_gt
+    {a k z t r : ℕ} {Mcoarse : ℕ → ℕ}
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k)
+    (hr : r < a) (hkr : k ≤ r) (hgt : Mcoarse t < (z - t).choose (r - t)) :
+    ¬ FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse := by
+  intro hFit
+  exact not_lt_of_ge
+    (fieldPowMixedProfileCardFit_high_choose_le
+      (F := F) (n := n) hFit hzlo hzhi ht htk hr hkr)
+    hgt
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- The same-profile low exact field-power term is necessary for a fitted full mixed card sum. -/
+theorem fieldPowFullMixedProfileCardFit_exact_le
+    {a k z t : ℕ} {Mcoarse : ℕ → ℕ}
+    (hFit : FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k) :
+    Fintype.card F * (n.choose (a - t) * Fintype.card F ^ (k - a)) ≤ Mcoarse t := by
+  simpa [htk] using
+    (fieldPowFullMixedProfileCardFit_term_le
+      (F := F) (n := n) hFit hzlo hzhi ht ht)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- Every high-profile singleton binomial term is necessary for a fitted full mixed card sum. -/
+theorem fieldPowFullMixedProfileCardFit_high_choose_le
+    {a k z t r : ℕ} {Mcoarse : ℕ → ℕ}
+    (hFit : FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (hr : r < a) (hkr : k ≤ r) :
+    (z - t).choose (r - t) ≤ Mcoarse t := by
+  simpa [not_lt_of_ge hkr] using
+    (fieldPowFullMixedProfileCardFit_term_le
+      (F := F) (n := n) hFit hzlo hzhi ht hr)
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- An over-budget low exact field-power term refutes the full field-power card
+fit. -/
+theorem not_fieldPowFullMixedProfileCardFit_of_exact_gt
+    {a k z t : ℕ} {Mcoarse : ℕ → ℕ}
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a) (htk : t < k)
+    (hgt :
+      Mcoarse t < Fintype.card F * (n.choose (a - t) * Fintype.card F ^ (k - a))) :
+    ¬ FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse := by
+  intro hFit
+  exact not_lt_of_ge
+    (fieldPowFullMixedProfileCardFit_exact_le
+      (F := F) (n := n) hFit hzlo hzhi ht htk)
+    hgt
+
+omit [Field F] [DecidableEq F] [NeZero n] in
+open Classical in
+/-- If one high singleton binomial term is over budget, the full field-power card fit fails. -/
+theorem not_fieldPowFullMixedProfileCardFit_of_high_choose_gt
+    {a k z t r : ℕ} {Mcoarse : ℕ → ℕ}
+    (hzlo : a ≤ z) (hzhi : z ≤ n) (ht : t < a)
+    (hr : r < a) (hkr : k ≤ r) (hgt : Mcoarse t < (z - t).choose (r - t)) :
+    ¬ FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse := by
+  intro hFit
+  exact not_lt_of_ge
+    (fieldPowFullMixedProfileCardFit_high_choose_le
+      (F := F) (n := n) hFit hzlo hzhi ht hr hkr)
+    hgt
+
 open Classical in
 /-- The all-threshold support-ratio cover envelope supplies the low exact-profile budget needed by
 the mixed exact-to-coarse route.  This composes the support-ratio `|F|^(k-a)` interpolation-tail
@@ -843,6 +1180,93 @@ theorem unsafe_or_largeZero_safe_fieldPow_fullMixedProfileCard_gt_of_not_budgete
     unsafe_or_largeZero_safe_fullMixedChooseProfileCard_gt_of_not_uniformLineBadScalarsBudgeted
       dom hk a L B Mexact Mcoarse hSupport hFits hExactLow hFiberFits hnot
 
+open Classical in
+/-- Named-fit wrapper for the low cardinal-profile support-ratio-field-power mixed route. -/
+theorem uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardFit
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hProfileFit : FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardSums
+    dom hk a L B Mcoarse hSupport hFits hZeroSafe
+    (by
+      intro z t hzlo hzhi ht htk
+      simpa [fieldPowMixedProfileCardSum] using hProfileFit z t hzlo hzhi ht htk)
+    hHigh hFiberFits
+
+open Classical in
+/-- Scanner-facing named-fit version of the low field-power mixed route.  Failure now exposes
+either zero-direction saturation or failure of the pure finite arithmetic fit. -/
+theorem unsafe_or_not_fieldPow_mixedProfileCardFit_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hHigh : ∀ t : ℕ, t < a → k ≤ t → 1 ≤ Mcoarse t)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      ¬ FieldPowMixedProfileCardFit (F := F) (n := n) a k Mcoarse := by
+  rcases
+      (unsafe_or_largeZero_safe_fieldPow_mixedProfileCard_gt_of_not_budgeted
+        dom hk a L B Mcoarse hSupport hFits hHigh hFiberFits hnot) with
+    hUnsafe | hProfile
+  · exact Or.inl hUnsafe
+  · rcases hProfile with ⟨u₁, _hnotEligible, hzlo, hzhi, t, ht, htk, hgt⟩
+    exact Or.inr
+      ((not_fieldPowMixedProfileCardFit_iff_exists_sum_gt
+        (F := F) (n := n) a k Mcoarse).mpr
+        ⟨(directionZeroSet u₁).card, t, hzlo, hzhi, ht, htk,
+          by simpa [fieldPowMixedProfileCardSum] using hgt⟩)
+
+open Classical in
+/-- Named-fit wrapper for the full cardinal-profile support-ratio-field-power mixed route. -/
+theorem uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hZeroSafe : UniformZeroDirectionSafe dom k a)
+    (hProfileFit : FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse) :
+    UniformLineBadScalarsBudgeted dom k a B :=
+  uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardSums
+    dom hk a L B Mcoarse hSupport hFits hZeroSafe
+    (by
+      intro z t hzlo hzhi ht
+      simpa [fieldPowMixedProfileCardSum] using hProfileFit z t hzlo hzhi ht)
+    hFiberFits
+
+open Classical in
+/-- Scanner-facing named-fit version of the full field-power mixed route. -/
+theorem unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a L B : ℕ) (Mcoarse : ℕ → ℕ)
+    (hSupport : UniformSupportLineListBudgeted dom k a L)
+    (hFits : SupportAdjustedBudgetFits (F := F) (n := n) a L B)
+    (hFiberFits :
+      UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits (F := F) (n := n) a B Mcoarse)
+    (hnot : ¬ UniformLineBadScalarsBudgeted dom k a B) :
+    (∃ u₀ u₁ c : Fin n → F, c ∈ (rsCode dom k : Submodule F (Fin n → F)) ∧
+        a ≤ (directionZeroAgreementSet c u₀ u₁).card) ∨
+      ¬ FieldPowFullMixedProfileCardFit (F := F) (n := n) a k Mcoarse := by
+  rcases
+      (unsafe_or_largeZero_safe_fieldPow_fullMixedProfileCard_gt_of_not_budgeted
+        dom hk a L B Mcoarse hSupport hFits hFiberFits hnot) with
+    hUnsafe | hProfile
+  · exact Or.inl hUnsafe
+  · rcases hProfile with ⟨u₁, _hnotEligible, hzlo, hzhi, t, ht, hgt⟩
+    exact Or.inr
+      ((not_fieldPowFullMixedProfileCardFit_iff_exists_sum_gt
+        (F := F) (n := n) a k Mcoarse).mpr
+        ⟨(directionZeroSet u₁).card, t, hzlo, hzhi, ht,
+          by simpa [fieldPowMixedProfileCardSum] using hgt⟩)
+
 section SourceAudit
 
 #print axioms ZeroLowMixedChooseProfileSumsFit
@@ -873,6 +1297,13 @@ section SourceAudit
 #print axioms uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileCardSums
 #print axioms
   unsafe_or_largeZero_safe_fullMixedChooseProfileCard_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms mixedChooseProfileCardSum_le_topCard
+#print axioms uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileTopSums
+#print axioms
+  unsafe_or_largeZero_safe_low_mixedChooseProfileTop_gt_of_not_uniformLineBadScalarsBudgeted
+#print axioms uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileTopSums
+#print axioms
+  unsafe_or_largeZero_safe_fullMixedChooseProfileTop_gt_of_not_uniformLineBadScalarsBudgeted
 #print axioms uniformLineBadScalarsBudgeted_of_lineFiberCoverFieldPow_mixedChooseProfileSums
 #print axioms
   unsafe_or_largeZero_safe_fieldPow_mixedProfile_gt_of_not_budgeted
@@ -883,7 +1314,25 @@ section SourceAudit
 #print axioms unsafe_or_largeZero_safe_fieldPow_mixedProfileCard_gt_of_not_budgeted
 #print axioms uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardSums
 #print axioms unsafe_or_largeZero_safe_fieldPow_fullMixedProfileCard_gt_of_not_budgeted
-
+#print axioms fieldPowMixedProfileCardSum
+#print axioms FieldPowMixedProfileCardFit
+#print axioms FieldPowFullMixedProfileCardFit
+#print axioms not_fieldPowMixedProfileCardFit_iff_exists_sum_gt
+#print axioms not_fieldPowFullMixedProfileCardFit_iff_exists_sum_gt
+#print axioms fieldPowMixedProfileCardFit_term_le
+#print axioms fieldPowFullMixedProfileCardFit_term_le
+#print axioms fieldPowMixedProfileCardFit_exact_le
+#print axioms fieldPowMixedProfileCardFit_high_choose_le
+#print axioms not_fieldPowMixedProfileCardFit_of_exact_gt
+#print axioms not_fieldPowMixedProfileCardFit_of_high_choose_gt
+#print axioms fieldPowFullMixedProfileCardFit_exact_le
+#print axioms fieldPowFullMixedProfileCardFit_high_choose_le
+#print axioms not_fieldPowFullMixedProfileCardFit_of_exact_gt
+#print axioms not_fieldPowFullMixedProfileCardFit_of_high_choose_gt
+#print axioms uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardFit
+#print axioms unsafe_or_not_fieldPow_mixedProfileCardFit_of_not_budgeted
+#print axioms uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit
+#print axioms unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted
 end SourceAudit
 
 end ProximityGap.Ownership

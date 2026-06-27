@@ -68,6 +68,8 @@ lineFiberCoverFieldPowBudgetFits_term_le
 not_lineFiberCoverFieldPowBudgetFits_of_exists_term_gt
 exists_lineFiberCoverFieldPowBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSums
+uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_mixedChooseProfileSumsFit
+unsafe_or_not_uniformLowSupportRatioMixedChooseProfileSumsFit_of_not_budgeted
 unsafe_or_largeZero_safe_low_supportRatioMixedChooseProfile_gt_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavy_fullMixedChooseProfileSums
 unsafe_or_largeZero_safe_fullSupportRatioMixedChooseProfile_gt_of_not_budgeted
@@ -83,6 +85,22 @@ uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardSums
 unsafe_or_largeZero_safe_fieldPow_mixedProfileCard_gt_of_not_budgeted
 uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardSums
 unsafe_or_largeZero_safe_fieldPow_fullMixedProfileCard_gt_of_not_budgeted
+FieldPowMixedProfileCardFit
+FieldPowFullMixedProfileCardFit
+fieldPowMixedProfileCardFit_exact_le
+fieldPowMixedProfileCardFit_high_choose_le
+not_fieldPowMixedProfileCardFit_of_exact_gt
+not_fieldPowMixedProfileCardFit_of_high_choose_gt
+uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardFit
+unsafe_or_not_fieldPow_mixedProfileCardFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit
+unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted
+FieldPowMixedProfileTopFit
+FieldPowFullMixedProfileTopFit
+uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileTopFit
+unsafe_or_not_fieldPow_mixedProfileTopFit_of_not_budgeted
+uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileTopFit
+unsafe_or_not_fieldPow_fullMixedProfileTopFit_of_not_budgeted
 ```
 
 The first theorem is the local high-profile estimate.  It does not need the global `k <= a`
@@ -108,9 +126,31 @@ profile route directly.  The composed `lineFiberCoverFieldPow_*MixedChooseProfil
 only the explicit mixed binomial arithmetic and the weighted coarse fit as caller obligations.
 The abstract support-ratio-heavy composition is split out in `LineListSupportRatioMixedProfile.lean`;
 it lets callers provide sharper low support-ratio-heavy budgets before committing to the
-field-power envelope.  The `*CardSums` variants remove the dummy subset witness from the residual:
+field-power envelope.  The named-fit wrappers consume
+`UniformLargeZeroSafeLowMixedChooseProfileSumsFit` directly, so failed production reduces to
+zero-direction saturation or negation of that named arithmetic fit before expanding to a concrete
+oversized mixed-profile witness.  The `*CardSums` variants remove the dummy subset witness from the
+residual:
 the mixed profile sum depends only on `z = #zeroSet(u1)` and `t`, so failed production is localized
 to zero-direction saturation or one pure cardinal inequality over `a <= z <= n`.
+The same arithmetic is now named as a reusable finite contract:
+`FieldPowMixedProfileCardFit` covers the low `t < k` branch and
+`FieldPowFullMixedProfileCardFit` covers all `t < a`.  Their consumers
+`uniformLineBadScalarsBudgeted_of_fieldPow_mixedProfileCardFit` and
+`uniformLineBadScalarsBudgeted_of_fieldPow_fullMixedProfileCardFit` avoid restating the large
+field-power sum, while the scanners
+`unsafe_or_not_fieldPow_mixedProfileCardFit_of_not_budgeted` and
+`unsafe_or_not_fieldPow_fullMixedProfileCardFit_of_not_budgeted` reduce failure to either
+zero-direction saturation or negation of the named finite arithmetic fit.
+The same fit now has term-level refuters: the same-profile field-power term and every high
+singleton binomial term are necessary conditions, so a single over-budget term refutes the
+field-power mixed-card route.
+Finally, `mixedChooseProfileCardSum_le_topCard` proves that the mixed card sum is monotone in the
+zero-set cardinality for any fixed exact-profile envelope.  The `*_mixedChooseProfileTopSums`
+production wrappers and scanners therefore let callers work directly at the worst case `z = n`
+when a top-cardinality arithmetic envelope is easier to prove than all `a <= z <= n` cases.
+`LineListAppearanceFiberMixedProfileFit.lean` records the corresponding field-power top-fit
+predicates and scanners.
 
 The support-ratio-heavy coordinate-fiber route now has the same positive split.  Low heavy fibers
 are the only nontrivial estimates; high heavy fibers are bounded by one via RS uniqueness, so the
