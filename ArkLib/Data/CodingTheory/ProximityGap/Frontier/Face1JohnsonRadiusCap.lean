@@ -93,7 +93,9 @@ theorem gs_johnson_lt_capacity {k n m : ℕ} (hm : 0 < m)
   have hextra_pos : 0 < Real.sqrt ρ / (2 * m) := by positivity
   -- `gs_johnson k n m = 1 - √ρ - √ρ/(2m)` definitionally (same `ρ`)
   have hgs : gs_johnson k n m = 1 - Real.sqrt ρ - Real.sqrt ρ / (2 * m) := by
-    rw [hρdef]; rfl
+    rw [hρdef, gs_johnson]
+    push_cast
+    rfl
   rw [hgs]
   -- `1 - √ρ - √ρ/(2m) < 1 - ρ  ⟺  ρ < √ρ + √ρ/(2m)`
   linarith
@@ -110,7 +112,9 @@ theorem gs_johnson_lt_one_sub_sqrt_rho {k n m : ℕ} (hm : 0 < m)
   have hsqrt_pos : 0 < Real.sqrt ρ := Real.sqrt_pos.mpr hρpos'
   have hextra_pos : 0 < Real.sqrt ρ / (2 * m) := by positivity
   have hgs : gs_johnson k n m = 1 - Real.sqrt ρ - Real.sqrt ρ / (2 * m) := by
-    rw [hρdef]; rfl
+    rw [hρdef, gs_johnson]
+    push_cast
+    rfl
   rw [hgs]; linarith
 
 /-- **The reachable-vs-prize separation, as one statement.**  For a non-degenerate rate
