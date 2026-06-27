@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # The smallest prime `≡ 1 (mod n)` is canonical-width-four bad (`n = 64, 128, 256`)
