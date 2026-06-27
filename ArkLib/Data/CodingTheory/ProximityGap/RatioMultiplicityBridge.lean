@@ -176,6 +176,21 @@ theorem badWeight_eq_degenerate_of_degree_exact (dom : ι → F)
     (degenerateScalars_subset_badWeight dom P Q)
 
 omit [DecidableEq ι] in
+/-- **Pointwise exact degree-collapse membership.**  Under the exact degree condition, a scalar is
+low-weight-bad exactly when the polynomial line `P + γ·Q` is identically zero. -/
+theorem badWeight_mem_iff_degenerate_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (γ : F) :
+    γ ∈ univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)
+      ↔ P + C γ * Q = 0 := by
+  rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg]
+  simp
+
+omit [DecidableEq ι] in
 /-- **Exact cardinal form of degree-collapse equality.**  Under the exact degree condition, the
 number of low-weight scalars equals the number of degenerate scalars. -/
 theorem badWeight_card_eq_degenerate_card_of_degree_exact (dom : ι → F)
@@ -243,6 +258,13 @@ theorem degenerateScalars_eq_singleton_of (P Q : F[X]) {γ₀ : F}
     subst hγ
     exact hγ₀
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Pointwise degenerate-scalar membership.**  Membership in the degenerate-scalar set is just
+the polynomial identity `P + γ·Q = 0`. -/
+theorem degenerateScalars_mem_iff (P Q : F[X]) (γ : F) :
+    γ ∈ univ.filter (fun γ : F => P + C γ * Q = 0) ↔ P + C γ * Q = 0 := by
+  simp
+
 omit [Fintype ι] [DecidableEq ι] [Fintype F] [DecidableEq F] in
 /-- **Degenerate scalar iff scalar multiple.**  A scalar `γ` with `P + γ·Q = 0` exists exactly
 when `P` is a scalar multiple of `Q` (with scalar `-γ`). -/
@@ -270,6 +292,15 @@ theorem degenerateScalars_eq_singleton_of_scalarMultiple (P Q : F[X]) {c : F}
     rw [hP, map_neg, neg_mul]
     exact add_neg_cancel _
   exact degenerateScalars_eq_singleton_of P Q hQ hγ
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Pointwise scalar-multiple membership for degenerate scalars.**  If `P = c·Q` and `Q ≠ 0`,
+then a scalar is degenerate exactly when it is `-c`. -/
+theorem degenerateScalars_mem_iff_eq_neg_scalarMultiple (P Q : F[X]) {c γ : F}
+    (hQ : Q ≠ 0) (hP : P = C c * Q) :
+    γ ∈ univ.filter (fun γ : F => P + C γ * Q = 0) ↔ γ = -c := by
+  rw [degenerateScalars_eq_singleton_of_scalarMultiple P Q hQ hP]
+  simp
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- **Degenerate singleton iff exact scalar multiple.**  If `Q ≠ 0`, then the degenerate-scalar
@@ -320,6 +351,45 @@ theorem degenerateScalars_eq_empty_or_singleton_scalarMultiple (P Q : F[X]) (hQ 
   · rcases hscalar with ⟨c, hP⟩
     exact Or.inr ⟨c, hP, degenerateScalars_eq_singleton_of_scalarMultiple P Q hQ hP⟩
   · exact Or.inl ((degenerateScalars_empty_iff_not_scalarMultiple P Q).2 hscalar)
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Degenerate cardinal-zero criterion.**  The degenerate-scalar count is zero iff `P` is not a
+scalar multiple of `Q`. -/
+theorem degenerateScalars_card_eq_zero_iff_not_scalarMultiple (P Q : F[X]) :
+    (univ.filter (fun γ : F => P + C γ * Q = 0)).card = 0
+      ↔ ¬ ∃ c : F, P = C c * Q := by
+  rw [Finset.card_eq_zero, degenerateScalars_empty_iff_not_scalarMultiple]
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Degenerate cardinal-one criterion.**  If `Q ≠ 0`, the degenerate-scalar count is one iff
+`P` is a scalar multiple of `Q`. -/
+theorem degenerateScalars_card_eq_one_iff_scalarMultiple (P Q : F[X]) (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F => P + C γ * Q = 0)).card = 1
+      ↔ ∃ c : F, P = C c * Q := by
+  constructor
+  · intro hcard
+    rw [Finset.card_eq_one] at hcard
+    rcases hcard with ⟨γ, hset⟩
+    have hmem : γ ∈ univ.filter (fun γ : F => P + C γ * Q = 0) := by
+      rw [hset]
+      simp
+    exact (degenerate_exists_iff_scalarMultiple P Q).1 ⟨γ, (Finset.mem_filter.mp hmem).2⟩
+  · rintro ⟨c, hP⟩
+    rw [degenerateScalars_eq_singleton_of_scalarMultiple P Q hQ hP]
+    exact Finset.card_singleton (-c)
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **Exact degenerate cardinal formula.**  If `Q ≠ 0`, the degenerate-scalar count is `1` in the
+scalar-multiple case and `0` otherwise. -/
+theorem degenerateScalars_card_eq_if_scalarMultiple (P Q : F[X]) (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F => P + C γ * Q = 0)).card
+      = if ∃ c : F, P = C c * Q then 1 else 0 := by
+  classical
+  by_cases hscalar : ∃ c : F, P = C c * Q
+  · rw [if_pos hscalar]
+    exact (degenerateScalars_card_eq_one_iff_scalarMultiple P Q hQ).2 hscalar
+  · rw [if_neg hscalar]
+    exact (degenerateScalars_card_eq_zero_iff_not_scalarMultiple P Q).2 hscalar
 
 omit [DecidableEq ι] in
 /-- **Exact degree-collapse leaves at most one low-weight scalar.**  For a nonzero denominator
@@ -388,6 +458,21 @@ theorem badWeight_eq_singleton_of_degree_exact_of_scalarMultiple (dom : ι → F
     rw [hP, map_neg, neg_mul]
     exact add_neg_cancel _
   exact badWeight_eq_singleton_of_degree_exact_of_degenerate dom hdom P Q hdeg hQ hγ
+
+omit [DecidableEq ι] in
+/-- **Pointwise exact scalar-multiple membership.**  Under the exact degree condition, if
+`P = c·Q` and `Q ≠ 0`, then a scalar is low-weight-bad exactly when it is `-c`. -/
+theorem badWeight_mem_iff_eq_neg_scalarMultiple_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ} {c γ : F}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) (hP : P = C c * Q) :
+    γ ∈ univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)
+      ↔ γ = -c := by
+  rw [badWeight_eq_singleton_of_degree_exact_of_scalarMultiple dom hdom P Q hdeg hQ hP]
+  simp
 
 omit [DecidableEq ι] in
 /-- **Exact singleton iff exact scalar multiple.**  Under the exact degree condition and `Q ≠ 0`,
@@ -524,6 +609,42 @@ theorem badWeight_empty_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
     exact hnot ((degenerate_exists_iff_scalarMultiple P Q).1 ⟨γ, hγ⟩)
 
 omit [DecidableEq ι] in
+/-- **Exact cardinal-zero criterion, scalar-multiple form.**  Under the exact degree condition and
+`Q ≠ 0`, the low-weight bad-scalar count is zero iff `P` is not a scalar multiple of `Q`. -/
+theorem badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card = 0
+      ↔ ¬ ∃ c : F, P = C c * Q := by
+  rw [Finset.card_eq_zero, badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+    dom hdom P Q hdeg hQ]
+
+omit [DecidableEq ι] in
+/-- **Exact bad-weight cardinal formula.**  Under the exact degree condition and `Q ≠ 0`, the
+low-weight bad-scalar count is `1` in the scalar-multiple case and `0` otherwise. -/
+theorem badWeight_card_eq_if_scalarMultiple_of_degree_exact (dom : ι → F)
+    (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
+    (hdeg : max P.natDegree Q.natDegree <
+      (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
+    (hQ : Q ≠ 0) :
+    (univ.filter (fun γ : F =>
+        (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card
+      = if ∃ c : F, P = C c * Q then 1 else 0 := by
+  classical
+  by_cases hscalar : ∃ c : F, P = C c * Q
+  · rw [if_pos hscalar]
+    exact (badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
+      dom hdom P Q hdeg hQ).2 hscalar
+  · rw [if_neg hscalar]
+    exact (badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact
+      dom hdom P Q hdeg hQ).2 hscalar
+
+omit [DecidableEq ι] in
 /-- **Exact empty-or-scalar-singleton dichotomy.**  Under the exact degree condition and `Q ≠ 0`,
 the low-weight bad-scalar set is either empty or exactly `{-c}` for a scalar multiple `P = c·Q`. -/
 theorem badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact (dom : ι → F)
@@ -556,6 +677,8 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_degenerate_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_mem_iff_degenerate_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_eq_degenerate_card_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_le_degenerate_card_of_degree_exact
@@ -566,9 +689,13 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_singleton_of
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_mem_iff
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerate_exists_iff_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_singleton_of_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_mem_iff_eq_neg_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_singleton_iff_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
@@ -576,9 +703,17 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms degenerateScalars_eq_empty_or_singleton_scalarMultiple
 open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_card_eq_zero_iff_not_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_card_eq_one_iff_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms degenerateScalars_card_eq_if_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_singleton_of_degree_exact_of_degenerate
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_singleton_of_degree_exact_of_scalarMultiple
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_mem_iff_eq_neg_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_singleton_iff_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
@@ -591,5 +726,9 @@ open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact
+open ArkLib.ProximityGap.RatioMultiplicity in
+#print axioms badWeight_card_eq_if_scalarMultiple_of_degree_exact
 open ArkLib.ProximityGap.RatioMultiplicity in
 #print axioms badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact

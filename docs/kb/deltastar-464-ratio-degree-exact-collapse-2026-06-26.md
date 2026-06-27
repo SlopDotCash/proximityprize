@@ -28,24 +28,33 @@ ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_subset_degenerate_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_subset_badWeight
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_degenerate_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_mem_iff_degenerate_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_degenerate_card_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_degenerate_card_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_le_one
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_le_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_mem_iff
 ArkLib.ProximityGap.RatioMultiplicity.degenerate_exists_iff_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_of_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_mem_iff_eq_neg_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_singleton_iff_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_empty_iff_not_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_eq_empty_or_singleton_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_eq_zero_iff_not_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_eq_one_iff_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.degenerateScalars_card_eq_if_scalarMultiple
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_degenerate
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_of_degree_exact_of_scalarMultiple
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_mem_iff_eq_neg_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_singleton_iff_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_or_one_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_degenerate_exists_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_empty_iff_not_scalarMultiple_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact
+ArkLib.ProximityGap.RatioMultiplicity.badWeight_card_eq_if_scalarMultiple_of_degree_exact
 ArkLib.ProximityGap.RatioMultiplicity.badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact
 ```
 
@@ -115,6 +124,15 @@ The final set-level scalar form packages this as a direct dichotomy.  The degene
 iff there is no scalar multiple `P = c*Q`; when `Q != 0`, it is either empty or exactly `{-c}` for
 a scalar multiple.  Under the exact degree inequality, the low-weight bad-scalar set has the same
 empty-or-`{-c}` scalar-multiple dichotomy.
+
+The count-level consumers now expose the same classification without a set rewrite: for `Q != 0`,
+the degenerate scalar count is `0` iff there is no scalar multiple, `1` iff there is one, and
+therefore equals `if exists c, P = c*Q then 1 else 0`.  Under the exact degree inequality, the
+low-weight bad-scalar count satisfies the identical `0/1` formula.
+
+The pointwise consumers expose the same classification as membership rewrites.  Under the exact
+degree inequality, a scalar `gamma` is low-weight-bad iff `P + gamma*Q = 0` as a polynomial.  If
+`P = c*Q` and `Q != 0`, this specializes to `gamma` being low-weight-bad iff `gamma = -c`.
 
 ## Prize Impact
 
