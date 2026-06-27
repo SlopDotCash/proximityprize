@@ -36,10 +36,17 @@ far-line incidence to obey the budget `q·ε*` at that radius. Together the two 
   `WorstCaseIncidenceBounded C δ ⌊q·ε*⌋` for the natural budget `E = ⌊q·ε*⌋`. This is the literal
   converse to the hypothesis of `worstCaseIncidence_pin`, closing the loop into a biconditional.
 
+* **`mcaDeltaStar_le_of_not_worstCaseIncidence`** — the contrapositive/refutation form: if the
+  budget-`E` open core fails at radius `δ`, then the threshold at error `E/q` is already at most
+  `δ`.  Thus every explicit budget failure is a formal upper delimiter for δ*.
+
+* **`mcaDeltaStar_le_of_stackIncidence_gt`** — the concrete witness form: one stack with more than
+  `E` bad scalars is enough to upper-bound the threshold by `δ`.
+
 * **`deltaStar_iff_incidence_budget`** — THE BICONDITIONAL (with an honest `±` half-rung gap from
-  `<` vs `≤` and `⌊·⌋`): for a budget `E` and `ε* = E/q`, `δ < δ*` ⟺ `WorstCaseIncidenceBounded C δ E`
-  holds in the strong sense `δ ≤ δ*`, with the forward direction giving `≤` and the converse giving
-  the budget. The two implications are each axiom-clean.
+  `<` vs `≤` and `⌊·⌋`): for a budget `E` and `ε* = E/q`, `δ < δ*` ⟺
+  `WorstCaseIncidenceBounded C δ E` holds in the strong sense `δ ≤ δ*`, with the forward direction
+  giving `≤` and the converse giving the budget. The two implications are each axiom-clean.
 
 ## The realizer bridge — honest scope (the still-open half)
 
@@ -170,6 +177,52 @@ theorem worstCaseIncidence_of_lt_mcaDeltaStar (C : Set (ι → A)) {δ : ℝ≥0
   rw [ENNReal.mul_div_cancel hq0 hqtop] at h
   exact_mod_cast h
 
+/-! ## Converse step 4 — failure of the budget upper-bounds the threshold -/
+
+/-- **Contrapositive δ* delimiter.**  If the budget-`E` open core fails at radius `δ`, then `δ`
+cannot lie strictly below the formal threshold `mcaDeltaStar C (E/q)`.
+
+This is the direct contrapositive of `worstCaseIncidence_of_lt_mcaDeltaStar`; it is the reusable
+upper-bound interface for explicit incidence failures, orbit-count overflows, and finite census
+counterexamples. -/
+theorem not_lt_mcaDeltaStar_of_not_worstCaseIncidence
+    (C : Set (ι → A)) {δ : ℝ≥0} {E : ℕ}
+    (hnot : ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ E) :
+    ¬ δ < mcaDeltaStar (F := F) (A := A) C
+      ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) := by
+  intro hδ
+  exact hnot (worstCaseIncidence_of_lt_mcaDeltaStar (F := F) (A := A) C hδ)
+
+/-- **Upper delimiter from open-core failure.**  A concrete failure of
+`WorstCaseIncidenceBounded C δ E` proves the threshold at budget `E/q` is no larger than `δ`. -/
+theorem mcaDeltaStar_le_of_not_worstCaseIncidence
+    (C : Set (ι → A)) {δ : ℝ≥0} {E : ℕ}
+    (hnot : ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ E) :
+    mcaDeltaStar (F := F) (A := A) C ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ≤ δ :=
+  not_lt.mp (not_lt_mcaDeltaStar_of_not_worstCaseIncidence (F := F) (A := A) C hnot)
+
+open Classical in
+/-- **A single over-budget stack refutes the incidence budget.**  If one stack has more than `E`
+bad scalars at radius `δ`, then the worst-case incidence budget `E` fails. -/
+theorem stackIncidence_gt_refutes_budget
+    (C : Set (ι → A)) (δ : ℝ≥0) {E : ℕ} (u : WordStack A (Fin 2) ι)
+    (hgt : E < (Finset.univ.filter
+      (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card) :
+    ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ E := by
+  intro hbound
+  exact (Nat.not_lt.mpr (hbound u)) hgt
+
+open Classical in
+/-- **δ* upper delimiter from one explicit stack.**  One stack with more than `E` bad scalars at
+radius `δ` proves `mcaDeltaStar C (E/q) ≤ δ`. -/
+theorem mcaDeltaStar_le_of_stackIncidence_gt
+    (C : Set (ι → A)) (δ : ℝ≥0) {E : ℕ} (u : WordStack A (Fin 2) ι)
+    (hgt : E < (Finset.univ.filter
+      (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card) :
+    mcaDeltaStar (F := F) (A := A) C ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ≤ δ :=
+  mcaDeltaStar_le_of_not_worstCaseIncidence (F := F) (A := A) C
+    (stackIncidence_gt_refutes_budget C δ u hgt)
+
 /-! ## The biconditional δ* ⟺ incidence-budget -/
 
 /-- **THE BICONDITIONAL (incidence-budget face), axiom-clean both directions.**
@@ -199,4 +252,8 @@ end ProximityGap.OpenCoreConverse
 #print axioms ProximityGap.OpenCoreConverse.epsMCA_le_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.incidence_le_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.worstCaseIncidence_of_lt_mcaDeltaStar
+#print axioms ProximityGap.OpenCoreConverse.not_lt_mcaDeltaStar_of_not_worstCaseIncidence
+#print axioms ProximityGap.OpenCoreConverse.mcaDeltaStar_le_of_not_worstCaseIncidence
+#print axioms ProximityGap.OpenCoreConverse.stackIncidence_gt_refutes_budget
+#print axioms ProximityGap.OpenCoreConverse.mcaDeltaStar_le_of_stackIncidence_gt
 #print axioms ProximityGap.OpenCoreConverse.deltaStar_iff_incidence_budget

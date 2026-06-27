@@ -1345,6 +1345,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AssaultV2_I031Chaining
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AssaultV2_JacobiToda
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AssaultV2_OnsetGrowthLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Attack01DyadicButterfly
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Attack01bLyapunovAverageLever
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Attack02GaussPeriodHouse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Attack03DepthGatedWraparound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Attack04MinimalVanishingWeightVacuous
@@ -2260,6 +2261,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientScaledLogTailGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientTailSupConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R1SecondMomentSqrtBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RMTBoundedDepthUniversalityNoGo

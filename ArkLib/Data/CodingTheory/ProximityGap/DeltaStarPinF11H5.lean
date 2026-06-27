@@ -39,10 +39,12 @@ At `ε* = 1/2` the supremum of good radii sits exactly at the second jump `2/5`.
   forces each legal `mcaEvent` witness set to have size `≥ n − 1 = 4`, so the forced-codimension-one
   barrier `MCAWitnessSpread.epsMCA_le_card_div_of_forced_pred` gives `ε_mca(C, δ) ≤ n/|F| = 5/11`,
   and `5/11 ≤ 1/2`.
-* **Bad side (one explicit stack).**  The probe-extracted stack `u₀ = (0,0,0,0,1)`,
-  `u₁ = (8,3,4,5,9)` has `6` of `11` scalars bad at `δ = 2/5`; each badness certificate is an
+* **Bad side (explicit stacks).**  The first probe-extracted stack `u₀ = (0,0,0,0,1)`,
+  `u₁ = (8,3,4,5,9)` has `6` of `11` scalars bad at `δ = 2/5`, already enough for the headline
+  `ε* = 1/2` pin.  A sharper stack `u₀ = (7,4,3,0,0)`, `u₁ = (3,9,1,0,0)` has `10` of `11`
+  scalars bad, matching the exact second jump.  Each badness certificate is an
   explicit `3`-element witness set, an explicit interpolating codeword, and a `decide`d
-  non-explainability of the row `u₁`.  Hence `ε_mca(C, 2/5) ≥ 6/11 > 1/2`.
+  non-explainability of the row `u₁`.  Hence `ε_mca(C, 2/5) ≥ 10/11`.
 * **Assembly.**  The two `MCAThresholdLedger` bracket lemmas plus density of `ℝ≥0` pin the `sSup`.
 
 ## References
@@ -240,6 +242,108 @@ theorem epsMCA_twoFifth_ge :
   have h := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
     (C : Set (Fin 5 → F11)) (2/5) ubad Gbad mcaEvent_of_mem_Gbad
   have hG : (Gbad.card : ℝ≥0∞) = 6 := by rw [show Gbad.card = 6 from by decide]; norm_num
+  have hF : ((Fintype.card F11 : ℕ) : ℝ≥0∞) = 11 := by
+    rw [show Fintype.card F11 = 11 from by simp [ZMod.card]]; norm_num
+  rwa [hG, hF] at h
+
+/-! ## The sharp bad side at `δ = 2/5` (10 of 11 scalars bad) -/
+
+def u₀Top : Fin 5 → F11 := ![7, 4, 3, 0, 0]
+def u₁Top : Fin 5 → F11 := ![3, 9, 1, 0, 0]
+
+/-- The sharp second-jump bad stack. -/
+def ubadTop : WordStack F11 (Fin 2) (Fin 5) := ![u₀Top, u₁Top]
+
+@[simp] theorem ubadTop_zero : ubadTop 0 = u₀Top := rfl
+@[simp] theorem ubadTop_one : ubadTop 1 = u₁Top := rfl
+
+/-- `γ = 0` is bad for the sharp stack. -/
+theorem mcaEventTop_g0 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (0 : F11) := by
+  refine ⟨{0, 1, 2}, card_cond (by decide), ⟨lineEval 8 10, lineEval_mem 8 10, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 1` is bad for the sharp stack. -/
+theorem mcaEventTop_g1 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (1 : F11) := by
+  refine ⟨{1, 2, 4}, card_cond (by decide), ⟨lineEval 5 2, lineEval_mem 5 2, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 2` is bad for the sharp stack. -/
+theorem mcaEventTop_g2 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (2 : F11) := by
+  refine ⟨{1, 3, 4}, card_cond (by decide), ⟨lineEval 0 0, lineEval_mem 0 0, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 3` is bad for the sharp stack. -/
+theorem mcaEventTop_g3 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (3 : F11) := by
+  refine ⟨{0, 2, 4}, card_cond (by decide), ⟨lineEval 2 3, lineEval_mem 2 3, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 4` is bad for the sharp stack. -/
+theorem mcaEventTop_g4 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (4 : F11) := by
+  refine ⟨{0, 1, 4}, card_cond (by decide), ⟨lineEval 1 7, lineEval_mem 1 7, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 5` is bad for the sharp stack. -/
+theorem mcaEventTop_g5 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (5 : F11) := by
+  refine ⟨{0, 3, 4}, card_cond (by decide), ⟨lineEval 0 0, lineEval_mem 0 0, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 6` is bad for the sharp stack. -/
+theorem mcaEventTop_g6 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (6 : F11) := by
+  refine ⟨{1, 2, 3}, card_cond (by decide), ⟨lineEval 1 6, lineEval_mem 1 6, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 7` is bad for the sharp stack. -/
+theorem mcaEventTop_g7 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (7 : F11) := by
+  refine ⟨{0, 1, 3}, card_cond (by decide), ⟨lineEval 4 2, lineEval_mem 4 2, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 8` is bad for the sharp stack. -/
+theorem mcaEventTop_g8 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (8 : F11) := by
+  refine ⟨{2, 3, 4}, card_cond (by decide), ⟨lineEval 0 0, lineEval_mem 0 0, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- `γ = 10` is bad for the sharp stack. -/
+theorem mcaEventTop_g10 :
+    mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) u₀Top u₁Top (10 : F11) := by
+  refine ⟨{0, 2, 3}, card_cond (by decide), ⟨lineEval 10 5, lineEval_mem 10 5, by decide⟩, ?_⟩
+  exact not_pairJointAgreesOn_of_row1 (by decide)
+
+/-- The sharp second-jump bad-scalar set: 10 of the 11 scalars. -/
+def GbadTop : Finset F11 := {0, 1, 2, 3, 4, 5, 6, 7, 8, 10}
+
+theorem mcaEventTop_of_mem_GbadTop :
+    ∀ γ ∈ GbadTop,
+      mcaEvent (F := F11) (C : Set (Fin 5 → F11)) (2/5) (ubadTop 0) (ubadTop 1) γ := by
+  intro γ hγ
+  rw [ubadTop_zero, ubadTop_one]
+  simp only [GbadTop, Finset.mem_insert, Finset.mem_singleton] at hγ
+  rcases hγ with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  · exact mcaEventTop_g0
+  · exact mcaEventTop_g1
+  · exact mcaEventTop_g2
+  · exact mcaEventTop_g3
+  · exact mcaEventTop_g4
+  · exact mcaEventTop_g5
+  · exact mcaEventTop_g6
+  · exact mcaEventTop_g7
+  · exact mcaEventTop_g8
+  · exact mcaEventTop_g10
+
+/-- **Sharp bad side:** `ε_mca(C, 2/5) ≥ 10/11`. -/
+theorem epsMCA_twoFifth_ge_ten :
+    (10 : ℝ≥0∞) / 11 ≤ epsMCA (F := F11) (A := F11) (C : Set (Fin 5 → F11)) (2/5) := by
+  have h := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
+    (C : Set (Fin 5 → F11)) (2/5) ubadTop GbadTop mcaEventTop_of_mem_GbadTop
+  have hG : (GbadTop.card : ℝ≥0∞) = 10 := by rw [show GbadTop.card = 10 from by decide]; norm_num
   have hF : ((Fintype.card F11 : ℕ) : ℝ≥0∞) = 11 := by
     rw [show Fintype.card F11 = 11 from by simp [ZMod.card]]; norm_num
   rwa [hG, hF] at h
@@ -580,9 +684,41 @@ theorem mcaDeltaStar_eq_twoFifth_via_middle_band :
   mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_sixEleven
     twoEleven_le_half half_lt_sixEleven
 
+/-! ## The sharp second-jump band: `mcaDeltaStar(C, ε*) = 2/5` for `ε* ∈ [2/11, 10/11)`
+
+Replacing the six-scalar bad stack with `ubadTop` upgrades the upper bracket to the exact
+second-jump value from the exhaustive profile.  The lower bracket is still the same
+budget-monotonicity transport from the `ε* = 2/11` ladder pin. -/
+
+/-- **Interval pin (sharp second-jump band):** `mcaDeltaStar(C, ε*) = 2/5` for every
+`ε* ∈ [2/11, 10/11)`. -/
+theorem mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_tenEleven {εstar : ℝ≥0∞}
+    (hlo : (2 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 10 / 11) :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) εstar = 2/5 := by
+  have hpin :
+      MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+        (C : Set (Fin 5 → F11)) (2 / 11 : ℝ≥0∞) = 2/5 :=
+    mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven
+      (εstar := (2 / 11 : ℝ≥0∞)) le_rfl twoEleven_lt_threeEleven
+  refine le_antisymm
+    (MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _ (lt_of_lt_of_le hhi epsMCA_twoFifth_ge_ten))
+    ?_
+  rw [← hpin]
+  exact MCAThresholdLedger.mcaDeltaStar_mono (F := F11) (A := F11)
+    (C := (C : Set (Fin 5 → F11))) hlo
+
+/-- The above-Johnson point pin via the sharp second-jump band. -/
+theorem mcaDeltaStar_eq_twoFifth_via_sharp_band :
+    MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
+      (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) = 2/5 :=
+  mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_tenEleven
+    twoEleven_le_half (lt_trans half_lt_sixEleven (by norm_num : (6 / 11 : ℝ≥0∞) < 10 / 11))
+
 /-! ## Source audit -/
 
 #print axioms epsMCA_twoFifth_ge
+#print axioms epsMCA_twoFifth_ge_ten
 #print axioms epsMCA_le_of_lt_twoFifth
 #print axioms mcaDeltaStar_eq_twoFifth_of_fiveEleven_le_of_lt_sixEleven
 #print axioms mcaDeltaStar_eq_twoFifth
@@ -594,5 +730,7 @@ theorem mcaDeltaStar_eq_twoFifth_via_middle_band :
 #print axioms mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_threeEleven
 #print axioms mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_sixEleven
 #print axioms mcaDeltaStar_eq_twoFifth_via_middle_band
+#print axioms mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_tenEleven
+#print axioms mcaDeltaStar_eq_twoFifth_via_sharp_band
 
 end ProximityGap.DeltaStarPinF11H5

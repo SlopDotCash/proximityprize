@@ -122,6 +122,22 @@ So the quotient/representative route and the off-BGK floor-closure route now sha
 obligation: find a listed representative that is the true budgeted global maximizer, or produce a
 stack that beats every listed representative.
 
+The bridge also now exposes the arithmetic floor-closure consumers directly in stack-orbit form:
+
+```lean
+floorClosureBudgetedMaxAtField_of_linnik_stackOrbitRepresentativeBudgetedMax
+worstCaseIncidenceBounded_of_linnik_stackOrbitRepresentativeBudgetedMaxContract
+deltaStar_pin_of_linnik_stackOrbitRepresentativeBudgetedMaxContract
+floorClosureBudgetedMaxAtField_of_tz_stackOrbitRepresentativeBudgetedMax
+worstCaseIncidenceBounded_of_tz_stackOrbitRepresentativeBudgetedMaxContract
+deltaStar_pin_of_tz_stackOrbitRepresentativeBudgetedMaxContract
+```
+
+Thus the Linnik and Thorner-Zaman floor routes no longer need a separate finite-family translation
+step.  After the arithmetic floor input, the only prize-facing incidence premise is the stack-orbit
+certificate `RepresentativeContainsBudgetedGlobalMax C δ R B`; the last two theorems above feed it
+directly into `WorstCaseIncidenceBounded` and then `mcaDeltaStar`.
+
 The negative scanner surface is now exact:
 
 ```lean

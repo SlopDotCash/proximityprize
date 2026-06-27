@@ -134,7 +134,14 @@ theorem l1mean_le_l2rms (η : ι → ℂ) : l1mean η ≤ Real.sqrt (l2mean η) 
             * ((Fintype.card ι : ℝ) * ∑ b, ‖η b‖ ^ 2) := by
           exact mul_le_mul_of_nonneg_left hcs (sq_nonneg _)
       _ = (1 / (Fintype.card ι : ℝ)) * ∑ b, ‖η b‖ ^ 2 := by
-          field_simp [ne_of_gt hN]
+          have hNne : (Fintype.card ι : ℝ) ≠ 0 := ne_of_gt hN
+          calc (1 / (Fintype.card ι : ℝ)) ^ 2
+                * ((Fintype.card ι : ℝ) * ∑ b, ‖η b‖ ^ 2)
+              = ((1 / (Fintype.card ι : ℝ)) * (Fintype.card ι : ℝ))
+                  * ((1 / (Fintype.card ι : ℝ)) * ∑ b, ‖η b‖ ^ 2) := by ring
+            _ = (1 : ℝ) * ((1 / (Fintype.card ι : ℝ)) * ∑ b, ‖η b‖ ^ 2) := by
+                  rw [one_div_mul_cancel hNne]
+            _ = (1 / (Fintype.card ι : ℝ)) * ∑ b, ‖η b‖ ^ 2 := by ring
   have h1nonneg : 0 ≤ l1mean η := by
     rw [l1mean]
     exact mul_nonneg (le_of_lt (one_div_pos.mpr hN))

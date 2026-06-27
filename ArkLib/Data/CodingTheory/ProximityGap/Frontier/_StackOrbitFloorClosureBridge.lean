@@ -92,6 +92,147 @@ theorem deltaStar_pin_of_stackOrbitRepresentativeBudgetedMax
       hmax)
     hbudget
 
+/-! ## Arithmetic floor-closure consumers in stack-orbit form -/
+
+/-- Under the Linnik least-prime input, a stack-orbit budgeted global representative is exactly the
+sharp floor-closure field certificate. -/
+theorem floorClosureBudgetedMaxAtField_of_linnik_stackOrbitRepresentativeBudgetedMax
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : ArkLib.ProximityGap.Frontier.FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    (hLeast : ArkLib.ProximityGap.Frontier.FloorLocalization.LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+      (F := F) (A := A) C δ R B) :
+    ArkLib.ProximityGap.Frontier.FloorClosureContract.FloorClosureBudgetedMaxAtField
+        (F := F) (A := A) FloorBad a C δ R B :=
+  ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+    (F := F) (A := A) FloorBad hexact hLeast a ha
+    hcardPrime hcardMod hcardPrize C δ
+    ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
+      hmax)
+
+/-- Linnik floor closure, stated directly in the stack-orbit representative certificate language,
+gives the prize-facing worst-case incidence bound. -/
+theorem worstCaseIncidenceBounded_of_linnik_stackOrbitRepresentativeBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : ArkLib.ProximityGap.Frontier.FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    (hLeast : ArkLib.ProximityGap.Frontier.FloorLocalization.LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+      (F := F) (A := A) C δ R B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
+    (F := F) (A := A) FloorBad hexact hLeast a ha
+    hcardPrime hcardMod hcardPrize C δ
+    ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
+      hmax)
+
+/-- Linnik floor closure, stated directly in stack-orbit representative form, feeds the direct
+delta-star lower-bound consumer. -/
+theorem deltaStar_pin_of_linnik_stackOrbitRepresentativeBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : ArkLib.ProximityGap.Frontier.FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    (hLeast : ArkLib.ProximityGap.Frontier.FloorLocalization.LinnikLeastPrimeBelowPrize)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+      (F := F) (A := A) C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
+    (F := F) (A := A) FloorBad hexact hLeast a ha
+    hcardPrime hcardMod hcardPrize C εstar hδ
+    ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
+      hmax)
+    hbudget
+
+/-- Under TZ prime supply, a stack-orbit budgeted global representative is exactly the sharp
+floor-closure field certificate. -/
+theorem floorClosureBudgetedMaxAtField_of_tz_stackOrbitRepresentativeBudgetedMax
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : ArkLib.ProximityGap.Frontier.FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> ArkLib.ProximityGap.KKH26.TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+      (F := F) (A := A) C δ R B) :
+    ArkLib.ProximityGap.Frontier.FloorClosureContract.FloorClosureBudgetedMaxAtField
+        (F := F) (A := A) FloorBad a C δ R B :=
+  ArkLib.ProximityGap.Frontier.FloorClosureContract.floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+    (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+    hcardPrime hcardMod hcardPrize C δ
+    ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
+      hmax)
+
+/-- TZ floor closure, stated directly in the stack-orbit representative certificate language, gives
+the prize-facing worst-case incidence bound. -/
+theorem worstCaseIncidenceBounded_of_tz_stackOrbitRepresentativeBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : ArkLib.ProximityGap.Frontier.FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> ArkLib.ProximityGap.KKH26.TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+      (F := F) (A := A) C δ R B) :
+    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
+        (F := F) (A := A) C δ B :=
+  ArkLib.ProximityGap.Frontier.FloorClosureContract.worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
+    (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+    hcardPrime hcardMod hcardPrize C δ
+    ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
+      hmax)
+
+/-- TZ floor closure, stated directly in stack-orbit representative form, feeds the direct
+delta-star lower-bound consumer. -/
+theorem deltaStar_pin_of_tz_stackOrbitRepresentativeBudgetedMaxContract
+    (FloorBad : ℕ -> ℕ -> Prop)
+    (hexact : ArkLib.ProximityGap.Frontier.FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
+    {β : ℝ} (hβ : β ≤ 3)
+    (hTZfam : ∀ a : ℕ, 4 ≤ a -> ArkLib.ProximityGap.KKH26.TZPrimeSupply (2 ^ a) β 1)
+    (a : ℕ) (ha : 4 ≤ a)
+    (hcardPrime : (Fintype.card F).Prime)
+    (hcardMod : Fintype.card F % (2 ^ a) = 1)
+    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
+    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
+    (hδ : δ ≤ 1)
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+      (F := F) (A := A) C δ R B)
+    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
+  ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
+    (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
+    hcardPrime hcardMod hcardPrize C εstar hδ
+    ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
+      hmax)
+    hbudget
+
 /-! ## Axiom audit -/
 #print axioms stackBadCount_eq_floorClosureStackBadCount
 #print axioms representativeStacksBounded_iff_familyBounded
@@ -99,5 +240,11 @@ theorem deltaStar_pin_of_stackOrbitRepresentativeBudgetedMax
 #print axioms representativeContainsGlobalMax_iff_familyContainsGlobalMax
 #print axioms representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax
 #print axioms deltaStar_pin_of_stackOrbitRepresentativeBudgetedMax
+#print axioms floorClosureBudgetedMaxAtField_of_linnik_stackOrbitRepresentativeBudgetedMax
+#print axioms worstCaseIncidenceBounded_of_linnik_stackOrbitRepresentativeBudgetedMaxContract
+#print axioms deltaStar_pin_of_linnik_stackOrbitRepresentativeBudgetedMaxContract
+#print axioms floorClosureBudgetedMaxAtField_of_tz_stackOrbitRepresentativeBudgetedMax
+#print axioms worstCaseIncidenceBounded_of_tz_stackOrbitRepresentativeBudgetedMaxContract
+#print axioms deltaStar_pin_of_tz_stackOrbitRepresentativeBudgetedMaxContract
 
 end ArkLib.ProximityGap.Frontier.StackOrbitFloorClosureBridge
