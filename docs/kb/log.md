@@ -1619,6 +1619,12 @@ pointwise collision `ζ^2 + ζ^-2 = u * (ζ + ζ^-1)` for some `u ∈ mu_n`, and
 `exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` also expose this
 as failure of the repaired sign-quotiented residual with an exact finite collision witness.
 
+Follow-up: the ratio obstruction is now discharged in one concrete large-field instance.  In
+`F_12289`, Lean proves that `4134` is a primitive 16-th root,
+`invariantRatio 4134 (4134^2)^16 != 1`, and therefore
+`16 < #(e2BadScalarSet (nthRootsFinset 16 1) 4)`.  This is a finite counter-budget witness for
+the local width-4 scanner, not a uniform δ* proof.
+
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
 `Frontier/ThornerZamanInstance.lean` now extends the finite `TZPrimeSupply` ladder with

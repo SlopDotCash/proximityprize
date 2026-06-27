@@ -68,6 +68,11 @@ invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_ne_one
 not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
+orderOf_4134_ratio
+isPrimitiveRoot_4134_16_ratio
+invariantRatio_4134_sq_pow16_ne_one
+sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
+not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
@@ -217,6 +222,13 @@ The canonical wrappers
 `quadT 1 ζ`, `quadT 1 ζ^2` scanner failure to proving
 `invariantRatio ζ (ζ^2) ^ n != 1`.  This is a narrower polynomial/norm-style residual, not a
 delta-star proof.
+
+The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
+witness at `n = 16`.  Lean proves `4134` has order `16`, checks
+`invariantRatio 4134 (4134^2)^16 != 1`, and derives
+`16 < #(e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod 12289)) 4)`.  The declaration
+`not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4` is the corresponding literal budget refuter
+for that concrete subgroup.
 
 The backwards direction is now explicit too.  If the literal budget
 `#(e2BadScalarSet mu_n 4) <= n` holds in the canonical fixed-witness lane, Lean derives both the

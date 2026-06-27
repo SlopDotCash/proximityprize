@@ -81,7 +81,7 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 - Kronecker (1857); Lam–Leung, *On vanishing sums of roots of unity*, J. Algebra 224 (2000).
 -/
 set_option linter.style.longLine false
-set_option linter.style.longFile 1900
+set_option linter.style.longFile 2000
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option autoImplicit false
@@ -1093,6 +1093,83 @@ theorem primRoot_add_inv_ne_neg_sq_add_inv {n : ℕ} (hn : 0 < n) {ζ : F}
       ring
     exact hζ.pow_ne_one_of_pos_of_lt (by norm_num : (6 : ℕ) ≠ 0) h6lt hz6
 
+/-! ### Complex fixed-pair non-collision -/
+
+/-- A real complex `n`-th root of unity is `1` or `-1`. -/
+theorem complex_root_of_unity_real_eq_one_or_neg_one {n : ℕ} (hn : n ≠ 0) {u : ℂ}
+    (hu : u ^ n = 1) (huim : u.im = 0) : u = 1 ∨ u = -1 := by
+  have hnorm : ‖u‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hu hn
+  have hns : Complex.normSq u = 1 := by
+    rw [Complex.normSq_eq_norm_sq, hnorm]
+    norm_num
+  rw [Complex.normSq_apply, huim] at hns
+  have hfac : (u.re - 1) * (u.re + 1) = 0 := by nlinarith
+  rcases mul_eq_zero.mp hfac with h1 | hneg
+  · left
+    apply Complex.ext
+    · simp
+      nlinarith
+    · simpa using huim
+  · right
+    apply Complex.ext
+    · simp
+      nlinarith
+    · simp [huim]
+
+/-- The real cyclotomic invariant `z + z⁻¹` has zero imaginary part for a complex root of unity. -/
+theorem complex_root_add_inv_im_eq_zero {n : ℕ} (hn : n ≠ 0) {z : ℂ}
+    (hz : z ^ n = 1) : (z + z⁻¹).im = 0 := by
+  have hnorm : ‖z‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hz hn
+  rw [Complex.inv_eq_conj hnorm]
+  simp
+
+/-- Over `ℂ`, the canonical primitive pair `ζ, ζ²` has no invariant collision with an `n`-th
+root scalar once `8 < n`. Any collision scalar would be real, hence `±1`, and the two
+field-general primitive-root separation lemmas rule those cases out. -/
+theorem invariantPairNonCollision_complex_primitive_zeta_sq {n : ℕ} {ζ : ℂ}
+    (hn : 0 < n) (hn8 : 8 < n) (hζ : IsPrimitiveRoot ζ n) :
+    InvariantPairNonCollision (Polynomial.nthRootsFinset n (1 : ℂ)) ζ (ζ ^ 2) := by
+  intro u hu hcollision
+  have hc : ζ + ζ⁻¹ ≠ 0 := by
+    simpa [pow_one] using
+      primRoot_pow_add_inv_ne_zero_of_four_mul_lt (F := ℂ) (ζ := ζ) (k := 1) hn hζ
+        one_ne_zero (by omega : 1 * 4 < n)
+  have hcim : (ζ + ζ⁻¹).im = 0 :=
+    complex_root_add_inv_im_eq_zero hn.ne' hζ.pow_eq_one
+  have hζ2pow : (ζ ^ 2) ^ n = 1 := by
+    rw [← pow_mul]
+    rw [mul_comm]
+    rw [pow_mul, hζ.pow_eq_one]
+    simp
+  have hc'im : (ζ ^ 2 + (ζ ^ 2)⁻¹).im = 0 :=
+    complex_root_add_inv_im_eq_zero hn.ne' hζ2pow
+  have hcre : (ζ + ζ⁻¹).re ≠ 0 := by
+    intro hcre
+    apply hc
+    apply Complex.ext
+    · simpa using hcre
+    · simpa using hcim
+  have huPow : u ^ n = 1 := by
+    simpa [Polynomial.mem_nthRootsFinset hn] using hu
+  have huim : u.im = 0 := by
+    have him : u.im * (ζ + ζ⁻¹).re = 0 := by
+      have h := congrArg Complex.im hcollision
+      rw [hc'im, Complex.mul_im, hcim, mul_zero, zero_add] at h
+      exact h.symm
+    exact (mul_eq_zero.mp him).resolve_right hcre
+  rcases complex_root_of_unity_real_eq_one_or_neg_one hn.ne' huPow huim with rfl | rfl
+  · have hne : ζ + ζ⁻¹ ≠ ζ ^ 2 + (ζ ^ 2)⁻¹ :=
+      primRoot_add_inv_ne_sq_add_inv (F := ℂ) hn hζ (by omega : 1 < n) (by omega : 3 < n)
+    exact hne (by
+      rw [hcollision]
+      ring)
+  · have hsign : ζ + ζ⁻¹ ≠ -(ζ ^ 2 + (ζ ^ 2)⁻¹) :=
+      primRoot_add_inv_ne_neg_sq_add_inv (F := ℂ) hn hζ (by omega : 2 < n)
+        (by omega : 6 < n)
+    exact hsign (by
+      rw [hcollision]
+      ring)
+
 /-- **Concrete `μ_n` width-4 refuter.** For the actual smooth-domain subgroup
 `μ_n = nthRootsFinset n 1`, two non-colliding product-form width-4 witnesses force the concrete
 `e₂ = 0` bad-scalar image to exceed the literal `n` budget. -/
@@ -1529,6 +1606,80 @@ theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
     (n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
       hn heven hn8 hζ hratio)
 
+/-! ### Complex discharge of the fixed canonical ratio residual -/
+
+/-- Over `ℂ`, the fixed canonical invariant ratio for `ζ, ζ²` is not an `n`-th root when
+`ζ` is primitive and `8 < n`. -/
+theorem invariantRatio_pow_ne_one_complex_primitive_zeta_sq {n : ℕ} {ζ : ℂ}
+    (hn : 0 < n) (hn8 : 8 < n) (hζ : IsPrimitiveRoot ζ n) :
+    invariantRatio ζ (ζ ^ 2) ^ n ≠ 1 := by
+  have hc : ζ + ζ⁻¹ ≠ 0 := by
+    simpa [pow_one] using
+      primRoot_pow_add_inv_ne_zero_of_four_mul_lt (F := ℂ) (ζ := ζ) (k := 1) hn hζ
+        one_ne_zero (by omega : 1 * 4 < n)
+  exact
+    (invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_ne_one
+      (F := ℂ) hn (t := ζ) (t' := ζ ^ 2) hc).mp
+      (invariantPairNonCollision_complex_primitive_zeta_sq hn hn8 hζ)
+
+/-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
+theorem n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
+    {n : ℕ} {ζ : ℂ} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n) :
+    n < (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : ℂ)) 4).card :=
+  n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
+    (F := ℂ) hn heven hn8 hζ
+    (invariantRatio_pow_ne_one_complex_primitive_zeta_sq hn hn8 hζ)
+
+/-- Complex scanner-failure form for the canonical width-4 witnesses. -/
+theorem not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
+    {n : ℕ} {ζ : ℂ} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n) :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : ℂ)) 4).card ≤ n :=
+  not_le.mpr
+    (n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
+      hn heven hn8 hζ)
+
+/-! ### A concrete finite-field ratio obstruction (`n = 16`, `p = 12289`) -/
+
+section Concrete12289Ratio
+
+local instance fact_prime_12289_ratio : Fact (Nat.Prime 12289) := ⟨by norm_num⟩
+
+/-- The same `F₁₂₂₈₉` primitive 16-th root used by the sub-ceiling ladder. -/
+theorem orderOf_4134_ratio : orderOf (4134 : ZMod 12289) = 16 := by
+  have h8 : ¬ (4134 : ZMod 12289) ^ (2 : ℕ) ^ 3 = 1 := by decide
+  have h16 : (4134 : ZMod 12289) ^ (2 : ℕ) ^ 4 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (4134 : ZMod 12289)) h8 h16
+  norm_num at h
+  exact h
+
+/-- `4134` is a primitive 16-th root in `F₁₂₂₈₉`. -/
+theorem isPrimitiveRoot_4134_16_ratio : IsPrimitiveRoot (4134 : ZMod 12289) 16 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_4134_ratio
+
+/-- The canonical pair `ζ, ζ²` fails the ratio-root condition in `F₁₂₂₈₉`. -/
+theorem invariantRatio_4134_sq_pow16_ne_one :
+    invariantRatio (4134 : ZMod 12289) ((4134 : ZMod 12289) ^ 2) ^ 16 ≠ 1 := by
+  decide
+
+/-- Concrete width-4 scanner failure for the 16-point subgroup of `F₁₂₂₈₉`. -/
+theorem sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4 :
+    16 < (e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod 12289)) 4).card :=
+  n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
+    (F := ZMod 12289) (n := 16) (ζ := (4134 : ZMod 12289))
+    (by norm_num) (by norm_num) (by norm_num)
+    isPrimitiveRoot_4134_16_ratio
+    invariantRatio_4134_sq_pow16_ne_one
+
+/-- The literal `≤ n` width-4 scanner budget is false in the same concrete instance. -/
+theorem not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4 :
+    ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod 12289)) 4).card ≤ 16 :=
+  not_le.mpr sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
+
+end Concrete12289Ratio
+
 /-- **Fixed primitive-root width-4 refuter.** For even `n > 8`, the canonical witnesses
 `quadT 1 ζ` and `quadT 1 ζ²` satisfy all membership, nonzero, distinctness, and sign-quotiented
 invariant-separation obligations automatically. Thus the remaining scanner-failure input is the
@@ -1757,6 +1908,9 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms one_ne_neg_one_of_primRoot_even
 #print axioms primRoot_add_inv_ne_sq_add_inv
 #print axioms primRoot_add_inv_ne_neg_sq_add_inv
+#print axioms complex_root_of_unity_real_eq_one_or_neg_one
+#print axioms complex_root_add_inv_im_eq_zero
+#print axioms invariantPairNonCollision_complex_primitive_zeta_sq
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_nonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_modSignNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_two_quadT_mem_nonCollision
@@ -1773,6 +1927,14 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_pairNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_ratioPowNeOne
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_ratioPowNeOne
+#print axioms invariantRatio_pow_ne_one_complex_primitive_zeta_sq
+#print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
+#print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
+#print axioms orderOf_4134_ratio
+#print axioms isPrimitiveRoot_4134_16_ratio
+#print axioms invariantRatio_4134_sq_pow16_ne_one
+#print axioms sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
+#print axioms not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
