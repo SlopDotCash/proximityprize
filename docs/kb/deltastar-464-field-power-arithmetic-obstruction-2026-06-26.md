@@ -122,6 +122,10 @@ supportRatioLineFiberCover_card_eq_supportRatioHeavyCoordinateFiber_card
 supportRatioLineFiberCover_card_le_sum_coordinateAgreementFibers
 supportRatioCoverSum_le_field_card_mul_choose
 supportRatioCoverSum_le_field_card_mul_choose_of_k_le_card
+supportRatioCoverSum_le_field_card_mul_choose_mul_field_pow_sub
+supportRatioLineFiberCover_card_le_field_card_mul_choose_mul_field_pow_sub
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_mul_field_pow_sub
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n_mul_field_pow_sub
 supportRatioLineFiberCover_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose
 supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n
@@ -135,6 +139,10 @@ UniformLargeZeroSafeLowSupportRatioCoverSumBudgeted
 zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose
 zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
 uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverChoose_n
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverFieldPow
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverFieldPow_n
+uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverFieldPow_n
+uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverFieldPow_n
 zeroSupportRatioCoverSumBudgeted_of_low_and_high_choose
 uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_low_and_high_choose
 not_zeroSupportRatioCoverSumBudgeted_iff_exists_coverSum_gt
@@ -146,12 +154,18 @@ zeroExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiber
 uniformExactAppearingZeroAgreementFiberBudgeted_of_supportRatioHeavyCoordinateFiberBudgeted
 uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverChoose_n
 uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverChoose_n
+uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverFieldPow_n
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverChoose_n
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverFieldPow_n
 uniformLineBadScalarsBudgeted_of_lowSupportRatioHeavyCoordFibers
 not_lineFiberCoverChooseBudgetFits_of_not_uniformLineBadScalarsBudgeted
 lineFiberCoverChooseBudgetFits_term_le
 not_lineFiberCoverChooseBudgetFits_of_exists_term_gt
 exists_lineFiberCoverChooseBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
+not_lineFiberCoverFieldPowBudgetFits_of_not_uniformLineBadScalarsBudgeted
+lineFiberCoverFieldPowBudgetFits_term_le
+not_lineFiberCoverFieldPowBudgetFits_of_exists_term_gt
+exists_lineFiberCoverFieldPowBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 uniformLineBadScalarsBudgeted_of_supportRatioCoverSums
 uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums
 uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_coverSum_lineFiberCoverChoose_n
@@ -179,7 +193,16 @@ giving the per-profile envelope
 `|F| * choose(#directionSupportSet(u1), a - #S)`.  This is still not a closed prize bound, but it is
 the first target that actually uses appearance on the affine line before paying the raw field-power
 count.  The ambient-length corollary replaces `#directionSupportSet(u1)` by `n` when a coarser
-line-independent expression is useful.  The same file also packages the finite `(γ, T)` sum itself
+line-independent expression is useful.  The same cover now has an all-threshold interpolation-tail
+form: after choosing `γ` and `T`, the fiber has `a` prescribed coordinates, so the remaining raw
+cost is `|F|^(k-a)`.  Thus the ambient low-threshold envelope is
+`|F| * choose(n, a - t) * |F|^(k-a)`, replacing the raw `|F|^(k-t)` count by a support-ratio
+filtered budget.  The corresponding exact-appearance and production consumers are named by
+`uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverFieldPow_n` and
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverFieldPow_n`; failed
+production under this envelope exposes the weighted sum in
+`exists_lineFiberCoverFieldPowBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted`.
+The same file also packages the finite `(γ, T)` sum itself
 as a production route: uniform cover-sum budgets imply support-ratio-heavy budgets,
 exact-appearance budgets, and a full failure scanner returning an overfull cover sum.  The
 scalar-times-binomial bound is now stated directly on that finite cover sum, with an ambient

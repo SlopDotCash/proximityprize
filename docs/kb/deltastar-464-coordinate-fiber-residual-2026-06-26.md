@@ -251,6 +251,14 @@ not_zeroLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt
 not_uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt
 exists_low_appearingCoordinateFiber_gt_of_exists_low_exactAppearingFiber_gt
 exists_uniformLow_appearingCoordinateFiber_gt_of_exists_uniformLow_exactAppearingFiber_gt
+zeroLowAppearingCoordinateFiberBudgeted_of_lowExactBudgeted_mixedChooseProfileSums
+uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_of_lowExact_mixedChooseProfileSums
+uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSums
+exists_largeZero_safe_low_mixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted
+unsafe_or_largeZero_safe_low_mixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted
+uniformLargeZeroSafeAppearingCoordinateFiberBudgeted_of_lowExact_fullMixedChooseProfileSums
+uniformLineBadScalarsBudgeted_of_lowExact_fullMixedChooseProfileSums
+unsafe_or_largeZero_safe_fullMixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 These wrappers let a future positive proof provide only the low-profile estimates `t < k`, while
@@ -281,6 +289,16 @@ subsets of `Z \ S`, and `sum_safeSupersets_le_sum_choose_sdiff` bounds the whole
 `sum_{r<a} choose(#Z - #S, r - #S) * M r`.  Therefore the exact-to-coarse budget transfer can now
 be discharged by the numeric profile condition packaged in
 `zeroAppearingCoordinateFiberBudgeted_of_exactAppearingBudgeted_and_chooseProfileSums`.
+The split module `LineListAppearanceFiberMixedProfile.lean` removes the remaining full-exact
+budget assumption from this route: exact supersets with `r < k` are charged to the caller's low
+exact budget, while supersets with `k <= r` cost only the RS singleton ceiling.  Consequently the
+new production wrapper `uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSums` leaves a
+pure arithmetic residual, and the scanner
+`unsafe_or_largeZero_safe_low_mixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted` returns
+either zero-direction saturation or one oversized mixed choose-profile sum.
+The companion `*_fullMixedChooseProfileSums` theorems use the same mixed exact-superset charges
+but require the profile inequality for every coarse `t < a`, yielding a full appearance-coordinate
+budget when that stronger arithmetic input is available.
 
 The negated low-budget forms are now exact scanners too: per-line failure exposes a low profile
 `t < k`, zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`; uniform failure
@@ -294,6 +312,14 @@ unsafe branch entirely and return the low large-zero safe witness.
 The low exact-overrun witnesses also convert directly to the coarser low appearance-coordinate
 overrun witnesses, so exact-budget failure can be compared with the original appearance route
 without rebuilding the existential payload.
+
+The mixed choose-profile consumer gives a less wasteful exact-to-coarse socket for the remaining low
+appearance-coordinate branch.  For exact supersets of size `r < k`, it charges the supplied exact
+budget `Mexact r`; for `k <= r < a`, it uses only the Reed--Solomon singleton ceiling.  Thus a
+coarse low-profile appearance-coordinate budget can be proved from low exact estimates plus the
+explicit mixed binomial sum over safe supersets.  Its production wrapper feeds the same line-list
+bad-scalar consumer, and the scanner localizes failed production to zero-direction saturation or one
+large-zero safe coarse profile where that mixed choose-profile sum is too small.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the
 binomial factor `choose(#zeroSet(u1), t)` and the weight `support(u1)/(a-t)` may exceed the target

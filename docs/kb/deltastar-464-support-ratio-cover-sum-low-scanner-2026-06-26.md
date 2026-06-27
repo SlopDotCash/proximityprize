@@ -53,6 +53,20 @@ uniformLineBadScalarsBudgeted_of_lowSupportRatioCoverSums
 exists_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
 exists_low_supportRatioCoverSum_gt_of_exists_coverSum_gt_and_high_choose
 unsafe_or_largeZero_safe_low_supportRatioCoverSum_gt_of_not_uniformLineBadScalarsBudgeted
+supportRatioCoverSum_le_field_card_mul_choose_mul_field_pow_sub
+supportRatioLineFiberCover_card_le_field_card_mul_choose_mul_field_pow_sub
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_mul_field_pow_sub
+supportRatioHeavyCoordinateFiber_card_le_field_card_mul_choose_n_mul_field_pow_sub
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverFieldPow
+zeroSupportRatioCoverSumBudgeted_of_lineFiberCoverFieldPow_n
+uniformLargeZeroSafeSupportRatioCoverSumBudgeted_of_lineFiberCoverFieldPow_n
+uniformLargeZeroSafeSupportRatioHeavyCoordinateFiberBudgeted_of_lineFiberCoverFieldPow_n
+uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverFieldPow_n
+uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverFieldPow_n
+not_lineFiberCoverFieldPowBudgetFits_of_not_uniformLineBadScalarsBudgeted
+lineFiberCoverFieldPowBudgetFits_term_le
+not_lineFiberCoverFieldPowBudgetFits_of_exists_term_gt
+exists_lineFiberCoverFieldPowBudgetSum_gt_of_not_uniformLineBadScalarsBudgeted
 ```
 
 The first theorem is the local high-profile estimate.  It does not need the global `k <= a`
@@ -81,6 +95,16 @@ The low support-ratio-heavy socket also feeds the low exact-appearance socket di
 failed low exact-appearance budget is not a separate residual: by the contrapositive wrappers, it
 already refutes the sharper low support-ratio-heavy budget.
 
+There is also now an all-threshold baseline for the same explicit cover.  Without assuming
+`k <= a`, each `(gamma, T)` choice fixes exactly `a` coordinates and leaves the interpolation tail
+`|F|^(k-a)`, giving the field-pow envelope
+`|F| * choose(#support, a-t) * |F|^(k-a)`, and its ambient-length version with
+`choose(n, a-t)`.  This recovers the singleton cover when `a >= k`, while in the low-threshold
+regime it records the remaining degrees of freedom instead of hiding them behind a missing lemma.
+The production wrapper and scanners make this a control case: failed production under the usual
+support and zero-safety hypotheses refutes the field-pow arithmetic fit, and a single over-budget
+weighted summand is enough to refute that fit.
+
 ## Consequence
 
 The support-ratio cover-sum route is now aligned with the other low-profile scanners.  High
@@ -89,3 +113,7 @@ profiles are no longer part of the residual once the envelope pays the explicit
 the low range `t < k`, where RS uniqueness alone does not collapse the coordinate fibers.  The
 heavy-fiber variant makes the same residual even sharper: once high profiles pay only one, any
 remaining failure must be a low support-ratio-heavy fiber.
+The all-threshold field-pow envelope does not close the residual; it is the fallback budget to beat.
+It is useful because it places every support-ratio cover attempt on an explicit arithmetic scale:
+either improve the finite cover sum beyond
+`|F| * choose(n, a-t) * |F|^(k-a)`, or accept the corresponding weighted-sum obstruction.

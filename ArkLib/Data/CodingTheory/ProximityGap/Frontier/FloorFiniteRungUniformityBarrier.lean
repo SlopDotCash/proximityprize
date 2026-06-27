@@ -212,6 +212,24 @@ theorem exists_next_failure_of_verifiedPrefix_of_not_uniformFrom
   (not_successorStep_iff_exists_next_failure start R).mp
     (not_successorStep_of_verifiedPrefix_of_not_uniformFrom hsc hprefix hnot)
 
+/-- A prefix scanner can place the first adjacent successor failure at or beyond the checked
+cutoff: a failure below the cutoff would contradict prefix verification at `a + 1`. -/
+theorem exists_next_failure_at_or_after_cutoff_of_verifiedPrefix_of_not_uniformFrom
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hprefix : VerifiedPrefix start cutoff R)
+    (hnot : ¬ UniformFrom start R) :
+    ∃ a : ℕ, cutoff ≤ a ∧ start ≤ a ∧ R a ∧ ¬ R (a + 1) := by
+  rcases exists_next_failure_of_verifiedPrefix_of_not_uniformFrom hsc hprefix hnot with
+    ⟨a, hstart, hR, hfail⟩
+  have hcutoff : cutoff ≤ a := by
+    by_contra hnotCutoff
+    have hlt : a < cutoff := Nat.lt_of_not_ge hnotCutoff
+    have hnextCutoff : a + 1 ≤ cutoff := Nat.succ_le_of_lt hlt
+    have hnextStart : start ≤ a + 1 := le_trans hstart (Nat.le_succ a)
+    exact hfail (hprefix (a + 1) hnextStart hnextCutoff)
+  exact ⟨a, hcutoff, hstart, hR, hfail⟩
+
 /-- Interval-finset scanner form of
 `exists_next_failure_of_verifiedPrefix_of_not_uniformFrom`. -/
 theorem exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
@@ -221,6 +239,17 @@ theorem exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
     (hnot : ¬ UniformFrom start R) :
     ∃ a : ℕ, start ≤ a ∧ R a ∧ ¬ R (a + 1) :=
   exists_next_failure_of_verifiedPrefix_of_not_uniformFrom hsc
+    ((verifiedOn_Icc_iff_verifiedPrefix start cutoff R).mp hverified) hnot
+
+/-- Interval-finset scanner form of
+`exists_next_failure_at_or_after_cutoff_of_verifiedPrefix_of_not_uniformFrom`. -/
+theorem exists_next_failure_at_or_after_cutoff_of_verifiedOn_Icc_of_not_uniformFrom
+    {R : ℕ -> Prop} {start cutoff : ℕ}
+    (hsc : start ≤ cutoff)
+    (hverified : VerifiedOn (Finset.Icc start cutoff) R)
+    (hnot : ¬ UniformFrom start R) :
+    ∃ a : ℕ, cutoff ≤ a ∧ start ≤ a ∧ R a ∧ ¬ R (a + 1) :=
+  exists_next_failure_at_or_after_cutoff_of_verifiedPrefix_of_not_uniformFrom hsc
     ((verifiedOn_Icc_iff_verifiedPrefix start cutoff R).mp hverified) hnot
 
 #print axioms verifiedOn_not_force_uniform
@@ -240,5 +269,7 @@ theorem exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
 #print axioms not_successorStep_of_verifiedOn_Icc_of_not_uniformFrom
 #print axioms exists_next_failure_of_verifiedPrefix_of_not_uniformFrom
 #print axioms exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
+#print axioms exists_next_failure_at_or_after_cutoff_of_verifiedPrefix_of_not_uniformFrom
+#print axioms exists_next_failure_at_or_after_cutoff_of_verifiedOn_Icc_of_not_uniformFrom
 
 end ArkLib.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier

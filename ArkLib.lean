@@ -1104,6 +1104,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FarLineProxyBelowJohnson
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FisherRSListCap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorAsymptoticRadius
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorClosurePrefixConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorClosureSuccessorScanner
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorFiniteRungUniformityBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.FloorLevelDepthPrimeScaleGate
@@ -2891,6 +2892,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineFirstMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineHeavySetBound
 import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
 import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiber
+import ArkLib.Data.CodingTheory.ProximityGap.LineListAppearanceFiberMixedProfile
 import ArkLib.Data.CodingTheory.ProximityGap.LineListArithmeticObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSingletonRelationCliqueCover

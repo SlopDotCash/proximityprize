@@ -627,3 +627,22 @@ The failure form is the same scanner as the open core: some stack has `StackBadC
 is the important compression gate.  A proposed floor catalogue is useful only if it replaces the
 trivial all-stack argmax with a smaller/invariant-defined family that still contains a budgeted
 global maximizer.
+
+## Continuation: prefix-successor consumers
+
+The scanner-facing successor bridge now composes directly with the sharp budgeted-global-max
+endpoint:
+
+```lean
+worstCaseIncidenceBounded_of_linnik_prefix_successor_budgetedMax
+deltaStar_pin_of_linnik_prefix_successor_budgetedMax
+worstCaseIncidenceBounded_of_tz_prefix_successor_budgetedMax
+deltaStar_pin_of_tz_prefix_successor_budgetedMax
+```
+
+These theorems consume a verified finite prefix of `CandidateListExactAt FloorBad`, the concrete
+successor theorem `CandidateListExactSuccessor FloorBad`, the relevant Linnik or Thorner-Zaman
+least-prime supply, and `FamilyContainsBudgetedGlobalMax`.  They remove only the bookkeeping
+between finite-rung scanner evidence and the prize-facing incidence consumers.  The remaining
+mathematics is still the same three inputs: a real successor theorem for all rungs, the arithmetic
+least-prime supply, and a budgeted global maximizer for the MCA bad-scalar order.

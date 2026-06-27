@@ -58,23 +58,59 @@ floor-closure predicate:
 ```lean
 candidateListExactSmallestFamily_iff_uniformFrom_candidateListExactAt
 candidateListExactSuccessor_iff_successorStep_candidateListExactAt
+candidateListExactSmallestFamily_iff_base_and_successor
+not_candidateListExactSmallestFamily_iff_not_base_or_exists_exact_rung_next_fails
+not_candidateListExactSmallestFamily_iff_exists_exact_rung_next_fails_of_base
 candidateListExactSmallestFamily_of_verifiedPrefix_and_successorStep
 candidateListExactSmallestFamily_of_verifiedOn_Icc_and_successorStep
 not_candidateListExactSuccessor_of_verifiedPrefix_of_not_candidateListExactSmallestFamily
 not_candidateListExactSuccessor_of_verifiedOn_Icc_of_not_candidateListExactSmallestFamily
 exists_exact_rung_next_fails_of_verifiedPrefix_of_not_candidateListExactSmallestFamily
 exists_exact_rung_next_fails_of_verifiedOn_Icc_of_not_candidateListExactSmallestFamily
+exists_candidate_exact_next_failure_at_or_after_cutoff
+exists_candidate_exact_next_failure_at_or_after_cutoff_Icc
 ```
 
 Thus finite verified-prefix evidence has one precise escape hatch: if it does not extend to
 uniform singleton exactness, the concrete successor theorem must fail at an adjacent rung.
+The latest normal form is sharper:
+
+```text
+CandidateListExactSmallestFamily
+  iff CandidateListExactAt 4 and CandidateListExactSuccessor.
+```
+
+So after the base rung is exact, uniform failure is equivalent to an adjacent exact-then-failing
+rung.  If the base rung is not exact, the scanner has already refuted the route at `a = 4`.
+The cutoff-refined scanner variants additionally show that, once a prefix through `cutoff` is
+verified, the adjacent exact-then-failing pair can be placed at some `a >= cutoff`.
+
+The public consumer bridge
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorClosurePrefixConsumer.lean` composes this
+prefix-plus-successor input with the sharp Linnik/TZ budgeted-global-max contracts:
+
+```lean
+worstCaseIncidenceBounded_of_linnik_prefix_successor_budgetedMax
+deltaStar_pin_of_linnik_prefix_successor_budgetedMax
+worstCaseIncidenceBounded_of_tz_prefix_successor_budgetedMax
+deltaStar_pin_of_tz_prefix_successor_budgetedMax
+```
+
+Thus the floor lane can now be stated without an intermediate uniform-localization hypothesis:
+verified prefix + successor theorem + least-prime supply + budgeted global maximizer feeds the
+same `WorstCaseIncidenceBounded` and delta-star consumers.
 
 ## Refutation Surface
 
-Uniform singleton exactness now fails exactly by a concrete rung:
+Uniform singleton exactness now fails exactly by either base failure or an adjacent successor
+failure:
 
 ```text
-exists a >= 4, not CandidateListExactAt a
+not CandidateListExactAt 4
+or
+exists a >= 4,
+  CandidateListExactAt a
+  and not CandidateListExactAt (a + 1)
 ```
 
 The successor theorem fails by an adjacent pair:

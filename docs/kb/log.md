@@ -1312,6 +1312,26 @@ yields `CandidateListExactSmallestFamily`; conversely, if a verified prefix does
 uniform singleton exactness, the bridge returns an adjacent rung where exactness holds at `a` and
 fails at `a + 1`.
 
+Follow-up normal forms sharpen the same successor lane:
+`candidateListExactSmallestFamily_iff_base_and_successor` says uniform singleton exactness is
+exactly `CandidateListExactAt 4` plus `CandidateListExactSuccessor`.
+`not_candidateListExactSmallestFamily_iff_not_base_or_exists_exact_rung_next_fails` says a failed
+uniform theorem is either base-rung failure or an adjacent exact-then-failing rung; once the base
+is known, the latter is equivalent to uniform failure.  The generic finite-rung scanner now also
+has cutoff-refined witnesses
+`exists_next_failure_at_or_after_cutoff_of_verifiedPrefix_of_not_uniformFrom` and
+`exists_next_failure_at_or_after_cutoff_of_verifiedOn_Icc_of_not_uniformFrom`, so a verified prefix
+pushes any adjacent successor failure to the boundary or beyond.
+
+Follow-up consumer bridge: `Frontier/FloorClosurePrefixConsumer.lean` now composes verified prefix
+evidence and `CandidateListExactSuccessor` with the sharp Linnik/TZ budgeted-global-max contracts.
+The new consumers are
+`worstCaseIncidenceBounded_of_linnik_prefix_successor_budgetedMax`,
+`deltaStar_pin_of_linnik_prefix_successor_budgetedMax`,
+`worstCaseIncidenceBounded_of_tz_prefix_successor_budgetedMax`, and
+`deltaStar_pin_of_tz_prefix_successor_budgetedMax`.  This keeps the remaining floor-prize inputs
+exactly visible: a real successor theorem, least-prime supply, and a budgeted global maximizer.
+
 ## [2026-06-27] reduce | low exact appearance collapses to low support-ratio-heavy
 
 Extended `LineListSupportRatioFiber.lean` with low-profile support-ratio-heavy to exact-appearance
@@ -1324,6 +1344,22 @@ The contrapositive wrappers
 `not_uniformLowSupportRatioHeavyBudgeted_of_not_uniformLowExactAppearingBudgeted` record that a
 failed low exact appearance budget is already a failure of the sharper low support-ratio-heavy
 coordinate-fiber budget.
+
+Follow-up: `LineListSupportRatioFiber.lean` now exposes an all-threshold support-ratio cover
+baseline with interpolation tail `|F|^(k-a)`, through
+`supportRatioCoverSum_le_field_card_mul_choose_mul_field_pow_sub`,
+`uniformExactAppearingZeroAgreementFiberBudgeted_of_lineFiberCoverFieldPow_n`, and
+`uniformLineBadScalarsBudgeted_of_supportAdjustedBudgetFits_and_lineFiberCoverFieldPow_n`.
+This removes the artificial high-threshold assumption from the cover baseline; when `a < k`, the
+residual is the explicit tail rather than an implicit missing lemma.
+
+Follow-up: `LineListAppearanceFiberMixedProfile.lean` now has a mixed low-exact/high-singleton
+profile consumer.  `uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSums` charges low
+exact profiles to `Mexact r` and high exact profiles to the RS singleton ceiling, while
+`unsafe_or_largeZero_safe_low_mixedChooseProfile_gt_of_not_uniformLineBadScalarsBudgeted` localizes
+failure to either zero-direction saturation or one oversized mixed choose-profile sum.
+The same file also records `*_fullMixedChooseProfileSums` variants for callers willing to pay the
+mixed profile inequality for every coarse `t < a` rather than only the low coarse range.
 
 ## [2026-06-27] reduce | promote finite-rung floor barrier
 

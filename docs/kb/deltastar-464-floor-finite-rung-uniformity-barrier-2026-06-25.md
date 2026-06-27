@@ -110,11 +110,17 @@ not_successorStep_of_verifiedPrefix_of_not_uniformFrom
 not_successorStep_of_verifiedOn_Icc_of_not_uniformFrom
 exists_next_failure_of_verifiedPrefix_of_not_uniformFrom
 exists_next_failure_of_verifiedOn_Icc_of_not_uniformFrom
+exists_next_failure_at_or_after_cutoff_of_verifiedPrefix_of_not_uniformFrom
+exists_next_failure_at_or_after_cutoff_of_verifiedOn_Icc_of_not_uniformFrom
 ```
 
 For the floor lane, this is the refutable form of the proposed tower/renormalization law: either
 prove the successor step for the actual floor-localization predicate, or find an adjacent rung
 where the least-prime rule stops propagating.
+
+The cutoff-refined forms say more: if every rung through `cutoff` has already been verified, then
+the adjacent failure can be placed at some `a >= cutoff`.  A scanner extending a verified prefix
+therefore never has to re-audit earlier rungs to explain a failed uniform theorem.
 
 Validation:
 

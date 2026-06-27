@@ -9,10 +9,11 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/CurvesBridge.lean : l
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1540 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/Errors.lean : line 1 : ERR_NUM_LIN : 1900 file contains 1762 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/GrandChallengesLattice.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1541 lines, try to split it up
-ArkLib/Data/CodingTheory/ProximityGap/LineListAppearanceFiber.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1576 lines, try to split it up
+ArkLib/Data/CodingTheory/ProximityGap/LineListAppearanceFiber.lean : line 1 : ERR_NUM_LIN : 1700 file contains 1606 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/LineListIncidenceMultiplicity.lean : line 1 : ERR_NUM_LIN : 2100 file contains 1932 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/LineListSingletonDefectGeometry.lean : line 1 : ERR_NUM_LIN : 1800 file contains 1634 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/LineListReduction.lean : line 1 : ERR_NUM_LIN : 2000 file contains 1992 lines, try to split it up
+ArkLib/Data/CodingTheory/ProximityGap/LineListSupportRatioFiber.lean : line 1 : ERR_NUM_LIN : 1800 file contains 1743 lines, try to split it up
 ArkLib/Data/CodingTheory/ReedSolomon/FftDomain.lean : line 1 : ERR_NUM_LIN : 2100 file contains 1954 lines, try to split it up
 ArkLib/Data/Polynomial/RationalFunctionsCore.lean : line 1 : ERR_NUM_LIN : 3200 file contains 3027 lines, try to split it up
 ArkLib/OracleReduction/Composition/Sequential/Append.lean : line 1 : ERR_NUM_LIN : 3000 file contains 2410 lines, try to split it up
