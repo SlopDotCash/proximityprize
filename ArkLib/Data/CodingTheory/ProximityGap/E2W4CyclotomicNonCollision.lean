@@ -1695,6 +1695,16 @@ theorem invariantRatio_pow_ne_one_complex_primitive_zeta_sq {n : ℕ} {ζ : ℂ}
       (F := ℂ) hn (t := ζ) (t' := ζ ^ 2) hc).mp
       (invariantPairNonCollision_complex_primitive_zeta_sq hn hn8 hζ)
 
+/-- Over `ℂ`, the denominator-cleared fixed canonical polynomial obstruction is nonzero for every
+primitive `ζ` with `8 < n`. This is the characteristic-zero nonvanishing input needed by the
+cyclotomic-resultant bad-prime route. -/
+theorem polynomial_ne_complex_primitive_zeta_sq {n : ℕ} {ζ : ℂ}
+    (hn : 0 < n) (hn8 : 8 < n) (hζ : IsPrimitiveRoot ζ n) :
+    (ζ ^ 4 + 1) ^ n ≠ (ζ ^ 2 + 1) ^ n :=
+  (invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
+    (F := ℂ) hn hn8 hζ).mp
+    (invariantRatio_pow_ne_one_complex_primitive_zeta_sq hn hn8 hζ)
+
 /-- Complex fixed primitive-root width-4 refuter for the canonical witnesses. -/
 theorem n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
     {n : ℕ} {ζ : ℂ} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
@@ -1732,10 +1742,19 @@ theorem isPrimitiveRoot_4134_16_ratio : IsPrimitiveRoot (4134 : ZMod 12289) 16 :
   rw [IsPrimitiveRoot.iff_orderOf]
   exact orderOf_4134_ratio
 
+/-- The denominator-free polynomial obstruction holds for the canonical pair in `F₁₂₂₈₉`. -/
+theorem polynomial_4134_sq_pow16_ne :
+    ((4134 : ZMod 12289) ^ 4 + 1) ^ 16 ≠
+      ((4134 : ZMod 12289) ^ 2 + 1) ^ 16 := by
+  decide
+
 /-- The canonical pair `ζ, ζ²` fails the ratio-root condition in `F₁₂₂₈₉`. -/
 theorem invariantRatio_4134_sq_pow16_ne_one :
-    invariantRatio (4134 : ZMod 12289) ((4134 : ZMod 12289) ^ 2) ^ 16 ≠ 1 := by
-  decide
+    invariantRatio (4134 : ZMod 12289) ((4134 : ZMod 12289) ^ 2) ^ 16 ≠ 1 :=
+  (invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
+    (F := ZMod 12289) (n := 16) (ζ := (4134 : ZMod 12289))
+    (by norm_num) (by norm_num) isPrimitiveRoot_4134_16_ratio).mpr
+    polynomial_4134_sq_pow16_ne
 
 /-- Concrete width-4 scanner failure for the 16-point subgroup of `F₁₂₂₈₉`. -/
 theorem sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4 :
@@ -1875,6 +1894,27 @@ theorem invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_
   exact (not_invariantPairNonCollision_nthRootsFinset_iff_ratio_pow_eq_one
     (F := F) hn (t := ζ) (t' := ζ ^ 2) hc).mp hnotPair
 
+/-- **Backwards polynomial obstruction for the fixed primitive witnesses.** If the literal
+`n` budget survives, then the denominator-free polynomial obstruction must vanish:
+`(ζ⁴ + 1)^n = (ζ² + 1)^n`.  Thus a finite-field proof of the negated polynomial equality is
+already enough to refute the scanner budget in this canonical width-4 lane. -/
+theorem polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+    {n : ℕ} {ζ : F} (hn : 0 < n) (heven : 2 ∣ n) (hn8 : 8 < n)
+    (hζ : IsPrimitiveRoot ζ n)
+    (hbudget : (e2BadScalarSet (Polynomial.nthRootsFinset n (1 : F)) 4).card ≤ n) :
+    (ζ ^ 4 + 1) ^ n = (ζ ^ 2 + 1) ^ n := by
+  have hratio :
+      invariantRatio ζ (ζ ^ 2) ^ n = 1 :=
+    invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+      hn heven hn8 hζ hbudget
+  have hζ2neneg1 : ζ ^ 2 ≠ -1 :=
+    primRoot_pow_ne_neg_one_of_two_mul_lt (F := F) (ζ := ζ) (k := 2) hζ
+      (by norm_num : (2 : ℕ) ≠ 0) (by omega : 2 * 2 < n)
+  have hden : ζ ^ 2 + 1 ≠ 0 := by
+    intro h
+    exact hζ2neneg1 (eq_neg_of_add_eq_zero_left h)
+  exact (invariantRatio_zeta_sq_pow_eq_one_iff_polynomial_eq hn hζ hden).mp hratio
+
 /-- Fixed primitive-root scanner-failure form for the canonical witnesses
 `quadT 1 ζ` and `quadT 1 ζ²`. -/
 theorem not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
@@ -2006,16 +2046,19 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
 #print axioms invariantRatio_pow_ne_one_complex_primitive_zeta_sq
+#print axioms polynomial_ne_complex_primitive_zeta_sq
 #print axioms n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 #print axioms orderOf_4134_ratio
 #print axioms isPrimitiveRoot_4134_16_ratio
+#print axioms polynomial_4134_sq_pow16_ne
 #print axioms invariantRatio_4134_sq_pow16_ne_one
 #print axioms sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 #print axioms not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
 #print axioms n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms exists_invariant_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms invariantRatio_pow_eq_one_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
+#print axioms polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_modSignNonCollision
 #print axioms not_cd0NonCollisionModSign_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 #print axioms exists_cd0ModSign_collision_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even

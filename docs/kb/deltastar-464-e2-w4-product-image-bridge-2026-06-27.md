@@ -73,14 +73,17 @@ invariantRatio_zeta_sq_pow_ne_one_iff_polynomial_ne
 invariantRatio_primitive_zeta_sq_pow_ne_one_iff_polynomial_ne
 n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe
 not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even
 complex_root_of_unity_real_eq_one_or_neg_one
 complex_root_add_inv_im_eq_zero
 invariantPairNonCollision_complex_primitive_zeta_sq
 invariantRatio_pow_ne_one_complex_primitive_zeta_sq
+polynomial_ne_complex_primitive_zeta_sq
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
 isPrimitiveRoot_4134_16_ratio
+polynomial_4134_sq_pow16_ne
 invariantRatio_4134_sq_pow16_ne_one
 sixteen_lt_e2BadScalarSet_mu16_card_zmod12289_width4
 not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4
@@ -245,7 +248,10 @@ invariantRatio ζ (ζ^2)^n != 1
 after clearing the nonzero denominator `ζ^2 + 1`.  The wrappers
 `n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe` and
 `not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe` expose this
-denominator-free polynomial nonvanishing statement as the scanner-facing target.
+denominator-free polynomial nonvanishing statement as the scanner-facing target.  Conversely,
+`polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` says any successful literal
+`n` budget in the canonical lane forces the polynomial equality
+`(ζ^4 + 1)^n = (ζ^2 + 1)^n`.
 
 Over `ℂ`, this fixed canonical ratio residual is now discharged unconditionally for primitive
 `ζ` with `8 < n`.  The theorem `invariantPairNonCollision_complex_primitive_zeta_sq` proves that
@@ -253,14 +259,17 @@ any collision scalar would be real, hence `±1`, using
 `complex_root_of_unity_real_eq_one_or_neg_one` and `complex_root_add_inv_im_eq_zero`; the existing
 primitive-root separation lemmas rule out both signs.  The wrappers
 `invariantRatio_pow_ne_one_complex_primitive_zeta_sq`,
+`polynomial_ne_complex_primitive_zeta_sq`,
 `n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even`, and
 `not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even` expose the corresponding
-ratio and image-budget conclusions over `ℂ`.  This is characteristic-zero evidence for the local
-lane, not a finite-field discharge for the prize prime.
+ratio, denominator-cleared polynomial, and image-budget conclusions over `ℂ`.  The polynomial
+nonvanishing theorem is the exact nonzero input for a cyclotomic-resultant bad-prime argument.
+This is characteristic-zero evidence for the local lane, not a finite-field discharge for the prize
+prime.
 
 The local obstruction is not merely abstract: `ZMod 12289` already supplies a finite checked
-witness at `n = 16`.  Lean proves `4134` has order `16`, checks
-`invariantRatio 4134 (4134^2)^16 != 1`, and derives
+witness at `n = 16`.  Lean proves `4134` has order `16`, checks the denominator-free
+`polynomial_4134_sq_pow16_ne`, derives `invariantRatio 4134 (4134^2)^16 != 1`, and derives
 `16 < #(e2BadScalarSet (Polynomial.nthRootsFinset 16 (1 : ZMod 12289)) 4)`.  The declaration
 `not_e2BadScalarSet_mu16_card_le_16_zmod12289_width4` is the corresponding literal budget refuter
 for that concrete subgroup.

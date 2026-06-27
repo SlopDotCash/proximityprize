@@ -1630,10 +1630,12 @@ The theorem `invariantPairNonCollision_complex_primitive_zeta_sq` proves that an
 scalar for `ζ` and `ζ^2` must be real, hence `±1`, and the existing primitive-root separation
 lemmas rule out both cases for `8 < n`.  The wrappers
 `invariantRatio_pow_ne_one_complex_primitive_zeta_sq`,
+`polynomial_ne_complex_primitive_zeta_sq`,
 `n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even`, and
 `not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even` expose the ratio and
-image-budget conclusions in characteristic zero.  This is not a finite-field prize discharge, but
-it closes the local canonical lane over `ℂ`.
+image-budget conclusions in characteristic zero.  The polynomial nonvanishing form is the exact
+nonzero input for the cyclotomic-resultant bad-prime route.  This is not a finite-field prize
+discharge, but it closes the local canonical lane over `ℂ`.
 
 Follow-up: the canonical ratio residual also has a denominator-free polynomial form.  For primitive
 `ζ` with `8 < n`, Lean proves
@@ -1642,6 +1644,11 @@ Follow-up: the canonical ratio residual also has a denominator-free polynomial f
 `n_lt_e2BadScalarSet_mu_card_of_primitive_zeta_sq_even_polynomialNe` and
 `not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe` make this polynomial
 nonvanishing statement the finite-field/norm-facing scanner target.
+The converse wrapper `polynomial_eq_of_e2BadScalarSet_mu_card_le_n_primitive_zeta_sq_even` states
+that any surviving literal `n` budget forces the polynomial equality itself, giving scanners an
+exact denominator-free obstruction to return.
+The concrete `F_12289`, `n = 16` witness now includes `polynomial_4134_sq_pow16_ne`, and the
+finite ratio obstruction is derived through that denominator-free certificate.
 
 ## [2026-06-27] prove | concrete Thorner-Zaman n=32 beta=3 supply
 
