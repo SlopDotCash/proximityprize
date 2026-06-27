@@ -3,8 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Data.Nat.Basic
+import Mathlib.Algebra.Order.Monoid.Unbundled.Pow
+import Mathlib.Tactic.NormNum
 
 /-!
 # Attack #04 — BCHKS 1.12 via minimal vanishing weight: the height route is VACUOUS at prize scale

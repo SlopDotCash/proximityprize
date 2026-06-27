@@ -51,9 +51,11 @@ theorem eta_split_of_disjoint_coset (ψ : AddChar F ℂ) (H : Finset F) (c : F) 
   classical
   subst hunion
   have hcoset : eta ψ (H.image (fun y => c * y)) b = eta ψ H (b * c) := by
-    rw [eta, eta, Finset.sum_image (fun x hx y hy h => hinj hx hy h)]
+    unfold eta
+    rw [Finset.sum_image (fun x hx y hy h => hinj hx hy h)]
     refine Finset.sum_congr rfl (fun y _ => ?_)
-    rw [mul_comm b c, mul_assoc]
+    congr 1
+    ring
   rw [← hcoset]
   show eta ψ (H ∪ H.image (fun y => c * y)) b = _
   rw [eta, Finset.sum_union hdisj]

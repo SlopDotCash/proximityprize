@@ -127,22 +127,25 @@ theorem meansq_zero_dir {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset 
         show ((G.card : ℂ)) = (((G.card : ℝ) : ℝ) : ℂ) from by push_cast; ring,
         Complex.norm_real, Real.norm_eq_abs, sq_abs]
   rw [Finset.sum_congr rfl (fun s₀ _ => hterm s₀)]
-  rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const, nsmul_eq_mul, nsmul_eq_mul]
   have hq : (0 : ℝ) < (Fintype.card F : ℝ) := by
     have := Fintype.card_pos (α := F); exact_mod_cast this
-  have hcardG : (Finset.univ.filter (fun s₀ : F => s₀ ∈ G)).card = G.card := by
-    rw [Finset.filter_mem_eq_inter, Finset.univ_inter]
-  have hcardNG : (Finset.univ.filter (fun s₀ : F => s₀ ∉ G)).card
-      = Fintype.card F - G.card := by
-    rw [Finset.filter_not, Finset.card_sdiff (by simp), Finset.card_univ,
-      Finset.filter_mem_eq_inter, Finset.univ_inter]
-  rw [hcardG, hcardNG]
-  -- (1/q) * (|G|*(q-|G|)^2 + (q-|G|)*|G|^2) = |G|*(q-|G|)
-  have hsub : ((Fintype.card F - G.card : ℕ) : ℝ) = (Fintype.card F : ℝ) - (G.card : ℝ) := by
+  -- ∑_{s₀} ite = |G|·(q-|G|)² + (q-|G|)·|G|²  via sum_ite_mem-style evaluation
+  have hsumval : (∑ s₀ : F,
+      (if s₀ ∈ G then ((Fintype.card F : ℝ) - (G.card : ℝ)) ^ 2 else (G.card : ℝ) ^ 2))
+      = (G.card : ℝ) * ((Fintype.card F : ℝ) - (G.card : ℝ)) ^ 2
+        + ((Fintype.card F : ℝ) - (G.card : ℝ)) * (G.card : ℝ) ^ 2 := by
+    rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const, nsmul_eq_mul, nsmul_eq_mul]
+    have hcardG : (Finset.univ.filter (fun s₀ : F => s₀ ∈ G)).card = G.card := by
+      rw [Finset.filter_mem_eq_inter, Finset.univ_inter]
+    have hcardNG : (Finset.univ.filter (fun s₀ : F => s₀ ∉ G)).card
+        = Fintype.card F - G.card := by
+      rw [Finset.filter_not, Finset.card_univ_diff, Finset.filter_mem_eq_inter,
+        Finset.univ_inter]
+    rw [hcardG, hcardNG]
     have hh : G.card ≤ Fintype.card F := by
       simpa [Finset.card_univ] using Finset.card_le_univ G
-    exact_mod_cast Nat.cast_sub hh
-  rw [hsub]
+    rw [Nat.cast_sub hh]
+  rw [hsumval]
   field_simp
   ring
 
@@ -160,8 +163,7 @@ theorem linf_sq_over_meansq_eq (G : Finset F)
     have : 0 < G.card := Finset.card_pos.mpr hG
     exact_mod_cast this
   have hdpos : (0 : ℝ) < (Fintype.card F : ℝ) - (G.card : ℝ) := by linarith
-  rw [pow_two, mul_comm ((G.card : ℝ)) _,
-    mul_div_assoc, mul_div_mul_left _ _ (ne_of_gt hdpos)]
+  field_simp [ne_of_gt hGpos, ne_of_gt hdpos]
 
 /-- **HEADLINE — the squared `L∞` STRICTLY dominates the mean-square once `q > 2|G|`.**
 Combining the spike `(q−|G|)²` (a lower bound for `max ‖D‖²`) with the exact mean-square

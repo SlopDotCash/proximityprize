@@ -151,3 +151,9 @@ theorem escape_fails_for_depth_ge_two {p : ℕ} (hp : 2 ≤ p) {r : ℕ} (hr : 2
   linarith
 
 end ArkLib.ProximityGap.Frontier.Attack03
+
+/-! ## Axiom audit (expected: only `propext, Classical.choice, Quot.sound`) -/
+#print axioms ArkLib.ProximityGap.Frontier.Attack03.subsetSumDiff_abs_le
+#print axioms ArkLib.ProximityGap.Frontier.Attack03.wraparound_requires_norm_ge_p
+#print axioms ArkLib.ProximityGap.Frontier.Attack03.noWraparound_of_range_lt_p
+#print axioms ArkLib.ProximityGap.Frontier.Attack03.escape_fails_for_depth_ge_two
