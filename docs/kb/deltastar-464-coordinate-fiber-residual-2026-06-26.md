@@ -220,7 +220,9 @@ uniformLineBadScalarsBudgeted_of_lowAppearingCoordinateFibers
 ZeroLowExactAppearingZeroAgreementFiberBudgeted
 UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted
 zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
-uniformLowExactAppearingBudgeted_of_lowAppearingBudgeted
+uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
+not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted
+not_uniformLowAppearingBudgeted_of_not_uniformLowExactAppearingBudgeted
 zeroExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
 uniformLargeZeroSafeExactAppearingZeroAgreementFiberBudgeted_of_low_and_high_one
 uniformLineBadScalarsBudgeted_of_lowExactAppearingFibers
@@ -237,11 +239,12 @@ satisfies `1 <= M t` there.
 The low exact-appearance socket can also be fed directly from the coarser low appearance-coordinate
 socket, because exact zero-agreement appearance fibers are subsets of the corresponding
 appearance-coordinate fibers.  Thus one low-profile appearance estimate now serves both the coarse
-and exact production routes.
+and exact production routes.  Conversely, if the low exact route fails, then the coarser low
+appearance-coordinate route already fails; the exact route has no separate failure mode.
 
-The negated low-budget forms are now exact scanners too: failure of a low appearance-coordinate or
-low exact appearance budget is equivalent to a concrete large-zero safe line, low profile `t < k`,
-zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`.  This avoids redoing the same
+The negated low-budget forms are now exact scanners too: per-line failure exposes a low profile
+`t < k`, zero-coordinate subset `S`, and strict overrun `M t < #fiber(S)`; uniform failure
+additionally exposes the large-zero safe line carrying that overrun.  This avoids redoing the same
 `by_contra` unpacking in downstream probes.
 
 This route can still fail to close the floor.  Even if the fiber count is exactly `|F|^(k-t)`, the

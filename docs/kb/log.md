@@ -1241,7 +1241,8 @@ low appearance-fiber saving, not another high-stratum bookkeeping obligation.
 
 Added
 `zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted` and its
-uniform version `uniformLowExactAppearingBudgeted_of_lowAppearingBudgeted`.
+uniform version
+`uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted`.
 Since exact zero-agreement appearance fibers sit inside the corresponding coarse
 appearance-coordinate fibers, a single low-profile appearance estimate now feeds both the ordinary
 and exact low/high production wrappers.  The same pass added exact negated forms for the low
@@ -1250,5 +1251,12 @@ appearance-coordinate and low exact appearance budgets:
 `not_uniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted_iff_exists_low_fiber_gt`,
 `not_zeroLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt`, and
 `not_uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_iff_exists_low_fiber_gt`.
-Any failed low-profile budget now unpacks to a concrete large-zero safe line, `t < k`, subset `S`,
-and strict overrun `M t < #fiber(S)`.
+Per-line low-budget failure now unpacks to `t < k`, subset `S`, and strict overrun
+`M t < #fiber(S)`; uniform failure additionally identifies the large-zero safe line carrying that
+overrun.
+
+Follow-up wrappers `not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted`
+and `not_uniformLowAppearingBudgeted_of_not_uniformLowExactAppearingBudgeted` record the
+contrapositive collapse: if the low exact appearance route fails, the coarser low
+appearance-coordinate route already fails.  The exact socket is therefore a refinement, not an
+independent residual.

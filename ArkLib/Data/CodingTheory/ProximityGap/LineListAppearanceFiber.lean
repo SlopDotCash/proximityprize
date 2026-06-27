@@ -233,13 +233,39 @@ open Classical in
 /-- Uniform low-profile version: a low appearance-coordinate budget can be consumed directly as a
 low exact zero-agreement appearance budget. -/
 theorem
-    uniformLowExactAppearingBudgeted_of_lowAppearingBudgeted
+    uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
     (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ)
     (hFiber : UniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted dom k a M) :
     UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a M := by
   intro u₀ u₁ hnotEligible hsafe
   exact zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
     dom k a u₀ u₁ M (hFiber u₀ u₁ hnotEligible hsafe)
+
+open Classical in
+/-- Contrapositive of
+`zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted`: if the
+low exact appearance budget fails, then the coarser low appearance-coordinate budget already
+fails. -/
+theorem not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) (M : ℕ → ℕ)
+    (hnot : ¬ ZeroLowExactAppearingZeroAgreementFiberBudgeted dom k a u₀ u₁ M) :
+    ¬ ZeroLowAppearingCoordinateFiberBudgeted dom k a u₀ u₁ M := by
+  intro hFiber
+  exact hnot
+    (zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
+      dom k a u₀ u₁ M hFiber)
+
+open Classical in
+/-- Uniform contrapositive: the exact low-profile route has no independent failure mode beyond
+the coarser low appearance-coordinate route. -/
+theorem not_uniformLowAppearingBudgeted_of_not_uniformLowExactAppearingBudgeted
+    (dom : Fin n ↪ F) (k a : ℕ) (M : ℕ → ℕ)
+    (hnot : ¬ UniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted dom k a M) :
+    ¬ UniformLargeZeroSafeLowAppearingCoordinateFiberBudgeted dom k a M := by
+  intro hFiber
+  exact hnot
+    (uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
+      dom k a M hFiber)
 
 open Classical in
 /-- A zero-agreement stratum is covered by appearance-filtered coordinate fibers.  This is the
@@ -1060,7 +1086,10 @@ section SourceAudit
 #print axioms
   zeroLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingCoordinateFiberBudgeted
 #print axioms
-  uniformLowExactAppearingBudgeted_of_lowAppearingBudgeted
+  uniformLargeZeroSafeLowExactAppearingZeroAgreementFiberBudgeted_of_lowAppearingBudgeted
+#print axioms
+  not_zeroLowAppearingCoordinateFiberBudgeted_of_not_zeroLowExactAppearingBudgeted
+#print axioms not_uniformLowAppearingBudgeted_of_not_uniformLowExactAppearingBudgeted
 #print axioms zeroAgreementStratum_subset_appearingCoordinateAgreementFiber_biUnion
 #print axioms zeroAgreementStratum_card_le_sum_appearingCoordinateAgreementFibers
 #print axioms zeroAgreementStratum_card_le_choose_mul_appearingCoordinateFiberBound
