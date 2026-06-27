@@ -200,7 +200,7 @@ theorem epsMCA_twoFifth_ge :
 /-! ## The good side on `[0, 2/5)` -/
 
 /-- Below `δ = 2/5` every legal witness set has size at least `n − 1 = 4`. -/
-theorem forced_pred_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2/5) :
+theorem forced_pred_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2 / 5) :
     ∀ T : Finset (Fin 5),
       ((1 : ℝ≥0) - δ) * (Fintype.card (Fin 5) : ℝ≥0) ≤ (T.card : ℝ≥0) →
         Fintype.card (Fin 5) - 1 ≤ T.card := by
@@ -218,7 +218,7 @@ theorem forced_pred_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2/5) :
   simp only [Fintype.card_fin]; omega
 
 /-- **Good side:** `ε_mca(C, δ) ≤ 5/11` for every `δ < 2/5`. -/
-theorem epsMCA_le_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2/5) :
+theorem epsMCA_le_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2 / 5) :
     epsMCA (F := F11) (A := F11) (C : Set (Fin 5 → F11)) δ ≤ 5 / 11 := by
   have h := MCAWitnessSpread.epsMCA_le_card_div_of_forced_pred C δ
     (forced_pred_of_lt_twoFifth hδ)
@@ -250,7 +250,7 @@ theorem epsMCA_twoFifth_gt :
   lt_of_lt_of_le half_lt_sixEleven epsMCA_twoFifth_ge
 
 /-- **Good-radius membership:** every `δ < 2/5` is a good radius at `ε* = 1/2`. -/
-theorem mem_goodRadii_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2/5) :
+theorem mem_goodRadii_of_lt_twoFifth {δ : ℝ≥0} (hδ : δ < 2 / 5) :
     δ ∈ MCAThresholdLedger.mcaGoodRadii (F := F11) (A := F11)
       (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) := by
   refine ⟨le_of_lt (lt_of_lt_of_le hδ twoFifth_le_one), ?_⟩
@@ -272,7 +272,7 @@ theorem mcaDeltaStar_eq_twoFifth :
   refine le_antisymm
     (MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _ epsMCA_twoFifth_gt) ?_
   by_contra h
-  push_neg at h
+  push Not at h
   obtain ⟨c, hc1, hc2⟩ := exists_between h
   have hmem := mem_goodRadii_of_lt_twoFifth hc2
   have hle := MCAThresholdLedger.le_mcaDeltaStar_of_good (F := F11) (A := F11)

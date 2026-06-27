@@ -2108,6 +2108,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._LowerBoundPermMatchingFlo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MSSCosetInterlacingZeroVariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MStarLognReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MasterGapOffByOneCorrected
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MaximizerCarryingReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MetaTheoremSecondOrderFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MixedMomentPhaseBlind
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MomentBoundFlooredAtN

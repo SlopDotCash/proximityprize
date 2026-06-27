@@ -135,6 +135,22 @@ u -> normalize(u) -> compress(u) -> r
 
 where each step preserves or increases `StackBadCount`.
 
+This is now a checked proof socket in
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MaximizerCarryingReduction.lean`.  The Lean theorem
+
+```lean
+deltaStar_pin_of_maximizersReachFamily
+```
+
+turns three inputs into the delta-star consumer:
+
+1. each primitive stack move is count-nondecreasing;
+2. every actual global maximizer reaches the chosen finite family by a finite improvement chain;
+3. the reached family is within the bad-scalar budget.
+
+This does not prove the missing monotone-normalization theorem, but it removes the need to prove an
+all-stack domination theorem when the attack can instead identify the maximizer locus.
+
 ### Backwards attack on B
 
 Finite-action and literal quotient versions are already blocked:
