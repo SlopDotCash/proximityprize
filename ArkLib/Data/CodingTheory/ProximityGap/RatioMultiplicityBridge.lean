@@ -585,43 +585,33 @@ theorem badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact (dom : ι → F
     degenerate_exists_iff_scalarMultiple]
 
 omit [DecidableEq ι] in
-/-- **Empty criterion, scalar-multiple form.**  Under the exact degree condition and `Q ≠ 0`, the
-low-weight scalar set is empty iff `P` is not a scalar multiple of `Q`. -/
+/-- **Empty criterion, scalar-multiple form.**  Under the exact degree condition, the low-weight
+scalar set is empty iff `P` is not a scalar multiple of `Q`.  This emptiness direction does not
+require `Q ≠ 0`; nonzero `Q` is only needed for uniqueness/cardinality-one statements. -/
 theorem badWeight_empty_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
     (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
     (hdeg : max P.natDegree Q.natDegree <
       (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
-        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
-    (hQ : Q ≠ 0) :
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
     univ.filter (fun γ : F =>
         (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w) = ∅
       ↔ ¬ ∃ c : F, P = C c * Q := by
-  constructor
-  · intro hbad hscalar
-    have hone := (badWeight_card_eq_one_iff_scalarMultiple_of_degree_exact
-      dom hdom P Q hdeg hQ).2 hscalar
-    rw [hbad, Finset.card_empty] at hone
-    omega
-  · intro hnot
-    rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg]
-    rw [Finset.filter_eq_empty_iff]
-    intro γ _ hγ
-    exact hnot ((degenerate_exists_iff_scalarMultiple P Q).1 ⟨γ, hγ⟩)
+  rw [badWeight_eq_degenerate_of_degree_exact dom hdom P Q hdeg,
+    degenerateScalars_empty_iff_not_scalarMultiple P Q]
 
 omit [DecidableEq ι] in
-/-- **Exact cardinal-zero criterion, scalar-multiple form.**  Under the exact degree condition and
-`Q ≠ 0`, the low-weight bad-scalar count is zero iff `P` is not a scalar multiple of `Q`. -/
+/-- **Exact cardinal-zero criterion, scalar-multiple form.**  Under the exact degree condition,
+the low-weight bad-scalar count is zero iff `P` is not a scalar multiple of `Q`. -/
 theorem badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact (dom : ι → F)
     (hdom : Function.Injective dom) (P Q : F[X]) {w : ℕ}
     (hdeg : max P.natDegree Q.natDegree <
       (univ.filter (fun i => Q.eval (dom i) ≠ 0)).card
-        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w)
-    (hQ : Q ≠ 0) :
+        + (univ.filter (fun i => Q.eval (dom i) = 0 ∧ P.eval (dom i) ≠ 0)).card - w) :
     (univ.filter (fun γ : F =>
         (univ.filter (fun i => P.eval (dom i) + γ * Q.eval (dom i) ≠ 0)).card ≤ w)).card = 0
       ↔ ¬ ∃ c : F, P = C c * Q := by
   rw [Finset.card_eq_zero, badWeight_empty_iff_not_scalarMultiple_of_degree_exact
-    dom hdom P Q hdeg hQ]
+    dom hdom P Q hdeg]
 
 omit [DecidableEq ι] in
 /-- **Exact bad-weight cardinal formula.**  Under the exact degree condition and `Q ≠ 0`, the
@@ -642,7 +632,7 @@ theorem badWeight_card_eq_if_scalarMultiple_of_degree_exact (dom : ι → F)
       dom hdom P Q hdeg hQ).2 hscalar
   · rw [if_neg hscalar]
     exact (badWeight_card_eq_zero_iff_not_scalarMultiple_of_degree_exact
-      dom hdom P Q hdeg hQ).2 hscalar
+      dom hdom P Q hdeg).2 hscalar
 
 omit [DecidableEq ι] in
 /-- **Exact empty-or-scalar-singleton dichotomy.**  Under the exact degree condition and `Q ≠ 0`,
@@ -664,7 +654,7 @@ theorem badWeight_eq_empty_or_singleton_scalarMultiple_of_degree_exact (dom : ι
     exact Or.inr ⟨c, hP,
       badWeight_eq_singleton_of_degree_exact_of_scalarMultiple dom hdom P Q hdeg hQ hP⟩
   · exact Or.inl
-      ((badWeight_empty_iff_not_scalarMultiple_of_degree_exact dom hdom P Q hdeg hQ).2 hscalar)
+      ((badWeight_empty_iff_not_scalarMultiple_of_degree_exact dom hdom P Q hdeg).2 hscalar)
 
 end ArkLib.ProximityGap.RatioMultiplicity
 

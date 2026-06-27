@@ -125,10 +125,11 @@ iff there is no scalar multiple `P = c*Q`; when `Q != 0`, it is either empty or 
 a scalar multiple.  Under the exact degree inequality, the low-weight bad-scalar set has the same
 empty-or-`{-c}` scalar-multiple dichotomy.
 
-The count-level consumers now expose the same classification without a set rewrite: for `Q != 0`,
-the degenerate scalar count is `0` iff there is no scalar multiple, `1` iff there is one, and
-therefore equals `if exists c, P = c*Q then 1 else 0`.  Under the exact degree inequality, the
-low-weight bad-scalar count satisfies the identical `0/1` formula.
+The count-level consumers now expose the same classification without a set rewrite: the
+degenerate scalar count is `0` iff there is no scalar multiple, and under the exact degree
+inequality the low-weight bad-scalar count is also `0` iff there is no scalar multiple.  These
+zero/empty criteria do not require `Q != 0`.  With `Q != 0`, the count is `1` iff there is a
+scalar multiple and therefore equals `if exists c, P = c*Q then 1 else 0`.
 
 The pointwise consumers expose the same classification as membership rewrites.  Under the exact
 degree inequality, a scalar `gamma` is low-weight-bad iff `P + gamma*Q = 0` as a polynomial.  If
