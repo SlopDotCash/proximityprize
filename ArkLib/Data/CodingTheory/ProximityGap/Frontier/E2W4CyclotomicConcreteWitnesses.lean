@@ -87,6 +87,168 @@ theorem exists_mu64_width4_refuter_zmod4289 :
 
 end Concrete4289Ratio
 
+section Concrete17921Ratio
+
+local instance fact_prime_17921_ratio : Fact (Nat.Prime 17921) := ⟨by norm_num⟩
+
+/-- A concrete primitive 128-th root in `F_17921`. -/
+theorem orderOf_244_ratio_zmod17921 : orderOf (244 : ZMod 17921) = 128 := by
+  have h64 : ¬ (244 : ZMod 17921) ^ (2 : ℕ) ^ 6 = 1 := by decide
+  have h128 : (244 : ZMod 17921) ^ (2 : ℕ) ^ 7 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (244 : ZMod 17921)) h64 h128
+  norm_num at h
+  exact h
+
+/-- `244` is a primitive 128-th root in `F_17921`. -/
+theorem isPrimitiveRoot_244_128_ratio_zmod17921 :
+    IsPrimitiveRoot (244 : ZMod 17921) 128 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_244_ratio_zmod17921
+
+set_option maxRecDepth 4096
+
+/-- The denominator-free canonical width-four obstruction is nonzero for the concrete
+`n = 128` Thorner-Zaman β=2 witness. -/
+theorem polynomial_244_sq_pow128_ne_zmod17921 :
+    ((244 : ZMod 17921) ^ 4 + 1) ^ 128 ≠
+      ((244 : ZMod 17921) ^ 2 + 1) ^ 128 := by
+  decide
+
+set_option maxRecDepth 1000
+
+/-- Concrete `n = 128` width-4 refuter in the small `β = 2` Thorner-Zaman row. -/
+theorem exists_mu128_width4_refuter_zmod17921 :
+    ∃ ζ : ZMod 17921, IsPrimitiveRoot ζ 128 ∧
+      ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 128 (1 : ZMod 17921)) 4).card ≤ 128 := by
+  exact ⟨244, isPrimitiveRoot_244_128_ratio_zmod17921,
+    not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+      (F := ZMod 17921) (n := 128) (ζ := (244 : ZMod 17921))
+      (by norm_num) (by norm_num) (by norm_num)
+      isPrimitiveRoot_244_128_ratio_zmod17921
+      polynomial_244_sq_pow128_ne_zmod17921⟩
+
+end Concrete17921Ratio
+
+set_option maxRecDepth 8192
+
+section Concrete65537Ratio
+
+local instance fact_prime_65537_ratio : Fact (Nat.Prime 65537) := ⟨by norm_num⟩
+
+/-- A concrete primitive 256-th root in `F_65537`. -/
+theorem orderOf_141_ratio_zmod65537 : orderOf (141 : ZMod 65537) = 256 := by
+  have h128 : ¬ (141 : ZMod 65537) ^ (2 : ℕ) ^ 7 = 1 := by decide
+  have h256 : (141 : ZMod 65537) ^ (2 : ℕ) ^ 8 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (141 : ZMod 65537)) h128 h256
+  norm_num at h
+  exact h
+
+/-- `141` is a primitive 256-th root in `F_65537`. -/
+theorem isPrimitiveRoot_141_256_ratio_zmod65537 :
+    IsPrimitiveRoot (141 : ZMod 65537) 256 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_141_ratio_zmod65537
+
+/-- The denominator-free canonical width-four obstruction is nonzero for the concrete
+`n = 256` Thorner-Zaman β=2 witness. -/
+theorem polynomial_141_sq_pow256_ne_zmod65537 :
+    ((141 : ZMod 65537) ^ 4 + 1) ^ 256 ≠
+      ((141 : ZMod 65537) ^ 2 + 1) ^ 256 := by
+  decide
+
+/-- Concrete `n = 256` width-4 refuter in the small `β = 2` Thorner-Zaman row. -/
+theorem exists_mu256_width4_refuter_zmod65537 :
+    ∃ ζ : ZMod 65537, IsPrimitiveRoot ζ 256 ∧
+      ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 256 (1 : ZMod 65537)) 4).card ≤ 256 := by
+  exact ⟨141, isPrimitiveRoot_141_256_ratio_zmod65537,
+    not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+      (F := ZMod 65537) (n := 256) (ζ := (141 : ZMod 65537))
+      (by norm_num) (by norm_num) (by norm_num)
+      isPrimitiveRoot_141_256_ratio_zmod65537
+      polynomial_141_sq_pow256_ne_zmod65537⟩
+
+end Concrete65537Ratio
+
+set_option maxRecDepth 8192
+
+section Concrete262657Ratio
+
+local instance fact_prime_262657_ratio : Fact (Nat.Prime 262657) := ⟨by norm_num⟩
+
+/-- A concrete primitive 512-th root in `F_262657`. -/
+theorem orderOf_1055_ratio_zmod262657 : orderOf (1055 : ZMod 262657) = 512 := by
+  have h256 : ¬ (1055 : ZMod 262657) ^ (2 : ℕ) ^ 8 = 1 := by decide
+  have h512 : (1055 : ZMod 262657) ^ (2 : ℕ) ^ 9 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (1055 : ZMod 262657)) h256 h512
+  norm_num at h
+  exact h
+
+/-- `1055` is a primitive 512-th root in `F_262657`. -/
+theorem isPrimitiveRoot_1055_512_ratio_zmod262657 :
+    IsPrimitiveRoot (1055 : ZMod 262657) 512 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_1055_ratio_zmod262657
+
+/-- The denominator-free canonical width-four obstruction is nonzero for the concrete
+`n = 512` Thorner-Zaman β=2 witness. -/
+theorem polynomial_1055_sq_pow512_ne_zmod262657 :
+    ((1055 : ZMod 262657) ^ 4 + 1) ^ 512 ≠
+      ((1055 : ZMod 262657) ^ 2 + 1) ^ 512 := by
+  decide
+
+/-- Concrete `n = 512` width-4 refuter in the small `β = 2` Thorner-Zaman row. -/
+theorem exists_mu512_width4_refuter_zmod262657 :
+    ∃ ζ : ZMod 262657, IsPrimitiveRoot ζ 512 ∧
+      ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 512 (1 : ZMod 262657)) 4).card ≤ 512 := by
+  exact ⟨1055, isPrimitiveRoot_1055_512_ratio_zmod262657,
+    not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+      (F := ZMod 262657) (n := 512) (ζ := (1055 : ZMod 262657))
+      (by norm_num) (by norm_num) (by norm_num)
+      isPrimitiveRoot_1055_512_ratio_zmod262657
+      polynomial_1055_sq_pow512_ne_zmod262657⟩
+
+end Concrete262657Ratio
+
+section Concrete1053697Ratio
+
+local instance fact_prime_1053697_ratio : Fact (Nat.Prime 1053697) := ⟨by norm_num⟩
+
+/-- A concrete primitive 1024-th root in `F_1053697`. -/
+theorem orderOf_80_ratio_zmod1053697 : orderOf (80 : ZMod 1053697) = 1024 := by
+  have h512 : ¬ (80 : ZMod 1053697) ^ (2 : ℕ) ^ 9 = 1 := by decide
+  have h1024 : (80 : ZMod 1053697) ^ (2 : ℕ) ^ 10 = 1 := by decide
+  have h := orderOf_eq_prime_pow (x := (80 : ZMod 1053697)) h512 h1024
+  norm_num at h
+  exact h
+
+/-- `80` is a primitive 1024-th root in `F_1053697`. -/
+theorem isPrimitiveRoot_80_1024_ratio_zmod1053697 :
+    IsPrimitiveRoot (80 : ZMod 1053697) 1024 := by
+  rw [IsPrimitiveRoot.iff_orderOf]
+  exact orderOf_80_ratio_zmod1053697
+
+/-- The denominator-free canonical width-four obstruction is nonzero for the concrete
+`n = 1024` Thorner-Zaman β=2 witness. -/
+theorem polynomial_80_sq_pow1024_ne_zmod1053697 :
+    ((80 : ZMod 1053697) ^ 4 + 1) ^ 1024 ≠
+      ((80 : ZMod 1053697) ^ 2 + 1) ^ 1024 := by
+  decide
+
+/-- Concrete `n = 1024` width-4 refuter in the small β=2 Thorner-Zaman row. -/
+theorem exists_mu1024_width4_refuter_zmod1053697 :
+    ∃ ζ : ZMod 1053697, IsPrimitiveRoot ζ 1024 ∧
+      ¬ (e2BadScalarSet (Polynomial.nthRootsFinset 1024 (1 : ZMod 1053697)) 4).card ≤ 1024 := by
+  exact ⟨80, isPrimitiveRoot_80_1024_ratio_zmod1053697,
+    not_e2BadScalarSet_mu_card_le_n_of_primitive_zeta_sq_even_polynomialNe
+      (F := ZMod 1053697) (n := 1024) (ζ := (80 : ZMod 1053697))
+      (by norm_num) (by norm_num) (by norm_num)
+      isPrimitiveRoot_80_1024_ratio_zmod1053697
+      polynomial_80_sq_pow1024_ne_zmod1053697⟩
+
+end Concrete1053697Ratio
+
+set_option maxRecDepth 1000
+
 section Concrete1048609Ratio
 
 local instance fact_prime_1048609_ratio : Fact (Nat.Prime 1048609) := ⟨by norm_num⟩
@@ -261,6 +423,22 @@ namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 #print axioms isPrimitiveRoot_56_64_ratio_zmod4289
 #print axioms polynomial_56_sq_pow64_ne_zmod4289
 #print axioms exists_mu64_width4_refuter_zmod4289
+#print axioms orderOf_244_ratio_zmod17921
+#print axioms isPrimitiveRoot_244_128_ratio_zmod17921
+#print axioms polynomial_244_sq_pow128_ne_zmod17921
+#print axioms exists_mu128_width4_refuter_zmod17921
+#print axioms orderOf_141_ratio_zmod65537
+#print axioms isPrimitiveRoot_141_256_ratio_zmod65537
+#print axioms polynomial_141_sq_pow256_ne_zmod65537
+#print axioms exists_mu256_width4_refuter_zmod65537
+#print axioms orderOf_1055_ratio_zmod262657
+#print axioms isPrimitiveRoot_1055_512_ratio_zmod262657
+#print axioms polynomial_1055_sq_pow512_ne_zmod262657
+#print axioms exists_mu512_width4_refuter_zmod262657
+#print axioms orderOf_80_ratio_zmod1053697
+#print axioms isPrimitiveRoot_80_1024_ratio_zmod1053697
+#print axioms polynomial_80_sq_pow1024_ne_zmod1053697
+#print axioms exists_mu1024_width4_refuter_zmod1053697
 #print axioms orderOf_57211_ratio_zmod1048609
 #print axioms isPrimitiveRoot_57211_32_ratio_zmod1048609
 #print axioms exists_mu32_width4_refuter_zmod1048609

@@ -126,6 +126,23 @@ A separate direct witness does produce one closed `n = 64` canonical refuter:
 direct nonzero denominator-free obstruction check, while
 `exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` records that `4289 ∈ [64^2, 2*64^2]`.
 This is a named concrete witness, not an exact `n = 64` finite-exception classification.
+The same pattern now reaches `n = 128`: `exists_mu128_width4_refuter_zmod17921` uses
+`244 : ZMod 17921` as a primitive 128th root and a direct nonzero obstruction check, and
+`exists_tzWindow_mu128_width4_refuter_zmod17921_beta2` records the window membership
+`17921 ∈ [128^2, 2*128^2]`.  This extends the concrete witness ladder, but still does not classify
+the complete `n = 128` bad-prime set.  The next rung is also explicit:
+`exists_mu256_width4_refuter_zmod65537` uses `141 : ZMod 65537` as a primitive 256th root, and
+`exists_tzWindow_mu256_width4_refuter_zmod65537_beta2` records
+`65537 ∈ [256^2, 2*256^2]`.  This is still a named concrete witness, not an exact
+`n = 256` finite-exception classification.  The next explicit rung is also closed:
+`exists_mu512_width4_refuter_zmod262657` uses `1055 : ZMod 262657` as a primitive 512th root, and
+`exists_tzWindow_mu512_width4_refuter_zmod262657_beta2` records
+`262657 ∈ [512^2, 2*512^2]`.  This again supplies a named concrete witness, not an exact
+`n = 512` finite-exception classification.  One further power-of-two rung is also closed:
+`exists_mu1024_width4_refuter_zmod1053697` uses `80 : ZMod 1053697` as a primitive 1024th root,
+and `exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2` records
+`1053697 ∈ [1024^2, 2*1024^2]`.  This extends the concrete β=2 ladder without classifying all
+`n = 1024` finite exceptions.
 
 This also gives a small but useful refutation of an over-identification.  The Lean theorem
 `canonicalN32PrimitiveBadPrimes_has_nonleast_split_prime` exhibits `641`: it is prime, satisfies

@@ -141,6 +141,22 @@ orderOf_56_ratio_zmod4289
 isPrimitiveRoot_56_64_ratio_zmod4289
 polynomial_56_sq_pow64_ne_zmod4289
 exists_mu64_width4_refuter_zmod4289
+orderOf_244_ratio_zmod17921
+isPrimitiveRoot_244_128_ratio_zmod17921
+polynomial_244_sq_pow128_ne_zmod17921
+exists_mu128_width4_refuter_zmod17921
+orderOf_141_ratio_zmod65537
+isPrimitiveRoot_141_256_ratio_zmod65537
+polynomial_141_sq_pow256_ne_zmod65537
+exists_mu256_width4_refuter_zmod65537
+orderOf_1055_ratio_zmod262657
+isPrimitiveRoot_1055_512_ratio_zmod262657
+polynomial_1055_sq_pow512_ne_zmod262657
+exists_mu512_width4_refuter_zmod262657
+orderOf_80_ratio_zmod1053697
+isPrimitiveRoot_80_1024_ratio_zmod1053697
+polynomial_80_sq_pow1024_ne_zmod1053697
+exists_mu1024_width4_refuter_zmod1053697
 canonicalN32PrimitiveBadPrimes
 exists_tzWindow_mu32_width4_refuter_of_TZ
 exists_tzWindow_mu32_width4_refuter_beta2
@@ -150,6 +166,14 @@ exists_tzWindow_mu32_width4_refuter_beta4
 exists_tzWindow_mu32_width4_refuter_zmod1048609_beta4
 exists_tzWindow_mu64_width4_refuter_zmod4289_beta2
 exists_tzWindow_mu64_width4_refuter_beta2
+exists_tzWindow_mu128_width4_refuter_zmod17921_beta2
+exists_tzWindow_mu128_width4_refuter_beta2
+exists_tzWindow_mu256_width4_refuter_zmod65537_beta2
+exists_tzWindow_mu256_width4_refuter_beta2
+exists_tzWindow_mu512_width4_refuter_zmod262657_beta2
+exists_tzWindow_mu512_width4_refuter_beta2
+exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2
+exists_tzWindow_mu1024_width4_refuter_beta2
 n_lt_e2BadScalarSet_mu_card_of_complex_primitive_zeta_sq_even
 not_e2BadScalarSet_mu_card_le_n_of_complex_primitive_zeta_sq_even
 orderOf_4134_ratio
@@ -464,11 +488,35 @@ width-4 budget refuter.  The follow-up module `Frontier/CanonicalWidthFourConcre
 records the window form:
 `exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` proves `4289 ∈ [64^2, 2*64^2]`, and
 `exists_tzWindow_mu64_width4_refuter_beta2` packages the existential prime/refuter statement.
+The next rung is now explicit too:
+`orderOf_244_ratio_zmod17921`, `isPrimitiveRoot_244_128_ratio_zmod17921`,
+`polynomial_244_sq_pow128_ne_zmod17921`, and `exists_mu128_width4_refuter_zmod17921` give the
+same concrete witness package at `n = 128`; `Frontier/CanonicalWidthFourConcreteTZ128.lean`
+adds `exists_tzWindow_mu128_width4_refuter_zmod17921_beta2` and
+`exists_tzWindow_mu128_width4_refuter_beta2` for the β=2 TZ window.
+The ladder now also has an `n = 256` rung:
+`orderOf_141_ratio_zmod65537`, `isPrimitiveRoot_141_256_ratio_zmod65537`,
+`polynomial_141_sq_pow256_ne_zmod65537`, and `exists_mu256_width4_refuter_zmod65537` certify the
+direct `ZMod 65537` witness, while `Frontier/CanonicalWidthFourConcreteTZ256.lean` records
+`exists_tzWindow_mu256_width4_refuter_zmod65537_beta2` and
+`exists_tzWindow_mu256_width4_refuter_beta2`.
+The next explicit rung is `n = 512`:
+`orderOf_1055_ratio_zmod262657`, `isPrimitiveRoot_1055_512_ratio_zmod262657`,
+`polynomial_1055_sq_pow512_ne_zmod262657`, and `exists_mu512_width4_refuter_zmod262657` certify
+the direct `ZMod 262657` witness, while `Frontier/CanonicalWidthFourConcreteTZ512.lean` records
+`exists_tzWindow_mu512_width4_refuter_zmod262657_beta2` and
+`exists_tzWindow_mu512_width4_refuter_beta2`.
+The β=2 ladder now reaches `n = 1024`:
+`orderOf_80_ratio_zmod1053697`, `isPrimitiveRoot_80_1024_ratio_zmod1053697`,
+`polynomial_80_sq_pow1024_ne_zmod1053697`, and `exists_mu1024_width4_refuter_zmod1053697` certify
+the direct `ZMod 1053697` witness, while `Frontier/CanonicalWidthFourConcreteTZ1024.lean` records
+`exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2` and
+`exists_tzWindow_mu1024_width4_refuter_beta2`.
 This is a concrete witness at the next smooth-domain rung, not an exact finite-exception theorem
-for all `n = 64` primes.
+for all primes at those rungs.
 The follow-up module `Frontier/CanonicalWidthFourConcreteTZ.lean` lifts this from one explicit
 prime to a finite-exception window argument: `exists_tzWindow_mu32_width4_refuter_of_TZ` consumes
-any `TZPrimeSupply 32 beta supply` with `4 < supply`, avoids
+any `TZPrimeSupply 32 β supply` with `4 < supply`, avoids
 `canonicalN32PrimitiveBadPrimes = {97, 641, 673, 1153}`, and returns a TZ-window prime/refuter.
 The concrete wrappers `exists_tzWindow_mu32_width4_refuter_beta2`, `_beta3`, and `_beta4`
 instantiate the existing β=2,3,4 supply rows.

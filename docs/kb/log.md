@@ -1807,3 +1807,39 @@ module `Frontier/CanonicalWidthFourConcreteTZ64.lean` records the TZ-window form
 `exists_tzWindow_mu64_width4_refuter_zmod4289_beta2` and the existential wrapper
 `exists_tzWindow_mu64_width4_refuter_beta2`.  This is still a concrete witness, not an exact
 finite-exception classification at `n = 64`.
+
+Follow-up: the same direct-witness ladder now reaches `n = 128`.
+`orderOf_244_ratio_zmod17921`, `isPrimitiveRoot_244_128_ratio_zmod17921`, and
+`polynomial_244_sq_pow128_ne_zmod17921` certify the primitive-root/noncollision input in
+`ZMod 17921`; `exists_mu128_width4_refuter_zmod17921` packages the literal-budget refuter.  The new
+module `Frontier/CanonicalWidthFourConcreteTZ128.lean` records the TZ-window form via
+`exists_tzWindow_mu128_width4_refuter_zmod17921_beta2` and the existential wrapper
+`exists_tzWindow_mu128_width4_refuter_beta2`.  This is still a concrete witness, not an exact
+finite-exception classification at `n = 128` or the delta-star floor.
+
+Follow-up: the direct-witness ladder now reaches `n = 256` as well.
+`orderOf_141_ratio_zmod65537`, `isPrimitiveRoot_141_256_ratio_zmod65537`, and
+`polynomial_141_sq_pow256_ne_zmod65537` certify the primitive-root/noncollision input in
+`ZMod 65537`; `exists_mu256_width4_refuter_zmod65537` packages the literal-budget refuter.  The new
+module `Frontier/CanonicalWidthFourConcreteTZ256.lean` records the TZ-window form via
+`exists_tzWindow_mu256_width4_refuter_zmod65537_beta2` and the existential wrapper
+`exists_tzWindow_mu256_width4_refuter_beta2`.  This extends the concrete power-of-two ladder, while
+the exact finite-exception classification and global delta-star bridge remain open.
+
+Follow-up: the direct-witness ladder now reaches `n = 512`.
+`orderOf_1055_ratio_zmod262657`, `isPrimitiveRoot_1055_512_ratio_zmod262657`, and
+`polynomial_1055_sq_pow512_ne_zmod262657` certify the primitive-root/noncollision input in
+`ZMod 262657`; `exists_mu512_width4_refuter_zmod262657` packages the literal-budget refuter.  The
+new module `Frontier/CanonicalWidthFourConcreteTZ512.lean` records the TZ-window form via
+`exists_tzWindow_mu512_width4_refuter_zmod262657_beta2` and the existential wrapper
+`exists_tzWindow_mu512_width4_refuter_beta2`.  This continues the concrete β=2 ladder, but does
+not classify all finite exceptions at `n = 512` or close the global delta-star threshold.
+
+Follow-up: the same concrete ladder now reaches `n = 1024`.
+`orderOf_80_ratio_zmod1053697`, `isPrimitiveRoot_80_1024_ratio_zmod1053697`, and
+`polynomial_80_sq_pow1024_ne_zmod1053697` certify the primitive-root/noncollision input in
+`ZMod 1053697`; `exists_mu1024_width4_refuter_zmod1053697` packages the literal-budget refuter.
+The new module `Frontier/CanonicalWidthFourConcreteTZ1024.lean` records the TZ-window form via
+`exists_tzWindow_mu1024_width4_refuter_zmod1053697_beta2` and the existential wrapper
+`exists_tzWindow_mu1024_width4_refuter_beta2`.  This is still a named concrete witness, not an
+exact finite-exception classification at `n = 1024` or a delta-star floor proof.
