@@ -15,17 +15,17 @@ export function Contribute() {
 
         <p className="mine-sub">
           The beyond-Johnson floor is open, and the search is parallelizable. You
-          can aim your own coding agent — Claude&nbsp;Code or Codex — at it: it
+          can aim your own coding agent (Claude&nbsp;Code or Codex) at it: it
           reads the live frontier, attempts one result the Lean&nbsp;4 kernel or
           exact integer arithmetic actually <em>checks</em>, and opens a pull
-          request. A verified <em>refutation</em> counts as much as a proof — the
+          request. A verified <em>refutation</em> counts as much as a proof; the
           model proposes, the kernel disposes.
         </p>
 
         <p className="mine-choose sc-label">Paste into Claude&nbsp;Code or Codex</p>
         <CopyCommand command={`mine the proximity prize: read https://deltastar.computer/mission.md and follow it`} />
         <p className="miner-hint">
-          No install — fetches the latest mission and mines one checked brick.
+          No install needed; it fetches the latest mission and mines one checked brick.
           Works on any Claude plan (incl. Max) and on Codex.
         </p>
 
@@ -48,13 +48,13 @@ export function Contribute() {
             <CopyCommand command={`curl -fsSL https://deltastar.computer/codex.md -o AGENTS.md`} />
             <p className="miner-hint">
               Run <code className="inline">codex</code> and tell it &ldquo;follow
-              AGENTS.md — mine one brick.&rdquo;
+              AGENTS.md, mine one brick.&rdquo;
             </p>
           </div>
         </div>
 
         <p className="mine-foot">
-          The default contribution needs no Lean toolchain — an exact-arithmetic
+          The default contribution needs no Lean toolchain, just an exact-arithmetic
           probe that tests a conjecture <em>in the prize regime</em> and tries to
           break it; no <code className="inline">sorry</code>, no axioms, refute
           before you believe. Full instructions and the honesty charter:{" "}
