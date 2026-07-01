@@ -1,4 +1,12 @@
-# The δ* Programme — Agent Guide (successor of issues #334 → #357)
+# The δ* Programme — Agent Guide (issue lineage #232 → #334 → #357 → #444 → #464 → #466)
+
+> ## 🎯 CURRENT CAMPAIGN: issue #466 · dossier v3 (2026-07-01)
+> The live issue is **#466** ("Prove δ* — complete research dossier (v3)"). Its body = the
+> canonical dossier **`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`** — read it FIRST: the exact
+> target (incl. the `δ* = (1−ρ) − m*/n` master-gap form), the four faces of the open core, the
+> complete no-go landscape, the **ranked live frontier (§6)**, the substrate API map, and the
+> honesty audit (the v2 "phantom bricks" recovered + landed 2026-07-01). Predecessors
+> #232/#334/#357/#444/#464 are all CLOSED, each distilled into its successor.
 
 > ## ⚡ START HERE TO SOLVE THE PRIZE: `PROXIMITY_PRIZE_WORKBENCH.lean`
 > The single self-contained "write your solution here" file:
@@ -18,15 +26,16 @@
 > It is the **single source of truth** for attacking the mutual-correlated-agreement
 > threshold (δ*) formalization. `AGENTS.md` in this directory is a verbatim copy.
 >
-> **Knowledge base (read before starting):**
-> - `docs/kb/deltastar-357-compiled-knowledge.md` — the full #357 campaign distilled
->   by theme (every exact result, refutation, probe, and the open core).
-> - `docs/kb/deltastar-research-map.md` — paper inventory + adjacent-math survey +
->   ranked attack vectors.
-> - `ArkLib/Data/CodingTheory/ProximityGap/docs/kb/deltastar-444-complete-map-25x25-2026-06-17.md`
->   — issue #444 no-larp companion map: 25 directions, status tags, and the current reduced-energy wall.
-> - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` — every refuted approach
->   with its constraint lemma. Check it before re-trying anything.
+> **Knowledge base (read in this order):**
+> - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` — **the canonical dossier (v3)**: everything
+>   proven / refuted / open, the ranked live frontier, and the substrate API map.
+> - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (59 tagged entries) +
+>   `docs/kb/deltastar-464-*.md` (~150 dated notes) — every refuted approach with its
+>   constraint lemma. Check BOTH before re-trying anything.
+> - Historical layers (each superseded by the next, kept for depth):
+>   `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md` (#464) ·
+>   `ArkLib/…/docs/kb/deltastar-444-complete-map-25x25-2026-06-17.md` (#444 25×25 map) ·
+>   `docs/kb/deltastar-357-compiled-knowledge.md` · `docs/kb/deltastar-research-map.md`.
 
 ## 0. The 30-second orientation
 
@@ -37,8 +46,9 @@ list-decoding threshold `δ*` for explicit smooth-domain Reed–Solomon codes in
 literature** (no known technique bridges Johnson→capacity for explicit fixed RS codes).
 Propose bold closed-form `δ*` conjectures and attack the core freely — just **don't *claim* a
 closure is *proven* when its input is unresolved** (see the §6 contract: bold in exploration,
-strict only in proof-claims). Predecessors #232, #334, #357 are CLOSED (each distilled into the
-successor); see §3.5 for the current state.
+strict only in proof-claims). Predecessors #232, #334, #357, #444, #464 are CLOSED (each distilled
+into the successor); the live issue is #466 and the current state is dossier v3 §0/§6 (the
+§3.5 below is the older #357-era layer, still accurate on the substrate it lists).
 
 ## 1. ⚡ BUILD — read this FIRST or you will clog the machine
 
