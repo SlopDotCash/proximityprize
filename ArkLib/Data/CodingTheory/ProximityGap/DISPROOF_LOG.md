@@ -19274,3 +19274,22 @@ conditional, β<6): bilinear (3,3) + √p-DFT finisher gives M ≤ 15^{1/9}H^{2/
 n^{8/9} at β=4 from the same T3 input — strictly better than the landed 23/24=0.9583, one
 fewer external input; round-2 lane formalizes after independent re-derivation. Dossier §6
 Tier-1 item 5: EXECUTED AND CLOSED as a route to 1/2.
+
+## [466-r1-windowed-extremal-spread-beats] windowed SumsetExtremal is FALSE at n=16 — spread beats every monomial in-window, replicated (2026-07-01)
+
+Lane: #466 round-1 P5 + generic-prime replication (`probe_466_windowed_extremal.py`, outputs
+`_out_466_windowed_extremal_q65537/65617/65633`; witnesses brute-verified over all γ; note
+`docs/kb/deltastar-466-p5-replication-2026-07-01.md`). At n=16, k=4, ρ=1/4, window-interior
+agreement a=7 (δ=0.5625): the 2-Fourier-component direction `x⁴ + c·x¹⁴` beats every monomial
+direction's worst-offset bad-scalar count **13-14 vs 9 (~45%) at THREE primes** (Fermat 65537
+v₂=16, generic 65617 v₂=4, 65633 v₂=5); a=5 replicates with small margins; a=6 ties. Winning
+gaps (10, 6) avoid the antipodal-correlated class (≠ n/2). The window guard repaired the
+below-window degeneracy but does NOT rescue the statement in-window. Consequences: the
+guard-cell catalogue route (`mcaDeltaStar_pin_of_finsetGuardCover` awaiting monomial dominance)
+dies as designed; the "extremal lines are monomial" ATTACK ansatz dies (proven bracket theorems
+unaffected — they never assumed it); the advantage is a CONSTANT factor (~1.45×), so nothing
+moves across the window. Caveats: worst-u₀ search heuristic on the monomial side (plateau
+exactly 9, prime-independent — plausibly the true optimum); n=16 only; spread values are true
+brute-verified lower bounds. Survivor reformulation (live, testable): the **bounded
+spread-excess law** `worst_spread ≤ C·worst_mono` in-window, measured C ≤ 1.56 at all
+levels/scales so far — a weaker per-cell input that still serves the weld's far-line budget.
