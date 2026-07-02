@@ -678,6 +678,68 @@ push — plus a proof that must use thinness load-bearingly.
 
 **The prize is OPEN and ON-BGK. Continue here.**
 
+---
+
+## 14. Round log — Round 1 (#466, 2026-07-01): plan → essay → 8-lane assault, double-refereed
+
+Plan: `deltastar-466-research-plan-round1-2026-07-01.md`. Essay (5 new machineries, each
+developed to its gap or death): `deltastar-466-essay-novel-mathematics-2026-07-01.md`.
+Assault: 8 lanes + 8 independent skeptics (16 agents); all verdicts CONFIRMED (severities
+minor/none). DISPROOF_LOG tags `466-r1-*`.
+
+**(A) The §12 new-phantom flags are RESOLVED.** `LineListMCAWeld` re-derived and landed —
+`Frontier/LineListMCAWeldRound1.lean` (8 thms; the weld is TRUE: `explainableScalars ⊆
+lineBadScalars` holds; the far-free counting bound is genuine) **plus** the refined cone-level
+`LineListMCAWeld.lean` supplying the REAL floor consumer `mcaDeltaStar_ge_of_farLineListBudgeted`
+and `not_uniform_lineListBudgeted_of_lt_card`, which machine-confirms the skeptic's finding that
+the non-far-restricted consumer is vacuous-in-practice (aligned directions force `Λ ≥ q` — the
+same vacuity mode #464 once retracted; far-restriction is necessary AND sufficient).
+`MomentExponentThreshold.lean` re-derived (ℚ-valued, sharper hypotheses, r=89 anchor). Both on
+main (commit `537959141`).
+
+**(B) Three Tier-2 probes RUN and CLOSED (never run before):** anti-resonance is **b-blind**
+(dilation invariance washes out every residue-class statistic; future dichotomies must classify
+coset-SETS); non-backtracking/Ihara–Bass is a **deterministic monotone relabeling** (the whole
+spectral-preprocessing family closes; upgrades I037); Kravchuk moment-interlacing is **weaker
+than Johnson** (semicircle `1/2+√(ρ(1−ρ)) > √ρ`; moments bound max agreement from BELOW only —
+countermodel; joins the second-order cap).
+
+**(C) The Hankel/Jacobi seam (Tier-1 #3) is REFUTED-for-bounded-windows** — countermodel pair
+(65617/65633: identical 4-window, 21% different k*) + the mechanism: the early window is
+ensemble-deterministic, `1−q_j = c_j(n)/p` (reads p, not the instance). Kept wins: the Hankel
+double-ratio anomaly detector (Fermat at moment-order 6, ~52× amplification — deployment-prime
+screening candidate); the pre-turnover bulge as a structured-prime signature; the exact j=1 ramp
+law. The seam survives only as global variance certification = the independence form (no shortcut).
+
+**(D) Windowed SumsetExtremal (Tier-1 #1) — crux RELOCATED:** at n=8 the first interior level
+`a = k+1` is **direction-blind** (per-direction ceiling `C(n,k+1)` with generic saturation — an
+identity in ALL n, so the discrimination question only has content at depth `a ≥ k+2`); at the
+boundary a=4 all 340 directions tie at 9 (search-bounded, honest). n=16 interior (a=6,7 — the
+first genuinely discriminating levels) launched.
+
+**(E) Attack #5 (Tier-1 #5) EXECUTED AND CLOSED as a route to 1/2:** infimum exponent
+`θ_min(β) = 1 − 1/(2β)` (7/8 at β=4) over the whole method family; binding = CS mass floor
+`T_k ≥ n^{2k}/p` at depth `k=β`; unlimited-depth ladder reproduces the prize target (circularity
+exact). Iterated-BGK quantified-dead (`_BGKEffectiveHalfPlateau.lean`: saving misses by 8192×;
+Cor-16 floor `2^768` vs prize `2^30`). **SIDE-DISCOVERY (live):** bilinear (3,3) + √p-DFT
+finisher ⟹ `M ≤ n^{8/9+o(1)}` at β=4 — beats the campaign's 0.9583 with one FEWER external
+input (good-prime conditional, dies at β=6); independently re-derived by the skeptic; round-2
+formalization lane.
+
+**(F) Essay outcomes (machine-checked where claimed):** γ₂-chaining provably degenerates to the
+union bound on flat-covariance exchangeable families (`_GammaTwoDegenerationGate.lean`,
+axiom-clean) — chaining is the wall, not a route around it; vertical-MSS dead at both ends
+(`_VerticalMSSGate.lean`, axiom-clean: min≤average + bad mean ⟹ vacuous); the typical-prime
+sieve boundary `r_cross = β` confirmed (`probe_466_tps_boundary.py`) — three independent methods
+(DC-crossover, moment-exponent θ, TPS) now agree the unconditional boundary is `r ≈ β`. Open
+essay proposals CMK (Christoffel edge-crowding) and SST (sparse-section transference,
+dilation-on-supports) went to round 2 with explicit lone-spike / section-statistics attacks.
+
+**Net:** two phantom flags resolved, three Tier-2 slivers closed, two Tier-1 items closed
+(one relocated, one executed-dead), one SOTA-adjacent discovery (n^{8/9}) pending
+formalization, three new provable targets spun off (ramp law j=2,3; first-interior-level brick;
+D4 scanner). **CORE unchanged: OPEN, ON-BGK.**
+
 <sub>🤖 Consolidated 2026-07-01 by Claude (Fable 5) from the full #464 record (dossier v2 + 179
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
 and independent re-verification. No fabricated closure; the core is carried as a named open

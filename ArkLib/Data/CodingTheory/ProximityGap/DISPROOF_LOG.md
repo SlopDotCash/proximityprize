@@ -19198,3 +19198,79 @@ Formal exports: `doorIV_twoPiece_norm_add_sq_eq_halfMass_sq_sub_two_angularDefic
 `doorIV_multiPiece_norm_sum_sq_le_iff_totalPairDeficit_ge_export`, and
 `doorIV_totalPairDeficit_le_l1Mass_sq_div_two_export`, axiom-clean with axioms contained in
 `{propext, Classical.choice, Quot.sound}`.
+
+## [466-r1-antiresonance-bblind] the Chapman–Mudgal anti-resonance dichotomy is b-blind on μ_n (2026-07-01)
+
+Lane: #466 round-1 P1 (`scripts/probes/probe_466_antiresonance.py`, verified by independent
+recomputation on a second code path). Across 11 regime-clean runs (n=8..64, ≥2 primes each,
+β=4.00) the worst dilation-coset's arithmetic resonance statistics (multiplicative order,
+quotient-group order, gcd structure, QR status, Ramanujan coset-means c_q for q≤16, major-arc
+min‖qb/p‖) are indistinguishable from a random coset (percentiles ~Uniform(0,1)); the exact
+full-b Pearson correlation of |η_b| with every Ramanujan sum is ≤0.077 (<0.6% of variance).
+Mechanism: |η_{ub}| = |η_b| exactly (dilation invariance) washes out every residue-class
+statistic — any future dichotomy must classify coset-SETS (arc-concentration functionals), not
+residues of b. The one extreme statistic (coset min-frequency) is the tautological
+arc-localization signature with decaying predictive power (0.29→0.06 over n=8→64). One-prime
+Fermat anomaly (65537: worst coset = μ_n itself) spun off to the round-2 constructive-family
+probe. Tier-2 probe: RUN and CLOSED.
+
+## [466-r1-nonbacktracking-relabeling] non-backtracking/Ihara–Bass spectrum is a deterministic monotone relabeling on Cay(F_p, μ_n) (2026-07-01)
+
+Lane: #466 round-1 P2 (`scripts/probes/probe_466_nonbacktracking.py`; independent from-scratch
+replication on 3 fresh cases). The NB spectrum is the Ihara–Bass image {roots of
+x² − η_b·x + (n−1)} ∪ {±1} (Hausdorff ≤7.7e-14 full-spectrum; ARPACK rel err ≤7.5e-10 at
+regime scale p=4129/65537); in the relevant range |λ|>2√(n−1) the map is injective and
+strictly monotone in |λ|; argmax coincides with argmax|η_b| everywhere; NB walk counts are
+integer polynomials in A, so every NB moment is a linear repackaging of the power sums = the
+E_r wall. The Chebyshev structure b_m = q^{m/2}T_m(λ/2√q) holds to 4e-15. Extends to the whole
+"spectral preprocessing" family (Bethe–Hessian etc. — polynomials in A on regular graphs).
+Cites and upgrades DISPROOF_LOG I037 (unweighted reparametrization) with machine-precision
+full-spectrum + regime-scale verification. The dossier Tier-2 "only sliver that could beat √q"
+is CLOSED.
+
+## [466-r1-kravchuk-weaker-than-johnson] Kravchuk moment-interlacing carries no in-window content (2026-07-01)
+
+Lane: #466 round-1 P3 (`scripts/probes/probe_466_kravchuk.py`, verifier reproduced by exact
+integer arithmetic + fresh countermodel). The literal largest-root reading converges to the
+Levenshtein semicircle 1/2 + √(ρ(1−ρ)) — strictly ABOVE the Johnson agreement √ρ at every
+prize rate (weaker than Johnson). The excess-over-baseline reading is direction-invalid: a
+received word EQUAL to a codeword has the same first-k factorial moments yet max agreement m —
+moment interlacing bounds max agreement from BELOW (Gauss quadrature), never above; and
+Binomial(m,1/2) has no nontrivial MDS instance (at the honest Binomial(m,1/q) weight the roots
+collapse to the trivial degree bound / capacity). Evaluation-point-independence is real and is
+exactly why the method is blind to μ_n. Joins the second-order cap beside Delsarte-LP
+(`DelsarteLPNoGo`, `parseval_lp_extremal`).
+
+## [466-r1-hankel-bounded-window-refuted] no bounded-window Jacobi functional pins the turnover k* or M (2026-07-01)
+
+Lane: #466 round-1 P4 (`scripts/probes/probe_466_hankel_turnover.py` + `_out_466_hankel_turnover.txt`;
+verifier replicated all headline numbers on an independent code path). Countermodel pair
+n=16, p=65617 vs 65633: first-4 Jacobi window identical to 7ppm yet k*(0.9) differs 21% and M
+differs 4.6% (non-saturated n=64 companion pair: window j≤3 identical to ~1e-4, M differs
+4.8%). Mechanism: the early window is ensemble-deterministic — 1 − q_j = c_j(n)/p (+O(p^{−3/2}))
+reads p, not the instance (j=1 exact: (n−1)/(p−1) + n/(p−1)²); instance k* is statistically
+indistinguishable from iid char-0 controls on the tested ensemble. Strict Hermite-spacing law
+b_{k+1}²−b_k² ≤ n REFUTED (structured 786433: 1.0140n); post-peak monotonicity of r_j fails
+generically (rebounds up to 0.32n/step). WINS kept: the Hankel double-ratio detects the
+Fermat-65537 anomaly at moment-order 6 with ~52x amplification over drift (raw moments need
+order 8) — a candidate deployment-prime screening invariant; the pre-turnover bulge
+(q_5,q_6 ≈ 1.11–1.12 at 786433) is a structured-prime signature. The surviving Hankel seam is
+ONLY the global variance-certification form = the independence form of the core (no shortcut).
+
+## [466-r1-effective-half-push-dead] the di Benedetto pipeline family cannot reach exponent 1/2 at β=4 (2026-07-01)
+
+Lane: #466 round-1 P6 (`scripts/probes/probe_466_dibenedetto_half.py` + `_out_466_dibenedetto_push.txt`;
+verifier re-derived the binding inequality and the discovery chain independently). Over all
+parameterizations of the method shape (moment/bilinear/trilinear-PS/hypothetical-quadrilinear
+finishers × fold orders ≤48 × Hölder splittings × all LEGAL energy inputs), the infimum
+exponent is θ_min(β) = 1 − 1/(2β) — 7/8 at β=4 — never approaching 1/2. Binding constraint:
+the Cauchy–Schwarz mass floor T_k ≥ n^{2k}/p at depth k=β (raw-T_k specific; the DC-subtracted
+evasion requires char-0-clean energy at depth k>β = the wall). Reaching 1/2+ε needs clean T_k
+at k ≈ (β−1)ln n ≈ 62 — reproducing the prize target within factor ~1.4: the unlimited-depth
+ladder IS the BGK wall (circularity exact). Companion iterated-BGK kill landed axiom-clean:
+`Frontier/_BGKEffectiveHalfPlateau.lean` (Shkredov Cor-16 route: saving 1/16384 vs required
+1/8 at k=12; applicability floor 2^768 vs prize 2^30). SIDE-DISCOVERY (live, good-prime
+conditional, β<6): bilinear (3,3) + √p-DFT finisher gives M ≤ 15^{1/9}H^{2/3}p^{1/18+o(1)} =
+n^{8/9} at β=4 from the same T3 input — strictly better than the landed 23/24=0.9583, one
+fewer external input; round-2 lane formalizes after independent re-derivation. Dossier §6
+Tier-1 item 5: EXECUTED AND CLOSED as a route to 1/2.
