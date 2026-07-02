@@ -1160,6 +1160,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Kappa8Kappa10DCWickRungs
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LaneB_Q2_SparsityExclusive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LargeSieveParsevalCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LineBallSingleCodewordEnvelope
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LineListMCAWeldRound1
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
@@ -2029,6 +2030,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodabilityOpener
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25LineToAffine
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GKPhaseCoboundaryNonLinear
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GammaTwoDegenerationGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussPeriodFirstMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussPeriodMomentCensus
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaussPeriodRealValued
@@ -2416,6 +2418,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._UnconditionalWrapRungR3
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._UnconditionalWrapRungR4Onset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._V7GeometricDecayLogCrossing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ValuationClassBarrier
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._VerticalMSSGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._VerticalTailSupConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._VietaScopeGapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._VinogradovDecouplingVacuous
@@ -2934,6 +2937,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineListCodewordSupportDivArithmeti
 import ArkLib.Data.CodingTheory.ProximityGap.LineListDimensionLift
 import ArkLib.Data.CodingTheory.ProximityGap.LineListIncidenceMultiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.LineListJohnsonClosure
+import ArkLib.Data.CodingTheory.ProximityGap.LineListMCAWeld
 import ArkLib.Data.CodingTheory.ProximityGap.LineListReduction
 import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonArithmeticObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.LineListSingletonDefectGeometry
@@ -3146,6 +3150,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionTower
 import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionWeilConditional
 import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupBound
 import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupNotSharper
+import ArkLib.Data.CodingTheory.ProximityGap.MomentExponentThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.MomentLogConvex
 import ArkLib.Data.CodingTheory.ProximityGap.MomentSupNormBridge
 import ArkLib.Data.CodingTheory.ProximityGap.MomentSupplyIdentity
