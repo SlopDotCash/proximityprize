@@ -352,13 +352,18 @@ independent-Gaussian behaviour of the period field: sub-Gaussian tail `P(|η_b| 
 to depth `r ≈ log p`, equivalently `E_r⁺(μ_n) − n^{2r}/p ≤ C^r·r!·n^r` at logarithmic depth.
 Difficulty is certification, not distribution shape.
 
-⇒ **The `▼ YOUR CONJECTURE HERE ▼` slot's current best targets:** (a) the windowed SumsetExtremal
-with a guard-cell catalogue; (b) the low-profile fiber bound `D(t)`, `t < k`, feeding
-`mcaDeltaStar_ge_of_farLineListBudgeted`; (c) `WorstCaseIncidenceBounded` at the window radius via
-any genuinely L∞ method (the §1.5 framing below remains valid). All three are equivalent to (faces
-of) the ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — see dossier v3 §2 for the four canonical
-forms (A) Wick-at-log-depth, (B) effective worst-case vertical Sato–Tate, (C) wraparound variance,
-(D) early Jacobi turnover.
+⇒ **The `▼ YOUR CONJECTURE HERE ▼` slot's current best targets (post rounds 1–2, 2026-07-01;
+see dossier §14/§15):** (a) the low-profile fiber bound `D(t)`, `t < k`, feeding
+`mcaDeltaStar_ge_of_farLineListBudgeted` (the PRIMARY surface; `_LowProfileFiberBound` +
+`_R2B_LargeZeroWitnessSplit` narrow it); (b) the **bounded spread-excess law at C = 3**
+(`_SpreadExcessLaw.SpreadExcessLaw` — the replacement for windowed SumsetExtremal, which is
+REFUTED at n=16: spread beats every monomial in-window, DISPROOF `466-r1-windowed-extremal-…`;
+C=2 is also dead); (c) the floor successor theorem `CandidateListExactSuccessor` (floor-bad(64)
+is compute-undecidable — theorem or nothing); (d) `WorstCaseIncidenceBounded` at the window
+radius via any genuinely L∞ method fed by non-second-order data (the §1.5 framing below remains
+valid; note round 2 KILLED the positivity/Christoffel upgrade — any such proposal must first
+beat the lone-spike countermodel, DISPROOF `466-r2-cmk-lonespike-refuted`). All are faces of the
+ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — dossier v3 §2 forms (A)–(D).
 
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  RESEARCH SYNTHESIS 2026-06-13 — the two challenges collapse to ONE δ*, and
