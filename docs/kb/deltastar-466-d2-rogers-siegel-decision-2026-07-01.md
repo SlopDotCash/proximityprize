@@ -43,12 +43,12 @@ anomaly class would be a new lever. If `M` concentrates, the ∃-form gains noth
 
 | | n = 16 (full, N = 2038) | n = 32 (sampled, N ≈ 2200) |
 |---|---|---|
-| mean x | 1.1493 | (see output) |
-| std x | 0.0193 | (see output) |
-| min … max x | 1.104 … 1.218 | (see output) |
-| P(x < 1.1) | **0.000** | (see output) |
-| P(x < 1.0), P(x < 0.9) | 0, 0 | (see output) |
-| Gumbel-z: mean, std | −1.86, **0.33** (benchmark: +0.58, 1.28) | (see output) |
+| mean x | 1.1493 | 1.2446 |
+| std x | 0.0193 | 0.0449 (Gumbel-predicted 0.0784 — strictly tighter) |
+| min … max x | 1.104 … 1.218 | 1.131 … 1.394 |
+| P(x < 1.1) | **0.000** | **0.000** |
+| P(x < 1.0), P(x < 0.9) | 0, 0 | 0, 0 |
+| Gumbel-z: mean, std | −1.86, **0.33** (benchmark: +0.58, 1.28) | (completed 2026-07-02: see _out_466_rogers_siegel_tail.txt) |
 
 Key facts (n = 16, full ensemble — no sampling caveat):
 
@@ -99,3 +99,6 @@ component at either n. Therefore:
   `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_D2LowerTailConcentrationGate.lean`
 - prior gates it composes with: `_D2RogersSiegelVarianceGate.lean` (coupling),
   `_D2LargeDeviationRateFunction.lean` (rate function / floor identity).
+
+
+**n=32 completion addendum (2026-07-02).** The full n=32 scan (2103 sampled + 123 structured of 13319 window primes, protected-image rerun after two taskkill collisions) confirms concentration: median x = 1.2402, std 0.0449 vs Gumbel-predicted 0.0784; P(x<1.1) = 0 exactly; zero primes below 0.85*median (1.054); mean x flat in v2(p-1) = 5..17 (1.224-1.256); the cross-n variance SHRINKS faster than the iid benchmark. The DISPROOF entry [466-r4-d2-lowertail-concentration]'s n=32 claim is now fully artifact-backed.
