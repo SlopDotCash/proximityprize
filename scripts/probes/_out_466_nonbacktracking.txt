@@ -1,0 +1,73 @@
+========================================================================================
+PART A: numerical verification of the Ihara-Bass relabeling (full NB spectrum)
+        [small p: verifies a DETERMINISTIC IDENTITY; regime stats are in parts B2/C]
+========================================================================================
+  n=  8 p=  89 dim(B)=  712 | adjacency-vs-eta err 8.66e-15 | NB Hausdorff 5.92e-14 | power-sum rel err (k<=10) 8.60e-12 | OK  (8.2s)
+  n=  8 p=  97 dim(B)=  776 | adjacency-vs-eta err 9.77e-15 | NB Hausdorff 7.71e-14 | power-sum rel err (k<=10) 9.15e-12 | OK  (6.5s)
+  n= 16 p=  97 dim(B)= 1552 | adjacency-vs-eta err 1.78e-14 | NB Hausdorff 6.29e-14 | power-sum rel err (k<=10) 5.99e-11 | OK  (27.9s)
+  n= 16 p= 113 dim(B)= 1808 | adjacency-vs-eta err 9.77e-15 | NB Hausdorff 7.08e-14 | power-sum rel err (k<=10) 5.34e-11 | OK  (43.1s)
+
+  NB walk-count recursion N_1=A, N_2=A^2-nI, N_{m+1}=N_m A - q N_{m-1} (poly in A):
+  n=  8 p=  89: max |direct NB-walk count - poly(A)| over m=1..6 = 0.00e+00  OK
+  n= 16 p=  97: max |direct NB-walk count - poly(A)| over m=1..6 = 0.00e+00  OK
+
+PART A verdict: Ihara-Bass relabeling CONFIRMED to machine precision (NB spectrum + NB walk counts are functions of the adjacency data)
+
+========================================================================================
+PART B: extreme NB eigenvalues at regime-proper primes (sparse ARPACK spot-check)
+========================================================================================
+  n=  8 p=  4129 dim(B)=   33032 beta=4.00 | top-6 distinct |NB eig| ARPACK vs Ihara-Bass rel err 7.45e-10 OK  (1s)
+        ARPACK          : [7.       6.477494 6.161703 5.952334 5.793968 5.761909]
+        theory distinct : [7.       6.477494 6.161703 5.952334 5.793968 5.761909]
+  n= 16 p= 65537 dim(B)= 1048592 beta=4.00 | top-4 distinct |NB eig| ARPACK vs Ihara-Bass rel err 3.07e-10 OK  (10s)
+        ARPACK          : [15.       12.651951 11.352007 11.235177]
+        theory distinct : [15.       12.651951 11.352007 11.235177]
+
+========================================================================================
+PART C: regime-proper analysis (beta>=4) -- NB radius, monotonicity, injectivity,
+        Chebyshev structure, worst-frequency separation
+========================================================================================
+  n=  8 p=   4129 beta= 4.00 | M=  7.5582 (excl mu_n-coset   7.5582) C=1.069 | 2sqrt(q)= 5.292 #above=  256 ( 6.20%)
+      rho_NB(nontriv)=  6.4775 = mono image of M (err 0.0e+00); sqrt(q)=2.646; rho_NB/sqrt(q)= 2.45 (Ramanujan would be 1)
+      inject err 8.9e-16 | tempered-collapse | |mu|-sqrt(q)| 8.9e-16 | monotone above thresh: True | argmax_b same: True | Cheb T_m err (m<=12) 2.2e-13
+  n=  8 p=   4153 beta= 4.01 | M=  7.4584 (excl mu_n-coset   7.4584) C=1.055 | 2sqrt(q)= 5.292 #above=  248 ( 5.97%)
+      rho_NB(nontriv)=  6.3573 = mono image of M (err 0.0e+00); sqrt(q)=2.646; rho_NB/sqrt(q)= 2.40 (Ramanujan would be 1)
+      inject err 8.9e-16 | tempered-collapse | |mu|-sqrt(q)| 8.9e-16 | monotone above thresh: True | argmax_b same: True | Cheb T_m err (m<=12) 1.8e-12
+  n=  8 p= 200009 beta= 5.87 | M=  7.9364 (excl mu_n-coset   7.9364) C=0.882 | 2sqrt(q)= 5.292 #above=12176 ( 6.09%)
+      rho_NB(nontriv)=  6.9256 = mono image of M (err 0.0e+00); sqrt(q)=2.646; rho_NB/sqrt(q)= 2.62 (Ramanujan would be 1)
+      inject err 8.9e-16 | tempered-collapse | |mu|-sqrt(q)| 8.9e-16 | monotone above thresh: True | argmax_b same: True | Cheb T_m err (m<=12) 3.6e-15
+  n= 16 p=  65537 beta= 4.00 | M= 13.8375 (excl mu_n-coset  12.6734) C=1.199 | 2sqrt(q)= 7.746 #above= 3328 ( 5.08%)
+      rho_NB(nontriv)= 12.6520 = mono image of M (err 0.0e+00); sqrt(q)=3.873; rho_NB/sqrt(q)= 3.27 (Ramanujan would be 1)
+      inject err 1.8e-15 | tempered-collapse | |mu|-sqrt(q)| 8.9e-16 | monotone above thresh: True | argmax_b same: True | Cheb T_m err (m<=12) 5.1e-15
+  n= 16 p=  65617 beta= 4.00 | M= 13.2948 (excl mu_n-coset  13.2948) C=1.152 | 2sqrt(q)= 7.746 #above= 3296 ( 5.02%)
+      rho_NB(nontriv)= 12.0500 = mono image of M (err 0.0e+00); sqrt(q)=3.873; rho_NB/sqrt(q)= 3.11 (Ramanujan would be 1)
+      inject err 1.8e-15 | tempered-collapse | |mu|-sqrt(q)| 8.9e-16 | monotone above thresh: True | argmax_b same: True | Cheb T_m err (m<=12) 4.5e-15
+  n= 16 p= 262193 beta= 4.50 | M= 14.2148 (excl mu_n-coset  14.2148) C=1.141 | 2sqrt(q)= 7.746 #above=13488 ( 5.14%)
+      rho_NB(nontriv)= 13.0669 = mono image of M (err 0.0e+00); sqrt(q)=3.873; rho_NB/sqrt(q)= 3.37 (Ramanujan would be 1)
+      inject err 1.8e-15 | tempered-collapse | |mu|-sqrt(q)| 8.9e-16 | monotone above thresh: True | argmax_b same: True | Cheb T_m err (m<=12) 4.2e-15
+
+========================================================================================
+KEY DECISION
+========================================================================================
+
+(1) Ihara-Bass identity: CONFIRMED numerically (Part A, 2 primes x 2 sizes, full spectra,
+    machine precision).  The NB spectrum of Cay(F_p, mu_n) is the deterministic multiset
+    {roots of x^2 - eta_b x + (n-1)} over adjacency eigenvalues, plus +-1 trivials.
+(2) In the relevant range |lambda| > 2 sqrt(n-1) the map lambda -> NB pair is INJECTIVE
+    (lambda = mu+ + mu-, reconstruction err ~1e-13) and |mu+| is STRICTLY MONOTONE in
+    |lambda| (verified on every regime prime).  Below threshold all NB magnitudes collapse
+    to sqrt(n-1) exactly -- the NB spectrum LOSES magnitude information there and adds none
+    above.  rho_NB(nontrivial) = (M + sqrt(M^2-4(n-1)))/2 exactly: a monotone image of M.
+(3) The worst frequency b* = argmax|eta_b| is IDENTICAL to argmax of the NB magnitude on
+    every prime tested: NB cannot separate the worst frequency beyond what |eta_b| does.
+(4) Chebyshev structure b_m = q^{m/2} T_m(lambda/(2 sqrt q)) verified to ~1e-14: every NB
+    moment tr(B^m) is a fixed linear repackaging of adjacency moments tr(A^j), j<=m, i.e.
+    of the SAME power sums sum_b eta_b^j that constitute the E_r / character-sum wall.
+    A 'tangle-free / Bordenave' NB-moment argument on this graph therefore has EXACTLY the
+    same information content as the ordinary moment method -- no new bound is possible.
+(5) rho_NB(nontrivial)/sqrt(n-1) ~ 2.5-3.2 at beta>=4: the graph is far from NB-Ramanujan,
+    and that ratio is again just the monotone image of M/(2 sqrt(n-1)).
+
+VERDICT: REFUTED (deterministic monotone relabeling; joins the door-(iv) closures)
+
+total runtime 108s

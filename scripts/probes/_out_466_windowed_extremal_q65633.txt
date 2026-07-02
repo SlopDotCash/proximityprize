@@ -1,0 +1,5 @@
+
+==============================================================================
+SETTING n=16 k=4 rho=4/16 q=65633 (q>=n^4=65536: True) omega=5013  C(n,k)=1820 interpolants
+window delta in (0.5,0.75) => agreement a interior=[5, 6, 7] boundary=[]
+92 directions, 209 shared u0 candidates + 8*3 per-u1 chained adversarial

@@ -1,0 +1,91 @@
+==============================================================================
+SELF-TEST: paper parameters (arities (3,3,2); PROVEN t2=49/20, t3=4; Macourt)
+  beta=4: got 2849/2880, paper formula 2849/2880  OK
+  beta=191/40 (triviality): got None, paper formula 1  OK
+  beta=3: got 2809/2880, paper formula 2809/2880  OK
+  SELF-TEST PASS
+
+--- SWEEP [A: PROVEN energies (MRSS)] beta = 3 (3.000) ---
+  theta = 0.954167 = 229/240   arities=(3, 2) [bi2]
+  theta = 0.965625 = 309/320   arities=(4, 2) [bi2]
+  theta = 0.972396 = 1867/1920   arities=(2, 3, 2) [tri]
+  theta = 0.972396 = 1867/1920   arities=(3, 2, 2) [tri]
+  theta = 0.972500 = 389/400   arities=(5, 2) [bi2]
+  BEST: theta = 0.954167 (229/240) at arities (3, 2) [bi2]   saving = 0.045833
+
+--- SWEEP [B: char-0-PERFECT energies t_m = m (unattainable)] beta = 3 (3.000) ---
+  theta = 0.583333 = 7/12   arities=(12,) [biH]
+  theta = 0.590909 = 13/22   arities=(11,) [biH]
+  theta = 0.600000 = 3/5   arities=(10,) [biH]
+  theta = 0.611111 = 11/18   arities=(9,) [biH]
+  theta = 0.625000 = 5/8   arities=(8,) [biH]
+  BEST: theta = 0.583333 (7/12) at arities (12,) [biH]   saving = 0.416667
+
+--- SWEEP [A: PROVEN energies (MRSS)] beta = 4 (4.000) ---
+  theta = 0.989236 = 2849/2880   arities=(3, 3, 2) [tri]
+  theta = 0.991927 = 3809/3840   arities=(3, 4, 2) [tri]
+  theta = 0.991927 = 3809/3840   arities=(4, 3, 2) [tri]
+  theta = 0.993229 = 1907/1920   arities=(2, 3, 2) [tri]
+  theta = 0.993229 = 1907/1920   arities=(3, 2, 2) [tri]
+  BEST: theta = 0.989236 (2849/2880) at arities (3, 3, 2) [tri]   saving = 0.010764
+
+--- SWEEP [B: char-0-PERFECT energies t_m = m (unattainable)] beta = 4 (4.000) ---
+  theta = 0.625000 = 5/8   arities=(12,) [biH]
+  theta = 0.636364 = 7/11   arities=(11,) [biH]
+  theta = 0.650000 = 13/20   arities=(10,) [biH]
+  theta = 0.666667 = 2/3   arities=(9,) [biH]
+  theta = 0.687500 = 11/16   arities=(8,) [biH]
+  BEST: theta = 0.625000 (5/8) at arities (12,) [biH]   saving = 0.375000
+
+--- SWEEP [A: PROVEN energies (MRSS)] beta = 9/2 (4.500) ---
+  theta = 0.996181 = 2869/2880   arities=(3, 3, 2) [tri]
+  theta = 0.997135 = 3829/3840   arities=(3, 4, 2) [tri]
+  theta = 0.997135 = 3829/3840   arities=(4, 3, 2) [tri]
+  theta = 0.997708 = 4789/4800   arities=(3, 5, 2) [tri]
+  theta = 0.997708 = 4789/4800   arities=(5, 3, 2) [tri]
+  BEST: theta = 0.996181 (2869/2880) at arities (3, 3, 2) [tri]   saving = 0.003819
+
+--- SWEEP [B: char-0-PERFECT energies t_m = m (unattainable)] beta = 9/2 (4.500) ---
+  theta = 0.645833 = 31/48   arities=(12,) [biH]
+  theta = 0.659091 = 29/44   arities=(11,) [biH]
+  theta = 0.675000 = 27/40   arities=(10,) [biH]
+  theta = 0.694444 = 25/36   arities=(9,) [biH]
+  theta = 0.718750 = 23/32   arities=(8,) [biH]
+  BEST: theta = 0.645833 (31/48) at arities (12,) [biH]   saving = 0.354167
+
+--- SWEEP [A: PROVEN energies (MRSS)] beta = 5 (5.000) ---
+  NO chain in the family proves any saving at this beta.
+
+--- SWEEP [B: char-0-PERFECT energies t_m = m (unattainable)] beta = 5 (5.000) ---
+  theta = 0.666667 = 2/3   arities=(12,) [biH]
+  theta = 0.681818 = 15/22   arities=(11,) [biH]
+  theta = 0.700000 = 7/10   arities=(10,) [biH]
+  theta = 0.722222 = 13/18   arities=(9,) [biH]
+  theta = 0.750000 = 3/4   arities=(8,) [biH]
+  BEST: theta = 0.666667 (2/3) at arities (12,) [biH]   saving = 0.333333
+
+==============================================================================
+(C) INVERSE: multilinear strength NEEDED for theta = 1/2 at beta = 4, perfect energies
+  best perfect-energy trilinear shape at beta=4: (2, 8, 2), theta = 121/128 (0.94531)
+  kappa needed (coeffs 1/4,1/4,1/8) for theta <= 1/2: kappa ~ 0.000000   (Macourt supplies kappa = 1/4 = 0.25)
+  uniform residual coeff c needed (kappa=1/4, coeffs (c,c,c)) for theta <= 1/2: c ~ 0.500000   (Macourt residuals: 1/4, 1/4, 1/8)
+
+==============================================================================
+DICTIONARY: BG chain with PERFECT energies == the pure moment ladder
+  (biH shape, perfect t_s = s:  theta(s) = (beta+s-1)/(2s) = momentExponent(s,beta))
+    s=  4: chain theta = 7/8   momentExponent = 7/8   match = True
+    s=  6: chain theta = 3/4   momentExponent = 3/4   match = True
+    s=  8: chain theta = 11/16   momentExponent = 11/16   match = True
+    s= 12: chain theta = 5/8   momentExponent = 5/8   match = True
+    s= 24: chain theta = 9/16   momentExponent = 9/16   match = True
+    s= 89: chain theta = 46/89   momentExponent = 46/89   match = True
+  => the multilinear rounds only TRADE unavailable deep energies for shallow
+     proven ones; reaching theta -> 1/2 requires perfect energies at UNBOUNDED
+     arity == the open Wick-at-log-depth bound == the wall (dossier v3 sec 2).
+
+==============================================================================
+VERDICT is read off the sweep-B plateau; see header rule.
+A-priori kill reminder: `deltaStar_determination_all_or_nothing` (in-tree) makes
+ANY fixed power-saving exponent theta > 1/2 irrelevant to delta*; the BG family's
+output is always a fixed power law, so attack #5 cannot move delta* even if the
+plateau improved -- the probe's numbers quantify how far it is from mattering.

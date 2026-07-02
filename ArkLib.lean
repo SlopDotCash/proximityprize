@@ -1545,6 +1545,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvgMaxExponentGapBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._B2DoorAOrbitCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._B6ConnectAll
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BCHKSTrilinearConditional
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKEffectiveHalfPlateau
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKModernToolCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKMomentFloorOptimized
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKSOTAInsufficiency
