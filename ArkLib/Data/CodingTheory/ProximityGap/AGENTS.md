@@ -29,8 +29,8 @@
 > **Knowledge base (read in this order):**
 > - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` — **the canonical dossier (v3)**: everything
 >   proven / refuted / open, the ranked live frontier, and the substrate API map.
-> - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (72 tagged entries as of
->   2026-07-01, `466-r*` rounds still landing) + `docs/kb/deltastar-*.md` (326 dated notes across
+> - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (73 tagged entries as of
+>   2026-07-02, `466-r*` rounds still landing) + `docs/kb/deltastar-*.md` (333 dated notes across
 >   the campaigns, 121 of them #464-era) — every refuted approach with its
 >   constraint lemma. Check BOTH before re-trying anything.
 > - Historical layers (each superseded by the next, kept for depth):
@@ -53,7 +53,7 @@ into the successor); the live issue is #466 and the current state is dossier v3 
 
 ## 1. ⚡ BUILD — read this FIRST or you will clog the machine
 
-This cone is **~3,500 files** (3,483 `.lean` files as of 2026-07-01, 1,638 of them in
+This cone is **~3,500 files** (3,489 `.lean` files as of 2026-07-02, 1,643 of them in
 `Frontier/`; it was 808 in the #334 era and keeps growing). `lake build <module>` traces a
 3000+-job graph (**~2-3 min even with no changes**) AND takes the `.lake` build lock, which
 **serializes every agent** on this 16-core box. Never iterate with `lake build`.
@@ -75,7 +75,9 @@ Rules that keep iteration fast and parallel-safe:
 - **Only run `lake build` to land.** Run a real `lake build <YourModule>` exactly once,
   right before committing, to confirm it passes the project build (`autoImplicit=false`,
   which `lake env lean` does NOT enforce — see pitfall (a)). Stagger these across agents.
-- **Scratch files** go in `Frontier/` and start with `_` (gitignored pattern) until proven.
+- **Scratch files** go in `Frontier/` and start with `_`. They are NOT gitignored — 1,300+
+  `_*` files are git-tracked lane state; treat `_` as "lane scratch, minimal imports", not
+  "throwaway" (see `Frontier/README.md` lane hygiene).
 
 ## 2. ⚠️ Concurrency hazards on this shared tree (learned the hard way)
 
