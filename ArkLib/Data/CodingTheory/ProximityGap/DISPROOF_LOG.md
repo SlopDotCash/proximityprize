@@ -19293,3 +19293,64 @@ exactly 9, prime-independent — plausibly the true optimum); n=16 only; spread 
 brute-verified lower bounds. Survivor reformulation (live, testable): the **bounded
 spread-excess law** `worst_spread ≤ C·worst_mono` in-window, measured C ≤ 1.56 at all
 levels/scales so far — a weaker per-cell input that still serves the weld's far-line budget.
+
+## [466-r2-cmk-lonespike-refuted] Christoffel–Markov–Krein edge-crowding cannot improve the moment bound (2026-07-01)
+
+Lane: #466 round-2 R1 (`probe_466_cmk_lonespike.py` + `_out_466_cmk_lonespike.txt`, certified
+two-sided brackets; kb `deltastar-466-cmk-refuted-2026-07-01.md`; verifier reproduced all six
+spot checks on fresh code paths and closed the mirrored two-spike odd-moment loophole).
+Essay Conjecture CMK ("q−1 equal atoms + exact Parseval + K^r-Wick moments to depth 2⌈ln q⌉ ⟹
+M² ≤ C(K)·n·log q, IMPROVING the raw moment bound via Christoffel positivity") is REFUTED by
+the lone-spike countermodel: spike height t_spike(K) = t_raw(K)·(1−o(1)) for every slack K
+(ratio 0.9979 at q=2^40 → 1.0000 at q=2^120); the abstract problem's sharp answer IS the
+moment bound, C(K) = 2K(1+o(1)) — positivity + equal masses + the full moment sequence add
+NOTHING. The spike deforms its own orthogonal polynomials so the true Christoffel bound is
+satisfied automatically (K_j(M,M)/(q−1)=0.9967 at t=1.5) while the Hermite proxy would forbid
+it — the essay's claimed threshold-constant was a computational error (t*_H → √2 from below,
+reproducing the moment bound exactly). The composition **CMK ∘ TPS dies with it** (a K^r-slack
+Wick input can never be post-processed past √(2K); the spike realizes the slack). STANDING
+FILTER for future lanes: any "positivity/quadrature upgrades a lossy moment input" proposal
+must first beat THIS countermodel; only genuinely arithmetic inputs distinguishing the real
+η-measure can pass. Companion gate: `_R2B_CMKDepthIrreducibility.lean` (depth cannot be traded
+for slack). Caveat kept honest: a hypothetically restated conjecture at window ≫ ln q with
+K→1 two-sided is not excluded by this countermodel as built — but CMK as stated lived at
+2⌈ln q⌉.
+
+## [466-r2-fermat-family-artifact] 2-adic saturation is NOT an adversarial family — generalized-Fermat structure is (2026-07-01)
+
+Lane: #466 round-2 R6 (`probe_466_fermat_family.py` + `_out_466_fermat_family.txt`; verifier
+re-verified 9 rows brute-force over ALL b, the closed form 7/7, and the W₄ anchor). The
+hypothesis "2-adically saturated primes p = c·2^k+1 (tiny odd c) systematically place the worst
+coset at μ_n / inflate C" is REFUTED: over 34 saturated primes vs 34 matched controls,
+μ_n-selection 2/34 (both = 65537) vs threshold 70%; C-inflation ratio 1.0145 vs threshold 1.15.
+**The true mechanism is GENERALIZED-FERMAT structure**: for p = b^(2^s)+1 with n | 2^(s+1),
+μ_n = ±⟨B⟩ is a geometric progression of small integers (B = b^{2^{s+1}/n}) and
+**η₁ = n − c_B + o(1)** exactly (c_B = 2Σ_{i≥1}(1−cos 2πB^{−i}); verified to 4 decimals on 7/7
+GF primes; c₂ = 6.7893, c₄ = 2.1625). Only B=2 (Fermat primes proper) beats the generic C
+plateau (asymptotic √(2/ln 2) ≈ 1.699; measured 1.614 at 65537, n=32, β=3.2 — the family's ONE
+in-window witness; F₅ = 641·6700417 is composite so the B=2 supply ENDS at F₄ = 65537).
+Deployment avoid-list NARROWED: generalized-Fermat with B ≤ 4 only; BabyBear-class (c=15)
+exonerated (34/34 generic); high v₂(p−1) per se exonerated. Ceiling-side tool: at GF primes
+M ≥ n − c_B at the μ_n coset itself — an explicit family refuting any hoped-for
+"M = o(n) for all window p" without a GF exclusion; touches NO floor statement (floors fix a
+designer-chosen p). Landable ceiling brick: the finite cosine-sum instance at p=65537, n=32
+(|η₁| ≥ 25.2).
+
+## [466-r2-sst-orbit-compression-cosmetic] the SST dilation-orbit compression is exact factor-n bookkeeping; antipodal correction mandatory (2026-07-01)
+
+Lane: #466 round-2 R2 (`probe_466_sst_sections.py` + `_out_466_sst_sections.txt`; verifier
+re-derived all three structural facts + independent full n=32 census). Essay Conjecture SST's
+novelty claims are DECIDED: (i) shift-orbit constancy of section sparse-counts/minima is
+PROVABLE (the shift multiplies the defining form by the unit h — an isometry), so the
+"dilation action on relation supports" compresses the section family by EXACTLY factor ~n with
+zero within-orbit variance — real but pure bookkeeping, the SST analogue of the I031 cosmetic
+collapse; (ii) the essay's bare SST statement is FALSE at 2-power n without the antipodal
+correction: a section containing k antipodal pairs {s, s+n/2} carries exactly 3^k−1 forced
+char-0 sparse vectors (dyadic Lam–Leung; 38% of r=2 supports at n=16); the honest object is
+the genuine char-p DEFECT = count − (3^k−1); (iii) measured defect = 0 across ALL sections at
+n=16 (r=2,3 exhaustive) and n=32 (full r=2 census + r=3 samples, both primes) — zero events,
+consistent with fixed-depth cleanliness (non-detection, NOT suppression: bads arrive in
+orbit batches so effective trials are ~n× fewer). Transference direction qualitatively
+confirmed (bad sections have systematically smaller dual minima). SURVIVING RESIDUE (named,
+open): cross-orbit correlation under the multiplier action S → kS, gcd(k,n)=1 — NOT an
+isometry of a fixed L_p; untested.

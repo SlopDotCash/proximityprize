@@ -1,0 +1,106 @@
+------------------------------------------------------------------------------
+CHAIN VERIFICATION ON REAL F_p DATA (worst-coset a, actual pigeonhole)
+------------------------------------------------------------------------------
+  n=8 p=4129 (beta=4.004)  worst a=1714  M=7.558  Delta=0.94477
+    T3=5120 char0=5120 good-prime match=True
+    eq5.2  n^4 D^3 = 3454.1 <= sum J3|T| = 3454.1   OK=True
+    pigeonhole: L=1 levels above cut, tail<=half OK=True; popular j*=0  D1=0.50000  |G1|=512  |X|=96
+      D1 >= D^3/4 (0.210823)            OK=True
+      contrib >= n^4 D^3/(2L)               OK=True
+      |G1| >= n^3 D^3/(4 L D1) = 215.9   OK=True
+      every x in X: |T(x)| > n D1           OK=True
+    leg1 CS: |G1|^2 = 262144 <= |X| T3 = 491520   OK=True
+    leg2:   |X|(nD1)^3 = 6144.0 <= sum|T|^3 = 24124.3 <= sqrt(p T3 |X|) = 45049.8   OK=True
+    MASTER  n^12 D^6 D1^4 = 3.054e+09 <= 16 L^2 p T3^2 = 1.732e+12  OK=True  (slack 5.7e+02)
+    COLLAPSED n^12 D^18 = 2.471e+10 <= 4096 L^2 p T3^2 = 4.433e+14  OK=True  (slack 1.8e+04)
+    end bound: M=7.56 vs clean 15^(1/9) n^(2/3) p^(1/18) = 8.58 (x const 2.14 tracked)   M<=clean*const OK=True
+    CASE ALL-THEOREM-STEPS OK: True
+  n=8 p=4153 (beta=4.007)  worst a=2256  M=7.458  Delta=0.93230
+    T3=5120 char0=5120 good-prime match=True
+    eq5.2  n^4 D^3 = 3319.2 <= sum J3|T| = 3319.2   OK=True
+    pigeonhole: L=1 levels above cut, tail<=half OK=True; popular j*=0  D1=0.50000  |G1|=512  |X|=96
+      D1 >= D^3/4 (0.202587)            OK=True
+      contrib >= n^4 D^3/(2L)               OK=True
+      |G1| >= n^3 D^3/(4 L D1) = 207.4   OK=True
+      every x in X: |T(x)| > n D1           OK=True
+    leg1 CS: |G1|^2 = 262144 <= |X| T3 = 491520   OK=True
+    leg2:   |X|(nD1)^3 = 6144.0 <= sum|T|^3 = 21252.4 <= sqrt(p T3 |X|) = 45180.6   OK=True
+    MASTER  n^12 D^6 D1^4 = 2.820e+09 <= 16 L^2 p T3^2 = 1.742e+12  OK=True  (slack 6.2e+02)
+    COLLAPSED n^12 D^18 = 1.946e+10 <= 4096 L^2 p T3^2 = 4.459e+14  OK=True  (slack 2.3e+04)
+    end bound: M=7.46 vs clean 15^(1/9) n^(2/3) p^(1/18) = 8.59 (x const 2.14 tracked)   M<=clean*const OK=True
+    CASE ALL-THEOREM-STEPS OK: True
+  n=16 p=65537 (beta=4.000)  worst a=1  M=13.838  Delta=0.86485
+    T3=50560 char0=50560 good-prime match=True
+    eq5.2  n^4 D^3 = 42393.2 <= sum J3|T| = 42393.2   OK=True
+    pigeonhole: L=1 levels above cut, tail<=half OK=True; popular j*=0  D1=0.50000  |G1|=4096  |X|=704
+      D1 >= D^3/4 (0.161717)            OK=True
+      contrib >= n^4 D^3/(2L)               OK=True
+      |G1| >= n^3 D^3/(4 L D1) = 1324.8   OK=True
+      every x in X: |T(x)| > n D1           OK=True
+    leg1 CS: |G1|^2 = 16777216 <= |X| T3 = 35594240   OK=True
+    leg2:   |X|(nD1)^3 = 360448.0 <= sum|T|^3 = 671944.6 <= sqrt(p T3 |X|) = 1527330.9   OK=True
+    MASTER  n^12 D^6 D1^4 = 7.361e+12 <= 16 L^2 p T3^2 = 2.681e+15  OK=True  (slack 3.6e+02)
+    COLLAPSED n^12 D^18 = 2.062e+13 <= 4096 L^2 p T3^2 = 6.862e+17  OK=True  (slack 3.3e+04)
+    end bound: M=13.84 vs clean 15^(1/9) n^(2/3) p^(1/18) = 15.89 (x const 2.14 tracked)   M<=clean*const OK=True
+    CASE ALL-THEOREM-STEPS OK: True
+  n=16 p=65617 (beta=4.000)  worst a=3211  M=13.295  Delta=0.83093
+    T3=50560 char0=50560 good-prime match=True
+    eq5.2  n^4 D^3 = 37598.1 <= sum J3|T| = 37598.1   OK=True
+    pigeonhole: L=2 levels above cut, tail<=half OK=True; popular j*=0  D1=0.50000  |G1|=2688  |X|=352
+      D1 >= D^3/4 (0.143425)            OK=True
+      contrib >= n^4 D^3/(2L)               OK=True
+      |G1| >= n^3 D^3/(4 L D1) = 587.5   OK=True
+      every x in X: |T(x)| > n D1           OK=True
+    leg1 CS: |G1|^2 = 7225344 <= |X| T3 = 17797120   OK=True
+    leg2:   |X|(nD1)^3 = 180224.0 <= sum|T|^3 = 347216.3 <= sqrt(p T3 |X|) = 1080645.0   OK=True
+    MASTER  n^12 D^6 D1^4 = 5.790e+12 <= 16 L^2 p T3^2 = 1.074e+16  OK=True  (slack 1.9e+03)
+    COLLAPSED n^12 D^18 = 1.004e+13 <= 4096 L^2 p T3^2 = 2.748e+18  OK=True  (slack 2.7e+05)
+    end bound: M=13.29 vs clean 15^(1/9) n^(2/3) p^(1/18) = 15.89 (x const 2.32 tracked)   M<=clean*const OK=True
+    CASE ALL-THEOREM-STEPS OK: True
+  n=32 p=1048609 (beta=4.000)  worst a=1361  M=22.983  Delta=0.71823
+    T3=446720 char0=446720 good-prime match=True
+    eq5.2  n^4 D^3 = 388499.8 <= sum J3|T| = 388632.5   OK=True
+    pigeonhole: L=3 levels above cut, tail<=half OK=True; popular j*=1  D1=0.25000  |G1|=20096  |X|=3552
+      D1 >= D^3/4 (0.092626)            OK=True
+      contrib >= n^4 D^3/(2L)               OK=True
+      |G1| >= n^3 D^3/(4 L D1) = 4046.9   OK=True
+      every x in X: |T(x)| > n D1           OK=True
+    leg1 CS: |G1|^2 = 403849216 <= |X| T3 = 1586749440   OK=True
+    leg2:   |X|(nD1)^3 = 1818624.0 <= sum|T|^3 = 6167210.6 <= sqrt(p T3 |X|) = 40790682.1   OK=True
+    MASTER  n^12 D^6 D1^4 = 6.182e+14 <= 16 L^2 p T3^2 = 3.013e+19  OK=True  (slack 4.9e+04)
+    COLLAPSED n^12 D^18 = 2.982e+15 <= 4096 L^2 p T3^2 = 7.714e+21  OK=True  (slack 2.6e+06)
+    end bound: M=22.98 vs clean 15^(1/9) n^(2/3) p^(1/18) = 29.42 (x const 2.42 tracked)   M<=clean*const OK=True
+    CASE ALL-THEOREM-STEPS OK: True
+
+------------------------------------------------------------------------------
+EXPONENT LAWS (exact rationals)
+------------------------------------------------------------------------------
+  beta=    3: bilinear saving=    1/6 theta=    5/6  trilinear saving=   1/18  winner=bilinear
+  beta=    4: bilinear saving=    1/9 theta=    8/9  trilinear saving=   1/24  winner=bilinear
+  beta=  9/2: bilinear saving=   1/12 theta=  11/12  trilinear saving=  5/144  winner=bilinear
+  beta=    5: bilinear saving=   1/18 theta=  17/18  trilinear saving=   1/36  winner=bilinear
+  beta= 11/2: bilinear saving=   1/36 theta=  35/36  trilinear saving=   1/48  winner=bilinear
+  beta= 17/3: bilinear saving=   1/54 theta=  53/54  trilinear saving=   1/54  winner=tie
+  beta=    6: bilinear saving=      0 theta=      1  trilinear saving=   1/72  winner=trilinear
+  beta= 13/2: bilinear saving=  -1/36 theta=  37/36  trilinear saving=  1/144  winner=trilinear
+  beta=    7: bilinear saving=  -1/18 theta=  19/18  trilinear saving=      0  winner=trilinear
+  CHECK saving(4) = 1/9: True
+  CHECK theta(4) = 8/9: True
+  CHECK dies at beta=6: True
+  CHECK dominates trilinear 23/24 at beta=4: True
+  CHECK trilinear theta(4) = 23/24 (landed): True
+  CHECK crossover exactly at beta = 17/3: True
+  CHECK 2/3 + beta/18 at beta=4 = 8/9: True
+
+------------------------------------------------------------------------------
+VERDICT
+------------------------------------------------------------------------------
+  All THEOREM-steps of the chain hold exactly on data: True
+  Good-prime T3 = char-0 value at all tested (n,p):    True
+  Exponent laws ((6-beta)/18, 8/9 at beta=4, die at 6,
+    dominate 23/24 for beta<17/3):                     True
+  CHAIN STATUS: CONFIRMED
+  Honesty: good-prime-conditional (T3 <= 15 n^3 fails on D3(n), which contains
+  prize-regime primes at n=32 -- _AvJ_UnconditionalBeat.lean); the 8/9 exponent is
+  the HIGH side of the BGK wall (prize needs 1/2); NOT prize closure; and by
+  deltaStar_determination_all_or_nothing a fixed power law cannot move delta*.

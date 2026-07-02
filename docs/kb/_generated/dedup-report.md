@@ -4,13 +4,13 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 4938 files, 53087 declarations
+- `ArkLib` — 4945 files, 53210 declarations
 
-## Same short-name across multiple files (2175 groups)
+## Same short-name across multiple files (2176 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
-### `wick` (42 declarations, 42 files)
+### `wick` (43 declarations, 43 files)
 
 - `def ArkLib.ProximityGap.CharPWickConditionalPin.wick` [ArkLib\Data\CodingTheory\ProximityGap\CharPWickConditionalPin.lean:97](../../../ArkLib\Data\CodingTheory\ProximityGap\CharPWickConditionalPin.lean#L97) — The char-`0` Wick / Gaussian sup-moment normalizer `Wick_r = (2r−1)‼ · n^r`.
 - `def AtkR6.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AttackR6_RelationVarietyBezoutNoGo.lean:29](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AttackR6_RelationVarietyBezoutNoGo.lean#L29) — Wick / char-0 energy bound (2r-1)!! * n^r.
@@ -50,6 +50,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.Frontier.CharZeroEnergy.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:66](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L66) — The "Wick" leading term `(2r−1)‼·n^r` (`(2r-1)‼ = doubleFactorial (2r-1)`).
 - `def ArkLib.ProximityGap.Frontier.NovelTransferOperator2.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean:110](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean#L110) — The **Wick value** `Wick(r,n) = (2r−1)‼ · n^r`: the char-`0` energy ceiling (number of perfect pairi
 - `def ArkLib.ProximityGap.P7VanishingMarginBarrier.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_P7VanishingMarginBarrier.lean:92](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_P7VanishingMarginBarrier.lean#L92) — The Wick budget `Wick_r(n) = (2r−1)‼ · n^r`.
+- `def ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean:114](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean#L114) — `(2r−1)‼`: the Wick/Gaussian moment coefficients — `wick 1 = 1`, `wick 2 = 3`, `wick 3 = 15`, `wick
 - `def ProximityGap.Frontier.ShawDepletion.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ShawDepletionTheorem.lean:127](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ShawDepletionTheorem.lean#L127) — The real-Gaussian **"Wick" ceiling** `Wick_r(n) := (2r−1)‼·n^r` — the `2r`-th moment of a real Gauss
 - `def ProximityGap.Frontier.ShawVanishingCoefficient.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ShawVanishingCoefficient.lean:297](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ShawVanishingCoefficient.lean#L297) — The "Wick" leading term `(2r-1)‼·n^r`.
 - `def ProximityGap.T1Cavity.wick` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_T1CavityClosureBreak.lean:82](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_T1CavityClosureBreak.lean#L82) — Leading **Wick** (Gaussian / real double-factorial) coefficient of the `2r`-th moment: in the *addit
@@ -575,6 +576,14 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.Frontier.HermiteRecurrence.wickMoment` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_FormDGaussOrthoPolyToolkit.lean:25](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_FormDGaussOrthoPolyToolkit.lean#L25) — The **Wick / Gaussian moment sequence** for `N(0,n)`: `m(2k) = (2k-1)‼ · n^k`, `m(2k+1) = 0`.  The p
 - `def ProximityGap.Frontier.FormDTurnover.wickMoment` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_FormDHankelHermiteTurnover.lean:97](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_FormDHankelHermiteTurnover.lean#L97) — The literal `2r`-th Wick moment `m_{2r} = (2r−1)‼·n^r` (odd moments are `0`).
 - `def ArkLib.ProximityGap.Frontier.WF8B9.wickMoment` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_wf8B9_GaussianConvexOrderExtremal.lean:88](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_wf8B9_GaussianConvexOrderExtremal.lean#L88) — **Wick-normalised even moments.** `wickMoment M n r = M r / ((2r-1)‼ · n^r)`; the Gaussian has `wick
+
+### `wick_two` (5 declarations, 5 files)
+
+- `theorem ProximityGap.Frontier.DCSubtractedSOSHankel.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean:83](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean#L83) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:58](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L58) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:68](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L68) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.NovelTransferOperator2.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean:230](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean#L230) — The operator generates the first nontrivial rung: `Wick(2,n) = 3·n²`.
+- `theorem ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean:119](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean#L119) — (no docstring)
 
 ### `coeffPoly` (5 declarations, 5 files)
 
@@ -1793,12 +1802,19 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Mu6ConditionalPin.u64` [ArkLib\Data\CodingTheory\ProximityGap\Mu6ConditionalPin.lean:888](../../../ArkLib\Data\CodingTheory\ProximityGap\Mu6ConditionalPin.lean#L888) — (no docstring)
 - `theorem ArkLib.ProximityGap.Mu6DeepRung.u64` [ArkLib\Data\CodingTheory\ProximityGap\Mu6DeepRung.lean:830](../../../ArkLib\Data\CodingTheory\ProximityGap\Mu6DeepRung.lean#L830) — (no docstring)
 
-### `wick_two` (4 declarations, 4 files)
+### `wick_one` (4 declarations, 4 files)
 
-- `theorem ProximityGap.Frontier.DCSubtractedSOSHankel.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean:83](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean#L83) — (no docstring)
-- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:58](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L58) — (no docstring)
-- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:68](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L68) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.NovelTransferOperator2.wick_two` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean:230](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean#L230) — The operator generates the first nontrivial rung: `Wick(2,n) = 3·n²`.
+- `theorem ArkLib.ProximityGap.CharPWickConditionalPin.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\CharPWickConditionalPin.lean:100](../../../ArkLib\Data\CodingTheory\ProximityGap\CharPWickConditionalPin.lean#L100) — `Wick_1 = n` (since `(2·1−1)‼ = 1‼ = 1`).
+- `theorem ProximityGap.Frontier.DCSubtractedSOSHankel.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean:82](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean#L82) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.NovelTransferOperator2.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean:226](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean#L226) — The base of the recurrence is real: `Wick(1,n) = n`.
+- `theorem ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean:118](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean#L118) — (no docstring)
+
+### `wick_three` (4 declarations, 4 files)
+
+- `theorem ProximityGap.Frontier.DCSubtractedSOSHankel.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean:85](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean#L85) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:59](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L59) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:70](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L70) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean:120](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean#L120) — (no docstring)
 
 ### `wrapExcess` (4 declarations, 4 files)
 
@@ -2681,6 +2697,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.Ownership.injTuples` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\PinnedScalarRatioImage.lean:76](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\PinnedScalarRatioImage.lean#L76) — The (finite) set of injective `(k+1)`-tuples in `Fin n`, the index set of the ratio map.
 - `def ArkLib.ProximityGap.BGKFloorSharp.injTuples` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_BgkSuperDiagonalSqrtNLowerBound.lean:77](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_BgkSuperDiagonalSqrtNLowerBound.lean#L77) — The finset of *injective* `r`-tuples drawn from `G`.
 - `def ArkLib.ProximityGap.LBResonanceFloor.injTuples` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_LowerBoundPermMatchingFloor.lean:111](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_LowerBoundPermMatchingFloor.lean#L111) — The set of tuples `v : Fin r → F` with all entries in `G` *and pairwise distinct* (an injective tupl
+
+### `isPrizeClosure` (3 declarations, 3 files)
+
+- `def ProximityGap.Frontier.ARX1.isPrizeClosure` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ArxSteinWraparoundNoGo.lean:219](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ArxSteinWraparoundNoGo.lean#L219) — Honest scope marker: this file does NOT close the prize. The Stein/Poisson route is fully assembled
+- `def ArkLib.ProximityGap.UniformNoWraparoundTheory.isPrizeClosure` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvF3_UniformNoWraparoundTheory.lean:344](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvF3_UniformNoWraparoundTheory.lean#L344) — The theory is NOT a prize closure: `isPrizeClosure = false`. The for-all-`q` prize needs the obligat
+- `def ArkLib.ProximityGap.Frontier.BilinearDFTBeat.isPrizeClosure` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_BilinearDFTBeat.lean:138](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_BilinearDFTBeat.lean#L138) — **NOT prize closure.** Good-prime-conditional, high side of the wall, and a fixed power law cannot m
 
 ### `isgn` (3 declarations, 3 files)
 
@@ -3876,17 +3898,17 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ProximityGap.Frontier.E8ClosedForm.wick_eight` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL2_E8ClosedForm.lean:90](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL2_E8ClosedForm.lean#L90) — (no docstring)
 - `theorem ArkLib.ProximityGap.P7VanishingMarginBarrier.wick_eight` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_P7VanishingMarginBarrier.lean:104](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_P7VanishingMarginBarrier.lean#L104) — (no docstring)
 
-### `wick_one` (3 declarations, 3 files)
+### `wick_five` (3 declarations, 3 files)
 
-- `theorem ArkLib.ProximityGap.CharPWickConditionalPin.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\CharPWickConditionalPin.lean:100](../../../ArkLib\Data\CodingTheory\ProximityGap\CharPWickConditionalPin.lean#L100) — `Wick_1 = n` (since `(2·1−1)‼ = 1‼ = 1`).
-- `theorem ProximityGap.Frontier.DCSubtractedSOSHankel.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean:82](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean#L82) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.NovelTransferOperator2.wick_one` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean:226](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_NovelTransferOperator2.lean#L226) — The base of the recurrence is real: `Wick(1,n) = n`.
+- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_five` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:61](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L61) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_five` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:74](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L74) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick_five` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean:122](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean#L122) — (no docstring)
 
-### `wick_three` (3 declarations, 3 files)
+### `wick_four` (3 declarations, 3 files)
 
-- `theorem ProximityGap.Frontier.DCSubtractedSOSHankel.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean:85](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvL11_DCSubtractedSOSHankel.lean#L85) — (no docstring)
-- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:59](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L59) — (no docstring)
-- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_three` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:70](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L70) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_four` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:60](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L60) — (no docstring)
+- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_four` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:72](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L72) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick_four` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean:121](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_R2B_CMKDepthIrreducibility.lean#L121) — (no docstring)
 
 ### `window_step` (3 declarations, 3 files)
 
@@ -7004,11 +7026,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem R12J.General.isPrimitiveRoot_zeta` [ArkLib\Data\CodingTheory\ProximityGap\JointT2Unconditional.lean:171](../../../ArkLib\Data\CodingTheory\ProximityGap\JointT2Unconditional.lean#L171) — `zeta m` is a primitive `2^m`-th root of unity.
 - `theorem Concrete.isPrimitiveRoot_zeta` [ArkLib\Data\CodingTheory\ProximityGap\LamLeungUnconditionalGeneral.lean:212](../../../ArkLib\Data\CodingTheory\ProximityGap\LamLeungUnconditionalGeneral.lean#L212) — `zeta m` is a primitive `2^m`-th root of unity (`m ≥ 1`).
 
-### `isPrizeClosure` (2 declarations, 2 files)
-
-- `def ProximityGap.Frontier.ARX1.isPrizeClosure` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ArxSteinWraparoundNoGo.lean:219](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_ArxSteinWraparoundNoGo.lean#L219) — Honest scope marker: this file does NOT close the prize. The Stein/Poisson route is fully assembled
-- `def ArkLib.ProximityGap.UniformNoWraparoundTheory.isPrizeClosure` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvF3_UniformNoWraparoundTheory.lean:344](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvF3_UniformNoWraparoundTheory.lean#L344) — The theory is NOT a prize closure: `isPrizeClosure = false`. The for-all-`q` prize needs the obligat
-
 ### `isStatHVZK` (2 declarations, 2 files)
 
 - `def OracleReduction.isStatHVZK` [ArkLib\OracleReduction\Security\OracleZeroKnowledge.lean:71](../../../ArkLib\OracleReduction\Security\OracleZeroKnowledge.lean#L71) — Existential statistical HVZK for an oracle reduction.
@@ -7233,6 +7250,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ProximityGap.lineAgreeSet` [ArkLib\Data\CodingTheory\Connections\GKL24FirstMoment.lean:106](../../../ArkLib\Data\CodingTheory\Connections\GKL24FirstMoment.lean#L106) — The agreement domain of the line `u₀ + γ • u₁` with a codeword `w`. GCXK/GKL maximal-domain argument
 - `def ArkLib.ProximityGap.KKH26.lineAgreeSet` [ArkLib\Data\CodingTheory\ProximityGap\KKH26CensusLaw.lean:54](../../../ArkLib\Data\CodingTheory\ProximityGap\KKH26CensusLaw.lean#L54) — The agreement set of the line word `x ↦ x^r + λ·x^{r−1}` with the polynomial `q`, inside the evaluat
+
+### `lineBadScalars` (2 declarations, 2 files)
+
+- `def ProximityGap.Frontier.SpreadExcess.lineBadScalars` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_SpreadExcessLaw.lean:163](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_SpreadExcessLaw.lean#L163) — The bad scalars of the stack `(u₀, u₁)` at agreement level `a`: scalars `γ` for which some codeword
+- `def ProximityGap.Ownership.lineBadScalars` [ArkLib\Data\CodingTheory\ProximityGap\LineListReduction.lean:54](../../../ArkLib\Data\CodingTheory\ProximityGap\LineListReduction.lean#L54) — The scalars whose line word `u₀ + γ • u₁` is agreed with by some codeword on at least `a` coordinate
 
 ### `linePoly` (2 declarations, 2 files)
 
@@ -8988,16 +9010,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProximityGap.UniformNoWraparoundTheory.wickEnvelope` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvF3_UniformNoWraparoundTheory.lean:305](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvF3_UniformNoWraparoundTheory.lean#L305) — The double-factorial Wick envelope `(2r-1)‼·n^r`, encoded as the Nat product `∏_{i<r}(2i+1)·n^r` tim
 - `def ArkLib.ProximityGap.WickStepRatio.wickEnvelope` [ArkLib\Data\CodingTheory\ProximityGap\WickStepRatio.lean:31](../../../ArkLib\Data\CodingTheory\ProximityGap\WickStepRatio.lean#L31) — The Wick/Gaussian even-moment envelope `(2r-1)!! n^r`, as a natural number.
-
-### `wick_five` (2 declarations, 2 files)
-
-- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_five` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:61](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L61) — (no docstring)
-- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_five` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:74](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L74) — (no docstring)
-
-### `wick_four` (2 declarations, 2 files)
-
-- `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_four` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean:60](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_AvZ_CharZeroWickBoundLadder.lean#L60) — (no docstring)
-- `theorem ProximityGap.Frontier.CharZeroEnergy.wick_four` [ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean:72](../../../ArkLib\Data\CodingTheory\ProximityGap\Frontier\_CharZeroEnergyClosedForm.lean#L72) — (no docstring)
 
 ### `wick_ratio_eq` (2 declarations, 2 files)
 

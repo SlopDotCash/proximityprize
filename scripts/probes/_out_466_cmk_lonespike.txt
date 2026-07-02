@@ -1,0 +1,193 @@
+PROBE 466 CMK LONE-SPIKE  (LANE R1)
+conventions: log = ln;  M = t*sqrt(n ln q);  q = n^4;  CMK window r <= L = ceil(ln q)
+Wick_r = (2r-1)!! n^r;  Parseval second moment = n(q-n)/(q-1) held EXACTLY.
+
+== VALIDATION q=2^24: exact full-enumeration bulk vs certified bracket ==
+(containment up to rel tol 1e-11 for float top-sums)
+   r     beta_exact     bracket_lo     bracket_hi  inside  rel_width
+   1 9.99999920e-01 9.99999615e-01 1.00000022e+00    True   6.09e-07
+   5 9.99531452e-01 9.99531233e-01 9.99531670e-01    True   4.38e-07
+  10 9.46519546e-01 9.46519545e-01 9.46519547e-01    True   2.32e-09
+  17 3.74613661e-01 3.74613661e-01 3.74613661e-01    True   5.48e-14
+  25 1.37246680e-02 1.37246680e-02 1.37246680e-02    True   0.00e+00
+  34 2.23878482e-05 2.23878482e-05 2.23878482e-05    True   0.00e+00
+validation PASS
+
+===== n = 2^10, q = n^4 = 2^40, ln q = 27.726, L = 28 =====
+bulk edge: x_max = Phi^-1(1-1/(2(q-2))) = 7.1436 = 1.3567*sqrt(ln q)  (bulk itself reaches t ~ sqrt(2))
+bulk Wick-ratio brackets beta_r (tail-truncation undershoot; midpoint-rule bracket):
+   r=   1: beta in [1.000000e+00, 1.000000e+00]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  14: beta in [9.970203e-01, 9.970208e-01]   K-cost (1/beta)^(1/r) = 1.0002
+   r=  28: beta in [3.916603e-01, 3.916603e-01]   K-cost (1/beta)^(1/r) = 1.0340
+   r=  56: beta in [2.374057e-07, 2.374057e-07]   K-cost (1/beta)^(1/r) = 1.3131
+bulk-only two-sided K floor: window L: 1.0340   window 2L: 1.3131
+(quantified: 'quantile bulk = Wick to depth 2j within K^r' holds two-sidedly with K -> 1 at the CMK window)
+
+K_req(t) two-sided, CMK window r<=L (binding r in parens); t^2/2 for reference:
+   t=1.0000: K_req=1.0340 (r*=28)   one-sided=1.0000 (r*=0)   t^2/2=0.5000
+   t=1.2000: K_req=1.0340 (r*=28)   one-sided=1.0000 (r*=5)   t^2/2=0.7200
+   t=1.4142: K_req=1.0091 (r*=24)   one-sided=1.0091 (r*=24)   t^2/2=1.0000
+   t=1.6000: K_req=1.2643 (r*=28)   one-sided=1.2643 (r*=28)   t^2/2=1.2800
+   t=1.8000: K_req=1.6001 (r*=28)   one-sided=1.6001 (r*=28)   t^2/2=1.6200
+   t=2.0000: K_req=1.9754 (r*=28)   one-sided=1.9754 (r*=28)   t^2/2=2.0000
+   t=2.3316: K_req=2.6849 (r*=28)   one-sided=2.6849 (r*=28)   t^2/2=2.7183
+   t=2.6000: K_req=3.3384 (r*=28)   one-sided=3.3384 (r*=28)   t^2/2=3.3800
+   t=3.0000: K_req=4.4447 (r*=28)   one-sided=4.4447 (r*=28)   t^2/2=4.5000
+
+K -> max spike height vs raw moment bound (SAME window r<=L, SAME K):
+     K  t_spike(2-sided)  t_spike(1-sided)  t_spike(win 2L)    t_raw   ratio  t_sp^2/(2K)  sqrt(2K)  sqrt(2eK)
+ 1.050            1.4551            1.4551           infeas   1.4581  0.9979       1.0082    1.4491     2.3892
+ 1.100            1.4917            1.4917           infeas   1.4924  0.9995       1.0115    1.4832     2.4454
+ 1.200            1.5587            1.5587           infeas   1.5588  1.0000       1.0124    1.5492     2.5542
+ 1.500            1.7428            1.7428           1.7428   1.7428  1.0000       1.0124    1.7321     2.8557
+ 2.000            2.0124            2.0124           2.0124   2.0124  1.0000       1.0124    2.0000     3.2974
+ 2.718            2.3461            2.3461           2.3461   2.3461  1.0000       1.0124    2.3316     3.8442
+ 4.000            2.8460            2.8460           2.8460   2.8460  1.0000       1.0124    2.8284     4.6633
+
+Hermite-kernel Christoffel threshold t*_H(q) = 1.3851  (vs raw-bound sqrt(2)=1.4142; essay claimed ~1)
+
+===== n = 2^14, q = n^4 = 2^56, ln q = 38.816, L = 39 =====
+bulk edge: x_max = Phi^-1(1-1/(2(q-2))) = 8.5361 = 1.3701*sqrt(ln q)  (bulk itself reaches t ~ sqrt(2))
+bulk Wick-ratio brackets beta_r (tail-truncation undershoot; midpoint-rule bracket):
+   r=   1: beta in [1.000000e+00, 1.000000e+00]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  19: beta in [9.996629e-01, 9.996631e-01]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  39: beta in [4.039037e-01, 4.039038e-01]   K-cost (1/beta)^(1/r) = 1.0235
+   r=  78: beta in [2.823688e-09, 2.823688e-09]   K-cost (1/beta)^(1/r) = 1.2871
+bulk-only two-sided K floor: window L: 1.0235   window 2L: 1.2871
+(quantified: 'quantile bulk = Wick to depth 2j within K^r' holds two-sidedly with K -> 1 at the CMK window)
+
+K_req(t) two-sided, CMK window r<=L (binding r in parens); t^2/2 for reference:
+   t=1.0000: K_req=1.0235 (r*=39)   one-sided=1.0000 (r*=5)   t^2/2=0.5000
+   t=1.2000: K_req=1.0235 (r*=39)   one-sided=1.0000 (r*=7)   t^2/2=0.7200
+   t=1.4142: K_req=1.0064 (r*=34)   one-sided=1.0064 (r*=34)   t^2/2=1.0000
+   t=1.6000: K_req=1.2687 (r*=39)   one-sided=1.2687 (r*=39)   t^2/2=1.2800
+   t=1.8000: K_req=1.6057 (r*=39)   one-sided=1.6057 (r*=39)   t^2/2=1.6200
+   t=2.0000: K_req=1.9823 (r*=39)   one-sided=1.9823 (r*=39)   t^2/2=2.0000
+   t=2.3316: K_req=2.6943 (r*=39)   one-sided=2.6943 (r*=39)   t^2/2=2.7183
+   t=2.6000: K_req=3.3502 (r*=39)   one-sided=3.3502 (r*=39)   t^2/2=3.3800
+   t=3.0000: K_req=4.4603 (r*=39)   one-sided=4.4603 (r*=39)   t^2/2=4.5000
+
+K -> max spike height vs raw moment bound (SAME window r<=L, SAME K):
+     K  t_spike(2-sided)  t_spike(1-sided)  t_spike(win 2L)    t_raw   ratio  t_sp^2/(2K)  sqrt(2K)  sqrt(2eK)
+ 1.050            1.4544            1.4544           infeas   1.4556  0.9992       1.0073    1.4491     2.3892
+ 1.100            1.4896            1.4896           infeas   1.4898  0.9999       1.0087    1.4832     2.4454
+ 1.200            1.5561            1.5561           infeas   1.5561  1.0000       1.0089    1.5492     2.5542
+ 1.500            1.7397            1.7397           1.7397   1.7397  1.0000       1.0089    1.7321     2.8557
+ 2.000            2.0089            2.0089           2.0089   2.0089  1.0000       1.0089    2.0000     3.2974
+ 2.718            2.3420            2.3420           2.3420   2.3420  1.0000       1.0089    2.3316     3.8442
+ 4.000            2.8410            2.8410           2.8410   2.8410  1.0000       1.0089    2.8284     4.6633
+
+Hermite-kernel Christoffel threshold t*_H(q) = 1.3906  (vs raw-bound sqrt(2)=1.4142; essay claimed ~1)
+
+===== n = 2^20, q = n^4 = 2^80, ln q = 55.452, L = 56 =====
+bulk edge: x_max = Phi^-1(1-1/(2(q-2))) = 10.2846 = 1.3811*sqrt(ln q)  (bulk itself reaches t ~ sqrt(2))
+bulk Wick-ratio brackets beta_r (tail-truncation undershoot; midpoint-rule bracket):
+   r=   1: beta in [1.000000e+00, 1.000000e+00]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  28: beta in [9.999599e-01, 9.999599e-01]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  56: beta in [3.912557e-01, 3.912557e-01]   K-cost (1/beta)^(1/r) = 1.0169
+   r= 112: beta in [1.924379e-12, 1.924379e-12]   K-cost (1/beta)^(1/r) = 1.2723
+bulk-only two-sided K floor: window L: 1.0169   window 2L: 1.2723
+(quantified: 'quantile bulk = Wick to depth 2j within K^r' holds two-sidedly with K -> 1 at the CMK window)
+
+K_req(t) two-sided, CMK window r<=L (binding r in parens); t^2/2 for reference:
+   t=1.0000: K_req=1.0169 (r*=56)   one-sided=1.0000 (r*=0)   t^2/2=0.5000
+   t=1.2000: K_req=1.0169 (r*=56)   one-sided=1.0000 (r*=0)   t^2/2=0.7200
+   t=1.4142: K_req=1.0044 (r*=50)   one-sided=1.0044 (r*=50)   t^2/2=1.0000
+   t=1.6000: K_req=1.2721 (r*=56)   one-sided=1.2721 (r*=56)   t^2/2=1.2800
+   t=1.8000: K_req=1.6099 (r*=56)   one-sided=1.6099 (r*=56)   t^2/2=1.6200
+   t=2.0000: K_req=1.9876 (r*=56)   one-sided=1.9876 (r*=56)   t^2/2=2.0000
+   t=2.3316: K_req=2.7014 (r*=56)   one-sided=2.7014 (r*=56)   t^2/2=2.7183
+   t=2.6000: K_req=3.3590 (r*=56)   one-sided=3.3590 (r*=56)   t^2/2=3.3800
+   t=3.0000: K_req=4.4721 (r*=56)   one-sided=4.4721 (r*=56)   t^2/2=4.5000
+
+K -> max spike height vs raw moment bound (SAME window r<=L, SAME K):
+     K  t_spike(2-sided)  t_spike(1-sided)  t_spike(win 2L)    t_raw   ratio  t_sp^2/(2K)  sqrt(2K)  sqrt(2eK)
+ 1.050            1.4533            1.4533           infeas   1.4537  0.9998       1.0058    1.4491     2.3892
+ 1.100            1.4878            1.4878           infeas   1.4879  1.0000       1.0062    1.4832     2.4454
+ 1.200            1.5540            1.5540           infeas   1.5540  1.0000       1.0062    1.5492     2.5542
+ 1.500            1.7374            1.7374           1.7374   1.7374  1.0000       1.0062    1.7321     2.8557
+ 2.000            2.0062            2.0062           2.0062   2.0062  1.0000       1.0062    2.0000     3.2974
+ 2.718            2.3389            2.3389           2.3389   2.3389  1.0000       1.0062    2.3316     3.8442
+ 4.000            2.8372            2.8372           2.8372   2.8372  1.0000       1.0062    2.8284     4.6633
+
+Hermite-kernel Christoffel threshold t*_H(q) = 1.3952  (vs raw-bound sqrt(2)=1.4142; essay claimed ~1)
+
+===== n = 2^30, q = n^4 = 2^120, ln q = 83.178, L = 84 =====
+bulk edge: x_max = Phi^-1(1-1/(2(q-2))) = 12.6811 = 1.3904*sqrt(ln q)  (bulk itself reaches t ~ sqrt(2))
+bulk Wick-ratio brackets beta_r (tail-truncation undershoot; midpoint-rule bracket):
+   r=   1: beta in [1.000000e+00, 1.000000e+00]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  42: beta in [9.999994e-01, 9.999994e-01]   K-cost (1/beta)^(1/r) = 1.0000
+   r=  84: beta in [3.908671e-01, 3.908671e-01]   K-cost (1/beta)^(1/r) = 1.0112
+   r= 168: beta in [2.004385e-17, 2.004385e-17]   K-cost (1/beta)^(1/r) = 1.2572
+bulk-only two-sided K floor: window L: 1.0112   window 2L: 1.2572
+(quantified: 'quantile bulk = Wick to depth 2j within K^r' holds two-sidedly with K -> 1 at the CMK window)
+
+K_req(t) two-sided, CMK window r<=L (binding r in parens); t^2/2 for reference:
+   t=1.0000: K_req=1.0112 (r*=84)   one-sided=1.0000 (r*=0)   t^2/2=0.5000
+   t=1.2000: K_req=1.0112 (r*=84)   one-sided=1.0000 (r*=0)   t^2/2=0.7200
+   t=1.4142: K_req=1.0029 (r*=77)   one-sided=1.0029 (r*=77)   t^2/2=1.0000
+   t=1.6000: K_req=1.2747 (r*=84)   one-sided=1.2747 (r*=84)   t^2/2=1.2800
+   t=1.8000: K_req=1.6133 (r*=84)   one-sided=1.6133 (r*=84)   t^2/2=1.6200
+   t=2.0000: K_req=1.9917 (r*=84)   one-sided=1.9917 (r*=84)   t^2/2=2.0000
+   t=2.3316: K_req=2.7070 (r*=84)   one-sided=2.7070 (r*=84)   t^2/2=2.7183
+   t=2.6000: K_req=3.3659 (r*=84)   one-sided=3.3659 (r*=84)   t^2/2=3.3800
+   t=3.0000: K_req=4.4813 (r*=84)   one-sided=4.4813 (r*=84)   t^2/2=4.5000
+
+K -> max spike height vs raw moment bound (SAME window r<=L, SAME K):
+     K  t_spike(2-sided)  t_spike(1-sided)  t_spike(win 2L)    t_raw   ratio  t_sp^2/(2K)  sqrt(2K)  sqrt(2eK)
+ 1.050            1.4521            1.4521           infeas   1.4522  1.0000       1.0041    1.4491     2.3892
+ 1.100            1.4863            1.4863           infeas   1.4863  1.0000       1.0042    1.4832     2.4454
+ 1.200            1.5524            1.5524           infeas   1.5524  1.0000       1.0042    1.5492     2.5542
+ 1.500            1.7357            1.7357           1.7357   1.7357  1.0000       1.0042    1.7321     2.8557
+ 2.000            2.0042            2.0042           2.0042   2.0042  1.0000       1.0042    2.0000     3.2974
+ 2.718            2.3365            2.3365           2.3365   2.3365  1.0000       1.0042    2.3316     3.8442
+ 4.000            2.8343            2.8343           2.8343   2.8343  1.0000       1.0042    2.8284     4.6633
+
+Hermite-kernel Christoffel threshold t*_H(q) = 1.3999  (vs raw-bound sqrt(2)=1.4142; essay claimed ~1)
+
+== CHRISTOFFEL SELF-CONSISTENCY DEMO: q-1=10001 atoms, j=ceil(ln q)=10 ==
+  t=1.50  M=4.552  (bulk edge atom at 3.891, gap M-edge=+0.662, near neighbors in [M-1,M]: 2)
+    true kernel  K_j(M,M) = 9968.09   K/(q-1) = 0.9967   (Christoffel bound mass<=1/K: SATISFIED)
+    Hermite proxy K^H_j(M,M) = 57986   K^H/(q-1) = 5.798   -> proxy WOULD FORBID the atom
+    demo moment ratios r=1..10: 1.002 1.013 1.051 1.146 1.327 1.603 1.941 2.266 2.490 2.544   (two-sided K_req = 1.1076)
+  t=1.80  M=5.463  (bulk edge atom at 3.891, gap M-edge=+1.572, near neighbors in [M-1,M]: 0)
+    true kernel  K_j(M,M) = 10000.8   K/(q-1) = 1.0000   (Christoffel bound mass<=1/K: SATISFIED)
+    Hermite proxy K^H_j(M,M) = 5.04749e+06   K^H/(q-1) = 504.7   -> proxy WOULD FORBID the atom
+    demo moment ratios r=1..10: 1.003 1.028 1.168 1.725 3.427 7.635 16.321 31.614 54.909 85.858   (two-sided K_req = 1.5609)
+
+============================================================================
+VERDICT SUMMARY
+============================================================================
+
+1. LONE SPIKE WORKS.  For every slack K (down to the bulk floor K_bulk(q)->1),
+   the countermodel achieves t_spike(K) = t_raw(K)*(1-o(1)) at the CMK-stated
+   depth, two-sidedly, with Parseval EXACT and all masses exactly 1/(q-1).
+   The abstract moment problem's answer IS the raw moment bound:
+   C(K) = 2K(1+o(1)).  Positivity + equal masses + full moment sequence add
+   NOTHING.  CMK-as-improvement is REFUTED; CMK-as-stated is trivially TRUE
+   with C(K)=2K, i.e. it collapses to form (A) verbatim.
+2. Extending the window to 2L (or any depth) does not help: the binding
+   constraint sits at r ~ ln q, interior; deeper Wick data is slack.
+3. SIGN settled: no factor improvement exists.  The essay's own
+   Christoffel-with-Hermite mechanism, computed exactly (kernel threshold
+   t*_H(q) = 1.385..1.400 rising to sqrt(2) from below; in the bulk region
+   K^H_j(x,x) ~ e^{x^2/2} sqrt(2j-x^2)), REPRODUCES the moment-bound constant
+   sqrt(2) -- it never improves it.  The essay's claimed "~1" rests on the
+   substitution He_j(M) ~ M^j, invalid at M ~ sqrt(2j) (needs M >> j).
+4. Edge crowding never fires: the lone spike has O(1) bulk atoms within unit
+   distance (0 at t=1.8) versus the Omega(K_j/j) ~ q/log q neighbors the
+   crowding mechanism would demand, yet the TRUE Christoffel bound is
+   satisfied automatically (the spike deforms its own orthogonal polynomials
+   -- one atom absorbs one quadrature node); only the illegitimate Hermite
+   PROXY kernel would forbid it (K^H/(q-1) = 5.8 at t=1.5, 505 at t=1.8,
+   while true K/(q-1) = 0.9967 / 1.0000).
+5. Bulk quantization error quantified: beta_r = P(r+1/2, x_max^2/2) up to a
+   certified midpoint bracket; undershoot is ~2x at r=L (K-cost 2^(1/L)->1)
+   and ~q^-c at r=2L (K-cost ~1.1-1.3): no false-refutation leak.
+CONSEQUENCE for the essay: Conjecture CMK dies as an improvement lever, and
+the CMK-compose-TPS composition (sec 3 closing) dies with it -- a K^r-slack
+Wick input can NEVER be sharpened past sqrt(2K) by abstract moment-problem
+rigidity, because the lone spike realizes the full slack.  What survives:
+form (A) itself, and the arithmetic question (prove K^r-Wick at depth ln q),
+untouched.
+

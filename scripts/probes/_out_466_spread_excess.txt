@@ -1,0 +1,59 @@
+n=8 primes: 4129 (v2=5), 4153 (v2=3)
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=4129 v2(q-1)=5 (q>=n^4: True)  C(n,k)=28
+levels a=[3, 4] (direction-blind flagged: [3]); spread pairs (gap n/2=4 excluded): [(0, 1), (0, 2), (0, 3), (0, 5), (0, 6), (0, 7), (1, 2), (1, 3), (1, 4), (1, 6), (1, 7), (2, 3), (2, 4), (2, 5), (2, 7), (3, 4), (3, 5), (3, 6), (4, 5), (4, 6), (4, 7), (5, 6), (5, 7), (6, 7)]
+56 directions (8 monomial, 48 spread2), shared pool 1599, EQUAL budget/direction: 12x2 chains + 3 restarts x <= 6 rounds x (192 mut + 64 chains)
+  ..20/56 dirs [15s]
+  ..30/56 dirs [23s]
+  ..40/56 dirs [32s]
+  ..50/56 dirs [41s]
+
+--- a=3 delta=0.6250 [DIRECTION-BLIND] q=4129 ---
+  monomial worst counts: mono_j2=56 mono_j3=56 mono_j6=56 mono_j7=56
+  spread2 top-8 worst counts: sp2_0_2_c1=56 sp2_0_2_c945=56 sp2_0_3_c1=56 sp2_0_3_c945=56 sp2_0_6_c1=56 sp2_0_6_c945=56 sp2_0_7_c1=56 sp2_0_7_c945=56
+  >>> best_mono mono_j2=56  best_spread sp2_0_2_c1=56  RATIO=1.0000  [witnesses brute-verified]
+
+--- a=4 delta=0.5000 [BOUNDARY] q=4129 ---
+  monomial worst counts: mono_j2=9 mono_j3=9 mono_j6=9 mono_j7=9
+  spread2 top-8 worst counts: sp2_2_7_c1=12 sp2_3_6_c1=11 sp2_0_2_c1=9 sp2_0_2_c945=9 sp2_0_3_c1=9 sp2_0_3_c945=9 sp2_0_6_c1=9 sp2_0_6_c945=9
+  >>> best_mono mono_j2=9  best_spread sp2_2_7_c1=12  RATIO=1.3333  [witnesses brute-verified]
+  [dissect spread sp2_2_7_c1 a=4 count=12] n_pencils=22 distinct_covs=19 MIN_COVER=3 max_single_pencil=5
+    per-pencil (covered, provable_cap, z, supp) top: [(5, 5, 3, 5), (4, 5, 3, 5), (4, 5, 3, 5), (3, 3, 2, 6), (3, 3, 2, 6), (3, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 2, 2, 5), (2, 2, 2, 5)]
+    bad gammas: [61, 1015, 1172, 1453, 1969, 2283, 2527, 2756, 3377, 3403, 3632, 3876]
+  [dissect mono mono_j2 a=4 count=9] n_pencils=28 distinct_covs=28 MIN_COVER=4 max_single_pencil=3
+    per-pencil (covered, provable_cap, z, supp) top: [(3, 3, 2, 6), (3, 3, 2, 6), (3, 3, 2, 6), (3, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6)]
+    bad gammas: [0, 894, 896, 966, 1609, 2520, 3163, 3233, 3235]
+[setting done in 47s]
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=4153 v2(q-1)=3 (q>=n^4: True)  C(n,k)=28
+levels a=[3, 4] (direction-blind flagged: [3]); spread pairs (gap n/2=4 excluded): [(0, 1), (0, 2), (0, 3), (0, 5), (0, 6), (0, 7), (1, 2), (1, 3), (1, 4), (1, 6), (1, 7), (2, 3), (2, 4), (2, 5), (2, 7), (3, 4), (3, 5), (3, 6), (4, 5), (4, 6), (4, 7), (5, 6), (5, 7), (6, 7)]
+56 directions (8 monomial, 48 spread2), shared pool 1599, EQUAL budget/direction: 12x2 chains + 3 restarts x <= 6 rounds x (192 mut + 64 chains)
+  ..20/56 dirs [12s]
+  ..30/56 dirs [25s]
+  ..40/56 dirs [37s]
+  ..50/56 dirs [46s]
+
+--- a=3 delta=0.6250 [DIRECTION-BLIND] q=4153 ---
+  monomial worst counts: mono_j2=56 mono_j3=56 mono_j6=56 mono_j7=56
+  spread2 top-8 worst counts: sp2_0_2_c1=56 sp2_0_2_c3266=56 sp2_0_3_c1=56 sp2_0_3_c3266=56 sp2_0_6_c1=56 sp2_0_6_c3266=56 sp2_0_7_c1=56 sp2_0_7_c3266=56
+  >>> best_mono mono_j2=56  best_spread sp2_0_2_c1=56  RATIO=1.0000  [witnesses brute-verified]
+
+--- a=4 delta=0.5000 [BOUNDARY] q=4153 ---
+  monomial worst counts: mono_j2=9 mono_j3=9 mono_j6=9 mono_j7=9
+  spread2 top-8 worst counts: sp2_2_7_c1=12 sp2_3_6_c1=11 sp2_0_2_c1=9 sp2_0_2_c3266=9 sp2_0_3_c1=9 sp2_0_3_c3266=9 sp2_0_6_c1=9 sp2_0_6_c3266=9
+  >>> best_mono mono_j2=9  best_spread sp2_2_7_c1=12  RATIO=1.3333  [witnesses brute-verified]
+  [dissect spread sp2_2_7_c1 a=4 count=12] n_pencils=22 distinct_covs=19 MIN_COVER=3 max_single_pencil=5
+    per-pencil (covered, provable_cap, z, supp) top: [(5, 5, 3, 5), (4, 5, 3, 5), (4, 5, 3, 5), (3, 3, 2, 6), (3, 3, 2, 6), (3, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 2, 2, 5), (2, 2, 2, 5)]
+    bad gammas: [41, 371, 692, 1013, 1261, 1754, 1970, 1985, 2201, 2694, 3914, 4054]
+  [dissect mono mono_j2 a=4 count=9] n_pencils=28 distinct_covs=28 MIN_COVER=4 max_single_pencil=3
+    per-pencil (covered, provable_cap, z, supp) top: [(3, 3, 2, 6), (3, 3, 2, 6), (3, 3, 2, 6), (3, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6), (2, 3, 2, 6)]
+    bad gammas: [0, 495, 703, 1642, 1644, 2509, 2511, 3450, 3658]
+[setting done in 52s]
+
+==============================================================================
+SETTING n=16 k=4 rho=4/16 q=65617 v2(q-1)=4 (q>=n^4: True)  C(n,k)=1820
+levels a=[6, 7] (direction-blind flagged: []); spread pairs (gap n/2=8 excluded): [(4, 14), (7, 13), (4, 8), (5, 11), (4, 7), (5, 9), (8, 10), (0, 15), (0, 4), (7, 9), (4, 6), (11, 14)]
+40 directions (16 monomial, 24 spread2), shared pool 169, EQUAL budget/direction: 8x2 chains + 2 restarts x <= 4 rounds x (96 mut + 32 chains)
+  ..20/40 dirs [263s]

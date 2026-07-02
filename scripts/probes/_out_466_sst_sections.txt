@@ -1,0 +1,98 @@
+========================================================================================
+probe_466_sst_sections.py  --  Conjecture SST (sparse-section transference), lane R2
+========================================================================================
+
+THEORY NOTE (exact, not empirical): the shift S -> S+1 multiplies the defining
+linear form sum c_i h^{s_i} by the UNIT h, so the section lattice is the same
+subgroup of Z^{2r} up to the sorting permutation of coordinates.  Sparse counts,
+lambda1, lambda1* are therefore EXACTLY constant on shift orbits.  (d) verifies.
+STRUCTURAL sparse vectors: n = 2^k => h^{n/2} = -1 => every section containing an
+antipodal pair {s, s+n/2} has the char-0 vector e_s + e_{s+n/2}.  For n a 2-power
+ALL char-0 vanishing {0,+-1} sums of n-th roots of unity decompose into antipodal
+pairs, so: bad section is CHAR-0/structural iff it contains an antipodal pair;
+bad ANTIPODAL-FREE sections are the sporadic char-p defect (the K^r question).
+
+n=16 primes: [65537, 65617, 65633]  (p = 1 mod 16, p >= 16^4 = 65536)
+REGIME FLAG: 65537 = 2^16+1 is the FERMAT prime: mu_16 = +-<4> is a geometric
+progression of 2-powers (maximally structured/correlated instance). Kept for
+contrast but statistics are read off the two generic primes 65617, 65633.
+--- n=16 p=65537 r=2 (d=4)  h=64  beta=log_n(p)=4.000 ---
+(a) section structure OK on spot checks: triangular basis det = p = 65537, rows in kernel, all h^s units => restricted map surjective => covolume = p ALWAYS.
+(b/c) sections=1820  antipodal-containing=700  antipodal-free=1120
+      sparse-count time 0.1s; distribution over ALL sections: {0: 1120, 2: 672, 8: 28}
+      distribution over ANTIPODAL-FREE sections: {0: 1120}
+      mean count ALL  = 0.861538   (prediction (3^4-1)/p = 0.001221 applies to generic sections)
+      mean count FREE = 0.000000  ratio to prediction = 0.000
+      bad sections: ALL 700/1820 = 0.38462; FREE 0/1120 = 0.000000 vs union-bound rate (3^4-1)/(2p) = 0.000610  (expected #bad among free = 0.68)
+      implied K (bad_free_rate = K^r/(2p)):  K = 0.000   [prediction K=9 i.e. 3^2]
+      char-p DEFECT (count - forced 3^k-1):  FREE total = 0;  ANTIPODAL total = 0 over 0 defective sections (DC prediction 0.83)
+(b) exact SVP on 1820 sections in 2.8s;  gaussian lambda1 = 7.743, gaussian lambda1* = 0.030246
+      lambda1 /gauss quantiles  1%=0.183 10%=0.183 50%=0.532 90%=0.532
+      lambda1*/gauss quantiles  1%=0.008 10%=0.033 50%=0.133 90%=0.532
+      fraction with lambda1* < 0.5*gauss : 0.61319
+      fraction with lambda1* < 0.75*gauss : 0.98242
+      fraction with lambda1* < 1.0*gauss : 0.98242
+      mean lambda1*: bad sections 0.004397 vs good 0.011399 (gauss 0.030246); bad(free/sporadic) n=0
+      cross-check: dual enumeration == O(p) exhaustive scan on 3 sections OK
+(d) shift orbits: 116 orbits over 1820 sections (compression factor 15.69, max possible 16); count-constancy violations 0/116; dual-min-constancy violations 0/116 (orbits fully SVP'd)
+(e) reversal S -> -S: 924 comparable pairs; sparse-count equal on 924/924; dual-min equal on 380/924 SVP'd pairs
+
+--- n=16 p=65617 r=2 (d=4)  h=23234  beta=log_n(p)=4.000 ---
+(a) section structure OK on spot checks: triangular basis det = p = 65617, rows in kernel, all h^s units => restricted map surjective => covolume = p ALWAYS.
+(b/c) sections=1820  antipodal-containing=700  antipodal-free=1120
+      sparse-count time 0.2s; distribution over ALL sections: {0: 1120, 2: 672, 8: 28}
+      distribution over ANTIPODAL-FREE sections: {0: 1120}
+      mean count ALL  = 0.861538   (prediction (3^4-1)/p = 0.001219 applies to generic sections)
+      mean count FREE = 0.000000  ratio to prediction = 0.000
+      bad sections: ALL 700/1820 = 0.38462; FREE 0/1120 = 0.000000 vs union-bound rate (3^4-1)/(2p) = 0.000610  (expected #bad among free = 0.68)
+      implied K (bad_free_rate = K^r/(2p)):  K = 0.000   [prediction K=9 i.e. 3^2]
+      char-p DEFECT (count - forced 3^k-1):  FREE total = 0;  ANTIPODAL total = 0 over 0 defective sections (DC prediction 0.83)
+(b) exact SVP on 1820 sections in 5.6s;  gaussian lambda1 = 7.745, gaussian lambda1* = 0.030237
+      lambda1 /gauss quantiles  1%=0.183 10%=0.183 50%=1.528 90%=2.102
+      lambda1*/gauss quantiles  1%=0.131 10%=0.183 50%=1.185 90%=2.102
+      fraction with lambda1* < 0.5*gauss : 0.40220
+      fraction with lambda1* < 0.75*gauss : 0.43736
+      fraction with lambda1* < 1.0*gauss : 0.45495
+      mean lambda1*: bad sections 0.008932 vs good 0.045960 (gauss 0.030237); bad(free/sporadic) n=0
+      cross-check: dual enumeration == O(p) exhaustive scan on 3 sections OK
+(d) shift orbits: 116 orbits over 1820 sections (compression factor 15.69, max possible 16); count-constancy violations 0/116; dual-min-constancy violations 0/116 (orbits fully SVP'd)
+(e) reversal S -> -S: 924 comparable pairs; sparse-count equal on 924/924; dual-min equal on 380/924 SVP'd pairs
+
+--- n=16 p=65633 r=2 (d=4)  h=5013  beta=log_n(p)=4.001 ---
+(a) section structure OK on spot checks: triangular basis det = p = 65633, rows in kernel, all h^s units => restricted map surjective => covolume = p ALWAYS.
+(b/c) sections=1820  antipodal-containing=700  antipodal-free=1120
+      sparse-count time 0.1s; distribution over ALL sections: {0: 1120, 2: 672, 8: 28}
+      distribution over ANTIPODAL-FREE sections: {0: 1120}
+      mean count ALL  = 0.861538   (prediction (3^4-1)/p = 0.001219 applies to generic sections)
+      mean count FREE = 0.000000  ratio to prediction = 0.000
+      bad sections: ALL 700/1820 = 0.38462; FREE 0/1120 = 0.000000 vs union-bound rate (3^4-1)/(2p) = 0.000609  (expected #bad among free = 0.68)
+      implied K (bad_free_rate = K^r/(2p)):  K = 0.000   [prediction K=9 i.e. 3^2]
+      char-p DEFECT (count - forced 3^k-1):  FREE total = 0;  ANTIPODAL total = 0 over 0 defective sections (DC prediction 0.83)
+(b) exact SVP on 1820 sections in 6.3s;  gaussian lambda1 = 7.746, gaussian lambda1* = 0.030235
+      lambda1 /gauss quantiles  1%=0.183 10%=0.183 50%=0.983 90%=1.919
+      lambda1*/gauss quantiles  1%=0.145 10%=0.510 50%=1.017 90%=1.962
+      fraction with lambda1* < 0.5*gauss : 0.08571
+      fraction with lambda1* < 0.75*gauss : 0.19121
+      fraction with lambda1* < 1.0*gauss : 0.45495
+      mean lambda1*: bad sections 0.020270 vs good 0.044843 (gauss 0.030235); bad(free/sporadic) n=0
+      cross-check: dual enumeration == O(p) exhaustive scan on 3 sections OK
+(d) shift orbits: 116 orbits over 1820 sections (compression factor 15.69, max possible 16); count-constancy violations 0/116; dual-min-constancy violations 0/116 (orbits fully SVP'd)
+(e) reversal S -> -S: 924 comparable pairs; sparse-count equal on 924/924; dual-min equal on 380/924 SVP'd pairs
+
+--- n=16 p=65537 r=3 (d=6)  h=64  beta=log_n(p)=4.000 ---
+(a) section structure OK on spot checks: triangular basis det = p = 65537, rows in kernel, all h^s units => restricted map surjective => covolume = p ALWAYS.
+(b/c) sections=8008  antipodal-containing=6216  antipodal-free=1792
+      sparse-count time 5.6s; distribution over ALL sections: {0: 1792, 2: 4480, 8: 1680, 26: 56}
+      distribution over ANTIPODAL-FREE sections: {0: 1792}
+      mean count ALL  = 2.979021   (prediction (3^6-1)/p = 0.011108 applies to generic sections)
+      mean count FREE = 0.000000  ratio to prediction = 0.000
+      bad sections: ALL 6216/8008 = 0.77622; FREE 0/1792 = 0.000000 vs union-bound rate (3^6-1)/(2p) = 0.005554  (expected #bad among free = 9.95)
+      implied K (bad_free_rate = K^r/(2p)):  K = 0.000   [prediction K=9 i.e. 3^2]
+      char-p DEFECT (count - forced 3^k-1):  FREE total = 0;  ANTIPODAL total = 0 over 0 defective sections (DC prediction 68.68)
+(b) exact SVP on 8008 sections in 59.6s;  gaussian lambda1 = 3.763, gaussian lambda1* = 0.093345
+      lambda1 /gauss quantiles  1%=0.376 10%=0.376 50%=0.376 90%=1.096
+      lambda1*/gauss quantiles  1%=0.011 10%=0.044 50%=0.173 90%=0.690
+      fraction with lambda1* < 0.5*gauss : 0.67433
+      fraction with lambda1* < 0.75*gauss : 1.00000
+      fraction with lambda1* < 1.0*gauss : 1.00000
+      mean lambda1*: bad sections 0.024122 vs good 0.050134 (gauss 0.093345); bad(free/sporadic) n=0

@@ -782,6 +782,84 @@ dilation-on-supports) went to round 2 with explicit lone-spike / section-statist
 formalization, three new provable targets spun off (ramp law j=2,3; first-interior-level brick;
 D4 scanner). **CORE unchanged: OPEN, ON-BGK.**
 
+## 15. Round log — Round 2 (#466, 2026-07-01): the refute pass + the seven spun threads
+
+7 lanes + skeptics (two skeptics lost to a rate limit; their lanes re-verified by the
+orchestrator: compile ✅, anchors independently reproduced by two other lanes' verifiers).
+Concurrently, a second session ran a round-2B (floorbad64, h-low map, P5 referee, CMK
+depth gate) — merged here. DISPROOF tags `466-r2-*`.
+
+**(A) CMK is REFUTED — and the essay's one new closure shape dies.** The lone-spike
+countermodel (certified brackets, q = 2^40…2^120): the abstract equal-atom moment problem's
+sharp answer IS the raw moment bound, `C(K) = 2K(1+o(1))`; positivity + equal masses + full
+moment sequences add nothing; the essay's Hermite–Christoffel constant was a computational
+error; **CMK ∘ TPS dies** (the spike realizes the slack). Standing filter: any future
+"positivity upgrades a lossy moment input" proposal must first beat this countermodel.
+Companion gate `_R2B_CMKDepthIrreducibility.lean` (depth cannot be traded for slack).
+
+**(B) SST is structurally clarified — no new leverage.** Orbit-constancy is PROVABLE (shift =
+unit multiple ⟹ isometry): the dilation-on-supports compression is exact factor-n bookkeeping
+(the SST analogue of the I031 cosmetic collapse); the essay's bare statement is FALSE at 2-power
+n without the antipodal `3^k−1` correction (dyadic Lam–Leung); measured genuine char-p defect =
+**identically 0** across all sections at n=16 (exhaustive, r=2,3) and n=32 (full r=2 census) —
+zero events, consistent with fixed-depth cleanliness. Surviving residue (named, open): the
+multiplier action `S → kS` (not an isometry) cross-orbit correlation.
+
+**(C) The n^{8/9} discovery is FORMALIZED** — `_BilinearDFTBeat.lean` (18 declarations,
+axiom-clean): the bilinear (3,3) + √p-DFT chain survives a second full adversarial re-derivation
+(exhaustive b-scan verification at p=4129; the splice direction, Parseval completion with no DC
+leak, and T3-squared bookkeeping all check); exponent law `θ(β) = (12+β)/18`, saving `(6−β)/18`,
+dominates the landed 23/24 for β < 17/3. Named hypotheses `Leg1PopularSumset` /
+`Leg2DFTFinisher`; good-prime-conditional; `isPrizeClosure := false`;
+`deltaStar_determination_all_or_nothing` keeps it honest (a fixed power saving cannot move δ\*).
+
+**(D) The Jacobi ramp law is EXACT and formalized** — `_JacobiRampDefectLaw.lean` (6 theorems):
+j=1 unconditional (`1−q₁ = (n−1)/(p−1) + n/(p−1)²` — the measured law is exactly the variance),
+j=2 conditional on clean `E₂`/`T₃` with the structural payoff: the j=1 defect reads p only,
+while j=2 carries an n-only char-0 Bessel floor `3/(2n)`. Ensemble MEAN only; instance turnover
+and j≥3 (where the char-p defect enters) stay open.
+
+**(E) First-interior brick landed; the discriminating depth at n=16 is k+3, not k+2.**
+`FirstInteriorLevelDirectionBlind.lean` (axiom-clean): a = k+1 is direction-blind with ceiling
+`C(n,k+1)` (thin corollary of `KKH26CeilingMarch.scalar_eq_of_shared_tuple`). n=16 completed
+runs: a=6 (depth 2) is an exact p-INDEPENDENT tie at 89 across all three primes; a=7 (depth 3)
+is where spread wins. **The P5 referee audit (466b) STRENGTHENED the refutation: spread worst
+≥ 21 vs monomial 9 (ratio ≥ 2.33)** — so the bounded spread-excess law at C=2 is already dead;
+**C=3 is the live constant** (`_SpreadExcessLaw.lean` carries the parameterized Prop + refuter
+record). Depth-separation appears driven by near-degenerate directions (self-agreement a−1).
+
+**(F) The 2-adic/Fermat family is an ARTIFACT — the real mechanism is generalized-Fermat.**
+v₂-saturation exonerated (2/34 vs 0/34 controls; C-ratio 1.0145); the true resonant family is
+`p = b^(2^s)+1` with `μ_n = ±⟨B⟩` a geometric progression: **η₁ = n − c_B exactly** (7/7
+verified; c₂ = 6.789). Only B=2 beats the C plateau (≈1.70 asymptotic; ONE in-window witness at
+β=3.2), and the B=2 supply ENDS at F₄ = 65537 (F₅ composite). Deployment avoid-list narrowed to
+generalized-Fermat B ≤ 4; BabyBear-class exonerated. Ceiling-side tool; touches no floor.
+
+**(G) D4 scanner: the depth-4 face mirrors D3.** Anchor `W₄(65537, n=16) = +4480` reproduced
+exactly (by three independent implementations across lanes); NEW unconditional fact: `D4(n)` is
+FINITE for every n (norm-height `8^{n/2}`), and the n=8 window is PROVABLY D4-clean
+(`8^4 = n^4`); n=16: threshold-bad empty, exactly-bad ≈ {65537}; n=32 exhaustive scan (18,452
+primes) confirms the pattern (see `_out_466_d4_scanner.txt` for the exact set). The
+D4-conditional `n^{7/8}` has plausible good-prime supply, but the in-tree counting comparator
+is vacuous at depth 4 — formal closure needs a structure theorem for depth-4 norm divisors.
+
+**(H) Round-2B (concurrent session):** floor-bad(32) = {97} re-verified through p = 1217 with
+the NEW exact count (32 realizable patterns = ONE translation orbit); **floor-bad(64) is
+UNDECIDED at feasible compute** (pattern space 2.2·10¹⁵ ≈ 10⁷ CPU-hours) — Tier-1 item 4 is now
+formally in the "numerics cannot decide" regime and needs the successor THEOREM
+(`CandidateListExactSuccessor`) or nothing; the h-low map + `_R2B_LargeZeroWitnessSplit.lean`
+advance the weld's near-branch; the referee vacuity theorem
+(`not_uniform_lineListBudgeted_of_lt_card` consumer shape) landed.
+
+**Survivor list after round 2 (the §6 re-rank):** ① line-list low-profile obligations
+(`_LowProfileFiberBound` + `LargeZeroWitnessSplit` narrow them; the weld consumer is real) —
+now clearly the primary open surface; ② the **bounded spread-excess law at C=3**
+(`_SpreadExcessLaw.SpreadExcessLaw`, parameterized, refutable — the replacement for the dead
+windowed SumsetExtremal); ③ uniform-in-μ floor-bad = the successor-theorem-or-nothing regime;
+④ the SST multiplier-action residue; ⑤ the D4 structure theorem (payoff 7/8); ⑥ ramp law j=3
+(first mean-ramp p-vs-n crossover); ⑦ the GF-ceiling brick (elementary, bankable). Dead this
+round: CMK, CMK∘TPS, 2-adic-family, naive SST. **CORE unchanged: OPEN, ON-BGK.**
+
 <sub>🤖 Consolidated 2026-07-01 by Claude (Fable 5) from the full #464 record (dossier v2 + 179
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
 and independent re-verification. No fabricated closure; the core is carried as a named open

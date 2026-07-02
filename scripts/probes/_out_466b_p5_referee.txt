@@ -1,0 +1,73 @@
+[SELF-TEST] engine vs full-enumeration ground truth, n=8 k=2 q=4129, 24 random instances + 6 adversarial chains
+[SELF-TEST] all 30 instances: fast == brute.  PASS
+
+==============================================================================
+[REFEREE] n=16 k=4 q=65617 a=7
+  window check: delta = 1 - a/n = 9/16 = 0.5625; prize window (1-sqrt(rho), 1-rho) = (0.5, 0.75); interior: True
+  regime check: q prime: True; q >= n^4 = 65536: True; n | q-1: True; proper subgroup (n < q-1): True
+  mu_16 generator (referee's own choice) omega = 53618; 1820 interpolants
+  monomial agreemax census:
+    j0:16 j1:16 j2:16 j3:16 j4:4 j5:4 j6:4 j7:4 j8:8 j9:8 j10:8 j11:8 j12:4 j13:4 j14:4 j15:4
+  eligible monomials at a=7: [4, 5, 6, 7, 12, 13, 14, 15] (degenerate: [0, 1, 2, 3, 8, 9, 10, 11])
+
+  [SPREAD] u1 = x^4 + x^14 on mu_16 (their sp2_4_14_c1): agreemax = 6 (claimed 6); eligible at a=7: True
+  correlated-direction exclusion: component gap 14-4 = 10 (= 6 mod-16-symmetric); n/2 = 8; gap != n/2: True
+    agreemax witness: u1 agrees with codeword on positions [0, 1, 3, 8, 9, 11] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [0, 5, 7, 8, 13, 15] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [1, 4, 7, 9, 12, 15] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [1, 5, 6, 9, 13, 14] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [2, 3, 7, 10, 11, 15] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [2, 4, 6, 10, 12, 14] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [3, 4, 5, 11, 12, 13] (|S| = 6)
+  structural seeds (no search): counts [10] -- certificate floor 10 = 10
+  [SPREAD] search max (fast engine) = 21
+  [BRUTE] spread witness verified over ALL 65617 gammas: count = 21; bad gammas = [2088, 8775, 11374, 15562, 15687, 16479, 17857, 19105, 21090, 26017, 30992, 35972, 44487, 45276, 45783, 49121, 51140, 54626, 55922, 58796, 60125]
+  [BRUTE] spread witness u0 = [25656, 44374, 59038, 3941, 58382, 47640, 51124, 29110, 28119, 21170, 43636, 8561, 8283, 4550, 62531, 29135]
+  [MONO] x^4: search max = 9   [243s]
+  [MONO] x^5: search max = 9   [270s]
+  [MONO] x^6: search max = 9   [292s]
+  [MONO] x^7: search max = 9   [324s]
+  [MONO] x^12: search max = 9   [349s]
+  [MONO] x^13: search max = 9   [370s]
+  [MONO] x^14: search max = 9   [393s]
+  [MONO] x^15: search max = 9   [413s]
+  [BRUTE] best monomial witness (x^4) verified over ALL gammas: count = 9
+
+  [VERDICT q=65617 a=7] spread(x^4+x^14) = 21  vs  monomial max = 9 (all: {4: 9, 5: 9, 6: 9, 7: 9, 12: 9, 13: 9, 14: 9, 15: 9})
+  spread strictly beats every monomial: True   [setting 625s]
+
+==============================================================================
+[REFEREE FINAL] claim under review: at n=16 k=4 a=7 (delta=9/16), sp2_4_14_c1 beats every monomial 13 vs 9 at q=65617 (and 65633).
+  q=65617: spread(x^4+x^14) = 21 (agreemax 6), monomial max = 9, strict win: True, excess ratio >= 2.33 (round-1 proposed replacement law C <= 2: VIOLATED if the monomial value is the true optimum)
+[total 628s]
+RUN_A_EXIT=0
+[SELF-TEST] engine vs full-enumeration ground truth, n=8 k=2 q=4129, 24 random instances + 6 adversarial chains
+[SELF-TEST] all 30 instances: fast == brute.  PASS
+
+==============================================================================
+[REFEREE] n=16 k=4 q=65633 a=7
+  window check: delta = 1 - a/n = 9/16 = 0.5625; prize window (1-sqrt(rho), 1-rho) = (0.5, 0.75); interior: True
+  regime check: q prime: True; q >= n^4 = 65536: True; n | q-1: True; proper subgroup (n < q-1): True
+  mu_16 generator (referee's own choice) omega = 5013; 1820 interpolants
+  monomial agreemax census:
+    j0:16 j1:16 j2:16 j3:16 j4:4 j5:4 j6:4 j7:4 j8:8 j9:8 j10:8 j11:8 j12:4 j13:4 j14:4 j15:4
+  eligible monomials at a=7: [4, 5, 6, 7, 12, 13, 14, 15] (degenerate: [0, 1, 2, 3, 8, 9, 10, 11])
+
+  [SPREAD] u1 = x^4 + x^14 on mu_16 (their sp2_4_14_c1): agreemax = 6 (claimed 6); eligible at a=7: True
+  correlated-direction exclusion: component gap 14-4 = 10 (= 6 mod-16-symmetric); n/2 = 8; gap != n/2: True
+    agreemax witness: u1 agrees with codeword on positions [0, 1, 3, 8, 9, 11] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [0, 5, 7, 8, 13, 15] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [1, 4, 7, 9, 12, 15] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [1, 5, 6, 9, 13, 14] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [2, 3, 7, 10, 11, 15] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [2, 4, 6, 10, 12, 14] (|S| = 6)
+    agreemax witness: u1 agrees with codeword on positions [3, 4, 5, 11, 12, 13] (|S| = 6)
+  structural seeds (no search): counts [10] -- certificate floor 10 = 10
+  [SPREAD] search max (fast engine) = 21
+  [BRUTE] spread witness verified over ALL 65633 gammas: count = 21; bad gammas = [4424, 10266, 13512, 15448, 24428, 24720, 25876, 26024, 32870, 38335, 43424, 44623, 45020, 49133, 50945, 54003, 55936, 56551, 59544, 63090, 65024]
+  [BRUTE] spread witness u0 = [54319, 48416, 51545, 58549, 34857, 15544, 17216, 32984, 28127, 64688, 13955, 11542, 36322, 62969, 8859, 22086]
+  [MONO] x^4: search max = 9   [261s]
+  [MONO] x^5: search max = 9   [281s]
+  [MONO] x^6: search max = 9   [310s]
+  [MONO] x^7: search max = 9   [340s]
+  [MONO] x^12: search max = 9   [372s]
