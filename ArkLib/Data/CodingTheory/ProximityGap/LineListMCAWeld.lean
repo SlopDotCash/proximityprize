@@ -47,6 +47,13 @@ lines (plus the zero-direction-unsafe residual, split off by
 `lowWeight_badCount_le_of_largeZeroSafe_budget`).  Nothing open is silently discharged; both
 sit exactly where `LineListReduction.lean` localizes them.
 
+§9 assembles this into single consumers whose named hypotheses ARE the total residual:
+`mcaDeltaStar_ge_of_farLineListBudgeted_largeZeroSplit` (three classes: far / large-zero-safe
+/ large-zero-unsafe) and `mcaDeltaStar_ge_of_farLineListBudgeted_lowProfileFibers` (the safe
+branch localized to the genuinely open low-profile `t < k` coordinate fibers, high fibers
+discharged by RS uniqueness; the fiber hypothesis is machine-satisfiable —
+`lowProfileFiber_obligation_satisfiable` — so no branch is vacuous).
+
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #466.
 -/
 
@@ -445,6 +452,146 @@ theorem lowWeight_badCount_le_of_largeZeroSafe_budget
       (hsafe u₀ e₁ hnotel hs)) (le_max_left _ _)
   · exact le_trans (hunsafe u₀ e₁ hs) (le_max_right _ _)
 
+/-! ### 9. The assembled consumer — the weld's total residual, itemized
+
+The three theorems below wire §6 and §8 into a single statement whose named hypotheses are
+*exactly* the weld's total residual, and certify (for the skeptic's vacuity check) that every
+budget hypothesis quantifies only over the direction class its branch actually serves:
+
+* the **far branch** budget `hfarL` quantifies over far directions only (forced by §7);
+* the **safe large-zero branch** obligation is localized to the **low-profile coordinate
+  fibers** `t < k` (high fibers `k ≤ t` are discharged unconditionally by RS uniqueness,
+  `coordinateAgreementFiber_card_le_one_of_k_le`), and the localized hypothesis is
+  **machine-satisfiable** (`lowProfileFiber_obligation_satisfiable` — the field-power
+  envelope realizes it, so the shape is not vacuous);
+* the **unsafe large-zero branch** budget `hunsafe` quantifies over zero-direction-unsafe
+  lines, which are a *subclass* of the large-zero directions
+  (`directionZeroSet_card_ge_of_not_zeroDirectionSafeLine`) — no support-eligible or far
+  line is ever charged to it.
+-/
+
+/-- **The unsafe class sits inside the large-zero class.**  A zero-direction-unsafe line
+(`¬ ZeroDirectionSafeLine`) forces `≥ a` zero coordinates on its direction: the saturating
+codeword's zero-agreement set is a subset of the direction's zero set.  Hence an unsafe-line
+budget quantifies over a subclass of the zero-set-`≥ a` directions — the branch's own class,
+never the far or support-eligible ones. -/
+theorem directionZeroSet_card_ge_of_not_zeroDirectionSafeLine
+    (dom : Fin n ↪ F) (k a : ℕ) {u₀ u₁ : Fin n → F}
+    (hunsafe : ¬ ZeroDirectionSafeLine dom k a u₀ u₁) :
+    a ≤ (directionZeroSet u₁).card := by
+  obtain ⟨c, _hc, hge⟩ :=
+    (not_zeroDirectionSafeLine_iff_exists_codeword_zeroAgreement_ge dom k a u₀ u₁).mp hunsafe
+  refine le_trans hge (Finset.card_le_card ?_)
+  simp only [directionZeroAgreementSet]
+  exact Finset.filter_subset _ _
+
+open Classical in
+/-- **The assembled weld consumer (large-zero branch split).**  Same conclusion as
+`mcaDeltaStar_ge_of_farLineListBudgeted`, with `hlow` replaced by its §8 split, so the named
+hypotheses are exactly the weld's total residual:
+
+1. `hfarL` — the far-line list budget `L` (production obligation; class: far directions);
+2. `hfit` — pure arithmetic (`L·((n−z)/(a−z)) ≤ B_far` for `z < a`);
+3. `hsafe` — the stack's named low-profile obligation
+   `LargeZeroSafeLineBadScalarsBudgeted` (class: zero-set `≥ a`, zero-direction-safe);
+4. `hunsafe` — the unsafe large-zero branch `mcaEvent` budget (class: zero-direction-unsafe
+   lines, a subclass of zero-set `≥ a` by
+   `directionZeroSet_card_ge_of_not_zeroDirectionSafeLine`; the count is on the `mcaEvent`
+   filter, NOT `lineBadScalars`, which saturates to `q` on unsafe lines). -/
+theorem mcaDeltaStar_ge_of_farLineListBudgeted_largeZeroSplit
+    (dom : Fin n ↪ F) (k a : ℕ) (δ : ℝ≥0) (εstar : ℝ≥0∞) {L Bfar Bsafe Bunsafe : ℕ}
+    (haC : (1 - δ) * (n : ℝ≥0) ≤ (a : ℝ≥0))
+    (haF : ∀ m : ℕ, (1 - δ) * (n : ℝ≥0) ≤ (m : ℝ≥0) → a ≤ m)
+    (hfarL : ∀ u₀ u₁ : Fin n → F,
+      FarFromCode ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₁ →
+        LineListBudgeted dom k a u₀ u₁ L)
+    (hfit : ∀ z : ℕ, z < a → L * ((n - z) / (a - z)) ≤ Bfar)
+    (hsafe : LargeZeroSafeLineBadScalarsBudgeted dom k a Bsafe)
+    (hunsafe : ∀ u₀ u₁ : Fin n → F, ¬ ZeroDirectionSafeLine dom k a u₀ u₁ →
+      (Finset.univ.filter (fun γ : F =>
+        mcaEvent (F := F)
+          ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₀ u₁ γ)).card
+        ≤ Bunsafe)
+    (hBudget : ((max Bfar (max Bsafe Bunsafe) : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar)
+    (hδ1 : δ ≤ 1) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := F)
+      ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) εstar :=
+  mcaDeltaStar_ge_of_farLineListBudgeted dom k a δ εstar haC haF hfarL hfit
+    (lowWeight_badCount_le_of_largeZeroSafe_budget dom k a δ haF hsafe hunsafe)
+    hBudget hδ1
+
+open Classical in
+/-- **The low-profile fiber obligation is satisfiable** (skeptic guard against the round-1
+vacuity mode): the field-power envelope `M t = q^(k−t)` realizes the exact hypothesis shape
+consumed by `mcaDeltaStar_ge_of_farLineListBudgeted_lowProfileFibers` below.  The open
+production question is only its *size* (`M t ≪ q^(k−t)` on low fibers), never its
+satisfiability. -/
+theorem lowProfileFiber_obligation_satisfiable
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a → t < k → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+          (coordinateAgreementFiber dom k u₀ S).card ≤ Fintype.card F ^ (k - t) := by
+  intro u₀ u₁ _hne _hsafe t ht _hlt S hS
+  exact zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card dom k a u₀ u₁ t ht S hS
+
+open Classical in
+/-- **The deepest assembled consumer: the safe large-zero branch localized to low-profile
+fibers.**  High coordinate fibers (`k ≤ t < a`) are discharged unconditionally by RS
+uniqueness (`coordinateAgreementFiber_card_le_one_of_k_le`), so the safe branch's named
+obligation shrinks to:
+
+* `hlowFiber` — the **low-profile fiber theorem** (`t < k` only): on zero-set-`≥ a`,
+  zero-direction-safe lines, every `t`-subset of the direction's zero set has at most `M t`
+  codewords agreeing with the offset there (satisfiable —
+  `lowProfileFiber_obligation_satisfiable`);
+* `hsafeFit` — the arithmetic fit of the extended envelope
+  `t ↦ if t < k then M t else 1` under `B_safe` on large-zero directions.
+
+Together with `hfarL`/`hfit` (far branch) and `hunsafe` (unsafe large-zero branch), these
+are the weld's **total** residual: every stack lands in exactly one of the three classes
+(far / large-zero-safe / large-zero-unsafe) via the coset dichotomy. -/
+theorem mcaDeltaStar_ge_of_farLineListBudgeted_lowProfileFibers
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ) (δ : ℝ≥0) (εstar : ℝ≥0∞)
+    {L Bfar Bsafe Bunsafe : ℕ} (M : ℕ → ℕ)
+    (haC : (1 - δ) * (n : ℝ≥0) ≤ (a : ℝ≥0))
+    (haF : ∀ m : ℕ, (1 - δ) * (n : ℝ≥0) ≤ (m : ℝ≥0) → a ≤ m)
+    (hfarL : ∀ u₀ u₁ : Fin n → F,
+      FarFromCode ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₁ →
+        LineListBudgeted dom k a u₀ u₁ L)
+    (hfit : ∀ z : ℕ, z < a → L * ((n - z) / (a - z)) ≤ Bfar)
+    (hlowFiber : ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a → t < k → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+          (coordinateAgreementFiber dom k u₀ S).card ≤ M t)
+    (hsafeFit : UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n)
+      a Bsafe (fun t => if t < k then M t else 1))
+    (hunsafe : ∀ u₀ u₁ : Fin n → F, ¬ ZeroDirectionSafeLine dom k a u₀ u₁ →
+      (Finset.univ.filter (fun γ : F =>
+        mcaEvent (F := F)
+          ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₀ u₁ γ)).card
+        ≤ Bunsafe)
+    (hBudget : ((max Bfar (max Bsafe Bunsafe) : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar)
+    (hδ1 : δ ≤ 1) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := F)
+      ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) εstar := by
+  have hFiber : UniformLargeZeroSafeCoordinateAgreementFiberBudgeted dom k a
+      (fun t => if t < k then M t else 1) := by
+    intro u₀ u₁ hne hsafeLine t ht S hS
+    by_cases hlt : t < k
+    · simpa [hlt] using hlowFiber u₀ u₁ hne hsafeLine t ht hlt S hS
+    · have hScard : S.card = t := (Finset.mem_powersetCard.mp hS).2
+      have hone := coordinateAgreementFiber_card_le_one_of_k_le dom hk u₀
+        (S := S) (by rw [hScard]; exact Nat.le_of_not_lt hlt)
+      simpa [hlt] using hone
+  have hsafeB : LargeZeroSafeLineBadScalarsBudgeted dom k a Bsafe :=
+    largeZeroSafeLineBadScalarsBudgeted_of_uniformPuncturedZeroStratifiedLineBudgeted
+      dom k a Bsafe
+      (uniformPuncturedZeroStratifiedLineBudgeted_of_uniformCoordinateAgreementFiberBudgeted
+        dom k a Bsafe (fun t => if t < k then M t else 1) hFiber hsafeFit)
+  exact mcaDeltaStar_ge_of_farLineListBudgeted_largeZeroSplit dom k a δ εstar haC haF
+    hfarL hfit hsafeB hunsafe hBudget hδ1
+
 end ProximityGap.LineListMCAWeld
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -458,3 +605,7 @@ end ProximityGap.LineListMCAWeld
 #print axioms ProximityGap.LineListMCAWeld.not_forall_nonvanishing_lineListBudgeted_of_lt_field
 #print axioms ProximityGap.LineListMCAWeld.not_uniform_lineListBudgeted_of_lt_card
 #print axioms ProximityGap.LineListMCAWeld.lowWeight_badCount_le_of_largeZeroSafe_budget
+#print axioms ProximityGap.LineListMCAWeld.directionZeroSet_card_ge_of_not_zeroDirectionSafeLine
+#print axioms ProximityGap.LineListMCAWeld.mcaDeltaStar_ge_of_farLineListBudgeted_largeZeroSplit
+#print axioms ProximityGap.LineListMCAWeld.lowProfileFiber_obligation_satisfiable
+#print axioms ProximityGap.LineListMCAWeld.mcaDeltaStar_ge_of_farLineListBudgeted_lowProfileFibers

@@ -260,7 +260,6 @@ theorem foldOracleReduction_perfectCompleteness
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
     simp only [←probOutput_eq_zero_iff]
-    simp_all only
     change Pr[= none | OptionT.run (m := (OracleComp []ₒ)) (x := (OptionT.bind _ _)) ] = 0
     rw [OptionT.probOutput_none_bind_eq_zero_iff]
     conv =>
@@ -280,9 +279,9 @@ theorem foldOracleReduction_perfectCompleteness
       -- Set.mem_singleton_iff, and_true, exists_const, Prod.mk.injEq, existsAndEq]
       rw [bind_pure_comp]
       dsimp only [Functor.map]
-      rw [OptionT.simulateQ_bind]
+      erw [OptionT.simulateQ_bind]
       erw [support_bind]
-      rw [simulateQ_ite]
+      erw [simulateQ_ite]
       simp only [Fin.isValue, Message, Matrix.cons_val_zero, id_eq, MessageIdx, support_ite,
         toPFunctor_emptySpec, Function.comp_apply, OptionT.simulateQ_pure, Set.mem_iUnion,
         exists_prop]
@@ -290,7 +289,7 @@ theorem foldOracleReduction_perfectCompleteness
       erw [_root_.simulateQ_pure]
     set V_check := step.verifierCheck stmtIn
       (FullTranscript.mk2
-        (msg0 := _)
+        (msg0 := foldProverComputeMsg 𝔽q β i witIn)
         (msg1 := (FullTranscript.mk2 (foldProverComputeMsg 𝔽q β i witIn) r_i').challenges ⟨1, rfl⟩))
       with h_V_check_def
     obtain ⟨h_V_check, h_rel, h_agree⟩ := strongly_complete (stmtIn := stmtIn)
@@ -661,9 +660,10 @@ def foldKnowledgeStateFunction (i : Fin ℓ) :
       erw [simulateQ_bind] at h_output_mem_V_run_support
       simp only [simulateQ_pure, Fin.isValue, Function.comp_apply,
         pure_bind] at h_output_mem_V_run_support
-      erw [support_pure] at h_output_mem_V_run_support
-      simp only [Set.mem_singleton_iff, Prod.mk.injEq, ↓existsAndEq, and_true, exists_eq_left,
-        ] at h_output_mem_V_run_support
+      erw [support_bind] at h_output_mem_V_run_support
+      erw [_root_.simulateQ_pure] at h_output_mem_V_run_support
+      simp only [pure_bind, Function.comp_apply, Set.mem_singleton_iff,
+        Prod.mk.injEq, ↓existsAndEq, and_true, exists_eq_left] at h_output_mem_V_run_support
       erw [support_pure] at h_output_mem_V_run_support
       simp only [Set.mem_singleton_iff, reduceCtorEq] at h_output_mem_V_run_support
 
