@@ -113,3 +113,21 @@ propagation, SST compression, far-line budget, D(t)), each with a designed attac
 concentration — not any theorem — is the round's real product.
 
 **The core is OPEN and ON-BGK.** Nothing here claims otherwise.
+
+---
+
+## ADDENDUM (same day, hours later): CMK is dead; the essay's own refutability paid off
+
+Round 2's lone-spike countermodel (parallel session, `probe_466_cmk_lonespike.py` +
+`probe_466b_cmk_countermeasure.py` + `Frontier/_R2B_CMKDepthIrreducibility.lean`) REFUTES the
+abstract-moment form of CMK exactly as §2.2 of the round-1 essay invited: an equal-atom measure
+with the Parseval mass and `K^r`-slack Wick moments to any depth can place a lone extreme spike
+that REALIZES the full slack — abstract moment-problem rigidity (positivity + atomicity +
+Parseval included) can never sharpen a `K^r`-slack input past `√(2K)`. **CMK dies as an
+improvement lever, and CMK ∘ TPS dies with it.** Scope: only the abstract-moment form is killed;
+a b_k-native variant consuming more than moments is untouched in principle — but the round-1
+bounded-window refutation independently squeezes that. §3's table row is superseded accordingly;
+what remains of §2's "two shapes" is SST (whose first dual-minima data — every section below the
+random-lattice value — looks unfavorable; verdict pending) and the reshaped counting route,
+which is now carrying the campaign. The method note in §4 stands: the proposal was stated
+refutably, attacked immediately, and killed in under a day — that is the system working.
