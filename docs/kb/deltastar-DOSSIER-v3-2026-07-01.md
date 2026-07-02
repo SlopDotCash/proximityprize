@@ -61,10 +61,11 @@
    `LineListReduction` → zero-agreement strata → coordinate fibers → MDS uniqueness for `#S ≥ k` →
    singleton-defect → support-ratio covers), which discharges everything except **low-profile
    (`t < k`) fibers on large-zero-safe lines** — with exact failure scanners at every layer; the raw
-   envelopes are all formally refuted. ⚠️ Its prize-facing **weld** (`LineListMCAWeld.lean`,
-   `mcaDeltaStar_ge_of_farLineListBudgeted` — "δ\* floor ⟸ far-line budget `Λ ≤ L ≲ ρ·n`") was
-   claimed landed in-thread but is **NOT on main** (flagged phantom at consolidation, §12) —
-   **re-deriving and landing the weld is a concrete, bankable first task** for the next agent.
+   envelopes are all formally refuted. ✅ **UPDATE 2026-07-01: its prize-facing weld is RE-LANDED
+   and referee-verified** (`LineListMCAWeld.lean`, `mcaDeltaStar_ge_of_farLineListBudgeted`, now
+   with a proven coset dichotomy localizing the near branch to large-zero directions — see §12);
+   the open production obligations are the far-line list budget `Λ ≤ L ≲ ρ·n` and the
+   large-zero-direction budget (`hlow`).
 
 6. **The evidence stays mildly favorable to the floor being TRUE** (δ\* strictly inside the window):
    `C ∈ [1.07, 1.49]` hugging √2 across eight octaves with no upward drift (~900 primes, to n=1024);
@@ -76,7 +77,9 @@
    low-profile obligations** (mixed-profile fits / second-witness multiplicity /
    `CandidateListExactSuccessor`); the **Hankel-positivity / Lax-pair spectral-shift** seam on the
    Jacobi turnover (the one non-magnitude door left ajar); the **uniform-in-μ floor-bad
-   characterization**; the announced-but-never-run **di Benedetto effective-1/2 push**; plus a short
+   characterization**; ~~the di Benedetto effective-1/2 push~~ (**CLOSED 2026-07-01** —
+   quantified-dead, double-refereed; the whole exponent-pushing axis is δ*-irrelevant by
+   `deltaStar_determination_all_or_nothing`, see §6 item 5); plus a short
    list of unrun probes and bankable off-core wins (folded-RS pin, Binius domain dissolution,
    deployment-prime certificates).
 
@@ -389,9 +392,19 @@ artifact traced; phantom bricks recovered and resolved (§12); numerics-cannot-d
    a = 4, 5; prove it uniform (the scanner + successor contracts are in place) — the only route
    terminating at a known theorem (least-prime-in-AP, now unconditional at 12/5). Remember the
    meta-verdict: this closes an obstruction, not the prize; the floor→δ\* arrow is a separate gap.
-5. **Bold attack #5 (announced 2026-06-27, never run): di Benedetto sum-product pushed to an
-   effective 1/2 exponent at β=4** — the only route that engages the real object with explicit
-   constants. The #464 thread ends right before this; it is the natural next essay/probe/refute cycle.
+5. ~~**Bold attack #5: di Benedetto pushed to an effective 1/2 exponent at β=4.**~~ **CLOSED
+   2026-07-01 (refutation-with-exact-constants, double-refereed by two independent sessions):**
+   `Frontier/_BGKEffectiveHalfPlateau.lean` (commit `537959141`) + `probe_466_dibenedetto_push.py`.
+   The sharpest explicit iterated-BGK (Shkredov 1705.09703 Cor. 16, per Kowalski 2401.04756
+   Rem. 1.2(3)) gives n-saving exactly `1/16384` at β=4 (k = 12 squarings; clean applicability
+   floor `2^768` ≫ prize `2^30`); the trilinear ceiling `1/24` (in-tree) dominates it 682×;
+   saving 1/2 is unreachable at any depth (`1/2^{k+2} < 1/2` structurally, Shkredov Rem. 17);
+   the multilinear chain with perfect energies IS the moment ladder (`θ(s,β)` dictionary,
+   probe-verified). With `deltaStar_determination_all_or_nothing`, ANY fixed θ > 1/2 is
+   δ*-irrelevant — the whole exponent-pushing axis is dead for the prize. See
+   `deltastar-466-bgk-effective-half-plateau-2026-07-01.md` +
+   `deltastar-466-exchange-rate-essay-2026-07-01.md` (the tariff-table re-ranking of this list
+   toward the exact/counting surfaces: items 1, 2, and the integer form of 3).
 
 ### Tier 2 — decisive probes not yet run
 
@@ -619,17 +632,24 @@ dossier's mission.** Conflating them is the standing larp hazard.
 
 ## 12. Honesty audit — corrections, phantom-brick resolution, what not to cite
 
-- **⚠️ NEW PHANTOMS FLAGGED at consolidation (2026-07-01): `LineListMCAWeld.lean` and
-  `MomentExponentThreshold.lean`.** Both were claimed landed in the #464 thread (comments of
-  2026-06-26, each with a full validation checklist incl. "real lake build") but exist in **no**
-  commit on any branch (`git log --all` empty; their theorem names `mcaDeltaStar_ge_of_farLineListBudgeted`,
-  `aligned_line_lambda_ge_q`, `half_lt_momentExponent` appear nowhere in the tree). Everything
-  else headline-claimed in the thread verifies on main (spot-checked: the coordinate-fiber MDS
-  endpoint, the field-closure trichotomy, `not_sumsetExtremal`, `ne_singleton97`, the TZ arrow,
-  the door-IV bricks, the singleton-defect layer). Treat the weld and the moment-exponent brick
-  as **conjectures-with-a-published-proof-sketch until re-landed** (§6 Tier-1 item 2 makes
-  re-landing the weld the first task). Likely cause: the round-4 ephemeral-worktree failure mode
-  the thread itself documented.
+- **✅ The 2026-07-01 phantom flags are DISCHARGED (same day): `LineListMCAWeld.lean` and
+  `MomentExponentThreshold.lean` re-derived and RE-LANDED** (commits `537959141` + umbrella
+  `d6dcc2cfd`), **referee-verified by a second independent session** (independent real build,
+  3541 jobs, all `#print axioms` = `[propext, Classical.choice, Quot.sound]`, 0 `sorry`). The
+  re-landed weld is *stronger* than the #464 claim: `mcaDeltaStar_ge_of_farLineListBudgeted` now
+  carries a **proven coset dichotomy** (`mcaEvent_direction_sub_codeword_iff` +
+  `farFromCode_of_forall_coset_supportEligible`: every stack either shifts to a large-zero
+  direction or is genuinely far), so the near branch is localized to large-zero directions
+  (`hlow`) instead of a blanket hypothesis; the far restriction is proven FORCED
+  (`aligned_line_lambda_ge_q` + `not_uniform_lineListBudgeted_of_lt_card` — a mid-flight
+  first draft whose floor consumer quantified over all nonvanishing directions was caught by the
+  referee session as vacuous-at-prize by its own refuter, and fixed before landing; kept as
+  `Frontier/LineListMCAWeldRound1.lean`). Historical record of the original flags: both were
+  claimed in the #464 thread (2026-06-26) but existed in no commit — the round-4
+  ephemeral-worktree failure mode. Everything else headline-claimed in the thread verifies on
+  main (spot-checked: the coordinate-fiber MDS endpoint, the field-closure trichotomy,
+  `not_sumsetExtremal`, `ne_singleton97`, the TZ arrow, the door-IV bricks, the singleton-defect
+  layer).
 - **Phantom bricks (v2 §12): RESOLVED 2026-07-01.** Dossier v2 flagged `_DstarGrowthLaw`, `_OPSingleOrbit`,
   `_DyadicRecursionDstar`, `PrizeEquivalencePin`, `FloorResonanceEnergyBridge` (+ `_S2NonSymTower`)
   as "cited as landed but absent on every branch." The files were **recovered from an unpushed
