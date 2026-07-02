@@ -360,16 +360,32 @@ artifact traced; phantom bricks recovered and resolved (§12); numerics-cannot-d
 
 ### Tier 1 — the sharpest open surfaces
 
-1. **The windowed SumsetExtremal crux.** Prove (or refute *in the window*): a ≥2-Fourier-component
+1. ~~**The windowed SumsetExtremal crux.**~~ **REFUTED AT SCALE 2026-07-01 (round 1, replicated):**
+   at n=16, k=4, in-window a=7, a 2-Fourier-component direction (`x^4+c*x^14` shape) strictly beats
+   every monomial (13-14 vs 9) at THREE primes across two v2 classes (65537/65617/65633),
+   brute-verified witnesses; a = k+1 is direction-blind (`FirstInteriorLevelDirectionBlind`), so
+   only a >= k+2 discriminates — and there spread wins. The monomial-extremality ansatz is FALSE
+   in-window; the guard-cell catalogue route as designed is dead. See
+   `deltastar-466-p5-replication-2026-07-01.md`, DISPROOF `466-r1-windowed-extremal-spread-beats`,
+   commit `fe272cc43`. **Survivor (round-2 lane W1): the bounded spread-excess law**
+   `worst_spread <= C*worst_mono` (measured C <= 1.56, conjectured C <= 2) — a weaker per-cell
+   input that still feeds the weld's far-line budget; the excess is constant-factor, so all proven
+   brackets are unaffected. Original statement (record): prove (or refute *in the window*): a ≥2-Fourier-component
    spread direction cannot beat every pure monomial component, for
    `δ ∈ (1−√ρ, 1−ρ−Θ(1/log n))`, `q` large. This = min-weight dual-RS hyperplane capture = the
    Paley eigenvalue in extremality clothing. Sockets built: `SumsetExtremalityGuard.lean`,
    `mcaDeltaStar_pin_of_finsetGuardCover(_orOutside)` (instantiate a real guard-cell catalogue and
    prove the outside-branch budget).
 2. **Line-list production obligations** (the counting surface closest to the prize object):
-   - **first, re-land the weld**: `LineListMCAWeld.lean` (`mcaDeltaStar_ge_of_farLineListBudgeted`
-     + the `aligned_line_lambda_ge_q` refuter) was claimed with a full validation checklist
-     (comment 2026-06-26) but never reached main — re-derive it from the thread's stated chain
+   - ~~first, re-land the weld~~ **DONE 2026-07-01 (round 1, referee-verified, commits
+     `537959141`/`bd546962c`)**: `mcaDeltaStar_ge_of_farLineListBudgeted` is a THEOREM (root
+     `LineListMCAWeld.lean`), with a strengthened derivation: witness-farness is FREE from the
+     `¬pairJointAgreesOn` clause (aligned directions carry ZERO bad scalars); direction-coset
+     invariance makes the residual branch exactly the large-zero stratum; the far-restriction is
+     proven both NECESSARY (`aligned_line_lambda_ge_q`, `not_uniform_lineListBudgeted_of_lt_card`,
+     `not_forall_nonvanishing_lineListBudgeted_of_lt_field`) and SATISFIABLE. Historical round-1
+     form at `Frontier/LineListMCAWeldRound1.lean` (nonvanishing-only consumer carries a vacuity
+     warning). Its open inputs are the next bullets. Original task (record): re-derive from the chain
      (`badScalars_eq_explainable` → `explainableFilter_subset_lineBadScalars` →
      `lineBadScalars_card_le_lineAppearingCodewords_card_mul`); the substrate names all exist;
    - the **low-profile theorem**: bound exact-appearance fibers `D(t)` for `t < k` on large-zero-safe
@@ -384,10 +400,16 @@ artifact traced; phantom bricks recovered and resolved (§12); numerics-cannot-d
    - **`CandidateListExactSuccessor`**: the successor/renormalization law for the floor predicate
      (or its adjacent-rung counterexample `R(a) ∧ ¬R(a+1)`) — with prefix+successor+budgeted-max the
      in-tree `deltaStar_pin_of_*` consumers fire.
-3. **Hankel-positivity / Lax-pair spectral-shift on the Jacobi turnover** (form D). The Toda
-   invariants provably don't determine `k*`, but the `b_k` carry Hankel-PSD/determinantal structure
-   the raw moments don't expose; a spectral-shift *inequality* bounding `k*` with less than full
-   deep-moment knowledge is genuinely untried — "the one surviving non-magnitude seam."
+3. ~~**Hankel-positivity / Lax-pair spectral-shift on the Jacobi turnover**~~ **BOUNDED WINDOWS
+   REFUTED 2026-07-01 (round 1):** the early recurrence window is ensemble-deterministic
+   (`1−q_j = c_j(n)/p` — reads p, not the instance; countermodel pair 65617/65633: identical
+   4-window to 7ppm, k\* differs 21%), so no O(1)-window Jacobi functional pins `k*` per-prime
+   (DISPROOF `466-r1-hankel-bounded-window-refuted`). The seam survives ONLY as global variance
+   certification = the independence form (§2.4). Kept diagnostics: the Hankel double-ratio Fermat
+   anomaly detector (~52× at moment order 6, deployment-screening candidate); the spacing law
+   `b_j² − b_{j−1}² ≤ (1+ε)n` (all instances); the exact j=1 ramp law (round-2 lane: j=2,3 proof).
+   Original text (for the record): the Toda invariants provably don't determine `k*`; the
+   spectral-shift inequality hope was — "the one surviving non-magnitude seam."
 4. **Uniform-in-μ floor-bad characterization** ("floor-bad = {smallest prime ≡ 1 mod n}"): verified
    a = 4, 5; prove it uniform (the scanner + successor contracts are in place) — the only route
    terminating at a known theorem (least-prime-in-AP, now unconditional at 12/5). Remember the
