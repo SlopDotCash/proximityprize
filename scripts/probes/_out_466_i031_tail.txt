@@ -1,0 +1,79 @@
+LANE L4(B) #466 -- I031 Lamzouri tail-union vs moment route (deterministic, no RNG)
+
+====================================================================================================
+PART 0 -- union-with-Markov-tail(depth r) == quotient-moment(depth r): exact identity
+  chain: #{reps:|eta|>t} <= sum_reps|eta|^(2r)/t^(2r) <= m*mu_2r/t^(2r);  '<1' <=> t^(2r) > m*mu_2r
+  hence inf{t: union succeeds} = (m*mu_2r)^(1/2r) = the moment bound.  Numeric cross-check:
+  max relative deviation bisection-vs-closed-form over grid: 9.34e-16  (identity holds)
+  exact-integer instance m=4096, r=8, sigma^2=16: union and moment routes both gate at t^(2r) > m*r!*sigma^(2r) = 709316941310853120  (same integer, same bound)
+
+====================================================================================================
+PART 1 -- Wick-input routes, grid over (mu, beta); all t in units of sigma = sqrt(n)
+ mu beta    ln m  tG_quot  tG_full  tM_quot  r*_q  tM_full  r*_f  tMq/tGq quot/full(M) quot/full(G) pred sqrt(1-1/b)  r*q/r*f
+  4    3    5.55   2.3548   2.8841   2.7320     7   3.2256    10   1.1602       0.8470       0.8165           0.8165   0.7000
+  8    3   11.09   3.3302   4.0787   3.6471    13   4.3625    19   1.0952       0.8360       0.8165           0.8165   0.6842
+ 16    3   22.18   4.7096   5.7681   4.9701    24   5.9986    35   1.0553       0.8285       0.8165           0.8165   0.6857
+ 24    3   33.27   5.7681   7.0645   5.9986    35   7.2670    52   1.0400       0.8255       0.8165           0.8165   0.6731
+ 32    3   44.36   6.6604   8.1573   6.8708    47   8.3416    69   1.0316       0.8237       0.8165           0.8165   0.6812
+  4    4    8.32   2.8841   3.3302   3.2256    10   3.6471    13   1.1184       0.8844       0.8660           0.8660   0.7692
+  8    4   16.64   4.0787   4.7096   4.3625    19   4.9701    24   1.0696       0.8777       0.8660           0.8660   0.7917
+ 16    4   33.27   5.7681   6.6604   5.9986    35   6.8708    47   1.0400       0.8731       0.8660           0.8660   0.7447
+ 24    4   49.91   7.0645   8.1573   7.2670    52   8.3416    69   1.0287       0.8712       0.8660           0.8660   0.7536
+ 32    4   66.54   8.1573   9.4193   8.3416    69   9.5866    91   1.0226       0.8701       0.8660           0.8660   0.7582
+  4    6   13.86   3.7233   4.0787   4.0217    16   4.3625    19   1.0802       0.9219       0.9129           0.9129   0.8421
+  8    6   27.73   5.2655   5.7681   5.5091    30   5.9986    35   1.0463       0.9184       0.9129           0.9129   0.8571
+ 16    6   55.45   7.4466   8.1573   7.6422    58   8.3416    69   1.0263       0.9162       0.9129           0.9129   0.8406
+ 24    6   83.18   9.1202   9.9907   9.2911    86  10.1514   103   1.0187       0.9153       0.9129           0.9129   0.8350
+ 32    6  110.90  10.5311  11.5362  10.6860   114  11.6816   136   1.0147       0.9148       0.9129           0.9129   0.8382
+  matched-depth detail (beta=4): t_mom_quot(r)/t_gauss_quot at r = round(ln m):
+    mu= 4: r=ln m=  8  ratio = 1.1314
+    mu= 8: r=ln m= 17  ratio = 1.0714
+    mu=16: r=ln m= 33  ratio = 1.0413
+    mu=24: r=ln m= 50  ratio = 1.0292
+    mu=32: r=ln m= 67  ratio = 1.0228
+
+====================================================================================================
+PART 2 -- real-data sanity, n=16 (generic primes, p >= n^4, p == 1 mod n, non-Fermat)
+
+  p=65617  m=4101  sigma^2=n(p-n)/(p-1)=15.996342  M=13.2948  M/sigma=3.3241
+  orbit-invariance of |eta|: max within-orbit spread = 5.33e-15  (machine precision)
+  A_1/Wick_1 = 1.000000000000  (exact identity check)
+  per-rep moment wall  A_r/(r! sigma^(2r)):
+    r1=1.000  r2=1.405  r3=2.048  r4=2.917  r5=3.958  r6=5.044  r7=5.997  r8=6.627  r9=6.803  r10=6.493  r11=5.774  r12=4.796  r13=3.731  r14=2.727
+  per-rep tail vs Gaussian:  t/sigma : #{reps:|eta|>t}  vs  m*exp(-t^2/sigma^2)
+     2.000 :    177  vs       75.11
+     2.500 :     38  vs        7.92
+     2.883 :      9  vs        1.01   <- t = sigma*sqrt(ln m) (Gaussian-union threshold)
+     3.000 :      5  vs        0.51
+     3.200 :      2  vs        0.15
+     3.324 :      0  vs        0.07   <- t = M (the actual max)
+  bound stack vs truth M = 13.2948:
+    unconditional empirical quotient-moment min_r (sum_reps|eta|^2r)^(1/2r) = 13.3018 at r=60  (true bound, ->M)
+    conditional Wick quotient-moment  min_r sigma(m r!)^(1/2r) = 12.9016 at r=10   [WOULD-BE bound if A_r<=Wick held]
+    Gaussian-tail union (quotient)    sigma sqrt(ln m)        = 11.5357
+    Gaussian-tail union (full index)  sigma sqrt(ln(p-1))     = 13.3201
+    M / [sigma sqrt(ln m)] = 1.1525   (>1 => even the FULL Gaussian-tail input undershoots the deterministic truth: the I031 constant creep)
+    Wick-conditional full-index moment min_r sigma((p-1) r!)^(1/2r) = 14.5876 at r=13; quotient/full gain = 0.8844 (predicted sqrt(ln m/ln(p-1)) = 0.8660)
+
+  p=65633  m=4102  sigma^2=n(p-n)/(p-1)=15.996343  M=13.9265  M/sigma=3.4820
+  orbit-invariance of |eta|: max within-orbit spread = 7.11e-15  (machine precision)
+  A_1/Wick_1 = 1.000000000000  (exact identity check)
+  per-rep moment wall  A_r/(r! sigma^(2r)):
+    r1=1.000  r2=1.405  r3=2.048  r4=2.917  r5=3.976  r6=5.145  r7=6.302  r8=7.293  r9=7.967  r10=8.209  r11=7.976  r12=7.308  r13=6.317  r14=5.158
+  per-rep tail vs Gaussian:  t/sigma : #{reps:|eta|>t}  vs  m*exp(-t^2/sigma^2)
+     2.000 :    188  vs       75.13
+     2.500 :     44  vs        7.92
+     2.883 :      9  vs        1.01   <- t = sigma*sqrt(ln m) (Gaussian-union threshold)
+     3.000 :      5  vs        0.51
+     3.200 :      1  vs        0.15
+     3.482 :      0  vs        0.02   <- t = M (the actual max)
+  bound stack vs truth M = 13.9265:
+    unconditional empirical quotient-moment min_r (sum_reps|eta|^2r)^(1/2r) = 13.9265 at r=60  (true bound, ->M)
+    conditional Wick quotient-moment  min_r sigma(m r!)^(1/2r) = 12.9017 at r=10   [WOULD-BE bound if A_r<=Wick held]
+    Gaussian-tail union (quotient)    sigma sqrt(ln m)        = 11.5359
+    Gaussian-tail union (full index)  sigma sqrt(ln(p-1))     = 13.3202
+    M / [sigma sqrt(ln m)] = 1.2072   (>1 => even the FULL Gaussian-tail input undershoots the deterministic truth: the I031 constant creep)
+    Wick-conditional full-index moment min_r sigma((p-1) r!)^(1/2r) = 14.5877 at r=13; quotient/full gain = 0.8844 (predicted sqrt(ln m/ln(p-1)) = 0.8660)
+
+====================================================================================================
+VERDICT lines are in the kb note; the decision inputs above are exact/deterministic.

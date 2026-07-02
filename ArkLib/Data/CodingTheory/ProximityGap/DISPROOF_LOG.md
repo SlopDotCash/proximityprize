@@ -19354,3 +19354,73 @@ orbit batches so effective trials are ~n× fewer). Transference direction qualit
 confirmed (bad sections have systematically smaller dual minima). SURVIVING RESIDUE (named,
 open): cross-orbit correlation under the multiplier action S → kS, gcd(k,n)=1 — NOT an
 isometry of a fixed L_p; untested.
+
+## [466-r2-mixed-topfit-budget-unsat] the mixed-profile top-fit route (z = n endpoint) is jointly unsatisfiable with the fiber budget at every prize shape (2026-07-01)
+
+Lane: #466 round-2 L1 (`probe_466_mixed_topfit_endpoint.py` + `_out_466_mixed_topfit_endpoint.txt`;
+kb `deltastar-466-mixed-topfit-refuted-2026-07-01.md`; Lean brick
+`Frontier/MixedTopFitBudgetIncompatibility.lean`, axiom-clean). The dossier §6 Tier-1 item 2
+sub-obligation "prove/refute `Low/FullMixedChooseProfileTopSumsFit` / `FieldPow*TopFit` at the
+`z = n` endpoint" is DECIDED: **refuted as a closure path, for EVERY exact budget `Mexact`**.
+The step direction with exactly `a` zeros forces `Mcoarse(t₀) ≤ B` through
+`UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits` at `t₀ = max(0, 2a−n) < k`, while the
+top fit forces (kill 1, field-power) `Mcoarse(t₀) ≥ q·C(n,a−t₀) ≥ q` and (kill 2,
+Mexact-INDEPENDENT, from the in-window high singleton `r = a−1`)
+`Mcoarse(t₀) ≥ C(n−t₀, a−1−t₀) ≈ 2^{n·H(a/n)}`. Joint UNSAT whenever `B < q` (weld gives
+`B ≤ ε*·q = q/2^128`) resp. `B < C(n−t₀, a−1−t₀)`. Exact scan μ=4..12 × 4 rates × 3 in-window
+a × 2 q-shapes × 2 budgets: **416/416 FAIL**; μ=30 Stirling: ~0.36–1.07·10⁹ bits of violation.
+Root cause: the endpoint contraction `mixedChooseProfileCardSum_le_topCard` evaluates the
+profile sum at `z = n` where the fiber coefficients vanish and imposes it at `z ≈ a` where the
+budget binds. General-parameter Lean theorems (not instances):
+`not_fieldPowMixedProfileTopFit_and_uniformFiberFits`,
+`not_exists_lowMixedChooseProfileTopSumsFit_and_uniformFiberFits` (+ Full variants, + concrete
+n=16/k=4/a=7/B≤4 scale model). CONSEQUENCE: the low-profile split (exact `D(t)` bounds for
+`t < k`, sub-`q`, with z-coupled budget coefficients) is MANDATORY; any future fiber consumer
+must keep both sides' z-dependence coupled, and any envelope carrying a bare factor `q` is dead
+at every z. Do NOT re-attempt: choose-profile supersets through ambient (z-independent)
+majorization; field-power envelopes into sub-`q` budgets.
+
+## [466-r4-d2-lowertail-concentration] the M(n,p) prime-ensemble CONCENTRATES — no ∃-form lower-tail lever exists (2026-07-01)
+
+Lane: #466 round-4 L3 (`probe_466_rogers_siegel_tail.py` + `_out_466_rogers_siegel_tail.txt`;
+exact full-coset scans, per-prime Parseval asserted ≤1e-6 rel). Over ALL 2038 primes
+p ≡ 1 mod 16 in (16⁴, 4·16⁴]: x = M/√(n log(p/n)) ∈ [1.104, 1.218] (std 0.019);
+P(x < 1.1) = 0 EXACTLY; the ensemble is STRICTLY MORE concentrated than the iid
+Gaussian/Gumbel benchmark (Gumbel-z mean −1.86, std 0.33 vs benchmark +0.58, 1.28) — the
+lower tail is thinner than doubly-exponential. NO anomaly class: mean x flat in v₂(p−1)
+(1.139–1.155 across v₂ = 4..16); all 16 in-window generalized-Fermat primes sit inside the
+bulk; the 15 smallest-x primes show no v₂/GF/smooth-cofactor signature. n=32 replication
+(2103 sampled + all 123 structured) consistent. VERDICT: the "prize prime as a rare
+large-deviation lower-tail anomaly" hypothesis is REFUTED — the D2 Rogers–Siegel sliver does
+NOT reopen; the ∃-form (deployer) gains nothing over the ∀-form beyond the already-settled
+floor removal. Gate brick `_D2LowerTailConcentrationGate.lean` (axiom-clean; the measured
+floor carried honestly as the named Prop `LowerTailConcentrationFloor`). Composes with
+`_D2RogersSiegelVarianceGate` and `_D2LargeDeviationRateFunction`.
+
+## [466-r4-tsang-levels-vacuous] Selberg/Tsang level-splitting has nothing to split — all genuine excess is level-0/archimedean (2026-07-01)
+
+Lane: #466 round-4 L4(A) (`probe_466_tsang_levels.py` + `_out_466_tsang_levels.txt`; exact
+integer decomposition E_r = Σ_k e_k by wraparound level k = (Σ_Z x − Σ_Z y)/p, verified
+against direct η sums to <5e-16). Findings: for GENERIC primes the wraparound term is
+IDENTICALLY ZERO for all r ≤ 6 at n=8 and r ≤ 4 at n=16 (T_r is p-independent there; new
+p-independent values T₄(16) = 4,649,680, T₅(8) = 7,939,008, T₆(8) = 357,713,664); level-0
+carries 100.1–104.2% of E_r in EVERY cell — the entire excess over Wick is the
+Z-lift/archimedean object (re-confirming "the wall is archimedean" from a new direction);
+at onset the k ≠ 0 levels are SUB-smooth (ρ_k mostly 0.002–0.22 < 1) with a small NEGATIVE
+excess — lift sums REPEL exact p-multiples; the resonant 65537 onsets earliest (r=4,
+level-3 concentration, ρ 1.12→2.30) but stays ≤1% of E_r. VERDICT: KILL, sharper than
+pre-registered — past the closed diagonal (2r ≤ β) there is literally nothing for a
+p-adic/divisor level-splitting to localize; any level-local bound reduces to smooth counting
+= the aggregate W_r.
+
+## [466-r4-i031-tail-cosmetic] the I031 entropy reduction cancels at the TAIL too — union-over-cosets ≡ the quotient moment bound (2026-07-01)
+
+Lane: #466 round-4 L4(B) (`probe_466_i031_tail.py` + `_out_466_i031_tail.txt`). EXACT
+IDENTITY: the union bound over the m coset reps with the best tail derivable from depth-r
+moments (Markov) succeeds iff t^{2r} > m·μ_{2r} — i.e. the tail packaging IS the quotient
+moment bound (m·μ_{2r})^{1/2r}, verified to 9e-16 + an exact-integer instance. Finite
+arithmetic (Wick input, μ = 4..32, β ∈ {3,4,6}): the moment route at optimal depth converges
+to the Gaussian-tail union output (ratio 1.16 → 1.02); the √(log m / log p) quotient/full
+factor is bounded (≤ √β/(β−1)) — cosmetic in the exponent. Completes the round-1
+`i031_chaining_cosmetic` moment-side kill: the dilation-quotient entropy reduction is
+cosmetic at BOTH the moment input and the tail/union input. The I031 lead is fully closed.
