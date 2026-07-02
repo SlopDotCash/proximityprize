@@ -376,6 +376,30 @@ theorem aligned_line_lambda_ge_q
     _ ≤ (lineAppearingCodewords dom k a 0 u₁).card :=
         Finset.card_le_card_of_injOn _ hmaps hinj
 
+open Classical in
+/-- **The nonvanishing-restricted uniform budget is ALSO unsatisfiable below `q`** (referee
+finding, cross-session 2026-07-01): the constant direction `u₁ = 1` is nowhere-zero and
+aligned, so any consumer of shape `∀ u₀ u₁, (∀ i, u₁ i ≠ 0) → LineListBudgeted … L` is
+vacuous for `L < q` once `1 ≤ k`.  The far restriction in
+`mcaDeltaStar_ge_of_farLineListBudgeted` is load-bearing for consumer *satisfiability*, not
+just bookkeeping — do not re-consume the nonvanishing-only form. -/
+theorem not_forall_nonvanishing_lineListBudgeted_of_lt_field
+    (dom : Fin n ↪ F) {k : ℕ} (hk : 1 ≤ k) (a : ℕ) (ha : a ≤ n)
+    {L : ℕ} (hL : L < Fintype.card F) :
+    ¬ ∀ u₀ u₁ : Fin n → F, (∀ i, u₁ i ≠ 0) → LineListBudgeted dom k a u₀ u₁ L := by
+  intro hall
+  have hmem : (fun _ : Fin n => (1 : F)) ∈ (rsCode dom k : Submodule F (Fin n → F)) := by
+    refine ⟨Polynomial.C 1, lt_of_le_of_lt Polynomial.degree_C_le ?_, ?_⟩
+    · exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hk
+    · funext i; simp
+  have hne : (fun _ : Fin n => (1 : F)) ≠ (0 : Fin n → F) := by
+    intro h
+    exact one_ne_zero (congrFun h ⟨0, Nat.pos_of_ne_zero (NeZero.ne n)⟩)
+  have hbudget := hall 0 (fun _ => 1) (fun _ => one_ne_zero)
+  rw [LineListBudgeted] at hbudget
+  exact absurd (le_trans (aligned_line_lambda_ge_q dom k a ha hmem hne) hbudget)
+    (not_le.mpr hL)
+
 /-- **The support-eligible capstone is unsatisfiable** (the #464 retraction, as a theorem):
 no uniform all-lines list budget below `q` exists once the code has a nonzero codeword. -/
 theorem not_uniform_lineListBudgeted_of_lt_card
@@ -431,5 +455,6 @@ end ProximityGap.LineListMCAWeld
 #print axioms ProximityGap.LineListMCAWeld.farFromCode_of_forall_coset_supportEligible
 #print axioms ProximityGap.LineListMCAWeld.mcaDeltaStar_ge_of_farLineListBudgeted
 #print axioms ProximityGap.LineListMCAWeld.aligned_line_lambda_ge_q
+#print axioms ProximityGap.LineListMCAWeld.not_forall_nonvanishing_lineListBudgeted_of_lt_field
 #print axioms ProximityGap.LineListMCAWeld.not_uniform_lineListBudgeted_of_lt_card
 #print axioms ProximityGap.LineListMCAWeld.lowWeight_badCount_le_of_largeZeroSafe_budget

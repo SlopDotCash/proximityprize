@@ -204,7 +204,15 @@ open Classical in
 directions, an explicit control `hvanish` on the vanishing-direction residual (an honest
 named obligation: `ε_mca` sups over ALL stacks, and the heavy-scalar fiber argument
 needs `u₁ i ≠ 0` everywhere), and the fit `L·⌊n/a⌋ / q ≤ ε*` give the MCA-threshold
-floor `δ ≤ mcaDeltaStar(RS, ε*)` through `le_mcaDeltaStar_of_good`. -/
+floor `δ ≤ mcaDeltaStar(RS, ε*)` through `le_mcaDeltaStar_of_good`.
+
+⚠️ **VACUOUS AT THE PRIZE BUDGET (referee finding, 2026-07-01):** the `hL` hypothesis
+quantifies over ALL nonvanishing directions, and the constant direction `u₁ = 1` is
+nonvanishing yet aligned, so `hL` is unsatisfiable for any `L < q` once `1 ≤ k`
+(`LineListMCAWeld.not_forall_nonvanishing_lineListBudgeted_of_lt_field`).  Kept as the
+round-1 historical form; the PRODUCTION consumer is the far-restricted
+`LineListMCAWeld.mcaDeltaStar_ge_of_farLineListBudgeted` (root file), whose budget
+hypothesis excludes aligned directions and is not refuted by them. -/
 theorem mcaDeltaStar_ge_of_lineList_budget
     (dom : Fin n ↪ F) (k a : ℕ) (ha : 1 ≤ a) (δ : ℝ≥0) (hδ : δ ≤ 1)
     (hthr : (a : ℝ≥0) ≤ (1 - δ) * (n : ℝ≥0)) (L : ℕ) (εstar : ℝ≥0∞)
