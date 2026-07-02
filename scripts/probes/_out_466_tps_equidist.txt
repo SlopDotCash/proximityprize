@@ -1,0 +1,128 @@
+probe_466_tps_equidist.py -- TPS divisor-equidistribution (LANE L8, #466) [stage spec]
+numpy 2.4.6, sympy yes; primes to 4194304
+
+----- ANCHOR: canonical width-4 resultant Res(Phi_16,(X^4+1)^16-(X^2+1)^16) -----
+  |Res| has 27 digits; prime factors: [2, 3, 7, 17]
+
+----- ANCHOR: D4 tuple count at the resonant GF prime -----
+  D4 tuple anchor: E4(65537,n=16) = 4654160, char-0 4649680, W4 = +4480 (dossier requires +4480) PASS
+  D4-legal folded space (c in Z^8, sum|c| <= 8): 265729 vectors, 256 with 65537 | N_c != 0; min sum c^2 = 17 (>= 17 as the sharp cap (sum c^2)^4 forces), min max|c_j| = 4
+  explicit multiplicity-carried relation at p=65537: folded c = (-4, -1, 0, 0, 0, 0, 0, 0), N_c = 65537 = 65537 * 1 (65537 | N_c: True)
+  => W_4(65537) mass is 100% multiplicity-carried: the {0,+-1} stack has sharp cap 16^4 = 65536 < 65537 at r=4 (W(65537) = 0 PROVABLY; carriers need |c_j| >= 3)
+
+===== n=8, r=2  (task spec) =====
+  1120 vectors (C(8,4)*2^4); char-0 vanishers: 24; distinct nonzero norms: 9; max N_a = 64, sharp cap (4r)^(n/4) = 64 [ATTAINED; crude cap 256]; 0.0s
+  [validate] n=8 r=2: 8 sympy resultants EXACT; mod-113 membership 30/30 consistent (divisible: 0)
+  orbit pass: 128 class big-prime vectors -> 1 orbits over 1 class primes > sqrt(cap)=8  (0.1s)
+  full class spectrum (p = 1 mod 8, W>0): 1 primes, vector mass 128 (class share 0.090)
+      served: 17
+  dyadic class profile (p = 1 mod 8; orbit units where p > sqrt(cap)):
+      [16,32): 1 primes, served 1, orbit mass 1, orbit index 0.00, top share 1.00
+  [beta=4] window [4096,16384]: 331 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=2 in this window
+  [beta=3] BETA-DEP window [512,2048]: 49 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=2 in this window
+
+===== n=8, r=3  (task spec) =====
+  1792 vectors (C(8,6)*2^6); char-0 vanishers: 32; distinct nonzero norms: 12; max N_a = 144, sharp cap (4r)^(n/4) = 144 [ATTAINED; crude cap 1296]; 0.0s
+  [validate] n=8 r=3: 8 sympy resultants EXACT; mod-113 membership 30/30 consistent (divisible: 0)
+  orbit pass: 384 class big-prime vectors -> 2 orbits over 1 class primes > sqrt(cap)=12  (0.0s)
+  full class spectrum (p = 1 mod 8, W>0): 1 primes, vector mass 384 (class share 0.140)
+      served: 17
+  dyadic class profile (p = 1 mod 8; orbit units where p > sqrt(cap)):
+      [16,32): 1 primes, served 1, orbit mass 2, orbit index 0.00, top share 1.00
+  [beta=4] window [4096,16384]: 331 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=3 in this window
+  [beta=3] BETA-DEP window [512,2048]: 49 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=3 in this window
+
+===== n=8, r=4  (task spec) =====
+  256 vectors (C(8,8)*2^8); char-0 vanishers: 16; distinct nonzero norms: 5; max N_a = 144, sharp cap (4r)^(n/4) = 256 [ratio 0.562; crude cap 4096]; 0.0s
+  [validate] n=8 r=4: 8 sympy resultants EXACT; mod-113 membership 30/30 consistent (divisible: 0)
+  full class spectrum (p = 1 mod 8, W>0): 0 primes, vector mass 0 (class share 0.000)
+  dyadic class profile (p = 1 mod 8; orbit units where p > sqrt(cap)):
+  [beta=4] window [4096,16384]: 331 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=4 in this window
+  [beta=3] BETA-DEP window [512,2048]: 49 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=4 in this window
+
+  [n=8 STRUCTURAL] sharp cap (4r)^2 <= 256 for every realizable depth r<=4:
+  => ALL {0,+-1} divisor mass at n=8 lives in p <= 241; the beta=3 AND beta=4
+     windows are PROVABLY EMPTY at every depth (strengthens 'n=8 D4-clean').
+
+===== n=16, r=2  (task spec) =====
+  29120 vectors (C(16,4)*2^4); char-0 vanishers: 112; distinct nonzero norms: 25; max N_a = 4096, sharp cap (4r)^(n/4) = 4096 [ATTAINED; crude cap 65536]; 0.2s
+  [validate] n=16 r=2: 8 sympy resultants EXACT; mod-401 membership 30/30 consistent (divisible: 0)
+  orbit pass: 4096 class big-prime vectors -> 5 orbits over 4 class primes > sqrt(cap)=64  (0.3s)
+  full class spectrum (p = 1 mod 16, W>0): 5 primes, vector mass 16384 (class share 0.346)
+      served: 17, 97, 113, 257, 337
+  dyadic class profile (p = 1 mod 16; orbit units where p > sqrt(cap)):
+      [16,32): 1 primes, served 1, vector mass 12288 (below sqrt-cap: small-prime regime)
+      [64,128): 2 primes, served 2, orbit mass 3, orbit index 0.17, top share 0.67
+      [256,512): 6 primes, served 2, orbit mass 2, orbit index 0.67, top share 0.50
+  [beta=4] window [65536,262144]: 2038 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=2 in this window
+  [beta=3] BETA-DEP window [4096,16384]: 169 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=2 in this window
+
+===== n=16, r=3  (task spec) =====
+  512512 vectors (C(16,6)*2^6); char-0 vanishers: 448; distinct nonzero norms: 100; max N_a = 20736, sharp cap (4r)^(n/4) = 20736 [ATTAINED; crude cap 1679616]; 2.9s
+  [validate] n=16 r=3: 8 sympy resultants EXACT; mod-401 membership 30/30 consistent (divisible: 0)
+  orbit pass: 112128 class big-prime vectors -> 63 orbits over 31 class primes > sqrt(cap)=144  (11.1s)
+  full class spectrum (p = 1 mod 16, W>0): 34 primes, vector mass 381440 (class share 0.401)
+      served: 17, 97, 113, 193, 241, 257, 337, 353, 401, 433, ..., 2273, 2689, 2833, 3089, 4001, 4049
+  dyadic class profile (p = 1 mod 16; orbit units where p > sqrt(cap)):
+      [16,32): 1 primes, served 1, vector mass 200192 (below sqrt-cap: small-prime regime)
+      [64,128): 2 primes, served 2, vector mass 69120 (below sqrt-cap: small-prime regime)
+      [128,256): 2 primes, served 2, orbit mass 13, orbit index 0.04, top share 0.54
+      [256,512): 6 primes, served 6, orbit mass 23, orbit index 0.56, top share 0.30
+      [512,1024): 9 primes, served 8, orbit mass 12, orbit index 0.50, top share 0.25
+      [1024,2048): 15 primes, served 8, orbit mass 8, orbit index 0.47, top share 0.12
+      [2048,4096): 31 primes, served 7, orbit mass 7, orbit index 0.77, top share 0.14
+  [beta=4] window [65536,262144]: 2038 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=3 in this window
+  [beta=3] BETA-DEP window [4096,16384]: 169 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=3 in this window
+
+===== n=16, r=4  (EXTENSION: below window onset r*=5, rich beta=3 data) =====
+  3294720 vectors (C(16,8)*2^8); char-0 vanishers: 1120; distinct nonzero norms: 287; max N_a = 50176, sharp cap (4r)^(n/4) = 65536 [ratio 0.766; crude cap 16777216]; 20.4s
+  [validate] n=16 r=4: 8 sympy resultants EXACT; mod-401 membership 30/30 consistent (divisible: 0)
+  orbit pass: 908800 class big-prime vectors -> 255 orbits over 96 class primes > sqrt(cap)=256  (149.3s)
+  full class spectrum (p = 1 mod 16, W>0): 101 primes, vector mass 2902784 (class share 0.442)
+      served: 17, 97, 113, 193, 241, 257, 337, 353, 401, 433, ..., 9601, 10337, 10369, 14321, 15569, 15761
+  dyadic class profile (p = 1 mod 16; orbit units where p > sqrt(cap)):
+      [16,32): 1 primes, served 1, vector mass 1280384 (below sqrt-cap: small-prime regime)
+      [64,128): 2 primes, served 2, vector mass 482176 (below sqrt-cap: small-prime regime)
+      [128,256): 2 primes, served 2, vector mass 231424 (below sqrt-cap: small-prime regime)
+      [256,512): 6 primes, served 6, orbit mass 75, orbit index 0.55, top share 0.23
+      [512,1024): 9 primes, served 9, orbit mass 56, orbit index 0.71, top share 0.18
+      [1024,2048): 15 primes, served 15, orbit mass 44, orbit index 0.57, top share 0.14
+      [2048,4096): 31 primes, served 26, orbit mass 39, orbit index 0.46, top share 0.08
+      [4096,8192): 56 primes, served 28, orbit mass 29, orbit index 0.55, top share 0.07
+      [8192,16384): 113 primes, served 12, orbit mass 12, orbit index 0.89, top share 0.08
+  [beta=4] window [65536,262144]: 2038 class primes, served 0 (0.0%), vector mass 0
+      W(p) == 0 identically -- ZERO divisor mass at r=4 in this window
+  [beta=3] BETA-DEP window [4096,16384]: 169 class primes, served 40 (23.7%), vector mass 50176
+      raw-vector Poisson index var/mean = 2357.14 (inflated by unfold x orbit degeneracy)
+      ORBIT-unit: total 41 orbits; mean 0.2426  index var/mean = 0.806   (distinct-norm index 0.806)
+        W(4481) = 1024  orbits=2 distinct-norms=2   [v2(p-1)=7]
+        W(4129) = 2048  orbits=1 distinct-norms=1   [least-in-window, v2(p-1)=5]
+        W(4241) = 2048  orbits=1 distinct-norms=1   [v2(p-1)=4]
+        W(4177) = 512  orbits=1 distinct-norms=1   [v2(p-1)=4]
+        W(4273) = 512  orbits=1 distinct-norms=1   [v2(p-1)=4]
+        W(4513) = 512  orbits=1 distinct-norms=1   [v2(p-1)=5]
+        W(4673) = 2048  orbits=1 distinct-norms=1   [v2(p-1)=6]
+        W(4657) = 512  orbits=1 distinct-norms=1   [v2(p-1)=4]
+      top-prime orbit share = 0.049
+
+----- CROSS-CHECK: n=16 r=2 bad-prime set vs the width-4 anchor -----
+  measured r=2 class bad-prime set: [17, 97, 113, 257, 337]
+  contains 17: True; canonical class factors [17] subset: True; measured-only: [97, 113, 257, 337]
+
+[stage spec] total runtime 188.3s
+probe_466_tps_equidist.py -- TPS divisor-equidistribution (LANE L8, #466) [stage ext16]
+numpy 2.4.6, sympy yes; primes to 4194304
+
+===== n=16, r=5  (EXTENSION: window-reaching depth (onset r*=5)) =====
+  8200192 vectors (C(16,10)*2^10); char-0 vanishers: 1792; distinct nonzero norms: 545; max N_a = 135424, sharp cap (4r)^(n/4) = 160000 [ratio 0.846; crude cap 100000000]; 66.1s
+  [validate] n=16 r=5: 8 sympy resultants EXACT; mod-401 membership 30/30 consistent (divisible: 0)

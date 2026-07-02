@@ -1,0 +1,197 @@
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=4129 (q>=n^4: True) v2(q-1)=5 omega=777 C(n,k)=28
+
+  DIRECTION mono_j2 a=3 (delta=0.6250) q=4129: worst-count=56 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[2, 120] (independent path)
+      COUNTERMODEL: gamma=2 unique witness poly coeffs (low->high)=(3659, 1783) agreement=3
+    [pool-top1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[17, 160] (independent path)
+      COUNTERMODEL: gamma=17 unique witness poly coeffs (low->high)=(622, 208) agreement=3
+    [pool-top2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[63, 125] (independent path)
+      COUNTERMODEL: gamma=63 unique witness poly coeffs (low->high)=(1984, 2958) agreement=3
+    [pool-top3] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[109, 187] (independent path)
+      COUNTERMODEL: gamma=109 unique witness poly coeffs (low->high)=(2216, 3944) agreement=3
+    [chained-arch0] #bad=55 (verified 3-way)  multiplicity {1w:54 2w:1}  unique-witness scalars: 54
+      full q^2-codeword enumeration verified fiber at gamma=[31, 63] (independent path)
+      COUNTERMODEL: gamma=31 unique witness poly coeffs (low->high)=(849, 2385) agreement=3
+    [chained-arch1] #bad=55 (verified 3-way)  multiplicity {1w:54 2w:1}  unique-witness scalars: 54
+      full q^2-codeword enumeration verified fiber at gamma=[116, 227] (independent path)
+      COUNTERMODEL: gamma=116 unique witness poly coeffs (low->high)=(2155, 4070) agreement=3
+    [chained-arch2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[6, 127] (independent path)
+      COUNTERMODEL: gamma=6 unique witness poly coeffs (low->high)=(3251, 4058) agreement=3
+
+  DIRECTION mono_j6 a=3 (delta=0.6250) q=4129: worst-count=56 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[52, 113] (independent path)
+      COUNTERMODEL: gamma=52 unique witness poly coeffs (low->high)=(2543, 1137) agreement=3
+    [pool-top1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[39, 81] (independent path)
+      COUNTERMODEL: gamma=39 unique witness poly coeffs (low->high)=(2880, 3552) agreement=3
+    [pool-top2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[149, 175] (independent path)
+      COUNTERMODEL: gamma=149 unique witness poly coeffs (low->high)=(2821, 2900) agreement=3
+    [pool-top3] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[61, 148] (independent path)
+      COUNTERMODEL: gamma=61 unique witness poly coeffs (low->high)=(1325, 3176) agreement=3
+    [chained-arch0] #bad=54 (verified 3-way)  multiplicity {1w:52 2w:2}  unique-witness scalars: 52
+      full q^2-codeword enumeration verified fiber at gamma=[36, 104] (independent path)
+      COUNTERMODEL: gamma=36 unique witness poly coeffs (low->high)=(3992, 2815) agreement=3
+    [chained-arch1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[61, 183] (independent path)
+      COUNTERMODEL: gamma=61 unique witness poly coeffs (low->high)=(3022, 3846) agreement=3
+    [chained-arch2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[90, 202] (independent path)
+      COUNTERMODEL: gamma=90 unique witness poly coeffs (low->high)=(964, 1414) agreement=3
+
+  DIRECTION sp2_0_2_c1 a=3 (delta=0.6250) q=4129: worst-count=56 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[143, 164] (independent path)
+      COUNTERMODEL: gamma=143 unique witness poly coeffs (low->high)=(2366, 3446) agreement=3
+    [pool-top1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[17, 189] (independent path)
+      COUNTERMODEL: gamma=17 unique witness poly coeffs (low->high)=(1668, 323) agreement=3
+    [pool-top2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[74, 97] (independent path)
+      COUNTERMODEL: gamma=74 unique witness poly coeffs (low->high)=(1015, 3802) agreement=3
+    [pool-top3] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[23, 30] (independent path)
+      COUNTERMODEL: gamma=23 unique witness poly coeffs (low->high)=(4044, 1222) agreement=3
+    [chained-arch0] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[31, 51] (independent path)
+      COUNTERMODEL: gamma=31 unique witness poly coeffs (low->high)=(349, 3258) agreement=3
+    [chained-arch1] #bad=55 (verified 3-way)  multiplicity {1w:54 2w:1}  unique-witness scalars: 54
+      full q^2-codeword enumeration verified fiber at gamma=[131, 221] (independent path)
+      COUNTERMODEL: gamma=131 unique witness poly coeffs (low->high)=(902, 2979) agreement=3
+    [chained-arch2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[92, 109] (independent path)
+      COUNTERMODEL: gamma=92 unique witness poly coeffs (low->high)=(979, 1217) agreement=3
+
+  DIRECTION sp2_0_3_c1 a=3 (delta=0.6250) q=4129: worst-count=56 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[30, 123] (independent path)
+      COUNTERMODEL: gamma=30 unique witness poly coeffs (low->high)=(992, 3379) agreement=3
+    [pool-top1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[100, 249] (independent path)
+      COUNTERMODEL: gamma=100 unique witness poly coeffs (low->high)=(3174, 1090) agreement=3
+    [pool-top2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[58, 243] (independent path)
+      COUNTERMODEL: gamma=58 unique witness poly coeffs (low->high)=(424, 3553) agreement=3
+    [pool-top3] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[81, 100] (independent path)
+      COUNTERMODEL: gamma=81 unique witness poly coeffs (low->high)=(212, 932) agreement=3
+    [chained-arch0] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[41, 105] (independent path)
+      COUNTERMODEL: gamma=41 unique witness poly coeffs (low->high)=(3821, 2156) agreement=3
+    [chained-arch1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[14, 112] (independent path)
+      COUNTERMODEL: gamma=14 unique witness poly coeffs (low->high)=(1988, 4107) agreement=3
+    [chained-arch2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[39, 154] (independent path)
+      COUNTERMODEL: gamma=39 unique witness poly coeffs (low->high)=(1768, 2497) agreement=3
+
+  DIRECTION mono_j2 a=4 (delta=0.5000) q=4129: worst-count=9 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=9 (verified 3-way)  multiplicity {1w:8 2w:1}  unique-witness scalars: 8
+      full q^2-codeword enumeration verified fiber at gamma=[894, 896] (independent path)
+      COUNTERMODEL: gamma=894 unique witness poly coeffs (low->high)=(896, 4128) agreement=4
+    [pool-top1] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      full q^2-codeword enumeration verified fiber at gamma=[1, 2206] (independent path)
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(3119, 0) agreement=4
+    [pool-top2] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      full q^2-codeword enumeration verified fiber at gamma=[1, 501] (independent path)
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(3094, 0) agreement=4
+    [pool-top3] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      full q^2-codeword enumeration verified fiber at gamma=[1, 976] (independent path)
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(1850, 0) agreement=4
+    [chained-arch0] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[1653, 1788] (independent path)
+      COUNTERMODEL: gamma=1653 unique witness poly coeffs (low->high)=(3442, 1359) agreement=4
+    [chained-arch1] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[899, 2706] (independent path)
+      COUNTERMODEL: gamma=899 unique witness poly coeffs (low->high)=(3080, 2210) agreement=4
+    [chained-arch2] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[174, 2370] (independent path)
+      COUNTERMODEL: gamma=174 unique witness poly coeffs (low->high)=(3600, 3523) agreement=4
+
+  DIRECTION mono_j6 a=4 (delta=0.5000) q=4129: worst-count=9 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=9 (verified 3-way)  multiplicity {1w:8 2w:1}  unique-witness scalars: 8
+      full q^2-codeword enumeration verified fiber at gamma=[894, 896] (independent path)
+      COUNTERMODEL: gamma=894 unique witness poly coeffs (low->high)=(896, 4128) agreement=4
+    [pool-top1] #bad=5 (verified 3-way)  multiplicity {1w:4 2w:1}  unique-witness scalars: 4
+      full q^2-codeword enumeration verified fiber at gamma=[1335, 1689] (independent path)
+      COUNTERMODEL: gamma=1335 unique witness poly coeffs (low->high)=(1513, 0) agreement=4
+    [pool-top2] #bad=5 (verified 3-way)  multiplicity {1w:4 2w:1}  unique-witness scalars: 4
+      full q^2-codeword enumeration verified fiber at gamma=[782, 1144] (independent path)
+      COUNTERMODEL: gamma=782 unique witness poly coeffs (low->high)=(964, 0) agreement=4
+    [pool-top3] #bad=5 (verified 3-way)  multiplicity {1w:4 2w:1}  unique-witness scalars: 4
+      full q^2-codeword enumeration verified fiber at gamma=[515, 627] (independent path)
+      COUNTERMODEL: gamma=515 unique witness poly coeffs (low->high)=(56, 0) agreement=4
+    [chained-arch0] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[172, 711] (independent path)
+      COUNTERMODEL: gamma=172 unique witness poly coeffs (low->high)=(822, 237) agreement=4
+    [chained-arch1] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[999, 2831] (independent path)
+      COUNTERMODEL: gamma=999 unique witness poly coeffs (low->high)=(2404, 795) agreement=4
+    [chained-arch2] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[1311, 2163] (independent path)
+      COUNTERMODEL: gamma=1311 unique witness poly coeffs (low->high)=(2996, 704) agreement=4
+
+  DIRECTION sp2_0_2_c1 a=4 (delta=0.5000) q=4129: worst-count=9 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=9 (verified 3-way)  multiplicity {1w:8 2w:1}  unique-witness scalars: 8
+      full q^2-codeword enumeration verified fiber at gamma=[894, 896] (independent path)
+      COUNTERMODEL: gamma=894 unique witness poly coeffs (low->high)=(1790, 4128) agreement=4
+    [pool-top1] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      full q^2-codeword enumeration verified fiber at gamma=[1, 716] (independent path)
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(1742, 0) agreement=4
+    [pool-top2] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      full q^2-codeword enumeration verified fiber at gamma=[1, 451] (independent path)
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(2958, 0) agreement=4
+    [pool-top3] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      full q^2-codeword enumeration verified fiber at gamma=[1, 7] (independent path)
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(2682, 0) agreement=4
+    [chained-arch0] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[2290, 2976] (independent path)
+      COUNTERMODEL: gamma=2290 unique witness poly coeffs (low->high)=(3323, 2174) agreement=4
+    [chained-arch1] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[2387, 3917] (independent path)
+      COUNTERMODEL: gamma=2387 unique witness poly coeffs (low->high)=(587, 329) agreement=4
+    [chained-arch2] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[128, 2193] (independent path)
+      COUNTERMODEL: gamma=128 unique witness poly coeffs (low->high)=(800, 2638) agreement=4
+
+  DIRECTION sp2_0_3_c1 a=4 (delta=0.5000) q=4129: worst-count=9 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=9 (verified 3-way)  multiplicity {1w:8 2w:1}  unique-witness scalars: 8
+      full q^2-codeword enumeration verified fiber at gamma=[894, 896] (independent path)
+      COUNTERMODEL: gamma=894 unique witness poly coeffs (low->high)=(893, 896) agreement=4
+    [pool-top1] #bad=5 (verified 3-way)  multiplicity {1w:4 2w:1}  unique-witness scalars: 4
+      full q^2-codeword enumeration verified fiber at gamma=[894, 896] (independent path)
+      COUNTERMODEL: gamma=894 unique witness poly coeffs (low->high)=(894, 895) agreement=4
+    [pool-top2] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      full q^2-codeword enumeration verified fiber at gamma=[3117, 3395] (independent path)
+      COUNTERMODEL: gamma=3117 unique witness poly coeffs (low->high)=(3484, 3618) agreement=4
+    [pool-top3] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      full q^2-codeword enumeration verified fiber at gamma=[107, 938] (independent path)
+      COUNTERMODEL: gamma=107 unique witness poly coeffs (low->high)=(3603, 325) agreement=4
+    [chained-arch0] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[395, 1474] (independent path)
+      COUNTERMODEL: gamma=395 unique witness poly coeffs (low->high)=(348, 4009) agreement=4
+    [chained-arch1] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[680, 1522] (independent path)
+      COUNTERMODEL: gamma=680 unique witness poly coeffs (low->high)=(1087, 2586) agreement=4
+    [chained-arch2] #bad=3 (verified 3-way)  multiplicity {1w:3}  unique-witness scalars: 3
+      full q^2-codeword enumeration verified fiber at gamma=[509, 1329] (independent path)
+      COUNTERMODEL: gamma=509 unique witness poly coeffs (low->high)=(2553, 3875) agreement=4
+[setting done in 1025s]
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=8273 (q>=n^4: True) v2(q-1)=4 omega=5775 C(n,k)=28
+
+  DIRECTION mono_j2 a=3 (delta=0.6250) q=8273: worst-count=56 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[217, 289] (independent path)
+      COUNTERMODEL: gamma=217 unique witness poly coeffs (low->high)=(580, 4025) agreement=3
+    [pool-top1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56

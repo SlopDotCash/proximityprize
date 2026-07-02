@@ -506,7 +506,23 @@ def main():
     ap.add_argument('--stage', choices=['n8', 'n16', 'all'], default='all')
     ap.add_argument('--fermat', action='store_true',
                     help='also run n16 at the structured Fermat prime 65537')
+    ap.add_argument('--qs', default='',
+                    help='comma-separated prime filter (chunked runs on a busy box)')
+    ap.add_argument('--alist', default='',
+                    help='comma-separated agreement-level filter')
+    ap.add_argument('--dirs', default='',
+                    help='comma-separated direction-index filter (0-based, per stage list)')
     args = ap.parse_args()
+    qfilt = {int(x) for x in args.qs.split(',') if x} or None
+    afilt = {int(x) for x in args.alist.split(',') if x} or None
+    dfilt = {int(x) for x in args.dirs.split(',') if x} or None
+    print(f"[chunk] stage={args.stage} qs={sorted(qfilt) if qfilt else 'all'} "
+          f"alist={sorted(afilt) if afilt else 'all'} "
+          f"dirs={sorted(dfilt) if dfilt else 'all'} seed=46612", flush=True)
+
+    def pick(seq, filt):
+        return [x for i, x in enumerate(seq) if filt is None or i in filt]
+
     rng = np.random.default_rng(46612)
     results = []
 
@@ -521,8 +537,10 @@ def main():
         # P5 hard classes at n=8: worst monomial mono_j2 (tie winners sp2_0_2 / sp2_0_3)
         hard8 = [('mono', 2), ('mono', 6), ('sp2', 0, 2, 1), ('sp2', 0, 3, 1)]
         for q in (4129, 8273):
-            run_setting(8, 2, q, a_list=[3, 4], hard_dirs=hard8, rng=rng,
-                        cfg=cfg8, results=results)
+            if qfilt is not None and q not in qfilt:
+                continue
+            run_setting(8, 2, q, a_list=[a for a in (3, 4) if afilt is None or a in afilt],
+                        hard_dirs=pick(hard8, dfilt), rng=rng, cfg=cfg8, results=results)
 
     if args.stage in ('n16', 'all'):
         qs = [65617, 65633] + ([65537] if args.fermat else [])
@@ -536,8 +554,11 @@ def main():
         # sp2_4_14_c1 and sp2_7_13_c1 (component gaps 10, 6 != n/2=8)
         hard16 = [('mono', 4), ('mono', 7), ('sp2', 4, 14, 1), ('sp2', 7, 13, 1)]
         for q in qs:
-            run_setting(16, 4, q, a_list=[5, 6, 7], hard_dirs=hard16, rng=rng,
-                        cfg=cfg16, results=results)
+            if qfilt is not None and q not in qfilt:
+                continue
+            run_setting(16, 4, q,
+                        a_list=[a for a in (5, 6, 7) if afilt is None or a in afilt],
+                        hard_dirs=pick(hard16, dfilt), rng=rng, cfg=cfg16, results=results)
 
     print("\n" + "=" * 78)
     print("FINAL SUMMARY -- NoUniqueBadScalarWitness on hard lines:", flush=True)

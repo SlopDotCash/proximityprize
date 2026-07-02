@@ -1,0 +1,70 @@
+probe_466_deployment_certificates.py -- Lane L6 deployment-prime certificates
+BabyBear p = 2013265921 (prime: True), KoalaBear p = 2130706433 (prime: True)
+== SELF-TESTS ==
+  [1] p=641 n=128 f=5: pipeline vs mpmath-exhaustive max|dev| = 1.24e-14
+  [2] p=61441 n=2^12 f=15: pipeline vs independent-path max|dev| = 3.13e-13   anchors: |S1+1| = 2.54e-12, |S2/(p-n)-1| = 3.33e-16
+  [3] p=61441 coset j=0 vs mpmath dps=25: |dev| = 1.21e-13
+  [4] Chebyshev(Gaussian moments): max |beta_k - k| = 0.00e+00
+  [5] Hankel D-ratio vs Lanczos b_(k+1)^2 (p=61441): max rel dev = 2.22e-16
+  SELF-TESTS ALL PASS
+
+Total cos evaluations: 9.67e9; measured ~155 ns/elem -> estimated 25 min compute
+
+-- BabyBear: p = 2013265921 = 15*2^27+1, n = 2^27, f = 15, g = 31, beta = 1.1447, ln(p/n) = 2.7081, genFermat = NO
+      chunk 32/128  (31s elapsed, 126s est total)
+      chunk 64/128  (66s elapsed, 133s est total)
+      chunk 96/128  (105s elapsed, 139s est total)
+      chunk 128/128  (137s elapsed, 137s est total)
+    anchors: |S1 - (-1)| = 1.617e-07   |S2/(p-n) - 1| = 2.220e-16   S3 = -6342852445186.306641 (int resid 3.066e-01)
+    M = |c_11| = 24858.614551   (eta_1 = c_0 = -3789.624971)
+    C = M/sqrt(n ln(p/n)) = 1.303898   M/(2 sqrt n) = 1.072857   M/Weil[(1+(f-1)sqrt p)/f] = 0.5936
+    |c| sorted desc: 24858.6 18191.9 16006.5 11036.9 10671.0 10418.7 9517.6 8781.0 8526.8 6845.2 4716.1 3789.6 2073.8 1138.9 507.2
+    independent-path recheck of argmax coset: |dev| = 7.276e-12
+    q_j = b_j^2/b0_j (j=1..7): 0.9333 0.7180 0.3481 0.1189 0.0591 0.0921 0.0463
+    double-ratio identity check (Hankel dets vs Lanczos): max rel dev = 2.2e-16
+    even-moment ratios m_2r/m0_2r (r=1..6): 0.9333 0.7636 0.5428 0.3185 0.1543 0.0628
+    [150s]
+
+-- ctrl27_c17: p = 2281701377 = 17*2^27+1, n = 2^27, f = 17, g = 3, beta = 1.1514, ln(p/n) = 2.8332, genFermat = NO
+      chunk 64/256  (34s elapsed, 135s est total)
+      chunk 128/256  (66s elapsed, 131s est total)
+      chunk 192/256  (96s elapsed, 128s est total)
+      chunk 256/256  (129s elapsed, 129s est total)
+    anchors: |S1 - (-1)| = 2.067e-07   |S2/(p-n) - 1| = 2.442e-15   S3 = -5230725402825.186523 (int resid 1.865e-01)
+    M = |c_13| = 25861.584992   (eta_1 = c_0 = -1673.823201)
+    C = M/sqrt(n ln(p/n)) = 1.326205   M/(2 sqrt n) = 1.116144   M/Weil[(1+(f-1)sqrt p)/f] = 0.5752
+    |c| sorted desc: 25861.6 20316.3 15358.6 15060.5 12881.5 11991.9 9074.9 8411.0 6538.6 6507.5 4862.5 3881.0 2907.2 1693.5 1673.8 ...
+    q_j = b_j^2/b0_j (j=1..7): 0.9412 0.8765 0.3533 0.2132 0.1068 0.0564 0.0312
+    double-ratio identity check (Hankel dets vs Lanczos): max rel dev = 2.2e-16
+    even-moment ratios m_2r/m0_2r (r=1..6): 0.9412 0.8591 0.6535 0.4076 0.2106 0.0918
+    [130s]
+
+-- ctrl27_c24: p = 3221225473 = 24*2^27+1, n = 2^27, f = 24, g = 5, beta = 1.1698, ln(p/n) = 3.1781, genFermat = NO
+      chunk 64/256  (48s elapsed, 193s est total)
+      chunk 128/256  (102s elapsed, 204s est total)
+      chunk 192/256  (158s elapsed, 210s est total)
+      chunk 256/256  (230s elapsed, 230s est total)
+    anchors: |S1 - (-1)| = 1.549e-07   |S2/(p-n) - 1| = 4.441e-16   S3 = 395142583700.332092 (int resid 3.321e-01)
+    M = |c_14| = 29340.605729   (eta_1 = c_0 = -6138.865305)
+    C = M/sqrt(n ln(p/n)) = 1.420638   M/(2 sqrt n) = 1.266293   M/Weil[(1+(f-1)sqrt p)/f] = 0.5394
+    |c| sorted desc: 29340.6 27381.5 15608.2 13921.5 12660.1 12216.2 11677.3 11011.7 10074.0 8629.9 8496.6 8071.4 6720.6 6138.9 4458.4 ...
+    q_j = b_j^2/b0_j (j=1..7): 0.9583 1.3445 0.7437 0.2267 0.0790 0.0732 0.0588
+    double-ratio identity check (Hankel dets vs Lanczos): max rel dev = 2.2e-16
+    even-moment ratios m_2r/m0_2r (r=1..6): 0.9583 1.1652 1.2582 1.0663 0.7199 0.4011
+    [231s]
+
+-- ctrl27_c26: p = 3489660929 = 26*2^27+1, n = 2^27, f = 26, g = 3, beta = 1.1741, ln(p/n) = 3.2581, genFermat = NO
+      chunk 64/256  (90s elapsed, 361s est total)
+      chunk 128/256  (190s elapsed, 380s est total)
+      chunk 192/256  (281s elapsed, 374s est total)
+      chunk 256/256  (357s elapsed, 357s est total)
+    anchors: |S1 - (-1)| = 1.422e-07   |S2/(p-n) - 1| = 3.553e-15   S3 = -26927292307822.859375 (int resid 1.406e-01)
+    M = |c_13| = 26946.808744   (eta_1 = c_0 = -4369.715475)
+    C = M/sqrt(n ln(p/n)) = 1.288607   M/(2 sqrt n) = 1.162980   M/Weil[(1+(f-1)sqrt p)/f] = 0.4744
+    |c| sorted desc: 26946.8 21932.5 19092.6 18861.0 16558.5 16259.8 10590.8 10540.9 10322.5 10272.4 9754.6 9628.5 9600.2 5827.8 5010.5 ...
+    q_j = b_j^2/b0_j (j=1..7): 0.9615 0.6568 0.3841 0.2999 0.1613 0.1311 0.1422
+    double-ratio identity check (Hankel dets vs Lanczos): max rel dev = 2.2e-16
+    even-moment ratios m_2r/m0_2r (r=1..6): 0.9615 0.8830 0.6728 0.4250 0.2268 0.1039
+    [358s]
+
+-- KoalaBear: p = 2130706433 = 127*2^24+1, n = 2^24, f = 127, g = 3, beta = 1.2912, ln(p/n) = 4.8442, genFermat = NO

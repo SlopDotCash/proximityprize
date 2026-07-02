@@ -1,0 +1,103 @@
+LANE L3 / D2 Rogers-Siegel decision probe -- M(n,p) distribution over the
+prime ensemble p = 1 mod n in [n^4, 4n^4].  x = M/sqrt(n log(p/n)).
+iid Gumbel benchmark: x ~= sqrt(2) = 1.4142 with O(1/log m) fluctuations;
+lower tail of a max is doubly-exponentially thin.
+
+==============================================================================
+n = 16: window (65536, 262144], primes p = 1 mod 16: 2038 total
+scanned: 2038 primes (full ensemble), structured (GF or v2>=12) forced in: 24
+  ... 500/2038 primes, 10s
+  ... 1000/2038 primes, 28s
+  ... 1500/2038 primes, 43s
+  ... 2000/2038 primes, 66s
+scan done in 67s
+
+-- ALL primes  (N = 2038) --
+x = M/sqrt(n log(p/n)):  mean 1.1493  std 0.0193  skew +0.427
+x quantiles  min/1/5/10/25/50/75/90/95/99/max:
+   1.104  1.113  1.121  1.126  1.135  1.147  1.162  1.176  1.183  1.197  1.218
+lower tail:  P(x<1.0) = 0.00000   P(x<0.9) = 0.00000   P(x<1.1) = 0.00000   P(x<1.2) = 0.99264
+upper tail:  P(x>1.8) = 0.00000   P(x>2.0) = 0.00000   P(x>2.5) = 0.00000
+Gumbel-standardized z = (M - loc)/scale (iid benchmark: mean 0.5772, std 1.2825):
+   observed mean -1.8586  std 0.3295
+   P(z<-1) obs 0.99411 vs Gumbel 0.06599   P(z<-2) obs 0.370952 vs Gumbel 0.000618
+   P(z>2)  obs 0.00000 vs Gumbel 0.12658   P(z>4)  obs 0.00000 vs Gumbel 0.01815
+
+-- NON-GF primes only (regime discipline)  (N = 2022) --
+x = M/sqrt(n log(p/n)):  mean 1.1493  std 0.0193  skew +0.424
+x quantiles  min/1/5/10/25/50/75/90/95/99/max:
+   1.104  1.113  1.121  1.126  1.135  1.147  1.162  1.176  1.183  1.197  1.218
+lower tail:  P(x<1.0) = 0.00000   P(x<0.9) = 0.00000   P(x<1.1) = 0.00000   P(x<1.2) = 0.99258
+upper tail:  P(x>1.8) = 0.00000   P(x>2.0) = 0.00000   P(x>2.5) = 0.00000
+Gumbel-standardized z = (M - loc)/scale (iid benchmark: mean 0.5772, std 1.2825):
+   observed mean -1.8594  std 0.3289
+   P(z<-1) obs 0.99456 vs Gumbel 0.06599   P(z<-2) obs 0.371414 vs Gumbel 0.000618
+   P(z>2)  obs 0.00000 vs Gumbel 0.12658   P(z>4)  obs 0.00000 vs Gumbel 0.01815
+
+-- GF primes p = b^(2^s)+1 in window: 16 --
+   p=65537  s=4  v2=16  x=1.1995  z=-0.970
+   p=67601  s=1  v2=4  x=1.1542  z=-1.534
+   p=69697  s=1  v2=6  x=1.1338  z=-1.795
+   p=78401  s=1  v2=6  x=1.1905  z=-1.127
+   p=80657  s=1  v2=4  x=1.1317  z=-1.871
+   p=90001  s=1  v2=4  x=1.1526  z=-1.643
+   p=115601  s=1  v2=4  x=1.1666  z=-1.541
+   p=147457  s=1  v2=14  x=1.1561  z=-1.754
+   p=156817  s=1  v2=4  x=1.1858  z=-1.373
+   p=160001  s=2  v2=8  x=1.1698  z=-1.594
+   p=176401  s=1  v2=4  x=1.1194  z=-2.311
+   p=190097  s=1  v2=4  x=1.1242  z=-2.272
+   p=193601  s=1  v2=6  x=1.1411  z=-2.047
+   p=197137  s=1  v2=4  x=1.1497  z=-1.934
+   p=215297  s=1  v2=8  x=1.1244  z=-2.314
+   p=246017  s=1  v2=8  x=1.1446  z=-2.077
+
+-- 15 SMALLEST-x primes (the lower tail; anomaly-class scan) --
+   p        m      v2  GF  lpf(m)     x       z
+   227729   14233  4   0   43        1.1043  -2.616
+   260417   16276  6   0   2         1.1046  -2.664
+   257281   16080  8   0   2         1.1056  -2.646
+   238417   14901  4   0   3         1.1056  -2.615
+   243889   15243  4   0   3         1.1072  -2.602
+   238481   14905  4   0   5         1.1099  -2.555
+   153409   9588   6   0   2         1.1105  -2.379
+   238001   14875  4   0   5         1.1107  -2.543
+   180241   11265  4   0   3         1.1107  -2.437
+   115201   7200   9   0   2         1.1108  -2.268
+   256577   16036  6   0   2         1.1109  -2.569
+   215153   13447  4   0   7         1.1111  -2.499
+   208609   13038  5   0   2         1.1111  -2.487
+   246241   15390  5   0   2         1.1115  -2.545
+   199457   12466  5   0   2         1.1115  -2.465
+-- 10 LARGEST-x primes (upper tail) --
+   76001    4750   5   0   2         1.2180  -0.775
+   67169    4198   5   0   2         1.2106  -0.839
+   68993    4312   7   0   2         1.2105  -0.847
+   71633    4477   4   0   11        1.2097  -0.866
+   79201    4950   5   0   2         1.2092  -0.895
+   65633    4102   5   0   2         1.2071  -0.877
+   94433    5902   5   0   2         1.2043  -1.000
+   77969    4873   4   0   11        1.2042  -0.954
+   66529    4158   5   0   2         1.2041  -0.917
+   83137    5196   6   0   2         1.2040  -0.972
+
+-- mean x by v2(p-1) --
+   v2=4   N=1021  mean x = 1.1491  min x = 1.1043
+   v2=5   N=517   mean x = 1.1496  min x = 1.1111
+   v2=6   N=246   mean x = 1.1509  min x = 1.1046
+   v2=7   N=121   mean x = 1.1498  min x = 1.1134
+   v2=8   N=69    mean x = 1.1445  min x = 1.1056
+   v2=9   N=34    mean x = 1.1490  min x = 1.1108
+   v2=10  N=15    mean x = 1.1450  min x = 1.1225
+   v2=11  N=5     mean x = 1.1550  min x = 1.1249
+   v2=12  N=5     mean x = 1.1387  min x = 1.1228
+   v2=13  N=1     mean x = 1.1306  min x = 1.1306
+   v2=14  N=2     mean x = 1.1525  min x = 1.1489
+   v2=15  N=1     mean x = 1.1499  min x = 1.1499
+   v2=16  N=1     mean x = 1.1995  min x = 1.1995
+
+primes with x < 0.85 * median (0.975): 0 (0.00000 of ensemble)
+
+==============================================================================
+n = 32: window (1048576, 4194304], primes p = 1 mod 32: 13319 total
+scanned: 2103 primes (evenly sampled), structured (GF or v2>=12) forced in: 123

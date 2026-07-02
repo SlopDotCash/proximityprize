@@ -1,0 +1,66 @@
+==============================================================================
+SCALE 1: n=8, p=4001, m=500  (proper dyadic subgroup, beta ~ 4)
+==============================================================================
+true M = 7.5624   target sqrt(n log(p/n)) = 7.0512   Johnson sqrt(p) = 63.2535
+exact wraparound counts: N(1..4) = (0, 8, 0, 168)
+  N(4) vs 3n^2-3n = 168   (excess = char-p wraparound at r=2): 0
+exact power sums: p1=-1, p2=3993, p3=-64, p4=83509
+congruences: (p3-p1) mod 3 = 0 (must be 0);  (p4-p2) mod 4 = 0 (must be 0)
+             (p3-p1) mod 6 = 3;  (p4-p2) mod 12 = 4
+exact e_1..e_4 (Newton): [-1, -1996, 1975, 1971152]
+float-vs-exact coefficient check (log10|e_k|): k=1: 0.000000 vs 0.000000, k=2: 3.300161 vs 3.300161, k=3: 3.295567 vs 3.295567, k=4: 6.294720 vs 6.294720
+
+P1 -- Wick prediction for elementary symmetric functions, |e_2s| ~ p2^s/(2^s s!):
+   s    measured log10|e_2s|    predicted     ratio e/pred
+   1          3.3002            3.3003       0.9997
+   2          6.2947            6.2995       0.9890
+   3          9.1086            9.1227       0.9682
+   4         11.7930           11.8209       0.9378
+   5         14.3759           14.4222       0.8989
+   6         16.8750           16.9443       0.8525
+   7         19.3025           19.3995       0.8000
+   8         21.6675           21.7966       0.7428
+   9         23.9767           24.1427       0.6824
+  10         26.2355           26.4429       0.6203
+
+Fujiwara terms 2|e_k|^(1/k): argmax k = 2 (G3 predicted 2); bound = 89.353 vs sqrt(2(p-n-1)) = 89.353
+  profile at k=2,4,8,16,32,64: 89.35, 74.94, 59.59, 45.21, 32.93, 23.00
+  => every max-form coefficient bound >= 89.4 = sqrt(2p) > Johnson; true M = 7.56
+
+P3a -- K=2 INTEGER countermodel (matches p1, p2 exactly; degree m; totally real; ZZ roots):
+  spike s=62, 43 roots at +1, 106 at -1, 350 at 0   [p1=-1, p2=3993: EXACT]
+  house = 62  vs Johnson sqrt(p) = 63.3  vs true M = 7.56  => K=2 consumers cannot go below 62
+
+P3b -- K=4 countermodel (matches p1..p4 exactly; monic ZZ[x]; totally real; degree m):
+  atoms at 0,+-1,+-2,+-3,+-4 + spike s + kappa golden packs (x^2 -+ x - 1) for congruences
+  no solution found in search range (tighten scales) -- s <= 11 fallback not attempted
+
+==============================================================================
+SCALE 2: n=16, p=65537, m=4096  (profile replication at larger m)
+==============================================================================
+true M = 13.8375   target = 11.5362   Johnson = 256.00   sqrt(2p) = 362.04
+Fujiwara argmax k = 2; bound = 361.99 = sqrt(2(p-n-1)) = 361.99
+Wick-prediction ratio |e_2s| / [p2^s/(2^s s!)] for s=1..8: 1.000, 0.999, 0.996, 0.992, 0.986, 0.980, 0.971, 0.962
+
+==============================================================================
+P4 -- PRIZE-POINT TRADEOFF (pure arithmetic; class floor S_2s = best possible for ANY
+      consumer of coefficients e_1..e_{2s} == moments p_1..p_2s, granted Wick-exact)
+==============================================================================
+[beta=4 diagonal (p=n^4)]  n=2^30, m=2^90, p~2^120
+  Johnson sqrt(p)              = 2^60.00
+  G3/Fujiwara sqrt(2p)         = 2^60.50   (> Johnson; max-form dead at k=2)
+  S_2 (K=2 class floor)        = 2^60.00   (= Johnson: K=2 consumers see nothing)
+  S_4 (K=4 class floor)        = 2^37.75   raw 4th-moment (3pn)^(1/4) = 2^37.90
+  prize target sqrt(n ln m)    = 2^17.98   => S_4/target = 2^19.8
+  class-floor curve: S_2s/target = sqrt(2s/(e ln m)) * m^(1/2s);  minimum sqrt(2) at s* = ln m = 62.4
+  => coefficient depth needed k* = 2 ln m = 125  == Wick moments to r ~ ln m == THE WALL
+
+[prize-exact (m=2^128)]  n=2^30, m=2^128, p~2^158
+  Johnson sqrt(p)              = 2^79.00
+  G3/Fujiwara sqrt(2p)         = 2^79.50   (> Johnson; max-form dead at k=2)
+  S_2 (K=2 class floor)        = 2^79.00   (= Johnson: K=2 consumers see nothing)
+  S_4 (K=4 class floor)        = 2^47.25   raw 4th-moment (3pn)^(1/4) = 2^47.40
+  prize target sqrt(n ln m)    = 2^18.24   => S_4/target = 2^29.0
+  class-floor curve: S_2s/target = sqrt(2s/(e ln m)) * m^(1/2s);  minimum sqrt(2) at s* = ln m = 88.7
+  => coefficient depth needed k* = 2 ln m = 177  == Wick moments to r ~ ln m == THE WALL
+

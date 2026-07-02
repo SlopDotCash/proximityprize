@@ -1,0 +1,88 @@
+PROBE 466 N5 SOS-COLLAPSE CONSTANTS (lane N5-sos-duality)
+k0 = covering fold of mu_n in F_p (collapse certificate degree d0 <= ~8*k0)
+d_gen = l1-generation radius of the relation lattice L (honest-axiom threshold)
+
+===== n=8, p=4129  (beta = log_n p = 4.004) =====
+covering fold: |C_k| = [9, 41, 129, 321, 681, 1289, 2145, 3041, 3761, 4057, 4121, 4129]  ->  k0 = 12
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =      8 (wraparound     0), rank =  4
+  d=3: #new rel =      0 (wraparound     0), rank =  4
+  d=4: #new rel =     32 (wraparound     0), rank =  4
+  d=5: #new rel =      0 (wraparound     0), rank =  4
+  d=6: #new rel =     88 (wraparound     0), rank =  4
+  d=7: #new rel =      0 (wraparound     0), rank =  4
+  d=8: #new rel =    192 (wraparound     0), rank =  4
+  SUMMARY n=8 p=4129: k0 = 12, d_onset(wraparound) = None, d_gen = >8
+
+===== n=8, p=4153  (beta = log_n p = 4.007) =====
+covering fold: |C_k| = [9, 41, 129, 321, 681, 1289, 2241, 3137, 3817, 4089, 4145, 4153]  ->  k0 = 12
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =      8 (wraparound     0), rank =  4
+  d=3: #new rel =      0 (wraparound     0), rank =  4
+  d=4: #new rel =     32 (wraparound     0), rank =  4
+  d=5: #new rel =      0 (wraparound     0), rank =  4
+  d=6: #new rel =     88 (wraparound     0), rank =  4
+  d=7: #new rel =      0 (wraparound     0), rank =  4
+  d=8: #new rel =    192 (wraparound     0), rank =  4
+  SUMMARY n=8 p=4153: k0 = 12, d_onset(wraparound) = None, d_gen = >8
+
+===== n=8, p=4177  (beta = log_n p = 4.009) =====
+covering fold: |C_k| = [9, 41, 129, 321, 681, 1257, 2033, 2881, 3617, 4105, 4169, 4177]  ->  k0 = 12
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =      8 (wraparound     0), rank =  4
+  d=3: #new rel =      0 (wraparound     0), rank =  4
+  d=4: #new rel =     32 (wraparound     0), rank =  4
+  d=5: #new rel =      0 (wraparound     0), rank =  4
+  d=6: #new rel =     88 (wraparound     0), rank =  4
+  d=7: #new rel =      0 (wraparound     0), rank =  4
+  d=8: #new rel =    192 (wraparound     0), rank =  4
+  SUMMARY n=8 p=4177: k0 = 12, d_onset(wraparound) = None, d_gen = >8
+
+===== n=16, p=65537  (beta = log_n p = 4.000) =====
+covering fold: |C_k| = [17, 145, 801, 3153, 9265, 20865, 36737, 51873, 61345, 64865, 65505, 65537]  ->  k0 = 12
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =     16 (wraparound     0), rank =  8
+  d=3: #new rel =      0 (wraparound     0), rank =  8
+  d=4: #new rel =    128 (wraparound     0), rank =  8
+  d=5: #new rel =    160 (wraparound   160), rank = 16 index = 65537 = p*1   <-- d_gen
+  d=6: #new rel =    688 (wraparound     0), rank = 16 index = 65537 = p*1
+  d=7: #new rel =   2144 (wraparound  2144), rank = 16 index = 65537 = p*1
+  d=8: #new rel =   3456 (wraparound   640), rank = 16 index = 65537 = p*1
+  SUMMARY n=16 p=65537: k0 = 12, d_onset(wraparound) = 5, d_gen = 5
+
+===== n=16, p=65617  (beta = log_n p = 4.000) =====
+covering fold: |C_k| = [17, 145, 833, 3649, 12929, 33969, 58641, 65489, 65617]  ->  k0 = 9
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =     16 (wraparound     0), rank =  8
+  d=3: #new rel =      0 (wraparound     0), rank =  8
+  d=4: #new rel =    128 (wraparound     0), rank =  8
+  d=5: #new rel =      0 (wraparound     0), rank =  8
+  d=6: #new rel =    688 (wraparound     0), rank =  8
+  d=7: #new rel =      0 (wraparound     0), rank =  8
+  d=8: #new rel =   2816 (wraparound     0), rank =  8
+  SUMMARY n=16 p=65617: k0 = 9, d_onset(wraparound) = None, d_gen = >8
+
+===== n=16, p=65633  (beta = log_n p = 4.001) =====
+covering fold: |C_k| = [17, 145, 833, 3649, 12593, 33569, 59089, 65585, 65633]  ->  k0 = 9
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =     16 (wraparound     0), rank =  8
+  d=3: #new rel =      0 (wraparound     0), rank =  8
+  d=4: #new rel =    128 (wraparound     0), rank =  8
+  d=5: #new rel =      0 (wraparound     0), rank =  8
+  d=6: #new rel =    688 (wraparound     0), rank =  8
+  d=7: #new rel =      0 (wraparound     0), rank =  8
+  d=8: #new rel =   2816 (wraparound     0), rank =  8
+  SUMMARY n=16 p=65633: k0 = 9, d_onset(wraparound) = None, d_gen = >8
+
+================ CROSS-SCALE TABLE ================
+   n        p   beta   k0  d_onset  d_gen
+   8     4129  4.004   12     None     >8
+   8     4153  4.007   12     None     >8
+   8     4177  4.009   12     None     >8
+  16    65537  4.000   12        5      5
+  16    65617  4.000    9     None     >8
+  16    65633  4.001    9     None     >8
+
+READING: if k0 is flat in n at fixed beta (expected ~beta+1) the collapse degree is
+O(1) at the prize point; d_gen flat-and-small means the collapse persists for the
+HONEST poly-size axiom set (circle + antipodal + norm-<=d_gen relations).

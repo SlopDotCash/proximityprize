@@ -1,0 +1,32 @@
+[chunk] stage=n16 qs=[65617] alist=[7] dirs=[0] seed=46612
+
+==============================================================================
+SETTING n=16 k=4 rho=4/16 q=65617 (q>=n^4: True) v2(q-1)=4 omega=53618 C(n,k)=1820
+
+  DIRECTION mono_j4 a=7 (delta=0.5625) q=65617: worst-count=9 (P5 reference in header), 6 hard lines scanned
+    [refined-worst] #bad=9 (verified 3-way)  multiplicity {1w:8 2w:1}  unique-witness scalars: 8
+      COUNTERMODEL: gamma=9564 unique witness poly coeffs (low->high)=(9564, 0, 1, 0) agreement=8
+    [pool-top1] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(21625, 0, 0, 0) agreement=8
+    [pool-top2] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(8796, 0, 0, 0) agreement=8
+    [chained-arch0] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      COUNTERMODEL: gamma=7763 unique witness poly coeffs (low->high)=(62669, 22334, 49345, 33675) agreement=7
+    [chained-arch1] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      COUNTERMODEL: gamma=9585 unique witness poly coeffs (low->high)=(15562, 24387, 7526, 50314) agreement=7
+    [chained-arch2] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      COUNTERMODEL: gamma=5765 unique witness poly coeffs (low->high)=(14638, 24402, 64425, 17935) agreement=7
+[setting done in 523s]
+
+==============================================================================
+FINAL SUMMARY -- NoUniqueBadScalarWitness on hard lines:
+  scanned lines: 6; lines WITH >=1 unique-witness bad scalar: 6; lines where EVERY bad scalar is unique-witness: 5
+  n=16 q=65617 a=7 mono_j4       : bad-scalar instances=33 unique-witness=32 multi-witness=1
+
+  EXPLICIT COUNTERMODEL (first found):
+    n=16 q=65617 k=4 a=7 dir=mono_j4 (refined-worst)
+    u0=[1, 53314, 51007, 21867, 65616, 12303, 14610, 43750, 1, 53314, 51007, 21867, 65616, 12303, 14610, 43750]
+    u1=[1, 51007, 65616, 14610, 1, 51007, 65616, 14610, 1, 51007, 65616, 14610, 1, 51007, 65616, 14610]
+    gamma=9564 unique-witness coeffs (low->high)=[9564, 0, 1, 0] agreement=8
+
+  VERDICT: unique-witness bad scalars EXIST on hard lines => NoUniqueBadScalarWitness is REFUTED-at-scale; the R=2 multiplicity floor (LineBadScalarMultiplicityFloor 2) fails.

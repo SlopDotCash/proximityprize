@@ -1,0 +1,124 @@
+probe_466_function_field.py -- Lane W4: function-field model of the prize law
+numpy 2.4.6; seed 466; quick=False
+
+==============================================================================
+PART A -- residue-ring model: mu_n inside F_q[t]/(f) = F_{p^k}
+==============================================================================
+
+A1. TRACE-COLLAPSE COUNTERMODEL (degenerate direction, labeled non-compliant):
+    n=64, mu_64 in F_193 (193 = 1 mod 64), ambient E = F_{193^2} = F_193[t]/(f),
+    deg f = 2. Claim: M_E = n = 64 EXACTLY (nontrivial character trivial on F_193).
+    computed M_E = 64.000000   (n = 64)   -> exact-n degeneracy: True
+    deg f = 2: index m = 582, naive-FF-law bound sqrt(2n ln m) = 28.55  vs  M = 64  -> law violated by 2.24x
+    deg f = 3: index m = 1.12e+05, naive-FF-law bound sqrt(2n ln m) = 38.58  vs  M = 64  -> law violated by 1.66x
+    deg f = 4: index m = 2.17e+07, naive-FF-law bound sqrt(2n ln m) = 46.50  vs  M = 64  -> law violated by 1.38x
+    => the naive F_q[t] transplant of (CORE) with m = ring index is FALSE;
+       M is frozen at its F_p(mu_n) value while deg f pumps m arbitrarily.
+
+    collapse identity check: M_(F_193)(mu_64) = 9.4130; M_E = max(n, M_base) = 64.0000 = 64.0000  OK=True
+
+A2. GENERATING instances (E = F_p(mu_n) = F_{p^k}, k = ord_n(p) -- the only
+    non-degenerate FF residue-ring model). Regime: Q = p^k >= n^4, index >= 4e3,
+    multiple primes, no Fermat primes. Question: same sqrt(2)-law as F_p?
+
+             field    n  k    index m          M  sqrt(2n ln m)  c2 = M/that  notes
+    F_263^2         16  2       4323    13.4335        16.3675       0.8207  
+    F_311^2         16  2       6045    13.7132        16.6920       0.8215  
+    F_271^2         16  2       4590    13.9168        16.4260       0.8472  p = -1 mod n (norm-one torus)
+    F_19^4          16  4       8145    14.0794        16.9754       0.8294  k = 4
+    F_1039^2        32  2      33735    24.3284        25.8318       0.9418  
+    F_1103^2        32  2      38019    24.7540        25.9795       0.9528  
+    F_1087^2        32  2      36924    23.5277        25.9435       0.9069  p = -1 mod n (norm-one torus)
+    F_41^4          32  4      88305    27.0625        26.9975       1.0024  k = 4
+
+A3. F_p BASELINES at matched (n, index) -- the classical prize object:
+    F_66161       16  1       4135    13.3234        16.3240       0.8162
+    F_90001       16  1       5625    13.5482        16.6229       0.8150
+    F_120017      16  1       7501    13.6765        16.8976       0.8094
+    F_1080097     32  1      33753    23.1485        25.8325       0.8961
+    F_1150081     32  1      35940    23.0525        25.9101       0.8897
+    F_1220257     32  1      38133    23.9504        25.9832       0.9218
+
+    c2 over EXTENSION fields (F_q[t] model):  min=0.821 max=1.002 mean=0.890
+    c2 over PRIME fields   (prize object)  :  min=0.809 max=0.922 mean=0.858
+    => if the two distributions match, the FF residue-ring model obeys the SAME
+       empirical sqrt(2)-law and is the SAME open problem (Weil equally vacuous:
+       mu_n is 0-dimensional in every characteristic; RH-for-curves is already a
+       theorem over F_p and bounds nothing here).
+
+------------------------------------------------------------------------------
+PART B -- Carlitz model at q=2:  D = 12, g = t^6  (|V| = n = 2^6 = 64, additive index 2^6, #chi = 2^12-1 = 4095)
+------------------------------------------------------------------------------
+    f = 0x1f81 (irreducible, deg 12, f = 1 mod t^6)  [Carlitz analogue of p = 1 mod 2^mu]
+    Carlitz torsion C[t^6] dim = 6 (expected 6; residue module cyclic A/(f-1): True)
+    B1 additive characters over C[t^6]: value set of |sum| = [0, 64]
+       -> ONLY {0, n}: the naive transliteration (additive chars over Carlitz
+          torsion) is DEGENERATE -- max = n = 64 exactly, zero cancellation.
+    B2 multiplicative characters (dual/Thakur-Gauss-sum model), n = 64:
+       Weil/Katz subspace bound (D-1) q^(w-1/2) = 497.8  vs trivial n = 64  -> VACUOUS at q=2 (bound > trivial)
+       gauss-dual elementary bound sqrt(2^D) = 64.0  -> vacuous iff index > n: False
+                     subspace     M_mult  sqrt(2n lnN)      c2  spike?
+              Carlitz C[t^mu]    20.9642       32.6289   0.643  
+               subfield F_2^6    63.0000       32.6289   1.931  M = n-1 EXACT (subfield chi)
+                              (# nontrivial chi with |S| = n-1: 64, predicted (2^D-1)/(2^w-1) - 1 = 64)
+           random subspace #1    19.9685       32.6289   0.612  
+           random subspace #2    21.3020       32.6289   0.653  
+           random subspace #3    20.9763       32.6289   0.643  
+           random subspace #4    23.1767       32.6289   0.710  
+           random subspace #5    23.2473       32.6289   0.712  
+
+------------------------------------------------------------------------------
+PART B -- Carlitz model at q=2:  D = 16, g = t^8  (|V| = n = 2^8 = 256, additive index 2^8, #chi = 2^16-1 = 65535)
+------------------------------------------------------------------------------
+    f = 0x12f01 (irreducible, deg 16, f = 1 mod t^8)  [Carlitz analogue of p = 1 mod 2^mu]
+    Carlitz torsion C[t^8] dim = 8 (expected 8; residue module cyclic A/(f-1): True)
+    B1 additive characters over C[t^8]: value set of |sum| = [0, 256]
+       -> ONLY {0, n}: the naive transliteration (additive chars over Carlitz
+          torsion) is DEGENERATE -- max = n = 256 exactly, zero cancellation.
+    B2 multiplicative characters (dual/Thakur-Gauss-sum model), n = 256:
+       Weil/Katz subspace bound (D-1) q^(w-1/2) = 2715.3  vs trivial n = 256  -> VACUOUS at q=2 (bound > trivial)
+       gauss-dual elementary bound sqrt(2^D) = 256.0  -> vacuous iff index > n: False
+                     subspace     M_mult  sqrt(2n lnN)      c2  spike?
+              Carlitz C[t^mu]    50.2800       75.3542   0.667  
+               subfield F_2^8   255.0000       75.3542   3.384  M = n-1 EXACT (subfield chi)
+                              (# nontrivial chi with |S| = n-1: 256, predicted (2^D-1)/(2^w-1) - 1 = 256)
+           random subspace #1    50.6466       75.3542   0.672  
+           random subspace #2    50.3362       75.3542   0.668  
+           random subspace #3    48.3905       75.3542   0.642  
+           random subspace #4    50.4873       75.3542   0.670  
+           random subspace #5    55.0065       75.3542   0.730  
+
+------------------------------------------------------------------------------
+PART B -- Carlitz model at q=2:  D = 20, g = t^10  (|V| = n = 2^10 = 1024, additive index 2^10, #chi = 2^20-1 = 1048575)
+------------------------------------------------------------------------------
+    f = 0x166401 (irreducible, deg 20, f = 1 mod t^10)  [Carlitz analogue of p = 1 mod 2^mu]
+    Carlitz torsion C[t^10] dim = 10 (expected 10; residue module cyclic A/(f-1): True)
+    B2 multiplicative characters (dual/Thakur-Gauss-sum model), n = 1024:
+       Weil/Katz subspace bound (D-1) q^(w-1/2) = 13757.5  vs trivial n = 1024  -> VACUOUS at q=2 (bound > trivial)
+       gauss-dual elementary bound sqrt(2^D) = 1024.0  -> vacuous iff index > n: False
+                     subspace     M_mult  sqrt(2n lnN)      c2  spike?
+              Carlitz C[t^mu]   108.9475      168.4972   0.647  
+              subfield F_2^10  1023.0000      168.4972   6.071  M = n-1 EXACT (subfield chi)
+                              (# nontrivial chi with |S| = n-1: 1024, predicted (2^D-1)/(2^w-1) - 1 = 1024)
+           random subspace #1   116.8636      168.4972   0.694  
+           random subspace #2   111.8813      168.4972   0.664  
+           random subspace #3   110.2173      168.4972   0.654  
+           random subspace #4   117.0213      168.4972   0.694  
+           random subspace #5   112.8650      168.4972   0.670  
+
+------------------------------------------------------------------------------
+PART B -- Carlitz model at q=2:  D = 20, g = t^8  (|V| = n = 2^8 = 256, additive index 2^12, #chi = 2^20-1 = 1048575)
+------------------------------------------------------------------------------
+    f = 0x1e6501 (irreducible, deg 20, f = 1 mod t^8)  [Carlitz analogue of p = 1 mod 2^mu]
+    Carlitz torsion C[t^8] dim = 8 (expected 8; residue module cyclic A/(f-1): True)
+    B2 multiplicative characters (dual/Thakur-Gauss-sum model), n = 256:
+       Weil/Katz subspace bound (D-1) q^(w-1/2) = 3439.4  vs trivial n = 256  -> VACUOUS at q=2 (bound > trivial)
+       gauss-dual elementary bound sqrt(2^D) = 1024.0  -> vacuous iff index > n: True
+                     subspace     M_mult  sqrt(2n lnN)      c2  spike?
+              Carlitz C[t^mu]    60.7076       84.2486   0.721  
+           random subspace #1    56.8004       84.2486   0.674  
+           random subspace #2    57.0202       84.2486   0.677  
+           random subspace #3    59.4458       84.2486   0.706  
+           random subspace #4    54.6017       84.2486   0.648  
+           random subspace #5    59.8518       84.2486   0.710  
+

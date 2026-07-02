@@ -1,0 +1,108 @@
+#466 lane N6-arith-dynamics: the flattening ladder in exact coordinates
+==============================================================================
+== GF/lacunary  F4 = 2^16+1: p = 65537  n = 32  beta = 3.200  m = 2048
+   Parseval sum_(k!=0)|eta|^2 = 2096160.000  vs exact n(p-n) = 2096160   (rel err 1.22e-15)
+   M = 25.2108  at k* = 1   C = M/sqrt(n ln(p/n)) = 1.6140
+   min representative of mu_n = 2   (p/n = 2048; ratio = 0.001)
+   small multipliers u<=1000 (p | u^n - 1): [2, 4, 8, 16, 32, 64, 128, 256, 512]
+   r | D_2(nu^(*r)) | increment | Wick pred    | A_r/Wick_r | regime
+    1 |   0.3125    |           |  0.3125     |     1.000  | Wick
+    2 |   0.5179    |  +0.2054  |  0.5255     |     1.089  | Wick
+    3 |   0.6610    |  +0.1431  |  0.6904     |     1.398  | Wick
+    4 |   0.7609    |  +0.0999  |  0.8176     |     2.008  | saturated
+    5 |   0.8320    |  +0.0711  |  0.9057     |     2.950  | saturated
+    6 |   0.8834    |  +0.0514  |  0.9557     |     4.169  | saturated
+    7 |   0.9204    |  +0.0370  |  0.9793     |     5.497  | saturated
+    8 |   0.9467    |  +0.0263  |  0.9897     |     6.665  | saturated
+    9 |   0.9650    |  +0.0183  |  0.9944     |     7.388  | saturated
+   10 |   0.9774    |  +0.0124  |  0.9966     |     7.484  | saturated
+   coarse Renyi-2 dim profile D_2(nu; 2^-s), s=1..17:
+     1.00  0.59  0.46  0.39  0.36  0.34  0.32  0.32  0.31  0.31  0.32  0.32  0.32  0.32  0.32  0.31  0.29
+
+== generic beta~3.2: p = 66337  n = 32  beta = 3.204  m = 2073
+   Parseval sum_(k!=0)|eta|^2 = 2121760.000  vs exact n(p-n) = 2121760   (rel err 4.39e-16)
+   M = 20.6878  at k* = 28049   C = M/sqrt(n ln(p/n)) = 1.3234
+   min representative of mu_n = 3598   (p/n = 2073; ratio = 1.736)
+   small multipliers u<=1000 (p | u^n - 1): NONE
+   r | D_2(nu^(*r)) | increment | Wick pred    | A_r/Wick_r | regime
+    1 |   0.3122    |           |  0.3121     |     1.000  | Wick
+    2 |   0.5282    |  +0.2161  |  0.5249     |     0.964  | Wick
+    3 |   0.6966    |  +0.1684  |  0.6896     |     0.923  | Wick
+    4 |   0.8265    |  +0.1298  |  0.8168     |     0.883  | saturated
+    5 |   0.9160    |  +0.0895  |  0.9051     |     0.825  | saturated
+    6 |   0.9654    |  +0.0493  |  0.9553     |     0.730  | saturated
+    7 |   0.9869    |  +0.0215  |  0.9791     |     0.602  | saturated
+    8 |   0.9951    |  +0.0082  |  0.9896     |     0.457  | saturated
+    9 |   0.9982    |  +0.0030  |  0.9943     |     0.319  | saturated
+   10 |   0.9993    |  +0.0011  |  0.9966     |     0.205  | saturated
+   coarse Renyi-2 dim profile D_2(nu; 2^-s), s=1..17:
+     1.00  0.91  0.93  0.94  0.91  0.76  0.71  0.62  0.56  0.50  0.45  0.42  0.38  0.36  0.33  0.31  0.29
+
+== generic beta~3.2: p = 66529  n = 32  beta = 3.204  m = 2079
+   Parseval sum_(k!=0)|eta|^2 = 2127904.000  vs exact n(p-n) = 2127904   (rel err 4.38e-16)
+   M = 18.2538  at k* = 33280   C = M/sqrt(n ln(p/n)) = 1.1675
+   min representative of mu_n = 2490   (p/n = 2079; ratio = 1.198)
+   small multipliers u<=1000 (p | u^n - 1): NONE
+   r | D_2(nu^(*r)) | increment | Wick pred    | A_r/Wick_r | regime
+    1 |   0.3121    |           |  0.3120     |     1.000  | Wick
+    2 |   0.5281    |  +0.2160  |  0.5248     |     0.964  | Wick
+    3 |   0.7010    |  +0.1729  |  0.6895     |     0.876  | Wick
+    4 |   0.8389    |  +0.1380  |  0.8166     |     0.748  | saturated
+    5 |   0.9328    |  +0.0939  |  0.9049     |     0.592  | saturated
+    6 |   0.9780    |  +0.0452  |  0.9552     |     0.430  | saturated
+    7 |   0.9935    |  +0.0155  |  0.9791     |     0.284  | saturated
+    8 |   0.9981    |  +0.0046  |  0.9896     |     0.171  | saturated
+    9 |   0.9994    |  +0.0013  |  0.9943     |     0.094  | saturated
+   10 |   0.9998    |  +0.0004  |  0.9966     |     0.047  | saturated
+   coarse Renyi-2 dim profile D_2(nu; 2^-s), s=1..17:
+     1.00  1.00  0.97  0.92  0.86  0.81  0.69  0.62  0.56  0.50  0.45  0.42  0.38  0.36  0.33  0.31  0.29
+
+== generic beta~4.0: p = 1048609  n = 32  beta = 4.000  m = 32769
+   Parseval sum_(k!=0)|eta|^2 = 33554464.000  vs exact n(p-n) = 33554464   (rel err 8.88e-16)
+   M = 22.9834  at k* = 11255   C = M/sqrt(n ln(p/n)) = 1.2600
+   min representative of mu_n = 35310   (p/n = 32769; ratio = 1.078)
+   small multipliers u<=1000 (p | u^n - 1): NONE
+   r | D_2(nu^(*r)) | increment | Wick pred    | A_r/Wick_r | regime
+    1 |   0.2500    |           |  0.2500     |     1.000  | Wick
+    2 |   0.4230    |  +0.1730  |  0.4207     |     0.968  | Wick
+    3 |   0.5615    |  +0.1385  |  0.5545     |     0.907  | Wick
+    4 |   0.6776    |  +0.1161  |  0.6636     |     0.822  | Wick
+    5 |   0.7760    |  +0.0984  |  0.7534     |     0.721  | saturated
+    6 |   0.8574    |  +0.0814  |  0.8260     |     0.613  | saturated
+    7 |   0.9191    |  +0.0617  |  0.8821     |     0.502  | saturated
+    8 |   0.9592    |  +0.0401  |  0.9224     |     0.393  | saturated
+    9 |   0.9810    |  +0.0218  |  0.9490     |     0.294  | saturated
+   10 |   0.9914    |  +0.0104  |  0.9657     |     0.209  | saturated
+   coarse Renyi-2 dim profile D_2(nu; 2^-s), s=1..21:
+     1.00  0.99  0.96  0.92  0.86  0.78  0.71  0.62  0.56  0.50  0.45  0.42  0.38  0.36  0.33  0.31  0.29  0.28  0.26  0.25  0.24
+
+== generic beta~4.0: p = 1048897  n = 32  beta = 4.000  m = 32778
+   Parseval sum_(k!=0)|eta|^2 = 33563680.000  vs exact n(p-n) = 33563680   (rel err 8.88e-16)
+   M = 22.7944  at k* = 690854   C = M/sqrt(n ln(p/n)) = 1.2496
+   min representative of mu_n = 65040   (p/n = 32778; ratio = 1.984)
+   small multipliers u<=1000 (p | u^n - 1): NONE
+   r | D_2(nu^(*r)) | increment | Wick pred    | A_r/Wick_r | regime
+    1 |   0.2500    |           |  0.2500     |     1.000  | Wick
+    2 |   0.4230    |  +0.1730  |  0.4207     |     0.968  | Wick
+    3 |   0.5615    |  +0.1385  |  0.5545     |     0.907  | Wick
+    4 |   0.6781    |  +0.1166  |  0.6636     |     0.816  | Wick
+    5 |   0.7776    |  +0.0995  |  0.7534     |     0.705  | saturated
+    6 |   0.8604    |  +0.0828  |  0.8260     |     0.584  | saturated
+    7 |   0.9229    |  +0.0625  |  0.8821     |     0.463  | saturated
+    8 |   0.9626    |  +0.0396  |  0.9224     |     0.352  | saturated
+    9 |   0.9832    |  +0.0206  |  0.9490     |     0.255  | saturated
+   10 |   0.9927    |  +0.0094  |  0.9656     |     0.176  | saturated
+   coarse Renyi-2 dim profile D_2(nu; 2^-s), s=1..21:
+     1.00  1.00  0.99  0.98  0.88  0.76  0.67  0.62  0.56  0.50  0.45  0.42  0.38  0.36  0.33  0.31  0.29  0.28  0.26  0.25  0.24
+
+==============================================================================
+Prize-point constants (n = 2^30, p ~ n^4 = 2^120):
+  ln p = 83.2   r* = ln p ~ 83   target sqrt(n ln(p/n)) = 2^17.98
+  prize gap n / target = 2^12.02 = p^0.1002
+  log-rate sufficiency exponent c* (|eta| <= n (ln p)^-c suffices iff c >= c*): c* = 1.884
+  at depth r = 83: relative L2 contributions (log2, vs DC term = 0):
+    Wick excess  :   -1877.1
+    prize-M floor:   -1995.1
+    BGK-M floor  :     -49.8
+  => D_2(nu^{*r}) = 1 - o(1) in EVERY scenario: the L^q-dimension functional
+     cannot distinguish prize-true from BGK-tight at any saturated depth.

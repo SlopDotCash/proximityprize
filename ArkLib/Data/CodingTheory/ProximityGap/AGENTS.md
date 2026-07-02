@@ -29,8 +29,9 @@
 > **Knowledge base (read in this order):**
 > - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` — **the canonical dossier (v3)**: everything
 >   proven / refuted / open, the ranked live frontier, and the substrate API map.
-> - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (59 tagged entries) +
->   `docs/kb/deltastar-464-*.md` (~150 dated notes) — every refuted approach with its
+> - `ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md` (72 tagged entries as of
+>   2026-07-01, `466-r*` rounds still landing) + `docs/kb/deltastar-*.md` (326 dated notes across
+>   the campaigns, 121 of them #464-era) — every refuted approach with its
 >   constraint lemma. Check BOTH before re-trying anything.
 > - Historical layers (each superseded by the next, kept for depth):
 >   `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md` (#464) ·
@@ -52,9 +53,10 @@ into the successor); the live issue is #466 and the current state is dossier v3 
 
 ## 1. ⚡ BUILD — read this FIRST or you will clog the machine
 
-This cone is **808 files**. `lake build <module>` traces a 3000+-job graph (**~2-3 min
-even with no changes**) AND takes the `.lake` build lock, which **serializes every agent**
-on this 16-core box. Never iterate with `lake build`.
+This cone is **~3,500 files** (3,483 `.lean` files as of 2026-07-01, 1,638 of them in
+`Frontier/`; it was 808 in the #334 era and keeps growing). `lake build <module>` traces a
+3000+-job graph (**~2-3 min even with no changes**) AND takes the `.lake` build lock, which
+**serializes every agent** on this 16-core box. Never iterate with `lake build`.
 
 **Iterate with the single-file fast path** — elaborates ONE file against existing oleans,
 ~30s, **no lock**, fully parallel across agents:

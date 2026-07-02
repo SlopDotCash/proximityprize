@@ -55,16 +55,20 @@ you need to avoid clogging the machine:
 - [`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`](ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md)
   (auto-loaded in that directory; `AGENTS.md` there is a copy): build/concurrency/honesty rules,
   the #334 ledger, substrate API map, references, and pitfall catalogue.
-- **Fast iteration (mandatory):** that cone is 808 files; `lake build` traces a 3000+-job graph
+- **Fast iteration (mandatory):** that cone is ~3,500 files (3,483 `.lean` as of 2026-07-01);
+  `lake build` traces a 3000+-job graph
   (~2-3 min even no-op) and takes the build lock (serializes all agents). Instead run
   `scripts/pg-warm.sh` ONCE (pre-builds the substrate oleans), then iterate per-attempt with
   `scripts/pg-iterate.sh <file>` (= `lake env lean`, ~30-75s, **no lock → fully parallel**).
-- **Start here:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/` — minimal-import,
-  compile-verified scaffolds for the actionable open targets (`B3` Thorner-Zaman s=128, `B2`
-  curve-decodability, `A5` equivariance pin) + `_TEMPLATE` + `README`.
+- **Start here:** `ArkLib/Data/CodingTheory/ProximityGap/Frontier/README.md` for lane-file
+  status (as of 2026-07-01: `A5` equivariance pin LANDED; `B3` Thorner-Zaman concrete ladder
+  LANDED through n=32768 with the asymptotic form still a named hypothesis; `B2`
+  curve-decodability OPEN), then the ranked live frontier in
+  `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 and `PROXIMITY_PRIZE_WORKBENCH.lean` §5.
 - **Open-residual map (whole project):**
-  [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — 37 discharged / 25 reduced /
-  41 deep-open; the "named residual" convention is modularity, not incompleteness.
+  [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — 100 strict residuals:
+  55 open / 44 discharged / 1 refuted (regenerated 2026-07-01); the "named residual"
+  convention is modularity, not incompleteness.
 
 ## Deeper Docs
 
