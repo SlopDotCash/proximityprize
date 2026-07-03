@@ -19424,3 +19424,54 @@ to the Gaussian-tail union output (ratio 1.16 → 1.02); the √(log m / log p) 
 factor is bounded (≤ √β/(β−1)) — cosmetic in the exponent. Completes the round-1
 `i031_chaining_cosmetic` moment-side kill: the dilation-quotient entropy reduction is
 cosmetic at BOTH the moment input and the tail/union input. The I031 lead is fully closed.
+
+## [466-r4-second-witness-floor-refuted] the second-witness / multiplicity floor is impossible exactly on the extremal far lines — saturation forces ALL-singleton (2026-07-02)
+
+Lane: #466 round-4 L2 (`probe_466_second_witness.py` + `_out_466_second_witness_n8.txt` /
+`_n8_q8273.txt` / `_n16_q65617_a7_d0.txt` / `_n16_q65633_a7.txt`; kb
+`deltastar-466-second-witness-floor-refuted-2026-07-02.md`; Lean brick
+`Frontier/_SecondWitnessFloor.lean`, axiom-clean). The dossier §6 Tier-1 item 2 sub-obligation
+"prove `NoUniqueBadScalarWitness` on hard lines, or exhibit a unique-witness bad scalar" is
+DECIDED: **refuted, with the forcing mechanism proven**. Numerics (exact complete witness-fiber
+enumeration, 3-way verified + independent full-`q²` path at k=2): on EVERY extremal far line at
+the first interior level (n=8, k=2, a=3, q ∈ {4129, 8273}, #bad = 56 = C(8,3) SATURATED, 4 hard
+directions) the histogram is `{1w:56}` — every bad scalar unique-witness; n=16 (k=4, a=7,
+q ∈ {65617, 65633}) worst lines `{1w:8, 2w:1}`, 5 of 6 scanned lines ALL-singleton; explicit
+countermodel γ=9564, witness `9564 + x²`, agreement 8. Mechanism (Lean, `Ownership` vocabulary,
+any embedding domain, every level a ≥ k, direction-far guard `AgreementFarDirection`):
+(1) **incidence cap** `Σ_γ #fiber(γ) ≤ C(n,a)` (`lineHeavyIncidences_card_le_choose` — each
+incidence privately owns the a-subsets of its agreement set; cross-scalar sharing transports u₁
+into the code, within-scalar sharing merges codewords); (2) **mutual exclusivity**
+`NoUniqueBadScalarWitness ⟹ #bad ≤ C(n,a)/2` — the floor and near-extremality cannot coexist;
+(3) **defect forcing** `2·#bad ≤ C(n,a) + singletonDefect`; (4) **saturation ⟹ all-singleton**
+(`singletonBadScalars_eq_lineBadScalars_of_choose_le`) — the measured `{1w:56}` as a theorem;
+(5) the unguarded universal Prop fails for EVERY code/field/level via lines through the code
+(exact singleton fiber at the crossing scalar). CONSEQUENCE: the pairwise-interpolation
+relation (the last un-exhausted graph-route shape) is dead — the extremal object is a PERFECT
+MATCHING bad-scalar ↔ private a-subset; the discount chain `2·#bad ≤ incidences + defect`
+degenerates to the undiscounted `#bad ≤ incidences` precisely on the budget-determining lines.
+KEPT: the incidence cap itself (strict strengthening of the direction-blind scalar ceiling from
+#scalars to Σ-multiplicities, all levels a ≥ k, production vocabulary). Do NOT re-attempt:
+multiplicity floors R ≥ 2 on worst/near-worst lines; "two singletons force a relation" in any
+clothing; weight-vs-defect discounts hoping defect = o(#bad) on extremal lines (defect = #bad
+exactly at saturation).
+
+## [466-r5-d4-structure-n32-Kbad] the depth-4 face DIVERGES from D3: n=32 has structured K-bad primes in-window (2026-07-02)
+
+Lane: #466 round-5 S5/D4 scanner (`probe_466_d4_scanner.py`, exhaustive; anchor W₄(65537,16)=+4480
+reproduced; sparse==dense int64 convolution cross-checked). Full exhaustive scan of ALL window
+primes p ≡ 1 mod n in [n⁴, 4n⁴]: n=8 (331 primes) 0 exact-bad / 0 K-bad — the window is PROVABLY
+D4-clean (norm-height cutoff 8^{n/2}=8⁴=n⁴); n=16 (2038) 24 exact-bad / **0 K-bad** (max in-window
+W₄=26880 vs K-margin 298020, ratio 0.09); n=32 (13319) 4872 exact-bad / **92 K-bad** (max
+in-window W₄=11,988,480 vs K-margin 5,593,032, ratio **2.14** — K-badness is REAL at n=32).
+VERDICT: the depth-4 face does NOT mirror D3 uniformly — unlike the width-four/D3 lane where badness
+is confined to a small finite set at every n, at n=32 a positive count of window primes carries
+genuine >5%-excess depth-4 energy. Structural finding: the K-bad set concentrates on structured
+primes (the below-onset β<4 tail is dominated by small p = 577, 641, 929, 2113 … which are
+generalized-Fermat / high-v₂; the 92 in-window K-bad at n=32 need a v₂/GF census). CONSEQUENCE for
+the bilinear n^{7/8} route (round-2 P6 side-discovery): the D4-conditional bound's good-prime supply
+is NOT free at n=32 — the T4=O(n⁴) hypothesis fails on a positive-density-looking structured subset,
+so the n^{7/8} improvement over n^{8/9} needs a genuine depth-4 divisor structure theorem (excluding
+the structured K-bad primes), not just "most primes are clean". The n^{8/9} (T3-based) route is
+unaffected (D3 stays finite-bad). New exact p-independent value confirmed: E₄⁰(32)=90,889,120.
+Full data: `scripts/probes/_out_466_d4_scanner_run3.txt` (2186s exhaustive, protected-image run).
