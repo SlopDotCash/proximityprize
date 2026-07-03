@@ -19512,3 +19512,57 @@ moments is p-adic/Stickelberger/Gross–Koblitz/Jacobi-sum/Iwasawa data is archi
 and cannot bound the house — pre-kills that whole family.** Bankable: the dual identity as clean
 unitary framing (S1); the AUP C6 made explicit and quantitative (S2, √(m/log m)=2^42); sharpened
 random-phase constant C ≈ 1.2–1.3, Fermat traps ≤ 1.45 (S4).
+
+## [466-r7-lowprofile-coupled-carries-q] the z-COUPLED low-profile sum does NOT close sub-q — the LAST weld path is dead (2026-07-02)
+
+Lane: #466 round-7 S1 (`_LowProfileFiberCoupled.lean` axiom-clean, verifier-confirmed;
+`probe_466_lowprofile_coupled.py`). The line-list weld's residual, after mixed-topfit
+(`466-r2-mixed-topfit`) and second-witness (`466-r4-second-witness-floor`) both died, was the
+z-COUPLED low-profile sum `Σ_{t<a} choose(z,t)·D(t)·⌊s/(a−t)⌋ ≤ 2B` (round-4 L1 killed the
+z-INDEPENDENT envelopes; the coupling was the last hope). REFUTED with a machine-checked
+countermodel: the ACTUAL weld weight `W_true = Σ #stratum(t)·⌊s/(a−t)⌋` stays poly (≤ Λ·s, ≤46 at
+n=16), but the provable z-coupled bound `W_coup = Σ choose(z,t)·D(t)·⌊s/(a−t)⌋` EXPLODES —
+coup/true ratio 2×→18×→120×→715×, driven by `choose(z,t)` at a realized stratum where
+subset-occupancy → 0. **The blow-up is at the t≥k MDS strata where D=1 is ALREADY proven**, so
+even a fully-proved low-profile t<k fiber bound cannot make the coupled sum sub-q —
+`choose(z,t)` is the killer, not `D(t)`. Exact instance (n,a,z,s)=(16,5,13,3): Λ=1, W_true=3,
+threshold-choose bound=2509 (836× gap); the Lean proves the bound ≥ choose(z,a−1)·s > 2^m on the
+realized diagonal family (exponential in length = a q-power, `thresholdChooseSum_unbounded` via
+`Nat.four_pow_lt_mul_centralBinom`), rfl-equal to the genuine in-tree
+`lineBadScalars_card_le_thresholdChoose_sum`. **CONSEQUENCE: the entire line-list weld route as a
+CLOSURE path is now closed** — every sub-obligation of the counting stack is refuted. The weld
+remains a valid REDUCTION (floor ⟸ far-line list budget) but the budget provably cannot be
+certified through the fiber-counting stack; the pure-coding-theory route that avoided the analytic
+wall is exhausted, pushing everything back onto the BGK/Paley wall.
+
+## [466-r7-sst-multiplier-dead] the SST multiplier/affine action carries no dual-minimum information (2026-07-02)
+
+Lane: #466 round-7 S5 (`_SSTMultiplierAntipode.lean` axiom-clean, verifier-confirmed;
+`probe_466_sst_multiplier.py`). The last SST residue (`466-r2-sst-orbit-compression-cosmetic` left
+the multiplier action S→kS open). Exact identity: multiplying the support index set by k
+(gcd(k,n)=1) replaces the root h by the DIFFERENT primitive root h^k — `L_{kS}(h) = L_S(h^k)`, a
+Galois twist, NOT a unit multiple, so NOT an isometry of a fixed L_p. Empirically L_S(h) and
+L_{kS}(h) always share sparse-count but DISAGREE on the dual minimum λ₁* on the majority of pairs
+(explicit antipodal-free countermodels). The affine action compresses the census beyond the shift
+ONLY for the sparse-count (extra factor up to φ(n)) — but that is the already-understood
+char-0/antipodal symmetry and carries ZERO new information about λ₁*, the transference quantity.
+Round-2's dangling reversal observation (S→−S: sparse-count 924/924, dual-min 380/924) is exactly
+the k=−1 (conjugation) instance and is now explained. The multiplier lever is DEAD; the landed
+Lean fact proves only the antipode-fixing mechanism (odd multiplier fixes n/2, permutes antipodal
+pairs) behind the sparse-count invariance. SST is fully closed.
+
+## [466-r7-floor-successor-is-a-norm] the floor successor is ARITHMETIC (a resultant/norm), NOT a combinatorial pattern lift (2026-07-02)
+
+Lane: #466 round-7 S3 (`probe_466_successor_structure.py`; verifier reproduced the norm
+computation from scratch in char-0). The combinatorial 16→32 lift is REFUTED: n=16/p=17 has 160
+realizable = 10 translation orbits (size 16, profile [3,3,2,2]); n=32/p=97 has 32 realizable = ONE
+translation orbit (size 32, closed under +1 AND negation) — the orbit count changes 10→1, so NO
+bijective pattern-level successor exists, and every natural map (period-double, index-double,
+tensor) gives 0 realizable images at p=97. BUT the SMALLEST-PRIME mechanism is DISCOVERED and
+validated at both rungs: **bad prime ⟺ p | Norm(β)** where β is the fixed obstruction algebraic
+integer and Norm = the resultant of the minimal polynomial V_A with Φ_n (char-0, p-independent) —
+the induction variable is a NORM/resultant, not a pattern map. This reframes the uniform
+floor-successor conjecture from combinatorics to arithmetic (a cyclotomic-resultant divisibility,
+the same 0-dimensional height object as the width-four/D3 lane) — the germ of a real successor
+theorem. No Lean landed (correctly — the object is a norm). p=17 confirmed the UNIQUE bad prime
+among all 49 primes ≡1 mod 16 up to 3000.

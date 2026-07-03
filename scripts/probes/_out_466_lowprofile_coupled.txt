@@ -1,0 +1,104 @@
+=== probe_466_lowprofile_coupled: z-COUPLED low-profile sum W_coup vs W_true vs W_unc ===
+Question: does the z-coupling (choose(z,t) coeffs) keep W_coup sub-q where W_unc blew up?
+
+[FERMAT] p=17(v2=4) n=8 k=2 a=4 z=4 s=4 MID(a<k+s) lines=6: Lambda<= 5 Lb<= 5 | W_true<= 10  W_coup<= 16  W_unc<= 33
+    worst-coupled line: Lambda=4 t_top=2 W_true=6 W_coup=16 (ratio 2.7x)
+      t=1: stratum=2  D(t)=1  choose(z,t)=4  occ=2/4  choose*D=4 (vs stratum 2; loss x2)  coupTerm=4
+      t=2: stratum=2  D(t)=1  choose(z,t)=6  occ=2/6  choose*D=6 (vs stratum 2; loss x3)  coupTerm=12
+
+[generic] p=41(v2=3) n=8 k=2 a=4 z=4 s=4 MID(a<k+s) lines=6: Lambda<= 2 Lb<= 4 | W_true<= 4  W_coup<= 16  W_unc<= 33
+    worst-coupled line: Lambda=2 t_top=2 W_true=3 W_coup=16 (ratio 5.3x)
+      t=1: stratum=1  D(t)=1  choose(z,t)=4  occ=1/4  choose*D=4 (vs stratum 1; loss x4)  coupTerm=4
+      t=2: stratum=1  D(t)=1  choose(z,t)=6  occ=1/6  choose*D=6 (vs stratum 1; loss x6)  coupTerm=12
+
+[generic] p=97(v2=5) n=8 k=2 a=4 z=4 s=4 MID(a<k+s) lines=6: Lambda<= 2 Lb<= 2 | W_true<= 3  W_coup<= 16  W_unc<= 33
+    worst-coupled line: Lambda=2 t_top=2 W_true=3 W_coup=16 (ratio 5.3x)
+      t=1: stratum=1  D(t)=1  choose(z,t)=4  occ=1/4  choose*D=4 (vs stratum 1; loss x4)  coupTerm=4
+      t=2: stratum=1  D(t)=1  choose(z,t)=6  occ=1/6  choose*D=6 (vs stratum 1; loss x6)  coupTerm=12
+
+[FERMAT] p=17(v2=4) n=8 k=2 a=4 z=6 s=2 vLZ(k+s<=a) lines=6: Lambda<= 3 Lb<= 4 | W_true<= 5  W_coup<= 55  W_unc<= 55
+    worst-coupled line: Lambda=3 t_top=3 W_true=5 W_coup=55 (ratio 11.0x)
+      t=2: stratum=1  D(t)=1  choose(z,t)=15  occ=1/15  choose*D=15 (vs stratum 1; loss x15)  coupTerm=15
+      t=3: stratum=2  D(t)=1  choose(z,t)=20  occ=2/20  choose*D=20 (vs stratum 2; loss x10)  coupTerm=40
+
+[generic] p=97(v2=5) n=8 k=2 a=4 z=6 s=2 vLZ(k+s<=a) lines=6: Lambda<= 2 Lb<= 3 | W_true<= 3  W_coup<= 55  W_unc<= 55
+    worst-coupled line: Lambda=2 t_top=3 W_true=3 W_coup=55 (ratio 18.3x)
+      t=2: stratum=1  D(t)=1  choose(z,t)=15  occ=1/15  choose*D=15 (vs stratum 1; loss x15)  coupTerm=15
+      t=3: stratum=1  D(t)=1  choose(z,t)=20  occ=1/20  choose*D=20 (vs stratum 1; loss x20)  coupTerm=40
+
+[FERMAT] p=17(v2=4) n=8 k=2 a=5 z=5 s=3 vLZ(k+s<=a) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+[generic] p=41(v2=3) n=8 k=2 a=5 z=5 s=3 vLZ(k+s<=a) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+[FERMAT] p=17(v2=4) n=8 k=2 a=5 z=7 s=1 vLZ(k+s<=a) lines=6: Lambda<= 1 Lb<= 1 | W_true<= 1  W_coup<= 35  W_unc<= 35
+    worst-coupled line: Lambda=1 t_top=4 W_true=1 W_coup=35 (ratio 35.0x)
+      t=4: stratum=1  D(t)=1  choose(z,t)=35  occ=1/35  choose*D=35 (vs stratum 1; loss x35)  coupTerm=35
+
+[generic] p=97(v2=5) n=8 k=2 a=5 z=7 s=1 vLZ(k+s<=a) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+[generic] p=97(v2=5) n=16 k=2 a=4 z=8 s=8 MID(a<k+s) lines=6: Lambda<= 14 Lb<= 19 | W_true<= 46  W_coup<= 594  W_unc<= 1156
+    worst-coupled line: Lambda=11 t_top=3 W_true=38 W_coup=594 (ratio 15.6x)
+      t=0: stratum=1  D(t)=1  choose(z,t)=1  occ=1/1  choose*D=1 (vs stratum 1; loss x1)  coupTerm=2
+      t=1: stratum=4  D(t)=2  choose(z,t)=8  occ=2/8  choose*D=16 (vs stratum 4; loss x4)  coupTerm=32
+      t=2: stratum=5  D(t)=1  choose(z,t)=28  occ=5/28  choose*D=28 (vs stratum 5; loss x6)  coupTerm=112
+      t=3: stratum=1  D(t)=1  choose(z,t)=56  occ=1/56  choose*D=56 (vs stratum 1; loss x56)  coupTerm=448
+
+[generic] p=193(v2=6) n=16 k=2 a=4 z=8 s=8 MID(a<k+s) lines=6: Lambda<= 7 Lb<= 13 | W_true<= 24  W_coup<= 578  W_unc<= 1734
+    worst-coupled line: Lambda=5 t_top=3 W_true=20 W_coup=578 (ratio 28.9x)
+      t=0: stratum=1  D(t)=1  choose(z,t)=1  occ=1/1  choose*D=1 (vs stratum 1; loss x1)  coupTerm=2
+      t=1: stratum=1  D(t)=1  choose(z,t)=8  occ=1/8  choose*D=8 (vs stratum 1; loss x8)  coupTerm=16
+      t=2: stratum=2  D(t)=1  choose(z,t)=28  occ=2/28  choose*D=28 (vs stratum 2; loss x14)  coupTerm=112
+      t=3: stratum=1  D(t)=1  choose(z,t)=56  occ=1/56  choose*D=56 (vs stratum 1; loss x56)  coupTerm=448
+
+[FERMAT] p=257(v2=8) n=16 k=2 a=4 z=8 s=8 MID(a<k+s) lines=6: Lambda<= 9 Lb<= 9 | W_true<= 30  W_coup<= 130  W_unc<= 578
+    worst-coupled line: Lambda=6 t_top=2 W_true=20 W_coup=130 (ratio 6.5x)
+      t=0: stratum=1  D(t)=1  choose(z,t)=1  occ=1/1  choose*D=1 (vs stratum 1; loss x1)  coupTerm=2
+      t=1: stratum=1  D(t)=1  choose(z,t)=8  occ=1/8  choose*D=8 (vs stratum 1; loss x8)  coupTerm=16
+      t=2: stratum=4  D(t)=1  choose(z,t)=28  occ=4/28  choose*D=28 (vs stratum 4; loss x7)  coupTerm=112
+
+[generic] p=97(v2=5) n=16 k=2 a=5 z=10 s=6 MID(a<k+s) lines=6: Lambda<= 1 Lb<= 1 | W_true<= 3  W_coup<= 360  W_unc<= 1721
+    worst-coupled line: Lambda=1 t_top=3 W_true=3 W_coup=360 (ratio 120.0x)
+      t=3: stratum=1  D(t)=1  choose(z,t)=120  occ=1/120  choose*D=120 (vs stratum 1; loss x120)  coupTerm=360
+
+[FERMAT] p=257(v2=8) n=16 k=2 a=5 z=10 s=6 MID(a<k+s) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+[generic] p=97(v2=5) n=16 k=2 a=5 z=13 s=3 vLZ(k+s<=a) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+[generic] p=193(v2=6) n=16 k=2 a=5 z=13 s=3 vLZ(k+s<=a) lines=6: Lambda<= 1 Lb<= 3 | W_true<= 3  W_coup<= 2145  W_unc<= 2509
+    worst-coupled line: Lambda=1 t_top=4 W_true=3 W_coup=2145 (ratio 715.0x)
+      t=4: stratum=1  D(t)=1  choose(z,t)=715  occ=1/715  choose*D=715 (vs stratum 1; loss x715)  coupTerm=2145
+
+[generic] p=97(v2=5) n=16 k=2 a=6 z=12 s=4 vLZ(k+s<=a) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+[FERMAT] p=257(v2=8) n=16 k=2 a=6 z=12 s=4 vLZ(k+s<=a) lines=6: Lambda<= 0 Lb<= 0 | W_true<= 0  W_coup<= 0  W_unc<= 0
+    worst-coupled line: Lambda=0 t_top=-1 W_true=0 W_coup=0 (ratio 0.0x)
+
+=== SCALING (W_coup vs W_true) — is the coupling lossy (choose injects a q-power)? ===
+  n=8 a=4 z=4 MID: W_true=10 (within n^2)  W_coup=16 (within n^2)  coup/true=2x  Lambda<= 5
+  n=8 a=4 z=4 MID: W_true=4 (within n^2)  W_coup=16 (within n^2)  coup/true=4x  Lambda<= 2
+  n=8 a=4 z=4 MID: W_true=3 (within n^2)  W_coup=16 (within n^2)  coup/true=5x  Lambda<= 2
+  n=8 a=4 z=6 vLZ: W_true=5 (within n^2)  W_coup=55 (within n^2)  coup/true=11x  Lambda<= 3
+  n=8 a=4 z=6 vLZ: W_true=3 (within n^2)  W_coup=55 (within n^2)  coup/true=18x  Lambda<= 2
+  n=8 a=5 z=5 vLZ: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+  n=8 a=5 z=5 vLZ: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+  n=8 a=5 z=7 vLZ: W_true=1 (within n^2)  W_coup=35 (within n^2)  coup/true=35x  Lambda<= 1
+  n=8 a=5 z=7 vLZ: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+  n=16 a=4 z=8 MID: W_true=46 (within n^2)  W_coup=594 (EXCEEDS poly n^2)  coup/true=13x  Lambda<= 14
+  n=16 a=4 z=8 MID: W_true=24 (within n^2)  W_coup=578 (EXCEEDS poly n^2)  coup/true=24x  Lambda<= 7
+  n=16 a=4 z=8 MID: W_true=30 (within n^2)  W_coup=130 (within n^2)  coup/true=4x  Lambda<= 9
+  n=16 a=5 z=10 MID: W_true=3 (within n^2)  W_coup=360 (EXCEEDS poly n^2)  coup/true=120x  Lambda<= 1
+  n=16 a=5 z=10 MID: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+  n=16 a=5 z=13 vLZ: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+  n=16 a=5 z=13 vLZ: W_true=3 (within n^2)  W_coup=2145 (EXCEEDS poly n^2)  coup/true=715x  Lambda<= 1
+  n=16 a=6 z=12 vLZ: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+  n=16 a=6 z=12 vLZ: W_true=0 (within n^2)  W_coup=0 (within n^2)  coup/true=0x  Lambda<= 0
+
+VERDICT: see coup/true ratio growth and occupancy loss above. If W_coup >> W_true ~ Lambda
+and grows binomially while W_true stays poly, the z-coupling does NOT rescue the sum:
+choose(z,t) injects a q-power (D(t)>=1 realized at high t, most t-subsets empty).
