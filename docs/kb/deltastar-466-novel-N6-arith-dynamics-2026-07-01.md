@@ -236,14 +236,15 @@ define `D_2(μ) = log(1/Σ_j μ(j)^2)/log p ∈ [0,1]`.
 
 - **The per-convolution increment is exactly `1/β = 1/4`** in the Wick regime — the seed's
   `c(q)` computed: `c(2) = 1/β`, and `β` steps *exactly* close `1/4 → 1`. This is the
-  DC-crossover / TPS boundary `r_cross = β` re-derived in dimension coordinates (third
-  independent confirmation of that anchor). Probe (generic β=4): ladder
+  DC-crossover / TPS boundary `r_cross = β` re-derived in dimension coordinates (the FOURTH
+  independent pin of that anchor, after DC-crossover, moment-exponent θ, and TPS —
+  dossier §14.F counts the first three). Probe (generic β=4): ladder
   `0.250 → 0.423 → 0.562 → 0.678 → 0.776 → …` with Wick-predicted values
   `0.250 → 0.421 → 0.554 → 0.664 → 0.753 → …` — increments ≈ 0.17→0.10 per step, tracking
   `1/β` minus the `(2r−1)‼` drag, saturating right past `r = β`.
 - **What is *proven* per-step, unconditionally:** step one only. `E_2 ≪ n^{49/20+o(1)}`
   (Murphy–Rudnev–Shkredov, arXiv:1712.00410; valid for `n ≤ p^{1/2}`) gives
-  `D_2(ν^{*2}) ≥ (2 − 49/40)/β = 31/(20β) = 0.3875` at β=4 — a proven gain of `11/80 ≈ 0.14`
+  `D_2(ν^{*2}) ≥ (4 − 49/20)/β = 31/(20β) = 0.3875` at β=4 — a proven gain of `11/80 ≈ 0.14`
   vs Wick's `0.25`. At `r = 4` nothing beyond the trivial floor is known at `n = p^{1/4}`
   (`E_4` open — dossier §8, "shifted-Burgess r=4 conditional on open E₄"). **The proven ladder
   stalls at the second rung.**
@@ -270,10 +271,24 @@ define `D_2(μ) = log(1/Σ_j μ(j)^2)/log p ∈ [0,1]`.
   functional is fixed-depth energy data (Meta-Theorem adjacency); `q → ∞` uniformly is where
   `L^q → L^∞`, and there no inverse theorem with uniform-in-`q` constants exists (Shmerkin's
   `ε(q,δ) → 0` as `q → ∞`; his `D_∞` conclusions pass through (S2), which ν lacks).
+- **The only exit from the ladder to the sup is positivity, and it prices the abelian
+  endgame.** `M^{2r} ≤ p·A_r` is the unique passage from any ladder statement to the prize
+  sup; even granting perfect Wick to depth `r` it yields `M ≤ p^{1/2r}·((2r−1)‼)^{1/2r}·√(Kn)`
+  — the fixed-depth exponent `θ(r,β) ≥ (β+r)/(2r) > 1/2` (the in-tree moment-exponent
+  threshold in dimension coordinates; `θ(4,4) ≈ 1`: the seed's endpoint "dim `1 − ε/log` at
+  `r = β`" is worth `M ≤ C·n`, i.e. NOTHING). The `p^{1/2r}` factor is the full union bound
+  over the `p−1` additive characters, and on `(Z/p,+)` every irreducible representation is
+  1-dimensional — there is no Bourgain–Gamburd quasirandomness discount converting
+  `L²`-flatness into a spectral gap. (Complement of the A8 kill: A8 killed the *acting*-group
+  side by amenability/solvability of `μ_n ⋉ F_p`; this kills the *convolving*-group side by
+  abelianness of `(Z/p,+)`.) Paying the factor forces depth `r ≈ ln p` — form (A) verbatim.
 - Iterating "‖ν^{*2r}‖ vs ‖ν^{*r}‖²" per-step is literally the **D1 convolution-squaring
   bootstrap** already gated in dossier §3 ("consumer of the Paley start value, not a
   bootstrap"); Lemma 6.1 + the blindness theorem explain *why* it cannot bootstrap: the
   functional it iterates is saturated and prize-blind exactly where the iteration matters.
+  Per-step induction on the Wick ratio itself is separately dead in-tree
+  (`_RatioIncrementWickLadder`, margins 22→11→2.7%); the GF Wick-ratio climb (1.09→7.48)
+  upgrades that from margin-decay to a realized countermodel family.
 - One-line disposal of the covering variant: Glibichuk–Konyagin `2^k`-fold sumset covering of
   `F_p` for `|H| > p^{1/4+ε}` gives `supp(ν^{*16}) = Z/p` — full *support* dimension, zero
   control of flatness constants; same blindness.
@@ -314,7 +329,7 @@ ceiling (uniform at every scale); GF ≈ 0.32 at every scale (atomic branch real
 - **Lemma 6.1 + the three-regime law + the blindness computation** — a clean bookkeeping brick
   (Lean-able with modest effort: finite Parseval on `ZMod p`, the trivial floor, and the
   DC-domination inequality at `r ≥ β`); it upgrades the D1 gate and the TPS boundary with a
-  third independent derivation of `r_cross = β` and gives the campaign a *dimension-coordinates
+  FOURTH independent derivation of `r_cross = β` and gives the campaign a *dimension-coordinates
   dictionary* for triaging any future "fractal/flattening/dimension" proposal in seconds.
 - **Lemma 3.1** (small multiplier ⟺ `p | u^n − 1`) — trivial but sharp: the dynamical
   applicability locus *equals* the structured-prime locus; feeds the deployment avoid-list

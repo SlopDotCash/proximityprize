@@ -175,7 +175,9 @@ lands at exactly `p` in one step). (iii) Generic primes at β=4 have `d_onset > 
 the dossier's balanced onset `r₀ = 5` (norm 10); counting heuristics put `d_gen ≈ 10–12` there,
 and ≈ 6–7 at the prize point (β ≈ 5.27, where `n^d/d! ≈ p` at d ≈ 5.5). **Unproven for generic
 primes; O(1)-plausible; this is the one open constant in the chain** (a follow-up can push the
-scan to norm 10 with the same meet-in-middle at ~2M half-vectors).
+scan to norm 10 with the same meet-in-middle at ~2M half-vectors). *[UPDATE 2026-07-02: the
+norm-10/12 follow-up scan was run — generic `d_onset = 10` exactly as predicted, first
+wraparounds reach full rank with index ≤ 4p; see the round-3 addendum §(3).]*
 
 ## 7. The corrected redirect map (what remains logically possible)
 
@@ -242,5 +244,83 @@ Glibichuk–Konyagin 2007 (subgroup sumset covering, explicit folds for |H| > p^
 2000 (vanishing sums of 2-power roots of unity); Lasserre/Parrilo (moment-SoS duality);
 Grigoriev 2001 (knapsack SoS lower bounds — the genre whose analogue is proven impossible here).
 
+---
+
+## Addendum — round-3 proposer re-verification (2026-07-02)
+
+The body above is preserved unedited. An independent full re-derivation of the chain (lane
+re-run) CONFIRMS Theorem A, Corollaries A1–A3, and B1–B3, with two sharpenings and one new
+probe that decides the body's flagged open constant at scan scales.
+
+**(1) The A3 bookkeeping is now an explicit identity — and the constant improves:
+`d₀ ≤ max(g, 2k₀) + 2k₀` (= `4k₀` for `g ≤ 2k₀`).** Work with the `z̄`-encoded relation axioms
+`B'_c := z^{c⁺}z̄^{c⁻} − 1` (degree `‖c‖₁`; this is the §1 encoding). For `a ∈ ℤⁿ`,
+`‖a‖₁ ≤ D_H := max(g, 2k₀)`, with canonical covering representative `â := a(S(a))` (`â ≥ 0`,
+`‖â‖₁ ≤ k₀`) and `c := a − â ∈ L` (`‖c‖₁ ≤ D_H + k₀`), the identification of the circle-reduced
+monomial `N_a := z^{a⁺}z̄^{a⁻}` with `N_â = z^{â}` is the exact two-term identity
+
+> `N_a − N_â = (N_a − z^{â+c⁺}z̄^{c⁻}) + z^{â}·B'_c`,
+
+where: (i) `z^{â}·B'_c` is an axiom multiple of degree `‖â‖₁ + ‖c‖₁ ≤ D_H + 2k₀`; (ii) the
+first bracket is a telescoped sum of circle-axiom multiples — `z^{â+c⁺}z̄^{c⁻}` has signed
+exponent `â + c⁺ − c⁻ = a`, and for ANY `u, v ≥ 0` with `u − v = a` one has `u = a⁺ + w`,
+`v = a⁻ + w` with `w := u ∧ v`, so extracting the `w` pairs one at a time writes
+`z^u z̄^v − N_a` as circle multiples with all products of degree ≤ `‖a‖₁ + 2‖w‖₁ ≤ ‖â‖₁ + ‖c‖₁
+≤ D_H + 2k₀` (extraction only decreases degree).
+
+So each monomial identification costs products of degree ≤ `D_H + 2k₀`, the reduced form is
+`Σ_s ĥ_s z^{a(s)}` (killed by DFT nonsingularity as in the body), and the whole certificate —
+SoS part `(Re F)² + (Im F)²` at degree `2k₀` included — lives at degree
+**`d₀ ≤ max(g, 2k₀) + 2k₀`**. For `G_τ` (`g = 4 ≤ 2k₀`): `d₀ ≤ 4k₀` — at the measured `k₀ = 9`:
+**`d₀ ≤ 36`** (supersedes the body's hand-count `4k₀ + 2g = 44`; the probe header's `~8k₀` stays
+a safe outer bound). Corollary A1's threshold improves correspondingly to `D ≥ 4k₀`.
+(Caution for re-derivers: the tempting two-plain-monomial clearing route
+`z̄^{a⁻+â⁻}·(z^{a⁺+â⁻} − z^{a⁻+â⁺})` leaks to `2D_H + k₀ = 5k₀` on its second branch
+(`2‖a⁻‖₁ + ‖â‖₁`); the `B'_c` route above is uniformly `4k₀`.)
+
+**(2) Degree-vs-norm encoding caveat (factor ≤ 2; conclusions O(1)-stable).** "The binomial has
+degree `‖a‖₁`" holds for the `z̄`-encoded axiom `z^{a⁺}z̄^{a⁻} − 1`; the two-monomial form
+`z^{a⁺} − z^{a⁻}` has degree `max(‖a⁺‖₁, ‖a⁻‖₁) ∈ [‖a‖₁/2, ‖a‖₁]`. So `d_onset`/`d_gen` as
+SoS-*degree* thresholds are the measured ℓ¹ values up to a factor ≤ 2 depending on the encoding
+convention. Every statement in the body is stable under this (all quantities stay O(1)).
+
+**(3) The open constant `d_gen` at generic β=4 primes — extended scan (norm 10/12).**
+`probe_466_novel_sos_dgen10.py` → `_out_466_novel_sos_dgen10.txt` (meet-in-the-middle over the
+full integer ℓ¹-ball to norm 10 at n=16 / norm 12 at n=8, exact HNF index):
+
+| n | p | d_onset | rank at onset | index at scan end | d_gen |
+|---|---|---|---|---|---|
+| 8 | 4129 / 4153 | >12 | 4 (char-0 only) | — | >12 |
+| 8 | 4177 | **11** | 8 = FULL, index p | p | **11** (= d_onset) |
+| 16 | 65537 (Fermat) | 5 | 16 = FULL, index p | p | 5 (= d_onset) |
+| 16 | 65617 | **10** | 16 = FULL | **4p** | >10 (≤ ~12 expected) |
+| 16 | 65633 | **10** | 16 = FULL | **2p** | >10 (≤ ~12 expected) |
+
+Readings: (i) generic-prime `d_onset = 10` at n=16 — **exactly the dossier's balanced onset
+`2r₀ = 10`**, and the FIRST wraparounds already reach full rank with residual index ≤ 4: where
+decided, `d_gen = d_onset` (4177, 65537), and generically `d_gen − d_onset` is at most a small
+constant. (ii) The B2-honest collapse at these scales therefore needs `D₀ ≈ 10–12` — O(1)-scale
+confirmed, though the exact generic-n=16 `d_gen` needs a norm-11/12 scan (~30× cost, deferred).
+(iii) **A finding beyond the lane's needs:** at generic primes the norm-≤9 sphere contains ZERO
+wraparound relations where uniform counting predicts ~1,700 (n=16, norm 9: `N ≈ 1.1·10⁸` vectors
+vs `p ≈ 6.6·10⁴`) — and at n=8 two of three primes are empty through norm 12 (~140 predicted).
+This massive sub-onset repulsion is the lattice-side face of the dossier's "every fixed-r face
+closes unconditionally off-BGK" (short ±relations of `2^μ`-th roots don't vanish mod generic
+`p` below the balanced onset); the Fermat prime's odd-norm relations (5,7) are the known
+`η₁ = n − c_B` resonance. The `d_onset` gap (measured 10–11+ vs naive counting ~5) says the
+*visible-arithmetic threshold is itself arithmetically rigid* — a new, cheap, per-prime
+deployment-screening statistic (compare the Hankel double-ratio detector).
+
+**(4) Re-audit.** No registered kill is tripped by the re-derived chain. Consistency re-checked
+against: the lone-spike filter (Corollary A1 is its phase-encoding form), `_wf5A2_sos_blindness`
+(= the zero-arithmetic-axiom end B1; its honesty note — "the genuine certificate would have to
+encode `xⁿ = 1 mod p`" — is exactly the uniformity relocation of §7.1), `_GammaTwoDegenerationGate`,
+`MetaTheoremSecondOrderCap` (tractable symmetric slices ≤ Johnson; the exact cone is `p×p`), and
+the CMK lone-spike verdict (positivity post-processing of moment data adds nothing; here the
+FULL encoding's positivity is exact but non-uniform). The weakest step remains (A1)'s BGK
+ineffectivity at the literal prize diagonal β ≈ 5.27 — the collapse is asymptotic-at-fixed-β
+with measured small constants, not an explicit certificate-degree bound at `n = 2^30`.
+
 <sub>2026-07-01, lane N5 proposer (Claude Fable 5). Self-refutation of the assigned conjecture
-with a structural theorem in its place; no arithmetic closure claimed; core OPEN, ON-BGK.</sub>
+with a structural theorem in its place; no arithmetic closure claimed; core OPEN, ON-BGK.
+Round-3 re-verification addendum 2026-07-02 (same lane, re-run).</sub>

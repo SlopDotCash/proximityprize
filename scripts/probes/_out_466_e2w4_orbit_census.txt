@@ -102,3 +102,27 @@ READINGS: K bounded  -> slope ~ 0;   K = Theta(n) (product-only) -> ~1;
           K = Theta(n^2) (full moment-variety, D*-law analogue) -> ~2.
 
 Done.
+
+==============================================================================
+ADDENDUM (audit pass): n=60 re-run after adding extra_reps printing + per-rep
+exact char-0 verification (independently cross-checked with sympy mod Phi_60).
+Substantiates the non-product representatives cited in the kb note.
+==============================================================================
+probe_466_e2w4_orbit_census -- width-4 e2BadScalarSet full G-orbit census
+numpy 2.4.6
+
+n= 60  C(n,4)=487635  char0: #bad(e2=0,e1!=0)=2040 (+15 with e1=0)
+  p=  12960061 (m=216001, flags=-): #bad=2040  #alpha=960  K_orbits=16  free_action=OK  K_prod=14(inside=True)  K_extra=2
+      non-product orbit rep (exponents mod 60): (0, 2, 14, 36)  char0-exact: e2==0 True  e1==0 False
+      non-product orbit rep (exponents mod 60): (0, 2, 26, 48)  char0-exact: e2==0 True  e1==0 False
+  p=  12960781 (m=216013, flags=-): #bad=2040  #alpha=960  K_orbits=16  free_action=OK  K_prod=14(inside=True)  K_extra=2
+      non-product orbit rep (exponents mod 60): (0, 2, 14, 36)  char0-exact: e2==0 True  e1==0 False
+      non-product orbit rep (exponents mod 60): (0, 2, 26, 48)  char0-exact: e2==0 True  e1==0 False
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=14  O_P-model=n/8-1=6  3|n=yes
+
+==============================================================================
+GROWTH TABLE (validated rows only)
+   n     #bad       K  K_prod  K_extra  n/4-1  n/8-1  K/(n/4-1)   bad/n^3
+  60     2040      16      14        2     14      6      1.143   0.00944
+
+Done.

@@ -83,7 +83,10 @@ exact integer reduction mod Φ_n; every row cross-prime AGREE + char-0 MATCH; fr
   super-budget D\* growth at r = 3 does NOT come from this object. The `_OPSingleOrbit` model
   n/8 − 1 is refuted as the census count (off by ×2 + 1).
 - **The n = 60 exception is Lam–Leung mixed {3,5}.** Both extra (non-product) orbits are stable
-  across both primes, representatives (exponents mod 60): (0, 2, 14, 36) and (0, 2, 26, 48).
+  across both primes, representatives (exponents mod 60): (0, 2, 14, 36) and (0, 2, 26, 48)
+  (substantiated in the ADDENDUM section of the output artifact: printed per-prime with exact
+  char-0 per-rep verification e2 ≡ 0 mod Φ₆₀, e1 ≠ 0; independently cross-checked via sympy;
+  neither rep contains an antipodal pair, so neither is of product form).
   Hand-check for (0, 2, 14, 36): e₂/ζ² = 1 + ζ¹² + ζ¹⁴ + ζ³⁴ + ζ³⁶ + ζ⁴⁸ =
   (−ζ²⁴ from the σ₅ relation) + (−ζ⁵⁴ from the σ₃ relation) = −ζ²⁴(1 + ζ³⁰) = 0 — a weight-6
   vanishing sum genuinely using BOTH a 5-cycle and a 3-cycle, hence requiring 15 | n. n = 60 is

@@ -37,6 +37,7 @@ COST: one pass over F_p^* (p-1 elements): k2 = log2(n) vectorized uint64 squarin
 per element to get the coset index of 1+t.  ~5.4e10 uint64 modmuls per prime.
 """
 import math
+import os
 import sys
 import time
 
@@ -47,6 +48,7 @@ from probe_466_deployment_certificates import (
     P_BB, P_KB, is_prime, primitive_root, power_table, coset_values)
 
 CHUNK = 1 << 22
+CKPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_ckpt_466_deploy")
 
 
 def period_matrix(p: int, n: int, g: int, verbose: bool = True) -> np.ndarray:
@@ -145,7 +147,16 @@ def analyze(name: str, p: int, n: int, s3_exact=None):
     print(f"\n-- {name}: p = {p}, n = 2^{n.bit_length()-1}, f = {f}, g = {g}",
           flush=True)
     t0 = time.time()
-    Mm = period_matrix(p, n, g)
+    os.makedirs(CKPT_DIR, exist_ok=True)
+    ck = os.path.join(CKPT_DIR, f"pm_{name}.npy")
+    if os.path.exists(ck):
+        Mm = np.load(ck)
+        assert Mm.shape == (f, f)
+        print(f"    [checkpoint] loaded period matrix from {os.path.basename(ck)}",
+              flush=True)
+    else:
+        Mm = period_matrix(p, n, g)
+        np.save(ck, Mm)
     tbuild = time.time() - t0
     # exact integer checks
     rows_ok = all(int(Mm[j].sum()) == n - (1 if j == 0 else 0) for j in range(f))

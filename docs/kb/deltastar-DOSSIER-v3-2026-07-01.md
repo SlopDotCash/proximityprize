@@ -393,10 +393,20 @@ artifact traced; phantom bricks recovered and resolved (§12); numerics-cannot-d
    - the **mixed-profile top-fit arithmetic**: prove/refute `Low/FullMixedChooseProfileTopSumsFit`,
      `FieldPow*TopFit` (contracted to the single endpoint `z = n` — "the next step is arithmetic,
      not API plumbing");
-   - the **second-witness / multiplicity floor**: prove `NoUniqueBadScalarWitness` on hard lines, or
-     exhibit a unique-witness bad scalar; the pairwise-interpolation relation (two singleton scalars
-     force a second witness / an RS dependence / a small classified pencil) is the one graph-route
-     shape not yet exhausted;
+   - ~~the **second-witness / multiplicity floor**~~ **REFUTED-WITH-MECHANISM 2026-07-02 (round 4,
+     lane L2)**: unique-witness bad scalars exist on EVERY hard line tested; the extremal lines are
+     ALL-singleton (`{1w:56}` at n=8 a=3 saturation, both primes; n=16 a=7 `{1w:8,2w:1}`, both
+     primes) — and this is a THEOREM: the incidence cap `Σ_γ #fiber(γ) ≤ C(n,a)` on far-direction
+     lines makes the floor and near-extremality mutually exclusive (`NoUniqueBadScalarWitness ⟹
+     #bad ≤ C(n,a)/2`), and ceiling saturation forces every fiber singleton. The
+     pairwise-interpolation relation is dead (the extremal object is a PERFECT MATCHING bad scalar ↔
+     private `a`-subset). KEPT: the incidence cap (strict strengthening of the direction-blind
+     scalar ceiling to Σ-multiplicities, all levels `a ≥ k`, production vocabulary).
+     `Frontier/_SecondWitnessFloor.lean` (compile VERIFIED 2026-07-02: pg-iterate ✅ 330s, all 11
+     `#print axioms` = `[propext, Classical.choice, Quot.sound]`, no sorryAx; a=4 boundary row now
+     2-prime replicated via `_out_466_second_witness_n8_q8273_a4.txt`),
+     DISPROOF `466-r4-second-witness-floor-refuted`,
+     kb `deltastar-466-second-witness-floor-refuted-2026-07-02.md`;
    - **`CandidateListExactSuccessor`**: the successor/renormalization law for the floor predicate
      (or its adjacent-rung counterexample `R(a) ∧ ¬R(a+1)`) — with prefix+successor+budgeted-max the
      in-tree `deltaStar_pin_of_*` consumers fire.
@@ -428,17 +438,28 @@ artifact traced; phantom bricks recovered and resolved (§12); numerics-cannot-d
    `deltastar-466-exchange-rate-essay-2026-07-01.md` (the tariff-table re-ranking of this list
    toward the exact/counting surfaces: items 1, 2, and the integer form of 3).
 
-### Tier 2 — decisive probes not yet run
+### Tier 2 — decisive probes: ALL RUN, ALL DECIDED (rounds 1+4; section retained as record)
 
-- **Anti-resonance dichotomy** (Chapman–Mudgal): is the worst `b` anti-resonant? (empirical gate).
-- **Non-backtracking / Ihara–Bass** `b_m = q^{m/2}·T_m(A/2√q)` on `Cay(F_q,μ_n)` — "the only sliver
-  that could beat √q"; probe not run.
-- **D2 Rogers–Siegel decision**: concentration ⟹ final no-go brick; heavy lower-tail ⟹ the
-  "prize prime as large-deviation anomaly" sliver genuinely reopens. Gated on a pointwise
-  prime-to-lattice coupling.
-- **Tsang level-splitting probe**; **Kravchuk moment-interlacing** numerical check (`SCL_ρ` vs
-  `1−√ρ`; risk: re-derives Johnson); **I031 Lamzouri-type union bound** over the collapsed index set
-  (is the entropy reduction exploitable at the *tail* rather than the moment?).
+- **Anti-resonance dichotomy** (Chapman–Mudgal) — **KILLED r1**, `466-r1-antiresonance-bblind`
+  (b-blind on μ_n).
+- **Non-backtracking / Ihara–Bass** — **KILLED r1**, `466-r1-nonbacktracking-relabeling`
+  (deterministic monotone relabeling on `Cay(F_p, μ_n)`; no sliver past √q).
+- **D2 Rogers–Siegel decision** — **DECIDED r4: CONCENTRATION**,
+  `466-r4-d2-lowertail-concentration` (all 2038 primes at n=16: x = M/√(n log(p/n)) ∈
+  [1.104, 1.218], lower tail thinner than Gumbel; the ∃-form/anomaly sliver is closed; gate
+  brick `_D2LowerTailConcentrationGate.lean`).
+- **Tsang level-splitting** — **KILLED r4, vacuous**, `466-r4-tsang-levels-vacuous` (exact
+  level decomposition `E_r = Σ_k e_k`: generic-prime wraparound `N_k ≡ 0` through r=6 (n=8) /
+  r=4 (n=16); level 0 carries 100.1–104.2% of `E_r` in every cell; nonzero levels sub-smooth —
+  nothing to split past the closed diagonal `2r ≤ β`;
+  `deltastar-466-tsang-levels-vacuous-2026-07-01.md`).
+- **Kravchuk moment-interlacing** — **KILLED r1**, `466-r1-kravchuk-weaker-than-johnson`
+  (no in-window content; re-derives ≤ Johnson).
+- **I031 Lamzouri-type union bound** — **KILLED r4, cosmetic at the tail too**,
+  `466-r4-i031-tail-cosmetic` (exact identity: union-with-Markov-tail at depth r ≡ the
+  quotient moment bound `(m·μ_{2r})^{1/2r}`; with `i031_chaining_cosmetic` the entropy
+  reduction is cosmetic at BOTH recognized inputs — I031 fully closed;
+  `deltastar-466-i031-tail-cosmetic-2026-07-01.md`).
 
 ### Tier 3 — bankable wins off the core (real value, no wall contact)
 

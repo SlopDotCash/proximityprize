@@ -36,12 +36,15 @@ Controls (pre-scanned, all non-generalized-Fermat, f >= 7):
                                   = 2013265921 IS BabyBear)
 """
 import math
+import os
 import sys
 import time
 from fractions import Fraction
 
 import numpy as np
 import mpmath as mp
+
+CKPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_ckpt_466_deploy")
 
 CHAR0_DPS = 400
 LANCZOS_DPS = 50
@@ -432,7 +435,17 @@ def analyze(name, p, n, deployment=False):
     print(f"\n-- {name}: p = {p} = {f}*2^{n.bit_length() - 1}+1, n = 2^{n.bit_length() - 1}, "
           f"f = {f}, g = {g}, beta = {beta:.4f}, ln(p/n) = {lnpn:.4f}, "
           f"genFermat = {gf if gf else 'NO'}", flush=True)
-    c = coset_values(p, n, g)
+    # checkpoint (the 2026-07-01 run lost ~15 min of coset values to a mid-run kill)
+    os.makedirs(CKPT_DIR, exist_ok=True)
+    ck = os.path.join(CKPT_DIR, f"c_{name}.npy")
+    if os.path.exists(ck):
+        c = np.load(ck)
+        assert c.size == f
+        print(f"    [checkpoint] loaded coset values from {os.path.basename(ck)}",
+              flush=True)
+    else:
+        c = coset_values(p, n, g)
+        np.save(ck, c)
     # exact anchors
     s1 = math.fsum(c.tolist())
     s2 = math.fsum((c * c).tolist())

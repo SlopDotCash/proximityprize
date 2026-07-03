@@ -1,5 +1,12 @@
 # N1-theta-cusp: the modular-form decomposition of the wraparound lattice theta — complete chain, explicit death (#466, 2026-07-01)
 
+> **ADJUDICATED (judge, 2026-07-02): REDUCES_TO_WALL.** Both refuters killed=true; all five
+> prize-point exponents independently recomputed by both refuters AND by the judge (exact
+> integer representation numbers where feasible) — every displayed digit confirmed. The death
+> is the flagged bounded-complexity `(2w)^{n/4}` norm-height wall (dossier §4.4, tetrachotomy
+> door (i), #407 exact-norm gate) landed verbatim, plus the missing ⟨S,S⟩ input ≡ the open D2
+> Rogers–Siegel gate. Full adjudication in §9 below; one probe-range claim corrected in §1.
+
 > **Lane:** N1-theta-cusp (novel-math round). **Seed:** θ(L_p) is a modular form of weight n/2;
 > decompose Eisenstein + cusp; Eisenstein = Siegel main term (allegedly the Wick/DC rate);
 > cusp ≤ Ramanujan–Petersson/Deligne (proven, integral weight since n/2 = 2^29 is even).
@@ -68,8 +75,12 @@ flagged; it is NOT the death point** (the death is upstream and unconditional). 
 contribution to `r_{Z^n}(w)` is an `O(w²/n)`-fraction — bounding the full `r_{L_p}` suffices
 and loses nothing.
 
-**[probe] (T) is the empirically right statement:** measured `r_{L_p}(m)/r_pred(m)` lies in
-[0.59, 1.92] at ALL measured (n, p, m) (n = 8, 16, 32 on the β=4 diagonal, m ≤ 16), and is
+**[probe] (T) is the empirically right statement:** measured `r_{L_p}(m)/r_pred(m)` has
+**upper envelope ≤ 1.92** at ALL measured (n, p, m) (n = 8, 16, 32 on the β=4 diagonal,
+m ≤ 16). ~~[0.59, 1.92] at all points~~ **[CORRECTED at adjudication (Refuter-B, judge-verified):
+one below-prediction point r/pred = 0.234 at (n=16, p=65537, m=9: r=32 vs pred 136.5); over
+nonzero-r points the range is [0.234, 1.92]. Below-prediction points are harmless to (T),
+which is an upper envelope.]** The ratio is
 **1.009 / 0.985 / 1.008 at the DC-dominated depths m = 12, 13, 14 at n = 32** — the
 Rogers–Siegel/random-sublattice model is accurate to 1% where the DC term dominates. This is
 the sharpest small-scale confirmation to date of the D2 (Rogers–Siegel) shape of the core.
@@ -244,7 +255,130 @@ in the object's forced complexity" reappears with the complexity = the weight.
 - **Self-refutation registered as the lane outcome: the seed mechanism cannot produce the
   prize at any tuning; the CORE stays OPEN, ON-BGK.**
 
+## 9. Adjudication (judge, 2026-07-02) — VERDICT: REDUCES_TO_WALL
+
+**Process:** proposer completed and self-refuted the chain; Refuter-A (arithmetic-vacuity
+lens) and Refuter-B (structural-reduction lens) both returned killed=true with independent
+recomputations; the judge re-derived every load-bearing number a third time, using **exact
+integer arithmetic** for the representation numbers (θ₃-power coefficients by binary
+polynomial exponentiation — not asymptotics). Result: **every displayed digit confirmed.**
+
+| quantity (prize point: n=2^30, k=2^29, p=2^120, m=178) | proposer | judge recomputation |
+|---|---|---|
+| `a_E(178)` (Eisenstein/Siegel main term) | `10^{−2,978,562,816}` | `10^{−2,978,562,816.3}` ✓ |
+| Deligne ceiling `n·d(m)·(m/2)^{(k−1)/2}` | `10^{523,285,404}` | `10^{523,285,404.0}` ✓ |
+| one-index-step cost `(178/177)^{(k−1)/2}` | `10^{656,791}` | `10^{656,790.7}` ✓ |
+| trivial `r_{Z^n}(178)` | `10^{1336.3}` | `10^{1336.3}` ✓ **[exact integer]** |
+| Wick floor `r_{L_0}(178)` | `10^{667.5}` | `10^{667.5}` ✓ **[exact integer]** |
+| DC target `r_pred(178)` | `10^{1300.2}` | `10^{1300.2}` ✓ |
+| max anchor ratio / Δm | `1+1.1·10^{−5}` / 0.002 | `1+1.11·10^{−5}` / 0.0020 ✓ |
+| `dim S_k(Γ₀(4p²))` (β=4 / literal q) | `10^{80.7}` / `10^{103.6}` | `10^{80.7}` / `10^{103.6}` ✓ |
+
+**Disputes resolved:**
+
+1. **Step-3 vs Step-4 filing (Refuter-B vs proposer/Refuter-A):** both filings are correct
+   and the verdict is insensitive to the choice. Precise resolution: **Step 3 is where the
+   seed's *mechanism* dies** (the Eisenstein slot holds the volume term, off by
+   `10^{2.98·10^9}`; the Wick main term is a weight-n/4 theta, constitutionally
+   unrepresentable in the weight-n/2 main-term slot; so at index 178 ≪ n the decomposition
+   is a no-op, S ≈ θ), and **Step 4 is where the *route* dies** (exhaustive check that no
+   cusp-side technology substitutes: forced anchor `r(2)=n`, transfer cost
+   `(m_t/m_a)^{(k−1)/2}` with no integer anchor placement, Petersson conditioning identical,
+   corank ≤ 356 on a `10^{80.7}`-dimensional space).
+2. **Proposer/Refuter-A crossover-number discrepancy** (n=128: `10^{43.0}` vs trivial
+   `10^{44.1}` [proposer] versus `10^{44.0}` vs `10^{45.4}` [Refuter-A]): traced by the judge
+   to the depth convention — proposer's probe used r = 19/22 (≈ floor ln p), Refuter-A used
+   r = 20/23 (ceil). Judge recomputed BOTH conventions with exact trivial counts:
+   n=2^7 ALIVE either way (43.0 vs 44.3; 44.0 vs 45.6), n=2^8 DEAD either way
+   (88.4 vs 63.1; 89.5 vs 65.0). **n\* ∈ (2^7, 2^8) is robust** — same range as the #407
+   exact-norm gate; not load-bearing for the prize-point death, which is off by `10^{5.2·10^8}`.
+3. **Refuter-B's data correction:** confirmed against the probe output and applied in §1
+   (one below-prediction point 0.234 at (16, 65537, m=9); upper envelope 1.92 unaffected;
+   (T) is an upper bound, so the correction is cosmetic for the lane but required for reuse).
+4. **Normalization generosity (Refuter-A):** confirmed — the proposer's ceiling used the
+   route-*favorable* base `(m/2)^{(k−1)/2} = 89^{...}`; the base-m variant gives
+   `10^{604,092,528}` (judge-recomputed), i.e. the death is understated, not overstated.
+
+**Why REDUCES_TO_WALL rather than VACUOUS_AT_SCALE:** the constants do die at the prize
+point (the method genuinely beats trivial for n ≲ 2^7), but the failure is not a loose
+constant — the transfer exponent `(k−1)/2 = n/4 − 1/2` makes the cost
+`(2r/2)^{n/4−1/2} = exp(Θ(n log r))`, which is **verbatim the `(2w)^{n/4}` norm-height /
+conjugate-count bounded-complexity wall** (dossier §4.4 and §8 "theta/ideal-lattice";
+tetrachotomy door (i): Deligne = Weil-I Frobenius bookkeeping with the modular weight
+k = n/2 as the forced unbounded-complexity parameter; effective range n\* ∈ (2^7, 2^8)
+numerically coincides with the #407 exact-norm gate). Secondary reduction: the single
+missing input — an upper bound on `⟨S,S⟩` (Petersson mass of θ − E) — is via
+Rankin–Selberg a second-order functional of the b-family (Meta-Theorem-capped) and is
+**identically the open D2 Rogers–Siegel pointwise-variance gate** (dossier §6 Tier-2);
+and per (4c), even a granted D2 resolution dies on the conditioning ratio. Positivity
+post-processing is pre-closed by the round-2 lone-spike filter. No step is mathematically
+wrong (not CLOSED_FALSE); nothing survives to escalate (not SURVIVES_ROUND).
+
+**The only rescue shape (recorded for completeness, Refuter-B's steelman, judge-endorsed):**
+a coefficient-certification method for `S_k(Γ₀(N))` in the regime **index ≈ log(level),
+weight ≈ 2^29** with conditioning subexponential in k — i.e.
+`a_S(m) ≤ C^m·m^{o(k)}·(single-anchor data)`, routed through **no** single Hilbert norm
+(4c kills all of those) and **not** a linear functional of the first o(dim) coefficients
+(4e kills those). No such tool exists in the literature (all coefficient technology is
+built for index → ∞ at fixed weight); any candidate must additionally beat the
+mixed-weight filter (S3) and would still need the D2-gated `⟨S,S⟩` input.
+
+### DISPROOF-ready summary
+
+> **N1-theta-cusp is dead (REDUCES_TO_WALL; triple-verified arithmetic).** Encoding the
+> prize as the representation-number envelope of the wraparound lattice
+> `L_p = ker(Z^n → F_p)` makes `θ_{L_p}` a weight-2^29 form on `Γ₀(4p²)`, and every part
+> of the modular toolbox then fails structurally at prize index m = 178: (i) the
+> Eisenstein/Siegel–Weil slot holds the volume term `10^{−2,978,562,816}`, not the Wick+DC
+> main term `10^{1300.2}` — the Wick term is a *weight-n/4* theta invisible to the
+> weight-n/2 main-term slot, so the whole count is cuspidal; (ii) every cusp-coefficient
+> normalization transfer from the forced anchor `r(2) = n` costs
+> `(m_t/m_a)^{(k−1)/2}`, best output `10^{523,285,404}` vs trivial `10^{1336.3}` (worse
+> than trivial by `10^{5.2·10^8}`; one index step costs `10^{656,791}`; no integer anchor
+> exists); (iii) `dim S_k = 10^{80.7}` vs corank ≤ 356 — modularity is informationless at
+> index ≪ dimension. The exponent `(k−1)/2 = n/4 − 1/2` is the `(2w)^{n/4}`
+> bounded-complexity wall verbatim (effective range n ≲ 2^8, matching the #407 exact-norm
+> gate), and the one missing input `⟨S,S⟩` is the open D2 Rogers–Siegel variance gate —
+> the lane re-derives the wall and the open core, and closes the entire family of
+> weight-n/2 "Eisenstein-main-term" proposals via the mixed-weight filter (S3).
+> **CORE stays OPEN, ON-BGK.**
+
+### Bankable sub-results (land regardless of the kill)
+
+1. **(S1) Exact anchor theorem, Lean-sized:** `r_{L_p}(2) = n` for every `p ≡ 1 (mod n)`,
+   h of exact order n (norm-2 membership forces `h^{i−j} ≡ ∓1`; unique dyadic dlog of −1
+   is n/2; vectors `±(e_i+e_{i+n/2})`). Judge re-derived the proof; probe-exact at 4
+   instances, independently re-verified by Refuter-A at 3. Plus the odd-index diagnostic:
+   `r_{L_0}(odd) = 0` ⟹ odd norms are pure wraparound; onset m=9 at Fermat 65537 vs m=13
+   at control 65617 — a rep-number Fermat-anomaly detector; n=8/p=4129 wrap-free to m=14
+   (consistent with D4-clean).
+2. **(S2, strongest) 1%-accurate Rogers–Siegel confirmation:** `r_pred = Wick + DC/p`
+   measured at 1.009/0.985/1.008 (n=32, m=12/13/14) — sharpest small-scale confirmation
+   of the D2 shape; statement (T) ("L_p is Rogers–Siegel-typical at indices ≤ 2 ln p") is
+   D2's cleanest invariant form. Feed to the dossier's Tier-2 D2 decision probe.
+   [With the §1 range correction: upper envelope 1.92, one low point 0.234.]
+3. **(S3) Mixed-weight filter (a-priori kill for a family):** the Wick main term is
+   `θ₃(2τ)^{n/2}`, weight n/4 — any weight-n/2 automorphic main-term/error decomposition
+   of `θ_{L_p}` misfiles the main term as error at indices ≪ n. Cite against all future
+   Eisenstein-main-term proposals on this object.
+4. **(S4) Door unification for the dossier map:** N1's missing normalization input
+   `⟨S,S⟩_Pet` ≡ the D2 Rogers–Siegel pointwise-variance gate — two dossier doors are one;
+   moreover (4c) shows a D2 resolution would still not open this lane (conditioning
+   transfer), so **D2-concentration closes N1 permanently rather than opening it**.
+5. **(Refuter-A addendum, judge-verified) Wall-coincidence datum:** the modular crossover
+   n\* ∈ (2^7, 2^8) coincides numerically with the #407 exact-norm-gate range (n ≈ 128–256)
+   under both depth conventions — strengthening "the two walls are one wall" for the
+   §4.4 catalogue, whose new entry reads: *"weight-n/2 modular forms / Deligne transfer
+   `(2r)^{n/4}`"*.
+
 <sub>🤖 Lane N1-theta-cusp proposer (Claude Fable 5), 2026-07-01. Probe:
 `scripts/probes/probe_466_novel_theta_cusp.py` (exact int64 DP, brute-force + polynomial
 cross-checks). No Lean claims made; nothing here is called "proven" beyond the cited
 classical theorems and the machine-verified integer data.</sub>
+
+<sub>🤖 Adjudicated by lane judge (Claude Fable 5), 2026-07-02. Judge recomputation:
+scratchpad `judge_recompute_N1.py` — exact θ₃-power representation numbers via integer
+polynomial exponentiation for `r_{Z^n}(178)`, `r_{L_0}(178)`, and the crossover table;
+lgamma ledger for the five automorphic exponents. All values in the §9 table confirmed.
+Verdict: REDUCES_TO_WALL (bounded-complexity `(2w)^{n/4}` + D2 gate). Not committed —
+awaiting round consolidation per lane protocol.</sub>

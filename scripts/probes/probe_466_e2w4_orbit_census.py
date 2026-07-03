@@ -296,8 +296,24 @@ def census(n: int, p: int, quads: np.ndarray):
 # driver
 # ----------------------------------------------------------------------------
 
+def char0_rep_check(n: int, rep):
+    """Exact char-0 (e2 == 0?, e1 == 0?) for one exponent quadruple, via Phi_n."""
+    M = reduction_table(n)
+    deg = M.shape[1]
+    acc2 = np.zeros(deg, dtype=np.int64)
+    for i in range(4):
+        for j in range(i + 1, 4):
+            acc2 += M[(rep[i] + rep[j]) % n]
+    acc1 = np.zeros(deg, dtype=np.int64)
+    for i in range(4):
+        acc1 += M[rep[i] % n]
+    return bool((acc2 == 0).all()), bool((acc1 == 0).all())
+
+
 def main():
     ns = [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64]
+    if len(sys.argv) > 1:
+        ns = [int(a) for a in sys.argv[1:]]
     rows = []
     print("probe_466_e2w4_orbit_census -- width-4 e2BadScalarSet full G-orbit census")
     print(f"numpy {np.__version__}")
@@ -325,6 +341,10 @@ def main():
                   f"#bad={r['nbad']}  #alpha={r['distinct_alpha']}  "
                   f"K_orbits={r['K']}  free_action={'OK' if r['free_ok'] else 'FAIL'}  "
                   f"K_prod={r['K_prod']}(inside={r['prod_inside']})  K_extra={r['K_extra']}")
+            for rep in r["extra_reps"]:
+                z2, z1 = char0_rep_check(n, rep)
+                print(f"      non-product orbit rep (exponents mod {n}): {rep}  "
+                      f"char0-exact: e2==0 {z2}  e1==0 {z1}")
         v = "AGREE" if agree else "**PRIME-DISAGREE**"
         c = "char0-MATCH" if char0_match else "**CHAR-P EXCESS (bad prime?)**"
         print(f"  cross-prime: {v}; {c};  Kmodel=n/4-1={kmodel}  O_P-model=n/8-1={opmodel}  "

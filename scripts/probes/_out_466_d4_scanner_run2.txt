@@ -17,3 +17,7 @@ EXACT-BAD iff W_4 > 0; K-BAD iff A_4 > 1.05 * E_4^{(0)}.
     ... n=16: 2000/2852 primes (12s)
 
 [n=16] scanned 2852 primes in 17.0s (exhaustive: 2852, window-sample: 0)
+    ... n=32: 1000/18452 primes (115s)
+    ... n=32: 2000/18452 primes (249s)
+    ... n=32: 3000/18452 primes (466s)
+    ... n=32: 4000/18452 primes (648s)

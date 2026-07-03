@@ -27,11 +27,15 @@ preserves N_a.  Poisson statistics are therefore reported in three units: raw ve
 (inflated by design effect = cluster size), DISTINCT NORM VALUES, and SYMMETRY ORBITS of
 folded relations (the honest independent-event unit).
 
-STAGES (CLI arg): spec | ext16 | ext32 | ext32deep   (default: spec)
+STAGES (CLI arg): spec | ext16 | ext32 | ext32deep | fullball16   (default: spec)
   spec     = the task grid n=8 r=2,3,4; n=16 r=2,3,4 + all anchors.
   ext16    = n=16 r=5,6,7,8  (EXTENSION: first depths whose mass reaches [n^4, 4n^4]).
   ext32    = n=32 r=2        (EXTENSION: second n with true in-window mass).
   ext32deep= n=32 r=3        (EXTENSION: depth growth at n=32; ~minutes).
+  fullball16 = n=16 r=3,4 FULL L1 ball (multiplicity carriers included -- the conjecture's
+    actual family; the {0,+-1} stack is its multiplicity-free part).  This is the ONLY
+    stage that can see the GF resonance (D4 anchor: 65537-mass is 100% |c_j|>=3-carried);
+    it measures whether the GF prime is OVER-SERVED in the full ball at fixed r.
 
 CROSS-CHECK ANCHORS (mandatory, all in stage spec):
   * n=16 r=2 bad-prime set vs {17} + canonical E2W4 resultant factors
@@ -361,7 +365,13 @@ def window_report(tag, n, r, W, lo, hi, nvec, orbit_map=None, flag=""):
 
 
 def dyadic_profile(n, r, W, cap, orbit_map):
-    """Per-dyadic [Y,2Y) class equidistribution profile -- the conjecture's native shape."""
+    """Per-dyadic [Y,2Y) class equidistribution profile -- the conjecture's native shape.
+    NOTE (bug found in-run, n=16 r=5 bin [256,512) index 11.18): a bin with
+    Y < sqrt(cap) < 2Y mixes below-sqrt-cap primes (orbit count 0 BY CONSTRUCTION,
+    orbit_map only covers leftover primes > sqrt(cap)) with genuine entries -- the
+    inflated index there is an ARTIFACT, now flagged STRADDLE (checked: the
+    all-prime distinct-norm counts in that bin are FLAT 10/8/9/10/10/8, stage aux)."""
+    sqc = int(math.isqrt(int(cap)))
     log(f"  dyadic class profile (p = 1 mod {n}; orbit units where p > sqrt(cap)):")
     Y = n
     while Y <= min(cap, PRIME_LIMIT // 2):
@@ -374,9 +384,11 @@ def dyadic_profile(n, r, W, cap, orbit_map):
                               dtype=np.float64) if orbit_map else None
                 if Ov is not None and Ov.sum() > 0:
                     oi = Ov.var() / Ov.mean()
+                    strad = "  [STRADDLE sqrt(cap): index unreliable]" \
+                        if Y <= sqc < 2 * Y else ""
                     log(f"      [{Y},{2*Y}): {len(ps)} primes, served {served}, "
                         f"orbit mass {int(Ov.sum())}, orbit index {oi:.2f}, "
-                        f"top share {Ov.max()/Ov.sum():.2f}")
+                        f"top share {Ov.max()/Ov.sum():.2f}{strad}")
                 else:
                     log(f"      [{Y},{2*Y}): {len(ps)} primes, served {served}, "
                         f"vector mass {int(Wv.sum())} (below sqrt-cap: small-prime regime)")

@@ -1,7 +1,14 @@
 # #466 novel-math round — lane N3-homogeneous: Hecke points, the space of lattices, and ×2-rigidity, developed to their deaths
 
-**Date:** 2026-07-01 · **Issue:** #466 · **Lane:** N3-homogeneous (proposer note; judge to finalize)
-**Verdict:** **SELF-REFUTED — all three sub-routes die on exact arithmetic or exact structure.**
+**Date:** 2026-07-01 · **Issue:** #466 · **Lane:** N3-homogeneous · **FINALIZED by lane judge 2026-07-02**
+**Adjudicated verdict:** **REDUCES_TO_WALL** (self-refutation confirmed by both refuters and by
+independent judge re-derivation of every disputed constant; dying step = S4 Kill 2×4, honest
+residue = the already-named open Props TPS + D2 coupling; Directions II/III land on the
+lone-spike/second-order meta-theorem and on BGK verbatim). Adjudication record, two constant
+errata (`mean^{−0.39}` not `^{−0.47}`; `2^146.2` not `2^150`), one sharpening (Sobolev tax
+`p^{+3011}` exact, resolving the refuters' 3006-vs-2822 discrepancy in A's favor), and the
+DISPROOF-ready paragraph: §9.
+**Proposer verdict (upheld):** SELF-REFUTED — all three sub-routes die on exact arithmetic or exact structure.
 The lane's positive residue: an exact new dictionary (sections = Hecke points of one `T_p`
 correspondence), three sharp depth crossovers that correct the lane's own seed framing, a
 Parseval refutation of the "cusp-avoidance" form of the target at depth `r ≥ 5`, a type-error
@@ -93,7 +100,15 @@ avoids the Minkowski cusp region."* Developing this honestly **refutes the frami
    > the total ±1-point count over the `C(n,2r)` Hecke points `{x_S(p)}` equals the Siegel/DC
    > mean `n^{2r}/p` (= `e^{3410}` in tuple units at β = 4) within `K^r·(2r−1)‼·n^r·(r-orderings)`
    > = `e^{2066+83 ln K}` — i.e. **CLT-scale concentration**: relative fluctuation
-   > `≤ mean^{−0.47}`, aggregated over sections, NOT per-section avoidance.
+   > `≤ mean^{−0.39}`, aggregated over sections, NOT per-section avoidance.
+   > *(Judge correction, confirming Refuter-A: `e^{2066}/e^{3410} = e^{−1344} = mean^{−0.394}`;
+   > independent Stirling `(167)‼·n^{84} = e^{2093.5}` gives `mean^{−0.386}`. The originally
+   > printed `−0.47` is not reproducible under any consistent convention pair; the nearest
+   > genealogy — mixing an ordered-tuple mean `e^{4107}` with an unordered fluctuation
+   > `e^{2093.5}` — gives `−0.490`, the plausible source of the slip. Under other
+   > tuple-multiplicity conventions the exponent ranges ≈ `−0.21` to `−0.39`; CLT-scale in every
+   > convention, so nothing downstream changes. The probe output line printing `−0.47` is
+   > superseded by this note; see §9.2 errata.)*
 
 So the homogeneous route must produce a **variance/second-moment theorem for a deterministic
 one-point-per-prime family**, not a non-concentration/cusp-avoidance estimate. This single
@@ -137,7 +152,11 @@ about it without thickening. Thickening to width `δ` needs `δ ≈ p^{−0.2}` 
 (`3^d·δ^d ≤ p^{−33.6}`), while any effective statement on `X_168` (dim = 28,223) consumes a
 Sobolev norm of order ≥ dim/2 ≈ 14,000 derivatives: error `≥ δ^{−14000}·p^{−κ} = p^{2800−κ}`.
 The thickening tax alone overshoots by **three orders of magnitude in the exponent**,
-independently of κ.
+independently of κ. *(Judge sharpening, adopting Refuter-A: the constraint `3^d·δ^d ≤ p^{−33.63}`
+actually forces `δ = 3^{−1}·p^{−0.2002} = p^{−0.2134}` — the extra `log_p 3 = 0.0132` term —
+so the exact tax is `p^{+3011}`; with the maximally charitable symmetric-space reading
+(dim 14,195, s ≈ 7,098) still `p^{+1514}`. The proposer's `p^{2800}` was an understatement;
+see §9.2.)*
 
 **Kill layer 4 — the theorem does not exist.** All proven effective Hecke equidistribution
 (Clozel–Oh–Ullmo Invent. Math. 144 (2001); Gorodnik–Nevo; Eskin–Oh) averages over the **full
@@ -297,3 +316,163 @@ flagged non-machine steps are (i) the layer bookkeeping in §2.3 (standard, not 
 not a theorem). Neither can revive the route: each kill layer is independently ≥ 60×
 overdetermined. Nothing here is claimed proven beyond the probe-checked identities and the
 two-line lattice propositions.*
+
+---
+
+## 9. ROUND ADJUDICATION (lane judge, 2026-07-02) — FINAL
+
+**Verdict: REDUCES_TO_WALL.** Both refuters returned killed = true; the judge independently
+re-derived every disputed constant (§9.2). The lane is correct as executed — no step of the
+*corrected* chain is mathematically wrong (so not CLOSED_FALSE), and while the constants do die
+spectacularly at the prize point, vacuity is the *overdetermining* layer, not the root: even with
+fictional constants the required input either does not exist as a theorem or is the target in
+disguise, and the lane's honest terminus is the **already-named open core** (Conjecture TPS +
+D2 pointwise coupling) plus known kills (BGK verbatim for Direction III; the lone-spike /
+second-order meta-theorem for Direction II). That is the definition of REDUCES_TO_WALL.
+
+### 9.1 Refuter record
+
+- **Refuter-A (arithmetic-vacuity): killed = true, dying step S4 (kill layers 1–3).**
+  Reproduced the κ_needed table to 4 decimals (0.9618 at r=2; 33.6287 at r*=84, deficit 67.3×;
+  prize field 32.9131 at r*=110), the single-section floor 0.7052/0.7736, and *sharpened* the
+  Sobolev layer: the thickening actually needed is δ = 3^{−1}·p^{−κ/d} = p^{−0.213} (not the
+  proposer's p^{−0.2}: the constraint 3^d·δ^d ≤ p^{−33.63} forces the extra log_p 3 = 0.0132
+  term), so on dim X₁₆₈ = 28,223 with s ≈ dim/2 ≈ 14,111 derivatives the tax is ≈ p^{+3006}
+  (proposer's "≥ p^{2800}" was a valid understatement), with symmetric-space charitable floor
+  ≈ p^{+1512}; even an arbitrarily super-Ramanujan fictional rate below κ ≈ 3000 fails.
+  Confirmed the S3 form correction (radius 2.519·λ_gauss = bulk; Parseval deficit 2^146.2 at
+  r=5, catching the probe's "~2^150" rounding erratum). Independently re-verified T1/T2
+  brute-force at fresh (d,p) = (3,101), (4,13). Found two non-load-bearing constant errors
+  (§9.2 errata).
+- **Refuter-B (structural-reduction): killed = true, dying step S4 Kill 4 × Kill 2.**
+  The required input is a one-point-per-prime effective Hecke equidistribution theorem that
+  **does not exist** (COU/Gorodnik–Nevo/Eskin–Oh average the full orbit with rates in deg T_p —
+  the wrong variable; the only one-point-per-prime relative, DFI 1995, is quadratic-only via
+  Salié sums; the level-1 Weyl shadow is degree-≥3 congruence-root equidistribution at degree
+  φ(2^30) = 2^29, a named open problem), AND at the required single-section strength κ ≥ 0.705
+  the "equidistribution input" is equivalent to a certified pointwise-in-p statement — i.e. **the
+  target in disguise (circularity)** — before the union-bound demand κ ≥ 33.63 even engages.
+  Re-derived T1/T2 (fresh brute-force MATCH at (d,p) = (3,17)) and the procyclic kill; verified
+  the packet variant dies as F0 + variance regress; confirmed distinctness from the prior J4
+  kill (abelian frequency torus ≠ non-abelian section family). Used the proposer's δ = p^{−0.2}
+  in the Sobolev layer (tax p^{+2822}) — superseded by A's corrected δ (§9.2). Flagged
+  bookkeeping debts (§9.6).
+
+### 9.2 Judge re-derivations (all disputed or load-bearing constants; machine-recomputed 2026-07-02)
+
+| Quantity | Judge value | Adjudication |
+|---|---|---|
+| κ_needed(r) = log_p C(n,2r), β=4 | 0.4917 / 0.9618 / 1.4209 / 1.8725 / 2.3184 / **33.6287** (r=1,2,3,4,5,84) | proposer + A exact ✓ |
+| single-section floor | log₂#primes = 84.62 ⟹ κ > **0.7052** (prize field 122.22 ⟹ **0.7736**) | ✓ (> 1/2 before any union) |
+| prize-field κ_needed(110) | **32.9131** | ✓ |
+| radius constant at r = ln p | √(2πe)·e^{−1/2} = **√(2π) = 2.5066**; finite-r value 2.5189 at r*=84 | ✓ bulk, not cusp |
+| r_cusp | 29.31 (β=4), 38.59 (prize field) | ✓ |
+| Parseval budget at r=5 | needed 2^180 vs K⁵·2^{33.8} ⟹ deficit **2^{146.2}** | kb §2.3 correct ✓; **erratum:** probe line "~2^150" is a rounding slip |
+| form-C relative fluctuation | e^{2066}/e^{3410.3} = e^{−1344} = **mean^{−0.394}**; independent Stirling (167)‼·n^{84} = e^{2093.5} ⟹ mean^{−0.386} | **erratum confirmed** (both refuters): printed −0.47 wrong; nearest genealogy (ordered mean e^{4107} vs unordered fluctuation e^{2093.5}) gives −0.490 — plausible slip source, not exact. CLT-scale under every convention — non-load-bearing. Corrected in §2.4. |
+| Sobolev tax (A/B discrepancy **resolved**) | dim = 168²−1 = 28,223; s = dim/2 = 14,111.5; true δ = 3^{−1}·p^{−0.2002} = p^{−0.2134} ⟹ tax = δ^{−s} = **p^{+3011}** (judge-exact; A's 3006 = rounding of 0.213·14112); proposer-δ = p^{−0.2} gives p^{+2822} (B's figure, undersharp); symmetric-space charitable floor (dim 14,195, s = 7,097.5) = **p^{+1514}**; fictional κ must exceed ≈ **2856–3045** (convention range), ≈ 1548 even maximally charitably | A's bookkeeping correct, adopted with exact recomputation ✓; every value ≥ 3 orders of magnitude beyond any κ — non-load-bearing which convention wins |
+| fixed-p density | log₂C(n,168) = 4035.4; 2^{4035−20040} = **2^{−16005}** | ✓ |
+| T1, T2 identities | re-derived by (ε, hyperplane) incidence counting: T1 = (3^d−1)π_{d−2} (each ε≠0 ⊥ a π_{d−2}-point projective hyperplane); T2 = diagonal 2(3^d−1)π_{d−2} + off-diagonal (3^d−1)((3^d−1)−2)π_{d−3} (±ε proportionality for p>3 since λε ∈ {0,±1}^d forces λ = ±1); judge brute-force at **fresh** (d,p) = (3,7): 208/1040, (3,13): 364/1352, (4,11): 10640/96160 — all MATCH | ✓ exact; 7 distinct (d,p) across 4 independent sessions; T1 > 0 always ⟹ positivity block stands |
+| S6 needed discrepancy | √(2 ln p/n) = **2^{−11.3}** | ✓ vs log-strength BLMV rates |
+| multiplier group | (Z/2^μ)^× ≅ {±1}×⟨3⟩, rank 1 mod torsion | ✓ no ×a×b pair exists |
+
+### 9.3 Adjudicated dying step (resolving the refuters' difference of emphasis)
+
+Both refuters die the lane in **S4**; they emphasize different layers, and both are right — the
+layers are compatible and jointly overdetermine the death. Under the honesty contract the
+**contract-primary** death is Refuter-B's: **S4, Kill 2 × Kill 4** — the required
+one-point-per-prime effective Hecke equidistribution input *does not exist*, and at the strength
+the route needs (single-section floor κ > 0.7052 > the √-barrier, before any union bound) it is
+equivalent to a certified pointwise-per-prime statement, i.e. a prize-shaped input (circularity);
+its honest second-moment residue is **Var_p(W_r) = Conjecture TPS verbatim** (Kill 5), plus the
+D2 coupling for the transfer. Refuter-A's layers 1–3 (κ_needed(2) = 0.9618 > 1/2 so
+fictional-Ramanujan certifies only r = 1 = Parseval; 67× deficit at r*; κ-independent Sobolev tax
+p^{+3011} on a measure-zero event, symmetric-space floor p^{+1514}) make the death
+exact-arithmetic-overdetermined so that **no rate hypothesis whatsoever revives the route**. The
+seed's original avoidance form dies even earlier, at S3 (Parseval-false for r ≥ 5, deficit
+2^146.2; the r = 3–4 seam is covered independently by κ_needed(3) = 1.4209 > 1/2).
+
+### 9.4 Kill-landscape mapping (adjudicated; matches both refuters)
+
+- **Direction I** = union-bound tax over C(n,2r) ≈ 2^4035 objects vs per-modulus √-barrier
+  (exchangeability gate) + "the average prime is bad" (first-order equidistribution over p is
+  TRUE and is the enemy — Kill 5) with residue = **TPS** — plus (f)-shaped circularity at the
+  required strength.
+- **Direction II** = tetrachotomy door (iv) / second-order meta-theorem (full-fiber moments are
+  exact identities — moments ARE the target) + the **lone-spike filter in lattice clothing**
+  (T1 > 0 means positivity post-processing of the aggregate certifies nothing about a
+  2^{−16005}-density subfamily); packet variant = F0 average-vs-max + variance regress.
+- **Direction III** = **BGK-circular verbatim** (the available rank-1 measure-rigidity statement
+  IS the BGK theorem = door (ii) SOTA) + AUP fence (entropy magnitude-blind), structurally closed
+  by dyadicity (procyclic multiplier group).
+- **Prop 3** (dilation = projectivization) = the ARC/RESIDUE b-blindness made structural.
+- **Distinct from the J4 kill** (abelian frequency torus, F0/F5): this lane attacked the
+  non-abelian section family in X_{2r} and died on different, correctly identified grounds.
+  The dictionary is novel *packaging* claiming zero leverage — salvage, not mechanism.
+
+### 9.5 DISPROOF-ready summary (fold into the disproof ledger when created)
+
+> **DISPROOF 466-N3-homogeneous-hecke (2026-07-01/02, adjudicated REDUCES_TO_WALL).** The
+> depth-r wraparound sections are literally Hecke points: L_S(p) = ker(a ↦ a·c_S mod p) has
+> index p, dual Z^d + Z·(c_S/p), so x_S(p) = p^{−1/d}L_S(p) is the minuscule T_p point with
+> parameter [c_S] ∈ P^{d−1}(F_p); dilation = projectivization (b-blindness), shift = isometry,
+> multiplier = Galois twist count(kS;h) = count(S;h^k) (probe-exact). Every homogeneous-dynamics
+> deployment dies. (∃-form) needs one-point-per-prime effective Hecke equidistribution — a
+> theorem that does not exist (proven rates are in deg T_p ≈ p^{d−1}, the wrong variable; only
+> quadratic DFI 1995 selects points per-prime; the level-1 shadow is degree-2^29 congruence-root
+> equidistribution, open) — at single-section strength κ > 0.7052 (already circular = pointwise
+> certification) and union strength κ_needed = log_p C(n,2r) = 33.63 at r* = 84 (vs √-barrier
+> 1/2: 67×; fictional-Ramanujan certifies only r = 1 = Parseval; measure-zero + Sobolev tax on
+> X₁₆₈ adds p^{+3011}, symmetric-space floor p^{+1514}); honest second-moment residue =
+> **Var_p(W_r) = Conjecture TPS verbatim** +
+> D2 coupling. (fixed-p) full-fiber mean/variance are exact identities T1 = (3^d−1)π_{d−2},
+> T2 = 2(3^d−1)π_{d−2} + ((3^d−1)²−2(3^d−1))π_{d−3}, machine-matched, with T1 > 0 blocking every
+> positivity route; the sections are a 2^{−16005}-density subfamily with no acting group.
+> (×2-rigidity) (Z/2^μ)^× is virtually cyclic — no rank-2 input exists on dyadic exponent
+> spaces; the honest rank-1 statement IS BGK (SOTA, ineffective); rate gap 2^{−11.3} vs
+> log-strength. Form correction banked: at prize depth the wraparound vectors sit at
+> √(2π)·λ_gauss (bulk, not cusp); the "all but K^r sections avoid" framing is Parseval-false for
+> r ≥ 5 (deficit 2^146.2); the honest target is CLT-concentration at the Siegel mean (dossier
+> form C), relative fluctuation mean^{−0.39} (corrected from −0.47). No new open input; a fourth
+> independent arrival at the r ≈ β boundary, from the space of lattices. Core unchanged: OPEN,
+> ON-BGK.
+
+### 9.6 Bookkeeping debts (recorded, not fixed here; no commits in judge session)
+
+1. The round-2 DISPROOF tags (`466-r2-*`) live in kb notes and the essay addendum; no standalone
+   `DISPROOF_LOG.md` exists yet (judge-verified by search). §9.5 is written fold-ready.
+2. Probe part (1)'s dual-integrality check is logically identical to its ker-membership check
+   (⟨c_S/p, a⟩ ∈ Z ⟺ a·c_S ≡ 0 mod p) — a smoke test, not independent evidence; harmless, since
+   Prop 1 is a two-line proof (Refuter-B's observation, confirmed).
+3. Probe output lines 69/71 (`~2^150`, `mean^{-0.47}`) contain the two errata of §9.2. The output
+   file is left as generated (machine artifact); this section is the correction of record.
+
+### 9.7 Bankable sub-results (land regardless of verdict)
+
+1. **The dictionary (Props 1–4)**: sections = one-point-per-prime selections from the minuscule
+   T_p Hecke orbit on X_{2r}, parameter [c_S] ∈ P^{d−1}(F_p); dilation = projectivization
+   (b-blindness made structural); shift = isometry; multiplier = Galois twist, information-free
+   at aggregate. Probe-exact (1000/1000, 60/60).
+2. **Three depth crossovers + the universal radius constant**: r_avoid ∈ (2,3),
+   r_cusp = ln p/ln(2πe) = 29.3 (38.6 prize field), r_sat = log₂(p)/2 = 60 (79); radius
+   √(2π)·λ_gauss at depth r = ln p. Cusp/avoidance language is quantitatively wrong at prize
+   depth; the honest object is form C (CLT-concentration at the Siegel mean).
+3. **The Parseval filter**: any future "all but K^r sections avoid" lattice framing is dead on
+   arrival for r ≥ 5 (deficit 2^146.2 at r = 5; independent κ-arithmetic covers r = 2–4).
+4. **The type-error warning + κ_needed table**: Hecke-point rates are exponents of
+   deg T_p ≈ p^{d−1}, not of p (conflation inflates a route by ~p^{80}); the table
+   (0.49/0.96/…/33.63) is a reusable referee tool for any "equidistribution beats the union
+   bound" proposal.
+5. **Exact full-fiber identities** T1/T2 ("Rogers/Siegel for the Hecke fiber" = finite-field
+   linear algebra), machine-matched at seven distinct (d,p) across four independent sessions:
+   proposer (3,251), (4,31); Refuter-A (3,101), (4,13); Refuter-B (3,17); judge (3,7), (3,13),
+   (4,11); T1 > 0 = standing positivity block.
+6. **The reduction identity**: the lane's entire residue = TPS + D2 coupling, both pre-named —
+   a fourth independent arrival at the unconditional r ≈ β boundary, from the space of lattices.
+7. **Corrected form-C constant**: relative fluctuation mean^{−0.39} (convention-dependent range
+   −0.21…−0.39), replacing the erroneous −0.47.
+8. **The sharpened Sobolev fence** (Refuter-A's bookkeeping, judge-exact): measure-zero exactness
+   on X₁₆₈ forces δ = 3^{−1}·p^{−κ/d} = p^{−0.2134}, tax p^{+3011} (symmetric-space floor
+   p^{+1514}) — reusable against any future thickened-equidistribution proposal on the space of
+   lattices at prize dimensions.
+
+**FINAL: REDUCES_TO_WALL. Core unchanged: OPEN, ON-BGK.**
