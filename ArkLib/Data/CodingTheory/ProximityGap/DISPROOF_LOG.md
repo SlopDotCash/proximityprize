@@ -19475,3 +19475,40 @@ so the n^{7/8} improvement over n^{8/9} needs a genuine depth-4 divisor structur
 the structured K-bad primes), not just "most primes are clean". The n^{8/9} (T3-based) route is
 unaffected (D3 stays finite-bad). New exact p-independent value confirmed: E₄⁰(32)=90,889,120.
 Full data: `scripts/probes/_out_466_d4_scanner_run3.txt` (2186s exhaustive, protected-image run).
+
+## [466-r6-novel-N4-leeyang-root-location] the Gauss-period-polynomial root-location route dies twice (2026-07-02)
+
+Lane: #466 novel-math N4 (`deltastar-466-novel-N4-leeyang-2026-07-02.md`; probes
+`probe_466_novel_N4_leeyang{,_close,_periodpoly}.py`). KEY IDENTITY: the m periods η_b are the
+roots of the classical Gauss period polynomial P_m (degree m) over ℚ, so M = house of P_m, and
+its coefficients are the elementary symmetric e_k(η) computable from the wraparound power sums
+(char-0-clean at shallow depth) via Newton's identities. DEATH #1: the Fujiwara/Lagrange max-form
+root bound `max|root| ≤ 2 max_k |a_{m−k}/a_m|^{1/k}` BINDS at k=2, giving √(2p) — WORSE than
+Johnson (√p side); it never sees the shallow coefficients that would help. DEATH #2: shallow-
+weighted / partial-disk (Schur–Cohn/Routh–Hurwitz-style) tests using only the provable shallow e_k
+are BLIND to the lone spike — the extremal object is one atom at ~√(2n log m), and the entire
+real-rootedness/Newton apparatus is invariant under it (the ROOT-LOCATION twin of the CMK
+moment-problem lone-spike death, `466-r2-cmk-lonespike-refuted`). VERDICT: REDUCES_TO_WALL — the
+non-trivial root bound needs e_k for k ~ log p = the deep moments = the wall. Bankable: exact
+integer power sums / Newton coefficients / Fujiwara profile / the K=2 integer countermodel.
+
+## [466-r6-novel-N7-gauss-phase-dual] the Gauss-sum-phase / Stickelberger dual reduces to the wall UNITARILY (2026-07-02)
+
+Lane: #466 novel-math N7 free-synthesis (`deltastar-466-novel-N7-free-2026-07-02.md`; probe
+`probe_466_novel_gauss_phase_dual.py`; both refuters + independent constants-audit confirm the
+kill at Step 6). The DUAL route: pass from periods η_b to the m Gauss sums g(χ) (χ trivial on μ_n)
+via the exact finite-Fourier identity η_b = (1/m)[−1 + Σ_{χ≠1} χ̄(b)g(χ)] — a UNITARY DFT on ℤ/m —
+and bring the one genuinely new lever: Stickelberger / Gross–Koblitz exact p-adic valuations. DEATH
+(Step 6): (a) |g(χ)| = √p is FLAT, so M is a nonlinear functional purely of the phase vector
+arg g(χ); (b) the p-adic lever is ARCHIMEDEAN-BLIND (fixes magnitude at √p, says nothing about the
+argument — the classical argument-of-Gauss-sum problem); (c) magnitude + valuation + all moments
+are invariant under the lone-spike phase alignment, leaving exactly the AUP deficit
+√(m/log m) = 2^42 at the prize point undetermined; (d) the required argument-equidistribution is
+UNITARILY EQUIVALENT to the original prize (DFT invertible) — at least as hard. Literature vacuity
+confirmed by constants (KU/Wasserstein q^{−1/(m−1)} ≈ 1 no decay; Katz vertical Sato–Tate
+averaged/asymptotic not sup; Heath-Brown–Patterson fixed order 3 not order 2^90). VERDICT:
+REDUCES_TO_WALL, unitarily. **NEW STANDING FILTER: any method whose only lever beyond period-side
+moments is p-adic/Stickelberger/Gross–Koblitz/Jacobi-sum/Iwasawa data is archimedean-phase-blind
+and cannot bound the house — pre-kills that whole family.** Bankable: the dual identity as clean
+unitary framing (S1); the AUP C6 made explicit and quantitative (S2, √(m/log m)=2^42); sharpened
+random-phase constant C ≈ 1.2–1.3, Fermat traps ≤ 1.45 (S4).
