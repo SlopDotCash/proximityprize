@@ -991,6 +991,43 @@ drift, zero `sorry`). Kept OPEN with the honest status; per-site fix list in
 BUT the wall — except the floor-successor-as-norm, which terminates at a cyclotomic-resultant
 divisibility (a genuine, non-wall theorem target).**
 
+## 18. Round log — Round 8 (#466, 2026-07-02, Opus): the floor-successor sharpened; the D4 n^{7/8} route killed
+
+3 lanes, double-refereed (all verifiers severity none). DISPROOF tags `466-r8-*`.
+
+**(A) The floor-successor-as-norm is SHARPENED to a precise uniform conjecture — its shortcut
+refuted.** The round-7 mechanism is verified exactly (independent Z[ζ_n] Bareiss recomputation):
+floor-bad ⟺ `p | N(A) = Res(V_A, Φ_n)` (char-0, p-independent). n=16: N=2312=2³·17²; n=32: the
+three orbit-rep norms have unique ≡1-mod-n factor = p_min(n) (17, 97). Germ landed axiom-clean
+(`_FloorSuccessorNorm.lean`: `floorObstructionNorm_forces_pmin_{16,32}` — p prime ∧ p%n=1 ∧ p|R_n
+→ p=p_min). **The "one canonical resultant resolves floor-bad(64)" shortcut is REFUTED** — the norm
+is genuinely pattern-dependent; at n=64 the ≡1-mod-64 factor sets of the seven canonical
+obstruction norms have EMPTY intersection, so no single char-0 resultant collapses the 2.2×10¹⁵
+search and floor-bad(64) stays compute-hard. **The surviving non-wall target, now precise: the
+uniform conjecture "unique ≡1-mod-n prime factor of R_n = p_min(n)" (verified n=16, 32).**
+
+**(B) The D4 depth-4 n^{7/8} route is DEAD (decisive negative).** Census of all 92 in-window K-bad
+primes at n=32 (exhaustive): they are ARITHMETICALLY GENERIC — 0 generalized-Fermat, 0 high-v₂,
+47/92 at the minimal v₂=5 with a single-large-prime cofactor, spanning the whole window to
+β=4.394. Countermodel: p=1391393=2⁵·43481 (43481 prime — the most generic form for p≡1 mod 32, yet
+K-bad). No divisor structure theorem exists at depth 4, so the bilinear n^{7/8} route's T4=O(n⁴)
+good-prime supply fails on positive-density generic K-badness. `_D4NormHeightFinite.lean` records
+the unconditional finiteness (the `8^{n/2}` norm-height cutoff). **The n^{8/9} (T3) route is
+UNAFFECTED** — it remains the best good-prime-conditional SOTA-closeness. (DISPROOF
+`466-r8-d4-kbad-generic-no-structure-theorem`.)
+
+**(C) B2 curve-decodability:** `_B2ExplainingCurveList.lean` axiom-clean and landed (a real bug
+fixed); the structured/weld pair is code-complete, blocked only on the GG25 dependency build.
+
+**THE FINAL STATE after 8 rounds.** Every Tier-1/2/3 avenue, all seven OOD complete-proof chains,
+and the entire line-list closure route are decided — each with a countermodel, exact identity, or
+standing filter. The surviving open surface is exactly two objects: **(1) the uniform
+floor-successor resultant conjecture** — a precise, well-posed, hard *non-wall* theorem target
+(a cyclotomic-resultant uniformity statement, the same 0-dimensional height world as the
+width-four/D3 lane, verified at two rungs); and **(2) the analytic BGK/Paley wall itself** — the
+DC-subtracted char-p Wick bound `A_r ≤ K^r(2r−1)‼·n^r` at depth `r ≈ ln q`, the ≈25-year-open
+thin-2-power square-root-cancellation problem. **CORE OPEN, ON-BGK.**
+
 <sub>🤖 Consolidated 2026-07-01 by Claude (Fable 5) from the full #464 record (dossier v2 + 179
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
 and independent re-verification. No fabricated closure; the core is carried as a named open
