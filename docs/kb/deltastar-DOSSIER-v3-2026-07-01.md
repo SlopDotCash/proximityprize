@@ -1019,14 +1019,63 @@ UNAFFECTED** — it remains the best good-prime-conditional SOTA-closeness. (DIS
 **(C) B2 curve-decodability:** `_B2ExplainingCurveList.lean` axiom-clean and landed (a real bug
 fixed); the structured/weld pair is code-complete, blocked only on the GG25 dependency build.
 
-**THE FINAL STATE after 8 rounds.** Every Tier-1/2/3 avenue, all seven OOD complete-proof chains,
-and the entire line-list closure route are decided — each with a countermodel, exact identity, or
-standing filter. The surviving open surface is exactly two objects: **(1) the uniform
-floor-successor resultant conjecture** — a precise, well-posed, hard *non-wall* theorem target
-(a cyclotomic-resultant uniformity statement, the same 0-dimensional height world as the
-width-four/D3 lane, verified at two rungs); and **(2) the analytic BGK/Paley wall itself** — the
-DC-subtracted char-p Wick bound `A_r ≤ K^r(2r−1)‼·n^r` at depth `r ≈ ln q`, the ≈25-year-open
-thin-2-power square-root-cancellation problem. **CORE OPEN, ON-BGK.**
+**THE STATE after 8 rounds.** Every Tier-1/2/3 avenue, all seven OOD complete-proof chains, and the
+entire line-list closure route are decided. Two surviving open surfaces: (1) the uniform
+floor-successor resultant conjecture (a *non-wall* target); (2) the analytic BGK/Paley wall.
+
+## 19. Round log — Round 9 (#466, 2026-07-03, Opus): the LAST non-wall target refuted; the campaign converges to ONE open surface
+
+6 lanes (4 floor-successor + 2 wall), double-refereed. DISPROOF `466-fs1/fs2/w1/w2-*`. This round
+attacked both surviving targets directly and closed the first outright.
+
+**⛔ (A) THE UNIFORM FLOOR-SUCCESSOR CONJECTURE IS FALSE (FS1, the decisive result).** The
+conjecture floor-bad(n) = {p_min(n)} — true at n=16 ({17}) and n=32 ({97}) — is **REFUTED at
+n=64: floor-bad(64) does NOT contain p_min = 193.** A COMPLETE scan of the entire adjacent-7th-type
+pattern family (the whole ≈2.2×10¹⁵ family up to the exact Z/16 translation symmetry; 2012s/11
+cores) found ZERO realizable patterns at p=193. The least-prime law is an n=16/32 **coincidence,
+not a theorem**; the off-BGK floor route via a uniform successor law is CLOSED. This was enabled by
+a NEW axiom-clean theorem — `_FloorComplementReform.lean` (real lake build): a pattern is
+floor-realizable at p IFF its complement polynomial `Q_B` has vanishing coefficients at the middle
+degrees `[n/8+1, n/4−1]`, which turns the scanner's degree-`5n/8` remainder test into a 7-coefficient
+condition and enables a meet-in-the-middle that replaces the raw scan. **Completeness is PROVABLE**
+(the Z/16 rotation-canonicalization is exhaustive, verified two ways + positive/negative controls +
+an independent RREF algorithm agreeing on 0 — verifier severity none). floor-bad(64) over the full
+window [193, 64⁴] is left open, but if nonempty it is NOT governed by a uniform law. (This does not
+change §16 A: the off-BGK floor was already necessary-not-sufficient — δ\*-pin ⟹ floor-good, never
+conversely.)
+
+**(B) The floor-successor program, fully mapped.** FS2 (refuted, `_FloorPackingDensityRefuted.lean`):
+the packing/density germ is dead — floor-badness is a sharp resultant-divisibility coincidence, not
+metric density (min-gap = 1 at both floor-bad and floor-good primes; density inversion
+`512/7681 < 256/769`). FS3 (partial): the resultant HEIGHT `2^{O(n log n)}` provably cannot force
+the common factor = p_min — the conjecture is irreducible to a height bound; but
+`_FloorSuccessorTZBridge.lean` (axiom-clean) wires the confirmed TZ 12/5 result to the floor closure
+so the entire off-BGK floor rests on ONE named conjecture (now known to fail the clean form at n=64).
+FS4 (partial, `_FloorSuccessorResultantBridge.lean`, axiom-clean): the realizability ⟹
+resultant-divisibility bridge is machine-checked (reusing the width-four `CyclotomicResultantBound`
+machinery).
+
+**(C) The wall, sharpened to its cleanest form.** W1 (decided, `_WallBetaPlusOneLocalization.lean`,
+axiom-clean, non-circular): the first unproven rung r = β+1 is ALREADY the wall. The exact split
+`E_r^(p) = E_∞ + W_r` and `A_r ≤ Wick ⟺ WraparoundBelowDC := (W_r ≤ n^{2r}/p)`; the signed-cancellation
+idea is REFUTED (`W_r` is a nonnegative count — nothing to cancel; the observed negative excess IS
+the unsigned inequality whose proof is the wall). **The wall is now pinned to an exact scalar**: at
+the prize (n=2³⁰, β=4, r=5) it demands `W_r` match its DC mean to relative precision `2^{−47}` — a
+genuine √-cancellation statement, the sharpest possible localization of the open core. W2 (decided,
+`_WallNewEnergyExhaustion.lean`, 19 decls): the exact-μ_n-energy exponent axis is EXHAUSTED — no beat
+past `n^{8/9}` good-prime or `n^{1−o(1)}` unconditional (multiplicative energy `n³` enters only via
+sum-product to the additive; T₄/T₆ reduce to the swept trilinear; the character 2nd moment is the
+Parseval √n floor).
+
+**═══ THE FINAL STATE after 9 rounds ═══**
+**The surviving open surface is EXACTLY ONE object: the analytic BGK/Paley wall** — now reduced to
+its cleanest form, the exact √-cancellation `W_r ≤ n^{2r}/p` of the wraparound below its DC mean at
+r = β+1 (equivalently the DC-subtracted char-p Wick bound `A_r ≤ K^r(2r−1)‼·n^r` at depth
+`r ≈ ln q`), the recognized ≈25-year-open thin-2-power square-root-cancellation problem. **Every
+other route** — every Tier-1/2/3 lever, all seven OOD complete-proof chains, the entire line-list
+closure route, and the floor-successor — **is decided, each with a countermodel, exact identity, or
+standing filter.** The prize is a single, precisely-stated open inequality with a completely mapped
+no-go landscape. **CORE OPEN, ON-BGK. No fabricated closure.**
 
 <sub>🤖 Consolidated 2026-07-01 by Claude (Fable 5) from the full #464 record (dossier v2 + 179
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
