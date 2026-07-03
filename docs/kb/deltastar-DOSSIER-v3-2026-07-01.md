@@ -941,9 +941,55 @@ judge adjudicated. Verdicts:
 
 **Net (rounds 4–6):** ~20 axiom-clean bricks + ~18 DISPROOF entries; every Tier-2/Tier-3 avenue and
 every OOD complete-proof route is now decided with a countermodel, exact identity, or standing
-filter. The surviving open surface is exactly: the low-profile `D(t)` coupled bound (the SOLE weld
-path), the spread-excess constant, the floor successor theorem, the depth-4 divisor structure, and
-the coset-SET arc language. **CORE unchanged: OPEN, ON-BGK.**
+filter. **CORE unchanged: OPEN, ON-BGK.**
+
+## 17. Round log — Round 7 (#466, 2026-07-02, Opus): the line-list weld CLOSURE ROUTE is closed
+
+11 Opus lanes, double-refereed. DISPROOF tags `466-r7-*`.
+
+**⛔ THE HEADLINE: the pure-coding-theory closure route is EXHAUSTED.** The line-list weld
+(`mcaDeltaStar_ge_of_farLineListBudgeted`) reduces the δ\* floor to a far-line list budget; the
+budget was to be certified through the fiber-counting stack. Its three successive sub-obligations
+are now ALL refuted: mixed-topfit (`466-r2`, UNSAT at every prize shape), second-witness floor
+(`466-r4`, all-singleton), and now — the last hope — the **z-COUPLED low-profile sum**
+(`466-r7-lowprofile-coupled-carries-q`, `_LowProfileFiberCoupled.lean` axiom-clean countermodel):
+it carries a q-power because `choose(z,t)` explodes (coup/true ratio 715× at n=16) **at the t≥k
+MDS strata where D=1 is already proven** — so no low-profile fiber theorem can rescue it;
+`choose(z,t)` is the killer, not `D(t)`. **Consequence:** the weld stays a valid *reduction*, but
+the budget provably cannot be certified through the counting stack — the route that avoided the
+analytic wall is closed, pushing everything back onto BGK/Paley.
+
+**The surviving open surface, re-ranked after round 7:**
+- **The floor successor as an ARITHMETIC theorem** (`466-r7-floor-successor-is-a-norm`, the round's
+  most promising residue): the combinatorial 16→32 lift is REFUTED (orbit count 10→1), but the
+  smallest-prime mechanism is DISCOVERED — **bad prime ⟺ p | Norm(β)**, β the fixed obstruction
+  algebraic integer, Norm the cyclotomic resultant (char-0, p-independent). The floor successor is
+  a resultant-divisibility question — the same 0-dimensional height object as the width-four/D3
+  lane — not a pattern map. This *terminates at a theorem*, not the wall.
+- **The D4 depth-4 divisor structure theorem** (from §16 C: n=32 has 92 in-window K-bad primes) —
+  needed for the n^{7/8} bilinear route; the n^{8/9} route is unaffected.
+- **The coset-SET arc-concentration language** (§16 D) — the correct vocabulary, no bound yet.
+- **The analytic wall itself** — the DC-subtracted char-p Wick bound at depth r ≈ ln q.
+
+**Also landed (all axiom-clean):** `_JacobiRampDefectLawJ3.lean` (j=3 ramp law — the char-0 floor
+`F_3 = (18n−31)/(3n(2n−3)) ≈ 3/n` is DOUBLE the j=2 floor `3/(2n)`: the char-0 floor GROWS with
+depth; + the `j*(n,p)` crossover characterization, the first quantitative statement of WHERE the
+char-p defect enters the Jacobi window); `_SSTMultiplierAntipode.lean` (SST fully closed — the
+multiplier action S→kS is a Galois twist `L_{kS}(h)=L_S(h^k)`, shares sparse-count but NOT the
+transference quantity λ₁*); `_SpreadExcessLaw.lean` (the spread "excess" is an
+elevated-self-agreement `agreemax=a−1` artifact, not spreadness — monomial baseline robustly 9,
+spread 21 at n=16 a=7); `_GFCeilingInstance65537.lean` (|η₁| > 2√n at F₄, out-of-window β=3.2 —
+docstring corrected to make NO in-window claim; re-confirms the round-2 GF mechanism); three
+Mathlib-API-drift repairs.
+
+**#313 Binius closeout:** math residuals done (4/4), but the cone is BUILD-RED — blocked on a
+substrate `iteratedQuotientMap` API migration landed after the audit (all errors are index/API
+drift, zero `sorry`). Kept OPEN with the honest status; per-site fix list in
+`docs/kb/binius-313-closeout-2026-07-02.md`.
+
+**CORE unchanged: OPEN, ON-BGK. The campaign has now closed every route that terminates anywhere
+BUT the wall — except the floor-successor-as-norm, which terminates at a cyclotomic-resultant
+divisibility (a genuine, non-wall theorem target).**
 
 <sub>🤖 Consolidated 2026-07-01 by Claude (Fable 5) from the full #464 record (dossier v2 + 179
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
