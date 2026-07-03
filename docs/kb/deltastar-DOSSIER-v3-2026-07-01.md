@@ -881,6 +881,70 @@ windowed SumsetExtremal); ③ uniform-in-μ floor-bad = the successor-theorem-or
 (first mean-ramp p-vs-n crossover); ⑦ the GF-ceiling brick (elementary, bankable). Dead this
 round: CMK, CMK∘TPS, 2-adic-family, naive SST. **CORE unchanged: OPEN, ON-BGK.**
 
+## 16. Round log — Rounds 4–6 (#466, 2026-07-01/02): the open-angle sweep, the deployment certificates, and the novel-mathematics round
+
+Multi-agent workflows (Fable + Opus, ~90 agents), each verdict double-refereed. DISPROOF tags
+`466-r4-*`/`466-r5-*`/`466-r6-*`.
+
+**(A) Every remaining Tier-2/Tier-3 avenue DECIDED.** D2 Rogers–Siegel lower tail = **CONCENTRATION**
+(`_D2LowerTailConcentrationGate.lean`; x ∈ [1.10,1.22]/[1.13,1.39] over ALL window primes at
+n=16/32, strictly tighter than iid Gumbel; no anomaly class — the ∃-form lever is dead). Tsang
+level-splitting = nothing to split (all excess is level-0/archimedean; generic wraparound
+identically zero to r≤6/4). I031 tail = cosmetic (union-over-cosets ≡ the quotient moment bound
+exactly, 9e-16 — the entropy reduction cancels at BOTH inputs; I031 fully closed). Mixed-topfit =
+UNSAT at every prize shape (`MixedTopFitBudgetIncompatibility.lean`, 420/420, refereed — the
+low-profile split is MANDATORY). Second-witness/multiplicity floor = REFUTED (`_SecondWitnessFloor.lean`
+— extremal far lines force ALL bad scalars to be unique-witness singletons). Function-field model =
+null (Carlitz analogue ~ random subspaces; Weil vacuous at q=2 the same way — F_q[t] is 0-dimensional too).
+
+**(B) Deployment certificates — the wall at PRODUCTION scale.** BabyBear (`p = 15·2^27+1`, n=2²⁷,
+f=15): exact-integer period-matrix certificate gives **M/√(n log(p/n)) = 1.304**, INSIDE the
+measured [1.07,1.49] band, two octaves beyond all prior data (n≤1024); Parseval anchor
+|S₂/(p−n)−1| = 2e-16. No-divergence confirmed at 2²⁷. (`deltastar-466-deployment-certificates.md`.)
+
+**(C) D4 depth-4 face DIVERGES from D3** (exhaustive n=32, 13,319 primes; anchor W₄(65537,16)=+4480
+reproduced): n=8 provably D4-clean (norm-height 8⁴=n⁴), n=16 0 K-bad, **n=32 92 K-bad in-window**
+(max W₄/K-margin ratio 2.14). The bilinear n^{7/8} route's T4=O(n⁴) good-prime supply is NOT free
+at n=32 — it needs a genuine depth-4 divisor structure theorem excluding the structured K-bad set;
+the n^{8/9} (T3) route is unaffected. New exact value E₄⁰(32)=90,889,120.
+
+**(D) The coset-SET language FOUND** (`deltastar-466-w8-*`): coarse arc-concentration functionals
+(quarter-arc discrepancy, L2 arc energy) predict |η_b| and near-extremize at the worst coset —
+the correct vocabulary for any future dichotomy, upgrading the round-1 residue-blindness kill from
+"residues of b don't classify" to "coset-SET arc concentration does."
+
+**(E) The novel-mathematics round — SEVEN out-of-distribution complete-proof attempts, all
+developed to exact deaths, each a new standing filter.** Each proposer wrote a complete chain with
+prize-point constants; two orthogonal refuters (arithmetic-vacuity + structural-reduction) and a
+judge adjudicated. Verdicts:
+- **N1 theta/cusp** (REDUCES_TO_WALL): the wraparound-lattice θ = Eisenstein + cusp, but the
+  Eisenstein slot provably holds the VOLUME term (off by 10^{3·10⁹}), the Wick term is a
+  weight-n/4 theta invisible to the weight-n/2 main-term slot, and the cusp Deligne transfer costs
+  (2r)^{n/4} = the norm-height wall in automorphic clothing. FILTER: any weight-n/2 automorphic
+  main-term proposal misfiles the Wick term.
+- **N2 Weil-representation** (exact dictionary; the thin orbit stays an incomplete sum),
+  **N3 homogeneous dynamics** (three sub-routes die on exact arithmetic — the Hecke union tax
+  beats the τ-spectral gap; no dynamics in S at fixed p),
+  **N5 SoS duality** (SELF-REFUTATION-WITH-STRUCTURE: the lone-spike measure IS a valid
+  pseudo-distribution ⟹ the wall is an SoS lower bound; enumerates which techniques remain
+  SoS-unrepresentable — dyadic induction, integrality, entropy compression),
+  **N6 Shmerkin/Hochman entropy flattening** (triple relocation onto the wall).
+- **N4 Lee–Yang / period-polynomial roots** (REDUCES_TO_WALL, dies TWICE): M = house of the Gauss
+  period polynomial P_m; the Fujiwara max-form root bound binds at k=2 → √(2p) (worse than
+  Johnson), and shallow-weighted real-rootedness tests are blind to the lone spike (the
+  root-location twin of the CMK moment death).
+- **N7 free-synthesis / Gauss-sum-phase dual** (REDUCES_TO_WALL, unitarily): the dual η ↔ g map is
+  a unitary DFT and |g(χ)| = √p is flat, so M is a functional purely of the phases arg g(χ); the
+  one new lever — Stickelberger/Gross–Koblitz p-adic data — is ARCHIMEDEAN-BLIND; the required
+  argument-equidistribution is unitarily equivalent to the prize. FILTER: any p-adic/Stickelberger/
+  Gross–Koblitz/Jacobi-sum/Iwasawa-only lever is phase-blind and cannot bound the house.
+
+**Net (rounds 4–6):** ~20 axiom-clean bricks + ~18 DISPROOF entries; every Tier-2/Tier-3 avenue and
+every OOD complete-proof route is now decided with a countermodel, exact identity, or standing
+filter. The surviving open surface is exactly: the low-profile `D(t)` coupled bound (the SOLE weld
+path), the spread-excess constant, the floor successor theorem, the depth-4 divisor structure, and
+the coset-SET arc language. **CORE unchanged: OPEN, ON-BGK.**
+
 <sub>🤖 Consolidated 2026-07-01 by Claude (Fable 5) from the full #464 record (dossier v2 + 179
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
 and independent re-verification. No fabricated closure; the core is carried as a named open
