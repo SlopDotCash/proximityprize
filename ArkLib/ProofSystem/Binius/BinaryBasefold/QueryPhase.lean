@@ -553,9 +553,9 @@ lemma query_phase_step_preserves_fold
           (f := getFirstOracle 𝔽q β oStmtIn)
           (r_challenges := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges
             0 (by simp only [zero_add, Fin.val_last]; omega))
-          (y := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
-            (destIdx := ⟨k.val * ϑ, by omega⟩) (h_destIdx_le := by simp only; omega))
           (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add])
+          (extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
+            (destIdx := ⟨k.val * ϑ, by omega⟩) (h_destIdx_le := by simp only; omega))
       else True)
     -- Hypothesis: s' is a valid output of the simulated step function
     (challenges : (pSpecQuery 𝔽q β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenges)
@@ -575,9 +575,9 @@ lemma query_phase_step_preserves_fold
         (f := getFirstOracle 𝔽q β oStmtIn)
         (r_challenges := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges 0
           (by simp only [zero_add, Fin.val_last]; omega))
-        (y := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
-          (destIdx := ⟨(k.val + 1) * ϑ, by omega⟩) (h_destIdx_le := by simp only; omega))
-          (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add];) := by
+        (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add])
+        (extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
+          (destIdx := ⟨(k.val + 1) * ϑ, by omega⟩) (h_destIdx_le := by simp only; omega)) := by
   let step := queryPhaseLogicStep 𝔽q β γ_repetitions
   let witIn : Unit := ()
   let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges
@@ -960,9 +960,9 @@ lemma query_phase_final_fold_eq_constant
         (f := getFirstOracle 𝔽q β oStmtIn)
         (r_challenges := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges 0
           (by simp only [zero_add, Fin.val_last]; omega))
-        (y := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
+        (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add])
+        (extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
           (destIdx := ⟨(ℓ / ϑ) * ϑ, by omega⟩) (h_destIdx_le := by simp only; omega))
-        (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add];)
     ) :
     c = stmtIn.final_constant := by
   classical
@@ -1143,7 +1143,7 @@ def checkSingleRepetition_foldRel
           apply Nat.mul_le_mul_right; exact h_le
         ) (f := f₀)
         (r_challenges := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges 0
-          (by simp only [zero_add, Fin.val_last]; omega)) (y := suffix_point_from_v)
+          (by simp only [zero_add, Fin.val_last]; omega)) suffix_point_from_v
 
 /-- Safety of the simulated inner `forIn` loop used by
 `checkSingleRepetition_probFailure_eq_zero`. -/

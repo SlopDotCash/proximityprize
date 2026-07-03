@@ -19566,3 +19566,45 @@ floor-successor conjecture from combinatorics to arithmetic (a cyclotomic-result
 the same 0-dimensional height object as the width-four/D3 lane) — the germ of a real successor
 theorem. No Lean landed (correctly — the object is a norm). p=17 confirmed the UNIQUE bad prime
 among all 49 primes ≡1 mod 16 up to 3000.
+
+## [466-r8-d4-kbad-generic-no-structure-theorem] depth-4 K-bad primes are ARITHMETICALLY GENERIC — no D4 divisor structure theorem, n^{7/8} route DEAD (2026-07-02)
+
+Lane: #466 lane F2 (`probe_466_d4_structure.py`; `_out_466_d4_structure.txt`; Lean
+`Frontier/_D4NormHeightFinite.lean` axiom-clean). Census of the 92 in-window K-bad primes from the
+run-3 exhaustive n=32 D4 scan (all 13,319 window primes; anchor `W₄(65537,16)=+4480` reproduced).
+QUESTION was whether the depth-4 K-bad set has a divisor structure theorem (analogous to the
+width-four canonical resultant) so the bilinear `n^{7/8}` route gets FREE `T4=O(n⁴)` good-prime
+supply. **REFUTED.** Of the 92: `0` generalized-Fermat, `0` with `v₂(p−1)≥13`, `47/92` at the
+MINIMAL forced `v₂=5`, odd cofactor `(p−1)/2^{v₂}` generic (often a single large prime), spread
+across the WHOLE window `β=log_n p ∈ [4.005, 4.394]` up to the top edge (deepest K-bad
+`p=4102753`, `β=4.394`, `v₂=5`). Clean generic countermodels `p−1 = 2⁵·(large prime)`:
+`p=1391393=2⁵·43481` (43481 prime, W₄=8816640, ratio 1.653), `p=2089889=2⁵·65309` (65309 prime,
+β=4.20), `p=1524449=2⁵·47639` (47639 prime), `p=4102753=2⁵·3·42737` (β=4.394). No fixed small
+norm-height integer collects these ⟹ **no depth-4 divisor structure theorem exists** ⟹ the
+`n^{7/8}` route's free depth-4 good-prime supply DOES NOT EXIST (T4 hypothesis fails on
+positive-density generic K-badness). The `n^{8/9}` (depth-3/T3) route is UNAFFECTED — depth 3 has
+NO in-window K-bad prime. Landed Lean (`_D4NormHeightFinite.lean`, axiom-clean): the unconditional
+norm-height finiteness backbone `d4NormHeightBound n = 8^{n/2}` (D4bad ⊆ {p ≤ 8^{n/2}}, finite;
+at n=8 equals n⁴ so the window is provably clean), the divisibility-gate `d4Bad_card_le_of_dvd_
+normHeightInteger`, and `card_le_of_d4GoodSupplyBudget` (the refuted supply hypothesis forces
+`|K-bad| ≤ m`, which the 92 generic primes defeat at n=32). CORE unchanged: OPEN, ON-BGK.
+
+## [466-r8-floor-successor-norm-partial] the floor successor IS a cyclotomic-resultant divisibility, but no single resultant dissolves floor-bad(64) (2026-07-02)
+
+Lane: #466 round-8 F1 (`_FloorSuccessorNorm.lean` axiom-clean; `probe_466_successor_norm.py`;
+verifier reproduced every number by an independent Z[ζ_n] multiplication-matrix/Bareiss method,
+severity none). Confirms and SHARPENS the round-7 successor-norm mechanism: floor-bad ⟺ p divides
+an obstruction norm `N(A) = Res(V_A, Φ_n)` (char-0, p-independent, V_A = the minimal polynomial of
+the adjacent-agreement pattern A). VERIFIED EXACTLY: n=16 Norm(r₉)=2312=2³·17² (all 160 realizable
+patterns, one norm tuple); n=32 norms 2⁹·97⁴ / 2⁶·31²·97² / 2⁹·97² (the 3 orbit reps); in both the
+UNIQUE prime factor ≡1 mod n equals p_min(n) (17, 97). The correct invariant is "unique ≡1-mod-n
+prime factor of `R_n = gcd_k N(r_k)` = p_min(n)" (the literal "smallest-prime-factor" is 2 —
+ramified). **BUT the "one canonical resultant resolves floor-bad(64)" shortcut is REFUTED:** the
+obstruction norm is genuinely PATTERN-dependent, and at n=64 the ≡1-mod-64 factor sets of the seven
+canonical obstruction norms have EMPTY intersection (17 distinct ≡1-mod-64 primes; 193 shared by
+only 2 of 7). So realizability at p ⟺ p ∈ ⋂_k {≡1-mod-n primes dividing N(r_k(A))}, and no single
+char-0 resultant collapses the 2.2×10¹⁵-pattern search — **floor-bad(64) stays compute-hard.** The
+germ landed: `floorObstructionNorm_forces_pmin_16/_32` (p prime ∧ p%n=1 ∧ p|R_n → p=p_min),
+axiom-clean. SURVIVING open conjecture (verified n=16,32 only): "unique ≡1-mod-n prime factor of
+R_n = p_min(n)" uniformly in n — the genuine non-wall target, but it does NOT by itself dissolve
+floor-bad(64) (which needs the realizable-pattern intersection forced to a single prime uniformly).

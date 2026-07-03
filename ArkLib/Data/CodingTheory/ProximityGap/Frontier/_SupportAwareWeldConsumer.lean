@@ -43,12 +43,19 @@ This file makes the second fact *named and machine-checked*, and strengthens the
 4. **`mcaDeltaStar_ge_of_zeroStratified_lowProfileFibers`** — the deepest assembled form:
    stratified far branch + safe large-zero branch localized to low-profile (`t < k`)
    coordinate fibers + unsafe large-zero branch.
-5. **Satisfiability guards for the far positions** (skeptic check, round-1 vacuity mode):
+5. **Satisfiability guards for the budget positions** (skeptic check, round-1 vacuity mode):
    `lineListBudgeted_field_pow_k` (`L = q^k` realizes the list-budget position on EVERY line,
-   a fortiori on far ones — the open question is only the size `L ≲ ρn`, never satisfiability)
-   and `supportAware_fit_satisfiable` (`B_far = L·n` realizes the fit position).  Together
-   with `lowProfileFiber_obligation_satisfiable` (already in the weld), every budget position
-   of the assembled consumer now has a machine-checked realizer.
+   a fortiori on far ones — the open question is only the size `L ≲ ρn`, never satisfiability),
+   `supportAware_fit_satisfiable` (`B_far = L·n` realizes the fit position), and
+   `unsafe_branch_budget_satisfiable` (`B = q` realizes the `hlow`/`hunsafe` `mcaEvent`-count
+   positions), `safeFit_position_satisfiable` (`B_safe = a·2^n·q^k·n` realizes the `hsafeFit`
+   position at the extended field-power envelope — necessary because the in-tree obstruction
+   `not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_two_mul_le` KILLS
+   fits below `q^k` for the raw envelope, so satisfiability here is not automatic), and
+   `lowProfileFiber_and_safeFit_jointly_satisfiable` (the SAME envelope `M t = q^(k−t)`
+   realizes `hlowFiber` and `hsafeFit` *simultaneously*).  Together with
+   `lowProfileFiber_obligation_satisfiable` (already in the weld), every budget position of
+   the assembled consumers has a machine-checked realizer.
 
 ## (c) What remains — the weld's total residual after this file
 
@@ -160,6 +167,21 @@ theorem supportAware_fit_satisfiable (a L : ℕ) :
   exact Nat.mul_le_mul (Nat.le_refl L)
     (le_trans (Nat.div_le_self _ _) (Nat.sub_le n z))
 
+open Classical in
+/-- **The `mcaEvent`-count budget positions (`hlow`/`hunsafe`) are satisfiable at `B = q`**:
+the bad-scalar filter lives inside `F`.  Trivial, but it certifies that the residual-branch
+positions of the consumers below are realizable hypotheses (never the #464 unsatisfiable-
+capstone mode), so their open content is exclusively the SIZE of the budget. -/
+theorem unsafe_branch_budget_satisfiable
+    (dom : Fin n ↪ F) (k : ℕ) (δ : ℝ≥0) :
+    ∀ u₀ u₁ : Fin n → F,
+      (Finset.univ.filter (fun γ : F =>
+        mcaEvent (F := F)
+          ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₀ u₁ γ)).card
+        ≤ Fintype.card F := by
+  intro u₀ u₁
+  exact le_trans (Finset.card_filter_le _ _) Finset.card_univ.le
+
 /-- The z-stratified far positions are jointly satisfiable: `L z := q^k` realizes the
 stratified list-budget hypothesis of the consumer below (on every line, a fortiori on far
 ones), and `B_far := q^k · n` realizes its per-stratum fit. -/
@@ -174,6 +196,74 @@ theorem zeroStratified_far_positions_satisfiable
           ≤ Fintype.card F ^ k * n) :=
   ⟨fun u₀ u₁ _ => lineListBudgeted_field_pow_k dom k a u₀ u₁,
     fun z hz => supportAware_fit_satisfiable (n := n) a (Fintype.card F ^ k) z hz⟩
+
+open Classical in
+/-- **The safe-branch arithmetic-fit position (`hsafeFit`) is satisfiable** at the extended
+field-power envelope with `B_safe = a·(2^n·(q^k·n))`: each `t`-stratum summand is at most
+`choose(z,t)·q^k·n ≤ 2^n·q^k·n`.  This closes the last budget position of the assembled
+consumers without an explicit realizer — and it is NOT automatic:
+`not_uniformLargeZeroSafeCoordinateAgreementFiberBudgetFits_fieldPow_of_two_mul_le`
+(`LineListArithmeticObstruction.lean`) refutes every fit below `q^k` for the raw field-power
+envelope, so the realizer must (and does) sit above `q^k`.  The open production content is
+exclusively the SIZE (`B_safe ≪ q`), never satisfiability. -/
+theorem safeFit_position_satisfiable (k a : ℕ) :
+    UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n)
+      a (a * (2 ^ n * (Fintype.card F ^ k * n)))
+      (fun t => if t < k then Fintype.card F ^ (k - t) else 1) := by
+  intro u₁ _hne
+  show ∑ t ∈ Finset.range a,
+      ((directionZeroSet u₁).card.choose t *
+        (if t < k then Fintype.card F ^ (k - t) else 1)) *
+      ((directionSupportSet u₁).card / (a - t))
+    ≤ a * (2 ^ n * (Fintype.card F ^ k * n))
+  have hzn : (directionZeroSet u₁).card ≤ n := by
+    simpa using Finset.card_le_univ (directionZeroSet u₁)
+  have hsn : (directionSupportSet u₁).card ≤ n := by
+    simpa using Finset.card_le_univ (directionSupportSet u₁)
+  calc ∑ t ∈ Finset.range a,
+      ((directionZeroSet u₁).card.choose t *
+        (if t < k then Fintype.card F ^ (k - t) else 1)) *
+      ((directionSupportSet u₁).card / (a - t))
+      ≤ ∑ _t ∈ Finset.range a, 2 ^ n * (Fintype.card F ^ k * n) := by
+        refine Finset.sum_le_sum fun t _ => ?_
+        have hchoose : (directionZeroSet u₁).card.choose t ≤ 2 ^ n :=
+          le_trans (Nat.choose_le_two_pow _ t)
+            (Nat.pow_le_pow_right (by norm_num) hzn)
+        have hM : (if t < k then Fintype.card F ^ (k - t) else 1)
+            ≤ Fintype.card F ^ k := by
+          by_cases hlt : t < k
+          · simpa [hlt] using
+              Nat.pow_le_pow_right Fintype.card_pos (Nat.sub_le k t)
+          · simpa [hlt] using Nat.one_le_pow k (Fintype.card F) Fintype.card_pos
+        have hdiv : (directionSupportSet u₁).card / (a - t) ≤ n :=
+          le_trans (Nat.div_le_self _ _) hsn
+        calc ((directionZeroSet u₁).card.choose t *
+              (if t < k then Fintype.card F ^ (k - t) else 1)) *
+            ((directionSupportSet u₁).card / (a - t))
+            ≤ (2 ^ n * Fintype.card F ^ k) * n :=
+              Nat.mul_le_mul (Nat.mul_le_mul hchoose hM) hdiv
+          _ = 2 ^ n * (Fintype.card F ^ k * n) := by ring
+    _ = a * (2 ^ n * (Fintype.card F ^ k * n)) := by
+        rw [Finset.sum_const, Finset.card_range, smul_eq_mul]
+
+/-- **Joint realizer for the two safe-branch positions of the deepest consumer.**  The SAME
+envelope `M t = q^(k−t)` simultaneously realizes `hlowFiber`
+(`lowProfileFiber_obligation_satisfiable`) and `hsafeFit` (`safeFit_position_satisfiable`) in
+`mcaDeltaStar_ge_of_zeroStratified_lowProfileFibers` — the two positions are jointly, not just
+separately, non-vacuous (the skeptic's compound-vacuity mode: two individually satisfiable
+hypotheses can still be jointly unsatisfiable, cf. `MixedTopFitBudgetIncompatibility.lean`). -/
+theorem lowProfileFiber_and_safeFit_jointly_satisfiable
+    (dom : Fin n ↪ F) (k a : ℕ) :
+    (∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
+      ZeroDirectionSafeLine dom k a u₀ u₁ →
+        ∀ t : ℕ, t < a → t < k → ∀ S ∈ (directionZeroSet u₁).powersetCard t,
+          (coordinateAgreementFiber dom k u₀ S).card ≤ Fintype.card F ^ (k - t))
+    ∧ UniformLargeZeroSafeCoordinateAgreementFiberBudgetFits (F := F) (n := n)
+        a (a * (2 ^ n * (Fintype.card F ^ k * n)))
+        (fun t => if t < k then Fintype.card F ^ (k - t) else 1) :=
+  ⟨fun u₀ u₁ _hne _hsafe t ht _hlt S hS =>
+      zeroCoordinateAgreementFiberBudgeted_field_pow_sub_card dom k a u₀ u₁ t ht S hS,
+    safeFit_position_satisfiable k a⟩
 
 /-! ### 4. The z-stratified weld consumer -/
 
@@ -313,6 +403,9 @@ end ProximityGap.LineListMCAWeld.SupportAware
 #print axioms ProximityGap.LineListMCAWeld.SupportAware.lineBadScalars_card_le_of_far_support_exact
 #print axioms ProximityGap.LineListMCAWeld.SupportAware.lineListBudgeted_field_pow_k
 #print axioms ProximityGap.LineListMCAWeld.SupportAware.supportAware_fit_satisfiable
+#print axioms ProximityGap.LineListMCAWeld.SupportAware.unsafe_branch_budget_satisfiable
 #print axioms ProximityGap.LineListMCAWeld.SupportAware.zeroStratified_far_positions_satisfiable
+#print axioms ProximityGap.LineListMCAWeld.SupportAware.safeFit_position_satisfiable
+#print axioms ProximityGap.LineListMCAWeld.SupportAware.lowProfileFiber_and_safeFit_jointly_satisfiable
 #print axioms ProximityGap.LineListMCAWeld.SupportAware.mcaDeltaStar_ge_of_farLineListBudgeted_zeroStratified
 #print axioms ProximityGap.LineListMCAWeld.SupportAware.mcaDeltaStar_ge_of_zeroStratified_lowProfileFibers
