@@ -19608,3 +19608,95 @@ germ landed: `floorObstructionNorm_forces_pmin_16/_32` (p prime ∧ p%n=1 ∧ p|
 axiom-clean. SURVIVING open conjecture (verified n=16,32 only): "unique ≡1-mod-n prime factor of
 R_n = p_min(n)" uniformly in n — the genuine non-wall target, but it does NOT by itself dissolve
 floor-bad(64) (which needs the realizable-pattern intersection forced to a single prime uniformly).
+
+## [466-w1-betaP1-is-the-wall] the first unproven rung r=β+1 is ALREADY the wall; the wraparound sign is not a lever (2026-07-03)
+
+Lane: #466 lane W1 (`probe_466_wall_betaP1.py`; `_out_466_wall_betaP1.txt`; Lean
+`Frontier/_WallBetaPlusOneLocalization.lean`, 3 thms axiom-clean, real build 3320 jobs). The
+DC-subtracted char-p energy `A_r = E_r^{(p)} − n^{2r}/p ≤ Wick=(2r−1)‼·n^r` is proven for `r ≤ β`
+(DC-crossover / moment-exponent-θ / TPS-boundary agree); QUESTION was whether the FIRST unproven
+rung `r=β+1` admits a new provable bound or an exact formula, and whether the round-4 "sub-smooth
+negative excess" (the SIGN of the wraparound) is exploitable. **NO new bound — a SHARP NO-GO.**
+Exact decomposition `E_r^{(p)} = E_∞ + W_r` with a NEW exact dyadic char-0 closed form
+`E_∞(n,r) = Σ_{c₁+…+c_{n/2}=r}(2r)!/∏(c_t!)²` (reproduces 3n²−3n, 15n³−45n²+40n) and Lam–Leung
+`E_∞ ≤ Wick` (PROVEN in-tree). Then `A_r = E_∞ + D_r`, `D_r := W_r − n^{2r}/p`, and
+`A_r ≤ Wick ⟺ D_r ≤ BUDGET := Wick−E_∞`. MEASURED (exact, n=8,16,32, ≥2 primes, r=2..9, β=4 and a
+flagged β=3 accelerant): (1) `A_r ≈ E_∞` — the DC-subtracted energy is carried by the char-0
+(archimedean) term, which is PROVEN ≤ Wick; (2) **`D_r < 0` at EVERY point** (generic AND
+generalized-Fermat 65537) ⟹ double margin `A_r < E_∞ ≤ Wick`, the wall is nowhere violated;
+(3) part (b) **REFUTED**: `W_r` is a nonnegative COUNT — the favorable "negative excess" is not
+signed cancellation but the UNSIGNED inequality `W_r ≤ n^{2r}/p`, and proving THAT is the
+concentration wall (round-4's "signed levels" kill, now exact at β+1). **Frontier sharpened** from
+"`r ≈ log q`" to: given char-0 (proven), the entire open content of the β+1 rung is the single
+scalar `WraparoundBelowDC` (`W_{β+1} ≤ n^{2r}/p`). Prize scale (n=2^30, β=4, r=5): `DC/Wick=2^{+20}`,
+char-0 budget `~C(r,2)/n=2^{−27}`, so `A_{β+1}≤Wick` demands `W_r` match its DC mean to relative
+precision `2^{−47}` — a genuine square-root-cancellation statement (β+2: `2^{−73}`; β+3: `2^{−99}`).
+No exact formula (char-0 ladder is p-independent; `W_r` is genuinely p-arithmetic). No provable
+non-trivial bound (Hölder needs the wall's M-bound — circular). Landed:
+`dcEnergyBound_of_charZero_of_wraparoundBelowDC` (the split), `dcSubtracted_le_charZero_of_
+wraparoundBelowDC` (the double margin `A_r ≤ E_∞`), `dcEnergyBound_iff_wraparound_within_budget`
+(the exact iff, E_∞ cancels). Refines `DCEnergyCorrection.DCEnergyBound` by discharging char-0 and
+naming the residual concentration. CORE unchanged: OPEN, ON-BGK.
+
+## [466-fs1-uniform-floor-successor-REFUTED] the uniform floor-successor conjecture floor-bad(n)={p_min(n)} is FALSE at n=64 (193 not floor-bad) (2026-07-03)
+
+Lane: #466 lane FS1 (`probe_466_floorbad64_decide.py`; output `_out_466_floorbad64_decide.txt`;
+Lean `Frontier/_FloorComplementReform.lean` axiom-clean `[propext, Classical.choice, Quot.sound]`).
+Two advances. **(A) The complement reformulation** (the enabling theorem, Lean-proved core): a
+pattern `A` is floor-bad-realizable at `p` (`deg(x^{3n/4} mod P_A) ≤ n/2`, the `floor_scan_exact.c`
+rank predicate) **iff the COMPLEMENT polynomial `Q_B = ∏_{j∉A}(x-ω^j)` has zero coefficients at
+degrees `i ∈ [n/8+1, n/4-1]`** — turning a test on the degree-`5n/8` remainder into `n/8-1` middle
+coefficients of the degree-`3n/8` complement.  Proof pivot `r·Q_B ≡ x^{3n/4}·Q_B (mod x^n-1)` is
+`floorReform_dvd` (axiom-clean, general in the ring).  Verified residual≡complement: **exact on all
+`2304·4` patterns at n=16**, `0` mismatches on 40k/prime (n=32) and 3k/prime (n=64, p=193,257).
+**(B) The decision.**  `Q_B = U·W` (U=min-complement deg 8, W=maj-complement deg 16) makes the 7
+conditions bilinear, LINEAR in U for fixed W (1-dim solution line, 193 pts); hash the 3,312,400
+min-U, enumerate each maj-W's line.  Realizability is EXACTLY translation-invariant
+(`[x^i]Q_{B+t}=ω^{t(3n/8-i)}[x^i]Q_B`) ⟹ scan `c0=0` only and `b2` over the `810` rotation-canonical
+reps of the `ℤ/16` translation-by-4 action (=`(1/16)[C(16,8)+C(8,4)+2C(4,2)+4C(2,1)]`) × all `b3` ×
+full min-set is **COMPLETE**.  Engine validated: MITM count == brute complement count at n=32
+(p=97→8=orbit/4 with residual-confirmed witness; 193/257/449/577→0, reproducing floor-bad(32)={97});
+translation-reduction reproduces the same at n=32; positive+negative controls at n=64 for BOTH p=193
+and p=257 (detects an injected on-line witness, rejects an off-line one — no false-neg blind spot,
+no false-pos; a collision-free random hash + exact reverify replaces base-p key packing which
+overflows int64 for p≥236 at kU=8).  **RESULT (COMPLETE scan of 10,424,700 maj-reps × 3,312,400 min,
+2012 s, 11 cores):  `p=193 = p_min(64)` is NOT floor-bad at n=64 — ZERO realizable patterns.**  So
+`floor-bad(64) ≠ {193}`, **REFUTING the uniform conjecture** `floor-bad(n)={p_min(n)}` (true n=16,32,
+FALSE n=64).  The least-prime law is an n=16,32 coincidence; the off-BGK δ* floor route via a uniform
+successor law is CLOSED (refutation-WIN).  `floor-bad(64)` (if nonempty) is carried by a larger prime
+`≡1 mod 64`; `257,449,577` being decided directly by the same complete MITM.  Round-8's "193 divides
+only 2 of 7 canonical-pattern norms" upgraded from one pattern to the WHOLE family.  CORE unchanged:
+OPEN, ON-BGK.
+
+## [466-fs2-packing-mechanism-refuted] floor-badness is a sharp resultant-divisibility coincidence, NOT a metric-density mechanism (2026-07-03)
+
+Lane: #466 round-9 FS2 (`_FloorPackingDensityRefuted.lean` axiom-clean;
+`probe_466_packing_mechanism.py`; verifier confirmed by independent recompute). The dossier §9/§12
+germ — "only at the tightest/smallest prime does μ_n pack densely enough to force the adjacent
+7th-type profile; for larger p the 6-type freeze holds" — is REFUTED as a quantitative mechanism.
+No monotone metric-density statistic separates floor-bad from floor-good primes: the min-gap
+between μ_n elements is 1 at BOTH the floor-bad p and floor-good primes (n=16: gap 1 at both 17 and
+257; n=32: gap 1 at bad 97 and good primes), and the naive "density" p_min/p is non-monotone under
+the exact split-prime arithmetic (n=512 vs 256: 512/7681 < 256/769 — a density inversion). Floor
+realizability is governed by the sharp arithmetic condition (resultant divisibility / the FS1
+complement-coefficient vanishing), not any metric packing — so the uniform conjecture cannot be
+proven by a density/covering-radius argument. (Consistent with FS1, which refuted the uniform
+conjecture outright at n=64.)
+
+## [466-w2-exact-energy-exhausted] the exact-μ_n-energy exponent axis is EXHAUSTED — no beat past 8/9 good-prime or n^{1−o(1)} unconditional (2026-07-03)
+
+Lane: #466 round-9 W2 (`_WallNewEnergyExhaustion.lean` axiom-clean, 19 decls;
+`probe_466_wall_newenergy.py`; verifier recomputed all exponents by hand, severity none). Final
+audit of the exact-energy exponent landscape at β=4, decisive negative (a frontier RECORD, not a
+beat — none expected): (C1) the multiplicative energy `E_×(μ_n) = n³` is exact and UNCONDITIONAL
+but the moment identity `Σ_a|S(a)|^{2r} = p·T_r` contains NO multiplicative energy — it only enters
+a sup bound via a sum-product transfer to the ADDITIVE energy, whose sharpest unconditional output
+is the generic di Benedetto `n^{1−31/2880} = 0.98924` (the n^{1−o(1)} class); direct
+Heath-Brown–Konyagin `t₂=5/2` is vacuous at β=4 (nonvacuous iff β<3, the p^{1/3} wall). (C2) the
+higher exact additive energies T₄/T₆ + a Rudnev point-plane finisher reduce to the already-swept
+trilinear (dominated by bilinear for β<17/3); the symmetric-bilinear optimum at the mass-floor-legal
+exponents is fold-order m=β=4 → 7/8, whose T₄=O(n⁴) supply is DEAD (D4, round 8); higher fold orders
+strictly worse. NO gain past 8/9 with surviving good-prime supply. (C3) the character 2nd moment
+`Σ_{b≠0}|η_b|² = pn − n²` is the Parseval FLOOR (M ≥ ≈√n) with only the trivial upper bound
+M ≤ √(pn) = n^{5/2}. The exact-energy route is closed; the SOTA record stands at n^{8/9}
+good-prime, n^{1−o(1)} unconditional, sharp √n floor.

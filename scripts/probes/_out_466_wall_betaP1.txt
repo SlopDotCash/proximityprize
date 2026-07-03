@@ -1,0 +1,333 @@
+LANE W1 #466 -- first unproven rung r=beta+1.  A_r=(1/p)sum_{b!=0}|eta|^{2r}; Einf=char-0 (exact closed form); Wick=(2r-1)!!n^r.
+D_r=A_r-Einf = signed wraparound DC-deviation (part b); A_r<=Wick <=> D_r<=BUDGET=Wick-Einf.
+numpy 2.4.6; deterministic.
+
+------------------------------------------------------------------------
+char-0 exact closed-form cross-check:
+  n=8: E_2^inf=168 (3n^2-3n=168);  E_3^inf=5120 (15n^3-45n^2+40n=5120)
+  n=16: E_2^inf=720 (3n^2-3n=720);  E_3^inf=50560 (15n^3-45n^2+40n=50560)
+  n=32: E_2^inf=2976 (3n^2-3n=2976);  E_3^inf=446720 (15n^3-45n^2+40n=446720)
+
+########################################################################################################################
+### PRIMARY beta = 4 (prize diagonal)
+########################################################################################################################
+
+========================================================================================================================
+n=8  p=4129  m=(p-1)/n=516  v2(p-1)=5  beta_eff=4.0039  (target 4.0)
+  Parseval rel 0.0e+00;  M=7.558  sqrt(n log(p/n))=7.069
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 5.00;  int64-exact levels up to r=10
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  5.167e-03    0.8698    0.8750   -9.9201e-01   - -5.167e-03    -0.041     0.996     Y   no
+   3  8.267e-03    0.6584    0.6667   -6.3488e+01   - -8.267e-03    -0.025     7.968     Y   no
+   4  9.448e-03    0.4326    0.4421   -4.0633e+03   - -9.448e-03    -0.017    63.744     Y   no
+   5  8.398e-03    0.2480    0.2564   -2.6005e+05   - -8.398e-03    -0.011   509.950     Y   no
+   6  6.108e-03    0.1252    0.1313   -1.6643e+07   - -6.108e-03    -0.007  4079.599     Y   no
+   7  3.759e-03    0.0562    0.0600   -1.0652e+09   - -3.759e-03    -0.004 32636.792     Y   no
+   8  2.005e-03    0.0227    0.0247   -6.8153e+10   - -2.004e-03    -0.002 261028.089     Y   no
+   9  9.433e-04    0.0083    0.0092   -4.3570e+12   - -9.420e-04    -0.001 2085939.117     Y   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=168  Einf=168  W_r=E-Einf=0  DC=n^2r/p=0.992  D_r=-0.992008
+       level-0 N_0=168  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=5120  Einf=5120  W_r=E-Einf=0  DC=n^2r/p=63.49  D_r=-63.4885
+       level-0 N_0=5120  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=190120  Einf=190120  W_r=E-Einf=0  DC=n^2r/p=4063  D_r=-4063.26
+       level-0 N_0=190120  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=5: E_r^(p)=7939008  Einf=7939008  W_r=E-Einf=0  DC=n^2r/p=2.6e+05  D_r=-260049
+       level-0 N_0=7939008  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=6: E_r^(p)=357713664  Einf=357713664  W_r=E-Einf=0  DC=n^2r/p=1.664e+07  D_r=-1.66431e+07
+       level-0 N_0=357713664  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=7: E_r^(p)=16993726464  Einf=16993726464  W_r=E-Einf=0  DC=n^2r/p=1.065e+09  D_r=-1.06516e+09
+       level-0 N_0=16993726464  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=8: E_r^(p)=839375582760  Einf=839358285480  W_r=E-Einf=17297280  DC=n^2r/p=6.817e+10  D_r=-6.8153e+10
+       level-0 N_0=839358285480  (share +0.99998);  residue-wraparound sum_(k!=0)N_k=17297280 (share +0.00002);  nonzero levels k=[2, 3, 4]
+  r=9: E_r^(p)=42720331734080  Einf=42714450658880  W_r=E-Einf=5881075200  DC=n^2r/p=4.363e+12  D_r=-4.35702e+12
+       level-0 N_0=42714450658880  (share +0.99986);  residue-wraparound sum_(k!=0)N_k=5881075200 (share +0.00014);  nonzero levels k=[2, 3, 4]
+
+========================================================================================================================
+n=8  p=4153  m=(p-1)/n=519  v2(p-1)=3  beta_eff=4.0066  (target 4.0)
+  Parseval rel 0.0e+00;  M=7.458  sqrt(n log(p/n))=7.072
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 5.01;  int64-exact levels up to r=10
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  5.137e-03    0.8699    0.8750   -9.8627e-01   - -5.137e-03    -0.041     0.993     Y   no
+   3  8.219e-03    0.6584    0.6667   -6.3122e+01   - -8.219e-03    -0.025     7.945     Y   no
+   4  9.393e-03    0.4327    0.4421   -4.0398e+03   - -9.393e-03    -0.017    63.559     Y   no
+   5  8.349e-03    0.2480    0.2564   -2.5855e+05   - -8.349e-03    -0.011   508.474     Y   no
+   6  6.072e-03    0.1252    0.1313   -1.6547e+07   - -6.072e-03    -0.007  4067.794     Y   no
+   7  3.737e-03    0.0562    0.0600   -1.0590e+09   - -3.737e-03    -0.004 32542.352     Y   no
+   8  1.993e-03    0.0227    0.0247   -6.7774e+10   - -1.993e-03    -0.002 260331.437     Y   no
+   9  9.379e-04    0.0083    0.0092   -4.3369e+12   - -9.377e-04    -0.001 2082346.030     Y   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=168  Einf=168  W_r=E-Einf=0  DC=n^2r/p=0.9863  D_r=-0.986275
+       level-0 N_0=168  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=5120  Einf=5120  W_r=E-Einf=0  DC=n^2r/p=63.12  D_r=-63.1216
+       level-0 N_0=5120  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=190120  Einf=190120  W_r=E-Einf=0  DC=n^2r/p=4040  D_r=-4039.78
+       level-0 N_0=190120  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=5: E_r^(p)=7939008  Einf=7939008  W_r=E-Einf=0  DC=n^2r/p=2.585e+05  D_r=-258546
+       level-0 N_0=7939008  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=6: E_r^(p)=357713664  Einf=357713664  W_r=E-Einf=0  DC=n^2r/p=1.655e+07  D_r=-1.65469e+07
+       level-0 N_0=357713664  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=7: E_r^(p)=16993726464  Einf=16993726464  W_r=E-Einf=0  DC=n^2r/p=1.059e+09  D_r=-1.059e+09
+       level-0 N_0=16993726464  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=8: E_r^(p)=839360207400  Einf=839358285480  W_r=E-Einf=1921920  DC=n^2r/p=6.778e+10  D_r=-6.77744e+10
+       level-0 N_0=839358285480  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=1921920 (share +0.00000);  nonzero levels k=[1, 4, 7]
+  r=9: E_r^(p)=42715209852224  Einf=42714450658880  W_r=E-Einf=759193344  DC=n^2r/p=4.338e+12  D_r=-4.33692e+12
+       level-0 N_0=42714450658880  (share +0.99998);  residue-wraparound sum_(k!=0)N_k=759193344 (share +0.00002);  nonzero levels k=[1, 4, 7]
+
+========================================================================================================================
+n=16  p=65617  m=(p-1)/n=4101  v2(p-1)=4  beta_eff=4.0004  (target 4.0)
+  Parseval rel 0.0e+00;  M=13.295  sqrt(n log(p/n))=11.537
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 5.00;  int64-exact levels up to r=7
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  1.300e-03    0.9362    0.9375   -9.9877e-01   - -1.300e-03    -0.021     0.999     Y   no
+   3  4.162e-03    0.8188    0.8229   -2.5568e+02   - -4.162e-03    -0.024    15.990     Y   no
+   4  9.512e-03    0.6662    0.6757   -6.5455e+04   - -9.512e-03    -0.029   255.842     Y   no
+   5  1.691e-02    0.5020    0.5188   -1.6636e+07   - -1.679e-02    -0.035  4063.922     Y   no
+   6  2.460e-02    0.3489    0.3724   -4.0910e+09   - -2.346e-02    -0.037 62461.789     Y   no
+   7  3.027e-02    0.2233    0.2501   -9.7084e+11   - -2.676e-02    -0.036 926441.408     Y   no
+   8  3.229e-02    0.1316    0.1573   -2.2370e+14   - -2.570e-02    -0.030 13341965.698     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=720  Einf=720  W_r=E-Einf=0  DC=n^2r/p=0.9988  D_r=-0.998766
+       level-0 N_0=720  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=50560  Einf=50560  W_r=E-Einf=0  DC=n^2r/p=255.7  D_r=-255.684
+       level-0 N_0=50560  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=4649680  Einf=4649680  W_r=E-Einf=0  DC=n^2r/p=6.546e+04  D_r=-65455.1
+       level-0 N_0=4649680  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=5: E_r^(p)=514152576  Einf=514031616  W_r=E-Einf=120960  DC=n^2r/p=1.676e+07  D_r=-1.66355e+07
+       level-0 N_0=514046736  (share +0.99979);  residue-wraparound sum_(k!=0)N_k=105840 (share +0.00021);  nonzero levels k=[1, 2, 3]
+  r=6: E_r^(p)=65140580736  Einf=64941883776  W_r=E-Einf=198696960  DC=n^2r/p=4.29e+09  D_r=-4.09097e+09
+       level-0 N_0=64981135296  (share +0.99755);  residue-wraparound sum_(k!=0)N_k=159445440 (share +0.00245);  nonzero levels k=[1, 2, 3, 4]
+  r=7: E_r^(p)=9198629531520  Einf=9071319628800  W_r=E-Einf=127309902720  DC=n^2r/p=1.098e+12  D_r=-9.70844e+11
+       level-0 N_0=9098527529520  (share +0.98912);  residue-wraparound sum_(k!=0)N_k=100102002000 (share +0.01088);  nonzero levels k=[1, 2, 3, 4]
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+n=16  p=65633  m=(p-1)/n=4102  v2(p-1)=5  beta_eff=4.0005  (target 4.0)
+  Parseval rel 0.0e+00;  M=13.927  sqrt(n log(p/n))=11.537
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 5.00;  int64-exact levels up to r=7
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  1.300e-03    0.9362    0.9375   -9.9852e-01   - -1.300e-03    -0.021     0.999     Y   no
+   3  4.161e-03    0.8188    0.8229   -2.5562e+02   - -4.161e-03    -0.023    15.988     Y   no
+   4  9.510e-03    0.6662    0.6757   -6.5439e+04   - -9.510e-03    -0.029   255.811     Y   no
+   5  1.691e-02    0.5043    0.5188   -1.4333e+07   - -1.446e-02    -0.030  3501.910     Y   no
+   6  2.459e-02    0.3559    0.3724   -2.8782e+09   - -1.650e-02    -0.026 43950.735     Y   no
+   7  3.027e-02    0.2347    0.2501   -5.5936e+11   - -1.542e-02    -0.021 533837.907     Y   no
+   8  3.228e-02    0.1448    0.1573   -1.0858e+14   - -1.247e-02    -0.015 6476519.222     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=720  Einf=720  W_r=E-Einf=0  DC=n^2r/p=0.9985  D_r=-0.998522
+       level-0 N_0=720  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=50560  Einf=50560  W_r=E-Einf=0  DC=n^2r/p=255.6  D_r=-255.622
+       level-0 N_0=50560  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=4649680  Einf=4649680  W_r=E-Einf=0  DC=n^2r/p=6.544e+04  D_r=-65439.1
+       level-0 N_0=4649680  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=5: E_r^(p)=516450816  Einf=514031616  W_r=E-Einf=2419200  DC=n^2r/p=1.675e+07  D_r=-1.43332e+07
+       level-0 N_0=515241216  (share +0.99766);  residue-wraparound sum_(k!=0)N_k=1209600 (share +0.00234);  nonzero levels k=[1, 2, 3]
+  r=6: E_r^(p)=66352277376  Einf=64941883776  W_r=E-Einf=1410393600  DC=n^2r/p=4.289e+09  D_r=-2.87823e+09
+       level-0 N_0=65647080576  (share +0.98937);  residue-wraparound sum_(k!=0)N_k=705196800 (share +0.01063);  nonzero levels k=[1, 2, 3]
+  r=7: E_r^(p)=9609850453632  Einf=9071319628800  W_r=E-Einf=538530824832  DC=n^2r/p=1.098e+12  D_r=-5.59356e+11
+       level-0 N_0=9338271241728  (share +0.97174);  residue-wraparound sum_(k!=0)N_k=271579211904 (share +0.02826);  nonzero levels k=[1, 2, 3, 4, 5]
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+n=32  p=1048609  m=(p-1)/n=32769  v2(p-1)=5  beta_eff=4.0000  (target 4.0)
+  Parseval rel 0.0e+00;  M=22.983  sqrt(n log(p/n))=18.240
+  finite-n crossover r* (first r: n^2r/p > Wick) = 10;  beta_eff+1 = 5.00;  int64-exact levels up to r=6
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  3.255e-04    0.9684    0.9688   -9.9997e-01   - -3.255e-04    -0.010     1.000     Y   no
+   3  2.083e-03    0.9068    0.9089   -1.0240e+03   - -2.083e-03    -0.023    31.999     Y   no
+   4  9.524e-03    0.8218    0.8255   -4.0342e+05   - -3.664e-03    -0.021   393.974     Y   no
+   5  3.386e-02    0.7215    0.7258   -1.3506e+08   - -4.259e-03    -0.016  4121.721     Y   no
+   6  9.851e-02    0.6127    0.6175   -5.2739e+10   - -4.725e-03    -0.012 50296.532     Y   no
+   7  2.425e-01    0.5015    0.5083   -3.1499e+13   - -6.784e-03    -0.014 938759.462     n   no
+   8  5.173e-01    0.3935    0.4048   -2.5288e+16   - -1.135e-02    -0.019 23551774.776     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+n=32  p=1048897  m=(p-1)/n=32778  v2(p-1)=6  beta_eff=4.0001  (target 4.0)
+  Parseval rel 0.0e+00;  M=22.794  sqrt(n log(p/n))=18.241
+  finite-n crossover r* (first r: n^2r/p > Wick) = 10;  beta_eff+1 = 5.00;  int64-exact levels up to r=6
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  3.254e-04    0.9684    0.9688   -9.9969e-01   - -3.254e-04    -0.010     1.000     Y   no
+   3  2.083e-03    0.9068    0.9089   -1.0237e+03   - -2.083e-03    -0.023    31.995     Y   no
+   4  9.521e-03    0.8160    0.8255   -1.0483e+06   - -9.521e-03    -0.055  1023.843     Y   no
+   5  3.385e-02    0.7046    0.7258   -6.7183e+08   - -2.119e-02    -0.077 20505.641     Y   no
+   6  9.848e-02    0.5835    0.6175   -3.7879e+11   - -3.394e-02    -0.089 361299.694     Y   no
+   7  2.424e-01    0.4631    0.5083   -2.0975e+14   - -4.517e-02    -0.092 6252134.459     n   no
+   8  5.171e-01    0.3516    0.4048   -1.1857e+17   - -5.320e-02    -0.089 110445172.725     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=8: (skipped -- n^2r exceeds int64)
+
+########################################################################################################################
+### FLAGGED ACCELERANT beta ~ 3 (crossover reached at small r; NOT prize evidence)
+########################################################################################################################
+
+========================================================================================================================
+n=16  p=4129  m=(p-1)/n=258  v2(p-1)=5  beta_eff=3.0029  (target 3.0)
+  Parseval rel 0.0e+00;  M=11.140  sqrt(n log(p/n))=9.426
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 4.00;  int64-exact levels up to r=7
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  2.067e-02    0.9168    0.9375   -1.5872e+01   - -2.067e-02    -0.331     3.984     Y   no
+   3  6.613e-02    0.7568    0.8229   -4.0633e+03   - -6.613e-02    -0.373    63.744     Y   no
+   4  1.512e-01    0.5512    0.6757   -8.5652e+05   - -1.245e-01    -0.384   839.804     Y   no
+   5  2.687e-01    0.3527    0.5188   -1.6452e+08   - -1.660e-01    -0.345 10082.136     Y   no
+   6  3.909e-01    0.1992    0.3724   -3.0209e+10   - -1.732e-01    -0.276 115700.653     Y   no
+   7  4.811e-01    0.1001    0.2501   -5.4413e+12   - -1.500e-01    -0.200 1302526.506     Y   no
+   8  5.132e-01    0.0452    0.1573   -9.7608e+14   - -1.121e-01    -0.133 14603241.086     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=720  Einf=720  W_r=E-Einf=0  DC=n^2r/p=15.87  D_r=-15.8721
+       level-0 N_0=720  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=50560  Einf=50560  W_r=E-Einf=0  DC=n^2r/p=4063  D_r=-4063.26
+       level-0 N_0=50560  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=4833360  Einf=4649680  W_r=E-Einf=183680  DC=n^2r/p=1.04e+06  D_r=-856516
+       level-0 N_0=4672640  (share +0.96675);  residue-wraparound sum_(k!=0)N_k=160720 (share +0.03325);  nonzero levels k=[1, 2, 3]
+  r=5: E_r^(p)=615797376  Einf=514031616  W_r=E-Einf=101765760  DC=n^2r/p=2.663e+08  D_r=-1.64524e+08
+       level-0 N_0=530255136  (share +0.86109);  residue-wraparound sum_(k!=0)N_k=85542240 (share +0.13891);  nonzero levels k=[1, 2, 3, 4]
+  r=6: E_r^(p)=102903351936  Einf=64941883776  W_r=E-Einf=37961468160  DC=n^2r/p=6.817e+10  D_r=-3.02088e+10
+       level-0 N_0=71768282256  (share +0.69743);  residue-wraparound sum_(k!=0)N_k=31135069680 (share +0.30257);  nonzero levels k=[1, 2, 3, 4, 5]
+  r=7: E_r^(p)=21081587786688  Einf=9071319628800  W_r=E-Einf=12010268157888  DC=n^2r/p=1.745e+13  D_r=-5.44132e+12
+       level-0 N_0=11374476845160  (share +0.53955);  residue-wraparound sum_(k!=0)N_k=9707110941528 (share +0.46045);  nonzero levels k=[1, 2, 3, 4, 5, 6]
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+n=16  p=4177  m=(p-1)/n=261  v2(p-1)=4  beta_eff=3.0071  (target 3.0)
+  Parseval rel 0.0e+00;  M=10.943  sqrt(n log(p/n))=9.436
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 4.01;  int64-exact levels up to r=7
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  2.043e-02    0.9171    0.9375   -1.5690e+01   - -2.043e-02    -0.327     3.961     Y   no
+   3  6.537e-02    0.7575    0.8229   -4.0166e+03   - -6.537e-02    -0.369    63.376     Y   no
+   4  1.494e-01    0.5419    0.6757   -9.2072e+05   - -1.338e-01    -0.413   907.990     Y   no
+   5  2.656e-01    0.3359    0.5188   -1.8118e+08   - -1.828e-01    -0.380 11167.081     Y   no
+   6  3.864e-01    0.1825    0.3724   -3.3116e+10   - -1.899e-01    -0.303 127570.813     Y   no
+   7  4.756e-01    0.0880    0.2501   -5.8807e+12   - -1.621e-01    -0.216 1415854.651     Y   no
+   8  5.073e-01    0.0380    0.1573   -1.0382e+15   - -1.192e-01    -0.142 15622215.245     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=720  Einf=720  W_r=E-Einf=0  DC=n^2r/p=15.69  D_r=-15.6897
+       level-0 N_0=720  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=50560  Einf=50560  W_r=E-Einf=0  DC=n^2r/p=4017  D_r=-4016.57
+       level-0 N_0=50560  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=4757200  Einf=4649680  W_r=E-Einf=107520  DC=n^2r/p=1.028e+06  D_r=-920722
+       level-0 N_0=4676560  (share +0.98305);  residue-wraparound sum_(k!=0)N_k=80640 (share +0.01695);  nonzero levels k=[1, 2, 3]
+  r=5: E_r^(p)=596082816  Einf=514031616  W_r=E-Einf=82051200  DC=n^2r/p=2.632e+08  D_r=-1.81179e+08
+       level-0 N_0=533853936  (share +0.89560);  residue-wraparound sum_(k!=0)N_k=62228880 (share +0.10440);  nonzero levels k=[1, 2, 3]
+  r=6: E_r^(p)=99212674176  Einf=64941883776  W_r=E-Einf=34270790400  DC=n^2r/p=6.739e+10  D_r=-3.31161e+10
+       level-0 N_0=73136620656  (share +0.73717);  residue-wraparound sum_(k!=0)N_k=26076053520 (share +0.26283);  nonzero levels k=[1, 2, 3, 4, 5]
+  r=7: E_r^(p)=20441696342496  Einf=9071319628800  W_r=E-Einf=11370376713696  DC=n^2r/p=1.725e+13  D_r=-5.88066e+12
+       level-0 N_0=11768133076128  (share +0.57569);  residue-wraparound sum_(k!=0)N_k=8673563266368 (share +0.42431);  nonzero levels k=[1, 2, 3, 4, 5, 6]
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+n=32  p=32801  m=(p-1)/n=1025  v2(p-1)=5  beta_eff=3.0003  (target 3.0)
+  Parseval rel 0.0e+00;  M=16.965  sqrt(n log(p/n))=14.894
+  finite-n crossover r* (first r: n^2r/p > Wick) = 5;  beta_eff+1 = 4.00;  int64-exact levels up to r=6
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  1.041e-02    0.9583    0.9688   -3.1968e+01   - -1.041e-02    -0.333     5.654     Y   no
+   3  6.660e-02    0.8462    0.9089   -3.0815e+04   - -6.269e-02    -0.688   170.316     Y   no
+   4  3.045e-01    0.6752    0.8255   -1.6550e+07   - -1.503e-01    -0.861  2858.598     Y   no
+   5  1.083e+00    0.4826    0.7258   -7.7118e+09   - -2.432e-01    -0.887 41624.498     Y  YES
+   6  3.149e+00    0.3086    0.6175   -3.4469e+12   - -3.088e-01    -0.807 581399.463     Y  YES
+   7  7.752e+00    0.1773    0.5083   -1.5367e+15   - -3.310e-01    -0.673 8100103.091     n  YES
+   8  1.654e+01    0.0920    0.4048   -6.9711e+17   - -3.128e-01    -0.526 114827572.804     n  YES
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=3: E_r^(p)=448640  Einf=446720  W_r=E-Einf=1920  DC=n^2r/p=3.274e+04  D_r=-30815
+       level-0 N_0=447560  (share +0.99759);  residue-wraparound sum_(k!=0)N_k=1080 (share +0.00241);  nonzero levels k=[1, 2]
+  r=4: E_r^(p)=107859360  Einf=90889120  W_r=E-Einf=16970240  DC=n^2r/p=3.352e+07  D_r=-1.65504e+07
+       level-0 N_0=98029680  (share +0.90887);  residue-wraparound sum_(k!=0)N_k=9829680 (share +0.09113);  nonzero levels k=[1, 2, 3]
+  r=5: E_r^(p)=49626323712  Einf=23012946432  W_r=E-Einf=26613377280  DC=n^2r/p=3.433e+10  D_r=-7.71179e+09
+       level-0 N_0=33363634752  (share +0.67230);  residue-wraparound sum_(k!=0)N_k=16262688960 (share +0.32770);  nonzero levels k=[1, 2, 3, 4]
+  r=6: E_r^(p)=38593900447872  Einf=6891844210944  W_r=E-Einf=31702056236928  DC=n^2r/p=3.515e+13  D_r=-3.44692e+12
+       level-0 N_0=18369519641880  (share +0.47597);  residue-wraparound sum_(k!=0)N_k=20224380805992 (share +0.52403);  nonzero levels k=[1, 2, 3, 4, 5]
+  r=7: (skipped -- n^2r exceeds int64)
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+n=32  p=32833  m=(p-1)/n=1026  v2(p-1)=6  beta_eff=3.0006  (target 3.0)
+  Parseval rel 0.0e+00;  M=17.253  sqrt(n log(p/n))=14.895
+  finite-n crossover r* (first r: n^2r/p > Wick) = 5;  beta_eff+1 = 4.00;  int64-exact levels up to r=6
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  1.040e-02    0.9584    0.9688   -3.1937e+01   - -1.040e-02    -0.333     5.651     Y   no
+   3  6.653e-02    0.8423    0.9089   -3.2703e+04   - -6.653e-02    -0.730   180.840     Y   no
+   4  3.042e-01    0.6593    0.8255   -1.8301e+07   - -1.662e-01    -0.953  3162.464     Y   no
+   5  1.081e+00    0.4593    0.7258   -8.4488e+09   - -2.664e-01    -0.972 45624.524     Y  YES
+   6  3.146e+00    0.2869    0.6175   -3.6897e+12   - -3.306e-01    -0.864 622656.404     Y  YES
+   7  7.744e+00    0.1619    0.5083   -1.6083e+15   - -3.464e-01    -0.704 8481640.631     n  YES
+   8  1.652e+01    0.0831    0.4048   -7.1699e+17   - -3.217e-01    -0.541 118159222.586     n  YES
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=3: E_r^(p)=446720  Einf=446720  W_r=E-Einf=0  DC=n^2r/p=3.27e+04  D_r=-32703.1
+       level-0 N_0=446720  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=106076320  Einf=90889120  W_r=E-Einf=15187200  DC=n^2r/p=3.349e+07  D_r=-1.83008e+07
+       level-0 N_0=97718320  (share +0.92121);  residue-wraparound sum_(k!=0)N_k=8358000 (share +0.07879);  nonzero levels k=[1, 2, 3]
+  r=5: E_r^(p)=48855902592  Einf=23012946432  W_r=E-Einf=25842956160  DC=n^2r/p=3.429e+10  D_r=-8.44876e+09
+       level-0 N_0=33795401472  (share +0.69174);  residue-wraparound sum_(k!=0)N_k=15060501120 (share +0.30826);  nonzero levels k=[1, 2, 3, 4]
+  r=6: E_r^(p)=38316844351104  Einf=6891844210944  W_r=E-Einf=31425000140160  DC=n^2r/p=3.511e+13  D_r=-3.68972e+12
+       level-0 N_0=19134815019144  (share +0.49938);  residue-wraparound sum_(k!=0)N_k=19182029331960 (share +0.50062);  nonzero levels k=[1, 2, 3, 4, 5]
+  r=7: (skipped -- n^2r exceeds int64)
+  r=8: (skipped -- n^2r exceeds int64)
+
+########################################################################################################################
+### FLAGGED generalized-Fermat contrast (65537 = 2^16+1)
+########################################################################################################################
+
+========================================================================================================================
+n=16  p=65537  m=(p-1)/n=4096  v2(p-1)=16  beta_eff=4.0000  (target 4.0)   ** GENERALIZED-FERMAT (flagged) **
+  Parseval rel 0.0e+00;  M=13.838  sqrt(n log(p/n))=11.536
+  finite-n crossover r* (first r: n^2r/p > Wick) = None;  beta_eff+1 = 5.00;  int64-exact levels up to r=7
+
+   r    DC/Wick  A_r/Wick Einf/Wick    D_r=A-Einf sgn     D/Wick  D/BUDGET  |D|/Pois exact past
+   2  1.302e-03    0.9362    0.9375   -9.9998e-01   - -1.302e-03    -0.021     1.000     Y   no
+   3  4.167e-03    0.8188    0.8229   -2.5600e+02   - -4.167e-03    -0.024    16.000     Y   no
+   4  9.524e-03    0.6668    0.6757   -6.1055e+04   - -8.873e-03    -0.027   238.498     Y   no
+   5  1.693e-02    0.5048    0.5188   -1.3853e+07   - -1.398e-02    -0.029  3382.116     Y   no
+   6  2.463e-02    0.3549    0.3724   -3.0466e+09   - -1.747e-02    -0.028 46487.458     Y   no
+   7  3.031e-02    0.2320    0.2501   -6.5732e+11   - -1.812e-02    -0.024 626869.535     Y   no
+   8  3.233e-02    0.1412    0.1573   -1.4034e+14   - -1.612e-02    -0.019 8365064.179     n   no
+
+  --- exact level decomposition E_r^(p)=sum_k N_k (locate the deviation) ---
+  r=2: E_r^(p)=720  Einf=720  W_r=E-Einf=0  DC=n^2r/p=1  D_r=-0.999985
+       level-0 N_0=720  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=3: E_r^(p)=50560  Einf=50560  W_r=E-Einf=0  DC=n^2r/p=256  D_r=-255.996
+       level-0 N_0=50560  (share +1.00000);  residue-wraparound sum_(k!=0)N_k=0 (share +0.00000);  nonzero levels k=[]
+  r=4: E_r^(p)=4654160  Einf=4649680  W_r=E-Einf=4480  DC=n^2r/p=6.554e+04  D_r=-61055
+       level-0 N_0=4650240  (share +0.99916);  residue-wraparound sum_(k!=0)N_k=3920 (share +0.00084);  nonzero levels k=[3]
+  r=5: E_r^(p)=516955536  Einf=514031616  W_r=E-Einf=2923920  DC=n^2r/p=1.678e+07  D_r=-1.3853e+07
+       level-0 N_0=514601136  (share +0.99545);  residue-wraparound sum_(k!=0)N_k=2354400 (share +0.00455);  nonzero levels k=[3]
+  r=6: E_r^(p)=66190206720  Einf=64941883776  W_r=E-Einf=1248322944  DC=n^2r/p=4.295e+09  D_r=-3.04658e+09
+       level-0 N_0=65244275712  (share +0.98571);  residue-wraparound sum_(k!=0)N_k=945931008 (share +0.01429);  nonzero levels k=[3]
+  r=7: E_r^(p)=9513499145488  Einf=9071319628800  W_r=E-Einf=442179516688  DC=n^2r/p=1.099e+12  D_r=-6.57315e+11
+       level-0 N_0=9193581440472  (share +0.96637);  residue-wraparound sum_(k!=0)N_k=319917705016 (share +0.03363);  nonzero levels k=[3, 6]
+  r=8: (skipped -- n^2r exceeds int64)
+
+========================================================================================================================
+PRIZE-SCALE EXTRAPOLATION  (n=2^30, beta=4; symbolic, exact Einf coefficient)
+  DC/Wick = n^{r-beta}/(2r-1)!!;  char-0 budget (Wick-Einf)/Wick and the REQUIRED
+  relative precision on W_r = BUDGET/DC = (Wick-Einf)/(n^{2r}/p):
+  r=4 (beta+0): DC/Wick=2^-6.7;  (Wick-Einf)/Wick ~ C(r,2)/n = 2^-27.4;  REQUIRED rel prec on W_r = 2^-20.7
+  r=5 (beta+1): DC/Wick=2^+20.1;  (Wick-Einf)/Wick ~ C(r,2)/n = 2^-26.7;  REQUIRED rel prec on W_r = 2^-46.8
+  r=6 (beta+2): DC/Wick=2^+46.7;  (Wick-Einf)/Wick ~ C(r,2)/n = 2^-26.1;  REQUIRED rel prec on W_r = 2^-72.7
+  r=7 (beta+3): DC/Wick=2^+73.0;  (Wick-Einf)/Wick ~ C(r,2)/n = 2^-25.6;  REQUIRED rel prec on W_r = 2^-98.6
+  READING: r=beta+1 is the SHALLOWEST wall rung, but A_{beta+1} <= Wick still requires
+  the arithmetic wraparound count W_r to match its DC mean n^{2r}/p to relative
+  precision 2^{~-56} -- a genuine square-root-cancellation/concentration statement.
+  The char-0 half (E_r^inf<=Wick) is PROVEN; the residual is this concentration.
+
+[total runtime 82.5s]
