@@ -1,0 +1,36 @@
+#466 R13 -- ONE-INPUT vs TWO-INPUT decision
+Testing whether sqrt(q)*B hyperplane cancellation follows from the per-frequency moment
+control (WallHolds/M). If T ranges freely over [sqrt(|H|)M, |H|M] at FIXED norms, it does NOT.
+
+=== n=8, p=4129, q=4129, M=max_b!=0||eta_b||=7.558, sqrt(n ln q)=8.161 ===
+  (A) |H|=64 (~sqrt q): best aligned T=126.99
+      sqrt(|H|)*M = 60.47   |H|*M (naive) = 483.72
+      best T / sqrt-bound = 2.100   best T / naive = 0.263
+      => aligned adversarial sum EXCEEDS sqrt(|H|)*M (cancellation is NOT automatic; 2.10x the sqrt bound)
+  (B) SAME per-frequency norms multiset, two phase-assignments:
+      typical T (true phases, random s0)         = 14.47  (~sqrt regime)
+      T for all-aligned rephasing (same norms)   = 162.79  (=|H|*avg, naive regime)
+      ratio surrogate/typical = 11.25  (~sqrt(|H|)=8.00 if T is genuinely sqrt-cancelled)
+      => T is NOT determined by the per-frequency norms: the wall's moment data fixes the multiset {||eta_b||} but T ranges over [~sqrt(|H|)M .. |H|M]. Two DISTINCT inputs.
+
+=== n=16, p=65537, q=65537, M=max_b!=0||eta_b||=13.838, sqrt(n ln q)=13.321 ===
+  (A) |H|=256 (~sqrt q): best aligned T=1846.05
+      sqrt(|H|)*M = 221.40   |H|*M (naive) = 3542.41
+      best T / sqrt-bound = 8.338   best T / naive = 0.521
+      => aligned adversarial sum EXCEEDS sqrt(|H|)*M (cancellation is NOT automatic; 8.34x the sqrt bound)
+  (B) SAME per-frequency norms multiset, two phase-assignments:
+      typical T (true phases, random s0)         = 37.34  (~sqrt regime)
+      T for all-aligned rephasing (same norms)   = 1846.91  (=|H|*avg, naive regime)
+      ratio surrogate/typical = 49.46  (~sqrt(|H|)=16.00 if T is genuinely sqrt-cancelled)
+      => T is NOT determined by the per-frequency norms: the wall's moment data fixes the multiset {||eta_b||} but T ranges over [~sqrt(|H|)M .. |H|M]. Two DISTINCT inputs.
+
+=== n=32, p=1048609, q=1048609, M=max_b!=0||eta_b||=22.983, sqrt(n ln q)=21.062 ===
+  (A) |H|=1024 (~sqrt q): best aligned T=1968.82
+      sqrt(|H|)*M = 735.47   |H|*M (naive) = 23534.96
+      best T / sqrt-bound = 2.677   best T / naive = 0.084
+      => aligned adversarial sum EXCEEDS sqrt(|H|)*M (cancellation is NOT automatic; 2.68x the sqrt bound)
+  (B) SAME per-frequency norms multiset, two phase-assignments:
+      typical T (true phases, random s0)         = 79.03  (~sqrt regime)
+      T for all-aligned rephasing (same norms)   = 4733.84  (=|H|*avg, naive regime)
+      ratio surrogate/typical = 59.90  (~sqrt(|H|)=32.00 if T is genuinely sqrt-cancelled)
+      => T is NOT determined by the per-frequency norms: the wall's moment data fixes the multiset {||eta_b||} but T ranges over [~sqrt(|H|)M .. |H|M]. Two DISTINCT inputs.

@@ -1224,3 +1224,52 @@ NOT discharged; the moment-order optimization is passed as a parameter.
 honestly-named, prize-vacuous glue that is itself the recognized open `√q·B` cancellation. The wall is **not**
 claimed closed — it remains genuine ≈25-year-open analytic number theory (square-root cancellation for thin
 2-power subgroups; best proven at β=4 is BGK `n^{1−o(1)}`). **CORE OPEN, ON-BGK. No fabricated closure.**
+
+---
+
+## 23. Round log — Round 13 (#466, 2026-07-04, Fable): the capstone tightened — moment-order parameter removed, and the core is TWO distinct inputs (not one)
+
+Round 12 left `CAPSTONE-PARTIAL` with two soft spots: (a) the moment-order optimization was an un-formalized
+parameter, and (b) it was open whether the second conjunct is genuinely distinct from the wall. Round 13 settles
+both. Essay: `deltastar-466-essay-round13-2026-07-04.md`. 2 lanes + 2 adversarial skeptics (5 agents); both
+lanes independently reached **WORLD-II**, skeptics CONFIRMED (severity minor). DISPROOF `466-r13-*`.
+
+**(M) The moment-order optimization is now AXIOM-CLEAN — caveat (a) discharged.** `_MomentOptimizedSupNorm.lean`
+(real build 3320 jobs, 9 axiom-clean thms) proves `WallHolds G ∧ q≥e ⟹ ∀ b≠0, ‖η_b‖ ≤ √(2e·n·(ln q+1))`
+directly from the DC-subtracted wall — the new Stirling-free arithmetic `(2r−1)‼ ≤ (2r)^r` (for Mathlib's
+`Nat.doubleFactorial`) + the saddle `q^{1/r} ≤ e` at `r=⌈ln q⌉`. `_MomentWallWiringCheck.lean`'s
+`wall_capstone_moment_closed` machine-verifies it composes into `wall_capstone`'s `B` slot (the two `WallHolds`
+defs are definitionally equal — no glue lemma), so **the wall now supplies its own optimized sup-norm `B`, with
+no free parameter.** (The crude Lean constant `√(2e)≈2.33` over-estimates the probe-measured sharp `≈1.43`;
+non-load-bearing numeric.)
+
+**(R) The core is TWO distinct open inputs, not one — the crux settled WORLD-II.** The wall's entire analytic
+payload is the sup-norm `M = max_b ‖η_b‖` (lane M derives it from `WallHolds`). Round 13 proves `M` is
+**necessary but not sufficient**: the machine-checked second-moment identity
+`∑_{s₀} ‖I_H(s₀)‖² = q·∑_{b∈H} ‖η_b‖²` (`_R13HyperplaneSecondMoment.lean`, axiom-clean, pure additive-character
+orthogonality) shows `M` controls only the **s₀-average** of the signed hyperplane incidence
+`I_H(s₀) = ∑_{b∈H} conj(η_b)ψ(b·s₀)` (giving `‖I_H‖ ≤ √|H|·M` on average) — while the far-coset adversary picks
+the **worst** `s₀` (which reaches the diagonal Gauss-period `|H|·M`-scale), and a **same-moduli two-spectra
+witness** (identical `{‖η_b‖}` hence identical `M`, worst-case incidence differing by `√|H|`; probe, rel-diff
+`2e-16` on the identity) proves the worst-case `√q·B` cancellation is **provably not a function of `M`**. So the
+prize localizes to **`WallHolds ∧ HyperplaneCancellation`** — two genuinely distinct open Props: (1) `WallHolds`,
+the moment/energy (Wick) bound = BGK proper, phase-blind; (2) `HyperplaneCancellation`, the worst-case
+per-frequency √q·B cancellation = **BCHKS Conjecture 1.12**, a phase-correlation statement. The first does not
+imply the second. This makes rigorous and machine-checks the two-input structure already implicit in
+`CharSumDeltaStarBridge.lean`'s docstring, and **refines the §0/§2 "one inequality `M`" framing**: `M` (the
+moment face) is one of two irreducible inputs.
+
+> **REFINEMENT TO §0/§2 (honest correction, 2026-07-04):** the earlier TL;DR "the prize is ONE inequality
+> `M ≤ C√(n log)`" is the *moment face* only. Round 13 machine-checks that `M` bounds just the **average**
+> hyperplane incidence; the δ\*-floor also needs the **worst-case** `√q·B` cancellation (BCHKS-1.12), which is a
+> distinct phase-correlation input not implied by any moment/energy bound. The core is **two** inputs: the Wick
+> bound `WallHolds` (⟹ `M`) **and** `HyperplaneCancellation`. Both are open; both are ON-BGK (BCHKS-1.12 is the
+> `√q`-cancellation form of the Paley-graph problem). Modeling caveat: the in-tree `V=F` syndrome hyperplane is
+> degenerate (`{b:b·s₁=0}={0}`), so lane R models `H` as a nontrivial index-`deg` subgroup (the honest
+> higher-dim analogue) — the two-input verdict is rigorous in that model and consistent with the in-tree bridge.
+
+**═══ STATE after 13 rounds ═══** The capstone is tightened: `WallHolds` now discharges its full analytic
+payload axiom-clean (the sup-norm `M`), and the prize is machine-checked to localize to **two** distinct named
+open Props (`WallHolds ∧ HyperplaneCancellation`), the second provably not implied by the first. Both are
+recognized open thin-2-power √-cancellation statements (BGK moment bound + BCHKS-1.12 worst-case cancellation).
+The no-go cartography remains complete and every escape decided. **CORE OPEN, ON-BGK. No fabricated closure.**

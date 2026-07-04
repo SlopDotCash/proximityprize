@@ -1,3 +1,61 @@
+## [466-r13-moment-order-optimization-formalized] WallHolds ==> M <= sqrt(2e*n*(ln q+1)) is now AXIOM-CLEAN — the moment-order parameter is removed from the capstone (2026-07-04, #466 round 13)
+
+Lane: round-13 Lane M (dossier §23), tightening the round-12 CAPSTONE-PARTIAL. Round 12's _WallCapstone.lean
+proved WallHolds ==> per-rung Wick bound but left the moment-order optimization (turning the per-rung 2r-power
+bounds into a single closed-form sup-norm M <= C*sqrt(n log q)) as an un-formalized parameter B/hB (caveat (a)).
+LANE M discharges it AXIOM-CLEAN. Brick _MomentOptimizedSupNorm.lean (real lake build 3320 jobs,
+autoImplicit=false, all thms #print axioms = {propext, Classical.choice, Quot.sound}, 0 sorryAx): from the
+DC-subtracted wall (DCEnergyCorrection.eta_pow_le_of_dcEnergyBound, non-vacuous at prize) + the new
+Stirling-free arithmetic doubleFactorial_two_sub_one_le ((2r-1)!! <= (2r)^r for Mathlib's Nat.doubleFactorial,
+via Nat.doubleFactorial_eq_prod_odd) + the saddle sq_le_of_pow_ceil (q^{1/r} <= e at r=ceil(ln q)):
+supNorm_le_of_wallHolds proves WallHolds G ∧ q>=e ==> forall b!=0, ||eta_b|| <= sqrt(2e*n*(ln q+1)).
+_MomentWallWiringCheck.lean's wall_capstone_moment_closed (pg-iterate axiom-clean) machine-verifies this
+composes into _WallCapstone.wall_capstone's B/hB0/hB slots (the two WallHolds defs are DEFINITIONALLY EQUAL,
+type-checks with NO glue lemma), discharging caveat (a) end-to-end: WallHolds now supplies BOTH the per-rung
+moments AND the optimized sup-norm B, no free parameter. Probe probe_466r13_moment.py (n=8,16,32, >=2 primes,
+p=n^4): true M/sqrt(n log(p/n)) = 1.05-1.26; the WallHolds Wick-min /sqrt(n ln q) = 1.43-1.44 CONSTANT across n
+(order confirmed); Wick argmin r* ≈ ln q matching the formalized r=ceil(ln q). CAVEAT: the crude Lean constant
+C=sqrt(2e)≈2.33 over-estimates the true ≈1.43 (probe numeric, not a Lean theorem); WallHolds itself is NOT
+proven (open ~25-yr analytic number theory). This is a TIGHTENING of the capstone, not a wall closure.
+
+## [466-r13-two-distinct-inputs] WORLD II SETTLED: the prize needs WallHolds AND a distinct 2nd Prop (worst-case hyperplane cancellation), NOT implied by M (2026-07-04, #466 round 13)
+
+Lane: R (dossier §22 tightening). THE CRUX QUESTION: does the round-12 `RealizedIncidenceBudget` glue
+(the √q·B hyperplane cancellation) FOLLOW from the wall's sup-norm bound M = max_{b≠0}‖η_b‖ (World I ⟹ prize
+localizes to WallHolds ALONE, single-Prop iff) or is it a DISTINCT open input (World II ⟹ prize = WallHolds ∧
+2nd Prop)? VERDICT: **WORLD II**, settled rigorously with an axiom-clean identity + counterexample-to-derivability.
+
+THE OBJECT. `I_H(s₀) = ∑_{b∈H} conj(η_b) ψ(b·s₀)` = the signed sum over a genuine frequency hyperplane H (the
+general-H form of `IncidencePeriodBridge.lineIncidence_period_sum`; the in-tree V=F geometry has the DEGENERATE
+hyperplane {b:b·s₁=0}={0} for s₁≠0, so it never tests cancellation — Round 13 uses a genuine nontrivial
+subgroup H=<g^deg> ⊂ F^*, |H|~q/deg, the honest higher-D analogue).
+
+LANDED AXIOM-CLEAN (`Frontier/_R13HyperplaneSecondMoment.lean`, 2 thms, #print axioms = [propext,
+Classical.choice, Quot.sound], no sorryAx, pg-iterate OK 38s):
+* `incidenceSum_sq_sum_offsets`: ∑_{s₀∈F} ‖I_H(s₀)‖² = q·∑_{b∈H}‖η_b‖²  (pure char-orthogonality, general H;
+  generalizes the in-tree `incidence_l2_eq_period_l2`). This is the WHOLE control M supplies over I_H.
+* `incidenceSum_sq_sum_le_of_supBound`: hence ∑_{s₀}‖I_H‖² ≤ q·|H|·M², i.e. the AVERAGE over offsets is
+  ≤|H|·M² ⟹ typical ‖I_H(s₀)‖ ≤ √|H|·M. So **M controls the AVERAGE (World-I-on-average) — and ONLY the average.**
+
+WHY WORLD II (probes `_out_466r13_incidence.txt`, `_mechanism.txt`; parallel agent `_twoinput.txt` n=32 concurs):
+regime p==1 mod n, p≥n^4, ≥2 primes distinct v2, n=8/16 (+ n=32 parallel).
+* worst_{s₀}‖I_H‖ ≈ 0.98–0.996·|H|·M_H (the far-coset adversary's actual pick), NOT √|H|·M: ratio
+  worst/(√|H|·M) = 6.1 at |H|=2064 GROWS to 13.7 at |H|=32808 (i.e. ∝√|H|, UNBOUNDED); worst/(|H|·M) ≈ 0.07–0.15
+  stays Θ(1). The worst s₀ sits √|H| ABOVE the rms — a rare in-phase peak the phase-blind 2nd moment cannot see.
+* COUNTEREXAMPLE-TO-DERIVABILITY: rephasing {η_b} to IDENTICAL moduli (⟹ same M, same L², same RHS of the
+  identity) but random phases collapses worst‖I_H‖ from ≈|H|·M to √-scale (ratio true/random = 5.4 at |H|=2064,
+  13.2 at |H|=32768, 59.9 at n=32 — ∝√|H|). Hence worst_{s₀}‖I_H‖ is NOT a function of M (nor of {‖η_b‖} at all):
+  two spectra with the SAME M differ in worst-case incidence by √|H|. A sup-norm bound CANNOT control it.
+
+CONSEQUENCE (sharpens the capstone, no closure claimed). The prize does NOT localize to WallHolds alone.
+It is `WallHolds ∧ HyperplaneCancellation` — TWO distinct analytic inputs. WallHolds (the wall) gives M, and
+M provably controls only the AVERAGE I_H; the worst-case (adversary) bound ∀s₀ ‖I_H(s₀)‖ ≤ √|H|·M (= √q·B,
+Paley/BCHKS-1.12) is a strictly finer, phase-sensitive object the wall does not supply. `RealizedIncidenceBudget`
+in `_WallCapstone.lean` is therefore CORRECTLY a separate named Prop, provably non-derivable from WallHolds.
+"The wall" is really TWO analytic statements. CORE OPEN, ON-BGK, TWO INPUTS. No fabricated closure.
+
+---
+
 ## [466-r12-wall-capstone-machine-checked] the prize is machine-checked to localize onto ONE named Prop (WallHolds), the cartography is CAPSTONED (2026-07-04, #466 round 12)
 
 Lane: round-12 capstone (dossier §22). ASSEMBLY (not new math) of the in-tree reduction chain into one

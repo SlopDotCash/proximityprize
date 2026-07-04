@@ -1,0 +1,22 @@
+
+n=8 p=4129 deg=2 |H\0|=2064 M=7.558 M_H=7.298
+  (A) 2nd moment: mean_s0|I|^2 = 16226.97   sum_b|eta_b|^2 (over H) = 16226.97   [equal => WORLD I holds on AVERAGE; sqrt = 127.39 ~ sqrt|H|*? ]
+      sqrt(mean|I|^2) = 127.39  <= sqrt|H|*M = 343.38  (World-I avg bound)
+  (B) WORST: worst|I| = 2028.37  ~ 0.9827*|H|   (>> sqrt|H|*M=343.38)
+      worst / sqrt(mean|I|^2) = 15.92  ~ sqrt|H|=45.4   => worst is sqrt|H| ABOVE the rms: a rare aligned peak, NOT the average
+  (B-CTX) SAME moduli |eta_b| (=> SAME M, SAME L2), RANDOMIZED phases:
+      worst|I| over 8 draws: mean=372.3 max=389.5 min=353.4
+      TRUE(arith-phase) worst = 2028.4   random-phase worst ~ 372.3
+      ratio true/random = 5.45  => worst|I| DEPENDS ON PHASES that M does NOT carry
+      (random worst ~ sqrt(2 ln|H|)*L2rms-ish; sqrt|H|*M=343.4, L2=127.4)
+
+n=16 p=65537 deg=2 |H\0|=32768 M=13.838 M_H=13.838
+  (A) 2nd moment: mean_s0|I|^2 = 522119.98   sum_b|eta_b|^2 (over H) = 522119.98   [equal => WORLD I holds on AVERAGE; sqrt = 722.58 ~ sqrt|H|*? ]
+      sqrt(mean|I|^2) = 722.58  <= sqrt|H|*M = 2504.86  (World-I avg bound)
+  (B) WORST: worst|I| = 32632.50  ~ 0.9959*|H|   (>> sqrt|H|*M=2504.86)
+      worst / sqrt(mean|I|^2) = 45.16  ~ sqrt|H|=181.0   => worst is sqrt|H| ABOVE the rms: a rare aligned peak, NOT the average
+  (B-CTX) SAME moduli |eta_b| (=> SAME M, SAME L2), RANDOMIZED phases:
+      worst|I| over 8 draws: mean=2481.7 max=2585.8 min=2380.3
+      TRUE(arith-phase) worst = 32632.5   random-phase worst ~ 2481.7
+      ratio true/random = 13.15  => worst|I| DEPENDS ON PHASES that M does NOT carry
+      (random worst ~ sqrt(2 ln|H|)*L2rms-ish; sqrt|H|*M=2504.9, L2=722.6)
