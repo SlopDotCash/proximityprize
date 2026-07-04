@@ -1,3 +1,23 @@
+## [466-r12-wall-capstone-machine-checked] the prize is machine-checked to localize onto ONE named Prop (WallHolds), the cartography is CAPSTONED (2026-07-04, #466 round 12)
+
+Lane: round-12 capstone (dossier §22). ASSEMBLY (not new math) of the in-tree reduction chain into one
+axiom-clean file `Frontier/_WallCapstone.lean` (3 thms, all #print axioms = [propext, Classical.choice,
+Quot.sound], no sorryAx; skeptic independently pg-iterated and confirmed every cited link is a real in-tree
+theorem applied faithfully, no laundering). WallHolds G := ∀ r, DCEnergyCorrection.DCEnergyBound G r (the
+∀-r closure of W1's WraparoundBelowDC, i.e. the DC-subtracted wraparound ≤ its mean-field DC value at every
+rung — the wall verbatim on the in-tree object, NOT a new incompatible def). Proven links: charSum_of_wallHolds
+(WallHolds ⟹ the per-frequency sup-norm/M bound — the wall's whole analytic payload, DERIVED not assumed, via
+eta_pow_le_of_dcEnergyBound); deltaStar_floor_of_charSumBound_of_budget (= le_mcaDeltaStar_of_charSumBound);
+composite wall_capstone whose conclusion is a CONJUNCTION so WallHolds is genuinely load-bearing. VERDICT
+CAPSTONE-PARTIAL: the prize localizes to WallHolds ∧ RealizedIncidenceBudget, where RealizedIncidenceBudget is
+ONE explicitly-named glue hypothesis (the M→δ* far-coset structural law + naive incidence budget
+⌈|G|+q·B⌉/q ≤ ε*) that the wall does NOT supply, is VACUOUS at the prize budget for nonzero B, and needs the
+open √q·B cancellation (Paley / BCHKS Conj 1.12) — honestly flagged, NOT discharged; plus the moment-order
+optimization (2r-th root, min over r≈ln q) is passed as a parameter, not formalized. Net: the campaign's
+cartography is now not just complete (round 11) but CAPSTONED — the sole open core is a single named Prop, the
+frontal magnitude route (466-r12-frontal-conjugate-gate-collapse) is machine-certified to bottom out exactly on
+it, and a compiled certificate localizes the prize onto it. The wall is NOT claimed closed. CORE OPEN, ON-BGK.
+
 ## [466-r11-jointphase-collinear-gauge] the joint tower phase field collapses to magnitudes at ALL depths — collinearity closes the last sub-thread (2026-07-04, #466 round 11)
 
 Lane: round-11 attack on JointPhaseFieldStructure, the ONE sub-thread round 10 declined to foreclose
@@ -19808,3 +19828,41 @@ strictly worse. NO gain past 8/9 with surviving good-prime supply. (C3) the char
 `Σ_{b≠0}|η_b|² = pn − n²` is the Parseval FLOOR (M ≥ ≈√n) with only the trivial upper bound
 M ≤ √(pn) = n^{5/2}. The exact-energy route is closed; the SOTA record stands at n^{8/9}
 good-prime, n^{1−o(1)} unconditional, sharp √n floor.
+
+## [466-r12-frontal-conjugate-gate-collapse] the frontal norm/conjugate-count assault on the wall REDUCES-TO-WALL at an exact-finite step: the gate (2r)^{n/2}<p that proves W_r=0 is vacuous at every rung for n≥64 (2026-07-04)
+
+Lane: #466 round-12 LANE F (`_FrontalConjugateGateCollapse.lean` axiom-clean, 4 decls;
+`probe_466r12_frontal.py`, `probe_466r12_gate.py`, exact int64 level-counts, cross-validated). A
+FRONTAL attempt ON the wall `W_r ≤ n^{2r}/p` at r=β+1 via the norm/conjugate-count decomposition.
+Result: REDUCES-TO-WALL with the exact step pinned, plus one genuinely-new PROVEN small-rung fact.
+
+**(1) The norm-divisibility reframe is EXACT (probe-validated).** `W_r = #{(h₁…h_{2r})∈μ_n^{2r} :
+α=Σεᵢhᵢ ≡ 0 mod 𝔭, α≠0 in ℤ[ζ_n]}` = the count of sparse ±1 sums of ≤2r n-th roots that are a
+NONZERO element of the degree-1 prime 𝔭|p, i.e. `p | N(α)`, `N(α)≠0`. At n=8 the norm-divisibility
+count (computed via exact algebraic norms) equals W_r exactly (r=2,3): the reframe is an identity,
+not an approximation. Since p splits completely, α≡0 mod 𝔭 with α≠0 ⟺ p|N(α).
+
+**(2) PROVEN SMALL-RUNG (the exact gate).** The in-tree `RootSumNorm.abs_norm_sum_rootsOfUnity_le`
+gives `|N(α)| ≤ (2r)^{φ(n)} = (2r)^{n/2}`, so `(2r)^{n/2} < p ⟹ W_r = 0` EXACTLY (a nonzero α has
+|N(α)|<p, so p∤N(α)). Empirically SOUND: onset r_0(n,p) = min{r: W_r>0} sits at or just above the
+gate reach r_gate = ⌊½·p^{2/n}⌋ (n=8: r_gate=4, onset r_0=8; n=16: r_gate=2, onset 5; n=32:
+r_gate=1, onset 4–5; slack O(1)). The wall HOLDS at every measured post-onset rung (W_r/(n^{2r}/p) ∈
+[0.007, 0.615] < 1, n=8/16/32, ≥2 primes each, β=4).
+
+**(3) The GATE COLLAPSE — the new exact-finite content (LANDED axiom-clean).** At the prize
+p=n^β=n^4, `p^{2/n}=n^{8/n}→1`, so r_gate=⌊½·n^{8/n}⌋ collapses: n=8→4, n=16→2, n=32→1, **n≥64→0**.
+`_FrontalConjugateGateCollapse.two_pow_half_gt_n_pow_four` (axiom-clean): `n^4 < 2^{n/2}` for even
+n≥64 (even crossover n=44; dyadic fails at 32, holds at 64: 64^4=16777216 < 2^32=4294967296). Hence
+`gate_vacuous_at_prize`: for n≥64 and EVERY r≥1, `(2r)^{n/2} ≥ p` — the conjugate-count sufficient
+condition `(2r)^{n/2}<p` for W_r=0 FAILS at every rung, so the norm bound certifies W_r=0 at NO rung
+on the prize surface `1≤r≤β+1`. (Sharpens the asymptotic-in-p `_AvND_NormDiameterThreshold.
+threshold_lt_saddle` to an EXACT finite prize-point boundary: past the gate already at r=1, n≥64.)
+
+**VERDICT: REDUCES-TO-WALL at the exact step.** The frontal norm/conjugate-count assault closes the
+wall (proves W_r=0) exactly where `(2r)^{n/2}<p`; at the prize that region is EMPTY for every r≥1.
+So the residual is precisely the un-gated inequality `WallBetaPlusOne.WraparoundBelowDC` (p·W_r ≤
+n^{2r}). A magnitude-only argument provably cannot enter it: the conjugate product |N|=∏|σ| can
+exceed p even when no single |σ| is large (each |σ(α)|≤2r), so bounding the COUNT of large-norm
+p-divisible sparse sums needs inter-conjugate PHASE cancellation = BGK/Paley. This is the same wall
+sec 9/W1 name, now reached from the norm side with the exact-finite reason the tool is vacuous. No
+new named target; no wall closure. CORE OPEN, ON-BGK.

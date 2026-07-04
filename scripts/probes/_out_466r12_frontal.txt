@@ -1,0 +1,127 @@
+LANE F #466 round 12 -- FRONTAL ASSAULT on the wall W_r <= n^{2r}/p (r=beta+1).
+W_r = E_r^{(p)} - E_infinity = wraparound count (# sparse +-1 root sums alpha != 0, p | N(alpha)).
+numpy 2.4.4; deterministic exact integer counts.
+
+char-0 exact closed-form cross-check (must reproduce E_2=3n^2-3n, E_3=15n^3-45n^2+40n):
+  n=8: E_2^inf=168 (3n^2-3n=168);  E_3^inf=5120 (15n^3-45n^2+40n=5120)
+  n=16: E_2^inf=720 (3n^2-3n=720);  E_3^inf=50560 (15n^3-45n^2+40n=50560)
+  n=32: E_2^inf=2976 (3n^2-3n=2976);  E_3^inf=446720 (15n^3-45n^2+40n=446720)
+
+##############################################################################################################
+### TASK 1: exact W_r, onset rung r_0, and the wall ratio W_r / (n^{2r}/p)  [beta=4 prize diagonal]
+##############################################################################################################
+
+==============================================================================================================
+n=8  beta=4.0  primes=[4129, 4153, 4177, 4289]  (v2(p-1): [5, 3, 4, 6])
+  --- p=4129  m=(p-1)/n=516  v2(p-1)=5  beta_eff=4.0039 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              168                168              0            0.992     0.0000        
+      3             5120               5120              0            63.49     0.0000        
+      4           190120             190120              0             4063     0.0000        
+      5          7939008            7939008              0          2.6e+05     0.0000        
+      6        357713664          357713664              0        1.664e+07     0.0000        
+
+  --- p=4153  m=(p-1)/n=519  v2(p-1)=3  beta_eff=4.0066 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              168                168              0           0.9863     0.0000        
+      3             5120               5120              0            63.12     0.0000        
+      4           190120             190120              0             4040     0.0000        
+      5          7939008            7939008              0        2.585e+05     0.0000        
+      6        357713664          357713664              0        1.655e+07     0.0000        
+
+  --- p=4177  m=(p-1)/n=522  v2(p-1)=4  beta_eff=4.0094 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              168                168              0           0.9806     0.0000        
+      3             5120               5120              0            62.76     0.0000        
+      4           190120             190120              0             4017     0.0000        
+      5          7939008            7939008              0        2.571e+05     0.0000        
+      6        357713664          357713664              0        1.645e+07     0.0000        
+
+  --- p=4289  m=(p-1)/n=536  v2(p-1)=6  beta_eff=4.0221 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              168                168              0            0.955     0.0000        
+      3             5120               5120              0            61.12     0.0000        
+      4           190120             190120              0             3912     0.0000        
+      5          7939008            7939008              0        2.503e+05     0.0000        
+      6        357713664          357713664              0        1.602e+07     0.0000        
+
+==============================================================================================================
+n=16  beta=4.0  primes=[65617, 65633, 65729]  (v2(p-1): [4, 5, 6])
+  --- p=65617  m=(p-1)/n=4101  v2(p-1)=4  beta_eff=4.0004 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              720                720              0           0.9988     0.0000        
+      3            50560              50560              0            255.7     0.0000        
+      4          4649680            4649680              0        6.546e+04     0.0000        
+      5        514031616          514152576         120960        1.676e+07     0.0072      R0
+
+  --- p=65633  m=(p-1)/n=4102  v2(p-1)=5  beta_eff=4.0005 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              720                720              0           0.9985     0.0000        
+      3            50560              50560              0            255.6     0.0000        
+      4          4649680            4649680              0        6.544e+04     0.0000        
+      5        514031616          516450816        2419200        1.675e+07     0.1444      R0
+
+  --- p=65729  m=(p-1)/n=4108  v2(p-1)=6  beta_eff=4.0011 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2              720                720              0           0.9971     0.0000        
+      3            50560              50560              0            255.2     0.0000        
+      4          4649680            4649680              0        6.534e+04     0.0000        
+      5        514031616          515644416        1612800        1.673e+07     0.0964      R0
+
+==============================================================================================================
+n=32  beta=4.0  primes=[1048609, 1048897]  (v2(p-1): [5, 6])
+  --- p=1048609  m=(p-1)/n=32769  v2(p-1)=5  beta_eff=4.0000 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2             2976               2976              0                1     0.0000        
+      3           446720             446720              0             1024     0.0000        
+      4         90889120           91534240         645120        1.049e+06     0.6153      R0
+
+  --- p=1048897  m=(p-1)/n=32778  v2(p-1)=6  beta_eff=4.0001 ---
+      r          E_r^inf            E_r^(p)            W_r        DC=n^2r/p     W_r/DC   onset
+      2             2976               2976              0           0.9997     0.0000        
+      3           446720             446720              0             1024     0.0000        
+      4         90889120           90889120              0        1.048e+06     0.0000        
+
+==============================================================================================================
+### TASK 1 verdict: the wall ratio W_r/(n^{2r}/p) across all (n,p,r)
+==============================================================================================================
+  # of (n,p,r) with W_r>0 (post-onset rungs): 4
+  W_r/(n^2r/p): min=0.0072  max=0.6153  mean=0.2158
+  --> wall holds (W_r <= n^2r/p) iff max ratio <= 1.0 : HOLDS
+  post-onset ratios sorted:
+     n= 32 p= 1048609 r=4 W=        645120 DC=     1.049e+06 ratio=0.6153
+     n= 16 p=   65633 r=5 W=       2419200 DC=     1.675e+07 ratio=0.1444
+     n= 16 p=   65729 r=5 W=       1612800 DC=     1.673e+07 ratio=0.0964
+     n= 16 p=   65617 r=5 W=        120960 DC=     1.676e+07 ratio=0.0072
+
+##############################################################################################################
+### TASK 2: NORM-DIVISIBILITY REFRAME (n=8). alpha = sum eps_i h_i, p | N(alpha), alpha != 0.
+##############################################################################################################
+For n=8, phi(n)=4, |sigma(alpha)|<=2r, so |N(alpha)|<=(2r)^4. p|N(alpha), alpha!=0 needs |N|>=p.
+We enumerate ALL +-1 sums of 2r eighth-roots (r-plus, r-minus) and bin by |N(alpha)|,
+then report how many have p | N(alpha) with N != 0 = the norm-divisibility count = W_r.
+
+  --- p=4129  (n=8, mu_n = <777> mod p) ---
+    r=2: (2r)^phi=     256  total_tuples=    4096  N==0_count=     168 (E_inf=168)  wrap(mod p)=168  W_r=0  normdiv(N!=0,p|N)=0  DC=0.992
+         cross-check normdiv==W_r: OK
+    r=3: (2r)^phi=    1296  total_tuples=  262144  N==0_count=    5120 (E_inf=5120)  wrap(mod p)=5120  W_r=0  normdiv(N!=0,p|N)=0  DC=63.5
+         cross-check normdiv==W_r: OK
+
+  --- p=4153  (n=8, mu_n = <3554> mod p) ---
+    r=2: (2r)^phi=     256  total_tuples=    4096  N==0_count=     168 (E_inf=168)  wrap(mod p)=168  W_r=0  normdiv(N!=0,p|N)=0  DC=0.986
+         cross-check normdiv==W_r: OK
+    r=3: (2r)^phi=    1296  total_tuples=  262144  N==0_count=    5120 (E_inf=5120)  wrap(mod p)=5120  W_r=0  normdiv(N!=0,p|N)=0  DC=63.1
+         cross-check normdiv==W_r: OK
+
+==============================================================================================================
+### TASK 2 verdict: the reframe
+  W_r = #{+-1 sums of 2r n-th roots : alpha != 0 (algebraically) AND alpha == 0 mod p}
+     = #{sparse +-1 root sums alpha : p | N(alpha), N(alpha) != 0}.
+  Since alpha lies in the degree-1 prime p above p, alpha==0 mod p <=> p | N(alpha)
+  (N(alpha) = prod conjugates; p splits completely so p | one conjugate <=> p | N up to units).
+  The reframe is EXACT (normdiv count == W_r confirmed). The binding constraint is |N|>=p:
+  a nonzero sparse +-1 root sum has bounded conjugates (|sigma|<=2r) so |N|<=(2r)^phi(n);
+  p|N with N!=0 forces |N|>=p ~ n^4 -- attainable only when the conjugate MAGNITUDES conspire
+  to a large product. This is the exact object; bounding its count = the wall.
+
+[done in 7.2s]

@@ -1,0 +1,42 @@
+LANE F #466 r12 -- CONJUGATE-COUNT GATE (RootSumNormBound) vs empirical wraparound onset.
+Provable THEOREM: (2r)^{phi(n)} < p  =>  W_r = 0 exactly  (in-tree abs_norm_sum_rootsOfUnity_le).
+numpy 2.4.4; exact.
+
+### The gate is SOUND but COLLAPSES: r_gate(n) = max{r : (2r)^{n/2} < p},  p ~ n^4.
+     n    phi=n/2          p~n^4    p^(1/phi)   r_gate   beta+1  note
+     8          4      4.096e+03      8.00000        3        5  gate proves W_r=0 up to r_gate; VACUOUS at r=beta+1
+    16          8      6.554e+04      4.00000        1        5  gate proves W_r=0 up to r_gate; VACUOUS at r=beta+1
+    32         16      1.049e+06      2.37841        1        5  gate proves W_r=0 up to r_gate; VACUOUS at r=beta+1
+    64         32      1.678e+07      1.68179        0        5  gate proves NOTHING (n^{8/n}<2)
+   128         64      2.684e+08      1.35426        0        5  gate proves NOTHING (n^{8/n}<2)
+   256        128      4.295e+09      1.18921        0        5  gate proves NOTHING (n^{8/n}<2)
+  1024        512      1.100e+12      1.05565        0        5  gate proves NOTHING (n^{8/n}<2)
+1048576     524288      1.209e+24      1.00011        0        5  gate proves NOTHING (n^{8/n}<2)
+1073741824  536870912      1.329e+36      1.00000        0        5  gate proves NOTHING (n^{8/n}<2)
+
+KEY: (2r)^{n/2} < n^4  <=>  2r < n^{8/n}.  n^{8/n} -> 1 as n grows (max at n=8: 8^1=8).
+     r_gate(n) = floor((n^{8/n})/2):  n=8 -> 4,  n=16 -> 2,  n=32 -> 1,  n>=64 -> 0.
+     So the norm/conjugate-count method proves W_r=0 only for r <= 4 (n=8), and NOTHING
+     at the prize rung r=beta+1=5 for every n>=16.  This IS the wall's lower boundary.
+
+### Empirical onset r_0 vs r_gate (soundness check + slack).  beta=4 prize diagonal.
+   n          p  v2  r_gate  r_0(onset)      W_{r_0} slack r_0-r_gate  sound?
+   8       4129   5       4           8     17297280                4  OK
+   8       4153   3       4           8      1921920                4  OK
+   8       4177   4       4           8      5765760                4  OK
+  16      65617   4       2           5       120960                3  OK
+  16      65633   5       2           5      2419200                3  OK
+  16      65729   6       2           5      1612800                3  OK
+  32    1048609   5       1           4       645120                3  OK
+  32    1048897   6       1           5    401587200                4  OK
+  32    1049089   9       1           5    332398080                4  OK
+
+### VERDICT
+The conjugate-count gate (2r)^{n/2}<p is SOUND (W_r=0 below it, confirmed) but its reach
+r_gate = floor(n^{8/n}/2) collapses to 0 for n>=64.  The empirical onset r_0 sits at or just
+above r_gate (slack O(1), largest at n=8 where r_gate=4, r_0=8).  The gap [r_gate+1, beta+1]
+is EXACTLY the un-provable region: there the wraparound count W_r is nonzero and the ONLY
+known bound (conjugate-count) is vacuous.  Proving W_r <= n^{2r}/p there is the wall itself:
+it requires inter-conjugate PHASE CANCELLATION (the product |N|=prod|sigma| can be large even
+when few sigma are large), which is precisely BGK/Paley -- no magnitude-only argument reaches it.
+[done 10.4s]

@@ -1181,3 +1181,46 @@ round-11 data supports the standing conjecture that no such object exists (a "un
 **CORE OPEN, ON-BGK. No fabricated closure.** The campaign's product is a complete, machine-checked
 cartography reducing a $1M grand challenge to one precisely-stated ≈25-year-open analytic inequality, with
 route-elimination as theorems and every conceivable escape decided.
+
+---
+
+## 22. Round log — Round 12 (#466, 2026-07-04, Fable): the frontal assault ON the wall + the machine-checked CAPSTONE
+
+After 11 rounds the cartography was complete (every escape decided). Round 12 does the two things the
+elimination campaign never did: a **frontal attempt ON the wall itself** (not an escape route) and the
+**machine-checked capstone** localizing the prize to one named Prop. Essay:
+`deltastar-466-essay-round12-2026-07-04.md`. 2 lanes + 2 adversarial skeptics (5 agents); Lane F severity
+**none**, Lane K severity minor. DISPROOF `466-r12-*`. Neither closes the wall — honestly.
+
+**(F) Frontal norm/conjugate-count assault — REDUCES-TO-WALL, at an exact-finite step.** `W_r` is exactly the
+count of sparse ±1 sums `α = Σεᵢhᵢ` of `2r` n-th roots with `p | N(α)`, `α ≠ 0` (identity: `p` splits
+completely, so `α ≡ 0 mod 𝔭` with `α ≠ 0 ⟺ p | N(α)`; probe-validated exact at n=8). The one unconditional
+magnitude tool — `|N(α)| ≤ (2r)^{n/2}` (in-tree `abs_norm_sum_rootsOfUnity_le`) — proves `W_r = 0` exactly
+where `(2r)^{n/2} < p` (the conjugate gate `no_wraparound_at_depth`). **New landed content**
+(`_FrontalConjugateGateCollapse.lean`, 4 axiom-clean thms, real build): at the prize `p = n^4` the gate is
+**vacuous** — `gate_vacuous_at_prize` proves `(2r)^{n/2} ≥ p` for every `r ≥ 1` once `n ≥ 64` (since
+`n^4 < 2^{n/2}`, even crossover at n=44; dyadic fails at 32, holds at 64), so the sole unconditional tool
+certifies `W_r = 0` at NO rung on `[1, β+1]`. This sharpens the prior asymptotic `threshold_lt_saddle` to an
+exact finite prize-point boundary. The residual is precisely the un-gated `WraparoundBelowDC` (the wall,
+unchanged); a magnitude-only argument cannot enter it because `|N| = ∏|σ|` can exceed `p` with every
+`|σ(α)| ≤ 2r` small — bounding the count of large-norm p-divisible sparse sums needs inter-conjugate PHASE
+cancellation = BGK. Empirically the wall HOLDS at every measured post-onset rung (`W_r/(n^{2r}/p) ∈
+[0.007, 0.615] < 1`, n=8/16/32, ≥2 primes, β=4).
+
+**(K) The machine-checked capstone — CAPSTONE-PARTIAL.** `_WallCapstone.lean` (3 axiom-clean thms; skeptic
+independently pg-iterated and verified every cited link is a real in-tree theorem faithfully applied — no
+laundering) states the wall as ONE named Prop `WallHolds G := ∀ r, DCEnergyBound G r` (the ∀-r closure of
+W1's `WraparoundBelowDC`, the wall verbatim) and proves: `charSum_of_wallHolds` (WallHolds ⟹ the
+per-frequency sup-norm bound — the wall's whole analytic payload, DERIVED); `deltaStar_floor_of_charSumBound_of_budget`;
+and the composite `wall_capstone` (a conjunction, so WallHolds is genuinely load-bearing). **The prize
+localizes to `WallHolds ∧ RealizedIncidenceBudget`**, machine-checked, where `RealizedIncidenceBudget` is ONE
+explicitly-named glue (the M→δ* far-coset law + naive incidence budget) that the wall does not supply, is
+vacuous at the prize budget for nonzero B, and needs the open `√q·B` cancellation (Paley/BCHKS-1.12) — flagged,
+NOT discharged; the moment-order optimization is passed as a parameter.
+
+**═══ CARTOGRAPHY CAPSTONED (state after 12 rounds) ═══** The sole open core is a single named `Prop`
+(`WallHolds`); the frontal magnitude route is machine-certified to bottom out exactly on it
+(`gate_vacuous_at_prize`); and a compiled certificate (`wall_capstone`) localizes the prize onto it modulo one
+honestly-named, prize-vacuous glue that is itself the recognized open `√q·B` cancellation. The wall is **not**
+claimed closed — it remains genuine ≈25-year-open analytic number theory (square-root cancellation for thin
+2-power subgroups; best proven at β=4 is BGK `n^{1−o(1)}`). **CORE OPEN, ON-BGK. No fabricated closure.**
