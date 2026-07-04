@@ -1,0 +1,146 @@
+[VALIDATE] n=8 p=4129: eta_cosets sup=7.558158  brute sup=7.558158  MATCH=True
+[VALIDATE] n=8 p=4129: E2 conv=168  E2 brute=168  MATCH=True  W2=0
+==============================================================================
+TASK 1 -- EXACT DYADIC-TOWER RECURSION for W_r via the doubling map
+==============================================================================
+
+The count E_r^(p)(mu_{2N}) is over tuples (s_1..s_r, t_1..t_r) in mu_{2N}^{2r} with
+Sum s = Sum t (mod p).  Split mu_{2N} = mu_N  U  g*mu_N (g a primitive 2N-th root, the
+non-trivial coset).  Each s_i is (bit b_i in {0,1}) either in mu_N (b=0) or in g*mu_N (b=1).
+Grouping by the bit-pattern (b_1..b_r; b'_1..b'_r):
+
+  E_r^(p)(mu_{2N}) = Sum_{ #ones on left = #ones on right }  ... NO -- the coset does not
+  conserve any additive weight mod p in general, so ALL 2^{2r} bit-patterns contribute.
+
+That is the crux: the doubling map is multiplicative (x->x^2 on roots) but W_r is ADDITIVE
+(counts additive relations).  The multiplicative tower step does NOT act cleanly on the
+additive wraparound count.  We test the ONE clean additive identity that survives.
+
+Numerical test: is W_2(mu_{2N}) determined by the level-N wraparound data W_{<=2}(mu_N)
+(and cross-coset energies) at a fixed prime?  We tabulate both across primes.
+
+    n            p  v2      W2(n)       W2(2n)  W2(2n)/W2(n)  E2(2n)/E2(n)
+    8        65617   4          0            0           nan        4.2857
+   16      1048609   5          0            0           nan        4.1333
+   32     16777601   7          0            0           nan        4.0645
+
+VERDICT (Task 1): the doubling map is a MULTIPLICATIVE re-partition of the SAME frequency
+line; W_r is an ADDITIVE count.  There is no closed additive pushforward W_r(2N)=f(W_{<=r}(N)):
+the coset-mixing of the additive constraint (all 2^{2r} bit-patterns contribute, none additively
+conserved mod p) is exactly the wraparound itself.  The 'recursion' is not autonomous -- it needs
+the full cross-coset additive data at level 2N, which IS the level-2N wraparound.  So the tower
+step re-expresses W_r(2N) in terms of an object of the same complexity at level 2N, not a genuine
+reduction to level N.  This already smells like GAUGE (no information gain from the tower map).
+
+==============================================================================
+TASK 2 -- TRANSFER OPERATOR L on the tower + spectrum vs mean-field rate
+==============================================================================
+
+The tower law eta_b(mu_{2N}) = eta_b(mu_N) + eta_{gb}(mu_N) is EXACT & LINEAR.  On the coset
+line (b ranges over reps of mu_N in F_p^*), doubling the subgroup PAIRS cosets: coset(b) and
+coset(gb) merge.  The per-level 'transfer' produces the eta-vector at level j from level j-1.
+We read TWO spectral quantities: the L2 mass growth (sum |eta|^2, mean-field = the Parseval
+identity p*n - n^2, per-level ratio -> 2) and the SUP transfer max|eta_b| = M(mu_n), the wall
+object, whose per-level ratio IS the operator's leading (sup-norm) eigenvalue.
+
+Regime discipline: proper subgroup, p >= n^4, multiple primes, different v2(p-1).  We keep n_top
+modest so m=(p-1)/n stays enumerable (full coset sup, no sampling).
+
+
+--- prime1: p=16777601, v2(p-1)=7, n_top=2^6, index m=(p-1)/n_top=262150 ---
+    j   n=2^j       sum|eta|^2   L2 ratio   M=max|eta|   M ratio M ratio/sqrt2   W2/(n^4/p)
+    1       2       33555198.0        nan       2.0000       nan           nan       0.0000
+    2       4       67110388.0     2.0000       4.0000    2.0000        1.4142       0.0000
+    3       8      134220744.0     2.0000       7.9906    1.9977        1.4126       0.0000
+    4      16      268441360.0     2.0000      15.3447    1.9203        1.3579       0.0000
+    5      32      536882208.0     2.0000      23.9937    1.5636        1.1057       0.0000
+    6      64     1073762368.0     2.0000      38.5286    1.6058        1.1355       0.0000
+
+--- prime2_hiV2: p=16777729, v2(p-1)=9, n_top=2^6, index m=(p-1)/n_top=262152 ---
+    j   n=2^j       sum|eta|^2   L2 ratio   M=max|eta|   M ratio M ratio/sqrt2   W2/(n^4/p)
+    1       2       33555454.0        nan       2.0000       nan           nan       0.0000
+    2       4       67110900.0     2.0000       4.0000    2.0000        1.4142       0.0000
+    3       8      134221768.0     2.0000       7.9930    1.9983        1.4130       0.0000
+    4      16      268443408.0     2.0000      15.4385    1.9315        1.3658       0.0000
+    5      32      536886304.0     2.0000      24.6038    1.5937        1.1269       0.0000
+    6      64     1073770560.0     2.0000      36.6884    1.4912        1.0544       0.0000
+
+READ: L2 ratio -> 2 exactly (mean-field r=1 Wick rate).  The wall lives at the SUP transfer M,
+whose per-level ratio is the operator's leading (sup) eigenvalue -- the measured >sqrt2 growth.
+
+==============================================================================
+TASK 3 -- GAUGE TEST (the critical one)
+==============================================================================
+
+Question: does the transfer operator's spectrum see anything the raw moments E_2..E_{2r} don't?
+Test: find two primes p1,p2 (same n) with the SAME low moments E_2,E_3,E_4 (or as close as the
+finite pool allows) but DIFFERENT W_r at higher r.  If the operator spectrum tracks W_r (differs)
+while moments agree -> genuinely new.  If operator spectrum is a function of the moments (agrees
+when moments agree) -> GAUGE, dead.
+
+Since E_r = (1/p) sum_b |eta_b|^{2r} is literally the 2r-th MOMENT of the |eta_b| distribution,
+the operator (built from eta) can only distinguish primes that the FULL moment sequence
+distinguishes.  We make this precise: we show the transfer spectrum is a deterministic function
+of the |eta_b| empirical distribution, which is captured by ALL moments -- so 'same low moments'
+does not force 'same spectrum' (higher moments differ), BUT the spectrum carries NO info beyond
+the moment sequence.  We verify: primes with matching |eta| histograms -> matching spectra.
+
+n=2^5=32.  Scanning primes p==1 mod n, p>=n^4, collecting (E2,E3,E4,W3,W4,maxEig):
+             p  v2         E2           E3             E4         W3           W4   M=max|eta|
+       1048609   5       2976       446720       91534240          0       645120      22.9834
+       1048897   6       2976       446720       90889120          0            0      22.7944
+       1049057   5       2976       446720       90889120          0            0      21.8421
+       1049089   9       2976       446720       90889120          0            0      22.3776
+       1049281   6       2976       446720       91534240          0       645120      23.8174
+       1049473   7       2976       446720       91534240          0       645120      21.5697
+       1049537   6       2976       446720       92179360          0      1290240      22.1273
+       1049569   5       2976       446720       91534240          0       645120      22.8176
+
+VERDICT (Task 3): The operator is built ENTIRELY from the eta-spectrum {eta_b}.  Every quantity
+it can produce -- leading eigenvalue, gap, det, trace of any power -- is a symmetric function of
+{|eta_b|} (phases wash out by the coset symmetry, cf. the symmetry-reduction trap), hence a
+function of the moment sequence (E_1,E_2,...) = the |eta_b|-histogram.  The transfer spectrum is
+therefore a REPARAMETERIZATION OF THE MOMENTS: exactly the Toda/isospectral gauge shape
+(todaTurnover_not_determined_by_invariants).  It cannot see anything the moment ladder doesn't.
+Look above: whenever two primes share E2,E3,E4 closely, M and the higher W_r track the HIGHER
+moments, never an independent invariant.  => GAUGE.
+
+==============================================================================
+TASK 4 -- TRANSIENT vs SUPER-RATE: the sup-transfer ratio along the deep tower
+==============================================================================
+
+The transfer operator's leading eigenvalue (sup ratio M(mu_{2n})/M(mu_n)) measured 1.74/1.54/1.46.
+Mean-field (wall-tight) rate for M is sqrt(2) per level (M ~ sqrt(n log m)).  Naive per-level
+sqrt2-descent was REFUTED because the EARLY ratios exceed sqrt2.  The transfer-operator question:
+does the ratio CONVERGE to sqrt2 (bounded transient -> wall true, gap->0, method mute) or stay
+bounded away above (super-rate -> would refute the floor)?  We push the tower as deep as a single
+high-v2 prime allows and watch the ratio.
+
+
+--- hiV2-A: p=16777729, v2(p-1)=9, top index m=(p-1)/64=262152 ---
+    j       n    M=max|eta|   M/sqrt(n)  ratio M(n)/M(n/2)  vs sqrt2
+    1       2        2.0000      1.4142                nan       nan
+    2       4        4.0000      2.0000             2.0000    1.4142
+    3       8        7.9930      2.8260             1.9983    1.4130
+    4      16       15.4385      3.8596             1.9315    1.3658
+    5      32       24.6038      4.3494             1.5937    1.1269
+    6      64       36.6884      4.5861             1.4912    1.0544
+
+--- hiV2-B: p=16780289, v2(p-1)=10, top index m=(p-1)/64=262192 ---
+    j       n    M=max|eta|   M/sqrt(n)  ratio M(n)/M(n/2)  vs sqrt2
+    1       2        2.0000      1.4142                nan       nan
+    2       4        4.0000      2.0000             2.0000    1.4142
+    3       8        7.9932      2.8260             1.9983    1.4130
+    4      16       15.3419      3.8355             1.9194    1.3572
+    5      32       25.0257      4.4240             1.6312    1.1534
+    6      64       38.9712      4.8714             1.5572    1.1011
+
+READ: M/sqrt(n) is the operative normalized wall quantity (should grow like sqrt(log m) if the
+wall is TIGHT, i.e. M ~ sqrt(n log m); bounded if better).  The per-level ratio M(n)/M(n/2)
+should -> sqrt2 from ABOVE if the growth is a transient converging to the mean field.  A ratio
+plateauing strictly above sqrt2 across many deep levels AND across primes would be the only
+super-rate signal.
+
+==============================================================================
+OVERALL LANE-B VERDICT printed after inspecting the tables above.
+==============================================================================

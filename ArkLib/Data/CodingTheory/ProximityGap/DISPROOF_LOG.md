@@ -1,3 +1,59 @@
+## [466-r10-automatic-sequence-bblind] the dyadic-root phase sequence's 2-adic digit structure is real but b-blind (2026-07-04, #466 round 10)
+
+Lane: round-10 new angle on the wall W_r <= n^{2r}/p (dossier §20). Automatic-sequence / substitutive
+Fourier analysis (Allouche-Shallit; Byszewski-Konieczny-Muellner Gowers-norm machinery) of the
+dyadic-root phase sequence k -> e_p(b*zeta^k), k in Z/2^mu. NEW OBSERVATION (previously unrecorded):
+the wraparound solution set IS genuinely 2-adic-digit structured -- the pairwise-valuation statistic
+v_2(k_i-k_j) deviates from the digit-uniform null with chi2/dof in the hundreds-to-thousands across
+n=8,16 and >=2 primes with distinct v_2(p-1), the single-exponent popcount is EXACTLY uniform (structure
+is JOINT not marginal), and the wrap set is NOT closed under the odd-unit dilation k->u*k (closed only
+under u=1) -- so it is NOT b-blind in the naive C1 dilation sense. REFUTED anyway, three machine-checked
+ways: (A) COUNT-NEUTRAL -- the solution set is the equal-sum locus sum_L zeta^{k} = sum_R zeta^{k} mod p,
+on which the per-frequency character weight e_p(b*0)=1 for EVERY b, so the digit structure is a property
+of the b-SUMMED moment E_r (the exact Meta-Theorem/C1 b-blindness), and W_r already sits at/below its
+digit-uniform DC mean (W_r/DC in [0.13,0.98], the wall empirically holds in the wraparound-bearing
+regime) -- a uniformity bound has no total to save; (B) SIGN-UNSTABLE -- the deviation direction flips
+with p (v_2=2 class depleted at beta=2.0, enhanced at 2.1, empty at 3.0), no fixed Gowers bias to convert;
+(C) NO mu-UNIFORM AUTOMATON -- k->zeta^k mod p obeys a(2k)=a(k)^2 but the 2-kernel base zeta^{2^i} has
+multiplicative order n/2^i SHRINKING to 1, so no fixed finite automaton exists and automatic-sequence
+asymptotics do not apply (reconfirms [wf-NC/NC1]). Brick `_LaneAAutomaticBBlind.lean` axiom-clean
+(char_weight_trivial_on_solset; solset_count_is_b_summed, reusing the #444 collision_count_eq_moment).
+Probe `probe_466r10_automatic.py` (exact wraparound enumeration, tuple-validated vs the level-count
+engine; skeptic independently re-derived every headline number via a disjoint char-0 convention).
+Verdict: WALL STANDS; the new digit structure is real but count-neutral/b-summed. Round-11 residue
+(honest, open): does the JOINT (eta_b, eta_{zeta b}) phase field carry b-sensitive info at deep r
+invisible to the marginals? (essay §5).
+
+## [466-r10-transfer-operator-gauge] the dyadic-tower transfer operator is gauge (its spectrum = the moment ladder) (2026-07-04, #466 round 10)
+
+Lane: round-10 new angle on the wall (dossier §20). Transfer-operator / dynamical-zeta spectral gap on
+the doubling map x->x^2 (the tower step on mu_{2^mu}), designed to beat the already-refuted naive
+per-level sqrt(2)-descent (no_sqrt_two_perLevel_thinning) by using a spectral GAP rather than a per-level
+ratio. REFUTED as GAUGE: every invariant of the transfer operator factors through the coset-invariant
+magnitude multiset {||eta_b||}, whose only invariants are its power sums = the raw energy/moment ladder
+E_2..E_{2r} -- so the operator spectrum is a reparameterization of the moments (the Toda/isospectral kill
+todaTurnover_not_determined_by_invariants shape), carrying no information the moment method lacks; and its
+leading sup-eigenvalue (the M-ratio) is a bounded transient converging to the sqrt(2) mean-field rate
+forced by M ~ sqrt(n log m) at fixed log m, so it cannot distinguish prize-true from BGK-tight (regime-
+mute). Gauge test passed: two primes with the same low moments but different W_r give the same operator
+spectrum. Brick `_B_TransferOperatorGauge.lean` axiom-clean (4 thms: momentPow_eq_ofMultiset,
+powerSum_eq_of_multiset_eq, transfer_functional_perm_invariant, transfer_gauge). Probes
+`probe_466r10_transfer.py` + `_transfer_gauge.py`; KB note
+`deltastar-466-r10-laneB-transfer-operator-gauge-2026-07-04.md`. Verdict: WALL STANDS.
+
+## [466-r10-literature-2024-2026-clear] no 2024-2026 result touches the thin-2-power wall at beta=4 (2026-07-04, #466 round 10)
+
+Lane: round-10 literature freshness sweep (dossier §20; KB
+`deltastar-466-r10-laneC-literature-freshness-2026-07-04.md`). Targeted 2024-2026 sweep for any result
+moving n^{1-o(1)} toward sqrt(n) for thin 2-power subgroups mu_{2^mu} < F_p^* at p ~ n^4, or supplying a
+Gowers-norm/automatic-sequence/additive-energy/spectral-gap tool usable at depth r ~ ln q. ZERO
+survivors: every genuinely-new sqrt-cancellation result lives on a structure the prize object provably
+LACKS -- Burgess intervals, function fields F_q[t], the p^{1/3}-and-up energy floor, or non-abelian
+Bourgain-Gamburd super-approximation -- so none supplies a b-sensitive proven sup-norm eigenvalue bound
+for the thin ABELIAN subgroup at index 2^128, beta=4; the closest hit (Kunisky) is index-2 and merely
+conjectural. Confirms the BGK-only-survivor foreclosure ledger is unbroken through 2026-07. Verdict:
+WALL STANDS, untouched by 2024-2026.
+
 ## [e2-w4-raw-noncollision-refuted] quotient-free width-4 `Cd₀NonCollision` is false on even domains (2026-06-27)
 
 Lane: #464 width-4 product-image/orbit scanner. The raw non-collision hypothesis

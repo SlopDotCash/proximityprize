@@ -1081,3 +1081,53 @@ no-go landscape. **CORE OPEN, ON-BGK. No fabricated closure.**
 comments, three independent digests), the in-tree substrate, the recovered #444 workstation branch,
 and independent re-verification. No fabricated closure; the core is carried as a named open
 `Prop`.</sub>
+
+---
+
+## 20. Round log — Round 10 (#466, 2026-07-04, Fable): two genuinely-new wall angles + a fresh literature sweep — all confirm the surface is exactly one object
+
+Plan: `deltastar-466-research-plan-round10-2026-07-04.md`. Essay:
+`deltastar-466-essay-round10-2026-07-04.md`. 3 lanes + 3 adversarial skeptics (7 agents), all verdicts
+CONFIRMED (severity minor). DISPROOF tags `466-r10-*`. This round attacked the LAST surface (the wall
+`W_r ≤ n^{2r}/p` at `r = β+1`) from two machineries checked absent from the 18k-line dead ledger, plus a
+2024–2026 sweep. **All three confirm: the wall stands, one object.**
+
+**(A) Automatic-sequence / substitutive Fourier analysis — REFUTED, but with a NEW observation.** The
+dyadic-root phase sequence `k ↦ e_p(b·ζ^k)` (2-adic digits of `k ∈ Z/2^μ`; Allouche–Shallit /
+Byszewski–Konieczny–Müllner Gowers-norm machinery). **New, previously-unrecorded fact:** the wraparound
+solution set IS genuinely 2-adic-digit **structured** (pairwise-valuation `v₂(kᵢ−kⱼ)` deviates from the
+digit-uniform null with χ²/dof in the hundreds–thousands; single-exponent popcount *exactly* uniform ⟹
+structure is JOINT not marginal) and is **not dilation-closed** (only `u=1` fixes the wrap set) — so it
+is NOT b-blind in the naive C1 sense. It dies three machine-checked ways anyway: (i) **count-neutral /
+b-summed** — the wrap set is the equal-sum locus, on which the character weight `χ_b(0)=1` for every `b`,
+so the structure is a property of the b-summed moment `E_r` and `W_r` already sits at/below its
+digit-uniform DC mean (`W_r/DC ∈ [0.13, 0.98]`), no total to save; (ii) **sign-unstable in p** (the
+deviation flips direction across primes, no fixed Gowers bias); (iii) **no μ-uniform automaton** (the
+2-kernel base `ζ^{2^i}` has multiplicative order `n/2^i` shrinking to 1, so automatic-sequence
+asymptotics do not apply — reconfirms [wf-NC/NC1]). Brick `_LaneAAutomaticBBlind.lean` (axiom-clean:
+`char_weight_trivial_on_solset`, `solset_count_is_b_summed`). Probe `probe_466r10_automatic.py` (exact
+enumeration, tuple-validated; skeptic re-derived every number via a disjoint char-0 convention).
+
+**(B) Transfer-operator / dynamical-zeta spectral gap — REFUTED as GAUGE.** The doubling-map `x↦x²`
+transfer operator on the dyadic tower, designed to beat the refuted naive √2-descent via a spectral gap.
+Every operator invariant factors through the coset-invariant magnitude multiset `{‖η_b‖}`, whose
+invariants are its power sums = the raw energy/moment ladder — so the spectrum is a reparameterization of
+the moments (the `todaTurnover_not_determined_by_invariants` gauge shape), and its leading eigenvalue is a
+bounded transient → the √2 mean-field rate forced by `M ~ √(n log m)` at fixed `log m` (regime-mute,
+cannot separate prize-true from BGK-tight). Gauge test passed (same low moments ⟹ same spectrum). Brick
+`_B_TransferOperatorGauge.lean` (4 axiom-clean thms). KB `deltastar-466-r10-laneB-*`.
+
+**(C) Literature 2024–2026 — CLEAR (zero survivors).** Every genuinely-new √-cancellation result lives on
+a structure the prize object lacks (Burgess intervals, function fields `F_q[t]`, the `p^{1/3}` energy
+floor, non-abelian Bourgain–Gamburd); the closest hit (Kunisky) is index-2 and conjectural. The
+BGK-only-survivor foreclosure ledger is unbroken through 2026-07. KB `deltastar-466-r10-laneC-*`.
+
+**═══ STATE after 10 rounds ═══** Unchanged and reconfirmed from a new direction: **the surviving open
+surface is EXACTLY ONE object, the wall `W_r ≤ n^{2r}/p` at `r = β+1`.** Both new machineries collapse to
+the *same* cause the Meta-Theorem names (b-summed / gauge second-order data). **The one honest Round-11
+candidate** is a genuine sub-question of the wall, not a new route: `JointPhaseFieldStructure` — does the
+**joint** `(η_b, η_{ζb})` phase field carry b-sensitive information at deep `r` that is invisible to every
+marginal-magnitude / moment functional? Round-10 lanes found the adjacent-coset joint *marginal-determined
+at r=2*; a round is warranted only if a deep-`r` joint statistic can be exhibited that is (a) not a
+function of the moment ladder and (b) b-sensitive. If it too collapses, that is another clean refutation —
+the expected outcome for this wall. **CORE OPEN, ON-BGK. No fabricated closure.**

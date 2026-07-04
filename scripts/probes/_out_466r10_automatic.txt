@@ -1,0 +1,443 @@
+LANE A #466r10 -- automatic-sequence / 2-adic-digit correlation of wraparound solutions.
+Test: are W_r wraparound tuples (k_1..k_2r in Z/2^mu) STRUCTURED in the 2-adic digits
+of the k_i (substitutive bound could bite), or DIGIT-UNIFORM (b-blind, angle dies)?
+numpy 2.4.4; exact enumeration; deterministic.
+chi2/dof > 3 flagged STRUCTURED; dilation-invariance = b-blindness (dead-ledger C1).
+
+######################################################################################################################
+### PRIMARY beta=4 (prize diagonal) -- documents W_r=0 at enumerable rungs
+######################################################################################################################
+
+======================================================================================================================
+mu=3 n=8  p=4129  m=516  v2(p-1)=5  beta_eff=4.004 (tgt 4.0)   r=2
+  E_r^(p)=168  Einf=168  W_r=0   (DC=n^2r/p=0.992)
+  ENUM CHECK: #all_sols=168 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=3 n=8  p=4129  m=516  v2(p-1)=5  beta_eff=4.004 (tgt 4.0)   r=3
+  E_r^(p)=5120  Einf=5120  W_r=0   (DC=n^2r/p=63.49)
+  ENUM CHECK: #all_sols=5120 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=3 n=8  p=4153  m=519  v2(p-1)=3  beta_eff=4.007 (tgt 4.0)   r=2
+  E_r^(p)=168  Einf=168  W_r=0   (DC=n^2r/p=0.9863)
+  ENUM CHECK: #all_sols=168 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=3 n=8  p=4153  m=519  v2(p-1)=3  beta_eff=4.007 (tgt 4.0)   r=3
+  E_r^(p)=5120  Einf=5120  W_r=0   (DC=n^2r/p=63.12)
+  ENUM CHECK: #all_sols=5120 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=4 n=16  p=65617  m=4101  v2(p-1)=4  beta_eff=4.000 (tgt 4.0)   r=2
+  E_r^(p)=720  Einf=720  W_r=0   (DC=n^2r/p=0.9988)
+  ENUM CHECK: #all_sols=720 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=4 n=16  p=65617  m=4101  v2(p-1)=4  beta_eff=4.000 (tgt 4.0)   r=3
+  E_r^(p)=50560  Einf=50560  W_r=0   (DC=n^2r/p=255.7)
+  ENUM CHECK: #all_sols=50560 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=4 n=16  p=65633  m=4102  v2(p-1)=5  beta_eff=4.001 (tgt 4.0)   r=2
+  E_r^(p)=720  Einf=720  W_r=0   (DC=n^2r/p=0.9985)
+  ENUM CHECK: #all_sols=720 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=4 n=16  p=65633  m=4102  v2(p-1)=5  beta_eff=4.001 (tgt 4.0)   r=3
+  E_r^(p)=50560  Einf=50560  W_r=0   (DC=n^2r/p=255.6)
+  ENUM CHECK: #all_sols=50560 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=5 n=32  p=1048609  m=32769  v2(p-1)=5  beta_eff=4.000 (tgt 4.0)   r=2
+  E_r^(p)=2976  Einf=2976  W_r=0   (DC=n^2r/p=1)
+  ENUM CHECK: #all_sols=2976 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=5 n=32  p=1048897  m=32778  v2(p-1)=6  beta_eff=4.000 (tgt 4.0)   r=2
+  E_r^(p)=2976  Einf=2976  W_r=0   (DC=n^2r/p=0.9997)
+  ENUM CHECK: #all_sols=2976 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+######################################################################################################################
+### WRAPAROUND-BEARING regime (smaller beta so W_r>0 at enumerable rungs)
+### -- STRUCTURAL probe of the wraparound object.  NOT prize-diagonal evidence; the
+### question (is the wraparound solution set 2-adic-digit-structured?) is QUALITATIVE
+### and beta-stable -- beta only sets which rung wraparound onsets at.  We sweep beta
+### up to ~3 across TWO octaves (n=8, n=16) to check the verdict is beta-robust.
+######################################################################################################################
+
+----------------------------------------------------------------------
+-- octave 1: n=8, r=3 --
+----------------------------------------------------------------------
+
+======================================================================================================================
+mu=3 n=8  p=17  m=2  v2(p-1)=4  beta_eff=1.362 (tgt 1.3624876137501134)  **GF**   r=3
+  E_r^(p)=15560  Einf=5120  W_r=10440   (DC=n^2r/p=1.542e+04)
+  ENUM CHECK: #all_sols=15560 (==E_r? True)  #wrap=10440 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=   773.44 dof= 3 chi2/dof= 257.81 maxdev= 2.11%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 3 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=   660.81 dof= 3 chi2/dof= 220.27 maxdev= 2.11%  -> STRUCTURED
+    S3_and      : chi2=   153.04 dof= 3 chi2/dof=  51.01 maxdev= 0.87%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=156600):
+       v2= 0        : obs=  80400 (51.34%)  null=  78300.0 (50.00%)
+       v2= 1        : obs=  41280 (26.36%)  null=  39150.0 (25.00%)
+       v2= 2        : obs=  18648 (11.91%)  null=  19575.0 (12.50%)
+       v2= 3(equal) : obs=  16272 (10.39%)  null=  19575.0 (12.50%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/4   -> NOT dilation-invariant (1/4)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.6770  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=3 n=8  p=41  m=5  v2(p-1)=3  beta_eff=1.786 (tgt 1.7858506682060282)   r=3
+  E_r^(p)=8240  Einf=5120  W_r=3120   (DC=n^2r/p=6394)
+  ENUM CHECK: #all_sols=8240 (==E_r? True)  #wrap=3120 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=  1625.85 dof= 3 chi2/dof= 541.95 maxdev= 5.51%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 3 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=   246.56 dof= 3 chi2/dof=  82.19 maxdev= 2.76%  -> STRUCTURED
+    S3_and      : chi2=    64.59 dof= 3 chi2/dof=  21.53 maxdev= 1.16%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=46800):
+       v2= 0        : obs=  22800 (48.72%)  null=  23400.0 (50.00%)
+       v2= 1        : obs=   9120 (19.49%)  null=  11700.0 (25.00%)
+       v2= 2        : obs=   8160 (17.44%)  null=   5850.0 (12.50%)
+       v2= 3(equal) : obs=   6720 (14.36%)  null=   5850.0 (12.50%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/4   -> NOT dilation-invariant (1/4)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.4880  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=3 n=8  p=73  m=9  v2(p-1)=3  beta_eff=2.063 (tgt 2.063274852960006)   r=3
+  E_r^(p)=5600  Einf=5120  W_r=480   (DC=n^2r/p=3591)
+  ENUM CHECK: #all_sols=5600 (==E_r? True)  #wrap=480 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=  1137.92 dof= 3 chi2/dof= 379.31 maxdev=16.67%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 3 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=   270.08 dof= 3 chi2/dof=  90.03 maxdev= 8.50%  -> STRUCTURED
+    S3_and      : chi2=    43.28 dof= 3 chi2/dof=  14.43 maxdev= 3.52%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=7200):
+       v2= 0        : obs=   2400 (33.33%)  null=   3600.0 (50.00%)
+       v2= 1        : obs=   2880 (40.00%)  null=   1800.0 (25.00%)
+       v2= 2        : obs=   1152 (16.00%)  null=    900.0 (12.50%)
+       v2= 3(equal) : obs=    768 (10.67%)  null=    900.0 (12.50%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/4   -> NOT dilation-invariant (1/4)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.1337  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=3 n=8  p=89  m=11  v2(p-1)=3  beta_eff=2.159 (tgt 2.1585778103221327)   r=3
+  E_r^(p)=5600  Einf=5120  W_r=480   (DC=n^2r/p=2945)
+  ENUM CHECK: #all_sols=5600 (==E_r? True)  #wrap=480 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=   625.92 dof= 3 chi2/dof= 208.64 maxdev=11.67%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 3 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=    56.75 dof= 3 chi2/dof=  18.92 maxdev= 2.50%  -> STRUCTURED
+    S3_and      : chi2=    16.17 dof= 3 chi2/dof=   5.39 maxdev= 2.15%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=7200):
+       v2= 0        : obs=   4320 (60.00%)  null=   3600.0 (50.00%)
+       v2= 1        : obs=    960 (13.33%)  null=   1800.0 (25.00%)
+       v2= 2        : obs=   1152 (16.00%)  null=    900.0 (12.50%)
+       v2= 3(equal) : obs=    768 (10.67%)  null=    900.0 (12.50%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/4   -> NOT dilation-invariant (1/4)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.1630  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=3 n=8  p=97  m=12  v2(p-1)=5  beta_eff=2.200 (tgt 2.1999709473957094)   r=3
+  E_r^(p)=5600  Einf=5120  W_r=480   (DC=n^2r/p=2703)
+  ENUM CHECK: #all_sols=5600 (==E_r? True)  #wrap=480 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=  1137.92 dof= 3 chi2/dof= 379.31 maxdev=16.67%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 3 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=   220.59 dof= 3 chi2/dof=  73.53 maxdev= 7.17%  -> STRUCTURED
+    S3_and      : chi2=    35.13 dof= 3 chi2/dof=  11.71 maxdev= 3.19%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=7200):
+       v2= 0        : obs=   2400 (33.33%)  null=   3600.0 (50.00%)
+       v2= 1        : obs=   2880 (40.00%)  null=   1800.0 (25.00%)
+       v2= 2        : obs=   1152 (16.00%)  null=    900.0 (12.50%)
+       v2= 3(equal) : obs=    768 (10.67%)  null=    900.0 (12.50%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/4   -> NOT dilation-invariant (1/4)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.1776  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=3 n=8  p=113  m=14  v2(p-1)=4  beta_eff=2.273 (tgt 2.2733929874717296)   r=3
+  E_r^(p)=5120  Einf=5120  W_r=0   (DC=n^2r/p=2320)
+  ENUM CHECK: #all_sols=5120 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+----------------------------------------------------------------------
+-- octave 2: n=16, r=3 --
+----------------------------------------------------------------------
+
+======================================================================================================================
+mu=4 n=16  p=97  m=6  v2(p-1)=5  beta_eff=1.650 (tgt 1.649978210546782)   r=3
+  E_r^(p)=191680  Einf=50560  W_r=141120   (DC=n^2r/p=1.73e+05)
+  ENUM CHECK: #all_sols=191680 (==E_r? True)  #wrap=141120 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2= 10129.95 dof= 4 chi2/dof=2532.49 maxdev= 1.42%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 4 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=  6763.07 dof= 4 chi2/dof=1690.77 maxdev= 1.24%  -> STRUCTURED
+    S3_and      : chi2=  1466.78 dof= 4 chi2/dof= 366.69 maxdev= 0.53%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=2116800):
+       v2= 0        : obs=1065120 (50.32%)  null=1058400.0 (50.00%)
+       v2= 1        : obs= 559200 (26.42%)  null= 529200.0 (25.00%)
+       v2= 2        : obs= 273600 (12.93%)  null= 264600.0 (12.50%)
+       v2= 3        : obs= 112896 ( 5.33%)  null= 132300.0 ( 6.25%)
+       v2= 4(equal) : obs= 105984 ( 5.01%)  null= 132300.0 ( 6.25%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/8   -> NOT dilation-invariant (1/8)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.8159  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=4 n=16  p=113  m=7  v2(p-1)=4  beta_eff=1.705 (tgt 1.7050447406037972)   r=3
+  E_r^(p)=173440  Einf=50560  W_r=122880   (DC=n^2r/p=1.485e+05)
+  ENUM CHECK: #all_sols=173440 (==E_r? True)  #wrap=122880 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=  9543.24 dof= 4 chi2/dof=2385.81 maxdev= 2.14%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 4 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=  1762.73 dof= 4 chi2/dof= 440.68 maxdev= 1.14%  -> STRUCTURED
+    S3_and      : chi2=   415.31 dof= 4 chi2/dof= 103.83 maxdev= 0.58%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=1843200):
+       v2= 0        : obs= 960960 (52.14%)  null= 921600.0 (50.00%)
+       v2= 1        : obs= 451200 (24.48%)  null= 460800.0 (25.00%)
+       v2= 2        : obs= 191040 (10.36%)  null= 230400.0 (12.50%)
+       v2= 3        : obs= 125568 ( 6.81%)  null= 115200.0 ( 6.25%)
+       v2= 4(equal) : obs= 114432 ( 6.21%)  null= 115200.0 ( 6.25%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/8   -> NOT dilation-invariant (1/8)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.8276  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=4 n=16  p=193  m=12  v2(p-1)=6  beta_eff=1.898 (tgt 1.8981142593170202)   r=3
+  E_r^(p)=104800  Einf=50560  W_r=54240   (DC=n^2r/p=8.693e+04)
+  ENUM CHECK: #all_sols=104800 (==E_r? True)  #wrap=54240 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=  6108.58 dof= 4 chi2/dof=1527.14 maxdev= 2.49%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 4 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=  2013.11 dof= 4 chi2/dof= 503.28 maxdev= 1.20%  -> STRUCTURED
+    S3_and      : chi2=   257.83 dof= 4 chi2/dof=  64.46 maxdev= 0.25%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=813600):
+       v2= 0        : obs= 407520 (50.09%)  null= 406800.0 (50.00%)
+       v2= 1        : obs= 223680 (27.49%)  null= 203400.0 (25.00%)
+       v2= 2        : obs=  87360 (10.74%)  null= 101700.0 (12.50%)
+       v2= 3        : obs=  53952 ( 6.63%)  null=  50850.0 ( 6.25%)
+       v2= 4(equal) : obs=  41088 ( 5.05%)  null=  50850.0 ( 6.25%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/8   -> NOT dilation-invariant (1/8)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.6240  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=4 n=16  p=241  m=15  v2(p-1)=4  beta_eff=1.978 (tgt 1.9782223340574905)   r=3
+  E_r^(p)=85600  Einf=50560  W_r=35040   (DC=n^2r/p=6.962e+04)
+  ENUM CHECK: #all_sols=85600 (==E_r? True)  #wrap=35040 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2=  7946.64 dof= 4 chi2/dof=1986.66 maxdev= 2.67%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 4 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=  6584.18 dof= 4 chi2/dof=1646.04 maxdev= 2.67%  -> STRUCTURED
+    S3_and      : chi2=  1115.17 dof= 4 chi2/dof= 278.79 maxdev= 0.79%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=525600):
+       v2= 0        : obs= 265920 (50.59%)  null= 262800.0 (50.00%)
+       v2= 1        : obs= 143040 (27.21%)  null= 131400.0 (25.00%)
+       v2= 2        : obs=  69600 (13.24%)  null=  65700.0 (12.50%)
+       v2= 3        : obs=  28224 ( 5.37%)  null=  32850.0 ( 6.25%)
+       v2= 4(equal) : obs=  18816 ( 3.58%)  null=  32850.0 ( 6.25%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/8   -> NOT dilation-invariant (1/8)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.5033  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+======================================================================================================================
+mu=4 n=16  p=257  m=16  v2(p-1)=8  beta_eff=2.001 (tgt 2.0014061372984697)  **GF**   r=3
+  E_r^(p)=109840  Einf=50560  W_r=59280   (DC=n^2r/p=6.528e+04)
+  ENUM CHECK: #all_sols=109840 (==E_r? True)  #wrap=59280 (==W_r? True)  OK
+
+  --- 2-adic digit statistics of WRAPAROUND solutions vs digit-uniform null ---
+    S1_v2diff   : chi2= 14877.47 dof= 4 chi2/dof=3719.37 maxdev= 3.11%  -> STRUCTURED
+    S2_popcount : chi2=     0.00 dof= 4 chi2/dof=   0.00 maxdev= 0.00%  -> uniform
+    S3_xor      : chi2=  3902.60 dof= 4 chi2/dof= 975.65 maxdev= 1.74%  -> STRUCTURED
+    S3_and      : chi2=   292.65 dof= 4 chi2/dof=  73.16 maxdev= 0.52%  -> STRUCTURED
+    S1 raw (v2 of k_i-k_j; total pairs=889200):
+       v2= 0        : obs= 450720 (50.69%)  null= 444600.0 (50.00%)
+       v2= 1        : obs= 216000 (24.29%)  null= 222300.0 (25.00%)
+       v2= 2        : obs=  83520 ( 9.39%)  null= 111150.0 (12.50%)
+       v2= 3        : obs=  74160 ( 8.34%)  null=  55575.0 ( 6.25%)
+       v2= 4(equal) : obs=  64800 ( 7.29%)  null=  55575.0 ( 6.25%)
+
+  --- dilation (odd-unit k->u*k) invariance of the WRAPAROUND solution set ---
+    #odd units u with (u*.)-image == wrap-set: 1/8   -> NOT dilation-invariant (1/8)
+
+  --- exploitability diagnostics ---
+    W_r/DC = 0.9081  (wall W_r<=n^2r/p: HOLDS) -- the COUNT already sits at/below its digit-uniform mean; the digit structure re-partitions
+    a total that is ALREADY <= mean-field, so a uniformity bound has no total left to save.
+    per-frequency weight e_p(b*(sumL x - sumR x)) on the solution set: sumL x - sumR x == 0 mod p for ALL wrap tuples: True
+    => e_p(b*0)=1 for EVERY b: the digit structure is IDENTICAL across all frequencies b (b-blind); it is a property of the b-SUMMED moment E_r, not of any single |eta_b|.
+
+######################################################################################################################
+### FLAGGED generalized-Fermat contrast (does resonant prime change digit structure?)
+######################################################################################################################
+
+======================================================================================================================
+mu=4 n=16  p=65537  m=4096  v2(p-1)=16  beta_eff=4.000 (tgt 4.0)  **GF**   r=2
+  E_r^(p)=720  Einf=720  W_r=0   (DC=n^2r/p=1)
+  ENUM CHECK: #all_sols=720 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+======================================================================================================================
+mu=4 n=16  p=65537  m=4096  v2(p-1)=16  beta_eff=4.000 (tgt 4.0)  **GF**   r=3
+  E_r^(p)=50560  Einf=50560  W_r=0   (DC=n^2r/p=256)
+  ENUM CHECK: #all_sols=50560 (==E_r? True)  #wrap=0 (==W_r? True)  OK
+  (W_r = 0 at this rung -- no wraparound solutions to test; skipping stats)
+
+######################################################################################################################
+### TASK 1: automaticity of the phase sequence k -> zeta^k mod p
+######################################################################################################################
+A 2-automatic sequence (Allouche-Shallit) has a FIXED finite automaton: a mu-INDEPENDENT
+finite output alphabet AND a mu-independent finite 2-kernel {a(2^i k + j)}.  BKM-type
+Gowers-norm / correlation bounds for automatic sequences are asymptotic in the LENGTH and
+REQUIRE this fixed-automaton (mu-uniform) structure.  We test it for a(k)=zeta^k mod p:
+
+  mu=3 n=8 p=521: doubling law a(2k)=a(k)^2 mod p holds: True
+    output alphabet size = n = 2^mu = 8  (GROWS with mu -- not a fixed alphabet)
+    2-kernel level i base = zeta^(2^i), multiplicative order n/2^i = [8, 4, 2, 1, 1]
+
+  mu=4 n=16 p=4129: doubling law a(2k)=a(k)^2 mod p holds: True
+    output alphabet size = n = 2^mu = 16  (GROWS with mu -- not a fixed alphabet)
+    2-kernel level i base = zeta^(2^i), multiplicative order n/2^i = [16, 8, 4, 2, 1, 1]
+
+  mu=5 n=32 p=32801: doubling law a(2k)=a(k)^2 mod p holds: True
+    output alphabet size = n = 2^mu = 32  (GROWS with mu -- not a fixed alphabet)
+    2-kernel level i base = zeta^(2^i), multiplicative order n/2^i = [32, 16, 8, 4, 2, 1, 1]
+
+  VERDICT (Task 1): k -> zeta^k mod p obeys the doubling law a(2k)=a(k)^2, but this is the
+  SQUARING map on F_p^* -- NOT a bounded-state finite-automaton output.  The 2-kernel is the
+  set of d-th-power-twisted copies zeta^j*(zeta^{2^i})^k whose base root has order n/2^i,
+  SHRINKING with i and living on different subgroups; there is no mu-uniform finite automaton.
+  Hence the sequence is 2-automatic only TRIVIALLY per fixed mu (every finite sequence is),
+  NOT uniformly in mu.  Automatic-sequence asymptotics (BKM Gowers bounds) need the uniform
+  fixed-automaton structure -> STRUCTURALLY ABSENT.  (Matches dead-ledger [wf-NC / NC1]: the
+  dyadic digit-sum handle is structurally absent for q prime, f=1.)
+
+######################################################################################################################
+### LANE A VERDICT
+######################################################################################################################
+
+FINDINGS.
+1. GROUND TRUTH: exact enumeration of the wraparound solution set reproduces W_r = E_r^(p) - E_inf
+   from the independent level-count engine at every (n,p,r) -- the enumerator is validated.
+2. At the PRIZE diagonal beta=4, W_r = 0 for all enumerable rungs r<=3 (onset r0=5); there are NO
+   wraparound solutions to test.  The digit-structure question is therefore probed in a wraparound-
+   BEARING regime (beta<=3), which is QUALITATIVE about the wraparound object and beta-stable.
+3. The wraparound solutions ARE strongly 2-adic-digit STRUCTURED, robustly across both octaves and
+   all primes: the pairwise-exponent valuation statistic S1 = v_2(k_i - k_j) has chi2/dof in the
+   hundreds-to-thousands vs the digit-uniform null (NOT b-blind in the naive C1 sense: the wrap set
+   is NOT closed under the odd-unit dilation k->u*k).  The single-exponent popcount S2 is EXACTLY
+   uniform (chi2/dof = 0) -- the structure is JOINT, not marginal.
+
+WHY THE ANGLE COLLAPSES ANYWAY (three independent, decisive mechanisms).
+(A) STRUCTURE IS COUNT-NEUTRAL.  The total W_r already sits AT/BELOW its digit-uniform DC mean
+    n^{2r}/p at every point (W_r/DC in [0.49,0.98]; the wall inequality already HOLDS empirically).
+    The digit structure is an INTERNAL re-partition of a count that is already <= mean-field.  A
+    substitutive/Gowers UNIFORMITY bound can only push a count TOWARD the null it already matches --
+    there is no total left to save.  The observed structure is a bias in HOW the (sub-mean) mass is
+    distributed among digit-classes, not an excess to be suppressed.
+(B) SIGN-UNSTABLE, NO FIXED DIRECTION.  The deviation direction flips with p (e.g. the v_2=2 class is
+    depleted at beta=2.0, enhanced at beta=2.1, empty at beta=3.0).  A Gowers/correlation bound needs
+    a FIXED-direction bias to convert into a uniform count bound; a p-dependent sign averages out and
+    yields no uniform saving.
+(C) b-BLIND AT THE OPERATIVE LEVEL.  On the wraparound solution set, sum_L x - sum_R x == 0 mod p
+    EXACTLY, so the per-frequency weight e_p(b*(sum_L - sum_R)) = 1 for EVERY b.  The digit structure
+    is thus IDENTICAL across all frequencies -- it is a property of the b-SUMMED moment E_r, not of any
+    single |eta_b|.  (This is the C1/Meta-Theorem b-blindness in its exact form for this object.)
+
+WHY THE TOOL DOES NOT APPLY (Task 1).  k -> zeta^k mod p is NOT 2-automatic in a mu-uniform sense:
+    the 2-kernel {zeta^j (zeta^{2^i})^k} has base root of order n/2^i (shrinking), so no fixed finite
+    automaton exists; automatic-sequence asymptotics need exactly that fixed automaton.  (Reconfirms
+    dead-ledger [wf-NC / NC1]: the dyadic digit-sum handle is structurally absent for q prime.)
+
+DEAD-LEDGER RELATION (Task 3).  This is a NEW statistic (exponent-side 2-adic digit correlation of the
+    wraparound solution SET) not identical to the phase-set small-ball family [door-iv-phaseset-*-b-blind]
+    (those act on the residue set {b*x^m}; ours acts on exponents k in Z/2^mu).  BUT it collapses by the
+    SAME deep cause: the object is the b-summed moment, so any statistic of it is b-blind, and the count
+    already matches mean-field.  It is ALSO a re-skin of the "new-math relocation" pattern (BKM automatic
+    machinery) whose transfer is absent (Task 1).  NOT a crack.
+
+VERDICT: GAP-IDENTIFIED / REFUTED.  The dyadic-root phase sequence carries genuine, robust 2-adic
+    digit structure in the wraparound solution set (a real and previously-unrecorded observation), but
+    that structure is count-neutral, sign-unstable, and b-blind, and the automatic-sequence tool that
+    could in principle exploit it does not apply (no mu-uniform automaton).  The wall stands; Lane A dies.
+
+
+[total runtime 14.9s]
