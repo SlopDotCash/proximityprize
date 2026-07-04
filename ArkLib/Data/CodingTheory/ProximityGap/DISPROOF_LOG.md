@@ -1,3 +1,55 @@
+## [466-r11-jointphase-collinear-gauge] the joint tower phase field collapses to magnitudes at ALL depths — collinearity closes the last sub-thread (2026-07-04, #466 round 11)
+
+Lane: round-11 attack on JointPhaseFieldStructure, the ONE sub-thread round 10 declined to foreclose
+(dossier §21). QUESTION: does the joint two-frequency tower phase field (eta_b, eta_{zeta b}) — equivalently
+the two tower half-periods A_b = eta_b(mu_{n/2}), B_b = eta_{zeta b}(mu_{n/2}), A_b+B_b = eta_b(mu_n) — carry
+b-sensitive, moment-transcendent information at deep r that escapes the Meta-Theorem 2nd-order cap? NO.
+DECISIVE (probe_466r11_jointphase_v3.py, proper mu_n ⊊ F_p^×, p≥n^4, p≡1 mod n, ≥2 primes distinct v2(p-1),
+n=8,16,32, full coset scan, scanner validated |A+B−eta|<1e-12): A_b and B_b are EXACTLY COLLINEAR for every
+coset b (max_b |sin(arg B_b − arg A_b)| < 3e-11), because their index sets are negation-closed for 4|n
+(the periods are real up to a global phase) — this is the logged `eta_real_of_neg_closed` /
+[door-iv-common-ray-coherence] fact, here UPGRADED from the worst frequency b* to ALL b, and from r=2 to
+ALL r. Collinearity ⟹ the joint is 1-real-dimensional per coset; its only phase content is a sign bit
+s_b = (|eta_b|² − |A_b|² − |B_b|²)/(2|A_b||B_b|) that is an ALGEBRAIC FUNCTION OF THE THREE MAGNITUDES
+(0 mismatches over 500–33000 cosets/prime), so the joint pair reconstructs from (|eta_b|,|A_b|,|B_b|) alone
+and every joint moment is a symmetric function of the magnitude multiset = the moment ladder (GAUGE). The
+apparent v1 "joint-vs-marginal gap grows with r" is the trivial magnitude inequality ||a|±|b|| vs sqrt(a²+b²)
+with s fixed algebraically — ZERO residual phase at any depth. This UPGRADES [doorIV-joint-field-white]
+(2nd-order cross-covariance = marginal variance) to all r: per coset the problem is 1-real-dimensional, so no
+depth admits a 2nd-order-transcendent phase invariant. Brick `_JointPhaseCollinearGauge.lean` (5 axiom-clean
+thms: collinear_normSq_eq, cross_eq_sign_mul, sign_algebraic_from_magnitudes, joint_reconstructed_from_magnitudes,
+joint_gauge_all_depths — abstract model proving GIVEN collinearity the joint reduces to magnitudes at every
+depth; collinearity itself established numerically per campaign convention). Skeptic re-ran the probe (0/33000
+mismatches reproduced), pg-iterated the brick (axiom-clean confirmed), and independently verified A_b is real
+to 1e-15 (even-power index set negation-closed) — confirming this is a robust rediscovery of a logged reality
+fact, not a delicate signal. Verdict: LAST SUB-THREAD CLOSED; surviving surface unchanged = the wall
+W_r ≤ n^{2r}/p. Residue (refutable, expected-vacuous): only a sub-tower level whose sub-subgroup were NOT
+negation-closed could give a genuine 2-D joint phase — but every dyadic level is negation-closed at the prize
+(−1 = h^{n/2} ∈ mu_{n/2} for 4|n), so the escape is vacuous at the prize regime.
+
+## [466-r11-tetrachotomy-holds-no-fifth-door] the Tetrachotomy holds: every candidate fifth-door escape reduces to a dead branch (2026-07-04, #466 round 11)
+
+Lane: round-11 completeness scout — is JointPhaseFieldStructure REALLY the only unforeclosed direction, or
+did 10 rounds miss a genuinely-new angle? (dossier §21). Systematic stress-test of the "no fifth door"
+claim (dossier §4.2) across model-theoretic/o-minimal, condensed/perfectoid/prismatic/p-adic-Hodge,
+motivic/determinantal, operator-algebraic/free-probability, random-matrix-universality-beyond-moments, and
+information-theoretic candidates. VERDICT: TETRACHOTOMY HOLDS, 0 survivors — the campaign had already run a
+T01-T25 sweep (24 invented escape-theorems in 5 clusters: sheaf/Deligne, adelic/Arakelov, info-functionals,
+post-2020 additive-combinatorics PFR/Sanders/BSG, dynamical/operator-algebraic/motivic) + 84 prior escapes,
+all dead. UNIFYING CATEGORY OBSTRUCTION (the deep reason): every p-adic / cohomological / model-theoretic /
+spectral-invariant functor lands in a target with NO ARCHIMEDEAN PLACE (or a signed / mean-zero object),
+whereas W_r is an UNSIGNED ARCHIMEDEAN MODULUS — so each candidate either sign-reverses, rank-collapses to
+the rank-n second moment, or needs an even moment, landing back in doors (i) AG / (iii) harmonic / (iv)
+moments. The naive third-order avatar T3 = eta_b² · conj(eta_{zeta b}) collapses even more cleanly:
+|T3| = |eta_b|²·|eta_{zeta b}| IDENTICALLY (magnitude = marginal product, resid_frac = 0 exactly), only a
+mean-zero sign that cancels under the coset sum. Skeptic caught and self-corrected one interpretation
+artifact (the r0(T3)=0.999 "b-sensitivity" is the trivial random-sign-scale artifact, not genuine content —
+control with a pure random-sign object reproduces it). Final refutable residue `UnsignedJointInvariant`:
+"there exists a b-sensitive UNSIGNED functional of the joint phase field at prize depth not a function of the
+|eta_b|-multiset" — stated as the negation of the final conceivable escape; round-11 data supports the
+standing conjecture that NO such object exists (a "universal b-summed collapse"). Verdict: cartography
+COMPLETE — the wall is the sole irreducible open core, every approach decided.
+
 ## [466-r10-automatic-sequence-bblind] the dyadic-root phase sequence's 2-adic digit structure is real but b-blind (2026-07-04, #466 round 10)
 
 Lane: round-10 new angle on the wall W_r <= n^{2r}/p (dossier §20). Automatic-sequence / substitutive

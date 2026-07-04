@@ -1,0 +1,75 @@
+probe_466r11_jointphase_v2.py -- deep interrogation of the collinearity + depth-gap artifacts
+
+================================================================================
+n=8  primes=[4129, 4153, 4177, 4201, 4217, 4241]  v2=[5, 3, 4, 3, 3, 4]
+================================================================================
+  p=      4129 v2=5: |sin delta|max=2.18e-13 (collinear if ~0)  frac(s=+1)=0.4922
+      |A+B| vs (|A|+|B|): errSame=7.359  vs signed:err=0.00e+00  corr(s,|eta|)=+0.567
+      P_r/SameRay_r (r=1..6): 0.6030 0.5276 0.5051 0.4969 0.4923 0.4883
+  p=      4153 v2=3: |sin delta|max=1.60e-12 (collinear if ~0)  frac(s=+1)=0.4952
+      |A+B| vs (|A|+|B|): errSame=7.578  vs signed:err=0.00e+00  corr(s,|eta|)=+0.581
+      P_r/SameRay_r (r=1..6): 0.6030 0.5277 0.5051 0.4969 0.4923 0.4883
+  p=      4177 v2=4: |sin delta|max=1.08e-12 (collinear if ~0)  frac(s=+1)=0.4981
+      |A+B| vs (|A|+|B|): errSame=7.403  vs signed:err=0.00e+00  corr(s,|eta|)=+0.577
+      P_r/SameRay_r (r=1..6): 0.6032 0.5276 0.5052 0.4970 0.4924 0.4884
+  p=      4201 v2=3: |sin delta|max=5.71e-13 (collinear if ~0)  frac(s=+1)=0.4857
+      |A+B| vs (|A|+|B|): errSame=7.465  vs signed:err=0.00e+00  corr(s,|eta|)=+0.596
+      P_r/SameRay_r (r=1..6): 0.6030 0.5277 0.5051 0.4969 0.4924 0.4885
+  p=      4217 v2=3: |sin delta|max=2.27e-13 (collinear if ~0)  frac(s=+1)=0.5104
+      |A+B| vs (|A|+|B|): errSame=7.442  vs signed:err=0.00e+00  corr(s,|eta|)=+0.561
+      P_r/SameRay_r (r=1..6): 0.6030 0.5277 0.5052 0.4970 0.4924 0.4885
+  p=      4241 v2=4: |sin delta|max=1.32e-13 (collinear if ~0)  frac(s=+1)=0.4943
+      |A+B| vs (|A|+|B|): errSame=7.659  vs signed:err=0.00e+00  corr(s,|eta|)=+0.588
+      P_r/SameRay_r (r=1..6): 0.6030 0.5277 0.5052 0.4970 0.4925 0.4886
+
+================================================================================
+n=16  primes=[65537, 65617, 65633, 65713, 65729, 65761]  v2=[16, 4, 5, 4, 6, 5]
+================================================================================
+  p=     65537 v2=16: |sin delta|max=3.35e-13 (collinear if ~0)  frac(s=+1)=0.4993
+      |A+B| vs (|A|+|B|): errSame=12.441  vs signed:err=0.00e+00  corr(s,|eta|)=+0.575
+      P_r/SameRay_r (r=1..6): 0.6046 0.5347 0.5115 0.5015 0.4959 0.4917
+  p=     65617 v2=4: |sin delta|max=9.07e-13 (collinear if ~0)  frac(s=+1)=0.4979
+      |A+B| vs (|A|+|B|): errSame=12.886  vs signed:err=0.00e+00  corr(s,|eta|)=+0.584
+      P_r/SameRay_r (r=1..6): 0.6039 0.5331 0.5102 0.5003 0.4930 0.4842
+  p=     65633 v2=5: |sin delta|max=7.55e-13 (collinear if ~0)  frac(s=+1)=0.5049
+      |A+B| vs (|A|+|B|): errSame=12.938  vs signed:err=0.00e+00  corr(s,|eta|)=+0.574
+      P_r/SameRay_r (r=1..6): 0.6040 0.5331 0.5101 0.5002 0.4953 0.4945
+  p=     65713 v2=4: |sin delta|max=2.55e-13 (collinear if ~0)  frac(s=+1)=0.5038
+      |A+B| vs (|A|+|B|): errSame=12.800  vs signed:err=0.00e+00  corr(s,|eta|)=+0.574
+      P_r/SameRay_r (r=1..6): 0.6040 0.5331 0.5100 0.5001 0.4929 0.4835
+  p=     65729 v2=6: |sin delta|max=3.12e-12 (collinear if ~0)  frac(s=+1)=0.4912
+      |A+B| vs (|A|+|B|): errSame=12.579  vs signed:err=0.00e+00  corr(s,|eta|)=+0.578
+      P_r/SameRay_r (r=1..6): 0.6038 0.5331 0.5103 0.5004 0.4946 0.4910
+  p=     65761 v2=5: |sin delta|max=2.26e-13 (collinear if ~0)  frac(s=+1)=0.4966
+      |A+B| vs (|A|+|B|): errSame=12.896  vs signed:err=0.00e+00  corr(s,|eta|)=+0.578
+      P_r/SameRay_r (r=1..6): 0.6039 0.5334 0.5104 0.5004 0.4936 0.4865
+
+================================================================================
+n=32  primes=[1048609, 1048897, 1049057, 1049089, 1049281, 1049473]  v2=[5, 6, 5, 9, 6, 7]
+================================================================================
+  p=   1048609 v2=5: |sin delta|max=1.62e-11 (collinear if ~0)  frac(s=+1)=0.4979
+      |A+B| vs (|A|+|B|): errSame=21.519  vs signed:err=0.00e+00  corr(s,|eta|)=+0.566
+      P_r/SameRay_r (r=1..6): 0.6073 0.5369 0.5134 0.5060 0.5070 0.5128
+  p=   1048897 v2=6: |sin delta|max=6.74e-12 (collinear if ~0)  frac(s=+1)=0.5021
+      |A+B| vs (|A|+|B|): errSame=22.921  vs signed:err=0.00e+00  corr(s,|eta|)=+0.557
+      P_r/SameRay_r (r=1..6): 0.6074 0.5370 0.5135 0.5025 0.4945 0.4857
+  p=   1049057 v2=5: |sin delta|max=2.53e-12 (collinear if ~0)  frac(s=+1)=0.5005
+      |A+B| vs (|A|+|B|): errSame=23.031  vs signed:err=0.00e+00  corr(s,|eta|)=+0.558
+      P_r/SameRay_r (r=1..6): 0.6073 0.5367 0.5133 0.5024 0.4917 0.4748
+  p=   1049089 v2=9: |sin delta|max=3.16e-12 (collinear if ~0)  frac(s=+1)=0.5023
+      |A+B| vs (|A|+|B|): errSame=22.014  vs signed:err=0.00e+00  corr(s,|eta|)=+0.559
+      P_r/SameRay_r (r=1..6): 0.6074 0.5370 0.5136 0.5027 0.4947 0.4869
+  p=   1049281 v2=6: |sin delta|max=7.04e-12 (collinear if ~0)  frac(s=+1)=0.5020
+      |A+B| vs (|A|+|B|): errSame=22.743  vs signed:err=0.00e+00  corr(s,|eta|)=+0.562
+      P_r/SameRay_r (r=1..6): 0.6072 0.5364 0.5130 0.5058 0.5078 0.5170
+  p=   1049473 v2=7: |sin delta|max=6.13e-12 (collinear if ~0)  frac(s=+1)=0.4988
+      |A+B| vs (|A|+|B|): errSame=21.641  vs signed:err=0.00e+00  corr(s,|eta|)=+0.563
+      P_r/SameRay_r (r=1..6): 0.6070 0.5369 0.5135 0.5062 0.5068 0.5113
+
+================================================================================
+READ: if |sin delta|~0 => A,B collinear (only a SIGN bit of phase). If frac(s=+1)=1 =>
+|A+B|=|A|+|B| pure magnitude => FULL GAUGE (v1 depth-gap was the trivial (|A|+|B|)^2 vs
+|A|^2+|B|^2 magnitude inequality, NO phase content). If frac(s=+1)!=1, the sign field is the
+only joint content: test its b-sensitivity (corr with |eta|) and whether P_r/SameRay ->1
+(sign washes out at depth) or deviates (sign carries deep info).
+================================================================================

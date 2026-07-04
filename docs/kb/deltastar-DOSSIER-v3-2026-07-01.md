@@ -1131,3 +1131,53 @@ marginal-magnitude / moment functional? Round-10 lanes found the adjacent-coset 
 at r=2*; a round is warranted only if a deep-`r` joint statistic can be exhibited that is (a) not a
 function of the moment ladder and (b) b-sensitive. If it too collapses, that is another clean refutation —
 the expected outcome for this wall. **CORE OPEN, ON-BGK. No fabricated closure.**
+
+---
+
+## 21. Round log — Round 11 (#466, 2026-07-04, Fable): the last sub-thread closed; the no-go cartography is COMPLETE
+
+Plan: attack the ONE sub-thread round 10 declined to foreclose (`JointPhaseFieldStructure`) + a
+completeness scout stress-testing the Tetrachotomy. Essay: `deltastar-466-essay-round11-2026-07-04.md`.
+2 lanes + 2 adversarial skeptics (5 agents), both verdicts CONFIRMED (severity minor). DISPROOF `466-r11-*`.
+
+**(A) JointPhaseFieldStructure — REFUTED, COLLAPSES at ALL depths (the last sub-thread closed).** The joint
+two-frequency tower field `(η_b, η_{ζb})` — the two tower half-periods `A_b = η_b(μ_{n/2})`,
+`B_b = η_{ζb}(μ_{n/2})`, `A_b + B_b = η_b(μ_n)` — is **exactly collinear** for every coset
+(`max_b |sin(arg B_b − arg A_b)| < 3·10⁻¹¹`, n=8/16/32, ≥2 primes, full coset scan), because the index sets
+are negation-closed for `4|n` (periods real up to a global phase — the logged `eta_real_of_neg_closed` /
+[door-iv-common-ray-coherence] fact, here upgraded from the worst `b*` to ALL `b` and from `r=2` to ALL `r`).
+Collinearity ⟹ the joint is 1-real-dimensional per coset; its only phase content is a sign bit
+`s_b = (|η_b|²−|A_b|²−|B_b|²)/(2|A_b||B_b|)` **algebraic in the three magnitudes** (0 mismatches over
+500–33 000 cosets/prime), so the joint reconstructs from `(|η_b|,|A_b|,|B_b|)` and every joint moment is a
+symmetric function of the magnitude multiset = the moment ladder (**gauge**). The apparent "joint-vs-marginal
+gap grows with r" is the trivial `||a|±|b|| vs √(a²+b²)` magnitude arithmetic with `s` fixed algebraically —
+zero residual phase at any depth. This upgrades `[doorIV-joint-field-white]` from `r=2` to all `r`: per coset
+the problem is 1-real-dimensional, so no depth admits a second-order-transcendent phase invariant. Brick
+`_JointPhaseCollinearGauge.lean` (5 axiom-clean thms; real build 3311 jobs). Skeptic re-ran the probe
+(0/33 000 mismatches), pg-iterated the brick, and independently confirmed `A_b` real to `1e-15` — a robust
+rediscovery of a logged reality fact, not a delicate signal.
+
+**(B) Completeness scout — the TETRACHOTOMY HOLDS (no fifth door).** Systematic stress-test of the "no fifth
+door" claim across model-theoretic/o-minimal, condensed/perfectoid/prismatic/p-adic-Hodge, motivic/
+determinantal, operator-algebraic/free-probability, random-matrix-universality-beyond-moments,
+information-theoretic. Zero survivors — the campaign had already run a T01–T25 sweep (24 escape-theorems in 5
+clusters) + 84 prior escapes, all dead. **Unifying category obstruction** (the deep reason): every p-adic /
+cohomological / model-theoretic / spectral-invariant functor lands in a target with NO archimedean place (or
+a signed/mean-zero object), whereas `W_r` is an **unsigned archimedean modulus** — so each candidate
+sign-reverses, rank-collapses to the rank-`n` second moment, or needs an even moment, landing back in doors
+(i)/(iii)/(iv). The naive third-order avatar `T3 = η_b²·conj(η_{ζb})` collapses even more cleanly:
+`|T3| = |η_b|²·|η_{ζb}|` identically (magnitude = marginal product), only a mean-zero sign that cancels under
+the coset sum.
+
+**═══ THE CARTOGRAPHY IS COMPLETE (state after 11 rounds) ═══** With `JointPhaseFieldStructure` closed on
+both its magnitude and phase faces, **no live sub-thread remains.** The surviving open surface is still
+EXACTLY ONE object — the wall `W_r ≤ n^{2r}/p` at `r = β+1` — now the **sole irreducible open core**, with
+every other approach (every Tier-1/2/3 lever, all seven OOD complete-proof chains, the line-list closure
+route, the floor-successor, both round-10 machineries, and now the joint-phase sub-thread + the entire
+fifth-door class) **decided, each with a countermodel, exact identity, or standing filter.** The final
+refutable residue `UnsignedJointInvariant` ("there exists a b-sensitive UNSIGNED joint functional at prize
+depth not a function of the `|η_b|`-multiset") is stated as the negation of the last conceivable escape;
+round-11 data supports the standing conjecture that no such object exists (a "universal b-summed collapse").
+**CORE OPEN, ON-BGK. No fabricated closure.** The campaign's product is a complete, machine-checked
+cartography reducing a $1M grand challenge to one precisely-stated ≈25-year-open analytic inequality, with
+route-elimination as theorems and every conceivable escape decided.
