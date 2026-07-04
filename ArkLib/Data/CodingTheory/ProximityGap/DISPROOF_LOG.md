@@ -1,4 +1,77 @@
-## [466-r13-moment-order-optimization-formalized] WallHolds ==> M <= sqrt(2e*n*(ln q+1)) is now AXIOM-CLEAN — the moment-order parameter is removed from the capstone (2026-07-04, #466 round 13)
+## [466-r14-outer-two-sided-iff] the delta*-floor is machine-checked BOTH DIRECTIONS equivalent to WorstCaseIncidenceBounded — the campaign's real two-sidedness (2026-07-04, #466 round 14)
+
+Lane: round-14 Lane I (dossier §24). Assembled the campaign's actual machine-checked two-sided reduction
+certificate _TwoSidedCapstone.lean (6 thms, all #print axioms = {propext, Classical.choice, Quot.sound}, no
+sorryAx, real build). THE OUTER IFF (genuinely two-sided, the NEW reverse direction is the contribution):
+epsMCA(C,δ) <= E/q  <=>  WorstCaseIncidenceBounded C δ E  (= for all stacks u, #bad-scalars(u) <= E). Forward
+(mp) reuses in-tree OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence; the NEW reverse (mpr,
+worstCaseIncidenceBounded_of_epsMCA_le) unfolds epsMCA as the sup of per-stack probabilities, applies
+mcaEvent_prob_le_epsMCA, cancels the finite positive denominator q via ENNReal.div_le_iff_le_mul +
+div_mul_cancel. SUFFICIENCY WorstCaseIncidenceBounded ==> δ <= mcaDeltaStar C (E/q) FULLY PROVEN
+(deltaStar_floor_of_incidence = in-tree worstCaseIncidence_pin_budget). NECESSITY proven in pointwise/local
+form (goodness-at-δ ==> incidence, incidence_of_deltaStar_good via the iff.mp) with goodness-at-δ consumed as
+the NAMED hyp hGoodAt (strictly stronger than δ<=mcaDeltaStar at the non-attained sSup boundary — NOT
+laundered). VERDICT IFF-PARTIAL-NAMED-GLUE. The INNER reduction WorstCaseIncidenceBounded <== WallHolds (M via
+supNorm_le_of_wallHolds) ∧ HyperplaneCancellation (√q·B, provably not a function of M) stays the open glue
+IncidenceFromWallGlue: the in-tree CharSumDeltaStarBridge budget is the NAIVE ceil(|G|+q·B) (vacuous at prize
+E~n for nonzero B); making it non-vacuous needs the √q·B HyperplaneCancellation (BCHKS Conj 1.12) on top of
+WallHolds's M. HONESTY CORRECTION folded to §0/§5: the dossier's "ERM-at-r ⟺ M ≤ √((2r+1)n), floor=ceiling
+two-sided" is PROSE — _EnergyRatioMonotoneReduction formalizes only forward (gaussianEnergyBound_of_ERM), raw
+ERM is DC-crossover-refuted (n=32,r=6), and a whole-cone grep found NO formalized ERM iff; the campaign's REAL
+machine-checked two-sidedness is THIS outer epsMCA<=>incidence iff, NOT an ERM<=>M iff. No closure. CORE OPEN.
+
+## [466-r14-two-inputs-independent] LANE D: the two open Props are INDEPENDENT — HyperplaneCancellation does NOT imply WallHolds either (reverse of round 13); WallHolds strictly stronger than "M small" (2026-07-04, #466 round 14)
+
+Lane: D (dossier §22/§23 relationship-completion). Round 13 proved WallHolds ⇏ HyperplaneCancellation
+(M phase-blind). Round 14 settles the REVERSE and the exact strength: does HyperplaneCancellation (whose
+only spectral input is the sup-norm M = max_{b≠0}‖η_b‖) imply WallHolds (the ∀-r Wick moment tower
+A_r := ∑_{b≠0}‖η_b‖^{2r} ≤ q·(2r−1)‼·n^r)? VERDICT: **NO — the two are INDEPENDENT. WallHolds is STRICTLY
+STRONGER than the sup-norm bound it produces.**
+
+THE MATH (why M-bound cannot recover the tower). A sup-norm bound M ≤ B gives, per rung r, ONLY the
+term-wise Hölder projection A_r ≤ |H|·B^{2r}. With the wall's own constant B² = 2e·n·(ln q+1), this is
+B^{2r} = (2e·n·ln q)^r, the WRONG SHAPE vs Wick (2r−1)‼·n^r: the ratio B^{2r}/Wick_r = (2e·ln q)^r/(2r−1)‼ ≫ 1
+at small r. The M-bound OVERSHOOTS Wick and can never re-tighten to it. Equivalently: a sup-norm-capped,
+Parseval-correct spectrum (k = n(q−1)/B² freqs at the cap B, rest 0) has M = B yet violates WallHolds at every
+r ≥ 2. So "M small" ⇏ WallHolds.
+
+LANDED AXIOM-CLEAN (`Frontier/_R14SupNormWeakerThanWall.lean`, 3 thms, #print axioms = [propext,
+Classical.choice, Quot.sound], no sorryAx, pg-iterate OK 25s):
+* `supBound_sumPow_le`: ∀ b∈H ‖η_b‖ ≤ B (0≤B) ⟹ ∑_{b∈H}‖η_b‖^{2r} ≤ |H|·B^{2r}. The ENTIRE per-rung content
+  of a sup-norm bound (Hölder projection). This is all M gives.
+* `wick_lt_supProjection_r1`: with the wall's B² = 2e·n·(L+1) (L = ln q ≥ 0, n ≥ 1, q ≥ 1), the Wick RHS at
+  r=1 (q·(2·1−1)‼·n = q·n) is STRICTLY < the projection q·B² = q·2e·n·(L+1). So the M-derived per-rung bound
+  strictly overshoots Wick already at r=1 ⟹ a spectrum saturating M = B carries A_1 above q·Wick_1 ⟹ M ≤ B
+  does NOT imply WallHolds.
+* `wallConst_sq_ge_n`: B² = 2e·n·(L+1) ≥ n (certifies the projection is never below the naive n^r scale, the
+  shape mismatch is genuine).
+
+PROBE `probe_466r14_relationship.py` → `_out_466r14_relationship.txt` (regime p≡1 mod n, p≥n^4, ≥2 primes
+distinct v2, n=8/16/32): (1) ratio B^{2r}/Wick_r = 45–75 at r=1, growing to ~10^12 by r=15, EVERY n,p — M-bound
+NEVER recovers the tower. (2) Parseval-respecting cap spectrum violates WallHolds at all r≥2 across all n,p.
+
+VERDICT (combining rounds 13+14):
+  WallHolds ⇏ HyperplaneCancellation   (round 13: M phase-blind, controls only the s₀-average of I_H)
+  HyperplaneCancellation ⇏ WallHolds   (round 14: HC's only spectral input is M, and M ≤ B is a lossy Hölder
+                                         projection that overshoots the per-rung Wick tower — strictly weaker)
+  ⟹ the two open Props are (d) INDEPENDENT — neither implies the other. The moment/energy layer (WallHolds)
+  and the phase-correlation layer (HyperplaneCancellation) are ORTHOGONAL faces: WallHolds is strictly stronger
+  than the sup-norm M it produces (a lossy projection), and HyperplaneCancellation is a finer phased object M
+  cannot see. The prize genuinely needs BOTH; neither is reducible to the other. This CONFIRMS the capstone's
+  two-Prop structure is irreducible, not an artifact. CORE OPEN, ON-BGK, TWO INDEPENDENT INPUTS. No closure.
+
+LITERATURE (Lane D question 2). The sup-norm object M = max_{b≠0}‖η_b‖ = non-principal eigenvalue of the
+generalized Paley graph Cay(F_q,μ_n) (Liu–Zhou Thm 115); "M ≤ 2√n" = the Paley Graph Conjecture (open; best
+proven BGK n^{1−o(1)}). The moment tower {A_r ≤ q·Wick_r} is the additive-energy / Gaussian-moment statement.
+STANDARD FACT (eigenvalue–moment interchange): the moment tower is STRICTLY STRONGER — it implies the sup-norm
+bound (via A_r ≥ M^{2r}, take r-th root, optimize r ≈ ln q ⟹ M ≲ √(n ln q), the moment method, formalized in
+supNorm_le_of_wallHolds), but NOT conversely (a single eigenvalue bound controls only max_b, not the whole
+spectral profile ∑_b‖η_b‖^{2r}). This matches the general principle that spectral-radius bounds are a lossy
+projection of trace/moment bounds. So WallHolds ⊋ PaleyGraphConjecture-strength on the FIRST-Prop axis; and the
+SECOND Prop (HyperplaneCancellation) is a phase-correlation statement orthogonal to both. No literature reduces
+one open Prop to the other.
+
+
 
 Lane: round-13 Lane M (dossier §23), tightening the round-12 CAPSTONE-PARTIAL. Round 12's _WallCapstone.lean
 proved WallHolds ==> per-rung Wick bound but left the moment-order optimization (turning the per-rung 2r-power

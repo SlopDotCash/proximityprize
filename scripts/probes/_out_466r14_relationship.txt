@@ -1,0 +1,316 @@
+#466 R14 LANE D -- RELATIONSHIP between WallHolds (moment tower) and M-bound / HyperplaneCancellation
+====================================================================================================
+
+===== n=8, p=4129  (beta=log_n p=4.00, v2(p-1)=5) =====
+  q=4129  log q=8.326  TRUE M=7.5582  M/sqrt(n log q)=C_meas=0.9261
+  sup-norm the WALL delivers: B_lean = sqrt(2e) sqrt(n log q) = 19.0292
+
+  (1) STRENGTH COMPARISON per rung r:  WallHolds asserts A_r <= q*Wick_r.
+      M<=B_lean alone implies only  A_r <= q*B_lean^{2r}.  Ratio = B_lean^{2r}/Wick_r.
+      If ratio >> 1 at small r, the M-bound is STRICTLY WEAKER than WallHolds there.
+   r | A_r(actual)      | q*Wick_r          | q*B_lean^{2r}     | Bnd/Wick ratio | Mbnd-recovers-Wick?
+   1 |        3.297e+04 |        3.303e+04 |        1.495e+06 |     4.526e+01 | no (M-bnd weaker)
+   2 |        6.896e+05 |        7.928e+05 |        5.414e+08 |     6.829e+02 | no (M-bnd weaker)
+   3 |        2.088e+07 |        3.171e+07 |        1.960e+11 |     6.182e+03 | no (M-bnd weaker)
+   4 |        7.682e+08 |        1.776e+09 |        7.099e+13 |     3.998e+04 | no (M-bnd weaker)
+   5 |        3.171e+10 |        1.279e+11 |        2.571e+16 |     2.011e+05 | no (M-bnd weaker)
+   6 |        1.408e+12 |        1.125e+13 |        9.309e+18 |     8.273e+05 | no (M-bnd weaker)
+   7 |        6.577e+13 |        1.170e+15 |        3.371e+21 |     2.881e+06 | no (M-bnd weaker)
+   8 |        3.184e+15 |        1.404e+17 |        1.221e+24 |     8.692e+06 | no (M-bnd weaker)
+   9 |        1.584e+17 |        1.910e+19 |        4.420e+26 |     2.314e+07 | no (M-bnd weaker)
+  10 |        8.042e+18 |        2.903e+21 |        1.600e+29 |     5.514e+07 | no (M-bnd weaker)
+    => Does M<=B_lean per-rung-imply the Wick tower (WallHolds)?  NO
+       (ratio B^{2r}/Wick_r exceeds 1 at small r: True)  => M-bound STRICTLY WEAKER => WallHolds strictly stronger than 'M small'.
+
+  (2b) SEMANTIC: within the sup-norm cap M<=B_lean, can a spectrum VIOLATE a per-rung Wick bound?
+      All-at-cap spectrum a_b=B_lean (q-1 freqs): A_1 = (q-1)B^2 = 1.495e+06 vs q*Wick_1=3.303e+04
+      VIOLATES WallHolds at r=1?  True
+      (Note: a_b=B_lean violates Parseval sum a_b^2 = n(q-1); the ADMISSIBLE cap-respecting
+       counterexample keeps Parseval A_1=n(q-1) fixed but PILES the L^{2r} mass onto few
+       freqs at the cap. Test that next.)
+      Parseval-respecting: k=91.2 freqs at cap B_lean, rest 0 (A_1=n(q-1) exact).
+       r | A_r=k*B^{2r}     | q*Wick_r         | violates WallHolds(r)?
+       1 |        3.302e+04 |        3.303e+04 | False
+       2 |        1.196e+07 |        7.928e+05 | True
+       3 |        4.330e+09 |        3.171e+07 | True
+       4 |        1.568e+12 |        1.776e+09 | True
+       5 |        5.678e+14 |        1.279e+11 | True
+       6 |        2.056e+17 |        1.125e+13 | True
+       7 |        7.445e+19 |        1.170e+15 | True
+       8 |        2.696e+22 |        1.404e+17 | True
+       9 |        9.762e+24 |        1.910e+19 | True
+      10 |        3.535e+27 |        2.903e+21 | True
+      => Exists sup-norm-capped, Parseval-correct spectrum violating WallHolds at some r?  True
+         If YES: 'M small' + Parseval does NOT imply WallHolds => M-bound (hence HyperplaneCancellation,
+         whose only spectral input is M) does NOT imply WallHolds.  Combined with (1): the two are
+         genuinely INDEPENDENT on the semantic spectrum class (neither M-bound nor its worst-case
+         refinement recovers the per-rung moment tower).
+
+===== n=8, p=4153  (beta=log_n p=4.01, v2(p-1)=3) =====
+  q=4153  log q=8.332  TRUE M=7.4584  M/sqrt(n log q)=C_meas=0.9136
+  sup-norm the WALL delivers: B_lean = sqrt(2e) sqrt(n log q) = 19.0358
+
+  (1) STRENGTH COMPARISON per rung r:  WallHolds asserts A_r <= q*Wick_r.
+      M<=B_lean alone implies only  A_r <= q*B_lean^{2r}.  Ratio = B_lean^{2r}/Wick_r.
+      If ratio >> 1 at small r, the M-bound is STRICTLY WEAKER than WallHolds there.
+   r | A_r(actual)      | q*Wick_r          | q*B_lean^{2r}     | Bnd/Wick ratio | Mbnd-recovers-Wick?
+   1 |        3.316e+04 |        3.322e+04 |        1.505e+06 |     4.530e+01 | no (M-bnd weaker)
+   2 |        6.936e+05 |        7.974e+05 |        5.453e+08 |     6.839e+02 | no (M-bnd weaker)
+   3 |        2.100e+07 |        3.190e+07 |        1.976e+11 |     6.195e+03 | no (M-bnd weaker)
+   4 |        7.728e+08 |        1.786e+09 |        7.160e+13 |     4.009e+04 | no (M-bnd weaker)
+   5 |        3.190e+10 |        1.286e+11 |        2.595e+16 |     2.018e+05 | no (M-bnd weaker)
+   6 |        1.417e+12 |        1.132e+13 |        9.402e+18 |     8.308e+05 | no (M-bnd weaker)
+   7 |        6.618e+13 |        1.177e+15 |        3.407e+21 |     2.895e+06 | no (M-bnd weaker)
+   8 |        3.204e+15 |        1.412e+17 |        1.235e+24 |     8.741e+06 | no (M-bnd weaker)
+   9 |        1.594e+17 |        1.921e+19 |        4.473e+26 |     2.329e+07 | no (M-bnd weaker)
+  10 |        8.091e+18 |        2.920e+21 |        1.621e+29 |     5.552e+07 | no (M-bnd weaker)
+    => Does M<=B_lean per-rung-imply the Wick tower (WallHolds)?  NO
+       (ratio B^{2r}/Wick_r exceeds 1 at small r: True)  => M-bound STRICTLY WEAKER => WallHolds strictly stronger than 'M small'.
+
+  (2b) SEMANTIC: within the sup-norm cap M<=B_lean, can a spectrum VIOLATE a per-rung Wick bound?
+      All-at-cap spectrum a_b=B_lean (q-1 freqs): A_1 = (q-1)B^2 = 1.505e+06 vs q*Wick_1=3.322e+04
+      VIOLATES WallHolds at r=1?  True
+      (Note: a_b=B_lean violates Parseval sum a_b^2 = n(q-1); the ADMISSIBLE cap-respecting
+       counterexample keeps Parseval A_1=n(q-1) fixed but PILES the L^{2r} mass onto few
+       freqs at the cap. Test that next.)
+      Parseval-respecting: k=91.7 freqs at cap B_lean, rest 0 (A_1=n(q-1) exact).
+       r | A_r=k*B^{2r}     | q*Wick_r         | violates WallHolds(r)?
+       1 |        3.322e+04 |        3.322e+04 | False
+       2 |        1.204e+07 |        7.974e+05 | True
+       3 |        4.361e+09 |        3.190e+07 | True
+       4 |        1.580e+12 |        1.786e+09 | True
+       5 |        5.727e+14 |        1.286e+11 | True
+       6 |        2.075e+17 |        1.132e+13 | True
+       7 |        7.520e+19 |        1.177e+15 | True
+       8 |        2.725e+22 |        1.412e+17 | True
+       9 |        9.874e+24 |        1.921e+19 | True
+      10 |        3.578e+27 |        2.920e+21 | True
+      => Exists sup-norm-capped, Parseval-correct spectrum violating WallHolds at some r?  True
+         If YES: 'M small' + Parseval does NOT imply WallHolds => M-bound (hence HyperplaneCancellation,
+         whose only spectral input is M) does NOT imply WallHolds.  Combined with (1): the two are
+         genuinely INDEPENDENT on the semantic spectrum class (neither M-bound nor its worst-case
+         refinement recovers the per-rung moment tower).
+
+===== n=16, p=65537  (beta=log_n p=4.00, v2(p-1)=16) =====
+  q=65537  log q=11.090  TRUE M=13.8375  M/sqrt(n log q)=C_meas=1.0388
+  sup-norm the WALL delivers: B_lean = sqrt(2e) sqrt(n log q) = 31.0596
+
+  (1) STRENGTH COMPARISON per rung r:  WallHolds asserts A_r <= q*Wick_r.
+      M<=B_lean alone implies only  A_r <= q*B_lean^{2r}.  Ratio = B_lean^{2r}/Wick_r.
+      If ratio >> 1 at small r, the M-bound is STRICTLY WEAKER than WallHolds there.
+   r | A_r(actual)      | q*Wick_r          | q*B_lean^{2r}     | Bnd/Wick ratio | Mbnd-recovers-Wick?
+   1 |        1.048e+06 |        1.049e+06 |        6.322e+07 |     6.029e+01 | no (M-bnd weaker)
+   2 |        4.712e+07 |        5.033e+07 |        6.099e+10 |     1.212e+03 | no (M-bnd weaker)
+   3 |        3.297e+09 |        4.027e+09 |        5.884e+13 |     1.461e+04 | no (M-bnd weaker)
+   4 |        3.007e+11 |        4.510e+11 |        5.676e+16 |     1.259e+05 | no (M-bnd weaker)
+   5 |        3.278e+13 |        6.494e+13 |        5.476e+19 |     8.432e+05 | no (M-bnd weaker)
+   6 |        4.056e+15 |        1.143e+16 |        5.282e+22 |     4.622e+06 | no (M-bnd weaker)
+   7 |        5.514e+17 |        2.377e+18 |        5.096e+25 |     2.144e+07 | no (M-bnd weaker)
+   8 |        8.054e+19 |        5.706e+20 |        4.916e+28 |     8.616e+07 | no (M-bnd weaker)
+   9 |        1.244e+22 |        1.552e+23 |        4.742e+31 |     3.056e+08 | no (M-bnd weaker)
+  10 |        2.010e+24 |        4.718e+25 |        4.575e+34 |     9.697e+08 | no (M-bnd weaker)
+  11 |        3.364e+26 |        1.585e+28 |        4.413e+37 |     2.784e+09 | no (M-bnd weaker)
+  12 |        5.792e+28 |        5.834e+30 |        4.258e+40 |     7.299e+09 | no (M-bnd weaker)
+  13 |        1.020e+31 |        2.333e+33 |        4.107e+43 |     1.760e+10 | no (M-bnd weaker)
+    => Does M<=B_lean per-rung-imply the Wick tower (WallHolds)?  NO
+       (ratio B^{2r}/Wick_r exceeds 1 at small r: True)  => M-bound STRICTLY WEAKER => WallHolds strictly stronger than 'M small'.
+
+  (2b) SEMANTIC: within the sup-norm cap M<=B_lean, can a spectrum VIOLATE a per-rung Wick bound?
+      All-at-cap spectrum a_b=B_lean (q-1 freqs): A_1 = (q-1)B^2 = 6.322e+07 vs q*Wick_1=1.049e+06
+      VIOLATES WallHolds at r=1?  True
+      (Note: a_b=B_lean violates Parseval sum a_b^2 = n(q-1); the ADMISSIBLE cap-respecting
+       counterexample keeps Parseval A_1=n(q-1) fixed but PILES the L^{2r} mass onto few
+       freqs at the cap. Test that next.)
+      Parseval-respecting: k=1086.9 freqs at cap B_lean, rest 0 (A_1=n(q-1) exact).
+       r | A_r=k*B^{2r}     | q*Wick_r         | violates WallHolds(r)?
+       1 |        1.049e+06 |        1.049e+06 | False
+       2 |        1.012e+09 |        5.033e+07 | True
+       3 |        9.758e+11 |        4.027e+09 | True
+       4 |        9.414e+14 |        4.510e+11 | True
+       5 |        9.082e+17 |        6.494e+13 | True
+       6 |        8.761e+20 |        1.143e+16 | True
+       7 |        8.452e+23 |        2.377e+18 | True
+       8 |        8.153e+26 |        5.706e+20 | True
+       9 |        7.865e+29 |        1.552e+23 | True
+      10 |        7.588e+32 |        4.718e+25 | True
+      11 |        7.320e+35 |        1.585e+28 | True
+      12 |        7.061e+38 |        5.834e+30 | True
+      13 |        6.812e+41 |        2.333e+33 | True
+      => Exists sup-norm-capped, Parseval-correct spectrum violating WallHolds at some r?  True
+         If YES: 'M small' + Parseval does NOT imply WallHolds => M-bound (hence HyperplaneCancellation,
+         whose only spectral input is M) does NOT imply WallHolds.  Combined with (1): the two are
+         genuinely INDEPENDENT on the semantic spectrum class (neither M-bound nor its worst-case
+         refinement recovers the per-rung moment tower).
+
+===== n=16, p=65617  (beta=log_n p=4.00, v2(p-1)=4) =====
+  q=65617  log q=11.092  TRUE M=13.2948  M/sqrt(n log q)=C_meas=0.9980
+  sup-norm the WALL delivers: B_lean = sqrt(2e) sqrt(n log q) = 31.0613
+
+  (1) STRENGTH COMPARISON per rung r:  WallHolds asserts A_r <= q*Wick_r.
+      M<=B_lean alone implies only  A_r <= q*B_lean^{2r}.  Ratio = B_lean^{2r}/Wick_r.
+      If ratio >> 1 at small r, the M-bound is STRICTLY WEAKER than WallHolds there.
+   r | A_r(actual)      | q*Wick_r          | q*B_lean^{2r}     | Bnd/Wick ratio | Mbnd-recovers-Wick?
+   1 |        1.050e+06 |        1.050e+06 |        6.331e+07 |     6.030e+01 | no (M-bnd weaker)
+   2 |        4.718e+07 |        5.039e+07 |        6.108e+10 |     1.212e+03 | no (M-bnd weaker)
+   3 |        3.301e+09 |        4.032e+09 |        5.893e+13 |     1.462e+04 | no (M-bnd weaker)
+   4 |        3.008e+11 |        4.515e+11 |        5.686e+16 |     1.259e+05 | no (M-bnd weaker)
+   5 |        3.264e+13 |        6.502e+13 |        5.485e+19 |     8.436e+05 | no (M-bnd weaker)
+   6 |        3.993e+15 |        1.144e+16 |        5.292e+22 |     4.625e+06 | no (M-bnd weaker)
+   7 |        5.315e+17 |        2.380e+18 |        5.106e+25 |     2.145e+07 | no (M-bnd weaker)
+   8 |        7.517e+19 |        5.713e+20 |        4.926e+28 |     8.624e+07 | no (M-bnd weaker)
+   9 |        1.111e+22 |        1.554e+23 |        4.753e+31 |     3.059e+08 | no (M-bnd weaker)
+  10 |        1.696e+24 |        4.724e+25 |        4.586e+34 |     9.708e+08 | no (M-bnd weaker)
+  11 |        2.654e+26 |        1.587e+28 |        4.424e+37 |     2.788e+09 | no (M-bnd weaker)
+  12 |        4.231e+28 |        5.841e+30 |        4.269e+40 |     7.308e+09 | no (M-bnd weaker)
+  13 |        6.845e+30 |        2.336e+33 |        4.118e+43 |     1.763e+10 | no (M-bnd weaker)
+    => Does M<=B_lean per-rung-imply the Wick tower (WallHolds)?  NO
+       (ratio B^{2r}/Wick_r exceeds 1 at small r: True)  => M-bound STRICTLY WEAKER => WallHolds strictly stronger than 'M small'.
+
+  (2b) SEMANTIC: within the sup-norm cap M<=B_lean, can a spectrum VIOLATE a per-rung Wick bound?
+      All-at-cap spectrum a_b=B_lean (q-1 freqs): A_1 = (q-1)B^2 = 6.331e+07 vs q*Wick_1=1.050e+06
+      VIOLATES WallHolds at r=1?  True
+      (Note: a_b=B_lean violates Parseval sum a_b^2 = n(q-1); the ADMISSIBLE cap-respecting
+       counterexample keeps Parseval A_1=n(q-1) fixed but PILES the L^{2r} mass onto few
+       freqs at the cap. Test that next.)
+      Parseval-respecting: k=1088.2 freqs at cap B_lean, rest 0 (A_1=n(q-1) exact).
+       r | A_r=k*B^{2r}     | q*Wick_r         | violates WallHolds(r)?
+       1 |        1.050e+06 |        1.050e+06 | False
+       2 |        1.013e+09 |        5.039e+07 | True
+       3 |        9.773e+11 |        4.032e+09 | True
+       4 |        9.429e+14 |        4.515e+11 | True
+       5 |        9.097e+17 |        6.502e+13 | True
+       6 |        8.776e+20 |        1.144e+16 | True
+       7 |        8.468e+23 |        2.380e+18 | True
+       8 |        8.170e+26 |        5.713e+20 | True
+       9 |        7.882e+29 |        1.554e+23 | True
+      10 |        7.605e+32 |        4.724e+25 | True
+      11 |        7.337e+35 |        1.587e+28 | True
+      12 |        7.079e+38 |        5.841e+30 | True
+      13 |        6.830e+41 |        2.336e+33 | True
+      => Exists sup-norm-capped, Parseval-correct spectrum violating WallHolds at some r?  True
+         If YES: 'M small' + Parseval does NOT imply WallHolds => M-bound (hence HyperplaneCancellation,
+         whose only spectral input is M) does NOT imply WallHolds.  Combined with (1): the two are
+         genuinely INDEPENDENT on the semantic spectrum class (neither M-bound nor its worst-case
+         refinement recovers the per-rung moment tower).
+
+===== n=32, p=1048609  (beta=log_n p=4.00, v2(p-1)=5) =====
+  q=1048609  log q=13.863  TRUE M=22.9834  M/sqrt(n log q)=C_meas=1.0912
+  sup-norm the WALL delivers: B_lean = sqrt(2e) sqrt(n log q) = 49.1095
+
+  (1) STRENGTH COMPARISON per rung r:  WallHolds asserts A_r <= q*Wick_r.
+      M<=B_lean alone implies only  A_r <= q*B_lean^{2r}.  Ratio = B_lean^{2r}/Wick_r.
+      If ratio >> 1 at small r, the M-bound is STRICTLY WEAKER than WallHolds there.
+   r | A_r(actual)      | q*Wick_r          | q*B_lean^{2r}     | Bnd/Wick ratio | Mbnd-recovers-Wick?
+   1 |        3.355e+07 |        3.356e+07 |        2.529e+09 |     7.537e+01 | no (M-bnd weaker)
+   2 |        3.120e+09 |        3.221e+09 |        6.099e+12 |     1.893e+03 | no (M-bnd weaker)
+   3 |        4.674e+11 |        5.154e+11 |        1.471e+16 |     2.854e+04 | no (M-bnd weaker)
+   4 |        9.488e+13 |        1.155e+14 |        3.548e+19 |     3.073e+05 | no (M-bnd weaker)
+   5 |        2.399e+16 |        3.325e+16 |        8.556e+22 |     2.573e+06 | no (M-bnd weaker)
+   6 |        7.172e+18 |        1.170e+19 |        2.063e+26 |     1.763e+07 | no (M-bnd weaker)
+   7 |        2.442e+21 |        4.869e+21 |        4.977e+29 |     1.022e+08 | no (M-bnd weaker)
+   8 |        9.196e+23 |        2.337e+24 |        1.200e+33 |     5.136e+08 | no (M-bnd weaker)
+   9 |        3.741e+26 |        1.271e+27 |        2.895e+36 |     2.277e+09 | no (M-bnd weaker)
+  10 |        1.613e+29 |        7.730e+29 |        6.981e+39 |     9.031e+09 | no (M-bnd weaker)
+  11 |        7.267e+31 |        5.195e+32 |        1.684e+43 |     3.241e+10 | no (M-bnd weaker)
+  12 |        3.381e+34 |        3.823e+35 |        4.061e+46 |     1.062e+11 | no (M-bnd weaker)
+  13 |        1.611e+37 |        3.059e+38 |        9.793e+49 |     3.202e+11 | no (M-bnd weaker)
+  14 |        7.821e+39 |        2.643e+41 |        2.362e+53 |     8.938e+11 | no (M-bnd weaker)
+  15 |        3.849e+42 |        2.452e+44 |        5.696e+56 |     2.323e+12 | no (M-bnd weaker)
+    => Does M<=B_lean per-rung-imply the Wick tower (WallHolds)?  NO
+       (ratio B^{2r}/Wick_r exceeds 1 at small r: True)  => M-bound STRICTLY WEAKER => WallHolds strictly stronger than 'M small'.
+
+  (2b) SEMANTIC: within the sup-norm cap M<=B_lean, can a spectrum VIOLATE a per-rung Wick bound?
+      All-at-cap spectrum a_b=B_lean (q-1 freqs): A_1 = (q-1)B^2 = 2.529e+09 vs q*Wick_1=3.356e+07
+      VIOLATES WallHolds at r=1?  True
+      (Note: a_b=B_lean violates Parseval sum a_b^2 = n(q-1); the ADMISSIBLE cap-respecting
+       counterexample keeps Parseval A_1=n(q-1) fixed but PILES the L^{2r} mass onto few
+       freqs at the cap. Test that next.)
+      Parseval-respecting: k=13913.4 freqs at cap B_lean, rest 0 (A_1=n(q-1) exact).
+       r | A_r=k*B^{2r}     | q*Wick_r         | violates WallHolds(r)?
+       1 |        3.356e+07 |        3.356e+07 | False
+       2 |        8.093e+10 |        3.221e+09 | True
+       3 |        1.952e+14 |        5.154e+11 | True
+       4 |        4.707e+17 |        1.155e+14 | True
+       5 |        1.135e+21 |        3.325e+16 | True
+       6 |        2.738e+24 |        1.170e+19 | True
+       7 |        6.603e+27 |        4.869e+21 | True
+       8 |        1.592e+31 |        2.337e+24 | True
+       9 |        3.841e+34 |        1.271e+27 | True
+      10 |        9.263e+37 |        7.730e+29 | True
+      11 |        2.234e+41 |        5.195e+32 | True
+      12 |        5.388e+44 |        3.823e+35 | True
+      13 |        1.299e+48 |        3.059e+38 | True
+      14 |        3.134e+51 |        2.643e+41 | True
+      15 |        7.558e+54 |        2.452e+44 | True
+      => Exists sup-norm-capped, Parseval-correct spectrum violating WallHolds at some r?  True
+         If YES: 'M small' + Parseval does NOT imply WallHolds => M-bound (hence HyperplaneCancellation,
+         whose only spectral input is M) does NOT imply WallHolds.  Combined with (1): the two are
+         genuinely INDEPENDENT on the semantic spectrum class (neither M-bound nor its worst-case
+         refinement recovers the per-rung moment tower).
+
+===== n=32, p=1048897  (beta=log_n p=4.00, v2(p-1)=6) =====
+  q=1048897  log q=13.863  TRUE M=22.7944  M/sqrt(n log q)=C_meas=1.0822
+  sup-norm the WALL delivers: B_lean = sqrt(2e) sqrt(n log q) = 49.1100
+
+  (1) STRENGTH COMPARISON per rung r:  WallHolds asserts A_r <= q*Wick_r.
+      M<=B_lean alone implies only  A_r <= q*B_lean^{2r}.  Ratio = B_lean^{2r}/Wick_r.
+      If ratio >> 1 at small r, the M-bound is STRICTLY WEAKER than WallHolds there.
+   r | A_r(actual)      | q*Wick_r          | q*B_lean^{2r}     | Bnd/Wick ratio | Mbnd-recovers-Wick?
+   1 |        3.356e+07 |        3.356e+07 |        2.530e+09 |     7.537e+01 | no (M-bnd weaker)
+   2 |        3.120e+09 |        3.222e+09 |        6.101e+12 |     1.893e+03 | no (M-bnd weaker)
+   3 |        4.675e+11 |        5.156e+11 |        1.471e+16 |     2.854e+04 | no (M-bnd weaker)
+   4 |        9.423e+13 |        1.155e+14 |        3.549e+19 |     3.073e+05 | no (M-bnd weaker)
+   5 |        2.343e+16 |        3.326e+16 |        8.559e+22 |     2.573e+06 | no (M-bnd weaker)
+   6 |        6.832e+18 |        1.171e+19 |        2.064e+26 |     1.763e+07 | no (M-bnd weaker)
+   7 |        2.256e+21 |        4.870e+21 |        4.979e+29 |     1.022e+08 | no (M-bnd weaker)
+   8 |        8.220e+23 |        2.338e+24 |        1.201e+33 |     5.136e+08 | no (M-bnd weaker)
+   9 |        3.241e+26 |        1.272e+27 |        2.896e+36 |     2.277e+09 | no (M-bnd weaker)
+  10 |        1.359e+29 |        7.732e+29 |        6.984e+39 |     9.033e+09 | no (M-bnd weaker)
+  11 |        5.987e+31 |        5.196e+32 |        1.684e+43 |     3.242e+10 | no (M-bnd weaker)
+  12 |        2.738e+34 |        3.824e+35 |        4.063e+46 |     1.062e+11 | no (M-bnd weaker)
+  13 |        1.288e+37 |        3.059e+38 |        9.798e+49 |     3.203e+11 | no (M-bnd weaker)
+  14 |        6.195e+39 |        2.643e+41 |        2.363e+53 |     8.940e+11 | no (M-bnd weaker)
+  15 |        3.027e+42 |        2.453e+44 |        5.699e+56 |     2.323e+12 | no (M-bnd weaker)
+    => Does M<=B_lean per-rung-imply the Wick tower (WallHolds)?  NO
+       (ratio B^{2r}/Wick_r exceeds 1 at small r: True)  => M-bound STRICTLY WEAKER => WallHolds strictly stronger than 'M small'.
+
+  (2b) SEMANTIC: within the sup-norm cap M<=B_lean, can a spectrum VIOLATE a per-rung Wick bound?
+      All-at-cap spectrum a_b=B_lean (q-1 freqs): A_1 = (q-1)B^2 = 2.530e+09 vs q*Wick_1=3.356e+07
+      VIOLATES WallHolds at r=1?  True
+      (Note: a_b=B_lean violates Parseval sum a_b^2 = n(q-1); the ADMISSIBLE cap-respecting
+       counterexample keeps Parseval A_1=n(q-1) fixed but PILES the L^{2r} mass onto few
+       freqs at the cap. Test that next.)
+      Parseval-respecting: k=13916.9 freqs at cap B_lean, rest 0 (A_1=n(q-1) exact).
+       r | A_r=k*B^{2r}     | q*Wick_r         | violates WallHolds(r)?
+       1 |        3.356e+07 |        3.356e+07 | False
+       2 |        8.095e+10 |        3.222e+09 | True
+       3 |        1.952e+14 |        5.156e+11 | True
+       4 |        4.709e+17 |        1.155e+14 | True
+       5 |        1.136e+21 |        3.326e+16 | True
+       6 |        2.739e+24 |        1.171e+19 | True
+       7 |        6.606e+27 |        4.870e+21 | True
+       8 |        1.593e+31 |        2.338e+24 | True
+       9 |        3.842e+34 |        1.272e+27 | True
+      10 |        9.267e+37 |        7.732e+29 | True
+      11 |        2.235e+41 |        5.196e+32 | True
+      12 |        5.390e+44 |        3.824e+35 | True
+      13 |        1.300e+48 |        3.059e+38 | True
+      14 |        3.135e+51 |        2.643e+41 | True
+      15 |        7.562e+54 |        2.453e+44 | True
+      => Exists sup-norm-capped, Parseval-correct spectrum violating WallHolds at some r?  True
+         If YES: 'M small' + Parseval does NOT imply WallHolds => M-bound (hence HyperplaneCancellation,
+         whose only spectral input is M) does NOT imply WallHolds.  Combined with (1): the two are
+         genuinely INDEPENDENT on the semantic spectrum class (neither M-bound nor its worst-case
+         refinement recovers the per-rung moment tower).
+
+====================================================================================================
+VERDICT SYNTHESIS:
+  (1) M-bound NEVER recovers the per-rung Wick tower (across all n,p): True
+      => WallHolds is STRICTLY STRONGER than the sup-norm bound 'M <= C sqrt(n log q)'.
+  (2) A sup-norm-capped, Parseval-correct spectrum can VIOLATE WallHolds: True
+      => 'M small' does NOT imply WallHolds; and since HyperplaneCancellation's only spectral
+         input is M, HyperplaneCancellation does NOT imply WallHolds either.
+  COMBINED with round-13 (WallHolds does NOT imply HyperplaneCancellation):
+     VERDICT = (d) INDEPENDENT -- neither open Prop implies the other.
+     Within the moment/energy layer alone: WallHolds is strictly stronger than the
+     sup-norm M-bound it produces (the M-bound is a lossy Holder projection of the tower).

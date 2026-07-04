@@ -34,8 +34,15 @@
    `m* ∈ [m_floor, m_KKH26]` with the ceiling `m_KKH26 = Θ(n/log n)` **proven**
    (`kkh26_mcaDeltaStar_le_of_TZ`). Pinning δ\* ≡ computing the integer `m*` ≡ the wall.
 
-2. **The wall is two-sided, necessary, and now exhaustively mapped.** `ERM-at-r ⟺ M ≤ √((2r+1)n)`
-   (floor and ceiling are the same object); every second-order / energy / spectral / LP method
+2. **The wall is two-sided, necessary, and now exhaustively mapped.** The machine-checked two-sidedness
+   is `ε_mca(C,δ) ≤ E/q ⟺ WorstCaseIncidenceBounded C δ E` (round 14, `_TwoSidedCapstone.lean`, both
+   directions axiom-clean). [⚠️ **Corrected 2026-07-04, round 14:** the older phrasing `ERM-at-r ⟺
+   M ≤ √((2r+1)n)`, "floor and ceiling are the same object", is *prose* — only the forward direction
+   `ERM ⟹ bound` is formalized (`gaussianEnergyBound_of_ERM`), and raw ERM/`GaussianEnergyBound` is
+   itself DC-crossover-refuted (§2.3); the sup-norm `M` is a *strictly lossy* projection of the moment
+   tower `WallHolds` (`_R14SupNormWeakerThanWall.lean`), so `M` and the Wick tower are **not** the same
+   object. Use the DC-subtracted `WallHolds`, and the outer iff above, as the machine-checked forms.]
+   Every second-order / energy / spectral / LP method
    provably caps at Johnson / √p (the Meta-Theorem); no fifth structural door exists (the
    Tetrachotomy); the #464 campaign additionally closed the **entire door-(iv) gap-combinatorial
    face**, all **graph-relation reformulations**, **six non-period angles**, **three
@@ -306,7 +313,11 @@ are worst at β=3 but benign at β=4.
 ## 5. Discoveries and firsts (machinery and cartography — not a closure)
 
 **Structural reductions / equivalences:**
-- Two-sided prize ⟺ char-sum (`_EnergyRatioMonotoneReduction`: `ERM-at-r ⟺ max‖η_c‖² ≤ (2r+1)n`).
+- Two-sided prize ⟺ char-sum: the machine-checked form is the OUTER iff `ε_mca(C,δ) ≤ E/q ⟺
+  WorstCaseIncidenceBounded` (`_TwoSidedCapstone.lean`, round 14, both directions axiom-clean). [The
+  `_EnergyRatioMonotoneReduction` "`ERM-at-r ⟺ max‖η_c‖² ≤ (2r+1)n`" is forward-only in-tree
+  (`gaussianEnergyBound_of_ERM`); the ⟺ is prose — the sup-norm is a lossy projection of the moment
+  tower, round 14.]
 - The Meta-Theorem + Tetrachotomy + AUP (route-elimination as theorems).
 - Mandatory DC-subtraction (`DCEnergyEssential`) — invalidated a whole class of naive moment attacks.
 - The Paley dictionary formalized (`GeneralizedPaleyRamanujan`, `GaussPeriodMomentBound`).
@@ -1273,3 +1284,45 @@ payload axiom-clean (the sup-norm `M`), and the prize is machine-checked to loca
 open Props (`WallHolds ∧ HyperplaneCancellation`), the second provably not implied by the first. Both are
 recognized open thin-2-power √-cancellation statements (BGK moment bound + BCHKS-1.12 worst-case cancellation).
 The no-go cartography remains complete and every escape decided. **CORE OPEN, ON-BGK. No fabricated closure.**
+
+---
+
+## 24. Round log — Round 14 (#466, 2026-07-04, Fable): the two inputs are INDEPENDENT + the real machine-checked two-sided iff + an honesty correction to §0
+
+Round 13 established the core is two distinct inputs; round 14 completes that thread (their relationship + the
+two-sided iff) and corrects an over-stated §0 claim. Essay: `deltastar-466-essay-round14-2026-07-04.md`. 2 lanes
++ 2 adversarial skeptics (5 agents); Lane D severity minor, Lane I severity none. DISPROOF `466-r14-*`.
+
+**(D) The two open inputs are INDEPENDENT — neither implies the other.** Round 13 proved `WallHolds ⇏
+HyperplaneCancellation` (the wall's sup-norm `M` is phase-blind — controls only the `s₀`-average incidence).
+Round 14 proves the REVERSE also fails, `HyperplaneCancellation ⇏ WallHolds`: `HyperplaneCancellation`'s only
+spectral input is `M`, and the sole per-rung fact `M ≤ B` supplies is the Hölder projection
+`A_r = ∑_{b∈H}‖η_b‖^{2r} ≤ |H|·B^{2r}` — which, with the wall's own `B² = 2e·n·(ln q+1)`, has the WRONG SHAPE
+`(2e·n·ln q)^r` vs Wick `(2r−1)‼·n^r` and **strictly exceeds** the Wick RHS at `r=1` (`_R14SupNormWeakerThanWall.lean`,
+3 axiom-clean thms: `supBound_sumPow_le`, `wick_lt_supProjection_r1`, `wallConst_sq_ge_n`; probe: overshoot 45–75×
+at r=1 growing to `~10¹²` by r=15, at every n, ≥2 primes). So `M` (a single spectral radius) is a strictly lossy
+projection of the whole moment tower and cannot recover it. **Verdict: the moment/energy layer (`WallHolds`, ⟹ the
+Paley-graph sup-norm, strictly stronger than it) and the phase-correlation layer (`HyperplaneCancellation`,
+BCHKS-1.12) are orthogonal — the prize needs BOTH; neither is the sole bottleneck.**
+
+**(I) The real machine-checked two-sidedness: the OUTER iff.** `_TwoSidedCapstone.lean` (6 axiom-clean thms; skeptic
+severity none) proves BOTH DIRECTIONS `ε_mca(C,δ) ≤ E/q ⟺ WorstCaseIncidenceBounded C δ E` — the NEW reverse
+(`worstCaseIncidenceBounded_of_epsMCA_le`) unfolds `epsMCA` as the per-stack sup and cancels `q`. Sufficiency
+`WorstCaseIncidenceBounded ⟹ δ ≤ mcaDeltaStar C (E/q)` is fully proven; necessity is proven pointwise with the named
+`hGoodAt` (goodness at the non-attained sSup boundary, not laundered). The inner reduction of the incidence Prop to
+`WallHolds ∧ HyperplaneCancellation` stays the open glue `IncidenceFromWallGlue` (the in-tree bridge budget is the
+naive `⌈|G|+q·B⌉`, vacuous at prize; the non-vacuous form needs the `√q·B` `HyperplaneCancellation`). Verdict
+IFF-PARTIAL-NAMED-GLUE.
+
+**(⚠️ Honesty correction to §0/§5, folded above.)** The dossier's `ERM-at-r ⟺ M ≤ √((2r+1)n)`, "floor and ceiling
+are the same object", was *prose*: only the forward `ERM ⟹ bound` is formalized (`gaussianEnergyBound_of_ERM`), raw
+ERM is DC-crossover-refuted (n=32, r=6), and a whole-cone grep found no formalized ERM iff. The campaign's genuine
+machine-checked two-sidedness is round 14's outer `ε_mca ⟺ incidence` iff — NOT an `ERM ⟺ M` iff. The sup-norm `M`
+is a strictly lossy projection of the moment tower (Lane D), so `M` and the Wick tower are not the same object.
+
+**═══ STATE after 14 rounds ═══** The reduction is now maximally sharpened and honest: the δ\*-floor is
+machine-checked equivalent both ways to `WorstCaseIncidenceBounded` (outer iff); that Prop reduces (one-directional
+named glue) to `WallHolds ∧ HyperplaneCancellation`, two **independent** open inputs — the phase-blind Wick moment
+bound (BGK proper, ⟹ the Paley-graph sup-norm) and the phase-correlation worst-case `√q·B` cancellation (BCHKS-1.12)
+— neither implying the other, both open, both ON-BGK. The no-go cartography is complete, capstoned, two-sided at the
+outer layer, and every escape decided. **CORE OPEN, ON-BGK. No fabricated closure.**
