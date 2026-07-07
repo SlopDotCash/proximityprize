@@ -165,6 +165,41 @@ theorem mgf_le_survival_weighted {ι : Type*} [DecidableEq ι] (s : Finset ι) (
     _ = ∑ θ ∈ Θ, δ θ * ((s.filter (fun b => θ ≤ t b)).card : ℝ) :=
         layercake_double_count s t Θ δ
 
+/-- **Survival-count ceiling packaged as an `MGFBound`.** If the per-point exponential weights are
+dominated by a threshold staircase and the resulting survival-count-weighted sum is at most
+`A·|s|`, then the spectrum satisfies `MGFBound s t A c`. This is the exact reusable endpoint of
+the discrete layer-cake bridge. -/
+theorem mgfBound_of_survival_weighted_ceiling {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (t : ι → ℝ) (Θ : Finset ℝ) (δ : ℝ → ℝ) {A c : ℝ}
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ s, Real.exp (c * t b) ≤ ∑ θ ∈ Θ.filter (fun θ => θ ≤ t b), δ θ)
+    (hweighted :
+      (∑ θ ∈ Θ, δ θ * ((s.filter (fun b => θ ≤ t b)).card : ℝ))
+        ≤ A * (s.card : ℝ)) :
+    MGFBound s t A c := by
+  unfold MGFBound
+  exact le_trans (mgf_le_survival_weighted s t Θ δ hδ hstair) hweighted
+
+/-- **MGFBound from explicit survival count ceilings.** If each threshold has a numerical ceiling
+`B θ` for its survival count and the weighted ceiling sum is at most `A·|s|`, then the staircase
+dominance gives `MGFBound`. This is the form an actual tail estimate supplies: prove
+`#{b ∈ s : θ ≤ t_b} ≤ B θ`, then sum the tail envelope over the grid. -/
+theorem mgfBound_of_survival_count_ceiling {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (t : ι → ℝ) (Θ : Finset ℝ) (δ B : ℝ → ℝ) {A c : ℝ}
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ s, Real.exp (c * t b) ≤ ∑ θ ∈ Θ.filter (fun θ => θ ≤ t b), δ θ)
+    (hcount : ∀ θ ∈ Θ, ((s.filter (fun b => θ ≤ t b)).card : ℝ) ≤ B θ)
+    (hweighted : (∑ θ ∈ Θ, δ θ * B θ) ≤ A * (s.card : ℝ)) :
+    MGFBound s t A c := by
+  refine mgfBound_of_survival_weighted_ceiling s t Θ δ hδ hstair ?_
+  calc
+    (∑ θ ∈ Θ, δ θ * ((s.filter (fun b => θ ≤ t b)).card : ℝ))
+        ≤ ∑ θ ∈ Θ, δ θ * B θ := by
+          apply Finset.sum_le_sum
+          intro θ hθ
+          exact mul_le_mul_of_nonneg_left (hcount θ hθ) (hδ θ hθ)
+    _ ≤ A * (s.card : ℝ) := hweighted
+
 /-! ### 5. End-to-end: a survival cutoff lands the moment envelope (welds to the sibling brick) -/
 
 /-- **Survival cutoff ⟹ moment envelope, end-to-end (welds the two layer-cake halves).** A uniform
@@ -189,4 +224,6 @@ end ArkLib.ProximityGap.Frontier.WFS11
 #print axioms ArkLib.ProximityGap.Frontier.WFS11.mgfBound_of_max_ceiling
 #print axioms ArkLib.ProximityGap.Frontier.WFS11.layercake_double_count
 #print axioms ArkLib.ProximityGap.Frontier.WFS11.mgf_le_survival_weighted
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.mgfBound_of_survival_weighted_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.mgfBound_of_survival_count_ceiling
 #print axioms ArkLib.ProximityGap.Frontier.WFS11.momentEnvelope_of_survival_cutoff
