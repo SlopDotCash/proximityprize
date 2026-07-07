@@ -369,6 +369,104 @@ theorem prizeFloor_of_fullSpectrum_survival_weighted_general_depth_factor
       (fullSpectrumT ψ G) Θ δ hδ hstair hweighted)
     hGpos hq hr hrq hrK hconst
 
+/-- Full-spectrum survival-count route to `NearRamanujanSqrtLog`, with rate transfer: a
+certificate at exponential rate `c` may be consumed at any lower positive rate `c' ≤ c`. -/
+theorem nearRamanujan_of_fullSpectrum_survival_count_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (Θ : Finset ℝ) (δ B : ℝ → ℝ) {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ (Finset.univ : Finset F),
+      Real.exp (c * fullSpectrumT ψ G b) ≤
+        ∑ θ ∈ Θ.filter (fun θ => θ ≤ fullSpectrumT ψ G b), δ θ)
+    (hcount : ∀ θ ∈ Θ,
+      (((Finset.univ : Finset F).filter (fun b => θ ≤ fullSpectrumT ψ G b)).card : ℝ) ≤ B θ)
+    (hweighted : (∑ θ ∈ Θ, δ θ * B θ) ≤ A * ((Finset.univ : Finset F).card : ℝ))
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor hψ G hA hc' hcc' hC
+    (mgfBound_of_survival_count_ceiling (Finset.univ : Finset F)
+      (fullSpectrumT ψ G) Θ δ B hδ hstair hcount hweighted)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum survival-count route to the convergence-hub `PrizeFloor`, with rate transfer:
+a certificate at exponential rate `c` may be consumed at any lower positive rate `c' ≤ c`. -/
+theorem prizeFloor_of_fullSpectrum_survival_count_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (Θ : Finset ℝ) (δ B : ℝ → ℝ) {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ (Finset.univ : Finset F),
+      Real.exp (c * fullSpectrumT ψ G b) ≤
+        ∑ θ ∈ Θ.filter (fun θ => θ ≤ fullSpectrumT ψ G b), δ θ)
+    (hcount : ∀ θ ∈ Θ,
+      (((Finset.univ : Finset F).filter (fun b => θ ≤ fullSpectrumT ψ G b)).card : ℝ) ≤ B θ)
+    (hweighted : (∑ θ ∈ Θ, δ θ * B θ) ≤ A * ((Finset.univ : Finset F).card : ℝ))
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor hψ G hA hc' hcc' hC
+    (mgfBound_of_survival_count_ceiling (Finset.univ : Finset F)
+      (fullSpectrumT ψ G) Θ δ B hδ hstair hcount hweighted)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum weighted-survival route to `NearRamanujanSqrtLog`, with rate transfer: if the
+actual survival-weighted staircase certifies the MGF at rate `c`, it can be consumed at any lower
+positive rate `c' ≤ c`. -/
+theorem nearRamanujan_of_fullSpectrum_survival_weighted_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (Θ : Finset ℝ) (δ : ℝ → ℝ) {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ (Finset.univ : Finset F),
+      Real.exp (c * fullSpectrumT ψ G b) ≤
+        ∑ θ ∈ Θ.filter (fun θ => θ ≤ fullSpectrumT ψ G b), δ θ)
+    (hweighted :
+      (∑ θ ∈ Θ,
+        δ θ *
+          (((Finset.univ : Finset F).filter (fun b => θ ≤ fullSpectrumT ψ G b)).card : ℝ))
+        ≤ A * ((Finset.univ : Finset F).card : ℝ))
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor hψ G hA hc' hcc' hC
+    (mgfBound_of_survival_weighted_ceiling (Finset.univ : Finset F)
+      (fullSpectrumT ψ G) Θ δ hδ hstair hweighted)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum weighted-survival route to the convergence-hub `PrizeFloor`, with rate transfer:
+if the actual survival-weighted staircase certifies the MGF at rate `c`, it can be consumed at any
+lower positive rate `c' ≤ c`. -/
+theorem prizeFloor_of_fullSpectrum_survival_weighted_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (Θ : Finset ℝ) (δ : ℝ → ℝ) {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ (Finset.univ : Finset F),
+      Real.exp (c * fullSpectrumT ψ G b) ≤
+        ∑ θ ∈ Θ.filter (fun θ => θ ≤ fullSpectrumT ψ G b), δ θ)
+    (hweighted :
+      (∑ θ ∈ Θ,
+        δ θ *
+          (((Finset.univ : Finset F).filter (fun b => θ ≤ fullSpectrumT ψ G b)).card : ℝ))
+        ≤ A * ((Finset.univ : Finset F).card : ℝ))
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor hψ G hA hc' hcc' hC
+    (mgfBound_of_survival_weighted_ceiling (Finset.univ : Finset F)
+      (fullSpectrumT ψ G) Θ δ hδ hstair hweighted)
+    hGpos hq hr hrq hrK hconst
+
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
 
 /-! ## Axiom audit -/
@@ -389,5 +487,9 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms prizeFloor_of_fullSpectrum_survival_count_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_survival_weighted_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_survival_weighted_general_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_survival_count_rate_le_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_survival_count_rate_le_general_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_survival_weighted_rate_le_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_survival_weighted_rate_le_general_depth_factor
 
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
