@@ -2348,6 +2348,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R22StepanovS2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R22SuperellipticIndependence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23EulerBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23Milestone
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23ParameterChoice
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23TripleConvEnergyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24InvolutionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiation
@@ -2380,6 +2381,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R42CubeLagInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R43GaussUnification
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R44EtaTower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R45GaussRatio
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R46GaussModulus
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch

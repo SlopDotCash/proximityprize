@@ -20769,3 +20769,15 @@ modulus. Any family-cancellation statement proven for either sequence transfers 
 through this identity + modulus laws. THE ENTIRE PRIZE now rests on family-torus cancellation
 for a single sequence-class (𝔤 and its unit twists) on ℤ/m — with the complete tower,
 calculus, ladders, and no-go cartography machine-checked around it. CORE OPEN, ON-BGK.
+
+## [466-r46-gauss-modulus] the MODULUS LAW: 𝔤_j·conj(𝔤_j) = q for every j ≠ 0 — the r45 entanglement is by EXACT unit twists; the unification is quantitative; family statements transfer between the towers with NO constant loss (2026-07-07)
+
+Lane: #466 round-46 A+B (`Frontier/_R46GaussModulus.lean` axiom-clean, real build).
+`gaussCoeff_mul_conj` (classical orthogonality: conj expansion, y-reindex x = y·t, unit
+modulus of λ, punctured sums; uses lam_ne_zero/norm_one/sum_eq_zero from the landed
+packages). With r45's gauss_ratio: ‖J_j‖ = ‖𝔤_j‖·‖g(χ)‖/‖𝔤^{λχ}_j‖ = √q — every factor's
+modulus now machine-checked exact, so family-torus cancellation statements transfer between
+the A-side (𝔤⁻, WallHolds) and B-side (J, HyperplaneCancellation) towers verbatim, constants
+included. The unification program (r43 expansion, r44 tower, r45 weld, r46 modulus) is
+COMPLETE AND QUANTITATIVE. The prize = ONE family-cancellation input for one unit-modulus
+sequence-class on ℤ/m. CORE OPEN, ON-BGK.
