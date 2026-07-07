@@ -20781,3 +20781,14 @@ the A-side (𝔤⁻, WallHolds) and B-side (J, HyperplaneCancellation) towers ve
 included. The unification program (r43 expansion, r44 tower, r45 weld, r46 modulus) is
 COMPLETE AND QUANTITATIVE. The prize = ONE family-cancellation input for one unit-modulus
 sequence-class on ℤ/m. CORE OPEN, ON-BGK.
+
+## [466-r47-gauss-tower-calibrated] the A-side tower calibrated and CONFIRMED identical-class to the B-side: |𝔤_j|/√q = 1.000 exactly (r46 verified numerically); E3^A/(6m³q³) ∈ [1.51, 1.91], A/B ∈ [0.60, 1.09] — one conjecture class, two faces, as the unification proved (2026-07-07)
+
+Lane: #466 round-47 A (probe `probe_r47_gauss_tower.py`, 4 cells). The 𝔤⁻-sequence's
+triple-convolution energy sits in the same O(1) band as the J-sequence's (same modest
+arithmetic excess over Gaussian, no spikes), and the moduli are exactly √q everywhere —
+numerically closing the loop on r43–r46. The A-side named input (the 𝔤-family-torus
+cancellation) calibrates at the same constants as the B-side (C = 4-class per-shape;
+family-aggregated statement subject to the same r41/r42 no-shortcut verdicts). The prize's
+single input is now calibrated on BOTH faces. Everything beneath it, on both sides, is
+machine-checked. CORE OPEN, ON-BGK.
