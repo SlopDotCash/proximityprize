@@ -202,6 +202,24 @@ theorem nearRamanujan_of_fullSpectrum_momentEnvelope_general_depth_factor
 
 /-- A full-spectrum uniform cutoff `fullSpectrumT ψ G b ≤ T` gives the convergence-hub
 `PrizeFloor`, with the honest cutoff slack constant `exp(c*T) / c`. -/
+theorem nearRamanujan_of_fullSpectrum_cutoff_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {T c C K : ℝ} {r : ℕ}
+    (hTnonneg : 0 ≤ T) (hc : 0 < c) (hC : 0 ≤ C)
+    (hT : ∀ b ∈ (Finset.univ : Finset F), fullSpectrumT ψ G b ≤ T)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (Real.exp (c * T) / c) * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C := by
+  have hA : 1 ≤ Real.exp (c * T) := by
+    simpa [Real.one_le_exp_iff] using mul_nonneg hc.le hTnonneg
+  exact nearRamanujan_of_fullSpectrum_mgf_general_depth_factor hψ G hA hc hC
+    (mgfBound_of_max_ceiling (Finset.univ : Finset F) (fullSpectrumT ψ G) hc.le hT)
+    hGpos hq hr hrq hrK hconst
+
+/-- A full-spectrum uniform cutoff `fullSpectrumT ψ G b ≤ T` gives the convergence-hub
+`PrizeFloor`, with the honest cutoff slack constant `exp(c*T) / c`. -/
 theorem prizeFloor_of_fullSpectrum_cutoff_depth_factor
     {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     {T c C K : ℝ} {r : ℕ}
@@ -230,6 +248,7 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms prizeFloor_of_fullSpectrum_mgf_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_momentEnvelope_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_momentEnvelope_general_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_cutoff_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_cutoff_depth_factor
 
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
