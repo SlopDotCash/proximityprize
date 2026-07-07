@@ -20715,3 +20715,17 @@ expansion is the 12-fold correlation (the moment hierarchy reappears — the wal
 this level, consistent with r24's involution no-go). The campaign's final input is hereby
 restated: FAMILY-level cancellation over the shape torus, one level of aggregation above
 r38. CORE OPEN, ON-BGK.
+
+## [466-r42-t-split-architecture-fails] the t=0 shape class carries only 12–51% of E3 (DECREASING with scale; t≠0 = 54–88% and growing) — the "diagonal main + off-diagonal error" architecture is FALSE at the shape level; the family cancellation is NON-PERTURBATIVE in t (2026-07-07)
+
+Lane: #466 round-42 B2 (probe `probe_r42_t0_split.py`, 10 cells with 3∤m; exact t=0-class
+evaluation via S0 = Σ_j |J_j|²·Σ_s|P_j(s)|², P_j = self-conv of the rotated sequence).
+Following r41 (per-shape weld lossy), the natural fallback architecture — prove the t=0
+class ≈ E3 exactly and bound the t≠0 classes as errors — is REFUTED: S0/E3 = 0.46→0.29 at
+n=8 (m: 14→44), 0.12 at (353,32). The majority of the sextic energy lives at t ≠ 0 and its
+share GROWS with scale. Consequence: no perturbative t-split can assemble
+TripleConvEnergyBound; the family statement must control all t-classes simultaneously
+(fully global cancellation over the 5-parameter shape torus). Together with r41 this pins
+the final input's true shape: vertical-Sato–Tate-for-families with NO perturbative shortcut.
+Architecture space narrowed twice in two rounds by the campaign's own probes.
+CORE OPEN, ON-BGK.
