@@ -2301,6 +2301,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientScaledLogTailGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientTailSupConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R13HyperplaneSecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R14SupNormWeakerThanWall
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15GaussDecompDiagonalSpike
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15IncidenceMomentInterchange
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R1SecondMomentSqrtBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_CMKDepthIrreducibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_LargeZeroWitnessSplit

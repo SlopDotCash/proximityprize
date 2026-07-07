@@ -207,7 +207,7 @@ is certification, not distribution shape.
 | Char-sum | `WorstCaseIncompleteSumBound` | `∀b≠0, ‖η_b‖² ≤ M` |
 | Energy | `DCEnergyBound` | DC-subtracted Wick at depth r |
 | Signed-deep | `CrossFormBridge.dcEnergyBound_iff_signedDeepCancellation` | sign ⟺ orbit-count rate |
-| Line-list (⚠️ weld not on main, §12) | `LineListReduction` stack; weld `mcaDeltaStar_ge_of_farLineListBudgeted` claimed, to re-land | floor ⟸ `Λ ≤ L ≲ ρn` on far lines |
+| Line-list | `LineListReduction` stack; weld `mcaDeltaStar_ge_of_farLineListBudgeted` re-landed in `LineListMCAWeld.lean` | floor ⟸ `Λ ≤ L ≲ ρn` on far lines |
 | **Field closure (NEW)** | `floorClosureBudgetedMaxAtField_univ_iff_floorGood_and_worstCaseIncidenceBounded` | all-stack closure ≡ floor-good ∧ WCI |
 | Stack domination (NEW) | `StackMaximizerDomination` | bounded dominating stack ⟺ WCI |
 | Target | `mcaConjecture` (`GrandChallenges.lean:650`) | the prize predicate |
@@ -217,9 +217,8 @@ the global spectrum (`lineEta_image_eq_globalImage`), `#dev = q−1`; bounding t
 bounding M. **Moment-exponent quantification:** the pure 2r-th-moment route yields exponent
 `θ(r,β) = (β+r−1)/(2r) > 1/2` always; non-triviality (`r > β−1`) coincides with the DC crossover
 (`r > β`) where char-p Wick is already refuted; the prize `θ = 1/2` is the unattained `r → ∞`
-limit. **The moment route is the route to Paley.** (⚠️ the Lean brick claimed for this,
-`MomentExponentThreshold.lean`, is NOT on main — §12; the arithmetic is elementary and worth
-re-landing.)
+limit. **The moment route is the route to Paley.** (`MomentExponentThreshold.lean` is re-landed;
+see §12.)
 
 ---
 
@@ -637,8 +636,8 @@ WraparoundVariance abstract-ring restatement; N9 codim-2; toy `deltaStar_pin_mu6
 - **Line-list stack (NEW #464):** `LineListReduction`, `LineListAppearanceFiber*`,
   `LineListSupportRatio*`, `LineListIncidenceMultiplicity`, `LineListSingletonDefect*`,
   `LineListCodewordSingleton*` — with exact failure scanners at every layer; the residual is
-  localized to low-t fibers. (⚠️ the prize-facing weld `LineListMCAWeld` is a §12 phantom —
-  re-land first.)
+  localized to low-t fibers. The prize-facing weld `LineListMCAWeld` is re-landed; remaining
+  obligations are the low-profile/list-budget inputs.
 - **Floor machinery (NEW #464):** `FloorNecessaryNotSufficient`, `FloorClosureSuccessorScanner`,
   `FloorClosurePrefixConsumer`, `FloorFiniteRungUniformityBarrier`, `FloorLevelDepthPrimeScaleGate`,
   `_FloorClosureContract`, `StackMaximizerDomination`, `_FloorLinnikRungInstances`,
@@ -1326,3 +1325,44 @@ named glue) to `WallHolds ∧ HyperplaneCancellation`, two **independent** open 
 bound (BGK proper, ⟹ the Paley-graph sup-norm) and the phase-correlation worst-case `√q·B` cancellation (BCHKS-1.12)
 — neither implying the other, both open, both ON-BGK. The no-go cartography is complete, capstoned, two-sided at the
 outer layer, and every escape decided. **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §25. Round 15 (2026-07-07) — the FIRST dedicated Problem-B structural round: the diagonal spike, the corrected off-diagonal B, and the χ/moment decompositions
+
+Three lanes + three adversarial skeptics (all CONFIRMED, severity minor). DISPROOF tag
+`466-r15-diagonal-spike-and-offdiag-moment`; bricks `_R15GaussDecompDiagonalSpike.lean`,
+`_R15IncidenceMomentInterchange.lean` (both real-build verified, 3315 jobs, axiom-clean).
+
+**Lane B1 (Gauss-sum decomposition).** Exact identity (verified to 1e-10, 33 (n,p,deg) cells):
+`I_H(s₀) = (p·1_{s₀∈μ_n} − n)/deg + (1/deg)Σ_{χ≠χ₀} g(χ)·T_χ(s₀)`, `T_χ(s₀)=Σ_{x∈μ_n,x≠s₀}χ̄(s₀−x)`.
+Consequences: (i) **Problem B over ALL offsets is FALSE** — the χ₀ term is a structural diagonal
+spike `≈ |H|` at every `s₀ ∈ μ_n`; round 13's "worst/(√|H|·M) = 6.1→13.7" is exactly `√|H|/M`,
+the trivial diagonal, fully explained — **B must be restated off-diagonal (`s₀ ∉ μ_n`) or
+χ₀-subtracted** (a reformulation of the campaign Prop, NOT a refutation of BCHKS 1.12);
+(ii) corrected off-diagonal B is empirically Θ(1)-true (ratio 0.61–1.61, no |H| growth over
+×1000); (iii) **new unconditional partial bound** `‖I_H(s₀∉μ_n)‖ ≤ n√p` (beats the trivial
+`|H|·M` budget by `n^{1.5}/deg` at prize scale); (iv) the corrected B reduces per-χ (√deg loss)
+to square-root cancellation of the twisted thin-subgroup sums `T_χ` — the same wall, now a
+cleaner scalar family; deg=2 face: `|Σ_{x∈μ_n}(s₀−x|p)| ≤ √2·M` (Legendre over the shifted
+subgroup — Karatsuba/Shkredov shifted-subgroup literature is the round-16 lane).
+
+**Lane B2 (s₀-moment tower).** `S_r = Σ_{s₀}‖I_H‖^{2r}` is the η-weighted 2r-energy of H; also
+`I_H(s₀) = Σ_{t∈H/μ_n} conj(η_t)·η_{t·s₀}` (coset autocorrelation). Raw Wick-for-incidence is
+probe-REFUTED (the same diagonal: `I_H(s₀∈μ_n) = Σ/n` EXACTLY); the **diagonal-subtracted tower
+(D = {0}∪μ_n) obeys Wick at every probed scale with ratio < 1 decreasing in r** — the offset-side
+mirror of Problem A's mandatory DC subtraction. Conditional interchange landed axiom-clean:
+diagonal-subtracted Wick rung at `r=⌈ln q⌉` ⟹ off-diagonal B up to `√(2e·ln q)` (9 audited
+declarations). The named open residual `WickForIncidenceAwayAt` reduces to the char-p deep-depth
+object **with thick-H averaging in front — the one genuinely new lever**; round-16 target: the
+r=2 rung unconditionally via Shkredov thick-subgroup E₄ (probe ratio 0.18–0.58, comfortable room).
+
+**Lane A1 (audit).** The §6 "Hankel/Lax-pair seam" was already dead in-tree
+(`_AssaultV2_JacobiToda.lean` isospectral kill + tags r1/r10/r11) — struck above. New loophole
+check: interlacing under moment-window growth gives only LOWER bounds on M (Gauss-quadrature
+edges converge to M from below at depth ≈ ln p); increments are Θ(√n) not O(1), so the
+rank-one-update variant RELOCATES to Problem A verbatim. No A-side residual outside the ledger.
+
+**═══ STATE after 15 rounds ═══** Problem B is now correctly stated (off-diagonal), structurally
+decomposed two independent ways (χ-decomposition; s₀-moment tower), carries its first
+unconditional nontrivial partial bound (`n√p`), and its moment face acquires the first genuinely
+new lever since the two-Prop split (thick-H averaging). **CORE OPEN, ON-BGK. No fabricated
+closure.**

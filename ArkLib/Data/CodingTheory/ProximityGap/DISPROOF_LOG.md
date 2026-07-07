@@ -19997,3 +19997,30 @@ exceed p even when no single |σ| is large (each |σ(α)|≤2r), so bounding the
 p-divisible sparse sums needs inter-conjugate PHASE cancellation = BGK/Paley. This is the same wall
 sec 9/W1 name, now reached from the norm side with the exact-finite reason the tool is vacuous. No
 new named target; no wall closure. CORE OPEN, ON-BGK.
+
+## [466-r15-diagonal-spike-and-offdiag-moment] all-offset Problem B is false on the diagonal; the corrected target is diagonal-subtracted/off-diagonal Wick (2026-07-07)
+
+Lane: #466 round-15 B1/B2 (`Frontier/_R15GaussDecompDiagonalSpike.lean`,
+`Frontier/_R15IncidenceMomentInterchange.lean`, both axiom-clean; probes
+`probe_r15_b2_fft.py`, `probe_r15_b2_diagsub.py`). The round-13 hyperplane-cancellation input
+was stress-tested by climbing the offset moment tower
+`S_r = Σ_{s0} |I_H(s0)|^{2r}`. **Verdict: the raw all-offset Wick tower and all-offset Problem B
+are FALSE for a structural reason.** The diagonal offsets `s0 ∈ μ_n` carry an exact `χ0` spike:
+`I_H(s0) = Σ/n` in the probes (`Σ = Σ_{b∈H}|η_b|²`), and formally
+`I_H(s0) = |H| + Σ_{x∈G\{s0}} η_H(s0-x)` (`incidenceSum_eq_card_add_offdiag_of_mem`) with lower
+bound `|I_H(s0)| ≥ |H| - (|G|-1)M_H` (`incidenceSum_diagonal_spike_lower`). Therefore if the spike
+clears `√|H|·M`, the all-offset Problem-B statement is refuted by any diagonal offset
+(`problemB_fails_at_diagonal_offset`). This explains the round-13 worst-case peaks: they were the
+trivial diagonal, not the off-diagonal BCHKS object.
+
+The corrected interface is diagonal-subtracted. Lean proves the exact bookkeeping
+`incidenceMoment = incidenceMomentAway + diagonal mass` (`incidenceMoment_eq_away_add_diag`), the
+monotone consumer from raw Wick to away Wick (`wickForIncidenceAwayAt_of_wickForIncidence`), and
+the conditional moment-method bridge: a single diagonal-subtracted Wick rung at `⌈log q⌉` gives
+off-diagonal approximate Problem B with the expected `√(2e log q)` loss
+(`incidence_le_of_wickAwayAt_optimal`, `approxB_away_of_wickAwayAt_optimal`). Probes confirm the
+correction at every tested scale: raw `S_r/Wick` blows up to `5.9e16` by `n=32,r=6`, while
+excluding `D={0}∪μ_n` gives `S'_r/Wick<1` and decreasing for all tested `(n,deg,p)`; off-diagonal
+`max |I_H|/(√|H|M)` stays `~0.54..1.06`. **Open content remains:** prove the diagonal-subtracted
+Wick/off-diagonal hyperplane-cancellation statement. This is not a closure; it sharpens Problem B
+by deleting a now-proven structural false diagonal branch. CORE OPEN, ON-BGK.

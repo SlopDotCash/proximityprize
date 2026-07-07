@@ -129,3 +129,24 @@ ON-BGK. No fabricated closure.**
 rounds 2–9). The single dossier is `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` (§0–§24); the Lean
 capstones are `Frontier/_WallCapstone.lean`, `_TwoSidedCapstone.lean`, `_MomentOptimizedSupNorm.lean`,
 `_R13HyperplaneSecondMoment.lean`, `_R14SupNormWeakerThanWall.lean`.</sub>
+
+---
+
+## ⚠️ Round-15 correction (2026-07-07) to Problem B's statement
+
+Problem B as stated above (worst case over ALL offsets `s₀`) is **false for a trivial structural
+reason**: the χ₀/diagonal term gives `I_H(s₀) ≈ |H|` at every `s₀ ∈ μ_n` (exactly
+`I_H(s₀ ∈ μ_n) = (Σ_{b∈H}‖η_b‖²)/n`; Lean brick `_R15GaussDecompDiagonalSpike.lean`,
+real-build axiom-clean). Round 13's "worst-case reaches the diagonal `|H|·M` scale" is this spike.
+**The correct open statement is off-diagonal:**
+
+> **PROBLEM B (corrected).** For every `s₀ ∉ μ_n` (equivalently, after χ₀-subtraction),
+> `‖I_H(s₀)‖ ≤ C·√|H|·M` with `C = O(1)` (measured `C ∈ [0.61, 1.61]` at all accessible scales).
+
+Known unconditionally (round 15): `‖I_H(s₀ ∉ μ_n)‖ ≤ n√p` (Gauss-sum decomposition + triangle),
+which beats the trivial `|H|·M` budget by `n^{3/2}/deg` at prize scale. The corrected B reduces
+per-χ (a `√deg` loss) to square-root cancellation of the twisted thin-subgroup sums
+`T_χ(s₀) = Σ_{x∈μ_n} χ̄(s₀−x)` — the same thin-2-power wall in a cleaner scalar family — and its
+diagonal-subtracted `s₀`-moment tower obeys Wick empirically at every accessible scale
+(`_R15IncidenceMomentInterchange.lean` has the conditional interchange: a proven
+diagonal-subtracted Wick tower gives corrected B up to `√(2e·ln q)`). See dossier §25.
