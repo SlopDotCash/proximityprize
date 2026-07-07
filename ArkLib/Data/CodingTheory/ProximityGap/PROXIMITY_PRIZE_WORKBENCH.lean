@@ -305,10 +305,10 @@ ceiling `m_KKH26 = Θ(n/log n)` PROVEN (`kkh26_mcaDeltaStar_le_of_TZ`). `m* = m_
 `LineListReduction` → zero-agreement strata → coordinate fibers → MDS uniqueness `#S ≥ k` ⟹
 fiber ≤ 1 → singleton-defect → support-ratio covers — discharges everything EXCEPT low-profile
 (`t < k`) fibers on large-zero-safe lines. All raw envelopes are formally REFUTED
-(`LineListArithmeticObstruction` etc.); exact failure scanners exist at every layer. ⚠️ The
+(`LineListArithmeticObstruction` etc.); exact failure scanners exist at every layer. ✅ The
 prize-facing weld (`LineListMCAWeld.mcaDeltaStar_ge_of_farLineListBudgeted`: δ* floor ⟸ far-line
-budget `Λ ≤ L ≲ ρ·n`) was claimed in-thread but is NOT on main (dossier §12 phantom) —
-**re-landing it is the first bankable task**. Then the open production obligations: the
+budget `Λ ≤ L ≲ ρ·n`) is on main (`LineListMCAWeld.lean`, re-landed axiom-clean). The open
+production obligations are now the
 low-profile fiber theorem; the mixed-profile top-fit arithmetic (`*MixedChooseProfileTopSumsFit`);
 the second-witness/multiplicity floor (`NoUniqueBadScalarWitness`); `CandidateListExactSuccessor`
 (or its adjacent-rung counterexample).
@@ -337,8 +337,8 @@ reformulations (tautological); six non-period angles; three √-cancellation-bre
 five beat-SOTA mechanisms; FHK log-correlated EVT (killed by EXPERIMENT — the {log|η_b|} field is
 independent-Gaussian, not log-correlated); effective-Katz (vacuous in thin regime); Toda/isospectral
 (gauge); 2026 literature D0–D5 gates (`_D*Gate.lean`). Moment-exponent quantification:
-`θ(r,β) = (β+r−1)/(2r) > 1/2` always — the moment route IS the route to Paley (its claimed Lean
-brick `MomentExponentThreshold.lean` is a dossier-§12 phantom; elementary, re-land it).
+`θ(r,β) = (β+r−1)/(2r) > 1/2` always — the moment route IS the route to Paley; the arithmetic is
+now re-landed in `MomentExponentThreshold.lean`.
 
 **(7) What survives (ranked, dossier §6):** ① windowed SumsetExtremal; ② the line-list low-profile
 obligations (2); ③ Hankel-positivity/Lax-pair spectral-shift on the Jacobi turnover `k*` (the one

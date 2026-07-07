@@ -189,6 +189,29 @@ theorem problemB_fails_at_diagonal_offset (ψ : AddChar F ℂ) (G H : Finset F)
   have h2 := hB s₀
   linarith
 
+/-- **Diagonal moment mass forced by the structural spike.**  If the excluded diagonal set `D`
+is contained in `G`, then the whole deleted `2r`-moment contribution is bounded below by
+
+`|D| · (|H| - (|G|-1)M_H)^(2r)`.
+
+This is the quantitative companion to `problemB_fails_at_diagonal_offset`: the raw moment tower is
+not merely pointwise contaminated by the diagonal spike; it carries a block of high-moment mass that
+must be subtracted before a Wick estimate can be true. -/
+theorem diagonalMass_spike_lower_of_subset (ψ : AddChar F ℂ) (G H D : Finset F)
+    (r : ℕ) (hDsub : D ⊆ G) {MH : ℝ}
+    (hMH : ∀ c : F, c ≠ 0 → ‖eta ψ H c‖ ≤ MH)
+    (hspike_nonneg : 0 ≤ (H.card : ℝ) - ((G.card : ℝ) - 1) * MH) :
+    (D.card : ℝ) * ((H.card : ℝ) - ((G.card : ℝ) - 1) * MH) ^ (2 * r)
+      ≤ ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r) := by
+  classical
+  calc (D.card : ℝ) * ((H.card : ℝ) - ((G.card : ℝ) - 1) * MH) ^ (2 * r)
+      = ∑ _s₀ ∈ D, ((H.card : ℝ) - ((G.card : ℝ) - 1) * MH) ^ (2 * r) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r) := by
+        refine Finset.sum_le_sum (fun s₀ hs₀ => ?_)
+        have hlow := incidenceSum_diagonal_spike_lower ψ G H (hDsub hs₀) hMH
+        exact pow_le_pow_left₀ hspike_nonneg hlow (2 * r)
+
 end ArkLib.ProximityGap.Frontier.R15GaussDecompDiagonalSpike
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -204,3 +227,5 @@ end ArkLib.ProximityGap.Frontier.R15GaussDecompDiagonalSpike
   ArkLib.ProximityGap.Frontier.R15GaussDecompDiagonalSpike.incidenceSum_diagonal_spike_lower
 #print axioms
   ArkLib.ProximityGap.Frontier.R15GaussDecompDiagonalSpike.problemB_fails_at_diagonal_offset
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15GaussDecompDiagonalSpike.diagonalMass_spike_lower_of_subset

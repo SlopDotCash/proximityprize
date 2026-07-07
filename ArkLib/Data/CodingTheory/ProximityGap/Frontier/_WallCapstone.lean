@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
 import ArkLib.Data.CodingTheory.ProximityGap.CharSumDeltaStarBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MomentOptimizedSupNorm
 
 /-!
 # LANE K CAPSTONE (#466): the campaign's machine-checked "one open Prop" certificate
@@ -169,10 +170,9 @@ the capstone certifies BOTH
   rung `r` and every `b ≠ 0` — this is `charSum_of_wallHolds`, the sole consumer of `hwall`; AND
 * (δ*-floor) `δ ≤ mcaDeltaStar C ε*` from the char-sum bound `B` and the named glue.
 
-The moment-order optimization that turns the first conjunct's `2r`-power bounds into a single
-sup-norm `B` (taking `2r`-th roots, minimizing over `r ≈ ln q`) is the one analytic step NOT
-formalized here; hence `B`/`hB` is passed as a parameter, with the wall certifying the moment
-inputs to that optimization. -/
+The optimized companion theorem below removes the original round-12 `B` parameter by importing
+`_MomentOptimizedSupNorm.lean`, which proves the elementary moment-order optimization
+axiom-clean. -/
 theorem wall_capstone
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -191,9 +191,40 @@ theorem wall_capstone
   ⟨fun r b hb => charSum_of_wallHolds hψ hwall r hb,
    deltaStar_floor_of_charSumBound_of_budget C εstar δ hψ G hB0 hB s₀ s₁ hglue hδ1⟩
 
+/-- **Optimized wall capstone.**  This is the round-13 tightening of `wall_capstone`: the wall
+itself supplies the closed-form sup-norm parameter
+`B = √(2e·|G|·(log |F| + 1))` via `_MomentOptimizedSupNorm.supNorm_le_of_wallHolds`, so the only
+remaining δ*-side input is the explicitly named `RealizedIncidenceBudget` at that concrete `B`.
+
+The result is still conditional on the incidence glue, and does not close the prize.  It removes
+only the bookkeeping parameter that round 12 left open. -/
+theorem wall_capstone_optimized
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
+    (C : Set (ι → A)) (εstar : ℝ≥0∞) (δ : ℝ≥0)
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hq : Real.exp 1 ≤ (Fintype.card F : ℝ))
+    (hwall : WallHolds G)
+    (s₀ s₁ : WordStack A (Fin 2) ι → F)
+    (hglue : RealizedIncidenceBudget C εstar δ G
+      (Real.sqrt (2 * Real.exp 1 * (G.card : ℝ) * (Real.log (Fintype.card F : ℝ) + 1)))
+      s₀ s₁)
+    (hδ1 : δ ≤ 1) :
+    (∀ (r : ℕ) (b : F), b ≠ 0 →
+        ‖eta ψ G b‖ ^ (2 * r)
+          ≤ (Fintype.card F : ℝ) * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r))
+      ∧ δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar := by
+  refine wall_capstone C εstar δ hψ G hwall
+    (ArkLib.ProximityGap.Frontier.MomentOptimizedSupNorm.sqrt_floor_nonneg (F := F) G)
+    ?_ s₀ s₁ hglue hδ1
+  exact ArkLib.ProximityGap.Frontier.MomentOptimizedSupNorm.supNorm_le_of_wallHolds
+    (F := F) hψ G hq hwall
+
 end ArkLib.ProximityGap.Frontier.WallCapstone
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.WallCapstone.charSum_of_wallHolds
 #print axioms ArkLib.ProximityGap.Frontier.WallCapstone.deltaStar_floor_of_charSumBound_of_budget
 #print axioms ArkLib.ProximityGap.Frontier.WallCapstone.wall_capstone
+#print axioms ArkLib.ProximityGap.Frontier.WallCapstone.wall_capstone_optimized

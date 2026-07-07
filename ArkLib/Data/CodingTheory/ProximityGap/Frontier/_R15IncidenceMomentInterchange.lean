@@ -400,6 +400,21 @@ theorem incidenceMomentAway_le_incidenceMoment (ψ : AddChar F ℂ) (G H D : Fin
     positivity
   linarith
 
+/-- **Away moments are monotone in the deleted diagonal set.**  Enlarging `D` only removes
+nonnegative terms from the diagonal-subtracted tower.  This lets future analytic proofs target the
+minimal structural diagonal while downstream consumers use any safer superset. -/
+theorem incidenceMomentAway_antitone_deleted (ψ : AddChar F ℂ) (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D') (r : ℕ) :
+    incidenceMomentAway ψ G H D' r ≤ incidenceMomentAway ψ G H D r := by
+  classical
+  unfold incidenceMomentAway
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
+  · intro s hs
+    exact Finset.mem_sdiff.mpr
+      ⟨Finset.mem_univ s, fun hsD => (Finset.mem_sdiff.mp hs).2 (hDD' hsD)⟩
+  · intro s _ _
+    positivity
+
 /-- **The probe-validated named open hypothesis (rung `r`): diagonal-subtracted Wick.**
 `S_r^D ≤ q·(2r−1)‼·Σ^r`.  With `D = {0} ∪ μ_n` this holds at every probed scale with ratio `< 1`
 decreasing in `r` — the honest offset-side analogue of Problem A's DC-subtracted `DCEnergyBound`.
@@ -408,6 +423,26 @@ def WickForIncidenceAwayAt (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ) : P
   incidenceMomentAway ψ G H D r
     ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
         * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r
+
+/-- **Full corrected incidence Wick tower.**  This is the honest replacement for the refuted raw
+`WickForIncidence`: all moment rungs after deleting the structural diagonal set `D`. -/
+def WickForIncidenceAway (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  ∀ r : ℕ, WickForIncidenceAwayAt ψ G H D r
+
+/-- **Zeroth rung for the corrected tower, proved.**  At `r = 0`, the away moment simply counts
+the non-diagonal offsets, so it is at most `q`; the Wick right-hand side is exactly `q`. -/
+theorem wickForIncidenceAwayAt_zero (ψ : AddChar F ℂ) (G H D : Finset F) :
+    WickForIncidenceAwayAt ψ G H D 0 := by
+  classical
+  unfold WickForIncidenceAwayAt incidenceMomentAway
+  calc (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * 0))
+      = ((Finset.univ \ D).card : ℝ) := by
+        simp
+    _ ≤ (Fintype.card F : ℝ) := by
+        exact_mod_cast Finset.card_le_univ (Finset.univ \ D)
+    _ = (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 0 - 1) : ℝ)
+          * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 0 := by
+        simp
 
 /-- **Base rung for the corrected tower, proved.**  The diagonal-subtracted Wick hypothesis is
 automatic at `r = 1`: the raw second moment is exactly
@@ -425,6 +460,125 @@ theorem wickForIncidenceAwayAt_one {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
         unfold incidenceMoment
         simpa using incidenceSum_sq_sum_offsets hψ G H
 
+/-- The full corrected tower is reduced to the genuinely hard range `r ≥ 2`: rungs `0` and `1`
+are automatic (`r = 1` by the exact second moment). -/
+theorem wickForIncidenceAway_of_ge_two {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G H D : Finset F)
+    (hhigh : ∀ r : ℕ, 2 ≤ r → WickForIncidenceAwayAt ψ G H D r) :
+    WickForIncidenceAway ψ G H D := by
+  intro r
+  cases r with
+  | zero => exact wickForIncidenceAwayAt_zero ψ G H D
+  | succ r =>
+      cases r with
+      | zero => simpa using wickForIncidenceAwayAt_one hψ G H D
+      | succ r => exact hhigh (r + 2) (by omega)
+
+/-- **Diagonal-mass cancellation criterion for the corrected tower.**  To prove the
+diagonal-subtracted Wick rung, it is enough to prove the raw moment bound with the *entire*
+excluded diagonal mass added to the right-hand side:
+
+`S_r ≤ Wick_r + diagonalMass(D)`.
+
+The exact split `S_r = S_r^D + diagonalMass(D)` then cancels the diagonal contribution without any
+smallness assumption.  This is the formal workbench hook for future analytic attacks that naturally
+estimate the raw expanded moment but isolate the structural diagonal separately. -/
+theorem wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag {ψ : AddChar F ℂ}
+    (G H D : Finset F) (r : ℕ)
+    (hraw :
+      incidenceMoment ψ G H r
+        ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+            * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r
+          + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r)) :
+    WickForIncidenceAwayAt ψ G H D r := by
+  classical
+  unfold WickForIncidenceAwayAt
+  have hsplit := incidenceMoment_eq_away_add_diag ψ G H D r
+  have hdiag_nonneg : 0 ≤ ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r) := by
+    positivity
+  linarith
+
+/-- **The concrete r=2 target for Round 16.**  To prove the first genuinely open corrected rung,
+it is enough to prove the raw fourth-moment estimate with the exact deleted diagonal mass added:
+
+`S₂ ≤ 3 q Σ² + diagonalMass₂(D)`.
+
+This is just the diagonal-mass cancellation criterion specialized to `r = 2`, but it exposes the
+right constant (`(2·2-1)‼ = 3`) for probes and future thick-subgroup counting arguments. -/
+theorem wickForIncidenceAwayAt_two_of_incidenceMoment_le_three_wick_add_diag {ψ : AddChar F ℂ}
+    (G H D : Finset F)
+    (hraw :
+      incidenceMoment ψ G H 2
+        ≤ (Fintype.card F : ℝ) * 3 * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 2
+          + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ 4) :
+    WickForIncidenceAwayAt ψ G H D 2 := by
+  refine wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D 2 ?_
+  simpa [Nat.doubleFactorial] using hraw
+
+/-- **Exact diagonal-cancellation equivalence.**  The corrected rung `WickForIncidenceAwayAt` is
+equivalent to the raw moment bound with the exact excluded diagonal mass added back to the Wick
+right-hand side.  This is the cleanest interface for expanded-moment attacks: prove either side,
+and Lean can switch to the other by the identity
+`S_r = S_r^D + diagonalMass(D)`. -/
+theorem wickForIncidenceAwayAt_iff_incidenceMoment_le_wick_add_diag {ψ : AddChar F ℂ}
+    (G H D : Finset F) (r : ℕ) :
+    WickForIncidenceAwayAt ψ G H D r
+      ↔ incidenceMoment ψ G H r
+          ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+              * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r
+            + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r) := by
+  constructor
+  · intro haway
+    unfold WickForIncidenceAwayAt at haway
+    rw [incidenceMoment_eq_away_add_diag ψ G H D r]
+    linarith
+  · exact wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D r
+
+/-- Full-tower form of diagonal-mass cancellation.  If every raw rung is bounded by Wick plus the
+exact excluded diagonal mass, then the corrected diagonal-subtracted Wick tower holds. -/
+theorem wickForIncidenceAway_of_incidenceMoment_le_wick_add_diag {ψ : AddChar F ℂ}
+    (G H D : Finset F)
+    (hraw : ∀ r : ℕ,
+      incidenceMoment ψ G H r
+        ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+            * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r
+          + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r)) :
+    WickForIncidenceAway ψ G H D := by
+  intro r
+  exact wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D r (hraw r)
+
+/-- Higher-rung form of diagonal-mass cancellation.  Since rungs `0` and `1` are already proved,
+it is enough to supply the raw-plus-diagonal estimate for `r ≥ 2`. -/
+theorem wickForIncidenceAway_of_high_incidenceMoment_le_wick_add_diag {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hraw : ∀ r : ℕ, 2 ≤ r →
+      incidenceMoment ψ G H r
+        ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+            * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r
+          + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r)) :
+    WickForIncidenceAway ψ G H D := by
+  refine wickForIncidenceAway_of_ge_two hψ G H D ?_
+  intro r hr
+  exact wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D r (hraw r hr)
+
+/-- **Uniform envelope for the excluded diagonal mass.**  If every excluded offset has
+`‖I_H(s₀)‖ ≤ B`, then its contribution to the `2r`-moment is at most `|D| · B^(2r)`.
+This is the coarse companion to `wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag`: exact
+diagonal cancellation is preferred, but a spike/tail envelope can be inserted when an analytic
+estimate needs a numerical budget for the deleted offsets. -/
+theorem diagonalMass_le_card_mul_bound {ψ : AddChar F ℂ} (G H D : Finset F)
+    (r : ℕ) {B : ℝ} (_hB0 : 0 ≤ B)
+    (hB : ∀ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ≤ B) :
+    (∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r))
+      ≤ (D.card : ℝ) * B ^ (2 * r) := by
+  classical
+  calc (∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r))
+      ≤ ∑ _s₀ ∈ D, B ^ (2 * r) := by
+        refine Finset.sum_le_sum (fun s₀ hs₀ => ?_)
+        exact pow_le_pow_left₀ (norm_nonneg _) (hB s₀ hs₀) (2 * r)
+    _ = (D.card : ℝ) * B ^ (2 * r) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+
 /-- Raw single-rung Wick control implies the diagonal-subtracted single-rung Wick control.  This
 fixes the logical hierarchy: away-Wick is the weaker corrected target after deleting the structural
 diagonal mass. -/
@@ -438,6 +592,31 @@ theorem wickForIncidenceAwayAt_of_wickForIncidence {ψ : AddChar F ℂ} (G H D :
     (hwick : WickForIncidence ψ G H) (r : ℕ) :
     WickForIncidenceAwayAt ψ G H D r :=
   wickForIncidenceAwayAt_of_wickForIncidenceAt G H D r (hwick r)
+
+/-- Raw full-tower Wick implies the corrected full tower.  This is logically weaker than the
+prize-relevant corrected target because raw Wick is probe-refuted, but it records the exact
+relationship between the old and corrected hypotheses. -/
+theorem wickForIncidenceAway_of_wickForIncidence {ψ : AddChar F ℂ} (G H D : Finset F)
+    (hwick : WickForIncidence ψ G H) :
+    WickForIncidenceAway ψ G H D := by
+  intro r
+  exact wickForIncidenceAwayAt_of_wickForIncidence G H D hwick r
+
+/-- **Monotonicity of the corrected Wick target.**  If the diagonal-subtracted Wick rung holds
+after deleting `D`, then it also holds after deleting any larger diagonal set `D'`. -/
+theorem wickForIncidenceAwayAt_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D') (r : ℕ)
+    (hwick : WickForIncidenceAwayAt ψ G H D r) :
+    WickForIncidenceAwayAt ψ G H D' r := by
+  exact le_trans (incidenceMomentAway_antitone_deleted ψ G H hDD' r) hwick
+
+/-- Full-tower monotonicity in the deleted diagonal set. -/
+theorem wickForIncidenceAway_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D')
+    (hwick : WickForIncidenceAway ψ G H D) :
+    WickForIncidenceAway ψ G H D' := by
+  intro r
+  exact wickForIncidenceAwayAt_mono_deleted G H hDD' r (hwick r)
 
 /-- Pointwise-to-tower step, diagonal-subtracted: for `s₀ ∉ D`,
 `‖I_H(s₀)‖^{2r} ≤ S_r^D`. -/
@@ -656,11 +835,35 @@ end ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.incidenceMomentAway_le_incidenceMoment
 #print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.incidenceMomentAway_antitone_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_zero
+#print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_one
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_of_ge_two
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_incidenceMoment_le_three_wick_add_diag
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_iff_incidenceMoment_le_wick_add_diag
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_of_incidenceMoment_le_wick_add_diag
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_of_high_incidenceMoment_le_wick_add_diag
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_of_wickForIncidenceAt
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_of_wickForIncidence
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_of_wickForIncidence
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.diagonalMass_le_card_mul_bound
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.pow_le_incidenceMomentAway
 #print axioms

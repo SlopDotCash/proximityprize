@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.IncidencePeriodBridge
+import Mathlib.Analysis.Complex.Norm
 
 /-!
 # LANE R (#466 round 13): the signed hyperplane incidence sum — WORLD II certificate
@@ -203,6 +204,53 @@ theorem incidenceSum_sq_sum_le_of_supBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrim
   have hq : (0 : ℝ) ≤ (Fintype.card F : ℝ) := by positivity
   exact mul_le_mul_of_nonneg_left hsum hq
 
+/-- **The pointwise triangle bound (the trivial worst-case scale).**  If every frequency in `H`
+has `‖η_b‖ ≤ M`, then every individual offset satisfies
+`‖I_H(s₀)‖ ≤ |H|·M`.
+
+Together with `incidenceSum_sq_sum_le_of_supBound`, this pins the exact missing gain in the
+prize-facing hyperplane-cancellation input: `M` gives the `√|H|·M` scale only on average, while
+the unconditional pointwise consequence of the same sup-bound is the larger `|H|·M` triangle scale.
+The open `HyperplaneCancellation` input is precisely the extra square-root cancellation between
+these two bounds. -/
+theorem incidenceSum_norm_le_card_mul_supBound {ψ : AddChar F ℂ}
+    (G : Finset F) (H : Finset F) {M : ℝ} (_hM0 : 0 ≤ M)
+    (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M) (s₀ : F) :
+    ‖incidenceSum ψ G H s₀‖ ≤ (H.card : ℝ) * M := by
+  classical
+  unfold incidenceSum
+  calc
+    ‖∑ b ∈ H, (starRingEnd ℂ) (eta ψ G b) * ψ (b * s₀)‖
+        ≤ ∑ b ∈ H, ‖(starRingEnd ℂ) (eta ψ G b) * ψ (b * s₀)‖ := by
+          exact norm_sum_le _ _
+    _ = ∑ b ∈ H, ‖eta ψ G b‖ := by
+          refine Finset.sum_congr rfl (fun b _ => ?_)
+          simp [ψ.norm_apply]
+    _ ≤ ∑ _b ∈ H, M := by
+          exact Finset.sum_le_sum (fun b hb => hM b hb)
+    _ = (H.card : ℝ) * M := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+
+/-- **The triangle scale is sharp for coherent bounded coefficients.**  If the coefficients on
+`H` all have the same phase and modulus `M`, then the triangle bound is attained exactly:
+`‖∑_{b∈H} M‖ = |H|·M`.
+
+This is deliberately stated for arbitrary coherent coefficients, not for Gauss periods.  It records
+the formal obstruction to any route that tries to upgrade
+`incidenceSum_norm_le_card_mul_supBound` to the square-root scale from only the hypotheses
+`‖coefficient_b‖ ≤ M`: the improvement must use additional arithmetic/phase information about
+the actual Gauss-period spectrum. -/
+theorem coherent_coefficients_attain_triangle_scale (H : Finset F) {M : ℝ} (hM0 : 0 ≤ M) :
+    ‖∑ _b ∈ H, (M : ℂ)‖ = (H.card : ℝ) * M := by
+  classical
+  have hcard_nonneg : (0 : ℝ) ≤ (H.card : ℝ) := by positivity
+  have hprod_nonneg : 0 ≤ (H.card : ℝ) * M := mul_nonneg hcard_nonneg hM0
+  have hsum : ∑ _b ∈ H, (M : ℂ) = (((H.card : ℝ) * M : ℝ) : ℂ) := by
+    rw [Finset.sum_const, nsmul_eq_mul]
+    norm_num [Complex.ofReal_mul]
+  rw [hsum]
+  exact Complex.norm_of_nonneg hprod_nonneg
+
 end ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -210,3 +258,7 @@ end ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment
   ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment.incidenceSum_sq_sum_offsets
 #print axioms
   ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment.incidenceSum_sq_sum_le_of_supBound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment.incidenceSum_norm_le_card_mul_supBound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment.coherent_coefficients_attain_triangle_scale

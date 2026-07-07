@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
+import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConverse
 import ArkLib.Data.CodingTheory.ProximityGap.CharSumDeltaStarBridge
 
 /-!
@@ -215,6 +216,24 @@ theorem deltaStar_good_iff_incidence_capstone
       ↔ WorstCaseIncidenceBounded (F := F) (A := A) C δ E :=
   deltaStar_good_iff_worstCaseIncidenceBounded_budget C δ E
 
+open Classical in
+/-- **Strict-interior `δ*` capstone.**  At target `ε* = E/q`, the honest `sSup` boundary gap is
+exactly `<` versus `≤`:
+
+* if `δ` is strictly below `mcaDeltaStar C (E/q)`, then the incidence budget holds at `δ`;
+* if the incidence budget holds at `δ ≤ 1`, then `δ ≤ mcaDeltaStar C (E/q)`.
+
+This re-exports the older `OpenCoreConverse.deltaStar_iff_incidence_budget` through the round-14
+capstone namespace, so the current two-sided certificate exposes both the pointwise-good `iff`
+above and the strict-interior threshold transport used by downstream orbit/counting consumers. -/
+theorem deltaStar_strictInterior_iff_incidence_budget
+    (C : Set (ι → A)) {δ : ℝ≥0} {E : ℕ} (hδ1 : δ ≤ 1) :
+    (δ < mcaDeltaStar (F := F) (A := A) C ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) →
+        WorstCaseIncidenceBounded (F := F) (A := A) C δ E)
+    ∧ (WorstCaseIncidenceBounded (F := F) (A := A) C δ E →
+        δ ≤ mcaDeltaStar (F := F) (A := A) C ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))) :=
+  ProximityGap.OpenCoreConverse.deltaStar_iff_incidence_budget (F := F) (A := A) C hδ1
+
 /-! ### (4) Wiring the incidence Prop to the two open Props (named glue, NOT re-proved). -/
 
 open Classical in
@@ -250,3 +269,5 @@ end ArkLib.ProximityGap.Frontier.TwoSidedCapstone
   ArkLib.ProximityGap.Frontier.TwoSidedCapstone.incidence_of_deltaStar_good
 #print axioms
   ArkLib.ProximityGap.Frontier.TwoSidedCapstone.deltaStar_good_iff_incidence_capstone
+#print axioms
+  ArkLib.ProximityGap.Frontier.TwoSidedCapstone.deltaStar_strictInterior_iff_incidence_budget
