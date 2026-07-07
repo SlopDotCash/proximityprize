@@ -20744,3 +20744,16 @@ Gauss sequence. SUCCESSOR: (a) transport lamExpansion_parseval/fullTower_collaps
 (one-composition corollaries — the A-side Parseval + full tower for free); (b) formalize the
 Gauss-ratio identity to weld the two sequences; (c) the unified family-torus statement is
 THE single open input of the entire prize. CORE OPEN, ON-BGK — now one framework, one input.
+
+## [466-r44-eta-tower] the A-SIDE TOWER FOR FREE: m·η_b + 1 = pureFace(𝔤⁻) exactly, hence Σ_{b≠0}‖m·η_b+1‖^{2r} = (q−1)·Σ_c‖(𝔤⁻)^{∗r}(c)‖² at EVERY depth — WallHolds' moment tower is the same iterated-self-convolution statement as the B-side, with the Gauss sequence (2026-07-07)
+
+Lane: #466 round-44 A (`Frontier/_R44EtaTower.lean` axiom-clean, real build).
+`eta_eq_pureFace` (negation-reindex + conj_lam on the r43 expansion) +
+`eta_tower_collapse` (one composition with r27's fullTower_collapse). The prize's two moment
+towers are now formally ONE tower with two coefficient sequences (J on the B-side, 𝔤⁻ on the
+A-side), on the same ℤ/m, entangled by the classical Gauss ratio J = 𝔤·𝔤(χ)/𝔤(λχ). The
+A-side inherits instantly: Parseval at r=1 (lamExpansion_parseval on 𝔤⁻), the quartic/sextic
+collapses, the cube-class theorem, the master-identity correlation calculus — all without a
+line of new proof. The single remaining input of the ENTIRE prize: family-torus cancellation
+for the 𝔤-sequence's iterated self-convolutions at depth (with the r41/r42 no-shortcut
+verdicts applying verbatim). CORE OPEN, ON-BGK — one tower, one sequence-pair, one input.
