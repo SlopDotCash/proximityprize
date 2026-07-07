@@ -113,6 +113,19 @@ theorem sup_pureFace_three_of_tripleConvPointwiseBound_le_const
 
 variable {χ : F → ℂ}
 
+/-- At the calibrated constant, the expanded Jacobi Hermitian energy target is exactly the
+third full-tower Wick rung.  This is the constant-preserving two-sided version of the r = 3
+consumer: no public-constant inflation and no endpoint propagation are involved. -/
+theorem jacobiHermitianExpandedEnergyBound_iff_iterConvEnergyWick_three
+    {C : ℝ} :
+    JacobiAdditiveTripleHermitianExpandedEnergyBound
+        χ lam (C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+      ↔ IterConvEnergyWick
+        (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C := by
+  rw [jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound]
+  exact tripleConvEnergyBound_iff_iterConvEnergyWick_three
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+
 /-- Energy-level expanded Jacobi Hermitian input gives the third full-tower Wick rung at any
 larger public tower constant. -/
 theorem iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
@@ -191,6 +204,8 @@ end ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvPointwiseBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.jacobiHermitianExpandedEnergyBound_iff_iterConvEnergyWick_three
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
 #print axioms
