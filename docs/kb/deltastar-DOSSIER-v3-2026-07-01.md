@@ -1366,3 +1366,27 @@ decomposed two independent ways (χ-decomposition; s₀-moment tower), carries i
 unconditional nontrivial partial bound (`n√p`), and its moment face acquires the first genuinely
 new lever since the two-Prop split (thick-H averaging). **CORE OPEN, ON-BGK. No fabricated
 closure.**
+
+## §26. Round 16 (2026-07-07) — lane B2 first result: away-Wick refuted as universal, the diagonal made exact, and the constant-C corrected tower
+
+DISPROOF tag `466-r16-away-wick-refuted-diag-exact`; brick `_R16DiagonalExactValue.lean`
+(axiom-clean, real-build verified). Probes `probe_r16_b2_{quad,spikedom,spikeloc}.py` +
+independent float128 recomputation of the decisive cell.
+
+**The r15 named hypothesis is FALSE as stated.** `WickForIncidenceAwayAt` with `D = {0}∪μ_n`
+and Wick constant `(2r−1)‼` has machine countermodels: `(p,n,deg) = (7681,64,8)` at β≈2.15
+(`S'_2/Wick = 1.0048`, `S'_3/Wick = 1.0364`) and thin-`H` cells at β=4
+(`deg≥128` at n=16, ratio up to 2.05). Failing offsets are unstructured (full order, ∉H,
+∉μ_n+μ_n), arriving in exact μ_n-orbits — an EVT tail, not a hidden diagonal. In the
+prize-shaped bulk (β≈4, deg≤32) all margins are 0.55–0.97: the constant is knife-edge.
+
+**What landed axiom-clean.** (i) `incidenceSum_diag_exact`: for a subgroup `G` stabilizing `H`,
+`I_H(s₀∈G) = Σ/|G|` exactly (pure reindexing, no primitivity) — the r15 spike bound upgraded to
+an identity; (ii) exact μ_n-orbit invariance of the incidence field; (iii) `diagMass_exact`
+closed form; (iv) `I_H(0) = conj(Σ_{b∈H}η_b)`; (v) the corrected named object
+`WickAwayAtWithConstant … C` with rungs r=0,1 for all C≥1 and the moment bridge at depth
+`⌈log(C·q)⌉` — the `√(2e log)`-loss interchange survives the correction verbatim.
+
+**State.** Problem B's moment face now carries: an exact diagonal (no analytic content), a
+refuted knife-edge constant, and a probe-calibrated corrected target (C=4 sufficient at every
+probed cell; open at the prize instance). CORE OPEN, ON-BGK.

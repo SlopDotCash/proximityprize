@@ -20024,3 +20024,31 @@ excluding `D={0}∪μ_n` gives `S'_r/Wick<1` and decreasing for all tested `(n,d
 `max |I_H|/(√|H|M)` stays `~0.54..1.06`. **Open content remains:** prove the diagonal-subtracted
 Wick/off-diagonal hyperplane-cancellation statement. This is not a closure; it sharpens Problem B
 by deleting a now-proven structural false diagonal branch. CORE OPEN, ON-BGK.
+
+## [466-r16-away-wick-refuted-diag-exact] the r15 away-Wick (D={0}∪μ_n, constant (2r−1)‼) is REFUTED as a universal statement; the diagonal value is EXACT Σ/n; corrected object = constant-C tower (2026-07-07)
+
+Lane: #466 round-16 B2 (`Frontier/_R16DiagonalExactValue.lean` axiom-clean, real build; probes
+`probe_r16_b2_quad.py`, `probe_r16_b2_spikedom.py`, `probe_r16_b2_spikeloc.py`; the decisive
+cell independently recomputed in float128 direct summation, two computations agreeing to 1e-12).
+
+**(1) REFUTATION.** `WickForIncidenceAwayAt ψ μ_n H ({0}∪μ_n) r` is FALSE in general:
+`p=7681, n=64, deg=8` (β≈2.15) gives `S'_2/Wick₂ = 1.0048`, `S'_3/Wick₃ = 1.0364`; at β=4 thin-H
+cells fail too (`p=65537, n=16, deg=128/256`: ratios up to `2.05`; `p≈2²⁰, n=32, deg=128`:
+`1.038`). The refuting offsets are UNSTRUCTURED (full multiplicative order, ∉H, ∉μ_n+μ_n) and come
+in exact μ_n-orbits: an extreme-value tail phenomenon, not a missed algebraic diagonal. In the
+prize-shaped bulk (β≈4, deg≤32) the rung holds with margins 0.55–0.97 rising in deg — knife-edge.
+The sharp candidate `S'_2 ≤ 2qΣ²` (pairing-only) is also refuted (ratio 1.51 at the 7681 cell).
+
+**(2) EXACT DIAGONAL (new, landed).** When G is a finite multiplicative subgroup stabilizing H:
+`I_H(s₀) = (Σ_{b∈H}‖η_b‖²)/|G|` EXACTLY for every `s₀ ∈ G` (`incidenceSum_diag_exact`; no
+primitivity, pure reindexing), `I_H(u·s₀) = I_H(s₀)` for `u∈G` (exact orbit invariance —
+the probe plateaus are μ_n-orbits), diagonal mass in closed form `|G|·(Σ/|G|)^{2r}`
+(`diagMass_exact`), and `I_H(0) = conj(Σ_{b∈H} η_b)` (`incidenceSum_zero_offset`). This upgrades
+the r15 spike LOWER BOUND to an identity and empties the excluded diagonal of analytic content.
+
+**(3) CORRECTED NAMED OBJECT.** `WickAwayAtWithConstant ψ G H D r C`
+(`S_r^D ≤ C·q·(2r−1)‼·Σ^r`): C=1 is the refuted r15 form; C=4 covers every probed cell. The
+moment-method bridge survives verbatim with the constant absorbed into the deeper optimal depth
+`r = ⌈log(C·q)⌉` (`incidence_sq_le_of_wickAwayAtWithConstant`, axiom-clean); rungs r=0,1 proven
+for all C≥1. Open content: the constant-C rung at `r≈ln q` for the prize instance — now with the
+correct constant landscape mapped. CORE OPEN, ON-BGK.
