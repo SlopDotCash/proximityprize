@@ -20201,3 +20201,29 @@ mathematical inputs — ChiDecompositionOff (R15 duality identity, formalization
 QuarticWeilInput (Hasse, formalization gap) — plus nothing else; hSig proven, GaussSumSizeBound
 in-tree. Rungs ≥ 3 are the wall proper (factor-n^{r−2} deficit beyond Weil, cross-coset
 self-referential). CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r19-jacobi-fourier-expansion] the EXACT Jacobi–Fourier expansion of every thin shifted character sum: m·W_χ(s) = χ(s)·(Σ_{j≠0} J_j·λ_j(s) − 1) — the moments of ALL T_χ faces collapse to Jacobi/Gauss phase-correlations (2026-07-07)
+
+Lane: #466 round-19 B2 (`Frontier/_R19JacobiFourierExpansion.lean` axiom-clean, real build;
+probe `probe_r19_jacobi_expansion.py` — identity exact to 1e-12 at χ of orders 2, 3, 4).
+
+**(1) THE IDENTITY (new, landed).** For μ_n of index m in F*, {λ_j}_{j∈ℤ/m} the dual family of
+F*/μ_n, and ANY nontrivial multiplicative χ: for s ≠ 0,
+`m·Σ_{y∈μ_n}χ(s−y) = χ(s)·(Σ_{j≠0} J_j·λ_j(s) − 1)`, `J_j = Σ_t λ_j(t)χ(1−t)` (generalized
+Jacobi sums, ‖J_j‖ = √q off the ≤ord(χ) degenerate j where ‖J_j‖ ≤ 1). The thin shifted sum is
+EXACTLY an (m−1)-term character polynomial with √q-modulus coefficients — deg-uniform: one
+identity covers every T_χ face of corrected Problem B at once. Landed with it: the dual
+pointwise envelope `‖W_χ‖ ≤ ((m−1)B+1)/m` under the named `‖J_j‖ ≤ B` input.
+
+**(2) THE STRUCTURAL CONSEQUENCE.** By complete multiplicative orthogonality, EVERY moment
+`Σ_s W_χ^{2r}` collapses exactly to a Jacobi-correlation over the linear equation
+`j₁+…+j₂ᵣ ≡ 0 (mod m)`; with `J(λ,χ) = g(λ)g(χ)/g(λχ)` this is a pure GAUSS-SUM
+phase-correlation sum. So the round-18 open object ("r=3 sextic family cancellation") and
+Problem A's wall (Gauss-sum moment cancellation) are faces of ONE phase-correlation object —
+the two open Props converge at depth 3, not just "mirror". The dual family is a hypothesis
+package (`SubgroupDualFamily`, supplied by finite abelian duality — Mathlib `MulChar.Duality`
+has the order-iso; explicit instantiation = companion lane; NOT a new open input).
+
+**Open content unchanged** (this is a reformulation, not a closure): the r=3 rung is now the
+statement that Σ over {j⃗ ∈ (ℤ/m \ 0)⁶ : Σj = 0} of ∏J_{jᵢ} is O(m⁵·q³/ ... Wick scale) —
+Jacobi-sum equidistribution along a linear condition. CORE OPEN, ON-BGK.
