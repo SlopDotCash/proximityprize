@@ -117,6 +117,48 @@ theorem prizeFloor_of_mgf_general_depth_factor
     (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc
       (momentEnvelope_of_mgf s t hc ht hP hMGF) henergyRep)
 
+/-- A general normalized moment envelope gives the spectral `NearRamanujanSqrtLog` face directly,
+without first packaging the envelope as an MGF certificate. This is the abstract S11 consumer for
+any empirical spectrum whose moments dominate the normalized `rEnergy` terms. -/
+theorem nearRamanujan_of_momentEnvelope_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {A c C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope M A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c) * K ≤ C ^ 2)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_forall_q_wickExcess_le_mul_slack_core hψ G (by positivity) hC hr hrq
+    (WraparoundKToConvergenceHub.prizeVariance_nonneg_of_card_le G hGpos hq)
+    (core_scale_of_depth_le_log_mul G (by positivity)
+      (Real.log_nonneg ((le_div_iff₀ (by exact_mod_cast hGpos : (0 : ℝ) < (G.card : ℝ))).mpr
+        (by simpa using hq)))
+      hrK hconst)
+    (forall_q_wickExcess_le_mul_slack_of_forall_rEnergy_le_mul_wick G
+      (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc henv henergyRep))
+
+/-- A general normalized moment envelope gives the convergence-hub `PrizeFloor` directly, with the
+honest slack constant `K = A / c`. -/
+theorem prizeFloor_of_momentEnvelope_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {A c C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope M A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c) * K ≤ C ^ 2)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_forall_rEnergy_le_mul_wick_depth_factor hψ G (by positivity) hC hGpos hq hr
+    hrq hrK hconst
+    (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc henv henergyRep)
+
 /-- Full-spectrum general-MGF route to `NearRamanujanSqrtLog`: using
 `t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
 discharged by the moment identity from `MGFToConvergenceHub`. The honest slack constant is
@@ -475,6 +517,8 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms forall_rEnergy_le_mul_wick_of_momentEnvelope_general
 #print axioms nearRamanujan_of_mgf_general_depth_factor
 #print axioms prizeFloor_of_mgf_general_depth_factor
+#print axioms nearRamanujan_of_momentEnvelope_general_depth_factor
+#print axioms prizeFloor_of_momentEnvelope_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_mgf_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_mgf_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_momentEnvelope_general_depth_factor
