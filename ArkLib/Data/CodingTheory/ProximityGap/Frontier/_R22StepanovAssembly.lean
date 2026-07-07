@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20StepanovScaffold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20MobiusDischarge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R22StepanovS2
 
 /-!
 # LANE S3 (#466 round 22): the Stepanov ASSEMBLY — count-to-charsum pipeline,
@@ -104,6 +105,8 @@ open ArkLib.ProximityGap.Frontier.R20StepanovScaffold
 open ArkLib.ProximityGap.Frontier.R18FourthMomentTwist
 open ArkLib.ProximityGap.Frontier.R20QuadFaceBridge
 open ArkLib.ProximityGap.Frontier.R20MobiusDischarge
+open ArkLib.ProximityGap.Frontier.R21StepanovS1
+open ArkLib.ProximityGap.Frontier.R22StepanovS2
 
 local notation "conj'" => starRingEnd ℂ
 
@@ -207,6 +210,41 @@ theorem nplus_card_le_of_s2output {m Dtot : ℕ} (hS : S2Output F m Dtot)
   obtain ⟨P, hP0, hvan, hdeg⟩ := hS u v hu hv huv
   exact le_trans (hasseDeriv_stepanov_degree_count hP0 hvan) hdeg
 
+/-- Concrete S2 (`_R22StepanovS2.cubic_stepanov_S2`) packaged into the assembly
+interface `S2Output`.  The only extra bridge is Euler's criterion:
+`quadraticChar f = 1` on `NPlus` implies `f^((q-1)/2)=1`, which is the vanishing set
+used by the auxiliary polynomial theorem. -/
+theorem s2Output_of_cubic_stepanov_S2 (hF : ringChar F ≠ 2)
+    (hq_odd : Odd (Fintype.card F))
+    {m J D : ℕ} (hJ : 0 < J)
+    (hme : m ≤ (Fintype.card F - 1) / 2)
+    (hD : 2 * D + 3 < Fintype.card F)
+    (hcount : m * (D + 2 * m + J) < 2 * (J * (D + 1))) :
+    S2Output F m
+      (3 * (m + (Fintype.card F - 1) / 2) + D + Fintype.card F * (J - 1)) := by
+  intro u v hu hv huv
+  obtain ⟨P, hP0, hPdeg, hPvan⟩ :=
+    cubic_stepanov_S2 hq_odd hu hv huv hJ hme hD hcount
+  refine ⟨P, hP0, ?_, hPdeg⟩
+  intro a ha k hk
+  have hχ : quadraticChar F (a * ((a - u) * (a - v))) = 1 := by
+    simpa [NPlus] using ha
+  have hcast : ((quadraticChar F (a * ((a - u) * (a - v))) : ℤ) : F) = 1 := by
+    rw [hχ]
+    norm_num
+  have hpow_card : (a * ((a - u) * (a - v))) ^ (Fintype.card F / 2) = 1 := by
+    simpa using (by
+      rw [quadraticChar_eq_pow_of_char_ne_two' hF (a * ((a - u) * (a - v)))] at hcast
+      exact hcast)
+  have hexp : Fintype.card F / 2 = (Fintype.card F - 1) / 2 := by
+    rcases hq_odd with ⟨t, ht⟩
+    omega
+  have hpow :
+      ((cubic u v).eval a) ^ ((Fintype.card F - 1) / 2) = 1 := by
+    rw [cubic_eval, ← hexp]
+    exact hpow_card
+  exact hPvan a hpow k hk
+
 /-- **S2 ⟹ the one-sided Stepanov bound**: any budget `B` with
 `2·Dtot + 3m ≤ m·(B + q)` (i.e. `B ≥ 2·Dtot/m + 3 − q`) gives `CubicStepanovUpper F B`.
 With the classical parameters (`m ≈ √q`, `Dtot ≈ m·q/2 + O(m√q)`) this yields
@@ -296,6 +334,25 @@ def S2OutputSized (F : Type*) [Field F] [Fintype F] [DecidableEq F] (K : ℤ) : 
     B ^ 2 ≤ K * (Fintype.card F : ℤ) ∧
     2 * (Dtot : ℤ) + 3 * (m : ℤ) ≤ (m : ℤ) * (B + (Fintype.card F : ℤ)) ∧
     S2Output F m Dtot
+
+/-- Concrete S2 parameters packaged into `S2OutputSized`.  This is the existential adapter
+from the raw auxiliary-polynomial theorem to the generic-constant Hasse pipeline; only the
+remaining scalar arithmetic (`B² ≤ Kq` and the count budget) is left explicit. -/
+theorem s2OutputSized_of_cubic_stepanov_params (hF : ringChar F ≠ 2)
+    (hq_odd : Odd (Fintype.card F))
+    {m J D : ℕ} (hm : 0 < m) (hJ : 0 < J)
+    (hme : m ≤ (Fintype.card F - 1) / 2)
+    (hD : 2 * D + 3 < Fintype.card F)
+    (hcount : m * (D + 2 * m + J) < 2 * (J * (D + 1)))
+    {K B : ℤ} (hB0 : 0 ≤ B) (hBK : B ^ 2 ≤ K * (Fintype.card F : ℤ))
+    (harith :
+      2 * ((3 * (m + (Fintype.card F - 1) / 2) + D + Fintype.card F * (J - 1) : ℕ) : ℤ)
+        + 3 * (m : ℤ) ≤ (m : ℤ) * (B + (Fintype.card F : ℤ))) :
+    S2OutputSized F K := by
+  refine ⟨m,
+    3 * (m + (Fintype.card F - 1) / 2) + D + Fintype.card F * (J - 1),
+    B, hm, hB0, hBK, harith, ?_⟩
+  exact s2Output_of_cubic_stepanov_S2 hF hq_odd hJ hme hD hcount
 
 /-- Sized S2 supply ⟹ the generic-constant Hasse bound. -/
 theorem legendreCubicHasseC_of_s2outputSized (hF : ringChar F ≠ 2) {K : ℤ}
@@ -564,8 +621,11 @@ end ArkLib.ProximityGap.Frontier.R22StepanovAssembly
 #print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.card_nplus_add_nminus
 #print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.charSum_eq_two_nplus
 #print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.nplus_card_le_of_s2output
+#print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.s2Output_of_cubic_stepanov_S2
 #print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.cubicStepanovUpper_of_s2output
 #print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.cubicStepanovUpper_trivial
+#print axioms
+  ArkLib.ProximityGap.Frontier.R22StepanovAssembly.s2OutputSized_of_cubic_stepanov_params
 #print axioms
   ArkLib.ProximityGap.Frontier.R22StepanovAssembly.legendreCubicHasseC_of_stepanovUpper
 #print axioms ArkLib.ProximityGap.Frontier.R22StepanovAssembly.legendreCubicHasseC_of_card_le

@@ -1616,3 +1616,37 @@ finding F1: "C∞=3 exactly" was probe-only — corrected).
 superelliptic Hasse family; its order-2 member ⟸ CubicStepanovUpper, whose hard core is in-tree
 and whose remainder is mechanical); tower ⟺ AwaySupBound two-sided at depth ≥ log₃q; head rungs
 = the wall's shadow (phase-deep, proven). **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §32. Round 22 (2026-07-07) — S2 proven; the pipeline assembled; constants parametric everywhere
+
+DISPROOF tag `466-r22-s2-done-pipeline-assembled-constant-parametric`. Bricks: `_R22StepanovS2.lean`
+(S2 DONE — auxiliary-polynomial existence, zero residuals; char-p Hasse-derivative machinery
+landed), `_R22StepanovAssembly.lean` (the full S2Output → CubicStepanovUpper → LegendreCubicHasseC
+→ QuarticWeilInputC → rung pipeline, 18 theorems; NO consumer needs the sharp Hasse constant —
+Cw parametric; S = 2#N⁺+3−q exact), `_R22Order2Link.lean` (d=2 family member welded as a theorem;
+honest mass accounting: d=2 is 1/(m−1) of the family), `_R22SuperellipticIndependence.lean`
+(d-generalization mapped; Kummer inputs proven; DBlockIndependence named with d=2 instance proven
+from the in-tree core).
+
+**═══ STATE after 22 rounds ═══** Remaining for the UNCONDITIONAL r=2 quadratic face: parameter
+instantiation (m,J,D as explicit functions of q satisfying the two proven budgets), the Euler
+criterion bridge, and small-q — pure arithmetic against proven interfaces. The d ≥ 4 bulk of the
+family = the norm-fold construction (new work, mapped lemma-by-lemma). Above the rung: unchanged
+(tower ⟺ AwaySupBound at depth; head rungs phase-deep). **CORE OPEN, ON-BGK. No fabricated
+closure.**
+
+## §33. Round 23 (2026-07-07) — 🏁 THE STEPANOV MILESTONE: the unconditional Hasse-type theorem lands; the r=2 quadratic face fires
+
+DISPROOF tag `466-r23-MILESTONE-unconditional-stepanov-hasse`. Two independent parameter families
+(PARAM K=169/49, MILESTONE K=625), both skeptic-verified at severity NONE:
+**`legendreCubicHasseC_unconditional`** (every odd finite field, gap-free, zero named hypotheses,
+no Weil input anywhere in the chain — pure Stepanov: S1 independence [in-tree #232 core] + S2
+rank-nullity existence [r22] + Euler bridge + explicit ℕ-sqrt parameter arithmetic [this round])
+and **`fourthMoment_quadChar_unconditional`** (Cw = 17; tight 11). To our knowledge the first
+machine-checked elementary Weil/Hasse-type character-sum bound in any proof assistant.
+
+**═══ STATE after 23 rounds ═══** The corrected-B r=2 rung: quadratic face UNCONDITIONAL;
+remaining faces = the superelliptic d ≥ 4 family (norm-fold, mapped in r22). Above the rung:
+tower ⟺ AwaySupBound (two-sided at depth), head rungs phase-deep. Problem A unchanged. The
+campaign's first unconditional wall-adjacent THEOREM. **CORE OPEN, ON-BGK. No fabricated
+closure.**

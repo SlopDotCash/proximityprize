@@ -20792,3 +20792,37 @@ cancellation) calibrates at the same constants as the B-side (C = 4-class per-sh
 family-aggregated statement subject to the same r41/r42 no-shortcut verdicts). The prize's
 single input is now calibrated on BOTH faces. Everything beneath it, on both sides, is
 machine-checked. CORE OPEN, ON-BGK.
+
+## [466-r23-MILESTONE-unconditional-stepanov-hasse] ROUND 23 MILESTONE: legendreCubicHasseC_unconditional — the first machine-checked elementary Weil/Hasse-type cubic character-sum bound; the r=2 rung quadratic face fires UNCONDITIONALLY (2026-07-07)
+
+Three lanes + three skeptics; PARAM and MILESTONE at severity NONE, EULER minor.
+
+**THE THEOREMS (all axiom-clean [propext, Classical.choice, Quot.sound], zero named hypothesis
+Props, zero sorryAx, real locked builds 8333–8335 jobs; two INDEPENDENT parameter families reached
+the goal):**
+- `_R23ParameterChoice.legendreCubicHasseC_unconditional : ringChar F ≠ 2 → LegendreCubicHasseC F 169`
+  — `(Σ_s χ₂(s(s−u)(s−v)))² ≤ 169·q` at EVERY odd finite field, gap-free (q ≤ 169 trivial branch,
+  q ≥ 171 Stepanov, q = 170 even-impossible). Family: s = ⌊√((q−4)/10)⌋, m = 2s, J = s+1,
+  D = (q−5)/2, B = 4⌊√(10q)⌋. Tight version K = 49 (|S| ≤ 7√q) for q ≥ 3251.
+- `_R23Milestone.legendreCubicHasseC_unconditional` (independent family, K = 625) +
+  `quarticWeilInputC_unconditional` (constant 26) +
+  **`fourthMoment_quadChar_unconditional : ringChar F ≠ 2 → |G|⁴ ≤ q → Σ_s ‖T_{χ₂}(s)‖⁴ ≤ 29·|G|²·q`**
+  (PARAM's version: Cw = 17; tight Cw = 11 for q ≥ 3251). The r=2 rung's quadratic face is
+  UNCONDITIONAL.
+- `_R23EulerBridge.lean`: Euler-criterion IFF (char-form ⟺ power-form N⁺), S2Output packaging;
+  count bridge audited no-gap. (Portability fix owed: add its own `import _R22StepanovS2`.)
+
+**Constant optimization settled:** C* = 2√10 ≈ 6.32 is the wall of THIS constraint system (S1
+budget 2D+3 < q binding at the D-cap; without the cap it would be 2√5); the sharp Hasse K = 4 is
+not reachable by this route and is needed NOWHERE downstream (Cw parametric, r22). Adversarial
+verification: independent numeric sweeps over every odd q ∈ [171, 300001] (zero failures),
+independent grid optimization reproduction, independent probe of the Euler identity, and skeptics'
+own #print axioms runs.
+
+**HONEST SCOPE (verbatim from the lanes, preserved):** this is the d = 2 (quadratic-character)
+face of ONE rung (r = 2) of the corrected-B tower, with a non-sharp constant (25·√q vs Weil's
+2√q). It is NOT the prize. Still open: the higher-order-χ faces (TripleLinearHasse, d ≥ 4
+superelliptic — the norm-fold construction), the head rungs and deep-depth moments (AwaySupBound),
+and Problem A (WallHolds). What changed: a wall-adjacent object that was "open formalization"
+for three rounds is now a THEOREM, and the pipeline architecture (parametric constants
+throughout) is validated end-to-end. CORE OPEN, ON-BGK. No fabricated closure.
