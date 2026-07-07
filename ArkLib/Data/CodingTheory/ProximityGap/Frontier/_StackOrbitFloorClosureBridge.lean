@@ -25,6 +25,17 @@ set_option linter.style.longLine false
 
 open scoped NNReal ENNReal ProbabilityTheory
 open ProximityGap Code
+open ArkLib.ProximityGap.Frontier.FloorClosureContract
+  (CandidateListExactSmallestFamily FloorClosureBudgetedMaxAtField
+   deltaStar_pin_of_containsBudgetedGlobalMax
+   floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudgetedMax
+   worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
+   deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
+   floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedMax
+   worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
+   deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract)
+open ArkLib.ProximityGap.Frontier.FloorLocalization (LinnikLeastPrimeBelowPrize)
+open ArkLib.ProximityGap.KKH26 (TZPrimeSupply)
 
 namespace ArkLib.ProximityGap.Frontier.StackOrbitFloorClosureBridge
 
@@ -35,35 +46,35 @@ variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 /-- The stack-orbit and floor-closure local copies of the actual MCA bad-scalar count coincide. -/
 theorem stackBadCount_eq_floorClosureStackBadCount
     (C : Set (ι -> A)) (δ : ℝ≥0) (u : WordStack A (Fin 2) ι) :
-    ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackBadCount F C δ u =
-      ArkLib.ProximityGap.Frontier.FloorClosureContract.StackBadCount F C δ u := by
+    StackOrbitRepresentativeReduction.StackBadCount F C δ u =
+      FloorClosureContract.StackBadCount F C δ u := by
   rfl
 
 /-- Representative boundedness is exactly the floor-closure family budget predicate. -/
 theorem representativeStacksBounded_iff_familyBounded
     (C : Set (ι -> A)) (δ : ℝ≥0)
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
-    ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeStacksBounded
+    StackOrbitRepresentativeReduction.RepresentativeStacksBounded
         (F := F) (A := A) C δ R B ↔
-      ArkLib.ProximityGap.Frontier.FloorClosureContract.FamilyBounded F C δ R B := by
+      FloorClosureContract.FamilyBounded F C δ R B := by
   rfl
 
 /-- Direct stack-orbit domination is exactly floor-closure family domination. -/
 theorem stackDominatingRepresentativeCover_iff_familyDominates
     (C : Set (ι -> A)) (δ : ℝ≥0)
     (R : Finset (WordStack A (Fin 2) ι)) :
-    ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.StackDominatingRepresentativeCover
+    StackOrbitRepresentativeReduction.StackDominatingRepresentativeCover
         (F := F) (A := A) C δ R ↔
-      ArkLib.ProximityGap.Frontier.FloorClosureContract.FamilyDominates F C δ R := by
+      FloorClosureContract.FamilyDominates F C δ R := by
   rfl
 
 /-- Stack-orbit representative max containment is exactly floor-closure global-max containment. -/
 theorem representativeContainsGlobalMax_iff_familyContainsGlobalMax
     (C : Set (ι -> A)) (δ : ℝ≥0)
     (R : Finset (WordStack A (Fin 2) ι)) :
-    ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsGlobalMax
+    StackOrbitRepresentativeReduction.RepresentativeContainsGlobalMax
         (F := F) (A := A) C δ R ↔
-      ArkLib.ProximityGap.Frontier.FloorClosureContract.FamilyContainsGlobalMax F C δ R := by
+      FloorClosureContract.FamilyContainsGlobalMax F C δ R := by
   rfl
 
 /-- Stack-orbit budgeted representative max containment is exactly the floor-closure sharp
@@ -71,9 +82,9 @@ budgeted-global-max certificate. -/
 theorem representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax
     (C : Set (ι -> A)) (δ : ℝ≥0)
     (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
-    ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+    StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
         (F := F) (A := A) C δ R B ↔
-      ArkLib.ProximityGap.Frontier.FloorClosureContract.FamilyContainsBudgetedGlobalMax F C δ R B := by
+      FloorClosureContract.FamilyContainsBudgetedGlobalMax F C δ R B := by
   rfl
 
 /-- The stack-orbit sharp representative certificate feeds the floor-closure delta-star consumer
@@ -82,12 +93,12 @@ theorem deltaStar_pin_of_stackOrbitRepresentativeBudgetedMax
     (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
     (hδ : δ ≤ 1)
     {R : Finset (WordStack A (Fin 2) ι)}
-    (hmax : ArkLib.ProximityGap.Frontier.StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
-      (F := F) (A := A) C δ R B)
+    (hmax :
+      StackOrbitRepresentativeReduction.RepresentativeContainsBudgetedGlobalMax
+        (F := F) (A := A) C δ R B)
     (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
     δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
-  ArkLib.ProximityGap.Frontier.FloorClosureContract.deltaStar_pin_of_containsBudgetedGlobalMax
-    C εstar hδ
+  deltaStar_pin_of_containsBudgetedGlobalMax C εstar hδ
     ((representativeContainsBudgetedGlobalMax_iff_familyContainsBudgetedGlobalMax C δ R B).mp
       hmax)
     hbudget

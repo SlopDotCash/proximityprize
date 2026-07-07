@@ -612,6 +612,13 @@ theorem twoEleven_le_half : (2 / 11 : ℝ≥0∞) ≤ 1 / 2 := by
   simp only [ENNReal.toReal_div, ENNReal.toReal_ofNat, ENNReal.toReal_one]
   norm_num
 
+/-- `6/11 < 10/11` in `ℝ≥0∞`. -/
+theorem sixEleven_lt_tenEleven : (6 / 11 : ℝ≥0∞) < 10 / 11 := by
+  rw [← ENNReal.toReal_lt_toReal (ENNReal.div_ne_top (by simp) (by simp))
+        (ENNReal.div_ne_top (by simp) (by simp))]
+  simp only [ENNReal.toReal_div, ENNReal.toReal_ofNat, ENNReal.toReal_one]
+  norm_num
+
 /-- **Interval pin (first jump):** `mcaDeltaStar(C, ε*) = 1/5` for every `ε* ∈ [1/11, 2/11)`. -/
 theorem mcaDeltaStar_eq_fifth_of_oneEleven_le_of_lt_twoEleven {εstar : ℝ≥0∞}
     (hlo : (1 / 11 : ℝ≥0∞) ≤ εstar) (hhi : εstar < 2 / 11) :
@@ -713,7 +720,7 @@ theorem mcaDeltaStar_eq_twoFifth_via_sharp_band :
     MCAThresholdLedger.mcaDeltaStar (F := F11) (A := F11)
       (C : Set (Fin 5 → F11)) (1/2 : ℝ≥0∞) = 2/5 :=
   mcaDeltaStar_eq_twoFifth_of_twoEleven_le_of_lt_tenEleven
-    twoEleven_le_half (lt_trans half_lt_sixEleven (by norm_num : (6 / 11 : ℝ≥0∞) < 10 / 11))
+    twoEleven_le_half (lt_trans half_lt_sixEleven sixEleven_lt_tenEleven)
 
 /-! ## Source audit -/
 

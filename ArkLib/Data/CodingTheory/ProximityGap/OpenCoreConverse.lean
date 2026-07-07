@@ -43,6 +43,10 @@ far-line incidence to obey the budget `q·ε*` at that radius. Together the two 
 * **`mcaDeltaStar_le_of_stackIncidence_gt`** — the concrete witness form: one stack with more than
   `E` bad scalars is enough to upper-bound the threshold by `δ`.
 
+* **`stackIncidence_le_of_lt_mcaDeltaStar`** / **`not_lt_mcaDeltaStar_of_stackIncidence_gt`** —
+  the stack-level pair: strict δ* interior forces every stack below budget, while one over-budget
+  stack refutes strict δ* interior.
+
 * **`deltaStar_iff_incidence_budget`** — THE BICONDITIONAL (with an honest `±` half-rung gap from
   `<` vs `≤` and `⌊·⌋`): for a budget `E` and `ε* = E/q`, `δ < δ*` ⟺
   `WorstCaseIncidenceBounded C δ E` holds in the strong sense `δ ≤ δ*`, with the forward direction
@@ -177,6 +181,18 @@ theorem worstCaseIncidence_of_lt_mcaDeltaStar (C : Set (ι → A)) {δ : ℝ≥0
   rw [ENNReal.mul_div_cancel hq0 hqtop] at h
   exact_mod_cast h
 
+open Classical in
+/-- **Stack-level natural-number converse.**  If `δ` lies strictly below
+`mcaDeltaStar C (E/q)`, then each concrete stack has at most `E` bad scalars. -/
+theorem stackIncidence_le_of_lt_mcaDeltaStar
+    (C : Set (ι → A)) {δ : ℝ≥0} {E : ℕ}
+    (hδ : δ < mcaDeltaStar (F := F) (A := A) C
+      ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)))
+    (u : WordStack A (Fin 2) ι) :
+    (Finset.univ.filter (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card
+      ≤ E :=
+  worstCaseIncidence_of_lt_mcaDeltaStar (F := F) (A := A) C hδ u
+
 /-! ## Converse step 4 — failure of the budget upper-bounds the threshold -/
 
 /-- **Contrapositive δ* delimiter.**  If the budget-`E` open core fails at radius `δ`, then `δ`
@@ -211,6 +227,18 @@ theorem stackIncidence_gt_refutes_budget
     ¬ WorstCaseIncidenceBounded (F := F) (A := A) C δ E := by
   intro hbound
   exact (Nat.not_lt.mpr (hbound u)) hgt
+
+open Classical in
+/-- **A single over-budget stack refutes strict δ* interior.**  This is the stack-level
+contrapositive of `stackIncidence_le_of_lt_mcaDeltaStar`. -/
+theorem not_lt_mcaDeltaStar_of_stackIncidence_gt
+    (C : Set (ι → A)) (δ : ℝ≥0) {E : ℕ} (u : WordStack A (Fin 2) ι)
+    (hgt : E < (Finset.univ.filter
+      (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card) :
+    ¬ δ < mcaDeltaStar (F := F) (A := A) C
+      ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) := by
+  intro hδ
+  exact (Nat.not_lt.mpr (stackIncidence_le_of_lt_mcaDeltaStar C hδ u)) hgt
 
 open Classical in
 /-- **δ* upper delimiter from one explicit stack.**  One stack with more than `E` bad scalars at
@@ -252,8 +280,10 @@ end ProximityGap.OpenCoreConverse
 #print axioms ProximityGap.OpenCoreConverse.epsMCA_le_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.incidence_le_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.worstCaseIncidence_of_lt_mcaDeltaStar
+#print axioms ProximityGap.OpenCoreConverse.stackIncidence_le_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.not_lt_mcaDeltaStar_of_not_worstCaseIncidence
 #print axioms ProximityGap.OpenCoreConverse.mcaDeltaStar_le_of_not_worstCaseIncidence
 #print axioms ProximityGap.OpenCoreConverse.stackIncidence_gt_refutes_budget
+#print axioms ProximityGap.OpenCoreConverse.not_lt_mcaDeltaStar_of_stackIncidence_gt
 #print axioms ProximityGap.OpenCoreConverse.mcaDeltaStar_le_of_stackIncidence_gt
 #print axioms ProximityGap.OpenCoreConverse.deltaStar_iff_incidence_budget

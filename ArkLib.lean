@@ -1216,6 +1216,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Prize407EntropyPinSynthesi
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PrizeFloorFromCrossStep
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PrizeRegimeDCEnergyBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ProfileMaximizerCarryingInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.R2UnfoldedDesignFloor
@@ -2248,7 +2249,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeFloorOfBGK
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileFiberMaxFloorBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileFiberSlackDominance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileFiberSlackFloorBridge
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileMaximizerCarryingInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PropagationTailGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcrete
