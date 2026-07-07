@@ -149,6 +149,75 @@ theorem prizeFloor_of_subexp_moment_rate_le_general_depth_factor
     (subexpMomentEnvelope_of_rate_le (le_trans (by norm_num) hA) hc' hcc' henv)
     henergyRep
 
+/-- Normalized S11 hub-facing consumer without the historical `c ≤ 1` convenience cap: a
+sub-exponential moment envelope with `A = 1` lands in the spectral `NearRamanujanSqrtLog` face at
+any positive rate `c`. -/
+theorem nearRamanujan_of_subexp_moment_depth_factor_no_rate_cap
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {c C A : ℝ} {r : ℕ}
+    (hc : 0 < c) (hC : 0 ≤ C)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrA : (r : ℝ) ≤ A * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c) * A ≤ C ^ 2)
+    (henv : MomentEnvelope M 1 c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_subexp_moment_general_depth_factor hψ G (by norm_num) hc hC
+    hGpos hq hr hrq hrA (by simpa using hconst) henv henergyRep
+
+/-- Normalized S11 hub-facing consumer without the historical `c ≤ 1` convenience cap: a
+sub-exponential moment envelope with `A = 1` lands in `PrizeFloor` at any positive rate `c`. -/
+theorem prizeFloor_of_subexp_moment_depth_factor_no_rate_cap
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {c C A : ℝ} {r : ℕ}
+    (hc : 0 < c) (hC : 0 ≤ C)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrA : (r : ℝ) ≤ A * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c) * A ≤ C ^ 2)
+    (henv : MomentEnvelope M 1 c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_subexp_moment_general_depth_factor hψ G (by norm_num) hc hC
+    hGpos hq hr hrq hrA (by simpa using hconst) henv henergyRep
+
+/-- Normalized S11 hub-facing consumer with rate transfer and no `c' ≤ 1` convenience cap:
+an envelope at rate `c` can be consumed at any lower positive rate `c' ≤ c`. -/
+theorem nearRamanujan_of_subexp_moment_rate_le_depth_factor_no_rate_cap
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {c c' C A : ℝ} {r : ℕ}
+    (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrA : (r : ℝ) ≤ A * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c') * A ≤ C ^ 2)
+    (henv : MomentEnvelope M 1 c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_subexp_moment_rate_le_general_depth_factor hψ G (by norm_num) hc'
+    hcc' hC hGpos hq hr hrq hrA (by simpa using hconst) henv henergyRep
+
+/-- Normalized S11 hub-facing consumer with rate transfer and no `c' ≤ 1` convenience cap:
+an envelope at rate `c` can be consumed at any lower positive rate `c' ≤ c` for `PrizeFloor`. -/
+theorem prizeFloor_of_subexp_moment_rate_le_depth_factor_no_rate_cap
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {c c' C A : ℝ} {r : ℕ}
+    (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrA : (r : ℝ) ≤ A * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c') * A ≤ C ^ 2)
+    (henv : MomentEnvelope M 1 c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_subexp_moment_rate_le_general_depth_factor hψ G (by norm_num) hc'
+    hcc' hC hGpos hq hr hrq hrA (by simpa using hconst) henv henergyRep
+
 /-- A normalized S11 moment envelope gives the multiplicative energy slack for the actual in-tree
 energy, provided the normalized moment functional dominates `rEnergy / |G|^r`. -/
 theorem forall_rEnergy_le_mul_wick_of_subexp_moment
@@ -264,6 +333,10 @@ namespace ProximityGap.Frontier.SubexpMomentToConvergenceHub
 #print axioms subexpMomentEnvelope_of_rate_le
 #print axioms nearRamanujan_of_subexp_moment_rate_le_general_depth_factor
 #print axioms prizeFloor_of_subexp_moment_rate_le_general_depth_factor
+#print axioms nearRamanujan_of_subexp_moment_depth_factor_no_rate_cap
+#print axioms prizeFloor_of_subexp_moment_depth_factor_no_rate_cap
+#print axioms nearRamanujan_of_subexp_moment_rate_le_depth_factor_no_rate_cap
+#print axioms prizeFloor_of_subexp_moment_rate_le_depth_factor_no_rate_cap
 #print axioms forall_rEnergy_le_mul_wick_of_subexp_moment
 #print axioms nearRamanujan_of_subexp_moment_depth_factor
 #print axioms prizeFloor_of_subexp_moment_depth_factor
