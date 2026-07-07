@@ -171,15 +171,23 @@ absolute-slack energy hypothesis
   `CharPEnergyTransferWithSlack (fun r => n^r · M r) n (1/c)`
 with `M r := (1/P)·Σ_b t_b^r` and the EXPLICIT constant `K = 1/c`. This is the complete S11
 concentration route with the layer-cake step now CARRIED, not assumed. -/
+theorem slack_of_mgf_general {ι : Type*} (s : Finset ι) (t : ι → ℝ) {A n c : ℝ}
+    (hA : 1 ≤ A) (hn : 0 ≤ n) (hc : 0 < c)
+    (ht : ∀ b ∈ s, 0 ≤ t b) (hP : 0 < (s.card : ℝ))
+    (hMGF : MGFBound s t A c) :
+    CharPEnergyTransferWithSlack
+      (fun r => n ^ r * ((∑ b ∈ s, (t b) ^ r) / (s.card : ℝ))) n (A / c) := by
+  have henv : MomentEnvelope (fun r => (∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)) A c :=
+    momentEnvelope_of_mgf s t hc ht hP hMGF
+  exact slack_of_subexp_moment_general hA hn hc henv
+
 theorem slack_of_mgf {ι : Type*} (s : Finset ι) (t : ι → ℝ) {n c : ℝ}
-    (hn : 0 ≤ n) (hc : 0 < c) (hc1 : c ≤ 1)
+    (hn : 0 ≤ n) (hc : 0 < c) (_hc1 : c ≤ 1)
     (ht : ∀ b ∈ s, 0 ≤ t b) (hP : 0 < (s.card : ℝ))
     (hMGF : MGFBound s t 1 c) :
     CharPEnergyTransferWithSlack
       (fun r => n ^ r * ((∑ b ∈ s, (t b) ^ r) / (s.card : ℝ))) n (1 / c) := by
-  have henv : MomentEnvelope (fun r => (∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)) 1 c :=
-    momentEnvelope_of_mgf s t hc ht hP hMGF
-  exact slack_of_subexp_moment hn hc hc1 henv
+  simpa using slack_of_mgf_general (A := 1) s t (by norm_num) hn hc ht hP hMGF
 
 /-- **MGF ⟹ prize, the COMPLETE S11 concentration chain in one theorem (axiom-clean).** Composes the
 layer-cake brick (`momentEnvelope_of_mgf`) with the in-tree consumer `prize_sq_of_subexp` to land the
@@ -189,15 +197,33 @@ under the formal-period moment identity `M^{2r} ≤ Q·E_r` (`E_r = n^r·M_r`) a
 the prize square-root shape with the EXPLICIT constant `√(2e/c)`. With the measured `c ≈ 0.59` this is
 `√(2e/0.59) ≈ 3.0`. This is the full S11 route `MGF ⟹ prize` with the layer-cake step CARRIED end to end
 (no `MomentEnvelope` hypothesis left assumed). -/
+theorem prize_sq_of_mgf_general {ι : Type*} (s : Finset ι) (t : ι → ℝ)
+    {Mmax A n Q c : ℝ} {r : ℕ}
+    (hMmax : 0 ≤ Mmax) (hA : 1 ≤ A) (hn : 0 ≤ n) (hQ : 0 < Q) (hc : 0 < c)
+    (ht : ∀ b ∈ s, 0 ≤ t b) (hP : 0 < (s.card : ℝ))
+    (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)
+    (hMGF : MGFBound s t A c)
+    (hmoment : Mmax ^ (2 * r) ≤ Q * (n ^ r * ((∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)))) :
+    Mmax ^ 2 ≤ 2 * Real.exp 1 * (A / c) * n * (r : ℝ) := by
+  have henv : MomentEnvelope (fun r => (∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)) A c :=
+    momentEnvelope_of_mgf s t hc ht hP hMGF
+  exact prize_sq_of_subexp_general hMmax hA hn hQ hc hr hrQ henv hmoment
+
 theorem prize_sq_of_mgf {ι : Type*} (s : Finset ι) (t : ι → ℝ) {Mmax n Q c : ℝ} {r : ℕ}
-    (hMmax : 0 ≤ Mmax) (hn : 0 ≤ n) (hQ : 0 < Q) (hc : 0 < c) (hc1 : c ≤ 1)
+    (hMmax : 0 ≤ Mmax) (hn : 0 ≤ n) (hQ : 0 < Q) (hc : 0 < c) (_hc1 : c ≤ 1)
     (ht : ∀ b ∈ s, 0 ≤ t b) (hP : 0 < (s.card : ℝ))
     (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)
     (hMGF : MGFBound s t 1 c)
     (hmoment : Mmax ^ (2 * r) ≤ Q * (n ^ r * ((∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)))) :
     Mmax ^ 2 ≤ 2 * Real.exp 1 * (1 / c) * n * (r : ℝ) := by
-  have henv : MomentEnvelope (fun r => (∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)) 1 c :=
-    momentEnvelope_of_mgf s t hc ht hP hMGF
-  exact prize_sq_of_subexp hMmax hn hQ hc hc1 hr hrQ henv hmoment
+  simpa using prize_sq_of_mgf_general (A := 1) s t hMmax (by norm_num) hn hQ hc ht hP
+    hr hrQ hMGF hmoment
 
 end ArkLib.ProximityGap.Frontier.WFS11
+
+/-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.momentEnvelope_of_mgf
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.slack_of_mgf_general
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.slack_of_mgf
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.prize_sq_of_mgf_general
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.prize_sq_of_mgf
