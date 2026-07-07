@@ -2311,10 +2311,12 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16UnconditionalIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17Deg2WeilBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17Deg2WeilRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17HighMomentSpikeGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadCharInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadrupleWeilRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17TchiMomentIdentities
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18FourthMomentTwist
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18PlateauLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18QuadraticCurveBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18RungThreeDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaEquidistribution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaGate

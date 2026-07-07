@@ -123,20 +123,18 @@ theorem incidenceSum_mul_left_invariant (ψ : AddChar F ℂ) (G H : Finset F)
   · intro b hb
     have heta : eta ψ G (u * b) = eta ψ G b := by
       unfold eta
-      refine Finset.sum_nbij' (fun x => u⁻¹ * x) (fun y => u * y) ?_ ?_ ?_ ?_ ?_
+      refine Finset.sum_nbij' (fun x => u * x) (fun y => u⁻¹ * y) ?_ ?_ ?_ ?_ ?_
       · intro x hx
-        exact (hG x).mpr hx
+        exact (hG (u * x)).mp (by rwa [inv_mul_cancel_left₀ hu])
       · intro y hy
-        exact (hG (u * y)).mp (by rwa [inv_mul_cancel_left₀ hu])
+        exact (hG y).mpr hy
       · intro x _
-        exact mul_inv_cancel_left₀ hu x
+        exact inv_mul_cancel_left₀ hu x
       · intro y _
-        exact inv_mul_cancel_left₀ hu y
+        exact mul_inv_cancel_left₀ hu y
       · intro x hx
-        have harg : (u * b) * (u⁻¹ * x) = b * x := by
-          field_simp [hu]
-          ring
-        rw [harg]
+        have harg : (u * b) * x = b * (u * x) := by ring
+        exact congrArg (fun z : F => ψ z) harg
     rw [heta]
     congr 1
     ring
@@ -261,6 +259,16 @@ def StrongR2Rung (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
   incidenceMomentAway ψ G H D 2
     ≤ (Fintype.card F : ℝ) * 2 * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 2
 
+/-- Enlarging the deleted offset set can only make the strong r=2 target easier.
+
+This is the formal hook for the round-17 secondary-spike strategy: once a refined deletion set
+`D'` removes whole secondary `μ_n`-orbits, any strong-rung proof for the smaller deleted set
+automatically transfers to the larger one. -/
+theorem strongR2Rung_mono_deleted (ψ : AddChar F ℂ) (G H : Finset F) {D D' : Finset F}
+    (hDD' : D ⊆ D') (h : StrongR2Rung ψ G H D) : StrongR2Rung ψ G H D' := by
+  unfold StrongR2Rung at h ⊢
+  exact le_trans (incidenceMomentAway_antitone_deleted ψ G H hDD' 2) h
+
 /-- The constant-2 form implies the r = 2 Wick rung (constant 3). -/
 theorem wickForIncidenceAwayAt_two_of_strong (ψ : AddChar F ℂ) (G H D : Finset F)
     (h : StrongR2Rung ψ G H D) : WickForIncidenceAwayAt ψ G H D 2 := by
@@ -280,5 +288,6 @@ end ArkLib.ProximityGap.Frontier.R16IncidenceR2Rung
   ArkLib.ProximityGap.Frontier.R16IncidenceR2Rung.wickForIncidenceAwayAt_two_of_pointwise
 #print axioms ArkLib.ProximityGap.Frontier.R16IncidenceR2Rung.incidence_away_pointwise_le
 #print axioms ArkLib.ProximityGap.Frontier.R16IncidenceR2Rung.awayMoment_two_le_unconditional
+#print axioms ArkLib.ProximityGap.Frontier.R16IncidenceR2Rung.strongR2Rung_mono_deleted
 #print axioms
   ArkLib.ProximityGap.Frontier.R16IncidenceR2Rung.wickForIncidenceAwayAt_two_of_strong

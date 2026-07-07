@@ -20164,3 +20164,40 @@ deep-depth regime r ≈ ln q where the Weil error n^{2r}√q swamps the main ter
 the r=3 rung at prize scaling is the first genuinely-open rung); (c) discharging
 `WeilQuarticPairs` itself if/when Weil lands in Mathlib. CORE OPEN, ON-BGK — but the open
 region is now sharply delimited from below.
+
+## [466-r18-hsig-discharged-weil-isolated-plateau-explained] ROUND 18: hSig DISCHARGED (r=2 rung → 3 named inputs); the Weil input isolated to a single Prop (QuarticWeilInput, pure Mathlib gap); plateau = variance depletion (exact); tower-welding refuted; rung-3 master identity (2026-07-07)
+
+Four lanes + four adversarial skeptics, all CONFIRMED (severity minor). All bricks real-locked-build,
+axiom-clean, no sorryAx.
+
+- **HSIG (`_R18SigmaEquidistribution.lean`):** the round-17 probe-only input `hSig: nq ≤ 2mΣ` is now
+  a PROVEN theorem for H = G_χ in regime q ≥ 16m²n² (weaker than the Weil regime): indicator
+  decomposition gives m·Σ = (nq−n²) + Σ_{j=1}^{m−1} A_j with each A_j a sum of off-diagonal Gauss
+  sums, |A_j| ≤ n(n−1)√q (SHARP — saturated at the Fermat cell p=65537, m=8). Holds for EVERY G ⊆ F,
+  |G| = n. The r=2 rung consumer drops from 4 named inputs to 3.
+- **WEILFORM (`_R18FourthMomentTwist.lean`):** the FourthMomentTwistBound reduces machine-checked to
+  the single per-tuple Prop `QuarticWeilInput` (nondegenerate quartic character sums ≤ 3√p = Hasse
+  genus ≤ 1) — verbatim-confirmed ABSENT from Mathlib (grep "Weil" in Mathlib/NumberTheory empty; no
+  complete character sum of any degree ≥ 2 polynomial exists). d=2 degeneracy classification EXACT
+  (3n² degenerates, S = p−1 or p−2). The hoped E₂(μ_n) elementary escape is REFUTED (sign-varying
+  unbounded ratio — the χ-twist genuinely blocks untwisting). ⚠️ scope: QuarticWeilInput's
+  degeneracy predicate is d=2-specific; consumers must restrict to quadratic characters.
+- **PLATEAU (`_R18PlateauLaw.lean`):** the r17 deg-plateau is EXPLAINED: pure variance depletion.
+  Exact: S₁^D = qΣ − ‖I_H(0)‖² − Σ²/n (the diagonal deletion removes a ≈1/m mass fraction);
+  depleted-Wick target `DepletedWickR2 C` (flat in deg) landed with the bridge back to constant-3
+  (+ explicit positive margin 3(1+n)Σ²); Cauchy–Schwarz floor puts the truth within 3.0–3.5× of the
+  absolute lower bound. Caveats: n=8 bulk cells reach 1.175 (C=3.5 NOT safe at small n); depleted
+  constant-3 violated at thin-H (m ≳ n²/2) EVT cells.
+- **RUNG3 (`_R18RungThreeDecomposition.lean`):** master identity Σ_{s₀}‖I_H‖⁶ = q·Σ_d‖cubeWeight d‖²
+  (general offset-Parseval engine); Wick-pairing 2/5 law exact (6 of 15 pairings diagonal); rung-3
+  deficit is exactly a factor n^{3−β/2} = n at β=4; **tower-welding REFUTED quantitatively**: the
+  E₃(μ_n) (banked Problem-A) slice of the sextuple sum is NEGLIGIBLE (≤1e-4 of Wick, decaying ~1/p);
+  the open rung-3 mass is cross-coset, self-referential (same incidence object) — Problem-A fixed-r
+  banking gives no free reduction. Rung-3 empirics: holds in bulk deg ≤ 32 (worst 0.86), crosses 1
+  at deg=128 (thin-H, mirrors r=2).
+
+State: the r=2 rung of the corrected-B tower is now fully machine-checked modulo exactly TWO
+mathematical inputs — ChiDecompositionOff (R15 duality identity, formalization gap) and
+QuarticWeilInput (Hasse, formalization gap) — plus nothing else; hSig proven, GaussSumSizeBound
+in-tree. Rungs ≥ 3 are the wall proper (factor-n^{r−2} deficit beyond Weil, cross-coset
+self-referential). CORE OPEN, ON-BGK. No fabricated closure.

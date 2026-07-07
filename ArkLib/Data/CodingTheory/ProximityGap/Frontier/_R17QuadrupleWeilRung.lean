@@ -5,6 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16IncidenceR2Rung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16DiagonalExactValue
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17HighMomentSpikeGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17TchiMomentIdentities
 import Mathlib.Algebra.Order.Chebyshev
 
 /-!
@@ -90,6 +92,7 @@ open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange
 open ArkLib.ProximityGap.Frontier.R16DiagonalExactValue
+open ArkLib.ProximityGap.Frontier.R16LegendreCosetFace (shiftedCharSum)
 
 namespace ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung
 
@@ -102,6 +105,76 @@ R15 χ-decomposition of the incidence sum.  (`χ(0) = 0` in Mathlib's `MulChar`,
 term `x = t` is automatically absent.) -/
 noncomputable def twistedThinSum (χ : MulChar F ℂ) (G : Finset F) (t : F) : ℂ :=
   ∑ x ∈ G, (starRingEnd ℂ) (χ (t - x))
+
+/-- The R17 Weil-lane twisted sum is exactly the complex conjugate of the common
+`shiftedCharSum` API used by the Tχ moment files. -/
+theorem twistedThinSum_eq_star_shiftedCharSum (χ : MulChar F ℂ) (G : Finset F) (t : F) :
+    twistedThinSum χ G t = star (shiftedCharSum χ G t) := by
+  simp [twistedThinSum, shiftedCharSum]
+
+/-- Consequently the two APIs have identical norm moments. -/
+theorem norm_twistedThinSum_eq_shiftedCharSum (χ : MulChar F ℂ) (G : Finset F) (t : F) :
+    ‖twistedThinSum χ G t‖ = ‖shiftedCharSum χ G t‖ := by
+  rw [twistedThinSum_eq_star_shiftedCharSum, norm_star]
+
+/-- Full-line norm moments are identical for the `twistedThinSum` and `shiftedCharSum` APIs. -/
+theorem sum_norm_twistedThinSum_pow_eq_shiftedCharMoment
+    (χ : MulChar F ℂ) (G : Finset F) (r : ℕ) :
+    ∑ t : F, ‖twistedThinSum χ G t‖ ^ (2 * r)
+      = ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.shiftedCharMoment χ G r := by
+  unfold ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.shiftedCharMoment
+  exact Finset.sum_congr rfl fun t _ => by rw [norm_twistedThinSum_eq_shiftedCharSum]
+
+/-- Deleted-line norm moments are identical for the `twistedThinSum` and `shiftedCharSum` APIs. -/
+theorem sum_norm_twistedThinSum_away_pow_eq_shiftedCharMomentAway
+    (χ : MulChar F ℂ) (G D : Finset F) (r : ℕ) :
+    ∑ t ∈ Finset.univ \ D, ‖twistedThinSum χ G t‖ ^ (2 * r)
+      = ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.shiftedCharMomentAway χ G D r := by
+  unfold ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.shiftedCharMomentAway
+  exact Finset.sum_congr rfl fun t _ => by rw [norm_twistedThinSum_eq_shiftedCharSum]
+
+/-- A shifted-character away Wick bound immediately bounds the conjugated twisted sum used in the
+χ-decomposition. -/
+theorem twistedThinSum_pow_le_of_shifted_awayWickAt
+    (χ : MulChar F ℂ) (G D : Finset F) (r : ℕ)
+    (hwick : ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ G D r)
+    {s₀ : F} (hs₀ : s₀ ∉ D) :
+    ‖twistedThinSum χ G s₀‖ ^ (2 * r)
+      ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r := by
+  rw [norm_twistedThinSum_eq_shiftedCharSum]
+  exact ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.shiftedCharSum_pow_le_of_awayWickAt
+    χ G D r hwick hs₀
+
+/-- Direct `twistedThinSum` consumer of the high-moment rate gate.  This transfers the
+shifted-character Markov last mile to the conjugated Tχ sums used by the R15 decomposition. -/
+theorem twistedThinSum_le_of_shifted_awayWickAt_rate
+    (χ : MulChar F ℂ) (G D : Finset F) (r : ℕ) {T : ℝ}
+    (hT : 0 ≤ T) (hr : 1 ≤ r)
+    (hwick : ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    {s₀ : F} (hs₀ : s₀ ∉ D) :
+    ‖twistedThinSum χ G s₀‖ ≤ T := by
+  rw [norm_twistedThinSum_eq_shiftedCharSum]
+  exact ArkLib.ProximityGap.Frontier.R17HighMomentSpikeGate.shiftedCharSum_le_of_awayWickAt_rate
+    χ G D r hT hr hwick hrate hs₀
+
+/-- Coarse rate version of `twistedThinSum_le_of_shifted_awayWickAt_rate`, using
+`(2r-1)‼ ≤ (2r)^r`. -/
+theorem twistedThinSum_le_of_coarse_shifted_awayWickAt_rate
+    (χ : MulChar F ℂ) (G D : Finset F) (r : ℕ) {T : ℝ}
+    (hT : 0 ≤ T) (hr : 1 ≤ r)
+    (hwick : ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (2 * r : ℝ) ^ r * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    {s₀ : F} (hs₀ : s₀ ∉ D) :
+    ‖twistedThinSum χ G s₀‖ ≤ T := by
+  rw [norm_twistedThinSum_eq_shiftedCharSum]
+  exact
+    ArkLib.ProximityGap.Frontier.R17HighMomentSpikeGate.shiftedCharSum_le_of_coarse_awayWickAt_rate
+      χ G D r hT hr hwick hrate hs₀
 
 /-! ### (1) Named structural / classical inputs -/
 
@@ -142,6 +215,112 @@ theorem norm_sum_pow_four_le {ι : Type*} (s : Finset ι) (f : ι → ℂ) :
   calc ‖∑ i ∈ s, f i‖ ^ 4 ≤ (∑ i ∈ s, ‖f i‖) ^ 4 :=
         pow_le_pow_left₀ (norm_nonneg _) h1 4
     _ ≤ _ := h2
+
+/-- Hölder/power-mean at arbitrary positive integer exponent, stated in the successor form used
+by `pow_sum_le_card_mul_sum_pow`.  This is the reusable bookkeeping step for any future deep
+moment rung: `‖∑ f‖^(k+1) ≤ |s|^k ∑ ‖f‖^(k+1)`. -/
+theorem norm_sum_pow_succ_le {ι : Type*} (s : Finset ι) (f : ι → ℂ) (k : ℕ) :
+    ‖∑ i ∈ s, f i‖ ^ (k + 1) ≤ (s.card : ℝ) ^ k * ∑ i ∈ s, ‖f i‖ ^ (k + 1) := by
+  have h1 : ‖∑ i ∈ s, f i‖ ≤ ∑ i ∈ s, ‖f i‖ := norm_sum_le s f
+  have h2 : (∑ i ∈ s, ‖f i‖) ^ (k + 1)
+      ≤ (s.card : ℝ) ^ k * ∑ i ∈ s, ‖f i‖ ^ (k + 1) := by
+    simpa using pow_sum_le_card_mul_sum_pow
+      (f := fun i => ‖f i‖) (fun i _ => norm_nonneg _) k
+  calc ‖∑ i ∈ s, f i‖ ^ (k + 1) ≤ (∑ i ∈ s, ‖f i‖) ^ (k + 1) :=
+        pow_le_pow_left₀ (norm_nonneg _) h1 (k + 1)
+    _ ≤ _ := h2
+
+/-- Even-exponent version of `norm_sum_pow_succ_le`, the shape needed for the `2r`-moment
+incidence ladder. -/
+theorem norm_sum_pow_even_le {ι : Type*} (s : Finset ι) (f : ι → ℂ) (r : ℕ) (hr : 1 ≤ r) :
+    ‖∑ i ∈ s, f i‖ ^ (2 * r)
+      ≤ (s.card : ℝ) ^ (2 * r - 1) * ∑ i ∈ s, ‖f i‖ ^ (2 * r) := by
+  have hsucc : 2 * r - 1 + 1 = 2 * r := by omega
+  simpa [hsucc] using norm_sum_pow_succ_le s f (2 * r - 1)
+
+/-- General-`r` χ-family pointwise bookkeeping.  If every shifted character face in `X` satisfies
+the corrected away Wick target at rung `r`, then the conjugated χ-sum appearing in the
+Gauss-decomposition is controlled at the same exponent, up to the standard Hölder factor over
+`X` and Gauss-sum sizes. -/
+theorem twistedFamilySum_pow_even_le_of_shifted_awayWick
+    (G D : Finset F) (X : Finset (MulChar F ℂ)) (g : MulChar F ℂ → ℂ)
+    (r : ℕ) (hr : 1 ≤ r)
+    (hg : GaussSumSizeBound X g)
+    (hwick :
+      ∀ χ ∈ X,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ G D r)
+    {s₀ : F} (hs₀ : s₀ ∉ D) :
+    ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ ^ (2 * r)
+      ≤ (X.card : ℝ) ^ (2 * r - 1)
+          * ∑ χ ∈ X,
+            (Real.sqrt (Fintype.card F : ℝ)) ^ (2 * r)
+              * ((Fintype.card F : ℝ)
+                * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) := by
+  classical
+  have hHolder :=
+    norm_sum_pow_even_le X (fun χ => g χ * twistedThinSum χ G s₀) r hr
+  refine le_trans hHolder ?_
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  refine Finset.sum_le_sum fun χ hχ => ?_
+  rw [norm_mul, mul_pow]
+  have hgpow : ‖g χ‖ ^ (2 * r) ≤ (Real.sqrt (Fintype.card F : ℝ)) ^ (2 * r) :=
+    pow_le_pow_left₀ (norm_nonneg _) (hg χ hχ) (2 * r)
+  have hTpow :
+      ‖twistedThinSum χ G s₀‖ ^ (2 * r)
+        ≤ (Fintype.card F : ℝ)
+            * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r :=
+    twistedThinSum_pow_le_of_shifted_awayWickAt χ G D r (hwick χ hχ) hs₀
+  exact mul_le_mul hgpow hTpow (by positivity) (by positivity)
+
+/-- General deep-route pointwise incidence consumer.  If the χ-decomposition holds off `D`, the
+Gauss coefficients have square-root size, and every shifted χ-face has crossed the corrected-away
+Wick rate at threshold `T`, then the completed incidence sum obeys
+`m‖I(s₀)‖ ≤ |G| + |X|√q T` at every non-deleted offset.  The remaining prize work is precisely to
+produce the deep-rate `ShiftedCharAwayWickAt` hypotheses with a threshold `T` small enough for the
+target `√Σ` scale. -/
+theorem incidenceSum_mul_le_of_shifted_awayWickAt_rate
+    (ψ : AddChar F ℂ) (G H D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (m : ℕ) (r : ℕ) {T : ℝ}
+    (hT : 0 ≤ T) (hr : 1 ≤ r)
+    (hdec : ChiDecompositionOff ψ G H D X g m)
+    (hg : GaussSumSizeBound X g)
+    (hwick :
+      ∀ χ ∈ X,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    {s₀ : F} (hs₀ : s₀ ∉ D) :
+    (m : ℝ) * ‖incidenceSum ψ G H s₀‖
+      ≤ (G.card : ℝ) + (X.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T := by
+  classical
+  have hdecs := hdec s₀ hs₀
+  have hnorm : (m : ℝ) * ‖incidenceSum ψ G H s₀‖
+      ≤ (G.card : ℝ) + ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ := by
+    have : ‖(m : ℂ) * incidenceSum ψ G H s₀‖
+        = ‖(-(G.card : ℂ)) + ∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ := by rw [hdecs]
+    calc (m : ℝ) * ‖incidenceSum ψ G H s₀‖
+        = ‖(m : ℂ) * incidenceSum ψ G H s₀‖ := by
+          rw [norm_mul, Complex.norm_natCast]
+      _ = ‖(-(G.card : ℂ)) + ∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ := this
+      _ ≤ ‖(-(G.card : ℂ))‖ + ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ := norm_add_le _ _
+      _ = (G.card : ℝ) + ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ := by
+          rw [norm_neg, Complex.norm_natCast]
+  have hsum : ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖
+      ≤ (X.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T := by
+    calc ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖
+        ≤ ∑ χ ∈ X, ‖g χ * twistedThinSum χ G s₀‖ := norm_sum_le X _
+      _ ≤ ∑ _χ ∈ X, Real.sqrt (Fintype.card F : ℝ) * T := by
+          refine Finset.sum_le_sum fun χ hχ => ?_
+          rw [norm_mul]
+          have hgχ := hg χ hχ
+          have hTχ : ‖twistedThinSum χ G s₀‖ ≤ T :=
+            twistedThinSum_le_of_shifted_awayWickAt_rate χ G D r hT hr (hwick χ hχ) hrate hs₀
+          exact mul_le_mul hgχ hTχ (norm_nonneg _) (by positivity)
+      _ = (X.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+          ring
+  linarith
 
 /-- `(a+b)⁴ ≤ 8(a⁴+b⁴)` for nonnegative reals. -/
 theorem add_pow_four_le {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
@@ -442,6 +621,21 @@ end ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.norm_sum_pow_four_le
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.twistedThinSum_eq_star_shiftedCharSum
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.norm_twistedThinSum_eq_shiftedCharSum
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.sum_norm_twistedThinSum_pow_eq_shiftedCharMoment
+#print axioms
+  ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.sum_norm_twistedThinSum_away_pow_eq_shiftedCharMomentAway
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.twistedThinSum_pow_le_of_shifted_awayWickAt
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.twistedThinSum_le_of_shifted_awayWickAt_rate
+#print axioms
+  ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.twistedThinSum_le_of_coarse_shifted_awayWickAt_rate
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.norm_sum_pow_succ_le
+#print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.norm_sum_pow_even_le
+#print axioms
+  ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.twistedFamilySum_pow_even_le_of_shifted_awayWick
+#print axioms
+  ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.incidenceSum_mul_le_of_shifted_awayWickAt_rate
 #print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.add_pow_four_le
 #print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.awayMoment_two_mul_le_of_chiDecomp
 #print axioms ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.r2Rung_of_weil

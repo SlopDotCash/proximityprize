@@ -52,9 +52,12 @@ where the Wick bound holds/fails at `n = 8/16`, `deg = 2/4`.
   `I_H(s₀) = Σ/n` EXACTLY (`Σ = ∑_{b∈H}‖η_b‖²`; verified to 1e-11) — the diagonal of the coset
   autocorrelation `I_H(s₀) = ∑_{t∈H/μ_n} conj(η_t) η_{t·s₀}`; and `I_H(0) = ∑_{b∈H} conj(η_b)` is
   a second (smaller) spike.  This is the exact mirror of Problem A's mandatory DC subtraction.
-* **The diagonal-subtracted tower obeys Wick everywhere probed**: excluding `D = {0} ∪ μ_n`, all
-  ratios `S_r^D/Wick < 1` and decreasing in `r` (`r ≤ 8`), at every probed `(n, deg, p)` including
-  `p ≈ n^4`.  The formalized hypothesis to attack is therefore `WickForIncidenceAwayAt` (below).
+* **The first diagonal-subtracted probes looked Wick-controlled**, but the wider round-16
+  stress sweep found a valid secondary-spike counterexample for the naive deletion set
+  `D = {0} ∪ μ_n`: `p = 7681, n = 64, deg = 8` has
+  `S₂^D/(3qΣ²) = 1.00481`.  Thus `WickForIncidenceAwayAt` remains a useful formal
+  interface, but not a universal conjecture for this smallest deletion set without an
+  additional range hypothesis or enlarged diagonal/secondary-spike deletion.
 * Off-diagonal worst-case `‖I_H‖/(√|H|·M)` measured `0.54–1.06` (once `> 1`, at `p = 4129, n = 8,
   deg = 4`): off-diagonal Problem B is essentially TIGHT — constant-1 fails marginally at one
   small scale; any constant `≥ 1.1` holds at all probed scales.
@@ -429,6 +432,285 @@ def WickForIncidenceAwayAt (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ) : P
 def WickForIncidenceAway (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
   ∀ r : ℕ, WickForIncidenceAwayAt ψ G H D r
 
+/-- **Raw moment with exact diagonal mass allowed.**  This is the expansion-friendly form of the
+corrected rung: the raw incidence moment may exceed Wick by exactly the deleted diagonal block. -/
+def RawIncidenceMomentWithDiagonalAt (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ) : Prop :=
+  incidenceMoment ψ G H r
+    ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+        * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r
+      + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r)
+
+/-- Full raw-with-diagonal tower, equivalent rungwise to the corrected away tower. -/
+def RawIncidenceMomentWithDiagonal (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  ∀ r : ℕ, RawIncidenceMomentWithDiagonalAt ψ G H D r
+
+/-- **Named first open fourth-moment target.**  This is the `r = 2` raw-with-diagonal estimate:
+`S₂ ≤ 3 q Σ² + diagonalMass₂(D)`. -/
+def RawFourthMomentWithDiagonal (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  incidenceMoment ψ G H 2
+    ≤ (Fintype.card F : ℝ) * 3 * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 2
+      + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ 4
+
+/-- **Named pointwise route to the first hard rung.**  Away from `D`, every incidence value is
+variance-scale: `‖I_H(s₀)‖² ≤ 3Σ`, where `Σ = ∑_{b∈H} ‖η_b‖²`. -/
+def OffdiagSquareLeThreeSigma (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  ∀ s₀ : F, s₀ ∉ D →
+    ‖incidenceSum ψ G H s₀‖ ^ 2 ≤ 3 * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2
+
+/-- **Norm-scale off-diagonal target.**  This is the more analytic-looking version of
+`OffdiagSquareLeThreeSigma`: away from `D`, the incidence norm is bounded by
+`C · sqrt(Σ)`.  The square target follows whenever `0 ≤ C` and `C² ≤ 3`. -/
+def OffdiagNormLeSqrtSigma (ψ : AddChar F ℂ) (G H D : Finset F) (C : ℝ) : Prop :=
+  ∀ s₀ : F, s₀ ∉ D →
+    ‖incidenceSum ψ G H s₀‖
+      ≤ C * Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+
+/-- **Exact-constant norm-scale first-rung target.**  Away from `D`,
+`‖I_H(s₀)‖ ≤ sqrt(3) * sqrt(Σ)`, the constant needed to imply
+`OffdiagSquareLeThreeSigma`. -/
+def OffdiagNormLeSqrtThreeSigma (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  OffdiagNormLeSqrtSigma ψ G H D (Real.sqrt 3)
+
+/-- **Problem-B-shaped off-diagonal norm target.**  Away from `D`,
+`‖I_H(s₀)‖ ≤ sqrt(Σ)`.  This is stronger than the `sqrt(3)` first-rung target. -/
+def OffdiagNormLeSqrtSigmaOne (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  OffdiagNormLeSqrtSigma ψ G H D 1
+
+/-- **Problem-B-shaped off-diagonal target with an explicit coefficient sup bound.**  If
+`M` bounds `‖η_b‖` on `H`, this is the familiar square-root-cancellation scale
+`sqrt(|H| · M²)`. -/
+def OffdiagNormLeSqrtCardMulSup (ψ : AddChar F ℂ) (G H D : Finset F) (M : ℝ) : Prop :=
+  ∀ s₀ : F, s₀ ∉ D →
+    ‖incidenceSum ψ G H s₀‖ ≤ Real.sqrt ((H.card : ℝ) * M ^ 2)
+
+/-- **Familiar Problem-B product form.**  Away from `D`,
+`‖I_H(s₀)‖ ≤ sqrt(|H|) · M`.  This is equivalent to
+`OffdiagNormLeSqrtCardMulSup` when `M ≥ 0`, but is often the most readable statement. -/
+def OffdiagNormLeSqrtCardMulSupProduct (ψ : AddChar F ℂ) (G H D : Finset F) (M : ℝ) :
+    Prop :=
+  ∀ s₀ : F, s₀ ∉ D →
+    ‖incidenceSum ψ G H s₀‖ ≤ Real.sqrt (H.card : ℝ) * M
+
+/-- **Constant-`C` familiar Problem-B product form.**  Away from `D`,
+`‖I_H(s₀)‖ ≤ C · sqrt(|H|) · M`. -/
+def OffdiagNormLeConstSqrtCardMulSupProduct
+    (ψ : AddChar F ℂ) (G H D : Finset F) (C M : ℝ) : Prop :=
+  ∀ s₀ : F, s₀ ∉ D →
+    ‖incidenceSum ψ G H s₀‖ ≤ C * (Real.sqrt (H.card : ℝ) * M)
+
+/-- **`sqrt(3)` product-form first-rung target.**  Away from `D`,
+`‖I_H(s₀)‖ ≤ sqrt(3) · sqrt(|H|) · M`. -/
+def OffdiagNormLeSqrtThreeCardMulSupProduct
+    (ψ : AddChar F ℂ) (G H D : Finset F) (M : ℝ) : Prop :=
+  OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D (Real.sqrt 3) M
+
+/-- Monotonicity of the norm-scale target in the constant. -/
+theorem offdiagNormLeSqrtSigma_mono_const {ψ : AddChar F ℂ} (G H D : Finset F)
+    {C C' : ℝ} (hCC' : C ≤ C')
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagNormLeSqrtSigma ψ G H D C' := by
+  intro s₀ hs₀
+  refine le_trans (hpt s₀ hs₀) ?_
+  exact mul_le_mul_of_nonneg_right hCC'
+    (Real.sqrt_nonneg (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
+
+/-- Any norm-scale bound with constant `C ≤ sqrt(3)` implies the exact-constant target. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le {ψ : AddChar F ℂ}
+    (G H D : Finset F) {C : ℝ} (hC : C ≤ Real.sqrt 3)
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D :=
+  offdiagNormLeSqrtSigma_mono_const G H D hC hpt
+
+/-- Constant-1 off-diagonal norm control implies the exact `sqrt(3)` target. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (G H D : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D := by
+  refine offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D ?_ hpt
+  rw [← Real.sqrt_one]
+  exact Real.sqrt_le_sqrt (by norm_num : (1 : ℝ) ≤ 3)
+
+/-- Monotonicity of the squared off-diagonal target in the deleted set. -/
+theorem offdiagSquareLeThreeSigma_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D')
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    OffdiagSquareLeThreeSigma ψ G H D' := by
+  intro s₀ hs₀
+  exact hpt s₀ (fun hsD => hs₀ (hDD' hsD))
+
+/-- Monotonicity of the norm-scale off-diagonal target in the deleted set. -/
+theorem offdiagNormLeSqrtSigma_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D') (C : ℝ)
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagNormLeSqrtSigma ψ G H D' C := by
+  intro s₀ hs₀
+  exact hpt s₀ (fun hsD => hs₀ (hDD' hsD))
+
+/-- Monotonicity of the exact `sqrt(3)` norm-scale target in the deleted set. -/
+theorem offdiagNormLeSqrtThreeSigma_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D')
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D' :=
+  offdiagNormLeSqrtSigma_mono_deleted G H hDD' (Real.sqrt 3) hpt
+
+/-- Monotonicity of the constant-1 norm-scale target in the deleted set. -/
+theorem offdiagNormLeSqrtSigmaOne_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D')
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtSigmaOne ψ G H D' :=
+  offdiagNormLeSqrtSigma_mono_deleted G H hDD' 1 hpt
+
+/-- Monotonicity of the square-root-card target in the deleted set. -/
+theorem offdiagNormLeSqrtCardMulSup_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D') (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSup ψ G H D' M := by
+  intro s₀ hs₀
+  exact hpt s₀ (fun hsD => hs₀ (hDD' hsD))
+
+/-- Monotonicity of the familiar product-form target in the deleted set. -/
+theorem offdiagNormLeSqrtCardMulSupProduct_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D') (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSupProduct ψ G H D' M := by
+  intro s₀ hs₀
+  exact hpt s₀ (fun hsD => hs₀ (hDD' hsD))
+
+/-- Monotonicity of the constant product-form target in the deleted set. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted {ψ : AddChar F ℂ}
+    (G H : Finset F) {D D' : Finset F} (hDD' : D ⊆ D') (C M : ℝ)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D' C M := by
+  intro s₀ hs₀
+  exact hpt s₀ (fun hsD => hs₀ (hDD' hsD))
+
+/-- Monotonicity of the `sqrt(3)` product-form target in the deleted set. -/
+theorem offdiagNormLeSqrtThreeCardMulSupProduct_mono_deleted {ψ : AddChar F ℂ}
+    (G H : Finset F) {D D' : Finset F} (hDD' : D ⊆ D') (M : ℝ)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D' M :=
+  offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H hDD' (Real.sqrt 3) M hpt
+
+/-- Enlarge the squared off-diagonal target by deleting an additional spike set `E`. -/
+theorem offdiagSquareLeThreeSigma_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    OffdiagSquareLeThreeSigma ψ G H (D ∪ E) :=
+  offdiagSquareLeThreeSigma_mono_deleted G H (by intro s hs; exact Finset.mem_union_left E hs)
+    hpt
+
+/-- Enlarge the norm-scale off-diagonal target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeSqrtSigma_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (C : ℝ) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagNormLeSqrtSigma ψ G H (D ∪ E) C :=
+  offdiagNormLeSqrtSigma_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) C hpt
+
+/-- Enlarge the exact `sqrt(3)` norm-scale target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeSqrtThreeSigma_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    OffdiagNormLeSqrtThreeSigma ψ G H (D ∪ E) :=
+  offdiagNormLeSqrtThreeSigma_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) hpt
+
+/-- Enlarge the constant-1 norm-scale target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeSqrtSigmaOne_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtSigmaOne ψ G H (D ∪ E) :=
+  offdiagNormLeSqrtSigmaOne_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) hpt
+
+/-- Enlarge the square-root-card target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeSqrtCardMulSup_union_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSup ψ G H (D ∪ E) M :=
+  offdiagNormLeSqrtCardMulSup_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) M hpt
+
+/-- Enlarge the familiar product-form target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeSqrtCardMulSupProduct_union_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSupProduct ψ G H (D ∪ E) M :=
+  offdiagNormLeSqrtCardMulSupProduct_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) M hpt
+
+/-- Enlarge the constant product-form target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_union_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (C M : ℝ)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H (D ∪ E) C M :=
+  offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) C M hpt
+
+/-- Enlarge the `sqrt(3)` product-form target by deleting an additional spike set `E`. -/
+theorem offdiagNormLeSqrtThreeCardMulSupProduct_union_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H (D ∪ E) M :=
+  offdiagNormLeSqrtThreeCardMulSupProduct_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) M hpt
+
+/-- Enlarge the squared off-diagonal target by deleting an additional left-hand spike set `E`. -/
+theorem offdiagSquareLeThreeSigma_leftUnion_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    OffdiagSquareLeThreeSigma ψ G H (E ∪ D) :=
+  offdiagSquareLeThreeSigma_mono_deleted G H (by intro s hs; exact Finset.mem_union_right E hs)
+    hpt
+
+/-- Enlarge the norm-scale target by deleting an additional left-hand spike set `E`. -/
+theorem offdiagNormLeSqrtSigma_leftUnion_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (C : ℝ) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagNormLeSqrtSigma ψ G H (E ∪ D) C :=
+  offdiagNormLeSqrtSigma_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) C hpt
+
+/-- Enlarge the exact `sqrt(3)` norm-scale target by deleting an additional left-hand spike set. -/
+theorem offdiagNormLeSqrtThreeSigma_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    OffdiagNormLeSqrtThreeSigma ψ G H (E ∪ D) :=
+  offdiagNormLeSqrtThreeSigma_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) hpt
+
+/-- Enlarge the constant-1 norm-scale target by deleting an additional left-hand spike set. -/
+theorem offdiagNormLeSqrtSigmaOne_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtSigmaOne ψ G H (E ∪ D) :=
+  offdiagNormLeSqrtSigmaOne_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) hpt
+
+/-- Enlarge the square-root-card target by deleting an additional left-hand spike set. -/
+theorem offdiagNormLeSqrtCardMulSup_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSup ψ G H (E ∪ D) M :=
+  offdiagNormLeSqrtCardMulSup_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) M hpt
+
+/-- Enlarge the familiar product-form target by deleting an additional left-hand spike set. -/
+theorem offdiagNormLeSqrtCardMulSupProduct_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSupProduct ψ G H (E ∪ D) M :=
+  offdiagNormLeSqrtCardMulSupProduct_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) M hpt
+
+/-- Enlarge the constant product-form target by deleting an additional left-hand spike set. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (C M : ℝ)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H (E ∪ D) C M :=
+  offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) C M hpt
+
+/-- Enlarge the `sqrt(3)` product-form target by deleting an additional left-hand spike set. -/
+theorem offdiagNormLeSqrtThreeCardMulSupProduct_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H (E ∪ D) M :=
+  offdiagNormLeSqrtThreeCardMulSupProduct_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) M hpt
+
 /-- **Zeroth rung for the corrected tower, proved.**  At `r = 0`, the away moment simply counts
 the non-diagonal offsets, so it is at most `q`; the Wick right-hand side is exactly `q`. -/
 theorem wickForIncidenceAwayAt_zero (ψ : AddChar F ℂ) (G H D : Finset F) :
@@ -498,6 +780,13 @@ theorem wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag {ψ : AddChar
     positivity
   linarith
 
+/-- Named-Prop form of diagonal-mass cancellation. -/
+theorem wickForIncidenceAwayAt_of_rawIncidenceMomentWithDiagonalAt {ψ : AddChar F ℂ}
+    (G H D : Finset F) (r : ℕ)
+    (hraw : RawIncidenceMomentWithDiagonalAt ψ G H D r) :
+    WickForIncidenceAwayAt ψ G H D r :=
+  wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D r hraw
+
 /-- **The concrete r=2 target for Round 16.**  To prove the first genuinely open corrected rung,
 it is enough to prove the raw fourth-moment estimate with the exact deleted diagonal mass added:
 
@@ -513,7 +802,1420 @@ theorem wickForIncidenceAwayAt_two_of_incidenceMoment_le_three_wick_add_diag {ψ
           + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ 4) :
     WickForIncidenceAwayAt ψ G H D 2 := by
   refine wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D 2 ?_
-  simpa [Nat.doubleFactorial] using hraw
+  have hdf : ((Nat.doubleFactorial (2 * 2 - 1) : ℕ) : ℝ) = 3 := by
+    norm_num [Nat.doubleFactorial]
+  simpa [hdf] using hraw
+
+/-- **Exact fourth-moment target.**  The first genuinely open corrected rung is equivalent to the
+raw fourth-moment estimate
+
+`S₂ ≤ 3 q Σ² + diagonalMass₂(D)`.
+
+This packages the Round-16 target with the constant exposed and no hidden diagonal bookkeeping. -/
+theorem wickForIncidenceAwayAt_two_iff_incidenceMoment_le_three_wick_add_diag
+    {ψ : AddChar F ℂ} (G H D : Finset F) :
+    WickForIncidenceAwayAt ψ G H D 2
+      ↔ incidenceMoment ψ G H 2
+          ≤ (Fintype.card F : ℝ) * 3 * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 2
+            + ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ 4 := by
+  constructor
+  · intro haway
+    unfold WickForIncidenceAwayAt at haway
+    rw [incidenceMoment_eq_away_add_diag ψ G H D 2]
+    have hdf : ((Nat.doubleFactorial (2 * 2 - 1) : ℕ) : ℝ) = 3 := by
+      norm_num [Nat.doubleFactorial]
+    simp [hdf] at haway ⊢
+    linarith
+  · exact wickForIncidenceAwayAt_two_of_incidenceMoment_le_three_wick_add_diag G H D
+
+/-- Named-Prop form of the first hard corrected rung. -/
+theorem wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal
+    {ψ : AddChar F ℂ} (G H D : Finset F) :
+    WickForIncidenceAwayAt ψ G H D 2 ↔ RawFourthMomentWithDiagonal ψ G H D := by
+  simpa [RawFourthMomentWithDiagonal] using
+    (wickForIncidenceAwayAt_two_iff_incidenceMoment_le_three_wick_add_diag G H D)
+
+/-- Named-Prop one-way consumer for the first hard corrected rung. -/
+theorem wickForIncidenceAwayAt_two_of_rawFourthMomentWithDiagonal {ψ : AddChar F ℂ}
+    (G H D : Finset F) (hraw : RawFourthMomentWithDiagonal ψ G H D) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G H D).mpr hraw
+
+/-- **`L∞ × L²` route to the first hard corrected rung.**  If every off-diagonal offset obeys
+`‖I_H(s₀)‖² ≤ 3Σ`, where `Σ = ∑_{b∈H} ‖η_b‖²`, then the diagonal-subtracted fourth moment satisfies
+the Wick `r = 2` bound `S₂^D ≤ 3 q Σ²`.
+
+This records a second exact entry point to the first open rung: prove a variance-scale pointwise
+bound off the diagonal, then combine it with the R13 second moment. -/
+theorem wickForIncidenceAwayAt_two_of_offdiag_sq_le_three_sigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : ∀ s₀ : F, s₀ ∉ D →
+      ‖incidenceSum ψ G H s₀‖ ^ 2 ≤ 3 * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) :
+    WickForIncidenceAwayAt ψ G H D 2 := by
+  classical
+  unfold WickForIncidenceAwayAt incidenceMomentAway
+  set Sig : ℝ := ∑ b ∈ H, ‖eta ψ G b‖ ^ 2
+  have haway_l2_le_raw :
+      (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ 2)
+        ≤ ∑ s₀ : F, ‖incidenceSum ψ G H s₀‖ ^ 2 := by
+    exact Finset.sum_le_sum_of_subset_of_nonneg
+      (by intro s hs; exact (Finset.mem_sdiff.mp hs).1)
+      (by intro s _ _; positivity)
+  have haway_l2 :
+      (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ 2)
+        ≤ (Fintype.card F : ℝ) * Sig := by
+    rw [incidenceSum_sq_sum_offsets hψ G H] at haway_l2_le_raw
+    simpa [Sig] using haway_l2_le_raw
+  have hterm : ∀ s₀ ∈ Finset.univ \ D,
+      ‖incidenceSum ψ G H s₀‖ ^ (2 * 2)
+        ≤ (3 * Sig) * ‖incidenceSum ψ G H s₀‖ ^ 2 := by
+    intro s₀ hs₀
+    have hsD : s₀ ∉ D := (Finset.mem_sdiff.mp hs₀).2
+    have hpt' : ‖incidenceSum ψ G H s₀‖ ^ 2 ≤ 3 * Sig := by
+      simpa [Sig] using hpt s₀ hsD
+    have hnonneg : 0 ≤ ‖incidenceSum ψ G H s₀‖ ^ 2 := by positivity
+    calc ‖incidenceSum ψ G H s₀‖ ^ (2 * 2)
+        = (‖incidenceSum ψ G H s₀‖ ^ 2) * ‖incidenceSum ψ G H s₀‖ ^ 2 := by ring
+      _ ≤ (3 * Sig) * ‖incidenceSum ψ G H s₀‖ ^ 2 :=
+          mul_le_mul_of_nonneg_right hpt' hnonneg
+  have hsum4 :
+      (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * 2))
+        ≤ (3 * Sig) * ∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ 2 := by
+    calc (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * 2))
+        ≤ ∑ s₀ ∈ Finset.univ \ D,
+            (3 * Sig) * ‖incidenceSum ψ G H s₀‖ ^ 2 := by
+          exact Finset.sum_le_sum hterm
+      _ = (3 * Sig) * ∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ 2 := by
+          rw [← Finset.mul_sum]
+  have hcoef_nonneg : 0 ≤ 3 * Sig := by
+    dsimp [Sig]
+    positivity
+  have hsum2 :
+      (3 * Sig) * (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ 2)
+        ≤ (3 * Sig) * ((Fintype.card F : ℝ) * Sig) :=
+    mul_le_mul_of_nonneg_left haway_l2 hcoef_nonneg
+  have hdf : ((Nat.doubleFactorial (2 * 2 - 1) : ℕ) : ℝ) = 3 := by
+    norm_num [Nat.doubleFactorial]
+  calc (∑ s₀ ∈ Finset.univ \ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * 2))
+      ≤ (3 * Sig) * ((Fintype.card F : ℝ) * Sig) := le_trans hsum4 hsum2
+    _ = (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 2 - 1) : ℝ) * Sig ^ 2 := by
+        rw [hdf]
+        ring
+
+/-- Named-target version of the `L∞ × L²` route.  The same off-diagonal square bound proves the
+packaged raw fourth-moment-with-diagonal target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiag_sq_le_three_sigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : ∀ s₀ : F, s₀ ∉ D →
+      ‖incidenceSum ψ G H s₀‖ ^ 2 ≤ 3 * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G H D).mp
+    (wickForIncidenceAwayAt_two_of_offdiag_sq_le_three_sigma hψ G H D hpt)
+
+/-- Named-Prop version of the `L∞ × L²` route to away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagSquareLeThreeSigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiag_sq_le_three_sigma hψ G H D hpt
+
+/-- Named-Prop version of the `L∞ × L²` route to the raw fourth-moment target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagSquareLeThreeSigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiag_sq_le_three_sigma hψ G H D hpt
+
+/-- Pointwise square control off `D` proves away-Wick at `r = 2` after deleting any extra spike
+set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagSquareLeThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagSquareLeThreeSigma hψ G H (D ∪ E)
+    (offdiagSquareLeThreeSigma_union_deleted G H D E hpt)
+
+/-- Pointwise square control off `D` proves the raw fourth target after deleting any extra spike
+set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagSquareLeThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagSquareLeThreeSigma hψ G H (D ∪ E)
+    (offdiagSquareLeThreeSigma_union_deleted G H D E hpt)
+
+/-- Pointwise square control off `D` proves away-Wick at `r = 2` after deleting an extra left-hand
+spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagSquareLeThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagSquareLeThreeSigma hψ G H (E ∪ D)
+    (offdiagSquareLeThreeSigma_leftUnion_deleted G H D E hpt)
+
+/-- Pointwise square control off `D` proves the raw fourth target after deleting an extra left-hand
+spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagSquareLeThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagSquareLeThreeSigma ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagSquareLeThreeSigma hψ G H (E ∪ D)
+    (offdiagSquareLeThreeSigma_leftUnion_deleted G H D E hpt)
+
+/-- Norm-scale off-diagonal control implies the squared `3Σ` target whenever `C² ≤ 3`. -/
+theorem offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtSigma {ψ : AddChar F ℂ}
+    (G H D : Finset F) {C : ℝ} (hC0 : 0 ≤ C) (hC : C ^ 2 ≤ 3)
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagSquareLeThreeSigma ψ G H D := by
+  intro s₀ hs₀
+  set Sig : ℝ := ∑ b ∈ H, ‖eta ψ G b‖ ^ 2
+  have hSig0 : 0 ≤ Sig := by
+    dsimp [Sig]
+    positivity
+  have hnorm := hpt s₀ hs₀
+  have hright_nonneg : 0 ≤ C * Real.sqrt Sig := mul_nonneg hC0 (Real.sqrt_nonneg Sig)
+  have hsq : ‖incidenceSum ψ G H s₀‖ ^ 2 ≤ (C * Real.sqrt Sig) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) hnorm 2
+  have htarget : (C * Real.sqrt Sig) ^ 2 ≤ 3 * Sig := by
+    calc (C * Real.sqrt Sig) ^ 2
+        = C ^ 2 * Sig := by rw [mul_pow, Real.sq_sqrt hSig0]
+      _ ≤ 3 * Sig := mul_le_mul_of_nonneg_right hC hSig0
+  exact le_trans hsq htarget
+
+/-- Norm-scale off-diagonal control gives away-Wick at the first hard rung. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F) {C : ℝ}
+    (hC0 : 0 ≤ C) (hC : C ^ 2 ≤ 3)
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagSquareLeThreeSigma hψ G H D
+    (offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtSigma G H D hC0 hC hpt)
+
+/-- Norm-scale off-diagonal control gives the named raw fourth-moment target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F) {C : ℝ}
+    (hC0 : 0 ≤ C) (hC : C ^ 2 ≤ 3)
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagSquareLeThreeSigma hψ G H D
+    (offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtSigma G H D hC0 hC hpt)
+
+/-- The exact-constant norm-scale target implies the squared `3Σ` target. -/
+theorem offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtThreeSigma {ψ : AddChar F ℂ}
+    (G H D : Finset F) (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    OffdiagSquareLeThreeSigma ψ G H D := by
+  refine offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtSigma G H D
+    (Real.sqrt_nonneg 3) ?_ hpt
+  rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)]
+
+/-- Exact-constant norm-scale control gives away-Wick at the first hard rung. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagSquareLeThreeSigma hψ G H D
+    (offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtThreeSigma G H D hpt)
+
+/-- Exact-constant norm-scale control gives the named raw fourth-moment target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagSquareLeThreeSigma hψ G H D
+    (offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtThreeSigma G H D hpt)
+
+/-- Exact `sqrt(3)` norm-scale control off `D` proves away-Wick at `r = 2` after deleting any
+extra spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma hψ G H (D ∪ E)
+    (offdiagNormLeSqrtThreeSigma_union_deleted G H D E hpt)
+
+/-- Exact `sqrt(3)` norm-scale control off `D` proves the raw fourth target after deleting any
+extra spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma hψ G H (D ∪ E)
+    (offdiagNormLeSqrtThreeSigma_union_deleted G H D E hpt)
+
+/-- Exact `sqrt(3)` norm-scale control off `D` proves away-Wick at `r = 2` after deleting an extra
+left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma hψ G H (E ∪ D)
+    (offdiagNormLeSqrtThreeSigma_leftUnion_deleted G H D E hpt)
+
+/-- Exact `sqrt(3)` norm-scale control off `D` proves the raw fourth target after deleting an extra
+left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeSigma
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma hψ G H (E ∪ D)
+    (offdiagNormLeSqrtThreeSigma_leftUnion_deleted G H D E hpt)
+
+/-- A norm-scale off-diagonal bound with any constant `C ≤ sqrt(3)` gives away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigma_le_sqrtThree
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D hC hpt)
+
+/-- A norm-scale off-diagonal bound with any constant `C ≤ sqrt(3)` gives the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigma_le_sqrtThree
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D hC hpt)
+
+/-- A norm-scale off-diagonal bound with any `C ≤ sqrt(3)` proves away-Wick at `r = 2` after
+deleting any extra spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeSigma hψ G H D E
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D hC hpt)
+
+/-- A norm-scale off-diagonal bound with any `C ≤ sqrt(3)` proves the raw fourth target after
+deleting any extra spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeSigma hψ G H D E
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D hC hpt)
+
+/-- A norm-scale off-diagonal bound with any `C ≤ sqrt(3)` proves away-Wick at `r = 2` after
+deleting an extra left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeSigma hψ G H D E
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D hC hpt)
+
+/-- A norm-scale off-diagonal bound with any `C ≤ sqrt(3)` proves the raw fourth target after
+deleting an extra left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeSigma hψ G H D E
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le G H D hC hpt)
+
+/-- Constant-1 off-diagonal norm control gives away-Wick at the first hard rung. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigmaOne G H D hpt)
+
+/-- Constant-1 off-diagonal norm control gives the named raw fourth-moment target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigmaOne G H D hpt)
+
+/-- Constant-1 norm-scale control off `D` proves away-Wick at `r = 2` after deleting any extra
+spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigmaOne hψ G H (D ∪ E)
+    (offdiagNormLeSqrtSigmaOne_union_deleted G H D E hpt)
+
+/-- Constant-1 norm-scale control off `D` proves the raw fourth target after deleting any extra
+spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigmaOne hψ G H (D ∪ E)
+    (offdiagNormLeSqrtSigmaOne_union_deleted G H D E hpt)
+
+/-- Constant-1 norm-scale control off `D` proves away-Wick at `r = 2` after deleting an extra
+left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigmaOne hψ G H (E ∪ D)
+    (offdiagNormLeSqrtSigmaOne_leftUnion_deleted G H D E hpt)
+
+/-- Constant-1 norm-scale control off `D` proves the raw fourth target after deleting an extra
+left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigmaOne hψ G H (E ∪ D)
+    (offdiagNormLeSqrtSigmaOne_leftUnion_deleted G H D E hpt)
+
+/-- Energy-normalized off-diagonal control plus a coefficient sup bound gives the familiar
+`sqrt(|H|·M²)` Problem-B scale. -/
+theorem offdiagNormLeSqrtCardMulSup_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ}
+    (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtCardMulSup ψ G H D M := by
+  intro s₀ hs₀
+  have hpt' : ‖incidenceSum ψ G H s₀‖
+      ≤ Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) := by
+    simpa [OffdiagNormLeSqrtSigmaOne, OffdiagNormLeSqrtSigma] using hpt s₀ hs₀
+  refine le_trans hpt' ?_
+  have hsum : (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ≤ (H.card : ℝ) * M ^ 2 := by
+    calc (∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+        ≤ ∑ _b ∈ H, M ^ 2 := by
+          refine Finset.sum_le_sum (fun b hb => ?_)
+          have h1 : ‖eta ψ G b‖ ≤ M := hM b hb
+          have h0 : 0 ≤ ‖eta ψ G b‖ := norm_nonneg _
+          nlinarith [h1, h0]
+      _ = (H.card : ℝ) * M ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+  exact Real.sqrt_le_sqrt hsum
+
+/-- A coefficient lower bound gives the energy-lower hypothesis
+`|H| · m² ≤ Σ`.  This is the dual of the sup-envelope estimate used to pass from variance-scale
+control to product-form control. -/
+theorem card_mul_sq_le_energy_of_coeff_lower_bound
+    {ψ : AddChar F ℂ} (G H : Finset F) {m : ℝ}
+    (hm0 : 0 ≤ m)
+    (hm : ∀ b ∈ H, m ≤ ‖eta ψ G b‖) :
+    (H.card : ℝ) * m ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2 := by
+  calc (H.card : ℝ) * m ^ 2
+      = ∑ _b ∈ H, m ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2 := by
+        refine Finset.sum_le_sum (fun b hb => ?_)
+        have h0 : 0 ≤ ‖eta ψ G b‖ := norm_nonneg _
+        nlinarith [hm0, hm b hb, h0]
+
+/-- If every coefficient on `H` has norm exactly `m`, then the coefficient energy is exactly
+`|H| · m²`. -/
+theorem energy_eq_card_mul_sq_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (G H : Finset F) {m : ℝ}
+    (hm : ∀ b ∈ H, ‖eta ψ G b‖ = m) :
+    (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) = (H.card : ℝ) * m ^ 2 := by
+  calc (∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+      = ∑ _b ∈ H, m ^ 2 := by
+          refine Finset.sum_congr rfl (fun b hb => ?_)
+          rw [hm b hb]
+    _ = (H.card : ℝ) * m ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+
+/-- Exact coefficient norms give the energy-lower hypothesis. -/
+theorem card_mul_sq_le_energy_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (G H : Finset F) {m : ℝ}
+    (hm : ∀ b ∈ H, ‖eta ψ G b‖ = m) :
+    (H.card : ℝ) * m ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2 := by
+  rw [energy_eq_card_mul_sq_of_coeff_norm_eq G H hm]
+
+/-- Convert `sqrt(|H|·M²)` to the familiar `sqrt(|H|)·M` product form when `M ≥ 0`. -/
+theorem offdiagNormLeSqrtCardMulSupProduct_of_sqrtCardMulSup
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ} (hM0 : 0 ≤ M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    OffdiagNormLeSqrtCardMulSupProduct ψ G H D M := by
+  intro s₀ hs₀
+  refine le_trans (hpt s₀ hs₀) ?_
+  have hcard_nonneg : 0 ≤ (H.card : ℝ) := by positivity
+  rw [Real.sqrt_mul hcard_nonneg, Real.sqrt_sq hM0]
+
+/-- Energy-normalized constant-1 off-diagonal control plus a coefficient sup bound gives the
+familiar `sqrt(|H|)·M` Problem-B scale. -/
+theorem offdiagNormLeSqrtCardMulSupProduct_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ} (hM0 : 0 ≤ M)
+    (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtCardMulSupProduct ψ G H D M :=
+  offdiagNormLeSqrtCardMulSupProduct_of_sqrtCardMulSup G H D hM0
+    (offdiagNormLeSqrtCardMulSup_of_offdiagNormLeSqrtSigmaOne G H D hM hpt)
+
+/-- Energy-normalized constant-`C` off-diagonal control plus a coefficient sup bound gives the
+familiar `C·sqrt(|H|)·M` Problem-B scale. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_of_offdiagNormLeSqrtSigma
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C M : ℝ} (hC0 : 0 ≤ C) (hM0 : 0 ≤ M)
+    (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M)
+    (hpt : OffdiagNormLeSqrtSigma ψ G H D C) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M := by
+  intro s₀ hs₀
+  have hsum : (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ≤ (H.card : ℝ) * M ^ 2 := by
+    calc (∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+        ≤ ∑ _b ∈ H, M ^ 2 := by
+          refine Finset.sum_le_sum (fun b hb => ?_)
+          have h1 : ‖eta ψ G b‖ ≤ M := hM b hb
+          have h0 : 0 ≤ ‖eta ψ G b‖ := norm_nonneg _
+          nlinarith [h1, h0]
+      _ = (H.card : ℝ) * M ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+  have hsqrt : Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+      ≤ Real.sqrt (H.card : ℝ) * M := by
+    refine le_trans (Real.sqrt_le_sqrt hsum) ?_
+    have hcard_nonneg : 0 ≤ (H.card : ℝ) := by positivity
+    rw [Real.sqrt_mul hcard_nonneg, Real.sqrt_sq hM0]
+  calc ‖incidenceSum ψ G H s₀‖
+      ≤ C * Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) := hpt s₀ hs₀
+    _ ≤ C * (Real.sqrt (H.card : ℝ) * M) :=
+        mul_le_mul_of_nonneg_left hsqrt hC0
+
+/-- Constant-1 product form as the `C = 1` specialization of the generic product target. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_one_of_product
+    {ψ : AddChar F ℂ} (G H D : Finset F) (M : ℝ)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D 1 M := by
+  intro s₀ hs₀
+  simpa using hpt s₀ hs₀
+
+/-- Monotonicity of the familiar product-form target in the explicit constant. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_mono_const
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C C' M : ℝ} (hCC' : C ≤ C')
+    (hM0 : 0 ≤ M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C' M := by
+  intro s₀ hs₀
+  refine le_trans (hpt s₀ hs₀) ?_
+  exact mul_le_mul_of_nonneg_right hCC'
+    (mul_nonneg (Real.sqrt_nonneg (H.card : ℝ)) hM0)
+
+/-- The constant-1 product form implies the named `sqrt(3)` product form. -/
+theorem offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ} (hM0 : 0 ≤ M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M := by
+  have h1sqrt3 : (1 : ℝ) ≤ Real.sqrt 3 := by
+    nlinarith [Real.sq_sqrt (show 0 ≤ (3 : ℝ) by norm_num), Real.sqrt_nonneg 3]
+  exact offdiagNormLeConstSqrtCardMulSupProduct_mono_const G H D h1sqrt3 hM0
+    (offdiagNormLeConstSqrtCardMulSupProduct_one_of_product G H D M hpt)
+
+/-- The constant-1 product form implies any larger-constant product form. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_of_product
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C M : ℝ} (hC : 1 ≤ C) (hM0 : 0 ≤ M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M :=
+  offdiagNormLeConstSqrtCardMulSupProduct_mono_const G H D hC hM0
+    (offdiagNormLeConstSqrtCardMulSupProduct_one_of_product G H D M hpt)
+
+/-- The square-root-card scale implies any larger-constant product form when `M ≥ 0`. -/
+theorem offdiagNormLeConstSqrtCardMulSupProduct_of_sqrtCardMulSup
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C M : ℝ} (hC : 1 ≤ C) (hM0 : 0 ≤ M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M :=
+  offdiagNormLeConstSqrtCardMulSupProduct_of_product G H D hC hM0
+    (offdiagNormLeSqrtCardMulSupProduct_of_sqrtCardMulSup G H D hM0 hpt)
+
+/-- Energy-normalized constant-1 off-diagonal control plus a coefficient sup bound gives the
+`sqrt(3)` familiar product scale. -/
+theorem offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtSigmaOne
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ} (hM0 : 0 ≤ M)
+    (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M)
+    (hpt : OffdiagNormLeSqrtSigmaOne ψ G H D) :
+    OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M :=
+  offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtCardMulSupProduct G H D hM0
+    (offdiagNormLeSqrtCardMulSupProduct_of_offdiagNormLeSqrtSigmaOne G H D hM0 hM hpt)
+
+/-- `sqrt(3)` energy-normalized control plus a coefficient sup bound gives the `sqrt(3)` familiar
+product scale. -/
+theorem offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtThreeSigma
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ} (hM0 : 0 ≤ M)
+    (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M)
+    (hpt : OffdiagNormLeSqrtThreeSigma ψ G H D) :
+    OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M :=
+  offdiagNormLeConstSqrtCardMulSupProduct_of_offdiagNormLeSqrtSigma
+    G H D (Real.sqrt_nonneg 3) hM0 hM hpt
+
+/-- Constant product-form control implies variance-scale control when `C ≤ C'` and the sup
+envelope does not exceed the actual coefficient energy: `|H|·M² ≤ Σ`. -/
+theorem offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C C' M : ℝ}
+    (hCC' : C ≤ C') (hC0 : 0 ≤ C') (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeSqrtSigma ψ G H D C' := by
+  intro s₀ hs₀
+  refine le_trans (hpt s₀ hs₀) ?_
+  have hcard_nonneg : 0 ≤ (H.card : ℝ) := by positivity
+  have hscale :
+      Real.sqrt (H.card : ℝ) * M
+        ≤ Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) := by
+    calc Real.sqrt (H.card : ℝ) * M
+        = Real.sqrt ((H.card : ℝ) * M ^ 2) := by
+            rw [Real.sqrt_mul hcard_nonneg, Real.sqrt_sq hM0]
+      _ ≤ Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) := Real.sqrt_le_sqrt henergy
+  calc C * (Real.sqrt (H.card : ℝ) * M)
+      ≤ C' * (Real.sqrt (H.card : ℝ) * M) :=
+        mul_le_mul_of_nonneg_right hCC' (mul_nonneg (Real.sqrt_nonneg (H.card : ℝ)) hM0)
+    _ ≤ C' * Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left hscale hC0
+
+/-- Constant product-form control with `C ≤ sqrt(3)` implies the exact `sqrt(3)` variance-scale
+target under the energy-lower hypothesis. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D :=
+  offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hC
+    (Real.sqrt_nonneg 3) hM0 henergy hpt
+
+/-- Constant product-form control with `C ≤ sqrt(3)` plus the energy-lower hypothesis proves
+away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hC
+      hM0 henergy hpt)
+
+/-- Constant product-form control with `C ≤ sqrt(3)` plus the energy-lower hypothesis proves the
+raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hC
+      hM0 henergy hpt)
+
+/-- Constant product-form control with `C ≤ sqrt(3)` plus the energy-lower hypothesis proves
+away-Wick at `r = 2` after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H (D ∪ E)
+    hC hM0 henergy
+    (offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_left E hs) C M hpt)
+
+/-- Constant product-form control with `C ≤ sqrt(3)` plus the energy-lower hypothesis proves the
+raw fourth target after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H (D ∪ E)
+    hC hM0 henergy
+    (offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_left E hs) C M hpt)
+
+/-- Constant product-form control with `C ≤ sqrt(3)` plus the energy-lower hypothesis proves
+away-Wick at `r = 2` after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H (E ∪ D)
+    hC hM0 henergy
+    (offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_right E hs) C M hpt)
+
+/-- Constant product-form control with `C ≤ sqrt(3)` plus the energy-lower hypothesis proves the
+raw fourth target after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H (E ∪ D)
+    hC hM0 henergy
+    (offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_right E hs) C M hpt)
+
+/-- Constant product-form control with a matching coefficient lower bound implies variance-scale
+control.  The lower bound discharges the energy-lower hypothesis. -/
+theorem offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C C' M : ℝ}
+    (hCC' : C ≤ C') (hC0 : 0 ≤ C') (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeSqrtSigma ψ G H D C' :=
+  offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hCC'
+    hC0 hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control with `C ≤ sqrt(3)` and a matching coefficient lower bound
+implies the exact `sqrt(3)` variance-scale target. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D :=
+  offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hC
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control with exact coefficient norms implies variance-scale control. -/
+theorem offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C C' M : ℝ}
+    (hCC' : C ≤ C') (hC0 : 0 ≤ C') (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeSqrtSigma ψ G H D C' :=
+  offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hCC'
+    hC0 hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with `C ≤ sqrt(3)` and exact coefficient norms implies the exact
+`sqrt(3)` variance-scale target. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D :=
+  offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct G H D hC
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with exact coefficient norms proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D
+    hC hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with exact coefficient norms proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D
+    hC hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with exact coefficient norms proves the raw fourth target after
+deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control with exact coefficient norms proves the raw fourth target after
+deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Constant product-form control plus a matching coefficient lower bound proves away-Wick at
+`r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D
+    hC hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control plus a matching coefficient lower bound proves the raw fourth
+target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D
+    hC hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control plus a matching coefficient lower bound proves away-Wick at
+`r = 2` after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control plus a matching coefficient lower bound proves the raw fourth
+target after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control plus a matching coefficient lower bound proves away-Wick at
+`r = 2` after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Constant product-form control plus a matching coefficient lower bound proves the raw fourth
+target after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {C M : ℝ}
+    (hC : C ≤ Real.sqrt 3) (hM0 : 0 ≤ M)
+    (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeConstSqrtCardMulSupProduct ψ G H D C M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D E
+    hC hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Familiar product-form control plus the energy-lower hypothesis proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 := by
+  have h1sqrt3 : (1 : ℝ) ≤ Real.sqrt 3 := by
+    nlinarith [Real.sq_sqrt (show 0 ≤ (3 : ℝ) by norm_num), Real.sqrt_nonneg 3]
+  exact wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D
+    h1sqrt3 hM0 henergy
+    (offdiagNormLeConstSqrtCardMulSupProduct_one_of_product G H D M hpt)
+
+/-- Familiar product-form control plus the energy-lower hypothesis proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D := by
+  have h1sqrt3 : (1 : ℝ) ≤ Real.sqrt 3 := by
+    nlinarith [Real.sq_sqrt (show 0 ≤ (3 : ℝ) by norm_num), Real.sqrt_nonneg 3]
+  exact rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct hψ G H D
+    h1sqrt3 hM0 henergy
+    (offdiagNormLeConstSqrtCardMulSupProduct_one_of_product G H D M hpt)
+
+/-- Familiar product-form control plus the energy-lower hypothesis proves away-Wick at `r = 2`
+after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct hψ G H (D ∪ E)
+    hM0 henergy (offdiagNormLeSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_left E hs) M hpt)
+
+/-- Familiar product-form control plus the energy-lower hypothesis proves the raw fourth target
+after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct hψ G H (D ∪ E)
+    hM0 henergy (offdiagNormLeSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_left E hs) M hpt)
+
+/-- Familiar product-form control plus the energy-lower hypothesis proves away-Wick at `r = 2`
+after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct hψ G H (E ∪ D)
+    hM0 henergy (offdiagNormLeSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_right E hs) M hpt)
+
+/-- Familiar product-form control plus the energy-lower hypothesis proves the raw fourth target
+after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct hψ G H (E ∪ D)
+    hM0 henergy (offdiagNormLeSqrtCardMulSupProduct_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_right E hs) M hpt)
+
+/-- Familiar product-form control with exact coefficient norms proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Familiar product-form control with exact coefficient norms proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Familiar product-form control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Familiar product-form control with exact coefficient norms proves the raw fourth target after
+deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Familiar product-form control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Familiar product-form control with exact coefficient norms proves the raw fourth target after
+deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Familiar product-form control plus a matching coefficient lower bound proves away-Wick at
+`r = 2`.  The lower bound discharges the energy-lower hypothesis. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Familiar product-form control plus a matching coefficient lower bound proves the raw fourth
+target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Familiar product-form control plus a matching coefficient lower bound proves away-Wick at
+`r = 2` after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Familiar product-form control plus a matching coefficient lower bound proves the raw fourth
+target after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Familiar product-form control plus a matching coefficient lower bound proves away-Wick at
+`r = 2` after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Familiar product-form control plus a matching coefficient lower bound proves the raw fourth
+target after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Square-root-card control plus the energy-lower hypothesis proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D
+    hM0 henergy (offdiagNormLeSqrtCardMulSupProduct_of_sqrtCardMulSup G H D hM0 hpt)
+
+/-- Square-root-card control plus the energy-lower hypothesis proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct hψ G H D
+    hM0 henergy (offdiagNormLeSqrtCardMulSupProduct_of_sqrtCardMulSup G H D hM0 hpt)
+
+/-- Square-root-card control plus the energy-lower hypothesis proves away-Wick at `r = 2` after
+deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup hψ G H (D ∪ E)
+    hM0 henergy (offdiagNormLeSqrtCardMulSup_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_left E hs) M hpt)
+
+/-- Square-root-card control plus the energy-lower hypothesis proves the raw fourth target after
+deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup hψ G H (D ∪ E)
+    hM0 henergy (offdiagNormLeSqrtCardMulSup_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_left E hs) M hpt)
+
+/-- Square-root-card control plus the energy-lower hypothesis proves away-Wick at `r = 2` after
+deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup hψ G H (E ∪ D)
+    hM0 henergy (offdiagNormLeSqrtCardMulSup_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_right E hs) M hpt)
+
+/-- Square-root-card control plus the energy-lower hypothesis proves the raw fourth target after
+deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup hψ G H (E ∪ D)
+    hM0 henergy (offdiagNormLeSqrtCardMulSup_mono_deleted G H
+      (by intro s hs; exact Finset.mem_union_right E hs) M hpt)
+
+/-- Square-root-card control with exact coefficient norms proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Square-root-card control with exact coefficient norms proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Square-root-card control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Square-root-card control with exact coefficient norms proves the raw fourth target after
+deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Square-root-card control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Square-root-card control with exact coefficient norms proves the raw fourth target after
+deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Square-root-card control plus a matching coefficient lower bound proves away-Wick at `r = 2`.
+The lower bound discharges the energy-lower hypothesis. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Square-root-card control plus a matching coefficient lower bound proves the raw fourth target.
+-/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Square-root-card control plus a matching coefficient lower bound proves away-Wick at `r = 2`
+after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Square-root-card control plus a matching coefficient lower bound proves the raw fourth target
+after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Square-root-card control plus a matching coefficient lower bound proves away-Wick at `r = 2`
+after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Square-root-card control plus a matching coefficient lower bound proves the raw fourth target
+after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtCardMulSup ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control implies variance-scale `sqrt(3)` control when the sup envelope
+does not exceed the actual coefficient energy: `|H|·M² ≤ Σ`.  This is the honest extra hypothesis
+needed to feed a product-form estimate into the first-rung Wick route. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ} (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D := by
+  intro s₀ hs₀
+  refine le_trans (hpt s₀ hs₀) ?_
+  have hcard_nonneg : 0 ≤ (H.card : ℝ) := by positivity
+  have hscale :
+      Real.sqrt (H.card : ℝ) * M
+        ≤ Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) := by
+    calc Real.sqrt (H.card : ℝ) * M
+        = Real.sqrt ((H.card : ℝ) * M ^ 2) := by
+            rw [Real.sqrt_mul hcard_nonneg, Real.sqrt_sq hM0]
+      _ ≤ Real.sqrt (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) := Real.sqrt_le_sqrt henergy
+  exact mul_le_mul_of_nonneg_left hscale (Real.sqrt_nonneg 3)
+
+/-- Product-form `sqrt(3)` control plus the energy-lower hypothesis proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct G H D hM0
+      henergy hpt)
+
+/-- Product-form `sqrt(3)` control plus the energy-lower hypothesis proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma hψ G H D
+    (offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct G H D hM0
+      henergy hpt)
+
+/-- Product-form `sqrt(3)` control plus the energy-lower hypothesis proves away-Wick at `r = 2`
+after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H (D ∪ E)
+    hM0 henergy (offdiagNormLeSqrtThreeCardMulSupProduct_union_deleted G H D E M hpt)
+
+/-- Product-form `sqrt(3)` control plus the energy-lower hypothesis proves the raw fourth target
+after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H (D ∪ E)
+    hM0 henergy (offdiagNormLeSqrtThreeCardMulSupProduct_union_deleted G H D E M hpt)
+
+/-- Product-form `sqrt(3)` control plus the energy-lower hypothesis proves away-Wick at `r = 2`
+after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H (E ∪ D)
+    hM0 henergy (offdiagNormLeSqrtThreeCardMulSupProduct_leftUnion_deleted G H D E M hpt)
+
+/-- Product-form `sqrt(3)` control plus the energy-lower hypothesis proves the raw fourth target
+after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M)
+    (henergy : (H.card : ℝ) * M ^ 2 ≤ ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H (E ∪ D)
+    hM0 henergy (offdiagNormLeSqrtThreeCardMulSupProduct_leftUnion_deleted G H D E M hpt)
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound implies the exact
+`sqrt(3)` variance-scale target. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D :=
+  offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms implies the exact `sqrt(3)`
+variance-scale target. -/
+theorem offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    OffdiagNormLeSqrtThreeSigma ψ G H D :=
+  offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms proves away-Wick at `r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms proves the raw fourth target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms proves the raw fourth target after
+deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms proves away-Wick at `r = 2` after
+deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with exact coefficient norms proves the raw fourth target after
+deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMeq : ∀ b ∈ H, ‖eta ψ G b‖ = M)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_norm_eq G H hMeq) hpt
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound proves away-Wick at
+`r = 2`. -/
+theorem wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H D 2 :=
+  wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound proves the raw fourth
+target. -/
+theorem rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D hM0
+    (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound proves away-Wick at
+`r = 2` after deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) 2 :=
+  wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound proves the raw fourth
+target after deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound proves away-Wick at
+`r = 2` after deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) 2 :=
+  wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
+
+/-- Product-form `sqrt(3)` control with a matching coefficient lower bound proves the raw fourth
+target after deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G H D E : Finset F) {M : ℝ}
+    (hM0 : 0 ≤ M) (hMlower : ∀ b ∈ H, M ≤ ‖eta ψ G b‖)
+    (hpt : OffdiagNormLeSqrtThreeCardMulSupProduct ψ G H D M) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct hψ G H D E
+    hM0 (card_mul_sq_le_energy_of_coeff_lower_bound G H hM0 hMlower) hpt
 
 /-- **Exact diagonal-cancellation equivalence.**  The corrected rung `WickForIncidenceAwayAt` is
 equivalent to the raw moment bound with the exact excluded diagonal mass added back to the Wick
@@ -533,6 +2235,25 @@ theorem wickForIncidenceAwayAt_iff_incidenceMoment_le_wick_add_diag {ψ : AddCha
     rw [incidenceMoment_eq_away_add_diag ψ G H D r]
     linarith
   · exact wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag G H D r
+
+/-- Named-Prop exact diagonal-cancellation equivalence. -/
+theorem wickForIncidenceAwayAt_iff_rawIncidenceMomentWithDiagonalAt
+    {ψ : AddChar F ℂ} (G H D : Finset F) (r : ℕ) :
+    WickForIncidenceAwayAt ψ G H D r
+      ↔ RawIncidenceMomentWithDiagonalAt ψ G H D r := by
+  simpa [RawIncidenceMomentWithDiagonalAt] using
+    (wickForIncidenceAwayAt_iff_incidenceMoment_le_wick_add_diag G H D r)
+
+/-- Full-tower named-Prop exact diagonal-cancellation equivalence. -/
+theorem wickForIncidenceAway_iff_rawIncidenceMomentWithDiagonal
+    {ψ : AddChar F ℂ} (G H D : Finset F) :
+    WickForIncidenceAway ψ G H D
+      ↔ RawIncidenceMomentWithDiagonal ψ G H D := by
+  constructor
+  · intro haway r
+    exact (wickForIncidenceAwayAt_iff_rawIncidenceMomentWithDiagonalAt G H D r).mp (haway r)
+  · intro hraw r
+    exact (wickForIncidenceAwayAt_iff_rawIncidenceMomentWithDiagonalAt G H D r).mpr (hraw r)
 
 /-- Full-tower form of diagonal-mass cancellation.  If every raw rung is bounded by Wick plus the
 exact excluded diagonal mass, then the corrected diagonal-subtracted Wick tower holds. -/
@@ -617,6 +2338,117 @@ theorem wickForIncidenceAway_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
     WickForIncidenceAway ψ G H D' := by
   intro r
   exact wickForIncidenceAwayAt_mono_deleted G H hDD' r (hwick r)
+
+/-- Monotonicity of the raw-with-diagonal target in the deleted set.  Enlarging `D` only enlarges
+the diagonal allowance on the right-hand side. -/
+theorem rawIncidenceMomentWithDiagonalAt_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D') (r : ℕ)
+    (hraw : RawIncidenceMomentWithDiagonalAt ψ G H D r) :
+    RawIncidenceMomentWithDiagonalAt ψ G H D' r := by
+  classical
+  unfold RawIncidenceMomentWithDiagonalAt at hraw ⊢
+  have hdiag :
+      (∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ (2 * r))
+        ≤ ∑ s₀ ∈ D', ‖incidenceSum ψ G H s₀‖ ^ (2 * r) :=
+    Finset.sum_le_sum_of_subset_of_nonneg hDD'
+      (by intro s _ _; positivity)
+  linarith
+
+/-- Full-tower monotonicity of the raw-with-diagonal target in the deleted set. -/
+theorem rawIncidenceMomentWithDiagonal_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D')
+    (hraw : RawIncidenceMomentWithDiagonal ψ G H D) :
+    RawIncidenceMomentWithDiagonal ψ G H D' := by
+  intro r
+  exact rawIncidenceMomentWithDiagonalAt_mono_deleted G H hDD' r (hraw r)
+
+/-- Monotonicity of the named raw fourth-moment target in the deleted set. -/
+theorem rawFourthMomentWithDiagonal_mono_deleted {ψ : AddChar F ℂ} (G H : Finset F)
+    {D D' : Finset F} (hDD' : D ⊆ D')
+    (hraw : RawFourthMomentWithDiagonal ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H D' := by
+  classical
+  unfold RawFourthMomentWithDiagonal at hraw ⊢
+  have hdiag :
+      (∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ 4)
+        ≤ ∑ s₀ ∈ D', ‖incidenceSum ψ G H s₀‖ ^ 4 :=
+    Finset.sum_le_sum_of_subset_of_nonneg hDD'
+      (by intro s _ _; positivity)
+  linarith
+
+/-- Enlarge a corrected Wick rung by deleting an additional spike set `E`. -/
+theorem wickForIncidenceAwayAt_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (r : ℕ) (hwick : WickForIncidenceAwayAt ψ G H D r) :
+    WickForIncidenceAwayAt ψ G H (D ∪ E) r :=
+  wickForIncidenceAwayAt_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) r hwick
+
+/-- Enlarge the corrected Wick tower by deleting an additional spike set `E`. -/
+theorem wickForIncidenceAway_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hwick : WickForIncidenceAway ψ G H D) :
+    WickForIncidenceAway ψ G H (D ∪ E) :=
+  wickForIncidenceAway_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) hwick
+
+/-- Enlarge the raw-with-diagonal rung by deleting an additional spike set `E`. -/
+theorem rawIncidenceMomentWithDiagonalAt_union_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (r : ℕ)
+    (hraw : RawIncidenceMomentWithDiagonalAt ψ G H D r) :
+    RawIncidenceMomentWithDiagonalAt ψ G H (D ∪ E) r :=
+  rawIncidenceMomentWithDiagonalAt_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) r hraw
+
+/-- Enlarge the raw-with-diagonal tower by deleting an additional spike set `E`. -/
+theorem rawIncidenceMomentWithDiagonal_union_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F)
+    (hraw : RawIncidenceMomentWithDiagonal ψ G H D) :
+    RawIncidenceMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawIncidenceMomentWithDiagonal_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) hraw
+
+/-- Enlarge the named raw fourth-moment target by deleting an additional spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_union_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hraw : RawFourthMomentWithDiagonal ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (D ∪ E) :=
+  rawFourthMomentWithDiagonal_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_left E hs) hraw
+
+/-- Enlarge a corrected Wick rung by deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAwayAt_leftUnion_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (r : ℕ) (hwick : WickForIncidenceAwayAt ψ G H D r) :
+    WickForIncidenceAwayAt ψ G H (E ∪ D) r :=
+  wickForIncidenceAwayAt_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) r hwick
+
+/-- Enlarge the corrected Wick tower by deleting an additional left-hand spike set `E`. -/
+theorem wickForIncidenceAway_leftUnion_deleted {ψ : AddChar F ℂ} (G H D E : Finset F)
+    (hwick : WickForIncidenceAway ψ G H D) :
+    WickForIncidenceAway ψ G H (E ∪ D) :=
+  wickForIncidenceAway_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) hwick
+
+/-- Enlarge the raw-with-diagonal rung by deleting an additional left-hand spike set `E`. -/
+theorem rawIncidenceMomentWithDiagonalAt_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (r : ℕ)
+    (hraw : RawIncidenceMomentWithDiagonalAt ψ G H D r) :
+    RawIncidenceMomentWithDiagonalAt ψ G H (E ∪ D) r :=
+  rawIncidenceMomentWithDiagonalAt_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) r hraw
+
+/-- Enlarge the raw-with-diagonal tower by deleting an additional left-hand spike set `E`. -/
+theorem rawIncidenceMomentWithDiagonal_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F)
+    (hraw : RawIncidenceMomentWithDiagonal ψ G H D) :
+    RawIncidenceMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawIncidenceMomentWithDiagonal_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) hraw
+
+/-- Enlarge the named raw fourth-moment target by deleting an additional left-hand spike set `E`. -/
+theorem rawFourthMomentWithDiagonal_leftUnion_deleted {ψ : AddChar F ℂ}
+    (G H D E : Finset F) (hraw : RawFourthMomentWithDiagonal ψ G H D) :
+    RawFourthMomentWithDiagonal ψ G H (E ∪ D) :=
+  rawFourthMomentWithDiagonal_mono_deleted G H
+    (by intro s hs; exact Finset.mem_union_right E hs) hraw
 
 /-- Pointwise-to-tower step, diagonal-subtracted: for `s₀ ∉ D`,
 `‖I_H(s₀)‖^{2r} ≤ S_r^D`. -/
@@ -845,9 +2677,325 @@ end ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_of_incidenceMoment_le_wick_add_diag
 #print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_of_rawIncidenceMomentWithDiagonalAt
+#print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_incidenceMoment_le_three_wick_add_diag
 #print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_iff_incidenceMoment_le_three_wick_add_diag
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_rawFourthMomentWithDiagonal
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiag_sq_le_three_sigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiag_sq_le_three_sigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagSquareLeThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagSquareLeThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagSquareLeThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagSquareLeThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagSquareLeThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagSquareLeThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_mono_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigma_le
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagSquareLeThreeSigma_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigmaOne_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSup_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSupProduct_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeCardMulSupProduct_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagSquareLeThreeSigma_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigmaOne_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSup_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSupProduct_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeCardMulSupProduct_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagSquareLeThreeSigma_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigmaOne_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSup_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSupProduct_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeCardMulSupProduct_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagSquareLeThreeSigma_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigma_le_sqrtThree
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigma_le_sqrtThree
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtSigma_le_sqrtThree
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSup_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.card_mul_sq_le_energy_of_coeff_lower_bound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.energy_eq_card_mul_sq_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.card_mul_sq_le_energy_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSupProduct_of_sqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtCardMulSupProduct_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_of_offdiagNormLeSqrtSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_one_of_product
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_mono_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_of_product
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeConstSqrtCardMulSupProduct_of_sqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtSigmaOne
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeCardMulSupProduct_of_offdiagNormLeSqrtThreeSigma
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeConstSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtCardMulSup_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_norm_eq
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.offdiagNormLeSqrtThreeSigma_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_two_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted_of_offdiagNormLeSqrtThreeCardMulSupProduct_of_coeff_lower
+#print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_iff_incidenceMoment_le_wick_add_diag
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_iff_rawIncidenceMomentWithDiagonalAt
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_iff_rawIncidenceMomentWithDiagonal
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_of_incidenceMoment_le_wick_add_diag
 #print axioms
@@ -862,6 +3010,32 @@ end ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_mono_deleted
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawIncidenceMomentWithDiagonalAt_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawIncidenceMomentWithDiagonal_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_mono_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawIncidenceMomentWithDiagonalAt_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawIncidenceMomentWithDiagonal_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_union_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAwayAt_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.wickForIncidenceAway_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawIncidenceMomentWithDiagonalAt_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawIncidenceMomentWithDiagonal_leftUnion_deleted
+#print axioms
+  ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.rawFourthMomentWithDiagonal_leftUnion_deleted
 #print axioms
   ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.diagonalMass_le_card_mul_bound
 #print axioms

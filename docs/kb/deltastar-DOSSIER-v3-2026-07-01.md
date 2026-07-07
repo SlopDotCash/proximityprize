@@ -1464,3 +1464,22 @@ the main term. At prize scaling the FIRST open rung at deg=2 is r=3 (needs β > 
 β ≈ 5.3). Round-18: general-deg `T_χ` version (same skeleton per χ), the r=3 boundary rung,
 and the deep-rung wall — which is where BCHKS/Paley genuinely lives. CORE OPEN, ON-BGK; the
 open region is now delimited from below by machine-checked classical mathematics.
+
+## §28. Round 18 (2026-07-07) — hSig discharged; the r=2 rung reduced to exactly two formalization gaps; plateau explained; welding refuted
+
+Four lanes + skeptics (all CONFIRMED, minor). DISPROOF tag `466-r18-hsig-discharged-weil-isolated-plateau-explained`.
+Bricks: `_R18SigmaEquidistribution.lean` (hSig PROVEN for H=G_χ, q ≥ 16m²n²; sharp n(n−1)√q Gauss-sum
+bound, saturated at Fermat cells), `_R18FourthMomentTwist.lean` (Weil input isolated to
+`QuarticWeilInput` = Hasse genus ≤ 1, verbatim-absent from Mathlib; E₂-escape refuted),
+`_R18PlateauLaw.lean` (plateau = variance depletion, exact S₁^D depletion identity, `DepletedWickR2`
+target flat in deg), `_R18RungThreeDecomposition.lean` (sixth-moment master identity via cubeWeight
+Parseval; 2/5 pairing law; rung-3 deficit exactly n at β=4; **tower-welding refuted** — the banked
+E₃(μ_n) slice is negligible ≤ 1e-4 of Wick; open mass is cross-coset self-referential).
+
+**═══ STATE after 18 rounds ═══** The corrected-B moment tower now has a complete r=2 story:
+the rung is machine-checked modulo exactly TWO classical-mathematics formalization gaps
+(ChiDecompositionOff, QuarticWeilInput) — everything else (hSig, Gauss-sum modulus, degeneracy
+combinatorics, the assembly) is proven axiom-clean. Rungs ≥ 3 are the wall proper: each rung r
+needs a factor n^{r−2} beyond square-root cancellation, the banked Problem-A energies live in a
+negligible slice, and the dominant mass is self-referential. The two towers (A and B) do NOT weld.
+**CORE OPEN, ON-BGK. No fabricated closure.**

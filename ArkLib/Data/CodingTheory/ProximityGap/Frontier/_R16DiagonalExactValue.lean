@@ -259,6 +259,34 @@ theorem wickAwayAtWithConstant_one {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
   wickAwayAtWithConstant_of_wickForIncidenceAwayAt G H D 1 hC
     (wickForIncidenceAwayAt_one hψ G H D)
 
+/-- A constant-relaxed rung with constant at most `1` collapses back to the exact R15 away-Wick
+rung.  This is the threshold gate used by later lanes: once a proposed route proves
+`WickAwayAtWithConstant … r C` with `C ≤ 1`, no additional bookkeeping is needed. -/
+theorem wickForIncidenceAwayAt_of_wickAwayAtWithConstant_le_one {ψ : AddChar F ℂ}
+    (G H D : Finset F) (r : ℕ) {C : ℝ} (hC : C ≤ 1)
+    (hwick : WickAwayAtWithConstant ψ G H D r C) :
+    WickForIncidenceAwayAt ψ G H D r := by
+  unfold WickForIncidenceAwayAt WickAwayAtWithConstant at *
+  have hX : (0 : ℝ) ≤ (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+      * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r := by positivity
+  calc incidenceMomentAway ψ G H D r
+      ≤ C * ((Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+          * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r) := hwick
+    _ ≤ 1 * ((Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+          * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r) :=
+        mul_le_mul_of_nonneg_right hC hX
+    _ = (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+          * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ r := by ring
+
+/-- The `r = 2` specialization of the constant-`≤ 1` gate, expressed in R15's raw
+fourth-moment-with-diagonal target. -/
+theorem rawFourthMomentWithDiagonal_of_wickAwayAtWithConstant_two_le_one {ψ : AddChar F ℂ}
+    (G H D : Finset F) {C : ℝ} (hC : C ≤ 1)
+    (hwick : WickAwayAtWithConstant ψ G H D 2 C) :
+    RawFourthMomentWithDiagonal ψ G H D :=
+  (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G H D).mp
+    (wickForIncidenceAwayAt_of_wickAwayAtWithConstant_le_one G H D 2 hC hwick)
+
 /-- **The corrected moment-method bridge.**  A single constant-`C` rung at the (deeper)
 optimal depth `r = ⌈log (C·q)⌉` still yields off-diagonal approximate Problem B:
 `‖I_H(s₀)‖² ≤ 2e·Σ·r` for every `s₀ ∉ D`.  The constant is absorbed into the depth — the
@@ -287,6 +315,43 @@ theorem incidence_sq_le_of_wickAwayAtWithConstant {ψ : AddChar F ℂ} (G H D : 
           nlinarith [h1, h2, h3, mul_nonneg h2 h3, mul_nonneg hC0 (mul_nonneg h2 h3)]
   exact sq_le_of_pow_ceil (norm_nonneg _) hCq hSig r hr hr1 hpow
 
+/-- Square-rooted constant-`C` bridge.  A single constant-relaxed rung at
+`r = ⌈log (Cq)⌉` gives the usual approximate-Problem-B norm bound away from `D`. -/
+theorem incidence_le_of_wickAwayAtWithConstant {ψ : AddChar F ℂ} (G H D : Finset F)
+    {C : ℝ} (hC : 1 ≤ C) (hq : 1 ≤ (Fintype.card F : ℝ))
+    (r : ℕ) (hr : r = ⌈Real.log (C * (Fintype.card F : ℝ))⌉₊) (hr1 : 1 ≤ r)
+    (hwick : WickAwayAtWithConstant ψ G H D r C) {s₀ : F} (hs : s₀ ∉ D) :
+    ‖incidenceSum ψ G H s₀‖
+      ≤ Real.sqrt (2 * Real.exp 1 * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) * r) := by
+  have hsq := incidence_sq_le_of_wickAwayAtWithConstant G H D hC hq r hr hr1 hwick hs
+  rw [show ‖incidenceSum ψ G H s₀‖ = Real.sqrt (‖incidenceSum ψ G H s₀‖ ^ 2) from
+    (Real.sqrt_sq (norm_nonneg _)).symm]
+  exact Real.sqrt_le_sqrt hsq
+
+/-- Constant-`C` corrected approximate Problem-B corollary away from the deleted set.  If the
+Fourier coefficients on `H` obey `‖η_b‖ ≤ M`, then a constant-relaxed Wick rung at
+`⌈log (Cq)⌉` gives
+`‖I_H(s₀)‖ ≤ sqrt(2e · |H| · M² · ⌈log(Cq)⌉)` for `s₀ ∉ D`. -/
+theorem approxB_away_of_wickAwayAtWithConstant {ψ : AddChar F ℂ} (G H D : Finset F)
+    {C : ℝ} (hC : 1 ≤ C) (hq : 1 ≤ (Fintype.card F : ℝ))
+    (r : ℕ) (hr : r = ⌈Real.log (C * (Fintype.card F : ℝ))⌉₊) (hr1 : 1 ≤ r)
+    (hwick : WickAwayAtWithConstant ψ G H D r C)
+    {M : ℝ} (_hM0 : 0 ≤ M) (hM : ∀ b ∈ H, ‖eta ψ G b‖ ≤ M)
+    {s₀ : F} (hs : s₀ ∉ D) :
+    ‖incidenceSum ψ G H s₀‖
+      ≤ Real.sqrt (2 * Real.exp 1 * ((H.card : ℝ) * M ^ 2) * r) := by
+  refine le_trans (incidence_le_of_wickAwayAtWithConstant G H D hC hq r hr hr1 hwick hs)
+    (Real.sqrt_le_sqrt ?_)
+  have hsum : (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ≤ (H.card : ℝ) * M ^ 2 := by
+    calc (∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
+        ≤ ∑ _b ∈ H, M ^ 2 := by
+          refine Finset.sum_le_sum (fun b hb => ?_)
+          exact pow_le_pow_left₀ (norm_nonneg _) (hM b hb) 2
+      _ = (H.card : ℝ) * M ^ 2 := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+  have hcoef : 0 ≤ 2 * Real.exp 1 * (r : ℝ) := by positivity
+  nlinarith [mul_le_mul_of_nonneg_right hsum hcoef]
+
 end ArkLib.ProximityGap.Frontier.R16DiagonalExactValue
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -299,4 +364,12 @@ end ArkLib.ProximityGap.Frontier.R16DiagonalExactValue
 #print axioms
   ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.wickAwayAtWithConstant_of_wickForIncidenceAwayAt
 #print axioms
+  ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.wickForIncidenceAwayAt_of_wickAwayAtWithConstant_le_one
+#print axioms
+  ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.rawFourthMomentWithDiagonal_of_wickAwayAtWithConstant_two_le_one
+#print axioms
   ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.incidence_sq_le_of_wickAwayAtWithConstant
+#print axioms
+  ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.incidence_le_of_wickAwayAtWithConstant
+#print axioms
+  ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.approxB_away_of_wickAwayAtWithConstant
