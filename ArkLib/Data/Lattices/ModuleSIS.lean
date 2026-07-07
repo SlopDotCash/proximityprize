@@ -3,9 +3,9 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Data.Lattices.CyclotomicRing.Rq
-import ArkLib.Data.Lattices.CyclotomicRing.Vectors
 import VCVio.OracleComp.Constructions.SampleableType
+import ArkLib.Data.Lattices.CyclotomicRing.Rq
+import ArkLib.Data.Lattices.Vectors
 
 /-!
 # Module Short Integer Solution (Module-SIS) over the Cyclotomic Ring
@@ -13,6 +13,10 @@ import VCVio.OracleComp.Constructions.SampleableType
 A small, ArkLib-native generic `SIS` search game and its Module-SIS specialization
 over the computable cyclotomic ring `Rq Φ`. The kernel-form relation: given a uniformly
 random matrix `A`, find a nonzero short vector `z` with `A *ᵥ z = 0`.
+
+Note, there is another SIS definition in VCV-io, that is however not defined over computable
+polynomials (CompPoly), for details checkout:
+`VCV-io/LatticeCrypto/HardnessAssumptions/ShortIntegerSolution.lean`.
 
 This is the hardness assumption the Ajtai [Ajt96] commitment binding reductions target, in
 the module form used by Greyhound [NS24] and Hachi [NOZ26].
@@ -71,8 +75,7 @@ namespace ModuleSIS
 
 open CyclotomicModulus
 
-variable {R : Type} [Field R] [BEq R] [LawfulBEq R] [DecidableEq R]
-  (Φ : CyclotomicModulus R) [IsCyclotomic Φ]
+variable {R : Type} [Field R] [BEq R] [LawfulBEq R] (Φ : CyclotomicModulus R) [IsCyclotomic Φ]
 
 /-- A Module-SIS solution for a matrix with `cols` columns over `Rq Φ`. -/
 abbrev Solution (cols : Nat) := PolyVec (Rq Φ) cols
@@ -87,6 +90,7 @@ def relation {rows cols : Nat}
 
 /-- Module-SIS as an instance of the generic SIS search game. -/
 def problem (rows cols : Nat) [SampleableType (PolyMatrix (Rq Φ) rows cols)]
+    [DecidableEq (PolyVec (Rq Φ) cols)] [DecidableEq (PolyVec (Rq Φ) rows)]
     (isShort : Solution Φ cols → Bool) :
     SIS.Problem (PolyMatrix (Rq Φ) rows cols) (Solution Φ cols) where
   sampleChallenge := $ᵗ (PolyMatrix (Rq Φ) rows cols)
@@ -94,16 +98,19 @@ def problem (rows cols : Nat) [SampleableType (PolyMatrix (Rq Φ) rows cols)]
 
 /-- A Module-SIS adversary. -/
 abbrev Adversary (rows cols : Nat) [SampleableType (PolyMatrix (Rq Φ) rows cols)]
+    [DecidableEq (PolyVec (Rq Φ) cols)] [DecidableEq (PolyVec (Rq Φ) rows)]
     (isShort : Solution Φ cols → Bool) :=
   SIS.Adversary (problem Φ rows cols isShort)
 
 /-- The Module-SIS experiment. -/
 def experiment (rows cols : Nat) [SampleableType (PolyMatrix (Rq Φ) rows cols)]
+    [DecidableEq (PolyVec (Rq Φ) cols)] [DecidableEq (PolyVec (Rq Φ) rows)]
     (isShort : Solution Φ cols → Bool) (adv : Adversary Φ rows cols isShort) : ProbComp Bool :=
   SIS.experiment (problem Φ rows cols isShort) adv
 
 /-- The Module-SIS advantage. -/
 noncomputable def advantage (rows cols : Nat) [SampleableType (PolyMatrix (Rq Φ) rows cols)]
+    [DecidableEq (PolyVec (Rq Φ) cols)] [DecidableEq (PolyVec (Rq Φ) rows)]
     (isShort : Solution Φ cols → Bool) (adv : Adversary Φ rows cols isShort) : ℝ≥0∞ :=
   SIS.advantage (problem Φ rows cols isShort) adv
 

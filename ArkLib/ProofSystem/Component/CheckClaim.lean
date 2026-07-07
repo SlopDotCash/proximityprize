@@ -5,7 +5,6 @@ Authors: Quang Dao
 -/
 
 import ArkLib.OracleReduction.Security.RoundByRound
-import ArkLib.OracleReduction.Security.ZeroKnowledge
 
 /-!
   # Simple (Oracle) Reduction: Check if a predicate / claim on a statement is satisfied
@@ -71,7 +70,7 @@ variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ Pro
 theorem reduction_completeness [Nonempty σ] [DecidableEq Statement] :
     (reduction oSpec Statement pred).perfectCompleteness init impl
     (relIn Statement pred) (relOut Statement) := by
-  simp only [Reduction.perfectCompleteness, Reduction.completeness, Reduction.completenessFromRun, ENNReal.coe_zero, tsub_zero]
+  simp only [Reduction.perfectCompleteness, Reduction.completeness, ENNReal.coe_zero, tsub_zero]
   intro stmt () valid
   simp only [relIn, Set.mem_setOf_eq] at valid
   -- valid : pred stmt
@@ -116,115 +115,52 @@ theorem reduction_completeness [Nonempty σ] [DecidableEq Statement] :
     cases hx
     simp [relOut]
 
-/-- The honest transcript distribution for a valid `CheckClaim` statement is the deterministic
-empty transcript. This is the concrete zero-round core used by the HVZK wrappers below. -/
-theorem honestTranscriptDist_reduction_evalDist
-    (stmt : Statement) (hpred : pred stmt) :
-    evalDist (Reduction.honestTranscriptDist init impl
-        (reduction oSpec Statement pred) stmt ()) =
-      evalDist (pure default : OptionT ProbComp (FullTranscript !p[])) := by
-  apply evalDist_ext
-  intro transcript
-  classical
-  unfold Reduction.honestTranscriptDist
-  have hrun : (reduction oSpec Statement pred).run stmt () =
-      (pure ((default, stmt, ()), stmt) : OptionT (OracleComp _) _) := by
-    simp [reduction, Reduction.run, prover, verifier, Prover.run, Verifier.run,
-          Prover.runToRound, guard, if_pos hpred]
-    rfl
-  simp only [hrun, map_pure, OptionT.run_pure, simulateQ_pure, StateT.run'_eq,
-    StateT.run_pure, bind_pure_comp]
-  rw [OptionT.probOutput_eq, OptionT.probOutput_eq]
-  simp [probOutput_map_const, HasEvalPMF.probFailure_eq_zero]
-
-/-- `CheckClaim` is perfectly HVZK for the predicate relation. The simulator is the identity
-transcript simulator, since the real protocol has no messages or challenges. -/
-theorem reduction_perfectHVZK :
-    Reduction.perfectHVZK init impl (relIn Statement pred)
-      (reduction oSpec Statement pred) Reduction.idTranscriptSimulator := by
-  intro stmt wit hrel
-  cases wit
-  exact (honestTranscriptDist_reduction_evalDist oSpec Statement pred stmt hrel).symm
-
-/-- Perfect HVZK implies statistical HVZK at every error budget. -/
-theorem reduction_statisticalHVZK (ε : NNReal) :
-    Reduction.statisticalHVZK init impl (relIn Statement pred)
-      (reduction oSpec Statement pred) Reduction.idTranscriptSimulator ε :=
-  (reduction_perfectHVZK oSpec Statement pred).statisticalHVZK ε
-
-/-- `CheckClaim` has an explicit perfect-HVZK simulator. -/
-theorem reduction_isHVZK :
-    Reduction.isHVZK init impl (relIn Statement pred) (reduction oSpec Statement pred) :=
-  ⟨Reduction.idTranscriptSimulator, reduction_perfectHVZK oSpec Statement pred⟩
-
-/-- `CheckClaim` has statistical HVZK at every error budget. -/
-theorem reduction_isStatHVZK (ε : NNReal) :
-    Reduction.isStatHVZK init impl (relIn Statement pred) (reduction oSpec Statement pred) ε :=
-  (reduction_isHVZK oSpec Statement pred).isStatHVZK ε
-
-/-- The round-by-round extractor for the `CheckClaim` reduction. Trivial since the witness is
-  `Unit`. -/
-def extractor : Extractor.RoundByRound oSpec Statement Unit Unit !p[] (fun _ => Unit) where
-  eqIn := rfl
-  extractMid := fun i => Fin.elim0 i
-  extractOut := fun _ _ witOut => witOut
-
-/-- The knowledge state function for the `CheckClaim` reduction. Since there is no challenge round,
-  the state function simply records whether the predicate holds on the statement. -/
+/-- The knowledge state function for the `CheckClaim` reduction, mirroring the trivial-verifier
+  template `Verifier.KnowledgeStateFunction.id`: at round `0` the state simply records that the
+  input is in `relIn`. -/
 def knowledgeStateFunction :
     (verifier oSpec Statement pred).KnowledgeStateFunction
-      init impl (relIn Statement pred) (relOut Statement) (extractor oSpec Statement) where
-  toFun | ⟨0, _⟩ => fun stmtIn _ _ => pred stmtIn
-  toFun_empty := fun stmtIn witIn => by simp [relIn]
-  toFun_next := fun m => Fin.elim0 m
-  toFun_full := fun stmtIn tr witOut => by
-    -- Bind `h` via `intro` (not as a lambda parameter) to avoid an expensive `isDefEq` check
-    -- against the heavy `verifier.run` field type.
-    intro h
-    -- Goal: `pred stmtIn`. The verifier runs `do guard (pred stmtIn); return stmtIn`. The output is
-    -- in the (trivial) output relation with positive probability only if the guard passes.
-    show pred stmtIn
+      init impl (relIn Statement pred) (relOut Statement)
+      (Extractor.RoundByRound.id (Witness := Unit)) where
+  toFun | ⟨0, _⟩ => fun stmtIn _ witIn => (stmtIn, witIn) ∈ relIn Statement pred
+  toFun_empty := fun _ _ => by simp
+  toFun_next := fun i => Fin.elim0 i
+  toFun_full := fun stmtIn tr _ h => by
+    -- Reduce the dependent-pattern goal to `pred stmtIn`.
+    change pred stmtIn
     by_contra hpred
+    -- If `pred stmtIn` is false then `guard` fails and the OptionT computation always returns
+    -- `none`, so no probability event can be positive.
     rw [gt_iff_lt, probEvent_pos_iff] at h
     obtain ⟨x, hx, _⟩ := h
     rw [OptionT.mem_support_iff] at hx
+    -- Reduce the failing verifier by unfolding the `guard` branch.
+    have hverify : (verifier oSpec Statement pred).run stmtIn tr =
+        (OptionT.mk (pure none) : OptionT (OracleComp oSpec) Statement) := by
+      simp only [Verifier.run, verifier]
+      change (do guard (pred stmtIn); return stmtIn :
+        OptionT (OracleComp oSpec) Statement) = _
+      simp [guard, hpred]
+      rfl
+    rw [hverify] at hx
+    -- Now `simulateQ impl (OptionT.mk (pure none))` has empty support.
     simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
     obtain ⟨s, _, hx⟩ := hx
-    -- `verifier.run stmtIn tr = do guard (pred stmtIn); return stmtIn`; with `¬ pred stmtIn` the
-    -- guard fails, so the underlying option computation has support `{none}`, contradicting
-    -- `some x ∈ support`.
-    have hrun : (verifier oSpec Statement pred).run stmtIn tr =
-        (OptionT.mk (pure none) : OptionT (OracleComp oSpec) Statement) := by
-      simp only [verifier, Verifier.run, guard, if_neg hpred]
-      rfl
-    have key : (simulateQ impl
-        ((verifier oSpec Statement pred).run stmtIn tr)).run' s =
-        pure none := by
-      rw [hrun]
-      change (simulateQ impl (pure none : OracleComp oSpec (Option Statement))).run' s = _
-      rw [simulateQ_pure]
-      change Prod.fst <$> (pure (none : Option Statement) : StateT σ ProbComp _).run s = _
-      rw [StateT.run_pure]; simp [map_pure]
-    rw [key] at hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    exact absurd hx (by simp)
+    rw [show ((OptionT.mk (pure none) : OptionT (OracleComp oSpec) Statement)) =
+        ((pure none : OracleComp oSpec (Option Statement)) : _) from rfl] at hx
+    rw [simulateQ_pure] at hx
+    change some x ∈ _root_.support
+      (Prod.fst <$> (pure none : StateT σ ProbComp _).run s) at hx
+    rw [StateT.run_pure] at hx
+    simp [map_pure, support_pure] at hx
 
-/-- The `CheckClaim` reduction satisfies perfect round-by-round knowledge soundness.
-
-Note that since there is no challenge round, all the work is done in the definition of the
-knowledge state function. -/
+/-- The `CheckClaim` reduction satisfies perfect round-by-round knowledge soundness. -/
 theorem verifier_rbr_knowledge_soundness :
     (verifier oSpec Statement pred).rbrKnowledgeSoundness init impl
       (relIn Statement pred) (relOut Statement) 0 := by
-  refine ⟨_, _, knowledgeStateFunction oSpec Statement pred, ?_⟩
-  simp only [ProtocolSpec.ChallengeIdx]
-  exact fun _ _ _ i => Fin.elim0 i.1
-
-#print axioms CheckClaim.honestTranscriptDist_reduction_evalDist
-#print axioms CheckClaim.reduction_perfectHVZK
-#print axioms CheckClaim.reduction_statisticalHVZK
-#print axioms CheckClaim.reduction_isHVZK
-#print axioms CheckClaim.reduction_isStatHVZK
+  refine ⟨_, _, knowledgeStateFunction oSpec Statement pred (init := init) (impl := impl), ?_⟩
+  intro stmtIn witIn prover i
+  exact Fin.elim0 i.1
 
 end Reduction
 
@@ -275,6 +211,7 @@ variable {Statement} {OStatement}
 -- theorem oracleReduction_completeness (h : init.neverFails) :
 --     (oracleReduction oSpec Statement OStatement pred).perfectCompleteness init impl
 --     (toRelInput pred hPred) Set.univ := by
+--   -- TODO: fix this proof once `OracleComp` no longer has failure
 --   simp only [OracleReduction.perfectCompleteness, toRelInput, OracleReduction.toReduction,
 --     oracleReduction, oracleProver, Nat.reduceAdd, Fin.isValue, MessageIdx, Message, ChallengeIdx,
 --     Challenge, Fin.reduceLast, oracleVerifier, bind_pure_comp, OracleVerifier.toVerifier,
@@ -287,6 +224,12 @@ variable {Statement} {OStatement}
 --   simp only [Reduction.run, Prover.run, Verifier.run, toOracleImpl, simulateQ']
 --   simp only [ChallengeIdx, Fin.reduceLast, Prover.runToRound_zero_of_prover_first, Fin.isValue,
 --     bind_pure_comp, liftM_eq_liftComp, liftComp_map, Functor.map_map, pure_bind]
+--   intro stmt oStmt _
+--   sorry
+--   -- simp [Reduction.run, Prover.run, Verifier.run, simOracle2]
+--   -- aesop
+
+-- theorem oracleReduction_rbr_knowledge_soundness : True := sorry
 
 end OracleReduction
 

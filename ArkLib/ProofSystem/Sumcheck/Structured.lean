@@ -22,7 +22,7 @@ verifier sees only the prover's round polynomials `pᵢ`, not `H` directly.
 
 The two modes coexist as parallel primitives under `Sumcheck`.
 
-## Future work (option C, tracked separately)
+## TODO (option C, tracked separately)
 
 A refinement theorem connecting the two modes — given `H = m · t`, derive structured-mode
 soundness from canonical-mode soundness — is left for follow-up work. Until then, the two
@@ -149,7 +149,27 @@ def computeRoundPoly {Context : Type} (param : SumcheckMultiplierParam L ℓ Con
 -- resulting round polynomial) lives in `Sumcheck.Structured.Prismalinear`. See
 -- `Structured/Prismalinear.lean`.
 
-/-- `Hᵢ(Xᵢ, ..., X_{ℓ-1}) = ∑ ω ∈ 𝓑ᵢ, H₀(ω₀, …, ω_{i-1}, Xᵢ, …, X_{ℓ-1}) (where H₀=h)` -/
+/-- Generic projection
+`Hᵢ(Xᵢ, ..., X_{ℓ-1}) = H₀(r₀, …, rᵢ₋₁, Xᵢ, …, X_{ℓ-1})`
+for `H₀ = P · Q(t)`. -/
+def projectToMidSumcheckPolyWithParam {Context : Type}
+    (param : SumcheckMultiplierParam L ℓ Context) (ctx : Context)
+    (t : MultilinearPoly L ℓ) (i : Fin (ℓ + 1)) (challenges : Fin i → L)
+    : L⦃≤ param.degCombinator + 1⦄[X Fin (ℓ-i)] :=
+  let H₀ := computeRoundPoly (L := L) (ℓ := ℓ) param ctx t
+  let Hᵢ := fixFirstVariablesOfMQP (ℓ := ℓ) (v := ⟨i, by omega⟩)
+    (H := H₀) (challenges := challenges)
+  ⟨Hᵢ, by
+    have hp := H₀.property
+    simpa using
+      (fixFirstVariablesOfMQP_degreeLE (L := L) (ℓ := ℓ) (v := ⟨i, by omega⟩)
+        (poly := H₀.val) (challenges := challenges) (deg := param.degCombinator + 1) hp)
+  ⟩
+
+/-- Identity-combinator projection
+`Hᵢ(Xᵢ, ..., X_{ℓ-1}) = H₀(r₀, …, rᵢ₋₁, Xᵢ, …, X_{ℓ-1})`
+for `H₀ = m · t`. For non-identity combinators, use
+`projectToMidSumcheckPolyWithParam`. -/
 def projectToMidSumcheckPoly (t : MultilinearPoly L ℓ)
     (m : MultilinearPoly L ℓ) (i : Fin (ℓ + 1))
     (challenges : Fin i → L)
@@ -164,18 +184,24 @@ def projectToMidSumcheckPoly (t : MultilinearPoly L ℓ)
         (poly := H₀.val) (challenges := challenges) (deg := 2) hp)
   ⟩
 
-/-- Derive `H_{i+1}` from `H_i` by projecting the first variable -/
-def projectToNextSumcheckPoly (i : Fin (ℓ)) (Hᵢ : MultiquadraticPoly L (ℓ - i))
-    (rᵢ : L) : -- the current challenge
-    MultiquadraticPoly L (ℓ - i.succ) := by
+/-- Derive `H_{i+1}` from a degree-`d` `H_i` by projecting the first variable. -/
+def projectToNextSumcheckPolyWithDegree {d : ℕ} (i : Fin (ℓ))
+    (Hᵢ : L⦃≤ d⦄[X Fin (ℓ - i)]) (rᵢ : L) :
+    L⦃≤ d⦄[X Fin (ℓ - i.succ)] := by
   let projectedH := fixFirstVariablesOfMQP (ℓ := ℓ - i) (v := ⟨1, by omega⟩)
     (H := Hᵢ.val) (challenges := fun _ => rᵢ)
   exact ⟨projectedH, by
     have hp := Hᵢ.property
     simpa using
       (fixFirstVariablesOfMQP_degreeLE (L := L) (ℓ := ℓ - i) (v := ⟨1, by omega⟩)
-        (poly := Hᵢ.val) (challenges := fun _ => rᵢ) (deg := 2) hp)
+        (poly := Hᵢ.val) (challenges := fun _ => rᵢ) (deg := d) hp)
   ⟩
+
+/-- Derive `H_{i+1}` from a multiquadratic `H_i` by projecting the first variable. -/
+def projectToNextSumcheckPoly (i : Fin (ℓ)) (Hᵢ : MultiquadraticPoly L (ℓ - i))
+    (rᵢ : L) : -- the current challenge
+    MultiquadraticPoly L (ℓ - i.succ) :=
+  projectToNextSumcheckPolyWithDegree (L := L) (ℓ := ℓ) (i := i) Hᵢ rᵢ
 
 end SumcheckOperations
 
@@ -209,8 +235,8 @@ variable {L : Type} [CommRing L]
 /-- Sumcheck consistency: the claimed sum equals the actual polynomial evaluation sum over the
 evaluation domain `D`'s cube. For the boolean hypercube (`D = boolDomain` / `uniform 𝓑`) this is the
 sum over `{0,1}^k`. -/
-def sumcheckConsistencyProp {k : ℕ} (D : SumcheckDomain L k) (sumcheckTarget : L)
-    (H : L⦃≤ 2⦄[X Fin (k)]) : Prop :=
+def sumcheckConsistencyProp {k d : ℕ} (D : SumcheckDomain L k) (sumcheckTarget : L)
+    (H : L⦃≤ d⦄[X Fin (k)]) : Prop :=
   sumcheckTarget = ∑ x ∈ D.cube, H.val.eval x
 
 end ConsistencyProp

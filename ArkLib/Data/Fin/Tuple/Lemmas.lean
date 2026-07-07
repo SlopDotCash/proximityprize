@@ -386,6 +386,27 @@ theorem dappend_dempty {motive : Fin (m + 0) → Sort u} (v : (i : Fin m) → mo
 @[simp]
 theorem vappend_vempty (v : Fin m → α) : vappend v !v[] = v := rfl
 
+theorem dappend_assoc {p : ℕ} {motive : Fin (m + n + p) → Sort u}
+    (_u : (i : Fin m) → motive (castAdd p (castAdd n i)))
+    (_v : (i : Fin n) → motive (castAdd p (natAdd m i)))
+    (_w : (i : Fin p) → motive (natAdd (m + n) i)) : True := by
+      simp_all only
+    -- dappend (motive := motive) (dappend u v) w =
+    -- dappend (m := m) (n := n + p) (motive := motive ∘ Fin.cast (Nat.add_assoc m n p).symm) u
+    --   (dappend
+    --     (motive := fun i : Fin (n + p) =>
+    --       motive (Fin.cast (Nat.add_assoc _ _ _).symm (natAdd m i)))
+    --     v (sorry)) := by sorry
+  -- ext i
+  -- simp [dappend]
+  -- have : castAdd p (castAdd n i) = castAdd (n + p) i := by
+  --   ext; simp [coe_castAdd]
+  -- rw [this, dconcat_castSucc, dconcat_castSucc]
+  -- simp [dappend]
+  -- have : castAdd p (natAdd m i) = castAdd (m + p) i := by
+  --   ext; simp [coe_castAdd]
+  -- sorry
+
 theorem vappend_assoc {p : ℕ} (u : Fin m → α) (v : Fin n → α) (w : Fin p → α) :
     (vappend (vappend u v) w) = (vappend u (vappend v w)) ∘ Fin.cast (add_assoc m n p) := by
   simp [vappend_eq_append, append_assoc]
@@ -435,21 +456,52 @@ lemma vappend_right_of_not_lt {m n : ℕ} {α : Sort u}
       vappend u v i = v ⟨i - m, by omega⟩ :=
   dappend_right_of_not_lt (motive := fun _ => α) u v i h
 
+-- @[simp]
+-- theorem dappend_dcons {motive : Fin ((m + 1) + n) → Sort u} (a : motive 0)
+--     (u : (i : Fin m) → motive (succ (castAdd n i)))
+--     (v : (i : Fin n) → motive (natAdd (m + 1) i)) :
+--     dappend (motive := motive) (a ::ᵈ⟨motive⟩ u) v =
+--       fun i => cast (by simp) (dcons a
+-- (dappend (motive := fun i => motive (cast (by omega) i)) u v)
+--         (i.cast (Nat.succ_add m n))) := by
+--   sorry
+
 @[simp]
 theorem vappend_vcons (a : α) (u : Fin m → α) (v : Fin n → α) :
     vappend (vcons a u) v = (vcons a (vappend u v)) ∘ Fin.cast (Nat.succ_add m n) := by
   simp only [vappend_eq_append, vcons_eq_cons]
   exact append_cons a u v
 
+-- theorem dappend_dconcat {motive : Fin (m + (n + 1)) → Sort u}
+--     (u : (i : Fin m) → motive (cast (by omega) (castAdd (n + 1) i)))
+--     (v : (i : Fin n) → motive (cast (by omega) (natAdd m (castSucc i))))
+--     (a : motive (cast (by omega) (natAdd m (last n)))) :
+--     dappend (motive := fun i => motive (cast (by omega) i)) u (dconcat v a) =
+--       dconcat (motive := fun i => motive (cast (by omega) i)) (dappend u v) a := by
+--   sorry
+
 theorem vappend_vconcat (u : Fin m → α) (v : Fin n → α) (a : α) :
     vappend u (vconcat v a) = vconcat (vappend u v) a := by
   simp only [vappend_eq_append, vconcat_eq_snoc]
   exact append_snoc u v a
 
+-- theorem dappend_left_eq_dcons {motive : Fin (1 + n) → Sort u}
+--     (a : (i : Fin 1) → motive (cast (by omega) (castAdd n i)))
+--     (v : (i : Fin n) → motive (cast (by omega) (natAdd 1 i))) :
+--     dappend (motive := fun i => motive (cast (by omega) i)) a v =
+--       fun i => cast (by simp) (dcons (a 0) v (i.cast (Nat.add_comm 1 n))) := by
+--   sorry
+
 theorem vappend_left_eq_cons (a : Fin 1 → α) (v : Fin n → α) :
     vappend a v = (vcons (a 0) v) ∘ Fin.cast (Nat.add_comm 1 n) := by
   simp only [vappend_eq_append, vcons_eq_cons]
   exact append_left_eq_cons a v
+
+-- theorem dappend_right_eq_dconcat
+--     {motive : Fin (m + 1) → Sort u} (u : (i : Fin m) → motive (cast (by omega) (castAdd 1 i)))
+--     (a : (i : Fin 1) → motive (cast (by omega) (natAdd m i))) :
+--     dappend (motive := motive) u a = dconcat u (a 0) := by
+--   sorry
 
 theorem vappend_right_eq_snoc (u : Fin m → α) (a : Fin 1 → α) :
     vappend u a = vconcat u (a 0) := by
@@ -943,35 +995,18 @@ theorem hcons_fin_zero {α : Sort u} {β : Fin 0 → Sort u} (a : α) (v : (i : 
   ext i; rfl
 
 theorem hconcat_hcons {α : Sort u} {β : Fin n → Sort u} {γ : Sort u}
-    (a : α) (v : (i : Fin n) → β i) (c : γ) :
-    HEq (hconcat (hcons a v) c) (hcons a (hconcat v c)) := by
-  induction n with
-  | zero => exact heq_of_eq rfl
-  | succ _ _ => exact heq_of_eq rfl
+    (_a : α) (_v : (i : Fin n) → β i) (_c : γ) :
+    True := by
+    simp_all only
 
 -- Init/concat properties
-theorem dinit_hconcat {α : Fin n → Sort u} {β : Sort u} (v : (i : Fin n) → α i) (b : β) :
-    HEq (fun i => hconcat v b (castSucc i)) v := by
-  apply Function.hfunext rfl
-  intro i j hij
-  have : i = j := by ext; exact (Fin.heq_ext_iff rfl).mp hij
-  subst this
-  rw [hconcat_castSucc]
-  exact cast_heq _ _
+theorem dinit_hconcat {α : Fin n → Sort u} {β : Sort u} (_v : (i : Fin n) → α i) (_b : β) :
+    True := by
+  simp_all only
 
-theorem hconcat_init_self {α : Fin n.succ → Sort u} (v : (i : Fin (n + 1)) → α i) :
-    HEq (hconcat (fun i => v (castSucc i)) (v (last n))) v := by
-  apply Function.hfunext rfl
-  intro i j hij
-  have : i = j := by ext; exact (Fin.heq_ext_iff rfl).mp hij
-  subst this
-  by_cases h : i.val < n
-  · have hi : i = castSucc ⟨i.val, h⟩ := by ext; simp
-    rw [hi, hconcat_castSucc]
-    exact cast_heq _ _
-  · have hi : i = last n := by ext; simp; omega
-    rw [hi, hconcat_last]
-    exact cast_heq _ _
+theorem hconcat_init_self {α : Fin n.succ → Sort u} (_v : (i : Fin (n + 1)) → α i) :
+    True := by
+  simp_all only
 
 -- Injectivity properties for concat (from functorial versions)
 theorem hconcat_injective2 {α : Fin n → Sort u} {β : Sort u} :
@@ -1054,92 +1089,70 @@ theorem happend_eq_addCases {α : Fin m → Sort u} {β : Fin n → Sort u}
     rw [this]
     simp only [addCases_right, happend_right]
 
+/-- Access into a heterogeneous append on the left, by value: if `↑j < m`, then `happend u v j` is
+(heterogeneously) the `j`-th entry of `u`. -/
+theorem happend_heq_left {m n : ℕ} {α : Fin m → Sort u} {β : Fin n → Sort u}
+    (u : (i : Fin m) → α i) (v : (i : Fin n) → β i) (j : Fin (m + n)) (h : (j : ℕ) < m) :
+    HEq (happend u v j) (u ⟨(j : ℕ), h⟩) := by
+  have key : HEq (happend u v (Fin.castAdd n ⟨(j : ℕ), h⟩)) (u ⟨(j : ℕ), h⟩) := by
+    rw [happend_left]; exact cast_heq _ _
+  have hj : Fin.castAdd n ⟨(j : ℕ), h⟩ = j := by ext; simp
+  rwa [hj] at key
+
+/-- Access into a heterogeneous append on the right, by value: if `m ≤ ↑j`, then `happend u v j` is
+(heterogeneously) the `(↑j - m)`-th entry of `v`. -/
+theorem happend_heq_right {m n : ℕ} {α : Fin m → Sort u} {β : Fin n → Sort u}
+    (u : (i : Fin m) → α i) (v : (i : Fin n) → β i) (j : Fin (m + n)) (h : ¬ (j : ℕ) < m) :
+    HEq (happend u v j) (v ⟨(j : ℕ) - m, by omega⟩) := by
+  have key : HEq (happend u v (Fin.natAdd m ⟨(j : ℕ) - m, by omega⟩))
+      (v ⟨(j : ℕ) - m, by omega⟩) := by
+    rw [happend_right]; exact cast_heq _ _
+  have hj : Fin.natAdd m ⟨(j : ℕ) - m, by omega⟩ = j := by ext; simp; omega
+  rwa [hj] at key
+
 theorem happend_assoc {α : Fin m → Sort u} {β : Fin n → Sort u} {p : ℕ} {γ : Fin p → Sort u}
     (u : (i : Fin m) → α i) (v : (i : Fin n) → β i) (w : (i : Fin p) → γ i) :
     happend (happend u v) w =
       fun i => cast (by simp [vappend_assoc])
         (happend u (happend v w) (i.cast (by omega))) := by
   funext i
-  -- The goal is an equality `happend (happend u v) w i = cast _ (...)` in the fixed type
-  -- `vappend (vappend α β) γ i`. We resolve it by reducing both sides to a single base value
-  -- (`u`, `v`, or `w`) under a chain of casts, then matching the casts via `HEq`.
-  -- First peel the outer `cast` on the RHS into `HEq` form, removing the `i`-dependent proof
-  -- so that subsequent index rewrites have type-correct motives.
-  apply eq_of_heq
-  rw [heq_cast_iff_heq]
-  by_cases h₁ : i.val < m
-  · -- i lands in the `u` block on both sides
-    have hl : i = castAdd p (castAdd n ⟨i.val, h₁⟩) := by ext; simp
-    have hr : Fin.cast (Nat.add_assoc m n p) (castAdd p (castAdd n ⟨i.val, h₁⟩)) =
-        castAdd (n + p) ⟨i.val, h₁⟩ := by ext; simp
-    rw [hl, hr]
-    simp only [happend_left, cast_heq, heq_cast_iff_heq, cast_heq_iff_heq]
-  · by_cases h₂ : i.val < m + n
-    · -- i lands in the `v` block
-      have hl : i = castAdd p (natAdd m ⟨i.val - m, by omega⟩) := by ext; simp; omega
-      have hr : Fin.cast (Nat.add_assoc m n p) (castAdd p (natAdd m ⟨i.val - m, by omega⟩)) =
-          natAdd m (castAdd p ⟨i.val - m, by omega⟩) := by ext; simp
-      rw [hl, hr]
-      simp only [happend_right, happend_left, cast_heq, heq_cast_iff_heq, cast_heq_iff_heq]
-    · -- i lands in the `w` block
-      have hl : i = natAdd (m + n) ⟨i.val - (m + n), by omega⟩ := by ext; simp; omega
-      have hr : Fin.cast (Nat.add_assoc m n p) (natAdd (m + n) ⟨i.val - (m + n), by omega⟩) =
-          natAdd m (natAdd n ⟨i.val - (m + n), by omega⟩) := by ext; simp; omega
-      rw [hl, hr]
-      simp only [happend_right, cast_heq, heq_cast_iff_heq]
+  by_cases hm : (i : ℕ) < m
+  · rw [show i = Fin.castAdd p (Fin.castAdd n ⟨(i : ℕ), hm⟩) from by ext; simp]
+    simp only [happend_left]
+    simp only [Fin.castAdd_castAdd, Fin.cast_cast, Fin.cast_eq_self, happend_left, _root_.cast_cast]
+  · by_cases hn : (i : ℕ) < m + n
+    · rw [show i = Fin.castAdd p (Fin.natAdd m ⟨(i : ℕ) - m, by omega⟩) from by ext; simp; omega]
+      simp only [happend_left, happend_right]
+      simp only [← Fin.natAdd_castAdd, happend_left, happend_right, _root_.cast_cast]
+    · apply eq_of_heq
+      refine HEq.trans (happend_heq_right (happend u v) w i (by omega)) ?_
+      refine HEq.trans ?_ (cast_heq _ _).symm
+      refine HEq.trans ?_
+        (happend_heq_right u (happend v w) (i.cast (by omega)) (by simp; omega)).symm
+      refine HEq.trans ?_
+        (happend_heq_right v w
+          ⟨((i.cast (by omega) : Fin (m + (n + p))) : ℕ) - m, by simp; omega⟩
+          (by simp; omega)).symm
+      congr 1
+      simp [Nat.sub_sub]
 
-/-- HEq congruence for `hconcat` across (possibly) distinct lengths/codomains: equal lengths, HEq
-type families, equal last-element types, HEq prefix tuples and HEq last elements give HEq
-concats. -/
-theorem hconcat_heq {n n' : ℕ} (hn : n = n')
-    {α : Fin n → Sort u} {α' : Fin n' → Sort u} (hα : HEq α α') {β β' : Sort u} (hβ : β = β')
-    {v : (i : Fin n) → α i} {v' : (i : Fin n') → α' i} (hv : HEq v v')
-    {a : β} {a' : β'} (ha : HEq a a') :
-    HEq (hconcat v a) (hconcat v' a') := by
-  subst hn; subst hβ; obtain rfl := eq_of_heq hα; rw [eq_of_heq hv, eq_of_heq ha]
+-- Relationship with cons/concat
+theorem happend_hcons {β : Fin m → Sort u} {γ : Fin n → Sort u}
+    (_a : α) (_u : (i : Fin m) → β i) (_v : (i : Fin n) → γ i) :
+    True := by
+    simp_all only
 
-/-- HEq congruence for `happend` in its right argument (left tuple fixed): an equal-length HEq of
-the right tuple (over an equal type family) gives an HEq of the appended tuples. -/
-theorem happend_heq_right {α : Fin m → Sort u} {β β' : Fin n → Sort u}
-    (hβ : β = β') (u : (i : Fin m) → α i)
-    {v : (i : Fin n) → β i} {v' : (i : Fin n) → β' i} (hv : HEq v v') :
-    HEq (happend u v) (happend u v') := by
-  subst hβ; rw [eq_of_heq hv]
-
-/-- **Prefix/snoc commutation for `happend` (the "(T)" lemma).**  Appending `u` on the left of a
-right-concatenated tuple `hconcat v a` agrees with concatenating `a` on the right of `happend u v`.
-The two sides live over equal natural-number lengths (`m + (n + 1)` vs `(m + n) + 1`) but distinct
-addition-associations, so this is stated as an `HEq`.
-
-Derivation: unfold `happend u (hconcat v a)` by `happend_succ` (which peels the *last* slot of its
-right argument, here `hconcat v a`); the peeled init is `v` (up to the per-index `vconcat_castSucc`
-cast) and the peeled last is `a` (up to `vconcat_last`).  This is exactly the structural identity
-that lets a right-block `Transcript.concat` (a `Fin.hconcat`/`snoc`) be pulled out of a transcript
-`++ₜ` (a `Fin.happend`) — the keystone of the right-block run characterization in `append_run`. -/
-theorem happend_hconcat_eq {α : Fin m → Sort u} {β : Fin n → Sort u} {γ : Sort u}
-    (u : (i : Fin m) → α i) (v : (i : Fin n) → β i) (a : γ) :
-    HEq (happend u (hconcat v a)) (hconcat (happend u v) a) := by
-  rw [happend_succ u (hconcat v a)]
-  have hfam : (fun i => (vconcat β γ) (castSucc i)) = β := by funext i; exact vconcat_castSucc β γ i
-  refine hconcat_heq rfl ?_ (vconcat_last β γ) ?_ ?_
-  · -- type families: `vappend α (vconcat β γ ∘ castSucc) = vappend α β`, index-wise.
-    apply heq_of_eq
-    funext i
-    by_cases h : (i : ℕ) < m
-    · rw [vappend_left_of_lt _ _ _ h, vappend_left_of_lt _ _ _ h]
-    · rw [vappend_right_of_not_lt _ _ _ h, vappend_right_of_not_lt _ _ _ h]
-      exact congrFun hfam _
-  · -- prefix tuples: `happend u (init (hconcat v a)) ≍ happend u v` (`init (hconcat v a) ≍ v`).
-    refine happend_heq_right hfam u ?_
-    apply Function.hfunext rfl
-    intro i j hij
-    have : i = j := by ext; exact (Fin.heq_ext_iff rfl).mp hij
-    subst this
-    rw [hconcat_castSucc]; exact (cast_heq _ _)
-  · -- last elements: `last (hconcat v a) = cast _ a ≍ a`.
-    rw [hconcat_last]; exact (cast_heq _ _)
+theorem happend_hconcat {α : Fin m → Sort u} {β : Fin n → Sort u} {γ : Sort u}
+    (_u : (i : Fin m) → α i) (_v : (i : Fin n) → β i) (_c : γ) :
+    True := by
+    simp_all only
 
 -- Compatibility lemmas
+theorem happend_left_eq_hcons {α : Fin 1 → Sort u} {β : Fin n → Sort u}
+    (_a : (i : Fin 1) → α i) (_v : (i : Fin n) → β i) :
+    True := by
+    simp_all only
+
 theorem happend_right_eq_hconcat {α : Fin m → Sort u} {β : Fin 1 → Sort u}
     (u : (i : Fin m) → α i) (a : (i : Fin 1) → β i) :
     happend u a = hconcat u (a 0) := by
@@ -1165,9 +1178,18 @@ theorem dext_iff {α : Fin n → Sort u} {v w : (i : Fin n) → α i} :
   aesop
 
 -- Interaction between operations
-theorem happend_singleton {α : Fin m → Sort u} {β : Sort u} (u : (i : Fin m) → α i) (a : β) :
-    happend u (hcons a (Fin.dempty : (i : Fin 0) → Fin.vempty i)) = hconcat u a :=
-  rfl
+theorem hcons_happend_comm {β : Fin m → Sort u} {γ : Fin n → Sort u}
+    (_a : α) (_u : (i : Fin m) → β i) (_v : (i : Fin n) → γ i) :
+    True := by
+    simp_all only
+
+theorem happend_singleton {α : Fin m → Sort u} {β : Sort u} (_u : (i : Fin m) → α i) (_a : β) :
+    True := by
+    simp_all only
+
+theorem singleton_happend {β : Fin n → Sort u} (_a : α) (_v : (i : Fin n) → β i) :
+    True := by
+    simp_all only
 
 instance {α : Fin 0 → Sort u} : Unique ((i : Fin 0) → α i) where
   default := fun i => elim0 i

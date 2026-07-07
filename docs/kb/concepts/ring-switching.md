@@ -16,9 +16,11 @@ Use this page when a question is about:
 
 Ring switching reduces a multilinear evaluation claim `s = t(r)` over a **small** coefficient ring
 `B` (a binary-tower field, `𝔽₂`, or a cyclotomic ring `R_q`) to an evaluation claim over a **large**
-extension `L`, paying only an additive `O(1/|L|)` soundness cost and **without re-committing** over
-`L`. This lets a PCS commit cheaply over a tiny ring while running sum-check and the final opening
-over a field large enough for soundness.
+extension `L` and **without re-committing** over `L`. Field instances such as Binius pay only an
+additive `O(1/|L|)` soundness cost; Hachi's cyclotomic-ring instance has a separate CWSS-style
+soundness theorem because `R_q` is not a domain. This lets a PCS commit cheaply over a tiny ring
+while running sum-check and the final opening over a carrier large enough for the intended
+soundness argument.
 
 With `ℓ = ℓ' + κ`, a small-field multilinear `t` in `ℓ` variables is *packed* into a large-field
 multilinear `t'` in `ℓ'` variables (`packMLE`): each block of `2^κ` coefficients becomes one
@@ -31,8 +33,12 @@ the original claim and the new sum-check target.
 ArkLib formalizes ring switching **once**, generic over a `RingSwitchingProfile (B L) κ`:
 
 - `basis`, carrier `A`, embeddings `φ₀`/`φ₁ : L →+* A`, coordinate maps `decomposeRows`/`Columns`,
-- plus two **reconstruction laws** (`decomposeRows_spec`, `decomposeColumns_spec`) — the eq̃/trace
-  identity — which the completeness/soundness proofs consume and which rule out degenerate profiles.
+- plus two **reconstruction laws** (`decomposeRows_spec`, `decomposeColumns_spec`) that tie the
+  coordinate maps to `φ₀`/`φ₁`/`basis` and rule out law-free profiles.
+
+Those laws are the algebraic profile boundary, not a complete soundness theorem by themselves.
+The batching/sum-check proofs still have to connect the profile coordinates to `packMLE`,
+`embedded_MLP_eval`, `compute_A_func`, and the instance's eq̃/trace identity.
 
 The protocol is three phases (batching → sum-check → large-field IOPCS opening); see the blueprint
 section *Ring Switching* (`blueprint/src/proof_systems/ring_switching.tex`) for the protocol and

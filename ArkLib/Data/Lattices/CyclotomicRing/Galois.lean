@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
 import ArkLib.Data.Lattices.CyclotomicRing.Galois.Automorphism
+import ArkLib.Data.Lattices.CyclotomicRing.Galois.Order
 import ArkLib.Data.Lattices.CyclotomicRing.Galois.Group
 import ArkLib.Data.Lattices.CyclotomicRing.Galois.Trace
 import ArkLib.Data.Lattices.CyclotomicRing.Galois.FixedSubring

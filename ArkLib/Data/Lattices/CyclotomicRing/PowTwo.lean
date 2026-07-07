@@ -27,7 +27,7 @@ automorphisms, the trace map, and the packing map `ψ`). Those two consumers car
 The object lives here, in `Data/Lattices`, rather than next to any one consumer: it is pure
 power-of-two cyclotomic ring theory over a prime field. The inner-outer commitment re-exports
 it under the names `hachiModulus` / `HachiRing` (see
-`ArkLib/CommitmentScheme/Ajtai/InnerOuter/Arithmetic.lean`).
+`ArkLib/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean`).
 
 Because `primePowTwoModulus` is *reducibly* equal to `powTwoCyclotomic α`, the
 `powTwoCyclotomic`-stated lemmas and the `IsCyclotomic` instance apply transparently.
@@ -62,13 +62,10 @@ power-of-two cyclotomic ring over `ZMod q`. It is a computable `CommRing`, inher
 This is the ring in which Hachi [NOZ26, §3] embeds the extension fields `F_{q^k}`. -/
 @[reducible] def PrimePowTwoRing : Type := Rq (primePowTwoModulus q α)
 
-/-- The prime power-of-two modulus `X^{2^α} + 1` has degree `2^α`. -/
-@[simp] theorem primePowTwoModulus_natDegree : (primePowTwoModulus q α).φ.natDegree = 2 ^ α := by
-  have h : (primePowTwoModulus q α).φ.toPoly = Polynomial.X ^ (2 ^ α) + 1 := by
-    change (CPolynomial.X ^ (2 ^ α) + 1 : CPolynomial (ZMod q)).toPoly = _
-    rw [toPoly_add, toPoly_pow, toPoly_X, toPoly_one]
-  rw [CompPoly.CPolynomial.natDegree_toPoly, h]
-  compute_degree!
+/-- The prime power-of-two modulus `X^{2^α} + 1` has degree `2^α`
+(a `ZMod q` specialization of `powTwoCyclotomic_natDegree`). -/
+@[simp] theorem primePowTwoModulus_natDegree : (primePowTwoModulus q α).φ.natDegree = 2 ^ α :=
+  powTwoCyclotomic_natDegree α
 
 /-- The prime power-of-two modulus has conductor `2^{α+1}`. -/
 @[simp] theorem primePowTwoModulus_conductor : (primePowTwoModulus q α).conductor = 2 ^ (α + 1) :=

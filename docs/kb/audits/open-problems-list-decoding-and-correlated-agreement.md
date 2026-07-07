@@ -1,291 +1,283 @@
 # Paper Audit: Open Problems in List Decoding and Correlated Agreement
 
-Paper-to-ArkLib audit for *Open Problems in List Decoding and Correlated
-Agreement* (Arnon, Boneh, Fenzi; April 8, 2026). Lists the paper's named
-formal items and records whether each one is currently present in ArkLib,
-missing, or present in a materially different form.
+This page records a paper-to-ArkLib audit for *Open Problems in List Decoding and Correlated
+Agreement* (dated April 8, 2026).
 
-This audit is the **status snapshot** — the canonical paper-to-Lean map. The
-forward-looking phased plan and review logs are kept as local working notes
-(out of the PR by design); this document records only what is present in the
-tree.
-
-Every per-item PR is expected to update this audit row in the same
-commit.
-
-The **canonical reference** for this work is the upstream LaTeX source,
-`ef-millenium/ef-millenium.tex` (the authors' repo, kept as a local clone and
-refreshed with `git -C ef-millenium pull`), **not** the static `ABF26.pdf`
-snapshot — the `.tex` tracks edits the PDF predates (e.g. the §4.5 MCA
-conjecture and Appendix C). Cited works are tracked against the authoritative
-`ef-millenium/references.bib`; the audit refers to the paper by its short name
-`ABF26` (eprint 2026/680).
-
-## Metadata
-
-- **Paper**: ABF26 — *Open Problems in List Decoding and Correlated Agreement* (eprint 2026/680)
-- **Canonical source**: `ef-millenium/ef-millenium.tex` (upstream author repo, local clone; `git -C ef-millenium pull` to refresh)
-- **Bibliography of record**: `ef-millenium/references.bib`
-- **Audit owner**: ABF26 formalization (PR #505)
+The goal is to list the paper's named formal items and check whether each one is already present in
+ArkLib, missing, or present in a materially different form.
 
 ## Status Legend
 
-- `present`: close match in ArkLib, no `sorry` blocking it.
-- `present-but-different`: underlying concept exists, but the interface,
-  statement shape, or abstraction level differs materially from the paper.
-- `present-but-incomplete`: the relevant theorem/symbol exists, but the
-  current Lean surface still depends on an explicit residual hypothesis,
-  external `Prop`, or theorem family. This status does not imply a raw
-  `sorry` proof hole in the current tree; use `scripts/sorry_census.py` for
-  the raw-hole census.
+- `present`: there is a close match in ArkLib.
+- `present-but-different`: the underlying concept exists, but the interface, statement shape, or
+  abstraction level differs materially from the paper.
+- `present-but-incomplete`: the relevant theorem/symbol exists, but the cited file still contains
+  `sorry`.
 - `missing`: no close formalization was found.
-- `deferred`: in scope of a later phase per the plan; not currently worked
-  on.
 
 ## Notes
 
-- Rows follow the theorem-like items extracted from the PDF, plus named
-  facts and remarks when they materially affect the comparison.
-- The **ABF26 ID** column matches the `ABF26-*` identifiers used by Lean
-  docstrings, external `Prop` declarations, and residual comments (e.g.
-  `D2.13`, `T4.13`, `L4.6`). Older references to raw proof-hole tags are
-  historical.
-- The **Lean target** column gives the canonical declaration name. For
-  `present` rows this is the existing name; for other rows it is the proposed
-  name.
-- The **Lean refs** column lists existing declarations and the files
-  containing them.
-- "External" Lean target rows reference results the paper itself states
-  without proof or whose source-paper proof is not yet formalized in ArkLib.
-  Current rows use `Prop` declarations, proved reductions with explicit
-  residual hypotheses, or ordinary theorems; they are not raw `sorry` holes
-  unless the census says otherwise.
-- 2026-06-06 residualization check: on clean `fork/main`,
-  `python3 scripts/sorry_census.py` reports `holes = 0`,
-  `files_with_holes = 0`, and `decls_with_holes = 0`. Historical raw-line
-  references below are kept only as breadcrumbs when explicitly marked.
+- Rows follow the theorem-like items extracted from the PDF, plus named facts and remarks when they
+  materially affect the comparison.
+- Lean references are given as symbol names plus direct file links.
+- In several places ArkLib has a more general or more reusable abstraction than the paper.
+  Those are marked `present-but-different` rather than `missing`.
 
-## Drift since last audit
+## Section 2: Preliminaries
 
-Three rows the previous audit flagged as `present-but-incomplete` are now
-fully sorry-free, thanks to PR #385 (AHIV22, 2026-04-24), PR #463 (BCIKS20
-`ReedSolomonGap`, 2026-04-30), and commit `6389c0e` (BCIKS20
-`AffineSpaces`, 2026-05-05; pushed directly with no associated PR
-number). Those rows are re-tagged `present` below. The older
-AffineLines raw-line and proximity-gap proof-hole inventories are now
-superseded by the zero-hole census and by named residual interfaces such as
-`StrictCoeffPolysResidual`, `BoundaryCardResidual`,
-`BoundaryCardLatticeResidual`, and the issue-indexed ABF26 theorem-family
-`Prop`s. Two supporting files relevant to the Phase 1 ε-error migration and
-the still-open non-unique-decoding/residualized branch:
-[`ArkLib/Data/CodingTheory/ReedSolomon/FftDomain.lean`](../../../ArkLib/Data/Domain/CosetFftDomain/Defs.lean)
-(smooth-domain FFT infrastructure, added 2026-04-17 in PR #448) and
-[`ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean)
-(bivariate-existence lemmas, added 2026-03-11 by `b333f6ba`).
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Lemma 2.1 Polynomial identity lemma | present-but-different | `prob_schwartz_zippel_mv_polynomial` in [ArkLib/Data/Probability/Instances.lean](../../../ArkLib/Data/Probability/Instances.lean); `schwartz_zippel_of_fintype` in [ArkLib/Data/MvPolynomial/Interpolation.lean](../../../ArkLib/Data/MvPolynomial/Interpolation.lean) | ArkLib has Schwartz-Zippel style lemmas, but not the exact paper statement over `F<d [X₁,...,Xₘ]` with bound `m(d-1)/|F|`. |
+| Definition 2.2 q-entropy function | missing | none | No `H_q` or entropy helper matching the paper was found. |
+| Definition 2.3 restricted Hamming distance | present-but-different | `Δ₀`, `δᵣ`, `distFromCode`, `relDistFromCode` in [ArkLib/Data/CodingTheory/Basic/Distance.lean](../../../ArkLib/Data/CodingTheory/Basic/Distance.lean) | ArkLib has ordinary and relative Hamming distance, but not the paper's explicit restricted distance `Δ_T`. |
+| Definition 2.4 Hamming-ball volume | present-but-different | `hammingBall`, `relHammingBall` in [ArkLib/Data/CodingTheory/ListDecodability.lean](../../../ArkLib/Data/CodingTheory/ListDecodability.lean) | Hamming balls are present, but the explicit cardinality function `Vol_q(δ,n)` is not. |
+| Definition 2.5 error-correcting code, minimum distance, rate | present-but-different | `Code.dist` in [ArkLib/Data/CodingTheory/Basic/Distance.lean](../../../ArkLib/Data/CodingTheory/Basic/Distance.lean); `LinearCode.rate` in [ArkLib/Data/CodingTheory/Basic/LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | ArkLib models codes as sets or submodules over function spaces rather than the paper's subset notation `C ⊆ Σ^n`. |
+| Lemma 2.6 Singleton bound | present | `singleton_bound`, `singleton_bound_linear` in [ArkLib/Data/CodingTheory/Basic/LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | Present for arbitrary and linear codes. |
+| Definition 2.7 `F`-additive code | present-but-different | `ModuleCode`, `LinearCode` in [ArkLib/Data/CodingTheory/Basic/LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | Same mathematical idea, but expressed through submodules rather than a named `F`-additive predicate. |
+| Definition 2.8 list around a word and global list size | present-but-different | `closeCodewordsRel`, `listDecodable`, `uniqueDecodable` in [ArkLib/Data/CodingTheory/ListDecodability.lean](../../../ArkLib/Data/CodingTheory/ListDecodability.lean) | ArkLib has the underlying set and predicate notions, but not the paper's maximized function `|Λ(C,δ)|`. |
+| Definition 2.9 interleaved code | present-but-different | `interleavedCodeSet`, `codewordStackSet` in [ArkLib/Data/CodingTheory/InterleavedCode.lean](../../../ArkLib/Data/CodingTheory/InterleavedCode.lean) | Present, with a matrix-based API rather than the paper's tuple notation `C^{≡m}`. |
+| Lemma 2.10 interleaved-code list-size bound | missing | none | No direct formalization of the GGR11 bound was found. |
+| Definition 2.11 Reed-Solomon code | present-but-different | `ReedSolomon.code` in [ArkLib/Data/CodingTheory/ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean) | Present, but parameterized by an injective domain `ι ↪ F` rather than a literal subset `L ⊆ F`. |
+| Definition 2.12 smooth domain | present-but-different | `ReedSolomon.Smooth` in [ArkLib/Data/CodingTheory/ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean) | Present as a typeclass on the domain embedding. |
+| Definition 2.13 interleaved Reed-Solomon code | present-but-different | `ReedSolomon.code` with `interleavedCodeSet` in [ArkLib/Data/CodingTheory/ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean) and [ArkLib/Data/CodingTheory/InterleavedCode.lean](../../../ArkLib/Data/CodingTheory/InterleavedCode.lean) | The construction exists compositionally, but there is no dedicated `IRS[...]` alias or API. |
+| Definition 2.14 admissible element for folded Reed-Solomon | missing | none | No matching folded Reed-Solomon infrastructure was found. |
+| Definition 2.15 folded Reed-Solomon code | missing | none | No dedicated folded Reed-Solomon code formalization was found. |
+| Definition 2.16 subspace-design code | missing | none | No `τ`-subspace-design definition was found. |
+| Lemma 2.17 lower bound on `τ` | missing | none | Depends on missing subspace-design infrastructure. |
+| Theorem 2.18 FRS/UM are subspace-design codes | missing | none | Folded RS and multiplicity codes are not yet formalized in this sense. |
+| Definition 2.19 extension field presentation | missing | none | No matching record for `(B,F,e,ψ,φ)` was found. |
+| Definition 2.20 extension code | missing | none | No extension-code construction was found. |
+| Lemma 2.21 list size of extension code equals list size of interleaved base code | missing | none | Depends on missing extension-code infrastructure. |
 
-**This-PR additions** (`feat/abf26-plan` branch): three in-tree sorries
-discharged in proof-discharge passes after the statement layer landed:
-`dim_irsCode` (D2.13 dim formula, commit `3b0cfc99`),
-`hammingBallVolume_eq_ncard_hammingBall` and its sub-sorries
-`card_filter_hammingDist_eq` (`c01232f3`) and the Set/Finset card conversion
-(`13f02444`) for D2.4, and `minDist_div_card_eq_minRelHammingDistCode`
-(`3f344a00`, via a `Set.Finite.toFinset` refactor of `minRelHammingDistCode`
-to dodge a `Fintype.ofFinite` instance diamond). Several new bridge lemmas
-land in `Basic/LinearCode.lean` (`IsMDS_iff_singleton_bound_tight`),
-`Basic/RelativeDistance.lean` (the `minDist_div_card` bridge above plus
-characterisation lemmas for `minRelHammingDistCode`), and
-`Whir/MutualCorrAgreement.lean` (`proximityCondition_imp_mcaEvent_affineLine`
-and the probability-level `Pr_proximityCondition_le_epsMCA`, one-way bridges
-documenting the WHIR↔ABF26 MCA asymmetry recorded in commit `d01117c8`).
+## Section 3: List Decoding
 
-## Section 1 — Grand Challenges (introduction)
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Definition 3.1 Johnson functions `J_{q,\ell}`, `J_q`, `J` | present-but-different | `J` in [ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean) | ArkLib has the usual `q`-ary Johnson function, but not the paper's full three-function family. |
+| Theorem 3.2 Johnson bound | present-but-different | `johnson_bound`, `johnson_bound_alphabet_free` in [ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean) | Present as a condition-based list-size theorem rather than the exact paper packaging. |
+| Corollary 3.3 MDS coarse Johnson corollary | missing | related ingredients in [ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean) and [ArkLib/Data/CodingTheory/Basic/LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | Likely derivable, but not present as a named result. |
+| Theorem 3.4 list decoding for subspace-design codes | missing | none | Depends on missing subspace-design infrastructure. |
+| Corollary 3.5 folded RS up to capacity | missing | none | Depends on missing folded RS and subspace-design code infrastructure. |
+| Theorem 3.6 random Reed-Solomon domains near capacity | missing | none | No random-domain RS list-decoding result was found. |
+| Lemma 3.7 Elias lower bound | missing | none | No formalization of this lower bound was found. |
+| Corollary 3.8 volume-based lower bound | missing | none | Depends on missing Elias/Hamming-volume formalization. |
+| Theorem 3.9 generalized Singleton bound for list decoding | missing | related classical Singleton bounds in [ArkLib/Data/CodingTheory/Basic/LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | ArkLib has only the classical Singleton bound. |
+| Theorem 3.10 large-alphabet lower bound near generalized Singleton | missing | none | No matching result was found. |
+| Theorem 3.11 random linear-code lower bound | missing | none | No matching result was found. |
+| Theorem 3.12 RS superpolynomial list size over extension fields | missing | none | No matching result was found. |
+| Theorem 3.13 RS large list size over prime fields | missing | none | No matching result was found. |
+| Theorem 3.14 large-rate RS lower bound | missing | none | No matching result was found. |
+| Theorem 3.15 hardness barrier for algorithmic list decoding | missing | none | No discrete-log-based lower bound was found. |
 
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `GC1` | Grand MCA Challenge (page 5): "determine the largest `δ*_C ∈ [0, 1]` such that `ε_mca(C, δ*_C) ≤ ε*`" | present (as predicate) | `ProximityGap.grandMCAChallenge` in [GrandChallenges.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean) | existing | Stated as a generic `Prop`-valued predicate over a `LinearCode ι F` and a threshold `ε* : ℝ≥0`. **Phase-1 instantiation framework (2026-06-03):** RS targets `grandMCAChallengeRS` / `grandMCAChallengeRSrate`, prize regime `prizeRates` (= {1/2,1/4,1/8,1/16}) + `epsStar` (= 2^-128) + `mcaPrize`, witness-carrying `GrandMCAResolution` with one-sided `MCALowerWitness`/`MCAUpperWitness` (bound any resolution's `δ*` via `epsMCA_mono`), and bridges from `CapacityBounds` (`MCALowerWitness.ofLe`/`ofJohnsonBCHKS25`, `MCAUpperWitness.ofGt`/`ofEpsCAGt`). Resolution is open. |
-| `GC2` | Grand List Decoding Challenge (page 5): "determine the largest `δ*_C ∈ [0, 1]` such that `\|Λ(C^≡m, δ*_C)\| ≤ ε* · \|F\|`" | present (as predicate) | `ProximityGap.grandListDecodingChallenge` in [GrandChallenges.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean) | existing | Stated as a generic `Prop`-valued predicate. Uses `ListDecodable.Lambda` for `\|Λ(C^≡m, ·)\|` (ABF26 D2.8). **Phase-1 mirror (2026-06-03):** `grandListDecodingChallengeRS` + `listDecodingPrize`, witness-carrying `GrandListResolution` with `ListLowerWitness`/`ListUpperWitness` (bound `δ*` via `lambda_coe_mono` from `Lambda_mono`). Resolution is open. |
+## Section 4: Correlated Agreement Conjectures
 
-## Section 2 — Preliminaries
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Definition 4.1 correlated agreement error `εca(C,δ_fld,δ_int)` | present-but-different | `δ_ε_correlatedAgreementAffineLines`, `δ_ε_correlatedAgreementCurves`, `δ_ε_correlatedAgreementAffineSpaces` in [ArkLib/Data/CodingTheory/ProximityGap/Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean) | ArkLib uses predicate-style CA notions, not the paper's maximized error-function interface. |
+| Remark 4.2 discretization of proximity loss | missing | related distance granularity in [ArkLib/Data/CodingTheory/Basic/Distance.lean](../../../ArkLib/Data/CodingTheory/Basic/Distance.lean) | The exact `εca`-specific remark is absent because `εca` is absent. |
+| Definition 4.3 mutual correlated agreement error `εmca(C,δ)` | missing | related WHIR-specific `hasMutualCorrAgreement` in [ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean) | ArkLib does not currently expose the paper's general code-level MCA error function. |
+| Remark 4.4 MCA with proximity loss | missing | none | No matching notion was found. |
+| Fact 4.5 `εpg ≤ εca ≤ εmca` | missing | related CA/proximity-gap predicates in [ArkLib/Data/CodingTheory/ProximityGap/Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean) | Not expressible in current ArkLib interfaces because `εca` and `εmca` are not defined as numeric errors. |
+| Lemma 4.6 MCA equals CA below unique decoding radius | missing | none | No general theorem of this form was found. |
+| Lemma 4.7 interleaving degrades MCA by at most `t` | missing | none; see [`Jo26`](../papers/Jo26.md) | No general interleaving-vs-MCA theorem was found. Jo26 gives a sharper interleaving-stability target for generator MCA: no linear interleaving-width loss, exact transfer when the seed-set size is at most the field size, and a field-size weighted factor otherwise. |
+| Theorem 4.8 AHIV17 general-code unique-decoding bound | missing | related but different [ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean) | AHIV22 is present, but not this general `εmca/εca` statement. |
+| Theorem 4.9 RS unique-decoding results | present-but-different | `RS_correlatedAgreement_affineLines_uniqueDecodingRegime` and `RS_correlatedAgreement_affineLines` in [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/UniqueDecoding.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/UniqueDecoding.lean) and [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean) | Item 1 is represented via predicate-style CA for RS. Item 2, the BCHKS25 proximity-loss refinement, is missing. The main file still has a `sorry` in the non-unique-decoding branch. |
+| Remark 4.10 small proximity-loss simplification | missing | none | Depends on missing `εca` error-function interface. |
+| Theorem 4.11 1.5-Johnson regime for general linear codes | missing | none | No matching theorem was found. |
+| Theorem 4.12 Johnson-range RS MCA bound | missing | related conjectural WHIR-facing statements in [ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean) | ArkLib does not yet contain the BCHKS25 theorem itself. |
+| Theorem 4.13 MCA from subspace-design codes | missing | none | Depends on missing subspace-design code infrastructure. |
+| Theorem 4.14 folded RS MCA up to capacity | missing | none | Depends on missing folded RS and subspace-design infrastructure. |
+| Theorem 4.15 random RS MCA up to capacity | missing | none | No random-domain RS MCA result was found. |
+| Theorem 4.16 lower bound on CA near capacity | missing | none | No matching result was found. |
+| Theorem 4.17 complete CA breakdown theorem | missing | none | No matching result was found. |
+| Theorem 4.18 CA jump at the Johnson bound | missing | none | No matching result was found. |
+| Lemma 4.19 CA bounded below by sampling probability | missing | none | No matching result was found. |
+| Definition 4.20 line-decoding | missing | none | No general line-decoding definition was found. |
+| Theorem 4.21 line-decoding implies MCA | missing | none | Depends on missing line-decoding infrastructure. |
 
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `L2.1` | Polynomial identity lemma | present | `prob_polynomial_identity_le`, `prob_schwartz_zippel_mv_polynomial_of_totalDegree_le`, `MvPolynomial.totalDegree_le_of_degreeOf_lt` in [Instances.lean](../../../ArkLib/Data/Probability/Instances.lean); `schwartz_zippel_of_fintype` in [Interpolation.lean](../../../ArkLib/Data/MvPolynomial/Interpolation.lean) | `prob_polynomial_identity_le` | Paper bound `m·(d-1)/|F|` for individual-degree-`<d` polynomials, realised as `prob_polynomial_identity_le`. Derived from the generalised Schwartz-Zippel wrapper `prob_schwartz_zippel_mv_polynomial_of_totalDegree_le` (which takes any `d ≥ totalDegree P`) via the `MvPolynomial.totalDegree_le_of_degreeOf_lt` helper. The legacy specialisation `prob_schwartz_zippel_mv_polynomial` (bound `≤ n / \|F\|` when `totalDegree ≤ n`) is preserved as a one-line wrapper. |
-| `D2.2` | q-entropy function `H_q` | present | `CodingTheory.qEntropy` in [Entropy.lean](../../../ArkLib/Data/CodingTheory/Basic/Entropy.lean) | existing | `noncomputable def`; uses Mathlib's `Real.logb`. Boundary case `qEntropy q 0 = 0` is a `@[simp]` lemma. |
-| `D2.3` | Restricted Hamming distance `Δ_T` | present | `CodingTheory.restrictedRelHammingDist` in [RelativeDistance.lean](../../../ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean); existing full-domain `Δ₀`/`δᵣ` in [Distance.lean](../../../ArkLib/Data/CodingTheory/Basic/Distance.lean) and [RelativeDistance.lean](../../../ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean) | existing | `ℝ≥0`-valued; `T = ∅` gives `0` via `NNReal`'s `0/0 = 0`. |
-| `D2.4` | Hamming-ball volume `Vol_q(δ,n)` | present | `CodingTheory.hammingBallVolume` in [HammingBallVolume.lean](../../../ArkLib/Data/CodingTheory/HammingBallVolume.lean); supporting `hammingBall`/`relHammingBall` sets in [ListDecodability.lean](../../../ArkLib/Data/CodingTheory/ListDecodability.lean) | existing | `noncomputable def` (depends on `Nat.floor` over `ℝ`). Boundary case `Vol_q(0, n) = 1` is a `@[simp]` lemma. |
-| `D2.5` | ECC, `δ_min`, rate | present-but-different | `Code.dist`, `Code.minDist` in [Distance.lean](../../../ArkLib/Data/CodingTheory/Basic/Distance.lean); `LinearCode.rate` in [LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean); bridge `minDist_div_card_eq_minRelHammingDistCode` and supporting `minRelHammingDistCode` in [RelativeDistance.lean](../../../ArkLib/Data/CodingTheory/Basic/RelativeDistance.lean) linking the raw `Code.minDist C / n` form to `δᵣ C` (proved, via `Set.Finite.toFinset` refactor of `minRelHammingDistCode`) | existing | Paper uses `C ⊆ Σ^n`; ArkLib uses function spaces. Mathematically equivalent. Paper-style `δ_min` / `ρ` scoped-notation file was once planned but never materialised — call sites use `Code.minDist C / Fintype.card ι` and `LinearCode.rate` directly. |
-| `L2.6` | Singleton bound | present | `singleton_bound`, `singleton_bound_linear`, `IsMDS` predicate (from PR #430), and `IsMDS_iff_rate_distance` bridge in [LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | existing | `IsMDS LC` encodes the additive Nat Singleton-tight condition `Code.dist LC.carrier = length LC - dim LC + 1`; the bridge `IsMDS_iff_rate_distance` connects it to the rate-distance form `δ_min(LC)/n = 1 - dim/n + 1/n` used by ABF26 §2-§3. |
-| `D2.7` | F-additive code | present-but-different | `ModuleCode`, `LinearCode` in [LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | use `ModuleCode ι F (Fin s → F)` directly | `ModuleCode` / `LinearCode` *bake in* F-linear subspace structure — the paper's "F-additive" notion is realised by these existing types. Theorems quantifying over a paper-style "F-additive `Set`-coded code `C`" can write `∃ MC : Submodule F (ι → A), (MC : Set _) = C` inline rather than via a dedicated paper-shape predicate; ArkLib convention avoids alias-style wrappers for items already realised by existing types. |
-| `D2.8` | `Λ(C,δ,f)` and `\|Λ(C,δ)\|` | present | `ListDecodable.closeCodewordsRel` (= point list `Λ(C,δ,f)`), `ListDecodable.Lambda`, `closeCodewordsRel_subset_of_le`, `Lambda_mono`, `Lambda_le_ncard` in [ListDecodability.lean](../../../ArkLib/Data/CodingTheory/ListDecodability.lean) | existing | The point list `Λ(C,δ,f)` is the pre-existing `closeCodewordsRel C f δ` (no paper-shape alias: the `Lambda_at` abbrev was removed 2026-05-31). `Lambda` is the new `ℕ∞`-valued maximised list size `\|Λ(C,δ)\|`. |
-| `D2.9` | `m`-interleaved code `C^≡m` | present-but-different | `interleavedCodeSet`, `codewordStackSet` in [InterleavedCode.lean](../../../ArkLib/Data/CodingTheory/InterleavedCode.lean) | existing + `scoped notation "_^≡_"` | Matrix-based API; paper uses tuple notation. |
-| `L2.10` | `\|Λ(C^≡m,δ)\| ≤ binom(b+r,r)·\|Λ\|^r` | stated (external Prop) | `InterleavedCode.lambda_le_ggr11` in [InterleavedCode.lean](../../../ArkLib/Data/CodingTheory/InterleavedCode.lean) | same | Prop-valued GGR11 recursion statement. In-tree carrier/list-size infrastructure and the leaf-counting reduction are proved; the remaining external wall is the named Erase-Decode tree structure `InterleavedCode.GGR11.GGR11TreeStructure` tracked by #73. |
-| `D2.11` | Reed-Solomon code `RS[F,L,k]` | present-but-different | `ReedSolomon.code` in [ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean) | existing + `scoped notation "RS[" F ", " L ", " k "]"` | Parameterised by injection `ι ↪ F` rather than `L ⊆ F`. Strictly more general. |
-| `D2.12` | Smooth domain | present | `ReedSolomon.Smooth` in [ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean) | existing | Verified: typeclass requires multiplicative coset of a subgroup with order a power of two. New companion file [FftDomain.lean](../../../ArkLib/Data/Domain/CosetFftDomain/Defs.lean) provides FFT-domain machinery; not a paper-item match but noted here for completeness. |
-| `D2.13` | s-interleaved RS `IRS[F,L,k,s]` | present | [ReedSolomon/Interleaved.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon/Interleaved.lean) | `ReedSolomon.Interleaved.irsCode`, plus `dim_irsCode` (proved) | Defined as `interleavedCodeSet (RS[F, L, ⌊k/s⌋])`. Dimension formula `dim(IRS) = s · (k/s)` proved via injective F-linear `(Fin s → ↥RS) → (ι → Fin s → F)` + `finrank_pi_fintype`. |
-| `D2.14` | `(L,s)`-admissible field element | present | [ReedSolomon/Folded.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon/Folded.lean) | `ReedSolomon.Folded.Admissible` | Required by D2.15. |
-| `D2.15` | Folded RS `FRS[F,L,k,s,ω]` | present | [ReedSolomon/Folded.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon/Folded.lean) | `ReedSolomon.Folded.frsCode` | Used pervasively in §3, §4, §6.3.2. |
-| `D2.16` | τ-subspace-design code | present | [SubspaceDesign.lean](../../../ArkLib/Data/CodingTheory/SubspaceDesign.lean) | `CodingTheory.IsSubspaceDesign` | GX13 definition; uses `LinearMap.proj` for `A_i`. |
-| `L2.17` | `min τ(r) ≥ ρ − 1/n` | present | [SubspaceDesign.lean](../../../ArkLib/Data/CodingTheory/SubspaceDesign.lean) | `CodingTheory.subspaceDesign_tau_lower` | GG25 lower-bound lemma proved in-tree, with the repaired nontrivial-code and `r ∈ [s]` hypotheses documented in the theorem docstring. |
-| `T2.18` | FRS and UM are subspace-design | present-but-incomplete (UM half only) | [SubspaceDesign.lean](../../../ArkLib/Data/CodingTheory/SubspaceDesign.lean) | `CodingTheory.frs_is_subspaceDesign_gk16` | FRS half is fully proven (the GK16 degree-budget lemmas are closed for the vector-space side). UM half remains deferred. Tracked by #92. |
-| `D2.19` | Extension field presentation `(B,F,e,ψ,φ)` | present | [ExtensionCodes.lean](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean) | `CodingTheory.ExtensionFieldPresentation` (structure wrapping `[Algebra B F]` + `Basis (Fin e) B F`), plus `IsSystematic` for the systematic variant. | Refactored to wrap Mathlib's `Algebra B F` + `Basis (Fin e) B F` directly (no parallel implementation of the field embedding / coordinate iso). `ψ := algebraMap B F`, `φ := basis.equivFun`, `coord j := proj j ∘ φ`. Univariate-multiplicity code (paper's namesake `DA.7`) is a *different* item, despite sharing a number. |
-| `D2.20` | Extension code `C_F` | present | [ExtensionCodes.lean](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean) | `CodingTheory.extensionCode` (Set form) + `CodingTheory.extensionCodeSubmodule` (Submodule form, mirroring `ReedSolomon.code`'s shape in [ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean)) | Set-level definition; uses coordinate-projections `P.coord j` of D2.19. **All closure laws proven**: `extensionCode_add_mem` (addition), `extensionCode_psi_smul_mem` (B-side scalar via `ψ`), and `extensionCode_smul_mem` (F-scalar closure, paper's D2.20 F-linearity claim, closed via basis-expansion through `Basis.sum_equivFun` + `Finset.sum_induction`). The Submodule packaging `extensionCodeSubmodule` bundles all three into a `Submodule F (ι → F)` (consumed by downstream code that wants a linear-code type; `coe_extensionCodeSubmodule` is the carrier bridge). Distance equality `δ_min(C_F) = δ_min(C_B)` from DP25 not formalised — separate paper item. |
-| `L2.21` | `\|Λ(C_F,δ)\| = \|Λ(C_B^e,δ)\|` | present | [ExtensionCodes.lean](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean) | `CodingTheory.lambda_extensionCode_eq_lambda_interleaved` | BCFW25 Lemma D.3 proved in-tree via the coordinate isometry `extensionCoordEquiv`. |
+## Section 5: Connections Between List Decoding and Correlated Agreement
 
-## Section 3 — List Decoding
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Theorem 5.1 list decoding implies MCA | missing | only related WHIR-specific `mca_list_decoding` in [ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean) | ArkLib does not contain the general GCXK25 theorem; the WHIR lemma is at a different abstraction layer and is still incomplete. |
+| Theorem 5.2 small CA error implies list size `< |F|` | missing | none | No matching result was found. |
+| Theorem 5.3 CA implies list decoding for a related RS code | missing | none | No matching result was found. |
+| Theorem 5.4 separation between list decoding and CA | missing | none | No matching result was found. |
 
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `D3.1` | Johnson functions `J_{q,ℓ}`, `J_q`, `J` | present | existing `J` in [JohnsonBound/Basic.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean) (which matches paper's `J_q`); new `JohnsonBound.Jqℓ` and `JohnsonBound.Jcap` in [JohnsonBound/Family.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Family.lean) | `JohnsonBound.Jqℓ`, `JohnsonBound.J` (= paper `J_q`), `JohnsonBound.Jcap` | All three functions present. Limit relationships documented in docstrings; not formalised (paper does not prove them either). |
-| `T3.2` | Johnson bound (Joh62) | refuted (corrected MDS form proven) | absolute-distance form `johnson_bound`, `johnson_bound_alphabet_free` in [JohnsonBound/Basic.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Basic.lean); paper-shaped `johnson_bound_lambda_le_ell` in [JohnsonBound/Family.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Family.lean) | `CodingTheory.johnson_bound_lambda_le_ell` | Refuted as stated; see FamilyRefutationComplete.lean for the counterexample. The corrected MDS theorem is proven. |
-| `C3.3` | MDS coarse Johnson | present | [JohnsonBound/Family.lean](../../../ArkLib/Data/CodingTheory/JohnsonBound/Family.lean) | `CodingTheory.mds_johnson_lambda_le` | Proved sorry-free using the corrected Johnson bound. |
-| `T3.4` | τ-subspace-design list decoding | stated (external Prop; split issue #93) | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.subspaceDesign_list_decoding_cz25` | Prop-valued CZ25 Thm B.5 statement. The unguarded statement is refuted; the tree now uses the guarded CZ25SpanBound' residual (tracked by #93). |
-| `C3.5` | Folded RS up to capacity | stated (external Prop; split issue #94) | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean), [ListDecoding/CZ25CapacityReduction.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/CZ25CapacityReduction.lean), [ListDecoding/CZ25SpanBoundBridge.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/CZ25SpanBoundBridge.lean), [SubspaceDesign.lean](../../../ArkLib/Data/CodingTheory/SubspaceDesign.lean) | `CodingTheory.frs_list_decoding_capacity_cz25` | Prop-valued CZ25 Cor 2.21 statement. The broad `_of_residuals` reductions still derive it from T3.4/T2.18 plus the floor reconciliation `hηnat`, but current source also exposes the narrower `frs_list_decoding_capacity_cz25_of_coordFiberCap_T218` route from the single `CZ25CoordFiberCap` bridge residual and the FRS T2.18 profile. The `frs_is_subspaceDesign_cz25Profile_of_gk16Profile`, `_of_injective`, and `_of_admissible` bridges adapt the repaired GK16 FRS profile to the CZ25 capacity profile, and `frs_list_decoding_capacity_cz25_of_coordFiberCap_injective` / `_of_coordFiberCap_admissible` package those bridges into the unfolded C3.5 inequality. Remaining #94 work is the GW/`CZ25CoordFiberCap` core inherited from #93, the final named-Prop wrappers over these unfolded reductions, and policy for the explicit `hηnat` side condition. |
-| `T3.6` | Random RS near capacity | stated (external Prop; split issue #95) | [Probability/Combinatorial.lean](../../../ArkLib/Data/Probability/Combinatorial.lean), [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.random_rs_list_decoding` | AGL24 Thm 1.1. The random-domain probability space is now present as `Probability.SizeSubset` / `uniformSizeSubsetOfLe`, with support/cardinality/equiv helpers and `SizeSubset.toEmbedding` for `RS[F,L,k]`. The AGL24 probability bound and concrete parameter instantiation remain external. |
-| `L3.7` | Elias volume bound | present | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.linear_lambda_ge_elias_volume_eli57` | Eli57 volume lower bound proved in-tree using `hammingBallVolume`. |
-| `C3.8` | Volume-based lower bound | present | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.linear_lambda_ge_entropy_volume` | Proved in-tree in the repaired lattice-point form, using `qEntropy` and the Elias-volume theorem. |
-| `T3.9` | Generalized Singleton bound | present | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.linear_C_le_generalized_singleton_st20` | ST20 Thm 1.2 proof restored in-tree. |
-| `T3.10` | Large-alphabet lower bound | stated (external Prop; split issue #96) | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.large_alphabet_barrier_bdg24_agl23` | Prop-valued BDG24/AGL23 statement; the counting/descent reductions are isolated, with the AGL23 extraction theorem family remaining external. |
-| `T3.11` | Random linear code lower bound | stated (external Prop; split issue #79) | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean), [ExternalDebt.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/ExternalDebt.lean) | `CodingTheory.random_linear_lambda_lower_glmrsw22` | Prop-valued GLMRSW22 statement. The random-generator-matrix probability space is now in-tree via `uniformRandomLinearGeneratorMatrix`, `uniformRandomLinearCode`, and `randomLinearLambdaLowerProbability`; the fixed-parameter theorem target is named by `randomLinearLambdaLowerFirstMomentResidual`, with `exists_code_of_randomLinearLambdaLowerFirstMomentResidual` converting positivity into the legacy existential code witness. The remaining #79 theorem is the GLMRSW22 first-moment count proving that residual (indeed a high-probability bound). |
-| `T3.12` | RS superpoly over extensions | **proven** | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean), [ToMathlib/BKR06BareT312.lean](../../../ArkLib/ToMathlib/BKR06BareT312.lean) | `BKR06.rs_lambda_superpoly_extension_bkr06_proven` | The bare front door `CodingTheory.rs_lambda_superpoly_extension_bkr06` is discharged as an in-tree, axiom-clean theorem (closes #97): witness sequence `2^{i+N+1}` past the Archimedean band threshold; per-instance assembly = ZMod-2 glue + log-2-widened band + tight pigeonhole count + floor-window/index transport (`BKR06EndToEnd.lean`). The `_of_residuals`/injection/family forms remain as the narrowed intermediate API. |
-| `T3.13` | RS large list over prime fields | **proven** | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean), [ToMathlib/GHSZ02LargeNProof.lean](../../../ArkLib/ToMathlib/GHSZ02LargeNProof.lean) | `GHSZ02LargeNProof.rs_lambda_large_prime_ghsz02_proven` | The bare front door `CodingTheory.rs_lambda_large_prime_ghsz02` is discharged as an in-tree, axiom-clean theorem (closes #98): the `GHSZ02LargeN` Cor-20 ledger proven from explicit thresholds (choose symmetry + `Nat.pow_le_choose` + `(1−1/p)^p` brick), thresholds eventually satisfied (tendsto compositions), uniform Ω-constant `c = 1/2` via `hcount_of_largeN`. The `_of_residuals`/injection forms remain as intermediate API. |
-| `T3.14` | Large-rate RS lower bound | present | [ListDecoding/Bounds.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean) | `CodingTheory.rs_lambda_high_rate_jh01` | JH01 Thm 2 repaired to the actual list-size separation and proved in-tree. |
-| `T3.15` | CW07 hardness barrier | out of scope | none | `CodingTheory.rs_dlog_barrier` (external; not stated) | Algorithmic hardness (discrete-log reduction); we formalise combinatorial statements only. |
+## Section 6: Toy Problem
 
-## Section 4 — Correlated Agreement Conjectures
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Definition 6.1 toy problem relation `R_C^ℓ` | missing | none | No matching relation was found. |
+| Definition 6.3 relaxed toy relation `R̃_C,δ^ℓ` | missing | none | No matching relation was found. |
+| Definition 6.4 erasure correction | missing | none | There is no code-level erasure-correction abstraction matching the paper. |
+| Lemma 6.5 every additive code supports erasure correction | missing | none | No matching theorem was found. |
+| Lemma 6.6 knowledge soundness of Construction 6.2 | missing | related general security framework in [ArkLib/OracleReduction/Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | The framework exists, but this protocol and its theorem are not formalized. |
+| Remark 6.7 CA is insufficient for the proof of Lemma 6.6 | missing | none | No matching analysis was found. |
+| Lemma 6.8 round-by-round knowledge soundness of Construction 6.2 | missing | related framework in [ArkLib/OracleReduction/Security/RoundByRound.lean](../../../ArkLib/OracleReduction/Security/RoundByRound.lean) | The framework exists, but this protocol and its theorem are not formalized. |
+| Lemma 6.10 soundness of Construction 6.9 | missing | none | No matching protocol or theorem was found. |
+| Definition 6.11 winning set `Ω` | missing | none | No matching definition was found. |
+| Lemma 6.12 list-decoding lower-bound attack | missing | none | No matching theorem was found. |
+| Lemma 6.13 CA lower-bound attack | missing | none | No matching theorem was found. |
+| Remark 6.14 attack currently only reaches `εca`, not `εmca` | missing | none | No matching analysis was found. |
 
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `D4.1` | `ε_ca(C,δ_fld,δ_int)` | present | `ProximityGap.epsCA`, `epsCA'`, `epsCA_curves`, `epsCA_affineSpaces`, `epsCA_mono_δ_fld`, `epsCA_antitone_δ_int`, three bridges `δ_ε_correlatedAgreement{AffineLines,Curves,AffineSpaces}_iff_epsCA{_,_curves_,_affineSpaces_}le` in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean); coexisting predicate API in [Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean) | existing | Definition, monotonicity in both arguments, and bridges to all three predicate-style API variants (`AffineLines`, `Curves`, `AffineSpaces`) closed. |
-| `R4.2` | ε_ca discretization | present | `ProximityGap.epsCA_eq_of_floor_eq` in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean) | existing | General "level set" form proved (`⌊δ_int · n⌋ = ⌊δ_int' · n⌋ → ε_ca's agree`). The paper's `β`-shift idiom is a corollary when `δ_int` is a multiple of `1/n`. |
-| `D4.3` | `ε_mca(C,δ)` | present | `ProximityGap.epsMCA`, helper preds `ProximityGap.pairJointAgreesOn`, `ProximityGap.mcaEvent` in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean); WHIR-specific `hasMutualCorrAgreement` still in [Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean) | existing | Code-theory MCA definition closed. The WHIR `hasMutualCorrAgreement` re-expression as a specialization of `epsMCA` is a follow-up commit. |
-| `R4.4` | MCA with proximity loss intentionally undefined | present | file docstring in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean) | docstring | Documentation only; documented in the "Note on MCA with proximity loss" subsection of the file docstring. |
-| `F4.5` | `ε_pg ≤ ε_ca ≤ ε_mca` | present | `ProximityGap.epsPG`, `ProximityGap.epsPG_le_epsCA`, `ProximityGap.epsCA_le_epsMCA`, `ProximityGap.epsPG_le_epsCA_le_epsMCA`, plus helper `ProximityGap.jointProximity_imp_line_close` in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean) | existing | Closed in stages; proved for `Submodule F (ι → A)`. |
-| `L4.6` | `ε_mca = ε_ca` below `δ_min/2` | present; RS route reduced | `ProximityGap.epsMCA_eq_epsCA_below_udr` in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean), `epsMCA_eq_epsCA_below_udr_rs` in [ToMathlib/L46DiffStackRS.lean](../../../ArkLib/ToMathlib/L46DiffStackRS.lean) | existing | The abstract theorem still consumes the explicit residual `diffStackMCAResidualBelowUDR`; the Reed-Solomon route is reduced to the named GS-witness lower-bound input. The bare abstract-code dominance is documented as false off that structured route. |
-| `L4.7` | `ε_mca(C^≡t,δ) ≤ t·ε_mca(C,δ)` | present | `ProximityGap.epsMCA_interleaved_le` plus local helper `ProximityGap.Pr_exists_Fin_le_sum` (union-bound for finitely-indexed existentials) in [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean) | existing | Proved via row-decomposition of the interleaved `mcaEvent` plus the `Pr_exists_Fin_le_sum` union bound. |
-| `T4.8` | AHIV17 general-code unique-decoding | UDR regime proven; tighter AHIV specialization residualized (#88) | [`ProximityGap/AHIV22.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean) (sorry-free residual surface), [ProximityGap/Errors.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Errors.lean), [`BCIKS20/AffineLines/UniqueDecoding.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/UniqueDecoding.lean) | `ProximityToRS.ahiv17_epsCA_bound_uniqueDecodingRegime`; `ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual`; `ProximityToRS.ahiv17_epsCA_bound_of_rowSpan_to_affineLine_dOverQ_residual` | For `δ ≤ relUDR`, `epsCA (RScodeSet α deg) δ δ ≤ errorBound δ deg α` is fully proven (no residual): the BCIKS20 affine-lines base case discharges `ahiv17_affineLine_correlatedAgreement_residual` (UDR forms in both implicit and explicit-argument spellings) and routes through the `epsCA` bridge. This lands the `n/q` UDR error bound. The tighter AHIV17 `d/q = ‖RS‖₀/q` route remains a named Prop-valued residual: `ahiv17_rowSpan_to_affineLine_dOverQ_residual` states the missing row-span → affine-line specialization, and `ahiv17_epsCA_bound_of_rowSpan_to_affineLine_dOverQ_residual` is the checked conditional adapter once that residual is supplied. |
-| `T4.9.1` | RS unique-decoding Item 1 (BCIKS20 Thm 1.4) | present-but-incomplete | [`BCIKS20/AffineLines/UniqueDecoding.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/UniqueDecoding.lean), [`AffineLines/Main.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean) | `ABF26.rs_epsMCA_uniqueDecoding` | The unique-decoding branch is proved. The list-decoding/Johnson branch is residualized through `StrictCoeffPolysResidual`, `BoundaryCardResidual`, and the narrower `BoundaryCardLatticeResidual` variants; the old raw line reference is superseded. |
-| `T4.9.2` | RS unique-decoding Item 2 (BCHKS25 Thm 1.3) | stated (external Prop; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.rs_epsCA_bchks25_item2` | Prop-valued BCHKS25 Thm 1.3 statement, tighter than T4.8 in the `δ_min/3`-to-Johnson regime. The RS interpolation/counting proof is tracked by #87. |
-| `R4.10` | Small proximity-loss simplification | stated (derived external Prop; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.rs_epsCA_small_loss_r4_10` | Derived Prop statement. The `rs_epsCA_small_loss_r4_10_of_residuals` reduction and floor side condition are proved; it closes once T4.9.2 is supplied, tracked with #87. |
-| `T4.11` | 1.5-Johnson regime general linear | stated (external Prop, 2 items; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.linear_epsMCA_1_5_johnson_gkl24`, `CodingTheory.linear_epsCA_1_5_johnson_bgks20` | Prop-valued GKL24 Thm 3 and BGKS20 Lem 3.2 statements. The cube-root list count and eta-margin union-bound work are tracked by #84. |
-| `T4.12` | Johnson-range RS MCA | stated (external Prop; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean), [Hab25Johnson.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean) | `CodingTheory.rs_epsMCA_johnson_range_bchks25` | Prop-valued BCHKS25 Thm 4.6 statement. Existing WHIR conjecture is a different shape; adjacent Hab25 algebra is #68, while the public CapacityBounds front door is tracked by #85. |
-| `T4.13` | MCA from τ-subspace-design | stated (external Prop; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.subspaceDesign_epsMCA_gg25` | Prop-valued GG25 Cor 4.9 statement using `IsSubspaceDesign`; upstream list-decoding/line-stitching residuals are tracked by #86. |
-| `T4.14` | Folded RS MCA up to capacity | stated (external Prop; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.frs_epsMCA_capacity_gg25` | Prop-valued GG25 Cor 4.10 statement. The `_of_residuals`/`_of_residuals_prop` reductions derive it from T4.13 plus T2.18; the instantiation is tracked with #86. |
-| `BCGM25` (extends T4.13/T4.14) | Polynomial-generator MCA | present (#76 resolved 2026-06-06; generator-native API plus compatibility shadow) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean), [ProximityGenerators.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean), [MCAGenerator.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAGenerator.lean) | `CodingTheory.polynomialGenerator_isMCAGenerator_bcgm25`, `CodingTheory.subspaceDesign_epsCA_curves_polynomial_generators_bcgm25`, `CoreDefinitions.IsPolynomialGenerator`, `CoreDefinitions.IsMCAGenerator` | BCGM25/BSGM25 (footnote 2 of ABF26 intro). The canonical CapacityBounds front door now uses the in-tree generator framework (`Generator`/`IsPolynomialGenerator`/`IsMCAGenerator`). The old `epsCA_curves … k` statement is retained only as an ABF26 survey-ledger compatibility shadow because there is not yet a checked bridge from scalar-code `IsMCAGenerator` to vector-alphabet curve CA. |
-| `T4.15` | Random RS MCA up to capacity | stated (external Prop; split issue #99) | [Probability/Combinatorial.lean](../../../ArkLib/Data/Probability/Combinatorial.lean), [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.random_rs_mca` | GG25 Thm 5.15. Uses `Pr_{L ← uniformSizeSubsetOfLe F n hn}` over size-`n` random RS domains and `SizeSubset.toEmbedding` for the evaluation-domain injection. The GG25 MCA probability bound and concrete `bound`/`failure` values remain external. |
-| `T4.16` | CA lower bound near capacity | stated (external Prop; split issue; witness package named; slack residual named) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean), [GrandChallenges.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean), [KK25NearCapacityProof.lean](../../../ArkLib/ToMathlib/KK25NearCapacityProof.lean) | `CodingTheory.rs_epsCA_lower_capacity_bchks25_kk25`, `CodingTheory.RSLowerCapacityWitness`, `CodingTheory.rs_epsCA_lower_capacity_bchks25_kk25_of_witness`, `ProximityGap.GrandChallenges.MCAUpperWitness.ofLowerCapacityBCHKS25KK25`, `CodingTheory.SlackThetaInvLog`, `CodingTheory.RSLowerCapacityWitnessΘ`, `CodingTheory.rs_epsCA_lower_capacity_bchks25_kk25_of_witnessΘ` | Prop-valued BCHKS25+KK25 statement. The `Θ(1/log n)` slack is now a named asymptotic residual `SlackThetaInvLog` (explicit two-sided constant bracket `c₁/log n ≤ slack ≤ c₂/log n`) carried by `RSLowerCapacityWitnessΘ`, which still re-derives the front door; the witness package and Grand-MCA upper-witness adapter are in-tree, while the near-capacity bad-code construction itself remains tracked by #81. |
-| `T4.17` | Complete CA breakdown | stated (external Prop; split issue) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean) | `CodingTheory.rs_epsCA_breakdown_cs25`, `CodingTheory.rs_epsCA_breakdown_cs25_entropyBallLowerWitness` | Prop-valued CS25 Cor 1 statement using `qEntropy`; the `≤ 1` half is routine and the named `entropyBallLowerWitness` isolates the hard `≥ 1` target for the qEntropy/RS-ball-count proof tracked by #82. |
-| `T4.18` | CA jump at Johnson bound | stated (external Prop; split issue; numeric front door named) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean), [GrandChallenges.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean) | `CodingTheory.rs_epsCA_johnson_jump_bchks25`, `CodingTheory.RSJohnsonJumpWitness`, `CodingTheory.johnsonJumpRadius_eq_three_fourths`, `CodingTheory.johnsonJumpInternalRadius_eq_seven_eighths_add_inv`, `ProximityGap.GrandChallenges.MCAUpperWitness.ofJohnsonJumpBCHKS25AutoRadius` | Prop-valued BCHKS25 Cor 1.7 statement. The witness package and Grand-MCA upper-witness adapter are in-tree; `J(15/16)=3/4` and the internal radius `7/8 + 1/n` are checked. The char-2 witness-family construction remains external and is tracked by #83. |
-| `L4.19` | CA bounded below by sampling probability | proved (Prop front door discharged; named mass) | [CapacityBounds.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean), [ProximityGap/DG25Sampling.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/DG25Sampling.lean), [GrandChallenges.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean) | `CodingTheory.linear_epsCA_sampling_dg25_mass`, `CodingTheory.pr_relDist_le_epsCA_of_lt_covering`, `CodingTheory.linear_epsCA_sampling_dg25_mass_le_epsCA`, `CodingTheory.linear_epsCA_ge_sampling_dg25_proof`, `CodingTheory.linear_epsCA_ge_sampling_dg25_of_mass_bound`, `ProximityGap.GrandChallenges.MCAUpperWitness.ofSamplingDG25Mass`, `ProximityGap.GrandChallenges.MCAUpperWitness.ofSamplingDG25` | DG25 Thm 2.5 covering-radius sampling lower bound is assembled in `DG25Sampling.lean`: choose a word beyond the covering radius, rule out joint proximity via the row-distance bridge, average line probabilities by uniform translation, and absorb the `(q-1)/q` factor. The Prop-valued CapacityBounds front door remains for compatibility and is discharged by `linear_epsCA_ge_sampling_dg25_proof`. |
-| `D4.20` | Line-decoding | present | [ProximityGap/LineDecoding.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/LineDecoding.lean) | `CodingTheory.LineDecodable` | GG25 Def 3.1. |
-| `T4.21` | Line-decoding implies MCA | repaired core present | [ProximityGap/LineDecoding.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/LineDecoding.lean), [ProximityGap/LineDecodingRefutation.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/LineDecodingRefutation.lean), [ProximityGap/LineDecodingCoverage.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/LineDecodingCoverage.lean) | `CodingTheory.lineDecodable_imp_epsMCA_le_target`, `ProximityGap.LineDecodingCoverage.epsMCA_eq_zero_of_forall_double_cover` | The original black-box `lineDecodable_imp_epsMCA_le` route is refuted; the source keeps the old shape only as `_target`. The structural replacement is the proved per-coordinate double-coverage core in `LineDecodingCoverage.lean`. The remaining quantitative path is to supply GS/list-size coverage data, tracked through the MCAGS mass/frontier issues rather than by reviving the false pure-counting route. |
-| `C4.5` | §4.5 MCA conjecture (`conj:mca-conjecture`): `ε_mca(C,δ) ≤ (1/\|F\|)·\|L\|^{c₁}/(ρ^{c₂}·η^{c₃})`, `η := 1−ρ−δ`, `δ < 1−ρ` | present (draft-source `Prop`; caveated adapters) | `ProximityGap.GrandChallenges.mcaConjecture`, `ProximityGap.GrandChallenges.mcaConjectureBound`, `ProximityGap.GrandChallenges.nonempty_mcaLowerWitness_of_mcaConjecture`, `ProximityGap.GrandChallenges.nonempty_mcaLowerWitness_of_ignoredSource_mcaConjecture`, `ProximityGap.GrandChallenges.exists_mcaLowerWitness_of_ignoredSource_mcaConjecture` in [GrandChallenges.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean), lattice adapters including `ProximityGap.GrandChallengesLattice.mcaThresholdExists_of_ignoredSource_mcaConjecture` and `ProximityGap.GrandChallengesLattice.mcaThreshold_spec_of_ignoredSource_mcaConjecture` in [Lattice2.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Lattice2.lean) | new (Phase 1, 2026-06-03; #78 resolved 2026-06-06) | Stated as a `Prop` (∃ constants `c₁ c₂ c₃`, ∀ RS code & `δ<1−ρ`), term-by-term faithful to the source. Conjecture⇒`MCALowerWitness` and lattice-threshold links are proven and axiom-clean. **Source caveat (verified 2026-06-03): this conjecture sits inside an `\ignore{…}` block in the current `.tex` (≈line 2030) — a draft, not a statement rendered in the compiled paper.** #78 decision: keep the existing public `mcaConjecture` compatibility surface, prefer the `ignoredSource`-named exported aliases when the caveat should be visible in identifiers, and do not treat this draft-source surface as a rendered-paper theorem obligation. |
+## Appendix A: Additional Preliminaries
 
-## Section 5 — Connections Between List Decoding and Correlated Agreement
-
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `T5.1` | List decoding implies MCA | stated (external Prop) | [Connections/ListDecodingAndCA.lean](../../../ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean); WHIR-specific bridge work in [Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean) | `CodingTheory.linear_listSize_to_epsMCA_gcxk25` | Prop-valued GCXK25 Thm 3 statement. The `_of_residuals`, first-moment, and in-tree-card reductions isolate the bad-γ/GKL24 residuals tracked by #67. |
-| `T5.2` | Small ε_ca implies list size < `\|F\|` | stated (external Prop) | [Connections/ListDecodingAndCA.lean](../../../ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean) | `CodingTheory.rs_epsCA_small_implies_lambda_lt_F_bchks25` | Prop-valued BCHKS25 Thm 1.9 statement with proved `_of_residuals` packaging around the bad-line witness input. |
-| `T5.3` | CA implies list decoding for related RS | stated (external Prop) | [Connections/ListDecodingAndCA.lean](../../../ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean) | `CodingTheory.rs_epsCA_implies_lambda_extended_cs25` | Prop-valued CS25 Thm 2 statement with a proved contradiction core modulo the deep-hole probability residual. |
-| `T5.4` | Separation: list-decoding does not tightly imply CA | stated (external Prop) | [Connections/ListDecodingAndCA.lean](../../../ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean) | `CodingTheory.rs_epsCA_separation_bgks20` | Prop-valued BGKS20 Lem 3.3 statement; proved reductions consume the near-certain bad-line residuals for both no-loss and proximity-loss forms. |
-
-## Section 6 — Toy Problem (deferred)
-
-All §6 items are tracked as `deferred` pending the OracleReduction security
-framework gaps being closed. Plan Phase 8 holds these.
-
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `D6.1` | Toy problem relation `R_C^ℓ` | present | `ToyProblem.relation` in [Definitions.lean](../../../ArkLib/ProofSystem/ToyProblem/Definitions.lean) | `ToyProblem.relation` | Existence-of-message-matrix form; works for any `Set`-shaped code. |
-| `C6.2` | Construction 6.2 | present | `ToyProblem.Spec.pSpec`, `Statement`, `OracleStatement`, `Witness`, `accepts`, `inputRelationFor`, `outputRelationFor`, `prover`, `verifier`, `reduction`, `oracleProver`, `oracleVerifier`, `oracleReduction`, `queryG`, `queryF`, `accepts_of_inputRelation` in [Spec/General.lean](../../../ArkLib/ProofSystem/ToyProblem/Spec/General.lean) | same | Three-round `ProtocolSpec` (γ / g / spot-checks) with `OracleInterface` / `SampleableType` instances. Full honest `Prover` / `Verifier` / `Reduction` triple (computable, non-oracle) **and** `OracleProver` / `OracleVerifier` / `OracleReduction` flavour with real query-based verify body (`queryG`, `queryF` mirroring FRI's `getConst`/`queryCodeword`; query complexity `2t+1`). Honest-completeness point form `accepts_of_inputRelation` **proven** (ring + linearity). The protocol-level `oracleReduction_perfectCompleteness` residual lives in the same file (depends on `accepts_of_inputRelation` plus `OracleReduction.toReduction` plumbing and is tracked under the roadmap query's Phase 2, not in the audit table since it is a Lean-side strengthening rather than a separate paper item). IRS instantiation in `Impl/IRS.lean`. (Note: the 1-arity relaxed relation lives in `SimplifiedIOR.outputRelationFor`.) **Faithfulness fix (2026-06-05):** the IOR relations are now **fixed-encoding** (`inputRelationFor`/`outputRelationFor` over the verifier's own `encode`, witness tied), replacing the earlier existential-encoding `ToyProblem.relation` form under which honest completeness is unprovable/false (an adversary reparameterises the encoding — the same defect as the L6.12 attack). `oracleReduction_perfectCompleteness` is now statement-faithful; its sole residual is the ~250-line `OptionT`/`StateT`/`simulateQ` support-peel (blocker lemmas `simulateQ_list_forIn`, `simulateQ_addLift_add_liftM_*` landed in `ArkLib/ToVCVio/`). |
-| `D6.3` | Relaxed toy relation `R̃_C,δ^ℓ` | present | `ToyProblem.relaxedRelation` in [Definitions.lean](../../../ArkLib/ProofSystem/ToyProblem/Definitions.lean) | `ToyProblem.relaxedRelation` | Existence of a valid instance `W*` with at least `(1−δ)·\|ι\|` columns agreeing on every row. |
-| `D6.4` | Erasure correction | present | `CodingTheory.SupportsErasureCorrection` in [Erasure.lean](../../../ArkLib/Data/CodingTheory/Erasure.lean); re-exported as `ToyProblem.SupportsErasureCorrection` from [Definitions.lean](../../../ArkLib/ProofSystem/ToyProblem/Definitions.lean) | `CodingTheory.SupportsErasureCorrection` | Predicate is generic (lives under `CodingTheory/`); a `@[reducible]` re-export keeps `ToyProblem.SupportsErasureCorrection` resolving. Both clauses of the paper's definition are encoded — (i) recovery when erasures `< δ_min·n` ∧ matching codeword, (ii) `E f = none` otherwise. Correction-time `ecor` is a `ℕ` parameter (not yet enforced operationally). |
-| `L6.5` | Every additive code supports erasure correction | present-but-incomplete | `ToyProblem.additive_code_supports_erasure_correction_grs25` in [SoundnessBounds.lean](../../../ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean) | same | External GRS25 residual, genuinely imported. Existence form (some `ecor` works); the paper's `O((s·n)³)` correction-time bound is **deliberately dropped** (pinning the constant needs a concrete encoder model). Faithful weakening, flagged here. |
-| `L6.6` | Knowledge soundness of Construction 6.2 | present-but-incomplete | `ToyProblem.Spec.protocol62_knowledgeSound` in [Spec/General.lean](../../../ArkLib/ProofSystem/ToyProblem/Spec/General.lean) | same | Statement has the concrete paper error formula and load-bearing `δ < δ_min(C)`/`[Nonempty ι]` hypotheses. The live proof surface is the reducible residual alias `protocol62_knowledgeSound_residual`, now pointing at `Bridge.StraightlineOfRewinding` rather than a raw proof hole. Tracked by #105. The concrete Koala IRS lower-bound accounting that consumes this side is #107. |
-| `R6.7` | CA insufficient for L6.6 proof | present | `ToyProblem.Spec.remark67` (narrative; sits in L6.6 docstring) in [Spec/General.lean](../../../ArkLib/ProofSystem/ToyProblem/Spec/General.lean) | same | Encoded as a docstring + a `Unit`-valued marker definition. |
-| `L6.8` | Round-by-round knowledge soundness of Construction 6.2 | present-but-incomplete | `ToyProblem.Spec.protocol62_rbrKnowledgeSound` in [Spec/General.lean](../../../ArkLib/ProofSystem/ToyProblem/Spec/General.lean) | same | Concrete per-challenge error statement is present. The live proof surface is `protocol62_rbrKnowledgeSound_residual`, another reducible alias to `Bridge.StraightlineOfRewinding`. Tracked by #105. |
-| `C6.9` | Construction 6.9 (attack target) | present | `ToyProblem.SimplifiedIOR.pSpec`, `OutputStatement`, `OutputOracleStatement`, `OutputWitness`, `outputRelationFor`, `prover`, `verifier`, `reduction` in [Spec/SimplifiedIOR.lean](../../../ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean) | same | One-round V→P γ reducing IOR, mapping `(v, μ₁, μ₂, f₁, f₂) ↦ (v, μ₁+γ·μ₂, f₁+γ·f₂)`. Sibling file to `Spec/General.lean` (C6.2). **Only the non-oracle flavour is shipped**: an `OracleReduction` version would require declaring the combined output oracle `f_new := f₁ + γ·f₂` as an arbitrary function of `(f₁, f₂, γ)`, but the current `OracleVerifier.embed` machinery in [`OracleReduction/Basic.lean`](../../../ArkLib/OracleReduction/Basic.lean) only allows the output oracle family to be a *verbatim subset* of input oracles + prover messages. A `simOStmt`-based refactor of the framework (sketched in `Basic.lean:278, 293`) is needed before the oracle flavour can be added. The bundled-input non-oracle `reduction` captures full semantics in the meantime. |
-| `L6.10` | Soundness of Construction 6.9 | present-but-incomplete | `ToyProblem.SimplifiedIOR.simplifiedIOR_knowledgeSound` in [Spec/SimplifiedIOR.lean](../../../ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean) | same | Concrete one-round knowledge-error statement is present. The live proof surface is `simplifiedIOR_knowledgeSound_residual`, the third reducible alias to `Bridge.StraightlineOfRewinding`. Tracked by #105. The Koala IRS lower-bound accounting that also names L6.10/L6.6 is tracked separately by #107. |
-| `D6.11` | Winning set `Ω` | present | `ToyProblem.winningSet` in [Definitions.lean](../../../ArkLib/ProofSystem/ToyProblem/Definitions.lean) | `ToyProblem.winningSet` | `Set F` of challenges; cardinality bounds drive L6.12 / L6.13. The Def-6.11 *soundness error* `sup_{violating}\|Ω\|/\|F\|` is realised as `ToyProblem.winningSetSoundness` / `soundnessError` in [Metrics.lean](../../../ArkLib/ProofSystem/ToyProblem/Metrics.lean). Current leaderboard residual fronts are explicit: `winningSetSoundness_le_toySoundnessError_residual` / `arklib_lowerBound_irs_t128_residual` (#107) and `fenziSanso_upperBound_attack_concrete_residual` (#106). |
-| `L6.12` | List-decoding lower-bound attack | **present** | `ToyProblem.simplified_iop_soundness_listDecoding_lb` in [SoundnessBounds.lean](../../../ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean) | same | **PROVEN sorry-free + axiom-clean 2026-06-04** (`#print axioms` → only `propext`/`Classical.choice`/`Quot.sound`). **Statement corrected 2026-06-04 (finding S5):** conclusion `\|Ω\|.ncard ≥ N·\|F\|/(\|F\|+2N)` (canonical `.tex` final bound), against the fixed-encoding `relaxedRelationFor enc` / `winningSetFor enc`; carries `[Nonempty ι]`, linearity (`enc` injective, `range enc = C`), and certifies the violation (`¬ R̃²` conjunct). Proof completed via the message-pair reconciliation lemma `encStack_mem_closeCodewordsRel_iff` (close-codeword stack ↔ agreement set, both directions; reuses the coercion handling of `mem_winningSet_zero_of_relClose`): (i) Λ-enumeration as the `encStack`-bijection `Smsg ≃ Λ(C^{≡2},δ,fStar)`, (ii) the violation `(μ₁,μ₂) ∉ S_v`, (iii) membership `winImg ⊆ Ω` via `mem_winningSetFor_of_agree`. The two Claim-B.1 applications + denominator algebra were already proven (`exists_dotProduct_image_lb`, `exists_affine_image_lb`, `claimB1_bound_to_real`, `listDecoding_winning_lb`). Leaderboard instantiation tracked by #106. |
-| `L6.13` | CA lower-bound attack | **present** | `ToyProblem.simplified_iop_soundness_ca_lb` in [SoundnessBounds.lean](../../../ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean) | same | **PROVEN sorry-free + axiom-clean 2026-06-04** (`#print axioms` → only `propext`/`Classical.choice`/`Quot.sound`). Statement strengthened: `[Nonempty ι]`, linearity hyp (`∃ enc, range enc = C`), `0 < ε_ca` guard (paper's "if not, vacuous"), and certifies the violation (`¬ R̃²` conjunct, via `jointAgreement_iff_jointProximity`). Helper `mem_winningSet_zero_of_relClose` (the `S ⊆ Ω` inclusion). The bound is in terms of `ε_ca`, not `ε_mca` (cf. R6.14). The attack→soundness chain `epsCA_le_winningSetSoundness` (Leaderboard.lean) is likewise real + axiom-clean. |
-| `R6.14` | Attack reaches `ε_ca` not `ε_mca` | deferred | docstring on `simplified_iop_soundness_ca_lb` | docstring | Already noted in L6.13's docstring. |
-
-## Appendix A — Additional Preliminaries
-
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `A.1` | IOR completeness | present-but-different | `Reduction.completeness`, `Reduction.perfectCompleteness` in [Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | use `Reduction.perfectCompleteness` directly | Paper's A.1 is realised by the existing definition (which is more general — richer execution / log model). ArkLib convention: use the in-tree name; the paper↔Lean name map lives in this Notes column rather than in an `alias` wrapper. |
-| `A.2` | IOP as IOR to trivial relation | present-but-different | same framework in [Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | docstring on `Reduction.completeness` | Conceptually supported. |
-| `A.3` | IOR knowledge soundness | present-but-different | `Verifier.knowledgeSoundness` in [Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | use `Verifier.knowledgeSoundness` directly | ArkLib's richer execution/log model captures the paper's narrative `(E, et, κ)` extractor presentation. No paper-shape wrapper — use the in-tree name. |
-| `A.4` | Knowledge state function | present | [Security/RoundByRound.lean](../../../ArkLib/OracleReduction/Security/RoundByRound.lean) | existing | Aligned with paper. |
-| `A.5` | Round-by-round knowledge soundness | present-but-different | `Verifier.rbrKnowledgeSoundnessOneShot`, `Verifier.rbrKnowledgeSoundness` in [Security/RoundByRound.lean](../../../ArkLib/OracleReduction/Security/RoundByRound.lean) | use `Verifier.rbrKnowledgeSoundness` directly | The paper's `KnowledgeStateFunction` machinery and per-round error tuple `(ε_1, …, ε_k)` map directly to the in-tree definition. No paper-shape wrapper. |
-| `A.6` | Formal derivative `f^(s)` | present-but-different | Mathlib `Polynomial.derivative` | use `Polynomial.derivative` directly | Iterated `f^(s)` form is `Polynomial.derivative^[s]` (used in `ReedSolomon/Multiplicity.lean`). No paper-shape wrapper — use Mathlib's name. |
-| `A.7` | Univariate multiplicity code `UM[F,L,k,s]` | present | `ReedSolomon.Multiplicity.umEvalOnPoints`, `ReedSolomon.Multiplicity.umCode`, `ReedSolomon.Multiplicity.mem_umCode_one_iff_mem_rsCode` in [ReedSolomon/Multiplicity.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean) | same | Submodule form `(Polynomial.degreeLT F k).map (umEvalOnPoints domain s)`, mirroring `ReedSolomon.code` and `ReedSolomon.Folded.frsCode`. Encoder packages `s` formal-derivative evaluations per domain point. `mem_umCode_one_iff_mem_rsCode` provides the `s = 1` collapse to plain RS (hoisted out of the `[CommRing F]` namespace to a `[Field F]` scope so the `Polynomial F` instance paths align with `ReedSolomon.code`'s). Paper requirement `char(F) ≥ k` is documented but not baked into the bare definition. |
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Definition A.1 completeness for IORs | present-but-different | `Reduction.completeness`, `Reduction.perfectCompleteness` in [ArkLib/OracleReduction/Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | Present in ArkLib's more general oracle-reduction framework rather than the paper's `(x,y,w)` relation presentation. |
+| Remark A.2 IOP as IOR to trivial relation | present-but-different | same framework in [ArkLib/OracleReduction/Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | Conceptually supported by the framework, but not isolated as this exact remark. |
+| Definition A.3 knowledge soundness for IORs | present-but-different | `Verifier.knowledgeSoundness` in [ArkLib/OracleReduction/Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean) | Present with a richer execution/log model. |
+| Definition A.5 round-by-round knowledge soundness | present-but-different | `Verifier.rbrKnowledgeSoundnessOneShot`, `Verifier.rbrKnowledgeSoundness` in [ArkLib/OracleReduction/Security/RoundByRound.lean](../../../ArkLib/OracleReduction/Security/RoundByRound.lean) | Present in a more abstract transcript/state-function framework. |
+| Definition A.6 formal derivative | present-but-different | uses Mathlib polynomial derivative machinery; see [ArkLib/Data/CodingTheory/ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean) for nearby polynomial infrastructure | ArkLib relies on the underlying polynomial derivative API rather than introducing the paper's local definition. |
+| Definition A.7 univariate multiplicity code | missing | none | No multiplicity-code formalization was found. |
 
 ## Appendix B
 
-| ABF26 ID | Paper item | Status | Lean refs | Lean target | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `B.1` | Collision bound for random functions | present | `Probability.exists_large_image_of_pairwise_collision_bound` in [Combinatorial.lean](../../../ArkLib/Data/Probability/Combinatorial.lean) | `Probability.exists_large_image_of_pairwise_collision_bound` | Closed 2026-05-20. Proof route: helper lemmas `sum_fiber_sq_eq` (fiber-partition + diagonal decomposition) and `cauchy_schwarz_fiber` (`sq_sum_le_card_mul_sum_sq` over `ℝ` via cast); main theorem by contradiction (avoids Jensen): `PMF.bind`-unfolded linearity gives `E[numColls] ≤ N(N-1)ε`, while per-`φ ∈ supp` Cauchy-Schwarz + ENNReal cross-multiplication gives `numColls φ > N(N-1)ε`; `ENNReal.tsum_lt_tsum` strict-averaging closes the loop. |
+| Paper item | Status | Lean refs | Notes |
+| --- | --- | --- | --- |
+| Claim B.1 collision bound for random functions | missing | none | No matching standalone combinatorial claim was found. |
 
 ## Existing Inconsistencies
 
-The largest mismatches between the paper and ArkLib are structural rather
-than mathematical. These drive the grand-challenge instantiation phase.
+The largest mismatches between the paper and ArkLib are structural rather than mathematical.
 
-1. **Correlated agreement is formalized as predicates, not error functions.**
+1. Correlated agreement is formalized as predicates, not error functions.
    ArkLib currently exposes `δ_ε_correlatedAgreement...` predicates in
-   [ProximityGap/Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean),
-   while the paper is organized around numeric error functions `ε_pg`,
-   `ε_ca`, and `ε_mca`. Closing this is the linchpin of Phase 1.
+   [ArkLib/Data/CodingTheory/ProximityGap/Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean),
+   while the paper is organized around numeric error functions `εpg`, `εca`, and `εmca`.
 
-2. **General MCA is not yet a first-class coding-theory notion.**
+2. General MCA is not yet a first-class coding-theory notion in ArkLib.
    The TODO at the top of
-   [ProximityGap/Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean)
-   still lists mutual correlated agreement as missing. The
-   [Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean)
-   file is WHIR/proximity-generator specific and is not a drop-in
-   formalization of Section 4. Phase 1 re-expresses the WHIR notion as a
-   specialization of the new general `epsMCA`.
+   [ArkLib/Data/CodingTheory/ProximityGap/Basic.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/Basic.lean)
+   still lists mutual correlated agreement as missing. The existing
+   [ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean)
+   file is WHIR/proximity-generator specific and is not a drop-in formalization of Section 4.
+   Jo26 should be treated as the sharper follow-up reference for transferring generator-MCA bounds
+   to row-wise interleaved codes once the general MCA interface exists.
 
-3. **The non-unique-decoding branch of BCIKS20 AffineLines is residualized, and the old exact
-   boundary residual is refuted.**
-   The old raw line reference for `RS_correlatedAgreement_affineLines` is
-   superseded. The bare closed-endpoint `BoundaryCardResidual`,
-   `BoundaryCardLatticeResidual`, and `BoundaryProbabilityResidual` interfaces
-   are not merely open: `BoundaryCardResidualRefutation` gives a small
-   `ZMod 5` counterexample. Current boundary work must therefore use a
-   stronger quantitative/cardinality or coefficient-polynomial interface,
-   alongside the named `StrictCoeffPolysResidual` interface and the supporting
-   bivariate-existence machinery in
-   [JointAgreement.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean).
+3. Some core BCIKS20 interfaces are present, but the list-decoding regime branch is incomplete.
+   In particular,
+   [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean)
+   still leaves the non-unique-decoding branch as `sorry`.
 
-4. **Historical proximity-gap raw-hole inventories are superseded.**
-   The current clean-tree census reports zero raw holes. The old file-count
-   inventory for `Curves.lean`, `BCIKS20/ListDecoding/*`,
-   `WeightedAgreement.lean`, `DG25/MainResults.lean`,
-   `Whir/MutualCorrAgreement.lean`, and `GuruswamiSudan.lean` should be read
-   as historical. Current ownership is by named residual interfaces and the
-   focused issue map, not by anonymous proof-hole counts.
+4. Several "present" proximity-gap and MCA files are still proof-incomplete.
+   This is true in
+   [ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean),
+   multiple files under
+   [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20),
+   and
+   [ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean).
 
-5. ~~**Several code families used centrally by the paper are absent.**~~
-   *(Resolved 2026-05.)* All four families are now present in-tree, each
-   reachable from a `present` or `present-but-incomplete` row above:
-   Folded Reed-Solomon (D2.14, D2.15) in
-   [`ReedSolomon/Folded.lean`](../../../ArkLib/Data/CodingTheory/ReedSolomon/Folded.lean);
-   univariate multiplicity codes (A.7) in
-   [`ReedSolomon/Multiplicity.lean`](../../../ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean);
-   subspace-design codes (D2.16, L2.17, T2.18) in
-   [`SubspaceDesign.lean`](../../../ArkLib/Data/CodingTheory/SubspaceDesign.lean);
-   and extension-field codes (D2.19, D2.20, L2.21) in
-   [`ExtensionCodes.lean`](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean).
+5. Several code families used centrally by the paper are absent.
+   Folded Reed-Solomon, univariate multiplicity codes, subspace-design codes, and extension-field
+   codes are not yet represented directly in ArkLib.
 
-## Forward roadmap
+## Roadmap
 
-The phased completion plan (grand-challenge instantiation framework, the
-toy-protocol bits-of-security leaderboard, the §6 proofs, the concrete
-parametrization tables, and the integration cleanups) and the per-finding
-review logs are maintained as local working notes, kept out of the PR by
-design. This audit doc is the in-tree status snapshot and is updated
-row-by-row as PRs land.
+### Phase 1: Align the Core Interfaces
+
+1. Add numeric error-function wrappers for proximity gap, CA, and MCA in
+   `ArkLib/Data/CodingTheory/ProximityGap/Basic.lean`.
+   These should coexist with the current predicate-style APIs rather than replace them.
+
+2. Add a general code-level MCA definition there as well.
+   The WHIR-specific notion in
+   [ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean](../../../ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean)
+   should then be re-expressed as a specialization of the general MCA layer.
+
+3. Add a general line-decoding definition next to CA/MCA.
+   Section 4 and Section 5 are much cleaner to formalize once this interface exists.
+
+4. Add a maximized list-size function `listSize` or `Lambda` on top of the current
+   `closeCodewordsRel` and `listDecodable` interfaces in
+   [ArkLib/Data/CodingTheory/ListDecodability.lean](../../../ArkLib/Data/CodingTheory/ListDecodability.lean).
+
+### Phase 2: Close Existing Gaps in the Current Theory
+
+1. Finish the non-unique-decoding branch of
+   `RS_correlatedAgreement_affineLines` in
+   [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean).
+
+2. Remove `sorry` from the already-declared proximity-gap files:
+   [ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean),
+   [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean),
+   [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean),
+   [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean),
+   and the BCIKS20 list-decoding support files.
+
+3. Finish the declared Guruswami-Sudan decoder results in
+   [ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean](../../../ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean),
+   since later list-decoding and CA/MCA comparisons depend on them.
+
+4. Finish the remaining `sorry` in the security framework files
+   [ArkLib/OracleReduction/Security/Basic.lean](../../../ArkLib/OracleReduction/Security/Basic.lean)
+   and
+   [ArkLib/OracleReduction/Security/RoundByRound.lean](../../../ArkLib/OracleReduction/Security/RoundByRound.lean),
+   because Section 6 depends heavily on these abstractions.
+
+### Phase 3: Add the Missing Code Families
+
+1. Add a dedicated interleaved Reed-Solomon alias/API in
+   [ArkLib/Data/CodingTheory/ReedSolomon.lean](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean)
+   or a sibling file, built on top of the existing interleaving machinery.
+
+2. Add folded Reed-Solomon codes, including admissibility conditions.
+
+3. Add univariate multiplicity codes and their formal-derivative packaging.
+
+4. Add extension-field presentations and extension codes.
+
+5. Add subspace-design codes as a reusable abstraction layer.
+
+### Phase 4: Rebuild Section 3 and Section 4 on the New Interfaces
+
+1. Formalize the missing list-size bounds that are prerequisites for the paper's later sections:
+   Elias lower bounds, generalized Singleton, interleaved-code list-size comparison, and the
+   missing Johnson corollaries.
+
+2. Add the general CA/MCA theorems in the unique-decoding regime first.
+   This includes the paper's Fact 4.5 and Lemma 4.6, and the AHIV17/BCHKS25 style results.
+   Treat Lemma 4.7's interleaving-loss statement as a baseline target sharpened by the newer
+   generator-MCA interleaving-stability results in [`Jo26`](../papers/Jo26.md).
+
+3. Add line-decoding and its implication to MCA before attempting the most recent capacity-level
+   theorems.
+
+4. Only after the above is stable, add the 2025-2026 results for subspace-design codes,
+   folded RS, and random-domain RS.
+
+### Phase 5: Formalize Section 5 Connections
+
+1. Add the general theorem "list decoding implies MCA" at the code-theory layer.
+
+2. Add the converse-obstruction theorems that bound CA using list size or sampling probability.
+
+3. Keep these results in coding-theory modules rather than protocol-specific files, so they can be
+   reused by WHIR, STIR, and later proof-system developments.
+
+### Phase 6: Formalize Section 6 as a Worked Oracle-Reduction Case Study
+
+1. Add the toy relation and relaxed toy relation as a small standalone module, likely under
+   `ArkLib/ProofSystem/` rather than under `OracleReduction/`.
+
+2. Add an erasure-correction abstraction at the coding-theory layer, with the generic additive-code
+   existence theorem.
+
+3. Formalize Construction 6.2 and Construction 6.9 as oracle reductions using the existing
+   security framework.
+
+4. Then prove the Section 6 knowledge-soundness, round-by-round soundness, and lower-bound attack
+   lemmas against those concrete reductions.
+
+### Recommended Order
+
+1. Phase 1
+2. Phase 2
+3. Phase 3
+4. Unique-decoding parts of Phase 4
+5. Phase 6
+6. Remaining parts of Phase 4 and Phase 5
+
+That order minimizes rework: it first stabilizes the interfaces, then completes already-started
+theory, then adds the code families the later theorems depend on.

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
 import ArkLib.Data.Lattices.CyclotomicRing.PowTwo
+import ArkLib.ToMathlib.Polynomial.AevalXPow
 
 /-!
 # Galois Automorphisms `σ_i : X ↦ X^i` of the Cyclotomic Ring
@@ -47,27 +48,7 @@ namespace ArkLib.Lattices.CyclotomicModulus
 
 variable {R : Type*} [Field R] [BEq R] [LawfulBEq R] [DecidableEq R]
 
-/-! ## `Rq.mk` is additive (helper for the computable layer) -/
-
 variable (Φ : CyclotomicModulus R) [IsCyclotomic Φ]
-
-omit [DecidableEq R] in
-/-- `Rq.mk` commutes with addition: reduction is additive in the quotient. -/
-theorem Rq.mk_add (p q : CPolynomial R) : Rq.mk Φ (p + q) = Rq.mk Φ p + Rq.mk Φ q := by
-  apply Rq.toQuotient_injective Φ
-  simp only [show ∀ x y : Rq Φ, Rq.toQuotient Φ (x + y) = Rq.toQuotient Φ x + Rq.toQuotient Φ y
-        from fun x y => map_add (Rq.toQuotientHom Φ) x y,
-      Rq.toQuotient_mk, map_add]
-
-omit [DecidableEq R] in
-/-- `Rq.mk` commutes with finite sums. -/
-theorem Rq.mk_sum {ι : Type*} (s : Finset ι) (f : ι → CPolynomial R) :
-    Rq.mk Φ (∑ k ∈ s, f k) = ∑ k ∈ s, Rq.mk Φ (f k) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp only [Finset.sum_empty]; rfl
-  · intro a s ha ih
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, Rq.mk_add, ih]
 
 /-! ## The computable automorphism `galoisAut` -/
 
@@ -79,11 +60,6 @@ automorphism only when `i` is a unit modulo the conductor (`i` odd, for the powe
 the bare action is defined for all `i`. -/
 def galoisAut (i : ℕ) (a : Rq Φ) : Rq Φ :=
   Rq.mk Φ (∑ k ∈ range Φ.φ.natDegree, monomial (k * i) (a.1.coeff k))
-
-/-- A monomial with zero coefficient is the zero polynomial. -/
-private theorem monomial_eq_zero (n : ℕ) : (monomial n (0 : R) : CPolynomial R) = 0 :=
-  CompPoly.CPolynomial.eq_zero_iff_coeff_zero.mpr
-    (fun j => by rw [CompPoly.CPolynomial.coeff_monomial]; split_ifs <;> rfl)
 
 @[simp] theorem galoisAut_zero (i : ℕ) : galoisAut Φ i 0 = 0 := by
   unfold galoisAut
@@ -103,37 +79,6 @@ theorem galoisAut_add (i : ℕ) (a b : Rq Φ) :
   congr 1
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [Rq.add_val, CompPoly.CPolynomial.coeff_add, CompPoly.CPolynomial.monomial_add]
-
-omit [DecidableEq R] in
-/-- The modulus polynomial of `powTwoCyclotomic α`, as a Mathlib polynomial. -/
-theorem powTwoCyclotomic_toPoly (α : ℕ) :
-    (powTwoCyclotomic (R := R) α).φ.toPoly = Polynomial.X ^ (2 ^ α) + 1 := by
-  change (CompPoly.CPolynomial.X ^ (2 ^ α) + 1 : CPolynomial R).toPoly = _
-  rw [toPoly_add, toPoly_pow, toPoly_X, toPoly_one]
-
-omit [DecidableEq R] in
-/-- **(S0)** The ring dimension: `natDegree` of the power-of-two modulus is `2^α`. -/
-theorem powTwoCyclotomic_natDegree (α : ℕ) :
-    (powTwoCyclotomic (R := R) α).φ.natDegree = 2 ^ α := by
-  rw [CompPoly.CPolynomial.natDegree_toPoly, powTwoCyclotomic_toPoly,
-    show (Polynomial.X ^ 2 ^ α + 1 : Polynomial R) = Polynomial.X ^ 2 ^ α + Polynomial.C 1 by
-      rw [Polynomial.C_1], Polynomial.natDegree_X_pow_add_C]
-
-omit [DecidableEq R] in
-/-- **(S3)** Coefficient bridge: the Mathlib and `CPolynomial` coefficients agree. -/
-theorem coeff_toPoly (p : CPolynomial R) (k : ℕ) : p.toPoly.coeff k = p.coeff k :=
-  (CompPoly.CPolynomial.coeff_toPoly p k).symm
-
-omit [DecidableEq R] in
-/-- **(S4)** A reduced representative has `natDegree` below the ring dimension. -/
-theorem natDegree_val_toPoly_lt (α : ℕ) (a : Rq (powTwoCyclotomic (R := R) α)) :
-    a.1.toPoly.natDegree < (powTwoCyclotomic (R := R) α).φ.natDegree := by
-  rcases eq_or_ne a.1.toPoly 0 with h0 | hne
-  · rw [h0, Polynomial.natDegree_zero, powTwoCyclotomic_natDegree]
-    exact pow_pos (by norm_num) α
-  · rw [CompPoly.CPolynomial.natDegree_toPoly]
-    exact Polynomial.natDegree_lt_natDegree hne
-      ((powTwoCyclotomic (R := R) α).degree_toPoly_lt_of_reduced a.2)
 
 /-- `σ_i` fixes `1`, since only the constant term contributes (so in particular `σ_1` fixes it). -/
 theorem galoisAut_map_one (α i : ℕ) : galoisAut (powTwoCyclotomic (R := R) α) i 1 = 1 := by
@@ -168,26 +113,6 @@ noncomputable def galoisAeval (i : ℕ) : Polynomial R →+* Polynomial R :=
 omit [BEq R] [LawfulBEq R] [DecidableEq R] in
 @[simp] theorem galoisAeval_apply (i : ℕ) (p : Polynomial R) :
     galoisAeval i p = Polynomial.aeval (Polynomial.X ^ i : Polynomial R) p := rfl
-
-omit [BEq R] [LawfulBEq R] [DecidableEq R] in
-/-- **(S2)** `aeval (X^i)` sends a monomial `X^k·c` to `X^{ki}·c`. -/
-theorem aeval_X_pow_monomial (i k : ℕ) (c : R) :
-    (Polynomial.aeval (Polynomial.X ^ i : Polynomial R)) (Polynomial.monomial k c)
-      = Polynomial.monomial (k * i) c := by
-  rw [Polynomial.aeval_monomial, Polynomial.algebraMap_eq, ← pow_mul,
-    Polynomial.C_mul_X_pow_eq_monomial, Nat.mul_comm]
-
-omit [BEq R] [LawfulBEq R] [DecidableEq R] in
-/-- Substituting `X ↦ X^j` then `X ↦ X^i` is substituting `X ↦ X^{ij}`. -/
-theorem aeval_X_pow_aeval_X_pow (i j : ℕ) (p : Polynomial R) :
-    (Polynomial.aeval (Polynomial.X ^ i : Polynomial R))
-        ((Polynomial.aeval (Polynomial.X ^ j : Polynomial R)) p)
-      = (Polynomial.aeval (Polynomial.X ^ (i * j) : Polynomial R)) p := by
-  have h : (Polynomial.aeval (Polynomial.X ^ i : Polynomial R)).comp
-        (Polynomial.aeval (Polynomial.X ^ j : Polynomial R))
-      = Polynomial.aeval (Polynomial.X ^ (i * j) : Polynomial R) := by
-    rw [← Polynomial.aeval_algHom, map_pow, Polynomial.aeval_X, ← pow_mul]
-  exact AlgHom.congr_fun h p
 
 omit [DecidableEq R] in
 /-- Well-definedness on the power-of-two ring: `aeval (X^i)` maps the modulus ideal into itself
@@ -249,7 +174,7 @@ theorem galoisAut_sum_toPoly_eq_aeval (α i : ℕ) (a : Rq (powTwoCyclotomic (R 
   rw [toPoly_sum,
     show a.1.toPoly = ∑ k ∈ range (powTwoCyclotomic (R := R) α).φ.natDegree,
         Polynomial.monomial k (a.1.toPoly.coeff k)
-      from a.1.toPoly.as_sum_range' _ (natDegree_val_toPoly_lt α a),
+      from a.1.toPoly.as_sum_range' _ (Rq.natDegree_val_toPoly_lt α a),
     map_sum]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [toPoly_monomial, aeval_X_pow_monomial, coeff_toPoly]
@@ -274,6 +199,62 @@ theorem galoisAut_mul (α i : ℕ) (hi : Odd i) (a b : Rq (powTwoCyclotomic (R :
   rw [galoisAut_toQuotient α i hi, hmul a b, map_mul,
     hmul (galoisAut (powTwoCyclotomic α) i a) (galoisAut (powTwoCyclotomic α) i b),
     galoisAut_toQuotient α i hi, galoisAut_toQuotient α i hi]
+
+/-! ## Exponent periodicity (`σ_n` depends only on `n mod 2^{α+1}`) -/
+
+-- TODO this is not the right place for this.
+omit [DecidableEq R] in
+/-- **(C-1)** `X^{2^{α+1}} ≡ 1` in the quotient, since `X^{2d} - 1 = (X^d - 1)(X^d + 1)`. -/
+theorem mk_X_pow_conductor_eq_one (α : ℕ) :
+    Ideal.Quotient.mk (powTwoCyclotomic (R := R) α).modIdeal (Polynomial.X ^ 2 ^ (α + 1)) = 1 := by
+  have hmem : (Polynomial.X ^ 2 ^ (α + 1) - 1 : Polynomial R)
+      ∈ (powTwoCyclotomic (R := R) α).modIdeal := by
+    rw [modIdeal, Ideal.mem_span_singleton, powTwoCyclotomic_toPoly, pow_succ, pow_mul]
+    exact ⟨Polynomial.X ^ 2 ^ α - 1, by ring⟩
+  rw [← sub_eq_zero, ← map_one (Ideal.Quotient.mk (powTwoCyclotomic (R := R) α).modIdeal),
+    ← map_sub]
+  exact (Ideal.Quotient.eq_zero_iff_mem).mpr hmem
+
+omit [DecidableEq R] in
+/-- **(C-2)** `X^n ≡ X^{n mod 2^{α+1}}` in the quotient. -/
+theorem mk_X_pow_periodic (α n : ℕ) :
+    Ideal.Quotient.mk (powTwoCyclotomic (R := R) α).modIdeal (Polynomial.X ^ n)
+      = Ideal.Quotient.mk _ (Polynomial.X ^ (n % 2 ^ (α + 1))) := by
+  nth_rewrite 1 [← Nat.div_add_mod n (2 ^ (α + 1))]
+  rw [pow_add, pow_mul, map_mul, map_pow, mk_X_pow_conductor_eq_one, one_pow, _root_.one_mul]
+
+omit [DecidableEq R] in
+/-- **(C-3 helper)** `aeval (X^n)` and `aeval (X^{n mod 2^{α+1}})` agree in the quotient. -/
+theorem mk_aeval_X_pow_periodic (α n : ℕ) (p : Polynomial R) :
+    Ideal.Quotient.mk (powTwoCyclotomic (R := R) α).modIdeal
+        (Polynomial.aeval (Polynomial.X ^ n : Polynomial R) p)
+      = Ideal.Quotient.mk _
+          (Polynomial.aeval (Polynomial.X ^ (n % 2 ^ (α + 1)) : Polynomial R) p) := by
+  have e : ∀ j : ℕ,
+      Ideal.Quotient.mk (powTwoCyclotomic (R := R) α).modIdeal (aeval (Polynomial.X ^ j) p)
+        = aeval (Ideal.Quotient.mk (powTwoCyclotomic (R := R) α).modIdeal
+            (Polynomial.X ^ j)) p := by
+    intro j
+    have h := aeval_algHom_apply (Ideal.Quotient.mkₐ R (powTwoCyclotomic (R := R) α).modIdeal)
+      (Polynomial.X ^ j) p
+    simp only [Ideal.Quotient.mkₐ_eq_mk] at h
+    exact h.symm
+  rw [e, e, mk_X_pow_periodic]
+
+/-- The computable automorphism, mapped to the quotient, is `mk (aeval (X^n) ·)` for any `n`
+(unlike `galoisAut_toQuotient`, no oddness is needed — this routes through `aeval` directly). -/
+theorem galoisAut_aeval_toQuotient (α n : ℕ) (a : Rq (powTwoCyclotomic (R := R) α)) :
+    (galoisAut (powTwoCyclotomic α) n a).toQuotient
+      = Ideal.Quotient.mk _ (Polynomial.aeval (Polynomial.X ^ n : Polynomial R) a.1.toPoly) := by
+  rw [galoisAut, Rq.toQuotient_mk, quotientHom_apply]
+  exact congrArg _ (galoisAut_sum_toPoly_eq_aeval α n a)
+
+/-- **Exponent periodicity**: `σ_n = σ_{n mod 2^{α+1}}` (the conductor is `2^{α+1}`). -/
+theorem galoisAut_periodic (α n : ℕ) (a : Rq (powTwoCyclotomic (R := R) α)) :
+    galoisAut (powTwoCyclotomic α) n a
+      = galoisAut (powTwoCyclotomic α) (n % 2 ^ (α + 1)) a := by
+  apply Rq.toQuotient_injective (powTwoCyclotomic α)
+  rw [galoisAut_aeval_toQuotient, galoisAut_aeval_toQuotient, mk_aeval_X_pow_periodic]
 
 /-! ## The computable automorphism bundled as a `RingHom` -/
 
