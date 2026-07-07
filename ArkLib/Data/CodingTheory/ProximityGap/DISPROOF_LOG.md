@@ -20332,3 +20332,19 @@ excess over Gaussian is distributed arithmetic correlation (Gauss-angle correlat
 content via the r22 collapse); `sup_pureFace_of_tripleConvEnergyBound` (sixth-moment sup).
 The normal-form program for the delimited open core is COMPLETE: one named, calibrated,
 manifestly-nonnegative inequality with a machine-checked consumer chain. CORE OPEN, ON-BGK.
+
+## [466-r24-renormalization-involution-nogo] the spectrum↦coefficients renormalization is an INVOLUTION (DFT), not a contraction — the descent strategy class is structurally CLOSED (2026-07-07)
+
+Lane: #466 round-24 B2 (`Frontier/_R24InvolutionNoGo.lean` axiom-clean, real build, 3 decls).
+Landed exact quotient facts: `zero_notMem_of_dualFamily` (0 ∉ G from the indicator);
+`lam_eq_one_on_G` (each λ_j trivial on G — triangle-equality: m unit vectors summing to m are
+all 1); `pureFace_mul_invariant` (the face T factors through F*/G ≅ ℤ/m).
+
+**The no-go.** T on a transversal IS the inverse DFT of the coefficient sequence J on ℤ/m —
+the r21 "renormalization fixed point" is the discrete Fourier involution: level-1 statistics
+are ISOMORPHIC to level-0 statistics, and iterating the spectrum↦coefficients map gains
+nothing. Contraction/descent-based strategies for `TripleConvEnergyBound` are closed. Live
+routes for the r=3 core narrow to: (i) Katz vertical equidistribution for the Jacobi angle
+family; (ii) a genuinely new idea. Combined with r18 (per-tuple Weil insufficient in β∈(4,6))
+and r23 (no spike to delete at the Jacobi level), the cartography of the delimited core is
+now closed on three sides. CORE OPEN, ON-BGK.
