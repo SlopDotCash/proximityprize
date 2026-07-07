@@ -252,6 +252,102 @@ theorem cubic_zero_count {u v : F} (hu : u ≠ 0) (hv : v ≠ 0) (huv : u ≠ v)
   rw [card_insert_of_notMem (by simp [Ne.symm hu, Ne.symm hv]),
     card_insert_of_notMem (by simp [huv]), card_singleton]
 
+/-- Three-valued bookkeeping for quadratic-character sums.  The sum is
+`2·#χ=1 + #χ=0 − q`, pointwise from the values `1, 0, -1`. -/
+theorem quadraticChar_sum_eq_two_pos_add_zero_sub_card (f : F → F) :
+    ∑ s : F, quadraticChar F (f s)
+      = 2 * (((univ.filter fun s : F => quadraticChar F (f s) = 1).card : ℕ) : ℤ)
+        + (((univ.filter fun s : F => quadraticChar F (f s) = 0).card : ℕ) : ℤ)
+        - Fintype.card F := by
+  classical
+  have hpt : ∀ s : F,
+      quadraticChar F (f s)
+        = 2 * (if quadraticChar F (f s) = 1 then (1 : ℤ) else 0)
+          + (if quadraticChar F (f s) = 0 then (1 : ℤ) else 0) - 1 := by
+    intro s
+    rcases (quadraticChar_isQuadratic F) (f s) with h | h | h <;> simp [h]
+  calc
+    ∑ s : F, quadraticChar F (f s)
+        = ∑ s : F,
+            (2 * (if quadraticChar F (f s) = 1 then (1 : ℤ) else 0)
+              + (if quadraticChar F (f s) = 0 then (1 : ℤ) else 0) - 1) := by
+          exact Finset.sum_congr rfl fun s _ => hpt s
+    _ = 2 * (((univ.filter fun s : F => quadraticChar F (f s) = 1).card : ℕ) : ℤ)
+        + (((univ.filter fun s : F => quadraticChar F (f s) = 0).card : ℕ) : ℤ)
+        - Fintype.card F := by
+          rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_const]
+          rw [← Finset.mul_sum]
+          have hpos :
+              (∑ s : F, if quadraticChar F (f s) = 1 then (1 : ℤ) else 0)
+                = (((univ.filter fun s : F => quadraticChar F (f s) = 1).card : ℕ) : ℤ) := by
+            rw [← Finset.sum_filter]
+            simp
+          have hzero :
+              (∑ s : F, if quadraticChar F (f s) = 0 then (1 : ℤ) else 0)
+                = (((univ.filter fun s : F => quadraticChar F (f s) = 0).card : ℕ) : ℤ) := by
+            rw [← Finset.sum_filter]
+            simp
+          rw [hpos, hzero]
+          simp
+
+/-- The zero fibers of the Stepanov cubic are exactly the zero values of the quadratic
+character. -/
+theorem cubic_quadraticChar_zero_count {u v : F} (hu : u ≠ 0) (hv : v ≠ 0) (huv : u ≠ v) :
+    (univ.filter fun s : F => quadraticChar F (s * ((s - u) * (s - v))) = 0).card = 3 := by
+  convert cubic_zero_count (F := F) hu hv huv using 2
+  ext s
+  simp only [mem_filter, mem_univ, true_and]
+  constructor
+  · intro h
+    have harg : s * ((s - u) * (s - v)) = 0 := quadraticChar_eq_zero_iff.mp h
+    simpa [mul_eq_zero, sub_eq_zero] using harg
+  · intro h
+    have harg : s * ((s - u) * (s - v)) = 0 := by
+      simpa [mul_eq_zero, sub_eq_zero] using h
+    exact quadraticChar_eq_zero_iff.mpr harg
+
+/-- Exact `N⁺` bookkeeping for the Stepanov cubic:
+`S = 2·N⁺ + 3 − q`, where `N⁺` is the number of nonzero square fibers
+(`χ(s(s-u)(s-v)) = 1`).  This is the arithmetic bridge used before the auxiliary-polynomial
+contradiction bounds `N⁺`. -/
+theorem cubic_charSum_eq_two_pos_add_three_sub_card {u v : F}
+    (hu : u ≠ 0) (hv : v ≠ 0) (huv : u ≠ v) :
+    ∑ s : F, quadraticChar F (s * ((s - u) * (s - v)))
+      = 2 * (((univ.filter fun s : F =>
+            quadraticChar F (s * ((s - u) * (s - v))) = 1).card : ℕ) : ℤ)
+        + 3 - Fintype.card F := by
+  rw [quadraticChar_sum_eq_two_pos_add_zero_sub_card
+    (F := F) (fun s => s * ((s - u) * (s - v)))]
+  rw [cubic_quadraticChar_zero_count hu hv huv]
+  norm_num
+
+/-- Positive-fiber formulation of `CubicStepanovUpper`: to prove the one-sided character-sum
+bound, it is enough to bound the number of `s` with
+`χ(s(s-u)(s-v)) = 1` by the corresponding affine-linear budget. -/
+theorem cubicStepanovUpper_of_positiveFiber_bound {B : ℤ}
+    (h :
+      ∀ u v : F, u ≠ 0 → v ≠ 0 → u ≠ v →
+        2 * (((univ.filter fun s : F =>
+              quadraticChar F (s * ((s - u) * (s - v))) = 1).card : ℕ) : ℤ)
+          + 3 - Fintype.card F ≤ B) :
+    CubicStepanovUpper F B := by
+  intro u v hu hv huv
+  rw [cubic_charSum_eq_two_pos_add_three_sub_card hu hv huv]
+  exact h u v hu hv huv
+
+/-- Conversely, `CubicStepanovUpper` is exactly the same affine-linear positive-fiber
+bound after the zero fibers have been counted.  This direction is mostly for rewriting
+search goals into the finite-set form used by the Stepanov auxiliary-polynomial argument. -/
+theorem positiveFiber_bound_of_cubicStepanovUpper {B : ℤ}
+    (hU : CubicStepanovUpper F B) :
+    ∀ u v : F, u ≠ 0 → v ≠ 0 → u ≠ v →
+      2 * (((univ.filter fun s : F =>
+            quadraticChar F (s * ((s - u) * (s - v))) = 1).card : ℕ) : ℤ)
+        + 3 - Fintype.card F ≤ B := by
+  intro u v hu hv huv
+  rw [← cubic_charSum_eq_two_pos_add_three_sub_card hu hv huv]
+  exact hU u v hu hv huv
+
 #print axioms affine_point_count
 #print axioms stepanov_degree_count
 #print axioms pow_dvd_stepanov_degree_count
@@ -261,5 +357,10 @@ theorem cubic_zero_count {u v : F} (hu : u ≠ 0) (hv : v ≠ 0) (huv : u ≠ v)
 #print axioms twist_negation
 #print axioms legendreCubicHasse_of_stepanovUpper
 #print axioms cubic_zero_count
+#print axioms quadraticChar_sum_eq_two_pos_add_zero_sub_card
+#print axioms cubic_quadraticChar_zero_count
+#print axioms cubic_charSum_eq_two_pos_add_three_sub_card
+#print axioms cubicStepanovUpper_of_positiveFiber_bound
+#print axioms positiveFiber_bound_of_cubicStepanovUpper
 
 end ArkLib.ProximityGap.Frontier.R20StepanovScaffold
