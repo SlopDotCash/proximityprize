@@ -2358,6 +2358,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32WeightedLagCorrelation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R33QuadViaWeights
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadWeilBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35TransformRingHom
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32LagOffDiagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer

@@ -20593,3 +20593,14 @@ corresponding variety dimension. The sextic class = the 3-fold ⊛-weight member
 input is the three-dimensional entry of the same classical family. Correlation calculus of
 the tower: COMPLETE. All remaining openness = the named top input + its A-side twin.
 CORE OPEN, ON-BGK.
+
+## [466-r36-jacobi-powers-bridge] the two convolution layers bridged: J = c_{f₀} and J^{k+1} = c_{f₀^{⊛(k+1)}} — the additive (ℤ/m) and multiplicative (F) structures are one calculus in λ-duality; the r=3 assembly is bookkeeping on either side (2026-07-07)
+
+Lane: #466 round-36 B2 (`Frontier/_R36JacobiPowers.lean` axiom-clean, real build).
+`jacobiWeight f₀ = zero-patched χ(1−·)`, `jacobiCoeff_eq_lamTransform` (J IS a transform),
+`mulConvPow` + `mulConvPow_zero`, and `jacobiCoeff_pow`: J_j^{k+1} = c_{f₀^{⊛(k+1)}}(j) by
+induction through the r35 ring hom. The sextic object Σ_c‖J^{∗3}‖² (additive side, r22) and
+the ⊛-power correlations of the weights (multiplicative side, r33/34) are the same family
+through the duality: the r=3 matching decomposition is now pure bookkeeping inside ONE
+calculus, and the named top input can be stated on whichever side is closest to the
+literature (Katz statements live naturally on the ⊛/variety side). CORE OPEN, ON-BGK.
