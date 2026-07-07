@@ -1411,3 +1411,27 @@ sound consumer audit, an unconditional n√q theorem, an exact r=2 reduction lat
 content is the signed quadruple cancellation (with a thin-margin falsification watch), and a deg=2
 scalar face with exact averages over only m cosets. Problem A unchanged. **CORE OPEN, ON-BGK. No
 fabricated closure.**
+
+## §27. Round 17 (2026-07-07) — StrongR2Rung refuted in the bulk; r=2 closes modulo Weil; averaging proven Wick-flat
+
+Three lanes + skeptics (all CONFIRMED, minor). DISPROOF tag `466-r17-strongr2rung-bulk-refuted-and-weil-r2`.
+
+1. **Refutation win:** the constant-2 r=2 rung is DEAD in the β=4 bulk for deg ≥ 8 (deg-plateau law
+   `S₂^D/Wick ≈ 1 − c/deg` — first campaign violation ABOVE β=4-onset norms); constant-3 survives
+   all β ≥ 2.7. The live r=2 object is `WickAwayAtWithConstant` with C ∈ (2, 3].
+2. **Conditional-proof win (`_R17QuadrupleWeilRung.lean`):** r=2 rung at explicit K(deg) reduces to
+   textbook Weil (+ the R15 duality identity + hSig energy-equidistribution, probe-only) for
+   p ≳ n⁴; **r=2 is the LAST Weil-closable rung** (rung r needs n^r ≲ √p). The wall is now the rung
+   gap [3, ⌈ln q⌉].
+3. **Exact identities (`_R17TchiMomentIdentities.lean`):** cross-χ and cross-offset second moments
+   proven exactly Wick-flat (arbitrary G, arbitrary nontrivial MulChar; general two-point
+   orthogonality new); fourth moment Wick-true at β=4 but value-useless (n^{3/2}).
+4. **Literature (web-verified):** nothing published beats √p at n = p^{1/4} worst-shift
+   (Karatsuba ≥ q^{1/2+ε}; bilinear Vinogradov √(q|A||B|)); r16 UNVERIFIED flags resolved.
+
+**═══ STATE after 17 rounds ═══** The r=2 layer of corrected Problem B is fully mapped: constant-2
+refuted in-bulk, constant-3 open-but-surviving, constant-K(deg) proven modulo textbook-Weil
+formalization inputs in the prize regime. All second-moment averaging directions are exact
+identities with zero slack. The open analytic content of the B-moment route is precisely rungs
+3..⌈ln q⌉ of the diagonal-subtracted tower — the same deep-depth wall, now with exact rung
+bookkeeping. **CORE OPEN, ON-BGK. No fabricated closure.**

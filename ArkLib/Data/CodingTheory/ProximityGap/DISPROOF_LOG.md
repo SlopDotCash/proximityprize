@@ -20092,3 +20092,41 @@ verified, axiom-clean {propext, Classical.choice, Quot.sound}, no sorryAx.
   depth ~ln p, the same wall. Karatsuba/Shkredov–Volostnov exponents flagged UNVERIFIED (offline).
 
 CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r17-strongr2rung-bulk-refuted-and-weil-r2] ROUND 17: StrongR2Rung constant-2 REFUTED in the β=4 bulk (deg ≥ 8, plateau law); the r=2 rung closes modulo textbook Weil for p ≳ n⁴ (last Weil-closable rung); cross-χ/cross-offset averaging proven exactly Wick-flat (2026-07-07)
+
+Three lanes + three adversarial skeptics, all CONFIRMED (severity minor).
+
+- **WATCH (refutation win, probe `probe_r17_strongr2rung_watch.py` + independent skeptic
+  recomputation to 5 decimals):** `StrongR2Rung` (constant-2 form `S₂^D ≤ 2qΣ²`) is VIOLATED in the
+  β=4 prize bulk for deg ≥ 8 at every probed n ∈ {32, 64, 128} — flagship (n=64, deg=8,
+  p=16777729, β=4.000): ratio 1.139; the ratio is a deg-only plateau `S₂^D/Wick ≈ 1 − c/deg`
+  (c ≈ 1.4–1.5), flat in β and n. This BREAKS the campaign norm "violations only below β=4".
+  deg ∈ {2,4} never violate (margins 0.37 / 0.16, the r16 thin margin was a low-β artifact).
+  The constant-3 Wick rung (`WickForIncidenceAwayAt r=2`) SURVIVES the entire β ≥ 2.7 watch
+  (max ratio 0.989; all β=4 cells ≤ 0.77). Correct r=2 constant sits in (2, 3]; conjecture:
+  constant-3 tight as deg → ∞ (the plateau law looks like provable algebra).
+- **WEIL (conditional-proof win, brick `_R17QuadrupleWeilRung.lean`, real build 3320 jobs,
+  5 thms axiom-clean):** the r=2 rung at explicit constant K(deg) = 32(Cw(deg−1)⁴+1)/deg²
+  (K=56 at deg=2) reduces, for p ≥ max(n⁴, 16n²deg²), to FOUR named inputs: ChiDecompositionOff
+  (R15 identity, Mathlib duality gap), FourthMomentTwistBound (`Σ_t|T_χ|⁴ ≤ Cw·n²p` for p ≥ n⁴,
+  textbook Weil on degree-4 rational function sums, Cw=6 independently re-derived),
+  GaussSumSizeBound (classical), and hSig (`Σ ≥ nq/2deg`, probe-only 0.71–1.08 — open math,
+  flagged). Fully-completed route confirmed CIRCULAR. **Bookkeeping theorem: r=2 is the LAST
+  Weil-closable rung at β=4** (rung r needs n^r ≲ √p ⟹ r ≤ 2); the R16 countermodel
+  (64, 8, 7681) is out-of-regime exactly (p/n⁴ ≈ 5e-4). The wall is now measured in RUNGS:
+  the gap between rung 2 and rung ⌈ln q⌉.
+- **JOINT (exact identities, brick `_R17TchiMomentIdentities.lean`, real build 2616 jobs, 7 thms
+  axiom-clean):** PROVEN for arbitrary finite G and any nontrivial MulChar: per-χ offset second
+  moment `Σ_{s₀} |T_χ|² = |G|q − |G|²` (generalizes R16 quadratic), full-family second moment
+  `= (q−1)(|G| − [s₀∈G])`, general-χ two-point orthogonality `Σ_a χ(a)conj(χ(a+b)) = −1` (not in
+  Mathlib). Both averaging directions exactly Wick-flat — zero log slack, so cross-χ/cross-offset
+  averaging buys NOTHING; fourth moment (`quarticShiftEnergy`, exact expansion landed) obeys Wick
+  at β=4 (E₄/Wick ∈ [0.89, 1.06]) but is value-useless (yields max|T_χ| ≲ n^{3/2}).
+- **Literature verification (orchestrator, web):** the shifted-subgroup character-sum literature
+  confirms NOTHING beats the √p scale at n = p^{1/4} worst-shift: Karatsuba's method needs set
+  size ≥ q^{1/2+ε}; the bilinear Vinogradov-type bound (arXiv:2309.09124 Prop 3.1) gives only
+  `√(q|A||B|)` ⟹ √q for the single sum. The r16 UNVERIFIED flags on Karatsuba/Shkredov–Volostnov
+  are now RESOLVED consistent with the wall.
+
+CORE OPEN, ON-BGK. No fabricated closure.
