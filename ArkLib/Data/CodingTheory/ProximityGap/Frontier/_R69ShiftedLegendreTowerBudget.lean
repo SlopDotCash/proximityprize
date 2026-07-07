@@ -55,6 +55,18 @@ theorem shiftedLegendreIncidenceBudget_spec (G : Finset F) (A : ℝ) :
       ≤ shiftedLegendreIncidenceBudget (F := F) G A := by
   rfl
 
+/-- The normalized shifted-Legendre tower budget is monotone in the tower constant. -/
+theorem shiftedLegendreTowerBudget_mono_const
+    [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} {G : Finset F} {A C C' : ℝ}
+    (hCC : C ≤ C')
+    (hBudget : ShiftedLegendreTowerBudget (χ := χ) ψ G A C) :
+    ShiftedLegendreTowerBudget (χ := χ) ψ G A C' := by
+  refine ⟨hBudget.1, ?_⟩
+  have hsum_nonneg : 0 ≤ ∑ b ∈ QRset χ, ‖eta ψ G b‖ ^ 2 := by
+    exact Finset.sum_nonneg (fun b _ => sq_nonneg _)
+  exact hBudget.2.trans (mul_le_mul_of_nonneg_right hCC hsum_nonneg)
+
 /-- A shifted-Legendre sup bound plus the named normalized budget feeds every later deg-2 QR
 away rung. -/
 theorem tower_qr_of_shiftedLegendreTowerBudget
@@ -72,11 +84,33 @@ theorem tower_qr_of_shiftedLegendreTowerBudget
     (B := shiftedLegendreIncidenceBudget (F := F) G A) (C := C)
     hW hGD (shiftedLegendreIncidenceBudget_spec (F := F) G A) hBudget.1 hC0 hBudget.2
 
+/-- A shifted-Legendre tower budget proved at a sharper constant can be consumed at any larger
+tower constant. -/
+theorem tower_qr_of_shiftedLegendreTowerBudget_le
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G D : Finset F} {A C C' : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hCC : C ≤ C')
+    (hC0 : 0 ≤ C')
+    (hBudget : ShiftedLegendreTowerBudget (χ := χ) ψ G A C) :
+    ∀ r : ℕ, rungMoment ψ G (QRset χ) D (r + 2)
+      ≤ (C' * ∑ b ∈ QRset χ, ‖eta ψ G b‖ ^ 2) ^ r
+          * rungMoment ψ G (QRset χ) D 2 :=
+  tower_qr_of_shiftedLegendreTowerBudget hχ hψ hW hGD hC0
+    (shiftedLegendreTowerBudget_mono_const (χ := χ) hCC hBudget)
+
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R69ShiftedLegendreTowerBudget.shiftedLegendreIncidenceBudget_spec
 set_option linter.style.longLine false in
 #print axioms
+  ArkLib.ProximityGap.Frontier.R69ShiftedLegendreTowerBudget.shiftedLegendreTowerBudget_mono_const
+set_option linter.style.longLine false in
+#print axioms
   ArkLib.ProximityGap.Frontier.R69ShiftedLegendreTowerBudget.tower_qr_of_shiftedLegendreTowerBudget
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R69ShiftedLegendreTowerBudget.tower_qr_of_shiftedLegendreTowerBudget_le
 
 end ArkLib.ProximityGap.Frontier.R69ShiftedLegendreTowerBudget
