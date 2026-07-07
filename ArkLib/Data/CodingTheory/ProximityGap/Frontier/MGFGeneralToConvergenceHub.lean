@@ -117,6 +117,44 @@ theorem prizeFloor_of_mgf_general_depth_factor
     (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc
       (momentEnvelope_of_mgf s t hc ht hP hMGF) henergyRep)
 
+/-- A general one-variable MGF bound at rate `c` gives the spectral `NearRamanujanSqrtLog`
+face at any lower positive rate `c' ≤ c`, with the honest slack constant `K = A / c'`. -/
+theorem nearRamanujan_of_mgf_rate_le_general_depth_factor
+    {ι : Type*} {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (s : Finset ι) (t : ι → ℝ) {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (ht : ∀ b ∈ s, 0 ≤ t b) (hP : 0 < (s.card : ℝ))
+    (hMGF : MGFBound s t A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * empiricalMoment s t r) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_mgf_general_depth_factor hψ G s t hA hc' hC ht hP
+    (ArkLib.ProximityGap.Frontier.WFS11.MGFBound.of_rate_le s t ht hcc' hMGF)
+    hGpos hq hr hrq hrK hconst henergyRep
+
+/-- A general one-variable MGF bound at rate `c` gives the convergence-hub `PrizeFloor` at any
+lower positive rate `c' ≤ c`, with the honest slack constant `K = A / c'`. -/
+theorem prizeFloor_of_mgf_rate_le_general_depth_factor
+    {ι : Type*} {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (s : Finset ι) (t : ι → ℝ) {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (ht : ∀ b ∈ s, 0 ≤ t b) (hP : 0 < (s.card : ℝ))
+    (hMGF : MGFBound s t A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * empiricalMoment s t r) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_mgf_general_depth_factor hψ G s t hA hc' hC ht hP
+    (ArkLib.ProximityGap.Frontier.WFS11.MGFBound.of_rate_le s t ht hcc' hMGF)
+    hGpos hq hr hrq hrK hconst henergyRep
+
 /-- A general normalized moment envelope gives the spectral `NearRamanujanSqrtLog` face directly,
 without first packaging the envelope as an MGF certificate. This is the abstract S11 consumer for
 any empirical spectrum whose moments dominate the normalized `rEnergy` terms. -/
@@ -517,6 +555,8 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms forall_rEnergy_le_mul_wick_of_momentEnvelope_general
 #print axioms nearRamanujan_of_mgf_general_depth_factor
 #print axioms prizeFloor_of_mgf_general_depth_factor
+#print axioms nearRamanujan_of_mgf_rate_le_general_depth_factor
+#print axioms prizeFloor_of_mgf_rate_le_general_depth_factor
 #print axioms nearRamanujan_of_momentEnvelope_general_depth_factor
 #print axioms prizeFloor_of_momentEnvelope_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_mgf_general_depth_factor
