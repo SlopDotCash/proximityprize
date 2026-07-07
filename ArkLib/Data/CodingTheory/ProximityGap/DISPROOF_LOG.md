@@ -20534,3 +20534,15 @@ TripleLinearHasse (one family, contains LegendreCubicHasse as order-2 via the R2
 asserted, not yet Lean-linked) ⟹ the FULL r=2 rung. Above: tower ⟺ AwaySupBound (two-sided at
 depth). Open wall: TripleLinearHasse/CubicStepanovUpper formalization + head-rung phases +
 AwaySupBound itself. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r32-weighted-lag-collapse] the MASTER weighted lag-correlation identity: Σ_i c_f(i+t)·conj(c_g(i)) = m·Σ_{u∈G}Σ_w f(uw)·conj(g(w))·λ_t(w) for ARBITRARY weights — subsumes r30 and collapses every balanced correlation of every derived sequence in the tower (2026-07-07)
+
+Lane: #466 round-32 B2 (`Frontier/_R32WeightedLagCorrelation.lean` axiom-clean, real build).
+`lamTransform` + `weighted_lag_correlation` (pure orthogonality: indicator + group law +
+λ-triviality; the r30 proof with abstract weights — and SIMPLER). r30 = the case
+f = g = χ(1−·). The r=3 decomposition's four-J cross terms = the case of pair-product
+weights (J_{j+a}·J_j is a λ-transform of a two-variable convolution weight, the pureFace_sq
+mechanism): the quad-correlation identity is now a COROLLARY awaiting only the weight
+computation (successor: `_R32QuadCorrelationIdentity.lean` WIP header lists the plan).
+With r30/r31 this gives the complete pair-statistics machinery at every derived level of
+the tower. CORE OPEN, ON-BGK.

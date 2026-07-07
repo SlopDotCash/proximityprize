@@ -2354,6 +2354,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_LargeZeroWitnessSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R30IterConvEnergyRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R30LagCorrelationIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R31LagSpectrumWeilBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32WeightedLagCorrelation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32LagOffDiagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
