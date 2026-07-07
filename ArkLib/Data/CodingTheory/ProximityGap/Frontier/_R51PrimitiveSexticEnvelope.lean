@@ -64,10 +64,38 @@ theorem sexticCorrelationBound_of_sexticVarietyInput_and_primitiveEnvelopes
     (hL 0)
     hbudget
 
+/-- Aggregate all-lag six-J energy from primitive Jacobi-weight and λ-family envelopes. -/
+theorem sextic_correlation_energy_bound_of_sexticVarietyInput_and_primitiveEnvelopes
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C A L B : ℝ} (hA0 : 0 ≤ A) (hL0 : 0 ≤ L)
+    (hweil : SexticVarietyInput χ lam G C)
+    (hA : ∀ z : F, ‖jacobiWeight χ z‖ ≤ A)
+    (hL : ∀ t : ZMod m, ∀ z : F, ‖lam t z‖ ≤ L)
+    (hbudget :
+      max
+        ((G.card : ℝ) * (C * Real.sqrt (Fintype.card F)
+          * (Fintype.card F : ℝ) ^ 2))
+        ((G.card : ℝ) * ((Fintype.card F : ℝ)
+          * (((Fintype.card F : ℝ) ^ 2 * (A * L) ^ 3) ^ 2 * L))) ≤ B) :
+    ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * B) ^ 2) :=
+  sextic_correlation_energy_bound_of_sexticCorrelationBound hfam hgrp
+    (sexticCorrelationBound_of_sexticVarietyInput_and_primitiveEnvelopes
+      hA0 hL0 hweil hA hL hbudget)
+
 set_option linter.style.longLine false in
 #print axioms ArkLib.ProximityGap.Frontier.R51PrimitiveSexticEnvelope.norm_twistedWeight_le_mul
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R51PrimitiveSexticEnvelope.sexticCorrelationBound_of_sexticVarietyInput_and_primitiveEnvelopes
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R51PrimitiveSexticEnvelope.sextic_correlation_energy_bound_of_sexticVarietyInput_and_primitiveEnvelopes
 
 end ArkLib.ProximityGap.Frontier.R51PrimitiveSexticEnvelope
