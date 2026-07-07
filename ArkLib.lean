@@ -2332,6 +2332,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R1SecondMomentSqrtBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20JacobiParseval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21QuarticConvolutionCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R22SexticConvolutionCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23TripleConvEnergyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_CMKDepthIrreducibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_LargeZeroWitnessSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap

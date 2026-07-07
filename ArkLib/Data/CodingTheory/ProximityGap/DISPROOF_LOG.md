@@ -20313,3 +20313,22 @@ generic lemma collapses every rung: T^r = J^{∗r}·λ, Σ_{s≠0}‖T‖^{2r} =
 the whole corrected tower is the ℓ²-growth profile of repeated self-convolution of the
 Jacobi sequence. r=1 closed (r20), r=2 closed mod Weil (r17/r18/r21), r=3 = THE object,
 deep-r = the wall as iterated self-convolution. CORE OPEN, ON-BGK.
+
+## [466-r23-tripleconv-energy-calibrated] the r=3 core calibrated and finalized: NO spike at the Jacobi level (excess is distributed), named input TripleConvEnergyBound (C=40 probe-safe, Gaussian C=6) + full consumer chain to the tower (2026-07-07)
+
+Lane: #466 round-23 B2 (`Frontier/_R23TripleConvEnergyInput.lean` axiom-clean, real build;
+probes `probe_r23_tripleconv_energy.py` + profile follow-up; r22 collapse identity validated
+to 1e-13 against the Lean tripleConv object).
+
+**Probe findings.** (i) Σ_d‖(J∗J∗J)(d)‖²/(6m³q³) ∈ [1.5, 3.2], fluctuating, O(1)-bounded —
+the Gaussian constant is right up to a small absolute factor; (ii) **NO spike structure at
+the Jacobi level**: top-5 indices carry 5–18% of energy (shrinking in m), profile flat at
+‖tc(d)‖ ≈ 3mq^{3/2} — structurally UNLIKE level 0 (r15/16 needed diagonal deletion); the
+excess over Gaussian is distributed arithmetic correlation (Gauss-angle correlations, Katz);
+(iii) ‖J_j‖ ∈ {1, √q} exactly (one degenerate index), as classical.
+
+**Landed.** `TripleConvEnergyBound J q C` (the calibrated named open input);
+`sextic_moment_of_tripleConvEnergyBound` (input ⟹ r=3 rung of the face, zero analytic
+content via the r22 collapse); `sup_pureFace_of_tripleConvEnergyBound` (sixth-moment sup).
+The normal-form program for the delimited open core is COMPLETE: one named, calibrated,
+manifestly-nonnegative inequality with a machine-checked consumer chain. CORE OPEN, ON-BGK.
