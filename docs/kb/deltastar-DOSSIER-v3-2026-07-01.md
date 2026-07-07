@@ -1521,3 +1521,59 @@ but `HyperplaneCancellation`'s open content is now delimited from below by class
 mathematics: everything up to fourth moments is Weil-classical; the first open object is a
 family-cancellation statement for sextic character sums; and its deg-2 face is a NAMED
 classical open problem (Karatsuba). CORE OPEN, ON-BGK. No fabricated closure.
+
+## §29. Round 19 (2026-07-07) — the duality debt paid; the tower names its fixed point
+
+Four lanes + skeptics (CHIDECOMP severity NONE, rest minor). DISPROOF tag
+`466-r19-chidecomp-discharged-tower-collapses-to-awaysup`. Bricks: `_R19ChiDecomposition.lean`
+(ChiDecompositionOff + GaussSumSizeBound PROVEN verbatim in the R17 shapes; **r=2 rung = ONE named
+input**), `_R19HasseAudit.lean` (±-paired quartic → Legendre cubic EXACT; residual
+`LegendreCubicHasse`; minimal missing Mathlib statement pinned; complete quadratic evaluation −1
+proven), `_R19DepletedConstant.lean` (C∞ = 3 exactly, envelope ~n^{−1.2}; DepletedWickR2-3
+per-instance false; K m²→m modulo FamilyQuarticCubicBound; |X|²-version probe-refuted =
+signed-vs-absolute gap), `_R19RungRecursion.lean` (**the tower collapses**: rung weights =
+convolution powers of w, ŵ = I_H; sup-split recursion loss ≤ 2.7 flat; L_r ≤ 1 everywhere;
+`AwaySupBound C` + tower_of_awaySupBound = the fixed-point equivalence). Plus concurrent-session
+`_R18OrderTwoCharacterBridge.lean` (FourthMomentTwist wired to order-2 double-cover inputs).
+
+**═══ STATE after 19 rounds ═══** The corrected-B tower is now a THEOREM-SHAPED object: rung 2 =
+FourthMomentTwistBound alone (whose ±-paired quadratic face = elliptic Hasse, the pinned Mathlib
+gap); rungs ≥ 3 ⟺ AwaySupBound (the prize sup itself) up to measured per-rung constant ≤ 3, with
+sub-Wick monotonicity (W_{r+1} ≤ W_r) as the new standalone structural conjecture. The wall's
+sharpest name: **AwaySupBound C at C = O(polylog q)**. **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §30. GRAND CONSOLIDATION after rounds 15–27 (2026-07-07, two concurrent sessions) — the ladder normal form: what is closed, what is THE open object
+
+**This section supersedes §0/§6 as the statement of the open core.** Read the machine-checked
+chain in this order: `_R19JacobiFourierExpansion` → `_R20JacobiParseval` →
+`_R21QuarticConvolutionCollapse` → `_R22SexticConvolutionCollapse` →
+`_R23TripleConvEnergyInput` → `_R24InvolutionNoGo` → `_R25DualFamilyInstantiation` →
+`_R26DiscreteLogExists` → `_R27FullTowerCollapse` (all axiom-clean, all unconditional after
+r26; DISPROOF tags `466-r15-*` … `466-r27-*`).
+
+**THE LADDER (the final normal form of corrected Problem B / HyperplaneCancellation).**
+For every finite field F (q = card F), every divisor pair m·n = q−1, χ any nontrivial
+multiplicative character, J the Jacobi coefficient sequence of the thin face on ℤ/m:
+
+  `∑_{s≠0} ‖T(s)‖^{2r} = (q−1) · ∑_{c∈ℤ/m} ‖(J^{∗r})(c)‖²`   — EXACT, every r
+  (`fullTower_collapse`), with `m·W_χ = χ·(T − 1)` the exact bridge to the face.
+
+Rung status:
+- **r = 1: PROVEN** (`jacobi_parseval`, pure orthogonality).
+- **r = 2: PROVEN modulo textbook Weil** (`wickAwayAt_two_of_weil` + the r18 reduction
+  lattice; the Weil input is a pure Mathlib-formalization gap, not open math).
+- **r = 3: THE CALIBRATED OPEN CORE** (`TripleConvEnergyBound`, C = 40 probe-safe, Gaussian
+  C = 6; per-tuple Weil provably insufficient for β ∈ (4,6) ∋ prize).
+- **r ≈ ln q: the wall** (`IterConvEnergyWick` at deep depth) — the remaining content of
+  `HyperplaneCancellation`; `WallHolds` is its A-side twin in the same Gauss-phase class.
+
+**Closed strategy classes (do NOT re-attempt):** per-tuple Weil at r ≥ 3 in the gap (r18);
+spike deletion at the Jacobi level — there is no spike (r23); renormalization descent — the
+spectrum↦coefficients map is the DFT involution (r24); uniform Wick constant 1 — refuted with
+countermodels (r16); constant-2 r=2 — refuted in the bulk (peer r17).
+
+**Live routes:** (i) Katz vertical equidistribution for the Jacobi angle family along linear
+conditions in ℤ/m (the literature route; would close r=3 and plausibly the gap window);
+(ii) Hasse–Davenport exact angle relations along subgroup cosets of ℤ/m (unexplored exact
+structure ON the ladder object); (iii) a genuinely new idea, now checkable directly against
+`IterConvEnergyWick`. CORE OPEN, ON-BGK. No fabricated closure.
