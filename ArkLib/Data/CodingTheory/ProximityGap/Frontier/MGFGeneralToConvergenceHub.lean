@@ -155,6 +155,19 @@ theorem prizeFloor_of_mgf_rate_le_general_depth_factor
     (ArkLib.ProximityGap.Frontier.WFS11.MGFBound.of_rate_le s t ht hcc' hMGF)
     hGpos hq hr hrq hrK hconst henergyRep
 
+/-- Moment-envelope rate monotonicity: an envelope at rate `c` can be consumed at any lower
+positive rate `c' ≤ c`. -/
+theorem momentEnvelope_of_rate_le {M : ℕ → ℝ} {A c c' : ℝ}
+    (hA : 0 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c)
+    (henv : MomentEnvelope M A c) :
+    MomentEnvelope M A c' := by
+  intro r hr
+  have hc : 0 < c := lt_of_lt_of_le hc' hcc'
+  have hnum : 0 ≤ A * (Nat.factorial r : ℝ) := mul_nonneg hA (by positivity)
+  exact (henv r hr).trans
+    (div_le_div_of_nonneg_left hnum (pow_pos hc' r)
+      (pow_le_pow_left₀ hc'.le hcc' r))
+
 /-- A general normalized moment envelope gives the spectral `NearRamanujanSqrtLog` face directly,
 without first packaging the envelope as an MGF certificate. This is the abstract S11 consumer for
 any empirical spectrum whose moments dominate the normalized `rEnergy` terms. -/
@@ -196,6 +209,42 @@ theorem prizeFloor_of_momentEnvelope_general_depth_factor
   prizeFloor_of_forall_rEnergy_le_mul_wick_depth_factor hψ G (by positivity) hC hGpos hq hr
     hrq hrK hconst
     (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc henv henergyRep)
+
+/-- A normalized moment envelope at rate `c` gives the spectral `NearRamanujanSqrtLog` face at
+any lower positive rate `c' ≤ c`, with the honest slack constant `K = A / c'`. -/
+theorem nearRamanujan_of_momentEnvelope_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope M A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_momentEnvelope_general_depth_factor hψ G hA hc' hC
+    (momentEnvelope_of_rate_le (le_trans (by norm_num) hA) hc' hcc' henv)
+    hGpos hq hr hrq hrK hconst henergyRep
+
+/-- A normalized moment envelope at rate `c` gives the convergence-hub `PrizeFloor` at any lower
+positive rate `c' ≤ c`, with the honest slack constant `K = A / c'`. -/
+theorem prizeFloor_of_momentEnvelope_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope M A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_momentEnvelope_general_depth_factor hψ G hA hc' hC
+    (momentEnvelope_of_rate_le (le_trans (by norm_num) hA) hc' hcc' henv)
+    hGpos hq hr hrq hrK hconst henergyRep
 
 /-- Full-spectrum general-MGF route to `NearRamanujanSqrtLog`: using
 `t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
@@ -280,6 +329,40 @@ theorem nearRamanujan_of_fullSpectrum_momentEnvelope_general_depth_factor
     (forall_q_wickExcess_le_mul_slack_of_forall_rEnergy_le_mul_wick G
       (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc henv
         (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r)))
+
+/-- Full-spectrum moment-envelope route to the convergence-hub `PrizeFloor`, with rate transfer:
+an empirical moment envelope at rate `c` may be consumed at any lower positive rate `c' ≤ c`. -/
+theorem prizeFloor_of_fullSpectrum_momentEnvelope_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope
+      (empiricalMoment (Finset.univ : Finset F) (fullSpectrumT ψ G)) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_fullSpectrum_momentEnvelope_general_depth_factor hψ G hA hc' hC
+    (momentEnvelope_of_rate_le (le_trans (by norm_num) hA) hc' hcc' henv)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum moment-envelope route to `NearRamanujanSqrtLog`, with rate transfer: an
+empirical moment envelope at rate `c` may be consumed at any lower positive rate `c' ≤ c`. -/
+theorem nearRamanujan_of_fullSpectrum_momentEnvelope_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope
+      (empiricalMoment (Finset.univ : Finset F) (fullSpectrumT ψ G)) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_fullSpectrum_momentEnvelope_general_depth_factor hψ G hA hc' hC
+    (momentEnvelope_of_rate_le (le_trans (by norm_num) hA) hc' hcc' henv)
+    hGpos hq hr hrq hrK hconst
 
 /-- A full-spectrum uniform cutoff `fullSpectrumT ψ G b ≤ T` gives the convergence-hub
 `PrizeFloor`, with the honest cutoff slack constant `exp(c*T) / c`. -/
@@ -557,12 +640,17 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms prizeFloor_of_mgf_general_depth_factor
 #print axioms nearRamanujan_of_mgf_rate_le_general_depth_factor
 #print axioms prizeFloor_of_mgf_rate_le_general_depth_factor
+#print axioms momentEnvelope_of_rate_le
 #print axioms nearRamanujan_of_momentEnvelope_general_depth_factor
 #print axioms prizeFloor_of_momentEnvelope_general_depth_factor
+#print axioms nearRamanujan_of_momentEnvelope_rate_le_general_depth_factor
+#print axioms prizeFloor_of_momentEnvelope_rate_le_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_mgf_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_mgf_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_momentEnvelope_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_momentEnvelope_general_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_momentEnvelope_rate_le_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_momentEnvelope_rate_le_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_cutoff_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_cutoff_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor
