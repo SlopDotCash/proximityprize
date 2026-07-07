@@ -44,6 +44,22 @@ theorem not_endpoint_budget_of_const_lt {r : ℕ} {C K : ℝ}
   intro hbudget
   nlinarith
 
+/-- The r = 2 obstruction used by the lag-correlation endpoint consumers, recovered from the
+uniform form. -/
+theorem le_const_of_two_endpoint_budget {C : ℝ}
+    (hbudget₂ : (m : ℝ) ≤ C * 3) :
+    (m : ℝ) / 3 ≤ C := by
+  simpa using
+    (le_const_of_endpoint_budget (m := m) (r := 2) (C := C) (by simpa using hbudget₂))
+
+/-- A bounded public constant below `m/3` cannot satisfy the r = 2 endpoint budget. -/
+theorem not_two_endpoint_budget_of_const_lt {C K : ℝ}
+    (hCK : C ≤ K) (hK : K * 3 < (m : ℝ)) :
+    ¬ (m : ℝ) ≤ C * 3 := by
+  simpa using
+    (not_endpoint_budget_of_const_lt (m := m) (r := 2) (C := C) (K := K)
+      hCK (by simpa using hK))
+
 /-- The r = 3 obstruction used by the Jacobi-head consumers, recovered from the uniform form. -/
 theorem le_const_of_three_endpoint_budget {C : ℝ}
     (hbudget₃ : (m : ℝ) ≤ C * 4) :
@@ -66,6 +82,10 @@ end ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.le_const_of_endpoint_budget
 #print axioms
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.not_endpoint_budget_of_const_lt
+#print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.le_const_of_two_endpoint_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.not_two_endpoint_budget_of_const_lt
 #print axioms
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.le_const_of_three_endpoint_budget
 #print axioms
