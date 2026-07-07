@@ -50,6 +50,21 @@ def SexticVarietyInput (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset
         * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam t w‖
       ≤ C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2
 
+/-- Monotonicity of the final sextic-variety input in its cancellation constant. -/
+theorem sexticVarietyInput_mono {C C' : ℝ}
+    (hCC' : C ≤ C') (hC : SexticVarietyInput χ lam G C) :
+    SexticVarietyInput χ lam G C' := by
+  intro u hu a b a' b' t ht
+  have hscale : 0 ≤ Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2 := by
+    positivity
+  exact (hC u hu a b a' b' t ht).trans (by
+    calc
+      C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2
+          = C * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) := by ring
+      _ ≤ C' * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) :=
+          mul_le_mul_of_nonneg_right hCC' hscale
+      _ = C' * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2 := by ring)
+
 /-- **THE SEXTIC CORRELATION BOUND (round-38 main theorem).**  Under the final named input,
 every balanced six-`J` correlation at lag `t ≠ 0` is `≤ m·|G|·C·q^{5/2}`. -/
 theorem sextic_correlation_bound (hfam : SubgroupDualFamily G m lam)
@@ -119,6 +134,8 @@ theorem sexticCorrelationBound_of_sexticVarietyInput_and_zeroLag
 end ArkLib.ProximityGap.Frontier.R38SexticVarietyInput
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+set_option linter.style.longLine false in
+#print axioms ArkLib.ProximityGap.Frontier.R38SexticVarietyInput.sexticVarietyInput_mono
 set_option linter.style.longLine false in
 #print axioms ArkLib.ProximityGap.Frontier.R38SexticVarietyInput.sextic_correlation_bound
 set_option linter.style.longLine false in
