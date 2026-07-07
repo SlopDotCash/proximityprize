@@ -1390,3 +1390,24 @@ closed form; (iv) `I_H(0) = conj(Σ_{b∈H}η_b)`; (v) the corrected named objec
 **State.** Problem B's moment face now carries: an exact diagonal (no analytic content), a
 refuted knife-edge constant, and a probe-calibrated corrected target (C=4 sufficient at every
 probed cell; open at the prize instance). CORE OPEN, ON-BGK.
+
+## §26. Round 16 (2026-07-07) — the round-15 openings cashed in: B's first unconditional theorem, the sound Prop layer, the r=2 lattice, the Legendre face
+
+Four lanes + four skeptics (all CONFIRMED, minor). DISPROOF tag `466-r16-partialB-unconditional-and-r2-lattice`.
+Bricks (all real-locked-build, axiom-clean): `_R16UnconditionalIncidenceBound.lean` (the FIRST
+unconditional theorem-level partial Problem B: `‖I_H(s₀∉G)‖ ≤ |G|·((m−1)√q+1)/m ≤ n√q`, every thick
+index-m subgroup, general m — glued from R15 resummation + #407 ConstantIndexGaussSumBound; deg=2
+per-shift bound TIGHT), `_R16OffDiagonalHyperplaneCancellation.lean` (Prop-layer audit: nothing
+formal was unsound — HyperplaneCancellation was docstring-only, V=F lineIncidence is offset-blind;
++ the corrected `OffDiagonalHyperplaneCancellation` Prop and its wiring from the R15 Wick tower at
+C = √(2e⌈ln q⌉)), `_R16IncidenceR2Rung.lean` (r=2 rung lattice: diagonal quadruples = 2/3·Wick
+unconditionally; open content = `StrongR2Rung` signed-quadruple cancellation, empirically true but
+margin down to ~4% — a live falsification watch), `_R16LegendreCosetFace.lean` (face coset-invariant
+⟹ m DOF; exact ℤ second moment |G|q−|G|²; face statistically INDEPENDENT of M per prime — a
+distinct object sharing the value; Weil moments stall at k=2, unconditional max|W| ≲ 1.3·n^{3/2}).
+
+**═══ STATE after 16 rounds ═══** Problem B (corrected, off-diagonal) now has: a formal Prop, a
+sound consumer audit, an unconditional n√q theorem, an exact r=2 reduction lattice whose sole open
+content is the signed quadruple cancellation (with a thin-margin falsification watch), and a deg=2
+scalar face with exact averages over only m cosets. Problem A unchanged. **CORE OPEN, ON-BGK. No
+fabricated closure.**

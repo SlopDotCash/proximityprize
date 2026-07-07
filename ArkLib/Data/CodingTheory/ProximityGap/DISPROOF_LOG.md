@@ -20052,3 +20052,43 @@ moment-method bridge survives verbatim with the constant absorbed into the deepe
 `r = ⌈log(C·q)⌉` (`incidence_sq_le_of_wickAwayAtWithConstant`, axiom-clean); rungs r=0,1 proven
 for all C≥1. Open content: the constant-C rung at `r≈ln q` for the prize instance — now with the
 correct constant landscape mapped. CORE OPEN, ON-BGK.
+
+## [466-r16-partialB-unconditional-and-r2-lattice] ROUND 16: first unconditional theorem-level partial Problem B; Prop-layer audited SOUND; r=2 rung reduction lattice (open content = signed quadruple cancellation); Legendre face exact second moment (2026-07-07)
+
+Four lanes + four adversarial skeptics, all CONFIRMED (severity minor). Bricks all real-locked-build
+verified, axiom-clean {propext, Classical.choice, Quot.sound}, no sorryAx.
+
+- **NSQRTP (`_R16UnconditionalIncidenceBound.lean`, 3318 jobs):** gluing R15's resummation identity
+  against the pre-existing #407 `ConstantIndexGaussSumBound` machinery gives, for EVERY thick
+  index-m subgroup H = G_χ and every s₀ ∉ G: `‖I_H(s₀)‖ ≤ |G|·((m−1)√q+1)/m ≤ |G|·√q` —
+  unconditional, general m ≥ 2 (no deg=2 restriction, no named hypothesis), + thickness certificate
+  `m·|G_χ| = q−1` + existence for every d | q−1. First unconditional theorem-level partial Problem B;
+  beats the trivial `|H|·M` budget by ≈ n^{3/2}/deg at prize scale. Exact failing step to go further:
+  the triangle `|T_χ| ≤ n` spends the whole phase budget; `|T_χ| ≲ √n·polylog` IS the wall.
+- **OFFDIAG (`_R16OffDiagonalHyperplaneCancellation.lean`, 3516 jobs):** audit verdict —
+  `HyperplaneCancellation` was NEVER a Lean Prop (docstrings only); `RealizedIncidenceBudget` and
+  `IncidenceFromWallGlue` are SOUND as consumed (triangle-conjunct shape, offset-uniform); farness
+  does NOT exclude spike offsets (FarFromCode constrains u₁ only) BUT in the formalized V=F geometry
+  `lineIncidence` is offset-blind (= |G| for s₁ ≠ 0), so no in-tree consumer is touched by the
+  round-15 spike. Landed: `OffDiagonalHyperplaneCancellation` (the corrected Problem-B Prop, first
+  formalization), wiring from `WickForIncidenceAwayAt` at C = √(2e⌈ln q⌉), and the spike-immunity
+  certificate (δ*-floor consumer chain re-proved with the offset quantifier eliminated).
+- **R2RUNG (`_R16IncidenceR2Rung.lean`, 3316 jobs):** the r=2 diagonal-subtracted Wick rung does NOT
+  close unconditionally at constant 3. Reduction lattice landed: diagonal quadruples give exactly
+  2/3 of Wick (unconditional algebra, probe p·Diag/Wick → 2/3); the pointwise chain needs
+  sup‖I_H‖² ≤ 3Σ which is FALSE (measured up to 4.25, grows like M²/3n — circular into A∧B); the
+  entire open content is the signed off-diagonal quadruple sum `q·Off ≤ spike + q·Σ²`
+  (= `StrongR2Rung`, named open Prop, constant-2 form) — empirically true everywhere but with margin
+  as thin as ~4% of Wick at (n=32, deg=4, p=12289) [skeptic correction of the lane's −0.10 floor];
+  a candidate FALSIFICATION surface — watch it at larger n. Unconditional quantitative r=2 bound
+  S₂^D ≤ (|G|·M_H)²·q·Σ (corollary of the NSQRTP pointwise ingredient; overshoot ~n·deg/3).
+- **LEGENDRE (`_R16LegendreCosetFace.lean`, 1878 jobs):** deg=2 face structure — |W| is
+  coset-invariant (equivariance for ARBITRARY MulChar: covers every T_χ), so the face has only
+  m = (p−1)/n DOF; exact ℤ second moment `Σ_{s₀} W(s₀)² = |G|q − |G|²` for ANY finite G (average
+  coset exactly Wick ≈ n); two-point orthogonality Σ_a χ(a)χ(a+b) = −1 proved (not in Mathlib).
+  Joint-distribution probe: corr(max|W_off|, M) ≈ 0.2 (−0.2 at β=4) — the face is a DISTINCT object
+  sharing the √(n ln p) value, not a per-prime coupling to M; Weil-backed moment tower stalls at
+  k=2 at β=4 (unconditional max|W| ≲ 1.3·n^{3/2}); open residual = worst-coset vs average-coset at
+  depth ~ln p, the same wall. Karatsuba/Shkredov–Volostnov exponents flagged UNVERIFIED (offline).
+
+CORE OPEN, ON-BGK. No fabricated closure.
