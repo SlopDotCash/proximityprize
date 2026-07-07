@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_survival_to_mgf
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_mgf_rate_monotone
 
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
@@ -236,6 +237,40 @@ theorem prizeFloor_of_fullSpectrum_cutoff_depth_factor
     (mgfBound_of_max_ceiling (Finset.univ : Finset F) (fullSpectrumT ψ G) hc.le hT)
     hGpos hq hr hrq hrK hconst
 
+/-- Full-spectrum higher-rate MGF route to `NearRamanujanSqrtLog`: a certificate at rate `c`
+can be consumed at any lower positive rate `c' ≤ c`, with the honest slack constant `A / c'`. -/
+theorem nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_fullSpectrum_mgf_general_depth_factor hψ G hA hc' hC
+    (ArkLib.ProximityGap.Frontier.WFS11.MGFBound.of_rate_le
+      (Finset.univ : Finset F) (fullSpectrumT ψ G) (fullSpectrumT_nonneg hGpos) hcc' hMGF)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum higher-rate MGF route to the convergence-hub `PrizeFloor`: a certificate at
+rate `c` can be consumed at any lower positive rate `c' ≤ c`, with slack constant `A / c'`. -/
+theorem prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c c' C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c') * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_fullSpectrum_mgf_general_depth_factor hψ G hA hc' hC
+    (ArkLib.ProximityGap.Frontier.WFS11.MGFBound.of_rate_le
+      (Finset.univ : Finset F) (fullSpectrumT ψ G) (fullSpectrumT_nonneg hGpos) hcc' hMGF)
+    hGpos hq hr hrq hrK hconst
+
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
 
 /-! ## Axiom audit -/
@@ -250,5 +285,7 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms prizeFloor_of_fullSpectrum_momentEnvelope_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_cutoff_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_cutoff_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor
 
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
