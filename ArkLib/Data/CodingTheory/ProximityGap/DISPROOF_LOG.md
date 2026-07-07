@@ -20618,3 +20618,19 @@ five-parameter family: points on an explicit variety, where Katz-class equidistr
 natively applies. The reduction program of rounds 15–37 is COMPLETE: beneath the wall there
 is no identity, no bookkeeping, no unnamed input, no unbounded class left. What remains is
 one bound on one explicit sum (+ its A-side twin WallHolds). CORE OPEN, ON-BGK.
+
+## [466-r38-sextic-variety-input] the FINAL named input landed, probe-calibrated: SexticVarietyInput (‖S‖ ≤ C·q^{5/2}, C=4 probe-safe: measured 0.67–2.0, shrinking vs q³) + consumer sextic_correlation_bound — the reduction program of rounds 15–38 is CLOSED at every arity ≤ 6 (2026-07-07)
+
+Lane: #466 round-38 B2 (`Frontier/_R38SexticVarietyInput.lean` axiom-clean, real build;
+probe `probe_r38_sextic_variety.py`: |S|/q^{5/2} ∈ [0.67, 2.0] with /q³ falling 0.084→0.011,
+max|tripleTwistWeight| ≈ 2.6q as surface-Deligne predicts). `SexticVarietyInput` (the r37
+w-sums have q^{5/2} cancellation — Katz/Deligne class, five-parameter family) +
+`sextic_correlation_bound` (every balanced six-J correlation at t ≠ 0 is ≤ m·n·C·q^{5/2}).
+
+**THE CAMPAIGN'S OPEN CORE IS NOW ONE LINE:** the truth of SexticVarietyInput at prize
+parameters (+ the A-side twin WallHolds). The complete named-input ladder: r17 quartic-Weil
+(curves) → r31 two-character (curves) → r34 surface → r38 sextic-variety — all classical
+Weil/Deligne mathematics; each with a machine-checked consumer; probes calibrating every
+constant. Beneath the wall: zero debt of any kind. SUCCESSOR: the E3 matching-decomposition
+assembly (pure bookkeeping welding r31/r34/r38 into TripleConvEnergyBound), then the Katz
+literature for the input itself, then the A-side transport. CORE OPEN, ON-BGK.
