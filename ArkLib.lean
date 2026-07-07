@@ -2344,6 +2344,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26DiscreteLogExists
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26PointwiseTripleConvTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R27FullTowerCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R30LagCorrelationIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R28IterConvBaseline
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_CMKDepthIrreducibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_LargeZeroWitnessSplit

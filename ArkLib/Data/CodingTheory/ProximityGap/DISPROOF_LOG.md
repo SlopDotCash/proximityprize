@@ -20466,3 +20466,19 @@ closed form (probe first: which t are large and is A(t) exactly a character sum?
 decompose J = (structured part with explicit lag spectrum) + (残 random-like part) and prove
 the r=3 rung as Gaussian + explicit main terms via the collapse machinery. This is the
 sharpest lead the campaign holds. CORE OPEN, ON-BGK.
+
+## [466-r30-lag-correlation-exact] the lag correlations of the Jacobi sequence EXACTLY evaluated: Σ_j J_{j+t}·conj(J_j) = m·Σ_{u∈μ_n}Σ_y χ(1−uy)χ̄(1−y)λ_t(y) — Weil-scale (measured ≤ 0.77·mn√q), hence the r29 pair-resonance excess VANISHES at prize scaling (2026-07-07)
+
+Lane: #466 round-30 B2 (`Frontier/_R30LagCorrelationIdentity.lean` axiom-clean, real build;
+probe `probe_r30_lag_identity.py`, identity to 1e-11, 4 cells). `lag_correlation_identity`
+(pure orthogonality: indicator + group law + λ-triviality on G, via `lam_inv_eq_conj`): every
+lag correlation of the ladder's coefficient sequence is m × a sum of n COMPLETE two-character
+sums in one variable — the Weil class of round 17. Measured |A(t)|/(mn√q) = 0.4–0.77.
+
+**Consequence for the open core:** normalized against ‖J‖² ≈ q, the lag correlation is
+≈ n/√q — at prize scaling (β > 2) the r29 pair-resonance mechanism DECAYS: the
+super-Gaussian excess in `TripleConvEnergyBound` (r23/r28/r29) is a small-q artifact, and the
+prize-scale constant should approach the Gaussian C = 6. The successor's structured+random
+decomposition of J now has: structured part = the exactly-known, Weil-vanishing lag spectrum;
+the genuinely open content is the HIGHER-order (triple+) correlations beyond pairs — the
+irreducible Katz-class core. CORE OPEN, ON-BGK.
