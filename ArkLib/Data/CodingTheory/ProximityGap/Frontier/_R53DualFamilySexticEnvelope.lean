@@ -85,6 +85,31 @@ theorem sexticCorrelationBound_of_sexticVarietyInput_and_characterEnvelope'
     hfam hgrp hA0 hweil hχ (by
       simpa using hbudget)
 
+/-- Aggregate all-lag six-J energy from the nonzero-lag sextic variety input and an arbitrary
+pointwise character envelope.  This is the R53 analogue of the unit-character R55 consumer. -/
+theorem sextic_correlation_energy_bound_of_sexticVarietyInput_and_characterEnvelope
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C A B : ℝ} (hA0 : 0 ≤ A)
+    (hweil : SexticVarietyInput χ lam G C)
+    (hχ : ∀ x : F, ‖χ x‖ ≤ A)
+    (hbudget :
+      max
+        ((G.card : ℝ) * (C * Real.sqrt (Fintype.card F)
+          * (Fintype.card F : ℝ) ^ 2))
+        ((G.card : ℝ) * ((Fintype.card F : ℝ)
+          * (((Fintype.card F : ℝ) ^ 2 * A ^ 3) ^ 2))) ≤ B) :
+    ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * B) ^ 2) :=
+  sextic_correlation_energy_bound_of_sexticCorrelationBound hfam hgrp
+    (sexticCorrelationBound_of_sexticVarietyInput_and_characterEnvelope'
+      hfam hgrp hA0 hweil hχ hbudget)
+
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R53DualFamilySexticEnvelope.norm_lam_le_one_of_dualFamily
@@ -94,5 +119,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R53DualFamilySexticEnvelope.sexticCorrelationBound_of_sexticVarietyInput_and_characterEnvelope'
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R53DualFamilySexticEnvelope.sextic_correlation_energy_bound_of_sexticVarietyInput_and_characterEnvelope
 
 end ArkLib.ProximityGap.Frontier.R53DualFamilySexticEnvelope
