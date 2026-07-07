@@ -230,6 +230,22 @@ theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le
           hC0 (by simpa using hleft)))
     hpt
 
+/-- Pointwise r = 3 input propagated to every depth `s ≥ 3`, with only the left-end Wick
+budget. -/
+theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_ge_left_budget_le_const
+    (J : ZMod m → ℂ) (q s : ℕ) {B B' C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hleft : (m : ℝ) ≤ C * (4 : ℝ))
+    (hpt : TripleConvPointwiseBound J q B)
+    (hs : 3 ≤ s) :
+    IterConvEnergyWick J q s C' := by
+  simpa [Nat.add_sub_of_le hs] using
+    (iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const
+      (m := m) J q (s - 3) hJ hC0 hCC hBB hBC hleft hpt)
+
 /-- Pointwise r = 3 input propagated to depth `3+k` and consumed by the face-moment bound,
 with the R95 budget window reduced to the head inequality `(m : ℝ) ≤ 4*C`. -/
 theorem sup_pureFace_from_three_of_tripleConvPointwiseBound_left_budget_le_const
@@ -343,6 +359,8 @@ end ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_ge_left_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_tripleConvPointwiseBound_left_budget_le_const
 #print axioms
