@@ -20546,3 +20546,21 @@ mechanism): the quad-correlation identity is now a COROLLARY awaiting only the w
 computation (successor: `_R32QuadCorrelationIdentity.lean` WIP header lists the plan).
 With r30/r31 this gives the complete pair-statistics machinery at every derived level of
 the tower. CORE OPEN, ON-BGK.
+
+## [466-r33-quad-via-weights] the four-J correlation MACHINE-CHECKED EXACT as a corollary of the master identity: pair products are λ-transforms (J_{j+a}·J_j = c_{W_a}(j)); the r=3 cross terms are closed — only the fully-unmatched sextic class remains (2026-07-07)
+
+Lane: #466 round-33 B2 (`Frontier/_R33QuadViaWeights.lean` axiom-clean, real build, 3 decls).
+Chain: `lamTransform_zero_patch` (the transform is blind to f(0) since λ_i(0)=0) ⟹
+`weighted_lag_correlation'` (the master identity for ARBITRARY weights, no vanishing
+hypothesis); `pairWeight W_a(z) = Σ_{x≠0}χ(1−x)χ(1−zx⁻¹)λ_a(x)` +
+`jacobi_pair_eq_lamTransform` (J_{j+a}·J_j = c_{W_a}(j), pure reindex);
+**`quad_correlation_via_weights`**: Σ_j J_{j+t₁}J_{j+t₂}·conj(J_{j+s₁}J_j)
+= m·Σ_{u∈G}Σ_w W_{t₂−t₁}(uw)·conj(W_{s₁}(w))·λ_{t₁}(w) — every balanced four-J correlation
+in explicit G-fibered closed form.
+
+**Consequence:** the r=3 matching decomposition's partially-matched (cross) terms are now
+machine-checked exact identities in the pair-weight calculus; bounding them is the r31
+two-character-Weil class applied to the W-weights (successor: the surface-Weil named input
+for Σ_w W(uw)conj(W(w))λ(w), then assemble the full r=3 decomposition). The ONLY remaining
+open object in `TripleConvEnergyBound` is the fully-unmatched sextic class — the named
+triple-correlation input, now with zero cross-term debt. CORE OPEN, ON-BGK.
