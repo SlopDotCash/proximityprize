@@ -20348,3 +20348,16 @@ routes for the r=3 core narrow to: (i) Katz vertical equidistribution for the Ja
 family; (ii) a genuinely new idea. Combined with r18 (per-tuple Weil insufficient in β∈(4,6))
 and r23 (no spike to delete at the Jacobi level), the cartography of the delimited core is
 now closed on three sides. CORE OPEN, ON-BGK.
+
+## [466-r25-dualfamily-instantiated] the r19–r24 hypothesis packages DISCHARGED to a bare discrete log: λ_j := ψ_m(j·dl) satisfies every field of SubgroupDualFamily + DualFamilyGroupLaw (2026-07-07)
+
+Lane: #466 round-25 B2 (`Frontier/_R25DualFamilyInstantiation.lean` axiom-clean, real build,
+3 decls). `dualFam m dl := fun j a => if a = 0 then 0 else ψ_m(j·dl a)` with ψ_m the standard
+ℤ/m character (built from exp(2πi/m); primitivity via `Complex.isPrimitiveRoot_exp` +
+`zmodChar_primitive_of_primitive_root`). `dualFam_isSubgroupDualFamily` +
+`dualFam_groupLaw`: all seven fields discharged — indicator orthogonality and punctured-sum
+vanishing are `AddChar.sum_mulShift` on ℤ/m; group law is bilinearity; unit modulus is
+‖exp(it)‖=1. The ONLY remaining input is `DiscreteLogTo` (fiber-equal hom F* → ℤ/m with
+kernel G): bare cyclic bookkeeping, exists for every index-m subgroup since F* is cyclic
+(companion lane via IsCyclic). The whole r19–r24 Jacobi normal-form chain now holds for
+every finite field modulo a discrete log. CORE OPEN, ON-BGK.
