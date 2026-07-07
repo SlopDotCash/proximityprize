@@ -20604,3 +20604,17 @@ the ⊛-power correlations of the weights (multiplicative side, r33/34) are the 
 through the duality: the r=3 matching decomposition is now pure bookkeeping inside ONE
 calculus, and the named top input can be stated on whichever side is closest to the
 literature (Katz statements live naturally on the ⊛/variety side). CORE OPEN, ON-BGK.
+
+## [466-r37-sextic-exact] the campaign's open object in FINAL CLOSED FORM: every balanced six-J correlation = m·Σ_{u∈G}Σ_w A(uw)·conj(B(w))·λ_t(w) with A,B explicit triple twisted ⊛-weights — the named top input is now "bound this explicit complete character sum" (2026-07-07)
+
+Lane: #466 round-37 B2 (`Frontier/_R37SexticExact.lean` axiom-clean, real build, 3 decls).
+`lamTransform_shift` (c_f(j+t) = c_{f·λ_t}(j)); `twistedWeight`/`tripleTwistWeight`
+(explicit (f₀λ_0)⊛(f₀λ_a)⊛(f₀λ_b)); `jacobi_triple_eq_lamTransform`
+(J_j·J_{j+a}·J_{j+b} = c_W(j)); **`sextic_correlation_exact`** via the master identity.
+
+The unmatched sextic class of `TripleConvEnergyBound` — after r30/31 (pairs), r33/34 (quads),
+this class was the sole open object — is now an EXPLICIT complete character sum over a
+five-parameter family: points on an explicit variety, where Katz-class equidistribution
+natively applies. The reduction program of rounds 15–37 is COMPLETE: beneath the wall there
+is no identity, no bookkeeping, no unnamed input, no unbounded class left. What remains is
+one bound on one explicit sum (+ its A-side twin WallHolds). CORE OPEN, ON-BGK.
