@@ -1,0 +1,70 @@
+#466 LANE S3 -- floor successor structure / smallest-prime mechanism
+=====================================================================
+Driver: probe_466_successor_structure.py  (pure-Python exact scanner; no C compiler on box)
+Predicate: adjacent-7th-type realizability (floor_scan_exact.c / floor_scan_poly.c semantics)
+  A subset of Z/n realizable over F_p (p==1 mod n, points x_j=g0^j, g0 order n) iff
+  x^{3n/4} in colspan{x^0..x^{n/2}} on A  <=>  r_k = 0 (k in [n/2+1, |A|-1]) for
+  r = x^{3n/4} mod prod_{j in A}(x - g0^j).  |A| = 5n/8.
+
+(a) PATTERN RECOMPUTATION
+------------------------
+n=16, p=17: 160 realizable / 2304   (matches ground truth)
+  = 10 translation(+1) orbits, each size 16; set closed under +1 AND +4 (diagonal Z/4).
+  mod-4 profile [3,3,2,2]. Confirmed 0 realizable at p=97,113,193,241,257 and at ALL
+  49 primes ==1 mod16 up to 3000 EXCEPT p=17. p=17 is the UNIQUE bad prime.
+
+n=32, p=97: 32 realizable = ONE translation(+1) orbit of size 32; closed under j->-j.
+  8 members per mod-4 profile-type; the (6,6,4,4) [c0=0] members are exactly the 8 found
+  by direct c0=0 scan (3,841,600 patterns fully enumerated).
+  Representative A = {0,1,3,4,8,9,10,11,12,13,14,15,16,17,21,22,24,25,27,30}.
+
+LIFTING 16->32: NO COMBINATORIAL LIFT EXISTS.
+  Orbit count changes 10 (n=16) -> 1 (n=32): no bijective pattern-level successor map.
+  Tested and REFUTED (0 realizable images at p=97):
+    - period-double  a->{a,a+16}   (preserves [6,6,4,4] profile) -> 0/160 realizable
+    - index-double   a->{2a,2a+1}  (profile [5,5,5,5])           -> 0/160
+    - double+16      a->{2a,2a+16}                                -> size collision
+  Tested and REFUTED (n=32 orbit does NOT project to realizable n=16):
+    - mod-16 "double-multiplicity" projection -> 0/32 orbit members
+    - even-part/2, low-half, high-half restrictions -> none realizable at n=16
+  => The successor is NOT combinatorial. What persists is arithmetic (see (c)).
+
+(b) LEAN INSTANCE: intentionally NOT written.
+  A "first induction rung" Lean lift would be fabricated: the combinatorial lift it would
+  assert does not exist.  The genuine induction variable is the obstruction NORM (below),
+  not a pattern map.  Uniform conjecture is NOT killed -- the arithmetic mechanism (c)
+  survives and gives a concrete proof route.
+
+(c) SMALLEST-PRIME MECHANISM  (EXACT, char-0 -> char-p transfer)  ** the germ **
+------------------------------------------------------------------------------
+The obstruction coefficients r_k(A) are ALGEBRAIC INTEGERS in Z[zeta_n] (monic reduction
+=> no denominators). A realizable over F_p (embedding zeta->g0) iff every r_k(A) == 0 at
+the prime P=(p, zeta-g0). NECESSARY: p | Norm_{Q(zeta_n)/Q}(r_k(A)) in Z, for each k.
+Exact norms (sympy resultant with Phi_n):
+
+  n=16 (single obstruction r_9): Norm(r_9(A)) = 2^3 * 17^2  for ALL 160 patterns.
+       -> unique prime ==1 mod16 dividing it = 17.
+
+  n=32 (three obstructions r_17,r_18,r_19), rep A above:
+       Norm(r_17) = 2^9 * 97^4
+       Norm(r_18) = 2^6 * 31^2 * 97^2      (31 == -1 mod 32: never in-regime, harmless)
+       Norm(r_19) = 2^9 * 97^2
+       -> unique prime ==1 mod32 across all three = 97.  (robust over multiple orbit reps.)
+
+PREDICTIVE STATISTIC (separates 17 from 97..1601, and predicts 97 vs 193+):
+  stat(n) := set of prime factors ==1 mod n of the obstruction norm(s).
+  It equals exactly {least prime ==1 mod n}. The obstruction norm is 2-power-dominated
+  (2 ramifies in Z[zeta_n]) times, off-regime primes (==-1 mod n), times a SINGLE prime
+  ==1 mod n = the least one. Because the norm is small, its largest ==1-mod-n factor is
+  forced small = the least prime ==1 mod n. Hence floor-bad(n) = {least prime ==1 mod n}.
+
+GERM OF UNIFORM PROOF:
+  Uniform floor-successor theorem <=> prove Norm_{Q(zeta_n)/Q}(r_k(A)) has the form
+  +/- 2^a * (offregime primes) * p_min(n)^b, i.e. its only ==1-mod-n factor is
+  p_min(n) = least prime ==1 mod n. This is a structured resultant of a GAPPED polynomial
+  (support {3n/4} u {0..n/2}) against Phi_n. Verified exactly at n=16 and n=32.
+  Open: uniform-in-n control of that resultant's ==1-mod-n factorization.
+
+HONESTY: all norms above are EXACT integer arithmetic (Z[zeta_n] monic reduction +
+sympy.resultant). This is a verified computational MECHANISM, not a Lean compile; no
+"proven-in-Lean" claim is made.

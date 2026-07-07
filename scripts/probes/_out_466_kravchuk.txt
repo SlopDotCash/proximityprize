@@ -1,0 +1,132 @@
+====================================================================================================
+PROBE 466 / LANE P3: Kravchuk moment-interlacing vs Johnson
+numpy 2.4.4, scipy 1.17.1
+====================================================================================================
+
+[0] SANITY: Jacobi-matrix roots vs direct polynomial roots (p=1/2)
+    m= 16 k=  4: eig x_max=12.45961819  direct=12.45961819  |diff|=0.00e+00  symmetry|x_min+x_max-m|=1.78e-15
+    m= 32 k=  8: eig x_max=26.83658296  direct=26.83658296  |diff|=0.00e+00  symmetry|x_min+x_max-m|=0.00e+00
+    m= 64 k=  8: eig x_max=47.96090993  direct=47.96090993  |diff|=1.42e-14  symmetry|x_min+x_max-m|=0.00e+00
+    m= 64 k= 16: eig x_max=55.97100382  direct=55.97100382  |diff|=4.26e-14  symmetry|x_min+x_max-m|=0.00e+00
+    t=2 anchor m=100: x_max=55.000000 == (m+sqrt(m))/2 OK   (worst cross-check err 4.26e-14)
+
+[1] LARGEST KRAVCHUK ROOT, p=1/2, degree k=rho*n over {0..m}, m=n
+    SCL_A = x_max/m (literal root agreement);  SCL_B = (x_max-m/2)/m (excess reading)
+    semicircle limits: SCL_A -> 1/2+sqrt(rho(1-rho)),  SCL_B -> sqrt(rho(1-rho))
+
+  rate rho=1/2  (Johnson sqrt(rho)=0.707107, capacity rho=0.500000)
+        n     k        x_max   SCL_A=x/m  SCL_B=(x-m/2)/m  gap_to_semicircle_A
+       64    32      63.0000    0.984375         0.484375             0.015625
+      128    64     127.0000    0.992188         0.492188             0.007812
+      256   128     255.0000    0.996094         0.496094             0.003906
+      512   256     511.0000    0.998047         0.498047             0.001953
+     1024   512    1023.0000    0.999023         0.499023             0.000977  (conv-check)
+     2048  1024    2047.0000    0.999512         0.499512             0.000488  (conv-check)
+     4096  2048    4095.0000    0.999756         0.499756             0.000244  (conv-check)
+    m^(-2/3)-extrapolated:  SCL_A_inf=1.000395 (semicircle 1.000000),  SCL_B_inf=0.500395 (semicircle 0.500000)
+
+  rate rho=1/4  (Johnson sqrt(rho)=0.500000, capacity rho=0.250000)
+        n     k        x_max   SCL_A=x/m  SCL_B=(x-m/2)/m  gap_to_semicircle_A
+       64    16      55.9710    0.874547         0.374547             0.058466
+      128    32     114.7452    0.896447         0.396447             0.036566
+      256    64     232.9598    0.909999         0.409999             0.023014
+      512   128     470.2589    0.918474         0.418474             0.014538
+     1024   256     945.9826    0.923811         0.423811             0.009202  (conv-check)
+     2048   512    1898.8745    0.927185         0.427185             0.005828  (conv-check)
+     4096  1024    3806.5016    0.929322         0.429322             0.003691  (conv-check)
+    m^(-2/3)-extrapolated:  SCL_A_inf=0.932928 (semicircle 0.933013),  SCL_B_inf=0.432928 (semicircle 0.433013)
+
+  rate rho=1/8  (Johnson sqrt(rho)=0.353553, capacity rho=0.125000)
+        n     k        x_max   SCL_A=x/m  SCL_B=(x-m/2)/m  gap_to_semicircle_A
+       64     8      47.9609    0.749389         0.249389             0.081330
+      128    16      99.7416    0.779231         0.279231             0.051487
+      256    32     204.3025    0.798057         0.298057             0.032662
+      512    64     414.7115    0.809983         0.309983             0.020735
+     1024   128     837.1780    0.817557         0.317557             0.013162  (conv-check)
+     2048   256    1684.2111    0.822369         0.322369             0.008350  (conv-check)
+     4096   512    3380.9441    0.825426         0.325426             0.005293  (conv-check)
+    m^(-2/3)-extrapolated:  SCL_A_inf=0.830548 (semicircle 0.830719),  SCL_B_inf=0.330548 (semicircle 0.330719)
+
+  rate rho=1/16  (Johnson sqrt(rho)=0.250000, capacity rho=0.062500)
+        n     k        x_max   SCL_A=x/m  SCL_B=(x-m/2)/m  gap_to_semicircle_A
+       64     4      41.2345    0.644288         0.144288             0.097773
+      128     8      87.0118    0.679780         0.179780             0.062282
+      256    16     179.8093    0.702380         0.202380             0.039682
+      512    32     366.9977    0.716792         0.216792             0.025269
+     1024    64     743.4097    0.725986         0.225986             0.016075  (conv-check)
+     2048   128    1498.8222    0.731847         0.231847             0.010215  (conv-check)
+     4096   256    3012.9305    0.735579         0.235579             0.006483  (conv-check)
+    m^(-2/3)-extrapolated:  SCL_A_inf=0.741800 (semicircle 0.742061),  SCL_B_inf=0.241800 (semicircle 0.242061)
+
+[1b] HONEST QUADRATURE DEGREE t=ceil(k/2) (k moments => degree-t largest root is the
+     max-agreement LOWER bound; limit SCL_B -> sqrt((rho/2)(1-rho/2)) )
+    rho=1/2: n=4096 t=1024: SCL_A=0.929322  SCL_B=0.429322  (limit_B 0.433013)   vs Johnson 0.7071, capacity 0.5000
+    rho=1/4: n=4096 t=512: SCL_A=0.825426  SCL_B=0.325426  (limit_B 0.330719)   vs Johnson 0.5000, capacity 0.2500
+    rho=1/8: n=4096 t=256: SCL_A=0.735579  SCL_B=0.235579  (limit_B 0.242061)   vs Johnson 0.3536, capacity 0.1250
+    rho=1/16: n=4096 t=128: SCL_A=0.666464  SCL_B=0.166464  (limit_B 0.173993)   vs Johnson 0.2500, capacity 0.0625
+
+[2] DECISION-RULE COMPARISON (extrapolated limits vs Johnson sqrt(rho) vs capacity rho)
+       rho  SCL_A_inf  SCL_B_inf  sqrt(rho)      rho   A vs Johnson   B vs Johnson  B/sqrt(rho)
+       1/2   1.000395   0.500395   0.707107   0.5000          ABOVE      =capacity     0.707665
+       1/4   0.932928   0.432928   0.500000   0.2500          ABOVE        between     0.865856
+       1/8   0.830548   0.330548   0.353553   0.1250          ABOVE        between     0.934931
+      1/16   0.741800   0.241800   0.250000   0.0625          ABOVE        between     0.967201
+    note: SCL_B/sqrt(rho) -> sqrt(1-rho) -> 1 as rho->0  (Johnson re-derivation in the
+    small-rate limit; the sqrt(1-rho) 'gain' is dissected in [3]/[4] below)
+
+[3] EXACT MOMENT AUDIT ON RS CODES (2 primes x 2 lengths x 2 evaluation sets)
+    identity: sum_c C(A(y,c),r) = C(m,r) q^(k-r), r<=k  ( = Binomial(m,1/q) factorial
+    moments, NOT Binomial(m,1/2) )  -- checked in exact integer arithmetic
+    q=13 m= 8 k=3 eval=consecutive: moments EXACT (both y);  max A: y-in-code=8 (=m: True), y-outside=5;  Kravchuk_(1/q) root: deg-2=1.903, deg-3=3.045;  pairwise agreement k-1=2
+    q=13 m= 8 k=3 eval=random     : moments EXACT (both y);  max A: y-in-code=8 (=m: True), y-outside=5;  Kravchuk_(1/q) root: deg-2=1.903, deg-3=3.045;  pairwise agreement k-1=2
+    q=17 m= 8 k=3 eval=consecutive: moments EXACT (both y);  max A: y-in-code=8 (=m: True), y-outside=4;  Kravchuk_(1/q) root: deg-2=1.710, deg-3=2.834;  pairwise agreement k-1=2
+    q=17 m= 8 k=3 eval=random     : moments EXACT (both y);  max A: y-in-code=8 (=m: True), y-outside=4;  Kravchuk_(1/q) root: deg-2=1.710, deg-3=2.834;  pairwise agreement k-1=2
+    q=13 m=12 k=3 eval=consecutive: moments EXACT (both y);  max A: y-in-code=12 (=m: True), y-outside=5;  Kravchuk_(1/q) root: deg-2=2.362, deg-3=3.628;  pairwise agreement k-1=2
+    q=13 m=12 k=3 eval=random     : moments EXACT (both y);  max A: y-in-code=12 (=m: True), y-outside=5;  Kravchuk_(1/q) root: deg-2=2.362, deg-3=3.628;  pairwise agreement k-1=2
+    q=17 m=12 k=3 eval=consecutive: moments EXACT (both y);  max A: y-in-code=12 (=m: True), y-outside=5;  Kravchuk_(1/q) root: deg-2=2.074, deg-3=3.304;  pairwise agreement k-1=2
+    q=17 m=12 k=3 eval=random     : moments EXACT (both y);  max A: y-in-code=12 (=m: True), y-outside=5;  Kravchuk_(1/q) root: deg-2=2.074, deg-3=3.304;  pairwise agreement k-1=2
+    => moment premise TRUE + evaluation-set-independent: True
+    => COUNTERMODEL: y in code has the SAME first-k moments but max agreement = m,
+       far above every Kravchuk root => largest root is NOT an upper bound ('pin' false);
+       Gauss quadrature makes it a LOWER bound on max agreement only.
+
+[4] HONEST WEIGHT Binomial(m,1/q) AT SCALE (no in-window content either way)
+    deg-k root/m -> (sqrt(rho(1-p))+sqrt(p(1-rho)))^2 -> rho as q->inf: full-degree
+    semicircle at the honest weight reproduces the TRIVIAL degree bound k (capacity),
+    not sqrt(rho); the moment-budget-justified degree t=ceil(k/2) root sits near rho/2
+    (a weak covering-type LOWER bound). Neither reading touches Johnson.
+    q=  257 n= 64 rho=1/2 : deg-32 root/m=0.5182 (~capacity 0.5000), deg-16 root/m=0.2625 (~rho/2=0.2500); pairwise (k-1)/m=0.4844
+    q=  257 n= 64 rho=1/8 : deg-8 root/m=0.1286 (~capacity 0.1250), deg-4 root/m=0.0588 (~rho/2=0.0625); pairwise (k-1)/m=0.1094
+    q=  257 n=256 rho=1/2 : deg-128 root/m=0.5445 (~capacity 0.5000), deg-64 root/m=0.2882 (~rho/2=0.2500); pairwise (k-1)/m=0.4961
+    q=  257 n=256 rho=1/8 : deg-32 root/m=0.1525 (~capacity 0.1250), deg-16 root/m=0.0806 (~rho/2=0.0625); pairwise (k-1)/m=0.1211
+    q=65537 n= 64 rho=1/2 : deg-32 root/m=0.4846 (~capacity 0.5000), deg-16 root/m=0.2346 (~rho/2=0.2500); pairwise (k-1)/m=0.4844
+    q=65537 n= 64 rho=1/8 : deg-8 root/m=0.1095 (~capacity 0.1250), deg-4 root/m=0.0469 (~rho/2=0.0625); pairwise (k-1)/m=0.1094
+    q=65537 n=256 rho=1/2 : deg-128 root/m=0.4970 (~capacity 0.5000), deg-64 root/m=0.2468 (~rho/2=0.2500); pairwise (k-1)/m=0.4961
+    q=65537 n=256 rho=1/8 : deg-32 root/m=0.1215 (~capacity 0.1250), deg-16 root/m=0.0588 (~rho/2=0.0625); pairwise (k-1)/m=0.1211
+    (a received word equal to a codeword has agreement m with matching first-k moments,
+     so no root is an upper bound; as a lower bound the honest-degree root ~rho/2 is a
+     covering-type statement with no list-decoding content)
+
+====================================================================================================
+VERDICT: REFUTED (no in-window bound; the live-looking reading is direction-invalid)
+====================================================================================================
+  rho=1/2 : SCL_A=1.0004 > Johnson 0.7071 (WEAKER than Johnson);  SCL_B=0.5004 = sqrt(rho(1-rho)) = Johnson*sqrt(1-rho)
+  rho=1/4 : SCL_A=0.9329 > Johnson 0.5000 (WEAKER than Johnson);  SCL_B=0.4329 = sqrt(rho(1-rho)) = Johnson*sqrt(1-rho)
+  rho=1/8 : SCL_A=0.8305 > Johnson 0.3536 (WEAKER than Johnson);  SCL_B=0.3305 = sqrt(rho(1-rho)) = Johnson*sqrt(1-rho)
+  rho=1/16: SCL_A=0.7418 > Johnson 0.2500 (WEAKER than Johnson);  SCL_B=0.2418 = sqrt(rho(1-rho)) = Johnson*sqrt(1-rho)
+
+  (i)  Literal reading (SCL_A = x_max/m -> 1/2+sqrt(rho(1-rho))): strictly ABOVE Johnson agreement
+       sqrt(rho) at every prize rate -- the semicircle 'pin' is weaker than Johnson in-window.
+  (ii) Excess reading (SCL_B -> sqrt(rho(1-rho)) = sqrt(rho)sqrt(1-rho)): lands numerically between
+       capacity and Johnson for rho<=1/4, BUT it is not a valid upper bound: (a) exact countermodel
+       in [3] (same first-k moments, max agreement = m); moment interlacing bounds the max from
+       BELOW (quadrature), never from above; (b) the Binomial(m,1/2) premise has no nontrivial MDS
+       instance (q=2 MDS is trivial) -- at the honest RS weight Binomial(m,1/q) the full-degree
+       root collapses to capacity (= the trivial degree bound) and the moment-budget-justified
+       degree-ceil(k/2) root to ~rho/2, a covering-type lower bound ([4]).
+  (iii) Evaluation-point-independence is REAL but is exactly the second-order-cap signature: the
+       premise (k-wise independence) holds for every evaluation set, hence cannot see mu_n and
+       cannot certify any delta* beyond the universal (Johnson) surface.
+  Dossier risk 'merely re-derives Johnson' CONFIRMED in the rho->0 limit (SCL_B/sqrt(rho) =
+  sqrt(1-rho) -> 1); at prize rates it is Johnson-or-weaker in every valid reading.
+

@@ -1,0 +1,128 @@
+probe_466_e2w4_orbit_census -- width-4 e2BadScalarSet full G-orbit census
+numpy 2.4.6
+
+n=  8  C(n,4)=70  char0: #bad(e2=0,e1!=0)=8 (+2 with e1=0)
+  p=      4129 (m=516, flags=-): #bad=8  #alpha=8  K_orbits=1  free_action=OK  K_prod=1(inside=True)  K_extra=0
+  p=      4153 (m=519, flags=-): #bad=8  #alpha=8  K_orbits=1  free_action=OK  K_prod=1(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=1  O_P-model=n/8-1=0  3|n=no
+
+n= 12  C(n,4)=495  char0: #bad(e2=0,e1!=0)=48 (+3 with e1=0)
+  p=     20749 (m=1729, flags=-): #bad=48  #alpha=24  K_orbits=2  free_action=OK  K_prod=2(inside=True)  K_extra=0
+  p=     20773 (m=1731, flags=-): #bad=48  #alpha=24  K_orbits=2  free_action=OK  K_prod=2(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=2  O_P-model=n/8-1=0  3|n=yes
+
+n= 16  C(n,4)=1820  char0: #bad(e2=0,e1!=0)=48 (+4 with e1=0)
+  p=     65617 (m=4101, flags=-): #bad=48  #alpha=48  K_orbits=3  free_action=OK  K_prod=3(inside=True)  K_extra=0
+  p=     65633 (m=4102, flags=-): #bad=48  #alpha=48  K_orbits=3  free_action=OK  K_prod=3(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=3  O_P-model=n/8-1=1  3|n=no
+
+n= 20  C(n,4)=4845  char0: #bad(e2=0,e1!=0)=80 (+5 with e1=0)
+  p=    160081 (m=8004, flags=-): #bad=80  #alpha=80  K_orbits=4  free_action=OK  K_prod=4(inside=True)  K_extra=0
+  p=    160141 (m=8007, flags=-): #bad=80  #alpha=80  K_orbits=4  free_action=OK  K_prod=4(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=4  O_P-model=n/8-1=1  3|n=no
+
+n= 24  C(n,4)=10626  char0: #bad(e2=0,e1!=0)=264 (+6 with e1=0)
+  p=    331801 (m=13825, flags=-): #bad=264  #alpha=120  K_orbits=5  free_action=OK  K_prod=5(inside=True)  K_extra=0
+  p=    331897 (m=13829, flags=-): #bad=264  #alpha=120  K_orbits=5  free_action=OK  K_prod=5(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=5  O_P-model=n/8-1=2  3|n=yes
+
+n= 28  C(n,4)=20475  char0: #bad(e2=0,e1!=0)=168 (+7 with e1=0)
+  p=    614741 (m=21955, flags=-): #bad=168  #alpha=168  K_orbits=6  free_action=OK  K_prod=6(inside=True)  K_extra=0
+  p=    614881 (m=21960, flags=-): #bad=168  #alpha=168  K_orbits=6  free_action=OK  K_prod=6(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=6  O_P-model=n/8-1=2  3|n=no
+
+n= 32  C(n,4)=35960  char0: #bad(e2=0,e1!=0)=224 (+8 with e1=0)
+  p=   1048609 (m=32769, flags=-): #bad=224  #alpha=224  K_orbits=7  free_action=OK  K_prod=7(inside=True)  K_extra=0
+  p=   1048897 (m=32778, flags=-): #bad=224  #alpha=224  K_orbits=7  free_action=OK  K_prod=7(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=7  O_P-model=n/8-1=3  3|n=no
+
+n= 36  C(n,4)=58905  char0: #bad(e2=0,e1!=0)=648 (+9 with e1=0)
+  p=   1679653 (m=46657, flags=-): #bad=648  #alpha=288  K_orbits=8  free_action=OK  K_prod=8(inside=True)  K_extra=0
+  p=   1679833 (m=46662, flags=-): #bad=648  #alpha=288  K_orbits=8  free_action=OK  K_prod=8(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=8  O_P-model=n/8-1=3  3|n=yes
+
+n= 40  C(n,4)=91390  char0: #bad(e2=0,e1!=0)=360 (+10 with e1=0)
+  p=   2560361 (m=64009, flags=-): #bad=360  #alpha=360  K_orbits=9  free_action=OK  K_prod=9(inside=True)  K_extra=0
+  p=   2560601 (m=64015, flags=-): #bad=360  #alpha=360  K_orbits=9  free_action=OK  K_prod=9(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=9  O_P-model=n/8-1=4  3|n=no
+
+n= 44  C(n,4)=135751  char0: #bad(e2=0,e1!=0)=440 (+11 with e1=0)
+  p=   3748141 (m=85185, flags=-): #bad=440  #alpha=440  K_orbits=10  free_action=OK  K_prod=10(inside=True)  K_extra=0
+  p=   3748229 (m=85187, flags=-): #bad=440  #alpha=440  K_orbits=10  free_action=OK  K_prod=10(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=10  O_P-model=n/8-1=4  3|n=no
+
+n= 48  C(n,4)=194580  char0: #bad(e2=0,e1!=0)=1200 (+12 with e1=0)
+  p=   5308609 (m=110596, flags=-): #bad=1200  #alpha=528  K_orbits=11  free_action=OK  K_prod=11(inside=True)  K_extra=0
+  p=   5308801 (m=110600, flags=-): #bad=1200  #alpha=528  K_orbits=11  free_action=OK  K_prod=11(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=11  O_P-model=n/8-1=5  3|n=yes
+
+n= 52  C(n,4)=270725  char0: #bad(e2=0,e1!=0)=624 (+13 with e1=0)
+  p=   7312969 (m=140634, flags=-): #bad=624  #alpha=624  K_orbits=12  free_action=OK  K_prod=12(inside=True)  K_extra=0
+  p=   7313749 (m=140649, flags=-): #bad=624  #alpha=624  K_orbits=12  free_action=OK  K_prod=12(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=12  O_P-model=n/8-1=5  3|n=no
+
+n= 56  C(n,4)=367290  char0: #bad(e2=0,e1!=0)=728 (+14 with e1=0)
+  p=   9834889 (m=175623, flags=-): #bad=728  #alpha=728  K_orbits=13  free_action=OK  K_prod=13(inside=True)  K_extra=0
+  p=   9835337 (m=175631, flags=-): #bad=728  #alpha=728  K_orbits=13  free_action=OK  K_prod=13(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=13  O_P-model=n/8-1=6  3|n=no
+
+n= 60  C(n,4)=487635  char0: #bad(e2=0,e1!=0)=2040 (+15 with e1=0)
+  p=  12960061 (m=216001, flags=-): #bad=2040  #alpha=960  K_orbits=16  free_action=OK  K_prod=14(inside=True)  K_extra=2
+  p=  12960781 (m=216013, flags=-): #bad=2040  #alpha=960  K_orbits=16  free_action=OK  K_prod=14(inside=True)  K_extra=2
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=14  O_P-model=n/8-1=6  3|n=yes
+
+n= 64  C(n,4)=635376  char0: #bad(e2=0,e1!=0)=960 (+16 with e1=0)
+  p=  16777601 (m=262150, flags=-): #bad=960  #alpha=960  K_orbits=15  free_action=OK  K_prod=15(inside=True)  K_extra=0
+  p=  16777729 (m=262152, flags=-): #bad=960  #alpha=960  K_orbits=15  free_action=OK  K_prod=15(inside=True)  K_extra=0
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=15  O_P-model=n/8-1=7  3|n=no
+
+==============================================================================
+GROWTH TABLE (validated rows only)
+   n     #bad       K  K_prod  K_extra  n/4-1  n/8-1  K/(n/4-1)   bad/n^3
+   8        8       1       1        0      1      0      1.000   0.01562
+  12       48       2       2        0      2      0      1.000   0.02778
+  16       48       3       3        0      3      1      1.000   0.01172
+  20       80       4       4        0      4      1      1.000   0.01000
+  24      264       5       5        0      5      2      1.000   0.01910
+  28      168       6       6        0      6      2      1.000   0.00765
+  32      224       7       7        0      7      3      1.000   0.00684
+  36      648       8       8        0      8      3      1.000   0.01389
+  40      360       9       9        0      9      4      1.000   0.00562
+  44      440      10      10        0     10      4      1.000   0.00517
+  48     1200      11      11        0     11      5      1.000   0.01085
+  52      624      12      12        0     12      5      1.000   0.00444
+  56      728      13      13        0     13      6      1.000   0.00415
+  60     2040      16      14        2     14      6      1.143   0.00944
+  64      960      15      15        0     15      7      1.000   0.00366
+
+log-log slope of K:    all-n +1.269   top-half +1.186
+log-log slope of #bad: all-n +2.293   top-half +1.757
+
+READINGS: K bounded  -> slope ~ 0;   K = Theta(n) (product-only) -> ~1;
+          K = Theta(n^2) (full moment-variety, D*-law analogue) -> ~2.
+
+Done.
+
+==============================================================================
+ADDENDUM (audit pass): n=60 re-run after adding extra_reps printing + per-rep
+exact char-0 verification (independently cross-checked with sympy mod Phi_60).
+Substantiates the non-product representatives cited in the kb note.
+==============================================================================
+probe_466_e2w4_orbit_census -- width-4 e2BadScalarSet full G-orbit census
+numpy 2.4.6
+
+n= 60  C(n,4)=487635  char0: #bad(e2=0,e1!=0)=2040 (+15 with e1=0)
+  p=  12960061 (m=216001, flags=-): #bad=2040  #alpha=960  K_orbits=16  free_action=OK  K_prod=14(inside=True)  K_extra=2
+      non-product orbit rep (exponents mod 60): (0, 2, 14, 36)  char0-exact: e2==0 True  e1==0 False
+      non-product orbit rep (exponents mod 60): (0, 2, 26, 48)  char0-exact: e2==0 True  e1==0 False
+  p=  12960781 (m=216013, flags=-): #bad=2040  #alpha=960  K_orbits=16  free_action=OK  K_prod=14(inside=True)  K_extra=2
+      non-product orbit rep (exponents mod 60): (0, 2, 14, 36)  char0-exact: e2==0 True  e1==0 False
+      non-product orbit rep (exponents mod 60): (0, 2, 26, 48)  char0-exact: e2==0 True  e1==0 False
+  cross-prime: AGREE; char0-MATCH;  Kmodel=n/4-1=14  O_P-model=n/8-1=6  3|n=yes
+
+==============================================================================
+GROWTH TABLE (validated rows only)
+   n     #bad       K  K_prod  K_extra  n/4-1  n/8-1  K/(n/4-1)   bad/n^3
+  60     2040      16      14        2     14      6      1.143   0.00944
+
+Done.

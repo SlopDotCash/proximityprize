@@ -1,7 +1,7 @@
 {
  "summary": {
-  "total": 91,
-  "open": 46,
+  "total": 100,
+  "open": 55,
   "discharged": 44,
   "refuted": 1,
   "by_top_dir": {
@@ -12,8 +12,8 @@
     "refuted": 0
    },
    "Data": {
-    "total": 24,
-    "open": 16,
+    "total": 33,
+    "open": 25,
     "discharged": 8,
     "refuted": 0
    },
@@ -39,11 +39,32 @@
  },
  "residuals": [
   {
+   "name": "FrankUncrossingResidual",
+   "fq_name": "AGL24.FrankUncrossingResidual",
+   "file": "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
+   "line": 264,
+   "providers": [],
+   "status": "open"
+  },
+  {
    "name": "FrankOrientationResidual",
    "fq_name": "AGL24.FrankOrientationResidual",
    "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
    "line": 42,
    "providers": [
+    {
+     "name": "AGL24.frankOrientationResidual_of_uncrossingResidual",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
+     "line": 298,
+     "conditional_on_residuals": [
+      "FrankUncrossingResidual"
+     ],
+     "extra_explicit_binders": [
+      "hres"
+     ],
+     "ambiguous_name_match": false
+    },
     {
      "name": "AGL24.frankOrientationResidual_of_rootedOutCutTheorem",
      "kind": "theorem",
@@ -99,6 +120,33 @@
       "hstep"
      ],
      "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.GMMDS.gmmDsResidual_of_lovett_via_steps",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/GMMDS/LovettToGZPDualBridgeReduction.lean",
+     "line": 166,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hlovett",
+      "hstep1",
+      "hstep2"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.GMMDS.gmmDsResidual_unconditional",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/GMMDS/LovettUnconditionalWiring.lean",
+     "line": 105,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hdual",
+      "hfield",
+      "hk",
+      "hminor"
+     ],
+     "ambiguous_name_match": false
     }
    ],
    "status": "open"
@@ -118,6 +166,21 @@
      "extra_explicit_binders": [
       "hnonempty",
       "hwitness"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "AGL24.symbolicFullRank_of_classical_imports_pinned",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24DualZeroPatternPinned.lean",
+     "line": 213,
+     "conditional_on_residuals": [
+      "FrankOrientationResidual"
+     ],
+     "extra_explicit_binders": [
+      "hfrank",
+      "hgm",
+      "hnonempty"
      ],
      "ambiguous_name_match": false
     },
@@ -170,6 +233,39 @@
      "extra_explicit_binders": [
       "hfrank",
       "hgm",
+      "hnonempty"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "AGL24.symbolicFullRank_via_lovett_pinned",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24PinnedConnector.lean",
+     "line": 129,
+     "conditional_on_residuals": [
+      "FrankOrientationResidual"
+     ],
+     "extra_explicit_binders": [
+      "hdual",
+      "hfield",
+      "hfrank",
+      "hnonempty",
+      "hrc"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.GMMDS.symbolicFullRank_lovett_free",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/GMMDS/SymbolicFullRankLovettFree.lean",
+     "line": 86,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hdual",
+      "hfield",
+      "hfrank",
+      "hk",
+      "hminor",
       "hnonempty"
      ],
      "ambiguous_name_match": false
@@ -1617,6 +1713,85 @@
    "status": "open"
   },
   {
+   "name": "IsolatedCountResidual",
+   "fq_name": "ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalEvenOddDescent.lean",
+   "line": 165,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "SteinWickResidual",
+   "fq_name": "ProximityGap.Frontier.ARX1.SteinWickResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean",
+   "line": 198,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "GaloisPhaseSpreadResidual",
+   "fq_name": "ArkLib.ProximityGap.GaloisStickelberger.GaloisPhaseSpreadResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGalois_StickelbergerPhaseDescent.lean",
+   "line": 119,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "FiberCountResidual",
+   "fq_name": "ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean",
+   "line": 208,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "IsolatedNonCosetCountResidual",
+   "fq_name": "ProximityGap.Frontier.IsoSparsityMasonStothers.IsolatedNonCosetCountResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IsoSparsityMasonStothers.lean",
+   "line": 145,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "EffectiveEquidistResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.JacKatz.EffectiveEquidistResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacKatzBoundedConductorFamily.lean",
+   "line": 234,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "JacobiEquidistributionRateResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.JacobiKatzEquidist.JacobiEquidistributionRateResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacobiKatzEquidist.lean",
+   "line": 202,
+   "providers": [],
+   "refutations": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.JacobiKatzEquidist.katz_discrepancy_fails_residual",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacobiKatzEquidist.lean",
+     "line": 210,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hn",
+      "hrmax",
+      "hβ"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "name": "SecondDescentStuckResidual",
+   "fq_name": "ProximityGap.Frontier.SecondDescentParity.SecondDescentStuckResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SecondDescentParity.lean",
+   "line": 148,
+   "providers": [],
+   "status": "open"
+  },
+  {
    "name": "SubJohnsonSupplyResidual",
    "fq_name": "ProximityGap.Ownership.SubJohnsonSupplyResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/JohnsonSplitSupply.lean",
@@ -1754,6 +1929,52 @@
       "hDir₂",
       "hImplSupp",
       "hInit",
+      "hn"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "Reduction.reductionAppendPerfectCompletenessResidual_msg",
+     "kind": "theorem",
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
+     "line": 49,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hDir",
+      "hDir₂",
+      "hImplSupp",
+      "hInit",
+      "hn"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "Reduction.reductionAppendPerfectCompletenessResidual_challenge",
+     "kind": "theorem",
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
+     "line": 71,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hDir",
+      "hDir₂",
+      "hInit",
+      "himplNF",
+      "himplSP",
+      "hn"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "Reduction.reductionAppendPerfectCompletenessResidual_holds",
+     "kind": "theorem",
+     "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
+     "line": 90,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hImplSupp",
+      "hInit",
+      "himplNF",
+      "himplSP",
       "hn"
      ],
      "ambiguous_name_match": false
@@ -3370,6 +3591,17 @@
    "line": 163,
    "providers": [
     {
+     "name": "Logup.OuterCompletenessResidual_holds",
+     "kind": "theorem",
+     "file": "ArkLib/ProofSystem/Logup/Security/LogupOuterCompletenessDischarge.lean",
+     "line": 43,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hInit"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
      "name": "Logup.outerCompletenessResidual_of_neverFail",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
@@ -4116,8 +4348,8 @@
    "reason": "name does not end in `Residual`"
   },
   {
-   "name": "StrictCoeffPolysResidualShareOr",
-   "fq_name": "ProximityGap.StrictCoeffPolysResidualShareOr",
+   "name": "StrictCoeffPolysShareResidualOr",
+   "fq_name": "ProximityGap.StrictCoeffPolysShareResidualOr",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean",
    "line": 54,
@@ -4210,6 +4442,38 @@
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Errors.lean",
    "line": 1597,
    "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualRatio",
+   "fq_name": "ProximityGap.Ownership.residualRatio",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/PinnedScalarRatioImage.lean",
+   "line": 70,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualNote",
+   "fq_name": "ProximityGap.Frontier.IsolatedCountKelley.residualNote",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IsolatedCountKelley.lean",
+   "line": 105,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "pairResidualCorrection",
+   "fq_name": "ArkLib.ProximityGap.Frontier.PhasePairEquidistBudget.pairResidualCorrection",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairEquidistBudget.lean",
+   "line": 39,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "stallResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean",
+   "line": 211,
+   "reason": "result type is `ℝ`, not `Prop`"
   },
   {
    "name": "mcaLowerWitness_of_residuals",

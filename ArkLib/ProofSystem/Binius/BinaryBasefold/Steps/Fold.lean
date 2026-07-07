@@ -221,6 +221,7 @@ theorem foldOracleReduction_perfectCompleteness
     simp only [Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one, ChallengeIdx,
       Challenge, liftComp_eq_liftM, liftM_pure, support_pure,
       Set.mem_singleton_iff] at hInputState_mem_support
+    obtain rfl := Set.eq_of_mem_singleton hInputState_mem_support
     conv_lhs =>
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
@@ -260,7 +261,6 @@ theorem foldOracleReduction_perfectCompleteness
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
     simp only [←probOutput_eq_zero_iff]
-    simp_all only
     change Pr[= none | OptionT.run (m := (OracleComp []ₒ)) (x := (OptionT.bind _ _)) ] = 0
     rw [OptionT.probOutput_none_bind_eq_zero_iff]
     conv =>
@@ -280,9 +280,9 @@ theorem foldOracleReduction_perfectCompleteness
       -- Set.mem_singleton_iff, and_true, exists_const, Prod.mk.injEq, existsAndEq]
       rw [bind_pure_comp]
       dsimp only [Functor.map]
-      rw [OptionT.simulateQ_bind]
+      erw [OptionT.simulateQ_bind]
       erw [support_bind]
-      rw [simulateQ_ite]
+      erw [simulateQ_ite]
       simp only [Fin.isValue, Message, Matrix.cons_val_zero, id_eq, MessageIdx, support_ite,
         toPFunctor_emptySpec, Function.comp_apply, OptionT.simulateQ_pure, Set.mem_iUnion,
         exists_prop]
@@ -332,8 +332,10 @@ theorem foldOracleReduction_perfectCompleteness
       liftComp_eq_liftM, liftM_pure, liftComp_pure, support_pure, Set.mem_singleton_iff,
       Fin.reduceLast, MessageIdx, Message, exists_eq_left] at hx_mem_support
     -- Step 2b: Extract the challenge r1 and the trace equations
-    obtain ⟨r1, ⟨_h_r1_mem_challenge_support, h_trace_support⟩⟩ := hx_mem_support
-    rcases h_trace_support with ⟨prvOut_eq, h_verOut_mem_support⟩
+    obtain ⟨r1, _h_r1_mem_challenge_support, i2, h_i2_eq, prvOut_eq, h_verOut_mem_support⟩ :=
+      hx_mem_support
+    obtain rfl := Set.eq_of_mem_singleton h_i2_eq
+    simp only [liftM_pure, support_pure, Set.mem_singleton_iff] at prvOut_eq
     -- Step 2c: Simplify the verifier computation
     conv at h_verOut_mem_support =>
       erw [simulateQ_bind]
@@ -369,9 +371,10 @@ theorem foldOracleReduction_perfectCompleteness
     have h_V_check_is_true : V_check := h_V_check
     simp only [h_V_check_is_true, ↓reduceIte, Fin.isValue, pure_bind] at h_verOut_mem_support
     erw [simulateQ_pure, liftM_pure] at h_verOut_mem_support
-    simp only [Fin.isValue, support_pure, Set.mem_singleton_iff, Option.some.injEq,
+    erw [support_pure] at h_verOut_mem_support
+    simp only [Fin.isValue, Set.mem_singleton_iff, Option.some.injEq,
       Prod.mk.injEq] at h_verOut_mem_support
-    rcases h_verOut_mem_support with ⟨verStmtOut_eq, verOStmtOut_eq⟩
+    obtain ⟨verStmtOut_eq, verOStmtOut_eq⟩ := h_verOut_mem_support
     dsimp only [foldStepLogic, foldProverComputeMsg, step, getFoldProverFinalOutput] at prvOut_eq
     rw [Prod.mk.injEq, Prod.mk.injEq] at prvOut_eq
     obtain ⟨⟨prvStmtOut_eq, prvOStmtOut_eq⟩, prvWitOut_eq⟩ := prvOut_eq
@@ -581,8 +584,7 @@ def foldKnowledgeStateFunction (i : Fin ℓ) :
       simp only [Fin.isValue, FullTranscript.mk1_eq_snoc, Function.comp_apply]
     erw [support_bind] at h_output_mem_V_run_support
     let step := (foldStepLogic 𝔽q β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp) i)
-    set V_check := step.verifierCheck stmtIn
-      (FullTranscript.mk2 (msg0 := _) (msg1 := _)) with h_V_check_def
+    set V_check := step.verifierCheck stmtIn tr with h_V_check_def
     by_cases h_V_check : V_check
     · simp only [Fin.isValue, Matrix.cons_val_zero, h_V_check, ↓reduceIte, OptionT.run_pure,
         simulateQ_pure, Function.comp_apply, Set.mem_iUnion, exists_prop, Prod.exists,
@@ -661,9 +663,10 @@ def foldKnowledgeStateFunction (i : Fin ℓ) :
       erw [simulateQ_bind] at h_output_mem_V_run_support
       simp only [simulateQ_pure, Fin.isValue, Function.comp_apply,
         pure_bind] at h_output_mem_V_run_support
-      erw [support_pure] at h_output_mem_V_run_support
-      simp only [Set.mem_singleton_iff, Prod.mk.injEq, ↓existsAndEq, and_true, exists_eq_left,
-        ] at h_output_mem_V_run_support
+      erw [support_bind] at h_output_mem_V_run_support
+      erw [_root_.simulateQ_pure] at h_output_mem_V_run_support
+      simp only [pure_bind, Function.comp_apply, Set.mem_singleton_iff,
+        Prod.mk.injEq, ↓existsAndEq, and_true, exists_eq_left] at h_output_mem_V_run_support
       erw [support_pure] at h_output_mem_V_run_support
       simp only [Set.mem_singleton_iff, reduceCtorEq] at h_output_mem_V_run_support
 

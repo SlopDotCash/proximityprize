@@ -1,0 +1,10 @@
+probe_466_deployment_period_matrix.py -- exact integer period-matrix certificate
+
+== SELF-TESTS ==
+  p=641 n=128 f=5: brute==vectorized: True;  max|eig(P) - c_j| = 8.17e-14;  trP=-1 trP^2=513 (want -1, 513)
+  p=61441 n=4096 f=15: brute==vectorized: True;  max|eig(P) - c_j| = 1.55e-11;  trP=-1 trP^2=57345 (want -1, 57345)
+  SELF-TESTS ALL PASS
+
+  exact S3 anchors loaded: {'BabyBear': -6342852445126, 'KoalaBear': -1078271540722}
+
+-- KoalaBear: p = 2130706433, n = 2^24, f = 127, g = 3

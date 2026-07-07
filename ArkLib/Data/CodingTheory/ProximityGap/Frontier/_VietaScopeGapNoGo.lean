@@ -58,7 +58,7 @@ cardinality of the `r`-fold subset-sum image of the agreement set over the witne
 sumset, governed by Glibichuk–Konyagin/BCHKS 1.12, **not** by `|S|`. A `Prop` asserting a set-size
 bound suffices to bound this is therefore FALSE-by-scope (see `sumset_card_not_determined_by_card`);
 kept as documentation that `SparseRaggedExcessBound` & friends, even if proven, do not reach δ\*. -/
-def SetBoundClosesDeltaStar : Prop :=
+def SetBoundClosesDeltaStar [DecidableEq F] : Prop :=
   ∀ (B : ℕ), (∀ S : Finset F, S.card ≤ B) →
     ∀ S₁ S₂ : Finset F, (S₁ + S₁).card = (S₂ + S₂).card
 

@@ -1,0 +1,259 @@
+#466 W3/B4 probe: CA vs MCA bad-scalar counts at lines, exact, window-interior a
+fast=False
+
+=== n=8 k=2 p=4129 (m=(p-1)/n=516, proper=True)  a in [3, 4, 5] (e=n-a: {3: 5, 4: 4, 5: 3}) ===
+    rate rho=2/8; Johnson agreement sqrt(kn)=4.00; UDR needs a >= 5 (d=7);  window-interior a: 3..4
+    [validate] brute-force per-gamma cross-check (independent algorithm):
+      random a=3: CA fast=56 brute=56 match=True | MCA fast=56 brute=56 match=True
+      random a=4: CA fast=0 brute=0 match=True | MCA fast=0 brute=0 match=True
+      sparse a=3: CA fast=ALL brute=4129 match=True | MCA fast=42 brute=42 match=True
+      sparse a=4: CA fast=5 brute=5 match=True | MCA fast=5 brute=5 match=True
+
+  --- a=3 (delta=5/8, e=5) ---
+    NON-JOINT stacks: max #CA-bad = 56, max #MCA-bad = 56 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 45  vs  e = 5  vs  non-joint max CA = 56
+      attained by family=sparse_random note=|E|=5 zero-type fires=5 excess fires=40
+      EXCESS (nonzero-witness) fires seen on 66 joint stacks: [('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('sparse_random', 40, '|E|=5'), ('sparse_random', 40, '|E|=5'), ('sparse_random', 39, '|E|=5'), ('sparse_random', 40, '|E|=5')]
+      random           N= 40 joint=  0 CA(nonjoint) max=56 MCA max=56 mean=55.55
+      monomial         N= 30 joint=  2 CA(nonjoint) max=40 MCA max=40 mean=20.53
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=45 mean=44.70
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=45 mean=44.87
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=40 mean=39.33
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=45 mean=45.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((2, 3, ''), 40, 40, 0), ((3, 2, ''), 40, 40, 0), ((6, 7, ''), 40, 40, 0), ((7, 6, ''), 40, 40, 0), ((4, 3, 'CORRELATED-X^(n/2)'), 25, 25, 0)]
+
+  --- a=4 (delta=4/8, e=4) ---
+    NON-JOINT stacks: max #CA-bad = 9, max #MCA-bad = 9 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 8  vs  e = 4  vs  non-joint max CA = 9
+      attained by family=monomial note=CORRELATED-X^(n/2) zero-type fires=0 excess fires=8
+      EXCESS (nonzero-witness) fires seen on 3 joint stacks: [('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('sparse_designed', 1, '|E|=4')]
+      random           N= 40 joint=  0 CA(nonjoint) max=1 MCA max=1 mean=0.07
+      monomial         N= 30 joint=  2 CA(nonjoint) max=9 MCA max=9 mean=4.53
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=4 mean=4.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=5 mean=4.03
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=4 mean=4.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=4 mean=4.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 3, 'CORRELATED-X^(n/2)'), 9, 9, 0), ((4, 7, 'CORRELATED-X^(n/2)'), 9, 9, 0), ((5, 2, ''), 9, 9, 0), ((5, 6, ''), 9, 9, 0), ((2, 5, ''), 8, 8, 0)]
+
+  --- a=5 (delta=3/8, e=3) ---
+    NON-JOINT stacks: max #CA-bad = 8, max #MCA-bad = 8 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 3  vs  e = 3  vs  non-joint max CA = 8
+      attained by family=sparse_random note=|E|=3 zero-type fires=3 excess fires=0
+      NO excess (nonzero-witness) fires found on any joint stack at a=5
+      random           N= 40 joint=  0 CA(nonjoint) max=0 MCA max=0 mean=0.00
+      monomial         N= 30 joint=  0 CA(nonjoint) max=8 MCA max=8 mean=0.53
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=3 mean=3.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 5, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((5, 4, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((2, 3, ''), 0, 0, 0), ((2, 4, 'CORRELATED-X^(n/2)'), 0, 0, 0), ((2, 5, ''), 0, 0, 0)]
+    [config time 11.3s]
+
+=== n=8 k=2 p=4153 (m=(p-1)/n=519, proper=True)  a in [3, 4, 5] (e=n-a: {3: 5, 4: 4, 5: 3}) ===
+    rate rho=2/8; Johnson agreement sqrt(kn)=4.00; UDR needs a >= 5 (d=7);  window-interior a: 3..4
+    [validate] brute-force per-gamma cross-check (independent algorithm):
+      random a=3: CA fast=56 brute=56 match=True | MCA fast=56 brute=56 match=True
+      random a=4: CA fast=0 brute=0 match=True | MCA fast=0 brute=0 match=True
+      sparse a=3: CA fast=ALL brute=4153 match=True | MCA fast=45 brute=45 match=True
+      sparse a=4: CA fast=5 brute=5 match=True | MCA fast=5 brute=5 match=True
+
+  --- a=3 (delta=5/8, e=5) ---
+    NON-JOINT stacks: max #CA-bad = 56, max #MCA-bad = 56 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 45  vs  e = 5  vs  non-joint max CA = 56
+      attained by family=sparse_random note=|E|=5 zero-type fires=5 excess fires=40
+      EXCESS (nonzero-witness) fires seen on 66 joint stacks: [('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('sparse_random', 40, '|E|=5'), ('sparse_random', 40, '|E|=5'), ('sparse_random', 37, '|E|=5'), ('sparse_random', 40, '|E|=5')]
+      random           N= 40 joint=  0 CA(nonjoint) max=56 MCA max=56 mean=55.58
+      monomial         N= 30 joint=  2 CA(nonjoint) max=40 MCA max=40 mean=20.53
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=45 mean=44.73
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=45 mean=44.67
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=40 mean=39.33
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=45 mean=45.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((2, 3, ''), 40, 40, 0), ((3, 2, ''), 40, 40, 0), ((6, 7, ''), 40, 40, 0), ((7, 6, ''), 40, 40, 0), ((4, 3, 'CORRELATED-X^(n/2)'), 25, 25, 0)]
+
+  --- a=4 (delta=4/8, e=4) ---
+    NON-JOINT stacks: max #CA-bad = 9, max #MCA-bad = 9 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 8  vs  e = 4  vs  non-joint max CA = 9
+      attained by family=monomial note=CORRELATED-X^(n/2) zero-type fires=0 excess fires=8
+      EXCESS (nonzero-witness) fires seen on 2 joint stacks: [('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)')]
+      random           N= 40 joint=  0 CA(nonjoint) max=0 MCA max=0 mean=0.00
+      monomial         N= 30 joint=  2 CA(nonjoint) max=9 MCA max=9 mean=4.53
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=4 mean=4.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=4 mean=4.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=4 mean=4.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=4 mean=4.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 3, 'CORRELATED-X^(n/2)'), 9, 9, 0), ((4, 7, 'CORRELATED-X^(n/2)'), 9, 9, 0), ((5, 2, ''), 9, 9, 0), ((5, 6, ''), 9, 9, 0), ((2, 5, ''), 8, 8, 0)]
+
+  --- a=5 (delta=3/8, e=3) ---
+    NON-JOINT stacks: max #CA-bad = 8, max #MCA-bad = 8 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 3  vs  e = 3  vs  non-joint max CA = 8
+      attained by family=sparse_random note=|E|=3 zero-type fires=3 excess fires=0
+      NO excess (nonzero-witness) fires found on any joint stack at a=5
+      random           N= 40 joint=  0 CA(nonjoint) max=0 MCA max=0 mean=0.00
+      monomial         N= 30 joint=  0 CA(nonjoint) max=8 MCA max=8 mean=0.53
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=3 mean=3.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 5, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((5, 4, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((2, 3, ''), 0, 0, 0), ((2, 4, 'CORRELATED-X^(n/2)'), 0, 0, 0), ((2, 5, ''), 0, 0, 0)]
+    [config time 8.8s]
+
+=== n=8 k=3 p=4129 (m=(p-1)/n=516, proper=True)  a in [4, 5] (e=n-a: {4: 4, 5: 3}) ===
+    rate rho=3/8; Johnson agreement sqrt(kn)=4.90; UDR needs a >= 6 (d=6);  window-interior a: 4..4
+    [validate] brute-force per-gamma cross-check (independent algorithm):
+      random a=4: CA fast=68 brute=68 match=True | MCA fast=68 brute=68 match=True
+      random a=5: CA fast=0 brute=0 match=True | MCA fast=0 brute=0 match=True
+      sparse a=4: CA fast=ALL brute=4129 match=True | MCA fast=55 brute=55 match=True
+      sparse a=5: CA fast=4 brute=4 match=True | MCA fast=4 brute=4 match=True
+
+  --- a=4 (delta=4/8, e=4) ---
+    NON-JOINT stacks: max #CA-bad = 70, max #MCA-bad = 70 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 57  vs  e = 4  vs  non-joint max CA = 70
+      attained by family=sparse_random note=|E|=4 zero-type fires=4 excess fires=53
+      EXCESS (nonzero-witness) fires seen on 70 joint stacks: [('monomial', 33, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 33, 'CORRELATED-X^(n/2)'), ('monomial', 33, ''), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 33, '')]
+      random           N= 40 joint=  0 CA(nonjoint) max=70 MCA max=70 mean=69.55
+      monomial         N= 20 joint=  6 CA(nonjoint) max=41 MCA max=41 mean=30.90
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=57 mean=55.27
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=57 mean=55.47
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=55 mean=55.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=56 mean=56.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 3, 'CORRELATED-X^(n/2)'), 41, 41, 0), ((4, 7, 'CORRELATED-X^(n/2)'), 41, 41, 0), ((6, 3, ''), 41, 41, 0), ((6, 7, ''), 41, 41, 0), ((3, 4, 'CORRELATED-X^(n/2)'), 40, 40, 0)]
+
+  --- a=5 (delta=3/8, e=3) ---
+    NON-JOINT stacks: max #CA-bad = 8, max #MCA-bad = 8 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 3  vs  e = 3  vs  non-joint max CA = 8
+      attained by family=sparse_random note=|E|=3 zero-type fires=3 excess fires=0
+      NO excess (nonzero-witness) fires found on any joint stack at a=5
+      random           N= 40 joint=  0 CA(nonjoint) max=0 MCA max=0 mean=0.00
+      monomial         N= 20 joint=  0 CA(nonjoint) max=8 MCA max=8 mean=2.00
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=3 mean=3.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 5, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((5, 4, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((5, 6, ''), 8, 8, 0), ((6, 5, ''), 8, 8, 0), ((4, 6, 'CORRELATED-X^(n/2)'), 4, 4, 0)]
+    [config time 23.2s]
+
+=== n=8 k=3 p=4153 (m=(p-1)/n=519, proper=True)  a in [4, 5] (e=n-a: {4: 4, 5: 3}) ===
+    rate rho=3/8; Johnson agreement sqrt(kn)=4.90; UDR needs a >= 6 (d=6);  window-interior a: 4..4
+    [validate] brute-force per-gamma cross-check (independent algorithm):
+      random a=4: CA fast=70 brute=70 match=True | MCA fast=70 brute=70 match=True
+      random a=5: CA fast=0 brute=0 match=True | MCA fast=0 brute=0 match=True
+      sparse a=4: CA fast=ALL brute=4153 match=True | MCA fast=56 brute=56 match=True
+      sparse a=5: CA fast=4 brute=4 match=True | MCA fast=4 brute=4 match=True
+
+  --- a=4 (delta=4/8, e=4) ---
+    NON-JOINT stacks: max #CA-bad = 70, max #MCA-bad = 70 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 57  vs  e = 4  vs  non-joint max CA = 70
+      attained by family=sparse_random note=|E|=4 zero-type fires=4 excess fires=53
+      EXCESS (nonzero-witness) fires seen on 70 joint stacks: [('monomial', 33, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 33, 'CORRELATED-X^(n/2)'), ('monomial', 33, ''), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 33, '')]
+      random           N= 40 joint=  0 CA(nonjoint) max=70 MCA max=70 mean=69.50
+      monomial         N= 20 joint=  6 CA(nonjoint) max=41 MCA max=41 mean=30.90
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=57 mean=55.03
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=57 mean=55.13
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=55 mean=55.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=55 mean=55.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 3, 'CORRELATED-X^(n/2)'), 41, 41, 0), ((4, 7, 'CORRELATED-X^(n/2)'), 41, 41, 0), ((6, 3, ''), 41, 41, 0), ((6, 7, ''), 41, 41, 0), ((3, 4, 'CORRELATED-X^(n/2)'), 40, 40, 0)]
+
+  --- a=5 (delta=3/8, e=3) ---
+    NON-JOINT stacks: max #CA-bad = 8, max #MCA-bad = 8 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 4  vs  e = 3  vs  non-joint max CA = 8
+      attained by family=sparse_climb note=|E|=3 steps=150 zero-type fires=3 excess fires=1
+      EXCESS (nonzero-witness) fires seen on 1 joint stacks: [('sparse_climb', 1, '|E|=3 steps=150')]
+      random           N= 40 joint=  0 CA(nonjoint) max=1 MCA max=1 mean=0.03
+      monomial         N= 20 joint=  0 CA(nonjoint) max=8 MCA max=8 mean=2.00
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=3 mean=3.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=4 mean=4.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((4, 5, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((5, 4, 'CORRELATED-X^(n/2)'), 8, 8, 0), ((5, 6, ''), 8, 8, 0), ((6, 5, ''), 8, 8, 0), ((4, 6, 'CORRELATED-X^(n/2)'), 4, 4, 0)]
+    [config time 23.0s]
+    [flag] skipping generalized-Fermat-structured prime p=65537 (m=2^t)
+
+=== n=16 k=4 p=65617 (m=(p-1)/n=4101, proper=True)  a in [5, 6, 7] (e=n-a: {5: 11, 6: 10, 7: 9}) ===
+    rate rho=4/16; Johnson agreement sqrt(kn)=8.00; UDR needs a >= 10 (d=13);  window-interior a: 5..8
+
+  --- a=5 (delta=11/16, e=11) ---
+    NON-JOINT stacks: max #CA-bad = 4247, max #MCA-bad = 4247 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 4199  vs  e = 11  vs  non-joint max CA = 4247
+      attained by family=sparse_random note=|E|=11 zero-type fires=10 excess fires=4189
+      EXCESS (nonzero-witness) fires seen on 30 joint stacks: [('monomial', 2192, 'CORRELATED-X^(n/2)'), ('monomial', 1064, 'CORRELATED-X^(n/2)'), ('monomial', 1008, 'CORRELATED-X^(n/2)'), ('monomial', 1200, ''), ('monomial', 1064, ''), ('monomial', 2192, '')]
+      random           N= 10 joint=  0 CA(nonjoint) max=4247 MCA max=4247 mean=4225.70
+      monomial         N= 66 joint=  6 CA(nonjoint) max=3936 MCA max=3936 mean=2099.88
+      sparse_random    N= 10 joint= 10 CA(nonjoint) max=- MCA max=4199 mean=4177.00
+      sparse_designed  N= 10 joint= 10 CA(nonjoint) max=- MCA max=4193 mean=4175.80
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=4056 mean=3996.33
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=4171 mean=4171.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((6, 7, ''), 3936, 3936, 0), ((12, 13, ''), 3936, 3936, 0), ((5, 12, ''), 3872, 3872, 0), ((7, 14, ''), 3872, 3872, 0), ((4, 13, ''), 3664, 3664, 0)]
+
+  --- a=6 (delta=10/16, e=10) ---
+    NON-JOINT stacks: max #CA-bad = 89, max #MCA-bad = 89 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 16  vs  e = 10  vs  non-joint max CA = 89
+      attained by family=monomial note=CORRELATED-X^(n/2) zero-type fires=0 excess fires=16
+      EXCESS (nonzero-witness) fires seen on 13 joint stacks: [('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 16, ''), ('monomial', 8, ''), ('monomial', 16, '')]
+      random           N= 10 joint=  0 CA(nonjoint) max=1 MCA max=1 mean=0.10
+      monomial         N= 66 joint=  6 CA(nonjoint) max=89 MCA max=89 mean=16.00
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=12 mean=10.13
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=11 mean=10.07
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=10 mean=9.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=12 mean=12.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((9, 15, ''), 89, 89, 0), ((4, 10, ''), 88, 88, 0), ((10, 12, ''), 73, 73, 0), ((7, 9, ''), 72, 72, 0), ((4, 6, ''), 40, 40, 0)]
+
+  --- a=7 (delta=9/16, e=9) ---
+    NON-JOINT stacks: max #CA-bad = 9, max #MCA-bad = 9 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 16  vs  e = 9  vs  non-joint max CA = 9
+      attained by family=monomial note=CORRELATED-X^(n/2) zero-type fires=0 excess fires=16
+      EXCESS (nonzero-witness) fires seen on 6 joint stacks: [('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 16, ''), ('monomial', 8, ''), ('monomial', 16, '')]
+      random           N= 10 joint=  0 CA(nonjoint) max=0 MCA max=0 mean=0.00
+      monomial         N= 66 joint=  6 CA(nonjoint) max=9 MCA max=16 mean=3.15
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=9 mean=9.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=9 mean=9.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=9 mean=7.33
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=9 mean=9.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((8, 9, 'CORRELATED-X^(n/2)'), 'ALL', 16, 0), ((8, 11, 'CORRELATED-X^(n/2)'), 'ALL', 16, 0), ((9, 10, ''), 'ALL', 16, 0), ((10, 11, ''), 'ALL', 16, 0), ((8, 14, 'CORRELATED-X^(n/2)'), 9, 9, 0)]
+    [config time 317.0s]
+
+=== n=16 k=4 p=65633 (m=(p-1)/n=4102, proper=True)  a in [5, 6, 7] (e=n-a: {5: 11, 6: 10, 7: 9}) ===
+    rate rho=4/16; Johnson agreement sqrt(kn)=8.00; UDR needs a >= 10 (d=13);  window-interior a: 5..8
+
+  --- a=5 (delta=11/16, e=11) ---
+    NON-JOINT stacks: max #CA-bad = 4238, max #MCA-bad = 4238 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 4204  vs  e = 11  vs  non-joint max CA = 4238
+      attained by family=sparse_designed note=|E|=11 zero-type fires=11 excess fires=4193
+      EXCESS (nonzero-witness) fires seen on 30 joint stacks: [('monomial', 2176, 'CORRELATED-X^(n/2)'), ('monomial', 1064, 'CORRELATED-X^(n/2)'), ('monomial', 1008, 'CORRELATED-X^(n/2)'), ('monomial', 1200, ''), ('monomial', 1064, ''), ('monomial', 2176, '')]
+      random           N= 10 joint=  0 CA(nonjoint) max=4238 MCA max=4238 mean=4223.30
+      monomial         N= 66 joint=  6 CA(nonjoint) max=3936 MCA max=3936 mean=2101.33
+      sparse_random    N= 10 joint= 10 CA(nonjoint) max=- MCA max=4190 mean=4169.90
+      sparse_designed  N= 10 joint= 10 CA(nonjoint) max=- MCA max=4204 mean=4177.70
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=4041 mean=3984.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=4166 mean=4166.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((6, 7, ''), 3936, 3936, 0), ((12, 13, ''), 3936, 3936, 0), ((5, 12, ''), 3904, 3904, 0), ((7, 14, ''), 3904, 3904, 0), ((4, 13, ''), 3680, 3680, 0)]
+
+  --- a=6 (delta=10/16, e=10) ---
+    NON-JOINT stacks: max #CA-bad = 89, max #MCA-bad = 89 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 16  vs  e = 10  vs  non-joint max CA = 89
+      attained by family=monomial note=CORRELATED-X^(n/2) zero-type fires=0 excess fires=16
+      EXCESS (nonzero-witness) fires seen on 13 joint stacks: [('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 16, ''), ('monomial', 8, ''), ('monomial', 16, '')]
+      random           N= 10 joint=  0 CA(nonjoint) max=1 MCA max=1 mean=0.20
+      monomial         N= 66 joint=  6 CA(nonjoint) max=89 MCA max=89 mean=16.00
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=11 mean=10.10
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=11 mean=10.07
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=10 mean=9.00
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=12 mean=12.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((9, 15, ''), 89, 89, 0), ((4, 10, ''), 88, 88, 0), ((10, 12, ''), 73, 73, 0), ((7, 9, ''), 72, 72, 0), ((4, 6, ''), 40, 40, 0)]
+
+  --- a=7 (delta=9/16, e=9) ---
+    NON-JOINT stacks: max #CA-bad = 9, max #MCA-bad = 9 (per-gamma MCA subset-of CA verified on every stack)
+    JOINT stacks (B4 channel; epsCA body = 0 here): max #MCA-bad J = 16  vs  e = 9  vs  non-joint max CA = 9
+      attained by family=monomial note=CORRELATED-X^(n/2) zero-type fires=0 excess fires=16
+      EXCESS (nonzero-witness) fires seen on 6 joint stacks: [('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 8, 'CORRELATED-X^(n/2)'), ('monomial', 16, 'CORRELATED-X^(n/2)'), ('monomial', 16, ''), ('monomial', 8, ''), ('monomial', 16, '')]
+      random           N= 10 joint=  0 CA(nonjoint) max=0 MCA max=0 mean=0.00
+      monomial         N= 66 joint=  6 CA(nonjoint) max=9 MCA max=16 mean=3.15
+      sparse_random    N= 30 joint= 30 CA(nonjoint) max=- MCA max=9 mean=9.00
+      sparse_designed  N= 30 joint= 30 CA(nonjoint) max=- MCA max=9 mean=9.00
+      sparse_monomial  N=  3 joint=  3 CA(nonjoint) max=- MCA max=9 mean=7.33
+      sparse_climb     N=  1 joint=  1 CA(nonjoint) max=- MCA max=9 mean=9.00
+      monomial top-5 by MCA [(j0,j1,flag), CA, MCA, gap]: [((8, 9, 'CORRELATED-X^(n/2)'), 'ALL', 16, 0), ((8, 11, 'CORRELATED-X^(n/2)'), 'ALL', 16, 0), ((9, 10, ''), 'ALL', 16, 0), ((10, 11, ''), 'ALL', 16, 0), ((8, 14, 'CORRELATED-X^(n/2)'), 9, 9, 0)]
+    [config time 310.8s]
+
+=== O147 cross-check: take-over stack (X^9, X^8) on mu_16, k=4, a=7 ===
+    [flag] skipping generalized-Fermat-structured prime p=65537 (m=2^t)
+    joint=True (O147: parity-class witnesses make the stack jointly explainable)  #critical-CA=16  #MCA=16 [X^8 = X^(n/2): CORRELATED direction, flagged]

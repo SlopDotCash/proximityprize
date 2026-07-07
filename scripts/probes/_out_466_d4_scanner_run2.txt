@@ -1,0 +1,23 @@
+probe_466_d4_scanner.py -- D4(n) bad-prime scanner (depth-4 wraparound excess)
+sieve limit 4194368, 295950 primes total
+
+Definitions: E_r(p) = #{x_1+..+x_r = y_1+..+y_r in mu_n subset F_p} (ordered tuples);
+W_r = E_r(p) - E_r^{(0)} >= 0 (wraparound excess); A_4 = E_4(p) - n^8/p (DC-subtracted);
+EXACT-BAD iff W_4 > 0; K-BAD iff A_4 > 1.05 * E_4^{(0)}.
+
+[VALIDATION]
+  sparse-vs-dense E4: n=8 p=12289 -> 190120 / 190120  OK
+  sparse-vs-dense E4: n=16 p=65537 -> 4654160 / 4654160  OK
+  sparse-vs-dense E4: n=16 p=65617 -> 4649680 / 4649680  OK
+  sparse-vs-dense E4: n=32 p=65537 -> 237898528 / 237898528  OK
+  ANCHOR n=16 p=65537: W4 = +4480 (dossier requires +4480) PASS
+
+[n=8] scanned 464 primes in 0.7s (exhaustive: 464, window-sample: 0)
+    ... n=16: 1000/2852 primes (6s)
+    ... n=16: 2000/2852 primes (12s)
+
+[n=16] scanned 2852 primes in 17.0s (exhaustive: 2852, window-sample: 0)
+    ... n=32: 1000/18452 primes (115s)
+    ... n=32: 2000/18452 primes (249s)
+    ... n=32: 3000/18452 primes (466s)
+    ... n=32: 4000/18452 primes (648s)

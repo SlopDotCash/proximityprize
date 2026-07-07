@@ -1,0 +1,61 @@
+== SYMBOLIC DERIVATION (sympy; every residual must be 0) ==
+  [OK] b2^2 matches j=2 file closed form
+
+  b_3^2 (FULL, clean) =
+     numerator   = (-n + p - 1)*(-2*n**6 + 9*n**5 - 21*n**4 + 12*n**3*p + 50*n**3 - 72*n**2*p - 54*n**2 + 143*n*p - 54*n - 93*p + 93)
+     denominator = (-n**3 + 2*n*p - 3*p + 3)**2
+
+  1 - q_3 = 1 - b_3^2/(3n) =
+     numerator   = n**7 + 2*n**6*p + 7*n**6 - 21*n**5*p - 12*n**5 + 51*n**4*p + 11*n**4 - 110*n**3*p - 4*n**3 + 36*n**2*p**2 + 161*n**2*p - 108*n**2 - 116*n*p**2 + 50*n*p + 66*n + 93*p**2 - 186*p + 93
+     denominator = 3*n*(-n**3 + 2*n*p - 3*p + 3)**2
+     numerator (expanded)   = n**7 + 2*n**6*p + 7*n**6 - 21*n**5*p - 12*n**5 + 51*n**4*p + 11*n**4 - 110*n**3*p - 4*n**3 + 36*n**2*p**2 + 161*n**2*p - 108*n**2 - 116*n*p**2 + 50*n*p + 66*n + 93*p**2 - 186*p + 93
+     denominator (expanded) = 3*n**7 - 12*n**5*p + 18*n**4*p - 18*n**4 + 12*n**3*p**2 - 36*n**2*p**2 + 36*n**2*p + 27*n*p**2 - 54*n*p + 27*n
+
+  char-0 floor F_3 = lim_(p->inf) (1-q_3) = (18*n - 31)/(3*n*(2*n - 3))
+  [OK] F_3 == (18n-31)/(3n(2n-3))
+  char-0 b_3^2 = (6*n**2 - 27*n + 31)/(2*n - 3)   (== (6n^2-27n+31)/(2n-3)? True)
+
+  RAMP R_3 = (1-q_3) - F_3 =
+     numerator   = 2*n**7 + 4*n**6*p - 7*n**6 - 48*n**5*p - 14*n**5 + 237*n**4*p + 58*n**4 - 605*n**3*p + 67*n**3 + 838*n**2*p - 390*n**2 - 599*n*p + 456*n + 174*p - 174
+     denominator = 3*(2*n - 3)*(-n**3 + 2*n*p - 3*p + 3)**2
+     leading coeff G_3 = lim (p-1) R_3 = (n - 2)*(2*n**4 - 17*n**3 + 53*n**2 - 66*n + 29)/(3*(2*n - 3)**2)
+
+  == CROSSOVER (n-term overtakes p-term) ==
+  j=2: F_2 - R_2 > 0  <=>  3(p-1-n)^2 - n(n-2)^2(p-1) - n^2(2n-3) > 0
+       LHS expanded (quadratic in p) = -n**3*p - n**3 + 4*n**2*p + 2*n**2 - 10*n*p + 10*n + 3*p**2 - 6*p + 3
+       roots in p: [n**3/6 - 2*n**2/3 - n*sqrt(n**4 - 8*n**3 + 36*n**2 - 56*n + 28)/6 + 5*n/3 + 1, n**3/6 - 2*n**2/3 + n*sqrt(n**4 - 8*n**3 + 36*n**2 - 56*n + 28)/6 + 5*n/3 + 1]
+       n=8: j*=2 requires p > 114.9  (n^4 = 4096, margin x35.7)
+       n=16: j*=2 requires p > 1080.4  (n^4 = 65536, margin x60.7)
+       n=32: j*=2 requires p > 9667.0  (n^4 = 1048576, margin x108.5)
+
+== INSTANCES (>=3 generic primes per n, beta>=4, mu_n proper) ==
+    n         p     tag      E2   T3        E3   T5 clean   exactJ b3^2  relDev b3^2  relDev 1-q3  j*
+    8      4129    gen1     168    0      5120    0  True 668736255/441     3.52e-16     4.51e-16   2   [0.1s]
+    8      4153    gen2     168    0      5120    0  True 96664572/6384     0.00e+00     0.00e+00   2   [0.0s]
+    8      4177    gen3     168    0      5120    0  True 684614319/452     1.17e-16     0.00e+00   2   [0.0s]
+   16     65537  FERMAT     720    0     50560   80 False 3029611039/78     1.83e-16     5.80e-16   2   [0.5s]
+   16     65537    gen1     720    0     50560   80 False 3029611039/78     1.83e-16     5.80e-16   2   [0.4s]
+   16     65617    gen2     720    0     50560    0  True 21878422624/5     1.83e-16     4.36e-16   2   [0.5s]
+   16     65633    gen3     720    0     50560    0  True 182409651677/     3.66e-16     1.60e-15   2   [0.6s]
+   32   1048609    gen1    2976    0    446720    0  True 3459614453268     0.00e+00     1.00e-15   2   [75.3s]
+   32   1048897    gen2    2976    0    446720    0  True 3461520356529     1.64e-16     1.00e-15   2   [83.7s]
+   32   1049057    gen3    2976    0    446720    0  True 3462579418454     3.28e-16     3.14e-15   2   [93.6s]
+
+== SUMMARY (clean instances; float64 spectrum vs exact rational Jacobi) ==
+  clean E_3 formula 15n^3-45n^2+40n confirmed on all clean instances: True
+  max relative deviation  b_3^2 : 3.66e-16
+  max relative deviation 1-q_3  : 3.14e-15
+  char-0 floor F_3 = (18*n - 31)/(3*n*(2*n - 3))
+  leading ramp coeff G_3 = (n - 2)*(2*n**4 - 17*n**3 + 53*n**2 - 66*n + 29)/(3*(2*n - 3)**2)
+  b_3^2 numerator = (-n + p - 1)*(-2*n**6 + 9*n**5 - 21*n**4 + 12*n**3*p + 50*n**3 - 72*n**2*p - 54*n**2 + 143*n*p - 54*n - 93*p + 93)
+  b_3^2 denominator = (-n**3 + 2*n*p - 3*p + 3)**2
+  1-q_3 numerator (expanded) = n**7 + 2*n**6*p + 7*n**6 - 21*n**5*p - 12*n**5 + 51*n**4*p + 11*n**4 - 110*n**3*p - 4*n**3 + 36*n**2*p**2 + 161*n**2*p - 108*n**2 - 116*n*p**2 + 50*n*p + 66*n + 93*p**2 - 186*p + 93
+  1-q_3 denominator (expanded) = 3*n**7 - 12*n**5*p + 18*n**4*p - 18*n**4 + 12*n**3*p**2 - 36*n**2*p**2 + 36*n**2*p + 27*n*p**2 - 54*n*p + 27*n
+
+  CROSSOVER: j*(n,p) = 2 for every tested (prize) prime -- the char-p ramp
+  dominates the Jacobi ramp defect ONLY at depth j=1 (F_1 = 0); from j=2 the
+  char-0 Gaussian floor F_2 = 3/(2n) dominates.  This is the first quantitative
+  statement of WHERE the char-p defect ceases to control the Jacobi window.
+
+  HONESTY: ensemble-MEAN ramp only; conditional on clean E_3, T_5. Instance
+  turnover and the char-p defect at deeper j (where E_3 itself deviates) OPEN.

@@ -1,0 +1,90 @@
+====================================================================================================
+PROBE 466b -- CMK abstract moment-problem rigidity: explicit refuting measure
+====================================================================================================
+
+prize scale: n = 2^30, m = 2^128 atoms (q = n*m+1), P2 = n - (n-1)/m exact
+ln m = 128*ln2 in (88.722839, 88.722839); certified integer bracket 88 < ln m < 89 (exact rational series bound)
+sqrt(2 n ln m) ~ 436498.4 ~ 2^18.74
+
+R rows: [4, 8, 11, 22, 44, 89, 128, 178]   (178 = first integer >= 2*ln m: 2*ln m < 178 since ln m < 89)
+countermeasure: atoms {+T, -T} x1 each, {+s, -s} x (m-2)/2 each (m-2 = 2^128-2, (m-2)/2 integer)
+verdicts (EXACT): 'T > a*sqrt(n ln m)' certified via T^2 > a^2*n*89 (89 > ln m); complement via T^2 < 16*n*88 (88 < ln m)
+
+----------------------------------------------------------------------------------------------------
+K = 1: envelope m_2r <= K^r (2r-1)!! n^r for r = 1..R; Parseval m_2 = P2 exact by construction
+----------------------------------------------------------------------------------------------------
+   R |                           Tmax (exact int) | ~T/sqrt(2n ln m) | bind r |  >2  >4  >8  (a*sqrt(n ln m), exact)
+   4 |                                 3519089267 |         8062.090 |      4 | YES YES YES   (tightness lhs/rhs at bind: 1.0000)
+   8 |                                   19909218 |           45.611 |      8 | YES YES YES   (tightness lhs/rhs at bind: 1.0000)
+  11 |                                    5176604 |           11.859 |     11 | YES YES YES   (tightness lhs/rhs at bind: 1.0000)
+  22 |                                     982456 |            2.251 |     22 | YES no  no    (tightness lhs/rhs at bind: 1.0000)
+  44 |                                     508968 |            1.166 |     44 | no  no  no    (tightness lhs/rhs at bind: 0.9999)
+  89 |                                     435645 |            0.998 |     88 | no  no  no    (tightness lhs/rhs at bind: 0.9997)
+ 128 |                                     435645 |            0.998 |     88 | no  no  no    (tightness lhs/rhs at bind: 0.9997)
+ 178 |                                     435645 |            0.998 |     88 | no  no  no    (tightness lhs/rhs at bind: 0.9997)
+
+  complement (R = 178 >= 2 ln m): Tmax = 435645  ~1.41*sqrt(n ln m); EXACT check Tmax^2 < 16*n*88: YES -- admissible edge is back at the prize scale
+   (recovers the KNOWN conditional moment bound at log depth -- cite GaussPeriodMomentBound / prize_scale_bound_at_saddle; NOT re-landed here)
+
+----------------------------------------------------------------------------------------------------
+K = 1.05 (=21/20): envelope m_2r <= K^r (2r-1)!! n^r for r = 1..R; Parseval m_2 = P2 exact by construction
+----------------------------------------------------------------------------------------------------
+   R |                           Tmax (exact int) | ~T/sqrt(2n ln m) | bind r |  >2  >4  >8  (a*sqrt(n ln m), exact)
+   4 |                                 3606761303 |         8262.943 |      4 | YES YES YES   (tightness lhs/rhs at bind: 1.0000)
+   8 |                                   20400878 |           46.738 |      8 | YES YES YES   (tightness lhs/rhs at bind: 1.0000)
+  11 |                                    5304440 |           12.152 |     11 | YES YES YES   (tightness lhs/rhs at bind: 1.0000)
+  22 |                                    1006717 |            2.306 |     22 | YES no  no    (tightness lhs/rhs at bind: 1.0000)
+  44 |                                     521537 |            1.195 |     44 | no  no  no    (tightness lhs/rhs at bind: 0.9999)
+  89 |                                     446404 |            1.023 |     88 | no  no  no    (tightness lhs/rhs at bind: 0.9999)
+ 128 |                                     446404 |            1.023 |     88 | no  no  no    (tightness lhs/rhs at bind: 0.9999)
+ 178 |                                     446404 |            1.023 |     88 | no  no  no    (tightness lhs/rhs at bind: 0.9999)
+
+  complement (R = 178 >= 2 ln m): Tmax = 446404  ~1.45*sqrt(n ln m); EXACT check Tmax^2 < 16*n*88: YES -- admissible edge is back at the prize scale
+   (recovers the KNOWN conditional moment bound at log depth -- cite GaussPeriodMomentBound / prize_scale_bound_at_saddle; NOT re-landed here)
+
+----------------------------------------------------------------------------------------------------
+small-r caution: per-single-constraint caps (K=1) -- does ANY small r already cap T at prize scale?
+----------------------------------------------------------------------------------------------------
+  r = 1 alone: Tmax = 427419822500504607534270  ~ 2^78.50  ~ 1.38e+18 * sqrt(n ln m)  -->  NO small-r cap (orders above prize scale)
+  r = 2 alone: Tmax = 140737488355328  ~ 2^47.00  ~ 4.56e+08 * sqrt(n ln m)  -->  NO small-r cap (orders above prize scale)
+  r = 3 alone: Tmax = 119749262974  ~ 2^36.80  ~ 3.88e+05 * sqrt(n ln m)  -->  NO small-r cap (orders above prize scale)
+  r = 1 is the Parseval constraint itself (equality by construction, P2 = n-(n-1)/m < n = 1!!*n^1: satisfied strictly).
+
+----------------------------------------------------------------------------------------------------
+TOY INSTANCE for Frontier/_R2B_CMKDepthIrreducibility.lean (n = 2^10, m = 2^40, R = 5, T = 900)
+----------------------------------------------------------------------------------------------------
+  ln m = 40*ln2 in (27.725887, 27.725887); L := 28 >= ln m (certified: 40*ln2 < 40*0.6931471806 < 28); R = 5 << 28
+  A = m*n-(n-1)-2T^2 = 1125899905221601  (>0: s^2 = A/(m-2) >= 0 OK)
+  s^2 = 1125899905221601/1099511627774 ~ 1023.999999  (vs n = 1024)
+  r=1: m_2r <= 1*n^1 ?  lhs/rhs = 1.000000  OK   (exact integers compared)
+  r=2: m_2r <= 3*n^2 ?  lhs/rhs = 0.333334  OK   (exact integers compared)
+  r=3: m_2r <= 15*n^3 ?  lhs/rhs = 0.066727  OK   (exact integers compared)
+  r=4: m_2r <= 105*n^4 ?  lhs/rhs = 0.016306  OK   (exact integers compared)
+  r=5: m_2r <= 945*n^5 ?  lhs/rhs = 0.597164  OK   (exact integers compared)
+  Parseval: m_2 = (2T^2 + A)/m = (m*n-(n-1))/m = P2 exact (identity).
+  edge: T^2 = 810000 > 16*n*L = 458752 ?  YES  ==> T > 4*sqrt(n*L) >= 4*sqrt(n ln m)
+  toy verdict: ALL constraints verified; edge exceeds 4*sqrt(n ln m); matches the Lean brick
+
+====================================================================================================
+VERDICT
+====================================================================================================
+
+The abstract CMK moment-problem theorem is FALSE at every depth R << log m:
+the symmetric 4-value equal-atom measure satisfies (i) m equal real atoms,
+(ii) EXACT Parseval m_2 = P2 = n-(n-1)/m, (iii) the full Wick envelope
+m_2r <= K^r (2r-1)!! n^r for ALL r <= R, and (iv) every positivity/Hankel/
+Krein constraint (it is an actual measure) -- yet its edge T exceeds
+8*sqrt(n ln m) for R <= 11 (K=1; ratio ~12*sqrt(2n ln m) at R=11, ~7000x at
+R=4) and still exceeds 2*sqrt(n ln m) at R = 22.  Depth is IRREDUCIBLE:
+moment data to depth R buys edge control m^(1/2R) -- no theorem from these
+inputs at R << log m can bound the edge at the prize scale, so CMK cannot
+shortcut the r ~ ln q Wick obligation.  The admissible edge falls back to
+O(sqrt(n log m)) only at R ~ ln m (binding r plateaus at r* ~ ln(m/2) ~ 88),
+recovering exactly the known conditional moment bound -- nothing new there.
+
+Scope (honest): this kills ONLY the abstract-moment form of CMK (equal atoms
++ Parseval + Wick-to-depth-R as the ONLY inputs).  A b_k-native (Jacobi/
+Hankel-window) CMK variant consuming MORE than moments is not touched -- but
+round-1 P4 independently found no O(1)-window Hankel functional pins k*
+per-prime, so that route is separately squeezed.
+

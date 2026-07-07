@@ -1,0 +1,40 @@
+
+============================================================
+n=8 p=4129 g=13  M=7.558
+  |H\0|=2064  DFT-vs-direct maxerr=2.27e-13
+  2nd-moment: sum_s0|I|^2 = 6.7001e+07   q*sum_H|eta|^2 = 6.7001e+07   rel.diff=2.22e-16
+  worst_s0|I| = 2028.37  at s0=3352   (|H|*M_H=15062.6, sqrt|H|*M_H=331.5)
+    worst/|H| = 0.9827   worst/(sqrt|H|*M_H) = 6.118
+    |I(0)| = |sum_H conj(eta_b)| = 253.03   (worst at s0=3352, so max is NOT AT 0)
+    phase spread of eta_b over H: circ.resultant |mean(e^{i ang})| = 0.1163  (1=all aligned, 0=uniform)
+    random-phase worst: mean=367.7  true/random=5.52
+
+============================================================
+n=8 p=4153 g=5  M=7.458
+  |H\0|=2076  DFT-vs-direct maxerr=2.27e-13
+  2nd-moment: sum_s0|I|^2 = 6.8857e+07   q*sum_H|eta|^2 = 6.8857e+07   rel.diff=2.16e-16
+  worst_s0|I| = 2104.72  at s0=3554   (|H|*M_H=15483.7, sqrt|H|*M_H=339.8)
+    worst/|H| = 1.0138   worst/(sqrt|H|*M_H) = 6.193
+    |I(0)| = |sum_H conj(eta_b)| = 4.00   (worst at s0=3554, so max is NOT AT 0)
+    phase spread of eta_b over H: circ.resultant |mean(e^{i ang})| = 0.0019  (1=all aligned, 0=uniform)
+    random-phase worst: mean=367.8  true/random=5.72
+
+============================================================
+n=16 p=65537 g=3  M=13.838
+  |H\0|=32768  DFT-vs-direct maxerr=2.18e-11
+  2nd-moment: sum_s0|I|^2 = 3.4218e+10   q*sum_H|eta|^2 = 3.4218e+10   rel.diff=1.11e-15
+  worst_s0|I| = 32632.50  at s0=65536   (|H|*M_H=453428.5, sqrt|H|*M_H=2504.9)
+    worst/|H| = 0.9959   worst/(sqrt|H|*M_H) = 13.028
+    |I(0)| = |sum_H conj(eta_b)| = 2040.02   (worst at s0=65536, so max is NOT AT 0)
+    phase spread of eta_b over H: circ.resultant |mean(e^{i ang})| = 0.0039  (1=all aligned, 0=uniform)
+    random-phase worst: mean=2487.8  true/random=13.12
+
+============================================================
+n=16 p=65617 g=13  M=13.295
+  |H\0|=32808  DFT-vs-direct maxerr=1.09e-11
+  2nd-moment: sum_s0|I|^2 = 3.4436e+10   q*sum_H|eta|^2 = 3.4436e+10   rel.diff=2.22e-16
+  worst_s0|I| = 32928.58  at s0=53618   (|H|*M_H=436176.0, sqrt|H|*M_H=2408.1)
+    worst/|H| = 1.0037   worst/(sqrt|H|*M_H) = 13.674
+    |I(0)| = |sum_H conj(eta_b)| = 8.00   (worst at s0=53618, so max is NOT AT 0)
+    phase spread of eta_b over H: circ.resultant |mean(e^{i ang})| = 0.0032  (1=all aligned, 0=uniform)
+    random-phase worst: mean=2527.7  true/random=13.03

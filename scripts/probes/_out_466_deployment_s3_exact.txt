@@ -1,0 +1,6 @@
+probe_466_deployment_s3_exact.py -- exact S3 = p*T - n^2 anchor
+  [self] p=641: T brute=27 vect=27 match=True; S3 float=923.000000 exact=923 |dev|=1.07e-11
+  [self] p=61441: T brute=258 vect=258 match=True; S3 float=-925438.000000 exact=-925438 |dev|=3.45e-08
+  BabyBear: T = 8944698   S3_exact = p*T - n^2 = -6342852445126   [396s]
+  KoalaBear: T = 131598   S3_exact = p*T - n^2 = -1078271540722   [65s]
+done

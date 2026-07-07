@@ -1,0 +1,81 @@
+------------------------------------------------------------------------------
+(C1) MULTIPLICATIVE ENERGY  E_x(mu_n) = #{(a,b,c,d) in mu_n^4 : ab=cd}
+------------------------------------------------------------------------------
+  n= 8 p=4129: E_x = 512   n^3 = 512   match=True   (char-free: E_x = n^3 EXACTLY for any subgroup)
+  n= 8 p=4153: E_x = 512   n^3 = 512   match=True   (char-free: E_x = n^3 EXACTLY for any subgroup)
+  n=16 p=65537: E_x = 4096   n^3 = 4096   match=True   (char-free: E_x = n^3 EXACTLY for any subgroup)
+  n=16 p=65617: E_x = 4096   n^3 = 4096   match=True   (char-free: E_x = n^3 EXACTLY for any subgroup)
+  n=32 p=1048609: E_x = 32768   n^3 = 32768   match=True   (char-free: E_x = n^3 EXACTLY for any subgroup)
+  n=32 p=1048897: E_x = 32768   n^3 = 32768   match=True   (char-free: E_x = n^3 EXACTLY for any subgroup)
+
+  READING.  E_x(mu_n) = n^3 is MAXIMAL (a group has the largest possible mult. energy)
+  and UNCONDITIONAL.  But the ADDITIVE character sum's 2r-th moment identity
+    sum_a |S(a)|^{2r} = p * T_r(mu_n)   (T_r = ADDITIVE energy)
+  contains NO multiplicative energy.  E_x enters a sup-norm bound ONLY via a sum-product
+  transfer  E_x = n^3  ==>  T_2(mu_n) <= (unconditional bound).  The sharpest such
+  UNCONDITIONAL subgroup transfers:
+    * Heath-Brown-Konyagin (Stepanov), single application:  T_2 <= n^{5/2}   (t2 = 5/2)
+    * MRSS 2017 / Rudnev point-plane, best known:           t2 = 49/20, t3 = 4
+  Both are EXACTLY the 'generic' menu already swept.  Pricing them at beta=4 below.
+  --- pricing the multiplicative-energy transfers at beta = 4 ---
+  HBK t2=5/2 : moment k=2 theta=1=1.0000 ; bilinear(2,2) E=3 (<= beta=4 -> VACUOUS: theta=1)   [dies at beta=3, the p^{1/3} wall]
+  MRSS/generic t2=49/20,t3=4 : di Benedetto trilinear = 2849/2880 = 0.989236  (= 1 - 31/2880; the SOTA EFFECTIVE unconditional)
+  ==> C1 VERDICT: the multiplicative energy is UNCONDITIONAL but only feeds t_r via
+      sum-product; its best unconditional output at beta=4 is 0.98924 = n^{1-o(1)}.
+      NO unconditional power-saving past BGK.  (Direct HBK route is VACUOUS at beta=4.)
+
+------------------------------------------------------------------------------
+(C2) EXACT higher additive energies T_4, T_6 (char-0 Wick) + incidence finisher
+------------------------------------------------------------------------------
+  n=8 p=4129: T_2=168 (lead (2r-1)!!*n^r=192, ratio=0.875)  T_3=5120 (lead (2r-1)!!*n^r=7680, ratio=0.667)  T_4=190120 (lead (2r-1)!!*n^r=430080, ratio=0.442)
+  n=16 p=65537: T_2=720 (lead (2r-1)!!*n^r=768, ratio=0.938)  T_3=50560 (lead (2r-1)!!*n^r=61440, ratio=0.823)  T_4=4654160 (lead (2r-1)!!*n^r=6881280, ratio=0.676)
+
+  Best finisher per EXACT input t_r = r (good-prime), fold order m, at beta=4:
+    bilinear(m,m), t=(r,r)=(m,m):  optimum at m = beta = 4  ->  7/8 = 0.875  (family infimum)
+      but t_4 = 4 good-prime supply is DEAD (D_4 generic K-bad, round 8) -> UNREACHABLE
+    bilinear(3,3), t=(3,3):  8/9 = 0.8889  (T_3 good-prime, LANDED _BilinearDFTBeat)
+    bilinear(6,6): CS mass floor forces t_6 = max(6, 2*6-4) = 8 (NOT 6) -> theta = 17/18 WORSE
+  A Rudnev point-plane / point-line finisher is the TRILINEAR PS shape already swept
+  (weights (1,1,1/2), c0=4); at beta=4 it is DOMINATED by bilinear for beta < 17/3.
+  ==> C2 VERDICT: higher exact energies do NOT beat 8/9 with surviving supply; the
+      k=beta optimum 7/8 is the family floor and its supply is dead.  No gain.
+    bilinear(3,3) legal t=3: theta = 8/9 = 0.888889
+    bilinear(4,4) legal t=4: theta = 7/8 = 0.875000
+    bilinear(5,5) legal t=6: theta = 23/25 = 0.920000
+    bilinear(6,6) legal t=8: theta = 17/18 = 0.944444
+
+------------------------------------------------------------------------------
+(C3) CHARACTER SECOND MOMENT  sum_{b!=0}|eta_b|^2 = p*n - n^2  (exact Parseval)
+------------------------------------------------------------------------------
+  n=8 p=4129: sum_{b!=0}|eta_b|^2 = 32968.0   p*n - n^2 = 32968   match=True
+  n=8 p=4153: sum_{b!=0}|eta_b|^2 = 33160.0   p*n - n^2 = 33160   match=True
+
+  The 2nd moment gives:
+    * LOWER bound (Parseval floor):  max_b |eta_b|^2 >= average = (pn-n^2)/(p-1) ~ n,
+      i.e. M >= sqrt(n - n^2/p) ~ sqrt(n)  (already in-tree, GaussPeriodParsevalFloor).
+    * UPPER bound from the 2nd moment ALONE:  M <= sqrt(sum) = sqrt(pn - n^2) ~ n^{(beta+1)/2}
+      = n^{5/2} at beta=4 -- TRIVIAL (worse than the trivial n).
+  Exponent of the pure-2nd-moment sup bound = (beta+1)/2 = 2.5 >> 1.
+  ==> C3 VERDICT: the exact 2nd moment is the Parseval FLOOR, not a sup-norm lever.
+      It brackets [sqrt(n), trivial]; no upper improvement.  (Only the 2r-th moment at
+      r ~ log p -- the OPEN Wick atom -- controls the sup; that IS the wall.)
+
+------------------------------------------------------------------------------
+VERDICT (LANE W2)
+------------------------------------------------------------------------------
+
+  The exact energies of mu_n are EXHAUSTED at:
+    * good-prime-conditional : 8/9 = 0.888889  (bilinear (3,3), T_3; LANDED)
+    * family infimum         : 7/8 = 0.875000  (bilinear (4,4), T_4; supply DEAD)
+    * unconditional          : n^{1-o(1)}  (BGK; effective SOTA 0.98924 via sum-product)
+  None of the THREE candidate NEW inputs breaks this:
+    (C1) multiplicative energy n^3 : unconditional, but only feeds t_r via sum-product;
+         best unconditional output 0.98924 = n^{1-o(1)}, direct HBK vacuous at beta=4.
+    (C2) higher exact additive energies T_4,T_6 : k=beta optimum is 7/8 (supply dead),
+         do not beat 8/9 with surviving supply; incidence finisher = swept trilinear.
+    (C3) character 2nd moment : the Parseval floor sqrt(n); no sup UPPER control.
+  Binding obstruction (all three): the moment identity routes every ADDITIVE sup bound
+  through the ADDITIVE energy T_r; the CS mass floor T_k >= n^{2k}/p forces the legal
+  envelope t_k >= max(k, 2k-beta), whose method-shape infimum is 1 - 1/(2 beta) = 7/8.
+  The exact-energy exponent axis is CLOSED at 8/9 good-prime / n^{1-o(1)} unconditional.
+

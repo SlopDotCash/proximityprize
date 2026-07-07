@@ -1,0 +1,145 @@
+C:\Users\Administrator\arklib\scripts\probes\probe_466r11_jointphase.py:111: SyntaxWarning: invalid escape sequence '\m'
+  Hlow = list of mu_{n/2} elements; zeta = primitive n-th root (an element of mu_n\mu_{n/2}).
+probe_466r11_jointphase.py -- LANE J JointPhaseFieldStructure
+numpy 2.4.4
+
+================================================================================
+n=8  (mu_n proper subgroup, p>=n^4, p==1 mod n)
+================================================================================
+primes: [4129, 4153, 4177, 4201, 4217, 4241]  v2(p-1)=[5, 3, 4, 3, 3, 4]
+  p=      4129 v2=5 M=7.5582  E2/n=86197.000 E3/n=2609792.0000  |recon-eta|max=1.78e-15  (scanner valid if ~0)
+  p=      4153 v2=3 M=7.4584  E2/n=86701.000 E3/n=2625152.0000  |recon-eta|max=8.88e-16  (scanner valid if ~0)
+  p=      4177 v2=4 M=7.5433  E2/n=87205.000 E3/n=2640512.0000  |recon-eta|max=8.88e-16  (scanner valid if ~0)
+  p=      4201 v2=3 M=7.4914  E2/n=87709.000 E3/n=2655872.0000  |recon-eta|max=1.78e-15  (scanner valid if ~0)
+  p=      4217 v2=3 M=7.4244  E2/n=88045.000 E3/n=2666112.0000  |recon-eta|max=1.78e-15  (scanner valid if ~0)
+  p=      4241 v2=4 M=7.5373  E2/n=88549.000 E3/n=2681472.0000  |recon-eta|max=8.88e-16  (scanner valid if ~0)
+
+================================================================================
+[GAUGE] n=8: joint cross-coset phase correlator vs moment ladder
+================================================================================
+  Define the DEEP-r joint correlator (cross-coset mixed phase moment):
+    J_r := (1/m) sum_b cos( r * delta_b ),  delta_b = arg(B_b)-arg(A_b)
+  This is the r-th Fourier coefficient of the phase-difference field. It is a PHASE
+  statistic invisible to the magnitude multiset {|eta_b|}. If J_r is nonetheless
+  pinned to a fixed value whenever the moments E_2..E_2r match => gauge; if it varies
+  independently of matched moments => genuinely new (candidate crack).
+           p  v2      E2/n       E3/n        J1        J2        J3        J4
+        4129   5 86197.000 2609792.0000   -0.0155    1.0000   -0.0155    1.0000
+        4153   3 86701.000 2625152.0000   -0.0096    1.0000   -0.0096    1.0000
+        4177   4 87205.000 2640512.0000   -0.0038    1.0000   -0.0038    1.0000
+        4201   3 87709.000 2655872.0000   -0.0286    1.0000   -0.0286    1.0000
+        4217   3 88045.000 2666112.0000    0.0209    1.0000    0.0209    1.0000
+        4241   4 88549.000 2681472.0000   -0.0113    1.0000   -0.0113    1.0000
+
+================================================================================
+[BSENS] n=8: b-sensitivity of the joint phase-difference field
+================================================================================
+  |eta_b| is CONSTANT on mu_n-cosets (dilation-invariant). Question: is delta_b (the
+  joint half-period phase difference) ALSO coset-constant (=> b-blind, dead) or does it
+  vary => b-sensitive. Report std(delta_b) across cosets and the b-summed sum_b sin(delta).
+  p=      4129: std(delta)=2.6296  <cos d>=-0.0155  <sin d>=0.0000  corr(delta,|eta|)=0.0119
+  p=      4153: std(delta)=3.1747  <cos d>=-0.0096  <sin d>=0.0000  corr(delta,|eta|)=0.0622
+  p=      4177: std(delta)=2.5123  <cos d>=-0.0038  <sin d>=-0.0000  corr(delta,|eta|)=0.0341
+
+================================================================================
+[DEPTH] n=8: does the joint-vs-marginal gap GROW with r?
+================================================================================
+  MARGINAL prediction for the cross moment <|A|^{2a}|B|^{2(r-a)}> assuming A,B independent
+  with the measured marginals vs the ACTUAL joint value. Because |A|=|B| in distribution
+  (dilation), the magnitude joint is trivially matched; the PHASE content is the test.
+  Cross-coset joint 2r-moment of the FULL period built from the pair:
+    actual  P_r := (1/m) sum_b |A_b + B_b|^{2r}   [= the real eta moment E_r/n]
+    marg    Q_r := (1/m) sum_b ( |A_b|^2 + |B_b|^2 )^r   [phase-blind / triangle-diagonal]
+  gap_r := P_r / Q_r  (=1 if phase is irrelevant / diagonalizes; <1 if phase cancels;
+  the DEPTH question: does |1-gap_r| grow with r => phase content strengthens at depth.
+           p     gap1     gap2     gap3     gap4     gap5     gap6
+        4129   0.9990   1.6097   3.0533   6.1768  12.7371  26.2611
+        4153   0.9990   1.6097   3.0535   6.1772  12.7386  26.2654
+        4177   0.9990   1.6098   3.0536   6.1777  12.7401  26.2697
+        4201   0.9990   1.6098   3.0537   6.1782  12.7415  26.2740
+        4217   0.9991   1.6098   3.0538   6.1785  12.7425  26.2768
+        4241   0.9991   1.6098   3.0540   6.1789  12.7440  26.2810
+
+================================================================================
+[WHITE] n=8: deep-r cross-covariance -- same diagonalization as doorIV r=2 or not?
+================================================================================
+  doorIV-joint-field-white: at r=2 the centered cross-covariance summed over the shift
+  is ZERO (field is white). Test whether the DEEP-r phase-difference field is also white:
+    W_r := (1/m) sum_b cos(delta_b)*|eta_b|^{2r}  -  <cos delta><|eta|^{2r}>   (cross-cov)
+  If W_r -> 0 for all r (phase indep of magnitude), same white diagonalization at depth.
+  p=      4129: normalized cross-cov(cos delta, |eta|^2r) r=1..6 = +0.6521 +0.8931 +0.9776 +1.0044 +1.0123 +1.0146
+  p=      4153: normalized cross-cov(cos delta, |eta|^2r) r=1..6 = +0.6636 +0.8994 +0.9772 +1.0005 +1.0071 +1.0089
+  p=      4177: normalized cross-cov(cos delta, |eta|^2r) r=1..6 = +0.6603 +0.8936 +0.9705 +0.9940 +1.0010 +1.0030
+
+================================================================================
+n=16  (mu_n proper subgroup, p>=n^4, p==1 mod n)
+================================================================================
+primes: [65537, 65617, 65633, 65713, 65729, 65761]  v2(p-1)=[16, 4, 5, 4, 6, 5]
+  p=     65537 v2=16 M=13.8375  E2/n=2945069.000 E3/n=206048344.0000  |recon-eta|max=3.55e-15  (scanner valid if ~0)
+  p=     65617 v2=4 M=13.2948  E2/n=2948669.000 E3/n=206301144.0000  |recon-eta|max=3.55e-15  (scanner valid if ~0)
+  p=     65633 v2=5 M=13.9265  E2/n=2949389.000 E3/n=206351704.0000  |recon-eta|max=3.55e-15  (scanner valid if ~0)
+  p=     65713 v2=4 M=13.2899  E2/n=2952989.000 E3/n=206604504.0000  |recon-eta|max=3.55e-15  (scanner valid if ~0)
+  p=     65729 v2=6 M=13.5829  E2/n=2953709.000 E3/n=206655064.0000  |recon-eta|max=1.78e-15  (scanner valid if ~0)
+  p=     65761 v2=5 M=13.7302  E2/n=2955149.000 E3/n=206756184.0000  |recon-eta|max=3.55e-15  (scanner valid if ~0)
+
+================================================================================
+[GAUGE] n=16: joint cross-coset phase correlator vs moment ladder
+================================================================================
+  Define the DEEP-r joint correlator (cross-coset mixed phase moment):
+    J_r := (1/m) sum_b cos( r * delta_b ),  delta_b = arg(B_b)-arg(A_b)
+  This is the r-th Fourier coefficient of the phase-difference field. It is a PHASE
+  statistic invisible to the magnitude multiset {|eta_b|}. If J_r is nonetheless
+  pinned to a fixed value whenever the moments E_2..E_2r match => gauge; if it varies
+  independently of matched moments => genuinely new (candidate crack).
+           p  v2      E2/n       E3/n        J1        J2        J3        J4
+       65537  16 2945069.000 206048344.0000   -0.0015    1.0000   -0.0015    1.0000
+       65617   4 2948669.000 206301144.0000   -0.0041    1.0000   -0.0041    1.0000
+       65633   5 2949389.000 206351704.0000    0.0098    1.0000    0.0098    1.0000
+       65713   4 2952989.000 206604504.0000    0.0075    1.0000    0.0075    1.0000
+       65729   6 2953709.000 206655064.0000   -0.0175    1.0000   -0.0175    1.0000
+       65761   5 2955149.000 206756184.0000   -0.0068    1.0000   -0.0068    1.0000
+
+================================================================================
+[BSENS] n=16: b-sensitivity of the joint phase-difference field
+================================================================================
+  |eta_b| is CONSTANT on mu_n-cosets (dilation-invariant). Question: is delta_b (the
+  joint half-period phase difference) ALSO coset-constant (=> b-blind, dead) or does it
+  vary => b-sensitive. Report std(delta_b) across cosets and the b-summed sum_b sin(delta).
+  p=     65537: std(delta)=2.8140  <cos d>=-0.0015  <sin d>=0.0000  corr(delta,|eta|)=0.0118
+  p=     65617: std(delta)=2.7588  <cos d>=-0.0041  <sin d>=0.0000  corr(delta,|eta|)=0.0096
+  p=     65633: std(delta)=2.7655  <cos d>=0.0098  <sin d>=-0.0000  corr(delta,|eta|)=0.0017
+
+================================================================================
+[DEPTH] n=16: does the joint-vs-marginal gap GROW with r?
+================================================================================
+  MARGINAL prediction for the cross moment <|A|^{2a}|B|^{2(r-a)}> assuming A,B independent
+  with the measured marginals vs the ACTUAL joint value. Because |A|=|B| in distribution
+  (dilation), the magnitude joint is trivially matched; the PHASE content is the test.
+  Cross-coset joint 2r-moment of the FULL period built from the pair:
+    actual  P_r := (1/m) sum_b |A_b + B_b|^{2r}   [= the real eta moment E_r/n]
+    marg    Q_r := (1/m) sum_b ( |A_b|^2 + |B_b|^2 )^r   [phase-blind / triangle-diagonal]
+  gap_r := P_r / Q_r  (=1 if phase is irrelevant / diagonalizes; <1 if phase cancels;
+  the DEPTH question: does |1-gap_r| grow with r => phase content strengthens at depth.
+           p     gap1     gap2     gap3     gap4     gap5     gap6
+       65537   0.9999   1.5504   2.7531   5.2551  10.4639  21.3040
+       65617   0.9999   1.5504   2.7531   5.2501  10.4100  20.9999
+       65633   0.9999   1.5504   2.7531   5.2501  10.4611  21.4526
+       65713   0.9999   1.5504   2.7531   5.2501  10.4068  20.9470
+       65729   0.9999   1.5504   2.7531   5.2502  10.4446  21.2977
+       65761   0.9999   1.5504   2.7531   5.2502  10.4236  21.1146
+
+================================================================================
+[WHITE] n=16: deep-r cross-covariance -- same diagonalization as doorIV r=2 or not?
+================================================================================
+  doorIV-joint-field-white: at r=2 the centered cross-covariance summed over the shift
+  is ZERO (field is white). Test whether the DEEP-r phase-difference field is also white:
+    W_r := (1/m) sum_b cos(delta_b)*|eta_b|^{2r}  -  <cos delta><|eta|^{2r}>   (cross-cov)
+  If W_r -> 0 for all r (phase indep of magnitude), same white diagonalization at depth.
+  p=     65537: normalized cross-cov(cos delta, |eta|^2r) r=1..6 = +0.6551 +0.8702 +0.9513 +0.9829 +0.9949 +0.9992
+  p=     65617: normalized cross-cov(cos delta, |eta|^2r) r=1..6 = +0.6682 +0.8880 +0.9653 +0.9916 +1.0002 +1.0029
+  p=     65633: normalized cross-cov(cos delta, |eta|^2r) r=1..6 = +0.6534 +0.8690 +0.9477 +0.9760 +0.9857 +0.9889
+
+================================================================================
+DONE. Read: GAUGE (J_r pinned by moments?), BSENS (delta_b varies?), DEPTH (gap grow with r?),
+WHITE (deep-r cross-cov ->0?). Verdict logic in the agent summary.
+================================================================================

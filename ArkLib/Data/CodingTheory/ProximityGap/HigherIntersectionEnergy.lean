@@ -5,6 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.Group.Action.Defs
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.Fintype.Card
 
 /-!
@@ -139,7 +142,7 @@ theorem exists_tupleSupport_gt_of_card_pow_mul_lt_higherIntersectionEnergy
     ∃ v : Fin d -> κ, t < (tupleSupport S v).card := by
   classical
   by_contra h
-  push_neg at h
+  push Not at h
   have hle := higherIntersectionEnergy_le_card_pow_mul_of_tuple_bound d S t h
   exact (not_le_of_gt hbig) hle
 

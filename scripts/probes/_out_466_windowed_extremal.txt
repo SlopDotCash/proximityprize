@@ -1,0 +1,240 @@
+n=8 primes: q1=4129, q2=8273 (both ==1 mod 8, >= n^4)
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=4129 (q>=n^4=4096: True) omega=777  C(n,k)=28 interpolants
+window delta in (0.5,0.75) => agreement a interior=[3] boundary=[4]
+384 directions, 2099 shared u0 candidates + 12*2 per-u1 chained adversarial
+  ..50/384 dirs  [10s]
+  ..100/384 dirs  [21s]
+  ..150/384 dirs  [35s]
+  ..200/384 dirs  [46s]
+  ..250/384 dirs  [56s]
+  ..300/384 dirs  [63s]
+  ..350/384 dirs  [71s]
+consistency spot-checks vs brute force over ALL gamma:
+  OK sp2_5_6_c3519 a=4: fast==brute==0
+  OK rand58 a=3: fast==brute==56
+  OK rand97 a=3: fast==brute==56
+  OK rand176 a=4: fast==brute==0
+  OK sp2_0_4_c3519 a=3: fast==brute==48
+  OK sp2_4_7_c3559 a=3: fast==brute==55
+
+--- level a=3 (delta=0.625) [INTERIOR] q=4129 ---
+  monomials degenerate at a=3 (a-close to code, worst=q trivially): [('mono_j0', 8), ('mono_j1', 8), ('mono_j4', 4), ('mono_j5', 4)]
+  eligible: 4 monomials, 327 spread (49 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j2                  agreemax=2  worst=56
+    mono_j3                  agreemax=2  worst=56
+    mono_j6                  agreemax=2  worst=56
+    mono_j7                  agreemax=2  worst=56
+  top-12 spread worst-u0 bad counts:
+    sp2_0_2_c1               agreemax=2  worst=56
+    sp2_0_2_c2               agreemax=2  worst=56
+    sp2_0_2_c4127            agreemax=2  worst=56
+    sp2_0_2_c3559            agreemax=2  worst=56
+    sp2_0_2_c3519            agreemax=2  worst=56
+    sp2_0_2_c1224            agreemax=2  worst=56
+    sp2_0_3_c1               agreemax=2  worst=56
+    sp2_0_3_c2               agreemax=2  worst=56
+    sp2_0_3_c4127            agreemax=2  worst=56
+    sp2_0_3_c3559            agreemax=2  worst=56
+    sp2_0_3_c3519            agreemax=2  worst=56
+    sp2_0_3_c1224            agreemax=2  worst=56
+  [witnesses brute-verified: mono_j2=56, sp2_0_2_c1=56]
+  >>> a=3: TIE at 56 (sp2_0_2_c1 vs mono_j2) -- monomials NOT strictly beaten
+
+--- level a=4 (delta=0.500) [JOHNSON-BOUNDARY] q=4129 ---
+  monomials degenerate at a=4 (a-close to code, worst=q trivially): [('mono_j0', 8), ('mono_j1', 8), ('mono_j4', 4), ('mono_j5', 4)]
+  eligible: 4 monomials, 336 spread (40 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j2                  agreemax=2  worst=9
+    mono_j3                  agreemax=2  worst=9
+    mono_j6                  agreemax=2  worst=9
+    mono_j7                  agreemax=2  worst=9
+  top-12 spread worst-u0 bad counts:
+    sp2_0_2_c1               agreemax=2  worst=9
+    sp2_0_2_c2               agreemax=2  worst=9
+    sp2_0_2_c4127            agreemax=2  worst=9
+    sp2_0_2_c3559            agreemax=2  worst=9
+    sp2_0_2_c3519            agreemax=2  worst=9
+    sp2_0_2_c1224            agreemax=2  worst=9
+    sp2_0_3_c1               agreemax=2  worst=9
+    sp2_0_3_c2               agreemax=2  worst=9
+    sp2_0_3_c4127            agreemax=2  worst=9
+    sp2_0_3_c3559            agreemax=2  worst=9
+    sp2_0_3_c3519            agreemax=2  worst=9
+    sp2_0_3_c1224            agreemax=2  worst=9
+  [witnesses brute-verified: mono_j2=9, sp2_0_2_c1=9]
+  >>> a=4: TIE at 9 (sp2_0_2_c1 vs mono_j2) -- monomials NOT strictly beaten
+[setting done in 81s]
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=8273 (q>=n^4=4096: True) omega=5775  C(n,k)=28 interpolants
+window delta in (0.5,0.75) => agreement a interior=[3] boundary=[4]
+384 directions, 2099 shared u0 candidates + 12*2 per-u1 chained adversarial
+  ..50/384 dirs  [7s]
+  ..100/384 dirs  [13s]
+  ..150/384 dirs  [20s]
+  ..200/384 dirs  [26s]
+  ..250/384 dirs  [32s]
+  ..300/384 dirs  [39s]
+  ..350/384 dirs  [45s]
+consistency spot-checks vs brute force over ALL gamma:
+  OK sp2_0_5_c1 a=4: fast==brute==0
+  OK rand155 a=3: fast==brute==56
+  OK rand124 a=3: fast==brute==56
+  OK sp2_1_3_c3606 a=3: fast==brute==56
+  OK sp2_6_7_c784 a=4: fast==brute==0
+  OK sp2_0_5_c3606 a=4: fast==brute==0
+
+--- level a=3 (delta=0.625) [INTERIOR] q=8273 ---
+  monomials degenerate at a=3 (a-close to code, worst=q trivially): [('mono_j0', 8), ('mono_j1', 8), ('mono_j4', 4), ('mono_j5', 4)]
+  eligible: 4 monomials, 329 spread (47 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j2                  agreemax=2  worst=56
+    mono_j3                  agreemax=2  worst=56
+    mono_j6                  agreemax=2  worst=56
+    mono_j7                  agreemax=2  worst=56
+  top-12 spread worst-u0 bad counts:
+    sp2_0_2_c1               agreemax=2  worst=56
+    sp2_0_2_c2               agreemax=2  worst=56
+    sp2_0_2_c8271            agreemax=2  worst=56
+    sp2_0_2_c784             agreemax=2  worst=56
+    sp2_0_2_c7266            agreemax=2  worst=56
+    sp2_0_2_c3606            agreemax=2  worst=56
+    sp2_0_3_c1               agreemax=2  worst=56
+    sp2_0_3_c2               agreemax=2  worst=56
+    sp2_0_3_c8271            agreemax=2  worst=56
+    sp2_0_3_c784             agreemax=2  worst=56
+    sp2_0_3_c7266            agreemax=2  worst=56
+    sp2_0_3_c3606            agreemax=2  worst=56
+  [witnesses brute-verified: mono_j2=56, sp2_0_2_c1=56]
+  >>> a=3: TIE at 56 (sp2_0_2_c1 vs mono_j2) -- monomials NOT strictly beaten
+
+--- level a=4 (delta=0.500) [JOHNSON-BOUNDARY] q=8273 ---
+  monomials degenerate at a=4 (a-close to code, worst=q trivially): [('mono_j0', 8), ('mono_j1', 8), ('mono_j4', 4), ('mono_j5', 4)]
+  eligible: 4 monomials, 336 spread (40 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j2                  agreemax=2  worst=9
+    mono_j3                  agreemax=2  worst=9
+    mono_j6                  agreemax=2  worst=9
+    mono_j7                  agreemax=2  worst=9
+  top-12 spread worst-u0 bad counts:
+    sp2_0_2_c1               agreemax=2  worst=9
+    sp2_0_2_c2               agreemax=2  worst=9
+    sp2_0_2_c8271            agreemax=2  worst=9
+    sp2_0_2_c784             agreemax=2  worst=9
+    sp2_0_2_c7266            agreemax=2  worst=9
+    sp2_0_2_c3606            agreemax=2  worst=9
+    sp2_0_3_c1               agreemax=2  worst=9
+    sp2_0_3_c2               agreemax=2  worst=9
+    sp2_0_3_c8271            agreemax=2  worst=9
+    sp2_0_3_c784             agreemax=2  worst=9
+    sp2_0_3_c7266            agreemax=2  worst=9
+    sp2_0_3_c3606            agreemax=2  worst=9
+  [witnesses brute-verified: mono_j2=9, sp2_0_2_c1=9]
+  >>> a=4: TIE at 9 (sp2_0_2_c1 vs mono_j2) -- monomials NOT strictly beaten
+[setting done in 50s]
+
+==============================================================================
+SETTING n=16 k=4 rho=4/16 q=65537 (q>=n^4=65536: True) omega=64  C(n,k)=1820 interpolants
+window delta in (0.5,0.75) => agreement a interior=[5, 6, 7] boundary=[]
+92 directions, 209 shared u0 candidates + 8*3 per-u1 chained adversarial
+  ..50/92 dirs  [86s]
+consistency spot-checks vs brute force over ALL gamma:
+  OK twist_11 a=5: fast==brute==4225
+
+--- level a=5 (delta=0.688) [INTERIOR] q=65537 ---
+  monomials degenerate at a=5 (a-close to code, worst=q trivially): [('mono_j0', 16), ('mono_j1', 16), ('mono_j2', 16), ('mono_j3', 16), ('mono_j8', 8), ('mono_j9', 8), ('mono_j10', 8), ('mono_j11', 8)]
+  eligible: 8 monomials, 48 spread (28 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j4                  agreemax=4  worst=4267
+    mono_j7                  agreemax=4  worst=4265
+    mono_j15                 agreemax=4  worst=4262
+    mono_j14                 agreemax=4  worst=4260
+    mono_j12                 agreemax=4  worst=4259
+    mono_j13                 agreemax=4  worst=4259
+    mono_j6                  agreemax=4  worst=4256
+    mono_j5                  agreemax=4  worst=4255
+  top-12 spread worst-u0 bad counts:
+    sp2_4_8_c27628           agreemax=4  worst=4277
+    sp2_2_7_c1               agreemax=4  worst=4272
+    twist_3                  agreemax=4  worst=4271
+    sp2_8_14_c27628          agreemax=4  worst=4269
+    sp2_2_7_c27628           agreemax=4  worst=4263
+    sp2_4_14_c27628          agreemax=4  worst=4263
+    sp2_0_7_c1               agreemax=4  worst=4263
+    sp2_0_7_c27628           agreemax=4  worst=4263
+    sp2_0_15_c1              agreemax=4  worst=4262
+    sp2_0_15_c27628          agreemax=4  worst=4262
+    sp2_4_11_c1              agreemax=4  worst=4262
+    twist_15                 agreemax=4  worst=4262
+  [witnesses brute-verified: mono_j4=4267, sp2_4_8_c27628=4277]
+  >>> a=5: SPREAD BEATS EVERY MONOMIAL: [('sp2_4_8_c27628', 4277), ('sp2_2_7_c1', 4272), ('twist_3', 4271), ('sp2_8_14_c27628', 4269)] vs best monomial mono_j4=4267
+
+--- level a=6 (delta=0.625) [INTERIOR] q=65537 ---
+  monomials degenerate at a=6 (a-close to code, worst=q trivially): [('mono_j0', 16), ('mono_j1', 16), ('mono_j2', 16), ('mono_j3', 16), ('mono_j8', 8), ('mono_j9', 8), ('mono_j10', 8), ('mono_j11', 8)]
+  eligible: 8 monomials, 56 spread (20 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j4                  agreemax=4  worst=89
+    mono_j15                 agreemax=4  worst=89
+    mono_j7                  agreemax=4  worst=73
+    mono_j12                 agreemax=4  worst=73
+    mono_j6                  agreemax=4  worst=56
+    mono_j14                 agreemax=4  worst=56
+    mono_j5                  agreemax=4  worst=40
+    mono_j13                 agreemax=4  worst=40
+  top-12 spread worst-u0 bad counts:
+    sp2_0_15_c1              agreemax=4  worst=89
+    sp2_0_15_c27628          agreemax=4  worst=89
+    twist_3                  agreemax=4  worst=89
+    twist_15                 agreemax=4  worst=89
+    sp2_2_7_c1               agreemax=4  worst=73
+    sp2_2_7_c27628           agreemax=4  worst=73
+    sp2_0_7_c1               agreemax=4  worst=73
+    sp2_0_7_c27628           agreemax=4  worst=73
+    sp2_4_8_c1               agreemax=4  worst=67
+    sp2_8_12_c1              agreemax=4  worst=65
+    sp2_8_12_c27628          agreemax=4  worst=65
+    sp2_4_8_c27628           agreemax=4  worst=65
+  [witnesses brute-verified: mono_j4=89, sp2_0_15_c1=89]
+  >>> a=6: TIE at 89 (sp2_0_15_c1 vs mono_j4) -- monomials NOT strictly beaten
+
+--- level a=7 (delta=0.562) [INTERIOR] q=65537 ---
+  monomials degenerate at a=7 (a-close to code, worst=q trivially): [('mono_j0', 16), ('mono_j1', 16), ('mono_j2', 16), ('mono_j3', 16), ('mono_j8', 8), ('mono_j9', 8), ('mono_j10', 8), ('mono_j11', 8)]
+  eligible: 8 monomials, 59 spread (17 spread degenerate, excluded)
+  monomial worst-u0 bad counts (post-refine):
+    mono_j4                  agreemax=4  worst=9
+    mono_j5                  agreemax=4  worst=9
+    mono_j6                  agreemax=4  worst=9
+    mono_j7                  agreemax=4  worst=9
+    mono_j12                 agreemax=4  worst=9
+    mono_j13                 agreemax=4  worst=9
+    mono_j14                 agreemax=4  worst=9
+    mono_j15                 agreemax=4  worst=9
+  top-12 spread worst-u0 bad counts:
+    sp2_7_13_c1              agreemax=6  worst=14
+    sp2_4_14_c1              agreemax=6  worst=13
+    sp2_2_7_c1               agreemax=4  worst=9
+    sp2_2_7_c27628           agreemax=4  worst=9
+    sp2_5_11_c1              agreemax=4  worst=9
+    sp2_5_11_c27628          agreemax=4  worst=9
+    sp2_0_7_c1               agreemax=4  worst=9
+    sp2_0_7_c27628           agreemax=4  worst=9
+    sp2_2_5_c1               agreemax=4  worst=9
+    sp2_2_5_c27628           agreemax=4  worst=9
+    sp2_12_14_c1             agreemax=6  worst=9
+    sp2_0_15_c1              agreemax=4  worst=9
+  [witnesses brute-verified: mono_j4=9, sp2_7_13_c1=14]
+  >>> a=7: SPREAD BEATS EVERY MONOMIAL: [('sp2_7_13_c1', 14), ('sp2_4_14_c1', 13)] vs best monomial mono_j4=9
+[setting done in 731s]
+
+==============================================================================
+FINAL SUMMARY (windowed SumsetExtremal, worst-u0 search is heuristic/lower-bound; witnesses brute-verified):
+  n8_q4129 a=3 INTERIOR: TIE  best_mono=('mono_j2', 56) best_spread=('sp2_0_2_c1', 56)
+  n8_q4129 a=4 BOUNDARY: TIE  best_mono=('mono_j2', 9) best_spread=('sp2_0_2_c1', 9)
+  n8_q8273 a=3 INTERIOR: TIE  best_mono=('mono_j2', 56) best_spread=('sp2_0_2_c1', 56)
+  n8_q8273 a=4 BOUNDARY: TIE  best_mono=('mono_j2', 9) best_spread=('sp2_0_2_c1', 9)
+  n16_q65537 a=5 INTERIOR: REFUTED-candidate  best_mono=('mono_j4', 4267) best_spread=('sp2_4_8_c27628', 4277)
+  n16_q65537 a=6 INTERIOR: TIE  best_mono=('mono_j4', 89) best_spread=('sp2_0_15_c1', 89)
+  n16_q65537 a=7 INTERIOR: REFUTED-candidate  best_mono=('mono_j4', 9) best_spread=('sp2_7_13_c1', 14)

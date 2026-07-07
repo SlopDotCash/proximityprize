@@ -1,0 +1,12 @@
+
+==============================================================================
+SETTING n=8 k=2 rho=2/8 q=4129 (q>=n^4: True) v2(q-1)=5 omega=777 C(n,k)=28
+
+  DIRECTION mono_j2 a=3 (delta=0.6250) q=4129: worst-count=56 (P5 reference in header), 7 hard lines scanned
+    [refined-worst] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[2, 120] (independent path)
+      COUNTERMODEL: gamma=2 unique witness poly coeffs (low->high)=(3659, 1783) agreement=3
+    [pool-top1] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56
+      full q^2-codeword enumeration verified fiber at gamma=[17, 160] (independent path)
+      COUNTERMODEL: gamma=17 unique witness poly coeffs (low->high)=(622, 208) agreement=3
+    [pool-top2] #bad=56 (verified 3-way)  multiplicity {1w:56}  unique-witness scalars: 56

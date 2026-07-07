@@ -1,0 +1,310 @@
+LANE L4(A) #466 -- Tsang/Selberg level-splitting of the wraparound term
+numpy 2.4.6; deterministic (no RNG). Levels: k=(sum_Z x - sum_Z y)/p; N_-k = N_k (symmetry), k>=1 rows doubled in shares.
+
+====================================================================================================
+n=8  p=4129  m=(p-1)/n=516  v2(p-1)=5  beta=log_n p=4.004  
+  Parseval check: sum_(b!=0)|eta|^2 = 32968.000000  vs n(p-n) = 32968  (rel err 0.00e+00)
+  M = max|eta_b| = 7.5582   sqrt(n)= 2.828   sqrt(n log(p/n)) = 7.069
+
+  --- r = 2   (2r <= beta=4.00? YES - D3 diagonal-admissible depth)
+  T_r = 168  (solutions over F_p);  D_r (diagonal) = 120;  level-0 Z-nondiagonal = 48
+  E_r = sum_(b!=0)|eta|^(2r) = 689576  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 5.284e+05;  E_r/Wick = 1.3051
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0            168   1.0000           0.53     319.0764           691498    1.0028    30.29
+   1              0   0.0000           0.22       0.0000             -924   -0.0027    -0.14
+   2              0   0.0000           0.01       0.0000              -37   -0.0001    -0.05
+  LEVEL VERDICT r=2: level-0 excess share = +1.0028; all wraparound levels combined = -0.0028 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 3   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 5120  (solutions over F_p);  D_r (diagonal) = 2528;  level-0 Z-nondiagonal = 2592
+  E_r = sum_(b!=0)|eta|^(2r) = 20878336  (float check rel err 1.78e-16);  Wick ref (p-1)r!n^r = 1.268e+07;  E_r/Wick = 1.6464
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0           5120   1.0000          28.72     178.2803         21021900    1.0069    20.77
+   1              0   0.0000          15.39       0.0000           -63527   -0.0061    -0.16
+   2              0   0.0000           1.98       0.0000            -8176   -0.0008    -0.15
+   3              0   0.0000           0.02       0.0000              -79   -0.0000    -0.05
+  LEVEL VERDICT r=3: level-0 excess share = +1.0069; all wraparound levels combined = -0.0069 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 4   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 190120  (solutions over F_p);  D_r (diagonal) = 66424;  level-0 Z-nondiagonal = 123696
+  E_r = sum_(b!=0)|eta|^(2r) = 768228264  (float check rel err 3.10e-16);  Wick ref (p-1)r!n^r = 4.058e+08;  E_r/Wick = 1.8931
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0         190120   1.0000        1625.66     116.9492        778293116    1.0131    16.17
+   1              0   0.0000         995.55       0.0000         -4110643   -0.0107    -0.19
+   2              0   0.0000         211.92       0.0000          -875014   -0.0023    -0.18
+   3              0   0.0000          11.29       0.0000           -46632   -0.0001    -0.15
+   4              0   0.0000           0.03       0.0000             -137   -0.0000    -0.05
+  LEVEL VERDICT r=4: level-0 excess share = +1.0131; all wraparound levels combined = -0.0131 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 5   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 7939008  (solutions over F_p);  D_r (diagonal) = 2039808;  level-0 Z-nondiagonal = 5899200
+  E_r = sum_(b!=0)|eta|^(2r) = 31706422208  (float check rel err 2.41e-16);  Wick ref (p-1)r!n^r = 1.623e+10;  E_r/Wick = 1.9533
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0        7939008   1.0000       94270.51      84.2152      32390921100    1.0216    13.51
+   1              0   0.0000       62952.39       0.0000       -259930409   -0.0164    -0.21
+   2              0   0.0000       17995.69       0.0000        -74304186   -0.0047    -0.20
+   3              0   0.0000        1892.79       0.0000         -7815346   -0.0005    -0.18
+   4              0   0.0000          48.27       0.0000          -199294   -0.0000    -0.14
+   5              0   0.0000           0.05       0.0000             -211   -0.0000    -0.05
+  LEVEL VERDICT r=5: level-0 excess share = +1.0216; all wraparound levels combined = -0.0216 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 6   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 357713664  (solutions over F_p);  D_r (diagonal) = 70283424;  level-0 Z-nondiagonal = 287430240
+  E_r = sum_(b!=0)|eta|^(2r) = 1408280241920  (float check rel err 3.47e-16);  Wick ref (p-1)r!n^r = 7.791e+11;  E_r/Wick = 1.8075
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0      357713664   1.0000     5556788.71      64.3742    1454055738078    1.0325    11.77
+   1              0   0.0000     3942443.83       0.0000     -16278350590   -0.0231    -0.22
+   2              0   0.0000     1372309.29       0.0000      -5666265077   -0.0080    -0.22
+   3              0   0.0000      215696.86       0.0000       -890612316   -0.0013    -0.21
+   4              0   0.0000       12553.45       0.0000        -51833215   -0.0001    -0.19
+   5              0   0.0000         166.28       0.0000          -686580   -0.0000    -0.13
+   6              0   0.0000           0.07       0.0000             -301   -0.0000    -0.05
+  LEVEL VERDICT r=6: level-0 excess share = +1.0325; all wraparound levels combined = -0.0325 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+  [runtime 0.6s]
+
+====================================================================================================
+n=8  p=4153  m=(p-1)/n=519  v2(p-1)=3  beta=log_n p=4.007  
+  Parseval check: sum_(b!=0)|eta|^2 = 33160.000000  vs n(p-n) = 33160  (rel err 0.00e+00)
+  M = max|eta_b| = 7.4584   sqrt(n)= 2.828   sqrt(n log(p/n)) = 7.072
+
+  --- r = 2   (2r <= beta=4.01? YES - D3 diagonal-admissible depth)
+  T_r = 168  (solutions over F_p);  D_r (diagonal) = 120;  level-0 Z-nondiagonal = 48
+  E_r = sum_(b!=0)|eta|^(2r) = 693608  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 5.315e+05;  E_r/Wick = 1.3051
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0            168   1.0000           0.46     368.3759           695810    1.0032    32.96
+   1              0   0.0000           0.24       0.0000             -989   -0.0029    -0.08
+   2              0   0.0000           0.03       0.0000             -112   -0.0003    -0.06
+  LEVEL VERDICT r=2: level-0 excess share = +1.0032; all wraparound levels combined = -0.0032 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 3   (2r <= beta=4.01? NO - past the D3 gate)
+  T_r = 5120  (solutions over F_p);  D_r (diagonal) = 2528;  level-0 Z-nondiagonal = 2592
+  E_r = sum_(b!=0)|eta|^(2r) = 21001216  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 1.275e+07;  E_r/Wick = 1.6465
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0           5120   1.0000          24.59     208.2030         21161232    1.0076    25.40
+   1              0   0.0000          15.46       0.0000           -64212   -0.0061    -0.10
+   2              0   0.0000           3.61       0.0000           -14974   -0.0014    -0.12
+   3              0   0.0000           0.20       0.0000             -822   -0.0001    -0.06
+  LEVEL VERDICT r=3: level-0 excess share = +1.0076; all wraparound levels combined = -0.0076 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 4   (2r <= beta=4.01? NO - past the D3 gate)
+  T_r = 190120  (solutions over F_p);  D_r (diagonal) = 66424;  level-0 Z-nondiagonal = 123696
+  E_r = sum_(b!=0)|eta|^(2r) = 772791144  (float check rel err 1.54e-16);  Wick ref (p-1)r!n^r = 4.082e+08;  E_r/Wick = 1.8934
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0         190120   1.0000        1382.67     137.5020        783826128    1.0143    21.47
+   1              0   0.0000         965.45       0.0000         -4009507   -0.0104    -0.12
+   2              0   0.0000         319.37       0.0000         -1326364   -0.0034    -0.15
+   3              0   0.0000          42.59       0.0000          -176861   -0.0005    -0.17
+   4              0   0.0000           1.15       0.0000            -4760   -0.0000    -0.06
+  LEVEL VERDICT r=4: level-0 excess share = +1.0143; all wraparound levels combined = -0.0143 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 5   (2r <= beta=4.01? NO - past the D3 gate)
+  T_r = 7939008  (solutions over F_p);  D_r (diagonal) = 2039808;  level-0 Z-nondiagonal = 5899200
+  E_r = sum_(b!=0)|eta|^(2r) = 31896958400  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 1.633e+10;  E_r/Wick = 1.9537
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0        7939008   1.0000       79802.33      99.4834      32639281142    1.0233    18.77
+   1              0   0.0000       59593.84       0.0000       -247493202   -0.0155    -0.15
+   2              0   0.0000       24332.72       0.0000       -101053806   -0.0063    -0.18
+   3              0   0.0000        5031.85       0.0000        -20897264   -0.0013    -0.18
+   4              0   0.0000         407.75       0.0000         -1693395   -0.0001    -0.17
+   5              0   0.0000           5.71       0.0000           -23704   -0.0000    -0.05
+  LEVEL VERDICT r=5: level-0 excess share = +1.0233; all wraparound levels combined = -0.0233 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 6   (2r <= beta=4.01? NO - past the D3 gate)
+  T_r = 357713664  (solutions over F_p);  D_r (diagonal) = 70283424;  level-0 Z-nondiagonal = 287430240
+  E_r = sum_(b!=0)|eta|^(2r) = 1416865369856  (float check rel err 1.72e-16);  Wick ref (p-1)r!n^r = 7.837e+11;  E_r/Wick = 1.8080
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0      357713664   1.0000     4688349.18      76.2984    1466114132450    1.0348    16.67
+   1              0   0.0000     3667521.44       0.0000     -15231216555   -0.0215    -0.18
+   2              0   0.0000     1725464.64       0.0000      -7165854633   -0.0101    -0.20
+   3              0   0.0000      468389.70       0.0000      -1945222435   -0.0027    -0.20
+   4              0   0.0000       64442.01       0.0000       -267627652   -0.0004    -0.19
+   5              0   0.0000        3454.76       0.0000        -14347628   -0.0000    -0.18
+   6              0   0.0000          27.06       0.0000          -112394   -0.0000    -0.05
+  LEVEL VERDICT r=6: level-0 excess share = +1.0348; all wraparound levels combined = -0.0348 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+  [runtime 0.8s]
+
+====================================================================================================
+n=16  p=65617  m=(p-1)/n=4101  v2(p-1)=4  beta=log_n p=4.000  
+  Parseval check: sum_(b!=0)|eta|^2 = 1049616.000000  vs n(p-n) = 1049616  (rel err 0.00e+00)
+  M = max|eta_b| = 13.2948   sqrt(n)= 4.000   sqrt(n log(p/n)) = 11.537
+
+  --- r = 2   (2r <= beta=4.00? YES - D3 diagonal-admissible depth)
+  T_r = 720  (solutions over F_p);  D_r (diagonal) = 496;  level-0 Z-nondiagonal = 224
+  E_r = sum_(b!=0)|eta|^(2r) = 47178704  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 3.360e+07;  E_r/Wick = 1.4043
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0            720   1.0000           0.58    1232.7586         47205916    1.0006    60.65
+   1              0   0.0000           0.21       0.0000           -13457   -0.0006    -0.08
+   2              0   0.0000           0.00       0.0000             -149   -0.0000    -0.05
+  LEVEL VERDICT r=2: level-0 excess share = +1.0006; all wraparound levels combined = -0.0006 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 3   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 50560  (solutions over F_p);  D_r (diagonal) = 22336;  level-0 Z-nondiagonal = 28224
+  E_r = sum_(b!=0)|eta|^(2r) = 3300818304  (float check rel err 2.89e-16);  Wick ref (p-1)r!n^r = 1.613e+09;  E_r/Wick = 2.0469
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0          50560   1.0000         128.27     394.1652       3309178756    1.0025    43.13
+   1              0   0.0000          59.39       0.0000         -3896718   -0.0024    -0.14
+   2              0   0.0000           4.32       0.0000          -283165   -0.0002    -0.14
+   3              0   0.0000           0.01       0.0000             -343   -0.0000    -0.05
+  LEVEL VERDICT r=3: level-0 excess share = +1.0025; all wraparound levels combined = -0.0025 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 4   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 4649680  (solutions over F_p);  D_r (diagonal) = 1298416;  level-0 Z-nondiagonal = 3351264
+  E_r = sum_(b!=0)|eta|^(2r) = 300803085264  (float check rel err 4.06e-16);  Wick ref (p-1)r!n^r = 1.032e+11;  E_r/Wick = 2.9146
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0        4649680   1.0000       29153.73     159.4883     303185072008    1.0079    33.92
+   1              0   0.0000       15860.94       0.0000      -1040747140   -0.0069    -0.25
+   2              0   0.0000        2243.13       0.0000       -147187273   -0.0010    -0.22
+   3              0   0.0000          46.61       0.0000         -3058342   -0.0000    -0.12
+   4              0   0.0000           0.01       0.0000             -617   -0.0000    -0.05
+  LEVEL VERDICT r=4: level-0 excess share = +1.0079; all wraparound levels combined = -0.0079 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 5   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 514152576  (solutions over F_p);  D_r (diagonal) = 91321216;  level-0 Z-nondiagonal = 422725520
+  E_r = sum_(b!=0)|eta|^(2r) = 32637637951616  (float check rel err 4.79e-16);  Wick ref (p-1)r!n^r = 8.256e+12;  E_r/Wick = 3.9530
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0      514046736   0.9998     6774977.91      75.8743   33285650950332    1.0199    27.62
+   1           7560   0.0000     4097313.48       0.0018    -268357354349   -0.0164    -0.39
+   2          37800   0.0001      846979.46       0.0446     -53095928894   -0.0033    -0.33
+   3           7560   0.0000       46178.67       0.1637      -2534041161   -0.0002    -0.19
+   4              0   0.0000         292.21       0.0000        -19173983   -0.0000    -0.11
+   5              0   0.0000           0.01       0.0000             -971   -0.0000    -0.05
+  LEVEL VERDICT r=5: level-0 excess share = +1.0199; all wraparound levels combined = -0.0199 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 6   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 65140580736  (solutions over F_p);  D_r (diagonal) = 7458705856;  level-0 Z-nondiagonal = 57522429440
+  E_r = sum_(b!=0)|eta|^(2r) = 3992854509443456  (float check rel err 6.26e-16);  Wick ref (p-1)r!n^r = 7.926e+14;  E_r/Wick = 5.0376
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0    64981135296   0.9976  1599012692.36      40.6383 4158944738883088    1.0416    22.63
+   1       26389440   0.0008  1041881868.10       0.0253  -66633566654664   -0.0334    -0.55
+   2       46236960   0.0014   276853882.05       0.1670  -15132390574152   -0.0076    -0.42
+   3        5433120   0.0002    25987970.05       0.2091   -1348747595803   -0.0007    -0.30
+   4        1663200   0.0001      601381.19       2.7656      69673364732    0.0000     1.25
+   5              0   0.0000        1268.86       0.0000        -83258524   -0.0000    -0.11
+   6              0   0.0000           0.02       0.0000            -1405   -0.0000    -0.05
+  LEVEL VERDICT r=6: level-0 excess share = +1.0416; all wraparound levels combined = -0.0416 of E_r; max_k!=0 |rho_k - 1| = 1.7656
+  [runtime 7.3s]
+
+====================================================================================================
+n=16  p=65633  m=(p-1)/n=4102  v2(p-1)=5  beta=log_n p=4.001  
+  Parseval check: sum_(b!=0)|eta|^2 = 1049872.000000  vs n(p-n) = 1049872  (rel err 0.00e+00)
+  M = max|eta_b| = 13.9265   sqrt(n)= 4.000   sqrt(n log(p/n)) = 11.537
+
+  --- r = 2   (2r <= beta=4.00? YES - D3 diagonal-admissible depth)
+  T_r = 720  (solutions over F_p);  D_r (diagonal) = 496;  level-0 Z-nondiagonal = 224
+  E_r = sum_(b!=0)|eta|^(2r) = 47190224  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 3.360e+07;  E_r/Wick = 1.4043
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0            720   1.0000           0.48    1485.3762         47223946    1.0007    34.74
+   1              0   0.0000           0.24       0.0000           -15756   -0.0007    -0.09
+   2              0   0.0000           0.02       0.0000            -1105   -0.0000    -0.05
+  LEVEL VERDICT r=2: level-0 excess share = +1.0007; all wraparound levels combined = -0.0007 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 3   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 50560  (solutions over F_p);  D_r (diagonal) = 22336;  level-0 Z-nondiagonal = 28224
+  E_r = sum_(b!=0)|eta|^(2r) = 3301627264  (float check rel err 1.44e-16);  Wick ref (p-1)r!n^r = 1.613e+09;  E_r/Wick = 2.0469
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0          50560   1.0000         106.34     475.4518       3311425004    1.0030    24.05
+   1              0   0.0000          63.45       0.0000         -4164449   -0.0025    -0.14
+   2              0   0.0000          10.99       0.0000          -721610   -0.0004    -0.19
+   3              0   0.0000           0.20       0.0000           -12811   -0.0000    -0.05
+  LEVEL VERDICT r=3: level-0 excess share = +1.0030; all wraparound levels combined = -0.0030 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 4   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 4649680  (solutions over F_p);  D_r (diagonal) = 1298416;  level-0 Z-nondiagonal = 3351264
+  E_r = sum_(b!=0)|eta|^(2r) = 300877480144  (float check rel err 2.03e-16);  Wick ref (p-1)r!n^r = 1.032e+11;  E_r/Wick = 2.9146
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0        4649680   1.0000       24134.78     192.6547     303588409180    1.0090    18.26
+   1              0   0.0000       16064.04       0.0000      -1054331205   -0.0070    -0.22
+   2              0   0.0000        4249.25       0.0000       -278890752   -0.0019    -0.33
+   3              0   0.0000         337.63       0.0000        -22159680   -0.0001    -0.17
+   4              0   0.0000           1.26       0.0000           -82881   -0.0000    -0.05
+  LEVEL VERDICT r=4: level-0 excess share = +1.0090; all wraparound levels combined = -0.0090 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 5   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 516450816  (solutions over F_p);  D_r (diagonal) = 91321216;  level-0 Z-nondiagonal = 423920000
+  E_r = sum_(b!=0)|eta|^(2r) = 32796704778752  (float check rel err 2.38e-16);  Wick ref (p-1)r!n^r = 8.258e+12;  E_r/Wick = 3.9713
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0      515241216   0.9977     5604323.44      91.9364   33448998169166    1.0199    14.33
+   1         302400   0.0012     4004650.49       0.0755    -242989806654   -0.0148    -0.29
+   2         151200   0.0006     1364763.49       0.1108     -79649812857   -0.0049    -0.37
+   3         151200   0.0006      196629.57       0.7690      -2981679087   -0.0002     0.20
+   4              0   0.0000        7999.74       0.0000       -525047014   -0.0000    -0.22
+   5              0   0.0000           5.33       0.0000          -349595   -0.0000    -0.05
+  LEVEL VERDICT r=5: level-0 excess share = +1.0199; all wraparound levels combined = -0.0199 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 6   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 66352277376  (solutions over F_p);  D_r (diagonal) = 7458705856;  level-0 Z-nondiagonal = 58188374720
+  E_r = sum_(b!=0)|eta|^(2r) = 4073424044308352  (float check rel err 2.45e-16);  Wick ref (p-1)r!n^r = 7.928e+14;  E_r/Wick = 5.1380
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0    65647080576   0.9894  1322288730.82      49.6466 4221829063174798    1.0364    11.42
+   1      176299200   0.0053   992790210.47       0.1776  -53588754490308   -0.0263    -0.36
+   2       88149600   0.0027   401250509.73       0.2197  -20549752008582   -0.0101    -0.39
+   3       88149600   0.0027    81960811.63       1.0755     406188746838    0.0002     0.33
+   4              0   0.0000     7008601.24       0.0000    -459995524878   -0.0002    -0.39
+   5              0   0.0000      155334.10       0.0000     -10195042964   -0.0000    -0.20
+   6              0   0.0000          16.96       0.0000         -1113329   -0.0000    -0.05
+  LEVEL VERDICT r=6: level-0 excess share = +1.0364; all wraparound levels combined = -0.0364 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+  [runtime 7.8s]
+
+====================================================================================================
+n=16  p=65537  m=(p-1)/n=4096  v2(p-1)=16  beta=log_n p=4.000  ** GENERALIZED-FERMAT (resonant family, FLAGGED) **
+  Parseval check: sum_(b!=0)|eta|^2 = 1048336.000000  vs n(p-n) = 1048336  (rel err 0.00e+00)
+  M = max|eta_b| = 13.8375   sqrt(n)= 4.000   sqrt(n log(p/n)) = 11.536
+
+  --- r = 2   (2r <= beta=4.00? YES - D3 diagonal-admissible depth)
+  T_r = 720  (solutions over F_p);  D_r (diagonal) = 496;  level-0 Z-nondiagonal = 224
+  E_r = sum_(b!=0)|eta|^(2r) = 47121104  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 3.355e+07;  E_r/Wick = 1.4043
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0            720   1.0000           0.38    1877.2533         47161504    1.0009    23.00
+   1              0   0.0000           0.25       0.0000           -16427   -0.0007    -0.22
+   2              0   0.0000           0.06       0.0000            -3773   -0.0002    -0.25
+  LEVEL VERDICT r=2: level-0 excess share = +1.0009; all wraparound levels combined = -0.0009 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 3   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 50560  (solutions over F_p);  D_r (diagonal) = 22336;  level-0 Z-nondiagonal = 28224
+  E_r = sum_(b!=0)|eta|^(2r) = 3296773504  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 1.611e+09;  E_r/Wick = 2.0469
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0          50560   1.0000          82.89     609.9798       3308118490    1.0034    15.93
+   1              0   0.0000          60.73       0.0000         -3980333   -0.0024    -0.29
+   2              0   0.0000          22.49       0.0000         -1473855   -0.0009    -0.31
+   3              0   0.0000           3.33       0.0000          -218305   -0.0001    -0.31
+  LEVEL VERDICT r=3: level-0 excess share = +1.0034; all wraparound levels combined = -0.0034 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 4   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 4654160  (solutions over F_p);  D_r (diagonal) = 1298416;  level-0 Z-nondiagonal = 3351824
+  E_r = sum_(b!=0)|eta|^(2r) = 300724716624  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 1.031e+11;  E_r/Wick = 2.9174
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0        4650240   0.9992       18718.80     248.4262     303536005108    1.0093    12.21
+   1              0   0.0000       14642.72       0.0000       -959639730   -0.0064    -0.37
+   2              0   0.0000        6829.16       0.0000       -447562957   -0.0030    -0.38
+   3           1960   0.0008        1748.75       1.1208         13844718    0.0001    -0.18
+   4              0   0.0000         187.47       0.0000        -12286273   -0.0001    -0.33
+  LEVEL VERDICT r=4: level-0 excess share = +1.0093; all wraparound levels combined = -0.0093 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 5   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 516955536  (solutions over F_p);  D_r (diagonal) = 91321216;  level-0 Z-nondiagonal = 423279920
+  E_r = sum_(b!=0)|eta|^(2r) = 32780203335056  (float check rel err 0.00e+00);  Wick ref (p-1)r!n^r = 8.246e+12;  E_r/Wick = 3.9751
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0      514601136   0.9954     4336955.75     118.6549   33441183580812    1.0202     9.84
+   1              0   0.0000     3540447.68       0.0000    -232030319319   -0.0142    -0.44
+   2              0   0.0000     1900351.98       0.0000    -124543367855   -0.0076    -0.45
+   3        1177200   0.0046      644521.96       1.8265      34910120542    0.0021     0.02
+   4              0   0.0000      124395.58       0.0000      -8152513318   -0.0005    -0.46
+   5              0   0.0000       10284.92       0.0000       -674042928   -0.0000    -0.32
+  LEVEL VERDICT r=5: level-0 excess share = +1.0202; all wraparound levels combined = -0.0202 of E_r; max_k!=0 |rho_k - 1| = 1.0000
+
+  --- r = 6   (2r <= beta=4.00? NO - past the D3 gate)
+  T_r = 66190206720  (solutions over F_p);  D_r (diagonal) = 7458705856;  level-0 Z-nondiagonal = 57785569856
+  E_r = sum_(b!=0)|eta|^(2r) = 4056432601097984  (float check rel err 2.47e-16);  Wick ref (p-1)r!n^r = 7.916e+14;  E_r/Wick = 5.1240
+   k            N_k   shareT         ghat_k rho_k=N/ghat        e_k=pN-WS   e_k/E_r  z(g@kp)
+   0    65244275712   0.9857  1021848193.52      63.8493 4208945232278754    1.0376     8.11
+   1              0   0.0000   859660392.79       0.0000  -56339563162135   -0.0278    -0.50
+   2              0   0.0000   507806563.18       0.0000  -33280118730976   -0.0164    -0.52
+   3      472965504   0.0143   205902866.10       2.2970   17502484100103    0.0086     0.27
+   4              0   0.0000    54298850.00       0.0000   -3558583732183   -0.0018    -0.55
+   5              0   0.0000     8308066.93       0.0000    -544485782150   -0.0003    -0.55
+   6              0   0.0000      550044.75       0.0000     -36048283044   -0.0000    -0.30
+  LEVEL VERDICT r=6: level-0 excess share = +1.0376; all wraparound levels combined = -0.0376 of E_r; max_k!=0 |rho_k - 1| = 1.2970
+  [runtime 6.7s]
+
+====================================================================================================
+See LEVEL VERDICT lines per (p, r). Aggregate verdict in kb note.

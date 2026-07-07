@@ -1,0 +1,55 @@
+probe_466_ff_halftrap.py -- W4 supplement: half-trap theorem census + n=256 violation
+
+==============================================================================
+S1 -- census over (Z/2^kappa)^*, kappa = 4..12: for every unit q of order
+     k >= 4, verify q^{k/2} == 2^{kappa-1}+1 (=> mu_{n/2} subfield-trapped),
+     and that order-2 units split clean/trapped exactly as {-1, n/2-1} / {n/2+1}.
+==============================================================================
+  kappa= 4 n=   16: order>=4 units:     4, half-trap violations: 0; order-2 clean classes [7, 15] == [n/2-1, n-1]: True
+  kappa= 5 n=   32: order>=4 units:    12, half-trap violations: 0; order-2 clean classes [15, 31] == [n/2-1, n-1]: True
+  kappa= 6 n=   64: order>=4 units:    28, half-trap violations: 0; order-2 clean classes [31, 63] == [n/2-1, n-1]: True
+  kappa= 7 n=  128: order>=4 units:    60, half-trap violations: 0; order-2 clean classes [63, 127] == [n/2-1, n-1]: True
+  kappa= 8 n=  256: order>=4 units:   124, half-trap violations: 0; order-2 clean classes [127, 255] == [n/2-1, n-1]: True
+  kappa= 9 n=  512: order>=4 units:   252, half-trap violations: 0; order-2 clean classes [255, 511] == [n/2-1, n-1]: True
+  kappa=10 n= 1024: order>=4 units:   508, half-trap violations: 0; order-2 clean classes [511, 1023] == [n/2-1, n-1]: True
+  kappa=11 n= 2048: order>=4 units:  1020, half-trap violations: 0; order-2 clean classes [1023, 2047] == [n/2-1, n-1]: True
+  kappa=12 n= 4096: order>=4 units:  2044, half-trap violations: 0; order-2 clean classes [2047, 4095] == [n/2-1, n-1]: True
+  S1 THEOREM CENSUS: ALL CONFIRMED
+
+------------------------------------------------------------------------------
+S2 -- n = 256, p = 577 (p mod 256 = 65, ord = 4), E = F_p^4, Q = 1.108e+11, index m = 4.330e+08, beta = 4.59
+------------------------------------------------------------------------------
+  mu_128 (squares) inside F_p^2: True; odd-part outside F_p^2: True   [(ii) CONFIRMED]
+  kernel characters kill mu_128 pointwise: 128 of 256 elements have (Tr(b1 x), Tr(b2 x)) = (0,0) (predicted 128)
+  exact sup over the p^2-1 = 332928 kernel characters: M_ker = 200.1209
+  theorem guarantee n/2 - (n/2)/(p^2-1) = 127.9996  (M_ker >= guarantee: True)
+  prize-law bound sqrt(2 n ln m) = 100.9046
+  M_E >= M_ker = 200.12 > 100.90  ==> LAW VIOLATED at this generating instance  (violation factor 1.983x)
+
+------------------------------------------------------------------------------
+S2 -- n = 256, p = 1087 (p mod 256 = 63, ord = 4), E = F_p^4, Q = 1.396e+12, index m = 5.454e+09, beta = 5.04
+------------------------------------------------------------------------------
+  mu_128 (squares) inside F_p^2: True; odd-part outside F_p^2: True   [(ii) CONFIRMED]
+  kernel characters kill mu_128 pointwise: 128 of 256 elements have (Tr(b1 x), Tr(b2 x)) = (0,0) (predicted 128)
+  exact sup over the p^2-1 = 1181568 kernel characters: M_ker = 181.1889
+  theorem guarantee n/2 - (n/2)/(p^2-1) = 127.9999  (M_ker >= guarantee: True)
+  prize-law bound sqrt(2 n ln m) = 107.1392
+  M_E >= M_ker = 181.19 > 107.14  ==> LAW VIOLATED at this generating instance  (violation factor 1.691x)
+
+------------------------------------------------------------------------------
+S2 -- n = 256, p = 2111 (p mod 256 = 63, ord = 4), E = F_p^4, Q = 1.986e+13, index m = 7.757e+10, beta = 5.52
+------------------------------------------------------------------------------
+  mu_128 (squares) inside F_p^2: True; odd-part outside F_p^2: True   [(ii) CONFIRMED]
+  kernel characters kill mu_128 pointwise: 128 of 256 elements have (Tr(b1 x), Tr(b2 x)) = (0,0) (predicted 128)
+  exact sup over the p^2-1 = 4456320 kernel characters: M_ker = 175.5655
+  theorem guarantee n/2 - (n/2)/(p^2-1) = 128.0000  (M_ker >= guarantee: True)
+  prize-law bound sqrt(2 n ln m) = 113.3055
+  M_E >= M_ker = 175.57 > 113.31  ==> LAW VIOLATED at this generating instance  (violation factor 1.549x)
+
+==============================================================================
+SUMMARY: S1 census CONFIRMED; S2 law-violations at n=256, k=4: 3/3 primes
+  => every deg-f >= 3 residue-ring model of the thin 2-power law is either
+     degenerate (trace collapse, M = n) or provably law-violating (half-trap,
+     M >= n/2); deg f = 3 is arithmetically impossible. The FF residue model
+     collapses to F_p / the two k=2 classes -- no new provable territory.
+==============================================================================

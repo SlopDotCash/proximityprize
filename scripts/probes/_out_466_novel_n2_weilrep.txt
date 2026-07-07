@@ -1,0 +1,10 @@
+== N2-weil-rep exact-identity probe ==
+n=    8 p=     41 m=    5 | M=   4.5291 C= 1.253 | purity_err=8.88e-16 recon_err=5.21e-14 dual_err=4.06e-14 lift_err=2.44e-16 | dual_max=    3.380 C_dual= 1.192 (sqrt(m ln m)=    2.84)
+n=    8 p=   4129 m=  516 | M=   7.5582 C= 1.069 | purity_err=5.68e-14 recon_err=8.65e-12 dual_err=6.95e-11 lift_err=9.07e-16 | dual_max=   60.678 C_dual= 1.069 (sqrt(m ln m)=   56.77)
+n=   16 p=    257 m=   16 | M=   9.2292 C= 1.385 | purity_err=7.11e-15 recon_err=4.58e-13 dual_err=4.58e-13 lift_err=9.31e-16 | dual_max=    9.274 C_dual= 1.392 (sqrt(m ln m)=    6.66)
+n=   16 p=  65537 m= 4096 | M=  13.8375 C= 1.199 | purity_err=2.27e-13 recon_err=1.18e-10 dual_err=1.88e-09 lift_err=8.93e-16 | dual_max=  221.403 C_dual= 1.199 (sqrt(m ln m)=  184.58)
+n=   32 p=  12289 m=  384 | M=  18.9020 C= 1.370 | purity_err=9.95e-14 recon_err=4.31e-11 dual_err=1.49e-10 lift_err=1.80e-15 | dual_max=   65.467 C_dual= 1.370 (sqrt(m ln m)=   47.80)
+
+== prize-point constants (symbolic) ==
+analytic diagonal p~n^4: sqrt(p)=2^60.0  target C*sqrt(n ln(p/n))=2^17.98  purity overshoot = 2^42.02
+prize q~n*2^128      : sqrt(p)=2^79.0  target C*sqrt(n ln(p/n))=2^18.24  purity overshoot = 2^60.76

@@ -1,0 +1,102 @@
+PROBE 466 N5 SOS-COLLAPSE d_gen EXTENSION (norm-10/12 scan; round-3 verifier)
+decides the open constant d_gen at generic beta=4 primes (parent scan: >8);
+dossier onset r0 = 5 predicts first balanced wraparounds at l1-norm 10.
+
+===== n=8, p=4129  (beta = log_n p = 4.004), scan to l1-norm 12 =====
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =      8 (wraparound     0), rank =  4
+  d=3: #new rel =      0 (wraparound     0), rank =  4
+  d=4: #new rel =     32 (wraparound     0), rank =  4
+  d=5: #new rel =      0 (wraparound     0), rank =  4
+  d=6: #new rel =     88 (wraparound     0), rank =  4
+  d=7: #new rel =      0 (wraparound     0), rank =  4
+  d=8: #new rel =    192 (wraparound     0), rank =  4
+  d=9: #new rel =      0 (wraparound     0), rank =  4
+  d=10: #new rel =    360 (wraparound     0), rank =  4
+  d=11: #new rel =      0 (wraparound     0), rank =  4
+  d=12: #new rel =    608 (wraparound     0), rank =  4
+  SUMMARY n=8 p=4129: d_onset(wraparound) = None, d_gen = >12
+
+===== n=8, p=4153  (beta = log_n p = 4.007), scan to l1-norm 12 =====
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =      8 (wraparound     0), rank =  4
+  d=3: #new rel =      0 (wraparound     0), rank =  4
+  d=4: #new rel =     32 (wraparound     0), rank =  4
+  d=5: #new rel =      0 (wraparound     0), rank =  4
+  d=6: #new rel =     88 (wraparound     0), rank =  4
+  d=7: #new rel =      0 (wraparound     0), rank =  4
+  d=8: #new rel =    192 (wraparound     0), rank =  4
+  d=9: #new rel =      0 (wraparound     0), rank =  4
+  d=10: #new rel =    360 (wraparound     0), rank =  4
+  d=11: #new rel =      0 (wraparound     0), rank =  4
+  d=12: #new rel =    608 (wraparound     0), rank =  4
+  SUMMARY n=8 p=4153: d_onset(wraparound) = None, d_gen = >12
+
+===== n=8, p=4177  (beta = log_n p = 4.009), scan to l1-norm 12 =====
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =      8 (wraparound     0), rank =  4
+  d=3: #new rel =      0 (wraparound     0), rank =  4
+  d=4: #new rel =     32 (wraparound     0), rank =  4
+  d=5: #new rel =      0 (wraparound     0), rank =  4
+  d=6: #new rel =     88 (wraparound     0), rank =  4
+  d=7: #new rel =      0 (wraparound     0), rank =  4
+  d=8: #new rel =    192 (wraparound     0), rank =  4
+  d=9: #new rel =      0 (wraparound     0), rank =  4
+  d=10: #new rel =    360 (wraparound     0), rank =  4
+  d=11: #new rel =    288 (wraparound   288), rank =  8 index = 4177 = p*1   <-- d_gen
+  d=12: #new rel =    608 (wraparound     0), rank =  8 index = 4177 = p*1
+  SUMMARY n=8 p=4177: d_onset(wraparound) = 11, d_gen = 11
+
+===== n=16, p=65537  (beta = log_n p = 4.000), scan to l1-norm 10 =====
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =     16 (wraparound     0), rank =  8
+  d=3: #new rel =      0 (wraparound     0), rank =  8
+  d=4: #new rel =    128 (wraparound     0), rank =  8
+  d=5: #new rel =    160 (wraparound   160), rank = 16 index = 65537 = p*1   <-- d_gen
+  d=6: #new rel =    688 (wraparound     0), rank = 16 index = 65537 = p*1
+  d=7: #new rel =   2144 (wraparound  2144), rank = 16 index = 65537 = p*1
+  d=8: #new rel =   3456 (wraparound   640), rank = 16 index = 65537 = p*1
+  d=9: #new rel =  14496 (wraparound 14496), rank = 16 index = 65537 = p*1
+  d=10: #new rel =  26432 (wraparound 17008), rank = 16 index = 65537 = p*1
+  SUMMARY n=16 p=65537: d_onset(wraparound) = 5, d_gen = 5
+
+===== n=16, p=65617  (beta = log_n p = 4.000), scan to l1-norm 10 =====
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =     16 (wraparound     0), rank =  8
+  d=3: #new rel =      0 (wraparound     0), rank =  8
+  d=4: #new rel =    128 (wraparound     0), rank =  8
+  d=5: #new rel =      0 (wraparound     0), rank =  8
+  d=6: #new rel =    688 (wraparound     0), rank =  8
+  d=7: #new rel =      0 (wraparound     0), rank =  8
+  d=8: #new rel =   2816 (wraparound     0), rank =  8
+  d=9: #new rel =      0 (wraparound     0), rank =  8
+  d=10: #new rel =  11152 (wraparound  1728), rank = 16 index = 262468 = p*4
+  SUMMARY n=16 p=65617: d_onset(wraparound) = 10, d_gen = >10
+
+===== n=16, p=65633  (beta = log_n p = 4.001), scan to l1-norm 10 =====
+  d=1: #new rel =      0 (wraparound     0), rank =  0
+  d=2: #new rel =     16 (wraparound     0), rank =  8
+  d=3: #new rel =      0 (wraparound     0), rank =  8
+  d=4: #new rel =    128 (wraparound     0), rank =  8
+  d=5: #new rel =      0 (wraparound     0), rank =  8
+  d=6: #new rel =    688 (wraparound     0), rank =  8
+  d=7: #new rel =      0 (wraparound     0), rank =  8
+  d=8: #new rel =   2816 (wraparound     0), rank =  8
+  d=9: #new rel =      0 (wraparound     0), rank =  8
+  d=10: #new rel =  14032 (wraparound  4608), rank = 16 index = 131266 = p*2
+  SUMMARY n=16 p=65633: d_onset(wraparound) = 10, d_gen = >10
+
+================ CROSS-SCALE TABLE (extended scan) ================
+   n        p   beta  scan  d_onset  d_gen
+   8     4129  4.004    12     None    >12
+   8     4153  4.007    12     None    >12
+   8     4177  4.009    12       11     11
+  16    65537  4.000    10        5      5
+  16    65617  4.000    10       10    >10
+  16    65633  4.001    10       10    >10
+
+READING: d_gen <= 10 at generic beta=4 primes closes the honest-axiom (B2) version of
+the collapse at those scales: the poly-size axiom set {circle, antipodal, relations of
+l1-norm <= d_gen} already cuts out V exactly, so Theorem A applies over it and the SoS
+degree window [d_onset, 6*k0] is O(1) end to end.  d_gen > 10 would leave B2 conditional
+(the semantic Theorem A is unaffected either way).

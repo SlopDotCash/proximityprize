@@ -1,0 +1,105 @@
+probe_466_novel_theta_cusp -- exact lattice data + the modular death ledger
+
+=== n=8, p=4129 (p-1 = 516*n), h=777, h^(n/2) = -1 verified ===
+    [check] DP row-sums == polynomial r_{Z^n}(m): OK
+    [check] brute-force enumeration == DP: OK
+    ANCHOR r(2) = 8  (= n: True)   [kissing number, unconditional]
+    wraparound onset (first m with r != Wick): m = None
+      m        r_Lp(m)    Wick r_L0   pred Wick+DC   r/pred  Eis a_E (S=1)      r/a_E
+      2              8            8           8.03    0.997        0.03146      254.3
+      3              0            0           0.11    0.000         0.1062          0
+      4             24           24          24.27    0.989         0.2516      95.37
+      5              0            0           0.49    0.000         0.4915          0
+      6             32           32          32.75    0.977         0.8493      37.68
+      7              0            0           1.33    0.000          1.349          0
+      8             24           24          26.25    0.914          2.013      11.92
+      9              0            0           2.93    0.000          2.866          0
+     10             48           48          51.41    0.934          3.932      12.21
+     11              0            0           5.16    0.000          5.233          0
+     12             96           96         103.68    0.926          6.794      14.13
+     13              0            0           8.52    0.000          8.638          0
+     14             64           64          73.32    0.873          10.79      5.932
+
+=== n=16, p=65537 (p-1 = 4096*n), h=64, h^(n/2) = -1 verified ===
+    [check] DP row-sums == polynomial r_{Z^n}(m): OK
+    ANCHOR r(2) = 16  (= n: True)   [kissing number, unconditional]
+    wraparound onset (first m with r != Wick): m = 9
+      m        r_Lp(m)    Wick r_L0   pred Wick+DC   r/pred  Eis a_E (S=1)      r/a_E
+      2             16           16          16.01    1.000       0.003677       4351
+      3              0            0           0.07    0.000        0.06282          0
+      4            112          112         112.44    0.996         0.4707        238
+      5              0            0           2.15    0.000          2.244          0
+      6            448          448         456.02    0.982          8.042      55.71
+      7              0            0          24.12    0.000          23.66          0
+      8           1136         1136        1196.93    0.949          60.24      18.86
+      9             32            0         136.50    0.234          137.4     0.2329
+     10           2016         2016        2300.18    0.876          287.3      7.018
+     11            448            0         560.21    0.800          559.8     0.8003
+     12           3136         3136        4173.21    0.751           1029      3.047
+     13           2720            0        1802.90    1.509           1803      1.509
+     14           5568         5504        8511.69    0.654           3028      1.839
+     15           9408            0        4908.57    1.917           4908      1.917
+     16          10096         9328       17096.68    0.591           7711      1.309
+
+=== n=16, p=65617 (p-1 = 4101*n), h=53618, h^(n/2) = -1 verified ===
+    [check] DP row-sums == polynomial r_{Z^n}(m): OK
+    ANCHOR r(2) = 16  (= n: True)   [kissing number, unconditional]
+    wraparound onset (first m with r != Wick): m = 13
+      m        r_Lp(m)    Wick r_L0   pred Wick+DC   r/pred  Eis a_E (S=1)      r/a_E
+      2             16           16          16.01    1.000       0.003673       4357
+      3              0            0           0.07    0.000        0.06275          0
+      4            112          112         112.44    0.996         0.4701      238.3
+      5              0            0           2.14    0.000          2.242          0
+      6            448          448         456.01    0.982          8.032      55.78
+      7              0            0          24.09    0.000          23.63          0
+      8           1136         1136        1196.85    0.949          60.17      18.88
+      9              0            0         136.33    0.000          137.2          0
+     10           2016         2016        2299.83    0.877          286.9      7.026
+     11              0            0         559.53    0.000          559.1          0
+     12           3136         3136        4171.95    0.752           1028       3.05
+     13           2048            0        1800.70    1.137           1800      1.138
+     14           5568         5504        8508.02    0.654           3024      1.841
+     15           4096            0        4902.59    0.835           4902     0.8355
+     16          10160         9328       17087.21    0.595           7702      1.319
+
+=== n=32, p=1048609 (p-1 = 32769*n), h=415330, h^(n/2) = -1 verified ===
+    [check] DP row-sums == polynomial r_{Z^n}(m): OK
+    ANCHOR r(2) = 32  (= n: True)   [kissing number, unconditional]
+    wraparound onset (first m with r != Wick): m = 8
+      m        r_Lp(m)    Wick r_L0   pred Wick+DC   r/pred  Eis a_E (S=1)      r/a_E
+      2             32           32          32.00    1.000      2.151e-06  1.487e+07
+      3              0            0           0.04    0.000      0.0009421          0
+      4            480          480         480.55    0.999         0.0705       6809
+      5              0            0           6.15    0.000          2.004          0
+      6           4480         4480        4535.42    0.988          30.87      145.1
+      7              0            0         413.05    0.000          311.7          0
+      8          31200        29152       31750.56    0.983           2310      13.51
+      9           8448            0       14027.23    0.602      1.352e+04     0.6249
+     10         200640       140736      206613.42    0.971      6.566e+04      3.056
+     11         267008            0      272597.48    0.979      2.743e+05     0.9735
+     12        1545984       525952     1532016.32    1.009      1.012e+06      1.528
+     13        3301376            0     3352414.31    0.985      3.361e+06     0.9823
+     14       11884416      1580800    11790964.71    1.008      1.021e+07      1.164
+
+=== DEATH LEDGER: Deligne/Petersson transfer ceiling vs trivial count ===
+   (Deligne-ceil = n*d(m)*(m/2)^{(k-1)/2}, the best any per-form bound anchored
+    at the kissing number can give; 1-step = cost (m/(m-1))^{(k-1)/2} of moving
+    ONE index; max-anchor-ratio = largest m/m_anchor for which the transfer
+    stays below the DC target -- < 1 + 1/m means NO integer anchor exists.)
+         n=2^3 r=8    m=16   | [skipped: depth m > n/2, sparse regime does not apply at this small n]
+         n=2^4 r=11   m=22   | [skipped: depth m > n/2, sparse regime does not apply at this small n]
+         n=2^5 r=14   m=28   | [skipped: depth m > n/2, sparse regime does not apply at this small n]
+         n=2^7 r=19   m=38   | triv 10^        44.1 | DC 10^        35.7 | Wick 10^     21.7 | Eis 10^           35.6 | Deligne-ceil 10^         43.0 | 1-step 10^       0.4 | dimS_k 10^  18.4 | max-anchor-ratio 13.5995
+         n=2^8 r=22   m=44   | triv 10^        63.1 | DC 10^        53.4 | Wick 10^     31.1 | Eis 10^           49.2 | Deligne-ceil 10^         88.4 | 1-step 10^       0.6 | dimS_k 10^  21.1 | max-anchor-ratio 6.94494
+         n=2^9 r=25   m=50   | triv 10^        85.0 | DC 10^        74.1 | Wick 10^     42.0 | Eis 10^           45.1 | Deligne-ceil 10^        181.7 | 1-step 10^       1.1 | dimS_k 10^  23.8 | max-anchor-ratio 3.81362
+        n=2^10 r=28   m=56   | triv 10^       109.9 | DC 10^        97.9 | Wick 10^     54.5 | Eis 10^          -28.0 | Deligne-ceil 10^        373.7 | 1-step 10^       2.0 | dimS_k 10^  26.5 | max-anchor-ratio 2.41589
+        n=2^20 r=55   m=110  | triv 10^       517.2 | DC 10^       493.1 | Wick 10^    258.0 | Eis 10^     -1440102.8 | Deligne-ceil 10^     456231.7 | 1-step 10^    1039.7 | dimS_k 10^  53.6 | max-anchor-ratio 1.00434
+    n=2^30 b=4 r=83   m=166  | triv 10^      1251.1 | DC 10^      1215.0 | Wick 10^    625.0 | Eis 10^  -2994836401.3 | Deligne-ceil 10^  515148611.5 | 1-step 10^  704413.2 | dimS_k 10^  80.7 | max-anchor-ratio 1.00001
+   n=2^30 r=89 r=89   m=178  | triv 10^      1336.3 | DC 10^      1300.2 | Wick 10^    667.5 | Eis 10^  -2978562816.3 | Deligne-ceil 10^  523285404.0 | 1-step 10^  656790.7 | dimS_k 10^  80.7 | max-anchor-ratio 1.00001
+  n=2^30 q-lit r=110  m=220  | triv 10^      1631.7 | DC 10^      1584.1 | Wick 10^    815.2 | Eis 10^  -2929169265.9 | Deligne-ceil 10^  547982185.4 | 1-step 10^  531117.3 | dimS_k 10^ 103.6 | max-anchor-ratio 1.00001
+
+VERDICT: Eisenstein(prize index) ~ 10^{-3e9} (NOT the Wick term; the whole
+count is cuspidal); Deligne/Petersson ceiling 10^{+5.2e8} vs trivial 10^{1339}
+vs DC target 10^{1303}: the modular route is worse than trivial by 10^{5.2e8}.
+The transfer cost (m/2)^{(k-1)/2} = (r)^{~n/4} IS the (2w)^{n/4} norm-height
+wall in automorphic clothing; effective range n <~ 2^8 (matches #407 gate).

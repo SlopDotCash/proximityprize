@@ -1,0 +1,74 @@
+==============================================================================
+[S1] real Gauss periods n=16, p=65537: the pincer functional S(Q) never fires
+==============================================================================
+  m = 4096 conjugates; M_true = max|eta_i| = 13.837539
+  sqrt(n ln(p/n)) = 11.5362;  C_true = 1.1995
+  Parseval check sum eta_i^2 = 65521.0 vs p-n = 65521
+  pincer at A* = round(M^2) = 191: S = 21109.4 nats  (>= 0 needed to kill; contradiction requires < 0)
+  min over 405 integer A in [1, 4M^2]: S = 6501.0 at A = 1  -> margin per conjugate 1.5871 nats/root (x2 roots)
+  empirical potential floor min_a avg_i ln|eta_i - a| = 0.7619  (prediction 0.5 ln n + u_min = 0.7511)
+  VERDICT S1: every integer pincer is ~m*ln(A) positive; integrality never bites.
+
+==============================================================================
+[S2] strict Z-admissibility margin of the spike+bulk countermodel measure
+==============================================================================
+  u_min(std normal, trunc 4 sigma) = -0.635563   (analytic -(gamma+ln2)/2 = -0.635181; z=0 value -0.635563)
+  smeared-spike worst dip (unit interval, root at center): -(1+ln 2) = -1.693147
+  per-root margin  (1-eps)*(0.5 ln n + u_min) - eps*(1+ln2)  [nats/root]:
+      n        eps=0.1     eps=0.01    eps=0.001
+   2^10       2.3778      2.7849      2.8256
+   2^20       5.4970      6.2160      6.2879
+   2^30       8.6162      9.6471      9.7502
+  boundary: n = 8, eps = 0.01 -> margin 0.3832 (> 0: admissible for all n >= 8)
+  VERDICT S2: mu_spike is strictly Z-admissible with ~10 nats/root margin at the
+  prize point -> Smith's realizability hypothesis holds with enormous slack.
+
+==============================================================================
+[S3] depth law of the realized spike (conjugate-family normalization)
+==============================================================================
+  atoms = m conjugates; K^k-Wick input for all k <= L = ceil(ln q); spike at
+  t*sqrt(n ln m).  t_max vs sqrt(2K):
+      regime                    K      t_max    sqrt(2K)   ratio
+   q=2^120,n=2^30 (beta=4)    1.00   1.4181    1.4142   1.0028
+   q=2^120,n=2^30 (beta=4)    1.05   1.4532    1.4491   1.0028
+   q=2^120,n=2^30 (beta=4)    1.20   1.5535    1.5492   1.0028
+   q=2^120,n=2^30 (beta=4)    2.00   2.0055    2.0000   1.0028
+   q=2^120,n=2^30 (beta=4)    4.00   2.8363    2.8284   1.0028
+   q=n*2^128,n=2^30 (prize)   1.00   1.4170    1.4142   1.0019
+   q=n*2^128,n=2^30 (prize)   1.05   1.4520    1.4491   1.0019
+   q=n*2^128,n=2^30 (prize)   1.20   1.5522    1.5492   1.0019
+   q=n*2^128,n=2^30 (prize)   2.00   2.0039    2.0000   1.0019
+   q=n*2^128,n=2^30 (prize)   4.00   2.8339    2.8284   1.0019
+  (round-2 lone-spike table, ln q normalization, for cross-check: t_raw =
+   1.452/1.552/2.004/2.834 at K = 1.05/1.2/2/4 — same 2K law, and indeed:
+     K=1.05  t_max(ln q units) = 1.452
+     K=1.2   t_max(ln q units) = 1.552
+     K=2.0   t_max(ln q units) = 2.004
+     K=4.0   t_max(ln q units) = 2.834
+  VERDICT S3: the arithmetic countermodel reproduces the lone-spike constant
+  sqrt(2K) exactly; integrality does not shave even the (1-o(1)).
+
+==============================================================================
+[S4] elementary countermodel P = (x - A0) C_N(x) - 1  (n = 16, B = sqrt(32))
+==============================================================================
+  N = 48, degree d = 49, K = 2.0, A0 = 16 (spike target 15.7822, bulk edge sqrt(2n) = 5.6569)
+  max |Im root| = 0.0  (all real iff ~0)
+  #bulk roots in [-sqrt(2n)-.5, +] = 48; spike(s) = ['16.000000'] (pred ~16)
+  house = 16.00000 = 2.0276 * sqrt(n ln d)   [sqrt(2K) = 2.0000]
+      k    (1/d) sum xi^2k / n^k     K^k (2k-1)!!    ok?
+      1                1.306              2.000    True
+      2                6.694             12.000    True
+      3               86.041            120.000    True
+      4             1341.755           1680.000    True   (beyond ln d window)
+      5            21407.224          30240.000    True   (beyond ln d window)
+  moment clause k <= ln d: PASS
+  factorization over Z: 1 irreducible factor(s), degrees [49]  -> IRREDUCIBLE: genuine degree-49 algebraic integer
+  VERDICT S4: an explicit monic integer polynomial realizes spike+bulk with
+  K^k-Wick moments to depth ln d — integrality satisfied by construction.
+
+SUMMARY: [S1] pincers blind on real data; [S2] countermodel admissible,
+~10 nats/root margin at prize point; [S3] t_max = sqrt(2K) survives the full
+integrality upgrade; [S4] explicit elementary witness at n=16, d=49.
+=> the arithmetic-certificate lane (Siegel 4-squares + resultant pincers)
+   is information-theoretically dead below sqrt(2K); death is at theorem level
+   (Smith realizability), not numerics. CORE unchanged: OPEN, ON-BGK.

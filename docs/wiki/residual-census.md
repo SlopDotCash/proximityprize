@@ -12,44 +12,72 @@ the tree contains a concrete theorem of a negated residual instance.
 The named-residual convention is a modularity pattern, not an incompleteness marker:
 always check this census before treating a `*Residual` name as open proof debt.
 
-> **#444 campaign note (wf-L6, char-`0` ceiling discharge ladder).** The `(P2-Slack)` slack route
-> (`Frontier/_wf6P2_charp_lamleung_slack.lean`) consumes the char-`0` Lam–Leung ceiling
-> `(S-M1) : A_r ≤ (2r−1)‼·n^r` as a free hypothesis (`hZceiling`). That input is now **PROVEN
-> unconditionally** (axiom-clean) at `r ∈ {2,3}` (`Frontier/_wf9OT4_charzero_ceiling_discharge.lean`)
-> at `r ∈ {7,8,9}` (`Frontier/_wfL6_charzero_ceiling_discharge_high.lean`), and — close-out round —
-> at the MIDDLE rungs `r ∈ {4,5,6}` (`Frontier/_wfL6_charzero_ceiling_discharge_mid.lean`), from the
-> in-tree exact `E_r` closed forms (`_CharZeroEnergyClosedForm.lean`'s `E{4,5,6}_le_wick`,
-> `_AvL2_E{7,8,9}ClosedForm.lean`, `CharZeroEnergyThree`). The mid-rung file adds the previously
-> missing strict-slack certificates `deficit_{four,five,six}_pos` (the `deficit_*_pos` ladder
-> stopped at `r=3`), so the char-`0` ceiling-discharge ladder is now **contiguous and unconditional
-> at `r = 2..9`** (axiom-clean on the integer closed-form carrier). So the slack
-> route's `(S-M1)` at these rungs rests on ONLY the open `(P2-Slack)` spurious-domination residual
-> `Spur_r(p) ≤ ceiling − E_r` — the char-`0` half is discharged, the strict slack
-> `(2r−1)‼·n^r − E_r > 0` is exhibited (non-vacuous). The remaining `(P2-Slack)` residual is the
-> **genuine BGK char-`p` wall** (the char-`p` transfer of the energy bound at depth `r ≈ ln q`,
-> refuted at the prize prime): GENUINELY OPEN.
+> **Hand-maintained addendum — #464/#466-era movements (regenerated 2026-07-01).** The previous
+> regeneration (2026-06-17, pre-#464/#466) counted 91 strict residuals / 46 open. This
+> regeneration counts 100 / 55: the +9 are all NEW open residuals — one AGL24 entry
+> (`FrankUncrossingResidual`) and eight `ProximityGap/Frontier` lane residuals from the
+> #444→#464 descent/equidistribution campaigns (`SteinWickResidual`, `GaloisPhaseSpreadResidual`,
+> `EffectiveEquidistResidual`, `JacobiEquidistributionRateResidual`, `IsolatedCountResidual`,
+> `FiberCountResidual`, `IsolatedNonCosetCountResidual`, `SecondDescentStuckResidual`); nothing
+> was discharged or removed from the strict census in the interval. NOTE the strict census only
+> sees `def ...Residual : Prop`; most #464/#466-era named obligations are conjecture `Prop`s
+> under other naming conventions and are tracked in
+> `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6/§14/§15 instead. Status of the campaign's
+> named objects as of 2026-07-01 (sourced from the dossier round logs):
+>
+> - **`TZPrimeSupply`** — concrete explicit-prime ladder LANDED axiom-clean
+>   (`Frontier/ThornerZamanInstance.lean`: β=2 through n=32768, β=3/β=4 through n=64, β=5 at
+>   n=8); the general/asymptotic Thorner–Zaman PNT-in-APs form remains a named open hypothesis.
+> - **The weld** — `mcaDeltaStar_ge_of_farLineListBudgeted` is a THEOREM
+>   (`ProximityGap/LineListMCAWeld.lean`, re-landed round 1); its open inputs are the line-list
+>   production obligations: low-profile fibers `D(t)`, mixed-profile top-fit arithmetic, the
+>   second-witness/multiplicity floor (dossier v3 §6 Tier-1 item 2 — the primary open surface).
+> - **`SpreadExcessLaw`** (`Frontier/_SpreadExcessLaw.lean`, parameterized `Prop`) — the
+>   replacement for the REFUTED windowed SumsetExtremal (DISPROOF
+>   `466-r1-windowed-extremal-spread-beats`); C=2 refuted by the P5 referee audit (ratio ≥
+>   2.33), C=3 is the live constant.
+> - **`CandidateListExactSuccessor`** — the floor-predicate successor law; after
+>   floor-bad(64) was shown compute-undecidable (~10⁷ CPU-hours), Tier-1 item 4 is formally
+>   successor-theorem-or-nothing.
+> - **D4** — NEW unconditional fact: `D4(n)` is finite for every n (norm-height `8^{n/2}`);
+>   n=8 provably D4-clean; formal closure needs a depth-4 norm-divisor structure theorem.
+> - **GF mechanism** — the 2-adic/Fermat family is an artifact; the real resonant family is
+>   generalized-Fermat `p = b^(2^s)+1` with `η₁ = n − c_B` exactly (ceiling-side brick, open).
+> - **SST** — orbit compression is cosmetic (DISPROOF `466-r2-sst-orbit-compression-cosmetic`);
+>   surviving open residue: the multiplier action `S → kS` cross-orbit correlation.
+> - **Dead this era** (do not re-attempt; see `ProximityGap/DISPROOF_LOG.md` tags
+>   `466-r1-*`/`466-r2-*`): CMK and CMK∘TPS (`466-r2-cmk-lonespike-refuted`), windowed
+>   SumsetExtremal, bounded-window Hankel/Jacobi, the exponent-pushing axis (BGK effective-1/2).
+>
+> The 2026-06-17 version carried a hand-written #444 wf-L6 note (char-0 Lam–Leung ceiling
+> discharge ladder, contiguous r=2..9) that this regeneration overwrites; that record lives on
+> in this file's git history and the in-tree
+> `Frontier/_wf{9OT4,L6}_charzero_ceiling_discharge*.lean` files. This addendum block is
+> hand-maintained: re-add
+> (or refresh) it after any future `residual_census.py --wiki-out` run, which rewrites the file.
 
 ## Summary
 
-- **Total strict residuals:** 91
-- **Open:** 46
+- **Total strict residuals:** 100
+- **Open:** 55
 - **Discharged:** 44
 - **Refuted:** 1
-- **Residual-like near misses:** 46 (listed below and in `scripts/residual_census.json`)
+- **Residual-like near misses:** 50 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | discharged | refuted |
 |---|---:|---:|---:|---:|
 | `(root)` | 1 | 0 | 1 | 0 |
-| `Data` | 24 | 16 | 8 | 0 |
+| `Data` | 33 | 25 | 8 | 0 |
 | `OracleReduction` | 39 | 22 | 17 | 0 |
 | `ProofSystem` | 16 | 8 | 8 | 0 |
 | `ToMathlib` | 11 | 0 | 10 | 1 |
 
 ## Open Residuals
 
-- `AGL24.FrankOrientationResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:42` — conditional providers only (extra assumptions: `hfrank`)
-- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — conditional providers only (extra assumptions: `hbridge`, `hgm`, `hlovett`, `hprim`, `hstep`)
-- `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h'`, `hfrank`, `hgm`, `hgmmds`, `hnonempty`, `hwitness`)
+- `AGL24.FrankUncrossingResidual` — `ArkLib/Data/CodingTheory/AGL24FrankDescent.lean:264`
+- `AGL24.FrankOrientationResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:42` — conditional providers only (residual deps: `FrankUncrossingResidual`; extra assumptions: `hfrank`, `hres`)
+- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — conditional providers only (extra assumptions: `hbridge`, `hdual`, `hfield`, `hgm`, `hk`, `hlovett`, `hminor`, `hprim`, `hstep`, `hstep1`, `hstep2`)
+- `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h'`, `hdual`, `hfield`, `hfrank`, `hgm`, `hgmmds`, `hk`, `hminor`, `hnonempty`, `hrc`, `hwitness`)
 - `AGL24.RIMFullRankFailureProbResidual` — `ArkLib/Data/CodingTheory/AGL24UnionBound.lean:88` — conditional providers only (residual deps: `SymbolicFullRankResidual`; extra assumptions: `hfrank`, `hgm`, `hnonempty`, `hsym`, `ht`, `hwpc`)
 - `CodingTheory.randomLinearLambdaLowerFirstMomentResidual` — `ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean:142` — conditional providers only (extra assumptions: `h`, `hG`)
 - `ProximityGap.StrictCanonicalCoeffPolysResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean:2528`
@@ -62,6 +90,14 @@ always check this census before treating a `*Residual` name as open proof debt.
 - `ProximityGap.StrictCoeffPolysExcResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysExceptional.lean:157` — conditional providers only (residual deps: `StrictCoeffPolysExcResidual`, `StrictCoeffPolysResidual`; extra assumptions: `h`, `hbb`)
 - `ProximityGap.StrictCoeffPolysShareResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean:76` — conditional providers only (residual deps: `StrictCoeffPolysExcResidual`, `StrictCoeffPolysResidual`; extra assumptions: `h`, `hInput`, `hℓ`)
 - `ArkLib.BoundaryLatticeThresholdLeaf.BoundaryCardLatticeThresholdResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdLeaf.lean:196` — conditional providers only (extra assumptions: `hCanon`, `hExt`, `hProd`)
+- `ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalEvenOddDescent.lean:165`
+- `ProximityGap.Frontier.ARX1.SteinWickResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:198`
+- `ArkLib.ProximityGap.GaloisStickelberger.GaloisPhaseSpreadResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGalois_StickelbergerPhaseDescent.lean:119`
+- `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean:208`
+- `ProximityGap.Frontier.IsoSparsityMasonStothers.IsolatedNonCosetCountResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IsoSparsityMasonStothers.lean:145`
+- `ArkLib.ProximityGap.Frontier.JacKatz.EffectiveEquidistResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacKatzBoundedConductorFamily.lean:234`
+- `ArkLib.ProximityGap.Frontier.JacobiKatzEquidist.JacobiEquidistributionRateResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacobiKatzEquidist.lean:202`
+- `ProximityGap.Frontier.SecondDescentParity.SecondDescentStuckResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SecondDescentParity.lean:148`
 - `ProximityGap.Ownership.SubJohnsonListResidual` — `ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean:76`
 - `Reduction.reductionAppendCompletenessResidual` — `ArkLib/OracleReduction/Composition/Sequential/Append.lean:901` — conditional providers only (extra assumptions: `hDir`, `hDir₂`, `hInit`, `himplNF`, `himplSP`, `himplVB`, `hn`)
 - `Reduction.reductionAppendPerfectCompletenessResidual` — `ArkLib/OracleReduction/Composition/Sequential/Append.lean:920` — conditional providers only (extra assumptions: `hDir`, `hDir₂`, `hImplSupp`, `hInit`, `himplNF`, `himplSP`, `hn`)
@@ -105,7 +141,7 @@ proof debt and naming drift.
 - `ProximityGap.GrandChallenges.MCALowerWitness.ofListSizeGCXK25_of_gkl24_witnessCover_residual` — `ArkLib/Data/CodingTheory/Connections/ProximityPrizeConnectiveTissue.lean:322` — `def`; name does not end in `Residual`
 - `ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1486` — `def`; name does not end in `Residual`
 - `ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual` — `ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean:1537` — `def`; name does not end in `Residual`
-- `ProximityGap.StrictCoeffPolysResidualShareOr` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean:54` — `def`; name does not end in `Residual`
+- `ProximityGap.StrictCoeffPolysShareResidualOr` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffPolysShareOr.lean:54` — `def`; name does not end in `Residual`
 - `ArkLib.Issue64Boundary.BoundaryCardLatticeSubResiduals` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardLatticeSlice.lean:131` — `def`; name does not end in `Residual`
 - `ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidual.lean:417` — `def`; name does not end in `Residual`
 - `CodingTheory.gkl24_cubeRoot_mca_bound_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:51` — `def`; name does not end in `Residual`
@@ -117,6 +153,10 @@ proof debt and naming drift.
 - `CodingTheory.bchks25_rs_epsCA_johnson_jump_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:170` — `def`; name does not end in `Residual`
 - `CodingTheory.gg25_subspaceDesign_epsMCA_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:193` — `def`; name does not end in `Residual`
 - `ProximityGap.diffStackMCAResidualBelowUDR` — `ArkLib/Data/CodingTheory/ProximityGap/Errors.lean:1597` — `def`; name does not end in `Residual`
+- `ProximityGap.Ownership.residualRatio` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/PinnedScalarRatioImage.lean:70` — `def`; name does not end in `Residual`
+- `ProximityGap.Frontier.IsolatedCountKelley.residualNote` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IsolatedCountKelley.lean:105` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.PhasePairEquidistBudget.pairResidualCorrection` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhasePairEquidistBudget.lean:39` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean:211` — `def`; result type is `ℝ`, not `Prop`
 - `CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.mcaLowerWitness_of_residuals` — `ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean:429` — `def`; name does not end in `Residual`
 - `ProximityGap.GrandChallenges.CS25BreakdownLowerResidualUniversal` — `ArkLib/Data/CodingTheory/ProximityGap/MCAConjectureRefutation.lean:120` — `def`; name does not end in `Residual`
 - `ProximityGap.Ownership.residual` — `ArkLib/Data/CodingTheory/ProximityGap/OwnershipBound.lean:48` — `def`; name does not end in `Residual`

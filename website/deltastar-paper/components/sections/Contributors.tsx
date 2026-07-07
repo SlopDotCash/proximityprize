@@ -1,17 +1,18 @@
 // Commit counts to lalalune/ArkLib main, identities deduped by email.
+// Updated 2026-06-30 (15,065 total commits on main).
 const lead = {
   user: "lalalune",
   name: "Shaw (lalalune)",
-  commits: 3200,
+  commits: 10219,
   note: "campaign lead",
 };
 
 // Everyone else, equal weight, with commit counts shown.
 const campaign: { user: string; name?: string; commits: number }[] = [
+  { user: "0xSolace", name: "Sol (0xSolace)", commits: 1715 },
+  { user: "lewistham9x", name: "lekt9", commits: 254 },
+  { user: "NubsCarson", name: "NubsCarson", commits: 209 },
   { user: "wakesync", name: "wakesync", commits: 154 },
-  { user: "0xSolace", name: "Sol (0xSolace)", commits: 148 },
-  { user: "lewistham9x", name: "lekt9", commits: 144 },
-  { user: "NubsCarson", name: "NubsCarson", commits: 100 },
   { user: "2-A-M", name: "2AM", commits: 19 },
   { user: "standujar", name: "Stan", commits: 3 },
 ];

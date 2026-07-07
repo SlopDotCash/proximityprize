@@ -352,7 +352,7 @@ def parse_file(path: Path, root: Path) -> list[dict]:
             )
 
     decls: list[dict] = []
-    rel = str(path.relative_to(root))
+    rel = path.relative_to(root).as_posix()
     for i, h in enumerate(headers):
         window_end = headers[i + 1]["start"] if i + 1 < len(headers) else len(code)
         binders, result = split_signature(code[h["sig_from"] : window_end])

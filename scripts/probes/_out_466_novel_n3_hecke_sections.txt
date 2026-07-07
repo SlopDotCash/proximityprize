@@ -1,0 +1,76 @@
+============================================================================================
+probe_466_novel_n3_hecke_sections.py -- N3-homogeneous lane: dictionary + binding arithmetic
+============================================================================================
+
+(1) DICTIONARY SPOT-CHECK: section = Hecke point; dual = Z^d + Z*(c/p)
+  p=65537: h=64 (order 16);  ker-membership 1000/1000, dual-integrality <c/p,a> in Z: 1000/1000;  covol(Z^d+Zc/p)=1/p certified (c has unit entries => order of c/p in (R/Z)^d is exactly p)
+  p=65617: h=53618 (order 16);  ker-membership 1000/1000, dual-integrality <c/p,a> in Z: 1000/1000;  covol(Z^d+Zc/p)=1/p certified (c has unit entries => order of c/p in (R/Z)^d is exactly p)
+  => x_S(p) = p^(-1/d) L_S(p) is the T_p Hecke point of [Z^d] with parameter [c_S] in P^(d-1)(F_p).
+  NOTE: mu_n-dilation acts on c_S by global scalar => acts TRIVIALLY on [c_S] (projective).
+  The Hecke fiber sees exactly the dilation-quotient of the problem (b-blindness = projectivization).
+
+(2) FULL-FIBER MOMENTS ARE ELEMENTARY IDENTITIES (Siegel/Rogers for the Hecke orbit = counting)
+  d=3, p=251: |P^2| = 63253;  T1 brute = 6552, closed = 6552  [MATCH];  T2 brute = 13728, closed = 13728  [MATCH]
+  d=4, p=31: |P^3| = 30784;  T1 brute = 79440, closed = 79440  [MATCH];  T2 brute = 358560, closed = 358560  [MATCH]
+  => full-orbit mean AND variance of the wraparound statistic are exact counting identities;
+     effective Hecke-point equidistribution (any rate) is information-free at fixed p:
+     it estimates averages that are already exact, and our C(n,2r) sections are a
+     density ~ 2^(-16000) subfamily it cannot resolve (see table (4)).
+
+(3) MULTIPLIER ACTION = GALOIS TWIST:  count(kS; h) = count(S; h^k), k odd
+  p=65617: identity verified on 60/60 random (S,k) pairs (EXACT)
+  => the multiplier 'dynamics' is generator-change (Galois); the AGGREGATE count is
+     Galois-invariant (generator-independent), so the action is information-free at the
+     aggregate level; the acting group (Z/n)^x ~ Z/2 x Z/2^(mu-2) is VIRTUALLY CYCLIC:
+     no rank-2 (x2x3 / Furstenberg-BLMV) rigidity input exists on a 2-power exponent space.
+
+(4) BINDING ARITHMETIC AT THE PRIZE POINT (deployer/union-bound form)
+  --- beta=4 diagonal: n = 2^30, p ~ 2^120, ln p = 83.18, r* = ceil(ln p) = 84, #primes(window) ~ 2^84.6 ---
+      single-section certification floor: kappa > log_p(#primes) = 0.7052  (Ramanujan ceiling = 0.5 => deficit p^0.2052 ~ 2^24.6 uncertifiable bad primes per section)
+          r   d=2r   kappa_needed=log_p C(n,2r)     vs 1/2  per-section mean +-1 pts (log2)  radius/lambda_gauss
+          1      2                       0.4917       1.0x                             -118                0.000
+          2      4                       0.9618       1.9x                             -116                0.000
+          3      6                       1.4209       2.8x                             -114                0.000
+          4      8                       1.8725       3.7x                             -112                0.000
+          5     10                       2.3184       4.6x                             -110                0.001
+         10     20                       4.4910       9.0x                             -100                0.065
+         29     58                      12.3305      24.7x                              -62                0.985
+         60    120                      24.4960      49.0x                                0                2.066
+         84    168                      33.6287      67.3x                               48                2.519
+      crossovers: avoidance-with-K^r-exceptions dies in r in (2,3) (expected dirty sections: r=2: 1.80e+35... see below);
+        r=2: E[#dirty sections] ~ C(n,4)*2^4/(2p) = exp(-1.1) = 0.333
+        r=3: E[#dirty sections] ~ C(n,6)*2^6/(2p) = exp(38.5) = 5.12e+16
+      cusp crossover r_cusp = ln p / ln(2 pi e) = 29.3 (below: a +-1 vector is beyond-Minkowski-short; above: bulk radius)
+      saturation r_sat = log2(p)/2 = 60 (above: EVERY section carries wraparounds; at r*: 2^48 per section)
+      union bound at r*: kappa_needed = 33.63 vs Ramanujan 0.5: deficit 67x; fictional-Ramanujan depth cap: r=1 only (kappa_needed(1) = 0.492, kappa_needed(2) = 0.962)
+  --- true prize field: n = 2^30, p ~ 2^158, ln p = 109.52, r* = ceil(ln p) = 110, #primes(window) ~ 2^122.2 ---
+      single-section certification floor: kappa > log_p(#primes) = 0.7736  (Ramanujan ceiling = 0.5 => deficit p^0.2736 ~ 2^43.2 uncertifiable bad primes per section)
+          r   d=2r   kappa_needed=log_p C(n,2r)     vs 1/2  per-section mean +-1 pts (log2)  radius/lambda_gauss
+          1      2                       0.3734       0.7x                             -156                0.000
+          2      4                       0.7305       1.5x                             -154                0.000
+          3      6                       1.0792       2.2x                             -152                0.000
+          4      8                       1.4222       2.8x                             -150                0.000
+          5     10                       1.7608       3.5x                             -148                0.000
+         10     20                       3.4109       6.8x                             -138                0.017
+         29     58                       9.3649      18.7x                             -100                0.625
+         60    120                      18.6045      37.2x                              -38                1.659
+        110    220                      32.9131      65.8x                               62                2.512
+      crossovers: avoidance-with-K^r-exceptions dies in r in (2,3) (expected dirty sections: r=2: 4.94e+46... see below);
+        r=2: E[#dirty sections] ~ C(n,4)*2^4/(2p) = exp(-27.4) = 1.21e-12
+        r=3: E[#dirty sections] ~ C(n,6)*2^6/(2p) = exp(12.1) = 1.86e+05
+      cusp crossover r_cusp = ln p / ln(2 pi e) = 38.6 (below: a +-1 vector is beyond-Minkowski-short; above: bulk radius)
+      saturation r_sat = log2(p)/2 = 79 (above: EVERY section carries wraparounds; at r*: 2^62 per section)
+      union bound at r*: kappa_needed = 32.91 vs Ramanujan 0.5: deficit 66x; fictional-Ramanujan depth cap: r=1 only (kappa_needed(1) = 0.373, kappa_needed(2) = 0.730)
+
+(4b) WHY THE FORM ITSELF IS WRONG PAST r ~ beta: Parseval forces E_r >= n^{2r}/p (DC mean);
+     the proven char-0 ladder caps char-0 solutions at Wick; so for r > beta the char-p mass
+     ~ n^{2r}/p MUST be present -- 'all but K^r sections avoid' contradicts Parseval at r >= 5
+     (modulo the standard low-support layer bookkeeping): at r=5, needed mass 2^180 tuples vs
+     K^5 * 2^10 * (5!)^2 * (max 2^10/section) -- constant K fails by ~2^150. The correct
+     lattice-language statement of form A at depth r ~ ln p is the VARIANCE form (dossier form C):
+     total +-1-count over the C(n,2r) Hecke points = Siegel mean * (1 + O(mean^{-0.47})).
+
+VERDICT: all three sub-routes die on exact arithmetic/structure (see kb note
+  deltastar-466-novel-N3-homogeneous-2026-07-01.md). Surviving content: the dictionary (exact),
+  the three crossovers, the type-error warning (deg-T_p rates vs p-rates), and the reduction of
+  the lane's residue to the ALREADY-NAMED open Props (TPS divisor-equidistribution; D2 coupling).

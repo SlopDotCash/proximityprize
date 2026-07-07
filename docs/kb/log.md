@@ -1925,3 +1925,22 @@ The strongest consumer, `deltaStar_pin_of_someMaximizerReachesFamily`, says it i
 some true global bad-scalar maximizer by count-nondecreasing improvement steps into a finite
 budgeted family.  This is not the missing monotone-normalization theorem, but it lowers the target
 from all-stack domination to an extremal/maximizer-carrying statement.
+## [2026-07-01] consolidate | dossier v3 + #444 phantom-brick recovery + workspace refresh
+
+Prize-consolidation pass (issue #464 → successor):
+
+- **`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`** — the v3 dossier, superseding v2: folds in the
+  full #464 record (dossier v2 §14–16 round logs + all 179 comments, independently re-digested by
+  three parallel readers), the TZ 12/5 resolution, the floor meta-verdict, the line-list weld
+  stack, the canonical width-four closure, the door-(iv)/graph-face closures, and the ranked live
+  frontier (§6).
+- **Phantom bricks RESOLVED**: the five dossier-v2 §12 "phantom" bricks (`_DstarGrowthLaw`,
+  `_OPSingleOrbit`, `_DyadicRecursionDstar`, `PrizeEquivalencePin`, `FloorResonanceEnergyBridge`)
+  plus `_S2NonSymTower`/`SymmetricTowerBracket` were recovered from the unpushed workstation
+  branch (archived: `archive/444-charzero-dyadic-rigidity`), re-verified axiom-clean against
+  2026-07-01 main, and landed. Note: `deltastar-444-recovered-workstation-bricks-2026-07-01.md`.
+- Landed the recovered #444 KB no-go notes (11 files) + non-underscore `probe_444_*`/`angleB_*`
+  probe scripts from the same branch.
+- **`PROXIMITY_PRIZE_WORKBENCH.lean`** refreshed: new §5 STATE OF PLAY 2026-07-01 (m* rational
+  form, line-list obligations, windowed-guard discipline, ranked survivors), header repointed at
+  dossier v3.

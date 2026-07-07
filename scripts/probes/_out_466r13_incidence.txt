@@ -1,0 +1,98 @@
+
+==========================================================================
+n = 8   primes (p==1 mod n, p>=n^4, distinct v2): [4129, 4153]
+
+  p = 4129  q = 4129  g = 13
+    M = max_(b!=0)||eta_b|| = 7.5582   M/sqrt(n) = 2.6722   (2*sqrt(n)=5.657)
+    ||eta||_2 over b!=0 = 181.57   ~ sqrt((q-1)*n) = 181.73
+    CONTROL H=F* (s1=0, line=point): worst_s0|I| = 4121.00   vs q-n = 4121   [reaches q-scale: naive q*B NOT beatable on full spectrum]
+    -- MODE B  H=<g^2> index 2  |H\0|=2064  M_H=7.298
+        worst_s0 |I|        = 2028.3714
+        L2 avg sqrt(S||^2)  = 127.3851
+        sqrt|H|*M_H  [WORLD I] = 331.5462
+        naive |H|*M_H [WORLD II] = 15062.5616
+        RATIOS  worst/(sqrt|H|*M_H)=6.118   worst/(|H|*M_H)=0.1347   worst/L2avg=15.923
+    -- MODE B  H=<g^4> index 4  |H\0|=1032  M_H=7.298
+        worst_s0 |I|        = 1113.4755
+        L2 avg sqrt(S||^2)  = 94.3812
+        sqrt|H|*M_H  [WORLD I] = 234.4385
+        naive |H|*M_H [WORLD II] = 7531.2808
+        RATIOS  worst/(sqrt|H|*M_H)=4.750   worst/(|H|*M_H)=0.1478   worst/L2avg=11.798
+    -- MODE B  H=<g^8> index 8  |H\0|=516  M_H=7.298
+        worst_s0 |I|        = 575.2835
+        L2 avg sqrt(S||^2)  = 66.7376
+        sqrt|H|*M_H  [WORLD I] = 165.7731
+        naive |H|*M_H [WORLD II] = 3765.6404
+        RATIOS  worst/(sqrt|H|*M_H)=3.470   worst/(|H|*M_H)=0.1528   worst/L2avg=8.620
+
+  p = 4153  q = 4153  g = 5
+    M = max_(b!=0)||eta_b|| = 7.4584   M/sqrt(n) = 2.6370   (2*sqrt(n)=5.657)
+    ||eta||_2 over b!=0 = 182.10   ~ sqrt((q-1)*n) = 182.25
+    CONTROL H=F* (s1=0, line=point): worst_s0|I| = 4145.00   vs q-n = 4145   [reaches q-scale: naive q*B NOT beatable on full spectrum]
+    -- MODE B  H=<g^2> index 2  |H\0|=2076  M_H=7.458
+        worst_s0 |I|        = 2104.7219
+        L2 avg sqrt(S||^2)  = 128.7633
+        sqrt|H|*M_H  [WORLD I] = 339.8294
+        naive |H|*M_H [WORLD II] = 15483.6942
+        RATIOS  worst/(sqrt|H|*M_H)=6.193   worst/(|H|*M_H)=0.1359   worst/L2avg=16.346
+    -- MODE B  H=<g^4> index 4  |H\0|=1038  M_H=7.458
+        worst_s0 |I|        = 1065.5040
+        L2 avg sqrt(S||^2)  = 91.0494
+        sqrt|H|*M_H  [WORLD I] = 240.2957
+        naive |H|*M_H [WORLD II] = 7741.8471
+        RATIOS  worst/(sqrt|H|*M_H)=4.434   worst/(|H|*M_H)=0.1376   worst/L2avg=11.702
+    -- MODE B  H=<g^8> index 8  |H\0|=519  M_H=7.458
+        worst_s0 |I|        = 533.3280
+        L2 avg sqrt(S||^2)  = 64.3817
+        sqrt|H|*M_H  [WORLD I] = 169.9147
+        naive |H|*M_H [WORLD II] = 3870.9235
+        RATIOS  worst/(sqrt|H|*M_H)=3.139   worst/(|H|*M_H)=0.1378   worst/L2avg=8.284
+
+==========================================================================
+n = 16   primes (p==1 mod n, p>=n^4, distinct v2): [65537, 65617]
+
+  p = 65537  q = 65537  g = 3
+    M = max_(b!=0)||eta_b|| = 13.8375   M/sqrt(n) = 3.4594   (2*sqrt(n)=8.000)
+    ||eta||_2 over b!=0 = 1023.88   ~ sqrt((q-1)*n) = 1024.00
+    CONTROL H=F* (s1=0, line=point): worst_s0|I| = 65521.00   vs q-n = 65521   [reaches q-scale: naive q*B NOT beatable on full spectrum]
+    -- MODE B  H=<g^2> index 2  |H\0|=32768  M_H=13.838
+        worst_s0 |I|        = 32632.4990
+        L2 avg sqrt(S||^2)  = 722.5787
+        sqrt|H|*M_H  [WORLD I] = 2504.8621
+        naive |H|*M_H [WORLD II] = 453428.4725
+        RATIOS  worst/(sqrt|H|*M_H)=13.028   worst/(|H|*M_H)=0.0720   worst/L2avg=45.161
+    -- MODE B  H=<g^4> index 4  |H\0|=16384  M_H=13.838
+        worst_s0 |I|        = 15683.9156
+        L2 avg sqrt(S||^2)  = 500.9418
+        sqrt|H|*M_H  [WORLD I] = 1771.2050
+        naive |H|*M_H [WORLD II] = 226714.2362
+        RATIOS  worst/(sqrt|H|*M_H)=8.855   worst/(|H|*M_H)=0.0692   worst/L2avg=31.309
+    -- MODE B  H=<g^8> index 8  |H\0|=8192  M_H=13.838
+        worst_s0 |I|        = 7903.2958
+        L2 avg sqrt(S||^2)  = 355.6019
+        sqrt|H|*M_H  [WORLD I] = 1252.4310
+        naive |H|*M_H [WORLD II] = 113357.1181
+        RATIOS  worst/(sqrt|H|*M_H)=6.310   worst/(|H|*M_H)=0.0697   worst/L2avg=22.225
+
+  p = 65617  q = 65617  g = 13
+    M = max_(b!=0)||eta_b|| = 13.2948   M/sqrt(n) = 3.3237   (2*sqrt(n)=8.000)
+    ||eta||_2 over b!=0 = 1024.51   ~ sqrt((q-1)*n) = 1024.62
+    CONTROL H=F* (s1=0, line=point): worst_s0|I| = 65601.00   vs q-n = 65601   [reaches q-scale: naive q*B NOT beatable on full spectrum]
+    -- MODE B  H=<g^2> index 2  |H\0|=32808  M_H=13.295
+        worst_s0 |I|        = 32928.5791
+        L2 avg sqrt(S||^2)  = 724.4363
+        sqrt|H|*M_H  [WORLD I] = 2408.0852
+        naive |H|*M_H [WORLD II] = 436175.9606
+        RATIOS  worst/(sqrt|H|*M_H)=13.674   worst/(|H|*M_H)=0.0755   worst/L2avg=45.454
+    -- MODE B  H=<g^4> index 4  |H\0|=16404  M_H=13.295
+        worst_s0 |I|        = 16556.4324
+        L2 avg sqrt(S||^2)  = 512.2538
+        sqrt|H|*M_H  [WORLD I] = 1702.7734
+        naive |H|*M_H [WORLD II] = 218087.9803
+        RATIOS  worst/(sqrt|H|*M_H)=9.723   worst/(|H|*M_H)=0.0759   worst/L2avg=32.321
+    -- MODE B  H=<g^8> index 8  |H\0|=8202  M_H=13.295
+        worst_s0 |I|        = 8582.3866
+        L2 avg sqrt(S||^2)  = 362.2182
+        sqrt|H|*M_H  [WORLD I] = 1204.0426
+        naive |H|*M_H [WORLD II] = 109043.9902
+        RATIOS  worst/(sqrt|H|*M_H)=7.128   worst/(|H|*M_H)=0.0787   worst/L2avg=23.694

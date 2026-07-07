@@ -1,0 +1,20 @@
+##### floor-bad(64) DECISION via complement-poly MITM (translation-complete) #####
+##### started Fri Jul  3 03:59:52 2026  nproc=11
+
+== DECIDE floor-bad(64) membership of p=193 via complement MITM ==
+   (c0=0 by translation-invariance; b2 over Z/16 rotation reps => COMPLETE for existence)
+  [n=64 p=193] canonical b2 reps=810/12870 (Z/16 translation); pairs scanned = 810*12870 = 10,424,700 (vs full 165,636,900); nproc=11
+   stats: {'reps': 810, 'pairs': 10424700, 'secs': 2011.7}
+  NO realizable adjacent-7th-type pattern exists (COMPLETE scan of 10,424,700 maj-reps x full min-set) => p=193 is NOT in floor-bad(64).
+   [p=193 wall=2012s]
+
+== DECIDE floor-bad(64) membership of p=257 via complement MITM ==
+   (c0=0 by translation-invariance; b2 over Z/16 rotation reps => COMPLETE for existence)
+  [n=64 p=257] canonical b2 reps=810/12870 (Z/16 translation); pairs scanned = 810*12870 = 10,424,700 (vs full 165,636,900); nproc=11
+   stats: {'reps': 810, 'pairs': 10424700, 'secs': 2374.8}
+  NO realizable adjacent-7th-type pattern exists (COMPLETE scan of 10,424,700 maj-reps x full min-set) => p=257 is NOT in floor-bad(64).
+   [p=257 wall=2375s]
+
+== DECIDE floor-bad(64) membership of p=449 via complement MITM ==
+   (c0=0 by translation-invariance; b2 over Z/16 rotation reps => COMPLETE for existence)
+  [n=64 p=449] canonical b2 reps=810/12870 (Z/16 translation); pairs scanned = 810*12870 = 10,424,700 (vs full 165,636,900); nproc=11

@@ -1,3 +1,262 @@
+## [466-r14-outer-two-sided-iff] the delta*-floor is machine-checked BOTH DIRECTIONS equivalent to WorstCaseIncidenceBounded — the campaign's real two-sidedness (2026-07-04, #466 round 14)
+
+Lane: round-14 Lane I (dossier §24). Assembled the campaign's actual machine-checked two-sided reduction
+certificate _TwoSidedCapstone.lean (6 thms, all #print axioms = {propext, Classical.choice, Quot.sound}, no
+sorryAx, real build). THE OUTER IFF (genuinely two-sided, the NEW reverse direction is the contribution):
+epsMCA(C,δ) <= E/q  <=>  WorstCaseIncidenceBounded C δ E  (= for all stacks u, #bad-scalars(u) <= E). Forward
+(mp) reuses in-tree OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence; the NEW reverse (mpr,
+worstCaseIncidenceBounded_of_epsMCA_le) unfolds epsMCA as the sup of per-stack probabilities, applies
+mcaEvent_prob_le_epsMCA, cancels the finite positive denominator q via ENNReal.div_le_iff_le_mul +
+div_mul_cancel. SUFFICIENCY WorstCaseIncidenceBounded ==> δ <= mcaDeltaStar C (E/q) FULLY PROVEN
+(deltaStar_floor_of_incidence = in-tree worstCaseIncidence_pin_budget). NECESSITY proven in pointwise/local
+form (goodness-at-δ ==> incidence, incidence_of_deltaStar_good via the iff.mp) with goodness-at-δ consumed as
+the NAMED hyp hGoodAt (strictly stronger than δ<=mcaDeltaStar at the non-attained sSup boundary — NOT
+laundered). VERDICT IFF-PARTIAL-NAMED-GLUE. The INNER reduction WorstCaseIncidenceBounded <== WallHolds (M via
+supNorm_le_of_wallHolds) ∧ HyperplaneCancellation (√q·B, provably not a function of M) stays the open glue
+IncidenceFromWallGlue: the in-tree CharSumDeltaStarBridge budget is the NAIVE ceil(|G|+q·B) (vacuous at prize
+E~n for nonzero B); making it non-vacuous needs the √q·B HyperplaneCancellation (BCHKS Conj 1.12) on top of
+WallHolds's M. HONESTY CORRECTION folded to §0/§5: the dossier's "ERM-at-r ⟺ M ≤ √((2r+1)n), floor=ceiling
+two-sided" is PROSE — _EnergyRatioMonotoneReduction formalizes only forward (gaussianEnergyBound_of_ERM), raw
+ERM is DC-crossover-refuted (n=32,r=6), and a whole-cone grep found NO formalized ERM iff; the campaign's REAL
+machine-checked two-sidedness is THIS outer epsMCA<=>incidence iff, NOT an ERM<=>M iff. No closure. CORE OPEN.
+
+## [466-r14-two-inputs-independent] LANE D: the two open Props are INDEPENDENT — HyperplaneCancellation does NOT imply WallHolds either (reverse of round 13); WallHolds strictly stronger than "M small" (2026-07-04, #466 round 14)
+
+Lane: D (dossier §22/§23 relationship-completion). Round 13 proved WallHolds ⇏ HyperplaneCancellation
+(M phase-blind). Round 14 settles the REVERSE and the exact strength: does HyperplaneCancellation (whose
+only spectral input is the sup-norm M = max_{b≠0}‖η_b‖) imply WallHolds (the ∀-r Wick moment tower
+A_r := ∑_{b≠0}‖η_b‖^{2r} ≤ q·(2r−1)‼·n^r)? VERDICT: **NO — the two are INDEPENDENT. WallHolds is STRICTLY
+STRONGER than the sup-norm bound it produces.**
+
+THE MATH (why M-bound cannot recover the tower). A sup-norm bound M ≤ B gives, per rung r, ONLY the
+term-wise Hölder projection A_r ≤ |H|·B^{2r}. With the wall's own constant B² = 2e·n·(ln q+1), this is
+B^{2r} = (2e·n·ln q)^r, the WRONG SHAPE vs Wick (2r−1)‼·n^r: the ratio B^{2r}/Wick_r = (2e·ln q)^r/(2r−1)‼ ≫ 1
+at small r. The M-bound OVERSHOOTS Wick and can never re-tighten to it. Equivalently: a sup-norm-capped,
+Parseval-correct spectrum (k = n(q−1)/B² freqs at the cap B, rest 0) has M = B yet violates WallHolds at every
+r ≥ 2. So "M small" ⇏ WallHolds.
+
+LANDED AXIOM-CLEAN (`Frontier/_R14SupNormWeakerThanWall.lean`, 3 thms, #print axioms = [propext,
+Classical.choice, Quot.sound], no sorryAx, pg-iterate OK 25s):
+* `supBound_sumPow_le`: ∀ b∈H ‖η_b‖ ≤ B (0≤B) ⟹ ∑_{b∈H}‖η_b‖^{2r} ≤ |H|·B^{2r}. The ENTIRE per-rung content
+  of a sup-norm bound (Hölder projection). This is all M gives.
+* `wick_lt_supProjection_r1`: with the wall's B² = 2e·n·(L+1) (L = ln q ≥ 0, n ≥ 1, q ≥ 1), the Wick RHS at
+  r=1 (q·(2·1−1)‼·n = q·n) is STRICTLY < the projection q·B² = q·2e·n·(L+1). So the M-derived per-rung bound
+  strictly overshoots Wick already at r=1 ⟹ a spectrum saturating M = B carries A_1 above q·Wick_1 ⟹ M ≤ B
+  does NOT imply WallHolds.
+* `wallConst_sq_ge_n`: B² = 2e·n·(L+1) ≥ n (certifies the projection is never below the naive n^r scale, the
+  shape mismatch is genuine).
+
+PROBE `probe_466r14_relationship.py` → `_out_466r14_relationship.txt` (regime p≡1 mod n, p≥n^4, ≥2 primes
+distinct v2, n=8/16/32): (1) ratio B^{2r}/Wick_r = 45–75 at r=1, growing to ~10^12 by r=15, EVERY n,p — M-bound
+NEVER recovers the tower. (2) Parseval-respecting cap spectrum violates WallHolds at all r≥2 across all n,p.
+
+VERDICT (combining rounds 13+14):
+  WallHolds ⇏ HyperplaneCancellation   (round 13: M phase-blind, controls only the s₀-average of I_H)
+  HyperplaneCancellation ⇏ WallHolds   (round 14: HC's only spectral input is M, and M ≤ B is a lossy Hölder
+                                         projection that overshoots the per-rung Wick tower — strictly weaker)
+  ⟹ the two open Props are (d) INDEPENDENT — neither implies the other. The moment/energy layer (WallHolds)
+  and the phase-correlation layer (HyperplaneCancellation) are ORTHOGONAL faces: WallHolds is strictly stronger
+  than the sup-norm M it produces (a lossy projection), and HyperplaneCancellation is a finer phased object M
+  cannot see. The prize genuinely needs BOTH; neither is reducible to the other. This CONFIRMS the capstone's
+  two-Prop structure is irreducible, not an artifact. CORE OPEN, ON-BGK, TWO INDEPENDENT INPUTS. No closure.
+
+LITERATURE (Lane D question 2). The sup-norm object M = max_{b≠0}‖η_b‖ = non-principal eigenvalue of the
+generalized Paley graph Cay(F_q,μ_n) (Liu–Zhou Thm 115); "M ≤ 2√n" = the Paley Graph Conjecture (open; best
+proven BGK n^{1−o(1)}). The moment tower {A_r ≤ q·Wick_r} is the additive-energy / Gaussian-moment statement.
+STANDARD FACT (eigenvalue–moment interchange): the moment tower is STRICTLY STRONGER — it implies the sup-norm
+bound (via A_r ≥ M^{2r}, take r-th root, optimize r ≈ ln q ⟹ M ≲ √(n ln q), the moment method, formalized in
+supNorm_le_of_wallHolds), but NOT conversely (a single eigenvalue bound controls only max_b, not the whole
+spectral profile ∑_b‖η_b‖^{2r}). This matches the general principle that spectral-radius bounds are a lossy
+projection of trace/moment bounds. So WallHolds ⊋ PaleyGraphConjecture-strength on the FIRST-Prop axis; and the
+SECOND Prop (HyperplaneCancellation) is a phase-correlation statement orthogonal to both. No literature reduces
+one open Prop to the other.
+
+
+
+Lane: round-13 Lane M (dossier §23), tightening the round-12 CAPSTONE-PARTIAL. Round 12's _WallCapstone.lean
+proved WallHolds ==> per-rung Wick bound but left the moment-order optimization (turning the per-rung 2r-power
+bounds into a single closed-form sup-norm M <= C*sqrt(n log q)) as an un-formalized parameter B/hB (caveat (a)).
+LANE M discharges it AXIOM-CLEAN. Brick _MomentOptimizedSupNorm.lean (real lake build 3320 jobs,
+autoImplicit=false, all thms #print axioms = {propext, Classical.choice, Quot.sound}, 0 sorryAx): from the
+DC-subtracted wall (DCEnergyCorrection.eta_pow_le_of_dcEnergyBound, non-vacuous at prize) + the new
+Stirling-free arithmetic doubleFactorial_two_sub_one_le ((2r-1)!! <= (2r)^r for Mathlib's Nat.doubleFactorial,
+via Nat.doubleFactorial_eq_prod_odd) + the saddle sq_le_of_pow_ceil (q^{1/r} <= e at r=ceil(ln q)):
+supNorm_le_of_wallHolds proves WallHolds G ∧ q>=e ==> forall b!=0, ||eta_b|| <= sqrt(2e*n*(ln q+1)).
+_MomentWallWiringCheck.lean's wall_capstone_moment_closed (pg-iterate axiom-clean) machine-verifies this
+composes into _WallCapstone.wall_capstone's B/hB0/hB slots (the two WallHolds defs are DEFINITIONALLY EQUAL,
+type-checks with NO glue lemma), discharging caveat (a) end-to-end: WallHolds now supplies BOTH the per-rung
+moments AND the optimized sup-norm B, no free parameter. Probe probe_466r13_moment.py (n=8,16,32, >=2 primes,
+p=n^4): true M/sqrt(n log(p/n)) = 1.05-1.26; the WallHolds Wick-min /sqrt(n ln q) = 1.43-1.44 CONSTANT across n
+(order confirmed); Wick argmin r* ≈ ln q matching the formalized r=ceil(ln q). CAVEAT: the crude Lean constant
+C=sqrt(2e)≈2.33 over-estimates the true ≈1.43 (probe numeric, not a Lean theorem); WallHolds itself is NOT
+proven (open ~25-yr analytic number theory). This is a TIGHTENING of the capstone, not a wall closure.
+
+## [466-r13-two-distinct-inputs] WORLD II SETTLED: the prize needs WallHolds AND a distinct 2nd Prop (worst-case hyperplane cancellation), NOT implied by M (2026-07-04, #466 round 13)
+
+Lane: R (dossier §22 tightening). THE CRUX QUESTION: does the round-12 `RealizedIncidenceBudget` glue
+(the √q·B hyperplane cancellation) FOLLOW from the wall's sup-norm bound M = max_{b≠0}‖η_b‖ (World I ⟹ prize
+localizes to WallHolds ALONE, single-Prop iff) or is it a DISTINCT open input (World II ⟹ prize = WallHolds ∧
+2nd Prop)? VERDICT: **WORLD II**, settled rigorously with an axiom-clean identity + counterexample-to-derivability.
+
+THE OBJECT. `I_H(s₀) = ∑_{b∈H} conj(η_b) ψ(b·s₀)` = the signed sum over a genuine frequency hyperplane H (the
+general-H form of `IncidencePeriodBridge.lineIncidence_period_sum`; the in-tree V=F geometry has the DEGENERATE
+hyperplane {b:b·s₁=0}={0} for s₁≠0, so it never tests cancellation — Round 13 uses a genuine nontrivial
+subgroup H=<g^deg> ⊂ F^*, |H|~q/deg, the honest higher-D analogue).
+
+LANDED AXIOM-CLEAN (`Frontier/_R13HyperplaneSecondMoment.lean`, 2 thms, #print axioms = [propext,
+Classical.choice, Quot.sound], no sorryAx, pg-iterate OK 38s):
+* `incidenceSum_sq_sum_offsets`: ∑_{s₀∈F} ‖I_H(s₀)‖² = q·∑_{b∈H}‖η_b‖²  (pure char-orthogonality, general H;
+  generalizes the in-tree `incidence_l2_eq_period_l2`). This is the WHOLE control M supplies over I_H.
+* `incidenceSum_sq_sum_le_of_supBound`: hence ∑_{s₀}‖I_H‖² ≤ q·|H|·M², i.e. the AVERAGE over offsets is
+  ≤|H|·M² ⟹ typical ‖I_H(s₀)‖ ≤ √|H|·M. So **M controls the AVERAGE (World-I-on-average) — and ONLY the average.**
+
+WHY WORLD II (probes `_out_466r13_incidence.txt`, `_mechanism.txt`; parallel agent `_twoinput.txt` n=32 concurs):
+regime p==1 mod n, p≥n^4, ≥2 primes distinct v2, n=8/16 (+ n=32 parallel).
+* worst_{s₀}‖I_H‖ ≈ 0.98–0.996·|H|·M_H (the far-coset adversary's actual pick), NOT √|H|·M: ratio
+  worst/(√|H|·M) = 6.1 at |H|=2064 GROWS to 13.7 at |H|=32808 (i.e. ∝√|H|, UNBOUNDED); worst/(|H|·M) ≈ 0.07–0.15
+  stays Θ(1). The worst s₀ sits √|H| ABOVE the rms — a rare in-phase peak the phase-blind 2nd moment cannot see.
+* COUNTEREXAMPLE-TO-DERIVABILITY: rephasing {η_b} to IDENTICAL moduli (⟹ same M, same L², same RHS of the
+  identity) but random phases collapses worst‖I_H‖ from ≈|H|·M to √-scale (ratio true/random = 5.4 at |H|=2064,
+  13.2 at |H|=32768, 59.9 at n=32 — ∝√|H|). Hence worst_{s₀}‖I_H‖ is NOT a function of M (nor of {‖η_b‖} at all):
+  two spectra with the SAME M differ in worst-case incidence by √|H|. A sup-norm bound CANNOT control it.
+
+CONSEQUENCE (sharpens the capstone, no closure claimed). The prize does NOT localize to WallHolds alone.
+It is `WallHolds ∧ HyperplaneCancellation` — TWO distinct analytic inputs. WallHolds (the wall) gives M, and
+M provably controls only the AVERAGE I_H; the worst-case (adversary) bound ∀s₀ ‖I_H(s₀)‖ ≤ √|H|·M (= √q·B,
+Paley/BCHKS-1.12) is a strictly finer, phase-sensitive object the wall does not supply. `RealizedIncidenceBudget`
+in `_WallCapstone.lean` is therefore CORRECTLY a separate named Prop, provably non-derivable from WallHolds.
+"The wall" is really TWO analytic statements. CORE OPEN, ON-BGK, TWO INPUTS. No fabricated closure.
+
+---
+
+## [466-r12-wall-capstone-machine-checked] the prize is machine-checked to localize onto ONE named Prop (WallHolds), the cartography is CAPSTONED (2026-07-04, #466 round 12)
+
+Lane: round-12 capstone (dossier §22). ASSEMBLY (not new math) of the in-tree reduction chain into one
+axiom-clean file `Frontier/_WallCapstone.lean` (3 thms, all #print axioms = [propext, Classical.choice,
+Quot.sound], no sorryAx; skeptic independently pg-iterated and confirmed every cited link is a real in-tree
+theorem applied faithfully, no laundering). WallHolds G := ∀ r, DCEnergyCorrection.DCEnergyBound G r (the
+∀-r closure of W1's WraparoundBelowDC, i.e. the DC-subtracted wraparound ≤ its mean-field DC value at every
+rung — the wall verbatim on the in-tree object, NOT a new incompatible def). Proven links: charSum_of_wallHolds
+(WallHolds ⟹ the per-frequency sup-norm/M bound — the wall's whole analytic payload, DERIVED not assumed, via
+eta_pow_le_of_dcEnergyBound); deltaStar_floor_of_charSumBound_of_budget (= le_mcaDeltaStar_of_charSumBound);
+composite wall_capstone whose conclusion is a CONJUNCTION so WallHolds is genuinely load-bearing. VERDICT
+CAPSTONE-PARTIAL: the prize localizes to WallHolds ∧ RealizedIncidenceBudget, where RealizedIncidenceBudget is
+ONE explicitly-named glue hypothesis (the M→δ* far-coset structural law + naive incidence budget
+⌈|G|+q·B⌉/q ≤ ε*) that the wall does NOT supply, is VACUOUS at the prize budget for nonzero B, and needs the
+open √q·B cancellation (Paley / BCHKS Conj 1.12) — honestly flagged, NOT discharged; plus the moment-order
+optimization (2r-th root, min over r≈ln q) is passed as a parameter, not formalized. Net: the campaign's
+cartography is now not just complete (round 11) but CAPSTONED — the sole open core is a single named Prop, the
+frontal magnitude route (466-r12-frontal-conjugate-gate-collapse) is machine-certified to bottom out exactly on
+it, and a compiled certificate localizes the prize onto it. The wall is NOT claimed closed. CORE OPEN, ON-BGK.
+
+## [466-r11-jointphase-collinear-gauge] the joint tower phase field collapses to magnitudes at ALL depths — collinearity closes the last sub-thread (2026-07-04, #466 round 11)
+
+Lane: round-11 attack on JointPhaseFieldStructure, the ONE sub-thread round 10 declined to foreclose
+(dossier §21). QUESTION: does the joint two-frequency tower phase field (eta_b, eta_{zeta b}) — equivalently
+the two tower half-periods A_b = eta_b(mu_{n/2}), B_b = eta_{zeta b}(mu_{n/2}), A_b+B_b = eta_b(mu_n) — carry
+b-sensitive, moment-transcendent information at deep r that escapes the Meta-Theorem 2nd-order cap? NO.
+DECISIVE (probe_466r11_jointphase_v3.py, proper mu_n ⊊ F_p^×, p≥n^4, p≡1 mod n, ≥2 primes distinct v2(p-1),
+n=8,16,32, full coset scan, scanner validated |A+B−eta|<1e-12): A_b and B_b are EXACTLY COLLINEAR for every
+coset b (max_b |sin(arg B_b − arg A_b)| < 3e-11), because their index sets are negation-closed for 4|n
+(the periods are real up to a global phase) — this is the logged `eta_real_of_neg_closed` /
+[door-iv-common-ray-coherence] fact, here UPGRADED from the worst frequency b* to ALL b, and from r=2 to
+ALL r. Collinearity ⟹ the joint is 1-real-dimensional per coset; its only phase content is a sign bit
+s_b = (|eta_b|² − |A_b|² − |B_b|²)/(2|A_b||B_b|) that is an ALGEBRAIC FUNCTION OF THE THREE MAGNITUDES
+(0 mismatches over 500–33000 cosets/prime), so the joint pair reconstructs from (|eta_b|,|A_b|,|B_b|) alone
+and every joint moment is a symmetric function of the magnitude multiset = the moment ladder (GAUGE). The
+apparent v1 "joint-vs-marginal gap grows with r" is the trivial magnitude inequality ||a|±|b|| vs sqrt(a²+b²)
+with s fixed algebraically — ZERO residual phase at any depth. This UPGRADES [doorIV-joint-field-white]
+(2nd-order cross-covariance = marginal variance) to all r: per coset the problem is 1-real-dimensional, so no
+depth admits a 2nd-order-transcendent phase invariant. Brick `_JointPhaseCollinearGauge.lean` (5 axiom-clean
+thms: collinear_normSq_eq, cross_eq_sign_mul, sign_algebraic_from_magnitudes, joint_reconstructed_from_magnitudes,
+joint_gauge_all_depths — abstract model proving GIVEN collinearity the joint reduces to magnitudes at every
+depth; collinearity itself established numerically per campaign convention). Skeptic re-ran the probe (0/33000
+mismatches reproduced), pg-iterated the brick (axiom-clean confirmed), and independently verified A_b is real
+to 1e-15 (even-power index set negation-closed) — confirming this is a robust rediscovery of a logged reality
+fact, not a delicate signal. Verdict: LAST SUB-THREAD CLOSED; surviving surface unchanged = the wall
+W_r ≤ n^{2r}/p. Residue (refutable, expected-vacuous): only a sub-tower level whose sub-subgroup were NOT
+negation-closed could give a genuine 2-D joint phase — but every dyadic level is negation-closed at the prize
+(−1 = h^{n/2} ∈ mu_{n/2} for 4|n), so the escape is vacuous at the prize regime.
+
+## [466-r11-tetrachotomy-holds-no-fifth-door] the Tetrachotomy holds: every candidate fifth-door escape reduces to a dead branch (2026-07-04, #466 round 11)
+
+Lane: round-11 completeness scout — is JointPhaseFieldStructure REALLY the only unforeclosed direction, or
+did 10 rounds miss a genuinely-new angle? (dossier §21). Systematic stress-test of the "no fifth door"
+claim (dossier §4.2) across model-theoretic/o-minimal, condensed/perfectoid/prismatic/p-adic-Hodge,
+motivic/determinantal, operator-algebraic/free-probability, random-matrix-universality-beyond-moments, and
+information-theoretic candidates. VERDICT: TETRACHOTOMY HOLDS, 0 survivors — the campaign had already run a
+T01-T25 sweep (24 invented escape-theorems in 5 clusters: sheaf/Deligne, adelic/Arakelov, info-functionals,
+post-2020 additive-combinatorics PFR/Sanders/BSG, dynamical/operator-algebraic/motivic) + 84 prior escapes,
+all dead. UNIFYING CATEGORY OBSTRUCTION (the deep reason): every p-adic / cohomological / model-theoretic /
+spectral-invariant functor lands in a target with NO ARCHIMEDEAN PLACE (or a signed / mean-zero object),
+whereas W_r is an UNSIGNED ARCHIMEDEAN MODULUS — so each candidate either sign-reverses, rank-collapses to
+the rank-n second moment, or needs an even moment, landing back in doors (i) AG / (iii) harmonic / (iv)
+moments. The naive third-order avatar T3 = eta_b² · conj(eta_{zeta b}) collapses even more cleanly:
+|T3| = |eta_b|²·|eta_{zeta b}| IDENTICALLY (magnitude = marginal product, resid_frac = 0 exactly), only a
+mean-zero sign that cancels under the coset sum. Skeptic caught and self-corrected one interpretation
+artifact (the r0(T3)=0.999 "b-sensitivity" is the trivial random-sign-scale artifact, not genuine content —
+control with a pure random-sign object reproduces it). Final refutable residue `UnsignedJointInvariant`:
+"there exists a b-sensitive UNSIGNED functional of the joint phase field at prize depth not a function of the
+|eta_b|-multiset" — stated as the negation of the final conceivable escape; round-11 data supports the
+standing conjecture that NO such object exists (a "universal b-summed collapse"). Verdict: cartography
+COMPLETE — the wall is the sole irreducible open core, every approach decided.
+
+## [466-r10-automatic-sequence-bblind] the dyadic-root phase sequence's 2-adic digit structure is real but b-blind (2026-07-04, #466 round 10)
+
+Lane: round-10 new angle on the wall W_r <= n^{2r}/p (dossier §20). Automatic-sequence / substitutive
+Fourier analysis (Allouche-Shallit; Byszewski-Konieczny-Muellner Gowers-norm machinery) of the
+dyadic-root phase sequence k -> e_p(b*zeta^k), k in Z/2^mu. NEW OBSERVATION (previously unrecorded):
+the wraparound solution set IS genuinely 2-adic-digit structured -- the pairwise-valuation statistic
+v_2(k_i-k_j) deviates from the digit-uniform null with chi2/dof in the hundreds-to-thousands across
+n=8,16 and >=2 primes with distinct v_2(p-1), the single-exponent popcount is EXACTLY uniform (structure
+is JOINT not marginal), and the wrap set is NOT closed under the odd-unit dilation k->u*k (closed only
+under u=1) -- so it is NOT b-blind in the naive C1 dilation sense. REFUTED anyway, three machine-checked
+ways: (A) COUNT-NEUTRAL -- the solution set is the equal-sum locus sum_L zeta^{k} = sum_R zeta^{k} mod p,
+on which the per-frequency character weight e_p(b*0)=1 for EVERY b, so the digit structure is a property
+of the b-SUMMED moment E_r (the exact Meta-Theorem/C1 b-blindness), and W_r already sits at/below its
+digit-uniform DC mean (W_r/DC in [0.13,0.98], the wall empirically holds in the wraparound-bearing
+regime) -- a uniformity bound has no total to save; (B) SIGN-UNSTABLE -- the deviation direction flips
+with p (v_2=2 class depleted at beta=2.0, enhanced at 2.1, empty at 3.0), no fixed Gowers bias to convert;
+(C) NO mu-UNIFORM AUTOMATON -- k->zeta^k mod p obeys a(2k)=a(k)^2 but the 2-kernel base zeta^{2^i} has
+multiplicative order n/2^i SHRINKING to 1, so no fixed finite automaton exists and automatic-sequence
+asymptotics do not apply (reconfirms [wf-NC/NC1]). Brick `_LaneAAutomaticBBlind.lean` axiom-clean
+(char_weight_trivial_on_solset; solset_count_is_b_summed, reusing the #444 collision_count_eq_moment).
+Probe `probe_466r10_automatic.py` (exact wraparound enumeration, tuple-validated vs the level-count
+engine; skeptic independently re-derived every headline number via a disjoint char-0 convention).
+Verdict: WALL STANDS; the new digit structure is real but count-neutral/b-summed. Round-11 residue
+(honest, open): does the JOINT (eta_b, eta_{zeta b}) phase field carry b-sensitive info at deep r
+invisible to the marginals? (essay §5).
+
+## [466-r10-transfer-operator-gauge] the dyadic-tower transfer operator is gauge (its spectrum = the moment ladder) (2026-07-04, #466 round 10)
+
+Lane: round-10 new angle on the wall (dossier §20). Transfer-operator / dynamical-zeta spectral gap on
+the doubling map x->x^2 (the tower step on mu_{2^mu}), designed to beat the already-refuted naive
+per-level sqrt(2)-descent (no_sqrt_two_perLevel_thinning) by using a spectral GAP rather than a per-level
+ratio. REFUTED as GAUGE: every invariant of the transfer operator factors through the coset-invariant
+magnitude multiset {||eta_b||}, whose only invariants are its power sums = the raw energy/moment ladder
+E_2..E_{2r} -- so the operator spectrum is a reparameterization of the moments (the Toda/isospectral kill
+todaTurnover_not_determined_by_invariants shape), carrying no information the moment method lacks; and its
+leading sup-eigenvalue (the M-ratio) is a bounded transient converging to the sqrt(2) mean-field rate
+forced by M ~ sqrt(n log m) at fixed log m, so it cannot distinguish prize-true from BGK-tight (regime-
+mute). Gauge test passed: two primes with the same low moments but different W_r give the same operator
+spectrum. Brick `_B_TransferOperatorGauge.lean` axiom-clean (4 thms: momentPow_eq_ofMultiset,
+powerSum_eq_of_multiset_eq, transfer_functional_perm_invariant, transfer_gauge). Probes
+`probe_466r10_transfer.py` + `_transfer_gauge.py`; KB note
+`deltastar-466-r10-laneB-transfer-operator-gauge-2026-07-04.md`. Verdict: WALL STANDS.
+
+## [466-r10-literature-2024-2026-clear] no 2024-2026 result touches the thin-2-power wall at beta=4 (2026-07-04, #466 round 10)
+
+Lane: round-10 literature freshness sweep (dossier §20; KB
+`deltastar-466-r10-laneC-literature-freshness-2026-07-04.md`). Targeted 2024-2026 sweep for any result
+moving n^{1-o(1)} toward sqrt(n) for thin 2-power subgroups mu_{2^mu} < F_p^* at p ~ n^4, or supplying a
+Gowers-norm/automatic-sequence/additive-energy/spectral-gap tool usable at depth r ~ ln q. ZERO
+survivors: every genuinely-new sqrt-cancellation result lives on a structure the prize object provably
+LACKS -- Burgess intervals, function fields F_q[t], the p^{1/3}-and-up energy floor, or non-abelian
+Bourgain-Gamburd super-approximation -- so none supplies a b-sensitive proven sup-norm eigenvalue bound
+for the thin ABELIAN subgroup at index 2^128, beta=4; the closest hit (Kunisky) is index-2 and merely
+conjectural. Confirms the BGK-only-survivor foreclosure ledger is unbroken through 2026-07. Verdict:
+WALL STANDS, untouched by 2024-2026.
+
 ## [e2-w4-raw-noncollision-refuted] quotient-free width-4 `Cd₀NonCollision` is false on even domains (2026-06-27)
 
 Lane: #464 width-4 product-image/orbit scanner. The raw non-collision hypothesis
@@ -19198,3 +19457,543 @@ Formal exports: `doorIV_twoPiece_norm_add_sq_eq_halfMass_sq_sub_two_angularDefic
 `doorIV_multiPiece_norm_sum_sq_le_iff_totalPairDeficit_ge_export`, and
 `doorIV_totalPairDeficit_le_l1Mass_sq_div_two_export`, axiom-clean with axioms contained in
 `{propext, Classical.choice, Quot.sound}`.
+
+## [466-r1-antiresonance-bblind] the Chapman–Mudgal anti-resonance dichotomy is b-blind on μ_n (2026-07-01)
+
+Lane: #466 round-1 P1 (`scripts/probes/probe_466_antiresonance.py`, verified by independent
+recomputation on a second code path). Across 11 regime-clean runs (n=8..64, ≥2 primes each,
+β=4.00) the worst dilation-coset's arithmetic resonance statistics (multiplicative order,
+quotient-group order, gcd structure, QR status, Ramanujan coset-means c_q for q≤16, major-arc
+min‖qb/p‖) are indistinguishable from a random coset (percentiles ~Uniform(0,1)); the exact
+full-b Pearson correlation of |η_b| with every Ramanujan sum is ≤0.077 (<0.6% of variance).
+Mechanism: |η_{ub}| = |η_b| exactly (dilation invariance) washes out every residue-class
+statistic — any future dichotomy must classify coset-SETS (arc-concentration functionals), not
+residues of b. The one extreme statistic (coset min-frequency) is the tautological
+arc-localization signature with decaying predictive power (0.29→0.06 over n=8→64). One-prime
+Fermat anomaly (65537: worst coset = μ_n itself) spun off to the round-2 constructive-family
+probe. Tier-2 probe: RUN and CLOSED.
+
+## [466-r1-nonbacktracking-relabeling] non-backtracking/Ihara–Bass spectrum is a deterministic monotone relabeling on Cay(F_p, μ_n) (2026-07-01)
+
+Lane: #466 round-1 P2 (`scripts/probes/probe_466_nonbacktracking.py`; independent from-scratch
+replication on 3 fresh cases). The NB spectrum is the Ihara–Bass image {roots of
+x² − η_b·x + (n−1)} ∪ {±1} (Hausdorff ≤7.7e-14 full-spectrum; ARPACK rel err ≤7.5e-10 at
+regime scale p=4129/65537); in the relevant range |λ|>2√(n−1) the map is injective and
+strictly monotone in |λ|; argmax coincides with argmax|η_b| everywhere; NB walk counts are
+integer polynomials in A, so every NB moment is a linear repackaging of the power sums = the
+E_r wall. The Chebyshev structure b_m = q^{m/2}T_m(λ/2√q) holds to 4e-15. Extends to the whole
+"spectral preprocessing" family (Bethe–Hessian etc. — polynomials in A on regular graphs).
+Cites and upgrades DISPROOF_LOG I037 (unweighted reparametrization) with machine-precision
+full-spectrum + regime-scale verification. The dossier Tier-2 "only sliver that could beat √q"
+is CLOSED.
+
+## [466-r1-kravchuk-weaker-than-johnson] Kravchuk moment-interlacing carries no in-window content (2026-07-01)
+
+Lane: #466 round-1 P3 (`scripts/probes/probe_466_kravchuk.py`, verifier reproduced by exact
+integer arithmetic + fresh countermodel). The literal largest-root reading converges to the
+Levenshtein semicircle 1/2 + √(ρ(1−ρ)) — strictly ABOVE the Johnson agreement √ρ at every
+prize rate (weaker than Johnson). The excess-over-baseline reading is direction-invalid: a
+received word EQUAL to a codeword has the same first-k factorial moments yet max agreement m —
+moment interlacing bounds max agreement from BELOW (Gauss quadrature), never above; and
+Binomial(m,1/2) has no nontrivial MDS instance (at the honest Binomial(m,1/q) weight the roots
+collapse to the trivial degree bound / capacity). Evaluation-point-independence is real and is
+exactly why the method is blind to μ_n. Joins the second-order cap beside Delsarte-LP
+(`DelsarteLPNoGo`, `parseval_lp_extremal`).
+
+## [466-r1-hankel-bounded-window-refuted] no bounded-window Jacobi functional pins the turnover k* or M (2026-07-01)
+
+Lane: #466 round-1 P4 (`scripts/probes/probe_466_hankel_turnover.py` + `_out_466_hankel_turnover.txt`;
+verifier replicated all headline numbers on an independent code path). Countermodel pair
+n=16, p=65617 vs 65633: first-4 Jacobi window identical to 7ppm yet k*(0.9) differs 21% and M
+differs 4.6% (non-saturated n=64 companion pair: window j≤3 identical to ~1e-4, M differs
+4.8%). Mechanism: the early window is ensemble-deterministic — 1 − q_j = c_j(n)/p (+O(p^{−3/2}))
+reads p, not the instance (j=1 exact: (n−1)/(p−1) + n/(p−1)²); instance k* is statistically
+indistinguishable from iid char-0 controls on the tested ensemble. Strict Hermite-spacing law
+b_{k+1}²−b_k² ≤ n REFUTED (structured 786433: 1.0140n); post-peak monotonicity of r_j fails
+generically (rebounds up to 0.32n/step). WINS kept: the Hankel double-ratio detects the
+Fermat-65537 anomaly at moment-order 6 with ~52x amplification over drift (raw moments need
+order 8) — a candidate deployment-prime screening invariant; the pre-turnover bulge
+(q_5,q_6 ≈ 1.11–1.12 at 786433) is a structured-prime signature. The surviving Hankel seam is
+ONLY the global variance-certification form = the independence form of the core (no shortcut).
+
+## [466-r1-effective-half-push-dead] the di Benedetto pipeline family cannot reach exponent 1/2 at β=4 (2026-07-01)
+
+Lane: #466 round-1 P6 (`scripts/probes/probe_466_dibenedetto_half.py` + `_out_466_dibenedetto_push.txt`;
+verifier re-derived the binding inequality and the discovery chain independently). Over all
+parameterizations of the method shape (moment/bilinear/trilinear-PS/hypothetical-quadrilinear
+finishers × fold orders ≤48 × Hölder splittings × all LEGAL energy inputs), the infimum
+exponent is θ_min(β) = 1 − 1/(2β) — 7/8 at β=4 — never approaching 1/2. Binding constraint:
+the Cauchy–Schwarz mass floor T_k ≥ n^{2k}/p at depth k=β (raw-T_k specific; the DC-subtracted
+evasion requires char-0-clean energy at depth k>β = the wall). Reaching 1/2+ε needs clean T_k
+at k ≈ (β−1)ln n ≈ 62 — reproducing the prize target within factor ~1.4: the unlimited-depth
+ladder IS the BGK wall (circularity exact). Companion iterated-BGK kill landed axiom-clean:
+`Frontier/_BGKEffectiveHalfPlateau.lean` (Shkredov Cor-16 route: saving 1/16384 vs required
+1/8 at k=12; applicability floor 2^768 vs prize 2^30). SIDE-DISCOVERY (live, good-prime
+conditional, β<6): bilinear (3,3) + √p-DFT finisher gives M ≤ 15^{1/9}H^{2/3}p^{1/18+o(1)} =
+n^{8/9} at β=4 from the same T3 input — strictly better than the landed 23/24=0.9583, one
+fewer external input; round-2 lane formalizes after independent re-derivation. Dossier §6
+Tier-1 item 5: EXECUTED AND CLOSED as a route to 1/2.
+
+## [466-r1-windowed-extremal-spread-beats] windowed SumsetExtremal is FALSE at n=16 — spread beats every monomial in-window, replicated (2026-07-01)
+
+Lane: #466 round-1 P5 + generic-prime replication (`probe_466_windowed_extremal.py`, outputs
+`_out_466_windowed_extremal_q65537/65617/65633`; witnesses brute-verified over all γ; note
+`docs/kb/deltastar-466-p5-replication-2026-07-01.md`). At n=16, k=4, ρ=1/4, window-interior
+agreement a=7 (δ=0.5625): the 2-Fourier-component direction `x⁴ + c·x¹⁴` beats every monomial
+direction's worst-offset bad-scalar count **13-14 vs 9 (~45%) at THREE primes** (Fermat 65537
+v₂=16, generic 65617 v₂=4, 65633 v₂=5); a=5 replicates with small margins; a=6 ties. Winning
+gaps (10, 6) avoid the antipodal-correlated class (≠ n/2). The window guard repaired the
+below-window degeneracy but does NOT rescue the statement in-window. Consequences: the
+guard-cell catalogue route (`mcaDeltaStar_pin_of_finsetGuardCover` awaiting monomial dominance)
+dies as designed; the "extremal lines are monomial" ATTACK ansatz dies (proven bracket theorems
+unaffected — they never assumed it); the advantage is a CONSTANT factor (~1.45×), so nothing
+moves across the window. Caveats: worst-u₀ search heuristic on the monomial side (plateau
+exactly 9, prime-independent — plausibly the true optimum); n=16 only; spread values are true
+brute-verified lower bounds. Survivor reformulation (live, testable): the **bounded
+spread-excess law** `worst_spread ≤ C·worst_mono` in-window, measured C ≤ 1.56 at all
+levels/scales so far — a weaker per-cell input that still serves the weld's far-line budget.
+
+## [466-r2-cmk-lonespike-refuted] Christoffel–Markov–Krein edge-crowding cannot improve the moment bound (2026-07-01)
+
+Lane: #466 round-2 R1 (`probe_466_cmk_lonespike.py` + `_out_466_cmk_lonespike.txt`, certified
+two-sided brackets; kb `deltastar-466-cmk-refuted-2026-07-01.md`; verifier reproduced all six
+spot checks on fresh code paths and closed the mirrored two-spike odd-moment loophole).
+Essay Conjecture CMK ("q−1 equal atoms + exact Parseval + K^r-Wick moments to depth 2⌈ln q⌉ ⟹
+M² ≤ C(K)·n·log q, IMPROVING the raw moment bound via Christoffel positivity") is REFUTED by
+the lone-spike countermodel: spike height t_spike(K) = t_raw(K)·(1−o(1)) for every slack K
+(ratio 0.9979 at q=2^40 → 1.0000 at q=2^120); the abstract problem's sharp answer IS the
+moment bound, C(K) = 2K(1+o(1)) — positivity + equal masses + the full moment sequence add
+NOTHING. The spike deforms its own orthogonal polynomials so the true Christoffel bound is
+satisfied automatically (K_j(M,M)/(q−1)=0.9967 at t=1.5) while the Hermite proxy would forbid
+it — the essay's claimed threshold-constant was a computational error (t*_H → √2 from below,
+reproducing the moment bound exactly). The composition **CMK ∘ TPS dies with it** (a K^r-slack
+Wick input can never be post-processed past √(2K); the spike realizes the slack). STANDING
+FILTER for future lanes: any "positivity/quadrature upgrades a lossy moment input" proposal
+must first beat THIS countermodel; only genuinely arithmetic inputs distinguishing the real
+η-measure can pass. Companion gate: `_R2B_CMKDepthIrreducibility.lean` (depth cannot be traded
+for slack). Caveat kept honest: a hypothetically restated conjecture at window ≫ ln q with
+K→1 two-sided is not excluded by this countermodel as built — but CMK as stated lived at
+2⌈ln q⌉.
+
+## [466-r2-fermat-family-artifact] 2-adic saturation is NOT an adversarial family — generalized-Fermat structure is (2026-07-01)
+
+Lane: #466 round-2 R6 (`probe_466_fermat_family.py` + `_out_466_fermat_family.txt`; verifier
+re-verified 9 rows brute-force over ALL b, the closed form 7/7, and the W₄ anchor). The
+hypothesis "2-adically saturated primes p = c·2^k+1 (tiny odd c) systematically place the worst
+coset at μ_n / inflate C" is REFUTED: over 34 saturated primes vs 34 matched controls,
+μ_n-selection 2/34 (both = 65537) vs threshold 70%; C-inflation ratio 1.0145 vs threshold 1.15.
+**The true mechanism is GENERALIZED-FERMAT structure**: for p = b^(2^s)+1 with n | 2^(s+1),
+μ_n = ±⟨B⟩ is a geometric progression of small integers (B = b^{2^{s+1}/n}) and
+**η₁ = n − c_B + o(1)** exactly (c_B = 2Σ_{i≥1}(1−cos 2πB^{−i}); verified to 4 decimals on 7/7
+GF primes; c₂ = 6.7893, c₄ = 2.1625). Only B=2 (Fermat primes proper) beats the generic C
+plateau (asymptotic √(2/ln 2) ≈ 1.699; measured 1.614 at 65537, n=32, β=3.2 — the family's ONE
+in-window witness; F₅ = 641·6700417 is composite so the B=2 supply ENDS at F₄ = 65537).
+Deployment avoid-list NARROWED: generalized-Fermat with B ≤ 4 only; BabyBear-class (c=15)
+exonerated (34/34 generic); high v₂(p−1) per se exonerated. Ceiling-side tool: at GF primes
+M ≥ n − c_B at the μ_n coset itself — an explicit family refuting any hoped-for
+"M = o(n) for all window p" without a GF exclusion; touches NO floor statement (floors fix a
+designer-chosen p). Landable ceiling brick: the finite cosine-sum instance at p=65537, n=32
+(|η₁| ≥ 25.2).
+
+## [466-r2-sst-orbit-compression-cosmetic] the SST dilation-orbit compression is exact factor-n bookkeeping; antipodal correction mandatory (2026-07-01)
+
+Lane: #466 round-2 R2 (`probe_466_sst_sections.py` + `_out_466_sst_sections.txt`; verifier
+re-derived all three structural facts + independent full n=32 census). Essay Conjecture SST's
+novelty claims are DECIDED: (i) shift-orbit constancy of section sparse-counts/minima is
+PROVABLE (the shift multiplies the defining form by the unit h — an isometry), so the
+"dilation action on relation supports" compresses the section family by EXACTLY factor ~n with
+zero within-orbit variance — real but pure bookkeeping, the SST analogue of the I031 cosmetic
+collapse; (ii) the essay's bare SST statement is FALSE at 2-power n without the antipodal
+correction: a section containing k antipodal pairs {s, s+n/2} carries exactly 3^k−1 forced
+char-0 sparse vectors (dyadic Lam–Leung; 38% of r=2 supports at n=16); the honest object is
+the genuine char-p DEFECT = count − (3^k−1); (iii) measured defect = 0 across ALL sections at
+n=16 (r=2,3 exhaustive) and n=32 (full r=2 census + r=3 samples, both primes) — zero events,
+consistent with fixed-depth cleanliness (non-detection, NOT suppression: bads arrive in
+orbit batches so effective trials are ~n× fewer). Transference direction qualitatively
+confirmed (bad sections have systematically smaller dual minima). SURVIVING RESIDUE (named,
+open): cross-orbit correlation under the multiplier action S → kS, gcd(k,n)=1 — NOT an
+isometry of a fixed L_p; untested.
+
+## [466-r2-mixed-topfit-budget-unsat] the mixed-profile top-fit route (z = n endpoint) is jointly unsatisfiable with the fiber budget at every prize shape (2026-07-01)
+
+Lane: #466 round-2 L1 (`probe_466_mixed_topfit_endpoint.py` + `_out_466_mixed_topfit_endpoint.txt`;
+kb `deltastar-466-mixed-topfit-refuted-2026-07-01.md`; Lean brick
+`Frontier/MixedTopFitBudgetIncompatibility.lean`, axiom-clean). The dossier §6 Tier-1 item 2
+sub-obligation "prove/refute `Low/FullMixedChooseProfileTopSumsFit` / `FieldPow*TopFit` at the
+`z = n` endpoint" is DECIDED: **refuted as a closure path, for EVERY exact budget `Mexact`**.
+The step direction with exactly `a` zeros forces `Mcoarse(t₀) ≤ B` through
+`UniformLargeZeroSafeAppearingCoordinateFiberBudgetFits` at `t₀ = max(0, 2a−n) < k`, while the
+top fit forces (kill 1, field-power) `Mcoarse(t₀) ≥ q·C(n,a−t₀) ≥ q` and (kill 2,
+Mexact-INDEPENDENT, from the in-window high singleton `r = a−1`)
+`Mcoarse(t₀) ≥ C(n−t₀, a−1−t₀) ≈ 2^{n·H(a/n)}`. Joint UNSAT whenever `B < q` (weld gives
+`B ≤ ε*·q = q/2^128`) resp. `B < C(n−t₀, a−1−t₀)`. Exact scan μ=4..12 × 4 rates × 3 in-window
+a × 2 q-shapes × 2 budgets: **416/416 FAIL**; μ=30 Stirling: ~0.36–1.07·10⁹ bits of violation.
+Root cause: the endpoint contraction `mixedChooseProfileCardSum_le_topCard` evaluates the
+profile sum at `z = n` where the fiber coefficients vanish and imposes it at `z ≈ a` where the
+budget binds. General-parameter Lean theorems (not instances):
+`not_fieldPowMixedProfileTopFit_and_uniformFiberFits`,
+`not_exists_lowMixedChooseProfileTopSumsFit_and_uniformFiberFits` (+ Full variants, + concrete
+n=16/k=4/a=7/B≤4 scale model). CONSEQUENCE: the low-profile split (exact `D(t)` bounds for
+`t < k`, sub-`q`, with z-coupled budget coefficients) is MANDATORY; any future fiber consumer
+must keep both sides' z-dependence coupled, and any envelope carrying a bare factor `q` is dead
+at every z. Do NOT re-attempt: choose-profile supersets through ambient (z-independent)
+majorization; field-power envelopes into sub-`q` budgets.
+
+## [466-r4-d2-lowertail-concentration] the M(n,p) prime-ensemble CONCENTRATES — no ∃-form lower-tail lever exists (2026-07-01)
+
+Lane: #466 round-4 L3 (`probe_466_rogers_siegel_tail.py` + `_out_466_rogers_siegel_tail.txt`;
+exact full-coset scans, per-prime Parseval asserted ≤1e-6 rel). Over ALL 2038 primes
+p ≡ 1 mod 16 in (16⁴, 4·16⁴]: x = M/√(n log(p/n)) ∈ [1.104, 1.218] (std 0.019);
+P(x < 1.1) = 0 EXACTLY; the ensemble is STRICTLY MORE concentrated than the iid
+Gaussian/Gumbel benchmark (Gumbel-z mean −1.86, std 0.33 vs benchmark +0.58, 1.28) — the
+lower tail is thinner than doubly-exponential. NO anomaly class: mean x flat in v₂(p−1)
+(1.139–1.155 across v₂ = 4..16); all 16 in-window generalized-Fermat primes sit inside the
+bulk; the 15 smallest-x primes show no v₂/GF/smooth-cofactor signature. n=32 replication
+(2103 sampled + all 123 structured) consistent. VERDICT: the "prize prime as a rare
+large-deviation lower-tail anomaly" hypothesis is REFUTED — the D2 Rogers–Siegel sliver does
+NOT reopen; the ∃-form (deployer) gains nothing over the ∀-form beyond the already-settled
+floor removal. Gate brick `_D2LowerTailConcentrationGate.lean` (axiom-clean; the measured
+floor carried honestly as the named Prop `LowerTailConcentrationFloor`). Composes with
+`_D2RogersSiegelVarianceGate` and `_D2LargeDeviationRateFunction`.
+
+## [466-r4-tsang-levels-vacuous] Selberg/Tsang level-splitting has nothing to split — all genuine excess is level-0/archimedean (2026-07-01)
+
+Lane: #466 round-4 L4(A) (`probe_466_tsang_levels.py` + `_out_466_tsang_levels.txt`; exact
+integer decomposition E_r = Σ_k e_k by wraparound level k = (Σ_Z x − Σ_Z y)/p, verified
+against direct η sums to <5e-16). Findings: for GENERIC primes the wraparound term is
+IDENTICALLY ZERO for all r ≤ 6 at n=8 and r ≤ 4 at n=16 (T_r is p-independent there; new
+p-independent values T₄(16) = 4,649,680, T₅(8) = 7,939,008, T₆(8) = 357,713,664); level-0
+carries 100.1–104.2% of E_r in EVERY cell — the entire excess over Wick is the
+Z-lift/archimedean object (re-confirming "the wall is archimedean" from a new direction);
+at onset the k ≠ 0 levels are SUB-smooth (ρ_k mostly 0.002–0.22 < 1) with a small NEGATIVE
+excess — lift sums REPEL exact p-multiples; the resonant 65537 onsets earliest (r=4,
+level-3 concentration, ρ 1.12→2.30) but stays ≤1% of E_r. VERDICT: KILL, sharper than
+pre-registered — past the closed diagonal (2r ≤ β) there is literally nothing for a
+p-adic/divisor level-splitting to localize; any level-local bound reduces to smooth counting
+= the aggregate W_r.
+
+## [466-r4-i031-tail-cosmetic] the I031 entropy reduction cancels at the TAIL too — union-over-cosets ≡ the quotient moment bound (2026-07-01)
+
+Lane: #466 round-4 L4(B) (`probe_466_i031_tail.py` + `_out_466_i031_tail.txt`). EXACT
+IDENTITY: the union bound over the m coset reps with the best tail derivable from depth-r
+moments (Markov) succeeds iff t^{2r} > m·μ_{2r} — i.e. the tail packaging IS the quotient
+moment bound (m·μ_{2r})^{1/2r}, verified to 9e-16 + an exact-integer instance. Finite
+arithmetic (Wick input, μ = 4..32, β ∈ {3,4,6}): the moment route at optimal depth converges
+to the Gaussian-tail union output (ratio 1.16 → 1.02); the √(log m / log p) quotient/full
+factor is bounded (≤ √β/(β−1)) — cosmetic in the exponent. Completes the round-1
+`i031_chaining_cosmetic` moment-side kill: the dilation-quotient entropy reduction is
+cosmetic at BOTH the moment input and the tail/union input. The I031 lead is fully closed.
+
+## [466-r4-second-witness-floor-refuted] the second-witness / multiplicity floor is impossible exactly on the extremal far lines — saturation forces ALL-singleton (2026-07-02)
+
+Lane: #466 round-4 L2 (`probe_466_second_witness.py` + `_out_466_second_witness_n8.txt` /
+`_n8_q8273.txt` / `_n16_q65617_a7_d0.txt` / `_n16_q65633_a7.txt`; kb
+`deltastar-466-second-witness-floor-refuted-2026-07-02.md`; Lean brick
+`Frontier/_SecondWitnessFloor.lean`, axiom-clean). The dossier §6 Tier-1 item 2 sub-obligation
+"prove `NoUniqueBadScalarWitness` on hard lines, or exhibit a unique-witness bad scalar" is
+DECIDED: **refuted, with the forcing mechanism proven**. Numerics (exact complete witness-fiber
+enumeration, 3-way verified + independent full-`q²` path at k=2): on EVERY extremal far line at
+the first interior level (n=8, k=2, a=3, q ∈ {4129, 8273}, #bad = 56 = C(8,3) SATURATED, 4 hard
+directions) the histogram is `{1w:56}` — every bad scalar unique-witness; n=16 (k=4, a=7,
+q ∈ {65617, 65633}) worst lines `{1w:8, 2w:1}`, 5 of 6 scanned lines ALL-singleton; explicit
+countermodel γ=9564, witness `9564 + x²`, agreement 8. Mechanism (Lean, `Ownership` vocabulary,
+any embedding domain, every level a ≥ k, direction-far guard `AgreementFarDirection`):
+(1) **incidence cap** `Σ_γ #fiber(γ) ≤ C(n,a)` (`lineHeavyIncidences_card_le_choose` — each
+incidence privately owns the a-subsets of its agreement set; cross-scalar sharing transports u₁
+into the code, within-scalar sharing merges codewords); (2) **mutual exclusivity**
+`NoUniqueBadScalarWitness ⟹ #bad ≤ C(n,a)/2` — the floor and near-extremality cannot coexist;
+(3) **defect forcing** `2·#bad ≤ C(n,a) + singletonDefect`; (4) **saturation ⟹ all-singleton**
+(`singletonBadScalars_eq_lineBadScalars_of_choose_le`) — the measured `{1w:56}` as a theorem;
+(5) the unguarded universal Prop fails for EVERY code/field/level via lines through the code
+(exact singleton fiber at the crossing scalar). CONSEQUENCE: the pairwise-interpolation
+relation (the last un-exhausted graph-route shape) is dead — the extremal object is a PERFECT
+MATCHING bad-scalar ↔ private a-subset; the discount chain `2·#bad ≤ incidences + defect`
+degenerates to the undiscounted `#bad ≤ incidences` precisely on the budget-determining lines.
+KEPT: the incidence cap itself (strict strengthening of the direction-blind scalar ceiling from
+#scalars to Σ-multiplicities, all levels a ≥ k, production vocabulary). Do NOT re-attempt:
+multiplicity floors R ≥ 2 on worst/near-worst lines; "two singletons force a relation" in any
+clothing; weight-vs-defect discounts hoping defect = o(#bad) on extremal lines (defect = #bad
+exactly at saturation).
+
+## [466-r5-d4-structure-n32-Kbad] the depth-4 face DIVERGES from D3: n=32 has structured K-bad primes in-window (2026-07-02)
+
+Lane: #466 round-5 S5/D4 scanner (`probe_466_d4_scanner.py`, exhaustive; anchor W₄(65537,16)=+4480
+reproduced; sparse==dense int64 convolution cross-checked). Full exhaustive scan of ALL window
+primes p ≡ 1 mod n in [n⁴, 4n⁴]: n=8 (331 primes) 0 exact-bad / 0 K-bad — the window is PROVABLY
+D4-clean (norm-height cutoff 8^{n/2}=8⁴=n⁴); n=16 (2038) 24 exact-bad / **0 K-bad** (max in-window
+W₄=26880 vs K-margin 298020, ratio 0.09); n=32 (13319) 4872 exact-bad / **92 K-bad** (max
+in-window W₄=11,988,480 vs K-margin 5,593,032, ratio **2.14** — K-badness is REAL at n=32).
+VERDICT: the depth-4 face does NOT mirror D3 uniformly — unlike the width-four/D3 lane where badness
+is confined to a small finite set at every n, at n=32 a positive count of window primes carries
+genuine >5%-excess depth-4 energy. Structural finding: the K-bad set concentrates on structured
+primes (the below-onset β<4 tail is dominated by small p = 577, 641, 929, 2113 … which are
+generalized-Fermat / high-v₂; the 92 in-window K-bad at n=32 need a v₂/GF census). CONSEQUENCE for
+the bilinear n^{7/8} route (round-2 P6 side-discovery): the D4-conditional bound's good-prime supply
+is NOT free at n=32 — the T4=O(n⁴) hypothesis fails on a positive-density-looking structured subset,
+so the n^{7/8} improvement over n^{8/9} needs a genuine depth-4 divisor structure theorem (excluding
+the structured K-bad primes), not just "most primes are clean". The n^{8/9} (T3-based) route is
+unaffected (D3 stays finite-bad). New exact p-independent value confirmed: E₄⁰(32)=90,889,120.
+Full data: `scripts/probes/_out_466_d4_scanner_run3.txt` (2186s exhaustive, protected-image run).
+
+## [466-r6-novel-N4-leeyang-root-location] the Gauss-period-polynomial root-location route dies twice (2026-07-02)
+
+Lane: #466 novel-math N4 (`deltastar-466-novel-N4-leeyang-2026-07-02.md`; probes
+`probe_466_novel_N4_leeyang{,_close,_periodpoly}.py`). KEY IDENTITY: the m periods η_b are the
+roots of the classical Gauss period polynomial P_m (degree m) over ℚ, so M = house of P_m, and
+its coefficients are the elementary symmetric e_k(η) computable from the wraparound power sums
+(char-0-clean at shallow depth) via Newton's identities. DEATH #1: the Fujiwara/Lagrange max-form
+root bound `max|root| ≤ 2 max_k |a_{m−k}/a_m|^{1/k}` BINDS at k=2, giving √(2p) — WORSE than
+Johnson (√p side); it never sees the shallow coefficients that would help. DEATH #2: shallow-
+weighted / partial-disk (Schur–Cohn/Routh–Hurwitz-style) tests using only the provable shallow e_k
+are BLIND to the lone spike — the extremal object is one atom at ~√(2n log m), and the entire
+real-rootedness/Newton apparatus is invariant under it (the ROOT-LOCATION twin of the CMK
+moment-problem lone-spike death, `466-r2-cmk-lonespike-refuted`). VERDICT: REDUCES_TO_WALL — the
+non-trivial root bound needs e_k for k ~ log p = the deep moments = the wall. Bankable: exact
+integer power sums / Newton coefficients / Fujiwara profile / the K=2 integer countermodel.
+
+## [466-r6-novel-N7-gauss-phase-dual] the Gauss-sum-phase / Stickelberger dual reduces to the wall UNITARILY (2026-07-02)
+
+Lane: #466 novel-math N7 free-synthesis (`deltastar-466-novel-N7-free-2026-07-02.md`; probe
+`probe_466_novel_gauss_phase_dual.py`; both refuters + independent constants-audit confirm the
+kill at Step 6). The DUAL route: pass from periods η_b to the m Gauss sums g(χ) (χ trivial on μ_n)
+via the exact finite-Fourier identity η_b = (1/m)[−1 + Σ_{χ≠1} χ̄(b)g(χ)] — a UNITARY DFT on ℤ/m —
+and bring the one genuinely new lever: Stickelberger / Gross–Koblitz exact p-adic valuations. DEATH
+(Step 6): (a) |g(χ)| = √p is FLAT, so M is a nonlinear functional purely of the phase vector
+arg g(χ); (b) the p-adic lever is ARCHIMEDEAN-BLIND (fixes magnitude at √p, says nothing about the
+argument — the classical argument-of-Gauss-sum problem); (c) magnitude + valuation + all moments
+are invariant under the lone-spike phase alignment, leaving exactly the AUP deficit
+√(m/log m) = 2^42 at the prize point undetermined; (d) the required argument-equidistribution is
+UNITARILY EQUIVALENT to the original prize (DFT invertible) — at least as hard. Literature vacuity
+confirmed by constants (KU/Wasserstein q^{−1/(m−1)} ≈ 1 no decay; Katz vertical Sato–Tate
+averaged/asymptotic not sup; Heath-Brown–Patterson fixed order 3 not order 2^90). VERDICT:
+REDUCES_TO_WALL, unitarily. **NEW STANDING FILTER: any method whose only lever beyond period-side
+moments is p-adic/Stickelberger/Gross–Koblitz/Jacobi-sum/Iwasawa data is archimedean-phase-blind
+and cannot bound the house — pre-kills that whole family.** Bankable: the dual identity as clean
+unitary framing (S1); the AUP C6 made explicit and quantitative (S2, √(m/log m)=2^42); sharpened
+random-phase constant C ≈ 1.2–1.3, Fermat traps ≤ 1.45 (S4).
+
+## [466-r7-lowprofile-coupled-carries-q] the z-COUPLED low-profile sum does NOT close sub-q — the LAST weld path is dead (2026-07-02)
+
+Lane: #466 round-7 S1 (`_LowProfileFiberCoupled.lean` axiom-clean, verifier-confirmed;
+`probe_466_lowprofile_coupled.py`). The line-list weld's residual, after mixed-topfit
+(`466-r2-mixed-topfit`) and second-witness (`466-r4-second-witness-floor`) both died, was the
+z-COUPLED low-profile sum `Σ_{t<a} choose(z,t)·D(t)·⌊s/(a−t)⌋ ≤ 2B` (round-4 L1 killed the
+z-INDEPENDENT envelopes; the coupling was the last hope). REFUTED with a machine-checked
+countermodel: the ACTUAL weld weight `W_true = Σ #stratum(t)·⌊s/(a−t)⌋` stays poly (≤ Λ·s, ≤46 at
+n=16), but the provable z-coupled bound `W_coup = Σ choose(z,t)·D(t)·⌊s/(a−t)⌋` EXPLODES —
+coup/true ratio 2×→18×→120×→715×, driven by `choose(z,t)` at a realized stratum where
+subset-occupancy → 0. **The blow-up is at the t≥k MDS strata where D=1 is ALREADY proven**, so
+even a fully-proved low-profile t<k fiber bound cannot make the coupled sum sub-q —
+`choose(z,t)` is the killer, not `D(t)`. Exact instance (n,a,z,s)=(16,5,13,3): Λ=1, W_true=3,
+threshold-choose bound=2509 (836× gap); the Lean proves the bound ≥ choose(z,a−1)·s > 2^m on the
+realized diagonal family (exponential in length = a q-power, `thresholdChooseSum_unbounded` via
+`Nat.four_pow_lt_mul_centralBinom`), rfl-equal to the genuine in-tree
+`lineBadScalars_card_le_thresholdChoose_sum`. **CONSEQUENCE: the entire line-list weld route as a
+CLOSURE path is now closed** — every sub-obligation of the counting stack is refuted. The weld
+remains a valid REDUCTION (floor ⟸ far-line list budget) but the budget provably cannot be
+certified through the fiber-counting stack; the pure-coding-theory route that avoided the analytic
+wall is exhausted, pushing everything back onto the BGK/Paley wall.
+
+## [466-r7-sst-multiplier-dead] the SST multiplier/affine action carries no dual-minimum information (2026-07-02)
+
+Lane: #466 round-7 S5 (`_SSTMultiplierAntipode.lean` axiom-clean, verifier-confirmed;
+`probe_466_sst_multiplier.py`). The last SST residue (`466-r2-sst-orbit-compression-cosmetic` left
+the multiplier action S→kS open). Exact identity: multiplying the support index set by k
+(gcd(k,n)=1) replaces the root h by the DIFFERENT primitive root h^k — `L_{kS}(h) = L_S(h^k)`, a
+Galois twist, NOT a unit multiple, so NOT an isometry of a fixed L_p. Empirically L_S(h) and
+L_{kS}(h) always share sparse-count but DISAGREE on the dual minimum λ₁* on the majority of pairs
+(explicit antipodal-free countermodels). The affine action compresses the census beyond the shift
+ONLY for the sparse-count (extra factor up to φ(n)) — but that is the already-understood
+char-0/antipodal symmetry and carries ZERO new information about λ₁*, the transference quantity.
+Round-2's dangling reversal observation (S→−S: sparse-count 924/924, dual-min 380/924) is exactly
+the k=−1 (conjugation) instance and is now explained. The multiplier lever is DEAD; the landed
+Lean fact proves only the antipode-fixing mechanism (odd multiplier fixes n/2, permutes antipodal
+pairs) behind the sparse-count invariance. SST is fully closed.
+
+## [466-r7-floor-successor-is-a-norm] the floor successor is ARITHMETIC (a resultant/norm), NOT a combinatorial pattern lift (2026-07-02)
+
+Lane: #466 round-7 S3 (`probe_466_successor_structure.py`; verifier reproduced the norm
+computation from scratch in char-0). The combinatorial 16→32 lift is REFUTED: n=16/p=17 has 160
+realizable = 10 translation orbits (size 16, profile [3,3,2,2]); n=32/p=97 has 32 realizable = ONE
+translation orbit (size 32, closed under +1 AND negation) — the orbit count changes 10→1, so NO
+bijective pattern-level successor exists, and every natural map (period-double, index-double,
+tensor) gives 0 realizable images at p=97. BUT the SMALLEST-PRIME mechanism is DISCOVERED and
+validated at both rungs: **bad prime ⟺ p | Norm(β)** where β is the fixed obstruction algebraic
+integer and Norm = the resultant of the minimal polynomial V_A with Φ_n (char-0, p-independent) —
+the induction variable is a NORM/resultant, not a pattern map. This reframes the uniform
+floor-successor conjecture from combinatorics to arithmetic (a cyclotomic-resultant divisibility,
+the same 0-dimensional height object as the width-four/D3 lane) — the germ of a real successor
+theorem. No Lean landed (correctly — the object is a norm). p=17 confirmed the UNIQUE bad prime
+among all 49 primes ≡1 mod 16 up to 3000.
+
+## [466-r8-d4-kbad-generic-no-structure-theorem] depth-4 K-bad primes are ARITHMETICALLY GENERIC — no D4 divisor structure theorem, n^{7/8} route DEAD (2026-07-02)
+
+Lane: #466 lane F2 (`probe_466_d4_structure.py`; `_out_466_d4_structure.txt`; Lean
+`Frontier/_D4NormHeightFinite.lean` axiom-clean). Census of the 92 in-window K-bad primes from the
+run-3 exhaustive n=32 D4 scan (all 13,319 window primes; anchor `W₄(65537,16)=+4480` reproduced).
+QUESTION was whether the depth-4 K-bad set has a divisor structure theorem (analogous to the
+width-four canonical resultant) so the bilinear `n^{7/8}` route gets FREE `T4=O(n⁴)` good-prime
+supply. **REFUTED.** Of the 92: `0` generalized-Fermat, `0` with `v₂(p−1)≥13`, `47/92` at the
+MINIMAL forced `v₂=5`, odd cofactor `(p−1)/2^{v₂}` generic (often a single large prime), spread
+across the WHOLE window `β=log_n p ∈ [4.005, 4.394]` up to the top edge (deepest K-bad
+`p=4102753`, `β=4.394`, `v₂=5`). Clean generic countermodels `p−1 = 2⁵·(large prime)`:
+`p=1391393=2⁵·43481` (43481 prime, W₄=8816640, ratio 1.653), `p=2089889=2⁵·65309` (65309 prime,
+β=4.20), `p=1524449=2⁵·47639` (47639 prime), `p=4102753=2⁵·3·42737` (β=4.394). No fixed small
+norm-height integer collects these ⟹ **no depth-4 divisor structure theorem exists** ⟹ the
+`n^{7/8}` route's free depth-4 good-prime supply DOES NOT EXIST (T4 hypothesis fails on
+positive-density generic K-badness). The `n^{8/9}` (depth-3/T3) route is UNAFFECTED — depth 3 has
+NO in-window K-bad prime. Landed Lean (`_D4NormHeightFinite.lean`, axiom-clean): the unconditional
+norm-height finiteness backbone `d4NormHeightBound n = 8^{n/2}` (D4bad ⊆ {p ≤ 8^{n/2}}, finite;
+at n=8 equals n⁴ so the window is provably clean), the divisibility-gate `d4Bad_card_le_of_dvd_
+normHeightInteger`, and `card_le_of_d4GoodSupplyBudget` (the refuted supply hypothesis forces
+`|K-bad| ≤ m`, which the 92 generic primes defeat at n=32). CORE unchanged: OPEN, ON-BGK.
+
+## [466-r8-floor-successor-norm-partial] the floor successor IS a cyclotomic-resultant divisibility, but no single resultant dissolves floor-bad(64) (2026-07-02)
+
+Lane: #466 round-8 F1 (`_FloorSuccessorNorm.lean` axiom-clean; `probe_466_successor_norm.py`;
+verifier reproduced every number by an independent Z[ζ_n] multiplication-matrix/Bareiss method,
+severity none). Confirms and SHARPENS the round-7 successor-norm mechanism: floor-bad ⟺ p divides
+an obstruction norm `N(A) = Res(V_A, Φ_n)` (char-0, p-independent, V_A = the minimal polynomial of
+the adjacent-agreement pattern A). VERIFIED EXACTLY: n=16 Norm(r₉)=2312=2³·17² (all 160 realizable
+patterns, one norm tuple); n=32 norms 2⁹·97⁴ / 2⁶·31²·97² / 2⁹·97² (the 3 orbit reps); in both the
+UNIQUE prime factor ≡1 mod n equals p_min(n) (17, 97). The correct invariant is "unique ≡1-mod-n
+prime factor of `R_n = gcd_k N(r_k)` = p_min(n)" (the literal "smallest-prime-factor" is 2 —
+ramified). **BUT the "one canonical resultant resolves floor-bad(64)" shortcut is REFUTED:** the
+obstruction norm is genuinely PATTERN-dependent, and at n=64 the ≡1-mod-64 factor sets of the seven
+canonical obstruction norms have EMPTY intersection (17 distinct ≡1-mod-64 primes; 193 shared by
+only 2 of 7). So realizability at p ⟺ p ∈ ⋂_k {≡1-mod-n primes dividing N(r_k(A))}, and no single
+char-0 resultant collapses the 2.2×10¹⁵-pattern search — **floor-bad(64) stays compute-hard.** The
+germ landed: `floorObstructionNorm_forces_pmin_16/_32` (p prime ∧ p%n=1 ∧ p|R_n → p=p_min),
+axiom-clean. SURVIVING open conjecture (verified n=16,32 only): "unique ≡1-mod-n prime factor of
+R_n = p_min(n)" uniformly in n — the genuine non-wall target, but it does NOT by itself dissolve
+floor-bad(64) (which needs the realizable-pattern intersection forced to a single prime uniformly).
+
+## [466-w1-betaP1-is-the-wall] the first unproven rung r=β+1 is ALREADY the wall; the wraparound sign is not a lever (2026-07-03)
+
+Lane: #466 lane W1 (`probe_466_wall_betaP1.py`; `_out_466_wall_betaP1.txt`; Lean
+`Frontier/_WallBetaPlusOneLocalization.lean`, 3 thms axiom-clean, real build 3320 jobs). The
+DC-subtracted char-p energy `A_r = E_r^{(p)} − n^{2r}/p ≤ Wick=(2r−1)‼·n^r` is proven for `r ≤ β`
+(DC-crossover / moment-exponent-θ / TPS-boundary agree); QUESTION was whether the FIRST unproven
+rung `r=β+1` admits a new provable bound or an exact formula, and whether the round-4 "sub-smooth
+negative excess" (the SIGN of the wraparound) is exploitable. **NO new bound — a SHARP NO-GO.**
+Exact decomposition `E_r^{(p)} = E_∞ + W_r` with a NEW exact dyadic char-0 closed form
+`E_∞(n,r) = Σ_{c₁+…+c_{n/2}=r}(2r)!/∏(c_t!)²` (reproduces 3n²−3n, 15n³−45n²+40n) and Lam–Leung
+`E_∞ ≤ Wick` (PROVEN in-tree). Then `A_r = E_∞ + D_r`, `D_r := W_r − n^{2r}/p`, and
+`A_r ≤ Wick ⟺ D_r ≤ BUDGET := Wick−E_∞`. MEASURED (exact, n=8,16,32, ≥2 primes, r=2..9, β=4 and a
+flagged β=3 accelerant): (1) `A_r ≈ E_∞` — the DC-subtracted energy is carried by the char-0
+(archimedean) term, which is PROVEN ≤ Wick; (2) **`D_r < 0` at EVERY point** (generic AND
+generalized-Fermat 65537) ⟹ double margin `A_r < E_∞ ≤ Wick`, the wall is nowhere violated;
+(3) part (b) **REFUTED**: `W_r` is a nonnegative COUNT — the favorable "negative excess" is not
+signed cancellation but the UNSIGNED inequality `W_r ≤ n^{2r}/p`, and proving THAT is the
+concentration wall (round-4's "signed levels" kill, now exact at β+1). **Frontier sharpened** from
+"`r ≈ log q`" to: given char-0 (proven), the entire open content of the β+1 rung is the single
+scalar `WraparoundBelowDC` (`W_{β+1} ≤ n^{2r}/p`). Prize scale (n=2^30, β=4, r=5): `DC/Wick=2^{+20}`,
+char-0 budget `~C(r,2)/n=2^{−27}`, so `A_{β+1}≤Wick` demands `W_r` match its DC mean to relative
+precision `2^{−47}` — a genuine square-root-cancellation statement (β+2: `2^{−73}`; β+3: `2^{−99}`).
+No exact formula (char-0 ladder is p-independent; `W_r` is genuinely p-arithmetic). No provable
+non-trivial bound (Hölder needs the wall's M-bound — circular). Landed:
+`dcEnergyBound_of_charZero_of_wraparoundBelowDC` (the split), `dcSubtracted_le_charZero_of_
+wraparoundBelowDC` (the double margin `A_r ≤ E_∞`), `dcEnergyBound_iff_wraparound_within_budget`
+(the exact iff, E_∞ cancels). Refines `DCEnergyCorrection.DCEnergyBound` by discharging char-0 and
+naming the residual concentration. CORE unchanged: OPEN, ON-BGK.
+
+## [466-fs1-uniform-floor-successor-REFUTED] the uniform floor-successor conjecture floor-bad(n)={p_min(n)} is FALSE at n=64 (193 not floor-bad) (2026-07-03)
+
+Lane: #466 lane FS1 (`probe_466_floorbad64_decide.py`; output `_out_466_floorbad64_decide.txt`;
+Lean `Frontier/_FloorComplementReform.lean` axiom-clean `[propext, Classical.choice, Quot.sound]`).
+Two advances. **(A) The complement reformulation** (the enabling theorem, Lean-proved core): a
+pattern `A` is floor-bad-realizable at `p` (`deg(x^{3n/4} mod P_A) ≤ n/2`, the `floor_scan_exact.c`
+rank predicate) **iff the COMPLEMENT polynomial `Q_B = ∏_{j∉A}(x-ω^j)` has zero coefficients at
+degrees `i ∈ [n/8+1, n/4-1]`** — turning a test on the degree-`5n/8` remainder into `n/8-1` middle
+coefficients of the degree-`3n/8` complement.  Proof pivot `r·Q_B ≡ x^{3n/4}·Q_B (mod x^n-1)` is
+`floorReform_dvd` (axiom-clean, general in the ring).  Verified residual≡complement: **exact on all
+`2304·4` patterns at n=16**, `0` mismatches on 40k/prime (n=32) and 3k/prime (n=64, p=193,257).
+**(B) The decision.**  `Q_B = U·W` (U=min-complement deg 8, W=maj-complement deg 16) makes the 7
+conditions bilinear, LINEAR in U for fixed W (1-dim solution line, 193 pts); hash the 3,312,400
+min-U, enumerate each maj-W's line.  Realizability is EXACTLY translation-invariant
+(`[x^i]Q_{B+t}=ω^{t(3n/8-i)}[x^i]Q_B`) ⟹ scan `c0=0` only and `b2` over the `810` rotation-canonical
+reps of the `ℤ/16` translation-by-4 action (=`(1/16)[C(16,8)+C(8,4)+2C(4,2)+4C(2,1)]`) × all `b3` ×
+full min-set is **COMPLETE**.  Engine validated: MITM count == brute complement count at n=32
+(p=97→8=orbit/4 with residual-confirmed witness; 193/257/449/577→0, reproducing floor-bad(32)={97});
+translation-reduction reproduces the same at n=32; positive+negative controls at n=64 for BOTH p=193
+and p=257 (detects an injected on-line witness, rejects an off-line one — no false-neg blind spot,
+no false-pos; a collision-free random hash + exact reverify replaces base-p key packing which
+overflows int64 for p≥236 at kU=8).  **RESULT (COMPLETE scan of 10,424,700 maj-reps × 3,312,400 min,
+2012 s, 11 cores):  `p=193 = p_min(64)` is NOT floor-bad at n=64 — ZERO realizable patterns.**  So
+`floor-bad(64) ≠ {193}`, **REFUTING the uniform conjecture** `floor-bad(n)={p_min(n)}` (true n=16,32,
+FALSE n=64).  The least-prime law is an n=16,32 coincidence; the off-BGK δ* floor route via a uniform
+successor law is CLOSED (refutation-WIN).  `floor-bad(64)` (if nonempty) is carried by a larger prime
+`≡1 mod 64`; `257,449,577` being decided directly by the same complete MITM.  Round-8's "193 divides
+only 2 of 7 canonical-pattern norms" upgraded from one pattern to the WHOLE family.  CORE unchanged:
+OPEN, ON-BGK.
+
+## [466-fs2-packing-mechanism-refuted] floor-badness is a sharp resultant-divisibility coincidence, NOT a metric-density mechanism (2026-07-03)
+
+Lane: #466 round-9 FS2 (`_FloorPackingDensityRefuted.lean` axiom-clean;
+`probe_466_packing_mechanism.py`; verifier confirmed by independent recompute). The dossier §9/§12
+germ — "only at the tightest/smallest prime does μ_n pack densely enough to force the adjacent
+7th-type profile; for larger p the 6-type freeze holds" — is REFUTED as a quantitative mechanism.
+No monotone metric-density statistic separates floor-bad from floor-good primes: the min-gap
+between μ_n elements is 1 at BOTH the floor-bad p and floor-good primes (n=16: gap 1 at both 17 and
+257; n=32: gap 1 at bad 97 and good primes), and the naive "density" p_min/p is non-monotone under
+the exact split-prime arithmetic (n=512 vs 256: 512/7681 < 256/769 — a density inversion). Floor
+realizability is governed by the sharp arithmetic condition (resultant divisibility / the FS1
+complement-coefficient vanishing), not any metric packing — so the uniform conjecture cannot be
+proven by a density/covering-radius argument. (Consistent with FS1, which refuted the uniform
+conjecture outright at n=64.)
+
+## [466-w2-exact-energy-exhausted] the exact-μ_n-energy exponent axis is EXHAUSTED — no beat past 8/9 good-prime or n^{1−o(1)} unconditional (2026-07-03)
+
+Lane: #466 round-9 W2 (`_WallNewEnergyExhaustion.lean` axiom-clean, 19 decls;
+`probe_466_wall_newenergy.py`; verifier recomputed all exponents by hand, severity none). Final
+audit of the exact-energy exponent landscape at β=4, decisive negative (a frontier RECORD, not a
+beat — none expected): (C1) the multiplicative energy `E_×(μ_n) = n³` is exact and UNCONDITIONAL
+but the moment identity `Σ_a|S(a)|^{2r} = p·T_r` contains NO multiplicative energy — it only enters
+a sup bound via a sum-product transfer to the ADDITIVE energy, whose sharpest unconditional output
+is the generic di Benedetto `n^{1−31/2880} = 0.98924` (the n^{1−o(1)} class); direct
+Heath-Brown–Konyagin `t₂=5/2` is vacuous at β=4 (nonvacuous iff β<3, the p^{1/3} wall). (C2) the
+higher exact additive energies T₄/T₆ + a Rudnev point-plane finisher reduce to the already-swept
+trilinear (dominated by bilinear for β<17/3); the symmetric-bilinear optimum at the mass-floor-legal
+exponents is fold-order m=β=4 → 7/8, whose T₄=O(n⁴) supply is DEAD (D4, round 8); higher fold orders
+strictly worse. NO gain past 8/9 with surviving good-prime supply. (C3) the character 2nd moment
+`Σ_{b≠0}|η_b|² = pn − n²` is the Parseval FLOOR (M ≥ ≈√n) with only the trivial upper bound
+M ≤ √(pn) = n^{5/2}. The exact-energy route is closed; the SOTA record stands at n^{8/9}
+good-prime, n^{1−o(1)} unconditional, sharp √n floor.
+
+## [466-r12-frontal-conjugate-gate-collapse] the frontal norm/conjugate-count assault on the wall REDUCES-TO-WALL at an exact-finite step: the gate (2r)^{n/2}<p that proves W_r=0 is vacuous at every rung for n≥64 (2026-07-04)
+
+Lane: #466 round-12 LANE F (`_FrontalConjugateGateCollapse.lean` axiom-clean, 4 decls;
+`probe_466r12_frontal.py`, `probe_466r12_gate.py`, exact int64 level-counts, cross-validated). A
+FRONTAL attempt ON the wall `W_r ≤ n^{2r}/p` at r=β+1 via the norm/conjugate-count decomposition.
+Result: REDUCES-TO-WALL with the exact step pinned, plus one genuinely-new PROVEN small-rung fact.
+
+**(1) The norm-divisibility reframe is EXACT (probe-validated).** `W_r = #{(h₁…h_{2r})∈μ_n^{2r} :
+α=Σεᵢhᵢ ≡ 0 mod 𝔭, α≠0 in ℤ[ζ_n]}` = the count of sparse ±1 sums of ≤2r n-th roots that are a
+NONZERO element of the degree-1 prime 𝔭|p, i.e. `p | N(α)`, `N(α)≠0`. At n=8 the norm-divisibility
+count (computed via exact algebraic norms) equals W_r exactly (r=2,3): the reframe is an identity,
+not an approximation. Since p splits completely, α≡0 mod 𝔭 with α≠0 ⟺ p|N(α).
+
+**(2) PROVEN SMALL-RUNG (the exact gate).** The in-tree `RootSumNorm.abs_norm_sum_rootsOfUnity_le`
+gives `|N(α)| ≤ (2r)^{φ(n)} = (2r)^{n/2}`, so `(2r)^{n/2} < p ⟹ W_r = 0` EXACTLY (a nonzero α has
+|N(α)|<p, so p∤N(α)). Empirically SOUND: onset r_0(n,p) = min{r: W_r>0} sits at or just above the
+gate reach r_gate = ⌊½·p^{2/n}⌋ (n=8: r_gate=4, onset r_0=8; n=16: r_gate=2, onset 5; n=32:
+r_gate=1, onset 4–5; slack O(1)). The wall HOLDS at every measured post-onset rung (W_r/(n^{2r}/p) ∈
+[0.007, 0.615] < 1, n=8/16/32, ≥2 primes each, β=4).
+
+**(3) The GATE COLLAPSE — the new exact-finite content (LANDED axiom-clean).** At the prize
+p=n^β=n^4, `p^{2/n}=n^{8/n}→1`, so r_gate=⌊½·n^{8/n}⌋ collapses: n=8→4, n=16→2, n=32→1, **n≥64→0**.
+`_FrontalConjugateGateCollapse.two_pow_half_gt_n_pow_four` (axiom-clean): `n^4 < 2^{n/2}` for even
+n≥64 (even crossover n=44; dyadic fails at 32, holds at 64: 64^4=16777216 < 2^32=4294967296). Hence
+`gate_vacuous_at_prize`: for n≥64 and EVERY r≥1, `(2r)^{n/2} ≥ p` — the conjugate-count sufficient
+condition `(2r)^{n/2}<p` for W_r=0 FAILS at every rung, so the norm bound certifies W_r=0 at NO rung
+on the prize surface `1≤r≤β+1`. (Sharpens the asymptotic-in-p `_AvND_NormDiameterThreshold.
+threshold_lt_saddle` to an EXACT finite prize-point boundary: past the gate already at r=1, n≥64.)
+
+**VERDICT: REDUCES-TO-WALL at the exact step.** The frontal norm/conjugate-count assault closes the
+wall (proves W_r=0) exactly where `(2r)^{n/2}<p`; at the prize that region is EMPTY for every r≥1.
+So the residual is precisely the un-gated inequality `WallBetaPlusOne.WraparoundBelowDC` (p·W_r ≤
+n^{2r}). A magnitude-only argument provably cannot enter it: the conjugate product |N|=∏|σ| can
+exceed p even when no single |σ| is large (each |σ(α)|≤2r), so bounding the COUNT of large-norm
+p-divisible sparse sums needs inter-conjugate PHASE cancellation = BGK/Paley. This is the same wall
+sec 9/W1 name, now reached from the norm side with the exact-finite reason the tool is vacuous. No
+new named target; no wall closure. CORE OPEN, ON-BGK.

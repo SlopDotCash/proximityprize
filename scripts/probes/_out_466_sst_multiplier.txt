@@ -1,0 +1,145 @@
+============================================================================================
+probe_466_sst_multiplier.py  --  LANE S5: the SST multiplier-action residue
+============================================================================================
+
+EXACT IDENTITY (not empirical): multiply index set by k (gcd(k,n)=1)  <=>  replace root
+h by the DIFFERENT primitive root h^k:   L_{kS}(h) = L_S(h^k).  The shift S->S+1 is the
+unit multiple h (true isometry); the multiplier is a GALOIS TWIST, not a unit multiple.
+
+n=16 primes [65537, 65617, 65633] (65537=2^16+1 is Fermat; stats read off generic 65617,65633)
+--- n=16 p=65537 r=2 (d=4)  h=64  units|(Z/n)^x|=phi(n)=8  [FERMAT 2^16+1 -- flagged resonant] ---
+  sparse-count dist over ALL 1820 sections: {0: 1120, 2: 672, 8: 28}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 12740/12740 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 12740/12740 pairs equal (100.0%);  char-p defect equal: 12740/12740 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 1820 sections in 1.5s
+(a) dual-min invariance under multiplier k: 5252/12740 pairs equal (41.2%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(0, 1, 2, 3), k=3, kS=(0, 3, 6, 9): sparse-count equal (0) but p^2*lambda1*^2 differs: 1052929 vs 4369
+(b) shift orbits: 116 (compression 15.69); AFFINE orbits: 25 (compression 72.80, extra factor 4.640 vs shift; max extra = phi(n)=8)
+    affine-orbit size distribution: {4: 1, 8: 1, 16: 3, 32: 3, 64: 8, 128: 9}
+    sparse-count CONSTANT on affine orbit: violations 0/25
+    dual-min   CONSTANT on affine orbit: violations 16/25 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 924/924; dual-min equal 380/924 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+--- n=16 p=65617 r=2 (d=4)  h=23234  units|(Z/n)^x|=phi(n)=8  [generic] ---
+  sparse-count dist over ALL 1820 sections: {0: 1120, 2: 672, 8: 28}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 12740/12740 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 12740/12740 pairs equal (100.0%);  char-p defect equal: 12740/12740 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 1820 sections in 3.8s
+(a) dual-min invariance under multiplier k: 5252/12740 pairs equal (41.2%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(0, 1, 2, 3), k=3, kS=(0, 3, 6, 9): sparse-count equal (0) but p^2*lambda1*^2 differs: 17524450 vs 9854290
+(b) shift orbits: 116 (compression 15.69); AFFINE orbits: 25 (compression 72.80, extra factor 4.640 vs shift; max extra = phi(n)=8)
+    affine-orbit size distribution: {4: 1, 8: 1, 16: 3, 32: 3, 64: 8, 128: 9}
+    sparse-count CONSTANT on affine orbit: violations 0/25
+    dual-min   CONSTANT on affine orbit: violations 16/25 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 924/924; dual-min equal 380/924 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+--- n=16 p=65633 r=2 (d=4)  h=5013  units|(Z/n)^x|=phi(n)=8  [generic] ---
+  sparse-count dist over ALL 1820 sections: {0: 1120, 2: 672, 8: 28}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 12740/12740 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 12740/12740 pairs equal (100.0%);  char-p defect equal: 12740/12740 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 1820 sections in 4.2s
+(a) dual-min invariance under multiplier k: 5252/12740 pairs equal (41.2%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(0, 1, 2, 3), k=3, kS=(0, 3, 6, 9): sparse-count equal (0) but p^2*lambda1*^2 differs: 15353950 vs 15163291
+(b) shift orbits: 116 (compression 15.69); AFFINE orbits: 25 (compression 72.80, extra factor 4.640 vs shift; max extra = phi(n)=8)
+    affine-orbit size distribution: {4: 1, 8: 1, 16: 3, 32: 3, 64: 8, 128: 9}
+    sparse-count CONSTANT on affine orbit: violations 0/25
+    dual-min   CONSTANT on affine orbit: violations 16/25 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 924/924; dual-min equal 380/924 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+--- n=16 p=65537 r=3 (d=6)  h=64  units|(Z/n)^x|=phi(n)=8  [FERMAT 2^16+1 -- flagged resonant] ---
+  sparse-count dist over ALL 8008 sections: {0: 1792, 2: 4480, 8: 1680, 26: 56}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 14000/14000 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 14000/14000 pairs equal (100.0%);  char-p defect equal: 14000/14000 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 1500 sections in 6.9s
+(a) dual-min invariance under multiplier k: 3738/10500 pairs equal (35.6%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(4, 6, 8, 10, 11, 12), k=3, kS=(1, 2, 4, 8, 12, 14): sparse-count equal (2) but p^2*lambda1*^2 differs: 16908561 vs 16843281
+(b) shift orbits: 504 (compression 15.89); AFFINE orbits: 84 (compression 95.33, extra factor 6.000 vs shift; max extra = phi(n)=8)
+    affine-orbit size distribution: {8: 1, 16: 4, 32: 8, 64: 22, 128: 49}
+    sparse-count CONSTANT on affine orbit: violations 0/84
+    dual-min   CONSTANT on affine orbit: violations 0/0 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 4032/4032; dual-min equal 48/133 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+--- n=16 p=65617 r=3 (d=6)  h=23234  units|(Z/n)^x|=phi(n)=8  [generic] ---
+  sparse-count dist over ALL 8008 sections: {0: 1792, 2: 4480, 8: 1680, 26: 56}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 14000/14000 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 14000/14000 pairs equal (100.0%);  char-p defect equal: 14000/14000 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 1500 sections in 16.2s
+(a) dual-min invariance under multiplier k: 3666/10500 pairs equal (34.9%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(1, 4, 6, 9, 10, 12), k=3, kS=(2, 3, 4, 11, 12, 14): sparse-count equal (8) but p^2*lambda1*^2 differs: 5749475 vs 17988292
+(b) shift orbits: 504 (compression 15.89); AFFINE orbits: 84 (compression 95.33, extra factor 6.000 vs shift; max extra = phi(n)=8)
+    affine-orbit size distribution: {8: 1, 16: 4, 32: 8, 64: 22, 128: 49}
+    sparse-count CONSTANT on affine orbit: violations 0/84
+    dual-min   CONSTANT on affine orbit: violations 0/0 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 4032/4032; dual-min equal 57/155 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+--- n=16 p=65633 r=3 (d=6)  h=5013  units|(Z/n)^x|=phi(n)=8  [generic] ---
+  sparse-count dist over ALL 8008 sections: {0: 1792, 2: 4480, 8: 1680, 26: 56}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 14000/14000 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 14000/14000 pairs equal (100.0%);  char-p defect equal: 14000/14000 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 1500 sections in 16.7s
+(a) dual-min invariance under multiplier k: 3650/10500 pairs equal (34.8%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(0, 1, 6, 8, 9, 12), k=3, kS=(0, 2, 3, 4, 8, 11): sparse-count equal (8) but p^2*lambda1*^2 differs: 13894104 vs 4501759
+(b) shift orbits: 504 (compression 15.89); AFFINE orbits: 84 (compression 95.33, extra factor 6.000 vs shift; max extra = phi(n)=8)
+    affine-orbit size distribution: {8: 1, 16: 4, 32: 8, 64: 22, 128: 49}
+    sparse-count CONSTANT on affine orbit: violations 0/84
+    dual-min   CONSTANT on affine orbit: violations 0/0 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 4032/4032; dual-min equal 68/164 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+n=32 primes [1048609, 1048897] (p=1 mod 32, p>=32^4=1048576)
+n=32 r=2 full census: 35960 sections
+--- n=32 p=1048609 r=2 (d=4)  h=57211  units|(Z/n)^x|=phi(n)=16  [generic] ---
+  sparse-count dist over ALL 35960 sections: {0: 29120, 2: 6720, 8: 120}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 30000/30000 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 30000/30000 pairs equal (100.0%);  char-p defect equal: 30000/30000 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 4000 sections in 12.0s
+(a) dual-min invariance under multiplier k: 9102/60000 pairs equal (15.2%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(10, 24, 30, 31), k=3, kS=(8, 26, 29, 30): sparse-count equal (0) but p^2*lambda1*^2 differs: 424120077 vs 938446026
+(b) shift orbits: 1128 (compression 31.88); AFFINE orbits: 100 (compression 359.60, extra factor 11.280 vs shift; max extra = phi(n)=16)
+    affine-orbit size distribution: {8: 1, 16: 1, 32: 3, 64: 4, 128: 10, 256: 28, 512: 53}
+    sparse-count CONSTANT on affine orbit: violations 0/100
+    dual-min   CONSTANT on affine orbit: violations 0/0 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 18040/18040; dual-min equal 53/230 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+--- n=32 p=1048897 r=2 (d=4)  h=342662  units|(Z/n)^x|=phi(n)=16  [generic] ---
+  sparse-count dist over ALL 35960 sections: {0: 29120, 2: 6720, 8: 120}
+  sections with char-p DEFECT (count > 3^#pairs - 1): 0  => ALL bad sections are char-0/antipodal (sparse-count is a candidate affine invariant)
+(a) EXACT identity sparse_count(kS,h)==sparse_count(S,h^k): 30000/30000 pass (fails=0)  [proves L_kS(h)=L_S(h^k)]
+(a) sparse-count invariance under multiplier k (fixed root h): 30000/30000 pairs equal (100.0%);  char-p defect equal: 30000/30000 (100.0%)
+(a) dual-min (p^2*lambda1*^2, exact) computed on 4000 sections in 16.6s
+(a) dual-min invariance under multiplier k: 9056/60000 pairs equal (15.1%)  => multiplier is NOT an isometry of L_p
+    COUNTERMODEL: S=(0, 9, 14, 17), k=3, kS=(0, 10, 19, 27): sparse-count equal (0) but p^2*lambda1*^2 differs: 348283963 vs 570529973
+(b) shift orbits: 1128 (compression 31.88); AFFINE orbits: 100 (compression 359.60, extra factor 11.280 vs shift; max extra = phi(n)=16)
+    affine-orbit size distribution: {8: 1, 16: 1, 32: 3, 64: 4, 128: 10, 256: 28, 512: 53}
+    sparse-count CONSTANT on affine orbit: violations 0/100
+    dual-min   CONSTANT on affine orbit: violations 0/0 (orbits fully dual'd)
+(d) reversal k=-1 (conjugation h->h^-1): sparse-count equal 18040/18040; dual-min equal 65/239 (dual'd pairs)  [-1 preserves char-0 antipodal count but not lambda1*]
+
+============================================================================================
+SUMMARY
+  n         p  r  #sect #defect  shOrb affOrb   sc=%   dm=% affCntViol affDmViol     rev_sc     rev_dm
+ 16     65537  2   1820       0    116     25 100.0  41.2          0        16    924/924    380/924
+ 16     65617  2   1820       0    116     25 100.0  41.2          0        16    924/924    380/924
+ 16     65633  2   1820       0    116     25 100.0  41.2          0        16    924/924    380/924
+ 16     65537  3   8008       0    504     84 100.0  35.6          0         0  4032/4032     48/133
+ 16     65617  3   8008       0    504     84 100.0  34.9          0         0  4032/4032     57/155
+ 16     65633  3   8008       0    504     84 100.0  34.8          0         0  4032/4032     68/164
+ 32   1048609  2  35960       0   1128    100 100.0  15.2          0         0 18040/18040     53/230
+ 32   1048897  2  35960       0   1128    100 100.0  15.1          0         0 18040/18040     65/239
+
+VERDICT:
+  sparse-count is CONSTANT on affine orbits (affine invariant; extra factor phi(n) compression over shift) -- because in the n=2^mu
+  regime every bad section is char-0/antipodal and multiplier x->kx fixes the order-2
+  element n/2 (k odd), so it permutes antipodal pairs.
+  dual-minimum lambda1* is BROKEN by multipliers => multiplier action is NOT an isometry of a fixed L_p.
+  RESIDUE STATUS: the multiplier gives NO new compression of the DUAL-MINIMUM census
+  (within-affine-orbit dual-min variance is nonzero; countermodel pairs printed). DEAD
+  as a lattice-geometry lever; ALIVE only as the (already-understood) char-0 sparse-count
+  symmetry.  Reversal k=-1 is the special conjugation case of exactly this dichotomy.
+total time 968.2s

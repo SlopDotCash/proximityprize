@@ -1,0 +1,5 @@
+n= 128 beta=3  window=[2097152,4194304]  witnesses=12  true window count=2180  OK
+n= 128 beta=4  window=[268435456,536870912]  witnesses=12  true window count=(skipped: large window)  OK
+n= 256 beta=3  window=[16777216,33554432]  witnesses=12  true window count=7629  OK
+n= 256 beta=4  window=[4294967296,8589934592]  witnesses=8  true window count=(skipped: large window)  OK
+ALL RUNGS VERIFIED

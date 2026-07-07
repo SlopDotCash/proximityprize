@@ -1,0 +1,168 @@
+#466 R13 LANE M -- moment-order optimization validation
+Validating: WallHolds => M <= C sqrt(n log q), optimal r ~ (1/2) ln q, C ~ sqrt(2e)~2.33
+
+===== n=8, p=4129 (p/n=516.1, beta=log_n(p)=4.00, v2(p-1)=5) =====
+  q=p=4129, log q=8.326, log(p/n)=6.246
+  TRUE sup-norm M = max_b!=0 ||eta_b|| = 7.5582
+  sqrt(n log(p/n)) = 7.0690   sqrt(n log q) = 8.1613
+  M / sqrt(n log(p/n)) = 1.0692    M / sqrt(n log q) = 0.9261
+  closed form sqrt(2e n (ln q +1)) = 20.1396  (M/closed = 0.3753)
+  theory optimal r ~ (1/2) ln q = 4.16
+  --- moment-bound (q E_r - n^{2r})^(1/2r) [proxy >= M] : argmin r*=11, value=8.6534 ---
+  --- WICK bound   (q (2r-1)!! n^r)^(1/2r) [WallHolds]  : argmin r*=9, value=11.7805 ---
+    moment argmin/(0.5 ln q) = 2.642   wick argmin/(0.5 ln q) = 2.162
+    wick-min / sqrt(n log q) = 1.4435   (theory C=sqrt(2e)=2.3316)
+    ceil(ln q)=9: at r=ceil(ln q), wick bound=11.7805  (/sqrt(n log q)=1.4435)
+   r |  moment^(1/2r) |  wick^(1/2r) | DCEnergyBound(r) holds?
+   1 |     181.5709 |     181.7471 | True 
+   2 |      28.8168 |      29.8392 | True 
+   3 |      16.5939 |      17.7910 | True 
+   4 |      12.9029 |      14.3276 | True 
+   5 |      11.2231 |      12.9025 | True 
+   6 |      10.2894 |      12.2349 | True 
+   7 |       9.7051 |      11.9207 | True 
+   8 |       9.3098 |      11.7954 | True 
+   9 |       9.0269 |      11.7805 | True  <-wick*
+  10 |       8.8159 |      11.8342 | True 
+  11 |       8.6534 |      11.9325 | True  <-mom*
+
+===== n=8, p=4153 (p/n=519.1, beta=log_n(p)=4.01, v2(p-1)=3) =====
+  q=p=4153, log q=8.332, log(p/n)=6.252
+  TRUE sup-norm M = max_b!=0 ||eta_b|| = 7.4584
+  sqrt(n log(p/n)) = 7.0723   sqrt(n log q) = 8.1641
+  M / sqrt(n log(p/n)) = 1.0546    M / sqrt(n log q) = 0.9136
+  closed form sqrt(2e n (ln q +1)) = 20.1458  (M/closed = 0.3702)
+  theory optimal r ~ (1/2) ln q = 4.17
+  --- moment-bound (q E_r - n^{2r})^(1/2r) [proxy >= M] : argmin r*=11, value=8.6555 ---
+  --- WICK bound   (q (2r-1)!! n^r)^(1/2r) [WallHolds]  : argmin r*=9, value=11.7843 ---
+    moment argmin/(0.5 ln q) = 2.641   wick argmin/(0.5 ln q) = 2.160
+    wick-min / sqrt(n log q) = 1.4434   (theory C=sqrt(2e)=2.3316)
+    ceil(ln q)=9: at r=ceil(ln q), wick bound=11.7843  (/sqrt(n log q)=1.4434)
+   r |  moment^(1/2r) |  wick^(1/2r) | DCEnergyBound(r) holds?
+   1 |     182.0989 |     182.2745 | True 
+   2 |      28.8588 |      29.8824 | True 
+   3 |      16.6102 |      17.8082 | True 
+   4 |      12.9124 |      14.3380 | True 
+   5 |      11.2299 |      12.9099 | True 
+   6 |      10.2946 |      12.2408 | True 
+   7 |       9.7094 |      11.9257 | True 
+   8 |       9.3134 |      11.7997 | True 
+   9 |       9.0301 |      11.7843 | True  <-wick*
+  10 |       8.8186 |      11.8377 | True 
+  11 |       8.6555 |      11.9357 | True  <-mom*
+
+===== n=16, p=65537 (p/n=4096.1, beta=log_n(p)=4.00, v2(p-1)=16) =====
+  q=p=65537, log q=11.090, log(p/n)=8.318
+  TRUE sup-norm M = max_b!=0 ||eta_b|| = 13.8375
+  sqrt(n log(p/n)) = 11.5362   sqrt(n log q) = 13.3209
+  M / sqrt(n log(p/n)) = 1.1995    M / sqrt(n log q) = 1.0388
+  closed form sqrt(2e n (ln q +1)) = 32.4296  (M/closed = 0.4267)
+  theory optimal r ~ (1/2) ln q = 5.55
+  --- moment-bound (q E_r - n^{2r})^(1/2r) [proxy >= M] : argmin r*=14, value=15.4149 ---
+  --- WICK bound   (q (2r-1)!! n^r)^(1/2r) [WallHolds]  : argmin r*=11, value=19.1347 ---
+    moment argmin/(0.5 ln q) = 2.525   wick argmin/(0.5 ln q) = 1.984
+    wick-min / sqrt(n log q) = 1.4364   (theory C=sqrt(2e)=2.3316)
+    ceil(ln q)=12: at r=ceil(ln q), wick bound=19.1388  (/sqrt(n log q)=1.4367)
+   r |  moment^(1/2r) |  wick^(1/2r) | DCEnergyBound(r) holds?
+   1 |    1023.8828 |    1024.0078 | True 
+   2 |      82.8522 |      84.2291 | True 
+   3 |      38.5788 |      39.8862 | True 
+   4 |      27.2127 |      28.6266 | True 
+   5 |      22.4678 |      24.0576 | True 
+   6 |      19.9838 |      21.7856 | True 
+   7 |      18.5033 |      20.5389 | True 
+   8 |      17.5439 |      19.8276 | True 
+   9 |      16.8848 |      19.4259 | True 
+  10 |      16.4118 |      19.2171 | True 
+  11 |      16.0607 |      19.1347 | True  <-wick*
+  12 |      15.7926 |      19.1388 | True 
+  13 |      15.5827 |      19.2037 | True 
+  14 |      15.4149 |      19.3125 | True  <-mom*
+
+===== n=16, p=65617 (p/n=4101.1, beta=log_n(p)=4.00, v2(p-1)=4) =====
+  q=p=65617, log q=11.092, log(p/n)=8.319
+  TRUE sup-norm M = max_b!=0 ||eta_b|| = 13.2948
+  sqrt(n log(p/n)) = 11.5371   sqrt(n log q) = 13.3216
+  M / sqrt(n log(p/n)) = 1.1524    M / sqrt(n log q) = 0.9980
+  closed form sqrt(2e n (ln q +1)) = 32.4313  (M/closed = 0.4099)
+  theory optimal r ~ (1/2) ln q = 5.55
+  --- moment-bound (q E_r - n^{2r})^(1/2r) [proxy >= M] : argmin r*=14, value=15.1472 ---
+  --- WICK bound   (q (2r-1)!! n^r)^(1/2r) [WallHolds]  : argmin r*=11, value=19.1358 ---
+    moment argmin/(0.5 ln q) = 2.524   wick argmin/(0.5 ln q) = 1.983
+    wick-min / sqrt(n log q) = 1.4364   (theory C=sqrt(2e)=2.3316)
+    ceil(ln q)=12: at r=ceil(ln q), wick bound=19.1397  (/sqrt(n log q)=1.4367)
+   r |  moment^(1/2r) |  wick^(1/2r) | DCEnergyBound(r) holds?
+   1 |    1024.5077 |    1024.6326 | True 
+   2 |      82.8775 |      84.2548 | True 
+   3 |      38.5866 |      39.8943 | True 
+   4 |      27.2136 |      28.6309 | True 
+   5 |      22.4580 |      24.0605 | True 
+   6 |      19.9575 |      21.7878 | True 
+   7 |      18.4548 |      20.5407 | True 
+   8 |      17.4684 |      19.8291 | True 
+   9 |      16.7787 |      19.4273 | True 
+  10 |      16.2732 |      19.2183 | True 
+  11 |      15.8886 |      19.1358 | True  <-wick*
+  12 |      15.5873 |      19.1397 | True 
+  13 |      15.3454 |      19.2046 | True 
+  14 |      15.1472 |      19.3133 | True  <-mom*
+
+===== n=32, p=1048609 (p/n=32769.0, beta=log_n(p)=4.00, v2(p-1)=5) =====
+  q=p=1048609, log q=13.863, log(p/n)=10.397
+  TRUE sup-norm M = max_b!=0 ||eta_b|| = 22.9834
+  sqrt(n log(p/n)) = 18.2404   sqrt(n log q) = 21.0622
+  M / sqrt(n log(p/n)) = 1.2600    M / sqrt(n log q) = 1.0912
+  closed form sqrt(2e n (ln q +1)) = 50.8499  (M/closed = 0.4520)
+  theory optimal r ~ (1/2) ln q = 6.93
+  --- moment-bound (q E_r - n^{2r})^(1/2r) [proxy >= M] : argmin r*=16, value=26.0053 ---
+  --- WICK bound   (q (2r-1)!! n^r)^(1/2r) [WallHolds]  : argmin r*=14, value=30.1549 ---
+    moment argmin/(0.5 ln q) = 2.308   wick argmin/(0.5 ln q) = 2.020
+    wick-min / sqrt(n log q) = 1.4317   (theory C=sqrt(2e)=2.3316)
+    ceil(ln q)=14: at r=ceil(ln q), wick bound=30.1549  (/sqrt(n log q)=1.4317)
+   r |  moment^(1/2r) |  wick^(1/2r) | DCEnergyBound(r) holds?
+   1 |    5792.6215 |    5792.7099 | True 
+   2 |     236.3334 |     238.2367 | True 
+   3 |      88.0931 |      89.5418 | True 
+   4 |      55.8662 |      57.2533 | True 
+   5 |      43.4513 |      44.8931 | True 
+   6 |      37.2650 |      38.8176 | True 
+   7 |      33.7050 |      35.4081 | True 
+   8 |      31.4576 |      33.3459 | True 
+   9 |      29.9418 |      32.0474 | True 
+  10 |      28.8659 |      31.2183 | True 
+  11 |      28.0700 |      30.6952 | True 
+  12 |      27.4606 |      30.3809 | True 
+  13 |      26.9803 |      30.2143 | True 
+  14 |      26.5926 |      30.1549 | True  <-wick*
+  15 |      26.2731 |      30.1754 | True 
+  16 |      26.0053 |      30.2563 | True  <-mom*
+
+===== n=32, p=1048897 (p/n=32778.0, beta=log_n(p)=4.00, v2(p-1)=6) =====
+  q=p=1048897, log q=13.863, log(p/n)=10.398
+  TRUE sup-norm M = max_b!=0 ||eta_b|| = 22.7944
+  sqrt(n log(p/n)) = 18.2406   sqrt(n log q) = 21.0624
+  M / sqrt(n log(p/n)) = 1.2496    M / sqrt(n log q) = 1.0822
+  closed form sqrt(2e n (ln q +1)) = 50.8504  (M/closed = 0.4483)
+  theory optimal r ~ (1/2) ln q = 6.93
+  --- moment-bound (q E_r - n^{2r})^(1/2r) [proxy >= M] : argmin r*=16, value=25.8067 ---
+  --- WICK bound   (q (2r-1)!! n^r)^(1/2r) [WallHolds]  : argmin r*=14, value=30.1552 ---
+    moment argmin/(0.5 ln q) = 2.308   wick argmin/(0.5 ln q) = 2.020
+    wick-min / sqrt(n log q) = 1.4317   (theory C=sqrt(2e)=2.3316)
+    ceil(ln q)=14: at r=ceil(ln q), wick bound=30.1552  (/sqrt(n log q)=1.4317)
+   r |  moment^(1/2r) |  wick^(1/2r) | DCEnergyBound(r) holds?
+   1 |    5793.4170 |    5793.5053 | True 
+   2 |     236.3497 |     238.2531 | True 
+   3 |      88.0972 |      89.5459 | True 
+   4 |      55.8182 |      57.2552 | True 
+   5 |      43.3495 |      44.8943 | True 
+   6 |      37.1145 |      38.8184 | True 
+   7 |      33.5144 |      35.4088 | True 
+   8 |      31.2378 |      33.3464 | True 
+   9 |      29.7038 |      32.0479 | True 
+  10 |      28.6199 |      31.2187 | True 
+  11 |      27.8240 |      30.6956 | True 
+  12 |      27.2202 |      30.3813 | True 
+  13 |      26.7490 |      30.2146 | True 
+  14 |      26.3720 |      30.1552 | True  <-wick*
+  15 |      26.0637 |      30.1756 | True 
+  16 |      25.8067 |      30.2565 | True  <-mom*

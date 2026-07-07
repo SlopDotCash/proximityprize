@@ -1,0 +1,155 @@
+=== probe_466_lowprofile_dt: low-profile D(t) fiber scanner (lane W2) ===
+
+[constructive countermodel to NAIVE] p=17 n=8 k=2 a=4 t=1: agree(c,w_g)=4 agree(c',w_g)=4 both>=4: True; zero-agr(c)=3 zero-agr(c')=1 (different strata; exact-fiber thm unharmed); pairwise agr(c,c')=1 <= k-1=1
+   threshold check: plain-fiber pair has k+s+t = 7 vs 2a = 8 (<= means exact-thm applies; the two words sit in exact strata t'=3 and t'=1)
+[constructive countermodel to NAIVE] p=41 n=8 k=2 a=4 t=1: agree(c,w_g)=4 agree(c',w_g)=4 both>=4: True; zero-agr(c)=3 zero-agr(c')=1 (different strata; exact-fiber thm unharmed); pairwise agr(c,c')=1 <= k-1=1
+   threshold check: plain-fiber pair has k+s+t = 7 vs 2a = 8 (<= means exact-thm applies; the two words sit in exact strata t'=3 and t'=1)
+[constructive countermodel to NAIVE] p=97 n=8 k=2 a=4 t=1: agree(c,w_g)=4 agree(c',w_g)=4 both>=4: True; zero-agr(c)=3 zero-agr(c')=1 (different strata; exact-fiber thm unharmed); pairwise agr(c,c')=1 <= k-1=1
+   threshold check: plain-fiber pair has k+s+t = 7 vs 2a = 8 (<= means exact-thm applies; the two words sit in exact strata t'=3 and t'=1)
+
+[scan] p=17 (v2=4) n=8 k=2 a=4 z=4 s=4 lines=4 naive_viol=2 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=3 Dexact_max=1 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=3 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (17, 8, 2, 4, 4, 0, [], 2)
+[scan] p=41 (v2=3) n=8 k=2 a=4 z=4 s=4 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=3 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=3 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=33 thrT(k+s+t<=2a)=False
+[scan] p=97 (v2=5) n=8 k=2 a=4 z=4 s=4 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=33 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=33 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=1 K=33 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=1 K=33 thrT(k+s+t<=2a)=False
+[scan] p=17 (v2=4) n=8 k=2 a=4 z=5 s=3 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=45 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=1 K=45 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=1 K=45 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=1 K=45 thrT(k+s+t<=2a)=True
+[scan] p=41 (v2=3) n=8 k=2 a=4 z=5 s=3 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=2 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=4 K=45 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=2 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=4 K=45 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=4 K=45 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=4 K=45 thrT(k+s+t<=2a)=True
+[scan] p=17 (v2=4) n=8 k=3 a=5 z=5 s=3 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=5 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=5 K=35 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=5 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=5 K=35 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=4 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=35 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=35 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=5 K=35 thrT(k+s+t<=2a)=True
+[scan] p=17 (v2=4) n=8 k=3 a=5 z=6 s=2 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=5 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=50 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=5 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=50 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=4 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=50 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=6 K=50 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=6 K=50 thrT(k+s+t<=2a)=True
+[scan] p=13 (v2=2) n=12 k=2 a=4 z=6 s=6 lines=4 naive_viol=14 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=17 Dexact_max=2 perG_plain_max=4 perG_exact_max=1 Lambda_b_max=13 K=178 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=6 Dexact_max=2 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=13 K=178 thrT(k+s+t<=2a)=False
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=178 thrT(k+s+t<=2a)=False
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=178 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (13, 12, 2, 4, 6, 0, [], 3)
+[scan] p=73 (v2=3) n=12 k=2 a=4 z=6 s=6 lines=4 naive_viol=2 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=7 Dexact_max=0 perG_plain_max=2 perG_exact_max=0 Lambda_b_max=9 K=178 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=4 Dexact_max=1 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=9 K=178 thrT(k+s+t<=2a)=False
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=9 K=178 thrT(k+s+t<=2a)=False
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=9 K=178 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (73, 12, 2, 4, 6, 0, [], 2)
+[scan] p=13 (v2=2) n=12 k=2 a=4 z=8 s=4 lines=4 naive_viol=22 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=15 Dexact_max=0 perG_plain_max=4 perG_exact_max=0 Lambda_b_max=13 K=289 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=7 Dexact_max=1 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=13 K=289 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=289 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=289 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (13, 12, 2, 4, 8, 0, [], 3)
+[scan] p=73 (v2=3) n=12 k=2 a=4 z=8 s=4 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=3 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=289 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=2 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=289 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=6 K=289 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=6 K=289 thrT(k+s+t<=2a)=False
+[scan] p=13 (v2=2) n=12 k=3 a=5 z=6 s=6 lines=4 naive_viol=52 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=33 Dexact_max=0 perG_plain_max=6 perG_exact_max=0 Lambda_b_max=13 K=187 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=15 Dexact_max=3 perG_plain_max=4 perG_exact_max=1 Lambda_b_max=13 K=187 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=7 Dexact_max=4 perG_plain_max=2 perG_exact_max=2 Lambda_b_max=13 K=187 thrT(k+s+t<=2a)=False
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=187 thrT(k+s+t<=2a)=False
+   t=4: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=187 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (13, 12, 3, 5, 6, 0, [], 5)
+[scan] p=13 (v2=2) n=12 k=3 a=5 z=8 s=4 lines=4 naive_viol=61 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=30 Dexact_max=0 perG_plain_max=6 perG_exact_max=0 Lambda_b_max=13 K=428 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=14 Dexact_max=1 perG_plain_max=3 perG_exact_max=1 Lambda_b_max=13 K=428 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=8 Dexact_max=2 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=13 K=428 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=428 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=13 K=428 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (13, 12, 3, 5, 8, 0, [], 6)
+[scan] p=97 (v2=5) n=16 k=2 a=4 z=8 s=8 lines=4 naive_viol=9 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=15 Dexact_max=1 perG_plain_max=3 perG_exact_max=1 Lambda_b_max=17 K=578 thrT(k+s+t<=2a)=False
+   t=1: D(t)max=6 Dexact_max=1 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=17 K=578 thrT(k+s+t<=2a)=False
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=17 K=578 thrT(k+s+t<=2a)=False
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=17 K=578 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (97, 16, 2, 4, 8, 0, [], 3)
+[scan] p=193 (v2=6) n=16 k=2 a=4 z=8 s=8 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=8 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=10 K=578 thrT(k+s+t<=2a)=False
+   t=1: D(t)max=3 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=10 K=578 thrT(k+s+t<=2a)=False
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=10 K=578 thrT(k+s+t<=2a)=False
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=10 K=578 thrT(k+s+t<=2a)=False
+[scan] p=97 (v2=5) n=16 k=2 a=4 z=12 s=4 lines=4 naive_viol=2 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=9 Dexact_max=0 perG_plain_max=2 perG_exact_max=0 Lambda_b_max=20 K=1025 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=4 Dexact_max=1 perG_plain_max=2 perG_exact_max=1 Lambda_b_max=20 K=1025 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=20 K=1025 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=20 K=1025 thrT(k+s+t<=2a)=False
+   NAIVE COUNTERMODEL (random scan): p,n,k,a,z,t,S,mx = (97, 16, 2, 4, 12, 0, [], 2)
+[scan] p=193 (v2=6) n=16 k=2 a=4 z=12 s=4 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=3 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=1025 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=2 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=6 K=1025 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=1 perG_plain_max=1 perG_exact_max=1 Lambda_b_max=6 K=1025 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=6 K=1025 thrT(k+s+t<=2a)=False
+[scan] p=17 (v2=4) n=8 k=2 a=5 z=5 s=3 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+[scan] p=41 (v2=3) n=8 k=2 a=5 z=5 s=3 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=35 thrT(k+s+t<=2a)=True
+[scan] p=13 (v2=2) n=12 k=2 a=6 z=8 s=4 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=448 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=448 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=448 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=1 Dexact_max=0 perG_plain_max=1 perG_exact_max=0 Lambda_b_max=1 K=448 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=1 K=448 thrT(k+s+t<=2a)=True
+   t=5: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=1 K=448 thrT(k+s+t<=2a)=True
+[scan] p=73 (v2=3) n=12 k=2 a=6 z=8 s=4 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=448 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=448 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=448 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=448 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=448 thrT(k+s+t<=2a)=True
+   t=5: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=448 thrT(k+s+t<=2a)=True
+[scan] p=97 (v2=5) n=16 k=3 a=8 z=10 s=6 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=5: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=6: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=7: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+[scan] p=193 (v2=6) n=16 k=3 a=8 z=10 s=6 lines=4 naive_viol=0 thmT_viol=0 ambient_viol=0
+   t=0: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=1: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=2: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=3: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=4: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=5: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=6: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+   t=7: D(t)max=0 Dexact_max=0 perG_plain_max=0 perG_exact_max=0 Lambda_b_max=0 K=2229 thrT(k+s+t<=2a)=True
+
+[beta>=4 spot] p=4129 n=8 k=2 a=4 z=4 t=1: naive per-gamma>1 events=0 (claim N false OK), thmT violations=0 (must be 0; threshold k+s+t=7 <= 2a=8: True)
+
+=== VERDICT: theorem-T (k+s+t<=2a => per-gamma exact fiber <=1) violations: 0 (0 expected) ===
+=== naive claim (a>=k => per-gamma plain fiber <=1): REFUTED constructively at p=17,41,97 ===

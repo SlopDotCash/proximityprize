@@ -1,0 +1,55 @@
+probe_466r11_jointphase_v3.py -- DECISIVE gauge closure
+
+================================================================================
+n=8  primes=[4129, 4153, 4177, 4201]  v2=[5, 3, 4, 3]
+================================================================================
+  p=      4129 v2=5: sign-from-magnitude mismatches=0/516  |clip(s_raw)-s_true|max=5.73e-14
+      ||A|-|B||max=3.829e+00 (rel 2.29e+00)  => |A|,|B| DIFFER
+  p=      4153 v2=3: sign-from-magnitude mismatches=0/519  |clip(s_raw)-s_true|max=3.79e-14
+      ||A|-|B||max=3.875e+00 (rel 2.28e+00)  => |A|,|B| DIFFER
+  p=      4177 v2=4: sign-from-magnitude mismatches=0/522  |clip(s_raw)-s_true|max=4.31e-13
+      ||A|-|B||max=3.906e+00 (rel 2.37e+00)  => |A|,|B| DIFFER
+  p=      4201 v2=3: sign-from-magnitude mismatches=0/525  |clip(s_raw)-s_true|max=3.05e-14
+      ||A|-|B||max=3.860e+00 (rel 2.26e+00)  => |A|,|B| DIFFER
+  VERDICT n=8: if mismatches==0 for all primes => s_b is an ALGEBRAIC FUNCTION of the
+  magnitude triple (|eta_b|,|A_b|,|B_b|). Joint (A,B) fully reconstructed from magnitudes.
+  => the joint phase field is GAUGE: no information beyond the marginal magnitude data.
+
+================================================================================
+n=16  primes=[65537, 65617, 65633, 65713]  v2=[16, 4, 5, 4]
+================================================================================
+  p=     65537 v2=16: sign-from-magnitude mismatches=0/4096  |clip(s_raw)-s_true|max=5.42e-14
+      ||A|-|B||max=7.162e+00 (rel 3.12e+00)  => |A|,|B| DIFFER
+  p=     65617 v2=4: sign-from-magnitude mismatches=0/4101  |clip(s_raw)-s_true|max=1.09e-12
+      ||A|-|B||max=7.660e+00 (rel 3.35e+00)  => |A|,|B| DIFFER
+  p=     65633 v2=5: sign-from-magnitude mismatches=0/4102  |clip(s_raw)-s_true|max=1.50e-12
+      ||A|-|B||max=7.284e+00 (rel 3.16e+00)  => |A|,|B| DIFFER
+  p=     65713 v2=4: sign-from-magnitude mismatches=0/4107  |clip(s_raw)-s_true|max=2.47e-13
+      ||A|-|B||max=7.330e+00 (rel 3.22e+00)  => |A|,|B| DIFFER
+  VERDICT n=16: if mismatches==0 for all primes => s_b is an ALGEBRAIC FUNCTION of the
+  magnitude triple (|eta_b|,|A_b|,|B_b|). Joint (A,B) fully reconstructed from magnitudes.
+  => the joint phase field is GAUGE: no information beyond the marginal magnitude data.
+
+================================================================================
+n=32  primes=[1048609, 1048897, 1049057, 1049089]  v2=[5, 6, 5, 9]
+================================================================================
+  p=   1048609 v2=5: sign-from-magnitude mismatches=0/32769  |clip(s_raw)-s_true|max=2.69e-12
+      ||A|-|B||max=1.321e+01 (rel 4.09e+00)  => |A|,|B| DIFFER
+  p=   1048897 v2=6: sign-from-magnitude mismatches=0/32778  |clip(s_raw)-s_true|max=9.37e-13
+      ||A|-|B||max=1.338e+01 (rel 4.17e+00)  => |A|,|B| DIFFER
+  p=   1049057 v2=5: sign-from-magnitude mismatches=0/32783  |clip(s_raw)-s_true|max=4.45e-12
+      ||A|-|B||max=1.360e+01 (rel 4.23e+00)  => |A|,|B| DIFFER
+  p=   1049089 v2=9: sign-from-magnitude mismatches=0/32784  |clip(s_raw)-s_true|max=1.05e-12
+      ||A|-|B||max=1.336e+01 (rel 4.15e+00)  => |A|,|B| DIFFER
+  VERDICT n=32: if mismatches==0 for all primes => s_b is an ALGEBRAIC FUNCTION of the
+  magnitude triple (|eta_b|,|A_b|,|B_b|). Joint (A,B) fully reconstructed from magnitudes.
+  => the joint phase field is GAUGE: no information beyond the marginal magnitude data.
+
+================================================================================
+CONCLUSION: The tower half-periods A_b,B_b are exactly collinear (1-D real problem per coset).
+The only phase content is a sign bit s_b, and s_b = sign(|eta_b|^2-|A_b|^2-|B_b|^2) is an
+algebraic function of the three magnitudes. The joint (eta_b,eta_{zeta b}) phase field at
+ANY depth r reduces to marginal magnitude data => GAUGE, Meta-Theorem cap applies. This is
+the SAME white/diagonalization as doorIV r=2, now proven collinear hence sign-deterministic
+at ALL r (not just r=2). Lane J REFUTED-collapses-to-moments.
+================================================================================

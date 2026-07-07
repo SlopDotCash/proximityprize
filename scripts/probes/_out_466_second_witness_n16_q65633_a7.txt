@@ -1,0 +1,22 @@
+[chunk] stage=n16 qs=[65633] alist=[7] dirs=[0, 2] seed=46612
+
+==============================================================================
+SETTING n=16 k=4 rho=4/16 q=65633 (q>=n^4: True) v2(q-1)=5 omega=5013 C(n,k)=1820
+
+  DIRECTION mono_j4 a=7 (delta=0.5625) q=65633: worst-count=9 (P5 reference in header), 6 hard lines scanned
+    [refined-worst] #bad=9 (verified 3-way)  multiplicity {1w:8 2w:1}  unique-witness scalars: 8
+      COUNTERMODEL: gamma=2097 unique witness poly coeffs (low->high)=(2097, 0, 1, 0) agreement=8
+    [pool-top1] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(21630, 0, 0, 0) agreement=8
+    [pool-top2] #bad=6 (verified 3-way)  multiplicity {1w:6}  unique-witness scalars: 6
+      COUNTERMODEL: gamma=1 unique witness poly coeffs (low->high)=(8799, 0, 0, 0) agreement=8
+    [chained-arch0] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      COUNTERMODEL: gamma=7764 unique witness poly coeffs (low->high)=(3869, 2714, 53875, 34764) agreement=7
+    [chained-arch1] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      COUNTERMODEL: gamma=9588 unique witness poly coeffs (low->high)=(35138, 6674, 32815, 23188) agreement=7
+    [chained-arch2] #bad=4 (verified 3-way)  multiplicity {1w:4}  unique-witness scalars: 4
+      COUNTERMODEL: gamma=5766 unique witness poly coeffs (low->high)=(14641, 24408, 64441, 17939) agreement=7
+
+  DIRECTION sp2_4_14_c1 a=7 (delta=0.5625) q=65633: worst-count=13 (P5 reference in header), 6 hard lines scanned
+    [refined-worst] #bad=13 (verified 3-way)  multiplicity {1w:13}  unique-witness scalars: 13
+      COUNTERMODEL: gamma=8174 unique witness poly coeffs (low->high)=(7218, 11338, 2331, 3311) agreement=7

@@ -1,0 +1,32 @@
+
+=== n=16, p>=n^4=65536 ===
+         p          m  v2       std_T3   resid_frac    R2_marg
+     65617       4101   4     106.1343     0.999509   0.000491
+     65633       4102   5     106.1346     0.999513   0.000487
+     65713       4107   4     106.1360     0.999611   0.000389
+     65729       4108   6     109.6947     0.995557   0.004443
+     65761       4110   5     110.2772     0.904448   0.095552
+     65777       4111   4     107.9310     0.991423   0.008577
+Interpretation: resid_frac ~ 0  => joint 3rd-order object is marginal-determined
+                (b-blind at 3rd order too, collapses like r=2).
+                resid_frac >> 0 and STABLE across primes => genuinely b-sensitive.
+
+=== n=32, p>=n^4=1048576 ===
+         p          m  v2       std_T3   resid_frac    R2_marg
+   1048609      32769   5     310.0454     0.990824   0.009176
+   1048897      32778   6     308.1824     0.999938   0.000062
+   1049057      32783   5     308.1827     0.999970   0.000030
+   1049089      32784   9     310.0461     0.988376   0.011624
+   1049281      32790   6     306.9345     0.999765   0.000235
+   1049473      32796   7     306.9348     0.998697   0.001303
+Interpretation: resid_frac ~ 0  => joint 3rd-order object is marginal-determined
+                (b-blind at 3rd order too, collapses like r=2).
+                resid_frac >> 0 and STABLE across primes => genuinely b-sensitive.
+                (b-blind at 3rd order too, collapses like r=2).
+                resid_frac >> 0 and STABLE across primes => genuinely b-sensitive.
+
+=== FOLLOWUP: is T3 signed (mean~0) => needs even moment for magnitude ===
+n=16 p=     65617 meanT3=    -0.062 mean/sd=-0.0006 M/sqrt(nlogm)= 1.152 maxAbsT3/M^3= 0.5327
+n=16 p=     65633 meanT3=    -0.062 mean/sd=-0.0006 M/sqrt(nlogm)= 1.207 maxAbsT3/M^3= 0.3934
+n=32 p=   1048609 meanT3=    -0.031 mean/sd=-0.0001 M/sqrt(nlogm)= 1.260 maxAbsT3/M^3= 0.5042
+n=32 p=   1048897 meanT3=    -0.031 mean/sd=-0.0001 M/sqrt(nlogm)= 1.250 maxAbsT3/M^3= 0.3831

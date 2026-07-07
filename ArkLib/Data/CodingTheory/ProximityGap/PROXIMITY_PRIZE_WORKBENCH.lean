@@ -54,6 +54,13 @@ that **simultaneously resolves both grand challenges** for *explicit, constant-r
 Reed–Solomon codes in the **prize regime** — and prove it. The two challenges are the same
 δ* up to the LD⇒MCA bridge; the genuine open core is ONE object (§3).
 
+⚡ **READ FIRST — the current dossier is `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`** (v3,
+supersedes the v2/#464 dossier): the complete map of what is proven, refuted, and open as of
+2026-07-01. The freshest state-of-play summary is **§5 below** (added 2026-07-01); the sections
+§1.5/§R.* below it are the historical layers of the campaign (kept because each pivot is itself
+load-bearing context). The δ* target now has an **exact-rational form**: `δ* = (1−ρ) − m*/n`
+(master-gap identity), so "pin δ*" = "compute the integer m*" = the wall.
+
 ────────────────────────────────────────────────────────────────────────────────
 ## §0.  THE PRIZE REGIME — pin this or you are wasting time
 ────────────────────────────────────────────────────────────────────────────────
@@ -283,6 +290,80 @@ without residual, closes the prize via its bridge.
 
 Once proved, wire it to `mcaConjecture` (T1) or a `GrandMCAResolution` (T2), then to the LD
 prize via the GG25 curve-decodability bridge (T3).
+
+────────────────────────────────────────────────────────────────────────────────
+## §5.  STATE OF PLAY 2026-07-01 — the #464 campaign outcome (read this, then attack)
+────────────────────────────────────────────────────────────────────────────────
+The #464 campaign (dossier v2 + 179 comments, 2026-06-22 → 06-27) is consolidated in
+`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`. What changed since the sections below were written:
+
+**(1) The target is now an exact rational.** `δ* = (1−ρ) − m*/n`, `m* ∈ [m_floor, m_KKH26]`,
+ceiling `m_KKH26 = Θ(n/log n)` PROVEN (`kkh26_mcaDeltaStar_le_of_TZ`). `m* = m_KKH26 ⟺` the wall
+(`_EnergyRatioMonotoneReduction`). Pinning δ* ≡ computing the integer `m*`.
+
+**(2) A production counting interface exists — the line-list stack** (on main, verified):
+`LineListReduction` → zero-agreement strata → coordinate fibers → MDS uniqueness `#S ≥ k` ⟹
+fiber ≤ 1 → singleton-defect → support-ratio covers — discharges everything EXCEPT low-profile
+(`t < k`) fibers on large-zero-safe lines. All raw envelopes are formally REFUTED
+(`LineListArithmeticObstruction` etc.); exact failure scanners exist at every layer. ⚠️ The
+prize-facing weld (`LineListMCAWeld.mcaDeltaStar_ge_of_farLineListBudgeted`: δ* floor ⟸ far-line
+budget `Λ ≤ L ≲ ρ·n`) was claimed in-thread but is NOT on main (dossier §12 phantom) —
+**re-landing it is the first bankable task**. Then the open production obligations: the
+low-profile fiber theorem; the mixed-profile top-fit arithmetic (`*MixedChooseProfileTopSumsFit`);
+the second-witness/multiplicity floor (`NoUniqueBadScalarWitness`); `CandidateListExactSuccessor`
+(or its adjacent-rung counterexample).
+
+**(3) The windowed-guard discipline.** Guard-free `SumsetExtremal` is FALSE
+(`not_sumsetExtremal`, below-window countermodel). Any dominance/extremality hypothesis must carry
+the prize-window guard (`SumsetExtremalityGuard.lean`). The **windowed SumsetExtremal** — a
+≥2-Fourier-component spread cannot beat every monomial component *in the window* — is the guarded
+crux; sockets `mcaDeltaStar_pin_of_finsetGuardCover(_orOutside)` await a real catalogue.
+
+**(4) The off-BGK floor is RESOLVED — as obstruction-removal.** floor-bad(16) = {17},
+floor-bad(32) = {97} (exact scanners); Thorner–Zaman sub-quartic 12/5 CONFIRMED unconditional for
+dyadic moduli ⟹ every prize prime is floor-good unconditionally. But δ*-pin ⟹ floor-good, NEVER
+conversely (ε_mca is a sup over all stacks; the floor bounds one direction) — necessary, not
+sufficient. Still open: the uniform-in-μ characterization; the floor→δ* arrow.
+
+**(5) The fixed-depth side is closed at every scale.** The canonical width-four/resultant lane
+(`canonicalRatioPoly n = (X⁴+1)^n − (X²+1)^n`) is discharged concretely at n = 16 … 32768
+(`CanonicalWidthFourConcreteTZ*`), exact bad-prime sets pinned (n=16: {17}; n=32 primitive:
+{97,641,673,1153} — NOTE width-four-bad ≠ floor-bad, `ne_singleton97`). No finite-r cutoff: every
+fixed-r face closes off-BGK. The residual is 100% the joint limit `r ≈ ln q`, `n = 2^30`.
+
+**(6) More doors closed as theorems** (see dossier §4/§8): the door-(iv) gap-combinatorial face
+(gap values/curvature/DFT-rank/runs all dilation-invariant or wrong-direction); graph-relation
+reformulations (tautological); six non-period angles; three √-cancellation-breaking templates;
+five beat-SOTA mechanisms; FHK log-correlated EVT (killed by EXPERIMENT — the {log|η_b|} field is
+independent-Gaussian, not log-correlated); effective-Katz (vacuous in thin regime); Toda/isospectral
+(gauge); 2026 literature D0–D5 gates (`_D*Gate.lean`). Moment-exponent quantification:
+`θ(r,β) = (β+r−1)/(2r) > 1/2` always — the moment route IS the route to Paley (its claimed Lean
+brick `MomentExponentThreshold.lean` is a dossier-§12 phantom; elementary, re-land it).
+
+**(7) What survives (ranked, dossier §6):** ① windowed SumsetExtremal; ② the line-list low-profile
+obligations (2); ③ Hankel-positivity/Lax-pair spectral-shift on the Jacobi turnover `k*` (the one
+non-magnitude seam); ④ uniform-in-μ floor-bad; ⑤ the announced-never-run di Benedetto effective-1/2
+push at β=4; probes not run: anti-resonance (2605.15434), non-backtracking Ihara–Bass (2606.27075),
+D2 Rogers–Siegel decision. Tool-shape principle: any survivor must be an L∞/sup-control method fed
+by computable second-order data (Talagrand γ₂ is the canonical candidate shape).
+
+**(8) The sharpest localization — the independence form.** The prize = CERTIFYING the measured
+independent-Gaussian behaviour of the period field: sub-Gaussian tail `P(|η_b| > tn) ≤ exp(−ct²n)`
+to depth `r ≈ log p`, equivalently `E_r⁺(μ_n) − n^{2r}/p ≤ C^r·r!·n^r` at logarithmic depth.
+Difficulty is certification, not distribution shape.
+
+⇒ **The `▼ YOUR CONJECTURE HERE ▼` slot's current best targets (post rounds 1–2, 2026-07-01;
+see dossier §14/§15):** (a) the low-profile fiber bound `D(t)`, `t < k`, feeding
+`mcaDeltaStar_ge_of_farLineListBudgeted` (the PRIMARY surface; `_LowProfileFiberBound` +
+`_R2B_LargeZeroWitnessSplit` narrow it); (b) the **bounded spread-excess law at C = 3**
+(`_SpreadExcessLaw.SpreadExcessLaw` — the replacement for windowed SumsetExtremal, which is
+REFUTED at n=16: spread beats every monomial in-window, DISPROOF `466-r1-windowed-extremal-…`;
+C=2 is also dead); (c) the floor successor theorem `CandidateListExactSuccessor` (floor-bad(64)
+is compute-undecidable — theorem or nothing); (d) `WorstCaseIncidenceBounded` at the window
+radius via any genuinely L∞ method fed by non-second-order data (the §1.5 framing below remains
+valid; note round 2 KILLED the positivity/Christoffel upgrade — any such proposal must first
+beat the lone-spike countermodel, DISPROOF `466-r2-cmk-lonespike-refuted`). All are faces of the
+ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — dossier v3 §2 forms (A)–(D).
 
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  RESEARCH SYNTHESIS 2026-06-13 — the two challenges collapse to ONE δ*, and
