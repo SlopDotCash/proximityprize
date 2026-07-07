@@ -20634,3 +20634,17 @@ Weil/Deligne mathematics; each with a machine-checked consumer; probes calibrati
 constant. Beneath the wall: zero debt of any kind. SUCCESSOR: the E3 matching-decomposition
 assembly (pure bookkeeping welding r31/r34/r38 into TripleConvEnergyBound), then the Katz
 literature for the input itself, then the A-side transport. CORE OPEN, ON-BGK.
+
+## [466-r39-sextic-stress-calibration] SexticVarietyInput survives wide stress (8 cells, β∈[2,5], q ≤ 65537, random + degenerate shapes): global worst ‖S‖/q^{5/2} = 2.96 — C=4 holds at 1.4× margin; the extremal shapes are the DEGENERATE CUBES (pure J³ autocorrelations, small lags) (2026-07-07)
+
+Lane: #466 round-39 B2 (probe `probe_r39_sextic_stress.py`). Findings: (i) the r38 named
+input holds across β ∈ [2.0, 5.0] including prize-adjacent scales, 24 random shapes/cell +
+systematic degenerate sweeps; (ii) the worst cases are UNIFORMLY the cube-degenerate shapes
+(a=b=a'=b'=0: the correlation of J³ with itself) at small lags t ∈ {1..5} — ratios 1.7–2.96
+vs random shapes' ≤ 2.5; (iii) recommendation for the successor's weld: either take C = 8
+(2.7× margin) uniformly, or split the input into the generic class (C = 4 ample) and the
+cube-diagonal class — the latter is the lag spectrum of the sequence J³ = c_{f₀^{⊛3}} (r36),
+i.e. AGAIN a weighted lag correlation (r32 master identity applies!), so the cube class may
+be exactly evaluable rather than named. That closed-loop structure (the extremal class of the
+final input is itself in the calculus) is the last recorded observation of this session.
+CORE OPEN, ON-BGK.
