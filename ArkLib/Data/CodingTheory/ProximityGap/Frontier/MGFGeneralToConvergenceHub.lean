@@ -109,6 +109,26 @@ theorem prizeFloor_of_fullSpectrum_mgf_general_depth_factor
     hMGF hGpos hq hr hrq hrK hconst
     (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r)
 
+/-- Full-spectrum moment-envelope route to the convergence-hub `PrizeFloor`. This is the direct
+S11 consumer: if the empirical moments of
+`t_b = ‖η_b‖² / |G|` obey `M_r ≤ A r! / c^r`, then the convergence hub gets the
+honest slack constant `K = A / c`, with no intermediate MGF hypothesis. -/
+theorem prizeFloor_of_fullSpectrum_momentEnvelope_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C)
+    (henv : MomentEnvelope
+      (empiricalMoment (Finset.univ : Finset F) (fullSpectrumT ψ G)) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c) * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_forall_rEnergy_le_mul_wick_depth_factor hψ G (by positivity) hC hGpos hq hr
+    hrq hrK hconst
+    (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc henv
+      (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r))
+
 /-- A full-spectrum uniform cutoff `fullSpectrumT ψ G b ≤ T` gives the convergence-hub
 `PrizeFloor`, with the honest cutoff slack constant `exp(c*T) / c`. -/
 theorem prizeFloor_of_fullSpectrum_cutoff_depth_factor
@@ -135,6 +155,7 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms forall_rEnergy_le_mul_wick_of_momentEnvelope_general
 #print axioms prizeFloor_of_mgf_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_mgf_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_momentEnvelope_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_cutoff_depth_factor
 
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
