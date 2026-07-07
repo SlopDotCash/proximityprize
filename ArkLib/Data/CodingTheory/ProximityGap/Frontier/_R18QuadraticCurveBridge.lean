@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Data.Real.Basic
 
@@ -56,15 +57,22 @@ theorem sum_quadraticChar_eq_affineDoubleCoverCount_sub_card
     ∑ x : F, χ (f x) = (affineDoubleCoverCount f : ℝ) - (Fintype.card F : ℝ) := by
   classical
   have hcount := affineDoubleCoverCount_eq_sum_fibers f
+  have hpoint : ∀ x : F,
+      χ (f x) = (((Finset.univ : Finset F).filter fun y => y ^ 2 = f x).card : ℝ) - 1 := by
+    intro x
+    have := hχ (f x)
+    linarith
+  have hsumone : (∑ _x : F, (1 : ℝ)) = (Fintype.card F : ℝ) := by
+    simp
   calc ∑ x : F, χ (f x)
-      = ∑ x : F, (((Finset.univ : Finset F).filter fun y => y ^ 2 = f x).card : ℝ) - 1 := by
-          refine Finset.sum_congr rfl fun x _ => ?_
-          have := hχ (f x)
-          linarith
+      = ∑ x : F,
+          ((((Finset.univ : Finset F).filter fun y => y ^ 2 = f x).card : ℝ) - 1) := by
+          exact Finset.sum_congr rfl fun x _ => hpoint x
     _ = (∑ x : F, (((Finset.univ : Finset F).filter fun y => y ^ 2 = f x).card : ℝ))
-          - ∑ _x : F, (1 : ℝ) := by rw [Finset.sum_sub_distrib]
+          - ∑ _x : F, (1 : ℝ) := by
+          rw [Finset.sum_sub_distrib]
     _ = (∑ x : F, (((Finset.univ : Finset F).filter fun y => y ^ 2 = f x).card : ℝ))
-          - (Fintype.card F : ℝ) := by rw [Finset.sum_const, nsmul_eq_mul, mul_one]
+          - (Fintype.card F : ℝ) := by rw [hsumone]
     _ = (affineDoubleCoverCount f : ℝ) - (Fintype.card F : ℝ) := by rw [hcount]
 
 /-- Hasse-style count control implies the corresponding complete quadratic-character sum bound. -/
@@ -84,6 +92,33 @@ theorem norm_sum_quadraticChar_le_three_sqrt
     ‖∑ x : F, χ (f x)‖ ≤ 3 * Real.sqrt (Fintype.card F : ℝ) :=
   norm_sum_quadraticChar_le_of_affineDoubleCoverCount hχ f hHasse
 
+/-! ## The quartic face used by the fourth-moment lane -/
+
+/-- The quartic polynomial attached to one quadruple of roots:
+`(s-x₁)(s-x₂)(s-y₁)(s-y₂)`. -/
+def quarticRootProduct (z : (F × F) × (F × F)) (s : F) : F :=
+  (s - z.1.1) * (s - z.1.2) * ((s - z.2.1) * (s - z.2.2))
+
+/-- A point-count form of the genus-one/Hasse input for one quartic quadruple. -/
+def QuarticDoubleCoverCountInput (z : (F × F) × (F × F)) : Prop :=
+  ‖(affineDoubleCoverCount (quarticRootProduct z) : ℝ) - (Fintype.card F : ℝ)‖
+    ≤ 3 * Real.sqrt (Fintype.card F : ℝ)
+
+/-- The exact point-count bridge specialized to the quartic root product. -/
+theorem sum_quadraticChar_quarticRootProduct_eq_count_sub_card
+    {χ : F → ℝ} (hχ : QuadraticFiberLaw χ) (z : (F × F) × (F × F)) :
+    ∑ s : F, χ (quarticRootProduct z s)
+      = (affineDoubleCoverCount (quarticRootProduct z) : ℝ) - (Fintype.card F : ℝ) :=
+  sum_quadraticChar_eq_affineDoubleCoverCount_sub_card hχ (quarticRootProduct z)
+
+/-- A Hasse-style point-count input for the quartic double cover gives the desired complete
+quadratic-character sum bound for that quadruple. -/
+theorem norm_sum_quadraticChar_quarticRootProduct_le_three_sqrt
+    {χ : F → ℝ} (hχ : QuadraticFiberLaw χ) (z : (F × F) × (F × F))
+    (hHasse : QuarticDoubleCoverCountInput z) :
+    ‖∑ s : F, χ (quarticRootProduct z s)‖ ≤ 3 * Real.sqrt (Fintype.card F : ℝ) :=
+  norm_sum_quadraticChar_le_three_sqrt hχ (quarticRootProduct z) hHasse
+
 end ArkLib.ProximityGap.Frontier.R18QuadraticCurveBridge
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -93,3 +128,7 @@ end ArkLib.ProximityGap.Frontier.R18QuadraticCurveBridge
   ArkLib.ProximityGap.Frontier.R18QuadraticCurveBridge.sum_quadraticChar_eq_affineDoubleCoverCount_sub_card
 #print axioms
   ArkLib.ProximityGap.Frontier.R18QuadraticCurveBridge.norm_sum_quadraticChar_le_three_sqrt
+#print axioms
+  ArkLib.ProximityGap.Frontier.R18QuadraticCurveBridge.sum_quadraticChar_quarticRootProduct_eq_count_sub_card
+#print axioms
+  ArkLib.ProximityGap.Frontier.R18QuadraticCurveBridge.norm_sum_quadraticChar_quarticRootProduct_le_three_sqrt

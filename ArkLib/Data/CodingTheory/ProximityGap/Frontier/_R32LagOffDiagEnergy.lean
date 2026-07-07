@@ -75,8 +75,25 @@ theorem offDiag_lagCorrelation_energy_bound
     _ = (((m : ℝ) - 1) *
           (((m : ℝ) * (G.card : ℝ) * C * Real.sqrt (Fintype.card F)) ^ 2)) := rfl
 
+/-- **Normalized off-zero pair-spectrum RMS bound.**  Dividing the aggregate off-diagonal
+energy by the number of nonzero lags recovers exactly the square of the R31 pointwise
+Weil-scale budget. -/
+theorem offDiag_lagCorrelation_rms_bound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C : ℝ} (hC : 0 ≤ C) (hweil : TwoCharacterWeilInput χ lam G C) (hm : 1 < m) :
+    (∑ t ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+        ‖lagCorrelation χ lam t‖ ^ 2) / ((m : ℝ) - 1)
+      ≤ (((m : ℝ) * (G.card : ℝ) * C * Real.sqrt (Fintype.card F)) ^ 2) := by
+  have hden : 0 < (m : ℝ) - 1 := by
+    exact sub_pos.mpr (by exact_mod_cast hm)
+  have henergy := offDiag_lagCorrelation_energy_bound hfam hgrp hC hweil
+  refine (div_le_iff₀ hden).mpr ?_
+  rwa [mul_comm] at henergy
+
 end ArkLib.ProximityGap.Frontier.R32LagOffDiagEnergy
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms
   ArkLib.ProximityGap.Frontier.R32LagOffDiagEnergy.offDiag_lagCorrelation_energy_bound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R32LagOffDiagEnergy.offDiag_lagCorrelation_rms_bound

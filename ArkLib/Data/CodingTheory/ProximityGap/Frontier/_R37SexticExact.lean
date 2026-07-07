@@ -42,6 +42,9 @@ open ArkLib.ProximityGap.Frontier.R33QuadViaWeights
 open ArkLib.ProximityGap.Frontier.R35TransformRingHom
 open ArkLib.ProximityGap.Frontier.R36JacobiPowers
 
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {m : ℕ} [NeZero m] {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
 
@@ -138,9 +141,123 @@ theorem sextic_correlation_exact (hfam : SubgroupDualFamily G m lam)
             * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam t w :=
         weighted_lag_correlation' hfam hgrp _ _ t
 
+/-- **Named final sextic input.**  This is the explicit complete character sum exposed by
+`sextic_correlation_exact`: uniform cancellation for the `G`-fibered correlation of two
+triple twisted `⊛`-weights, for every five-lag datum. -/
+def SexticCorrelationBound
+    (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset F) (B : ℝ) : Prop :=
+  ∀ a b a' b' t : ZMod m,
+    ‖∑ u ∈ G, ∑ w : F,
+        tripleTwistWeight χ lam a b (u * w)
+          * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam t w‖ ≤ B
+
+/-- Monotonicity of the final sextic input in its scalar budget. -/
+theorem sexticCorrelationBound_mono {B B' : ℝ}
+    (hBB' : B ≤ B') (hB : SexticCorrelationBound χ lam G B) :
+    SexticCorrelationBound χ lam G B' := by
+  intro a b a' b' t
+  exact le_trans (hB a b a' b' t) hBB'
+
+/-- Pointwise six-`J` bound from the final sextic input.  The exact collapse loses only
+the forced quotient-duality factor `m`. -/
+theorem sextic_correlation_bound_of_sexticCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : SexticCorrelationBound χ lam G B)
+    (a b a' b' t : ZMod m) :
+    ‖∑ j : ZMod m,
+        (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+          * jacobiCoeff χ lam ((j + t) + b))
+        * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+          * jacobiCoeff χ lam (j + b'))‖
+      ≤ (m : ℝ) * B := by
+  rw [sextic_correlation_exact hfam hgrp a b a' b' t]
+  rw [norm_mul, Complex.norm_natCast]
+  exact mul_le_mul_of_nonneg_left (hB a b a' b' t) (by positivity)
+
+/-- Pointwise six-`J` bound with an enlarged scalar budget. -/
+theorem sextic_correlation_bound_of_sexticCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : SexticCorrelationBound χ lam G B)
+    (a b a' b' t : ZMod m) :
+    ‖∑ j : ZMod m,
+        (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+          * jacobiCoeff χ lam ((j + t) + b))
+        * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+          * jacobiCoeff χ lam (j + b'))‖
+      ≤ (m : ℝ) * B' :=
+  sextic_correlation_bound_of_sexticCorrelationBound hfam hgrp
+    (sexticCorrelationBound_mono hBB' hB) a b a' b' t
+
+/-- Aggregate all-lag six-`J` energy from the final sextic input.  This is the direct
+`L²` budget for the fully-unmatched r = 3 class once the explicit complete character sum
+has a uniform bound. -/
+theorem sextic_correlation_energy_bound_of_sexticCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : SexticCorrelationBound χ lam G B) :
+    ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * B) ^ 2) := by
+  classical
+  have hpoint : ∀ a b a' b' t : ZMod m,
+      ‖∑ j : ZMod m,
+        (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+          * jacobiCoeff χ lam ((j + t) + b))
+        * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+          * jacobiCoeff χ lam (j + b'))‖ ^ 2
+        ≤ (((m : ℝ) * B) ^ 2) := by
+    intro a b a' b' t
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (sextic_correlation_bound_of_sexticCorrelationBound hfam hgrp hB a b a' b' t) 2
+  calc ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ∑ _a : ZMod m, ∑ _b : ZMod m, ∑ _a' : ZMod m, ∑ _b' : ZMod m,
+          ∑ _t : ZMod m, ((m : ℝ) * B) ^ 2 := by
+        refine Finset.sum_le_sum (fun a _ => ?_)
+        refine Finset.sum_le_sum (fun b _ => ?_)
+        refine Finset.sum_le_sum (fun a' _ => ?_)
+        refine Finset.sum_le_sum (fun b' _ => ?_)
+        exact Finset.sum_le_sum (fun t _ => hpoint a b a' b' t)
+    _ = ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * B) ^ 2) := by
+        simp only [Finset.sum_const, nsmul_eq_mul, Finset.card_univ, ZMod.card]
+        ring
+
+/-- Aggregate all-lag six-`J` energy with an enlarged scalar budget. -/
+theorem sextic_correlation_energy_bound_of_sexticCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : SexticCorrelationBound χ lam G B) :
+    ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * B') ^ 2) :=
+  sextic_correlation_energy_bound_of_sexticCorrelationBound hfam hgrp
+    (sexticCorrelationBound_mono hBB' hB)
+
 end ArkLib.ProximityGap.Frontier.R37SexticExact
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.R37SexticExact.lamTransform_shift
 #print axioms ArkLib.ProximityGap.Frontier.R37SexticExact.jacobi_triple_eq_lamTransform
 #print axioms ArkLib.ProximityGap.Frontier.R37SexticExact.sextic_correlation_exact
+#print axioms ArkLib.ProximityGap.Frontier.R37SexticExact.sexticCorrelationBound_mono
+#print axioms
+  ArkLib.ProximityGap.Frontier.R37SexticExact.sextic_correlation_bound_of_sexticCorrelationBound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R37SexticExact.sextic_correlation_bound_of_sexticCorrelationBound_le
+#print axioms
+  ArkLib.ProximityGap.Frontier.R37SexticExact.sextic_correlation_energy_bound_of_sexticCorrelationBound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R37SexticExact.sextic_correlation_energy_bound_of_sexticCorrelationBound_le

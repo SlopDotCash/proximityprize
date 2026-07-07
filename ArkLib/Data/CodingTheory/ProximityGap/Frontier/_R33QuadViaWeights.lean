@@ -164,9 +164,65 @@ theorem quad_correlation_via_weights (hfam : SubgroupDualFamily G m lam)
             * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w :=
         weighted_lag_correlation' hfam hgrp _ _ t₁
 
+/-- **Named surface-correlation input for the pair weights.**  This is the analytic surface
+sum exposed by `quad_correlation_via_weights`: uniform cancellation in the `G`-fibered
+pair-weight correlation, for every lag triple. -/
+def PairWeightCorrelationBound
+    (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset F) (B : ℝ) : Prop :=
+  ∀ t₁ t₂ s₁ : ZMod m,
+    ‖∑ u ∈ G, ∑ w : F,
+        pairWeight χ lam (t₂ - t₁) (u * w)
+          * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖ ≤ B
+
+/-- **Four-`J` bound from the pair-weight surface input.**  The exact weighted collapse
+turns the named surface-correlation estimate into a bound for every balanced four-`J`
+correlation, losing only the forced quotient-duality factor `m`. -/
+theorem quad_correlation_bound_of_pairWeightCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : PairWeightCorrelationBound χ lam G B) (t₁ t₂ s₁ : ZMod m) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * B := by
+  rw [quad_correlation_via_weights hfam hgrp t₁ t₂ s₁]
+  rw [norm_mul, Complex.norm_natCast]
+  exact mul_le_mul_of_nonneg_left (hB t₁ t₂ s₁) (by positivity)
+
+/-- **All-lag four-`J` energy from the pair-weight surface input.**  The pointwise
+round-33 bound summed over all lag triples gives the aggregate budget
+`m³ · (mB)²`. -/
+theorem quad_correlation_energy_bound_of_pairWeightCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : PairWeightCorrelationBound χ lam G B) :
+    ∑ t₁ : ZMod m, ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+        ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+            * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B) ^ 2) := by
+  classical
+  have hpoint : ∀ t₁ t₂ s₁ : ZMod m,
+      ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+          * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+        ≤ (((m : ℝ) * B) ^ 2) := by
+    intro t₁ t₂ s₁
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (quad_correlation_bound_of_pairWeightCorrelationBound hfam hgrp hB t₁ t₂ s₁) 2
+  calc ∑ t₁ : ZMod m, ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+        ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+            * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ ∑ _t₁ : ZMod m, ∑ _t₂ : ZMod m, ∑ _s₁ : ZMod m, ((m : ℝ) * B) ^ 2 := by
+        refine Finset.sum_le_sum (fun t₁ _ => ?_)
+        refine Finset.sum_le_sum (fun t₂ _ => ?_)
+        exact Finset.sum_le_sum (fun s₁ _ => hpoint t₁ t₂ s₁)
+    _ = ((m : ℝ) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B) ^ 2) := by
+        simp only [Finset.sum_const, nsmul_eq_mul, Finset.card_univ, ZMod.card]
+        ring
+
 end ArkLib.ProximityGap.Frontier.R33QuadViaWeights
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.R33QuadViaWeights.weighted_lag_correlation'
 #print axioms ArkLib.ProximityGap.Frontier.R33QuadViaWeights.jacobi_pair_eq_lamTransform
 #print axioms ArkLib.ProximityGap.Frontier.R33QuadViaWeights.quad_correlation_via_weights
+open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
+#print axioms quad_correlation_bound_of_pairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
+#print axioms quad_correlation_energy_bound_of_pairWeightCorrelationBound

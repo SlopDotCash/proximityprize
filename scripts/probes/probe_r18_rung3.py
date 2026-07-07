@@ -10,6 +10,7 @@ Also computes:
  - diagonal (matched-multiset) sextuple mass: p*(6 Sigma^3 - 9 Sigma Q2 + 4 Q3),
    Q_k = sum_{b in H} |eta_b|^{2k}  -> fraction of Wick (predicted -> 6/15 = 2/5)
  - all-equal-coset slice: p * E3(mu_n) * sum_{cosets t} |eta_t|^6
+ - deleted credit and residual non-matched mass fractions relative to Wick
  - I_H(s0 in mu_n) = Sigma/n exact check; I_H(0) = conj(sum eta) check
  - deficit: needed extra saving factor n^3/sqrt(p)
 """
@@ -63,7 +64,8 @@ def run_cell(n, m, beta, p):
     zero_err = abs(I[0] - np.conj(np.sum(eta[H])))
     A6 = np.abs(I) ** 6
     S3_full = float(np.sum(A6))
-    S3_D = S3_full - float(A6[0]) - float(np.sum(A6[mu]))
+    deleted = float(A6[0]) + float(np.sum(A6[mu]))
+    S3_D = S3_full - deleted
     wick = p * 15.0 * Sigma ** 3
     ratio = S3_D / wick
     # diagonal sextuple closed form (matched b-multisets)
@@ -79,9 +81,15 @@ def run_cell(n, m, beta, p):
                 seen.add(b * u % p)
     E3mu = E3_mu(mu, p)
     allequal = p * E3mu * float(sum(abs(eta[t]) ** 6 for t in coset_reps))
+    fullfrac = S3_full / wick
+    deletedfrac = deleted / wick
+    crossfrac = (S3_full - diag_sext) / wick
+    cross_deletedfrac = (S3_D - diag_sext) / wick
     M = float(np.max(np.abs(eta[1:])))
     deficit = n ** 3 / np.sqrt(p)
     return dict(ratio=ratio, diagfrac=diag_sext / wick, allequalfrac=allequal / wick,
+                fullfrac=fullfrac, deletedfrac=deletedfrac, crossfrac=crossfrac,
+                cross_deletedfrac=cross_deletedfrac,
                 S3D=S3_D, wick=wick, diag_err=diag_err, zero_err=zero_err,
                 E3mu=E3mu, E3wick=E3mu / (6 * n ** 3), M=M, deficit=deficit,
                 ncoset=len(coset_reps))
@@ -100,13 +108,16 @@ def E3_mu(mu, p):
     return sum(v * v for v in c3.values())
 
 if __name__ == "__main__":
-    print(f"{'n':>3} {'m':>2} {'beta':>4} {'p':>9} {'S3D/15qS^3':>10} {'diag/wick':>9} "
-          f"{'alleq/wick':>10} {'E3/6n^3':>8} {'n^3/sqrt(p)':>11} {'diagerr':>8} {'zeroerr':>8}")
+    print(f"{'n':>3} {'m':>2} {'beta':>4} {'p':>9} {'S3D/W':>8} {'full/W':>8} "
+          f"{'diag/W':>8} {'cross/W':>8} {'crossD/W':>9} {'del/W':>8} {'alleq/W':>9} "
+          f"{'E3/6n^3':>8} {'n^3/sqrtp':>10} {'diagerr':>8} {'zeroerr':>8}")
     for n, m, beta, p in cells():
         if p > 2_500_000:
             print(f"{n:>3} {m:>2} {beta:>4} {p:>9}  SKIP(large)")
             continue
         r = run_cell(n, m, beta, p)
-        print(f"{n:>3} {m:>2} {beta:>4} {p:>9} {r['ratio']:>10.4f} {r['diagfrac']:>9.4f} "
-              f"{r['allequalfrac']:>10.2e} {r['E3wick']:>8.4f} {r['deficit']:>11.2f} "
+        print(f"{n:>3} {m:>2} {beta:>4} {p:>9} {r['ratio']:>8.4f} {r['fullfrac']:>8.4f} "
+              f"{r['diagfrac']:>8.4f} {r['crossfrac']:>8.4f} {r['cross_deletedfrac']:>9.4f} "
+              f"{r['deletedfrac']:>8.2e} "
+              f"{r['allequalfrac']:>9.2e} {r['E3wick']:>8.4f} {r['deficit']:>10.2f} "
               f"{r['diag_err']:>8.1e} {r['zero_err']:>8.1e}")

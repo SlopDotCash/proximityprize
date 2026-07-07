@@ -36,6 +36,57 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 noncomputable def empiricalMoment {ι : Type*} (s : Finset ι) (t : ι → ℝ) (r : ℕ) : ℝ :=
   (∑ b ∈ s, (t b) ^ r) / (s.card : ℝ)
 
+/-- The full-spectrum S11 normalized variable `t_b = ‖η_b‖² / |G|`. -/
+noncomputable def fullSpectrumT (ψ : AddChar F ℂ) (G : Finset F) (b : F) : ℝ :=
+  ‖eta ψ G b‖ ^ 2 / (G.card : ℝ)
+
+/-- The full-spectrum normalized variable is nonnegative. -/
+theorem fullSpectrumT_nonneg {ψ : AddChar F ℂ} {G : Finset F} (hGpos : 0 < G.card) :
+    ∀ b ∈ (Finset.univ : Finset F), 0 ≤ fullSpectrumT ψ G b := by
+  intro b _
+  unfold fullSpectrumT
+  positivity
+
+/-- For the full spectrum `t_b = ‖η_b‖² / |G|`, the empirical moments represent the in-tree
+energy exactly, hence in particular dominate `rEnergy / |G|^r`. -/
+theorem rEnergy_le_card_pow_mul_fullSpectrumMoment
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (hGpos : 0 < G.card)
+    (r : ℕ) :
+    (rEnergy G r : ℝ)
+      ≤ (G.card : ℝ) ^ r
+          * empiricalMoment (Finset.univ : Finset F) (fullSpectrumT ψ G) r := by
+  classical
+  have hG : 0 < (G.card : ℝ) := by exact_mod_cast hGpos
+  have hq : 0 < (Fintype.card F : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hpow : (0 : ℝ) < (G.card : ℝ) ^ r := pow_pos hG r
+  have hsum := subgroup_gaussSum_moment hψ G r
+  have hsumT :
+      ∑ b : F, (fullSpectrumT ψ G b) ^ r
+        = ((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r := by
+    unfold fullSpectrumT
+    calc
+      ∑ b : F, (‖eta ψ G b‖ ^ 2 / (G.card : ℝ)) ^ r
+          = ∑ b : F, ‖eta ψ G b‖ ^ (2 * r) / (G.card : ℝ) ^ r := by
+              refine Finset.sum_congr rfl (fun b _ => ?_)
+              rw [div_pow, ← pow_mul]
+      _ = (∑ b : F, ‖eta ψ G b‖ ^ (2 * r)) / (G.card : ℝ) ^ r := by
+              rw [Finset.sum_div]
+      _ = ((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r := by
+              rw [hsum]
+  rw [empiricalMoment]
+  simp only [Finset.mem_univ, Finset.sum_true, Finset.card_univ]
+  rw [hsumT]
+  calc
+    (rEnergy G r : ℝ)
+        = (G.card : ℝ) ^ r
+            * (((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r
+                / (Fintype.card F : ℝ)) := by
+            field_simp [ne_of_gt hpow, ne_of_gt hq]
+            ring
+    _ ≤ (G.card : ℝ) ^ r
+            * (((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r
+                / (Fintype.card F : ℝ)) := le_rfl
+
 /-- A one-variable S11 MGF residual gives the spectral `NearRamanujanSqrtLog` face once the
 empirical moments dominate the actual in-tree energies. -/
 theorem nearRamanujan_of_mgf_depth_factor
@@ -74,6 +125,42 @@ theorem prizeFloor_of_mgf_depth_factor
     (momentEnvelope_of_mgf s t hc ht hP hMGF)
     henergyRep
 
+/-- Full-spectrum MGF route to `NearRamanujanSqrtLog`: using
+`t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
+discharged by the moment identity `∑_b ‖η_b‖^(2r) = q · rEnergy G r`. -/
+theorem nearRamanujan_of_fullSpectrum_mgf_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {c C A : ℝ} {r : ℕ}
+    (hc : 0 < c) (hc1 : c ≤ 1) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) 1 c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrA : (r : ℝ) ≤ A * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c) * A ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_mgf_depth_factor hψ G (Finset.univ : Finset F) (fullSpectrumT ψ G)
+    hc hc1 hC (fullSpectrumT_nonneg hGpos) (by exact_mod_cast Fintype.card_pos)
+    hMGF hGpos hq hr hrq hrA hconst
+    (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r)
+
+/-- Full-spectrum MGF route to the convergence-hub `PrizeFloor`: using
+`t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
+discharged by the moment identity `∑_b ‖η_b‖^(2r) = q · rEnergy G r`. -/
+theorem prizeFloor_of_fullSpectrum_mgf_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {c C A : ℝ} {r : ℕ}
+    (hc : 0 < c) (hc1 : c ≤ 1) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) 1 c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrA : (r : ℝ) ≤ A * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c) * A ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_mgf_depth_factor hψ G (Finset.univ : Finset F) (fullSpectrumT ψ G)
+    hc hc1 hC (fullSpectrumT_nonneg hGpos) (by exact_mod_cast Fintype.card_pos)
+    hMGF hGpos hq hr hrq hrA hconst
+    (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r)
+
 end ProximityGap.Frontier.MGFToConvergenceHub
 
 /-! ## Axiom audit -/
@@ -81,5 +168,8 @@ namespace ProximityGap.Frontier.MGFToConvergenceHub
 
 #print axioms nearRamanujan_of_mgf_depth_factor
 #print axioms prizeFloor_of_mgf_depth_factor
+#print axioms rEnergy_le_card_pow_mul_fullSpectrumMoment
+#print axioms nearRamanujan_of_fullSpectrum_mgf_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_mgf_depth_factor
 
 end ProximityGap.Frontier.MGFToConvergenceHub

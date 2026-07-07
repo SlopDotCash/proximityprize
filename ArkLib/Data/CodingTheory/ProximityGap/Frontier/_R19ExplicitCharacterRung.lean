@@ -520,6 +520,160 @@ theorem wickAwayAtWithConstant_two_of_chiSubfamily_shifted_omitted_rate
         hTout0 hr (hTin s₀ hs₀) hwick hrate)
     hgate
 
+/-- Σ-lower-bound simplification of the constant-rung numeric gate.  If
+`nq ≤ 2mΣ`, then the R16 target
+`m⁴·C·q·3·Σ²` is implied by the cleaner scale gate
+`4·L ≤ 3·C·m²·n²·q³`. -/
+theorem pointwise_order_gate_of_hSig
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (G D : Finset F) {B C : ℝ}
+    (hm : 1 ≤ orderOf χ) (hC0 : 0 ≤ C)
+    (hSig :
+      (G.card : ℝ) * (Fintype.card F : ℝ)
+        ≤ 2 * (orderOf χ : ℝ) * ∑ b ∈ Gchi χ, ‖eta ψ G b‖ ^ 2)
+    (hscale :
+      4 * ((((Finset.univ : Finset F) \ D).card : ℝ) * B ^ 4)
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 3) :
+    (((Finset.univ : Finset F) \ D).card : ℝ) * B ^ 4
+      ≤ (orderOf χ : ℝ) ^ 4
+        * (C * ((Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 2 - 1) : ℝ)
+          * (∑ b ∈ Gchi χ, ‖eta ψ G b‖ ^ 2) ^ 2)) := by
+  classical
+  set L : ℝ := (((Finset.univ : Finset F) \ D).card : ℝ) * B ^ 4 with hLdef
+  set m : ℝ := (orderOf χ : ℝ) with hmdef
+  set n : ℝ := (G.card : ℝ) with hndef
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  set Sig : ℝ := ∑ b ∈ Gchi χ, ‖eta ψ G b‖ ^ 2 with hSigdef
+  have hm0 : 0 < m := by
+    rw [hmdef]
+    exact_mod_cast Nat.succ_le_iff.mp hm
+  have hn0 : 0 ≤ n := by rw [hndef]; positivity
+  have hq0 : 0 ≤ q := by rw [hqdef]; positivity
+  have hSig0 : 0 ≤ Sig := by rw [hSigdef]; positivity
+  have hSig' : n * q ≤ 2 * m * Sig := by
+    simpa [hndef, hqdef, hmdef, hSigdef] using hSig
+  have hSig2 : n ^ 2 * q ^ 2 ≤ 4 * m ^ 2 * Sig ^ 2 := by
+    have hlhs0 : 0 ≤ n * q := mul_nonneg hn0 hq0
+    have hsq : (n * q) ^ 2 ≤ (2 * m * Sig) ^ 2 :=
+      pow_le_pow_left₀ hlhs0 hSig' 2
+    nlinarith
+  have htarget4 :
+      4 * (m ^ 4 * (C * (q * (Nat.doubleFactorial (2 * 2 - 1) : ℝ) * Sig ^ 2)))
+        = 12 * C * m ^ 4 * q * Sig ^ 2 := by norm_num; ring
+  have hmiddle :
+      3 * C * m ^ 2 * n ^ 2 * q ^ 3
+        ≤ 12 * C * m ^ 4 * q * Sig ^ 2 := by
+    have hcoef : 0 ≤ 3 * C * m ^ 2 * q := by positivity
+    have hmul :
+        (3 * C * m ^ 2 * q) * (n ^ 2 * q ^ 2)
+          ≤ (3 * C * m ^ 2 * q) * (4 * m ^ 2 * Sig ^ 2) :=
+      mul_le_mul_of_nonneg_left hSig2 hcoef
+    nlinarith [hmul, hcoef]
+  have hscaled : 4 * L ≤ 4 * (m ^ 4 * (C * (q * (Nat.doubleFactorial (2 * 2 - 1) : ℝ) * Sig ^ 2))) := by
+    have hs : 4 * L ≤ 3 * C * m ^ 2 * n ^ 2 * q ^ 3 := by
+      simpa [L, m, n, q] using hscale
+    nlinarith [hs, hmiddle, htarget4]
+  have hfour : (0 : ℝ) < 4 := by norm_num
+  have hfinal : L ≤ m ^ 4 * (C * (q * (Nat.doubleFactorial (2 * 2 - 1) : ℝ) * Sig ^ 2)) :=
+    le_of_mul_le_mul_left hscaled hfour
+  simpa [L, m, q, Sig] using hfinal
+
+/-- Cardinality simplification for the scale gate.  Since `|F \ D| ≤ q`, it is enough to prove
+the pointwise-order bound at the scale
+`4·B⁴ ≤ 3·C·m²·n²·q²`. -/
+theorem scale_gate_of_pointwise_fourth_scale
+    (χ : MulChar F ℂ) (G D : Finset F) {B C : ℝ}
+    (hB :
+      4 * B ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2) :
+    4 * ((((Finset.univ : Finset F) \ D).card : ℝ) * B ^ 4)
+      ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+        * (Fintype.card F : ℝ) ^ 3 := by
+  have hcard : (((Finset.univ : Finset F) \ D).card : ℝ) ≤ (Fintype.card F : ℝ) := by
+    exact_mod_cast Finset.card_le_univ ((Finset.univ : Finset F) \ D)
+  have hpow0 : 0 ≤ B ^ 4 := by positivity
+  have hmul := mul_le_mul_of_nonneg_right hcard hpow0
+  nlinarith [hB, hmul]
+
+/-- If a pointwise-order budget `B` is dominated by a cleaner budget `K`, it is enough to prove
+the fourth-scale inequality for `K`. -/
+theorem pointwise_fourth_scale_of_le
+    (χ : MulChar F ℂ) (G : Finset F) {B K C : ℝ} (hB0 : 0 ≤ B) (hBK : B ≤ K)
+    (hK :
+      4 * K ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2) :
+    4 * B ^ 4
+      ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+        * (Fintype.card F : ℝ) ^ 2 := by
+  have hpow : B ^ 4 ≤ K ^ 4 := pow_le_pow_left₀ hB0 hBK 4
+  nlinarith
+
+/-- Dimensionless version of the `K` fourth-scale gate.  If the clean budget is at most
+`A·|G|·√q`, it suffices to prove `4A⁴|G|² ≤ 3Cm²`. -/
+theorem pointwise_fourth_scale_of_le_const_mul_card_sqrt
+    (χ : MulChar F ℂ) (G : Finset F) {A K C : ℝ} (hK0 : 0 ≤ K)
+    (hKbound : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA :
+      4 * A ^ 4 * (G.card : ℝ) ^ 2
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2) :
+    4 * K ^ 4
+      ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+        * (Fintype.card F : ℝ) ^ 2 := by
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  set n : ℝ := (G.card : ℝ) with hndef
+  have hq0 : 0 ≤ q := by rw [hqdef]; positivity
+  have hpow : K ^ 4 ≤ (A * n * Real.sqrt q) ^ 4 := by
+    simpa [hndef, hqdef] using pow_le_pow_left₀ hK0 hKbound 4
+  have hsqrt4 : (Real.sqrt q) ^ 4 = q ^ 2 := by
+    rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, Real.sq_sqrt hq0]
+  have hexpand : 4 * (A * n * Real.sqrt q) ^ 4 = 4 * A ^ 4 * n ^ 4 * q ^ 2 := by
+    rw [mul_pow, mul_pow, hsqrt4]
+    ring
+  have hmain :
+      4 * (A * n * Real.sqrt q) ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * n ^ 2 * q ^ 2 := by
+    have hfac0 : 0 ≤ n ^ 2 * q ^ 2 := by positivity
+    have hmul := mul_le_mul_of_nonneg_right hA hfac0
+    nlinarith [hmul, hexpand]
+  have hstep : 4 * K ^ 4 ≤ 4 * (A * n * Real.sqrt q) ^ 4 := by nlinarith
+  have hfinal : 4 * K ^ 4 ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * n ^ 2 * q ^ 2 :=
+    le_trans hstep hmain
+  simpa [hndef, hqdef] using hfinal
+
+/-- The exact-constant (`C = 1`) dimensionless reducer. -/
+theorem pointwise_fourth_scale_of_le_const_mul_card_sqrt_one
+    (χ : MulChar F ℂ) (G : Finset F) {A K : ℝ} (hK0 : 0 ≤ K)
+    (hKbound : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA :
+      4 * A ^ 4 * (G.card : ℝ) ^ 2
+        ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    4 * K ^ 4
+      ≤ 3 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+        * (Fintype.card F : ℝ) ^ 2 := by
+  simpa using
+    (pointwise_fourth_scale_of_le_const_mul_card_sqrt (χ := χ) (G := G) (C := 1)
+      hK0 hKbound (by simpa using hA))
+
+/-- If the dimensionless budget constant is at most `1`, the exact-constant scale gate follows
+from `4|G|² ≤ 3m²`. -/
+theorem pointwise_fourth_scale_one_of_A_le_one
+    (χ : MulChar F ℂ) (G : Finset F) {A K : ℝ} (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hKbound : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    4 * K ^ 4
+      ≤ 3 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+        * (Fintype.card F : ℝ) ^ 2 := by
+  have hA4 : A ^ 4 ≤ 1 := by
+    have hpow := pow_le_pow_left₀ hA0 hA1 4
+    simpa using hpow
+  have hdim : 4 * A ^ 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2 := by
+    have hcoef0 : 0 ≤ 4 * (G.card : ℝ) ^ 2 := by positivity
+    have hmul := mul_le_mul_of_nonneg_right hA4 hcoef0
+    nlinarith
+  exact pointwise_fourth_scale_of_le_const_mul_card_sqrt_one χ G hK0 hKbound hdim
+
 /-- Raw fourth-moment endpoint from an abstract pointwise order-scaled incidence bound and the
 explicit constant-`≤ 1` numerical gate. -/
 theorem rawFourthMomentWithDiagonal_of_pointwise_order_bound_gate
@@ -561,6 +715,184 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_gate
     (wickAwayAtWithConstant_two_of_chiSubfamily_pointwise_bounds χ hψ G D hGD hY
       hm hTin hTout hgate)
 
+/-- Regime-form raw fourth-moment endpoint for direct kept/omitted pointwise bounds.  This is
+the non-shifted companion to
+`rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_scale_gate`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_scale_gate
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    {T_in T_out C : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hTout :
+      ∀ s₀ : F, s₀ ∉ D →
+        ∀ χ' ∈ chiFamily χ \ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_out)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hscale :
+      4 * ((((Finset.univ : Finset F) \ D).card : ℝ)
+        * ((G.card : ℝ)
+          + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+          + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out) ^ 4)
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 3) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_gate χ hψ G D hGD hY
+    (le_trans (by norm_num) hm) hC hTin hTout
+    (pointwise_order_gate_of_hSig χ ψ G D (le_trans (by norm_num) hm) hC0
+      (hSig_of_regime hψ G hm hn hreg) hscale)
+
+/-- Regime-form raw fourth-moment endpoint with the deleted-offset cardinality also discharged
+by `|F \ D| ≤ q`.  The remaining numeric target is the per-offset scale
+`4B⁴ ≤ 3Cm²n²q²`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_fourth_scale
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    {T_in T_out C : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hTout :
+      ∀ s₀ : F, s₀ ∉ D →
+        ∀ χ' ∈ chiFamily χ \ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_out)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hB :
+      4 * ((G.card : ℝ)
+          + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+          + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out) ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_scale_gate χ hψ G D hGD hY
+    hm hn hC0 hC hTin hTout hreg
+    (scale_gate_of_pointwise_fourth_scale χ G D hB)
+
+/-- `K`-budget version of
+`rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_fourth_scale`: it is enough to
+upper-bound the concrete residual budget by a cleaner nonnegative `K`, then prove the fourth-scale
+inequality for `K`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_K_scale
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    {T_in T_out C K : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hTout :
+      ∀ s₀ : F, s₀ ∉ D →
+        ∀ χ' ∈ chiFamily χ \ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_out)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hK :
+      4 * K ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
+  have hB0 :
+      0 ≤ (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out := by
+    positivity
+  exact rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_fourth_scale χ hψ G D
+    hGD hY hm hn hC0 hC hTin hTout hreg
+    (pointwise_fourth_scale_of_le χ G hB0 hKbound hK)
+
+/-- Dimensionless `A`-scale version of the direct pointwise residual endpoint.  The concrete
+budget is first bounded by `K`, then by `A·|G|·√q`; the remaining scale obligation is
+`4A⁴|G|² ≤ 3Cm²`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_scale
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    {T_in T_out C K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hTout :
+      ∀ s₀ : F, s₀ ∉ D →
+        ∀ χ' ∈ chiFamily χ \ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_out)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA :
+      4 * A ^ 4 * (G.card : ℝ) ^ 2
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_K_scale χ hψ G D hGD hY
+    hm hn hC0 hC hTin0 hTout0 hTin hTout hreg hKbound
+    (pointwise_fourth_scale_of_le_const_mul_card_sqrt χ G hK0 hKdim hA)
+
+/-- Exact-constant (`C = 1`) direct pointwise endpoint in dimensionless `A`-scale form. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_scale_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    {T_in T_out K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hTout :
+      ∀ s₀ : F, s₀ ∉ D →
+        ∀ χ' ∈ chiFamily χ \ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_out)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA :
+      4 * A ^ 4 * (G.card : ℝ) ^ 2
+        ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  have hC0 : (0 : ℝ) ≤ 1 := by norm_num
+  have hC1 : (1 : ℝ) ≤ 1 := by norm_num
+  have hA' : 4 * A ^ 4 * (G.card : ℝ) ^ 2
+      ≤ 3 * (1 : ℝ) * (orderOf χ : ℝ) ^ 2 := by
+    simpa using hA
+  rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_scale χ hψ G D hGD hY
+    hm hn hC0 hC1 hTin0 hTout0 hK0 hTin hTout hreg hKbound hKdim hA'
+
+/-- Direct pointwise endpoint with `C = 1` and `A ≤ 1`; only the size gate
+`4|G|² ≤ 3m²` remains on the dimensionless side. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    {T_in T_out K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hTout :
+      ∀ s₀ : F, s₀ ∉ D →
+        ∀ χ' ∈ chiFamily χ \ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_out)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  have hC0 : (0 : ℝ) ≤ 1 := by norm_num
+  have hC1 : (1 : ℝ) ≤ 1 := by norm_num
+  have hK :
+      4 * K ^ 4
+        ≤ 3 * (1 : ℝ) * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2 := by
+    simpa using pointwise_fourth_scale_one_of_A_le_one χ G hK0 hA0 hA1 hKdim hsize
+  rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_K_scale χ hψ G D hGD hY
+    hm hn hC0 hC1 hTin0 hTout0 hTin hTout hreg hKbound
+    hK
+
 /-- Raw fourth-moment endpoint for the approximate residual route.  Once the explicit numeric
 gate puts the pointwise-residual constant at `C ≤ 1`, R16 collapses the constant-rung statement
 back to the exact R15 `RawFourthMomentWithDiagonal` target. -/
@@ -589,6 +921,762 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_gate
   rawFourthMomentWithDiagonal_of_wickAwayAtWithConstant_two_le_one G (Gchi χ) D hC
     (wickAwayAtWithConstant_two_of_chiSubfamily_shifted_omitted_rate χ hψ G D hGD hY
       r hm hTout0 hr hTin hwick hrate hgate)
+
+/-- Regime-form raw fourth-moment endpoint for the shifted omitted-character route.  R18
+discharges the Σ lower bound, so the remaining numerical target is the cleaner scale gate
+`4 |F \ D| B⁴ ≤ 3 C m² n² q³`, where
+`B = |G| + |Y|√q T_in + |chiFamily χ \ Y|√q T_out`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_scale_gate
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    (r : ℕ) {T_in T_out C : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1) (hTout0 : 0 ≤ T_out) (hr : 1 ≤ r)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T_out ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hscale :
+      4 * ((((Finset.univ : Finset F) \ D).card : ℝ)
+        * ((G.card : ℝ)
+          + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+          + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out) ^ 4)
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 3) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_gate χ hψ G D hGD hY
+    r (le_trans (by norm_num) hm) hC hTout0 hr hTin hwick hrate
+    (pointwise_order_gate_of_hSig χ ψ G D (le_trans (by norm_num) hm) hC0
+      (hSig_of_regime hψ G hm hn hreg) hscale)
+
+/-- Shifted-omitted-rate endpoint with both Σ and deleted-offset cardinality discharged.  This is
+the cleanest current residual-route target: prove the kept-character pointwise bound, the omitted
+shifted-Wick rate, and the per-offset scale inequality
+`4B⁴ ≤ 3Cm²n²q²`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_fourth_scale
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    (r : ℕ) {T_in T_out C : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1) (hTout0 : 0 ≤ T_out) (hr : 1 ≤ r)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T_out ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hB :
+      4 * ((G.card : ℝ)
+          + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+          + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out) ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_scale_gate χ hψ G D
+    hGD hY r hm hn hC0 hC hTout0 hr hTin hwick hrate hreg
+    (scale_gate_of_pointwise_fourth_scale χ G D hB)
+
+/-- `K`-budget version of the shifted-omitted-rate endpoint.  This is currently the most compact
+formal residual target: prove a kept-family pointwise bound, an omitted-family shifted Wick rate,
+and a clean budget `K` with `4K⁴ ≤ 3Cm²n²q²`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_K_scale
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    (r : ℕ) {T_in T_out C K : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1) (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hr : 1 ≤ r)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T_out ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hK :
+      4 * K ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
+  have hB0 :
+      0 ≤ (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out := by
+    positivity
+  exact rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_fourth_scale χ hψ G D
+    hGD hY r hm hn hC0 hC hTout0 hr hTin hwick hrate hreg
+    (pointwise_fourth_scale_of_le χ G hB0 hKbound hK)
+
+/-- Dimensionless `A`-scale version of the shifted-omitted residual endpoint.  This is the
+current compact target for the route: prove the analytic bounds, dominate the resulting budget by
+`A·|G|·√q`, and close `4A⁴|G|² ≤ 3Cm²`. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_scale
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    (r : ℕ) {T_in T_out C K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hC0 : 0 ≤ C) (hC : C ≤ 1)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K) (hr : 1 ≤ r)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T_out ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA :
+      4 * A ^ 4 * (G.card : ℝ) ^ 2
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_K_scale χ hψ G D hGD hY
+    r hm hn hC0 hC hTin0 hTout0 hr hTin hwick hrate hreg hKbound
+    (pointwise_fourth_scale_of_le_const_mul_card_sqrt χ G hK0 hKdim hA)
+
+/-- Exact-constant (`C = 1`) shifted-omitted endpoint in dimensionless `A`-scale form. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_scale_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    (r : ℕ) {T_in T_out K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K) (hr : 1 ≤ r)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T_out ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA :
+      4 * A ^ 4 * (G.card : ℝ) ^ 2
+        ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  have hC0 : (0 : ℝ) ≤ 1 := by norm_num
+  have hC1 : (1 : ℝ) ≤ 1 := by norm_num
+  have hA' : 4 * A ^ 4 * (G.card : ℝ) ^ 2
+      ≤ 3 * (1 : ℝ) * (orderOf χ : ℝ) ^ 2 := by
+    simpa using hA
+  rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_scale χ hψ G D hGD hY
+    r hm hn hC0 hC1 hTin0 hTout0 hK0 hr hTin hwick hrate hreg
+    hKbound hKdim hA'
+
+/-- Shifted-omitted endpoint with `C = 1` and `A ≤ 1`; only the size gate
+`4|G|² ≤ 3m²` remains after the analytic budget is normalized. -/
+theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) {Y : Finset (MulChar F ℂ)} (hGD : G ⊆ D) (hY : Y ⊆ chiFamily χ)
+    (r : ℕ) {T_in T_out K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hr : 1 ≤ r)
+    (hTin :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ Y, ‖twistedThinSum χ' G s₀‖ ≤ T_in)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T_out ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  have hC0 : (0 : ℝ) ≤ 1 := by norm_num
+  have hC1 : (1 : ℝ) ≤ 1 := by norm_num
+  have hK :
+      4 * K ^ 4
+        ≤ 3 * (1 : ℝ) * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2
+          * (Fintype.card F : ℝ) ^ 2 := by
+    simpa using pointwise_fourth_scale_one_of_A_le_one χ G hK0 hA0 hA1 hKdim hsize
+  rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_K_scale χ hψ G D hGD hY
+    r hm hn hC0 hC1 hTin0 hTout0 hr hTin hwick hrate hreg hKbound
+    hK
+
+/-- Empty-kept-family specialization of the direct pointwise endpoint.  This exposes the
+all-residual route with the compact budget `|G| + |chiFamily χ|√q·T ≤ K`. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    {T K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hT :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ) + ((chiFamily χ).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
+  classical
+  exact rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_le_one χ hψ G D
+    hGD (Y := (∅ : Finset (MulChar F ℂ))) (T_in := 0) (T_out := T)
+    (by simp) hm hn (by norm_num) hT0 hK0 hA0 hA1
+    (fun _s₀ _hs₀ χ' hχ' => by simp at hχ')
+    (fun s₀ hs₀ χ' hχ' => by
+      exact hT s₀ hs₀ χ' (by simpa using hχ'))
+    hreg
+    (by simpa using hKbound)
+    hKdim hsize
+
+/-- Empty-kept-family specialization of the shifted-Wick omitted endpoint.  The analytic work is
+entirely on `chiFamily χ`, through a shifted-away Wick rate and the same normalized budget. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    (r : ℕ) {T K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1) (hr : 1 ≤ r)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ) + ((chiFamily χ).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
+  classical
+  exact rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_le_one χ hψ G D
+    hGD (Y := (∅ : Finset (MulChar F ℂ))) (T_in := 0) (T_out := T)
+    (by simp) r hm hn (by norm_num) hT0 hK0 hA0 hA1 hr
+    (fun _s₀ _hs₀ χ' hχ' => by simp at hχ')
+    (fun χ' hχ' => hwick χ' (by simpa using hχ'))
+    hrate hreg
+    (by simpa using hKbound)
+    hKdim hsize
+
+/-- Closed-cardinality form of
+`rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one`, using
+`|chiFamily χ| = orderOf χ - 1` in the residual budget. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_order_budget_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    {T K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hT :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one χ hψ G D hGD
+    hm hn hT0 hK0 hA0 hA1 hT hreg
+    (by simpa [chiFamily_card] using hKbound)
+    hKdim hsize
+
+/-- Closed-cardinality form of
+`rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_A_le_one`, using
+`|chiFamily χ| = orderOf χ - 1` in the residual budget. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_order_budget_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    (r : ℕ) {T K A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hK0 : 0 ≤ K) (hA0 : 0 ≤ A) (hA1 : A ≤ 1) (hr : 1 ≤ r)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_A_le_one χ hψ G D hGD
+    r hm hn hT0 hK0 hA0 hA1 hr hwick hrate hreg
+    (by simpa [chiFamily_card] using hKbound)
+    hKdim hsize
+
+/-- Normalized-budget pointwise all-omitted endpoint.  This removes the auxiliary `K`: it is
+enough to prove the explicit residual budget is at most `A·|G|·√q`. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_normalized_budget_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    {T A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hT :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
+  have hK0 : 0 ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+    positivity
+  exact
+    rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_order_budget_A_le_one
+      χ hψ G D hGD hm hn hT0 hK0 hA0 hA1 hT hreg hbudget (le_rfl) hsize
+
+/-- Normalized-budget shifted-Wick all-omitted endpoint.  The open analytic target is now just:
+prove shifted Wick on every character, a rate bound for `T`, and
+`|G| + (m-1)√q·T ≤ A·|G|√q`. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_A_le_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    (r : ℕ) {T A : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hA0 : 0 ≤ A) (hA1 : A ≤ 1) (hr : 1 ≤ r)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
+  have hK0 : 0 ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+    positivity
+  exact
+    rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_order_budget_A_le_one
+      χ hψ G D hGD r hm hn hT0 hK0 hA0 hA1 hr hwick hrate hreg
+      hbudget (le_rfl) hsize
+
+/-- Exact normalized-budget pointwise all-omitted endpoint (`A = 1`).  The remaining budget is
+`|G| + (m-1)√q·T ≤ |G|√q`. -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_normalized_budget_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    {T : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hT0 : 0 ≤ T)
+    (hT :
+      ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_normalized_budget_A_le_one
+    χ hψ G D hGD (A := 1) hm hn hT0 (by norm_num) (by norm_num) hT
+    hreg
+    (by simpa using hbudget) hsize
+
+/-- Exact normalized-budget shifted-Wick all-omitted endpoint (`A = 1`). -/
+theorem rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_one
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G D : Finset F) (hGD : G ⊆ D)
+    (r : ℕ) {T : ℝ} (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T) (hr : 1 ≤ r)
+    (hwick :
+      ∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D r)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    RawFourthMomentWithDiagonal ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_A_le_one
+    χ hψ G D hGD r (A := 1) hm hn hT0 (by norm_num) (by norm_num) hr
+    hwick hrate hreg
+    (by simpa using hbudget) hsize
+
+/-- Necessary `T`-cap encoded by the exact normalized all-omitted budget.  Any route using
+`|G| + (m-1)√q·T ≤ |G|√q` must in particular prove
+`(m-1)√q·T ≤ |G|(√q - 1)`. -/
+theorem chiFamily_all_omitted_T_cap_of_normalized_budget_one
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ}
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+      ≤ (G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1) := by
+  nlinarith
+
+/-- Divided form of `chiFamily_all_omitted_T_cap_of_normalized_budget_one`.  This is the
+pointwise size an all-omitted route must force on every twisted thin sum. -/
+theorem chiFamily_all_omitted_T_le_of_normalized_budget_one
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ}
+    (hden :
+      0 < ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    T ≤ ((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+        / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ)) := by
+  have hcap := chiFamily_all_omitted_T_cap_of_normalized_budget_one χ G hbudget
+  rw [le_div_iff₀ hden]
+  simpa [mul_comm, mul_left_comm, mul_assoc] using hcap
+
+/-- The denominator in the divided all-omitted `T` cap is positive in the nontrivial
+`orderOf χ ≥ 2` regime. -/
+theorem chiFamily_all_omitted_den_pos (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) :
+    0 < ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  have hm1_nat : 0 < orderOf χ - 1 := by omega
+  have hm1 : (0 : ℝ) < ((orderOf χ - 1 : ℕ) : ℝ) := by exact_mod_cast hm1_nat
+  have hqpos_nat : 0 < Fintype.card F := Fintype.card_pos
+  have hqpos : (0 : ℝ) < (Fintype.card F : ℝ) := by exact_mod_cast hqpos_nat
+  have hsqrt : 0 < Real.sqrt (Fintype.card F : ℝ) := Real.sqrt_pos.2 hqpos
+  exact mul_pos hm1 hsqrt
+
+/-- Divided `T` cap with the denominator positivity discharged from `orderOf χ ≥ 2`. -/
+theorem chiFamily_all_omitted_T_le_of_normalized_budget_one_of_two_le_order
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ} (hm : 2 ≤ orderOf χ)
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    T ≤ ((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+        / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :=
+  chiFamily_all_omitted_T_le_of_normalized_budget_one χ G
+    (chiFamily_all_omitted_den_pos χ hm) hbudget
+
+/-- Combining the shifted-Wick rate lower requirement with the exact all-omitted budget cap
+forces a purely numerical inequality.  This is the obstruction shape for the all-omitted shifted
+route: the moment-derived lower scale for `T` must fit under the budget cap. -/
+theorem shifted_all_omitted_rate_le_budget_cap_pow
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ} (r : ℕ)
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+      ≤ (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ (2 * r) := by
+  have hTcap :=
+    chiFamily_all_omitted_T_le_of_normalized_budget_one_of_two_le_order χ G hm hbudget
+  have hpow := pow_le_pow_left₀ hT0 hTcap (2 * r)
+  exact le_trans hrate hpow
+
+/-- No-go corollary for the all-omitted shifted route: if the numeric shifted-rate lower bound
+is strictly larger than the budget cap to the same power, then the exact normalized budget cannot
+hold. -/
+theorem not_shifted_all_omitted_budget_of_rate_cap_lt
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ} (r : ℕ)
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hcap_lt :
+      (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ (2 * r)
+        < (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+          * (G.card : ℝ) ^ r) :
+    ¬ (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  intro hbudget
+  have hle := shifted_all_omitted_rate_le_budget_cap_pow χ G r hm hT0 hrate hbudget
+  exact not_lt_of_ge hle hcap_lt
+
+/-- The `r = 1` specialization of `shifted_all_omitted_rate_le_budget_cap_pow`: the exact
+all-omitted shifted route already forces `q·|G|` to fit below the square of the budget cap. -/
+theorem shifted_all_omitted_rate_one_le_budget_cap_sq
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ}
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T)
+    (hrate :
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2)
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    (Fintype.card F : ℝ) * (G.card : ℝ)
+      ≤ (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2 := by
+  have hrate' :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ) * (G.card : ℝ) ^ 1
+        ≤ T ^ (2 * 1) := by
+    norm_num at hrate ⊢
+    exact hrate
+  simpa using shifted_all_omitted_rate_le_budget_cap_pow χ G 1 hm hT0 hrate' hbudget
+
+/-- `r = 1` no-go for the all-omitted shifted route.  If the square of the exact normalized
+budget cap is below `q·|G|`, the budget cannot coexist with the `r = 1` shifted-rate lower bound. -/
+theorem not_shifted_all_omitted_budget_of_rate_one_cap_sq_lt
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ}
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T)
+    (hrate :
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2)
+    (hcap_lt :
+      (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2
+        < (Fintype.card F : ℝ) * (G.card : ℝ)) :
+    ¬ (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  intro hbudget
+  have hle := shifted_all_omitted_rate_one_le_budget_cap_sq χ G hm hT0 hrate hbudget
+  exact not_lt_of_ge hle hcap_lt
+
+/-- A convenient upper bound for the squared exact all-omitted budget cap.  The factor
+`(√q - 1)^2 / q` is at most `1`, so the cap is no larger than `|G|/(m-1)`. -/
+theorem shifted_all_omitted_budget_cap_sq_le_card_div_order_sub_sq
+    (χ : MulChar F ℂ) (G : Finset F) (hm : 2 ≤ orderOf χ) :
+    (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2
+      ≤ (G.card : ℝ) ^ 2 / (((orderOf χ - 1 : ℕ) : ℝ) ^ 2) := by
+  set n : ℝ := (G.card : ℝ) with hndef
+  set a : ℝ := ((orderOf χ - 1 : ℕ) : ℝ) with hadef
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  set s : ℝ := Real.sqrt q with hsdef
+  have ha0 : 0 < a := by
+    rw [hadef]
+    have hm1_nat : 0 < orderOf χ - 1 := by omega
+    exact_mod_cast hm1_nat
+  have hqpos_nat : 0 < Fintype.card F := Fintype.card_pos
+  have hqpos : 0 < q := by rw [hqdef]; exact_mod_cast hqpos_nat
+  have hs0 : 0 < s := by rw [hsdef]; exact Real.sqrt_pos.2 hqpos
+  have hs_sq : s ^ 2 = q := by rw [hsdef, Real.sq_sqrt (le_of_lt hqpos)]
+  have hq1 : (1 : ℝ) ≤ q := by
+    rw [hqdef]
+    exact_mod_cast (Nat.succ_le_iff.mp hqpos_nat)
+  have hs_ge_one : 1 ≤ s := by
+    have hs1 := Real.sqrt_le_sqrt hq1
+    simpa [hsdef] using hs1
+  have hratio_sq : (s - 1) ^ 2 ≤ s ^ 2 := by
+    nlinarith [hs_ge_one]
+  have hnonneg : 0 ≤ n ^ 2 / a ^ 2 := by positivity
+  calc
+    (n * (s - 1) / (a * s)) ^ 2
+        = (n ^ 2 / a ^ 2) * ((s - 1) ^ 2 / s ^ 2) := by
+          field_simp [ne_of_gt ha0, ne_of_gt hs0]
+    _ ≤ (n ^ 2 / a ^ 2) * 1 := by
+          have hs2pos : 0 < s ^ 2 := sq_pos_of_pos hs0
+          have hfrac : (s - 1) ^ 2 / s ^ 2 ≤ 1 := by
+            rw [div_le_one hs2pos]
+            exact hratio_sq
+          exact mul_le_mul_of_nonneg_left hfrac hnonneg
+    _ = n ^ 2 / a ^ 2 := by ring
+
+/-- In the R18 regime, the `r = 1` all-omitted shifted budget cap is automatically too small:
+`cap^2 < q·|G|`.  This turns the `r = 1` no-go into a direct regime obstruction. -/
+theorem shifted_all_omitted_budget_cap_sq_lt_rate_one_of_regime
+    (χ : MulChar F ℂ) (G : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2
+        < (Fintype.card F : ℝ) * (G.card : ℝ) := by
+  set n : ℝ := (G.card : ℝ) with hndef
+  set m : ℝ := (orderOf χ : ℝ) with hmdef
+  set a : ℝ := ((orderOf χ - 1 : ℕ) : ℝ) with hadef
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  have hnpos : 0 < n := by rw [hndef]; exact_mod_cast hn
+  have hn_ge_one : (1 : ℝ) ≤ n := by rw [hndef]; exact_mod_cast hn
+  have hmpos : 0 < m := by rw [hmdef]; exact_mod_cast (lt_of_lt_of_le (by norm_num) hm)
+  have hm_ge_two : (2 : ℝ) ≤ m := by rw [hmdef]; exact_mod_cast hm
+  have ha_eq : a = m - 1 := by
+    rw [hadef, hmdef]
+    rw [Nat.cast_sub (by omega : 1 ≤ orderOf χ), Nat.cast_one]
+  have ha_ge_one : 1 ≤ a := by
+    rw [ha_eq]
+    have hmreal : (2 : ℝ) ≤ m := by rw [hmdef]; exact_mod_cast hm
+    linarith
+  have ha_pos : 0 < a := lt_of_lt_of_le (by norm_num) ha_ge_one
+  have hcap_le :=
+    shifted_all_omitted_budget_cap_sq_le_card_div_order_sub_sq χ G hm
+  have hcap_le' :
+      (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+            / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2
+        ≤ n ^ 2 / a ^ 2 := by
+    simpa [hndef, hadef] using hcap_le
+  have hreg' : 16 * m ^ 2 * n ^ 2 ≤ q := by
+    simpa [hmdef, hndef, hqdef] using hreg
+  have hupper_lt : n ^ 2 / a ^ 2 < q * n := by
+    have ha2_ge_one : 1 ≤ a ^ 2 := by nlinarith [ha_ge_one]
+    have hdiv_le : n ^ 2 / a ^ 2 ≤ n ^ 2 := by
+      rw [div_le_iff₀ (by positivity : 0 < a ^ 2)]
+      nlinarith [ha2_ge_one]
+    have hq_lower : n ^ 2 < q * n := by
+      have hq_gt_n : n < q := by
+        have hlarge : n < 16 * m ^ 2 * n ^ 2 := by
+          have hfactor : 1 < 16 * m ^ 2 * n := by
+            nlinarith [hn_ge_one, hm_ge_two]
+          calc
+            n = n * 1 := by ring
+            _ < n * (16 * m ^ 2 * n) := mul_lt_mul_of_pos_left hfactor hnpos
+            _ = 16 * m ^ 2 * n ^ 2 := by ring
+        exact lt_of_lt_of_le hlarge hreg'
+      nlinarith [mul_lt_mul_of_pos_right hq_gt_n hnpos]
+    exact lt_of_le_of_lt hdiv_le hq_lower
+  exact lt_of_le_of_lt hcap_le' hupper_lt
+
+/-- Regime-level `r = 1` no-go: under the R18 size regime, the exact normalized all-omitted
+budget is incompatible with the `r = 1` shifted-rate lower bound. -/
+theorem not_shifted_all_omitted_budget_of_rate_one_regime
+    (χ : MulChar F ℂ) (G : Finset F) {T : ℝ}
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hT0 : 0 ≤ T)
+    (hrate : (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
+  not_shifted_all_omitted_budget_of_rate_one_cap_sq_lt χ G hm hT0 hrate
+    (shifted_all_omitted_budget_cap_sq_lt_rate_one_of_regime χ G hm hn hreg)
+
+/-- Existential form of the regime-level `r = 1` no-go.  In the R18 regime there is no
+nonnegative `T` that simultaneously satisfies the `r = 1` shifted-rate lower bound and the exact
+all-omitted normalized budget. -/
+theorem not_exists_shifted_all_omitted_rate_one_budget_regime
+    (χ : MulChar F ℂ) (G : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ T : ℝ,
+      0 ≤ T ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨T, hT0, hrate, hbudget⟩
+  exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate hreg hbudget
+
+/-- Interface-level form of the `r = 1` all-omitted shifted no-go.  These are exactly the
+`T`-nonnegativity, `r = 1` rate, and normalized-budget assumptions appearing in
+`rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_one`; the shifted
+Wick hypothesis itself is irrelevant because the numeric side is already inconsistent. -/
+theorem not_shifted_all_omitted_normalized_budget_one_inputs_r_one_regime
+    (χ : MulChar F ℂ) (G D : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ T : ℝ,
+      0 ≤ T ∧
+      (∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D 1) ∧
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ) * (G.card : ℝ) ^ 1
+        ≤ T ^ (2 * 1) ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨T, hT0, _hwick, hrate, hbudget⟩
+  have hrate_one : (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 := by
+    norm_num at hrate ⊢
+    exact hrate
+  exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate_one hreg hbudget
+
+/-- Interface-level `A ≤ 1` form of the `r = 1` all-omitted shifted no-go.  This matches the
+dimensionless normalized endpoint before specializing `A = 1`: any `A ≤ 1` budget is stronger
+than the exact normalized budget, so the same R18-regime obstruction applies. -/
+theorem not_shifted_all_omitted_normalized_budget_A_inputs_r_one_regime
+    (χ : MulChar F ℂ) (G D : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ A T : ℝ,
+      0 ≤ A ∧ A ≤ 1 ∧ 0 ≤ T ∧
+      (∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D 1) ∧
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ) * (G.card : ℝ) ^ 1
+        ≤ T ^ (2 * 1) ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨A, T, _hA0, hA1, hT0, _hwick, hrate, hbudgetA⟩
+  have hbudget_one :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+    have hscale_nonneg : 0 ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+      positivity
+    have hA_scale :
+        A * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+          ≤ 1 * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :=
+      mul_le_mul_of_nonneg_right hA1 hscale_nonneg
+    nlinarith [hbudgetA, hA_scale]
+  have hrate_one : (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 := by
+    norm_num at hrate ⊢
+    exact hrate
+  exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate_one hreg
+    hbudget_one
+
+/-- Raw-endpoint-shaped no-go for the `r = 1`, all-omitted, normalized shifted route.  The
+parameters `ψ`, `hψ`, and `hGD` are included so this theorem is easy to find from attempts to use
+`rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_A_le_one`; they are
+not needed for the numeric contradiction. -/
+theorem not_rawFourthMoment_shifted_all_omitted_normalized_A_inputs_r_one_regime
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (_hψ : ψ.IsPrimitive)
+    (G D : Finset F) (_hGD : G ⊆ D)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ A T : ℝ,
+      0 ≤ A ∧ A ≤ 1 ∧ 0 ≤ T ∧
+      (∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D 1) ∧
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ) * (G.card : ℝ) ^ 1
+        ≤ T ^ (2 * 1) ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
+  not_shifted_all_omitted_normalized_budget_A_inputs_r_one_regime χ G D hm hn hreg
+
+/-- Interface-level `A ≤ 1` no-go for the direct pointwise all-omitted route at the natural
+`sqrt(q * |G|)` scale.  The pointwise upper-bound hypothesis does not enter the contradiction:
+once `T` is at least the natural second-moment scale, the same normalized-budget obstruction as in
+the shifted `r = 1` route applies in the R18 regime. -/
+theorem not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime
+    (χ : MulChar F ℂ) (G D : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ A T : ℝ,
+      0 ≤ A ∧ A ≤ 1 ∧ 0 ≤ T ∧
+      (∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T) ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨A, T, _hA0, hA1, hT0, _hpointwise, hrate, hbudgetA⟩
+  have hbudget_one :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+    have hscale_nonneg : 0 ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+      positivity
+    have hA_scale :
+        A * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+          ≤ 1 * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :=
+      mul_le_mul_of_nonneg_right hA1 hscale_nonneg
+    nlinarith [hbudgetA, hA_scale]
+  exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate hreg
+    hbudget_one
+
+/-- Raw-endpoint-shaped no-go for the direct pointwise all-omitted normalized route at the
+natural `sqrt(q * |G|)` scale.  The additive character data is included to mirror attempts to feed
+the hypotheses into the raw fourth-moment endpoint; the contradiction is purely numeric. -/
+theorem not_rawFourthMoment_pointwise_all_omitted_normalized_A_inputs_sqrt_scale_regime
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (_hψ : ψ.IsPrimitive)
+    (G D : Finset F) (_hGD : G ⊆ D)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ A T : ℝ,
+      0 ≤ A ∧ A ≤ 1 ∧ 0 ≤ T ∧
+      (∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T) ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
+  not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime χ G D hm hn hreg
 
 /-- **Thin-subfamily exact-rung consumer.**  If a subfamily `Y ⊆ chiFamily χ` has its own exact
 `ChiDecompositionOff` identity, then all other explicit-character inputs are discharged:
@@ -809,7 +1897,54 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
 #print axioms wickAwayAtWithConstant_two_of_pointwise_order_bound
 #print axioms wickAwayAtWithConstant_two_of_chiSubfamily_pointwise_bounds
 #print axioms wickAwayAtWithConstant_two_of_chiSubfamily_shifted_omitted_rate
+#print axioms pointwise_order_gate_of_hSig
+#print axioms scale_gate_of_pointwise_fourth_scale
+#print axioms pointwise_fourth_scale_of_le
+#print axioms pointwise_fourth_scale_of_le_const_mul_card_sqrt
+#print axioms pointwise_fourth_scale_of_le_const_mul_card_sqrt_one
+#print axioms pointwise_fourth_scale_one_of_A_le_one
+#print axioms rawFourthMomentWithDiagonal_of_pointwise_order_bound_gate
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_gate
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_scale_gate
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_fourth_scale
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_K_scale
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_scale
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_scale_one
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_A_le_one
 #print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_gate
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_scale_gate
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_fourth_scale
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_K_scale
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_scale
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_scale_one
+#print axioms rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_A_le_one
+#print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one
+#print axioms rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_A_le_one
+#print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_order_budget_A_le_one
+#print axioms rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_order_budget_A_le_one
+#print axioms
+  rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_normalized_budget_A_le_one
+#print axioms
+  rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_A_le_one
+#print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_normalized_budget_one
+#print axioms rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_one
+#print axioms chiFamily_all_omitted_T_cap_of_normalized_budget_one
+#print axioms chiFamily_all_omitted_T_le_of_normalized_budget_one
+#print axioms chiFamily_all_omitted_den_pos
+#print axioms chiFamily_all_omitted_T_le_of_normalized_budget_one_of_two_le_order
+#print axioms shifted_all_omitted_rate_le_budget_cap_pow
+#print axioms not_shifted_all_omitted_budget_of_rate_cap_lt
+#print axioms shifted_all_omitted_rate_one_le_budget_cap_sq
+#print axioms not_shifted_all_omitted_budget_of_rate_one_cap_sq_lt
+#print axioms shifted_all_omitted_budget_cap_sq_le_card_div_order_sub_sq
+#print axioms shifted_all_omitted_budget_cap_sq_lt_rate_one_of_regime
+#print axioms not_shifted_all_omitted_budget_of_rate_one_regime
+#print axioms not_exists_shifted_all_omitted_rate_one_budget_regime
+#print axioms not_shifted_all_omitted_normalized_budget_one_inputs_r_one_regime
+#print axioms not_shifted_all_omitted_normalized_budget_A_inputs_r_one_regime
+#print axioms not_rawFourthMoment_shifted_all_omitted_normalized_A_inputs_r_one_regime
+#print axioms not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime
+#print axioms not_rawFourthMoment_pointwise_all_omitted_normalized_A_inputs_sqrt_scale_regime
 #print axioms
   wickForIncidenceAwayAt_two_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
 #print axioms

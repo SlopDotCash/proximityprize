@@ -79,6 +79,82 @@ in-flight edits). Definitionally equal to the R15/R16/R17 `incidenceSum`. -/
 noncomputable def incidenceSum (ψ : AddChar F ℂ) (G H : Finset F) (s₀ : F) : ℂ :=
   ∑ b ∈ H, (starRingEnd ℂ) (eta ψ G b) * ψ (b * s₀)
 
+/-- The average of the incidence field over the base set `G` is exactly the restricted
+period energy `Σ = ∑_{b∈H} ‖η_b‖²`.  This is the algebra behind the flat deleted spike:
+if `I_H(s)` is constant on `G` (as it is for multiplicative-subgroup/coset-stable inputs),
+then every deleted `s ∈ G` has value `Σ / |G|`. -/
+theorem sum_incidenceSum_over_base_eq_sigma (ψ : AddChar F ℂ) (G H : Finset F) :
+    (∑ s ∈ G, incidenceSum ψ G H s)
+      = ((∑ b ∈ H, ‖eta ψ G b‖ ^ 2 : ℝ) : ℂ) := by
+  classical
+  unfold incidenceSum
+  change (Finset.sum G fun s => Finset.sum H fun b =>
+      (starRingEnd ℂ) (eta ψ G b) * ψ (b * s))
+      = ((Finset.sum H fun b => ‖eta ψ G b‖ ^ 2 : ℝ) : ℂ)
+  rw [Finset.sum_comm]
+  rw [Complex.ofReal_sum]
+  refine Finset.sum_congr rfl (fun b _ => ?_)
+  rw [← Finset.mul_sum]
+  change (starRingEnd ℂ) (eta ψ G b) * eta ψ G b
+      = ((‖eta ψ G b‖ ^ 2 : ℝ) : ℂ)
+  rw [mul_comm, RCLike.mul_conj]
+  norm_cast
+
+/-- Flat deleted-spike form.  If the incidence field is constant on `G`, then the common value
+is forced by the average identity: `|G| · I_H(s) = Σ`.  This avoids dividing in the statement
+and is the exact finite algebra behind the probe check `I_H(s) = Σ/n` for `s ∈ μ_n`. -/
+theorem card_mul_incidenceSum_eq_sigma_of_const_on_base (ψ : AddChar F ℂ) (G H : Finset F)
+    {s : F} (_hs : s ∈ G)
+    (hconst : ∀ t ∈ G, incidenceSum ψ G H t = incidenceSum ψ G H s) :
+    (G.card : ℂ) * incidenceSum ψ G H s
+      = ((∑ b ∈ H, ‖eta ψ G b‖ ^ 2 : ℝ) : ℂ) := by
+  classical
+  have hsum := sum_incidenceSum_over_base_eq_sigma ψ G H
+  rw [← hsum]
+  rw [Finset.sum_congr rfl (fun t ht => hconst t ht)]
+  rw [Finset.sum_const, nsmul_eq_mul]
+
+/-- Incidence invariance under a multiplicative frequency symmetry.  If right-multiplication by
+`u` permutes the frequency set `H`, and the periods are invariant under the same multiplier on
+`H`, then the signed incidence field satisfies `I_H(u*s) = I_H(s)`.
+
+This is the local algebraic bridge from coset stability of `H` and orbit-invariance of `η` to
+the deleted-spike constancy consumed by `card_mul_incidenceSum_eq_sigma_of_const_on_base`. -/
+theorem incidenceSum_mul_left_eq_of_eta_invariant (ψ : AddChar F ℂ) (G H : Finset F)
+    {u : F} (hu : u ≠ 0)
+    (hH : H.image (fun b => b * u) = H)
+    (hη : ∀ b ∈ H, eta ψ G (b * u) = eta ψ G b) (s : F) :
+    incidenceSum ψ G H (u * s) = incidenceSum ψ G H s := by
+  classical
+  unfold incidenceSum
+  calc ∑ b ∈ H, (starRingEnd ℂ) (eta ψ G b) * ψ (b * (u * s))
+      = ∑ b ∈ H, (starRingEnd ℂ) (eta ψ G (b * u)) * ψ ((b * u) * s) := by
+          refine Finset.sum_congr rfl (fun b hb => ?_)
+          rw [hη b hb]
+          congr 2
+          ring
+    _ = ∑ c ∈ H.image (fun b => b * u),
+          (starRingEnd ℂ) (eta ψ G c) * ψ (c * s) := by
+          rw [Finset.sum_image]
+          intro a _ b _ hab
+          exact mul_right_cancel₀ hu hab
+    _ = ∑ c ∈ H, (starRingEnd ℂ) (eta ψ G c) * ψ (c * s) := by
+          rw [hH]
+
+/-- Flat deleted-spike theorem from explicit multiplicative transport.  To prove the common
+deleted value at a base point `s ∈ G`, it is enough to transport every `t ∈ G` to `s` by a
+nonzero multiplier `u` that preserves `H` and leaves `η` invariant on `H`. -/
+theorem card_mul_incidenceSum_eq_sigma_of_transport (ψ : AddChar F ℂ) (G H : Finset F)
+    {s : F} (hs : s ∈ G)
+    (htransport : ∀ t ∈ G, ∃ u : F, u ≠ 0 ∧ t = u * s ∧
+      H.image (fun b => b * u) = H ∧ ∀ b ∈ H, eta ψ G (b * u) = eta ψ G b) :
+    (G.card : ℂ) * incidenceSum ψ G H s
+      = ((∑ b ∈ H, ‖eta ψ G b‖ ^ 2 : ℝ) : ℂ) := by
+  refine card_mul_incidenceSum_eq_sigma_of_const_on_base ψ G H hs ?_
+  intro t ht
+  obtain ⟨u, hu, rfl, hH, hη⟩ := htransport t ht
+  exact incidenceSum_mul_left_eq_of_eta_invariant ψ G H hu hH hη s
+
 /-- The η-weighted triple additive convolution of `H`:
 `cubeWeight(d) = ∑_{b₁,b₂,b₃ ∈ H, b₁+b₂+b₃ = d} conj(η_{b₁})·conj(η_{b₂})·conj(η_{b₃})`. -/
 noncomputable def cubeWeight (ψ : AddChar F ℂ) (G H : Finset F) (d : F) : ℂ :=
@@ -277,6 +353,42 @@ theorem incidenceRung3Wick_iff_cubeWeightEnergy {ψ : AddChar F ℂ} (hψ : ψ.I
   ⟨cubeWeightEnergy_of_incidenceRung3Wick hψ,
     incidenceRung3Wick_of_cubeWeightEnergy hψ⟩
 
+/-! ### (3c) The post-deletion cross remainder.
+
+The probe split shows that the full non-matched cube energy is enormous, but the deleted
+`D = {0} ∪ μ_n` samples carry almost all of that mass.  The right residual is therefore not
+the raw cross energy; it is the energy left after deleting `D` and after reserving the
+matched-multiset diagonal budget `6·q·Σ³`.  Since Wick at rung 3 is `15·q·Σ³`, the remaining
+cross allowance is exactly `9·q·Σ³`.
+-/
+
+/-- The post-deletion cross-energy target for rung 3.  This subtracts the deleted samples and
+the matched-multiset diagonal budget `6·q·Σ³` from the exact cube-weight energy.  The remaining
+allowance is the other `9/15` of Wick. -/
+def PostDeletedCrossRung3Energy (ψ : AddChar F ℂ) (G H D : Finset F) : Prop :=
+  (Fintype.card F : ℝ) * (∑ d : F, ‖cubeWeight ψ G H d‖ ^ 2)
+      - ∑ s₀ ∈ D, ‖incidenceSum ψ G H s₀‖ ^ 6
+      - 6 * (Fintype.card F : ℝ) * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 3
+    ≤ 9 * (Fintype.card F : ℝ) * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 3
+
+/-- The post-deletion cross target is exactly the same as the cube-weight Wick target, just
+with the `6/15` matched-multiset diagonal budget moved to the left.  This is the algebraic
+form suggested by the `crossD/W` probe column. -/
+theorem postDeletedCrossRung3Energy_iff_cubeWeightEnergy
+    (ψ : AddChar F ℂ) (G H D : Finset F) :
+    PostDeletedCrossRung3Energy ψ G H D ↔ CubeWeightRung3Energy ψ G H D := by
+  unfold PostDeletedCrossRung3Energy CubeWeightRung3Energy
+  constructor <;> intro h <;> linarith
+
+/-- Consumer form: proving the post-deletion cross remainder with the `9/15` budget implies
+the deleted rung-3 Wick bound. -/
+theorem incidenceRung3Wick_of_postDeletedCrossRung3Energy {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) {G H D : Finset F}
+    (hE : PostDeletedCrossRung3Energy ψ G H D) :
+    IncidenceRung3Wick ψ G H D :=
+  incidenceRung3Wick_of_cubeWeightEnergy hψ
+    ((postDeletedCrossRung3Energy_iff_cubeWeightEnergy ψ G H D).mp hE)
+
 /-! ### (4) The all-equal-coset slice carries `E₃(μ_n)` verbatim (dilation invariance). -/
 
 /-- **Dilation invariance of the sextuple count.** For `t ≠ 0`, the number of sextuple
@@ -316,6 +428,10 @@ theorem wick_pairing_constants :
 end ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+#print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.sum_incidenceSum_over_base_eq_sigma
+#print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.card_mul_incidenceSum_eq_sigma_of_const_on_base
+#print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.incidenceSum_mul_left_eq_of_eta_invariant
+#print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.card_mul_incidenceSum_eq_sigma_of_transport
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.parseval_offsets
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.incidenceSum_cube_eq
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.sixthMoment_eq_cubeWeight_energy
@@ -323,5 +439,7 @@ end ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.incidenceRung3Wick_of_cubeWeightEnergy
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.cubeWeightEnergy_of_incidenceRung3Wick
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.incidenceRung3Wick_iff_cubeWeightEnergy
+#print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.postDeletedCrossRung3Energy_iff_cubeWeightEnergy
+#print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.incidenceRung3Wick_of_postDeletedCrossRung3Energy
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.tripleCount_smul_eq
 #print axioms ArkLib.ProximityGap.Frontier.R18RungThreeDecomposition.wick_pairing_constants

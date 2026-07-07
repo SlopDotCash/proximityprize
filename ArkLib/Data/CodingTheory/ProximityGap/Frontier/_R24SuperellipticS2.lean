@@ -58,9 +58,12 @@ parameter-choice lane (mimic `_R23ParameterChoice`).
 
 ## What stalls (honest scope)
 
-EXACTLY ONE input: `DBlockIndependence F d (card F) D g` for `d ≥ 4` (2-power order) —
-the norm-fold construction (NORMFOLD lane).  Everything else in the order-`d` Stepanov
-chain through the per-fiber count is machine-checked below.  No closure claimed.
+EXACTLY ONE input: `DBlockIndependence F d (card F) D g` for the desired 2-power order.
+It is proven below for `d = 4`; the `d = 8` norm-fold endpoint is proven in
+`_R25OcticNormFold` and exposed to this S2 API by `_R147OcticSuperellipticS2Consumer`.
+Higher doublings (`d = 16, 32, ...`) remain the norm-fold construction.  Everything else in
+the order-`d` Stepanov chain through the per-fiber count is machine-checked below.  No prize
+closure claimed.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.R24SuperellipticS2

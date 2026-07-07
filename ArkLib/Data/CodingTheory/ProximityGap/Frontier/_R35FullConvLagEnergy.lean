@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21QuarticConvolutionCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23TripleConvEnergyInput
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R30IterConvEnergyRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32LagOffDiagEnergy
 
 /-!
@@ -31,6 +32,8 @@ open ArkLib.ProximityGap.Frontier.R19JacobiFourierExpansion
 open ArkLib.ProximityGap.Frontier.R20JacobiParseval
 open ArkLib.ProximityGap.Frontier.R21QuarticConvolutionCollapse
 open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse
+open ArkLib.ProximityGap.Frontier.R30IterConvEnergyRecursion
 open ArkLib.ProximityGap.Frontier.R31LagSpectrumWeilBound
 open ArkLib.ProximityGap.Frontier.R32LagOffDiagEnergy
 
@@ -403,6 +406,35 @@ theorem tripleConvEnergyBound_of_lagCorrelation_bound_and_coeffEnvelope_budget
   exact tripleConvEnergyBound_of_lagCorrelation_bound_and_zeroBoundary_budget
     J q hB0 hJ hJsq hlag hbudget
 
+/-- Lag-correlation control with zero-boundary bookkeeping feeds the final tower at `r = 2`. -/
+theorem iterConvEnergyWick_two_of_lagCorrelation_bound_and_zeroBoundary_budget
+    (J : ZMod m → ℂ) (q : ℕ) {L B C C₂ : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖J c‖ ≤ B)
+    (hlag : ∀ t : ZMod m, ‖fullLagCorrelation J t‖ ≤ L)
+    (hbudget : 2 * ((m : ℝ) * L ^ 2)
+        + (8 * (m : ℝ)) * ‖J 0‖ ^ 2 * B ^ 2
+      ≤ C₂ * (m : ℝ) * (q : ℝ) ^ 2)
+    (hC : C₂ ≤ 2 * C ^ 2) :
+    IterConvEnergyWick J q 2 C :=
+  iterConvEnergyWick_two_of_selfConvEnergyBound J q
+    (selfConvEnergyBound_of_lagCorrelation_bound_and_zeroBoundary_budget
+      J q hB0 hJ hlag hbudget) hC
+
+/-- Lag-correlation control with zero-boundary bookkeeping feeds the final tower at `r = 3`. -/
+theorem iterConvEnergyWick_three_of_lagCorrelation_bound_and_zeroBoundary_budget
+    (J : ZMod m → ℂ) (q : ℕ) {L B C C₃ : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖J c‖ ≤ B)
+    (hJsq : ∀ c : ZMod m, ‖J c‖ ^ 2 ≤ (q : ℝ))
+    (hlag : ∀ t : ZMod m, ‖fullLagCorrelation J t‖ ≤ L)
+    (hbudget : 2 * ((m : ℝ) * L ^ 2)
+        + (8 * (m : ℝ)) * ‖J 0‖ ^ 2 * B ^ 2
+      ≤ C₃ * (m : ℝ) * (q : ℝ) ^ 2)
+    (hC : C₃ ≤ 6 * C ^ 3) :
+    IterConvEnergyWick J q 3 C :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound J q
+    (tripleConvEnergyBound_of_lagCorrelation_bound_and_zeroBoundary_budget
+      J q hB0 hJ hJsq hlag hbudget) hC
+
 /-- Under `J 0 = 0`, a pointwise lag-correlation bound controls the R21 punctured
 self-convolution energy. -/
 theorem selfConv_energy_bound_of_lagCorrelation_bound_of_zero (J : ZMod m → ℂ)
@@ -447,6 +479,28 @@ theorem tripleConvEnergyBound_of_lagCorrelation_bound_of_zero_coeffEnvelope_budg
     exact (pow_le_pow_left₀ (norm_nonneg _) (hJ c) 2).trans hBsq
   exact tripleConvEnergyBound_of_lagCorrelation_bound_of_zero_budget
     J q hJ0 hJsq hlag hbudget
+
+/-- Zero-mode-free lag-correlation control feeds the final tower at `r = 2`. -/
+theorem iterConvEnergyWick_two_of_lagCorrelation_bound_of_zero_budget
+    (J : ZMod m → ℂ) (q : ℕ) (hJ0 : J 0 = 0) {L C C₂ : ℝ}
+    (hlag : ∀ t : ZMod m, ‖fullLagCorrelation J t‖ ≤ L)
+    (hbudget : (m : ℝ) * L ^ 2 ≤ C₂ * (m : ℝ) * (q : ℝ) ^ 2)
+    (hC : C₂ ≤ 2 * C ^ 2) :
+    IterConvEnergyWick J q 2 C :=
+  iterConvEnergyWick_two_of_selfConvEnergyBound J q
+    (selfConvEnergyBound_of_lagCorrelation_bound_of_zero_budget J q hJ0 hlag hbudget) hC
+
+/-- Zero-mode-free lag-correlation control feeds the final tower at `r = 3`. -/
+theorem iterConvEnergyWick_three_of_lagCorrelation_bound_of_zero_budget
+    (J : ZMod m → ℂ) (q : ℕ) (hJ0 : J 0 = 0)
+    (hJsq : ∀ c : ZMod m, ‖J c‖ ^ 2 ≤ (q : ℝ)) {L C C₃ : ℝ}
+    (hlag : ∀ t : ZMod m, ‖fullLagCorrelation J t‖ ≤ L)
+    (hbudget : (m : ℝ) * L ^ 2 ≤ C₃ * (m : ℝ) * (q : ℝ) ^ 2)
+    (hC : C₃ ≤ 6 * C ^ 3) :
+    IterConvEnergyWick J q 3 C :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound J q
+    (tripleConvEnergyBound_of_lagCorrelation_bound_of_zero_budget
+      J q hJ0 hJsq hlag hbudget) hC
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
@@ -690,6 +744,151 @@ theorem tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudg
   rw [norm_jacobiCoeff_zero_eq_one hχ hχ1 hfam]
   simpa [L] using hbudget
 
+/-- Direct depth-two tower consumer for the Jacobi/Weil R35 bridge. -/
+theorem iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_budget
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B Ctwo C : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hzero : ‖lagCorrelation χ lam (0 : ZMod m)‖
+      ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
+    (hbudget : 2 * ((m : ℝ)
+        * (((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * ‖jacobiCoeff χ lam 0‖ ^ 2 * B ^ 2
+      ≤ Ctwo * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hC : Ctwo ≤ 2 * C ^ 2) :
+    IterConvEnergyWick (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 2 C := by
+  classical
+  let L : ℝ := (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)
+  have hlag : ∀ t : ZMod m,
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
+    intro t
+    by_cases ht : t = 0
+    · subst ht
+      simpa [fullLagCorrelation, lagCorrelation, L] using hzero
+    · have h := lag_correlation_bound hfam hgrp hweil ht
+      simpa [fullLagCorrelation, lagCorrelation, L] using h
+  exact iterConvEnergyWick_two_of_lagCorrelation_bound_and_zeroBoundary_budget
+    (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
+    (L := L) (B := B) (C₂ := Ctwo) hB0 hJ hlag (by simpa [L] using hbudget) hC
+
+/-- Direct depth-two tower consumer with the Jacobi zero coefficient evaluated explicitly. -/
+theorem iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_budget'
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B Ctwo C : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hzero : ‖lagCorrelation χ lam (0 : ZMod m)‖
+      ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
+    (hbudget : 2 * ((m : ℝ)
+        * (((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * B ^ 2
+      ≤ Ctwo * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hC : Ctwo ≤ 2 * C ^ 2) :
+    IterConvEnergyWick (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 2 C := by
+  refine iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_budget
+    (hfam := hfam) (hgrp := hgrp) hB0 hJ hweil hzero ?_ hC
+  rw [norm_jacobiCoeff_zero_eq_one hχ hχ1 hfam]
+  simpa using hbudget
+
+/-- Direct depth-two tower consumer for the hzero-free max-budget Jacobi/Weil bridge. -/
+theorem iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudget
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B Ctwo C : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hbudget : 2 * ((m : ℝ)
+        * (max ((m : ℝ) * B ^ 2)
+            ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * B ^ 2
+      ≤ Ctwo * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hC : Ctwo ≤ 2 * C ^ 2) :
+    IterConvEnergyWick (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 2 C := by
+  classical
+  let L : ℝ := max ((m : ℝ) * B ^ 2)
+    ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
+  have hlag : ∀ t : ZMod m,
+      ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖ ≤ L := by
+    intro t
+    by_cases ht : t = 0
+    · subst ht
+      exact (norm_fullLagCorrelation_zero_le_card_mul_sq
+        (J := fun i : ZMod m => jacobiCoeff χ lam i) hB0 hJ).trans (le_max_left _ _)
+    · have h := lag_correlation_bound hfam hgrp hweil ht
+      have hoff :
+          ‖fullLagCorrelation (fun i : ZMod m => jacobiCoeff χ lam i) t‖
+            ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F) := by
+        simpa [fullLagCorrelation, lagCorrelation] using h
+      exact hoff.trans (le_max_right _ _)
+  refine iterConvEnergyWick_two_of_lagCorrelation_bound_and_zeroBoundary_budget
+    (J := fun i : ZMod m => jacobiCoeff χ lam i) (q := Fintype.card F)
+    (L := L) (B := B) (C₂ := Ctwo) hB0 hJ hlag ?_ hC
+  rw [norm_jacobiCoeff_zero_eq_one hχ hχ1 hfam]
+  simpa [L] using hbudget
+
+/-- Direct final-tower consumer for the Jacobi/Weil R35 bridge. -/
+theorem iterConvEnergyWick_three_of_twoCharacterWeilInput_and_coeffEnvelope_budget
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B Ctriple C : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hBsq : B ^ 2 ≤ (Fintype.card F : ℝ))
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hzero : ‖lagCorrelation χ lam (0 : ZMod m)‖
+      ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
+    (hbudget : 2 * ((m : ℝ)
+        * (((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * ‖jacobiCoeff χ lam 0‖ ^ 2 * B ^ 2
+      ≤ Ctriple * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hC : Ctriple ≤ 6 * C ^ 3) :
+    IterConvEnergyWick (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+    (tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_budget
+      hfam hgrp hB0 hJ hBsq hweil hzero hbudget) hC
+
+/-- Direct final-tower consumer with the Jacobi zero coefficient evaluated explicitly. -/
+theorem iterConvEnergyWick_three_of_twoCharacterWeilInput_and_coeffEnvelope_budget'
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B Ctriple C : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hBsq : B ^ 2 ≤ (Fintype.card F : ℝ))
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hzero : ‖lagCorrelation χ lam (0 : ZMod m)‖
+      ≤ (m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F))
+    (hbudget : 2 * ((m : ℝ)
+        * (((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * B ^ 2
+      ≤ Ctriple * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hC : Ctriple ≤ 6 * C ^ 3) :
+    IterConvEnergyWick (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+    (tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_budget'
+      hχ hχ1 hfam hgrp hB0 hJ hBsq hweil hzero hbudget) hC
+
+/-- Direct final-tower consumer for the hzero-free max-budget Jacobi/Weil bridge. -/
+theorem iterConvEnergyWick_three_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudget
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {Cweil B Ctriple C : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hBsq : B ^ 2 ≤ (Fintype.card F : ℝ))
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hbudget : 2 * ((m : ℝ)
+        * (max ((m : ℝ) * B ^ 2)
+            ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * B ^ 2
+      ≤ Ctriple * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hC : Ctriple ≤ 6 * C ^ 3) :
+    IterConvEnergyWick (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+    (tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudget
+      hχ hχ1 hfam hgrp hB0 hJ hBsq hweil hbudget) hC
+
 /-- Direct sextic-face consumer for the Jacobi/Weil R35 bridge.  It composes the
 coefficient-envelope triple-convolution bridge with R23's exact sextic collapse. -/
 theorem sextic_moment_of_twoCharacterWeilInput_and_coeffEnvelope_budget
@@ -856,6 +1055,10 @@ open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms tripleConvEnergyBound_of_lagCorrelation_bound_and_coeffEnvelope_budget
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_two_of_lagCorrelation_bound_and_zeroBoundary_budget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_three_of_lagCorrelation_bound_and_zeroBoundary_budget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms selfConv_energy_bound_of_lagCorrelation_bound_of_zero
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms jacobiCoeff_zero_eq_neg_one
@@ -867,6 +1070,10 @@ open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms tripleConvEnergyBound_of_lagCorrelation_bound_of_zero_budget
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms tripleConvEnergyBound_of_lagCorrelation_bound_of_zero_coeffEnvelope_budget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_two_of_lagCorrelation_bound_of_zero_budget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_three_of_lagCorrelation_bound_of_zero_budget
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms sextic_moment_of_lagCorrelation_bound_and_coeffEnvelope_budget
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
@@ -885,6 +1092,18 @@ open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_budget'
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms tripleConvEnergyBound_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_budget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_budget'
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_three_of_twoCharacterWeilInput_and_coeffEnvelope_budget
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_three_of_twoCharacterWeilInput_and_coeffEnvelope_budget'
+open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
+#print axioms iterConvEnergyWick_three_of_twoCharacterWeilInput_and_coeffEnvelope_maxBudget
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in
 #print axioms sextic_moment_of_twoCharacterWeilInput_and_coeffEnvelope_budget
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy in

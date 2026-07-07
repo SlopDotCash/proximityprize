@@ -335,6 +335,47 @@ theorem r18Constant_le_one_of_num_le {m A : ℝ} (hm : 0 < m)
   rw [div_le_iff₀ hden]
   nlinarith
 
+/-- A squared-size version of the R18 constant threshold.  It isolates the real arithmetic:
+any lower bound strong enough to prove `32A ≤ 3m²` feeds the exact-rung gate. -/
+theorem r18Constant_le_one_of_sq_ge {m A K : ℝ} (hm : 0 < m)
+    (hA : 32 * A ≤ K ^ 2) (hK : K ^ 2 ≤ 3 * m ^ 2) :
+    32 * A / m ^ 2 / 3 ≤ 1 :=
+  r18Constant_le_one_of_num_le hm (le_trans hA hK)
+
+/-- A convenient stronger threshold: bounding the numerator by `m²` is enough. -/
+theorem r18Constant_le_one_of_num_le_sq {m A : ℝ} (hm : 0 < m)
+    (hnum : 32 * A ≤ m ^ 2) :
+    32 * A / m ^ 2 / 3 ≤ 1 := by
+  refine r18Constant_le_one_of_num_le hm (le_trans hnum ?_)
+  nlinarith [sq_nonneg m]
+
+/-- Coarse but convenient quartic-Weil numerator bound: if `1 ≤ N` and `15N² ≤ m`, then
+`32(6N⁴+1) ≤ m²`.  This packages the r18 exact-rung condition in the natural scale
+`m ≳ |X|²`. -/
+theorem quarticWeil_num_le_sq_of_fifteen_card_sq_le
+    {N m : ℝ} (hN : 1 ≤ N) (hm : 15 * N ^ 2 ≤ m) :
+    32 * (6 * N ^ 4 + 1) ≤ m ^ 2 := by
+  have hN2_ge_one : 1 ≤ N ^ 2 := by nlinarith [sq_nonneg (N - 1)]
+  have hN4_ge_one : 1 ≤ N ^ 4 := by
+    have hN4_eq : N ^ 4 = (N ^ 2) ^ 2 := by ring
+    rw [hN4_eq]
+    nlinarith [sq_nonneg (N ^ 2 - 1)]
+  have hnum : 32 * (6 * N ^ 4 + 1) ≤ 225 * N ^ 4 := by nlinarith
+  have hsq : (15 * N ^ 2) ^ 2 ≤ m ^ 2 := by
+    have hm0 : 0 ≤ m := by nlinarith [hN2_ge_one]
+    nlinarith [hm, hm0, sq_nonneg (m - 15 * N ^ 2)]
+  nlinarith [hnum, hsq]
+
+/-- Generic `Cw` version of the coarse quartic numerator bound.  If `Cw ≤ 6`, the same
+`15N² ≤ m` scale used by the fully quartic-Weil route bounds `32(CwN⁴+1)` by `m²`. -/
+theorem generic_num_le_sq_of_fifteen_card_sq_le
+    {Cw N m : ℝ} (hCw : Cw ≤ 6) (hN : 1 ≤ N) (hm : 15 * N ^ 2 ≤ m) :
+    32 * (Cw * N ^ 4 + 1) ≤ m ^ 2 := by
+  have hN4_nonneg : 0 ≤ N ^ 4 := by positivity
+  have hnum_le : 32 * (Cw * N ^ 4 + 1) ≤ 32 * (6 * N ^ 4 + 1) := by
+    nlinarith
+  exact le_trans hnum_le (quarticWeil_num_le_sq_of_fifteen_card_sq_le hN hm)
+
 /-! ### (5) Consumer wiring: the r = 2 rung at THREE named inputs -/
 
 /-- **The raw round-17 r = 2 rung with `hSig` discharged** (for `H = G_χ`).  This is the
@@ -421,6 +462,211 @@ theorem rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one
   ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.rawFourthMomentWithDiagonal_of_wickAwayAtWithConstant_two_le_one
     G (Gchi χ) D hC
     (wickAwayAtWithConstant_two_of_gchi ψ hψ G D X g χ hm hn hCw hdec hg h4 hq1 hnq hreg)
+
+/-- Size-condition version of `wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one`.
+It is often easier to prove the unnormalized numerator bound. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_of_num_le
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw : 0 ≤ Cw)
+    (hnum : 32 * (Cw * (X.card : ℝ) ^ 4 + 1) ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one ψ hψ G D X g χ hm hn hCw
+    (r18Constant_le_one_of_num_le (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Size-condition version of `rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_of_num_le
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw : 0 ≤ Cw)
+    (hnum : 32 * (Cw * (X.card : ℝ) ^ 4 + 1) ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one ψ hψ G D X g χ hm hn hCw
+    (r18Constant_le_one_of_num_le (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Strong square-bound version of `wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_of_num_le_sq
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw : 0 ≤ Cw)
+    (hnum : 32 * (Cw * (X.card : ℝ) ^ 4 + 1) ≤ ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one ψ hψ G D X g χ hm hn hCw
+    (r18Constant_le_one_of_num_le_sq (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Strong square-bound version of `rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_of_num_le_sq
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw : 0 ≤ Cw)
+    (hnum : 32 * (Cw * (X.card : ℝ) ^ 4 + 1) ≤ ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one ψ hψ G D X g χ hm hn hCw
+    (r18Constant_le_one_of_num_le_sq (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Generic `Cw` exact-rung consumer at the same family-size scale as the quartic-Weil
+discharge.  The hypothesis `Cw ≤ 6` is the only constant input. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw0 : 0 ≤ Cw) (hCw6 : Cw ≤ 6) (hX : X.Nonempty)
+    (horder : 15 * ((X.card : ℝ) ^ 2) ≤ (orderOf χ : ℝ))
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_of_num_le_sq ψ hψ G D X g χ hm hn hCw0
+    (generic_num_le_sq_of_fifteen_card_sq_le hCw6
+      (by exact_mod_cast Nat.succ_le_of_lt (Finset.card_pos.mpr hX)) horder)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Raw fourth-moment companion to
+`wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw0 : 0 ≤ Cw) (hCw6 : Cw ≤ 6) (hX : X.Nonempty)
+    (horder : 15 * ((X.card : ℝ) ^ 2) ≤ (orderOf χ : ℝ))
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_of_num_le_sq ψ hψ G D X g χ hm hn hCw0
+    (generic_num_le_sq_of_fifteen_card_sq_le hCw6
+      (by exact_mod_cast Nat.succ_le_of_lt (Finset.card_pos.mpr hX)) horder)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Nat-order version of
+`wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order_nat
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw0 : 0 ≤ Cw) (hCw6 : Cw ≤ 6) (hX : X.Nonempty)
+    (horder : 15 * X.card ^ 2 ≤ orderOf χ)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order
+    ψ hψ G D X g χ hm hn hCw0 hCw6 hX (by exact_mod_cast horder)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Raw fourth-moment Nat-order companion to
+`wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order_nat`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order_nat
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw : ℝ} (hCw0 : 0 ≤ Cw) (hCw6 : Cw ≤ 6) (hX : X.Nonempty)
+    (horder : 15 * X.card ^ 2 ≤ orderOf χ)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order
+    ψ hψ G D X g χ hm hn hCw0 hCw6 hX (by exact_mod_cast horder)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Squared-size version of `wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_of_sq_ge
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw K : ℝ} (hCw : 0 ≤ Cw)
+    (hA : 32 * (Cw * (X.card : ℝ) ^ 4 + 1) ≤ K ^ 2)
+    (hK : K ^ 2 ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one ψ hψ G D X g χ hm hn hCw
+    (r18Constant_le_one_of_sq_ge (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hA hK)
+    hdec hg h4 hq1 hnq hreg
+
+/-- Squared-size version of `rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_of_sq_ge
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {Cw K : ℝ} (hCw : 0 ≤ Cw)
+    (hA : 32 * (Cw * (X.card : ℝ) ^ 4 + 1) ≤ K ^ 2)
+    (hK : K ^ 2 ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (h4 : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound G X Cw)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one ψ hψ G D X g χ hm hn hCw
+    (r18Constant_le_one_of_sq_ge (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hA hK)
+    hdec hg h4 hq1 hnq hreg
 
 /-- **The r = 2 rung with both R18 plumbing inputs discharged**: `hSig` comes from Σ-equidistribution
 and `FourthMomentTwistBound` comes from the per-tuple quartic Weil input.  This is the raw
@@ -523,6 +769,285 @@ theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one
     (wickAwayAtWithConstant_two_of_gchi_quarticWeil ψ hψ G D X g χ hm hn hdec hg hW
       hq1 hnq hn4q hreg)
 
+/-- Size-condition version of
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_num_le
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hnum : 32 * (6 * (X.card : ℝ) ^ 4 + 1) ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one ψ hψ G D X g χ hm hn
+    (r18Constant_le_one_of_num_le (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Size-condition version of
+`rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_num_le
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hnum : 32 * (6 * (X.card : ℝ) ^ 4 + 1) ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one ψ hψ G D X g χ hm hn
+    (r18Constant_le_one_of_num_le (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Strong square-bound version of
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_num_le_sq
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hnum : 32 * (6 * (X.card : ℝ) ^ 4 + 1) ≤ ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one ψ hψ G D X g χ hm hn
+    (r18Constant_le_one_of_num_le_sq (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Strong square-bound version of
+`rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_num_le_sq
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hnum : 32 * (6 * (X.card : ℝ) ^ 4 + 1) ≤ ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one ψ hψ G D X g χ hm hn
+    (r18Constant_le_one_of_num_le_sq (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hnum)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Quartic-Weil exact-rung consumer in the natural family-size scale: if
+`15 * |X|² ≤ orderOf χ`, then the fully discharged R18 route proves the exact R15 `r = 2`
+away-Wick target. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_fifteen_card_sq_le_order
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hX : 1 ≤ X.card)
+    (horder : 15 * ((X.card : ℝ) ^ 2) ≤ (orderOf χ : ℝ))
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_num_le_sq ψ hψ G D X g χ hm hn
+    (quarticWeil_num_le_sq_of_fifteen_card_sq_le (by exact_mod_cast hX) horder)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Raw fourth-moment companion to
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_fifteen_card_sq_le_order`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_fifteen_card_sq_le_order
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hX : 1 ≤ X.card)
+    (horder : 15 * ((X.card : ℝ) ^ 2) ≤ (orderOf χ : ℝ))
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_num_le_sq ψ hψ G D X g χ hm hn
+    (quarticWeil_num_le_sq_of_fifteen_card_sq_le (by exact_mod_cast hX) horder)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Nonempty-family version of
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_fifteen_card_sq_le_order`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hX : X.Nonempty)
+    (horder : 15 * ((X.card : ℝ) ^ 2) ≤ (orderOf χ : ℝ))
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_fifteen_card_sq_le_order
+    ψ hψ G D X g χ hm hn (Nat.succ_le_of_lt (Finset.card_pos.mpr hX)) horder
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Raw fourth-moment nonempty-family companion to
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hX : X.Nonempty)
+    (horder : 15 * ((X.card : ℝ) ^ 2) ≤ (orderOf χ : ℝ))
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_fifteen_card_sq_le_order
+    ψ hψ G D X g χ hm hn (Nat.succ_le_of_lt (Finset.card_pos.mpr hX)) horder
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Nat-order version of
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hX : X.Nonempty)
+    (horder : 15 * X.card ^ 2 ≤ orderOf χ)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order
+    ψ hψ G D X g χ hm hn hX (by exact_mod_cast horder) hdec hg hW hq1 hnq hn4q hreg
+
+/-- Raw fourth-moment Nat-order companion to
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hX : X.Nonempty)
+    (horder : 15 * X.card ^ 2 ≤ orderOf χ)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order
+    ψ hψ G D X g χ hm hn hX (by exact_mod_cast horder) hdec hg hW hq1 hnq hn4q hreg
+
+/-- Squared-size version of
+`wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one`. -/
+theorem wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_sq_ge
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {K : ℝ}
+    (hA : 32 * (6 * (X.card : ℝ) ^ 4 + 1) ≤ K ^ 2)
+    (hK : K ^ 2 ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.WickForIncidenceAwayAt
+      ψ G (Gchi χ) D 2 :=
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one ψ hψ G D X g χ hm hn
+    (r18Constant_le_one_of_sq_ge (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hA hK)
+    hdec hg hW hq1 hnq hn4q hreg
+
+/-- Squared-size version of
+`rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one`. -/
+theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_sq_ge
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (G D : Finset F) (X : Finset (MulChar F ℂ))
+    (g : MulChar F ℂ → ℂ) (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    {K : ℝ}
+    (hA : 32 * (6 * (X.card : ℝ) ^ 4 + 1) ≤ K ^ 2)
+    (hK : K ^ 2 ≤ 3 * ((orderOf χ : ℝ)) ^ 2)
+    (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
+      ψ G (Gchi χ) D X g (orderOf χ))
+    (hg : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.GaussSumSizeBound X g)
+    (hW :
+      ∀ χ' ∈ X,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ArkLib.ProximityGap.Frontier.R15IncidenceMomentInterchange.RawFourthMomentWithDiagonal
+      ψ G (Gchi χ) D :=
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one ψ hψ G D X g χ hm hn
+    (r18Constant_le_one_of_sq_ge (by exact_mod_cast lt_of_lt_of_le (by norm_num : (0 : ℕ) < 2) hm)
+      hA hK)
+    hdec hg hW hq1 hnq hn4q hreg
+
 #print axioms twisted_secondMoment_eq_gaussSums
 #print axioms norm_twisted_secondMoment_le
 #print axioms sigma_indicator_decomp
@@ -530,13 +1055,48 @@ theorem rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one
 #print axioms sigma_lower_bound
 #print axioms hSig_of_regime
 #print axioms sigmaLowerEnvelope_of_gchi
+#print axioms r18Constant_le_one_of_num_le
+#print axioms r18Constant_le_one_of_sq_ge
+#print axioms r18Constant_le_one_of_num_le_sq
+#print axioms quarticWeil_num_le_sq_of_fifteen_card_sq_le
+#print axioms generic_num_le_sq_of_fifteen_card_sq_le
 #print axioms r2Rung_of_gchi
 #print axioms wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one
 #print axioms rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one
+#print axioms wickForIncidenceAwayAt_two_of_gchi_of_num_le
+#print axioms rawFourthMomentWithDiagonal_of_gchi_of_num_le
+#print axioms wickForIncidenceAwayAt_two_of_gchi_of_num_le_sq
+#print axioms rawFourthMomentWithDiagonal_of_gchi_of_num_le_sq
+#print axioms
+  wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order
+#print axioms
+  rawFourthMomentWithDiagonal_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order
+#print axioms
+  wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order_nat
+#print axioms
+  rawFourthMomentWithDiagonal_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order_nat
+#print axioms wickForIncidenceAwayAt_two_of_gchi_of_sq_ge
+#print axioms rawFourthMomentWithDiagonal_of_gchi_of_sq_ge
 #print axioms r2Rung_of_gchi_quarticWeil
 #print axioms wickAwayAtWithConstant_two_of_gchi
 #print axioms wickAwayAtWithConstant_two_of_gchi_quarticWeil
 #print axioms wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one
 #print axioms rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one
+#print axioms wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_num_le
+#print axioms rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_num_le
+#print axioms wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_num_le_sq
+#print axioms rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_num_le_sq
+#print axioms wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_fifteen_card_sq_le_order
+#print axioms rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_fifteen_card_sq_le_order
+#print axioms
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order
+#print axioms
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order
+#print axioms
+  wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+#print axioms
+  rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+#print axioms wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_sq_ge
+#print axioms rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_sq_ge
 
 end ArkLib.ProximityGap.Frontier.R18SigmaEquidistribution
