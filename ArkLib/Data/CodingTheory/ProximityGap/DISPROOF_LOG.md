@@ -20259,3 +20259,57 @@ sequence on ℤ/m, in a manifestly nonnegative normal form; (ii) by discrete Par
 DFT of its own coefficients: the corrected tower is a FIXED POINT of the spectrum↦coefficients
 renormalization. The deep-depth wall is this self-similarity iterated log q times; the r=3
 open object is its first non-classical rung. CORE OPEN, ON-BGK.
+
+## [466-r19-chidecomp-discharged-tower-collapses-to-awaysup] ROUND 19: ChiDecompositionOff + GaussSumSizeBound DISCHARGED (r=2 rung = ONE named input); quartic→Legendre-cubic exact reduction (residual = elliptic Hasse); depleted constant C∞=3 exactly; the tower COLLAPSES to the fixed-point Prop AwaySupBound (2026-07-07)
+
+Four lanes + four adversarial skeptics; CHIDECOMP severity NONE, rest minor.
+
+- **CHIDECOMP (`_R19ChiDecomposition.lean`, 3444 jobs):** the R15 χ-duality identity is PROVEN
+  verbatim in the R17 Prop shape (X = chiFamily χ = {χ^j : 1 ≤ j < m}, g = gaussSum · ψ), including
+  the exact conjugation bookkeeping via Mathlib's gaussSum_mulShift; GaussSumSizeBound proven with
+  norm EXACTLY √q. Consumer smoke verified: `r2Rung_of_gchi` now needs only
+  `FourthMomentTwistBound + regime`. **The r=2 rung of the corrected-B tower = ONE named input.**
+- **HASSE (`_R19HasseAudit.lean`):** Mathlib audit re-confirmed verbatim (no Hasse point-count
+  bound; no archimedean Gauss/Jacobi norm bounds — only algebraic squares). New exact bricks:
+  complete quadratic evaluation Σ_x χ((x−u)(x−v)) = −1 (absent from Mathlib); the ±-paired quartic
+  (available since −1 ∈ μ_n) collapses EXACTLY to the full-2-torsion Legendre cubic:
+  Σ_t χ((t²−u)(t²−v)) = −1 + Σ_s χ(s(s−u)(s−v)). Named residual `LegendreCubicHasse` (C² ≤ 4p) +
+  budget transfer to 9p. **Minimal missing Mathlib statement pinned** (hasse_cubic, genus 1,
+  Stepanov-elementary on paper). General cross-ratio face is genuinely Hasse (Jacobi-sum closed
+  forms are CM-only). ⚠️ int→ℂ cast bridge to QuarticWeilInput unformalized; quadratic-χ face only.
+- **DEPLETED (`_R19DepletedConstant.lean`):** dense scan (~200 cells): C∞ = 3 EXACTLY as the center
+  of fluctuations (envelope ~n^{−1.2}: max|C−3| = 0.42/0.11/0.08 at n=16/32/64); `DepletedWickR2 3`
+  per-instance FALSE (Fermat cell 3.018) — the true target is C ≤ 3+ε(n); thin-H EVT is an interior
+  BUMP (peak 4.39 at |H| ≈ 4n, returns to 2.79 at H = μ_n; β-gated). K(m): m²→m repaired modulo ONE
+  new family Prop `FamilyQuarticCubicBound` (|X|³-scale absolute mass — the |X|² version is
+  probe-REFUTED: the signed-vs-absolute gap at family level IS the wall's signature).
+- **RECURSION (`_R19RungRecursion.lean`):** a working rung recursion EXISTS — refutes r18's implicit
+  "no recursion": every rung weight is a convolution power of w (ŵ = I_H proven), all spectral
+  splits are tautological (proven), and the unique non-tautological step is the sup-split
+  S_{r+1}^D ≤ (sup_{s∉D}‖I_H‖²)·S_r^D with measured loss ρ ≤ 2.7 FLAT in p; per-rung Wick
+  multiplier L_r ≤ 1 in ALL cells (sub-Wick monotonicity, new standalone conjecture W_{r+1} ≤ W_r).
+  **The tower collapses to the single fixed-point Prop `AwaySupBound C`**
+  (+ `tower_of_awaySupBound`: AwaySupBound C ⟹ S_{r+2}^D ≤ (CΣ)^r · S₂^D for ALL r). At
+  C = O(polylog q) AwaySupBound IS the prize sup — the collapse is a quantitative equivalence
+  (per-rung constant ≤ 3), the sharpest naming of the wall to date. The provable Chebyshev input
+  carries all the divergence (√q-lossy); no bootstrap.
+
+State: corrected-B r=2 = FourthMomentTwistBound alone; its ±-paired quadratic face =
+LegendreCubicHasse (elliptic Hasse, pinned as the minimal missing Mathlib statement); the whole
+B-moment tower ⟺ AwaySupBound up to per-rung constant ≤ 3. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r22-sextic-convolution-collapse] the open r=3 object machine-stated in final normal form: Σ_{s≠0}‖T‖⁶ = (q−1)·Σ_d‖(J∗J∗J)(d)‖² — plus the generic λ-Parseval that collapses EVERY rung (2026-07-07)
+
+Lane: #466 round-22 B2 (`Frontier/_R22SexticConvolutionCollapse.lean` axiom-clean, real
+build, 3 audited decls). Factored the r21 mechanism into the generic `lamExpansion_parseval`
+(any λ-expansion Σ_c f(c)λ_c has punctured second moment (q−1)Σ‖f‖²) and landed
+`pureFace_cube` (T³ = Σ_d (J∗J∗J)(d)λ_d exactly) + `sextic_convolution_collapse`.
+
+**The campaign's open core is now exactly one machine-stated inequality:** the
+triple-convolution energy `Σ_{d∈ℤ/m}‖(J∗J∗J)(d)‖²` at Wick scale — manifestly nonnegative,
+zero sign bookkeeping left; all difficulty = additive smoothness of J∗J∗J on ℤ/m
+(Katz-equidistribution territory; per-tuple Weil provably insufficient in β∈(4,6), r18). The
+generic lemma collapses every rung: T^r = J^{∗r}·λ, Σ_{s≠0}‖T‖^{2r} = (q−1)Σ‖J^{∗r}‖² —
+the whole corrected tower is the ℓ²-growth profile of repeated self-convolution of the
+Jacobi sequence. r=1 closed (r20), r=2 closed mod Weil (r17/r18/r21), r=3 = THE object,
+deep-r = the wall as iterated self-convolution. CORE OPEN, ON-BGK.
