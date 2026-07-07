@@ -20729,3 +20729,18 @@ TripleConvEnergyBound; the family statement must control all t-classes simultane
 the final input's true shape: vertical-Sato–Tate-for-families with NO perturbative shortcut.
 Architecture space narrowed twice in two rounds by the campaign's own probes.
 CORE OPEN, ON-BGK.
+
+## [466-r43-gauss-unification] THE UNIFICATION: m·η_b = −1 + Σ_{j≠0} 𝔤_j·conj(λ_j(b)) EXACT — the A-side (WallHolds) object enters the SAME λ-transform calculus as the B-side; the prize's two open Props are faces of one framework about the Gauss-coefficient sequence (2026-07-07)
+
+Lane: #466 round-43 A+B (`Frontier/_R43GaussUnification.lean` axiom-clean, real build).
+`gaussCoeff 𝔤_j = Σ_x λ_j(x)ψ(x)` + `eta_gauss_expansion` (dual-family indicator + reindex,
+the exact A-side analogue of r19). Consequences: (i) the r19–r40 calculus (lamTransform,
+master identity, ring hom, collapses, ladders, cube-class) is weight-agnostic and applies
+VERBATIM to η's moment tower — WallHolds = the iterated self-convolution program for the
+𝔤-sequence on the SAME ℤ/m; (ii) classically J_j = 𝔤_j·𝔤(χ)/𝔤(λ_jχ) (Jacobi = Gauss ratio):
+the two coefficient sequences are multiplicatively entangled — the two final family-torus
+inputs (r41/r42-corrected B-side; A-side analogue) are faces of ONE statement about the
+Gauss sequence. SUCCESSOR: (a) transport lamExpansion_parseval/fullTower_collapse to η
+(one-composition corollaries — the A-side Parseval + full tower for free); (b) formalize the
+Gauss-ratio identity to weld the two sequences; (c) the unified family-torus statement is
+THE single open input of the entire prize. CORE OPEN, ON-BGK — now one framework, one input.
