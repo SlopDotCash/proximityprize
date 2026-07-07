@@ -20361,3 +20361,20 @@ vanishing are `AddChar.sum_mulShift` on ℤ/m; group law is bilinearity; unit mo
 kernel G): bare cyclic bookkeeping, exists for every index-m subgroup since F* is cyclic
 (companion lane via IsCyclic). The whole r19–r24 Jacobi normal-form chain now holds for
 every finite field modulo a discrete log. CORE OPEN, ON-BGK.
+
+## [466-r26-discretelog-exists] the discrete log CONSTRUCTED from cyclicity: DiscreteLogTo(μ_n, m) holds for every finite field and every m·n = q−1 — the ENTIRE r19–r25 Jacobi chain is now UNCONDITIONAL (2026-07-07)
+
+Lane: #466 round-26 B2 (`Frontier/_R26DiscreteLogExists.lean` axiom-clean, real build, 4
+audited decls incl. the existence theorem `discreteLogTo_muN`). Construction: fixed generator
+of F* (IsCyclic), `dl a := (dlogNat a : ℤ/m)`; `map_mul` via exponent congruence mod
+orderOf = q−1 pushed to ℤ/m (m | q−1); `vanish_iff` via (q−1) | kn ⟺ m | k; `fiber_card` via
+the translation-bijection trick (fibers are multiplicative translates ⟹ equal card; m equal
+fibers partition q−1 ⟹ each = (q−1)/m — no explicit exponent counting).
+
+**Consequence (the round's point):** with r25's `dualFam_isSubgroupDualFamily`/`dualFam_groupLaw`,
+every hypothesis package of rounds 19–24 is DISCHARGED: the Jacobi–Fourier expansion,
+Jacobi–Parseval (r=1 closed), the quartic/sextic convolution collapses, the calibrated
+`TripleConvEnergyBound` consumer chain, and the involution no-go now hold unconditionally for
+every finite field and divisor pair m·n = q−1. Zero named packages remain in the chain; the
+open content of corrected Problem B is exactly `TripleConvEnergyBound` (+ deep-depth
+iterates) — one inequality, no scaffolding debt. CORE OPEN, ON-BGK.

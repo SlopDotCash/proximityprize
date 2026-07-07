@@ -2335,6 +2335,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R22SexticConvolutionColla
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23TripleConvEnergyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24InvolutionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26DiscreteLogExists
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_CMKDepthIrreducibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_LargeZeroWitnessSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
