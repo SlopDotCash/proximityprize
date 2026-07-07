@@ -102,6 +102,26 @@ theorem iterConvEnergyWick_of_ge_of_prev_of_left_budget_le_const
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
 
+/-- Universal-depth face-moment consumer for the left-end budget adapter.  Once a rung `r` is
+certified and the left endpoint pays the successor budget, every later depth can be published
+directly as a pure-face moment bound. -/
+theorem sup_pureFace_of_ge_of_iterConvEnergyWick_left_budget_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {r s : ℕ} {C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hprev : IterConvEnergyWick J (Fintype.card F) r C)
+    (hleft : (m : ℝ) ≤ C * ((r + 1 : ℕ) : ℝ))
+    (hrs : r ≤ s) {x : F} (hx : x ≠ 0) :
+    ‖pureFace J lam x‖ ^ (2 * s)
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ s * (s.factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ s) :=
+  sup_pureFace_of_iterConvEnergyWick hfam hgrp J
+    (iterConvEnergyWick_of_ge_of_prev_of_left_budget_le_const
+      J (Fintype.card F) r s hJ hC0 hCC hprev hleft hrs)
+    hx
+
 /-- Calibrated r = 3 energy input propagated to depth `3+k`, with the R95 budget window
 reduced to the head inequality `(m : ℝ) ≤ 4*C`. -/
 theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_left_budget_le_const
@@ -345,6 +365,8 @@ end ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_of_ge_of_prev_of_left_budget
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_of_ge_of_prev_of_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_of_ge_of_iterConvEnergyWick_left_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_left_budget_le_const
 #print axioms
