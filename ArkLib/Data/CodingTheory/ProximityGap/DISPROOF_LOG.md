@@ -20698,3 +20698,20 @@ explicit G-fibered closed form — not an input, a theorem. The final named inpu
 `SexticVarietyInput` is thereby needed only on the generic (non-cube) shape class, where the
 r39 stress margin at C = 4 is ample (≤ 2.5). The calculus has now consumed its own worst
 case. CORE OPEN, ON-BGK — the two one-line statements stand, thinner still.
+
+## [466-r41-per-shape-weld-lossy] CORRECTION to the r38 weld plan: per-shape SexticVarietyInput does NOT imply TripleConvEnergyBound by triangle inequality — the shape sum itself cancels by 22–174× (growing with m); the true final input is the AGGREGATED (Katz-family) statement, not per-sheaf (2026-07-07)
+
+Lane: #466 round-41 B2 (probe `probe_r41_shape_cancellation.py`, 3 cells, 300 shape samples
+each). The E3 assembly identity E3 = Σ_{shapes: 3t=a'+b'−a−b} sexticCorr(shape) is exact, but
+Σ_{shapes}|corr| exceeds E3 by measured factors 32×/22×/174× (m = 72/36/258) — the shape
+family carries essential cancellation. Hence bounding each shape at the r38 Deligne scale and
+summing (the plan recorded at r38/r40) loses ~m^{3/2}-class factors and CANNOT reach
+TripleConvEnergyBound. VERDICT (refutation-grade, self-correcting the campaign's own plan):
+the per-shape input is the per-sheaf Katz statement and remains true/useful for individual
+correlations (r38 consumers stand), but the E3 weld requires the FAMILY-aggregated
+cancellation — vertical Sato–Tate over the 4-parameter shape family, i.e. precisely the
+form of Katz equidistribution for families, or a second-moment-over-shapes route whose
+expansion is the 12-fold correlation (the moment hierarchy reappears — the wall's face at
+this level, consistent with r24's involution no-go). The campaign's final input is hereby
+restated: FAMILY-level cancellation over the shape torus, one level of aggregation above
+r38. CORE OPEN, ON-BGK.
