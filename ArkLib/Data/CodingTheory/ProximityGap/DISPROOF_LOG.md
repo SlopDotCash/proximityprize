@@ -20757,3 +20757,15 @@ collapses, the cube-class theorem, the master-identity correlation calculus — 
 line of new proof. The single remaining input of the ENTIRE prize: family-torus cancellation
 for the 𝔤-sequence's iterated self-convolutions at depth (with the r41/r42 no-shortcut
 verdicts applying verbatim). CORE OPEN, ON-BGK — one tower, one sequence-pair, one input.
+
+## [466-r45-gauss-ratio-weld] the GAUSS-RATIO WELD machine-checked: J_j·𝔤^{λχ}_j = 𝔤_j·g(χ) — the A- and B-side coefficient sequences exactly entangled; the prize's one remaining input concerns ONE sequence up to explicit unit twists (2026-07-07)
+
+Lane: #466 round-45 A+B (`Frontier/_R45GaussRatio.lean` axiom-clean, real build).
+`twistedGaussCoeff` + `gauss_ratio` (classical J(λ,χ)g(λχ) = g(λ)g(χ), proven by the
+convolution reindex (x,y)↦(x,s=x+y) with the r19/r30 inner collapse; hypothesis: λ_jχ
+nontrivial). With r43 (η's expansion) and r44 (η's full tower): the B-side sequence J is the
+exact multiplicative twist 𝔤·g(χ)/𝔤^{λχ} of the A-side sequence 𝔤 — all factors unit-√q
+modulus. Any family-cancellation statement proven for either sequence transfers to the other
+through this identity + modulus laws. THE ENTIRE PRIZE now rests on family-torus cancellation
+for a single sequence-class (𝔤 and its unit twists) on ℤ/m — with the complete tower,
+calculus, ladders, and no-go cartography machine-checked around it. CORE OPEN, ON-BGK.

@@ -2379,6 +2379,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R41SexticInputSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R42CubeLagInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R43GaussUnification
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R44EtaTower
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R45GaussRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch
