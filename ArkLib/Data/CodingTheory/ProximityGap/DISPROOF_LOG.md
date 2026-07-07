@@ -20227,3 +20227,21 @@ has the order-iso; explicit instantiation = companion lane; NOT a new open input
 **Open content unchanged** (this is a reformulation, not a closure): the r=3 rung is now the
 statement that Σ over {j⃗ ∈ (ℤ/m \ 0)⁶ : Σj = 0} of ∏J_{jᵢ} is O(m⁵·q³/ ... Wick scale) —
 Jacobi-sum equidistribution along a linear condition. CORE OPEN, ON-BGK.
+
+## [466-r20-jacobi-parseval] Jacobi–Parseval: (q−1)·(Σ_{j≠0}‖J_j‖² + 1) = m²·Σ_{s≠0}‖W_χ(s)‖² — the r19 expansion is Parseval-tight, and the offset-orthogonality toolkit for every moment collapse is landed (2026-07-07)
+
+Lane: #466 round-20 B2 (`Frontier/_R20JacobiParseval.lean` axiom-clean, real build).
+From the r19 exact expansion plus two structural fields of the dual family (pointwise group law
+`λ_{i+j} = λ_i·λ_j`, unit modulus on units — automatic for genuine character families), pure
+orthogonality gives: `conj(λ_j a) = λ_{−j} a`, `Σ_{s≠0} λ_j(s)·conj(λ_k(s)) = (q−1)·1_{j=k}`,
+`‖χ‖ = 1` on units from `χ(1)=1` + Fermat, and the main theorem `jacobi_parseval`. NO Weil, NO
+named analytic input: the mean square modulus of the Jacobi coefficients is pinned EXACTLY by
+the (computable) second moment of the face — the expansion is Parseval-tight, confirming the
+√q coefficient scale unconditionally on average.
+
+The same three orthogonality lemmas collapse EVERY tower moment `Σ_s‖W_χ‖^{2r}` to the Jacobi
+correlation over `j₁+…+j_r ≡ k₁+…+k_r (mod m)`: rung r of corrected Problem B at every deg is
+now an explicit statement about equidistribution of Jacobi-sum products along linear conditions
+in ℤ/m — with r = 1 CLOSED by this brick (Parseval), r = 2 closed mod textbook Weil (r17/r18),
+r = 3 the delimited open core. CORE OPEN, ON-BGK; the open object is now stated in its exact
+arithmetic normal form.

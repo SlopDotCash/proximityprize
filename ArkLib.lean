@@ -2316,6 +2316,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadrupleWeilRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17TchiMomentIdentities
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18Deg2FaceConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19JacobiFourierExpansion
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20JacobiParseval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18FourthMomentTwist
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18PlateauLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18QuadraticCurveBridge
