@@ -20838,3 +20838,20 @@ forms of the #464 era). The new calculus and the old energy ledger are ONE bookk
 system: energy bounds transfer up the tower, collapses transfer down to counts. In
 particular the WallHolds shallow rungs inherit every in-tree exact energy result, and the
 deep-rung demand is the same family-torus input as everywhere else. CORE OPEN, ON-BGK.
+
+## [466-r49-full-circle] FULL CIRCLE, machine-checked: the in-tree moment-energy bridges (subgroup_gaussSum_fourthMoment/sixthMoment: Σ‖η‖^{2r} = q·E_r(G)) + the r44 tower collapse identify the single family-torus input's A-side face as EXACTLY E₃(μ_n) ≤ Wick — the campaign's ORIGINAL wall object; plus an honest correction: r48 partially duplicated the in-tree fourth-moment bridge (2026-07-07)
+
+Lane: #466 round-49 A (audit round; no new Lean needed — the theorems exist).
+(1) CORRECTION: r48's `eta_fourth_moment` duplicates the in-tree
+`SubgroupGaussSumFourthMoment.subgroup_gaussSum_fourthMoment` (Σ‖η‖⁴ = q·E, ite-sum
+addEnergy form); r48's marginal new content is the filter-form def only. Recorded per the
+honesty contract; successors should cite the in-tree original.
+(2) THE CLOSURE OF THE CIRCLE: `SubgroupGaussSumSixthMoment.subgroup_gaussSum_sixthMoment`
+(Σ‖η‖⁶ = q·E₃(G), in-tree) + r44's `eta_tower_collapse` identify the A-side r=3 ladder rung
+EXACTLY with the sextic additive energy E₃(μ_n) = #{y⃗∈μ_n⁶: y₁+y₂+y₃=y₄+y₅+y₆} — the
+ORIGINAL WallHolds wraparound object (T₃-class) that the campaign started from. Thirty-plus
+rounds of tower/calculus reduction thus form a machine-checked equivalence WEB: original
+counts ⟺ moment towers ⟺ convolution ladders ⟺ Jacobi/Gauss correlations ⟺ family-torus
+statements — all faces of ONE open input, every equivalence axiom-clean, every shortcut
+between faces refuted. The prize = E₃(μ_n) at Wick scale (+ deep-depth iterates), full stop.
+The web means: an advance on ANY face instantly propagates to all. CORE OPEN, ON-BGK.
