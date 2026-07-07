@@ -39,6 +39,50 @@ set_option linter.style.longLine false
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
+/-- Octic superelliptic class-fiber certificates produce the R17 fourth-moment twist input
+with constant `4 + Cmax`. -/
+theorem fourthMomentTwistBound_of_octic_superelliptic_consumer
+    [NormalizationMonoid (Polynomial (Polynomial F))]
+    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
+    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
+    (G : Finset F) (X : Finset (MulChar F ℂ))
+    (T : MulChar F ℂ → Finset ℂ)
+    (msteps e J D Dtot : MulChar F ℂ → ℕ)
+    (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
+    (gOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F[X])
+    (ζOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F)
+    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (hm : ∀ χ ∈ X, 0 < msteps χ)
+    (hJ : ∀ χ ∈ X, 0 < J χ)
+    (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
+    (hT0 : ∀ χ ∈ X, (∑ c ∈ T χ, c) = 0)
+    (hvals : ∀ χ ∈ X, ∀ u v w s : F,
+      tripleVal χ u v w s = 0 ∨ tripleVal χ u v w s ∈ T χ)
+    (hmodel : ∀ χ ∈ X,
+      ClassFiberPowerModel χ (T χ) (e χ) (gOf χ) (ζOf χ))
+    (hpoly : ∀ χ ∈ X,
+      OcticModelPolynomialHypotheses (F := F) (T χ) (gOf χ))
+    (he : ∀ χ ∈ X, e χ = (Fintype.card F - 1) / 8)
+    (hmq : ∀ χ ∈ X, msteps χ < Fintype.card F)
+    (hD : ∀ χ ∈ X, ∀ u v w : F, ∀ c ∈ T χ,
+      8 * D χ + 7 * (gOf χ u v w c).natDegree < Fintype.card F)
+    (hcount : ∀ χ ∈ X, ∀ u v w : F, ∀ c ∈ T χ,
+      msteps χ * (D χ + ((gOf χ u v w c).natDegree - 1) * msteps χ + J χ)
+        < 8 * (J χ * (D χ + 1)))
+    (hDtot : ∀ χ ∈ X, ∀ u v w : F, ∀ c ∈ T χ,
+      (gOf χ u v w c).natDegree * (msteps χ + (8 - 1) * e χ) + D χ
+          + Fintype.card F * (J χ - 1) ≤ Dtot χ)
+    (harith : ∀ χ ∈ X,
+      ((T χ).card : ℝ) * ((Dtot χ : ℝ) / (msteps χ : ℝ)) - (Fintype.card F : ℝ) + 3
+        ≤ Cd χ * Real.sqrt (Fintype.card F))
+    (hCd0 : ∀ χ ∈ X, 0 ≤ Cd χ)
+    (hCdmax : ∀ χ ∈ X, Cd χ ≤ Cmax)
+    (hp : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ)) :
+    FourthMomentTwistBound G X (4 + Cmax) :=
+  fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
+    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    hCdmax hp
+
 /-- Octic superelliptic class-fiber certificates, plus the standard R17 decomposition inputs,
 produce the corrected `r = 2` away-incidence Wick rung. -/
 theorem wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
@@ -91,7 +135,7 @@ theorem wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
       (32 * ((4 + Cmax) * (X.card : ℝ) ^ 4 + 1) / (mχ : ℝ) ^ 2 / 3) := by
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
-    fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
+    fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
       hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact wickAwayAtWithConstant_two_of_weil ψ G H Dset X g mχ hmχ hCw0 hdec hg h4
@@ -150,7 +194,7 @@ theorem incidence_sq_le_sqrt_of_octic_superelliptic_pipeline
           * ((Fintype.card F : ℝ) * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 2)) := by
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
-    fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
+    fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
       hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact incidence_sq_le_sqrt_of_weil_r2 ψ G H Dset X g mχ hmχ hCw0 hdec hg h4
@@ -213,7 +257,7 @@ theorem incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline
           * ((Fintype.card F : ℝ) * ((H.card : ℝ) * M ^ 2) ^ 2)) := by
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
-    fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
+    fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
       hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact incidence_sq_le_sqrt_sup_of_weil_r2 ψ G H Dset X g mχ hmχ hCw0 hdec hg h4
@@ -222,6 +266,8 @@ theorem incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline
 end ArkLib.ProximityGap.Frontier.R150OcticR2WeilConsumer
 
 /-! ## Axiom audit -/
+open ArkLib.ProximityGap.Frontier.R150OcticR2WeilConsumer in
+#print axioms fourthMomentTwistBound_of_octic_superelliptic_consumer
 open ArkLib.ProximityGap.Frontier.R150OcticR2WeilConsumer in
 #print axioms wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
 open ArkLib.ProximityGap.Frontier.R150OcticR2WeilConsumer in
