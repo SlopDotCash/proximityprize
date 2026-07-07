@@ -20392,3 +20392,17 @@ sup at depth r — the moment-method input the prize chain consumes at r ≈ ln 
 status in this final normal form: r=1 CLOSED (r20), r=2 closed mod textbook Weil
 (r17/18/21), r=3 calibrated open core (r23, C=40 probe-safe), r≈ln q = the wall. ONE family
 of inequalities, one open parameter range, zero scaffolding debt. CORE OPEN, ON-BGK.
+
+## [466-r28-hd-relations-excess-mechanism] Hasse–Davenport d=2 verifies EXACTLY on the ladder family (g(λ_j)g(λ_{j+m/2}) = λ_j(4)⁻¹ g(λ_{2j}) g(λ_{m/2})); the E3 excess over Gaussian is ARITHMETIC (true/iid = 1.5–3.1×) with HD resonances the candidate mechanism — route (ii) is an excess-explainer, not a cancellation lever (2026-07-07)
+
+Lane: #466 round-28 B2 (probe `probe_r28_hd_relations.py`; 4 cells, n = 8/16/32). Findings:
+(1) the HD d=2 product relation holds to 1e-12 on the family {g(λ_j)} — an EXACT angle
+recursion (j, j+m/2, 2j linked) on the ladder's coefficients, formalizable and so far
+unformalized; (2) the i.i.d.-phase null model sits exactly at the Gaussian scale
+(E3/6m³q³ = 0.92–1.03 ✓), while the TRUE sequence sits 1.5–3.1× above — the super-Gaussian
+excess in `TripleConvEnergyBound` is arithmetic correlation, and the HD resonances are the
+natural candidate mechanism. VERDICT: any "J is random-like" proof strategy UNDERESTIMATES;
+route (ii) (HD relations) explains the excess rather than cancelling it — quantifying the HD
+contribution is the route to the SHARP constant, while closing the bound still needs
+Katz-class input or a new idea. Live-route map refined; C = 40 calibration unchanged.
+CORE OPEN, ON-BGK.
