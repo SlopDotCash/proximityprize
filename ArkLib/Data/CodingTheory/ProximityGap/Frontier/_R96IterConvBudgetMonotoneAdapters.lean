@@ -28,6 +28,7 @@ namespace ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters
 open ArkLib.ProximityGap.Frontier.R19JacobiFourierExpansion
 open ArkLib.ProximityGap.Frontier.R20JacobiParseval
 open ArkLib.ProximityGap.Frontier.R21QuarticConvolutionCollapse
+open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput
 open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget
 open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse
 open ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers
@@ -72,6 +73,83 @@ theorem iterConvEnergyWick_add_of_prev_of_left_budget_le_const
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
+
+/-- Calibrated r = 3 energy input propagated to depth `3+k`, with the R95 budget window
+reduced to the head inequality `(m : ℝ) ≤ 4*C`. -/
+theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_left_budget_le_const
+    (J : ZMod m → ℂ) (q k : ℕ) {B C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hleft : (m : ℝ) ≤ C * (4 : ℝ))
+    (h : TripleConvEnergyBound J q B) :
+    IterConvEnergyWick J q (3 + k) C' :=
+  iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const J q k
+    hJ hC0 hCC hBC
+    (by
+      simpa using
+        (iterConvBudget_window_of_left (m := m) (r := 3) (k := k) (C := C)
+          hC0 (by simpa using hleft)))
+    h
+
+/-- Calibrated r = 3 energy input propagated and consumed by the face-moment bound, with the
+whole budget window collapsed to `(m : ℝ) ≤ 4*C`. -/
+theorem sup_pureFace_from_three_of_tripleConvEnergyBound_left_budget_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hleft : (m : ℝ) ≤ C * (4 : ℝ))
+    (h : TripleConvEnergyBound J (Fintype.card F) B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_from_three_of_tripleConvEnergyBound_le_const hfam hgrp J k
+    hJ hC0 hCC hBC
+    (by
+      simpa using
+        (iterConvBudget_window_of_left (m := m) (r := 3) (k := k) (C := C)
+          hC0 (by simpa using hleft)))
+    h hs
+
+/-- Energy-level expanded Jacobi Hermitian input propagated to depth `3+k`, with the R95
+budget window reduced to the head inequality `(m : ℝ) ≤ 4*C`. -/
+theorem iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
+    {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hleft : (m : ℝ) ≤ C * (4 : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) :
+    IterConvEnergyWick
+      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) (3 + k) C' :=
+  iterConvEnergyWick_from_three_of_tripleConvEnergyBound_left_budget_le_const
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) k
+    hJ hC0 hCC hBC hleft
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h)
+
+/-- Energy-level expanded Jacobi Hermitian input propagated and consumed by the face-moment
+bound, with the whole budget window collapsed to `(m : ℝ) ≤ 4*C`. -/
+theorem sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hleft : (m : ℝ) ≤ C * (4 : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_from_three_of_tripleConvEnergyBound_left_budget_le_const hfam hgrp
+    (fun i : ZMod m => jacobiCoeff χ lam i) k
+    hJ hC0 hCC hBC hleft
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h) hs
 
 /-- Pointwise r = 3 input propagated to depth `3+k`, with the R95 budget window reduced to
 the head inequality `(m : ℝ) ≤ 4*C`. -/
@@ -145,6 +223,14 @@ end ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_add_of_prev_of_left_budget
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_add_of_prev_of_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_tripleConvEnergyBound_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const
 #print axioms
