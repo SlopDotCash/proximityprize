@@ -20855,3 +20855,22 @@ counts ⟺ moment towers ⟺ convolution ladders ⟺ Jacobi/Gauss correlations �
 statements — all faces of ONE open input, every equivalence axiom-clean, every shortcut
 between faces refuted. The prize = E₃(μ_n) at Wick scale (+ deep-depth iterates), full stop.
 The web means: an advance on ANY face instantly propagates to all. CORE OPEN, ON-BGK.
+
+## [466-r50-depth3-wraparound-vanishing] THE ATOM SPLIT: E₃(μ_n) mod p = E₃^{char-0} EXACTLY for β ≥ 3 (zero wraparound at n = 8/16/32, all tested cells incl. β = 4, 5); char-0 value = (1.67–2.27)·6n³, EXACTLY computable via the in-tree #464 closed forms — the depth-3 face of THE input reduces to ONE sharp arithmetic vanishing statement (2026-07-07)
+
+Lane: #466 round-50 A (probe `probe_r50_E3_wraparound.py`; exact integer counts, char-0 via
+huge auxiliary primes P > 6^{φ(n)}-scale). Findings:
+(1) wraparound excess E₃(p) − E₃^{char0} = 0 IDENTICALLY for β ≥ 3 at n = 8/16/32 (onset
+only at β ≤ 2.5: n=16/β=2.54 excess 0.12·Wick; n=32/β=2.5 excess 2.4·Wick);
+(2) E₃^{char0}/6n³ = 1.67/2.06/2.27 (n = 8/16/32) — Wick scale, modest growing constant,
+and the #464-era char-0 machinery (CharZeroEnergyMultinomial: V_{2r} = C(2r,r)Σmult²,
+Bessel-GF) computes it EXACTLY in-tree;
+(3) the r12 norm-gate ((2r)^{n/2} < p) is sufficient-NOT-necessary: it fails at these cells
+yet the truth (zero excess) holds — the gate undersells reality.
+**CONSEQUENCE — the sharpest form of the atom to date:** the depth-3 A-side rung =
+[in-tree char-0 closed form] + [NEW NAMED STATEMENT `Depth3WraparoundVanishing`: no six
+μ_n-elements have coinciding triple-sums mod p without coinciding in ℤ[ζ_n], for p ≥ n³] —
+probe-true with zero exceptions in the window, purely arithmetic, no analysis. The
+family-torus mystery at depth 3 IS this vanishing statement. Deep depths remain the wall,
+but the first open rung is now a single clean divisibility question about vanishing sums of
+roots of unity — the campaign's most concrete open object ever. CORE OPEN, ON-BGK.
