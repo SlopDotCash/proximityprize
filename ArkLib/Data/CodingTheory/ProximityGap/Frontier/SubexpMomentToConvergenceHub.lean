@@ -33,6 +33,89 @@ namespace ProximityGap.Frontier.SubexpMomentToConvergenceHub
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
+/-- A general S11 moment envelope gives the multiplicative energy slack for the actual in-tree
+energy, provided the normalized moment functional dominates `rEnergy / |G|^r`. The honest slack
+constant is `K = A / c`. -/
+theorem forall_rEnergy_le_mul_wick_of_subexp_moment_general
+    (G : Finset F) {M : ℕ → ℝ} {A c : ℝ}
+    (hA : 1 ≤ A) (hc : 0 < c)
+    (henv : MomentEnvelope M A c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ)
+        ≤ (A / c) ^ r
+            * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) := by
+  intro r hr
+  have hGnonneg : 0 ≤ (G.card : ℝ) := by positivity
+  have hcardpow : 0 ≤ (G.card : ℝ) ^ r := pow_nonneg hGnonneg r
+  have hAnonneg : 0 ≤ A := le_trans (by norm_num) hA
+  have hcrpos : 0 < c ^ r := pow_pos hc r
+  have henvr := henv r hr
+  have hfac : (Nat.factorial r : ℝ) ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) :=
+    factorial_le_doubleFactorial_odd r
+  have hApow : A ≤ A ^ r := by
+    simpa using pow_le_pow_right₀ hA hr
+  calc
+    (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r := henergyRep r hr
+    _ ≤ (G.card : ℝ) ^ r * (A * (Nat.factorial r : ℝ) / c ^ r) := by
+        exact mul_le_mul_of_nonneg_left henvr hcardpow
+    _ ≤ (G.card : ℝ) ^ r * (A ^ r * (Nat.doubleFactorial (2 * r - 1) : ℝ) / c ^ r) := by
+        apply mul_le_mul_of_nonneg_left
+        · apply div_le_div_of_nonneg_right _ (le_of_lt hcrpos)
+          calc
+            A * (Nat.factorial r : ℝ)
+                ≤ A * (Nat.doubleFactorial (2 * r - 1) : ℝ) := by
+                  exact mul_le_mul_of_nonneg_left hfac hAnonneg
+            _ ≤ A ^ r * (Nat.doubleFactorial (2 * r - 1) : ℝ) := by
+                  exact mul_le_mul_of_nonneg_right hApow (by positivity)
+        · exact hcardpow
+    _ = (A / c) ^ r
+          * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) := by
+        rw [div_pow]
+        field_simp [ne_of_gt hcrpos]
+
+/-- General S11 hub-facing consumer: a sub-exponential moment envelope with constant `A` lands in
+the spectral `NearRamanujanSqrtLog` face after the usual depth/constant bookkeeping. -/
+theorem nearRamanujan_of_subexp_moment_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {A c C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c) * K ≤ C ^ 2)
+    (henv : MomentEnvelope M A c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_forall_q_wickExcess_le_mul_slack_core hψ G (by positivity) hC hr hrq
+    (WraparoundKToConvergenceHub.prizeVariance_nonneg_of_card_le G hGpos hq)
+    (core_scale_of_depth_le_log_mul G (by positivity)
+      (Real.log_nonneg ((le_div_iff₀ (by exact_mod_cast hGpos : (0 : ℝ) < (G.card : ℝ))).mpr
+        (by simpa using hq)))
+      hrK hconst)
+    (forall_q_wickExcess_le_mul_slack_of_forall_rEnergy_le_mul_wick G
+      (forall_rEnergy_le_mul_wick_of_subexp_moment_general G hA hc henv henergyRep))
+
+/-- General S11 hub-facing consumer: a sub-exponential moment envelope with constant `A` lands in
+`PrizeFloor`, with the honest slack constant `K = A / c`. -/
+theorem prizeFloor_of_subexp_moment_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {M : ℕ → ℝ} {A c C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c) * K ≤ C ^ 2)
+    (henv : MomentEnvelope M A c)
+    (henergyRep : ∀ r : ℕ, 1 ≤ r →
+      (rEnergy G r : ℝ) ≤ (G.card : ℝ) ^ r * M r) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_forall_rEnergy_le_mul_wick_depth_factor hψ G (by positivity) hC hGpos hq hr
+    hrq hrK hconst
+    (forall_rEnergy_le_mul_wick_of_subexp_moment_general G hA hc henv henergyRep)
+
 /-- A normalized S11 moment envelope gives the multiplicative energy slack for the actual in-tree
 energy, provided the normalized moment functional dominates `rEnergy / |G|^r`. -/
 theorem forall_rEnergy_le_mul_wick_of_subexp_moment
@@ -104,6 +187,9 @@ end ProximityGap.Frontier.SubexpMomentToConvergenceHub
 /-! ## Axiom audit -/
 namespace ProximityGap.Frontier.SubexpMomentToConvergenceHub
 
+#print axioms forall_rEnergy_le_mul_wick_of_subexp_moment_general
+#print axioms nearRamanujan_of_subexp_moment_general_depth_factor
+#print axioms prizeFloor_of_subexp_moment_general_depth_factor
 #print axioms forall_rEnergy_le_mul_wick_of_subexp_moment
 #print axioms nearRamanujan_of_subexp_moment_depth_factor
 #print axioms prizeFloor_of_subexp_moment_depth_factor
