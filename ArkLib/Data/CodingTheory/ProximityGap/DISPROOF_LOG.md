@@ -20406,3 +20406,49 @@ route (ii) (HD relations) explains the excess rather than cancelling it — quan
 contribution is the route to the SHARP constant, while closing the bound still needs
 Katz-class input or a new idea. Live-route map refined; C = 40 calibration unchanged.
 CORE OPEN, ON-BGK.
+
+## [466-r20-mobius-discharged-stepanov-scaffold-depth-twosided] ROUND 20: MobiusCrossRatioIdentity DISCHARGED (quadratic face of QuarticWeilInput = LegendreCubicHasse ALONE); Stepanov scaffold + one-sided halving; tower⟺AwaySupBound TWO-SIDED (constant 3) at depth r ≥ log₃q; magnitude-only reverse refuted below depth (2026-07-07)
+
+Four lanes + four adversarial skeptics (CASTBRIDGE/STEPANOV/RHO minor; SUBWICK **major** — see
+correction below). All bricks real-locked-build, axiom-clean.
+
+- **CASTBRIDGE (`_R20QuadFaceBridge.lean` + `_R20MobiusDischarge.lean`):** the int→ℂ cast bridge
+  PROVEN (quadCharC = ringHomComp); repeated-root patterns |S| ≤ 2 PROVEN; and the Möbius residual
+  DISCHARGED with a clean discovery: the single substitution t = d + 1/s scales the quartic by the
+  perfect square (t−d)⁴ — invisible to quadratic χ — giving the EXACT identity
+  Σ_t χ((t−a)(t−b)(t−c)(t−d)) = χ((d−a)(d−b)(d−c))·Σ_w χ(w(w−u₀)(w−v₀)) − 1. NO cross-ratio/Jacobian
+  machinery. **The ENTIRE quadratic face of QuarticWeilInput (all n⁴ tuples, every G) now rests on
+  LegendreCubicHasse alone** (`quarticWeilInput_of_legendreCubicHasse`). Skeptic: 313k-tuple
+  independent exhaustive probe, 0 failures. Honest scope: order-d > 2 members of chiFamily remain
+  open faces (genus grows with d).
+- **STEPANOV (`_R20StepanovScaffold.lean`):** route decided (Stepanov/Bombieri elementary; Manin
+  needs absent derivation calculus; Jacobi CM-only). Banked NEW: `twist_negation` (quadratic twist
+  negates the sum inside the full-2-torsion family) ⟹ `legendreCubicHasse_of_stepanovUpper` — a
+  ONE-SIDED uniform upper bound suffices (halves the problem); `affine_point_count` (exact χ ↔
+  point-count bridge); `cubic_zero_count`. Named core: `CubicStepanovUpper` (auxiliary-polynomial
+  construction, ~1500–2500 lines, all Mathlib ingredients present). ⚠️ skeptic: parts of the
+  re-derived engine DUPLICATE in-tree StepanovPointCountEngine/HasseMultiplicityBridge/
+  StepanovHasseInterface — future lanes must build on those.
+- **RHO (`_R20SupSplitReverse.lean`):** the reverse sup-split splits into NO-GO + THEOREM:
+  (no-go) ρ ≤ 3 at fixed small r is NOT magnitude-provable — adversarial phases with the true
+  |η| multiset drive ρ₃ to 6.6+ growing with p (`magnitudeOnly_reverse_unbounded` for free vectors;
+  probe for true multisets); R19's "ρ flat in p" was optimistic (ρ₃: 1.30→2.70, log-like).
+  (theorem) unconditional Hölder reverse ρ_r ≤ N^{1/r} (`supSplit_reverse_pow`, natural powers) ⟹
+  `supSplit_reverse_three_at_depth`: at every rung r+1 ≥ log₃q, ρ ≤ 3 UNCONDITIONALLY — combined
+  with R19's forward direction, **tower ⟺ AwaySupBound is a TWO-SIDED theorem with constant 3 at
+  all rungs ≥ log₃q** (prize depth ln q ≈ 1.10·log₃q qualifies — note the lane report's 0.91 factor
+  was inverted, fixed here). Below log₃q = the phase-deep zone. + Paley–Zygmund threshold reverse.
+- **SUBWICK (`_R20SubWickInterpolation.lean`) — with MAJOR skeptic correction:** proven: away-moment
+  log-convexity (S_{r+1})² ≤ S_r·S_{r+2} + division-free ratio monotonicity; conditional automatic
+  tail (AwaySupBound C ⟹ L_r ≤ 1 for 2r+1 ≥ C); depth-independence iff (the specific
+  Chebyshev∘sup-split^R∘rung-2 bootstrap chain yields exactly rung-2 Chebyshev at EVERY depth —
+  that self-improvement route closed). **CORRECTED CLAIM:** the lane's "sub-Wick ⟺ AwaySupBound
+  two-way collapse" is FALSE as stated — only the one-way sandwich is proven (AwaySupBound at
+  budget (2r+1)Σ ⟹ sub-Wick at rung r; violation refutes that budget = contrapositive). Sub-Wick
+  monotonicity (W_{r+1} ≤ W_r) may remain a STRICTLY WEAKER independent target — it stays a live
+  standalone conjecture, NOT absorbed.
+
+Chain after round 20: CubicStepanovUpper (→ LegendreCubicHasse) → quadratic face of
+QuarticWeilInput → (+ higher-d faces) FourthMomentTwistBound → r=2 rung → tower ⟺ AwaySupBound
+(two-sided, constant 3, at depth ≥ log₃q). The head rungs (r < log₃q) and the higher-d faces and
+AwaySupBound itself remain the wall. CORE OPEN, ON-BGK. No fabricated closure.

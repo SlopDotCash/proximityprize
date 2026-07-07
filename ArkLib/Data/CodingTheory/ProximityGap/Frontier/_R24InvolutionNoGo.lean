@@ -82,7 +82,7 @@ theorem lam_eq_one_on_G (hfam : SubgroupDualFamily G m lam)
     exact le_trans (le_abs_self _) h3
   have hre_eq : ∀ j' : ZMod m, (lam j' u).re = 1 := by
     by_contra hne
-    push_neg at hne
+    push Not at hne
     obtain ⟨j₀, hj₀⟩ := hne
     have hlt : (lam j₀ u).re < 1 := lt_of_le_of_ne (hre_le j₀) hj₀
     have hsum_lt : ∑ j' : ZMod m, (lam j' u).re < (m : ℝ) := by

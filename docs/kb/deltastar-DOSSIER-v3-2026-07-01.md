@@ -1577,3 +1577,26 @@ conditions in ℤ/m (the literature route; would close r=3 and plausibly the gap
 (ii) Hasse–Davenport exact angle relations along subgroup cosets of ℤ/m (unexplored exact
 structure ON the ladder object); (iii) a genuinely new idea, now checkable directly against
 `IterConvEnergyWick`. CORE OPEN, ON-BGK. No fabricated closure.
+
+## §30. Round 20 (2026-07-07) — the Möbius discharge; the Stepanov program opens; the equivalence goes two-sided at depth
+
+Four lanes + skeptics (one MAJOR correction recorded). DISPROOF tag
+`466-r20-mobius-discharged-stepanov-scaffold-depth-twosided`. Bricks: `_R20QuadFaceBridge.lean` +
+`_R20MobiusDischarge.lean` (cast bridge + the t = d + 1/s discovery: quartic scales by a perfect
+square ⟹ NO cross-ratio machinery; **quadratic face of QuarticWeilInput = LegendreCubicHasse
+ALONE**, all n⁴ tuples), `_R20StepanovScaffold.lean` (route decided; twist-negation halving:
+one-sided `CubicStepanovUpper` suffices; ~1500–2500-line self-contained core, all Mathlib
+ingredients present; must reuse in-tree Stepanov engines), `_R20SupSplitReverse.lean` (ρ ≤ N^{1/r}
+unconditional ⟹ **tower ⟺ AwaySupBound two-sided with constant 3 at rungs ≥ log₃q**; below that
+depth magnitude-only reverse REFUTED — the phase-deep zone), `_R20SubWickInterpolation.lean`
+(log-convexity + ratio monotonicity + the depth-independence no-go; ⚠️ the "two-way collapse"
+claim was corrected by the skeptic to one-way — sub-Wick monotonicity stays a live independent
+conjecture). Plus concurrent `_R19ExplicitCharacterRung.lean`.
+
+**═══ STATE after 20 rounds ═══** The proof-chain to the r=2 rung is now:
+`CubicStepanovUpper` (one-sided Stepanov, pure formalization, ~2k lines) ⟹ `LegendreCubicHasse` ⟹
+(Möbius, proven) quadratic face ⟹ (+ open higher-d faces) `FourthMomentTwistBound` ⟹ r=2 rung —
+and above it, tower ⟺ `AwaySupBound` is a genuine two-sided theorem (constant 3) at all depths
+≥ log₃q. The wall's residual: the head rungs r < log₃q (phase-deep, magnitude-only provably
+insufficient), the higher-order-χ quartic faces, and AwaySupBound itself. **CORE OPEN, ON-BGK.
+No fabricated closure.**

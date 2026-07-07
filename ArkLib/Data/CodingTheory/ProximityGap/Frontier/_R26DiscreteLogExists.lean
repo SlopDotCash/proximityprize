@@ -208,15 +208,11 @@ theorem dl_fiber_card (hmn : m * n = Fintype.card F - 1) (c : ZMod m) :
     · intro a _
       dsimp only
       rw [← mul_assoc]
-      first
-        | rw [huv, one_mul]
-        | rw [show v * u = 1 from by rw [mul_comm]; exact huv, one_mul]
+      rw [show v * u = 1 from by rw [mul_comm]; exact huv, one_mul]
     · intro b _
       dsimp only
       rw [← mul_assoc]
-      first
-        | rw [huv, one_mul]
-        | rw [show v * u = 1 from by rw [mul_comm]; exact huv, one_mul]
+      rw [huv, one_mul]
   -- Step 2: the m equal fibers partition the q−1 nonzero elements.
   have hpart : ∑ c' : ZMod m,
       (((Finset.univ : Finset F).erase 0).filter (fun a => dl m a = c')).card
