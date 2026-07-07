@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R66TripleConvIterWickAdapter
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26PointwiseTripleConvTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R90IterConvWickConstantAdapters
 
 /-!
@@ -31,6 +32,7 @@ open ArkLib.ProximityGap.Frontier.R19JacobiFourierExpansion
 open ArkLib.ProximityGap.Frontier.R20JacobiParseval
 open ArkLib.ProximityGap.Frontier.R21QuarticConvolutionCollapse
 open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput
+open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget
 open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse
 open ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter
 open ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters
@@ -70,6 +72,114 @@ theorem sup_pureFace_three_of_tripleConvEnergyBound_le_const
       (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
       hs
 
+/-- A pointwise triple-convolution certificate gives the third full-tower Wick rung at any
+larger public tower constant. -/
+theorem iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
+    (J : ZMod m → ℂ) (q : ℕ) {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hpt : TripleConvPointwiseBound J q B) :
+    IterConvEnergyWick J q 3 C' :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const J q hC0 hCC hBC
+    (tripleConvEnergyBound_of_pointwise J q
+      (fun d => (hpt d).trans (by
+        have hm : 0 ≤ (m : ℝ) ^ 2 := by positivity
+        have hq : 0 ≤ (q : ℝ) ^ 3 := by positivity
+        exact mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right hBB hm) hq)))
+
+/-- A pointwise triple-convolution certificate can be consumed directly by the pointwise
+third-moment face bound at any larger public tower constant. -/
+theorem sup_pureFace_three_of_tripleConvPointwiseBound_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hpt : TripleConvPointwiseBound J (Fintype.card F) B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) :=
+  sup_pureFace_three_of_tripleConvEnergyBound_le_const hfam hgrp J hC0 hCC hBC
+    (tripleConvEnergyBound_of_pointwise J (Fintype.card F)
+      (fun d => (hpt d).trans (by
+        have hm : 0 ≤ (m : ℝ) ^ 2 := by positivity
+        have hq : 0 ≤ (Fintype.card F : ℝ) ^ 3 := by positivity
+        exact mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right hBB hm) hq)))
+    hs
+
+variable {χ : F → ℂ}
+
+/-- Energy-level expanded Jacobi Hermitian input gives the third full-tower Wick rung at any
+larger public tower constant. -/
+theorem iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
+    {B C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) :
+    IterConvEnergyWick
+      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C' :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+    hC0 hCC hBC
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h)
+
+/-- Energy-level expanded Jacobi Hermitian input feeds the public sixth-power face bound at the
+third rung. -/
+theorem sup_pureFace_three_of_jacobiHermitianExpandedEnergyBound_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) :=
+  sup_pureFace_three_of_tripleConvEnergyBound_le_const hfam hgrp
+    (fun i : ZMod m => jacobiCoeff χ lam i) hC0 hCC hBC
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h) hs
+
+/-- Jacobi six-input pointwise certificate gives the third full-tower Wick rung at any larger
+public tower constant. -/
+theorem iterConvEnergyWick_three_of_jacobiHermitianSixInput_le_const
+    {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiHermitianSixInput χ lam B) :
+    IterConvEnergyWick
+      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C' :=
+  iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+    hC0 hCC hBB hBC
+    ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
+      (χ := χ) (lam := lam) (C := B)).mp h)
+
+/-- Jacobi six-input pointwise certificate feeds the public sixth-power face bound at the third
+rung. -/
+theorem sup_pureFace_three_of_jacobiHermitianSixInput_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiHermitianSixInput χ lam B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) :=
+  sup_pureFace_three_of_tripleConvPointwiseBound_le_const hfam hgrp
+    (fun i : ZMod m => jacobiCoeff χ lam i)
+    hC0 hCC hBB hBC
+    ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
+      (χ := χ) (lam := lam) (C := B)).mp h) hs
+
 end ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
 
 /-! ## Axiom audit -/
@@ -77,3 +187,15 @@ end ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvPointwiseBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_jacobiHermitianExpandedEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_jacobiHermitianSixInput_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_jacobiHermitianSixInput_le_const
