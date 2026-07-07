@@ -50,7 +50,7 @@ noncomputable def twistedGaussCoeff (lam : ZMod m → F → ℂ) (χ : F → ℂ
 `jacobiCoeff_j · 𝔤^{λχ}_j = 𝔤_j · g(χ)` — the exact entanglement of the A- and B-side
 coefficient sequences. -/
 theorem gauss_ratio (hfam : SubgroupDualFamily G m lam) (hχ : IsMulCharC χ)
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (j : ZMod m)
+    {ψ : AddChar F ℂ} (_hψ : ψ.IsPrimitive) (j : ZMod m)
     (hnt : ∑ x : F, lam j x * χ x = 0) :
     jacobiCoeff χ lam j * twistedGaussCoeff lam χ ψ j
       = gaussCoeff lam ψ j * (∑ x : F, χ x * ψ x) := by
@@ -67,11 +67,11 @@ theorem gauss_ratio (hfam : SubgroupDualFamily G m lam) (hχ : IsMulCharC χ)
       = ∑ s : F, (∑ x : F, lam j x * χ (s - x)) * ψ s := by
     have hx : ∀ x : F, ∑ y : F, lam j x * χ y * ψ (x + y)
         = ∑ s : F, lam j x * χ (s - x) * ψ s := by
-	      intro x
-	      refine Fintype.sum_bijective (fun y => x + y)
-	        ⟨fun y₁ y₂ h => by
-	            exact add_left_cancel h,
-	          fun s => ⟨s - x, by ring⟩⟩ _ _ (fun y => ?_)
+      intro x
+      refine Fintype.sum_bijective (fun y => x + y)
+        ⟨fun y₁ y₂ h => by
+            exact add_left_cancel h,
+          fun s => ⟨s - x, by ring⟩⟩ _ _ (fun y => ?_)
       dsimp only
       rw [show x + y - x = y from by ring]
     rw [Finset.sum_congr rfl (fun x _ => hx x), Finset.sum_comm]
@@ -102,7 +102,7 @@ theorem gauss_ratio (hfam : SubgroupDualFamily G m lam) (hχ : IsMulCharC χ)
         rw [hfam.map_mul j s t, show s - s * t = s * (1 - t) from by ring,
           hχ.map_mul s (1 - t)]
         ring
-	      rw [Finset.sum_congr rfl (fun t _ => hpt t), ← Finset.mul_sum, jacobiCoeff]
+      rw [Finset.sum_congr rfl (fun t _ => hpt t), ← Finset.mul_sum, jacobiCoeff]
   rw [hR, hR2, Finset.sum_congr rfl (fun s _ => by rw [hU s])]
   -- assemble: Σ_s ite·ψ(s) = J_j·Σ_s λ_j(s)χ(s)ψ(s) = J_j·𝔤^{λχ}_j
   have hasm : ∑ s : F, (if s = 0 then (0:ℂ) else lam j s * χ s * jacobiCoeff χ lam j) * ψ s

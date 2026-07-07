@@ -54,7 +54,7 @@ def SexticVarietyInput (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset
 every balanced six-`J` correlation at lag `t ≠ 0` is `≤ m·|G|·C·q^{5/2}`. -/
 theorem sextic_correlation_bound (hfam : SubgroupDualFamily G m lam)
     (hgrp : DualFamilyGroupLaw m lam)
-    {C : ℝ} (hC : 0 ≤ C) (hweil : SexticVarietyInput χ lam G C)
+    {C : ℝ} (_hC : 0 ≤ C) (hweil : SexticVarietyInput χ lam G C)
     {a b a' b' t : ZMod m} (ht : t ≠ 0) :
     ‖∑ j : ZMod m,
         (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
@@ -85,7 +85,41 @@ theorem sextic_correlation_bound (hfam : SubgroupDualFamily G m lam)
     _ = (m : ℝ) * (G.card : ℝ) * C
           * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) := by ring
 
+/-- The nonzero-lag R38 input, plus an explicit zero-lag budget, supplies the all-lag
+R37 `SexticCorrelationBound` interface.  This is the bookkeeping adapter needed before
+summing the five-lag sextic energy: the only extra datum is the diagonal `t = 0` slice. -/
+theorem sexticCorrelationBound_of_sexticVarietyInput_and_zeroLag
+    {C B : ℝ} (hweil : SexticVarietyInput χ lam G C)
+    (hzero : ∀ a b a' b' : ZMod m,
+      ‖∑ u ∈ G, ∑ w : F,
+          tripleTwistWeight χ lam a b (u * w)
+            * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam 0 w‖ ≤ B)
+    (hbudget :
+      (G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) ≤ B) :
+    SexticCorrelationBound χ lam G B := by
+  classical
+  intro a b a' b' t
+  by_cases ht : t = 0
+  · subst ht
+    exact hzero a b a' b'
+  · have hsum : ‖∑ u ∈ G, ∑ w : F, tripleTwistWeight χ lam a b (u * w)
+          * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam t w‖
+        ≤ (G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) := by
+      calc ‖∑ u ∈ G, ∑ w : F, tripleTwistWeight χ lam a b (u * w)
+            * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam t w‖
+          ≤ ∑ u ∈ G, ‖∑ w : F, tripleTwistWeight χ lam a b (u * w)
+              * (starRingEnd ℂ) (tripleTwistWeight χ lam a' b' w) * lam t w‖ :=
+            norm_sum_le _ _
+        _ ≤ ∑ _u ∈ G, C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2 :=
+            Finset.sum_le_sum (fun u hu => hweil u hu a b a' b' t ht)
+        _ = (G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) := by
+            rw [Finset.sum_const, nsmul_eq_mul]
+    exact hsum.trans hbudget
+
 end ArkLib.ProximityGap.Frontier.R38SexticVarietyInput
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+set_option linter.style.longLine false in
 #print axioms ArkLib.ProximityGap.Frontier.R38SexticVarietyInput.sextic_correlation_bound
+set_option linter.style.longLine false in
+#print axioms ArkLib.ProximityGap.Frontier.R38SexticVarietyInput.sexticCorrelationBound_of_sexticVarietyInput_and_zeroLag

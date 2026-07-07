@@ -133,7 +133,23 @@ theorem gaussCoeff_mul_conj (hfam : SubgroupDualFamily G m lam)
   have hB : ∑ t : F, lam j t = 0 := hfam.sum_eq_zero j hj
   rw [hA, hB, sub_zero]
 
+/-- Real norm form of `gaussCoeff_mul_conj`: every nontrivial Gauss coefficient has
+modulus `sqrt q`. -/
+theorem norm_gaussCoeff_eq_sqrt_card (hfam : SubgroupDualFamily G m lam)
+    (hgrp : DualFamilyGroupLaw m lam) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {j : ZMod m} (hj : j ≠ 0) :
+    ‖gaussCoeff lam ψ j‖ = Real.sqrt (Fintype.card F) := by
+  have hprod := gaussCoeff_mul_conj hfam hgrp hψ hj
+  have hsqC : (((‖gaussCoeff lam ψ j‖ ^ 2 : ℝ) : ℂ))
+      = (Fintype.card F : ℂ) := by
+    rw [← hprod, RCLike.mul_conj]
+    norm_cast
+  have hsqR : ‖gaussCoeff lam ψ j‖ ^ 2 = (Fintype.card F : ℝ) := by
+    exact_mod_cast hsqC
+  rw [← hsqR, Real.sqrt_sq (norm_nonneg _)]
+
 end ArkLib.ProximityGap.Frontier.R46GaussModulus
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.R46GaussModulus.gaussCoeff_mul_conj
+#print axioms ArkLib.ProximityGap.Frontier.R46GaussModulus.norm_gaussCoeff_eq_sqrt_card

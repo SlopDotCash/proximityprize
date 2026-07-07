@@ -1367,6 +1367,8 @@ unconditional nontrivial partial bound (`n√p`), and its moment face acquires t
 new lever since the two-Prop split (thick-H averaging). **CORE OPEN, ON-BGK. No fabricated
 closure.**
 
+> **Numbering note (2026-07-07 hygiene pass, round 24):** sections from here down were written by concurrent sessions and originally carried duplicated numbers (two §26s, two §27s, two §28s, two §30s). They have been renumbered into a single consistent sequence §26–§37; content is unchanged. Older notes citing '§32/§33 (rounds 22/23)' now correspond to §36/§37.
+
 ## §26. Round 16 (2026-07-07) — lane B2 first result: away-Wick refuted as universal, the diagonal made exact, and the constant-C corrected tower
 
 DISPROOF tag `466-r16-away-wick-refuted-diag-exact`; brick `_R16DiagonalExactValue.lean`
@@ -1391,7 +1393,7 @@ closed form; (iv) `I_H(0) = conj(Σ_{b∈H}η_b)`; (v) the corrected named objec
 refuted knife-edge constant, and a probe-calibrated corrected target (C=4 sufficient at every
 probed cell; open at the prize instance). CORE OPEN, ON-BGK.
 
-## §26. Round 16 (2026-07-07) — the round-15 openings cashed in: B's first unconditional theorem, the sound Prop layer, the r=2 lattice, the Legendre face
+## §27. Round 16 (2026-07-07) — the round-15 openings cashed in: B's first unconditional theorem, the sound Prop layer, the r=2 lattice, the Legendre face
 
 Four lanes + four skeptics (all CONFIRMED, minor). DISPROOF tag `466-r16-partialB-unconditional-and-r2-lattice`.
 Bricks (all real-locked-build, axiom-clean): `_R16UnconditionalIncidenceBound.lean` (the FIRST
@@ -1412,7 +1414,7 @@ content is the signed quadruple cancellation (with a thin-margin falsification w
 scalar face with exact averages over only m cosets. Problem A unchanged. **CORE OPEN, ON-BGK. No
 fabricated closure.**
 
-## §27. Round 17 (2026-07-07) — StrongR2Rung refuted in the bulk; r=2 closes modulo Weil; averaging proven Wick-flat
+## §28. Round 17 (2026-07-07) — StrongR2Rung refuted in the bulk; r=2 closes modulo Weil; averaging proven Wick-flat
 
 Three lanes + skeptics (all CONFIRMED, minor). DISPROOF tag `466-r17-strongr2rung-bulk-refuted-and-weil-r2`.
 
@@ -1436,7 +1438,7 @@ identities with zero slack. The open analytic content of the B-moment route is p
 3..⌈ln q⌉ of the diagonal-subtracted tower — the same deep-depth wall, now with exact rung
 bookkeeping. **CORE OPEN, ON-BGK. No fabricated closure.**
 
-## §27. Round 17 (2026-07-07) — the FIRST discharged rung: r=2 away-Wick at deg=2 is Weil-classical, via the exact QR bridge
+## §29. Round 17 (2026-07-07) — the FIRST discharged rung: r=2 away-Wick at deg=2 is Weil-classical, via the exact QR bridge
 
 DISPROOF tag `466-r17-deg2-weil-rung-discharged`; brick `_R17Deg2WeilRung.lean` (axiom-clean,
 real-build verified, 10 audited declarations). Probe `probe_r17_deg2_weil_rung.py` (18 cells).
@@ -1465,7 +1467,7 @@ the main term. At prize scaling the FIRST open rung at deg=2 is r=3 (needs β > 
 and the deep-rung wall — which is where BCHKS/Paley genuinely lives. CORE OPEN, ON-BGK; the
 open region is now delimited from below by machine-checked classical mathematics.
 
-## §28. Round 18 (2026-07-07) — hSig discharged; the r=2 rung reduced to exactly two formalization gaps; plateau explained; welding refuted
+## §30. Round 18 (2026-07-07) — hSig discharged; the r=2 rung reduced to exactly two formalization gaps; plateau explained; welding refuted
 
 Four lanes + skeptics (all CONFIRMED, minor). DISPROOF tag `466-r18-hsig-discharged-weil-isolated-plateau-explained`.
 Bricks: `_R18SigmaEquidistribution.lean` (hSig PROVEN for H=G_χ, q ≥ 16m²n²; sharp n(n−1)√q Gauss-sum
@@ -1484,7 +1486,7 @@ needs a factor n^{r−2} beyond square-root cancellation, the banked Problem-A e
 negligible slice, and the dominant mass is self-referential. The two towers (A and B) do NOT weld.
 **CORE OPEN, ON-BGK. No fabricated closure.**
 
-## §28. Consolidation after rounds 15–18 (2026-07-07) — the corrected two-problem statement
+## §31. Consolidation after rounds 15–18 (2026-07-07) — the corrected two-problem statement
 
 Rounds 15–18 (two concurrent sessions, ~12 landed commits) materially updated what "Problem B"
 is. The definitive statement of §0/round-14 should now be read with these corrections:
@@ -1522,7 +1524,7 @@ mathematics: everything up to fourth moments is Weil-classical; the first open o
 family-cancellation statement for sextic character sums; and its deg-2 face is a NAMED
 classical open problem (Karatsuba). CORE OPEN, ON-BGK. No fabricated closure.
 
-## §29. Round 19 (2026-07-07) — the duality debt paid; the tower names its fixed point
+## §32. Round 19 (2026-07-07) — the duality debt paid; the tower names its fixed point
 
 Four lanes + skeptics (CHIDECOMP severity NONE, rest minor). DISPROOF tag
 `466-r19-chidecomp-discharged-tower-collapses-to-awaysup`. Bricks: `_R19ChiDecomposition.lean`
@@ -1542,7 +1544,7 @@ gap); rungs ≥ 3 ⟺ AwaySupBound (the prize sup itself) up to measured per-run
 sub-Wick monotonicity (W_{r+1} ≤ W_r) as the new standalone structural conjecture. The wall's
 sharpest name: **AwaySupBound C at C = O(polylog q)**. **CORE OPEN, ON-BGK. No fabricated closure.**
 
-## §30. GRAND CONSOLIDATION after rounds 15–27 (2026-07-07, two concurrent sessions) — the ladder normal form: what is closed, what is THE open object
+## §33. GRAND CONSOLIDATION after rounds 15–27 (2026-07-07, two concurrent sessions) — the ladder normal form: what is closed, what is THE open object
 
 **This section supersedes §0/§6 as the statement of the open core.** Read the machine-checked
 chain in this order: `_R19JacobiFourierExpansion` → `_R20JacobiParseval` →
@@ -1578,7 +1580,7 @@ conditions in ℤ/m (the literature route; would close r=3 and plausibly the gap
 structure ON the ladder object); (iii) a genuinely new idea, now checkable directly against
 `IterConvEnergyWick`. CORE OPEN, ON-BGK. No fabricated closure.
 
-## §30. Round 20 (2026-07-07) — the Möbius discharge; the Stepanov program opens; the equivalence goes two-sided at depth
+## §34. Round 20 (2026-07-07) — the Möbius discharge; the Stepanov program opens; the equivalence goes two-sided at depth
 
 Four lanes + skeptics (one MAJOR correction recorded). DISPROOF tag
 `466-r20-mobius-discharged-stepanov-scaffold-depth-twosided`. Bricks: `_R20QuadFaceBridge.lean` +
@@ -1601,7 +1603,7 @@ and above it, tower ⟺ `AwaySupBound` is a genuine two-sided theorem (constant 
 insufficient), the higher-order-χ quartic faces, and AwaySupBound itself. **CORE OPEN, ON-BGK.
 No fabricated closure.**
 
-## §31. Round 21 (2026-07-07) — S1 done (core was in-tree); one uniform Hasse family; head rungs settled; expert statement v2
+## §35. Round 21 (2026-07-07) — S1 done (core was in-tree); one uniform Hasse family; head rungs settled; expert statement v2
 
 DISPROOF tag `466-r21-s1-done-orderblind-uniform-family-headrung-settled`. Bricks:
 `_R21StepanovS1.lean` (cubic independence glue onto the in-tree #232 non-vanishing core;
@@ -1617,7 +1619,7 @@ superelliptic Hasse family; its order-2 member ⟸ CubicStepanovUpper, whose har
 and whose remainder is mechanical); tower ⟺ AwaySupBound two-sided at depth ≥ log₃q; head rungs
 = the wall's shadow (phase-deep, proven). **CORE OPEN, ON-BGK. No fabricated closure.**
 
-## §32. Round 22 (2026-07-07) — S2 proven; the pipeline assembled; constants parametric everywhere
+## §36. Round 22 (2026-07-07) — S2 proven; the pipeline assembled; constants parametric everywhere
 
 DISPROOF tag `466-r22-s2-done-pipeline-assembled-constant-parametric`. Bricks: `_R22StepanovS2.lean`
 (S2 DONE — auxiliary-polynomial existence, zero residuals; char-p Hasse-derivative machinery
@@ -1635,7 +1637,7 @@ family = the norm-fold construction (new work, mapped lemma-by-lemma). Above the
 (tower ⟺ AwaySupBound at depth; head rungs phase-deep). **CORE OPEN, ON-BGK. No fabricated
 closure.**
 
-## §33. Round 23 (2026-07-07) — 🏁 THE STEPANOV MILESTONE: the unconditional Hasse-type theorem lands; the r=2 quadratic face fires
+## §37. Round 23 (2026-07-07) — 🏁 THE STEPANOV MILESTONE: the unconditional Hasse-type theorem lands; the r=2 quadratic face fires
 
 DISPROOF tag `466-r23-MILESTONE-unconditional-stepanov-hasse`. Two independent parameter families
 (PARAM K=169/49, MILESTONE K=625), both skeptic-verified at severity NONE:
@@ -1650,3 +1652,19 @@ remaining faces = the superelliptic d ≥ 4 family (norm-fold, mapped in r22). A
 tower ⟺ AwaySupBound (two-sided at depth), head rungs phase-deep. Problem A unchanged. The
 campaign's first unconditional wall-adjacent THEOREM. **CORE OPEN, ON-BGK. No fabricated
 closure.**
+
+## §38. Round 24 (2026-07-07) — d=4 independence proven (new descent technique); the full-rung pipeline; the gate audit
+
+DISPROOF tag `466-r24-dblock-d4-proven-supers2-fullrung-gate-audit`. Bricks:
+`_R24DBlockIndependence.lean` (d=4 PROVEN — alternating-conjugate fold + extension-free quartic
+descent, a genuinely new formalization technique; d=2^k iterates mechanically),
+`_R24SuperellipticS2.lean` (d-block S2 chain conditional on DBlockIndependence alone),
+`_R24FullRungAssembly.lean` (pipeline + `fullFamily_gate_impossible`: the full-family normalized
+gate was NEVER live, even for sharp Weil — the live route is subfamily-Y), UPSTREAM hygiene
+(EulerBridge import fix; dossier renumbered — rounds 22/23 logs now §36/§37; Mathlib PR plan).
+
+**═══ STATE after 24 rounds ═══** r=2 rung: d=2 face UNCONDITIONAL (§37 milestone); d=4
+independence PROVEN, its S2 machinery in place (parameter instantiation owed); d=8+ mechanical
+descent iterations; full-family gate dead by theorem, subfamily-Y the live consumer. Above the
+rung unchanged (AwaySupBound; head rungs phase-deep; Problem A). **CORE OPEN, ON-BGK. No
+fabricated closure.**

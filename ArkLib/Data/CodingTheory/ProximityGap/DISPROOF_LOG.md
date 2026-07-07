@@ -20874,3 +20874,45 @@ probe-true with zero exceptions in the window, purely arithmetic, no analysis. T
 family-torus mystery at depth 3 IS this vanishing statement. Deep depths remain the wall,
 but the first open rung is now a single clean divisibility question about vanishing sums of
 roots of unity — the campaign's most concrete open object ever. CORE OPEN, ON-BGK.
+
+## [466-r24-dblock-d4-proven-supers2-fullrung-gate-audit] ROUND 24: DBlockIndependence d=4 PROVEN (extension-free quartic descent — new technique); d-block S2 chain conditional on DBlockIndependence alone; full-rung pipeline + the gate-impossibility audit; Mathlib upstream plan (2026-07-07)
+
+Four lanes + four skeptics, all CONFIRMED (minor). NOTE: the dossier §§ were renumbered this round
+(duplicates resolved): rounds 22/23 logs are now §36/§37.
+
+- **NORMFOLD (`_R24DBlockIndependence.lean`, 8316-job build):** `dBlockIndependence_four` PROVEN
+  unconditionally (squarefree g, 4 | q−1, budget 4D+3·deg g < q — exactly the r22-predicted shape).
+  Route: alternating-conjugate fold to quartic norm blocks (fires the in-tree d=2 core ONCE) + a
+  NEW extension-free quartic descent: two ring-checkable identities + a non-square cascade
+  (¬IsSquare c ∧ ¬IsSquare(−c)) replace the planned AdjoinRoot/Algebra.norm machinery entirely;
+  the 4|d Kummer side condition discharged concretely. d = 8, 16, … iterate the fold verbatim
+  (budget 2^k·D + (2^k−1)·deg g < q) needing one new descent lemma per halving (mechanical,
+  conjectured extension-free again); odd d needs the 3×3 norm determinant (not attempted; prize
+  family is 2-power only).
+- **SUPERS2 (`_R24SuperellipticS2.lean`, 10 thms):** the d-block Stepanov S2 chain machine-checked
+  — generic-exponent aux polynomial, rank-nullity kernel, general-fiber Hasse-derivative
+  factorization (D^(k)P)(s) = g(s)^{m−k}·W_k^ζ(s), per-fiber capstone
+  m·#N_ζ ≤ deg g·(m+(d−1)e)+D+q(J−1) — conditional ONLY on DBlockIndependence (d=2 instance
+  unconditional, strictly generalizing r22). Skeptic corrections: character-sum assembly constant
+  is 2dC√q+Z (not d(C√q+Z)); d | q−1 implicit; DBlockIndependence at d ≥ 4 must hold at D ~ q
+  scale (budget satisfiability part of the open input).
+- **FULLRUNG (`_R24FullRungAssembly.lean`, 9 thms):** conditional pipeline DStepanovOutput →
+  class-fold (proven: fold cost LINEAR in d on the per-class excess) → TripleLinearHasseC →
+  QuarticWeilInputC → FourthMomentTwistBound(4+Cmax). **Decisive audit theorem
+  `fullFamily_gate_impossible`:** the full-family normalized gate 32(Cw(m−1)⁴+1)/m²/3 ≤ 1 is
+  IMPOSSIBLE for every m ≥ 2, Cw ≥ 1 — including sharp Weil Cw = 6: the full-family consumers were
+  never live; elementary constants change nothing (Cw ≥ 1 caveat: sub-1 loophole not machine-
+  checked). Live route = subfamily-Y (|Y| ≤ √(m/15), low-order characters — ChiDecompositionOff
+  for proper Y open). Honest verdict: completing TripleLinearHasse buys the r=2 rung in parametric
+  form + the reusable template; the δ*-interchange needs ALL rungs + AwaySupBound + Problem A.
+- **UPSTREAM:** _R23EulerBridge portability FIXED (own import, rebuilt); dossier duplicate §§
+  renumbered (§25–§37 now unique; rounds 22/23 = §36/§37); r15–r23 axiom hygiene spot-check (10
+  files) ALL CLEAN; Mathlib PR sequencing: PR-1 divByMonic linearity, PR-2 norm_gaussSum (absent
+  in any form), PR-3 general-χ two-point orthogonality (skeptic: quadraticChar_sum_mul does NOT
+  exist in pinned Mathlib — the quadratic evaluation is MORE upstreamable than ranked), PR-4 the
+  milestone itself (new file, expect constant-tightening pushback, 2–4 weeks).
+
+State: the r=2 rung machinery is complete for d ∈ {2, 4} modulo the S2-parameter instantiation at
+d=4 (mirror _R23ParameterChoice); d = 8, 16, … = one descent lemma per halving; the full family
+serves the subfamily-Y gate only (full-family gate dead by theorem). CORE OPEN, ON-BGK. No
+fabricated closure.
