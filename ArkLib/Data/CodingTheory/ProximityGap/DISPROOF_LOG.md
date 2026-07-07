@@ -20648,3 +20648,53 @@ i.e. AGAIN a weighted lag correlation (r32 master identity applies!), so the cub
 be exactly evaluable rather than named. That closed-loop structure (the extremal class of the
 final input is itself in the calculus) is the last recorded observation of this session.
 CORE OPEN, ON-BGK.
+
+## [466-r22-s2-done-pipeline-assembled-constant-parametric] ROUND 22: Stepanov S2 FULLY PROVEN (auxiliary-polynomial existence, zero residuals); the complete S2→rung pipeline assembled with PARAMETRIC constants (no consumer needs sharp Hasse); order-2 family member welded; superelliptic d-generalization mapped with d=2 consistency proof (2026-07-07)
+
+Four lanes + four skeptics, all CONFIRMED (minor).
+
+- **S2 (`_R22StepanovS2.lean`, ~580 lines, 8317-job build):** the dimension-count existence step is
+  DONE: `cubic_stepanov_S2` (nonzero aux P = Σ_j (f^m a_j + f^{m+e} b_j) X^{qj}, Hasse-order-m
+  vanishing on N⁺, explicit degree budget) + capstone `cubic_stepanov_positive_fiber_bound`
+  (m·#N⁺ ≤ 3(m+e) + D + q(J−1)) — all proven, zero named residuals inside S2. Key char-p
+  machinery landed: X^{qj} Hasse-constancy below order q (binomial coefficient vanishing, no Lucas
+  needed), the Leibniz divisibility engine f^{N−k} | D^(k)(f^N a), monic-quotient linearity
+  (Mathlib-upstreamable), rank-nullity kernel existence. ⚠️ skeptic constant correction: the
+  quoted parameter feasibility gives B² ≈ 41q (not 25q) — S3 must re-optimize (harmless: see next).
+- **S3 (`_R22StepanovAssembly.lean`, 18 theorems):** the full pipeline
+  `S2Output(m,Dtot) → CubicStepanovUpper F B (any admissible B) → LegendreCubicHasseC F K (S² ≤ Kq;
+  K=4 ↔ the sharp form) → quartic (k+1)²q → QuarticWeilInputC → fourth moment ≤ (k+4)·n²·p` — ALL
+  proven. **DECISIVE bookkeeping finding: NO consumer needs the sharp Hasse constant** —
+  FourthMomentTwistBound carries Cw parametrically through every downstream theorem (verified by
+  grep across _R18/_R19 consumers); a one-sided Stepanov constant C propagates to Cw = C + 4.
+  Exact count S = 2·#N⁺ + 3 − q formalized. Small-q: trivial branch covers q ≤ K; a finite gap
+  (K, q₀) may remain pending S2 parameter instantiation (honestly flagged).
+- **ORDER2LINK (`_R22Order2Link.lean`):** the R21 assertion is now a THEOREM:
+  `tripleLinearHasse_of_legendreCubicHasse` (exact affine reindex s = t − w⁻¹, χ-of-constant twist,
+  all edge cases exact) + the chain from CubicStepanovUpper. HONEST MASS ACCOUNTING: in the prize
+  family (m = 2^μ) the d=2 member is exactly ONE character of m−1 (mass ~9.3e-10 at m=2^30); half
+  the family sits at order m. The d=2 discharge is structural completeness, not quantitative mass;
+  the bulk rests on superelliptic d ≥ 4 members.
+- **SUPERELL (`_R22SuperellipticIndependence.lean`):** lemma-by-lemma d-generalization map of the
+  in-tree #232 non-vanishing core: subq/faithfulness VERBATIM; square-first → norm-first (multiply
+  d conjugate relations over μ_d, the one real new cost, est. 400–800 lines); Kummer inputs PROVEN
+  this round (squarefree_not_isPow + odd-d irreducibility chain); named Prop `DBlockIndependence`
+  with its **d=2 instance PROVEN from in-tree obstruction_forces_trivial for arbitrary squarefree
+  g** (consistency + frees the R21 budget from the cubic). Probe: d=4 independence boundaries match
+  pure degree-collision predictions exactly. ⚠️ skeptic: "no new mathematics" is a prognosis — the
+  d ≥ 3 Norm=0 elimination is genuinely new work the d=2 proof avoided.
+
+State: the r=2 rung's quadratic face is now ONE parameter-instantiation + Euler-bridge + small-q
+step away from firing UNCONDITIONALLY (all with parametric constants — the sharp Hasse value is
+needed nowhere). The d ≥ 4 family = norm-fold construction (mapped, not proven). CORE OPEN,
+ON-BGK. No fabricated closure.
+
+## [466-r40-cube-class-exact] the stress-extremal class of the final input is a THEOREM: Σ_j J_{j+t}³·conj(J_j³) = m·Σ_{u∈G}Σ_w f₀^{⊛3}(uw)·conj(f₀^{⊛3}(w))·λ_t(w) — one composition of landed lemmas; SexticVarietyInput needed only on generic shapes at ample margin (2026-07-07)
+
+Lane: #466 round-40 B2 (`Frontier/_R40CubeClassExact.lean` axiom-clean, real build).
+`cube_lag_correlation_exact` = jacobiCoeff_pow (r36) + weighted_lag_correlation' (r33): the
+degenerate-cube shapes that carry the r39 stress-extremes (ratios up to 2.96/q^{5/2}) are in
+explicit G-fibered closed form — not an input, a theorem. The final named input
+`SexticVarietyInput` is thereby needed only on the generic (non-cube) shape class, where the
+r39 stress margin at C = 4 is ample (≤ 2.5). The calculus has now consumed its own worst
+case. CORE OPEN, ON-BGK — the two one-line statements stand, thinner still.
