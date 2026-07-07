@@ -434,6 +434,46 @@ theorem prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor
       (Finset.univ : Finset F) (fullSpectrumT ψ G) (fullSpectrumT_nonneg hGpos) hcc' hMGF)
     hGpos hq hr hrq hrK hconst
 
+/-- Full-spectrum uniform cutoff route to `NearRamanujanSqrtLog`, with rate transfer: a cutoff
+MGF certificate at rate `c` may be consumed at any lower positive rate `c' ≤ c`. -/
+theorem nearRamanujan_of_fullSpectrum_cutoff_rate_le_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {T c c' C K : ℝ} {r : ℕ}
+    (hTnonneg : 0 ≤ T) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hT : ∀ b ∈ (Finset.univ : Finset F), fullSpectrumT ψ G b ≤ T)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (Real.exp (c * T) / c') * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C := by
+  have hc : 0 < c := lt_of_lt_of_le hc' hcc'
+  have hA : 1 ≤ Real.exp (c * T) := by
+    simpa [Real.one_le_exp_iff] using mul_nonneg hc.le hTnonneg
+  exact nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor hψ G hA hc'
+    hcc' hC
+    (mgfBound_of_max_ceiling (Finset.univ : Finset F) (fullSpectrumT ψ G) hc.le hT)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum uniform cutoff route to `PrizeFloor`, with rate transfer: a cutoff MGF
+certificate at rate `c` may be consumed at any lower positive rate `c' ≤ c`. -/
+theorem prizeFloor_of_fullSpectrum_cutoff_rate_le_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {T c c' C K : ℝ} {r : ℕ}
+    (hTnonneg : 0 ≤ T) (hc' : 0 < c') (hcc' : c' ≤ c) (hC : 0 ≤ C)
+    (hT : ∀ b ∈ (Finset.univ : Finset F), fullSpectrumT ψ G b ≤ T)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (Real.exp (c * T) / c') * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C := by
+  have hc : 0 < c := lt_of_lt_of_le hc' hcc'
+  have hA : 1 ≤ Real.exp (c * T) := by
+    simpa [Real.one_le_exp_iff] using mul_nonneg hc.le hTnonneg
+  exact prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor hψ G hA hc'
+    hcc' hC
+    (mgfBound_of_max_ceiling (Finset.univ : Finset F) (fullSpectrumT ψ G) hc.le hT)
+    hGpos hq hr hrq hrK hconst
+
 /-- Full-spectrum survival-count route to `NearRamanujanSqrtLog`: a threshold-grid staircase
 dominating the exponential weights, together with explicit survival-count ceilings, gives the
 full-spectrum `MGFBound` and hence the spectral face. -/
@@ -655,6 +695,8 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms prizeFloor_of_fullSpectrum_cutoff_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_mgf_rate_le_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_mgf_rate_le_general_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_cutoff_rate_le_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_cutoff_rate_le_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_survival_count_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_survival_count_general_depth_factor
 #print axioms nearRamanujan_of_fullSpectrum_survival_weighted_general_depth_factor
