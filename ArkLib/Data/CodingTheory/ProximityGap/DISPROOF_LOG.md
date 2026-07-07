@@ -20452,3 +20452,17 @@ Chain after round 20: CubicStepanovUpper (→ LegendreCubicHasse) → quadratic 
 QuarticWeilInput → (+ higher-d faces) FourthMomentTwistBound → r=2 rung → tower ⟺ AwaySupBound
 (two-sided, constant 3, at depth ≥ log₃q). The head rungs (r < log₃q) and the higher-d faces and
 AwaySupBound itself remain the wall. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r29-linear-lag-mechanism] the E3 excess is carried by LINEAR-LAG phase autocorrelations of the Jacobi sequence (A(t) up to 0.35 vs 1/√m random, at specific lags) — and lag correlations Σ_j J_{j+t}conj(J_j) are Gauss-sum correlations plausibly admitting EXACT evaluation: the sharp r=3 statement is likely "Gaussian + explicit main terms" (2026-07-07)
+
+Lane: #466 round-29 B2 (probe `probe_r29_phase_autocorr.py`, 4 cells). The unit-phase sequence
+u_j = J_j/|J_j| has linear-lag autocorrelations 3–4.5× above the random baseline (max |A(t)| =
+0.15–0.35 vs 1/√m = 0.05–0.12) at cell-specific lags; these dominate the HD-triple (0.08–0.27)
+and doubling (0.07–0.12) correlations. The E3 super-Gaussian excess (r23/r28) is therefore
+primarily PAIR-resonance driven. Since Σ_j J_{j+t}·conj(J_j) expands into sums of
+g(λ_{j+t})·conj(g(λ_j))·(χ-factors) over the dual family — Gauss-sum correlations of the class
+with known exact evaluations — the successor lane is: (a) evaluate the lag correlations in
+closed form (probe first: which t are large and is A(t) exactly a character sum?); (b) if so,
+decompose J = (structured part with explicit lag spectrum) + (残 random-like part) and prove
+the r=3 rung as Gaussian + explicit main terms via the collapse machinery. This is the
+sharpest lead the campaign holds. CORE OPEN, ON-BGK.
