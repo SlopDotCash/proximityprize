@@ -118,7 +118,7 @@ theorem mcaGoodRadii_le_of_bad (C : Set (ι → A)) (εstar : ℝ≥0∞) {δbad
       intro γ h_event
       obtain ⟨S, hS_card, hline, hpair⟩ := h_event
       exact ⟨S, le_trans
-        (mul_le_mul_of_nonneg_right (tsub_le_tsub_left hbad_le 1) (zero_le _)) hS_card,
+        (mul_le_mul_of_nonneg_right (tsub_le_tsub_left hbad_le 1) zero_le) hS_card,
         hline, hpair⟩
   exact not_le_of_gt hbad (le_trans hmono hδ.2)
 

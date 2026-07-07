@@ -250,7 +250,7 @@ theorem epsCA_le_one (C : Set (ι → A)) (δ_fld δ_int : ℝ≥0) :
   refine iSup_le fun u => ?_
   by_cases hjp : jointProximity (C := C) (u := u) δ_int
   · rw [if_pos hjp]
-    exact zero_le _
+    exact bot_le
   · rw [if_neg hjp]
     exact Pr_le_one ($ᵖ F) fun γ => δᵣ(u 0 + γ • u 1, C) ≤ δ_fld
 
@@ -390,7 +390,7 @@ theorem epsCA_antitone_δ_int
     intro h_jp
     exact le_trans h_jp (by exact_mod_cast h)
   by_cases hjp' : jointProximity (C := C) (u := u) δ_int'
-  · rw [if_pos hjp']; exact zero_le _
+  · rw [if_pos hjp']; exact bot_le
   · -- Contrapositive of `h_jp_mono`: `¬jointProximity_δ_int' → ¬jointProximity_δ_int`.
     have hjp : ¬ jointProximity (C := C) (u := u) δ_int := fun h_jp ↦ hjp' (h_jp_mono h_jp)
     rw [if_neg hjp', if_neg hjp]
@@ -415,7 +415,7 @@ theorem epsMCA_mono
   intro γ h_event
   obtain ⟨S, hS_card, hline, hpair⟩ := h_event
   -- The size clause `(1 - δ')·n ≤ (1 - δ)·n ≤ |S|` survives; `hline`/`hpair` are δ-free.
-  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (zero_le _)) hS_card,
+  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (by positivity)) hS_card,
     hline, hpair⟩
 
 /-! ## Helpers toward ABF26 Fact 4.5
@@ -479,7 +479,7 @@ theorem epsPG_le_epsCA (MC : Submodule F (ι → A)) (δ : ℝ≥0) :
   · by_cases h_all : ∀ γ : F, δᵣ(u 0 + γ • u 1, (MC : Set (ι → A))) ≤ δ
     · -- `epsPG` picks 0; `epsCA` picks Pr ≥ 0.
       rw [if_pos h_all, if_neg hjp]
-      exact zero_le _
+      exact bot_le
     · -- Both pick the same `Pr_γ[line δ-close]` (same expression inside the `Pr`).
       rw [if_neg h_all, if_neg hjp]
 
@@ -499,7 +499,7 @@ theorem epsCA_le_epsMCA (MC : Submodule F (ι → A)) (δ : ℝ≥0) :
   apply iSup_mono
   intro u
   by_cases hjp : jointProximity (C := (MC : Set (ι → A))) (u := u) δ
-  · rw [if_pos hjp]; exact zero_le _
+  · rw [if_pos hjp]; exact bot_le
   · rw [if_neg hjp]
     -- Probability monotonicity: `Pr_γ[line close] ≤ Pr_γ[mcaEvent]` because, in the
     -- `¬jointProximity` regime, "line δ-close to MC" implies `mcaEvent`. The implication
@@ -597,7 +597,7 @@ theorem δ_ε_correlatedAgreementAffineLines_iff_epsCA_le
   · intro h_pred
     refine iSup_le fun u ↦ ?_
     by_cases hjp : jointProximity (C := C) (u := u) δ
-    · rw [if_pos hjp]; exact zero_le _
+    · rw [if_pos hjp]; exact bot_le
     · rw [if_neg hjp]
       have h_not_ja : ¬ jointAgreement (C := C) (W := u) δ := by
         rw [jointAgreement_iff_jointProximity]; exact hjp
@@ -626,7 +626,7 @@ theorem δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le {k : ℕ}
   · intro h_pred
     refine iSup_le fun u ↦ ?_
     by_cases hjp : jointProximity (C := C) (u := u) δ
-    · rw [if_pos hjp]; exact zero_le _
+    · rw [if_pos hjp]; exact bot_le
     · rw [if_neg hjp]
       have h_not_ja : ¬ jointAgreement (C := C) (W := u) δ := by
         rw [jointAgreement_iff_jointProximity]; exact hjp
@@ -667,7 +667,7 @@ theorem Pr_exists_Fin_le_sum {α : Type} (D : PMF α) {t : ℕ} (f : Fin t → �
   -- Pointwise bound: `D r * I[∃ k, f k r] ≤ D r * ∑ k, I[f k r]`.
   apply ENNReal.tsum_le_tsum
   intro r
-  apply mul_le_mul_of_nonneg_left _ (zero_le _)
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
   by_cases h : ∃ k, f k r
   · rw [if_pos h]
     obtain ⟨k₀, hk₀⟩ := h
@@ -675,9 +675,9 @@ theorem Pr_exists_Fin_le_sum {α : Type} (D : PMF α) {t : ℕ} (f : Fin t → �
         = if f k₀ r then 1 else 0 := by rw [if_pos hk₀]
       _ ≤ ∑ k : Fin t, if f k r then (1 : ENNReal) else 0 :=
           Finset.single_le_sum (f := fun k ↦ if f k r then (1 : ENNReal) else 0)
-            (fun _ _ ↦ zero_le _) (Finset.mem_univ k₀)
+            (fun _ _ ↦ by positivity) (Finset.mem_univ k₀)
   · rw [if_neg h]
-    exact zero_le _
+    exact bot_le
 
 /-- **Structural half of ABF26 Lemma 4.6 (provable in-tree).** The `mcaEvent` always entails
 that the line `u₀ + γ • u₁` is `δ`-close to `C`: the event's witness set `S` (of size
@@ -864,7 +864,7 @@ theorem eq_of_relDist_le_of_two_mul_lt_dist
   have h_abs : (Δ₀(w₁, w₂)) ≤ Nat.floor (δ * Fintype.card ι) :=
     (pairRelDist_le_iff_pairDist_le (u := w₁) (v := w₂) δ).mp h_close
   have h_floor_le : (Nat.floor (δ * (Fintype.card ι : ℝ≥0)) : ℝ≥0) ≤ δ * Fintype.card ι :=
-    Nat.floor_le (zero_le _)
+    Nat.floor_le (by positivity)
   -- `δ·n ≤ 2·δ·n < d`, so `Δ₀(w₁, w₂) < d` and `eq_of_lt_dist` closes it.
   have h_dn_lt : δ * (Fintype.card ι : ℝ≥0) < (Code.dist C : ℝ≥0) := by
     have h_le : δ * (Fintype.card ι : ℝ≥0) ≤ 2 * δ * (Fintype.card ι : ℝ≥0) := by
@@ -977,7 +977,7 @@ theorem mcaEvent_witness_eq_combined_of_jointProximity_udr
   -- `2·e ≤ 2·δ·n < d`, so `Δ₀ < d` and `eq_of_lt_dist` concludes.
   have h_lt : Δ₀(w, p₀ + γ • p₁) < Code.dist (C : Set (ι → A)) := by
     have he_le : (e : ℝ≥0) ≤ δ * (Fintype.card ι : ℝ≥0) := by
-      rw [he]; exact Nat.floor_le (zero_le _)
+      rw [he]; exact Nat.floor_le (by positivity)
     have h2e : (2 * e : ℝ≥0) ≤ 2 * δ * (Fintype.card ι : ℝ≥0) := by
       have : (2 : ℝ≥0) * (e : ℝ≥0) ≤ 2 * (δ * (Fintype.card ι : ℝ≥0)) := by gcongr
       simpa [mul_assoc] using this
@@ -1148,7 +1148,7 @@ theorem jointProximity_mcaEvent_imp_diffStack_mcaEvent_udr
     exact le_trans h1 h2
   have h_lt : Δ₀(w, p₀ + γ • p₁) < Code.dist (C : Set (ι → A)) := by
     have he_le : (e : ℝ≥0) ≤ δ * (Fintype.card ι : ℝ≥0) := by
-      rw [he]; exact Nat.floor_le (zero_le _)
+      rw [he]; exact Nat.floor_le (by positivity)
     have h2e : (2 * e : ℝ≥0) ≤ 2 * δ * (Fintype.card ι : ℝ≥0) := by
       have : (2 : ℝ≥0) * (e : ℝ≥0) ≤ 2 * (δ * (Fintype.card ι : ℝ≥0)) := by gcongr
       simpa [mul_assoc] using this
@@ -1289,7 +1289,7 @@ theorem jointlyProximate_mcaEvent_exists_bad_coord_udr
     omega
   have h_lt : Δ₀(w, p₀ + γ • p₁) < Code.dist (C : Set (ι → A)) := by
     have he_le : (e : ℝ≥0) ≤ δ * (Fintype.card ι : ℝ≥0) := by
-      rw [he]; exact Nat.floor_le (zero_le _)
+      rw [he]; exact Nat.floor_le (by positivity)
     have h2e : (2 * e : ℝ≥0) ≤ 2 * δ * (Fintype.card ι : ℝ≥0) := by
       have : (2 : ℝ≥0) * (e : ℝ≥0) ≤ 2 * (δ * (Fintype.card ι : ℝ≥0)) := by gcongr
       simpa [mul_assoc] using this
@@ -1440,7 +1440,7 @@ theorem jointlyProximateContribution_le_card_div_udr [NoZeroSMulDivisors F A]
   by_cases hjp : jointProximity (C := (C : Set (ι → A))) (u := u) δ
   · rw [if_pos hjp]
     exact jointlyProximate_mcaEvent_Pr_le_card_div_udr C δ u h_udr hjp
-  · rw [if_neg hjp]; exact zero_le _
+  · rw [if_neg hjp]; exact bot_le
 
 open Classical in
 /-- **Decomposition of `ε_mca` (audited intermediate toward ABF26 Lemma 4.6).**
@@ -1797,7 +1797,7 @@ theorem epsMCA_eq_epsCA_below_udr
     -- ════════════════════════════════════════════════════════════════════════════════════════
     -- Step-B residual: `Pr_γ[mcaEvent(diff-stack)] ≤ ε_ca` (GS list-decoding count).
     exact h_diffStack u p₀ p₁ hp₀ hp₁ hjp
-  · rw [if_neg hjp]; exact zero_le _
+  · rw [if_neg hjp]; exact bot_le
 
 /-- Row-extraction: the `k`-th row of a `Fin t → A`-valued word, as an `A`-valued word. -/
 private def row_of {ι : Type} {A : Type} {t : ℕ}
@@ -1906,7 +1906,7 @@ theorem δ_ε_correlatedAgreementAffineSpaces_iff_epsCA_affineSpaces_le {k : ℕ
   · intro h_pred
     refine iSup_le fun u ↦ ?_
     by_cases hjp : jointProximity (C := C) (u := u) δ
-    · rw [if_pos hjp]; exact zero_le _
+    · rw [if_pos hjp]; exact bot_le
     · rw [if_neg hjp]
       have h_not_ja : ¬ jointAgreement (C := C) (W := u) δ := by
         rw [jointAgreement_iff_jointProximity]; exact hjp
