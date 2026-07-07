@@ -138,6 +138,45 @@ theorem sup_pureFace_from_three_of_tripleConvEnergyBound_le_const
     (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
     hbudget hs
 
+/-- Energy-level expanded Jacobi Hermitian input propagates to depth `3+k` under the explicit
+head-rung budgets, and can be published at any larger Wick constant. -/
+theorem iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_le_const
+    {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget : ∀ t : ℕ, 3 ≤ t → t < 3 + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) :
+    IterConvEnergyWick
+      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) (3 + k) C' :=
+  iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) k
+    hJ hC0 hCC hBC hbudget
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h)
+
+/-- Energy-level expanded Jacobi Hermitian input propagates to depth `3+k` and feeds the public
+face-moment bound. -/
+theorem sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget : ∀ t : ℕ, 3 ≤ t → t < 3 + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_from_three_of_tripleConvEnergyBound_le_const hfam hgrp
+    (fun i : ZMod m => jacobiCoeff χ lam i) k
+    hJ hC0 hCC hBC hbudget
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h) hs
+
 /-- A pointwise r = 3 certificate propagates to depth `3+k` under the explicit head-rung
 budgets, and can be published at any larger Wick constant. -/
 theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_le_const
@@ -212,6 +251,10 @@ end ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_from_three_of_tripleConvEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_le_const
 #print axioms
