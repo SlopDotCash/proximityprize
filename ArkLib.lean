@@ -2051,6 +2051,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikTZClosure
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikThornerZamanArrow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorPackingDensityRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorSuccessorNorm
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorSuccessorPmin64Good
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorSuccessorResultantBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorSuccessorScanResult
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorSuccessorTZBridge
@@ -2362,9 +2363,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R30IterConvEnergyRecursio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R30LagCorrelationIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R31LagSpectrumWeilBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32LagOffDiagEnergy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32QuadCorrelationIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R32WeightedLagCorrelation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R33LagVarianceBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R33QuadViaWeights
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadLambdaCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadWeilBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35FullConvLagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35TransformRingHom
@@ -2373,10 +2376,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R40CubeClassExact
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R41SexticInputSplit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R42CubeLagInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R43GaussUnification
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R44EtaTower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R45GaussRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R46GaussModulus
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R48EtaFourthMoment
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R49SexticZeroLagEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch

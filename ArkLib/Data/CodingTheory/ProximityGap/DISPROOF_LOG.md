@@ -20826,3 +20826,15 @@ superelliptic — the norm-fold construction), the head rungs and deep-depth mom
 and Problem A (WallHolds). What changed: a wall-adjacent object that was "open formalization"
 for three rounds is now a THEOREM, and the pipeline architecture (parametric constants
 throughout) is validated end-to-end. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r48-eta-fourth-moment] the CLASSICAL BRIDGE machine-checked: Σ_b‖η_b‖⁴ = q·E₊(G) exactly — the unified tower welded to the original A-side energy ledger; the A-side r=2 rung IS the additive energy of μ_n (2026-07-07)
+
+Lane: #466 round-48 A (`Frontier/_R48EtaFourthMoment.lean` axiom-clean, real build).
+`addEnergy` + `eta_fourth_moment` (pure ψ-orthogonality: fourth-power expansion over
+(G×G)×(G×G), sum_mulShift collapse, exact count). Through the r44 collapse, the A-side r=2
+ladder rung Σ_c‖(𝔤⁻)^{∗2}(c)‖² is exactly expressible in E₊(μ_n) and lower moments — the
+campaign's ORIGINAL A-side objects (the T_r wraparound counts, E_× = n³, the char-0 closed
+forms of the #464 era). The new calculus and the old energy ledger are ONE bookkeeping
+system: energy bounds transfer up the tower, collapses transfer down to counts. In
+particular the WallHolds shallow rungs inherit every in-tree exact energy result, and the
+deep-rung demand is the same family-torus input as everywhere else. CORE OPEN, ON-BGK.
