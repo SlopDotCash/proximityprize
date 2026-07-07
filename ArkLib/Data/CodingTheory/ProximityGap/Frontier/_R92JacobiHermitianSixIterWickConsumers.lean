@@ -66,6 +66,41 @@ theorem sup_pureFace_three_of_jacobiHermitianSixInput
     ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
       (χ := χ) (lam := lam) (C := B)).mp h) hs
 
+/-- The named Jacobi six-variable pointwise input feeds the third full-tower Wick rung at any
+larger published tower constant. -/
+theorem iterConvEnergyWick_three_of_jacobiHermitianSixInput_le_const
+    {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiHermitianSixInput χ lam B) :
+    IterConvEnergyWick
+      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C' :=
+  iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
+    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
+    hC0 hCC hBB hBC
+    ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
+      (χ := χ) (lam := lam) (C := B)).mp h)
+
+/-- The named Jacobi six-variable pointwise input feeds the third face-moment consumer at any
+larger published tower constant. -/
+theorem sup_pureFace_three_of_jacobiHermitianSixInput_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiHermitianSixInput χ lam B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) :=
+  sup_pureFace_three_of_tripleConvPointwiseBound_le_const hfam hgrp
+    (fun i : ZMod m => jacobiCoeff χ lam i)
+    hC0 hCC hBB hBC
+    ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
+      (χ := χ) (lam := lam) (C := B)).mp h) hs
+
 /-- The energy-level expanded Jacobi Hermitian target feeds the third full-tower Wick rung at
 any larger published tower constant. -/
 theorem iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
@@ -106,6 +141,10 @@ end ArkLib.ProximityGap.Frontier.R92JacobiHermitianSixIterWickConsumers
   ArkLib.ProximityGap.Frontier.R92JacobiHermitianSixIterWickConsumers.iterConvEnergyWick_three_of_jacobiHermitianSixInput
 #print axioms
   ArkLib.ProximityGap.Frontier.R92JacobiHermitianSixIterWickConsumers.sup_pureFace_three_of_jacobiHermitianSixInput
+#print axioms
+  ArkLib.ProximityGap.Frontier.R92JacobiHermitianSixIterWickConsumers.iterConvEnergyWick_three_of_jacobiHermitianSixInput_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R92JacobiHermitianSixIterWickConsumers.sup_pureFace_three_of_jacobiHermitianSixInput_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R92JacobiHermitianSixIterWickConsumers.iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
 #print axioms
