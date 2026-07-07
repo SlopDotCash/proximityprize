@@ -112,9 +112,12 @@ theorem iterConv_energy_le_card_pow_mul_of_uniform_sq_bound (J : ZMod m → ℂ)
 end ArkLib.ProximityGap.Frontier.R28IterConvBaseline
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+open ArkLib.ProximityGap.Frontier.R28IterConvBaseline in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R28IterConvBaseline.norm_iterConv_le_card_pow_mul_bound
+  norm_iterConv_le_card_pow_mul_bound
+open ArkLib.ProximityGap.Frontier.R28IterConvBaseline in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R28IterConvBaseline.iterConv_energy_le_card_pow_mul_bound
+  iterConv_energy_le_card_pow_mul_bound
+open ArkLib.ProximityGap.Frontier.R28IterConvBaseline in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R28IterConvBaseline.iterConv_energy_le_card_pow_mul_of_uniform_sq_bound
+  iterConv_energy_le_card_pow_mul_of_uniform_sq_bound

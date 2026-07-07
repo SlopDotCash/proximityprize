@@ -64,6 +64,32 @@ when the Jacobi coefficients satisfy `‖J_j‖² ≤ q`. -/
 def SelfConvEnergyBound (J : ZMod m → ℂ) (q : ℕ) (C : ℝ) : Prop :=
   ∑ c : ZMod m, ‖selfConv J c‖ ^ 2 ≤ C * (m : ℝ) * (q : ℝ) ^ 2
 
+/-- **Quartic face-moment input.**  This is the R21 quartic collapse written at the
+scale that is exactly equivalent to `SelfConvEnergyBound` after cancelling the nonzero
+Parseval factor `q - 1`. -/
+def PureFaceQuarticMomentBound (J : ZMod m → ℂ) (lam : ZMod m → F → ℂ) (C : ℝ) : Prop :=
+  ∑ s ∈ Finset.univ.erase (0 : F), ‖pureFace J lam s‖ ^ 4
+    ≤ ((Fintype.card F - 1 : ℕ) : ℝ) *
+      (C * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+
+/-! ### R21 quartic collapse as the exact source of `SelfConvEnergyBound` -/
+
+/-- **Quartic face bound ⇒ quadratic-convolution energy.**  R21's exact quartic collapse
+cancels the `q - 1` Parseval factor and turns a face fourth-moment bound into the new
+`SelfConvEnergyBound` input used by the R23 Young/Cauchy bridge. -/
+theorem selfConvEnergyBound_of_pureFaceQuarticMomentBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {C : ℝ} (hquartic : PureFaceQuarticMomentBound J lam C) :
+    SelfConvEnergyBound J (Fintype.card F) C := by
+  classical
+  unfold PureFaceQuarticMomentBound at hquartic
+  rw [quartic_convolution_collapse hfam hgrp J] at hquartic
+  have hcard : 0 < ((Fintype.card F - 1 : ℕ) : ℝ) := by
+    have hnat : 0 < Fintype.card F - 1 := Nat.sub_pos_of_lt (Fintype.one_lt_card (α := F))
+    exact_mod_cast hnat
+  unfold SelfConvEnergyBound
+  nlinarith [hquartic, hcard]
+
 /-! ### Proven baseline: triangle-inequality convolution energy -/
 
 /-- A uniform coefficient bound gives the elementary pointwise bound
@@ -244,6 +270,19 @@ theorem tripleConvEnergyBound_of_selfConvEnergyBound (J : ZMod m → ℂ) (q : �
         simpa [mul_assoc] using mul_le_mul_of_nonneg_right hself hmul
     _ = C * (m : ℝ) ^ 3 * (q : ℝ) ^ 3 := by ring
 
+/-- **Quartic face input ⇒ R23 named input.**  This composes R21's exact quartic collapse
+with the finite Young/Cauchy bridge: a Wick-scale fourth moment for the pure face, together
+with the classical square bound on Jacobi coefficients, already yields the calibrated
+triple-convolution energy bound. -/
+theorem tripleConvEnergyBound_of_pureFaceQuarticMomentBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {C : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hquartic : PureFaceQuarticMomentBound J lam C) :
+    TripleConvEnergyBound J (Fintype.card F) C :=
+  tripleConvEnergyBound_of_selfConvEnergyBound J (Fintype.card F) hJ
+    (selfConvEnergyBound_of_pureFaceQuarticMomentBound hfam hgrp J hquartic)
+
 /-- If `‖J_j‖² ≤ q`, the triangle-inequality baseline supplies the named r = 3 input with
 constant `m²`.  The prize-scale problem is precisely to replace this formal `m²` by an
 absolute constant using arithmetic cancellation of the Jacobi phases. -/
@@ -301,6 +340,9 @@ end ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
 #print axioms
+  selfConvEnergyBound_of_pureFaceQuarticMomentBound
+open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
+#print axioms
   norm_selfConv_le_card_mul_bound
 open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
 #print axioms
@@ -314,6 +356,9 @@ open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
 open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
 #print axioms
   tripleConvEnergyBound_of_selfConvEnergyBound
+open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
+#print axioms
+  tripleConvEnergyBound_of_pureFaceQuarticMomentBound
 open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput in
 #print axioms
   tripleConvEnergyBound_of_uniform_sq_bound

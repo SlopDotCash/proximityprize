@@ -1,5 +1,13 @@
 # The Ethereum Proximity Prize δ\* — the two open problems, stated for an analytic number theorist (#466, after 14 rounds)
 
+> **⚠️ SUPERSEDED (2026-07-07).** This is the v1 statement. Rounds 15–20 corrected Problem B
+> (the all-offset form is FALSE — diagonal spike; the live form is the off-diagonal
+> `AwaySupBound`), added an unconditional `n√q` partial theorem, a two-sided tower⟺sup
+> equivalence (constant 3) at depth ≥ log₃ q, and reduced the r=2 rung to a pinned Stepanov
+> formalization gap. **Read the definitive current statement:
+> `docs/kb/deltastar-466-expert-statement-v2-2026-07-07.md`.** The round-15 correction appendix
+> below is retained but v2 subsumes it.
+
 This is the campaign's definitive, corrected problem statement. Fourteen rounds of route-elimination
 (as theorems), machine-checked reduction, and adversarial verification have reduced the $1,000,000
 grand challenge to **two precisely-stated, independent, recognized-open problems in analytic number

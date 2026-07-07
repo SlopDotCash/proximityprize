@@ -51,7 +51,7 @@ the lag-0 value `∑‖J‖² ≈ m·q`.  The structured part of the sequence is
 the open core is triple-and-higher correlations only. -/
 theorem lag_correlation_bound
     (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
-    {C : ℝ} (hC : 0 ≤ C) (hweil : TwoCharacterWeilInput χ lam G C)
+    {C : ℝ} (hweil : TwoCharacterWeilInput χ lam G C)
     {t : ZMod m} (ht : t ≠ 0) :
     ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t) * (starRingEnd ℂ) (jacobiCoeff χ lam j)‖
       ≤ (m : ℝ) * (G.card : ℝ) * C * Real.sqrt (Fintype.card F) := by

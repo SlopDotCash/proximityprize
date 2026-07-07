@@ -20493,3 +20493,44 @@ r20 (lag 0 exact) the ENTIRE pair statistics of the Jacobi sequence are now mach
 classical. The irreducible open content of `TripleConvEnergyBound` (hence of
 HyperplaneCancellation's ladder) is exactly the triple-and-higher phase correlations — the
 Katz-class object, with every lower-order shadow proven away. CORE OPEN, ON-BGK.
+
+## [466-r21-s1-done-orderblind-uniform-family-headrung-settled] ROUND 21: Stepanov S1 DONE (hard core was in-tree); ALL higher-d faces reduce to ONE uniform Hasse family (order-blind substitution); head-rung dichotomy SETTLED (sub-Wick deleted from independent list); expert statement v2 (2026-07-07)
+
+Four lanes + four skeptics (CONSOLIDATE severity none, rest minor).
+
+- **S1 (`_R21StepanovS1.lean`, 8314-job build):** the hard hyperelliptic non-vanishing core of
+  CubicStepanovUpper was ALREADY IN-TREE (#232-era `StepanovNonVanishing.obstruction_forces_trivial`,
+  axiom-clean) — the R20 "~300 delicate lines" were already paid. This round landed the cubic
+  specialization glue: `cubic_stepanov_independence` (squarefree X(X−u)(X−v) ⟹ a + f^{(q−1)/2}b = 0
+  forces a=b=0, budget 2D+3 < q), contrapositive matching the R20 scaffold's P ≠ 0 input, and the
+  degree budget. **Remaining for CubicStepanovUpper: S2 (rank-nullity existence + hasseDeriv Leibniz
+  bookkeeping — mechanical) and S3 (assembly + small q).**
+- **HIGHERD (`_R21HigherDFaces.lean`):** the t = y₂ + 1/s substitution is ORDER-BLIND (the Jacobian
+  factors cancel on the unit circle — no d-th-power argument needed): hypothesis-free identity
+  quadTerm = Σ_s χ((us+1)(vs+1))·conj χ(ws+1) − 1 for EVERY MulChar and EVERY tuple. Order-d kernel
+  = 3 distinct roots ⟹ per-tuple Weil 2√p UNIFORM IN d (no genus-driven constant growth; probe:
+  ‖S‖/√p ≤ 2.01 at orders 2/4/8/16, and Σ|T_χ|⁴/(n²p) even SMALLER for d > 2). Degeneracy for d ≥ 3
+  = pair-match exactly (R18 diagonal clause is d=2-specific). **Result chain proven:
+  `TripleLinearHasse` (ONE named Prop, superelliptic y^d = L₁L₂L₃^{d−1}) ⟹ QuarticWeilInput (all
+  orders) ⟹ the FULL r=2 rung `FourthMomentTwistBound G X 6`.** The complete formalization surface
+  of the r=2 rung is now one uniform Hasse family with constant 2.
+- **HEADRUNG (`_R21HeadRungDichotomy.lean`):** dichotomy SETTLED. Exact free-measure maximum of the
+  rung multiplier: sup L_r = Λ/(2r+1) (flat/spike attains; Lean equality for the unconstrained
+  config — skeptic: exactly-fixed-S₁ approaches, not attains). Aligned-phase adversary WITH the
+  true |η| multiset breaks L₁ in every cell (up to 2367 at p=65537) ⟹ head rungs are PHASE-DEEP;
+  above (Λ−1)/2 automatic from AwaySupBound. Direction CORRECTION to r20/r21 briefs: L₁ ≤ 1 is
+  STRICTLY STRONGER than the constant-3 rung (needs the r19-refuted depleted constant ≈ 1.5–2.3);
+  the sound implication is L₁ ≤ 1 ⟹ constant-3 (proven). **Sub-Wick monotonicity DELETED from the
+  independent-conjecture list** (automatic above, wall's-shadow below).
+- **CONSOLIDATE (severity none):** `docs/kb/deltastar-466-expert-statement-v2-2026-07-07.md` landed
+  (definitive post-r20 statement, every Prop cited by file:line, verified against source);
+  v1 banner added. FINDINGS: F1 — the §29/r19 "C∞ = 3 exactly" was probe-calibration, NOT a Lean
+  theorem (corrected in v2; this DISPROOF_LOG's r19 entry inherits the caveat); F2 — dossier has
+  duplicate section numbers from concurrent sessions (cite DISPROOF tags, not §§); F4 — v1's
+  "HyperplaneCancellation named open Prop" overstated (docstring-only, per r16 audit).
+
+Chain after round 21: CubicStepanovUpper = S2+S3 (mechanical) ⟹ LegendreCubicHasse;
+TripleLinearHasse (one family, contains LegendreCubicHasse as order-2 via the R20 normal form —
+asserted, not yet Lean-linked) ⟹ the FULL r=2 rung. Above: tower ⟺ AwaySupBound (two-sided at
+depth). Open wall: TripleLinearHasse/CubicStepanovUpper formalization + head-rung phases +
+AwaySupBound itself. CORE OPEN, ON-BGK. No fabricated closure.

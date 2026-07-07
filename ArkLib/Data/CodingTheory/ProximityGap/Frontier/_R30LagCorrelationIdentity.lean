@@ -64,7 +64,7 @@ theorem lam_inv_eq_conj (hfam : SubgroupDualFamily G m lam)
 of the ladder's coefficient sequence is `m` times a sum of `n` COMPLETE two-character sums.
 Pure orthogonality; Weil then gives `|A(t)| ≤ m·n·C√q`, which vanishes at prize scaling
 relative to `‖J‖² ≈ q`. -/
-theorem lag_correlation_identity (hχ : IsMulCharC χ)
+theorem lag_correlation_identity
     (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam) (t : ZMod m) :
     ∑ j : ZMod m, jacobiCoeff χ lam (j + t) * (starRingEnd ℂ) (jacobiCoeff χ lam j)
       = (m : ℂ) * ∑ u ∈ G, ∑ y : F, χ (1 - u * y) * (starRingEnd ℂ) (χ (1 - y))

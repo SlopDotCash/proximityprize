@@ -1600,3 +1600,19 @@ and above it, tower ⟺ `AwaySupBound` is a genuine two-sided theorem (constant 
 ≥ log₃q. The wall's residual: the head rungs r < log₃q (phase-deep, magnitude-only provably
 insufficient), the higher-order-χ quartic faces, and AwaySupBound itself. **CORE OPEN, ON-BGK.
 No fabricated closure.**
+
+## §31. Round 21 (2026-07-07) — S1 done (core was in-tree); one uniform Hasse family; head rungs settled; expert statement v2
+
+DISPROOF tag `466-r21-s1-done-orderblind-uniform-family-headrung-settled`. Bricks:
+`_R21StepanovS1.lean` (cubic independence glue onto the in-tree #232 non-vanishing core;
+CubicStepanovUpper = S2 mechanical linear algebra + S3 assembly), `_R21HigherDFaces.lean`
+(order-blind substitution ⟹ ALL χ-orders reduce to `TripleLinearHasse`, per-tuple 2√p uniform in d
+— the r=2 rung's complete formalization surface is ONE Hasse family), `_R21HeadRungDichotomy.lean`
+(sub-Wick: automatic above (Λ−1)/2, phase-deep below — deleted as independent conjecture; exact
+free-measure max Λ/(2r+1)), `deltastar-466-expert-statement-v2-2026-07-07.md` (definitive v2;
+finding F1: "C∞=3 exactly" was probe-only — corrected).
+
+**═══ STATE after 21 rounds ═══** The B-side is now: r=2 rung ⟸ TripleLinearHasse (one uniform
+superelliptic Hasse family; its order-2 member ⟸ CubicStepanovUpper, whose hard core is in-tree
+and whose remainder is mechanical); tower ⟺ AwaySupBound two-sided at depth ≥ log₃q; head rungs
+= the wall's shadow (phase-deep, proven). **CORE OPEN, ON-BGK. No fabricated closure.**
