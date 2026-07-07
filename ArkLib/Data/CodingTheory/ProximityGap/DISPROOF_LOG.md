@@ -20580,3 +20580,16 @@ matching decomposition has: main term (Gaussian), pair class (r31-bounded), cros
 (r34-bounded), and the fully-unmatched sextic class = THE one remaining open object.
 SUCCESSOR: assemble the decomposition (bookkeeping identity), then face the last input.
 CORE OPEN, ON-BGK.
+
+## [466-r35-transform-ring-hom] the correlation calculus COMPLETE: c_f·c_g = c_{f⊛g} (the λ-transform is multiplicative for the ⊛-convolution) — every correlation of every product of shifted J's now reduces to the master identity with an explicit weight (2026-07-07)
+
+Lane: #466 round-35 B2 (`Frontier/_R35TransformRingHom.lean` axiom-clean, real build).
+`mulConv (f⊛g)(v) = Σ_{z≠0}f(z)g(z⁻¹v)` + `lamTransform_mul`: c_f(i)·c_g(i) = c_{f⊛g}(i)
+(pure reindex; the transform is a ring hom from (weights,⊛) to sequences under pointwise
+product). With r32/r33 (`weighted_lag_correlation'`) and the named ladder (r17 curves, r31
+curves, r34 surfaces): every balanced correlation of every product of shifted Jacobi
+coefficients collapses to an exact G-fibered complete character sum and is bounded at the
+corresponding variety dimension. The sextic class = the 3-fold ⊛-weight member; its named
+input is the three-dimensional entry of the same classical family. Correlation calculus of
+the tower: COMPLETE. All remaining openness = the named top input + its A-side twin.
+CORE OPEN, ON-BGK.
