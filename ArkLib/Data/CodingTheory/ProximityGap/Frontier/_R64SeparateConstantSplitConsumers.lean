@@ -136,6 +136,52 @@ theorem sextic_correlation_energy_bound_of_generic_cubeLag_common_le
   sextic_correlation_energy_bound_of_splitSexticCancellationInput hχ hχ1 hfam hgrp
     (splitSexticCancellationInput_of_generic_cubeLag_le hgeneric hcube hCg hCc)
 
+/-- A split cancellation input at `C₀` supplies the normalized all-lag interface at any larger
+constant `C`. -/
+theorem sexticCorrelationBound_of_splitSexticCancellationInput_le
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C₀ C : ℝ}
+    (hsplit : SplitSexticCancellationInput χ lam G C₀) (hC : C₀ ≤ C) :
+    SexticCorrelationBound χ lam G (normalizedUnitSexticBudget (F := F) G C) :=
+  sexticCorrelationBound_of_splitSexticCancellationInput hχ hχ1 hfam hgrp
+    (splitSexticCancellationInput_mono hC hsplit)
+
+/-- Pointwise six-`J` bound from a split cancellation input lifted to any larger normalized
+constant. -/
+theorem sextic_correlation_bound_of_splitSexticCancellationInput_le
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C₀ C : ℝ}
+    (hsplit : SplitSexticCancellationInput χ lam G C₀) (hC : C₀ ≤ C)
+    (a b a' b' t : ZMod m) :
+    ‖∑ j : ZMod m,
+        (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+          * jacobiCoeff χ lam ((j + t) + b))
+        * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+          * jacobiCoeff χ lam (j + b'))‖
+      ≤ (m : ℝ) * normalizedUnitSexticBudget (F := F) G C :=
+  sextic_correlation_bound_of_splitSexticCancellationInput hχ hχ1 hfam hgrp
+    (splitSexticCancellationInput_mono hC hsplit) a b a' b' t
+
+/-- Aggregate all-lag six-`J` energy from a split cancellation input lifted to any larger
+normalized constant. -/
+theorem sextic_correlation_energy_bound_of_splitSexticCancellationInput_le
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C₀ C : ℝ}
+    (hsplit : SplitSexticCancellationInput χ lam G C₀) (hC : C₀ ≤ C) :
+    ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * normalizedUnitSexticBudget (F := F) G C) ^ 2) :=
+  sextic_correlation_energy_bound_of_splitSexticCancellationInput hχ hχ1 hfam hgrp
+    (splitSexticCancellationInput_mono hC hsplit)
+
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R64SeparateConstantSplitConsumers.sexticCorrelationBound_of_generic_cubeLag_max
@@ -154,5 +200,14 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R64SeparateConstantSplitConsumers.sextic_correlation_energy_bound_of_generic_cubeLag_common_le
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R64SeparateConstantSplitConsumers.sexticCorrelationBound_of_splitSexticCancellationInput_le
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R64SeparateConstantSplitConsumers.sextic_correlation_bound_of_splitSexticCancellationInput_le
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R64SeparateConstantSplitConsumers.sextic_correlation_energy_bound_of_splitSexticCancellationInput_le
 
 end ArkLib.ProximityGap.Frontier.R64SeparateConstantSplitConsumers
