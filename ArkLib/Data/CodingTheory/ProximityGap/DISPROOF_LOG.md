@@ -20482,3 +20482,14 @@ prize-scale constant should approach the Gaussian C = 6. The successor's structu
 decomposition of J now has: structured part = the exactly-known, Weil-vanishing lag spectrum;
 the genuinely open content is the HIGHER-order (triple+) correlations beyond pairs — the
 irreducible Katz-class core. CORE OPEN, ON-BGK.
+
+## [466-r31-lag-spectrum-weil-bound] the pair spectrum machine-checked Weil-small: ‖Σ_j J_{j+t}conj(J_j)‖ ≤ m·n·C·√q for every t ≠ 0 under the named TwoCharacterWeilInput — the structured part of J is CONTROLLED; the open core is triple+ correlations only (2026-07-07)
+
+Lane: #466 round-31 B2 (`Frontier/_R31LagSpectrumWeilBound.lean` axiom-clean, real build).
+`lag_correlation_bound` consumes the r30 exact identity + the named `TwoCharacterWeilInput`
+(round-17 Weil class; the u=1 subcase is elementary): every off-zero lag correlation is
+≤ m·n·C√q — i.e. ≤ nC/√q of the lag-0 Parseval mass, vanishing at prize scaling. With
+r20 (lag 0 exact) the ENTIRE pair statistics of the Jacobi sequence are now machine-checked
+classical. The irreducible open content of `TripleConvEnergyBound` (hence of
+HyperplaneCancellation's ladder) is exactly the triple-and-higher phase correlations — the
+Katz-class object, with every lower-order shadow proven away. CORE OPEN, ON-BGK.
