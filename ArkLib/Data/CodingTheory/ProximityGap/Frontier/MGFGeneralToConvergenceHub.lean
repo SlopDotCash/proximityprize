@@ -88,6 +88,26 @@ theorem prizeFloor_of_mgf_general_depth_factor
     (forall_rEnergy_le_mul_wick_of_momentEnvelope_general G hA hc
       (momentEnvelope_of_mgf s t hc ht hP hMGF) henergyRep)
 
+/-- Full-spectrum general-MGF route to the convergence-hub `PrizeFloor`: using
+`t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
+discharged by the moment identity from `MGFToConvergenceHub`. The honest slack constant is
+`K = A / c`. -/
+theorem prizeFloor_of_fullSpectrum_mgf_general_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c C K : ℝ} {r : ℕ}
+    (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (A / c) * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_mgf_general_depth_factor hψ G
+    (Finset.univ : Finset F) (fullSpectrumT ψ G) hA hc hC
+    (fullSpectrumT_nonneg hGpos) (by exact_mod_cast Fintype.card_pos)
+    hMGF hGpos hq hr hrq hrK hconst
+    (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r)
+
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
 
 /-! ## Axiom audit -/
@@ -95,5 +115,6 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 
 #print axioms forall_rEnergy_le_mul_wick_of_momentEnvelope_general
 #print axioms prizeFloor_of_mgf_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_mgf_general_depth_factor
 
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
