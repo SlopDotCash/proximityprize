@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFToConvergenceHub
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_survival_to_mgf
 
 set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
@@ -108,6 +109,24 @@ theorem prizeFloor_of_fullSpectrum_mgf_general_depth_factor
     hMGF hGpos hq hr hrq hrK hconst
     (fun r _hr => rEnergy_le_card_pow_mul_fullSpectrumMoment hψ G hGpos r)
 
+/-- A full-spectrum uniform cutoff `fullSpectrumT ψ G b ≤ T` gives the convergence-hub
+`PrizeFloor`, with the honest cutoff slack constant `exp(c*T) / c`. -/
+theorem prizeFloor_of_fullSpectrum_cutoff_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {T c C K : ℝ} {r : ℕ}
+    (hTnonneg : 0 ≤ T) (hc : 0 < c) (hC : 0 ≤ C)
+    (hT : ∀ b ∈ (Finset.univ : Finset F), fullSpectrumT ψ G b ≤ T)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (Real.exp (c * T) / c) * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C := by
+  have hA : 1 ≤ Real.exp (c * T) := by
+    simpa [Real.one_le_exp_iff] using mul_nonneg hc.le hTnonneg
+  exact prizeFloor_of_fullSpectrum_mgf_general_depth_factor hψ G hA hc hC
+    (mgfBound_of_max_ceiling (Finset.univ : Finset F) (fullSpectrumT ψ G) hc.le hT)
+    hGpos hq hr hrq hrK hconst
+
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
 
 /-! ## Axiom audit -/
@@ -116,5 +135,6 @@ namespace ProximityGap.Frontier.MGFGeneralToConvergenceHub
 #print axioms forall_rEnergy_le_mul_wick_of_momentEnvelope_general
 #print axioms prizeFloor_of_mgf_general_depth_factor
 #print axioms prizeFloor_of_fullSpectrum_mgf_general_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_cutoff_depth_factor
 
 end ProximityGap.Frontier.MGFGeneralToConvergenceHub
