@@ -221,6 +221,56 @@ theorem trueWeight_le_of_puncturedListBudget
   have h := trueWeight_le_list_card_mul (a := a) (s := s) (Λ := Λ) stratum hprofile.le
   exact le_trans h (Nat.mul_le_mul_right _ hbudget)
 
+open Classical in
+/-- **Punctured weight from list size.**  The actual punctured zero-stratified line weight is
+bounded by the appearing-list size times the moving support size.  This is the concrete in-tree
+version of `trueWeight_le_list_card_mul`: it uses the codeword-weighted definition directly, so it
+does not pass through the exploded `choose(z,t)·D(t)` envelope. -/
+theorem puncturedZeroStratifiedLineWeight_le_lineAppearingCodewords_card_mul_support
+    (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
+    puncturedZeroStratifiedLineWeight dom k a u₀ u₁
+      ≤ (lineAppearingCodewords dom k a u₀ u₁).card * (directionSupportSet u₁).card := by
+  rw [puncturedZeroStratifiedLineWeight]
+  calc
+    ∑ c ∈ lineAppearingCodewords dom k a u₀ u₁,
+        (directionSupportSet u₁).card / (a - (directionZeroAgreementSet c u₀ u₁).card)
+      ≤ ∑ _c ∈ lineAppearingCodewords dom k a u₀ u₁, (directionSupportSet u₁).card := by
+        refine Finset.sum_le_sum fun c _ => ?_
+        exact Nat.div_le_self _ _
+    _ = (lineAppearingCodewords dom k a u₀ u₁).card * (directionSupportSet u₁).card := by
+        rw [Finset.sum_const, smul_eq_mul]
+
+open Classical in
+/-- A direct punctured-list budget gives a uniform punctured zero-stratified line budget, with
+only the unavoidable support factor `≤ n`.  This is the weld-facing form of the surviving
+`PuncturedListBudget` object. -/
+theorem uniformPuncturedZeroStratifiedLineBudgeted_of_puncturedListBudget
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hbudget : PuncturedListBudget dom k a B) :
+    UniformPuncturedZeroStratifiedLineBudgeted dom k a (B * n) := by
+  intro u₀ u₁ hne hsafe
+  have hlist := hbudget u₀ u₁ hne hsafe
+  have hsupport : (directionSupportSet u₁).card ≤ n := by
+    simpa using Finset.card_le_univ (directionSupportSet u₁)
+  exact le_trans
+    (puncturedZeroStratifiedLineWeight_le_lineAppearingCodewords_card_mul_support
+      dom k a u₀ u₁)
+    (Nat.mul_le_mul hlist hsupport)
+
+open Classical in
+/-- **Safe large-zero consumer from the surviving punctured-list object.**  If the direct
+punctured-list budget holds on large-zero safe lines, then the large-zero safe bad-scalar branch
+is bounded by `B * n`.  This is the positive replacement for the refuted coupled-sum route. -/
+theorem largeZeroSafeLineBadScalarsBudgeted_of_puncturedListBudget
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hbudget : PuncturedListBudget dom k a B) :
+    LargeZeroSafeLineBadScalarsBudgeted dom k a (B * n) := by
+  intro u₀ u₁ hne hsafe
+  exact le_trans
+    (lineBadScalars_card_le_puncturedZeroStratifiedLineWeight dom k a u₀ u₁ hsafe)
+    ((uniformPuncturedZeroStratifiedLineBudgeted_of_puncturedListBudget dom k a B hbudget)
+      u₀ u₁ hne hsafe)
+
 end ProximityGap.LowProfileCoupled
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -234,3 +284,6 @@ end ProximityGap.LowProfileCoupled
 #print axioms ProximityGap.LowProfileCoupled.thresholdChooseSum_unbounded
 #print axioms ProximityGap.LowProfileCoupled.trueWeight_le_list_card_mul
 #print axioms ProximityGap.LowProfileCoupled.trueWeight_le_of_puncturedListBudget
+#print axioms ProximityGap.LowProfileCoupled.puncturedZeroStratifiedLineWeight_le_lineAppearingCodewords_card_mul_support
+#print axioms ProximityGap.LowProfileCoupled.uniformPuncturedZeroStratifiedLineBudgeted_of_puncturedListBudget
+#print axioms ProximityGap.LowProfileCoupled.largeZeroSafeLineBadScalarsBudgeted_of_puncturedListBudget
