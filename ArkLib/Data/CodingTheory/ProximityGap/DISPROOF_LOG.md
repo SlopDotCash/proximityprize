@@ -20378,3 +20378,17 @@ Jacobi–Parseval (r=1 closed), the quartic/sextic convolution collapses, the ca
 every finite field and divisor pair m·n = q−1. Zero named packages remain in the chain; the
 open content of corrected Problem B is exactly `TripleConvEnergyBound` (+ deep-depth
 iterates) — one inequality, no scaffolding debt. CORE OPEN, ON-BGK.
+
+## [466-r27-fulltower-collapse] EVERY rung collapsed: Σ_{s≠0}‖T‖^{2r} = (q−1)·Σ_c‖(J^{∗r})(c)‖² for all r, unconditionally — HyperplaneCancellation's remaining content in final normal form as the named ladder IterConvEnergyWick (2026-07-07)
+
+Lane: #466 round-27 B2 (`Frontier/_R27FullTowerCollapse.lean` axiom-clean, real build, 3
+decls). `iterConv` (r-fold nonzero-index self-convolution on ℤ/m), `pureFace_pow` by
+induction (T^r = (J^{∗r})·λ), `fullTower_collapse` via the generic λ-Parseval; with
+r25/r26 the identity is UNCONDITIONAL for every finite field and every m·n = q−1.
+
+The named ladder `IterConvEnergyWick J q r C` (energy ≤ C^r·r!·(mq)^r) + machine-checked
+consumer `sup_pureFace_of_iterConvEnergyWick` (rung r ⟹ the 2r-th moment ⟹ the pointwise
+sup at depth r — the moment-method input the prize chain consumes at r ≈ ln q). Ladder
+status in this final normal form: r=1 CLOSED (r20), r=2 closed mod textbook Weil
+(r17/18/21), r=3 calibrated open core (r23, C=40 probe-safe), r≈ln q = the wall. ONE family
+of inequalities, one open parameter range, zero scaffolding debt. CORE OPEN, ON-BGK.
