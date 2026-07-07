@@ -20245,3 +20245,17 @@ now an explicit statement about equidistribution of Jacobi-sum products along li
 in ℤ/m — with r = 1 CLOSED by this brick (Parseval), r = 2 closed mod textbook Weil (r17/r18),
 r = 3 the delimited open core. CORE OPEN, ON-BGK; the open object is now stated in its exact
 arithmetic normal form.
+
+## [466-r21-quartic-convolution-collapse] the r=2 Jacobi correlation is EXACTLY a convolution energy: Σ_{s≠0}‖T‖⁴ = (q−1)·Σ_c‖(J∗J)(c)‖² — the tower is self-similar under spectrum↦coefficients renormalization (2026-07-07)
+
+Lane: #466 round-21 B2 (`Frontier/_R21QuarticConvolutionCollapse.lean` axiom-clean, real
+build). From the r19/r20 Jacobi normal form: `T(s)² = Σ_c (J∗J)(c)·λ_c(s)` exactly
+(`pureFace_sq`), hence by cross-orthogonality `quartic_convolution_collapse`:
+`Σ_{s≠0}‖T(s)‖⁴ = (q−1)·Σ_{c∈ℤ/m}‖(J∗J)(c)‖²`. Pure algebra, no analytic input.
+
+Payoffs: (i) the r=2 rung at every deg is the additive smoothness of the Jacobi-coefficient
+sequence on ℤ/m, in a manifestly nonnegative normal form; (ii) by discrete Parseval on ℤ/m,
+`Σ_c‖J∗J‖² = (1/m)Σ_t‖Ĵ(t)‖⁴` — the fourth moment of the face equals the fourth moment of the
+DFT of its own coefficients: the corrected tower is a FIXED POINT of the spectrum↦coefficients
+renormalization. The deep-depth wall is this self-similarity iterated log q times; the r=3
+open object is its first non-classical rung. CORE OPEN, ON-BGK.
