@@ -111,6 +111,11 @@ All claims below are exact-checked (verify-don't-believe):
   monomial-ONLY: `eigen_forces_monomial`; general `f` → the BGK incidence wall),
   `BridgeLoop41`, `Frontier/LaneB_Q2_SparsityExclusive`, `Frontier/_ChaiFanBasePanelGate`.
 * **Status of the two open inputs:**
+  · **(UPDATE 2026-07-07, rounds 15–18 — read dossier §25–§28 FIRST):** Problem B is now the
+    OFF-DIAGONAL constant-C tower (raw away-Wick REFUTED as universal); rungs ≤ 2 are
+    Weil-classical (r=2@deg2 discharged mod `WeilQuarticPairs`, a pure Mathlib gap); the deg-2
+    face ⟺ Karatsuba thin-shift sup (two-sided, `_R18Deg2FaceConverse`); first genuinely-open
+    object = the r=3 sextic family cancellation in the β∈(4,6) gap + the deep `r ≈ ln q` wall.
   · **Q1** (Chai–Fan Conj 4.12, the conjugate-norm non-vanishing) is GENUINELY NON-character-sum
     and PROVEN at `d=16` at prize scale (`Frontier/_wfLB2_Q1Direct_d16`: `V_16^prim = ∅` all
     char, bad-reduction threshold 881 ≪ 16⁴); route-(i) self-similarity breaks in char-`p` at

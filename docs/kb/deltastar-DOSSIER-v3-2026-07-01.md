@@ -1483,3 +1483,41 @@ combinatorics, the assembly) is proven axiom-clean. Rungs ≥ 3 are the wall pro
 needs a factor n^{r−2} beyond square-root cancellation, the banked Problem-A energies live in a
 negligible slice, and the dominant mass is self-referential. The two towers (A and B) do NOT weld.
 **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §28. Consolidation after rounds 15–18 (2026-07-07) — the corrected two-problem statement
+
+Rounds 15–18 (two concurrent sessions, ~12 landed commits) materially updated what "Problem B"
+is. The definitive statement of §0/round-14 should now be read with these corrections:
+
+**Problem B, corrected statement (supersedes the raw round-13/14 form).** The BCHKS-1.12-shaped
+input is the OFF-DIAGONAL incidence field: `D = {0} ∪ μ_n` must be deleted (the diagonal value
+is the exact rational `I_H(s₀∈μ_n) = Σ/n` — `incidenceSum_diag_exact`, zero analytic content),
+and the Wick tower carries a constant: the raw `(2r−1)‼` form is REFUTED as a universal
+statement (float128 countermodels at low β and at thin `H`; tag
+`466-r16-away-wick-refuted-diag-exact`), the corrected object is `WickAwayAtWithConstant`
+(C = 4 probe-sufficient everywhere; plateau law `1 − c/deg` = exact variance depletion, r18).
+
+**What is now CLOSED under named classical inputs (machine-checked):**
+- rungs r = 0, 1 of the corrected tower — unconditional;
+- rung r = 2 at deg = 2 — `wickAwayAt_two_of_weil` (+ `quadraticChar` instantiation): constant-1
+  Wick for `√q ≥ 16n²`, conditional ONLY on `WeilQuarticPairs` (Weil 1948 — a pure
+  Mathlib-formalization gap, not open math; the E2-escape is refuted, r18);
+- the r = 2 rung reduction lattice at general deg through `QuarticWeilInput` (r18, peer session);
+- the deg-2 face is TWO-SIDEDLY the thin-shifted-Legendre sup problem:
+  `g·W = 2·I_QR + n` exactly off-diagonal (`_R18Deg2FaceConverse`) — corrected Problem B at
+  deg 2 ⟺ Karatsuba's shifted-thin-subgroup cancellation, explicit constants both ways.
+
+**What is genuinely OPEN (the delimited core, replacing "BCHKS 1.12" tout court):**
+1. the r = 3 rung at deg = 2 in the β ∈ (4,6) gap (prize β ≈ 5.3): the sixth moment sits AT
+   the Wick main term empirically while per-tuple Weil is vacuous — requires cancellation
+   ACROSS the genus-2 Weil sums of the family `{∏(s−yᵢ)}_{y⃗∈μ_n⁶}` (vertical-Sato–Tate
+   flavor); rung-3 master identity + tower-welding no-go landed (r18);
+2. the deep-depth regime `r ≈ ln q` at every deg — the moment-method demand, where the wall
+   (Paley/BGK/BCHKS) genuinely lives;
+3. Problem A (`WallHolds`) — unchanged since round 12.
+
+**Net effect on the prize statement.** `prize ⟺ WallHolds ∧ HyperplaneCancellation` stands,
+but `HyperplaneCancellation`'s open content is now delimited from below by classical
+mathematics: everything up to fourth moments is Weil-classical; the first open object is a
+family-cancellation statement for sextic character sums; and its deg-2 face is a NAMED
+classical open problem (Karatsuba). CORE OPEN, ON-BGK. No fabricated closure.
