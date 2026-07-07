@@ -20564,3 +20564,19 @@ two-character-Weil class applied to the W-weights (successor: the surface-Weil n
 for Σ_w W(uw)conj(W(w))λ(w), then assemble the full r=3 decomposition). The ONLY remaining
 open object in `TripleConvEnergyBound` is the fully-unmatched sextic class — the named
 triple-correlation input, now with zero cross-term debt. CORE OPEN, ON-BGK.
+
+## [466-r34-quad-weil-bound] the cross class of the r=3 decomposition CONTROLLED: ‖Σ_j J_{j+t₁}J_{j+t₂}conj(J_{j+s₁}J_j)‖ ≤ m·n·C·q^{3/2} under the named SurfaceWeilInput (Deligne class) — only the fully-unmatched sextic class remains (2026-07-07)
+
+Lane: #466 round-34 B2 (`Frontier/_R34QuadWeilBound.lean` axiom-clean, real build).
+`SurfaceWeilInput` (the w-sums of the r33 collapse have q^{3/2} cancellation — after
+expanding both pair-weights, a three-free-variable complete character sum over an explicit
+surface; the classical Deligne input mirroring r17/r31 one level up) +
+`quad_correlation_bound` (a √q-saving against the trivial m·q² four-coefficient scale).
+
+Ladder of named classical inputs now: r17 `WeilQuarticPairs` (curves) → r31
+`TwoCharacterWeilInput` (curves) → r34 `SurfaceWeilInput` (surfaces) — each consumed by a
+machine-checked bound; all are literature-true (Weil/Deligne), none open math. The r=3
+matching decomposition has: main term (Gaussian), pair class (r31-bounded), cross class
+(r34-bounded), and the fully-unmatched sextic class = THE one remaining open object.
+SUCCESSOR: assemble the decomposition (bookkeeping identity), then face the last input.
+CORE OPEN, ON-BGK.

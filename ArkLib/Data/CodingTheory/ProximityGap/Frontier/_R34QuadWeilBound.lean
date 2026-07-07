@@ -1,0 +1,90 @@
+/-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R33QuadViaWeights
+
+/-!
+# LANE B2 (#466 round 34): the four-`J` correlations are surface-Weil-small — the cross
+  class of the r = 3 decomposition, bounded
+
+Round 33 made every balanced four-`J` correlation exact:
+`∑_j J_{j+t₁}J_{j+t₂}·conj(J_{j+s₁}J_j) = m·∑_{u∈G}∑_w W_{t₂−t₁}(u·w)·conj(W_{s₁}(w))·λ_{t₁}(w)`.
+Each inner `w`-sum is (after expanding the two pair-weights) a THREE-free-variable complete
+character sum — the Deligne surface class, with expected cancellation `C·q^{3/2}`.  This brick
+names that input and lands the machine-checked consumer:
+
+  **`quad_correlation_bound`** : under `SurfaceWeilInput`, for all lag data,
+  `‖∑_j J_{j+t₁}J_{j+t₂}·conj(J_{j+s₁}J_j)‖ ≤ m·|G|·C·q^{3/2}`.
+
+Against the trivial scale `m·q²` (four coefficients of modulus `√q`, `m` terms), this is a
+`√q`-saving — the exact analogue at the pair level of round 31's bound at the singleton
+level.  With it, the r = 3 matching decomposition's cross class is CONTROLLED (mod the named
+surface input); the sole remaining open object is the fully-unmatched sextic class.
+
+Axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #466, round 34, LANE B2.
+-/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
+open Finset
+
+namespace ArkLib.ProximityGap.Frontier.R34QuadWeilBound
+
+open ArkLib.ProximityGap.Frontier.R19JacobiFourierExpansion
+open ArkLib.ProximityGap.Frontier.R20JacobiParseval
+open ArkLib.ProximityGap.Frontier.R32WeightedLagCorrelation
+open ArkLib.ProximityGap.Frontier.R33QuadViaWeights
+
+variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+variable {m : ℕ} [NeZero m] {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
+
+/-- **Named input (surface Weil, Deligne class)**: the `w`-sums of the round-33 collapse have
+`q^{3/2}` cancellation, uniformly over `u ∈ G` and lag data with `t₁ ≠ 0`.  After expanding
+both pair-weights this is a three-free-variable complete character sum over an explicit
+surface; the classical input mirrors rounds 17/31 one level up. -/
+def SurfaceWeilInput (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset F) (C : ℝ) : Prop :=
+  ∀ u ∈ G, ∀ a b t : ZMod m, t ≠ 0 →
+    ‖∑ w : F, pairWeight χ lam a (u * w)
+        * (starRingEnd ℂ) (pairWeight χ lam b w) * lam t w‖
+      ≤ C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)
+
+/-- **THE QUAD-CORRELATION BOUND (round-34 main theorem).**  Under the named surface input,
+every balanced four-`J` correlation at lag `t₁ ≠ 0` satisfies
+`‖∑_j J_{j+t₁}J_{j+t₂}·conj(J_{j+s₁}J_j)‖ ≤ m·|G|·C·q^{3/2}` — the cross class of the r = 3
+matching decomposition is controlled. -/
+theorem quad_correlation_bound (hfam : SubgroupDualFamily G m lam)
+    (hgrp : DualFamilyGroupLaw m lam)
+    {C : ℝ} (hC : 0 ≤ C) (hweil : SurfaceWeilInput χ lam G C)
+    {t₁ t₂ s₁ : ZMod m} (ht₁ : t₁ ≠ 0) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * (G.card : ℝ) * C
+          * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)) := by
+  rw [quad_correlation_via_weights hfam hgrp t₁ t₂ s₁]
+  rw [norm_mul, Complex.norm_natCast]
+  have hsum : ‖∑ u ∈ G, ∑ w : F, pairWeight χ lam (t₂ - t₁) (u * w)
+        * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖
+      ≤ (G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)) := by
+    calc ‖∑ u ∈ G, ∑ w : F, pairWeight χ lam (t₂ - t₁) (u * w)
+          * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖
+        ≤ ∑ u ∈ G, ‖∑ w : F, pairWeight χ lam (t₂ - t₁) (u * w)
+            * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖ := norm_sum_le _ _
+      _ ≤ ∑ _u ∈ G, C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) :=
+          Finset.sum_le_sum (fun u hu => hweil u hu (t₂ - t₁) s₁ t₁ ht₁)
+      _ = (G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+  calc (m : ℝ) * ‖∑ u ∈ G, ∑ w : F, pairWeight χ lam (t₂ - t₁) (u * w)
+        * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖
+      ≤ (m : ℝ) * ((G.card : ℝ) * (C * Real.sqrt (Fintype.card F)
+          * (Fintype.card F : ℝ))) :=
+        mul_le_mul_of_nonneg_left hsum (by positivity)
+    _ = (m : ℝ) * (G.card : ℝ) * C
+          * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)) := by ring
+
+end ArkLib.ProximityGap.Frontier.R34QuadWeilBound
+
+/-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+#print axioms ArkLib.ProximityGap.Frontier.R34QuadWeilBound.quad_correlation_bound
