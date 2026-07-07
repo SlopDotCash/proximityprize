@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaGate
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R149OcticFullRungPipeline
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R150OcticR2WeilConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16DiagonalExactValue
 
 /-!
@@ -26,7 +26,7 @@ open ArkLib.ProximityGap.Frontier.R18SigmaGate
 open ArkLib.ProximityGap.Frontier.R24FullRungAssembly
 open ArkLib.ProximityGap.Frontier.R59DStepanovSuperellipticAdapter
 open ArkLib.ProximityGap.Frontier.R148OcticDStepanovAdapter
-open ArkLib.ProximityGap.Frontier.R149OcticFullRungPipeline
+open ArkLib.ProximityGap.Frontier.R150OcticR2WeilConsumer
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
@@ -90,7 +90,7 @@ theorem wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope
       (32 * ((4 + Cmax) * (X.card : ℝ) ^ 4 + 1) / (mχ : ℝ) ^ 2 / 3) := by
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
-    fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
+    fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
       hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact wickAwayAtWithConstant_two_of_weil_of_sigmaLowerEnvelope ψ G H Dset X g
@@ -152,7 +152,7 @@ theorem incidence_sq_le_sqrt_of_octic_sigmaLowerEnvelope
           * ((Fintype.card F : ℝ) * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) ^ 2)) := by
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
-    fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
+    fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
       hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact incidence_sq_le_sqrt_of_weil_r2 ψ G H Dset X g mχ hmχ hCw0 hdec hg h4 hq1 hnq
