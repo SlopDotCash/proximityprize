@@ -72,6 +72,40 @@ theorem prizeFloor_of_mgf_le_one_depth_factor
   prizeFloor_of_mgf_depth_factor hψ G s t hc hc1 hC ht hP
     (mgfBound_one_of_le_one s t hA hMGF) hGpos hq hr hrq hrK hconst henergyRep
 
+/-- Full-spectrum version of `nearRamanujan_of_mgf_le_one_depth_factor`: for
+`t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
+discharged by `MGFToConvergenceHub`. -/
+theorem nearRamanujan_of_fullSpectrum_mgf_le_one_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c C K : ℝ} {r : ℕ}
+    (hA : A ≤ 1) (hc : 0 < c) (hc1 : c ≤ 1) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c) * K ≤ C ^ 2) :
+    NearRamanujanSqrtLog ψ G C :=
+  nearRamanujan_of_fullSpectrum_mgf_depth_factor hψ G hc hc1 hC
+    (mgfBound_one_of_le_one (Finset.univ : Finset F) (fullSpectrumT ψ G) hA hMGF)
+    hGpos hq hr hrq hrK hconst
+
+/-- Full-spectrum version of `prizeFloor_of_mgf_le_one_depth_factor`: for
+`t_b = ‖η_b‖² / |G|` over all additive frequencies, the energy-representation hypothesis is
+discharged by `MGFToConvergenceHub`. -/
+theorem prizeFloor_of_fullSpectrum_mgf_le_one_depth_factor
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {A c C K : ℝ} {r : ℕ}
+    (hA : A ≤ 1) (hc : 0 < c) (hc1 : c ≤ 1) (hC : 0 ≤ C)
+    (hMGF : MGFBound (Finset.univ : Finset F) (fullSpectrumT ψ G) A c)
+    (hGpos : 0 < G.card) (hq : (G.card : ℝ) ≤ Fintype.card F) (hr : 1 ≤ r)
+    (hrq : Real.log (Fintype.card F : ℝ) ≤ r)
+    (hrK : (r : ℝ) ≤ K * Real.log ((Fintype.card F : ℝ) / (G.card : ℝ)))
+    (hconst : 2 * Real.exp 1 * (1 / c) * K ≤ C ^ 2) :
+    ConvergenceHub.PrizeFloor ψ G C :=
+  prizeFloor_of_fullSpectrum_mgf_depth_factor hψ G hc hc1 hC
+    (mgfBound_one_of_le_one (Finset.univ : Finset F) (fullSpectrumT ψ G) hA hMGF)
+    hGpos hq hr hrq hrK hconst
+
 end ProximityGap.Frontier.R149MGFSmallToConvergenceHub
 
 /-! ## Axiom audit -/
@@ -80,5 +114,7 @@ namespace ProximityGap.Frontier.R149MGFSmallToConvergenceHub
 #print axioms mgfBound_one_of_le_one
 #print axioms nearRamanujan_of_mgf_le_one_depth_factor
 #print axioms prizeFloor_of_mgf_le_one_depth_factor
+#print axioms nearRamanujan_of_fullSpectrum_mgf_le_one_depth_factor
+#print axioms prizeFloor_of_fullSpectrum_mgf_le_one_depth_factor
 
 end ProximityGap.Frontier.R149MGFSmallToConvergenceHub

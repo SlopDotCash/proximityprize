@@ -24,6 +24,7 @@ composition as the hub-facing S11 route with no explicit `MomentEnvelope` hypoth
 
 open AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)
 open ArkLib.ProximityGap.GaussPeriodSpectralFrame
 open ArkLib.ProximityGap.Frontier.WFS11
 open ProximityGap.Frontier.SubexpMomentToConvergenceHub
@@ -45,7 +46,7 @@ theorem fullSpectrumT_nonneg {ψ : AddChar F ℂ} {G : Finset F} (hGpos : 0 < G.
     ∀ b ∈ (Finset.univ : Finset F), 0 ≤ fullSpectrumT ψ G b := by
   intro b _
   unfold fullSpectrumT
-  positivity
+  exact div_nonneg (sq_nonneg _) (by positivity)
 
 /-- For the full spectrum `t_b = ‖η_b‖² / |G|`, the empirical moments represent the in-tree
 energy exactly, hence in particular dominate `rEnergy / |G|^r`. -/
@@ -74,18 +75,9 @@ theorem rEnergy_le_card_pow_mul_fullSpectrumMoment
       _ = ((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r := by
               rw [hsum]
   rw [empiricalMoment]
-  simp only [Finset.mem_univ, Finset.sum_true, Finset.card_univ]
+  simp only [Finset.card_univ]
   rw [hsumT]
-  calc
-    (rEnergy G r : ℝ)
-        = (G.card : ℝ) ^ r
-            * (((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r
-                / (Fintype.card F : ℝ)) := by
-            field_simp [ne_of_gt hpow, ne_of_gt hq]
-            ring
-    _ ≤ (G.card : ℝ) ^ r
-            * (((Fintype.card F : ℝ) * (rEnergy G r : ℝ)) / (G.card : ℝ) ^ r
-                / (Fintype.card F : ℝ)) := le_rfl
+  exact le_of_eq (by field_simp [ne_of_gt hpow, ne_of_gt hq])
 
 /-- A one-variable S11 MGF residual gives the spectral `NearRamanujanSqrtLog` face once the
 empirical moments dominate the actual in-tree energies. -/
