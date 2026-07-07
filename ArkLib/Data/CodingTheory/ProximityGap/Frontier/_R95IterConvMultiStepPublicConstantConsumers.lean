@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R93PointwiseTriplePublicConstantConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R94IterConvSuccPublicConstantAdapters
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R66TripleConvIterWickAdapter
 
 /-!
 # LANE B2 (#466 round 95): multi-step Wick propagation from the r = 3 head
@@ -30,9 +31,11 @@ namespace ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsume
 open ArkLib.ProximityGap.Frontier.R19JacobiFourierExpansion
 open ArkLib.ProximityGap.Frontier.R20JacobiParseval
 open ArkLib.ProximityGap.Frontier.R21QuarticConvolutionCollapse
+open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput
 open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget
 open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse
 open ArkLib.ProximityGap.Frontier.R30IterConvEnergyRecursion
+open ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter
 open ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters
 open ArkLib.ProximityGap.Frontier.R91PointwiseTripleToIterWickBridge
 open ArkLib.ProximityGap.Frontier.R93PointwiseTriplePublicConstantConsumers
@@ -99,6 +102,41 @@ theorem sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const
     (iterConvEnergyWick_add_of_prev_of_budget J (Fintype.card F) r k
       hJ hC0 hprev hbudget)
     hs
+
+/-- A calibrated r = 3 energy certificate propagates to depth `3+k` under the explicit
+head-rung budgets, and can be published at any larger Wick constant. -/
+theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
+    (J : ZMod m → ℂ) (q k : ℕ) {B C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget : ∀ t : ℕ, 3 ≤ t → t < 3 + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    (h : TripleConvEnergyBound J q B) :
+    IterConvEnergyWick J q (3 + k) C' :=
+  iterConvEnergyWick_add_of_prev_of_budget_le_const J q 3 k hJ hC0 hCC
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
+    hbudget
+
+/-- A calibrated r = 3 energy certificate propagates to depth `3+k` under explicit head-rung
+budgets, then feeds the public face-moment bound. -/
+theorem sup_pureFace_from_three_of_tripleConvEnergyBound_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget : ∀ t : ℕ, 3 ≤ t → t < 3 + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    (h : TripleConvEnergyBound J (Fintype.card F) B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const hfam hgrp J
+    hJ hC0 hCC
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
+    hbudget hs
 
 /-- A pointwise r = 3 certificate propagates to depth `3+k` under the explicit head-rung
 budgets, and can be published at any larger Wick constant. -/
@@ -170,6 +208,10 @@ end ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_add_of_prev_of_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_from_three_of_tripleConvEnergyBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_le_const
 #print axioms

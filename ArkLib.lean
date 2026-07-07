@@ -1181,6 +1181,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFGeneralToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MixedTopFitBudgetIncompatibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MuNIteratedDoubling
@@ -2379,6 +2380,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R148TwoCharacterWeilSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R149MGFSmallToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R149OcticFullRungPipeline
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R14SupNormWeakerThanWall
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R150OcticR2WeilConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R151OcticChiFamilyExactRung
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R151OcticSigmaGateConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15GaussDecompDiagonalSpike
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15IncidenceMomentInterchange
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16DiagonalExactValue
