@@ -110,6 +110,18 @@ theorem tripleConvEnergyBound_of_iterConvEnergyWick_three
     _ ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ) * ((m : ℝ) * (q : ℝ)) ^ 3 := h
     _ = (C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)) * (m : ℝ) ^ 3 * (q : ℝ) ^ 3 := by ring
 
+/-- Exact r = 3 equivalence between the calibrated R23 bound and the full-tower Wick
+normalization. -/
+theorem tripleConvEnergyBound_iff_iterConvEnergyWick_three
+    (J : ZMod m → ℂ) (q : ℕ) {C : ℝ} :
+    TripleConvEnergyBound J q (C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+      ↔ IterConvEnergyWick J q 3 C := by
+  constructor
+  · intro h
+    exact iterConvEnergyWick_three_of_tripleConvEnergyBound J q (le_rfl) h
+  · intro h
+    exact tripleConvEnergyBound_of_iterConvEnergyWick_three J q h
+
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter.iterConv_one_eq
@@ -125,5 +137,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter.tripleConvEnergyBound_of_iterConvEnergyWick_three
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter.tripleConvEnergyBound_iff_iterConvEnergyWick_three
 
 end ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter
