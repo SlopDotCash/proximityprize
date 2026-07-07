@@ -20130,3 +20130,37 @@ Three lanes + three adversarial skeptics, all CONFIRMED (severity minor).
   are now RESOLVED consistent with the wall.
 
 CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r17-deg2-weil-rung-discharged] the FIRST discharged nontrivial rung of the corrected tower: r=2 away-Wick at deg=2 is CLASSICAL (Weil), not open — with the exact QR bridge `I_QR = (q·1_G − n + g·W)/2` (2026-07-07)
+
+Lane: #466 round-17 B2 (`Frontier/_R17Deg2WeilRung.lean` axiom-clean, real build; probe
+`probe_r17_deg2_weil_rung.py`, 18 cells, bridge exact to 1e-9, S₂'/Wick = 0.22–0.29 ≈ the
+predicted 1/4).
+
+**(1) THE EXACT BRIDGE (unconditional, landed).** For χ the quadratic character and H = QR
+(index-2 subgroup): `I_QR(s₀) = (q·1_G(s₀) − n + g(χ)·W(s₀))/2` EXACTLY, where
+`W(s₀) = Σ_{y∈μ_n} χ(s₀−y)` and `g·conj(g) = q` (`bridge`, `gSum_mul_conj` — pure
+orthogonality/reindexing, in a self-contained real-quadratic-character calculus
+`IsRealQuadChar`). The deg-2 face of corrected Problem B IS the shifted-subgroup character sum
+at scale √q. Also exact: `Σ_s W = 0`, `Σ_s W² = n(q−n)` (two-point orthogonality
+`Σ_s χ(s−a)χ(s−b) = −1`).
+
+**(2) THE DISCHARGED RUNG (the round's theorem).** `wickAwayAt_two_of_weil`: for `√q ≥ 16n²`
+(true at prize scaling β≈5.3; any β>4 asymptotically),
+`WickForIncidenceAwayAt ψ μ_n QR ({0}∪μ_n) 2` — the TRUE constant-1 r=2 rung — holds
+conditional ONLY on the named classical input `WeilQuarticPairs` (square-root cancellation of
+quartic shifted character sums for non-matching pairs; Weil 1948, Mathlib lacks it;
+named-residual convention as `TZPrimeSupply`). Proof: fourth moment of W splits as
+pairing main term (≤ 3n²q + 2n³, elementary: R-kernel split `W² = (n−1_G) + R`, `Σ_s R ≤ 0`,
+matching-pair count 2n²·q) + Weil error (≤ 3n⁴√q); third moment via Cauchy–Schwarz
+`|ΣWR| ≤ √(ΣW²·ΣR²)` — NO cubic Weil input needed; binomial assembly with `Re(g)² ≤ q` gives
+S₂^D ≤ 3qΣ_QR² with ~3× slack at the threshold.
+
+**(3) STRUCTURAL PAYOFF.** Problem B now mirrors Problem A exactly: shallow rungs of the
+corrected tower are CLASSICAL (r=1 unconditional; r=2 at deg=2 = Weil), the open content is the
+deep-depth regime r ≈ ln q where the Weil error n^{2r}√q swamps the main term. Round-18 lanes:
+(a) general-deg χ-decomposition (each T_χ pair a Weil sum of order deg — same skeleton);
+(b) r=3 at deg=2 (needs sextic Weil, works while n³ ≲ √q, i.e. β>6 — prize β≈5.3 sits BETWEEN:
+the r=3 rung at prize scaling is the first genuinely-open rung); (c) discharging
+`WeilQuarticPairs` itself if/when Weil lands in Mathlib. CORE OPEN, ON-BGK — but the open
+region is now sharply delimited from below.

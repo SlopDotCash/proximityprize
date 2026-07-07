@@ -1435,3 +1435,32 @@ formalization inputs in the prize regime. All second-moment averaging directions
 identities with zero slack. The open analytic content of the B-moment route is precisely rungs
 3..⌈ln q⌉ of the diagonal-subtracted tower — the same deep-depth wall, now with exact rung
 bookkeeping. **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §27. Round 17 (2026-07-07) — the FIRST discharged rung: r=2 away-Wick at deg=2 is Weil-classical, via the exact QR bridge
+
+DISPROOF tag `466-r17-deg2-weil-rung-discharged`; brick `_R17Deg2WeilRung.lean` (axiom-clean,
+real-build verified, 10 audited declarations). Probe `probe_r17_deg2_weil_rung.py` (18 cells).
+
+**The discovery.** For `H = QR` the incidence field collapses exactly:
+`I_QR(s₀) = (q·1_G(s₀) − n + g·W(s₀))/2` with `W(s₀) = Σ_{y∈μ_n}χ(s₀−y)`, `|g|² = q` — so the
+deg-2 face of corrected Problem B IS the shifted-subgroup character sum, and the r=2 rung is
+the fourth moment of `W`: paired quadruples give the Wick main term, all-distinct quadruples
+are Weil sums. The Weil error `3n⁴√q` is subdominant exactly for `√q ≳ n²` (β > 4) — which
+CONTAINS the prize scaling (β ≈ 5.3).
+
+**What landed (all machine-checked).** A self-contained real-quadratic-character calculus
+(`IsRealQuadChar`: two-point orthogonality, twisted complete sums, `g·conj g = q` — no Mathlib
+Gauss-sum import); the exact bridge; exact `ΣW = 0`, `ΣW² = n(q−n)`; the R-kernel split
+`W² = (n−1_G) + R` with `ΣR ≤ 0` and `ΣR² ≤ 2n²q + 3n⁴√q` (quartic Weil, matching-pair count
+exact); the third moment via Cauchy–Schwarz (no cubic input); and the theorem
+**`wickAwayAt_two_of_weil`**: `√q ≥ 16n²` ⟹ the constant-1 r=2 rung
+`WickForIncidenceAwayAt ψ μ_n QR ({0}∪μ_n) 2`, conditional only on the named
+`WeilQuarticPairs` (Weil 1948; named-residual convention).
+
+**State after 17 rounds.** Problem B now structurally mirrors Problem A: shallow tower rungs
+are closed (r=1 unconditional; r=2 at deg=2 classical), and the genuinely-open content is
+localized to deep depth `r ≈ ln q` (the moment-method demand) where Weil's `n^{2r}√q` loses to
+the main term. At prize scaling the FIRST open rung at deg=2 is r=3 (needs β > 6; prize is
+β ≈ 5.3). Round-18: general-deg `T_χ` version (same skeleton per χ), the r=3 boundary rung,
+and the deep-rung wall — which is where BCHKS/Paley genuinely lives. CORE OPEN, ON-BGK; the
+open region is now delimited from below by machine-checked classical mathematics.

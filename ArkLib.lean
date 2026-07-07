@@ -2308,8 +2308,17 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16IncidenceR2Rung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16LegendreCosetFace
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16OffDiagonalHyperplaneCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16UnconditionalIncidenceBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17Deg2WeilBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17Deg2WeilRung
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17HighMomentSpikeGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadrupleWeilRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17TchiMomentIdentities
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18FourthMomentTwist
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18PlateauLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18RungThreeDecomposition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaEquidistribution
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18TwistedSecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R1SecondMomentSqrtBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_CMKDepthIrreducibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R2B_LargeZeroWitnessSplit
