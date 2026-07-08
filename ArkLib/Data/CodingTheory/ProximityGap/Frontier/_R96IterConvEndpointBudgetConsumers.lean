@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R95IterConvMultiStepPublicConstantConsumers
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R91TripleConvIterWickConstantConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35FullConvLagEnergy
 
 /-!
@@ -36,6 +37,7 @@ open ArkLib.ProximityGap.Frontier.R31LagSpectrumWeilBound
 open ArkLib.ProximityGap.Frontier.R35FullConvLagEnergy
 open ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter
 open ArkLib.ProximityGap.Frontier.R91PointwiseTripleToIterWickBridge
+open ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
 open ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers
 
 variable {m : ℕ} [NeZero m]
@@ -286,6 +288,28 @@ theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const
     (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
     (by simpa using hbudget₃)
 
+/-- A calibrated r = 3 energy certificate checked at a smaller ambient parameter propagates to
+depth `3+k` at a larger ambient parameter, using only the endpoint budget `m ≤ C * 4`. -/
+theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const_q
+    (J : ZMod m → ℂ) {q q' : ℕ} (k : ℕ) {B C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q' : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget₃ : (m : ℝ) ≤ C * 4)
+    (h : TripleConvEnergyBound J q B) :
+    IterConvEnergyWick J q' (3 + k) C' :=
+  iterConvEnergyWick_add_of_prev_of_budget_le_const J q' 3 k hJ hC0 hCC
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const_q
+      J hC0 le_rfl hqq hBC h)
+    (by
+      intro t ht3 htk
+      exact hbudget₃.trans
+        (mul_le_mul_of_nonneg_left
+          (by
+            have ht : 4 ≤ t + 1 := Nat.succ_le_succ ht3
+            exact_mod_cast ht)
+          hC0))
+
 /-- A calibrated r = 3 energy certificate propagates to depth `3+k` and is immediately consumed
 by the public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
 theorem sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const
@@ -304,6 +328,34 @@ theorem sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const
     hJ hC0 hCC
     (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
     (by simpa using hbudget₃)
+    hs
+
+/-- A calibrated r = 3 energy certificate checked at any `q ≤ |F|` propagates to depth `3+k`
+and feeds the public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
+theorem sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q : ℕ} {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget₃ : (m : ℝ) ≤ C * 4)
+    (h : TripleConvEnergyBound J q B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const hfam hgrp J
+    hJ hC0 hCC
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const_q
+      J hC0 le_rfl hqq hBC h)
+    (by
+      intro t ht3 htk
+      exact hbudget₃.trans
+        (mul_le_mul_of_nonneg_left
+          (by
+            have ht : 4 ≤ t + 1 := Nat.succ_le_succ ht3
+            exact_mod_cast ht)
+          hC0))
     hs
 
 /-- Energy-level expanded Jacobi Hermitian input propagates to depth `3+k` from the single
@@ -358,6 +410,29 @@ theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_co
     (iterConvEnergyWick_three_of_tripleConvPointwiseBound_le J q hBB hBC hpt)
     (by simpa using hbudget₃)
 
+/-- A pointwise r = 3 certificate checked at a smaller ambient parameter propagates to depth
+`3+k` at a larger ambient parameter, using only the endpoint budget `m ≤ C * 4`. -/
+theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q
+    (J : ZMod m → ℂ) {q q' : ℕ} (k : ℕ) {B B' C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q' : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget₃ : (m : ℝ) ≤ C * 4)
+    (hpt : TripleConvPointwiseBound J q B) :
+    IterConvEnergyWick J q' (3 + k) C' :=
+  iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_le_const_q J k
+    hJ hC0 hCC hqq hBB hBC
+    (by
+      intro t ht3 htk
+      exact hbudget₃.trans
+        (mul_le_mul_of_nonneg_left
+          (by
+            have ht : 4 ≤ t + 1 := Nat.succ_le_succ ht3
+            exact_mod_cast ht)
+          hC0))
+    hpt
+
 /-- A pointwise r = 3 certificate propagates to depth `3+k` and is immediately consumed by the
 public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
 theorem sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const
@@ -380,12 +455,47 @@ theorem sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const
     (by simpa using hbudget₃)
     hs
 
+/-- A pointwise r = 3 certificate checked at any `q ≤ |F|` propagates to depth `3+k` and feeds
+the public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
+theorem sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q : ℕ} {B B' C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget₃ : (m : ℝ) ≤ C * 4)
+    (hpt : TripleConvPointwiseBound J q B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_from_three_of_tripleConvPointwiseBound_le_const_q hfam hgrp J k
+    hJ hC0 hCC hqq hBB hBC
+    (by
+      intro t ht3 htk
+      exact hbudget₃.trans
+        (mul_le_mul_of_nonneg_left
+          (by
+            have ht : 4 ≤ t + 1 := Nat.succ_le_succ ht3
+            exact_mod_cast ht)
+          hC0))
+    hpt hs
+
 /-- The r = 3 endpoint budget is equivalent to paying a linear-in-`m` Wick constant up to the
 factor `4`; this records the arithmetic obstruction carried by the bare Cauchy recursion. -/
 theorem le_const_of_three_endpoint_budget {C : ℝ}
     (hbudget₃ : (m : ℝ) ≤ C * 4) :
     (m : ℝ) / 4 ≤ C := by
   nlinarith
+
+/-- The r = 3 endpoint budget is exactly the lower bound `C ≥ m/4`. -/
+theorem three_endpoint_budget_iff_const_lower {C : ℝ} :
+    (m : ℝ) ≤ C * 4 ↔ (m : ℝ) / 4 ≤ C := by
+  constructor
+  · exact le_const_of_three_endpoint_budget
+  · intro hC
+    nlinarith
 
 /-- A bounded public constant below `m/4` cannot satisfy the r = 3 endpoint budget. -/
 theorem not_three_endpoint_budget_of_const_lt {C K : ℝ}
@@ -464,7 +574,11 @@ end ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const_q
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_endpoint_le_const
 #print axioms
@@ -472,9 +586,15 @@ end ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.le_const_of_three_endpoint_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.three_endpoint_budget_iff_const_lower
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.not_three_endpoint_budget_of_const_lt
 #print axioms

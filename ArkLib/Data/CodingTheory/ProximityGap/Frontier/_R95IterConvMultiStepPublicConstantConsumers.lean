@@ -78,6 +78,19 @@ theorem iterConvEnergyWick_add_of_prev_of_budget_le_const
   iterConvEnergyWick_mono_const J q (r + k) hC0 hCC
     (iterConvEnergyWick_add_of_prev_of_budget J q r k hJ hC0 hprev hbudget)
 
+/-- Multi-step Wick propagation, published at any larger public constant and ambient size. -/
+theorem iterConvEnergyWick_add_of_prev_of_budget_le_const_q
+    (J : ZMod m → ℂ) {q q' r k : ℕ} {C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q' : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hprev : IterConvEnergyWick J q r C)
+    (hbudget : ∀ t : ℕ, r ≤ t → t < r + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ)) :
+    IterConvEnergyWick J q' (r + k) C' :=
+  iterConvEnergyWick_add_of_prev_of_budget_le_const J q' r k hJ hC0 hCC
+    (iterConvEnergyWick_mono_q J hC0 hqq hprev)
+    hbudget
+
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
 
@@ -103,6 +116,28 @@ theorem sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const
       hJ hC0 hprev hbudget)
     hs
 
+/-- Multi-step Wick propagation at a smaller ambient parameter, immediately consumed by the
+pointwise face bound at the actual field size. -/
+theorem sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q r k : ℕ} {C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hprev : IterConvEnergyWick J q r C)
+    (hbudget : ∀ t : ℕ, r ≤ t → t < r + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (r + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (r + k) * ((r + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (r + k)) :=
+  sup_pureFace_of_iterConvEnergyWick hfam hgrp J
+    (iterConvEnergyWick_add_of_prev_of_budget_le_const
+      J (Fintype.card F) r k hJ hC0 hCC
+      (iterConvEnergyWick_mono_q J hC0 hqq hprev)
+      hbudget)
+    hs
+
 /-- A calibrated r = 3 energy certificate propagates to depth `3+k` under the explicit
 head-rung budgets, and can be published at any larger Wick constant. -/
 theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
@@ -115,6 +150,22 @@ theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
     (h : TripleConvEnergyBound J q B) :
     IterConvEnergyWick J q (3 + k) C' :=
   iterConvEnergyWick_add_of_prev_of_budget_le_const J q 3 k hJ hC0 hCC
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
+    hbudget
+
+/-- A calibrated r = 3 energy certificate checked at a smaller ambient parameter propagates to
+depth `3+k` at any larger ambient parameter. -/
+theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const_q
+    (J : ZMod m → ℂ) {q q' : ℕ} (k : ℕ) {B C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q' : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget : ∀ t : ℕ, 3 ≤ t → t < 3 + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    (h : TripleConvEnergyBound J q B) :
+    IterConvEnergyWick J q' (3 + k) C' :=
+  iterConvEnergyWick_add_of_prev_of_budget_le_const_q J (q := q) (q' := q') (r := 3) (k := k)
+    hJ hC0 hCC hqq
     (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
     hbudget
 
@@ -136,6 +187,26 @@ theorem sup_pureFace_from_three_of_tripleConvEnergyBound_le_const
   sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const hfam hgrp J
     hJ hC0 hCC
     (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
+    hbudget hs
+
+/-- A calibrated r = 3 energy certificate checked at a smaller ambient parameter propagates to
+depth `3+k`, then feeds the public face-moment bound at the field-size ambient parameter. -/
+theorem sup_pureFace_from_three_of_tripleConvEnergyBound_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q : ℕ} {B C C' : ℝ} (k : ℕ)
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hbudget : ∀ t : ℕ, 3 ≤ t → t < 3 + k →
+      (m : ℝ) ≤ C * ((t + 1 : ℕ) : ℝ))
+    (h : TripleConvEnergyBound J q B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const_q hfam hgrp J
+    hJ hC0 hCC hqq
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
     hbudget hs
 
 /-- Energy-level expanded Jacobi Hermitian input propagates to depth `3+k` under the explicit
@@ -307,11 +378,19 @@ end ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_add_of_prev_of_budget_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_add_of_prev_of_budget_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_add_of_iterConvEnergyWick_prev_of_budget_le_const_q
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_from_three_of_tripleConvEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.sup_pureFace_from_three_of_tripleConvEnergyBound_le_const_q
 #print axioms
   ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers.iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_le_const
 #print axioms
