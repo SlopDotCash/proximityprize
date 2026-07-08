@@ -271,6 +271,31 @@ theorem largeZeroSafeLineBadScalarsBudgeted_of_puncturedListBudget
     ((uniformPuncturedZeroStratifiedLineBudgeted_of_puncturedListBudget dom k a B hbudget)
       u₀ u₁ hne hsafe)
 
+open Classical in
+/-- Failure-localization for the surviving large-zero route.  If the weld-facing safe
+large-zero bad-scalar budget fails even after the unavoidable support factor `n`, then the direct
+punctured-list budget is not available at level `B`. -/
+theorem not_puncturedListBudget_of_not_largeZeroSafeLineBadScalarsBudgeted
+    (dom : Fin n ↪ F) (k a B : ℕ)
+    (hnot : ¬ LargeZeroSafeLineBadScalarsBudgeted dom k a (B * n)) :
+    ¬ PuncturedListBudget dom k a B := by
+  intro hbudget
+  exact hnot (largeZeroSafeLineBadScalarsBudgeted_of_puncturedListBudget dom k a B hbudget)
+
+open Classical in
+/-- Witness form of the same localization: a concrete safe large-zero line whose bad-scalar count
+exceeds `B*n` rules out the direct punctured-list budget `B`. -/
+theorem not_puncturedListBudget_of_largeZeroSafe_badScalars_gt
+    (dom : Fin n ↪ F) (k a B : ℕ) (u₀ u₁ : Fin n → F)
+    (hne : ¬ SupportEligibleLineDirection a u₁)
+    (hsafe : ZeroDirectionSafeLine dom k a u₀ u₁)
+    (hgt : B * n < (lineBadScalars dom k a u₀ u₁).card) :
+    ¬ PuncturedListBudget dom k a B :=
+  not_puncturedListBudget_of_not_largeZeroSafeLineBadScalarsBudgeted dom k a B
+    (by
+      intro hbudget
+      exact not_lt_of_ge (hbudget u₀ u₁ hne hsafe) hgt)
+
 end ProximityGap.LowProfileCoupled
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -287,3 +312,5 @@ end ProximityGap.LowProfileCoupled
 #print axioms ProximityGap.LowProfileCoupled.puncturedZeroStratifiedLineWeight_le_lineAppearingCodewords_card_mul_support
 #print axioms ProximityGap.LowProfileCoupled.uniformPuncturedZeroStratifiedLineBudgeted_of_puncturedListBudget
 #print axioms ProximityGap.LowProfileCoupled.largeZeroSafeLineBadScalarsBudgeted_of_puncturedListBudget
+#print axioms ProximityGap.LowProfileCoupled.not_puncturedListBudget_of_not_largeZeroSafeLineBadScalarsBudgeted
+#print axioms ProximityGap.LowProfileCoupled.not_puncturedListBudget_of_largeZeroSafe_badScalars_gt
