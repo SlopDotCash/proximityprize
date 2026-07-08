@@ -14,7 +14,7 @@ namespace ArkLib.ProximityGap.Frontier.R202ShiftPermutationQuarterSum
 open Finset Real
 open scoped BigOperators
 
-variable {ι : Type*} [DecidableEq ι]
+variable {ι : Type*}
 
 theorem sum_comp_perm_eq
     (s : Finset ι) (f : ι → ℝ) (e : Equiv.Perm ι)
