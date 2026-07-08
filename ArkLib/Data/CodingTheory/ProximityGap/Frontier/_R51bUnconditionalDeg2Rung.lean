@@ -130,7 +130,7 @@ theorem sum_Rker_sq_bound26 (hχ : IsRealQuadChar χ) (G : Finset F)
           have hnn : (0:ℝ) ≤ (if p' = p then (1:ℝ) else 0) := by positivity
           nlinarith [hs0, hq0]
         linarith
-    · push_neg at hmatch
+    · push Not at hmatch
       have h := hweil p hpmem p' hp'mem hp hp' hmatch.1 hmatch.2
       have h1 : (if p' = p then (1:ℝ) else 0) = 0 := if_neg hmatch.1
       have h2 : (if p' = Prod.swap p then (1:ℝ) else 0) = 0 := if_neg hmatch.2
@@ -158,15 +158,25 @@ theorem sum_Rker_sq_bound26 (hχ : IsRealQuadChar χ) (G : Finset F)
       have e1 : ∑ p' ∈ G ×ˢ G, (if p' = p then (1:ℝ) else 0) * q ≤ q := by
         have hptw : ∀ p' ∈ G ×ˢ G, (if p' = p then (1:ℝ) else 0) * q
             = (if p' = p then q else 0) := by
-          intro p' _; split_ifs <;> ring
+          intro p' _
+          by_cases h : p' = p <;> simp [h]
         rw [Finset.sum_congr rfl hptw, Finset.sum_ite_eq' (G ×ˢ G) p (fun _ => q)]
-        split_ifs <;> first | linarith | positivity
+        by_cases hpG : p ∈ G ×ˢ G
+        · rw [if_pos hpG]
+          exact le_rfl
+        · rw [if_neg hpG]
+          positivity
       have e2 : ∑ p' ∈ G ×ˢ G, (if p' = Prod.swap p then (1:ℝ) else 0) * q ≤ q := by
         have hptw : ∀ p' ∈ G ×ˢ G, (if p' = Prod.swap p then (1:ℝ) else 0) * q
             = (if p' = Prod.swap p then q else 0) := by
-          intro p' _; split_ifs <;> ring
+          intro p' _
+          by_cases h : p' = Prod.swap p <;> simp [h]
         rw [Finset.sum_congr rfl hptw, Finset.sum_ite_eq' (G ×ˢ G) (Prod.swap p) (fun _ => q)]
-        split_ifs <;> first | linarith | positivity
+        by_cases hpG : Prod.swap p ∈ G ×ˢ G
+        · rw [if_pos hpG]
+          exact le_rfl
+        · rw [if_neg hpG]
+          positivity
       linarith
     have hc2 : ∑ _p' ∈ G ×ˢ G, (26 * Real.sqrt q) = (n^2) * (26 * Real.sqrt q) := by
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_product]
@@ -334,6 +344,7 @@ theorem sum_W_cubed_bound26 (hχ : IsRealQuadChar χ) (G : Finset F)
 /-! ### (2) The rung at constant 26, then THE UNCONDITIONAL MILESTONE. -/
 
 set_option maxHeartbeats 3200000 in
+-- The replayed r17 polynomial inequality needs a larger heartbeat budget for `nlinarith`.
 /-- The r17 rung replayed at input constant 26, same threshold `16·n² ≤ √q`. -/
 theorem wickAwayAt_two_of_weil26 (hχ : IsRealQuadChar χ)
     [DecidablePred fun b : F => χ b = 1]
@@ -618,10 +629,20 @@ theorem wickAwayAtWithConstant_two_unconditional (hF : ringChar F ≠ 2)
     {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) {C : ℝ} (hC : 1 ≤ C)
     (hbig : 16 * (G.card : ℝ) ^ 2 ≤ Real.sqrt (Fintype.card F))
     (hGne : G.Nonempty) :
-    ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.WickAwayAtWithConstant
-      ψ G (QRset (realQuadChar F)) (insert (0:F) G) 2 C :=
-  ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.wickAwayAtWithConstant_of_wickForIncidenceAwayAt
+    WickAwayAtWithConstant ψ G (QRset (realQuadChar F)) (insert (0:F) G) 2 C :=
+  wickAwayAtWithConstant_of_wickForIncidenceAwayAt
     G (QRset (realQuadChar F)) (insert (0:F) G) 2 hC
+    (wickAwayAt_two_unconditional hF hψ G hbig hGne)
+
+/-- Raw fourth-moment target supplied unconditionally by the r = 2 quadratic-character rung. -/
+theorem rawFourthMomentWithDiagonal_two_unconditional (hF : ringChar F ≠ 2)
+    [DecidablePred fun b : F => realQuadChar F b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hbig : 16 * (G.card : ℝ) ^ 2 ≤ Real.sqrt (Fintype.card F))
+    (hGne : G.Nonempty) :
+    RawFourthMomentWithDiagonal ψ G (QRset (realQuadChar F)) (insert (0:F) G) :=
+  (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G
+    (QRset (realQuadChar F)) (insert (0:F) G)).mp
     (wickAwayAt_two_unconditional hF hψ G hbig hGne)
 
 end ArkLib.ProximityGap.Frontier.R51bUnconditionalDeg2Rung
@@ -635,3 +656,5 @@ end ArkLib.ProximityGap.Frontier.R51bUnconditionalDeg2Rung
   ArkLib.ProximityGap.Frontier.R51bUnconditionalDeg2Rung.wickAwayAt_two_unconditional
 #print axioms
   ArkLib.ProximityGap.Frontier.R51bUnconditionalDeg2Rung.wickAwayAtWithConstant_two_unconditional
+#print axioms
+  ArkLib.ProximityGap.Frontier.R51bUnconditionalDeg2Rung.rawFourthMomentWithDiagonal_two_unconditional
