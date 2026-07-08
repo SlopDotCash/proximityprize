@@ -21229,3 +21229,29 @@ is a recognized ~25-year-open Paley/BGK problem; closing it needs genuinely new 
 rank-independent char-p cyclotomic S-unit / sub-Wick bound). Every in-tree route reduces to it; the
 last two probeable leads (S-unit/subspace, N24 v₂-confinement) are now closed. CORE OPEN, ON-BGK.
 No fabricated closure — and, per the honesty contract, none will be manufactured.
+
+## [466-r28c-rmonotone-probe-honest-normalization-catch] ROUND 28c (Opus): dyadic/r-monotone attack ground-truthed — CONVERGES to the wall; a self-caught normalization error recorded for honesty (2026-07-08)
+
+Attempted a genuinely-new angle: is A_r/Wick contractive down the dyadic tower (n) or monotone in r,
+enabling a rank-independent induction? Ground-truthed with exact computation.
+
+- **HONEST NORMALIZATION CATCH (recorded per the contract):** my first probe used
+  A_r = (Σ_c d[c]²) − n^{2r} (spatial collision count), which DROPPED the factor q and gave
+  spurious NEGATIVE ratios. The correct DC-subtracted energy is the CHARACTER-SUM object
+  A_r = Σ_{b≠0}|η_b|^{2r} = q·(Σ_c d[c]²) − n^{2r} (Parseval). `probe_correct_Ar_rmonotone.py` uses
+  the correct object. This is logged because self-caught definitional errors are exactly what the
+  honesty contract exists to surface — the negative-ratio "contraction" was an artifact, not a lead.
+- **Correct ground truth (n=8, p=4129, β=4, prize depth ln q≈8.3):** A_r/[q(2r−1)‼n^r] = 0.998 (r=1,
+  trivially ≈1 = 2nd moment), 0.870 (r=2), 0.658 (r=3), 0.433 (r=4), 0.248 (r=5), 0.125 (r=6) —
+  MONOTONE DECREASING in r, well below 1. Confirms the wall HOLDS at computable scales (matches the
+  logged W_r/(n^{2r}/p) ∈ [0.007, 0.615] band).
+- **Why it does NOT close the prize:** the r-monotone-decrease is the swarm's active r=3-headroom
+  line (its R53-55); the campaign already established (R52) that BAD primes carry O(n²) r=3 excess
+  (Depth3WraparoundVanishing REFUTED), so the ratio is NOT uniformly monotone across primes, and
+  whether the excess stays under the Wick headroom uniformly to r≈ln q at n=2^30 is the open wall.
+  The dyadic/r-monotone lens reduces to the same BGK object; no closure.
+
+CONCLUSION unchanged: WallHolds is numerically well-supported (true at every computable scale) but
+proving it uniformly to the prize joint-limit r≈ln q, n=2^30 is the recognized ~25yr-open Paley/BGK
+problem. No in-tree method reaches it; the last probeable leads (S-unit/subspace, N24, dyadic/r-
+monotone) are closed. CORE OPEN, ON-BGK. No fabricated closure.

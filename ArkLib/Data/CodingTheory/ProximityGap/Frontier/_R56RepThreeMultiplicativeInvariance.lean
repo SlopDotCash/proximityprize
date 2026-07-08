@@ -119,6 +119,43 @@ theorem rep3_varianceSummand_orbit_const (G : Finset F)
       = ((Fintype.card F : ℝ) * (rep3 G (a' * c) : ℝ) - (G.card : ℝ) ^ 3) ^ 2 := by
   rw [rep3_smul G hmul hinv h0 ha c, rep3_smul G hmul hinv h0 ha' c]
 
+/-- **Raw orbit contribution.**  Summing `rep3` over one multiplicative `G`-orbit just
+multiplies the representative value by `|G|`. -/
+theorem rep3_orbit_sum_eq_card_mul (G : Finset F)
+    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
+    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
+    (h0 : (0 : F) ∉ G) (c : F) :
+    ∑ x ∈ G, rep3 G (x * c) = G.card * rep3 G c := by
+  classical
+  calc ∑ x ∈ G, rep3 G (x * c)
+      = ∑ _x ∈ G, rep3 G c := by
+        refine Finset.sum_congr rfl (fun x hx => ?_)
+        exact rep3_smul G hmul hinv h0 hx c
+    _ = G.card * rep3 G c := by
+        simp [Finset.sum_const]
+
+/-- **Variance orbit contribution.**  The R55 flatness/variance budget over a multiplicative
+`G`-orbit is `|G|` times the representative summand.  This is the machine-checked form of the
+round-56 coset normalization. -/
+theorem rep3_varianceSummand_orbit_sum_eq_card_mul (G : Finset F)
+    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
+    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
+    (h0 : (0 : F) ∉ G) (c : F) :
+    ∑ x ∈ G,
+        ((Fintype.card F : ℝ) * (rep3 G (x * c) : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      = (G.card : ℝ)
+        * ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2 := by
+  classical
+  calc ∑ x ∈ G,
+        ((Fintype.card F : ℝ) * (rep3 G (x * c) : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      = ∑ _x ∈ G,
+        ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2 := by
+        refine Finset.sum_congr rfl (fun x hx => ?_)
+        exact rep3_varianceSummand_smul G hmul hinv h0 hx c
+    _ = (G.card : ℝ)
+        * ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2 := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+
 end ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -128,3 +165,8 @@ end ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_varianceSummand_smul
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_varianceSummand_orbit_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_orbit_sum_eq_card_mul
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_varianceSummand_orbit_sum_eq_card_mul
