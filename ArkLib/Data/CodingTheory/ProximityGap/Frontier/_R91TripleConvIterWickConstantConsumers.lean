@@ -50,6 +50,15 @@ theorem iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const
   iterConvEnergyWick_mono_const J q 3 hC0 hCC
     (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
 
+theorem iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const_q
+    (J : ZMod m → ℂ) {q q' : ℕ} {B C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : TripleConvEnergyBound J q B) :
+    IterConvEnergyWick J q' 3 C' :=
+  iterConvEnergyWick_mono_const_q J hC0 hCC hqq
+    (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
+
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F}
 
@@ -70,6 +79,26 @@ theorem sup_pureFace_three_of_tripleConvEnergyBound_le_const
       (F := F) (m := m) (lam := lam) (G := G)
       hfam hgrp J hC0 hCC
       (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
+      hs
+
+/-- Field-size-parametric version of
+`sup_pureFace_three_of_tripleConvEnergyBound_le_const`: a triple-convolution certificate at any
+`q ≤ |F|` feeds the actual finite-field face bound. -/
+theorem sup_pureFace_three_of_tripleConvEnergyBound_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q : ℕ} {B C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : TripleConvEnergyBound J q B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) := by
+  simpa using
+    sup_pureFace_of_iterConvEnergyWick_le_const_q
+      (F := F) (m := m) (lam := lam) (G := G)
+      hfam hgrp J hC0 hCC hqq
+      (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
       hs
 
 /-- A pointwise triple-convolution certificate gives the third full-tower Wick rung at any
@@ -199,7 +228,11 @@ end ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvEnergyBound_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvEnergyBound_le_const_q
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
 #print axioms
