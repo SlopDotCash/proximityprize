@@ -863,6 +863,19 @@ theorem approxB_away_of_chiFamily_octic_superelliptic_of_constant_le_one
       hCdmax hq1 hnq hn4q hreg)
     hM0 hM hs
 
+/-- The size gate used by the `Cmax ≤ 2` octic thinned-family consumer cannot be closed by
+taking the full explicit `chiFamily χ`.  The octic route therefore genuinely needs a thinned
+subfamily, a different decomposition, or a stronger constant gate. -/
+theorem not_full_chiFamily_octic_size_gate (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) :
+    ¬ 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ :=
+  not_fifteen_chiFamily_card_sq_le_order χ hm
+
+/-- Real-valued companion to `not_full_chiFamily_octic_size_gate`, matching the normalized
+constant-gate arithmetic used by downstream analytic consumers. -/
+theorem not_full_chiFamily_octic_size_gate_real (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) :
+    ¬ 15 * (((chiFamily χ).card : ℝ) ^ 2) ≤ (orderOf χ : ℝ) :=
+  not_fifteen_chiFamily_card_sq_le_order_real χ hm
+
 end ArkLib.ProximityGap.Frontier.R151OcticChiFamilyExactRung
 
 /-! ## Axiom audit -/
@@ -894,3 +907,7 @@ open ArkLib.ProximityGap.Frontier.R151OcticChiFamilyExactRung in
 #print axioms incidence_le_of_chiFamily_octic_superelliptic_of_constant_le_one
 open ArkLib.ProximityGap.Frontier.R151OcticChiFamilyExactRung in
 #print axioms approxB_away_of_chiFamily_octic_superelliptic_of_constant_le_one
+open ArkLib.ProximityGap.Frontier.R151OcticChiFamilyExactRung in
+#print axioms not_full_chiFamily_octic_size_gate
+open ArkLib.ProximityGap.Frontier.R151OcticChiFamilyExactRung in
+#print axioms not_full_chiFamily_octic_size_gate_real
