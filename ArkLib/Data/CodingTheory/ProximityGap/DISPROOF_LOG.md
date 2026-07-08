@@ -21039,3 +21039,29 @@ State: TWO unconditional faces of the r=2 rung (d=2 K≈169/49, d=4 K=45); indep
 the whole probed 2-power tower (d ≤ 16, uniform capstone); the rung's remaining analytic content
 = the Main–Res mixed moment (subfamily gate) + the d=8/16 parameter mirrors + everything above
 the rung. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r53-depth3-headroom-reduction] REDUCTION: the r=3 rung needs only `excess ≤ 45n² − 40n` (bounded), NOT exact vanishing — because the char-0 closed form `15n³−45n²+40n` is Wick `15n³` MINUS a Θ(n²) headroom; `Depth3ExcessBounded G E ∧ E ≤ 45n²−40n ⟹ GaussianEnergyBound G 3` (exact Wick), axiom-clean (2026-07-08)
+
+Lane: #466 round-53 (file `_R53Depth3ExcessHeadroom.lean`). Turns the r52 numerical finding
+into a typed reduction. KEY STRUCTURAL FACT: the char-0 depth-3 closed form
+`15n³ − 45n² + 40n` equals the Wick value `15n³` MINUS a positive `Θ(n²)` term — so there is
+`≈45n²` of built-in headroom below the exact Wick bound. The finite-field energy is
+`charZero + excess`; r52 measured the char-p excess at only `~4n²`, an order of magnitude
+inside the `45n²` gate. Hence the EXACT Wick bound survives without any exact vanishing.
+Theorems (all axiom-clean `[propext, Classical.choice, Quot.sound]`, real build):
+- `Depth3ExcessBounded G E := addEnergy3 G ≤ (15n³−45n²+40n) + E` — the refined one-sided atom
+  (strict weakening of r50's exact-equality `Depth3WraparoundVanishing`).
+- `gaussianEnergyBound_three_of_excess_headroom`: `Depth3ExcessBounded G E → E ≤ 45n²−40n →
+  GaussianEnergyBound G 3` (exact Wick, via the in-tree bridge rEnergy G 3 = addEnergy3 G and
+  15 = (2·3−1)‼).
+- `quadraticExcess_within_headroom` + `gaussianEnergyBound_three_of_quadraticExcess`: the
+  concrete r52 instantiation `E = C·n²`, `C ≤ 44`, `n ≥ 40` ⟹ exact Wick (r52 data C≈4).
+- `sixthMoment_le_of_excess_headroom`: `∑_b‖η_b‖⁶ ≤ 15·q·|G|³`.
+- `depth3ExcessBounded_zero_of_closedForm`: r50's exact atom is the E=0 special case (strict
+  generalization).
+**Open content downgraded**: the r=3 rung now needs only a ONE-SIDED O(n²) upper bound on the
+char-p depth-3 wraparound excess (`≤ 45n²−40n`), NOT an exact cyclotomic identity (Lam-Leung).
+This is a much smaller, probe-consistent target. Same wall class (still requires bounding a
+char-p additive-energy surplus), but the exact-vanishing obstruction is removed. CORE OPEN
+(the excess ≤ 45n²−40n bound), ON-BGK. NEXT: the char-0 lift (ℤ[ζ] → F_p reduction) +
+orbit-count route to prove the excess bound; or a direct additive-combinatorial argument.

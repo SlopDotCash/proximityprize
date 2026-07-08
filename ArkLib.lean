@@ -2512,6 +2512,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51UnconditionalQuarticIn
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51bUnconditionalDeg2Rung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52CharacterSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52UnitSexticEnvelope
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53Depth3ExcessHeadroom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53DualFamilySexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R54CharacterUnitSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55SexticExplicitBudget
