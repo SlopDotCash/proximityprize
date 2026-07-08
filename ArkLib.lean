@@ -2523,6 +2523,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55Depth3VarianceReformul
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55SexticExplicitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55UnitSexticEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R56RepThreeMultiplicativeInvariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R57Depth3DeviationOrbitBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R56SexticBudgetNormalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R57SplitCubeLagUnitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R58SplitCubeLagBudgetAdapters

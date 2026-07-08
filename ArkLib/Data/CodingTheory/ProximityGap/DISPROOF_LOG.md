@@ -21255,3 +21255,20 @@ CONCLUSION unchanged: WallHolds is numerically well-supported (true at every com
 proving it uniformly to the prize joint-limit r≈ln q, n=2^30 is the recognized ~25yr-open Paley/BGK
 problem. No in-tree method reaches it; the last probeable leads (S-unit/subspace, N24, dyadic/r-
 monotone) are closed. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r57-deviation-orbit-multiplicity] CAPSTONE (depth-3 variance arc): the deviation d(c)=q·rep3(c)−|G|³ is mean-zero + G-invariant, and the flatness deficit ∑d² ≥ |G|·d(b)² for b≠0 (deficit sees each Gauss period |G| times → effective DOF = (q−1)/|G|) (2026-07-08)
+
+Lane: #466 round-57 (file `_R57Depth3DeviationOrbitBound.lean`). Finishes the r55/r56 arc with
+the structural normalization of the depth-3 variance. Proven axiom-clean (real build):
+- `deviation_smul`: d(a·c)=d(c) for a∈G (from r56 rep3_smul).
+- `sum_deviation_zero`: ∑_c d(c) = 0 (mean-zero, from r55 sum_rep3).
+- `deficit_ge_orbit`: for b≠0, ∑_c d(c)² ≥ |G|·d(b)² — d is constant on the |G|-element
+  multiplicative orbit G·b (free action, b≠0), so a single large period-deviation forces the
+  whole deficit up by |G|. Additive-side mirror of in-tree
+  `GaussPeriodCosetReduction.card_mul_eta_pow_le_sum_erase` (char side).
+- `energy_ge_orbit`: via r55 variance_identity, |G|·d(b)² ≤ q·(q·E₃−|G|⁶) — the DC-subtracted
+  depth-3 energy dominates |G| copies of any single period-deviation.
+CONSEQUENCE: the depth-3 flatness deficit "sees" each Gauss period with multiplicity |G|, so the
+effective number of degrees of freedom is (q−1)/|G|, not q — the /|G| saving the moment method
+relies on, now proven on the additive side. Does NOT break the wall (per-orbit deviations still
+Paley/BGK-governed). Completes the depth-3 variance arc r55→r56→r57. CORE OPEN, ON-BGK.
