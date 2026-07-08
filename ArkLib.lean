@@ -2446,6 +2446,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25FractionRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25OcticNormFold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25QuarticAdjoinRoot
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25SubfamilyGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26DiscreteLogExists
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26PointwiseTripleConvTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R27FullTowerCollapse
