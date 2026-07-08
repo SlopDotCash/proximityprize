@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMoment
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkov
 
 /-!
 # Round 50: the depth-3 wraparound-vanishing atom
@@ -97,6 +97,56 @@ theorem sixthMoment_le_fifteen_card_cube_of_depth3WraparoundVanishing {ψ : AddC
   sixthMoment_le_of_depth3WraparoundVanishing_bound hψ G hvan
     (charZero_depth3_closedForm_le_fifteen_card_cube G hn)
 
+/-- Johnson-scale exclusion from the exact depth-3 atom.  If the finite-field depth-3 energy
+has the characteristic-zero closed form and that closed form lies below `q²`, the sixth-moment
+Markov count forces the Johnson-scale frequency set to be empty. -/
+theorem no_johnson_scale_frequency_of_depth3_closedForm_lt {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F) (hq : 0 < Fintype.card F)
+    (hvan :
+      (addEnergy3 G : ℝ)
+        = 15 * (G.card : ℝ) ^ 3 - 45 * (G.card : ℝ) ^ 2 + 40 * (G.card : ℝ))
+    (hlt :
+      15 * (G.card : ℝ) ^ 3 - 45 * (G.card : ℝ) ^ 2 + 40 * (G.card : ℝ)
+        < (Fintype.card F : ℝ) ^ 2) :
+    (Finset.univ.filter (fun b : F =>
+      (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2)) = ∅ := by
+  classical
+  by_contra hne
+  have hnemp : (Finset.univ.filter (fun b : F =>
+      (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2)).Nonempty :=
+    Finset.nonempty_iff_ne_empty.mpr hne
+  have hcard1 : (1 : ℝ) ≤
+      ((Finset.univ.filter (fun b : F =>
+        (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2)).card : ℝ) := by
+    have : 1 ≤ (Finset.univ.filter (fun b : F =>
+        (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2)).card :=
+      Finset.Nonempty.card_pos hnemp
+    exact_mod_cast this
+  have hqpos : (0 : ℝ) < (Fintype.card F : ℝ) ^ 2 := by
+    have : (0 : ℝ) < (Fintype.card F : ℝ) := by exact_mod_cast hq
+    positivity
+  have hmarkov := card_johnson_scale_frequencies_mul_sq_le_energy3 hψ G hq
+  have hq2le : (Fintype.card F : ℝ) ^ 2 ≤
+      ((Finset.univ.filter (fun b : F =>
+        (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2)).card : ℝ)
+          * (Fintype.card F : ℝ) ^ 2 := by
+    nlinarith [hcard1, hqpos]
+  rw [hvan] at hmarkov
+  linarith [hq2le, hmarkov, hlt]
+
+/-- Cleaner sufficient form of `no_johnson_scale_frequency_of_depth3_closedForm_lt`.
+For nonempty `G`, it is enough to check the Wick envelope `15·|G|³ < q²`. -/
+theorem no_johnson_scale_frequency_of_depth3_card_cube_lt {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F) (hq : 0 < Fintype.card F) (hn : 1 ≤ G.card)
+    (hvan :
+      (addEnergy3 G : ℝ)
+        = 15 * (G.card : ℝ) ^ 3 - 45 * (G.card : ℝ) ^ 2 + 40 * (G.card : ℝ))
+    (hlt : 15 * (G.card : ℝ) ^ 3 < (Fintype.card F : ℝ) ^ 2) :
+    (Finset.univ.filter (fun b : F =>
+      (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2)) = ∅ :=
+  no_johnson_scale_frequency_of_depth3_closedForm_lt hψ G hq hvan
+    (lt_of_le_of_lt (charZero_depth3_closedForm_le_fifteen_card_cube G hn) hlt)
+
 end ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing
 
 /-! ## Axiom audit -/
@@ -110,3 +160,7 @@ end ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing
   ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.charZero_depth3_closedForm_le_fifteen_card_cube
 #print axioms
   ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.sixthMoment_le_fifteen_card_cube_of_depth3WraparoundVanishing
+#print axioms
+  ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.no_johnson_scale_frequency_of_depth3_closedForm_lt
+#print axioms
+  ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.no_johnson_scale_frequency_of_depth3_card_cube_lt
