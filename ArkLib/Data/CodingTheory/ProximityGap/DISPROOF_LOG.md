@@ -21126,3 +21126,26 @@ State: the r=2 rung's subfamily-gate closure is now reduced to ONE precise objec
 4-character decoupling `MixedMainResHalfCS(½)` — with the rung PROVEN to fire once it's supplied
 (machine-checked, 6.5% slack). Two unconditional faces (d=2, d=4); independence proven d ≤ 16; the
 mirror arithmetic and general-k skeleton in place. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r55-variance-reformulation] NEW ATTACK SURFACE: the DC-subtracted depth-3 energy IS the ℓ²-flatness deficit of the 3-fold representation function — `∑_c (q·rep3(c) − |G|³)² = q·(q·E₃ − |G|⁶)`; prize target ⟺ representation function flat to Wick fluctuation; unconditional floor `|G|⁶ ≤ q·E₃` (2026-07-08)
+
+Lane: #466 round-55 (file `_R55Depth3VarianceReformulation.lean`). Recasts the deep-r wall's
+depth-3 instance as an EQUIDISTRIBUTION statement, division-free, NO cyclotomic machinery — a
+different toolset than character sums. Let rep3 G c = #{(y₁,y₂,y₃)∈G³ : y₁+y₂+y₃=c}. Proven
+axiom-clean (real build):
+- `sum_rep3`: ∑_c rep3 c = |G|³ (total mass); `addEnergy3_eq`: addEnergy3 = ∑_c rep3(c)²
+  (energy = ℓ² norm of rep function), both via a reusable `sum_triples_weight` regrouping.
+- **`variance_identity`**: ∑_c (q·rep3(c) − |G|³)² = q·(q·addEnergy3 − |G|⁶). The RHS is EXACTLY
+  the DC-subtracted energy (the `DCEnergyBound` object) ×q. So the DC-subtracted energy IS the
+  ℓ²-variance of the representation function around its flat mean |G|³/q.
+- **`dc_floor`** (unconditional): |G|⁶ ≤ q·addEnergy3 — the DC term is a genuine floor (LHS is a
+  sum of squares ≥ 0); confirms the raw `E₃ ≤ Wick` must fail (DC essential), matching r54.
+- **`dcEnergyBound_three_iff_variance`**: the prize's `DCEnergyBound G 3` ⟺
+  ∑_c (q·rep3(c) − |G|³)² ≤ 15·q²·|G|³ — i.e. the representation function is FLAT to within the
+  Wick fluctuation. This is an equidistribution deficit, inviting large-sieve / equidistribution
+  tools on the multiplicative-subgroup rep function, not only character-sum bounds.
+NOT a closure: bounding the flatness deficit at r≈log q is still the Paley/BGK wall. It is a
+correct machine-checked reformulation that (a) sharpens the target to a variance/flatness form,
+(b) proves the DC floor unconditionally, (c) opens the equidistribution toolset. Feasibility of
+the new route: OPEN (the multiplicative-subgroup rep function's flatness is exactly as hard as
+the additive-energy bound — no free lunch — but the LENS is new to the codebase). CORE OPEN.

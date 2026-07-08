@@ -48,6 +48,7 @@ open Finset
 
 namespace ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation
 
+open ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.SubgroupGaussSumSixthMoment
 open ArkLib.ProximityGap.DCEnergyCorrection
 
@@ -64,26 +65,27 @@ theorem sum_triples_weight (G : Finset F) (g : F → ℕ) :
     ∑ y₁ ∈ G, ∑ y₂ ∈ G, ∑ y₃ ∈ G, g (y₁ + y₂ + y₃)
       = ∑ c : F, rep3 G c * g c := by
   classical
-  unfold rep3
-  -- RHS: distribute the `* g c` inside and pull the `c`-sum out
-  have hR : ∑ c : F, (∑ y₁ ∈ G, ∑ y₂ ∈ G, ∑ y₃ ∈ G, if y₁ + y₂ + y₃ = c then 1 else 0) * g c
-      = ∑ y₁ ∈ G, ∑ y₂ ∈ G, ∑ y₃ ∈ G, ∑ c : F, (if y₁ + y₂ + y₃ = c then 1 else 0) * g c := by
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun y₁ _ => ?_)
-    rw [Finset.sum_mul, Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun y₂ _ => ?_)
-    rw [Finset.sum_mul, Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun y₃ _ => ?_)
+  -- per-`c`, distribute `g c` through the triple sum
+  have hc : ∀ c : F, rep3 G c * g c
+      = ∑ y₁ ∈ G, ∑ y₂ ∈ G, ∑ y₃ ∈ G, if y₁ + y₂ + y₃ = c then g c else 0 := by
+    intro c
+    unfold rep3
     rw [Finset.sum_mul]
-  rw [hR]
-  refine Finset.sum_congr rfl (fun y₁ _ => Finset.sum_congr rfl (fun y₂ _ =>
-    Finset.sum_congr rfl (fun y₃ _ => ?_)))
-  -- ∑_c (if s = c then 1 else 0) * g c = g s
-  have hpt : ∀ c : F, (if y₁ + y₂ + y₃ = c then (1:ℕ) else 0) * g c
-      = if y₁ + y₂ + y₃ = c then g c else 0 := by
-    intro c; split_ifs <;> simp
-  rw [Finset.sum_congr rfl (fun c _ => hpt c),
-    Finset.sum_ite_eq Finset.univ (y₁ + y₂ + y₃) g]
+    refine Finset.sum_congr rfl (fun y₁ _ => ?_)
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl (fun y₂ _ => ?_)
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl (fun y₃ _ => ?_)
+    split_ifs <;> simp
+  rw [Finset.sum_congr rfl (fun c _ => hc c)]
+  -- pull the `c`-sum inside past the three `G`-sums (targeting only the RHS), then collapse
+  conv_rhs => rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun y₁ _ => ?_)
+  conv_rhs => rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun y₂ _ => ?_)
+  conv_rhs => rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun y₃ _ => ?_)
+  rw [Finset.sum_ite_eq Finset.univ (y₁ + y₂ + y₃) g]
   simp
 
 /-- **Total mass**: the representation function sums to `|G|³`. -/
@@ -184,3 +186,11 @@ theorem dcEnergyBound_three_iff_variance {ψ : AddChar F ℂ} (hψ : ψ.IsPrimit
     exact le_of_mul_le_mul_left h' hq
 
 end ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation
+
+/-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+#print axioms ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.sum_rep3
+#print axioms ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.addEnergy3_eq
+#print axioms ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.variance_identity
+#print axioms ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.dc_floor
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.dcEnergyBound_three_iff_variance
