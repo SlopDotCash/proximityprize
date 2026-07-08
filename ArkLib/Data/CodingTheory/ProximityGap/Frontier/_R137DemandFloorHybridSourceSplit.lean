@@ -122,6 +122,28 @@ theorem demand_floor_of_dvd_four_prefixes_and_source_split_tail
     (hybrid_active_prefix_of_source_split_cover Bad R rs ts hcover hkkh hladder)
     htail hprefix r n hn hg hr hrg
 
+/-- Source-split finite certificates plus a tail theorem give the positive-rung
+divisibility-form budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_source_split_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ) (rs ts : Finset ℕ)
+    (hcover : Finset.Icc 6 R ⊆ rs ∪ ts)
+    (hkkh : HasKKH26CensusDominatorsOn Bad rs)
+    (hladder : HasLadderMajorantsOn Bad ts)
+    (htail : HasHybridMajorantsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_hybrid_cutoff Bad R
+    (hybrid_cutoff_of_active_prefix_and_tail Bad R
+      (hybrid_active_prefix_of_source_split_cover Bad R rs ts hcover hkkh hladder) htail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- A budget overrun refutes any source-split finite certificate plus tail proof. -/
 theorem not_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R : ℕ) (rs ts : Finset ℕ)
@@ -140,6 +162,27 @@ theorem not_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_of_dvd_four_prefixes_and_source_split_tail
       Bad R rs ts hcover hkkh hladder htail hprefix r n hn hg hr hrg)
+
+/-- Positive-rung obstruction for source-split finite certificates plus a tail theorem. -/
+theorem not_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ) (rs ts : Finset ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (Finset.Icc 6 R ⊆ rs ∪ ts ∧
+      HasKKH26CensusDominatorsOn Bad rs ∧
+      HasLadderMajorantsOn Bad ts ∧
+      HasHybridMajorantsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hcover, hkkh, hladder, htail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_source_split_tail
+      Bad R rs ts hcover hkkh hladder htail hprefix r n hn hg hr0 hr1 hr2 hrg)
 
 end ArkLib.ProximityGap.Frontier.R137DemandFloorHybridSourceSplit
 
@@ -163,4 +206,8 @@ end ArkLib.ProximityGap.Frontier.R137DemandFloorHybridSourceSplit
 #print axioms
   ArkLib.ProximityGap.Frontier.R137DemandFloorHybridSourceSplit.demand_floor_of_dvd_four_prefixes_and_source_split_tail
 #print axioms
+  ArkLib.ProximityGap.Frontier.R137DemandFloorHybridSourceSplit.demand_floor_positive_of_dvd_four_prefixes_and_source_split_tail
+#print axioms
   ArkLib.ProximityGap.Frontier.R137DemandFloorHybridSourceSplit.not_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R137DemandFloorHybridSourceSplit.not_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
