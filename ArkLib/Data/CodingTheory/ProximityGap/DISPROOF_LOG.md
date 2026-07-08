@@ -21065,3 +21065,23 @@ This is a much smaller, probe-consistent target. Same wall class (still requires
 char-p additive-energy surplus), but the exact-vanishing obstruction is removed. CORE OPEN
 (the excess ≤ 45n²−40n bound), ON-BGK. NEXT: the char-0 lift (ℤ[ζ] → F_p reduction) +
 orbit-count route to prove the excess bound; or a direct additive-combinatorial argument.
+
+## [466-r54-depth3-perfreq-chain-DC-reconciliation] CHAIN + RECONCILIATION: the r53 headroom atom reaches the per-frequency Gauss-period bound `‖η_b‖⁶ ≤ 15q|G|³` (b≠0) via the in-tree DC-subtracted `DCEnergyBound G 3`; and the small-β "Wick violations" of the RAW energy are ENTIRELY the DC term |G|⁶/q — DC-subtracted energy is Wick-bounded even at β≈1 (2026-07-08)
+
+Lane: #466 round-54 (file `_R54Depth3PerFrequencyChain.lean`, probe `probe_r54_worstcase_excess.py`).
+(1) CHAIN: `Depth3ExcessBounded G E ∧ E ≤ 45n²−40n → GaussianEnergyBound G 3` (r53)
+`→ DCEnergyBound G 3` (in-tree `dcEnergyBound_of_gaussianEnergyBound`) `→ ‖η_b‖⁶ ≤ 15q|G|³` for
+b≠0 (in-tree `eta_pow_le_of_dcEnergyBound`). So the r51→r53 depth-3 headroom atom now reaches
+the exact object the prize moment-method consumes. Axiom-clean, real build.
+(2) RECONCILIATION (honesty): the r54 worst-case probe found RAW E₃/15n³ up to 2.03/16.1/22.6
+at small primes β≈1 (n=8 p=17, n=16 p=17, n=32 p=97) — the raw depth-3 Wick bound is FALSE
+there. BUT the entire excess is the DC term |G|⁶/q (η₀=|G|): DC-subtracted (E₃−|G|⁶/q)/15n³ =
+0.018/0.000/0.042 at the SAME cells — Wick-bounded even at β≈1. This is why the prize uses the
+in-tree DC-subtracted `DCEnergyBound` (division-cleared `q·E₃−|G|⁶ ≤ q·Wick`), non-vacuous at
+prize params, NOT the raw `GaussianEnergyBound`.
+(3) SCOPE: DC term |G|^{2r}/q overtakes Wick (2r−1)‼|G|^r when r ≳ log_n q = β. So the DC
+crossover killing RAW GaussianEnergyBound is a DEEP-r phenomenon (r≈β≈129 at prize), NOT r=3.
+At r=3 prize scale, DC term |G|⁶/q = n⁵/2¹²⁸ is NEGLIGIBLE vs 45n² headroom ⟹ r53's raw
+reduction is correctly shaped; the small-β violations are pure DC artifacts of tiny primes.
+The genuine open target at r=3 is unchanged: excess ≤ 45n² at prize scale. Deep r = the wall.
+CORE OPEN, ON-BGK.
