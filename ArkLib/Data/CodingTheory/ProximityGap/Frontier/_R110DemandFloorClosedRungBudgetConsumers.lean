@@ -49,6 +49,15 @@ theorem demand_floor_r4_budget_of_orbit_bound_plus_one
   exact demand_floor_four_mul_budget_of_orbit_bound_plus_one
     4 g OP bad (by norm_num) (by omega) hOP hbad
 
+/-- r=4 closed-budget consumer without the possible zero orbit. -/
+theorem demand_floor_r4_budget_of_orbit_bound
+    (g OP bad : ℕ)
+    (hg : 4 ≤ g)
+    (hOP : OP ≤ (2 * g).choose 3)
+    (hbad : bad ≤ (4 * g) * OP) :
+    bad ≤ ArkLib.ProximityGap.DeepBandR4.deepBandBudget4 g :=
+  demand_floor_r4_budget_of_orbit_bound_plus_one g OP bad hg hOP (by omega)
+
 /-- r=5 closed-budget consumer: an honest orbit identity plus the orbit-count bound gives the
 named r=5 demand-side budget. -/
 theorem demand_floor_r5_budget_of_orbit_bound_plus_one
@@ -61,6 +70,15 @@ theorem demand_floor_r5_budget_of_orbit_bound_plus_one
   exact demand_floor_four_mul_budget_of_orbit_bound_plus_one
     5 g OP bad (by norm_num) (by omega) hOP hbad
 
+/-- r=5 closed-budget consumer without the possible zero orbit. -/
+theorem demand_floor_r5_budget_of_orbit_bound
+    (g OP bad : ℕ)
+    (hg : 5 ≤ g)
+    (hOP : OP ≤ (2 * g).choose 4)
+    (hbad : bad ≤ (4 * g) * OP) :
+    bad ≤ ArkLib.ProximityGap.DeepBandR5.deepBandBudget5 g :=
+  demand_floor_r5_budget_of_orbit_bound_plus_one g OP bad hg hOP (by omega)
+
 end ArkLib.ProximityGap.Frontier.R110DemandFloorClosedRungBudgetConsumers
 
 /-! ## Axiom audit -/
@@ -71,4 +89,8 @@ end ArkLib.ProximityGap.Frontier.R110DemandFloorClosedRungBudgetConsumers
 #print axioms
   ArkLib.ProximityGap.Frontier.R110DemandFloorClosedRungBudgetConsumers.demand_floor_r4_budget_of_orbit_bound_plus_one
 #print axioms
+  ArkLib.ProximityGap.Frontier.R110DemandFloorClosedRungBudgetConsumers.demand_floor_r4_budget_of_orbit_bound
+#print axioms
   ArkLib.ProximityGap.Frontier.R110DemandFloorClosedRungBudgetConsumers.demand_floor_r5_budget_of_orbit_bound_plus_one
+#print axioms
+  ArkLib.ProximityGap.Frontier.R110DemandFloorClosedRungBudgetConsumers.demand_floor_r5_budget_of_orbit_bound

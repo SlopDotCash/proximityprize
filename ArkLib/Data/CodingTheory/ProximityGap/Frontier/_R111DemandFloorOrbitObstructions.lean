@@ -36,6 +36,18 @@ theorem not_general_orbit_certificate_of_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_general_budget_of_orbit_bound_plus_one r n OP bad hn hr hm hOP hbad)
 
+/-- General workbench-coordinate obstruction for the sharper no-zero orbit identity. -/
+theorem not_general_orbit_certificate_no_zero_of_budget_lt_bad
+    (r n OP bad : ℕ)
+    (hn : 2 ∣ n)
+    (hr : 4 ≤ r)
+    (hm : 2 * r ≤ n / 2)
+    (hgt : deepBandBudgetR r n < bad) :
+    ¬ (OP ≤ (n / 2).choose (r - 1) ∧ bad ≤ n * OP) := by
+  rintro ⟨hOP, hbad⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_general_budget_of_orbit_bound r n OP bad hn hr hm hOP hbad)
+
 /-- r=4 named-budget obstruction. -/
 theorem not_r4_orbit_certificate_of_budget_lt_bad
     (g OP bad : ℕ)
@@ -45,6 +57,16 @@ theorem not_r4_orbit_certificate_of_budget_lt_bad
   rintro ⟨hOP, hbad⟩
   exact (Nat.not_le.mpr hgt)
     (demand_floor_r4_budget_of_orbit_bound_plus_one g OP bad hg hOP hbad)
+
+/-- r=4 named-budget obstruction for the sharper no-zero orbit identity. -/
+theorem not_r4_orbit_certificate_no_zero_of_budget_lt_bad
+    (g OP bad : ℕ)
+    (hg : 4 ≤ g)
+    (hgt : ArkLib.ProximityGap.DeepBandR4.deepBandBudget4 g < bad) :
+    ¬ (OP ≤ (2 * g).choose 3 ∧ bad ≤ (4 * g) * OP) := by
+  rintro ⟨hOP, hbad⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_r4_budget_of_orbit_bound g OP bad hg hOP hbad)
 
 /-- r=5 named-budget obstruction. -/
 theorem not_r5_orbit_certificate_of_budget_lt_bad
@@ -56,12 +78,28 @@ theorem not_r5_orbit_certificate_of_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_r5_budget_of_orbit_bound_plus_one g OP bad hg hOP hbad)
 
+/-- r=5 named-budget obstruction for the sharper no-zero orbit identity. -/
+theorem not_r5_orbit_certificate_no_zero_of_budget_lt_bad
+    (g OP bad : ℕ)
+    (hg : 5 ≤ g)
+    (hgt : ArkLib.ProximityGap.DeepBandR5.deepBandBudget5 g < bad) :
+    ¬ (OP ≤ (2 * g).choose 4 ∧ bad ≤ (4 * g) * OP) := by
+  rintro ⟨hOP, hbad⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_r5_budget_of_orbit_bound g OP bad hg hOP hbad)
+
 end ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions
 
 /-! ## Axiom audit -/
 #print axioms
   ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions.not_general_orbit_certificate_of_budget_lt_bad
 #print axioms
+  ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions.not_general_orbit_certificate_no_zero_of_budget_lt_bad
+#print axioms
   ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions.not_r4_orbit_certificate_of_budget_lt_bad
 #print axioms
+  ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions.not_r4_orbit_certificate_no_zero_of_budget_lt_bad
+#print axioms
   ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions.not_r5_orbit_certificate_of_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R111DemandFloorOrbitObstructions.not_r5_orbit_certificate_no_zero_of_budget_lt_bad

@@ -254,6 +254,28 @@ theorem sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_left_budge
     ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
       (χ := χ) (lam := lam) (C := B)).mp h) hs
 
+/-- Energy-level expanded Jacobi Hermitian input propagated to every depth `s ≥ 3` and
+consumed directly by the face-moment bound, with only the left-end Wick budget. -/
+theorem sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_ge_left_budget_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B C C' : ℝ} (s : ℕ)
+    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hleft : (m : ℝ) ≤ C * (4 : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B)
+    (hs : 3 ≤ s) {x : F} (hx : x ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam x‖ ^ (2 * s)
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ s * (s.factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ s) :=
+  sup_pureFace_from_three_of_tripleConvEnergyBound_ge_left_budget_le_const hfam hgrp
+    (fun i : ZMod m => jacobiCoeff χ lam i) s
+    hJ hC0 hCC hBC hleft
+    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
+      (χ := χ) (lam := lam) (C := B)).mp h)
+    hs hx
+
 /-- Pointwise r = 3 input propagated to depth `3+k`, with the R95 budget window reduced to
 the head inequality `(m : ℝ) ≤ 4*C`. -/
 theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const
@@ -453,6 +475,8 @@ end ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_ge_left_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_ge_left_budget_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const
 #print axioms
