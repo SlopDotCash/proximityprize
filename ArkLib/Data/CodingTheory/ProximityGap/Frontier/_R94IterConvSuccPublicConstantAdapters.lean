@@ -47,6 +47,18 @@ theorem iterConvEnergyWick_succ_of_prev_of_budget_le_const
   iterConvEnergyWick_mono_const J q (r + 1) hC0 hCC
     (iterConvEnergyWick_succ_of_prev_of_budget J q r hJ hC0 hprev hbudget)
 
+/-- One-step Wick propagation, published at any larger public constant and ambient size. -/
+theorem iterConvEnergyWick_succ_of_prev_of_budget_le_const_q
+    (J : ZMod m → ℂ) {q q' r : ℕ} {C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hprev : IterConvEnergyWick J q r C)
+    (hbudget : (m : ℝ) ≤ C * ((r + 1 : ℕ) : ℝ)) :
+    IterConvEnergyWick J q' (r + 1) C' :=
+  iterConvEnergyWick_mono_q J (le_trans hC0 hCC) hqq
+    (iterConvEnergyWick_succ_of_prev_of_budget_le_const
+      J q r hJ hC0 hCC hprev hbudget)
+
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F}
 
@@ -71,10 +83,35 @@ theorem sup_pureFace_succ_of_iterConvEnergyWick_prev_of_budget_le_const
       hJ hC0 hprev hbudget)
     hs
 
+/-- One-step Wick propagation at a smaller ambient size, consumed by the pointwise face bound at
+the actual field size and larger public constant. -/
+theorem sup_pureFace_succ_of_iterConvEnergyWick_prev_of_budget_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q r : ℕ} {C C' : ℝ}
+    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hprev : IterConvEnergyWick J q r C)
+    (hbudget : (m : ℝ) ≤ C * ((r + 1 : ℕ) : ℝ))
+    {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * (r + 1))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (r + 1) * ((r + 1).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (r + 1)) :=
+  sup_pureFace_of_iterConvEnergyWick_le_q
+    (F := F) (m := m) (lam := lam) (G := G)
+    hfam hgrp J (le_trans hC0 hCC) hqq
+    (iterConvEnergyWick_succ_of_prev_of_budget_le_const
+      J q r hJ hC0 hCC hprev hbudget)
+    hs
+
 end ArkLib.ProximityGap.Frontier.R94IterConvSuccPublicConstantAdapters
 
 /-! ## Axiom audit -/
 #print axioms
   ArkLib.ProximityGap.Frontier.R94IterConvSuccPublicConstantAdapters.iterConvEnergyWick_succ_of_prev_of_budget_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R94IterConvSuccPublicConstantAdapters.iterConvEnergyWick_succ_of_prev_of_budget_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R94IterConvSuccPublicConstantAdapters.sup_pureFace_succ_of_iterConvEnergyWick_prev_of_budget_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R94IterConvSuccPublicConstantAdapters.sup_pureFace_succ_of_iterConvEnergyWick_prev_of_budget_le_const_q
