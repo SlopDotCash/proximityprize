@@ -196,6 +196,15 @@ theorem subWick_of_awaySupBound (ψ : AddChar F ℂ) (G H D : Finset F) {C : ℝ
     Finset.sum_nonneg fun _ _ => pow_nonneg (norm_nonneg _) _
   exact (h s hs).trans (mul_le_mul_of_nonneg_right hr hSig)
 
+/-- Exact-budget form of `subWick_of_awaySupBound`: an away-sup bound at `C = 2r+1`
+immediately gives the rung-`r` sub-Wick inequality. -/
+theorem subWick_of_awaySupBound_at_wickBudget
+    (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ)
+    (h : AwaySupBound ψ G H D (2 * (r : ℝ) + 1)) :
+    rungMoment ψ G H D (r + 1)
+      ≤ ((2 * (r : ℝ) + 1) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) * rungMoment ψ G H D r :=
+  subWick_of_awaySupBound ψ G H D r h le_rfl
+
 /-- **Converse: a sub-Wick violation certifies an away-sup lower bound.** If rung r is
 super-Wick (`(2r+1)·Σ·S_r^D < S_{r+1}^D`), some away value exceeds the Wick budget:
 `∃ s∉D, (2r+1)·Σ < ‖I_H(s)‖²`. Together with `subWick_of_awaySupBound`, sub-Wick
@@ -285,6 +294,7 @@ end ArkLib.ProximityGap.Frontier.R20SubWickInterpolation
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.rungMoment_sq_le_mul
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.rungMoment_ratio_mono
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.subWick_of_awaySupBound
+#print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.subWick_of_awaySupBound_at_wickBudget
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.awaySup_lower_of_superWick
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.not_awaySupBound_of_superWick
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.not_superWick_of_awaySupBound
