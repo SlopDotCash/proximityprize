@@ -220,6 +220,15 @@ theorem not_awaySupBound_of_superWick (ψ : AddChar F ℂ) (G H D : Finset F) (r
   intro hsup
   exact not_le.mpr hviol (subWick_of_awaySupBound ψ G H D r hsup le_rfl)
 
+/-- Direct no-violation form: under the away-sup budget `C = 2r + 1`, rung `r` cannot be
+super-Wick.  This packages `subWick_of_awaySupBound` in the negated form most useful to
+counterexample scanners. -/
+theorem not_superWick_of_awaySupBound (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ)
+    (hsup : AwaySupBound ψ G H D (2 * (r : ℝ) + 1)) :
+    ¬ ((2 * (r : ℝ) + 1) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) * rungMoment ψ G H D r
+      < rungMoment ψ G H D (r + 1) := by
+  exact not_lt.mpr (subWick_of_awaySupBound ψ G H D r hsup le_rfl)
+
 /-! ### (3) The no-self-improvement fixed point. -/
 
 /-- Chebyshev at any depth: every away value's `2R`-th power is dominated by rung R. -/
@@ -278,6 +287,7 @@ end ArkLib.ProximityGap.Frontier.R20SubWickInterpolation
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.subWick_of_awaySupBound
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.awaySup_lower_of_superWick
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.not_awaySupBound_of_superWick
+#print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.not_superWick_of_awaySupBound
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.away_pow_le_rungMoment
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.awayValue_pow_le_chain
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.fixedPoint_depth_independent
