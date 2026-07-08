@@ -20981,3 +20981,26 @@ State: DBlockIndependence proven at d ∈ {2, 4, 8} (+ non-squarefree quintic ke
 recursion is mechanical; the fiber-count machinery is in place. Remaining for the full r=2 rung:
 the (m,J,D) numeric mirror at d=4/8 and the bounded-residual subfamily gate (the rung's actual
 live consumer). CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r52-badprime-frontier-refutes-universal-vanishing] CORRECTION of r50 + REFINED ATOM: universal `Depth3WraparoundVanishing (p ≥ n³)` is REFUTED (explicit bad primes: n=16 p=41521 β=3.84 excess=480; norm-frontier probe finds bad primes to β≈6.3 at n=32) — but the excess at EVERY bad prime is O(n²)-scale (0.02–0.23·n³), so the r=3 RUNG inequality E₃ ≤ C·n³ SURVIVES at all tested primes; the atom is boundedness, not vanishing (2026-07-08)
+
+Lane: #466 round-52 (probes `probe_r52_norm_frontier.py`, `probe_r52_badprime_excess.py`).
+(1) REFUTATION (honesty correction of the r50 tag's "β ≥ 3 ⟹ zero excess" reading): bad
+primes p ≡ 1 (mod n) dividing N(α) for nonzero six-term root-sum α exist FAR above n³ —
+n=8: max 313 (0.6·n³); n=16: 57 bad primes, max 41521 = 10.1·n³ (β=3.84); n=32: 1158 bad
+primes, max 3487801441 (β≈6.29; max norm 6^{n/2} grows exponentially, so the bad frontier
+climbs in β with n). They are SPARSE — the r50 four-prime sample missed them all; direct
+E₃ at the explicit bad primes confirms nonzero excess (n=16: p=11489→96, p=14401→960,
+p=37201/41521→480). Since σ ∈ Gal permutes μ_n, p | N(α) ⟺ genuine wraparound at p —
+the embedding choice is irrelevant; universal vanishing above ANY polynomial threshold dies.
+(2) THE GOOD NEWS (the refined atom): the measured excess at every bad prime is TINY —
+0.375·n², 1.9·n², 3.75·n² (= 0.023–0.23·n³) — so E₃/6n³ moves only 2.06 → 2.08–2.10. The
+r=3 rung consumes E₃ ≤ C·n³, NOT exact char-0 equality: it survives every tested cell.
+NEW NAMED FORM `Depth3EnergyBounded`: E₃(μ_n mod p) ≤ char0(n) + c·n²·ω(n,p) with ω = the
+number of coincidence orbits (generically 0, sparse-bad small) — probe-consistent shape;
+the per-orbit n²-scale is forced by rotation-orbit counting (each vanishing class
+contributes ≤ (orbit size ≤ n)² cross pairs... measured multipliers 0.4–3.8).
+(3) STRATEGIC: the prize prime is FIXED but essentially generic; density-of-good-primes
+(the #464 FiniteObstructionGoodPrime selector pattern) OR bad-prime-robust boundedness both
+suffice for the rung. The prize does NOT need vanishing — it needs Wick-boundedness, which
+no probed prime (good or bad) violates. CORE OPEN (the boundedness proof), ON-BGK.
