@@ -1511,6 +1511,26 @@ theorem shifted_all_omitted_rate_one_le_budget_cap_sq
     exact hrate
   simpa using shifted_all_omitted_rate_le_budget_cap_pow χ G 1 hm hT0 hrate' hbudget
 
+/-- `A ≤ 1` version of `shifted_all_omitted_rate_one_le_budget_cap_sq`. -/
+theorem shifted_all_omitted_rate_one_le_budget_cap_sq_of_A_le_one
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ}
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T) (hA : A ≤ 1)
+    (hrate :
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2)
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    (Fintype.card F : ℝ) * (G.card : ℝ)
+      ≤ (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2 := by
+  have hrate' :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ) * (G.card : ℝ) ^ 1
+        ≤ T ^ (2 * 1) := by
+    norm_num at hrate ⊢
+    exact hrate
+  simpa using shifted_all_omitted_rate_le_budget_cap_pow_of_A_le_one χ G 1 hm hT0 hA
+    hrate' hbudget
+
 /-- `r = 1` no-go for the all-omitted shifted route.  If the square of the exact normalized
 budget cap is below `q·|G|`, the budget cannot coexist with the `r = 1` shifted-rate lower bound. -/
 theorem not_shifted_all_omitted_budget_of_rate_one_cap_sq_lt
@@ -1526,6 +1546,23 @@ theorem not_shifted_all_omitted_budget_of_rate_one_cap_sq_lt
         ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
   intro hbudget
   have hle := shifted_all_omitted_rate_one_le_budget_cap_sq χ G hm hT0 hrate hbudget
+  exact not_lt_of_ge hle hcap_lt
+
+/-- `A ≤ 1` no-go for the `r = 1` all-omitted shifted route. -/
+theorem not_shifted_all_omitted_budget_A_le_one_of_rate_one_cap_sq_lt
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ}
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T) (hA : A ≤ 1)
+    (hrate :
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2)
+    (hcap_lt :
+      (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ 2
+        < (Fintype.card F : ℝ) * (G.card : ℝ)) :
+    ¬ (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  intro hbudget
+  have hle := shifted_all_omitted_rate_one_le_budget_cap_sq_of_A_le_one χ G hm hT0 hA
+    hrate hbudget
   exact not_lt_of_ge hle hcap_lt
 
 /-- A convenient upper bound for the squared exact all-omitted budget cap.  The factor
@@ -1647,6 +1684,22 @@ theorem not_exists_shifted_all_omitted_rate_one_budget_regime
         ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
   rintro ⟨T, hT0, hrate, hbudget⟩
   exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate hreg hbudget
+
+/-- Existential `A ≤ 1` form of the regime-level `r = 1` no-go.  In the R18 regime no
+nonnegative `T` can satisfy the natural `r = 1` lower scale and any normalized all-omitted
+budget with right side `A·|G|√q`, `A ≤ 1`. -/
+theorem not_exists_shifted_all_omitted_rate_one_budget_A_le_one_regime
+    (χ : MulChar F ℂ) (G : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ A T : ℝ,
+      0 ≤ A ∧ A ≤ 1 ∧ 0 ≤ T ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨A, T, _hA0, hA1, hT0, hrate, hbudget⟩
+  exact not_shifted_all_omitted_budget_A_le_one_of_rate_one_cap_sq_lt χ G hm hT0 hA1
+    hrate (shifted_all_omitted_budget_cap_sq_lt_rate_one_of_regime χ G hm hn hreg) hbudget
 
 /-- Interface-level form of the `r = 1` all-omitted shifted no-go.  These are exactly the
 `T`-nonnegativity, `r = 1` rate, and normalized-budget assumptions appearing in
@@ -2027,11 +2080,14 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
 #print axioms not_shifted_all_omitted_budget_of_rate_cap_lt
 #print axioms not_shifted_all_omitted_budget_A_le_one_of_rate_cap_lt
 #print axioms shifted_all_omitted_rate_one_le_budget_cap_sq
+#print axioms shifted_all_omitted_rate_one_le_budget_cap_sq_of_A_le_one
 #print axioms not_shifted_all_omitted_budget_of_rate_one_cap_sq_lt
+#print axioms not_shifted_all_omitted_budget_A_le_one_of_rate_one_cap_sq_lt
 #print axioms shifted_all_omitted_budget_cap_sq_le_card_div_order_sub_sq
 #print axioms shifted_all_omitted_budget_cap_sq_lt_rate_one_of_regime
 #print axioms not_shifted_all_omitted_budget_of_rate_one_regime
 #print axioms not_exists_shifted_all_omitted_rate_one_budget_regime
+#print axioms not_exists_shifted_all_omitted_rate_one_budget_A_le_one_regime
 #print axioms not_shifted_all_omitted_normalized_budget_one_inputs_r_one_regime
 #print axioms not_shifted_all_omitted_normalized_budget_A_inputs_r_one_regime
 #print axioms not_rawFourthMoment_shifted_all_omitted_normalized_A_inputs_r_one_regime
