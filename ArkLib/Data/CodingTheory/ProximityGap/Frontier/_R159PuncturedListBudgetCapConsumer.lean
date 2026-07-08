@@ -37,6 +37,7 @@ open ProximityGap.LineListMCAWeld.SupportAware.Frontier.R158PuncturedListBudgetG
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
+omit [DecidableEq F] in
 /-- The exact nested R157 budget can be paid through any larger single natural cap. -/
 theorem puncturedList_nestedBudget_le_cap
     {Bfar Bpunctured Bunsafe Bcap : ℕ}
@@ -45,6 +46,29 @@ theorem puncturedList_nestedBudget_le_cap
         (Fintype.card F : ℝ≥0∞)
       ≤ (Bcap : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
   ENNReal.div_le_div_right (by exact_mod_cast hcap) _
+
+/-- Branchwise caps imply the exact nested R157 cap.  This is the caller-facing arithmetic form:
+prove each production branch spends at most `Bcap`, and the nested maximum is automatically
+within `Bcap`. -/
+theorem puncturedList_nestedBudget_le_cap_of_branches
+    {Bfar Bpunctured Bunsafe Bcap : ℕ}
+    (hfar : Bfar ≤ Bcap) (hpunctured : Bpunctured * n ≤ Bcap)
+    (hunsafe : Bunsafe ≤ Bcap) :
+    max Bfar (max (Bpunctured * n) Bunsafe) ≤ Bcap := by
+  exact max_le hfar (max_le hpunctured hunsafe)
+
+omit [DecidableEq F] in
+/-- **The exact nested R157 budget can be paid through branchwise caps.** -/
+theorem puncturedList_nestedBudget_le_cap_of_branch_bounds
+    {Bfar Bpunctured Bunsafe Bcap : ℕ}
+    (hfar : Bfar ≤ Bcap) (hpunctured : Bpunctured * n ≤ Bcap)
+    (hunsafe : Bunsafe ≤ Bcap) :
+    ((max Bfar (max (Bpunctured * n) Bunsafe) : ℕ) : ℝ≥0∞) /
+        (Fintype.card F : ℝ≥0∞)
+      ≤ (Bcap : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
+  puncturedList_nestedBudget_le_cap (F := F) (n := n)
+    (puncturedList_nestedBudget_le_cap_of_branches
+      (n := n) hfar hpunctured hunsafe)
 
 open Classical in
 /-- Single-cap form of the R157 punctured-list weld consumer. -/
@@ -71,6 +95,38 @@ theorem mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget_cap
   mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget dom k a δ εstar L haC haF
     hfarL hfit hpunctured hunsafe
     (le_trans (puncturedList_nestedBudget_le_cap (F := F) (n := n) hcap) hBudget) hδ1
+
+open Classical in
+/-- Branchwise single-cap form: instead of proving the nested `max` cap directly, callers may
+prove that the far branch, the punctured branch after its support factor, and the unsafe branch
+each fit under the same public cap `Bcap`. -/
+theorem mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget_branch_caps
+    (dom : Fin n ↪ F) (k a : ℕ) (δ : ℝ≥0) (εstar : ℝ≥0∞)
+    {Bfar Bpunctured Bunsafe Bcap : ℕ} (L : ℕ → ℕ)
+    (haC : (1 - δ) * (n : ℝ≥0) ≤ (a : ℝ≥0))
+    (haF : ∀ m : ℕ, (1 - δ) * (n : ℝ≥0) ≤ (m : ℝ≥0) → a ≤ m)
+    (hfarL : ∀ u₀ u₁ : Fin n → F,
+      FarFromCode ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₁ →
+        LineListBudgeted dom k a u₀ u₁ (L ((directionZeroSet u₁).card)))
+    (hfit : ∀ z : ℕ, z < a → L z * ((n - z) / (a - z)) ≤ Bfar)
+    (hpunctured : PuncturedListBudget dom k a Bpunctured)
+    (hunsafe : ∀ u₀ u₁ : Fin n → F, ¬ ZeroDirectionSafeLine dom k a u₀ u₁ →
+      (Finset.univ.filter (fun γ : F =>
+        mcaEvent (F := F)
+          ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) δ u₀ u₁ γ)).card
+        ≤ Bunsafe)
+    (hBfar : Bfar ≤ Bcap)
+    (hBpunctured : Bpunctured * n ≤ Bcap)
+    (hBunsafe : Bunsafe ≤ Bcap)
+    (hBudget : (Bcap : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar)
+    (hδ1 : δ ≤ 1) :
+    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := F)
+      ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F)) εstar :=
+  mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget_cap dom k a δ εstar L
+    haC haF hfarL hfit hpunctured hunsafe
+    (puncturedList_nestedBudget_le_cap_of_branches
+      (n := n) hBfar hBpunctured hBunsafe)
+    hBudget hδ1
 
 open Classical in
 /-- Monotone single-cap form: local proofs may land below relaxed branch budgets, and the relaxed
@@ -111,6 +167,12 @@ end ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCa
 #print axioms
   ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCapConsumer.puncturedList_nestedBudget_le_cap
 #print axioms
+  ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCapConsumer.puncturedList_nestedBudget_le_cap_of_branches
+#print axioms
+  ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCapConsumer.puncturedList_nestedBudget_le_cap_of_branch_bounds
+#print axioms
   ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCapConsumer.mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget_cap
+#print axioms
+  ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCapConsumer.mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget_branch_caps
 #print axioms
   ProximityGap.LineListMCAWeld.SupportAware.Frontier.R159PuncturedListBudgetCapConsumer.mcaDeltaStar_ge_of_zeroStratified_puncturedListBudget_cap_mono
