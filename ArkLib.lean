@@ -2483,6 +2483,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorRed
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50Depth3WraparoundVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50TripleTwistEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51PrimitiveSexticEnvelope
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51UnconditionalQuarticInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52CharacterSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52UnitSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53DualFamilySexticEnvelope
