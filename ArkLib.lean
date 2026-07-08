@@ -2404,6 +2404,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R161PuncturedUniqueFailur
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R162LargeZeroSafeUniqueFailureScanner
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R163PuncturedUniqueConsumerContrapositive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R164PuncturedUniqueConsumerWitness
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R168DyadicTailEnvelopeConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16DiagonalExactValue
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16IncidenceR2Rung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16LegendreCosetFace
@@ -2431,12 +2432,21 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19HasseAudit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19JacobiFourierExpansion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19RungRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R1SecondMomentSqrtBarrier
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R200ShiftedQuarterPrizeConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R207NonzeroGaussPeriodDilationConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R209NonzeroQuarterMGFResidualConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20JacobiParseval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20MobiusDischarge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20QuadFaceBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20StepanovScaffold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20SubWickInterpolation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20SupSplitReverse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R210NonzeroBulkPlusSpikesMGFConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R210RawDyadicPrizeTowerStep
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R211NonzeroNormalizedSqDilationConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R212LargeIndexChildLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R213NonzeroNormalizedSqQuarterMGFResidualConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R214DirectChildMGFLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21HeadRungDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21HigherDFaces
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21QuarticConvolutionCollapse
@@ -2457,6 +2467,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24SuperellipticS2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25D4Instantiate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25D8Descent
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DirectClassCountPipeline
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DiscreteArcsineMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25FractionRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25OcticNormFold
@@ -2523,8 +2534,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55Depth3VarianceReformul
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55SexticExplicitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55UnitSexticEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R56RepThreeMultiplicativeInvariance
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R57Depth3DeviationOrbitBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R56SexticBudgetNormalization
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R57Depth3DeviationOrbitBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R57SplitCubeLagUnitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R58SplitCubeLagBudgetAdapters
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R59CubeLagTriangleBaseline
@@ -2962,6 +2973,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.FullBandLadderLaw
 import ArkLib.Data.CodingTheory.ProximityGap.FullWindowDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodFromListSize
 import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodability
+import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodabilityB2Capstone
 import ArkLib.Data.CodingTheory.ProximityGap.GG25ExactPreservation
 import ArkLib.Data.CodingTheory.ProximityGap.GG25MCAFromCurveDecodability
 import ArkLib.Data.CodingTheory.ProximityGap.GG25MarkedCurve
