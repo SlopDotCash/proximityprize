@@ -1697,3 +1697,20 @@ cancellation**). MATHLIB debt now 2 rounds (owed).
 **═══ STATE after 26 rounds ═══** The r=2 rung: two unconditional faces (d=2, d=4); independence
 closed through d=16 with a uniform capstone; the one remaining analytic input for the live gate is
 the Main–Res mixed moment. Above the rung unchanged. **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §41. Round 27 (2026-07-08, Opus) — the mixed moment goes real; the rung fires at κ=1/2
+
+DISPROOF tag `466-r27-mixed-moment-real-rung-fires-at-half`. Bricks: `_R27FMixedMoment.lean`
+(+`_R28FMixedMomentGuards.lean`): M' and Res proven pointwise real in the rung regime ⟹ mixed
+moment = real ∑(A+B)⁴; `_R27GMixedAudit.lean` (`mixed_rung_fires_at_half`): the composed RHS at
+κ=1/2 is 0.919·budget < budget — **the subfamily rung is machine-checked to FIRE once
+`MixedMainResHalfCS(½)` is supplied** (the cross-block 4-character decoupling object, exactly
+pinned). `_R27GD8D16Mirrors.lean` (d=8/16 parameter backbone; blocked on non-squarefree
+`dBlockIndependence_{eight,sixteen}_sqmul`); `_R27GGenericDescent.lean` (quadAdjoin extracted
+generic; k=5 pattern confirmed; general-k induction still open).
+
+**═══ STATE after 27 rounds ═══** The r=2 rung subfamily gate is reduced to a single precise
+open object (`MixedMainResHalfCS(½)`, a Y×complement decoupling), and the rung is PROVEN to fire
+once it lands (6.5% slack, machine-checked). Two unconditional faces (d=2,4); independence d ≤ 16;
+mirror arithmetic + general-k skeleton in place. Above the rung unchanged. **CORE OPEN, ON-BGK.
+No fabricated closure.**

@@ -14,20 +14,17 @@ sumcheck `H = P · Q(t)` with a *prismalinear* multiplier: per-variable degree `
 coord `i`, where the canonical SWIRL bound `MvPolynomial.prismalinearBound ℓ' k` gives degree
 `2^ℓ' − 1` in the univariate-skip coordinate and `≤ 1` in the remaining `k` Boolean coordinates.
 
-This file is the prismalinear polynomial-shape specialization, mirroring the multilinear surface in
-`ArkLib.ProofSystem.Sumcheck.Structured` *under a sub-namespace*. It is groundwork for SWIRL-style
-hyperprisms; it does not yet model SWIRL's special univariate-skip round or its separate `d₀`
-soundness term:
+This file is the prismalinear specialization, mirroring the multilinear surface in
+`ArkLib.ProofSystem.Sumcheck.Structured` *under a sub-namespace*:
 
 | Multilinear (`Sumcheck.Structured`)    | Prismalinear (`Sumcheck.Structured.Prismalinear`)    |
 |----------------------------------------|------------------------------------------------------|
 | `SumcheckMultiplierParam`              | `SumcheckMultiplierParam`                            |
 | `computeRoundPoly`                     | `computeRoundPoly`                                   |
-| `projectToMidSumcheckPolyWithParam`    | `projectToMidSumcheckPolyWithParam`                  |
 
-For `multpolyBound = fun _ => 1`, the prismalinear case is *definitionally* the multilinear
-case (via `restrictDegreeVar_const`, mechanically locked in by `example := rfl` next to
-`PrismalinearPoly` in `Sumcheck.Structured`).
+For `multpolyBound = fun _ => 1`, the prismalinear case is *definitionally* the
+multilinear case (via `restrictDegreeVar_const`, mechanically locked in by
+`example := rfl` next to `PrismalinearPoly` in `Sumcheck.Structured`).
 
 The polynomial-shape primitives `MultilinearPoly` and `PrismalinearPoly` live at the parent
 namespace `Sumcheck.Structured` — they're shape primitives, not sumcheck-specific concepts, so
@@ -92,27 +89,6 @@ def computeRoundPoly {Context : Type} {multpolyBound : Fin ℓ → ℕ}
           gcongr
           exact param.combinator_natDegree_le ctx
       _ = param.degCombinator + multpolyBound i := by ring⟩
-
-/-- Generic prismalinear projection
-`Hᵢ(Xᵢ, ..., X_{ℓ-1}) = H₀(r₀, …, rᵢ₋₁, Xᵢ, …, X_{ℓ-1})`
-for `H₀ = P · Q(t)`. The surviving per-variable bounds are the original suffix bounds after
-fixing the first `i` variables. -/
-def projectToMidSumcheckPolyWithParam {Context : Type} {multpolyBound : Fin ℓ → ℕ}
-    (param : SumcheckMultiplierParam L Context multpolyBound)
-    (ctx : Context) (t : MultilinearPoly L ℓ) (i : Fin (ℓ + 1)) (challenges : Fin i → L) :
-    PrismalinearPoly L
-      (fun j => param.degCombinator +
-        multpolyBound (fixFirstVariablesOfMQP_survivingIndex ℓ ⟨i, by omega⟩ j)) :=
-  let H₀ := computeRoundPoly (L := L) (ℓ := ℓ) param ctx t
-  let Hᵢ := fixFirstVariablesOfMQP (ℓ := ℓ) (v := ⟨i, by omega⟩)
-    (H := H₀) (challenges := challenges)
-  ⟨Hᵢ, by
-    have hp := H₀.property
-    simpa [Function.comp_def] using
-      (fixFirstVariablesOfMQP_degreeVarLE (L := L) (ℓ := ℓ)
-        (b := fun k => param.degCombinator + multpolyBound k) (v := ⟨i, by omega⟩)
-        (poly := H₀.val) (challenges := challenges) hp)
-  ⟩
 
 end Sumcheck.Structured.Prismalinear
 

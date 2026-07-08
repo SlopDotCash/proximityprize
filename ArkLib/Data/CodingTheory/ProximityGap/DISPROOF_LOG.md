@@ -21085,3 +21085,44 @@ At r=3 prize scale, DC term |G|⁶/q = n⁵/2¹²⁸ is NEGLIGIBLE vs 45n² head
 reduction is correctly shaped; the small-β violations are pure DC artifacts of tiny primes.
 The genuine open target at r=3 is unchanged: excess ≤ 45n² at prize scale. Deep r = the wall.
 CORE OPEN, ON-BGK.
+
+## [466-r27-mixed-moment-real-rung-fires-at-half] ROUND 27 (Opus): the Main–Res mixed moment is REAL bookkeeping and the composed rung FIRES at κ=1/2 (machine-checked closure); d=8/16 mirror arithmetic landed (blocked on non-squarefree substrate); general-k skeleton pinned (2026-07-08)
+
+Model note: the Fable-5 lanes hit their usage limit; the MIXED lane's axiom-clean file was salvaged
+and the round re-run under Opus 4.8 (adversarial-verified). MATHLIB debt was PAID by a concurrent
+session (ArkLib/ToMathlib/Polynomial/DivByMonicLinear.lean, ToMathlib/NumberTheory/GaussSumNorm.lean,
+docs/kb/mathlib-upstream-pr-plan-2026-07-08.md all tracked).
+
+- **MIXED (`_R27FMixedMoment.lean` + `_R28FMixedMomentGuards.lean`, committed 5bb06a6d6; audited
+  27b):** in the rung regime 2m | q−1, BOTH M'(s₀) and Res(s₀) are proven POINTWISE REAL
+  (`chiSubfamilyResidual_im_eq_zero`, via conj g(χ')=g(χ'⁻¹) when χ'(−1)=1) — skeptic confirmed the
+  heven hypothesis is load-bearing (non-even control gives |Im| = 15.9). So the mixed moment is REAL
+  ∑(A+B)⁴ bookkeeping; the composed rung `sum_norm_quartic_le_of_mixed_faces` reduces closure to
+  `MixedMainResHalfCS` at κ=1/2 (∑A²B² ≤ ½√(∑A⁴·∑B⁴)) + a small odd bound.
+- **THE KEY RESULT (`_R27GMixedAudit.lean`, `mixed_rung_fires_at_half`):** with the measured face
+  fractions (Ea=0.0036, Eb=0.7635 of budget), the composed RHS Ea+Eb+6·½·√(Ea·Eb)+4Θ = 0.919·budget
+  < budget — **proving MixedMainResHalfCS at κ=1/2 FIRES THE RUNG with ~6.5% slack**, machine-checked
+  in Lean (measured κ≈0.356 sits well below ½). The remaining open object is now EXACT: the
+  cross-block 4-character moment ∑ T_a conj T_b · T_c conj T_d (a,b ∈ Y-side, c,d ∈ complement) with
+  a factor-2 beat over Cauchy–Schwarz = a Y×complement DECOUPLING instance — within the
+  dBlockIndependence philosophy but needing its own cross-block input. ⚠️ HONEST: the face fractions
+  are single-flagship-cell measurements passed as hypotheses (not yet discharged from the d≤16
+  machinery); the firing is fully conditional. Prose fix owed: r26 "1.37–1.57× overspend" was the
+  per-part split; the CS-composed (κ=1) form gives 1.08×.
+- **D8D16 mirrors (`_R27GD8D16Mirrors.lean`):** the parameter-arithmetic backbone machine-checked
+  axiom-clean at d=8 (C₈=139) and d=16 (C₁₆=530) — explicit Nat.sqrt families, all budget side
+  conditions. HONEST blocker (correcting the round brief): d=8/16 independence is NOT a trivial
+  mirror — it needs the NON-squarefree `dBlockIndependence_{eight,sixteen}_sqmul` (s²·r fold; r25/r26
+  proved only the squarefree forms). Those two bricks are the only missing inputs; with them the
+  fiber-count/fold assembly is mechanical. (Skeptic caught a probe J-offset bug; the Lean is correct.)
+- **GENK (`_R27GGenericDescent.lean`):** the k=5 (d=32) probe passes — pattern continues, no new
+  obstruction. Landed genuine reusable content: `quadAdjoin` (the quadratic-adjunction package
+  extracted as generic data — the r25/r26 hand-rebuilt preamble, now once), `sum_range_even_odd_split`
+  (generic parity fold). ⚠️ HONEST (skeptic): the three "obstruction Props" are content-free `True`-
+  tailed schemas — the general-k induction is genuinely still open (needs Finset-antidiagonal
+  Cauchy-product reindexing, a change of proof technology).
+
+State: the r=2 rung's subfamily-gate closure is now reduced to ONE precise object — the cross-block
+4-character decoupling `MixedMainResHalfCS(½)` — with the rung PROVEN to fire once it's supplied
+(machine-checked, 6.5% slack). Two unconditional faces (d=2, d=4); independence proven d ≤ 16; the
+mirror arithmetic and general-k skeleton in place. CORE OPEN, ON-BGK. No fabricated closure.
