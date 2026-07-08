@@ -74,6 +74,7 @@ theorem sixthMoment_le_of_depth3WraparoundVanishing_bound {ψ : AddChar F ℂ}
   rw [sixthMoment_eq_charZero_closedForm_of_depth3WraparoundVanishing hψ G hvan]
   exact mul_le_mul_of_nonneg_left hB (by exact_mod_cast Nat.zero_le (Fintype.card F))
 
+omit [Field F] [Fintype F] [DecidableEq F] in
 /-- The characteristic-zero depth-3 closed form is bounded by the Wick constant `15·|G|³` for
 nonempty `G`. -/
 theorem charZero_depth3_closedForm_le_fifteen_card_cube
