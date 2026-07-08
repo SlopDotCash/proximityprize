@@ -77,6 +77,92 @@ theorem not_exists_octic_chiFamily_constant_gate_of_Cmax_nonneg_le_two
   rintro ⟨Cmax, hCmax0, hCmax2, hgate⟩
   exact not_octic_chiFamily_constant_gate_of_Cmax_nonneg_le_two χ hm hCmax0 hCmax2 hgate
 
+/-- The R151/R153 thinned-size adapter cannot be applied with `Y = chiFamily χ`: the
+required arithmetic `15 * |Y|² ≤ orderOf χ` already fails for every nontrivial generated family. -/
+theorem not_octic_chiFamily_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) :
+    ¬ 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ :=
+  not_fifteen_chiFamily_card_sq_le_order χ hm
+
+/-- Existential form: no full-family choice can satisfy the thinned-size gate used by the
+size-gated octic residual endpoint. -/
+theorem not_exists_octic_chiFamily_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) :
+    ¬ ∃ Y : Finset (MulChar F ℂ), Y = chiFamily χ ∧
+      15 * Y.card ^ 2 ≤ orderOf χ := by
+  rintro ⟨Y, rfl, hsize⟩
+  exact not_octic_chiFamily_thinned_size_gate χ hm hsize
+
+/-- Any subfamily satisfying the R151/R153 thinned-size gate must omit at least one
+character from `chiFamily χ`.  Thus the octic residual route is genuinely a thinning route, not
+the full-family residual endpoint in disguise. -/
+theorem not_chiFamily_subset_of_octic_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) {Y : Finset (MulChar F ℂ)}
+    (_hY : Y ⊆ chiFamily χ) (hsize : 15 * Y.card ^ 2 ≤ orderOf χ) :
+    ¬ chiFamily χ ⊆ Y := by
+  intro hcover
+  have hcard : (((chiFamily χ).card : ℝ)) ≤ (Y.card : ℝ) := by
+    exact_mod_cast Finset.card_le_card hcover
+  have hsizeR : (15 : ℝ) * (Y.card : ℝ) ^ 2 ≤ (orderOf χ : ℝ) := by
+    exact_mod_cast hsize
+  have hfull : (15 : ℝ) * (((chiFamily χ).card : ℝ) ^ 2) ≤ (orderOf χ : ℝ) := by
+    nlinarith [sq_nonneg ((Y.card : ℝ) - ((chiFamily χ).card : ℝ))]
+  exact not_fifteen_chiFamily_card_sq_le_order_real χ hm hfull
+
+/-- Equality form of the mandatory-thinning obstruction. -/
+theorem ne_chiFamily_of_octic_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) {Y : Finset (MulChar F ℂ)}
+    (hY : Y ⊆ chiFamily χ) (hsize : 15 * Y.card ^ 2 ≤ orderOf χ) :
+    Y ≠ chiFamily χ := by
+  intro hEq
+  exact not_chiFamily_subset_of_octic_thinned_size_gate χ hm hY hsize (by
+    intro χ' hχ'
+    simpa [hEq] using hχ')
+
+/-- Cardinal form of mandatory thinning: any size-gated subfamily is strictly smaller than
+`chiFamily χ`. -/
+theorem card_lt_chiFamily_of_octic_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) {Y : Finset (MulChar F ℂ)}
+    (hY : Y ⊆ chiFamily χ) (hsize : 15 * Y.card ^ 2 ≤ orderOf χ) :
+    Y.card < (chiFamily χ).card := by
+  have hle : Y.card ≤ (chiFamily χ).card := Finset.card_le_card hY
+  exact lt_of_le_of_ne hle fun hcard => by
+    apply ne_chiFamily_of_octic_thinned_size_gate χ hm hY hsize
+    exact Finset.eq_of_subset_of_card_le hY (by simp [hcard])
+
+/-- Exact omitted-cardinality identity for subfamilies of `chiFamily χ`. -/
+theorem omitted_card_eq_chiFamily_sub
+    (χ : MulChar F ℂ) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ) :
+    (chiFamily χ \ Y).card = (chiFamily χ).card - Y.card := by
+  exact Finset.card_sdiff_of_subset hY
+
+/-- Omitted-cardinality form of mandatory thinning.  Under the size gate, the residual sum in
+R153 is over a nonempty omitted family. -/
+theorem omitted_card_pos_of_octic_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) {Y : Finset (MulChar F ℂ)}
+    (hY : Y ⊆ chiFamily χ) (hsize : 15 * Y.card ^ 2 ≤ orderOf χ) :
+    0 < (chiFamily χ \ Y).card := by
+  have hlt : Y.card < (chiFamily χ).card :=
+    card_lt_chiFamily_of_octic_thinned_size_gate χ hm hY hsize
+  rw [omitted_card_eq_chiFamily_sub χ hY]
+  omega
+
+/-- Nonempty omitted-family form of mandatory thinning. -/
+theorem omitted_nonempty_of_octic_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) {Y : Finset (MulChar F ℂ)}
+    (hY : Y ⊆ chiFamily χ) (hsize : 15 * Y.card ^ 2 ≤ orderOf χ) :
+    (chiFamily χ \ Y).Nonempty :=
+  Finset.card_pos.mp (omitted_card_pos_of_octic_thinned_size_gate χ hm hY hsize)
+
+/-- Witness form of mandatory thinning: under the size gate there is a concrete omitted
+character in `chiFamily χ \ Y`. -/
+theorem exists_omitted_char_of_octic_thinned_size_gate
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) {Y : Finset (MulChar F ℂ)}
+    (hY : Y ⊆ chiFamily χ) (hsize : 15 * Y.card ^ 2 ≤ orderOf χ) :
+    ∃ χ' : MulChar F ℂ, χ' ∈ chiFamily χ ∧ χ' ∉ Y := by
+  rcases omitted_nonempty_of_octic_thinned_size_gate χ hm hY hsize with ⟨χ', hχ'⟩
+  exact ⟨χ', by simpa [Finset.mem_sdiff] using hχ'⟩
+
 /-- The full-family octic pipeline's own coefficient bounds force `Cmax ≥ 0`; hence they
 already make the full `chiFamily χ` normalized exact-rung gate impossible. -/
 theorem not_octic_chiFamily_constant_gate_of_pipeline_bounds
@@ -121,6 +207,33 @@ open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
 open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
 #print axioms
   not_exists_octic_chiFamily_constant_gate_of_Cmax_nonneg_le_two
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  not_octic_chiFamily_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  not_exists_octic_chiFamily_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  not_chiFamily_subset_of_octic_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  ne_chiFamily_of_octic_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  card_lt_chiFamily_of_octic_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  omitted_card_eq_chiFamily_sub
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  omitted_card_pos_of_octic_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  omitted_nonempty_of_octic_thinned_size_gate
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  exists_omitted_char_of_octic_thinned_size_gate
 open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
 #print axioms
   not_octic_chiFamily_constant_gate_of_pipeline_bounds
