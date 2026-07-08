@@ -2442,6 +2442,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24DBlockIndependence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24FullRungAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24InvolutionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24SuperellipticS2
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25D8Descent
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25FractionRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25OcticNormFold
