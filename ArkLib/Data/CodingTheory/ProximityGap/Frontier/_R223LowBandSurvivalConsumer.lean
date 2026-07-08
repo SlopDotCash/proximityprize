@@ -55,7 +55,7 @@ theorem lowBandGridTail_of_above_tail
       (lowBandBulkSpikesBound (F := F) τ Cbulk Kspike) := by
   intro θ hθ
   by_cases hlow : θ ≤ τ
-  · simp [lowBandBulkSpikesBound, hlow]
+  · simp only [lowBandBulkSpikesBound, hlow, ↓reduceIte]
     exact_mod_cast Finset.card_le_card
       (Finset.filter_subset
         (fun b => θ ≤ ‖eta ψ G b‖ ^ (2 : ℕ) / σ ^ (2 : ℕ))

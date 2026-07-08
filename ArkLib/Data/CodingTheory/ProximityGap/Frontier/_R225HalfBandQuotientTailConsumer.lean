@@ -3,13 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (R225 half-band quotient-tail consumer)
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R223QuotientTailToScaledSpikePrize
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R223LowBandSurvivalConsumer
 
 /-!
 # R225 (#466): quotient half-band tail to corrected raw half-band MGF
 
-This file combines the quotient-tail interface from R223 with the corrected
+This file combines an abstract quotient-tail interface with the corrected
 half-band scaled-spike consumer.  The analytic input is now quotient-sized:
 
 ```text
@@ -30,7 +29,6 @@ namespace ArkLib.ProximityGap.Frontier.R225HalfBandQuotientTailConsumer
 
 open ArkLib.ProximityGap.Frontier.R207NonzeroGaussPeriodDilationConsumer
 open ArkLib.ProximityGap.Frontier.R213NonzeroNormalizedSqQuarterMGFResidualConsumer
-open ArkLib.ProximityGap.Frontier.R223QuotientTailToScaledSpikePrize
 open ArkLib.ProximityGap.Frontier.R223LowBandSurvivalConsumer
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 
@@ -45,12 +43,22 @@ consumer. -/
 def halfBandScaledTwoBound (G : Finset F) (θ : ℝ) : ℝ :=
   lowBandBulkSpikesBound (F := F) (1 / 2) (3 / 5) (2 * (G.card : ℝ)) θ
 
+/-- The local half-band quotient-to-raw counting lift hypothesis: above the
+half-band, every quotient survivor contributes at most `|G|` raw frequencies. -/
+def HalfBandRawNonzeroTailLeCosetScale {ι : Type*} (ψ : AddChar F ℂ)
+    (G : Finset F) (σ : ℝ) (Q : Finset ι) (qSq : ι → ℝ)
+    (Θ : Finset ℝ) : Prop :=
+  ∀ θ ∈ Θ, (1 / 2 : ℝ) < θ →
+    ((((nonzeroFreqs (F := F)).filter
+        (fun b => θ ≤ ‖eta ψ G b‖ ^ 2 / σ ^ 2)).card : ℝ)
+      ≤ (G.card : ℝ) * ((Q.filter (fun i => θ ≤ qSq i)).card : ℝ))
+
 /-- Quotient tail plus raw-to-quotient counting lift gives the corrected raw
 half-band tail envelope with spike reserve `2 * |G|`. -/
 theorem nonzeroNormalizedSqHalfBandTail_scaledTwo_of_quotient
     {ι : Type*} (ψ : AddChar F ℂ) (G : Finset F) {σ : ℝ}
     (Q : Finset ι) (qSq : ι → ℝ) (Θ : Finset ℝ) (Bq : ℝ → ℝ)
-    (hLift : RawNonzeroTailLeCosetScale ψ G σ Q qSq Θ)
+    (hLift : HalfBandRawNonzeroTailLeCosetScale ψ G σ Q qSq Θ)
     (hQTailAbove : ∀ θ ∈ Θ, (1 / 2 : ℝ) < θ →
       (((Q.filter (fun i => θ ≤ qSq i)).card : ℝ) ≤ Bq θ))
     (hScaleAbove : ∀ θ ∈ Θ, (1 / 2 : ℝ) < θ →
@@ -67,7 +75,7 @@ theorem nonzeroNormalizedSqHalfBandTail_scaledTwo_of_quotient
     (((nonzeroFreqs (F := F)).filter
         (fun b => θ ≤ ‖eta ψ G b‖ ^ 2 / σ ^ 2)).card : ℝ) ≤
         (G.card : ℝ) * ((Q.filter (fun i => θ ≤ qSq i)).card : ℝ) :=
-      hLift θ hθ
+      hLift θ hθ habove
     _ ≤ (G.card : ℝ) * Bq θ := by
       exact mul_le_mul_of_nonneg_left (hQTailAbove θ hθ habove) (by positivity)
     _ ≤ (3 / 5 : ℝ) * ((nonzeroFreqs (F := F)).card : ℝ) *
@@ -79,7 +87,7 @@ quarter-MGF residual. -/
 theorem nonzeroNormalizedSqQuarterMGFResidual_of_quotient_halfBand_tail
     {ι : Type*} (ψ : AddChar F ℂ) (G : Finset F) {σ : ℝ}
     (Q : Finset ι) (qSq : ι → ℝ) (Θ : Finset ℝ) (δ Bq : ℝ → ℝ)
-    (hLift : RawNonzeroTailLeCosetScale ψ G σ Q qSq Θ)
+    (hLift : HalfBandRawNonzeroTailLeCosetScale ψ G σ Q qSq Θ)
     (hQTailAbove : ∀ θ ∈ Θ, (1 / 2 : ℝ) < θ →
       (((Q.filter (fun i => θ ≤ qSq i)).card : ℝ) ≤ Bq θ))
     (hScaleAbove : ∀ θ ∈ Θ, (1 / 2 : ℝ) < θ →

@@ -58,7 +58,7 @@ theorem zeroSplitGridTail_of_positive_tail
   intro θ hθ
   by_cases hzero : θ = 0
   · subst θ
-    simp [zeroSplitBulkSpikesBound]
+    simp only [zeroSplitBulkSpikesBound, ↓reduceIte]
     exact_mod_cast Finset.card_le_card
       (Finset.filter_subset
         (fun b => (0 : ℝ) ≤ ‖eta ψ G b‖ ^ (2 : ℕ) / σ ^ (2 : ℕ))
