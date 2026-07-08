@@ -1684,3 +1684,16 @@ d ∈ {2,4,8} including the true non-squarefree kernels; the 2-power tower is a 
 recursion; fiber counts supplied to the pipeline. The rung's live consumer needs the
 bounded-residual subfamily gate (cross-character cancellation — a genuinely analytic question).
 **CORE OPEN, ON-BGK. No fabricated closure.**
+
+## §40. Round 26 (2026-07-08) — the second face falls; the tower capstone; the mixed-moment pin
+
+DISPROOF tag `466-r26-d4-face-unconditional-d16-tower-mixedmoment-pinned`. Bricks: `_R26D4Mirror.lean`
+(**tripleLinearHasseC_d4_unconditional**, K=45, zero named hypotheses — the SECOND unconditional
+face), `_R26D16.lean` (d=16 + the uniform `dBlockIndependence_two_pow` capstone, k ≤ 4),
+`_R26ResidualL2CrossIdentity.lean` (new exact cross-χ identity with Jacobi modulus √q; per-part
+splits provably overspend — the subfamily gate's open content = **Main–Res mixed-moment
+cancellation**). MATHLIB debt now 2 rounds (owed).
+
+**═══ STATE after 26 rounds ═══** The r=2 rung: two unconditional faces (d=2, d=4); independence
+closed through d=16 with a uniform capstone; the one remaining analytic input for the live gate is
+the Main–Res mixed moment. Above the rung unchanged. **CORE OPEN, ON-BGK. No fabricated closure.**

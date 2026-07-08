@@ -21004,3 +21004,38 @@ contributes ≤ (orbit size ≤ n)² cross pairs... measured multipliers 0.4–3
 (the #464 FiniteObstructionGoodPrime selector pattern) OR bad-prime-robust boundedness both
 suffice for the rung. The prize does NOT need vanishing — it needs Wick-boundedness, which
 no probed prime (good or bad) violates. CORE OPEN (the boundedness proof), ON-BGK.
+
+## [466-r26-d4-face-unconditional-d16-tower-mixedmoment-pinned] ROUND 26: SECOND unconditional face — TripleLinearHasseC d=4 (K=45, zero named hypotheses); d=16 + the uniform 2^k capstone; the subfamily gate's open content pinned as Main–Res MIXED-moment cancellation (per-part splits provably overspend) (2026-07-08)
+
+Four lanes + skeptics; RESL2/D4MIRROR/D16 CONFIRMED (minor); MATHLIB-redo FAILED AGAIN (fatal —
+"waiting on the build", no artifacts; debt now 2 rounds old, owed).
+
+- **D4MIRROR (`_R26D4Mirror.lean`, 1061 lines, 8503-job build):**
+  `tripleLinearHasseC_d4_unconditional` — TripleLinearHasseC χ G 45 for EVERY finite field and
+  EVERY order-4 character, zero named hypotheses (trivial branch q ≤ 2025, Stepanov branch above;
+  zero gap). New bridges: character-fiber ⊆ power-fiber dictionary; kernel-shape decomposition
+  (all 11 coincidence patterns = unit·σ²r; R18 degeneracy clauses = EXACTLY the perfect-power
+  collapse kernels — nondegeneracy = fold-admissibility with nothing to spare).
+  `fourthMomentTwistBound_order4_family` at Cw = 49 (within the standing rung regime |G|⁴ ≤ q —
+  skeptic wording fix). Optimum C₄* = 2√204 ≈ 28.6; landed constant 45.
+- **D16 (`_R26D16.lean`, 903 lines, 8480-job build):** `dBlockIndependence_sixteen` (budget
+  16D + 15·deg g < q — the predicted shape) + capstone **`dBlockIndependence_two_pow`** (uniform
+  k ≤ 4 statement; oddness derived). The r25 recursion validated at three consecutive rungs with
+  zero surprises — the file was produced mechanically from _R25D8Descent by the documented rules,
+  first compile passed. General-k induction assessed honestly: needs Finset-generic convolution
+  reindexing (2–3 focused lanes), the quadratic-adjunction package is already generic.
+- **RESL2 (`_R26ResidualL2CrossIdentity.lean` + `_R26BoundedResidual.lean` helpers):** decisive
+  negative + a genuinely new exact identity. NEW: cross-χ second-moment identity
+  Σ_{s₀} T_{χ'}·conj T_{χ''} = K(χ',χ'')·Σ_{x,y}(χ'conj χ'')(x−y) with ‖K‖ = √q EXACTLY (Jacobi
+  sums; includes new norm_jacobiSum_eq_sqrt_card). Residual L² bound proven. THE NEGATIVE: the
+  residual's true fourth-moment constant is measured AT the Wick budget constant 3 (large cells;
+  Gaussian heuristic — conjecture-grade per skeptic), so EVERY per-part norm split of
+  I_H = MainY + Res overspends the budget even though the true rung ratio is 0.87 — **the open
+  content is Main–Res joint (mixed-moment) cancellation**, not any per-part residual bound.
+  L²×sup overshoots by Mn/2 exactly; L⁴-Minkowski misses at C_R = 3 for all m under the gate.
+  Pinned next Prop: a mixed-moment bound on Σ‖MainY‖²‖Res‖²-type cross terms.
+
+State: TWO unconditional faces of the r=2 rung (d=2 K≈169/49, d=4 K=45); independence closed for
+the whole probed 2-power tower (d ≤ 16, uniform capstone); the rung's remaining analytic content
+= the Main–Res mixed moment (subfamily gate) + the d=8/16 parameter mirrors + everything above
+the rung. CORE OPEN, ON-BGK. No fabricated closure.
