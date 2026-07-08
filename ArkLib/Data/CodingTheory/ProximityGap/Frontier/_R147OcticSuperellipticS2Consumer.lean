@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24SuperellipticS2
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25OcticNormFold
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25D8Descent
 
 /-!
 # LANE B2 (#466 round 147): public d = 8 superelliptic fiber consumer
@@ -22,7 +22,7 @@ namespace ArkLib.ProximityGap.Frontier.R147OcticSuperellipticS2Consumer
 
 open Polynomial Finset
 open ArkLib.ProximityGap.Frontier.R24SuperellipticS2
-open ArkLib.ProximityGap.Frontier.R25OcticNormFold
+open ArkLib.ProximityGap.Frontier.R25D8Descent
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
@@ -32,17 +32,14 @@ set_option linter.style.longLine false
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Octic norm-fold corollary.**  For `d = 8` and squarefree `g`, the R25 octic
-norm-fold theorem supplies the independence input needed by R24's general
-superelliptic S2 machine, so the order-8 fiber bound is unconditional modulo the standard
-polynomial-ring algebraic instances required by the fraction-field descent. -/
+/-- **Octic descent corollary.**  For `d = 8` and squarefree `g`, the direct R25 octic
+descent theorem supplies the independence input needed by R24's general superelliptic S2
+machine, so the order-8 fiber bound is exposed without the older fraction-field algebraic
+instance hypotheses. -/
 theorem squarefree_eight_block_fiber_bound
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (g : F[X]) (hg : g.Monic)
     (hsf : Squarefree g) (hdg : 0 < g.natDegree)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     {m e J D : ℕ} (hJ : 0 < J)
     (he : e = (Fintype.card F - 1) / 8)
     (hmq : m < Fintype.card F)
@@ -52,20 +49,17 @@ theorem squarefree_eight_block_fiber_bound
     m * (Finset.univ.filter fun s : F => (g.eval s) ^ e = ζ).card
       ≤ g.natDegree * (m + (8 - 1) * e) + D + Fintype.card F * (J - 1) :=
   superelliptic_stepanov_fiber_bound g hg hdg hJ
-    (dBlockIndependence_eight g hsf hdg hq_odd h8 hD) he hmq hcount ζ
+    (dBlockIndependence_eight g hsf hdg h8 hD) he hmq hcount ζ
 
 /-- Family form of `squarefree_eight_block_fiber_bound`, for callers whose class values are
 indexed by a finite support set.  The membership hypothesis is intentionally unused by the
 proof; it packages the single-fiber estimate in the shape consumed by the octic model
 adapters. -/
 theorem squarefree_eight_block_fiber_bound_family
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     {ι : Type*} (T : Finset ι) (ζOf : ι → F)
     (g : F[X]) (hg : g.Monic)
     (hsf : Squarefree g) (hdg : 0 < g.natDegree)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     {m e J D : ℕ} (hJ : 0 < J)
     (he : e = (Fintype.card F - 1) / 8)
     (hmq : m < Fintype.card F)
@@ -75,7 +69,7 @@ theorem squarefree_eight_block_fiber_bound_family
       m * (Finset.univ.filter fun s : F => (g.eval s) ^ e = ζOf c).card
         ≤ g.natDegree * (m + (8 - 1) * e) + D + Fintype.card F * (J - 1) := by
   intro c _
-  exact squarefree_eight_block_fiber_bound g hg hsf hdg hq_odd h8 hJ he hmq hD hcount
+  exact squarefree_eight_block_fiber_bound g hg hsf hdg h8 hJ he hmq hD hcount
     (ζOf c)
 
 end ArkLib.ProximityGap.Frontier.R147OcticSuperellipticS2Consumer

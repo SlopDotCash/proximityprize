@@ -20945,3 +20945,39 @@ wiring the rung into the r15/r16 constant-interfaces; and a main-branch fix — 
 sync's new style-header linter broke `SubgroupGaussSumSecondMoment.lean` (set_option before
 module docstring), which failed EVERY build of this cone; moved the option below the
 docstring. Real build: 8499 jobs, success.
+
+## [466-r25-d8-proven-nonsquarefree-resolved-suby-not-free] ROUND 25: DBlockIndependence d=8 PROVEN (the 2^k tower pattern found — hypotheses stable up the tower); the non-squarefree quintic kernel RESOLVED (s²·r radical fold); subfamily-Y gate NOT free (⟺ HyperplaneTransferOff, refuted as exact identity) (2026-07-08)
+
+Four lanes + skeptics; D4INST/D8/SUBY CONFIRMED (minor); MATHLIB-drafts FAILED (placeholder, dead
+build — honestly recorded as NOT PRODUCED; redo owed).
+
+- **D8 (`_R25D8Descent.lean`, 8479-job build):** `dBlockIndependence_eight` PROVEN (squarefree g,
+  8 | q−1, budget 8D + 7·deg g < q — the predicted shape; oddness derived). THE PATTERN: fold 8→4
+  is verbatim r24 mechanics consuming dBlockIndependence_four once; the octic descent IS the
+  quartic descent instantiated over the single quadratic adjunction K(√c) (AdjoinRoot X²−c — not
+  literally extension-free, but no octic extension is built); Kummer side conditions TELESCOPE
+  (¬IsSquare(−c) absorbs the −4K⁴ clause) — **the hypothesis set is stable for the whole 2-power
+  tower**. Stated recursion: d=2^{k+1} descent = d=2^k descent over K(√c); d=16 is now a
+  mechanical instantiation. Skeptic added an exhaustive F₅ check (all 390k tuples) and an F₇
+  witness proving ¬IsSquare(−c) is genuinely load-bearing.
+- **D4INST (`_R25D4Instantiate.lean`, 8484-job build):** the kernel-multiplicity obstruction
+  RESOLVED — the d=4 Stepanov object h = L₁L₂L₃³ (deg 5, NOT squarefree) satisfies
+  DBlockIndependence anyway: gcd(3,4)=1 lets h = s²·r fold onto the squarefree radical at both
+  usage points with ZERO budget loss (4D + 3·deg h < q). First non-squarefree d-block instance;
+  `quintic_kernel_fiber_bound` = the exact DStepanovOutput-shaped count supply for the r24
+  pipeline. ⚠️ skeptic: the fiber bound beats trivial only asymptotically (q ≳ 10⁴; ~0.26q at
+  10⁷) — fine at prize scale, must be stated when the (m,J,D) mirror consumes it (owed).
+- **SUBY (`_R25SubfamilyGate.lean`):** the live-gate audit — the subfamily-Y route is NOT free:
+  the coarse instantiation changes the hyperplane (regress to the impossible full-family gate);
+  the original-H gate is EQUIVALENT (proven iff) to `HyperplaneTransferOff` (pointwise coset
+  equidistribution of signed incidences), which is REFUTED numerically as an exact identity
+  (√q·|G|-scale residual at ≥33/36 offsets in every cell). Composed conditional gate landed
+  (antecedent generically false — a named-open-input implication only). NEXT: the
+  bounded-residual variant (r19's norm_chiSubfamilyResidual_le_card_mul entry point; needs
+  cross-character cancellation, not per-term bounds). Audit-provenance fix owed: add the
+  #print axioms block to the brick.
+
+State: DBlockIndependence proven at d ∈ {2, 4, 8} (+ non-squarefree quintic kernel); the 2^k
+recursion is mechanical; the fiber-count machinery is in place. Remaining for the full r=2 rung:
+the (m,J,D) numeric mirror at d=4/8 and the bounded-residual subfamily gate (the rung's actual
+live consumer). CORE OPEN, ON-BGK. No fabricated closure.

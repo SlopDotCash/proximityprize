@@ -1668,3 +1668,19 @@ independence PROVEN, its S2 machinery in place (parameter instantiation owed); d
 descent iterations; full-family gate dead by theorem, subfamily-Y the live consumer. Above the
 rung unchanged (AwaySupBound; head rungs phase-deep; Problem A). **CORE OPEN, ON-BGK. No
 fabricated closure.**
+
+## §39. Round 25 (2026-07-08) — d=8 proven (tower pattern found); non-squarefree kernel resolved; the subfamily gate honestly pinned
+
+DISPROOF tag `466-r25-d8-proven-nonsquarefree-resolved-suby-not-free`. Bricks:
+`_R25D8Descent.lean` (dBlockIndependence_eight; 2^k recursion: next descent = same descent over
+K(√c), hypotheses stable — d=16 mechanical), `_R25D4Instantiate.lean` (s²·r radical fold; first
+non-squarefree instance; quintic_kernel_fiber_bound = the pipeline's count supply, asymptotic
+regime flagged), `_R25SubfamilyGate.lean` (subfamily-Y NOT free; original-H gate ⟺
+HyperplaneTransferOff, refuted as exact identity; bounded-residual variant is the real target).
+MATHLIB-drafts lane failed (nothing produced; redo owed).
+
+**═══ STATE after 25 rounds ═══** The superelliptic Stepanov program: independence proven at
+d ∈ {2,4,8} including the true non-squarefree kernels; the 2-power tower is a mechanical
+recursion; fiber counts supplied to the pipeline. The rung's live consumer needs the
+bounded-residual subfamily gate (cross-character cancellation — a genuinely analytic question).
+**CORE OPEN, ON-BGK. No fabricated closure.**
