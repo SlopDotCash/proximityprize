@@ -1774,6 +1774,36 @@ theorem not_rawFourthMoment_shifted_all_omitted_normalized_A_inputs_r_one_regime
         ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
   not_shifted_all_omitted_normalized_budget_A_inputs_r_one_regime χ G D hm hn hreg
 
+/-- Raw-endpoint-shaped no-go for the exact `A = 1` shifted all-omitted normalized route. -/
+theorem not_rawFourthMoment_shifted_all_omitted_normalized_one_inputs_r_one_regime
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (_hψ : ψ.IsPrimitive)
+    (G D : Finset F) (_hGD : G ⊆ D)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ T : ℝ,
+      0 ≤ T ∧
+      (∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt χ' G D 1) ∧
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ) * (G.card : ℝ) ^ 1
+        ≤ T ^ (2 * 1) ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
+  not_shifted_all_omitted_normalized_budget_one_inputs_r_one_regime χ G D hm hn hreg
+
+/-- Predicate-free numeric no-go for the direct pointwise all-omitted route at the natural
+`sqrt(q * |G|)` scale.  In the R18 regime, no `A ≤ 1` normalized budget can coexist with the
+natural lower scale `q|G| ≤ T²`. -/
+theorem not_exists_pointwise_all_omitted_sqrt_scale_budget_A_le_one_regime
+    (χ : MulChar F ℂ) (G : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ A T : ℝ,
+      0 ≤ A ∧ A ≤ 1 ∧ 0 ≤ T ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  exact not_exists_shifted_all_omitted_rate_one_budget_A_le_one_regime χ G hm hn hreg
+
 /-- Interface-level `A ≤ 1` no-go for the direct pointwise all-omitted route at the natural
 `sqrt(q * |G|)` scale.  The pointwise upper-bound hypothesis does not enter the contradiction:
 once `T` is at least the natural second-moment scale, the same normalized-budget obstruction as in
@@ -1788,19 +1818,9 @@ theorem not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime
       (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
       (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
         ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
-  rintro ⟨A, T, _hA0, hA1, hT0, _hpointwise, hrate, hbudgetA⟩
-  have hbudget_one :
-      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
-        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
-    have hscale_nonneg : 0 ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
-      positivity
-    have hA_scale :
-        A * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
-          ≤ 1 * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :=
-      mul_le_mul_of_nonneg_right hA1 hscale_nonneg
-    nlinarith [hbudgetA, hA_scale]
-  exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate hreg
-    hbudget_one
+  rintro ⟨A, T, hA0, hA1, hT0, _hpointwise, hrate, hbudgetA⟩
+  exact not_exists_pointwise_all_omitted_sqrt_scale_budget_A_le_one_regime χ G hm hn hreg
+    ⟨A, T, hA0, hA1, hT0, hrate, hbudgetA⟩
 
 /-- Raw-endpoint-shaped no-go for the direct pointwise all-omitted normalized route at the
 natural `sqrt(q * |G|)` scale.  The additive character data is included to mirror attempts to feed
@@ -1817,6 +1837,22 @@ theorem not_rawFourthMoment_pointwise_all_omitted_normalized_A_inputs_sqrt_scale
       (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
         ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
   not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime χ G D hm hn hreg
+
+/-- Raw-endpoint-shaped no-go for the exact `A = 1` pointwise all-omitted normalized route. -/
+theorem not_rawFourthMoment_pointwise_all_omitted_normalized_one_inputs_sqrt_scale_regime
+    (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (_hψ : ψ.IsPrimitive)
+    (G D : Finset F) (_hGD : G ⊆ D)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ T : ℝ,
+      0 ≤ T ∧
+      (∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T) ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T ^ 2 ∧
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨T, hT0, hpointwise, hrate, hbudget⟩
+  exact not_exists_pointwise_all_omitted_sqrt_scale_budget_A_le_one_regime χ G hm hn hreg
+    ⟨1, T, by norm_num, by norm_num, hT0, hrate, by simpa using hbudget⟩
 
 /-- **Thin-subfamily exact-rung consumer.**  If a subfamily `Y ⊆ chiFamily χ` has its own exact
 `ChiDecompositionOff` identity, then all other explicit-character inputs are discharged:
@@ -2091,8 +2127,11 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
 #print axioms not_shifted_all_omitted_normalized_budget_one_inputs_r_one_regime
 #print axioms not_shifted_all_omitted_normalized_budget_A_inputs_r_one_regime
 #print axioms not_rawFourthMoment_shifted_all_omitted_normalized_A_inputs_r_one_regime
+#print axioms not_rawFourthMoment_shifted_all_omitted_normalized_one_inputs_r_one_regime
+#print axioms not_exists_pointwise_all_omitted_sqrt_scale_budget_A_le_one_regime
 #print axioms not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime
 #print axioms not_rawFourthMoment_pointwise_all_omitted_normalized_A_inputs_sqrt_scale_regime
+#print axioms not_rawFourthMoment_pointwise_all_omitted_normalized_one_inputs_sqrt_scale_regime
 #print axioms
   wickForIncidenceAwayAt_two_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
 #print axioms
