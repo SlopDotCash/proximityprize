@@ -208,7 +208,7 @@ theorem eta_sq_lt_card_of_depth3_card_cube_lt {ψ : AddChar F ℂ}
         (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2) :=
       Finset.mem_filter.mpr ⟨Finset.mem_univ b, hb⟩
     rw [hempty] at hbmem
-    simpa using hbmem
+    simp at hbmem
   exact lt_of_not_ge hbnot
 
 end ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing
