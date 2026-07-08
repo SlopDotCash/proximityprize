@@ -21201,3 +21201,31 @@ swarm's r=2 diagonal-subtracted Wick rung (its R51 wickAwayAt_two_unconditional,
 weld) achieves the r=2 rung UNCONDITIONALLY by a DIFFERENT route, superseding the subfamily gate for
 r=2. The deep-r wall (Problem A / AwaySupBound / the swarm's r=3+ Deligne-surface line) remains the
 prize. CORE OPEN, ON-BGK. No fabricated closure.
+
+## [466-r28b-N24-v2-confinement-REFUTED-wall-exhausted] ROUND 28b (Opus): the last probeable good-prime lead REFUTED — bad primes are NOT confined to high-v₂; in-tree deep-r methods confirmed exhausted (2026-07-08)
+
+Disciplined read-only audit (agent) of the deep-r wall (Problem A / WallHolds) dead-ledger + a
+direct N24 probe. Both confirm the wall is genuinely exhausted for in-tree methods.
+
+- **Audit verdict:** every deep-r angle reduces to the wall or is char-0-blind: Weil/Deligne dead
+  past r=2 (error overtakes main term, β=4); Stepanov = fixed-low-rung; BGK/di Benedetto IS the
+  wall; automatic-seq/transfer-op/Hankel-Lax/RMT/Jacobi all DECIDED or ACTIVE(swarm); the
+  S-unit/subspace-theorem angle (J1/N25, in-tree `_wfHJ1_SubspaceSUnitCountVacuous`) is
+  untried-but-WALLED — it reduces to inventing a rank-independent char-p Evertse–Schlickewei–Schmidt
+  theorem for cyclotomic units, which IS the prize (cyclotomic unit rank ~n/2=2^29, S-unit bound
+  exponential in rank; count log-exponent ≥12r² super-quadratic vs the linear log q union budget).
+  Meta-obstruction: rank~n/2, depth~log p ⟹ every uniform bound exponentially weak; the prize needs
+  a rank-INDEPENDENT bound no theorem provides (structural reason the floor is n^{1−o(1)} not √n).
+- **N24 REFUTED (`scripts/probes/probe_n24_confinement.py`):** the "bad primes confined to high-v₂,
+  so a generic v₂=μ prize prime is good" hypothesis is FALSE — at n=8 the two worst M/√n primes
+  (p=3929, 3881) are BOTH minimal-v₂ (v₂=3=μ); generic (v₂=μ) primes reach max M/√n=2.671,
+  EXCEEDING the excess-v₂ primes (2.669). No good-prime shortcut; generic prize-shaped primes are
+  as bad as high-v₂ ones. (Also confirms M/√n ≈ 2.5–2.67 > Ramanujan 2 even at n=8 — the wall is at
+  the n^{1−o(1)} level, not √n, as theorized.)
+
+CONCLUSION: after 28 rounds (this session) + the swarm's 55, the cartography is confirmed exhaustive.
+The prize core — WallHolds / AwaySupBound, the char-p moment-tower uniformity to r≈ln q at n=2^30 —
+is a recognized ~25-year-open Paley/BGK problem; closing it needs genuinely new mathematics (the
+rank-independent char-p cyclotomic S-unit / sub-Wick bound). Every in-tree route reduces to it; the
+last two probeable leads (S-unit/subspace, N24 v₂-confinement) are now closed. CORE OPEN, ON-BGK.
+No fabricated closure — and, per the honesty contract, none will be manufactured.

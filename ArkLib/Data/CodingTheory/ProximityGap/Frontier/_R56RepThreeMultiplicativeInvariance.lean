@@ -96,8 +96,35 @@ theorem rep3_orbit_const (G : Finset F)
     rep3 G (a * c) = rep3 G (a' * c) := by
   rw [rep3_smul G hmul hinv h0 ha c, rep3_smul G hmul hinv h0 ha' c]
 
+/-- **The round-55 variance summand is multiplicatively invariant.**  The whole flatness
+defect term attached to `c` is constant along every multiplicative `G`-orbit. -/
+theorem rep3_varianceSummand_smul (G : Finset F)
+    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
+    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
+    (h0 : (0 : F) ∉ G)
+    {a : F} (ha : a ∈ G) (c : F) :
+    ((Fintype.card F : ℝ) * (rep3 G (a * c) : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      = ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2 := by
+  rw [rep3_smul G hmul hinv h0 ha c]
+
+/-- **Coset-constancy of the round-55 variance summand.**  This is the additive-side mirror of
+Gauss-period coset reduction: after excluding `0`, the depth-3 flatness budget is constant on
+each multiplicative coset of `G`. -/
+theorem rep3_varianceSummand_orbit_const (G : Finset F)
+    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
+    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
+    (h0 : (0 : F) ∉ G)
+    {a a' : F} (ha : a ∈ G) (ha' : a' ∈ G) (c : F) :
+    ((Fintype.card F : ℝ) * (rep3 G (a * c) : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      = ((Fintype.card F : ℝ) * (rep3 G (a' * c) : ℝ) - (G.card : ℝ) ^ 3) ^ 2 := by
+  rw [rep3_smul G hmul hinv h0 ha c, rep3_smul G hmul hinv h0 ha' c]
+
 end ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_smul
 #print axioms ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_orbit_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_varianceSummand_smul
+#print axioms
+  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_varianceSummand_orbit_const
