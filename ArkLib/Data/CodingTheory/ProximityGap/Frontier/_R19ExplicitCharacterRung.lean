@@ -1327,6 +1327,27 @@ theorem chiFamily_all_omitted_T_cap_of_normalized_budget_one
       ≤ (G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1) := by
   nlinarith
 
+/-- `A ≤ 1` version of the all-omitted `T` cap.  Any normalized budget with
+`A·|G|√q` on the right is at least as restrictive as the exact `A = 1` budget. -/
+theorem chiFamily_all_omitted_T_cap_of_normalized_budget_A_le_one
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ} (hA : A ≤ 1)
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+      ≤ (G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1) := by
+  have hscale_nonneg : 0 ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+    positivity
+  have hbudget_one :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+    have hA_scale :
+        A * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+          ≤ 1 * ((G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :=
+      mul_le_mul_of_nonneg_right hA hscale_nonneg
+    nlinarith [hbudget, hA_scale]
+  exact chiFamily_all_omitted_T_cap_of_normalized_budget_one χ G hbudget_one
+
 /-- Divided form of `chiFamily_all_omitted_T_cap_of_normalized_budget_one`.  This is the
 pointwise size an all-omitted route must force on every twisted thin sum. -/
 theorem chiFamily_all_omitted_T_le_of_normalized_budget_one
@@ -1339,6 +1360,21 @@ theorem chiFamily_all_omitted_T_le_of_normalized_budget_one
     T ≤ ((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
         / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ)) := by
   have hcap := chiFamily_all_omitted_T_cap_of_normalized_budget_one χ G hbudget
+  rw [le_div_iff₀ hden]
+  simpa [mul_comm, mul_left_comm, mul_assoc] using hcap
+
+/-- Divided `A ≤ 1` form of the all-omitted `T` cap. -/
+theorem chiFamily_all_omitted_T_le_of_normalized_budget_A_le_one
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ}
+    (hden :
+      0 < ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (hA : A ≤ 1)
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    T ≤ ((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+        / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ)) := by
+  have hcap := chiFamily_all_omitted_T_cap_of_normalized_budget_A_le_one χ G hA hbudget
   rw [le_div_iff₀ hden]
   simpa [mul_comm, mul_left_comm, mul_assoc] using hcap
 
@@ -1364,6 +1400,18 @@ theorem chiFamily_all_omitted_T_le_of_normalized_budget_one_of_two_le_order
   chiFamily_all_omitted_T_le_of_normalized_budget_one χ G
     (chiFamily_all_omitted_den_pos χ hm) hbudget
 
+/-- Divided `A ≤ 1` all-omitted `T` cap with denominator positivity discharged from
+`orderOf χ ≥ 2`. -/
+theorem chiFamily_all_omitted_T_le_of_normalized_budget_A_le_one_of_two_le_order
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ} (hm : 2 ≤ orderOf χ) (hA : A ≤ 1)
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    T ≤ ((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+        / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :=
+  chiFamily_all_omitted_T_le_of_normalized_budget_A_le_one χ G
+    (chiFamily_all_omitted_den_pos χ hm) hA hbudget
+
 /-- Combining the shifted-Wick rate lower requirement with the exact all-omitted budget cap
 forces a purely numerical inequality.  This is the obstruction shape for the all-omitted shifted
 route: the moment-derived lower scale for `T` must fit under the budget cap. -/
@@ -1381,6 +1429,26 @@ theorem shifted_all_omitted_rate_le_budget_cap_pow
           / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ (2 * r) := by
   have hTcap :=
     chiFamily_all_omitted_T_le_of_normalized_budget_one_of_two_le_order χ G hm hbudget
+  have hpow := pow_le_pow_left₀ hT0 hTcap (2 * r)
+  exact le_trans hrate hpow
+
+/-- `A ≤ 1` version of `shifted_all_omitted_rate_le_budget_cap_pow`.  The same cap controls every
+normalized all-omitted budget whose right side is `A·|G|√q` with `A ≤ 1`. -/
+theorem shifted_all_omitted_rate_le_budget_cap_pow_of_A_le_one
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ} (r : ℕ)
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T) (hA : A ≤ 1)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hbudget :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+      ≤ (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ (2 * r) := by
+  have hTcap :=
+    chiFamily_all_omitted_T_le_of_normalized_budget_A_le_one_of_two_le_order χ G hm hA
+      hbudget
   have hpow := pow_le_pow_left₀ hT0 hTcap (2 * r)
   exact le_trans hrate hpow
 
@@ -1402,6 +1470,25 @@ theorem not_shifted_all_omitted_budget_of_rate_cap_lt
         ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
   intro hbudget
   have hle := shifted_all_omitted_rate_le_budget_cap_pow χ G r hm hT0 hrate hbudget
+  exact not_lt_of_ge hle hcap_lt
+
+/-- `A ≤ 1` no-go corollary for the all-omitted shifted route. -/
+theorem not_shifted_all_omitted_budget_A_le_one_of_rate_cap_lt
+    (χ : MulChar F ℂ) (G : Finset F) {T A : ℝ} (r : ℕ)
+    (hm : 2 ≤ orderOf χ) (hT0 : 0 ≤ T) (hA : A ≤ 1)
+    (hrate :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+        ≤ T ^ (2 * r))
+    (hcap_lt :
+      (((G.card : ℝ) * (Real.sqrt (Fintype.card F : ℝ) - 1))
+          / (((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ))) ^ (2 * r)
+        < (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ)
+          * (G.card : ℝ) ^ r) :
+    ¬ (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T
+        ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  intro hbudget
+  have hle :=
+    shifted_all_omitted_rate_le_budget_cap_pow_of_A_le_one χ G r hm hT0 hA hrate hbudget
   exact not_lt_of_ge hle hcap_lt
 
 /-- The `r = 1` specialization of `shifted_all_omitted_rate_le_budget_cap_pow`: the exact
@@ -1929,9 +2016,12 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_normalized_budget_one
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_normalized_budget_one
 #print axioms chiFamily_all_omitted_T_cap_of_normalized_budget_one
+#print axioms chiFamily_all_omitted_T_cap_of_normalized_budget_A_le_one
 #print axioms chiFamily_all_omitted_T_le_of_normalized_budget_one
+#print axioms chiFamily_all_omitted_T_le_of_normalized_budget_A_le_one
 #print axioms chiFamily_all_omitted_den_pos
 #print axioms chiFamily_all_omitted_T_le_of_normalized_budget_one_of_two_le_order
+#print axioms chiFamily_all_omitted_T_le_of_normalized_budget_A_le_one_of_two_le_order
 #print axioms shifted_all_omitted_rate_le_budget_cap_pow
 #print axioms not_shifted_all_omitted_budget_of_rate_cap_lt
 #print axioms shifted_all_omitted_rate_one_le_budget_cap_sq
