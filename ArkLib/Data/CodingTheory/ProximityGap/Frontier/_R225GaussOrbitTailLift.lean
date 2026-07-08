@@ -19,6 +19,7 @@ open Real
 open scoped BigOperators
 
 set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
 set_option linter.unusedDecidableInType false
 set_option linter.unusedFintypeInType false
 
