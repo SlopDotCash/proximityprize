@@ -210,6 +210,16 @@ theorem awaySup_lower_of_superWick (ψ : AddChar F ℂ) (G H D : Finset F) (r : 
   push_neg at hno
   exact absurd (sup_split_recursion ψ G H D _ hno r) (not_le.mpr hviol)
 
+/-- A super-Wick rung is an explicit certificate that the corresponding away-sup budget
+`C = 2r + 1` fails.  This is the direct consumer form of `awaySup_lower_of_superWick`: any
+attempt to prove the rung from `AwaySupBound (2r+1)` contradicts the measured violation. -/
+theorem not_awaySupBound_of_superWick (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ)
+    (hviol : ((2 * (r : ℝ) + 1) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2) * rungMoment ψ G H D r
+      < rungMoment ψ G H D (r + 1)) :
+    ¬ AwaySupBound ψ G H D (2 * (r : ℝ) + 1) := by
+  intro hsup
+  exact not_le.mpr hviol (subWick_of_awaySupBound ψ G H D r hsup le_rfl)
+
 /-! ### (3) The no-self-improvement fixed point. -/
 
 /-- Chebyshev at any depth: every away value's `2R`-th power is dominated by rung R. -/
@@ -267,6 +277,7 @@ end ArkLib.ProximityGap.Frontier.R20SubWickInterpolation
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.rungMoment_ratio_mono
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.subWick_of_awaySupBound
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.awaySup_lower_of_superWick
+#print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.not_awaySupBound_of_superWick
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.away_pow_le_rungMoment
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.awayValue_pow_le_chain
 #print axioms ArkLib.ProximityGap.Frontier.R20SubWickInterpolation.fixedPoint_depth_independent
