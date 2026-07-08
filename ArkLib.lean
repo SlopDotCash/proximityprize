@@ -2520,6 +2520,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53DualFamilySexticEnvelo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R54CharacterUnitSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R54Depth3PerFrequencyChain
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55Depth3VarianceReformulation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R56RepThreeMultiplicativeInvariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55SexticExplicitBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R55UnitSexticEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R56SexticBudgetNormalization

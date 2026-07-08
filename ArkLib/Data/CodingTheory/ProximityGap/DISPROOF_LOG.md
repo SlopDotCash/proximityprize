@@ -21149,3 +21149,23 @@ correct machine-checked reformulation that (a) sharpens the target to a variance
 (b) proves the DC floor unconditionally, (c) opens the equidistribution toolset. Feasibility of
 the new route: OPEN (the multiplicative-subgroup rep function's flatness is exactly as hard as
 the additive-energy bound — no free lunch — but the LENS is new to the codebase). CORE OPEN.
+
+## [466-r56-rep-function-multiplicative-symmetry] STRUCTURE: the 3-fold representation function of the multiplicative subgroup G=μ_n is G-INVARIANT — `rep3(a·c)=rep3(c)` for a∈G; so the r55 flatness deficit lives on the (q−1)/|G| Gauss-period orbits, not all q points (2026-07-08)
+
+Lane: #466 round-56 (file `_R56RepThreeMultiplicativeInvariance.lean`). The one structural fact
+special to G=μ_n (vs a generic set): G is a MULTIPLICATIVE subgroup, so the ADDITIVE 3-fold
+representation function rep3(c)=#{(y₁,y₂,y₃)∈G³: y₁+y₂+y₃=c} inherits a multiplicative symmetry.
+Proven axiom-clean (real build):
+- `rep3_smul`: for a∈G (G closed under ·, inverses, 0∉G), rep3(a·c)=rep3(c). Proof: x↦a⁻¹x
+  permutes G (subgroup), carrying triples-summing-to-a·c onto triples-summing-to-c
+  (Finset.sum_nbij' reindex ×3 + mul_left_cancel).
+- `rep3_orbit_const`: rep3 is constant on each multiplicative coset of G.
+CONSEQUENCE (sharpened r55 lens): the DC-subtracted depth-3 energy = flatness deficit
+∑_c(q·rep3(c)−|G|³)² is really ∑ over the (q−1)/|G| COSETS (Gauss-period orbits), each
+contributing |G| equal terms + the c=0 point. So the depth-3 flatness problem has only
+(q−1)/|G| genuine degrees of freedom (the distinct Gauss periods), NOT q — the exact
+additive-side mirror of "η_b depends only on the coset of b". Does NOT break the wall
+(per-coset values still governed by Paley/BGK) but is the correct μ_n-specific normalization
+of the r55 variance. HONEST NOTE: r55's `dc_floor` (|G|⁶≤q·E₃) duplicates the r=3 case of the
+in-tree general `DCEnergyEssential.q_mul_energy_ge_dc` (my sum-of-squares proof route differs;
+the variance IDENTITY + iff in r55 are the genuinely new part). CORE OPEN, ON-BGK.
