@@ -8,8 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.CharP.Lemmas
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — the subgroup Gauss-sum SECOND MOMENT, exactly, with NO Weil bound.
 
@@ -37,6 +35,8 @@ case (the deep-interior pin) open. All `sorry`-free and axiom-clean.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
 
 open Finset AddChar
 

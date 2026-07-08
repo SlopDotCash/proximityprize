@@ -20916,3 +20916,32 @@ State: the r=2 rung machinery is complete for d ∈ {2, 4} modulo the S2-paramet
 d=4 (mirror _R23ParameterChoice); d = 8, 16, … = one descent lemma per halving; the full family
 serves the subfamily-Y gate only (full-family gate dead by theorem). CORE OPEN, ON-BGK. No
 fabricated closure.
+
+## [466-r51-UNCONDITIONAL-r2-rung-weld] MILESTONE: `wickAwayAt_two_unconditional` — the r=2 diagonal-subtracted Wick rung of the corrected tower holds at EVERY odd finite field with `16·|G|² ≤ √q`, ZERO named hypotheses; the Fourier lane (r16/r17) and the elementary Stepanov lane (Stepanov-r23 milestone) are WELDED (2026-07-08)
+
+Lane: #466 round-51 (files `_R51UnconditionalQuarticInput.lean`, `_R51bUnconditionalDeg2Rung.lean`).
+The r17 named input `WeilQuarticPairs` (Weil 1948 class, constant 3) is now DISCHARGED:
+(a) r51a — `weilQuarticPairsOn_unconditional`: the G-restricted generic-constant form
+`WeilQuarticPairsOn G (realQuadChar F) 26` holds at every odd finite field, welded from the
+Stepanov-lane `quarticWeilInputC_unconditional` (K=625 family, C=25+1=26) through the
+`intQuartic` cast bridge; degeneracy translation: the r17 four conditions imply
+¬IsDegenerate exactly. `isRealQuadChar_realQuadChar` instantiates the r17 axioms for the
+concrete `quadraticChar`.
+(b) r51b — the full r17 moment chain replayed at constant 26 (`sum_Rker_sq_bound26`:
+2n²q+26n⁴√q; fourth moment 3n²q+2n³+26n⁴√q; third moment by CS), and the rung theorem
+`wickAwayAt_two_of_weil26` at the UNCHANGED threshold `16n² ≤ √q` (the constant-26 surplus
+26n⁴√q ≤ (26/16)n²q stays below the Wick main term: LHS ≈ 5.9·n²q³ vs RHS ≈ 9.2·n²q³ in the
+final polynomial inequality — same 16, no weakening).
+**Consequence:** `WickForIncidenceAwayAt ψ G (QRset χ₂) (insert 0 G) 2` is a THEOREM with
+zero named hypotheses — the FIRST fully unconditional nontrivial rung of the corrected
+(r16) tower, valid in the prize window (β ≈ 5.3 ⟹ √q ≈ n^{2.65} ≫ 16n²... note: 16n² ≤ √q
+requires β ≥ 4+ε with the constant; at prize q ≈ n·2^{128} the condition is trivially true).
+The two campaign lanes (my Fourier/λ-transform tower + peer Stepanov pipeline) now share
+machine-checked plumbing. NEXT open rung: r=3 (the r50 atom split: char-0 closed form +
+`Depth3WraparoundVanishing`). CORE OPEN above r=2, ON-BGK.
+Also this round: peer consumer welds landed inside `_R51bUnconditionalDeg2Rung.lean`
+(`wickAwayAtWithConstant_two_unconditional`, `rawFourthMomentWithDiagonal_two_unconditional`)
+wiring the rung into the r15/r16 constant-interfaces; and a main-branch fix — the upstream
+sync's new style-header linter broke `SubgroupGaussSumSecondMoment.lean` (set_option before
+module docstring), which failed EVERY build of this cone; moved the option below the
+docstring. Real build: 8499 jobs, success.

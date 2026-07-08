@@ -2442,10 +2442,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24DBlockIndependence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24FullRungAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24InvolutionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24SuperellipticS2
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25D4Instantiate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25D8Descent
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25DualFamilyInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25FractionRatio
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25OcticNormFold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25QuarticAdjoinRoot
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R25SubfamilyGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26DiscreteLogExists
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26PointwiseTripleConvTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R27FullTowerCollapse
@@ -2484,6 +2487,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50Depth3WraparoundVanish
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50TripleTwistEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51PrimitiveSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51UnconditionalQuarticInput
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51bUnconditionalDeg2Rung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52CharacterSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52UnitSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53DualFamilySexticEnvelope
