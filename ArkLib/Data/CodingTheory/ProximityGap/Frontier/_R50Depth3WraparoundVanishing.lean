@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkov
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkovWick
 
 /-!
 # Round 50: the depth-3 wraparound-vanishing atom
@@ -22,10 +22,13 @@ This gives future attempts a small, typed target instead of a prose note in the 
 
 set_option autoImplicit false
 set_option linter.style.longLine false
+set_option linter.unusedFintypeInType false
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)
+open ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.SubgroupGaussSumSixthMoment
+open ArkLib.ProximityGap.GaussPeriodMomentBound
 
 namespace ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing
 
@@ -97,6 +100,46 @@ theorem sixthMoment_le_fifteen_card_cube_of_depth3WraparoundVanishing {ψ : AddC
   sixthMoment_le_of_depth3WraparoundVanishing_bound hψ G hvan
     (charZero_depth3_closedForm_le_fifteen_card_cube G hn)
 
+/-- Generic energy-interface form of the named depth-3 atom.  If the exact finite-field depth-3
+energy is a supplied value `V3`, and `V3` satisfies the Wick envelope, then the canonical
+`GaussianEnergyBound G 3` interface follows. -/
+theorem gaussianEnergyBound_three_of_depth3WraparoundVanishing_bound {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F) {V3 : ℕ}
+    (hvan : Depth3WraparoundVanishing G V3)
+    (hV3 : (V3 : ℝ) ≤ 15 * (G.card : ℝ) ^ 3) :
+    GaussianEnergyBound G 3 := by
+  unfold GaussianEnergyBound
+  have hbridge : (rEnergy G 3 : ℝ) = (addEnergy3 G : ℝ) := by
+    rw [rEnergy_three_eq_addEnergy3 hψ G]
+  calc
+    (rEnergy G 3 : ℝ)
+        = (V3 : ℝ) := by
+          rw [hbridge, hvan]
+    _ ≤ 15 * (G.card : ℝ) ^ 3 := hV3
+    _ = (Nat.doubleFactorial (2 * 3 - 1) : ℝ) * (G.card : ℝ) ^ 3 := by
+          norm_num [Nat.doubleFactorial]
+
+/-- Canonical energy-interface form of the depth-3 atom.  The closed-form finite-field
+`addEnergy3` identity supplies `GaussianEnergyBound G 3`, via the in-tree bridge
+`rEnergy G 3 = addEnergy3 G`. -/
+theorem gaussianEnergyBound_three_of_depth3_closedForm {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F) (hn : 1 ≤ G.card)
+    (hvan :
+      (addEnergy3 G : ℝ)
+        = 15 * (G.card : ℝ) ^ 3 - 45 * (G.card : ℝ) ^ 2 + 40 * (G.card : ℝ)) :
+    GaussianEnergyBound G 3 := by
+  unfold GaussianEnergyBound
+  have hbridge : (rEnergy G 3 : ℝ) = (addEnergy3 G : ℝ) := by
+    rw [rEnergy_three_eq_addEnergy3 hψ G]
+  calc
+    (rEnergy G 3 : ℝ)
+        = 15 * (G.card : ℝ) ^ 3 - 45 * (G.card : ℝ) ^ 2 + 40 * (G.card : ℝ) := by
+          rw [hbridge, hvan]
+    _ ≤ 15 * (G.card : ℝ) ^ 3 :=
+          charZero_depth3_closedForm_le_fifteen_card_cube G hn
+    _ = (Nat.doubleFactorial (2 * 3 - 1) : ℝ) * (G.card : ℝ) ^ 3 := by
+          norm_num [Nat.doubleFactorial]
+
 /-- Johnson-scale exclusion from the exact depth-3 atom.  If the finite-field depth-3 energy
 has the characteristic-zero closed form and that closed form lies below `q²`, the sixth-moment
 Markov count forces the Johnson-scale frequency set to be empty. -/
@@ -147,6 +190,27 @@ theorem no_johnson_scale_frequency_of_depth3_card_cube_lt {ψ : AddChar F ℂ}
   no_johnson_scale_frequency_of_depth3_closedForm_lt hψ G hq hvan
     (lt_of_le_of_lt (charZero_depth3_closedForm_le_fifteen_card_cube G hn) hlt)
 
+/-- Pointwise Johnson-scale exclusion from the depth-3 atom.  Under the Wick envelope
+`15·|G|³ < q²`, every individual Fourier coefficient lies strictly below scale `q`. -/
+theorem eta_sq_lt_card_of_depth3_card_cube_lt {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F) (hq : 0 < Fintype.card F) (hn : 1 ≤ G.card)
+    (hvan :
+      (addEnergy3 G : ℝ)
+        = 15 * (G.card : ℝ) ^ 3 - 45 * (G.card : ℝ) ^ 2 + 40 * (G.card : ℝ))
+    (hlt : 15 * (G.card : ℝ) ^ 3 < (Fintype.card F : ℝ) ^ 2) (b : F) :
+    ‖eta ψ G b‖ ^ 2 < (Fintype.card F : ℝ) := by
+  classical
+  have hempty :=
+    no_johnson_scale_frequency_of_depth3_card_cube_lt hψ G hq hn hvan hlt
+  have hbnot : ¬ (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2 := by
+    intro hb
+    have hbmem : b ∈ Finset.univ.filter (fun b : F =>
+        (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖ ^ 2) :=
+      Finset.mem_filter.mpr ⟨Finset.mem_univ b, hb⟩
+    rw [hempty] at hbmem
+    simpa using hbmem
+  exact lt_of_not_ge hbnot
+
 end ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing
 
 /-! ## Axiom audit -/
@@ -161,6 +225,12 @@ end ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing
 #print axioms
   ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.sixthMoment_le_fifteen_card_cube_of_depth3WraparoundVanishing
 #print axioms
+  ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.gaussianEnergyBound_three_of_depth3WraparoundVanishing_bound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.gaussianEnergyBound_three_of_depth3_closedForm
+#print axioms
   ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.no_johnson_scale_frequency_of_depth3_closedForm_lt
 #print axioms
   ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.no_johnson_scale_frequency_of_depth3_card_cube_lt
+#print axioms
+  ArkLib.ProximityGap.Frontier.R50Depth3WraparoundVanishing.eta_sq_lt_card_of_depth3_card_cube_lt
