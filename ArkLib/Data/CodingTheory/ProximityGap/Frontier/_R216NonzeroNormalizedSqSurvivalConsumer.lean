@@ -73,8 +73,36 @@ theorem nonzeroNormalizedSqQuarterMGFResidual_of_survival_count_ceiling
     (fun b => ‖eta ψ G b‖ ^ 2 / σ ^ 2) Θ δ B
     hδ hstair hTail hweighted
 
-/-- The observed half-rate bulk-plus-two survival envelope, packaged as a
-direct residual for the normalized-square spectrum. -/
+/-- A half-rate bulk-plus-spikes survival envelope, packaged as a direct
+residual for the normalized-square spectrum.  When the carrier is raw nonzero
+frequencies, a two-coset spike reserve should be inserted here as a frequency
+mass such as `Kspike = 2 * |G|`, not literal `2`. -/
+theorem nonzeroNormalizedSqQuarterMGFResidual_of_halfRate_bulkPlusSpikes_tail
+    (ψ : AddChar F ℂ) (G : Finset F) {σ : ℝ}
+    (Θ : Finset ℝ) (δ : ℝ → ℝ) (Cbulk Kspike : ℝ)
+    (hδ : ∀ θ ∈ Θ, 0 ≤ δ θ)
+    (hstair : ∀ b ∈ nonzeroFreqs (F := F),
+      Real.exp ((1 / 4 : ℝ) * (‖eta ψ G b‖ ^ 2 / σ ^ 2)) ≤
+        ∑ θ ∈ Θ.filter (fun θ => θ ≤ ‖eta ψ G b‖ ^ 2 / σ ^ 2), δ θ)
+    (hTail : NonzeroNormalizedSqGridTail ψ G σ Θ
+      (fun θ => Cbulk * ((nonzeroFreqs (F := F)).card : ℝ) *
+        Real.exp (-(θ / 2)) + Kspike))
+    (hweighted :
+      (∑ θ ∈ Θ, δ θ *
+        (Cbulk * ((nonzeroFreqs (F := F)).card : ℝ) *
+          Real.exp (-(θ / 2)) + Kspike))
+        ≤ 2 * ((nonzeroFreqs (F := F)).card : ℝ)) :
+    NonzeroNormalizedSqQuarterMGFResidual ψ G σ := by
+  exact nonzeroNormalizedSqQuarterMGFResidual_of_survival_count_ceiling
+    ψ G Θ δ
+    (fun θ => Cbulk * ((nonzeroFreqs (F := F)).card : ℝ) *
+      Real.exp (-(θ / 2)) + Kspike)
+    hδ hstair hTail hweighted
+
+/-- Literal `(3/5, 2)` specialization.  This is appropriate for a carrier whose
+spikes are counted as individual elements of `s`; for quotient-coset evidence
+on raw frequencies, use `nonzeroNormalizedSqQuarterMGFResidual_of_halfRate_bulkPlusSpikes_tail`
+with the spike budget multiplied by the coset multiplicity. -/
 theorem nonzeroNormalizedSqQuarterMGFResidual_of_threeFifths_plus_two_tail
     (ψ : AddChar F ℂ) (G : Finset F) {σ : ℝ}
     (Θ : Finset ℝ) (δ : ℝ → ℝ)
@@ -91,14 +119,12 @@ theorem nonzeroNormalizedSqQuarterMGFResidual_of_threeFifths_plus_two_tail
           Real.exp (-(θ / 2)) + 2))
         ≤ 2 * ((nonzeroFreqs (F := F)).card : ℝ)) :
     NonzeroNormalizedSqQuarterMGFResidual ψ G σ := by
-  exact nonzeroNormalizedSqQuarterMGFResidual_of_survival_count_ceiling
-    ψ G Θ δ
-    (fun θ => (3 / 5 : ℝ) * ((nonzeroFreqs (F := F)).card : ℝ) *
-      Real.exp (-(θ / 2)) + 2)
-    hδ hstair hTail hweighted
+  exact nonzeroNormalizedSqQuarterMGFResidual_of_halfRate_bulkPlusSpikes_tail
+    ψ G Θ δ (3 / 5) 2 hδ hstair hTail hweighted
 
 end ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_survival_count_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_halfRate_bulkPlusSpikes_tail
 #print axioms ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_threeFifths_plus_two_tail
