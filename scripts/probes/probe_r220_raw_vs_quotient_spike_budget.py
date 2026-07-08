@@ -28,7 +28,7 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 import numpy as np  # noqa: E402
 
-from scripts.probes.probe_r199_vectorized_large_anchor_tail import (  # noqa: E402
+from scripts.probes.probe_r226_half_band_quotient_tail_sweep import (  # noqa: E402
     normalized_values_vectorized,
 )
 

@@ -21,14 +21,33 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 import numpy as np  # noqa: E402
 
-from scripts.probes.probe_r199_vectorized_large_anchor_tail import (  # noqa: E402
+from scripts.probes.probe_r226_half_band_quotient_tail_sweep import (  # noqa: E402
+    is_prime,
     normalized_values_vectorized,
 )
-from scripts.probes.probe_r200_vectorized_large_grid_sweep import case_set  # noqa: E402
 from scripts.probes.probe_r220_raw_vs_quotient_spike_budget import (  # noqa: E402
     DEFAULT_ROWS as R220_ROWS,
 )
-from scripts.probes.probe_r59_large_moment_ratio_monotonicity import is_prime  # noqa: E402
+
+
+def case_set(max_n: int, max_p: int, primes_per_start: int) -> set[tuple[int, int, str]]:
+    """Small local replacement for the untracked R200 large-grid case helper."""
+    out: set[tuple[int, int, str]] = set()
+    starts = (2**16, 2**20, 2**24, 2**28)
+    n = 16
+    while n <= max_n:
+        for start in starts:
+            if start > max_p:
+                continue
+            p = start + ((1 - start) % n)
+            found = 0
+            while p <= max_p and found < primes_per_start:
+                if is_prime(p):
+                    out.add((n, p, f"large-start={start}"))
+                    found += 1
+                p += n
+        n *= 2
+    return out
 
 
 def medium_cases(max_a: int, max_index: int) -> set[tuple[int, int, str]]:
