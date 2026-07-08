@@ -19,6 +19,8 @@ open Real
 open scoped BigOperators
 
 set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
 
 namespace ArkLib.ProximityGap.Frontier.R225GaussOrbitTailLift
 
@@ -45,8 +47,6 @@ theorem normalizedSq_superlevel_stable_of_finSubgroup
     (ψ : AddChar F ℂ) {G : Finset F} {σ θ : ℝ}
     (hG : ArkLib.ProximityGap.E2DilationDirectCount.FinSubgroup G)
     {u b : F} (hu : u ∈ G)
-    (hb : b ∈
-      ArkLib.ProximityGap.Frontier.R207NonzeroGaussPeriodDilationConsumer.nonzeroFreqs (F := F))
     (hθ : θ ≤ ‖eta ψ G b‖ ^ 2 / σ ^ 2) :
     θ ≤ ‖eta ψ G (u * b)‖ ^ 2 / σ ^ 2 := by
   have hu0 : u ≠ 0 :=
@@ -68,8 +68,8 @@ theorem rawNonzeroTailLeCosetScale_of_gauss_orbit_score
     RawNonzeroTailLeCosetScale ψ G σ (nonzeroOrbitCarrier G) qSq Θ := by
   refine rawNonzeroTailLeCosetScale_of_orbit_superlevels
     ψ G hG Θ qSq ?_ hqSq
-  intro θ hθ u hu b hb hbθ
-  exact normalizedSq_superlevel_stable_of_finSubgroup ψ hG hu hb hbθ
+  intro θ hθ u hu b _hb hbθ
+  exact normalizedSq_superlevel_stable_of_finSubgroup ψ hG hu hbθ
 
 end
 
