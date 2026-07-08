@@ -2389,6 +2389,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R150OcticR2WeilConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R151OcticChiFamilyExactRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R151OcticSigmaGateConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R152OcticFullFamilyGateObstructions
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R153OcticThinnedResidualTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15GaussDecompDiagonalSpike
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15IncidenceMomentInterchange
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16DiagonalExactValue

@@ -77,6 +77,32 @@ theorem not_exists_octic_chiFamily_constant_gate_of_Cmax_nonneg_le_two
   rintro ⟨Cmax, hCmax0, hCmax2, hgate⟩
   exact not_octic_chiFamily_constant_gate_of_Cmax_nonneg_le_two χ hm hCmax0 hCmax2 hgate
 
+/-- The full-family octic pipeline's own coefficient bounds force `Cmax ≥ 0`; hence they
+already make the full `chiFamily χ` normalized exact-rung gate impossible. -/
+theorem not_octic_chiFamily_constant_gate_of_pipeline_bounds
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ)
+    (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
+    (hCd0 : ∀ χ' ∈ chiFamily χ, 0 ≤ Cd χ')
+    (hCdmax : ∀ χ' ∈ chiFamily χ, Cd χ' ≤ Cmax) :
+    ¬ 32 * ((4 + Cmax) * ((chiFamily χ).card : ℝ) ^ 4 + 1)
+        / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1 := by
+  obtain ⟨χ', hχ'⟩ := chiFamily_nonempty_of_two_le_order χ hm
+  have hCmax0 : 0 ≤ Cmax := le_trans (hCd0 χ' hχ') (hCdmax χ' hχ')
+  exact not_octic_chiFamily_constant_gate_of_Cmax_nonneg χ hm hCmax0
+
+/-- Existential form for the exact R151 full-family pipeline bounds: no choice of `Cd` and
+`Cmax` can satisfy nonnegative per-character constants, a uniform upper bound, and the full
+`chiFamily χ` normalized exact-rung gate simultaneously. -/
+theorem not_exists_octic_chiFamily_constant_gate_of_pipeline_bounds
+    (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ) :
+    ¬ ∃ (Cd : MulChar F ℂ → ℝ) (Cmax : ℝ),
+      (∀ χ' ∈ chiFamily χ, 0 ≤ Cd χ') ∧
+      (∀ χ' ∈ chiFamily χ, Cd χ' ≤ Cmax) ∧
+      32 * ((4 + Cmax) * ((chiFamily χ).card : ℝ) ^ 4 + 1)
+          / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1 := by
+  rintro ⟨Cd, Cmax, hCd0, hCdmax, hgate⟩
+  exact not_octic_chiFamily_constant_gate_of_pipeline_bounds χ hm Cd hCd0 hCdmax hgate
+
 end ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions
 
 /-! ## Axiom audit -/
@@ -95,3 +121,9 @@ open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
 open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
 #print axioms
   not_exists_octic_chiFamily_constant_gate_of_Cmax_nonneg_le_two
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  not_octic_chiFamily_constant_gate_of_pipeline_bounds
+open ArkLib.ProximityGap.Frontier.R152OcticFullFamilyGateObstructions in
+#print axioms
+  not_exists_octic_chiFamily_constant_gate_of_pipeline_bounds
