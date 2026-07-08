@@ -114,6 +114,24 @@ theorem not_hybrid_cutoff_and_prefixes_of_dvd_four_budget_lt_bad
     (demand_floor_of_dvd_four_prefixes_and_hybrid_cutoff
       Bad R hcut hprefix r n hn hg hr hrg)
 
+/-- Positive-rung version of the cutoff obstruction. -/
+theorem not_hybrid_cutoff_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasHybridMajorantsCutoff Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hcut, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_hybrid_cutoff
+      Bad R hcut hprefix r n hn hg hr0 hr1 hr2 hrg)
+
 end ArkLib.ProximityGap.Frontier.R133DemandFloorHybridCutoff
 
 /-! ## Axiom audit -/
@@ -135,3 +153,5 @@ end ArkLib.ProximityGap.Frontier.R133DemandFloorHybridCutoff
   ArkLib.ProximityGap.Frontier.R133DemandFloorHybridCutoff.demand_floor_positive_of_dvd_four_prefixes_and_hybrid_cutoff
 #print axioms
   ArkLib.ProximityGap.Frontier.R133DemandFloorHybridCutoff.not_hybrid_cutoff_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R133DemandFloorHybridCutoff.not_hybrid_cutoff_and_prefixes_of_dvd_four_budget_lt_bad_positive

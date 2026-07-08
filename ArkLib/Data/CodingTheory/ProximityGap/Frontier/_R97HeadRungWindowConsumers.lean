@@ -31,6 +31,14 @@ open ArkLib.ProximityGap.Frontier.R21HeadRungDichotomy
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
+/-- Exact-budget one-rung form: `AwaySupBound` at the Wick budget `C = 2r+1`
+is precisely enough to force the named head-rung sub-Wick inequality. -/
+theorem headRungSubWick_of_awaySupBound_at_wickBudget
+    (ψ : AddChar F ℂ) (G H D : Finset F) (r : ℕ)
+    (hAway : AwaySupBound ψ G H D (2 * (r : ℝ) + 1)) :
+    HeadRungSubWick ψ G H D r :=
+  headRungSubWick_of_awaySupBound ψ G H D r le_rfl hAway
+
 /-- If `AwaySupBound C` reaches the threshold at `r₀`, then every later head rung is automatic. -/
 theorem headRungSubWick_window_of_awaySupBound
     (ψ : AddChar F ℂ) (G H D : Finset F) {C : ℝ} (r₀ : ℕ)
@@ -66,6 +74,15 @@ theorem not_awaySupBound_of_headRung_window_failure
   intro hAway
   exact hfail (headRungSubWick_window_of_awaySupBound ψ G H D r₀ hC hAway r hr)
 
+/-- Exact-budget contrapositive: failure of the rung-`r` sub-Wick inequality refutes
+`AwaySupBound` at the matching Wick budget `C = 2r+1`. -/
+theorem not_awaySupBound_at_wickBudget_of_headRung_failure
+    (ψ : AddChar F ℂ) (G H D : Finset F) {r : ℕ}
+    (hfail : ¬ HeadRungSubWick ψ G H D r) :
+    ¬ AwaySupBound ψ G H D (2 * (r : ℝ) + 1) := by
+  intro hAway
+  exact hfail (headRungSubWick_of_awaySupBound_at_wickBudget ψ G H D r hAway)
+
 /-- Concrete r = 3 failure form: any failed head rung at depth at least `3` rules out
 `AwaySupBound C` for every `C ≤ 7`. -/
 theorem not_awaySupBound_le_seven_of_headRung_failure
@@ -83,10 +100,14 @@ end ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers
 
 /-! ## Axiom audit -/
 #print axioms
+  ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers.headRungSubWick_of_awaySupBound_at_wickBudget
+#print axioms
   ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers.headRungSubWick_window_of_awaySupBound
 #print axioms
   ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers.headRungSubWick_from_three_of_awaySupBound
 #print axioms
   ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers.not_awaySupBound_of_headRung_window_failure
+#print axioms
+  ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers.not_awaySupBound_at_wickBudget_of_headRung_failure
 #print axioms
   ArkLib.ProximityGap.Frontier.R97HeadRungWindowConsumers.not_awaySupBound_le_seven_of_headRung_failure

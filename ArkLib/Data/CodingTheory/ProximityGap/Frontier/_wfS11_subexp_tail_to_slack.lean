@@ -128,45 +128,71 @@ Mechanism (per `r`):
    assumed; instead we state the clean form with `K = 1/c` valid when `A ≤ 1`, and the general
    `A ≥ 1` form gives `K` with an `A`-factor at `r=1`).
 
-We prove the clean, load-bearing case `A = 1` (the measured envelope is `A ≈ 1`, `c ≈ 0.59`): then
-`E_r ≤ (1/c)^r·(2r−1)‼·n^r`, exactly `CharPEnergyTransferWithSlack _ n (1/c)`. -/
-theorem slack_of_subexp_moment
-    {M : ℕ → ℝ} {n c : ℝ}
-    (hn : 0 ≤ n) (hc : 0 < c) (hc1 : c ≤ 1)
-    (henv : MomentEnvelope M 1 c) :
-    CharPEnergyTransferWithSlack (fun r => n ^ r * M r) n (1 / c) := by
+The honest general form has slack constant `K = A / c`. The older clean, load-bearing case `A = 1`
+(the measured envelope is `A ≈ 1`, `c ≈ 0.59`) is recovered as `K = 1 / c`. -/
+theorem slack_of_subexp_moment_general
+    {M : ℕ → ℝ} {A n c : ℝ}
+    (hA : 1 ≤ A) (hn : 0 ≤ n) (hc : 0 < c)
+    (henv : MomentEnvelope M A c) :
+    CharPEnergyTransferWithSlack (fun r => n ^ r * M r) n (A / c) := by
   intro r hr
   have hcr : (0 : ℝ) < c ^ r := pow_pos hc r
-  -- E_r = n^r * M_r ≤ n^r * (1 * r! / c^r) = n^r * r!/c^r
-  have hMr : M r ≤ 1 * (Nat.factorial r : ℝ) / c ^ r := henv r hr
-  have hMr' : M r ≤ (Nat.factorial r : ℝ) / c ^ r := by simpa using hMr
   have hnr : (0 : ℝ) ≤ n ^ r := pow_nonneg hn r
-  -- r! ≤ (2r-1)‼
-  have hfac : (Nat.factorial r : ℝ) ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) := factorial_le_doubleFactorial_odd r
-  -- chain
+  have hAnonneg : 0 ≤ A := le_trans (by norm_num) hA
+  have hMr : M r ≤ A * (Nat.factorial r : ℝ) / c ^ r := henv r hr
+  have hfac : (Nat.factorial r : ℝ) ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) :=
+    factorial_le_doubleFactorial_odd r
+  have hApow : A ≤ A ^ r := by
+    simpa using pow_le_pow_right₀ hA hr
   calc n ^ r * M r
-      ≤ n ^ r * ((Nat.factorial r : ℝ) / c ^ r) := by
-        exact mul_le_mul_of_nonneg_left hMr' hnr
-    _ ≤ n ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) / c ^ r) := by
-        gcongr
-    _ = (1 / c) ^ r * (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ r := by
-        rw [one_div, inv_pow]
-        field_simp
+      ≤ n ^ r * (A * (Nat.factorial r : ℝ) / c ^ r) := by
+        exact mul_le_mul_of_nonneg_left hMr hnr
+    _ ≤ n ^ r * (A ^ r * (Nat.doubleFactorial (2 * r - 1) : ℝ) / c ^ r) := by
+        apply mul_le_mul_of_nonneg_left
+        · apply div_le_div_of_nonneg_right _ (le_of_lt hcr)
+          calc
+            A * (Nat.factorial r : ℝ)
+                ≤ A * (Nat.doubleFactorial (2 * r - 1) : ℝ) := by
+                  exact mul_le_mul_of_nonneg_left hfac hAnonneg
+            _ ≤ A ^ r * (Nat.doubleFactorial (2 * r - 1) : ℝ) := by
+                  exact mul_le_mul_of_nonneg_right hApow (by positivity)
+        · exact hnr
+    _ = (A / c) ^ r * (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ r := by
+        rw [div_pow]
+        field_simp [ne_of_gt hcr]
+
+theorem slack_of_subexp_moment
+    {M : ℕ → ℝ} {n c : ℝ}
+    (hn : 0 ≤ n) (hc : 0 < c) (_hc1 : c ≤ 1)
+    (henv : MomentEnvelope M 1 c) :
+    CharPEnergyTransferWithSlack (fun r => n ^ r * M r) n (1 / c) := by
+  simpa using slack_of_subexp_moment_general (A := 1) (M := M) (n := n) (c := c)
+    (by norm_num) hn hc henv
 
 /-- **Composed prize bound (the S11 → S1 → prize chain), explicit constant `√(2e/c)`.**
 Under the sub-exponential moment envelope (rate `c`), the formal-period moment identity
 `M^{2r} ≤ Q·E_r`, and `r ≥ max(1, log Q)`, the per-frequency Gauss-period sup obeys the prize
 square-root shape with constant `√(2e/c)`. With the MEASURED `c ≈ 0.59` this is `√(2e/0.59) ≈ 3.0`. -/
+theorem prize_sq_of_subexp_general
+    {Mmax A n Q c : ℝ} {r : ℕ} {M : ℕ → ℝ}
+    (hMmax : 0 ≤ Mmax) (hA : 1 ≤ A) (hn : 0 ≤ n) (hQ : 0 < Q) (hc : 0 < c)
+    (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)
+    (henv : MomentEnvelope M A c)
+    (hmoment : Mmax ^ (2 * r) ≤ Q * (n ^ r * M r)) :
+    Mmax ^ 2 ≤ 2 * Real.exp 1 * (A / c) * n * (r : ℝ) := by
+  have hslack := slack_of_subexp_moment_general hA hn hc henv
+  have hKpos : (0 : ℝ) < A / c := by positivity
+  exact prize_sq_of_transfer_slack hMmax hn hQ hKpos hr hrQ hslack hmoment
+
 theorem prize_sq_of_subexp
     {Mmax n Q c : ℝ} {r : ℕ} {M : ℕ → ℝ}
-    (hMmax : 0 ≤ Mmax) (hn : 0 ≤ n) (hQ : 0 < Q) (hc : 0 < c) (hc1 : c ≤ 1)
+    (hMmax : 0 ≤ Mmax) (hn : 0 ≤ n) (hQ : 0 < Q) (hc : 0 < c) (_hc1 : c ≤ 1)
     (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)
     (henv : MomentEnvelope M 1 c)
     (hmoment : Mmax ^ (2 * r) ≤ Q * (n ^ r * M r)) :
     Mmax ^ 2 ≤ 2 * Real.exp 1 * (1 / c) * n * (r : ℝ) := by
-  have hslack := slack_of_subexp_moment hn hc hc1 henv
-  have hKpos : (0 : ℝ) < 1 / c := by positivity
-  exact prize_sq_of_transfer_slack hMmax hn hQ hKpos hr hrQ hslack hmoment
+  simpa using prize_sq_of_subexp_general (A := 1) hMmax (by norm_num) hn hQ hc hr hrQ henv
+    hmoment
 
 /-! ### 4. Sanity: the `c = 1` (Gaussian-rate) collapse to the char-0 constant √(2e) -/
 
@@ -183,3 +209,10 @@ theorem prize_sq_subexp_gaussian_rate
   simpa using h
 
 end ArkLib.ProximityGap.Frontier.WFS11
+
+/-! ## Axiom audit -/
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.slack_of_subexp_moment_general
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.slack_of_subexp_moment
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.prize_sq_of_subexp_general
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.prize_sq_of_subexp
+#print axioms ArkLib.ProximityGap.Frontier.WFS11.prize_sq_subexp_gaussian_rate

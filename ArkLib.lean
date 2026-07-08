@@ -1181,6 +1181,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFGeneralToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MixedTopFitBudgetIncompatibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MuNIteratedDoubling
@@ -2330,10 +2331,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R108QRWeilConcreteCleared
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R109DemandFloorGeneralBudgetBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R109QRWeilConcreteClearedScalarSevenObstructions
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R110DemandFloorClosedRungBudgetConsumers
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R110QRWeilSevenProjectionConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R111DemandFloorOrbitObstructions
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R111QRWeilNormalizedSevenProjectionConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R112DemandFloorClosedRungGeneralBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R112LineListWeldObstructions
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R112QRWeilClearedScalarSevenProjectionConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R113DemandFloorR3GeneralBudget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R113QRWeilExactScalarSevenProjectionConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R113SupportAwareWeldObstructions
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R114DemandFloorClosedPrefixGeneralBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R114LowProfileSelfReferenceObstructions
@@ -2343,6 +2348,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R117DemandFloorTailObstru
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R118DemandFloorActiveRangeBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R119DemandFloorNaturalTailCertificates
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R120DemandFloorNaturalCertificatePackage
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R120QRWeilConcreteSevenProjectionConsumers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R121DemandFloorTailTheoremInterface
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R122DemandFloorExplicitOrbitProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R122DemandFloorNCoordinateInterface
@@ -2379,6 +2385,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R148TwoCharacterWeilSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R149MGFSmallToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R149OcticFullRungPipeline
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R14SupNormWeakerThanWall
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R150OcticR2WeilConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R151OcticChiFamilyExactRung
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R151OcticSigmaGateConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R152OcticFullFamilyGateObstructions
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R153OcticThinnedResidualTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15GaussDecompDiagonalSpike
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R15IncidenceMomentInterchange
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R16DiagonalExactValue
@@ -2469,8 +2480,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R48EtaFourthMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R49SexticZeroLagEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorReduction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50Depth3WraparoundVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50TripleTwistEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51PrimitiveSexticEnvelope
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51UnconditionalQuarticInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52CharacterSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52UnitSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53DualFamilySexticEnvelope

@@ -389,11 +389,11 @@ theorem mcaDeltaStar_eq_granularity (C : Submodule F (ι → A))
     obtain ⟨c, hc1, hc2⟩ := exists_between h
     have hcn : c * (Fintype.card ι : ℝ≥0) < j := by
       have h2 := hc2
-      rwa [lt_div_iff₀ (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))] at h2
+      rwa [lt_div_iff₀ (lt_of_le_of_ne (by positivity) (Ne.symm hn0))] at h2
     have hc1' : c ≤ 1 := by
       calc c ≤ (j : ℝ≥0) / (Fintype.card ι : ℝ≥0) := le_of_lt hc2
         _ ≤ 1 := by
-            rw [div_le_one (lt_of_le_of_ne (zero_le _) (Ne.symm hn0))]
+            rw [div_le_one (lt_of_le_of_ne (by positivity) (Ne.symm hn0))]
             exact_mod_cast le_trans (by omega : j ≤ j + 1) hj1n
     have hgood : c ∈ MCAThresholdLedger.mcaGoodRadii (F := F) (A := A)
         (C : Set (ι → A)) εstar :=

@@ -39,6 +39,22 @@ def HasHybridMajorantAt (Bad : ℕ → ℕ → ℕ) (g r : ℕ) : Prop :=
 def HasHybridMajorants (Bad : ℕ → ℕ → ℕ) : Prop :=
   ∀ g r : ℕ, 3 ≤ g → 6 ≤ r → r ≤ g → HasHybridMajorantAt Bad g r
 
+/-- A uniform KKH26 census route is a uniform hybrid route. -/
+theorem hybrid_majorants_of_kkh26_census_dominators
+    (Bad : ℕ → ℕ → ℕ)
+    (hdom : HasKKH26CensusDominators Bad) :
+    HasHybridMajorants Bad := by
+  intro g r hg hr hrg
+  exact Or.inl (hdom g r hg hr hrg)
+
+/-- A uniform ladder-list route is a uniform hybrid route. -/
+theorem hybrid_majorants_of_ladder_majorants
+    (Bad : ℕ → ℕ → ℕ)
+    (hmajor : HasLadderMajorants Bad) :
+    HasHybridMajorants Bad := by
+  intro g r hg hr hrg
+  exact Or.inr (hmajor g r hg hr hrg)
+
 /-- A single hybrid majorant gives the R125 maximal-binomial allowance at its rung. -/
 theorem maximal_allowance_of_hybrid_majorant_at
     (Bad : ℕ → ℕ → ℕ) (g r : ℕ)
@@ -134,6 +150,24 @@ theorem not_prefixes_and_hybrid_majorants_of_dvd_four_budget_lt_bad
     (demand_floor_of_dvd_four_prefixes_and_hybrid_majorants
       Bad hhyb hprefix r n hn hg hr hrg)
 
+/-- Positive-rung version of the hybrid-route obstruction. -/
+theorem not_prefixes_and_hybrid_majorants_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasHybridMajorants Bad ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hhyb, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_hybrid_majorants
+      Bad hhyb hprefix r n hn hg hr0 hr1 hr2 hrg)
+
 end ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants
 
 /-! ## Axiom audit -/
@@ -141,6 +175,10 @@ end ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants
   ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.HasHybridMajorantAt
 #print axioms
   ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.HasHybridMajorants
+#print axioms
+  ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.hybrid_majorants_of_kkh26_census_dominators
+#print axioms
+  ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.hybrid_majorants_of_ladder_majorants
 #print axioms
   ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.maximal_allowance_of_hybrid_majorant_at
 #print axioms
@@ -157,3 +195,5 @@ end ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants
   ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.demand_floor_positive_of_dvd_four_prefixes_and_hybrid_majorants
 #print axioms
   ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.not_prefixes_and_hybrid_majorants_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R132DemandFloorHybridMajorants.not_prefixes_and_hybrid_majorants_of_dvd_four_budget_lt_bad_positive

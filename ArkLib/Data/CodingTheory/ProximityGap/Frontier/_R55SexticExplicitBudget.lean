@@ -37,6 +37,24 @@ noncomputable def unitSexticBudget (G : Finset F) (C : ℝ) : ℝ :=
     ((G.card : ℝ) * ((Fintype.card F : ℝ)
       * (((Fintype.card F : ℝ) ^ 2 * (1 : ℝ) ^ 3) ^ 2)))
 
+/-- The explicit unit-envelope budget is monotone in the nonzero-lag variety constant. -/
+theorem unitSexticBudget_mono {C C' : ℝ} (hCC' : C ≤ C') :
+    unitSexticBudget (F := F) G C ≤ unitSexticBudget (F := F) G C' := by
+  unfold unitSexticBudget
+  refine max_le_max ?_ le_rfl
+  have hscale : 0 ≤ Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2 := by
+    positivity
+  have hinner :
+      C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2
+        ≤ C' * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2 := by
+    calc
+      C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2
+          = C * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) := by ring
+      _ ≤ C' * (Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2) :=
+          mul_le_mul_of_nonneg_right hCC' hscale
+      _ = C' * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) ^ 2 := by ring
+  exact mul_le_mul_of_nonneg_left hinner (by positivity)
+
 /-- Under the standard unit character/dual-family hypotheses, the named nonzero-lag
 `SexticVarietyInput` supplies the R37 all-lag `SexticCorrelationBound` at the explicit budget
 `unitSexticBudget`. -/
@@ -59,6 +77,17 @@ theorem sexticCorrelationBound_of_sexticVarietyInput_unitBudget_le
     SexticCorrelationBound χ lam G B :=
   sexticCorrelationBound_mono hB
     (sexticCorrelationBound_of_sexticVarietyInput_unitBudget hχ hχ1 hfam hgrp hweil)
+
+/-- A variety input at a sharper constant can be published at any larger explicit unit budget. -/
+theorem sexticCorrelationBound_of_sexticVarietyInput_unitBudget_mono
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C C' : ℝ}
+    (hCC' : C ≤ C')
+    (hweil : SexticVarietyInput χ lam G C) :
+    SexticCorrelationBound χ lam G (unitSexticBudget (F := F) G C') :=
+  sexticCorrelationBound_of_sexticVarietyInput_unitBudget_le hχ hχ1 hfam hgrp hweil
+    (unitSexticBudget_mono (F := F) (G := G) hCC')
 
 /-- Pointwise six-`J` bound at the explicit unit-envelope budget. -/
 theorem sextic_correlation_bound_of_sexticVarietyInput_unitBudget
@@ -96,10 +125,16 @@ theorem sextic_correlation_energy_bound_of_sexticVarietyInput_unitBudget
 
 set_option linter.style.longLine false in
 #print axioms
+  ArkLib.ProximityGap.Frontier.R55SexticExplicitBudget.unitSexticBudget_mono
+set_option linter.style.longLine false in
+#print axioms
   ArkLib.ProximityGap.Frontier.R55SexticExplicitBudget.sexticCorrelationBound_of_sexticVarietyInput_unitBudget
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R55SexticExplicitBudget.sexticCorrelationBound_of_sexticVarietyInput_unitBudget_le
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55SexticExplicitBudget.sexticCorrelationBound_of_sexticVarietyInput_unitBudget_mono
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R55SexticExplicitBudget.sextic_correlation_bound_of_sexticVarietyInput_unitBudget

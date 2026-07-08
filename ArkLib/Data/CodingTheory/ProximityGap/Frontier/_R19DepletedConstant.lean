@@ -347,6 +347,19 @@ def FamilyQuarticCubicBound (G : Finset F) (X : Finset (MulChar F ℂ)) (C₄ : 
   ∑ χ₁ ∈ X, ∑ χ₂ ∈ X, ∑ χ₃ ∈ X, ∑ χ₄ ∈ X, ‖crossMoment χ₁ χ₂ χ₃ χ₄ G‖
     ≤ C₄ * (X.card : ℝ) ^ 3 * (G.card : ℝ) ^ 2 * (Fintype.card F : ℝ)
 
+/-- The family-level quartic input is monotone in the published cubic-mass constant. -/
+theorem familyQuarticCubicBound_mono {G : Finset F} {X : Finset (MulChar F ℂ)} {C₄ C₄' : ℝ}
+    (hC : C₄ ≤ C₄') (h : FamilyQuarticCubicBound G X C₄) :
+    FamilyQuarticCubicBound G X C₄' := by
+  unfold FamilyQuarticCubicBound at *
+  have hscale :
+      C₄ * (X.card : ℝ) ^ 3 * (G.card : ℝ) ^ 2 * (Fintype.card F : ℝ)
+        ≤ C₄' * (X.card : ℝ) ^ 3 * (G.card : ℝ) ^ 2 * (Fintype.card F : ℝ) := by
+    have hmul := mul_le_mul_of_nonneg_right hC
+      (by positivity : 0 ≤ (X.card : ℝ) ^ 3 * (G.card : ℝ) ^ 2 * (Fintype.card F : ℝ))
+    linarith
+  exact h.trans hscale
+
 /-! ### (4) The master bound and the linear-K rung -/
 
 /-- **The Hölder-free master bound**: for ANY total quadruple-mass bound `B`,
@@ -511,6 +524,7 @@ theorem r19_linearK_rung
 #print axioms pairedDiagonal_le
 #print axioms sum_pow_two_mul_sum_pow_two
 #print axioms familyFourth_expansion
+#print axioms familyQuarticCubicBound_mono
 #print axioms sum_norm_familySum_pow_four_le
 #print axioms awayMoment_two_mul_le_of_familyQuartic
 #print axioms r19_linearK_rung

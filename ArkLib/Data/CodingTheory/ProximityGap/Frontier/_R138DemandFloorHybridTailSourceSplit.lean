@@ -133,6 +133,27 @@ theorem demand_floor_of_dvd_four_prefixes_and_source_split_finite_source_split_t
     hcover hkkhFin hladderFin (hybrid_above_of_source_split_above Bad R htail)
     hprefix r n hn hg hr hrg
 
+/-- Source-split finite prefixes plus a source-split tail give the positive-rung
+divisibility-form budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_source_split_finite_source_split_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ) (rs ts : Finset ℕ)
+    (hcover : Finset.Icc 6 R ⊆ rs ∪ ts)
+    (hkkhFin : HasKKH26CensusDominatorsOn Bad rs)
+    (hladderFin : HasLadderMajorantsOn Bad ts)
+    (htail : HasSourceSplitMajorantsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_source_split_tail Bad R rs ts
+    hcover hkkhFin hladderFin (hybrid_above_of_source_split_above Bad R htail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- A budget overrun refutes any source-split finite prefix plus source-split tail proof. -/
 theorem not_source_split_finite_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R : ℕ) (rs ts : Finset ℕ)
@@ -151,6 +172,27 @@ theorem not_source_split_finite_source_split_tail_and_prefixes_of_dvd_four_budge
   exact (Nat.not_le.mpr hgt)
     (demand_floor_of_dvd_four_prefixes_and_source_split_finite_source_split_tail
       Bad R rs ts hcover hkkhFin hladderFin htail hprefix r n hn hg hr hrg)
+
+/-- Positive-rung obstruction for source-split finite prefixes plus a source-split tail. -/
+theorem not_source_split_finite_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ) (rs ts : Finset ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (Finset.Icc 6 R ⊆ rs ∪ ts ∧
+      HasKKH26CensusDominatorsOn Bad rs ∧
+      HasLadderMajorantsOn Bad ts ∧
+      HasSourceSplitMajorantsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hcover, hkkhFin, hladderFin, htail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_source_split_finite_source_split_tail
+      Bad R rs ts hcover hkkhFin hladderFin htail hprefix r n hn hg hr0 hr1 hr2 hrg)
 
 end ArkLib.ProximityGap.Frontier.R138DemandFloorHybridTailSourceSplit
 
@@ -178,4 +220,8 @@ end ArkLib.ProximityGap.Frontier.R138DemandFloorHybridTailSourceSplit
 #print axioms
   ArkLib.ProximityGap.Frontier.R138DemandFloorHybridTailSourceSplit.demand_floor_of_dvd_four_prefixes_and_source_split_finite_source_split_tail
 #print axioms
+  ArkLib.ProximityGap.Frontier.R138DemandFloorHybridTailSourceSplit.demand_floor_positive_of_dvd_four_prefixes_and_source_split_finite_source_split_tail
+#print axioms
   ArkLib.ProximityGap.Frontier.R138DemandFloorHybridTailSourceSplit.not_source_split_finite_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R138DemandFloorHybridTailSourceSplit.not_source_split_finite_source_split_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive

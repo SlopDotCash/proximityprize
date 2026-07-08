@@ -24,6 +24,10 @@ the clean bound `≥ 18` comes from the *uniform* quadratic floor `cos t ≥ 1 -
 **Ceiling corollaries** (fully proven):
 * `etaGF_gt_ramanujan : etaGF > 2 * √32` — the Ramanujan `M ≤ 2√n` bound is VIOLATED at this
   prime (`M ≥ |η₁| = etaGF`).
+* `etaGF_ramanujan_ratio_ge_three_halves : 3/2 ≤ etaGF / (2 * √32)` — a clean rational
+  normalized witness, stronger than the advertised `1.34` constant.
+* `etaGF_ramanujan_ratio_gt_three_halves : 3/2 < etaGF / (2 * √32)` — the strict form,
+  using `2√32 < 12`.
 * `C_gt_134 : etaGF > 1.34 * (2 * √32)` — the Ramanujan-normalized ratio `M/(2√n)` is `> 1.34`
   (true value `≈ 2.23`) at `p = 65537`.
 
@@ -111,6 +115,15 @@ lemma two_sqrt32_le_twelve : 2 * Real.sqrt 32 ≤ 12 := by
     rw [← h36]; exact Real.sqrt_le_sqrt (by norm_num)
   linarith
 
+/-- Strict version of `two_sqrt32_le_twelve`: `2√32 < 12`. -/
+lemma two_sqrt32_lt_twelve : 2 * Real.sqrt 32 < 12 := by
+  rw [show (12 : ℝ) = 2 * 6 by norm_num]
+  gcongr
+  rw [show (6 : ℝ) = Real.sqrt 36 by
+    rw [show (36 : ℝ) = 6 ^ 2 by norm_num]
+    exact (Real.sqrt_sq (by norm_num)).symm]
+  exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+
 /-- **Ceiling corollary (Ramanujan/EVT violated):** `etaGF > 2√32`.
 The square-root ceiling `M ≤ 2√n` fails at this generalized-Fermat prime, since
 `M ≥ |η₁| = etaGF ≥ 18 > 12 ≥ 2√32`. -/
@@ -118,6 +131,34 @@ theorem etaGF_gt_ramanujan : etaGF > 2 * Real.sqrt 32 := by
   have h1 := etaGF_ge
   have h2 := two_sqrt32_le_twelve
   linarith
+
+/-- **Normalized rational ceiling witness:** `etaGF/(2√32) ≥ 3/2`.
+This is the same coarse certificate as `etaGF_ge`, divided by the Ramanujan scale:
+`etaGF ≥ 18` and `2√32 ≤ 12`. -/
+theorem etaGF_ramanujan_ratio_ge_three_halves :
+    (3 / 2 : ℝ) ≤ etaGF / (2 * Real.sqrt 32) := by
+  have hnum : (18 : ℝ) ≤ etaGF := etaGF_ge
+  have hden_pos : 0 < 2 * Real.sqrt 32 := by positivity
+  have hden : 2 * Real.sqrt 32 ≤ 12 := two_sqrt32_le_twelve
+  have hscaled : 18 / (2 * Real.sqrt 32) ≤ etaGF / (2 * Real.sqrt 32) := by
+    exact div_le_div_of_nonneg_right hnum (le_of_lt hden_pos)
+  have hbase : (3 / 2 : ℝ) ≤ 18 / (2 * Real.sqrt 32) := by
+    rw [le_div_iff₀ hden_pos]
+    nlinarith
+  exact hbase.trans hscaled
+
+/-- **Strict normalized rational ceiling witness:** `etaGF/(2√32) > 3/2`. -/
+theorem etaGF_ramanujan_ratio_gt_three_halves :
+    (3 / 2 : ℝ) < etaGF / (2 * Real.sqrt 32) := by
+  have hnum : (18 : ℝ) ≤ etaGF := etaGF_ge
+  have hden_pos : 0 < 2 * Real.sqrt 32 := by positivity
+  have hden : 2 * Real.sqrt 32 < 12 := two_sqrt32_lt_twelve
+  have hscaled : 18 / (2 * Real.sqrt 32) ≤ etaGF / (2 * Real.sqrt 32) := by
+    exact div_le_div_of_nonneg_right hnum (le_of_lt hden_pos)
+  have hbase : (3 / 2 : ℝ) < 18 / (2 * Real.sqrt 32) := by
+    rw [lt_div_iff₀ hden_pos]
+    nlinarith
+  exact hbase.trans_le hscaled
 
 /-- **Ceiling corollary (EVT constant `> 1.34`):** `etaGF > 1.34 · (2√32)`.
 Hence the EVT constant `C = M/(2√n) ≥ etaGF/(2√32) > 1.34` (true value `≈ 2.23`):
@@ -144,10 +185,28 @@ theorem eta1_ceiling {eta1re : ℝ} (h : GFCharSumBridge eta1re) :
   subst h
   exact ⟨etaGF_gt_ramanujan, C_gt_134⟩
 
+/-- Ratio-form transport to the genuine character sum. -/
+theorem eta1_ramanujan_ratio_ge_three_halves {eta1re : ℝ} (h : GFCharSumBridge eta1re) :
+    (3 / 2 : ℝ) ≤ eta1re / (2 * Real.sqrt 32) := by
+  unfold GFCharSumBridge at h
+  subst h
+  exact etaGF_ramanujan_ratio_ge_three_halves
+
+/-- Strict ratio-form transport to the genuine character sum. -/
+theorem eta1_ramanujan_ratio_gt_three_halves {eta1re : ℝ} (h : GFCharSumBridge eta1re) :
+    (3 / 2 : ℝ) < eta1re / (2 * Real.sqrt 32) := by
+  unfold GFCharSumBridge at h
+  subst h
+  exact etaGF_ramanujan_ratio_gt_three_halves
+
 end ArkLib.ProximityGap.Frontier.GFCeiling65537
 
 -- Axiom audit (frontier convention: keep these so pg-iterate reports the audit).
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_ge
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_gt_ramanujan
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_ramanujan_ratio_ge_three_halves
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_ramanujan_ratio_gt_three_halves
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.C_gt_134
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ramanujan_ratio_ge_three_halves
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ramanujan_ratio_gt_three_halves

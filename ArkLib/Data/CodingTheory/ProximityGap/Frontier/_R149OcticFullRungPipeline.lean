@@ -47,8 +47,8 @@ theorem fourthMomentTwistBound_of_octic_superelliptic_pipeline
     (T : MulChar F ℂ → Finset ℂ)
     (msteps e J D Dtot : MulChar F ℂ → ℕ)
     (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
-    (gOf : ∀ χ : MulChar F ℂ, F → F → F → ℂ → F[X])
-    (ζOf : ∀ χ : MulChar F ℂ, F → F → F → ℂ → F)
+    (gOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F[X])
+    (ζOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F)
     (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)

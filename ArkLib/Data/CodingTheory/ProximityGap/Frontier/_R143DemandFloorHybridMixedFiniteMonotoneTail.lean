@@ -75,6 +75,29 @@ theorem demand_floor_of_dvd_four_prefixes_and_mixed_finite_kkh26_tail_mono
       Bad R Rt rs ts hRt hcover hkkhFin hladderFin hkkhTail)
     hprefix r n hn hg hr hrg
 
+/-- Mixed finite source cover plus a monotone KKH26 tail gives the positive-rung
+divisibility-form budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_mixed_finite_kkh26_tail_mono
+    (Bad : ℕ → ℕ → ℕ) (R Rt : ℕ) (rs ts : Finset ℕ)
+    (hRt : Rt ≤ R)
+    (hcover : Finset.Icc 6 R ⊆ rs ∪ ts)
+    (hkkhFin : HasKKH26CensusDominatorsOn Bad rs)
+    (hladderFin : HasLadderMajorantsOn Bad ts)
+    (hkkhTail : HasKKH26CensusDominatorsAbove Bad Rt)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate Bad
+    (source_split_certificate_of_mixed_finite_kkh26_tail_mono
+      Bad R Rt rs ts hRt hcover hkkhFin hladderFin hkkhTail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- Mixed finite source cover plus a monotone ladder tail gives the divisibility-form budget. -/
 theorem demand_floor_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
     (Bad : ℕ → ℕ → ℕ) (R Rt : ℕ) (rs ts : Finset ℕ)
@@ -94,6 +117,29 @@ theorem demand_floor_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
     (source_split_certificate_of_mixed_finite_ladder_tail_mono
       Bad R Rt rs ts hRt hcover hkkhFin hladderFin hladderTail)
     hprefix r n hn hg hr hrg
+
+/-- Mixed finite source cover plus a monotone ladder tail gives the positive-rung
+divisibility-form budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
+    (Bad : ℕ → ℕ → ℕ) (R Rt : ℕ) (rs ts : Finset ℕ)
+    (hRt : Rt ≤ R)
+    (hcover : Finset.Icc 6 R ⊆ rs ∪ ts)
+    (hkkhFin : HasKKH26CensusDominatorsOn Bad rs)
+    (hladderFin : HasLadderMajorantsOn Bad ts)
+    (hladderTail : HasLadderMajorantsAbove Bad Rt)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate Bad
+    (source_split_certificate_of_mixed_finite_ladder_tail_mono
+      Bad R Rt rs ts hRt hcover hkkhFin hladderFin hladderTail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
 
 /-- A budget overrun refutes mixed finite source cover plus a monotone KKH26 tail. -/
 theorem not_mixed_finite_kkh26_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad
@@ -115,6 +161,29 @@ theorem not_mixed_finite_kkh26_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad
     (demand_floor_of_dvd_four_prefixes_and_mixed_finite_kkh26_tail_mono
       Bad R Rt rs ts hRt hcover hkkhFin hladderFin hkkhTail hprefix r n hn hg hr hrg)
 
+/-- Positive-rung obstruction for mixed finite source cover plus a monotone KKH26 tail. -/
+theorem not_mixed_finite_kkh26_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R Rt : ℕ) (rs ts : Finset ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (Rt ≤ R ∧
+      Finset.Icc 6 R ⊆ rs ∪ ts ∧
+      HasKKH26CensusDominatorsOn Bad rs ∧
+      HasLadderMajorantsOn Bad ts ∧
+      HasKKH26CensusDominatorsAbove Bad Rt ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hRt, hcover, hkkhFin, hladderFin, hkkhTail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_mixed_finite_kkh26_tail_mono
+      Bad R Rt rs ts hRt hcover hkkhFin hladderFin hkkhTail hprefix
+      r n hn hg hr0 hr1 hr2 hrg)
+
 /-- A budget overrun refutes mixed finite source cover plus a monotone ladder tail. -/
 theorem not_mixed_finite_ladder_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R Rt : ℕ) (rs ts : Finset ℕ)
@@ -135,6 +204,29 @@ theorem not_mixed_finite_ladder_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad
     (demand_floor_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
       Bad R Rt rs ts hRt hcover hkkhFin hladderFin hladderTail hprefix r n hn hg hr hrg)
 
+/-- Positive-rung obstruction for mixed finite source cover plus a monotone ladder tail. -/
+theorem not_mixed_finite_ladder_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R Rt : ℕ) (rs ts : Finset ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (Rt ≤ R ∧
+      Finset.Icc 6 R ⊆ rs ∪ ts ∧
+      HasKKH26CensusDominatorsOn Bad rs ∧
+      HasLadderMajorantsOn Bad ts ∧
+      HasLadderMajorantsAbove Bad Rt ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hRt, hcover, hkkhFin, hladderFin, hladderTail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
+      Bad R Rt rs ts hRt hcover hkkhFin hladderFin hladderTail hprefix
+      r n hn hg hr0 hr1 hr2 hrg)
+
 end ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail
 
 /-! ## Axiom audit -/
@@ -145,8 +237,16 @@ end ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail
 #print axioms
   ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.demand_floor_of_dvd_four_prefixes_and_mixed_finite_kkh26_tail_mono
 #print axioms
+  ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.demand_floor_positive_of_dvd_four_prefixes_and_mixed_finite_kkh26_tail_mono
+#print axioms
   ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.demand_floor_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
+#print axioms
+  ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.demand_floor_positive_of_dvd_four_prefixes_and_mixed_finite_ladder_tail_mono
 #print axioms
   ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.not_mixed_finite_kkh26_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad
 #print axioms
+  ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.not_mixed_finite_kkh26_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad_positive
+#print axioms
   ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.not_mixed_finite_ladder_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R143DemandFloorHybridMixedFiniteMonotoneTail.not_mixed_finite_ladder_tail_mono_and_prefixes_of_dvd_four_budget_lt_bad_positive

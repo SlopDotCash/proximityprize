@@ -91,8 +91,60 @@ theorem sup_pureFace_from_three_of_twoCharacterWeilInput_splitBudget_endpoint_le
       hχ hχ1 hfam hgrp hB0 hJ hBsq hweil hzeroCap hoffCap hheadBudget hCtriple)
     (by simpa using hbudget₃) hs
 
+/-- Max-budget hzero-free Jacobi/Weil start at `r = 2`, propagated to a pointwise pure-face
+bound.  This is the endpoint pure-face sibling of the split-cap wrappers above. -/
+theorem sup_pureFace_from_two_of_twoCharacterWeilInput_maxBudget_endpoint_le_const
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (k : ℕ) {Cweil B Ctwo C C' : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hJsq : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ^ 2 ≤ (Fintype.card F : ℝ))
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hheadBudget : 2 * ((m : ℝ)
+        * (max ((m : ℝ) * B ^ 2)
+            ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * B ^ 2
+      ≤ Ctwo * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hCtwo : Ctwo ≤ 2 * C ^ 2)
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hbudget₂ : (m : ℝ) ≤ C * 3)
+    {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ (2 * (2 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (2 + k) * ((2 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (2 + k)) :=
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.sup_pureFace_from_two_of_twoCharacterWeilInput_maxBudget_endpoint_le_const
+      hχ hχ1 hfam hgrp k hB0 hJ hJsq hweil hheadBudget hCtwo hC0 hCC hbudget₂ hs
+
+/-- Max-budget hzero-free Jacobi/Weil start at `r = 3`, propagated to a pointwise pure-face
+bound. -/
+theorem sup_pureFace_from_three_of_twoCharacterWeilInput_maxBudget_endpoint_le_const
+    (hχ : IsMulCharC χ) (hχ1 : χ 1 = 1)
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (k : ℕ) {Cweil B Ctriple C C' : ℝ} (hB0 : 0 ≤ B)
+    (hJ : ∀ c : ZMod m, ‖jacobiCoeff χ lam c‖ ≤ B)
+    (hBsq : B ^ 2 ≤ (Fintype.card F : ℝ))
+    (hweil : TwoCharacterWeilInput χ lam G Cweil)
+    (hheadBudget : 2 * ((m : ℝ)
+        * (max ((m : ℝ) * B ^ 2)
+            ((m : ℝ) * (G.card : ℝ) * Cweil * Real.sqrt (Fintype.card F)) ^ 2))
+        + (8 * (m : ℝ)) * B ^ 2
+      ≤ Ctriple * (m : ℝ) * (Fintype.card F : ℝ) ^ 2)
+    (hCtriple : Ctriple ≤ 6 * C ^ 3)
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hbudget₃ : (m : ℝ) ≤ C * 4)
+    {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ (2 * (3 + k))
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
+  ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers.sup_pureFace_from_three_of_twoCharacterWeilInput_maxBudget_endpoint_le_const
+      hχ hχ1 hfam hgrp k hB0 hJ hBsq hweil hheadBudget hCtriple hC0 hCC hbudget₃ hs
+
 /-! ## Axiom audit -/
 #print axioms sup_pureFace_from_two_of_twoCharacterWeilInput_splitBudget_endpoint_le_const
 #print axioms sup_pureFace_from_three_of_twoCharacterWeilInput_splitBudget_endpoint_le_const
+#print axioms sup_pureFace_from_two_of_twoCharacterWeilInput_maxBudget_endpoint_le_const
+#print axioms sup_pureFace_from_three_of_twoCharacterWeilInput_maxBudget_endpoint_le_const
 
 end ArkLib.ProximityGap.Frontier.R147TwoCharacterWeilSplitEndpointPureFace

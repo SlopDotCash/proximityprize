@@ -435,6 +435,13 @@ def DepletedWickR2 (ψ : AddChar F ℂ) (G H : Finset F) (C : ℝ) : Prop :=
       * ((Fintype.card F : ℝ) - 1 - (G.card : ℝ))
     ≤ C * (awayMoment ψ G H (insert (0 : F) G) 1) ^ 2
 
+/-- The depleted-Wick r = 2 input is monotone in its published constant. -/
+theorem depletedWickR2_mono {ψ : AddChar F ℂ} {G H : Finset F} {C C' : ℝ}
+    (hC : C ≤ C') (h : DepletedWickR2 ψ G H C) :
+    DepletedWickR2 ψ G H C' := by
+  unfold DepletedWickR2 at *
+  exact h.trans (mul_le_mul_of_nonneg_right hC (sq_nonneg _))
+
 /-- **THE BRIDGE (lane deliverable): depleted-Wick at `C = 3` ⟹ the constant-3 rung WITH AN
 EXPLICIT POSITIVE MARGIN.**  If `DepletedWickR2 3` holds and `Σ ≥ |G|·(|G|+1)` (trivially true
 at the prize: `Σ ≈ nq/m ≫ n²`), then
@@ -497,6 +504,7 @@ theorem constant3_rung_of_depletedWick (hG : IsMulSubgroup G) (hGH : Stabilizes 
 #print axioms awayMoment_one_depletion
 #print axioms zeroSum_family_exact
 #print axioms sq_awayMoment_one_le
+#print axioms depletedWickR2_mono
 #print axioms constant3_rung_of_depletedWick
 
 end ArkLib.ProximityGap.Frontier.R18PlateauLaw

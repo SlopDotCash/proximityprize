@@ -109,6 +109,33 @@ theorem sexticCorrelationBound_of_sexticVarietyInput_and_baseEnvelopes
     hL
     hbudget
 
+/-- Direct all-lag sextic-energy consumer from the final variety input plus elementary
+twisted-base envelopes.  This composes the R50 envelope bookkeeping with the R37 energy
+summation, so a future Katz/Deligne proof can feed the energy surface in one step. -/
+theorem sextic_correlation_energy_bound_of_sexticVarietyInput_and_baseEnvelopes
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C W L B : ℝ} (hW0 : 0 ≤ W)
+    (hweil : SexticVarietyInput χ lam G C)
+    (hW : ∀ t : ZMod m, ∀ z : F, ‖twistedWeight χ lam t z‖ ≤ W)
+    (hL : ∀ w : F, ‖lam 0 w‖ ≤ L)
+    (hbudget :
+      max
+        ((G.card : ℝ) * (C * Real.sqrt (Fintype.card F)
+          * (Fintype.card F : ℝ) ^ 2))
+        ((G.card : ℝ) * ((Fintype.card F : ℝ)
+          * (((Fintype.card F : ℝ) ^ 2 * W ^ 3) ^ 2 * L))) ≤ B) :
+    ∑ a : ZMod m, ∑ b : ZMod m, ∑ a' : ZMod m, ∑ b' : ZMod m, ∑ t : ZMod m,
+        ‖∑ j : ZMod m,
+          (jacobiCoeff χ lam (j + t) * jacobiCoeff χ lam ((j + t) + a)
+            * jacobiCoeff χ lam ((j + t) + b))
+          * (starRingEnd ℂ) (jacobiCoeff χ lam j * jacobiCoeff χ lam (j + a')
+            * jacobiCoeff χ lam (j + b'))‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ) * (m : ℝ))
+          * (((m : ℝ) * B) ^ 2) :=
+  sextic_correlation_energy_bound_of_sexticCorrelationBound hfam hgrp
+    (sexticCorrelationBound_of_sexticVarietyInput_and_baseEnvelopes
+      hW0 hweil hW hL hbudget)
+
 set_option linter.style.longLine false in
 #print axioms ArkLib.ProximityGap.Frontier.R50TripleTwistEnvelope.norm_mulConv_le_card_mul
 set_option linter.style.longLine false in
@@ -117,5 +144,8 @@ set_option linter.style.longLine false in
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R50TripleTwistEnvelope.sexticCorrelationBound_of_sexticVarietyInput_and_baseEnvelopes
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R50TripleTwistEnvelope.sextic_correlation_energy_bound_of_sexticVarietyInput_and_baseEnvelopes
 
 end ArkLib.ProximityGap.Frontier.R50TripleTwistEnvelope

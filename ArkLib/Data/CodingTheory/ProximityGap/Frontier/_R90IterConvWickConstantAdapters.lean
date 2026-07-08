@@ -46,6 +46,30 @@ theorem iterConvEnergyWick_mono_const
     mul_le_mul_of_nonneg_right hpow hfac
   exact h.trans (mul_le_mul_of_nonneg_right hpow_fac hmq)
 
+/-- `IterConvEnergyWick` is monotone in the ambient size parameter `q`, provided the Wick
+constant is nonnegative. -/
+theorem iterConvEnergyWick_mono_q
+    (J : ZMod m → ℂ) {q q' r : ℕ} {C : ℝ}
+    (hC0 : 0 ≤ C) (hqq : q ≤ q')
+    (h : IterConvEnergyWick J q r C) :
+    IterConvEnergyWick J q' r C := by
+  unfold IterConvEnergyWick at *
+  have hmq : (m : ℝ) * (q : ℝ) ≤ (m : ℝ) * (q' : ℝ) := by
+    exact mul_le_mul_of_nonneg_left (by exact_mod_cast hqq) (by positivity)
+  have hmqpow : ((m : ℝ) * (q : ℝ)) ^ r ≤ ((m : ℝ) * (q' : ℝ)) ^ r :=
+    pow_le_pow_left₀ (by positivity) hmq r
+  have hcoef : 0 ≤ C ^ r * (r.factorial : ℝ) := by positivity
+  exact h.trans (mul_le_mul_of_nonneg_left hmqpow hcoef)
+
+/-- Combined monotonicity in both the public Wick constant and ambient size parameter. -/
+theorem iterConvEnergyWick_mono_const_q
+    (J : ZMod m → ℂ) {q q' r : ℕ} {C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (h : IterConvEnergyWick J q r C) :
+    IterConvEnergyWick J q' r C' :=
+  iterConvEnergyWick_mono_const J q' r hC0 hCC
+    (iterConvEnergyWick_mono_q J hC0 hqq h)
+
 /-- A sharp deep-rung certificate can be consumed by the full-tower sup bound at any larger
 published Wick constant. -/
 theorem sup_pureFace_of_iterConvEnergyWick_le_const
@@ -59,10 +83,44 @@ theorem sup_pureFace_of_iterConvEnergyWick_le_const
   sup_pureFace_of_iterConvEnergyWick hfam hgrp J
     (iterConvEnergyWick_mono_const J (Fintype.card F) r hC0 hCC h) hs
 
+/-- A deep-rung certificate at a smaller ambient size can be consumed by the full-tower sup bound
+at the actual field size. -/
+theorem sup_pureFace_of_iterConvEnergyWick_le_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q r : ℕ} {C : ℝ}
+    (hC0 : 0 ≤ C) (hqq : q ≤ Fintype.card F)
+    (h : IterConvEnergyWick J q r C) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * r)
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C ^ r * (r.factorial : ℝ) * ((m : ℝ) * (Fintype.card F : ℝ)) ^ r) :=
+  sup_pureFace_of_iterConvEnergyWick hfam hgrp J
+    (iterConvEnergyWick_mono_q J hC0 hqq h) hs
+
+/-- A deep-rung certificate at a smaller ambient size and sharper constant can be consumed by the
+full-tower sup bound at the actual field size and larger public constant. -/
+theorem sup_pureFace_of_iterConvEnergyWick_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q r : ℕ} {C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (h : IterConvEnergyWick J q r C) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ (2 * r)
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ r * (r.factorial : ℝ) * ((m : ℝ) * (Fintype.card F : ℝ)) ^ r) :=
+  sup_pureFace_of_iterConvEnergyWick hfam hgrp J
+    (iterConvEnergyWick_mono_const_q J hC0 hCC hqq h) hs
+
 end ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters
 
 /-! ## Axiom audit -/
 #print axioms
   ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters.iterConvEnergyWick_mono_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters.iterConvEnergyWick_mono_q
+#print axioms
+  ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters.iterConvEnergyWick_mono_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters.sup_pureFace_of_iterConvEnergyWick_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters.sup_pureFace_of_iterConvEnergyWick_le_q
+#print axioms
+  ArkLib.ProximityGap.Frontier.R90IterConvWickConstantAdapters.sup_pureFace_of_iterConvEnergyWick_le_const_q

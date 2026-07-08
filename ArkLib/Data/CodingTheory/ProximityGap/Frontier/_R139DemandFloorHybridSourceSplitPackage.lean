@@ -98,6 +98,24 @@ theorem demand_floor_of_dvd_four_prefixes_and_source_split_certificate
     (hybrid_majorants_of_source_split_certificate Bad C)
     hprefix r n hn hg hr hrg
 
+/-- Uniform closed prefixes plus a source-split package give the positive-rung
+divisibility-form budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate
+    (Bad : ℕ → ℕ → ℕ)
+    (C : SourceSplitHybridCertificate Bad)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_hybrid_majorants Bad
+    (hybrid_majorants_of_source_split_certificate Bad C)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- A budget overrun refutes any source-split certificate with closed prefixes. -/
 theorem not_source_split_certificate_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ)
@@ -113,6 +131,24 @@ theorem not_source_split_certificate_and_prefixes_of_dvd_four_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_of_dvd_four_prefixes_and_source_split_certificate
       Bad C hprefix r n hn hg hr hrg)
+
+/-- Positive-rung obstruction for any source-split certificate with closed prefixes. -/
+theorem not_source_split_certificate_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (∃ _ : SourceSplitHybridCertificate Bad,
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨C, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate
+      Bad C hprefix r n hn hg hr0 hr1 hr2 hrg)
 
 end ArkLib.ProximityGap.Frontier.R139DemandFloorHybridSourceSplitPackage
 
@@ -132,4 +168,8 @@ end ArkLib.ProximityGap.Frontier.R139DemandFloorHybridSourceSplitPackage
 #print axioms
   ArkLib.ProximityGap.Frontier.R139DemandFloorHybridSourceSplitPackage.demand_floor_of_dvd_four_prefixes_and_source_split_certificate
 #print axioms
+  ArkLib.ProximityGap.Frontier.R139DemandFloorHybridSourceSplitPackage.demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate
+#print axioms
   ArkLib.ProximityGap.Frontier.R139DemandFloorHybridSourceSplitPackage.not_source_split_certificate_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R139DemandFloorHybridSourceSplitPackage.not_source_split_certificate_and_prefixes_of_dvd_four_budget_lt_bad_positive

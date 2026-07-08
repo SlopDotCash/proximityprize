@@ -36,6 +36,15 @@ theorem le_const_of_endpoint_budget {r : ℕ} {C : ℝ}
     exact_mod_cast Nat.succ_pos r
   rwa [div_le_iff₀ hpos]
 
+/-- Endpoint-budget arithmetic as an iff: paying the start-depth budget is equivalent to
+`C ≥ m/(r+1)`. -/
+theorem endpoint_budget_iff_const_lower {r : ℕ} {C : ℝ} :
+    (m : ℝ) ≤ C * ((r + 1 : ℕ) : ℝ)
+      ↔ (m : ℝ) / ((r + 1 : ℕ) : ℝ) ≤ C := by
+  have hpos : 0 < ((r + 1 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.succ_pos r
+  rw [div_le_iff₀ hpos]
+
 /-- A public upper bound `C ≤ K` cannot pay the endpoint budget when `K*(r+1) < m`. -/
 theorem not_endpoint_budget_of_const_lt {r : ℕ} {C K : ℝ}
     (hCK : C ≤ K)
@@ -44,12 +53,38 @@ theorem not_endpoint_budget_of_const_lt {r : ℕ} {C K : ℝ}
   intro hbudget
   nlinarith
 
+/-- The r = 2 obstruction used by the lag-correlation endpoint consumers, recovered from the
+uniform form. -/
+theorem le_const_of_two_endpoint_budget {C : ℝ}
+    (hbudget₂ : (m : ℝ) ≤ C * 3) :
+    (m : ℝ) / 3 ≤ C := by
+  simpa using
+    (le_const_of_endpoint_budget (m := m) (r := 2) (C := C) (by simpa using hbudget₂))
+
+/-- The r = 2 endpoint budget is equivalent to `C ≥ m/3`. -/
+theorem two_endpoint_budget_iff_const_lower {C : ℝ} :
+    (m : ℝ) ≤ C * 3 ↔ (m : ℝ) / 3 ≤ C := by
+  simpa using endpoint_budget_iff_const_lower (m := m) (r := 2) (C := C)
+
+/-- A bounded public constant below `m/3` cannot satisfy the r = 2 endpoint budget. -/
+theorem not_two_endpoint_budget_of_const_lt {C K : ℝ}
+    (hCK : C ≤ K) (hK : K * 3 < (m : ℝ)) :
+    ¬ (m : ℝ) ≤ C * 3 := by
+  simpa using
+    (not_endpoint_budget_of_const_lt (m := m) (r := 2) (C := C) (K := K)
+      hCK (by simpa using hK))
+
 /-- The r = 3 obstruction used by the Jacobi-head consumers, recovered from the uniform form. -/
 theorem le_const_of_three_endpoint_budget {C : ℝ}
     (hbudget₃ : (m : ℝ) ≤ C * 4) :
     (m : ℝ) / 4 ≤ C := by
   simpa using
     (le_const_of_endpoint_budget (m := m) (r := 3) (C := C) (by simpa using hbudget₃))
+
+/-- The r = 3 endpoint budget is equivalent to `C ≥ m/4`. -/
+theorem three_endpoint_budget_iff_const_lower {C : ℝ} :
+    (m : ℝ) ≤ C * 4 ↔ (m : ℝ) / 4 ≤ C := by
+  simpa using endpoint_budget_iff_const_lower (m := m) (r := 3) (C := C)
 
 /-- A bounded public constant below `m/4` cannot satisfy the r = 3 endpoint budget. -/
 theorem not_three_endpoint_budget_of_const_lt {C K : ℝ}
@@ -65,8 +100,18 @@ end ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction
 #print axioms
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.le_const_of_endpoint_budget
 #print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.endpoint_budget_iff_const_lower
+#print axioms
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.not_endpoint_budget_of_const_lt
 #print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.le_const_of_two_endpoint_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.two_endpoint_budget_iff_const_lower
+#print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.not_two_endpoint_budget_of_const_lt
+#print axioms
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.le_const_of_three_endpoint_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.three_endpoint_budget_iff_const_lower
 #print axioms
   ArkLib.ProximityGap.Frontier.R97EndpointBudgetObstruction.not_three_endpoint_budget_of_const_lt

@@ -53,6 +53,17 @@ theorem demand_floor_general_budget_of_orbit_bound_plus_one
     simpa [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm] using hbad
   exact demand_floor_count_of_orbit_bound_plus_one m r OP bad hr hm hOP hbad'
 
+/-- Workbench-coordinate bridge without the possible zero orbit. -/
+theorem demand_floor_general_budget_of_orbit_bound
+    (r n OP bad : ℕ)
+    (hn : 2 ∣ n)
+    (hr : 4 ≤ r)
+    (hm : 2 * r ≤ n / 2)
+    (hOP : OP ≤ (n / 2).choose (r - 1))
+    (hbad : bad ≤ n * OP) :
+    bad ≤ deepBandBudgetR r n :=
+  demand_floor_general_budget_of_orbit_bound_plus_one r n OP bad hn hr hm hOP (by omega)
+
 /-- Same bridge for the closed-rung `n = 4g` coordinate. -/
 theorem demand_floor_four_mul_budget_of_orbit_bound_plus_one
     (r g OP bad : ℕ)
@@ -66,6 +77,16 @@ theorem demand_floor_four_mul_budget_of_orbit_bound_plus_one
     simpa [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm] using hbad
   exact demand_floor_count_of_orbit_bound_plus_one (2 * g) r OP bad hr hm hOP hbad'
 
+/-- Same bridge for the closed-rung `n = 4g` coordinate, without the possible zero orbit. -/
+theorem demand_floor_four_mul_budget_of_orbit_bound
+    (r g OP bad : ℕ)
+    (hr : 4 ≤ r)
+    (hm : 2 * r ≤ 2 * g)
+    (hOP : OP ≤ (2 * g).choose (r - 1))
+    (hbad : bad ≤ (4 * g) * OP) :
+    bad ≤ deepBandBudgetR r (4 * g) :=
+  demand_floor_four_mul_budget_of_orbit_bound_plus_one r g OP bad hr hm hOP (by omega)
+
 end ArkLib.ProximityGap.Frontier.R109DemandFloorGeneralBudgetBridge
 
 /-! ## Axiom audit -/
@@ -74,4 +95,8 @@ end ArkLib.ProximityGap.Frontier.R109DemandFloorGeneralBudgetBridge
 #print axioms
   ArkLib.ProximityGap.Frontier.R109DemandFloorGeneralBudgetBridge.demand_floor_general_budget_of_orbit_bound_plus_one
 #print axioms
+  ArkLib.ProximityGap.Frontier.R109DemandFloorGeneralBudgetBridge.demand_floor_general_budget_of_orbit_bound
+#print axioms
   ArkLib.ProximityGap.Frontier.R109DemandFloorGeneralBudgetBridge.demand_floor_four_mul_budget_of_orbit_bound_plus_one
+#print axioms
+  ArkLib.ProximityGap.Frontier.R109DemandFloorGeneralBudgetBridge.demand_floor_four_mul_budget_of_orbit_bound
