@@ -113,6 +113,24 @@ theorem demand_floor_of_dvd_four_prefixes_and_hybrid_window_tail
     (hybrid_cutoff_of_initial_window_and_tail Bad R hwin htail)
     hprefix r n hn hg hr hrg
 
+/-- Initial-window plus tail packages give the positive-rung divisibility-form demand budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_hybrid_window_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (hwin : HasHybridMajorantsWindow Bad 6 R)
+    (htail : HasHybridMajorantsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_hybrid_cutoff Bad R
+    (hybrid_cutoff_of_initial_window_and_tail Bad R hwin htail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- A single divisible-by-four budget overrun refutes any initial-window plus tail proof. -/
 theorem not_hybrid_window_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R : ℕ)
@@ -128,6 +146,24 @@ theorem not_hybrid_window_tail_and_prefixes_of_dvd_four_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_of_dvd_four_prefixes_and_hybrid_window_tail
       Bad R hwin htail hprefix r n hn hg hr hrg)
+
+/-- Positive-rung version of the initial-window plus tail obstruction. -/
+theorem not_hybrid_window_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasHybridMajorantsWindow Bad 6 R ∧ HasHybridMajorantsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hwin, htail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_hybrid_window_tail
+      Bad R hwin htail hprefix r n hn hg hr0 hr1 hr2 hrg)
 
 end ArkLib.ProximityGap.Frontier.R134DemandFloorHybridWindows
 
@@ -151,4 +187,8 @@ end ArkLib.ProximityGap.Frontier.R134DemandFloorHybridWindows
 #print axioms
   ArkLib.ProximityGap.Frontier.R134DemandFloorHybridWindows.demand_floor_of_dvd_four_prefixes_and_hybrid_window_tail
 #print axioms
+  ArkLib.ProximityGap.Frontier.R134DemandFloorHybridWindows.demand_floor_positive_of_dvd_four_prefixes_and_hybrid_window_tail
+#print axioms
   ArkLib.ProximityGap.Frontier.R134DemandFloorHybridWindows.not_hybrid_window_tail_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R134DemandFloorHybridWindows.not_hybrid_window_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive

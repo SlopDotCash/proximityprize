@@ -126,6 +126,25 @@ theorem demand_floor_of_dvd_four_prefixes_and_hybrid_finite_tail
   exact demand_floor_of_dvd_four_prefixes_and_hybrid_window_tail Bad R
     (hybrid_window_of_hybrid_on_Icc Bad 6 R hon) htail hprefix r n hn hg hr hrg
 
+/-- Initial finite rung certificates plus a tail theorem give the positive-rung
+divisibility-form demand budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_hybrid_finite_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (hon : HasHybridMajorantsOn Bad (Finset.Icc 6 R))
+    (htail : HasHybridMajorantsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_hybrid_window_tail Bad R
+    (hybrid_window_of_hybrid_on_Icc Bad 6 R hon) htail hprefix
+    r n hn hg hr0 hr1 hr2 hrg
+
 /-- A budget overrun refutes any finite initial certificate plus tail proof. -/
 theorem not_hybrid_finite_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R : ℕ)
@@ -141,6 +160,24 @@ theorem not_hybrid_finite_tail_and_prefixes_of_dvd_four_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_of_dvd_four_prefixes_and_hybrid_finite_tail
       Bad R hon htail hprefix r n hn hg hr hrg)
+
+/-- Positive-rung version of the finite initial certificate plus tail obstruction. -/
+theorem not_hybrid_finite_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasHybridMajorantsOn Bad (Finset.Icc 6 R) ∧ HasHybridMajorantsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hon, htail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_hybrid_finite_tail
+      Bad R hon htail hprefix r n hn hg hr0 hr1 hr2 hrg)
 
 end ArkLib.ProximityGap.Frontier.R135DemandFloorHybridFiniteCertificates
 
@@ -168,4 +205,8 @@ end ArkLib.ProximityGap.Frontier.R135DemandFloorHybridFiniteCertificates
 #print axioms
   ArkLib.ProximityGap.Frontier.R135DemandFloorHybridFiniteCertificates.demand_floor_of_dvd_four_prefixes_and_hybrid_finite_tail
 #print axioms
+  ArkLib.ProximityGap.Frontier.R135DemandFloorHybridFiniteCertificates.demand_floor_positive_of_dvd_four_prefixes_and_hybrid_finite_tail
+#print axioms
   ArkLib.ProximityGap.Frontier.R135DemandFloorHybridFiniteCertificates.not_hybrid_finite_tail_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R135DemandFloorHybridFiniteCertificates.not_hybrid_finite_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive

@@ -103,6 +103,25 @@ theorem demand_floor_of_dvd_four_prefixes_and_kkh26_finite_kkh26_tail
     (source_split_certificate_of_kkh26_finite_kkh26_tail Bad R hkkhFin hkkhTail)
     hprefix r n hn hg hr hrg
 
+/-- KKH26-only finite prefix and KKH26-only tail give the positive-rung
+divisibility-form demand budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_kkh26_finite_kkh26_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (hkkhFin : HasKKH26CensusDominatorsOn Bad (Finset.Icc 6 R))
+    (hkkhTail : HasKKH26CensusDominatorsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate Bad
+    (source_split_certificate_of_kkh26_finite_kkh26_tail Bad R hkkhFin hkkhTail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- Ladder-only finite prefix and ladder-only tail give the divisibility-form demand budget. -/
 theorem demand_floor_of_dvd_four_prefixes_and_ladder_finite_ladder_tail
     (Bad : ℕ → ℕ → ℕ) (R : ℕ)
@@ -118,6 +137,25 @@ theorem demand_floor_of_dvd_four_prefixes_and_ladder_finite_ladder_tail
   exact demand_floor_of_dvd_four_prefixes_and_source_split_certificate Bad
     (source_split_certificate_of_ladder_finite_ladder_tail Bad R hladderFin hladderTail)
     hprefix r n hn hg hr hrg
+
+/-- Ladder-only finite prefix and ladder-only tail give the positive-rung divisibility-form
+demand budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_ladder_finite_ladder_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (hladderFin : HasLadderMajorantsOn Bad (Finset.Icc 6 R))
+    (hladderTail : HasLadderMajorantsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_source_split_certificate Bad
+    (source_split_certificate_of_ladder_finite_ladder_tail Bad R hladderFin hladderTail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
 
 end ArkLib.ProximityGap.Frontier.R140DemandFloorHybridSourceSplitConstructors
 
@@ -137,4 +175,8 @@ end ArkLib.ProximityGap.Frontier.R140DemandFloorHybridSourceSplitConstructors
 #print axioms
   ArkLib.ProximityGap.Frontier.R140DemandFloorHybridSourceSplitConstructors.demand_floor_of_dvd_four_prefixes_and_kkh26_finite_kkh26_tail
 #print axioms
+  ArkLib.ProximityGap.Frontier.R140DemandFloorHybridSourceSplitConstructors.demand_floor_positive_of_dvd_four_prefixes_and_kkh26_finite_kkh26_tail
+#print axioms
   ArkLib.ProximityGap.Frontier.R140DemandFloorHybridSourceSplitConstructors.demand_floor_of_dvd_four_prefixes_and_ladder_finite_ladder_tail
+#print axioms
+  ArkLib.ProximityGap.Frontier.R140DemandFloorHybridSourceSplitConstructors.demand_floor_positive_of_dvd_four_prefixes_and_ladder_finite_ladder_tail

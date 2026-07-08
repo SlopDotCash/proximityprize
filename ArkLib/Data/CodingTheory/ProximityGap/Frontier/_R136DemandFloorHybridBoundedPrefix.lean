@@ -113,6 +113,25 @@ theorem demand_floor_of_dvd_four_prefixes_and_hybrid_active_prefix_tail
     (hybrid_cutoff_of_active_prefix_and_tail Bad R hactive htail)
     hprefix r n hn hg hr hrg
 
+/-- Active bounded-prefix certificates plus a tail theorem give the positive-rung
+divisibility-form budget. -/
+theorem demand_floor_positive_of_dvd_four_prefixes_and_hybrid_active_prefix_tail
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (hactive : HasHybridMajorantsActivePrefix Bad R)
+    (htail : HasHybridMajorantsAbove Bad R)
+    (hprefix : ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4) :
+    Bad r n ≤ deepBandBudgetR r n := by
+  exact demand_floor_positive_of_dvd_four_prefixes_and_hybrid_cutoff Bad R
+    (hybrid_cutoff_of_active_prefix_and_tail Bad R hactive htail)
+    hprefix r n hn hg hr0 hr1 hr2 hrg
+
 /-- A budget overrun refutes any active-prefix plus tail proof. -/
 theorem not_hybrid_active_prefix_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R : ℕ)
@@ -128,6 +147,24 @@ theorem not_hybrid_active_prefix_tail_and_prefixes_of_dvd_four_budget_lt_bad
   exact (Nat.not_le.mpr hgt)
     (demand_floor_of_dvd_four_prefixes_and_hybrid_active_prefix_tail
       Bad R hactive htail hprefix r n hn hg hr hrg)
+
+/-- Positive-rung version of the active-prefix plus tail obstruction. -/
+theorem not_hybrid_active_prefix_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasHybridMajorantsActivePrefix Bad R ∧ HasHybridMajorantsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hactive, htail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_hybrid_active_prefix_tail
+      Bad R hactive htail hprefix r n hn hg hr0 hr1 hr2 hrg)
 
 end ArkLib.ProximityGap.Frontier.R136DemandFloorHybridBoundedPrefix
 
@@ -151,4 +188,8 @@ end ArkLib.ProximityGap.Frontier.R136DemandFloorHybridBoundedPrefix
 #print axioms
   ArkLib.ProximityGap.Frontier.R136DemandFloorHybridBoundedPrefix.demand_floor_of_dvd_four_prefixes_and_hybrid_active_prefix_tail
 #print axioms
+  ArkLib.ProximityGap.Frontier.R136DemandFloorHybridBoundedPrefix.demand_floor_positive_of_dvd_four_prefixes_and_hybrid_active_prefix_tail
+#print axioms
   ArkLib.ProximityGap.Frontier.R136DemandFloorHybridBoundedPrefix.not_hybrid_active_prefix_tail_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R136DemandFloorHybridBoundedPrefix.not_hybrid_active_prefix_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
