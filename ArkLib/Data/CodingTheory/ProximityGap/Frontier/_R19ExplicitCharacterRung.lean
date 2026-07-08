@@ -1271,6 +1271,44 @@ theorem not_exists_chiSubfamily_shifted_rates_budget_one_of_nonempty_kept_r_one_
     χ G hm hn hYne hreg
     ⟨T_in, T_out, 1, hTin0, hTout0, le_rfl, hrateIn, by simpa using hbudget⟩
 
+/-- Public-interface no-go for the two-sided shifted-rate adapter at kept rung `r_in = 1`.
+For a nonempty kept subfamily, the adapter's own `K ≤ A·|G|√q` and `A ≤ 1` budget hypotheses
+already imply the forbidden direct budget, so the input package is inconsistent in the R18
+regime. -/
+theorem not_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
+    (χ : MulChar F ℂ) (G : Finset F) {Y : Finset (MulChar F ℂ)}
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hYne : Y.Nonempty)
+    {T_in T_out K A : ℝ} (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out)
+    (_hK0 : 0 ≤ K) (_hA0 : 0 ≤ A) (hA1 : A ≤ 1)
+    (hrateIn : (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T_in ^ 2)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ)) :
+    False := by
+  exact not_chiSubfamily_shifted_rates_budget_A_le_one_of_nonempty_kept_r_one_regime
+    χ G hm hn hYne hTin0 hTout0 hA1 hrateIn hreg (le_trans hKbound hKdim)
+
+/-- Existential public-interface form of the nonempty-kept `r_in = 1` obstruction. -/
+theorem not_exists_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
+    (χ : MulChar F ℂ) (G : Finset F) {Y : Finset (MulChar F ℂ)}
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hYne : Y.Nonempty)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ ∃ T_in T_out K A : ℝ,
+      0 ≤ T_in ∧ 0 ≤ T_out ∧ 0 ≤ K ∧ 0 ≤ A ∧ A ≤ 1 ∧
+      (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T_in ^ 2 ∧
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K ∧
+      K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) := by
+  rintro ⟨T_in, T_out, K, A, hTin0, hTout0, hK0, hA0, hA1, hrateIn, hKbound, hKdim⟩
+  exact not_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
+    χ G hm hn hYne hTin0 hTout0 hK0 hA0 hA1 hrateIn hreg hKbound hKdim
+
 /-- Empty-kept-family specialization of the direct pointwise endpoint.  This exposes the
 all-residual route with the compact budget `|G| + |chiFamily χ|√q·T ≤ K`. -/
 theorem rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one
@@ -2347,6 +2385,8 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
 #print axioms not_chiSubfamily_shifted_rates_budget_A_le_one_of_nonempty_kept_r_one_regime
 #print axioms not_exists_chiSubfamily_shifted_rates_budget_A_le_one_of_nonempty_kept_r_one_regime
 #print axioms not_exists_chiSubfamily_shifted_rates_budget_one_of_nonempty_kept_r_one_regime
+#print axioms not_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
+#print axioms not_exists_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_A_le_one
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_order_budget_A_le_one
