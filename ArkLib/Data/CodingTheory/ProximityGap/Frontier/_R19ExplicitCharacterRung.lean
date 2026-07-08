@@ -1309,6 +1309,47 @@ theorem not_exists_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r
   exact not_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
     χ G hm hn hYne hTin0 hTout0 hK0 hA0 hA1 hrateIn hreg hKbound hKdim
 
+/-- The exact input-shape obstruction for
+`rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_rates_A_le_one` when the kept-side rung is
+`r_in = 1`.  The Wick witnesses themselves are irrelevant: the rate lower bound and normalized
+budget already contradict the R18 regime for every nonempty kept subfamily. -/
+theorem not_rawFourthMoment_chiSubfamily_shifted_rates_A_le_one_inputs_r_in_one_regime
+    (χ : MulChar F ℂ) (G D : Finset F) {Y : Finset (MulChar F ℂ)}
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hYne : Y.Nonempty)
+    (r_out : ℕ) {T_in T_out K A : ℝ}
+    (hTin0 : 0 ≤ T_in) (hTout0 : 0 ≤ T_out) (hK0 : 0 ≤ K)
+    (hA0 : 0 ≤ A) (hA1 : A ≤ 1) (_hr_out : 1 ≤ r_out)
+    (_hwickIn :
+      ∀ χ' ∈ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt
+          χ' G D 1)
+    (_hwickOut :
+      ∀ χ' ∈ chiFamily χ \ Y,
+        ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.ShiftedCharAwayWickAt
+          χ' G D r_out)
+    (hrateIn :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * 1 - 1) : ℝ)
+          * (G.card : ℝ) ^ 1
+        ≤ T_in ^ (2 * 1))
+    (_hrateOut :
+      (Fintype.card F : ℝ) * (Nat.doubleFactorial (2 * r_out - 1) : ℝ)
+          * (G.card : ℝ) ^ r_out
+        ≤ T_out ^ (2 * r_out))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ)
+        + (Y.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_in
+        + ((chiFamily χ \ Y).card : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T_out
+        ≤ K)
+    (hKdim : K ≤ A * (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ))
+    (_hsize : 4 * (G.card : ℝ) ^ 2 ≤ 3 * (orderOf χ : ℝ) ^ 2) :
+    False := by
+  have hrateIn' : (Fintype.card F : ℝ) * (G.card : ℝ) ≤ T_in ^ 2 := by
+    norm_num at hrateIn ⊢
+    exact hrateIn
+  exact not_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
+    χ G hm hn hYne hTin0 hTout0 hK0 hA0 hA1 hrateIn' hreg hKbound hKdim
+
 /-- Empty-kept-family specialization of the direct pointwise endpoint.  This exposes the
 all-residual route with the compact budget `|G| + |chiFamily χ|√q·T ≤ K`. -/
 theorem rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one
@@ -2387,6 +2428,7 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
 #print axioms not_exists_chiSubfamily_shifted_rates_budget_one_of_nonempty_kept_r_one_regime
 #print axioms not_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
 #print axioms not_exists_chiSubfamily_shifted_rates_A_le_one_inputs_of_nonempty_kept_r_one_regime
+#print axioms not_rawFourthMoment_chiSubfamily_shifted_rates_A_le_one_inputs_r_in_one_regime
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_A_le_one
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_shifted_all_omitted_A_le_one
 #print axioms rawFourthMomentWithDiagonal_of_chiFamily_pointwise_all_omitted_order_budget_A_le_one

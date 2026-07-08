@@ -2480,6 +2480,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R48EtaFourthMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R49SexticZeroLagEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4CosetCoverProducer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R4PessimisticEstimatorReduction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50Depth3WraparoundVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R50TripleTwistEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R51PrimitiveSexticEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R52CharacterSexticEnvelope
