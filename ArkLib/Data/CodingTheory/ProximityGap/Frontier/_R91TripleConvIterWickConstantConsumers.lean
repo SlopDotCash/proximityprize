@@ -118,6 +118,19 @@ theorem iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_right hBB hm) hq)))
 
+/-- Field-size-parametric pointwise version: a pointwise triple-convolution certificate at
+`q ≤ q'` gives the third full-tower Wick rung at `q'` and any larger public tower constant. -/
+theorem iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const_q
+    (J : ZMod m → ℂ) {q q' : ℕ} {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hpt : TripleConvPointwiseBound J q B) :
+    IterConvEnergyWick J q' 3 C' :=
+  iterConvEnergyWick_mono_q J (le_trans hC0 hCC) hqq
+    (iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
+      J q hC0 hCC hBB hBC hpt)
+
 /-- A pointwise triple-convolution certificate can be consumed directly by the pointwise
 third-moment face bound at any larger public tower constant. -/
 theorem sup_pureFace_three_of_tripleConvPointwiseBound_le_const
@@ -136,6 +149,30 @@ theorem sup_pureFace_three_of_tripleConvPointwiseBound_le_const
       (fun d => (hpt d).trans (by
         have hm : 0 ≤ (m : ℝ) ^ 2 := by positivity
         have hq : 0 ≤ (Fintype.card F : ℝ) ^ 3 := by positivity
+        exact mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right hBB hm) hq)))
+    hs
+
+/-- Field-size-parametric pointwise version of
+`sup_pureFace_three_of_tripleConvPointwiseBound_le_const`: a pointwise certificate at any
+`q ≤ |F|` feeds the actual finite-field face bound. -/
+theorem sup_pureFace_three_of_tripleConvPointwiseBound_le_const_q
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {q : ℕ} {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (hpt : TripleConvPointwiseBound J q B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace J lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) :=
+  sup_pureFace_three_of_tripleConvEnergyBound_le_const_q hfam hgrp J
+    hC0 hCC hqq hBC
+    (tripleConvEnergyBound_of_pointwise J q
+      (fun d => (hpt d).trans (by
+        have hm : 0 ≤ (m : ℝ) ^ 2 := by positivity
+        have hq : 0 ≤ (q : ℝ) ^ 3 := by positivity
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_right hBB hm) hq)))
     hs
@@ -236,7 +273,11 @@ end ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const
 #print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_tripleConvPointwiseBound_le_const_q
+#print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvPointwiseBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_tripleConvPointwiseBound_le_const_q
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.jacobiHermitianExpandedEnergyBound_iff_iterConvEnergyWick_three
 #print axioms
