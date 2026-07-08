@@ -2076,6 +2076,54 @@ theorem rawFourthMomentWithDiagonal_of_chiFamily_quarticWeil_of_nonempty_fifteen
     (gaussSumSizeBound_holds χ hψ)
     hW hq1 hnq hn4q hreg
 
+/-- Direct off-diagonal incidence consumer for the full explicit-character quartic-Weil
+exact rung. -/
+theorem incidence_le_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
+    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
+    (hX : (chiFamily χ).Nonempty)
+    (horder : 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ)
+    (hW :
+      ∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hdepth : 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊)
+    {s₀ : F} (hs : s₀ ∉ D) :
+    ‖incidenceSum ψ G (Gchi χ) s₀‖
+      ≤ Real.sqrt (2 * Real.exp 1
+        * (∑ b ∈ (Gchi χ), ‖eta ψ G b‖ ^ 2) * (2 : ℕ)) :=
+  incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) D 2 hdepth (by norm_num) hq1
+    (wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+      ψ hψ χ G D hm hn hGD hX horder hW hq1 hnq hn4q hreg)
+    hs
+
+/-- Sup-norm approximate-`B` consumer for the full explicit-character quartic-Weil exact
+rung. -/
+theorem approxB_away_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
+    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
+    (hX : (chiFamily χ).Nonempty)
+    (horder : 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ)
+    (hW :
+      ∀ χ' ∈ chiFamily χ,
+        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
+    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
+    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
+    (hdepth : 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊)
+    {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ b ∈ (Gchi χ), ‖eta ψ G b‖ ≤ M)
+    {s₀ : F} (hs : s₀ ∉ D) :
+    ‖incidenceSum ψ G (Gchi χ) s₀‖
+      ≤ Real.sqrt (2 * Real.exp 1 * (((Gchi χ).card : ℝ) * M ^ 2) * (2 : ℕ)) :=
+  approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) D 2 hdepth (by norm_num) hq1
+    (wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+      ψ hψ χ G D hm hn hGD hX horder hW hq1 hnq hn4q hreg)
+    hM0 hM hs
+
 /-- **Explicit-character R19 linear-`K` depleted rung.**  For `H = Gχ`, the decomposition,
 Gauss-sum size bound, `|X| ≤ m`, and Σ lower bound are discharged for `chiFamily χ`; only the
 cubic quadruple-family mass bound remains as analytic input. -/
@@ -2198,6 +2246,10 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
   wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
 #print axioms
   rawFourthMomentWithDiagonal_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+#print axioms
+  incidence_le_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
+#print axioms
+  approxB_away_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
 #print axioms r19_linearK_incidenceMomentAway_of_chiFamily
 
 end ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung
