@@ -42,6 +42,25 @@ theorem not_kkh26_finite_kkh26_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (demand_floor_of_dvd_four_prefixes_and_kkh26_finite_kkh26_tail
       Bad R hkkhFin hkkhTail hprefix r n hn hg hr hrg)
 
+/-- Positive-rung obstruction for the all-KKH26 finite-prefix plus all-KKH26 tail route. -/
+theorem not_kkh26_finite_kkh26_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasKKH26CensusDominatorsOn Bad (Finset.Icc 6 R) ∧
+      HasKKH26CensusDominatorsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hkkhFin, hkkhTail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_kkh26_finite_kkh26_tail
+      Bad R hkkhFin hkkhTail hprefix r n hn hg hr0 hr1 hr2 hrg)
+
 /-- A single budget overrun refutes the all-ladder finite-prefix plus all-ladder tail route. -/
 theorem not_ladder_finite_ladder_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (Bad : ℕ → ℕ → ℕ) (R : ℕ)
@@ -59,10 +78,33 @@ theorem not_ladder_finite_ladder_tail_and_prefixes_of_dvd_four_budget_lt_bad
     (demand_floor_of_dvd_four_prefixes_and_ladder_finite_ladder_tail
       Bad R hladderFin hladderTail hprefix r n hn hg hr hrg)
 
+/-- Positive-rung obstruction for the all-ladder finite-prefix plus all-ladder tail route. -/
+theorem not_ladder_finite_ladder_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+    (Bad : ℕ → ℕ → ℕ) (R : ℕ)
+    (r n : ℕ)
+    (hn : 4 ∣ n)
+    (hg : 3 ≤ n / 4)
+    (hr0 : r ≠ 0)
+    (hr1 : r ≠ 1)
+    (hr2 : r ≠ 2)
+    (hrg : r ≤ n / 4)
+    (hgt : deepBandBudgetR r n < Bad r n) :
+    ¬ (HasLadderMajorantsOn Bad (Finset.Icc 6 R) ∧
+      HasLadderMajorantsAbove Bad R ∧
+      ∀ g : ℕ, 3 ≤ g → AgreesWithClosedDemandPrefix Bad g) := by
+  rintro ⟨hladderFin, hladderTail, hprefix⟩
+  exact (Nat.not_le.mpr hgt)
+    (demand_floor_positive_of_dvd_four_prefixes_and_ladder_finite_ladder_tail
+      Bad R hladderFin hladderTail hprefix r n hn hg hr0 hr1 hr2 hrg)
+
 end ArkLib.ProximityGap.Frontier.R141DemandFloorHybridConstructorObstructions
 
 /-! ## Axiom audit -/
 #print axioms
   ArkLib.ProximityGap.Frontier.R141DemandFloorHybridConstructorObstructions.not_kkh26_finite_kkh26_tail_and_prefixes_of_dvd_four_budget_lt_bad
 #print axioms
+  ArkLib.ProximityGap.Frontier.R141DemandFloorHybridConstructorObstructions.not_kkh26_finite_kkh26_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
+#print axioms
   ArkLib.ProximityGap.Frontier.R141DemandFloorHybridConstructorObstructions.not_ladder_finite_ladder_tail_and_prefixes_of_dvd_four_budget_lt_bad
+#print axioms
+  ArkLib.ProximityGap.Frontier.R141DemandFloorHybridConstructorObstructions.not_ladder_finite_ladder_tail_and_prefixes_of_dvd_four_budget_lt_bad_positive
