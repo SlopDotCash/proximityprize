@@ -34,6 +34,15 @@ open ArkLib.ProximityGap.Frontier.WFS11
 
 namespace ArkLib.ProximityGap.Frontier.WFS11
 
+/-- **MGF amplitude monotonicity.** If an empirical MGF is bounded with amplitude `A`, then it is
+also bounded with any larger amplitude `A'`. This packages the nuisance constant weakening used by
+the convergence-hub adapters. -/
+theorem MGFBound.of_amplitude_le {ι : Type*} (s : Finset ι) (t : ι → ℝ) {A A' c : ℝ}
+    (hAA' : A ≤ A') (hMGF : MGFBound s t A c) :
+    MGFBound s t A' c := by
+  unfold MGFBound at hMGF ⊢
+  exact hMGF.trans (mul_le_mul_of_nonneg_right hAA' (by positivity))
+
 /-- **MGF rate monotonicity.** For a nonnegative spectrum, an MGF bound at rate `c` implies the same
 bound at every lower rate `c' ≤ c`. This is the discrete exponential-tail rate-transfer step: the
 residual may be checked at one rate and consumed at any smaller positive rate. -/
@@ -78,6 +87,7 @@ theorem prize_sq_of_mgf_rate_le {ι : Type*} (s : Finset ι) (t : ι → ℝ) {M
   simpa using prize_sq_of_mgf_rate_le_general (A := 1) s t hMmax (by norm_num) hn hQ hc'
     ht hP hcc' hr hrQ hMGF hmoment
 
+#print axioms MGFBound.of_amplitude_le
 #print axioms MGFBound.of_rate_le
 #print axioms momentEnvelope_of_mgf_rate_le
 #print axioms prize_sq_of_mgf_rate_le_general
