@@ -51,6 +51,180 @@ def SurfaceWeilInput (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset F
         * (starRingEnd ℂ) (pairWeight χ lam b w) * lam t w‖
       ≤ C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)
 
+/-- Monotonicity of the surface-Weil input in the cancellation constant. -/
+theorem surfaceWeilInput_mono {C C' : ℝ} (hCC' : C ≤ C')
+    (hC : SurfaceWeilInput χ lam G C) :
+    SurfaceWeilInput χ lam G C' := by
+  intro u hu a b t ht
+  exact (hC u hu a b t ht).trans
+    (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hCC' (by positivity)) (by positivity))
+
+/-- Off-diagonal pair-weight correlation budget: the round-33 surface sum only for leading
+lag `t₁ ≠ 0`, matching the actual domain of the surface-Weil input. -/
+def OffDiagPairWeightCorrelationBound
+    (χ : F → ℂ) (lam : ZMod m → F → ℂ) (G : Finset F) (B : ℝ) : Prop :=
+  ∀ t₁ t₂ s₁ : ZMod m, t₁ ≠ 0 →
+    ‖∑ u ∈ G, ∑ w : F,
+        pairWeight χ lam (t₂ - t₁) (u * w)
+          * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖ ≤ B
+
+/-- Monotonicity of the off-diagonal pair-weight budget. -/
+theorem offDiagPairWeightCorrelationBound_mono {B B' : ℝ} (hBB' : B ≤ B')
+    (hB : OffDiagPairWeightCorrelationBound χ lam G B) :
+    OffDiagPairWeightCorrelationBound χ lam G B' := by
+  intro t₁ t₂ s₁ ht₁
+  exact (hB t₁ t₂ s₁ ht₁).trans hBB'
+
+/-- The all-lag pair-weight correlation budget from round 33 supplies the off-diagonal
+budget used by the surface-Weil consumer. -/
+theorem offDiagPairWeightCorrelationBound_of_pairWeightCorrelationBound
+    {B : ℝ} (hB : PairWeightCorrelationBound χ lam G B) :
+    OffDiagPairWeightCorrelationBound χ lam G B := by
+  intro t₁ t₂ s₁ _ht₁
+  exact hB t₁ t₂ s₁
+
+/-- The surface-Weil input supplies the off-diagonal round-33 pair-weight correlation budget
+after summing over `u ∈ G`.  The later four-`J` bound then only loses the forced factor `m`. -/
+theorem offDiagPairWeightCorrelationBound_of_surfaceWeilInput
+    {C : ℝ} (hweil : SurfaceWeilInput χ lam G C) :
+    OffDiagPairWeightCorrelationBound χ lam G
+      ((G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ))) := by
+  intro t₁ t₂ s₁ ht₁
+  calc ‖∑ u ∈ G, ∑ w : F, pairWeight χ lam (t₂ - t₁) (u * w)
+        * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖
+      ≤ ∑ u ∈ G, ‖∑ w : F, pairWeight χ lam (t₂ - t₁) (u * w)
+          * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖ := norm_sum_le _ _
+    _ ≤ ∑ _u ∈ G, C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ) := by
+        refine Finset.sum_le_sum (fun u hu => ?_)
+        exact hweil u hu (t₂ - t₁) s₁ t₁ ht₁
+    _ = (G.card : ℝ) * (C * Real.sqrt (Fintype.card F) * (Fintype.card F : ℝ)) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+
+/-- Four-`J` bound from the off-diagonal pair-weight budget. -/
+theorem quad_correlation_bound_of_offDiagPairWeightCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : OffDiagPairWeightCorrelationBound χ lam G B)
+    {t₁ t₂ s₁ : ZMod m} (ht₁ : t₁ ≠ 0) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * B := by
+  rw [quad_correlation_via_weights hfam hgrp t₁ t₂ s₁]
+  rw [norm_mul, Complex.norm_natCast]
+  exact mul_le_mul_of_nonneg_left (hB t₁ t₂ s₁ ht₁) (by positivity)
+
+/-- Four-`J` bound from a sharper off-diagonal pair-weight budget, spent at a looser budget. -/
+theorem quad_correlation_bound_of_offDiagPairWeightCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : OffDiagPairWeightCorrelationBound χ lam G B)
+    {t₁ t₂ s₁ : ZMod m} (ht₁ : t₁ ≠ 0) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * B' :=
+  quad_correlation_bound_of_offDiagPairWeightCorrelationBound hfam hgrp
+    (offDiagPairWeightCorrelationBound_mono hBB' hB) ht₁
+
+/-- Off-diagonal four-`J` bound from the all-lag pair-weight budget. -/
+theorem offDiag_quad_correlation_bound_of_pairWeightCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : PairWeightCorrelationBound χ lam G B)
+    {t₁ t₂ s₁ : ZMod m} (ht₁ : t₁ ≠ 0) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * B :=
+  quad_correlation_bound_of_offDiagPairWeightCorrelationBound hfam hgrp
+    (offDiagPairWeightCorrelationBound_of_pairWeightCorrelationBound hB) ht₁
+
+/-- Off-diagonal four-`J` bound from a sharper all-lag pair-weight budget, spent at a looser
+budget. -/
+theorem offDiag_quad_correlation_bound_of_pairWeightCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : PairWeightCorrelationBound χ lam G B)
+    {t₁ t₂ s₁ : ZMod m} (ht₁ : t₁ ≠ 0) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * B' :=
+  quad_correlation_bound_of_offDiagPairWeightCorrelationBound_le hfam hgrp hBB'
+    (offDiagPairWeightCorrelationBound_of_pairWeightCorrelationBound hB) ht₁
+
+/-- Aggregate off-diagonal four-`J` energy from the named pair-weight budget. -/
+theorem offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : OffDiagPairWeightCorrelationBound χ lam G B) :
+    ∑ t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+        ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+          ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+              * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ (((m : ℝ) - 1) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B) ^ 2) := by
+  classical
+  have hpoint : ∀ t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+      ∀ t₂ s₁ : ZMod m,
+        ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+            * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+          ≤ (((m : ℝ) * B) ^ 2) := by
+    intro t₁ ht₁ t₂ s₁
+    have ht₁0 : t₁ ≠ 0 := by
+      have hnot := (Finset.mem_sdiff.mp ht₁).2
+      simpa using hnot
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (quad_correlation_bound_of_offDiagPairWeightCorrelationBound hfam hgrp hB ht₁0
+        (t₂ := t₂) (s₁ := s₁)) 2
+  calc ∑ t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+        ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+          ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+              * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ ∑ _t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+          ∑ _t₂ : ZMod m, ∑ _s₁ : ZMod m, ((m : ℝ) * B) ^ 2 := by
+        refine Finset.sum_le_sum (fun t₁ ht₁ => ?_)
+        refine Finset.sum_le_sum (fun t₂ _ => ?_)
+        exact Finset.sum_le_sum (fun s₁ _ => hpoint t₁ ht₁ t₂ s₁)
+    _ = (((m : ℝ) - 1) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B) ^ 2) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+        simp only [Finset.sum_const, nsmul_eq_mul, Finset.card_univ, ZMod.card]
+        rw [Finset.card_sdiff]
+        have hmpos : 0 < m := Nat.pos_of_ne_zero (NeZero.ne m)
+        have hm1 : 1 ≤ m := Nat.succ_le_of_lt hmpos
+        simp [ZMod.card, Nat.cast_sub hm1]
+        ring
+
+/-- Aggregate off-diagonal four-`J` energy from a sharper named pair-weight budget, spent at a
+looser budget. -/
+theorem offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : OffDiagPairWeightCorrelationBound χ lam G B) :
+    ∑ t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+        ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+          ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+              * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ (((m : ℝ) - 1) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B') ^ 2) :=
+  offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound hfam hgrp
+    (offDiagPairWeightCorrelationBound_mono hBB' hB)
+
+/-- Aggregate off-diagonal four-`J` energy from the all-lag pair-weight budget. -/
+theorem offDiag_quad_correlation_energy_bound_of_pairWeightCorrelationBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B : ℝ} (hB : PairWeightCorrelationBound χ lam G B) :
+    ∑ t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+        ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+          ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+              * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ (((m : ℝ) - 1) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B) ^ 2) :=
+  offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound hfam hgrp
+    (offDiagPairWeightCorrelationBound_of_pairWeightCorrelationBound hB)
+
+/-- Aggregate off-diagonal four-`J` energy from a sharper all-lag pair-weight budget, spent at a
+looser budget. -/
+theorem offDiag_quad_correlation_energy_bound_of_pairWeightCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : PairWeightCorrelationBound χ lam G B) :
+    ∑ t₁ ∈ (Finset.univ \ ({(0 : ZMod m)} : Finset (ZMod m))),
+        ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+          ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+              * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ (((m : ℝ) - 1) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B') ^ 2) :=
+  offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound_le hfam hgrp hBB'
+    (offDiagPairWeightCorrelationBound_of_pairWeightCorrelationBound hB)
+
 /-- **THE QUAD-CORRELATION BOUND (round-34 main theorem).**  Under the named surface input,
 every balanced four-`J` correlation at lag `t₁ ≠ 0` satisfies
 `‖∑_j J_{j+t₁}J_{j+t₂}·conj(J_{j+s₁}J_j)‖ ≤ m·|G|·C·q^{3/2}` — the cross class of the r = 3
@@ -136,5 +310,28 @@ theorem offDiag_quad_correlation_energy_bound (hfam : SubgroupDualFamily G m lam
 end ArkLib.ProximityGap.Frontier.R34QuadWeilBound
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
+#print axioms ArkLib.ProximityGap.Frontier.R34QuadWeilBound.surfaceWeilInput_mono
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiagPairWeightCorrelationBound_mono
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiagPairWeightCorrelationBound_of_pairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiagPairWeightCorrelationBound_of_surfaceWeilInput
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms quad_correlation_bound_of_offDiagPairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms quad_correlation_bound_of_offDiagPairWeightCorrelationBound_le
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiag_quad_correlation_bound_of_pairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiag_quad_correlation_bound_of_pairWeightCorrelationBound_le
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiag_quad_correlation_energy_bound_of_offDiagPairWeightCorrelationBound_le
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiag_quad_correlation_energy_bound_of_pairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R34QuadWeilBound in
+#print axioms offDiag_quad_correlation_energy_bound_of_pairWeightCorrelationBound_le
 #print axioms ArkLib.ProximityGap.Frontier.R34QuadWeilBound.quad_correlation_bound
 #print axioms ArkLib.ProximityGap.Frontier.R34QuadWeilBound.offDiag_quad_correlation_energy_bound

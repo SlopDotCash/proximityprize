@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26DiscreteLogExists
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R23TripleConvEnergyInput
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R26PointwiseTripleConvTarget
 
 /-!
 # LANE B2 (#466 round 27): the FULL-TOWER collapse — every rung, including the deep-depth
@@ -42,9 +44,11 @@ open ArkLib.ProximityGap.Frontier.R19JacobiFourierExpansion
 open ArkLib.ProximityGap.Frontier.R20JacobiParseval
 open ArkLib.ProximityGap.Frontier.R21QuarticConvolutionCollapse
 open ArkLib.ProximityGap.Frontier.R22SexticConvolutionCollapse
+open ArkLib.ProximityGap.Frontier.R23TripleConvEnergyInput
+open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
-variable {m : ℕ} [NeZero m] {lam : ZMod m → F → ℂ} {G : Finset F}
+variable {m : ℕ} [NeZero m] {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
 
 /-- The `r`-fold self-convolution of the coefficient sequence, all indices nonzero:
 `J^{∗0} = δ₀`, `J^{∗(r+1)}(c) = ∑_{j≠0} J^{∗r}(c−j)·J_j`. -/
@@ -130,6 +134,84 @@ def IterConvEnergyWick (J : ZMod m → ℂ) (q r : ℕ) (C : ℝ) : Prop :=
   ∑ c : ZMod m, ‖iterConv J r c‖ ^ 2
     ≤ C ^ r * (r.factorial : ℝ) * ((m : ℝ) * (q : ℝ)) ^ r
 
+/-- At depth `3`, the full-tower `iterConv` energy is the same energy as the R22/R23
+triple-convolution normal form.  This routes the calibrated r = 3 input into the uniform
+ladder notation used by the deeper tower. -/
+theorem iterConv_three_energy_eq_tripleConv_energy
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) :
+    ∑ c : ZMod m, ‖iterConv J 3 c‖ ^ 2
+      = ∑ d : ZMod m, ‖tripleConv J d‖ ^ 2 := by
+  have hfull := fullTower_collapse (F := F) (G := G) (lam := lam) hfam hgrp J 3
+  have hsext := sextic_convolution_collapse (F := F) (G := G) (lam := lam) hfam hgrp J
+  have hpow : (2 : ℕ) * 3 = 6 := by norm_num
+  rw [hpow] at hfull
+  rw [hsext] at hfull
+  have hcard : 0 < ((Fintype.card F - 1 : ℕ) : ℝ) := by
+    have hnat : 0 < Fintype.card F - 1 := Nat.sub_pos_of_lt (Fintype.one_lt_card (α := F))
+    exact_mod_cast hnat
+  nlinarith
+
+/-- The calibrated R23 triple-convolution input supplies the depth-3 full-tower Wick rung
+for any ladder constant `K` with `C ≤ 6 K³`. -/
+theorem iterConvEnergyWick_three_of_tripleConvEnergyBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    (J : ZMod m → ℂ) {C K : ℝ}
+    (hCK : C ≤ 6 * K ^ 3)
+    (h : TripleConvEnergyBound J (Fintype.card F) C) :
+    IterConvEnergyWick J (Fintype.card F) 3 K := by
+  unfold IterConvEnergyWick
+  unfold TripleConvEnergyBound at h
+  rw [iterConv_three_energy_eq_tripleConv_energy (F := F) (G := G) (lam := lam) hfam hgrp J]
+  have hscale : C * (m : ℝ) ^ 3 * (Fintype.card F : ℝ) ^ 3
+      ≤ K ^ 3 * (Nat.factorial 3 : ℝ) * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3 := by
+    have hnon : 0 ≤ (m : ℝ) ^ 3 * (Fintype.card F : ℝ) ^ 3 := by positivity
+    calc C * (m : ℝ) ^ 3 * (Fintype.card F : ℝ) ^ 3
+        = C * ((m : ℝ) ^ 3 * (Fintype.card F : ℝ) ^ 3) := by ring
+      _ ≤ (6 * K ^ 3) * ((m : ℝ) ^ 3 * (Fintype.card F : ℝ) ^ 3) :=
+          mul_le_mul_of_nonneg_right hCK hnon
+      _ = K ^ 3 * (Nat.factorial 3 : ℝ) * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3 := by
+          norm_num
+          ring
+  exact h.trans hscale
+
+/-- The energy-level expanded Jacobi Hermitian target supplies the depth-3 full-tower Wick
+rung for the Jacobi coefficient sequence. -/
+theorem iterConvEnergyWick_three_of_jacobiAdditiveTripleHermitianExpandedEnergyBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C K : ℝ} (hCK : C ≤ 6 * K ^ 3)
+    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam C) :
+    IterConvEnergyWick
+      (fun i : ZMod m => R19JacobiFourierExpansion.jacobiCoeff χ lam i)
+      (Fintype.card F) 3 K :=
+  iterConvEnergyWick_three_of_tripleConvEnergyBound hfam hgrp
+    (fun i : ZMod m => R19JacobiFourierExpansion.jacobiCoeff χ lam i) hCK
+    (tripleConvEnergyBound_of_jacobiAdditiveTripleHermitianExpandedEnergyBound h)
+
+/-- The pointwise expanded Jacobi Hermitian target supplies the depth-3 full-tower Wick
+rung for the Jacobi coefficient sequence. -/
+theorem iterConvEnergyWick_three_of_jacobiAdditiveTripleHermitianExpandedPointwiseBound
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C K : ℝ} (hCK : C ≤ 6 * K ^ 3)
+    (h : JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam C) :
+    IterConvEnergyWick
+      (fun i : ZMod m => R19JacobiFourierExpansion.jacobiCoeff χ lam i)
+      (Fintype.card F) 3 K :=
+  iterConvEnergyWick_three_of_jacobiAdditiveTripleHermitianExpandedEnergyBound hfam hgrp
+    hCK (jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise h)
+
+/-- The named B-side six-variable input supplies the depth-3 full-tower Wick rung for the
+Jacobi coefficient sequence. -/
+theorem iterConvEnergyWick_three_of_jacobiHermitianSixInput
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {C K : ℝ} (hCK : C ≤ 6 * K ^ 3)
+    (h : JacobiHermitianSixInput χ lam C) :
+    IterConvEnergyWick
+      (fun i : ZMod m => R19JacobiFourierExpansion.jacobiCoeff χ lam i)
+      (Fintype.card F) 3 K :=
+  iterConvEnergyWick_three_of_jacobiAdditiveTripleHermitianExpandedPointwiseBound hfam hgrp
+    hCK h
+
 /-- Consumer: the rung-`r` ladder bound yields the `2r`-th moment of the face, hence the
 pointwise sup bound at depth `r` — the moment-method input the prize chain consumes at
 `r ≈ ln q`. -/
@@ -155,5 +237,15 @@ end ArkLib.ProximityGap.Frontier.R27FullTowerCollapse
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
 #print axioms ArkLib.ProximityGap.Frontier.R27FullTowerCollapse.pureFace_pow
 #print axioms ArkLib.ProximityGap.Frontier.R27FullTowerCollapse.fullTower_collapse
-#print axioms
-  ArkLib.ProximityGap.Frontier.R27FullTowerCollapse.sup_pureFace_of_iterConvEnergyWick
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse in
+#print axioms iterConv_three_energy_eq_tripleConv_energy
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse in
+#print axioms iterConvEnergyWick_three_of_tripleConvEnergyBound
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse in
+#print axioms iterConvEnergyWick_three_of_jacobiAdditiveTripleHermitianExpandedEnergyBound
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse in
+#print axioms iterConvEnergyWick_three_of_jacobiAdditiveTripleHermitianExpandedPointwiseBound
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse in
+#print axioms iterConvEnergyWick_three_of_jacobiHermitianSixInput
+open ArkLib.ProximityGap.Frontier.R27FullTowerCollapse in
+#print axioms sup_pureFace_of_iterConvEnergyWick

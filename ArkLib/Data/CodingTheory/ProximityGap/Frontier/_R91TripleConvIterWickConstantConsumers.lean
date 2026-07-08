@@ -224,6 +224,37 @@ theorem sup_pureFace_three_of_jacobiHermitianExpandedEnergyBound_le_const
     ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
       (χ := χ) (lam := lam) (C := B)).mp h) hs
 
+/-- Fully expanded pointwise Jacobi Hermitian input gives the third full-tower Wick rung at
+any larger public tower constant. -/
+theorem iterConvEnergyWick_three_of_jacobiHermitianExpandedPointwiseBound_le_const
+    {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam B) :
+    IterConvEnergyWick
+      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) 3 C' :=
+  iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
+    hC0 hCC hBC
+    (jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise_le hBB h)
+
+/-- Fully expanded pointwise Jacobi Hermitian input feeds the public sixth-power face bound
+at the third rung. -/
+theorem sup_pureFace_three_of_jacobiHermitianExpandedPointwiseBound_le_const
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' C C' : ℝ}
+    (hC0 : 0 ≤ C) (hCC : C ≤ C')
+    (hBB : B ≤ B')
+    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
+    (h : JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam B) {s : F} (hs : s ≠ 0) :
+    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ 6
+      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
+          * (C' ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ)
+            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ 3) :=
+  sup_pureFace_three_of_jacobiHermitianExpandedEnergyBound_le_const hfam hgrp
+    hC0 hCC hBC
+    (jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise_le hBB h) hs
+
 /-- Jacobi six-input pointwise certificate gives the third full-tower Wick rung at any larger
 public tower constant. -/
 theorem iterConvEnergyWick_three_of_jacobiHermitianSixInput_le_const
@@ -284,6 +315,10 @@ end ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_jacobiHermitianExpandedEnergyBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_jacobiHermitianExpandedEnergyBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_jacobiHermitianExpandedPointwiseBound_le_const
+#print axioms
+  ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.sup_pureFace_three_of_jacobiHermitianExpandedPointwiseBound_le_const
 #print axioms
   ArkLib.ProximityGap.Frontier.R91TripleConvIterWickConstantConsumers.iterConvEnergyWick_three_of_jacobiHermitianSixInput_le_const
 #print axioms

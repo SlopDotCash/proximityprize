@@ -342,6 +342,31 @@ theorem jacobiAdditiveTripleHermitianExpandedEnergyBound_mono
     mul_le_mul_of_nonneg_right hCC' hm
   exact h.trans (mul_le_mul_of_nonneg_right hC_m hq)
 
+/-- A pointwise expanded Jacobi Hermitian bound sums to the corresponding energy-level
+expanded bound with the same scalar budget. -/
+theorem jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise
+    {C : ℝ} (h : JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam C) :
+    JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam C := by
+  unfold JacobiAdditiveTripleHermitianExpandedEnergyBound
+  unfold JacobiAdditiveTripleHermitianExpandedPointwiseBound at h
+  calc
+    ∑ d : ZMod m, jacobiAdditiveTripleHermitianExpansion χ lam d
+        ≤ ∑ _d : ZMod m, C * (m : ℝ) ^ 2 * (Fintype.card F : ℝ) ^ 3 := by
+          exact Finset.sum_le_sum (fun d _ => h d)
+    _ = (m : ℝ) * (C * (m : ℝ) ^ 2 * (Fintype.card F : ℝ) ^ 3) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+          simp [ZMod.card]
+    _ = C * (m : ℝ) ^ 3 * (Fintype.card F : ℝ) ^ 3 := by ring
+
+/-- A pointwise expanded Jacobi Hermitian bound also supplies any enlarged energy-level
+expanded budget. -/
+theorem jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise_le
+    {C C' : ℝ} (hCC' : C ≤ C')
+    (h : JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam C) :
+    JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam C' :=
+  jacobiAdditiveTripleHermitianExpandedEnergyBound_mono hCC'
+    (jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise h)
+
 /-- The fully expanded Jacobi target is the same as the generic Jacobi Hermitian target. -/
 theorem jacobiAdditiveTripleHermitianPointwiseBound_of_expanded
     {C : ℝ} (h : JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam C) :
@@ -652,6 +677,10 @@ open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget in
 #print axioms jacobiHermitianSixInput_mono
 open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget in
 #print axioms jacobiAdditiveTripleHermitianExpandedEnergyBound_mono
+open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget in
+#print axioms jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise
+open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget in
+#print axioms jacobiAdditiveTripleHermitianExpandedEnergyBound_of_pointwise_le
 open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget in
 #print axioms tripleConvEnergyBound_of_jacobiAdditiveTripleHermitianExpandedPointwiseBound
 open ArkLib.ProximityGap.Frontier.R26PointwiseTripleConvTarget in

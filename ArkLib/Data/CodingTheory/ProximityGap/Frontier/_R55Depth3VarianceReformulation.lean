@@ -6,6 +6,8 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMoment
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkovWick
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
+import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyRungThree
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R53Depth3ExcessHeadroom
 
 /-!
 # LANE B2 (#466 round 55): THE VARIANCE REFORMULATION — the DC-subtracted depth-3 energy IS the
@@ -49,8 +51,15 @@ open Finset
 namespace ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation
 
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.SubgroupGaussSumSixthMoment
+open ArkLib.ProximityGap.DCSubtractedMoment
 open ArkLib.ProximityGap.DCEnergyCorrection
+open ArkLib.ProximityGap.EnergyBoundImplication
+open ArkLib.ProximityGap.DCEnergyRungThree
+open ArkLib.ProximityGap.GaussianEnergyThreeRepThree
+open ArkLib.ProximityGap.GaussPeriodMomentBound
+open ArkLib.ProximityGap.Frontier.R53Depth3ExcessHeadroom
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
@@ -185,6 +194,180 @@ theorem dcEnergyBound_three_iff_variance {ψ : AddChar F ℂ} (hψ : ψ.IsPrimit
       exact h
     exact le_of_mul_le_mul_left h' hq
 
+/-- **Variance-flatness input gives the depth-3 DC energy bound.**  This is the forward
+consumer form of `dcEnergyBound_three_iff_variance`, useful for plugging large-sieve or
+equidistribution estimates on `rep3` directly into the prize-correct moment hypothesis. -/
+theorem dcEnergyBound_three_of_variance {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hvar : ∑ c : F,
+        ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+          ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3) :
+    DCEnergyBound G 3 :=
+  (dcEnergyBound_three_iff_variance hψ G).mpr hvar
+
+/-- **DC energy input gives variance flatness.**  This is the reverse consumer form of
+`dcEnergyBound_three_iff_variance`: any existing r=3 `DCEnergyBound` producer can now feed
+the representation-function flatness surface directly. -/
+theorem variance_bound_of_dcEnergyBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hdc : DCEnergyBound G 3) :
+    ∑ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3 :=
+  (dcEnergyBound_three_iff_variance hψ G).mp hdc
+
+/-- **Raw Gaussian r=3 input gives variance flatness.**  This records that the round-55
+flatness surface also subsumes every older producer of the stronger raw Wick statement
+`GaussianEnergyBound G 3`. -/
+theorem variance_bound_of_gaussianEnergyBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) (hgauss : GaussianEnergyBound G 3) :
+    ∑ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3 :=
+  variance_bound_of_dcEnergyBound hψ G (dcEnergyBound_of_gaussianEnergyBound hgauss)
+
+/-- **Depth-3 excess headroom gives variance flatness.**  The round-53 one-sided excess
+target now feeds the round-55 representation-function target directly. -/
+theorem variance_bound_of_excess_headroom {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) {E : ℝ} (hexc : Depth3ExcessBounded G E)
+    (hhead : E ≤ 45 * (G.card : ℝ) ^ 2 - 40 * (G.card : ℝ)) :
+    ∑ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3 :=
+  variance_bound_of_gaussianEnergyBound hψ G
+    (gaussianEnergyBound_three_of_excess_headroom hψ G hexc hhead)
+
+/-- **Quadratic depth-3 excess gives variance flatness.**  This is the concrete round-52/53
+regime (`E = C n²`, `C ≤ 44`, `n ≥ 40`) stated on the variance side. -/
+theorem variance_bound_of_quadraticExcess {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) {C : ℝ}
+    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
+    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ)) :
+    ∑ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3 :=
+  variance_bound_of_gaussianEnergyBound hψ G
+    (gaussianEnergyBound_three_of_quadraticExcess hψ G hexc hC hn)
+
+/-- **Variance-flatness input gives the nonzero-frequency sixth-moment bound.**  This closes the
+round-55 equidistribution interface to the same per-frequency endpoint as the round-54 headroom
+route: for every nonzero `b`, `‖η_b‖⁶ ≤ 15 q |G|³`. -/
+theorem eta_sixth_le_of_variance {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hvar : ∑ c : F,
+        ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+          ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3)
+    {b : F} (hb : b ≠ 0) :
+    ‖eta ψ G b‖ ^ 6
+      ≤ (Fintype.card F : ℝ) * (15 * (G.card : ℝ) ^ 3) := by
+  have hdc : DCEnergyBound G 3 := dcEnergyBound_three_of_variance hψ G hvar
+  have h := eta_pow_le_of_dcEnergyBound hψ hdc hb
+  have hpow : (2 * 3 : ℕ) = 6 := by norm_num
+  have hdf : (Nat.doubleFactorial (2 * 3 - 1) : ℝ) = 15 := by norm_num [Nat.doubleFactorial]
+  rw [hpow, hdf] at h
+  exact h
+
+/-- **Variance-flatness gives a nonzero-frequency sixth-moment level-set bound.**  This is the
+DC-correct level-set consumer: the zero frequency is excluded, so the variance/DCEnergy input
+controls the whole remaining sixth-moment mass. -/
+theorem nonzero_levelset_sixth_of_variance {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hvar : ∑ c : F,
+        ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+          ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3)
+    {lam : ℝ} (hlam : 0 ≤ lam) :
+    (((Finset.univ.erase (0 : F)).filter (fun b => lam ≤ ‖eta ψ G b‖)).card : ℝ)
+        * lam ^ 6
+      ≤ (Fintype.card F : ℝ) * (15 * (G.card : ℝ) ^ 3) := by
+  classical
+  set S := (Finset.univ.erase (0 : F)).filter (fun b => lam ≤ ‖eta ψ G b‖) with hSdef
+  have hconst : (S.card : ℝ) * lam ^ 6 = ∑ _b ∈ S, lam ^ 6 := by
+    rw [Finset.sum_const, nsmul_eq_mul]
+  have hpoint : ∑ _b ∈ S, lam ^ 6 ≤ ∑ b ∈ S, ‖eta ψ G b‖ ^ 6 :=
+    Finset.sum_le_sum (fun b hb => pow_le_pow_left₀ hlam (Finset.mem_filter.mp hb).2 6)
+  have hsubset : S ⊆ Finset.univ.erase (0 : F) := Finset.filter_subset _ _
+  have hmass : ∑ b ∈ S, ‖eta ψ G b‖ ^ 6
+      ≤ ∑ b ∈ Finset.univ.erase (0 : F), ‖eta ψ G b‖ ^ 6 :=
+    Finset.sum_le_sum_of_subset_of_nonneg hsubset (fun b _ _ => by positivity)
+  have hdc : DCEnergyBound G 3 := dcEnergyBound_three_of_variance hψ G hvar
+  have hdc' : (Fintype.card F : ℝ) * (rEnergy G 3 : ℝ) - (G.card : ℝ) ^ 6
+      ≤ (Fintype.card F : ℝ) * (15 * (G.card : ℝ) ^ 3) := by
+    unfold DCEnergyBound at hdc
+    have hpow : (2 * 3 : ℕ) = 6 := by norm_num
+    have hdf : (Nat.doubleFactorial (2 * 3 - 1) : ℝ) = 15 := by
+      norm_num [Nat.doubleFactorial]
+    rwa [hpow, hdf] at hdc
+  have hsum : ∑ b ∈ Finset.univ.erase (0 : F), ‖eta ψ G b‖ ^ 6
+      = (Fintype.card F : ℝ) * (rEnergy G 3 : ℝ) - (G.card : ℝ) ^ 6 := by
+    have h := sum_nonzero_moment hψ G 3
+    have hpow : (2 * 3 : ℕ) = 6 := by norm_num
+    rwa [hpow] at h
+  calc
+    (S.card : ℝ) * lam ^ 6 = ∑ _b ∈ S, lam ^ 6 := hconst
+    _ ≤ ∑ b ∈ S, ‖eta ψ G b‖ ^ 6 := hpoint
+    _ ≤ ∑ b ∈ Finset.univ.erase (0 : F), ‖eta ψ G b‖ ^ 6 := hmass
+    _ = (Fintype.card F : ℝ) * (rEnergy G 3 : ℝ) - (G.card : ℝ) ^ 6 := hsum
+    _ ≤ (Fintype.card F : ℝ) * (15 * (G.card : ℝ) ^ 3) := hdc'
+
+/-- **Variance-flatness forbids nonzero Johnson-scale frequencies under the sixth-moment guard.**
+If `15 |G|³ < q²`, then the nonzero frequencies with
+`sqrt(q) ≤ ‖eta ψ G b‖` form an empty set. This is the DC-correct analogue of the
+sixth-moment no-Johnson corollary: the principal frequency is excluded by construction. -/
+theorem no_nonzero_sqrt_card_levelset_of_variance_lt {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hvar : ∑ c : F,
+        ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+          ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3)
+    (hlt : 15 * (G.card : ℝ) ^ 3 < (Fintype.card F : ℝ) ^ 2) :
+    ((Finset.univ.erase (0 : F)).filter
+      (fun b => Real.sqrt (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖)) = ∅ := by
+  classical
+  by_contra hne
+  set S := (Finset.univ.erase (0 : F)).filter
+    (fun b => Real.sqrt (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖) with hSdef
+  have hnemp : S.Nonempty := by
+    rw [hSdef]
+    exact Finset.nonempty_iff_ne_empty.mpr hne
+  have hcard1 : (1 : ℝ) ≤ (S.card : ℝ) := by
+    have : 1 ≤ S.card := Finset.Nonempty.card_pos hnemp
+    exact_mod_cast this
+  have hq0 : 0 ≤ (Fintype.card F : ℝ) := by positivity
+  have hsqrt_pow : (Real.sqrt (Fintype.card F : ℝ)) ^ 6
+      = (Fintype.card F : ℝ) ^ 3 := by
+    calc
+      (Real.sqrt (Fintype.card F : ℝ)) ^ 6
+          = ((Real.sqrt (Fintype.card F : ℝ)) ^ 2) ^ 3 := by ring
+      _ = (Fintype.card F : ℝ) ^ 3 := by rw [Real.sq_sqrt hq0]
+  have hlevel := nonzero_levelset_sixth_of_variance hψ G hvar
+    (Real.sqrt_nonneg (Fintype.card F : ℝ))
+  rw [← hSdef, hsqrt_pow] at hlevel
+  have hqpos : 0 < (Fintype.card F : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hq3pos : 0 < (Fintype.card F : ℝ) ^ 3 := by positivity
+  have hq3le : (Fintype.card F : ℝ) ^ 3 ≤
+      (S.card : ℝ) * (Fintype.card F : ℝ) ^ 3 := by
+    nlinarith [hcard1, hq3pos]
+  have hguard_mul :
+      (Fintype.card F : ℝ) * (15 * (G.card : ℝ) ^ 3)
+        < (Fintype.card F : ℝ) ^ 3 := by
+    nlinarith [hlt, hqpos]
+  linarith [hq3le, hlevel, hguard_mul]
+
+/-- **Quadratic depth-3 excess forbids nonzero Johnson-scale frequencies.**  This is the
+concrete round-52/53 atom composed through the round-55 variance surface: if
+`Depth3ExcessBounded G (C n²)` with `C ≤ 44`, `n ≥ 40`, and `15n³ < q²`, then no nonzero
+frequency reaches `sqrt(q)`. -/
+theorem no_nonzero_sqrt_card_levelset_of_quadraticExcess_lt {ψ : AddChar F ℂ}
+    (hψ : ψ.IsPrimitive) (G : Finset F) {C : ℝ}
+    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
+    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
+    (hlt : 15 * (G.card : ℝ) ^ 3 < (Fintype.card F : ℝ) ^ 2) :
+    ((Finset.univ.erase (0 : F)).filter
+      (fun b => Real.sqrt (Fintype.card F : ℝ) ≤ ‖eta ψ G b‖)) = ∅ :=
+  no_nonzero_sqrt_card_levelset_of_variance_lt hψ G
+    (variance_bound_of_quadraticExcess hψ G hexc hC hn) hlt
+
+/-- **The older `RepThree` atom implies the variance-flatness target.**  This connects the
+round-407 antipodal-pairing residual to the round-55 representation-function formulation:
+for negation-closed `G`, `RepThree G` is strong enough to prove the Wick-scale flatness
+inequality for `rep3`. -/
+theorem variance_bound_of_repThree {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {G : Finset F} (hG : ∀ x ∈ G, -x ∈ G) (hrep : RepThree G) :
+    ∑ c : F, ((Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3) ^ 2
+      ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3 :=
+  variance_bound_of_dcEnergyBound hψ G (dcEnergyBound_three_of_repThree hψ hG hrep)
+
 end ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -194,3 +377,25 @@ end ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation
 #print axioms ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.dc_floor
 #print axioms
   ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.dcEnergyBound_three_iff_variance
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.dcEnergyBound_three_of_variance
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.variance_bound_of_dcEnergyBound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.variance_bound_of_gaussianEnergyBound
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.variance_bound_of_excess_headroom
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.variance_bound_of_quadraticExcess
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.eta_sixth_le_of_variance
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.nonzero_levelset_sixth_of_variance
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.no_nonzero_sqrt_card_levelset_of_variance_lt
+set_option linter.style.longLine false in
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.no_nonzero_sqrt_card_levelset_of_quadraticExcess_lt
+#print axioms
+  ArkLib.ProximityGap.Frontier.R55Depth3VarianceReformulation.variance_bound_of_repThree

@@ -174,6 +174,13 @@ def PairWeightCorrelationBound
         pairWeight χ lam (t₂ - t₁) (u * w)
           * (starRingEnd ℂ) (pairWeight χ lam s₁ w) * lam t₁ w‖ ≤ B
 
+/-- Monotonicity of the all-lag pair-weight correlation budget. -/
+theorem pairWeightCorrelationBound_mono {B B' : ℝ} (hBB' : B ≤ B')
+    (hB : PairWeightCorrelationBound χ lam G B) :
+    PairWeightCorrelationBound χ lam G B' := by
+  intro t₁ t₂ s₁
+  exact (hB t₁ t₂ s₁).trans hBB'
+
 /-- **Four-`J` bound from the pair-weight surface input.**  The exact weighted collapse
 turns the named surface-correlation estimate into a bound for every balanced four-`J`
 correlation, losing only the forced quotient-duality factor `m`. -/
@@ -186,6 +193,17 @@ theorem quad_correlation_bound_of_pairWeightCorrelationBound
   rw [quad_correlation_via_weights hfam hgrp t₁ t₂ s₁]
   rw [norm_mul, Complex.norm_natCast]
   exact mul_le_mul_of_nonneg_left (hB t₁ t₂ s₁) (by positivity)
+
+/-- Four-`J` bound from a sharper all-lag pair-weight budget, spent at a looser budget. -/
+theorem quad_correlation_bound_of_pairWeightCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : PairWeightCorrelationBound χ lam G B)
+    (t₁ t₂ s₁ : ZMod m) :
+    ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+        * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖
+      ≤ (m : ℝ) * B' :=
+  quad_correlation_bound_of_pairWeightCorrelationBound hfam hgrp
+    (pairWeightCorrelationBound_mono hBB' hB) t₁ t₂ s₁
 
 /-- **All-lag four-`J` energy from the pair-weight surface input.**  The pointwise
 round-33 bound summed over all lag triples gives the aggregate budget
@@ -216,6 +234,18 @@ theorem quad_correlation_energy_bound_of_pairWeightCorrelationBound
         simp only [Finset.sum_const, nsmul_eq_mul, Finset.card_univ, ZMod.card]
         ring
 
+/-- All-lag four-`J` energy from a sharper named pair-weight budget, spent at a looser
+budget. -/
+theorem quad_correlation_energy_bound_of_pairWeightCorrelationBound_le
+    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
+    {B B' : ℝ} (hBB' : B ≤ B') (hB : PairWeightCorrelationBound χ lam G B) :
+    ∑ t₁ : ZMod m, ∑ t₂ : ZMod m, ∑ s₁ : ZMod m,
+        ‖∑ j : ZMod m, jacobiCoeff χ lam (j + t₁) * jacobiCoeff χ lam (j + t₂)
+            * (starRingEnd ℂ) (jacobiCoeff χ lam (j + s₁) * jacobiCoeff χ lam j)‖ ^ 2
+      ≤ ((m : ℝ) * (m : ℝ) * (m : ℝ)) * (((m : ℝ) * B') ^ 2) :=
+  quad_correlation_energy_bound_of_pairWeightCorrelationBound hfam hgrp
+    (pairWeightCorrelationBound_mono hBB' hB)
+
 end ArkLib.ProximityGap.Frontier.R33QuadViaWeights
 
 /-! ## Axiom audit (must be ⊆ {propext, Classical.choice, Quot.sound}; NO sorryAx) -/
@@ -223,6 +253,12 @@ end ArkLib.ProximityGap.Frontier.R33QuadViaWeights
 #print axioms ArkLib.ProximityGap.Frontier.R33QuadViaWeights.jacobi_pair_eq_lamTransform
 #print axioms ArkLib.ProximityGap.Frontier.R33QuadViaWeights.quad_correlation_via_weights
 open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
+#print axioms pairWeightCorrelationBound_mono
+open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
 #print axioms quad_correlation_bound_of_pairWeightCorrelationBound
 open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
+#print axioms quad_correlation_bound_of_pairWeightCorrelationBound_le
+open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
 #print axioms quad_correlation_energy_bound_of_pairWeightCorrelationBound
+open ArkLib.ProximityGap.Frontier.R33QuadViaWeights in
+#print axioms quad_correlation_energy_bound_of_pairWeightCorrelationBound_le

@@ -21169,3 +21169,35 @@ additive-side mirror of "η_b depends only on the coset of b". Does NOT break th
 of the r55 variance. HONEST NOTE: r55's `dc_floor` (|G|⁶≤q·E₃) duplicates the r=3 case of the
 in-tree general `DCEnergyEssential.q_mul_energy_ge_dc` (my sum-of-squares proof route differs;
 the variance IDENTITY + iff in r55 are the genuinely new part). CORE OPEN, ON-BGK.
+
+## [466-r28-subfamily-kappa-half-REFUTED-faces-dont-discharge] ROUND 28F (Opus): CORRECTION — the r27 "subfamily rung fires at κ=1/2" is REFUTED in-regime (κ > 1/2, growing with n); the mixed-moment faces do NOT discharge from proven per-character machinery (2026-07-08)
+
+Two lanes + two adversarial skeptics. This round is a CORRECTION: it walks back the r27 headline
+after adversarial refutation. Refutations-with-countermodels are wins per the honesty contract.
+
+- **DECOUPLE (`_R28FDecoupling.lean`, axiom-clean but empirically REFUTED, skeptic severity MAJOR):**
+  the lane reduced MixedMainResHalfCS(κ) to a product κ = corr·fA·fB (covariance-decoupling constant
+  × two per-block flatness factors) — but the skeptic showed this factorization is a DEFINITIONAL
+  tautology (holds for all inputs by substitution, verified 2e-16), and, decisively, REFUTED the
+  load-bearing claim that the composite constant sits ≤ 1/2 in-regime: at p=449 in the r27 flagship
+  family (n=8, m=16, d=8, m'=2, even regime, off-diagonal domain) κ = 0.5203 > 1/2; a wider in-regime
+  grid reaches κ = 0.6952 with the covariance constant Ccov = 2.14, GROWING WITH n toward the prize
+  (n = 2^30). **So MixedMainResHalfCS(1/2) is FALSE in-regime — the r27 "6.5% slack, rung fires at
+  κ=1/2" was single-cell (p=65537) selection-fitting.** The three landed Lean lemmas are correct
+  elementary Cauchy–Schwarz algebra but are effectively vacuous as an advance (they rename the open
+  target as a product of still-open predicates whose firing hypothesis is not satisfiable in-regime).
+- **FACES (`_R28FFacesDischarge.lean`, axiom-clean NEGATIVE result, confirmed):** the r27 face
+  fractions Ea, Eb CANNOT be discharged from the proven d≤16 per-character faces — the best proven
+  route (L²×sup, C=2Mn for Eb; Hölder for Ea) OVERSPENDS by a q-independent factor 2Mn/3 ≈ 75× (Eb)
+  and 270×–5900× (Ea), uniform across all tested cells (confirmed by skeptic at 3 primes, 2 m').
+  The measured face fractions are TIGHT — already at the joint-cancellation (Wick) scale — so the
+  faces are the SAME wall as the mixed decoupling, appearing three times. (The 2Mn/3 gap was already
+  documented in _R26ResidualL2CrossIdentity.)
+
+CORRECTED STATE: the subfamily-Y route for the r=2 rung — already shown "not free" at r25 — is now
+also shown NOT to close via the mixed-moment κ=1/2 mechanism (κ exceeds 1/2 in-regime and grows with
+n). The r=2 rung's UNCONDITIONAL faces (d=2 milestone r23; d=4 milestone r26) STAND; the concurrent
+swarm's r=2 diagonal-subtracted Wick rung (its R51 wickAwayAt_two_unconditional, a Fourier+Stepanov
+weld) achieves the r=2 rung UNCONDITIONALLY by a DIFFERENT route, superseding the subfamily gate for
+r=2. The deep-r wall (Problem A / AwaySupBound / the swarm's r=3+ Deligne-surface line) remains the
+prize. CORE OPEN, ON-BGK. No fabricated closure.
