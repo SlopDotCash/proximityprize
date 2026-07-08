@@ -39,6 +39,56 @@ open ArkLib.ProximityGap.Frontier.R100QRWeilSevenPackage
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {χ : F → ℝ}
 
+/-- Exact-numerator constant-seven certificates give the QR `AwaySupBound` projection, with
+bridge-budget nonnegativity supplied directly. -/
+theorem awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G D : Finset F}
+    {A S S' N : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hB0 : 0 ≤ shiftedLegendreIncidenceBudget (F := F) G A)
+    (hS : S' ≤ S)
+    (hCert : QRWeilAverageCertificate χ G S N)
+    (hNum : shiftedLegendreIncidenceBudget (F := F) G A ^ 2 ≤ (7 : ℝ) * S') :
+    AwaySupBound ψ G (QRset χ) D (7 : ℝ) :=
+  (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+    (F := F) (χ := χ) hχ hψ hW hGD hB0 hS hCert hNum).1
+
+/-- Exact-numerator constant-seven certificates give the R19 away-tower projection, with
+bridge-budget nonnegativity supplied directly. -/
+theorem tower_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G D : Finset F}
+    {A S S' N : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hB0 : 0 ≤ shiftedLegendreIncidenceBudget (F := F) G A)
+    (hS : S' ≤ S)
+    (hCert : QRWeilAverageCertificate χ G S N)
+    (hNum : shiftedLegendreIncidenceBudget (F := F) G A ^ 2 ≤ (7 : ℝ) * S') :
+    ∀ r : ℕ, rungMoment ψ G (QRset χ) D (r + 2)
+      ≤ ((7 : ℝ) * ∑ b ∈ QRset χ, ‖eta ψ G b‖ ^ 2) ^ r
+          * rungMoment ψ G (QRset χ) D 2 :=
+  (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+    (F := F) (χ := χ) hχ hψ hW hGD hB0 hS hCert hNum).2.1
+
+/-- Exact-numerator constant-seven certificates give the head-rung-window projection, with
+bridge-budget nonnegativity supplied directly. -/
+theorem headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G D : Finset F}
+    {A S S' N : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hB0 : 0 ≤ shiftedLegendreIncidenceBudget (F := F) G A)
+    (hS : S' ≤ S)
+    (hCert : QRWeilAverageCertificate χ G S N)
+    (hNum : shiftedLegendreIncidenceBudget (F := F) G A ^ 2 ≤ (7 : ℝ) * S') :
+    ∀ r : ℕ, 3 ≤ r → HeadRungSubWick ψ G (QRset χ) D r :=
+  (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+    (F := F) (χ := χ) hχ hψ hW hGD hB0 hS hCert hNum).2.2
+
 /-- Exact-numerator constant-seven certificates give the QR `AwaySupBound` projection. -/
 theorem awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold_of_A_nonneg
     (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
@@ -85,6 +135,59 @@ theorem headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshol
     ∀ r : ℕ, 3 ≤ r → HeadRungSubWick ψ G (QRset χ) D r :=
   (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold_of_A_nonneg
     (F := F) (χ := χ) hχ hψ hW hGD hA0 hS hCert hNum).2.2
+
+/-- Larger-numerator constant-seven certificates give the QR `AwaySupBound` projection, with
+bridge-budget nonnegativity supplied directly. -/
+theorem awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {G D : Finset F} {A B S S' N : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hB0 : 0 ≤ shiftedLegendreIncidenceBudget (F := F) G A)
+    (hB : shiftedLegendreIncidenceBudget (F := F) G A ≤ B)
+    (hS : S' ≤ S)
+    (hCert : QRWeilAverageCertificate χ G S N)
+    (hNum : B ^ 2 ≤ (7 : ℝ) * S') :
+    AwaySupBound ψ G (QRset χ) D (7 : ℝ) :=
+  (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+    (F := F) (χ := χ) hχ hψ hW hGD hB0 hB hS hCert hNum).1
+
+/-- Larger-numerator constant-seven certificates give the R19 away-tower projection, with
+bridge-budget nonnegativity supplied directly. -/
+theorem tower_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {G D : Finset F} {A B S S' N : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hB0 : 0 ≤ shiftedLegendreIncidenceBudget (F := F) G A)
+    (hB : shiftedLegendreIncidenceBudget (F := F) G A ≤ B)
+    (hS : S' ≤ S)
+    (hCert : QRWeilAverageCertificate χ G S N)
+    (hNum : B ^ 2 ≤ (7 : ℝ) * S') :
+    ∀ r : ℕ, rungMoment ψ G (QRset χ) D (r + 2)
+      ≤ ((7 : ℝ) * ∑ b ∈ QRset χ, ‖eta ψ G b‖ ^ 2) ^ r
+          * rungMoment ψ G (QRset χ) D 2 :=
+  (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+    (F := F) (χ := χ) hχ hψ hW hGD hB0 hB hS hCert hNum).2.1
+
+/-- Larger-numerator constant-seven certificates give the head-rung-window projection, with
+bridge-budget nonnegativity supplied directly. -/
+theorem headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+    (hχ : IsRealQuadChar χ) [DecidablePred fun b : F => χ b = 1]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {G D : Finset F} {A B S S' N : ℝ}
+    (hW : ShiftedLegendreSupBound χ G A)
+    (hGD : G ⊆ D)
+    (hB0 : 0 ≤ shiftedLegendreIncidenceBudget (F := F) G A)
+    (hB : shiftedLegendreIncidenceBudget (F := F) G A ≤ B)
+    (hS : S' ≤ S)
+    (hCert : QRWeilAverageCertificate χ G S N)
+    (hNum : B ^ 2 ≤ (7 : ℝ) * S') :
+    ∀ r : ℕ, 3 ≤ r → HeadRungSubWick ψ G (QRset χ) D r :=
+  (awaySupBound_tower_and_headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+    (F := F) (χ := χ) hχ hψ hW hGD hB0 hB hS hCert hNum).2.2
 
 /-- Larger-numerator constant-seven certificates give the QR `AwaySupBound` projection. -/
 theorem awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold_of_A_nonneg
@@ -140,11 +243,23 @@ end ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers
 
 /-! ## Axiom audit -/
 #print axioms
+  ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+#print axioms
+  ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.tower_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+#print axioms
+  ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold
+#print axioms
   ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold_of_A_nonneg
 #print axioms
   ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.tower_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold_of_A_nonneg
 #print axioms
   ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_mono_threshold_of_A_nonneg
+#print axioms
+  ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+#print axioms
+  ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.tower_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
+#print axioms
+  ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.headWindow_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold
 #print axioms
   ArkLib.ProximityGap.Frontier.R110QRWeilSevenProjectionConsumers.awaySupBound_qr_seven_of_shiftedLegendreSupBound_certificate_le_sq_mono_threshold_of_A_nonneg
 #print axioms
