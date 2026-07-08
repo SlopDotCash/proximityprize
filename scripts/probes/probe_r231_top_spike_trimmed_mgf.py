@@ -39,6 +39,7 @@ class Case:
     p: int
     m: int
     xs: np.ndarray
+    desc: np.ndarray
     label: str
 
 
@@ -50,14 +51,14 @@ def medium_cases(max_a: int, max_index: int, min_index: int, chunk: int) -> list
             p = m * n + 1
             if is_prime(p):
                 xs = normalized_values_vectorized(p, n, chunk)
-                out.append(Case(n, p, m, xs, f"a={a}-M={m}"))
+                out.append(Case(n, p, m, xs, np.sort(xs)[::-1], f"a={a}-M={m}"))
     return out
 
 
 def residual_required_c(
     xs: np.ndarray, tau: float, spike_budget: float, trim: int
 ) -> tuple[float, float, int]:
-    desc = np.sort(xs)[::-1]
+    desc = xs
     residual = desc[min(trim, len(desc)) :]
     m = len(desc)
     best_c = 0.0
@@ -79,7 +80,7 @@ def residual_required_c(
 def top_stair_budget_per_carrier(
     xs: np.ndarray, trim: int, step: float, cutoff: float, rate: float
 ) -> float:
-    desc = np.sort(xs)[::-1]
+    desc = xs
     top = desc[: min(trim, len(desc))]
     if len(top) == 0:
         return 0.0
@@ -130,7 +131,7 @@ def main() -> None:
             for spike_budget in args.spike_budgets:
                 worst = (0.0, tau, 0, None)
                 for case in cases:
-                    c_req, theta, count = residual_required_c(case.xs, tau, spike_budget, trim)
+                    c_req, theta, count = residual_required_c(case.desc, tau, spike_budget, trim)
                     if c_req > worst[0]:
                         worst = (c_req, theta, count, case)
                 worst_budget = -1.0
@@ -138,7 +139,7 @@ def main() -> None:
                 for case in cases:
                     cutoff = max(args.cutoff, float(case.xs.max()))
                     budget = top_stair_budget_per_carrier(
-                        case.xs, trim, args.step, cutoff, args.rate
+                        case.desc, trim, args.step, cutoff, args.rate
                     ) + residual_envelope_budget(
                         case.m, args.step, cutoff, args.rate, tau, worst[0], spike_budget
                     )
