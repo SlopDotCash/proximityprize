@@ -97,6 +97,32 @@ C_req=0.63323354
 trim=8 tau=0.5 K=0
 ```
 
+A cross-dyadic smoke test also closes for `a = 3..8`, `M >= 3194`, using the
+best parameter shape:
+
+```bash
+python3 scripts/probes/probe_r234_rank_sum_residual_feasibility.py \
+  --medium-min-a 3 --medium-max-a 8 --medium-max-index 4500 \
+  --min-index 3194 --chunk 8192 \
+  --trims 8 --taus 0.5 --spike-budgets 0 --top 10
+```
+
+Result:
+
+```text
+cases=1298
+feasible_rows=1
+best_budget=1.945479
+slack=0.054521
+topCap=0.209391
+C_req=0.64696232
+trim=8 tau=0.5 K=0
+
+top-rank witness: n=64 p=238081 M=3720
+C witness:        n=8  p=33377  M=4172
+budget witness:   n=64 p=259201 M=4050
+```
+
 ## Interpretation
 
 This is a useful positive signal.  A viable post-exception residual is:

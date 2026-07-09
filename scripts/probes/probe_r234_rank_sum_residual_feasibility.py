@@ -43,11 +43,20 @@ class Case:
     label: str
 
 
-def medium_cases(min_a: int, max_a: int, min_index: int, max_index: int, chunk: int) -> list[Case]:
+def medium_cases(
+    min_a: int,
+    max_a: int,
+    min_index: int,
+    max_index: int,
+    min_beta: float,
+    chunk: int,
+) -> list[Case]:
     out: list[Case] = []
     for a in range(min_a, max_a + 1):
         n = 2**a
-        for m in range(max(2, min_index), max_index + 1):
+        beta_floor = 2 if min_beta <= 0 else math.ceil(n ** (min_beta - 1.0))
+        lo = max(2, min_index, beta_floor)
+        for m in range(lo, max_index + 1):
             p = m * n + 1
             if is_prime(p):
                 xs = normalized_values_vectorized(p, n, chunk)
@@ -110,6 +119,7 @@ def main() -> None:
     parser.add_argument("--medium-max-a", type=int, default=8)
     parser.add_argument("--min-index", type=int, default=512)
     parser.add_argument("--medium-max-index", type=int, default=4096)
+    parser.add_argument("--min-beta", type=float, default=0.0)
     parser.add_argument("--chunk", type=int, default=32768)
     parser.add_argument("--trims", type=int, nargs="+", default=[1, 2, 4, 8, 16, 32, 64])
     parser.add_argument("--taus", type=float, nargs="+", default=[0.5, 1.0, 2.0, 4.0])
@@ -121,7 +131,12 @@ def main() -> None:
     args = parser.parse_args()
 
     cases = medium_cases(
-        args.medium_min_a, args.medium_max_a, args.min_index, args.medium_max_index, args.chunk
+        args.medium_min_a,
+        args.medium_max_a,
+        args.min_index,
+        args.medium_max_index,
+        args.min_beta,
+        args.chunk,
     )
     rows = []
     for trim in args.trims:
@@ -169,7 +184,7 @@ def main() -> None:
     rows.sort(key=lambda row: (row[0], row[2], row[1]))
     print(
         "R234 rank-sum residual feasibility "
-        f"cases={len(cases)} step={args.step} rate={args.rate}"
+        f"cases={len(cases)} step={args.step} rate={args.rate} min_beta={args.min_beta}"
     )
     print(
         "budget   slack    topCap   C_req    trim tau   K     theta        count "
