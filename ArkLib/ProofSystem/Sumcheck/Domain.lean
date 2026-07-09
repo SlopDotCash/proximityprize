@@ -110,6 +110,14 @@ def tail (D : SumcheckDomain R (k + 1)) : SumcheckDomain R k where
 @[simp] lemma points_tail (D : SumcheckDomain R (k + 1)) (i : Fin k) :
     D.tail.points i = D.points i.succ := rfl
 
+/-- Drop the last coordinate of a `(k+1)`-coordinate domain family. -/
+def init (D : SumcheckDomain R (k + 1)) : SumcheckDomain R k where
+  size := fun i => D.size i.castSucc
+  embed := fun i => D.embed i.castSucc
+
+@[simp] lemma points_init (D : SumcheckDomain R (k + 1)) (i : Fin k) :
+    D.init.points i = D.points i.castSucc := rfl
+
 /-- Drop the first `j` coordinates, leaving the domain on the remaining `k - j` coordinates:
 coordinate `i` of `D.drop j` is coordinate `j + i` of `D`. This is the *suffix* that per-round
 sum-check needs — round `j` sums over coordinates `j … k-1`. -/
@@ -125,6 +133,9 @@ def drop (D : SumcheckDomain R k) (j : ℕ) : SumcheckDomain R (k - j) where
 `rfl` hook that lets `Sumcheck.Spec`'s round-`i` sum migrate onto `drop` with no semantic change. -/
 @[simp] lemma drop_uniform (D₀ : Fin m ↪ R) (N j : ℕ) :
     (uniform D₀ N).drop j = uniform D₀ (N - j) := rfl
+
+@[simp] lemma init_uniform (D₀ : Fin m ↪ R) (N : ℕ) :
+    (uniform D₀ (N + 1)).init = uniform D₀ N := rfl
 
 /-- Membership in the cube: a point lies in the cube iff each coordinate lies in its domain. -/
 @[simp] lemma mem_cube {D : SumcheckDomain R k} {x : Fin k → R} :
@@ -157,6 +168,14 @@ theorem sum_cube_succ {M : Type*} [AddCommMonoid M] (D : SumcheckDomain R (k + 1
       Finset.filter_piFinset_eq_map_consEquiv (S := D.points) (fun _ => True)
   rw [hcube, Finset.sum_map]
   rfl
+
+/-- Last-coordinate version of `sum_cube_succ`: split a `(k+1)`-cube into its first `k`
+coordinates and final coordinate. -/
+theorem sum_cube_snoc {M : Type*} [AddCommMonoid M] (D : SumcheckDomain R (k + 1))
+    (f : (Fin (k + 1) → R) → M) :
+    ∑ x ∈ D.cube, f x =
+      ∑ b ∈ D.points (Fin.last k), ∑ y ∈ D.init.cube, f (Fin.snoc y b) := by
+  sorry
 
 end SumcheckDomain
 

@@ -165,7 +165,7 @@ theorem prob_badPolyAgreement_le_of_sub_natDegree {p q : F[X]} {D : ℕ}
       rw [hempty, Finset.card_empty]
       simp
     rw [hzero]
-    exact zero_le _
+    exact bot_le
   · -- Distinct polynomials: root-count the agreement set and divide by the field size.
     rw [prob_uniform_eq_card_filter_div_card]
     have hfilter :

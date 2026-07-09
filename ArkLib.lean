@@ -2447,6 +2447,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R211NonzeroNormalizedSqDi
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R212LargeIndexChildLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R213NonzeroNormalizedSqQuarterMGFResidualConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R214DirectChildMGFLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R215OneChildDirectMGFLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R216NonzeroNormalizedSqSurvivalConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21HeadRungDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21HigherDFaces
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21QuarticConvolutionCollapse

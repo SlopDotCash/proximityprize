@@ -399,8 +399,10 @@ lemma ps_is_rel_prime_swap {F : Type} [CommRing F] {A B : F[X][Y]}
   classical
   let f : F[X][Y] ≃+* F[X][Y] := swap.toRingEquiv
   refine fun d hdA hdB ↦ ?_
+  have hd_swap : swap (swap d) = d := swap.left_inv d
   have hunit : IsUnit (f.symm d) :=
-    h ((map_dvd_iff f).1 (by simpa [f] using hdA)) ((map_dvd_iff f).1 (by simpa [f] using hdB))
+    h ((map_dvd_iff f).1 (by simpa [f, hd_swap] using hdA))
+      ((map_dvd_iff f).1 (by simpa [f, hd_swap] using hdB))
   have : IsUnit (f (f.symm d)) := f.toRingHom.isUnit_map hunit
   simpa [f] using this
 

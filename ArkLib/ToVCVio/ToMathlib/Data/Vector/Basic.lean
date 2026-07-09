@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 
 import Mathlib.Data.Vector.Basic
 import VCVio.EvalDist.Monad.Basic
+import VCVio.EvalDist.Defs.Support
 
 /-!
 # Additions to VCV-io's `ToMathlib.Data.Vector.Basic`

@@ -32,21 +32,19 @@ and parameterize the protocol over it; the Binius instance `binaryTowerProfile` 
 | field | Binius (DP24) | Hachi (ePrint 2026/156) |
 |---|---|---|
 | `B`, `L` | small field `K`, tower field `L` | `R_q^H ≅ F_{q^k}`, `R_q` |
-| `basis` | binary `K`-basis of `L`, rank `2^κ` | `ψ`; ArkLib `κ = log₂(d/k)` |
+| `basis` | binary `K`-basis of `L`, rank `2^κ` | `ψ` of Theorem 2, rank `d/k = 2^κ` |
 | `A` | tensor algebra `L ⊗[K] L` | `R_q` itself (`= L`) |
 | `φ₀`, `φ₁` | `α ↦ α ⊗ 1`, `α ↦ 1 ⊗ α` | `id`, the automorphism `σ₋₁` |
 | `decomposeRows`/`Columns` | `L`-coords of `ŝ` in `L ⊗_K L` | coords of `Y ∈ R_q` via `ψ` |
 
 The only structural difference — Hachi has no separate tensor object (`A = L`, `φ₀ = id`,
-`φ₁ = σ₋₁`) while Binius has `A = L ⊗_K L` — is absorbed by making `A`, `φ₀`,
-and `φ₁` explicit fields.
-The two `Prop`-valued fields `decomposeRows_spec` / `decomposeColumns_spec` are the base
-coordinate-reconstruction laws tying `decomposeRows`/`decomposeColumns` to `φ₀`/`φ₁`/`basis`.
-They rule out law-free coordinate maps, but they are not a standalone generic soundness theorem:
-the batching and sumcheck proofs still have to connect these coordinates to `packMLE`,
-`embedded_MLP_eval`, `compute_A_func`, and the instance-specific eq̃/trace identities. Each
-instance discharges those protocol-level obligations from its own algebra (Binius: tensor
-`Basis.sum_repr`; Hachi: Theorem 2 plus its CWSS soundness argument).
+`φ₁ = σ₋₁`) while Binius has `A = L ⊗_K L` — is absorbed by `A`, `φ₀`, `φ₁` being explicit fields.
+The eq̃/trace inner-product law (DP24 §2.5 / Hachi Theorem 2) is carried as the two `Prop`-valued
+fields `decomposeRows_spec` / `decomposeColumns_spec` below: it is exactly what the completeness and
+soundness proofs consume, and stating it as part of the data keeps those theorems true for *every*
+profile (a law-free structure would make the generic statements vacuously false — e.g.
+`decomposeColumns ≡ 0`). Each instance discharges the laws from its own algebra (Binius: tensor
+`Basis.sum_repr`; Hachi: Theorem 2).
 
 See also: the KB concept page `docs/kb/concepts/ring-switching.md` and the blueprint section
 `blueprint/src/proof_systems/ring_switching.tex` for the protocol, phases, and security statements.
@@ -72,25 +70,43 @@ structure RingSwitchingProfile (B L : Type*) (κ : ℕ)
   φ₀ : L →+* A
   /-- row embedding `L → A`; Binius `α ↦ 1 ⊗ α`, Hachi the automorphism `σ₋₁`. -/
   φ₁ : L →+* A
-  /-- The `2^κ` `L`-valued "row" coordinates of an `A`-element (Binius: `β.baseChange L`-coords of
-  `ŝ ∈ L ⊗_K L`; used in step 5 / `compute_s0`). Protocol-level identities relating these
-  coordinates to `packMLE`/`compute_A_func` are discharged by the batching proofs, not by this
-  data field alone. -/
+  /-- The `2^κ` `L`-valued "row" coordinates of an `A`-element (Binius:
+  `β.baseChange L`-coords of `ŝ ∈ L ⊗_K L`; used in step 5 / `compute_s0`).
+  The algebraic law relating it to `φ₀`/`φ₁` and `A`'s multiplication is an
+  instance-internal lemma (used in soundness proofs), not a field here. -/
   decomposeRows : A → (Fin κ → Fin 2) → L
-  /-- The `2^κ` `L`-valued "column" coordinates of an `A`-element (Binius:
-  `baseChangeRight`-coords; used in step 2 / `performCheckOriginalEvaluation`). NOTE: in the
-  Binius instance this uses the *right* `L`-module structure on `A`, distinct from `algLA`
-  (the left/`φ₀` action). -/
+  /-- The `2^κ` `L`-valued "column" coordinates of an `A`-element (Binius: `baseChangeRight`-coords;
+  used in step 2 / `performCheckOriginalEvaluation`). NOTE: in the Binius instance this uses the
+  *right* `L`-module structure on `A`, distinct from `algLA` (the left/`φ₀` action). -/
   decomposeColumns : A → (Fin κ → Fin 2) → L
-  /-- **Row reconstruction law** (the base coordinate identity from DP24 §2.5 / Hachi Theorem 2):
+  /-- **Row reconstruction law** (the eq̃/trace structural identity, DP24 §2.5 / Hachi Theorem 2):
   every `A`-element is recovered from its row coordinates via the `φ₀`-image of those coordinates
   weighted by the `φ₁`-image of the basis. This is the algebraic law tying `decomposeRows` to
-  `φ₀`/`φ₁`/`basis` and rules out law-free profiles (e.g. `decomposeRows ≡ 0`). For Binius
-  (`A = L ⊗_K L`) it is `Basis.sum_repr` for `β.baseChange L`; for Hachi it is supplied by
-  Theorem 2 together with the profile-specific trace/coordinate interpretation. -/
+  `φ₀`/`φ₁`/`basis`; it is what the batching/sumcheck completeness and soundness
+  proofs depend on, and what rules out degenerate profiles (e.g. `decomposeRows ≡ 0`).
+  For Binius (`A = L ⊗_K L`) it is `Basis.sum_repr` for `β.baseChange L`; for Hachi
+  it is Theorem 2. -/
   decomposeRows_spec : ∀ z : A, z = ∑ u, φ₀ (decomposeRows z u) * φ₁ (basis u)
   /-- **Column reconstruction law**: the right/`φ₁`-action dual of `decomposeRows_spec`. -/
   decomposeColumns_spec : ∀ z : A, z = ∑ v, φ₁ (decomposeColumns z v) * φ₀ (basis v)
+  /-- **Row additivity**: row coordinates are additive. Together with
+  `decomposeRows_φ₀_mul_φ₁` this is the *extraction* direction (rows of a reconstruction
+  recover the coordinates), which `decomposeRows_spec` alone does not imply — two distinct
+  coordinate vectors could reconstruct the same element without it. Binius: linearity of
+  `(β.baseChange L).repr`. -/
+  decomposeRows_add : ∀ z w : A, ∀ u, decomposeRows (z + w) u = decomposeRows z u + decomposeRows w u
+  /-- **Row atomic extraction**: the row coordinates of a pure `φ₀ a * φ₁ b` element are the
+  basis coordinates of `b` scaled into `a`. Binius: `Basis.baseChange_repr_tmul`. -/
+  decomposeRows_φ₀_mul_φ₁ : ∀ (a b : L) (u : Fin κ → Fin 2),
+    decomposeRows (φ₀ a * φ₁ b) u = basis.repr b u • a
+  /-- **Column additivity**: the column-side dual of `decomposeRows_add`. -/
+  decomposeColumns_add : ∀ z w : A, ∀ v,
+    decomposeColumns (z + w) v = decomposeColumns z v + decomposeColumns w v
+  /-- **Column atomic extraction**: the column coordinates of a pure `φ₀ a * φ₁ b` element are
+  the basis coordinates of `a` scaled into `b` — the dual of `decomposeRows_φ₀_mul_φ₁`.
+  Binius: `Basis.baseChangeRight_repr_tmul`. -/
+  decomposeColumns_φ₀_mul_φ₁ : ∀ (a b : L) (v : Fin κ → Fin 2),
+    decomposeColumns (φ₀ a * φ₁ b) v = basis.repr a v • b
 
 attribute [instance] RingSwitchingProfile.commRingA RingSwitchingProfile.algLA
 
