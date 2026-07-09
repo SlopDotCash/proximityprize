@@ -1,8 +1,8 @@
-# Prize entropy pin: degree parameter refutation
+# Prize entropy pin: degree and actual-rate refutations
 
 Date: 2026-07-09
 
-## Result
+## Historical definition
 
 `PrizePinConjecture` in `PrizeEntropyDeltaStar.lean` is false as stated.  Its parameter
 `k` is the polynomial degree bound used by `evalCode g n k`, so the code has dimension
@@ -29,11 +29,34 @@ prizeDeltaStar 0 B = 1
 for every budget `B`, because binary entropy vanishes at zero.  Thus the claimed equality
 would identify `3/4` with `1`.
 
+## The actual-rate repair also fails
+
+The same Lean module proves the stronger exact inequality
+
+```text
+3/4 < prizeDeltaStar (1/8) 14.
+```
+
+Here `1/8` is the actual dimension-one code rate and `14` is the simplified list budget
+`12289 * (14/12289)`.  The certificate uses
+
+```text
+binEntropy(1/8) < 2/5,
+7/2 < logb 2 14,
+```
+
+so `binEntropy(1/8) / logb 2 14 < 1/8`.  The logarithm bound follows from the exact integer
+inequality `2^7 < 14^2`; no floating-point oracle enters the proof.
+
+Consequently, merely replacing `k/n` by `(k+1)/n` does not produce a valid generic finite
+exact-pin formula.
+
 ## Scope
 
-This refutes the Lean definition exactly as written.  It does not refute a corrected
-entropy conjecture using the actual rate `(k + 1) / n`, and it does not close or refute any
-of the four production prize instances.  Their worst-case list upper bound remains open.
+These results refute the historical Lean definition and its naive actual-rate repair as
+generic finite exact-pin statements.  They do not close or refute any of the four production
+prize instances, and they do not rule out a suitably qualified asymptotic entropy law.
+The production worst-case list upper bound remains open.
 
 ## Related finite pins
 

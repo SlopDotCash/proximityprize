@@ -69,5 +69,6 @@ def run(p, n):
               f"Linf/unif={linf_ratio:.8g} m/(n-1)^d={diagonal_ratio:.8g}", flush=True)
 
 
-for cell in ((1_073_741_953, 64), (34_359_740_801, 128)):
-    run(*cell)
+if __name__ == "__main__":
+    for cell in ((1_073_741_953, 64), (34_359_740_801, 128)):
+        run(*cell)

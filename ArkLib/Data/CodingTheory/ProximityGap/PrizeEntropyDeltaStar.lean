@@ -13,8 +13,9 @@ import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 > **Status warning (2026-07-09).** `PrizePinConjecture` below is refuted as stated: its
 > parameter `k` is the polynomial degree bound in `evalCode g n k`, whose dimension is
 > `k + 1`, but the right-hand side uses the stale rate `k / n`.  The degree-zero
-> counterexample is machine-checked in `PrizeEntropyPinRefuted`.  A corrected statement
-> using `(k + 1) / n` remains open, as do the production prize instances.
+> counterexample is machine-checked in `PrizeEntropyPinRefuted`.  That file also proves
+> that the naive actual-rate repair is false at the same finite instance:
+> `3/4 < prizeDeltaStar (1/8) 14`.  The four production prize instances remain open.
 
 This file states a **closed-form candidate answer** to the Proximity Prize
 (proximityprize.org, ABF26) for explicit constant-rate smooth-domain Reed–Solomon codes,
@@ -54,8 +55,9 @@ transfer wall.  Feeding it into `mcaDeltaStar_le_of_bad` gives the rigorous ceil
 
 The intended matching lower bound is still the worst-case list bound for explicit smooth
 RS above Johnson.  The historical `PrizeFloorStatement` and `PrizePinConjecture` definitions
-below use the degree ratio `k / n`; they must first be corrected to the actual code rate
-`(k + 1) / n`.  No exact entropy pin for a production prize instance is proved here.
+below use the degree ratio `k / n`.  Replacing it by `(k + 1) / n` repairs that parameter
+but does not make the generic finite equality true.  No exact entropy pin for a production
+prize instance is proved here.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`, no `axiom`.
 -/
