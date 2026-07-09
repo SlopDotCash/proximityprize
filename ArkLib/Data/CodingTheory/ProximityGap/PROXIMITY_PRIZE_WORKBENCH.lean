@@ -11,6 +11,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.OwnershipCensusSharpened
 import ArkLib.Data.CodingTheory.ProximityGap.GVHBKEnergyReduction
 import ArkLib.Data.CodingTheory.ProximityGap.BoundarySupExactness
 import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
+-- §2.2 the exact projective form of the production incidence core:
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -35,8 +37,9 @@ import ArkLib.Data.CodingTheory.GMMDS.LovettDivisibility
 import ArkLib.Data.CodingTheory.ProximityGap.ShawOperator
 -- §3 (W6) the machine-checked second-moment / L² no-go + far-restriction + falsification:
 import ArkLib.Data.CodingTheory.ProximityGap.ShawSecondMoment
--- §Y the explicit entropy closed-form δ* value + the rigorous in-window ladder ceiling:
+-- §Y the historical entropy candidate, its counterexamples, and the discrete ladder ceiling:
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyDeltaStar
+import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyPinRefuted
 -- §D THE DEMAND-SIDE LANE (#389) — the CensusDomination #bad-scalar count, r=3 closed (O172):
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR3Bound
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR4Bound
@@ -491,8 +494,10 @@ not a proof. Full record: `docs/kb/jlr26-frs-subspace-design-formalization-map-2
 
 ⛔ **CORRECTED (KB §37): this section's "δ* = capacity term" claim is WRONG.** Kambiré
 (arXiv:2604.09724, native to μ_{2^t}) PROVES δ* is the WINDOW EDGE `1−ρ−2/(K·log₂n)`=`1−ρ−Θ(1/log n)`,
-NOT the capacity term. The in-tree `PrizeEntropyDeltaStar.prizeDeltaStar(ρ, q·ε*)`=`1−ρ−H(ρ)/log₂(qε*)`
-IS the window edge (log₂(qε*)≈log₂n) and is correct; my H_q⁻¹/capacity-term framing below overshoots.
+NOT the capacity term. The in-tree historical candidate
+`PrizeEntropyDeltaStar.prizeDeltaStar(ρ, q·ε*)` was proposed as that window edge, but its generic
+finite equality and the obvious rate-and-log-unit repair are now refuted in
+`PrizeEntropyPinRefuted`; whether a corrected asymptotic law has the same leading scale remains open.
 Genericity ALSO INVERTED: bad count = DISTINCT r-fold sumset `|H^{(+r)}|`, so LARGE sumset FUELS the
 disproof. Treat §R.4 as superseded by KB §37.
 
@@ -688,54 +693,57 @@ theorem deltaStar_pin_mu8_F4129_witness :
       (by norm_num) (by norm_num) (by norm_num) (by norm_num) orderOf_g8_witness (by norm_num)
   rw [hpin]; refine tsub_eq_of_eq_add ?_; norm_num
 /-! ════════════════════════════════════════════════════════════════════════════
-    ║   §Y.  THE EXPLICIT ENTROPY VALUE  +  THE RIGOROUS IN-WINDOW CEILING        ║
+    ║   §P.  THE PRODUCTION INCIDENCE CORE IS EXACTLY PROJECTIVE                  ║
     ════════════════════════════════════════════════════════════════════════════
 
-  Complement to the Shaw-operator reduction: that gives the closed *form* (δ* = closed
-  function of the worst-case line-ball spectral error); this pins the closed *value* with
-  the explicit constant and proves the in-window placement + ceiling rigorously
-  (`PrizeEntropyDeltaStar.lean`, axiom-clean).
+  `WorstCaseIncidenceBounded` counts one affine chart of each two-row pencil.  For every
+  `E < |F|`, `worstCaseIncidenceBounded_iff_projective` proves this is EXACTLY equivalent to
+  bounding all `|F|+1` projective bad slots.  There is no `+1` loss: a good affine slot can be
+  moved to infinity, and `badSlotCount_row_mix` proves the census is invariant under every
+  invertible row mix.  The strict budget is sharp; the `F_2`, three-coordinate boundary theorem
+  refutes the equivalence at `E = |F|`.
 
-  THE CONTINUOUS CROSSOVER CANDIDATE:
-  **δ_cont(ρ, B) = 1 − ρ − binEntropy(ρ) / log₂ B**,  B = q·ε* (≈ n).
-  Its location is PROVEN strictly inside the window from BOTH sides:
-  `prizeDeltaStar_lt_capacity` (< 1−ρ) and `prizeDeltaStar_gt_johnson` (> 1−√ρ, given
-  `log₂B > H(ρ)/(√ρ−ρ)` — holds at every prize rate × budget {40,64,128}).
+  `epsMCA_le_iff_projective` identifies the operational error budget with this projective census,
+  and `mcaDeltaStar_eq_of_projective_jump` converts its first failure into an exact threshold.
+  The remaining open math is the projective incidence estimate itself, now naturally stated on
+  rank-two syndrome pencils rather than ordered row generators. -/
 
-  FINITE-LENGTH CORRECTION.  `epsMCA` depends only on `floor(δ*n)`, so, whenever the good set
-  is nonempty, the operational `mcaDeltaStar` is one of the `n+1` Hamming lattice points.  At an
-  interior jump it is the first bad point `(t+1)/n`, one rung above the maximal-good lattice
-  index `t`.  Therefore an unrounded entropy/asymptotic expression is not yet an exact finite-code
-  answer: it must be converted to the appropriate `ceil(n*δ_cont)/n`-type boundary and paired
-  with a proof identifying the adjacent good/bad cells.  The current `PrizePinConjecture` states
-  the unrounded equality and should be read as a provisional continuous candidate, not as the
-  faithful exact target.
+#check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
+#check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
+#check @ProximityGap.ProjectiveWorstCaseIncidence.worstCaseIncidenceBounded_iff_projective
+#check @ProximityGap.ProjectiveWorstCaseIncidence.epsMCA_le_iff_projective
+#check @ProximityGap.ProjectiveWorstCaseIncidence.mcaDeltaStar_eq_of_projective_jump
+#check
+  ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 
-  DERIVATION.  Worst-case list `= q·ε_mca` on the dyadic subgroup `μ_s` is the maximal
-  subset-sum fibre `N_fib(s,r) = C(s/2 − r%2, ⌊r/2⌋)` (`TwoPowerFibreValue`; Lam–Leung
-  antipodal structure).  Constant rate ⟹ ladder `r ≈ ρs+2`, list `2^{(s/2)H(ρ)}`, exceeding
-  `B` exactly when `s > 2log₂B/H(ρ)`, i.e. `δ` drops below `prizeDeltaStar`.
+/-! ════════════════════════════════════════════════════════════════════════════
+    ║   §Y.  THE HISTORICAL ENTROPY CANDIDATE IS REFUTED FINITELY                ║
+    ════════════════════════════════════════════════════════════════════════════
 
-  THE PROVEN SINGLE-RUNG CEILING:  `prizeDeltaStar_ceiling` — `δ* ≤ 1−r/2^μ`
-  via the explicit ladder (`kkh26_epsMCA_lower_bound_of_not_dvd`) under the MILD DECIDABLE
-  hypothesis `q ∤ (collision resultants)` — NOT the `s^{s/2}<q` transfer wall, NO
-  `CensusDomination`, no incomputable lemma.  The theorem itself is parameterized by one
-  `(μ,r)` rung; an optimized, exact-rate, rounded equality with `δ_cont` is not proved there.
+  `PrizePinConjecture` is false as stated.  It passes the polynomial degree ratio `k/n` to
+  `prizeDeltaStar`, although `evalCode g n k` has dimension `k+1`.  It also mixes Mathlib's
+  natural-log `Real.binEntropy` with the base-two denominator `Real.logb 2 B`.
 
-  THE REMAINING CORE, STATED CLOSED:  `PrizeFloorStatement` — worst-case list `≤ B` below
-  the corresponding rounded boundary (= the Shaw budget `‖𝒮‖ ≤ B` = BCHKS25 Conj 1.12).
-  The ladder ceiling
-  LOWER-BOUNDS the achievable Shaw budget by `N_fib − average`, so the Shaw conjecture's
-  budget is expected to sit near the entropy crossover.  Pinning the exact finite answer still
-  requires the adjacent-cell conversion above; any list-decoding conclusion additionally needs a
-  separately checked bridge with its actual radius and code parameters. -/
+  At the unconditional dimension-one pin over `F_12289`,
 
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar              -- continuous crossover candidate
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar_lt_capacity  -- PROVEN: below capacity
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar_gt_johnson   -- PROVEN: above Johnson (in-window)
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar_ceiling      -- PROVEN: unconditional ladder ceiling
-#check @ProximityGap.PrizeEntropy.PrizeFloorStatement         -- the single closed open core
-#check @ProximityGap.PrizeEntropy.PrizePinConjecture          -- provisional unrounded equality
+  `mcaDeltaStar (evalCode 4043 8 0) (14/12289) = 3/4`.
+
+  The historical degree-rate side is `1`; the same mixed-base expression at the actual rate
+  `1/8` is strictly ABOVE `3/4`; and the obvious base-consistent repair is strictly BELOW `3/4`.
+  All three statements are machine-checked in `PrizeEntropyPinRefuted`.  Therefore none is a
+  generic finite exact formula.  These counterexamples do not refute a suitably corrected
+  asymptotic law or any of the four production instances.
+
+  The independent discrete ladder theorem `prizeDeltaStar_ceiling` remains valid: it proves
+  `δ* ≤ 1-r/2^μ` at a certified rung under the stated collision-resultant hypothesis.  It does
+  not prove equality with either entropy expression.  The production worst-case incidence/list
+  upper bound remains the open core. -/
+
+#check @ProximityGap.PrizeEntropy.prizeDeltaStar
+#check @ProximityGap.PrizeEntropy.prizeDeltaStar_ceiling
+#check @ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED
+#check @ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
+#check @ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
 /-! ════════════════════════════════════════════════════════════════════════════
     ║   §D   THE DEMAND-SIDE LANE (#389) — CensusDomination #bad-scalar count    ║
     ════════════════════════════════════════════════════════════════════════════

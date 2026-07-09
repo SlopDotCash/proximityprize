@@ -117,7 +117,8 @@ theorem epsMCACurve_mono (C : Set (ι → A)) (L : ℕ) {δ δ' : ℝ≥0} (h : 
   refine iSup_mono fun u => ?_
   refine Pr_le_Pr_of_implies _ _ _ fun γ h_event => ?_
   obtain ⟨S, hS_card, hline, hstack⟩ := h_event
-  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1) (zero_le)) hS_card,
+  exact ⟨S, le_trans (mul_le_mul_of_nonneg_right (tsub_le_tsub_left h 1)
+      (by positivity : (0 : ℝ≥0) ≤ Fintype.card ι)) hS_card,
     hline, hstack⟩
 
 /-- The `mcaEventCurve` always entails that the curve `∑ j, γ^j • u j` is `δ`-close to `C`

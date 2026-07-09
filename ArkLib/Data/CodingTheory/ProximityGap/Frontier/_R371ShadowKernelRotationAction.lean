@@ -45,28 +45,36 @@ def rotZ (hm : 0 < m) (z : Fin m → ℤ) : Fin m → ℤ :=
   fun j => if (j : ℕ) = 0 then -z ⟨m - 1, by omega⟩
     else z ⟨(j : ℕ) - 1, by have := j.isLt; omega⟩
 
-/-- The inverse rotation. -/
+/-- The inverse rotation (total via `% m`; on the non-wrap branch `(j+1) % m = j+1`). -/
 def rotZinv (hm : 0 < m) (z : Fin m → ℤ) : Fin m → ℤ :=
   fun j => if (j : ℕ) = m - 1 then -z ⟨0, hm⟩
-    else z ⟨(j : ℕ) + 1, by have := j.isLt; omega⟩
+    else z ⟨((j : ℕ) + 1) % m, Nat.mod_lt _ hm⟩
 
 theorem rotZinv_rotZ (hm : 0 < m) (z : Fin m → ℤ) : rotZinv m hm (rotZ m hm z) = z := by
   funext j
-  unfold rotZ rotZinv
+  simp only [rotZ, rotZinv]
   by_cases h : (j : ℕ) = m - 1
-  · rw [if_pos h, if_pos rfl, neg_neg]
+  · rw [if_pos h]
+    simp only [if_true, neg_neg]
     exact congrArg z (Fin.ext (by simp [h]))
-  · rw [if_neg h, if_neg (by simp)]
-    exact congrArg z (Fin.ext (by simp))
+  · have hlt := j.isLt
+    have hmod : ((j : ℕ) + 1) % m = (j : ℕ) + 1 := Nat.mod_eq_of_lt (by omega)
+    rw [if_neg h, if_neg (by omega)]
+    exact congrArg z (Fin.ext (by simp [hmod]))
 
 theorem rotZ_rotZinv (hm : 0 < m) (z : Fin m → ℤ) : rotZ m hm (rotZinv m hm z) = z := by
   funext j
-  unfold rotZ rotZinv
+  simp only [rotZ, rotZinv]
   by_cases h : (j : ℕ) = 0
-  · rw [if_pos h, if_pos rfl, neg_neg]
+  · rw [if_pos h]
+    simp only [if_true, neg_neg]
     exact congrArg z (Fin.ext (by simp [h]))
-  · rw [if_neg h, if_neg (by have := j.isLt; omega)]
-    exact congrArg z (Fin.ext (by have := j.isLt; simp; omega))
+  · have hlt := j.isLt
+    rw [if_neg h, if_neg (by omega)]
+    have hmod : ((j : ℕ) - 1 + 1) % m = (j : ℕ) := by
+      have : (j : ℕ) - 1 + 1 = (j : ℕ) := by omega
+      rw [this, Nat.mod_eq_of_lt hlt]
+    exact congrArg z (Fin.ext (by simp [hmod]))
 
 theorem rotZ_bijective (hm : 0 < m) : Function.Bijective (rotZ m hm) :=
   Function.bijective_iff_has_inverse.mpr
@@ -75,85 +83,48 @@ theorem rotZ_bijective (hm : 0 < m) : Function.Bijective (rotZ m hm) :=
 /-- **Rotation twists the evaluation by `g`** (using `g^m = −1`). -/
 theorem evalVec_rotZ (g : F) (hm : 0 < m) (hg : g ^ m = -1) (z : Fin m → ℤ) :
     evalVec g m (rotZ m hm z) = g * evalVec g m z := by
-  unfold evalVec rotZ
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+  unfold evalVec
   rw [Finset.mul_sum]
-  rw [show (Finset.univ : Finset (Fin m))
-      = insert (⟨0, hm⟩ : Fin m) (Finset.univ.erase ⟨0, hm⟩) by
-    rw [Finset.insert_erase (Finset.mem_univ _)]]
-  rw [Finset.sum_insert (Finset.notMem_erase _ _)]
-  conv_rhs =>
-    rw [show (Finset.univ : Finset (Fin m))
-        = insert (⟨m - 1, by omega⟩ : Fin m) (Finset.univ.erase ⟨m - 1, by omega⟩) by
-      rw [Finset.insert_erase (Finset.mem_univ _)]]
-    rw [Finset.sum_insert (Finset.notMem_erase _ _)]
-  refine congrArg₂ (· + ·) ?_ ?_
-  · -- head terms: (−z_{m−1}) • g^0 = g · (z_{m−1} • g^{m−1})
-    rw [if_pos rfl]
+  -- reindex the LHS by the rotation equivalence `finRotate`
+  rw [← Equiv.sum_comp (finRotate (m' + 1))
+    (fun j => (rotZ (m' + 1) hm z j : ℤ) • g ^ (j : ℕ))]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  by_cases h : j = Fin.last m'
+  · -- wrap term: `σ(last) = 0`, and `−z_{m'} • g^0 = g · (z_{m'} • g^{m'})`
+    subst h
+    rw [finRotate_last]
+    have hz0 : rotZ (m' + 1) hm z 0 = -z ⟨m', by omega⟩ := by
+      unfold rotZ
+      simp only [Fin.val_zero, eq_self_iff_true, if_true]
+      exact congrArg (fun x => -z x) (Fin.ext (by simp))
+    rw [hz0]
     simp only [zsmul_eq_mul]
     push_cast
-    have hgm : g * g ^ (m - 1) = g ^ m := by
-      rw [← pow_succ']
-      congr 1
+    simp only [Fin.val_zero, Fin.val_last, pow_zero, mul_one]
+    have hgm : g * g ^ m' = g ^ (m' + 1) := by rw [← pow_succ']
+    have hzz : z (Fin.last m') = z ⟨m', by omega⟩ := rfl
+    rw [hzz]
+    calc (-((z ⟨m', by omega⟩ : ℤ) : F))
+        = ((z ⟨m', by omega⟩ : ℤ) : F) * -1 := by ring
+      _ = ((z ⟨m', by omega⟩ : ℤ) : F) * (g * g ^ m') := by rw [hgm, hg]
+      _ = g * (((z ⟨m', by omega⟩ : ℤ) : F) * g ^ m') := by ring
+  · -- generic term: `σ(j) = j+1`, `(rotZ z)_{j+1} = z_j`, `g^{j+1} = g·g^j`
+    have hcoe : ((finRotate (m' + 1) j : Fin (m' + 1)) : ℕ) = (j : ℕ) + 1 := by
+      rw [coe_finRotate_of_ne_last h]
+    have hzj : rotZ (m' + 1) hm z (finRotate (m' + 1) j) = z j := by
+      unfold rotZ
+      rw [if_neg (by rw [hcoe]; omega)]
+      refine congrArg z (Fin.ext ?_)
+      show ((finRotate (m' + 1) j : Fin (m' + 1)) : ℕ) - 1 = (j : ℕ)
+      rw [hcoe]
       omega
-    calc (-(z ⟨m - 1, by omega⟩ : ℤ) : F) * g ^ ((⟨0, hm⟩ : Fin m) : ℕ)
-        = -((z ⟨m - 1, by omega⟩ : ℤ) : F) := by norm_num
-      _ = ((z ⟨m - 1, by omega⟩ : ℤ) : F) * -1 := by ring
-      _ = ((z ⟨m - 1, by omega⟩ : ℤ) : F) * (g * g ^ (m - 1)) := by rw [hgm, hg]
-      _ = g * (((z ⟨m - 1, by omega⟩ : ℤ) : F)
-            * g ^ ((⟨m - 1, by omega⟩ : Fin m) : ℕ)) := by ring
-  · -- tails: reindex erase-0 ↔ erase-(m−1) by j ↦ j−1
-    refine Finset.sum_nbij'
-      (i := fun j => (⟨(j : ℕ) - 1, by have := j.isLt; omega⟩ : Fin m))
-      (j := fun j => (⟨((j : ℕ) + 1) % m, Nat.mod_lt _ hm⟩ : Fin m)) ?_ ?_ ?_ ?_ ?_
-    · intro j hj
-      rw [Finset.mem_erase] at hj ⊢
-      have hj0 : (j : ℕ) ≠ 0 := fun h0 => hj.1 (Fin.ext (by simpa using h0))
-      refine ⟨fun hc => ?_, Finset.mem_univ _⟩
-      have : (j : ℕ) - 1 = m - 1 := by
-        simpa using congrArg (fun x : Fin m => (x : ℕ)) hc
-      have := j.isLt
-      omega
-    · intro j hj
-      rw [Finset.mem_erase] at hj ⊢
-      have hjm : (j : ℕ) ≠ m - 1 := fun h0 => hj.1 (Fin.ext (by simpa using h0))
-      have hlt := j.isLt
-      have hmod : ((j : ℕ) + 1) % m = (j : ℕ) + 1 := Nat.mod_eq_of_lt (by omega)
-      refine ⟨fun hc => ?_, Finset.mem_univ _⟩
-      have : ((j : ℕ) + 1) % m = 0 := by
-        simpa using congrArg (fun x : Fin m => (x : ℕ)) hc
-      omega
-    · intro j hj
-      rw [Finset.mem_erase] at hj
-      have hj0 : (j : ℕ) ≠ 0 := fun h0 => hj.1 (Fin.ext (by simpa using h0))
-      have hlt := j.isLt
-      apply Fin.ext
-      simp only []
-      have : ((j : ℕ) - 1 + 1) % m = (j : ℕ) % m := by
-        congr 1
-        omega
-      rw [this, Nat.mod_eq_of_lt hlt]
-    · intro j hj
-      rw [Finset.mem_erase] at hj
-      have hjm : (j : ℕ) ≠ m - 1 := fun h0 => hj.1 (Fin.ext (by simpa using h0))
-      have hlt := j.isLt
-      have hmod : ((j : ℕ) + 1) % m = (j : ℕ) + 1 := Nat.mod_eq_of_lt (by omega)
-      apply Fin.ext
-      simp [hmod]
-    · intro j hj
-      rw [Finset.mem_erase] at hj
-      have hj0 : (j : ℕ) ≠ 0 := fun h0 => hj.1 (Fin.ext (by simpa using h0))
-      rw [if_neg hj0]
-      simp only [zsmul_eq_mul]
-      push_cast
-      have hlt := j.isLt
-      have hexp : g * g ^ ((j : ℕ) - 1) = g ^ (j : ℕ) := by
-        rw [← pow_succ']
-        congr 1
-        omega
-      calc ((z ⟨(j : ℕ) - 1, by omega⟩ : ℤ) : F) * g ^ (j : ℕ)
-          = ((z ⟨(j : ℕ) - 1, by omega⟩ : ℤ) : F) * (g * g ^ ((j : ℕ) - 1)) := by
-            rw [hexp]
-        _ = g * (((z ⟨(j : ℕ) - 1, by omega⟩ : ℤ) : F) * g ^ ((j : ℕ) - 1)) := by ring
+    rw [hzj]
+    simp only [zsmul_eq_mul]
+    rw [hcoe]
+    have hexp : g ^ ((j : ℕ) + 1) = g * g ^ (j : ℕ) := by rw [← pow_succ']
+    rw [hexp]
+    ring
 
 /-- **Kernel stability**: for `g ≠ 0`, rotation preserves vanishing of the evaluation. -/
 theorem rotZ_eval_zero_iff (g : F) (hm : 0 < m) (hg : g ^ m = -1) (hg0 : g ≠ 0)
@@ -168,9 +139,9 @@ theorem rotZ_ne_zero_iff (hm : 0 < m) (z : Fin m → ℤ) :
   constructor
   · intro h hz
     apply h
+    subst hz
     funext j
     unfold rotZ
-    subst hz
     by_cases hj : (j : ℕ) = 0 <;> simp [hj]
   · intro hz h
     apply hz
