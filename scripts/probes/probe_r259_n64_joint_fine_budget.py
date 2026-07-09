@@ -47,6 +47,7 @@ class Row:
     envelope: float
     coarse_weight_mean: float
     c_tail: float
+    c_weighted_tail: float
     theta_tail: float
     count_tail: int
     fine_max: float
@@ -65,6 +66,23 @@ def fine_tail_constant(fine_desc: np.ndarray, tau: float, trim: int) -> tuple[fl
         if theta <= tau:
             break
         c = (idx / m) * math.exp(theta / 2.0)
+        if c > best[0]:
+            best = (c, theta, idx)
+    return best
+
+
+def weighted_fine_tail_constant(
+    fine: np.ndarray, weights: np.ndarray, order: np.ndarray, tau: float, trim: int
+) -> tuple[float, float, int]:
+    m = len(fine)
+    best = (0.0, tau, 0)
+    running = 0.0
+    for idx, j in enumerate(order[min(trim, m) :], start=1):
+        theta = float(fine[j])
+        if theta <= tau:
+            break
+        running += float(weights[j])
+        c = (running / m) * math.exp(theta / 2.0)
         if c > best[0]:
             best = (c, theta, idx)
     return best
@@ -91,9 +109,13 @@ def row_for_m(m: int, chunk: int, trim: int, tau: float, step: float, rate: floa
     residual_idx = order[min(trim, len(order)) :]
     fine_desc = fine[order]
     c_tail, theta_tail, count_tail = fine_tail_constant(fine_desc, tau, trim)
+    weights = np.exp(lifted * rate)
+    c_weighted_tail, theta_weighted, count_weighted = weighted_fine_tail_constant(
+        fine, weights, order, tau, trim
+    )
 
     paid = float(np.exp((lifted[paid_idx] + fine[paid_idx]) * rate).sum() / len(fine)) if len(paid_idx) else 0.0
-    coarse_weight_mean = float(np.exp(lifted[residual_idx] * rate).mean()) if len(residual_idx) else 0.0
+    coarse_weight_mean = float(weights[residual_idx].mean()) if len(residual_idx) else 0.0
     cutoff = max(0.0, float(fine[residual_idx].max()) if len(residual_idx) else 0.0)
     envelope = coarse_weight_mean * residual_envelope_budget(step, cutoff, rate, tau, c_tail)
     budget = paid + envelope
@@ -108,8 +130,9 @@ def row_for_m(m: int, chunk: int, trim: int, tau: float, step: float, rate: floa
         envelope=envelope,
         coarse_weight_mean=coarse_weight_mean,
         c_tail=c_tail,
-        theta_tail=theta_tail,
-        count_tail=count_tail,
+        c_weighted_tail=c_weighted_tail,
+        theta_tail=theta_weighted if c_weighted_tail >= c_tail else theta_tail,
+        count_tail=count_weighted if c_weighted_tail >= c_tail else count_tail,
         fine_max=float(fine_desc[0]),
     )
 
@@ -124,6 +147,11 @@ def main() -> None:
     parser.add_argument("--step", type=float, default=0.03125)
     parser.add_argument("--rate", type=float, default=0.25)
     parser.add_argument("--max-exact-mgf", type=float, default=None)
+    parser.add_argument(
+        "--sort",
+        choices=["budget", "c_weighted_tail", "c_tail", "exact"],
+        default="budget",
+    )
     parser.add_argument("--top", type=int, default=30)
     args = parser.parse_args()
 
@@ -136,20 +164,27 @@ def main() -> None:
         row for row in rows_all
         if args.max_exact_mgf is None or row.exact_full_mgf <= args.max_exact_mgf
     ]
-    rows.sort(key=lambda row: row.budget, reverse=True)
+    sort_key = {
+        "budget": lambda row: row.budget,
+        "c_weighted_tail": lambda row: row.c_weighted_tail,
+        "c_tail": lambda row: row.c_tail,
+        "exact": lambda row: row.exact_full_mgf,
+    }[args.sort]
+    rows.sort(key=sort_key, reverse=True)
 
     print(
         f"R259 n=64 joint fine budget cases={len(rows)} filtered_from={len(rows_all)} "
         f"M=[{args.min_index},{args.max_index}] trim={args.trim} tau={args.tau} "
-        f"step={args.step} max_exact_mgf={args.max_exact_mgf}"
+        f"step={args.step} max_exact_mgf={args.max_exact_mgf} sort={args.sort}"
     )
-    print("budget  slack   exact   paid    env     Ew32    Ctail   theta  count fineMax M      p")
+    print("budget  slack   exact   paid    env     Ew32    Ctail   CWtail  theta  count fineMax M      p")
     print("-" * 112)
     for row in rows[: args.top]:
         print(
             f"{row.budget:<7.4f} {row.slack:<7.4f} {row.exact_full_mgf:<7.4f} "
             f"{row.paid:<7.4f} {row.envelope:<7.4f} {row.coarse_weight_mean:<7.4f} "
-            f"{row.c_tail:<7.4f} {row.theta_tail:<6.3f} {row.count_tail:<5d} "
+            f"{row.c_tail:<7.4f} {row.c_weighted_tail:<7.4f} "
+            f"{row.theta_tail:<6.3f} {row.count_tail:<5d} "
             f"{row.fine_max:<7.3f} {row.m:<6d} {row.p}"
         )
 
@@ -157,10 +192,16 @@ def main() -> None:
     feasible = [row for row in rows if row.budget <= 2.0 + 1e-12]
     print(f"feasible_rows={len(feasible)}")
     if rows:
-        worst = rows[0]
+        worst = max(rows, key=lambda row: row.budget)
+        worst_weighted = max(rows, key=lambda row: row.c_weighted_tail)
         print(
             f"worst_budget={worst.budget:.8f} slack={worst.slack:.8f} "
             f"M={worst.m} p={worst.p} exact={worst.exact_full_mgf:.8f}"
+        )
+        print(
+            f"worst_weighted_tail={worst_weighted.c_weighted_tail:.8f} "
+            f"M={worst_weighted.m} p={worst_weighted.p} "
+            f"budget={worst_weighted.budget:.8f}"
         )
 
 
