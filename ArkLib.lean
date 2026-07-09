@@ -2535,6 +2535,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R33LagVarianceBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R33QuadViaWeights
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadLambdaCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadWeilBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R350RateHalfEntropyLatticeMismatch
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35FullConvLagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35TransformRingHom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
