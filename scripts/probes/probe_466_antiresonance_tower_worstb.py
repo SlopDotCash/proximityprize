@@ -122,12 +122,30 @@ def primes_for(n, count, generic=True):
 
 
 CHUNK = 2048
+# Cap the full-coset scan to bound memory; if m exceeds this, sample cosets (sound
+# LOWER bound on M and worst-b, since we scan a subset of cosets). Prevents the
+# memory-exhaustion + int64-overflow failure mode on large high-2-adic primes.
+MAX_COSETS = 300000
+# int64 modular products overflow once p*p > 2^63; above this reduce the product in
+# Python arbitrary-precision int (via object dtype) before taking it mod p.
+INT64_SAFE_P = 3037000499  # floor(sqrt(2^63-1)); p <= this => p*p fits int64
 
 
-def worstb_and_a2q(n, p):
+def _mod_mul(a_vec, b_vec, p):
+    """(a_vec * b_vec) mod p, overflow-safe for any prime p (uses Python bigint when
+    p*p would overflow int64). a_vec, b_vec are int arrays with entries in [0, p)."""
+    if p <= INT64_SAFE_P:
+        return (a_vec.astype(np.int64) * b_vec.astype(np.int64)) % p
+    ao = a_vec.astype(object)
+    bo = b_vec.astype(object)
+    return (ao * bo) % p
+
+
+def worstb_and_a2q(n, p, rng=None):
     """At WORST-B only: |eta_{b*}| and the quarter-arc L2 energy A2q(C_{b*}),
     using the EXACT convention of the legacy probe (triangular-kernel arc energy /n).
-    Full |eta| scan over all cosets (cheap O(m n)), then A2q only at the argmax coset."""
+    Full |eta| scan over all cosets if m <= MAX_COSETS, else a sound sampled scan
+    (LOWER bound on M / worst-b). Modular products are overflow-safe via `_mod_mul`."""
     m = (p - 1) // n
     g = primitive_root(p)
     h = pow(g, m, p)
@@ -136,22 +154,37 @@ def worstb_and_a2q(n, p):
     for k in range(n):
         X[k] = x
         x = x * h % p
-    B = np.empty(m, dtype=np.int64)
-    b = 1
-    for j in range(m):
-        B[j] = b
-        b = b * g % p
-    abs_eta = np.empty(m)
-    for lo in range(0, m, CHUNK):
-        hi = min(lo + CHUNK, m)
-        E = (B[lo:hi, None] * X[None, :]) % p
-        z = np.exp(2j * np.pi * (E.astype(np.float64) / p)).sum(axis=1)
+    if m <= MAX_COSETS:
+        B = np.empty(m, dtype=np.int64)
+        b = 1
+        for j in range(m):
+            B[j] = b
+            b = b * g % p
+        sampled = False
+    else:
+        if rng is None:
+            rng = np.random.default_rng(4661122)
+        exps = rng.choice(m, size=MAX_COSETS, replace=False)
+        B = np.array([pow(g, int(e), p) for e in exps], dtype=np.int64)
+        sampled = True
+    mm = len(B)
+    abs_eta = np.empty(mm)
+    for lo in range(0, mm, CHUNK):
+        hi = min(lo + CHUNK, mm)
+        # broadcast product B[lo:hi] (col) * X (row), reduced mod p overflow-safely
+        Erow = _mod_mul(np.repeat(B[lo:hi, None], n, axis=1),
+                        np.repeat(X[None, :], hi - lo, axis=0), p)
+        z = np.exp(2j * np.pi * (Erow.astype(np.float64) / p)).sum(axis=1)
         abs_eta[lo:hi] = np.abs(z)
-    parseval_rel = abs(float((abs_eta ** 2).sum()) - (p - n)) / (p - n)
+    # Parseval check only meaningful on a FULL scan (subset sums do not sum to p-n)
+    if not sampled:
+        parseval_rel = abs(float((abs_eta ** 2).sum()) - (p - n)) / (p - n)
+    else:
+        parseval_rel = float("nan")
     jstar = int(np.argmax(abs_eta))
     M = float(abs_eta[jstar])
     bstar = int(B[jstar])
-    T = np.sort(((bstar * X) % p).astype(np.float64) / p)
+    T = np.sort((_mod_mul(np.full(n, bstar), X, p)).astype(np.float64) / p)
     D = np.abs(T[:, None] - T[None, :])
     D = np.minimum(D, 1.0 - D)
     iu = np.triu_indices(n, 1)
@@ -162,10 +195,10 @@ def worstb_and_a2q(n, p):
     logf = math.log(p / n)
     C = M / math.sqrt(n * logf)
     return dict(m=m, M=M, C=C, A2q=A2q, R=R, logf=logf, jstar=jstar,
-                parseval_rel=parseval_rel)
+                parseval_rel=parseval_rel, sampled=sampled)
 
 
-def tower(p, t_lo, t_hi):
+def tower(p, t_lo, t_hi, rng=None):
     rows = []
     prev = None
     for t in range(t_lo, t_hi + 1):
@@ -174,7 +207,7 @@ def tower(p, t_lo, t_hi):
             continue
         if n * n >= p:
             continue
-        r = worstb_and_a2q(n, p)
+        r = worstb_and_a2q(n, p, rng)
         ratio = (r["A2q"] / prev) if prev is not None else float("nan")
         rr = dict(t=t, n=n, a2_ratio_up=ratio)
         rr.update(r)
@@ -226,24 +259,23 @@ def main():
             sys.stdout.flush()
 
     print("\n[Q3] thin-dyadic tower: worst-b A2q* up mu_{2^t} (contraction < 2 = spectral gap?)")
+    # Moderate high-2-adic primes: every thin low level stays PROPER (p >= n^4) AND m and
+    # p*p stay within safe int64 / bounded-memory range (all < INT64_SAFE_P). The heavier
+    # levels auto-sample via MAX_COSETS (sound lower bound). This avoids the memory-
+    # exhaustion + int64-overflow that big multi-GHz tower primes would trigger.
+    tower_rng = np.random.default_rng(4661122)
     tower_primes = []
-    for cand in [3 * 2 ** 30 + 1, 15 * 2 ** 27 + 1, 13 * 2 ** 28 + 1, 2 ** 24 * 3 + 1]:
+    for cand in [40961, 65537, 786433, 5767169, 7340033, 23068673, 104857601, 167772161]:
         if is_prime(cand):
             tower_primes.append(cand)
-    if len(tower_primes) < 2:
-        c = 3 * 2 ** 30 + 1
-        while len(tower_primes) < 2:
-            if is_prime(c):
-                tower_primes.append(c)
-            c += 2 ** 20
     tower_ratios = []
-    for p in tower_primes[:3]:
+    for p in tower_primes:
         v2 = ((p - 1) & -(p - 1)).bit_length() - 1
         t_hi = min(v2 - 1, int(math.log2(p) / 4))
         t_lo = 3
         if t_hi < t_lo + 1:
             continue
-        rows = tower(p, t_lo, t_hi)
+        rows = tower(p, t_lo, t_hi, tower_rng)
         if len(rows) < 2:
             continue
         print(f"\n  p={p} (v2={v2}, thin tower t={t_lo}..{t_hi})")
