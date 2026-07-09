@@ -184,6 +184,33 @@ theorem card_l1Sphere_le_multichoose (m k : ℕ) :
       congrArg (fun n => Nat.multichoose n k)
         (by simp [Nat.mul_comm] : Fintype.card (Fin m × Fin 2) = 2 * m)
 
+/-- Clearing the stars-and-bars denominator leaves a single falling-factorial bound. -/
+theorem factorial_mul_card_l1Sphere_le_pow (m k : ℕ) :
+    k.factorial * (l1Sphere m k).card ≤ (2 * m + k - 1) ^ k := by
+  calc
+    k.factorial * (l1Sphere m k).card ≤ k.factorial * Nat.multichoose (2 * m) k :=
+      Nat.mul_le_mul_left _ (card_l1Sphere_le_multichoose m k)
+    _ = k.factorial * (2 * m + k - 1).choose k := by rw [Nat.multichoose_eq]
+    _ = (2 * m + k - 1).descFactorial k :=
+      (Nat.descFactorial_eq_factorial_mul_choose _ _).symm
+    _ ≤ (2 * m + k - 1) ^ k := Nat.descFactorial_le_pow _ _
+
+/-- **Wick-scale generator census.** After factorial normalization, an `L1` sphere of
+generators costs only `3^k`; its dimension exponent is absorbed by cancellation depth. -/
+theorem factorial_mul_card_l1Sphere_mul_pow_le
+    (m r s k : ℕ) (hm : 0 < m) (hk : k ≤ m + 1) (hsk : s + k ≤ r) :
+    k.factorial * (l1Sphere m k).card * m ^ s ≤ 3 ^ k * m ^ r := by
+  have hbase : 2 * m + k - 1 ≤ 3 * m := by omega
+  calc
+    k.factorial * (l1Sphere m k).card * m ^ s ≤
+        (2 * m + k - 1) ^ k * m ^ s :=
+      Nat.mul_le_mul_right _ (factorial_mul_card_l1Sphere_le_pow m k)
+    _ ≤ (3 * m) ^ k * m ^ s :=
+      Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hbase k)
+    _ = 3 ^ k * (m ^ s * m ^ k) := by ring
+    _ ≤ 3 ^ k * m ^ r :=
+      Nat.mul_le_mul_left _ (pow_cancellation m r s k hm hsk)
+
 end ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction
 
 /-! ## Axiom audit -/
@@ -197,3 +224,7 @@ end ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction
   ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.pow_cancellation
 #print axioms
   ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.card_l1Sphere_le_multichoose
+#print axioms
+  ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.factorial_mul_card_l1Sphere_le_pow
+#print axioms
+  ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.factorial_mul_card_l1Sphere_mul_pow_le

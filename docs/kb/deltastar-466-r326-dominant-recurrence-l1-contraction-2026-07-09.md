@@ -28,7 +28,20 @@ s + ||g||_1 <= r
 m^s * m^(||g||_1) <= m^r.
 ```
 
-All four exported results are axiom-clean.
+Integer vectors of mass `k` inject into multisets of `k` signed coordinates, yielding
+
+```text
+#{g : Z^m : ||g||_1 = k} <= multichoose(2m,k),
+k! * #{g : Z^m : ||g||_1 = k} <= (2m+k-1)^k.
+```
+
+Consequently, when `k <= m+1` and `s+k <= r`, the file proves the normalized Wick-scale bound
+
+```text
+k! * #{g : Z^m : ||g||_1 = k} * m^s <= 3^k * m^r.
+```
+
+All exported results are axiom-clean.
 
 ## Significance
 
@@ -36,7 +49,8 @@ R325's coordinate-box count has shape `K^m`, which is unusable when `m` is near 
 The `L1` contraction instead pairs a generator-count cost of order `m^k` with R322's
 endpoint weight `m^(r-k)`.  Their ambient-dimension exponents cancel exactly at `m^r`.
 
-This does not yet prove the full weighted census: one must count low-`L1` generators with
-their factorial weights and discharge the dyadic saturation quotient.  It identifies a
-route by which the dominant-binomial recurrence class can reach Wick scale without an
-exponential-in-`m` loss.
+The low-`L1` generator count and its factorial normalization are now discharged.  This does
+not yet prove the full weighted census: one must inject each relevant relation stratum into
+these generator spheres with controlled multiplicity and discharge the dyadic saturation
+quotient.  It identifies a route by which the dominant-binomial recurrence class can reach
+Wick scale without an exponential-in-`m` loss.

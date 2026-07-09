@@ -343,6 +343,60 @@ section FinalLens
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : Nat} [NeZero n]
 
+/-- The agreement-weighted mass of all ordered distinct secant pairs. -/
+noncomputable def offDiagSlopeMass (G : Finset F) (c : F -> Fin n -> F)
+    (u1 : Fin n -> F) : Nat :=
+  ∑ pair ∈ G.offDiag,
+    (slopeAgreeSet u1
+      (secantSlope pair.1 pair.2 (c pair.1) (c pair.2))).card
+
+/-- Grouping ordered pairs by slope and applying the fixed-slope affine-cluster cap
+bounds their total agreement mass by `|G|` times the weighted realized-slope mass. -/
+theorem offDiagSlopeMass_le_card_mul_weightedSlopeMass
+    (C : Submodule F (Fin n -> F)) (G : Finset F)
+    (c : F -> Fin n -> F) (S : F -> Finset (Fin n))
+    (u0 u1 : Fin n -> F) (a : Nat)
+    (hcode : ∀ gamma ∈ G, c gamma ∈ C)
+    (hsize : ∀ gamma ∈ G, a <= (S gamma).card)
+    (hagree : ∀ gamma ∈ G, ∀ i ∈ S gamma,
+      c gamma i = u0 i + gamma * u1 i)
+    (hno : ∀ gamma ∈ G,
+      ¬ pairJointAgreesOn (C : Set (Fin n -> F)) (S gamma) u0 u1) :
+    offDiagSlopeMass G c u1 <= G.card * weightedSlopeMass a G c u1 := by
+  classical
+  let slope : F × F -> (Fin n -> F) := fun pair =>
+    secantSlope pair.1 pair.2 (c pair.1) (c pair.2)
+  let weight : (Fin n -> F) -> Nat := fun b => (slopeAgreeSet u1 b).card
+  have hmaps : (G.offDiag : Set (F × F)).MapsTo slope (realizedSlopes G c) := by
+    intro pair hpair
+    exact Finset.mem_image_of_mem slope hpair
+  have hgroup : offDiagSlopeMass G c u1 =
+      ∑ b ∈ realizedSlopes G c, slopePairCount G c b * weight b := by
+    rw [offDiagSlopeMass]
+    change (∑ pair ∈ G.offDiag, weight (slope pair)) = _
+    rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+    apply Finset.sum_congr rfl
+    intro b hb
+    have hconst : ∀ pair ∈ G.offDiag.filter (fun pair => slope pair = b),
+        weight (slope pair) = weight b := by
+      intro pair hpair
+      exact congrArg weight (Finset.mem_filter.mp hpair).2
+    rw [Finset.sum_const_nat hconst]
+    rfl
+  rw [hgroup, weightedSlopeMass, Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro b hb
+  have hbC : b ∈ C := realizedSlopes_subset_code C G c hcode b hb
+  have hpair := slopePairCount_le_card_mul_cap_sub_one C G c S u0 u1 b a
+    hcode hsize hagree hno hbC
+  dsimp only [weight]
+  calc
+    slopePairCount G c b * (slopeAgreeSet u1 b).card <=
+        (G.card * (slopeClusterCap a u1 b - 1)) *
+          (slopeAgreeSet u1 b).card := Nat.mul_le_mul_right _ hpair
+    _ = G.card * ((slopeAgreeSet u1 b).card *
+          (slopeClusterCap a u1 b - 1)) := by ring
+
 /-- Reindex the abstract subtype off-diagonal mass by the underlying scalar finset. -/
 theorem offDiagInterMass_subtype_eq (G : Finset F) (S : F -> Finset (Fin n)) :
     offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) =
@@ -376,6 +430,94 @@ theorem offDiagInterMass_subtype_eq (G : Finset F) (S : F -> Finset (Fin n)) :
     _ = ∑ x ∈ G, ∑ y ∈ G.erase x, (S x ∩ S y).card :=
       Finset.sum_attach G (fun x : F => ∑ y ∈ G.erase x, (S x ∩ S y).card)
 
+/-- Nested erasure sums are ordered-off-diagonal pair sums. -/
+theorem sum_erase_pairs_eq_sum_offDiag (G : Finset F) (f : F × F -> Nat) :
+    (∑ x ∈ G, ∑ y ∈ G.erase x, f (x, y)) = ∑ pair ∈ G.offDiag, f pair := by
+  classical
+  have herase : ∀ x ∈ G, G.erase x = G.filter (fun y => x ≠ y) := by
+    intro x _
+    ext y
+    simp only [Finset.mem_erase, Finset.mem_filter]
+    constructor
+    · rintro ⟨hyx, hyG⟩
+      exact ⟨hyG, fun hxy => hyx hxy.symm⟩
+    · rintro ⟨hyG, hxy⟩
+      exact ⟨fun hyx => hxy hyx.symm, hyG⟩
+  have hoff : G.offDiag = (G ×ˢ G).filter (fun pair => pair.1 ≠ pair.2) := by
+    ext pair
+    simp only [Finset.mem_offDiag, Finset.mem_filter, Finset.mem_product]
+    constructor
+    · rintro ⟨h1, h2, hne⟩
+      exact ⟨⟨h1, h2⟩, hne⟩
+    · rintro ⟨⟨h1, h2⟩, hne⟩
+      exact ⟨h1, h2, hne⟩
+  simp_rw [herase]
+  rw [hoff]
+  simp only [Finset.sum_filter]
+  rw [Finset.sum_product']
+
+/-- Witness intersections are pointwise bounded by the agreement weight of their
+secant slope. -/
+theorem offDiagInterMass_subtype_le_offDiagSlopeMass
+    (C : Submodule F (Fin n -> F)) (G : Finset F)
+    (c : F -> Fin n -> F) (S : F -> Finset (Fin n))
+    (u0 u1 : Fin n -> F)
+    (hcode : ∀ gamma ∈ G, c gamma ∈ C)
+    (hagree : ∀ gamma ∈ G, ∀ i ∈ S gamma,
+      c gamma i = u0 i + gamma * u1 i) :
+    offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) <=
+      offDiagSlopeMass G c u1 := by
+  classical
+  rw [offDiagInterMass_subtype_eq,
+    sum_erase_pairs_eq_sum_offDiag, offDiagSlopeMass]
+  apply Finset.sum_le_sum
+  intro pair hpair
+  obtain ⟨hgamma, hgamma', hne⟩ := Finset.mem_offDiag.mp hpair
+  exact Finset.card_le_card
+    (witness_inter_subset_slopeAgreeSet C hne
+      (hcode pair.1 hgamma) (hcode pair.2 hgamma')
+      (hagree pair.1 hgamma) (hagree pair.2 hgamma'))
+
+/-- **Weighted secant-slope upper lens.**  A family of bad scalar witnesses satisfies
+
+`|G| * a^2 <= n^2 + n * weightedSlopeMass`.
+
+The only code-specific input still missing from this theorem is an upper bound on the
+weighted mass of the realized slope codewords. -/
+theorem badScalar_card_mul_sq_le_length_sq_add_weightedSlopeMass
+    (C : Submodule F (Fin n -> F)) (G : Finset F)
+    (c : F -> Fin n -> F) (S : F -> Finset (Fin n))
+    (u0 u1 : Fin n -> F) (a : Nat)
+    (hcode : ∀ gamma ∈ G, c gamma ∈ C)
+    (hsize : ∀ gamma ∈ G, a <= (S gamma).card)
+    (hagree : ∀ gamma ∈ G, ∀ i ∈ S gamma,
+      c gamma i = u0 i + gamma * u1 i)
+    (hno : ∀ gamma ∈ G,
+      ¬ pairJointAgreesOn (C : Set (Fin n -> F)) (S gamma) u0 u1) :
+    G.card * a ^ 2 <= n ^ 2 + n * weightedSlopeMass a G c u1 := by
+  classical
+  by_cases hG : G.Nonempty
+  · letI : Nonempty {x // x ∈ G} := ⟨⟨hG.choose, hG.choose_spec⟩⟩
+    have hsize' : ∀ gamma : {x // x ∈ G},
+        a <= (S gamma.1).card := fun gamma => hsize gamma.1 gamma.2
+    have hmass :
+        offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) <=
+          Fintype.card {x // x ∈ G} * weightedSlopeMass a G c u1 := by
+      calc
+        offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) <=
+            offDiagSlopeMass G c u1 :=
+          offDiagInterMass_subtype_le_offDiagSlopeMass C G c S u0 u1 hcode hagree
+        _ <= G.card * weightedSlopeMass a G c u1 :=
+          offDiagSlopeMass_le_card_mul_weightedSlopeMass C G c S u0 u1 a
+            hcode hsize hagree hno
+        _ = Fintype.card {x // x ∈ G} * weightedSlopeMass a G c u1 := by
+          simp
+    simpa using card_mul_sq_le_length_sq_add_weightedMass
+      (fun gamma : {x // x ∈ G} => S gamma.1) a
+      (weightedSlopeMass a G c u1) hsize' hmass
+  · obtain rfl : G = ∅ := Finset.not_nonempty_iff_eq_empty.mp hG
+    simp
+
 end FinalLens
 
 end ProximityGap.Frontier.WeightedSlopeMassUpperLens
@@ -383,3 +525,6 @@ end ProximityGap.Frontier.WeightedSlopeMassUpperLens
 #print axioms ProximityGap.Frontier.WeightedSlopeMassUpperLens.card_mul_sq_le_length_sq_add_weightedMass
 #print axioms ProximityGap.Frontier.WeightedSlopeMassUpperLens.secantSlope_eq_iff_affineIntercept_eq
 #print axioms ProximityGap.Frontier.WeightedSlopeMassUpperLens.witness_inter_subset_slopeAgreeSet
+#print axioms ProximityGap.Frontier.WeightedSlopeMassUpperLens.slopePairCount_le_card_mul_cap_sub_one
+#print axioms ProximityGap.Frontier.WeightedSlopeMassUpperLens.offDiagSlopeMass_le_card_mul_weightedSlopeMass
+#print axioms ProximityGap.Frontier.WeightedSlopeMassUpperLens.badScalar_card_mul_sq_le_length_sq_add_weightedSlopeMass

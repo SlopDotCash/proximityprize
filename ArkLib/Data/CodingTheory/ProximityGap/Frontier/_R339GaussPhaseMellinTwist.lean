@@ -146,7 +146,25 @@ theorem norm_eta_le_of_papr {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 <
         rw [norm_neg, norm_one]
         exact add_le_add le_rfl (hpapr χ hord ψ hψ b hb)
 
+/-! ## The moment→sup skeleton (Markov + union bound over frequencies) -/
+
+/-- **Moment-to-sup**: if the depth-`k` moment sum of a finite family is at most `B^k`,
+every member is at most `B`. This is the union-bound step that converts a Wick-type
+moment bound at depth `k ≈ log t` into the PAPR sup bound: instantiate `f` with the
+Mellin sum of the Gauss-phase vector, `s` with the nonzero frequencies, and
+`B = A·√(q·t·log t)`. The remaining open content of `GaussPhasePAPRBound` is then
+EXACTLY the DC-subtracted moment bound of dossier face 3 — nothing else. -/
+theorem papr_of_momentSum {α : Type*} {s : Finset α} (f : α → ℂ) {k : ℕ} (hk : 0 < k)
+    {B : ℝ} (hB : 0 ≤ B) (hmom : ∑ b ∈ s, ‖f b‖ ^ k ≤ B ^ k) :
+    ∀ b ∈ s, ‖f b‖ ≤ B := by
+  intro b hb
+  have hsingle : ‖f b‖ ^ k ≤ ∑ b' ∈ s, ‖f b'‖ ^ k :=
+    Finset.single_le_sum (fun b' _ => pow_nonneg (norm_nonneg _) k) hb
+  have hle : ‖f b‖ ^ k ≤ B ^ k := hsingle.trans hmom
+  exact le_of_pow_le_pow_left₀ hk.ne' hB hle
+
 #print axioms gaussSum_mulShift_twist
+#print axioms papr_of_momentSum
 #print axioms mellin_identity
 #print axioms norm_eta_le_of_papr
 

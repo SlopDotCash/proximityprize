@@ -32,7 +32,7 @@ along. The canonical work is NOT here; locate declarations by name (`git grep -i
   all-seeds-close (the MCA spread).
 * `ProximityGap/MCACurveEvent.lean` — the curve MCA error `mcaEventCurve` / `epsMCACurve`
   (the prize-relevant `ε_mca` object), with `epsMCACurve_two_eq_epsMCA` (L=2 ↦ affine line).
-* `Frontier/WF407_B2-curve.lean` — **the seam between the two**: codeword stacks are MCA-clean
+* `Frontier/WF407_B2Curve.lean` — **the seam between the two**: codeword stacks are MCA-clean
   (`mcaEventCurve_false_of_rows_mem`, `epsMCACurve_term_codewordStack_eq_zero`), the negation
   characterization (`not_mcaEventCurve_iff_stackAgrees`), and the curve-decodability-facing
   sufficient condition (`not_mcaEventCurve_of_full_stackAgrees`). All axiom-clean.

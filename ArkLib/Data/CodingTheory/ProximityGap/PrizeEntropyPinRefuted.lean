@@ -28,6 +28,13 @@ The left side is the known exact threshold of the same code, while `1/8` and `14
 actual rate and list budget.  Thus the actual-rate equality is also false at this finite
 instance.  This does not determine the four production prize instances or refute a suitably
 qualified asymptotic statement.
+
+There is also a logarithm-base mismatch in the proposed expression: Mathlib's
+`Real.binEntropy` uses natural logarithms, whereas the denominator uses `Real.logb 2`.
+The obvious base-consistent variant divides the entropy by `log 2` first.  A second exact
+certificate proves that this repaired value is *below* `3/4`, so correcting both the rate and
+the logarithm units still does not give the finite operational pin.  This only rules out that
+specific repair.
 -/
 
 set_option autoImplicit false
@@ -113,6 +120,56 @@ theorem actualRateEntropyPin_degreeZero_F12289_REFUTED :
   norm_num
   exact ne_of_lt prizeDeltaStar_one_eighth_fourteen_gt_three_fourths
 
+/-! ## The base-consistent repair is also false -/
+
+/-- The entropy candidate after expressing Mathlib's natural-log binary entropy in bits. -/
+noncomputable def prizeDeltaStarBits (rho B : ℝ) : ℝ :=
+  1 - rho - (Real.binEntropy rho / Real.log 2) / Real.logb 2 B
+
+/-- An exact lower certificate for the entropy at rate `1/8`, after clearing the integer
+budget.  The underlying rational inequality is `14 < 2^24 / 7^7`. -/
+theorem log_fourteen_lt_eight_mul_binEntropy_one_eighth :
+    Real.log 14 < 8 * Real.binEntropy (1 / 8 : ℝ) := by
+  have hratio : (14 : ℝ) < (2 : ℝ) ^ 24 / (7 : ℝ) ^ 7 := by norm_num
+  have hlog : Real.log 14 < Real.log ((2 : ℝ) ^ 24 / (7 : ℝ) ^ 7) := by
+    exact (Real.log_lt_log_iff (by norm_num) (by positivity)).2 hratio
+  rw [Real.log_div (by positivity) (by positivity), Real.log_pow, Real.log_pow] at hlog
+  rw [binEntropy_one_eighth_exact]
+  have hlog8 : Real.log (8 : ℝ) = 3 * Real.log 2 := by
+    rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]
+    norm_num
+  rw [Real.log_div (by norm_num) (by norm_num), hlog8]
+  ring_nf at hlog ⊢
+  exact hlog
+
+/-- In the base-consistent candidate, the entropy penalty is strictly greater than `1/8`. -/
+theorem one_eighth_lt_bits_entropy_ratio_fourteen :
+    (1 / 8 : ℝ) <
+      (Real.binEntropy (1 / 8 : ℝ) / Real.log 2) / Real.logb 2 14 := by
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hlog14 : 0 < Real.log 14 := Real.log_pos (by norm_num)
+  have hmain := log_fourteen_lt_eight_mul_binEntropy_one_eighth
+  rw [Real.logb]
+  field_simp
+  nlinarith
+
+/-- **The base-consistent entropy value is strictly below the known exact pin.** -/
+theorem prizeDeltaStarBits_one_eighth_fourteen_lt_three_fourths :
+    prizeDeltaStarBits (1 / 8 : ℝ) 14 < 3 / 4 := by
+  have hratio := one_eighth_lt_bits_entropy_ratio_fourteen
+  unfold prizeDeltaStarBits
+  norm_num
+  linarith
+
+/-- The obvious logarithm-base repair still misses the dimension-one operational pin. -/
+theorem actualRateBitsEntropyPin_degreeZero_F12289_REFUTED :
+    (mcaDeltaStar (F := ZMod 12289) (A := ZMod 12289)
+        (evalCode (4043 : ZMod 12289) 8 0) ((14 : ℝ≥0∞) / (12289 : ℝ≥0∞)) : ℝ)
+      ≠ prizeDeltaStarBits (1 / 8 : ℝ) 14 := by
+  rw [deltaStar_pin_F12289]
+  norm_num
+  exact ne_of_gt prizeDeltaStarBits_one_eighth_fourteen_lt_three_fourths
+
 /-- **Machine-checked counterexample to `PrizePinConjecture` as stated.**
 
 The degree-zero code has actual dimension one and rate `1/8`, but the conjecture passes the
@@ -137,4 +194,8 @@ end ProximityGap.PrizeEntropy
 #print axioms ProximityGap.PrizeEntropy.seven_halves_lt_logb_two_fourteen
 #print axioms ProximityGap.PrizeEntropy.prizeDeltaStar_one_eighth_fourteen_gt_three_fourths
 #print axioms ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
+#print axioms ProximityGap.PrizeEntropy.log_fourteen_lt_eight_mul_binEntropy_one_eighth
+#print axioms ProximityGap.PrizeEntropy.one_eighth_lt_bits_entropy_ratio_fourteen
+#print axioms ProximityGap.PrizeEntropy.prizeDeltaStarBits_one_eighth_fourteen_lt_three_fourths
+#print axioms ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
 #print axioms ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED

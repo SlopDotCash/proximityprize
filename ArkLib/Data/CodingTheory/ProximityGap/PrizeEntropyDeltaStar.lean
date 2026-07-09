@@ -15,7 +15,10 @@ import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 > `k + 1`, but the right-hand side uses the stale rate `k / n`.  The degree-zero
 > counterexample is machine-checked in `PrizeEntropyPinRefuted`.  That file also proves
 > that the naive actual-rate repair is false at the same finite instance:
-> `3/4 < prizeDeltaStar (1/8) 14`.  The four production prize instances remain open.
+> `3/4 < prizeDeltaStar (1/8) 14`.  Moreover, `Real.binEntropy` uses natural logarithms
+> while the denominator below uses `logb 2`; the obvious base-consistent actual-rate repair
+> is also false there, now in the opposite direction.  The four production prize instances
+> remain open.
 
 This file states a **closed-form candidate answer** to the Proximity Prize
 (proximityprize.org, ABF26) for explicit constant-rate smooth-domain Reed–Solomon codes,
@@ -24,8 +27,10 @@ together with the **rigorous ceiling half** (an unconditional in-window upper bo
 
 ## The closed form
 
-For rate `ρ = k/n`, list budget `B = q·ε*` (`≈ n` in the prize regime), define
-`prizeDeltaStar ρ B := 1 − ρ − binEntropy ρ / log₂ B`.  It lies strictly inside the prize
+For rate `ρ = k/n`, list budget `B = q·ε*` (`≈ n` in the prize regime), the historical
+Lean candidate defines `prizeDeltaStar ρ B := 1 − ρ − binEntropy ρ / log₂ B`.  Mathlib's
+`binEntropy` is measured with natural logarithms, so this definition mixes entropy and
+denominator units.  It lies strictly inside the prize
 window `(1 − √ρ, 1 − ρ)` at every prize rate `ρ ∈ {1/2,1/4,1/8,1/16}` and budget
 `log₂ B ∈ {40,64,128}` (numerically verified, `scripts/probes/probe_entropy_ceiling.py`).
 
@@ -38,7 +43,9 @@ The explicit ladder family `w = x^{rm}+λx^{(r−1)m}` on the dyadic subgroup `�
 structure).  At constant rate `k = ρn` the construction forces `r ≈ ρs+2`, radius
 `δ = 1 − r/s = 1 − ρ − 2/s`, list `C(s/2, ρ·s/2) = 2^{(s/2)·H(ρ)}`.  This exceeds `B` —
 making `δ` BAD — exactly when `s > 2 log₂ B / H(ρ)`, i.e. `δ` drops below
-`1 − ρ − H(ρ)/log₂ B`.  So **`δ* ≤ prizeDeltaStar ρ B`** unconditionally (the ladder is an
+`1 − ρ − H(ρ)/log₂ B`.  Thus the derivation uses base-two entropy; the Lean definition below
+does not perform that conversion.  So **`δ* ≤ prizeDeltaStar ρ B`** was the proposed ceiling
+(the ladder is an
 explicit bad family).  The conjecture is that this ceiling is **tight** — equivalently,
 that no word beats the ladder/`N_fib` count in the worst case (the worst-case list upper
 bound, the one open wall).
@@ -56,8 +63,9 @@ transfer wall.  Feeding it into `mcaDeltaStar_le_of_bad` gives the rigorous ceil
 The intended matching lower bound is still the worst-case list bound for explicit smooth
 RS above Johnson.  The historical `PrizeFloorStatement` and `PrizePinConjecture` definitions
 below use the degree ratio `k / n`.  Replacing it by `(k + 1) / n` repairs that parameter
-but does not make the generic finite equality true.  No exact entropy pin for a production
-prize instance is proved here.
+but does not make the generic finite equality true.  Dividing `Real.binEntropy` by `log 2`
+repairs the unit mismatch but also fails at the finite counterexample.  No exact entropy pin
+for a production prize instance is proved here.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`, no `axiom`.
 -/
@@ -67,9 +75,10 @@ open ProximityGap ProximityGap.MCAThresholdLedger ArkLib.ProximityGap.KKH26
 
 namespace ProximityGap.PrizeEntropy
 
-/-- **The closed-form prize threshold.**  `δ*(ρ, B) = 1 − ρ − H(ρ)/log₂ B`, with `H` the
-binary entropy and `B = q·ε*` the list budget.  A single computable real expression — no
-`∃`-over-incomputable objects, no residual. -/
+/-- **The historical mixed-base closed-form candidate.**  The expression uses Mathlib's
+natural-log `binEntropy` over the base-two denominator `logb 2 B`.  It is retained for the
+historical results in this module; see `PrizeEntropyPinRefuted` for both the finite
+counterexample and the refutation of the base-consistent repair. -/
 noncomputable def prizeDeltaStar (ρ B : ℝ) : ℝ :=
   1 - ρ - Real.binEntropy ρ / Real.logb 2 B
 

@@ -18,10 +18,13 @@ theorem not_repThree_of_zeroSumSix_no_antipode
   intro hrep
   obtain ⟨σ, hσ, hpair⟩ := hrep c hc hsum
   have hne : σ 0 ≠ 0 := hσ.2 0
+  have hne' : (0 : Fin 6) ≠ σ 0 := by
+    intro h
+    exact hne h.symm
   have hneg : -c (σ 0) = c 0 := by
     rw [hpair 0]
     simp
-  exact hno 0 (σ 0) hne hneg.symm
+  exact (hno 0 (σ 0) hne') hneg.symm
 
 end ArkLib.ProximityGap.Frontier.R353RepThreeCounterexample
 

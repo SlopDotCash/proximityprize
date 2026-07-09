@@ -21662,15 +21662,19 @@ points.  The surviving target must retain `NR(2m,m,2r,d)` weights and bound tota
 mass, rather than replace every relation by the zero-mode maximum.  KB:
 `deltastar-466-r327-relation-count-fiber-no-go-2026-07-09.md`. CORE OPEN, ON-BGK.
 
-## [prize-entropy-degree-parameter] `PrizePinConjecture` and its naive actual-rate repair are REFUTED at the exact dimension-one pin (2026-07-09)
+## [prize-entropy-degree-parameter] `PrizePinConjecture`, its actual-rate repair, and its base-consistent repair are REFUTED at the exact dimension-one pin (2026-07-09)
 
 `PrizeEntropyPinRefuted.lean` proves the concrete counterexample
 `p=12289`, `n=8`, `g=4043`, `k=0`, `epsilon*=14/12289`.  The existing unconditional
 dimension-one theorem gives operational `delta*=3/4`, while the historical entropy side
 uses rate `0/8` and simplifies to `prizeDeltaStar 0 B = 1`.  Moreover, the same file gives
 an exact logarithmic certificate for `3/4 < prizeDeltaStar (1/8) 14`, so replacing `k/n`
-by the actual rate `(k+1)/n` does not rescue the generic finite equality.  The four
-production prize instances and a suitably qualified asymptotic law remain open.  KB:
+by the actual rate `(k+1)/n` does not rescue the generic finite equality.  The historical
+expression also mixes Mathlib's natural-log `binEntropy` with a base-two logarithm.  For the
+obvious unit repair `(binEntropy rho / log 2) / logb 2 B`, an exact integer certificate
+`14 < 2^24 / 7^7` proves the repaired candidate is strictly *below* `3/4` at the same pin.
+The four production prize instances and a suitably qualified asymptotic law with finite-size
+or floor corrections remain open.  KB:
 `deltastar-prize-entropy-degree-parameter-refutation-2026-07-09.md`. CORE OPEN.
 =======
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
@@ -30972,3 +30976,20 @@ the BCH relabeling supplies no leverage precisely because the only nontrivial co
 restriction) is the part LP drops. Same failure mode as the moment/energy lane: the linear/`ℓ²`
 machinery is blind to the `ℓ^∞`/combinatorial `{0,1}` structure that carries the defect. Adds to the
 dead ledger; the wall (thin-subgroup BGK/Paley √-cancellation) is unchanged. No closure.
+
+## [466-r363-v2-selection-blind] v₂(p−1) (deployment shape) is NOT a depth-3 good-prime criterion — census badness is v₂-BLIND and GENERIC below the norm frontier (badrate 52–68%, violation rate 13–17%, flat across v₂=5..10; the one v₂=16 prime, F₄=65537, violates) (2026-07-09)
+
+Cross-tab of the r305 complete n=32 census against v₂(p−1) over all 1,109 primes ≡ 1 mod 32
+below 2·10⁵ (`probe_r363_v2_selection_blindness.py`):
+- badrate (nonzero excess): 0.52, 0.56, 0.53, 0.58, 0.62, 0.68 at v₂ = 5..10 — no trend
+  beyond noise; violation rate (excess > headroom): 0.13–0.17, flat.
+- The unique v₂=16 prime in range (Fermat F₄ = 65537) VIOLATES exact Wick (excess 256800).
+- Largest-v₂ violators: 65537, 12289, 13313, 15361, 50177 — the standard FFT/NTT prime
+  shapes are all present.
+CONSEQUENCE: (i) selecting deployment primes by high 2-adic valuation does NOT avoid the
+depth-3 obstruction (confirms + sharpens #464's "generic v₂=μ primes are as bad as high-v₂"
+at exact census resolution); (ii) badness below the norm frontier is GENERIC (half of all
+primes), so at prize n — where every candidate prime is far below the astronomically large
+norm frontier — good-prime selection cannot rely on bad primes being rare in any
+v₂-structured family; the selection criterion must read the actual relation-web mass
+(the r305 invariant), not the shape of p−1. CORE OPEN, ON-BGK.

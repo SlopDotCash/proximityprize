@@ -12,20 +12,22 @@ import ArkLib.Data.CodingTheory.ProximityGap.Mu6DeepRung
 `LiteralBudgetPin` certifies a prime `P = 1314883 * 2^128 + 1`, an order-32 generator,
 and the literal-budget `r = 8` pin.  The same field lies in the adjacent `r = 7` band:
 
-* `choose(32, 7) / 7 = 480836 <= P / 2^128 = 1314883`;
-* `P / 2^128 = 1314883 < 2^7 * choose(16, 7) = 1464320`.
+* `floor(choose(32, 7) / 7) = 480836 <= floor(P / 2^128) = 1314883`;
+* `floor(P / 2^128) = 1314883 < 2^7 * choose(16, 7) = 1464320`.
 
 Consequently the dimension-6 code has
 
 `mcaDeltaStar(evalCode g 32 5, 2^-128) = 25/32`.
 
 This code has rate `6/32 = 3/16`.  `Mu6DeepRung` independently pins the dimension-12,
-length-64 code at the same rate and literal error budget to `51/64`.  Their exact thresholds
-differ by `1/64`.  Thus a finite-code exact threshold cannot be a function of `(rate,
-epsilon*)` alone; length, field budget, or finer code data must remain in any exact formula.
+length-64 code at the same rate and normalized error threshold `epsilon* = 2^-128` to `51/64`.
+Their exact thresholds differ by `1/64`.  Thus there is no universal finite-instance exact
+identity depending only on `(rate, epsilon*)`; length, field budget, or finer code data must
+remain in any such identity.
 
-The two pins use different certified prime fields.  The comparison does not refute formulas
-that retain the field/list budget.
+The two pins use different certified prime fields and hence different integer bad-scalar
+budgets.  The comparison does not refute formulas that retain the length, field size,
+`floor(|F| * epsilon*)`, or a fixed field-scaling regime.
 -/
 
 set_option autoImplicit false
@@ -90,8 +92,30 @@ theorem deltaStar_pin_literal_budget_dimSix :
   refine tsub_eq_of_eq_add ?_
   norm_num
 
-/-- At the same rate and literal error budget, the length-64 exact threshold exceeds the
-length-32 threshold by exactly one length-64 Hamming rung. -/
+/-- The two exact pins have the same actual rate `3/16` and normalized error threshold
+`epsilon* = 2^-128`. -/
+theorem literal_rate_three_sixteenths_two_scale_profile :
+    ((6 : ℝ≥0) / 32 = 3 / 16) ∧
+    ((12 : ℝ≥0) / 64 = 3 / 16) ∧
+    mcaDeltaStar (F := ZMod LiteralBudgetPin.P) (A := ZMod LiteralBudgetPin.P)
+        (evalCode
+          (365776689002390431616511545157923604483360578 :
+            ZMod LiteralBudgetPin.P)
+          32 5)
+        (1 / 2 ^ 128)
+      = 25 / 32 ∧
+    mcaDeltaStar (F := ZMod Mu6DeepRung.P) (A := ZMod Mu6DeepRung.P)
+        (evalCode
+          (218028241209259214929338402535096146560619661187581 :
+            ZMod Mu6DeepRung.P)
+          64 11)
+        (1 / 2 ^ 128)
+      = 51 / 64 := by
+  refine ⟨by norm_num, by norm_num, deltaStar_pin_literal_budget_dimSix, ?_⟩
+  exact Mu6DeepRung.deltaStar_pin_mu6_dim12
+
+/-- At the same rate and normalized error threshold, the length-64 exact threshold exceeds
+the length-32 threshold by exactly one length-64 Hamming rung. -/
 theorem literal_rate_three_sixteenths_two_scale_drift :
     mcaDeltaStar (F := ZMod Mu6DeepRung.P) (A := ZMod Mu6DeepRung.P)
         (evalCode
@@ -106,30 +130,39 @@ theorem literal_rate_three_sixteenths_two_scale_drift :
           (1 / 2 ^ 128)
       = 1 / 64 := by
   rw [Mu6DeepRung.deltaStar_pin_mu6_dim12, deltaStar_pin_literal_budget_dimSix]
+  refine tsub_eq_of_eq_add ?_
   norm_num
 
-/-- **Rate-and-error-only exact threshold laws are refuted.**  The two explicit codes have
-the same rate `3/16` and the same literal error budget, but different operational thresholds. -/
+/-- **A concrete counterexample to universal finite-instance rate-and-error-only identities.**
+The two explicit codes have the same rate `3/16` and normalized error threshold `2^-128`, but
+different lengths, fields, integer budgets, and operational thresholds. -/
 theorem literal_rate_only_threshold_REFUTED :
-    mcaDeltaStar (F := ZMod Mu6DeepRung.P) (A := ZMod Mu6DeepRung.P)
-        (evalCode
-          (218028241209259214929338402535096146560619661187581 : ZMod Mu6DeepRung.P)
-          64 11)
-        (1 / 2 ^ 128)
-      ≠ mcaDeltaStar (F := ZMod LiteralBudgetPin.P) (A := ZMod LiteralBudgetPin.P)
+    ((6 : ℝ≥0) / 32 = (12 : ℝ≥0) / 64) ∧
+    mcaDeltaStar (F := ZMod LiteralBudgetPin.P) (A := ZMod LiteralBudgetPin.P)
           (evalCode
             (365776689002390431616511545157923604483360578 :
               ZMod LiteralBudgetPin.P)
             32 5)
+          (1 / 2 ^ 128)
+      ≠ mcaDeltaStar (F := ZMod Mu6DeepRung.P) (A := ZMod Mu6DeepRung.P)
+          (evalCode
+            (218028241209259214929338402535096146560619661187581 :
+              ZMod Mu6DeepRung.P)
+            64 11)
           (1 / 2 ^ 128) := by
-  rw [Mu6DeepRung.deltaStar_pin_mu6_dim12, deltaStar_pin_literal_budget_dimSix]
-  norm_num
+  constructor
+  · norm_num
+  · rw [deltaStar_pin_literal_budget_dimSix,
+      Mu6DeepRung.deltaStar_pin_mu6_dim12]
+    norm_num
 
 end ArkLib.ProximityGap.LiteralBudgetRateThreeSixteenths
 
 /-! ## Axiom audit -/
 #print axioms
   ArkLib.ProximityGap.LiteralBudgetRateThreeSixteenths.deltaStar_pin_literal_budget_dimSix
+#print axioms
+  ArkLib.ProximityGap.LiteralBudgetRateThreeSixteenths.literal_rate_three_sixteenths_two_scale_profile
 #print axioms
   ArkLib.ProximityGap.LiteralBudgetRateThreeSixteenths.literal_rate_three_sixteenths_two_scale_drift
 #print axioms
