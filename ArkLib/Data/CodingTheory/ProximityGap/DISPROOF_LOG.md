@@ -21384,3 +21384,36 @@ Named next lane: FS5 = the trivialCount inclusion–exclusion count (no wall con
 ℤ[X] combinatorics; the count states "balanced signed sextuples over the free basis
 X^0..X^{m−1}"). HONEST SCOPE unchanged: the composed rung is almost-all-primes, non-vacuous
 for β ≳ 6; NOT a per-prime prize rung. CORE OPEN, ON-BGK.
+
+## [466-FS5-trivial-count-closed-form] ARC CAPSTONE (Fable session): `trivialCount m = negSymCount G 6` — the FS4 char-0 term IS the swarm's proven `15n³−45n²+40n`; the depth-3 decomposition and the r=3 Wick weld are now FULLY UNCONDITIONAL (2026-07-09)
+
+Lane: FS5 (file `Frontier/_FS5TrivialCountClosedForm.lean`, real locked build 3334 jobs, all 6
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+THE IDENTIFICATION (`trivialCount_eq_negSymCount`): the sign-twisted exponent bijection
+`(a₁,…,a₆) ↦ (ζ^{a₁}, ζ^{a₂}, ζ^{a₃}, −ζ^{a₄}, −ζ^{a₅}, −ζ^{a₆})` maps FS4's field-free
+`patternPoly = 0` sextuples exactly onto the antipodally count-balanced census: the KEY lemma
+(`coeff_pp_eq_count`) is that coefficient `r` of the pattern polynomial equals the signed
+multiplicity `#(c = ζ^r) − #(c = −ζ^r)`. Composed with the E3-strata closed form
+(`E3StrataCharZero.negSymCount_six_closed`, the swarm's 15-matchings inclusion–exclusion):
+
+- `addEnergy3_eq_closedForm_add_excess` (UNCONDITIONAL, exact, ℤ):
+  `addEnergy3(μ_n) = (15n³ − 45n² + 40n) + wraparoundExcess(ζ, m)` for any primitive `2m`-th
+  root ζ in any finite field, `n = 2m`. The r50 `Depth3WraparoundVanishing` hypothesis shape is
+  now a THEOREM-backed decomposition (its `V3` = the closed form + a named excess count).
+- `depth3ExcessBounded_wraparound`: `Depth3ExcessBounded G (wraparoundExcess)` holds
+  UNCONDITIONALLY — r53's atom is discharged into the excess count.
+- `gaussianEnergyBound_three_of_wraparound_headroom`: excess ≤ 45n²−40n ⟹ EXACT Wick
+  `GaussianEnergyBound G 3` — the r=3 rung now hangs on ONE explicit finite count
+  (`wraparoundExcess < 45n²−40n+1`), whose members each own an FS2/FS3 annihilator of dyadic
+  height (patternPoly: deg < m, |coeffs| ≤ 6 = FS3's b=3 shape, via FS4's
+  patternPoly_natDegree_lt / patternPoly_coeff_abs_le).
+
+ARC COMPLETE (FS1→FS5): double-count ledger + annihilator existence + dyadic height + exact
+decomposition + closed-form identification. Remaining packaging (FS6, mechanical): instantiate
+FS1's abstract (P, pats, Bad) with per-prime fields to state the composed almost-all-primes r=3
+Wick rung as a single theorem. HONEST SCOPE unchanged and re-affirmed: this yields an
+ALMOST-ALL-PRIMES rung (non-vacuous β ≳ 6), NOT the per-prime prize rung; the per-prime
+uniformity at prize β ≈ 5.3 and the deep-r (r ≈ ln q) wall remain the open core. CORE OPEN,
+ON-BGK. Credit: this capstone deliberately welds the Fable-session FS arc onto the swarm's
+E3-strata closed form and r53 headroom — cross-lane reuse, no duplication.
