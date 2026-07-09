@@ -2098,6 +2098,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullFieldNoisyCharacterTr
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullLengthCharacterSumScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullRankLatticeTransferenceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FunctionFieldModelSubfieldDegeneracy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
