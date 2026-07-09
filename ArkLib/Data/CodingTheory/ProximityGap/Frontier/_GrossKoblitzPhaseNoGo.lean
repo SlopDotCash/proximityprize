@@ -92,7 +92,7 @@ namespace ProximityGap.Frontier.GrossKoblitzPhaseNoGo
 /-- **The index-2 phase pin.** If `z² ∈ ℝ` (equivalently the self-conjugate reflection
 `z · z = (real)`), then `z` lies on the real or imaginary axis: `z.re = 0 ∨ z.im = 0`.  This is the
 *only* case in which a reflection/`Γ_p` relation pins an individual phase — and it is exactly the
-quadratic / index-2 regime (Gauss's `τ/√q ∈ {1, i}`), not the prize.  -/
+quadratic / index-2 regime (Gauss's `τ/√q ∈ {1, i}`), not the prize. -/
 theorem selfConj_sq_real_forces_axis {z : ℂ} (h : (z ^ 2).im = 0) :
     z.re = 0 ∨ z.im = 0 := by
   -- (z^2).im = 2 · z.re · z.im

@@ -90,8 +90,7 @@ theorem proxy_ne_measured : farLineProxy 32 rho ≠ 19 / 32 := by
   rw [proxy_n32]; norm_num
 
 /-- The exact discrepancy between the PROXY value `17/32` and the MEASURED worst-direction value
-    `19/32` at `n = 32`: `1/16` (the proxy `m* = 7` over-predicts the measured `m* = 5` by 2 rungs).
-    -/
+    `19/32` at `n = 32`: `1/16` (the proxy `m* = 7` over-predicts the measured `m* = 5` by 2 rungs). -/
 theorem proxy_measured_gap : (19 / 32 : ℝ) - farLineProxy 32 rho = 1 / 16 := by
   rw [proxy_n32]; norm_num
 

@@ -273,6 +273,8 @@ theorem fhat_foldSubset (n : ℕ) (hn : Even n) (_hpos : 0 < n) (A' : Finset ℕ
           have hi : (i : ℕ) < (2 * n) / 2 := i.isLt
           have he : (2 * n) / 2 = n := Nat.mul_div_cancel_left n (by norm_num : 0 < 2)
           obtain ⟨t, ht⟩ := hn; omega⟩ : Fin (n / 2)) : ℕ)) := by
+      simp only [Fin.val_mk]
+      obtain ⟨t, ht⟩ := hn
       omega
     by_cases hb : 2 * gradeContribBin a m' n = (i : ℕ)
     · rw [if_pos hb, if_pos (hiff.mp hb)]
