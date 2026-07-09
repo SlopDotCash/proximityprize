@@ -17,12 +17,12 @@ ArkLib.Data.CodingTheory.ProximityGap.Collapse ProximityGap.grandMCAChallenge_if
 ArkLib.Data.CodingTheory.ProximityGap.Lattice2 ProximityGap.GrandChallengesLattice.mcaThreshold_spec
 
 # ── KZG commitment scheme ──────────────────────────────────────────────
-ArkLib.CommitmentScheme.KZG.Correctness KZG.CommitmentScheme.correctness
-ArkLib.CommitmentScheme.KZG.Binding KZG.CommitmentScheme.map_binding_to_t_sdh_of_two_valid_openings
+ArkLib.Commitments.Functional.KZG.Correctness KZG.CommitmentScheme.correctness
+ArkLib.Commitments.Functional.KZG.Binding KZG.CommitmentScheme.map_binding_to_t_sdh_of_two_valid_openings
 
 # ── Merkle tree extraction ─────────────────────────────────────────────
-ArkLib.CommitmentScheme.MerkleTree.Extraction InductiveMerkleTree.opening_binding
-ArkLib.CommitmentScheme.MerkleTree.Extraction InductiveMerkleTree.extracted_leaf_unique
+ArkLib.Commitments.Functional.MerkleTree.Extraction InductiveMerkleTree.opening_binding
+ArkLib.Commitments.Functional.MerkleTree.Extraction InductiveMerkleTree.extracted_leaf_unique
 
 # ── Berlekamp-Welch decoder ────────────────────────────────────────────
 ArkLib.Data.CodingTheory.BerlekampWelch.BerlekampWelch BerlekampWelch.decoder_eq_some

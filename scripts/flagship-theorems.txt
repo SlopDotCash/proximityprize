@@ -16,12 +16,12 @@
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean  ProximityGap.proximity_gap_RSCodes
 
 # ── KZG commitment scheme ──────────────────────────────────────────────
-ArkLib/CommitmentScheme/KZG/Correctness.lean  KZG.CommitmentScheme.correctness
-ArkLib/CommitmentScheme/KZG/Binding.lean  KZG.CommitmentScheme.map_binding_to_t_sdh_of_two_valid_openings
+ArkLib/Commitments/Functional/KZG/Correctness.lean  KZG.CommitmentScheme.correctness
+ArkLib/Commitments/Functional/KZG/Binding.lean  KZG.CommitmentScheme.map_binding_to_t_sdh_of_two_valid_openings
 
 # ── Merkle tree extraction ─────────────────────────────────────────────
-ArkLib/CommitmentScheme/MerkleTree/Extraction.lean  InductiveMerkleTree.opening_binding
-ArkLib/CommitmentScheme/MerkleTree/Extraction.lean  InductiveMerkleTree.extracted_leaf_unique
+ArkLib/Commitments/Functional/MerkleTree/Extraction.lean  InductiveMerkleTree.opening_binding
+ArkLib/Commitments/Functional/MerkleTree/Extraction.lean  InductiveMerkleTree.extracted_leaf_unique
 
 # ── Berlekamp-Welch decoder ────────────────────────────────────────────
 ArkLib/Data/CodingTheory/BerlekampWelch/BerlekampWelch.lean  BerlekampWelch.decoder_eq_some
