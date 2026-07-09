@@ -22,6 +22,7 @@ namespace ArkLib.ProximityGap.Frontier.R365CenteredShadowMassWeld
 
 open ArkLib.ProximityGap.DCEnergyCorrection
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
+open ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor
 open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
 open ArkLib.ProximityGap.Frontier.R310ShadowFloorToRFoldEnergy
@@ -54,7 +55,7 @@ theorem centeredShadowMass_eq_dcNumerator
       (power_index_injective_of_orderOf g n hg0 hord), Finset.card_univ, Fintype.card_fin]
   unfold centeredShadowMass
   rw [henergy, hcard]
-  push_cast
+  rfl
 
 /-- The deep prize hypothesis is exactly a centered shadow-mass bound. -/
 theorem dcEnergyBound_iff_centeredShadowMass_le

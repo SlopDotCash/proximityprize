@@ -31059,3 +31059,28 @@ NEXT: (a) is the s6h1 mass per violator bounded by C·n² at n=64 (check: 322560
 — it's ~1.2–1.8× headroom, i.e. barely violating — quantify the trend vs n=32's 8.7×);
 (b) the swarm's FS4/Sidon lanes own the ±1-pattern census — hand the s6h1 spectrum there.
 CORE OPEN, ON-BGK.
+
+## [466-r369-orbit-quantization-linear-coincidence-law] the s6h1 (Sidon) sector is ORBIT-QUANTIZED with LINEAR units: at p=264961 (n=64, 100% s6h1 violator) the 256 vanishing 6-term ±1 relations = exactly 4 full Galois×rotation orbits (size 64 each), mass unit 46080 = 720·n; hence exact-Wick violation at depth 3 requires ≥ ~(45n²)/(720n) = n/16 SIMULTANEOUS vanishing primitive orbits — a coincidence count growing LINEARLY in n (2026-07-09)
+
+Probe: orbit decomposition of the vanishing s6h1 patterns (inline, from the r368 collision
+groups). Facts: 256 signed-exponent 6-sets → 4 orbits, reps (0,1,2,5,53,56), (0,1,3,7,29,44),
+(0,1,3,7,38,52), (0,1,2,4,44,48), each size 64 = n; per-orbit mass 46080 = n · 720
+(720 = 72·(realization count ~10), n-independent); 4 × 46080 = 184320 = the violator's exact
+excess. Cross-check at n=32: the minimal violators' s6h1 masses were also 46080-quantized.
+
+THE REDUCTION (sharpest form of the depth-3 rung to date): since headroom = 45n²−40n and the
+orbit unit is Θ(n), exact-Wick violation ⟺ ≥ Ω(n) primitive 6-term ±1 relations vanish
+simultaneously mod p. Single-relation vanishing is FS-union-bounded (each z has
+0 ≠ |Norm z| ≤ 6^φ(n)); violations are Ω(n)-fold coincidences. Two theorem-shaped pieces to
+land: (a) orbit-unit linearity (orbit size ≤ n via rotation-freeness + per-relation mass
+≤ C via bounded realizations of a disjoint-support 6-set — combinatorial, provable);
+(b) an anti-coincidence input: no prime p > p₀(n) admits Ω(n) simultaneous primitive
+vanishing relations — this is where the arithmetic lives (the census violators like
+264961 = special primes DO stack 4 coincidences at n=64; the question is whether stacking
+Ω(n) of them forces p below poly(n)). Piece (b) is a rank/height statement about the
+ℤ-module of vanishing relations: k independent relations ⟹ p | det-ideal of a k×k minor
+system ⟹ p ≤ height^{O(k)}/... — if the relation module's height growth beats the count,
+the rung closes asymptotically. NEXT: (i) measure max simultaneous orbit count vs p at
+n=64 (does any p in the scan stack ≥ 5?); (ii) prove (a) in Lean (bounded realizations);
+(iii) formalize the rank-vs-height inequality for (b). CORE OPEN — this is an exact
+structural reduction, not a closure.
