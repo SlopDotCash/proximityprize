@@ -519,7 +519,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def AGM.GroupRepresentation.append` [ArkLib/AGM/RepresentationLemmas.lean:164](../../../ArkLib/AGM/RepresentationLemmas.lean#L164) — **Representations compose multiplicatively.** Concatenating the bases and exponent vectors of two al
 - `def Interaction.Oracle.Spec.append` [ArkLib/Interaction/Oracle/Spec.lean:216](../../../ArkLib/Interaction/Oracle/Spec.lean#L216) — (no docstring)
 - `abbrev ProtocolSpec.append` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:36](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L36) — Appending two `ProtocolSpec`s
-- `def ProtocolSpec.FullTranscript.append` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:141](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L141) — Appending two transcripts for two `ProtocolSpec`s
+- `def ProtocolSpec.FullTranscript.append` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:164](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L164) — Appending two transcripts for two `ProtocolSpec`s
 - `def CWSSStructure.append` [ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean:84](../../../ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean#L84) — Binary append of coordinate-wise special-soundness structures. On left challenge rounds this is `D₁`
 - `def ProtocolSpec.ChallengeTreeShape.append` [ArkLib/OracleReduction/Security/TranscriptTree/Composition.lean:96](../../../ArkLib/OracleReduction/Security/TranscriptTree/Composition.lean#L96) — Append two protocol-generic tree shapes along sequential protocol append.
 
@@ -2049,8 +2049,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def OracleProver.seqCompose` [ArkLib/OracleReduction/Composition/Sequential/General.lean:135](../../../ArkLib/OracleReduction/Composition/Sequential/General.lean#L135) — Sequential composition of provers in oracle reductions, defined via sequential composition of prover
 - `def OracleVerifier.seqCompose` [ArkLib/OracleReduction/Composition/Sequential/General.lean:188](../../../ArkLib/OracleReduction/Composition/Sequential/General.lean#L188) — Sequential composition of oracle verifiers (in oracle reductions), defined via iteration of the comp
 - `def OracleReduction.seqCompose` [ArkLib/OracleReduction/Composition/Sequential/General.lean:310](../../../ArkLib/OracleReduction/Composition/Sequential/General.lean#L310) — Sequential composition of oracle reductions, defined via sequential composition of oracle provers an
-- `def ProtocolSpec.seqCompose` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:290](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L290) — Sequential composition of a family of `ProtocolSpec`s, indexed by `i : Fin m`. Defined for definitio
-- `def ProtocolSpec.FullTranscript.seqCompose` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:348](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L348) — Sequential composition of a family of `FullTranscript`s, indexed by `i : Fin m`. Defined for definit
+- `def ProtocolSpec.seqCompose` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:314](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L314) — Sequential composition of a family of `ProtocolSpec`s, indexed by `i : Fin m`. Defined for definitio
+- `def ProtocolSpec.FullTranscript.seqCompose` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:372](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L372) — Sequential composition of a family of `FullTranscript`s, indexed by `i : Fin m`. Defined for definit
 - `def ChallengeTreeShape.seqCompose` [ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean:53](../../../ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean#L53) — Sequential composition of a finite family of generic challenge-tree shapes.
 - `def CWSSStructure.seqCompose` [ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean:191](../../../ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Composition.lean#L191) — Sequential composition of a finite family of CWSS structures.
 
@@ -4333,8 +4333,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma Reduction.seqCompose_zero` [ArkLib/OracleReduction/Composition/Sequential/General.lean:113](../../../ArkLib/OracleReduction/Composition/Sequential/General.lean#L113) — (no docstring)
 - `lemma OracleVerifier.seqCompose_zero` [ArkLib/OracleReduction/Composition/Sequential/General.lean:204](../../../ArkLib/OracleReduction/Composition/Sequential/General.lean#L204) — (no docstring)
 - `lemma OracleReduction.seqCompose_zero` [ArkLib/OracleReduction/Composition/Sequential/General.lean:347](../../../ArkLib/OracleReduction/Composition/Sequential/General.lean#L347) — (no docstring)
-- `theorem ProtocolSpec.seqCompose_zero` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:306](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L306) — (no docstring)
-- `theorem ProtocolSpec.FullTranscript.seqCompose_zero` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:353](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L353) — (no docstring)
+- `theorem ProtocolSpec.seqCompose_zero` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:330](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L330) — (no docstring)
+- `theorem ProtocolSpec.FullTranscript.seqCompose_zero` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:377](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L377) — (no docstring)
 
 ### `concat` (5 declarations, 2 files)
 
@@ -4342,7 +4342,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProtocolSpec.ChallengesUpTo.concat` [ArkLib/OracleReduction/ProtocolSpec/Basic.lean:465](../../../ArkLib/OracleReduction/ProtocolSpec/Basic.lean#L465) — Concatenate the `k`-th challenge to the end of the tuple of challenges up to round `k`, assuming rou
 - `abbrev ProtocolSpec.Transcript.concat` [ArkLib/OracleReduction/ProtocolSpec/Basic.lean:504](../../../ArkLib/OracleReduction/ProtocolSpec/Basic.lean#L504) — Concatenate a message to the end of a partial transcript. This is definitionally equivalent to `Fin.
 - `abbrev ProtocolSpec.concat` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:31](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L31) — Concatenate a round with direction `dir` and type `Message` to the end of a `ProtocolSpec`
-- `def ProtocolSpec.FullTranscript.concat` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:149](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L149) — Adding a message with a given direction and type to the end of a `Transcript`
+- `def ProtocolSpec.FullTranscript.concat` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:172](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L172) — Adding a message with a given direction and type to the end of a `Transcript`
 
 ### `knowledgeSoundness` (5 declarations, 2 files)
 
@@ -4470,7 +4470,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def Prover.fst` [ArkLib/OracleReduction/Composition/Sequential/SeamDecomposition.lean:52](../../../ArkLib/OracleReduction/Composition/Sequential/SeamDecomposition.lean#L52) — **Phase-1 seam restriction of a (malicious) prover** over `pSpec₁ ++ₚ pSpec₂`. Runs rounds `0 .. m-1
 - `def ProtocolSpec.Transcript.fst` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:119](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L119) — The first half of a partial transcript for a concatenated protocol, up to round `k < m + n + 1`. Thi
-- `def ProtocolSpec.FullTranscript.fst` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:192](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L192) — The first half of a transcript for a concatenated protocol
+- `def ProtocolSpec.FullTranscript.fst` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:216](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L216) — The first half of a transcript for a concatenated protocol
 
 ### `mem_toFinset_iff_mem` (3 declarations, 2 files)
 
@@ -4493,8 +4493,8 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `snd` (3 declarations, 2 files)
 
 - `def Prover.snd` [ArkLib/OracleReduction/Composition/Sequential/SeamDecomposition.lean:90](../../../ArkLib/OracleReduction/Composition/Sequential/SeamDecomposition.lean#L90) — **Phase-2 seam restriction of a (malicious) prover** over `pSpec₁ ++ₚ pSpec₂`. Resumes from `P`'s se
-- `def ProtocolSpec.Transcript.snd` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:129](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L129) — The second half of a partial transcript for a concatenated protocol.
-- `def ProtocolSpec.FullTranscript.snd` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:198](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L198) — The second half of a transcript for a concatenated protocol
+- `def ProtocolSpec.Transcript.snd` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:142](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L142) — The second half of a partial transcript for a concatenated protocol.
+- `def ProtocolSpec.FullTranscript.snd` [ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean:222](../../../ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean#L222) — The second half of a transcript for a concatenated protocol
 
 ### `A_def` (2 declarations, 2 files)
 
