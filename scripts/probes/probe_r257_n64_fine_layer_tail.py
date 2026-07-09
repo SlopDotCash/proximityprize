@@ -39,6 +39,7 @@ class Row:
     c_tail: float
     theta_tail: float
     count_tail: int
+    trim: int
 
 
 def lift32_to64(x32: np.ndarray, m64: int) -> np.ndarray:
@@ -46,10 +47,10 @@ def lift32_to64(x32: np.ndarray, m64: int) -> np.ndarray:
     return np.array([x32[j % m32] for j in range(m64)], dtype=float)
 
 
-def tail_constant(desc: np.ndarray, tau: float) -> tuple[float, float, int]:
+def tail_constant(desc: np.ndarray, tau: float, trim: int) -> tuple[float, float, int]:
     m = len(desc)
     best = (0.0, tau, 0)
-    for idx, value in enumerate(desc, start=1):
+    for idx, value in enumerate(desc[min(trim, m) :], start=1):
         theta = float(value)
         if theta <= tau:
             break
@@ -59,7 +60,7 @@ def tail_constant(desc: np.ndarray, tau: float) -> tuple[float, float, int]:
     return best
 
 
-def row_for_m(m: int, chunk: int, tau: float) -> Row | None:
+def row_for_m(m: int, chunk: int, tau: float, trim: int) -> Row | None:
     p = 64 * m + 1
     if not is_prime(p):
         return None
@@ -68,7 +69,7 @@ def row_for_m(m: int, chunk: int, tau: float) -> Row | None:
     fine = x64 - lift32_to64(x32, len(x64))
     full_desc = np.sort(x64)[::-1]
     fine_desc = np.sort(fine)[::-1]
-    c_tail, theta_tail, count_tail = tail_constant(fine_desc, tau)
+    c_tail, theta_tail, count_tail = tail_constant(fine_desc, tau, trim)
     return Row(
         p=p,
         m=m,
@@ -82,6 +83,7 @@ def row_for_m(m: int, chunk: int, tau: float) -> Row | None:
         c_tail=c_tail,
         theta_tail=theta_tail,
         count_tail=count_tail,
+        trim=trim,
     )
 
 
@@ -91,6 +93,7 @@ def main() -> None:
     parser.add_argument("--max-index", type=int, default=12000)
     parser.add_argument("--chunk", type=int, default=8192)
     parser.add_argument("--tau", type=float, default=0.5)
+    parser.add_argument("--trim", type=int, default=0)
     parser.add_argument("--sort", choices=["fine_max", "fine_top8", "fine_mgf", "c_tail"], default="fine_top8")
     parser.add_argument("--top", type=int, default=30)
     args = parser.parse_args()
@@ -98,13 +101,13 @@ def main() -> None:
     rows = [
         row
         for m in range(args.min_index, args.max_index + 1)
-        if (row := row_for_m(m, args.chunk, args.tau)) is not None
+        if (row := row_for_m(m, args.chunk, args.tau, args.trim)) is not None
     ]
     rows.sort(key=lambda row: getattr(row, args.sort), reverse=True)
 
     print(
         f"R257 n=64 fine-layer tail cases={len(rows)} "
-        f"M=[{args.min_index},{args.max_index}] tau={args.tau} sort={args.sort}"
+        f"M=[{args.min_index},{args.max_index}] tau={args.tau} trim={args.trim} sort={args.sort}"
     )
     print(
         "score    fineTop8 fineTop16 fineMGF fineMax cTail   theta   count "
