@@ -508,6 +508,26 @@ theorem exists_negacyclic_preimage_of_mem_span {m : ℕ} [NeZero m] (hm : 0 < m)
     rw [mk_relationPoly_negacyclicBinomialMul hm, ← mk_relationPoly_binomialVec, hh]
   exact relationPoly_mk_inj hm h1
 
+/-- **MASTER PIPE (r330).**  If every realized shadow-kernel relation, scaled by `2^t`,
+lies in the recurrence *ideal* of a dominant binomial (the exact conclusion R329 + R321
+produce from `|Res| ∣ 2^t·p`), then the entire char-zero collision surplus is capped by
+the closed-form short-vector count times the per-relation mass bound. -/
+theorem shadowCollisionMass_le_of_span_saturation
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    (g : F) (n m r : ℕ) [NeZero m] (hm : 0 < m)
+    (a b : ℤ) (s : Fin m) (t : ℕ) (hab : |b| < |a|) (M : ℕ)
+    (hsat : ∀ d ∈ ArkLib.ProximityGap.Frontier.R314KernelRelationMassDecomposition.shadowKernelRelations g n m r,
+      AdjoinRoot.mk (fpoly m) (relationPoly (fun i => 2 ^ t * d i)) ∈
+        Ideal.span ({AdjoinRoot.mk (fpoly m) (relationPoly (binomialVec a b s))} :
+          Set (AdjoinRoot (fpoly m))))
+    (hmass : ∀ d ∈ ArkLib.ProximityGap.Frontier.R314KernelRelationMassDecomposition.shadowKernelRelations g n m r,
+      ArkLib.ProximityGap.Frontier.R314KernelRelationMassDecomposition.shadowRelationMass g n m r d ≤ M) :
+    ArkLib.ProximityGap.Frontier.R312ShadowCollisionMassIdentity.shadowCollisionMass g n m r
+      ≤ (2 * ((2 ^ t * (2 * r : ℤ)) / (|a| - |b|)).toNat + 1) ^ m * M := by
+  refine shadowCollisionMass_le_of_binomial_saturation g n m r hm a b s t hab M ?_ hmass
+  intro d hd
+  exact exists_negacyclic_preimage_of_mem_span hm a b s (hsat d hd)
+
 end Dictionary
 
 #print axioms banded_max_bound
@@ -525,5 +545,6 @@ end Dictionary
 #print axioms mk_relationPoly_binomialVec
 #print axioms relationPoly_mk_inj
 #print axioms exists_negacyclic_preimage_of_mem_span
+#print axioms shadowCollisionMass_le_of_span_saturation
 
 end ArkLib.ProximityGap.Frontier.R325BinomialRecurrenceReturnBound
