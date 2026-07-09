@@ -124,6 +124,30 @@ def structured_half_span_search(domain, annihilators):
     return best
 
 
+def constrained_four_hit_search(columns, supports, annihilators, trials=5_000, seed=383):
+    """Sample pencils forced through four independently chosen support spans."""
+    rng = random.Random(seed)
+    best = (0, None)
+    for trial in range(trials):
+        chosen = rng.sample(range(len(supports)), 4)
+        gammas = rng.sample(range(P), 4)
+        kernel = constraint_kernel(columns, supports, chosen, gammas)
+        if len(kernel) == 0:
+            continue
+        for vector in kernel:
+            base = vector[:D]
+            direction = vector[D:2 * D]
+            if not np.any(direction):
+                continue
+            hits = line_incidence(base, direction, annihilators)
+            if len(hits) > best[0]:
+                best = (len(hits), (chosen, gammas, base.tolist(), direction.tolist(), hits))
+                print({"four_hit_trial": trial, "four_hit_best": best}, flush=True)
+            if len(hits) > N:
+                return best
+    return best
+
+
 def line_incidence(base, direction, annihilators):
     ab = np.einsum("sed,d->se", annihilators, base) % P
     ad = np.einsum("sed,d->se", annihilators, direction) % P
@@ -145,11 +169,82 @@ def line_incidence(base, direction, annihilators):
     return sorted(set(int(x) for x in gamma[valid]))
 
 
+def incidence_witnesses(base, direction, annihilators):
+    ab = np.einsum("sed,d->se", annihilators, base) % P
+    ad = np.einsum("sed,d->se", annihilators, direction) % P
+    joint = np.all(ab == 0, axis=1) & np.all(ad == 0, axis=1)
+    gamma = np.full(len(annihilators), -1, dtype=np.int64)
+    for j in range(D - E):
+        pivot = ~joint & (ad[:, j] != 0) & (gamma < 0)
+        if np.any(pivot):
+            inv = np.array([pow(int(x), P - 2, P) for x in ad[pivot, j]], dtype=np.int64)
+            gamma[pivot] = (-ab[pivot, j] * inv) % P
+    valid = gamma >= 0
+    indices = np.flatnonzero(valid)
+    if len(indices):
+        equations = (ab[indices] + gamma[indices, None] * ad[indices]) % P
+        valid[indices] = np.all(equations == 0, axis=1)
+    out = {}
+    for support_index in np.flatnonzero(valid):
+        out.setdefault(int(gamma[support_index]), []).append(int(support_index))
+    return out
+
+
+def constraint_kernel(columns, supports, chosen, gammas):
+    m = len(chosen)
+    matrix = np.zeros((m * D, 2 * D + m * E), dtype=np.int64)
+    for j, (support_index, gamma) in enumerate(zip(chosen, gammas)):
+        rows = slice(j * D, (j + 1) * D)
+        matrix[rows, :D] = np.eye(D, dtype=np.int64)
+        matrix[rows, D:2 * D] = gamma * np.eye(D, dtype=np.int64)
+        matrix[rows, 2 * D + j * E:2 * D + (j + 1) * E] = \
+            -columns[list(supports[support_index])].T
+    return nullspace(matrix)
+
+
+def seeded_component_search(columns, supports, annihilators, seed_line,
+                            trials=10_000, seed=384):
+    rng = random.Random(seed)
+    base = np.array(seed_line[0], dtype=np.int64)
+    direction = np.array(seed_line[1], dtype=np.int64)
+    witnesses = incidence_witnesses(base, direction, annihilators)
+    best = (len(witnesses), (base.tolist(), direction.tolist(), sorted(witnesses)))
+    for trial in range(trials):
+        if len(witnesses) < 4:
+            break
+        gammas = rng.sample(list(witnesses), 4)
+        chosen = [rng.choice(witnesses[g]) for g in gammas]
+        kernel = constraint_kernel(columns, supports, chosen, gammas)
+        candidates = list(kernel)
+        for _ in range(4):
+            if len(kernel) == 0:
+                break
+            coeffs = np.array([rng.randrange(P) for _ in range(len(kernel))], dtype=np.int64)
+            candidates.append(coeffs @ kernel % P)
+        for vector in candidates:
+            b = vector[:D]
+            d = vector[D:2 * D]
+            if not np.any(d):
+                continue
+            found = incidence_witnesses(b, d, annihilators)
+            if len(found) > best[0]:
+                best = (len(found), (b.tolist(), d.tolist(), sorted(found)))
+                base, direction, witnesses = b, d, found
+                print({"seeded_trial": trial, "seeded_best": best}, flush=True)
+            if len(found) > N:
+                return best
+    return best
+
+
 def run(samples=200_000, seed=382):
     domain, columns, supports, annihilators = setup()
     structured = structured_half_span_search(domain, annihilators)
     if structured[0] > N:
         print("STRUCTURED_COUNTEREXAMPLE", structured, flush=True)
+        return False
+    constrained = constrained_four_hit_search(columns, supports, annihilators)
+    if constrained[0] > N:
+        print("FOUR_HIT_COUNTEREXAMPLE", constrained, flush=True)
         return False
     rng = random.Random(seed)
     best = (0, None)
