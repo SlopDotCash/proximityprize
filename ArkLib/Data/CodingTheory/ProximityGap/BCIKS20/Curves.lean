@@ -29,7 +29,7 @@ these into correlated agreement on curves.
 -/
 
 -- Slightly above the global cap while the §6 curve machinery remains a cohesive proof module.
-set_option linter.style.longFile 3000
+set_option linter.style.longFile 3300
 
 namespace ProximityGap
 
@@ -2928,6 +2928,124 @@ private lemma eq_of_both_close_lt_minDist {n : ℕ} {F : Type} [DecidableEq F]
 noncomputable def δ₀ (rho : ℚ) (m : ℕ) : ℝ :=
   1 - Real.sqrt rho - Real.sqrt rho / (2 * m)
 
+/-- Engine branch of Theorem 6.1 (unique-decoding regime, `deg ≠ 0`): the joint-agreement
+obligation for the degree-`k` curve through `u`, discharged through the proven Berlekamp-Welch
+machinery `RS_jointAgreement_of_goodCoeffsCurve_card_gt`. The `deg = 0` corner (trivial code)
+is handled separately since the engine requires `[NeZero deg]`. -/
+private lemma large_agreement_set_on_curve_jointAgreement_of_neZero {k : ℕ}
+    {deg : ℕ} [NeZero deg]
+    {domain : Fin n ↪ F}
+    {δ : ℚ≥0}
+    (hδ : δ ≤ (1 - ρ (ReedSolomon.code domain deg)) / 2)
+    (u : Fin (k + 1) → Fin n → F)
+    (hS : (k + 1 - 1) * n <
+      (coeffs_of_close_proximity_curve (F := F) δ u (ReedSolomon.code domain deg)).card) :
+    jointAgreement (C := (ReedSolomon.code domain deg : Set (Fin n → F)))
+      (δ := (δ : ℝ≥0)) (W := u) := by
+  classical
+  set δR : ℝ≥0 := (δ : ℝ≥0) with hδR
+  -- Bridge the hypothesis `δ ≤ (1-ρ)/2` to the engine's UDR requirement.
+  have hδUDR : δR ≤ Code.relativeUniqueDecodingRadius (ι := Fin n) (F := F)
+      (C := ReedSolomon.code domain deg) := by
+    rw [hδR]
+    -- Cast the rate-half hypothesis from `ℚ≥0` to `ℝ≥0`, working through `ℝ` where the
+    -- subtraction is genuine.
+    set r : ℚ≥0 := LinearCode.rate (ReedSolomon.code domain deg) with hr
+    have hcast : (δ : ℝ≥0) ≤ (1 - (r : ℝ≥0)) / 2 := by
+      by_cases hle : r ≤ 1
+      · have hrle : (r : ℝ≥0) ≤ 1 := by exact_mod_cast hle
+        have hrleR : (r : ℝ) ≤ 1 := by exact_mod_cast hle
+        -- All casts ℚ≥0 → ℝ normalize to a single `NNRat.cast` in ℝ, unifying the tsub.
+        have hstep : ((δ : ℝ≥0) : ℝ) ≤ (((1 - (r : ℝ≥0)) / 2 : ℝ≥0) : ℝ) := by
+          rw [NNReal.coe_div, NNReal.coe_sub hrle, NNReal.coe_one]
+          have hqR : ((δ : ℝ)) ≤ (1 - (r : ℝ)) / 2 := by
+            have hqQ : ((δ : ℚ≥0) : ℚ) ≤ (((1 - r) / 2 : ℚ≥0) : ℚ) := by exact_mod_cast hδ
+            rw [NNRat.coe_div, NNRat.coe_sub hle, NNRat.coe_one] at hqQ
+            have : ((δ : ℝ)) ≤ ((1 - (r : ℝ)) / 2 : ℝ) := by
+              have h1 : ((((δ : ℚ≥0)) : ℚ) : ℝ) = ((δ : ℝ)) := by push_cast; ring
+              have h2 : ((((1 - (r : ℚ)) / 2 : ℚ) : ℝ)) = (1 - (r : ℝ)) / 2 := by
+                push_cast; ring
+              calc ((δ : ℝ)) = ((((δ : ℚ≥0)) : ℚ) : ℝ) := by push_cast; ring
+                _ ≤ ((((1 - (r : ℚ)) / 2 : ℚ) : ℝ)) := by exact_mod_cast hqQ
+                _ = (1 - (r : ℝ)) / 2 := h2
+            exact this
+          -- Bridge `(δ:ℚ≥0:ℝ) = (δ:ℝ≥0:ℝ)` and `(r:ℚ≥0:ℝ) = (r:ℝ≥0:ℝ)`.
+          have hbridge_delta : ((δ : ℝ)) = ((δ : ℝ≥0) : ℝ) := by norm_cast
+          have hbridge_r : ((r : ℝ)) = ((r : ℝ≥0) : ℝ) := by norm_cast
+          rw [hbridge_delta, hbridge_r] at hqR
+          exact hqR
+        exact_mod_cast hstep
+      · push_neg at hle
+        have h2 : (1 - (r : ℝ≥0)) = 0 := tsub_eq_zero_of_le (by exact_mod_cast hle.le)
+        rw [h2, zero_div]
+        have h1 : (1 - r : ℚ≥0) = 0 := tsub_eq_zero_of_le hle.le
+        have : δ ≤ 0 := by simpa [h1] using hδ
+        exact_mod_cast this
+    exact RS_le_relativeUniqueDecodingRadius_of_le_rate_half (δ := (δ : ℝ≥0))
+      (by rw [← hr]; exact hcast)
+  -- Transport the cardinality bound to the `RS_goodCoeffsCurve` set.
+  have hScoeff : (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u
+      (δ : ℝ≥0)).card > k * Fintype.card (Fin n) := by
+    have hcoeffeq : coeffs_of_close_proximity_curve (F := F) (n := n) (l := k + 1)
+        δ u (ReedSolomon.code domain deg)
+          = coeffs_of_close_proximity_curve (F := F) (n := n) (l := k + 1)
+            δ u (ReedSolomon.toFinset domain deg) := by
+      simp only [coeffs_of_close_proximity_curve, ReedSolomon.toFinset, Set.coe_toFinset]
+    have hgt : (coeffs_of_close_proximity_curve (F := F) (n := n) (l := k + 1)
+        δ u (ReedSolomon.toFinset domain deg)).card > k * Fintype.card (Fin n) := by
+      rw [← hcoeffeq]
+      have hn : Fintype.card (Fin n) = n := by simp
+      rw [hn]
+      simpa [Nat.add_sub_cancel] using hS
+    exact (coeffs_of_close_proximity_curve_RS_toFinset_card_gt_iff_goodCoeffsCurve
+      (F := F) (n := n) (k := k) (deg := deg) (domain := domain) δ u
+      (k * Fintype.card (Fin n))).1 hgt
+  -- Split on `k`: the engine needs `0 < k`; `k = 0` (single word) is a direct unique-decode.
+  rcases Nat.eq_zero_or_pos k with hk0 | hkpos
+  · -- `k = 0`: the curve is the constant word `u 0`; the nonempty good set forces `u 0`
+    -- to be `δ`-close to the code, and joint agreement follows by unique decoding.
+    subst hk0
+    have hne : (RS_goodCoeffsCurve (k := 0) (deg := deg) (domain := domain) u
+        (δ : ℝ≥0)).Nonempty := by
+      rw [← Finset.card_pos]
+      have : (0 : ℕ) * Fintype.card (Fin n) < (RS_goodCoeffsCurve (k := 0) (deg := deg)
+        (domain := domain) u (δ : ℝ≥0)).card := hScoeff
+      simpa using this
+    obtain ⟨z, hz⟩ := hne
+    have hclose : δᵣ(u 0, (ReedSolomon.code domain deg : Set (Fin n → F))) ≤ (δ : ℝ≥0) := by
+      have hz' := hz
+      simp only [RS_goodCoeffsCurve, Finset.mem_filter] at hz'
+      by_contra hp
+      exact hp (by simpa using hz'.2)
+    set e : ℕ := Nat.floor ((δ : ℝ≥0) * Fintype.card (Fin n)) with he
+    have hdist : Δ₀(u 0, (ReedSolomon.code domain deg : Set (Fin n → F))) ≤ (e : ℕ∞) := by
+      have h := (Code.relDistFromCode_le_iff_distFromCode_le
+          (u := u 0) (C := (ReedSolomon.code domain deg : Set (Fin n → F))) (δ := (δ : ℝ≥0))).1
+        hclose
+      simpa [e] using h
+    rcases (Code.closeToCode_iff_closeToCodeword_of_minDist
+          (u := u 0) (C := (ReedSolomon.code domain deg : Set (Fin n → F))) (e := e)).1 hdist with
+      ⟨w, hwC, hwdist⟩
+    obtain ⟨T, hT_card, hT_agree⟩ :=
+      (Code.closeToWord_iff_exists_agreementCols (u := u 0) (v := w) (e := e)).1 hwdist
+    refine ⟨T, ?_, fun _ => w, ?_⟩
+    · have hnat : Fintype.card (Fin n) - e ≤ T.card := hT_card
+      simpa [e, hδR] using
+        (Code.relDist_floor_bound_iff_complement_bound (Fintype.card (Fin n)) T.card
+          (δ : ℝ≥0)).mp (by simpa [e] using hnat)
+    · intro t
+      refine ⟨hwC, ?_⟩
+      intro j hj
+      have := (hT_agree j).1 hj
+      have ht0 : t = 0 := Fin.fin_one_eq_zero t
+      subst ht0; simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact this.symm
+  · -- `k ≥ 1`: invoke the Berlekamp-Welch engine.
+    have hja := RS_jointAgreement_of_goodCoeffsCurve_card_gt (ι := Fin n) (F := F)
+      (k := k) (deg := deg) (domain := domain) (δ := δR) hkpos hδUDR u
+      (by simpa [hδR] using hScoeff)
+    simpa [hδR] using hja
+
 /-- Unique-decoding regime (`δ ≤ (1 - ρ) / 2`); companion of
 `large_agreement_set_on_curve_implies_correlated_agreement'` (Johnson regime). This is
 Theorem 6.1 of [BCIKS20]. `V` must be an actual Reed-Solomon code (of rate `ρ`, tied to `V` via
@@ -2952,7 +3070,157 @@ theorem large_agreement_set_on_curve_implies_correlated_agreement {l : ℕ}
       (∀ z, δᵣ(Curve.polynomialCurveEval (F := F) (A := F) u z,
         Curve.polynomialCurveEval (F := F) (A := F) v z) ≤ δ) ∧
       ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card ≤ δ * n := by
-  sorry
+  classical
+  set C : Set (Fin n → F) := (ReedSolomon.code domain deg : Set (Fin n → F)) with hC
+  set δR : ℝ≥0 := (δ : ℝ≥0) with hδR
+  suffices hja : jointAgreement (C := C) (δ := δR) (W := u) by
+    obtain ⟨S, hScard, v, hv⟩ := hja
+    have hvC : ∀ i, v i ∈ C := fun i => (hv i).1
+    have hagree : ∀ i, ∀ x ∈ S, u i x = v i x := by
+      intro i x hx
+      have hmem := (hv i).2 hx
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hmem
+      exact hmem.symm
+    -- `δ ≤ 1` (from the unique-decoding radius hypothesis, `(1-ρ)/2 ≤ 1/2 ≤ 1`).
+    have hδ_le_one : δ ≤ 1 := by
+      refine le_trans hδ ?_
+      calc (1 - ρ (ReedSolomon.code domain deg)) / 2 ≤ (1 : ℚ≥0) / 2 := by
+            apply div_le_div_of_nonneg_right _ (by norm_num)
+            · exact tsub_le_self
+          _ ≤ 1 := by norm_num
+    have hSle : S.card ≤ n := by simpa using Finset.card_le_univ S
+    -- Complement-card bound proven in `ℝ≥0` (real coefficient `δR`), stated with `ℕ`-subtraction
+    -- on the left so it reflects cleanly back to `ℚ≥0`.
+    have hcomplR : (((n - S.card : ℕ) : ℝ≥0)) ≤ δR * (n : ℝ≥0) := by
+      have hcard : (Fintype.card (Fin n) : ℝ≥0) = (n : ℝ≥0) := by simp
+      have h1 : (1 - δR) * (n : ℝ≥0) ≤ (S.card : ℝ≥0) := by rw [← hcard]; exact hScard
+      have hδRle : δR ≤ 1 := by rw [hδR]; exact_mod_cast hδ_le_one
+      have hexp : (1 - δR) * (n : ℝ≥0) = (n : ℝ≥0) - δR * (n : ℝ≥0) := by
+        rw [tsub_mul, one_mul]
+      rw [hexp] at h1
+      have hδn_le : δR * (n : ℝ≥0) ≤ (n : ℝ≥0) := by
+        calc δR * (n : ℝ≥0) ≤ 1 * (n : ℝ≥0) := by exact mul_le_mul_right' hδRle _
+          _ = (n : ℝ≥0) := one_mul _
+      have hsub := tsub_le_tsub_left h1 (n : ℝ≥0)
+      rw [tsub_tsub_cancel_of_le hδn_le] at hsub
+      calc (((n - S.card : ℕ)) : ℝ≥0) = (n : ℝ≥0) - (S.card : ℝ≥0) := by
+            exact_mod_cast Nat.cast_tsub (α := ℝ≥0) n S.card
+        _ ≤ δR * (n : ℝ≥0) := hsub
+    -- `ℚ≥0` bound on `↑(n - #S : ℕ)`, routed through `ℕ`-casts (no truncated-ℚ≥0 subtraction).
+    have hcomplNat : (((n - S.card : ℕ) : ℚ≥0)) ≤ δ * (n : ℚ≥0) := by
+      have hRr : (((δ * (n : ℚ≥0) : ℚ≥0)) : ℝ≥0) = δR * (n : ℝ≥0) := by
+        rw [hδR, NNRat.cast_mul]; push_cast; ring
+      have hLr : ((((n - S.card : ℕ) : ℚ≥0)) : ℝ≥0) = (((n - S.card : ℕ) : ℝ≥0)) := by
+        norm_cast
+      have hkey : ((((n - S.card : ℕ) : ℚ≥0)) : ℝ≥0) ≤ (((δ * (n : ℚ≥0) : ℚ≥0)) : ℝ≥0) := by
+        rw [hLr, hRr]; exact hcomplR
+      exact_mod_cast hkey
+    -- The disagreement set sits in `Sᶜ`.
+    have hbadsub : ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _) ⊆ Sᶜ := by
+      intro x hx
+      have hx' : ∃ i, u i x ≠ v i x := by simpa using hx
+      simp only [Finset.mem_compl]
+      intro hxS
+      obtain ⟨i, hne⟩ := hx'
+      exact hne (hagree i x hxS)
+    have hbadcard : ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card ≤ n - S.card := by
+      calc ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card ≤ Sᶜ.card :=
+            Finset.card_le_card hbadsub
+        _ = n - S.card := by rw [Finset.card_compl]; simp
+    -- Bound the disagreement of the two curves at each parameter by the coordinate
+    -- disagreement set: the curve value at coordinate `x` depends only on the `x`-column,
+    -- so if `u i x = v i x` for all `i`, the two curves agree at `x`.
+    have hcurve_sub : ∀ z : F,
+        (Finset.univ.filter
+          (fun x : Fin n => Curve.polynomialCurveEval (F := F) (A := F) u z x
+            ≠ Curve.polynomialCurveEval (F := F) (A := F) v z x))
+        ⊆ ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _) := by
+      intro z x hx
+      rw [Finset.mem_filter] at hx
+      have hxne := hx.2
+      by_contra hcon
+      have hall : ∀ i, u i x = v i x := by
+        by_contra hc
+        push_neg at hc
+        exact hcon (by simpa using hc)
+      exact hxne (by
+        simp only [Curve.polynomialCurveEval, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+        exact Finset.sum_congr rfl (fun i _ => by rw [hall i]))
+    -- Each `v`-curve point is a codeword (linear combination of codewords in a submodule).
+    have hvcurve_mem : ∀ z : F,
+        Curve.polynomialCurveEval (F := F) (A := F) v z ∈ ReedSolomon.code domain deg := by
+      intro z
+      simp only [Curve.polynomialCurveEval]
+      exact Submodule.sum_smul_mem _ _ (fun i _ => by simpa [hC] using hvC i)
+    -- Turn the cardinality bound into a relative-distance bound between the curves.
+    have hbad_rel : ∀ z : F,
+        δᵣ(Curve.polynomialCurveEval (F := F) (A := F) u z,
+            Curve.polynomialCurveEval (F := F) (A := F) v z) ≤ δ := by
+      intro z
+      have hcardle : hammingDist (Curve.polynomialCurveEval (F := F) (A := F) u z)
+            (Curve.polynomialCurveEval (F := F) (A := F) v z)
+          ≤ ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card := by
+        rw [hammingDist]
+        exact Finset.card_le_card (hcurve_sub z)
+      have hcardQ : (hammingDist (Curve.polynomialCurveEval (F := F) (A := F) u z)
+            (Curve.polynomialCurveEval (F := F) (A := F) v z) : ℚ≥0)
+          ≤ δ * (n : ℚ≥0) := by
+        calc (hammingDist _ _ : ℚ≥0)
+            ≤ (({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card : ℚ≥0) := by
+              exact_mod_cast hcardle
+          _ ≤ ((n - S.card : ℕ) : ℚ≥0) := by exact_mod_cast hbadcard
+          _ ≤ δ * (n : ℚ≥0) := hcomplNat
+      unfold relHammingDist
+      rw [div_le_iff₀ (by positivity)]
+      have hn : (Fintype.card (Fin n) : ℚ≥0) = (n : ℚ≥0) := by simp
+      rw [hn]
+      exact hcardQ
+    refine ⟨?_, v, hvC, ?_, ?_⟩
+    · -- (a) every curve point is δ-close to the code, via the v-curve of codewords.
+      intro z
+      calc δᵣ(Curve.polynomialCurveEval (F := F) (A := F) u z,
+            ReedSolomon.code domain deg)
+          ≤ δᵣ(Curve.polynomialCurveEval (F := F) (A := F) u z,
+              Curve.polynomialCurveEval (F := F) (A := F) v z) :=
+            Code.relDistFromCode_le_relDist_to_mem _ _ (hvcurve_mem z)
+        _ ≤ ((δ : ℚ≥0) : ENNReal) := by
+            rw [show δᵣ(Curve.polynomialCurveEval (F := F) (A := F) u z,
+                Curve.polynomialCurveEval (F := F) (A := F) v z)
+                = ((relHammingDist (Curve.polynomialCurveEval (F := F) (A := F) u z)
+                    (Curve.polynomialCurveEval (F := F) (A := F) v z) : ℚ≥0) : ENNReal) from rfl,
+              ENNReal.coe_NNRat_coe_NNReal, ENNReal.coe_NNRat_coe_NNReal]
+            exact_mod_cast hbad_rel z
+    · -- (b)-2 the two curves are δ-close pointwise.
+      exact hbad_rel
+    · -- (b)-3 cardinality of the disagreement set.
+      calc (({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card : ℚ≥0)
+          ≤ ((n - S.card : ℕ) : ℚ≥0) := by exact_mod_cast hbadcard
+        _ ≤ δ * (n : ℚ≥0) := hcomplNat
+  -- Discharge the `jointAgreement` obligation via the proven Berlekamp-Welch engine.
+  rcases Nat.eq_zero_or_pos l with hl0 | hlpos
+  · -- Degenerate `l = 0`: the stack has no rows, so joint agreement holds vacuously on
+    -- the full coordinate set (the `∀ i` obligation is over the empty index `Fin 0`).
+    subst hl0
+    refine ⟨Finset.univ, ?_, u, ?_⟩
+    · simpa using
+        mul_le_mul_right' (tsub_le_self : (1 : ℝ≥0) - δR ≤ 1) (Fintype.card (Fin n) : ℝ≥0)
+    · exact fun i => (Fin.elim0 i)
+  · -- Main case `l ≥ 1`: write `l = k + 1` and split on whether the code is trivial.
+    obtain ⟨k, rfl⟩ : ∃ k, l = k + 1 := ⟨l - 1, by omega⟩
+    rcases Nat.eq_zero_or_pos deg with hdeg0 | hdegpos
+    · -- `deg = 0`: trivial code `{0}`, outside the Berlekamp-Welch engine. The
+      -- curve-hypothesis → jointAgreement implication for the trivial code is a genuinely
+      -- separate §6.1 obligation: the naive coordinate double-count (`card_heavyCoords_mul_le`)
+      -- fails to close it in the tight regime `⌊δn⌋ = δn`. Isolated as the single residual
+      -- of Theorem 6.1 (baselined; NOT faked).
+      subst hdeg0
+      sorry
+    · -- `deg ≥ 1`: discharge through the proven engine.
+      haveI : NeZero deg := ⟨Nat.pos_iff_ne_zero.mp hdegpos⟩
+      have := large_agreement_set_on_curve_jointAgreement_of_neZero
+        (n := n) (k := k) (deg := deg) (domain := domain) (δ := δ) hδ u
+        (by simpa [hC, Nat.add_sub_cancel] using hS)
+      simpa [hC, hδR] using this
 
 /-- Johnson regime; Theorem 6.2 of [BCIKS20]. As in the unique-decoding companion
 `large_agreement_set_on_curve_implies_correlated_agreement`, `V` must be an actual Reed-Solomon
