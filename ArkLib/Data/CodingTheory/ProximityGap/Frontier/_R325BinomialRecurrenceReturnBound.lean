@@ -11,6 +11,7 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R314KernelRelationMassDecomposition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R315KernelRelationResultantWeld
 
 /-!
 # ROUND 325 (#466, Fable session 2026-07-09): THE BINOMIAL RETURN-PROBABILITY BOUND —
@@ -310,6 +311,105 @@ theorem shadowCollisionMass_le_of_binomial_saturation
   have h := shadowKernelRelation_abs_le_two_mul_r g n m r hd i
   exact_mod_cast h
 
+/-! ## R331 dictionary: negacyclic vector product = ring multiplication in `ℤ[x]/(x^m+1)`
+
+The missing translation between the vector-level `negacyclicBinomialMul` and actual ring
+multiplication by `a + b·x^s` in `AdjoinRoot (x^m+1)`, at the level of `mk ∘ relationPoly`.
+With this, "`2^t·d` lies in the recurrence lattice `L_{a+b·x^s}`" (the R321/R329 saturation
+conclusion) converts into the exact `hsat` hypothesis consumed by
+`saturated_kernel_card_le` / `shadowCollisionMass_le_of_binomial_saturation`. -/
+
+section Dictionary
+
+open Polynomial AdjoinRoot
+open ArkLib.ProximityGap.Frontier.FS2PatternAnnihilatorResultant
+open ArkLib.ProximityGap.Frontier.R315KernelRelationResultantWeld
+
+/-- `mk (relationPoly v) = Σ v_i · ρ^i` where `ρ = root (x^m+1)`. -/
+theorem mk_relationPoly_eq_sum {m : ℕ} (v : Fin m → ℤ) :
+    AdjoinRoot.mk (fpoly m) (relationPoly v)
+      = ∑ i : Fin m, (v i : AdjoinRoot (fpoly m))
+          * (AdjoinRoot.root (fpoly m)) ^ (i : ℕ) := by
+  rw [← AdjoinRoot.aeval_eq, relationPoly, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [map_mul, aeval_C, map_pow, aeval_X]
+  simp [algebraMap_int_eq]
+
+/-- The root of `x^m+1` is a half-root: `ρ^m = -1`. -/
+theorem root_fpoly_pow {m : ℕ} :
+    (AdjoinRoot.root (fpoly m)) ^ m = -1 := by
+  have h := AdjoinRoot.mk_self (f := fpoly m)
+  rw [fpoly, map_add, map_pow, AdjoinRoot.mk_X, map_one] at h
+  exact eq_neg_of_add_eq_zero_left h
+
+/-- **The dictionary.**  Negacyclic binomial vector multiplication is ring multiplication
+by `a + b·x^s` in `ℤ[x]/(x^m+1)`:
+`mk (P_{v·(a+bx^s)}) = mk (P_v) · (a + b·ρ^s)`. -/
+theorem mk_relationPoly_negacyclicBinomialMul {m : ℕ} (hm : 0 < m)
+    (a b : ℤ) (s : Fin m) (v : Fin m → ℤ) :
+    AdjoinRoot.mk (fpoly m) (relationPoly (negacyclicBinomialMul a b s v))
+      = AdjoinRoot.mk (fpoly m) (relationPoly v)
+        * ((a : AdjoinRoot (fpoly m))
+            + (b : AdjoinRoot (fpoly m)) * (AdjoinRoot.root (fpoly m)) ^ (s : ℕ)) := by
+  classical
+  haveI : NeZero m := ⟨hm.ne'⟩
+  set ρ : AdjoinRoot (fpoly m) := AdjoinRoot.root (fpoly m) with hρdef
+  have hρ : ρ ^ m = -1 := root_fpoly_pow
+  rw [mk_relationPoly_eq_sum, mk_relationPoly_eq_sum, Finset.sum_mul]
+  have hterm : ∀ i : Fin m,
+      (v i : AdjoinRoot (fpoly m)) * ρ ^ (i : ℕ)
+          * ((a : AdjoinRoot (fpoly m)) + (b : AdjoinRoot (fpoly m)) * ρ ^ (s : ℕ))
+        = ((a * v i : ℤ) : AdjoinRoot (fpoly m)) * ρ ^ (i : ℕ)
+          + ((b * v i : ℤ) : AdjoinRoot (fpoly m)) * ρ ^ ((i : ℕ) + (s : ℕ)) := by
+    intro i
+    rw [pow_add]
+    simp only [Int.cast_mul]
+    ring
+  rw [Finset.sum_congr rfl fun i _ => hterm i, Finset.sum_add_distrib]
+  have hshift : (∑ i : Fin m, ((b * v i : ℤ) : AdjoinRoot (fpoly m)) * ρ ^ ((i : ℕ) + (s : ℕ)))
+      = ∑ j : Fin m,
+          (((if (j : ℕ) < (s : ℕ) then -b else b) * v (j - s) : ℤ) : AdjoinRoot (fpoly m))
+            * ρ ^ (j : ℕ) := by
+    rw [← Equiv.sum_comp (Equiv.addRight s)
+      (fun j => (((if (j : ℕ) < (s : ℕ) then -b else b) * v (j - s) : ℤ) : AdjoinRoot (fpoly m))
+        * ρ ^ (j : ℕ))]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [Equiv.coe_addRight]
+    have hesub : i + s - s = i := by
+      simp
+    rw [hesub]
+    have hs : (s : ℕ) < m := s.isLt
+    have hi : (i : ℕ) < m := i.isLt
+    have h1 : ((i + s : Fin m) : ℕ) = ((i : ℕ) + (s : ℕ)) % m := Fin.val_add i s
+    by_cases hwrap : (i : ℕ) + (s : ℕ) < m
+    · have hval : ((i + s : Fin m) : ℕ) = (i : ℕ) + (s : ℕ) := by
+        rw [Nat.mod_eq_of_lt hwrap] at h1
+        exact h1
+      simp only [hval]
+      rw [if_neg (by omega)]
+    · push_neg at hwrap
+      have hval : ((i + s : Fin m) : ℕ) = (i : ℕ) + (s : ℕ) - m := by
+        rw [Nat.mod_eq_sub_mod hwrap, Nat.mod_eq_of_lt (by omega)] at h1
+        exact h1
+      simp only [hval]
+      rw [if_pos (by omega)]
+      have hpow : ρ ^ ((i : ℕ) + (s : ℕ)) = -ρ ^ ((i : ℕ) + (s : ℕ) - m) := by
+        have hsum : (i : ℕ) + (s : ℕ) = ((i : ℕ) + (s : ℕ) - m) + m := by omega
+        calc ρ ^ ((i : ℕ) + (s : ℕ))
+            = ρ ^ (((i : ℕ) + (s : ℕ) - m) + m) := by rw [← hsum]
+          _ = ρ ^ ((i : ℕ) + (s : ℕ) - m) * ρ ^ m := pow_add ρ _ m
+          _ = -ρ ^ ((i : ℕ) + (s : ℕ) - m) := by rw [hρ]; ring
+      rw [hpow]
+      push_cast
+      ring
+  rw [hshift, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  simp only [negacyclicBinomialMul]
+  push_cast
+  ring
+
+end Dictionary
+
 #print axioms banded_max_bound
 #print axioms banded_preimage_card_le
 #print axioms dominant_max_bound
@@ -318,5 +418,8 @@ theorem shadowCollisionMass_le_of_binomial_saturation
 #print axioms negacyclicBinomialMul_injective
 #print axioms saturated_kernel_card_le
 #print axioms shadowCollisionMass_le_of_binomial_saturation
+#print axioms mk_relationPoly_eq_sum
+#print axioms root_fpoly_pow
+#print axioms mk_relationPoly_negacyclicBinomialMul
 
 end ArkLib.ProximityGap.Frontier.R325BinomialRecurrenceReturnBound
