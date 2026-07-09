@@ -221,13 +221,19 @@ theorem weighted_recurrence_floor_arith
     B * (K - w) ≤ K * M := by
   have hwZ : w < Z := hwK.trans_le hK
   have hcross : Z * M * (K - w) ≤ K * M * (Z - w) := by
+    have hwK' : w ≤ K := hwK.le
+    have hwZ' : w ≤ Z := hwZ.le
+    have hKw : K - w + w = K := Nat.sub_add_cancel hwK'
+    have hZK : Z - K + K = Z := Nat.sub_add_cancel hK
+    have hZw : Z - w + w = Z := Nat.sub_add_cancel hwZ'
     have h1 : K * (Z - w) = Z * (K - w) + w * (Z - K) := by
-      omega
+      nlinarith
     calc
       Z * M * (K - w) = M * (Z * (K - w)) := by ring
       _ ≤ M * (K * (Z - w)) := by
-        gcongr
-        omega
+        apply Nat.mul_le_mul_left
+        rw [h1]
+        exact Nat.le_add_right _ _
       _ = K * M * (Z - w) := by ring
   have hscaled := Nat.mul_le_mul_right (K - w) hrec
   have hcancel : (B * (K - w)) * (Z - w) ≤

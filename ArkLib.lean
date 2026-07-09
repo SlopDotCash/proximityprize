@@ -2375,6 +2375,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P6_ReverseHolderTelescope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P7HGGCrossCorrNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P7VanishingMarginBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PIndependenceLangWeil
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PackingBudgetFirstJump
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PadicBakerDefectCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PaleyCayleyEigenvalue
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PaleyDoubleSumSingletonGate
@@ -3623,6 +3624,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.ListSizeMomentsConcrete
 import ArkLib.Data.CodingTheory.ProximityGap.ListSizeMomentsWeight
 import ArkLib.Data.CodingTheory.ProximityGap.ListThresholdWellDefined
 import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetPin
+import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetRateThreeSixteenths
 import ArkLib.Data.CodingTheory.ProximityGap.LogUpAppendProof
 import ArkLib.Data.CodingTheory.ProximityGap.MCAAntichainEngine
 import ArkLib.Data.CodingTheory.ProximityGap.MCAAntichainLYM

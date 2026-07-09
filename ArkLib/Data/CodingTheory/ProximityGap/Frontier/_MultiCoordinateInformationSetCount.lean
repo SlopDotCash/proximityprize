@@ -50,6 +50,8 @@ theorem card_add_finrank_le_of_vanish
   letI : FiniteDimensional F (Polynomial.degreeLT F k) :=
     FiniteDimensional.of_injective (Polynomial.degreeLTEquiv F k).toLinearMap
       (Polynomial.degreeLTEquiv F k).injective
+  letI : FiniteDimensional F W :=
+    FiniteDimensional.of_injective W.subtype W.injective_subtype
   have hSk : S.card ≤ k := by
     by_contra hnot
     have hkS : k < S.card := Nat.lt_of_not_ge hnot
@@ -263,6 +265,105 @@ theorem choose_le_card_layer_of_extension (P : Finset E → Prop) [DecidablePred
   exact hmain d le_rfl
 
 end LayerCount
+
+/-! ## The polynomial-subspace count -/
+
+/-- **Polynomial-subspace information-set count.**
+
+Let `W` be a `d`-dimensional subspace of degree-`<k` polynomials, evaluated on `k+m` distinct
+points.  Then at least `C(m+d,d)` coordinate `d`-sets are information sets for `W`.
+
+The proof is the generalized-MDS argument described at the top of the file.  For an information
+`i`-set `I`, its vanishing kernel has dimension `d-i`.  The common-zero theorem bounds the
+rank-preserving coordinates by `k-d+i`, so at least `m+d-i` coordinates raise the rank.  The
+abstract marked-extension recurrence then gives the binomial count. -/
+theorem polynomial_information_set_count
+    (α : ι ↪ F) (k m d : ℕ)
+    (W : Submodule F (Polynomial.degreeLT F k))
+    (hcard : Fintype.card ι = k + m)
+    (hdim : Module.finrank F W = d) :
+    (m + d).choose d ≤
+      Fintype.card (layer (IsPolynomialInformationSet α k W) d) := by
+  classical
+  letI : FiniteDimensional F (Polynomial.degreeLT F k) :=
+    FiniteDimensional.of_injective (Polynomial.degreeLTEquiv F k).toLinearMap
+      (Polynomial.degreeLTEquiv F k).injective
+  letI : FiniteDimensional F W :=
+    FiniteDimensional.of_injective W.subtype W.injective_subtype
+  apply choose_le_card_layer_of_extension (IsPolynomialInformationSet α k W) m d
+      (isPolynomialInformationSet_empty α k W)
+  intro i hid I
+  let R : W →ₗ[F] (I.1 → F) :=
+    (ArkLib.CS25.evalOnS α k I.1).domRestrict W
+  let K : Submodule F W := LinearMap.ker R
+  have hrange : Module.finrank F (LinearMap.range R) = I.1.card := by
+    rw [LinearMap.range_eq_top.mpr I.2.2, finrank_top, Module.finrank_pi,
+      Fintype.card_coe]
+  have hKdim : Module.finrank F K = d - i := by
+    have hranknull := R.finrank_range_add_finrank_ker
+    rw [hrange, hdim, I.2.1] at hranknull
+    omega
+  let Kamb : Submodule F (Polynomial.degreeLT F k) := K.map W.subtype
+  have hKambdim : Module.finrank F Kamb = d - i := by
+    dsimp [Kamb]
+    rw [Submodule.finrank_map_subtype_eq, hKdim]
+  let B : Finset ι := Finset.univ.filter (fun x =>
+    ∀ q : K, (q.1.1 : F[X]).eval (α x) = 0)
+  have hKambvan : Kamb ≤ LinearMap.ker (ArkLib.CS25.evalOnS α k B) := by
+    intro p hp
+    rw [LinearMap.mem_ker]
+    ext x
+    rw [Submodule.mem_map] at hp
+    obtain ⟨q, hqK, hqp⟩ := hp
+    have hxall : ∀ z : K, (z.1.1 : F[X]).eval (α x.1) = 0 :=
+      (Finset.mem_filter.mp x.2).2
+    have hqzero := hxall ⟨q, hqK⟩
+    simpa [ArkLib.CS25.evalOnS, ← hqp] using hqzero
+  have hKambpos : 0 < Module.finrank F Kamb := by
+    rw [hKambdim]
+    omega
+  have hBmaster := card_add_finrank_le_of_vanish α k B Kamb hKambpos hKambvan
+  have hBbound : B.card + (d - i) ≤ k := by
+    simpa [hKambdim] using hBmaster
+  let outsideB := {x : ι // x ∈ (Finset.univ \ B)}
+  letI : Fintype outsideB :=
+    Fintype.ofInjective (fun x : outsideB => x.1) Subtype.val_injective
+  let toExtension : outsideB → extensions (IsPolynomialInformationSet α k W) I.1 := by
+    intro x
+    have hxnotB : x.1 ∉ B := (Finset.mem_sdiff.mp x.2).2
+    have hnotall : ¬ ∀ q : K, (q.1.1 : F[X]).eval (α x.1) = 0 := by
+      intro hall
+      apply hxnotB
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hall⟩
+    push_neg at hnotall
+    let q : K := Classical.choose hnotall
+    have hqx : (q.1.1 : F[X]).eval (α x.1) ≠ 0 := Classical.choose_spec hnotall
+    have hqker : R q.1 = 0 := by
+      exact LinearMap.mem_ker.mp q.2
+    have hxnotI : x.1 ∉ I.1 := by
+      intro hxI
+      apply hqx
+      have := congrFun hqker ⟨x.1, hxI⟩
+      simpa [R, ArkLib.CS25.evalOnS, LinearMap.domRestrict_apply] using this
+    refine ⟨x.1, hxnotI, ?_⟩
+    exact isPolynomialInformationSet_insert_of_kernel_nonzero α k W I.1 x.1 I.2.2 q.1
+      (by simpa [R, K] using hqker) hqx
+  have htoExtension : Function.Injective toExtension := by
+    intro x y hxy
+    apply Subtype.ext
+    change x.1 = y.1
+    simpa [toExtension] using congrArg (fun z => z.1) hxy
+  have hcardOutside : Fintype.card outsideB = Fintype.card ι - B.card := by
+    rw [show Fintype.card outsideB = (Finset.univ \ B).card by
+      exact Fintype.card_coe _]
+    simp [Finset.card_sdiff]
+  have houtside_le : Fintype.card outsideB ≤
+      Fintype.card (extensions (IsPolynomialInformationSet α k W) I.1) :=
+    Fintype.card_le_of_injective toExtension htoExtension
+  calc
+    m + d - i ≤ Fintype.card ι - B.card := by omega
+    _ = Fintype.card outsideB := hcardOutside.symm
+    _ ≤ Fintype.card (extensions (IsPolynomialInformationSet α k W) I.1) := houtside_le
 
 /-! ## Simultaneous rank-to-two reduction on a shared information set -/
 
