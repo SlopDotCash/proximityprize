@@ -13,11 +13,3 @@ The historical determinant split proof was written against the retired `foldMatr
 issue #313 audit now treats this proof stratum as a documented, grant-out-of-scope substrate port.
 This module remains as the stable import point for files that record that status.
 -/
-
-namespace Binius.BinaryBasefold.DetNeZero
-
-/-- Marker theorem for the documented fold-determinant split port boundary. -/
-theorem issue313_foldDetSplitDocumented : True := by
-  trivial
-
-end Binius.BinaryBasefold.DetNeZero

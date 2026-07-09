@@ -2416,6 +2416,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17HighMomentSpikeGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadCharInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadrupleWeilRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17TchiMomentIdentities
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R188QuarterMGFTowerConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18Deg2FaceConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18FourthMomentTwist
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18OrderTwoCharacterBridge
@@ -2425,6 +2426,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18RungThreeDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaEquidistribution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18SigmaGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R18TwistedSecondMoment
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R190BulkPlusSpikesQuarterMGF
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R192BulkSpikeBudgetSplit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R193SpikeMassBudgetConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19ChiDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19DepletedConstant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19ExplicitCharacterRung
@@ -2433,7 +2437,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19JacobiFourierExpansion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R19RungRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R1SecondMomentSqrtBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R200ShiftedQuarterPrizeConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R202ShiftPermutationQuarterSum
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R203LargeIndexNormalizedBudgets
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R204PrizeTowerLargeIndex
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R205PrizeTowerLargeMGFConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R207NonzeroGaussPeriodDilationConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R207PrizeTowerStepConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R208PrizeTowerStepToPrize
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R209DyadicCauchyNormalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R209NonzeroQuarterMGFResidualConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20JacobiParseval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20MobiusDischarge

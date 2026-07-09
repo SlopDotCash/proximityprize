@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.OracleReduction.BCS.CompletenessPreservation
 import ArkLib.OracleReduction.BCS.AppendSoundnessMsg
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
-import ArkLib.CommitmentScheme.Transparent
+import ArkLib.Commitments.Functional.Transparent
 
 /-!
 # A concrete BCS end-to-end instance with the transparent commitment scheme (issue #62)

@@ -14,11 +14,3 @@ For issue #313, this module remains a focused validation target and records that
 front-door import chain builds. The unreconciled lower-level composition obligations are tracked in
 `docs/wiki/Binius_Closeout_Audit.md`.
 -/
-
-namespace Binius.FRIBinius.FullFRIBinius
-
-/-- Marker theorem for the issue #313 focused FRI-Binius front-door validation target. -/
-theorem issue313_frontDoorBuilds : True := by
-  trivial
-
-end Binius.FRIBinius.FullFRIBinius

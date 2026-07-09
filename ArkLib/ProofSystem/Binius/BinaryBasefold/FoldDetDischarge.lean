@@ -13,11 +13,3 @@ The old `foldMatrix_det_ne_zero` proof depends on the retired `foldMatrixNat` su
 recorded as an out-of-scope substrate-port boundary for issue #313 in
 `docs/wiki/Binius_Closeout_Audit.md`.
 -/
-
-namespace Binius.BinaryBasefold
-
-/-- Marker theorem for the documented fold-determinant discharge port boundary. -/
-theorem issue313_foldDetDischargeDocumented : True := by
-  trivial
-
-end Binius.BinaryBasefold

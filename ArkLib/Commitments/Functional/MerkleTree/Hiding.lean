@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.CommitmentScheme.MerkleTree.Extraction
+import ArkLib.Commitments.Functional.MerkleTree.Extraction
 import VCVio
 import ToMathlib.Data.IndexedBinaryTree.Equiv
 

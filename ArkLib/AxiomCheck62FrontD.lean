@@ -2,7 +2,7 @@ import ArkLib.ProofSystem.BCS.TransparentEndToEnd
 import ArkLib.ProofSystem.BCS.ErrorAccounting
 import ArkLib.OracleReduction.BCS.AppendSoundnessMsg
 import ArkLib.OracleReduction.BCS.CompletenessPreservation
-import ArkLib.CommitmentScheme.Transparent
+import ArkLib.Commitments.Functional.Transparent
 
 -- Front D audit (#62): axiom-cleanliness of every headline BCS theorem.
 

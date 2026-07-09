@@ -17,11 +17,3 @@ oracle functions by protocol level `Fin (ell + 1)` and folds with `steps : Fin (
 Until the downstream incremental soundness proofs are ported to that substrate, this file remains
 as the stable import point and records the API boundary explicitly.
 -/
-
-namespace Binius.BinaryBasefold
-
-/-- Marker theorem for the documented incremental-helper substrate-port boundary. -/
-theorem issue313_incrementalHelpersDocumented : True := by
-  trivial
-
-end Binius.BinaryBasefold

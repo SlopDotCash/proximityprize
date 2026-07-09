@@ -20,11 +20,3 @@ Issue #313 separates two concerns:
 This front-door module is intentionally lightweight so the focused issue-313 validation target can
 type-check without dragging in the stale residual cone.
 -/
-
-namespace Binius.BinaryBasefold.FullBinaryBasefold
-
-/-- Marker theorem for the issue #313 focused Binary Basefold front-door validation target. -/
-theorem issue313_frontDoorBuilds : True := by
-  trivial
-
-end Binius.BinaryBasefold.FullBinaryBasefold

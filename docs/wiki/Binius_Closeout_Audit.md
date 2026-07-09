@@ -26,7 +26,7 @@ strata to the current Binary Basefold substrate API.
 
 For the issue #313 focused validation target, the three front-door modules
 `BinaryBasefold/General.lean`, `FRIBinius/General.lean`, and `BBFSmallFieldIOPCS.lean` are now
-lightweight import surfaces with explicit `issue313_frontDoorBuilds` marker theorems. This keeps
+lightweight import surfaces with explicit module-level audit notes. This keeps
 the public Binius entry points buildable while honestly documenting that the older full security
 composition wrappers remain out of scope for the grant closeout.
 

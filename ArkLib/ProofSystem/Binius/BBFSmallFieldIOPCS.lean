@@ -16,11 +16,3 @@ the grant closeout in `docs/wiki/Binius_Closeout_Audit.md`; keeping this front d
 prevents stale internal proof strata from blocking validation of the current public Binius import
 surface.
 -/
-
-namespace Binius.BBFSmallFieldIOPCS
-
-/-- Marker theorem for the issue #313 focused BBF small-field IOPCS validation target. -/
-theorem issue313_frontDoorBuilds : True := by
-  trivial
-
-end Binius.BBFSmallFieldIOPCS
