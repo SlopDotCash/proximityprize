@@ -77,6 +77,32 @@ C witness:        n=8,  p=17393, M=2174
 budget witness:   n=32, p=65537, M=2048
 ```
 
+The same beta-3 plus finite-floor shape remains stable in a wider exact
+window:
+
+```bash
+python3 scripts/probes/probe_r234_rank_sum_residual_feasibility.py \
+  --medium-min-a 3 --medium-max-a 12 --medium-max-index 5000 \
+  --min-index 512 --min-beta 3.0 --chunk 8192 \
+  --trims 8 --taus 0.5 --spike-budgets 0 --top 8
+```
+
+Result:
+
+```text
+cases=2586
+feasible_rows=1
+best_budget=1.913328
+slack=0.086672
+topCap=0.176136
+C_req=0.64951109
+trim=8 tau=0.5 K=0
+
+top-rank witness: n=32, p=32993, M=1031
+C witness:        n=8,  p=17393, M=2174
+budget witness:   n=64, p=296833, M=4638
+```
+
 ## Interpretation
 
 The strongest current large-index residual is:
@@ -92,7 +118,7 @@ Top8RankMGFCap <= 0.177
 ResidualHalfBandTail C <= 0.650 after removing top 8 ranks
 ```
 
-This closes the tested `a=3..10`, `M<=2500` exact window with about `0.09`
+This closes the tested `a=3..12`, `M<=5000` exact window with about `0.087`
 slack.  Beta 4 is easier and may be a safer first theorem target; beta 3 plus
 finite floor is sharper.
 
