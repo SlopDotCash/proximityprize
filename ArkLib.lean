@@ -2775,6 +2775,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R366CenteredRelationAnoma
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R367SignedShadowPairDiscrepancy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R368SignedDifferenceFiberDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R369FourthPowerSaddleRecovery
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R369SignedDifferenceMassDoubling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R371ShadowKernelRotationAction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R372ShadowRelationRotationEquivariance
