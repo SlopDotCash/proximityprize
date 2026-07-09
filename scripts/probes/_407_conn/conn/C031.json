@@ -1,0 +1,29 @@
+{
+ "id": "C031",
+ "rank": 31,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F3",
+  "F1"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentPairCount.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CS25BallIntersectionGlobal.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CS25BallIntersectionMGF.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CS25SecondMomentReduction.lean"
+ ],
+ "title": "CS25 second moment IS the additive energy E_2; its diagonal/off-diagonal split is the n^{1/2} energy-deficit wall made explicit and machine-checked",
+ "connection": "sum_closeCount_sq_eq_card_mul_sum_ballInterCount_of_add_sub_closed proves E[N²]=|C|·∑_{v∈C}ballInterCount(v): the CS25 second moment IS the additive-energy-style sum of two-ball intersections over codeword differences. sum_jointCoverCount_eq_volume_sq gives the GLOBAL normalizer ∑_all-v I(v)=V². sum_jointCoverCount_mgf_mds_le/weightEnum_mds_le ALGEBRAICALLY separate the diagonal A_0·(1+(q−1)θ²)^n (=I(0)=V) from the off-diagonal (q·X+Y)^n/q^{n−k}. This is the in-tree machine-checked realization of 'E(μ_n)≥n² always (diagonal), so list≤√(n·E)≥n^{3/2}': the diagonal A_0=1 term is the +V (n-scale) floor no L² method removes, and the MGF file PROVES it must be separated (uniform A_d over all d is unsatisfiable because A_0=1 > MDS-predicted q^{-(n-k)}).",
+ "why_insightful": "The issue treats 'CS25 second moment' and 'the E_r energy wall' as separate; this shows the CS25 ball-intersection cone literally computes E_2 of the RS code, and its required diagonal-separation is the SAME structural fact _MomentMethodNoGo records.",
+ "attack_plan": "Lean: prove ballInterCount r 0=V and ∑_{v∈RS∖0}ballInterCount r v=E[N²]/|RS|−V exposing codeAdditiveEnergyOffDiag. Formalize that optimal-θ of (q·(2θ+(q−2)θ²)+(1+(q−1)θ²))^n/q^{n−k} equals the entropy-volume off-diagonal; probe (μ_8/μ_16, p=12289, β≈4.5) off-diag/diag at WINDOW radius is Θ(1), testing whether E[N²] reaches the floor or stalls at Johnson."
+}

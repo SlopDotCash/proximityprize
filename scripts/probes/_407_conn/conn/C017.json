@@ -1,0 +1,29 @@
+{
+ "id": "C017",
+ "rank": 17,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F3",
+  "F4"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/ShawOperator.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/ShawOperatorDual.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/ShellFourierKrawtchouk.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean"
+ ],
+ "title": "Krawtchouk diagonalizes the Shaw operator: the worst far-line incidence is a Krawtchouk-weighted Gauss period (F3 = F2 ⊗ F4-ball)",
+ "connection": "Three landed exact identities chain into one closed formula for I(δ). incidence_eq_average_add_shaw: incidence·|V|=|F|·(|S|+𝒮), 𝒮 the off-trivial spectral error on s1^perp. shawError_subgroup_eq: 𝒮=|H|·Σ_{ψ∈H^perp∩s1^perp,ψ≠0}ψ(s0) for a LINEAR agreement set. The Hamming δ-ball S is a UNION of shells, and shell_fourier proves each shell's Fourier coefficient Σ_{wt(e)=k}ψ(e) is EXACTLY the Krawtchouk value K_k(charWeight ψ). So 1̂_S(ψ)=Σ_{k≤δn}K_k(wt ψ) and 𝒮(S;s0,s1)=Σ_{ψ⊥s1,ψ≠0}(Σ_{k≤δn}K_k(wt ψ))ψ(s0). The far-line restriction s1=monomial makes the surviving ψ⊥s1 exactly the Gauss-period frequencies b·μ_n (F2). Hence I(δ) is a Krawtchouk-weighted Gauss period sum.",
+ "why_insightful": "Exhibits F3 as the literal convolution of F2 and F4 via the Krawtchouk transform, all three bricks proven axiom-clean. The Krawtchouk weight is the EXACT object §3's face-1↔face-2 reverse bound was missing, and its sign-oscillation could give cancellation the raw |η_b| sup-norm misses.",
+ "attack_plan": "Land incidence_eq_krawtchouk_gausssum composing incidence_eq_average_add_shaw + a ball-version of shawError_subgroup_eq (replace [ψ∈H^perp] by Σ_{k≤δn}K_k(wt ψ) via shell_fourier). Probe (μ_8/μ_16, p≈n^4): evaluate Σ_{k≤δn}K_k(wt ψ)·η_b vs direct incidence to confirm; measure whether the Krawtchouk weight DECAYS high-|b| periods (new lever for the reverse bound)."
+}

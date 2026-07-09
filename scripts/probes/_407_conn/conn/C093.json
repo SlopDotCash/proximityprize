@@ -1,0 +1,28 @@
+{
+ "id": "C093",
+ "rank": 93,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F6",
+  "F19",
+  "F20"
+ ],
+ "walls": [
+  "W-largesieve",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/EffectiveTransfer.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/QuadraticGaussSumNorm.lean"
+ ],
+ "title": "Effective Jacobi equidistribution at CONSTANT index is the Rojas-León homothety lever read backwards: the prize's large automorphism is the multiplicative h-shift, giving √q per-h but only m statistics",
+ "connection": "Rojas-León 1010.0120 gives a √q gain from a large automorphism (homothety by a big subgroup), but the in-tree verdict (issue §5) is it needs n≥√p (window empty at prize). The tangent face reveals the prize's available automorphism differently: the index-m=⟨χ⟩ Galois action χ↦χ^a permutes {J(χ^i,χ^h)}_i AND Hasse-Davenport makes T_h for different h a SHIFT family. The proven gaussSum_normSq (‖τ‖²=p, F20 index-2 case) and EffectiveTransfer (char-0→F_p above C(w,j)^{φ(n)}) give: each individual τ_i is √p exactly, so per-h the tangent sum has trivial bound n and the open question is purely the m-statistic AVERAGE — exactly constant-index (m=2^128 fixed) effective equidistribution. The homothety lever applies to the h-shift (multiplicative, m values) not the x-sum, sidestepping the n≥√p emptiness: the relevant family is m-dimensional (huge), effectivity needs conductor uniform in p at FIXED index m.",
+ "why_insightful": "Re-identifies which automorphism Rojas-León's √q-gain should act on: not the additive x-sum (needs n≥√p, empty) but the multiplicative h-shift of the Hasse-Davenport-linked Jacobi family (m statistics, available). The 'wrong uniformity' the issue flags becomes 'uniform-in-p at fixed index m' — a precisely stated, possibly-tractable effective conductor question.",
+ "attack_plan": "State the conductor of the h↦T_h family (Kummer sheaf L_{χ^h} twisted by the tangent locus) and check whether it is bounded uniformly in p at fixed m — if yes, effective Deligne gives √-cancellation in the m-average. Lean (modest): wire EffectiveTransfer's threshold to the tangent-sum vanishing, tangentSum_reduction_ne_zero: a nonzero char-0 tangent value survives mod p above C(n,·)^{φ(n)}, pinning per-prime exactness of T_h analogous to esymm_eq_zero_iff."
+}

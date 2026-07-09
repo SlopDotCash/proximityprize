@@ -1,0 +1,32 @@
+{
+ "id": "C027",
+ "rank": 27,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F4",
+  "F10",
+  "F14"
+ ],
+ "walls": [
+  "W-Mersenne",
+  "W-largesieve",
+  "W-idealSVP"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumLowerLoop50.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupSumsetThreePowUpper.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TwoPowerSubsetSumSpectrum.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CoveringTransfer.lean"
+ ],
+ "title": "The covering number from the far-count IS the subgroup distinct r-fold subset-sum |G^{(+r)}|, with a PROVEN two-sided base-{2,3} bracket [2^{n/2},3^{n/2}] capped by p",
+ "connection": "The §7/BCHKS far-line construction makes the bad-scalar count a=|E^{(+ℓ)}| (distinct ℓ-fold subset-sum), the close-set cardinality of the curve-decodability route. For dyadic μ_n the antipodal collapse (antipodal_pow, subsetSum_closed_form) factors every subset sum through the signed cube {−1,0,1}^{n/2}, giving the EXACT spectrum law N(μ,r)=∑_a 2^a C(n/2,a) (subsetSumSpectrum_card) and the proven two-sided bracket 2^{n/2}≤|G^{(+)}|≤3^{n/2} (card_subsetSumset_isPrimitiveRoot_two_pow_ge / subsetSumset_full_le_three_pow), then field-capped to min(3^{n/2},p) (subsetSumset_full_le_min). So the F3 covering count is pinned BEFORE the field cap; only the cap p (≤2^256) keeps the prize alive. Explicit F3↔F10↔F14 unification: the covering number = a BCH-type distinct-sumset = signed-cube image.",
+ "why_insightful": "The covering/incidence count is NOT analytic in char 0 — it is doubly-exponential and fully pinned combinatorially; the ENTIRE prize-relevant subtlety is the field cap p truncating it. Re-frames 'is the bad count ≤ budget' as 'does the mod-p reduction collapse the signed cube below n', a decidable arithmetic question, not BGK.",
+ "attack_plan": "Probe: for μ_n over prize-shaped primes p=Θ(n^β), β∈{4,5}, compute #{distinct ∑_{i∈S}ζ^i:|S|=r} at r=ℓ near the window vs both 2^r·C(n/2,r) (char-0) and the budget n. Lean: RealizedCoveringCount G r:=(sumsetDistinct G r).card, prove epsMCA≥RealizedCoveringCount/q by wiring FarCosetExplosion to the §7 stack."
+}

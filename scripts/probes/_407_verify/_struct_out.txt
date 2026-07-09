@@ -1,0 +1,35 @@
+====================================================================================================
+ #407 SPARSE DEFECT STRUCTURE: is the excess the AUTOMORPHISM ORBIT of the SVP-min vector?
+====================================================================================================
+
+--- n=16 D=8 p=65617 (2^16.0) λ_1~2.83 ---
+  r=5: #distinct defect pts = 8;  #orbits(Z/n×Gal) = 1
+        house: min=9.089 max=9.089  (λ_1~2.83, min/λ_1=3.213)
+        norm/p: [4.0]
+        support wt (power basis): min=4 max=4 (D=8)
+        orbit rep house=9.089 norm/p=4.00 wt=4: full-orbit=64, in-defect-set=8
+        => ALL sparse defects are the SINGLE automorphism orbit of one SVP-min vector.
+
+--- n=32 D=16 p=1048609 (2^20.0) λ_1~4.00 ---
+  r=4: #distinct defect pts = 16;  #orbits(Z/n×Gal) = 1
+        house: min=5.108 max=5.108  (λ_1~4.00, min/λ_1=1.277)
+        norm/p: [2.0]
+        support wt (power basis): min=7 max=7 (D=16)
+        orbit rep house=5.108 norm/p=2.00 wt=7: full-orbit=256, in-defect-set=16
+        => ALL sparse defects are the SINGLE automorphism orbit of one SVP-min vector.
+  r=5: #distinct defect pts = 208;  #orbits(Z/n×Gal) = 13
+        house: min=5.108 max=7.896  (λ_1~4.00, min/λ_1=1.277)
+        norm/p: [2.0, 4.0, 16.0, 64.0, 194.0, 578.0, 1544.0, 6274.0]
+        support wt (power basis): min=5 max=9 (D=16)
+        orbit rep house=6.619 norm/p=194.00 wt=8: full-orbit=256, in-defect-set=16
+        orbit rep house=7.344 norm/p=578.00 wt=6: full-orbit=256, in-defect-set=16
+        orbit rep house=6.478 norm/p=18818.00 wt=6: full-orbit=256, in-defect-set=16
+        orbit rep house=7.827 norm/p=2.00 wt=7: full-orbit=256, in-defect-set=16
+        orbit rep house=6.911 norm/p=16.00 wt=8: full-orbit=256, in-defect-set=16
+        orbit rep house=7.896 norm/p=11272.00 wt=6: full-orbit=256, in-defect-set=16
+
+INTERPRETATION:
+ If #orbits is tiny (1-2) and min-house ≈ λ_1 and norm/p ∈ {1,2,..}: the sparse-support
+ defect set is EXACTLY the automorphism orbit of the shortest vector(s) of 𝔭 (the SVP-min),
+ padded by balanced 0-pairs. The count is then n·|Gal|·(pad) — structured, NOT 1/p random,
+ and governed by SVP-min, not box volume. minHouse not growing with r confirms padding.

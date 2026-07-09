@@ -1,0 +1,27 @@
+{
+ "id": "C072",
+ "rank": 72,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F8",
+  "F18",
+  "F10"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicHalvingRecursion.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean"
+ ],
+ "title": "Reality from −1=ζ^{n/2} makes the dyadic parallelogram a REAL 2D rotation whose only fixed point is the coherent worst case; ‖A−B‖ (the χ-twisted odd-half period) breaks coherence, tying the gap to Lam–Leung antipodal rigidity",
+ "connection": "DyadicHalvingRecursion.conj_eta proves η_b REAL for μ_{2k} (negation closure). In η_b(μ_{2k})=A+B (A=η_b(μ_k), B=η_{bζ}(μ_k)), A+B is real for every b; for the dyadic tower all levels are negation-closed so A,B are real too. The parallelogram ‖A+B‖²+‖A−B‖²=2(‖A‖²+‖B‖²) becomes a REAL identity, ‖A−B‖²=η_b(μ_{2k}^{−})² the χ-twisted period. Worst case ‖A+B‖ max ⟺ ‖A−B‖ min ⟺ A,B aligned (refuted coherence). ‖A−B‖≥0 gives ‖A+B‖²≤2(‖A‖²+‖B‖²); the descent question is whether ‖A‖²+‖B‖²≤M(k)²(1+o(1)). LamLeungTwoPow shows char-0 the only vanishing relations are antipodal, so A−B (odd-half period) cannot be anomalously large without a char-p relation, bounding the gap.",
+ "why_insightful": "Couples the proven reality (F18 root) with the parallelogram to show the descent is a real 2D rotation, identifying ‖A−B‖=the odd-half period as the exact quantity whose non-smallness breaks coherence — tying the gap to F10 antipodal rigidity, a link the issue does not make.",
+ "attack_plan": "Probe: at worst coset b*, measure ‖A−B‖²/M(k)² and ‖A‖²+‖B‖² across the tower; test whether ‖A−B‖² stays Ω(M(k)²) (forcing ‖A‖²+‖B‖²<2M(k)²). Lean: the real parallelogram via conj_eta, twistedPeriod=A−B, Prop TwistedPeriodLowerBound whose truth yields soft descent; relate to LamLeungTwoPow.vanishing_sum_antipodal."
+}

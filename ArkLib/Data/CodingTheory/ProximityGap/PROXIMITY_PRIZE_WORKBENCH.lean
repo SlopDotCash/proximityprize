@@ -11,6 +11,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.OwnershipCensusSharpened
 import ArkLib.Data.CodingTheory.ProximityGap.GVHBKEnergyReduction
 import ArkLib.Data.CodingTheory.ProximityGap.BoundarySupExactness
 import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
+-- §2.2 the exact projective form of the production incidence core:
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -35,8 +39,9 @@ import ArkLib.Data.CodingTheory.GMMDS.LovettDivisibility
 import ArkLib.Data.CodingTheory.ProximityGap.ShawOperator
 -- §3 (W6) the machine-checked second-moment / L² no-go + far-restriction + falsification:
 import ArkLib.Data.CodingTheory.ProximityGap.ShawSecondMoment
--- §Y the explicit entropy closed-form δ* value + the rigorous in-window ladder ceiling:
+-- §Y the historical entropy candidate, its counterexamples, and the discrete ladder ceiling:
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyDeltaStar
+import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyPinRefuted
 -- §D THE DEMAND-SIDE LANE (#389) — the CensusDomination #bad-scalar count, r=3 closed (O172):
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR3Bound
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandR4Bound
@@ -49,10 +54,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.FactorizationRigidity
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 **Mission (proximityprize.org / ABF26 = Arnon–Boneh–Fenzi 2026, ePrint 2026/680).**
-Produce a *novel, complete, closed* conjecture (no further open math, no incomputable lemma)
-that **simultaneously resolves both grand challenges** for *explicit, constant-rate, smooth*
-Reed–Solomon codes in the **prize regime** — and prove it. The two challenges are the same
-δ* up to the LD⇒MCA bridge; the genuine open core is ONE object (§3).
+Produce a *novel, complete, closed* theorem (no further open math, no incomputable lemma) for
+*explicit, constant-rate, smooth* Reed–Solomon codes in the **prize regime**.  The MCA and list
+decoding challenges are distinct fixed-code thresholds.  Known implications between them change
+the radius, the code, or the constants; they do not identify the two exact `δ*` values for free.
 
 ⚡ **READ FIRST — the current dossier is `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`** (v3,
 supersedes the v2/#464 dossier): the complete map of what is proven, refuted, and open as of
@@ -77,19 +82,37 @@ load-bearing context). The δ* target now has an **exact-rational form**: `δ* =
 ⚠️ **DEGENERACY TRAP (do not target these).** The *real-valued* `grandMCAChallenge` /
 `grandListDecodingChallenge` collapse: `grandMCAChallenge_iff_epsMCA_one` (radius-one only),
 and `not_grandListDecodingChallengeRS_of_pos` (the LD one is *false* for `0<k`, `ε*<1`).
-**The faithful targets are `mcaConjecture` (§1) and the operational `mcaDeltaStar` (§2).**
+**The faithful fixed-code targets are the operational supremum `mcaDeltaStar` (§2) and the
+finite-lattice specification `GrandChallengesLattice.mcaPrizeLatticeResolved`.**  The uniform
+`mcaConjecture` is a separate, substantially stronger sufficient route; it is not definitionally
+equivalent to determining the four prize instances.
 
 ────────────────────────────────────────────────────────────────────────────────
-## §1.  THE EXACT TARGET  (prove ONE of these — they are the prize)
+## §1.  THE EXACT TARGET  (choose the convention explicitly)
 ────────────────────────────────────────────────────────────────────────────────
-**(T1) The uniform MCA conjecture** `ProximityGap.mcaConjecture` (ABF26 §4.5):
+**(T1) The operational fixed-code threshold.** Prove an equality for
+  `MCAThresholdLedger.mcaDeltaStar`, the supremum of the good real radii.  A jump certificate has
+  the honest asymmetric shape: every `δ < δ₀` is good and `δ₀` is bad, hence
+  `mcaDeltaStar = δ₀`.
+**(T2) The faithful finite-lattice threshold.** Supply
+  `GrandChallengesLattice.mcaPrizeLatticeResolved domain τ`.  Its specification says exactly that
+  `τ j` is good and maximal among the meaningful radii `i/n`.  At an interior bad jump `s/n`, the
+  lattice answer is the predecessor index `s-1`, whereas the operational supremum is `s/n`.
+  This one-lattice-step distinction is intentional and must not be erased.
+**(T3) The uniform MCA conjecture** `ProximityGap.mcaConjecture` (ABF26 §4.5):
   `∃ c₁ c₂ c₃, ∀ RS[F,L,k], ∀ δ < 1−ρ,  ε_mca(RS,δ) ≤ (1/q)·n^{c₁}/(ρ^{c₂}·η^{c₃})`,
   `η = 1−ρ−δ`. Constants quantified BEFORE the ∀-over-codes. Proving this resolves the
-  MCA prize at every rate (`nonempty_mcaLowerWitness_of_mcaConjecture` → `mcaPrize`).
-**(T2) A `GrandMCAResolution`** for each prize rate: a maximal `δ*` with `ε_mca(C,δ*)≤ε*`
-  and strict failure above. Equivalent to pinning the operational `mcaDeltaStar` (§2).
-**(T3) Either ⟹ the LD prize** via the LD⇒MCA bridge (`GG25MCAFromCurveDecodability`,
-  the §3.x curve-decodability route) — the two challenges share `δ*`.
+  MCA witness problem at every rate (`nonempty_mcaLowerWitness_of_mcaConjecture` → `mcaPrize`),
+  but it is stronger than T1/T2 and should not be advertised as their equivalent.
+**(T4) Treat the list-decoding threshold as a separate target.** ABF26 Theorem 5.1 sends an LD
+  bound to MCA with a square-root radius loss; Theorems 5.2/5.3 send sufficiently small CA to an
+  LD statement under additional hypotheses and, in one case, for a related code.
+  `GG25MCAFromCurveDecodability` is an upstream sufficient condition for MCA, not an
+  MCA-to-LD equivalence.  Invoke only the direction whose hypotheses and parameters are proved.
+
+Do **not** use `GrandMCAResolution` as an interior-jump synonym for T1: its `bound` field requires
+the cutoff itself to be good.  Consequently it cannot represent the common case in which `δ₀`
+is the first bad real radius and `mcaDeltaStar = δ₀`.  Use T1 or T2 instead.
 
 The `YOUR CONJECTURE HERE` slot at the bottom is where the closed-form `δ*(ρ,ε*,n)` and its
 proof go. It must be **complete**: a single computable `δ*`-expression, proven, no residual.
@@ -293,8 +316,10 @@ without residual, closes the prize via its bridge.
 4. Be **machine-checkable**: instantiate at one concrete prize-shaped RS code and `decide`/
    prove the bound, then prove the general statement.
 
-Once proved, wire it to `mcaConjecture` (T1) or a `GrandMCAResolution` (T2), then to the LD
-prize via the GG25 curve-decodability bridge (T3).
+Once proved, wire it to an actual `mcaDeltaStar` equality (T1) or
+`mcaPrizeLatticeResolved` (T2).  Only claim the stronger uniform `mcaConjecture` (T3) if its
+all-fields/all-domains quantifiers have really been discharged; then use the applicable LD bridge
+(T4).
 
 ────────────────────────────────────────────────────────────────────────────────
 ## §5.  STATE OF PLAY 2026-07-01 — the #464 campaign outcome (read this, then attack)
@@ -371,12 +396,16 @@ beat the lone-spike countermodel, DISPROOF `466-r2-cmk-lonespike-refuted`). All 
 ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — dossier v3 §2 forms (A)–(D).
 
 ────────────────────────────────────────────────────────────────────────────────
-## §R.  RESEARCH SYNTHESIS 2026-06-13 — the two challenges collapse to ONE δ*, and
+## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim
 ##      every published route provably misses the prize regime (plain RS, s=1).
 ##      (full map: `docs/kb/jlr26-frs-subspace-design-formalization-map-2026-06-13.md`)
 ────────────────────────────────────────────────────────────────────────────────
-**THE REDUCTION (defensible, from the ABF26 bridges).** The grand MCA challenge and the grand
-list-decoding challenge share the *same* `δ*`:
+⚠️ The paragraph below is retained as campaign history, but its conclusion that the two exact
+thresholds are identical is too strong: the displayed bridges have radius/code/constant losses.
+It is not part of the closure contract in §1/§4.
+
+**THE HISTORICAL REDUCTION CLAIM.** The earlier campaign treated the grand MCA challenge and the
+grand list-decoding challenge as sharing the *same* `δ*`:
   · MCA ⟹ list  (ABF26 Thm 5.2 [BCHKS25 1.9] / Thm 5.3 [CS25 2]): `ε_mca ≤ ε*` ⟹ `|Λ| ≲ ε*·|F|`.
   · list ⟹ MCA  (ABF26 Thm 5.1 [GCXK25 3]): `|Λ(C,δ)| ≤ L` ⟹ `ε_mca(C, 1−√(1−δ+η)) ≤ L²δn/(η|F|)`.
 With `ε*=2⁻¹²⁸`, `q≈n·2¹²⁸`, so `ε*·|F| ≈ n`, hence the prize core is exactly:
@@ -467,8 +496,10 @@ not a proof. Full record: `docs/kb/jlr26-frs-subspace-design-formalization-map-2
 
 ⛔ **CORRECTED (KB §37): this section's "δ* = capacity term" claim is WRONG.** Kambiré
 (arXiv:2604.09724, native to μ_{2^t}) PROVES δ* is the WINDOW EDGE `1−ρ−2/(K·log₂n)`=`1−ρ−Θ(1/log n)`,
-NOT the capacity term. The in-tree `PrizeEntropyDeltaStar.prizeDeltaStar(ρ, q·ε*)`=`1−ρ−H(ρ)/log₂(qε*)`
-IS the window edge (log₂(qε*)≈log₂n) and is correct; my H_q⁻¹/capacity-term framing below overshoots.
+NOT the capacity term. The in-tree historical candidate
+`PrizeEntropyDeltaStar.prizeDeltaStar(ρ, q·ε*)` was proposed as that window edge, but its generic
+finite equality and the obvious rate-and-log-unit repair are now refuted in
+`PrizeEntropyPinRefuted`; whether a corrected asymptotic law has the same leading scale remains open.
 Genericity ALSO INVERTED: bad count = DISTINCT r-fold sumset `|H^{(+r)}|`, so LARGE sumset FUELS the
 disproof. Treat §R.4 as superseded by KB §37.
 
@@ -487,7 +518,9 @@ prime-field `μ_n` BEATS it and reaches the capacity term, because it is inciden
   · `E(μ_n) = 3n²−3n` exactly (in-tree `RootsOfUnityEnergyExact`) = the CLEAN generic value
     (`E⁺/3n(n−1)=1`), the antipodal `−1∈μ_n` accounted for, NOT an inflation.
 
-So both grand challenges share `δ* = ` the capacity radius. Open core (gated): deployed-regime
+The historical draft therefore claimed a shared capacity threshold.  That claim is superseded by
+§1: only the parameter-checked one-way implications are valid.  The associated open core was:
+deployed-regime
 genericity `E(μ_n)=O(n²) ⟺ B(μ_n)=O(√(n·polylog))` (the 25-yr wall) — PROVEN for `p>2^n`
 (cyclotomic resultant, in-tree), refutation-certified for deployed `p≈2^168≪2^{2^40}`, BGK-floored
 `B≤n^{1−ε}`. The two remaining open links: the dichotomy's forward direction (generic ⟹ capacity δ*)
@@ -568,16 +601,19 @@ noncomputable example {F : Type} [Field F] [Fintype F] [DecidableEq F] {n : ℕ}
     ════════════════════════════════════════════════════════════════════════════
 
     State the closed-form `δ*(ρ, ε*, n)` (or the `ε_mca` bound), prove it in the
-    prize regime, beat the per-witness wall (W1), and wire it to `mcaConjecture`
-    (T1) / a `GrandMCAResolution` (T2) / the LD prize (T3). Keep it CLOSED — no
+    prize regime, beat the per-witness wall (W1), and wire it to an operational
+    `mcaDeltaStar` equality (T1) / `mcaPrizeLatticeResolved` (T2), with the stronger
+    `mcaConjecture` only if its uniform quantifiers are proved (T3), then the LD bridge (T4).
+    Keep it CLOSED — no
     residual, no incomputable lemma. Prove a concrete prize-shaped instance first,
     then the general statement.
 
     Example skeletons (uncomment, replace `sorry` — but the prize needs NO sorry):
 
       -- def prizeDeltaStar (ρ : ℝ≥0) (n : ℕ) : ℝ≥0 := …            -- the closed form
-      -- theorem prize_mcaConjecture : mcaConjecture := …            -- T1
-      -- def prizeResolution … : GrandMCAResolution C epsStar := …   -- T2
+      -- theorem prize_deltaStar : mcaDeltaStar C epsStar = prizeDeltaStar ρ n := … -- T1
+      -- theorem prize_lattice : mcaPrizeLatticeResolved domain τ := …              -- T2
+      -- theorem prize_mcaConjecture : mcaConjecture := …                            -- T3
 
     ════════════════════════════════════════════════════════════════════════════ -/
 
@@ -659,41 +695,64 @@ theorem deltaStar_pin_mu8_F4129_witness :
       (by norm_num) (by norm_num) (by norm_num) (by norm_num) orderOf_g8_witness (by norm_num)
   rw [hpin]; refine tsub_eq_of_eq_add ?_; norm_num
 /-! ════════════════════════════════════════════════════════════════════════════
-    ║   §Y.  THE EXPLICIT ENTROPY VALUE  +  THE RIGOROUS IN-WINDOW CEILING        ║
+    ║   §P.  THE PRODUCTION INCIDENCE CORE IS EXACTLY PROJECTIVE                  ║
     ════════════════════════════════════════════════════════════════════════════
 
-  Complement to the Shaw-operator reduction: that gives the closed *form* (δ* = closed
-  function of the worst-case line-ball spectral error); this pins the closed *value* with
-  the explicit constant and proves the in-window placement + ceiling rigorously
-  (`PrizeEntropyDeltaStar.lean`, axiom-clean).
+  `WorstCaseIncidenceBounded` counts one affine chart of each two-row pencil.  For every
+  `E < |F|`, `worstCaseIncidenceBounded_iff_projective` proves this is EXACTLY equivalent to
+  bounding all `|F|+1` projective bad slots.  There is no `+1` loss: a good affine slot can be
+  moved to infinity, and `badSlotCount_row_mix` proves the census is invariant under every
+  invertible row mix.  The strict budget is sharp; the `F_2`, three-coordinate boundary theorem
+  refutes the equivalence at `E = |F|`.
 
-  THE CLOSED-FORM VALUE:  **δ*(ρ, B) = 1 − ρ − binEntropy(ρ) / log₂ B**,  B = q·ε* (≈ n).
-  A single computable real, no residual.  PROVEN strictly inside the window from BOTH sides:
-  `prizeDeltaStar_lt_capacity` (< 1−ρ) and `prizeDeltaStar_gt_johnson` (> 1−√ρ, given
-  `log₂B > H(ρ)/(√ρ−ρ)` — holds at every prize rate × budget {40,64,128}).
+  `epsMCA_le_iff_projective` identifies the operational error budget with this projective census,
+  and `mcaDeltaStar_eq_of_projective_jump` converts its first failure into an exact threshold.
+  Codeword translation shows that the census depends only on the two quotient classes.  For every
+  budget `E >= 1`, dependent quotient rows contribute at most one slot, so only genuine rank-two
+  pencils remain.  `mcaEventProj_iff_quotientPencilSupport` states each bad slot exactly as a class
+  lying in a witness support subspace which does not contain the whole quotient pencil.  The open
+  math is the resulting worst-case incidence estimate. -/
 
-  DERIVATION.  Worst-case list `= q·ε_mca` on the dyadic subgroup `μ_s` is the maximal
-  subset-sum fibre `N_fib(s,r) = C(s/2 − r%2, ⌊r/2⌋)` (`TwoPowerFibreValue`; Lam–Leung
-  antipodal structure).  Constant rate ⟹ ladder `r ≈ ρs+2`, list `2^{(s/2)H(ρ)}`, exceeding
-  `B` exactly when `s > 2log₂B/H(ρ)`, i.e. `δ` drops below `prizeDeltaStar`.
+#check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
+#check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
+#check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_eq_of_quotient_mk_eq
+#check @ProximityGap.ProjectiveWorstCaseIncidence.worstCaseIncidenceBounded_iff_projective
+#check @ProximityGap.ProjectiveWorstCaseIncidence.epsMCA_le_iff_projective
+#check @ProximityGap.ProjectiveWorstCaseIncidence.mcaDeltaStar_eq_of_projective_jump
+#check @ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
+#check @ProximityGap.ProjectiveRankTwoAPI.rowsIndependentModCode_iff_finrank_quotientPencil_eq_two
+#check @ProximityGap.ProjectiveQuotientSupport.mcaEventProj_iff_quotientPencilSupport
+#check
+  ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 
-  THE PROVEN CEILING (unconditional, prize-regime):  `prizeDeltaStar_ceiling` — `δ* ≤ 1−r/2^μ`
-  via the explicit ladder (`kkh26_epsMCA_lower_bound_of_not_dvd`) under the MILD DECIDABLE
-  hypothesis `q ∤ (collision resultants)` — NOT the `s^{s/2}<q` transfer wall, NO
-  `CensusDomination`, no incomputable lemma.  Optimised over dyadic levels ⟹ entropy ceiling.
+/-! ════════════════════════════════════════════════════════════════════════════
+    ║   §Y.  THE HISTORICAL ENTROPY CANDIDATE IS REFUTED FINITELY                ║
+    ════════════════════════════════════════════════════════════════════════════
 
-  THE REMAINING CORE, STATED CLOSED:  `PrizeFloorStatement` — worst-case list `≤ B` below
-  `prizeDeltaStar` (= the Shaw budget `‖𝒮‖ ≤ B` = BCHKS25 Conj 1.12).  The ladder ceiling
-  LOWER-BOUNDS the achievable Shaw budget by `N_fib − average`, so the Shaw conjecture's
-  budget must sit at exactly the entropy crossover.  Proving the floor pins
-  `δ* = prizeDeltaStar` and resolves both grand challenges. -/
+  `PrizePinConjecture` is false as stated.  It passes the polynomial degree ratio `k/n` to
+  `prizeDeltaStar`, although `evalCode g n k` has dimension `k+1`.  It also mixes Mathlib's
+  natural-log `Real.binEntropy` with the base-two denominator `Real.logb 2 B`.
 
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar              -- δ* = 1−ρ−H(ρ)/log₂B (closed form)
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar_lt_capacity  -- PROVEN: below capacity
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar_gt_johnson   -- PROVEN: above Johnson (in-window)
-#check @ProximityGap.PrizeEntropy.prizeDeltaStar_ceiling      -- PROVEN: unconditional ladder ceiling
-#check @ProximityGap.PrizeEntropy.PrizeFloorStatement         -- the single closed open core
-#check @ProximityGap.PrizeEntropy.PrizePinConjecture          -- δ* = prizeDeltaStar (the pin)
+  At the unconditional dimension-one pin over `F_12289`,
+
+  `mcaDeltaStar (evalCode 4043 8 0) (14/12289) = 3/4`.
+
+  The historical degree-rate side is `1`; the same mixed-base expression at the actual rate
+  `1/8` is strictly ABOVE `3/4`; and the obvious base-consistent repair is strictly BELOW `3/4`.
+  All three statements are machine-checked in `PrizeEntropyPinRefuted`.  Therefore none is a
+  generic finite exact formula.  These counterexamples do not refute a suitably corrected
+  asymptotic law or any of the four production instances.
+
+  The independent discrete ladder theorem `prizeDeltaStar_ceiling` remains valid: it proves
+  `δ* ≤ 1-r/2^μ` at a certified rung under the stated collision-resultant hypothesis.  It does
+  not prove equality with either entropy expression.  The production worst-case incidence/list
+  upper bound remains the open core. -/
+
+#check @ProximityGap.PrizeEntropy.prizeDeltaStar
+#check @ProximityGap.PrizeEntropy.prizeDeltaStar_ceiling
+#check @ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED
+#check @ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
+#check @ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
 /-! ════════════════════════════════════════════════════════════════════════════
     ║   §D   THE DEMAND-SIDE LANE (#389) — CensusDomination #bad-scalar count    ║
     ════════════════════════════════════════════════════════════════════════════
@@ -805,8 +864,9 @@ example (g : ℕ) (hg : 3 ≤ g) :
     scalar to a subset-sum spectrum value (`witness_pin_eq_neg_sum`), bound the spectrum
     cardinality, then discharge the resulting `Nat`/poly inequality against `2^r·C(n/2,r)`.
 
-    Once proved, wire to the CensusDomination reduction → `mcaDeltaStar` → `mcaConjecture` (T1) /
-    `GrandMCAResolution` (T2) / the LD prize (T3), exactly as §4's closure contract requires.
+    Once proved, wire to the CensusDomination reduction → an `mcaDeltaStar` equality (T1) or
+    `mcaPrizeLatticeResolved` (T2).  Do not infer the uniform `mcaConjecture` (T3) without its
+    extra quantifiers; use the applicable LD bridge as T4, exactly as §4's closure contract requires.
     ════════════════════════════════════════════════════════════════════════════ -/
 
 /-- The general-`r` budget `K = 2^r · C(n/2, r)`, ready for the conjecture above to consume.

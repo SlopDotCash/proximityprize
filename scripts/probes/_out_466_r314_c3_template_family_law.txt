@@ -1,0 +1,19 @@
+# R314 c=3 template-family multiplicity law
+
+n=32 p=21523361 m=16 abs3_offset=5 abs3_sign=-1 inv3_offset=11
+  signature=(93, 3, 1) delta=750 templates=2 occurrences=32 dist=16:2
+  signature=(6, 3, 3) delta=90 templates=12 occurrences=64 dist=5:8 6:4
+  signature=(6, 3) delta=36 templates=150 occurrences=800 dist=1:16 2:16 3:16 4:16 5:36 6:2 7:8 8:8 9:8 10:8 11:16
+  checks: large_templates=2 large_occ=32 expected=32; middle_templates=12 middle_occ=64 expected=64; small_templates=150 expected=150 small_occ=800 expected=800
+
+n=64 p=926510094425921 m=32 abs3_offset=21 abs3_sign=1 inv3_offset=11
+  signature=(189, 3, 1) delta=1518 templates=2 occurrences=64 dist=32:2
+  signature=(6, 3, 3) delta=90 templates=12 occurrences=128 dist=10:4 11:8
+  signature=(6, 3) delta=36 templates=342 occurrences=3648 dist=1:16 2:16 3:16 4:16 5:16 6:16 7:16 8:16 9:16 10:10 11:76 12:8 13:8 14:8 15:8 16:8 17:8 18:8 19:8 20:8 21:40
+  checks: large_templates=2 large_occ=64 expected=64; middle_templates=12 middle_occ=128 expected=128; small_templates=342 expected=342 small_occ=3648 expected=3648
+
+n=128 p=1716841910146256242328924544641 m=64 abs3_offset=21 abs3_sign=1 inv3_offset=43
+  signature=(381, 3, 1) delta=3054 templates=2 occurrences=128 dist=64:2
+  signature=(6, 3, 3) delta=90 templates=12 occurrences=256 dist=21:8 22:4
+  signature=(6, 3) delta=36 templates=726 occurrences=15488 dist=1:16 2:16 3:16 4:16 5:16 6:16 7:16 8:16 9:16 10:16 11:16 12:16 13:16 14:16 15:16 16:16 17:16 18:16 19:16 20:16 21:164 22:2 23:8 24:8 25:8 26:8 27:8 28:8 29:8 30:8 31:8 32:8 33:8 34:8 35:8 36:8 37:8 38:8 39:8 40:8 41:8 42:8 43:80
+  checks: large_templates=2 large_occ=128 expected=128; middle_templates=12 middle_occ=256 expected=256; small_templates=726 expected=726 small_occ=15488 expected=15488

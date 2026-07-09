@@ -1,0 +1,29 @@
+{
+ "id": "C026",
+ "rank": 26,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F12",
+  "F5",
+  "F13"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-largesieve",
+  "W-anomaly"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean"
+ ],
+ "title": "The cyclotomic norm-defect threshold is ONE engine for both e2=0 rigidity (F12) and the additive-energy clean range (F5/F13): the FINITE-degree escape from F5 vacuity",
+ "connection": "CyclotomicNormDefectThreshold (prime_le_of_cyclotomic_signed_sum, no_spurious_tuple_of_lt_prime) proves the additive-energy clean range: any signed sum of ≤2r roots vanishing mod p forces p≤(2r)^{φ(n)} via |Res(Φ_n,g)|=|Norm(α)|≤M^{φ(n)}. WindowTwoLayerThreshold.qualifying_implies_char0_vanishing is the SAME mechanism specialized to the degree-2-in-the-set polynomial R_U with M=|A|² (ℓ¹ mass ≤2^{m-1}|A|²). So F12 (e2=0) is the r-fixed structured instance of the F5/F13 deep-moment clean range with the signed sum being the e2 relation. The crucial difference: e2's relation has BOUNDED EXPLICIT degree and ℓ¹ mass independent of r, so its threshold is genuinely finite and beats the W-Johnson L² ceiling, whereas the generic F5 threshold is VACUOUS at prize r≈log p because φ(n)=n/2 makes (2r)^{n/2}≫p.",
+ "why_insightful": "Exposes that the 'no-BGK-wall' property of F12 is exactly the FINITE-DEGREE escape from F5 vacuity: both use the identical Norm≤M^{φ(n)} engine, but e2's relation is r-uniform so its threshold doesn't blow up with depth — the one structured corner where the cyclotomic-norm method is non-vacuous in the prize regime.",
+ "attack_plan": "Lean: refactor WindowTwoLayer's threshold to be a direct corollary of prime_le_of_cyclotomic_signed_sum (unifying the two resultant engines into one Norm≤M^φ lemma). Research probe: tabulate Norm(e2 relation) vs (|A|²)^{φ(n)} for small n to measure the gap between crude and true threshold (≈n³ measured vs (n²+n)^{n/2} provable); if the true norm spectrum is poly(n), the e2 face is clean unconditionally at prize scale."
+}

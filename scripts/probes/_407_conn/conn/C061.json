@@ -1,0 +1,27 @@
+{
+ "id": "C061",
+ "rank": 61,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F4"
+ ],
+ "walls": [
+  "W-subspace",
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignListDim.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignListSize.lean"
+ ],
+ "title": "List-dimension confinement (dim≤r−1) is the missing reverse bound for the n²-monomial-line concentration — design supplies the rank cap the Poisson floor lacks",
+ "connection": "Comment 1 reframes δ* as the first-moment (Poisson) threshold over the n²-monomial-line family and notes the MISSING reverse bound is 'list-concentration over a poly-size family' — a cap on how many close codewords pile onto one line. The proven subspaceDesign_list_dim_bound gives EXACTLY such a cap by a non-analytic linear-algebraic mechanism: r+1 close codewords with independent differences cannot jointly agree on >τ(r)·n coordinates, so the close list spans dimension <r, |L|≤|F|^{r−1} (SubspaceDesignListSize). The F3 incidence I(δ) is precisely the count this confines. The design route's list-dim confinement is the structural form of the concentration bound Comment 1 wants, and the gap to plain RS is exactly that confinement needs τ(r)<1 (folding), whereas the monomial-line Poisson argument needs sub-Poisson concentration — the SAME missing ingredient (a rank/incidence cap below capacity) combinatorially vs analytically.",
+ "why_insightful": "Comment 1's 'missing reverse bound' and the design route's 'list-dim confinement' have never been identified as the same object. The design machinery is PROVEN (axiom-clean) for the folded case; recognizing it as the reverse bound the floor needs tells you exactly what folding is buying analytically (the rank cap).",
+ "attack_plan": "Instantiate subspaceDesign_list_dim_bound at the monomial-line family: close codewords={u0+γu1 δ-close}, their differences ∝γ·u1 are 1-dimensional so r=1 and the bound is |L|≤1 unless τ(1)·n is large. Compute the τ(1) needed to match the n² Poisson count; this reveals the exact τ-deficit plain RS suffers. If the deficit equals H(ρ)/(β log n), the design wall and the floor coincide quantitatively."
+}

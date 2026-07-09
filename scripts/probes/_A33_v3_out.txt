@@ -1,0 +1,32 @@
+
+### A33 v3 (fast exact n<=16, sampled n=32): realizable RAGGED max vs sqrt(n*k)
+
+================================================================================================
+n=8=2^3  (EXACT: all gamma, all k-subsets)
+================================================================================================
+
+  rho=0.5 k=4 sqrt(n*k)=5.657
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  beats?  orbit-inc  MAXcoset
+       1    8     (5,4)        41 |         5     5.657     YES       8.00         0
+       2    4     (6,4)        41 |         5     5.657     YES       6.00         6
+
+  rho=0.25 k=2 sqrt(n*k)=4.000
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  beats?  orbit-inc  MAXcoset
+       1    8     (3,2)        41 |         3     4.000     YES       8.00         0
+       2    4     (4,2)        41 |         3     4.000     YES       4.83         4
+       4    2     (6,2)        41 |         3     4.000     YES       3.65         4
+
+  [char-test n=8 rho=0.25 k=2] Kambire-worst d=2 s=4 (a,b)=(4,2) sqrt(nk)=4.000
+      q=       41 MAXragged=3 MAXcoset=4 beats=YES
+      q=       73 MAXragged=3 MAXcoset=4 beats=YES
+      q=       89 MAXragged=3 MAXcoset=4 beats=YES
+      q=       97 MAXragged=3 MAXcoset=4 beats=YES
+      q=      113 MAXragged=3 MAXcoset=4 beats=YES
+      q=      137 MAXragged=3 MAXcoset=4 beats=YES
+      -> ragged char-INDEP (values [3])
+================================================================================================
+n=16=2^4  (EXACT: all gamma, all k-subsets)
+================================================================================================
+
+  rho=0.5 k=8 sqrt(n*k)=11.314
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  beats?  orbit-inc  MAXcoset

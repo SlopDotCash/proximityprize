@@ -1,0 +1,28 @@
+{
+ "id": "C018",
+ "rank": 18,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3",
+  "F10",
+  "F13"
+ ],
+ "walls": [
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26CensusExact.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26CharZeroCollisionLaw.lean"
+ ],
+ "title": "I_∞(δ) is the q-independent stratified census ∑_j 2^{r-2j}C(2^{μ-1},r-2j); δ*=I_∞^{-1}(n) is a single cyclotomic function — but ONLY above the resultant threshold (prize is below it)",
+ "connection": "census_card_eq_stratified: above p>(2^μ)^{2^{μ-1}}, the exact bad-scalar count for the KKH26 fiber class equals I_∞(1−r/2^μ)=∑_{j∈feas}2^{r-2j}·C(2^{μ-1},r-2j) — a function of (μ,r) ONLY, q-independent. sum_eq_iff_freePart_eq pins the mechanism: two subgroup subsets collide iff antipodal-free parts agree, so I_∞ counts antipodal-free configs (F10 half-sum, F13 signed-unit-vector). So δ*(n)=sup{δ:I_∞(δ)≤n} IS a single q/n-independent inverse-cyclotomic function — but ONLY above the resultant threshold. CRITICAL CAVEAT (honest): the prize p≈n^β (β≈4-5) is FAR BELOW (2^μ)^{2^{μ-1}}, so census exactness FAILS there (DISPROOF_LOG O139: in-window census field-dependent; extra mod-p collisions). I_∞ is the char-0/large-p envelope; the prize gap is 'how far below I_∞ the char-p count rises'.",
+ "why_insightful": "Reframes the 'q-independent single function' claim HONESTLY: the q-independent census is the large-p envelope, and the entire prize difficulty is localized to char-p surplus collisions BELOW the resultant threshold (W-LamLeung). Staircase restatement of the same char-p crux, as a count not a sup-norm.",
+ "attack_plan": "Probe: for fixed (μ,r) sweep p across [n^4,(2^μ)^{2^{μ-1}}], measure I−I_∞ vs p; surplus governed by #{(S,T):p|N(λ_S−λ_T)}=resultant-divisibility count. Lean: bound the char-p surplus by (collisionPairs μ r).card·(largest resultant)/p feeding KKH26FixedRResultantBound (2r)^{2^{μ-1}}, show it stays ≤n at β≈4 (count-side of the prize, off BGK)."
+}

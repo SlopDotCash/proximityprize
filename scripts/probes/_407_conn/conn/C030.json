@@ -1,0 +1,27 @@
+{
+ "id": "C030",
+ "rank": 30,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26EntropyForm.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26AsymptoticCeiling.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EntropyGateDeltaStar.lean"
+ ],
+ "title": "The δ* gap H(ρ)/(β log n) IS the entropy-rate of the census numerator: ceiling distance to capacity = (log₂ I_∞)/(β log₂ n) via method-of-types",
+ "connection": "The conjectured pin δ*=1−ρ−H(ρ)/(β log₂ n) is reconstructed from the census: kkh26_gap_identity proves the march ceiling sits EXACTLY (2m−1)/n=Θ(1/2^μ) below capacity; kkh26_count_poly_in_n + choose_ge_two_rpow_entropy_div prove the census numerator C(2^μ,r)≥2^{2^μ·H(r/2^μ)}/(2^μ+1), i.e. log₂ I_∞≈2^μ·H(ρ). The pin fires (F1) when I_∞=q·ε*≈n, i.e. 2^μ·H(ρ)≈log₂ n+(gap)·(β log₂ n); solving gives gap=H(ρ)/(β log n). EntropyGateDeltaStar.mcaDeltaStar_le_of_entropy_gate makes this a THEOREM mod two binomial-tail walls (lower a!·2q^m≤(n+1−a)^a; upper n^a<a!·q^{m+1}).",
+ "why_insightful": "Shows the headline constant H(ρ)/β is not mysterious-analytic but forced by C(n,ρn)≈2^{nH(ρ)} method-of-types on the census — reducing the prize constant to a binomial entropy fact already in-tree, isolating exactly the two binomial-tail inequalities.",
+ "attack_plan": "Lean: discharge the two entropy-gate walls in the prize regime via the in-tree binomial sandwich (n+1−a)^a≤a!C(n,a)≤n^a — upper wall is the truncation collapse; lower wall needs H(a/n)·n≥(a−k)β log n = two_rpow_entropy_le_succ_mul_choose at a=ρn+gap. Then mcaDeltaStar_le_of_entropy_gate gives the upper-bracket ceiling for the GENERIC ladder code unconditionally — a real advance on the upper side."
+}

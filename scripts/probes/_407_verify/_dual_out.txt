@@ -1,0 +1,19 @@
+====================================================================================================
+ #407 DUAL / TRANSFERENCE lever (ℓ2 Minkowski):  is 𝔭 well-rounded (no dual rescue)?
+====================================================================================================
+   n  beta              p |    λ1(𝔭)      λn~   λn/λ1 |    λ1(𝔭*)   λ1·λ1*   1/λn*≈  tight?
+   8   4.0           4129 |   17.550   17.550   1.000 |    0.0683    1.198   14.646   0.835
+   8   5.0          32801 |   29.866   29.866   1.000 |    0.0412    1.231   24.256   0.812
+  16   4.0          65617 |   12.329   12.329   1.000 |    0.0961    1.184   10.411   0.844
+  16   5.0        1048609 |   18.111   19.596   1.082 |    0.0714    1.294   13.105   0.724
+  32   4.0        1048609 |   12.649   13.856   1.095 |    0.1306    1.653    6.377   0.504
+  32   5.0       33554593 |   16.492   19.183   1.163 |    0.1152    1.900    7.386   0.448
+  64   4.0       16777601 |   16.000   21.166   1.323 |    0.1768    2.828    4.583   0.286
+  64   5.0     1073741953 |   17.889   24.658   1.378 |    0.1592    2.848    5.001   0.280
+
+READING:
+ - λn/λ1 ≈ 1: 𝔭 is PERFECTLY WELL-ROUNDED (Fukshansky-Petersen). Then transference is TIGHT
+   and gives NO loose lower bound on λ1 beyond the Minkowski/Hermite value -> the dual offers
+   no rescue: λ1(𝔭) is pinned ~ Hermite·covol^{1/D}, hence the onset is pinned, hence the
+   sparse-support sub-count is two-sided pinned just like the box count. No new lever.
+ - 1/λn* ≈ λ1: transference is essentially an equality here (well-rounded) -> exhausted.

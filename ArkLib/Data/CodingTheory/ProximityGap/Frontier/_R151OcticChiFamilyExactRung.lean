@@ -46,16 +46,13 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 /-- The octic superelliptic pipeline supplies the R17 fourth-moment input for the explicit
 `chiFamily χ` exact-rung consumers. -/
 theorem fourthMomentTwistBound_chiFamily_of_octic_superelliptic
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (χ : MulChar F ℂ) (G : Finset F)
     (T : MulChar F ℂ → Finset ℂ)
     (msteps e J D Dtot : MulChar F ℂ → ℕ)
     (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
     (gOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F[X])
     (ζOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -85,16 +82,13 @@ theorem fourthMomentTwistBound_chiFamily_of_octic_superelliptic
     ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
       G (chiFamily χ) (4 + Cmax) :=
   fourthMomentTwistBound_of_octic_superelliptic_pipeline G (chiFamily χ) T msteps e J D
-    Dtot Cd gOf ζOf hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount
+    Dtot Cd gOf ζOf h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount
     hDtot harith hCd0 hCdmax hn4q
 
 /-- The octic superelliptic pipeline also supplies the fourth-moment input for any thinned
 subfamily `Y ⊆ chiFamily χ`.  This is the usable form for the residual/thinning route, since the
 full `chiFamily` size gate is known to be impossible in the large-order regime. -/
 theorem fourthMomentTwistBound_chiSubfamily_of_octic_superelliptic
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (χ : MulChar F ℂ) (G : Finset F) {Y : Finset (MulChar F ℂ)}
     (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -102,7 +96,7 @@ theorem fourthMomentTwistBound_chiSubfamily_of_octic_superelliptic
     (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
     (gOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F[X])
     (ζOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -133,16 +127,13 @@ theorem fourthMomentTwistBound_chiSubfamily_of_octic_superelliptic
       G Y (4 + Cmax) :=
   fourthMomentTwistBound_mono hY
     (fourthMomentTwistBound_chiFamily_of_octic_superelliptic χ G T msteps e J D Dtot Cd
-      gOf ζOf hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith
+      gOf ζOf h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith
       hCd0 hCdmax hn4q)
 
 /-- Thinned-family exact-rung consumer with the fourth-moment input supplied by the octic
 superelliptic pipeline.  The remaining nontrivial thinning input is the exact
 `ChiDecompositionOff` identity for the chosen subfamily `Y`. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -157,7 +148,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_consta
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -192,7 +183,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_consta
       ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
         G Y (4 + Cmax) :=
     fourthMomentTwistBound_chiSubfamily_of_octic_superelliptic χ G hY T msteps e J D Dtot
-      Cd gOf ζOf hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot
+      Cd gOf ζOf h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot
       harith hCd0 hCdmax hn4q
   exact wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one ψ hψ G Dset Y
     (fun χ' => gaussSum χ' ψ) χ hmord hn hCw0 hC hdec
@@ -201,9 +192,6 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_consta
 /-- Raw-fourth-moment companion to
 `wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_constant_le_one`. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -218,7 +206,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_const
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -252,16 +240,13 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_const
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_constant_le_one
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hC hdec
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
 
 /-- Size-gated thinned-family exact-rung consumer for the octic route.  Instead of asking callers
 to prove the normalized `hC` gate directly, this version uses the standard R18 arithmetic adapter:
 if the octic constant satisfies `4 + Cmax ≤ 6` and `15 * |Y|² ≤ orderOf χ`, the gate fires. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -275,7 +260,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_l
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -310,7 +295,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_l
       ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
         G Y (4 + Cmax) :=
     fourthMomentTwistBound_chiSubfamily_of_octic_superelliptic χ G hY T msteps e J D Dtot
-      Cd gOf ζOf hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot
+      Cd gOf ζOf h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot
       harith hCd0 hCdmax hn4q
   have hCw6 : 4 + Cmax ≤ 6 := by linarith
   exact wickForIncidenceAwayAt_two_of_gchi_of_Cw_le_six_nonempty_fifteen_card_sq_le_order_nat
@@ -320,9 +305,6 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_l
 /-- Raw-fourth-moment companion to
 `wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two`. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -336,7 +318,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_Cmax_
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -370,14 +352,11 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_Cmax_
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hCmax2
-      hYnonempty horder hdec hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder hdec h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence consumer for the size-gated thinned octic route. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -391,7 +370,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -431,15 +410,12 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
   incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hCmax2
-      hYnonempty horder hdec hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder hdec h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
     hs
 
 /-- Sup-norm approximate-`B` consumer for the size-gated thinned octic route. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -453,7 +429,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -493,15 +469,12 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
   approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hCmax2
-      hYnonempty horder hdec hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder hdec h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
     hM0 hM hs
 
 /-- Direct off-diagonal incidence consumer for the thinned octic `chiFamily` route. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -516,7 +489,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_constant_le_one
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -556,15 +529,12 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_constant_le_one
   incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_constant_le_one
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hC hdec
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
     hs
 
 /-- Sup-norm approximate-`B` consumer for the thinned octic `chiFamily` route. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -579,7 +549,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_constant_le_one
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hdec : ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.ChiDecompositionOff
       ψ G (Gchi χ) Dset Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -619,7 +589,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_constant_le_one
   approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_constant_le_one
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hC hdec
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
     hM0 hM hs
 
@@ -627,9 +597,6 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_constant_le_one
 explicit `chiFamily` exact-rung consumer.  The normalized full-family gate is kept as an
 explicit hypothesis, matching R19. -/
 theorem wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F)
     (T : MulChar F ℂ → Finset ℂ)
@@ -642,7 +609,7 @@ theorem wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_
     (hC :
       32 * ((4 + Cmax) * ((chiFamily χ).card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -677,7 +644,7 @@ theorem wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_
       ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
         G (chiFamily χ) (4 + Cmax) :=
     fourthMomentTwistBound_chiFamily_of_octic_superelliptic χ G T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hn4q
   exact wickForIncidenceAwayAt_two_of_chiFamily_of_constant_le_one ψ hψ χ G Dset hmord hn hGD
     hCw0 hC h4 hq1 hnq hreg
@@ -685,9 +652,6 @@ theorem wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_
 /-- Raw-fourth-moment companion to
 `wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_le_one`. -/
 theorem rawFourthMomentWithDiagonal_of_chiFamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F)
     (T : MulChar F ℂ → Finset ℂ)
@@ -700,7 +664,7 @@ theorem rawFourthMomentWithDiagonal_of_chiFamily_octic_superelliptic_of_constant
     (hC :
       32 * ((4 + Cmax) * ((chiFamily χ).card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -735,7 +699,7 @@ theorem rawFourthMomentWithDiagonal_of_chiFamily_octic_superelliptic_of_constant
       ArkLib.ProximityGap.Frontier.R17QuadrupleWeilRung.FourthMomentTwistBound
         G (chiFamily χ) (4 + Cmax) :=
     fourthMomentTwistBound_chiFamily_of_octic_superelliptic χ G T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hn4q
   exact rawFourthMomentWithDiagonal_of_chiFamily_of_constant_le_one ψ hψ χ G Dset hmord hn hGD
     hCw0 hC h4 hq1 hnq hreg
@@ -743,9 +707,6 @@ theorem rawFourthMomentWithDiagonal_of_chiFamily_octic_superelliptic_of_constant
 /-- Direct off-diagonal incidence consumer for the octic `chiFamily` exact rung, specialized to
 the available `r = 2` Wick certificate. -/
 theorem incidence_le_of_chiFamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F)
     (T : MulChar F ℂ → Finset ℂ)
@@ -758,7 +719,7 @@ theorem incidence_le_of_chiFamily_octic_superelliptic_of_constant_le_one
     (hC :
       32 * ((4 + Cmax) * ((chiFamily χ).card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -798,15 +759,12 @@ theorem incidence_le_of_chiFamily_octic_superelliptic_of_constant_le_one
   incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_le_one
       ψ hψ χ G Dset T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
     hs
 
 /-- Sup-norm approximate-`B` consumer for the octic `chiFamily` exact rung. -/
 theorem approxB_away_of_chiFamily_octic_superelliptic_of_constant_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F)
     (T : MulChar F ℂ → Finset ℂ)
@@ -819,7 +777,7 @@ theorem approxB_away_of_chiFamily_octic_superelliptic_of_constant_le_one
     (hC :
       32 * ((4 + Cmax) * ((chiFamily χ).card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -859,7 +817,7 @@ theorem approxB_away_of_chiFamily_octic_superelliptic_of_constant_le_one
   approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiFamily_octic_superelliptic_of_constant_le_one
       ψ hψ χ G Dset T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
     hM0 hM hs
 

@@ -1,0 +1,29 @@
+{
+ "id": "C097",
+ "rank": 97,
+ "total": 22,
+ "scores": {
+  "insight": 7,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F18",
+  "F19"
+ ],
+ "walls": [
+  "W-largesieve",
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionWeilConditional.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/StepanovWeilEngine.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/StepanovFrobeniusReduction.lean"
+ ],
+ "title": "Per-character Weil energy ‖Tψ‖²≤B SUFFICES (Plancherel bridge built); the missing input is a single Stepanov point-count on the subgroup-restricted curve, not the full BGK sup-norm",
+ "connection": "collision_le_of_relative_bound (axiom-clean) proves the M2 anti-concentration the prize needs follows from a UNIFORM per-character bound ‖Tψ‖²≤ε·C² for every ψ≠0 — the Plancherel arithmetic is fully discharged, the open input is ONE named hypothesis hB. The per-character sum Tψ=Σ_{x∈μ_n}ψ(stat) is a Weil-on-curves count. Critically this is a PER-ψ bound (autocorrelation-flatness F18, not a sup over a growing family), exactly the shape Stepanov delivers — stepanov_point_bound_via_reduceFrob bounds the point count of ONE curve at a time. So the bridge + Stepanov engine reduce the M2 part of the prize to: produce, for each fixed ψ, a Frobenius-reduced auxiliary of degree <q and order M≈√q on the relevant point set. Non-vanishing is FREE (obstruction_forces_trivial, no genus). Only the explicit auxiliary with √q-strength degree accounting remains.",
+ "why_insightful": "Two independently-built pieces — the conditional Plancherel bridge (per-character suffices) and the Stepanov engine (one curve, non-vanishing free) — are exactly complementary: the bridge needs per-ψ bounds, Stepanov produces per-curve bounds. The campaign treats the Weil input as monolithic; this exposes that for the M2/second-moment face the input is per-character (Johnson-level, F18 flatness), where the assembled Stepanov machinery has a real shot.",
+ "attack_plan": "Wire collision_le_of_relative_bound's hB to weil_stepanov_card_lt's conclusion: instantiate (g,A0,A1,V,M) so V=the curve {stat(x)=t}∩μ_n and |V|·M<D yields ‖Tψ‖²≤ε·C². The remaining piece is choosing A≈q/2−deg g and M≈√q to balance 2ℓ(A+1) vs |V|·M — pure degree bookkeeping. Lean: perChar_weil_bound_of_stepanov_aux discharging hB from an explicit auxiliary, then chain to M2 anti-concentration — closes the SECOND-MOMENT (Johnson-side) face unconditionally even if deep-band δ* stays open."
+}

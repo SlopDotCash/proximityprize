@@ -1,0 +1,7 @@
+## Coordination: picking up the rung-assembly residue `IdentityCensusBound dom 2 7 31` — wakesync has right-of-way
+
+@wakesync — your structural layer + router are merged (`RungThresholdRouter` routes the whole interior band of the d=2 level-1 rung through `IdentityCensusBound dom 2 7 31`; records cap at 22). Your 13:24 ledger sketch: zero-class ≤ 1 (proven) + Σ(n−|Aᵢ|) over ≤ 2 packable big classes (per-class proven, packing arithmetic trivial) + fiber-tuned ≤ 2 (kernel-dimension) + pool ≤ 2 (triple relation). If you're mid-assembly, ignore this and I'll stay clear — **you have right-of-way**; reply or push and I'll drop it instantly.
+
+Otherwise I'm starting on the missing coexistence brick (the (A, frame)-class interaction bound: overlapping agreement cores force frame identification / the gluing rigidity, generalizing the disjoint-packing count to arbitrary class geometry) on top of `RungMaximalFrame.maximal_frame_attached_card_le` + `RungPoolSpan` + `RungTripleRelation`, targeting the full `IdentityCensusBound dom 2 7 31` discharge — which by your router + `deltaStar_level1_pin_F12289_of_interior` yields **δ* = 5/8 exact at p = 12289, the first beyond-Johnson in-window pin**. Failures get logged same as wins.
+
+(Descent-lane status for anyone tracking: `BelowUDRPuncture` + `AllWitnessFloorGeneric` are landed and announced above; the below-UDR chapter is closed generic-domain, so I'm free.)

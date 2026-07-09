@@ -1,0 +1,30 @@
+{
+ "id": "C069",
+ "rank": 69,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F8",
+  "F12",
+  "F13"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/TwoPowerTowerFactorization.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GVObjectTowerDecomposition.lean"
+ ],
+ "title": "The TWO cocycles coincide: the additive tower factor a^{2^k}−b^{2^k}=∏(a^{2^j}+b^{2^j}) IS the Galois norm N(α)=∏_ω g(ω) bounding the char-p energy defect",
+ "connection": "TwoPowerTowerFactorization.pow_two_pow_sub_eq decomposes the GV/energy collision object (1+w)^n=c^n into ∏_{j<k}((1+w)^{2^j}+c^{2^j}) — a product of k=μ quadratic-extension factors. CyclotomicNormDefectThreshold proves the char-p defect exists only if p∣N(α), N(α)=Res(Φ_n,g)=∏_{ω prim}g(ω), |N(α)|≤(2r)^{φ(n)} — also a product, over the φ(n)=n/2 Galois embeddings. SAME multiplicative cocycle two ways: the tower factorization is the 2-adic refinement (factor per level j) of the Galois norm (factor per embedding ω), since the Frobenius/2-power structure groups the φ(n) embeddings into μ tower levels of sizes 2^j. The anomaly wall (defect forced once (2r)^{n/2}≥p) is literally the product cocycle dropping below p; the tower gives a level-by-level handle on WHICH embeddings make it small.",
+ "why_insightful": "The issue treats the additive 2-adic tower (F8) and the cyclotomic norm threshold (W-anomaly) as separate lanes; recognizing both as the same φ(n)-fold product, with the tower as the 2-adic stratification of the norm, is unstated structural unification.",
+ "attack_plan": "Probe: for short balanced 2r-tuples α=g(ζ_n) at n=16,32, compute per-embedding |g(ω)|, check clustering by 2-adic tower level (predict small factors concentrate where (1+w)/c has order exactly 2^{j+1}, per GVObjectTowerDecomposition). Lean: factor Res(Φ_n,g) through the tower factor product of TwoPowerTowerFactorization for n=2^μ. If one level dominates the smallness, the defect-existence wall localizes to a single quadratic factor."
+}

@@ -1,0 +1,28 @@
+{
+ "id": "C085",
+ "rank": 85,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F20",
+  "F8",
+  "F2"
+ ],
+ "walls": [
+  "W-BGK",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GaussPhaseFlatnessAlgebra.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean"
+ ],
+ "title": "The index is ODD at the prize, so the constant-index lane can never recurse via a 2-power head: F8 and F20 live on coprime-order sides of F_q*≅μ_n×ℤ/m",
+ "connection": "prizeIndex_odd proves m=(q−1)/n is ODD when n=2^a is the full 2-part of q−1. The completion sum runs over t=m phases indexed by ℤ/m. A natural way to extract a constant head with cancellation is a 2-adic/parallelogram fold (F8: M(n)²≤2M(n/2)²) ON THE INDEX side — but doubling_bijective_of_odd shows x↦2x permutes ℤ/m (m odd), so Hasse–Davenport order-2 duplication gives NO 2-to-1 fold of the phase sequence. The dyadic descent F8 (which works on the SUBGROUP μ_n) is structurally unavailable on the INDEX group ℤ/m where the completion sum lives. F8 and F20 cannot be combined.",
+ "why_insightful": "Links the proven parity fact to the constant-index lane's recursion barrier: people assume the dyadic structure powering F8 could recurse the phase DFT, but odd m forbids it — F8 and F20 live on coprime-order sides of F_q*≅μ_n×ℤ/m.",
+ "attack_plan": "Lean: constIndex_no_dyadic_recursion combining prizeIndex_odd + doubling_bijective_of_odd to certify that any sub-√q saving in the m-phase completion sum must come from cancellation over an ODD-order cyclic group (no 2-adic tower), i.e. from Salem–Zygmund flatness over ℤ/m (F16), NOT F8. Documents why the 'fold the index by 2' attack is dead."
+}

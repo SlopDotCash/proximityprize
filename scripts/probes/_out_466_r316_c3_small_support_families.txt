@@ -1,0 +1,19 @@
+# R316 c=3 small-support parametric families
+
+n=32 p=21523361 m=16 abs3_offset=5 abs3_sign=-1 inv3_offset=11
+  support_patterns=39 expected=39 unknown=0
+  family=H count=13 expected=13 missing=[5, 11] duplicates=0
+  family=K count=13 expected=13 missing=[6, 11] duplicates=0
+  family=D count=13 expected=13 missing=[5, 11] duplicates=0
+
+n=64 p=926510094425921 m=32 abs3_offset=21 abs3_sign=1 inv3_offset=11
+  support_patterns=87 expected=87 unknown=0
+  family=H count=29 expected=29 missing=[11, 21] duplicates=0
+  family=K count=29 expected=29 missing=[11, 22] duplicates=0
+  family=D count=29 expected=29 missing=[11, 21] duplicates=0
+
+n=128 p=1716841910146256242328924544641 m=64 abs3_offset=21 abs3_sign=1 inv3_offset=43
+  support_patterns=183 expected=183 unknown=0
+  family=H count=61 expected=61 missing=[21, 43] duplicates=0
+  family=K count=61 expected=61 missing=[22, 43] duplicates=0
+  family=D count=61 expected=61 missing=[21, 43] duplicates=0

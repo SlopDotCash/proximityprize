@@ -31,6 +31,10 @@ MCA bad event acts **projectively** on the pencil of a stack.
   (`some γ ↦ [1 : γ]`, `none ↦ [0 : 1]`): the affine bad-scalar count of
   `MCADeltaStarExactPoint`/`MCAEquivariance` is the projective count minus the ∞ indicator
   (`badSlotCount_eq_affine_add_infty`).
+* `rowMixSlotEquiv` / `badSlotCount_row_mix` — the explicit Mobius permutation of projective
+  slots induced by every invertible row mix, and invariance of the full projective census.
+* `badSlotCount_translate` / `badSlotCount_eq_of_quotient_mk_eq` — invariance under translating
+  either row by a codeword, so the census descends to a pair of quotient classes modulo `C`.
 
 Why this matters for the campaign:
 
@@ -222,6 +226,246 @@ open Classical in
 noncomputable def badSlotCount (C : Set (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) : ℕ :=
   (Finset.filter (fun s : Option F => badSlot C δ u₀ u₁ s) Finset.univ).card
 
+/-! ## Descent to quotient classes modulo the code -/
+
+/-- Translating both rows by codewords preserves every homogeneous pencil event.
+The witnessing codeword changes by `α • c₀ + β • c₁`. -/
+theorem mcaEventProj_translate (C : Submodule F (ι → A)) {δ : ℝ≥0}
+    {u₀ u₁ c₀ c₁ : ι → A} (hc₀ : c₀ ∈ C) (hc₁ : c₁ ∈ C) (α β : F) :
+    mcaEventProj (F := F) (C : Set (ι → A)) δ (u₀ + c₀) (u₁ + c₁) α β ↔
+      mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ α β := by
+  constructor
+  · rintro ⟨S, hcard, ⟨w, hw, hag⟩, hno⟩
+    refine ⟨S, hcard, ⟨w - (α • c₀ + β • c₁),
+      C.sub_mem hw (C.add_mem (C.smul_mem α hc₀) (C.smul_mem β hc₁)),
+      fun i hi => ?_⟩,
+      fun hp => hno ((MCAEquivariance.pairJointAgreesOn_translate C hc₀ hc₁).mpr hp)⟩
+    simp only [Pi.sub_apply, Pi.add_apply, Pi.smul_apply]
+    rw [hag i hi]
+    simp only [Pi.add_apply, smul_add]
+    abel
+  · rintro ⟨S, hcard, ⟨w, hw, hag⟩, hno⟩
+    refine ⟨S, hcard, ⟨w + (α • c₀ + β • c₁),
+      C.add_mem hw (C.add_mem (C.smul_mem α hc₀) (C.smul_mem β hc₁)),
+      fun i hi => ?_⟩,
+      fun hp => hno ((MCAEquivariance.pairJointAgreesOn_translate C hc₀ hc₁).mp hp)⟩
+    simp only [Pi.add_apply, Pi.smul_apply]
+    rw [hag i hi]
+    simp only [smul_add]
+    abel
+
+/-- Codeword translation preserves badness of each normalized projective slot. -/
+theorem badSlot_translate (C : Submodule F (ι → A)) {δ : ℝ≥0}
+    {u₀ u₁ c₀ c₁ : ι → A} (hc₀ : c₀ ∈ C) (hc₁ : c₁ ∈ C) (s : Option F) :
+    badSlot (F := F) (C : Set (ι → A)) δ (u₀ + c₀) (u₁ + c₁) s ↔
+      badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ s := by
+  unfold badSlot
+  exact mcaEventProj_translate C hc₀ hc₁ (slotCoords s).1 (slotCoords s).2
+
+/-- The full projective census is constant under translation by a pair of codewords. -/
+theorem badSlotCount_translate (C : Submodule F (ι → A)) {δ : ℝ≥0}
+    {u₀ u₁ c₀ c₁ : ι → A} (hc₀ : c₀ ∈ C) (hc₁ : c₁ ∈ C) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ (u₀ + c₀) (u₁ + c₁) =
+      badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ := by
+  classical
+  unfold badSlotCount
+  congr 1
+  ext s
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+  exact badSlot_translate C hc₀ hc₁ s
+
+/-- The projective census depends only on the two additive cosets modulo `C`. -/
+theorem badSlotCount_eq_of_sub_mem (C : Submodule F (ι → A)) (δ : ℝ≥0)
+    {u₀ u₁ v₀ v₁ : ι → A} (h₀ : u₀ - v₀ ∈ C) (h₁ : u₁ - v₁ ∈ C) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ =
+      badSlotCount (F := F) (C : Set (ι → A)) δ v₀ v₁ := by
+  have htranslate := badSlotCount_translate (F := F) C h₀ h₁
+    (δ := δ) (u₀ := v₀) (u₁ := v₁) (c₀ := u₀ - v₀) (c₁ := u₁ - v₁)
+  have heq₀ : v₀ + (u₀ - v₀) = u₀ := by abel
+  have heq₁ : v₁ + (u₁ - v₁) = u₁ := by abel
+  simpa only [heq₀, heq₁] using htranslate
+
+/-- Equality of both quotient classes gives equality of projective bad-slot counts. -/
+theorem badSlotCount_eq_of_quotient_mk_eq (C : Submodule F (ι → A)) (δ : ℝ≥0)
+    {u₀ u₁ v₀ v₁ : ι → A}
+    (h₀ : (Submodule.Quotient.mk u₀ : (ι → A) ⧸ C) = Submodule.Quotient.mk v₀)
+    (h₁ : (Submodule.Quotient.mk u₁ : (ι → A) ⧸ C) = Submodule.Quotient.mk v₁) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ =
+      badSlotCount (F := F) (C : Set (ι → A)) δ v₀ v₁ := by
+  exact badSlotCount_eq_of_sub_mem C δ
+    ((Submodule.Quotient.eq (p := C)).mp h₀)
+    ((Submodule.Quotient.eq (p := C)).mp h₁)
+
+/-! ## The induced Mobius action on projective slots -/
+
+/-- Normalize nonzero homogeneous coordinates into the `Option F` chart. -/
+private def normalizeSlot (x y : F) : Option F :=
+  if x = 0 then none else some (x⁻¹ * y)
+
+/-- The projective-slot map induced by the row mix with entries `(a,b;c,d)`. -/
+private def rowMixSlotMap (a b c d : F) : Option F → Option F
+  | none => normalizeSlot c d
+  | some t => normalizeSlot (a + t * c) (b + t * d)
+
+/-- The adjugate row mix is a left inverse on projective slots. -/
+private theorem rowMixSlotMap_adjugate_left (a b c d : F) (hdet : a * d - b * c ≠ 0)
+    (s : Option F) :
+    rowMixSlotMap d (-b) (-c) a (rowMixSlotMap a b c d s) = s := by
+  rcases s with _ | t
+  · unfold rowMixSlotMap normalizeSlot
+    by_cases hc : c = 0
+    · simp [hc]
+    · simp [hc]
+      field_simp
+      ring
+  · unfold rowMixSlotMap normalizeSlot
+    by_cases hx : a + t * c = 0
+    · simp [hx]
+      have hc : c ≠ 0 := by
+        intro hc
+        have ha : a = 0 := by simpa [hc] using hx
+        exact hdet (by simp [ha, hc])
+      simp [hc]
+      field_simp
+      linear_combination -hx
+    · simp [hx]
+      have hfirst : d + (a + t * c)⁻¹ * (b + t * d) * -c ≠ 0 := by
+        intro hzero
+        apply hdet
+        field_simp at hzero
+        linear_combination hzero
+      have hfirst' : d + -((a + t * c)⁻¹ * (b + t * d) * c) ≠ 0 := by
+        simpa [mul_neg] using hfirst
+      constructor
+      · exact hfirst'
+      · have hdet' : a * d - c * b ≠ 0 := by simpa [mul_comm] using hdet
+        have hden :
+            d + -((a + t * c)⁻¹ * (b + t * d) * c) =
+              (a + t * c)⁻¹ * (a * d - c * b) := by
+          field_simp [hx]
+          ring
+        have hnum :
+            -b + (a + t * c)⁻¹ * (b + t * d) * a =
+              (a + t * c)⁻¹ * (t * (a * d - c * b)) := by
+          field_simp [hx]
+          ring
+        rw [hden, hnum]
+        field_simp [hx, hdet']
+
+/-- The Mobius permutation of projective slots induced by an invertible row mix. -/
+def rowMixSlotEquiv (a b c d : F) (hdet : a * d - b * c ≠ 0) : Option F ≃ Option F where
+  toFun := rowMixSlotMap a b c d
+  invFun := rowMixSlotMap d (-b) (-c) a
+  left_inv := rowMixSlotMap_adjugate_left a b c d hdet
+  right_inv := by
+    intro s
+    have hadj : d * a - (-b) * (-c) ≠ 0 := by
+      simpa [mul_comm] using hdet
+    simpa using rowMixSlotMap_adjugate_left d (-b) (-c) a hadj s
+
+/-- Bad projective slots transport through the Mobius action of every invertible row mix. -/
+theorem badSlot_row_mix_iff (C : Submodule F (ι → A)) {a b c d : F}
+    (hdet : a * d - b * c ≠ 0) (δ : ℝ≥0) (u₀ u₁ : ι → A) (s : Option F) :
+    badSlot (F := F) (C : Set (ι → A)) δ
+        (a • u₀ + b • u₁) (c • u₀ + d • u₁) s ↔
+      badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁
+        (rowMixSlotEquiv a b c d hdet s) := by
+  rcases s with _ | t
+  · have hrow :
+        mcaEventProj (F := F) (C : Set (ι → A)) δ
+            (a • u₀ + b • u₁) (c • u₀ + d • u₁) 0 1 ↔
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ c d := by
+      simpa using mcaEventProj_row_mix C hdet δ u₀ u₁ 0 1
+    by_cases hc : c = 0
+    · have hd : d ≠ 0 := by
+        intro hd
+        exact hdet (by simp [hc, hd])
+      have hscale := mcaEventProj_smul C hd δ u₀ u₁ 0 1
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ c d ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 0 1 := by
+        simpa [hc] using hscale
+      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, hc] using
+        hrow.trans hscale'
+    · have hscale := mcaEventProj_smul C hc δ u₀ u₁ 1 (c⁻¹ * d)
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ c d ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 1 (c⁻¹ * d) := by
+        simpa [mul_assoc, hc] using hscale
+      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, hc] using
+        hrow.trans hscale'
+  · have hrow0 := mcaEventProj_row_mix C hdet δ u₀ u₁ 1 t
+    let x := a + t * c
+    let y := b + t * d
+    have hrow :
+        mcaEventProj (F := F) (C : Set (ι → A)) δ
+            (a • u₀ + b • u₁) (c • u₀ + d • u₁) 1 t ↔
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ x y := by
+      simpa [x, y] using hrow0
+    by_cases hx : x = 0
+    · have hy : y ≠ 0 := by
+        intro hy
+        apply hdet
+        dsimp [x] at hx
+        dsimp [y] at hy
+        linear_combination d * hx - c * hy
+      have hscale := mcaEventProj_smul C hy δ u₀ u₁ 0 1
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ x y ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 0 1 := by
+        simpa [hx] using hscale
+      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, x, y, hx]
+        using hrow.trans hscale'
+    · have hscale := mcaEventProj_smul C hx δ u₀ u₁ 1 (x⁻¹ * y)
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ x y ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 1 (x⁻¹ * y) := by
+        simpa [mul_assoc, hx] using hscale
+      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, x, y, hx]
+        using hrow.trans hscale'
+
+private theorem card_filter_comp_equiv {X : Type} [Fintype X] [DecidableEq X]
+    (P : X → Prop) [DecidablePred P] (e : X ≃ X) :
+    (Finset.univ.filter (fun x => P (e x))).card =
+      (Finset.univ.filter P).card := by
+  classical
+  refine Finset.card_bij' (fun x _ => e x) (fun y _ => e.symm y) ?_ ?_ ?_ ?_
+  · intro x hx
+    exact Finset.mem_filter.mpr
+      ⟨Finset.mem_univ _, (Finset.mem_filter.mp hx).2⟩
+  · intro y hy
+    exact Finset.mem_filter.mpr
+      ⟨Finset.mem_univ _, by simpa using (Finset.mem_filter.mp hy).2⟩
+  · intro x _hx
+    simp
+  · intro y _hy
+    simp
+
+/-- **The projective bad-slot census is invariant under every invertible row mix.** -/
+theorem badSlotCount_row_mix (C : Submodule F (ι → A)) {a b c d : F}
+    (hdet : a * d - b * c ≠ 0) (δ : ℝ≥0) (u₀ u₁ : ι → A) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ
+        (a • u₀ + b • u₁) (c • u₀ + d • u₁) =
+      badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ := by
+  classical
+  unfold badSlotCount
+  calc
+    (Finset.univ.filter (fun s : Option F =>
+        badSlot (F := F) (C : Set (ι → A)) δ
+          (a • u₀ + b • u₁) (c • u₀ + d • u₁) s)).card =
+        (Finset.univ.filter (fun s : Option F =>
+          badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁
+            (rowMixSlotEquiv a b c d hdet s))).card := by
+      congr 1
+      ext s
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact badSlot_row_mix_iff C hdet δ u₀ u₁ s
+    _ = (Finset.univ.filter (fun s : Option F =>
+          badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ s)).card :=
+      card_filter_comp_equiv
+        (fun s : Option F => badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ s)
+        (rowMixSlotEquiv a b c d hdet)
+
 open Classical in
 /-- **The census decomposition**: the projective slot count is the affine bad-scalar count
 plus the indicator of the slot at infinity. Affine censuses (everything in
@@ -277,6 +521,14 @@ theorem badSlotCount_eq_affine_add_infty (C : Set (ι → A)) (δ : ℝ≥0) (u�
 #print axioms pairJointAgreesOn_row_mix_iff
 #print axioms mcaEventProj_row_mix
 #print axioms mcaEventProj_smul
+#print axioms mcaEventProj_translate
+#print axioms badSlot_translate
+#print axioms badSlotCount_translate
+#print axioms badSlotCount_eq_of_sub_mem
+#print axioms badSlotCount_eq_of_quotient_mk_eq
+#print axioms rowMixSlotEquiv
+#print axioms badSlot_row_mix_iff
+#print axioms badSlotCount_row_mix
 #print axioms badSlotCount_eq_affine_add_infty
 
 end ProximityGap.MCAProjectiveEquivariance

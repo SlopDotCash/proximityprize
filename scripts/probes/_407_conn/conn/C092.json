@@ -1,0 +1,30 @@
+{
+ "id": "C092",
+ "rank": 92,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F5",
+  "F18"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-largesieve",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyDilationReduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean"
+ ],
+ "title": "The energy chain q·E(H)=Σ‖η_b‖⁴ + dilation reduction E=|H|·T(H) wires F5↔F2↔F18 into one normalized curve-incidence T(H)=#{(b,c)∈H²:1+b−c∈H}",
+ "connection": "Three axiom-clean #389 bricks compose: (1) subgroup_gaussSum_fourthMoment: q·E(H)=Σ_b‖η_b‖⁴ (F5↔F2 Parseval, no Weil); (2) addEnergy_eq_card_mul_incidence: E(H)=|H|·T(H), T(H)=#{(b,c)∈H²:1+b−c∈H} (dilation-invariance collapses the 4-variable energy to a curve point-count — this T is the F18 autocorrelation r(h) summed); (3) sidon_order_of_sqrt_charSum: in n≤√q, ‖η_b‖≤C√n ⟹ E≤(1+C²)n². So F2 (√n cancellation), F5 (energy/deep moments), F18 (autocorrelation flatness) are the SAME scalar B(μ_n) up to explicit constants, routing through the single incidence T(H)=(1+o(1))n²/q. card_dvd_addEnergy (|H|∣E) is the structural fingerprint distinguishing subgroups from generic sets.",
+ "why_insightful": "The explicit constant the literature uses without writing down, making the F18 autocorrelation face a literal corollary of the F5 energy face via the dilation reduction — that T(H) (curve incidence, the Szemerédi-Trotter/Stepanov object) equals the autocorrelation sum is not in the issue body.",
+ "attack_plan": "The honest residual is the n^{1/2} deficit (E≥n² always, √(nE)≥n^{3/2}>budget n). Attack T(H) directly via the dilation-reduced curve: bound #{(b,c)∈H²:1+b−c∈H} by a Stepanov auxiliary-polynomial on the curve 1+b−c=h∈H, exploiting that |H|∣E removes one DOF. Lean: a T_le lemma feeding addEnergy_eq_card_mul_incidence — even T(H)≤n²·polylog/q gives the F2 √(n·polylog) target via the transport."
+}

@@ -1,0 +1,3 @@
+[submodule "external/zk-payments-confetti"]
+	path = external/zk-payments-confetti
+	url = https://github.com/dmarzzz/zk-payments-confetti.git

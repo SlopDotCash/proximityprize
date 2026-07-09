@@ -1,0 +1,20 @@
+====================================================================================================
+ #407 SPARSE vs LATTICE SVP-min of 𝔭:  is the support-sparse minimum STRICTLY longer?
+====================================================================================================
+   n  beta              p | h_lat(LLL) wt(svpmin) l1(svpmin)     Mink h_lat/Mink
+   8   4.0           4129 |     10.865          4         16    3.879      2.801
+   8   5.0          32801 |     17.809          4         28    6.513      2.734
+  16   4.0          65617 |      5.815          8         11    2.738      2.124
+  16   5.0        1048609 |      8.739          6         16    3.872      2.257
+  32   4.0        1048609 |      5.108          7          8    2.302      2.219
+  32   5.0       33554593 |      5.908          9         12    2.859      2.067
+  64   4.0       16777601 |      4.932         10         10    2.302      2.143
+  64   5.0     1073741953 |      5.867         13         13    2.622      2.238
+
+KEY:
+ - wt(svpmin), l1(svpmin) = support weight & ℓ1 of the LATTICE SVP-min element of 𝔭 in the
+   power basis. If l1(svpmin) is SMALL (<= 2·onset_r), the lattice SVP-min is ALREADY a
+   sparse signed root-sum -> sparse-support minimum = lattice minimum -> sparsity gives
+   NOTHING beyond well-roundedness. If l1(svpmin) is LARGE (~D), the lattice SVP-min is
+   DENSE -> sparse elements are strictly longer -> a genuine sparse-support gap.
+ - h_lat/Mink ≈ 1: 𝔭 behaves like a random index-p sublattice (no exceptional short vec).

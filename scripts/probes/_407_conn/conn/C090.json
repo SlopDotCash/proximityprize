@@ -1,0 +1,28 @@
+{
+ "id": "C090",
+ "rank": 90,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F4",
+  "F13"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyNegClosedLower.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyExcessCore.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean"
+ ],
+ "title": "The negative-energy-defect = bounded-support TRUNCATION is the SAME mechanism as the supply LOWER bound B≥Ω(n^{(k+1)/2}): defect sign pins the two-sided bracket via compact support",
+ "connection": "Two energy facts point opposite and reconcile. (1) AdditiveEnergyNegClosedLower proves the UNCONDITIONAL char-0 LOWER bound E(μ_n)≥3n²−3n (negation-forced quadruples), EnergyExcessCore reduces the wall to energyExcess=E−(3n²−3n)≥0. (2) The cumulant-deep-nonbetti measurement finds the char-p HIGH-order energy BELOW char-0 (negative defect). So in char p, the LOW-order energy excess is ≥0 (above Sidon) while the HIGH-order defect is ≤0 (below Bessel): the char-p truncation |X|≤√n ADDS low-order quadruples (the sum-product excess, W-Johnson source) and REMOVES high-order tail solutions (kurtosis<3). SAME bounded-support phenomenon at two scales: the support cap [−√n,√n] forces energyExcess≥0 at r=2 (clustering near the cap) and κ_r decreasing at large r (cap truncates the tail).",
+ "why_insightful": "Non-obvious that the proven low-order energy LOWER bound (a W-Johnson liability) and the high-order cumulant UPPER margin (the prize asset) are two faces of one constraint (compact support). Says the energyExcess and the cumulant are not independent: a bound at r=2 should propagate to κ_r at all r via the shared support — the missing link from proven r=2 to open r≈ln q.",
+ "attack_plan": "Test propagation: does the proven E_2=3n²−3n (support [−√n,√n]) algebraically FORCE κ_r≤1 for all r via a support/moment interpolation (Hausdorff-moment / completely-monotone on the compactly-supported measure)? Probe: given exact μ_2,μ_4 and support cap, compute the maximal feasible μ_{2r} (Markov upper) vs the Bessel baseline (2r−1)!!n^r; if support+μ_4 already keeps μ_{2r} below baseline at all r, the open core collapses to proven r=2. Lean: 'compact support √n + μ_4≤3 ⟹ μ_{2r}≤(2r−1)!!n^r' if the LP confirms."
+}

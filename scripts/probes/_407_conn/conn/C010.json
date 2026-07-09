@@ -1,0 +1,29 @@
+{
+ "id": "C010",
+ "rank": 10,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F12",
+  "F13"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-Betti"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/HasseWeilBoundInstances.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Fermat257EnergyCrossover.lean"
+ ],
+ "title": "GLT (Garcia-Lorenz-Todd) identity makes the anomaly defect LITERALLY the Hasse-Weil Betti error — W-anomaly = W-Betti by an exact equation, proven at r=2",
+ "connection": "The GLT identity Σ_s η_s^{2r} = p^{2r−1} + ((p−1)/(pm))·Σ_s(1+mη_s)^{2r} ⟺ #{x_1^m+...+x_{2r}^m≡0 mod p} makes E_r EXACTLY a degree-m hypersurface point count in 2r variables. The char-p anomaly defect E_r−E_r^ℂ IS the Hasse-Weil error term of that variety — equal, not analogous. At r=2 proven exactly in-tree (V_4=3p(n−1)−n^3, zero error = genus-(m−1)(m−2)/2 Fermat CURVE count; Fermat257EnergyCrossover pins E(μ_8)=168=3·64−24 and the failure at μ_16). For r≥3 the hypersurface Betti ~m^{2r−1} forces the Weil error 2ν√p to overtake the diagonal (2r−1)‼ n^r m at the crossover. So W-anomaly and W-Betti are two readings of genus·√p > diagonal.",
+ "why_insightful": "The campaign keeps W-anomaly and W-Betti as separate rows; GLT collapses them to ONE — there is no non-Betti object to find (the cumulant-deep-nonbetti verdict) because the cumulant IS the Betti number. Sharpest statement of why every moment route stalls at the same place.",
+ "attack_plan": "Lean: formalize the GLT r=2 identity V_4=3p(n−1)−n^3 as gauss_period_fourth_moment_eq_fermat_curve_count wired to HasseWeilBoundInstances' Weil bound, giving machine-checked W-anomaly⟺W-Betti at r=2. Probe: _wf407_glt_v4_check across more primes; compute the EXACT crossover r where m^{2r−1}√p first exceeds (2r−1)‼ n^r m and confirm it equals CharSumMomentDeepWall r_max and the cumulant onset r₀."
+}

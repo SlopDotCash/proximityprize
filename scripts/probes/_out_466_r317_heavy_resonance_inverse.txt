@@ -1,0 +1,8 @@
+# R317 high-beta heavy-resonance inverse test
+n=32 depth=3 beta_min=4.0 headroom=44800 census=scripts/probes/_out_466_r305_census_n32.txt
+heavy p=21523361 beta=4.871880 excess=58560 ratio=1.307143 resonances=[(1, 3), (3, 1)]
+summary considered=259 heavy=1 unexplained=0
+
+# Lower-octave control
+n=16 depth=3 beta_min=3.0 headroom=10880 census=scripts/probes/_out_466_r305_census_n16.txt
+summary considered=14 heavy=0 unexplained=0

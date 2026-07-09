@@ -176,7 +176,8 @@ theorem append_perfectCompleteness_msg_proof
     obtain ⟨a₃, hpr, hmem0⟩ := (mem_support_bind_iff _ _ _).mp hmem0
     rcases a₃ with _ | pr
     · exact absurd hpr (none_not_mem_optionT_lift _)
-    change some pr ∈ support (pure (some (tr₁ ++ₜ tr₂, s₃, w₃)) : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hpr
+    change some pr ∈ support (pure (some (tr₁ ++ₜ tr₂, s₃, w₃))
+      : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hpr
     simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq] at hpr
     subst hpr
     obtain ⟨a₄, hV₁, hmem0⟩ := (mem_support_bind_iff _ _ _).mp hmem0

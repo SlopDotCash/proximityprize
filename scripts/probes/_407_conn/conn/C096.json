@@ -1,0 +1,26 @@
+{
+ "id": "C096",
+ "rank": 96,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F2",
+  "F3"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAMonomialEquivariance.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WBPencilSymmetry.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/FarLineIncidenceEquivariance.lean"
+ ],
+ "title": "The twisted-inversion GRS-duality monomial automorphism γ↦γ⁻¹ (x·u(1/x)) is a code automorphism the dilation group misses — folds the worst-line search mod an involution, the F2↔F3 swap",
+ "connection": "There is a code automorphism of RS[μ_n] beyond Z/n dilations: the twisted inversion M:u↦x^{k-1}·u(1/x) (mcaEvent_monomial), the permutation x↦x⁻¹ (fixes μ_n since inversion-closed) composed with the diagonal d(x)=x. It is a genuine GRS-duality move stabilizing RS while the untwisted u↦u(1/x) does not (probe-verified: fuses the F5-exact-pin extremal set into ONE orbit). On the bad-scalar set it acts as the γ-inversion of mcaEvent_swap_inv (WBPencilSymmetry): mcaEvent(u₀,u₁,γ)⟺mcaEvent(u₁,u₀,γ⁻¹). Combined with FarLineIncidenceEquivariance dilation, the worst-line search over n² monomial directions (X^a,X^b) is equivariant under BOTH Z/n dilation AND the involution (a,b)↦(−a,−b) — halving the fundamental domain, making the monomial direction self-dual under (a,b)↔(k−b,k−a)-type reflection.",
+ "why_insightful": "Every comment uses only dilation/permutation/translation symmetries; the twisted-inversion (GRS duality) monomial automorphism is in-tree, proven, and ignored on the prize cone. It is the F2↔F3 self-duality (period b↦b⁻¹ vs scalar γ↦γ⁻¹), a second commuting symmetry no published incidence bound exploits.",
+ "attack_plan": "Probe: extend the FarLineIncidenceEquivariance worst-line sweep to quotient the n² monomial directions by ⟨dilation, twisted-inversion⟩ and check the worst direction is a FIXED point of the involution (self-dual line a+b=k). If forced self-dual, the circulant line-incidence operator (F3) restricted to the inversion-symmetric subspace is a smaller real symmetric problem. Lean: package explainableScalars invariance under the inversion permutation to land the combined ⟨Z/n,inv⟩ equivariance."
+}

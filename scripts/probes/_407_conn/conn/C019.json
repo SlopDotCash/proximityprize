@@ -1,0 +1,30 @@
+{
+ "id": "C019",
+ "rank": 19,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F5",
+  "F13",
+  "F16"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean"
+ ],
+ "title": "The Bessel coefficient bound IS the Salem-Zygmund sub-Gaussian MGF — char-0 closes the chaining input, leaving only the char-p defect",
+ "connection": "RungBesselEnergy.bessel_energy_le_gaussian proves coefficientwise [x^{2r}]I₀(2x)^{n/2}≤[x^{2r}]e^{(n/2)x²}=n^r/r! (E_r^∞(μ_n)≤(2r-1)‼·n^r). Generating-function-wise this is I₀(2x)^{n/2}⪯e^{(n/2)x²}, EXACTLY the per-period real-Gaussian MGF E_diag[e^{λη_b/√n}]≤e^{λ²/2} with proxy σ²=n — i.e. it discharges SalemZygmundChaining.SubGaussianMGF (the named open input) in characteristic 0. Feeding into the proven chernoff_max_re_le gives B≤√(2n log m) over m=(p−1)/n cosets, the prize floor. The two files were built as moment-method (F5) and exponential-MGF (F16) routes but the SAME Bessel inequality powers both. Only residual: char-p defect E_r−E_r^{(0)}>0 at r≈β (W-anomaly).",
+ "why_insightful": "The frontier files name the MGF as OPEN and the moment bound as a separate route, but bessel_energy_le_gaussian already proves the generating-function form of the MGF in char 0 — nobody wired the Bessel brick into SubGaussianMGF. Collapses the F5/F16 duality to one inequality whose only gap is the char-p transfer.",
+ "attack_plan": "Lean: prove SalemZygmundChaining.SubGaussianMGF η n for the char-0 diagonal model from bessel_energy_le_gaussian by summing the coefficient bound against λ^{2r}/(2r)! (Carleman/MGF assembly) → besselEnergy_implies_subGaussianMGF; compose with chernoff_max_re_le for B_char0≤√(2n log m), isolating the residual as Σ_r(E_r−E_r^{(0)})λ^{2r}/(2r)! controlled by CyclotomicNormDefectThreshold."
+}

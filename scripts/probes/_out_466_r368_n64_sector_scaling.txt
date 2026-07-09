@@ -1,0 +1,263 @@
+n=64: K=43776 vectors, headroom=181760
+badprime p=262337 excess=138240
+badprime p=262657 excess=138240
+VIOLATOR p=263489 beta=3.001 excess=207360 | s5h2:69120 s6h1:138240
+VIOLATOR p=264577 beta=3.002 excess=299520 | s5h2:23040 s6h1:276480
+VIOLATOR p=264769 beta=3.002 excess=345600 | s5h2:23040 s6h1:322560
+VIOLATOR p=264961 beta=3.003 excess=184320 | s6h1:184320
+badprime p=265729 excess=122880
+VIOLATOR p=265921 beta=3.003 excess=299520 | s5h2:115200 s6h1:184320
+VIOLATOR p=266177 beta=3.004 excess=184320 | s5h2:92160 s6h1:92160
+badprime p=266369 excess=138240
+VIOLATOR p=266689 beta=3.004 excess=207360 | s5h2:23040 s6h1:184320
+badprime p=267521 excess=92160
+badprime p=267649 excess=138240
+badprime p=267713 excess=115200
+VIOLATOR p=268993 beta=3.006 excess=299520 | s5h2:23040 s6h1:276480
+VIOLATOR p=269057 beta=3.006 excess=299520 | s5h2:69120 s6h1:230400
+badprime p=269377 excess=161280
+VIOLATOR p=269441 beta=3.007 excess=276480 | s5h2:46080 s6h1:230400
+badprime p=269761 excess=92160
+VIOLATOR p=269953 beta=3.007 excess=1751040 | s4h1:1382400 s6h1:368640
+badprime p=270209 excess=161280
+badprime p=270337 excess=138240
+VIOLATOR p=270593 beta=3.008 excess=261120 | s4h3:7680 s5h2:23040 s6h1:230400
+badprime p=270913 excess=161280
+VIOLATOR p=271169 beta=3.008 excess=207360 | s5h2:115200 s6h1:92160
+badprime p=271489 excess=168960
+VIOLATOR p=271553 beta=3.008 excess=207360 | s5h2:69120 s6h1:138240
+badprime p=272257 excess=138240
+badprime p=272449 excess=88320
+badprime p=273281 excess=161280
+badprime p=273473 excess=138240
+badprime p=273601 excess=119040
+badprime p=273857 excess=138240
+VIOLATOR p=274177 beta=3.011 excess=522240 | s4h3:15360 s5h2:46080 s6h1:460800
+VIOLATOR p=274817 beta=3.011 excess=230400 | s5h2:46080 s6h1:184320
+VIOLATOR p=275201 beta=3.012 excess=215040 | s4h3:7680 s5h2:69120 s6h1:138240
+badprime p=275393 excess=46080
+badprime p=275521 excess=115200
+badprime p=275969 excess=161280
+VIOLATOR p=276673 beta=3.013 excess=253440 | s5h2:23040 s6h1:230400
+VIOLATOR p=276929 beta=3.013 excess=184320 | s6h1:184320
+VIOLATOR p=277889 beta=3.014 excess=334080 | s4h2:11520 s5h2:46080 s6h1:276480
+VIOLATOR p=278017 beta=3.014 excess=195840 | s4h2:11520 s5h2:46080 s6h1:138240
+VIOLATOR p=278209 beta=3.014 excess=184320 | s6h1:184320
+VIOLATOR p=278849 beta=3.015 excess=368640 | s5h2:92160 s6h1:276480
+VIOLATOR p=279553 beta=3.015 excess=184320 | s5h2:46080 s6h1:138240
+VIOLATOR p=280001 beta=3.016 excess=218880 | s4h2:11520 s5h2:23040 s6h1:184320
+VIOLATOR p=280129 beta=3.016 excess=345600 | s5h2:23040 s6h1:322560
+VIOLATOR p=280321 beta=3.016 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=280513 excess=138240
+badprime p=280769 excess=115200
+badprime p=280897 excess=138240
+badprime p=281153 excess=126720
+badprime p=281857 excess=176640
+VIOLATOR p=281921 beta=3.017 excess=276480 | s5h2:92160 s6h1:184320
+badprime p=282241 excess=138240
+badprime p=282881 excess=138240
+badprime p=283009 excess=138240
+badprime p=284161 excess=92160
+VIOLATOR p=284737 beta=3.020 excess=184320 | s6h1:184320
+VIOLATOR p=285121 beta=3.020 excess=241920 | s4h2:11520 s6h1:230400
+VIOLATOR p=285377 beta=3.020 excess=299520 | s5h2:161280 s6h1:138240
+VIOLATOR p=285569 beta=3.021 excess=230400 | s6h1:230400
+VIOLATOR p=285697 beta=3.021 excess=357120 | s4h2:11520 s5h2:115200 s6h1:230400
+badprime p=285953 excess=138240
+badprime p=286721 excess=99840
+badprime p=287233 excess=149760
+badprime p=287297 excess=115200
+badprime p=287681 excess=149760
+badprime p=287873 excess=161280
+badprime p=288257 excess=161280
+VIOLATOR p=288577 beta=3.023 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=288833 excess=161280
+badprime p=290113 excess=92160
+VIOLATOR p=290369 beta=3.025 excess=184320 | s5h2:46080 s6h1:138240
+VIOLATOR p=290497 beta=3.025 excess=345600 | s5h2:69120 s6h1:276480
+badprime p=291457 excess=145920
+badprime p=291521 excess=138240
+badprime p=291649 excess=69120
+badprime p=292673 excess=149760
+VIOLATOR p=292801 beta=3.027 excess=207360 | s5h2:23040 s6h1:184320
+badprime p=292993 excess=168960
+VIOLATOR p=293441 beta=3.027 excess=207360 | s5h2:23040 s6h1:184320
+VIOLATOR p=293633 beta=3.027 excess=284160 | s4h3:7680 s5h2:46080 s6h1:230400
+badprime p=294337 excess=115200
+badprime p=294529 excess=115200
+badprime p=295553 excess=172800
+VIOLATOR p=295873 beta=3.029 excess=192000 | s4h3:7680 s6h1:184320
+VIOLATOR p=295937 beta=3.029 excess=207360 | s5h2:23040 s6h1:184320
+badprime p=296129 excess=161280
+VIOLATOR p=296833 beta=3.030 excess=1981440 | s4h1:1382400 s6h1:599040
+VIOLATOR p=297601 beta=3.031 excess=322560 | s5h2:46080 s6h1:276480
+badprime p=297793 excess=134400
+badprime p=298049 excess=92160
+badprime p=298369 excess=138240
+VIOLATOR p=298817 beta=3.031 excess=230400 | s5h2:92160 s6h1:138240
+VIOLATOR p=299137 beta=3.032 excess=345600 | s5h2:23040 s6h1:322560
+VIOLATOR p=299329 beta=3.032 excess=230400 | s5h2:46080 s6h1:184320
+VIOLATOR p=299393 beta=3.032 excess=207360 | s5h2:23040 s6h1:184320
+VIOLATOR p=299521 beta=3.032 excess=207360 | s5h2:23040 s6h1:184320
+badprime p=299777 excess=69120
+badprime p=299969 excess=69120
+badprime p=300481 excess=115200
+badprime p=300673 excess=138240
+badprime p=300929 excess=138240
+VIOLATOR p=301057 beta=3.033 excess=322560 | s5h2:92160 s6h1:230400
+badprime p=302273 excess=69120
+badprime p=302593 excess=138240
+VIOLATOR p=302977 beta=3.035 excess=184320 | s6h1:184320
+VIOLATOR p=303361 beta=3.035 excess=299520 | s5h2:69120 s6h1:230400
+badprime p=303553 excess=149760
+VIOLATOR p=303617 beta=3.035 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=303937 excess=115200
+badprime p=304193 excess=161280
+badprime p=304897 excess=161280
+VIOLATOR p=304961 beta=3.036 excess=253440 | s5h2:23040 s6h1:230400
+badprime p=305281 excess=115200
+VIOLATOR p=305857 beta=3.037 excess=322560 | s5h2:92160 s6h1:230400
+VIOLATOR p=306049 beta=3.037 excess=322560 | s6h1:322560
+badprime p=306689 excess=92160
+badprime p=307009 excess=161280
+badprime p=307201 excess=92160
+badprime p=307969 excess=69120
+VIOLATOR p=308801 beta=3.039 excess=311040 | s4h2:11520 s5h2:115200 s6h1:184320
+VIOLATOR p=308929 beta=3.039 excess=207360 | s5h2:23040 s6h1:184320
+badprime p=309121 excess=115200
+badprime p=309313 excess=149760
+badprime p=310081 excess=138240
+VIOLATOR p=310273 beta=3.041 excess=253440 | s5h2:23040 s6h1:230400
+badprime p=310721 excess=92160
+VIOLATOR p=311041 beta=3.041 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=311681 excess=92160
+badprime p=313153 excess=115200
+badprime p=313409 excess=92160
+badprime p=313921 excess=145920
+VIOLATOR p=314113 beta=3.043 excess=218880 | s4h2:11520 s5h2:69120 s6h1:138240
+badprime p=314497 excess=115200
+VIOLATOR p=315521 beta=3.045 excess=230400 | s6h1:230400
+VIOLATOR p=316033 beta=3.045 excess=253440 | s5h2:23040 s6h1:230400
+badprime p=316097 excess=115200
+badprime p=316801 excess=126720
+VIOLATOR p=318209 beta=3.047 excess=391680 | s5h2:23040 s6h1:368640
+badprime p=318337 excess=92160
+badprime p=319169 excess=145920
+VIOLATOR p=319489 beta=3.048 excess=318720 | s4h2:11520 s4h3:7680 s5h2:23040 s6h1:276480
+VIOLATOR p=319681 beta=3.048 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=319937 excess=161280
+badprime p=320449 excess=115200
+badprime p=320513 excess=138240
+badprime p=320833 excess=138240
+badprime p=322433 excess=69120
+badprime p=323009 excess=69120
+VIOLATOR p=323137 beta=3.050 excess=230400 | s5h2:46080 s6h1:184320
+badprime p=323201 excess=149760
+VIOLATOR p=324097 beta=3.051 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=324161 excess=46080
+VIOLATOR p=324673 beta=3.051 excess=192000 | s4h3:7680 s5h2:46080 s6h1:138240
+badprime p=325249 excess=161280
+badprime p=325697 excess=122880
+badprime p=325889 excess=138240
+badprime p=326593 excess=122880
+badprime p=326657 excess=122880
+badprime p=327553 excess=138240
+VIOLATOR p=327809 beta=3.054 excess=207360 | s5h2:69120 s6h1:138240
+badprime p=328129 excess=92160
+VIOLATOR p=328513 beta=3.054 excess=230400 | s5h2:46080 s6h1:184320
+VIOLATOR p=328897 beta=3.055 excess=184320 | s6h1:184320
+badprime p=328961 excess=161280
+badprime p=329089 excess=115200
+badprime p=329281 excess=69120
+badprime p=329473 excess=126720
+VIOLATOR p=329729 beta=3.055 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=330241 excess=138240
+badprime p=330433 excess=88320
+badprime p=330689 excess=23040
+badprime p=331777 excess=115200
+badprime p=331841 excess=115200
+VIOLATOR p=332161 beta=3.057 excess=253440 | s5h2:69120 s6h1:184320
+VIOLATOR p=332417 beta=3.057 excess=230400 | s5h2:46080 s6h1:184320
+badprime p=332993 excess=138240
+badprime p=334721 excess=138240
+badprime p=335681 excess=145920
+badprime p=335809 excess=46080
+badprime p=336577 excess=69120
+badprime p=336769 excess=122880
+badprime p=336961 excess=161280
+VIOLATOR p=337153 beta=3.061 excess=218880 | s4h2:11520 s5h2:115200 s6h1:92160
+badprime p=337217 excess=115200
+badprime p=337537 excess=92160
+badprime p=337793 excess=115200
+badprime p=338369 excess=103680
+VIOLATOR p=338497 beta=3.061 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=338753 excess=138240
+badprime p=339137 excess=53760
+badprime p=339649 excess=168960
+badprime p=339841 excess=76800
+badprime p=340481 excess=138240
+badprime p=340801 excess=138240
+VIOLATOR p=341057 beta=3.063 excess=230400 | s6h1:230400
+badprime p=341569 excess=69120
+VIOLATOR p=341953 beta=3.064 excess=230400 | s5h2:46080 s6h1:184320
+badprime p=342337 excess=161280
+badprime p=342593 excess=69120
+badprime p=343169 excess=92160
+badprime p=343489 excess=46080
+badprime p=344257 excess=161280
+badprime p=344321 excess=69120
+VIOLATOR p=345089 beta=3.066 excess=230400 | s6h1:230400
+VIOLATOR p=345473 beta=3.066 excess=299520 | s5h2:23040 s6h1:276480
+badprime p=345601 excess=103680
+VIOLATOR p=346369 beta=3.067 excess=184320 | s6h1:184320
+VIOLATOR p=346433 beta=3.067 excess=184320 | s6h1:184320
+badprime p=346561 excess=138240
+badprime p=347201 excess=115200
+badprime p=347329 excess=138240
+VIOLATOR p=347969 beta=3.068 excess=1781760 | s4h1:1382400 s4h3:7680 s5h2:23040 s6h1:368640
+badprime p=348097 excess=161280
+badprime p=348353 excess=161280
+badprime p=349121 excess=138240
+badprime p=349313 excess=153600
+VIOLATOR p=349697 beta=3.069 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=350593 excess=161280
+badprime p=350657 excess=138240
+VIOLATOR p=351041 beta=3.070 excess=345600 | s5h2:23040 s6h1:322560
+VIOLATOR p=351361 beta=3.070 excess=322560 | s6h1:322560
+badprime p=352193 excess=161280
+badprime p=353473 excess=92160
+badprime p=353921 excess=161280
+badprime p=354689 excess=161280
+badprime p=354881 excess=115200
+VIOLATOR p=355009 beta=3.073 excess=3617280 | s4h1:2764800 s5h2:115200 s6h1:737280
+badprime p=355073 excess=115200
+VIOLATOR p=355457 beta=3.073 excess=253440 | s5h2:23040 s6h1:230400
+VIOLATOR p=355777 beta=3.073 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=355841 excess=161280
+badprime p=355969 excess=138240
+VIOLATOR p=356737 beta=3.074 excess=276480 | s6h1:276480
+VIOLATOR p=356929 beta=3.074 excess=207360 | s5h2:69120 s6h1:138240
+VIOLATOR p=357377 beta=3.075 excess=207360 | s5h2:23040 s6h1:184320
+badprime p=357569 excess=138240
+badprime p=358273 excess=115200
+badprime p=359041 excess=69120
+VIOLATOR p=359297 beta=3.076 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=360193 excess=23040
+VIOLATOR p=360257 beta=3.076 excess=207360 | s5h2:69120 s6h1:138240
+badprime p=360769 excess=161280
+badprime p=361217 excess=92160
+VIOLATOR p=361409 beta=3.077 excess=184320 | s5h2:46080 s6h1:138240
+badprime p=361793 excess=30720
+VIOLATOR p=362177 beta=3.078 excess=218880 | s4h2:34560 s6h1:184320
+badprime p=362561 excess=115200
+badprime p=362753 excess=92160
+badprime p=363329 excess=80640
+badprime p=363841 excess=161280
+badprime p=364289 excess=69120
+badprime p=364417 excess=69120
+badprime p=364801 excess=69120
+badprime p=364993 excess=115200
+badprime p=365249 excess=92160
+VIOLATOR p=365377 beta=3.080 excess=192000 | s4h3:7680 s6h1:184320
+VIOLATOR p=365441 beta=3.080 excess=288000 | s4h2:11520 s6h1:276480
+badprime p=365569 excess=138240

@@ -7,6 +7,7 @@ import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R21StepanovS1
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R20StepanovScaffold
+import ArkLib.ToMathlib.Polynomial.DivByMonicLinear
 
 /-!
 # LANE S2 (#466 round 22): auxiliary-polynomial EXISTENCE for the cubic Stepanov proof
@@ -173,26 +174,19 @@ theorem divByMonic_exact {F : Type*} [Field F] {g p : F[X]} (hg : g.Monic) (hdvd
   obtain ⟨c, rfl⟩ := hdvd
   rw [mul_divByMonic_cancel_left c hg]
 
-theorem add_divByMonic {F : Type*} [Field F] {g : F[X]} (hg : g.Monic) (p q : F[X]) :
-    (p + q) /ₘ g = p /ₘ g + q /ₘ g := by
-  have h1 := modByMonic_add_div (p + q) g
-  have h2 := modByMonic_add_div p g
-  have h3 := modByMonic_add_div q g
-  have hmod := add_modByMonic (q := g) p q
-  have key : g * ((p + q) /ₘ g) = g * (p /ₘ g + q /ₘ g) := by
-    rw [mul_add]
-    linear_combination h1 - h2 - h3 - hmod
-  exact mul_left_cancel₀ hg.ne_zero key
+/-- Additivity of `/ₘ`.  Now a thin wrapper over the ToMathlib PR-1 lemma
+`Polynomial.add_divByMonic` (`ArkLib/ToMathlib/Polynomial/DivByMonicLinear.lean`), which holds
+over any `CommRing` with no `Monic` hypothesis; the hypothesis is kept for call-site
+compatibility. -/
+theorem add_divByMonic {F : Type*} [Field F] {g : F[X]} (_hg : g.Monic) (p q : F[X]) :
+    (p + q) /ₘ g = p /ₘ g + q /ₘ g :=
+  _root_.Polynomial.add_divByMonic p q
 
-theorem smul_divByMonic {F : Type*} [Field F] {g : F[X]} (hg : g.Monic) (c : F) (p : F[X]) :
-    (c • p) /ₘ g = c • (p /ₘ g) := by
-  have h1 := modByMonic_add_div (c • p) g
-  have h2 := modByMonic_add_div p g
-  have hmod := smul_modByMonic (q := g) c p
-  have key : g * ((c • p) /ₘ g) = g * (c • (p /ₘ g)) := by
-    rw [smul_eq_C_mul, smul_eq_C_mul] at *
-    linear_combination h1 - C c * h2 - hmod
-  exact mul_left_cancel₀ hg.ne_zero key
+/-- Scalar-linearity of `/ₘ`.  Now a thin wrapper over the ToMathlib PR-1 lemma
+`Polynomial.smul_divByMonic`. -/
+theorem smul_divByMonic {F : Type*} [Field F] {g : F[X]} (_hg : g.Monic) (c : F) (p : F[X]) :
+    (c • p) /ₘ g = c • (p /ₘ g) :=
+  _root_.Polynomial.smul_divByMonic c p
 
 /-! ## 4. The coefficient blocks, the reduced witnesses `W_k`, and the auxiliary `P` -/
 

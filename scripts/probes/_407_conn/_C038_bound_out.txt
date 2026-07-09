@@ -1,0 +1,33 @@
+================================================================================================================
+C038: does the descent bound M(n)^2 <= 2*M(n/2)^2 (F8, the alleged mult. analogue) HOLD in prize regime?
+and is R = M(n)^2/M(n/2)^2 the orbit factor 2 or a BGK sqrt(n)-scaling artifact?
+================================================================================================================
+
+   n           q     M(n)   M(n/2)       R   2*Mn2^2    M(n)^2  desc<=2?   c(n)  c(n/2)  R_bgk_model
+   8        8009    7.684    3.998   3.695     31.96     59.04     False  1.034   0.725       3.6948
+   8        8017    7.676    3.998   3.687     31.96     58.92     False  1.032   0.725       3.6872
+   8        8081    7.611    3.998   3.625     31.96     57.92     False  1.023   0.725       3.6246
+  16       70001   13.267    7.877   2.837    124.09    176.01     False  1.146   0.924       2.8368
+  16       70177   13.633    7.889   2.986    124.47    185.86     False  1.177   0.926       2.9865
+  16       70241   13.549    7.871   2.963    123.90    183.59     False  1.170   0.923       2.9635
+  32     1000033   23.001   14.642   2.467    428.80    529.03     False  1.264   1.102       2.4675
+  32     1000193   24.153   14.739   2.685    434.46    583.37     False  1.327   1.109       2.6855
+  64    16000129   36.374   24.290   2.242   1180.02   1323.09     False  1.290   1.185       2.2425
+
+----------------------------------------------------------------------------------------------------------------
+Descent bound M(n)^2 <= 2*M(n/2)^2 :  HOLDS 0 times,  FAILS 9 times.
+----------------------------------------------------------------------------------------------------------------
+Verdict logic:
+ * The orbit-fold deflation (d+1)*foldedAgree <= plainAgree is EXACT, lossless, factor d+1=2,
+   provable for ANY 2-to-1 fold over ANY field (FoldingTransferNoGo.lean) -- a pure combinatorial
+   counting fact, INDEPENDENT of cancellation.
+ * The char-sum R = M(n)^2/M(n/2)^2 is NOT a fixed factor 2: it DRIFTS with n (3.7 -> 2.2),
+   and is fully reproduced by R_bgk = 2*(c(n)/c(n/2))^2*log(q/n)/log(2q/n) with c=M/sqrt(n log)
+   STABLE -- i.e. M(n) lives on the BGK sqrt(n*log(q/n)) law.
+ * The factor '2' in M^2/M(n/2)^2 is the sqrt(n)->sqrt(2n) DOUBLING of the size n inside
+   sqrt(n*log), which happens for ANY size-doubling subgroup -- it is NOT produced by the
+   x->x^2 ORBIT structure. (Same '2' would appear comparing mu_n to an UNRELATED mu_{n/2}.)
+Conclusion: the two '2's are unrelated: one is a lossless integer orbit count, the other is a
+sqrt-of-size scaling sitting ON TOP of the open BGK cancellation. The walls do NOT share a
+deflation mechanism in the load-bearing sense (W-BGK's '2' is the trivial size factor; the
+HARD content of W-BGK is the c(n)=M/sqrt(n log) constant, which the orbit fold says nothing about).

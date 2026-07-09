@@ -1,0 +1,27 @@
+{
+ "id": "C052",
+ "rank": 52,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F8",
+  "F10",
+  "F9"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MonomialSpectrumEquivariance.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean"
+ ],
+ "title": "Imprimitive heavy lines are a self-similar orbit shrink: gcd(d,n)>1 ⟹ eigenratio order n/gcd ⟹ residence in a μ_{n/gcd} sub-tower (F3↔F8 descent, in-code)",
+ "connection": "Comment-1 numerics show imprimitive monomial directions X^{2a'} are 'heavy' (up to full-q incidence) while primitive ones concentrate, but offer only a self-similar pull-back heuristic. The eigenstack law gives the EXACT mechanism: for direction (x^a,x^b) gap d=a−b the eigenratio under domain rotation g is g^d of order n/gcd(d,n) (DyadicLacunary line 44). gcd>1 directions have SMALLER eigenratio order — but the per-coset multiplicity grows: the bad set tiles into cosets of the SMALLER group μ_{n/gcd}, exactly the 2-adic descent F8 (passing μ_n→μ_{n/2^j}). The heavy-line overflow is the orbit-quantization seen one tower level down, captured by composing rotation + scaling equivariances.",
+ "why_insightful": "Reframes the imprimitive-heavy-line phenomenon (currently a numeric observation) as an exact proven orbit-order computation: heaviness = the eigenratio dropping to a proper subgroup, i.e. the F8 2-adic descent realized as a change of which μ_{n/gcd} the orbit lives in — not a separate analytic fact.",
+ "attack_plan": "Lean: generalize monomial_badSet_mul_invariant to (x^a,x^b) with gap d, proving the eigenratio is g^d of order n/gcd(d,n), hence n/gcd(d,n)∣#bad. Budget lemma: if #bad>0 at the window, #bad≥n/gcd(d,n); heavy imprimitive = gcd(d,n)>1 forcing residence in a μ_{n/gcd} sub-tower bounded by the F8 descent. Probe: confirm n/gcd(d,n)∣#bad for all directions at μ_16 over a large prime, and overflow happens iff multiplicity·(#cosets)>budget."
+}

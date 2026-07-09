@@ -1,0 +1,29 @@
+{
+ "id": "C059",
+ "rank": 59,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F12",
+  "F16",
+  "F18"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-Betti"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/AutocorrelationMax.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean"
+ ],
+ "title": "Autocorrelation-at-origin (proven L^∞ brick) × resultant-threshold point-count bounds the char-p energy ANOMALY — fusing the proven caps to localize the open Bourgain-Shkredov factor",
+ "connection": "AutocorrelationMax.autocorr_le_autocorr_zero proves R_r(z)≤R_r(0) for the r-fold representation function R_r=r_r⋆r_r — a per-lattice-point CAP on the spurious (z≠0, 𝔭|z) collision mass producing the char-p energy anomaly (F12/W-anomaly): E_r^{Fp}−E_r^{char0}=Σ_{z≠0,p|z}R_r(z)≤(#{z≠0:p|z in the 2r-box})·R_r(0). The count of such z is governed by CyclotomicNormDefectThreshold (only z with |N(z)|≥p contribute, |N|≤(2r)^{φ(n)}). So the deep-moment anomaly is BOUNDED by [proven autocorr cap R_r(0)]×[proven resultant-threshold count]: fuses the COUNT face F16 (N₀=R_r), the proven L^∞ autocorr brick (F18), the energy anomaly F5/F12, and the resultant threshold. The ONLY open input is the NUMBER of contributing sublattice points (Bourgain-Shkredov equidistribution of μ_n in the 2r-box) — the autocorr brick provides the per-point cap.",
+ "why_insightful": "Two already-proven in-tree bricks combine into a clean upper bound on the deep-moment ANOMALY (the object comment 14 measured exploding), reducing the wall to a pure point-count in the 2r-box — separating the proven L^∞/L² caps from the one genuinely open equidistribution count.",
+ "attack_plan": "Lean: energy_anomaly_le_autocorr_times_latticeCount combining autocorr_le_autocorr_zero with no_spurious_tuple_of_lt_prime to bound E_r^{Fp}−E_r^{char0}≤R_r(0)·#{contributing 𝔭-cosets}. Probe _wf_anomaly_decomp.py: verify the anomaly equals Σ_{z≠0,p|z}R_r(z), check R_r(z)/R_r(0)≤1 always, measure the contributing-point count vs the (2r)^{φ(n)}/p box-density prediction to localize the open Bourgain-Shkredov factor."
+}

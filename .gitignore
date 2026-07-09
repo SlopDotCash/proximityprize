@@ -90,3 +90,4 @@ references/
 
 # Generated codedb index snapshot (regenerate locally; not repo content)
 /codedb.snapshot
+.cache/

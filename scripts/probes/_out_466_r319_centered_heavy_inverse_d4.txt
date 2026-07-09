@@ -1,0 +1,5 @@
+# R319 centered heavy-resonance inverse: depth-4 stress
+n=32 r=4 rows=92 char0=90889120 wick=110100480 headroom=19211360
+max_wick_ratio p=1439393 ratio=0.927459428563 centered_headroom_ratio=0.584269321138 resonance=False
+max_centered_ratio p=1439393 wick_ratio=0.927459428563 centered_headroom_ratio=0.584269321138 resonance=False
+summary super_wick=0 resonant=0 nonresonant=92

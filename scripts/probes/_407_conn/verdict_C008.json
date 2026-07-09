@@ -1,0 +1,17 @@
+{
+  "id": "C008",
+  "title": "Threshold-free per-instance e2=0 criterion: bad alpha at a=k+2 iff p divides one cyclotomic resultant Res(e2Fold, Phi_{2^m}) -- claimed to have NO BGK wall",
+  "verdict": "REFUTED",
+  "method": "probe",
+  "reduced_to": "",
+  "wall": "W-BGK",
+  "evidence": "The two Lean facts cited (PairSumRigidityModP.pair_sum_collision_dvd_resultant and WindowTwoLayerThreshold.qualifying_implies_char0_vanishing) ARE real and axiom-clean, and the biconditional 'bad alpha for subset A at scale 2^m  <=>  p | Res(e2Fold m A, Phi_{2^m}) (Res != 0)' is correct. I verified the forward+backward direction exactly: probe_c008_witness_verify2.py takes A={1,5,6,7,8,10,19,20,23,27,28,31} at n=32, gets Res=2*139292647009, and the odd factor q=139292647009 is prime with q=1 mod 32, so mu_32 is a PROPER subgroup of F_q* (index 4352895219); enumerating all 16 primitive 2^5-th roots g in F_q, exactly one (g=62361104047) gives e2Fold(g)=0, and the raw power sum sum_{i<j in A} g^{i+j} = 0 mod q confirms a GENUINE bad alpha at this proper-subgroup prize prime. The 'NO BGK wall' claim is what fails: the 'finite divisor set' S(n,k) is NOT a benign fixed object -- its prime factors grow doubly-exponentially and densely include EXACTLY prize-regime primes. probe_c008_e2_resultant_spectrum.py: worst-case largest odd prime factor of Res is 2^14 (n=16), 2^37 (n=32), 2^89 (n=64) -- doubly exponential in the exponent count, log2|Res| ~ 2^{m-1}*log(|A|^2). probe_c008_beta_band.py: over random subsets, prize-FORM factors (q=1 mod n, mu_n proper) land squarely in the target band beta=log_n(q) in [4,5]: n=64 gives q=672067393 (beta=4.89), q=220895041 (beta=4.62), etc.; beta range observed up to ~14. So for the adversary's choice of A AND a deployed proper-subgroup prime q~n^4..n^5, p|Res holds and a thin-subgroup e2-collision exists -- which is precisely the BGK sqrt-cancellation event. The reframing relocates BGK to 'does this sparse lacunary cyclotomic norm have a prize-sized prime factor' (Mahler-measure/large-prime-factor of lacunary cyclotomic integers), which is equally open, not an escape.",
+  "honest_note": "The Lean lemmas are genuine, sorry-free, axiom-clean and the resultant criterion itself is a correct exact per-instance test (good work) -- only the 'escapes the 25-year BGK wall' / 'no thin-subgroup cancellation' interpretation is refuted. Subtlety: the O144 parity lemmas (e2_ne_zero_of_production_dim) only kill the CHAR-0 layer for |A| = 2,3 mod 4; they do NOT bound the char-p surplus, and all my prize-form witnesses have |A| = 12,16 (= 0 mod 4), exactly the rows parity leaves open, where the surplus is unbounded. The probes are at toy scales n=8..64 (exact integer arithmetic); the doubly-exponential growth log2|Res| ~ 2^{m-1}*2 log|A| and the dense appearance of beta in [4,5] proper-subgroup primes is the disproof signal the connection's own attack_plan named ('a single odd factor >= n^beta is a concrete disproof'). Not a hardness proof of BGK -- a refutation that this route avoids it. Recommend logging to DISPROOF_LOG as the C008 e2-resultant no-escape entry.",
+  "connection": "C008",
+  "forms": ["F12", "F3", "F2"],
+  "probe_files": [
+    "scripts/probes/_407_conn/probe_c008_e2_resultant_spectrum.py",
+    "scripts/probes/_407_conn/probe_c008_witness_verify2.py",
+    "scripts/probes/_407_conn/probe_c008_beta_band.py"
+  ]
+}

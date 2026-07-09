@@ -1,0 +1,23 @@
+n=64: K=43776 vectors, headroom=181760
+badprime p=4003841 excess=23040
+badprime p=4004417 excess=69120
+badprime p=4006529 excess=23040
+badprime p=4009729 excess=46080
+badprime p=4012033 excess=23040
+badprime p=4013953 excess=23040
+badprime p=4014721 excess=46080
+badprime p=4015937 excess=46080
+badprime p=4016833 excess=23040
+VIOLATOR p=4017089 beta=3.656 excess=1693440 | s4h1:1382400 s4h2:11520 s5h2:69120 s6h1:230400
+badprime p=4020353 excess=46080
+badprime p=4022657 excess=92160
+badprime p=4028993 excess=46080
+badprime p=4033153 excess=46080
+badprime p=4033409 excess=23040
+badprime p=4033537 excess=23040
+badprime p=4034497 excess=57600
+badprime p=4034881 excess=69120
+badprime p=4035457 excess=46080
+badprime p=4036993 excess=46080
+badprime p=4039169 excess=46080
+badprime p=4039681 excess=11520

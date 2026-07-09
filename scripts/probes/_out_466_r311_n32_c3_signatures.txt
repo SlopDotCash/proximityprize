@@ -1,0 +1,10 @@
+n=32 p=21523361
+observed signature histogram:
+  signature=(93, 3, 1) delta=750 count=32 mass=24000
+  signature=(6, 3, 3) delta=90 count=64 mass=5760
+  signature=(6, 3) delta=36 count=800 mass=28800
+predicted signature histogram:
+  signature=(93, 3, 1) delta=750 count=32 mass=24000
+  signature=(6, 3, 3) delta=90 count=64 mass=5760
+  signature=(6, 3) delta=36 count=800 mass=28800
+matches predicted signatures: True

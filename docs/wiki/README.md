@@ -22,6 +22,8 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
   agent wiki and bibliography.
 - [`arklib-zkvm-boundary.md`](arklib-zkvm-boundary.md) - boundary between ArkLib proof-system
   verification and a whole-zkVM end-to-end theorem.
+- [`zk-payment-channels.md`](zk-payment-channels.md) - imported zk-payment-channel proof
+  artifact, reusable ArkLib infrastructure, and the concrete end-to-end roadmap.
 - [`tower-fiber-theory.md`](tower-fiber-theory.md) - the #232 tower-fiber formal corpus
   (O35-O63): file map, the theory in one paragraph, recurring Lean gotchas.
 - [`coding-theory-conventions.md`](coding-theory-conventions.md) - theorem-naming pattern,

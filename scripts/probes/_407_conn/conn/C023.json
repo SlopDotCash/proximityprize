@@ -1,0 +1,29 @@
+{
+ "id": "C023",
+ "rank": 23,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F2",
+  "F3",
+  "F10"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/FarLineIncidenceEquivariance.lean"
+ ],
+ "title": "Two distinct group-actions quantize the SAME law: dilation ⟨g^t⟩ on bad-scalars (F3) vs coset μ_n on frequencies (F2); gcd(t,n) via the t-power map is the missing dictionary entry",
+ "connection": "Two proven coset-quantizations on opposite sides of δ*=sup{δ:I(δ)≤q·ε*}, NOT the same group. FREQUENCY side: eta_image_card_mul_le proves η_b invariant under b↦b·x for x∈μ_n, so (q−1)/n periods (F2), log((q−1)/n) scale. BAD-SCALAR side: lacBad_smul_closed proves lacBad(μ_n,a,t) invariant under γ↦g^t·γ, a union of cosets of ⟨g^t⟩=μ_{n/gcd(t,n)}, so #bad is a multiple of n/gcd(t,n) (F3). DUAL actions of the same Z/n on two objects (frequencies via b↦b·g, witness-sums via g↦g^t). The dictionary is gcd(t,n): coprime-t gives FULL μ_n-orbits (n units, matching per-frequency); t even shrinks the orbit to n/2 — exactly when the t-power map collapses μ_n onto μ_{n/2}.",
+ "why_insightful": "The campaign treats F2 (period count) and F3 (incidence count) as the same '~n quantization', but they are governed by two genuinely different actions whose ratio is gcd(t,n); the t-power map g↦g^t is the unnamed bridge, and it predicts the even/odd-t parity split in incidence directly.",
+ "attack_plan": "Lean: lacBad_orbit_count: #lacBad/(n/gcd(t,n))=#{distinct ⟨g^t⟩-orbits}; probe (extend probe_lacbad_crossover_407.py) measuring #orbits as a function of gcd(t,n) at the window edge to test whether the ORBIT count is O(1) exactly when gcd(t,n)=1. If so, the floor reduces to coprime-t directions and the t-power collapse handles the rest by self-similar μ_{n/2} reduction."
+}

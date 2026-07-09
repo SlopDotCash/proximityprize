@@ -59,9 +59,7 @@ When the verifier challenge `r_i'` is uniform over `L`, the probability that two
 degree-≤2 round polynomials agree at `r_i'` is at most `2 / |L|`. -/
 lemma probability_bound_badSumcheckEventProp (h_i h_star : L⦃≤ 2⦄[X]) :
     Pr_{ let r_i' ← $ᵖ L }[
-      badSumcheckEventProp r_i'
-        (fun r => h_i.val.eval r)
-        (fun r => h_star.val.eval r) ] ≤
+      badSumcheckEventProp r_i' h_i h_star ] ≤
       (2 : ℝ≥0) / Fintype.card L := by
   classical
   have h_i_deg : h_i.val.natDegree ≤ 2 :=
@@ -70,20 +68,15 @@ lemma probability_bound_badSumcheckEventProp (h_i h_star : L⦃≤ 2⦄[X]) :
     Polynomial.natDegree_le_of_degree_le (Polynomial.mem_degreeLE.1 h_star.property)
   have hmono :
       Pr_{ let r_i' ← $ᵖ L }[
-        badSumcheckEventProp r_i'
-          (fun r => h_i.val.eval r)
-          (fun r => h_star.val.eval r) ] ≤
+        badSumcheckEventProp r_i' h_i h_star ] ≤
         Pr_{ let r_i' ← $ᵖ L }[
           KStateWeaken.badPolyAgreement r_i' h_i.val h_star.val ] :=
     PrUnion.Pr_mono ($ᵖ L)
-      (fun r_i' =>
-        badSumcheckEventProp r_i'
-          (fun r => h_i.val.eval r)
-          (fun r => h_star.val.eval r))
+      (fun r_i' => badSumcheckEventProp r_i' h_i h_star)
       (fun r_i' => KStateWeaken.badPolyAgreement r_i' h_i.val h_star.val)
       (by
         intro r_i' hbad
-        exact ⟨fun h_eq => hbad.1 (by funext r; simp [h_eq]), hbad.2⟩)
+        exact ⟨fun h_eq => hbad.1 (Subtype.ext h_eq), hbad.2⟩)
   exact le_trans hmono
     (KStateWeaken.prob_badPolyAgreement_degree_two_le h_i_deg h_star_deg)
 
