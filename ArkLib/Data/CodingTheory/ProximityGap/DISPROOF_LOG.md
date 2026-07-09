@@ -31018,3 +31018,25 @@ trinomial sparse relations, i.e. the shape-avoidance test is genuinely a sparse-
 question (r364), not a divisibility shortlist. Next: classify the actual violating webs at
 32993/50177/156353 from the r305 collision groups (they are computable exactly).
 CORE OPEN, ON-BGK.
+
+## [466-r367-trinomial-webs-dominant-and-shkredov-route] the dense β≥3 violators are TRINOMIAL webs (support-3 height-2 = 84% of p=32993's excess), and the trinomial sector reduces to subgroup-on-a-line counts |{(x,y) ∈ μ_n² : c₀+c₁x+c₂y=0}| — Shkredov-class bounds (n^{2/3+ε} per class, O(h³) classes, orbit factor n) give sector mass ≲ n^{5/3+ε} ≪ 45n² headroom asymptotically: a candidate UNCONDITIONAL asymptotic closure of the r=3 rung (2026-07-09)
+
+Shape spectrum at p=32993 (collision-group extraction, exact): support-3 height-2 M=330240
+(84%), s3h3 1920, s3h4 1920, s4h2 11520, s5h2 46080; total 391680. The r366-refuting dense
+webs are trinomials a·ζ^i + b·ζ^j + c·ζ^k ≡ 0, |coeffs| ≤ 2.
+
+THE ROUTE: factor out ζ^i — trinomial vanishing ⟺ (x, y) ∈ μ_n² on the line
+c₀ + c₁x + c₂y = 0. Coefficient classes: O(h³) with h ≤ 2r (NO n-dependence — exponents
+absorbed into (x,y)); per-class solution count = subgroup-line intersection, bounded
+n^{2/3+o(1)} for n < p^{1/2} (Heath-Brown–Konyagin/Shkredov shifted-subgroup bounds); each
+solution's Galois/rotation orbit contributes ≤ n relations. Sector mass ≲ h³·n^{5/3+ε} —
+BELOW the 45n²−40n headroom for n large (violations at n=32 are small-n constants, so this
+is CONSISTENT with the census; no β-frontier claim). Support-4/5/6 sectors = μ_n-points on
+planes/hyperplanes — candidate control via higher additive-energy/decoupling bounds; s ≤ 6
+suffices for the whole depth-3 rung. IF each sector is o(n²) the r=3 rung E₃ ≤ 15n³ holds
+for ALL primes p > p₀(n), n ≥ n₀ UNCONDITIONALLY — the first would-be all-primes asymptotic
+rung. NEXT (priority): (a) verify sector scaling at n=64/128 numerically (census per-shape
+masses vs n); (b) locate in-tree/literature exact Shkredov constant for |H ∩ (aH + b)|;
+(c) the s=5 sector at p=32993 (46080 = above headroom alone) — check its per-class
+structure before trusting the route. CORE OPEN — this is a derivation sketch + exact
+shape data, not a proof.
