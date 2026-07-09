@@ -49,7 +49,9 @@ the scalar multiples of one fixed cubic-resonant pair.
    `#bad<=n` bound needed at budget `floor(p/2^128)=n`.
 3. More importantly, its mechanism requires `3 | n`.  The prize evaluation group has
    order `2^30` and contains no nontrivial cube root of unity.  A corrected conjecture
-   should exploit the dyadic subgroup, not merely the MDS property.
+   should exploit the dyadic subgroup, not merely the MDS property.  The axiom-clean
+   theorem `R381DyadicCubicResonanceExcluded.no_dyadic_cubic_resonance` formally proves
+   that `u^(2^mu)=1` and `u^2+u+1=0` are incompatible in characteristic other than `3`.
 4. The ordinary secant-variety degree argument cannot prove the desired bound in the
    production range: for `D=n-k` and `e=n/2-1`, the `e`-secant variety of the rational
    normal curve fills the ambient projective syndrome space whenever `2e>=D`.
