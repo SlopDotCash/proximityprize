@@ -2538,6 +2538,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadWeilBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35FullConvLagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35TransformRingHom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R377GaloisKernelStabilityRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
