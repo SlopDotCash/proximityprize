@@ -43,15 +43,53 @@ class Case:
     label: str
 
 
-def medium_cases(max_a: int, max_index: int, min_index: int, chunk: int) -> list[Case]:
+def cached_desc(
+    p: int, n: int, chunk: int, cache_dir: Path | None, cache_only: bool
+) -> tuple[np.ndarray, np.ndarray] | None:
+    if cache_dir is None:
+        if cache_only:
+            return None
+        xs = normalized_values_vectorized(p, n, chunk)
+        return xs, np.sort(xs)[::-1]
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    path = cache_dir / f"r231_n{n}_p{p}_chunk{chunk}.npz"
+    if path.exists():
+        try:
+            with np.load(path) as data:
+                desc = data["desc"]
+            return desc[::-1], desc
+        except (EOFError, OSError, ValueError, KeyError):
+            path.unlink(missing_ok=True)
+            if cache_only:
+                return None
+    if cache_only:
+        return None
+    xs = normalized_values_vectorized(p, n, chunk)
+    desc = np.sort(xs)[::-1]
+    np.savez_compressed(path, desc=desc)
+    return xs, desc
+
+
+def medium_cases(
+    min_a: int,
+    max_a: int,
+    max_index: int,
+    min_index: int,
+    chunk: int,
+    cache_dir: Path | None,
+    cache_only: bool,
+) -> list[Case]:
     out: list[Case] = []
-    for a in range(3, max_a + 1):
+    for a in range(min_a, max_a + 1):
         n = 2**a
         for m in range(max(2, min_index), max_index + 1):
             p = m * n + 1
             if is_prime(p):
-                xs = normalized_values_vectorized(p, n, chunk)
-                out.append(Case(n, p, m, xs, np.sort(xs)[::-1], f"a={a}-M={m}"))
+                cached = cached_desc(p, n, chunk, cache_dir, cache_only)
+                if cached is None:
+                    continue
+                xs, desc = cached
+                out.append(Case(n, p, m, xs, desc, f"a={a}-M={m}"))
     return out
 
 
@@ -111,10 +149,13 @@ def residual_envelope_budget(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--medium-min-a", type=int, default=3)
     parser.add_argument("--medium-max-a", type=int, default=8)
     parser.add_argument("--medium-max-index", type=int, default=4096)
     parser.add_argument("--min-index", type=int, default=512)
     parser.add_argument("--chunk", type=int, default=32768)
+    parser.add_argument("--cache-dir", type=Path, default=None)
+    parser.add_argument("--cache-only", action="store_true")
     parser.add_argument("--trims", type=int, nargs="+", default=[1, 2, 4, 8, 16, 32])
     parser.add_argument("--taus", type=float, nargs="+", default=[0.5, 1.0, 2.0])
     parser.add_argument("--spike-budgets", type=float, nargs="+", default=[0.0, 1.0, 2.0])
@@ -124,7 +165,15 @@ def main() -> None:
     parser.add_argument("--top", type=int, default=30)
     args = parser.parse_args()
 
-    cases = medium_cases(args.medium_max_a, args.medium_max_index, args.min_index, args.chunk)
+    cases = medium_cases(
+        args.medium_min_a,
+        args.medium_max_a,
+        args.medium_max_index,
+        args.min_index,
+        args.chunk,
+        args.cache_dir,
+        args.cache_only,
+    )
     rows = []
     for trim in args.trims:
         for tau in args.taus:
