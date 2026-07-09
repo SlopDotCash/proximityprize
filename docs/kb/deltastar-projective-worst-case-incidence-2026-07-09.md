@@ -104,6 +104,16 @@ ProjectiveWorstCaseIncidenceBounded C delta E
 Thus the universal production condition has no unresolved rank-zero or rank-one part.  Its entire
 content lies on genuine two-dimensional quotient pencils.
 
+`ProjectiveRankTwoAPI.lean` connects this campaign predicate to standard Mathlib geometry:
+
+```text
+RowsIndependentModCode C u0 u1
+  <-> LinearIndependent F ([u0], [u1])
+  <-> finrank F (quotientPencil C u0 u1) = 2.
+```
+
+Downstream incidence arguments can therefore use the ordinary `Submodule` and `finrank` APIs.
+
 ## Exact support-subspace dictionary
 
 `ProjectiveQuotientSupport.lean` packages the remaining event without a choice of pencil basis.
@@ -125,8 +135,9 @@ mcaEventProj C delta u0 u1 alpha beta
 
 The first membership says that the selected projective class has a representative supported off
 `S`; the failed inclusion says that the whole pencil is not jointly explainable there.  On the
-rank-two stratum, a bad slot is therefore a projective line of `P` cut out by a proper support
-subspace.  This is an exact theorem-level dictionary, not the missing incidence estimate.
+rank-two stratum, a bad slot is therefore a projective point on the line associated to `P`, selected
+by a proper intersection `P ∩ B_S`.  This is an exact theorem-level dictionary, not the missing
+incidence estimate.
 
 ## A necessary no-go
 
@@ -149,11 +160,11 @@ that must be bounded and removes a chart artifact from that task.
 The next unformalized specialization is the MDS/RS circuit dictionary.  For a rank-two quotient
 pencil `P`, let `D_P` be its inverse image in the word space, a two-dimensional supercode extension
 of `C`.  The support-subspace theorem suggests indexing bad projective labels by low-support,
-support-minimal words of `D_P / C`, equivalently by short circuits after projecting parity-check
-columns along `P`.  The shallow support layers admit elementary packing bounds, but the binding
-layer can contain many private supports, as the 56-slot construction demonstrates.  Controlling
-that deep layer for every smooth-domain RS pencil is the same worst-case list-incidence wall that
-remains open.
+support-minimal words of `D_P / C`; these are expected to correspond to short circuits after
+projecting parity-check columns along `P`.  The shallow support layers admit elementary packing
+bounds, but the binding layer can contain many private supports, as the 56-slot construction
+demonstrates.  Controlling that deep layer for every smooth-domain RS pencil is the same worst-case
+list-incidence wall that remains open.
 
 ## Validation
 

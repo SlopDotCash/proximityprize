@@ -13,6 +13,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BoundarySupExactness
 import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
 -- §2.2 the exact projective form of the production incidence core:
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -705,14 +707,21 @@ theorem deltaStar_pin_mu8_F4129_witness :
 
   `epsMCA_le_iff_projective` identifies the operational error budget with this projective census,
   and `mcaDeltaStar_eq_of_projective_jump` converts its first failure into an exact threshold.
-  The remaining open math is the projective incidence estimate itself, now naturally stated on
-  rank-two syndrome pencils rather than ordered row generators. -/
+  Codeword translation shows that the census depends only on the two quotient classes.  For every
+  budget `E >= 1`, dependent quotient rows contribute at most one slot, so only genuine rank-two
+  pencils remain.  `mcaEventProj_iff_quotientPencilSupport` states each bad slot exactly as a class
+  lying in a witness support subspace which does not contain the whole quotient pencil.  The open
+  math is the resulting worst-case incidence estimate. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
+#check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_eq_of_quotient_mk_eq
 #check @ProximityGap.ProjectiveWorstCaseIncidence.worstCaseIncidenceBounded_iff_projective
 #check @ProximityGap.ProjectiveWorstCaseIncidence.epsMCA_le_iff_projective
 #check @ProximityGap.ProjectiveWorstCaseIncidence.mcaDeltaStar_eq_of_projective_jump
+#check @ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
+#check @ProximityGap.ProjectiveRankTwoAPI.rowsIndependentModCode_iff_finrank_quotientPencil_eq_two
+#check @ProximityGap.ProjectiveQuotientSupport.mcaEventProj_iff_quotientPencilSupport
 #check
   ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 

@@ -8,6 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
 import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetRateThreeSixteenths
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyPinRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
 
 set_option linter.style.longLine false
@@ -554,6 +555,7 @@ finite laws.
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_eq_of_quotient_mk_eq
 #check @ProximityGap.ProjectiveWorstCaseIncidence.worstCaseIncidenceBounded_iff_projective
 #check @ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
+#check @ProximityGap.ProjectiveRankTwoAPI.rowsIndependentModCode_iff_finrank_quotientPencil_eq_two
 #check @ProximityGap.ProjectiveQuotientSupport.mcaEventProj_iff_quotientPencilSupport
 #check ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
