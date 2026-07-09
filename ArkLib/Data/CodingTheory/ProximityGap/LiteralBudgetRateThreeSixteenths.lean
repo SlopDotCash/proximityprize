@@ -42,6 +42,9 @@ open ArkLib.ProximityGap.LiteralBudgetPin
 local instance fact_prime_literal_P : Fact (Nat.Prime LiteralBudgetPin.P) :=
   ⟨LiteralBudgetPin.prime_P⟩
 
+local instance fact_prime_mu6_P : Fact (Nat.Prime Mu6DeepRung.P) :=
+  ⟨Mu6DeepRung.prime_P⟩
+
 private theorem choose_32_7 : (32 : ℕ).choose 7 = 3365856 := by
   rw [Nat.choose_eq_descFactorial_div_factorial]
   decide
