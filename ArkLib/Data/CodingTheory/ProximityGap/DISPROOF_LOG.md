@@ -21272,3 +21272,62 @@ CONSEQUENCE: the depth-3 flatness deficit "sees" each Gauss period with multipli
 effective number of degrees of freedom is (q−1)/|G|, not q — the /|G| saving the moment method
 relies on, now proven on the additive side. Does NOT break the wall (per-orbit deviations still
 Paley/BGK-governed). Completes the depth-3 variance arc r55→r56→r57. CORE OPEN, ON-BGK.
+
+## [466-B2-curve-decodability-reduction-SEALED] B2 (curve-decodability ⟹ MCA) reduction COMPLETED end-to-end, axiom-clean (2026-07-08)
+
+The #334 class-B item B2 — "[GG25] Def 3.1 curve decodability from scratch; does a good interleaved
+list-decoding bound imply a good MCA bound?" — is now answered YES, unconditionally, sealed into one
+composed theorem. New file `GG25CurveDecodabilityB2Capstone.lean` (real locked build 8511 jobs, all
+3 theorems axiom-clean [propext, Classical.choice, Quot.sound]).
+
+The two engine halves were already in-tree axiom-clean (`curveDecodable_of_curveListSize` pigeonhole;
+`GG25Lemma32.all_seeds_relClose_of_curveDecodable` spread/MCA), and the per-row factorization
+`Attack05.curveListSize_le_pow_of_rowList_le` (curve list size ≤ Lᵈ, L = per-row RS list size,
+d = ℓ+1). The GENUINELY MISSING piece was the interface + capstone, now landed:
+- `curveListSizeLe_of_rowList_le`: a per-row list-decoding bound L ⟹ `CurveListSizeLe C ℓ δ (Lᵈ)`
+  (packages the per-row product bound existentially into the predicate the engine consumes).
+- `curveDecodable_of_rowList_le`: composes into the pigeonhole (`Lᵈ·b ≤ a`, `1 ≤ Lᵈ` ⟹ curve-decodable).
+- `curveDecodable_relMCA_of_rowList_le` (THE B2 CAPSTONE): per-row list bound L + arithmetic
+  (`1 ≤ Lᵈ`, `Lᵈ·t ≤ a`, `ℓ < t`) ⟹ for any (u,f) with close set ≥ a, a single codeword-curve is
+  within relative Hamming distance (t/(t−ℓ))·δ of the tested curve at EVERY seed (the MCA conclusion).
+
+NO δ*/BGK/Paley input appears — the reduction is fully unconditional. The only remaining
+code-family-specific input is the numeric per-row list size L: O(1/η) (field linear in n) for
+folded/random RS via list-recovery (formalizable, routes to FRS list-decodability / CZ25CoordFiberCap,
+NOT the wall); the open BCHKS-1.12 line-ball object (`RSCurveListSizeResidual`) only for explicit
+plain RS above Johnson — and that open input is entirely outside this reduction. B2's substantive
+question is answered.
+
+## [466-r304-depth3-exact-wick-refuted-n32] the r53 headroom atom (E₃ ≤ 15n³ for all p ≡ 1 mod n, β ≥ 3) is REFUTED at n=32 — 19 violating primes, worst E₃/Wick = 1.71 (1.64 DC-subtracted), excess reaches 11.95·n³; the failure is n-INVERTED (n=8 exact-zero excess everywhere, n=16 clean, n=32 fails 8.7×) (2026-07-09)
+
+Exhaustive scan of EVERY prime p ≡ 1 (mod n), β ≥ 3: n=8 to 10⁶ (19,532 primes), n=16 to
+1.5·10⁶ (14k primes), n=32 to 2·10⁶ (9,088 primes). FFT computation of q·E₃ = Σ_b|η_b|⁶,
+validated bit-exact against the r52 integer probe; all headline violations re-verified with
+exact integer arithmetic. `scripts/probes/probe_r304_depth3_excess_exhaustive.py`,
+outputs `_out_466_r304_n{8,16,32}.txt`, kb
+`deltastar-466-r304-depth3-headroom-refuted-n32-2026-07-09.md`.
+
+- **REFUTED**: `excess(p,n) ≤ 45n²−40n` (⇔ exact-Wick E₃ ≤ 15n³) universally over β ≥ 3.
+  At n=32: p=32993 (β=3.002) E₃=838400 = 1.706×Wick, excess=391680 = 11.95n³ = 8.74×headroom;
+  p=65537 (Fermat, β=3.2) 1.431×; violations persist to p=194977 (β=3.515); 19 total, none in
+  (β=3.52, 4.19].
+- **CORRECTION to r52**: "excess is O(n²)-scale at every bad prime" is FALSE at n=32 —
+  n³-scale excess exists. The r53 conditional theorem stands; its hypothesis is what fails.
+- **CORRECTION-SCOPE to r54**: the DC floor does NOT explain the strong violations
+  (E₃−n⁶/q = 1.64/1.40/1.28×Wick at the top three); only the weak 45n²-level raw violations
+  (e.g. p=35393 → 0.94 after DC) are DC artifacts.
+- **n-INVERSION**: n=8 has excess ≡ 0 EXACTLY (E₃ = 15n³−45n²+40n = 5120) at ALL 19,532
+  primes β ∈ [3, 6.64]; n=16 worst excess = 1920 = 17.6% of headroom (no violation to
+  1.5·10⁶); n=32 fails by 8.7×. Uniformity in n degrades — the wrong direction for n = 2³⁰.
+- **KEPT (new structure)**: (i) quantization — every nonzero excess at n∈{16,32} is an exact
+  multiple of 480, commonest violating level exactly 45n²; (ii) the norm-bound mechanism —
+  wraparound ⇒ p | Norm(z) for a nonzero 6-term ±sum z of n-th roots, |Norm(z)| ≤ 6^φ(n),
+  hence excess ≡ 0 for p > 6^φ(n) (matches n=8/n=16 data precisely); (iii) at fixed n the
+  r=3 rung is a FINITE check below the norm frontier — useless at prize n but it locates the
+  wall: the open question is violation persistence at prize-relevant β ≈ 5.3 under the norm
+  frontier (→ r305 norm-divisor census).
+
+CONSEQUENCE: the depth-3 exact-Wick rung cannot be closed uniformly over β ≥ 3; the moment
+route needs bad-prime exclusion (re-routes into the floor-bad/good-prime lane, Tier-1 §6
+item 4). The r55–r303 variance/orbit machinery is unaffected (parametric in the energy
+bound). CORE OPEN, ON-BGK.

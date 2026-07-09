@@ -1,0 +1,27 @@
+R304 n=8 window p in [512, 1000000] (beta in [3.00, 6.64]): 19532 primes ≡ 1 mod 8; atom: excess <= 2560 (E3 <= 7680)
+progress 2000/19532 p=83737 worstExcess=0 (p=83737) violations=0
+progress 4000/19532 p=178289 worstExcess=0 (p=178289) violations=0
+progress 6000/19532 p=277793 worstExcess=0 (p=277793) violations=0
+progress 8000/19532 p=379993 worstExcess=0 (p=379993) violations=0
+progress 10000/19532 p=483481 worstExcess=0 (p=483481) violations=0
+progress 12000/19532 p=588953 worstExcess=0 (p=588953) violations=0
+progress 14000/19532 p=696569 worstExcess=0 (p=696569) violations=0
+progress 16000/19532 p=804521 worstExcess=0 (p=804521) violations=0
+progress 18000/19532 p=914369 worstExcess=0 (p=914369) violations=0
+
+scan complete: 19532 primes, violations=0
+atom 'excess <= 2560': SURVIVES this window
+
+top excess primes:
+  p=   999961 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999953 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999809 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999769 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999721 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999553 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999529 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999521 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999433 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999377 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999329 beta=6.644 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
+  p=   999233 beta=6.643 E3=        5120 excess=       0 excess/headroom=+0.0000 E3/Wick=0.6667
