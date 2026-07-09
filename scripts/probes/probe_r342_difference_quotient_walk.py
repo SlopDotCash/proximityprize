@@ -65,5 +65,6 @@ def run(p, n):
         print(f"  d={depth} support={support}/{m} L2/unif={l2_ratio:.6g} Linf/unif={max_ratio:.6g}")
 
 
-for cell in [(521, 8), (100049, 8), (1048609, 16), (16777601, 32)]:
-    run(*cell)
+if __name__ == "__main__":
+    for cell in [(521, 8), (100049, 8), (1048609, 16), (16777601, 32)]:
+        run(*cell)
