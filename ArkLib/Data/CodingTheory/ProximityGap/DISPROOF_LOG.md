@@ -21272,3 +21272,34 @@ CONSEQUENCE: the depth-3 flatness deficit "sees" each Gauss period with multipli
 effective number of degrees of freedom is (q−1)/|G|, not q — the /|G| saving the moment method
 relies on, now proven on the additive side. Does NOT break the wall (per-orbit deviations still
 Paley/BGK-governed). Completes the depth-3 variance arc r55→r56→r57. CORE OPEN, ON-BGK.
+
+## [466-FS1-depth3-annihilator-ledger] NEW REDUCTION BRICK (Fable session): the (prime × pattern) ANNIHILATOR LEDGER — an unconditional double-count + height-cap + Markov chain that turns the r53 headroom atom into an ALMOST-ALL-PRIMES depth-3 Wick rung; honest scope: non-vacuous only for β ≳ 6, caps nothing at prize β ≈ 5.3 (2026-07-09)
+
+Lane: FS1 (file `Frontier/_FS1Depth3AnnihilatorLedger.lean`, real locked build 3322 jobs, all 5
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+IDEA (new to the tree at FIXED depth r=3): every nontrivial depth-3 exponent pattern σ owns a
+nonzero integer annihilator N(σ) (for 2-power n: `Res(x^{n/2}+1, σ̄)`, height ≤ 6^{n/2} ≤ 2^{3n/2});
+σ can only contribute char-p wraparound excess at primes p | N(σ). Distinct primes ≥ 2^s dividing
+an integer ≤ 2^L number ≤ L/s — so a (prime × pattern) double count caps the TOTAL excess over any
+prime family, and Markov caps the number of primes whose excess exceeds the r53 headroom 45n²−40n.
+
+PROVEN UNCONDITIONALLY (abstract pattern set, no named hypotheses inside proofs):
+- `sum_badCount_eq` — exact incidence double count Σ_p excess(p) = Σ_σ #{p : Bad p σ}.
+- `perPattern_primeCount_le` — the height cap #{p ∈ P : Bad p σ} ≤ L/s from any nonzero
+  annihilator N ≤ H ≤ 2^L (product of distinct primes ≥ 2^s divides N).
+- `badPrime_card_mul_le` / `annihilator_ledger_badPrime_cap` — #{p : excess(p) ≥ T}·T ≤ |pats|·(L/s).
+- `gaussianEnergyBound_three_of_ledger_good_prime` — the r53 weld: at any prime outside the capped
+  bad set (T = 45n²−40n+1), given the excess decomposition `Depth3ExcessBounded G (excess p)`, the
+  EXACT Wick bound `GaussianEnergyBound G 3` fires.
+
+NAMED OPEN INPUTS (follow-up bricks, not claimed): (i) the μ_n instantiation — exponent
+parametrization of addEnergy3 against the char-0 closed form with |pats| ≤ n⁶ (r50/r52 shape);
+(ii) the annihilator discharge via the cyclotomic resultant (classical height bound; Mathlib
+resultant API is the constraint).
+
+HONEST SCOPE (the F9/J1 shadow at r=3): with |pats| = n⁶, H = 6^{n/2}, p ≥ n^β the cap reads
+#bad ≲ n⁵/(30·β·log₂ n), vs ≈ n^{β−1}/(β ln n) primes ≡ 1 mod n below n^β — NON-VACUOUS only for
+β ≳ 6; at the prize shape β ≈ 5.3 it caps nothing. This is an average/almost-all rung, NOT a
+per-prime prize rung; the per-prime uniformity at prize β remains the wall (rank-independent
+S-unit obstruction, r28b audit). Logged as a positive reduction brick. CORE OPEN, ON-BGK.
