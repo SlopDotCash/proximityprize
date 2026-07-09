@@ -27,6 +27,7 @@ open Finset
 
 namespace ArkLib.ProximityGap.Frontier.R362KernelShellWickWeld
 
+open ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor
 open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
 open ArkLib.ProximityGap.Frontier.R312ShadowCollisionMassIdentity
 open ArkLib.ProximityGap.Frontier.R314KernelRelationMassDecomposition
@@ -69,6 +70,8 @@ theorem relationCancellationStratum_subset_kernelL1Shell
   have heval := (shadowKernelRelation_ne_zero_and_evalVec_eq_zero g (2 * m) m r hdrel).2
   refine ⟨mem_l1Sphere_of_natL1_eq ?_, heval⟩
   have hdepth := decomposition_of_mem_relationCancellationStratum g m r s hd
+  unfold endpointL1 at hdepth
+  have hsr : s ≤ r := by omega
   unfold natL1
   omega
 

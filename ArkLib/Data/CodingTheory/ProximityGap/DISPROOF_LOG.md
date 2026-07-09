@@ -31005,3 +31005,16 @@ UNAVOIDABLE (Minkowski) at and below prize scale; the entire question is whether
 in the (finite, mass-weighted) realizable-shape set Z_r. Good-prime selection = shape
 avoidance in the prime-ideal lattice; the ideal-SVP/Ring-LWE literature transfer (r364 §2)
 is the live lane. CORE OPEN, ON-BGK.
+
+## [466-r366-binomial-web-criterion-REFUTED] "all exact-Wick violations arise from rank-1 binomial webs (p | c^m ± d^m, c,d ≤ 6)" is FALSE — only 12/156 violators overall and 2/20 at β ≥ 3 (65537, 21523361) are binomial; the other 18 β≥3 violators (32993, 35393, …, 194977) carry DENSER (trinomial+) relation modules (2026-07-09)
+
+Follow-up to r364/r365: if all violations were binomial webs, "avoid p | c^m ± d^m" would be
+a poly-time deployment selection criterion. Direct check over the census violator list
+(inline probe on `_out_466_r305_census_n32.txt`): NONE-FOUND for 18 of the 20 β ≥ 3
+violators across c,d ≤ 6, both signs, and the order-8 subfield binomials. CONSEQUENCE: the
+shape set Z₃'s heavy-mass classes are not confined to rank-1 binomial modules — the
+violating webs are generically denser; a usable selection criterion must test (at least)
+trinomial sparse relations, i.e. the shape-avoidance test is genuinely a sparse-SVP-in-Z_r
+question (r364), not a divisibility shortlist. Next: classify the actual violating webs at
+32993/50177/156353 from the r305 collision groups (they are computable exactly).
+CORE OPEN, ON-BGK.
