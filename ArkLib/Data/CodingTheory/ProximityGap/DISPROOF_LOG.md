@@ -21576,12 +21576,13 @@ points.  The surviving target must retain `NR(2m,m,2r,d)` weights and bound tota
 mass, rather than replace every relation by the zero-mode maximum.  KB:
 `deltastar-466-r327-relation-count-fiber-no-go-2026-07-09.md`. CORE OPEN, ON-BGK.
 
-## [prize-entropy-degree-parameter] `PrizePinConjecture` is REFUTED as stated: it uses polynomial degree `k` as the rate numerator although `evalCode g n k` has dimension `k + 1` (2026-07-09)
+## [prize-entropy-degree-parameter] `PrizePinConjecture` and its naive actual-rate repair are REFUTED at the exact dimension-one pin (2026-07-09)
 
 `PrizeEntropyPinRefuted.lean` proves the concrete counterexample
 `p=12289`, `n=8`, `g=4043`, `k=0`, `epsilon*=14/12289`.  The existing unconditional
 dimension-one theorem gives operational `delta*=3/4`, while the historical entropy side
-uses rate `0/8` and simplifies to `prizeDeltaStar 0 B = 1`.  Hence the two sides cannot be
-equal.  This refutes only the degree-parameterized Lean definition; the corrected conjecture
-with actual rate `(k+1)/n` and the production prize instances remain open.  KB:
+uses rate `0/8` and simplifies to `prizeDeltaStar 0 B = 1`.  Moreover, the same file gives
+an exact logarithmic certificate for `3/4 < prizeDeltaStar (1/8) 14`, so replacing `k/n`
+by the actual rate `(k+1)/n` does not rescue the generic finite equality.  The four
+production prize instances and a suitably qualified asymptotic law remain open.  KB:
 `deltastar-prize-entropy-degree-parameter-refutation-2026-07-09.md`. CORE OPEN.
