@@ -111,6 +111,15 @@ def main() -> int:
         action="store_true",
         help="exit 1 if any live sorry/admit hole exists (CI gate)",
     )
+    ap.add_argument(
+        "--baseline",
+        type=Path,
+        default=Path("scripts/sorry_baseline.json"),
+        help="JSON list of {file, decl} holes inherited from upstream syncs; "
+        "baselined holes report but do not fail the gate. Ratchet: any hole "
+        "not in the baseline still fails, and retired entries are reported "
+        "so the baseline can only shrink.",
+    )
     args = ap.parse_args()
 
     rows = census(args.root.expanduser())
@@ -121,10 +130,33 @@ def main() -> int:
         print(f"wrote {args.out}")
     print(json.dumps(out["summary"], indent=2))
 
+    baseline: set[tuple[str, str]] = set()
+    if args.baseline.is_file():
+        data = json.loads(args.baseline.read_text())
+        baseline = {(e["file"], e["decl"]) for e in data["holes"]}
+
     holes = [r for r in rows if r["kind"] == "hole"]
-    if holes:
-        print(f"\n{len(holes)} live hole(s):", file=sys.stderr)
-        for r in holes:
+    new_holes = [r for r in holes if (r["file"], r["decl"]) not in baseline]
+    baselined = [r for r in holes if (r["file"], r["decl"]) in baseline]
+    retired = baseline - {(r["file"], r["decl"]) for r in holes}
+    if baselined:
+        print(
+            f"\n{len(baselined)} baselined upstream-inherited hole(s) "
+            f"in {len({(r['file'], r['decl']) for r in baselined})} decl(s) "
+            f"(tracked in {args.baseline}; see the issue referenced there)",
+            file=sys.stderr,
+        )
+    if retired:
+        print(
+            f"{len(retired)} baseline entr(ies) no longer have holes — "
+            f"remove them from {args.baseline}:",
+            file=sys.stderr,
+        )
+        for f, d in sorted(retired):
+            print(f"  {f}: {d}", file=sys.stderr)
+    if new_holes:
+        print(f"\n{len(new_holes)} NEW live hole(s):", file=sys.stderr)
+        for r in new_holes:
             print(f"  {r['file']}:{r['line']}: {r['token']} in {r['decl']}", file=sys.stderr)
         if args.fail_on_holes:
             return 1
