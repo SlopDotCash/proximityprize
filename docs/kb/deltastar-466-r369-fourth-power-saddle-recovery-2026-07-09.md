@@ -61,5 +61,35 @@ fixed-depth resultant census: a web can violate shallow Wick while becoming harm
 saddle.  The next attack should bound the weighted generating function of relation modules
 directly at this saddle, not coefficientwise at every depth.
 
+There is an exact mechanism behind the observed recovery.  Cancel the maximal common
+multiset from the two endpoint tuples of a depth-`r` collision.  If the remaining primitive
+disjoint relation has depth `s`, then the original collision is obtained by inserting an
+ordered common padding tuple of length `r-s` and choosing its complement positions on both
+sides.  Consequently, if `J_s` is the number of ordered primitive disjoint `s`-webs, its
+entire padded contribution obeys
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * n^(r-s).                 (1)
+```
+
+Indeed there are at most `n^(r-s)` ordered padding tuples and
+`choose(r,s)^2 (s!)^2 = (r descFactorial s)^2` insertion choices.  Overcounting caused by
+repeated padding entries only strengthens (1).  Dividing by the Wick scale gives
+
+```text
+W_r^(s) / ((2r-1)!! n^r)
+ <= (J_s / n^s) * (r descFactorial s)^2
+      / ((2r-1)(2r-3)...(2(r-s)+1)),                             (2)
+```
+
+which is asymptotic to `(J_s/n^s) * (r/2)^s` for fixed `s`.  In particular, an orbit-sized
+family `J_s = O(n)` is negligible whenever `s >= 2` and `r = O(log p) << n`.  This explains
+why the rank-one `p=21523361` web can violate depths 2--10 and still disappear at depth 17.
+
+Equation (1) removes all bounded-support primitive modules from the saddle obstruction.  The
+remaining theorem is now narrower: center and control primitive disjoint webs with
+`s` growing with `r`.  Those are precisely the maximal-support strata that migrated to the
+front in R368; shallow resultant spikes cannot refute the saddle conjecture by themselves.
+
 No current published subgroup exponential-sum theorem proves this estimate.  It remains open
 and is not claimed as prize closure.
