@@ -36,23 +36,57 @@ open Finset
 
 namespace ArkLib.ProximityGap.Frontier.R310ShadowFloorToRFoldEnergy
 
-namespace R240 := ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
-namespace R306 := ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor
-namespace R308 := ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
-
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
+open ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
+open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+
+/-- The concrete finset of the first `n` powers of `g`. -/
+noncomputable def powerRootSet (g : F) (n : ℕ) : Finset F :=
+  (Finset.univ : Finset (Fin n)).image (fun i => g ^ (i : ℕ))
 
 /-- Socket hypothesis: the indexed power-root representation function from R308 is the same
 as the ambient `r`-fold representation function of a finset `G`.  The intended concrete
 consumer is `G = {g^i | i < n}` with a no-duplicate proof for the indexing map. -/
 def PowerShadowRepIdentifies (g : F) (G : Finset F) (n r : ℕ) : Prop :=
-  ∀ c : F, R308.repRF g n r c = R240.repR G r c
+  ∀ c : F, repRF g n r c = repR G r c
+
+/-- The power tuple associated to an indexed tuple. -/
+def powerTuple (g : F) {n r : ℕ} (t : Fin r → Fin n) : Fin r → F :=
+  fun i => g ^ ((t i : ℕ))
+
+/-- Indexed power tuples land in the `piFinset` of `powerRootSet`. -/
+theorem powerTuple_mem_piFinset (g : F) (n r : ℕ) (t : Fin r → Fin n) :
+    powerTuple g t ∈ Fintype.piFinset (fun _ : Fin r => powerRootSet g n) := by
+  classical
+  rw [Fintype.mem_piFinset]
+  intro i
+  unfold powerTuple powerRootSet
+  exact Finset.mem_image_of_mem (fun j : Fin n => g ^ (j : ℕ)) (Finset.mem_univ (t i))
+
+/-- If the first `n` powers are indexed without duplication, every tuple in the ambient
+`piFinset` has a unique indexed preimage. -/
+theorem exists_unique_powerTuple_of_mem_piFinset (g : F) (n r : ℕ)
+    (hinj : Function.Injective (fun i : Fin n => g ^ (i : ℕ)))
+    (v : Fin r → F) (hv : v ∈ Fintype.piFinset (fun _ : Fin r => powerRootSet g n)) :
+    ∃! t : Fin r → Fin n, powerTuple g t = v := by
+  classical
+  rw [Fintype.mem_piFinset] at hv
+  choose t ht using fun i => (Finset.mem_image.mp (hv i))
+  refine ⟨t, ?_, ?_⟩
+  · ext i
+    exact ht i
+  · intro u hu
+    ext i
+    apply hinj
+    change g ^ ((u i : ℕ)) = g ^ ((t i : ℕ))
+    rw [show g ^ ((u i : ℕ)) = powerTuple g u i by rfl, hu]
+    exact (ht i).symm
 
 /-- The char-0 shadow energy at depth `r`. -/
 noncomputable def shadowEnergy (n m r : ℕ) : ℕ :=
-  ∑ v ∈ R308.keysR n m r, (R308.NR n m r v) ^ 2
+  ∑ v ∈ keysR n m r, (NR n m r v) ^ 2
 
 /-- If the power-root representation counts identify with `repR`, the R308 char-0 floor
 becomes a floor for the R240/R-subgroup `rEnergy`. -/
@@ -62,13 +96,13 @@ theorem shadowEnergy_le_rEnergy_of_repIdentifies (g : F) (G : Finset F) (n m r :
     shadowEnergy n m r ≤ rEnergy G r := by
   classical
   calc
-    shadowEnergy n m r = ∑ v ∈ R308.keysR n m r, (R308.NR n m r v) ^ 2 := rfl
-    _ ≤ ∑ c : F, (R308.repRF g n r c) ^ 2 :=
-      R308.shadowR_energy_le_depthR_energy g n m r hm hn hg
-    _ = ∑ c : F, (R240.repR G r c) ^ 2 := by
+    shadowEnergy n m r = ∑ v ∈ keysR n m r, (NR n m r v) ^ 2 := rfl
+    _ ≤ ∑ c : F, (repRF g n r c) ^ 2 :=
+      shadowR_energy_le_depthR_energy g n m r hm hn hg
+    _ = ∑ c : F, (repR G r c) ^ 2 := by
       refine Finset.sum_congr rfl (fun c _ => ?_)
       rw [hrep c]
-    _ = rEnergy G r := (R240.rEnergy_eq_sum_repR_sq G r).symm
+    _ = rEnergy G r := (rEnergy_eq_sum_repR_sq G r).symm
 
 /-- Real-valued version of `shadowEnergy_le_rEnergy_of_repIdentifies`, ready for the
 DC-gap inequalities. -/
@@ -84,19 +118,20 @@ theorem rEnergy_eq_shadowEnergy_of_shadow_injective_and_repIdentifies
     (g : F) (G : Finset F) (n m r : ℕ) (hm : 0 < m) (hn : n = 2 * m)
     (hg : g ^ m = -1)
     (hinj :
-      ∀ v ∈ R308.keysR n m r, ∀ w ∈ R308.keysR n m r,
-        R306.evalVec g m v = R306.evalVec g m w → v = w)
+      ∀ v ∈ keysR n m r, ∀ w ∈ keysR n m r,
+        ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor.evalVec g m v =
+          ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor.evalVec g m w → v = w)
     (hrep : PowerShadowRepIdentifies g G n r) :
     rEnergy G r = shadowEnergy n m r := by
   classical
   calc
-    rEnergy G r = ∑ c : F, (R240.repR G r c) ^ 2 :=
-      R240.rEnergy_eq_sum_repR_sq G r
-    _ = ∑ c : F, (R308.repRF g n r c) ^ 2 := by
+    rEnergy G r = ∑ c : F, (repR G r c) ^ 2 :=
+      rEnergy_eq_sum_repR_sq G r
+    _ = ∑ c : F, (repRF g n r c) ^ 2 := by
       refine Finset.sum_congr rfl (fun c _ => ?_)
       rw [← hrep c]
-    _ = ∑ v ∈ R308.keysR n m r, (R308.NR n m r v) ^ 2 :=
-      R308.depthR_energy_eq_of_shadow_injective g n m r hm hn hg hinj
+    _ = ∑ v ∈ keysR n m r, (NR n m r v) ^ 2 :=
+      depthR_energy_eq_of_shadow_injective g n m r hm hn hg hinj
     _ = shadowEnergy n m r := rfl
 
 /-- The nonnegative excess of field-level energy over the char-0 shadow floor. -/
@@ -109,8 +144,9 @@ theorem shadowEnergySurplus_eq_zero_of_shadow_injective_and_repIdentifies
     (g : F) (G : Finset F) (n m r : ℕ) (hm : 0 < m) (hn : n = 2 * m)
     (hg : g ^ m = -1)
     (hinj :
-      ∀ v ∈ R308.keysR n m r, ∀ w ∈ R308.keysR n m r,
-        R306.evalVec g m v = R306.evalVec g m w → v = w)
+      ∀ v ∈ keysR n m r, ∀ w ∈ keysR n m r,
+        ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor.evalVec g m v =
+          ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor.evalVec g m w → v = w)
     (hrep : PowerShadowRepIdentifies g G n r) :
     shadowEnergySurplus G n m r = 0 := by
   unfold shadowEnergySurplus

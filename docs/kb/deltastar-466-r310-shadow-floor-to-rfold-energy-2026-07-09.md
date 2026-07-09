@@ -46,6 +46,11 @@ can already consume the shadow floor once that identification is available.
 
 ## Validation
 
-Pending: the first `pg-iterate` attempt reached a missing R308 `.olean`, so a locked build of
-`ArkLib.Data.CodingTheory.ProximityGap.Frontier._R308DepthUniformShadowFloor` was started before
-rerunning the R310 per-file check.
+Validated:
+
+```text
+./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R310ShadowFloorToRFoldEnergy.lean
+```
+
+Result: `OK` in 18 seconds. The first attempt reached a missing R308 `.olean`; once that
+dependency artifact appeared from the locked build queue, the direct R310 check passed.
