@@ -74,3 +74,22 @@ Axiom audit: `[propext, Classical.choice, Quot.sound]` on all seven.
 3. Converting the relation-count cap into the DC-subtracted moment bound consumed by
    R240/R310 (bookkeeping against `relationMass`, not just relation count — mass weights
    are bounded by count × height² locally).
+
+## R330–R331 (same file, later commits): dictionary + extraction + master pipe
+
+* `mk_relationPoly_negacyclicBinomialMul` (r331) — negacyclic vector product = ring
+  multiplication by `a + b·ρ^s` in `ℤ[x]/(x^m+1)` (`ρ^m = −1`, `Equiv.addRight` reindex).
+* `binomialVec`, `exists_relationPoly_repr`, `relationPoly_mk_inj`,
+  `exists_negacyclic_preimage_of_mem_span` (r330) — span membership in the binomial
+  recurrence ideal yields an exact vector-level negacyclic preimage.
+* `shadowCollisionMass_le_of_span_saturation` — **the master pipe**: if every realized
+  relation scaled by `2^t` lies in the binomial recurrence ideal, then
+  `shadowCollisionMass ≤ (2·(2^{t+1}r/(|a|−|b|)).toNat+1)^m · M`.
+
+16 theorems in the file, all `[propext, Classical.choice, Quot.sound]`.
+
+**Remaining glue (blocked only on the r323 olean build queue):** r329's
+`card_quotient_dvd_of_patternResultant_dvd` + R321's `eight_saturation_of_card_dvd_eight`
+produce the span-membership hypothesis from the pure integer fact `|Res| ∣ 2^t·p` —
+after which the ONLY open input of the whole chain is **BinomialBadPrimeLaw** (see the
+r329 note).
