@@ -18,8 +18,24 @@ into a character sum over the rational image
 h -> h/(b+h),  h in H.
 ```
 
-Thus derivative flatness is an arithmetic statement about a shifted subgroup, not a generic
-CAZAC consequence.
+Because `psi` is trivial on `H`, this simplifies exactly to
+
+```text
+psi(h/(b+h)) = conjugate(psi(b+h)).
+```
+
+Keeping the Fourier normalization gives
+
+```text
+|Fourier(D_psi u)(b)| / sqrt(m)
+  = |sum_(h in H) psi(b+h)| / sqrt(n),                         (1)
+```
+
+apart from the explicitly removable trivial-character terms. Thus derivative Fourier
+flatness is *exactly* square-root cancellation for a multiplicative character on an additive
+translate of `H`, not a generic CAZAC consequence. The measured constants near `3` on the
+left of (1) are the same constants near `3` in the normalized shifted-subgroup sum on the
+right.
 
 The probe
 
@@ -32,7 +48,7 @@ finds, for `m=33141`, first-derivative Fourier maxima between `2.95 sqrt(m)` and
 `1,2,4,...,128` remain between `2.99 sqrt(m)` and `4.74 sqrt(m)` through depth eight.
 The original period PAPR is `4.304`.
 
-This supports a constant-conductor hypergeometric-sheaf hypothesis for low derivative depth.
+This supports a square-root shifted-subgroup hypothesis for low derivative depth.
 It does **not** close the prize. From `|C_h| <= C sqrt(m)`, the complete van der Corput
 identity gives only
 
@@ -42,9 +58,10 @@ identity gives only
 
 hence the `m^(3/4)` scale. Fixed-depth Gowers iteration likewise leaves a power loss; reaching
 `sqrt(m log m)` requires uniform control at growing depth, where conductor growth is itself
-the R376 moment wall. Standard Weil expansion of the rational subgroup sum gives a `sqrt(p)`
-bound, losing `sqrt(n)` relative to the observed `sqrt(m)` scale.
+the R376 moment wall. Standard completion gives a `sqrt(p)` bound for the shifted-subgroup
+sum, losing `sqrt(m)` relative to the desired `sqrt(n)` scale.
 
 Verdict: the derivative phenomenon is genuine and potentially useful if one proves a
-growing-depth conductor theorem, but the low-depth version is insufficient and presently
-reduces to a shifted-subgroup BGK estimate. No prize closure is claimed.
+growing-depth conductor theorem, but the low-depth version is insufficient and equation (1)
+shows that its key estimate is another exact coordinate system for the shifted-subgroup BGK
+wall. No prize closure is claimed.
