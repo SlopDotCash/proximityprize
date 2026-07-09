@@ -31084,3 +31084,15 @@ the rung closes asymptotically. NEXT: (i) measure max simultaneous orbit count v
 n=64 (does any p in the scan stack ≥ 5?); (ii) prove (a) in Lean (bounded realizations);
 (iii) formalize the rank-vs-height inequality for (b). CORE OPEN — this is an exact
 structural reduction, not a closure.
+
+## [466-r370-stacking-census-and-severity-correction] CORRECTION to r368's tentative severity signal: the full n=64 window [n³, 400000] has violators stacking up to 16 orbits (p=355009, excess 3617280 = 19.9× headroom; s6h1 = 737280 = 16 units) — at fixed β≈3 severity INCREASES with n (n=32 max 8.7× → n=64 max ≥19.9×); the r369 linear-coincidence requirement (≥ n/16 = 4 orbits at n=64) is met by dozens of small-β primes (2026-07-09)
+
+From the completed r368 scan (226 bad, 114 violators in [262144, 400000]): top stackers
+355009 (16 units), 395201 (15), 296833 (13), 274177 (10; = 2^7·2141+1... a Fermat-adjacent
+shape), 347969/318209/269953 (8). All at β ∈ [3, 3.08]. HONEST STATUS: (i) the "severity
+decreasing in n" hypothesis from r368's first-five sample is WRONG at fixed β≈3 — orbit
+stacking is EASY for primes just above n³; (ii) the anti-coincidence question (r369 piece b)
+is therefore correctly a β-QUESTION: does max stacking decay as p grows at fixed n (the
+prize sits at β≈5.27)? The census answer at n=16/32 was yes for TOTAL excess (largest
+violator β=4.87 at n=32, none above); the n=64 high-β windows are the open measurement.
+NEXT: sample windows at β≈3.3, 3.7, 4.2 at n=64 for max stacking. CORE OPEN, ON-BGK.

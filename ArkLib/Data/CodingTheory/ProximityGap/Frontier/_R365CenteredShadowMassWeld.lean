@@ -55,7 +55,7 @@ theorem centeredShadowMass_eq_dcNumerator
       (power_index_injective_of_orderOf g n hg0 hord), Finset.card_univ, Fintype.card_fin]
   unfold centeredShadowMass
   rw [henergy, hcard]
-  rfl
+  rw [Nat.cast_add]
 
 /-- The deep prize hypothesis is exactly a centered shadow-mass bound. -/
 theorem dcEnergyBound_iff_centeredShadowMass_le

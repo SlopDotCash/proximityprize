@@ -2137,6 +2137,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS4Depth3PatternDecomposi
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS5TrivialCountClosedForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS6AlmostAllPrimesWickRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS8PerFrequencyAlmostAllPrimes
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS9WorstCaseBoundAlmostAllPrimes
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Face4OverdetBypassBoundary
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FallingFactorialDecay
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FarLineProxyTowerN32Corrected
@@ -2767,6 +2768,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R355GeneratorWebWickConsu
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35FullConvLagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35TransformRingHom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R362KernelShellWickWeld
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R365CenteredShadowMassWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
