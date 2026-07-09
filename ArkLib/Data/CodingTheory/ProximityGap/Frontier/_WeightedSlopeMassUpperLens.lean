@@ -362,7 +362,7 @@ theorem offDiagInterMass_subtype_eq (G : Finset F) (S : F -> Finset (Fin n)) :
     · intro y hy
       have hy' := Finset.mem_erase.mp hy
       exact Finset.mem_erase.mpr ⟨fun h => hy'.1 (congrArg Subtype.val h),
-        Finset.mem_attach.mpr (Finset.mem_univ _)⟩
+        by simp⟩
     · intro y _
       exact Subtype.ext rfl
     · intro y _
@@ -374,7 +374,7 @@ theorem offDiagInterMass_subtype_eq (G : Finset F) (S : F -> Finset (Fin n)) :
         ∑ x ∈ G.attach, ∑ y ∈ G.erase x.1, (S x.1 ∩ S y).card :=
       Finset.sum_congr rfl (fun x _ => hinner x)
     _ = ∑ x ∈ G, ∑ y ∈ G.erase x, (S x ∩ S y).card :=
-      Finset.sum_attach G (fun x => ∑ y ∈ G.erase x.1, (S x.1 ∩ S y).card)
+      Finset.sum_attach G (fun x : F => ∑ y ∈ G.erase x, (S x ∩ S y).card)
 
 end FinalLens
 

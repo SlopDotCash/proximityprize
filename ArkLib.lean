@@ -2759,6 +2759,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R345PropagationThresholdN
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R349EndpointLengthExclusion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadLambdaCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadWeilBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R353RepThreeCounterexample
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35FullConvLagEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R35TransformRingHom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers

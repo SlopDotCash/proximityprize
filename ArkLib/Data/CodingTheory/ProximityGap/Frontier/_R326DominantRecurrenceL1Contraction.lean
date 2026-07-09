@@ -181,7 +181,8 @@ theorem card_l1Sphere_le_multichoose (m k : ℕ) :
     _ = Nat.multichoose (Fintype.card (Fin m × Fin 2)) k :=
       Sym.card_sym_eq_multichoose _ _
     _ = Nat.multichoose (2 * m) k :=
-      congrArg (fun n => Nat.multichoose n k) (Nat.mul_comm m 2)
+      congrArg (fun n => Nat.multichoose n k)
+        (by simp [Nat.mul_comm] : Fintype.card (Fin m × Fin 2) = 2 * m)
 
 end ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction
 
