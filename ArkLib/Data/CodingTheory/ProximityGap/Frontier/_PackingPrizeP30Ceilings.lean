@@ -40,7 +40,7 @@ the Johnson radius. -/
 theorem rateQuarter_mcaDeltaStar_le_half :
     mcaDeltaStar (F := ZMod P) (A := ZMod P)
         (evalCode g (2 ^ 30) (2 ^ 28 - 1))
-        ((((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
+        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
       ≤ (1 / 2 : ℝ≥0) := by
   refine mcaDeltaStar_le_half_of_floor_eq_length
     (p := P) (n := 2 ^ 30) (k := 2 ^ 28) (Q := 2 ^ 128) (g := g)
@@ -53,7 +53,7 @@ strictly below the Johnson radius. -/
 theorem rateEighth_mcaDeltaStar_le_half :
     mcaDeltaStar (F := ZMod P) (A := ZMod P)
         (evalCode g (2 ^ 30) (2 ^ 27 - 1))
-        ((((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
+        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
       ≤ (1 / 2 : ℝ≥0) := by
   refine mcaDeltaStar_le_half_of_floor_eq_length
     (p := P) (n := 2 ^ 30) (k := 2 ^ 27) (Q := 2 ^ 128) (g := g)
@@ -66,7 +66,7 @@ strictly below the Johnson radius `3/4`. -/
 theorem rateSixteenth_mcaDeltaStar_le_half :
     mcaDeltaStar (F := ZMod P) (A := ZMod P)
         (evalCode g (2 ^ 30) (2 ^ 26 - 1))
-        ((((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
+        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
       ≤ (1 / 2 : ℝ≥0) := by
   refine mcaDeltaStar_le_half_of_floor_eq_length
     (p := P) (n := 2 ^ 30) (k := 2 ^ 26) (Q := 2 ^ 128) (g := g)
@@ -78,13 +78,13 @@ theorem rateSixteenth_mcaDeltaStar_le_half :
 theorem three_lower_prize_rates_mcaDeltaStar_le_half :
     mcaDeltaStar (F := ZMod P) (A := ZMod P)
           (evalCode g (2 ^ 30) (2 ^ 28 - 1))
-          ((((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) ∧
+          (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) ∧
       mcaDeltaStar (F := ZMod P) (A := ZMod P)
           (evalCode g (2 ^ 30) (2 ^ 27 - 1))
-          ((((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) ∧
+          (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) ∧
       mcaDeltaStar (F := ZMod P) (A := ZMod P)
           (evalCode g (2 ^ 30) (2 ^ 26 - 1))
-          ((((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) :=
+          (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) :=
   ⟨rateQuarter_mcaDeltaStar_le_half, rateEighth_mcaDeltaStar_le_half,
     rateSixteenth_mcaDeltaStar_le_half⟩
 

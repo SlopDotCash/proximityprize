@@ -35,6 +35,8 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
+attribute [local instance] Classical.propDecidable
+
 /-- A coordinate set is admissible at radius `delta` when it is large enough to witness an MCA
 event. -/
 def WitnessAdmissible (δ : ℝ≥0) (S : Finset ι) : Prop :=
@@ -139,7 +141,6 @@ theorem badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
 
 /-- The projective quotient line--ball incidence is its affine-chart incidence plus the
 indicator of incidence at infinity. -/
-open Classical in
 theorem projectiveBallIncidence_eq_affine_add_infty
     (C : Submodule F (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) :
     projectiveBallIncidence C δ u₀ u₁ =

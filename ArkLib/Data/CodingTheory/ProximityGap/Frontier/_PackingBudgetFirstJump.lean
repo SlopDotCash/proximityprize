@@ -24,8 +24,9 @@ For `B = floor (p / Q)`, code dimension `k`, and `D = n-k`, the packing family h
 ```
 
 Thus its first budget-crossing error is `max(ceil(D/2), floor(B/2))`, provided this
-does not exceed `D-1`.  This is only a bad-side consumer: no matching upper bound or
-threshold equality is claimed.
+does not exceed `D-1`.  The general result is a bad-side consumer.  In dimension two,
+`mcaDeltaStar_eq_half_dim_two_of_floor_eq_length` supplies the matching adjacent good
+side and pins the tight-budget operational threshold exactly at `1/2`.
 -/
 
 set_option autoImplicit false
@@ -501,4 +502,5 @@ end ArkLib.ProximityGap.PackingBudgetFirstJump
 #print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.overlap_epsMCA_lower_bound_of_supply
 #print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_first_deep_packing_of_floor_budget
 #print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_half_of_floor_eq_length
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
 #print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_order_mcaDeltaStar_le_half_of_floor_eq_length

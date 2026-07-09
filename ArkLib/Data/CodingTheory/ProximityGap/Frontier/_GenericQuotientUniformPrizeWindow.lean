@@ -94,6 +94,11 @@ theorem rateHalf_s256_mcaDeltaStar_le
     (p := p) (s := 256) (m := m) (r := 129)
     hpLo hpHi (by norm_num) hm (by norm_num) (by norm_num) hg rateHalf_s256_supply
   convert h using 1 <;> norm_num
+  symm
+  rw [tsub_eq_iff_eq_add_of_le (by
+    rw [div_le_one (by positivity : (0 : NNReal) < 256)]
+    norm_num : (129 / 256 : NNReal) ≤ 1)]
+  norm_num
 
 /-- Exact rate `1/4`: operational threshold at most `191/256`. -/
 theorem rateQuarter_s256_mcaDeltaStar_le
@@ -107,6 +112,11 @@ theorem rateQuarter_s256_mcaDeltaStar_le
     (p := p) (s := 256) (m := m) (r := 65)
     hpLo hpHi (by norm_num) hm (by norm_num) (by norm_num) hg rateQuarter_s256_supply
   convert h using 1 <;> norm_num
+  symm
+  rw [tsub_eq_iff_eq_add_of_le (by
+    rw [div_le_one (by positivity : (0 : NNReal) < 256)]
+    norm_num : (65 / 256 : NNReal) ≤ 1)]
+  norm_num
 
 /-- Exact rate `1/8`: operational threshold at most `223/256`. -/
 theorem rateEighth_s256_mcaDeltaStar_le
@@ -120,6 +130,11 @@ theorem rateEighth_s256_mcaDeltaStar_le
     (p := p) (s := 256) (m := m) (r := 33)
     hpLo hpHi (by norm_num) hm (by norm_num) (by norm_num) hg rateEighth_s256_supply
   convert h using 1 <;> norm_num
+  symm
+  rw [tsub_eq_iff_eq_add_of_le (by
+    rw [div_le_one (by positivity : (0 : NNReal) < 256)]
+    norm_num : (33 / 256 : NNReal) ≤ 1)]
+  norm_num
 
 /-- Exact rate `1/16`: operational threshold at most `479/512`. -/
 theorem rateSixteenth_s512_mcaDeltaStar_le
@@ -133,6 +148,11 @@ theorem rateSixteenth_s512_mcaDeltaStar_le
     (p := p) (s := 512) (m := m) (r := 33)
     hpLo hpHi (by norm_num) hm (by norm_num) (by norm_num) hg rateSixteenth_s512_supply
   convert h using 1 <;> norm_num
+  symm
+  rw [tsub_eq_iff_eq_add_of_le (by
+    rw [div_le_one (by positivity : (0 : NNReal) < 512)]
+    norm_num : (33 / 512 : NNReal) ≤ 1)]
+  norm_num
 
 end ArkLib.ProximityGap.Frontier.GenericQuotientUniformPrizeWindow
 

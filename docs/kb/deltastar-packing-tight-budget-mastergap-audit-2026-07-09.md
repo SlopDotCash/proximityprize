@@ -140,6 +140,13 @@ so it does not yet establish `mcaDeltaStar = 1/2`.  It also does not cover the e
 code: at `k=n/2` the packing degree/window inequality fails by one.  A matching all-stack bound
 below `1/2`, plus a separate rate-`1/2` analysis, remain necessary for a complete prize solution.
 
+There is one exact boundary case: the axiom-clean theorem
+`mcaDeltaStar_eq_half_dim_two_of_floor_eq_length` proves equality for dimension `k=2` and every
+even `n>=8` on this tight-budget branch.  It combines the factor-two UDR bound at the predecessor
+`1/2-1/n`, Hamming step-function collapse on the open interval, and the overlap-packing bad point
+at `1/2`.  This pins the toy exact-rate instances `(n,k)=(8,2),(16,2),(32,2)`; it does not extend
+the good side to the production dimensions `2^28,2^27,2^26`.
+
 ## Validation
 
 `scripts/pg-iterate.sh` passes on

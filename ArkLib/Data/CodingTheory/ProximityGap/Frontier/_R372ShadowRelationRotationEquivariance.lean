@@ -41,25 +41,17 @@ variable (n m : ℕ)
 
 /-- The exponent successor on root indices (cyclic). -/
 def succN (hn : 0 < n) (a : Fin n) : Fin n :=
-  ⟨((a : ℕ) + 1) % n, Nat.mod_lt _ hn⟩
+  finRotate n a
 
 /-- The exponent predecessor on root indices (cyclic). -/
 def predN (hn : 0 < n) (a : Fin n) : Fin n :=
-  ⟨((a : ℕ) + (n - 1)) % n, Nat.mod_lt _ hn⟩
+  (finRotate n).symm a
 
 theorem predN_succN (hn : 0 < n) (a : Fin n) : predN n hn (succN n hn a) = a := by
-  unfold succN predN
-  apply Fin.ext
-  have := a.isLt
-  simp only []
-  omega
+  exact (finRotate n).symm_apply_apply a
 
 theorem succN_predN (hn : 0 < n) (a : Fin n) : succN n hn (predN n hn a) = a := by
-  unfold succN predN
-  apply Fin.ext
-  have := a.isLt
-  simp only []
-  omega
+  exact (finRotate n).apply_symm_apply a
 
 theorem succN_bijective (hn : 0 < n) : Function.Bijective (succN n hn) :=
   Function.bijective_iff_has_inverse.mpr
@@ -76,12 +68,32 @@ theorem rotZ_add (hm : 0 < m) (v w : Fin m → ℤ) :
 (for `n = 2m`). -/
 theorem rotZ_vecOf (hm : 0 < m) (hn : n = 2 * m) (a : Fin n) :
     rotZ m hm (vecOf n m a) = vecOf n m (succN n (by omega) a) := by
+  obtain ⟨n', rfl⟩ : ∃ n', n = n' + 1 := ⟨n - 1, by omega⟩
   funext j
-  unfold rotZ vecOf succN
-  have ha := a.isLt
-  have hj := j.isLt
-  by_cases h : (j : ℕ) = 0 <;> simp only [h, if_true, if_false, eq_self_iff_true] <;>
-    split_ifs <;> omega
+  by_cases halastVal : (a : ℕ) = n'
+  · have halast : a = Fin.last n' := Fin.ext halastVal
+    have hsucc : succN (n' + 1) (by omega) a = 0 := by
+      simp [succN, halast]
+    rw [hsucc]
+    unfold rotZ vecOf
+    have hj := j.isLt
+    simp only [Fin.val_zero]
+    by_cases h : (j : ℕ) = 0 <;> simp only [h, if_true, if_false] <;>
+      split_ifs <;> subst a <;> simp only [Fin.val_last] at * <;> omega
+  · have halast : a ≠ Fin.last n' := by
+      intro h
+      exact halastVal (congrArg Fin.val h)
+    have hsucc : ((succN (n' + 1) (by omega) a : Fin (n' + 1)) : ℕ) = (a : ℕ) + 1 := by
+      exact coe_finRotate_of_ne_last halast
+    clear halast
+    unfold rotZ vecOf
+    have ha := a.isLt
+    have hj := j.isLt
+    have hmPred : m - 1 < m := Nat.sub_lt hm (by decide)
+    have hmEq : m - 1 + 1 = m := by omega
+    simp only [hsucc]
+    by_cases h : (j : ℕ) = 0 <;> simp only [h, if_true, if_false] <;>
+      split_ifs <;> simp_all <;> omega
 
 /-- Rotation equivariance of tuple shadows: `rotZ (tupleVec t) = tupleVec (succN ∘ t)`. -/
 theorem rotZ_tupleVec (r : ℕ) (hm : 0 < m) (hn : n = 2 * m) (t : Fin r → Fin n) :
@@ -125,19 +137,21 @@ theorem NR_rotZ (r : ℕ) (hm : 0 < m) (hn : n = 2 * m) (v : Fin m → ℤ) :
   · intro t ht
     rw [Finset.mem_filter] at ht ⊢
     refine ⟨Finset.mem_univ _, ?_⟩
-    have hface : t = fun i => succN n (by omega : 0 < n)
-        (predN n (by omega : 0 < n) (t i)) := by
-      funext i
-      rw [succN_predN]
-    have := ht.2
-    rw [hface, rotZ_tupleVec n m r hm hn (fun i => predN n (by omega) (t i))] at this
-    exact (rotZ_bijective m hm).1 this
+    apply (rotZ_bijective m hm).1
+    rw [rotZ_tupleVec n m r hm hn (fun i => predN n (by omega) (t i))]
+    calc
+      tupleVec n m r (fun i => succN n (by omega) (predN n (by omega) (t i))) =
+          tupleVec n m r t := by
+        congr 1
+        funext i
+        exact succN_predN n (by omega) (t i)
+      _ = rotZ m hm v := ht.2
   · intro t _
     funext i
-    rw [predN_succN]
+    exact predN_succN n (by omega) (t i)
   · intro t _
     funext i
-    rw [succN_predN]
+    exact succN_predN n (by omega) (t i)
 
 /-- `rotZ` maps realized keys to realized keys. -/
 theorem keysR_rotZ (r : ℕ) (hm : 0 < m) (hn : n = 2 * m) (v : Fin m → ℤ)
