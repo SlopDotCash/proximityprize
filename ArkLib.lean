@@ -2330,6 +2330,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoExcessOnsetThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorDischarged
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoTighterBoundCapstone
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NonBacktrackingRelabelingNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NonPrincipalClosedWalkTrace
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NonTensorWrapCrossResidual
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelAntiConcentration
