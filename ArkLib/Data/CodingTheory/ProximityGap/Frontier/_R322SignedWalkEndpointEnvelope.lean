@@ -28,6 +28,8 @@ namespace ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
 
 open ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor
 open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
+open ArkLib.ProximityGap.Frontier.R314KernelRelationMassDecomposition
+open ArkLib.ProximityGap.Frontier.R321ShadowAutocorrelationDoubling
 
 theorem countPerms_eq_multinomial {A : Type*} [DecidableEq A] (M : Multiset A) :
     M.countPerms = Nat.multinomial M.toFinset (fun a => M.count a) := by
@@ -749,6 +751,19 @@ theorem NR_factorial_envelope
     exact factorial_parts_mul_eq_natAbs_factorial (d j)
   rwa [hprod] at h
 
+/-- R321 consumer: each realized kernel relation's finite-field collision mass inherits the
+sharp factorial endpoint envelope. -/
+theorem shadowRelationMass_factorial_envelope
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (g : F) (m r s : ℕ) {d : Fin m → ℤ}
+    (hd : d ∈ shadowKernelRelations g (2 * m) m r)
+    (hdepth : r + r = 2 * s + endpointL1 d) :
+    shadowRelationMass g (2 * m) m r d * s.factorial *
+        (∏ j : Fin m, (d j).natAbs.factorial)
+      ≤ (r + r).factorial * m ^ s := by
+  rw [shadowRelationMass_eq_NR_double g m r hd]
+  exact NR_factorial_envelope m (r + r) s d hdepth
+
 end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
 
 /-! ## Axiom audit -/
@@ -778,3 +793,5 @@ end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.NR_factorial_envelope_of_sub
 #print axioms
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.NR_factorial_envelope
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.shadowRelationMass_factorial_envelope

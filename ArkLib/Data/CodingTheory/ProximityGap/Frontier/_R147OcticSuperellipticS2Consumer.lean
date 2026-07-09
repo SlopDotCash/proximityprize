@@ -72,6 +72,30 @@ theorem squarefree_eight_block_fiber_bound_family
   exact squarefree_eight_block_fiber_bound g hg hsf hdg h8 hJ he hmq hD hcount
     (ζOf c)
 
+/-- Family form of `squarefree_eight_block_fiber_bound`, for callers whose class values are
+indexed by a finite support set.  The membership hypothesis is intentionally unused by the
+proof; it packages the single-fiber estimate in the shape consumed by the octic model
+adapters. -/
+theorem squarefree_eight_block_fiber_bound_family
+    [NormalizationMonoid (Polynomial (Polynomial F))]
+    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
+    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
+    {ι : Type*} (T : Finset ι) (ζOf : ι → F)
+    (g : F[X]) (hg : g.Monic)
+    (hsf : Squarefree g) (hdg : 0 < g.natDegree)
+    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    {m e J D : ℕ} (hJ : 0 < J)
+    (he : e = (Fintype.card F - 1) / 8)
+    (hmq : m < Fintype.card F)
+    (hD : 8 * D + 7 * g.natDegree < Fintype.card F)
+    (hcount : m * (D + (g.natDegree - 1) * m + J) < 8 * (J * (D + 1))) :
+    ∀ c ∈ T,
+      m * (Finset.univ.filter fun s : F => (g.eval s) ^ e = ζOf c).card
+        ≤ g.natDegree * (m + (8 - 1) * e) + D + Fintype.card F * (J - 1) := by
+  intro c _
+  exact squarefree_eight_block_fiber_bound g hg hsf hdg hq_odd h8 hJ he hmq hD hcount
+    (ζOf c)
+
 end ArkLib.ProximityGap.Frontier.R147OcticSuperellipticS2Consumer
 
 /-! ## Axiom audit -/

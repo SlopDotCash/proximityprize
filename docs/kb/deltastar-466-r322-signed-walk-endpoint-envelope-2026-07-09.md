@@ -76,6 +76,8 @@ The weld is complete.  The file additionally proves:
   to ArkLib's `NR`;
 * `NR_factorial_envelope`: the headline bound (E) for arbitrary integer endpoints, using
   the canonical positive/negative decomposition of every coefficient.
+* `shadowRelationMass_factorial_envelope`: via R321, every realized finite-field kernel
+  relation inherits the same factorial suppression on its exact collision mass.
 
 Thus (E) is an axiom-clean Lean theorem, not a conjecture or probe.
 
