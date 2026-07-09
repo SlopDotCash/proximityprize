@@ -1,0 +1,29 @@
+{
+ "id": "C057",
+ "rank": 57,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F5",
+  "F10",
+  "F18"
+ ],
+ "walls": [
+  "W-anomaly"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean"
+ ],
+ "title": "Power-sum window = all-ones-error syndrome: e_1..e_{t-1}=0 IS the F2 char-sum incomplete identity at frequency=indicator (Newton bridge F10→F2/F5)",
+ "connection": "Newton's identities make e_1=…=e_{t-1}=0 ⟺ p_1=…=p_{t-1}=0 over char 0 (DISPROOF_LOG O60), p_j(S)=∑_{x∈S}x^j = the all-ones-error syndrome on support S. The full Gauss-period η_b=∑_{x∈μ_n}e_p(bx) expands via e_p(bx)=∑_j(bx)^j, so the LOW power sums p_j(μ_n)=0 (subgroup vanishing, SubsetSumEsymmVanishing) are exactly the low-order Taylor coefficients of η. The lacunary floor (vanishing window on a SUBSET S) is the same object as the F2 sup-norm with the indicator 1_S replacing 1_{μ_n}, and the same antipodal balance (EnergyRelationAntipodal.energy_relation_count_antipodal) that bounds E_r governs both. The bridge shows the count face inherits the SAME deep-moment content past the char-p crossover r*≈β+1.",
+ "why_insightful": "Contradicts the comforting framing that F10 (count) is independent of F2/F5. The Newton/power-sum=syndrome identity shows the lacunary variety nonemptiness for LARGE t is governed by the same antipodal-balance/E_r structure whose char-p transfer is the wall; q-independent only while t<2·r_max≈2(β+1)log_n p.",
+ "attack_plan": "Lean: instantiate MvPolynomial.NewtonIdentities to prove vanishingVariety (e-window)=power-sum-window variety over CharZero, then connect to EnergyRelationAntipodal showing variety members are antipodally balanced. Probe: measure at what gap t the char-0 coset-union count and the char-p count first DIVERGE — predict t*≈2(β+1)log_n p."
+}

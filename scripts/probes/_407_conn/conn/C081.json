@@ -1,0 +1,27 @@
+{
+ "id": "C081",
+ "rank": 81,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F12",
+  "F13",
+  "F10"
+ ],
+ "walls": [
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/NegationClosedSumZero.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean"
+ ],
+ "title": "The bad locus {e2=0, e1≠0} is provably DISJOINT from all negation/coset structure (e1=0), so the e2 face must use orbit/quadric methods, NOT Lam–Leung antipodal machinery",
+ "connection": "e1_eq_zero_of_neg_closed: negation-closed S ⟹ e1(S)=∑s=0 (char≠2 involution), so the entire F13/Lam–Leung antipodal/Bessel-law world (NegationClosedSumZero.antipodalConsistent_sum_zero; SubsetSumEsymmVanishing's e1(μ_n)=0) lives on the e1=0 locus. But the bad-scalar locus is {e2=0, e1≠0} — its defining feature e1≠0 PROVABLY forbids negation/coset structure. So F12's hard object is the EXACT COMPLEMENT of the F5/F13 antipodal regime: the deep-moment/energy methods (antipodal-pairing counts) are structurally blind to the bad set. W-LamLeung's char-p collapse is irrelevant to e2 badness because the bad set never touches the e1=0 locus where Lam–Leung operates.",
+ "why_insightful": "A precise non-overlap theorem: the one face with no BGK wall (F12) is exactly orthogonal to the negation-symmetric locus that all energy/Bessel/Lam–Leung machinery describes — so importing those tools is provably futile, and the correct tools are dilation-orbit counting (F9) and quadric geometry, redirecting effort away from a dead transfer.",
+ "attack_plan": "Lean: land badLocus_disjoint_negClosed (formalize e2_zero_bad_not_neg_closed from e1_eq_zero_of_neg_closed). Then parametrize {e2=0, e1≠0} by the complement-quadric and dilation orbits, prove the residual-orbit count K is O(1) above δ* via the quadric's bounded point count — the only route consistent with this disjointness."
+}

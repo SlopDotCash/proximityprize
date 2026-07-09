@@ -8,21 +8,33 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 
 /-!
-# The closed-form prize δ*: the entropy law `δ* = 1 − ρ − H(ρ)/log₂(q·ε*)` (#389)
+# A proposed closed-form prize δ*: `δ* = 1 − ρ − H(ρ)/log₂(q·ε*)` (#389)
 
-This file states the **complete, closed-form candidate answer** to the Proximity Prize
+> **Status warning (2026-07-09).** `PrizePinConjecture` below is refuted as stated: its
+> parameter `k` is the polynomial degree bound in `evalCode g n k`, whose dimension is
+> `k + 1`, but the right-hand side uses the stale rate `k / n`.  The degree-zero
+> counterexample is machine-checked in `PrizeEntropyPinRefuted`.  That file also proves
+> that the naive actual-rate repair is false at the same finite instance:
+> `3/4 < prizeDeltaStar (1/8) 14`.  Moreover, `Real.binEntropy` uses natural logarithms
+> while the denominator below uses `logb 2`; the obvious base-consistent actual-rate repair
+> is also false there, now in the opposite direction.  The four production prize instances
+> remain open.
+
+This file records a historical **closed-form candidate answer** to the Proximity Prize
 (proximityprize.org, ABF26) for explicit constant-rate smooth-domain Reed–Solomon codes,
-together with the **rigorous ceiling half** (an unconditional in-window upper bound on
-`δ*`) and the precise single statement whose proof closes the prize.
+together with a rigorous discrete ladder ceiling and the historical statement that was
+intended to supply its matching floor.
 
 ## The closed form
 
-For rate `ρ = k/n`, list budget `B = q·ε*` (`≈ n` in the prize regime), define
-`prizeDeltaStar ρ B := 1 − ρ − binEntropy ρ / log₂ B`.  It lies strictly inside the prize
+For rate `ρ = k/n`, list budget `B = q·ε*` (`≈ n` in the prize regime), the historical
+Lean candidate defines `prizeDeltaStar ρ B := 1 − ρ − binEntropy ρ / log₂ B`.  Mathlib's
+`binEntropy` is measured with natural logarithms, so this definition mixes entropy and
+denominator units.  It lies strictly inside the prize
 window `(1 − √ρ, 1 − ρ)` at every prize rate `ρ ∈ {1/2,1/4,1/8,1/16}` and budget
 `log₂ B ∈ {40,64,128}` (numerically verified, `scripts/probes/probe_entropy_ceiling.py`).
 
-## Why this is the answer (the derivation)
+## Historical derivation
 
 The threshold `δ*` is where the **worst-case list** (= `q·ε_mca`) crosses `B = q·ε*`.
 The explicit ladder family `w = x^{rm}+λx^{(r−1)m}` on the dyadic subgroup `μ_s` (`s = 2^μ`,
@@ -31,8 +43,10 @@ The explicit ladder family `w = x^{rm}+λx^{(r−1)m}` on the dyadic subgroup `�
 structure).  At constant rate `k = ρn` the construction forces `r ≈ ρs+2`, radius
 `δ = 1 − r/s = 1 − ρ − 2/s`, list `C(s/2, ρ·s/2) = 2^{(s/2)·H(ρ)}`.  This exceeds `B` —
 making `δ` BAD — exactly when `s > 2 log₂ B / H(ρ)`, i.e. `δ` drops below
-`1 − ρ − H(ρ)/log₂ B`.  So **`δ* ≤ prizeDeltaStar ρ B`** unconditionally (the ladder is an
-explicit bad family).  The conjecture is that this ceiling is **tight** — equivalently,
+`1 − ρ − H(ρ)/log₂ B`.  Thus the derivation uses base-two entropy; the Lean definition below
+does not perform that conversion.  So **`δ* ≤ prizeDeltaStar ρ B`** was the proposed ceiling
+(the ladder is an explicit bad family).  The conjecture was that this ceiling is **tight** —
+equivalently,
 that no word beats the ladder/`N_fib` count in the worst case (the worst-case list upper
 bound, the one open wall).
 
@@ -44,13 +58,14 @@ and `q ∤ (collision resultants)` — a finite checkable prime spectrum, NOT th
 transfer wall.  Feeding it into `mcaDeltaStar_le_of_bad` gives the rigorous ceiling
 `prizeDeltaStar_ceiling`.  No `CensusDomination`, no incomputable lemma.
 
-## What remains (the prize, stated as ONE closed Prop)
+## What remains
 
-`PrizeFloorStatement`: the matching lower bound — for every word, the list at radius
-`δ < prizeDeltaStar ρ B` is `≤ B` (worst-case `ε_mca ≤ ε*`).  This is the single open core
-(= worst-case list bound for explicit smooth RS above Johnson = BCHKS25 Conj 1.12).  It is
-stated closed (no further residual); proving it pins `δ* = prizeDeltaStar` exactly and
-resolves both grand challenges via the in-tree LD⇔MCA bridges.
+The intended matching lower bound is still the worst-case list bound for explicit smooth
+RS above Johnson.  The historical `PrizeFloorStatement` and `PrizePinConjecture` definitions
+below use the degree ratio `k / n`.  Replacing it by `(k + 1) / n` repairs that parameter
+but does not make the generic finite equality true.  Dividing `Real.binEntropy` by `log 2`
+repairs the unit mismatch but also fails at the finite counterexample.  No exact entropy pin
+for a production prize instance is proved here.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`, no `axiom`.
 -/
@@ -60,9 +75,10 @@ open ProximityGap ProximityGap.MCAThresholdLedger ArkLib.ProximityGap.KKH26
 
 namespace ProximityGap.PrizeEntropy
 
-/-- **The closed-form prize threshold.**  `δ*(ρ, B) = 1 − ρ − H(ρ)/log₂ B`, with `H` the
-binary entropy and `B = q·ε*` the list budget.  A single computable real expression — no
-`∃`-over-incomputable objects, no residual. -/
+/-- **The historical mixed-base closed-form candidate.**  The expression uses Mathlib's
+natural-log `binEntropy` over the base-two denominator `logb 2 B`.  It is retained for the
+historical results in this module; see `PrizeEntropyPinRefuted` for both the finite
+counterexample and the refutation of the base-consistent repair. -/
 noncomputable def prizeDeltaStar (ρ B : ℝ) : ℝ :=
   1 - ρ - Real.binEntropy ρ / Real.logb 2 B
 
@@ -98,7 +114,12 @@ theorem prizeDeltaStar_gt_johnson {ρ B : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ < 1)
   unfold prizeDeltaStar
   linarith
 
-/-- **THE PRIZE FLOOR STATEMENT** — the single open core, stated closed (no residual).
+/-- **Historical degree-parameterized prize floor statement.**
+
+This definition uses `k / n`, although `k` is the degree bound of `evalCode g n k` and the
+actual code dimension is `k + 1`.  It is retained for compatibility; a corrected prize
+statement must use the actual rate.
+
 For the explicit smooth-domain RS code at constant rate `ρ`, every received word's list at
 any radius strictly below `prizeDeltaStar ρ (q·ε*)` has at most `q·ε*` codewords — i.e. the
 worst-case `ε_mca ≤ ε*`.  Proving this (the worst-case list upper bound for explicit smooth
@@ -109,21 +130,21 @@ def PrizeFloorStatement
   ∀ δ : ℝ≥0, (δ : ℝ) < prizeDeltaStar ((k : ℝ) / n) ((p : ℝ) * εstar.toReal) →
     epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n k) δ ≤ εstar
 
-/-- **THE PRIZE PIN (conditional on the floor).**  Granting `PrizeFloorStatement` and the
-in-tree ladder ceiling, `mcaDeltaStar` of the explicit smooth-domain RS code equals the
-closed form `prizeDeltaStar`.  The ceiling direction is unconditional (the explicit ladder
-family); only the floor is the open wall. -/
+/-- **Refuted historical prize pin.**  This definition passes the degree ratio `k / n` to
+`prizeDeltaStar` instead of the actual rate `(k + 1) / n`.  The theorem
+`prizePinConjecture_degreeZero_F12289_REFUTED` gives a machine-checked counterexample. -/
 def PrizePinConjecture
     {p n : ℕ} [Fact p.Prime] [NeZero n] (g : ZMod p) (k : ℕ) (εstar : ℝ≥0∞) : Prop :=
   (MCAThresholdLedger.mcaDeltaStar (F := ZMod p) (A := ZMod p)
       (evalCode g n k) εstar : ℝ)
     = prizeDeltaStar ((k : ℝ) / n) ((p : ℝ) * εstar.toReal)
 
-/-- **The rigorous ceiling (unconditional, prize-regime).**  The explicit ladder family
-forces `δ* ≤ 1 − r/2^μ` for the dyadic construction, under the mild decidable hypothesis
+/-- **A rigorous discrete ladder ceiling (unconditional in its stated regime).**  The explicit
+ladder family forces `δ* ≤ 1 − r/2^μ` for the dyadic construction, under the mild decidable
+hypothesis
 that `q` divides no collision resultant (NOT the `s^{s/2} < q` transfer wall).  This is the
-upper half of the prize pin, with no `CensusDomination` and no incomputable input.  (The
-optimized form over dyadic levels gives the entropy ceiling `prizeDeltaStar`.) -/
+machine-checked rung ceiling, with no `CensusDomination` and no incomputable input.  This theorem
+does not identify its right-hand side with the mixed-base `prizeDeltaStar` definition above. -/
 theorem prizeDeltaStar_ceiling {p n : ℕ} [Fact p.Prime] [NeZero n] {μ m r : ℕ}
     (hμ : 1 ≤ μ) {g : ZMod p} (hm : 1 ≤ m) (hn : n = 2 ^ μ * m)
     (hg : orderOf g = 2 ^ μ * m) (hpμ : 2 ^ μ < p)

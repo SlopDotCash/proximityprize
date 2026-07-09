@@ -1,0 +1,184 @@
+n=32: K=5504 vectors, char-0 E3=446720, headroom=44800
+scanning 350725 primes ≡ 1 mod 32 in [2000000, 100000000]
+badprime p=2005441 beta=4.187 excess=11520
+badprime p=2019361 beta=4.189 excess=11520
+badprime p=2086081 beta=4.198 excess=11520
+badprime p=2089441 beta=4.199 excess=11520
+badprime p=2089889 beta=4.199 excess=11520
+badprime p=2133601 beta=4.205 excess=3840
+badprime p=2140129 beta=4.206 excess=11520
+badprime p=2152001 beta=4.207 excess=11520
+badprime p=2163809 beta=4.209 excess=11520
+badprime p=2178433 beta=4.211 excess=11520
+badprime p=2184769 beta=4.212 excess=5760
+badprime p=2202913 beta=4.214 excess=11520
+badprime p=2279009 beta=4.224 excess=11520
+badprime p=2288257 beta=4.225 excess=11520
+badprime p=2301473 beta=4.227 excess=5760
+badprime p=2325377 beta=4.230 excess=5760
+badprime p=2348161 beta=4.233 excess=11520
+badprime p=2370689 beta=4.235 excess=3840
+badprime p=2484289 beta=4.249 excess=5760
+badprime p=2491553 beta=4.250 excess=11520
+badprime p=2493089 beta=4.250 excess=3840
+badprime p=2498273 beta=4.250 excess=3840
+badprime p=2548769 beta=4.256 excess=11520
+badprime p=2562337 beta=4.258 excess=5760
+badprime p=2587969 beta=4.261 excess=5760
+badprime p=2604769 beta=4.263 excess=5760
+badprime p=2668993 beta=4.270 excess=5760
+badprime p=2677217 beta=4.270 excess=5760
+badprime p=2702209 beta=4.273 excess=11520
+badprime p=2775713 beta=4.281 excess=11520
+badprime p=2834017 beta=4.287 excess=5760
+badprime p=2944673 beta=4.298 excess=5760
+badprime p=2952737 beta=4.299 excess=11520
+badprime p=2976481 beta=4.301 excess=11520
+badprime p=3109441 beta=4.314 excess=5760
+badprime p=3109697 beta=4.314 excess=11520
+badprime p=3115009 beta=4.314 excess=5760
+badprime p=3246977 beta=4.326 excess=11520
+badprime p=3260833 beta=4.327 excess=11520
+badprime p=3260897 beta=4.327 excess=5760
+badprime p=3264449 beta=4.328 excess=3840
+badprime p=3283361 beta=4.329 excess=5760
+badprime p=3289697 beta=4.330 excess=3840
+badprime p=3331457 beta=4.334 excess=11520
+badprime p=3377377 beta=4.337 excess=5760
+badprime p=3443681 beta=4.343 excess=5760
+badprime p=3489089 beta=4.347 excess=3840
+badprime p=3500897 beta=4.348 excess=11520
+badprime p=3502657 beta=4.348 excess=11520
+badprime p=3546721 beta=4.352 excess=11520
+badprime p=3549697 beta=4.352 excess=11520
+badprime p=3556897 beta=4.352 excess=3840
+badprime p=3585697 beta=4.355 excess=3840
+badprime p=3692641 beta=4.363 excess=5760
+badprime p=3696097 beta=4.364 excess=5760
+badprime p=3701249 beta=4.364 excess=3840
+badprime p=3725857 beta=4.366 excess=5760
+badprime p=3824993 beta=4.373 excess=11520
+badprime p=4102753 beta=4.394 excess=11520
+badprime p=4205857 beta=4.401 excess=3840
+badprime p=4273153 beta=4.405 excess=5760
+badprime p=4347841 beta=4.410 excess=5760
+badprime p=4495297 beta=4.420 excess=5760
+badprime p=4511809 beta=4.421 excess=5760
+badprime p=4973057 beta=4.449 excess=5760
+badprime p=5087809 beta=4.456 excess=3840
+badprime p=5164769 beta=4.460 excess=5760
+badprime p=5261569 beta=4.465 excess=11520
+badprime p=5292769 beta=4.467 excess=5760
+badprime p=5324129 beta=4.469 excess=5760
+badprime p=5340449 beta=4.470 excess=5760
+badprime p=5652961 beta=4.486 excess=3840
+badprime p=5947489 beta=4.501 excess=5760
+badprime p=5950369 beta=4.501 excess=1920
+badprime p=5975969 beta=4.502 excess=5760
+badprime p=5992289 beta=4.503 excess=1920
+badprime p=6251233 beta=4.515 excess=3840
+badprime p=6734017 beta=4.537 excess=3840
+progress 20000/350725 p=6891617 bad=78 violations=0
+badprime p=6975841 beta=4.547 excess=5760
+badprime p=7234849 beta=4.557 excess=3840
+badprime p=7269697 beta=4.559 excess=3840
+badprime p=7564097 beta=4.570 excess=3840
+badprime p=7938529 beta=4.584 excess=5760
+badprime p=8018369 beta=4.587 excess=5760
+badprime p=8039233 beta=4.588 excess=3840
+badprime p=8322241 beta=4.598 excess=5760
+badprime p=8576609 beta=4.606 excess=960
+badprime p=8740577 beta=4.612 excess=3840
+badprime p=8755073 beta=4.612 excess=3840
+badprime p=8877601 beta=4.616 excess=5760
+badprime p=9148001 beta=4.625 excess=5760
+badprime p=9444641 beta=4.634 excess=5760
+badprime p=9549697 beta=4.637 excess=3840
+badprime p=9650401 beta=4.640 excess=3840
+badprime p=9699841 beta=4.642 excess=1920
+badprime p=10148321 beta=4.655 excess=3840
+badprime p=10314209 beta=4.660 excess=5760
+badprime p=10764641 beta=4.672 excess=3840
+badprime p=11118721 beta=4.681 excess=5760
+badprime p=11653217 beta=4.695 excess=1920
+badprime p=11688961 beta=4.696 excess=3840
+badprime p=11712929 beta=4.696 excess=3840
+progress 40000/350725 p=12028993 bad=102 violations=0
+badprime p=12281729 beta=4.710 excess=3840
+badprime p=12549857 beta=4.716 excess=3840
+badprime p=13294081 beta=4.733 excess=3840
+badprime p=13604033 beta=4.740 excess=3840
+badprime p=13871617 beta=4.745 excess=1920
+badprime p=13925761 beta=4.746 excess=3840
+badprime p=13944257 beta=4.747 excess=5760
+badprime p=14043457 beta=4.749 excess=5760
+badprime p=14088769 beta=4.750 excess=3840
+badprime p=14394433 beta=4.756 excess=5760
+badprime p=15011873 beta=4.768 excess=1920
+badprime p=16165889 beta=4.789 excess=3840
+badprime p=16260929 beta=4.791 excess=3840
+progress 60000/350725 p=17308769 bad=115 violations=0
+badprime p=18120769 beta=4.822 excess=3840
+badprime p=19514177 beta=4.844 excess=1920
+badprime p=19569889 beta=4.844 excess=3840
+badprime p=19894753 beta=4.849 excess=1920
+badprime p=20315201 beta=4.855 excess=3840
+badprime p=20686241 beta=4.860 excess=3840
+badprime p=21091649 beta=4.866 excess=1920
+badprime p=21164929 beta=4.867 excess=3840
+badprime p=21523361 beta=4.872 excess=58560  *** EXACT-WICK VIOLATION
+badprime p=21724193 beta=4.875 excess=3840
+badprime p=21821249 beta=4.876 excess=3840
+badprime p=21983617 beta=4.878 excess=3840
+progress 80000/350725 p=22684577 bad=127 violations=1
+badprime p=23837057 beta=4.901 excess=3840
+badprime p=23958017 beta=4.903 excess=3840
+badprime p=24535009 beta=4.910 excess=3840
+badprime p=24943073 beta=4.914 excess=3840
+badprime p=26058497 beta=4.927 excess=3840
+badprime p=26510401 beta=4.932 excess=3840
+badprime p=27232193 beta=4.940 excess=3840
+progress 100000/350725 p=28153217 bad=134 violations=1
+badprime p=28949729 beta=4.957 excess=3840
+badprime p=29420609 beta=4.962 excess=3840
+badprime p=29423041 beta=4.962 excess=192
+badprime p=29495041 beta=4.963 excess=3840
+badprime p=29596001 beta=4.964 excess=3840
+badprime p=30508417 beta=4.973 excess=3840
+badprime p=30700321 beta=4.974 excess=3840
+badprime p=31060417 beta=4.978 excess=3840
+badprime p=32245441 beta=4.989 excess=3840
+progress 120000/350725 p=33686977 bad=143 violations=1
+badprime p=34160449 beta=5.005 excess=3840
+badprime p=34351553 beta=5.007 excess=3840
+badprime p=38168033 beta=5.037 excess=3840
+progress 140000/350725 p=39254273 bad=146 violations=1
+badprime p=41368609 beta=5.060 excess=3840
+badprime p=42155809 beta=5.066 excess=1920
+badprime p=43078817 beta=5.072 excess=3840
+badprime p=43107521 beta=5.072 excess=3840
+badprime p=43293857 beta=5.074 excess=1920
+progress 160000/350725 p=44891137 bad=151 violations=1
+badprime p=45296033 beta=5.087 excess=3840
+badprime p=48564001 beta=5.107 excess=3840
+badprime p=49231649 beta=5.111 excess=3840
+progress 180000/350725 p=50549153 bad=154 violations=1
+badprime p=51474433 beta=5.123 excess=3840
+badprime p=51491393 beta=5.124 excess=3840
+badprime p=52609409 beta=5.130 excess=1920
+progress 200000/350725 p=56235521 bad=157 violations=1
+badprime p=57499009 beta=5.155 excess=3840
+badprime p=59469793 beta=5.165 excess=3840
+progress 220000/350725 p=61973633 bad=159 violations=1
+badprime p=64522049 beta=5.189 excess=1920
+progress 240000/350725 p=67737377 bad=160 violations=1
+progress 260000/350725 p=73511297 bad=160 violations=1
+progress 280000/350725 p=79318529 bad=160 violations=1
+badprime p=84333089 beta=5.266 excess=3840
+progress 300000/350725 p=85146433 bad=161 violations=1
+badprime p=88597121 beta=5.280 excess=3840
+progress 320000/350725 p=90996289 bad=162 violations=1
+badprime p=92349473 beta=5.292 excess=3840
+progress 340000/350725 p=96834817 bad=163 violations=1
+
+scan complete: 350725 primes, nonzero-excess=163, exact-Wick violations=1

@@ -1,0 +1,7 @@
+
+### A33 margin-fast: sqrt(n*k) - MAXragged at Kambire-worst direction
+
+rho=1/4:
+      n    k    d    s     (a,b)        q     mode | MAXrag  sqrt(nk)  margin  mar/sqrt
+      8    2    2    4     (4,2)       17    EXACT |      3     4.000   1.000    0.2500
+     16    4    4    4     (8,4)       17    EXACT |      6     8.000   2.000    0.2500

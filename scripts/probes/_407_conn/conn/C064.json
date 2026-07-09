@@ -1,0 +1,29 @@
+{
+ "id": "C064",
+ "rank": 64,
+ "total": 22,
+ "scores": {
+  "insight": 7,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F3",
+  "F7",
+  "F18"
+ ],
+ "walls": [
+  "W-largesieve",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean"
+ ],
+ "title": "The line-incidence spectral collapse + coset-period count give an EXACT identity: per-line incidence error is an n-weighted average of the m periods, so the worst far line equals the worst PERIOD not the worst frequency",
+ "connection": "lineIncidence_spectral gives #{γ:s₀+γs₁∈S}·|V|=|F|·Σ_{ψ⊥s₁}Σ_{s∈S}ψ(s₀−s). For a MONOMIAL far direction the surviving ψ⊥s₁ are indexed by μ_n and Σ_{s∈S}ψ(s₀−s) factors through η_b. With eta_image_card_mul_le (η constant on the (p−1)/n cosets), the spectral error is NOT a sum over q frequencies but over exactly m=(p−1)/n distinct period values, each with multiplicity n. So the per-line incidence error is an n-weighted average of m periods — the WORST far-line incidence is governed by the worst PERIOD (F7), and the autocorrelation flatness F18 is the variance of that n-weighted period average. A count(F3)=char-sum(F2)=period-spectrum(F7) triple identity with the multiplicity-n quantization explicit.",
+ "why_insightful": "The spectral identity and the coset count exist separately; fusing them shows the line-incidence error inherits the coset multiplicity-n structure, so F3's worst case is a max over m periods — explaining why the budget n·log(p/n) (=variance n × max-of-m enhancement) is the right scale, bridging F3 to F7/F18 not just F2.",
+ "attack_plan": "Lean: lineIncidence_error_eq_period_average rewriting the s₁^⊥ spectral sum using eta_constant_on_mulCoset to collapse to Σ over m period values × multiplicity n. Probe: verify #bad far-line incidence(δ)=avg-of-n·(period values in the syndrome ball) exactly at a proper subgroup, and that its variance = F18 autocorrelation max."
+}

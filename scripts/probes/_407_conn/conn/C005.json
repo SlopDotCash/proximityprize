@@ -1,0 +1,30 @@
+{
+ "id": "C005",
+ "rank": 5,
+ "total": 26,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F17",
+  "F2",
+  "F7",
+  "F16"
+ ],
+ "walls": [
+  "W-BGK",
+  "W-largesieve"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/NVMDyadicTowerObstruction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean"
+ ],
+ "title": "The 1×1 NVM minors ARE the Gauss-period house F2; index-m NVM vanishing = the exact char-sum sup-norm wall",
+ "connection": "The compressed-Fourier matrix factors M = (1/m)·F·D·Fᵀ with F the m×m Vandermonde of ζ_m and D = diag(G_0..G_{m-1}) the Gauss sums (M_factor/cft_det_eq). The 1×1 minors are M_{a,b}=T_{a+b}, T_j=(1/m)Σ_i ω^{ij}G_i — and T_j is EXACTLY η_b, the prize Gauss-period (cft_one_by_one_minor docstring, up to √q/m). So F17's k=1 NVM conditions (T_j≠0) and F2/F7's sup-norm target M(n)≤C√(n log(p/n)) are the SAME object: nonvanishing is the qualitative shadow, sup-norm the quantitative one, both on the DFT of the unimodular Gauss-phase vector a_i=G_i/√q. Machine-checked identity, not analogy.",
+ "why_insightful": "Pins WHICH minor level (k=1) reduces to the prize char-sum, and shows the top (k=m) minor cft_top_minor_ne_zero NEVER vanishes (det=(det F)²∏G_i, single Cauchy-Binet term, no cancellation). So the entire NVM obstruction lives at intermediate k≈m/2 — a localization the prose ('index 2,3 done, large open') does not make.",
+ "attack_plan": "Lean: extend NVMDyadicTowerObstruction to prove cft_one_by_one_minor_eq_house : M_{a,b}=(√q/m)·η_{...} as a real equality (currently example:True). Then prove (∀j,|T_j|≤C√(n log m)) → WorstCaseIncompleteSumBound, wiring k=1 NVM-quantitative into the existing GaussPeriodMomentBound consumer."
+}

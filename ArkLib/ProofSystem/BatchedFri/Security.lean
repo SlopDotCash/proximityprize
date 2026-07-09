@@ -812,34 +812,6 @@ noncomputable instance {t l : ℕ} {ω : SmoothCosetFftDomain n 𝔽} :
                     Spec.FinalFoldPhase.pSpec 𝔽 ++ₚ
                       Spec.QueryRound.pSpec (ω := ω) l)).Challenge]ₒ).Range q))
 
-noncomputable instance {t l : ℕ} {ω : SmoothCosetFftDomain n 𝔽} :
-    HasEvalPMF
-      (OracleComp
-        ([]ₒ +
-          [((BatchedFri.Spec.BatchingRound.batchSpec 𝔽 t) ++ₚ
-              (Spec.pSpecFold (ω := ω) k s ++ₚ
-                Spec.FinalFoldPhase.pSpec 𝔽 ++ₚ
-                  Spec.QueryRound.pSpec (ω := ω) l)).Challenge]ₒ)) := by
-  infer_instance
---HasEvalSPMF
---       (OptionT
---         (OracleComp
---           ([]ₒ +
---             [(BatchedFri.Spec.BatchingRound.batchSpec 𝔽 t ++ₚ
---                   (Spec.pSpecFold k s ++ₚ Spec.FinalFoldPhase.pSpec 𝔽 ++ₚ
---                     Spec.QueryRound.pSpec l)).Challenge]ₒ)))
---
-noncomputable instance {t l : ℕ} {ω : SmoothCosetFftDomain n 𝔽} :
-    HasEvalSPMF
-      (OptionT
-        (OracleComp
-          ([]ₒ +
-            [((BatchedFri.Spec.BatchingRound.batchSpec 𝔽 t) ++ₚ
-                (Spec.pSpecFold (ω := ω) k s ++ₚ
-                  Spec.FinalFoldPhase.pSpec 𝔽 ++ₚ
-                    Spec.QueryRound.pSpec (ω := ω) l)).Challenge]ₒ))) := by
-  infer_instance
-
 open ENNReal in
 /-- Corresponds to Claim 8.2 of [BCIKS20] (the query-phase soundness of batched FRI).
 

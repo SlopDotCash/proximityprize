@@ -1,0 +1,29 @@
+{
+ "id": "C036",
+ "rank": 36,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F5",
+  "F10",
+  "F13",
+  "F15"
+ ],
+ "walls": [
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean"
+ ],
+ "title": "Vieta-pin makes the COUNT face a power-sum-Newton image: I(δ)=#{e_t on {p_1=...=p_{t-1}=0}}, literally the deep additive-energy variety F5/F13 (a char-sum-free F3↔F5 bridge)",
+ "connection": "DyadicLacunaryDeltaStar pins I(δ) for direction (a,b) as #lacBad=#{e_t(S):S⊆μ_n,|S|=a,e_1(S)=...=e_{t-1}(S)=0}, t=a−b. By Newton's identities e_1=...=e_{t-1}=0 ⟺ power sums p_1(S)=...=p_{t-1}(S)=0 (with these vanishing, p_t=(−1)^{t-1}t·e_t). So the bad-scalar count is exactly a count of a-subsets of μ_n whose first t−1 power sums vanish — p_j(S)=Σ_{x∈S}x^j is precisely the additive-relation/energy object governing F5/F13 (the antipodal vanishing-power-sum structure in EnergyRelationAntipodal). This identifies the COMBINATORIAL count face (F3/F10) with the ANALYTIC moment/energy face (F5/F13) NOT through char sums but through the symmetric-function/power-sum dictionary: e_t=(−1)^{t-1}p_t/t on the vanishing variety. The same Lam–Leung antipodal rigidity bounding E_r bounds #lacBad cosets.",
+ "why_insightful": "The issue links F3 (count) and F5 (energy) only through the char-sum moment Ση^{2r}=qE_r; this gives a SECOND char-sum-free bridge via Newton's identities, turning #lacBad directly into a vanishing-power-sum subset count — the object EnergyRelationAntipodal already controls in char 0.",
+ "attack_plan": "Lean: lacBad_eq_powerSumVanishing rewriting {e_1=...=e_{t-1}=0} as {p_1=...=p_{t-1}=0} via Mathlib NewtonIdentities (Multiset.esymm↔psum), then a probe counting a-subsets of μ_n with p_1..p_{t-1}=0 and checking it equals the brute-forced bad count and is O(n) at prize radius. If the antipodal-balance lemma forces these into ⟨g^t⟩-cosets, that is DyadicLacunaryFloor."
+}

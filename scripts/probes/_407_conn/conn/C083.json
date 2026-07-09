@@ -1,0 +1,28 @@
+{
+ "id": "C083",
+ "rank": 83,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F12",
+  "F5",
+  "F9"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyThreeDvd.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean"
+ ],
+ "title": "Group-action divisibility (S3 ⟹ 6|M, parity ⟹ even-pair-count, dilation ⟹ ord|#bad) is a shared 'symmetry kills the count' principle linking e2=0 (F12) to the energy kernel (F5) with NO magnitude bound",
+ "connection": "AdditiveEnergyThreeDvd derives 6|M for the BGK energy kernel M=#{u∈μ_n:−(1+u)∈μ_n} purely from a fixed-point-free S3 action (ι:u↦u⁻¹, σ:u↦−(1+u), τ=ι∘σ order 3) — NO magnitude control. WindowTwoLayerThreshold.e2Folded_ne_zero_of_odd_pairs is the SAME species on the e2 face (mod-2 quotient of the bad set). MCAEigenstackOrbitLaw.orderOf_dvd_badScalarSet_card_of_eigenstack shows the bad-scalar count is ε+(#orbits)·ord under the dilation action (F9). All three are 'count = invariant of a finite group action'. The e2=0 face and the F5 energy kernel share an action-theoretic skeleton: the open magnitude question is what survives AFTER quotienting by the proven symmetries.",
+ "why_insightful": "Identifies a uniform method (count = invariant of a finite group action) producing hard q-independent constraints on BOTH the algebraic F12 face and the analytic F5 kernel without touching the magnitude — the right object is the count MODULO the full symmetry group (residual orbits), reducing both faces to the same residual-orbit-count question.",
+ "attack_plan": "Lean: a common count_dvd_of_group_action lemma, rederive both three_dvd_bgkCount and a divisibility refinement of the e2 bad set. Research: enumerate the full symmetry group acting jointly on {e2=0, e1≠0} subsets (negation, dilation by ⟨g^t⟩, Frobenius x↦x^p) and compute the residual orbit count K — if the combined group forces K=O(1) above δ* by pure orbit arithmetic, that is a non-analytic closure of the depth-1 floor."
+}

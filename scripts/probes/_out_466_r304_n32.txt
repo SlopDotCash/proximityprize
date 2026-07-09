@@ -1,0 +1,55 @@
+R304 n=32 window p in [32768, 2000000] (beta in [3.00, 4.19]): 9088 primes ≡ 1 mod 32; atom: excess <= 44800 (E3 <= 491520)
+*** VIOLATION p=32993 beta=3.002 E3=838400 excess=391680 > headroom=44800
+*** VIOLATION p=35393 beta=3.022 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=37217 beta=3.037 E3=640640 excess=193920 > headroom=44800
+*** VIOLATION p=37441 beta=3.038 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=37633 beta=3.040 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=38977 beta=3.050 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=43457 beta=3.081 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=46049 beta=3.098 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=48353 beta=3.112 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=48449 beta=3.113 E3=496640 excess=49920 > headroom=44800
+*** VIOLATION p=49921 beta=3.121 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=50177 beta=3.123 E3=640640 excess=193920 > headroom=44800
+*** VIOLATION p=51137 beta=3.128 E3=640640 excess=193920 > headroom=44800
+*** VIOLATION p=51361 beta=3.130 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=54721 beta=3.148 E3=492800 excess=46080 > headroom=44800
+*** VIOLATION p=65537 beta=3.200 E3=703520 excess=256800 > headroom=44800
+*** VIOLATION p=68449 beta=3.213 E3=640640 excess=193920 > headroom=44800
+progress 500/9088 p=124193 worstExcess=391680 (p=32993) violations=17
+*** VIOLATION p=156353 beta=3.451 E3=640640 excess=193920 > headroom=44800
+*** VIOLATION p=194977 beta=3.515 E3=636800 excess=190080 > headroom=44800
+progress 1000/9088 p=221953 worstExcess=391680 (p=32993) violations=19
+progress 1500/9088 p=319489 worstExcess=391680 (p=32993) violations=19
+progress 2000/9088 p=422753 worstExcess=391680 (p=32993) violations=19
+progress 2500/9088 p=527809 worstExcess=391680 (p=32993) violations=19
+progress 3000/9088 p=632609 worstExcess=391680 (p=32993) violations=19
+progress 3500/9088 p=740321 worstExcess=391680 (p=32993) violations=19
+progress 4000/9088 p=846977 worstExcess=391680 (p=32993) violations=19
+progress 4500/9088 p=957953 worstExcess=391680 (p=32993) violations=19
+progress 5000/9088 p=1065697 worstExcess=391680 (p=32993) violations=19
+progress 5500/9088 p=1177921 worstExcess=391680 (p=32993) violations=19
+progress 6000/9088 p=1289921 worstExcess=391680 (p=32993) violations=19
+progress 6500/9088 p=1401761 worstExcess=391680 (p=32993) violations=19
+progress 7000/9088 p=1514209 worstExcess=391680 (p=32993) violations=19
+progress 7500/9088 p=1631297 worstExcess=391680 (p=32993) violations=19
+progress 8000/9088 p=1744801 worstExcess=391680 (p=32993) violations=19
+progress 8500/9088 p=1859329 worstExcess=391680 (p=32993) violations=19
+progress 9000/9088 p=1979713 worstExcess=391680 (p=32993) violations=19
+
+scan complete: 9088 primes, violations=19
+atom 'excess <= 44800': REFUTED
+
+top excess primes:
+  p=    32993 beta=3.002 E3=      838400 excess=  391680 excess/headroom=+8.7429 E3/Wick=1.7057
+  p=    65537 beta=3.200 E3=      703520 excess=  256800 excess/headroom=+5.7321 E3/Wick=1.4313
+  p=   156353 beta=3.451 E3=      640640 excess=  193920 excess/headroom=+4.3286 E3/Wick=1.3034
+  p=    68449 beta=3.213 E3=      640640 excess=  193920 excess/headroom=+4.3286 E3/Wick=1.3034
+  p=    51137 beta=3.128 E3=      640640 excess=  193920 excess/headroom=+4.3286 E3/Wick=1.3034
+  p=    50177 beta=3.123 E3=      640640 excess=  193920 excess/headroom=+4.3286 E3/Wick=1.3034
+  p=    37217 beta=3.037 E3=      640640 excess=  193920 excess/headroom=+4.3286 E3/Wick=1.3034
+  p=   194977 beta=3.515 E3=      636800 excess=  190080 excess/headroom=+4.2429 E3/Wick=1.2956
+  p=    48449 beta=3.113 E3=      496640 excess=   49920 excess/headroom=+1.1143 E3/Wick=1.0104
+  p=    54721 beta=3.148 E3=      492800 excess=   46080 excess/headroom=+1.0286 E3/Wick=1.0026
+  p=    51361 beta=3.130 E3=      492800 excess=   46080 excess/headroom=+1.0286 E3/Wick=1.0026
+  p=    49921 beta=3.121 E3=      492800 excess=   46080 excess/headroom=+1.0286 E3/Wick=1.0026

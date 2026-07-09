@@ -1,0 +1,28 @@
+{
+ "id": "C038",
+ "rank": 38,
+ "total": 24,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F5",
+  "F8"
+ ],
+ "walls": [
+  "W-subspace",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/FoldingTransferNoGo.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignFullVanish.lean"
+ ],
+ "title": "Folding buys an additive-energy reduction: the (d+1)-orbit fold is the multiplicative analogue of the 2-adic energy descent (W-subspace and W-BGK may share one deflation mechanism)",
+ "connection": "The proven foldedAgree_mul_le_plainAgree: (d+1)·foldedAgree≤plainAgree — a fold over orbits of size d+1 deflates the agreement count by the orbit size. Structurally the SAME factor-of-2 deflation as the proven 2-adic char-sum descent M(n)²≤2M(n/2)² (F8): folding μ_n by x↦x² maps μ_n→μ_{n/2}, energy/agreement halves per level. The subspace-design fullVanish bound (SubspaceDesignFullVanish) gives WHY folding helps the LIST face: a dim-r subspace is forced nonzero on (1−τ(r))n coordinates, folding raises s, lowering τ. So the design route's 'folding necessity' (W-subspace) and the char-sum route's '2-adic descent' (W-BGK→F8) may be the SAME deflation on two faces — list-energy on the design side, char-sum-energy on the analytic side, both ÷(orbit size) per fold.",
+ "why_insightful": "The issue treats W-subspace (list) and W-BGK (char-sum) as DOUBLY-independent barriers. This proposes they share one mechanism — the orbit-fold deflation factor — which would mean a single energy-descent inequality governs both walls. Explicitly contrary to the 'two unrelated walls' framing and, if true, high-value (if false, a publishable refutation).",
+ "attack_plan": "Probe: for μ_n over a prime field compute (i) plainAgree/foldedAgree for x↦x² and (ii) M(n)²/M(n/2)² (char-sum), across n=8..128, test whether both track (d+1)=2 with the same sub-maximal correction. If corrections coincide, formalize foldedAgree_le ↔ charSum_descent reducing both walls to one per-level deflation Prop. If they diverge, the 'two walls' framing is confirmed."
+}

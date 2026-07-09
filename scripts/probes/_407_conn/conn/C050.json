@@ -1,0 +1,25 @@
+{
+ "id": "C050",
+ "rank": 50,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F15",
+  "F3",
+  "F12"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumE2PairingInflate.lean"
+ ],
+ "title": "Schur-ladder identity makes e_t the EXACT transducer from the algebraic bad set to a subset-sum set: badSet=−{(k+1)-subset sums}, descending one dyadic level via the squaring fold",
+ "connection": "LadderSchurReduction.residual_ladder_schur proves e_t(x^{k+1})=(∑points)·e_t(x^k) at the ladder stack, so badSet=−{subset sums of (k+1)-subsets of the domain} (F15 realized as the residual ratio), the t=1 analogue of the e2=0/α=−1/e1 reduction at t=2. SubsetSumE2PairingInflate.esymm2_inflate gives the EXACT engine controlling how e2 moves: doubling a zero-sum ±pair fixes e1 and shifts e2 by exactly −∑g_i² (all cross terms cancel). Chaining: the depth-t bad set is a level-(t) symmetric-function image, and the inflate identity reduces the t=2 joint (e1,e2) count to a subset-sum count on the SQUARES {g_i²}∈μ_{n/2} — i.e. F12 rigidity descends one dyadic level via squaring, the same FRI fold. Wires F15 (Schur) → F3 (incidence as subset sum) → F12 (e2 control by squares one level down).",
+ "why_insightful": "Pins the precise mechanism turning algebraic e2/e_t vanishing into a concrete additive subset-sum count, and shows the t=2 case descends to a t=1-shaped count on the squared subgroup — making the dyadic squaring tower the literal recursion under the whole bad-set magnitude question.",
+ "attack_plan": "Lean: combine residual_ladder_schur + esymm2_inflate to prove the recursion badCount(μ_n,t=2) reduces to squareSubsetSumCount(μ_{n/2},t=1) and iterate ⌈log2(t+1)⌉ times (the DISPROOF_LOG window-halving engine). Probe: measure whether the per-level subset-sum spread stays O(n) down the tower at window-interior gaps t≥t0."
+}

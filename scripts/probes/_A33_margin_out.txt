@@ -1,0 +1,7 @@
+
+### A33 margin scaling: sqrt(n*k) - MAXragged at the Kambire-worst direction
+
+rho=1/2 (k=n/2):
+      n    k    d    s     (a,b)         q     mode | MAXrag  sqrt(nk)  margin  margin/sqrt(nk)
+      8    4    2    4     (6,4)        17    EXACT |      5     5.657   0.657           0.1161
+     16    8    4    4    (12,8)        17    EXACT |     10    11.314   1.314           0.1161

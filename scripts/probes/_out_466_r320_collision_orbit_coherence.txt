@@ -1,0 +1,11 @@
+# R320 collision-orbit coherence
+n=32 p=21523361 r=3 shadow_keys=5504 collision_pairs=1088 orbits=2 collision_mass=58560
+  rank=1 mass=56640 share=0.967213115 cumulative=0.967213115 support=2 l1=4 relation=(-3, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  rank=2 mass=1920 share=0.032786885 cumulative=1.000000000 support=3 l1=6 relation=(-3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0)
+n=32 p=1439393 r=4 shadow_keys=44545 collision_pairs=11200 orbits=5 collision_mass=11988480
+  rank=1 mass=8601600 share=0.717488789 cumulative=0.717488789 support=5 l1=6 relation=(-2, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+  rank=2 mass=2956800 share=0.246636771 cumulative=0.964125561 support=4 l1=6 relation=(-3, -1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  rank=3 mass=215040 share=0.017937220 cumulative=0.982062780 support=6 l1=8 relation=(-3, 0, 0, 0, 1, -1, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0)
+  rank=4 mass=107520 share=0.008968610 cumulative=0.991031390 support=5 l1=8 relation=(-3, -1, 0, 0, -2, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0)
+  rank=5 mass=107520 share=0.008968610 cumulative=1.000000000 support=5 l1=8 relation=(-3, 2, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+primitive_class reduced_identity=x**5 + x**4 - x - 3 resultant=46060576

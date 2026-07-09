@@ -1,0 +1,30 @@
+{
+ "id": "C033",
+ "rank": 33,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F10",
+  "F12"
+ ],
+ "walls": [
+  "W-LamLeung",
+  "W-anomaly",
+  "W-largesieve"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LamLeungAntipodalTightness.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MinimalVanishingReduction.lean"
+ ],
+ "title": "The char-p transfer of #lacBad is gated by the SAME ±1-relation height as the BGK energy — one threshold s* governs both faces",
+ "connection": "DyadicLacunaryDeltaStar's relation-free criterion (char-0 e_t values stay distinct mod q) is verified at s*=2·log₂(qε*)/H(ρ). LamLeungAntipodalTightness.antipodal_invariant_of_vanishing_sum proves, CONDITIONAL on hindep (no nonzero {-1,0,1}-combination of {1,ζ,…,ζ^{N-1}} vanishes), every char-p vanishing subset is antipodal. MinimalVanishingReduction reduces Lam-Leung to minimal {-1,0,1}-vanishing sums. So the char-p transfer of the COUNT (does a non-antipodal subset appear mod q?) is governed by the SAME short ±1-relation supply as the char-p transfer of the ENERGY E_r (does a non-Wick collision appear mod q?). Both: 'do 2^μ-th roots satisfy a short {-1,0,1} relation mod the prize prime q?'. One cyclotomic-height question, threshold s*=2log(qε*)/H(ρ).",
+ "why_insightful": "The KB treats the count's char-p transfer and the energy's char-p transfer as separate residuals. This shows they are the identical {-1,0,1}-lattice-relation-mod-q question with one explicit threshold s*. Converts two 'open inputs' into one, gives a concrete decidable predicate.",
+ "attack_plan": "Probe: for prize primes q≈n·2^128, test whether μ_{2^μ}-th roots admit any nonzero {-1,0,1} relation of length ≤s* mod q (LLL on the cyclotomic lattice of ζ_{2^μ} mod q). Lean: RelationFreeAtLevel q μ s* := (∀{-1,0,1}-vector c of support ≤s*, ∑c_jζ^j≠0 in F_q); prove DyadicLacunaryFloor ∧ GaussianEnergyBound BOTH follow from it."
+}

@@ -1,0 +1,29 @@
+{
+ "id": "C070",
+ "rank": 70,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F6",
+  "F8",
+  "F19"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean",
+  "docs/kb/deltastar-407-dyadic-2adic-gauss-tower-verdict-2026-06-13.md"
+ ],
+ "title": "The Azuma √(2 ln m) inflation = the additive-vs-multiplicative gap: replace the additive level-sum cocycle by the multiplicative Jacobi-sum cocycle (Hasse–Davenport tower) with NO bulk-vs-tail loss",
+ "connection": "CumulantTowerAzumaWall pins the failure: Azuma must use the L∞ increment bound B_{k-1}, √(ln m) larger than its L² size √(2^{k-1}), paying the bulk-vs-tail gap once per level → total √(2 ln m). The dyadic verdict KB shows the 2-adic ADDITIVE structure is inert (governs O(1) phases; cancellation is among odd-order chars). TangentSumJacobiAverage gives the multiplicative reframing: the house concentration is carried by T(φ)=(1/m)Σ_{i<m}J(χ^i,φ), an AVERAGE of m Jacobi sums (each |J|≤√q). The Jacobi-sum family carries a MULTIPLICATIVE cocycle (Hasse–Davenport: J=−g(χ)g(φ)/g(χφ); lifting to F_{q^t} multiplies Gauss sums), so the tower descent on T multiplies Jacobi sums rather than summing periods — no L∞-vs-L² penalty since each factor is uniformly |·|=√q-controlled by Weil. The √(2 ln m) loss is an artifact of doing the cocycle additively.",
+ "why_insightful": "Diagnoses the exact reason the additive tower-martingale loses √(2 ln m) (bulk-vs-tail) and pairs it with the in-tree observation that cancellation is multiplicative/odd-order, proposing the Jacobi-sum cocycle as the loss-free replacement — a connection between F8 (failed) and F6/F19 (the right surface).",
+ "attack_plan": "Probe: compare the additive level cocycle (period ratios r_j) with the multiplicative Jacobi cocycle (track |T(φ)| as φ ranges and as the field lifts F_q→F_{q^2}); test whether the Jacobi-tower has bounded per-level multiplier. Lean: combine tangentSum_mul_orderOf_eq_sum_jacobiSum with a Hasse–Davenport lift lemma to express T over F_{q^2} as a product over the quadratic descent, exhibiting the multiplicative cocycle; check the increment is uniformly bounded."
+}

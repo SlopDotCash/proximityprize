@@ -1,0 +1,29 @@
+{
+ "id": "C058",
+ "rank": 58,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F9",
+  "F10",
+  "F15"
+ ],
+ "walls": [
+  "W-BGK",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/OrbitSpectrumBound.lean"
+ ],
+ "title": "Action-orbit (F9) and lacunary-coset (F10) quantization are the SAME ⟨g^{b-a}⟩-coset action — Chai-Fan's K literally equals #lacBad/(coset size), routing the orbit lane into the Schur/esymm-vanishing framework",
+ "connection": "Chai-Fan (F9): bad-α set is a union of ⟨g^{b-a}⟩-orbits because h_α(μz)=μ^a h_{αμ^{b-a}}(z). DyadicLacunary's lacBad_smul_closed (F10): bad-scalar set closed under γ↦g^t·γ, t=a−b, a union of cosets of ⟨g^t⟩=μ_{n/gcd(t,n)}. IDENTICAL action (g^{b-a}=g^{-t}, same cyclic subgroup). So #lacBad=K·(orbit size)=K·n/gcd(t,n) — the two count faces are one quantity at two granularities. Via the Vieta pin #lacBad is an e_t-image of a vanishing-symmetric-function variety (F15), so K=(#vanishing-esymm subsets)/(n/gcd): Chai-Fan's number-theoretic norm-non-vanishing Q1 becomes a SCHUR/elementary-symmetric vanishing count (F15) — the missing bridge between the non-BGK orbit lane and the cyclotomic-rigidity lane.",
+ "why_insightful": "The campaign treats Action-Orbit (F9, comment 15) and DyadicLacunaryFloor (F10) as DISTINCT escape lanes; recognizing they are the same ⟨g^{|b-a|}⟩-coset action makes K and #lacBad mutually computable and routes Chai-Fan's open Q1 into the in-tree esymm-vanishing (F15) framework with the Vieta pin already proven.",
+ "attack_plan": "Lean: lacBad_card_eq_orbitCount_mul_cosetSize equating DyadicLacunary.lacBad cardinality with valueSpectrum_card_le_of_orbit_param (OrbitSpectrumBound) at g^t. Probe _wf_orbit_eq_lacbad.py: at proper subgroup compute Chai-Fan K (orbit count of bad-α) and #lacBad/(n/gcd(t,n)); verify equality across rates and directions, translate Chai-Fan's F_d(α) norm to the e_t-vanishing count."
+}

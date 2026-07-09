@@ -1,0 +1,26 @@
+{
+ "id": "C044",
+ "rank": 44,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F10",
+  "F12"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TopDirectionLineCount.lean"
+ ],
+ "title": "e_t=(−1)^t·(product of coset values): on coset-unions the bad scalar γ is a PRODUCT in μ_{n/gcd}, collapsing #lacBad ≤ n by a constructive char-p-stable certificate",
+ "connection": "lacBad = image of e_t over vanishingVariety. On a μ_{2^L}-coset-union S=⋃_i x_i·μ_{2^L}, loc(S)=∏_i(X^{2^L}−x_i^{2^L}) (loc_coset_union), so e_{2^L·j}(S)=±e_j of {x_i^{2^L}} and the lacunary slot e_t with t=2^L (smallest live gap) gives γ=±∏_i x_i^{2^L}·(unit) — a PRODUCT of the coset-reps' 2^L-powers. By esymmF_image_mul (lacBad_smul_closed) this image is a union of ⟨g^t⟩-cosets, and the product structure means distinct γ ↔ distinct multisets of 2^L-power class values, landing in μ_{n/gcd(t,n)}. Hence #lacBad ≤ n/gcd(t,n) ≤ n. Explains the measured #bad=Θ(n) AND that it never exceeds n: γ ranges over a single subgroup of order ≤n.",
+ "why_insightful": "Turns 'image collapse' into a concrete product formula: the bad scalar IS a product of coset-class values in a subgroup of order ≤n. The structural reason #lacBad≤n (the budget) at the smallest live gap, and a constructive char-p-stable certificate (products of roots of unity), not an analytic estimate.",
+ "attack_plan": "Lean: prove for t=2^L (smallest live gap dividing k+t) that lacBad μ_n (k+t) t ⊆ a single coset-orbit of μ_{n/2^L} via γ=±∏x_i^{2^L}, hence #lacBad≤n/gcd(t,n)≤n. Probe: enumerate γ-values for coset-union S at small μ_n, confirm one ⟨g^t⟩-orbit."
+}

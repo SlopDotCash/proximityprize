@@ -1,0 +1,12 @@
+## Literature verification addendum (full-PDF-verified, not snippets)
+
+Validates the hypothesis map and pins citations for the eventual blueprint entry:
+
+1. **The 1/|R| target is the paper bound, and the in-tree challenge shape is paper-faithful.** Spartan ([eprint 2019/550](https://eprint.iacr.org/2019/550.pdf)) **Lemma 5.1** assigns the RLC step error exactly `1/|F|`, with **three independently sampled** challenges `r_A, r_B, r_C` (verbatim: "V samples rA, rB, rC ∈R F and computes c = rA·vA + rB·vB + rC·vC"; proof = degree-1 Schwartz–Zippel). The reference implementation (`microsoft/Spartan`, `src/r1csproof.rs:266-269`) samples three separate scalars. Our `LinearCombinationChallenge R = R1CS.MatrixIdx → R` matches. The `(1, r, r²)` powers variant would give `2/|F|` — that is NOT Spartan. Total Spartan-core budget decomposes as `(ℓ_m + 3ℓ_m + 2ℓ_n + 1)/|F|` (Lemma A.1) — exactly our target per-round vector `(0, ℓ_m/|R|, 3/|R|, 0, 1/|R|, 0, 2/|R|, 0)`.
+2. **No published RBR(-knowledge) analysis of Spartan exists.** The only published FS-soundness treatment is Dao–Grubbs ([eprint 2023/494](https://eprint.iacr.org/2023/494.pdf)), via computational special soundness + tree-builder — explicitly not RBR; and Block et al. ([2023/1256](https://eprint.iacr.org/2023/1256)) prove generalized special soundness does NOT imply generalized RBR-knowledge, so the Dao–Grubbs route cannot manufacture our theorem. The tight composed theorem here would be the **first RBR-KS-with-per-round-errors result for Spartan in any medium**, formal or pen-and-paper.
+3. **A3 (tightness) has a published framework but the instantiation is new**: special unsoundness (Attema–Fehr–Klooß TCC'22) and its RBR duality, Block et al. Theorem 1.4. The Spartan RLC round is `|F|²`-special-unsound on `F³` (kernel hyperplane) matching the RBR error `1/|F|` — writing that instantiation down (formally!) is ours.
+4. **A2/A5 novelty survives**: no "conjoin invariant at unchanged error" combinator and no generic batching-round-with-kernel-counting combinator found anywhere (closest: per-protocol batching IORs in [eprint 2025/753](https://eprint.iacr.org/2025/753.pdf) §6–8, Thm 9.1 — protocol-specific, pen-and-paper).
+5. **Formalization landscape**: Bosshard et al. (Isabelle, CSF'24) = plain sumcheck soundness only; zksecurity/simple-rbr-fri (Lean) = plain RBR (not knowledge) for FRI; Bailey–Miller = linear PCPs. ArkLib's RBR-KS-with-error-vectors machinery appears to be unique.
+
+Proving campaign (bricks B1–B6 per the map) is running; results will be reported as they verify.
+

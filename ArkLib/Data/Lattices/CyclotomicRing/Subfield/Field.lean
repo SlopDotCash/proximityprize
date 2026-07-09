@@ -31,11 +31,12 @@ The route (blueprint `blueprint/src/lattices/hachi_subfield.tex`, Phases 4–5):
 
 ## Status
 
-The only remaining `sorry` is `no_selfReciprocal_factor` (the `−1 ∉ ⟨q⟩` root-orbit argument,
-blueprint Lemma 4.5); its docstring carries a self-contained proof plan and an inventory of the
-already-proven ingredients. It holds the entire number-theoretic content of the swap. Everything
-else — the reverse identity, factor existence, the core unit lemma, and the whole assembly
-(`conjFixedSubring_isField`, `fixedSubring_isField`, `fixedSubringEquivGaloisField`) — is proven.
+The remaining tracked residual axiom is `no_selfReciprocal_factor` (the `−1 ∉ ⟨q⟩`
+root-orbit argument, blueprint Lemma 4.5); its docstring carries a self-contained proof plan and
+an inventory of the already-proven ingredients. It holds the entire number-theoretic content of
+the swap. Everything else — the reverse identity, factor existence, the core unit lemma, and the
+whole assembly (`conjFixedSubring_isField`, `fixedSubring_isField`,
+`fixedSubringEquivGaloisField`) — is proven conditional on that residual.
 
 ## References
 
@@ -148,10 +149,10 @@ theorem exists_irreducible_factorization (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 �
 irreducible factors of `X^{2^α}+1`: if `X^{2^α}+1 = p₁ · p₂` with `p₁, p₂` irreducible, then
 `p₁.reverse` is associated to `p₂` (and hence not to `p₁`).
 
-**Status: `sorry` — open for contribution** (blueprint difficulty rating 8/10). This is the *only*
-remaining gap in the `R_q^H ≃+* F_{q^k}` chain (Hachi [NOZ26, §3], Lemma 5): everything downstream
-(`galoisAutₛ_fixed_isUnit`, `conjFixedSubring_isField`, `fixedSubring_isField`,
-`fixedSubringEquivGaloisField`) is fully proven conditional on this lemma.
+**Status: tracked residual axiom (#470) — open for contribution** (blueprint difficulty rating
+8/10). This is the remaining gap in the `R_q^H ≃+* F_{q^k}` chain (Hachi [NOZ26, §3], Lemma 5):
+everything downstream (`galoisAutₛ_fixed_isUnit`, `conjFixedSubring_isField`,
+`fixedSubring_isField`, `fixedSubringEquivGaloisField`) is fully proven conditional on this lemma.
 
 ## Mathematical content
 
@@ -204,11 +205,10 @@ This swap is exactly what makes `σ_{-1}` (`= X ↦ X⁻¹`) interchange the two
   `eval₂`-reverse technique (`Polynomial.eval₂_reverse_mul_pow`).
 - Mathlib's `Polynomial.Reverse` file: `reverse_mul_of_domain`, `eval₂_reverse_eq_zero_iff`,
   `reverse_natDegree`-style lemmas. -/
-theorem no_selfReciprocal_factor (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 ≤ α)
+axiom no_selfReciprocal_factor (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 ≤ α)
     {p₁ p₂ : (ZMod q)[X]} (hp₁ : Irreducible p₁) (hp₂ : Irreducible p₂)
     (hf : (X ^ (2 ^ α) + 1 : (ZMod q)[X]) = p₁ * p₂) :
-    Associated p₁.reverse p₂ := by
-  sorry
+    Associated p₁.reverse p₂
 
 open Polynomial in
 /-- **Core unit lemma.** In `S = Z_q[X]/(X^{2^α}+1)`, every nonzero `σ_{-1}`-fixed element is a
@@ -279,10 +279,10 @@ theorem galoisAutₛ_fixed_isUnit (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 ≤ α)
 `σ_{-1}`-fixed element is a unit: if `p₁ ∣ g` then the reverse identity plus the swap
 `p₁.reverse ~ p₂` force `p₂ ∣ g` too, so `X^{2^α}+1 ∣ g` and the element vanishes.
 
-Proven (modulo `no_selfReciprocal_factor`): transport to `S = Z_q[X]/(X^{2^α}+1)` via
-`Rq.equivQuotient`, where `conjAut` becomes `galoisAutₛ` (`galoisAut_toQuotient`), and apply the
-core unit lemma `galoisAutₛ_fixed_isUnit`. The inverse of a `σ_{-1}`-fixed unit is again fixed
-(apply `σ_{-1}` to `a·a⁻¹ = 1` and cancel the unit). -/
+Proven modulo the tracked residual axiom `no_selfReciprocal_factor`: transport to
+`S = Z_q[X]/(X^{2^α}+1)` via `Rq.equivQuotient`, where `conjAut` becomes `galoisAutₛ`
+(`galoisAut_toQuotient`), and apply the core unit lemma `galoisAutₛ_fixed_isUnit`. The inverse of
+a `σ_{-1}`-fixed unit is again fixed (apply `σ_{-1}` to `a·a⁻¹ = 1` and cancel the unit). -/
 theorem conjFixedSubring_isField (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 ≤ α) :
     IsField (conjFixedSubring (R := ZMod q) α) := by
   haveI hntC : Nontrivial (powTwoCyclotomic (R := ZMod q) α).CyclotomicRing := by

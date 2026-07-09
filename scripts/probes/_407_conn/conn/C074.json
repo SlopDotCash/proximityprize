@@ -1,0 +1,28 @@
+{
+ "id": "C074",
+ "rank": 74,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F15",
+  "F9",
+  "F3"
+ ],
+ "walls": [
+  "W-Mersenne"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SubsetProductSpectrum.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SubsetProductSpectrumSubgroup.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean"
+ ],
+ "title": "Additive subset-SUM spectrum (F15, open) vs multiplicative subset-PRODUCT spectrum (proven ≤n): SAME μ_n, opposite collapse — the dilation orbit bridges them",
+ "connection": "For μ_n=⟨g⟩, the multiplicative t-subset PRODUCT spectrum is PROVEN ≤n (subsetProduct_spectrum_card_le_subgroup: ∏x∈H lands in H). The additive t-subset SUM spectrum (=ladder badSet, F15) is OPEN. Bridge: g·(−) maps a subset SUM ∑_{i∈S}g^{a_i} to ∑_{i∈S}g^{a_i+1} (cyclic shift of exponents), so the additive sum spectrum carries a free Z/n action (F9 orbit), while the product spectrum carries the Z/n action by EXPONENT-sum mod n (∏=g^{Σa_i}, exactly n values). The δ* question is whether the additive spectrum is as collapsed as the multiplicative one (≤poly·n, prize survives) or super-exponential (false). Product collapse to n is 'maximal collapse'; sum spectrum bounded below by the orbit law (≥n if any nonzero bad scalar) and above by C(n,k+1).",
+ "why_insightful": "Exhibits the same domain with two subset-operations giving provably-opposite spectrum sizes (n vs open/super-exp), isolating that the prize hardness is purely additive (multiplicative side trivially tame), and names the dilation orbit as the common symmetry.",
+ "attack_plan": "Probe probe_mult_spectrum.py vs probe_jump_subsetsum.py side-by-side on μ_8..μ_64: confirm product spectrum=n exactly while sum spectrum grows; measure sum-spectrum/n=K to test polynomial-in-n vs super-poly. Lean: formalize that g·(subset-sum) is a subset sum (exponent shift) to give the Z/n action, then sum-spectrum-card ≡[0 realized] (mod n)."
+}

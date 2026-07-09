@@ -1,0 +1,28 @@
+{
+ "id": "C049",
+ "rank": 49,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F3",
+  "F1"
+ ],
+ "walls": [
+  "W-subspace"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMCACollapse.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMDSBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/ListRecoveryInterleavedGap.lean"
+ ],
+ "title": "The radius-doubling 2δ in the interleaved collapse is the quantitative form of the 'needs Λ(C)≤O(1)' circularity, and exactly why the MDS-incidence bound is window-vacuous",
+ "connection": "mcaBad_card_le_interleavedList bounds #mcaBad(δ) by the interleaved C^{≡2} list at the DOUBLED radius 2δ (joint-agreement floor 2t−n), the same-radius version proven FALSE by exhaustive counterexample. interleavedList_card_le gives |interleavedList(a)|·C(a,k)≤C(n,k), non-vacuous only for a=2t−n≥k, i.e. δ≤(1−ρ)/2 — strictly BELOW the prize window. So the radius doubling (necessary, not artifact) pushes the only unconditional list bound out of the window. With Lambda_interleaved_sandwich (Λ(C)≤Λ(C^{≡m})≤Λ(C)^m) and deltaStar_collapse_backward, the interleaved view provably cannot beat the single-code list at radius δ — 'B4 circular, needs Λ(C)≤O(1)' is exactly the statement that the 2δ→δ gap costs a factor that vanishes only if the base list is already O(1).",
+ "why_insightful": "Ties three in-tree facts (radius-doubling necessity, MDS-incidence vacuity threshold (1−ρ)/2, sandwich collapse) into one mechanism, giving quantitative meaning to the qualitative 'circular' verdict. The (1−ρ)/2 half-window threshold is the same place the unconditional bracket bottoms out.",
+ "attack_plan": "Lean: interleaved_collapse_window_vacuous — at any δ in (1−√ρ,1−ρ), the floor 2t−n<k, so interleavedList_card_le gives C(n,k)/C(2t−n,k)≥q (exponential), certifying nothing. Contrapositive: a window-radius MCA bound via the collapse REQUIRES a sub-C(n,k)/C(a,k) (higher-order-MDS) list bound at half-radius — quantify the exponent gap as a function of (ρ,β,n)."
+}

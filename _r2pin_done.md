@@ -1,0 +1,19 @@
+## 🎯 LANDED: THE FIRST UNCONDITIONAL δ* PIN AT THE KKH26 CEILING — `KKH26DimOnePin.lean` (`6c36084a5` + content in `06d0ec711`), axiom-clean, 0 sorry
+
+The lane claimed at the previous comment is closed, ~2.5 hours later. **`InteriorCeiling` — the named open core of the deployed-regime reduction — is now discharged at its first parameter point, and `kkh26_deltaStar_pin_of_interior_ceiling` fires unconditionally for the first time.** Seven theorems, all `[propext, Classical.choice, Quot.sound]`:
+
+**The chain:**
+- `mem_evalCode_zero_iff` — the `r = 2` code is the constants.
+- **`dimOne_badScalars_card_mul_four_le`** — THE PAIR-OWNERSHIP COUNT: `#bad · 4 ≤ n² − n` for every stack at agreement threshold `> 2`. Each bad scalar's witness level set has `u₁` non-constant on it (constancy ⟹ `pairJointAgreesOn` via the constant pair — the level identity forces `u₀` constant too), so it owns the two cross-fibre blocks `Af ×ˢ Cf ∪ Cf ×ˢ Af` (≥ `2(|S|−1) ≥ 4` ordered pairs with `u₁ i ≠ u₁ j`); any such pair **determines** the scalar (`(γ−γ')(u₁ i − u₁ j) = 0`), so the pair sets are disjoint in the off-diagonal.
+- `dimOne_epsMCA_le` — `ε_mca(dim-1 code, δ) ≤ ((n²−n)/4)/p` uniformly below the ceiling.
+- `interiorCeiling_dimOne` — the discharge: `InteriorCeiling p (2^μ) g μ 1 2 ε*` for every `ε* ≥ ((n²−n)/4)/p`.
+- `dimOne_band_nonempty` — `(n²−n)/4 = 2^{2μ−2}−2^{μ−2} < 2^{2μ−1}−2^μ = 2²·C(2^{μ−1},2)` for all `μ ≥ 2`: **the ε\* band is nonempty**.
+- **`kkh26_dimOne_deltaStar_pin`** (+ `_canonical`): `mcaDeltaStar(evalCode g (2^μ) 0, ε*) = 1 − 2/2^μ` EXACT, both brackets met, no open obligation.
+- `dimOne_ceiling_beyond_johnson_sq` / `dimOne_ceiling_below_capacity` — for `μ ≥ 3` the pinned value sits **strictly inside the open window** `(1−√ρ, 1−ρ)`, `ρ = 2^{−μ}`.
+- **`deltaStar_pin_F12289`** — the concrete instance: **δ\* = 3/4** for the dimension-one code on the 8-point smooth domain `⟨4043⟩ ⊆ F₁₂₂₈₉ˣ` (the NTT prime; order-8 certificate by `decide`), `ε* = 14/12289`, rate `ρ = 1/8`, Johnson `≈ 0.6464 < 3/4 < 7/8` = capacity. At scale: any prime `p ≡ 1 (mod 8)` in `[7·2^129, 3·2^131)` realizes the same pin at `ε* = 2^{−128}` exactly, `|F| < 2^256`.
+
+**Honest scope.** This is the `k = 1` member: the production-dimension conjecture (`k ≥ 2`) remains the open prize core, exactly as the regime-split analysis predicted (`hd1 : 1 ≤ (r−2)m` never covered this slice). What is genuinely new: (1) the first unconditional `InteriorCeiling` discharge at any parameter point; (2) the first machine-checked exact δ\* strictly beyond Johnson for any explicit smooth-domain code — the literal statement-shape of the prize at the degenerate dimension; (3) a NEW lower-bracket mechanism (incidence pair-ownership) that is census-free, staircase-free, and reaches arbitrarily far above the `d ≥ 3b−2` ladder — the first device in-tree that works at radii where absorption/clump induction fail.
+
+**Next (claimed): the `r = 3` slice = `k = 2`.** `r=3, m=1, μ=3`: `evalCode g 8 m` has `k = 2`, `ρ = 1/4` (production rate), ceiling `δ* = 5/8`, Johnson `1/2 < 5/8 < 3/4` = capacity — in-window. The `k = 2` badness at band radii IS the wide-circuit/pencil census this issue's converse lane just classified (`simple_wideCircuit_classification` + the slanted transfer thresholds). Plan: probe the exact `k = 2` bad-count below `5/8` at `n = 8` (syndrome reduction), check it clears `2³·C(4,3) = 32`, then formalize the count via the census classification + large-`p` transfer. If the count exceeds 32 ⟹ the `r = 3` pin is REFUTED at `μ = 3` and the parameter map gets its first interior obstruction — either way the slice decides.
+
+Files: `ArkLib/Data/CodingTheory/ProximityGap/KKH26DimOnePin.lean` (454 lines), `scripts/probes/probe_dim1_interior_ceiling.py`. (Note: the .lean + probe content physically rode in sibling commit `06d0ec711` via a shared-worktree index race; `6c36084a5` adds the `ArkLib.lean` import + restores 3 race-dropped imports.)

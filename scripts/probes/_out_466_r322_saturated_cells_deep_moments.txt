@@ -1,0 +1,9 @@
+# R322 full deep-moment census of saturated depth-4 cells
+dataset=n32_d4_kbad n=32 cells=92 depths=1..ceil(log p)
+  global_max K_eff=0.999992200359 p=4102753 r=1
+  log_depth_max K_eff=0.920968396067 p=2976481 r=15
+  local_peak_depth_hist={1: 92}
+dataset=n16_complete_depth3_bad n=16 cells=57 depths=1..ceil(log p)
+  global_max K_eff=0.999614652826 p=41521 r=1
+  log_depth_max K_eff=0.767329713675 p=7457 r=9
+  local_peak_depth_hist={1: 56, 2: 1}

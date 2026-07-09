@@ -1,0 +1,29 @@
+{
+ "id": "C088",
+ "rank": 88,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F10",
+  "F11"
+ ],
+ "walls": [
+  "W-Mersenne",
+  "W-idealSVP"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CoveringTransfer.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/PrimitiveFactorCovering.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GG25ExactPreservation.lean"
+ ],
+ "title": "The covering-transfer hom (surjective + injective-on-G) carries the dyadic obstruction down to every prime quotient AND forward across curve interleaving — one injectivity hypothesis unifies F4, F10, F11",
+ "connection": "sumsetDistinct_image_eq_univ proves the r-fold distinct-sumset covering transfers under any surjective additive hom injective on G. SAME structural move as Jo26 Theorem 5.7 (GG25ExactPreservation, curve-decodability transfers exactly under interleaving when C(a,b)≤q): both are 'a covering of the small object covers the big object via a hom preserving distinctness'. The covering-transfer pushes the ⟨−2⟩ Mersenne covering to every primitive factor q∣2^m−1 (PrimitiveFactorCovering); the curve interleaving is the code-side analogue. The cyclotomic reduction ℤ[ζ_{2^μ}]↠F_p (degree-1 prime 𝔭|p, the F11 fully-split case) is precisely a covering-transfer hom whose injectivity-on-G is the resultant non-divisibility p∤Res — i.e. the F10 lacunary cleanliness AND the curve-list distinctness are ONE injectivity hypothesis on ONE hom.",
+ "why_insightful": "Identifies a single algebraic gadget (distinctness-preserving surjection) underlying three in-tree results — Mersenne covering descent, curve interleaving (Jo26 5.7), the cyclotomic lift to F_p — and shows the fully-split prime 𝔭|p (the Pan-Xu open case, F11) is the relevant hom for the prize.",
+ "attack_plan": "Lean: an abstract DistinctnessPreservingTransfer generalizing sumsetDistinct_image_eq_univ to the curve-close-set image, instantiate with the cyclotomic reduction ℤ[ζ]↠F_p (degree-1 𝔭). The injectivity hypothesis becomes p∤Res(f_S−f_T,Φ_{2^μ}) (not_dvd_collisionResultant). Probe: for fully-split prize primes, measure the density of degree-1 primes 𝔭|p for which the dyadic sumset stays injective vs collapses (the F11/Pan-Xu split-case count)."
+}

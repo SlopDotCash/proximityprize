@@ -1,0 +1,29 @@
+{
+ "id": "C046",
+ "rank": 46,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F4",
+  "F7"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/JohnsonFourthMomentNoGo.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean"
+ ],
+ "title": "Fourth-moment-can't-beat-Johnson and the period 4th moment are the SAME no-go: any finite L^p moment chain returns the variance, so the escape must be L^∞ (max), the MGF/Chernoff kernel",
+ "connection": "JohnsonFourthMomentNoGo.squaredJohnson_le_fourthChain proves (n·S₂)²≤n³·S₄ ALWAYS, so the 4th moment of the matchCount profile can never beat the squared Johnson cap from S₄ alone. Dual: WorstPeriodLowerBound.exists_period_sq_ge uses the 4th period moment Σ‖η_b‖⁴=q·E(G) and gets only max≳√n. Same phenomenon: Σ‖η‖⁴/Σ‖η‖²=E/|G|, and S₂²≤n·S₄ is the period kurtosis being ≥Gaussian-flat. The proven Johnson 4th-moment no-go IS the statement that the period family's L⁴/L² ratio cannot localize the max — the capacity gap requires L^∞ (a maximal inequality), which is exactly why SalemZygmundChaining's MGF route (one exponential moment) is the right tool, not any finite L^p.",
+ "why_insightful": "Unifies a list-side no-go (JohnsonFourthMomentNoGo) with a character-sum-side lower bound (WorstPeriodLowerBound) under one principle: any FINITE-degree moment chain returns the variance. Sharpens §7.2 to a structural reason — the extreme value is L^∞, invisible to every L^p — and points to the MGF/Chernoff kernel as the unique admissible tool.",
+ "attack_plan": "Lean: meta-lemma finiteMoment_returns_variance abstracting both squaredJohnson_le_fourthChain and the period 4th-moment chain over an arbitrary nonneg profile: any (S_{2r})^{1/r} bound is ≥ the variance, equality iff flat. Cite chernoff_max_re_le as the only escape. Probe: confirm period kurtosis→3 at proper subgroups, certifying no L⁴ gain."
+}

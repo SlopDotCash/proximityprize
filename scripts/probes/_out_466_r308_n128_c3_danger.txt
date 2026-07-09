@@ -1,0 +1,109 @@
+n=128 p=1716841910146256242328924544641 beta=14.348 K=349696 g0=127173474825648610542883299603
+constant hits among powers of g0: [(21, '3', 3), (43, '-3^-1', 1144561273430837494885949696427), (85, '-3', 1716841910146256242328924544638), (107, '3^-1', 572280636715418747442974848214)]
+char0=30725120 headroom=732160 wick=31457280 excess=971520 ratio=1.326923 E3/Wick=1.007609  *** EXACT-WICK VIOLATION
+collision residues with positive delta: 15872
+delta histogram:
+  delta=3054 count=128 mass=390912
+  delta=90 count=256 mass=23040
+  delta=36 count=15488 mass=557568
+matches c=3 formula excess = 60*n^2 - 90*n = 971520
+
+#1: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924544640
+  cnt= 381 vec={0: -1}
+  cnt=   3 vec={0: 2, 21: -1}
+  cnt=   1 vec={43: 3}
+
+#2: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924544638
+  cnt= 381 vec={21: -1}
+  cnt=   3 vec={21: 2, 42: -1}
+  cnt=   1 vec={0: -3}
+
+#3: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924544632
+  cnt= 381 vec={42: -1}
+  cnt=   3 vec={42: 2, 63: -1}
+  cnt=   1 vec={21: -3}
+
+#4: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924544614
+  cnt= 381 vec={63: -1}
+  cnt=   3 vec={20: 1, 63: 2}
+  cnt=   1 vec={42: -3}
+
+#5: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924544560
+  cnt= 381 vec={20: 1}
+  cnt=   3 vec={20: -2, 41: 1}
+  cnt=   1 vec={63: -3}
+
+#6: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924544398
+  cnt= 381 vec={41: 1}
+  cnt=   3 vec={41: -2, 62: 1}
+  cnt=   1 vec={20: 3}
+
+#7: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924543912
+  cnt= 381 vec={62: 1}
+  cnt=   3 vec={19: -1, 62: -2}
+  cnt=   1 vec={41: 3}
+
+#8: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924542454
+  cnt= 381 vec={19: -1}
+  cnt=   3 vec={19: 2, 40: -1}
+  cnt=   1 vec={62: 3}
+
+#9: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924538080
+  cnt= 381 vec={40: -1}
+  cnt=   3 vec={40: 2, 61: -1}
+  cnt=   1 vec={19: -3}
+
+#10: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924524958
+  cnt= 381 vec={61: -1}
+  cnt=   3 vec={18: 1, 61: 2}
+  cnt=   1 vec={40: -3}
+
+#11: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924485592
+  cnt= 381 vec={18: 1}
+  cnt=   3 vec={18: -2, 39: 1}
+  cnt=   1 vec={61: -3}
+
+#12: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924367494
+  cnt= 381 vec={39: 1}
+  cnt=   3 vec={39: -2, 60: 1}
+  cnt=   1 vec={18: 3}
+
+#13: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328924013200
+  cnt= 381 vec={60: 1}
+  cnt=   3 vec={17: -1, 60: -2}
+  cnt=   1 vec={39: 3}
+
+#14: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328922950318
+  cnt= 381 vec={17: -1}
+  cnt=   3 vec={17: 2, 38: -1}
+  cnt=   1 vec={60: 3}
+
+#15: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328919761672
+  cnt= 381 vec={38: -1}
+  cnt=   3 vec={38: 2, 59: -1}
+  cnt=   1 vec={17: -3}
+
+#16: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328910195734
+  cnt= 381 vec={59: -1}
+  cnt=   3 vec={16: 1, 59: 2}
+  cnt=   1 vec={38: -3}
+
+#17: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328881497920
+  cnt= 381 vec={16: 1}
+  cnt=   3 vec={16: -2, 37: 1}
+  cnt=   1 vec={59: -3}
+
+#18: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328795404478
+  cnt= 381 vec={37: 1}
+  cnt=   3 vec={37: -2, 58: 1}
+  cnt=   1 vec={16: 3}
+
+#19: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242328537124152
+  cnt= 381 vec={58: 1}
+  cnt=   3 vec={15: -1, 58: -2}
+  cnt=   1 vec={37: 3}
+
+#20: delta=3054 total=385 self=145171 fiber_size=3 residue=1716841910146256242327762283174
+  cnt= 381 vec={15: -1}
+  cnt=   3 vec={15: 2, 36: -1}
+  cnt=   1 vec={58: 3}

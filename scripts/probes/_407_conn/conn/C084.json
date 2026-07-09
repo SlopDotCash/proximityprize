@@ -1,0 +1,28 @@
+{
+ "id": "C084",
+ "rank": 84,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F20",
+  "F16",
+  "F6"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean"
+ ],
+ "title": "Two-Gauss-sum hybrid split: the worst-case bound is sharp only because (m−1) of the m completion phases are wasted at √q; the QR closed form is the J=1 effective-phase collapse",
+ "connection": "In the completion t·η_b=Σ_{j<t}τ(χ^{dj},ψ_b), the worst-case proof bounds ALL t−1 nontrivial terms by √q and sums (triangle ineq). Hybrid: split the index sum into a CONSTANT head {0≤j<J} (J=O(1) or polylog) where χ^{dj}(b) phases are pinned, plus a residual tail. The head gives genuine constant-index √-cancellation (the proven QR/index-2 lane is J=1 effective phase, eta_QR_eq: η_b=(χ(b)τ−1)/2); the tail is open. TangentSumJacobiAverage's I4 m·T(φ)=Σ_{i<m}J(χ^i,φ) shows this m-term average is ALSO the tangent sum's Jacobi decomposition (F6), so the head/tail split of the completion is simultaneously a head/tail split of the Jacobi-sum average, where Deligne/Katz (F19) governs the tail.",
+ "why_insightful": "Reframes the lane not as 'index too big' but as 'we throw away cancellation among the m phases by triangle-inequality'; the proven QR closed form is literally the J=1 collapse, suggesting a graded family of partial-collapse bounds between QR (clean) and bare √q (trivial) parametrised by how many phases you can pin.",
+ "attack_plan": "Probe _407_consthead_split.py: for fixed small q and μ_n compute partial sums S_J=‖Σ_{j<J}τ(χ^{dj},ψ_b)‖/(J·√q) vs full B; measure whether a constant/polylog head J already captures the bulk (S_J/B→1 fast) or all m phases are needed. If a polylog head suffices, target a Lean lemma bounding the head via gaussSum norm + explicit phase-pinning for χ^{dj}(b) at j in an arithmetic progression."
+}

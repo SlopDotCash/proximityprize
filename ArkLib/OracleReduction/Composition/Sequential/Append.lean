@@ -1015,6 +1015,60 @@ namespace Verifier
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     {lang₁ : Set Stmt₁} {lang₂ : Set Stmt₂} {lang₃ : Set Stmt₃}
 
+/-! ### Entry-level HEq lemmas for appended-transcript projections
+
+Each projection (`Transcript.fst`/`snd`, `FullTranscript.fst`/`snd`) entry is a `cast` of an entry
+of the underlying transcript, hence heterogeneously equal to it. Together with `fin_app_heq`
+(same dependent function at value-equal indices), these discharge the pointwise obligations of the
+`Function.hfunext` steps in `StateFunction.append` below. -/
+
+/-- A dependent function on `Fin d` sends value-equal indices to `HEq` outputs. -/
+private theorem fin_app_heq {d : ℕ} {α : Fin d → Sort*} (f : (i : Fin d) → α i)
+    {i j : Fin d} (h : (i : ℕ) = (j : ℕ)) : HEq (f i) (f j) := by
+  cases Fin.ext h
+  exact HEq.rfl
+
+/-- Entry-level unfolding of the partial first-half projection. -/
+private theorem transcriptFst_heq_entry {k : Fin (m + n + 1)}
+    (T : (pSpec₁ ++ₚ pSpec₂).Transcript k) (i : Fin (min (k : ℕ) m)) :
+    HEq (Transcript.fst T i) (T ⟨(i : ℕ), lt_of_lt_of_le i.isLt (min_le_left _ _)⟩) := by
+  unfold Transcript.fst
+  exact cast_heq _ _
+
+/-- Entry-level unfolding of the partial second-half projection (past the phase boundary). -/
+private theorem transcriptSnd_heq_entry {k : Fin (m + n + 1)}
+    (T : (pSpec₁ ++ₚ pSpec₂).Transcript k) (hk : ¬ (k : ℕ) ≤ m) (i : Fin ((k : ℕ) - m)) :
+    HEq (Transcript.snd T i) (T ⟨m + (i : ℕ), by omega⟩) := by
+  unfold Transcript.snd
+  rw [dif_neg hk]
+  exact cast_heq _ _
+
+/-- Entry-level unfolding of the full first-half projection. -/
+private theorem fullTranscriptFst_heq_entry (T : (pSpec₁ ++ₚ pSpec₂).FullTranscript) (i : Fin m) :
+    HEq (T.fst i) (T (Fin.castAdd n i)) := by
+  rw [← congrFun (FullTranscript.fst_append_snd T) (Fin.castAdd n i)]
+  refine HEq.trans ?_ (Fin.happend_heq_left T.fst T.snd (Fin.castAdd n i)
+    (by simp only [Fin.val_castAdd]; omega)).symm
+  exact fin_app_heq T.fst (by simp only [Fin.val_castAdd, Fin.val_mk])
+
+/-- Entry-level unfolding of the full second-half projection. -/
+private theorem fullTranscriptSnd_heq_entry (T : (pSpec₁ ++ₚ pSpec₂).FullTranscript) (i : Fin n) :
+    HEq (T.snd i) (T (Fin.natAdd m i)) := by
+  rw [← congrFun (FullTranscript.fst_append_snd T) (Fin.natAdd m i)]
+  refine HEq.trans ?_ (Fin.happend_heq_right T.fst T.snd (Fin.natAdd m i)
+    (by simp only [Fin.val_natAdd]; omega)).symm
+  exact fin_app_heq T.snd (by simp only [Fin.val_natAdd, Fin.val_mk]; omega)
+
+/-- Entry of an `Eq.mp`-transported transcript is heterogeneously the original entry (the two
+round indices being equal). -/
+private theorem eqMp_transcript_heq_entry {p : ℕ} {pSpec : ProtocolSpec p} {k k' : Fin (p + 1)}
+    (hkk : k = k') (e : pSpec.Transcript k = pSpec.Transcript k')
+    (f : pSpec.Transcript k) {i : Fin (k : ℕ)} {i' : Fin (k' : ℕ)} (hii : (i : ℕ) = (i' : ℕ)) :
+    HEq (e.mp f i') (f i) := by
+  subst hkk
+  cases Fin.ext hii
+  exact HEq.rfl
+
 /-- **Doomed-ness crosses the language.** For a *deterministic* first verifier `V₁ = pure ∘ verify`
 with a reachable initial state (`∃ s, s ∈ support init`), if its state function `S₁` is false on a
 full transcript, then the intermediate statement `verify stmt tr` lies *outside* `lang₂`.
@@ -1126,8 +1180,26 @@ def StateFunction.append
         · congr 1
           simp only [Fin.val_succ]
           omega
-        · intro _ _ _
-          sorry
+        · intro i j hij
+          have hv : (i : ℕ) = (j : ℕ) :=
+            (Fin.heq_ext_iff (by simp only [Fin.val_mk, Fin.val_succ]; omega)).mp hij
+          refine HEq.trans (transcriptFst_heq_entry _ i) ?_
+          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.val_castLT]
+          by_cases hc : (j : ℕ) < (roundIdx : ℕ)
+          · -- interior round: both sides are entries of `tr`
+            rw [dif_pos (show (i : ℕ) < (roundIdx : ℕ) from by omega), dif_pos hc]
+            refine (cast_heq _ _).trans (HEq.trans ?_ (cast_heq _ _).symm)
+            have hi₀ : (i : ℕ) < min ((roundIdx : Fin (m + n)).castSucc : ℕ) m := by
+              try simp only [Fin.val_castSucc]
+              omega
+            refine HEq.trans (transcriptFst_heq_entry tr ⟨(i : ℕ), hi₀⟩).symm ?_
+            exact (eqMp_transcript_heq_entry
+              (by ext; try simp only [Fin.val_castSucc, Fin.val_mk]; omega) _ tr.fst
+              (i := ⟨(i : ℕ), hi₀⟩)
+              (by try simp only [Fin.val_mk, Fin.val_castLT]; omega)).symm
+          · -- seam round: both sides are the new message
+            rw [dif_neg (show ¬ (i : ℕ) < (roundIdx : ℕ) from by omega), dif_neg hc]
+            exact (cast_heq _ _).trans (((cast_heq _ _).trans (cast_heq _ _)).symm)
     · -- second segment: roundIdx ≥ m
       rw [not_lt] at hlt
       have hnsucc : ¬ ((roundIdx : ℕ) + 1 ≤ m) := by omega
@@ -1143,8 +1215,16 @@ def StateFunction.append
         -- (concat msg tr).fst ≍ tr.fst   (over their min-indexed domains)
         apply Function.hfunext
         · congr 1
-        · intro _ _ _
-          sorry
+        · intro i j hij
+          have hv : (i : ℕ) = (j : ℕ) :=
+            (Fin.heq_ext_iff (by simp only [Fin.val_mk]; omega)).mp hij
+          have him : (i : ℕ) < m := lt_of_lt_of_le i.isLt (by simp only [Fin.val_mk]; omega)
+          refine HEq.trans (transcriptFst_heq_entry _ i) ?_
+          refine HEq.trans ?_ (transcriptFst_heq_entry tr j).symm
+          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.val_castLT]
+          rw [dif_pos (show (i : ℕ) < (roundIdx : ℕ) from by omega)]
+          refine (cast_heq _ _).trans ?_
+          exact fin_app_heq tr (by try simp only [Fin.val_castLT, Fin.val_mk]; omega)
       -- The succ-round (`> m`) goal is the second state function on the phase-2 prefix. We will
       -- show
       -- `¬ S₂ ((roundIdx - m).succ) (verify stmt₁ tr.fst) (tr.snd.concat msg₂)` (the "clean" form,
@@ -1263,8 +1343,26 @@ def StateFunction.append
           simp only [Fin.val_succ]; omega
         apply Function.hfunext
         · congr 1
-        · intro _ _ _
-          sorry
+        · intro i j hij
+          have hv : (i : ℕ) = (j : ℕ) :=
+            (Fin.heq_ext_iff (by simp only [Fin.val_succ, Fin.val_mk]; omega)).mp hij
+          have hksucc : ¬ ((roundIdx : Fin (m + n)).succ : ℕ) ≤ m := by
+            simp only [Fin.val_succ]; omega
+          refine HEq.trans ?_ (transcriptSnd_heq_entry (Transcript.concat msg tr) hksucc
+            ⟨(j : ℕ), by simpa only [Fin.val_mk] using j.isLt⟩).symm
+          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.val_castLT]
+          by_cases hc : (i : ℕ) < (roundIdx : ℕ) - m
+          · -- interior phase-2 round: both sides are entries of `tr` past the boundary
+            rw [dif_pos hc,
+              dif_pos (show m + (j : ℕ) < (roundIdx : ℕ) from by omega)]
+            refine (cast_heq _ _).trans (HEq.trans ?_ (cast_heq _ _).symm)
+            refine HEq.trans (transcriptSnd_heq_entry tr
+              (by try simp only [Fin.val_castSucc]; omega) _) ?_
+            exact fin_app_heq tr (by try simp only [Fin.val_mk, Fin.val_castLT]; omega)
+          · -- seam: both sides are the new message
+            rw [dif_neg hc,
+              dif_neg (show ¬ m + (j : ℕ) < (roundIdx : ℕ) from by omega)]
+            exact ((cast_heq _ _).trans (cast_heq _ _)).trans (cast_heq _ _).symm
   toFun_full := by
     -- `toFun (last)` on the appended protocol is `S₂ (last)` on the phase-2 transcript (since
     -- `m + n > m`, the `≤ m` branch never fires for the last round when `n > 0`; when `n = 0` the
@@ -1281,14 +1379,24 @@ def StateFunction.append
         (Transcript.fst (k := Fin.last (m + n)) T) ≍ FullTranscript.fst T := by
       intro T
       apply Function.hfunext (congrArg Fin hmincard)
-      intro _ _ _
-      sorry
+      intro i j hij
+      have hv : (i : ℕ) = (j : ℕ) := (Fin.heq_ext_iff hmincard).mp hij
+      refine HEq.trans (transcriptFst_heq_entry (k := Fin.last (m + n)) T i) ?_
+      refine HEq.trans ?_ (fullTranscriptFst_heq_entry T j).symm
+      exact fin_app_heq T (by simp only [Fin.val_castAdd, Fin.val_mk]; exact hv)
     have htSndHeq : ∀ (T : (pSpec₁ ++ₚ pSpec₂).FullTranscript),
         (Transcript.snd (k := Fin.last (m + n)) T) ≍ FullTranscript.snd T := by
       intro T
       apply Function.hfunext (congrArg Fin hsndcard)
-      intro _ _ _
-      sorry
+      intro i j hij
+      have hv : (i : ℕ) = (j : ℕ) := (Fin.heq_ext_iff hsndcard).mp hij
+      have hn0 : ¬ ((Fin.last (m + n) : Fin (m + n + 1)) : ℕ) ≤ m := by
+        have := j.isLt
+        simp only [Fin.val_last]
+        omega
+      refine HEq.trans (transcriptSnd_heq_entry (k := Fin.last (m + n)) T hn0 i) ?_
+      refine HEq.trans ?_ (fullTranscriptSnd_heq_entry T j).symm
+      exact fin_app_heq T (by simp only [Fin.val_natAdd, Fin.val_mk]; omega)
     by_cases hn : n = 0
     · -- degenerate: empty second protocol. `toFun (last) = S₁ (last)`, and the appended verifier's
       -- output language is `lang₃`; since `n = 0`, `lang₂`-membership of `verify …` is `lang₃` via

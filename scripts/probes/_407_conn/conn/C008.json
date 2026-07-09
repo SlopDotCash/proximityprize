@@ -1,0 +1,27 @@
+{
+ "id": "C008",
+ "rank": 8,
+ "total": 25,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F12",
+  "F3",
+  "F2"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/PairSumRigidityModP.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean"
+ ],
+ "title": "Threshold-free per-instance e2=0 criterion: bad α at a=k+2 ⟺ p divides one explicit cyclotomic resultant Res(e2Fold,Φ_{2^m}) — no size threshold, decidable per scale, no BGK",
+ "connection": "PairSumRigidityModP.pair_sum_collision_dvd_resultant / pair_sums_ne_of_not_dvd_resultant replace the crude (n²+n)^{n/2} threshold by an EXACT per-instance test valid at every p>4: a mod-p collision not forced in char 0 forces p|Res(foldedRelation,Φ_{2^k}) with Res≠0. Lifting from the 4-term pair-sum to the e2 relation R_U=(∑X^i)²−∑X^{2i} (e2Fold of WindowTwoLayerThreshold), bad-scalar existence at a=k+2 is exactly: p divides the single integer Res(e2Fold m A,Φ_{2^m}). Pins the entire F3 incidence by a finite divisor set, showing the e2 face has NO BGK wall: the obstruction is a fixed finite arithmetic object, not thin-subgroup cancellation — sharp contrast to F2's M(n).",
+ "why_insightful": "The standard story is 'threshold c≈n³ needs sharpening'; this reframes the whole face as 'p ∤ one explicit integer Res' — a divisibility condition with no asymptotic threshold, making the q∤D residual a single computable integer per scale, which is why e2 escapes the 25-year BGK wall.",
+ "attack_plan": "Lean: instantiate pair_sum_collision_dvd_resultant's engine (prime_dvd_resultant_of_common_root + diff_coprime_cyclotomic_rat) for e2Fold to land e2_collision_dvd_resultant and e2_clean_of_not_dvd. Probe: compute Res(e2Fold,Φ_{2^m}) for n=16,32,64 across production rows, factor it, check every odd prime factor < n^β (comment-32 'D is a pure power of 2'); a single odd factor ≥ n^β is a concrete disproof signal."
+}

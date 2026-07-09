@@ -1,0 +1,28 @@
+{
+ "id": "C078",
+ "rank": 78,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F5",
+  "F2",
+  "F3"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SupplyForcingLowerBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean"
+ ],
+ "title": "Cross-face reverse-bound matching: the F4 list-LB (n^{(k+1)/2}) and the F2/F5 4th-moment period-LB (√n) are the SAME tower-word floor — a reverse bound the upper bounds lack",
+ "connection": "SupplyForcingLowerBound.evenSupply_ge_choose forces super-code supply B≥C(|R|,j)=Θ(n^j) at rate 2j−1 via antipodal tower words x^{k+1} (zero-sum (k+1)-subsets). WorstPeriodLowerBound.exists_period_sq_ge forces max_{b≠0}‖η_b‖²≳|G|=n, since E(G)≥|G|² (diagonal energy). Both are REVERSE (lower) bounds, both proven from the SAME diagonal/antipodal structure of μ_n (negation symmetry), both landing at the Johnson floor: the list LB n^{(k+1)/2} is the F4 image of the E≥n² energy forcing ‖η_b‖²≳n on F2. They certify the floor is genuinely Ω(√n) per face — but neither reaches the budget n.",
+ "why_insightful": "Exhibits a reverse bound that DOES match across faces (F4↔F2↔F5), unlike the upper bounds (which only the energy face controls, capped at Johnson). The shared origin (antipodal zero-sum subsets = diagonal energy) explains WHY the reverse bound is uniform while the forward bound is not — a structural asymmetry not noted in the issue.",
+ "attack_plan": "Lean: supply_lb_eq_period_lb_at_diagonal showing both reduce to C(R.card,j) via the raw-moment identity Σ_b η_b^{2r}=q·E_r. Clarifies that pushing the reverse bound past √n requires NON-diagonal (off-antipodal) words on BOTH faces simultaneously."
+}

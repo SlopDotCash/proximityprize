@@ -1,0 +1,27 @@
+{
+ "id": "C087",
+ "rank": 87,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F5"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MomentSupplyIdentity.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SupplyForcingLowerBound.lean"
+ ],
+ "title": "explainableCoreSupply_iff_moment makes the named open residual a binomial MOMENT of the agreement spectrum — directly identifying F4 supply with F5 deep moments E_r",
+ "connection": "explainableCoreSupply_iff_moment proves the #389 residual ExplainableCoreSupply dom k m B EQUIVALENT to the uniform (k+m+1)-th binomial moment ∀w, Σ_c C(|A_c|,k+m+1)≤B. The agreement-spectrum binomial moment Σ_c C(a_c,t) is the combinatorial analogue of the additive deep moment E_r=Σ_b η_b^{2r}/q (F5): both are t-th moments of a concentration object, both have a FROZEN base (moment_identity_base: Σ_c C(a_c,k)=C(n,k) identically, mirroring Σ‖η_b‖²=q|H|), both become coupled only above the base. supply_ge_towerZeroSum forces B≥ the tower-word zero-sum count = the F13 vanishing-roots-of-unity count, the same Lam–Leung object controlling E_r in char 0.",
+ "why_insightful": "Gives an exact dictionary 'agreement-spectrum binomial moment ↔ additive deep moment', so the deep-moment-anomaly wall (W-anomaly) has a combinatorial twin: the supply moment Σ_c C(a_c,t) is forced above its char-0 value by the same zero-sum coincidences. The two 'moment walls' are one.",
+ "attack_plan": "Cross-check whether the supply-moment crossover (where Σ_c C(a_c,t) exceeds the frozen-base extrapolation) lands at the same t*≈β+1 as the W-anomaly r*. Probe: for fixed μ_n and a sweep of capped words, compute Σ_c C(a_c,t) vs C(n,t)·(scaling), locate the spike t; compare to E_r anomaly crossover. If coincident, the supply face inherits the anomaly and the two walls are provably identical."
+}

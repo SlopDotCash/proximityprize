@@ -1,0 +1,30 @@
+{
+ "id": "C011",
+ "rank": 11,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F5",
+  "F16"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-Betti",
+  "W-largesieve"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/ManyTermResultantBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/KowalskiUntrauBarrier.lean"
+ ],
+ "title": "All three deep-moment walls share ONE root crossover depth r*≈β=log_n q; the deficit is exactly the half-tower height a/2",
+ "connection": "(i) W-anomaly: CharSumMomentDeepWall gives char-0 validity only for r≤r_max=2 log_n p−3, while the moment optimum needs r_opt≈log q=a·log_n p, so r_opt/r_max=(log n)/2=a/2. (ii) W-largesieve: ManyTermResultantBound proves char-0 energy valid exactly when q>(2r)^{φ(n)}=(2r)^{n/2}; logs give r-validity cap at r≍log q/(n log r) — the SAME r≈β=log_n q at the production index. (iii) Kowalski–Untrau decay q^{−1/(d−1)} non-vacuous only for d−1<log q/(12+2 log d), i.e. d≲log q/log log q — the SAME log q ceiling, with d(=n) in the exponent denominator. The three 'deficits' are one number: needed-depth log q vs reliable-depth log_n q, ratio a/2.",
+ "why_insightful": "The project treats these as three separate barriers; pinning their crossover depths to ONE quantity (a/2=half the tower height) shows they are a single log-vs-log-base-n depth mismatch, sharply narrowing what a winning proof must beat.",
+ "attack_plan": "Lean: wall_depth_ratio packaging r_opt/r_max=a/2 (CharSumMomentDeepWall) + the (2r)^{n/2} threshold (ManyTermResultantBound) + the kuThreshold (KowalskiUntrauBarrier) as three instances of one RequiredDepthExceedsReliableDepth predicate. Probe: tabulate the three crossover r* across n=2^μ (μ=8..32), β∈{4,5}, confirm coincidence at r*≈β±1."
+}

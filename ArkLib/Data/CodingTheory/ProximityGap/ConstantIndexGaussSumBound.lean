@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.GaussSum
 import Mathlib.NumberTheory.MulChar.Lemmas
 import ArkLib.Data.CodingTheory.ProximityGap.InteriorWorstCaseIncompleteSum
+import ArkLib.ToMathlib.NumberTheory.GaussSumNorm
 
 /-!
 # Constant-index √-cancellation: the worst-case per-frequency bound for ANY fixed-index subgroup (#407)
@@ -52,15 +53,8 @@ theorem conj_gaussSum (χ : MulChar F ℂ) (ψ : AddChar F ℂ) :
 `ψ` over a finite field, valued in `ℂ`.  Reusable; Mathlib lacks it directly. -/
 theorem norm_gaussSum_eq_sqrt {χ : MulChar F ℂ} (hχ : χ ≠ 1) {ψ : AddChar F ℂ}
     (hψ : ψ.IsPrimitive) :
-    ‖gaussSum χ ψ‖ = Real.sqrt (Fintype.card F : ℝ) := by
-  have hmul : gaussSum χ ψ * gaussSum χ⁻¹ ψ⁻¹ = (Fintype.card F : ℂ) :=
-    gaussSum_mul_gaussSum_eq_card hχ hψ
-  have hsq : ‖gaussSum χ ψ‖ ^ 2 = (Fintype.card F : ℝ) := by
-    have h1 : gaussSum χ ψ * (starRingEnd ℂ) (gaussSum χ ψ) = (Fintype.card F : ℂ) := by
-      rw [conj_gaussSum]; exact hmul
-    rw [Complex.mul_conj'] at h1
-    exact_mod_cast h1
-  rw [← hsq, Real.sqrt_sq (norm_nonneg _)]
+    ‖gaussSum χ ψ‖ = Real.sqrt (Fintype.card F : ℝ) :=
+  _root_.norm_gaussSum_eq_sqrt_card hχ hψ
 
 /-- **Character orthogonality / indicator decomposition.** For a multiplicative character `χ` of
 order `m = orderOf χ`, the subgroup-indicator of `G_χ = {a : χ a = 1}` is the average of the powers

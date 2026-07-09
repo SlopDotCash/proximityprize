@@ -1,0 +1,34 @@
+
+=== A = mu_n itself, n=8, p=4129  (LARGEST degenerate set, best case for the route) ===
+   want: order-M aux deg < M*n  =>  r-bound = floor(deg/M) < n.  generic = M*n flat.
+   M : d_min(M)   M*n     r-bound=floor/M   discount(M*n - d_min)
+   1 :      8       8          8             0
+   2 :     16      16          8             0
+   3 :     24      24          8             0
+   4 :     32      32          8             0
+   5 :     40      40          8             0
+   6 :     48      48          8             0
+   7 :     56      56          8             0
+   8 :     64      64          8             0
+
+=== A = mu_n itself, n=16, p=65537  (LARGEST degenerate set, best case for the route) ===
+   want: order-M aux deg < M*n  =>  r-bound = floor(deg/M) < n.  generic = M*n flat.
+   M : d_min(M)   M*n     r-bound=floor/M   discount(M*n - d_min)
+   1 :     16      16         16             0
+   2 :     32      32         16             0
+   3 :     48      48         16             0
+   4 :     64      64         16             0
+   5 :     80      80         16             0
+   6 :     96      96         16             0
+   7 :    112     112         16             0
+   8 :    128     128         16             0
+
+=== A = mu_n itself, n=32, p=1048609  (LARGEST degenerate set, best case for the route) ===
+   want: order-M aux deg < M*n  =>  r-bound = floor(deg/M) < n.  generic = M*n flat.
+   M : d_min(M)   M*n     r-bound=floor/M   discount(M*n - d_min)
+   1 :     32      32         32             0
+   2 :     64      64         32             0
+   3 :     96      96         32             0
+   4 :    128     128         32             0
+   5 :    160     160         32             0
+   6 :    192     192         32             0

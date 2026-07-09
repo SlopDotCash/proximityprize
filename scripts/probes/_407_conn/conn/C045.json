@@ -1,0 +1,28 @@
+{
+ "id": "C045",
+ "rank": 45,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F7",
+  "F5"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/JohnsonSecondMomentFrontier.lean"
+ ],
+ "title": "Var=n is literally the Johnson ceiling: the SAME flat-profile equality saturates both Cauchy-Schwarz steps (F7 period variance = W-Johnson tightness)",
+ "connection": "Two in-tree exact identities are one object on two faces. (1) subgroup_gaussSum_secondMoment: Σ_b‖η_b‖²=q·|G|, average ‖η_b‖²=|G|=n (period variance). (2) JohnsonSecondMomentFrontier.cauchySchwarz_eq_iff_flat: (∑S)²=n·∑S² iff the per-coordinate profile S_j is FLAT. Applying Parseval to the period family, max_b‖η_b‖²≤Σ_b‖η_b‖²=q·n gives only √q per word (the Johnson √n deficit), with equality exactly the flat spectrum. So 'using only Var(η)=n' IS 'using only the marginal 2nd moment' IS the flat-profile CS-tight case — the Johnson ceiling and the L²-period ceiling are the same equality, not merely analogous.",
+ "why_insightful": "The issue calls these 'faces of one wall' but never pins the EXACT shared equality. The flatness witness in cauchySchwarz_eq_iff_flat is the same configuration as the period spectrum being flat (Salem-Zygmund extremal), tying F7's Var=n to W-Johnson's tightness lemma via one Finset identity.",
+ "attack_plan": "Lean: periodVariance_flat_iff_johnsonExtremal applying cauchySchwarz_eq_iff_flat to the ‖η‖-derived profile, showing the CS-equality set = {η : spectrum flat}; isolates the above-Johnson content as strictly the non-flatness (decorrelation). Probe: on μ_8/μ_16 check the per-coordinate matchCount profile for a far line is flat exactly when the period family is L²-extremal."
+}

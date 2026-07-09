@@ -1,0 +1,30 @@
+{
+ "id": "C004",
+ "rank": 4,
+ "total": 26,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3",
+  "F9",
+  "F10",
+  "F15"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MonomialSpectrumEquivariance.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean"
+ ],
+ "title": "δ* count = n·K: the budget q·ε*≈n is exactly ONE μ_n-orbit; eigenstack/monomial-spectrum/lacunary quantization collapse F1=F3=F10=F9 into one counting identity",
+ "connection": "adjacent_card_eq_n_mul_add_zero gives #bad = n·K + [0∈badSet]; orderOf_dvd_badScalarSet_card_of_eigenstack generalizes it to any σ-eigenstack (#bad = ε + (#orbits)·ord(a⁻¹c)); monomial_badSet_mul_invariant specializes to the monomial pencil where the eigenratio is g (order n) so n∣#bad; DyadicLacunaryDeltaStar quantizes #lacBad in units n/gcd(t,n). All are the SAME ⟨g^t⟩-coset action. The far-line incidence I(δ) for the ladder/monomial directions is n·K(δ)+ε with K = number of free dilation orbits = (via Schur reduction boundary_slice_ladder_badSet_card_eq) the dilation-orbits of e-symm-vanishing (k+1)-subset-sum VALUES. The prize budget I(δ)≤n reads K(δ)≤1+o(1): δ* is EXACTLY the radius where K crosses from O(1) to ≥2. This identifies Chai-Fan's orbit count K with the Schur subset-sum fiber.",
+ "why_insightful": "Pins the abstract Chai-Fan orbit count K to a concrete computable object (dilation-orbits of subset sums), and reframes the entire δ* threshold as a single integer K crossing 1 — turning the analytic 'is M(n)≤√(n log)' question into a discrete orbit-counting question off the BGK/sup-norm face. The budget n is literally one orbit.",
+ "attack_plan": "Lean: I_ladder(δ)=n·K(δ)+[0 bad], K(δ):=#(badScalars∖{0})/n well-defined by n_dvd_card_badScalars_adjacent; then K(δ)≤1 ⟺ I≤n+1 ⟺ δ≤δ*. Compose monomial_badSet_mul_invariant with epsMCA_eq_iSup_mcaBadCount. Probe: tabulate K(δ) vs δ across the window interior for μ_8,μ_16 at β∈{4,5}, locate K:1→2 crossing, compare to 1−ρ−H(ρ)/(β log n)."
+}

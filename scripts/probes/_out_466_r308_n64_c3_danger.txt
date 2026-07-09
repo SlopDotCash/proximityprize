@@ -1,0 +1,69 @@
+n=64 p=926510094425921 beta=8.286 K=43776 g0=857879717061038
+constant hits among powers of g0: [(11, '-3^-1', 617673396283947), (21, '3', 3), (43, '3^-1', 308836698141974), (53, '-3', 926510094425918)]
+char0=3750400 headroom=181760 wick=3932160 excess=240000 ratio=1.320423 E3/Wick=1.014811  *** EXACT-WICK VIOLATION
+collision residues with positive delta: 3840
+delta histogram:
+  delta=1518 count=64 mass=97152
+  delta=90 count=128 mass=11520
+  delta=36 count=3648 mass=131328
+matches c=3 formula excess = 60*n^2 - 90*n = 240000
+
+#1: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425920
+  cnt= 189 vec={0: -1}
+  cnt=   3 vec={0: 2, 21: -1}
+  cnt=   1 vec={11: 3}
+
+#2: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425918
+  cnt= 189 vec={21: -1}
+  cnt=   3 vec={10: 1, 21: 2}
+  cnt=   1 vec={0: -3}
+
+#3: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425912
+  cnt= 189 vec={10: 1}
+  cnt=   3 vec={10: -2, 31: 1}
+  cnt=   1 vec={21: -3}
+
+#4: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425894
+  cnt= 189 vec={31: 1}
+  cnt=   3 vec={20: -1, 31: -2}
+  cnt=   1 vec={10: 3}
+
+#5: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425840
+  cnt= 189 vec={20: -1}
+  cnt=   3 vec={9: 1, 20: 2}
+  cnt=   1 vec={31: 3}
+
+#6: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425678
+  cnt= 189 vec={9: 1}
+  cnt=   3 vec={9: -2, 30: 1}
+  cnt=   1 vec={20: -3}
+
+#7: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094425192
+  cnt= 189 vec={30: 1}
+  cnt=   3 vec={19: -1, 30: -2}
+  cnt=   1 vec={9: 3}
+
+#8: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094423734
+  cnt= 189 vec={19: -1}
+  cnt=   3 vec={8: 1, 19: 2}
+  cnt=   1 vec={30: 3}
+
+#9: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094419360
+  cnt= 189 vec={8: 1}
+  cnt=   3 vec={8: -2, 29: 1}
+  cnt=   1 vec={19: -3}
+
+#10: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094406238
+  cnt= 189 vec={29: 1}
+  cnt=   3 vec={18: -1, 29: -2}
+  cnt=   1 vec={8: 3}
+
+#11: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094366872
+  cnt= 189 vec={18: -1}
+  cnt=   3 vec={7: 1, 18: 2}
+  cnt=   1 vec={29: 3}
+
+#12: delta=1518 total=193 self=35731 fiber_size=3 residue=926510094248774
+  cnt= 189 vec={7: 1}
+  cnt=   3 vec={7: -2, 28: 1}
+  cnt=   1 vec={18: -3}

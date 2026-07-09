@@ -1,0 +1,36 @@
+diff --git a/ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md b/ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md
+index be4f4e0ae..2cb07b0bb 100644
+--- a/ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md
++++ b/ArkLib/Data/CodingTheory/ProximityGap/DISPROOF_LOG.md
+@@ -6503,3 +6503,31 @@ true frontier is two specific extensions.** Deep audit of the Hensel/A.1 lane:
+   Both for monic H, on built substrates, with proven templates one notch below. When J1+J2
+   land: Claim 5.10 weld fires → CoordinateUpgrade → hsurface → johnsonNumericBound_holds →
+   JohnsonDischargeStatement (no Prop) → the bracket → the deployed-regime exact δ* pin.
++
++**O154 third addendum — the FaaDiBruno residual is PROVEN for monic H
++(`faaDiBrunoSuccSumZeroResidual_of_leadingCoeff_one`, P2MonicConsequences) and integrality
++is unconditional (`alphaGenuine_regular_of_monic`); the deg ≤ 2 mechanism identified; J1's
++shape is CONSTRAINED by an in-tree refutation.** Final audit notes for the J1 dive:
++
++* The deg ≤ 2 Z-linearity proof needs NO recursion-tracking and NO geometric input for the
++  *shape*: monic integrality puts every `αGenuine t` in `𝒪 H`, and for `d_H ≤ 2` the
++  canonical representative automatically has `T`-degree ≤ 1. For general `d_H` the gap is
++  exactly: **kill the canonical representative's `T`-degrees `2..d_H−1`** — this is where
++  the GS interpolant's Z-degree budget (in-tree, `gs_existence_over_ratfunc_zDegree_div`)
++  must enter, i.e. the genuine §5.2.7 content.
++* **Warning shaping J1 (in-tree refutation):** `P1MonicWeightRefutation.weight_refuted` is
++  a valid monic quadratic `ClaimA2.Hypotheses` instance where the per-order X-degree
++  budget FAILS at `t = 1` — so the budget cannot come from the recursion/hypotheses alone;
++  it MUST be imported from the interpolant's geometry (the `R` fed to the Hensel lane must
++  carry the GS budget, not be an arbitrary `Hypotheses` instance). J1's correct statement
++  is therefore conditional on the GS-produced `R`, not free-standing over `ClaimA2`.
++* Both J1 ingredients verified axiom-audited in-file (`S5GenuineZLinearQuadratic`,
++  `P2MonicConsequences`, `P1MonicIntegrality` carry `#print axioms` blocks; no sorryAx
++  grep-hits).
++
++J1 final spec: for the GS interpolant's factor `H` (monic via `H_tilde`, budgets via
++`gs_existence_over_ratfunc_zDegree_div`), every `αGenuine t`'s canonical representative has
++`T`-degree ≤ 1. Route: the weighted-degree functional on `𝒪 H` (Λ-weight machinery) bounds
++rep degrees by interpolant budgets; alternatively trace the §5.2.7 interpolation argument
++(fulltext 1719–1740). J2 unchanged (`SβLargeAt` count). These two remain the entire gap
++between today's tree and Prop-free Johnson + the exact deployed-regime δ* pin.

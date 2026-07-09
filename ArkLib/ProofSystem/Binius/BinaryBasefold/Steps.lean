@@ -8,10 +8,19 @@ import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Relay
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Commit
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.FinalSumcheck
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.VerifierDeterminism
 
 /-!
-# Binary Basefold single-step reductions
+## Binary Basefold single steps
 
-This module is the compatibility import surface for the split step implementation.
+This module is the compatibility entry point for the maintained split step proofs:
+
+* `Steps.Fold`
+* `Steps.Relay`
+* `Steps.Commit`
+* `Steps.FinalSumcheck`
+
+The former aggregate implementation duplicated stale versions of these definitions and contained
+unprovable executable holes, notably perfect-completeness statements missing `NeverFail init`.
+The split modules carry the repaired statements and the current relation layer used downstream by
+`CoreInteractionPhase`.
 -/

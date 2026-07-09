@@ -1,0 +1,26 @@
+{
+ "id": "C048",
+ "rank": 48,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F3"
+ ],
+ "walls": [
+  "W-genericity"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SuperCodeListBridge.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MonomialLineListBridge.lean"
+ ],
+ "title": "The super-code C⁺=C⊕⟨u₁⟩ collapses worst-case I(δ) into a single rank-(k+1) list-decoding radius, and the cyclic lever forces C⁺=RS[k+1] up to dilation",
+ "connection": "explainableScalars_card_le_superList proves for ANY far u₁∉C, I(u₀,u₁;δ)≤|list(C⊕⟨u₁⟩,δn)| via the injection γ↦c_γ−γ·u₁ (injective since u₁∉C makes the sum direct). So worst-case I(δ)≤max over (dim+1)-super-codes of their δ-list. The cyclic lever (FarLineIncidenceEquivariance: Z/n-dilation makes monomials X^a extremal) collapses the max to the SINGLE super-code RS[k]⊕⟨X^k⟩=RS[k+1] — MonomialLineListBridge makes this exact. So the worst (dim+1)-super-code is forced (up to dilation) to be RS[k+1], NOT an adversarial generic one. The structural reason the two grand challenges are literally one: the super-code is not a free parameter.",
+ "why_insightful": "Explains why the prize is RS-list-decoding specifically and not a generic super-code list problem: the dilation symmetry PINS the worst super-code to RS[k+1]. The favorable direction of the genericity wall (W-genericity usually blocks; here it RESTRICTS the adversary's super-code to a structured one).",
+ "attack_plan": "Lean: worstSuperCode_eq_RSsucc combining explainableScalars_card_le_superList (max over super-codes) with FarLineIncidenceEquivariance + badScalars_monomial_eq_degreeLTSucc to prove worst-case I(δ) is achieved at u₁=X^k, super-code=RS[k+1]. Probe whether any non-monomial far direction beats RS[k+1]'s list at window radius (μ_16/F12289)."
+}

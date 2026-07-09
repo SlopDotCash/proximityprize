@@ -1,0 +1,29 @@
+{
+ "id": "C035",
+ "rank": 35,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F5",
+  "F7"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-BGK",
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodMomentRatioLower.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean"
+ ],
+ "title": "Two-sided reverse-Markov moment-ratio bracket pins F2 to F5's E_r/E_{r−1} growth: the prize is the single law E_r/E_{r−1}≤C·n·log-correction at r≈log m",
+ "connection": "exists_period_sq_ge_moment_ratio proves, for EVERY r, max_{b≠0}‖η_b‖²≥(q·E_r−|G|^{2r})/(q·E_{r−1}−|G|^{2(r−1)}) — a reverse-Markov LOWER companion to GaussPeriodMomentBound.eta_pow_le_of_energyBound's upper max²≤(qE_r)^{1/r}. Together they bracket the worst period by the consecutive additive-energy ratio E_r/E_{r−1}. For a TRUE max of m sub-Gaussians of variance n, E_r=(2r−1)‼·n^r so E_r/E_{r−1}=(2r−1)·n, giving max²≳(2r−1)·n; optimizing the upper feeder at r*≈log m gives max≲√(2n log m). The match at r≈log m is the max-of-m scaling — the log m is the optimizing-r artifact, NOT extra energy. Converts the open core from an upper-only sup-norm into a falsifiable two-sided energy-ratio law; the char-p anomaly is the breakdown of E_r/E_{r−1}≈n once q·E_r^{char0}<n^{2r}.",
+ "why_insightful": "The lower companion is in-tree but read only as 'optimality of √n'. Reading it together with the upper feeder at the SAME r exposes that the Johnson→capacity gap is precisely the growth of E_r/E_{r−1} with r — the extreme-value law in disguise — a sharper two-sided target than the one-sided BGK sup-norm. The ratio telescopes away the (2r−1)‼ prefactor, a cleaner object.",
+ "attack_plan": "Probe E_r/E_{r−1} directly (closed form via Bessel E_r=(2r)![x^r]I₀(2√x)^{n/2}); locate where it departs from ≈n in the prize regime, cross-check against W-anomaly crossover r*≈β+1. Lean: combine the upper WorstPeriodMomentBound and lower exists_period_sq_ge_moment_ratio into worst_period_bracket_of_energy_ratio (hratio:∀r,E_r≤C·n·E_{r−1}) : M(n)≤√(C·n·log...), isolating the energy-ratio as the one named open Prop."
+}

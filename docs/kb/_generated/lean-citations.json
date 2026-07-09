@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 435,
+    "files_with_citations": 439,
     "keys_cited": 35,
-    "total_citation_edges": 495
+    "total_citation_edges": 499
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -397,6 +397,12 @@
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean": [
       "BCHKS25"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean": [
+      "Jo26"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_B2Curve.lean": [
+      "Jo26"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2ExplainingCurveList.lean": [
       "Jo26"
@@ -831,6 +837,9 @@
     "ArkLib/ProofSystem/BatchedFri/Spec/SingleRound.lean": [
       "FRI1216"
     ],
+    "ArkLib/ProofSystem/Binius/BinaryBasefold/General.lean": [
+      "DP24"
+    ],
     "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness.lean": [
       "DP24"
     ],
@@ -847,6 +856,9 @@
       "DP24"
     ],
     "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/SoundnessProposition.lean": [
+      "DP24"
+    ],
+    "ArkLib/ProofSystem/Binius/FRIBinius/General.lean": [
       "DP24"
     ],
     "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean": [
@@ -1772,12 +1784,14 @@
       "ArkLib/Data/CodingTheory/ProximityGap/MCAPlateauWindow.lean"
     ],
     "DP24": [
+      "ArkLib/ProofSystem/Binius/BinaryBasefold/General.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhasePrelims.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/SoundnessProposition.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness.lean",
+      "ArkLib/ProofSystem/Binius/FRIBinius/General.lean",
       "ArkLib/ProofSystem/RingSwitching/General.lean",
       "ArkLib/ToMathlib/KStateWeaken.lean",
       "ArkLib/ToMathlib/RSPhases.lean"
@@ -1804,6 +1818,8 @@
       "ArkLib/Data/CodingTheory/ProximityGap/ExactnessWithoutCoverability.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/FarWordSupplyCounting.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CurveDecodability.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_B2Curve.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2ExplainingCurveList.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean",

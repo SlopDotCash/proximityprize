@@ -1,0 +1,47 @@
+
+=== n=8, p=4129 ~ n^4.0  proper(n!=p-1) n/sqrt(p)=0.1245 ===
+  additive energy E(mu_n)=sum r(c)^2 = 168   (=2n^2-n=120 if Sidon-like odd)
+  max r(c) over all c = 8;   #c with r(c)>=3 = 1
+  top r(c) values: [8, 2, 2, 2, 2, 2, 2, 2]
+  -- c=0 (OFF-diag c^n!=1)  r(c)=|A|=8
+      M : d_min(M)  rbound=floor(d_min/M)  d_min/|A|  d_min/(M*|A|)   (|A|=8)
+      1 :      8         8                 1.000     1.000
+      2 :     16         8                 2.000     1.000
+      3 :     24         8                 3.000     1.000
+      4 :     32         8                 4.000     1.000
+      5 :     40         8                 5.000     1.000
+
+=== n=16, p=65537 ~ n^4.0  proper(n!=p-1) n/sqrt(p)=0.0625 ===
+  additive energy E(mu_n)=sum r(c)^2 = 720   (=2n^2-n=496 if Sidon-like odd)
+  max r(c) over all c = 16;   #c with r(c)>=3 = 1
+  top r(c) values: [16, 2, 2, 2, 2, 2, 2, 2]
+  -- c=0 (OFF-diag c^n!=1)  r(c)=|A|=16
+      M : d_min(M)  rbound=floor(d_min/M)  d_min/|A|  d_min/(M*|A|)   (|A|=16)
+      1 :     16        16                 1.000     1.000
+      2 :     32        16                 2.000     1.000
+      3 :     48        16                 3.000     1.000
+      4 :     64        16                 4.000     1.000
+      5 : >Dmax(72)
+
+=== n=32, p=1048609 ~ n^4.0  proper(n!=p-1) n/sqrt(p)=0.0312 ===
+  additive energy E(mu_n)=sum r(c)^2 = 2976   (=2n^2-n=2016 if Sidon-like odd)
+  max r(c) over all c = 32;   #c with r(c)>=3 = 1
+  top r(c) values: [32, 2, 2, 2, 2, 2, 2, 2]
+  -- c=0 (OFF-diag c^n!=1)  r(c)=|A|=32
+      M : d_min(M)  rbound=floor(d_min/M)  d_min/|A|  d_min/(M*|A|)   (|A|=32)
+      1 :     32        32                 1.000     1.000
+      2 :     64        32                 2.000     1.000
+      3 :     96        32                 3.000     1.000
+      4 :    128        32                 4.000     1.000
+      5 : >Dmax(136)
+
+=== n=64, p=16777601 ~ n^4.0  proper(n!=p-1) n/sqrt(p)=0.0156 ===
+  additive energy E(mu_n)=sum r(c)^2 = 12096   (=2n^2-n=8128 if Sidon-like odd)
+  max r(c) over all c = 64;   #c with r(c)>=3 = 1
+  top r(c) values: [64, 2, 2, 2, 2, 2, 2, 2]
+  -- c=0 (OFF-diag c^n!=1)  r(c)=|A|=64
+      M : d_min(M)  rbound=floor(d_min/M)  d_min/|A|  d_min/(M*|A|)   (|A|=64)
+      1 :     64        64                 1.000     1.000
+      2 :    128        64                 2.000     1.000
+      3 :    192        64                 3.000     1.000
+      4 :    256        64                 4.000     1.000

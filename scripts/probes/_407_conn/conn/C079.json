@@ -1,0 +1,27 @@
+{
+ "id": "C079",
+ "rank": 79,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F3",
+  "F5",
+  "F16"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSpectral.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean"
+ ],
+ "title": "The Plancherel collision identity and the Gauss-sum second moment are ONE Parseval at two group levels — making N₀=Σ_b η_b^{2r}/q a literal subset-collision count",
+ "connection": "MomentCollisionSpectral.plancherel_collision: collision·|A|=Σ_ψ‖Σ_S ψ(stat S)‖² for a finite-abelian-valued statistic. With A=F, stat=sum over an r-subset of μ_n, the Fourier coefficient is an elementary symmetric character sum whose r-fold version is the r-th additive-energy generator; the |η_b|^{2r} identity Σ_b‖η_b‖^{2r}=q·E_r (subgroup_gaussSum_secondMoment r=1, EnergyCharacterTransport r=2, same Parseval all r) is the SAME Plancherel specialized to the single-element statistic. So N₀(μ_n,r):=Σ_b η_b^r/q (F16) is literally MomentCollisionSpectral.collision, and the proven main-term split collision·|A|=C(n,a)²+Σ_{ψ≠0}‖Tψ‖² is the same b=0 split in EnergyCharacterTransport.addEnergy_le_of_charSum_bound. F2/F3/F5/F16 are four readings of one Parseval at two nested group levels.",
+ "why_insightful": "The collision-spectral and Gauss-sum-second-moment files were written for different issues and never linked; recognizing they are the SAME Plancherel at two group levels lets plancherel_collision_main_term transfer verbatim to the η-moment ladder, and identifies N₀ as a genuine subset-collision count (not just a phase sum), opening Paley-Zygmund anti-concentration on the η side.",
+ "attack_plan": "Lean: instantiate plancherel_collision with stat S=Σ_{x∈S}x over A=F, a=r, prove it equals Σ_b‖η_b‖^{2r}/q=E_r (matching r=1), giving eta_moment_eq_collision. Port SubsetSumPaleyZygmundDichotomy.manyHeavyTargets_card_ge to the η-frequency side: 'small η-collision second moment ⟹ many heavy frequencies', a new anti-concentration constraint on the Gauss-period distribution attacking F2."
+}

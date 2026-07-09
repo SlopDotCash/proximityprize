@@ -1,0 +1,14 @@
+####### C018 max-norm growth vs resultant threshold (2n)^phi #######
+If max_norm ~ n^c (polynomial, c small), onset <= max_norm stays poly => prize above it.
+If max_norm ~ (2n)^{phi=n/2} (super-poly), the resultant caveat bites at large mu.
+
+--- r=2 ---
+  mu=3 n=8 deg=4: max_norm=64 = n^2.000   resultant-thr (2n)^deg=65536   ratio thr/maxnorm=1.02e+03
+  mu=4 n=16 deg=8: max_norm=4096 = n^3.000  (x64.0 vs prev)   resultant-thr (2n)^deg=1099511627776   ratio thr/maxnorm=2.68e+08
+  mu=5 n=32 deg=16: max_norm=16777216 = n^4.800  (x4096.0 vs prev)   resultant-thr (2n)^deg=79228162514264337593543950336   ratio thr/maxnorm=4.72e+21
+
+--- r=3 ---
+  mu=3 n=8 deg=4: max_norm=144 = n^2.390   resultant-thr (2n)^deg=65536   ratio thr/maxnorm=4.55e+02
+  mu=4 n=16 deg=8: max_norm=20736 = n^3.585  (x144.0 vs prev)   resultant-thr (2n)^deg=1099511627776   ratio thr/maxnorm=5.30e+07
+  mu=5 n=32: (skipped r=3 at mu=5 -- too heavy)
+

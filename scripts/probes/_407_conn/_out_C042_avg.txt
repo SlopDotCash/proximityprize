@@ -1,0 +1,25 @@
+C:\Users\Administrator\arklib\scripts\probes\_407_conn\probe_C042_avg_forcing.py:6: SyntaxWarning: invalid escape sequence '\{'
+  = |S0\{0}|^2          (each (a,b) has unique h=b/a)
+====================================================================================================
+(C) EXACT averaging identity:  AVG_{h in F_q*} |S0 cap hS0| = |S0\{0}|^2/(q-1)
+    (verify on full dilate-sweep for small q), then the q/100 forcing.
+====================================================================================================
+  n=8 q=4129: |S0|=81 (0 in S0: True)  AVG_h=2.5504  pred |Snz|^2/(q-1)=1.5504  pred+0fix=2.5504
+  n=8 q=11593: |S0|=81 (0 in S0: True)  AVG_h=1.5521  pred |Snz|^2/(q-1)=0.5521  pred+0fix=1.5521
+  n=16 q=65537: |S0|=6561 (0 in S0: True)  AVG_h=657.6406  pred |Snz|^2/(q-1)=656.6406  pred+0fix=657.6406
+
+====================================================================================================
+(D) MERSENNE EXTREME (the claim's 'worst defect'): S0 = ALL of F_q => |S0 cap hS0| = q for
+    EVERY h.  Confirmed structurally (univ intersect anything = univ).  The in-tree
+    sumsetDistinct_signedPowers_eq_univ gives S0 = univ for q=2^p-1, so int = q (max).
+    This is consistent BUT it is the WORST case for the floor, not a good one.
+====================================================================================================
+  n=32 q=1048609: |S0|=1048609 fill=1.0000  |S0 cap (-g)S0|=1048609  (= q means worst)
+
+VERDICT LOGIC:
+  * IDENTITY #defects = |S0 cap (-g)S0| : TRUE but tautological (re-expression).
+  * Conj 1.12 (|S0|>=q/10) => AVG_h int = |S0|^2/(q-1) >= q/100 = Theta(q).
+  * cross-parity dilate -g is FIXED and empirically ~99th percentile (>= avg),
+    so spreading FORCES |S0 cap (-g)S0| = Theta(q): NOT a usable small floor.
+  * => the two 'dual halves' are ANTAGONISTIC, both controlled by |S0| / sum-product
+    expansion of the subset-sum image = the BGK / sum-product wall.  No new lever.

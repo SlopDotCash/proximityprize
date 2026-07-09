@@ -1,0 +1,2 @@
+{"n": 64, "rho": "1/16", "k": 4, "eta_label": "mid", "eta": 0.0938, "delta": 0.8438, "tau": 10, "in_window": true, "Lstar_lower": 4, "worst_word": "x^51+x^0", "top_gaps": [51, 50, 49, 48, 19, 18], "method": "focused_randomized_lower_bound", "seconds": 102.8}
+{"n": 64, "rho": "1/16", "k": 4, "eta_label": "c=0.5", "eta": 0.0833, "delta": 0.8542, "tau": 10, "in_window": true, "Lstar_lower": 4, "worst_word": "x^51+x^0", "top_gaps": [51, 50, 49, 48, 19, 18], "method": "focused_randomized_lower_bound", "seconds": 139.3}

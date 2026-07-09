@@ -1,0 +1,40 @@
+
+### A33 v2: realizable RAGGED max vs sqrt(n*k) (coset-unions separated out)
+
+============================================================================================
+n = 8 = 2^3   (exhaustive=True)
+============================================================================================
+
+  rho=0.5, k=4, sqrt(n*k)=5.657
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  RAGGEDbeats?  orbit-inc  MAXcoset
+       1    8     (5,4)        41 |         5     5.657           YES       8.00         4
+       2    4     (6,4)        41 |         5     5.657           YES       6.00         6
+
+  rho=0.25, k=2, sqrt(n*k)=4.000
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  RAGGEDbeats?  orbit-inc  MAXcoset
+       1    8     (3,2)        41 |         3     4.000           YES       8.00         2
+       2    4     (4,2)        41 |         3     4.000           YES       4.83         4
+       4    2     (6,2)        41 |         3     4.000           YES       3.65         4
+
+  [char-test n=8 rho=0.25 k=2] worst-ish d=2, s=4, (a,b)=(4,2), sqrt(nk)=4.000
+      q=       41  MAXragged=3  MAXcoset=4  raggedBeats=YES
+      q=       73  MAXragged=3  MAXcoset=4  raggedBeats=YES
+      q=       89  MAXragged=3  MAXcoset=4  raggedBeats=YES
+      q=       97  MAXragged=3  MAXcoset=4  raggedBeats=YES
+      q=      113  MAXragged=3  MAXcoset=4  raggedBeats=YES
+      q=      137  MAXragged=3  MAXcoset=4  raggedBeats=YES
+      -> ragged char-INDEPENDENT (values [3])
+============================================================================================
+n = 16 = 2^4   (exhaustive=True)
+============================================================================================
+
+  rho=0.5, k=8, sqrt(n*k)=11.314
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  RAGGEDbeats?  orbit-inc  MAXcoset
+       1   16     (9,8)       113 |         9    11.314           YES      16.00         8
+       2    8    (10,8)       113 |        10    11.314           YES      12.49        10
+       4    4    (12,8)       113 |        11    11.314           YES      11.38        12
+
+  rho=0.25, k=4, sqrt(n*k)=8.000
+       d    s     (a,b)         q | MAXragged  sqrt(nk)  RAGGEDbeats?  orbit-inc  MAXcoset
+       1   16     (5,4)       113 |         5     8.000           YES      16.00         4
+       2    8     (6,4)       113 |         6     8.000           YES      10.32         6

@@ -1,0 +1,27 @@
+{
+ "id": "C054",
+ "rank": 54,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F2",
+  "F5"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/ShawSecondMoment.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LineIncidenceSpectral.lean"
+ ],
+ "title": "The √|V| second-moment gap is the q^{n/2} 'union tax' that forces an L^∞ argument (W-Johnson relocated to base-point space via Plancherel duality)",
+ "connection": "shawError_sq_le_second_moment (max‖𝒮‖²≤|V|·M) and exists_shawError_sq_ge (some s0 has ‖𝒮‖²≥M) BRACKET the worst Shaw error in [√M,√(|V|·M)] — a multiplicative gap of EXACTLY √|V|=q^{n/2}. This is the same √n energy-deficit of W-Johnson but RELOCATED from frequency space to BASE-POINT (s0) space: the union bound over the |V|=q^{n-k} base points is the obstruction, NOT the frequency average. The average side (shawError_second_moment: Σ_{s0}‖𝒮‖²=|V|·Σ_{ψ⊥s1}‖1̂_S(ψ)‖²) is proven sharp; the open core is purely the worst-s0 excess. So W-Johnson's '(p·E_r)^{1/2r}≥n always' is the FREQUENCY-side shadow of a BASE-POINT-side √|V| union tax — the same wall through Plancherel duality.",
+ "why_insightful": "Reframes W-Johnson not as a frequency/energy deficit but as a base-point union tax, and pins the exact factor (q^{n/2}, dwarfing the budget) with machine-checked two-sided bricks. Shows why ANY L² estimate is hopeless and exactly what an L^∞ (every-s0) argument must save.",
+ "attack_plan": "Probe whether the worst s0 (achieving ‖𝒮‖ near √(|V|·M)) is STRUCTURED — does it lie in a coset of H^perp? If forced into a low-dimensional structured set, the union tax shrinks from √|V| to √(dim). Lean: characterize argmax_{s0}‖shawError S s0 s1‖ via the phase Σ_ψ 1̂_S(ψ)ψ(s0) being a flat exponential sum in s0 (Salem-Zygmund flatness, F16), connecting the base-point sup to F16."
+}

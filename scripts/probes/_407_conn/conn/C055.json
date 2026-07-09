@@ -1,0 +1,26 @@
+{
+ "id": "C055",
+ "rank": 55,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": false,
+ "forms": [
+  "F4"
+ ],
+ "walls": [
+  "W-subspace",
+  "W-genericity"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/SubspaceDesign.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubspaceDesignListSize.lean"
+ ],
+ "title": "The proven τ-lower bound IS the s=1 vacuity wall: τ(r)≥ρ−1/n meets the off-range τ=1 collapse — BCDZ25 vacuity is two proven theorems whose ranges fail to overlap",
+ "connection": "subspaceDesign_tau_lower (SubspaceDesign.lean) derives from minimum distance + the block-alphabet Singleton bound that ANY τ-subspace-design of rate ρ over F^s satisfies τ(r)≥ρ−1/n on r∈[s]. frs_is_subspaceDesign_gk16 gives τ(r)=(k−1)/n on [s] and τ(r)=1 for r∉[s]. The consumer subspaceDesign_list_card_le needs τ(r)·n+r·n<(r+1)·a, forcing τ(r)<1 at the working rank r. For plain RS the alphabet is F^1 (s=1), [s]={1}; for every r≥2 the design is OFF-range, τ(r)=1, and the hypothesis is unsatisfiable. So BCDZ25 'vacuous at s=1' is the exact collision between the proven Singleton-tight lower bound τ≥ρ−1/n and the proven off-[s] ceiling τ=1.",
+ "why_insightful": "The issue cites BCDZ25 Thm1.11 vacuity (d(k−d)/(s−d+1)) as external folklore; this shows the SAME wall is already a machine-checked dichotomy in-tree (proven τ-lower meets proven off-range τ=1), with the Schubert denominator realized as the [s]-range cutoff. The wall is not a missing lemma — it is two proven theorems whose ranges fail to overlap at s=1.",
+ "attack_plan": "Lean: subspaceDesign_listsize_vacuous_at_s_one — for s=1 and any r≥2, the hypothesis τ r·n+r·n<(r+1)·a implies a>n (impossible since a≤n), using τ(r)=1 from the FRS profile. Makes the vacuity a theorem. Probe: tabulate (s−d+1) vs the [s]-range cutoff to confirm they coincide as the design-quality denominator."
+}

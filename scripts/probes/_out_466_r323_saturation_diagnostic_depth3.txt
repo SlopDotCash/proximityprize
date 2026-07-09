@@ -1,0 +1,14 @@
+# R323 complete depth-3 saturation diagnostic
+n=32 r=3 cells=1158 shadow_keys=5504 resultant_divisibility_failures=0
+small_quotient_hist={2: 675, 4: 250, 8: 111, 16: 47, 32: 9}
+class=dyadic count=1092 high_beta=256 super_wick=27 worst_ratio=1.639517141894 worst_p=32993 worst_beta=3.001974 top_share=0.421568627 quotient=4 odd_part=1
+class=odd_cofactor count=66 high_beta=3 super_wick=0 worst_ratio=0.914749872991 worst_p=1139681 worst_beta=4.024040 top_share=1.000000000 quotient=194 odd_part=97
+high_beta_super_wick p=21523361 ratio=1.027893295746 beta=4.871880 top_share=0.967213115 quotient=2 odd_part=1
+high_beta_quotient=2 count=184 worst_ratio=1.027893295746 K_eff_r3=1.009212632027 p=21523361 odd_part=1
+high_beta_quotient=4 count=49 worst_ratio=0.931414890883 K_eff_r3=0.976594765808 p=2491553 odd_part=1
+high_beta_quotient=8 count=14 worst_ratio=0.930288832456 K_eff_r3=0.976201047160 p=1090721 odd_part=1
+high_beta_quotient=16 count=7 worst_ratio=0.918946591723 K_eff_r3=0.972217476798 p=1343233 odd_part=1
+high_beta_quotient=32 count=2 worst_ratio=0.915792249286 K_eff_r3=0.971103802195 p=2498273 odd_part=1
+high_beta_quotient=194 count=1 worst_ratio=0.914749872991 K_eff_r3=0.970735217914 p=1139681 odd_part=97
+high_beta_quotient=386 count=1 worst_ratio=0.910552583386 K_eff_r3=0.969248215942 p=8576609 odd_part=193
+high_beta_quotient=5186 count=1 worst_ratio=0.909170545999 K_eff_r3=0.968757592415 p=29423041 odd_part=2593

@@ -1,0 +1,25 @@
+========================================================================================================
+C033 UNIFICATION TEST v2: GENUINE char-p relation height, COUNT vs ENERGY face
+========================================================================================================
+
+--- n=8 (mu=3), q=11593 (q~n^4.50), PROPER subgroup, large prime ---
+  [COUNT] min GENUINE +-1 relation support (vanish mod q, !=0 in C): None   (searched up to 8)   rel: None
+  [COUNT] min non-antipodal |S| with e_1=0 mod q (true #lacBad defect): None   (searched up to 8)
+  [ENERGY] min r with E_r^Fp > E_r^char0: r=None  (E_r^Fp=None, E_r^char0=None);  signed relation length 2r=None
+
+--- n=8 (mu=3), q=521 (q~n^3.01), PROPER subgroup, large prime ---
+  [COUNT] min GENUINE +-1 relation support (vanish mod q, !=0 in C): None   (searched up to 8)   rel: None
+  [COUNT] min non-antipodal |S| with e_1=0 mod q (true #lacBad defect): None   (searched up to 8)
+  [ENERGY] min r with E_r^Fp > E_r^char0: r=None  (E_r^Fp=None, E_r^char0=None);  signed relation length 2r=None
+
+--- n=16 (mu=4), q=262193 (q~n^4.50), PROPER subgroup, large prime ---
+  [COUNT] min GENUINE +-1 relation support (vanish mod q, !=0 in C): None   (searched up to 8)   rel: None
+  [COUNT] min non-antipodal |S| with e_1=0 mod q (true #lacBad defect): None   (searched up to 8)
+  [ENERGY] q=262193 too large for exact DP; energy NEEDS r~log2 q=18.0, length 2r~36 (BGK depth)
+
+--- n=16 (mu=4), q=4129 (q~n^3.00), PROPER subgroup, large prime ---
+  [COUNT] min GENUINE +-1 relation support (vanish mod q, !=0 in C): 7   (searched up to 8)   rel: [(0, 1), (1, -1), (2, 1), (4, -1), (5, 1), (8, -1), (10, -1)]
+  [COUNT] min non-antipodal |S| with e_1=0 mod q (true #lacBad defect): None   (searched up to 8)
+  [ENERGY] min r with E_r^Fp > E_r^char0: r=4  (E_r^Fp=4833360, E_r^char0=4649680);  signed relation length 2r=8
+
+--- n=32 (mu=5), q=5931649 (q~n^4.50), PROPER subgroup, large prime ---
