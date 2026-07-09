@@ -7,6 +7,9 @@ import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
 import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetRateThreeSixteenths
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyPinRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveCosetWeight
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveMetricUnification
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
@@ -546,10 +549,10 @@ end ProximityPrize
 
 The production incidence condition is now exactly projective below the full-field budget, descends
 to quotient classes, and for every budget at least one only needs rank-two quotient pencils.  The
-last check gives the basis-free support-subspace event that remains to be counted.  The final four
-checks keep the finite-instance entropy and rate-only counterexamples visible next to the open
-asymptotic conjectures above; they prevent those disproved identities from being reused as exact
-finite laws.
+support, metric, and line--ball checks give three exact forms of the remaining incidence object.
+The final four checks keep the finite-instance entropy and rate-only counterexamples next to the
+open asymptotic conjectures above; they prevent those disproved identities from being reused as
+exact finite laws.
 -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_eq_of_quotient_mk_eq
@@ -557,6 +560,13 @@ finite laws.
 #check @ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
 #check @ProximityGap.ProjectiveRankTwoAPI.rowsIndependentModCode_iff_finrank_quotientPencil_eq_two
 #check @ProximityGap.ProjectiveQuotientSupport.mcaEventProj_iff_quotientPencilSupport
+#check @ProximityGap.ProjectiveCosetWeight.badSlotCount_le_lowCosetWeightCount
+#check @ProximityGap.ProjectiveCosetWeight.badSlotCount_eq_lowCosetWeightCount_of_not_jointProximity
+#check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
+#check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
+#check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
+#check @ProximityGap.ProjectiveMetricUnification.pencilJointFar_iff_not_jointProximity
+#check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED

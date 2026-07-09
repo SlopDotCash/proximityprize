@@ -15,6 +15,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveCosetWeight
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveMetricUnification
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -711,7 +714,15 @@ theorem deltaStar_pin_mu8_F4129_witness :
   budget `E >= 1`, dependent quotient rows contribute at most one slot, so only genuine rank-two
   pencils remain.  `mcaEventProj_iff_quotientPencilSupport` states each bad slot exactly as a class
   lying in a witness support subspace which does not contain the whole quotient pencil.  The open
-  math is the resulting worst-case incidence estimate. -/
+  math is the resulting worst-case incidence estimate.
+
+  `badSlotCount_le_lowCosetWeightCount` gives the unconditional metric envelope, and becomes an
+  equality under global `not jointProximity`.  `quotientSyndromeBall` is the finite union of all
+  admissible support subspaces.  `ProjectiveMetricUnification` proves that this is exactly the
+  coset-weight sublevel set and that basis-free `PencilJointFar` is equivalent to
+  `not jointProximity`.  The resulting projective line--ball incidence splits into its affine chart
+  and infinity point, while the affine chart feeds directly into
+  `LineIncidenceSpectral.lineIncidence_spectral`. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
@@ -722,6 +733,15 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check @ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
 #check @ProximityGap.ProjectiveRankTwoAPI.rowsIndependentModCode_iff_finrank_quotientPencil_eq_two
 #check @ProximityGap.ProjectiveQuotientSupport.mcaEventProj_iff_quotientPencilSupport
+#check @ProximityGap.ProjectiveCosetWeight.badSlotCount_le_lowCosetWeightCount
+#check @ProximityGap.ProjectiveCosetWeight.badSlotCount_eq_lowCosetWeightCount_of_not_jointProximity
+#check @ProximityGap.ProjectiveCosetWeight.card_slotQuotientPoints_of_rowsIndependent
+#check @ProximityGap.ProjectiveQuotientBall.badSlotCount_le_projectiveBallIncidence
+#check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
+#check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
+#check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
+#check @ProximityGap.ProjectiveMetricUnification.pencilJointFar_iff_not_jointProximity
+#check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check
   ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 

@@ -65,6 +65,43 @@ def PencilJointFar (C : Submodule F (ι → A)) (δ : ℝ≥0)
   ∀ S : Finset ι, WitnessAdmissible δ S →
     ¬ P ≤ quotientSupportSubmodule C S
 
+/-- A quotient pencil is jointly far exactly when its two chosen generators are not jointly
+close to the code. -/
+theorem pencilJointFar_quotientPencil_iff_not_jointProximity
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) :
+    PencilJointFar C δ (quotientPencil C u₀ u₁) ↔
+      ¬ Code.jointProximity (C := (C : Set (ι → A)))
+        (u := Code.finMapTwoWords u₀ u₁) δ := by
+  rw [← Code.jointAgreement_iff_jointProximity]
+  constructor
+  · intro hfar hjoint
+    obtain ⟨S, hS, v, hv⟩ := hjoint
+    apply hfar S hS
+    apply (quotientPencil_le_iff C u₀ u₁ _).2
+    apply (pairJointAgreesOn_iff_quotientSupport C S u₀ u₁).1
+    refine ⟨v 0, (hv 0).1, v 1, (hv 1).1, ?_⟩
+    intro i hi
+    have h₀ := (Finset.mem_filter.mp ((hv 0).2 hi)).2
+    have h₁ := (Finset.mem_filter.mp ((hv 1).2 hi)).2
+    exact ⟨by simpa using h₀, by simpa using h₁⟩
+  · intro hnot S hS hle
+    apply hnot
+    have hpair : pairJointAgreesOn (C : Set (ι → A)) S u₀ u₁ :=
+      (pairJointAgreesOn_iff_quotientSupport C S u₀ u₁).2
+        ((quotientPencil_le_iff C u₀ u₁ _).1 hle)
+    obtain ⟨c₀, hc₀, c₁, hc₁, hagree⟩ := hpair
+    refine ⟨S, hS, Code.finMapTwoWords c₀ c₁, ?_⟩
+    intro j
+    fin_cases j
+    · refine ⟨hc₀, ?_⟩
+      intro i hi
+      exact Finset.mem_filter.mpr
+        ⟨Finset.mem_univ _, by simpa using (hagree i hi).1⟩
+    · refine ⟨hc₁, ?_⟩
+      intro i hi
+      exact Finset.mem_filter.mpr
+        ⟨Finset.mem_univ _, by simpa using (hagree i hi).2⟩
+
 /-- The quotient class represented by a normalized projective slot. -/
 def quotientSlotPoint (C : Submodule F (ι → A)) (u₀ u₁ : ι → A)
     (s : Option F) : (ι → A) ⧸ C :=
@@ -139,6 +176,16 @@ theorem badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
   simp only [Finset.mem_filter, Finset.mem_univ, true_and]
   exact badSlot_iff_mem_quotientSyndromeBall_of_pencilJointFar C δ u₀ u₁ hfar s
 
+/-- The exact projective line--ball incidence law on the usual non-jointly-close branch. -/
+theorem badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A)
+    (hjoint : ¬ Code.jointProximity (C := (C : Set (ι → A)))
+      (u := Code.finMapTwoWords u₀ u₁) δ) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ =
+      projectiveBallIncidence C δ u₀ u₁ :=
+  badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar C δ u₀ u₁
+    ((pencilJointFar_quotientPencil_iff_not_jointProximity C δ u₀ u₁).2 hjoint)
+
 /-- The projective quotient line--ball incidence is its affine-chart incidence plus the
 indicator of incidence at infinity. -/
 theorem projectiveBallIncidence_eq_affine_add_infty
@@ -205,11 +252,15 @@ theorem affineBallIncidence_spectral
 end ProximityGap.ProjectiveQuotientBall
 
 /-! ## Axiom audit -/
+#print axioms
+  ProximityGap.ProjectiveQuotientBall.pencilJointFar_quotientPencil_iff_not_jointProximity
 #print axioms ProximityGap.ProjectiveQuotientBall.badSlot_imp_mem_quotientSyndromeBall
 #print axioms
   ProximityGap.ProjectiveQuotientBall.badSlot_iff_mem_quotientSyndromeBall_of_pencilJointFar
 #print axioms ProximityGap.ProjectiveQuotientBall.badSlotCount_le_projectiveBallIncidence
 #print axioms
   ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
+#print axioms
+  ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
 #print axioms ProximityGap.ProjectiveQuotientBall.projectiveBallIncidence_eq_affine_add_infty
 #print axioms ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
