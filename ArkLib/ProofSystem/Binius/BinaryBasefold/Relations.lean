@@ -611,9 +611,16 @@ lemma badEventExistsProp_iff_incrementalBadEventExistsProp_last
       (𝔽q := 𝔽q) (β := β) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (ϑ := ϑ) oStmt challenges j h_j_inc_bad
 
+/-- The bad sumcheck event, stated at the **polynomial** level.
+
+Over `CharP L 2` with `|L| = 2`, two *distinct* degree-≤2 polynomials can share the same
+evaluation function, so a function-level inequality (`h_i ≠ h_star` as maps `L → L`) is strictly
+weaker than what the soundness argument produces (a polynomial inequality). We therefore state the
+event on the polynomial subtype `↥L⦃≤ 2⦄[X]`, matching the polynomial inequality supplied by the
+extractor (`h_hi_ne_extracted`) and the Schwartz–Zippel bound (`badPolyAgreement`). -/
 def badSumcheckEventProp
-    (r_i' : L) (h_i h_star : L → L) :=
-  h_i ≠ h_star ∧ h_i r_i' = h_star r_i'
+    (r_i' : L) (h_i h_star : ↥L⦃≤ 2⦄[X]) :=
+  h_i ≠ h_star ∧ Polynomial.eval r_i' h_i.val = Polynomial.eval r_i' h_star.val
 section SingleStepRelationPreservationLemmas
 
 section FoldStepPreservationLemmas

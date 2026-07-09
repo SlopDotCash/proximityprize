@@ -12,15 +12,15 @@ R189 found a sharper empirical route to the child-side residual
 `DyadicQuarterMGFBound`:
 
 ```text
-  N(T) <= (3/5) M exp(-T/2) + 2.
+  N(T) ≤ (3/5) M exp(-T/2) + 2.
 ```
 
-This file turns that into a reusable Lean-facing consumer. On any finite
-threshold grid `Theta`, if a staircase dominates `exp(t/4)`, each survival count
+This file turns that into a reusable Lean-facing consumer.  On any finite
+threshold grid `Θ`, if a staircase dominates `exp(t/4)`, each survival count
 is bounded by the bulk-plus-spikes envelope, and the weighted envelope budget
 is at most `2 |s|`, then the R188 quarter-MGF residual follows.
 
-Status: concentration consumer only. Residual = prove the bulk-plus-spikes
+Status: concentration consumer only.  Residual = prove the bulk-plus-spikes
 survival law for actual dyadic Gauss-period spectra and discharge the finite
 numerical grid budget.
 -/
@@ -33,9 +33,9 @@ namespace ArkLib.ProximityGap.Frontier.R190BulkPlusSpikesQuarterMGF
 open ArkLib.ProximityGap.Frontier.WFS11
 open ArkLib.ProximityGap.Frontier.R188QuarterMGFTowerConsumer
 
-/-- **Bulk-plus-spikes grid tail residual.** On the threshold grid `Theta`, every
+/-- **Bulk-plus-spikes grid tail residual.**  On the threshold grid `Θ`, every
 survival count is bounded by
-`Cbulk * |s| * exp(-theta/2) + Kspike`. R189's clean empirical constants are
+`Cbulk * |s| * exp(-θ/2) + Kspike`.  R189's clean empirical constants are
 `Cbulk = 3/5` and `Kspike = 2`. -/
 def BulkPlusSpikesGridTail {ι : Type*} (s : Finset ι) (t : ι → ℝ)
     (Θ : Finset ℝ) (Cbulk Kspike : ℝ) : Prop :=
@@ -43,7 +43,7 @@ def BulkPlusSpikesGridTail {ι : Type*} (s : Finset ι) (t : ι → ℝ)
     ((s.filter (fun b => θ ≤ t b)).card : ℝ) ≤
       Cbulk * (s.card : ℝ) * Real.exp (-(θ / 2)) + Kspike
 
-/-- **R190 quarter-MGF consumer.** A bulk-plus-spikes survival envelope on a
+/-- **R190 quarter-MGF consumer.**  A bulk-plus-spikes survival envelope on a
 staircase grid proves the named quarter-MGF residual once the weighted envelope
 budget is below `2 |s|`. -/
 theorem quarterMGF_of_bulkPlusSpikesGridTail {ι : Type*} [DecidableEq ι]

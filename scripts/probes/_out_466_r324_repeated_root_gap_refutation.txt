@@ -1,0 +1,6 @@
+# R324 repeated-root local spectral-gap refutation
+a= 2 rank= 2 one_negative_bias= 0 normalized=0.000000000 spectral_gap=1.000000000
+a= 4 rank= 4 one_negative_bias= 2 normalized=0.500000000 spectral_gap=0.500000000
+a= 8 rank= 8 one_negative_bias= 6 normalized=0.750000000 spectral_gap=0.250000000
+a=16 rank=16 one_negative_bias=14 normalized=0.875000000 spectral_gap=0.125000000
+a=32 rank=32 one_negative_bias=30 normalized=0.937500000 spectral_gap=0.062500000

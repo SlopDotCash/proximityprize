@@ -46,9 +46,6 @@ noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
 /-- The R151 thinned-octic exact-rung consumer with the live decomposition hypothesis phrased
 as vanishing of the omitted-character residual. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -62,7 +59,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residu
       32 * ((4 + Cmax) * (Y.card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -98,15 +95,12 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residu
     (chiSubfamily_chiDecompositionOff_iff_residual_vanishes χ hψ hGD hY).2 hres
   exact wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_constant_le_one
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hC hdec
-    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
     hCdmax hq1 hnq hn4q hreg
 
 /-- Raw-fourth-moment companion to
 `wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes`. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -120,7 +114,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_resid
       32 * ((4 + Cmax) * (Y.card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -154,14 +148,11 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_resid
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC hres
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence consumer for the explicit-constant residual form. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -175,7 +166,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
       32 * ((4 + Cmax) * (Y.card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -213,15 +204,12 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
   exact incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC hres
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
     hs
 
 /-- Sup-norm approximate-`B` consumer for the explicit-constant residual form. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -235,7 +223,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
       32 * ((4 + Cmax) * (Y.card : ℝ) ^ 4 + 1)
           / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -273,7 +261,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
   exact approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC hres
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
     hM0 hM hs
 
@@ -281,9 +269,6 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
 decomposition target is exactly residual vanishing; the normalized constant gate is discharged
 from `Cmax ≤ 2`, nonempty `Y`, and `15 * |Y|² ≤ orderOf χ`. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -296,7 +281,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residu
     (hYnonempty : Y.Nonempty)
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -332,14 +317,11 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residu
     (chiSubfamily_chiDecompositionOff_iff_residual_vanishes χ hψ hGD hY).2 hres
   exact wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hCw0 hCmax2
-    hYnonempty horder hdec hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hdec h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg
 
 /-- Raw-fourth-moment companion to the size-gated residual form. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -352,7 +334,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_resid
     (hYnonempty : Y.Nonempty)
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -386,14 +368,11 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_resid
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-      hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence consumer for the size-gated residual form. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -406,7 +385,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cm
     (hYnonempty : Y.Nonempty)
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -444,15 +423,12 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cm
   exact incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-      hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
     hs
 
 /-- Sup-norm approximate-`B` consumer for the size-gated residual form. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -465,7 +441,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cm
     (hYnonempty : Y.Nonempty)
     (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
     (hres : ChiSubfamilyResidualVanishesOff χ ψ G Dset Y)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -503,7 +479,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cm
   exact approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) Dset 2 hdepth (by norm_num) hq1
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-      hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
     hM0 hM hs
 
@@ -568,9 +544,6 @@ theorem chiSubfamilyResidualVanishesOff_self
 /-- Size-gated thinned-octic endpoint with the residual target discharged by pointwise
 vanishing of every omitted twisted thin sum. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -585,7 +558,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitte
     (homit :
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y → twistedThinSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -620,15 +593,12 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitte
     chiSubfamilyResidualVanishesOff_of_omitted_twistedThinSum_zero χ ψ G Dset Y homit
   exact wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg
 
 /-- Raw-fourth-moment companion to
 `wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le_two`. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -643,7 +613,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_omitt
     (homit :
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y → twistedThinSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -677,15 +647,12 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_omitt
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-      hYnonempty horder homit hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder homit h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence endpoint with the residual target discharged by pointwise
 vanishing of every omitted twisted thin sum. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -700,7 +667,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le
     (homit :
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y → twistedThinSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -739,15 +706,12 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le
     chiSubfamilyResidualVanishesOff_of_omitted_twistedThinSum_zero χ ψ G Dset Y homit
   exact incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg hdepth hs
 
 /-- Sup-norm approximate-`B` endpoint with the residual target discharged by pointwise
 vanishing of every omitted twisted thin sum. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -762,7 +726,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le
     (homit :
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y → twistedThinSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -801,15 +765,12 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_omitted_zero_Cmax_le
     chiSubfamilyResidualVanishesOff_of_omitted_twistedThinSum_zero χ ψ G Dset Y homit
   exact approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg hdepth hM0 hM hs
 
 /-- Size-gated thinned-octic endpoint with the residual target discharged by pointwise
 vanishing of every omitted shifted character sum. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -825,7 +786,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifte
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -860,15 +821,12 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifte
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg
 
 /-- Raw-fourth-moment companion to
 `wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le_two`. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -884,7 +842,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_shift
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -918,15 +876,12 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_shift
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-      hYnonempty horder homit hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder homit h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence endpoint with the residual target discharged by pointwise
 vanishing of every omitted shifted character sum. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -942,7 +897,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -981,15 +936,12 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg hdepth hs
 
 /-- Sup-norm approximate-`B` endpoint with the residual target discharged by pointwise
 vanishing of every omitted shifted character sum. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1005,7 +957,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1044,15 +996,12 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_shifted_zero_Cmax_le
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg hdepth hM0 hM hs
 
 /-- Explicit-constant thinned-octic endpoint with the residual target discharged by pointwise
 vanishing of every omitted shifted character sum. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifted_zero
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1069,7 +1018,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifte
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1104,14 +1053,11 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifte
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC hres
-    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
     hCdmax hq1 hnq hn4q hreg
 
 /-- Raw-fourth-moment companion for the explicit-constant shifted-zero form. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_shifted_zero
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1128,7 +1074,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_shift
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1162,14 +1108,11 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_shift
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_shifted_zero
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC homit
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence endpoint for the explicit-constant shifted-zero form. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_shifted_zero
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1186,7 +1129,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_shifted_zero
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1225,14 +1168,11 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_shifted_zero
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC hres
-    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
     hCdmax hq1 hnq hn4q hreg hdepth hs
 
 /-- Sup-norm approximate-`B` endpoint for the explicit-constant shifted-zero form. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_shifted_zero
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1249,7 +1189,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_shifted_zero
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1288,15 +1228,12 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_shifted_zero
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hC hres
-    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
     hCdmax hq1 hnq hn4q hreg hdepth hM0 hM hs
 
 /-- Size-gated thinned-octic endpoint with the residual target discharged by pointwise
 vanishing in the `shiftedCharSum` API. -/
 theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1312,7 +1249,7 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitte
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1347,14 +1284,11 @@ theorem wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitte
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg
 
 /-- Raw-fourth-moment companion to the shifted-sum size-gated endpoint. -/
 theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1370,7 +1304,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_omitt
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1404,14 +1338,11 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_octic_superelliptic_of_omitt
   exact (wickForIncidenceAwayAt_two_iff_rawFourthMomentWithDiagonal G (Gchi χ) Dset).mp
     (wickForIncidenceAwayAt_two_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero_Cmax_le_two
       ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-      hYnonempty horder homit hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+      hYnonempty horder homit h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
       hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg)
 
 /-- Direct off-diagonal incidence endpoint in the shifted-sum size-gated form. -/
 theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1427,7 +1358,7 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1466,14 +1397,11 @@ theorem incidence_le_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact incidence_le_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg hdepth hs
 
 /-- Sup-norm approximate-`B` endpoint in the shifted-sum size-gated form. -/
 theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero_Cmax_le_two
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
     (G Dset : Finset F) {Y : Finset (MulChar F ℂ)} (hY : Y ⊆ chiFamily χ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -1489,7 +1417,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero
       ∀ s₀ : F, s₀ ∉ Dset →
         ∀ χ' ∈ chiFamily χ, χ' ∉ Y →
           ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G s₀ = 0)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ' ∈ chiFamily χ, 0 < msteps χ')
     (hJ : ∀ χ' ∈ chiFamily χ, 0 < J χ')
     (hT1 : ∀ χ' ∈ chiFamily χ, ∀ c ∈ T χ', ‖c‖ = 1)
@@ -1528,7 +1456,7 @@ theorem approxB_away_of_chiSubfamily_octic_superelliptic_of_omitted_shifted_zero
     chiSubfamilyResidualVanishesOff_of_omitted_shiftedCharSum_zero χ ψ G Dset Y homit
   exact approxB_away_of_chiSubfamily_octic_superelliptic_of_residual_vanishes_Cmax_le_two
     ψ hψ χ G Dset hY T msteps e J D Dtot Cd gOf ζOf hmord hn hGD hCw0 hCmax2
-    hYnonempty horder hres hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
+    hYnonempty horder hres h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD
     hcount hDtot harith hCd0 hCdmax hq1 hnq hn4q hreg hdepth hM0 hM hs
 
 end ArkLib.ProximityGap.Frontier.R153OcticThinnedResidualTarget

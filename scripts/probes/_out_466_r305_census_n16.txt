@@ -1,0 +1,67 @@
+n=16: K=704 vectors, char0=50560, headroom=10880
+29952 distinct nonzero difference classes
+176 distinct |Norm| values, max=1.680e+06
+57 candidate primes ≡ 1 mod 16 dividing some norm
+
+COMPLETE bad-prime table for n=16 (57 primes with nonzero excess, ALL beta):
+  p=            17 beta=1.022 excess=936336  *** EXACT-WICK VIOLATION
+  p=            97 beta=1.650 excess=141120  *** EXACT-WICK VIOLATION
+  p=           113 beta=1.705 excess=122880  *** EXACT-WICK VIOLATION
+  p=           193 beta=1.898 excess=54240  *** EXACT-WICK VIOLATION
+  p=           241 beta=1.978 excess=35040  *** EXACT-WICK VIOLATION
+  p=           257 beta=2.001 excess=59280  *** EXACT-WICK VIOLATION
+  p=           337 beta=2.099 excess=48960  *** EXACT-WICK VIOLATION
+  p=           353 beta=2.116 excess=24960  *** EXACT-WICK VIOLATION
+  p=           401 beta=2.162 excess=18240  *** EXACT-WICK VIOLATION
+  p=           433 beta=2.190 excess=16800  *** EXACT-WICK VIOLATION
+  p=           449 beta=2.203 excess=18240  *** EXACT-WICK VIOLATION
+  p=           577 beta=2.293 excess=14400  *** EXACT-WICK VIOLATION
+  p=           593 beta=2.303 excess=7680
+  p=           641 beta=2.331 excess=11520  *** EXACT-WICK VIOLATION
+  p=           673 beta=2.349 excess=5760
+  p=           769 beta=2.397 excess=8640
+  p=           881 beta=2.446 excess=8640
+  p=           929 beta=2.465 excess=7680
+  p=           977 beta=2.483 excess=5760
+  p=          1009 beta=2.495 excess=480
+  p=          1153 beta=2.543 excess=2880
+  p=          1217 beta=2.562 excess=2880
+  p=          1249 beta=2.572 excess=2880
+  p=          1297 beta=2.585 excess=7680
+  p=          1361 beta=2.603 excess=5760
+  p=          1409 beta=2.615 excess=5760
+  p=          1489 beta=2.635 excess=7680
+  p=          1601 beta=2.661 excess=1920
+  p=          1697 beta=2.682 excess=1920
+  p=          1777 beta=2.699 excess=2880
+  p=          2113 beta=2.761 excess=1920
+  p=          2129 beta=2.764 excess=4800
+  p=          2273 beta=2.788 excess=2880
+  p=          2689 beta=2.848 excess=2880
+  p=          2753 beta=2.857 excess=1920
+  p=          2833 beta=2.867 excess=2880
+  p=          3089 beta=2.898 excess=2880
+  p=          3169 beta=2.907 excess=1920
+  p=          3313 beta=2.923 excess=960
+  p=          3329 beta=2.925 excess=1920
+  p=          3361 beta=2.929 excess=960
+  p=          4001 beta=2.992 excess=2880
+  p=          4049 beta=2.996 excess=2880
+  p=          4289 beta=3.017 excess=960
+  p=          4561 beta=3.039 excess=1920
+  p=          5281 beta=3.092 excess=1920
+  p=          6449 beta=3.164 excess=960
+  p=          6481 beta=3.166 excess=960
+  p=          6977 beta=3.192 excess=1920
+  p=          7457 beta=3.216 excess=1920
+  p=          7873 beta=3.236 excess=1920
+  p=          8929 beta=3.281 excess=1920
+  p=         11489 beta=3.372 excess=96
+  p=         14401 beta=3.453 excess=960
+  p=         33713 beta=3.760 excess=480
+  p=         37201 beta=3.796 excess=480
+  p=         41521 beta=3.835 excess=480
+
+exact-Wick violations: 13; largest violating prime: 641 (beta=2.331)
+excess quantum (gcd over all bad primes): 48
+largest bad prime overall: p=41521 beta=3.835

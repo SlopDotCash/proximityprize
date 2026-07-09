@@ -39,9 +39,6 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 /-- Octic superelliptic certificates plus the Σ lower-envelope package produce the corrected
 `r = 2` away-incidence Wick rung. -/
 theorem wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -59,7 +56,7 @@ theorem wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -91,7 +88,7 @@ theorem wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
     fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact wickAwayAtWithConstant_two_of_weil_of_sigmaLowerEnvelope ψ G H Dset X g
     hmχ hmχ2 hn hCw0 hdec hg h4 hq1 hnq hreg hlow
@@ -99,9 +96,6 @@ theorem wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope
 /-- Exact R15 away-Wick companion to the sigma-gated octic `r = 2` Wick consumer in the
 constant-`≤ 1` regime. -/
 theorem wickForIncidenceAwayAt_two_of_octic_sigmaLowerEnvelope_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -120,7 +114,7 @@ theorem wickForIncidenceAwayAt_two_of_octic_sigmaLowerEnvelope_le_one
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -151,16 +145,13 @@ theorem wickForIncidenceAwayAt_two_of_octic_sigmaLowerEnvelope_le_one
   wickForIncidenceAwayAt_of_wickAwayAtWithConstant_le_one G H Dset 2 hCle
     (wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope ψ G H Dset X g mχ
       T msteps e J D Dtot Cd gOf ζOf hmχ hmχ2 hn hCw0 hdec hg hq1 hnq hreg hlow
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp)
 
 /-- Raw-fourth-moment companion to the sigma-gated octic `r = 2` Wick consumer in the
 constant-`≤ 1` regime.  This is the lower-envelope version of
 `rawFourthMomentWithDiagonal_of_octic_superelliptic_pipeline_le_one`. -/
 theorem rawFourthMomentWithDiagonal_of_octic_sigmaLowerEnvelope_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -179,7 +170,7 @@ theorem rawFourthMomentWithDiagonal_of_octic_sigmaLowerEnvelope_le_one
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -210,15 +201,12 @@ theorem rawFourthMomentWithDiagonal_of_octic_sigmaLowerEnvelope_le_one
   rawFourthMomentWithDiagonal_of_wickAwayAtWithConstant_two_le_one G H Dset hCle
     (wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope ψ G H Dset X g mχ
       T msteps e J D Dtot Cd gOf ζOf hmχ hmχ2 hn hCw0 hdec hg hq1 hnq hreg hlow
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp)
 
 /-- Pointwise fourth-root incidence consumer from octic superelliptic certificates plus the
 Σ lower-envelope package. -/
 theorem incidence_sq_le_sqrt_of_octic_sigmaLowerEnvelope
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -236,7 +224,7 @@ theorem incidence_sq_le_sqrt_of_octic_sigmaLowerEnvelope
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -270,7 +258,7 @@ theorem incidence_sq_le_sqrt_of_octic_sigmaLowerEnvelope
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
     fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact incidence_sq_le_sqrt_of_weil_r2 ψ G H Dset X g mχ hmχ hCw0 hdec hg h4 hq1 hnq
     (hSig_of_sigmaLowerEnvelope_field ψ G H hmχ2 hn hreg hlow) hs
@@ -281,9 +269,6 @@ This is the R151 sibling of `incidence_sq_le_sqrt_sup_of_octic_superelliptic_pip
 that have a pointwise envelope on the additive spectrum can use the standard sigma lower-envelope
 package without manually reopening the raw `hSig` inequality. -/
 theorem incidence_sq_le_sqrt_sup_of_octic_sigmaLowerEnvelope
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -301,7 +286,7 @@ theorem incidence_sq_le_sqrt_sup_of_octic_sigmaLowerEnvelope
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -336,7 +321,7 @@ theorem incidence_sq_le_sqrt_sup_of_octic_sigmaLowerEnvelope
   exact incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline ψ G H Dset X g mχ
     T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq
     (hSig_of_sigmaLowerEnvelope_field ψ G H hmχ2 hn hreg hlow)
-    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
     hCdmax hp hM0 hM hs
 
 /-- Direct norm incidence consumer from the octic sigma-gated `r = 2` Wick certificate.
@@ -344,9 +329,6 @@ theorem incidence_sq_le_sqrt_sup_of_octic_sigmaLowerEnvelope
 The constant in the `r = 2` rung is paid by the caller through the standard R16 depth contract,
 specialized to the available octic rung. -/
 theorem incidence_le_of_octic_sigmaLowerEnvelope
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -365,7 +347,7 @@ theorem incidence_le_of_octic_sigmaLowerEnvelope
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -401,15 +383,12 @@ theorem incidence_le_of_octic_sigmaLowerEnvelope
   incidence_le_of_wickAwayAtWithConstant G H Dset hCge hq1 2 hdepth (by norm_num)
     (wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope ψ G H Dset X g mχ
       T msteps e J D Dtot Cd gOf ζOf hmχ hmχ2 hn hCw0 hdec hg hq1 hnq hreg hlow
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp)
     hs
 
 /-- Sup-norm approximate-`B` consumer from the octic sigma-gated `r = 2` Wick certificate. -/
 theorem approxB_away_of_octic_sigmaLowerEnvelope
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -428,7 +407,7 @@ theorem approxB_away_of_octic_sigmaLowerEnvelope
     (hlow :
       SigmaLowerEnvelope (mχ : ℝ) (G.card : ℝ) (Fintype.card F : ℝ)
         (∑ b ∈ H, ‖eta ψ G b‖ ^ 2))
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -465,7 +444,7 @@ theorem approxB_away_of_octic_sigmaLowerEnvelope
   approxB_away_of_wickAwayAtWithConstant G H Dset hCge hq1 2 hdepth (by norm_num)
     (wickAwayAtWithConstant_two_of_octic_sigmaLowerEnvelope ψ G H Dset X g mχ
       T msteps e J D Dtot Cd gOf ζOf hmχ hmχ2 hn hCw0 hdec hg hq1 hnq hreg hlow
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp)
     hM0 hM hs
 

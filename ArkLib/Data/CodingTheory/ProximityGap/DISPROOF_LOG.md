@@ -21462,3 +21462,126 @@ INTRINSIC to the (pattern-count n⁶ × per-pattern log-height Θ(n)) ledger at 
 that window-primes divide few resultants simultaneously) — that is again the per-prime
 uniformity wall, as expected. Route closed for threshold improvement; the FS6 statement stands
 as the sharp output of this method. CORE OPEN, ON-BGK.
+
+## [466-B2-curve-decodability-reduction-SEALED] B2 (curve-decodability ⟹ MCA) reduction COMPLETED end-to-end, axiom-clean (2026-07-08)
+
+The #334 class-B item B2 — "[GG25] Def 3.1 curve decodability from scratch; does a good interleaved
+list-decoding bound imply a good MCA bound?" — is now answered YES, unconditionally, sealed into one
+composed theorem. New file `GG25CurveDecodabilityB2Capstone.lean` (real locked build 8511 jobs, all
+3 theorems axiom-clean [propext, Classical.choice, Quot.sound]).
+
+The two engine halves were already in-tree axiom-clean (`curveDecodable_of_curveListSize` pigeonhole;
+`GG25Lemma32.all_seeds_relClose_of_curveDecodable` spread/MCA), and the per-row factorization
+`Attack05.curveListSize_le_pow_of_rowList_le` (curve list size ≤ Lᵈ, L = per-row RS list size,
+d = ℓ+1). The GENUINELY MISSING piece was the interface + capstone, now landed:
+- `curveListSizeLe_of_rowList_le`: a per-row list-decoding bound L ⟹ `CurveListSizeLe C ℓ δ (Lᵈ)`
+  (packages the per-row product bound existentially into the predicate the engine consumes).
+- `curveDecodable_of_rowList_le`: composes into the pigeonhole (`Lᵈ·b ≤ a`, `1 ≤ Lᵈ` ⟹ curve-decodable).
+- `curveDecodable_relMCA_of_rowList_le` (THE B2 CAPSTONE): per-row list bound L + arithmetic
+  (`1 ≤ Lᵈ`, `Lᵈ·t ≤ a`, `ℓ < t`) ⟹ for any (u,f) with close set ≥ a, a single codeword-curve is
+  within relative Hamming distance (t/(t−ℓ))·δ of the tested curve at EVERY seed (the MCA conclusion).
+
+NO δ*/BGK/Paley input appears — the reduction is fully unconditional. The only remaining
+code-family-specific input is the numeric per-row list size L: O(1/η) (field linear in n) for
+folded/random RS via list-recovery (formalizable, routes to FRS list-decodability / CZ25CoordFiberCap,
+NOT the wall); the open BCHKS-1.12 line-ball object (`RSCurveListSizeResidual`) only for explicit
+plain RS above Johnson — and that open input is entirely outside this reduction. B2's substantive
+question is answered.
+
+## [466-r304-depth3-exact-wick-refuted-n32] the r53 headroom atom (E₃ ≤ 15n³ for all p ≡ 1 mod n, β ≥ 3) is REFUTED at n=32 — 19 violating primes, worst E₃/Wick = 1.71 (1.64 DC-subtracted), excess reaches 11.95·n³; the failure is n-INVERTED (n=8 exact-zero excess everywhere, n=16 clean, n=32 fails 8.7×) (2026-07-09)
+
+Exhaustive scan of EVERY prime p ≡ 1 (mod n), β ≥ 3: n=8 to 10⁶ (19,532 primes), n=16 to
+1.5·10⁶ (14k primes), n=32 to 2·10⁶ (9,088 primes). FFT computation of q·E₃ = Σ_b|η_b|⁶,
+validated bit-exact against the r52 integer probe; all headline violations re-verified with
+exact integer arithmetic. `scripts/probes/probe_r304_depth3_excess_exhaustive.py`,
+outputs `_out_466_r304_n{8,16,32}.txt`, kb
+`deltastar-466-r304-depth3-headroom-refuted-n32-2026-07-09.md`.
+
+- **REFUTED**: `excess(p,n) ≤ 45n²−40n` (⇔ exact-Wick E₃ ≤ 15n³) universally over β ≥ 3.
+  At n=32: p=32993 (β=3.002) E₃=838400 = 1.706×Wick, excess=391680 = 11.95n³ = 8.74×headroom;
+  p=65537 (Fermat, β=3.2) 1.431×; violations persist to p=194977 (β=3.515); 19 total, none in
+  (β=3.52, 4.19].
+- **CORRECTION to r52**: "excess is O(n²)-scale at every bad prime" is FALSE at n=32 —
+  n³-scale excess exists. The r53 conditional theorem stands; its hypothesis is what fails.
+- **CORRECTION-SCOPE to r54**: the DC floor does NOT explain the strong violations
+  (E₃−n⁶/q = 1.64/1.40/1.28×Wick at the top three); only the weak 45n²-level raw violations
+  (e.g. p=35393 → 0.94 after DC) are DC artifacts.
+- **n-INVERSION**: n=8 has excess ≡ 0 EXACTLY (E₃ = 15n³−45n²+40n = 5120) at ALL 19,532
+  primes β ∈ [3, 6.64]; n=16 worst excess = 1920 = 17.6% of headroom (no violation to
+  1.5·10⁶); n=32 fails by 8.7×. Uniformity in n degrades — the wrong direction for n = 2³⁰.
+- **KEPT (new structure)**: (i) quantization — every nonzero excess at n∈{16,32} is an exact
+  multiple of 480, commonest violating level exactly 45n²; (ii) the norm-bound mechanism —
+  wraparound ⇒ p | Norm(z) for a nonzero 6-term ±sum z of n-th roots, |Norm(z)| ≤ 6^φ(n),
+  hence excess ≡ 0 for p > 6^φ(n) (matches n=8/n=16 data precisely); (iii) at fixed n the
+  r=3 rung is a FINITE check below the norm frontier — useless at prize n but it locates the
+  wall: the open question is violation persistence at prize-relevant β ≈ 5.3 under the norm
+  frontier (→ r305 norm-divisor census).
+
+CONSEQUENCE: the depth-3 exact-Wick rung cannot be closed uniformly over β ≥ 3; the moment
+route needs bad-prime exclusion (re-routes into the floor-bad/good-prime lane, Tier-1 §6
+item 4). The r55–r303 variance/orbit machinery is unaffected (parametric in the energy
+bound). CORE OPEN, ON-BGK.
+
+## [466-r305-depth3-complete-classification] the depth-3 excess EXACTLY classified (excess = colliding-class ℓ² mass over cyclotomic difference classes) + the COMPLETE n=32 bad-prime census: largest exact-Wick violator p=21523361=(3¹⁶+1)/2 (β=4.872, mechanism ζ⁵≡−3), largest bad prime 3487801441 (β=6.34); no β-frontier rescue; n=16 depth-3 landscape CLOSED (max bad prime 41521) (2026-07-09)
+
+Positive round (classification, not a disproof — logged for the record and the corrections it
+pins). Probes `probe_r305_{depth3_excess_classification,fast_excess_scanner,complete_census}.py`,
+outputs `_out_466_r305_*.txt`, kb `deltastar-466-r305-depth3-excess-complete-classification-2026-07-09.md`.
+
+- **THE THEORY (verified bit-exact everywhere tested)**: in ℤ[ζ]/Φ_{2^k}, excess(p,n) =
+  Σ_groups (Σ_{w(g)≡c} N₃(w))² − Σ_w N₃(w)² over the char-0 3-sum histogram (K=5504 at n=32) —
+  the excess is EXACTLY the ℓ² mass of char-0 vector collisions mod p. Bad primes = divisors
+  of class norms ≤ 6^{φ(n)}. O(K log K)/prime exact evaluator.
+- **n=16 CLOSED**: 40 bad primes ever, max 41521 (β=3.835); all 13 exact-Wick violations at
+  β<3 ⟹ the β≥3 exact-Wick rung at n=16 is TRUE by complete enumeration.
+- **n=32 CLOSED**: 1158 bad primes ever, 156 exact-Wick violations, largest violator
+  p=21523361=(3¹⁶+1)/2 at β=4.872 (whole excess = the ζ⁵≡−3 relation web; cross-checked by
+  FFT); every prime > 21523361 satisfies E₃ ≤ 15n³; excess ≡ 0 above p=3487801441 (β=6.34).
+  Independent [2·10⁶,10⁸] scan (163 bad primes, 1 violation) agrees on every compared prime;
+  the 19 r304 violations in [n³,2·10⁶] reproduced exactly.
+- **NO β-FRONTIER RESCUE**: violations recur at β=4.87 ≈ prize-shaped depth via small-height
+  norm families (c^{φ(n)}+1-type); the depth-3 exact-Wick rung is only salvageable by
+  bad-prime EXCLUSION. The obstruction set is now EXACTLY characterized (divisors of
+  small-height cyclotomic norms) — the FiniteObstructionGoodPrime selector (#464) gets its
+  precise invariant; the lane re-routes into dossier §6 Tier-1 item 4 with the right object.
+- Prize wall untouched (census cost ~ n³ per n; infeasible at n=2³⁰) — but depth-3 at small n
+  is no longer scan-evidence: it is a finite exact theory. CORE OPEN, ON-BGK.
+
+## [466-r307-binomial-norm-highbeta] beta-frontier rescue for depth-3 exact-Wick is REFUTED at n=64 and n=128 by small-height binomial norm divisors: violations at β=8.286 and β=14.348 (2026-07-09)
+
+Follow-up to r305's `p=(3^16+1)/2` mechanism. New bigint-safe probe
+`scripts/probes/probe_r307_binomial_norm_depth3.py` factors `c^(n/2)+1 = Norm(c+ζ)`, keeps
+prime factors `p≡1 (mod n)`, and evaluates exact depth-3 excess by sparse pushforward of the
+char-zero 3-sum histogram. Outputs `_out_466_r307_n64.txt`, `_out_466_r307_n128.txt`.
+
+REFUTED rescue: "take beta large enough and exact Wick becomes safe." At n=64,
+`p=926510094425921` (large factor of `3^32+1`, β=8.286) has excess/headroom=1.320. At n=128,
+`p=1716841910146256242328924544641` (large factor of `3^64+1`, β=14.348) has
+excess/headroom=1.327. Also n=128 has `p=67280421310721` (factor of `2^64+1`, β=6.562)
+with excess/headroom=5.934. Some binomial norm factors are harmless (zero/tiny excess), so the
+dangerous invariant is relation-web mass, not binomiality alone. Consequence: depth-3 exact-Wick
+can only be repaired by dangerous-prime/relation-web exclusion or by a log-depth argument that
+tolerates fixed-depth failures; no beta cutoff rescue. CORE OPEN.
+
+## [466-r327-raw-relation-count] R326's raw cardinality endpoint is REFUTED: logarithmic-depth endpoint fibers force `exp(Theta(r²))` distinct realized relations (2026-07-09)
+
+`_R327RelationCountFiberLowerBound.lean` proves axiom-clean, for every finite field and every
+evaluation point, `choose(m,r) <= |F|*(card(shadowKernelRelations)+1)`.  The proof injects every
+evaluation fiber minus one basepoint into the relation set by subtraction, and embeds all
+cardinality-`r` positive coordinate subsets as distinct shadow keys.  At `n=2^30`, `m=2^29`,
+`q=2^158`, `r=ceil(ln q)=110`, exact arithmetic forces more than `2^2440` relations (effective
+base `2^22.18` per rung).  Hence no uniform `C^r` raw-cardinality bound can close R326; principal
+recurrence/dyadic saturation may organize the relations but cannot remove the forced short lattice
+points.  The surviving target must retain `NR(2m,m,2r,d)` weights and bound total recurrence-class
+mass, rather than replace every relation by the zero-mode maximum.  KB:
+`deltastar-466-r327-relation-count-fiber-no-go-2026-07-09.md`. CORE OPEN, ON-BGK.
+
+## [prize-entropy-degree-parameter] `PrizePinConjecture` is REFUTED as stated: it uses polynomial degree `k` as the rate numerator although `evalCode g n k` has dimension `k + 1` (2026-07-09)
+
+`PrizeEntropyPinRefuted.lean` proves the concrete counterexample
+`p=12289`, `n=8`, `g=4043`, `k=0`, `epsilon*=14/12289`.  The existing unconditional
+dimension-one theorem gives operational `delta*=3/4`, while the historical entropy side
+uses rate `0/8` and simplifies to `prizeDeltaStar 0 B = 1`.  Hence the two sides cannot be
+equal.  This refutes only the degree-parameterized Lean definition; the corrected conjecture
+with actual rate `(k+1)/n` and the production prize instances remain open.  KB:
+`deltastar-prize-entropy-degree-parameter-refutation-2026-07-09.md`. CORE OPEN.

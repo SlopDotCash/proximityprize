@@ -1,0 +1,14 @@
+n=32 p=21523361 beta=4.872 c=3 d=21
+observed histogram:
+  delta=750 count=32 mass=24000
+  delta=90 count=64 mass=5760
+  delta=36 count=800 mass=28800
+predicted histogram:
+  delta=750 count=32 mass=24000
+  delta=90 count=64 mass=5760
+  delta=36 count=800 mass=28800
+observed excess=58560
+predicted excess=58560
+headroom=44800
+matches predicted histogram: True
+violates exact-Wick headroom: True

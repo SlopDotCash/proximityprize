@@ -1,0 +1,27 @@
+n=64: K=43776 char0=3750400 closed=3750400 headroom=181760 wick=3932160
+
+c=2: factor c^(n/2)+1 (33 bits) = {641: 1, 6700417: 1}
+  p=641 exp=1 beta=1.554 excess=106423104 ratio=585.514 E3/Wick=28.018571  *** EXACT-WICK VIOLATION
+  p=6700417 exp=1 beta=3.779 excess=1066560 ratio=5.868 E3/Wick=1.225016  *** EXACT-WICK VIOLATION
+
+c=3: factor c^(n/2)+1 (51 bits) = {2: 1, 926510094425921: 1}
+  p=926510094425921 exp=1 beta=8.286 excess=240000 ratio=1.320 E3/Wick=1.014811  *** EXACT-WICK VIOLATION
+
+c=4: factor c^(n/2)+1 (65 bits) = {274177: 1, 67280421310721: 1}
+  p=274177 exp=1 beta=3.011 excess=522240 ratio=2.873 E3/Wick=1.086589  *** EXACT-WICK VIOLATION
+  p=67280421310721 exp=1 beta=7.656 excess=0 ratio=0.000 E3/Wick=0.953776
+
+c=5: factor c^(n/2)+1 (75 bits) = {2: 1, 641: 1, 75068993: 1, 241931001601: 1}
+  p=641 exp=1 beta=1.554 excess=106423104 ratio=585.514 E3/Wick=28.018571  *** EXACT-WICK VIOLATION
+  p=75068993 exp=1 beta=4.360 excess=384 ratio=0.002 E3/Wick=0.953874
+  p=241931001601 exp=1 beta=6.303 excess=384 ratio=0.002 E3/Wick=0.953874
+
+c=6: factor c^(n/2)+1 (83 bits) = {2753: 1, 145601: 1, 19854979505843329: 1}
+  p=2753 exp=1 beta=1.904 excess=26012160 ratio=143.113 E3/Wick=7.569010  *** EXACT-WICK VIOLATION
+  p=145601 exp=1 beta=2.859 excess=403200 ratio=2.218 E3/Wick=1.056315  *** EXACT-WICK VIOLATION
+  p=19854979505843329 exp=1 beta=9.023 excess=0 ratio=0.000 E3/Wick=0.953776
+
+c=7: factor c^(n/2)+1 (90 bits) = {2: 1, 7699649: 1, 531968664833: 1, 134818753: 1}
+  p=7699649 exp=1 beta=3.813 excess=0 ratio=0.000 E3/Wick=0.953776
+  p=134818753 exp=1 beta=4.501 excess=0 ratio=0.000 E3/Wick=0.953776
+  p=531968664833 exp=1 beta=6.492 excess=0 ratio=0.000 E3/Wick=0.953776

@@ -40,16 +40,13 @@ with the usual class-value facts and explicit Stepanov arithmetic, supplies the 
 fourth-moment face at constant `4 + Cmax`.  The order-8 norm-fold independence is
 discharged internally by R25 through the R148 adapter. -/
 theorem fourthMomentTwistBound_of_octic_superelliptic_pipeline
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (G : Finset F) (X : Finset (MulChar F ℂ))
     (T : MulChar F ℂ → Finset ℂ)
     (msteps e J D Dtot : MulChar F ℂ → ℕ)
     (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
     (gOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F[X])
     (ζOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -81,7 +78,7 @@ theorem fourthMomentTwistBound_of_octic_superelliptic_pipeline
     hvals ?_ harith hCd0 hCdmax hp
   intro χ hχ
   exact dStepanovOutput_of_octic_superelliptic_power_model χ (T χ) (gOf χ) (ζOf χ)
-    (hJ χ hχ) hq_odd h8 (hmodel χ hχ) (hpoly χ hχ) (he χ hχ) (hmq χ hχ)
+    (hJ χ hχ) h8 (hmodel χ hχ) (hpoly χ hχ) (he χ hχ) (hmq χ hχ)
     (hD χ hχ) (hcount χ hχ) (hDtot χ hχ)
 
 end ArkLib.ProximityGap.Frontier.R149OcticFullRungPipeline

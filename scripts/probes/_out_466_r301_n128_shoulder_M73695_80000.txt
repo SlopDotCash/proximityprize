@@ -1,0 +1,53 @@
+progress M=73919 primes=30 high=54 highMass=0.042705 formulaMass=0.000000 prevMass=0.000000 cap=49152 elapsed=30.8s
+progress M=74150 primes=61 high=118 highMass=0.092866 formulaMass=0.000000 prevMass=0.000000 cap=49152 elapsed=61.3s
+progress M=74394 primes=90 high=182 highMass=0.139288 formulaMass=0.000000 prevMass=0.000000 cap=49152 elapsed=91.4s
+progress M=74639 primes=120 high=243 highMass=0.202941 formulaMass=0.000000 prevMass=0.000227 cap=49152 elapsed=122.1s
+progress M=74862 primes=146 high=291 highMass=0.243770 formulaMass=0.000000 prevMass=0.000227 cap=49152 elapsed=153.0s
+progress M=75090 primes=174 high=343 highMass=0.279091 formulaMass=0.000000 prevMass=0.000227 cap=49152 elapsed=183.3s
+progress M=75317 primes=200 high=394 highMass=0.327609 formulaMass=0.000000 prevMass=0.000227 cap=49152 elapsed=208.8s
+progress M=75600 primes=231 high=452 highMass=0.371675 formulaMass=0.000000 prevMass=0.000227 cap=49152 elapsed=239.1s
+progress M=75744 primes=259 high=505 highMass=0.407910 formulaMass=0.000000 prevMass=0.000227 cap=49152 elapsed=269.2s
+progress M=75984 primes=288 high=563 highMass=0.449730 formulaMass=0.000000 prevMass=0.000471 cap=49152 elapsed=299.8s
+progress M=76217 primes=316 high=626 highMass=0.508754 formulaMass=0.000000 prevMass=0.000471 cap=49152 elapsed=330.8s
+progress M=76361 primes=336 high=666 highMass=0.538651 formulaMass=0.000000 prevMass=0.000471 cap=49152 elapsed=362.1s
+progress M=76521 primes=353 high=703 highMass=0.569126 formulaMass=0.000000 prevMass=0.000471 cap=49152 elapsed=392.2s
+progress M=76680 primes=376 high=748 highMass=0.602164 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=423.0s
+progress M=76830 primes=400 high=787 highMass=0.635516 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=450.5s
+progress M=77009 primes=428 high=846 highMass=0.678599 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=481.1s
+progress M=77330 primes=456 high=899 highMass=0.715619 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=511.4s
+progress M=77546 primes=484 high=959 highMass=0.764638 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=542.2s
+progress M=77775 primes=513 high=1015 highMass=0.810312 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=572.5s
+progress M=78030 primes=538 high=1054 highMass=0.840379 formulaMass=0.000000 prevMass=0.000700 cap=49152 elapsed=602.7s
+progress M=78177 primes=562 high=1106 highMass=0.883032 formulaMass=0.000000 prevMass=0.000965 cap=49152 elapsed=633.9s
+progress M=78407 primes=591 high=1159 highMass=0.928794 formulaMass=0.000000 prevMass=0.001201 cap=49152 elapsed=664.6s
+progress M=78491 primes=600 high=1176 highMass=0.939505 formulaMass=0.000000 prevMass=0.001439 cap=49152 elapsed=676.5s
+progress M=78710 primes=630 high=1227 highMass=0.979193 formulaMass=0.000000 prevMass=0.001439 cap=49152 elapsed=707.3s
+progress M=78941 primes=659 high=1284 highMass=1.017242 formulaMass=0.000000 prevMass=0.001439 cap=49152 elapsed=738.1s
+progress M=79175 primes=689 high=1342 highMass=1.058266 formulaMass=0.000000 prevMass=0.001439 cap=49152 elapsed=768.6s
+progress M=79455 primes=716 high=1387 highMass=1.098076 formulaMass=0.000000 prevMass=0.001439 cap=49152 elapsed=798.9s
+progress M=79634 primes=744 high=1432 highMass=1.124469 formulaMass=0.000000 prevMass=0.001439 cap=49152 elapsed=829.3s
+progress M=79872 primes=774 high=1489 highMass=1.172263 formulaMass=0.000000 prevMass=0.001701 cap=49152 elapsed=860.4s
+
+R296 n=128 piecewise shoulder cap M=[73695,80000] cap=8192*ceil((M+10000)/15000)
+primes=789 candidateRows=3054 moderateRows=1632 highRows=1521 highMass=1.19655459
+
+residual summary
+kind       count mass      share     worstMass worstM worstP maxTailX maxFR   maxTopR maxTailR maxCap
+--------------------------------------------------------------------------------------------------------------------
+formula    0     0.000000  0.000000  0.000000  0      0        0.0000   0.0000  0       0        0
+prevCap    7     0.001701  0.001422  0.000264  78036  9988609  1.2817   0.7554  27      42030    49152
+
+worst formula escapes
+mass       fRatio  X128    F128    topR   tailR    cap     topX    tailX   tail/top M       p         idx
+--------------------------------------------------------------------------------------------------------------------------------
+
+worst previous-cap escapes
+mass       fRatio  X128    F128    topR   tailR    cap     topX    tailX   tail/top M       p         idx
+--------------------------------------------------------------------------------------------------------------------------------
+0.00026430 0.7513  12.106  10.851  15     41237    49152   14.442  1.255   0.0869   78036   9988609   55662
+0.00026230 0.7536  12.161  10.879  19     41378    49152   14.437  1.282   0.0888   79715   10203521  19229
+0.00024427 0.7514  11.677  10.466  16     41331    49152   13.929  1.211   0.0869   75854   9709313   40251
+0.00023784 0.7549  11.704  10.459  23     41766    49152   13.856  1.245   0.0899   78432   10039297  57188
+0.00023612 0.7539  11.671  10.437  23     42030    49152   13.844  1.233   0.0891   78339   10027393  28623
+0.00022935 0.7554  11.464  10.239  17     41392    49152   13.554  1.225   0.0904   76602   9805057   35932
+0.00022681 0.7515  11.314  10.139  27     41749    49152   13.492  1.174   0.0870   74592   9547777   24993

@@ -1,0 +1,31 @@
+R304 n=16 window p in [45000, 1500000] (beta in [3.86, 5.13]): 13663 primes ≡ 1 mod 16; atom: excess <= 10880 (E3 <= 61440)
+progress 1000/13663 p=137873 worstExcess=0 (p=137873) violations=0
+progress 2000/13663 p=234193 worstExcess=0 (p=234193) violations=0
+progress 3000/13663 p=335729 worstExcess=0 (p=335729) violations=0
+progress 4000/13663 p=438401 worstExcess=0 (p=438401) violations=0
+progress 5000/13663 p=545057 worstExcess=0 (p=545057) violations=0
+progress 6000/13663 p=651169 worstExcess=0 (p=651169) violations=0
+progress 7000/13663 p=760897 worstExcess=0 (p=760897) violations=0
+progress 8000/13663 p=866737 worstExcess=0 (p=866737) violations=0
+progress 9000/13663 p=979361 worstExcess=0 (p=979361) violations=0
+progress 10000/13663 p=1087841 worstExcess=0 (p=1087841) violations=0
+progress 11000/13663 p=1200673 worstExcess=0 (p=1200673) violations=0
+progress 12000/13663 p=1315537 worstExcess=0 (p=1315537) violations=0
+progress 13000/13663 p=1426801 worstExcess=0 (p=1426801) violations=0
+
+scan complete: 13663 primes, violations=0
+atom 'excess <= 10880': SURVIVES this window
+
+top excess primes:
+  p=  1499921 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499857 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499713 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499681 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499569 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499521 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499153 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1499041 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1498993 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1498961 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1498801 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229
+  p=  1498577 beta=5.129 E3=       50560 excess=       0 excess/headroom=+0.0000 E3/Wick=0.8229

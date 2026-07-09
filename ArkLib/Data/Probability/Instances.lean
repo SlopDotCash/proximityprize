@@ -351,11 +351,14 @@ theorem Pr_le_Pr_of_implies {α : Type} (D : PMF α)
   -- 3. Show the term-wise inequality for each r
   intro r
   -- Goal: ⊢ D r * (if f r then 1 else 0) ≤ D r * (if g r then 1 else 0)
-  apply mul_le_mul_right
-  -- 4. Prove the inequality between the `ite` terms using the implication.
-  by_cases hf : f r
-  · simp only [hf, ↓reduceIte, h_imp, le_refl]
-  · simp only [hf, ↓reduceIte, zero_le]
+  -- Keep the comparison in `ENNReal`; otherwise the generic multiplication lemma
+  -- leaves Lean searching for an ordered-add structure through metavariables.
+  have hite : (if f r then (1 : ENNReal) else 0) ≤
+      (if g r then (1 : ENNReal) else 0) := by
+    by_cases hf : f r
+    · simp only [hf, ↓reduceIte, h_imp, le_refl]
+    · simp only [hf, ↓reduceIte, zero_le]
+  exact mul_le_mul_left' hite (D r)
 
 theorem Pr_multi_let_equiv_single_let {α β : Type}
     (D₁ : PMF α) (D₂ : PMF β) -- Assuming D₂ is independent for simplicity

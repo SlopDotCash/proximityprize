@@ -1,0 +1,5 @@
+n=128 p=59649589127497217 beta=7.961 K=349696 g0=59649314249590273
+constant hits among powers of g0: [(27, '-4', 59649589127497213), (37, '4^-1', 44737191845622913), (91, '4', 4), (101, '-4^-1', 14912397281874304)]
+char0=30725120 headroom=732160 wick=31457280 excess=0 ratio=0.000000 E3/Wick=0.976725
+collision residues with positive delta: 0
+delta histogram:
