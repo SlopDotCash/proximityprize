@@ -21331,3 +21331,28 @@ CONSEQUENCE: the depth-3 exact-Wick rung cannot be closed uniformly over β ≥ 
 route needs bad-prime exclusion (re-routes into the floor-bad/good-prime lane, Tier-1 §6
 item 4). The r55–r303 variance/orbit machinery is unaffected (parametric in the energy
 bound). CORE OPEN, ON-BGK.
+
+## [466-r305-depth3-complete-classification] the depth-3 excess EXACTLY classified (excess = colliding-class ℓ² mass over cyclotomic difference classes) + the COMPLETE n=32 bad-prime census: largest exact-Wick violator p=21523361=(3¹⁶+1)/2 (β=4.872, mechanism ζ⁵≡−3), largest bad prime 3487801441 (β=6.34); no β-frontier rescue; n=16 depth-3 landscape CLOSED (max bad prime 41521) (2026-07-09)
+
+Positive round (classification, not a disproof — logged for the record and the corrections it
+pins). Probes `probe_r305_{depth3_excess_classification,fast_excess_scanner,complete_census}.py`,
+outputs `_out_466_r305_*.txt`, kb `deltastar-466-r305-depth3-excess-complete-classification-2026-07-09.md`.
+
+- **THE THEORY (verified bit-exact everywhere tested)**: in ℤ[ζ]/Φ_{2^k}, excess(p,n) =
+  Σ_groups (Σ_{w(g)≡c} N₃(w))² − Σ_w N₃(w)² over the char-0 3-sum histogram (K=5504 at n=32) —
+  the excess is EXACTLY the ℓ² mass of char-0 vector collisions mod p. Bad primes = divisors
+  of class norms ≤ 6^{φ(n)}. O(K log K)/prime exact evaluator.
+- **n=16 CLOSED**: 40 bad primes ever, max 41521 (β=3.835); all 13 exact-Wick violations at
+  β<3 ⟹ the β≥3 exact-Wick rung at n=16 is TRUE by complete enumeration.
+- **n=32 CLOSED**: 1158 bad primes ever, 156 exact-Wick violations, largest violator
+  p=21523361=(3¹⁶+1)/2 at β=4.872 (whole excess = the ζ⁵≡−3 relation web; cross-checked by
+  FFT); every prime > 21523361 satisfies E₃ ≤ 15n³; excess ≡ 0 above p=3487801441 (β=6.34).
+  Independent [2·10⁶,10⁸] scan (163 bad primes, 1 violation) agrees on every compared prime;
+  the 19 r304 violations in [n³,2·10⁶] reproduced exactly.
+- **NO β-FRONTIER RESCUE**: violations recur at β=4.87 ≈ prize-shaped depth via small-height
+  norm families (c^{φ(n)}+1-type); the depth-3 exact-Wick rung is only salvageable by
+  bad-prime EXCLUSION. The obstruction set is now EXACTLY characterized (divisors of
+  small-height cyclotomic norms) — the FiniteObstructionGoodPrime selector (#464) gets its
+  precise invariant; the lane re-routes into dossier §6 Tier-1 item 4 with the right object.
+- Prize wall untouched (census cost ~ n³ per n; infeasible at n=2³⁰) — but depth-3 at small n
+  is no longer scan-evidence: it is a finite exact theory. CORE OPEN, ON-BGK.

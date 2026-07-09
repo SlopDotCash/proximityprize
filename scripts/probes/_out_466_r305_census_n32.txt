@@ -1,0 +1,1168 @@
+n=32: K=5504 vectors, char0=446720, headroom=44800
+1594368 distinct nonzero difference classes
+2345 distinct |Norm| values, max=2.821e+12
+1158 candidate primes ≡ 1 mod 32 dividing some norm
+
+COMPLETE bad-prime table for n=32 (1158 primes with nonzero excess, ALL beta):
+  p=            97 beta=1.320 excess=10643520  *** EXACT-WICK VIOLATION
+  p=           193 beta=1.518 excess=5173440  *** EXACT-WICK VIOLATION
+  p=           257 beta=1.601 excess=4087200  *** EXACT-WICK VIOLATION
+  p=           353 beta=1.693 excess=2851200  *** EXACT-WICK VIOLATION
+  p=           449 beta=1.762 excess=2435520  *** EXACT-WICK VIOLATION
+  p=           577 beta=1.834 excess=2054400  *** EXACT-WICK VIOLATION
+  p=           641 beta=1.865 excess=1989120  *** EXACT-WICK VIOLATION
+  p=           673 beta=1.879 excess=1552320  *** EXACT-WICK VIOLATION
+  p=           769 beta=1.917 excess=1055040  *** EXACT-WICK VIOLATION
+  p=           929 beta=1.972 excess=1316160  *** EXACT-WICK VIOLATION
+  p=          1153 beta=2.034 excess=852480  *** EXACT-WICK VIOLATION
+  p=          1217 beta=2.050 excess=981120  *** EXACT-WICK VIOLATION
+  p=          1249 beta=2.057 excess=810240  *** EXACT-WICK VIOLATION
+  p=          1409 beta=2.092 excess=721920  *** EXACT-WICK VIOLATION
+  p=          1601 beta=2.129 excess=455040  *** EXACT-WICK VIOLATION
+  p=          1697 beta=2.146 excess=445440  *** EXACT-WICK VIOLATION
+  p=          1889 beta=2.177 excess=399360  *** EXACT-WICK VIOLATION
+  p=          2017 beta=2.196 excess=460800  *** EXACT-WICK VIOLATION
+  p=          2081 beta=2.205 excess=357120  *** EXACT-WICK VIOLATION
+  p=          2113 beta=2.209 excess=648960  *** EXACT-WICK VIOLATION
+  p=          2273 beta=2.230 excess=556800  *** EXACT-WICK VIOLATION
+  p=          2593 beta=2.268 excess=528192  *** EXACT-WICK VIOLATION
+  p=          2657 beta=2.275 excess=238080  *** EXACT-WICK VIOLATION
+  p=          2689 beta=2.279 excess=514560  *** EXACT-WICK VIOLATION
+  p=          2753 beta=2.285 excess=256320  *** EXACT-WICK VIOLATION
+  p=          3041 beta=2.314 excess=243840  *** EXACT-WICK VIOLATION
+  p=          3137 beta=2.323 excess=541440  *** EXACT-WICK VIOLATION
+  p=          3169 beta=2.326 excess=264960  *** EXACT-WICK VIOLATION
+  p=          3329 beta=2.340 excess=207360  *** EXACT-WICK VIOLATION
+  p=          3361 beta=2.343 excess=213120  *** EXACT-WICK VIOLATION
+  p=          3457 beta=2.351 excess=524160  *** EXACT-WICK VIOLATION
+  p=          3617 beta=2.364 excess=192000  *** EXACT-WICK VIOLATION
+  p=          4001 beta=2.393 excess=491520  *** EXACT-WICK VIOLATION
+  p=          4129 beta=2.402 excess=497280  *** EXACT-WICK VIOLATION
+  p=          4289 beta=2.413 excess=172800  *** EXACT-WICK VIOLATION
+  p=          4481 beta=2.426 excess=105600  *** EXACT-WICK VIOLATION
+  p=          4513 beta=2.428 excess=147840  *** EXACT-WICK VIOLATION
+  p=          4673 beta=2.438 excess=155520  *** EXACT-WICK VIOLATION
+  p=          4801 beta=2.446 excess=184320  *** EXACT-WICK VIOLATION
+  p=          4993 beta=2.457 excess=466560  *** EXACT-WICK VIOLATION
+  p=          5153 beta=2.466 excess=140160  *** EXACT-WICK VIOLATION
+  p=          5281 beta=2.473 excess=145920  *** EXACT-WICK VIOLATION
+  p=          5441 beta=2.482 excess=163200  *** EXACT-WICK VIOLATION
+  p=          5569 beta=2.489 excess=120960  *** EXACT-WICK VIOLATION
+  p=          5857 beta=2.503 excess=476160  *** EXACT-WICK VIOLATION
+  p=          5953 beta=2.508 excess=109440  *** EXACT-WICK VIOLATION
+  p=          6113 beta=2.516 excess=83520  *** EXACT-WICK VIOLATION
+  p=          6337 beta=2.526 excess=107520  *** EXACT-WICK VIOLATION
+  p=          6529 beta=2.535 excess=72960  *** EXACT-WICK VIOLATION
+  p=          6689 beta=2.542 excess=96000  *** EXACT-WICK VIOLATION
+  p=          6977 beta=2.554 excess=99840  *** EXACT-WICK VIOLATION
+  p=          7297 beta=2.567 excess=78720  *** EXACT-WICK VIOLATION
+  p=          7393 beta=2.570 excess=117120  *** EXACT-WICK VIOLATION
+  p=          7457 beta=2.573 excess=96000  *** EXACT-WICK VIOLATION
+  p=          7489 beta=2.574 excess=77760  *** EXACT-WICK VIOLATION
+  p=          7649 beta=2.580 excess=90240  *** EXACT-WICK VIOLATION
+  p=          7681 beta=2.581 excess=97920  *** EXACT-WICK VIOLATION
+  p=          7841 beta=2.587 excess=58560  *** EXACT-WICK VIOLATION
+  p=          7873 beta=2.589 excess=88320  *** EXACT-WICK VIOLATION
+  p=          7937 beta=2.591 excess=445440  *** EXACT-WICK VIOLATION
+  p=          8161 beta=2.599 excess=80640  *** EXACT-WICK VIOLATION
+  p=          8353 beta=2.606 excess=82560  *** EXACT-WICK VIOLATION
+  p=          8513 beta=2.611 excess=55680  *** EXACT-WICK VIOLATION
+  p=          8609 beta=2.614 excess=40320
+  p=          8641 beta=2.615 excess=74880  *** EXACT-WICK VIOLATION
+  p=          8737 beta=2.619 excess=42240
+  p=          8929 beta=2.625 excess=84480  *** EXACT-WICK VIOLATION
+  p=          9281 beta=2.636 excess=55680  *** EXACT-WICK VIOLATION
+  p=          9377 beta=2.639 excess=61440  *** EXACT-WICK VIOLATION
+  p=          9473 beta=2.642 excess=63360  *** EXACT-WICK VIOLATION
+  p=          9601 beta=2.646 excess=111360  *** EXACT-WICK VIOLATION
+  p=          9697 beta=2.649 excess=28800
+  p=          9857 beta=2.653 excess=51840  *** EXACT-WICK VIOLATION
+  p=         10177 beta=2.663 excess=205440  *** EXACT-WICK VIOLATION
+  p=         10273 beta=2.665 excess=69120  *** EXACT-WICK VIOLATION
+  p=         10337 beta=2.667 excess=69120  *** EXACT-WICK VIOLATION
+  p=         10369 beta=2.668 excess=38400
+  p=         10433 beta=2.670 excess=92160  *** EXACT-WICK VIOLATION
+  p=         10529 beta=2.672 excess=74880  *** EXACT-WICK VIOLATION
+  p=         10657 beta=2.676 excess=34560
+  p=         10753 beta=2.678 excess=51840  *** EXACT-WICK VIOLATION
+  p=         11329 beta=2.694 excess=228480  *** EXACT-WICK VIOLATION
+  p=         11393 beta=2.695 excess=49920  *** EXACT-WICK VIOLATION
+  p=         11489 beta=2.698 excess=46272  *** EXACT-WICK VIOLATION
+  p=         11617 beta=2.701 excess=92160  *** EXACT-WICK VIOLATION
+  p=         11681 beta=2.702 excess=80640  *** EXACT-WICK VIOLATION
+  p=         11777 beta=2.705 excess=38400
+  p=         11969 beta=2.709 excess=50880  *** EXACT-WICK VIOLATION
+  p=         12097 beta=2.712 excess=109440  *** EXACT-WICK VIOLATION
+  p=         12161 beta=2.714 excess=80640  *** EXACT-WICK VIOLATION
+  p=         12289 beta=2.717 excess=92160  *** EXACT-WICK VIOLATION
+  p=         12577 beta=2.724 excess=80640  *** EXACT-WICK VIOLATION
+  p=         12641 beta=2.725 excess=51840  *** EXACT-WICK VIOLATION
+  p=         13121 beta=2.736 excess=80640  *** EXACT-WICK VIOLATION
+  p=         13217 beta=2.738 excess=23040
+  p=         13249 beta=2.739 excess=46080  *** EXACT-WICK VIOLATION
+  p=         13313 beta=2.740 excess=46080  *** EXACT-WICK VIOLATION
+  p=         13441 beta=2.743 excess=51840  *** EXACT-WICK VIOLATION
+  p=         13537 beta=2.745 excess=57600  *** EXACT-WICK VIOLATION
+  p=         13633 beta=2.747 excess=40320
+  p=         13697 beta=2.748 excess=46080  *** EXACT-WICK VIOLATION
+  p=         13729 beta=2.749 excess=72960  *** EXACT-WICK VIOLATION
+  p=         13921 beta=2.753 excess=40320
+  p=         14081 beta=2.756 excess=23040
+  p=         14177 beta=2.758 excess=36480
+  p=         14369 beta=2.762 excess=57600  *** EXACT-WICK VIOLATION
+  p=         14401 beta=2.763 excess=63360  *** EXACT-WICK VIOLATION
+  p=         14561 beta=2.766 excess=48000  *** EXACT-WICK VIOLATION
+  p=         14593 beta=2.767 excess=72960  *** EXACT-WICK VIOLATION
+  p=         14657 beta=2.768 excess=57600  *** EXACT-WICK VIOLATION
+  p=         14753 beta=2.770 excess=63360  *** EXACT-WICK VIOLATION
+  p=         15073 beta=2.776 excess=32640
+  p=         15137 beta=2.777 excess=23040
+  p=         15233 beta=2.779 excess=69120  *** EXACT-WICK VIOLATION
+  p=         15329 beta=2.781 excess=46080  *** EXACT-WICK VIOLATION
+  p=         15361 beta=2.781 excess=46080  *** EXACT-WICK VIOLATION
+  p=         15649 beta=2.787 excess=49920  *** EXACT-WICK VIOLATION
+  p=         15809 beta=2.790 excess=78720  *** EXACT-WICK VIOLATION
+  p=         15937 beta=2.792 excess=28800
+  p=         16001 beta=2.793 excess=23040
+  p=         16097 beta=2.795 excess=17280
+  p=         16193 beta=2.797 excess=57600  *** EXACT-WICK VIOLATION
+  p=         16417 beta=2.801 excess=34560
+  p=         16481 beta=2.802 excess=57600  *** EXACT-WICK VIOLATION
+  p=         16673 beta=2.805 excess=71040  *** EXACT-WICK VIOLATION
+  p=         16993 beta=2.811 excess=57600  *** EXACT-WICK VIOLATION
+  p=         17377 beta=2.817 excess=15360
+  p=         17569 beta=2.820 excess=47040  *** EXACT-WICK VIOLATION
+  p=         17729 beta=2.823 excess=34560
+  p=         17761 beta=2.823 excess=51840  *** EXACT-WICK VIOLATION
+  p=         17921 beta=2.826 excess=40320
+  p=         18049 beta=2.828 excess=38400
+  p=         18401 beta=2.833 excess=46080  *** EXACT-WICK VIOLATION
+  p=         18433 beta=2.834 excess=34560
+  p=         18593 beta=2.836 excess=57600  *** EXACT-WICK VIOLATION
+  p=         18913 beta=2.841 excess=38400
+  p=         19009 beta=2.843 excess=34560
+  p=         19073 beta=2.844 excess=34560
+  p=         19457 beta=2.850 excess=11520
+  p=         19489 beta=2.850 excess=51840  *** EXACT-WICK VIOLATION
+  p=         19553 beta=2.851 excess=40320
+  p=         19681 beta=2.853 excess=49920  *** EXACT-WICK VIOLATION
+  p=         19777 beta=2.854 excess=49920  *** EXACT-WICK VIOLATION
+  p=         19841 beta=2.855 excess=57600  *** EXACT-WICK VIOLATION
+  p=         19937 beta=2.857 excess=28800
+  p=         20129 beta=2.859 excess=57600  *** EXACT-WICK VIOLATION
+  p=         20161 beta=2.860 excess=23040
+  p=         20353 beta=2.863 excess=57600  *** EXACT-WICK VIOLATION
+  p=         20641 beta=2.867 excess=23040
+  p=         20897 beta=2.870 excess=34560
+  p=         20929 beta=2.871 excess=34560
+  p=         21089 beta=2.873 excess=23040
+  p=         21121 beta=2.873 excess=23040
+  p=         21313 beta=2.876 excess=57600  *** EXACT-WICK VIOLATION
+  p=         21377 beta=2.877 excess=34560
+  p=         21569 beta=2.879 excess=59520  *** EXACT-WICK VIOLATION
+  p=         21601 beta=2.880 excess=46080  *** EXACT-WICK VIOLATION
+  p=         22273 beta=2.889 excess=46080  *** EXACT-WICK VIOLATION
+  p=         22369 beta=2.890 excess=34560
+  p=         22433 beta=2.891 excess=23040
+  p=         22721 beta=2.894 excess=34560
+  p=         22817 beta=2.896 excess=34560
+  p=         23041 beta=2.898 excess=5760
+  p=         23201 beta=2.900 excess=28800
+  p=         23297 beta=2.902 excess=46080  *** EXACT-WICK VIOLATION
+  p=         23873 beta=2.909 excess=24000
+  p=         24001 beta=2.910 excess=46080  *** EXACT-WICK VIOLATION
+  p=         24097 beta=2.911 excess=46080  *** EXACT-WICK VIOLATION
+  p=         24481 beta=2.916 excess=34560
+  p=         25057 beta=2.923 excess=46080  *** EXACT-WICK VIOLATION
+  p=         25121 beta=2.923 excess=34560
+  p=         25409 beta=2.927 excess=40320
+  p=         25537 beta=2.928 excess=38400
+  p=         25601 beta=2.929 excess=40320
+  p=         25633 beta=2.929 excess=38400
+  p=         25793 beta=2.931 excess=26880
+  p=         26017 beta=2.933 excess=17280
+  p=         26113 beta=2.934 excess=46080  *** EXACT-WICK VIOLATION
+  p=         26177 beta=2.935 excess=193920  *** EXACT-WICK VIOLATION
+  p=         26209 beta=2.936 excess=34560
+  p=         26497 beta=2.939 excess=15360
+  p=         26561 beta=2.939 excess=23040
+  p=         26849 beta=2.943 excess=11520
+  p=         26881 beta=2.943 excess=34560
+  p=         27073 beta=2.945 excess=28800
+  p=         27329 beta=2.948 excess=23040
+  p=         27361 beta=2.948 excess=3840
+  p=         27457 beta=2.949 excess=46080  *** EXACT-WICK VIOLATION
+  p=         27617 beta=2.951 excess=46080  *** EXACT-WICK VIOLATION
+  p=         27809 beta=2.953 excess=23040
+  p=         28001 beta=2.955 excess=11520
+  p=         28097 beta=2.956 excess=28800
+  p=         28289 beta=2.958 excess=23040
+  p=         28513 beta=2.960 excess=23040
+  p=         28961 beta=2.964 excess=34560
+  p=         29153 beta=2.966 excess=34560
+  p=         29473 beta=2.969 excess=23040
+  p=         29537 beta=2.970 excess=11520
+  p=         29569 beta=2.970 excess=11520
+  p=         29633 beta=2.971 excess=23040
+  p=         29761 beta=2.972 excess=46080  *** EXACT-WICK VIOLATION
+  p=         30113 beta=2.976 excess=57600  *** EXACT-WICK VIOLATION
+  p=         30241 beta=2.977 excess=34560
+  p=         30497 beta=2.979 excess=11520
+  p=         30529 beta=2.980 excess=23040
+  p=         30593 beta=2.980 excess=5760
+  p=         30817 beta=2.982 excess=49920  *** EXACT-WICK VIOLATION
+  p=         30881 beta=2.983 excess=46080  *** EXACT-WICK VIOLATION
+  p=         31393 beta=2.988 excess=23040
+  p=         31489 beta=2.989 excess=34560
+  p=         31873 beta=2.992 excess=34560
+  p=         32257 beta=2.995 excess=69120  *** EXACT-WICK VIOLATION
+  p=         32321 beta=2.996 excess=26880
+  p=         32353 beta=2.996 excess=23040
+  p=         32609 beta=2.999 excess=23040
+  p=         32801 beta=3.000 excess=1920
+  p=         32993 beta=3.002 excess=391680  *** EXACT-WICK VIOLATION
+  p=         33409 beta=3.006 excess=34560
+  p=         33569 beta=3.007 excess=11520
+  p=         33601 beta=3.007 excess=11520
+  p=         34273 beta=3.013 excess=23040
+  p=         34337 beta=3.013 excess=11520
+  p=         34369 beta=3.014 excess=34560
+  p=         34721 beta=3.017 excess=23040
+  p=         34849 beta=3.018 excess=23040
+  p=         34913 beta=3.018 excess=23040
+  p=         35201 beta=3.021 excess=23040
+  p=         35393 beta=3.022 excess=46080  *** EXACT-WICK VIOLATION
+  p=         35521 beta=3.023 excess=11520
+  p=         35617 beta=3.024 excess=5760
+  p=         35809 beta=3.026 excess=11520
+  p=         36097 beta=3.028 excess=15360
+  p=         36161 beta=3.028 excess=34560
+  p=         36353 beta=3.030 excess=11520
+  p=         36833 beta=3.034 excess=11520
+  p=         36929 beta=3.034 excess=34560
+  p=         37057 beta=3.035 excess=23040
+  p=         37217 beta=3.037 excess=193920  *** EXACT-WICK VIOLATION
+  p=         37313 beta=3.037 excess=34560
+  p=         37441 beta=3.038 excess=46080  *** EXACT-WICK VIOLATION
+  p=         37633 beta=3.040 excess=46080  *** EXACT-WICK VIOLATION
+  p=         37889 beta=3.042 excess=23040
+  p=         38113 beta=3.044 excess=11520
+  p=         38177 beta=3.044 excess=23040
+  p=         38273 beta=3.045 excess=17280
+  p=         38561 beta=3.047 excess=34560
+  p=         38977 beta=3.050 excess=46080  *** EXACT-WICK VIOLATION
+  p=         39041 beta=3.051 excess=11520
+  p=         39233 beta=3.052 excess=23040
+  p=         40129 beta=3.058 excess=23040
+  p=         40193 beta=3.059 excess=23040
+  p=         40609 beta=3.062 excess=34560
+  p=         40801 beta=3.063 excess=3840
+  p=         40961 beta=3.064 excess=34560
+  p=         41729 beta=3.070 excess=23040
+  p=         41953 beta=3.071 excess=34560
+  p=         42209 beta=3.073 excess=34560
+  p=         42433 beta=3.075 excess=1920
+  p=         42689 beta=3.076 excess=23040
+  p=         43457 beta=3.081 excess=46080  *** EXACT-WICK VIOLATION
+  p=         43649 beta=3.083 excess=23040
+  p=         43777 beta=3.084 excess=34560
+  p=         43969 beta=3.085 excess=23040
+  p=         44129 beta=3.086 excess=23040
+  p=         44257 beta=3.087 excess=34560
+  p=         44417 beta=3.088 excess=34560
+  p=         44641 beta=3.089 excess=17280
+  p=         45121 beta=3.092 excess=23040
+  p=         45377 beta=3.094 excess=23040
+  p=         45569 beta=3.095 excess=23040
+  p=         45697 beta=3.096 excess=34560
+  p=         46049 beta=3.098 excess=46080  *** EXACT-WICK VIOLATION
+  p=         46337 beta=3.100 excess=3840
+  p=         46817 beta=3.103 excess=3840
+  p=         47041 beta=3.104 excess=23040
+  p=         47297 beta=3.106 excess=23040
+  p=         47521 beta=3.107 excess=23040
+  p=         47681 beta=3.108 excess=11520
+  p=         47713 beta=3.108 excess=40320
+  p=         47777 beta=3.109 excess=11520
+  p=         48193 beta=3.111 excess=23040
+  p=         48353 beta=3.112 excess=46080  *** EXACT-WICK VIOLATION
+  p=         48449 beta=3.113 excess=49920  *** EXACT-WICK VIOLATION
+  p=         48481 beta=3.113 excess=34560
+  p=         49057 beta=3.116 excess=23040
+  p=         49121 beta=3.117 excess=23040
+  p=         49409 beta=3.118 excess=23040
+  p=         49537 beta=3.119 excess=23040
+  p=         49633 beta=3.120 excess=11520
+  p=         49697 beta=3.120 excess=5760
+  p=         49921 beta=3.121 excess=46080  *** EXACT-WICK VIOLATION
+  p=         50177 beta=3.123 excess=193920  *** EXACT-WICK VIOLATION
+  p=         50273 beta=3.123 excess=11520
+  p=         50497 beta=3.125 excess=23040
+  p=         50593 beta=3.125 excess=11520
+  p=         50753 beta=3.126 excess=23040
+  p=         50849 beta=3.127 excess=34560
+  p=         51137 beta=3.128 excess=193920  *** EXACT-WICK VIOLATION
+  p=         51169 beta=3.129 excess=11520
+  p=         51329 beta=3.129 excess=3840
+  p=         51361 beta=3.130 excess=46080  *** EXACT-WICK VIOLATION
+  p=         51521 beta=3.131 excess=23040
+  p=         51713 beta=3.132 excess=34560
+  p=         52289 beta=3.135 excess=40320
+  p=         52321 beta=3.135 excess=34560
+  p=         52609 beta=3.137 excess=23040
+  p=         52673 beta=3.137 excess=5760
+  p=         52769 beta=3.137 excess=23040
+  p=         53089 beta=3.139 excess=11520
+  p=         53281 beta=3.140 excess=36480
+  p=         53441 beta=3.141 excess=23040
+  p=         53569 beta=3.142 excess=11520
+  p=         53633 beta=3.142 excess=17280
+  p=         53857 beta=3.143 excess=11520
+  p=         54497 beta=3.147 excess=11520
+  p=         54721 beta=3.148 excess=46080  *** EXACT-WICK VIOLATION
+  p=         55009 beta=3.149 excess=11520
+  p=         55073 beta=3.150 excess=11520
+  p=         55457 beta=3.152 excess=5760
+  p=         55681 beta=3.153 excess=23040
+  p=         56929 beta=3.159 excess=11520
+  p=         56993 beta=3.160 excess=34560
+  p=         57089 beta=3.160 excess=34560
+  p=         57601 beta=3.163 excess=11520
+  p=         57793 beta=3.164 excess=34560
+  p=         58337 beta=3.166 excess=23040
+  p=         58369 beta=3.167 excess=23040
+  p=         58657 beta=3.168 excess=23040
+  p=         58913 beta=3.169 excess=5760
+  p=         59393 beta=3.172 excess=23040
+  p=         59617 beta=3.173 excess=38400
+  p=         59809 beta=3.174 excess=23040
+  p=         60737 beta=3.178 excess=28800
+  p=         60961 beta=3.179 excess=11520
+  p=         61121 beta=3.180 excess=11520
+  p=         61153 beta=3.180 excess=11520
+  p=         61409 beta=3.181 excess=23040
+  p=         61729 beta=3.183 excess=23040
+  p=         62017 beta=3.184 excess=23040
+  p=         62273 beta=3.185 excess=34560
+  p=         62401 beta=3.186 excess=1920
+  p=         62497 beta=3.186 excess=11520
+  p=         62753 beta=3.187 excess=23040
+  p=         63073 beta=3.189 excess=11520
+  p=         63361 beta=3.190 excess=23040
+  p=         63521 beta=3.191 excess=11520
+  p=         63617 beta=3.191 excess=23040
+  p=         63649 beta=3.192 excess=11520
+  p=         63841 beta=3.192 excess=23040
+  p=         64033 beta=3.193 excess=3840
+  p=         64513 beta=3.195 excess=23040
+  p=         64609 beta=3.196 excess=11520
+  p=         65537 beta=3.200 excess=256800  *** EXACT-WICK VIOLATION
+  p=         65729 beta=3.201 excess=34560
+  p=         65921 beta=3.202 excess=23040
+  p=         66337 beta=3.204 excess=23040
+  p=         66721 beta=3.205 excess=28800
+  p=         66977 beta=3.206 excess=23040
+  p=         67073 beta=3.207 excess=35520
+  p=         67489 beta=3.208 excess=28800
+  p=         67777 beta=3.210 excess=23040
+  p=         68161 beta=3.211 excess=23040
+  p=         68449 beta=3.213 excess=193920  *** EXACT-WICK VIOLATION
+  p=         68897 beta=3.214 excess=11520
+  p=         69313 beta=3.216 excess=23040
+  p=         69697 beta=3.218 excess=11520
+  p=         69857 beta=3.218 excess=5760
+  p=         70241 beta=3.220 excess=3840
+  p=         70657 beta=3.222 excess=11520
+  p=         70913 beta=3.223 excess=38400
+  p=         71233 beta=3.224 excess=23040
+  p=         71777 beta=3.226 excess=38400
+  p=         72161 beta=3.228 excess=34560
+  p=         72353 beta=3.229 excess=23040
+  p=         72481 beta=3.229 excess=11520
+  p=         72577 beta=3.229 excess=11520
+  p=         72673 beta=3.230 excess=5760
+  p=         74561 beta=3.237 excess=23040
+  p=         75169 beta=3.240 excess=11520
+  p=         75329 beta=3.240 excess=11520
+  p=         75521 beta=3.241 excess=34560
+  p=         75937 beta=3.243 excess=23040
+  p=         76289 beta=3.244 excess=11520
+  p=         76801 beta=3.246 excess=23040
+  p=         76961 beta=3.246 excess=23040
+  p=         77153 beta=3.247 excess=11520
+  p=         77569 beta=3.249 excess=23040
+  p=         78017 beta=3.250 excess=11520
+  p=         78049 beta=3.250 excess=26880
+  p=         78241 beta=3.251 excess=23040
+  p=         78401 beta=3.252 excess=3840
+  p=         78497 beta=3.252 excess=23040
+  p=         78593 beta=3.252 excess=11520
+  p=         78721 beta=3.253 excess=11520
+  p=         79201 beta=3.255 excess=23040
+  p=         79393 beta=3.255 excess=23040
+  p=         79777 beta=3.257 excess=11520
+  p=         79841 beta=3.257 excess=11520
+  p=         80449 beta=3.259 excess=11520
+  p=         80513 beta=3.259 excess=28800
+  p=         80737 beta=3.260 excess=23040
+  p=         81409 beta=3.263 excess=23040
+  p=         81953 beta=3.265 excess=11520
+  p=         82241 beta=3.266 excess=23040
+  p=         82529 beta=3.267 excess=11520
+  p=         84481 beta=3.273 excess=11520
+  p=         84673 beta=3.274 excess=23040
+  p=         84961 beta=3.275 excess=11520
+  p=         85121 beta=3.275 excess=23040
+  p=         85313 beta=3.276 excess=11520
+  p=         85889 beta=3.278 excess=23040
+  p=         86017 beta=3.278 excess=11520
+  p=         86209 beta=3.279 excess=24000
+  p=         86753 beta=3.281 excess=11520
+  p=         87649 beta=3.284 excess=11520
+  p=         88289 beta=3.286 excess=11520
+  p=         88321 beta=3.286 excess=23040
+  p=         88513 beta=3.287 excess=23040
+  p=         88801 beta=3.288 excess=11520
+  p=         88897 beta=3.288 excess=11520
+  p=         89153 beta=3.289 excess=38400
+  p=         89633 beta=3.290 excess=23040
+  p=         90529 beta=3.293 excess=11520
+  p=         91009 beta=3.295 excess=23040
+  p=         91297 beta=3.296 excess=5760
+  p=         91393 beta=3.296 excess=23040
+  p=         91457 beta=3.296 excess=11520
+  p=         91841 beta=3.297 excess=34560
+  p=         91873 beta=3.297 excess=28800
+  p=         92353 beta=3.299 excess=23040
+  p=         93089 beta=3.301 excess=11520
+  p=         93281 beta=3.302 excess=17280
+  p=         93601 beta=3.303 excess=23040
+  p=         94273 beta=3.305 excess=11520
+  p=         94561 beta=3.306 excess=3840
+  p=         95009 beta=3.307 excess=11520
+  p=         95233 beta=3.308 excess=3840
+  p=         95873 beta=3.310 excess=23040
+  p=         96001 beta=3.310 excess=3840
+  p=         96097 beta=3.310 excess=23040
+  p=         96289 beta=3.311 excess=11520
+  p=         97729 beta=3.315 excess=23040
+  p=         98017 beta=3.316 excess=11520
+  p=         98689 beta=3.318 excess=5760
+  p=         99137 beta=3.319 excess=11520
+  p=         99233 beta=3.320 excess=23040
+  p=         99713 beta=3.321 excess=5760
+  p=        100129 beta=3.322 excess=40320
+  p=        100193 beta=3.322 excess=23040
+  p=        100769 beta=3.324 excess=34560
+  p=        100801 beta=3.324 excess=11520
+  p=        101377 beta=3.326 excess=23040
+  p=        102593 beta=3.329 excess=23040
+  p=        102913 beta=3.330 excess=11520
+  p=        103553 beta=3.332 excess=11520
+  p=        104161 beta=3.334 excess=11520
+  p=        105761 beta=3.338 excess=11520
+  p=        107777 beta=3.344 excess=17280
+  p=        107873 beta=3.344 excess=11520
+  p=        108161 beta=3.345 excess=3840
+  p=        108193 beta=3.345 excess=23040
+  p=        108289 beta=3.345 excess=23040
+  p=        108769 beta=3.346 excess=11520
+  p=        109121 beta=3.347 excess=23040
+  p=        109793 beta=3.349 excess=23040
+  p=        110273 beta=3.350 excess=23040
+  p=        110849 beta=3.352 excess=11520
+  p=        110881 beta=3.352 excess=11520
+  p=        111521 beta=3.353 excess=11520
+  p=        112129 beta=3.355 excess=11520
+  p=        112481 beta=3.356 excess=11520
+  p=        113153 beta=3.358 excess=11520
+  p=        113537 beta=3.359 excess=11520
+  p=        113921 beta=3.360 excess=5760
+  p=        114113 beta=3.360 excess=11520
+  p=        114913 beta=3.362 excess=11520
+  p=        115361 beta=3.363 excess=11520
+  p=        115873 beta=3.364 excess=3840
+  p=        116257 beta=3.365 excess=11520
+  p=        116833 beta=3.367 excess=5760
+  p=        117281 beta=3.368 excess=23040
+  p=        118529 beta=3.371 excess=23040
+  p=        118913 beta=3.372 excess=23040
+  p=        119233 beta=3.373 excess=17280
+  p=        119297 beta=3.373 excess=11520
+  p=        119809 beta=3.374 excess=11520
+  p=        120193 beta=3.375 excess=26880
+  p=        120641 beta=3.376 excess=23040
+  p=        120833 beta=3.377 excess=23040
+  p=        121313 beta=3.378 excess=11520
+  p=        121441 beta=3.378 excess=17280
+  p=        121921 beta=3.379 excess=11520
+  p=        122273 beta=3.380 excess=11520
+  p=        122849 beta=3.381 excess=17280
+  p=        124193 beta=3.384 excess=23040
+  p=        124577 beta=3.385 excess=11520
+  p=        125441 beta=3.387 excess=11520
+  p=        125921 beta=3.388 excess=23040
+  p=        126241 beta=3.389 excess=23040
+  p=        127297 beta=3.392 excess=23040
+  p=        127681 beta=3.392 excess=11520
+  p=        127873 beta=3.393 excess=23040
+  p=        128033 beta=3.393 excess=3840
+  p=        129793 beta=3.397 excess=11520
+  p=        129953 beta=3.398 excess=23040
+  p=        130241 beta=3.398 excess=5760
+  p=        130337 beta=3.398 excess=11520
+  p=        130657 beta=3.399 excess=11520
+  p=        131041 beta=3.400 excess=23040
+  p=        133121 beta=3.404 excess=1920
+  p=        134081 beta=3.407 excess=23040
+  p=        134369 beta=3.407 excess=11520
+  p=        134401 beta=3.407 excess=11520
+  p=        135329 beta=3.409 excess=11520
+  p=        135937 beta=3.411 excess=3840
+  p=        136481 beta=3.412 excess=23040
+  p=        137153 beta=3.413 excess=11520
+  p=        138497 beta=3.416 excess=23040
+  p=        139393 beta=3.418 excess=11520
+  p=        139457 beta=3.418 excess=5760
+  p=        140321 beta=3.420 excess=11520
+  p=        140449 beta=3.420 excess=11520
+  p=        141121 beta=3.421 excess=11520
+  p=        142369 beta=3.424 excess=11520
+  p=        142433 beta=3.424 excess=23040
+  p=        142529 beta=3.424 excess=11520
+  p=        143617 beta=3.426 excess=23040
+  p=        143873 beta=3.427 excess=11520
+  p=        144577 beta=3.428 excess=23040
+  p=        144961 beta=3.429 excess=11520
+  p=        145121 beta=3.429 excess=11520
+  p=        146273 beta=3.432 excess=11520
+  p=        146369 beta=3.432 excess=11520
+  p=        148193 beta=3.435 excess=17280
+  p=        148513 beta=3.436 excess=11520
+  p=        148609 beta=3.436 excess=11520
+  p=        149153 beta=3.437 excess=11520
+  p=        149249 beta=3.437 excess=17280
+  p=        150497 beta=3.440 excess=11520
+  p=        151681 beta=3.442 excess=5760
+  p=        151841 beta=3.442 excess=11520
+  p=        151937 beta=3.443 excess=11520
+  p=        151969 beta=3.443 excess=17280
+  p=        154081 beta=3.447 excess=26880
+  p=        154369 beta=3.447 excess=23040
+  p=        155137 beta=3.449 excess=11520
+  p=        155201 beta=3.449 excess=23040
+  p=        156257 beta=3.451 excess=11520
+  p=        156353 beta=3.451 excess=193920  *** EXACT-WICK VIOLATION
+  p=        157889 beta=3.454 excess=23040
+  p=        158657 beta=3.455 excess=23040
+  p=        159073 beta=3.456 excess=11520
+  p=        159169 beta=3.456 excess=34560
+  p=        159361 beta=3.456 excess=34560
+  p=        159521 beta=3.457 excess=23040
+  p=        159553 beta=3.457 excess=11520
+  p=        159937 beta=3.457 excess=3840
+  p=        160033 beta=3.458 excess=11520
+  p=        161569 beta=3.460 excess=11520
+  p=        165313 beta=3.467 excess=11520
+  p=        165569 beta=3.467 excess=23040
+  p=        165601 beta=3.467 excess=11520
+  p=        165857 beta=3.468 excess=5760
+  p=        167809 beta=3.471 excess=23040
+  p=        168769 beta=3.473 excess=34560
+  p=        169217 beta=3.474 excess=23040
+  p=        169249 beta=3.474 excess=11520
+  p=        169313 beta=3.474 excess=11520
+  p=        169633 beta=3.474 excess=23040
+  p=        171169 beta=3.477 excess=11520
+  p=        172673 beta=3.480 excess=23040
+  p=        174017 beta=3.482 excess=11520
+  p=        174241 beta=3.482 excess=11520
+  p=        175937 beta=3.485 excess=40320
+  p=        176321 beta=3.486 excess=17280
+  p=        176417 beta=3.486 excess=11520
+  p=        177409 beta=3.487 excess=23040
+  p=        177473 beta=3.487 excess=11520
+  p=        177601 beta=3.488 excess=11520
+  p=        177889 beta=3.488 excess=23040
+  p=        178561 beta=3.489 excess=23040
+  p=        179041 beta=3.490 excess=23040
+  p=        180097 beta=3.492 excess=11520
+  p=        180161 beta=3.492 excess=11520
+  p=        181537 beta=3.494 excess=11520
+  p=        184321 beta=3.498 excess=23040
+  p=        184417 beta=3.499 excess=3840
+  p=        184609 beta=3.499 excess=23040
+  p=        186049 beta=3.501 excess=23040
+  p=        187009 beta=3.503 excess=23040
+  p=        187073 beta=3.503 excess=11520
+  p=        188417 beta=3.505 excess=3840
+  p=        188609 beta=3.505 excess=11520
+  p=        190369 beta=3.508 excess=38400
+  p=        190913 beta=3.509 excess=23040
+  p=        193057 beta=3.512 excess=11520
+  p=        194017 beta=3.513 excess=23040
+  p=        194977 beta=3.515 excess=190080  *** EXACT-WICK VIOLATION
+  p=        196993 beta=3.518 excess=3840
+  p=        198529 beta=3.520 excess=960
+  p=        198977 beta=3.520 excess=11520
+  p=        200513 beta=3.523 excess=11520
+  p=        201121 beta=3.524 excess=11520
+  p=        202817 beta=3.526 excess=11520
+  p=        203393 beta=3.527 excess=11520
+  p=        204353 beta=3.528 excess=23040
+  p=        204641 beta=3.529 excess=11520
+  p=        205441 beta=3.530 excess=3840
+  p=        205537 beta=3.530 excess=23040
+  p=        206081 beta=3.531 excess=11520
+  p=        206209 beta=3.531 excess=23040
+  p=        207041 beta=3.532 excess=11520
+  p=        207073 beta=3.532 excess=11520
+  p=        208001 beta=3.533 excess=5760
+  p=        208577 beta=3.534 excess=23040
+  p=        208673 beta=3.534 excess=11520
+  p=        209249 beta=3.535 excess=11520
+  p=        210241 beta=3.536 excess=3840
+  p=        211297 beta=3.538 excess=11520
+  p=        211873 beta=3.539 excess=11520
+  p=        211969 beta=3.539 excess=11520
+  p=        214657 beta=3.542 excess=11520
+  p=        214817 beta=3.543 excess=11520
+  p=        215521 beta=3.543 excess=5760
+  p=        217121 beta=3.546 excess=17280
+  p=        217313 beta=3.546 excess=11520
+  p=        217409 beta=3.546 excess=11520
+  p=        218401 beta=3.547 excess=11520
+  p=        219041 beta=3.548 excess=11520
+  p=        220673 beta=3.550 excess=11520
+  p=        221729 beta=3.552 excess=11520
+  p=        223009 beta=3.553 excess=3840
+  p=        226433 beta=3.558 excess=11520
+  p=        227873 beta=3.560 excess=11520
+  p=        228929 beta=3.561 excess=23040
+  p=        229601 beta=3.562 excess=11520
+  p=        231809 beta=3.565 excess=23040
+  p=        232801 beta=3.566 excess=5760
+  p=        236129 beta=3.570 excess=5760
+  p=        236897 beta=3.571 excess=11520
+  p=        238369 beta=3.573 excess=11520
+  p=        240641 beta=3.575 excess=11520
+  p=        248033 beta=3.584 excess=5760
+  p=        251969 beta=3.589 excess=11520
+  p=        255457 beta=3.593 excess=11520
+  p=        257249 beta=3.595 excess=11520
+  p=        257953 beta=3.595 excess=23040
+  p=        259201 beta=3.597 excess=11520
+  p=        261281 beta=3.599 excess=11520
+  p=        262657 beta=3.601 excess=11520
+  p=        265921 beta=3.604 excess=11520
+  p=        266977 beta=3.605 excess=11520
+  p=        268897 beta=3.607 excess=11520
+  p=        270593 beta=3.609 excess=11520
+  p=        271393 beta=3.610 excess=23040
+  p=        273313 beta=3.612 excess=11520
+  p=        276961 beta=3.616 excess=3840
+  p=        278177 beta=3.617 excess=11520
+  p=        278849 beta=3.618 excess=11520
+  p=        280097 beta=3.619 excess=11520
+  p=        280129 beta=3.619 excess=11520
+  p=        284129 beta=3.623 excess=5760
+  p=        286049 beta=3.625 excess=11520
+  p=        286753 beta=3.626 excess=23040
+  p=        287873 beta=3.627 excess=11520
+  p=        288481 beta=3.628 excess=5760
+  p=        288577 beta=3.628 excess=11520
+  p=        289889 beta=3.629 excess=960
+  p=        290209 beta=3.629 excess=11520
+  p=        290593 beta=3.630 excess=11520
+  p=        291041 beta=3.630 excess=11520
+  p=        295777 beta=3.635 excess=11520
+  p=        297377 beta=3.636 excess=11520
+  p=        299137 beta=3.638 excess=11520
+  p=        299329 beta=3.638 excess=11520
+  p=        301057 beta=3.640 excess=11520
+  p=        302977 beta=3.642 excess=23040
+  p=        303649 beta=3.642 excess=11520
+  p=        304033 beta=3.643 excess=11520
+  p=        306529 beta=3.645 excess=3840
+  p=        306913 beta=3.645 excess=23040
+  p=        309121 beta=3.648 excess=11520
+  p=        309857 beta=3.648 excess=11520
+  p=        312289 beta=3.651 excess=11520
+  p=        316577 beta=3.654 excess=11520
+  p=        316801 beta=3.655 excess=11520
+  p=        321313 beta=3.659 excess=11520
+  p=        323233 beta=3.660 excess=11520
+  p=        324641 beta=3.662 excess=11520
+  p=        325217 beta=3.662 excess=23040
+  p=        331937 beta=3.668 excess=3840
+  p=        332161 beta=3.668 excess=11520
+  p=        332513 beta=3.669 excess=11520
+  p=        334721 beta=3.671 excess=11520
+  p=        335809 beta=3.671 excess=11520
+  p=        336353 beta=3.672 excess=11520
+  p=        336769 beta=3.672 excess=11520
+  p=        337153 beta=3.673 excess=11520
+  p=        337697 beta=3.673 excess=11520
+  p=        340321 beta=3.675 excess=11520
+  p=        344161 beta=3.679 excess=11520
+  p=        346721 beta=3.681 excess=11520
+  p=        347297 beta=3.681 excess=11520
+  p=        347969 beta=3.682 excess=3840
+  p=        351041 beta=3.684 excess=11520
+  p=        353057 beta=3.686 excess=11520
+  p=        353473 beta=3.686 excess=11520
+  p=        353921 beta=3.687 excess=11520
+  p=        354401 beta=3.687 excess=11520
+  p=        355457 beta=3.688 excess=11520
+  p=        356449 beta=3.689 excess=11520
+  p=        357281 beta=3.689 excess=17280
+  p=        359713 beta=3.691 excess=11520
+  p=        360257 beta=3.692 excess=11520
+  p=        361313 beta=3.693 excess=11520
+  p=        361409 beta=3.693 excess=11520
+  p=        371873 beta=3.701 excess=11520
+  p=        375233 beta=3.703 excess=11520
+  p=        376097 beta=3.704 excess=5760
+  p=        376417 beta=3.704 excess=3840
+  p=        376577 beta=3.705 excess=23040
+  p=        380129 beta=3.707 excess=13440
+  p=        384001 beta=3.710 excess=11520
+  p=        385057 beta=3.711 excess=11520
+  p=        392321 beta=3.716 excess=3840
+  p=        392929 beta=3.717 excess=11520
+  p=        394241 beta=3.718 excess=5760
+  p=        396001 beta=3.719 excess=23040
+  p=        396449 beta=3.719 excess=11520
+  p=        397057 beta=3.720 excess=23040
+  p=        400417 beta=3.722 excess=11520
+  p=        406817 beta=3.727 excess=23040
+  p=        409153 beta=3.728 excess=11520
+  p=        411233 beta=3.730 excess=11520
+  p=        414017 beta=3.732 excess=11520
+  p=        416513 beta=3.734 excess=5760
+  p=        417793 beta=3.734 excess=1920
+  p=        419329 beta=3.736 excess=11520
+  p=        420001 beta=3.736 excess=17280
+  p=        420193 beta=3.736 excess=11520
+  p=        422689 beta=3.738 excess=11520
+  p=        431329 beta=3.744 excess=11520
+  p=        431777 beta=3.744 excess=5760
+  p=        432737 beta=3.745 excess=11520
+  p=        434561 beta=3.746 excess=11520
+  p=        441281 beta=3.750 excess=11520
+  p=        443777 beta=3.752 excess=1920
+  p=        445633 beta=3.753 excess=11520
+  p=        446657 beta=3.754 excess=17280
+  p=        450881 beta=3.756 excess=11520
+  p=        451553 beta=3.757 excess=11520
+  p=        453889 beta=3.758 excess=11520
+  p=        455201 beta=3.759 excess=11520
+  p=        455809 beta=3.760 excess=5760
+  p=        456193 beta=3.760 excess=11520
+  p=        456641 beta=3.760 excess=11520
+  p=        464033 beta=3.765 excess=11520
+  p=        466369 beta=3.766 excess=11520
+  p=        472193 beta=3.770 excess=11520
+  p=        473729 beta=3.771 excess=11520
+  p=        482753 beta=3.776 excess=11520
+  p=        485729 beta=3.778 excess=11520
+  p=        490913 beta=3.781 excess=11520
+  p=        491041 beta=3.781 excess=11520
+  p=        491489 beta=3.781 excess=11520
+  p=        493217 beta=3.782 excess=11520
+  p=        495617 beta=3.784 excess=5760
+  p=        497729 beta=3.785 excess=11520
+  p=        501089 beta=3.787 excess=23040
+  p=        503137 beta=3.788 excess=23040
+  p=        503297 beta=3.788 excess=11520
+  p=        506593 beta=3.790 excess=23040
+  p=        510401 beta=3.792 excess=11520
+  p=        510529 beta=3.792 excess=17280
+  p=        511873 beta=3.793 excess=11520
+  p=        512609 beta=3.793 excess=11520
+  p=        512641 beta=3.794 excess=5760
+  p=        523969 beta=3.800 excess=11520
+  p=        525377 beta=3.801 excess=11520
+  p=        529121 beta=3.803 excess=11520
+  p=        530017 beta=3.803 excess=5760
+  p=        533249 beta=3.805 excess=11520
+  p=        535489 beta=3.806 excess=11520
+  p=        548833 beta=3.813 excess=11520
+  p=        550049 beta=3.814 excess=11520
+  p=        554977 beta=3.816 excess=11520
+  p=        556289 beta=3.817 excess=5760
+  p=        557057 beta=3.817 excess=11520
+  p=        559649 beta=3.819 excess=3840
+  p=        565921 beta=3.822 excess=11520
+  p=        566977 beta=3.823 excess=5760
+  p=        568577 beta=3.823 excess=11520
+  p=        572161 beta=3.825 excess=11520
+  p=        575777 beta=3.827 excess=17280
+  p=        581857 beta=3.830 excess=11520
+  p=        582017 beta=3.830 excess=11520
+  p=        585953 beta=3.832 excess=5760
+  p=        598369 beta=3.838 excess=11520
+  p=        600577 beta=3.839 excess=11520
+  p=        608737 beta=3.843 excess=11520
+  p=        610913 beta=3.844 excess=11520
+  p=        619681 beta=3.848 excess=11520
+  p=        622561 beta=3.850 excess=11520
+  p=        628193 beta=3.852 excess=5760
+  p=        628673 beta=3.852 excess=11520
+  p=        632353 beta=3.854 excess=11520
+  p=        632609 beta=3.854 excess=5760
+  p=        634241 beta=3.855 excess=11520
+  p=        639137 beta=3.857 excess=11520
+  p=        641057 beta=3.858 excess=11520
+  p=        642049 beta=3.858 excess=11520
+  p=        645313 beta=3.860 excess=5760
+  p=        645857 beta=3.860 excess=11520
+  p=        646433 beta=3.860 excess=11520
+  p=        651169 beta=3.863 excess=11520
+  p=        656321 beta=3.865 excess=11520
+  p=        656737 beta=3.865 excess=11520
+  p=        658817 beta=3.866 excess=11520
+  p=        660833 beta=3.867 excess=11520
+  p=        665857 beta=3.869 excess=23040
+  p=        669089 beta=3.870 excess=11520
+  p=        672097 beta=3.872 excess=5760
+  p=        676129 beta=3.873 excess=3840
+  p=        677857 beta=3.874 excess=5760
+  p=        679297 beta=3.875 excess=11520
+  p=        680321 beta=3.875 excess=11520
+  p=        681409 beta=3.876 excess=11520
+  p=        682049 beta=3.876 excess=11520
+  p=        685057 beta=3.877 excess=11520
+  p=        688097 beta=3.878 excess=5760
+  p=        693697 beta=3.881 excess=11520
+  p=        696481 beta=3.882 excess=11520
+  p=        696737 beta=3.882 excess=11520
+  p=        697601 beta=3.882 excess=11520
+  p=        702017 beta=3.884 excess=11520
+  p=        702497 beta=3.884 excess=5760
+  p=        712417 beta=3.888 excess=11520
+  p=        715457 beta=3.890 excess=11520
+  p=        717089 beta=3.890 excess=11520
+  p=        719041 beta=3.891 excess=11520
+  p=        721057 beta=3.892 excess=5760
+  p=        724001 beta=3.893 excess=5760
+  p=        729473 beta=3.895 excess=11520
+  p=        734177 beta=3.897 excess=11520
+  p=        734849 beta=3.897 excess=11520
+  p=        735649 beta=3.898 excess=11520
+  p=        744353 beta=3.901 excess=11520
+  p=        762049 beta=3.908 excess=11520
+  p=        762529 beta=3.908 excess=11520
+  p=        770177 beta=3.911 excess=11520
+  p=        770657 beta=3.911 excess=5760
+  p=        782209 beta=3.915 excess=11520
+  p=        783553 beta=3.916 excess=11520
+  p=        788993 beta=3.918 excess=11520
+  p=        791969 beta=3.919 excess=11520
+  p=        795713 beta=3.920 excess=11520
+  p=        797281 beta=3.921 excess=11520
+  p=        801569 beta=3.922 excess=11520
+  p=        802913 beta=3.923 excess=11520
+  p=        813089 beta=3.927 excess=11520
+  p=        818689 beta=3.929 excess=11520
+  p=        819457 beta=3.929 excess=5760
+  p=        829057 beta=3.932 excess=11520
+  p=        830849 beta=3.933 excess=11520
+  p=        841601 beta=3.937 excess=5760
+  p=        843649 beta=3.937 excess=11520
+  p=        848321 beta=3.939 excess=11520
+  p=        850753 beta=3.940 excess=11520
+  p=        857953 beta=3.942 excess=3840
+  p=        860513 beta=3.943 excess=11520
+  p=        862241 beta=3.944 excess=5760
+  p=        865153 beta=3.945 excess=5760
+  p=        872737 beta=3.947 excess=11520
+  p=        879457 beta=3.949 excess=11520
+  p=        882881 beta=3.950 excess=11520
+  p=        886337 beta=3.951 excess=5760
+  p=        888737 beta=3.952 excess=11520
+  p=        897601 beta=3.955 excess=11520
+  p=        907169 beta=3.958 excess=11520
+  p=        918529 beta=3.962 excess=11520
+  p=        921121 beta=3.963 excess=11520
+  p=        934561 beta=3.967 excess=11520
+  p=        946273 beta=3.970 excess=11520
+  p=        949153 beta=3.971 excess=11520
+  p=        949441 beta=3.971 excess=1920
+  p=        956353 beta=3.973 excess=5760
+  p=        961313 beta=3.975 excess=11520
+  p=        974401 beta=3.979 excess=11520
+  p=        986497 beta=3.982 excess=5760
+  p=        987809 beta=3.983 excess=11520
+  p=        992417 beta=3.984 excess=960
+  p=        994913 beta=3.985 excess=11520
+  p=       1005313 beta=3.988 excess=5760
+  p=       1008001 beta=3.989 excess=11520
+  p=       1009601 beta=3.989 excess=11520
+  p=       1011649 beta=3.990 excess=5760
+  p=       1015361 beta=3.991 excess=11520
+  p=       1028129 beta=3.994 excess=5760
+  p=       1036993 beta=3.997 excess=11520
+  p=       1065409 beta=4.005 excess=11520
+  p=       1065601 beta=4.005 excess=11520
+  p=       1079329 beta=4.008 excess=11520
+  p=       1083809 beta=4.010 excess=5760
+  p=       1086913 beta=4.010 excess=11520
+  p=       1090721 beta=4.011 excess=11520
+  p=       1096481 beta=4.013 excess=11520
+  p=       1100353 beta=4.014 excess=11520
+  p=       1115297 beta=4.018 excess=11520
+  p=       1120481 beta=4.019 excess=11520
+  p=       1121377 beta=4.019 excess=11520
+  p=       1135873 beta=4.023 excess=11520
+  p=       1139681 beta=4.024 excess=3840
+  p=       1144193 beta=4.025 excess=11520
+  p=       1147009 beta=4.026 excess=11520
+  p=       1154177 beta=4.028 excess=11520
+  p=       1158593 beta=4.029 excess=11520
+  p=       1172993 beta=4.032 excess=11520
+  p=       1176641 beta=4.033 excess=5760
+  p=       1180961 beta=4.034 excess=11520
+  p=       1202689 beta=4.040 excess=11520
+  p=       1219649 beta=4.044 excess=5760
+  p=       1225729 beta=4.045 excess=11520
+  p=       1242817 beta=4.049 excess=11520
+  p=       1244993 beta=4.050 excess=15360
+  p=       1256897 beta=4.052 excess=5760
+  p=       1283969 beta=4.058 excess=11520
+  p=       1304609 beta=4.063 excess=11520
+  p=       1314433 beta=4.065 excess=11520
+  p=       1315297 beta=4.065 excess=11520
+  p=       1343233 beta=4.071 excess=5760
+  p=       1350977 beta=4.073 excess=11520
+  p=       1366721 beta=4.076 excess=11520
+  p=       1382177 beta=4.080 excess=11520
+  p=       1383169 beta=4.080 excess=11520
+  p=       1385921 beta=4.080 excess=11520
+  p=       1391393 beta=4.082 excess=11520
+  p=       1395809 beta=4.083 excess=15360
+  p=       1398113 beta=4.083 excess=5760
+  p=       1406081 beta=4.085 excess=5760
+  p=       1407041 beta=4.085 excess=11520
+  p=       1411297 beta=4.086 excess=5760
+  p=       1425953 beta=4.089 excess=11520
+  p=       1426913 beta=4.089 excess=5760
+  p=       1439393 beta=4.091 excess=15360
+  p=       1440737 beta=4.092 excess=11520
+  p=       1443713 beta=4.092 excess=5760
+  p=       1447777 beta=4.093 excess=11520
+  p=       1457633 beta=4.095 excess=11520
+  p=       1463009 beta=4.096 excess=11520
+  p=       1471681 beta=4.098 excess=11520
+  p=       1478209 beta=4.099 excess=5760
+  p=       1478273 beta=4.099 excess=5760
+  p=       1489409 beta=4.101 excess=5760
+  p=       1505761 beta=4.104 excess=5760
+  p=       1509857 beta=4.105 excess=11520
+  p=       1524449 beta=4.108 excess=11520
+  p=       1534081 beta=4.110 excess=11520
+  p=       1539649 beta=4.111 excess=5760
+  p=       1562593 beta=4.115 excess=11520
+  p=       1572353 beta=4.117 excess=5760
+  p=       1572929 beta=4.117 excess=11520
+  p=       1584257 beta=4.119 excess=11520
+  p=       1590049 beta=4.120 excess=11520
+  p=       1621729 beta=4.126 excess=11520
+  p=       1648481 beta=4.131 excess=11520
+  p=       1669249 beta=4.134 excess=11520
+  p=       1693889 beta=4.138 excess=11520
+  p=       1700129 beta=4.139 excess=11520
+  p=       1700161 beta=4.139 excess=5760
+  p=       1707617 beta=4.141 excess=11520
+  p=       1707649 beta=4.141 excess=11520
+  p=       1750913 beta=4.148 excess=11520
+  p=       1772993 beta=4.152 excess=5760
+  p=       1821857 beta=4.159 excess=11520
+  p=       1876129 beta=4.168 excess=5760
+  p=       1880513 beta=4.169 excess=11520
+  p=       1910369 beta=4.173 excess=3840
+  p=       1910401 beta=4.173 excess=11520
+  p=       1951457 beta=4.179 excess=1920
+  p=       1956001 beta=4.180 excess=11520
+  p=       1960993 beta=4.181 excess=11520
+  p=       1991489 beta=4.185 excess=3840
+  p=       2005441 beta=4.187 excess=11520
+  p=       2019361 beta=4.189 excess=11520
+  p=       2086081 beta=4.198 excess=11520
+  p=       2089441 beta=4.199 excess=11520
+  p=       2089889 beta=4.199 excess=11520
+  p=       2133601 beta=4.205 excess=3840
+  p=       2140129 beta=4.206 excess=11520
+  p=       2152001 beta=4.207 excess=11520
+  p=       2163809 beta=4.209 excess=11520
+  p=       2178433 beta=4.211 excess=11520
+  p=       2184769 beta=4.212 excess=5760
+  p=       2202913 beta=4.214 excess=11520
+  p=       2279009 beta=4.224 excess=11520
+  p=       2288257 beta=4.225 excess=11520
+  p=       2301473 beta=4.227 excess=5760
+  p=       2325377 beta=4.230 excess=5760
+  p=       2348161 beta=4.233 excess=11520
+  p=       2370689 beta=4.235 excess=3840
+  p=       2484289 beta=4.249 excess=5760
+  p=       2491553 beta=4.250 excess=11520
+  p=       2493089 beta=4.250 excess=3840
+  p=       2498273 beta=4.250 excess=3840
+  p=       2548769 beta=4.256 excess=11520
+  p=       2562337 beta=4.258 excess=5760
+  p=       2587969 beta=4.261 excess=5760
+  p=       2604769 beta=4.263 excess=5760
+  p=       2668993 beta=4.270 excess=5760
+  p=       2677217 beta=4.270 excess=5760
+  p=       2702209 beta=4.273 excess=11520
+  p=       2775713 beta=4.281 excess=11520
+  p=       2834017 beta=4.287 excess=5760
+  p=       2944673 beta=4.298 excess=5760
+  p=       2952737 beta=4.299 excess=11520
+  p=       2976481 beta=4.301 excess=11520
+  p=       3109441 beta=4.314 excess=5760
+  p=       3109697 beta=4.314 excess=11520
+  p=       3115009 beta=4.314 excess=5760
+  p=       3246977 beta=4.326 excess=11520
+  p=       3260833 beta=4.327 excess=11520
+  p=       3260897 beta=4.327 excess=5760
+  p=       3264449 beta=4.328 excess=3840
+  p=       3283361 beta=4.329 excess=5760
+  p=       3289697 beta=4.330 excess=3840
+  p=       3331457 beta=4.334 excess=11520
+  p=       3377377 beta=4.337 excess=5760
+  p=       3443681 beta=4.343 excess=5760
+  p=       3489089 beta=4.347 excess=3840
+  p=       3500897 beta=4.348 excess=11520
+  p=       3502657 beta=4.348 excess=11520
+  p=       3546721 beta=4.352 excess=11520
+  p=       3549697 beta=4.352 excess=11520
+  p=       3556897 beta=4.352 excess=3840
+  p=       3585697 beta=4.355 excess=3840
+  p=       3692641 beta=4.363 excess=5760
+  p=       3696097 beta=4.364 excess=5760
+  p=       3701249 beta=4.364 excess=3840
+  p=       3725857 beta=4.366 excess=5760
+  p=       3824993 beta=4.373 excess=11520
+  p=       4102753 beta=4.394 excess=11520
+  p=       4205857 beta=4.401 excess=3840
+  p=       4273153 beta=4.405 excess=5760
+  p=       4347841 beta=4.410 excess=5760
+  p=       4495297 beta=4.420 excess=5760
+  p=       4511809 beta=4.421 excess=5760
+  p=       4973057 beta=4.449 excess=5760
+  p=       5087809 beta=4.456 excess=3840
+  p=       5164769 beta=4.460 excess=5760
+  p=       5261569 beta=4.465 excess=11520
+  p=       5292769 beta=4.467 excess=5760
+  p=       5324129 beta=4.469 excess=5760
+  p=       5340449 beta=4.470 excess=5760
+  p=       5652961 beta=4.486 excess=3840
+  p=       5947489 beta=4.501 excess=5760
+  p=       5950369 beta=4.501 excess=1920
+  p=       5975969 beta=4.502 excess=5760
+  p=       5992289 beta=4.503 excess=1920
+  p=       6251233 beta=4.515 excess=3840
+  p=       6734017 beta=4.537 excess=3840
+  p=       6975841 beta=4.547 excess=5760
+  p=       7234849 beta=4.557 excess=3840
+  p=       7269697 beta=4.559 excess=3840
+  p=       7564097 beta=4.570 excess=3840
+  p=       7938529 beta=4.584 excess=5760
+  p=       8018369 beta=4.587 excess=5760
+  p=       8039233 beta=4.588 excess=3840
+  p=       8322241 beta=4.598 excess=5760
+  p=       8576609 beta=4.606 excess=960
+  p=       8740577 beta=4.612 excess=3840
+  p=       8755073 beta=4.612 excess=3840
+  p=       8877601 beta=4.616 excess=5760
+  p=       9148001 beta=4.625 excess=5760
+  p=       9444641 beta=4.634 excess=5760
+  p=       9549697 beta=4.637 excess=3840
+  p=       9650401 beta=4.640 excess=3840
+  p=       9699841 beta=4.642 excess=1920
+  p=      10148321 beta=4.655 excess=3840
+  p=      10314209 beta=4.660 excess=5760
+  p=      10764641 beta=4.672 excess=3840
+  p=      11118721 beta=4.681 excess=5760
+  p=      11653217 beta=4.695 excess=1920
+  p=      11688961 beta=4.696 excess=3840
+  p=      11712929 beta=4.696 excess=3840
+  p=      12281729 beta=4.710 excess=3840
+  p=      12549857 beta=4.716 excess=3840
+  p=      13294081 beta=4.733 excess=3840
+  p=      13604033 beta=4.740 excess=3840
+  p=      13871617 beta=4.745 excess=1920
+  p=      13925761 beta=4.746 excess=3840
+  p=      13944257 beta=4.747 excess=5760
+  p=      14043457 beta=4.749 excess=5760
+  p=      14088769 beta=4.750 excess=3840
+  p=      14394433 beta=4.756 excess=5760
+  p=      15011873 beta=4.768 excess=1920
+  p=      16165889 beta=4.789 excess=3840
+  p=      16260929 beta=4.791 excess=3840
+  p=      18120769 beta=4.822 excess=3840
+  p=      19514177 beta=4.844 excess=1920
+  p=      19569889 beta=4.844 excess=3840
+  p=      19894753 beta=4.849 excess=1920
+  p=      20315201 beta=4.855 excess=3840
+  p=      20686241 beta=4.860 excess=3840
+  p=      21091649 beta=4.866 excess=1920
+  p=      21164929 beta=4.867 excess=3840
+  p=      21523361 beta=4.872 excess=58560  *** EXACT-WICK VIOLATION
+  p=      21724193 beta=4.875 excess=3840
+  p=      21821249 beta=4.876 excess=3840
+  p=      21983617 beta=4.878 excess=3840
+  p=      23837057 beta=4.901 excess=3840
+  p=      23958017 beta=4.903 excess=3840
+  p=      24535009 beta=4.910 excess=3840
+  p=      24943073 beta=4.914 excess=3840
+  p=      26058497 beta=4.927 excess=3840
+  p=      26510401 beta=4.932 excess=3840
+  p=      27232193 beta=4.940 excess=3840
+  p=      28949729 beta=4.957 excess=3840
+  p=      29420609 beta=4.962 excess=3840
+  p=      29423041 beta=4.962 excess=192
+  p=      29495041 beta=4.963 excess=3840
+  p=      29596001 beta=4.964 excess=3840
+  p=      30508417 beta=4.973 excess=3840
+  p=      30700321 beta=4.974 excess=3840
+  p=      31060417 beta=4.978 excess=3840
+  p=      32245441 beta=4.989 excess=3840
+  p=      34160449 beta=5.005 excess=3840
+  p=      34351553 beta=5.007 excess=3840
+  p=      38168033 beta=5.037 excess=3840
+  p=      41368609 beta=5.060 excess=3840
+  p=      42155809 beta=5.066 excess=1920
+  p=      43078817 beta=5.072 excess=3840
+  p=      43107521 beta=5.072 excess=3840
+  p=      43293857 beta=5.074 excess=1920
+  p=      45296033 beta=5.087 excess=3840
+  p=      48564001 beta=5.107 excess=3840
+  p=      49231649 beta=5.111 excess=3840
+  p=      51474433 beta=5.123 excess=3840
+  p=      51491393 beta=5.124 excess=3840
+  p=      52609409 beta=5.130 excess=1920
+  p=      57499009 beta=5.155 excess=3840
+  p=      59469793 beta=5.165 excess=3840
+  p=      64522049 beta=5.189 excess=1920
+  p=      84333089 beta=5.266 excess=3840
+  p=      88597121 beta=5.280 excess=3840
+  p=      92349473 beta=5.292 excess=3840
+  p=     104747809 beta=5.328 excess=3840
+  p=     109478273 beta=5.341 excess=3840
+  p=     114167969 beta=5.353 excess=3840
+  p=     407836801 beta=5.721 excess=1920
+  p=     407893921 beta=5.721 excess=1920
+  p=    1080434561 beta=6.002 excess=960
+  p=    1176841217 beta=6.026 excess=960
+  p=    2082918049 beta=6.191 excess=960
+  p=    2147442977 beta=6.200 excess=960
+  p=    2149202273 beta=6.200 excess=960
+  p=    2174816417 beta=6.204 excess=960
+  p=    2191787489 beta=6.206 excess=960
+  p=    3487801441 beta=6.340 excess=960
+
+exact-Wick violations: 156; largest violating prime: 21523361 (beta=4.872)
+excess quantum (gcd over all bad primes): 96
+largest bad prime overall: p=3487801441 beta=6.340
