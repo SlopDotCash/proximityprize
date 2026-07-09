@@ -36,8 +36,7 @@ depth and worse at deep `r`. Numerics (probe): the true `E_r` crosses `wallTarge
 joint cancellation across `b`, i.e. the same BGK wall. Consistent with dossier v3 line 908
 ("Function-field model = null") and the DISPROOF ledger, now with an exact in-tree identity.
 -/
-import Mathlib.Algebra.Order.Monoid.Lemmas
-import Mathlib.Algebra.GroupPower.Order
+import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.HedgeReframe
@@ -65,10 +64,9 @@ per-character route gets *strictly worse* at every deeper rung — it cannot dis
 theorem gapFactor_strictMono {p : ℕ} (hp : 2 ≤ p) :
     StrictMono (fun r => gapFactor r p) := by
   intro a b hab
-  have hp1 : 1 ≤ p - 1 := by omega
-  have hpow : p ^ a < p ^ b := Nat.pow_lt_pow_right hp hab
+  have hpow : p ^ a < p ^ b := Nat.pow_lt_pow_right (by omega : 1 < p) hab
   have : (p - 1) * p ^ a < (p - 1) * p ^ b :=
-    Nat.mul_lt_mul_left (by omega) hpow
+    Nat.mul_lt_mul_of_pos_left hpow (by omega)
   simpa [gapFactor] using this
 
 /-- The overshoot is unbounded: for every bound `M` there is a depth `r` at which the naive
@@ -77,10 +75,7 @@ theorem gapFactor_unbounded {p : ℕ} (hp : 2 ≤ p) (M : ℕ) :
     ∃ r, M < gapFactor r p := by
   obtain ⟨r, hr⟩ := pow_unbounded_of_one_lt M (by omega : (1:ℕ) < p)
   refine ⟨r, ?_⟩
-  have hp1 : 1 ≤ p - 1 := by omega
-  calc M < p ^ r := hr
-    _ ≤ (p - 1) * p ^ r := Nat.le_mul_of_pos_left _ (by omega)
-  -- gapFactor r p = (p-1)*p^r
-  <;> rfl
+  exact lt_of_lt_of_le hr (by
+    simpa [gapFactor] using Nat.le_mul_of_pos_left (p ^ r) (by omega : 0 < p - 1))
 
 end ArkLib.ProximityGap.HedgeReframe

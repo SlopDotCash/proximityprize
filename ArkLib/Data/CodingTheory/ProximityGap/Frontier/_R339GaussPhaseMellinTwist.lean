@@ -163,8 +163,42 @@ theorem papr_of_momentSum {α : Type*} {s : Finset α} (f : α → ℂ) {k : ℕ
   have hle : ‖f b‖ ^ k ≤ B ^ k := hsingle.trans hmom
   exact le_of_pow_le_pow_left₀ hk.ne' hB hle
 
+/-- **The DC-subtracted Mellin moment bound** at depth `k` and constant `A`: the
+depth-`k` moment sum of the Mellin transform of the Gauss-phase vector over all
+nonzero frequencies is at most `(A·√(q·t·log t))^k`. This is the concrete Lean form
+of the dossier face-3 residual (`DCSubtractedMoment` side): a Wick-type bound here at
+`k ≈ log t` is the ONLY remaining open input on this face. NAMED OPEN — do not
+discharge. -/
+def MellinMomentBound (F : Type*) [Field F] [Fintype F] [DecidableEq F]
+    (d k : ℕ) (A : ℝ) : Prop :=
+  ∀ (χ : MulChar F ℂ), orderOf χ = Fintype.card F - 1 →
+  ∀ (ψ : AddChar F ℂ), ψ.IsPrimitive →
+    ∑ b ∈ Finset.univ.erase (0 : F),
+      ‖∑ j ∈ (Finset.range ((Fintype.card F - 1) / d)).erase 0,
+          (χ ^ (d * j))⁻¹ b * gaussSum (χ ^ (d * j)) ψ‖ ^ k
+      ≤ (A * Real.sqrt (Fintype.card F * (((Fintype.card F - 1) / d : ℕ))
+          * Real.log (((Fintype.card F - 1) / d : ℕ)))) ^ k
+
+/-- **PROVEN glue**: the depth-`k` Mellin moment bound implies the PAPR bound at the
+same constant — via `papr_of_momentSum` (Markov + union bound over the `q−1` nonzero
+frequencies). Combined with `norm_eta_le_of_papr`, the whole face-3 chain
+`moment ⟹ PAPR ⟹ per-frequency √(n log t)` is now machine-checked; only the moment
+Prop itself is open. -/
+theorem gaussPhasePAPR_of_mellinMoment {d k : ℕ} (hk : 0 < k) {A : ℝ} (hA : 0 ≤ A)
+    (hmom : MellinMomentBound F d k A) :
+    GaussPhasePAPRBound F d A := by
+  intro χ hord ψ hψ b hb
+  have hB : 0 ≤ A * Real.sqrt (Fintype.card F * (((Fintype.card F - 1) / d : ℕ))
+      * Real.log (((Fintype.card F - 1) / d : ℕ))) :=
+    mul_nonneg hA (Real.sqrt_nonneg _)
+  exact papr_of_momentSum
+    (fun b' => ∑ j ∈ (Finset.range ((Fintype.card F - 1) / d)).erase 0,
+      (χ ^ (d * j))⁻¹ b' * gaussSum (χ ^ (d * j)) ψ)
+    hk hB (hmom χ hord ψ hψ) b (Finset.mem_erase.mpr ⟨hb, Finset.mem_univ b⟩)
+
 #print axioms gaussSum_mulShift_twist
 #print axioms papr_of_momentSum
+#print axioms gaussPhasePAPR_of_mellinMoment
 #print axioms mellin_identity
 #print axioms norm_eta_le_of_papr
 

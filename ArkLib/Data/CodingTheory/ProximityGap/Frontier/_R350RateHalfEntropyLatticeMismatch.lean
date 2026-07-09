@@ -31,14 +31,19 @@ theorem binEntropy_one_half_exact :
     Real.binEntropy (1 / 2 : ℝ) = Real.log 2 := by
   rw [Real.binEntropy]
   norm_num [Real.log_inv]
+  ring
 
 /-- The rate-half entropy candidate with `B = 2^25` is exactly `23/50`. -/
 theorem prizeDeltaStar_half_two_pow_twenty_five :
     prizeDeltaStar (1 / 2 : ℝ) (2 ^ 25 : ℝ) = 23 / 50 := by
   rw [prizeDeltaStar, binEntropy_one_half_exact]
-  rw [Real.logb, Real.log_pow]
-  norm_num
-  field_simp
+  rw [Real.logb]
+  change 1 - 1 / 2 - Real.log 2 /
+      (Real.log ((2 : ℝ) ^ 25) / Real.log 2) = 23 / 50
+  rw [Real.log_pow]
+  have hlog : Real.log (2 : ℝ) ≠ 0 :=
+    ne_of_gt (Real.log_pos (by norm_num))
+  field_simp [hlog]
   ring
 
 /-- No point of the `2^25` Hamming lattice equals `23/50`. -/
@@ -69,12 +74,18 @@ theorem operational_deltaStar_ne_unrounded_entropy_half_two_pow_twenty_five
   obtain ⟨j, hj⟩ := exists_latticePoint_eq_mcaDeltaStar C εstar hne
   rw [prizeDeltaStar_half_two_pow_twenty_five]
   intro h
+  let j' : Fin (2 ^ 25 + 1) :=
+    ⟨j.val, by rw [← hn]; exact j.isLt⟩
+  have hjpoint :
+      mcaLatticePoint (Fintype.card ι) j = mcaLatticePoint (2 ^ 25) j' := by
+    unfold mcaLatticePoint
+    simp only [j', hn]
+  have hjR := congrArg (fun x : ℝ≥0 => (x : ℝ)) hj
   have hlattice :
-      ((mcaLatticePoint (2 ^ 25) j : ℝ≥0) : ℝ) = 23 / 50 := by
-    rw [← hn]
-    exact_mod_cast hj.symm.trans (by exact_mod_cast h)
-  exact rateHalf_candidate_not_lattice
-    ⟨j.val, by simpa [hn] using j.isLt⟩ hlattice
+      ((mcaLatticePoint (2 ^ 25) j' : ℝ≥0) : ℝ) = 23 / 50 := by
+    rw [← hjpoint]
+    exact hjR.symm.trans h
+  exact rateHalf_candidate_not_lattice j' hlattice
 
 end ProximityGap.PrizeEntropy
 

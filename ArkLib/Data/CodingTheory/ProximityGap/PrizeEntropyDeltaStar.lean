@@ -20,10 +20,10 @@ import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 > is also false there, now in the opposite direction.  The four production prize instances
 > remain open.
 
-This file states a **closed-form candidate answer** to the Proximity Prize
+This file records a historical **closed-form candidate answer** to the Proximity Prize
 (proximityprize.org, ABF26) for explicit constant-rate smooth-domain Reed–Solomon codes,
-together with the **rigorous ceiling half** (an unconditional in-window upper bound on
-`δ*`) and the precise single statement whose proof closes the prize.
+together with a rigorous discrete ladder ceiling and the historical statement that was
+intended to supply its matching floor.
 
 ## The closed form
 
@@ -34,7 +34,7 @@ denominator units.  It lies strictly inside the prize
 window `(1 − √ρ, 1 − ρ)` at every prize rate `ρ ∈ {1/2,1/4,1/8,1/16}` and budget
 `log₂ B ∈ {40,64,128}` (numerically verified, `scripts/probes/probe_entropy_ceiling.py`).
 
-## Why this is the answer (the derivation)
+## Historical derivation
 
 The threshold `δ*` is where the **worst-case list** (= `q·ε_mca`) crosses `B = q·ε*`.
 The explicit ladder family `w = x^{rm}+λx^{(r−1)m}` on the dyadic subgroup `μ_s` (`s = 2^μ`,
@@ -45,8 +45,8 @@ structure).  At constant rate `k = ρn` the construction forces `r ≈ ρs+2`, r
 making `δ` BAD — exactly when `s > 2 log₂ B / H(ρ)`, i.e. `δ` drops below
 `1 − ρ − H(ρ)/log₂ B`.  Thus the derivation uses base-two entropy; the Lean definition below
 does not perform that conversion.  So **`δ* ≤ prizeDeltaStar ρ B`** was the proposed ceiling
-(the ladder is an
-explicit bad family).  The conjecture is that this ceiling is **tight** — equivalently,
+(the ladder is an explicit bad family).  The conjecture was that this ceiling is **tight** —
+equivalently,
 that no word beats the ladder/`N_fib` count in the worst case (the worst-case list upper
 bound, the one open wall).
 
@@ -139,11 +139,12 @@ def PrizePinConjecture
       (evalCode g n k) εstar : ℝ)
     = prizeDeltaStar ((k : ℝ) / n) ((p : ℝ) * εstar.toReal)
 
-/-- **The rigorous ceiling (unconditional, prize-regime).**  The explicit ladder family
-forces `δ* ≤ 1 − r/2^μ` for the dyadic construction, under the mild decidable hypothesis
+/-- **A rigorous discrete ladder ceiling (unconditional in its stated regime).**  The explicit
+ladder family forces `δ* ≤ 1 − r/2^μ` for the dyadic construction, under the mild decidable
+hypothesis
 that `q` divides no collision resultant (NOT the `s^{s/2} < q` transfer wall).  This is the
-upper half of the prize pin, with no `CensusDomination` and no incomputable input.  (The
-optimized form over dyadic levels gives the entropy ceiling `prizeDeltaStar`.) -/
+machine-checked rung ceiling, with no `CensusDomination` and no incomputable input.  This theorem
+does not identify its right-hand side with the mixed-base `prizeDeltaStar` definition above. -/
 theorem prizeDeltaStar_ceiling {p n : ℕ} [Fact p.Prime] [NeZero n] {μ m r : ℕ}
     (hμ : 1 ≤ μ) {g : ZMod p} (hm : 1 ≤ m) (hn : n = 2 ^ μ * m)
     (hg : orderOf g = 2 ^ μ * m) (hpμ : 2 ^ μ < p)

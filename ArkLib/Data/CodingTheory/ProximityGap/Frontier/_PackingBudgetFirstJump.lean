@@ -350,3 +350,11 @@ theorem exists_order_mcaDeltaStar_le_half_of_floor_eq_length
     hfloor hkquarter hsupply⟩
 
 end ArkLib.ProximityGap.PackingBudgetFirstJump
+
+/-! ## Axiom audit -/
+
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_overlapFreshScalars
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.overlap_epsMCA_lower_bound_of_supply
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_first_deep_packing_of_floor_budget
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_half_of_floor_eq_length
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_order_mcaDeltaStar_le_half_of_floor_eq_length

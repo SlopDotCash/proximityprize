@@ -31040,3 +31040,22 @@ masses vs n); (b) locate in-tree/literature exact Shkredov constant for |H ∩ (
 (c) the s=5 sector at p=32993 (46080 = above headroom alone) — check its per-class
 structure before trusting the route. CORE OPEN — this is a derivation sketch + exact
 shape data, not a proof.
+
+## [466-r368-sector-migration-refutes-simple-shkredov-route] the r367 asymptotic route AS STATED is REFUTED by sector migration: at n=64 the violators' dominant mass is SUPPORT-6 HEIGHT-1 (pure ±1 six-term relations, 60–100% per violator), not the trinomial sector — the deep core of the r=3 rung is the Sidon-type 6-term ±1 relation count (the additive-energy excess itself), which the subgroup-on-a-line reduction does not cover (2026-07-09)
+
+`probe_r368_sector_scaling_n64.py`, `_out_466_r368_n64_sector_scaling.txt`: first n=64
+violators (β ≥ 3, p ∈ [262144, 400000]): p=263489 excess=207360 (s6h1: 138240, s5h2: 69120);
+p=264577 (s6h1: 276480 of 299520); p=264769 (s6h1: 322560 of 345600); p=264961 (s6h1: 100%);
+p=265921 (s6h1: 184320 of 299520). At n=32 the dominant sector was s3h2 (84%); at n=64 it is
+s6h1. CONSEQUENCE: (i) the height-2+ low-support sectors (where Shkredov/line bounds apply)
+appear to be the SMALL-n phenomenon; the large-n mass concentrates in the height-1
+maximal-support stratum = distinct 3-sums colliding, i.e. exactly the Sidon/additive-energy
+core object — the reduction is circular there; (ii) the r367 route survives only as a
+control of the SUBDOMINANT sectors (still useful for the full decomposition: r=3 rung ⟺
+s6h1 count + provably-small rest); (iii) the honest statement of the depth-3 wall after
+r305–r368: bound #{(x⃗,y⃗) ∈ μ_n⁶: Σx = Σy, disjoint supports} − Wick ≤ 45n² − (small
+sectors) — the pure Sidon-defect form, now with every other sector explicitly separated.
+NEXT: (a) is the s6h1 mass per violator bounded by C·n² at n=64 (check: 322560 = 78·n²·1.23
+— it's ~1.2–1.8× headroom, i.e. barely violating — quantify the trend vs n=32's 8.7×);
+(b) the swarm's FS4/Sidon lanes own the ±1-pattern census — hand the s6h1 spectrum there.
+CORE OPEN, ON-BGK.
