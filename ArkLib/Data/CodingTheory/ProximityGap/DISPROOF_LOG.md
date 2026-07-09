@@ -31185,3 +31185,23 @@ Weil/Stepanov-adjacent) controls; (iii) the full rung decomposition is now: exce
 excess (shifted-subgroup intersections), s5/s6 = genuine depth-3 Sidon strata — EACH sector
 has its own literature; the wall is their SIMULTANEOUS control at prize (n, β, r≈ln q).
 CORE OPEN, ON-BGK.
+
+## [466-r383-half-radius-mds-line-n-bound-REFUTED] the unrestricted projective `n` ceiling is false for dyadic RS and for an infinite conic family (2026-07-09)
+
+R382 proposed: if `H` is an `[n,k]` MDS parity frame, `2e<n`, and `e+k+1<=n`, then
+every proper projective syndrome line has at most `n` points in the weight-`e` support union.
+`Frontier/_R383HalfRadiusMDSLineRefuted.lean` refutes this inside a genuine dyadic RS frame:
+for the eight roots of unity in `F_17`, `(n,k,e)=(8,4,3)`, the affine line
+`(1,gamma,0,0)` has nine distinct proper weight-three points.  The file gives every sparse
+certificate, proves the fixed base point is outside each witness span, and checks both numerical
+hypotheses.  Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
+
+The mechanism is not isolated.  Ng--Wild (Ars Combin. 58 (2001), Theorem 4.5) construct, for
+every `s|(q+1)`, `s>=3`, a conic subset of size `N=s+(q+1)/s-1` whose secants cover a
+prescribed disjoint line.  Taking odd `q>=7`, `s=(q+1)/2`, parity dimension `3`, and `e=2`
+gives `[N,N-3]` GRS counterexamples with `2e<N`, `e+k+1=N`, and `q+1>N` proper points.
+
+CONSEQUENCE: ordinary MDS, GRS/NRC structure, and dyadicity separately cannot imply the proposed
+ceiling.  The strict low-rate production slice `e=n/2-1`, `k<=n/4` remains open because it has
+linear slack in `e+k+1<n`; R383 does not close or refute that slice.  Detailed source and parameter
+translation: `docs/kb/deltastar-half-radius-mds-line-refutation-2026-07-09.md`.

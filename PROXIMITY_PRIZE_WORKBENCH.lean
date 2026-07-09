@@ -14,6 +14,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R383HalfRadiusMDSLineRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusConicSecantBoundaryFamily
 
 set_option linter.style.longLine false
 
@@ -551,9 +553,10 @@ end ProximityPrize
 The production incidence condition is now exactly projective below the full-field budget, descends
 to quotient classes, and for every budget at least one only needs rank-two quotient pencils.  The
 support, metric, and line--ball checks give three exact forms of the remaining incidence object.
-The final four checks keep the finite-instance entropy and rate-only counterexamples next to the
-open asymptotic conjectures above; they prevent those disproved identities from being reused as
-exact finite laws.
+The R383 checks refute the unrestricted half-radius MDS-line ceiling with nine proper affine
+points on a dyadic `[8,4]` Reed--Solomon frame.  The final four checks keep the finite-instance
+entropy and rate-only counterexamples next to the open asymptotic conjectures above; together they
+prevent disproved finite laws from being reused as exact inputs.
 -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_eq_of_quotient_mk_eq
@@ -566,7 +569,6 @@ exact finite laws.
 #check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
 #check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
 #check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
-#check @ProximityGap.ProjectiveMetricUnification.pencilJointFar_iff_not_jointProximity
 #check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check @ProximityGap.ProjectiveQuotientBall.pencilJointFar_quotientPencil_iff_not_jointProximity
 #check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
@@ -578,6 +580,11 @@ exact finite laws.
 #check @ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
 #check @ProximityGap.ProjectiveProperQuotientBall.properProjectiveBallIncidence_eq_affine_add_infty
 #check @ProximityGap.ProjectiveProperQuotientBall.properAffineBallIncidence_spectral
+#check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.exists_more_than_eight_proper_points
+#check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.conjecture_hypotheses_hold
+#check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentPoint_eq_secant
+#check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentInfinity_eq_secant
+#check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.conic_family_numerics
 #check ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED

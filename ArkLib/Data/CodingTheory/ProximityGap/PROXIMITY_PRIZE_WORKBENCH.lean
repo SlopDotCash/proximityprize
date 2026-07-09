@@ -19,6 +19,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveCosetWeight
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveMetricUnification
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveProperQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R383HalfRadiusMDSLineRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusConicSecantBoundaryFamily
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -715,7 +717,6 @@ theorem deltaStar_pin_mu8_F4129_witness :
   budget `E >= 1`, dependent quotient rows contribute at most one slot, so only genuine rank-two
   pencils remain.  `mcaEventProj_iff_quotientPencilSupport` states each bad slot exactly as a class
   lying in a witness support subspace which does not contain the whole quotient pencil.  The open
-  math is the resulting worst-case incidence estimate.
   math is the resulting worst-case incidence estimate.  `ProjectiveProperQuotientBall` retains this
   local properness clause, gives an unconditional exact projective incidence for every pencil, and
   supplies its affine-plus-infinity decomposition and exact affine Fourier expansion.
@@ -723,13 +724,15 @@ theorem deltaStar_pin_mu8_F4129_witness :
   `badSlotCount_le_lowCosetWeightCount` gives the unconditional metric envelope, and becomes an
   equality under global `not jointProximity`.  `quotientSyndromeBall` is the finite union of all
   admissible support subspaces.  `ProjectiveMetricUnification` proves that this is exactly the
-  coset-weight sublevel set and that basis-free `PencilJointFar` is equivalent to
-  `not jointProximity`.  The resulting projective line--ball incidence splits into its affine chart
-  and infinity point, while the affine chart feeds directly into
-  coset-weight sublevel set, while `ProjectiveQuotientBall` proves that basis-free
-  `PencilJointFar` is equivalent to `not jointProximity`.  The resulting projective line--ball
-  incidence splits into its affine chart and infinity point, while the affine chart feeds into
+  coset-weight sublevel set, while `ProjectiveQuotientBall` identifies basis-free `PencilJointFar`
+  with `not jointProximity`.  The resulting projective line--ball incidence splits into its affine chart
+  and infinity point, while the affine chart feeds into
   `LineIncidenceSpectral.lineIncidence_spectral`. -/
+
+/-! The tempting field-uniform ceiling of `n` proper points on every half-radius MDS syndrome
+  line is false.  The R383 countermodel has nine proper affine points on the dyadic `[8,4]`
+  Reed--Solomon frame over `F_17`, with `2e<n` and `e+k+1=n`.  This retires the unrestricted
+  MDS/GRS conjecture but leaves the strict-slack production slice `k<=n/4` open. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
@@ -747,7 +750,6 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_pencilJointFar
 #check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
 #check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
-#check @ProximityGap.ProjectiveMetricUnification.pencilJointFar_iff_not_jointProximity
 #check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check @ProximityGap.ProjectiveQuotientBall.pencilJointFar_quotientPencil_iff_not_jointProximity
 #check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
@@ -759,6 +761,11 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check @ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
 #check @ProximityGap.ProjectiveProperQuotientBall.properProjectiveBallIncidence_eq_affine_add_infty
 #check @ProximityGap.ProjectiveProperQuotientBall.properAffineBallIncidence_spectral
+#check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.exists_more_than_eight_proper_points
+#check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.conjecture_hypotheses_hold
+#check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentPoint_eq_secant
+#check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentInfinity_eq_secant
+#check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.conic_family_numerics
 #check
   ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 
