@@ -21462,3 +21462,88 @@ INTRINSIC to the (pattern-count n⁶ × per-pattern log-height Θ(n)) ledger at 
 that window-primes divide few resultants simultaneously) — that is again the per-prime
 uniformity wall, as expected. Route closed for threshold improvement; the FS6 statement stands
 as the sharp output of this method. CORE OPEN, ON-BGK.
+
+## [466-leafmine-r1-second-moment-sqrt-barrier] second-moment LD⇒MCA is unconditionally SILENT in the entire window interior — `s²>b ⟺ below-Johnson`, machine-checked dichotomy (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_R1SecondMomentSqrtBarrier.lean` (axiom-clean, previously unmined leaf). The GCXK25
+second-moment master inequality `N·s² ≤ s + (N−1)·b` bounds the bad count `N` **iff `s² > b`**, and
+`s² > b ⟺ δ < 1−√ρ` (exactly the Johnson radius); when `s² ≤ b` the inequality is satisfied by every `N`
+(`second_moment_unbounded_in_window`), regardless of any input list-size bound `L`. So every
+second-moment-only LD⇒MCA argument is structurally mute on the whole prize window interior
+`{δ : (1−δ)² ≤ ρ}` — the √-barrier is intrinsic to the method, not an artifact of constants. VERDICT
+NO-GO (method-cap at Johnson), consistent with and sharpening the Meta-Theorem. CORE OPEN.
+
+## [466-leafmine-r4-pessimistic-estimator-is-the-wall] the R4 probabilistic/pessimistic-estimator route reduces EXACTLY to the DC-subtracted energy wall — no Paley bypass (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_R4PessimisticEstimatorReduction.lean` (axiom-clean, previously unmined leaf). The
+named certificate `R4PessimisticCertificate` (`q·E_r − |G|^{2r} ≤ M^r`) is proven **equivalent** to the
+DC-subtracted char-p energy bound (node N6c-2), and it discharges the floor consumer
+`WorstCaseIncompleteSumBound`. The derandomization/pessimistic-estimator door is therefore not a fifth
+door: its success criterion IS the wall object, and it fails numerically at the known bad primes
+(e.g. p = 641 for n = 16). VERDICT REDUCTION-TO-CORE. CORE OPEN.
+
+## [466-leafmine-r25-subfamily-bounded-residual-nogo] coarse-power subfamily thinning with a uniform pointwise cap buys EXACTLY nothing — RHS collapses to the full-family triangle bound (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_R25SubfamilyBoundedResidualNoGo.lean` (axiom-clean, previously unmined leaf).
+Replacing exact residual cancellation in the coarse-power subfamily route by any uniform pointwise cap
+`T` yields an incidence RHS `|G| + (orderOf χ − 1)·√q·T` — proven **equal** (`no_thinning_gain`) to the
+trivial full-family triangle bound. Thinning-with-bounding therefore contributes zero; the estimate
+depends only on the per-character incomplete-Gauss-sum cap `T`, i.e. the open BGK/Paley object itself.
+VERDICT NO-GO (distinct from the spatial-window thinning entries already logged). CORE OPEN.
+
+## [466-leafmine-rmt-bounded-depth-overshoot] any FIXED moment depth r₀ polynomially OVERSHOOTS the EVT/prize target — 4-moment RMT universality is quantitatively insufficient (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_RMTBoundedDepthUniversalityNoGo.lean` (axiom-clean, previously unmined leaf). The
+bounded-depth max-envelope `N^{1/(2r₀)}` strictly exceeds the EVT target `√(2 ln N)` with exact ratio
+`N^{1/(2r₀)}/√(2 ln N) → ∞` (proven strict-exceed + monotonicity); at prize scale `N ≈ 2^158` the
+4-moment (`r₀ = 2`) envelope overshoots by ≈ 7·10¹⁰. Complements the existing "bounded-depth moment is
+decision-blind" trichotomy entry (which is about two spectra sharing moments): here the ENVELOPE itself
+is off-target by a polynomial factor; the binding depth is Θ(ln N), re-deriving the joint-limit wall
+from the RMT side. VERDICT NO-GO. CORE OPEN.
+
+## [466-leafmine-rs-restrict-injon-shearer-vacuous] RS k-projection rigidity: entropy/Shearer sub-additivity is VACUOUS for RS list-counts at block size ≥ k (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_RSRestrictInjOn.lean` (axiom-clean, previously unmined leaf). Fully proven: a
+degree-<k polynomial vanishing on ≥ k points is 0; restriction of the RS code to ANY k-subset of the
+domain is `InjOn` (MDS recovery); hence the RS list at k-agreement is a subsingleton (list-count ≤ 1).
+Consequence for the entropy-descent door: per-block entropy at block size ≥ k EQUALS global entropy, so
+Shearer/sub-additivity descent cannot beat Johnson for RS list-counts — the certificate that closed the
+narrative entropy route is now an in-tree theorem, not prose. VERDICT NO-GO-CERTIFICATE. CORE OPEN.
+
+## [466-leafmine-resonance-single-coset-no-log] single-coset resonators can NEVER beat the √n floor — numerator = Parseval diagonal EXACTLY; any log gain requires ≥ 2 correlating cosets (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_ResonanceNumeratorDiagOffDiagSplit.lean` (axiom-clean, previously unmined leaf).
+Exact identity: the coset-resonator numerator splits as Parseval diagonal `‖r‖²·A₁` plus a NAMED
+off-diagonal Gauss-period autocorrelation `Off`, with `Num = ‖r‖²(qn − n²) + Off` under orthogonality,
+and `coset_resonator_numerator_single_eq_parseval`: for a single-coset resonator the numerator EQUALS
+the diagonal — zero off-diagonal, hence no possible log improvement over the √n floor from one coset.
+Localizes the door-(iv) resonance search to multi-coset correlation (the `Off` object). VERDICT
+STRUCTURE-LOCALIZATION. CORE OPEN.
+
+## [466-leafmine-rho-char0-slack-vacuous] the char-0-slack ρ ≤ 1 shortcut is IDENTICALLY the raw DC-included energy bound — machine-refuted at prize depth; genuine slack must come from the DC term (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_RhoCharZeroSlackVacuousAtPrize.lean` (axiom-clean, previously unmined leaf). The
+char-0-slack premise `W ≤ Wick − E0` (with `W = E_r − E0`) is proven ALGEBRAICALLY IDENTICAL (exact iff)
+to raw `GaussianEnergyBound`, which `not_gaussianEnergyBound_of_deep` machine-refutes at prize depth
+(n ≥ 64, r ≈ log q). The ρ ≤ 1 shortcut is therefore empty exactly where it would be needed; any true
+slack must be extracted from the DC term (consistent with the DC-crossover findings). VERDICT
+REFUTED-EQUIVALENCE. CORE OPEN.
+
+## [466-leafmine-runglist-371-bridge] #371 LD↔MCA bridge: attached-stratum class count IS the RS list size, capped by the agreement-Fisher ceiling `#list·C(a,k) ≤ C(n,k)`; census closes inside Johnson, deep band = large-radius RS list decoding (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_RungListBridge.lean` (axiom-clean, previously unmined leaf). The attached MCA frame
+classes are exactly RS list members of the row code R₁, and `attached_cross_polys_card_le` proves the
+Fisher-injection ceiling `#list · C(a,k) ≤ C(n,k)` at agreement a. So the #371 attached-side census is
+list decoding: it closes for r ≤ √n (inside Johnson) and the deep band r ∈ (√(n log n), n/2] is the
+large-radius RS list-decoding wall — the same object, met from the multiplicity side. VERDICT
+BRIDGE-IDENTIFICATION. CORE OPEN.
+
+## [466-leafmine-rudnev-mathlib-ceiling] Rudnev's √(mnq) point–plane incidence core is an IRREDUCIBLE-AG-CEILING for the Mathlib route — no existing primitive discharges it (2026-07-09, leaf-mining audit)
+
+Source: `Frontier/_RUD_MathlibAssessment.lean` (assessment leaf; the Cauchy–Schwarz reduction TO the
+core is proven, the core itself is the named open input). Systematic capability scan: Mathlib has no
+Klein quadric / Plücker embedding / polynomial partitioning / incidence machinery — every path to
+`RudnevIncidenceCore` requires a multi-month AG formalization project (Klein-quadric route judged the
+minimal one). The energy route through Rudnev is therefore not a shortcut around the wall for THIS
+campaign; it is a formalization ceiling, recorded so future lanes do not re-scout it. VERDICT
+IRREDUCIBLE-AG-CEILING. CORE OPEN.
