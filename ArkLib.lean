@@ -1908,6 +1908,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectMomentCeilingAtF
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectNecessitySufficiencyGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectSupCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectSupNecessity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCStieltjesRatioAntitoneEquivalence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DE_DCSubtractedDeep
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DPPCoherenceReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DStarOneIsPDependentBindingIsNot
