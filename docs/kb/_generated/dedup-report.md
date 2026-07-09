@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5636 files, 59536 declarations
+- `ArkLib` — 5646 files, 59607 declarations
 
 ## Same short-name across multiple files (2301 groups)
 
@@ -944,6 +944,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.BridgeB11.dilate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB11.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB11.lean#L61) — The dilation self-map `α ↦ α·μ^{b−a}`.
 - `def ProximityGap.T3InverseRigidity.dilate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_T3InverseRigidityAffineBlind.lean:74](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_T3InverseRigidityAffineBlind.lean#L74) — The dilate `b • S = {b * x : x ∈ S}`.
 - `def ArkLib.ProximityGap.SubgroupGaussSumSecondMoment.dilate` [ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumDilationRecursion.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumDilationRecursion.lean#L61) — The **dilated set** `ζ•G = {ζ·x : x ∈ G}`.
+
+### `doubleFactorial_le_crude` (4 declarations, 4 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L101) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r}(2j+1) = (2r−1)‼`: each of the `r` factors `2j+1`
+- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L112) — `∏_{j<r}(2j+1) ≤ (2r)^r` (each factor `2j+1 ≤ 2r`).
+- `theorem ArkLib.ProximityGap.Frontier.G58AllDepthLedgerReversal.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean#L96) — **`(2r−1)‼ ≤ (2r)^r`.** Each of the `r` factors `2j+1` (for `j < r`) is `≤ 2r`.
+- `theorem ArkLib.ProximityGap.wfA04WeilEnvelopeVacuity.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean#L105) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r} (2j+1) = (2r−1)‼`: each of the `r` factors `2j+1
 
 ### `doubleFactorial_step` (4 declarations, 4 files)
 
@@ -2711,11 +2718,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma ArkLib.ProximityGap.P6ReverseHolderTelescope.doubleFactOdd_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean#L87) — (no docstring)
 - `theorem ArkLib.ProximityGap.MomentWickBridge.doubleFactOdd_zero` [ArkLib/Data/CodingTheory/ProximityGap/MomentWickBridge.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/MomentWickBridge.lean#L49) — (no docstring)
 
-### `doubleFactorial_le_crude` (3 declarations, 3 files)
+### `doubleFactorial_eq_prod` (3 declarations, 3 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L101) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r}(2j+1) = (2r−1)‼`: each of the `r` factors `2j+1`
-- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L112) — `∏_{j<r}(2j+1) ≤ (2r)^r` (each factor `2j+1 ≤ 2r`).
-- `theorem ArkLib.ProximityGap.wfA04WeilEnvelopeVacuity.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean#L105) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r} (2j+1) = (2r−1)‼`: each of the `r` factors `2j+1
+- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L124) — The product form of the double factorial: `(2r−1)‼ = ∏_{j<r}(2j+1)`.
+- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L105) — `(2r−1)‼ = ∏_{j<r}(2j+1)`.
+- `theorem ArkLib.ProximityGap.Frontier.G58AllDepthLedgerReversal.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean#L79) — Product form of the double factorial `(2r−1)‼ = ∏_{j<r} (2j+1)`.
 
 ### `doubleFactorial_two_sub_one_le` (3 declarations, 3 files)
 
@@ -6639,11 +6646,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.MomentMethodPrizeDepthNoGo.doubleFactOdd_succ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean#L92) — (no docstring)
 - `lemma ArkLib.ProximityGap.P6ReverseHolderTelescope.doubleFactOdd_succ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean:89](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean#L89) — (no docstring)
-
-### `doubleFactorial_eq_prod` (2 declarations, 2 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L124) — The product form of the double factorial: `(2r−1)‼ = ∏_{j<r}(2j+1)`.
-- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L105) — `(2r−1)‼ = ∏_{j<r}(2j+1)`.
 
 ### `doubleFactorial_le_pow` (2 declarations, 2 files)
 

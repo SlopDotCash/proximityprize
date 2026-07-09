@@ -52,6 +52,49 @@ Frontier/_AntiResonanceDichotomyReducesToWall.lean --
 Probes: scripts/probes/probe_466_antiresonance_tower_worstb.py, probe_466_antiresonance_tower_only.py.
 Author Sol (opus-4-8 core seat), co-author wakesync. -- antiresdichotomy.
 
+## [466-G58-ledger-reverses-with-depth] the all-depth annihilator ledger WORSENS with depth — G56's all-depth identity moves the BGK-free ledger the WRONG way; branch CLOSED (2026-07-09, #466 G58)
+
+Lane: arklib-opus-formalizer (opus-4-8). Answers the question raised by the G56/G57 calibration audit:
+*does the all-depth folded-pattern identity strengthen the BGK-free annihilator ledger route?* **NO — it
+strictly weakens it.** Landed axiom-clean in `Frontier/_G58AllDepthLedgerReversal.lean` (5 thms, all
+`#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, locked build 3350 jobs).
+
+CALIBRATION FIRST (why no new consumer is landed). `DCEnergyBound (Gset ζ m) r` is definitionally
+`q·E_r − n^{2r} ≤ q·Wickₚ` (`n = |Gset| = 2m`, `Wickₚ = (2r−1)‼·n^r`). Substituting G56's exact identity
+`E_r = negSymCount(2r) + W` turns it into the EXACT equivalent `q·W ≤ n^{2r} + q·(Wickₚ − negSymCount(2r))`
+— the sharp slack-aware criterion implied by `rEnergy = negSymCount + W` together with
+`negSymCount(2r) ≤ Wickₚ` (`G57.negSymCount_le_wick`). This is a genuine `↔`-rewrite of the OPEN
+`DCEnergyBound` prop, i.e. a RELABELING whose slack term `q·(Wickₚ − negSymCount)` is itself the residual
+BGK content. G57 already lands the weaker sufficient gate `q·W ≤ n^{2r}`; the sharp criterion exposes the
+exact remaining obligation but does NOT discharge it, so per brief NO stronger-looking wrapper around the
+same open prop is landed.
+
+THE NO-GO WE DO LAND. The BGK-free ledger (`FS1.annihilator_ledger_badPrime_cap`) bounds bad primes by
+`|pats|·(L/s)/T`. At depth `r`: pattern count `|pats| = |expTupleSet m (2r)| = n^{2r}` (proved exactly:
+`expTupleSet_card`, `Fintype.card_piFinset_const` + `Gset_card`), Wick headroom threshold scale
+`T_r = (2r−1)‼·n^r`. The decisive ratio `ledgerRatio r = |pats|/T_r = n^r/(2r−1)‼`. We prove the exact
+Nat/double-factorial bounds:
+* `wick_le_patternCount` : `(2r−1)‼·n^r ≤ n^{2r}` for `2r ≤ n` (ledgerRatio ≥ 1).
+* `ledger_ratio_growth` : `((2r−1)‼·n^r)·n^r ≤ n^{2r}·(2r)^r` (cross-multiplied `ledgerRatio ≥ (n/2r)^r`),
+  via the crude ceiling `(2r−1)‼ ≤ (2r)^r` (`doubleFactorial_le_crude`, product form).
+* `ledger_ratio_step_mono` : `n^r·(2(r+1)−1)‼ ≤ n^{r+1}·(2r−1)‼` for `2r+1 ≤ n` — the EXACT step
+  monotonicity: the ratio `n^r/(2r−1)‼` weakly INCREASES from depth `r` to `r+1` (one-step factor
+  `n/(2r+1) ≥ 1`). This is the correct monotonicity carrier (NOT a `(n/(2r))^r`-monotone claim, which is
+  FALSE near the `2r ≤ n` boundary, e.g. `(10/4)^2 > (10/6)^3` — caught in Codex review).
+* `ledger_gain_reverses_with_depth` : the packaged no-go on the real objects — pattern count is exactly
+  `n^{2r}`, `T_r ≤ n^{2r}`, `T_r·n^r ≤ n^{2r}·(2r)^r`, AND the step monotonicity above.
+
+Iterating `ledger_ratio_step_mono` from `r = 3` upward — valid at every step throughout the prize regime
+(`n = 2^30`, `r ≈ ln q ≈ 83 ≪ n`, so `2r+1 ≤ n` holds), the all-depth ledger's pattern-count-over-headroom
+ratio is monotone non-decreasing in depth and strictly LARGER at every depth `r ≥ 4` than at `r = 3` — so
+the all-depth cap needs a strictly larger prime family to stay non-vacuous. VERDICT: the all-depth folded-pattern identity does NOT help the annihilator
+ledger; it moves it the wrong way. This converts Fable's informal "moves the wrong way" (fable-implications
+report, 2026-07-09) into an in-tree theorem. NOTHING here is BGK — the ledger route never touches per-
+character incomplete Gauss sums; the price (as always) is that it can only certify Wick where the ratio
+stays bounded, and this file proves that ratio provably blows up with depth. DISTINCT from `_wfA04` (the
+Weil/toric envelope vacuity, a Deligne/Weil-II object) and from the padding-persistence probe: this is the
+FS1-ledger pattern-count/headroom ratio. CORE stays OPEN, ON-BGK — consistent with and sharpened by G58.
+
 ## [466-r14-outer-two-sided-iff] the delta*-floor is machine-checked BOTH DIRECTIONS equivalent to WorstCaseIncidenceBounded — the campaign's real two-sidedness (2026-07-04, #466 round 14)
 
 Lane: round-14 Lane I (dossier §24). Assembled the campaign's actual machine-checked two-sided reduction
