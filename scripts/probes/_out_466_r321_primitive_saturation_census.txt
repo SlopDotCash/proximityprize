@@ -1,0 +1,6 @@
+# R321 primitive-recurrence dyadic saturation census
+n=32 r=4 cells=92 shadow_keys=44545 quotient_hist={2: 76, 4: 15, 8: 1} failures=0
+top_orbit_share min=0.717488789 mean=0.955667269 max=1.000000000
+example p=1065409 share=0.963855422 resultant_quotient=2 relation=(-2, -1, 0, 0, 0, 0, 0, -1, 1, 0, 0, 1, 0, 0, 0, 0)
+example p=1439393 share=0.717488789 resultant_quotient=2 relation=(-2, -1, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+example p=4102753 share=1.000000000 resultant_quotient=2 relation=(-2, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1)
