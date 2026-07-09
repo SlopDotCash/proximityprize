@@ -21357,3 +21357,30 @@ coefficient bound 6, producing `Depth3ExcessBounded G (excessCount pats Bad p)`.
 sizable; next lane. INFRA NOTE: `Mathlib.LinearAlgebra.Matrix.AbsoluteValue` olean was
 toolchain-stale (kernel `unknown constant Semiring.toMonoid`); fixed by
 `lake-locked.sh build Mathlib.LinearAlgebra.Matrix.AbsoluteValue` (1388 jobs). CORE OPEN, ON-BGK.
+
+## [466-FS4-depth3-pattern-decomposition] EXACT STRUCTURAL BRIDGE (Fable session): `addEnergy3(μ_n) = trivialCount(m) + wraparoundExcess(ζ,m)` machine-checked for 2-power domains — the char-0 term is FIELD-INDEPENDENT and the excess term is exactly the FS1/FS2/FS3 pattern object; one pure counting lemma left (2026-07-09)
+
+Lane: FS4 (file `Frontier/_FS4Depth3PatternDecomposition.lean`, real locked build 3314 jobs, all
+4 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `patternPoly m a₁…a₆` — the folded pattern of an exponent sextuple (`μ(a) = X^a` for `a < m`,
+  `−X^{a−m}` else): `deg < m` (`patternPoly_natDegree_lt`), `|coeffs| ≤ 6 ≤ 2^3`
+  (`patternPoly_coeff_abs_le`) — EXACTLY the FS3 annihilator-input shape at `b = 3`.
+- `sum_eq_iff_aeval_patternPoly`: for `ζ^m = −1`, the depth-3 energy condition
+  `ζ^{a₁}+ζ^{a₂}+ζ^{a₃} = ζ^{a₄}+ζ^{a₅}+ζ^{a₆}` ⟺ `patternPoly(ζ) = 0`.
+- `addEnergy3_eq_trivial_add_excess` (MAIN): for primitive `2m`-th ζ,
+  `addEnergy3(image ζ^· [0,2m)) = trivialCount m + wraparoundExcess ζ m` — an EXACT equality,
+  where `trivialCount m := #{sextuples : patternPoly = 0 in ℤ[X]}` (field-independent, no ζ!)
+  and `wraparoundExcess := #{sextuples : patternPoly ≠ 0 ∧ patternPoly(ζ) = 0}`.
+  Proof: ζ^m = −1 from primitivity; six-fold `sum_image` reindex; pointwise indicator split.
+
+CHAIN STATUS (FS1→FS4): the almost-all-primes r=3 Wick rung is now reduced to ONE remaining
+lemma, purely combinatorial and field-free: `trivialCount m ≤ 15n³ − 45n² + 40n` (`n = 2m`).
+Probe `python` (this round): trivialCount = 15n³−45n²+40n EXACTLY at n = 4 (400) and n = 8
+(5120) — the 15-matchings inclusion–exclusion form, consistent with r50's Lam–Leung closed
+form. Everything else in the chain is proven: decomposition (FS4) + per-pattern annihilator
+with dyadic height (FS2+FS3, b=3 ⟹ L = (k+4)·2^{k+1}) + the ledger cap and r53 weld (FS1).
+Named next lane: FS5 = the trivialCount inclusion–exclusion count (no wall contact — finite
+ℤ[X] combinatorics; the count states "balanced signed sextuples over the free basis
+X^0..X^{m−1}"). HONEST SCOPE unchanged: the composed rung is almost-all-primes, non-vacuous
+for β ≳ 6; NOT a per-prime prize rung. CORE OPEN, ON-BGK.
