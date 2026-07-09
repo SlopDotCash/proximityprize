@@ -21448,3 +21448,17 @@ effective nontrivial-pattern count is ≪ n⁶ — could push the almost-all thr
 (ii) per-coset (r56-style) refinement of BadPat; (iii) the same 6-brick schema at r = 4
 (105n⁴ Wick, headroom O(n³), patterns in [n]⁸ with |coeffs| ≤ 8 ≤ 2^3 — the machinery is
 depth-generic except the closed form). CORE OPEN, ON-BGK.
+
+## [466-FS7-mahler-average-refuted] FS7 (Fable session, probe-only): the Mahler-measure average CANNOT lower the FS6 ledger threshold below β ≈ 6 — E[log|N(g)|] → 0.35·(n/2)ln6, a constant factor; the almost-all threshold shifts by log_n(const) → 0 (2026-07-09)
+
+Probe (this session, sampled 4000 patterns/size): E[log|N(g)|]/((n/2)ln 6) = 0.373 / 0.355 /
+0.351 / 0.350 at n = 8/16/32/64 — converging to ≈ 0.35 (= E[log|signed 6-step root-walk|]/ln 6).
+So replacing FS3's worst-case Sylvester height by the average pattern log-height in the FS1
+incidence total Σ_σ ω(N(σ)) ≤ Σ_σ log N/s gains only a CONSTANT factor in L. The FS6
+non-vacuity condition n⁵·const < n^{β−1} moves by log_n(const) → 0: the β ≳ 6 threshold is
+INTRINSIC to the (pattern-count n⁶ × per-pattern log-height Θ(n)) ledger at r = 3. Also checked
+(FS6 entry): diagonal shift-orbit quotienting is Markov-neutral. To reach the prize shape
+(β ≈ 5.3) the ledger would need structural control of WHICH primes divide N(σ) (equivalently,
+that window-primes divide few resultants simultaneously) — that is again the per-prime
+uniformity wall, as expected. Route closed for threshold improvement; the FS6 statement stands
+as the sharp output of this method. CORE OPEN, ON-BGK.
