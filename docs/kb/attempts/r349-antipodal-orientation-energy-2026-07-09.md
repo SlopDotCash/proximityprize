@@ -58,3 +58,34 @@ parity constraint to the multiplicity of every antipodal pair in a relation;
 the hope is that this removes enough characteristic-`p` wraparound relations
 to prove a Wick recurrence even though no fixed transversal has such a known
 bound.
+
+## Adversarial audit: the original spike is a literal summand
+
+The orientation average must not be advertised as an independent source of
+randomness.  Write
+
+`F_eps(b) = sum_j exp(2 pi i b eps_j a_j / p) = S(b) + i Y_eps(b)`.
+
+Because changing the representative of an antipodal pair conjugates its
+character value, `S(b) = eta_H(b)/2` is independent of `eps`.  Therefore
+
+`E_eps |F_eps(b)|^(2k) = E_eps (S(b)^2 + Y_eps(b)^2)^k
+                       >= |eta_H(b)|^(2k) / 4^k`.
+
+The desired orientation-averaged Wick inequality does imply the prize bound,
+but it already contains the original exceptional spike as its `Y=0` term.
+Random orientation cannot average that spike away.  A proof still needs a
+new arithmetic bound on the signed relation expansion; Khinchine or generic
+`B_2` input alone is circular or false.  Thus R349 is a diagnostic coordinate
+change, not yet a reduction to an easier theorem.
+
+## Literature correction
+
+The v3 dossier lists Chapman--Mudgal arXiv:2605.15434 among unrun
+"anti-resonance" probes.  The paper is *Counting solutions to the quadratic
+determinant equation*.  Its square-root error concerns integer solutions of
+`x1*x2-x3*x4=h` in the boundary regime `h=N^2+O(N)`, using a Ramanujan-sum
+symmetry.  It supplies no estimate for additive character sums over a thin
+multiplicative subgroup and does not instantiate the R349 or CORE objects.
+It should not remain on the live analytic queue without an additional,
+explicit transfer theorem.
