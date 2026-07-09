@@ -33,6 +33,8 @@ MCA bad event acts **projectively** on the pencil of a stack.
   (`badSlotCount_eq_affine_add_infty`).
 * `rowMixSlotEquiv` / `badSlotCount_row_mix` — the explicit Mobius permutation of projective
   slots induced by every invertible row mix, and invariance of the full projective census.
+* `badSlotCount_translate` / `badSlotCount_eq_of_quotient_mk_eq` — invariance under translating
+  either row by a codeword, so the census descends to a pair of quotient classes modulo `C`.
 
 Why this matters for the campaign:
 
@@ -223,6 +225,76 @@ open Classical in
 /-- The projective census of a stack: the number of bad slots among the `|F| + 1`. -/
 noncomputable def badSlotCount (C : Set (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) : ℕ :=
   (Finset.filter (fun s : Option F => badSlot C δ u₀ u₁ s) Finset.univ).card
+
+/-! ## Descent to quotient classes modulo the code -/
+
+/-- Translating both rows by codewords preserves every homogeneous pencil event.
+The witnessing codeword changes by `α • c₀ + β • c₁`. -/
+theorem mcaEventProj_translate (C : Submodule F (ι → A)) {δ : ℝ≥0}
+    {u₀ u₁ c₀ c₁ : ι → A} (hc₀ : c₀ ∈ C) (hc₁ : c₁ ∈ C) (α β : F) :
+    mcaEventProj (F := F) (C : Set (ι → A)) δ (u₀ + c₀) (u₁ + c₁) α β ↔
+      mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ α β := by
+  constructor
+  · rintro ⟨S, hcard, ⟨w, hw, hag⟩, hno⟩
+    refine ⟨S, hcard, ⟨w - (α • c₀ + β • c₁),
+      C.sub_mem hw (C.add_mem (C.smul_mem α hc₀) (C.smul_mem β hc₁)),
+      fun i hi => ?_⟩,
+      fun hp => hno ((MCAEquivariance.pairJointAgreesOn_translate C hc₀ hc₁).mpr hp)⟩
+    simp only [Pi.sub_apply, Pi.add_apply, Pi.smul_apply]
+    rw [hag i hi]
+    simp only [Pi.add_apply, smul_add]
+    abel
+  · rintro ⟨S, hcard, ⟨w, hw, hag⟩, hno⟩
+    refine ⟨S, hcard, ⟨w + (α • c₀ + β • c₁),
+      C.add_mem hw (C.add_mem (C.smul_mem α hc₀) (C.smul_mem β hc₁)),
+      fun i hi => ?_⟩,
+      fun hp => hno ((MCAEquivariance.pairJointAgreesOn_translate C hc₀ hc₁).mp hp)⟩
+    simp only [Pi.add_apply, Pi.smul_apply]
+    rw [hag i hi]
+    simp only [smul_add]
+    abel
+
+/-- Codeword translation preserves badness of each normalized projective slot. -/
+theorem badSlot_translate (C : Submodule F (ι → A)) {δ : ℝ≥0}
+    {u₀ u₁ c₀ c₁ : ι → A} (hc₀ : c₀ ∈ C) (hc₁ : c₁ ∈ C) (s : Option F) :
+    badSlot (F := F) (C : Set (ι → A)) δ (u₀ + c₀) (u₁ + c₁) s ↔
+      badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ s := by
+  unfold badSlot
+  exact mcaEventProj_translate C hc₀ hc₁ (slotCoords s).1 (slotCoords s).2
+
+/-- The full projective census is constant under translation by a pair of codewords. -/
+theorem badSlotCount_translate (C : Submodule F (ι → A)) {δ : ℝ≥0}
+    {u₀ u₁ c₀ c₁ : ι → A} (hc₀ : c₀ ∈ C) (hc₁ : c₁ ∈ C) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ (u₀ + c₀) (u₁ + c₁) =
+      badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ := by
+  classical
+  unfold badSlotCount
+  congr 1
+  ext s
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+  exact badSlot_translate C hc₀ hc₁ s
+
+/-- The projective census depends only on the two additive cosets modulo `C`. -/
+theorem badSlotCount_eq_of_sub_mem (C : Submodule F (ι → A)) (δ : ℝ≥0)
+    {u₀ u₁ v₀ v₁ : ι → A} (h₀ : u₀ - v₀ ∈ C) (h₁ : u₁ - v₁ ∈ C) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ =
+      badSlotCount (F := F) (C : Set (ι → A)) δ v₀ v₁ := by
+  have htranslate := badSlotCount_translate (F := F) C h₀ h₁
+    (δ := δ) (u₀ := v₀) (u₁ := v₁) (c₀ := u₀ - v₀) (c₁ := u₁ - v₁)
+  have heq₀ : v₀ + (u₀ - v₀) = u₀ := by abel
+  have heq₁ : v₁ + (u₁ - v₁) = u₁ := by abel
+  simpa only [heq₀, heq₁] using htranslate
+
+/-- Equality of both quotient classes gives equality of projective bad-slot counts. -/
+theorem badSlotCount_eq_of_quotient_mk_eq (C : Submodule F (ι → A)) (δ : ℝ≥0)
+    {u₀ u₁ v₀ v₁ : ι → A}
+    (h₀ : (Submodule.Quotient.mk u₀ : (ι → A) ⧸ C) = Submodule.Quotient.mk v₀)
+    (h₁ : (Submodule.Quotient.mk u₁ : (ι → A) ⧸ C) = Submodule.Quotient.mk v₁) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ =
+      badSlotCount (F := F) (C : Set (ι → A)) δ v₀ v₁ := by
+  exact badSlotCount_eq_of_sub_mem C δ
+    ((Submodule.Quotient.eq (p := C)).mp h₀)
+    ((Submodule.Quotient.eq (p := C)).mp h₁)
 
 /-! ## The induced Mobius action on projective slots -/
 
@@ -449,6 +521,11 @@ theorem badSlotCount_eq_affine_add_infty (C : Set (ι → A)) (δ : ℝ≥0) (u�
 #print axioms pairJointAgreesOn_row_mix_iff
 #print axioms mcaEventProj_row_mix
 #print axioms mcaEventProj_smul
+#print axioms mcaEventProj_translate
+#print axioms badSlot_translate
+#print axioms badSlotCount_translate
+#print axioms badSlotCount_eq_of_sub_mem
+#print axioms badSlotCount_eq_of_quotient_mk_eq
 #print axioms rowMixSlotEquiv
 #print axioms badSlot_row_mix_iff
 #print axioms badSlotCount_row_mix

@@ -2407,6 +2407,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrimeCapacityUncertainty
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeCharZeroWired
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeConditionalCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeFloorOfBGK
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePackingCounterexample
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileFiberMaxFloorBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileFiberSlackDominance
@@ -2772,9 +2773,12 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R362KernelShellWickWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R365CenteredShadowMassWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R366CenteredRelationAnomaly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R367SignedShadowPairDiscrepancy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R368SignedDifferenceFiberDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R369FourthPowerSaddleRecovery
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R371ShadowKernelRotationAction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R372ShadowRelationRotationEquivariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R376PerFrequencyShadowLogMEndpoint
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap

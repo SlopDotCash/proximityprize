@@ -35,7 +35,9 @@ with the additional numeric hypothesis `E < |F|`.  The right side is a projectiv
 rebase below is the chart change needed to move away from a bad infinity slot.  The final
 consumers feed the census directly into the existing operational `mcaDeltaStar` floor engine.
 This does not prove the incidence bound; it removes the affine-chart artifact and identifies
-the exact GL2-invariant projective object a production proof must bound.
+the exact GL2-invariant projective object a production proof must bound.  The quotient-rank
+reduction below also proves that rank-zero and rank-one pencils have at most one bad slot, so
+every production budget `E >= 1` only needs genuine rank-two quotient pencils.
 -/
 
 set_option autoImplicit false
@@ -48,6 +50,7 @@ open ProximityGap Code
 namespace ProximityGap.ProjectiveWorstCaseIncidence
 
 open ProximityGap.MCAProjectiveEquivariance
+open ProximityGap.MCAEquivariance
 open ProximityGap.OpenCoreConditionalPin
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -276,6 +279,82 @@ theorem mcaDeltaStar_eq_of_projective_jump
     intro heps
     exact hbad ((epsMCA_le_iff_projective C δ₀ E hE).mp heps)
 
+/-! ## Quotient-rank stratification -/
+
+/-- A nontrivial linear combination of the rows is a codeword, equivalently their quotient
+classes span a subspace of dimension at most one. -/
+def RowsDependentModCode (C : Submodule F (ι → A)) (u₀ u₁ : ι → A) : Prop :=
+  ∃ a b : F, (a ≠ 0 ∨ b ≠ 0) ∧ a • u₀ + b • u₁ ∈ C
+
+/-- A pair represents a genuine rank-two pencil in the quotient by `C`. -/
+def RowsIndependentModCode (C : Submodule F (ι → A)) (u₀ u₁ : ι → A) : Prop :=
+  ¬ RowsDependentModCode C u₀ u₁
+
+/-- If the direction row is a codeword, no affine slot can be bad. -/
+theorem not_mcaEvent_of_right_mem (C : Submodule F (ι → A)) (δ : ℝ≥0)
+    (u₀ u₁ : ι → A) (hu₁ : u₁ ∈ C) (γ : F) :
+    ¬ mcaEvent (F := F) (C : Set (ι → A)) δ u₀ u₁ γ := by
+  intro hbad
+  have htrans := mcaEvent_translate C C.zero_mem (C.neg_mem hu₁) (δ := δ)
+    (u₀ := u₀) (u₁ := u₁) γ
+  have hzero :
+      mcaEvent (F := F) (C : Set (ι → A)) δ u₀ (0 : ι → A) γ := by
+    apply htrans.mpr at hbad
+    simpa using hbad
+  obtain ⟨S, _hS, ⟨w, hw, hagree⟩, hno⟩ := hzero
+  apply hno
+  refine ⟨w, hw, 0, C.zero_mem, fun i hi => ⟨?_, rfl⟩⟩
+  simpa using hagree i hi
+
+/-- A pencil with a codeword direction has at most its infinity slot bad. -/
+theorem badSlotCount_le_one_of_right_mem (C : Submodule F (ι → A)) (δ : ℝ≥0)
+    (u₀ u₁ : ι → A) (hu₁ : u₁ ∈ C) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ ≤ 1 := by
+  classical
+  rw [badSlotCount_eq_affine_add_infty]
+  have hcard :
+      (Finset.univ.filter (fun γ : F =>
+        mcaEvent (F := F) (C : Set (ι → A)) δ u₀ u₁ γ)).card = 0 := by
+    rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+    intro γ _hγ
+    exact not_mcaEvent_of_right_mem C δ u₀ u₁ hu₁ γ
+  rw [hcard, zero_add]
+  split <;> simp
+
+/-- Linear dependence of the two quotient classes forces at most one bad projective slot. -/
+theorem badSlotCount_le_one_of_rowsDependentModCode
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A)
+    (hdep : RowsDependentModCode C u₀ u₁) :
+    badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ ≤ 1 := by
+  obtain ⟨a, b, ha | hb, habC⟩ := hdep
+  · have hdet : (0 : F) * b - 1 * a ≠ 0 := by simpa using ha
+    have hmix := badSlotCount_row_mix C hdet δ u₀ u₁
+    rw [← hmix]
+    simpa using badSlotCount_le_one_of_right_mem C δ
+      u₁ (a • u₀ + b • u₁) habC
+  · have hdet : (1 : F) * b - 0 * a ≠ 0 := by simpa using hb
+    have hmix := badSlotCount_row_mix C hdet δ u₀ u₁
+    rw [← hmix]
+    simpa using badSlotCount_le_one_of_right_mem C δ
+      u₀ (a • u₀ + b • u₁) habC
+
+/-- For budgets at least one, the all-stack projective condition only needs to be checked on
+genuine rank-two quotient pencils. -/
+theorem projectiveWorstCaseIncidenceBounded_iff_rankTwo
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) (E : ℕ) (hE : 1 ≤ E) :
+    ProjectiveWorstCaseIncidenceBounded C δ E ↔
+      ∀ u : WordStack A (Fin 2) ι,
+        RowsIndependentModCode C (u 0) (u 1) →
+          badSlotCount (F := F) (C : Set (ι → A)) δ (u 0) (u 1) ≤ E := by
+  constructor
+  · intro h u _hu
+    exact h u
+  · intro h u
+    by_cases hdep : RowsDependentModCode C (u 0) (u 1)
+    · exact le_trans
+        (badSlotCount_le_one_of_rowsDependentModCode C δ (u 0) (u 1) hdep) hE
+    · exact h u hdep
+
 end ProximityGap.ProjectiveWorstCaseIncidence
 
 /-! ## Axiom audit -/
@@ -288,6 +367,12 @@ end ProximityGap.ProjectiveWorstCaseIncidence
 #print axioms ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidence_pin
 #print axioms ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidence_pin_budget
 #print axioms ProximityGap.ProjectiveWorstCaseIncidence.mcaDeltaStar_eq_of_projective_jump
+#print axioms ProximityGap.ProjectiveWorstCaseIncidence.not_mcaEvent_of_right_mem
+#print axioms ProximityGap.ProjectiveWorstCaseIncidence.badSlotCount_le_one_of_right_mem
+#print axioms
+  ProximityGap.ProjectiveWorstCaseIncidence.badSlotCount_le_one_of_rowsDependentModCode
+#print axioms
+  ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
 
 /-! ## Sharpness of the strict budget hypothesis
 

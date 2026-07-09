@@ -41,12 +41,7 @@ theorem eta_sq_le_of_fourthPowerSaddle
     exact_mod_cast (Fintype.one_lt_card (α := F))
   have hlogpos : 0 < Real.log (Fintype.card F : ℝ) := Real.log_pos hq
   have hr : 1 ≤ r := by
-    rw [Nat.one_le_iff_ne_zero]
-    intro hr0
-    have hceil : (⌈Real.log (Fintype.card F : ℝ)⌉₊ : ℝ) = 0 := by simp [r] at hr0 ⊢
-    have hle := Nat.le_ceil (Real.log (Fintype.card F : ℝ))
-    rw [hceil] at hle
-    linarith
+    exact Nat.ceil_pos.mpr hlogpos
   have hrq : Real.log (Fintype.card F : ℝ) ≤ r := Nat.le_ceil _
   have hdc : DCEnergyBound G r := hsaddle hsize
   simpa only [r] using eta_sq_le_dcOptimized hψ hr hrq hdc hb
