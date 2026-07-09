@@ -15,6 +15,7 @@ namespace ArkLib.ProximityGap.Frontier.R329Depth3ClosedFormLargeChar
 
 open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm
 open ArkLib.ProximityGap.Frontier.R327Depth3ExcessVanishing
+open ArkLib.ProximityGap.SubgroupGaussSumSixthMoment
 
 theorem addEnergy3_eq_closedForm_of_characteristic_above_height
     {k prime : ℕ} {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -33,6 +34,4 @@ theorem addEnergy3_eq_closedForm_of_characteristic_above_height
 
 end ArkLib.ProximityGap.Frontier.R329Depth3ClosedFormLargeChar
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R329Depth3ClosedFormLargeChar
-    .addEnergy3_eq_closedForm_of_characteristic_above_height
+#print axioms ArkLib.ProximityGap.Frontier.R329Depth3ClosedFormLargeChar.addEnergy3_eq_closedForm_of_characteristic_above_height
