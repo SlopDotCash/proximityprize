@@ -343,6 +343,13 @@ section FinalLens
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : Nat} [NeZero n]
 
+/-- Reindex the abstract subtype off-diagonal mass by the underlying scalar finset. -/
+theorem offDiagInterMass_subtype_eq (G : Finset F) (S : F -> Finset (Fin n)) :
+    offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) =
+      ∑ gamma ∈ G, ∑ gamma' ∈ G.erase gamma, (S gamma ∩ S gamma').card := by
+  classical
+  simp [offDiagInterMass]
+
 end FinalLens
 
 end ProximityGap.Frontier.WeightedSlopeMassUpperLens
