@@ -299,7 +299,6 @@ theorem unroll_n_message_reduction_perfectCompleteness
             refine ⟨h_pOut, ?_⟩
             use vStmtOut, vOStmtOut
             refine ⟨?_, rfl⟩
-            simp only [OptionT.mem_support_simulateQ_liftQuery_iff, liftM_OptionT_eq]
             exact h_ver
           · intro hRight tr pStmtOut pOStmtOut pWitOut vStmtOut vOStmtOut h_exists_tr_lastPrvState
             rcases h_exists_tr_lastPrvState with
@@ -654,15 +653,15 @@ lemma tsum_mul_le_of_le_of_sum_le_one_nnreal {α : Type*}
   -- 2. Establish that the target series (f x * g x) is summable by comparison
   have h_fg_summable : Summable (fun x ↦ f x * g x) := by
     refine NNReal.summable_of_le (fun x ↦ ?_) h_mul_summable
-    exact mul_le_mul_of_nonneg_left (hg x) (zero_le (f x))
+    exact mul_le_mul_of_nonneg_left (hg x) zero_le'
   -- 3. The calculation
   calc ∑' x, f x * g x
     _ ≤ ∑' x, f x * ε := by
       apply Summable.tsum_le_tsum _ h_fg_summable h_mul_summable
       intro x
-      exact mul_le_mul_of_nonneg_left (hg x) (zero_le _)
+      exact mul_le_mul_of_nonneg_left (hg x) zero_le'
     _ = (∑' x, f x) * ε := tsum_mul_right f ε
-    _ ≤ 1 * ε := mul_le_mul_of_nonneg_right hf (zero_le _)
+    _ ≤ 1 * ε := mul_le_mul_of_nonneg_right hf zero_le'
     _ = ε := one_mul ε
 
 lemma ENNReal.tsum_mul_le_of_le_of_sum_le_one {α : Type*} {f g : α → ℝ≥0∞} {ε : ℝ≥0∞}

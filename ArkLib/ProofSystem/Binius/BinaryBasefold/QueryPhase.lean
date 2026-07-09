@@ -45,6 +45,7 @@ variable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]
   [h_β₀_eq_1 : Fact (β 0 = 1)]
 variable {ℓ 𝓡 ϑ : ℕ} (γ_repetitions : ℕ) [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ] -- Should we allow ℓ = 0?
 variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}
+variable {𝓑 : Fin 2 ↪ L}
 variable [hdiv : Fact (ϑ ∣ ℓ)]
 
 open scoped NNReal ProbabilityTheory
@@ -105,6 +106,31 @@ lemma single_point_localized_fold_matrix_form_congr_dest_index
           (h_destIdx_eq_destIdx' ▸ y) fiber_eval_mapping := by
   subst h_destIdx_eq_destIdx'
   rfl
+
+/-- Congruence of `single_point_localized_fold_matrix_form` under a (propositionally equal)
+change of the `steps` index. Mirror of `single_point_localized_fold_matrix_form_congr_dest_index`
+over the `steps` index. -/
+lemma single_point_localized_fold_matrix_form_congr_steps_index
+    {i : Fin r} {steps steps' : ℕ} {destIdx : Fin r}
+    {h_destIdx : destIdx.val = i.val + steps} {h_destIdx_le : destIdx ≤ ℓ}
+    {r_challenges : Fin steps → L} {y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx}
+    {fiber_eval_mapping : Fin (2 ^ steps) → L}
+    (h_steps_eq_steps' : steps = steps') :
+    single_point_localized_fold_matrix_form 𝔽q β i steps h_destIdx h_destIdx_le r_challenges y
+        fiber_eval_mapping
+      = single_point_localized_fold_matrix_form 𝔽q β i steps'
+          (h_steps_eq_steps' ▸ h_destIdx) h_destIdx_le
+          (h_steps_eq_steps' ▸ r_challenges) y
+          (h_steps_eq_steps' ▸ fiber_eval_mapping) := by
+  subst h_steps_eq_steps'
+  rfl
+
+/-- For a block index `k < ℓ / ϑ` (with `ϑ ∣ ℓ`), the block end `(k + 1) * ϑ`
+is `≤ ℓ`. Product-form companion of `k_succ_mul_ϑ_le_ℓ_₂`. -/
+lemma k_succ_mul_ϑ_le_ℓ (k : Fin (ℓ / ϑ)) : (k.val + 1) * ϑ ≤ ℓ := by
+  have h := k_succ_mul_ϑ_le_ℓ_₂ (k := k)
+  rw [Nat.add_mul, Nat.one_mul]
+  omega
 
 noncomputable def queryPhaseLogicStep :
     OracleAwareReductionLogicStep
@@ -299,9 +325,8 @@ lemma mem_support_queryFiberPoints
     Set.mem_singleton_iff] at h_fiber_mem ⊢
   intro fiberIndex
   have h_res := h_fiber_mem fiberIndex
-  convert h_res using 1
-  congr 1
-  simp only [Array.getElem_finRange, Fin.cast_mk, Fin.eta]
+  simp only [OracleQuery.cont_query, id_eq, OracleInterface.answer] at h_res
+  exact (Option.some.inj h_res).symm
 
 /-! Simulated `queryFiberPoints` has zero failure probability. -/
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ in
@@ -356,84 +381,6 @@ lemma getBit_eq_testBit (n k : ℕ) : Nat.getBit k n = 1 ↔ Nat.testBit n k = t
     subst h_m_0
     simp
 
-set_option maxHeartbeats 1000000 in
-lemma iteratedQuotientMap_eq_qMap_total_fiber_extractMiddleFinMask
-    (i : Fin r) (steps : ℕ) {destIdx : Fin r}
-    (h_destIdx : destIdx.val = i.val + steps)
-    (h_destIdx_le : destIdx.val ≤ ℓ)
-    (v : sDomain 𝔽q β h_ℓ_add_R_rate ⟨0, by omega⟩) :
-    iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, by omega⟩) (k := i.val)
-      (h_bound := by have : 0 < 𝓡 := NeZero.pos 𝓡; omega) v =
-    qMap_total_fiber 𝔽q β i steps (by have : 0 < 𝓡 := NeZero.pos 𝓡; omega)
-      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, by omega⟩) (k := destIdx.val)
-        (h_bound := by have : 0 < 𝓡 := NeZero.pos 𝓡; omega) v)
-      (extractMiddleFinMask 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v i steps) := by
-  have h_R_pos : 0 < 𝓡 := NeZero.pos 𝓡
-  have h_i_le : i.val ≤ ℓ := by omega
-  have h_i : i.val < ℓ + 𝓡 := Nat.lt_of_le_of_lt h_i_le (Nat.lt_add_of_pos_right h_R_pos)
-  have h_zero : (0 : Fin r).val < ℓ + 𝓡 := by
-    change 0 < ℓ + 𝓡
-    exact Nat.lt_of_lt_of_le (NeZero.pos ℓ) (Nat.le_add_right ℓ 𝓡)
-  apply LinearEquiv.injective (sDomain_basis 𝔽q β h_ℓ_add_R_rate i h_i).repr
-  ext j
-  rw [getSDomainBasisCoeff_of_iteratedQuotientMap]
-  set y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx :=
-    iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, by omega⟩) (k := destIdx.val)
-      (h_destIdx := by simp only [zero_add]) (h_destIdx_le := h_destIdx_le) v
-  have h_repr_fiber := qMap_total_fiber_repr_coeff 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    (i := i) (steps := steps) h_destIdx h_destIdx_le (y := y)
-    (k := extractMiddleFinMask 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v i steps) (j := j)
-  simp only [y] at h_repr_fiber
-  rw [h_repr_fiber]
-  by_cases h_j : j.val < steps
-  · unfold fiber_coeff
-    rw [dif_pos h_j]
-    set pointFinIdx :=
-      sDomainToFin 𝔽q β h_ℓ_add_R_rate ⟨0, by omega⟩ h_zero v
-    have h_j_shift : j.val + i.val < ℓ + 𝓡 := by
-      omega
-    have h_coeff_v := finToBinaryCoeffs_sDomainToFin 𝔽q β h_ℓ_add_R_rate
-      ⟨0, by omega⟩ h_zero v
-    simp only [pointFinIdx] at h_coeff_v
-    have h_coeff_vj := congrFun h_coeff_v ⟨j.val + i.val, h_j_shift⟩
-    simp only [finToBinaryCoeffs] at h_coeff_vj
-    rw [← h_coeff_vj]
-    have h_middle_bit :
-        Nat.getBit (k := j) (n := extractMiddleFinMask 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v i steps) =
-          Nat.getBit (k := j.val + i.val) (n := pointFinIdx) := by
-      dsimp [extractMiddleFinMask, pointFinIdx]
-      rw [Nat.getBit_of_middleBits]
-      simp only [h_j, ↓reduceIte]
-    rw [← h_middle_bit]
-    by_cases h_bit :
-        Nat.getBit (k := j) (n := extractMiddleFinMask 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v i steps) = 0
-    · simp [h_bit]
-    · have h_bit_one :
-          Nat.getBit (k := j) (n := extractMiddleFinMask 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v i steps) = 1 := by
-        have h := Nat.getBit_eq_zero_or_one
-          (k := j) (n := extractMiddleFinMask 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v i steps)
-        simp only [h_bit, false_or] at h
-        exact h
-      simp [h_bit, h_bit_one]
-  · unfold fiber_coeff
-    rw [dif_neg h_j]
-    have h_res := getSDomainBasisCoeff_of_iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
-      ⟨0, by omega⟩ (k := destIdx.val) (h_destIdx := by simp only [zero_add])
-      (h_destIdx_le := h_destIdx_le) (x := v) (j := ⟨j.val - steps, by omega⟩)
-    simp only [y] at h_res
-    have h_idx :
-        (⟨j.val + i.val, by omega⟩ : Fin (ℓ + 𝓡)) =
-          ⟨j.val - steps + destIdx.val, by omega⟩ := by
-      apply Fin.eq_of_val_eq
-      simp
-      rw [h_destIdx]
-      omega
-    rw [h_idx]
-    exact h_res.symm
 
 /-- Lemma 1 (Safety):
 Proves that if `c_k` is the result of `iterated_fold` up to step `k`,
@@ -497,27 +444,21 @@ lemma query_phase_consistency_guard_safe
     by simp only [toOutCodewordsCount_last, Fin.is_lt]⟩
   simp only [id_eq] at h_oStmtIn_k_eq
   conv_rhs => rw [h_oStmtIn_k_eq]
+  -- The correctly-typed equivalent lives in `QueryPhaseSuffix.lean` (the deleted local lemma was
+  -- ill-typed: it fed a `Fin r`-indexed source into an `Fin ℓ`-typed obligation, so elaborating its
+  -- statement ground `isDefEq` to the heartbeat cap). `previousSuffix_eq_getFiberPoint…` is exactly
+  -- `extractSuffixFromChallenge (block source j·ϑ) = getFiberPoint j (extractMiddleFinMask …)`.
   have h_point_eq : extractSuffixFromChallenge 𝔽q β v ⟨↑k * ϑ, by omega⟩ (by simp only; omega) =
-      getFiberPoint 𝔽q β k v (extractMiddleFinMask 𝔽q β v ⟨↑k * ϑ, by omega⟩ ϑ) := by
-    -- The key insight: getFiberPoint reconstructs a point in S^i by:
-    -- 1. Taking the suffix at i+ϑ
-    -- 2. Joining it with the fiber index u (the middle ϑ bits)
-    -- 3. Converting back to sDomain
-    -- When u = extractMiddleFinMask v i ϑ, this reconstructs exactly the suffix at i
-    -- Unfold definitions
-    dsimp only [getFiberPoint, getChallengeSuffix, challengeSuffixToFin, extractSuffixFromChallenge]
-    -- Both sides use iteratedQuotientMap, so we need to show they're applied to the same element
-    have h_aux := iteratedQuotientMap_eq_qMap_total_fiber_extractMiddleFinMask
-      𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := ⟨k.val * ϑ, by have := k_mul_ϑ_lt_ℓ (k := k); omega⟩) (steps := ϑ)
-      (destIdx := ⟨k.val * ϑ + ϑ, by have := k_succ_mul_ϑ_le_ℓ_₂ (k := k); omega⟩)
-      (h_destIdx := rfl) (h_destIdx_le := k_succ_mul_ϑ_le_ℓ_₂ (k := k)) (v := v)
-    exact h_aux
+      getFiberPoint 𝔽q β k v (extractMiddleFinMask 𝔽q β v ⟨↑k * ϑ, by omega⟩ ϑ) :=
+    previousSuffix_eq_getFiberPoint_extractMiddleFinMask 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) k v
+  -- `set destIdx` above folded the literal `⟨k*ϑ, _⟩`; expose it again so `h_point_eq` matches.
   rw [h_point_eq]
-  rw [polyToOracleFunc_eq_getFirstOracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+  rw [← polyToOracleFunc_eq_getFirstOracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (t := ⟨t, h_t_mem_support⟩) (i := Fin.last ℓ)
     (challenges := stmtIn.challenges) (oStmt := oStmtIn)
     (h_consistency := h_strictOracleFoldingConsistency)]
+  rfl
 
 /--
 Lemma 2 (Preservation):
@@ -592,7 +533,8 @@ lemma query_phase_step_preserves_fold
             have hm : (k.val + 1) * ϑ = k.val * ϑ + ϑ := by ring
             simp only
             omega)) := by
-  let step := queryPhaseLogicStep 𝔽q β γ_repetitions
+  let step := queryPhaseLogicStep 𝔽q β (ℓ := ℓ) (ϑ := ϑ) γ_repetitions
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
   let witIn : Unit := ()
   let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges
   let so := OracleInterface.simOracle2 []ₒ oStmtIn transcript.messages
@@ -605,8 +547,10 @@ lemma query_phase_step_preserves_fold
   have h₂ := k_succ_mul_ϑ_le_ℓ_₂ (k := k)
   have h_ϑ_pos : ϑ > 0 := Nat.pos_of_neZero ϑ
   have h_ϑ_le_ℓ : ϑ ≤ ℓ := Nat.le_of_dvd (by exact Nat.pos_of_neZero ℓ) (by exact hdiv.out)
-  let destIdx : Fin r := ⟨(k.val + 1) * ϑ, by omega⟩
-  let midIdx : Fin r := ⟨k.val * ϑ, by omega⟩
+  let destIdx : Fin r := ⟨(k.val + 1) * ϑ, by
+    have := k_succ_mul_ϑ_le_ℓ (k := k); omega⟩
+  let midIdx : Fin r := ⟨k.val * ϑ, by
+    have := k_succ_mul_ϑ_le_ℓ (k := k); omega⟩
   by_cases h_k_pos : k.val > 0
   · -- Case k > 0: The guard is present.
     -- **Simplify the monadic structure**
@@ -689,7 +633,8 @@ lemma query_phase_step_preserves_fold
     set y_left := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
       (destIdx := ⟨k.val * ϑ + ϑ, by omega⟩) (h_destIdx_le := by omega) with hy_left_defs
     set y_right := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
-      (destIdx := ⟨(k.val + 1) * ϑ, by omega⟩) (h_destIdx_le := by omega) with hy_right_defs
+      (destIdx := ⟨(k.val + 1) * ϑ, by have := k_succ_mul_ϑ_le_ℓ (k := k); omega⟩)
+      (h_destIdx_le := by omega) with hy_right_defs
     -- -- Step 2: Transform the RHS
     -- Define f_mid directly from oStmtIn k, which is simpler and aligns with fiber_vec.get
     let k_oracle_idx : Fin (toOutCodewordsCount ℓ ϑ (Fin.last ℓ)) :=
@@ -701,7 +646,7 @@ lemma query_phase_step_preserves_fold
     have h_sDomain_midIdx_eq : sDomain 𝔽q β h_ℓ_add_R_rate midIdx = sDomain 𝔽q β h_ℓ_add_R_rate
       ⟨(oraclePositionToDomainIndex ℓ ϑ (i := Fin.last ℓ)
         (positionIdx := k_oracle_idx)).val, by omega⟩ := by
-      apply sDomain_eq_of_eq; apply Fin.eq_of_val_eq; rw [h_domain_idx_eq]
+      congr 1
     let f_mid : ↥(sDomain 𝔽q β h_ℓ_add_R_rate midIdx) → L :=
       fun x => oStmtIn k_oracle_idx (cast (by rw [h_sDomain_midIdx_eq]) x)
     set fiber_vec_actual_def := fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -729,7 +674,7 @@ lemma query_phase_step_preserves_fold
       (h_destIdx_le := by omega) (h_i_lt := by dsimp only [midIdx]; exact k_mul_ϑ_lt_ℓ (k := k))
       (f := f_mid) (y := y_left) (r_challenges :=
         fun j => stmtIn.challenges ⟨k.val * ϑ + j.val, by simp only [Fin.val_last]; omega⟩)
-    conv_lhs => rw [h_eq]
+    erw [h_eq]
     dsimp only [f_mid]
     -- Now rw the oStmtIn k_oracle_idx into the iterated_fold of f⁽⁰⁾ form
     -- Extract t and strictOracleFoldingConsistencyProp from h_relIn
@@ -741,7 +686,8 @@ lemma query_phase_step_preserves_fold
     dsimp only [strictOracleFoldingConsistencyProp] at h_strictOracleFoldingConsistency
     -- Get the equality for k_oracle_idx: oStmtIn k_oracle_idx = iterated_fold from 0 to k.val * ϑ
     have h_f_mid_eq_iterated_fold := h_strictOracleFoldingConsistency k_oracle_idx
-    conv_lhs => rw [h_f_mid_eq_iterated_fold]
+    simp only [id_eq] at h_f_mid_eq_iterated_fold
+    conv_lhs => simp only [cast_eq]; rw [h_f_mid_eq_iterated_fold]
     let P₀: L[X]_(2 ^ ℓ) := polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega)
       (fun ω => t.eval (statementOrderBitsOfIndex ω))
     let f₀ := polyToOracleFunc 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (domainIdx := 0) (P := P₀)
@@ -859,9 +805,10 @@ lemma query_phase_step_preserves_fold
         -- (extractSuffixFromChallenge 𝔽q β v ⟨(↑k + 1) * ϑ, ⋯⟩ ⋯)
     let challenges_full := getFoldingChallenges (𝓡 := 𝓡) (r := r) (ϑ := (k.val + 1) * ϑ)
       (i := Fin.last ℓ) stmtIn.challenges
-      (k := 0) (h := by simp only [zero_add, Fin.val_last]; omega)
+      (k := 0) (h := by simp only [zero_add, Fin.val_last]; exact k_succ_mul_ϑ_le_ℓ (k := k))
     set y := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
-      (destIdx := ⟨(k.val + 1) * ϑ, by omega⟩) (h_destIdx_le := by omega) with hy_def
+      (destIdx := ⟨(k.val + 1) * ϑ, by have := k_succ_mul_ϑ_le_ℓ (k := k); omega⟩)
+      (h_destIdx_le := by omega) with hy_def
     -- Step 2: Transform the RHS
     let rhs_to_mat_mul_form := iterated_fold_eq_matrix_form 𝔽q β (i := 0)
       (steps := (k.val + 1) * ϑ) (destIdx := destIdx) (h_destIdx := by
@@ -896,8 +843,9 @@ lemma query_phase_step_preserves_fold
         (oStmtIn := oStmtIn) (j' := 0) (j := ⟨k, by
           simp only [toOutCodewordsCount_last, Fin.is_lt]⟩) (h_j := by
           apply Fin.eq_of_val_eq
-          exact h_k_eq_0)
-      have h_destIdx_eq : (⟨k.val * ϑ + ϑ, by omega⟩ : Fin r) = ⟨(k.val + 1) * ϑ, by omega⟩ := by
+          simp only [Fin.val_zero]; omega)
+      have h_destIdx_eq : (⟨k.val * ϑ + ϑ, by omega⟩ : Fin r)
+          = ⟨(k.val + 1) * ϑ, by have := k_succ_mul_ϑ_le_ℓ (k := k); omega⟩ := by
         apply Fin.eq_of_val_eq
         simp only [Nat.add_mul, one_mul]
       simp only [Fin.coe_ofNat_eq_mod, cast_cast]
@@ -1805,6 +1753,8 @@ lemma logical_checkSingleRepetition_of_mem_support_forIn_body {σ : Type}
                 (j := ⟨k, by
                   rw [toOutCodewordsCount_last]
                   exact h_k⟩)
+              have hd := Nat.div_mul_cancel (hdiv.out)
+              have hkl := (Nat.mul_lt_mul_right (Nat.pos_of_neZero ϑ)).mpr h_k
               simp only at h; omega⟩ ϑ))
           )) with h_V_check_def
         have h_V_check_passed : V_check := by
@@ -2299,12 +2249,14 @@ This proves that for any valid input satisfying `strictFinalSumcheckRelOut`,
 the verifier check succeeds with probability 1, and the output satisfies
 `acceptRejectOracleRel` (i.e., the statement is `true`). -/
 theorem queryPhaseLogicStep_isStronglyComplete :
-    (queryPhaseLogicStep 𝔽q β γ_repetitions).IsStronglyCompleteUnderSimulation := by
+    (queryPhaseLogicStep 𝔽q β (ℓ := ℓ) (ϑ := ϑ) γ_repetitions
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).IsStronglyCompleteUnderSimulation := by
   intro stmtIn witIn oStmtIn challenges h_relIn
   let f₀ := getFirstOracle 𝔽q β oStmtIn
   have h_ϑ_pos : ϑ > 0 := by exact Nat.pos_of_neZero ϑ
   have h_ϑ_le_ℓ : ϑ ≤ ℓ := by apply Nat.le_of_dvd (by exact Nat.pos_of_neZero ℓ); exact hdiv.out
-  let step := queryPhaseLogicStep 𝔽q β γ_repetitions
+  let step := queryPhaseLogicStep 𝔽q β (ℓ := ℓ) (ϑ := ϑ) γ_repetitions
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
   -- 1. Generate the Honest Transcript (Deterministic given challenges)
   let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges
   -- 2. Define the honest oracle simulator
@@ -2437,7 +2389,8 @@ theorem queryOracleProof_perfectCompleteness {σ : Type}
   -- Step 3: Unfold protocol definitions
   -- dsimp only [queryOracleProof, queryOracleProver, queryOracleVerifier,
   dsimp only [OracleVerifier.toVerifier, FullTranscript.mk1]
-  let step := (queryPhaseLogicStep 𝔽q β γ_repetitions)
+  let step := (queryPhaseLogicStep 𝔽q β (ℓ := ℓ) (ϑ := ϑ) γ_repetitions
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
   let strongly_complete : step.IsStronglyCompleteUnderSimulation :=
     queryPhaseLogicStep_isStronglyComplete (L := L)
       𝔽q β (ϑ := ϑ) γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -2690,8 +2643,8 @@ noncomputable def queryKnowledgeStateFunction {σ : Type} (init : ProbComp σ)
       (m:=m) (tr:=tr) (stmtIn:=stmtIn) (witMid:=witMid) (oStmtIn:=oStmtIn)
   toFun_empty := fun ⟨stmtIn, oStmtIn⟩ witMid => by rfl
   toFun_next := fun m hDir ⟨stmtMid, oStmtMid⟩ tr msg witMid => by
-    simp only [ne_eq, reduceCtorEq, not_false_eq_true, Matrix.cons_val_fin_one,
-      Direction.not_V_to_P_eq_P_to_V] at hDir
+    -- `pSpecQuery` has a single `V_to_P` message, so `hDir : dir m = .P_to_V` is absurd.
+    simp only [pSpecQuery, Matrix.cons_val_fin_one, reduceCtorEq] at hDir
   toFun_full := fun ⟨stmtIn, oStmtIn⟩ tr witOut probEvent_relOut_gt_0 => by
     -- h_relOut: ∃ stmtOut oStmtOut, verifier outputs (stmtOut, oStmtOut) with prob > 0
     --   and ((stmtOut, oStmtOut), witOut) ∈ foldStepRelOut
@@ -2861,7 +2814,8 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
     simp only [Fin.isValue, probEvent_map]
     let q : OracleQuery
         [(pSpecQuery 𝔽q β γ_repetitions (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenge]ₒ
-        _ := query ⟨⟨0, by rfl⟩, ()⟩
+        _ := query (spec := [(pSpecQuery 𝔽q β γ_repetitions
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).Challenge]ₒ) ⟨⟨0, by rfl⟩, ()⟩
     erw [OracleReduction.probEvent_StateT_run_ignore_state
       (comp := simulateQ (impl.addLift challengeQueryImpl) (liftM (query q.input)))
       (s := x.2)
@@ -2874,7 +2828,8 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
     have h_L_inhabited : Inhabited L := ⟨0⟩
     conv_lhs =>
       enter [1, x_1, 2, 1, 2]
-      rw [addLift_challengeQueryImpl_input_run_eq_liftM_run (impl := impl) (q := q) (s := x.2)]
+      rw [addLift_challengeQueryImpl_input_run_eq_liftM_run (impl := impl) (t := q.input)
+        (s := x.2)]
     erw [StateT.run_monadLift, monadLift_self, liftComp_id]
     rw [bind_pure_comp]
     conv =>
