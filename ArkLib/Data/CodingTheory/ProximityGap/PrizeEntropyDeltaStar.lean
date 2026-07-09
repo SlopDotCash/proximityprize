@@ -8,9 +8,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 
 /-!
-# The closed-form prize δ*: the entropy law `δ* = 1 − ρ − H(ρ)/log₂(q·ε*)` (#389)
+# A proposed closed-form prize δ*: `δ* = 1 − ρ − H(ρ)/log₂(q·ε*)` (#389)
 
-This file states the **complete, closed-form candidate answer** to the Proximity Prize
+> **Status warning (2026-07-09).** `PrizePinConjecture` below is refuted as stated: its
+> parameter `k` is the polynomial degree bound in `evalCode g n k`, whose dimension is
+> `k + 1`, but the right-hand side uses the stale rate `k / n`.  The degree-zero
+> counterexample is machine-checked in `PrizeEntropyPinRefuted`.  A corrected statement
+> using `(k + 1) / n` remains open, as do the production prize instances.
+
+This file states a **closed-form candidate answer** to the Proximity Prize
 (proximityprize.org, ABF26) for explicit constant-rate smooth-domain Reed–Solomon codes,
 together with the **rigorous ceiling half** (an unconditional in-window upper bound on
 `δ*`) and the precise single statement whose proof closes the prize.
@@ -44,13 +50,12 @@ and `q ∤ (collision resultants)` — a finite checkable prime spectrum, NOT th
 transfer wall.  Feeding it into `mcaDeltaStar_le_of_bad` gives the rigorous ceiling
 `prizeDeltaStar_ceiling`.  No `CensusDomination`, no incomputable lemma.
 
-## What remains (the prize, stated as ONE closed Prop)
+## What remains
 
-`PrizeFloorStatement`: the matching lower bound — for every word, the list at radius
-`δ < prizeDeltaStar ρ B` is `≤ B` (worst-case `ε_mca ≤ ε*`).  This is the single open core
-(= worst-case list bound for explicit smooth RS above Johnson = BCHKS25 Conj 1.12).  It is
-stated closed (no further residual); proving it pins `δ* = prizeDeltaStar` exactly and
-resolves both grand challenges via the in-tree LD⇔MCA bridges.
+The intended matching lower bound is still the worst-case list bound for explicit smooth
+RS above Johnson.  The historical `PrizeFloorStatement` and `PrizePinConjecture` definitions
+below use the degree ratio `k / n`; they must first be corrected to the actual code rate
+`(k + 1) / n`.  No exact entropy pin for a production prize instance is proved here.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`, no `axiom`.
 -/
@@ -98,7 +103,12 @@ theorem prizeDeltaStar_gt_johnson {ρ B : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ < 1)
   unfold prizeDeltaStar
   linarith
 
-/-- **THE PRIZE FLOOR STATEMENT** — the single open core, stated closed (no residual).
+/-- **Historical degree-parameterized prize floor statement.**
+
+This definition uses `k / n`, although `k` is the degree bound of `evalCode g n k` and the
+actual code dimension is `k + 1`.  It is retained for compatibility; a corrected prize
+statement must use the actual rate.
+
 For the explicit smooth-domain RS code at constant rate `ρ`, every received word's list at
 any radius strictly below `prizeDeltaStar ρ (q·ε*)` has at most `q·ε*` codewords — i.e. the
 worst-case `ε_mca ≤ ε*`.  Proving this (the worst-case list upper bound for explicit smooth
@@ -109,10 +119,9 @@ def PrizeFloorStatement
   ∀ δ : ℝ≥0, (δ : ℝ) < prizeDeltaStar ((k : ℝ) / n) ((p : ℝ) * εstar.toReal) →
     epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n k) δ ≤ εstar
 
-/-- **THE PRIZE PIN (conditional on the floor).**  Granting `PrizeFloorStatement` and the
-in-tree ladder ceiling, `mcaDeltaStar` of the explicit smooth-domain RS code equals the
-closed form `prizeDeltaStar`.  The ceiling direction is unconditional (the explicit ladder
-family); only the floor is the open wall. -/
+/-- **Refuted historical prize pin.**  This definition passes the degree ratio `k / n` to
+`prizeDeltaStar` instead of the actual rate `(k + 1) / n`.  The theorem
+`prizePinConjecture_degreeZero_F12289_REFUTED` gives a machine-checked counterexample. -/
 def PrizePinConjecture
     {p n : ℕ} [Fact p.Prime] [NeZero n] (g : ZMod p) (k : ℕ) (εstar : ℝ≥0∞) : Prop :=
   (MCAThresholdLedger.mcaDeltaStar (F := ZMod p) (A := ZMod p)

@@ -67,7 +67,7 @@ theorem reduction_completeness --(h : init.neverFails)
     (hRel : ∀ stmtIn witIn, (stmtIn, witIn) ∈ relIn ↔
       (mapStmt stmtIn, mapWit stmtIn witIn) ∈ relOut) :
     (reduction oSpec mapStmt mapWit).perfectCompleteness init impl relIn relOut := by
-  simp only [Reduction.perfectCompleteness, Reduction.completeness, ENNReal.coe_zero, tsub_zero]
+  simp only [Reduction.perfectCompleteness, Reduction.completeness]
   intro stmtIn witIn hIn
   have hrun : (reduction oSpec mapStmt mapWit).run stmtIn witIn =
       (pure ((default, (mapStmt stmtIn, mapWit stmtIn witIn)), mapStmt stmtIn) :
@@ -75,7 +75,9 @@ theorem reduction_completeness --(h : init.neverFails)
     simp [reduction, Reduction.run, prover, verifier, Prover.run, Verifier.run, Prover.runToRound]
     rfl
   simp only [hrun]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
+  rw [ge_iff_le]
+  simp only [ENNReal.coe_zero, tsub_zero]
+  rw [one_le_probEvent_iff, probEvent_eq_one_iff]
   refine ⟨?_, ?_⟩
   · rw [OptionT.probFailure_eq, OptionT.run_mk]
     simp only [probFailure_eq_zero, zero_add]
@@ -119,13 +121,12 @@ variable {mapWitInv : StmtIn → WitOut → WitIn}
 
 
 @[simp]
-lemma support_liftM (m : Type _ → Type _) [Monad m]
-    [MonadLiftT m SetM] [LawfulMonadLiftT m SetM]
+lemma support_liftM (m : Type _ → Type _) [Monad m] [HasEvalSet m]
     {α} (mx : m α) : support (liftM mx : OptionT m α) = support mx := by
   simp
 
 @[simp]
-lemma support_mk (m : Type _ → Type _) [Monad m] [MonadLiftT m SetM]
+lemma support_mk (m : Type _ → Type _) [Monad m] [HasEvalSet m]
     {α} (mx : m (Option α)) :
     support (OptionT.mk mx) = {x | some x ∈ support mx} := by
   rfl
@@ -222,20 +223,12 @@ theorem oracleReduction_completeness --(h : init.neverFails)
     (oracleReduction oSpec mapStmt mapWit embedIdx hEq).perfectCompleteness init impl
       relIn relOut := by
   simp only [OracleReduction.perfectCompleteness, Reduction.perfectCompleteness,
-    Reduction.completeness, ENNReal.coe_zero, tsub_zero]
+    Reduction.completeness]
   intro ⟨stmtIn, oStmtIn⟩ witIn hIn
-  -- Reduce the run to a deterministic `pure` of the expected output.
-  have hrun : (oracleReduction oSpec mapStmt mapWit embedIdx hEq).toReduction.run
-      ⟨stmtIn, oStmtIn⟩ witIn =
-      (pure ((default,
-          ((mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn), mapWit stmtIn witIn)),
-          (mapStmt stmtIn, mapOStmt embedIdx hEq oStmtIn)) :
-        OptionT (OracleComp _) _) := by
-    simp only [oracleReduction, OracleReduction.toReduction, Reduction.run, oracleProver,
-      oracleVerifier, OracleVerifier.toVerifier, Prover.run, Verifier.run, Prover.runToRound]
-    rfl
-  rw [hrun]
-  rw [ge_iff_le, one_le_probEvent_iff, probEvent_eq_one_iff]
+  -- The run reduces definitionally to a deterministic `pure`; the `change` steps below exploit this.
+  rw [ge_iff_le]
+  simp only [ENNReal.coe_zero, tsub_zero]
+  rw [one_le_probEvent_iff, probEvent_eq_one_iff]
   refine ⟨?_, ?_⟩
   · rw [OptionT.probFailure_eq, OptionT.run_mk]
     simp only [probFailure_eq_zero, zero_add]

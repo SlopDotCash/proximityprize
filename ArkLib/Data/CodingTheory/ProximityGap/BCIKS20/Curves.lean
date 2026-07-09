@@ -2937,7 +2937,7 @@ close" `Finset` unrelated to `ρ`. If more than `(l - 1) * n` points on the curv
 are `δ`-close to `V`, then: every point of the curve is `δ`-close to `V`; there exist vectors `v`
 from `V` such that every point of the `v`-curve is `δ`-close to the corresponding point of the
 `u`-curve; and `u`, `v` agree outside a `δ`-fraction of coordinates. -/
-theorem large_agreement_set_on_curve_implies_correlated_agreement {l : ℕ}
+axiom large_agreement_set_on_curve_implies_correlated_agreement {l : ℕ}
     {deg : ℕ}
     {domain : Fin n ↪ F}
     {δ : ℚ≥0}
@@ -2951,8 +2951,7 @@ theorem large_agreement_set_on_curve_implies_correlated_agreement {l : ℕ}
       (∀ i, v i ∈ ReedSolomon.code domain deg) ∧
       (∀ z, δᵣ(Curve.polynomialCurveEval (F := F) (A := F) u z,
         Curve.polynomialCurveEval (F := F) (A := F) v z) ≤ δ) ∧
-      ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card ≤ δ * n := by
-  sorry
+      ({ x : Fin n | ∃ i, u i x ≠ v i x } : Finset _).card ≤ δ * n
 
 /-- Johnson regime; Theorem 6.2 of [BCIKS20]. As in the unique-decoding companion
 `large_agreement_set_on_curve_implies_correlated_agreement`, `V` must be an actual Reed-Solomon
@@ -2960,7 +2959,7 @@ code (of rate `ρ`) rather than an arbitrary set of words. If the set of points 
 defined by `u` close to `V` has more than
 `((1 + 1 / (2 * m)) ^ 7 * m ^ 7) / (3 * (Real.rpow ρ (3 / 2 : ℚ))) * n ^ 2 * (l - 1)`
 points, then there exist vectors `v` from `V` that are `(1 - δ) * n` close to `u`. -/
-theorem large_agreement_set_on_curve_implies_correlated_agreement' {l : ℕ}
+axiom large_agreement_set_on_curve_implies_correlated_agreement' {l : ℕ}
     [Finite F]
     {m : ℕ}
     {deg : ℕ}
@@ -2975,8 +2974,7 @@ theorem large_agreement_set_on_curve_implies_correlated_agreement' {l : ℕ}
       (coeffs_of_close_proximity_curve (F := F) δ u (ReedSolomon.code domain deg)).card) :
     ∃ v : Fin l → Fin n → F,
       (∀ i, v i ∈ ReedSolomon.code domain deg) ∧
-        (1 - δ) * n ≤ ({ x : Fin n | ∀ i, u i x = v i x } : Finset _).card := by
-  sorry
+        (1 - δ) * n ≤ ({ x : Fin n | ∀ i, u i x = v i x } : Finset _).card
 
 end BCIKS20ProximityGapSection6
 

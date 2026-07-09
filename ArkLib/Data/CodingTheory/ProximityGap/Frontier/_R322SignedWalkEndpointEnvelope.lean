@@ -319,6 +319,22 @@ theorem vecOf_signedIndex {m : ℕ} (j k : Fin m) (e : Fin 2) :
 def encodeSignedTuple {m L : ℕ} (t : Fin L → Fin m × Fin 2) : Fin L → Fin (2 * m) :=
   fun i => signedIndexEquiv m (t i)
 
+/-- Decode ArkLib's root indexing into the canonical signed alphabet. -/
+def decodeSignedTuple {m L : ℕ} (t : Fin L → Fin (2 * m)) : Fin L → Fin m × Fin 2 :=
+  fun i => (signedIndexEquiv m).symm (t i)
+
+@[simp] theorem encodeSignedTuple_decodeSignedTuple {m L : ℕ}
+    (t : Fin L → Fin (2 * m)) :
+    encodeSignedTuple (decodeSignedTuple t) = t := by
+  funext i
+  simp [encodeSignedTuple, decodeSignedTuple]
+
+@[simp] theorem decodeSignedTuple_encodeSignedTuple {m L : ℕ}
+    (t : Fin L → Fin m × Fin 2) :
+    decodeSignedTuple (encodeSignedTuple t) = t := by
+  funext i
+  simp [encodeSignedTuple, decodeSignedTuple]
+
 /-- The endpoint of an arbitrary canonical signed tuple is positive-count minus negative-count. -/
 theorem tupleVec_encodeSignedTuple_eq_counts {m L : ℕ}
     (t : Fin L → Fin m × Fin 2) :
@@ -390,6 +406,16 @@ theorem tupleMultiset_eq_profile_of_endpoint {m L : ℕ}
     change q = min p q + b j
     rcases hdisj j with ha | hb <;> omega
 
+theorem sum_signedProfile {m : ℕ} (c a b : Fin m → ℕ) :
+    ∑ x : Fin m × Fin 2, signedProfile c a b x =
+      ∑ j : Fin m, (2 * c j + a j + b j) := by
+  rw [← Finset.univ_product_univ, Finset.sum_product]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Fin.sum_univ_two]
+  simp [signedProfile]
+  omega
+
 /-- Every tuple with signed profile `(c,a,b)` has endpoint `a-b`; the cancellation profile
 `c` disappears exactly. -/
 theorem tupleVec_encodeSignedTuple_of_profile {m L : ℕ}
@@ -421,15 +447,96 @@ theorem tupleVec_encodeSignedTuple_of_profile {m L : ℕ}
     _ = (a k : ℤ) - (b k : ℤ) := by
           simp [signedProfile]
 
-theorem sum_signedProfile {m : ℕ} (c a b : Fin m → ℕ) :
-    ∑ x : Fin m × Fin 2, signedProfile c a b x =
-      ∑ j : Fin m, (2 * c j + a j + b j) := by
-  rw [← Finset.univ_product_univ, Finset.sum_product]
-  apply Finset.sum_congr rfl
-  intro j _
-  rw [Fin.sum_univ_two]
-  simp [signedProfile]
-  omega
+/-- Canonical signed tuples of length `L` ending at `a-b`. -/
+def canonicalEndpointTuples (m L : ℕ) (a b : Fin m → ℕ) :
+    Finset (Fin L → Fin m × Fin 2) :=
+  (Fintype.piFinset (fun _ : Fin L => (Finset.univ : Finset (Fin m × Fin 2)))).filter
+    (fun t => tupleVec (2 * m) m L (encodeSignedTuple t) =
+      fun j => (a j : ℤ) - (b j : ℤ))
+
+/-- **Exact endpoint-profile partition.** At length
+`L = 2s + Σ(a_j+b_j)`, the endpoint count is the sum of the exact profile multinomials over
+all cancellation vectors of mass `s`. -/
+theorem card_canonicalEndpointTuples_eq_sum_multinomial
+    (m L s : ℕ) (a b : Fin m → ℕ)
+    (hdisj : ∀ j, a j = 0 ∨ b j = 0)
+    (hL : L = 2 * s + ∑ j : Fin m, (a j + b j)) :
+    (canonicalEndpointTuples m L a b).card =
+      ∑ c ∈ piAntidiag (Finset.univ : Finset (Fin m)) s,
+        Nat.multinomial Finset.univ (signedProfile c a b) := by
+  classical
+  let Q := canonicalEndpointTuples m L a b
+  let C := piAntidiag (Finset.univ : Finset (Fin m)) s
+  have hmaps : (↑Q : Set (Fin L → Fin m × Fin 2)).MapsTo
+      tupleCancellationProfile (↑C : Set (Fin m → ℕ)) := by
+    intro t ht
+    change t ∈ Q at ht
+    simp only [Q, canonicalEndpointTuples, Finset.mem_filter] at ht
+    have hprofile := tupleMultiset_eq_profile_of_endpoint a b t hdisj ht.2
+    have hcard := congrArg Multiset.card hprofile
+    rw [card_tupleMultiset, card_multiplicityMultiset, sum_signedProfile] at hcard
+    rw [Finset.mem_coe, Finset.mem_piAntidiag]
+    constructor
+    · have hsum :
+          (∑ j : Fin m,
+              (2 * tupleCancellationProfile t j + a j + b j)) =
+            2 * (∑ j : Fin m, tupleCancellationProfile t j) +
+              ∑ j : Fin m, (a j + b j) := by
+          calc
+            (∑ j : Fin m,
+                (2 * tupleCancellationProfile t j + a j + b j)) =
+                ∑ j : Fin m,
+                  (2 * tupleCancellationProfile t j + (a j + b j)) := by
+                    apply Finset.sum_congr rfl
+                    intro j _
+                    omega
+            _ = (∑ j : Fin m, 2 * tupleCancellationProfile t j) +
+                ∑ j : Fin m, (a j + b j) := Finset.sum_add_distrib
+            _ = 2 * (∑ j : Fin m, tupleCancellationProfile t j) +
+                ∑ j : Fin m, (a j + b j) := by rw [Finset.mul_sum]
+      rw [hsum] at hcard
+      exact Nat.mul_left_cancel (by norm_num)
+        (Nat.add_right_cancel (hcard.symm.trans hL))
+    · intro j hj
+      exact Finset.mem_univ j
+  rw [show (canonicalEndpointTuples m L a b).card = Q.card from rfl]
+  rw [Finset.card_eq_sum_card_fiberwise hmaps]
+  refine Finset.sum_congr rfl fun c hc => ?_
+  rw [Finset.mem_piAntidiag] at hc
+  have hprofileSum :
+      (∑ x : Fin m × Fin 2, signedProfile c a b x) = L := by
+    rw [sum_signedProfile]
+    have hsum : (∑ j : Fin m, (2 * c j + a j + b j)) =
+        2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
+      calc
+        (∑ j : Fin m, (2 * c j + a j + b j)) =
+            ∑ j : Fin m, (2 * c j + (a j + b j)) := by
+              apply Finset.sum_congr rfl
+              intro j _
+              omega
+        _ = (∑ j : Fin m, 2 * c j) + ∑ j : Fin m, (a j + b j) :=
+          Finset.sum_add_distrib
+        _ = 2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
+          rw [Finset.mul_sum]
+    rw [hsum, hc.1, hL]
+  have hset : Q.filter (fun t => tupleCancellationProfile t = c) =
+      (Fintype.piFinset (fun _ : Fin L =>
+        (Finset.univ : Finset (Fin m × Fin 2)))).filter
+          (fun t => tupleMultiset t = multiplicityMultiset (signedProfile c a b)) := by
+    ext t
+    simp only [Finset.mem_filter, Q, canonicalEndpointTuples]
+    constructor
+    · rintro ⟨⟨htU, hend⟩, hcanc⟩
+      refine ⟨htU, ?_⟩
+      rw [← hcanc]
+      exact tupleMultiset_eq_profile_of_endpoint a b t hdisj hend
+    · rintro ⟨htU, hprof⟩
+      exact ⟨⟨htU, tupleVec_encodeSignedTuple_of_profile c a b t hprof⟩,
+        tupleCancellationProfile_eq_of_profile c a b t hdisj hprof⟩
+  rw [hset, tupleMultiset_fiber_card_eq_countPerms,
+    countPerms_multiplicityMultiset]
+  rw [card_multiplicityMultiset]
+  exact hprofileSum
 
 theorem prod_factorial_signedProfile {m : ℕ} (c a b : Fin m → ℕ) :
     ∏ x : Fin m × Fin 2, (signedProfile c a b x).factorial =
@@ -506,6 +613,142 @@ theorem multinomial_signedProfile_envelope {m : ℕ} (c a b : Fin m → ℕ) :
     _ = (∑ x : Fin m × Fin 2, signedProfile c a b x).factorial * MC := by
       rw [hspecQ]
 
+/-- **Canonical signed-walk endpoint envelope.** The full endpoint fiber satisfies the
+denominator-cleared factorial bound before transport to ArkLib's `NR`. -/
+theorem card_canonicalEndpointTuples_factorial_envelope
+    (m L s : ℕ) (a b : Fin m → ℕ)
+    (hdisj : ∀ j, a j = 0 ∨ b j = 0)
+    (hL : L = 2 * s + ∑ j : Fin m, (a j + b j)) :
+    (canonicalEndpointTuples m L a b).card * s.factorial *
+        (∏ j : Fin m, (a j).factorial * (b j).factorial)
+      ≤ L.factorial * m ^ s := by
+  rw [card_canonicalEndpointTuples_eq_sum_multinomial m L s a b hdisj hL]
+  calc
+    (∑ c ∈ piAntidiag (Finset.univ : Finset (Fin m)) s,
+        Nat.multinomial Finset.univ (signedProfile c a b)) * s.factorial *
+          (∏ j : Fin m, (a j).factorial * (b j).factorial)
+        = ∑ c ∈ piAntidiag (Finset.univ : Finset (Fin m)) s,
+            (Nat.multinomial Finset.univ (signedProfile c a b) * s.factorial *
+              (∏ j : Fin m, (a j).factorial * (b j).factorial)) := by
+          rw [Finset.sum_mul, Finset.sum_mul]
+    _ ≤ ∑ c ∈ piAntidiag (Finset.univ : Finset (Fin m)) s,
+          L.factorial * Nat.multinomial Finset.univ c := by
+          apply Finset.sum_le_sum
+          intro c hc
+          rw [Finset.mem_piAntidiag] at hc
+          have hsum : (∑ x : Fin m × Fin 2, signedProfile c a b x) = L := by
+            rw [sum_signedProfile]
+            have hsplit : (∑ j : Fin m, (2 * c j + a j + b j)) =
+                2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
+              calc
+                (∑ j : Fin m, (2 * c j + a j + b j)) =
+                    ∑ j : Fin m, (2 * c j + (a j + b j)) := by
+                      apply Finset.sum_congr rfl
+                      intro j _
+                      omega
+                _ = (∑ j : Fin m, 2 * c j) + ∑ j : Fin m, (a j + b j) :=
+                  Finset.sum_add_distrib
+                _ = 2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
+                  rw [Finset.mul_sum]
+            rw [hsplit, hc.1, ← hL]
+          simpa [hc.1, hsum] using multinomial_signedProfile_envelope c a b
+    _ = L.factorial * ∑ c ∈ piAntidiag (Finset.univ : Finset (Fin m)) s,
+          Nat.multinomial Finset.univ c := by rw [Finset.mul_sum]
+    _ = L.factorial * m ^ s := by rw [sum_multinomial_piAntidiag]
+
+/-- The canonical endpoint count is exactly ArkLib's characteristic-zero histogram `NR`. -/
+theorem NR_eq_card_canonicalEndpointTuples
+    (m L : ℕ) (a b : Fin m → ℕ) :
+    NR (2 * m) m L (fun j => (a j : ℤ) - (b j : ℤ)) =
+      (canonicalEndpointTuples m L a b).card := by
+  classical
+  unfold NR canonicalEndpointTuples
+  apply Finset.card_bij'
+    (i := fun (t : Fin L → Fin (2 * m)) _ => decodeSignedTuple t)
+    (j := fun (u : Fin L → Fin m × Fin 2) _ => encodeSignedTuple u)
+  · intro t ht
+    rw [Finset.mem_filter] at ht ⊢
+    refine ⟨by simp, ?_⟩
+    simpa using ht.2
+  · intro u hu
+    rw [Finset.mem_filter] at hu ⊢
+    refine ⟨by simp, ?_⟩
+    simpa using hu.2
+  · intro t ht
+    exact encodeSignedTuple_decodeSignedTuple t
+  · intro u hu
+    exact decodeSignedTuple_encodeSignedTuple u
+
+/-- **NR factorial envelope in positive/negative endpoint coordinates.** -/
+theorem NR_factorial_envelope_of_sub
+    (m L s : ℕ) (a b : Fin m → ℕ)
+    (hdisj : ∀ j, a j = 0 ∨ b j = 0)
+    (hL : L = 2 * s + ∑ j : Fin m, (a j + b j)) :
+    NR (2 * m) m L (fun j => (a j : ℤ) - (b j : ℤ)) * s.factorial *
+        (∏ j : Fin m, (a j).factorial * (b j).factorial)
+      ≤ L.factorial * m ^ s := by
+  rw [NR_eq_card_canonicalEndpointTuples]
+  exact card_canonicalEndpointTuples_factorial_envelope m L s a b hdisj hL
+
+/-- Positive and negative natural parts of an integer coefficient. -/
+def intPositivePart (z : ℤ) : ℕ := z.toNat
+def intNegativePart (z : ℤ) : ℕ := (-z).toNat
+
+theorem intPositivePart_eq_zero_or_intNegativePart_eq_zero (z : ℤ) :
+    intPositivePart z = 0 ∨ intNegativePart z = 0 := by
+  cases z <;> simp [intPositivePart, intNegativePart]
+
+theorem intPositivePart_cast_sub_intNegativePart_cast (z : ℤ) :
+    (intPositivePart z : ℤ) - (intNegativePart z : ℤ) = z := by
+  cases z <;> simp [intPositivePart, intNegativePart]
+
+theorem intPositivePart_add_intNegativePart (z : ℤ) :
+    intPositivePart z + intNegativePart z = z.natAbs := by
+  cases z <;> simp [intPositivePart, intNegativePart]
+
+theorem factorial_parts_mul_eq_natAbs_factorial (z : ℤ) :
+    (intPositivePart z).factorial * (intNegativePart z).factorial =
+      z.natAbs.factorial := by
+  cases z <;> simp [intPositivePart, intNegativePart]
+
+/-- The coefficient `L1` norm of an integer endpoint. -/
+def endpointL1 {m : ℕ} (d : Fin m → ℤ) : ℕ :=
+  ∑ j : Fin m, (d j).natAbs
+
+/-- **R322 HEADLINE: sharp signed-walk endpoint envelope.** For an endpoint `d` reachable
+at length `L = 2s + ‖d‖₁`, its characteristic-zero histogram obeys
+
+`NR(d) * s! * ∏ |d_j|! ≤ L! * m^s`.
+-/
+theorem NR_factorial_envelope
+    (m L s : ℕ) (d : Fin m → ℤ)
+    (hL : L = 2 * s + endpointL1 d) :
+    NR (2 * m) m L d * s.factorial *
+        (∏ j : Fin m, (d j).natAbs.factorial)
+      ≤ L.factorial * m ^ s := by
+  let a : Fin m → ℕ := fun j => intPositivePart (d j)
+  let b : Fin m → ℕ := fun j => intNegativePart (d j)
+  have hdisj : ∀ j, a j = 0 ∨ b j = 0 := fun j =>
+    intPositivePart_eq_zero_or_intNegativePart_eq_zero (d j)
+  have hendpoint : (fun j => (a j : ℤ) - (b j : ℤ)) = d := by
+    funext j
+    exact intPositivePart_cast_sub_intNegativePart_cast (d j)
+  have hmass : L = 2 * s + ∑ j : Fin m, (a j + b j) := by
+    rw [hL]
+    congr 2
+    unfold endpointL1
+    apply Finset.sum_congr rfl
+    intro j _
+    exact (intPositivePart_add_intNegativePart (d j)).symm
+  have h := NR_factorial_envelope_of_sub m L s a b hdisj hmass
+  rw [hendpoint] at h
+  have hprod : (∏ j : Fin m, (a j).factorial * (b j).factorial) =
+      ∏ j : Fin m, (d j).natAbs.factorial := by
+    apply Finset.prod_congr rfl
+    intro j _
+    exact factorial_parts_mul_eq_natAbs_factorial (d j)
+  rwa [hprod] at h
+
 end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
 
 /-! ## Axiom audit -/
@@ -527,3 +770,11 @@ end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.tupleMultiset_eq_profile_of_endpoint
 #print axioms
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.tupleCancellationProfile_eq_of_profile
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.card_canonicalEndpointTuples_eq_sum_multinomial
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.card_canonicalEndpointTuples_factorial_envelope
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.NR_factorial_envelope_of_sub
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.NR_factorial_envelope

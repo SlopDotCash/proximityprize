@@ -408,6 +408,106 @@ theorem mk_relationPoly_negacyclicBinomialMul {m : ℕ} (hm : 0 < m)
   push_cast
   ring
 
+/-! ### R330 extraction: span membership → vector-level saturation witness -/
+
+/-- The sparse binomial coefficient vector of `a + b·x^s`. -/
+def binomialVec {m : ℕ} [NeZero m] (a b : ℤ) (s : Fin m) : Fin m → ℤ :=
+  fun i => (if i = 0 then a else 0) + (if i = s then b else 0)
+
+/-- Every element of `ℤ[x]/(x^m+1)` is `mk (relationPoly v)` for some vector `v`. -/
+theorem exists_relationPoly_repr {m : ℕ} (hm : 0 < m) (x : AdjoinRoot (fpoly m)) :
+    ∃ v : Fin m → ℤ, AdjoinRoot.mk (fpoly m) (relationPoly v) = x := by
+  classical
+  obtain ⟨Q, rfl⟩ := AdjoinRoot.mk_surjective x
+  set R := Q %ₘ fpoly m with hR
+  refine ⟨fun i => R.coeff (i : ℕ), ?_⟩
+  have hfne : fpoly m ≠ 0 := (fpoly_monic hm).ne_zero
+  have hdeg : R.degree < (fpoly m).degree :=
+    Polynomial.degree_modByMonic_lt Q (fpoly_monic hm)
+  have hdegm : (fpoly m).degree = (m : WithBot ℕ) := by
+    rw [Polynomial.degree_eq_natDegree hfne, fpoly_natDegree hm]
+  have hcoeff0 : ∀ j : ℕ, m ≤ j → R.coeff j = 0 := by
+    intro j hj
+    apply Polynomial.coeff_eq_zero_of_degree_lt
+    rw [hdegm] at hdeg
+    exact lt_of_lt_of_le hdeg (by exact_mod_cast hj)
+  have hRP : relationPoly (fun i : Fin m => R.coeff (i : ℕ)) = R := by
+    ext j
+    by_cases hj : j < m
+    · simpa using relationPoly_coeff_fin (fun i : Fin m => R.coeff (i : ℕ)) ⟨j, hj⟩
+    · push_neg at hj
+      rw [relationPoly_coeff_eq_zero_of_le _ hj, hcoeff0 j hj]
+  rw [hRP]
+  refine (AdjoinRoot.mk_eq_mk).mpr ⟨-(Q /ₘ fpoly m), ?_⟩
+  have hmd := Polynomial.modByMonic_add_div Q (fpoly m)
+  rw [hR]
+  linear_combination hmd
+
+/-- The binomial vector represents `a + b·ρ^s`. -/
+theorem mk_relationPoly_binomialVec {m : ℕ} [NeZero m] (a b : ℤ) (s : Fin m) :
+    AdjoinRoot.mk (fpoly m) (relationPoly (binomialVec a b s))
+      = (a : AdjoinRoot (fpoly m))
+        + (b : AdjoinRoot (fpoly m)) * (AdjoinRoot.root (fpoly m)) ^ (s : ℕ) := by
+  classical
+  rw [mk_relationPoly_eq_sum]
+  have hterm : ∀ i : Fin m,
+      ((binomialVec a b s i : ℤ) : AdjoinRoot (fpoly m))
+          * (AdjoinRoot.root (fpoly m)) ^ (i : ℕ)
+        = (if i = 0 then (a : AdjoinRoot (fpoly m))
+              * (AdjoinRoot.root (fpoly m)) ^ (i : ℕ) else 0)
+          + (if i = s then (b : AdjoinRoot (fpoly m))
+              * (AdjoinRoot.root (fpoly m)) ^ (i : ℕ) else 0) := by
+    intro i
+    simp only [binomialVec]
+    split_ifs <;> push_cast <;> ring
+  rw [Finset.sum_congr rfl fun i _ => hterm i, Finset.sum_add_distrib,
+    Finset.sum_ite_eq' Finset.univ (0 : Fin m), Finset.sum_ite_eq' Finset.univ s]
+  simp
+
+/-- `mk ∘ relationPoly` is injective (degree obstruction). -/
+theorem relationPoly_mk_inj {m : ℕ} (hm : 0 < m) {u w : Fin m → ℤ}
+    (h : AdjoinRoot.mk (fpoly m) (relationPoly u)
+      = AdjoinRoot.mk (fpoly m) (relationPoly w)) :
+    u = w := by
+  classical
+  have hdvd : fpoly m ∣ relationPoly u - relationPoly w := by
+    have h0 : AdjoinRoot.mk (fpoly m) (relationPoly u - relationPoly w) = 0 := by
+      rw [map_sub, h, sub_self]
+    exact (AdjoinRoot.mk_eq_zero).mp h0
+  have hpoly : relationPoly u = relationPoly w := by
+    by_contra hne
+    have hzero : relationPoly u - relationPoly w ≠ 0 := sub_ne_zero.mpr hne
+    have hle := Polynomial.natDegree_le_of_dvd hdvd hzero
+    have h1 := relationPoly_natDegree_lt hm u
+    have h2 := relationPoly_natDegree_lt hm w
+    have hsub : (relationPoly u - relationPoly w).natDegree < m :=
+      lt_of_le_of_lt (Polynomial.natDegree_sub_le _ _) (by omega)
+    rw [fpoly_natDegree hm] at hle
+    omega
+  funext j
+  have hu := relationPoly_coeff_fin u j
+  have hw := relationPoly_coeff_fin w j
+  rw [← hu, ← hw, hpoly]
+
+/-- **The extraction.**  If `mk (P_w)` lies in the recurrence lattice of the binomial,
+then `w` has an exact vector-level negacyclic preimage — the `hsat` witness consumed by
+`saturated_kernel_card_le`. -/
+theorem exists_negacyclic_preimage_of_mem_span {m : ℕ} [NeZero m] (hm : 0 < m)
+    (a b : ℤ) (s : Fin m) {w : Fin m → ℤ}
+    (hmem : AdjoinRoot.mk (fpoly m) (relationPoly w) ∈
+      Ideal.span ({AdjoinRoot.mk (fpoly m) (relationPoly (binomialVec a b s))} :
+        Set (AdjoinRoot (fpoly m)))) :
+    ∃ g : Fin m → ℤ, negacyclicBinomialMul a b s g = w := by
+  classical
+  rw [Ideal.mem_span_singleton'] at hmem
+  obtain ⟨h, hh⟩ := hmem
+  obtain ⟨v, rfl⟩ := exists_relationPoly_repr hm h
+  refine ⟨v, ?_⟩
+  have h1 : AdjoinRoot.mk (fpoly m) (relationPoly (negacyclicBinomialMul a b s v))
+      = AdjoinRoot.mk (fpoly m) (relationPoly w) := by
+    rw [mk_relationPoly_negacyclicBinomialMul hm, ← mk_relationPoly_binomialVec, hh]
+  exact relationPoly_mk_inj hm h1
+
 end Dictionary
 
 #print axioms banded_max_bound
@@ -421,5 +521,9 @@ end Dictionary
 #print axioms mk_relationPoly_eq_sum
 #print axioms root_fpoly_pow
 #print axioms mk_relationPoly_negacyclicBinomialMul
+#print axioms exists_relationPoly_repr
+#print axioms mk_relationPoly_binomialVec
+#print axioms relationPoly_mk_inj
+#print axioms exists_negacyclic_preimage_of_mem_span
 
 end ArkLib.ProximityGap.Frontier.R325BinomialRecurrenceReturnBound

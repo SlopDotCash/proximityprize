@@ -21372,3 +21372,26 @@ with excess/headroom=5.934. Some binomial norm factors are harmless (zero/tiny e
 dangerous invariant is relation-web mass, not binomiality alone. Consequence: depth-3 exact-Wick
 can only be repaired by dangerous-prime/relation-web exclusion or by a log-depth argument that
 tolerates fixed-depth failures; no beta cutoff rescue. CORE OPEN.
+
+## [466-r327-raw-relation-count] R326's raw cardinality endpoint is REFUTED: logarithmic-depth endpoint fibers force `exp(Theta(r²))` distinct realized relations (2026-07-09)
+
+`_R327RelationCountFiberLowerBound.lean` proves axiom-clean, for every finite field and every
+evaluation point, `choose(m,r) <= |F|*(card(shadowKernelRelations)+1)`.  The proof injects every
+evaluation fiber minus one basepoint into the relation set by subtraction, and embeds all
+cardinality-`r` positive coordinate subsets as distinct shadow keys.  At `n=2^30`, `m=2^29`,
+`q=2^158`, `r=ceil(ln q)=110`, exact arithmetic forces more than `2^2440` relations (effective
+base `2^22.18` per rung).  Hence no uniform `C^r` raw-cardinality bound can close R326; principal
+recurrence/dyadic saturation may organize the relations but cannot remove the forced short lattice
+points.  The surviving target must retain `NR(2m,m,2r,d)` weights and bound total recurrence-class
+mass, rather than replace every relation by the zero-mode maximum.  KB:
+`deltastar-466-r327-relation-count-fiber-no-go-2026-07-09.md`. CORE OPEN, ON-BGK.
+
+## [prize-entropy-degree-parameter] `PrizePinConjecture` is REFUTED as stated: it uses polynomial degree `k` as the rate numerator although `evalCode g n k` has dimension `k + 1` (2026-07-09)
+
+`PrizeEntropyPinRefuted.lean` proves the concrete counterexample
+`p=12289`, `n=8`, `g=4043`, `k=0`, `epsilon*=14/12289`.  The existing unconditional
+dimension-one theorem gives operational `delta*=3/4`, while the historical entropy side
+uses rate `0/8` and simplifies to `prizeDeltaStar 0 B = 1`.  Hence the two sides cannot be
+equal.  This refutes only the degree-parameterized Lean definition; the corrected conjecture
+with actual rate `(k+1)/n` and the production prize instances remain open.  KB:
+`deltastar-prize-entropy-degree-parameter-refutation-2026-07-09.md`. CORE OPEN.

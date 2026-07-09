@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexGaussSumBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R17QuadrupleWeilRung
+import ArkLib.ToMathlib.NumberTheory.GaussSumNorm
 
 /-!
 # R19 (lane CHIDECOMP): `ChiDecompositionOff` is a THEOREM — the R15/R17 named input discharged
@@ -214,7 +215,7 @@ theorem chiDecompositionOff_holds (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ
 theorem norm_gaussSum_chiFamily (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
     {χ' : MulChar F ℂ} (hχ' : χ' ∈ chiFamily χ) :
     ‖gaussSum χ' ψ‖ = Real.sqrt (Fintype.card F) :=
-  norm_gaussSum_eq_sqrt (chiFamily_ne_one χ hχ') hψ
+  _root_.norm_gaussSum_eq_sqrt_card (chiFamily_ne_one χ hχ') hψ
 
 /-- **`GaussSumSizeBound` is a theorem** for the explicit family — the second round-17 named
 input discharged. -/

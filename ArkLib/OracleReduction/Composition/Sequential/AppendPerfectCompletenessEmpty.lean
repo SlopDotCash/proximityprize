@@ -104,12 +104,11 @@ theorem append_perfectCompleteness_empty_proof
     obtain ⟨a₂, hP₂, hmem0⟩ := (mem_support_bind_iff _ _ _).mp hmem0
     rcases a₂ with _ | ⟨tr₂, s₃, w₃⟩
     · exact absurd hP₂ (none_not_mem_optionT_lift _)
-    obtain ⟨a₃, hpr, hmem0⟩ := (mem_support_bind_iff _ _ _).mp hmem0
-    rcases a₃ with _ | pr
-    · exact absurd hpr (none_not_mem_optionT_lift _)
-    change some pr ∈ support (pure (some (tr₁ ++ₜ tr₂, s₃, w₃)) : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hpr
-    simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq] at hpr
-    subst hpr
+    obtain ⟨trOpt, hTr, hmem0⟩ := (mem_support_bind_iff _ _ _).mp hmem0
+    change trOpt ∈ support (pure (some (tr₁ ++ₜ tr₂, s₃, w₃)) :
+      OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hTr
+    rw [support_pure, Set.mem_singleton_iff] at hTr
+    subst hTr
     obtain ⟨a₄, hV₁, hmem0⟩ := (mem_support_bind_iff _ _ _).mp hmem0
     simp only [FullTranscript.append_fst] at hV₁
     rcases a₄ with _ | vo₁
@@ -159,7 +158,7 @@ theorem append_perfectCompleteness_empty_proof
         (h₂nf s₂ w₂ hrel₂)
     simp only [Option.elim_some, Option.getM_some, pure_bind] at hmem0
     change none ∈ support (pure (some ((tr₁ ++ₜ tr₂, s₃, w₃), vs₃)) : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hmem0
-    simp at hmem0
+    simp only [support_pure, Set.mem_singleton_iff, reduceCtorEq] at hmem0
   · intro x hx
     have h₁' : ∀ y ∈ support (OptionT.mk (R₁.run stmt wit)),
         (y.2, y.1.2.2) ∈ rel₂ ∧ y.1.2.1 = y.2 := by
@@ -192,20 +191,22 @@ theorem append_perfectCompleteness_empty_proof
       OptionT.run_bind, Option.elimM, bind_assoc, liftM_bind] at hx
     obtain ⟨a₁, hP₁, hx⟩ := (mem_support_bind_iff _ _ _).mp hx
     rcases a₁ with _ | ⟨tr₁, s₂, w₂⟩
-    · simp at hx
+    · exact absurd hP₁ (none_not_mem_optionT_lift _)
     obtain ⟨a₂, hP₂, hx⟩ := (mem_support_bind_iff _ _ _).mp hx
     rcases a₂ with _ | ⟨tr₂, s₃, w₃⟩
-    · simp at hx
-    obtain ⟨a₃, hpr, hx⟩ := (mem_support_bind_iff _ _ _).mp hx
-    rcases a₃ with _ | pr
-    · simp at hx
-    change some pr ∈ support (pure (some (tr₁ ++ₜ tr₂, s₃, w₃))
-      : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hpr
-    simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq] at hpr
-    subst hpr
+    · exact absurd hP₂ (none_not_mem_optionT_lift _)
+    obtain ⟨trOpt, hTr, hx⟩ := (mem_support_bind_iff _ _ _).mp hx
+    change trOpt ∈ support (pure (some (tr₁ ++ₜ tr₂, s₃, w₃)) :
+      OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) at hTr
+    rw [support_pure, Set.mem_singleton_iff] at hTr
+    subst hTr
     obtain ⟨a₄, hV₁, hx⟩ := (mem_support_bind_iff _ _ _).mp hx
     rcases a₄ with _ | vo₁
-    · simp at hx
+    · simp only [FullTranscript.append_fst] at hV₁
+      change none ∈ support (OracleComp.liftComp ((fun a => some a) <$>
+        ((Verifier.run stmt tr₁ R₁.verifier).run)) (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) at hV₁
+      simp only [mem_support_liftComp_iff, support_map, Set.mem_image, reduceCtorEq, and_false,
+        exists_false] at hV₁
     rcases vo₁ with _ | vs₂
     · exfalso
       have hP₁'' : (tr₁, s₂, w₂) ∈ support (R₁.prover.run stmt wit) := by

@@ -50,6 +50,12 @@ variable [hdiv : Fact (ϑ ∣ ℓ)]
 
 open scoped NNReal ProbabilityTheory
 
+/-- Eta-expansion as an explicit rewrite lemma. In Lean 4.30 function eta is definitional
+and the former core `fun_eta_expansion` lemma was removed; we reintroduce it locally so the
+`rw [←fun_eta_expansion]` eta-contraction steps below continue to key correctly. -/
+private theorem fun_eta_expansion {α : Sort*} {β : Sort*} (f : α → β) :
+    f = fun a => f a := rfl
+
 section FinalQueryRoundIOR
 
 /-!
@@ -325,8 +331,24 @@ lemma mem_support_queryFiberPoints
     Set.mem_singleton_iff] at h_fiber_mem ⊢
   intro fiberIndex
   have h_res := h_fiber_mem fiberIndex
-  simp only [OracleQuery.cont_query, id_eq, OracleInterface.answer] at h_res
-  exact (Option.some.inj h_res).symm
+  have h_ans : ∀ (q : (sDomain 𝔽q β h_ℓ_add_R_rate)
+      ⟨(⟨oraclePositionIdx.val, by
+        simp only [toOutCodewordsCount, Fin.val_last, lt_self_iff_false, ↓reduceIte,
+          add_zero, Fin.is_lt]⟩ : Fin (toOutCodewordsCount ℓ ϑ (Fin.last ℓ))).val * ϑ, by
+        have := toCodewordsCount_mul_ϑ_lt_ℓ ℓ ϑ (Fin.last ℓ)
+          ⟨oraclePositionIdx.val, by
+            simp only [toOutCodewordsCount, Fin.val_last, lt_self_iff_false, ↓reduceIte,
+              add_zero, Fin.is_lt]⟩
+        omega⟩),
+      OracleInterface.answer (oStmtIn ⟨oraclePositionIdx.val, by
+        simp only [toOutCodewordsCount, Fin.val_last, lt_self_iff_false, ↓reduceIte,
+          add_zero, Fin.is_lt]⟩) q
+        = oStmtIn ⟨oraclePositionIdx.val, by
+        simp only [toOutCodewordsCount, Fin.val_last, lt_self_iff_false, ↓reduceIte,
+          add_zero, Fin.is_lt]⟩ q := fun _ => rfl
+  simp only [OracleQuery.cont_query, id_eq, h_ans, Array.getElem_finRange, Fin.cast_mk,
+    Fin.eta] at h_res
+  simpa only [Vector.get_eq_getElem, id_eq] using (Option.some.inj h_res)
 
 /-! Simulated `queryFiberPoints` has zero failure probability. -/
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ in
@@ -673,7 +695,8 @@ lemma query_phase_step_preserves_fold
       (destIdx := ⟨k * ϑ + ϑ, by omega⟩) (h_destIdx := by simp only [Nat.add_right_cancel_iff]; rfl)
       (h_destIdx_le := by omega) (h_i_lt := by dsimp only [midIdx]; exact k_mul_ϑ_lt_ℓ (k := k))
       (f := f_mid) (y := y_left) (r_challenges :=
-        fun j => stmtIn.challenges ⟨k.val * ϑ + j.val, by simp only [Fin.val_last]; omega⟩)
+        fun j => foldOrderChallenges (ℓ := ℓ) (i := Fin.last ℓ) stmtIn.challenges
+          ⟨k.val * ϑ + j.val, by simp only [Fin.val_last]; omega⟩)
     erw [h_eq]
     dsimp only [f_mid]
     -- Now rw the oStmtIn k_oracle_idx into the iterated_fold of f⁽⁰⁾ form

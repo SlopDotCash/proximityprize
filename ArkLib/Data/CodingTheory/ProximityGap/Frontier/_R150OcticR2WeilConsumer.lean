@@ -42,16 +42,13 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 /-- Octic superelliptic class-fiber certificates produce the R17 fourth-moment twist input
 with constant `4 + Cmax`. -/
 theorem fourthMomentTwistBound_of_octic_superelliptic_consumer
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (G : Finset F) (X : Finset (MulChar F ℂ))
     (T : MulChar F ℂ → Finset ℂ)
     (msteps e J D Dtot : MulChar F ℂ → ℕ)
     (Cd : MulChar F ℂ → ℝ) {Cmax : ℝ}
     (gOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F[X])
     (ζOf : ∀ _ : MulChar F ℂ, F → F → F → ℂ → F)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -80,15 +77,12 @@ theorem fourthMomentTwistBound_of_octic_superelliptic_consumer
     (hp : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ)) :
     FourthMomentTwistBound G X (4 + Cmax) :=
   fourthMomentTwistBound_of_octic_superelliptic_pipeline G X T msteps e J D Dtot Cd gOf ζOf
-    hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+    h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
     hCdmax hp
 
 /-- Octic superelliptic class-fiber certificates, plus the standard R17 decomposition inputs,
 produce the corrected `r = 2` away-incidence Wick rung. -/
 theorem wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -104,7 +98,7 @@ theorem wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -136,7 +130,7 @@ theorem wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
     fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact wickAwayAtWithConstant_two_of_weil ψ G H Dset X g mχ hmχ hCw0 hdec hg h4
     hq1 hnq hSig
@@ -144,9 +138,6 @@ theorem wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline
 /-- Exact R15 away-Wick companion to
 `wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline` in the constant-`≤ 1` regime. -/
 theorem wickForIncidenceAwayAt_two_of_octic_superelliptic_pipeline_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -163,7 +154,7 @@ theorem wickForIncidenceAwayAt_two_of_octic_superelliptic_pipeline_le_one
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -193,15 +184,12 @@ theorem wickForIncidenceAwayAt_two_of_octic_superelliptic_pipeline_le_one
     WickForIncidenceAwayAt ψ G H Dset 2 :=
   wickForIncidenceAwayAt_of_wickAwayAtWithConstant_le_one G H Dset 2 hCle
     (wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline ψ G H Dset X g mχ
-      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig hq_odd h8 hm hJ
+      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig h8 hm hJ
       hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0 hCdmax hp)
 
 /-- Raw-fourth-moment companion to
 `wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline` in the constant-`≤ 1` regime. -/
 theorem rawFourthMomentWithDiagonal_of_octic_superelliptic_pipeline_le_one
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -218,7 +206,7 @@ theorem rawFourthMomentWithDiagonal_of_octic_superelliptic_pipeline_le_one
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -248,14 +236,11 @@ theorem rawFourthMomentWithDiagonal_of_octic_superelliptic_pipeline_le_one
     RawFourthMomentWithDiagonal ψ G H Dset :=
   rawFourthMomentWithDiagonal_of_wickAwayAtWithConstant_two_le_one G H Dset hCle
     (wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline ψ G H Dset X g mχ
-      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig hq_odd h8 hm hJ
+      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig h8 hm hJ
       hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0 hCdmax hp)
 
 /-- Pointwise fourth-root incidence consumer produced by the octic superelliptic pipeline. -/
 theorem incidence_sq_le_sqrt_of_octic_superelliptic_pipeline
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -271,7 +256,7 @@ theorem incidence_sq_le_sqrt_of_octic_superelliptic_pipeline
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -305,7 +290,7 @@ theorem incidence_sq_le_sqrt_of_octic_superelliptic_pipeline
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
     fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact incidence_sq_le_sqrt_of_weil_r2 ψ G H Dset X g mχ hmχ hCw0 hdec hg h4
     hq1 hnq hSig hs
@@ -315,9 +300,6 @@ theorem incidence_sq_le_sqrt_of_octic_superelliptic_pipeline
 This is the direct R149→R17 bridge for routes that first prove a pointwise envelope
 `‖eta ψ G b‖ ≤ M` on `H`, rather than keeping the raw second moment. -/
 theorem incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -333,7 +315,7 @@ theorem incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -368,7 +350,7 @@ theorem incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline
   have h4 :
       FourthMomentTwistBound G X (4 + Cmax) :=
     fourthMomentTwistBound_of_octic_superelliptic_consumer G X T msteps e J D Dtot Cd gOf ζOf
-      hq_odd h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
+      h8 hm hJ hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0
       hCdmax hp
   exact incidence_sq_le_sqrt_sup_of_weil_r2 ψ G H Dset X g mχ hmχ hCw0 hdec hg h4
     hq1 hnq hSig hM0 hM hs
@@ -378,9 +360,6 @@ theorem incidence_sq_le_sqrt_sup_of_octic_superelliptic_pipeline
 This composes the R150 `r = 2` constant-aware Wick certificate with the R16 off-diagonal
 incidence bridge, leaving the calibrated depth equality explicit. -/
 theorem incidence_le_of_octic_superelliptic_pipeline
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -397,7 +376,7 @@ theorem incidence_le_of_octic_superelliptic_pipeline
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -432,15 +411,12 @@ theorem incidence_le_of_octic_superelliptic_pipeline
       ≤ Real.sqrt (2 * Real.exp 1 * (∑ b ∈ H, ‖eta ψ G b‖ ^ 2) * (2 : ℕ)) :=
   incidence_le_of_wickAwayAtWithConstant G H Dset hCge hq1 2 hdepth (by norm_num)
     (wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline ψ G H Dset X g mχ
-      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig hq_odd h8 hm hJ
+      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig h8 hm hJ
       hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0 hCdmax hp)
     hs
 
 /-- Sup-norm approximate-`B` consumer produced by the octic superelliptic pipeline. -/
 theorem approxB_away_of_octic_superelliptic_pipeline
-    [NormalizationMonoid (Polynomial (Polynomial F))]
-    [UniqueFactorizationMonoid (Polynomial (Polynomial F))]
-    [NeZero (2 : FractionRing (Polynomial (Polynomial F)))]
     (ψ : AddChar F ℂ) (G H Dset : Finset F) (X : Finset (MulChar F ℂ))
     (g : MulChar F ℂ → ℂ) (mχ : ℕ)
     (T : MulChar F ℂ → Finset ℂ)
@@ -457,7 +433,7 @@ theorem approxB_away_of_octic_superelliptic_pipeline
     (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
     (hSig : (G.card : ℝ) * (Fintype.card F : ℝ)
         ≤ 2 * (mχ : ℝ) * ∑ b ∈ H, ‖eta ψ G b‖ ^ 2)
-    (hq_odd : Odd (Fintype.card F)) (h8 : 8 ∣ (Fintype.card F - 1))
+    (h8 : 8 ∣ (Fintype.card F - 1))
     (hm : ∀ χ ∈ X, 0 < msteps χ)
     (hJ : ∀ χ ∈ X, 0 < J χ)
     (hT1 : ∀ χ ∈ X, ∀ c ∈ T χ, ‖c‖ = 1)
@@ -493,7 +469,7 @@ theorem approxB_away_of_octic_superelliptic_pipeline
       ≤ Real.sqrt (2 * Real.exp 1 * ((H.card : ℝ) * M ^ 2) * (2 : ℕ)) :=
   approxB_away_of_wickAwayAtWithConstant G H Dset hCge hq1 2 hdepth (by norm_num)
     (wickAwayAtWithConstant_two_of_octic_superelliptic_pipeline ψ G H Dset X g mχ
-      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig hq_odd h8 hm hJ
+      T msteps e J D Dtot Cd gOf ζOf hmχ hCw0 hdec hg hq1 hnq hSig h8 hm hJ
       hT1 hT0 hvals hmodel hpoly he hmq hD hcount hDtot harith hCd0 hCdmax hp)
     hM0 hM hs
 
