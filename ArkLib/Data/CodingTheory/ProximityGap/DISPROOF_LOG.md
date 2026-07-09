@@ -31096,3 +31096,19 @@ is therefore correctly a β-QUESTION: does max stacking decay as p grows at fixe
 prize sits at β≈5.27)? The census answer at n=16/32 was yes for TOTAL excess (largest
 violator β=4.87 at n=32, none above); the n=64 high-β windows are the open measurement.
 NEXT: sample windows at β≈3.3, 3.7, 4.2 at n=64 for max stacking. CORE OPEN, ON-BGK.
+
+## [466-r370b-beta-decay-nonmonotone-s4-revival] the β-decay of orbit stacking is REAL but NON-MONOTONE: n=64 max stacking 16 units (β=3.0) → 4–6 units (β=3.32, 5 violators) → but at β=3.66 a single special prime p=4017089 violates at 9.3× headroom with a NEW dominant sector s4h1 = 1382400 (support-4 height-1 = PAIR-SUM collisions, the depth-2 Sidon object) (2026-07-09)
+
+Windows `_out_466_r370_n64_beta33.txt` (β≈3.32: violators 1009537/1013569/1018817/1022209/
+1028737, all s6h1-dominated, 4–6 units) and `_out_466_r370_n64_beta37.txt` (β≈3.66: ONE
+violator p=4017089, excess 1693440, spectrum s4h1:1382400 s4h2:11520 s5h2:69120 s6h1:230400).
+CONSEQUENCES: (i) the s6h1 stacking DOES decay with β (16→~5→~5 units) — the r369
+anti-coincidence law is empirically right for the depth-3-native sector; (ii) BUT special
+primes revive violations through the DEPTH-2 sector (s4h1: ζ^a+ζ^b ≡ ζ^c+ζ^d, i.e.
+|μ_n ∩ shifted μ_n| collapse) — the depth-3 rung inherits depth-2's bad primes; the
+anti-coincidence law must be stated PER SECTOR with the depth-2 sector's own (known,
+Weil/Stepanov-adjacent) controls; (iii) the full rung decomposition is now: excess =
+Σ_{s=3..6} sector(s), with s3 = subgroup-on-line (Shkredov-class), s4 = depth-2 energy
+excess (shifted-subgroup intersections), s5/s6 = genuine depth-3 Sidon strata — EACH sector
+has its own literature; the wall is their SIMULTANEOUS control at prize (n, β, r≈ln q).
+CORE OPEN, ON-BGK.
