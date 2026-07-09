@@ -2783,6 +2783,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R376PerFrequencyShadowLog
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R377GaloisKernelStabilityRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R378SignedDifferenceRotationInvariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R380HalfRadiusTwoEPlusOneRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R40CubeClassExact
