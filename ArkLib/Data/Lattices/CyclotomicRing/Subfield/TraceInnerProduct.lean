@@ -257,7 +257,7 @@ theorem traceH_psi_mul_conj (α k : ℕ) (h2 : (2 : R) ≠ 0) (hk2pow : ∃ κ, 
     mul_one]
   rw [← Finset.smul_sum]
   congr 1
-  rw [AddSubmonoidClass.coe_finsetSum]
+  rw [AddSubmonoidClass.coe_finset_sum]
   simp only [MulMemClass.coe_mul]
 
 /-! ## `ψ` is injective (from the non-degenerate trace pairing) -/
