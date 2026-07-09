@@ -9,6 +9,10 @@ The following assumptions are intentionally kept as external/residual hypotheses
 - `FoldMatrixDetNeZeroResidual` / `foldMatrix_det_ne_zero` (the historical discharge used the
   retired `foldMatrixNat` API; `FoldDetSplit.lean` and `FoldDetDischarge.lean` now record this as
   a substrate-port boundary instead of exposing a stale theorem).
+- `Reconstruct/IncrementalHelpers.lean` (the historical helper lemmas used the retired
+  `OracleFunction : Fin r` indexing and natural-number `iterated_fold` step API; the current
+  substrate indexes oracle functions by protocol level `Fin (ell + 1)` and folds with
+  `steps : Fin (ell + 1)`, so this file now records the migration boundary).
 - Any remaining `h...Completeness` or `h...RbrKnowledgeSoundness` hypotheses not covered by direct append/seq-compose plumbing.
 
 ## Composition Assumptions
@@ -17,8 +21,8 @@ The role-named composition assumptions in `BinaryBasefold/CoreInteractionPhase.l
 `FRIBinius/CoreInteractionPhase.lean`, and the older full-security wrappers are intentionally kept
 as external hypotheses. They are marked as grant-out-of-scope for this closeout, as discharging
 them with `append_perfectCompleteness_total` would require a separate port of the stale
-`Relations` / `ReductionLogic` / `QueryPhase` / `Soundness` proof strata to the current
-Binary Basefold substrate API.
+`Relations` / `ReductionLogic` / `QueryPhase` / `Soundness` / incremental reconstruction proof
+strata to the current Binary Basefold substrate API.
 
 For the issue #313 focused validation target, the three front-door modules
 `BinaryBasefold/General.lean`, `FRIBinius/General.lean`, and `BBFSmallFieldIOPCS.lean` are now
