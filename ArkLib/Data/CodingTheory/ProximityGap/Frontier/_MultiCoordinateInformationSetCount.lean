@@ -300,7 +300,8 @@ theorem polynomial_information_set_count
     rw [LinearMap.range_eq_top.mpr I.2.2, finrank_top, Module.finrank_pi,
       Fintype.card_coe]
   have hKdim : Module.finrank F K = d - i := by
-    have hranknull := R.finrank_range_add_finrank_ker
+    have hranknull := K.finrank_quotient_add_finrank
+    rw [R.quotKerEquivRange.finrank_eq] at hranknull
     rw [hrange, hdim, I.2.1] at hranknull
     omega
   let Kamb : Submodule F (Polynomial.degreeLT F k) := K.map W.subtype
@@ -344,7 +345,8 @@ theorem polynomial_information_set_count
       intro hxI
       apply hqx
       have := congrFun hqker ⟨x.1, hxI⟩
-      simpa [R, ArkLib.CS25.evalOnS, LinearMap.domRestrict_apply] using this
+      change (q.1.1 : F[X]).eval (α x.1) = 0 at this
+      exact this
     refine ⟨x.1, hxnotI, ?_⟩
     exact isPolynomialInformationSet_insert_of_kernel_nonzero α k W I.1 x.1 I.2.2 q.1
       (by simpa [R, K] using hqker) hqx

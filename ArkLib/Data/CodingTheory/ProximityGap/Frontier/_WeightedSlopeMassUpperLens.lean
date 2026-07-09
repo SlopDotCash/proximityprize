@@ -230,14 +230,12 @@ noncomputable def weightedSlopeMass (a : Nat) (G : Finset F)
 theorem realizedSlopes_subset_code
     (C : Submodule F (Fin n -> F)) (G : Finset F) (c : F -> Fin n -> F)
     (hcode : ∀ gamma ∈ G, c gamma ∈ C) :
-    realizedSlopes G c ⊆ Finset.univ.filter (fun b : Fin n -> F => b ∈ C) := by
+    ∀ b ∈ realizedSlopes G c, b ∈ C := by
   classical
   intro b hb
   obtain ⟨pair, hpair, rfl⟩ := Finset.mem_image.mp hb
   obtain ⟨hgamma, hgamma', _hne⟩ := Finset.mem_offDiag.mp hpair
-  rw [Finset.mem_filter]
-  exact ⟨Finset.mem_univ _, C.smul_mem _
-    (C.sub_mem (hcode pair.1 hgamma) (hcode pair.2 hgamma'))⟩
+  exact C.smul_mem _ (C.sub_mem (hcode pair.1 hgamma) (hcode pair.2 hgamma'))
 
 /-- Each affine-intercept fiber obeys the cluster-independent pin/support bound. -/
 theorem interceptFiber_card_mul_le_support
@@ -317,7 +315,7 @@ theorem slopePairCount_le_card_mul_cap_sub_one
   have hfiber : ∀ d ∈ G.image f, (G.filter (fun gamma => f gamma = d)).card <= cap := by
     intro d hd
     apply (Nat.le_div_iff_mul_le hmu).2
-    simpa only [mu, cap, slopeClusterCap, f] using
+    simpa only [mu, cap, slopeClusterCap, f, Nat.mul_comm] using
       interceptFiber_card_mul_le_support C G c S u0 u1 b d a
         hcode hsize hagree hno hb hd
   have hterm : ∀ d ∈ G.image f,

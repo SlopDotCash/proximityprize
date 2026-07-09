@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R324KernelRelationLengthStratification
+import Mathlib.Data.Int.Interval
+import Mathlib.Data.Sym.Card
 
 /-!
 # LANE B2 (#466 round 326): dominant recurrence contracts `L1` preimages
@@ -120,6 +122,65 @@ theorem pow_cancellation
   rw [← pow_add]
   exact pow_le_pow_right' (Nat.succ_le_iff.mpr hm) hsk
 
+/-- Signed-coordinate multiplicity multiset of an integer vector. -/
+noncomputable def vectorSignedMultiset {m : ℕ} (v : Fin m → ℤ) :
+    Multiset (Fin m × Fin 2) :=
+  multiplicityMultiset fun x =>
+    if x.2 = 0 then intPositivePart (v x.1) else intNegativePart (v x.1)
+
+theorem card_vectorSignedMultiset {m : ℕ} (v : Fin m → ℤ) :
+    (vectorSignedMultiset v).card = natL1 v := by
+  classical
+  rw [vectorSignedMultiset, card_multiplicityMultiset]
+  unfold natL1
+  rw [← Finset.univ_product_univ, Finset.sum_product]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Fin.sum_univ_two]
+  simp only [Fin.isValue, if_pos, reduceCtorEq, if_false]
+  exact intPositivePart_add_intNegativePart (v j)
+
+theorem vectorSignedMultiset_injective {m : ℕ} :
+    Function.Injective (vectorSignedMultiset (m := m)) := by
+  intro u v huv
+  funext j
+  have hp := congrArg (fun M : Multiset (Fin m × Fin 2) => M.count (j, 0)) huv
+  have hn := congrArg (fun M : Multiset (Fin m × Fin 2) => M.count (j, 1)) huv
+  simp only [vectorSignedMultiset, count_multiplicityMultiset, Fin.isValue, if_pos] at hp
+  change intNegativePart (u j) = intNegativePart (v j) at hn
+  calc
+    u j = (intPositivePart (u j) : ℤ) - (intNegativePart (u j) : ℤ) :=
+      (intPositivePart_cast_sub_intNegativePart_cast (u j)).symm
+    _ = (intPositivePart (v j) : ℤ) - (intNegativePart (v j) : ℤ) := by
+      rw [hp, hn]
+    _ = v j := intPositivePart_cast_sub_intNegativePart_cast (v j)
+
+/-- Finite `L1` sphere of integer vectors. -/
+noncomputable def l1Sphere (m k : ℕ) : Finset (Fin m → ℤ) :=
+  (Fintype.piFinset (fun _ : Fin m => Finset.Icc (-(k : ℤ)) (k : ℤ))).filter
+    (fun v => natL1 v = k)
+
+/-- **Stars-and-bars count for integer `L1` spheres.** Integer vectors of mass `k` inject
+into multisets of `k` signed coordinates. -/
+theorem card_l1Sphere_le_multichoose (m k : ℕ) :
+    (l1Sphere m k).card ≤ Nat.multichoose (2 * m) k := by
+  classical
+  let enc : {v // v ∈ l1Sphere m k} → Sym (Fin m × Fin 2) k := fun v =>
+    ⟨vectorSignedMultiset v.1, by
+      rw [card_vectorSignedMultiset]
+      exact (Finset.mem_filter.mp v.2).2⟩
+  have henc : Function.Injective enc := by
+    intro u v huv
+    apply Subtype.ext
+    apply vectorSignedMultiset_injective
+    exact congrArg (fun z : Sym (Fin m × Fin 2) k => (z : Multiset (Fin m × Fin 2))) huv
+  calc
+    (l1Sphere m k).card = Fintype.card {v // v ∈ l1Sphere m k} := by simp
+    _ ≤ Fintype.card (Sym (Fin m × Fin 2) k) := Fintype.card_le_of_injective enc henc
+    _ = Nat.multichoose (Fintype.card (Fin m × Fin 2)) k :=
+      Sym.card_sym_eq_multichoose _ _
+    _ = Nat.multichoose (2 * m) k := by simp
+
 end ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction
 
 /-! ## Axiom audit -/
@@ -131,3 +192,5 @@ end ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction
   ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.cancellationDepth_add_natL1_le
 #print axioms
   ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.pow_cancellation
+#print axioms
+  ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction.card_l1Sphere_le_multichoose
