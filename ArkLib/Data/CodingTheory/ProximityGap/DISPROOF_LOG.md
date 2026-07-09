@@ -30993,3 +30993,15 @@ primes), so at prize n — where every candidate prime is far below the astronom
 norm frontier — good-prime selection cannot rely on bad primes being rare in any
 v₂-structured family; the selection criterion must read the actual relation-web mass
 (the r305 invariant), not the shape of p−1. CORE OPEN, ON-BGK.
+
+## [466-r365-lattice-shape-criterion-CONFIRMED] the r364 ideal-lattice dictionary verified at n=16: EVERY prime below the norm frontier carries ~19k kernel vectors of height ≤ 6 (λ∞ = 2–3, Minkowski abundance), and badness is EXACTLY the shape event (some short vector lands in the finite difference-class set Z₃) — good primes are shape-misses, not short-vector-free (2026-07-09)
+
+`probe_r365_lattice_shape_criterion.py` (meet-in-middle enumeration of ALL height-≤6 kernel
+vectors, dim 8, vs the exact Z₃ membership), `_out_466_r365_n16_shape_criterion.txt`.
+Window [40000,44000]: 49 primes, all good (above the n=16 census max bad prime 41521), each
+with 18,500–19,100 nonzero height-≤6 kernel vectors, λ∞ ∈ {2,3}, Z₃-hits = 0 for every one.
+CONSEQUENCE: the wall's difficulty is correctly located by r364 — sparse-short vectors are
+UNAVOIDABLE (Minkowski) at and below prize scale; the entire question is whether any lands
+in the (finite, mass-weighted) realizable-shape set Z_r. Good-prime selection = shape
+avoidance in the prime-ideal lattice; the ideal-SVP/Ring-LWE literature transfer (r364 §2)
+is the live lane. CORE OPEN, ON-BGK.

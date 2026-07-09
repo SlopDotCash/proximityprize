@@ -1,0 +1,15 @@
+|Z3| = 29952
+p= 41057 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19840
+p= 41201 bad=0 Z3hits=  0 lambdaInf=3 heightLE6kernel=19824
+p= 41233 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19824
+p= 41281 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19696
+p= 41521 bad=1 Z3hits= 16 lambdaInf=2 heightLE6kernel=19792
+p= 41617 bad=0 Z3hits=  0 lambdaInf=3 heightLE6kernel=19616
+p= 41681 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19616
+p= 41729 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19600
+p= 41761 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19760
+p= 41777 bad=0 Z3hits=  0 lambdaInf=3 heightLE6kernel=19504
+p= 41809 bad=0 Z3hits=  0 lambdaInf=3 heightLE6kernel=19520
+p= 41953 bad=0 Z3hits=  0 lambdaInf=2 heightLE6kernel=19440
+p= 41969 bad=0 Z3hits=  0 lambdaInf=3 heightLE6kernel=19424
+done rows=13
