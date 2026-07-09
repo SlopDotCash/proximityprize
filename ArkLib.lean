@@ -2051,6 +2051,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS2PatternAnnihilatorResu
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS3AnnihilatorHeightBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS4Depth3PatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS5TrivialCountClosedForm
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS6AlmostAllPrimesWickRung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Face4OverdetBypassBoundary
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FallingFactorialDecay
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FarLineProxyTowerN32Corrected

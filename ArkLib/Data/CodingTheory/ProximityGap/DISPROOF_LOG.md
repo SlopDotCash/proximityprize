@@ -21417,3 +21417,34 @@ ALMOST-ALL-PRIMES rung (non-vacuous β ≳ 6), NOT the per-prime prize rung; the
 uniformity at prize β ≈ 5.3 and the deep-r (r ≈ ln q) wall remain the open core. CORE OPEN,
 ON-BGK. Credit: this capstone deliberately welds the Fable-session FS arc onto the swarm's
 E3-strata closed form and r53 headroom — cross-lane reuse, no duplication.
+
+## [466-FS6-almost-all-primes-wick-rung-SEALED] ARC SEALED (Fable session): the almost-all-primes r=3 Wick rung is a THEOREM, end-to-end, no named inputs — `badPrime_cap` + `gaussianEnergyBound_three_of_good_prime` (2026-07-09)
+
+Lane: FS6 (file `Frontier/_FS6AlmostAllPrimesWickRung.lean`, real locked build 3342 jobs, all 3
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+THE COMPOSED RESULT (n = 2^{k+1}, any finite family P of primes ≥ 2^s):
+- `badPrime_cap`: #{p ∈ P : pattern-badness count ≥ T} ≤ n⁶·(((k+4)·n)/s)/T — instantiates
+  FS1's abstract ledger with pats = tupleSet n (card n⁶ via `tupleSet_card`) and
+  Bad = `BadPat k` (nonzero pattern vanishing at an order-n root in some char-p field);
+  annihilators supplied by FS3's `pattern_annihilator_exists_with_height` at b = 3
+  (degree/coefficient shape from FS4); trivial patterns take N = 1.
+- `wraparoundExcess_le_excessCount`: any concrete field's wraparound excess is dominated by
+  the abstract per-prime badness count.
+- `gaussianEnergyBound_three_of_good_prime`: at every p ∈ P outside the capped bad set
+  (T = 45n²−40n+1), in EVERY field of char p with a primitive n-th root, the EXACT depth-3
+  Wick bound `GaussianEnergyBound (μ_n) 3` holds (through FS5's unconditional decomposition +
+  the swarm's negSymCount closed form + the r53 headroom weld).
+
+NET NEW STATE FOR #466: the r=3 Wick rung — previously conditional on the r53
+`Depth3ExcessBounded` atom — is now UNCONDITIONALLY TRUE at all but
+≤ n⁴·(k+4)/(45·s)·(1+o(1)) primes of any family of primes ≥ 2^s (2-power n). The rung's
+obstruction is exactly localized: a per-prime finite pattern count with a proven
+prime-averaged budget. HONEST SCOPE (final): non-vacuous only when the family has
+≫ n⁴(k+4)/(45s) members (β ≳ 6); at prize β ≈ 5.3 the cap exceeds the family size — NOT a
+prize closure; deep-r (r ≈ ln q) untouched. The natural next targets: (i) tighten the n⁶
+pattern budget by quotienting the (a,a,·|a,a,·)-degenerate patterns (probe suggests the
+effective nontrivial-pattern count is ≪ n⁶ — could push the almost-all threshold below β = 6);
+(ii) per-coset (r56-style) refinement of BadPat; (iii) the same 6-brick schema at r = 4
+(105n⁴ Wick, headroom O(n³), patterns in [n]⁸ with |coeffs| ≤ 8 ≤ 2^3 — the machinery is
+depth-generic except the closed form). CORE OPEN, ON-BGK.
