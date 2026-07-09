@@ -9,6 +9,7 @@ For the negacyclic shadow rotation `rotZ`, R378 proves
 ```text
 differenceDiscrepancyCoeff(rotZ d) = differenceDiscrepancyCoeff(d)
 NR(2m,m,2r,rotZ d) = NR(2m,m,2r,d)
+endpointL1(rotZ d) = endpointL1(d)
 signedEndpointSummand(rotZ d) = signedEndpointSummand(d).
 ```
 

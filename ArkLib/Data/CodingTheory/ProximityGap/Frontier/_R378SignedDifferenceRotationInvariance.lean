@@ -22,6 +22,7 @@ namespace ArkLib.ProximityGap.Frontier.R378SignedDifferenceRotationInvariance
 open ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor
 open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
 open ArkLib.ProximityGap.Frontier.R321ShadowAutocorrelationDoubling
+open ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
 open ArkLib.ProximityGap.Frontier.R368SignedDifferenceFiberDecomposition
 open ArkLib.ProximityGap.Frontier.R369SignedDifferenceMassDoubling
 open ArkLib.ProximityGap.Frontier.R371ShadowKernelRotationAction
@@ -32,6 +33,30 @@ noncomputable def signedEndpointSummand
     {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     (g : F) (m r : ℕ) (d : Fin m → ℤ) : ℝ :=
   (NR (2 * m) m (r + r) d : ℝ) * differenceDiscrepancyCoeff g m d
+
+/-- Negacyclic rotation preserves endpoint `L1` mass exactly. -/
+theorem endpointL1_rotZ (m : ℕ) (hm : 0 < m) (d : Fin m → ℤ) :
+    endpointL1 (rotZ m hm d) = endpointL1 d := by
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+  unfold endpointL1
+  rw [← Equiv.sum_comp (finRotate (m' + 1))
+    (fun j => (rotZ (m' + 1) hm d j).natAbs)]
+  apply Finset.sum_congr rfl
+  intro j hj
+  by_cases hlast : j = Fin.last m'
+  · subst j
+    rw [finRotate_last]
+    unfold rotZ
+    simp only [Fin.val_zero, if_true, Int.natAbs_neg]
+    rfl
+  · have hcoe : ((finRotate (m' + 1) j : Fin (m' + 1)) : ℕ) = (j : ℕ) + 1 :=
+      coe_finRotate_of_ne_last hlast
+    unfold rotZ
+    rw [if_neg (by rw [hcoe]; omega)]
+    congr 2
+    apply Fin.ext
+    change ((finRotate (m' + 1) j : Fin (m' + 1)) : ℕ) - 1 = (j : ℕ)
+    omega
 
 /-- The centered coefficient is rotation-invariant because rotation multiplies evaluation by the
 nonzero scalar `g`. -/
@@ -56,6 +81,8 @@ theorem signedEndpointSummand_rotZ
 end ArkLib.ProximityGap.Frontier.R378SignedDifferenceRotationInvariance
 
 /-! ## Axiom audit -/
+#print axioms
+  ArkLib.ProximityGap.Frontier.R378SignedDifferenceRotationInvariance.endpointL1_rotZ
 #print axioms
   ArkLib.ProximityGap.Frontier.R378SignedDifferenceRotationInvariance.differenceDiscrepancyCoeff_rotZ
 #print axioms
