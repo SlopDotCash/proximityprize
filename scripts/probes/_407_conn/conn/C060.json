@@ -1,0 +1,28 @@
+{
+ "id": "C060",
+ "rank": 60,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F7",
+  "F16"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/PrizeSpectralLevelSetSharp.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumAntiConc.lean"
+ ],
+ "title": "The Paley-Zygmund lower bound forbids spectral concentration: F2 can hold only by sign-cancellation, never magnitude redistribution — the open core is phase-only",
+ "connection": "card_resonant_ge proves (q·n−λ²q)²≤#{b:λ≤‖η_b‖}·q·(3n²−3n): a Paley-Zygmund lower bound forcing Ω(q) frequencies at the √n scale. card_johnson_scale_frequencies_le_min caps #{‖η_b‖²≥q}≤min(|G|,E/q). Together: the spectrum {‖η_b‖} is RIGIDLY spread — positive density sit at √n, only ≤min(n,E/q) reach √q. The prize cannot be won by 'magnitude redistribution' (concentrating mass into few small periods); magnitudes are pinned by E_2=3n²−3n (F5) and Parseval (F7's variance n). The ONLY remaining freedom is the SIGN/phase of the worst η_b: M(n)≤C√(n log m) requires the m Gauss-period phases χ̄(b)τ(χ) (F16) to be flat enough (Salem-Zygmund), with magnitude already determined. F2 decoupled into a PROVEN magnitude part (F5/F7) and an OPEN phase part (F16).",
+ "why_insightful": "Sharpens the open core from 'bound |η_b|' to 'magnitudes are already pinned by proven moments; only the phase alignment (F16 Salem-Zygmund) is open' — a strictly smaller and more falsifiable target, grounded in two landed two-sided level-set bricks. Cleanly separates what the moment method gives (magnitude) from what it cannot (phase).",
+ "attack_plan": "Probe: at μ_n over p≈n^4, fix the proven magnitude profile {‖η_b‖²} and ask whether ANY phase assignment consistent with the Gauss-sum constraints (|τ(χ)|=√p, Hasse-Davenport only, F19) could push max|η_b| above C√(n log m). If phase constraints FORCE flatness, that is the closure direction; if they admit a coherent worst case, that bounds δ* from above. Lean: state PaleyFloorBound as 'magnitude-pinned + phase-flat', prove the magnitude half from card_resonant_ge/prize_levelset_sharp."
+}

@@ -1,0 +1,28 @@
+{
+ "id": "C028",
+ "rank": 28,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F10",
+  "F4",
+  "F15"
+ ],
+ "walls": [
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26SumsOfRootsOfUnity.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TwoPowerSubsetSumSpectrum.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/FiniteFieldDisproofLoop53.lean"
+ ],
+ "title": "The KKH26 resultant threshold p>s^{s/2} is the SINGLE shared injectivity boundary controlling both the covering count (F4) and the Half-Sum lacunary vanishing (F10), read in opposite directions",
+ "connection": "kkh26_lemma1 proves the covering count 2^r·C(n/2,r) is REALIZED in F_p precisely when p>s^{s/2} (s=n), via natAbs_resultant_cyclotomic_le (|Res(R,Φ_{2^μ})|≤‖R‖₁^{n/2}≤(2r)^{n/2}) and not_isRoot_of_l1On_pow_lt. The SAME object — a short ±1,0 lacunary polynomial R of degree <n/2 not vanishing at g mod p — is exactly the DyadicLacunaryFloor object F10. Curve/covering realization (F4 list explodes ⟺ p large) and Half-Sum cleanliness (F10 floor holds ⟺ short relations vanish) are the SAME resultant-nonvanishing inequality with the inequality flipped: list explosion needs sums DISTINCT (R(g)≠0), floor cleanliness needs bad relations to VANISH (R(g)=0). Exact complements gated by p⋛s^{s/2}.",
+ "why_insightful": "Exposes the floor (F10) and the ceiling/counterexample (F4 via KKH26) as the SAME resultant inequality flipped — p>s^{s/2} gives the ceiling, p≤s^{s/2} would give the floor, and the prize p=n^β sits in the crossover where (2r)^{n/2} vs p is delicate. A concrete decidable hinge rather than the diffuse BGK wall.",
+ "attack_plan": "Quantify: at the prize p=2^{βμ}, threshold s^{s/2}=2^{μ·2^{μ-1}}≫p for n≥16, so KKH26 distinctness FAILS to be guaranteed by the size bound exactly in the prize regime (why kkh26_lemma1_of_not_dvd replaces it via Thorner-Zaman good primes). Lean: LacunaryFloorClean G r:=∀ short signed R, R(g)≠0; prove ⟺ ¬p∣collisionResultant (not_dvd_collisionResultant_* half-exists), unifying F10 and F4. Probe: for n=8,16,32 and p=Θ(n^4), count how many pairwise collision resultants are divisible by p (the TZ24 good-prime density)."
+}

@@ -1,0 +1,18 @@
+## A cyclotomic-rigidity escape route was tested rigorously and REFUTED — and the refutation *strengthens* the wall to an iff-equivalence
+
+I chased a genuinely new lead from a targeted 2026 sweep: the prior "floor = character-sum wall" used the **crude height threshold** `esymm_eq_zero_iff: C(w,⌊w/2⌋)^{φ(n)} < p` (beyond any prize prime), but the **sharp criterion is Lam–Leung weight-`<p` rigidity** — `disc(Φ_{2^a}) = ±2^{(a−1)2^{a−1}}` is a pure 2-power, so the integral cyclotomic relation lattice transfers char-0→F_p for *every* odd p, and new F_p vanishing sums need weight `≥ p`. Prize floor sums have weight `≤ n = 2^a ≪ p ≈ n·2^128`. So **"route (II)": bound the char-0 floor + transfer via weight-`<p` rigidity, avoiding the magnitude wall.**
+
+A 11-agent adversarial workflow (0/4 red-team, 0/3 reconcile) found a **FATAL LEVEL ERROR**, verified against axiom-clean in-tree facts:
+
+**Rigidity transfers the wrong face.** Two orthogonal objects:
+- **Vanishing face** ("which `A⊆μ_n` have `∑ζ^a=0`") — weight-`<p` rigidity *does* transfer this. The new input is correct *for this face*.
+- **Magnitude face** — the floor `L_max = max_w #{c:agree≥(1−δ)n}` is the *level-set SIZE* = collision energy `E(μ_n)`, NOT a vanishing condition. The floor is the magnitude face.
+
+Three receipts:
+1. **The energy bridge is BIDIRECTIONAL** — `FiberEnergyListBound.maxRep_sq_le_addEnergy` (list²≤E) **and the converse** `EnergyCharacterTransport.exists_charSum_ge_of_energy'` (`max_b‖η_b‖⁴ ≥ (qE−n⁴)/(q−1)`). So `E(μ_n)=O(n²)` is **logically EQUIVALENT (iff)** to `B(μ_n)=max_b|∑ψ(bx)|=O(√n)` — the 25-year wall. And the 4th-moment identity is **char-0-valid**, so even over ℂ the arbitrary-word maximum is a magnitude quantity, never a vanishing one.
+2. `antipodal_invariant_of_vanishing_sum` needs a **homogeneous** `{−1,0,1}`-vanishing sum (only the ladder/monomial). Arbitrary words impose **inhomogeneous** top-symmetric constraints — no rigidity theorem exists for those.
+3. **THE KILLER RECEIPT** — `SubgroupRepCountFiniteFieldCounterexample.char0_repBound_fails_over_finite_field` (kernel-`decide`, axiom-clean): over F₁₇ the 8th roots `{±1,±2,±4,±8}` have a shift `t=1` with `repCount = 3 > 2`. The char-0 unit-circle engine gives `≤ 2`; F_q gives `3`, **at weight 2 ≪ p** — an F_q sum-product coincidence with no char-0 analogue, invisible to the discriminant/weight argument. So weight-`<p` does **not** prevent energy inflation; the inflation `E_{F_p}(μ_n) − E_ℂ(μ_n)` is exactly the open sum-product quantity. **`"weight ≥ p"` is a red herring** — KKH26's failure is a magnitude phenomenon at weight `≤ n < p`.
+
+**Net (the strongest irreducibility statement we have):** the prize floor is not merely *reducible to* but **logically EQUIVALENT (iff, machine-checked via the bidirectional transport)** to the 25-year wall `B(μ_n)=O(√n)`. The char-0 *arbitrary-word* floor is *itself* the grand challenge (= RS list-decoding to capacity, BCHKS Thm 1.18; the only proven every-word char-0 envelope, Corrádi/Fisher, is strictly `> N_fib`). The "crude bound" critique is true but lands on the orthogonal (vanishing) face; the substantive conclusion stands.
+
+This is honest failure (the prompt's "expect to fail repeatedly") — a real lead, rigorously refuted with a machine-checked counterexample. It also flags more **phantom citations** (`ladder_list_charZero_eq_fibre`, `arbitraryWord_list_le_ladder_fibre`, files `LadderCensusCharZeroExact.lean`/`LadderTowerCharZeroExact.lean`) that do not exist. The honest next increment is `ladder_list_charZero_eq_fibre` (char-0 + ladder-only, deletes phantoms, **not** prize progress).

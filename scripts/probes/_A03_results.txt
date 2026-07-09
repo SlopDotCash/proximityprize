@@ -1,0 +1,49 @@
+====================================================================================================
+A03  cosh-MGF root-free reduction at the saddle  --  prize-shaped sweep
+====================================================================================================
+
+[Part 1] Verify the two EXACT cancellations
+------------------------------------------------------------
+  n=  8 p=     257 m=     32:  C1(Parseval) rel.err=1.14e-16 ok=True   C2(cosh @y=0.15) lhs/rhs=1.00000001
+  n= 16 p=   65537 m=   4096:  C1(Parseval) rel.err=1.33e-15 ok=True   C2(cosh @y=0.15) lhs/rhs=1.00000003
+  n= 16 p=  786433 m=  49152:  C1(Parseval) rel.err=8.88e-16 ok=True   C2(cosh @y=0.15) lhs/rhs=1.00000000
+  n= 32 p= 1048609 m=  32769:  C1(Parseval) rel.err=1.11e-15 ok=True   C2(cosh @y=0.15) lhs/rhs=1.00000414
+  n=  8 p=    3209 m=    401:  C1(Parseval) rel.err=3.34e-16 ok=True   C2(cosh @y=0.15) lhs/rhs=1.00000000
+
+  [C2 at increasing y -- exposes the char-0 vs char-p anomaly (structured prime n=16,p=786433)]
+  n=16 p=65537: lhs/rhs @y=   0.1:1.0000   0.3:1.0000   0.6:1.0013   1.0:1.0443   1.5:1.4588   2.0:2.9329
+  n=16 p=786433: lhs/rhs @y=   0.1:1.0000   0.3:1.0000   0.6:1.0000   1.0:1.0001   1.5:1.0060   2.0:1.0538
+  n=32 p=1048609: lhs/rhs @y=   0.1:1.0000   0.3:1.0011   0.6:1.5019   1.0:71.5856   1.5:3226.0834   2.0:41953.3521
+
+[Part 2] MGF-at-saddle  vs  moment-method  vs  TRUE B  (floor = sqrt(2 n log(p/n)))
+------------------------------------------------------------
+     n          p  beta |    trueB    floor  B/flr |    mom_p  r* |    mom_0  r0 |    mgf_0    mgf_p     y*
+     8         73   2.0 |     4.79     5.95  0.805 |     4.91  40 |     6.94   3 |     7.27     8.00  1.036
+     8        521   3.0 |     6.56     8.17  0.803 |     6.74  40 |     6.18  10 |     7.82     8.02  1.251
+     8       4129   4.0 |     7.56    10.00  0.756 |     7.76  40 |     7.58  28 |     8.25     8.26  1.443
+     8      32801   5.0 |     7.84    11.54  0.680 |     8.12  40 |     8.11  40 |     8.61     8.61  1.612
+    16        337   2.0 |     9.52     9.88  0.964 |     9.86  40 |     8.00   3 |    12.79    16.00  0.853
+    16       4129   3.0 |    11.14    13.33  0.836 |    11.53  40 |    15.88   5 |    14.18    16.00  1.020
+    16      65617   4.0 |    13.29    16.32  0.815 |    13.79  40 |    15.31  11 |    15.08    16.00  1.177
+    16    1048609   5.0 |    14.51    18.84  0.770 |    15.20  40 |    15.42  23 |    15.77    16.04  1.316
+    32       1153   2.0 |    13.92    15.15  0.919 |    14.54  40 |    39.29   2 |    20.83    32.00  0.664
+    32      32801   3.0 |    16.96    21.06  0.805 |    17.83  40 |    34.22   4 |    24.11    32.00  0.806
+    32    1048609   4.0 |    22.98    25.80  0.891 |    24.01  40 |    32.21   7 |    26.58    32.00  0.931
+    64       4289   2.0 |    19.21    23.20  0.828 |    20.24  40 |    76.97   2 |    32.80    64.00  0.511
+    64     262337   3.0 |    26.73    32.63  0.819 |    28.19  40 |    58.59   4 |    38.83    64.00  0.624
+
+  [Structured-prime spotlight]
+  n= 16 p=   786433 beta=4.90 | trueB=14.61 floor=18.59 B/flr=0.786 | mom_p=15.16(r=40) mom_0=15.00(r=22) | mgf_0=15.70 mgf_p=16.03
+  n=  8 p=      257 beta=2.67 | trueB=6.10 floor=7.45 B/flr=0.819 | mom_p=6.26(r=40) mom_0=7.31(r=6) | mgf_0=7.64 mgf_p=8.00
+  n= 16 p=    65537 beta=4.00 | trueB=13.84 floor=16.31 B/flr=0.848 | mom_p=14.33(r=40) mom_0=15.30(r=11) | mgf_0=15.08 mgf_p=16.00
+  n= 32 p=  1048609 beta=4.00 | trueB=22.98 floor=25.80 B/flr=0.891 | mom_p=24.01(r=40) mom_0=32.21(r=7) | mgf_0=26.58 mgf_p=32.00
+  skip n=64 p=16777601 (p>MAXP)
+  skip n=128 p=16777729 (p>MAXP)
+
+[Part 3] Is mgf_charp == mom_charp?  (does the cosh-MGF add anything over moments?)
+------------------------------------------------------------
+  The char-p cosh-MGF bound and the char-p moment bound should be numerically equal
+  (cosh = generating fn of the SAME even moments). If mgf_p ~ mom_p, the MGF is a
+  REPACKAGING of the moments, not new information.  And mgf_0 (char-0 RHS) inherits
+  the SAME anomaly wall as mom_0 (the char-0 RHS is only valid below the anomaly).
+  n=16 p=65617: mgf_p=16.001 vs mom_p=13.794  (ratio 1.1600); mgf_0=15.085 vs mom_0=15.306 (ratio 0.9856); trueB=13.295

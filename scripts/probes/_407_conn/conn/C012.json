@@ -1,0 +1,28 @@
+{
+ "id": "C012",
+ "rank": 12,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F6",
+  "F19",
+  "F16",
+  "F2"
+ ],
+ "walls": [
+  "W-largesieve",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean"
+ ],
+ "title": "Hasse-Davenport collapses T_h to the autocorrelation of ONE shifted Gauss-sum sequence (GL(1) monodromy), so the m-fold largesieve dimension wall is mis-applied to the tangent face",
+ "connection": "In-tree I4 (tangentSum_mul_orderOf_eq_sum_jacobiSum) writes T_h=(1/m)Σ_{i<m}J(χ^i,χ^h). Mathlib jacobiSum_mul_nontrivial gives J(χ^i,χ^h)=τ(χ^i)τ(χ^h)/τ(χ^{i+h}) when χ^{i+h}≠1. Substituting, T_h=(τ_h/(mp))·Σ_i τ_i·conj(τ_{i+h}), recovering I3 from pure Mathlib. KEY: Hasse-Davenport makes the m summands NOT m independent Frobenius eigenvalues but ratios τ_i/τ_{i+h} of ONE Gauss-sum sequence shifted by h — so the relevant geometric monodromy is GL(1) of a single Kummer sheaf L_{χ^h} on G_m, conductor O(1) in i, NOT the f=(q-1)/n-dimensional family that W-largesieve obstructs. The house carried by T_h is the autocorrelation-at-lag-h of a SINGLE sequence, governed by one effective Sato-Tate, not m of them.",
+ "why_insightful": "The campaign treats T_h as an average of m 'independent' Jacobi sums needing m-fold equidistribution (W-largesieve: f≤√q fails). Hasse-Davenport collapses this to one shifted Gauss sequence — the dimension obstruction quoted as fatal is for the WRONG family. Reframes whether the largesieve dimension wall even applies to the tangent face.",
+ "attack_plan": "Lean: prove tangentSum_eq_gaussSum_autocorrelation: T_h·(mp)=conj(τ_h)·Σ_{i:χ^{i+h}≠1}τ(χ^i)·conj(τ(χ^{i+h})) using jacobiSum_mul_nontrivial + gaussSum_mul_gaussSum_eq_card (both Mathlib). Probe: max_h|Σ_i τ_i conj(τ_{i+h})| over the SINGLE sequence behaves like √(m·p·log m) (one-sequence autocorrelation) vs m·√p coherent, at p=n^4, n=8..64. If one-sequence autocorrelation governs, the f-dimensional largesieve wall is mis-applied."
+}

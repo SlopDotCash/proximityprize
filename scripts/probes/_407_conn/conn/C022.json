@@ -1,0 +1,31 @@
+{
+ "id": "C022",
+ "rank": 22,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F14",
+  "F3",
+  "F10",
+  "F15"
+ ],
+ "walls": [
+  "W-LamLeung",
+  "W-anomaly",
+  "W-Mersenne"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/PrimePowerMultisetWindow.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubsetSumEsymmVanishing.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/TwoPrimeWindowLaw.lean"
+ ],
+ "title": "The dyadic prize domain is single-prime-power, so the BCH-window/dual-RS code is the COMPLETE & SHARP char-0 case; the prize wall is the char-0→char-p transfer of ONE proven theorem",
+ "connection": "The BCH-window/dual-RS code is C_t={w:Σ_e w_e ζ^{je}=0, 1≤j≤t} on μ_n. The #232/#389 thread handles n with one or two primes. The PRIZE n=2^μ is a SINGLE prime power, the easiest case, and weighted_windowed_prime_pow PROVES the window law UNCONDITIONALLY there: a window-t-vanishing weight is exactly an ℕ-combination of μ_d-coset indicators with d∣n, d>t, so min nonzero weight (designed/true min distance of the dual-RS code) is the least divisor of 2^μ exceeding t, i.e. 2^{⌈log2(t+1)⌉}, sharp and BCH-beating. BUT every such theorem is [CharZero L] load-bearing (explicit char-p failure ζ=2 over F_17). The prize is precisely the char-p version (q≡1 mod n, μ_n⊂F_q) of this single-prime-power window law — the char-p antipodal-coincidence / Lam–Leung-in-char-p wall, the SAME object as F10's DyadicLacunaryFloor and the deep-moment anomaly.",
+ "why_insightful": "Not stated anywhere that the dyadic prize lands in the simplest fully-solved radix of the in-tree window machinery, and that the only missing ingredient is char-0→char-p transfer of a SINGLE proven theorem. Reframes the wall as a transfer problem with a known char-0 anchor.",
+ "attack_plan": "Lean: dyadicWindowMinWeight_charP:Prop = (the least-divisor-of-2^μ-exceeding-t min weight survives mod q), prove weighted_windowed_prime_pow_charP → DyadicLacunaryFloor by reusing the char-0 coset-indicator classification as the candidate set. Probe: re-run the prime-power window-law census over F_q with q≡1 mod 2^μ (split, β≈4) for μ=3..6, counting char-p-only window-vanishing vectors that are NOT char-0 coset unions (the defect carriers); measure ≤q·ε*≈n."
+}

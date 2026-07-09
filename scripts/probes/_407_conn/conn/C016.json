@@ -1,0 +1,28 @@
+{
+ "id": "C016",
+ "rank": 16,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F17",
+  "F4",
+  "F15"
+ ],
+ "walls": [
+  "W-genericity"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf407_nvm.lean",
+  "ArkLib/Data/CodingTheory/GMMDS/LovettPrimitiveDistinctDegree.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean"
+ ],
+ "title": "The exact genericity gap is the degree-collapse map d↦d mod n; LovettUnionDegreesInjective is stated at the WRONG quotient for μ_n",
+ "connection": "The in-tree GM-MDS primitive step closes UNCONDITIONALLY in the distinct-degree case (linearIndependent_of_injOn_natDegree) and reduces the rest to LovettUnionDegreesInjective: '|Vᵢ|+e pairwise distinct'. Over μ_n the relevant equality is degree MOD n, because genVandermonde_rootsOfUnity_det_ne_zero_iff says the minor is nonzero iff exponents are distinct mod n. _wf407_nvm exhibits the exact failure: SubgroupNVMProperty is FALSE at μ₈ because x⁴=1 collapses degree-4 onto degree-0 (col4_eq_col0, Mbad_det_eq_zero). So the genericity gap is precisely the difference between 'distinct as naturals' (Lovett's residual, generic-true) and 'distinct mod n' (the μ_n-faithful condition) — the d↦d%n collapse map.",
+ "why_insightful": "Turns the abstract 'genericity barrier' into a single concrete arithmetic map, and shows the in-tree Lovett residual is at the wrong quotient: closing LovettUnionDegreesInjective certifies generic RS but is provably silent at μ_n. Precise reason 'finishing LovettPrimitiveStep does not win the prize.'",
+ "attack_plan": "Lean: state SubgroupLovettUnionDegreesInjectiveModN (require |Vᵢ|+e distinct MOD n) and prove ...ModN → pFamUnion_linearIndependent over μ_n via genVandermonde_rootsOfUnity_det_ne_zero_iff instead of natDegree injectivity. First honest μ_n-specific GM-MDS reduction; hypothesis is exactly n-core emptiness."
+}

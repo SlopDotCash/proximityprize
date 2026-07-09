@@ -1,0 +1,25 @@
+{
+ "id": "C009",
+ "rank": 9,
+ "total": 25,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3",
+  "F4"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Hab25K4AffinePinningCardBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernel.lean"
+ ],
+ "title": "The Hab25 K4 cell budget (≤ n) is the EXACT governing-law budget q·ε*≈n — capture cone and δ* law meet at the same n",
+ "connection": "K4_cell_card_le_of_affine_pinning_family proves a cell whose bad scalars are decoded by a single affine pencil (v₀,v₁) has |Ecell|≤Fintype.card ι₀=n, via factorImprove_card_le_n (|improving scalars|≤|disagreeSet|≤n). The governing law is δ*=sup{δ:I(δ)≤q·ε*≈n}. So Hab25's affine-pinned cell bound n is the SAME n as the prize budget. The whole open question 'does I(δ)≤n in the window interior' becomes 'can the bad scalars be partitioned into O(1) affine pencils each contributing ≤n', and Hab25 already proves each pencil gives ≤n. The gap is the NUMBER of cells (GS factors) times n vs budget n.",
+ "why_insightful": "Connects the BCIKS20-style capture machinery's terminal constant (n) to the prize budget constant (q·ε*≈n) — they coincide exactly, so Hab25's cell-counting operates at the precise resolution the prize needs, not a coarser Johnson scale. The residual is sharply 'cell count', not 'per-cell size'.",
+ "attack_plan": "Lean: deltaStar_via_cell_count — if hab25McaBadScalars decomposes into c cells each affine-pinned, then I(δ)≤c·n, so I(δ)≤q·ε*≈n forces c=O(1). Cross-reference gsFactorIndex (Hab25DegreeBudget) to bound c by deg_Y(R); probe (μ_8/F12289 window) whether the bad set ever needs c>1 affine cells (the Hab25 falsify-probe found maximal affine cell a STRICT subset — c>1 occurs; quantify c at window radius)."
+}

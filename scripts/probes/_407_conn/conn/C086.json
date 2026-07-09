@@ -1,0 +1,29 @@
+{
+ "id": "C086",
+ "rank": 86,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F2",
+  "F12"
+ ],
+ "walls": [
+  "W-LamLeung",
+  "W-BGK",
+  "W-anomaly"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergySidonModNeg.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean"
+ ],
+ "title": "The proven r=2 Sidon/energy floor E(G)=3n²−3n and its hypothesis are the SAME char-p coincidence wall that gates the all-witness count AND the Gauss-period house",
+ "connection": "additiveEnergy_eq_of_sidonModNeg proves E(G)=3n²−3n EXACTLY for a Sidon-modulo-negation set (only trivial or zero-sum additive coincidences). Via the transport chain (sidon_order_of_sqrt_charSum), E at floor 3n² ⟺ the F2 bound ‖η_b‖≤C√n with C²≈2 ⟺ Sidon order. The HYPOTHESIS SidonModNeg — 'no extra additive coincidences mod p' — is verbatim the char-p coincidence wall of (a) the all-witness fit/unfit dichotomy (whether a divided-difference fit exists mod p), (b) the F12 e₂=0 algebraic rigidity (char-p resultant threshold c≈n³), (c) the deep-moment anomaly W-anomaly (#collisions mod p but not over ℤ[ζ_n]≤n^{2r}/p). All four ask: do short ±1-relations of 2^μ-th roots vanish mod the prize prime?",
+ "why_insightful": "Unifies the energy floor's hypothesis with the e₂=0 face and the all-witness fit face — one char-p coincidence count. The §5.7 e₂=0 'no BGK wall' claim is in tension: the SidonModNeg/energy floor IS gated on the same coincidences, so e₂=0's freedom from BGK must come from the resultant-height threshold, not from avoiding the coincidence count.",
+ "attack_plan": "Compute, for β≈4 and μ_n, whether SidonModNeg holds = whether extra additive coincidences appear, cross-tabulate against the all-witness fit-count and the e₂=0 rigidity threshold. Lean/probe: a single Prop NoShortVanishingRelation μ_n p, show it implies SidonModNeg, the all-witness sharpness, AND e₂=0 rigidity — if provable all three close together; the honest residual is then this one Prop = the resultant-height/Lam–Leung char-p transfer."
+}

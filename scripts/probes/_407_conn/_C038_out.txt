@@ -1,0 +1,47 @@
+============================================================================================================
+C038: orbit-fold deflation (EXACT factor d+1=2, lossless) vs char-sum 2-adic descent R=M(n)^2/M(n/2)^2
+============================================================================================================
+
+    n           q   beta      M(n)    M(n/2)  R=Mn^2/Mn2^2  orbit  R/orbit 2*log(q/n)/log(2q/n) M/sqrt(n*log(q/n))
+    8        8009   4.32     7.684     3.998        3.6948      2   1.8474               1.8176             1.0336
+    8        8017   4.32     7.676     3.998        3.6872      2   1.8436               1.8177             1.0324
+    8        8081   4.33     7.611     3.998        3.6246      2   1.8123               1.8179             1.0231
+   16       70001   4.02    13.267     7.877        2.8368      2   1.4184               1.8473             1.1455
+   16       70177   4.02    13.633     7.889        2.9865      2   1.4932               1.8473             1.1769
+   16       70241   4.03    13.549     7.871        2.9635      2   1.4817               1.8473             1.1697
+   32     1000033   3.99    23.001    14.642        2.4675      2   1.2337               1.8745             1.2639
+   32     1000193   3.99    24.153    14.739        2.6855      2   1.3427               1.8745             1.3272
+   64    16000129   3.99    36.374    24.290        2.2425      2   1.1212               1.8944             1.2897
+
+------------------------------------------------------------------------------------------------------------
+ANALYSIS
+------------------------------------------------------------------------------------------------------------
+Folding side (FoldingTransferNoGo.lean, PROVEN axiom-clean): the deflation factor is
+EXACTLY d+1 = 2 (the orbit size), a LOSSLESS combinatorial inequality
+  (d+1)*foldedAgree <= plainAgree,  converse fails MAXIMALLY
+  (one corruption/orbit: plainAgree = N*d, foldedAgree = 0).
+So on the folding side, R_orbit = 2 EXACTLY and the 'slack' is purely structural/integer.
+
+Char-sum side: R = M(n)^2/M(n/2)^2 measured above. Two competing predictions:
+  * C038 claim:  R = 2 (orbit) +/- a 'matching sub-maximal correction'.
+  * BGK/Paley:   M(n) ~ sqrt(n*log(q/n)) (the open square-root cancellation),
+                 so R ~ 2*log(q/n)/log(2q/n)  -- an ANALYTIC log-ratio, NOT 2,
+                 q- and n-DEPENDENT, with NO relation to the integer orbit factor.
+
+Match test (smaller |R - pred| wins):
+    n           q         R  |R-2| (orbit)    |R-BGK|     winner
+    8        8009    3.6948         1.6948     1.8772      ORBIT
+    8        8017    3.6872         1.6872     1.8695      ORBIT
+    8        8081    3.6246         1.6246     1.8068      ORBIT
+   16       70001    2.8368         0.8368     0.9896      ORBIT
+   16       70177    2.9865         0.9865     1.1392      ORBIT
+   16       70241    2.9635         0.9635     1.1161      ORBIT
+   32     1000033    2.4675         0.4675     0.5930      ORBIT
+   32     1000193    2.6855         0.6855     0.8110      ORBIT
+   64    16000129    2.2425         0.2425     0.3481      ORBIT
+
+ORBIT-prediction wins: 9   BGK-prediction wins: 0
+
+Also report M(n)/sqrt(n log(q/n)): if STABLE across n (not -> 1, not growing as M/sqrt(n)),
+M(n) lives on the BGK sqrt(n log) law, i.e. the char-sum 'descent' is the open BGK
+cancellation, NOT a lossless orbit fold.

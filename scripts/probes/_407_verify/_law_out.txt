@@ -1,0 +1,23 @@
+========================================================================================================
+ #407 HOUSE-MIN LAW of 𝔭 + Minkowski/dual/theta diagnostics (sparse-support angle settled)
+========================================================================================================
+   n  beta               p |   h_lat  p^(2/n)  h/p^(2/n)    h/√n   Mink∞  h/Mink  2*Mink?
+   8   4.0            4129 |   10.86    8.016      1.355   3.841   16.03   0.678         
+   8   5.0           32801 |   17.81   13.458      1.323   6.296   26.92   0.662         
+  16   4.0           65617 |    5.81    4.001      1.453   1.454   11.32   0.514         
+  16   5.0         1048609 |    8.74    5.657      1.545   2.185   16.00   0.546         
+  32   4.0         1048609 |    5.11    2.378      2.148   0.903    9.51   0.537         
+  32   5.0        33554593 |    6.49    2.954      2.197   1.147   11.81   0.549         
+  64   4.0        16777601 |    4.77    1.682      2.835   0.596    9.51   0.501         
+  64   5.0      1073741953 |    5.71    1.915      2.980   0.713   10.83   0.527         
+ 128   4.0       268437889 |    4.55    1.354      3.359   0.402   10.83   0.420         
+ 128   5.0     34359740801 |    5.35    1.461      3.662   0.473   11.69   0.458         
+
+LAW EXTRACTION (h_lat vs n at fixed beta):
+  beta=4.0: h_lat ~ 15.494 * n^-0.280   (slope 0.5 => √n law; 0 => bounded; -? => shrinking)
+  beta=5.0: h_lat ~ 32.554 * n^-0.408   (slope 0.5 => √n law; 0 => bounded; -? => shrinking)
+
+ - If h_lat ~ C·p^{2/n}: 𝔭 short vector is the GENERIC Minkowski minimum (no exceptional
+   sparse shortcut). p^{2/n} -> 1 as n grows at fixed beta, but ×√n (disc) keeps house ~ √n.
+ - h/Mink ~ 2 (constant, two-sided): theta is TWO-SIDED pinned -> NO loose-upper rescue,
+   confirming the well-rounded no-go EXTENDS to the sparse-support sub-count.

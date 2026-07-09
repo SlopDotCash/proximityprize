@@ -1,0 +1,33 @@
+{
+ "id": "C029",
+ "rank": 29,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F2",
+  "F13",
+  "F12"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-Johnson",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/RepCountCharZeroBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RepCountCharZeroEnergy.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RepCountStepanovOrderTwo.lean"
+ ],
+ "title": "The char-p energy SURPLUS E_p−E_∞ is the only open quantity, and it is a Stepanov point-count — not a Weil/moment one (three proven bricks isolate it)",
+ "connection": "Three theorems chain: (1) repCount_le_two proves r(c)=#{y∈μ_n:c−y∈μ_n}≤2 over ℂ, so additiveEnergy_charZero_le gives E_∞(μ_n)≤3n². (2) bessel_energy_le_gaussian proves the char-0 deep energy E_r^∞≤(2r−1)!!n^r term-by-term (a THEOREM). (3) E_r^{F_p}=E_r^∞+surplus S_r, S_r=#{2r-tuples summing to 0 mod p but NOT over ℤ[ζ_n]}. The char-0 part is fully governed; via sidon_order_of_sqrt_charSum E_2 of Sidon order ⟺ B≤C√n ⟺ δ* pinned in n²≤q (the prize). So the entire open core is the surplus S_r — by definition a count of F_p-rational solutions to Σx=Σy on μ_n^{2r} that are not ℤ-solutions, a point-count on an affine variety, the home turf of Stepanov, NOT a Gauss-sum sup-norm.",
+ "why_insightful": "Surgically isolates the open quantity (char-p surplus) from the fully-governed char-0 part using THREE proven bricks, and reclassifies it from an L^∞/BGK sup-norm object (where the campaign is stuck) to a point-count object. The campaign notes 'the char-p anomaly is the only open part' but treats it as a moment that explodes; this frames it as a variety-point-count to Stepanov-bound directly.",
+ "attack_plan": "Lean: energySurplus G p r:=E_r^{F_p}−E_r^∞ as a Prop, prove E_r^{F_p}=E_r^∞+surplus with surplus=#{(x,y)∈μ_n^{2r}:Σx≡Σy mod p, Σx≠Σy in ℤ[ζ_n]}. Probe: count surplus_r directly at prize instances (n=64, β=4) to confirm surplus_r=O(n^{2r}/p) (Sidon-spread, sub-floor). Target a brick surplus_r≤(2r)^{n/2}-type norm criterion for the LOW-r band, isolating the genuinely-open mid band r∈(β/2, ln p)."
+}

@@ -1,0 +1,28 @@
+{
+ "id": "C068",
+ "rank": 68,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F11",
+  "F2",
+  "F19"
+ ],
+ "walls": [
+  "W-idealSVP",
+  "W-BGK",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean"
+ ],
+ "title": "Smoothness↔split-prime is a provable RING-THEORETIC dichotomy (q≡1 mod 2^μ ⟺ μ_{2^μ} exists ⟺ 𝔮 fully splits) — the structural ROOT of why every face hits W-idealSVP",
+ "connection": "q≡1 mod 8 ⟺ has FFT subgroup μ_n ⟺ ℚ(ζ_{2^μ}) fully split at q (N(𝔮)=q, the OPEN Pan-Xu case); q≡3,5,7 mod 8 ⟹ 8∤q−1 ⟹ no order-2^μ subgroup ⟹ non-split (Pan-Xu tractable) but cannot host a smooth RS code. This is a THEOREM of cyclotomic splitting: a prime q splits completely in ℚ(ζ_m) iff q≡1 mod m, and μ_m⊂F_q* iff m|q−1 iff q≡1 mod m. So 'smoothness forces the open ideal-SVP class' is the same congruence q≡1 mod 2^μ controlling BOTH the existence of the FFT domain AND full splitting. This explains why F2/F19 and F11 are 'shadows of the same prime'.",
+ "why_insightful": "Converts the verbal 'structural root of the wall' into a one-line congruence theorem (q≡1 mod 2^μ) that is the SHARED hypothesis of the prize regime and the open ideal-SVP class, fully Mathlib-formalizable, giving a citable obstruction-explanation.",
+ "attack_plan": "Lean (achievable now): smoothDomain_iff_fullySplit : (∃ζ:ZMod q, IsPrimitiveRoot ζ (2^μ)) ↔ (q%(2^μ)=1), tied to splitting of cyclotomic (2^μ) over ZMod q via isRoot_cyclotomic_iff. Machine-checked Prop. Probe: enumerate primes q∈[n^4,n^5] with/without order-2^μ subgroup and check residue mod 2^μ."
+}

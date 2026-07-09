@@ -1,0 +1,28 @@
+{
+ "id": "C099",
+ "rank": 99,
+ "total": 21,
+ "scores": {
+  "insight": 7,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F5",
+  "F10"
+ ],
+ "walls": [
+  "W-BGK",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/GVDvdSuccClosure.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RepCountDiagonalVanish.lean"
+ ],
+ "title": "Frobenius n|p+1 gives r(t)≤2 UNCONDITIONALLY — the count face is CLOSED on the inert-prime family, isolating the wall to the split family n|p−1",
+ "connection": "gvRepBound_of_dvd_succ proves: when n|p+1 (Frobenius acts as inversion on μ_n⊂F_{p²}, the finite-field unit-circle bound), the representation count r(t)=#{y∈μ_n:t−y∈μ_n}≤2 unconditionally, closing the energy/supply wall with M=2. RepCountDiagonalVanish shows the diagonal coset r=0 over ℂ. The prize regime is n|p−1 (split, μ_n⊂F_p, Frobenius trivial). So the count face — the SAME additive-energy object underlying I(δ) and #lacBad — is provably O(1) on the inert family and the entire difficulty is the Θ(n⁴/p) char-p surplus that appears ONLY for split q. Pins the wall to precisely the split-prime arithmetic the prize fixes, and gives a proven anchor bracketing the open split case.",
+ "why_insightful": "A proven axiom-clean closure of the count face on a full infinite prime family (n|p+1) the KB does not foreground for #407. Reframes the prize as 'the split-prime surplus over the inert-prime baseline r≤2' — a sharply localized arithmetic difference, suggesting a deformation/interpolation between the two prime families.",
+ "attack_plan": "Probe: for fixed n=2^μ, compute worst-case I(δ) and #lacBad over BOTH inert (n|p+1) and split (n|p−1) prime sequences; confirm inert stays O(n) (r≤2), split grows the Θ(n⁴/p) surplus. Investigate whether a CRT/quadratic-extension lift transfers the inert r≤2 to control the split count at frequency b in the F_{p²}-coset (Frobenius-pairing the split sum with an inert one)."
+}

@@ -1,0 +1,3858 @@
+=== PAGE 1 ===
+Proximity Gaps for Reed–Solomon Codes
+Eli Ben-Sasson ∗ Dan Carmon ∗ Yuval Ishai† Swastik Kopparty ‡
+Shubhangi Saraf §
+July 3, 2021
+Abstract
+A collection of sets displays a proximity gap with respect to some property if for every set in
+the collection, either (i) all members are δ-close to the property in relative Hamming distance
+or (ii) only a tiny fraction of members are δ-close to the property. In particular, no set in the
+collection has roughly half of its members δ-close to the property and the others δ-far from it.
+We show that the collection of aﬃne spaces displays a proximi ty gap with respect to Reed–
+Solomon (RS) codes, even over small ﬁelds, of size polynomia l in the dimension of the code,
+and the gap applies to any δ smaller than the Johnson/Guruswami–Sudan list-decoding b ound
+of the RS code. We also show near-optimal gap results, over ﬁe lds of (at least) linear size in the
+RS code dimension, for δ smaller than the unique decoding radius. Concretely, if δ is smaller
+than half the minimal distance of an RS code V ⊂ Fn
+q , every aﬃne space is either entirely δ-
+close to the code, or alternatively at most an (n/q)-fraction of it is δ-close to the code. Finally,
+we discuss several applications of our proximity gap result s to distributed storage, multi-party
+cryptographic protocols, and concretely eﬃcient proof sys tems.
+We prove the proximity gap results by analyzing the execution of classical algebraic decoding
+algorithms for Reed–Solomon codes (due to Berlekamp–Welch and Guruswami–Sudan) on a
+formal element of an aﬃne space. This involves working with Reed–Solomon co des whose base
+ﬁeld is an (inﬁnite) rational function ﬁeld. Our proofs are o btained by developing an extension
+(to function ﬁelds) of a strategy of Arora and Sudan for analyz ing low-degree tests.
+∗ StarkWare Industries Ltd. {eli,dancar}@starkware.co
+† Computer Science Department, Technion. Supported by ERC Proj ect NTSC (742754), NSF-BSF grant 2015782,
+BSF grant 2018393, and a grant from the Ministry of Science and Te chnology, Israel and Department of Science and
+Technology, Government of India. Work done in part while par ticipating in the Simons Institute program on Proofs,
+Consensus, and Decentralizing Society. yuvali@cs.technion.ac.il
+‡ Department of Mathematics and Department of Computer Science, Rutgers University. Research sup-
+ported in part by NSF grants CCF-1540634 and CCF-1814409 and BSF grant 2014359. Work done in part
+while attending a workshop at the Simons Institute program o n Proofs, Consensus, and Decentralizing Society.
+swastik.kopparty@gmail.com
+§ Department of Mathematics and Department of Computer Science, Rutgers University. Research supported in
+part by NSF grants CCF-1540634 and CCF-1909683, BSF grant 201 4359, a Sloan research fellowship and the Simons
+Collaboration on Algorithms and Geometry. shubhangi.saraf@gmail.com
+=== PAGE 2 ===
+1 Introduction
+A variety of protocols, arising in the contexts of interactive proof s, distributed storage and cryptog-
+raphy, give rise to the following problem regarding proximity to a linear code V ⊂ Fn
+q over a ﬁnite
+ﬁeld Fq of minimal relative distance δV . These myriad protocols assume oracle access to a batch
+of vectors u = {u0, . . . , ul} ⊂ Fn
+q and their soundness requires that each and every vector ui be
+close to V in relative Hamming distance. Furthermore, soundness deteriorat es as a function of the
+largest distance between some vector ui and the code V . Thus, we seek protocols that minimize the
+number of queries to the entries of the vectors in u, while maximizing the probability of recognizing
+when some vector ui is signiﬁcantly far from V .
+The linearity of V suggests a natural approach, ﬁrst explored by Rothblum, Vadhan and Wigder-
+son [
+R VW13]: sample a uniformly random vector u′ in the span of u (denoted span(u)) and view
+the distance between u′ and V , denoted ∆( u′, V ), as a proxy for the maximal distance between
+some member of u and V . To argue soundness, we would like to show that if even a single ui is δ-far
+from (all members of) V , then a randomly chosen u′ is also far from V . Indeed, the paper [ R VW13]
+that suggested this approach also showed for any V , that whenever a single ui is δ-far from V , then
+nearly all samples u′ are at least δ/2-far from V . Here and henceforth, we use ∆ to denote relative
+Hamming distance and say “ u is δ-close to V ”, denoted ∆( u, V ) ≤ δ, when ∆( u, v) ≤ δ for some
+v ∈ V ; otherwise we say “ u is δ-far from V ” (denoted ∆( u, V ) > δ ).
+Note that the result above incurs a 2× degradation in the proximity parameter δ: the worst-case
+assumption — that some ui is δ-far from V — implies an average-case distance that is only δ/2.
+Eliminating the proximity degradation is easy when the ﬁeld size is expone ntial in the code length.
+More concretely, if q ≫ 2nH(δ), where H is the binary entropy function, then a union bound over
+agreement sets shows that for δ < δ V , if ui is δ-far from V then so are nearly all u′ ∈ span(u).
+However, exponential ﬁeld size is prohibitively large in the context of t he motivating applications.
+Obtaining similar results over ﬁelds of sub-exponential size appears t o be much more challenging.
+A number of works looked at this question and were able to remove th e degradation in δ with
+polynomial ﬁeld size. Ames et al. [ AHIV17] showed that for proximity parameters δ that are
+smaller than half of the unique-decoding radius of V (i.e., when δ < δ V /4), nearly all u′ ∈ span(u)
+are δ-far from V . The proximity bound was subsequently improved to δ < δ V /3 by Roth and
+Zémor [ RZ18]. Ben-Sasson et al. [ BKS18] showed similar results for δ above the unique decoding
+radius, holding for any δ < 1 − 4√1 − δV , and the state of the art 1 was given in [ BGKS20], holding
+for any δ < 1 − 3√1 − δV . In fact, this latter result was shown to be tight for certain RS code s, in
+particular, of maximal blocklength n = q.
+Ames et al., who were the ﬁrst to show that in certain cases the avera ge-case distance of u′ ∈
+span(u) from V is nearly-always equal to the worst-case distance of ui ∈ u from V , also raised the
+following intriguing question, which is at the focus of our investigation here: For which codes and
+what range of δ does the following statement hold?
+If some u∗ ∈ span(u) is δ-far from V , then so are nearly all u′ ∈ span(u).
+One implication of our main result is that when V is an RS code over a suﬃciently large ﬁeld —
+polynomially large in the code’s blocklength — and when δ is smaller than the Johnson/Guruswami–
+Sudan list decoding bound, the above phenomenon holds. We refer t o it as a proximity gap , as
+explained next.
+1We note that these improvements give a roughly 2× improvement to the protocol of [ R VW13] in which this
+question was originally studied, when that protocol is insta ntiated with codes of suﬃciently large relative distance
+(see Theorem 3.4 there).
+1
+=== PAGE 3 ===
+1.1 Gaps and proximity gaps
+When a “gap” is mentioned in theoretical computer science, it usually r efers to a situation where all
+objects under consideration must fall into one of two categories, and these categories display a large
+gap according to some metric. Striking examples are given by PCP red uctions whose outputs are
+constraint satisfaction problems that lie in one of two categories: s atisﬁable instances in which some
+assignment satisﬁes all constraints, and unsatisﬁable instances in wh ich all assignments fail to satisfy
+more than an ǫ fraction of constraints. Another gap example underlies randomize d algorithms. For
+instance, the Miller–Rabin primality test relies on a gap between primes and composites: in the
+latter case (composites), at least three-quarters of the intege rs serve as composite witnesses whereas
+for primes none do, leading to a “gap” of measure 3/4.
+Our main result can be phrased as a proximity gap according to the following deﬁnition.
+Deﬁnition 1.1 (Proximity gap) . Let P ⊂ Σ n be a property and C ⊂ 2Σ n
+be a collection of sets.
+Let ∆ be a distance measure on Σ n. We say that C displays a (δ, ǫ)-proximity gap with respect to P
+under ∆ if every S ∈ C satisﬁes exactly one of the following:
+1. Prs∈S[∆( s, P) ≤ δ] = 1 .
+2. Prs∈S[∆( s, P) ≤ δ] ≤ ǫ.
+We call δ the proximity parameter and ǫ is the error parameter . By default, ∆ denotes the relative
+Hamming distance measure.
+Using this deﬁnition, our main result can be informally stated as follows: if V ⊂ Fn is an RS
+code and A ⊂ Fn is an aﬃne space, then either all elements of A are close to V , or otherwise, nearly
+all elements of A are far from V . In other words, there is no aﬃne A in which roughly half of the
+elements are close to V while the other half are far from V .
+Throughout this paper, Fq denotes the ﬁeld of size q, and RS[Fq, D, k] is the RS code of dimension
+k + 1 and blocklength n = |D| containing as its codewords the polynomials of degree ≤ k, evaluated
+on D. We use ρ to denote the rate ρ = k+1
+n of the code. The letter δ will typically denote relative
+Hamming distance to the relevant RS code and ǫ will denote an error parameter, the probability
+that a “bad event” occurs (with varying deﬁnitions of the term “bad event”).
+The following result has two parts and each part has its own proof. T he ﬁrst part holds only
+below the unique decoding radius but has a smaller error parameter, denoted ǫU, which is in fact
+essentially tight; the second part holds for proximity parameters u p to the Johnson/Guruswami–
+Sudan bound (which is greater than the unique decoding bound) but has a larger error bound ǫJ
+(the proof of the second part is also signiﬁcantly harder).
+Theorem 1.2 (Proximity gap for RS codes) . The collection CAﬃne of aﬃne spaces in FD
+q displays a
+(δ, ǫ)-proximity gap with respect to the RS code V := RS[Fq, D, k] of blocklength n and rate ρ = k+1
+n ,
+for any δ ∈ (0, 1 − √ρ), and ǫ = ǫ(q, n, ρ, δ) deﬁned as the following piecewise function:
+• Unique decoding bound: For δ ∈
+(
+0, 1−ρ
+2
+]
+, the error parameter ǫ is
+ǫ = ǫU = ǫU(q, n) := n
+q . (1.1)
+• Johnson bound: For δ ∈
+(
+1−ρ
+2 , 1 − √ρ
+)
+, setting η := 1 − √ρ − δ, the error parameter ǫ is
+ǫ = ǫJ = ǫJ(q, n, ρ, δ) := (k + 1)2
+(
+2 min
+(
+η,
+√ρ
+20
+))7
+q
+= O
+( 1
+(ηρ)O(1) · n2
+q
+)
+(1.2)
+2
+=== PAGE 4 ===
+There are two striking aspects to this result. First, the proximity p arameter δ can take any
+value smaller than the famous Johnson/Guruswami–Sudan bound, w hich is the largest distance
+for which we know of eﬃcient (list) decoding algorithms. (Looking ahea d, the Guruswami–Sudan
+algorithm will play a crucial, though non-algorithmic, role in our proofs .) Second, the size of the
+ﬁeld needed to achieve this result is relatively small — linear in the blocklen gth when δ is below
+the unique decoding radius δ < (1 − ρ)/2 and, for ﬁxed rate, quadratic in blocklength for larger δ
+up to the list decoding bound.
+Remark 1.1 (On the tightness of our results) . We make several comments on the margins for possible
+improvement.
+• Proximity parameter δ. The maximal proximity parameter δ for which Theorem
+1.2 applies
+happens to coincide with the Johnson/Guruswami–Sudan list-decod ing bound ( 1 − √ρ). This
+evidently follows from the techniques we use here, which rely on list-d ecoding algorithms that
+reach that bound. However, we conjecture that Theorem 1.2 holds even for larger proximity
+parameters, up to capacity ( 1 − ρ). See Conjecture 8.4 and the discussion there.
+• Field size q. The bound in Eq. ( 1.2) which reaches the Johnson bound becomes nontrivial
+only for ﬁelds of size q that are at least quadratically larger than the blocklength n. In
+contrast, the bound for smaller proximity parameters, below the u nique decoding radius,
+works for q = O(n) (see Eq. ( 1.1)). We point out that for certain combinations of ﬁelds and
+rate parameters one cannot hope to reach the Johnson bound wit h linear size ﬁelds, as this
+would contradict prior results from [ BKS18].
+• Error parameter ǫ. In the unique decoding regime, our bound on the error ǫ is sharp in
+the sense that aﬃne spaces do not all display a proximity gap with q · ǫ being sublinear in
+n, for ﬁxed distance parameter δ. A simple example is of the aﬃne line {u0 + zu1 : z ∈ Fq},
+where u0, u1 : D → Fq are such that on a set D′ ⊂ D of size |D′| = n(1 − δ) − 1 we have
+u0|D′ = u1|D′ = 0 , and on the complement we have that u1|D\D′ = 1 , and u0 takes δn + 1
+distinct non-zero values. We then have ∆( u0 + zu1, V ) ≤ δ for each of the δn + 1 values of
+z ∈ Fq for which −z is in the image of u0|D\D′, but that ∆( u0, V ) = δ + 1
+n > δ , thus this line
+does not display a (δ, δn
+q ) proximity gap with respect to the code.
+1.2 Concentration bounds
+Theorem
+1.2 implies the following concentration bound, saying that for any aﬃne s pace in which
+the element farthest from the RS code is within the Johnson/Gurus wami–Sudan radius, nearly all
+elements are at exactly the same distance from the code(!).
+For two sets U, V ⊂ Σ n deﬁne the divergence2 of U from V as D(U, V ) := max u∈U ∆( u, V ).
+Corollary 1.3 (Concentration bounds) . Let V, q, n, k and ρ be as deﬁned in Theorem 1.2. Let U ⊂
+FD
+q be an aﬃne space over Fq and denote δ∗ := D(U, V ). If δ∗ is smaller than the Johnson/Guruswami–
+Sudan bound, then nearly all elements of U have distance exactly δ∗ from the code. In other words,
+if δ∗ ∈ (0, 1 − √
+ρ), then
+Pr
+u∈U
+[∆( u, V ) ̸= δ∗] ≤ ǫ,
+where ǫ = ǫ(q, n, ρ, δ∗) is as deﬁned in Theorem 1.2.
+2Note that divergence is not symmetric as can be seen, e.g., when U is a strict subset of V .
+3
+=== PAGE 5 ===
+Proof. Deﬁne δ = ⌈nδ∗⌉−1
+n < δ ∗. Note that because the values of ∆ are integer multiples of 1
+n , we
+have for all u ∈ U , ∆( u, V ) < δ ∗ ⇐ ⇒ ∆( u, V ) ≤ δ. On the other hand by the maximality of δ∗,
+we have ∆( u, V ) ̸= δ∗ ⇐ ⇒ ∆( u, V ) < δ ∗, i.e.
+Pr
+u∈U
+[∆( u, V ) ̸= δ∗] = Pr
+u∈U
+[∆( u, V ) < δ ∗] = Pr
+u∈U
+[∆( u, V ) ≤ δ] .
+This probability cannot equal 1, since some u ∈ U exists with ∆( u, V ) = δ∗, by deﬁnition. Thus
+the proximity gap from Theorem 1.2 gives
+Pr
+u∈U
+[∆( u, V ) ̸= δ∗] = Pr
+u∈U
+[∆( u, V ) ≤ δ] ≤ ǫ(q, n, ρ, δ) ≤ ǫ(q, n, ρ, δ∗) = ǫ,
+where the last inequality is due to ǫ being monotone non-decreasing as a function of the δ parameter.
+When the divergence of U from the RS code V is greater than the Johnson/Guruswami–Sudan
+bound ( δ∗ > 1 − √ρ) we may still use Theorem 1.2 to conclude that nearly all elements of U are
+≈ (1−√ρ)-far from V , but what remains an interesting open problem is whether nearly all m embers
+of U are maximally far ( δ∗-far) from V . An example from [ BGKS20] shows that this need not be
+the case for RS codes where q = O(n).
+1.3 Correlated agreement
+Next, we state the main technical theorem proved in the paper. Co nsider two vectors u0, u1 ∈ FD.
+The result says that if suﬃciently many elements in the 1-dimensional aﬃne space A = {u0 + zu1 :
+z ∈ F} are suﬃciently close ( δ-close) to the RS code V , then there must be a nontrivial subdomain
+D′ ⊂ D of density 1 − δ in D, such that restricting u0, u1 to D′ gives a valid RS codeword (evaluated
+over D′). We refer to the property that such a D′ exists as correlated agreement, in the sense that
+u0, u1 and the elements of A do not only have large agreement with the RS code individually, but
+also share a common large agreement set. The result has two range s of parameters, as in prior
+statements in this paper. For proximity parameters in the unique de coding regime this is proved in
+Theorem
+4.1, and for proximity parameters in the list decoding regime this is prove d in Theorem 5.1.
+Theorem 1.4 (Main Theorem — Correlated agreement over lines) . Let V, q, n, k and ρ be as deﬁned
+in Theorem 1.2. For u0, u1 ∈ FD
+q , if δ ∈ (0, 1 − √
+ρ) and
+Pr
+z∈Fq
+[∆( u0 + z · u1, V ) ≤ δ] > ǫ,
+where ǫ is as deﬁned in Theorem 1.2, then there exist D′ ⊂ D and v0, v1 ∈ V satisfying
+• Density: |D′|/|D| ≥ 1 − δ, and
+• Agreement: v0 agrees with u0 and v1 agrees with u1 on all of D′.
+Remark 1.2 (Sampling from extension ﬁelds) . One may sample z from a ﬁnite extension ﬁeld Fq′
+of Fq. In this case, the statement above holds with ǫU and ǫJ modiﬁed by replacing q with q′ in the
+denominators of Eqs. ( 1.1) and ( 1.2), respectively. Note that even in this setting, the vectors v0, v1
+deduced to exist in Theorem 1.4 belong to RS[Fq, D, k], not just in RS[Fq′, D, k], because v0, v1 have
+high agreement with u0, u1 ∈ FD
+q . The ability to sample from a larger ﬁeld (and incur smaller error)
+applies to the other statements of this section but for simplicity we s tate all of them using a single
+ﬁeld Fq to both deﬁne V and sample z from.
+Motivated by applications (described later), we generalize the theo rem above to two interesting
+cases: (i) low-degree parameterized curves, and (ii) higher-dimen sional aﬃne spaces; details follow.
+4
+=== PAGE 6 ===
+Correlated agreement over parameterized curves The ﬁrst extension of Theorem 1.4 ex-
+tends it from the case of a “line” passing through u0 and u1 (the line being {u0 + zu1 : z ∈ F}) to
+a “low-degree curve” with coeﬃcients u0, u1, . . . , ul, as described below. This result is of particular
+importance for two reasons. First, it leads to derandomized testin g of veriﬁable secret sharing and
+other multi-party protocols (cf. Section 8.1). Second, it improves the soundness analysis of the Fast
+RS IOPP (FRI) protocol [ BBHR18b], which is used in concretely eﬃcient and transparent (public
+coin) proof systems [ BBHR18a, BBHR19, BCR+18, BCG+19, COS19]. We discuss this application
+in Sections 3.2 and 8.2.
+Let u = {u0, . . . , ul} ⊂ FD
+q . The parameterized curve of degree l that is generated by u is the
+following collection of vectors in FD
+q :
+curve(u) :=
+{
+uz :=
+l∑
+i=0
+zi · ui
+⏐
+⏐
+⏐
+⏐
+⏐z ∈ Fq
+}
+.
+Theorem 1.5 (Correlated agreement for low-degree parameterized curves) . Let V, q, n, k and ρ be
+as deﬁned in Theorem
+1.2. Let u = {u0, . . . , ul} ⊂ FD
+q . If δ ∈ (0, 1 − √
+ρ) and
+Pr
+u∈curve(u)
+[∆( u, V ) ≤ δ] > l · ǫ,
+where ǫ is as deﬁned in Theorem 1.2, then there exist D′ ⊂ D and v0, . . . , vl ∈ V satisfying
+• Density: |D′|/|D| ≥ 1 − δ, and
+• Agreement: for all i ∈ {0, . . . , l}, the functions ui and vi agree on all of D′.
+Correlated agreement for aﬃne spaces The second generalization of our Main Theorem 1.4,
+extends it from the 1-dimensional case (aﬃne line) to an aﬃne space of arbitrary dimensio n. Theo-
+rem 1.2 follows directly from the following statement. Note that Main Theore m 1.4 is actually a case
+of the following result (for 1-dimensional spaces). However, we stated that special case sep arately
+because we prove it ﬁrst, and from it deduce the more general case (see Section 6.3).
+Theorem 1.6 (Correlated agreement over aﬃne spaces) . Let V, q, n, k and ρ be as deﬁned in The-
+orem 1.2. For u0, u1, . . . ul ∈ FD
+q let U = u0 + span{u1, . . . , ul} ⊂ FD
+q be an aﬃne subspace. If
+δ ∈ (0, 1 − √
+ρ) and
+Pr
+u∈U
+[∆( u, V ) ≤ δ] > ǫ,
+where ǫ is as deﬁned in Theorem 1.2, then there exist D′ ⊂ D and v0, . . . , vl ∈ V satisfying
+• Density: |D′|/|D| ≥ 1 − δ, and
+• Agreement: for all i ∈ {0, . . . , l}, the functions ui and vi agree on all of D′.
+Furthermore, in the unique decoding regime δ ∈
+(
+0, 1−ρ
+2
+]
+, there exists a unique maximal D′ satisfying
+the above, with unique vi.
+Correlated agreement (Theorem 1.6) is a suﬃcient condition for proximity gaps with the same
+error and proximity parameters (Theorem 1.2). We leave as open problems (i) whether correlated
+agreement is also a necessary condition for a proximity gap. And, if t he answer to this question
+is negative, an intriguing possibility arises: (ii) obtaining proximity gaps for δ > 1 − √ρ while
+bypassing the correlated agreement approach we took here.
+5
+=== PAGE 7 ===
+Organization of the rest of the paper: We start with an overview of the proof of Main
+Theorem 1.4 in Section 2. In Section 3 we survey several applications of our results. Section 4
+gives the (simper) proof of the unique decoding radius part of Main T heorem 1.4. Section 5 gives
+the proof of the (harder) list decoding radius part of that theore m, by reducing it to a diﬀerent,
+more parameterized format (Appendix A provides the preliminary algebraic setup for the proof).
+In Section 6 we prove the generalizations of Main Theorem 1.4 to curves (Theorem 1.5) and higher
+dimensional aﬃne spaces (Theorem 1.6). In Section 7 we state and prove weighted versions of our
+theorems. Section 8 concludes with more details on selected applications — veriﬁable secret sharing
+(VSS) and Fast RS IOPs of Proximity (FRI).
+Acknowledgments We thank Venkatesan Guruswami and Amnon Ta-Shma for carefully auditing
+this paper and suggesting valuable improvements to it, and the Ethe reum Foundation for funding
+their audit.
+We thank Ronald Cramer and Jade Nardi for pointing out a ﬂaw in the cit ed version of the
+Polishchuk–Spielman lemma and suggesting possible ﬁxes.
+2 Proof Overview
+In this section, we give an overview of our proof strategy of our main result, Theorem
+1.4.
+Recall the setup. V = RS[Fq, D, k] of degree k polynomials evaluated at the points of D ⊆ Fq,
+where |D| = n. We have functions u0, u1 : D → Fq such that for many z ∈ Fq, the function u0 + zu1
+is δ-close to V . We want to deduce that u0 and u1 are themselves close to V .
+The main conceptual idea of our analysis is to work with the function ﬁe ld K = Fq(Z) with a
+formal variable Z, and to study the various received words u0 + zu1 for the code V simultaneously
+by considering the formal received word w = u0 + Zu1 : D → K for the (big ﬁeld) Reed–Solomon
+code RS[K, D, k]. It turns out that showing that w is close to a (well-structured) codeword of this
+Reed–Solomon code is suﬃcient to show that u0 and u1 are both close to the original Reed–Solomon
+code V . With this viewpoint, our proof strategy is to run a decoding algorithm for Reed–Solomon
+codes on this received word w = u0 + Zu1. Our goal is to analyze the execution of this algorithm
+to show that it succeeds in ﬁnding a nearby Reed–Solomon codeword. We do such an analysis by
+relating it to the execution of that decoding algorithm on the various received words u0 + zu1 for
+the Reed–Solomon code V over the small ﬁeld Fq.
+This strategy is instantiated with two diﬀerent decoding algorithms f or Reed–Solomon codes:
+the Berlekamp–Welch unique decoding algorithm, and the Guruswami– Sudan list decoding algo-
+rithm [ GS99]. Both instantiations give rise to intriguing algebraic questions about polynomials,
+which we resolve using nontrivial tools from algebraic geometry and t he theory of algebraic function
+ﬁelds.
+Instantiation with the Berlekamp–Welch Algorithm
+Over a ﬁeld F and an evaluation domain D, given a received word r : D → F, the Berlekamp–Welch
+decoding algorithm for ﬁnding the (unique) nearby polynomial P (X) ∈ F[X] close to r works as
+follows. First it searches for low-degree polynomials A(X), B(X) ∈ F[X] such that for each x ∈ D :
+A(x)r(x) = B(x).
+Then the nearby polynomial P (X) is recovered as B(X)/A(X) (which a priori may be a rational
+function).
+6
+=== PAGE 8 ===
+In our setting, we ﬁrst run the Berlekamp–Welch algorithm with receive d word w = u0 + Zu1 :
+D → K over the big ﬁeld K = Fq(Z) (we will sometimes view this as a function w(x, z) with
+w : D × Fq → Fq). Our goal is to ﬁnd a nearby Reed–Solomon codeword (low-degree p olynomial)
+P (X) ∈ K[X] which has the special form P0(X) + ZP1(X), where each Pi(X) ∈ Fq[X]. The ﬁrst
+step of the Berlekamp–Welch algorithm gives us A(X), B(X) ∈ K[X] = Fq(Z)[X]. Making the
+Z dependence explicit, we write these as A(X, Z), B(X, Z). This gives us a candidate, namely
+A(X, Z)/B(X, Z), for being a Reed–Solomon codeword close to w. We will show two things: that
+A(X, Z)/B(X, Z) is a polynomial in Fq(Z)[X] (a priori it is only a rational function), and that it
+is close to w.
+The crucial step is to substitute Z = z into A(X, Z) and B(X, Z) for various values of z ∈ Fq.
+Letting wz = u0 + zu1 : D → K (the result of substituting Z = z into w), it turns out that
+A(X, z), B(X, z) ∈ Fq[X] are what we would get if we run the Berlekamp–Welch algorithm (over
+the small ﬁeld Fq) on received word wz. In particular, for many z we get that B(X, z) is divisible by
+A(X, z) in Fq[X], and B(X, z)/A(X, z) equals the Reed–Solomon codeword close to wz. This then
+allows us to use the Polishchuk–Spielman lemma (a strengthening of th e classical Bezout theorem,
+which deduces divisibility of bivariate polynomials from divisibility of univar iate restrictions) to
+conclude that B(X, Z)/A(X, Z) is in fact a polynomial P (X, Z) in K[X] of low degree in X.
+The ﬁnal step is to show that P (X, Z), when viewed as a function from D to K, is close to w,
+and that that the Z dependence of P (X, Z) is simple (just linear in Z). This is again achieved by
+considering Z substitutions. We know that for many z, P (X, z) is the degree at most k polynomial
+Pz(X) that is close to wz. This means that the X degree of P (X, z) is at most k, and that for
+many x ∈ D and z there is agreement between P (x, z) and wz(x) = w(x, z). On the other hand,
+for any x ∈ D , w(x, ·) is a linear function, and P (x, ·) is a low degree rational function, and so they
+cannot agree on too many points unless the low degree rational fun ction P (x, ·) formally equals the
+linear function w(x, ·). Therefore this formal equality must happen for many x ∈ D , i.e., P (·, Z) is
+close to w. Finally, by simple linear algebra, if P (x, Z) is linear in Z for many x, we conclude that
+P (X, Z) is linear in Z. This gives us our desired conclusion.
+Instantiation with the Guruswami–Sudan Algorithm
+Over a ﬁeld F and an evaluation domain D, given a received word r : D → F, the Sudan and
+Guruswami–Sudan decoding algorithms for ﬁnding all nearby polynomia ls P (X) ∈ F[X] close to r
+work as follows. First one searches for a low-degree polynomial Q(X, Y ) ∈ F[X, Y ] such that for
+each x ∈ D ,
+Q(x, r(x)) = 0 .
+(This is the Sudan algorithm; for the Guruswami–Sudan algorithm we a sk that Q vanishes at each
+(x, r(x)) with high multiplicity.) Then every nearby polynomial P (X) turns out to have the property
+that Y − P (X) divides Q(X, Y ) in the bivariate polynomial ring Fq[X, Y ]. This means that all such
+P (X) can be found by factoring Q(X, Y ).
+In our setting, we run the Guruswami–Sudan algorithm with received w ord w = u0 + Zu1 :
+D → K over the big ﬁeld K = Fq(Z). Our goal is to ﬁnd a nearby low-degree polynomial P (X) ∈
+K[X] which has the special form P0(X) + ZP1(X), where each Pi(X) ∈ Fq[X]. The ﬁrst step
+of the Guruswami–Sudan algorithm gives us a bivariate polynomial Q(X, Y ) ∈ K[X, Y ] such that
+Q(x, w(x)) = 0 for each x ∈ D . Again, we write Q(X, Y ) as Q(X, Y, Z) ∈ Fq(Z)[X, Y ] to make
+the Z dependence explicit (and we can clear denominators in Z without aﬀecting the vanishing
+property).
+Substituting Z = z, we get that Q(x, wz(x), z) = 0 for each x ∈ D . This means that the
+7
+=== PAGE 9 ===
+polynomial Qz(X, Y ) ∈ Fq[X, Y ] given by Qz(X, Y ) = Q(X, Y, z) ∈ Fq[X, Y ] is the bivariate
+polynomial we would have found while running the Guruswami–Sudan alg orithm with received
+word wz : D → Fq over the small ﬁeld Fq. Since for many z ∈ Fq we have that wz is close to some
+codeword Pz(X) ∈ Fq[X] of the Reed–Solomon code V , we get that Y − Pz(X) divides Q(X, Y, z)
+for many z ∈ Fq. We would like to deduce from this that over the big ﬁeld K there is a low-degree
+polynomial P (X) ∈ K[X] such that Y − P (X) divides Q(X, Y ) in K[X, Y ] (and furthermore, this
+P (X) is close to w and has a simple Z dependence).
+This is the most involved (and interesting) part of the analysis. We will factor Q(X, Y, Z)
+completely into linear factors in Y .
+Q(X, Y, Z) = C(X, Z)(Y − γ1(X, Z))(Y − γ2(X, Z)) · · · (Y − γD(X, Z)). (2.1)
+This is natural to do, because we are searching for factors that a re linear in Y . Then we substitute
+Z = z into this, and we should see Pz(X) as one of the factors.
+However, getting such a factorization for Q(X, Y, Z) may not be possible with polynomials
+γi(X, Z), and we have to look (far) beyond. What kind of objects should we th ink of the γi as?
+After getting the γi(X, Z), we would like to (a) argue about when γi(X, Z) is a polynomial in X,
+and (b) substitute Z = z into it and inspect the resulting object. To enable these, we will expr ess
+γi(X, Z) in the ring R = K[[X]], the ring of power series in X, whose coeﬃcients are in the algebraic
+closure of K = Fq(Z). The power series in X representation allows us to see when γi is a polynomial
+in X, and the coeﬃcients being simply algebraic functions in Z (such as
+√
+Z3 + Z + 1) allows us to
+reason about substitutions Z = z. Having decided on R, it is a simple application of Hensel lifting
+(after possibly a random shift) to show that a factorization as in ( 2.1) is possible with the γi ∈ R.
+Rather than describe what happens in full generality, we just sket ch what would happen in a
+special case with most of the action. Suppose Fq is not of characteristic 2, and we have:
+Q(X, Y, Z) = Y 2 − (Z3 + Z + 1)(1 − ZX ).
+Going to the ring R, and letting α =
+√
+Z3 + Z + 1 ∈ K, it turns out that Q(X, Y, Z) factors as:
+Q(X, Y, Z) =
+(
+Y −
+√
+Z3 + Z + 1
+√
+1 − ZX
+)
+·
+(
+Y +
+√
+Z3 + Z + 1
+√
+1 − ZX
+)
+=
+(
+Y −
+(
+α − α · Z
+2 X − α · Z2
+16 X 2 + . . .
+))(
+Y +
+(
+α − α · Z
+2 X − α · Z2
+16 X 2 + . . .
+))
+where we used the Taylor series expansion for
+√
+1 − ZX . Now substitute Z = z for z ∈ Fq.
+Substituting values into algebraic functions like α is a slightly delicate operation (which square root
+do you choose? how do you make these choices consistent for diﬀer ent algebraic functions?), but it
+can be done using basic concepts from the theory of algebraic func tion ﬁelds. Another tool that we
+need from the theory of algebraic function ﬁelds is an analogue of the degree of a polynomial, to
+measure complexity of algebraic functions and bound the number of their zeroes. In this sketch we
+avoid going into any such details.
+Doing the substitution gives us:
+Qz(X, Y ) = Q(X, Y, z)
+=
+(
+Y −
+(
+α(z) − α(z) · z
+2 X + · · · + ciα(z)ziX i + · · ·
+))
+×
+(
+Y +
+(
+α(z) − α(z) · z
+2 X + · · · + ciα(z)ziX i + · · ·
+))
+.
+8
+=== PAGE 10 ===
+By properties of the Guruswami–Sudan decoding algorithm, we know for all “good” z ∈ Fq where
+wz is close to some low degree polynomial Pz, we must have that Y − Pz(X) divides Qz(X, Y ).
+Given the factorization above, one of the following must occur:
+1. Pz(X) =
+(
+α(z) − α(z)·z
+2 X − α(z)·z2
+16 X 2 + · · · + ciα(z)ziX i + · · ·
+)
+,
+2. Pz(X) = −
+(
+α(z) − α(z)·z
+2 X − α(z)·z2
+16 X 2 + · · · + ciα(z)ziX i + · · ·
+)
+.
+Whichever power series ends up equaling Pz(X), the coeﬃcient of X k+1 in that power series must
+equal 0. In our particular example, we deduce that ck+1α(z)zk+1 = 0 for some constant ck+1.
+Assuming ck+1 is nonzero in Fq, we get that α(z)zk+1 = 0 for every good z. Finally we use the
+fact that a nonzero algebraic functions of low “degree” like α(Z)Zk+1 =
+√
+Z3 + Z + 1 · Zk+1 cannot
+vanish at too many points z. This means that there cannot be too many good z, contradicting our
+hypothesis. We conclude that Q(X, Y, Z) cannot equal Y 2 − (Z3 + Z + 1)(1 − ZX )!
+A very similar argument derives a contradiction unless Q(X, Y, Z) has a factor of the form
+Y − P (X) for some P (X) ∈ K[X] of degree at most k. The only twist is that we may have to
+focus on the coeﬃcient of some diﬀerent power X k+c in the power series than the coeﬃcient of
+X k+1 (in case the coeﬃcient of X k+1 in the power series is identically 0). To make this argument
+work, we need to estimate the “degree” of the algebraic functions that appear as coeﬃcients in these
+power series. This involves a careful study of the Hensel lifting pro cess, especially its eﬀect on the
+complexity of its coeﬃcients.
+The ﬁnal part of the argument, showing that some Y − P (X) factor of Q(X, Y, Z) is such that
+P (X) has high agreement with w and all the coeﬃcients of P (X) are linear polynomials in Z, is
+similar to what happened in the unique decoding case. Instead of using the fact that a low degree
+rational function and a linear function cannot have high agreement unless they are equal, we use the
+fact that a low degree algebraic function and a linear function canno t have high agreement unless
+they are equal. This completes our sketch of the proof.
+Technical issues When we actually implement the argument, there are some technical c hanges
+we make (both for simplicity and for optimizing parameters). First, w e do not do the proof by
+contradiction, but instead show how to ﬁnd the factor of the form Y − P (X). Next, instead of
+directly doing Hensel lifting with Q, we factor Q into irreducible factors over Fq[X, Y, Z] and focus
+on a single irreducible factor that is “responsible” for many of the Pz. This helps in that we do
+not need to factor arbitrarily messy Q’s completely into linear factors, but only those which have
+the property that Q(X, Y, z) has a linear factor of the form Y − Pz(X). Finally, instead of arguing
+over the algebraic closure
+K, we go to a small algebraic extension L of K which is rich enough to
+express all the coeﬃcients of the relevant power series. These ch anges lead to some simpliﬁcations
+and quantitative improvements in our proofs.
+Relationship with the Arora-Sudan low degree test [
+AS03] A beautiful and fundamental
+paper of Arora and Sudan [ AS03], analyzed the “line vs. line” low degree test for multivariate poly-
+nomials in the high error regime. The heart of their paper is a theorem that says that if a function
+f : F2
+q → Fq is such that for most lines L given by Y = aX +b in F2
+q the univariate function obtained
+from restricting f to L (denoted f |L) is close to a low degree univariate polynomial, then f is itself
+close to a low degree bivariate polynomial. This is closely related to our t heorem which deduces a
+similar conclusion about a received word w : D × Fq → Fq, also based on restrictions to lines. Our
+proof is heavily inﬂuenced by the proof in [
+AS03] (which in turn builds on fundamental results on
+9
+=== PAGE 11 ===
+polynomial factorization and the Hilbert irreducibility theorem by Kalt ofen [ Kal85, Kal95]). There
+is one crucial diﬀerence in our proof. Our approach is spearheaded by the idea of running all ar-
+guments over the big ﬁeld K = Fq(Z) (as opposed to treating Z as another variable over Fq just
+like X and Y , as is done in [ AS03]). This diﬀerence aﬀects our proofs in a tangible sense: our
+proofs are based on bivariate interpolation over the big ﬁeld K rather than trivariate interpolation
+over the small ﬁeld Fq. Inside the analysis, our proofs use power series in one variable over function
+ﬁelds rather than power series in two variables over ﬁnite extensions o f Fq. This leads to more
+involved algebraic tools being needed for our proof (most seriously t he use of algebraic function
+ﬁelds), but also yields three improvements. First, our result is about axis parallel restrictions Z = z
+(for z ∈ Fq) instead of more general linear restrictions Z = aX + b (for a, b ∈ Fq). This simpler form
+of restriction is important for our applications. Second, our result deduces structure all the way up
+to the Johnson radius, while the result in Arora-Sudan is to a smaller r adius (polynomially worse
+in terms of agreement parameter). Third, our result works over ﬁe lds that are quadratic in the
+degree of the polynomials involved whereas the Arora-Sudan result requires ﬁelds that are quartic
+(at least) in the degree.
+3 Applications
+Our proximity gap results are motivated by the following general set ting. There are several pur-
+ported codewords u = {u1, . . . , ul} ⊂ Fn
+q of an RS code V . A veriﬁer would like to be assured that
+they are all close to V . This is done by taking a random linear combination of the ui and checking
+its proximity to V . The analysis of this simple test, which is useful in a variety of applicat ion
+scenarios, turns out to be surprisingly challenging. Indeed, it is close ly related to the proximity gap
+problem we study in this work.
+This batch veriﬁcation problem arises in two kinds of settings: a distributed setting, where entries
+of u are split between multiple parties (“servers”) and may not be known to any single entity, and
+a centralized setting, where u is entirely known to a prover and can be queried by a veriﬁer. We
+brieﬂy explain the role of proximity gaps in these two types of applicatio ns.
+In the distributed setting, the coeﬃcients of the random linear comb ination is either generated
+by a single veriﬁer or jointly via a distributed coin tossing protocol. Eac h server then responds with
+its own share of the output. Veriﬁcation succeeds if the joint outpu t is a codeword, or alternatively
+it is close to the code. Examples for applications in the distributed set ting include veriﬁable secret
+sharing (see Section
+8.1) and secure multiparty computation protocols, such as those fro m [ DI06,
+IPS09]. These applications typically rely on unique decoding and can thus ben eﬁt from our near-
+optimal analysis for this regime. In this type of applications, the main c hallenge is protecting against
+an adaptive adversary who may choose which servers to corrupt after seeing the coeﬃcients of the
+random linear combination. To defeat such an adversary, we need t o ensure that if at least one of
+the ui is far from the code, then (with high probability) so is their random line ar combination. If
+this were not the case, an adaptive adversary could eliminate all inco nsistencies by corrupting a
+small set of servers whose identity is determined by the linear combin ation. Proximity gaps rule
+out this kind of attack.
+In the centralized setting, u is known to a prover and can be queried by the veriﬁer. A typical
+realization is using a tree-based succinct cryptographic commitmen t that binds the prover to a
+uniquely deﬁned u and yet enables eﬃcient local opening of symbols queried by the veriﬁe r. In
+this case, the veriﬁer challenges the prover by choosing the coeﬃcie nts ri of the random linear
+combination. The prover, who claims that all ui are codewords in V , must respond with a valid
+codeword u ∈ V . The veriﬁer checks that u agrees with u′ = r1u1 + . . .+ rlul by querying a random
+10
+=== PAGE 12 ===
+entry of u and the corresponding entries of u and checking their consistency. (To amplify soundness,
+the veriﬁer can query several random entries of u.) Here too, proximity gaps guarantee that if one
+of the ui is far from V , then (with high probability) so is u′. This ensures that the veriﬁer detects
+an inconsistency with high probability. Examples for applications in the centralized setting include
+communication-eﬃcient proof systems [ R VW13, AHIV17, BBHR18b], homomorphic commitment
+schemes [ CDD+16], and secure two-party computation protocols [ IPS08, HIMV19]. See more in
+Section 3.2 below.
+An appealing feature of the simple “random linear combination” test is that it can be imple-
+mented with low communication and computation costs. In particular, in the distributed setting it
+suﬃces for each server to send a single ﬁeld element to the veriﬁer. In b oth settings, communicat-
+ing the l random coeﬃcients ri is typically not a bottleneck. This random challenge can be made
+shorter either by using a cryptographic pseudorandom generato r or unconditionally by using simple
+derandomization techniques. In particular, one can generate all co eﬃcients as distinct powers of a
+single random ﬁeld elements and appeal to the parameterized curves variant of the proximity gap
+theorem (Theorem 1.5).
+Our new proximity gaps imply a tighter analysis of applications that tes t proximity to RS codes.
+Generally speaking, in the distributed setting the improved proximity gap bounds imply a constant-
+factor improvement in the resilience threshold, namely the number of corrupted parties that can
+be tolerated. In the centralized setting, one typically gets constan t-factor savings in the overall
+communication and computation costs. While often ignored in theory- oriented research, the latter
+kind of improvements can be very signiﬁcant in the context of practic al succinct proof systems.
+Why RS codes? Reed–Solomon codes are commonly used in distributed storage, eﬃc ient proof
+systems, and cryptographic protocols. They are useful becaus e of their MDS property, near-linear
+encoding, and eﬃcient (list)-decoding algorithms. A more qualitative feature of RS codes, which
+is commonly used in proof systems and cryptography, is the following multiplication-friendliness
+property: when n = |D| > 2k, the pointwise products of codewords in V = RS[Fq, D, k] span a
+linear code that has nontrivial minimal distance, namely the code RS[Fq, D, 2k].
+We now give more concrete examples of applying proximity gaps to ana lyze batch-veriﬁcation
+tasks that arise in diﬀerent application scenarios.
+3.1 Distributed storage and cryptography
+Distributed storage. Consider a scenario in which l users encode their inputs using a length- n
+RS code V = RS[Fq, D, k], where server i stores the i-th symbol of each of the l codewords. Suppose
+that some of the nl symbols were corrupted, say by a transient malware that overwrit es a subset of
+the symbols before being discovered and eliminated. A veriﬁer would like to get a quick estimate of
+the amount of damage caused by the malware. A natural idea is to ha ve the servers communicate a
+random linear combination u′ of the potentially corrupted codewords uj. Using the basic proximity
+gap result (Theorem
+1.2), if at least one of uj is δ-far from the code (for δ ≤ 1−ρ
+2 or δ < 1 − √ρ),
+then u′ is δ-far from the code except with small failure probability (at most n/q for δ ≤ 1−ρ
+2 ). Thus,
+for suﬃciently large Fq, the distance of u′ from V provides a reliable upper bound on the maximal
+relative distance of a vector ui from V within the proximity bounds of Theorem 1.2. This estimate
+is not too pessimistic in the sense that if only a µ-fraction of the servers were aﬀected, the upper
+bound obtained by the test is no bigger than µ.
+11
+=== PAGE 13 ===
+Distributed proximity test for Interleaved RS codes. The above analysis leaves something
+to be desired: if u′ is within (suﬃciently small) distance δ from V , the veriﬁer is only assured that
+each uj is individually within distance δ from V . In some applications, we would like to get the
+stronger guarantee that in such an event there is a δ-fraction of the coordinates whose removal
+makes all uj consistent with V . Moreover, we would like to identify this set of coordinates, which
+is uniquely deﬁned in the unique decoding regime. This is useful even in th e above distributed
+storage scenario, but will be even more useful for the applications we discuss next. The stronger
+feature can be conveniently captured using the notion of an Interleaved Reed–Solomon (IRS) code.
+In an IRS (V, l) code, the codewords are l × n matrices in which each row is a codeword in V . The
+symbols of such a codeword are the matrix columns. Namely, a codew ord consists of n symbols in
+Fℓ
+q. The following theorem, which follows easily from Theorem
+1.6, phrases the stronger guarantee
+provided by the reﬁned analysis in terms of proximity testing for IRS co des. We state it for the
+unique decoding regime, which suﬃces (and is sometimes required) fo r the applications we discuss
+next. For u within the unique decoding radius of V , we denote by Γ( u, V ) the set of coordinates on
+which u disagrees with the closest codeword from V .
+Theorem 3.1 (Distributed proximity test for Interleaved RS codes) . Let V = RS[Fq, D, k] for
+|D| = n and V = IRS(V, l). We view codewords in V and V as vectors in Fn
+q and matrices in Fl×n
+q
+respectively. Let ρ = k+1
+n and δ ≤ 1−ρ
+2 . Let u ∈ Fl×n
+q and let u′ = rT u where r ∈R Fl
+q.
+• Completeness: If ∆( u, V) ≤ δ then Pr[∆( u′, V ) ≤ δ] = 1 and moreover Pr[Γ( u′, V ) ̸=
+Γ( u, V)] ≤ n/q.
+• Soundness: If ∆( u, V) > δ then Pr[∆( u′, V ) ≤ δ] ≤ n/q.
+We refer to the above test as distributed because it can be implemen ted with low communication
+complexity in the distributed setting, where each server holds a diﬀe rent column of u. One can
+similarly obtain an aﬃne version with the same guarantee, where u has an additional row u0 that
+is always added to u′ (i.e., with coeﬃcient r0 = 1 ), and the code V is extended to IRS(V, l + 1).
+This aﬃne version is useful for zero-knowledge variants of the tes t, where a single random u0 ∈ V
+is used for blinding u1, . . . , ul. This is used in the cryptographic applications we discuss next.
+General cryptographic protocols. Theorem
+3.1 serves as a useful tool for analyzing cryp-
+tographic protocols in the presence of an adaptive adversary who can dynamically choose the
+set of corrupted parties. For instance, it shows that secure mult iparty computation protocols
+from [DI06, IPS09] are adaptively secure when the adversary can corrupt roughly 1/3 of the parties.
+The best previous proximity gaps from [ RZ18, BKS18, BGKS20] could only get up to 1/4 corruption
+threshold in the same setting. Adaptive security, in turn, is crucial for the general transformation
+from [ IKOS09, IPS08] of these honest-majority protocols to two-party protocols an d protocols for
+dishonest majority. Indeed, this is the context that gave rise to pr oximity gap in the analysis of
+the Ligero zero-knowledge proof system [ AHIV17], which applies a variant of the transformation
+from [ IKOS09] to a variant of the protocol from [ DI06]. We give a detailed exposition of the appli-
+cation of proximity gaps to veriﬁable secret sharing , which serves as a basis for the above results on
+secure multiparty computation, in Section 8.
+3.2 Soundness of the Fast RS IOPP (FRI) protocol
+FRI is an Interactive Oracle Proof of Proximity (IOP of Proximity, or IOP P) as deﬁned in [
+RRR16,
+BCS16]. An IOP is an interactive protocol in which the veriﬁer has oracle acces s to messages sent
+12
+=== PAGE 14 ===
+by the prover, so she need not read and store those messages bu t may query random entries of
+them. FRI is one of a family of protocols for testing proximity to the R S code (an “RS proximity
+testing” (RPT) protocol). Its purpose is to check whether a receiv ed word f : D → Fq belongs to
+a pre-speciﬁed RS code V := RS[Fq, D, k] and to reject words that are δ-far from the code with
+high probability and low query complexity. Due to its eﬃciency it is used a s a building block in
+several recent succinct zero knowledge protocols including scalab le and transparent (public coins)
+arguments of knowledge (STARKs) [ BBHR18a, BBHR19], Aurora [ BCR+18] and its succinct ver-
+sion [ BCG+19], and Fractal [ COS19], to name a few. These systems have been shown by Chiesa
+et al. to be sound in the quantum random oracle model (hence are “p lausibly post-quantum se-
+cure”) [ CMS19]. Therefore, understanding the concrete soundness error of F RI, denoted ǫFRI, is of
+signiﬁcant practical value, in addition to being a theoretically interest ing question.
+Consider the case of f that is maximally far from V , i.e., ∆( f, V ) ≈ 1 − ρ (this holds, e.g., for
+random f , with high probability). Fix a target soundness error bound 2−λ (in concrete settings,
+λ is the “security parameter”, often ﬁxed to λ = 128 ). The communication complexity of FRI is
+dominated by the number t of iterations of the QUERY phase, so the question at hand is:
+How many iterations t of the QUERY phase are needed to obtain ǫFRI ≤ 2−λ?
+The initial analysis of [ BBHR18b] required a number t that is quite large, and does not tend
+to 0 even for tiny rates ρ. This was improved by [ BKS18] to t ≈ 4λ/ log 1
+ρ , and then by [ BGKS20]
+to t ≈ 3λ/ log 1
+ρ . Sadly, that paper also showed that this bound is tight, at least whe n the ﬁeld
+size q equals the code’s blocklength n. Our main result regarding FRI (Theorem 8.3) shows that
+for q ≫ n2 we can reduce the number t of iterations by 33% to t ≈ 2λ/ log 1
+ρ , which leads to
+communication complexity that is at least 33% shorter, for provable soundness settings. The actual
+savings in the provable soundness case are likely larger, due to smalle r ﬁeld size and the ability of
+the improved analysis to operate with any sequence of oracle sizes in the FRI COMMIT phase (as
+discussed after the statement of Theorem 8.3).
+4 Correlated Agreement over Lines — Unique Decoding Radius
+In this section we prove the correlated agreement result for proxim ity parameters that are below
+the unique decoding radius, corresponding to the ǫ = ǫU part of Theorem
+1.4. In this case, where
+δ ∈
+(
+0, 1−ρ
+2
+]
+, our result holds even with ﬁelds that are merely linear in the blocklength of the code.
+More importantly, the proof will present several ideas, in simpliﬁed fo rm, that will appear again in
+the proof of harder, list decoding regime, result (Theorem 5.1).
+As usual, let Fq be the ﬁnite ﬁeld of size q, let D ⊆ Fq be an evaluation domain of size |D| = n,
+let k ≤ n, and let V = RS[Fq, D, k] be the Reed–Solomon code of rate ρ = k+1
+n .
+Theorem 4.1. Suppose δ ≤ (1 − ρ)/2. Let u0, u1 : D → Fq be functions. Let
+S = {z ∈ Fq : ∆( u0 + zu1, V ) ≤ δ}
+and suppose |S| > n. Then S = Fq. Furthermore there are v0, v1 ∈ V such that for all z ∈ Fq,
+∆( u0 + zu1, v0 + zv1) ≤ δ
+and in fact
+|{x ∈ D : (u0(x), u1(x)) ̸= (v0(x), v1(x))}| ≤ δ|D|.
+Remark 4.1. Since δ ≤ 1−ρ
+2 is within the unique decoding regime, the above v0, v1, which are
+simultaneously and separately δ-close to u0, u1, are also unique.
+13
+=== PAGE 15 ===
+4.1 The Berlekamp–Welch decoder
+Our proof will be based on the Berlekamp–Welch decoding algorithm. Le t F be a (general) ﬁeld and
+D ⊆ F. For an integer k, consider the Reed–Solomon code V = RS[F, D, k]. We will be instantiating
+the Berlekamp–Welch decoder for RS codes over two diﬀerent ﬁelds: the “standard” ﬁeld Fq and the
+ﬁeld of rational functions K = Fq(Z) in the formal variable Z. We now give a quick description of
+the Berlekamp–Welch decoding algorithm and some useful aspects o f it.
+Given a received word w : D → F, where D ⊆ F, and an error parameter e = ⌊δn⌋ ≤ n−k−1
+2 , the
+Berlekamp–Welch decoder ﬁnds the unique (if any) polynomial P (X) ∈ F[X] such that ∆( w, P ) ≤ e.
+The ﬁrst step of the Berlekamp–Welch decoder is to set up a a homoge neous system of linear
+equations to ﬁnd polynomials A(X), B(X) ∈ F[X] with deg(A) ≤ e, deg(B) ≤ k + e such that:
+A(x)w(x) = B(x)
+for all x ∈ D .
+Lemma 4.2. The homogeneous system of linear equations above has the fol lowing properties:
+1. Suppose ∆( w, V ) ≤ δ. Then the system of equations has a nonzero solution.
+2. Suppose ∆( w, V ) ≤ δ. Then for any nonzero solution A(X), B(X) to the system of equations,
+we have that A(X) divides B(X) (in F[X]), and furthermore the element of V which realizes
+the distance is B(X)/A(X).
+3. If A(X), B(X) is a nonzero solution to the system of equations such that A(X) divides B(X)
+(in F[X]), then the polynomial P (X) = B(X)/A(X) has the property 3 that ∆( w, P ) ≤ δ.
+These properties above are well known and we omit the proof.
+Note that in our setting we have k + 2e < n . This may seem to be oﬀ if one is used to seeing the
+condition k + 2e ≤ n. The diﬀerence is that we use k here to denote the degree of the polynomials
+rather than the dimension of the code, and they are indeed oﬀ by 1 f rom each other.
+4.2 The Polishchuk–Spielman lemma
+Another ingredient that will appear in our proof is a version of the Po lishchuk–Spielman lemma [
+PS94].
+The version we state below is a variation of [ Spi95, Lemma 4.2.18], with some diﬀerences in the
+precise conditions, and we include a derivation in Appendix D.
+Lemma 4.3. Let F be a ﬁeld, and let aX , aZ, bX , bZ, dX , dZ, nX , nZ be non-negative integers satis-
+fying dX = bX − aX , dZ = bZ − aZ. Let A(X, Z), B(X, Z) ∈ F[X, Z] be polynomials with degrees
+bounded by
+degX (A) ≤ aX , degX (B) ≤ bX , degZ(A) ≤ aZ, degZ(B) ≤ bZ.
+Suppose that for at least nX values of x ∈ F, there exist polynomials PZ,x(Z) ∈ F[Z] with
+degZ(PZ,x) ≤ dZ such that B(x, Z) = PZ,x(Z)A(x, Z), and similarly suppose that for at least
+nZ values of z ∈ F, there exist polynomials PX,z(X) ∈ F[X] with degX (PX,z) ≤ dX such that
+B(X, z) = PX,z(X)A(X, z).
+Finally, suppose
+bX
+nX
++ bZ
+nZ
+< 1. (⋆)
+3Note that P (X) may have degree larger than k. The best we can say about the degree of P (X) is that it is at
+most k + e.
+14
+=== PAGE 16 ===
+If all conditions hold, then A(X, Z) | B(X, Z) as polynomials in Fq[X, Z]. Furthermore, the
+quotient P (X, Z) = B(X,Z)
+A(X,Z) satisﬁes degX (P ) ≤ dX , degZ(P ) ≤ dZ, as well as P (X, z) = PX,z(X)
+for at least nZ − aZ values of z, and P (x, Z) = PZ,x(Z) for at least nX − aX values of x.
+4.3 Proof of Theorem 4.1
+By deﬁnition of S, for each z ∈ S, we have a polynomial Pz(X) ∈ Fq[X] with deg(Pz) ≤ k such
+that ∆( u0 + zu1, Pz) ≤ δ.
+Our strategy is to run the Berlekamp–Welch decoder over the ﬁeld K = Fq(Z) of rational
+functions in the formal variable Z.
+First deﬁne a received word
+w : D → K
+given by:
+w(x) = u0(x) + Zu1(x).
+We sometimes also use the notation w(x, Z) to denote u0(x) + Zu1(x).
+We will try to ﬁnd a polynomial P (X, Z) ∈ Fq[X, Z] of the form P (X, Z) = v0(X) + Zv 1(X),
+where degX (P ) ≤ k, such that
+P (x, Z) = w(x)
+for at least n − e choices of x ∈ D .
+4.3.1 Step 1: Finding A(X, Z), B(X, Z)
+The ﬁrst step of the Berlekamp–Welch algorithm is to ﬁnd nonzero A(X, Z), B(X, Z) ∈ K[X] of
+degrees ≤ e and ≤ k + e (in the variable X) respectively such that
+A(x, Z)w(x) = B(x, Z) (4.1)
+for all x ∈ D , where e = ⌊δn⌋ as before. Setting this up as a homogeneous linear system over K, we
+get an n × (k + 2e + 2) matrix M (Z) with entries being polynomials in Z, of degree ≤ 1 for the e + 1
+columns of the A-variables, and degree 0 for the k + e + 1 columns of the B variables. Explicitly,
+in the row corresponding to x ∈ D , the entry of M (Z) corresponding to the coeﬃcient of Ai(Z) is
+u0(x)xi + u1(x)xiZ, and the entry corresponding to the coeﬃcient of Bi(Z) is simply xi.
+We now show that M (Z) has rank < k + 2e + 2 over K. Fix any (k + 2e + 2) × (k + 2e + 2)
+minor of M (Z), and consider its determinant R(Z) ∈ Fq[Z]. We will show that R(Z) = 0 . This
+then implies that M (Z) has rank < k + 2e + 2 over K.
+For any z ∈ S, consider M (z). This is the homogeneous linear system that arises when we run
+the Berlekamp–Welch decoder with received word u0 + zu1 ∈ Fn
+q over the ﬁeld Fq. By deﬁnition of
+S we know that ∆( u0 + zu1, V ) ≤ δ, and so Item 1 of Lemma
+4.2 tells us that this linear system
+has a nonzero solution. Therefore M (z) has rank < k + 2e + 2. Thus for each z ∈ S, R(z) = 0 .
+Now notice that deg(R) ≤ e + 1. Since |S| > e + 1, we conclude that R(Z) = 0 formally, as desired.
+We now know that the system of equations M (Z) has a non-trivial solution, with Ai(Z), Bi(Z) ∈
+Fq(Z). We wish to show that in particular there is a solution in which Ai(Z), Bi(Z) are not just
+rational functions, but polynomials of bounded Z-degree. To do so, focus on some r ×r non-singular
+submatrix, where r is the matrix’s rank. As we have show r < k + 2e+ 2, we can also choose another
+r +1-th column to be a “free variable”. Then we can ﬁnd a unique solution to the r ×r system, where
+the free variable is set to 1, and all variables outside the chosen r + 1 vanish. This solution will
+the necessarily satisfy the entire system of equations, since r was the full rank (and so every other
+relation is a linear combination of the r rows we chose). Cramer’s rule shows this solution is given
+15
+=== PAGE 17 ===
+(up to signs) by ratios of r × r determinants, with the denominator always being the determinant
+of our chosen r × r matrix, and the numerators being the determinants of this matrix w ith one
+of its columns replaced by the “free variable” column. We clear out th e common denominator by
+simply assigning it to the free variable instead of the previous assignm ent of 1, and replacing each
+ratio with only its numerator. This gives us a homogenous form of Cra mer’s rule. Note that by
+the non-singularity assumption, the determinant assigned to the “ free” variable must have been
+non-zero, so this is a non-zero solution.
+To summarize, we ﬁnd that there exists a non-zero solution to the ma trix where each variable
+is either 0, or given by some determinant of a square r × r submatrix—notably, one from which
+the column corresponding to that particular variable is excluded. Su ch determinants will all be
+polynomials in Z, and their degree is bounded by how many of its columns are attache d to A
+variables. It follows that deg Bi(Z) ≤ e + 1, deg Ai(Z) ≤ e, as there are only e + 1 degree 1 columns,
+and for the A variables at least one is excluded.
+Writing now A(X, Z) =∑ e
+i=0 Ai(Z)X i, B(X, Z) =∑ k+e
+i=0 Bi(Z)X i, we ﬁnd that A(X, Z), B(X, Z) ∈
+Fq[X, Z] are polynomials with degZ(A) ≤ e, degZ(B) ≤ e + 1, degX (A) ≤ e, degX (B) ≤ k + e and:
+A(x, Z)w(x) = B(x, Z)
+for all x ∈ D . Using our alternate notation for w, we get:
+A(x, Z)w(x, Z) = B(x, Z)
+for all x ∈ D .
+4.3.2 Step 2: Dividing B(X, Z) by A(X, Z) in Fq[X, Z]
+Now if z ∈ S, we know that the function w(·, z) : D → Fq has distance ≤ e from V . Consider
+the Berlekamp–Welch system of linear equations associated with this received word: namely, we
+consider the space of all pairs of polynomials E(X), F (X) of degrees ≤ e, ≤ k + e respectively, such
+that
+E(x)w(x, z) = F (x)
+for all x ∈ D . We see that any solution E(X), F (X) of this system falls into one of two cases:
+• E(X) = 0 , in which case F (x) = 0 for all x ∈ D , and so F (X) = 0 too.
+• E(X) is nonzero, in which case Item 2 of Lemma
+4.2 tells us that E(X) divides F (X), and
+F (X)
+E(X) = Pz(X).
+In both these cases, E(X) divides F (X), and F (X) = Pz(X)E(X). For any z ∈ S, A(X, z), B(X, z)
+are polynomials that satisfy the properties of E, F above, thus B(X, z) = Pz(X)A(X, z).
+Let aX = aZ = e, bX = k + e, bZ = e + 1, dX = k, dZ = 1 , nX = n and nZ = |S| > 1. We’ve
+seen that B(x, Z) = w(x, Z)A(x, Z) with w(x, Z) of degree at most dZ = 1 for |D| = nX values of
+x, and B(X, z) = Pz(X)A(X, z) with Pz(X) of degree at most dX = k for |S| = nZ values of z.
+The X and Z degrees of A and B are bounded by aX , aZ, bX , bZ, and ﬁnally
+bX
+nX
++ bZ
+nZ
+= k + e
+n + e + 1
+|S| < k + 2e + 1
+n ≤ 1.
+we may therefore apply the Polishchuk–Spielman lemma 4.3. We ﬁnd that A(X, Z) divides B(X, Z)
+in Fq[X, Z], and the quotient P (X, Z) = B(X, Z)/A(X, Z) is of degree at most dZ = 1 in Z and
+16
+=== PAGE 18 ===
+dX = k in X, and so can be written as v0(X) + Zv 1(X), where v0, v1 are of degree at most k.
+Furthermore the lemma implies that
+v0(x) + Zv 1(x) = P (x, Z) = w(x, Z) = u0(x) + Zu1(x)
+for at least nX − aX = n − e = ⌈n(1 − δ)⌉ values of x ∈ D . Thus
+∆( u0 + Zu1, v0 + Zv 1) ≤ δ
+as claimed. This completes the proof of Theorem 4.1.
+5 Correlated Agreement over Lines — List Decoding Radius
+In this section we prove the large distance part of the correlated ag reement theorem (Theorem
+1.4),
+corresponding to larger proximity parameters δ ∈
+(
+1−ρ
+2 , 1 − √ρ
+)
+. First, we state the theorem in a
+slightly diﬀerent form that will be easier to work with.
+Theorem 5.1. Let u0, u1 : D → Fq, let m ≥ 3, deﬁne
+δ0(ρ, m) := 1 − √
+ρ −
+√ρ
+2m , (5.1)
+and let δ ≤ δ0(ρ, m). Deﬁne
+S = {z ∈ Fq : ∆( u0 + zu1, V ) ≤ δ} (5.2)
+and suppose
+|S| > (1 + 1
+2m )7m7
+3ρ3/2 n2. (5.3)
+Then u0, u1 are simultaneously δ-close to V , i.e. ∃v0, v1 ∈ V such that
+|{x ∈ D : (u0(x), u1(x)) = ( v0(x), v1(x))}| ≥ (1 − δ)|D|.
+The above version easily implies the large distance part of Theorem 1.4 with the coarser
+ǫJ = O
+( 1
+(ηρ)O(1) · n2
+q
+)
+bound by setting m = O
+(√ρ
+η
+)
+. For the more precise bound on ǫJ, we need to be a little careful,
+and we do this in the following theorem.
+Theorem 5.2 (Correlated agreement over lines — alternative formulation) . Let u0, u1 : D → Fq.
+Let δ, η > 0 satisfy η ≤
+√
+ρ
+20 and δ ≤ δ0(ρ, η) := 1 − √ρ − η, and suppose
+Pz∈Fq (∆( u0 + zu1, V ) ≤ δ) > ρ2n2
+(2η)7q =: ǫJ. (5.4)
+Then u0, u1 are simultaneously δ-close to V , i.e. ∃v0, v1 ∈ V such that
+|{x ∈ D : (u0(x), u1(x)) = ( v0(x), v1(x))}| ≥ (1 − δ)|D|.
+17
+=== PAGE 19 ===
+Proof of Theorem 5.2 from Theorem 5.1. Set m =
+⌈ √ρ
+2η
+⌉
+≥ 10, and note that δ ≤ δ0(ρ, η) <
+δ0(ρ, m). Deﬁne S as in Theorem 5.1, and observe that ( 5.3) is satisﬁed:
+|S| > ǫ Jq = (2η)−7ρ2n2 >
+(m − 1√ρ
+)7
+ρ2n2 =
+(
+1 − 1
+m
+)7 m7
+ρ3/2 n2 > (1 + 1
+2m )7m7
+3ρ3/2 n2,
+where in the last step we use 3
+(
+1 − 1
+m
+)7 >
+(
+1 + 1
+2m
+)7, which holds for m ≥ 10. Thus we may apply
+Theorem 5.1, and conclude (u0, u1) is δ-close to (v0, v1), as claimed.
+5.1 The Guruswami–Sudan decoder
+Our proof will be based on the Guruswami–Sudan decoding algorithm. Let F be a (general) ﬁeld
+and D ⊆ F. Let V be the Reed–Solomon code RS[F, D, k]. Let ρ = k+1
+n denote its rate. We will be
+instantiating the Guruswami–Sudan decoder for RS codes over two diﬀerent ﬁelds: the “standard”
+ﬁeld Fq and the ﬁeld of rational functions K = Fq(Z) in the formal variable Z. We now give a quick
+description of the Guruswami–Sudan decoding algorithm and some us eful aspects of it.
+First, some deﬁnitions related to bivariate polynomials: The (a, b)-weighted degree of a mono-
+mial X iY j is ai + bj. The (a, b)-weighted degree of a polynomial Q(X, Y ) ∈ F[X, Y ] is the maximal
+(a, b)-weighted degree of all its non-zero monomials. The vanishing multiplic ity of a polynomial
+Q(X, Y ) ∈ F[X, Y ] at a point (x, y) ∈ F2 is the smallest m such that the shifted polynomial
+Q(x + X, y + Y ), written as:
+Q(x + X, y + Y ) =
+∑
+i,j
+aijX iY j
+has aij = 0 for all (i, j) with i + j < m . We denote the vanishing multiplicity of Q at (x, y) by
+mult(Q, (x, y)).
+Given a received word w : D → F and a multiplicity parameter m, the Guruswami–Sudan de-
+coder ﬁrst solves a homogeneous system of linear equations to ﬁnd a n onzero polynomial Q(X, Y ) ∈
+F[X, Y ] with (1, k)-weighted degree less than DX (m) (for a certain function DX (m), speciﬁed later),
+such that:
+mult(Q, (x, w(x)) ≥ m
+for all x ∈ D .
+The key properties of this system of linear equations that enable de coding are given by the
+following lemma.
+Lemma 5.3. Let δ0(ρ, m) = 1 − √
+ρ −
+√ρ
+2m . With DX (m) = ( m + 1
+2 )√ρn, the system of linear
+equations set up above has the following properties:
+1. The system has a nonzero solution Q(X, Y ).
+2. For any nonzero solution Q(X, Y ) of the above system, and for any polynomial P (X) ∈ V
+such that ∆( w, P ) ≤ δ0(ρ, m), we have that Y − P (X) divides Q(X, Y ) in the polynomial ring
+F[X, Y ].
+Note that these choices of δ0 and DX are not quite optimal. The optimal values are only slightly
+better, but their formulas are longer and messier, and we opt for s implicity in favor of optimization.
+18
+=== PAGE 20 ===
+5.2 Proof of Theorem 5.1
+By deﬁnition of S, for each z ∈ S, we have a polynomial Pz(X) ∈ Fq[X] with deg(Pz) ≤ k such
+that ∆( u0 + zu1, Pz) ≤ δ.
+Our strategy is to run the Guruswami–Sudan decoder over the ﬁeld K = Fq(Z) of rational
+functions in the formal variable Z.
+First deﬁne a received word
+w : D → K
+given by:
+w(x) = u0(x) + Zu1(x).
+We sometimes also use the notation w(x, Z) to denote u0(x) + Zu1(x).
+We will try to ﬁnd a polynomial P (X, Z) ∈ Fq[X, Z] of the form P (X, Z) = v0(X) + Zv 1(X),
+where degX (P ) ≤ k, such that
+P (x, Z) = w(x)
+for at least than n − e choices of x ∈ D , where e = ⌊nδ⌋ is the decoder’s error parameter.
+5.2.1 Step 1: Interpolating Q(X, Y, Z)
+Let DX = DX (m) = ( m + 1
+2 )√ρn. The ﬁrst step of the Guruswami–Sudan decoding algorithm is
+to ﬁnd a nonzero polynomial Q(X, Y ) ∈ K[X, Y ]:
+Q(X, Y ) =
+∑
+i+k·j<DX
+Qji(Z)X iY j,
+where each Qji(Z) lies in the big ﬁeld K, such that Q(X, Y ) has a zero of multiplicity m at (x, w(x))
+for each x ∈ D .
+This is possible when the number of available monomials, which is at least k
+2
+((
+DX
+k + 1
+2
+)2
+− 1
+4
+)
+(see Claim B.1 in Appendix B.2), exceeds the number of homogeneous linear equations
+(m+1
+2
+)
+n.
+Indeed, this happens for our choice of DX .
+Solving this system of equations for a nonzero solution using Cramer ’s rule, and clearing Z
+denominators, we get such a Q(X, Y ) ∈ K[X, Y ] where each coeﬃcient Qji(Z) is in fact an element
+of Fq[Z] (i.e., a polynomial instead of just a rational function) with controlled degree.
+Explicitly, we get:
+Claim 5.4. There is a nonzero polynomial Q(X, Y ) ∈ K[X, Y ] with (1, k)-weighted degree less than
+DX such that for each x ∈ D , we have:
+mult(Q, (x, w(x))) ≥ m,
+and furthermore:
+•
+degX (Q) < D X = (m + 1
+2 )√ρn. (5.5)
+• DY := deg Y (Q) satisﬁes:
+DY < DX
+k = m + 1
+2√ρ . (5.6)
+• Each coeﬃcient Qji(Z) of Q(X, Y ) is in Fq[Z].
+19
+=== PAGE 21 ===
+• DY Z := deg Y,Z (Q) (which is the total Y, Z degree of Q) satisﬁes:
+DY Z ≤ (m + 1
+2 )3
+6√ρ n. (5.7)
+Only the bound on DY Z needs to be discussed, and it is explained and proven in detail in
+Appendix B.1.
+Claim 5.4 allows us to express the lower bound on |S| from ( 5.3) in terms of DX , DY , DY Z , as
+|S| > (1 + 1
+2m )7m7
+3ρ3/2 n2 = 2
+(
+(m + 1
+2 )√ρ
+)3
+(
+(m + 1
+2 )√ρ n
+)
+(
+(m + 1
+2 )3
+6√ρ n
+)
+≥ 2D3
+Y DX DY Z . (5.8)
+Over the next subsections, we will prove the following proposition, w hich is the core of our proof:
+Proposition 5.5. There exist a subset S′ ⊂ S and a polynomial P (X, Z) ∈ Fq[X, Z] with the
+following properties:
+|S′| > |S|
+2DY
+, (5.9)
+∀z ∈ S′, P z(X) = P (X, z), (5.10)
+degX (P ) ≤ k, degZ(P ) ≤ 1. (5.11)
+5.2.2 Step 2: Q(X, Y, z) is divisible by Y − Pz(X) for many z
+Recall that for every z ∈ S there exists a polynomial Pz(X) ∈ Fq[X] of degree at most k with
+distance at most δ from u0 + zu1, i.e. (x, Pz(x)) equals (x, wz(x)) for at least n(1 − δ) values of
+x ∈ D . In each such point of agreement, the univariate polynomial Q(X, Pz(X), z) ∈ Fq[X] must
+then have a zero of order m, thus it has at least mn(1 − δ) roots counted with multiplicity. On the
+other hand, Since Q is chosen to have (1, k)-weighted degree less than DX , and deg Pz(X) ≤ k, we
+have degX (Q(X, Pz(X), z)) < D X . Thus the polynomial must be identically zero if DX ≤ mn(1−δ).
+Indeed this holds, because
+1 − δ ≥ 1 − δ0 =
+(
+1 + 1
+2m
+)√ρ = DX
+mn .
+Thus Q(X, Y, z) is divisible by Y − Pz(X) for each z ∈ S.
+5.2.3 Step 3: Finding a good x0 to start Hensel lifting
+We now begin the process of ﬁnding a power series solution Y = γ(X) ∈ K[[X]] to Q(X, Y, Z) = 0
+(thought of as a bivariate equation Q(X, Y ) = 0 with coeﬃcients in K). To ﬁnd the power series
+solution, we will start at a suitable solution (x0, α0) of Q(X, Y ) = 0 , and then use Hensel lifting.
+In this section, our goal is to ﬁnd such a “suitable” (x0, α0).
+Considering Q(X, Y, Z) as a polynomial in Y over Fq[X, Z], it can be uniquely factored as
+Q(X, Y, Z) = C(X, Z)
+∏
+i
+Ri(X, Y pfi
+, Z)ei, (5.12)
+20
+=== PAGE 22 ===
+where p is the characteristic of Fq, fi ≥ 0, ei ≥ 1, and each Ri(X, Y, Z) is irreducible and separable 4.
+In this section we prove the following claim:
+Claim 5.6. There exists x0 ∈ Fq such that for all i,
+discY (Ri(X, Y, Z))(x0) ̸= 0 ∈ Fq[Z].
+Before we prove the claim, let us explain its use and motivation. The He nsel lift (described
+in more detail in Appendix
+A.4) shows that any simple root5 Y = α0 ∈ K of Q(x0, Y, Z) can be
+uniquely lifted to a power series solution γ(X) ∈ K[[X − x0]] with free coeﬃcient α0, by iteratively
+ﬁnding solutions to Q(X, Y, Z) ≡ 0 (mod ( X − x0)s) with increasing s.
+However, it may be that Q(X, Y ) has no simple roots. This could happen, for example, if the fac-
+tors of Q(X, Y ) appear with multiplicity. To resolve this, we instead focus on an irredu cible factor Ri
+of Q. Even after focusing on Ri, it might still be the case that the particular root α0 of Ri(x0, Y, Z)
+which we would wish to lift non-simple. We avoid this issue by requiring tha t that Ri(x0, Y, Z)
+is separable in Y (i.e., all of its roots in Y are simple). This happens if discY Ri(x0, Y, Z) ̸= 0 .
+Claim 5.6 exactly guarantees the existence of an element x0 such that this occurs for all possible
+Ri. For all future sections, we will ﬁx any such x0 arbitrarily.
+Henceforth, we will assume for simplicity that Q does not have inseparable irreducible factors,
+i.e. that fi = 0 for all i. Note that since any inseparable factor has Y -degree at least p, this is
+necessarily the case if the characteristic is larger than DY , for example in the case where Fq is a
+prime ﬁeld with p = q: ( 5.8) together with the trivial bound |S| ≤ q immediately yield DY < q 1/3.
+The general case, including the possibility of inseparable factors, is very similar, but has more
+technicalities, which are discussed in detail in Appendix C.
+Proof of Claim 5.6. Since all of the polynomials Ri(X, Y, Z) are separable in Y , the discriminants
+discY (Ri(X, Y, Z)) ∈ Fq[X, Z] are non-zero polynomials. We need to ﬁnd an x0 ∈ Fq which makes
+all these discriminants evaluate to nonzero polynomials in Fq[Z]. This will simply follow from a
+bound on the sum of degrees of all the Ri, which we would like to show is less than q. A crude
+bound on the sum of degrees (which would require a stronger bound on |S|) is easy to give. The
+rest of the proof is just a more careful bound.
+Deﬁne
+disc∗
+Y (Q) :=
+∏
+i
+discY (Ri(X, Y, Z)) ∈ Fq[Z][X].
+It suﬃces to show that degX disc∗
+Y (Q) < q .
+In order to bound the X-degree of disc∗
+Y (Q), we will instead bound the X-degree of discY (Q),
+and see that it serves as an upper bound. There is a subtle issue her e, as discY (Q) may very well be
+the zero polynomial, for example if any ei > 1. However, note that by expressing Q as polynomial in
+Y , i.e. Q =∑
+j≤DY Qj(X, Z)Y j with Qj(X, Z) = ∑
+i<DX −k·j Qji(Z)X i, there is a generic formula
+for the discriminant discY (Q), which is a polynomial in the Qj(X, Z) coeﬃcients, given (up to sign)
+by the determinant of the Sylvester matrix of Q and ∂Q
+∂Y , divided by the leading coeﬃcient QDY .
+The generic polynomial is non-zero, and though it might vanish for th e particular substitution of Qj,
+we can still compute its formal X-degree as the maximal degree that would appear when expanding
+all algebraic expressions in the Qj(X, Z), before cancellations. Furthermore, this polynomial will
+4R(X, Y, Z ) being separable in Y means it does not have repeated roots in the variable Y , in any extension
+ﬁeld. This is equivalent to discY (R(X, Y, Z )) ̸= 0 . For an irreducible polynomial in Y , it is also equivalent to the
+Y -derivative being not identically 0, or to the polynomial not being representable as a polynomia l in Y p.
+5A root is simple when it has multiplicity 1.
+21
+=== PAGE 23 ===
+be formally divisible by disc∗
+Y (Q), in the sense that the quotient can be expressed as a generic
+polynomial in X, Z (which again might vanish for the particular substitution). This is due to the
+Ri dividing Q, so that we may write Q(X, Y, Z) = U (X, Y, Z) ·∏
+i Ri(X, Y, Z) where U is the
+quotient. We then use the fact that the discriminant of a product o f polynomials is given by a
+product of their discriminants and resultants, in this case yielding
+discY (Q) = disc Y (U ) ·
+∏
+i
+discY (Ri) ·
+∏
+i
+resY (Ri, U)2∏
+i<i′
+resY (Ri, Ri′)2
+where the right hand side contains disc∗
+Y (Q) =∏
+i discY Ri as well as other terms, and all discrimi-
+nants and resultants can be expressed as polynomials in the Y -coeﬃcients of Q, U and the Ri. Thus
+we deduce degX (disc∗
+Y (Q)) ≤ degX (discY (Q)).
+Finally, we wish to evaluate the formal X-degree of discY (Q) from the Sylvester matrix and the
+bounds degX Qj < D X − k · j. Since for each row in this matrix, the non-zero coeﬃcients are simp ly
+QDY , . . . Q0 (or multiplied by constants, for rows of ∂Q
+∂Y ), we see that shifting a column to the right
+always increases the degree bound by the same constant k, so that in general the entry degree bound
+is given by the sum of a function of the row index and a linear function o f the column index. Since
+the determinant always uses products with one item from each row a nd from each column, every
+non-zero product in the expression will have the exact same degre e bound; thus, we may compute
+this bound “by example”, considering any one such expansion. It is pa rticularly pleasant to take the
+leading coeﬃcient QDY from each of the DY copies of ∂Q
+∂Y , and the free coeﬃcient of Q0 from the
+DY − 1 copies of Q, and of course dividing once by QDY , as is part of the discriminant formula,
+giving the term QDY −1
+DY QDY −1
+0 . We thus get
+degX (disc∗
+Y (Q)) ≤ degX (discY (Q)) = ( DY − 1)(degX (QDY ) + degX (Q0))
+< (DY − 1)(2DX − kDY ) < (kDY )(2DX − kDY )
+k
+< D2
+X
+k = (m + 1
+2 )2ρ n2
+ρ n = (m + 1
+2 )2n.
+Note that from ( 5.3), we in particular have q ≥ | S| > (1+ 1
+2m )
+7
+m7
+3ρ3/ 2 n2 > (m + 1
+2 )2n, and we have
+our desired inequality.
+5.2.4 Step 4: F ocusing on a useful factor Ri(X, Y, Z)
+Our main goal in the following sections is to show that at least one of th e factors Ri(X, Y, Z) is
+of the form Y − P (X, Z), with P ∈ Fq[X, Z] a polynomial of X-degree at most k and Z-degree at
+most 1. Note that for such a factor, we will have in particular that f or any z ∈ Fq, Y − P (X, z) is
+a factor of Ri(X, Y, z), and P (x0, z) is a rational root of Ri(x0, Y, z). We will see that a converse is
+also true: if such factors and roots of Ri exist for suﬃciently many z’s, then Ri must be divisible
+by (and thus of the form) Y − P (X, Z). In this section we will make use of this fact in order to
+focus on a useful Ri. More precisely, we prove the following claim:
+Claim 5.7. There exists a factor R = Ri of Q, and an irreducible factor H(Y, Z) of R(x0, Y, Z),
+such that the set Sx0,R,H of z values for which both R and H vanish at Pz, i.e.
+Sx0,R,H = {z ∈ S : R(X, Pz(X), z) ≡ 0 and H(Pz(x0), z) = 0 },
+22
+=== PAGE 24 ===
+is suﬃciently large; more precisely, such that
+|Sx0,R,H | ≥ |S|
+DY
+> 2D2
+Y DX DY Z . (5.13)
+Proof. After substituting X ↦→x0, each of the irreducible Ri(X, Y, Z) can be factored as
+Ri(x0, Y, Z) = Ci(Z)
+∏
+j
+Hij(Y, Z),
+where Hij ∈ Fq[Z][Y ] are irreducible, separable in Y , and with positive Y -degree. For Q, this yields
+the factorization
+Q(x0, Y, Z) =
+(
+C(x0, Z)
+∏
+i
+Ci(Z)
+)∏
+i,j
+Hij(Y, Z).
+In particular, the number of Hij is at most DY .
+For any z ∈ S, the polynomial Pz(X) satisﬁes Q(X, Pz(X), z) = 0 , i.e. Y − Pz(X) | Q(X, Y, z),
+thus there is some i such that Y − Pz(X) | Ri(X, Y, z), or equivalently Ri(X, Pz(X), z) = 0 .
+Substituting X ↦→x0 yields also Y −Pz(x0) | Ri(x0, Y, z), thus there is some j such that Y −Pz(x0) |
+Hij(Y, z) and equivalently Hij(Pz(x0), z) = 0 . Therefore we have z ∈ Sx0,Ri,Hij , by deﬁnition. Let
+(i, j) be the most common pair appearing in this process and set R = Ri, H = Hij. Since the total
+number of pairs (i, j) is at most DY , and using ( 5.8), by the pigeonhole principle we ﬁnd that
+|Sx0,R,H | ≥ |S|
+DY
+> 2D2
+Y DX DY Z ,
+as claimed.
+As mentioned above, our proof will eventually show that both R and H must in fact be lin-
+ear in Y , with R(X, Y, Z) = Y − P (X, Z), where P is linear in Z and of degree k in X and
+H = R(x0, Y, Z) = Y − P (x0, Z). We will also see that P (x0, z) = Pz(x0) for almost all z ∈ Sx0,R,H .
+We will reach this point only later — for now we assume R, H have Y -degrees d, dH ≤ DY corre-
+spondingly, that their total Y, Z degrees at most D = DY Z , and are not necessarily monic.
+5.2.5 Step 5: Interlude — the algebraic function ﬁeld L and the power series γ(X)
+Our next step is to ﬁnd a root of H (if needed, by artiﬁcially adding it to the ﬁeld Fq(Z)), and
+then to lift it to a power series solution Y = γ(X) to R(X, Y, Z) = 0 . This process is carried out
+in Appendix A, which also provides the required setup and deﬁnitions from the theo ry of algebraic
+extensions of function ﬁelds.
+We strongly encourage reading Appendix A at this point, as the analysis of the aforementioned γ
+in the next sections will use the following objects introduced and disc ussed there: the function ﬁeld
+L, the ring of regular functions O, the special polynomials/algebraic functions ζ, ξ, W, ˜H, and the
+power series γ itself, with its coeﬃcients αt and their numerators βt. We will also use the deﬁnition
+of the rational substitution maps πz (that allow us to substitute z into the regular algebraic functions
+in O) and the weight function Λ( ·) (that bounds the number of zeroes of a regular algebraic function )
+from that appendix, as well as Lemma A.1.
+At the end of the day, the power series γ(X) will be shown to be of the form P (X, Z) ∈ Fq[X, Z]
+with X- and Z-degrees at most k and 1, respectively. However, to reach that point, we will analyze
+γ(X) as having coeﬃcients in an algebraic extension of Fq(Z), and unbounded X-degree.
+23
+=== PAGE 25 ===
+5.2.6 Step 6: Bounding the X-degree of γ
+In this section we show that the power series solution γ =∑ ∞
+t=0 αt(X − x0)t to R(X, Y, Z) = 0 is
+in fact a ﬁnite polynomial in X of degree k. In other words, we prove:
+Claim 5.8. For all t > k , αt = 0. Equivalently,
+γ = γk =
+k∑
+t=0
+αt(X − x0)t.
+The claim is proved in two steps: ﬁrst for all k < t < D X , by showing that πz(αt) is well deﬁned
+and vanishes for suﬃciently many substitutions; then for all t ≥ DX as well, by observing that γk
+is already a root of R(X, Y, Z).
+In the course of the proof we will also deﬁne the set S′ appearing in Proposition
+5.5, and show
+that it satisﬁes ( 5.9).
+Proof. For each z ∈ Sx0,R,H , from H(Pz(x0), z) = 0 we also get ˜H(W (z)Pz(x0), z) = 0 , and thus
+we have a substitution map πz : O → Fq with tz = W (z)Pz(x0). The denominators appearing in
+the αt are all powers of W and ξ, so we can evaluate αt at any z which is not a root of W or ξ, i.e.
+in the set
+S′ = Sx0,R,H \ {z : W (z) = 0 or πz(ξ) = 0 }.
+Using lemma A.1 and the bounds on deg W, Λ( ξ) from claim A.2, as well as ( 5.13), we ﬁnd
+|S′| ≥ | Sx0,R,H | − (deg W + dH Λ( ξ))
+≥ |Sx0,R,H | − ((d − 1)dH + 1)(D − dH + 1) + 1
+> |Sx0,R,H | − dH dD ≥ |S|
+DY
+− D2
+Y DY Z
+> 2D2
+Y DX DY Z − D2
+Y DY Z = D2
+Y DY Z (2DX − 1). (5.14)
+Note that to apply the lemma we also used ξ ̸= 0 in L. Since furthermore D2
+Y DY Z < |S|
+2DY
+, we also
+get the bound
+|S′| > |S|
+DY
+− D2
+Y DY Z > |S|
+2DY
+as we claimed in ( 5.9).
+Now for each z ∈ S′, we may apply πz to γ, since we removed all poles of γ from S′. We
+wish to show that πz(γ) = Pz(X). Note that πz(γ) ∈ Fq[[X − x0]], and the polynomial Pz(X)
+can also be considered as a (ﬁnite) power series in Fq[[X − x0]]. We have that Y = Pz(X), πz(γ)
+both are roots of R(X, Y, z) = 0 : For Pz(X) this follows by deﬁnition from z ∈ Sx0,R,H , and for
+πz(X) we have R(X, πz(γ), z) = πz(R(X, γ, Z)) = πz(0) = 0 . Additionally, modulo X − x0 we have
+πz(α0) = πz(T /W) = tz/W (z) = Pz(x0). Furthermore, πz(ζ) is well deﬁned and non-zero (since
+πz(ξ) ̸= 0), and equal to
+πz(ζ) = πz
+(∂R
+∂Y
+(
+x0, T
+W , Z
+))
+= ∂R
+∂Y
+(
+x0, tz
+W (z) , z
+)
+= ∂R
+∂Y (x0, Pz(x0), z).
+In particular, ∂R
+∂Y (x0, Pz(x0), z), ̸= 0, i.e. Pz(x0) = πz(α0) is a simple root of R(x0, Y, z).
+Putting all of the above together, we see that both πz(γ), Pz(X) ∈ Fq[[X − x0]] are power series
+solutions to R(X, Y, z) = 0 , with the same free coeﬃcient πz(α0) = Pz(x0) modulo X − x0, which is
+24
+=== PAGE 26 ===
+a simple root of R(x0, Y, z). Thus, they must be identically equal, by the uniqueness of the Hens el
+lift with a given starting simple root. In other words, we have
+Fq[[X − x0]] ∋
+∞∑
+t=0
+πz(αt)(X − x0)t = πz(γ) = Pz(X) ∈ Fq[X − x0]
+and in particular, πz(αt) = 0 for all z ∈ S′ and all t > k , since deg(Pz) ≤ k. Thus we also ﬁnd
+πz(βt) = 0 for all t > k . Restricting to k < t < D X , we additionally have by claim A.2
+Λ( βt) < (2t + 1)dD ≤ dD(2DX − 1),
+and from ( 5.14) it follows that
+|S′| > D 2
+Y DY Z (2DX − 1) ≥ dH dD(2DX − 1) > d H Λ( βt).
+We can therefore apply lemma A.1 to ﬁnd that indeed βt = 0 and αt = 0 in L.
+We thus have that the degree k polynomial
+γk =
+k∑
+t=0
+αt(X − x0)t =
+DX −1∑
+t=0
+αt(X − x0)t = γDX −1 ∈ L[X]
+satisﬁes γ ≡ γk (mod ( X − x0)DX ), and therefore
+R(X, γk, Z) ≡ 0 (mod ( X − x0)DX );
+but, R(X, γk, Z) ∈ L[X] is a polynomial of degree < D X , since by construction Q has (1, k)-
+weighted degree less than DX and so do its factors, and therefore R(X, γk, Z) = 0 identically. By
+the uniqueness of the lifting, we thus ﬁnd γ = γk ∈ L[X], as claimed.
+5.2.7 Step 7: Bounding the Z-degree of γ
+In the previous section we’ve seen that γ = γk ∈ L[X] is a polynomial of degree at most k in X,
+whose coeﬃcients lie in L, an extension ﬁeld of Fq(Z). We’ve also seen that πz(γ) = Pz(X) for all
+z ∈ S′. In this section we will show that the coeﬃcients of γ are all in fact simply linear polynomials
+in Z, and thus obtain that γ = P (X, Z) ∈ Fq[X, Z] with X-degree at most k and Z-degree at most
+1:
+Claim 5.9. The exists degree ≤ k polynomials v0, v1 ∈ Fq[X], such that
+γ = v0(X) + Z · v1(X) =: P (X, Z).
+Proving Claim 5.9 will also complete the proof of Proposition 5.5, as γ = P satsiﬁes ( 5.11), the
+set S′ satisﬁes ( 5.9), and together they satisfy ( 5.10), since for each z ∈ S′,
+P (X, z) = πz(P (X, Z)) = πz(γ) = Pz(X).
+We prove Claim 5.9 by showing that γ(x) agrees with the linear function w(x, Z) on at least
+k + 1 values of x, using suﬃciently many Z-substitutions at each x, and then use the fact γ can be
+interpolated from such values of γ(x), and this interpolation is also linear in Z. Details follow.
+We consider good pairs of x ∈ D , z ∈ S′ satisfying w(x, z) = Pz(x). We deﬁne the sets of x’s
+which are good for each z ∈ S′ and vice versa, that is,
+Dz = {x ∈ D : w(x, z) = Pz(x)},
+S′
+x = {z ∈ S′ : w(x, z) = Pz(x)} = {z ∈ S′ : x ∈ D z}.
+By the deﬁnitions of S and Pz, we have |Dz| ≥ n − e for each z ∈ S′, where e = ⌊δn⌋. We make the
+following claims regarding the sizes of the sets S′
+x:
+25
+=== PAGE 27 ===
+Claim 5.10. Suppose |S′
+x| > (2k + 1)dH dD. Then γ(x) = w(x, Z), and in particular, γ(x) is a
+linear polynomial in Fq[Z].
+Claim 5.11. There exists a set Dtop = {x1, . . . , xk+1} ⊂ D of k + 1 points of D, satisfying |S′
+xj | >
+(2k + 1)dH dD for all 1 ≤ j ≤ k + 1.
+Before proving the two claims, let us ﬁrst deduce Claim 5.9 from them:
+Proof Claim 5.9. Observe that from Claim 5.10 and Claim 5.11 it follows that γ(x) = w(x, Z) =
+u0(x) + Z · u1(Z) is linear in Z for every x = xj ∈ D top. But, since γ(X) is a polynomial of degree
+at most k, it can be interpolated from its values in any k + 1 points, and this interpolation only
+involves operations over Fq. Thus the interpolated polynomial will also have coeﬃcients which are
+linear in Z.
+More concretely, let v0(X), v1(X) ∈ Fq[X] be the unique polynomials of degree at most k inter-
+polating u0(x), u1(x) at the points of Dtop. Then γ(X) and v0(X) + Z · v1(X) are two polynomials
+in L[X] of degree at most k which agree on at least k + 1 evaluations, since
+γ(xj) = w(xj, Z) = u0(xj) + Z · u1(xj) = ( v0(X) + Z · v1(X))(xj)
+for each xj ∈ D top. It follows that γ and v0 + Z · v1 are identically equal as polynomials in L[X], as
+claimed.
+We now proceed to prove the claims:
+Proof of Claim 5.10. Since πz(γ) = Pz(X) for each z ∈ S′, by deﬁnition of S′
+x we have
+πz(γ(x)) = Pz(x) = w(x, z) = u0(x) + z · u1(x)
+for each z ∈ S′
+x, or equivalently
+πz
+(
+γ(x) − (u0(x) + Z · u1(x))
+)
+= 0. (5.15)
+On the other hand, we can write
+γ(x) − (u0(x) + Z · u1(x)) =
+(
+1
+W k+1ξek
+k∑
+t=0
+βt(x − x0)tW k−tξek−et
+)
+− (u0(x) + Z · u1(x))
+= 1
+W k+1ξek
+(
+β(x) − (u0(x) + u1(x) · Z) W k+1ξek
+)
+, (5.16)
+where β(x) :=∑ k
+t=0 βt(x − x0)tW k−tξek−et ∈ O , which by Claim
+A.2 has weight
+Λ( β(x)) ≤ max
+t=0,...,k
+(Λ( βt) + (k − t)Λ( W ) + (ek − et)Λ( ξ))
+≤ max
+t=0,...,k
+((1 + (t + 1)Λ( W ) + etΛ( ξ)) + (k − t)Λ( W ) + (ek − et)Λ( ξ))
+= 1 + ( k + 1)Λ( W ) + ekΛ( ξ) ≤ (2k + 1)dD,
+and so does ˜β(x) := β(x)−(u0(x)+u1(x)·Z) W k+1ξek . From ( 5.15) and (5.16) we have πz(˜β(x)) = 0
+for all z ∈ S′
+x, with |S′
+x| > (2k + 1)dH dD ≥ dH Λ(˜β(x)), by assumption. By Lemma A.1 it follows
+that ˜β(x) = 0 , and thus γ(x) = u0(x) + Z · u1(x) = w(x, Z) identically in L, as claimed.
+26
+=== PAGE 28 ===
+Proof of Claim 5.11. Let Dtop = {x1, . . . , xk+1} ⊂ D be the set of the xj ∈ D with the k + 1 largest
+sizes of |S′
+xj |, breaking ties arbitrarily. We ﬁrst claim that for each 1 ≤ j ≤ k + 1,
+|S′
+xj | ≥ n − k − 1 − e
+n − k − 1 |S′| ≥ 1 − ρ − δ
+1 − ρ |S′|.
+This follows by way of contradiction, which we get by double counting t he set of bad pairs (x, z) ∈
+D × S′ with w(x, z) ̸= Pz(x). The contrary assumption implies that |S′
+x| < n−k−1−e
+n−k−1 |S′| for all
+x /∈ D top, giving many bad z-s for each such x, but on the other hand each z is only paired with a
+few bad x-s. More precisely, we get the following contradiction:
+e|S′| ≥
+∑
+z∈S′
+|D \ D z| =
+∑
+x∈D
+|S′ \ S′
+x| ≥
+∑
+x∈D\Dtop
+(|S′| − |S′
+x|) (5.17)
+> (n − k − 1)
+(
+1 − n − k − 1 − e
+n − k − 1
+)
+|S′| = e|S′|.
+From (5.14) we have
+|S′
+xj | ≥ 1 − ρ − δ
+1 − ρ |S′| > 1 − ρ − δ
+1 − ρ D2
+Y DY Z (2DX − 1) ≥ 1 − ρ − δ
+1 − ρ (2DX − 1)dH dD,
+so to conclude |S′
+xj | > (2k + 1)dH dD it suﬃces to show that 2DX − 1 > 1−ρ
+1−ρ−δ (2k + 1). And indeed
+for m ≥ 3, we have
+2DX − 1 = (2 m + 1)√ρ n − 1 > 2 · 3√ρ n − 1 > 1 + √ρ√ρ (3ρ n) − 1
+> 1 − ρ√ρ(1 − √ρ) (2k + 1) > 1 − ρ
+√ρ +
+√ρ
+2m − ρ
+(2k + 1)
+= 1 − ρ
+1 − δ0(ρ, m) − ρ (2k + 1) ≥ 1 − ρ
+1 − ρ − δ (2k + 1)
+as needed.
+5.2.8 Step 8: Proving the correlated agreement between ui and vi
+We’ve found a polynomial γ = v0(X) + Z · v1(X) of the required degrees satisfying Q(X, γ, Z) = 0 .
+To ﬁnish the proof of Theorem 5.1, it now remains only to be seen that γ(x, Z) and w(x, Z) agree
+identically on all but δ|D| values of x ∈ D .
+Deﬁne D′ = {x ∈ D : |S′
+x| ≥ 2}. Note that for each x ∈ D ′, we must have v0(x) = u0(x),
+v1(x) = u1(x) (and thus γ(x, Z) = w(x, Z)), since
+v0(x) + z · v1(x) = πz(γ(x)) = πz(γ)(x) = Pz(x) = w(x, z)
+= u0(x) + z · u1(x)
+for at least 2 diﬀerent values of z ∈ S′
+x. Since |S′
+x| ≤ 1 for every x ∈ D \ D ′, double counting the
+number of bad pairs (x, z) ∈ D × S′ with w(x, z) ̸= Pz(x), as in ( 5.17), gives
+e|S′| ≥
+∑
+z∈S′
+|D \ D z| =
+∑
+x∈D
+|S′ \ S′
+x| ≥
+∑
+x∈D\D′
+(|S′| − 1) = ( |S′| − 1)|D \ D ′|
+27
+=== PAGE 29 ===
+and therefore |D \ D ′| ≤ e|S′|
+|S′|−1 . On the other hand, from ( 5.3), ( 5.6), ( 5.9), as well as m ≥ 2 and
+ρ < 1 we have
+|S′| > |S|
+2DY
+> (m + 1
+2 )6
+6ρ n2 > 2n2, (5.18)
+thus
+|D \ D ′| ≤ e|S′|
+|S′| − 1 <
+(
+1 + 2
+|S′|
+)
+e <
+(
+1 + 1
+n2
+)
+e < e + 1
+n < e + 1,
+i.e. |D \ D ′| ≤ e ≤ δn, which we ﬁnally rewrite as
+|{x ∈ D : (u0(x), u1(x)) = ( v0(x), v1(x))}| ≥ |D ′| ≥ (1 − δ)|D|
+as we wanted to show.
+Remark 5.1. Note that from γ = v0(X) + Z · v1(X) = P (X, Z) solving R(X, γ, Z) = 0 we ﬁnd that
+Y − P (X, Z) | R(X, Y, Z). But since R is irreducible, it indeed follows that R = Y − P (X, Z) is
+monic and linear in Y , and so is H, as was mentioned earlier; and, as mentioned, we only reach this
+conclusion near the end of the proof. It is an interesting open proble m whether this conclusion can
+be reached without passing through the various extension ﬁelds as o ur proof required.
+6 Correlated Agreement in Generalized Settings
+Both Theorems
+4.1 and 5.1 considered two functions u0, u1 : D → F and the corresponding aﬃne
+line {u0 +zu1 : z ∈ Fq} inside the linear plane span{u0, u1}. A generalization of these theorems that
+is particularly important to the soundness analysis of the FRI proto col in Theorem 8.3 is obtained
+by considering l + 1 functions u0, . . . , ul : D → F, and the 1-dimensional, degree l parameterized
+curve
+{u0 + zu1 + z2u2 + · · · + zlul : z ∈ Fq}
+inside the linear space span{u0, . . . , ul}. This curve can also be viewed as a function w(·, Z) : D → K
+given by
+w(x, Z) = u0(x) + u1(x)Z + u2(x)Z2 + · · · + ul(x)Zl.
+The two theorems can then be generalized as follows:
+Theorem 6.1. Suppose δ ≤ (1 − ρ)/2. Let u0, u1, . . . , ul : D → Fq be functions. Let
+S = {z ∈ Fq : ∆( u0 + zu1 + · · · + zlul, V ) ≤ δ}
+and suppose |S| > l · n. Then for all z ∈ Fq we have
+∆( u0 + zu1 + · · · + zlul, V ) ≤ δ,
+and furthermore there are v0, . . . , vl ∈ V such that for all z ∈ Fq,
+∆( u0 + zu1 + · · · + zlul, v0 + zv1 + · · · + zlvl) ≤ δ
+and in fact
+|{x ∈ D : (u0(x), . . . , ul(x)) ̸= (v0(x), . . . , vl(x))}| ≤ δ|D|.
+Theorem 6.2. Let u0, u1, . . . , ul : D → Fq, let m ≥ 3, deﬁne δ0(ρ, m) := 1 − √
+ρ −
+√ρ
+2m , and let
+δ ≤ δ0(ρ, m). Deﬁne
+S = {z ∈ Fq : ∆( u0 + zu1 + · · · + zlul, V ) ≤ δ}
+28
+=== PAGE 30 ===
+and suppose
+|S| > (1 + 1
+2m )7m7
+3ρ3/2 n2 l. (6.1)
+Then u0, . . . , ul are simultaneously δ-close to V , i.e. ∃v0, . . . , vl ∈ V such that
+|{x ∈ D : ∀0 ≤ i ≤ l, ui(x) = vi(x)}| ≥ (1 − δ)|D|.
+These generalizations do not greatly aﬀect the proofs, which were presented in the previous
+sections in the special case l = 1 only for the purposes of simplicity. We will thus not repeat the
+arguments in full, but only detail the required changes in subsection s 6.1 and 6.2.
+Another generalization of interest is to correlated agreement in th e entire aﬃne space, stated as
+Theorem 1.6, restated here for completeness:
+Theorem 1.6 (Correlated agreement over aﬃne spaces) . Let V, q, n, k and ρ be as deﬁned in The-
+orem 1.2. For u0, u1, . . . ul ∈ FD
+q let U = u0 + span{u1, . . . , ul} ⊂ FD
+q be an aﬃne subspace. If
+δ ∈ (0, 1 − √
+ρ) and
+Pr
+u∈U
+[∆( u, V ) ≤ δ] > ǫ,
+where ǫ is as deﬁned in Theorem 1.2, then there exist D′ ⊂ D and v0, . . . , vl ∈ V satisfying
+• Density: |D′|/|D| ≥ 1 − δ, and
+• Agreement: for all i ∈ {0, . . . , l}, the functions ui and vi agree on all of D′.
+Furthermore, in the unique decoding regime δ ∈
+(
+0, 1−ρ
+2
+]
+, there exists a unique maximal D′ satisfying
+the above, with unique vi.
+To prove this theorem we will make use of the following lemma:
+Lemma 6.3. Let V, q, n, k and ρ be as deﬁned in Theorem 1.2. For u0, u1, . . . ul ∈ FD
+q let U =
+u0 +span{u1, . . . , ul} ⊂ FD
+q be an aﬃne subspace, and let U ′ = span{u1, . . . , ul} be the corresponding
+linear subspace (so that U = u0 + U ′ and U ′ = U − U ). If δ ∈ (0, 1 − √
+ρ) and
+Pr
+u∈U
+[∆( u, V ) ≤ δ] > ǫ,
+where ǫ is as deﬁned in Theorem 1.2, then we have ∆( u′, V ) ≤ δ for every u′ ∈ U ′.
+Note that Lemma 6.3 is very similar to Theorem 1.2, the diﬀerence being only that the conse-
+quent ∆( u′, V ) ≤ δ is stated for elements of the linear space U ′ instead of elements of the aﬃne
+space U . In particular, when U itself is linear and U ′ = U , they are equivalent. Moreover, Theo-
+rem 1.2 can be proven from Lemma 6.3, and in fact we will pass through such a proof in the course
+of proving Theorem 1.6. Both Lemma 6.3 and Theorem 1.6 are proven in Section 6.3.
+6.1 Proof of Theorem 6.1
+Following the proof in Section 4, the ﬁrst change is in the analysis of the matrix M , where the
+entries in the columns corresponding to the coeﬃcients of A are of degree ≤ l in Z instead of 1 (and
+the columns corresponding to the coeﬃcients of B remain of degree 0). The determinants of minors
+R(Z) are then of degree at most l(e + 1), which is less than |S|, so are still identically 0, and the
+matrix has rank < k + 2e + 2.
+29
+=== PAGE 31 ===
+Similarly, the solution A, B of the equation system will have Z-degrees degZ(A) ≤ l·e, degZ(B) ≤
+l(e + 1), so aZ, bZ grow by a factor of l, as does dZ = l (which remains the degree of the w(x, Z)),
+and similarly nZ = |S| > l · n. We again have
+bX
+nX
++ bZ
+nZ
+< k + e
+n + l(e + 1)
+l · n < k + 2e + 1
+n ≤ 1
+and the Polishchuk–Spielman lemma remains applicable, and the rest of the conclusions are derived
+as before with no further changes, save that P (X, Z) is now of degree l in Z, and thus written as
+v0(X) + Zv 1(X) + · · · Zlvl.
+6.2 Proof of Theorem 6.2
+As in the l = 1 case, we apply the Guruswami–Sudan decoder to the KD word w(x, Z) =∑ l
+i=0 ui(x)Zi.
+We use exactly the same parameters, and the degrees DX , DY are unaﬀected. In the entries of the
+equation system, every appearance of (a power of) the previous ly linear w(x, Z) is replaced by (a
+power of) a polynomial of degree l, thus the bounds on DC, DR, D, DY Z are all multiplied by l, and
+speciﬁcally DY Z < (m+1/2)3
+6√ρ n l.
+Also note that instead of the Y, Z degrees being graded in Q such that the coeﬃcient Qji(Z)
+of X iY j is of degree at most D − j in Z, it is of degree at most D − l ·j, i.e. when Y and Z are
+assigned weights l and 1 (instead of 1 and 1), the total weight of Q, and thus also of R and H, is
+at most D. Thus all bounds on Z-degrees and weights are henceforth simply multiplied by l. The
+leading coeﬃcient W of H has degree at most D − l·d, and the variable T = W (Z)Y is assigned the
+l times larger weight D − l(d − 1), which makes the weight of the monic polynomial ˜H dominated by
+its leading monomial T d, thus the weight never increases on reductions modulo ˜H. The bounds on
+weights of ξ, βt are multiplied by l. Since for Fq[Z] polynomials the weight corresponds to degree,
+lemma A.1 remains valid; in all its applications, the upper bounds on weights of th e regular elements
+are multiplied by l; and so are the lower bounds on the sizes of the sets of vanishing su bstitutions,
+i.e. the sets S, Sx0,R,H , S′, S′
+xj . Thus we can still deduce that γ is of degree k, and then by
+interpolating u0, . . . , ul by polynomials v0, . . . , vl at k + 1 appropriately chosen points, to deduce
+that γ =∑ l
+i=0 vi(X)Zi identically.
+For the ﬁnal argument we again note that ∑ l
+i=0 ui(x)zi =∑ l
+i=0 vi(x)zi for all x ∈ D and z ∈ S′
+x.
+Since for a ﬁxed x both sides of the equation are degree l polynomials in z, if |S′
+x| > l then we must
+have ui(x) = vi(x) for all 0 ≤ i ≤ l. We have |S′| > 2l·n2, or equivalently l
+|S′| < 2
+n2 , and thus the
+number of x ∈ D for which |S′
+x| ≤ l is at most e|S′|
+|S′|−l < e + 1, and again we ﬁnd that ui and vi all
+agree on the set D′ = {x ∈ D : |S′
+x| > l} which is of size at least (1 − δ)n, as claimed.
+6.3 Proofs of Lemma 6.3 and Theorem 1.6
+Proof of Lemma 6.3. Let u′ ∈ U ′ be an arbitrary element. If u′ = 0, then clearly ∆( u′, V ) = 0 ≤ δ.
+Otherwise, consider the partition of U into aﬃne lines parallel to u′; formally, write U = ˜U ⊕
+span{u′}, where ˜U ⊂ U is some direct complement of u′ in U ′ shifted by u0. Then
+E˜u∈ ˜U Pr
+z∈Fq
+[
+∆
+(
+˜u + z · u′, V
+)
+≤ δ
+]
+= Pr
+u∈U
+[∆( u, V ) ≤ δ] > ǫ,
+and in particular there exists some ˜u ∈ ˜U for which Prz∈Fq [∆(˜u + z · u′, V ) ≤ δ] > ǫ. We can thus
+apply Theorem 1.4 to the line {˜u + z · u′ : z ∈ Fq}, which in particular implies ∆( u′, V ) ≤ δ, as
+claimed.
+30
+=== PAGE 32 ===
+Proof of Theorem 1.6. Let δ∗ = D(U, V ), where D is the divergence as deﬁned in subsection 1.2,
+and let u∗ ∈ U be an element with ∆( u∗, V ) = δ∗.
+We ﬁrst show that δ∗ ≤ δ. Let U = span( U ) be the linear space spanned by U , which either
+equals U when 0 ∈ U , or otherwise is the disjoint union of U ′ = U − U and {z · U : z ∈ Fq \ {0}}.
+By Lemma 6.3 we have ∆( u′, V ) ≤ δ for all u′ ∈ U ′, and we also have ∆( z · u, V ) = ∆( u, V ) for all
+z ̸= 0 and u ∈ U . Thus in both cases, whether U = U or U = U ′ ·∪ ·⋃
+z̸=0(z · U ), we have
+Pr
+¯u∈U
+[∆(¯u, V ) ≤ δ] ≥ Pr
+u∈U
+[∆( u, V ) ≤ δ] > ǫ.
+We can therefore apply Lemma 6.3 to U , and in particular for u∗ ∈ U ⊂ U we get δ∗ = ∆( u∗, V ) ≤ δ,
+as claimed. As previously noted, this is in fact the content of Theore m 1.2, which is now proved.
+Let {v∗
+1, . . . , v∗
+L} ⊂ V be all possible codewords at distance at most δ∗ from u∗. Note that they
+are all in fact at distance exactly δ∗, not less, since otherwise we would have ∆( u∗, V ) < δ ∗. For
+each 1 ≤ i ≤ L deﬁne the agreement set D′
+i = {x ∈ D : u∗(x) = v∗
+i (x)} which has size exactly
+(1 − δ∗)|D|. Note that in the unique decoding regime δ∗ ≤ 1−ρ
+2 we must have L = 1 , and in the
+general Johnson/Guruswami–Sudan regime δ∗ < 1 − √ρ − η we have L < q : indeed, from ǫ = ǫJ < 1
+and η <
+√ρ
+16 we must have q > (2η)−7 > 217
+η , 221
+√ρ , and from the analysis of the Guruswami–Sudan
+algorithm, using ( 5.6) and m =
+⌈ √ρ
+2η
+⌉
+<
+√ρ
+2η + 1 we ﬁnd
+L ≤ DY < 2m + 1
+2√ρ < 1
+2η + 3
+2√ρ < 2−17q < q.
+For each i ≤ L, let Ui = {u ∈ U : u|D′
+i
+∈ V |D′
+i
+} be the set of all functions in U which agree
+with some codeword in V on all of D′
+i. Note that this condition is linear, therefore each Ui is an
+aﬃne subspace of U . We claim that U ⊂⋃ L
+i=0 Ui, i.e. every element of U belongs to at least one
+Ui. This is obvious for u∗, which belongs to all Ui. Consider any u ∈ U \ {u∗}, and the aﬃne line
+{u∗ + z · (u − u∗) : z ∈ Fq} ⊂ U containing u∗ and u. By deﬁnition of δ∗, we have
+Pr
+z∈Fq
+[∆( u∗ + z · (u − u∗), V ) ≤ δ∗] = 1 > ǫ.
+Since δ∗ ≤ δ, by Theorem
+1.4 we have correlated agreement in the line, i.e. there exists D′ ⊂ D with
+|D′| ≥ (1 − δ∗)|D|, and codewords v∗, v ∈ V which respectively agree with u∗, u on D′. In particular
+∆( u∗, v∗) ≤ δ∗, thus v∗ must be one of the L decodings {v∗
+1, . . . , v∗
+L}, as the list was exhaustive, and
+D′ = D′
+i. This exactly implies u ∈ Ui ⊂⋃ L
+i=0 Ui, as claimed.
+Comparing sizes, we ﬁnd that the largest Ui must then satisfy |Ui| ≥ |U |
+L > |U |
+q . But Ui is a
+subspace of U , and it thus follows that Ui = U . Now setting D′ = D′
+i, we have in particular that the
+restrictions of u0, u1, . . . , ul to D′ are codewords, since they are elements or diﬀerences of elements
+in Ui. Then setting v0, v1, . . . , vl ∈ V to be the unique extensions of these codewords from D′ to D,
+we ﬁnd that D′, v0, . . . , vl satisfy both conditions. Again note that in the unique decoding regim e,
+L = 1 and this D′ is therefore uniquely deﬁned.
+7 Correlated Weighted Agreement
+For certain applications, like analyzing the soundness of the FRI pro tocol (Section
+8.2), a weighted
+version of Theorem 1.5 is necessary, and we provide it in this section.
+31
+=== PAGE 33 ===
+For a given weight vector µ : D → [0, 1], the (relative) µ-agreement between words u, v is deﬁned
+as
+agreeµ(u, v) := 1
+|D|
+∑
+x:u(x)=v(x)
+µ(x).
+Note that for µ ≡ 1 the notion of µ-agreement is equivalent to the standard notion of relative
+agreement, which is deﬁned as agree(u, v) = 1 − ∆( u, v). The agreement between a word u and a
+linear code V is the maximal agreement between u and a codeword of V ,
+agreeµ(u, V ) := max
+v∈V
+agreeµ(u, v).
+We also deﬁne the weighted size of a subdomain D′ ⊂ D as
+µ(D′) := 1
+|D|
+∑
+x∈D′
+µ(x).
+Thus the agreement satisﬁes agreeµ(u, v) = µ({x ∈ D : u(x) = v(x)}). Finally, for u = {u0, . . . , ul}, ui ∈
+FD a set of words, the µ-weighted correlated agreement of u and V is the maximal µ-weighted size
+of a subdomain D′ ⊂ D such that the restriction of u to D′ belongs to V |D′, i.e., for each i = 0, . . . , l
+there exist vi ∈ V such that ui|D′ = vi|D′. When µ is unspeciﬁed, it is set to the constant weight
+function 1, which recovers the notion of correlated agreement measure disc ussed in Section 1.3.
+In what follows we shall assume the weight function µ has some structure, speciﬁcally, all weights
+µ(x) are the form µ(x) = ax
+M for varying integers ax and common denominator M . This assumption
+indeed holds for the special case of FRI soundness (where M equals the blocklength of the RS code
+to which the FRI protocol is applied). The following is the weighted gen eralization of Theorem 1.5.
+Theorem 7.1 (Weighted correlated agreement over curves – Version I) . Let V, q, n, k and ρ be as
+deﬁned in Theorem 1.2. Let u = {u0, . . . , ul} ⊂ FD
+q . Let α ∈ (√
+ρ, 1) and let µ : D → [0, 1] be a
+vector of weights, whose values all have denominator M . Suppose
+Pr
+u∈curve(u)
+[
+agreeµ(u, V ) ≥ α
+]
+> l · ǫ,
+where ǫ is as deﬁned in Theorem 1.2 (with η = min(α − √ρ,
+√ρ
+20 )), and additionally suppose
+Pr
+u∈curve(u)
+[
+agreeµ(u, V ) ≥ α
+]
+≥ l(M |D| + 1)
+q
+(1
+η + 3√ρ
+)
+.
+Then there exist D′ ⊂ D and v0, . . . , vl ∈ V satisfying
+• µ-Density: µ(D′) ≥ α, and
+• Agreement: for all i ∈ {0, . . . , l}, the functions ui and vi agree on all of D′.
+A slightly more precise form, only for the Johnson bound regime, is th e following:
+Theorem 7.2 (Weighted correlated agreement over curves – Version II) . Let V, q, n, k and ρ be as
+deﬁned in Theorem 1.2. Let u = {u0, . . . , ul} ⊂ FD
+q . Let µ : D → [0, 1] be a vector of weights, whose
+values all have denominator M . Let m ≥ 3 and let
+α ≥ α0(ρ, m) := √
+ρ +
+√ρ
+2m .
+Let
+S = {z ∈ Fq : agree µ(u0 + zu1 + · · · + zlul, V ) ≥ α}
+32
+=== PAGE 34 ===
+and suppose
+|S| > max
+(
+(1 + 1
+2m )7m7
+3ρ3/2 n2l, 2m + 1√ρ (M · n + 1)l
+)
+. (7.1)
+Then u0, . . . , ul have at least α correlated µ-agreement with V , i.e. ∃v0, . . . , vl ∈ V such that
+µ({x ∈ D : ∀0 ≤ i ≤ l, ui(x) = vi(x)}) ≥ α.
+Similarly, we can also prove a weighted version of the theorem for aﬃn e spaces. As was the case
+in the unweighted version, here the lower bounds on the probability o r size of S are the same as
+they are for aﬃne lines, which can be considered as curves with degr ee l = 1 . Again we give two
+versions, with η and with m:
+Theorem 7.3 (Weighted correlated agreement over aﬃne spaces) . Let V, q, n, k and ρ be as deﬁned
+in Theorem 1.2. Let u = {u0, . . . , ul} ⊂ FD
+q and let U = u0 + span{u1, . . . , ul} ⊂ FD
+q be an aﬃne
+subspace. Let α ∈ (√
+ρ, 1) and let µ : D → [0, 1] be a vector of weights, whose values all have
+denominator M . Suppose
+Pr
+u∈U
+[
+agreeµ(u, V ) ≥ α
+]
+> ǫ,
+where ǫ is as deﬁned in Theorem 1.2 (with η = min(α − √ρ,
+√ρ
+20 )), and additionally suppose
+Pr
+u∈U
+[
+agreeµ(u, V ) ≥ α
+]
+≥ M |D| + 1
+q
+(1
+η + 3√ρ
+)
+.
+Then there exist D′ ⊂ D and v0, . . . , vl ∈ V satisfying
+• µ-Density: µ(D′) ≥ α, and
+• Agreement: for all i ∈ {0, . . . , l}, the functions ui and vi agree on all of D′.
+Theorem 7.4 (Weighted correlated agreement over aﬃne spaces – Version II) . Let V, q, n, k and ρ
+be as deﬁned in Theorem 1.2. Let u = {u0, . . . , ul} ⊂ FD
+q and let U = u0 + span{u1, . . . , ul} ⊂ FD
+q
+be an aﬃne subspace.. Let µ : D → [0, 1] be a vector of weights, whose values all have denominator
+M . Let m ≥ 3 and let
+α ≥ α0(ρ, m) := √
+ρ +
+√ρ
+2m .
+Suppose
+Pr
+u∈U
+[
+agreeµ(u, V ) ≥ α
+]
+> max
+(
+(1 + 1
+2m )7m7
+3ρ3/2 · n2
+q , 2m + 1√ρ · M · n + 1
+q
+)
+. (7.2)
+Then u0, . . . , ul have at least α correlated µ-agreement with V , i.e. ∃v0, . . . , vl ∈ V such that
+µ({x ∈ D : ∀0 ≤ i ≤ l, ui(x) = vi(x)}) ≥ α.
+7.1 Proof of Theorems 7.1 and 7.2
+The proofs of the theorems rely on the proofs of Theorems 6.1 and 6.2, which in turn were general-
+izations of the proofs of Theorems 4.1 and 5.1. Let S be as in Theorem 7.2, so that for each z ∈ S
+there is Pz ∈ V with agreeµ(∑ l
+j=0 zjuj, Pz) ≥ α. By deﬁnition, the unweighted agreement is at
+least the weighted agreement, thus ∆(∑ l
+j=0 zjuj, Pz) ≤ 1 − α. It follows that we can immediately
+apply Theorems
+6.1 and 6.2 to the set S, as all other assumptions hold, and deduce that u0, . . . , ul
+33
+=== PAGE 35 ===
+have at least α correlated agreement with codewords v0, . . . , vl. This is not suﬃcient, however, as
+our goal is to show µ-agreement, which is stronger.
+To continue, we observe that in the course of our proofs, the cod ewords v0, . . . , vl that we found
+had the property that the identity v0 + zv1 + · · · + zlvl = Pz was satisﬁed for every z ∈ S′, where
+S′ ⊂ S was a fairly large set. In the unique decoding regime this is even true fo r S′ = S, because
+Pz and∑ l
+j=0 zjvj are both decodings of ∑ l
+j=0 zjuj, and the decoding is unique. In the Johnson
+bound regime, this is exactly the content of Proposition
+5.5, with P (X, Z) (of degree l in Z) written
+explicitly as P (X, Z) = ∑ l
+j=0 Zjvj, and a set S′ of size greater than |S|
+2DY
+by ( 5.9). By ( 5.6) we
+have 2DY ≤ 2m+1√ρ , and in the setting of Theorem 7.1 we use the deﬁnition m =
+⌈ √ρ
+2η
+⌉
+to get
+2DY < 2m + 1√ρ <
+√ρ
+η + 3
+√ρ = 1
+η + 3√ρ .
+We thus ﬁnd that in all cases the additional assumptions give us |S′| ≥ (M · n + 1)l. The crucial
+aspect here is that these Pz which for z ∈ S′ are linear combinations of the vj, are the same Pz-s
+with which we started—which in this setting were assumed to also have high µ-agreement with
+linear combinations of the words uj, and not just regular agreement. In other words, we know that∑ l
+j=0 zjuj(x) and∑ l
+j=0 zjvj(x) have high µ-agreement for every z ∈ S′. We can now use this fact
+to deduce that the vj also must have correlated µ-agreement with uj. The necessary argument is
+very similar to that of Section
+5.2.8, but in higher generality. We apply it through the following two
+lemmas, ﬁrst getting the correlated agreement with a small loss, the n showing this loss must be 0,
+if |S′| is large enough in comparison to the denominator M of the weights – as we had assumed.
+Lemma 7.5. Let V, q, n, k and ρ be as deﬁned in Theorem 1.2. Let u0, . . . , ul ∈ FD
+q , v0, . . . , vl ∈ V ,
+let µ be a weight vector, and let α ≥ 0. Denote
+w(x, z) =
+l∑
+j=0
+zjuj(x), ˜w(x, z) =
+l∑
+j=0
+zjvj(x)
+for all x ∈ D , z ∈ Fq, and suppose that there exists a set S′ ⊂ Fq with |S′| > l and such that
+∀z ∈ S′, agreeµ(w(·, z),˜w(·, z)) ≥ α. (7.3)
+Then the correlated agreement domain of the (uj) and (vj)
+D′ = {x ∈ D : (u0(x), . . . , ul(x)) = ( v0(x), . . . , vl(x))}
+satisﬁes
+µ(D′) > α − l
+|S′| − l .
+Lemma 7.6. Let V, q, n, k, ρ, α, µ, uj, vj, S′, D′ be as in Lemma 7.5 and with the same assumptions.
+Assume additionally that µ only takes rational values with denominator (dividing) M , and that
+|S′| ≥ M |D|l + l. Then
+µ(D′) ≥ α.
+As we have seen that S′ satisﬁes the assumptions of Lemma 7.5 and |S′| ≥ (M ·n+1)l = M |D|l+l
+holds, our claimed correlated µ-agreement follows immediately from Lemma 7.6. It remains to prove
+the lemmas, which we do in the next subsection.
+34
+=== PAGE 36 ===
+7.2 Proofs of Lemmas 7.5 and 7.6
+Proof of Lemma 7.5. Denote
+S′
+x = {z ∈ S′ : w(x, z) = ˜w(x, z)}, ∀x ∈ D ,
+Dz = {x ∈ D : w(x, z) = ˜w(x, z)}, ∀z ∈ S′.
+Note that for any given x ∈ D , w(x, z),˜w(x, z) are both polynomials in z of degree at most l. It
+follows that if they agree on more than l values of z, then they must be identical as polynomials
+and agree for every z. Thus, either |S′
+x| ≤ l or |S′
+x| = |S′|. Moreover, since |S′| > l , the set D′ is
+precisely the set of x ∈ D for which |S′
+x| = |S′|, and D \ D ′ is the set on which |S′
+x| ≤ l. On the
+other hand, for each z ∈ S′, Dz is the agreement set of w(·, z),˜w(·, z), so by ( 7.3), it has µ-weighted
+size at least α. Thus by double counting we get
+α|S′| ≤
+∑
+z∈S′
+agreeµ(w(·, z),˜w(·, z)) =
+∑
+z∈S′
+1
+|D|
+∑
+x∈Dz
+µ(x)
+= 1
+|D|
+∑
+x∈D
+µ(x)|S′
+x| ≤ µ(D′)|S′| + µ(D \ D ′) · l = µ(D′)(|S′| − l) + µ(D) · l.
+Here, the ﬁrst inequality is from the lower bound on the µ-agreement of w(·, z),˜w(·, z), the next
+equality is by deﬁnition of µ-agreement, the next equality is double counting (changing the ord er
+of summation), and the ﬁnal inequality is from bounding the size of |S′
+x| inside and outside D′.
+Rearranging, we get
+µ(D′) ≥ α|S′| − µ(D) · l
+|S′| − l = α − (µ(D) − α) · l
+|S′| − l > α − l
+|S′| − l
+as claimed. Here the ﬁnal step uses the simple bound µ(D) − α < 1.
+Proof of Lemma 7.6. By the assumption on the values of µ, it follows that agreeµ only takes rational
+values with denominator M |D|, and similarly so does µ(D′). We may therefore round α up to the
+nearest multiple of 1
+M |D| without aﬀecting the validity of the assumption ( 7.3), nor of the wanted
+consequent µ(D′) ≥ α. The assumption |S′| ≥ M |D|l + l is equivalent to l
+|S′|−l ≤ 1
+M |D| , and thus
+from Lemma 7.5 we get
+µ(D′) > α − l
+|S′| − l ≥ α − 1
+M |D| .
+But, since both α and µ(D′) are integer multiples of 1
+M |D| , it follows that µ(D′) ≥ α, as claimed.
+7.3 Proof of Theorems 7.3 and 7.4
+As was the case in the unweighted version, these theorems are obt ained by reduction to the respective
+theorems on aﬃne lines (which are special cases of Theorems 7.1 and 7.2 with l = 1). The reduction
+is exactly as done in Section 6.3, with the distance ∆ replaced by the weighted agreement agreeµ;
+the parameters δ, δ∗ replaced by α, α∗; all inequalities on agreement being in the opposite direction
+to those on distances, thus α∗ ≥ α is the smallest µ-agreement with the code of any u ∈ U ; and the
+sizes of the agreement sets Di, D′ are replaced by their µ-sizes, which are now equal to α∗ instead
+of (1 − δ∗)|D|.
+For this reduction, there are no new nuances introduced by the mo ve to µ-weights, and the proof
+can be reapplied verbatim, with the above mentioned replacements. We thus omit duplicating it
+here.
+35
+=== PAGE 37 ===
+8 Applications to Veriﬁable Secret Sharing and FRI soundnes s
+In this section we give some more details on applications that were brieﬂy described in Section 3.
+8.1 Veriﬁable Secret Sharing
+We start with an application of distributed proximity testing of Interle aved Reed–Solomon Codes
+(Theorem
+3.1) to veriﬁable secret sharing (VSS) [CGMA85]. VSS serves as a building block both for
+useful special tasks, such as simultaneous broadcast and fair co in-ﬂipping, and for general protocols
+for secure multiparty computation with an honest majority [ BGW88, CCD88, RB89].
+A VSS protocol with security threshold t is a two-phase protocol involving a dealer, n servers,
+and an honest output client. The sharing phase starts with the dealer distributing the secret s
+among the servers by sending a share si to server i and is followed by a veriﬁcation protocol. In the
+reconstruction phase, each server sends its share si to the output client, who reconstructs s from the
+shares. Both phases of the protocol are attacked by a malicious a dversary who may corrupt at most
+t servers and possibly also the dealer. Communication proceeds in syn chronous rounds and may
+use secure point-to-point channels. We also assume the availability o f a common broadcast medium
+and a source of unpredictable public coins. These assumptions, whic h can be eliminated at a small
+amortized cost, make the protocol simpler. Finally, while the commun ication is synchronous, the
+adversary has a rushing capability, in the sense that it can wait to receive messages from unc orrupted
+parties before sending its own messages.
+Here we consider a simpliﬁed variant of VSS that allows a denial-of-serv ice attack only in the
+sharing phase, but not in the reconstruction phase. The latter “g uaranteed output delivery” require-
+ment makes the protocol suitable for applications that rely on indep endence, such as simultaneous
+broadcast and fair coin-tossing, as they prevent the adversary from making the protocol selectively
+fail based on information obtained in the ﬁnal round via rushing.
+A VSS protocol as above should satisfy the following properties:
+• Completeness: if the dealer is honest and the sharing phase succe eds, the output client outputs
+s. Moreover, the sharing phase succeeds if the adversary does no t attack it.
+• Secrecy: if the dealer is honest, the adversary learns nothing ab out s.
+• Unique reconstruction: even if the dealer is dishonest, if the shar ing phase succeeds then the
+messages sent in the sharing phase deﬁne a unique s∗ such that (except with small failure
+probability) the output client will output s∗ in the end of the reconstruction phase.
+Implementing VSS eﬃciently is a challenging task. Here we consider the f ollowing simple ap-
+proach for simultaneously sharing l secrets s1, . . . , sl. This approach underlies the eﬃcient MPC
+protocols from [ HM01, DI06, IPS09]. A centralized variant of this protocol (in a relaxed setting
+that allows reconstruction to fail) is a building block in eﬃcient two-par ty protocols for zero knowl-
+edge [ IKOS09, AHIV17] and secure computation [ IPS08, HIMV19].
+We will assume here that each secret sj is a single ﬁeld element and all secrets originate from the
+same dealer. However, the protocol is even more attractive when the secrets originate from diﬀerent
+dealers and when each secret sj is a vector of ℓ < n ﬁeld elements that are simultaneously shared
+via so-called “packed secret sharing” [ FY92]. Moreover, while the communication complexity of the
+protocol beats all competing approaches we are aware of in the amortized case when l is large, it is
+potentially useful (and nontrivial to analyze) even with l = 1. In fact, if we count public coins and
+36
+=== PAGE 38 ===
+broadcast as normal communication, the communication complexity of the protocol is nontrivial to
+match even in this case.
+The two phases of the protocol proceed as follows.
+Sharing. In the sharing phase, the dealer uses Shamir’s secret sharing schem e [Sha79] for sharing
+each secret, with secrecy threshold t. Viewed abstractly, each sj is randomly mapped to a codeword
+uj of an [n, t + 1 , d] RS code V over Fq, with d = n − t. The dealer distributes uj between
+the servers, together with an additional random codeword u0 ∈R V that is used for blinding.
+Following a public random challenge r ∈ Fl
+q, each server i broadcasts its view of u′ = rT u, namely
+u′(i) = u0(i) +∑ l
+j=1 r(i)uj(i). Let u′ ∈ Fn
+q be the resulting vector. (As discussed in Section
+3,
+this challenge can be compressed using either cryptography or simp le derandomization techniques.)
+The sharing phase succeeds if u′ ∈ V .
+Reconstruction. In the reconstruction phase, each server sends its shares to an o utput client,
+who recovers the secrets sj by error-correcting the (potentially) corrupted codewords u∗
+j .
+We assume in the following that n > 3t, implying that the minimal distance of the underlying
+RS code satisﬁes d = n − t > 2t. We start by considering the case of a static adversary, who decides
+in advance which t servers to corrupt. Completeness follows from the fact that t < d/ 2 and each u∗
+j
+is t-close to V . Secrecy follows from the secrecy property of Shamir’s scheme an d from the fact that
+u0 blinds the information exchanged during the veriﬁcation process. Fo r the unique reconstruction
+property, consider the shares of the n − t > 2t uncorrupted servers. If they are not consistent with
+V , then (by a simple analysis) the sharing phase will fail except with 1/q probability. If they are
+consistent with V , then (as before) u∗
+j is within the unique decoding radius and the outputs will be
+correct.
+What goes wrong when the adversary can be adaptive? In this case, t he dealer could potentially
+distribute badly formed vectors u that have the following devious property: there is uj which is
+very far from the code, and yet u′ is with high probability (say, 1/2) t-close to the code. Now,
+the adaptive adversary can corrupt only those servers in T = Γ( u′, V ) and send on their behalf
+ﬁeld elements that make u′ consistent with V . This in turn makes the sharing phase succeed. But
+since uj is not within the unique decoding distance from V , we lose the unique decoding guarantee.
+Theorem
+1.2 rules out the existence of such a devious u. But this is not enough. We actually need
+to ensure that u is consistent with V when restricted to the n − t servers that are not corrupted
+during reconstruction phase.
+This is ensured by the stronger guarantee of Theorem 3.1. The analysis proceeds as follows. If
+u is t-far from the interleaved code V, then u′ will be t-far from V except with ≤ n/q probability.
+In this event, even an adaptive corruption cannot make u′ look consistent with V , and the sharing
+phase fails. If u is within distance t′ ≤ t from V, then except with ≤ n/q probability we have that
+Γ( u′, V ) = Γ( u, V). Denoting this set by T ′, the adversary must corrupt the entire set T ′ for the
+sharing phase to succeed, and may additional corrupt t − t′ more servers. In this case, u restricted
+to the n − t uncorrupted servers is fully consistent with V , guaranteeing unique reconstruction.
+We ﬁnally note that security against an adaptive adversary can be re duced to security against a
+static adversary via a generic union bound argument, taking the un ion over all
+(n
+t
+)
+sets of servers that
+can be eventually be corrupted [ CDD+04]. (Alternatively, this follows from the simple derivation of
+proximity gaps over exponentially large ﬁelds discussed in the Introduc tion.) However, this would
+require the ﬁeld size q to satisfy q = 2 Ω( n), which would make communication grow quadratically
+(rather than linearly) with the number of servers n. In this parameter regime the proximity gap
+37
+=== PAGE 39 ===
+approach does not seem useful, as there are VSS protocols that m eet the quadratic communication
+bound with perfect (rather than statistical) security against an adaptive adversary [BGW88].
+8.2 Soundness of the Fast RS IOP of Proximity (FRI) protocol for batched
+instances
+In this section we use Theorems 7.2 and 7.4, the weighted and sharper versions of Theorems 1.5
+and 1.6, to improve the soundness of the FRI protocol [ BBHR18b], when applied to a batch of
+functions. We start by brieﬂy recalling the essential components of the protocol needed to state our
+theorem, assuming familiarity with the protocol (see [ BBHR18b] for a more thorough explanation
+of it). We also explain below the meaning of “batching” of FRI instance s.
+The FRI protocol As explained in Section 3.2, the purpose of FRI is to verify, in the IOP model,
+the proximity of a received word f (0) : D(0) → F to an RS code V (0) := RS[F, D(0), k(0)]. FRI works
+for any evaluation domain D(0) that is a coset of 2-smooth group, i.e., for any D(0) that is a coset
+of a group (additive or multiplicative) of size 2s, for integer s. Henceforth we assume the group
+D(0) is multiplicative 6. The FRI protocol has two phases, called COMMIT and QUERY. During
+the COMMIT phase, a sequence of functions f (1) : D(1) → F, f (2) : D(2) → F, . . . , f(r) : D(r) → F
+is generated over a ﬁnite number r of interactive rounds. With each iteration the domain size
+|D(i)| shrinks. Assuming an honest prover and f (0) being low-degree, the low-degreeness property
+is maintained for each f (i) (see Claim 8.1). At the beginning of the i-th round, the prover message
+f (i) : D(i) → F has already been created (and the veriﬁer has oracle access to it). The veriﬁer now
+sends a uniformly random z(i) ∈ F and the prover replies with a new function f (i+1) : D(i+1) → F
+where D(i+1) is a ( 2-smooth) strict subgroup of D(i).
+D(i+1) partitions D(i) into cosets of size l(i) := |D(i)|/|D(i+1)|. Let C(i)
+g denote the coset corre-
+sponding to g ∈ D(i+1), namely
+C(i)
+g := {g′ ∈ D (i) |
+(
+g′)l(i)
+= g}. (8.1)
+For each coset C(i)
+g , the interpolation map M (i)
+g is the invertible linear map M (i)
+g : FC(i)
+g → Fl(i)
+over
+F that maps f (i)|C(i)
+g
+: C(i)
+g → F — the restriction of f (i) to domain C(i)
+g ⊂ D (i) — to the vector
+u(i)(g) =
+(
+u(i)
+0 (g), . . . , u(i)
+l(i)−1(g)
+)
+of coeﬃcients of the polynomial Pu(i)(g)(Z) =∑
+j<l(i) Zj ·
+(
+u(i)
+j (g)
+)
+that interpolates f (i)|C(i)
+g
+. In other words, M (i)
+g is the inverse of the Vandermonde matrix generated
+by C(i)
+g , which implies that
+(
+M (i)
+g
+)−1
+· (u0, . . . , ul(i)−1) is the evaluation of the polynomial Pu(X) =
+∑
+i<(i) uiX i on the coset C(i)
+g .
+The following claim is a restatement of [ BBHR18b, Section 4.1], using our notation (and working
+over a multiplicative rather than additive group). For the sake of co mpleteness a proof appears in
+Appendix E.
+Claim 8.1. Suppose that f (i) ∈ RS[F, D(i), k(i)] where k(i) + 1 is an integral power of 2. Then, for
+any z(i) ∈ F, letting z(i) =
+((
+z(i))0
+,
+(
+z(i))1
+, . . . ,
+(
+z(i))l(i)−1
+)
+, the function f (i+1)
+f (i),z(i) : D(i+1) → F
+6The FRI protocol in [ BBHR18b] is stated for cosets of additive 2-smooth groups; Remark 3.1 in the online
+version of [ BBHR18b] translates the results to multiplicative groups (cf. Remark 1.4 and Section 2.1 there). Gener-
+alizing the results here to (i) additive groups, (ii) t-smooth groups for larger constant t and (iii) cosets of groups, is
+straightforward, using [ BBHR18b]; we omit these generalizations to simplify the exposition.
+38
+=== PAGE 40 ===
+deﬁned on g ∈ D (i+1) by
+f (i+1)
+f (i),z(i)(g) :=
+(
+z(i)
+)⊤
+· u(i)(g) =
+(
+z(i)
+)⊤
+· M (i)
+g · f (i)
+⏐
+⏐
+⏐
+C(i)
+g
+(8.2)
+is a valid codeword of V (i+1) := RS[F, D(i+1), k(i+1)] where k(i+1) := k(i)+1
+l(i) − 1.
+Batching In certain cases the ﬁrst prover oracle f (0) is sampled from an aﬃne space F ⊂ FD(0)
+of functions, which serves as our input,
+F =
+{
+f (0)
+0 +
+t∑
+i=1
+xi · f (0)
+i |xi ∈ F, f (0)
+i : D(0) → F
+}
+. (8.3)
+This is the case when the FRI protocol is used to “batch” several d iﬀerent instances of the low
+degree testing problem, combining them all using a random linear comb ination. In this batching
+setting we assume the prover has committed to f (0)
+1 , . . . , f(0)
+t (notice we set f (0)
+0 = 0 in this case),
+and the batched FRI veriﬁer samples uniformly random x1, . . . , xt ∈ F, the prover replies with f (0)
+which supposedly equals f (0)
+0 +∑
+i xi ·f (0)
+i , and the FRI protocol is now applied to f (0). Accordingly,
+the batched FRI QUERY phase is extended so that each time a query to f (0)(g) is requested, the
+veriﬁer also queries f (0)
+0 (g), . . . , f(0)
+t (g) and veriﬁes that indeed f (0)(g) = f (0)
+0 (g) +∑
+i f (0)
+i (g).
+The (batched) FRI QUER Y phase Claim 8.1 implies that an honest prover may construct
+from a codeword f (i) ∈ V (i) a new codeword f (i+1) ∈ V (i+1) (for any value z(i) picked by the
+veriﬁer), doing so by computing Eq. ( 8.2) for each g ∈ D (i+1). Henceforth we shall always assume
+f (r) ∈ V (r), say, by assuming the veriﬁer always queries the ﬁrst k(r) elements of f (r) (according to
+some canonical order) and identiﬁes f (r) with the interpolating polynomial of this function.
+Claim 8.1 suggests a natural test for consistency between f (i) and f (i+1), and the QUERY
+phase of FRI follows this natural test by applying it iteratively from “ top” ( f (r)) to “bottom” ( f (0)),
+according to the following process
+A single invocation of the batched QUER Y phase:
+1. Pick uniformly random g(r) ∈ D (r). For i = r, . . . ,1, sample g(i−1) uniformly at random from
+the coset C(i−1)
+g(i) .
+2. If f (0)(g(0)) ̸= f (0)
+0 (g(0)) +∑ t
+i=1 xi · f (0)
+i (g(0)), then reject.
+3. If, for any i ∈ {0, . . . ,r − 1}, we have f (i+1)(g(i+1)) ̸=
+(
+z(i))⊤
+· M (i)
+g(i+1) · f (i)⏐
+⏐
+C(i)
+g(i+1)
+, then reject.
+4. Otherwise — when equality holds in all cases mentioned in the bullets a bove, then accept.
+Summary of the batched FRI protocol: Let us summarize the essential properties recounted
+thus far, as they will be used in our soundness analysis below.
+1. At the end of the protocol’s COMMIT phase the veriﬁer has oracle ac cess to a sequence of
+functions f (0) : D(0) → F, . . . , f(r) : D(r) → F where D(0) ⊋ . . . ,⊋ D(r) is a sequence of 2-
+smooth groups and f (i) depends arbitrarily on z(0), . . . , z(i) (and f (0), . . . , f(i−1)). We assume
+that f (r) ∈ V (r).
+39
+=== PAGE 41 ===
+2. There exists a set of l(i) × l(i) invertible matrices {M (i)
+g(i+1) : g(i+1) ∈ D (i+1)}, so that applying
+M (i)
+g(i+1) to f (i)|C(i)
+g(i+1)
+maps f (i) to a sequence of vectors u = u(i) = {u(i)
+0 , . . . , u(i)
+l(i)} ⊂ FD(i+1)
+,
+where
+u(i)
+(
+g(i+1)
+)
+=
+(
+u(i)
+0
+(
+g(i+1)
+)
+, . . . , u(i)
+l(i)−1
+(
+g(i+1)
+))
+= M (i)
+g(i+1) · f (i)|C(i)
+g(i+1)
+. (8.4)
+Furthermore, if f (i) is a valid RS codeword over D(i) of rate ρ, then each vector on the
+parameterized curve passing through u(i) is a valid RS codeword over D(i+1) of the same rate
+ρ.
+3. Each iteration of the QUERY phase checks whether f (i+1) was constructed from f (i) via
+Eq. ( 8.2) and (in the batched case) whether f (0) was computed correctly via Eq. ( 8.3).
+Soundness We now bound the soundness error of the batched FRI protocol, u sing Theorems 7.1
+and 7.2. Recall the notion of correlated agreement from Section 1.3 and its generalization to µ-
+weighted correlated agreement deﬁned at the beginning of Section 7.
+Lemma 8.2 (batched FRI error bound) . Let V (0) = RS[F, D(0), k(0)] where D(0) is a coset of a
+2-smooth multiplicative group, and k(0) + 1 is a power of 2; set ρ = (k(0) + 1)/|D(0)|.
+Let F ⊆ FD(0)
+be a space of functions as deﬁned in Eq. (8.3) whose correlated agreement density
+with V (0) is at most α. For integer m ≥ 3, let
+α(0)(ρ, m) = max {α, √ρ(1 + 1/2m)}.
+Assume the FRI protocol is used with r rounds, and let l(i) = |D(i)|/|D(i+1)| denote the ratio between
+prover messages (oracles) i and i + 1. Let ǫQ denote the probability that the veriﬁer accepts a single
+FRI QUERY invocation. Then,
+Pr
+x1,...,xt,z(0),...,z(r−1)
+[
+ǫQ > α (0)(ρ, m)
+]
+≤ ǫC, (8.5)
+where
+ǫC =
+(
+m + 1
+2
+)7 · |D(0)|2
+2ρ3/2|F| + (2m + 1) · (|D(0)| + 1)√ρ ·
+∑ r−1
+i=0 l(i)
+|F| .
+In words: For any interactive FRI prover P ∗, the probability that the oracles f (0), . . . , f(r) sent
+by P ∗ will pass a single invocation of the batched FRI QUERY test wi th probability greater than
+α(0)(ρ, m), is smaller than ǫC. The probability is over the random variables x1, . . . , xt used to sample
+f (0) from F and over the random messages z(0), . . . , z(r−1) sent by the veriﬁer during the COMMIT
+phase.
+The previous lemma gives us the following result.
+Theorem 8.3 (Batched FRI Soundness) . Let f (0)
+0 , . . . , f(0)
+t : D(0) → F be a sequence of functions
+and let V (0) = RS[F, D(0), k(0)] where D(0) is a coset of a 2-smooth group of size n(0) = |D(0)|, and
+ρ = k(0)+1
+n(0) satisﬁes ρ = 2 −R for positive integer R. Let α = √ρ(1 + 1/2m) for integer m ≥ 3 and ǫC
+be as deﬁned in Lemma 8.2.
+Assume the FRI protocol is used with r rounds. Let l(i) = |D(i)|/|D(i+1)| denote the ratio between
+prover messages (oracles) i and i + 1. Assume furthermore that s is the number of invocations of
+the FRI QUERY step.
+40
+=== PAGE 42 ===
+Suppose there exists a batched FRI prover P ∗ that interacts with the batched FRI veriﬁer and
+causes it to output “accept” with probability greater than
+ǫFRI := ǫC + αs =
+(
+m + 1
+2
+)7 · |D(0)|2
+2ρ3/2|F| + (2m + 1) · (|D(0)| + 1)√ρ ·
+∑ r−1
+i=0 l(i)
+|F| +
+(√ρ ·
+(
+1 + 1
+2m
+))s
+.
+Then f (0)
+0 , . . . , f(0)
+t have correlated agreement with V (0) on a domain D′ ⊂ D (0) of density at
+least α.
+Numerical Example: Suppose q ≥ 2256, n = |D(0)| = 2 20, ρ = 2 −4, so k + 1 = 2 16, an
+entirely reasonable choice for practical applications (In STARKs, k corresponds to the length of a
+computation for which a STARK proof is being generated). Set m = 2 11 −1 and notice∑ (l(i) −1) ≤
+n, so
+ǫC < (211)7 · 240
+2 · 2−6 · 2256 + 211 · 221
+2−2 · 220
+2256 < 2−133.
+Assume the maximal correlated agreement density of f (0)
+0 , . . . , f(0)
+t with RS[F, D(0), k + 1] is at most
+α = √ρ(1 + 1/2m) ≈ 0.25006 . . . . . . ≈ 1
+4 .
+Invoking the QUERY protocol for s = 65 invocations gives
+αs ≈ 0.2500665 < 2−129.97
+So the total FRI error is bounded by
+ǫFRI ≤ ǫC + αs < 2−128.
+In words, if the FRI protocol accepts with probability greater than 2−128 then f (0)
+0 , . . . , f(0)
+t have
+correlated agreement with V (0) of density greater than α. Thus we get 128-bits of provable soundness
+for the FRI protocol for this setting of parameters and 65 invocations of the QUERY phase.
+Proof of Theorem 8.3. The proof follows directly from Lemma 8.2 by way of contradiction. Suppose
+the maximal correlated agreement of f (0)
+0 , . . . , f(0)
+t with V (0) is less than α(0)(ρ, m) = √ρ(1+1 /2m),
+yet the probability of acceptance is greater than ǫC + (α(0)(ρ, m))s.
+Let E be the event that each FRI QUERY accepts with probability greater than α(0)(ρ, m).
+This event depends on x1, . . . , xt, f (0), z(0), f (1), . . . , z(r−1), f (r), where each f (i) is generated by P ∗
+in response to prior veriﬁer messages. By Lemma 8.2, for any prover P ∗, the probability of the event
+E is bounded by ǫC. When E does not hold, then the probability of the event that s independent
+invocations of the FRI QUERY all return “accept”, is bounded by (α0(ρ, m))s.
+We conclude the probability of acceptance of the FRI veriﬁer is bound ed by ǫC + (α(0)(ρ, m))s,
+contradicting our assumption.
+Discussion and Two Open Questions Theorem 8.3 improves on the previous state of the art,
+due to [BKS18, BGKS20], in several ways. First, as explained in Section 3.2, the prior state of the art
+required a proximity parameter that is smaller than the “one-and-a -half Johnson bound”: δ < 1− 3√ρ;
+the current result pushes the proximity parameter (for large ﬁelds ) up to the Johnson/Guruswami–
+Sudan bound. Second, the error parameter during the COMMIT pha se was worse, and the analysis
+incurred an additional loss in the proximity parameter during the QUE RY phase, which led to
+worse concrete soundness bounds across all proximity paramete r settings. Last, but not least, the
+prior bounds on δ (above the unique decoding radius) were only valid for the case wher e the “folding
+41
+=== PAGE 43 ===
+parameters” l(0), . . . , l(r−1) were all equal to the ﬁxed value l⋆ = 2, and deteriorated swiftly for larger
+l(i) (they only work up to radius 1 − (l(i)+1)√ρ). The current bounds deteriorate much more slowly
+with l(i), and this is important because large values of l(i) are often preferable in practice.
+Ben-Sasson et al. showed in [ BBHR18b] that for the FRI protocol to achieve security parameter
+λ (i.e., ǫFRI ≤ 2−λ), we need to use at least s ≥ λ/ log 1
+ρ invocations of the QUERY phase, and
+conjectured that this lower bound on s is also suﬃcient (for suﬃciently large ﬁelds). As noted
+earlier in Section 3.2 our results imply that taking s ≈ 2λ/ log 1
+ρ suﬃces to get security parameter
+λ for quadratically large ﬁelds. Closing the gap between the provable up per and lower bounds on
+s is left as an interesting open problem. Concretely, the following conj ectured improvement to our
+main correlated agreement theorem (Theorem 1.4) will imply the conjecture of [ BBHR18b]. To the
+best of our knowledge, nothing contradicts setting c1 = c2 = 2 in the conjecture below. When
+limiting the scope to ﬁelds of characteristic greater than k (degree of the RS code), we are not
+aware of anything contradicting c1 = c2 = 1; note that [ BGKS20, Appendix B] shows these smaller
+exponents cannot hold for ﬁelds of characteristic two.
+Conjecture 8.4. There exist constants c1, c2 such that the following statements hold for all η > 0.
+• Theorems
+1.2, 1.4 and 1.6 hold for proximity parameter δ ≤ 1 − ρ − η with error
+ǫ ≤ 1
+(ηρ)c1
+· nc2
+q .
+• Theorem 1.5 holds for proximity parameter δ ≤ 1 − ρ − η and parameterized curves of degree
+l with error
+ǫ ≤ 1
+(ηρ)c1
+· (l · n)c2
+q .
+DEEP FRI is another Reed-Solomon Proximity Testing (RPT) protoco l that is closely related
+to FRI (as its name suggests). Introduced in [ BGKS20], it is slightly less eﬃcient (in terms of prover
+and veriﬁer complexity) than FRI because it requires more from the p rover, making it harder for a
+malicious prover to cheat. Prior to this work, the extra complexity o f DEEP FRI led to improved
+soundness, which reaches the Johnson/Guruswami–Sudan bound . But Theorem 8.3 shows that
+FRI has soundness which also reaches the same bound. Moreover, when approaching the Johnson
+bound, DEEP FRI requires cubic size ﬁelds for the arguments to work , whereas FRI is shown here
+to require only quadratic size ﬁelds. Thus, according to our new unde rstanding, in terms of both
+complexity and ﬁeld size, FRI dominates DEEP FRI, even though DEEP FR I demands strictly
+more from the prover side. 7 This raises an interesting second question: understanding how the
+techniques developed here may be combined with the techniques of t he DEEP FRI protocol to
+derive better soundness bounds for DEEP FRI and new, improved R PT protocols.
+8.2.1 Proof of Lemma 8.2
+Recall that the prover sends a function f (i+1) in response to the random choice of z(i). In the FRI
+QUERY phase, the function f (i+1) will be checked for consistency with f (i). We now introduce a
+way to keep track of the consistencies and inconsistencies.
+7The one remaining virtue of DEEP FRI is that its soundness is cl osely connected to a classically studied problem
+(the list-decodability of Reed–Solomon codes), and under a si mple, plausible conjecture about that problem, it
+achieves the optimal bound on the required repetition param eter t = (1 + o(1))λ log 1
+ρ .
+42
+=== PAGE 44 ===
+Deﬁne a sequence of weight functions µ(i) : D(i) → [0, 1] and ν(i) : D(i) → [0, 1] inductively for
+i = 0, . . . ,r. For i = 0, we assign {0, 1} weights indicating whether f (0)(g) is computed correctly:
+µ(0)(g) =
+{
+1 f (0)(g) = f (0)
+0 (g) +∑ t
+i=1 xif (0)
+i (g)
+0 otherwise
+Now, we inductively deﬁne an auxiliary weight ν(i+1) : D(i+1) → [0, 1]. Recall the coset C(i)
+g ⊂ D (i)
+from Eq. (
+8.1). Then
+ν(i+1)(g) = Eg′∈C(i)
+g
+[µ(i)(g′)]. (8.6)
+In words, ν(i+1)(g) is the expected µ(i) weight of a member of the coset C(i)
+g . Finally, we deﬁne the
+weight function µ(i+1) thus for each g ∈ D (i+1):
+µ(i+1)(g) =
+{
+ν(i+1)(g) f (i+1)(g) = f (i+1)
+f (i),z(i)(g)
+0 otherwise
+The key property of the above deﬁnition of the µ(i) is that µ(i)(g) is a measure of the suc-
+cess probability of the FRI QUERY phase conditioned on g being queried from f (i). This is the
+underlying reason behind the following claim.
+Claim 8.5. The probability ǫQ that a single invocation of the batched FRI QUERY accepts f (0), . . . , f(r),
+where f (r) ∈ RS[F, D(r), k(r)], satisﬁes
+ǫQ = Eg(r)∈D(r)
+[
+µ(r)
+(
+g(r)
+)]
+.
+Proof. Recall that the FRI QUERY invocation picks a random sequence g(r), . . . , g(0) as described
+above, where g(i−1) is sampled uniformly at random from C(i−1)
+g(i) . We prove by induction on i =
+0, . . . ,r that
+Eg(i)∈D(i)
+[
+µ(i)
+(
+g(i)
+)]
+equals the probability that, when sampling a uniformly random g(i) and generating from it the
+random sequence g(i−1) ∈ C(i−1)
+g(i) , . . . , g(0) ∈ C(0)
+g(1), all tests associated with g(i) and its induced
+sequence accept.
+The base case follows from the deﬁnition of µ(0). For the inductive case, notice µ(i)(g(i)) equals
+0 when f (i)(g(i)) is not computed correctly as per Eq. (
+8.2), and otherwise it is the average of the
+values of µ(i−1) on the coset C(i−1)
+g(i) ⊆ D (i−1), which, by the inductive assumption, is the expectation
+that the tests associated with g(i−1), . . . , g(0) are all accepted.
+Proof of Lemma 8.2. In light of Claim 8.5 it suﬃces to prove that with probability 1 − ǫC over the
+random choices of the veriﬁer,
+Eg∈D(r)
+[
+µ(r)(g)
+]
+≤ α(0)(ρ, m). (8.7)
+We deﬁne a sequence of bad events E(0), . . . , E(r) and bound the sum of their probabilities by
+ǫC. Assuming none of the bad events occurred, we shall show that Eq . ( 8.7) holds.
+Let E(0) be the event
+agreeµ(0)
+(
+f (0), V (0)
+)
+> α (0)(ρ, m).
+43
+=== PAGE 45 ===
+The deﬁnition of µ(0) implies that the event E(0) is
+agree
+(
+f (0)
+0 +
+t∑
+i=1
+xif (0)
+i , V (0)
+)
+> α (0)(ρ, m) = max( α, √ρ(1 + 1/2m)).
+This event depends on x1, . . . , xt. By assumption the maximal correlated agreement density of
+(f (0)
+0 , . . . f(0)
+t ) with V (0) is at most α. So Theorem 7.4 (with α = α(0)(ρ, m) and µ ≡ 1, M = 1 )
+implies:
+Pr
+x1,...,xt
+[E(0)] ≤ ǫ, where ǫ =
+(
+m + 1
+2
+)7
+3ρ3/2 · n2
+q . (8.8)
+Now ﬁx i ∈ {0, . . . ,r − 1}. We deﬁne E(i+1) to be the event that:
+agreeν(i+1)
+(
+f (i+1)
+f (i),z(i), V (i+1)
+)
+> max
+(
+agreeµ(i)
+(
+f (i), V (i)
+)
+, √ρ(1 + 1/2m)
+)
+. (8.9)
+Having ﬁxed f (i) and µ(i), the event E(i+1) depends on z(i). By deﬁnition, we have
+agreeµ(i+1)
+(
+f (i+1), V (i+1)
+)
+≤ agreeν(i+1)
+(
+f (i+1)
+f (i),z(i), V (i+1)
+)
+so when E(i+1) does not hold we conclude from Eq. ( 8.9) that
+agreeµ(i+1)
+(
+f (i+1), V (i+1)
+)
+≤ max
+(
+agreeµ(i)
+(
+f (i), V (i)
+)
+, √ρ(1 + 1/2m)
+)
+. (8.10)
+Let α = max
+(
+agreeµ(i)
+(
+f (i), V (i))
+, √ρ(1 + 1/2m)
+)
+. Opening up the deﬁnition of f (i+1)
+f (i),z(i), we
+get that E(i+1) is the event that:
+agreeν(i+1)
+(
+u0 + z(i)u1 + . . . + (z(i))l(i)−1ul(i)−1, V (i+1)
+)
+> α,
+where u0, . . . , ul(i)−1 : D(i+1) → F are the functions obtained from f (i) in the deﬁnition of the FRI
+protocol (cf. Claim 8.1). This is precisely the situation addressed by Theorem 7.2. Moreover, ν(i+1)
+has a common denominator M = |D(0)|/|D(i+1)|, so, using the notation there M · n = |D(0)|. So
+Theorem 7.2 tells us that if
+Pr
+z(i)
+[
+E(i+1)
+]
+≥ (l(i) − 1) ·
+(
+ǫ(i) + 2m + 1√ρ · |D(0)| + 1
+|F|
+)
+then there is an S ⊆ D (i+1) and codewords v0, . . . , vl(i)−1 ∈ V (i+1) such that the ui and vi agree
+on S, and ν(i+1)(S) > α . Here ǫ(i) = |D(i+1)|2
+|D(0)|2 ǫ = ǫ
+(l(0)···l(i))2 where ǫ is given in Eq. ( 8.8), since the
+required probability is quadratic in the size of the target domain D(i+1). Recall from Eq. ( 8.4) that
+the mapping of f (i)|C(i)
+g(i+1)
+to u(i)(g(i+1)) is the invertible interpolation map. Apply the inverse map,
+i.e., the evaluation map, to v0(g(i+1)), . . . , vl(i)−1(g(i+1)) for each g(i+1) ∈ D (i+1), to get a function
+h(i) : D(i) → F that, on g(i) ∈ Cg(i+1), satisﬁes:
+h(i)(g(i)) =
+l(i)−1∑
+j=0
+(
+g(i)
+)j
+· vj
+(
+g(i+1)
+)
+=
+l(i)−1∑
+j=0
+(
+g(i)
+)j
+· vj
+((
+g(i)
+)l(i))
+.
+Therefore, since vj ∈ V (i+1), we conclude that h(i) ∈ V (i). Moreover, by deﬁnition we have
+agreeµ(i)
+(
+f (i), V (i)
+)
+≥ agreeµ(i)
+(
+f (i), h(i)
+)
+= ν(i+1)(S) > α,
+44
+=== PAGE 46 ===
+contradicting our deﬁnition of α. The equality above arises from the deﬁnition of µ(i), ν(i+1) and
+h(i), noticing ν(i+1)(g(i+1)) ̸= 0 implies that h(i)|C(i)
+g(i+1)
+= f (i)|C(i)
+g(i+1)
+.
+Thus, if none of the events E(i+1) happen, we deduce via Eq. ( 8.10) that for all i ∈ 0, 1, . . . ,r −1:
+agreeµ(i+1)(f (i+1), V (i+1)) ≤ max
+(
+agreeµ(i)
+(
+f (i), V (i)
+)
+, √ρ(1 + 1/2m)
+)
+.
+Recalling the deﬁnition of ǫ from Eq. ( 8.8), the probability that E(0) or some E(i+1) happens is
+bounded by
+Pr
+x1,...,xt
+[
+E(0)
+]
++
+r−1∑
+i=0
+Pr
+z(i)
+[
+E(i+1)
+]
+≤ ǫ +
+r−1∑
+i=0
+(l(i) − 1)
+(
+ǫ(i) + 2m + 1√ρ · |D(0)| + 1
+|F|
+)
+=
+(
+1 +
+r−1∑
+i=0
+l(i) − 1
+(l(0) · · · l(i))2
+)
+ǫ + 2m + 1√ρ · |D(0)| + 1
+|F| ·
+r−1∑
+i=0
+(l(i) − 1)
+< 3ǫ
+2 + 2m + 1√ρ · |D(0)| + 1
+|F| ·
+r−1∑
+i=0
+l(i).
+Here we bounded
+r−1∑
+i=0
+l(i) − 1
+(l(0) · · · l(i))2 =
+r−1∑
+i=0
+( 1
+(l(0) · · · l(i−1))2l(i) − 1
+(l(0) · · · l(i))2
+)
+< 1
+2 ,
+which is immediate from l(i) ≥ 2.
+Putting everything together, we get that except on a set with pro bability strictly less than
+3ǫ
+2 + 2m + 1√ρ · |D(0)| + 1
+|F| ·
+r−1∑
+i=0
+l(i) = ǫC,
+it holds that
+agreeµ(r)(f (r), V (r)) = Eg(r)∈D(r)
+[
+µ(r)(g(r))
+]
+≤ max (α, √ρ(1 + 1/2m)) = α(0)(ρ, m).
+The ﬁrst equality above holds by the assumption that f (r) ∈ V (r). This completes our proof.
+45
+=== PAGE 47 ===
+References
+[AHIV17] Scott Ames, Carmit Hazay, Yuval Ishai, and Muthuramakris hnan Venkitasubrama-
+niam. Ligero: Lightweight sublinear arguments without a trusted setu p. In Proceed-
+ings of the 24th ACM Conference on Computer and Communicatio ns Security, October
+2017.
+[AS03] Sanjeev Arora and Madhu Sudan. Improved low-degree test ing and its applications.
+Combinatorica, 23(3):365–426, 2003. Preliminary version appeared in STOC ’97.
+[BBHR18a] Eli Ben-Sasson, Iddo Bentov, Yinon Horesh, and Michael Riabzev. Scalable, trans-
+parent, and post-quantum secure computational integrity. IACR Cryptology ePrint
+Archive, 2018:46, 2018.
+[BBHR18b] Eli Ben-Sasson, Iddo Bentov, Ynon Horesh, and Michael Riabzev. Fast Reed-Solomon
+Interactive Oracle Proofs of Proximity. In Proceedings of the 45th International Col-
+loquium on Automata, Languages, and Programming (ICALP) , 2018. A vailable online
+as Report 134-17 on Electronic Colloquium on Computational Complex ity.
+[BBHR19] Eli Ben-Sasson, Iddo Bentov, Yinon Horesh, and Michael R iabzev. Scalable zero knowl-
+edge with no trusted setup. In Alexandra Boldyreva and Daniele Miccia ncio, editors,
+Advances in Cryptology - CRYPTO 2019 - 39th Annual Internati onal Cryptology Con-
+ference, Santa Barbara, CA, USA, August 18-22, 2019, Procee dings, Part III , volume
+11694 of Lecture Notes in Computer Science , pages 701–732. Springer, 2019.
+[BCG+19] Eli Ben-Sasson, Alessandro Chiesa, Lior Goldberg, Tom Gur, Mich ael Riabzev, and
+Nicholas Spooner. Linear-size constant-query iops for delegating c omputation. In
+Dennis Hofheinz and Alon Rosen, editors, Theory of Cryptography - 17th International
+Conference, TCC 2019, Nuremberg, Germany, December 1-5, 20 19, Proceedings, Part
+II, volume 11892 of Lecture Notes in Computer Science , pages 494–521. Springer, 2019.
+[BCR+18] Eli Ben-Sasson, Alessandro Chiesa, Michael Riabzev, Nicholas S pooner, Madars Virza,
+and Nicholas P. Ward. Aurora: Transparent succinct arguments f or R1CS. IACR
+Cryptology ePrint Archive , 2018:828, 2018.
+[BCS16] Eli Ben-Sasson, Alessandro Chiesa, and Nicholas Spooner. Interactive oracle proofs. In
+Theory of Cryptography - 14th International Conference, TC C 2016-B, Beijing, China,
+October 31 - November 3, 2016, Proceedings, Part II , pages 31–60, 2016.
+[Bég19] Olivier Bégassat. Bivariate polynomial divisibility test of spielma n, Dec 2019.
+https://mathoverflow.net/questions/348657/bivariate-polynomial-divisibility-test-of-sp 
+[BGKS20] Eli Ben-Sasson, Lior Goldberg, Swastik Kopparty, and Shu bhangi Saraf. DEEP-FRI:
+sampling outside the box improves soundness. In Thomas Vidick, edito r, 11th Innova-
+tions in Theoretical Computer Science Conference, ITCS 202 0, January 12-14, 2020,
+Seattle, Washington, USA , volume 151 of LIPIcs, pages 5:1–5:32. Schloss Dagstuhl -
+Leibniz-Zentrum für Informatik, 2020.
+46
+=== PAGE 48 ===
+[BGW88] Michael Ben-Or, Shaﬁ Goldwasser, and A vi Wigderson. Comple teness theorems for
+non-cryptographic fault-tolerant distributed computation (ext ended abstract). In Pro-
+ceedings of the 20th Annual ACM Symposium on Theory of Comput ing, STOC ’88,
+pages 1–10, 1988.
+[BKS18] Eli Ben-Sasson, Swastik Kopparty, and Shubhangi Saraf . Worst-case to average case
+reductions for the distance to a code. In 33rd Computational Complexity Conference,
+CCC 2018, June 22-24, 2018, San Diego, CA, USA , pages 24:1–24:23, 2018.
+[CCD88] David Chaum, Claude Crépeau, and Ivan Damgård. Multiparty unconditionally secure
+protocols (extended abstract). In Proceedings of the 20th Annual ACM Symposium on
+Theory of Computing, May 2-4, 1988, Chicago, Illinois, USA , pages 11–19, 1988.
+[CDD+04] Ran Canetti, Ivan Damgård, Stefan Dziembowski, Yuval Ishai, an d Tal Malkin. Adap-
+tive versus non-adaptive security of multi-party protocols. J. Cryptology, 17(3):153–207,
+2004.
+[CDD+16] Ignacio Cascudo, Ivan Damgård, Bernardo David, Nico Döttling, a nd Jesper Buus
+Nielsen. Rate-1, linear time and additively homomorphic UC commitment s. In Ad-
+vances in Cryptology - CRYPTO 2016 - 36th Annual Internation al Cryptology Con-
+ference, Santa Barbara, CA, USA, August 14-18, 2016, Procee dings, Part III , pages
+179–207, 2016.
+[CGMA85] Benny Chor, Shaﬁ Goldwasser, Silvio Micali, and Baruch Awer buch. Veriﬁable secret
+sharing and achieving simultaneity in the presence of faults (extend ed abstract). In
+26th Annual Symposium on Foundations of Computer Science, P ortland, Oregon, USA,
+21-23 October 1985 , pages 383–395, 1985.
+[CMS19] Alessandro Chiesa, Peter Manohar, and Nicholas Spooner. Succinct arguments in the
+quantum random oracle model. In Dennis Hofheinz and Alon Rosen, edit ors, Theory
+of Cryptography, pages 1–29, Cham, 2019. Springer International Publishing.
+[COS19] Alessandro Chiesa, Dev Ojha, and Nicholas Spooner. Fract al: Post-quantum and trans-
+parent recursive proofs from holography. IACR Cryptology ePrint Archive , 2019:1076,
+2019. To appear in Eurocrypt 2020.
+[DI06] Ivan Damgård and Yuval Ishai. Scalable secure multiparty compu tation. In Cynthia
+Dwork, editor, Advances in Cryptology - CRYPTO 2006, 26th Annual Internati onal
+Cryptology Conference, Santa Barbara, California, USA, Au gust 20-24, 2006, Proceed-
+ings, volume 4117 of Lecture Notes in Computer Science , pages 501–520. Springer,
+2006.
+[FY92] Matthew K. Franklin and Moti Yung. Communication complexity of secure compu-
+tation (extended abstract). In S. Rao Kosaraju, Mike Fellows, A vi Wigderson, and
+John A. Ellis, editors, Proceedings of the 24th Annual ACM Symposium on Theory of
+Computing, May 4-6, 1992, Victoria, British Columbia, Cana da, pages 699–710. ACM,
+1992.
+[GS99] Venkatesan Guruswami and Madhu Sudan. Improved decodin g of reed-solomon and
+algebraic-geometry codes. IEEE Trans. Information Theory , 45(6):1757–1767, 1999.
+47
+=== PAGE 49 ===
+[HIMV19] Carmit Hazay, Yuval Ishai, Antonio Marcedone, and Muthur amakrishnan Venkitasub-
+ramaniam. Leviosa: Lightweight secure arithmetic computation. In Lore nzo Caval-
+laro, Johannes Kinder, XiaoFeng Wang, and Jonathan Katz, editor s, Proceedings of
+the 2019 ACM SIGSAC Conference on Computer and Communicatio ns Security, CCS
+2019, London, UK, November 11-15, 2019 , pages 327–344. ACM, 2019.
+[HM01] Martin Hirt and Ueli M. Maurer. Robustness for free in uncon ditional multi-party
+computation. In Joe Kilian, editor, CRYPTO 2001, pages 101–118, 2001.
+[IKOS09] Yuval Ishai, Eyal Kushilevitz, Rafail Ostrovsky, and Amit Sa hai. Zero-knowledge proofs
+from secure multiparty computation. SIAM J. Comput. , 39(3):1121–1152, 2009.
+[IPS08] Yuval Ishai, Manoj Prabhakaran, and Amit Sahai. Founding cr yptography on oblivious
+transfer - eﬃciently. In David A. Wagner, editor, Advances in Cryptology - CRYPTO
+2008, 28th Annual International Cryptology Conference, Sa nta Barbara, CA, USA,
+August 17-21, 2008. Proceedings , volume 5157 of Lecture Notes in Computer Science ,
+pages 572–591. Springer, 2008.
+[IPS09] Yuval Ishai, Manoj Prabhakaran, and Amit Sahai. Secure arit hmetic computation
+with no honest majority. In Omer Reingold, editor, Theory of Cryptography, 6th The-
+ory of Cryptography Conference, TCC 2009, San Francisco, CA , USA, March 15-17,
+2009. Proceedings, volume 5444 of Lecture Notes in Computer Science , pages 294–314.
+Springer, 2009.
+[Kal85] Erich Kaltofen. Polynomial-time reductions from multivariate t o bi- and univariate
+integral polynomial factorization. SIAM Journal on Computing , 14(2):469–489, May
+1985.
+[Kal95] Erich Kaltofen. Eﬀective noether irreducibility forms and app lications. J. Comput.
+Syst. Sci , 50(2):274–295, 1995.
+[PS94] Alexander Polishchuk and Daniel A. Spielman. Nearly-linear size holographic proofs. In
+Proceedings of the 26th Annual ACM Symposium on Theory of Com puting, STOC ’94,
+pages 194–203, 1994.
+[RB89] Tal Rabin and Michael Ben-Or. Veriﬁable secret sharing and mu ltiparty protocols
+with honest majority (extended abstract). In Proceedings of the 21st Annual ACM
+Symposium on Theory of Computing, May 14-17, 1989, Seattle, Washigton, USA, pages
+73–85, 1989.
+[RRR16] Omer Reingold, Guy N. Rothblum, and Ron D. Rothblum. Const ant-round interactive
+proofs for delegating computation. In Proceedings of the 48th Annual ACM SIGACT
+Symposium on Theory of Computing, STOC 2016, Cambridge, MA, USA, June 18-21,
+2016, pages 49–62, 2016.
+[R VW13] Guy N. Rothblum, Salil Vadhan, and A vi Wigderson. Interactive proofs of proximity:
+delegating computation in sublinear time. In Proceedings of the forty-ﬁfth annual ACM
+symposium on Theory of computing , pages 793–802. ACM, 2013.
+[RZ18] Ron M. Roth and Gilles Zémor. Personal communication, 2018.
+48
+=== PAGE 50 ===
+[Sha79] Adi Shamir. How to share a secret. Commun. ACM , 22(11):612–613, 1979.
+[Spi95] Daniel A. Spielman. Computationally Eﬃcient Error-Correcting Codes and Holog raphic
+Proofs. PhD thesis, MIT, 1995.
+49
+=== PAGE 51 ===
+A Algebraic Extensions of Fq(Z)
+In this section we develop preliminaries that will be necessary for the p roof of Theorem 5.1. In the
+proof, we will have a trivariate polynomial Q(X, Y, Z), with an irreducible factor R(X, Y, Z). When
+evaluated at a certain X = x0 ∈ Fq, R(x0, Y, Z) will have an irreducible factor H(Y, Z). For both
+R and H, irreducible means irreducible in the respective ring of polynomials ove r Fq. Our goal will
+be to show that Q has a factor of the form Y − P (X, Z), where P has low X and Z degree, and in
+fact R is this factor. Considering Q and R as polynomials in Y over Fq[X, Z], this is equivalent to
+ﬁnding a rational root P (X, Z) of Q, which is also a root of R, and P (x0, Z) is thus a root of H.
+To do so, we will instead start by understanding roots of H, not necessarily of the required form or
+even lying in Fq(Z), lifting them to roots of R (and Q), and then investigating these lifts to prove
+that they are indeed of the required form P (X, Z).
+We will therefore need to understand the roots of H(Y, Z). Such roots can be realized in
+Fq(Z)[T ]/(H(T, Z )), which is a ﬁnite algebraic extension of Fq(Z). The ﬁeld will perhaps contain
+only one root of H, which is suﬃcient, since H’s irreducibility implies all of its roots are equivalent.
+We will construct this ﬁeld, in a slightly diﬀerent way, and also introduce its ring of regular elements,
+in Appendix A.1. In this ﬁeld, we will need a concept of weight, which is an extension of the concept
+of “degree” from Fq(Z), and is introduced in Appendix A.2. A major tool that we will use in several
+ways is of substitution maps from this ﬁeld to Fq, extending the concept of substituting Z = z in a
+rational function in Fq(Z). These substitutions and a useful lemma regarding them are introd uced
+in Appendix A.3. The ﬁnal tool we need is the lifting of roots of H(Y, Z) to roots of R(X, Y, Z),
+which is known as Hensel lifting. We describe this process and state a n important lemma on the
+weights of the ﬁeld elements appearing in this lift in Appendix A.4.
+A.1 The algebraic extension and its regular elements
+Let d ≥ 1 be an integer, and let
+H(Y, Z) = h0(Z)Y d + h1(Z)Y d−1 + · · · + hd(Z) ∈ Fq[Y, Z]
+be an irreducible bivariate polynomial, expressed as a polynomial in Y over Fq[Z]. Denote the
+leading coeﬃcient of H also as W = h0.
+We wish to understand the ﬁeld Fq(Z)[T ]/(H(T, Z )), of polynomials in T over Fq(Z) modulo
+H. The presence of the leading coeﬃcient W means that T is not an integer in this ﬁeld, and makes
+the arithmetic modulo H unpleasant to keep track of, with possible emergence of high power s of
+W in denominators whenever a reduction modulo H is performed. To avoid this, we ﬁrst deﬁne a
+“monicized” version of H, denoted ˜H, which is a monic, irreducible polynomial in Fq[Z][T ] generating
+the same ﬁeld as H:
+˜H(T, Z ) = W (Z)d−1H(T /W(Z), Z)
+= T d + h1(Z)T d−1 + h2(Z)W (Z)T d−2 + · · · + hd(Z)W (Z)d−1.
+We now denote L = Fq(Z)[T ]/(˜H(T, Z )), and observe that Y = T
+W (Z) is a root of H(Y, Z)
+in L; this also establishes that T ↦→W (Z) · Y and Y ↦→ T
+W (Z) are isomorphisms between L and
+Fq(Z)[Y ]/(H(Y, Z)). We say that an element of L is regular if it can be expressed as a polynomial
+in T with coeﬃcients only in the ring Fq[Z] instead of the ﬁeld Fq(Z); equivalently, if this is true for
+its canonical form as a polynomial in T of degree less than d. We denote the set of regular elements
+by O = Fq[Z][T ]/(˜H(T, Z )). The regular elements are in fact a ring, and a subring of the ring of
+integers of L (we will not be interested in non-regular integers, for our purpose s).
+50
+=== PAGE 52 ===
+A.2 Algebraic weights
+Let D ≥ d be an upper bound on the total Y, Z degree of H, so that degZ hk ≤ D + k − d for all k.
+We deﬁne a weight function Λ on Fq[T, Z ] by assigning Λ( Z) = 1 and Λ( T ) = D + 1 − d, extended
+additively to monomials, i.e. Λ( T aZb) = aΛ( T ) + bΛ( Z), and the weight of a polynomial is the
+maximal weight of all monomials appearing in it with non-zero coeﬃcient s (with the weight of the
+0 polynomial being −∞). Note that Λ is fully additive on Fq[T, Z ], i.e. for any A, B ∈ Fq[T, Z ],
+Λ( AB) = Λ( A) + Λ( B). Also note that when restricted to Fq[Z], Λ = deg Z.
+Observe that ˜H(T, Z ) has weight Λ( ˜H) = d(D + 1 − d) = dD − d(d − 1), with the leading
+monomial being of this exact weight and every other monomial bound ed by it. It follows that any
+simple modulo Λ( ˜H) operation of the form
+T d+k → −
+d∑
+i=1
+hi(Z)W (Z)i−1T d+k−i
+never increases the weight Λ , and so does complete reduction modulo ˜H.
+We now deﬁne the weight Λ( α) of a regular element α ∈ O as the weight of the canonical
+representative of α with degree less than d, which by the above is also the minimal value of Λ over
+all representatives of α. It also follows that for any α, β ∈ O , if A(T, Z ), B(T, Z ) are their canonical
+representatives, and C(T, Z ) = A(T, Z )B(T, Z ) mod ˜H(T, Z ) is the canonical representative of
+γ = αβ, then
+Λ( γ) = Λ( C) ≤ Λ( AB) = Λ( A) + Λ( B) = Λ( α) + Λ( β).
+In other words, Λ is sub-additive in O.
+A.3 Rational substitutions
+Let z ∈ Fq be such that ˜H(T, z) has a rational root T = tz. In other words, (tz, z) ∈ F2
+q is a root of
+˜H, with tz considered as depending on z (in our applications, it will in fact be given as a function of
+z). For any such root-pair, we deﬁne the substitution πz, which is the homomorphism πz : O → Fq
+given by πz(Z) = z, πz(T ) = tz. The homomorphism is well deﬁned since O = Fq[T, Z ]/(˜H(T, Z ))
+and πz(˜H(T, Z )) = ˜H(tz, z) = 0 . The substitution πz can be extended naturally to any element of
+L for which z is not a pole, i.e. elements of the form β
+C(Z) with β ∈ O and z not a root of C, by
+πz
+(
+β
+C(Z)
+)
+= πz(β)
+C(z) .
+The following lemma gives an upper bound on the number of substitutio ns in which an element
+β ∈ O can vanish in terms of its weight. It is analogous to the statement tha t a polynomial of
+degree at most d which vanishes for more than d evaluations must be the 0 polynomial.
+Lemma A.1. Let β ∈ O be regular with weight Λ( β). Let
+Sβ = {z ∈ Fq : ∃tz ∈ Fq, ˜H(tz, z) = 0 and πz(β) = 0 }
+and suppose |Sβ| > d · Λ( β). Then β = 0 ∈ L.
+Proof. Let β =∑ d−1
+i=0 βi(Z)T i ∈ Fq[Z][T ] be the canonical representative, with
+degZ(βi) = Λ Z(βi) ≤ Λ( β) − iΛ( T ) = Λ( β) − i(D + 1 − d).
+Consider the resultant R(Z) = res T (β, ˜H). From the Sylvester matrix, or considering weights
+of roots, we ﬁnd degZ R ≤ d · Λ( β) < |Sβ|. On the other hand, every z ∈ Sβ is a root of R, since
+51
+=== PAGE 53 ===
+˜H(T, z) and β(T, z) have a common root tz. It follows that R is identically 0, i.e. β and ˜H are not
+coprime, but since ˜H is irreducible and degT (β) < degT (˜H), we have β = 0, as claimed.
+A.4 Hensel lifts
+Suppose H(Y, Z) as above is a factor of Rx0(Y, Z) = R(x0, Y, Z), where x0 ∈ Fq, and R(X, Y, Z)
+is irreducible in Fq[X, Y, Z]. Additionally assume that R and Rx0 are both separable in Y , which
+means that they do not have double roots when considered as polyn omials in Y , or equivalently,
+that they are coprime to their Y -derivatives. Note that this applies not only to roots in the ﬁelds
+over which they are deﬁned, but over any extension ﬁeld as well. Denot ing α0 = T
+W ∈ L, we ﬁnd
+R(x0, α0, Z) = 0 ∈ L, or equivalently in L[X],
+R(X, α0, Z) ≡ 0 (mod X − x0).
+Since α0 is a root of the separable polynomial Rx0, it must be a simple root, or equivalently must
+satisfy ζ = ∂R
+∂Y (x0, α0, Z) ̸= 0. In other words ζ ∈ L is invertible. This fact allows us to iteratively
+lift the root α0 of R(X, Y, Z) (mod X − x0) to a root
+α0 + α1(X − x0) of R(X, Y, Z) (mod ( X − x0)2)
+by solving the equation R(X, α0 + α1(X − x0), Z) ≡ 0 (mod ( X − x0)2), in which α1 appears with
+coeﬃcient ζ, after expansion. We then lift again to a root
+α0 + α1(X − x0) + α2(X − x0)2 of R(X, Y, Z) (mod ( X − x0)3),
+and so on. At each step the lifting is unique, and determined by an alge braic equation in which the
+new αt appears linearly with the same coeﬃcient ζ.
+We obtain an inﬁnite sequence (αt)∞
+t=0, such that at each step s the truncated series γs =∑ s
+t=0 αt(X − x0)t ∈ L[X] satisﬁes
+R(X, γs, Z) ≡ 0 (mod ( X − x0)s+1).
+Equivalently, for the inﬁnite formal power series γ = ∑ ∞
+t=0 αt(X − x0)t ∈ L[[X − x0]], we have
+R(X, γ, Z) = 0 ∈ L[[X − x0]]. Here L[[X − x0]] is the ring of formal power series in X − x0 with
+coeﬃcients in L. This power series γ is the Hensel lift of α0, and the process by which it is computed
+is the Hensel lifting. Its existence and uniqueness both follow solely fr om α0 being a simple root
+modulo X − x0.
+We make a slight change to the notation, and henceforth d will be the Y -degree of R, and
+dH ≤ d will denote the Y -degree of H (previously denoted by d). We will also assume that D is an
+upper bound not only on the total degree of H but also of R. Note that W , the leading coeﬃcient
+of H, divides the leading coeﬃcient of Rx0, and has weight Λ( W ) ≤ D − dH .
+The following claim describes the coeﬃcients αt appearing in the Hensel lift, and bounds their
+denominators and the weights of their numerators:
+Claim A.2. αt is of the form βt
+W t+1ξet , where
+• ξ = W (Z)d−2ζ ∈ O with ζ = ∂R
+∂Y (x0, T
+W , Z) ∈ L, and
+Λ( ξ) ≤ (D − 1) + (d − 2)Λ( W ) ≤ (d − 1)(D − dH + 1),
+• et = max(0, 2t − 1), i.e. e0 = 0 and et = 2t − 1 for t ≥ 1,
+52
+=== PAGE 54 ===
+• βt ∈ O with
+Λ( βt) ≤ 1 + (t + 1)Λ( W ) + etΛ( ξ)
+≤ 1 + (t + 1)(D − dH ) + et(d − 1)(D − dH + 1)
+= ((d − 1) · et + t + 1)(D − dH + 1) − t
+≤ ((2t(d − 1) + t + 1)(D − dH + 1) − t < (2t + 1)dD.
+The claim is proven by straight-forwardly expanding R(X, γ, Z) as a series in X − x0, comparing
+each coeﬃcient to 0, and using induction on t. The existence and uniqueness of the Hensel lift γ,
+and how each new coeﬃcient αt is computed from the previous ones, will also follow from the proof.
+Proof. We prove the statement by induction on t. For t = 0 , we have simply α0 = T
+W mod ˜H, i.e.
+β0 = T mod ˜H and indeed Λ( T ) = Λ( W ) + 1.
+Let Rji(Z) be the coeﬃcient of X iY j in R(X, Y, Z), i.e. R(X, Y, Z) = ∑
+i,j Rji(Z)X iY j. We
+wish to write R(X, γ, Z) as a power series in X − x0. A partition of t is a sequence of non-negative
+integers λ = ( λl)l≥1 with∑
+l l · λl = t. Such sequences are non-zero only ﬁnitely many times, and
+we trim any trailing 0s in writing, e.g. (1) = (1 , 0, 0, 0, . . .). We also denote Σ λ =∑
+l≥1 λl. Let
+P(t) be the set of partitions of t. For any t, i1 ≤ t, and λ ∈ P (t − i1), denote
+Ai1,λ =
+∑
+j0
+j = j0 + Σ λ
+( j
+j0, λ1, . . . , λl, . . .
+)
+αj0
+0
+∑
+i0
+i = i0 + i1
+( i
+i0, i1
+)
+Rji(Z)xi0
+0
+=
+∑
+i0, j0
+i = i0 + i1
+j = j0 + Σ λ
+( i
+i0, i1
+)( j
+j0, λ1, . . . , λl, . . .
+)
+Rji(Z)xi0
+0 αj0
+0
+=
+( Σ λ
+λ1, . . . , λl, . . .
+)∑
+i, j
+( i
+i1
+)( j
+Σ λ
+)
+Rji(Z)xi−i1
+0 αj−Σ λ
+0
+=
+( Σ λ
+λ1, . . . , λl, . . .
+)(
+∆ i1
+X ∆ Σ λ
+Y R(X, Y, Z)
+)⏐
+⏐
+⏐
+(x0,α0,Z)
+where the sums are taken only over non-zero terms, i.e. with i + kj < D X , and ∆ k
+V is the k-th Hasse
+derivative with respect to the variable V . In particular, whenever λ is such that Σ λ = 1, we have
+A0,λ = (∆ Y R)(x0, α0, Z) = ∂R
+∂Y (x0, α0, Z) = ζ.
+Since the maximal degree of α0 = T
+W appearing in Ai1,λ is d − Σ λ, we can generally write
+Ai1,λ =
+Bi1,λ
+W d−Σ λ , where Bi1,λ ∈ O has weight Λ( Bi1,λ) = ( D − Σ λ) + (d − Σ λ)Λ( W ). In the special
+case i1 = 0, the coeﬃcient of αd−Σ λ
+0 is a multiple of ∑
+i Rdi(Z)xi
+0, which is the leading coeﬃcient of
+Rx0, hence divisible by W , and thus we can save a little and write A0,λ = B0,λ
+W d−1−Σ λ , where B0,λ ∈ O
+has weight (D − Σ λ) + (d − 1 − Σ λ)Λ( W ). When Σ λ = 1 we then get ζ = A0,λ = B0,λ
+W d−2 = ξ
+W d−2
+where ξ ∈ O has weight (D − 1) + (d − 2)Λ( W ) as stated. To generalize the two cases, we may write
+Ai1,λ =
+Bi1,λ
+W d−δi1, 0−Σ λ , where δi1,0 = 1 if i1 = 0 and δi1,0 = 0 otherwise.
+Now, expanding R(X, γ, Z), we get
+0 = R(X, γ, Z) =R
+(
+x0 + (X − x0),
+∑
+l
+αl(X − x0)l, Z
+)
+53
+=== PAGE 55 ===
+=
+∑
+ij
+Rji(Z)(x0 + (X − x0))i
+(∑
+l
+αl(X − x0)l
+)j
+=
+∑
+ij
+Rji(Z)
+( ∑
+i0+i1=i
+( i
+i0, i1
+)
+xi0
+0 (X − x0)i1
+×
+∑
+j0+Σ λ=j
+( j
+j0, λ
+)(
+αj0
+0
+∏
+l
+αλl
+l
+)
+(X − x0)
+∑
+l l·λl
+)
+=
+∞∑
+t=0
+(X − x0)t ∑
+i1
+λ ∈ P (t − i1)
+Ai1,λ
+∏
+l≥1
+αλl
+l
+Note that αt appears for the ﬁrst time in the term corresponding to (X − x0)t, and only with
+i1 = 0 and λ = λ(t) deﬁned by λ(t)
+t = 1, λ(t)
+l = 0 for l ̸= t, with the coeﬃcient A0,λ(t) = ζ. All other
+summands in the coeﬃcient of (X − x0)t involve only αl with l < t , so we may apply the induction.
+Comparing the coeﬃcient to 0, we get
+αt = − 1
+ζ
+∑
+i1; λ ∈ P (t − i1)
+λ ̸= λ(t)
+Ai1,λ
+∏
+l≥1
+αλl
+l
+= − W d−2
+ξ
+∑
+i1; λ ∈ P (t − i1)
+λ ̸= λ(t)
+Bi1,λ
+W d−δi1, 0−Σ λ
+∏
+l≥1
+( βl
+W l+1ξel
+)λl
+=
+∑
+i1; λ ∈ P (t − i1)
+λ ̸= λ(t)
+Bi1,λ
+∏
+l βλl
+l
+W 2−δi1, 0−Σ λ+∑
+l(l+1)λlξ1+∑
+l(2l−1)λl
+=
+∑
+i1; λ ∈ P (t − i1)
+λ ̸= λ(t)
+Bi1,λ
+∏
+l βλl
+l
+W t−i1−δi1, 0+2ξ2t−2i1−Σ λ+1 ,
+= 1
+W t+1ξ2t−1
+∑
+i1; λ ∈ P (t − i1)
+λ ̸= λ(t)
+W i1+δi1, 0−1ξ2i1+Σ λ−2Bi1,λ
+∏
+l
+βλl
+l ,
+thus we have
+βt =
+∑
+i1; λ ∈ P (t − i1)
+λ ̸= λ(t)
+W i1+δi1, 0−1ξ2i1+Σ λ−2Bi1,λ
+∏
+l
+βλl
+l (A.1)
+which is indeed regular, as the W , ξ, the B’s and the β’s are all regular and the exponents are
+non-negative: for the exponent of W , it is always the case that i1 + δi1,0 ≥ 1. For the exponent
+of ξ, for i1 = 0 , every λ ∈ P (t) with λ ̸= λ(t) indeed has Σ λ ≥ 2, and for i1 ≥ 1 we even have
+2i1 + Σ λ − 2 ≥ 1, since Σ λ ≥ 1.
+The upper bound on the weight of β can be shown by induction using the recursion ( A.1), but
+an easier way to understand it is by considering the weight of αt: Since γ =∑ ∞
+t=0 αt(X − x0)t is a
+54
+=== PAGE 56 ===
+solution to R(X, Y, Z) = 0 , γ has the same weight as Y ; since X, x0 have weight 0, each αt also has
+weight Λ( αt) = Λ( Y ) = 1 . Thus
+Λ( βt) = Λ( αtW t+1ξet) ≤ 1 + (t + 1)Λ( W ) + etΛ( ξ)
+as claimed.
+B Miscellaneous Computations
+B.1 The Y, Z-degree of Q
+In this section we prove inequality (
+5.7) of Claim 5.4, which claims that the total Y, Z-degree of
+Q(X, Y, Z) is bounded by (m+1/2)3
+6√ρ n.
+The bound on DY Z = deg Y,Z (Q) comes from minors of the matrix M representing the system of
+equations deﬁning Q. These equations are all of the form “the (mX , mY )-th derivative of Q vanishes
+at (x, w(x))”, for x ∈ D and non-negative integers mX , mY with mX + mY < m . Computing the
+derivative8 and substituting (x, w(x)), we see that the (x, mX , mY )-th equation is
+∆ mX
+X ∆ mY
+Y Q(x, w(x, Z), Z) =
+∑
+i+k·j<DX
+Qji(Z)
+( i
+mX
+)( j
+mY
+)
+xi−mX (u0(x) + Zu1(x))j−mY = 0.
+The coeﬃcient of Qji(Z) in this equation is therefore
+( i
+mX
+)( j
+mY
+)
+xi−mX (u0(x) + Zu1(x))j−mY ,
+and this coeﬃcient appears in the matrix M at row (x, mX , mY ) and column ji. Note that as a
+polynomial in Z, it has degree at most j − mY , which is the sum of j, which is determined by
+the column, and −mY , determined by the row. We thus call j and −mY the contributions of the
+column and the row, respectively, to the Z-degree of the matrix’s entry.
+Let r be the rank of M , which is bounded from above by the number of rows
+(m+1
+2
+)
+n. To ﬁnd a
+non-zero solution of the system, ﬁrst ﬁnd an r×r non-singular submatrix, and add an arbitrary single
+column. As in Section 4.3.1, the homogenous form of Cramer’s rule then tells us that a solution t o
+the r × (r + 1) subsystem is given by assigning each Qji to be the r × r minor obtained by removing
+the ji-th column from the submatrix and taking the determinant, with alte rnating signs. These
+Qji will then be a solution to the original system, since these r rows span the entire row-space of
+the original matrix, and the solution is non-zero since at least one of these minors was chosen to
+be non-singular. The determinant corresponding to Qji is a sum over products corresponding to
+permutations, each containing a single entry from each row and eac h column of the r × r submatrix.
+The degree of each such product is thus bounded by the sum of the degree contributions from all
+columns and rows of the r × r submatrix, regardless of the permutation, or of all columns and ro ws
+of the r × (r + 1) matrix, minus that of the ji-th column. In other words, it is at most D − j, where
+D = DC − DR is the sum of the contributions of all columns and (negative) contrib utions of all
+rows from the r × (r + 1) matrix. Thus the total Y, Z degree of the monomial QjiX iY j is at most
+(D − j) + j ≤ D, and hence the total Y, Z degree of Q is at most D, i.e. DY Z ≤ D.
+It remains to bound D = DC − DR from above. We do this by simply using DR ≥ 0 and
+bounding DC by the sum of column contributions of the entire matrix. It is possible t o improve
+8We use the Hasse derivatives ∆ m
+X (X i) :=
+( i
+m
+)
+X i−m instead of the regular derivatives to avoid complications due
+to the characteristic of the ﬁeld.
+55
+=== PAGE 57 ===
+this bound by ﬁnding the worst r for which the sum of the largest r + 1 column contributions minus
+the sum of the smallest r row contributions is maximal, and computing these sums. We opt for
+the simpler bound, since the optimal bound requires a more technica l and involved computation,
+and only ends up improving on the simple bound by a small constant fac tor, with an unpleasant
+dependence on ρ.
+Write s =
+⌊
+DX
+k
+⌋
+, t =
+{
+DX
+k
+}
+∈ [0, 1) with DX = k(s + t). Then
+DY Z = deg Y,Z (Q) ≤ D = DC − DR ≤ DC ≤
+∑
+i+kj<D X
+j
+=
+∑
+j< DX
+k
+j(DX − j · k) = DX
+s∑
+j=0
+j − k
+s∑
+j=0
+j2 = k(s + t) s(s + 1)
+2 − k s(s + 1)(2s + 1)
+6
+= ks(s + 1)(s + 3t − 1)
+6 = k
+6 (s3 + 3ts2 + (3t − 1)s) = k
+6 ((s + t)3 − (1 − 3t + 3t2)s − t3)
+= k
+6 ((s + t)3 − (1 − t)3s − (s + 1)t3) < k
+6 (s + t)3 = D3
+X
+6k2 ≤ (m + 1
+2 )3
+6√ρ n,
+as claimed in ( 5.7).
+B.2 The number of variables in the Guruswami–Sudan decoder
+Recall that the Guruswami–Sudan decoder searched for a polynom ial Q(X, Y ) = ∑
+i,j QjiX iY j,
+with variable coeﬃcients Qji coming from the set {(i, j) : i, j ≥ 0, i + k · j < D X }.
+Claim B.1. The number of variables in the Guruswami–Sudan decoder abov e is at least
+k
+2
+((DX
+k + 1
+2
+)2
+− 1
+4
+)
+= DX (DX + k)
+2k .
+Proof. For this computation, we may assume DX is an integer: if is not, then replacing it by ⌈DX ⌉
+does not change the deﬁnition of the set of indices (since the inequalit y is strict), and only increases
+the lower bound we wish to prove. Dividing DX by k with remainder, we write DX = k · a + r, with
+a =
+⌊
+DX
+k
+⌋
+, 0 ≤ r < k . The size of the index set is
+∑
+i+k·j<DX
+1 =
+a∑
+j=0
+|{0 ≤ i < D X − kj}| =
+a∑
+j=0
+(DX − kj) = ( a + 1)DX − k a(a + 1)
+2
+= (a + 1)
+(
+ka + r − ka
+2
+)
+= (ka + k)(ka + 2r)
+2k ≥ (ka + r)(ka + r + k)
+2k
+= DX (DX + k)
+2k ,
+where the inequality (ka + k)(ka + 2r) > (ka + r)(ka + r + k), is equivalent after expansion to
+2rk > r (r + k) ≥ r2 + rk, or simply r(k − r) ≥ 0, which follows from 0 ≤ r < k .
+56
+=== PAGE 58 ===
+C The Inseparable Factor Case in the List Decoding Regime
+Recall that in Section
+5.2.3, we had assumed that in the decomposition
+Q(X, Y, Z) = C(X, Z)
+∏
+i
+Ri(X, Y pfi
+, Z)ei,
+the factors Ri(X, Y pfi
+, Z) were all separable, i.e. fi = 0. This assumption was in fact necessary only
+for the factor R on which we focused in Section 5.2.4. We now consider the case where f = fi > 0,
+and our relevant factor is of the form R(X, Y p, Z), where p = pf and R(X,˜Y , Z) is separable and
+irreducible in ˜Y . Note that we still have that R(x0,˜Y , Z) is separable. The elements of Sx0,R,H
+now satisfy Y − Pz(X) | R(X, Y p, Z), and equivalently ˜Y = Pz(X)p is a root of R(X,˜Y , Z) and
+Y p − Pz(X)p | R(X, Y p, Z). Similarly, ˜Y = Pz(x0)p is a root of the irreducible factor H(˜Y , Z) of
+R(x0,˜Y , Z) — and a simple root of both, since they are separable.
+Note that p ≤ degY (R(X, Y p, Z)) ≤ degY (Q(X, Y, Z)) = DY and therefore
+degX (Pz(X)p) ≤ pf k ≤ kDY < D X .
+We construct the ﬁeld L for the polynomial H(˜Y , Z) exactly as before, but noting that ˜Y = Y p
+will have weight p, which correspondingly aﬀects the weight of T = W (Z)˜Y = W (Z)Y p, now deﬁned
+as D − (dH − 1)p. Note that the upper bound on dH , d (the ˜Y degrees of R, H) is also changed,
+and is now DY
+p instead of simply DY . With these adaptations in mind, we perform the Hensel lift,
+lifting the root α0 = T
+W ∈ L of R(x0,˜Y , Z) to the power series root γ ∈ L[[X − x0]] of R(X,˜Y , Z).
+Claim A.2 still holds and gives us
+Λ( ξ) ≤ (D − p) + (d − 2)Λ( W ) ≤ (d − 1)(D − (dH − 1)p),
+Λ( βt) ≤ p + (t + 1)Λ( W ) + etΛ( ξ)
+≤ ((d − 1) · et + t + 1)(D − (dH − 1)p) − pt < (2t + 1)dD.
+As in Section 5.2.6, the substitution πz(γ) for z ∈ S′ is a root of R(X,˜Y , z) which is the lift of
+the simple root ˜Y = Pz(x0)p of R(x0,˜Y , Z). Since Pz(X)p is also of this form, by the uniqueness
+of the lifting we get πz(γ) = Pz(X)p, and in particular πz(αt) = 0 and πz(βt) = 0 for all t except
+for 0 ≤ t ≤ pk < D X which are divisible by p. As before, we have |S′| ≥ dH Λ( βt) for all t < D X :
+the right hand side is bounded from above by D2
+Y DY Z (2DX −1)
+p2 , which only decreases as p increases.
+It thus follows that βt = 0 and αt = 0 for all t < D X except for those which are at most pk and
+divisible by p. In other words we have
+γDX −1 =
+k∑
+t=0
+αpt(X − x0)pt.
+Out next goal is to show that γDX −1 is a p-th power of a polynomial of degree k (and later that
+γ = γDX −1, and that this polynomial is in fact in Fq[Z][X − x0], with coeﬃcients linear in Z). This
+part did not appear in Section 5, as it is trivial for p = 1. This polynomial should naturally be the
+p-th root of γDX −1 — but in order to construct such roots, we will need some more prelim inaries
+about the ﬁeld in which they live.
+Let σ : Fq → Fq be the automorphism mapping each element a to its unique p-th root σ(a) =
+a1/p. Let ˆL be the inseparable algebraic ﬁeld extension of L with elements ˆT ,ˆZ satisfying ˆT p − T =
+ˆZp − Z = 0; equivalently, ˆT = T 1/p and ˆZ = Z1/p. Note that ˆL can also be directly deﬁned directly
+57
+=== PAGE 59 ===
+as the ﬁeld Fq
+(ˆZ
+)[ˆT
+]
+/
+(ˆH
+(ˆT ,ˆZ
+))
+, where ˆH = σ(˜H) is the (irreducible) polynomial obtained by
+applying σ to the coeﬃcients of ˜H, which satisﬁes
+ˆH
+(ˆT ,ˆZ
+)p = ˜H
+(
+ˆT p,ˆZp
+)
+= ˜H(T, Z ).
+Since the monomials of ˆH have the same ˆT - and ˆZ-degrees as the T - and Z-degrees of ˜H, a weight
+ˆΛ can be deﬁned for regular elements in ˆL in exactly the same way as in L. Additionally, σ can
+be extended to a map ˆσ : L → ˆL satisfying ˆσ(α)p = α for all α ∈ L by deﬁning ˆσ(T ) = ˆT
+and ˆσ(Z) = ˆZ. Note that Λ( β) = ˆΛ(ˆσ(β)) for any β ∈ O , since ˆσ preserves degrees. The
+substitution maps πz for z ∈ S′ can also be extended to ˆL by setting πz(ˆZ) = σ(z) = z1/p and
+πz(ˆT ) = σ(tz) = t1/p
+z =ˆW
+(
+z1/p)
+Pz(x0), where ˆW = σ(W ).
+Deﬁne
+ˆγ =
+k∑
+t=0
+ˆσ(αpt)(X − x0)t ∈ˆL[X − x0]
+which indeed satisﬁes γDX −1 = ˆγp, and therefore R(X,ˆγp, Z) ≡ 0 (mod ( X − x0)DX ). Since
+R(X, Y p, Z) is a divisor of Q(X, Y, Z), it follows as before that degX R(X,ˆγp, Z) < D X , and there-
+fore R(X,ˆγp, Z) = 0 identically, and γ = γDX −1 =ˆγp by the uniqueness of the lifting. Furthermore,
+for every z ∈ S′, since πz(ˆγ)p = πz(ˆγp) = πz(γ) = Pz(X)p, we also have πz(ˆγ) = Pz(X).
+As in Section 5.2.7, our next goal is now to show that the coeﬃcients ˆαt =ˆσ(αpt) ofˆγ are linear
+polynomials in Fq[Z], rather than general elements of ˆL. This is done in exactly the same way, by
+comparing the values of πz(ˆγ(x)) and w(x, z) at every x = xj ∈ D top and z ∈ S′
+x, deducing that
+ˆγ(x) and w(x, Z) must be equal in ˆL since
+dHˆΛ(ˆβk) = dHˆΛ(ˆσ(βpk)) = dH Λ( βpk) ≤ dH (2pk + 1)dD < (2k + 1)D2
+Y DY Z
+p
+< (2k + 1)D2
+Y DY Z < |S′
+x|,
+Finally, having shown that ˆγ ∈ Fq[X, Z], the arguments of Section 5.2.8 can be applied without
+any further changes, only with ˆγ in the role γ, concluding the proof.
+D Proof of Lemma 4.3
+It has been recently discovered that there is a subtle ﬂaw in the proof of [ Spi95, Lemma 4.2.18],
+and indeed, there are counter examples to the Lemma as originally sta ted (cf. [ Bég19]). We thank
+Ronald Cramer and Jade Nardi for pointing out the precise ﬂaw and su ggesting possible ﬁxes; the
+ﬁx chosen and described in this paper was independently discovered b y Ronald Cramer.
+The main diﬀerence between the version of the lemma used in this pape r and the original version
+is the condition that the quotients PZ,x and PX,z have bounded degrees, with the bound matching
+the diﬀerence in the degrees of A and B. This extra assumption suﬃces to make the original proof
+valid, and is fortunately satisﬁed in our application.
+For completeness, we provide here a proof of the lemma, essentially following [ Spi95, Lemma
+4.2.18]. During the proof, we will make several reductions to smaller a nd simpler cases by changing
+the a, b, n variables and the polynomials A, B, but note that none of the reductions will change
+dX , dZ or B(X,Z)
+A(X,Z) .
+Clearly, we may assume B is not the zero polynomial (otherwise, the results are trivial). It the n
+follows that A is also not the zero polynomial (otherwise, B(x, Z) = 0 for nX > b X ≥ degX (B)
+values of x, so B is identically 0). We may also assume that either degX (A) = aX or degX (B) = bX .
+58
+=== PAGE 60 ===
+If not, then we may decrease aX and bX by 1 without changing dX = bX −aX or any other assumption
+(in particular, the LHS of ( ⋆) strictly decreases), and repeat until at least one equality holds.
+In fact, once we are done subtracting, we will necessarily have degX (A) = aX . This fact follows
+from the bound on degX (PX,z) as well as the inequality bZ < n Z (which follows from ( ⋆)). We omit
+the full details, as this fact will not be used in the proof.
+Similarly, by reducing aZ and bZ if necessary, we may assume degZ(A) = aZ (or degZ(B) = bZ).
+Next, let G(X, Z) ∈ F[X, Z] be the greatest common divisor of A and B; we aim to prove that
+G = A. Let gX = deg X (G), gZ = deg Z(G), and replace both A and B with the quotients A/G
+and B/G. The degrees degX (A), degX (B) and their bounds aX , bX decrease by exactly gX , and
+degZ(A), degZ(B), aZ, bZ decrease by gZ; it follows that dX , dZ are unchanged, and neither is the
+quotient B
+A = B/G
+A/G . The number of good substitutions nX also decreases by (at most) gX , and
+similarly nZ decreases by at most gZ: indeed, at most gX of the x ∈ F can satisfy G(x, Z) = 0 ,
+and in any of at least nX − gX good substitution with G(x, Z) ̸= 0 , we can divide both sides of
+B(x, Z) = PZ,x(Z)A(x, Z) by G(x, Z) to obtain B
+G (x, Z) = PZ,x(Z) A
+G (x, Z), and the assumption
+degZ(PZ,x) ≤ dZ isn’t aﬀected. Since bX
+nX
+< 1 and gX ≥ 0, we will have bX −gX
+nX −gX
+≤ bX
+nX
+(with equality
+only if gX = 0), and thus
+bX − gX
+nX − gX
++ bZ − gZ
+nZ − gZ
+≤ bX
+nX
++ bZ
+nZ
+< 1,
+and it follows that assumption ( ⋆) still holds.
+We have seen that after dividing by the GCD, the polynomials still satis fy all of the Lemma’s
+assumptions. Additionally, they are now coprime. We will prove that in this case we must have
+aX = aZ = 0, i.e. A is a constant function.
+Write A(X, Z) = A0(Z) + A1(Z)X + · · · AaX (Z)X aX , and similarly B(X, Z) = B0(Z) +
+B1(Z)X + · · · BbX (Z)X bX . Note that at least one of AaX , BbX is non-zero by the early assumption
+on equality of degrees. Let
+MX (Z) = Syl X (A, B) =
+
+
+
+
+
+
+
+
+
+
+
+BbX (Z) · · · · · · B1(Z) B0(Z)
+. . . · · · · · · . . . . . .
+BbX (Z) · · · · · · B1(Z) B0(Z)
+AaX (Z) · · · A1(Z) A0(Z)
+AaX (Z) · · · A1(Z) A0(Z)
+. . . · · · . . . . . .
+AaX (Z) · · · A1(Z) A0(Z)
+
+
+
+
+
+
+
+
+
+
+
+be the Sylvester matrix of A and B, considered as polynomials of degrees aX and bX in X over
+F[Z]. It is a square matrix of order aX + bX , with the ﬁrst aX rows being shifts of the coeﬃcient
+vector of B, and the last bX rows being shifts of the coeﬃcients of A.
+Let RX (Z) = det MX (Z) be the determinant of the Sylvester matrix, which is not identically
+0, since the polynomials are coprime
+9. By the bounds on the Z-degrees of Ai, Bj, it is immediate
+to see that degZ(RX ) ≤ aX bZ + aZbX . We will denote D := aX bZ + aZbX , and note that the
+expression is symmetric in X and Z.
+9This polynomial is almost, but not quite, the resultant of A and B, which is non-zero iﬀ they are coprime; the
+diﬀerence comes from the possibility that A, B are not exactly of X-degrees aX , b X , and in fact RX (Z) is equal to the
+resultant times AaX (Z)bX −degX (B)BbX (Z)aX −degX (A). The fact that at least one of degX (A) = aX or degX (B) = bX
+holds is equivalent to this extra factor being non-vanishing . In case one of the inequalities is not exact, it is important
+for the proof not to modify the degrees and to keep the extra factor, to get the ri ght order of vanishing.
+59
+=== PAGE 61 ===
+For any of the nZ good values of z ∈ F, the fact that B(X, z) = PX,z(X)A(X, z) with degX (P ) ≤
+dX = bX − aX implies that each of the ﬁrst aX rows of MX (z), corresponding to the coeﬃcients of
+B(X, z), is a linear combination of (at most) dX + 1 of the bX rows corresponding to coeﬃcients of
+A(X, z). It follows that the last bX rows span the whole row space, i.e. rk MX (z) ≤ bX , from which
+it follows that RX , R′
+X , . . . , R(aX −1)
+X all vanish at Z = z, i.e. RX has a zero of multiplicity at least aX
+at every such z (see also [ Spi95, Proposition 4.2.17]). Note that the assumption degX (PX,z) ≤ dX
+is critical: if the degree were larger, than the ﬁrst degX (PX,z) − dX of the B rows would not have
+been spanned by the A rows.
+We have obtained that RX is a non-vanishing polynomial of degree at most D, with at least nZ
+roots of multiplicity aX each, thus aX nZ ≤ D. Repeating the argument with the roles of X and Z
+switched, we ﬁnd aZnX ≤ D as well. Thus
+D = aX bZ + aZbX = bZ
+nZ
+aX nZ + bX
+nX
+aZnX ≤ bX
+nX
+D + bZ
+nZ
+D =
+( bX
+nX
++ bZ
+nZ
+)
+D.
+However, (⋆) yields bX
+nX
++ bZ
+nZ
+< 1, and thus the obtained inequality is only possible for D = 0. Since
+nX , nZ > 0, and aX nZ, aZnX ≤ D = 0, we must have aX = aZ = 0, as claimed.
+From here the rest of the claim is immediate: aX = aZ = 0 imply that A is a constant
+polynomial, so clearly A | B, and furthermore the quotient P = B/A is proportional to B, thus
+degX (P ) = deg X (B) ≤ bX = bX − aX = dX , and similarly degZ(P ) ≤ dZ. Since dX , dZ and P =
+B/A did not change during our reduction steps, the same results hold fo r the original polynomials
+and quotient.
+For all nZ substitutions z ∈ F, we have P (X, z)A(X, z) = B(X, z) = PX,z(X)A(X, z), and if
+A(X, z) ̸= 0 then we can cancel it to obtain P (X, z) = PX,z(X). At most degZ(A) ≤ aZ values of
+z satisfy A(X, z) = 0 , hence for at least nZ − aZ values we have P (X, z) = PX,z(X), and similarly
+for values of x, as claimed.
+E Proof of Claim 8.1
+Proof of Claim 8.1. By assumption f (i) is the evaluation of a polynomial P (X) of degree strictly
+less than k(i) and k(i) is an integral power of 2. Recall k(i+1) = k(i)+1
+2 − 1 noticing k(i+1) + 1 is an
+integral power of 2. Let
+Q(X, Y ) = P (X) mod Y − X l(i)
+.
+By deﬁnition degX (Q) < l (i) and degY (Q) < k (i+1). We claim f (i+1)
+f (i),z(i) is the evaluation of the
+polynomial Q(z(i), Y ) ∈ F[Y ] on D(i+1). To see this recall that M (i)
+g is the interpolation map over
+f (i)|C(i)
+g
+and so
+M (i)
+g · f (i)|C(i)
+g
+= Q(X, g).
+Hence, using Eq. ( 8.2), we have
+f (i+1)
+f (i),z(i)(g) =
+(
+z(i)
+)⊤
+· M (i)
+g · f (i)
+⏐
+⏐
+⏐
+C(i)
+g
+= Q(z(i), g).
+So f (i+1)
+f (i),z(i) is the evaluation of the polynomial Q(z(i), Y ), which has degree less than k(i+1), on the
+domain D(i+1). This completes the proof.
+60

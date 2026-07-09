@@ -1,0 +1,32 @@
+{
+ "id": "C013",
+ "rank": 13,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F11",
+  "F12",
+  "F13",
+  "F15"
+ ],
+ "walls": [
+  "W-idealSVP",
+  "W-anomaly",
+  "W-LamLeung"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/AdditiveEnergyResultant.lean"
+ ],
+ "title": "ONE resultant Res(Φ_n,g)=N(α) is simultaneously the char-p defect threshold (F12), the ideal-SVP / cross-parity norm (F11), and the ZERO-detector of an additive-energy collision (F5/F13) — a single-integer Rosetta stone",
+ "connection": "CyclotomicNormDefectThreshold proves axiom-clean: for g=signed sum of ≤2r roots of unity, R:=Res(Φ_n,g)=N(α), α=g(ζ_n)∈ℤ[ζ_n], |R|≤(2r)^{φ(n)} (archimedean), p|R iff a primitive root ζ∈ZMod p roots g (mod-p collision), R≠0 iff α≠0 (char-0). The SAME R is: (a) R=0 ⟺ genuine char-0 additive-energy collision (F5/F13, α the signed-unit-vector); (b) p|R but R≠0 ⟺ char-p anomaly collision (F12, W-anomaly defect); (c) α∈ℤ[ζ_n] with small N(α), 𝔭|α IS a short vector of (α,𝔭) — when N(𝔮)=q (fully split, prize) this is the Pan-Xu open fully-split ideal-SVP (F11/W-idealSVP). The Schur/h_{b−k}=0 vanishing (F15) is the resultant of Φ_n with the symmetric-function polynomial. So F5/F11/F12/F15 are readings of divisibility of one resultant; |R|≤(2r)^{φ(n)} crossing p is exactly the onset of ideal-SVP shortness.",
+ "why_insightful": "The issue lists F5/F11/F12/F15 as separate faces; this pins them to ONE proven in-tree integer whose three arithmetic properties (=0, p|·, magnitude) ARE the faces, and shows the cross-parity/ideal-SVP wall is the geometric dual of the energy-anomaly threshold.",
+ "attack_plan": "Probe _wf_resultant_triple_face.py: for prize (n,p) enumerate small signed g, compute R=Res(Φ_n,g), verify the readings co-occur (R=0↔energy collision; p|R↔mod-p collision; (α,𝔭) ℤ[ζ_n]-vector L1-norm vs Minkowski for SVP). Lean: extend with idealNorm_eq_resultant linking N(α) to the F11 ideal generator and three wrappers (F5/F12/F15 defect tests each reduce to p|Res via dvd_resultant_of_isPrimitiveRoot_isRoot_bound)."
+}

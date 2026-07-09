@@ -1,0 +1,28 @@
+{
+ "id": "C032",
+ "rank": 32,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F11",
+  "F5",
+  "F12"
+ ],
+ "walls": [
+  "W-idealSVP"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SmallSubgroupSidonModNeg.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CyclotomicResultantBound.lean"
+ ],
+ "title": "The proven r=2 Sidon anchor (smallSubgroup_sidonModNeg) IS fully-split ideal-SVP NON-EXISTENCE at the shortest length — extending past r=2 = proving short ideal-lattice vectors don't exist mod 𝔮",
+ "connection": "smallSubgroup_sidonModNeg proves: if 4^{φ(n)}<p then μ_n has no nontrivial additive parallelogram mod p (the r=2 case). Through the ideal-lattice lens, a parallelogram x₁+x₂−x₃−x₄≡0 mod 𝔮 with four distinct roots is EXACTLY a short (house≤4) nonzero vector of the ideal 𝔮⊂ℤ[ζ_n] that is a signed sum of ≤4 roots of unity. So smallSubgroup_sidonModNeg = 'the fully-split ideal 𝔮 has no sparse-support vector of house≤4 below norm 4^{φ(n)}', a fully-split ideal-SVP non-existence at length 4. The general F11 open core (defect onset at r≈ln q) is the SAME statement at house≤2r. The proven Sidon brick AND CyclotomicNormDefectThreshold are partial ideal-SVP results; the gap to the prize is extending house-4/length-4 to house-2r/length-2r.",
+ "why_insightful": "The campaign never frames its OWN proven Sidon/norm bricks as ideal-SVP results; treats ideal-SVP as an external wall. This shows the in-tree axiom-clean lemmas are the r=2 instance of the very Pan-Xu-open quantity, so the prize is a quantitative continuation of code that already exists.",
+ "attack_plan": "Probe (probe_407_sparse_support_ideal_svp.py exists): extend to track min_house(r), confirm min_house>4 forces r=2 cleanness exactly when 4^{φ(n)}<p. Lean: generalize smallSubgroup_sidonModNeg to smallSubgroup_noSparseDefect_of_lt for 2r terms (= no_spurious_tuple_of_lt_prime specialized to the energy g); state the OPEN residual as SparseIdealSVPNonExistence n p r and show it ⟹ the energy clean range, isolating the Pan-Xu gap as one named Prop above the proven r=2."
+}

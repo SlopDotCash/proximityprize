@@ -1,0 +1,29 @@
+{
+ "id": "C040",
+ "rank": 40,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F2",
+  "F16"
+ ],
+ "walls": [
+  "W-anomaly",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CharSumMomentDeepWall.lean"
+ ],
+ "title": "The cumulant IS the char-p energy DEFECT and the defect is NEGATIVE: the open core is an UPPER bound free in char 0 that must only not OVER-correct in char p",
+ "connection": "The machine-verified identity n·Σ_i η_i^{2r}=q·E_r−n^{2r} makes B a CUMULANT (the b=0 raw term n^{2r} cancels), and the measured char-p defect E_r−E_r^ℂ is NEGATIVE in-regime (n=16,r=5: E_5=5.17e8<E_5^ℂ=9.91e8). This flips the wall framing: W-anomaly is usually 'char-p energy OVERTAKES char-0 once qE^{char0}<n^{2r}, blowing up the bound'. But the off-diagonal cumulant Σ_{b≠0}η_b^{2r}=qE_r−n^{2r} subtracts exactly the diverging n^{2r}, and what remains is measured SMALLER than the Bessel baseline. CharSumMomentDeepWall's 'E_r≤(2r−1)!!n^r FALSE past r≈8' is about the RAW E_r, not the cumulant; the cumulant κ_r≤1 holds WITH MARGIN.",
+ "why_insightful": "CharSumMomentDeepWall and the cumulant-not-moment KB say opposite-sounding things and both are right (one raw, one connected). The reconciliation — subtract n^{2r} FIRST, then bound — is the correct order of operations and dissolves the W-anomaly 'forced positive' obstruction at the cumulant level.",
+ "attack_plan": "Lean: CumulantBound G r := (q·rEnergy G r−(G.card)^{2r}:ℝ)≤q·(2r−1)!!·n^r; derive B^{2r}≤cumulant+n^{2r}-cancellation via the existing single_le_sum arrow restricted to b≠0 (one-line edit of term_le_moment over univ.erase 0); show CumulantBound at r≈ln q ⟹ B≤√(2n ln q). Carry as a SIGNED cumulant, matching the negative-defect measurement."
+}

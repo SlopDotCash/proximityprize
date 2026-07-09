@@ -1,0 +1,27 @@
+{
+ "id": "C095",
+ "rank": 95,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F6",
+  "F12",
+  "F19"
+ ],
+ "walls": [
+  "W-Betti",
+  "W-anomaly"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean"
+ ],
+ "title": "The tangent set {1-w:w∈μ_n} carries a forced sign-involution w↦w⁻¹ putting T_h on a curve of degree n/2 (Betti reduction by factor 2 on the multiplicative tangent face)",
+ "connection": "407-TANGENT §5b proves an EXACT forced involution w↦w⁻¹: 1−w⁻¹=−w⁻¹(1−w), and −w⁻¹∈μ_n (n even ⟹ −1∈μ_n). So s=1−w↦s' is an n-action with −1 acting, giving #Sol=2n−3 floor. The Betti wall (B_prim for the Fermat point-count, caps moment at r=2) is computed for the FULL Fermat curve x^n+y^n=z^n. But the involution means T_h's underlying exponential sum Σ_w χ^h(1−w) over μ_n factors through the quotient μ_n/⟨w↦−w⟩ (the squares of the tangent values), HALVING the relevant curve degree from n to n/2 in the cohomological count. The multiplicative-tangent shadow of the negation symmetry that elsewhere only appears additively (S_b real).",
+ "why_insightful": "The negation symmetry has only been used additively (S_b∈ℝ). 407-TANGENT shows it acts on the MULTIPLICATIVE tangent geometry too (w↦w⁻¹ involution). If this halves the Betti number in the GLT Fermat-point-count, it pushes the W-Betti crossover from r*≈3 toward r*≈3+ — small but a structural degree reduction not previously exploited on the tangent face.",
+ "attack_plan": "Probe: compute the cohomological/Betti dimension of Σ_{w∈μ_n}χ^h(1−w) as a sum over μ_n/{±1} (over squares t=w²) and compare the effective curve degree to n vs n/2; check whether the GLT r=2 Hasse-Weil result extends to r=3 on the halved curve. Lean: tangentSum_involution: T_h=Σ_{orbits}(χ^h(1−w)+χ^h(−w⁻¹(1−w))), exposing the χ^h(−w⁻¹) factorization."
+}

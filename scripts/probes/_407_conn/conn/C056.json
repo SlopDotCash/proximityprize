@@ -1,0 +1,26 @@
+{
+ "id": "C056",
+ "rank": 56,
+ "total": 23,
+ "scores": {
+  "insight": 9,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F15",
+  "F9",
+  "F3"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/EsymmFiber.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LadderSchurReduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MonomialGammaFibration.lean"
+ ],
+ "title": "Schur vanishing h_{b−k}(x_S)=0 ⟺ esymm-fiber membership, with the dilation acting as h_j(g·x_S)=g^j h_j: the orbit-law multiplier c=g^{b−a} is the homogeneity degree of the controlling complete-homogeneous polynomial",
+ "connection": "F15: 'bad ⟺ ∃(k+1)-subset with h_{b−k}(x_S)=0'. The in-tree Schur reduction (residual_ladder_schur) realizes b=k+1: residual ratio=−e₁(x_S)=−h₁(x_S). For general monomial gap (a,b), the residual ratio is h_{b−a}(x_S) reduced mod ∏(X−x_i) (Jacobi-Trudi cofactor), bad-locus = γ with ratio=−γ. The dilation x_S↦g·x_S scales h_j homogeneously: h_j(g·x_S)=g^j·h_j(x_S). Therefore the orbit-law multiplier c=g^{b−a} (MonomialGammaFibration) is EXACTLY the homogeneity weight of the controlling complete-homogeneous polynomial h_{b−a}, and the orbit size n/gcd(b−a,n) is forced by the period of g^{b−a}. Explains the orbit-size arithmetic (currently proven but unexplained) as the homogeneity degree of the Schur cofactor.",
+ "why_insightful": "Identifies the orbit-law multiplier c (an opaque field element g^{b−a} in the proof) with the homogeneity degree of the complete-homogeneous symmetric polynomial governing the residual — a structural reason for the n/gcd orbit sizes, bridging F15 (Schur/h_j vanishing) and F9 (orbit count) by a degree=eigenweight identity.",
+ "attack_plan": "Lean: generalize residual_ladder_schur (b=k+1) to arbitrary b≥k+1: residual dom k t (x^b)=h_{b−k}(dom(t))·residual(x^k) via Jacobi-Trudi reduction of X^b mod the core-vanishing polynomial. Then prove h_{b−k}(g·x_S)=g^{b−k}·h_{b−k}(x_S) to derive the orbit multiplier abstractly. Probe (probe_ratio_collision_census.py has k=2/k=3 Schur data): extend to b=k+2 to read off h₂ and confirm the g²-orbit."
+}

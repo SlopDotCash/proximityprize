@@ -1,0 +1,16 @@
+{
+  "id": "C005",
+  "title": "The 1x1 NVM minors ARE the Gauss-period house F2; index-m NVM vanishing = the exact char-sum sup-norm wall",
+  "verdict": "REDUCED",
+  "method": "probe",
+  "reduced_to": "The whole NVM route adds nothing past the existing GaussPeriodMomentBound consumer: its only open input is verbatim |T_j| = |eta_b| <= C*sqrt(n*log(p/n)), i.e. the BGK/Paley sup-norm wall. The identity half is structural (already in-tree, axiom-clean as cftMat_apply_eq_houseVec); the size half is the unchanged open core.",
+  "wall": "W-BGK (the per-frequency Gauss-period / generalized-Paley sup-norm bound for thin mu_n; equivalently the BGK sqrt-cancellation wall). The minor machinery is provably blind to it.",
+  "evidence": "Two exact probes in scripts/probes/_407_conn/. (1) probe_C005_nvm_house_identity.py: at proper dyadic subgroups mu_n, n=2^mu in {8,16,32}, multiple primes p=m*n+1 (m=9,11,16,21,36,38), the 1x1 NVM minor vector T_j=(1/m)sum_i omega^{ij} G_i (omega=zeta_m, G_i the m Gauss sums of the extensions) is EXACTLY the multiset of Gauss-period values {eta_coset} to <1e-6 (RAW, no scaling), and max_j|T_j| = B = max_b|eta_b| exactly (float and exact-integer |eta_b|^2 agree). So the IDENTITY part of C005 is confirmed -- matching the already-axiom-clean Lean lemma ArkLib.ProximityGap.NVMDyadicTower.cftMat_apply_eq_houseVec. (2) probe_C005_crux_nvm_size_gap.py: k=1 NVM (all T_j != 0) is ALWAYS True at every prize-flavoured prime (n=8..64), independent of B, while B/sqrt(n log(p/n)) ranges 1.03-1.39 (the live BGK quantity). Structural blindness: holding all |G_i| fixed (|a_i|=1 => det != 0, every minor-nonvanishing fact identical via cft_det_eq / cft_top_minor_ne_zero), B varies from sqrt(m) (random phases) to m (aligned phases): ratio grows 1.71x (m=8) -> 3.67x (m=64). Hence the determinant/minor machinery depends only on |G_i|=sqrt q>0 and is provably blind to the relative Gauss-sum phases that DETERMINE B. No nonvanishing-minor statement at any k can deliver B <= C*sqrt(n log(p/n)).",
+  "honest_note": "Identity half is genuinely PROVEN/structural (in-tree, axiom-clean) and the connection correctly localizes the open NVM obstruction to k=1 for the sup-norm question (and shows k=m never obstructs). But as a ROUTE to the prize it is OPEN, welding back to W-BGK: the attack_plan's proposed wiring (forall j, |T_j| <= C sqrt(n log m)) -> WorstCaseIncompleteSumBound is exactly worstCaseIncompleteSumBound_of_energyBound's job and adds no new content -- its hypothesis IS the open core. Two caveats: (a) C005's literal '(sqrt q / m) * eta' scaling is WRONG -- the identity is RAW (T_j == eta_coset, no factor); the essential claim 'max_j|T_j| = B' holds exactly without scaling. (b) probe primes are at beta=log_n p ~ 2-3, not the prize beta~4-5, because the identity is an exact algebraic fact independent of beta (purely cftMat_apply_eq_houseVec); the size question (where beta matters) is precisely the part that stays open. No closure claimed.",
+  "code_files": [
+    "scripts/probes/_407_conn/probe_C005_nvm_house_identity.py",
+    "scripts/probes/_407_conn/probe_C005_crux_nvm_size_gap.py",
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/NVMDyadicTowerObstruction.lean",
+    "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodMomentBound.lean"
+  ]
+}

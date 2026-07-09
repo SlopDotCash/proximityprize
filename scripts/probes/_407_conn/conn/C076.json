@@ -1,0 +1,28 @@
+{
+ "id": "C076",
+ "rank": 76,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F13",
+  "F5",
+  "F16"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-anomaly"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean"
+ ],
+ "title": "Odd-moment NEGATIVITY Σηᵢ^{2k+1}=−n^{2k} is an exact all-r left-skew the even-moment-only Bessel/Markov-Krein machinery throws away",
+ "connection": "The in-tree odd-moment law (PR #415, char-0) Σ_i η_i^{2k+1}=−n^{2k} holds for ALL k, stating the period distribution {η_i} over the m cosets is systematically left-skewed by exactly n^{2k} at every odd order. Every moment/cumulant/Bessel route bounds B via EVEN moments Σηᵢ^{2r} only. But B=max|η_i| is bounded by BOTH tails, and the odd moments pin the asymmetry exactly: the b=0/full-group atom at η_0=n forces a deterministic negative skew across the off-diagonal spectrum, so the mass cannot be arranged to maximize the positive tail freely. The even-moment-only extremal LP is feasible over a strictly larger set than the one also constrained by the proven odd moments.",
+ "why_insightful": "The cone has the odd-moment law landed and explicitly marked 'unaffected by refutations', yet it is used NOWHERE in any B-bound — every route symmetrizes first. Re-coupling the proven odd moments into the extremal problem is an untried tightening using already-proven char-0 math.",
+ "attack_plan": "Add the odd-moment constraints Σηᵢ^{2k+1}=−n^{2k} (k=1..R) to the Chebyshev-Markov LP for max-atom and re-solve; the extra equality constraints can only shrink the feasible far-atom. Probe: python LP/SDP with both even (Bessel) and odd (−n^{2k}) moment rows up to R=ln m, report whether the joint-constrained max-atom drops below n^{1−ε}. If yes isolate the dual certificate; if odd constraints inactive at the optimum, log honestly."
+}

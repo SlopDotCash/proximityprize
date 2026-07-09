@@ -1,0 +1,29 @@
+{
+ "id": "C042",
+ "rank": 42,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F11",
+  "F3",
+  "F1"
+ ],
+ "walls": [
+  "W-Mersenne",
+  "W-idealSVP",
+  "W-largesieve"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupSumsetLargeFactorReduction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupSumsetConjecture.lean"
+ ],
+ "title": "The cross-parity defect A≡−g·B and Conj 1.12's anti-spreading complement are DUAL halves of one fully-split subset-sum image S₀, linking W-Mersenne to W-idealSVP through one set",
+ "connection": "RESULTS §17: #cross-parity-defects=|S₀∩(−g)·S₀| where S₀=(μ_{n/2}-subset-sum image)⊂F_q. Conj 1.12 (SubgroupSumsetConjecture) is the LOWER bound |sumsetDistinct G (b/2)|≥q/10 (image BIG/spreading). The defect count is the SELF-INTERSECTION of that same image under a multiplicative dilate. Two faces of one set: the prize FLOOR needs S₀ additively spread yet thin under multiplicative dilation (small |S₀∩(−g)S₀|), while Conj 1.12 needs S₀ to nearly fill F_q. The Mersenne reduction (BigOrderTwoPrimeFactorHyp) is the structured case S₀=ALL of F_q (the ⟨−2⟩ signed-binary covering): there S₀∩(−g)S₀=F_q, the WORST defect. A Mersenne-type prime maximizes the cross-parity defect.",
+ "why_insightful": "Makes the prose 'anti-spreading complement of Conj 1.12' a precise set identity: both are statements about |S₀| and |S₀∩(−g)S₀| of the SAME subset-sum image, and the in-tree ⟨−2⟩ covering exhibits the extreme.",
+ "attack_plan": "Probe: for μ_n⊊F_q* (q=n^β, β∈{4,5}), compute (a) |S₀|/q (Conj-1.12 spreading) and (b) |S₀∩(−g)S₀|/n (cross-parity defect/budget); test anti-correlation across primes, and whether worst (b) occurs when (a)→1. Lean: CrossParityDefectEqDilateIncidence defining #defect=|S₀∩(−g)S₀|, prove the Mersenne-covering case gives full F_q, reusing mem_sumsetDistinct_signedPowersF."
+}

@@ -1,0 +1,6 @@
+
+### A33 n=32,64 ratio test (rho=1/4), Kambire-worst direction
+
+      n    k    d    s      (a,b)        q | MAXrag-LB  sqrt(nk)  ratio-LB   3/2 k
+     32    8    4    8     (12,8)       97 |        12    16.000    0.7500    12.0
+        witness ragged S (exps, |S|=12): [0, 5, 8, 10, 12, 15, 16, 18, 19, 21, 22, 25]

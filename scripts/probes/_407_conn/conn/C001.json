@@ -1,0 +1,29 @@
+{
+ "id": "C001",
+ "rank": 1,
+ "total": 27,
+ "scores": {
+  "insight": 9,
+  "research": 9,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F17",
+  "F4",
+  "F15"
+ ],
+ "walls": [
+  "W-genericity",
+  "W-subspace"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/HOMDSSmoothObstruction.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RectNCore.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/RootsOfUnityVandermonde.lean"
+ ],
+ "title": "n-core nonemptiness = NVM minor vanishing = list-decoding-beyond-Johnson shape: F17 / F4 / F15 collapse onto one arithmetic condition n∤a",
+ "connection": "homds_det_ne_zero_iff_nCoreEmpty: the generalized-Vandermonde HOMDS certificate det(ζ^(β_j·i)) (the NVM minor for the β-numbers of a partition λ) is nonzero IFF the abacus n-core of λ is empty. rectBeta_nCoreEmpty_iff: for a rectangle λ=a^h (h codewords agreeing to a common shape), the n-core is empty IFF n∣a. The list-decoding obstruction shapes (F4) are exactly these interior rectangles with n∤a, which have NONEMPTY core ⟹ vanishing minor ⟹ the algebraic certificate is silent. So 'NVM fails' (F17), 'list size large' (F4), and 'h_{b-k}(x_S)=0 Schur-vanishing' (F15) coincide on the single arithmetic divisibility n∤a.",
+ "why_insightful": "Three nominally separate forms collapse to one decidable number-theory condition (n∣a) via two axiom-clean in-tree theorems. The cyclic symmetry x^n=1 that makes the domain 'smooth/FFT-friendly' is identified as the EXACT mechanism annihilating the certificate — the smoothness the prover wants is the smoothness the adversary exploits.",
+ "attack_plan": "LIVE 'n-core reachability crux'. Lean+probe: enumerate window-radius RS[μ_n,k] list-decoding instances and test whether an adversarial rectangle a^L with n∤a is actually REACHABLE (a genuine codeword configuration), not just a formal partition. Build RectReachableInWindow:Prop and either exhibit a reachable nonempty-n-core rectangle (advances the F4 lower bound) or prove window radius forces n∣a (closes the route via HOMDS). Either outcome moves δ*."
+}

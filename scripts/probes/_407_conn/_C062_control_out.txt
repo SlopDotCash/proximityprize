@@ -1,0 +1,170 @@
+
+=== n=8, p=4129 ~ n^4.0  n/sqrt(p)=0.1245  (PROPER: n!=p-1=4128) ===
+  c=118 (c^n=3112!=1) off-diag |A|=r(c)=2;  deg Q=9
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=9)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=776 (c^n=3112!=1) off-diag |A|=r(c)=2;  deg Q=9
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=9)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=778 (c^n=881!=1) off-diag |A|=r(c)=2;  deg Q=9
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=9)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=848 (c^n=3112!=1) off-diag |A|=r(c)=2;  deg Q=9
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=9)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+
+=== n=16, p=65537 ~ n^4.0  n/sqrt(p)=0.0625  (PROPER: n!=p-1=65536) ===
+  c=3 (c^n=54449!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=5 (c^n=59635!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=12 (c^n=54449!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=15 (c^n=35450!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+
+=== n=32, p=1048609 ~ n^4.0  n/sqrt(p)=0.0312  (PROPER: n!=p-1=1048608) ===
+  c=5959 (c^n=27782!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=9340 (c^n=815329!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=12295 (c^n=897651!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=12324 (c^n=897651!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+
+=== n=16, p=769 ~ n^2.4  n/sqrt(p)=0.5770  (PROPER: n!=p-1=768) ===
+  c=5 (c^n=729!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=13 (c^n=492!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=17 (c^n=729!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=22 (c^n=27!=1) off-diag |A|=r(c)=2;  deg Q=17
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=17)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+
+=== n=32, p=3137 ~ n^2.32  n/sqrt(p)=0.5713  (PROPER: n!=p-1=3136) ===
+  c=12 (c^n=474!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=24 (c^n=104!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=37 (c^n=306!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2
+  c=51 (c^n=104!=1) off-diag |A|=r(c)=2;  deg Q=33
+     explicit Q: vanishes order>=2 on A: True;  also order>=3 (Hasse_2==0) on A: False
+     M : d_min(M)  generic=M*|A|  beats_generic?  rbound=floor/M    (explicit order2 deg=33)
+     1 :     2           2         no            2
+     2 :     4           4         no            2
+     3 :     6           6         no            2
+     4 :     8           8         no            2
+     5 :    10          10         no            2

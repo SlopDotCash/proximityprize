@@ -1,0 +1,29 @@
+{
+ "id": "C024",
+ "rank": 24,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F5",
+  "F13"
+ ],
+ "walls": [
+  "W-genericity",
+  "W-subspace"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/KKH26CharZeroCollisionLaw.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRefutation.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/LamLeungMultisetAntipodal.lean"
+ ],
+ "title": "Negation symmetry −1=ζ^{n/2} is load-bearing in OPPOSITE directions: it pins/eases the count faces (F2 real, F5 odd-moment, F13) but IS the wall on the GM-MDS genericity face",
+ "connection": "The single symmetry −1=ζ^{n/2}∈μ_n appears with OPPOSITE sign on the two faces. Count/moment face HELPS: sum_eq_iff_freePart_eq/sum_injOn_antipodalFree show the antipodal-free part is a complete invariant of subset-sums, collapsing the char-0 collision count, making periods real (F2), forcing odd-moments to −n^{2k} (F5/F13) — comment 66 confirmed even order has FEWER distinct subset-sums than odd. GENERICITY face HURTS: MuTwoPowDerandRefutation.not_kwpc_rigidity/rimMatrix_det_eq_zero use EXACTLY −1=ω^{n/2} (even polynomials agree on ±x) to build an explicit RIM with vanishing determinant, killing the GM-MDS derandomization that would give capacity. Same involution, opposite valence.",
+ "why_insightful": "The literature treats 'negation helps the count' and 'negation blocks GM-MDS' as unrelated facts; recognizing they are the SAME ζ^{n/2} acting with opposite valence explains why the prize is doubly-barriered (count-tractable yet genericity-blocked) and tells you which face a new symmetry must respect.",
+ "attack_plan": "Make the dichotomy a theorem: take the even-polynomial certificate from MuTwoPowDerandRefutation and show its agreement set is a union of antipodal pairs (freePart=∅), i.e. the GM-MDS counterexample is in the kernel of the KKH26 sum-invariant. Lean: derand_certificate_is_paired (bad RIM-kernel words negation-closed). Proves the genericity obstruction and the count-collapse have a common cause (paired support); the prize floor must be sought on the freePart locus where BOTH the count is governed AND genericity is not automatically saturated."
+}

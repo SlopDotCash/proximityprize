@@ -1,0 +1,26 @@
+{
+ "id": "C089",
+ "rank": 89,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F15",
+  "F12"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MCADualPencilLaw.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAIncidenceCensus.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/MCASecondMoment.lean"
+ ],
+ "title": "Dual pencil law: collinear (e,m) pair-points are the antipodal/equal-product orbit relations, fusing F3 incidence with the F15 vanishing-Schur face; the open slanted Dickson family is the residual",
+ "connection": "MCADualPencilLaw.dependent_iff_collinear proves a wide matroid circuit of Lagrange dual vectors λ^S (λ^S_i=1/∏_{j∈S∖i}(x_i−x_j)) exists iff the three pair-points (e,m)=(sum,product) are collinear. MCAIncidenceCensus shows over μ_n the dependent triangles split into equal-product 'horizontal', equal-sum 'vertical' (antipodal e=0), plus the open 'slanted' Dickson-curve sections. The λ^S are exactly the (k+1)-subset collision functionals c_T whose distinct VALUES are the bad scalars (MCASecondMoment's c_T, F15 Schur/h_{b-k} vanishing). So the dual-pencil collinearity is the EXACT algebraic relation governing when two functionals collide. The orbit-quantization must be CONSISTENT with this census: orbits ↔ collinear-(e,m) families, the e₂=0 rigidity (F12) is the antipodal vertical family.",
+ "why_insightful": "Connects the geometric collision matroid (dual pencil / (e,m) plane) to the orbit-quantization and the F15 Schur-vanishing face — three faces of #bad in separate files, not linked. Shows the open 'slanted Dickson family' is exactly the non-orbit, non-antipodal residual the prize needs to count.",
+ "attack_plan": "Lean: bridge MCASecondMoment's collCount/c_T to dualVec (show c_T=⟨λ^T,·⟩ on the deep-hole word) so dependent_iff_collinear directly counts functional collisions; then bad-scalar count = #distinct c_T = M'−(#collinear-(e,m)-triples). Probe: enumerate slanted (cross-class collinear) μ_n triples — sections of m=ζ^s ⟹ e=ζ^j+ζ^{s-j} (Dickson) — at μ_16 to get the exact non-structured count."
+}

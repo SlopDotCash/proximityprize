@@ -1,0 +1,27 @@
+{
+ "id": "C094",
+ "rank": 94,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F6",
+  "F2",
+  "F16"
+ ],
+ "walls": [
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean"
+ ],
+ "title": "The Gauss-quotient identity routes the tangent house through gaussSum recursion to a PROVABLE per-h positivity restatement: unit_h·T_h IS an autocorrelation, so its b-DFT is a power spectrum (no L1 bound is tight)",
+ "connection": "Mathlib JacobiSum/Basic has a recursion jacobiSum χ (χ^n)·gaussSum(χ^{n+1}). With in-tree I4 and eta_image_card_mul_le (proven m=(q-1)/n count), the house B²=n+(√p/m)max_b|Σ_h unit_h·T_h·χ^h(b)| (407-TANGENT §3) becomes a DFT in b of (conj(τ_h)/√p·T_h). The refuted L1 route dropped the h-cancellation (gives √n·m^{1/4}). But the Gauss-quotient form T_h=(conj(τ_h)/(mp))·Σ_i τ_i conj(τ_{i+h}) means (unit_h·T_h)_h is itself a normalized autocorrelation of (τ_i), whose DFT in b is by Wiener-Khinchin EXACTLY |Σ_i τ_i χ^{-i}(b)|²/(mp)=|η_b·(something)|. Closing the loop re-derives |η_b|² as a manifestly-nonnegative spectral density — a Parseval-exact (not lossy) restatement.",
+ "why_insightful": "The L1/triangle route was refuted because it drops h-cancellation; the Gauss-quotient form reveals (unit_h·T_h) IS an autocorrelation, so its b-DFT is a power spectrum (nonneg, Parseval-tight). The algebraic reason the house can't be bounded by L1 but CAN by a spectral/positivity argument — entirely Mathlib+in-tree, no Weil-on-curves.",
+ "attack_plan": "Lean: house_is_power_spectrum — from I3+I4 and subgroup_gaussSum_moment at r=1, show |η_b|²·m²=|Σ_{j<m}χ^{-j}(b)τ_j|² is the manifest nonneg spectral form, confirming no L1 bound is tight and isolating the positivity structure. Probe: verify Σ_h unit_h T_h χ^h(b) reconstructs m²|η_b|²/p−const exactly (1e-12) at proper subgroups."
+}

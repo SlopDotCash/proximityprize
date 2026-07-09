@@ -16,8 +16,10 @@ They are intentionally lightweight and use only the Python standard library.
 - `find_dedup_candidates.py` - derive `docs/kb/_generated/dedup-report.md`
   from the catalog: same-short-name groups across files + cross-file
   near-duplicate docstrings, a review aid for spotting duplication in PRs
+- `regenerate.py` - refresh all generated indexes and scaffold missing cited paper pages
 - `check_generated.py` - check that the committed generated indexes are fresh
 - `scaffold_paper.py KEY` - create a stub paper page and source metadata file for `KEY`
+  (`--all-missing` scaffolds stubs for every cited key without a page)
 - `lint.py` - validate paper-page structure and report cited keys without paper pages
 - `review_context.py` - resolve citation keys, KB paper pages, and external URLs for review
   comments
@@ -31,6 +33,7 @@ python3 ./scripts/kb/sync_from_bib.py
 python3 ./scripts/kb/extract_lean_citations.py
 python3 ./scripts/kb/extract_declarations.py
 python3 ./scripts/kb/find_dedup_candidates.py
+python3 ./scripts/kb/regenerate.py
 python3 ./scripts/kb/check_generated.py
 python3 ./scripts/kb/lint.py
 python3 ./scripts/kb/review_context.py --files ArkLib/ProofSystem/Fri/Spec/SingleRound.lean --format review

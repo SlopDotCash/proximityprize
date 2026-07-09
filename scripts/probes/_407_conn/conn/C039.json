@@ -1,0 +1,30 @@
+{
+ "id": "C039",
+ "rank": 39,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F20",
+  "F19",
+  "F7"
+ ],
+ "walls": [
+  "W-BGK",
+  "W-largesieve"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumWorstCase.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/BurgessIndexOvershoot.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean"
+ ],
+ "title": "The constant-index torsion bound IS the F20 lane with the index t=(q−1)/d as the exact divisor that kills the √-saving",
+ "connection": "mul_norm_eta_torsion_le says t·‖η_b‖≤(t−1)√q+1, t=(q−1)/d the cofactor. As F20: ‖η_b‖≤((t−1)√q+1)/t=√q·(1−1/t)+1/t. The ENTIRE F20 √-cancellation lives in the single +1 (trivial-character term contributing 1 not √q): the saving over √q is exactly (√q−1)/t, governed by the cofactor t. For μ_n, t=m=(q−1)/n≈2^128, so saving (√q−1)/t≈n^{β/2}/2^128 is negligible and the bound collapses to bare √q. eta_image_card_mul_le shows the same m=(q−1)/n is the period count (F7)=Paley eigenvalue multiplicity, tying F20's index to the W-BGK Paley spectrum size. The constant-index lane is proven precisely when t is small (QR has the small subgroup as the OTHER factor); at the prize d=n and t=m both ≥n, so neither completion is constant-index.",
+ "why_insightful": "Reads the in-tree worst-case proof (normally 'B≤√q') as the F20 constant-index bound, exposing the saving as a single +1/t term over the cofactor — making BurgessIndexOvershoot's √(m/log m) factor a direct consequence of one proven inequality, and identifying the lane parameter with the Paley eigenvalue count m.",
+ "attack_plan": "Lean: restate as eta_le_constIndex: ‖η_b‖≤√q−(√q−1)/t (one-line algebra), companion constIndex_saving_eq:(√q−bound)=(√q−1)/t, corollary prize_saving_negligible instantiating t=(q−1)/n, q=n^β to show saving<1 whenever m>√q (the prize). Converts the integer surrogate of BurgessIndexOvershoot into the exact real saving formula."
+}

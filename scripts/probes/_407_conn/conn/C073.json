@@ -1,0 +1,25 @@
+{
+ "id": "C073",
+ "rank": 73,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F9",
+  "F15",
+  "F3"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/MCAEigenstackOrbitLaw.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EsymmFiber.lean"
+ ],
+ "title": "The eigenstack orbit law generalizes the dilation: ANY σ-eigenstack reparametrizes badSet by affine T(γ)=a⁻¹b+γ·a⁻¹c — Schur fibers of NON-monomial stacks inherit ord(a⁻¹c)-quantization",
+ "connection": "mcaEvent_eigenstack_iff proves the orbit law for the GENERAL σ-eigenstack (u₀∘σ=a·u₀+b·u₁, u₁∘σ=c·u₁): #bad=ε+(#orbits)·ord(a⁻¹c) — strictly more general than monomial c=g^{b−a}. The EsymmFiber identity (e_j(dom T)=(−1)^j W_{t−j}/W_t) characterizes explainable cores of ANY degree-t word as the esymm-fiber over forced top-coefficient values. A domain symmetry σ scaling a degree-t word W by a σ-eigenvalue acts on the esymm-fiber by a Z/ord-action on the subsets T, so the esymm-fiber count (F15, the sub-Johnson list F3/F4) is ord(a⁻¹c)-quantized for EVERY eigenstack, not just the monomial ladder. For μ_n with σ=dilation it recovers n-quantization, but also applies to twisted/coset eigenstacks (the KKH26 near-capacity bad line, eigenratio g^{−m} order s).",
+ "why_insightful": "Lifts the n-divisibility from the special monomial ladder to the full eigenstack class via an already-proven general law, and ties it to the EsymmFiber characterization of sub-Johnson cores — the orbit quantization is a property of the whole F4 list-size object, not a monomial artifact; the KKH26 ceiling line and toy-plateau maximizers are unified as one quantized object.",
+ "attack_plan": "Lean: instantiate orderOf_dvd_badScalarSet_card_of_eigenstack at the KKH26 near-capacity eigenstack (eigenratio g^{−m}, order s) to get s∣#bad, cross with EsymmFiber count to show the near-capacity list is s-quantized; verify against the in-tree N(4,4)=1233=77·16+1 census. Probe (probe_s3_eigenstack_orbit_law.py validates the (13,12,6) profile): extend to a twisted (non-adjacent) eigenstack."
+}

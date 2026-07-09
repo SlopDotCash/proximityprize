@@ -1,0 +1,29 @@
+{
+ "id": "C071",
+ "rank": 71,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F4",
+  "F2",
+  "F8",
+  "F10"
+ ],
+ "walls": [
+  "W-Mersenne",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/LamLeungTwoPow.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicHalvingRecursion.lean"
+ ],
+ "title": "The full_tower coset-closure budget 2^{n/2^s} and the tower house cocycle are one s-indexed squaring recursion: s=μ (count F4) vs s=1 (house F2), window length t=2^s−1 as the dial",
+ "connection": "LamLeungTwoPow.full_tower + tower_count: a window-vanishing word S (p_j=0 for 1≤j<2^s) is a union of μ_{2^s}-cosets, count ≤2^{n/2^s} (COUNT side F4). The house-side halving (DyadicHalvingRecursion) is the SAME squaring-tower fold (x→x^2 collapsing μ_{2k}→μ_k) applied to the character sum. Two readings of one recursion indexed by s: at s=1 the house parallelogram η(μ_{2k})=η(μ_k)+η(μ_kζ); at s=μ the all-μ_n-closure count 2. The δ* budget needs incidence ≤q·ε*≈n at window t=⌊δn⌋=Θ(n) i.e. s=Θ(μ); the house needs L∞ at s=1. The open core is the SAME tower recursion at different window depths s, with the 2^{n/2^s} branching (where Mersenne/sumset growth enters via the number of 2^s-power classes) interpolating.",
+ "why_insightful": "Unifies the count face (F4, the proven full_tower budget) and the house face (F2, the open halving) as one s-indexed squaring-tower recursion, showing the list-size budget 2^{n/2^s} is the SAME object as the per-level house multiplier at a different window depth.",
+ "attack_plan": "Probe: for fixed q and μ_n, compute both the actual bad-scalar count at window t=2^s−1 and the house M at fold depth s, s=1..μ; test the 2^{n/2^s} branching prediction. Lean: exhibit DyadicHalvingRecursion.eta_halving and LamLeungTwoPow.full_tower as instances of one squaringFold operator at s=1 and s=μ, with window depth s as parameter."
+}

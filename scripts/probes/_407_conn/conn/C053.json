@@ -1,0 +1,30 @@
+{
+ "id": "C053",
+ "rank": 53,
+ "total": 23,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F6",
+  "F7",
+  "F16",
+  "F19"
+ ],
+ "walls": [
+  "W-BGK",
+  "W-Betti"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumMoment.lean"
+ ],
+ "title": "The Gauss-sum DFT identity η_b=(√q/m)Σ_χ χ̄(b)u_χ makes M(n) an extreme value of an exponential sum with PERFECTLY FLAT amplitudes — N₀ is a pure moment of UNIT phases u_χ, isolating the open core to phase-only",
+ "connection": "Combine: (i) η_b=(1/m)Σ_{χ∈μ_n^⊥}χ̄(b)τ(χ), |τ(χ)|=√q (Weil, Mathlib gaussSum norm), so η_b=(√q/m)Σ_χ χ̄(b)u_χ with u_χ:=τ(χ)/√q ON THE UNIT CIRCLE; (ii) the raw-moment identity Σ_b η_b^r=q·N₀(G,r) (F16=SubgroupGaussSumMoment specialization); (iii) the tangent identity A_h=m conj(τ_h)T_h (Gauss factor flat). Substituting (i) into (ii): q·N₀(G,r)=q·(√q/m)^r·Σ_{χ_1···χ_r=1}u_{χ_1}...u_{χ_r}. So N₀ — a COUNT — equals (up to explicit prefactor) a moment of the unimodular Gauss-phase family u_χ over its OWN additive-relation set {χ_1···χ_r=1}. The amplitude √q drops out entirely. The whole prize is whether {u_χ} is 'incoherent enough' = effective Katz/Rojas-León equidistribution (F19), and the only relations among the χ_i are Hasse-Davenport (the W-Betti structure).",
+ "why_insightful": "The issue states A_h=m·conj(τ_h)·T_h and N₀=Ση^r/q separately; chaining them shows the COUNT N₀ is literally a self-correlation moment of unit Gauss phases restricted to the character-relation lattice — the entire difficulty is phase coherence of {u_χ}, amplitude provably inert.",
+ "attack_plan": "Probe _wf_gaussphase_relation_moment.py: compute u_χ=τ(χ)/√q for χ∈μ_n^⊥, form M_r=Σ_{χ_1···χ_r=1}u_{χ_1}...u_{χ_r}, check N₀(G,r)·m^r/q^{r/2}=M_r exactly; test whether M_r/(diagonal Hasse-Davenport count) stays O(1) to depth r≈log q (the Betti/Katz-relation question). Lean: rawMoment_eq_gaussPhase_relation_sum brick over SubgroupGaussSumMoment + gaussSum norm."
+}

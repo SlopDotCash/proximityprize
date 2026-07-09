@@ -1,0 +1,8 @@
+Per (n,p): y_valid = largest y with char-0 cosh ratio<=1.02;  y_opt = char-0 bound minimizer.
+If y_opt > y_valid, the char-0 saddle bound is EVALUATED OUTSIDE its validity region (a FICTION).
+n= 16 beta=3.0 p=    4129: y_valid=0.54  y_opt=2.35  -> OUTSIDE validity (FICTION)   char0bound=14.18 floor=13.33
+n= 16 beta=4.0 p=   65617: y_valid=0.99  y_opt=4.38  -> OUTSIDE validity (FICTION)   char0bound=15.06 floor=16.32
+n= 32 beta=3.0 p=   32801: y_valid=0.28  y_opt=1.20  -> OUTSIDE validity (FICTION)   char0bound=24.11 floor=21.06
+n= 32 beta=4.0 p= 1048609: y_valid=0.42  y_opt=1.66  -> OUTSIDE validity (FICTION)   char0bound=26.58 floor=25.80
+n= 64 beta=3.0 p=  262337: y_valid=0.15  y_opt=0.77  -> OUTSIDE validity (FICTION)   char0bound=38.83 floor=32.63
+n=64 beta=4.0 p=16777601 skip(large)

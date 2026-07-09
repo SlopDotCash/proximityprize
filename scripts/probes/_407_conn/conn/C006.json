@@ -1,0 +1,29 @@
+{
+ "id": "C006",
+ "rank": 6,
+ "total": 26,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F2",
+  "F7",
+  "F5"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/WorstPeriodLowerBound.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/Frontier/SalemZygmundChaining.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean"
+ ],
+ "title": "The Johnson-vs-capacity gap is an EXTREME-VALUE gap: in-tree code supplies BOTH endpoints [√n proven, √(n log m) conditional on one MGF]",
+ "connection": "WorstPeriodLowerBound.exists_period_sq_ge proves (q·E−|G|⁴)≤max_{b≠0}‖η_b‖²·(q·|G|−|G|²), i.e. worst period Ω(√n) UNCONDITIONALLY (axiom-clean, no Weil). The conjectured √(n log m) is strictly above by the log m factor. SalemZygmundChaining.chernoff_max_re_le proves the matching UPPER side max_c X_c≤√(2σ² log M) from a single MGF — the max-of-M-sub-Gaussians scaling with M=m=(p−1)/n. So the in-tree code brackets the worst period in [√n, √(2n log m)] and the ENTIRE gap is the log m=log(p/n) extreme-value enhancement of taking a max over m periods. Johnson radius = √n endpoint; capacity−H/(βlog n) = √(n log m) endpoint.",
+ "why_insightful": "Makes precise that 'Johnson→capacity' is not a deeper moment bound but a max-over-m statement: the lower endpoint is already a theorem, the upper endpoint is a maximal inequality whose only open input is a single exponential moment, not all even moments — strictly less than the BGK all-moments wall.",
+ "attack_plan": "Lean: combine exists_period_sq_ge (floor √n) with chernoff_max_re_le (ceiling √(n log m)) into worstPeriod_bracket conditional on SubGaussianMGF, making the open core = the σ²=O(n) MGF over the m index-m characters. Probe: measure max/√(n log m) and max/√n across n=8..256, proper subgroups, multiple large primes."
+}

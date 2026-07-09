@@ -1,0 +1,29 @@
+{
+ "id": "C077",
+ "rank": 77,
+ "total": 22,
+ "scores": {
+  "insight": 8,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F5",
+  "F7",
+  "F13"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumFourthMoment.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean"
+ ],
+ "title": "E_r/n^{2r}→0 makes the cumulant a TRUE connected correlation: the prize is a free-cumulant (planar) spectral-edge bound, and platykurtosis says the period law is sub-semicircular",
+ "connection": "B=max_i|η_i| is the operator-norm/edge of the m-atom real spectrum {η_i}=eigenvalues of the generalized Paley graph Cay(F_q,μ_n) (CLAUDE.md face 3). The spectral edge of a measure is governed by its FREE cumulants (the R-transform), not the classical ones, and the proven μ_2=1, μ_4=3−3/n<3 give classical κ_4=μ_4−3μ_2²=−3/n<0 but free κ_4^{free}=μ_4−2μ_2²=1−3/n>0. The edge of a measure with positive bounded free cumulants and compact support [−2√n,2√n] is at most ~2√n·(1+free-cumulant correction). Connecting the proven low-order free cumulants to the spectral edge via the R-transform is the natural eigenvalue-edge tool, never applied here despite B being literally the second eigenvalue.",
+ "why_insightful": "The cone repeatedly notes 'B is the Paley second eigenvalue' and 'the difficulty is bulk extreme-value not outliers' — EXACTLY the regime where free-probability edge estimates (Haagerup-Thorbjørnsen, BBP) apply — yet no route uses the free-cumulant/R-transform edge. The classical-vs-free cumulant distinction (κ_4^{cl}=−3/n vs κ_4^{free}=1−3/n) is a genuinely new lens.",
+ "attack_plan": "Compute the free cumulants from proven μ_2,μ_4,μ_6=15−45/n+40/n² (moment→free-cumulant Möbius on noncrossing partitions) and the implied BBP/edge prediction; compare to measured B. Probe: free-cumulant calculator on the in-tree exact moments, test whether the edge tracks B/√(n ln m). If free cumulants O(1) bounded, edge is √n·polylog — formalize the free-cumulant→edge bound as the named open input."
+}

@@ -1,0 +1,14 @@
+
+=== n=8 (mu_8), q=233 (q=1 mod n: True), n^2<q: True, k=1, RS[k+1] enum size q^(k+1)=54289 ===
+  mu_8 = [1, 221, 144, 136, 232, 12, 89, 97]
+   t  delta  maxI  maxList  maxLam2         worst I/list sec_noninj  listedG ofWhichBad
+   1  0.875    28     1838        0  ((23, 1837), 0.013)       True    13980       1591
+   2   0.75    28       28        0    ((25, 28), 0.893)       True     1610       1610
+   3  0.625     2        2        0        ((1, 1), 1.0)      False       12         12
+   4    0.5     0        0        0                 None      False        0          0
+   5  0.375     0        0        0                 None      False        0          0
+   6   0.25     0        0        0                 None      False        0          0
+   7  0.125     0        0        0                 None      False        0          0
+   8    0.0     0        0        0                 None      False        0          0
+
+=== n=8 (mu_8), q=521 (q=1 mod n: True), n^2<q: True, k=1, RS[k+1] enum size q^(k+1)=271441 ===

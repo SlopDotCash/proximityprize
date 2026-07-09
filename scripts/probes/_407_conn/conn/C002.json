@@ -1,0 +1,28 @@
+{
+ "id": "C002",
+ "rank": 2,
+ "total": 27,
+ "scores": {
+  "insight": 9,
+  "research": 9,
+  "relevance": 9
+ },
+ "multiform": true,
+ "forms": [
+  "F1",
+  "F3",
+  "F4"
+ ],
+ "walls": [
+  "W-Johnson",
+  "W-BGK"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/AllWitnessOwnershipFloor.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/AllWitnessFloorGeneric.lean"
+ ],
+ "title": "The all-witness ownership floor IS a direct combinatorial upper bound on F3 incidence I(δ) — the δ* object of F1, with NO character-sum input",
+ "connection": "allWitness_badScalars_card_mul_le proves #bad·C(w₀,d+1) ≤ C(n,d+2) axiom-clean, where #bad = #{γ : u₀+γu₁ δ-close} is EXACTLY F3's far-line incidence I(δ), and δ* = sup{δ : I(δ) ≤ q·ε*} is F1. So this brick directly upper-bounds I(δ) by C(n,d+2)/C(w₀,d+1) — a purely combinatorial divided-difference argument (Pascal + the divided-difference fit transport fit_insert_iff_divDiff), with zero character-sum/energy/Weil content. It is the missing reverse bound on face-1 that SuperCodeListBridge lacks, derived from set-system geometry. d+2 here is k+1, so it is the F4 super-code (RS[k+1]) list object too.",
+ "why_insightful": "The issue frames the prize as reducing to the BGK wall, but this #371 brick gives a genuinely non-analytic upper bound on the SAME I(δ) — the combinatorial face of the wall that lane A (count) calls for, already axiom-clean in-tree, not conjectured.",
+ "attack_plan": "Compute the witness threshold w₀ that the prize window δ∈(1−√ρ,1−ρ−Θ(1/log n)) forces (w₀≈(1−δ)n), plug into C(n,k+1)/C(w₀,k), compare to q·ε*≈n. Lean: prize_window_badScalars_le instantiating allWitness_badScalars_card_mul_le at d=k, w₀=⌈(1−δ)n⌉, then Stirling-evaluate the binomial ratio to quantify how far above n it sits — the residual the analytic wall must close."
+}

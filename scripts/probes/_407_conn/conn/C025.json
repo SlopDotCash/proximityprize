@@ -1,0 +1,24 @@
+{
+ "id": "C025",
+ "rank": 25,
+ "total": 25,
+ "scores": {
+  "insight": 9,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F12",
+  "F3",
+  "F15"
+ ],
+ "walls": [],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean"
+ ],
+ "title": "The parity obstruction is an enumeration-free q-independent KILL of the char-0 e2=0 layer exactly on prize production dimensions k≡0 (mod 4)",
+ "connection": "e2Folded_ne_zero_of_odd_pairs proves that if the pair count C(|A|,2) is odd then the folded e2 polynomial CANNOT vanish in char 0 (coefficient-sum ≡ pair count mod 2). Composed with the threshold theorem: e2_ne_zero_of_production_dim — for |A|≡2 (mod 4) i.e. agreement a=k+2 with k≡0 (mod 4), covering EVERY production dimension k=2^j (j≥2), there is NO qualifying subset (e2=0) at any prime above the resultant threshold, with NO enumeration and uniformly in n=2^m. Via comment-40's reduction (bad α at agreement k+2 ⟺ ∃(k+2)-subset S with e2(S)=0, e1(S)≠0, α=−1/e1(S)), the entire depth-1 bad-scalar set at a=k+2 is EMPTY at production dimensions: an F3 incidence statement from an F12 algebraic-rigidity certificate, no character sum.",
+ "why_insightful": "Converts the hardest object (bad-scalar count) into a one-line mod-2 parity check on C(k+2,2), bypassing enumeration and character-sum machinery, landing precisely on the dyadic FFT dimensions k=2^j — a structural reason the depth-1 layer is silent that no analytic route sees.",
+ "attack_plan": "Lean: wire e2_ne_zero_of_production_dim into the comment-40 e2=0/α=−1/e1 reduction to land depth1_badScalarSet_empty_of_production_dim. Probe: compute the coefficient-sum mod small primes of the folded e_t relation for |A|=k+t over n=16,32, look for an arithmetic-progression of clean (k,t) pairs — if the parity pattern persists for t≥2 it kills whole diagonals of the staircase for free."
+}

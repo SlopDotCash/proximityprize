@@ -1,0 +1,27 @@
+{
+ "id": "C034",
+ "rank": 34,
+ "total": 24,
+ "scores": {
+  "insight": 8,
+  "research": 8,
+  "relevance": 8
+ },
+ "multiform": true,
+ "forms": [
+  "F3",
+  "F10",
+  "F15"
+ ],
+ "walls": [
+  "W-genericity"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/CosetVanishingDichotomy.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/DyadicLacunaryDeltaStar.lean"
+ ],
+ "title": "L must straddle k: the lacunary floor is automatically TRUE when 2^L∤(k+t) (variety EMPTY), FALSE-risk only at the 2-adic carry resonance 2^L|(k+t)",
+ "connection": "card_le_gcd_of_esymm_zero proves a vanishing-statistic h-subset injects into the gcd(h,n)-th roots, so |S|≤gcd(h,n); not_exists_esymm_zero_of_not_dvd makes the variety EMPTY unless the constraint count divides into n. Applied to lacunary L=⌈log₂ t⌉: vanishingVariety μ_n (k+t) t is NONEMPTY iff 2^L|(k+t). So the floor is trivially satisfied (count 0) for every gap t with 2^L∤(k+t) — only arithmetic-resonant gaps contribute, and there count = C(n/2^L,(k+t)/2^L). The window-interior gap t≈H(ρ)n/log n is large, so 2^L≈t≈n/log n, n/2^L≈log n: the binomial is C(log n,k/2^L+1)=poly(n) — the floor holds for structural reasons.",
+ "why_insightful": "Explains WHY the measured incidence is Θ(n) and quantized in units n/gcd: the only live gaps are 2-power-resonant with k+t, and at the prize window 2^L≈t so n/2^L is only ~log n — a SMALL ambient, forcing the binomial polynomial. A new reduction of the floor to a 2-adic carry/divisibility condition on (k+t), invisible to the analytic faces.",
+ "attack_plan": "Probe: for prize gaps t₀=⌈H(ρ)n/log₂(qε*)⌉, compute L=⌈log₂ t⌉, n/2^L, and C(n/2^L,(k+t)/2^L) only at resonant t (2^L|(k+t)); verify it never exceeds C·n. Lean: lift card_le_gcd_of_esymm_zero to the lacunary case via μ_{2^L}-closure of full_tower (the usable content is the nonemptiness divisibility 2^L|(k+t))."
+}

@@ -1,0 +1,27 @@
+{
+ "id": "C100",
+ "rank": 100,
+ "total": 21,
+ "scores": {
+  "insight": 7,
+  "research": 7,
+  "relevance": 7
+ },
+ "multiform": true,
+ "forms": [
+  "F13",
+  "F7",
+  "F8"
+ ],
+ "walls": [
+  "W-Johnson"
+ ],
+ "code_files": [
+  "ArkLib/Data/CodingTheory/ProximityGap/RungBesselEnergy.lean",
+  "ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean"
+ ],
+ "title": "Bessel I₀ tail gives a sub-exponential MGF for the period law — a Bennett/Freedman bound the Azuma route could not reach (it used only L^∞ increments)",
+ "connection": "The proven Bessel even-moment law E_r=(2r)![x^r]I₀(2√x)^{n/2} and the in-tree coefficientwise I₀(2x)≤e^{x²} (bessel_energy_le_gaussian) give the EXACT MGF of the squared period, sub-Gaussian in the bulk but with I₀'s genuine asymptotic I₀(z)~e^z/√(2πz). The Azuma wall inflates by √(2 ln m) precisely because Azuma uses the L^∞ increment bound B_{k−1}, paying the bulk-vs-tail gap √(ln m) per level. The Bessel MGF gives the BULK (L²-scale) increment distribution directly: the per-level increment Δ_k=η^{(2^{k−1})} has the Bessel I₀ law of a level-(k−1) period, MGF controlled by the SAME I₀ bound. A Bennett/Freedman bound uses the predictable-variance ⟨S⟩≍n (proven via Parseval orthogonality, corr≈0) PLUS the MGF — not the crude L^∞ — and the Bessel MGF is exactly the missing conditional-MGF input.",
+ "why_insightful": "The Azuma no-go is explicitly attributed to 'Azuma can only use the L^∞ bound'; the Bessel law provides the full increment LAW (hence its MGF/conditional variance), the ingredient distinguishing Bennett (MGF) from Azuma (range). Coupling the proven Bessel MGF to the proven uncorrelatedness has not been tried.",
+ "attack_plan": "Compute the Bessel-law MGF of a single period increment from I₀(2√x)^{n/2}, feed into a Bennett/Bernstein tail for the telescoped η^{(2^a)}=ΣΔ_k with ⟨S⟩=Σ Var(Δ_k)≍n. Check whether it beats the √(2 ln m) Azuma inflation. Probe: extend _cumulant_martingale_deep.py to compute the empirical conditional MGF of Δ_k and test B_a≤√(2⟨S⟩ ln m)+(1/3)b_max ln m vs target — quantify whether the Bessel-controlled variance term dominates the b_max ln m obstruction."
+}
