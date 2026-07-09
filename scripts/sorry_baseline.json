@@ -34,26 +34,6 @@
    "decl": "def StateFunction.append"
   },
   {
-   "file": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
-   "decl": "def fst"
-  },
-  {
-   "file": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
-   "decl": "def seqComposeChallengeEquiv"
-  },
-  {
-   "file": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
-   "decl": "def seqComposeMessageEquiv"
-  },
-  {
-   "file": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
-   "decl": "def snd"
-  },
-  {
-   "file": "ArkLib/OracleReduction/ProtocolSpec/SeqCompose.lean",
-   "decl": "theorem rtake_append_right"
-  },
-  {
    "file": "ArkLib/OracleReduction/Security/Implications.lean",
    "decl": "theorem knowledgeSoundness_implies_soundness"
   },

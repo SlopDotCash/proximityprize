@@ -119,19 +119,42 @@ This is defined to be the full transcript for the first half if `k ≥ m`. -/
 def fst (T : (pSpec₁ ++ₚ pSpec₂).Transcript k) : pSpec₁.Transcript ⟨min k m, by omega⟩ :=
   if hk : k ≤ m then
     fun i => by
-    dsimp [take]; have := T ⟨i, lt_of_lt_of_le i.isLt (inf_le_left)⟩; simp at this; sorry
-    -- dcast (by sorry) (T ⟨i, lt_of_lt_of_le i.isLt (inf_le_left)⟩)
+    have h := T ⟨i, lt_of_lt_of_le i.isLt (inf_le_left)⟩
+    simp only [ProtocolSpec.take, Fin.take, Fin.vappend_eq_append,
+      SliceLT.sliceLT] at h ⊢
+    have hcast : Fin.castLE (Nat.le_of_lt_succ k.isLt) ⟨i, lt_of_lt_of_le i.isLt (inf_le_left)⟩
+        = Fin.castAdd n (Fin.castLE (min_le_right (k : ℕ) m) i) := by
+      ext; simp
+    rw [hcast, Fin.append_left] at h
+    exact h
   else
-    fun i => sorry
-    -- dcast (by sorry) (T ⟨i, by omega⟩)
+    fun i => by
+    have h := T ⟨i, lt_of_lt_of_le i.isLt (inf_le_left)⟩
+    simp only [ProtocolSpec.take, Fin.take, Fin.vappend_eq_append,
+      SliceLT.sliceLT] at h ⊢
+    have hcast : Fin.castLE (Nat.le_of_lt_succ k.isLt) ⟨i, lt_of_lt_of_le i.isLt (inf_le_left)⟩
+        = Fin.castAdd n (Fin.castLE (min_le_right (k : ℕ) m) i) := by
+      ext; simp
+    rw [hcast, Fin.append_left] at h
+    exact h
 
 /-- The second half of a partial transcript for a concatenated protocol. -/
 def snd (T : (pSpec₁ ++ₚ pSpec₂).Transcript k) : pSpec₂.Transcript ⟨k - m, by omega⟩ :=
   if hk : k ≤ m then
     fun i => Fin.elim0 (by simpa [hk] using i)
   else
-    fun i => sorry
-    -- dcast (by sorry) (T ⟨m + i, by simp_all; dsimp at i; have := i.isLt; omega⟩)
+    fun i => by
+    have hkm : m < (k : ℕ) := not_le.mp hk
+    have hi : (i : ℕ) < (k : ℕ) - m := i.isLt
+    have hkn : (k : ℕ) ≤ m + n := Nat.le_of_lt_succ k.isLt
+    have h := T ⟨m + i, by omega⟩
+    simp only [ProtocolSpec.take, Fin.take, Fin.vappend_eq_append,
+      SliceLT.sliceLT] at h ⊢
+    have hcast : Fin.castLE (Nat.le_of_lt_succ k.isLt) ⟨m + i, by omega⟩
+        = Fin.natAdd m (Fin.castLE (by omega : (k : ℕ) - m ≤ n) i) := by
+      ext; simp
+    rw [hcast, Fin.append_right] at h
+    exact h
 
 end Transcript
 
@@ -186,7 +209,8 @@ theorem rtake_append_right (T : FullTranscript pSpec₁) (T' : FullTranscript pS
   simp [rtake, Fin.rtake, append, Fin.cast, FullTranscript.cast, Transcript.cast]
   have : ⟨m + n - n + i.val, by omega⟩ = Fin.natAdd m i := by ext; simp
   rw! (castMode := .all) [this, Fin.happend_right]
-  sorry
+  simp only [eqRec_eq_cast, cast_cast]
+  rfl
 
 /-- The first half of a transcript for a concatenated protocol -/
 def fst (T : FullTranscript (pSpec₁ ++ₚ pSpec₂)) : FullTranscript pSpec₁ :=
@@ -496,8 +520,13 @@ def seqComposeChallengeEquiv {m : ℕ} {n : Fin m → ℕ} (pSpec : ∀ i, Proto
   toFun := fun ⟨i, j⟩ => sigmaChallengeIdxToSeqCompose i j
   invFun := seqComposeChallengeIdxToSigma
   left_inv := by
-    intro ⟨_, _⟩; simp [seqComposeChallengeIdxToSigma, sigmaChallengeIdxToSeqCompose]
-    sorry
+    rintro ⟨i, ⟨j, hj⟩⟩
+    simp only [seqComposeChallengeIdxToSigma, sigmaChallengeIdxToSeqCompose, Sigma.mk.injEq]
+    refine ⟨Fin.splitSum_embedSum_fst i j, ?_⟩
+    congr! 1
+    all_goals first
+      | rw [Fin.splitSum_embedSum_fst i j]
+      | rw [Fin.splitSum_embedSum i j]
   right_inv := by intro; simp [seqComposeChallengeIdxToSigma, sigmaChallengeIdxToSeqCompose]
 
 def sigmaMessageIdxToSeqCompose {m : ℕ} {n : Fin m → ℕ} {pSpec : ∀ i, ProtocolSpec (n i)}
@@ -520,8 +549,13 @@ def seqComposeMessageEquiv {m : ℕ} {n : Fin m → ℕ} {pSpec : ∀ i, Protoco
   toFun := fun ⟨i, msgIdx⟩ => sigmaMessageIdxToSeqCompose i msgIdx
   invFun := seqComposeMessageIdxToSigma
   left_inv := by
-    intro ⟨i, ⟨j, h⟩⟩ ; simp [seqComposeMessageIdxToSigma, sigmaMessageIdxToSeqCompose]
-    sorry
+    rintro ⟨i, ⟨j, hj⟩⟩
+    simp only [seqComposeMessageIdxToSigma, sigmaMessageIdxToSeqCompose, Sigma.mk.injEq]
+    refine ⟨Fin.splitSum_embedSum_fst i j, ?_⟩
+    congr! 1
+    all_goals first
+      | rw [Fin.splitSum_embedSum_fst i j]
+      | rw [Fin.splitSum_embedSum i j]
   right_inv := by intro; simp [seqComposeMessageIdxToSigma, sigmaMessageIdxToSeqCompose]
 
 instance {m : ℕ} {n : Fin m → ℕ} {pSpec : ∀ i, ProtocolSpec (n i)}
