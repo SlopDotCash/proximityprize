@@ -147,12 +147,13 @@ theorem vectorSignedMultiset_injective {m : ℕ} :
   have hp := congrArg (fun M : Multiset (Fin m × Fin 2) => M.count (j, 0)) huv
   have hn := congrArg (fun M : Multiset (Fin m × Fin 2) => M.count (j, 1)) huv
   simp only [vectorSignedMultiset, count_multiplicityMultiset, Fin.isValue, if_pos] at hp
-  change intNegativePart (u j) = intNegativePart (v j) at hn
+  have hn' : intNegativePart (u j) = intNegativePart (v j) := by
+    simpa [vectorSignedMultiset] using hn
   calc
     u j = (intPositivePart (u j) : ℤ) - (intNegativePart (u j) : ℤ) :=
       (intPositivePart_cast_sub_intNegativePart_cast (u j)).symm
     _ = (intPositivePart (v j) : ℤ) - (intNegativePart (v j) : ℤ) := by
-      rw [hp, hn]
+      rw [hp, hn']
     _ = v j := intPositivePart_cast_sub_intNegativePart_cast (v j)
 
 /-- Finite `L1` sphere of integer vectors. -/
@@ -179,7 +180,7 @@ theorem card_l1Sphere_le_multichoose (m k : ℕ) :
     _ ≤ Fintype.card (Sym (Fin m × Fin 2) k) := Fintype.card_le_of_injective enc henc
     _ = Nat.multichoose (Fintype.card (Fin m × Fin 2)) k :=
       Sym.card_sym_eq_multichoose _ _
-    _ = Nat.multichoose (2 * m) k := by simp
+    _ = Nat.multichoose (2 * m) k := by rw [Nat.mul_comm]
 
 end ArkLib.ProximityGap.Frontier.R326DominantRecurrenceL1Contraction
 
