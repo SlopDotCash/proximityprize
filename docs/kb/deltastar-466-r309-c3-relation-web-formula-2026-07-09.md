@@ -1,76 +1,47 @@
-# #466 R309 — Lean socket for the `c=3` relation-web excess formula
+# #466 R309: c=3 relation-web formula
 
-## What R308 exposed
+Date: 2026-07-09
 
-R308 found that the dangerous `c = 3` binomial norm relation-web at `n = 64` and `n = 128`
-has exactly three positive collision-delta strata:
+## What landed
 
-```text
-count n        at delta 24n - 18
-count 2n       at delta 90
-count n(n-7)   at delta 36
-```
-
-This was observed in:
+`Frontier/_R309C3RelationWebFormula.lean` proves the arithmetic simplification
+for the `c = 3` relation-web histogram identified by the R308 probe/anatomy:
 
 ```text
-scripts/probes/_out_466_r308_n64_c3_danger.txt
-scripts/probes/_out_466_r308_n128_c3_danger.txt
+c3HistogramMass n = 60 n^2 - 90 n
 ```
 
-## Lean result
-
-New file:
+and compares it to the depth-3 exact-Wick headroom:
 
 ```text
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R309C3RelationWebFormula.lean
+depth3Headroom n = 45 n^2 - 40 n.
 ```
 
-It proves the algebraic consequence of that histogram:
+Main declarations:
 
 ```text
-n(24n - 18) + 2n*90 + n(n-7)*36 = 60n² - 90n
+c3HistogramMass_eq
+depth3Headroom_lt_c3HistogramMass
+c3HistogramMass_sub_headroom
 ```
 
-and verifies that this beats the exact-Wick depth-3 headroom:
+For every `n >= 4`, the c=3 histogram mass exceeds the depth-3 headroom.  The
+gap is:
 
 ```text
-60n² - 90n > 45n² - 40n   for every n >= 4.
+c3HistogramMass n - depth3Headroom n = 5 n (3 n - 10).
 ```
 
-Equivalently, the excess over headroom is:
+## Meaning
+
+This does not prove the relation-web classification.  It locks the algebraic
+consequence of that classification, preventing constant drift: if the three
+strata are proved as stated, the c=3 web is too large for the depth-3 headroom.
+
+## Validation
+
+Passed:
 
 ```text
-5n(3n - 10).
+./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R309C3RelationWebFormula.lean
 ```
-
-Validation:
-
-```bash
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R309C3RelationWebFormula.lean
-```
-
-passed in 30s, axiom-clean (`propext`, `Classical.choice`/`Quot.sound` audit only; no `sorryAx`).
-
-## Attempted next-rung stress
-
-Factoring `3^128 + 1` for `n = 256` found several prime factors `p ≡ 1 (mod 256)`, including
-beta `8.382`.  A brute-force `build_n3(256)` evaluation was started but stopped: the pure
-Python triple enumeration is too slow for useful iteration at this rung.  No `n = 256`
-classification claim is made here.
-
-## Status
-
-This does not prove the relation-web classification.  It proves the arithmetic endgame:
-if the R308 three-stratum `c=3` histogram holds at a dyadic `n`, then exact-Wick depth 3
-fails automatically.
-
-The remaining theorem-shaped target is:
-
-```text
-C3RelationWebHistogram:
-  under the nondegenerate c=3 binomial relation pattern, the collision histogram has
-  counts n, 2n, n(n-7) at deltas 24n-18, 90, 36.
-```
-
-That is the next real proof/refutation target.

@@ -59,9 +59,9 @@ This is still not the prize proof.  The adapter leaves the real work explicit:
 
 ## Validation
 
-`_R295MixedCollisionLadderSocket.lean` passed `pg-iterate`.
+The relevant checks passed:
 
-R296 is source-staged and passes `git diff --check`.  Full Lean validation of
-R296 requires compiled `.olean` files for the newly added R294 prize bridge and
-R295 ladder socket; at time of writing, the checkout build lock was held by
-long-running unrelated Binius builds.
+```text
+./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R295MixedCollisionLadderSocket.lean
+./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R296CollisionLadderToPrizeSocket.lean
+```
