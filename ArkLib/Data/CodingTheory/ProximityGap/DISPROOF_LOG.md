@@ -21330,3 +21330,30 @@ Both classical, neither claimed. Enabler note: Mathlib's `RingTheory/Polynomial/
 (new API: `resultant_map_map`, `resultant_ne_zero`, `resultant_eq_zero_iff`) is what made this
 brick cheap — earlier campaigns recorded resultant work as blocked on Mathlib support.
 CORE OPEN, ON-BGK (the ledger route stays almost-all/high-β per FS1's honest scope).
+
+## [466-FS3-annihilator-height-bound] FS1 ANNIHILATOR INPUT COMPLETED (Fable session): explicit dyadic height `|N(g)| ≤ 2^{(k+1+b)·2^{k+1}}` via Sylvester-determinant Leibniz bound — the FS1 `H ≤ 2^L` input is now fully discharged; only the addEnergy3 pattern-parametrization remains (2026-07-09)
+
+Lane: FS3 (file `Frontier/_FS3AnnihilatorHeightBound.lean`, real locked build 2684 jobs, all 4
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `sylvester_entry_abs_le`: every entry of `sylvester (x^m+1) g m d` is 0, a coefficient of
+  `x^m+1` (≤1), or a coefficient of `g` (≤B).
+- `patternResultant_abs_le`: `|N(g)| ≤ (m + deg g)! · B^(m + deg g)` via `Matrix.det_le`.
+- `factorial_height_le_two_pow`: crude dyadic form `(m+d)!·B^(m+d) ≤ 2^{(k+1+b)·2^{k+1}}`
+  (`m = 2^k`, `d ≤ m`, `B ≤ 2^b`; factorial ≤ D^D route, log-factor loss accepted).
+- `pattern_annihilator_exists_with_height` (CAPSTONE): nonzero + height + divisibility in
+  EXACTLY the FS1 `annihilator_ledger_badPrime_cap` shape (`N ≤ H = 2^L`,
+  `L = (k+1+b)·2^{k+1}`; depth-3 patterns have `b = 3`, so `L = (k+4)·n` at `n = 2^{k+1}`).
+
+COMPOSITION NOW AVAILABLE (FS1 + FS2 + FS3): for any family P of primes ≥ 2^s and any pattern
+family with per-pattern nonzero-annihilator instantiation, #{p ∈ P : depth-3 excess ≥ 45n²−40n+1}
+≤ |pats|·(L/s)/(45n²−40n+1), and at every other prime the EXACT Wick bound
+`GaussianEnergyBound G 3` fires through the r53 weld. With |pats| ≤ n⁶, L = (k+4)n, s = β·log₂ n:
+#bad ≲ n⁵·(k+4)/(45·β·log₂ n) — the almost-all-primes r=3 rung, non-vacuous for β ≳ 6.
+
+REMAINING NAMED INPUT (one): the exponent-parametrization of addEnergy3 for G = μ_n — the
+bijection tuples ↔ patterns, char-0 count = 15n³−45n²+40n (r50 closed form), pattern count ≤ n⁶,
+coefficient bound 6, producing `Depth3ExcessBounded G (excessCount pats Bad p)`. Mechanical but
+sizable; next lane. INFRA NOTE: `Mathlib.LinearAlgebra.Matrix.AbsoluteValue` olean was
+toolchain-stale (kernel `unknown constant Semiring.toMonoid`); fixed by
+`lake-locked.sh build Mathlib.LinearAlgebra.Matrix.AbsoluteValue` (1388 jobs). CORE OPEN, ON-BGK.
