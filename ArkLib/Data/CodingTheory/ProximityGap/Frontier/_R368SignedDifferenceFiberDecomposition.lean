@@ -81,7 +81,7 @@ theorem signedShadowPairDiscrepancy_eq_sum_differenceMass
       unfold signedShadowPairDiscrepancy f P differenceDiscrepancyCoeff
       apply Finset.sum_congr rfl
       intro p hp
-      rw [if_congr (hpair p)]
+      rw [if_congr (hpair p)] <;> rfl
     _ = ∑ d ∈ D, ∑ p ∈ P.filter (fun p => shadowDifference p = d), f p :=
       (Finset.sum_fiberwise_of_maps_to (g := shadowDifference) (f := f) hmaps).symm
     _ = ∑ d ∈ D,

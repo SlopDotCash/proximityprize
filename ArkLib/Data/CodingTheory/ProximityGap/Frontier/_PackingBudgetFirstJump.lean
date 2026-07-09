@@ -364,8 +364,7 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
   have hprev_mul : δprev * (n : ℝ≥0) = (w : ℝ≥0) := by
     dsimp only [δprev, w]
     simpa [Fintype.card_fin] using
-      (ProximityGap.one_sub_div_mul_cast (F := ZMod p) (A := ZMod p)
-        (i := Fin n) a ha)
+      (ProximityGap.one_sub_div_mul_cast (ι := Fin n) a ha)
   have hprev_ratio : δprev = (w : ℝ≥0) / (n : ℝ≥0) := by
     apply mul_right_cancel₀ hn0
     rw [hprev_mul, div_mul_cancel₀ _ hn0]
@@ -413,16 +412,14 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
     · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
         dsimp only [δprev]
         simpa [Fintype.card_fin] using
-          (ProximityGap.ceil_one_sub_one_sub_div (F := ZMod p) (A := ZMod p)
-            (i := Fin n) a ha)
+          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha)
       rw [hceil, Fintype.card_fin]
       dsimp only [a]
       omega
     · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
         dsimp only [δprev]
         simpa [Fintype.card_fin] using
-          (ProximityGap.ceil_one_sub_one_sub_div (F := ZMod p) (A := ZMod p)
-            (i := Fin n) a ha)
+          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha)
       rw [hceil, Fintype.card_fin]
       dsimp only [a]
       omega

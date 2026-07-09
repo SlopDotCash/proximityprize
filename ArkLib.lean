@@ -2779,6 +2779,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R36JacobiPowers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R371ShadowKernelRotationAction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R372ShadowRelationRotationEquivariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R376PerFrequencyShadowLogMEndpoint
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R377GaloisKernelStabilityRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap

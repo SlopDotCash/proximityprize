@@ -1048,8 +1048,8 @@ private theorem fullTranscriptFst_heq_entry (T : (pSpec₁ ++ₚ pSpec₂).FullT
     HEq (T.fst i) (T (Fin.castAdd n i)) := by
   rw [← congrFun (FullTranscript.fst_append_snd T) (Fin.castAdd n i)]
   refine HEq.trans ?_ (Fin.happend_heq_left T.fst T.snd (Fin.castAdd n i)
-    (by simp only [Fin.coe_castAdd]; omega)).symm
-  exact fin_app_heq T.fst (by simp only [Fin.coe_castAdd, Fin.val_mk])
+    (by simp only [Fin.val_castAdd]; omega)).symm
+  exact fin_app_heq T.fst (by simp only [Fin.val_castAdd, Fin.val_mk])
 
 /-- Entry-level unfolding of the full second-half projection. -/
 private theorem fullTranscriptSnd_heq_entry (T : (pSpec₁ ++ₚ pSpec₂).FullTranscript) (i : Fin n) :
@@ -1184,25 +1184,21 @@ def StateFunction.append
           have hv : (i : ℕ) = (j : ℕ) :=
             (Fin.heq_ext_iff (by simp only [Fin.val_mk, Fin.val_succ]; omega)).mp hij
           refine HEq.trans (transcriptFst_heq_entry _ i) ?_
-          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.coe_castLT]
+          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.val_castLT]
           by_cases hc : (j : ℕ) < (roundIdx : ℕ)
           · -- interior round: both sides are entries of `tr`
-            rw [dif_pos (show (i : ℕ) < ((roundIdx : Fin (m + n)).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc]; omega),
-              dif_pos (show (j : ℕ) < (((⟨(roundIdx : ℕ), hlt⟩ : Fin m)).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc]; omega)]
+            rw [dif_pos (show (i : ℕ) < (roundIdx : ℕ) from by omega), dif_pos hc]
             refine (cast_heq _ _).trans (HEq.trans ?_ (cast_heq _ _).symm)
             have hi₀ : (i : ℕ) < min ((roundIdx : Fin (m + n)).castSucc : ℕ) m := by
-              simp only [Fin.coe_castSucc]; omega
+              try simp only [Fin.val_castSucc]
+              omega
             refine HEq.trans (transcriptFst_heq_entry tr ⟨(i : ℕ), hi₀⟩).symm ?_
             exact (eqMp_transcript_heq_entry
-              (by ext; simp only [Fin.coe_castSucc, Fin.val_mk]; omega) _ tr.fst
-              (i := ⟨(i : ℕ), hi₀⟩) (by simp only [Fin.val_mk, Fin.coe_castLT]; exact hv)).symm
+              (by ext; try simp only [Fin.val_castSucc, Fin.val_mk]; omega) _ tr.fst
+              (i := ⟨(i : ℕ), hi₀⟩)
+              (by try simp only [Fin.val_mk, Fin.val_castLT]; omega)).symm
           · -- seam round: both sides are the new message
-            rw [dif_neg (show ¬ (i : ℕ) < ((roundIdx : Fin (m + n)).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc]; omega),
-              dif_neg (show ¬ (j : ℕ) < (((⟨(roundIdx : ℕ), hlt⟩ : Fin m)).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc]; omega)]
+            rw [dif_neg (show ¬ (i : ℕ) < (roundIdx : ℕ) from by omega), dif_neg hc]
             exact (cast_heq _ _).trans (((cast_heq _ _).trans (cast_heq _ _)).symm)
     · -- second segment: roundIdx ≥ m
       rw [not_lt] at hlt
@@ -1225,11 +1221,10 @@ def StateFunction.append
           have him : (i : ℕ) < m := lt_of_lt_of_le i.isLt (by simp only [Fin.val_mk]; omega)
           refine HEq.trans (transcriptFst_heq_entry _ i) ?_
           refine HEq.trans ?_ (transcriptFst_heq_entry tr j).symm
-          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.coe_castLT]
-          rw [dif_pos (show (i : ℕ) < ((roundIdx : Fin (m + n)).castSucc : ℕ) from by
-            simp only [Fin.coe_castSucc]; omega)]
+          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.val_castLT]
+          rw [dif_pos (show (i : ℕ) < (roundIdx : ℕ) from by omega)]
           refine (cast_heq _ _).trans ?_
-          exact fin_app_heq tr (by simp only [Fin.coe_castLT, Fin.val_mk]; exact hv)
+          exact fin_app_heq tr (by try simp only [Fin.val_castLT, Fin.val_mk]; omega)
       -- The succ-round (`> m`) goal is the second state function on the phase-2 prefix. We will
       -- show
       -- `¬ S₂ ((roundIdx - m).succ) (verify stmt₁ tr.fst) (tr.snd.concat msg₂)` (the "clean" form,
@@ -1354,25 +1349,19 @@ def StateFunction.append
           have hksucc : ¬ ((roundIdx : Fin (m + n)).succ : ℕ) ≤ m := by
             simp only [Fin.val_succ]; omega
           refine HEq.trans ?_ (transcriptSnd_heq_entry (Transcript.concat msg tr) hksucc
-            ⟨(j : ℕ), by simp only [Fin.val_succ]; omega⟩).symm
-          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.coe_castLT]
+            ⟨(j : ℕ), by simpa only [Fin.val_mk] using j.isLt⟩).symm
+          simp only [Transcript.concat, Fin.snoc, Fin.val_mk, Fin.val_castLT]
           by_cases hc : (i : ℕ) < (roundIdx : ℕ) - m
           · -- interior phase-2 round: both sides are entries of `tr` past the boundary
-            rw [dif_pos (show (i : ℕ)
-                  < ((⟨(roundIdx : ℕ) - m, by omega⟩ : Fin n).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc, Fin.val_mk]; omega),
-              dif_pos (show m + (j : ℕ) < ((roundIdx : Fin (m + n)).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc]; omega)]
+            rw [dif_pos hc,
+              dif_pos (show m + (j : ℕ) < (roundIdx : ℕ) from by omega)]
             refine (cast_heq _ _).trans (HEq.trans ?_ (cast_heq _ _).symm)
             refine HEq.trans (transcriptSnd_heq_entry tr
-              (by simp only [Fin.coe_castSucc]; omega) _) ?_
-            exact fin_app_heq tr (by simp only [Fin.val_mk, Fin.coe_castLT]; omega)
+              (by try simp only [Fin.val_castSucc]; omega) _) ?_
+            exact fin_app_heq tr (by try simp only [Fin.val_mk, Fin.val_castLT]; omega)
           · -- seam: both sides are the new message
-            rw [dif_neg (show ¬ (i : ℕ)
-                  < ((⟨(roundIdx : ℕ) - m, by omega⟩ : Fin n).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc, Fin.val_mk]; omega),
-              dif_neg (show ¬ m + (j : ℕ) < ((roundIdx : Fin (m + n)).castSucc : ℕ) from by
-                simp only [Fin.coe_castSucc]; omega)]
+            rw [dif_neg hc,
+              dif_neg (show ¬ m + (j : ℕ) < (roundIdx : ℕ) from by omega)]
             exact ((cast_heq _ _).trans (cast_heq _ _)).trans (cast_heq _ _).symm
   toFun_full := by
     -- `toFun (last)` on the appended protocol is `S₂ (last)` on the phase-2 transcript (since
@@ -1394,7 +1383,7 @@ def StateFunction.append
       have hv : (i : ℕ) = (j : ℕ) := (Fin.heq_ext_iff hmincard).mp hij
       refine HEq.trans (transcriptFst_heq_entry (k := Fin.last (m + n)) T i) ?_
       refine HEq.trans ?_ (fullTranscriptFst_heq_entry T j).symm
-      exact fin_app_heq T (by simp only [Fin.coe_castAdd, Fin.val_mk]; exact hv)
+      exact fin_app_heq T (by simp only [Fin.val_castAdd, Fin.val_mk]; exact hv)
     have htSndHeq : ∀ (T : (pSpec₁ ++ₚ pSpec₂).FullTranscript),
         (Transcript.snd (k := Fin.last (m + n)) T) ≍ FullTranscript.snd T := by
       intro T

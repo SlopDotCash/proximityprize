@@ -1,9 +1,4 @@
 {
  "note": "Upstream-inherited sorry/admit holes (Verified-zkEVM/ArkLib sync of 2026-07-08, merge f59d294fb). These pre-exist upstream and are baselined so the zero-hole gate ratchets: any NEW hole still fails CI. Remove entries as the proofs land. Tracked in lalalune/ArkLib issue #470.",
- "holes": [
-  {
-   "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "decl": "def StateFunction.append"
-  }
- ]
+ "holes": []
 }
