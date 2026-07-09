@@ -2047,6 +2047,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FErightedgeLDPRateFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FFCompositeDiscrepancyChaining
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FIResolventEdgePerturbation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS1Depth3AnnihilatorLedger
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS2PatternAnnihilatorResultant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._Face4OverdetBypassBoundary
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FallingFactorialDecay
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FarLineProxyTowerN32Corrected

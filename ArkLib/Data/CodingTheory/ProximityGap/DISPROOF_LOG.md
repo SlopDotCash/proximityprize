@@ -21303,3 +21303,30 @@ HONEST SCOPE (the F9/J1 shadow at r=3): with |pats| = n⁶, H = 6^{n/2}, p ≥ n
 β ≳ 6; at the prize shape β ≈ 5.3 it caps nothing. This is an average/almost-all rung, NOT a
 per-prime prize rung; the per-prime uniformity at prize β remains the wall (rank-independent
 S-unit obstruction, r28b audit). Logged as a positive reduction brick. CORE OPEN, ON-BGK.
+
+## [466-FS2-pattern-annihilator-discharged] FS1 INPUT DISCHARGED (Fable session): the pattern annihilator EXISTS — nonzero cyclotomic resultant `N(g) = Res(x^{2^k}+1, g)` with `p ∣ N(g)` at every common-root prime, axiom-clean via Mathlib's new resultant API (2026-07-09)
+
+Lane: FS2 (file `Frontier/_FS2PatternAnnihilatorResultant.lean`, real locked build 2681 jobs,
+all 3 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+Discharges the EXISTENCE half of FS1's named arithmetic input, unconditionally:
+- `patternResultant_ne_zero`: for `m = 2^k`, `g ∈ ℤ[X]`, `g ≠ 0`, `deg g < m`, the integer
+  `N(g) := Res_{m,deg g}(x^m+1, g)` is NONZERO — over ℚ, `x^m+1 = Φ_{2^{k+1}}` (via
+  `cyclotomic_prime_pow_eq_geom_sum`) is irreducible (`cyclotomic.irreducible_rat`), so smaller-
+  degree nonzero `g` is coprime to it and `resultant_ne_zero` applies; `resultant_map_map`
+  transports ℤ → ℚ.
+- `charP_dvd_patternResultant_of_common_root`: in ANY field `F` of char `p` containing `ζ` with
+  `ζ^m = −1` and `aeval ζ g = 0`, the mapped resultant vanishes (common root kills coprimality,
+  `resultant_eq_zero_iff`; degree-padding handled by `resultant_add_right_deg` with the monic top
+  coefficient) — so `p ∣ N(g)`. NOTE: `ζ^{2^k} = −1` ⟺ ζ has order `2^{k+1}` — exactly the μ_n
+  generator avatar for smooth 2-power `n = 2^{k+1}`.
+- `pattern_annihilator_exists`: the FS1-shaped package `∃ N : ℕ, N ≠ 0 ∧ ∀ F p ζ, bad → p ∣ N`.
+
+REMAINING NAMED INPUTS for the full FS1 almost-all-primes r=3 rung: (i) the HEIGHT bound
+`|N(g)| ≤ 6^{n/2}` (product over unit-modulus roots, or Hadamard/Leibniz on the Sylvester
+determinant with a log-factor loss — feeds FS1's `H ≤ 2^L`); (ii) the exponent-parametrization
+of `addEnergy3` producing the pattern set with `|pats| ≤ n⁶` against the char-0 closed form.
+Both classical, neither claimed. Enabler note: Mathlib's `RingTheory/Polynomial/Resultant/Basic`
+(new API: `resultant_map_map`, `resultant_ne_zero`, `resultant_eq_zero_iff`) is what made this
+brick cheap — earlier campaigns recorded resultant work as blocked on Mathlib support.
+CORE OPEN, ON-BGK (the ledger route stays almost-all/high-β per FS1's honest scope).
