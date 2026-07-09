@@ -41,7 +41,7 @@ jobs:
         run: python3 ./scripts/kb/check_generated.py
 
       - name: Lint generated KB state
-        run: python3 ./scripts/kb/lint.py --strict-cited-pages --use-generated-indexes
+        run: python3 ./scripts/kb/lint.py --strict-cited-pages
 
       - name: Open generated update PR
         env:
