@@ -1,0 +1,10 @@
+n=64 p=926510094425921
+observed signature histogram:
+  signature=(189, 3, 1) delta=1518 count=64 mass=97152
+  signature=(6, 3, 3) delta=90 count=128 mass=11520
+  signature=(6, 3) delta=36 count=3648 mass=131328
+predicted signature histogram:
+  signature=(189, 3, 1) delta=1518 count=64 mass=97152
+  signature=(6, 3, 3) delta=90 count=128 mass=11520
+  signature=(6, 3) delta=36 count=3648 mass=131328
+matches predicted signatures: True
