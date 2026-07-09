@@ -21356,3 +21356,19 @@ outputs `_out_466_r305_*.txt`, kb `deltastar-466-r305-depth3-excess-complete-cla
   precise invariant; the lane re-routes into dossier §6 Tier-1 item 4 with the right object.
 - Prize wall untouched (census cost ~ n³ per n; infeasible at n=2³⁰) — but depth-3 at small n
   is no longer scan-evidence: it is a finite exact theory. CORE OPEN, ON-BGK.
+
+## [466-r307-binomial-norm-highbeta] beta-frontier rescue for depth-3 exact-Wick is REFUTED at n=64 and n=128 by small-height binomial norm divisors: violations at β=8.286 and β=14.348 (2026-07-09)
+
+Follow-up to r305's `p=(3^16+1)/2` mechanism. New bigint-safe probe
+`scripts/probes/probe_r307_binomial_norm_depth3.py` factors `c^(n/2)+1 = Norm(c+ζ)`, keeps
+prime factors `p≡1 (mod n)`, and evaluates exact depth-3 excess by sparse pushforward of the
+char-zero 3-sum histogram. Outputs `_out_466_r307_n64.txt`, `_out_466_r307_n128.txt`.
+
+REFUTED rescue: "take beta large enough and exact Wick becomes safe." At n=64,
+`p=926510094425921` (large factor of `3^32+1`, β=8.286) has excess/headroom=1.320. At n=128,
+`p=1716841910146256242328924544641` (large factor of `3^64+1`, β=14.348) has
+excess/headroom=1.327. Also n=128 has `p=67280421310721` (factor of `2^64+1`, β=6.562)
+with excess/headroom=5.934. Some binomial norm factors are harmless (zero/tiny excess), so the
+dangerous invariant is relation-web mass, not binomiality alone. Consequence: depth-3 exact-Wick
+can only be repaired by dangerous-prime/relation-web exclusion or by a log-depth argument that
+tolerates fixed-depth failures; no beta cutoff rescue. CORE OPEN.
