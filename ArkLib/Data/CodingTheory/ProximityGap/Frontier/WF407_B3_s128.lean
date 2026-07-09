@@ -119,7 +119,7 @@ theorem effectiveTZ_dominates_polyBudget {n : ℕ} {β c : ℝ}
 
 /-! ### Reading of the verdict (non-theorem documentation) -/
 
-/-- **The s=128 gate is prime EXISTENCE, not resultant size** (documentation lemma).  The two
+/-! **The s=128 gate is prime EXISTENCE, not resultant size** (documentation note).  The two
 in-tree resultant bounds give `M_coarse = s^{s/2}` and `M_parseval = 2^{3n/4}` with
 `M_parseval ≤ M_coarse` (the Parseval halving).  By `budget_monotone_in_resultantBound` the
 Parseval bound's budget is `≤` the coarse budget; and by `effectiveTZ_dominates_polyBudget`
@@ -128,7 +128,6 @@ which *did* open the s=64 census/explicit-threshold route (`p > M`, fixed `|F| <
 **irrelevant** to the polynomial-field s=128 ceiling: that lane closes iff
 `EffectiveTZLowerBound` holds, full stop.  (This is a comment, not a `Prop`; the content is the
 two theorems above.) -/
-theorem s128_gate_is_prime_existence : True := trivial
 
 end ArkLib.ProximityGap.KKH26
 

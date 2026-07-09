@@ -142,13 +142,12 @@ theorem haloFree_s256 (hPB : ParsevalCensusResultantBound 8)
 
 /-! ### Reading of the verdict (documentation) -/
 
-/-- **The coverage frontier, pinned** (documentation lemma).  Combining the four extent
+/-! **The coverage frontier, pinned** (documentation note).  Combining the four extent
 theorems: the in-tree ℓ¹ engine covers `s ≤ 64` unconditionally (`coverage_s64_l1`,
 `no_coverage_s128_l1`); the Parseval engine extends this to `s ≤ 256`
 (`coverage_s256_parseval`, `no_coverage_s512_parseval`).  So at `|F| < 2^256` the
 unconditional depth-1 census-coverage frontier is **s = 256** (was s = 64), gated on the single
 named `Prop` `ParsevalCensusResultantBound 8`.  (Content is the theorems above.) -/
-theorem coverage_frontier_is_s256 : True := trivial
 
 end ArkLib.ProximityGap.KKH26
 
