@@ -348,7 +348,33 @@ theorem offDiagInterMass_subtype_eq (G : Finset F) (S : F -> Finset (Fin n)) :
     offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) =
       ∑ gamma ∈ G, ∑ gamma' ∈ G.erase gamma, (S gamma ∩ S gamma').card := by
   classical
-  simp [offDiagInterMass]
+  simp only [offDiagInterMass, Finset.univ_eq_attach]
+  have hinner : ∀ x : {x // x ∈ G},
+      (∑ y ∈ G.attach.erase x, (S x.1 ∩ S y.1).card) =
+        ∑ y ∈ G.erase x.1, (S x.1 ∩ S y).card := by
+    intro x
+    refine Finset.sum_bij'
+      (fun y _ => y.1)
+      (fun y hy => (⟨y, (Finset.mem_erase.mp hy).2⟩ : {z // z ∈ G})) ?_ ?_ ?_ ?_ ?_
+    · intro y hy
+      have hy' := Finset.mem_erase.mp hy
+      exact Finset.mem_erase.mpr ⟨fun h => hy'.1 (Subtype.ext h), y.2⟩
+    · intro y hy
+      have hy' := Finset.mem_erase.mp hy
+      exact Finset.mem_erase.mpr ⟨fun h => hy'.1 (congrArg Subtype.val h),
+        Finset.mem_attach.mpr (Finset.mem_univ _)⟩
+    · intro y _
+      exact Subtype.ext rfl
+    · intro y _
+      rfl
+    · intro y _
+      rfl
+  calc
+    (∑ x ∈ G.attach, ∑ y ∈ G.attach.erase x, (S x.1 ∩ S y.1).card) =
+        ∑ x ∈ G.attach, ∑ y ∈ G.erase x.1, (S x.1 ∩ S y).card :=
+      Finset.sum_congr rfl (fun x _ => hinner x)
+    _ = ∑ x ∈ G, ∑ y ∈ G.erase x, (S x ∩ S y).card :=
+      Finset.sum_attach G (fun x => ∑ y ∈ G.erase x.1, (S x.1 ∩ S y).card)
 
 end FinalLens
 
