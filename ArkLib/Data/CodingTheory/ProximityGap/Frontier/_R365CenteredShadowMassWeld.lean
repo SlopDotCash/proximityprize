@@ -22,7 +22,6 @@ namespace ArkLib.ProximityGap.Frontier.R365CenteredShadowMassWeld
 
 open ArkLib.ProximityGap.DCEnergyCorrection
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
-open ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.Frontier.R306Depth3CharZeroFloor
 open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
 open ArkLib.ProximityGap.Frontier.R310ShadowFloorToRFoldEnergy

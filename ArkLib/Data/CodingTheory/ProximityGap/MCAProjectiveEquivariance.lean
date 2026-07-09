@@ -227,16 +227,16 @@ noncomputable def badSlotCount (C : Set (ι → A)) (δ : ℝ≥0) (u₀ u₁ : 
 /-! ## The induced Mobius action on projective slots -/
 
 /-- Normalize nonzero homogeneous coordinates into the `Option F` chart. -/
-def normalizeSlot (x y : F) : Option F :=
+private def normalizeSlot (x y : F) : Option F :=
   if x = 0 then none else some (x⁻¹ * y)
 
 /-- The projective-slot map induced by the row mix with entries `(a,b;c,d)`. -/
-def rowMixSlotMap (a b c d : F) : Option F → Option F
+private def rowMixSlotMap (a b c d : F) : Option F → Option F
   | none => normalizeSlot c d
   | some t => normalizeSlot (a + t * c) (b + t * d)
 
 /-- The adjugate row mix is a left inverse on projective slots. -/
-theorem rowMixSlotMap_adjugate_left (a b c d : F) (hdet : a * d - b * c ≠ 0)
+private theorem rowMixSlotMap_adjugate_left (a b c d : F) (hdet : a * d - b * c ≠ 0)
     (s : Option F) :
     rowMixSlotMap d (-b) (-c) a (rowMixSlotMap a b c d s) = s := by
   rcases s with _ | t
@@ -245,6 +245,7 @@ theorem rowMixSlotMap_adjugate_left (a b c d : F) (hdet : a * d - b * c ≠ 0)
     · simp [hc]
     · simp [hc]
       field_simp
+      ring
   · unfold rowMixSlotMap normalizeSlot
     by_cases hx : a + t * c = 0
     · simp [hx]
@@ -261,10 +262,23 @@ theorem rowMixSlotMap_adjugate_left (a b c d : F) (hdet : a * d - b * c ≠ 0)
         apply hdet
         field_simp at hzero
         linear_combination hzero
-      simp only [hfirst, ↓reduceIte]
-      apply congrArg some
-      field_simp
-      ring
+      have hfirst' : d + -((a + t * c)⁻¹ * (b + t * d) * c) ≠ 0 := by
+        simpa [mul_neg] using hfirst
+      constructor
+      · exact hfirst'
+      · have hdet' : a * d - c * b ≠ 0 := by simpa [mul_comm] using hdet
+        have hden :
+            d + -((a + t * c)⁻¹ * (b + t * d) * c) =
+              (a + t * c)⁻¹ * (a * d - c * b) := by
+          field_simp [hx]
+          ring
+        have hnum :
+            -b + (a + t * c)⁻¹ * (b + t * d) * a =
+              (a + t * c)⁻¹ * (t * (a * d - c * b)) := by
+          field_simp [hx]
+          ring
+        rw [hden, hnum]
+        field_simp [hx, hdet']
 
 /-- The Mobius permutation of projective slots induced by an invertible row mix. -/
 def rowMixSlotEquiv (a b c d : F) (hdet : a * d - b * c ≠ 0) : Option F ≃ Option F where
@@ -285,20 +299,37 @@ theorem badSlot_row_mix_iff (C : Submodule F (ι → A)) {a b c d : F}
       badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁
         (rowMixSlotEquiv a b c d hdet s) := by
   rcases s with _ | t
-  · have hrow := mcaEventProj_row_mix C hdet δ u₀ u₁ 0 1
+  · have hrow :
+        mcaEventProj (F := F) (C : Set (ι → A)) δ
+            (a • u₀ + b • u₁) (c • u₀ + d • u₁) 0 1 ↔
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ c d := by
+      simpa using mcaEventProj_row_mix C hdet δ u₀ u₁ 0 1
     by_cases hc : c = 0
     · have hd : d ≠ 0 := by
         intro hd
         exact hdet (by simp [hc, hd])
       have hscale := mcaEventProj_smul C hd δ u₀ u₁ 0 1
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ c d ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 0 1 := by
+        simpa [hc] using hscale
       simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, hc] using
-        hrow.trans hscale
+        hrow.trans hscale'
     · have hscale := mcaEventProj_smul C hc δ u₀ u₁ 1 (c⁻¹ * d)
-      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, hc,
-        mul_inv_cancel₀] using hrow.trans hscale
-  · have hrow := mcaEventProj_row_mix C hdet δ u₀ u₁ 1 t
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ c d ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 1 (c⁻¹ * d) := by
+        simpa [mul_assoc, hc] using hscale
+      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, hc] using
+        hrow.trans hscale'
+  · have hrow0 := mcaEventProj_row_mix C hdet δ u₀ u₁ 1 t
     let x := a + t * c
     let y := b + t * d
+    have hrow :
+        mcaEventProj (F := F) (C : Set (ι → A)) δ
+            (a • u₀ + b • u₁) (c • u₀ + d • u₁) 1 t ↔
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ x y := by
+      simpa [x, y] using hrow0
     by_cases hx : x = 0
     · have hy : y ≠ 0 := by
         intro hy
@@ -307,11 +338,19 @@ theorem badSlot_row_mix_iff (C : Submodule F (ι → A)) {a b c d : F}
         dsimp [y] at hy
         linear_combination d * hx - c * hy
       have hscale := mcaEventProj_smul C hy δ u₀ u₁ 0 1
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ x y ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 0 1 := by
+        simpa [hx] using hscale
       simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, x, y, hx]
-        using hrow.trans hscale
+        using hrow.trans hscale'
     · have hscale := mcaEventProj_smul C hx δ u₀ u₁ 1 (x⁻¹ * y)
-      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, x, y, hx,
-        mul_inv_cancel₀] using hrow.trans hscale
+      have hscale' :
+          mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ x y ↔
+            mcaEventProj (F := F) (C : Set (ι → A)) δ u₀ u₁ 1 (x⁻¹ * y) := by
+        simpa [mul_assoc, hx] using hscale
+      simpa [badSlot, slotCoords, rowMixSlotEquiv, rowMixSlotMap, normalizeSlot, x, y, hx]
+        using hrow.trans hscale'
 
 private theorem card_filter_comp_equiv {X : Type} [Fintype X] [DecidableEq X]
     (P : X → Prop) [DecidablePred P] (e : X ≃ X) :
@@ -410,7 +449,7 @@ theorem badSlotCount_eq_affine_add_infty (C : Set (ι → A)) (δ : ℝ≥0) (u�
 #print axioms pairJointAgreesOn_row_mix_iff
 #print axioms mcaEventProj_row_mix
 #print axioms mcaEventProj_smul
-#print axioms rowMixSlotMap_adjugate_left
+#print axioms rowMixSlotEquiv
 #print axioms badSlot_row_mix_iff
 #print axioms badSlotCount_row_mix
 #print axioms badSlotCount_eq_affine_add_infty

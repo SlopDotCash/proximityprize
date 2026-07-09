@@ -21,6 +21,11 @@ WorstCaseIncidenceBounded C delta E
 
 This is an exact equivalence, not an affine-to-projective estimate with an extra slot.
 
+The substrate now also exposes `rowMixSlotEquiv`, the explicit Mobius permutation induced by
+an arbitrary invertible `2 x 2` row mix, together with `badSlot_row_mix_iff` and
+`badSlotCount_row_mix`.  Thus the projective census is formally independent of the chosen
+ordered generators of a rank-two pencil.
+
 ## Proof mechanism
 
 The projective census decomposes as the affine bad-scalar count plus an indicator for the
@@ -41,6 +46,20 @@ the universal affine hypothesis to that rebased stack proves the projective budg
 
 The strict budget condition is used exactly once: to ensure a good affine slot exists.  It is
 the relevant regime for normalized error thresholds below one, including the prize budget.
+
+## Sharpness
+
+The boundary section of `ProjectiveWorstCaseIncidence.lean` proves that the strict inequality
+cannot be relaxed.  Over `F_2`, the zero code on three coordinates at radius `2/3` has a row pair whose
+three projective slots are all bad.  At `E = |F_2| = 2`, every affine census is nevertheless
+at most two by cardinality.  Consequently
+
+```text
+WorstCaseIncidenceBounded C delta |F_2|
+```
+
+holds universally while `ProjectiveWorstCaseIncidenceBounded C delta |F_2|` fails.  The
+hypothesis `E < |F|` is therefore sharp, not a proof artifact.
 
 ## Operational consumers
 
@@ -67,14 +86,15 @@ plumbing.
 This result does not prove the production incidence bound.  It identifies the exact object
 that must be bounded and removes a chart artifact from that task.
 
-A concrete next route is to descend `badSlotCount` from ordered row pairs to their rank-two
-projective pencil, quotienting by invertible row changes.  Rank-zero and rank-one stacks should
-be split off explicitly.  On the rank-two stratum, the target becomes a worst-case incidence
-bound over two-dimensional syndrome submodules rather than over arbitrary ordered generators.
-The new rebase theorem proves the chart move needed for this descent; a full general-`GL2`
-descent API is still to be formalized.
+A concrete next route is to package the now-proven generator invariance as a function on
+rank-two projective pencils, quotienting ordered row pairs by invertible row changes.  Rank-zero
+and rank-one stacks should be split off explicitly.  On the rank-two stratum, the target becomes
+a worst-case incidence bound over two-dimensional syndrome submodules rather than over arbitrary
+ordered generators.  The full row-mix census theorem supplies the mathematical descent; the
+quotient/Grassmannian packaging and the actual incidence estimate remain to be formalized.
 
 ## Validation
 
-The module typechecks in the stable Lean overlay.  Every exported theorem's axiom audit reports
-only `propext`, `Classical.choice`, and `Quot.sound`.
+The substrate, downstream equivalence, and sharpness section typecheck in the stable Lean
+overlay.  Every new exported theorem's axiom audit reports only `propext`, `Classical.choice`,
+and `Quot.sound`.

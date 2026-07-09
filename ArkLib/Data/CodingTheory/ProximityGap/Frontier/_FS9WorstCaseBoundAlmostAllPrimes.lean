@@ -43,6 +43,7 @@ open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm
 open ArkLib.ProximityGap.Frontier.FS6AlmostAllPrimesWickRung
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.GaussPeriodMomentBound
+open ArkLib.ProximityGap.InteriorWorstCaseIncompleteSum
 
 open scoped Classical
 

@@ -20,6 +20,7 @@ a computational witness and is proved equal to ordinary monoid exponentiation.
 
 namespace ArkLib.ProximityGap.PrizeShapePrimeP30
 
+set_option autoImplicit false
 set_option maxRecDepth 100000
 
 /-- The concrete prize-shaped modulus. -/

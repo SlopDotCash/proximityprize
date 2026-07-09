@@ -31,12 +31,11 @@ In the linear-code, finite-field setting of this module, the headline theorem
 `WorstCaseIncidenceBounded C delta E <-> forall u, badSlotCount C delta u0 u1 <= E`
 
 with the additional numeric hypothesis `E < |F|`.  The right side is a projective census, and
-the module exposes the special rebase invariance needed to change away from a bad infinity
-slot.  The final consumers feed it directly into the existing operational `mcaDeltaStar` floor
-engine.
+`MCAProjectiveEquivariance` proves its invariance under every invertible row mix.  The explicit
+rebase below is the chart change needed to move away from a bad infinity slot.  The final
+consumers feed the census directly into the existing operational `mcaDeltaStar` floor engine.
 This does not prove the incidence bound; it removes the affine-chart artifact and identifies
-the exact projective object a production proof must bound.  A public theorem for arbitrary
-invertible row mixes remains a further API step.
+the exact GL2-invariant projective object a production proof must bound.
 -/
 
 set_option autoImplicit false
@@ -80,24 +79,6 @@ def rebaseSlotEquiv (γ : F) : Option F ≃ Option F where
       · have hsub : t - γ ≠ 0 := sub_ne_zero.mpr ht
         simp [ht, hsub]
 
-/-- Cardinality of a filtered finite type is invariant under an equivalence. -/
-theorem card_filter_comp_equiv {X : Type} [Fintype X] [DecidableEq X]
-    (P : X → Prop) [DecidablePred P] (e : X ≃ X) :
-    (Finset.univ.filter (fun x => P (e x))).card =
-      (Finset.univ.filter P).card := by
-  classical
-  refine Finset.card_bij' (fun x _ => e x) (fun y _ => e.symm y) ?_ ?_ ?_ ?_
-  · intro x hx
-    exact Finset.mem_filter.mpr
-      ⟨Finset.mem_univ _, (Finset.mem_filter.mp hx).2⟩
-  · intro y hy
-    exact Finset.mem_filter.mpr
-      ⟨Finset.mem_univ _, by simpa using (Finset.mem_filter.mp hy).2⟩
-  · intro x _hx
-    simp
-  · intro y _hy
-    simp
-
 /-- Rebasing sends the chosen affine slot `gamma` exactly to infinity. -/
 theorem mcaEventProj_rebase_infty (C : Submodule F (ι → A)) (δ : ℝ≥0)
     (u₀ u₁ : ι → A) (γ : F) :
@@ -139,23 +120,9 @@ theorem badSlotCount_rebase (C : Submodule F (ι → A)) (δ : ℝ≥0)
     (u₀ u₁ : ι → A) (γ : F) :
     badSlotCount (F := F) (C : Set (ι → A)) δ u₁ (u₀ + γ • u₁) =
       badSlotCount (F := F) (C : Set (ι → A)) δ u₀ u₁ := by
-  classical
-  unfold badSlotCount
-  calc
-    (Finset.univ.filter (fun s : Option F =>
-        badSlot (F := F) (C : Set (ι → A)) δ u₁ (u₀ + γ • u₁) s)).card =
-        (Finset.univ.filter (fun s : Option F =>
-          badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ (rebaseSlotEquiv γ s))).card := by
-            congr 1
-            ext s
-            simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-            exact badSlot_rebase_iff C δ u₀ u₁ γ s
-    _ = (Finset.univ.filter (fun s : Option F =>
-          badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ s)).card :=
-      card_filter_comp_equiv
-        (fun s : Option F =>
-          badSlot (F := F) (C : Set (ι → A)) δ u₀ u₁ s)
-        (rebaseSlotEquiv γ)
+  simpa using
+    (badSlotCount_row_mix C (a := (0 : F)) (b := 1) (c := 1) (d := γ)
+      (by simp) δ u₀ u₁)
 
 /-- The projective form of the all-stack production incidence budget. -/
 def ProjectiveWorstCaseIncidenceBounded
@@ -321,3 +288,147 @@ end ProximityGap.ProjectiveWorstCaseIncidence
 #print axioms ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidence_pin
 #print axioms ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidence_pin_budget
 #print axioms ProximityGap.ProjectiveWorstCaseIncidence.mcaDeltaStar_eq_of_projective_jump
+
+/-! ## Sharpness of the strict budget hypothesis
+
+Over `F_2`, the zero code on three coordinates at radius `2/3` has a row pair whose three
+projective slots are all bad.  At the full-field budget `E = |F_2| = 2`, every affine census
+is nevertheless at most two by cardinality.  Thus `E < |F|` in the headline equivalence is
+sharp, not a proof artifact.
+-/
+
+attribute [local instance] Classical.propDecidable
+
+namespace ProximityGap.ProjectiveWorstCaseIncidenceBoundary
+
+open ProximityGap.MCAProjectiveEquivariance
+open ProximityGap.OpenCoreConditionalPin
+open ProximityGap.ProjectiveWorstCaseIncidence
+
+abbrev F2 := ZMod 2
+abbrev I3 := Fin 3
+
+def zeroCode : Submodule F2 (I3 → F2) := ⊥
+
+def u0 : I3 → F2 := ![0, 1, 1]
+def u1 : I3 → F2 := ![1, 0, 1]
+
+noncomputable def delta : ℝ≥0 := 2 / 3
+
+private theorem singleton_meets_radius :
+    (1 - delta) * Fintype.card I3 ≤ (1 : ℝ≥0) := by
+  change ((1 - 2 / 3) * 3 : ℝ≥0) ≤ 1
+  have h : (2 / 3 : ℝ≥0) ≤ 1 := by
+    rw [div_le_iff₀ (by norm_num : (0 : ℝ≥0) < 3)]
+    norm_num
+  have hsub : (1 - 2 / 3 : ℝ≥0) = 1 / 3 := by
+    apply NNReal.eq
+    rw [NNReal.coe_sub h]
+    norm_num
+  rw [hsub]
+  norm_num
+
+private theorem notJoint_zeroCode (i : I3) (hi0 : u0 i ≠ 0 ∨ u1 i ≠ 0) :
+    ¬ pairJointAgreesOn (zeroCode : Set (I3 → F2)) {i} u0 u1 := by
+  intro h
+  obtain ⟨v0, hv0, v1, hv1, hag⟩ := h
+  have hv0z : v0 = 0 := by simpa [zeroCode] using hv0
+  have hv1z : v1 = 0 := by simpa [zeroCode] using hv1
+  subst v0
+  subst v1
+  have hi := hag i (by simp)
+  rcases hi0 with h0 | h1
+  · exact h0 (by simpa using hi.1.symm)
+  · exact h1 (by simpa using hi.2.symm)
+
+private theorem bad_zero :
+    mcaEventProj (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 1 0 := by
+  refine ⟨{0}, ?_, ?_, notJoint_zeroCode 0 ?_⟩
+  · simpa using singleton_meets_radius
+  · refine ⟨0, by simp [zeroCode], ?_⟩
+    intro i hi
+    have hi' : i = 0 := by simpa using hi
+    subst i
+    simp [u0, u1]
+  · right
+    simp [u1]
+
+private theorem bad_one :
+    mcaEventProj (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 1 1 := by
+  refine ⟨{2}, ?_, ?_, notJoint_zeroCode 2 ?_⟩
+  · simpa using singleton_meets_radius
+  · refine ⟨0, by simp [zeroCode], ?_⟩
+    intro i hi
+    have hi' : i = 2 := by simpa using hi
+    subst i
+    change (0 : F2) = 1 + 1
+    decide
+  · left
+    simp [u0]
+
+private theorem bad_infty :
+    mcaEventProj (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 0 1 := by
+  refine ⟨{1}, ?_, ?_, notJoint_zeroCode 1 ?_⟩
+  · simpa using singleton_meets_radius
+  · refine ⟨0, by simp [zeroCode], ?_⟩
+    intro i hi
+    have hi' : i = 1 := by simpa using hi
+    subst i
+    simp [u0, u1]
+  · left
+    simp [u0]
+
+private theorem every_affine_bad (γ : F2) :
+    mcaEvent (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 γ := by
+  fin_cases γ
+  · exact (mcaEventProj_one_gamma
+      (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 0).mp bad_zero
+  · exact (mcaEventProj_one_gamma
+      (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 1).mp bad_one
+
+private theorem affine_count_eq_two :
+    (Finset.univ.filter (fun γ : F2 =>
+      mcaEvent (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 γ)).card = 2 := by
+  rw [Finset.filter_eq_self.mpr]
+  · simp
+  · intro γ _hγ
+    exact every_affine_bad γ
+
+/-- The selected pencil has all three projective slots bad. -/
+theorem projective_count_eq_three :
+    badSlotCount (F := F2) (zeroCode : Set (I3 → F2)) delta u0 u1 = 3 := by
+  rw [badSlotCount_eq_affine_add_infty, affine_count_eq_two, if_pos bad_infty]
+
+/-- At the full-field budget, the affine condition holds for every stack by cardinality. -/
+theorem affine_boundary_holds :
+    WorstCaseIncidenceBounded (F := F2) (A := F2)
+      (zeroCode : Set (I3 → F2)) delta (Fintype.card F2) := by
+  intro u
+  exact Finset.card_le_univ _
+
+/-- The same full-field budget fails for the projective census. -/
+theorem projective_boundary_fails :
+    ¬ ProjectiveWorstCaseIncidenceBounded zeroCode delta (Fintype.card F2) := by
+  intro h
+  let u : WordStack F2 (Fin 2) I3 := ![u0, u1]
+  have hu := h u
+  have hrows : u 0 = u0 ∧ u 1 = u1 := by simp [u]
+  rw [hrows.1, hrows.2, projective_count_eq_three] at hu
+  norm_num at hu
+
+/-- **The strict budget hypothesis in `worstCaseIncidenceBounded_iff_projective` is sharp.** -/
+theorem worstCaseIncidenceBounded_iff_projective_fails_at_full_field :
+    ¬ (WorstCaseIncidenceBounded (F := F2) (A := F2)
+          (zeroCode : Set (I3 → F2)) delta (Fintype.card F2) ↔
+        ProjectiveWorstCaseIncidenceBounded zeroCode delta (Fintype.card F2)) := by
+  intro h
+  exact projective_boundary_fails (h.mp affine_boundary_holds)
+
+end ProximityGap.ProjectiveWorstCaseIncidenceBoundary
+
+/-! ## Boundary axiom audit -/
+#print axioms ProximityGap.ProjectiveWorstCaseIncidenceBoundary.projective_count_eq_three
+#print axioms ProximityGap.ProjectiveWorstCaseIncidenceBoundary.affine_boundary_holds
+#print axioms ProximityGap.ProjectiveWorstCaseIncidenceBoundary.projective_boundary_fails
+#print axioms
+  ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field

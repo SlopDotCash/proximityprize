@@ -4,6 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.PackingEnvelope
+import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
+import ArkLib.Data.CodingTheory.ProximityGap.MCAUDR2Bound
+import ArkLib.Data.CodingTheory.ProximityGap.MCAListBracketInterpolation
+import ArkLib.Data.CodingTheory.ProximityGap.MCALatticeExact
 
 /-!
 # The first overlap-packing jump at a field-normalized budget
@@ -330,6 +334,149 @@ theorem mcaDeltaStar_le_half_of_floor_eq_length
     _ = 1 / 2 := by
       rw [tsub_eq_iff_eq_add_of_le (by norm_num : (1 / 2 : ℝ≥0) ≤ 1)]
       norm_num
+
+open Classical in
+/-- **Exact adjacent pin in dimension two.**  At the tight floor budget `p/Q=n`,
+the factor-two unique-decoding theorem makes the lattice predecessor of `1/2` good
+for the dimension-two RS code, while overlap packing is bad at `1/2`.  Step-function
+collapse fills the real interval between the predecessor and `1/2`, so the operational
+threshold is exactly `1/2`.
+
+This applies in particular to the exact-rate toy lengths `n=8,16,32`, giving rates
+`1/4,1/8,1/16`. -/
+theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
+    {p n Q : ℕ} [Fact p.Prime] [NeZero n]
+    {g : ZMod p} (hg : orderOf g = n)
+    (hQ : 0 < Q) (hnEven : n % 2 = 0) (hn8 : 8 ≤ n)
+    (hfloor : p / Q = n) (hsupply : 4 ≤ p - n) :
+    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g n 1)
+        ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞)
+      = (1 / 2 : ℝ≥0) := by
+  classical
+  let a : ℕ := n / 2 + 1
+  let w : ℕ := n - a
+  let δprev : ℝ≥0 := 1 - (a : ℝ≥0) / (n : ℝ≥0)
+  have hnpos : 0 < n := by omega
+  have hn0 : (n : ℝ≥0) ≠ 0 := by exact_mod_cast hnpos.ne'
+  have hn2 : n = 2 * (n / 2) := by omega
+  have ha : a ≤ n := by dsimp only [a]; omega
+  have hw : w = n / 2 - 1 := by dsimp only [w, a]; omega
+  have hprev_mul : δprev * (n : ℝ≥0) = (w : ℝ≥0) := by
+    dsimp only [δprev, w]
+    simpa [Fintype.card_fin] using
+      (ProximityGap.one_sub_div_mul_cast (F := ZMod p) (A := ZMod p)
+        (i := Fin n) a ha)
+  have hprev_ratio : δprev = (w : ℝ≥0) / (n : ℝ≥0) := by
+    apply mul_right_cancel₀ hn0
+    rw [hprev_mul, div_mul_cancel₀ _ hn0]
+  have hhalf_mul : (1 / 2 : ℝ≥0) * (n : ℝ≥0) = ((n / 2 : ℕ) : ℝ≥0) := by
+    have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by
+      exact_mod_cast hn2
+    rw [hncast]
+    field_simp
+  have hg0 : g ≠ 0 := ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq hg
+  let dom : Fin n ↪ ZMod p := ProximityGap.KKH26RegimeSplit.powDomain g hg hg0
+  have hcode : evalCode g n 1 =
+      (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) := by
+    simpa [dom] using
+      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon g hg hg0 1)
+  have hbudget_good : ((n : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) ≤
+      ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
+    have hp0 : (p : ℝ≥0∞) ≠ 0 := by
+      simp only [ne_eq, Nat.cast_eq_zero]
+      exact (Fact.out (p := p.Prime)).ne_zero
+    rw [ENNReal.div_le_iff hp0 (ENNReal.natCast_ne_top _)]
+    have hQ0 : (Q : ℝ≥0∞) ≠ 0 := by
+      simp only [ne_eq, Nat.cast_eq_zero]
+      omega
+    have hQT : (Q : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top Q
+    calc
+      (n : ℝ≥0∞) = (n : ℝ≥0∞) * Q * (Q : ℝ≥0∞)⁻¹ := by
+        rw [mul_assoc, ENNReal.mul_inv_cancel hQ0 hQT, mul_one]
+      _ ≤ (p : ℝ≥0∞) * (Q : ℝ≥0∞)⁻¹ := by
+        gcongr
+        exact_mod_cast (show n * Q ≤ p by
+          have hmul := Nat.mul_div_le p Q
+          simpa [hfloor, Nat.mul_comm] using hmul)
+      _ = (Q : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := mul_comm _ _
+  have hgood_prev : epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n 1) δprev ≤
+      ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
+    rw [hcode]
+    refine le_trans (ProximityGap.UDR2.epsMCA_rs_udr2_le dom 2 (by omega) δprev ?_ ?_ ?_)
+      hbudget_good
+    · rw [hprev_ratio]
+      apply (Code.dist_le_UDR_iff_relDist_le_relUDR
+        (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) w).1
+      rw [ReedSolomon.uniqueDecodingRadius_RS_eq' (n := 2) (by simp; omega)]
+      rw [hw]
+      omega
+    · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
+        dsimp only [δprev]
+        simpa [Fintype.card_fin] using
+          (ProximityGap.ceil_one_sub_one_sub_div (F := ZMod p) (A := ZMod p)
+            (i := Fin n) a ha)
+      rw [hceil, Fintype.card_fin]
+      dsimp only [a]
+      omega
+    · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
+        dsimp only [δprev]
+        simpa [Fintype.card_fin] using
+          (ProximityGap.ceil_one_sub_one_sub_div (F := ZMod p) (A := ZMod p)
+            (i := Fin n) a ha)
+      rw [hceil, Fintype.card_fin]
+      dsimp only [a]
+      omega
+  have hpQ : p < Q * (n + 1) := by
+    simpa [hfloor] using Nat.lt_mul_div_succ p hQ
+  have hpW : p < Q * (n + 2) := lt_of_lt_of_le hpQ (by gcongr; omega)
+  have hbudget_bad : ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
+      ((n + 2 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) :=
+    inv_natCast_lt_natCast_div hQ (Fact.out (p := p.Prime)).pos hpW
+  have hlower := overlap_epsMCA_lower_bound_of_supply (p := p) (n := n)
+    (k := 2) (e := n / 2) (g := g) hg (by norm_num) (by omega) (by omega) (by
+      simpa [hn2] using hsupply)
+  have hratio_half : (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
+    have hnsub : n - n / 2 = n / 2 := by omega
+    rw [hnsub]
+    apply (div_eq_iff hn0).2
+    have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by
+      exact_mod_cast hn2
+    rw [hncast]
+    field_simp
+  have hbad : ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
+      epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n 1) (1 / 2 : ℝ≥0) := by
+    have hradius : (1 : ℝ≥0) -
+        (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
+      rw [hratio_half, tsub_eq_iff_eq_add_of_le (by norm_num : (1 / 2 : ℝ≥0) ≤ 1)]
+      norm_num
+    rw [hradius] at hlower
+    exact lt_of_lt_of_le hbudget_bad hlower
+  apply ProximityGap.MCAListBracketInterpolation.mcaDeltaStar_eq_of_jump
+  · norm_num
+  · intro δ hδ
+    by_cases hle : δ ≤ δprev
+    · exact le_trans (epsMCA_mono (evalCode g n 1) hle) hgood_prev
+    · have hprevδ : δprev < δ := lt_of_not_ge hle
+      have hlowerFloor : (w : ℝ≥0) ≤ δ * (n : ℝ≥0) := by
+        have hm := mul_lt_mul_of_pos_right hprevδ (by exact_mod_cast hnpos)
+        rw [hprev_mul] at hm
+        exact hm.le
+      have hupperFloor : δ * (n : ℝ≥0) < ((n / 2 : ℕ) : ℝ≥0) := by
+        have hm := mul_lt_mul_of_pos_right hδ (by exact_mod_cast hnpos)
+        rwa [hhalf_mul] at hm
+      have hfloorδ : Nat.floor (δ * (Fintype.card (Fin n) : ℝ≥0)) = w := by
+        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        constructor
+        · exact hlowerFloor
+        · rw [hw]
+          have : n / 2 - 1 + 1 = n / 2 := by omega
+          simpa [this] using hupperFloor
+      have hfloorPrev : Nat.floor (δprev * (Fintype.card (Fin n) : ℝ≥0)) = w := by
+        rw [Fintype.card_fin, hprev_mul, Nat.floor_natCast]
+      rw [ProximityGap.epsMCA_eq_of_floor_eq (F := ZMod p) (A := ZMod p)
+        (evalCode g n 1) (hfloorδ.trans hfloorPrev.symm)]
+      exact hgood_prev
+  · exact hbad
 
 open Classical in
 /-- Generator-free form of `mcaDeltaStar_le_half_of_floor_eq_length`.  Prime and
