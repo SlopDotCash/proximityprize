@@ -717,6 +717,74 @@ theorem factorial_parts_mul_eq_natAbs_factorial (z : ℤ) :
 def endpointL1 {m : ℕ} (d : Fin m → ℤ) : ℕ :=
   ∑ j : Fin m, (d j).natAbs
 
+theorem endpointL1_pos_of_ne_zero {m : ℕ} {d : Fin m → ℤ} (hd : d ≠ 0) :
+    0 < endpointL1 d := by
+  by_contra h
+  push Not at h
+  have hzero : endpointL1 d = 0 := Nat.eq_zero_of_le_zero h
+  apply hd
+  funext j
+  unfold endpointL1 at hzero
+  have hj : (d j).natAbs = 0 := by
+    have hjle : (d j).natAbs ≤ ∑ x : Fin m, (d x).natAbs :=
+      Finset.single_le_sum (s := (Finset.univ : Finset (Fin m)))
+        (f := fun x => (d x).natAbs) (fun _ _ => Nat.zero_le _) (Finset.mem_univ j)
+    rw [hzero] at hjle
+    omega
+  exact Int.natAbs_eq_zero.mp hj
+
+/-- Every signed-basis tuple has the required parity decomposition of its length. -/
+theorem exists_length_eq_two_mul_add_endpointL1_of_tuple
+    (m L : ℕ) (t : Fin L → Fin (2 * m)) :
+    ∃ s : ℕ, L = 2 * s + endpointL1 (tupleVec (2 * m) m L t) := by
+  let u := decodeSignedTuple t
+  let d := tupleVec (2 * m) m L t
+  let a : Fin m → ℕ := fun j => intPositivePart (d j)
+  let b : Fin m → ℕ := fun j => intNegativePart (d j)
+  let c := tupleCancellationProfile u
+  have hdisj : ∀ j, a j = 0 ∨ b j = 0 := fun j =>
+    intPositivePart_eq_zero_or_intNegativePart_eq_zero (d j)
+  have hend : tupleVec (2 * m) m L (encodeSignedTuple u) =
+      fun j => (a j : ℤ) - (b j : ℤ) := by
+    rw [show encodeSignedTuple u = t from encodeSignedTuple_decodeSignedTuple t]
+    funext j
+    exact (intPositivePart_cast_sub_intNegativePart_cast (d j)).symm
+  have hprofile := tupleMultiset_eq_profile_of_endpoint a b u hdisj hend
+  have hcard := congrArg Multiset.card hprofile
+  rw [card_tupleMultiset, card_multiplicityMultiset, sum_signedProfile] at hcard
+  refine ⟨∑ j : Fin m, c j, ?_⟩
+  have hsplit : (∑ j : Fin m, (2 * c j + a j + b j)) =
+      2 * (∑ j : Fin m, c j) + endpointL1 d := by
+    calc
+      (∑ j : Fin m, (2 * c j + a j + b j)) =
+          ∑ j : Fin m, (2 * c j + (a j + b j)) := by
+            apply Finset.sum_congr rfl
+            intro j _
+            omega
+      _ = (∑ j : Fin m, 2 * c j) + ∑ j : Fin m, (a j + b j) :=
+        Finset.sum_add_distrib
+      _ = 2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
+        rw [Finset.mul_sum]
+      _ = 2 * (∑ j : Fin m, c j) + endpointL1 d := by
+        congr 1
+        unfold endpointL1
+        apply Finset.sum_congr rfl
+        intro j _
+        exact intPositivePart_add_intNegativePart (d j)
+  rw [hsplit] at hcard
+  exact hcard
+
+/-- Every nonempty histogram fiber automatically has the parity witness required by the
+factorial envelope. -/
+theorem exists_length_eq_two_mul_add_endpointL1_of_NR_pos
+    (m L : ℕ) (d : Fin m → ℤ) (hpos : 0 < NR (2 * m) m L d) :
+    ∃ s : ℕ, L = 2 * s + endpointL1 d := by
+  unfold NR at hpos
+  obtain ⟨t, ht⟩ := Finset.card_pos.mp hpos
+  rw [Finset.mem_filter] at ht
+  obtain ⟨s, hs⟩ := exists_length_eq_two_mul_add_endpointL1_of_tuple m L t
+  exact ⟨s, by rwa [ht.2] at hs⟩
+
 /-- **R322 HEADLINE: sharp signed-walk endpoint envelope.** For an endpoint `d` reachable
 at length `L = 2s + ‖d‖₁`, its characteristic-zero histogram obeys
 
@@ -764,6 +832,90 @@ theorem shadowRelationMass_factorial_envelope
   rw [shadowRelationMass_eq_NR_double g m r hd]
   exact NR_factorial_envelope m (r + r) s d hdepth
 
+/-- Every realized kernel relation has a nonempty doubled-depth characteristic-zero fiber. -/
+theorem NR_double_pos_of_shadowKernelRelation
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (g : F) (m r : ℕ) {d : Fin m → ℤ}
+    (hd : d ∈ shadowKernelRelations g (2 * m) m r) :
+    0 < NR (2 * m) m (r + r) d := by
+  classical
+  rw [shadowKernelRelations, Finset.mem_image] at hd
+  obtain ⟨p, hp, hpd⟩ := hd
+  have hoff := (Finset.mem_filter.mp hp).1
+  have hp1 := (Finset.mem_offDiag.mp hoff).1
+  have hp2 := (Finset.mem_offDiag.mp hoff).2.1
+  rw [keysR, Finset.mem_image] at hp1 hp2
+  obtain ⟨t, _htU, ht⟩ := hp1
+  obtain ⟨u, _huU, hu⟩ := hp2
+  rw [← tuplePairDifferenceCount_eq_NR]
+  unfold tuplePairDifferenceCount
+  rw [Finset.card_pos]
+  refine ⟨(t, u), ?_⟩
+  rw [Finset.mem_filter]
+  refine ⟨Finset.mem_univ _, ?_⟩
+  rw [ht, hu]
+  exact hpd
+
+/-- **Hypothesis-free realized-relation envelope.** Every realized relation owns a parity
+witness `s` and satisfies the corresponding sharp factorial collision-mass bound. -/
+theorem exists_shadowRelationMass_factorial_envelope
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (g : F) (m r : ℕ) {d : Fin m → ℤ}
+    (hd : d ∈ shadowKernelRelations g (2 * m) m r) :
+    ∃ s : ℕ,
+      r + r = 2 * s + endpointL1 d ∧
+      shadowRelationMass g (2 * m) m r d * s.factorial *
+          (∏ j : Fin m, (d j).natAbs.factorial)
+        ≤ (r + r).factorial * m ^ s := by
+  obtain ⟨s, hs⟩ := exists_length_eq_two_mul_add_endpointL1_of_NR_pos
+    m (r + r) d (NR_double_pos_of_shadowKernelRelation g m r hd)
+  exact ⟨s, hs, shadowRelationMass_factorial_envelope g m r s hd hs⟩
+
+/-- A realized nonzero relation necessarily has strictly fewer than `r` cancellation pairs. -/
+theorem exists_lt_shadowRelationMass_factorial_envelope
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (g : F) (m r : ℕ) {d : Fin m → ℤ}
+    (hd : d ∈ shadowKernelRelations g (2 * m) m r) :
+    ∃ s < r,
+      r + r = 2 * s + endpointL1 d ∧
+      shadowRelationMass g (2 * m) m r d * s.factorial *
+          (∏ j : Fin m, (d j).natAbs.factorial)
+        ≤ (r + r).factorial * m ^ s := by
+  obtain ⟨s, hs, hbound⟩ := exists_shadowRelationMass_factorial_envelope g m r hd
+  have hdne := (shadowKernelRelation_ne_zero_and_evalVec_eq_zero
+    g (2 * m) m r hd).1
+  have hl1 := endpointL1_pos_of_ne_zero hdne
+  refine ⟨s, ?_, hs, hbound⟩
+  omega
+
+/-- Coarser but convenient consequence: every realized nonzero relation saves at least one
+full power of `m` relative to the central `m^r` scale. -/
+theorem shadowRelationMass_le_factorial_mul_pow_pred
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (g : F) (m r : ℕ) (hm : 0 < m) {d : Fin m → ℤ}
+    (hd : d ∈ shadowKernelRelations g (2 * m) m r) :
+    shadowRelationMass g (2 * m) m r d ≤ (r + r).factorial * m ^ (r - 1) := by
+  obtain ⟨s, hsr, _hs, hbound⟩ :=
+    exists_lt_shadowRelationMass_factorial_envelope g m r hd
+  let D := s.factorial * ∏ j : Fin m, (d j).natAbs.factorial
+  have hD : 0 < D := by
+    dsimp [D]
+    positivity
+  have honeD : 1 ≤ D := Nat.succ_le_iff.mpr hD
+  have hmass : shadowRelationMass g (2 * m) m r d ≤
+      shadowRelationMass g (2 * m) m r d * D := by
+    simpa using Nat.mul_le_mul_left (shadowRelationMass g (2 * m) m r d) honeD
+  have hsle : s ≤ r - 1 := by omega
+  have hpowers : m ^ s ≤ m ^ (r - 1) :=
+    pow_le_pow_right' (Nat.succ_le_iff.mpr hm) hsle
+  calc
+    shadowRelationMass g (2 * m) m r d
+        ≤ shadowRelationMass g (2 * m) m r d * D := hmass
+    _ ≤ (r + r).factorial * m ^ s := by
+      simpa [D, mul_assoc] using hbound
+    _ ≤ (r + r).factorial * m ^ (r - 1) :=
+      Nat.mul_le_mul_left (r + r).factorial hpowers
+
 end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
 
 /-! ## Axiom audit -/
@@ -795,3 +947,9 @@ end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.NR_factorial_envelope
 #print axioms
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.shadowRelationMass_factorial_envelope
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.exists_shadowRelationMass_factorial_envelope
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.exists_lt_shadowRelationMass_factorial_envelope
+#print axioms
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.shadowRelationMass_le_factorial_mul_pow_pred

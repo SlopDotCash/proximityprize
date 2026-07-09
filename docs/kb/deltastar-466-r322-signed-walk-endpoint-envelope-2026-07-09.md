@@ -78,6 +78,12 @@ The weld is complete.  The file additionally proves:
   the canonical positive/negative decomposition of every coefficient.
 * `shadowRelationMass_factorial_envelope`: via R321, every realized finite-field kernel
   relation inherits the same factorial suppression on its exact collision mass.
+* `NR_double_pos_of_shadowKernelRelation`: every realized relation has a nonempty
+  doubled-depth characteristic-zero fiber.
+* `exists_lt_shadowRelationMass_factorial_envelope`: the parity witness is automatic and,
+  because realized relations are nonzero, satisfies `s < r`.
+* `shadowRelationMass_le_factorial_mul_pow_pred`: the convenient coarse consequence
+  `shadowRelationMass(d) <= (2r)! * m^(r-1)` for `m > 0`.
 
 Thus (E) is an axiom-clean Lean theorem, not a conjecture or probe.
 
