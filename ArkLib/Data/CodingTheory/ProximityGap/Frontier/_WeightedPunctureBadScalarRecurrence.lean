@@ -91,14 +91,13 @@ theorem weighted_puncture_badScalars
   have hratio :
       (1 - δ) * ((m + 1 : ℕ) : ℝ≥0) = ((m + 1 - w : ℕ) : ℝ≥0) := by
     have hden : (((m + 1 : ℕ) : ℝ≥0)) ≠ 0 := by positivity
-    have hwm : w ≤ m + 1 := hw.trans (Nat.le_succ m)
     calc
       (1 - δ) * ((m + 1 : ℕ) : ℝ≥0)
           = ((m + 1 : ℕ) : ℝ≥0) - (w : ℝ≥0) := by
               rw [tsub_mul, one_mul]
               simp only [δ]
               rw [div_mul_cancel₀ _ hden]
-      _ = ((m + 1 - w : ℕ) : ℝ≥0) := (Nat.cast_tsub hwm).symm
+      _ = ((m + 1 - w : ℕ) : ℝ≥0) := (Nat.cast_tsub (m + 1) w).symm
   have hSsize : ∀ γ ∈ B, m + 1 - w ≤ (S γ).card := by
     intro γ hγ
     have hs := (hSspec γ hγ).1
@@ -106,8 +105,12 @@ theorem weighted_puncture_badScalars
     exact_mod_cast hs
   have hinter : ∀ γ ∈ B, Z.card - w ≤ (S γ ∩ Z).card := by
     intro γ hγ
-    have hu := ProximityGap.card_inter_ge (S γ) Z
-    rw [Fintype.card_fin] at hu
+    have hcu := Finset.card_union_add_card_inter (S γ) Z
+    have hunion : (S γ ∪ Z).card ≤ m + 1 := by
+      calc
+        (S γ ∪ Z).card ≤ (Finset.univ : Finset (Fin (m + 1))).card :=
+          Finset.card_le_card (Finset.subset_univ _)
+        _ = m + 1 := by rw [Finset.card_univ, Fintype.card_fin]
     have hs := hSsize γ hγ
     omega
   have hchild : ∀ γ ∈ B, ∀ i ∈ Z, i ∈ S γ →
@@ -130,7 +133,7 @@ theorem weighted_puncture_badScalars
   change B.card * (Z.card - w) ≤ _
   calc
     B.card * (Z.card - w) = ∑ _γ ∈ B, (Z.card - w) := by
-      rw [Finset.sum_const, nsmul_eq_mul]
+      rw [Finset.sum_const, smul_eq_mul]
     _ ≤ ∑ γ ∈ B, (S γ ∩ Z).card :=
       Finset.sum_le_sum (fun γ hγ => hinter γ hγ)
     _ = ∑ γ ∈ B, ∑ i ∈ Z, if i ∈ S γ then 1 else 0 := by
@@ -208,7 +211,78 @@ theorem weighted_puncture_badScalars_le_of_child_cap
       ≤ ∑ _i ∈ Finset.univ.filter (fun i : Fin (m + 1) => u₁ i = 0), M :=
         Finset.sum_le_sum (fun i hi => hcap i hi)
     _ = (Finset.univ.filter (fun i : Fin (m + 1) => u₁ i = 0)).card * M := by
-      rw [Finset.sum_const, nsmul_eq_mul]
+      rw [Finset.sum_const, smul_eq_mul]
+
+/-- Pure arithmetic consumer for a weighted recurrence.  If `B * (Z-w) ≤ Z*M`,
+the useful zero floor is any `K ≤ Z` above the error budget. -/
+theorem weighted_recurrence_floor_arith
+    {B Z w K M : ℕ} (hwK : w < K) (hK : K ≤ Z)
+    (hrec : B * (Z - w) ≤ Z * M) :
+    B * (K - w) ≤ K * M := by
+  have hwZ : w < Z := hwK.trans_le hK
+  have hcross : Z * M * (K - w) ≤ K * M * (Z - w) := by
+    have h1 : K * (Z - w) = Z * (K - w) + w * (Z - K) := by
+      omega
+    calc
+      Z * M * (K - w) = M * (Z * (K - w)) := by ring
+      _ ≤ M * (K * (Z - w)) := by
+        gcongr
+        omega
+      _ = K * M * (Z - w) := by ring
+  have hscaled := Nat.mul_le_mul_right (K - w) hrec
+  have hcancel : (B * (K - w)) * (Z - w) ≤
+      (K * M) * (Z - w) := by
+    calc
+      (B * (K - w)) * (Z - w)
+          = (B * (Z - w)) * (K - w) := by ring
+      _ ≤ (Z * M) * (K - w) := hscaled
+      _ ≤ (K * M) * (Z - w) := hcross
+  exact Nat.le_of_mul_le_mul_right hcancel (Nat.sub_pos_of_lt hwZ)
+
+open Classical in
+/-- Dimension-floor form of the recurrence.  If the shifted direction has at least
+`K` zeros, `w < K`, and every punctured child has cap `M`, then
+
+`#bad(parent) * (K-w) ≤ K*M`.
+
+This is the form suited to iteration after coset-normalizing an RS direction: Lagrange
+interpolation always supplies a representative with at least `K` zeros for a
+dimension-`K` code. -/
+theorem weighted_puncture_badScalars_mul_sub_le_of_zero_floor
+    {m k w K M : ℕ} (hm : 0 < m) (hw : w ≤ m)
+    (dom : Fin (m + 1) ↪ F) (u₀ u₁ : Fin (m + 1) → F)
+    (hwK : w < K)
+    (hK : K ≤ (Finset.univ.filter (fun i : Fin (m + 1) => u₁ i = 0)).card)
+    (hcap : ∀ i ∈ Finset.univ.filter (fun i : Fin (m + 1) => u₁ i = 0),
+      (Finset.univ.filter (fun γ : F => mcaEvent (F := F)
+        ((rsCode (punctureDom dom i) k : Submodule F (Fin m → F)) :
+          Set (Fin m → F))
+        ((w : ℝ≥0) / (m : ℝ≥0))
+        (punctureWord dom i u₀) (punctureWord dom i u₁) γ)).card ≤ M) :
+    (Finset.univ.filter (fun γ : F => mcaEvent (F := F)
+      ((rsCode dom (k + 1) : Submodule F (Fin (m + 1) → F)) :
+        Set (Fin (m + 1) → F))
+      ((w : ℝ≥0) / ((m + 1 : ℕ) : ℝ≥0)) u₀ u₁ γ)).card * (K - w)
+      ≤ K * M := by
+  let Z : Finset (Fin (m + 1)) :=
+    Finset.univ.filter (fun i : Fin (m + 1) => u₁ i = 0)
+  let B : Finset F := Finset.univ.filter (fun γ : F => mcaEvent (F := F)
+    ((rsCode dom (k + 1) : Submodule F (Fin (m + 1) → F)) :
+      Set (Fin (m + 1) → F))
+    ((w : ℝ≥0) / ((m + 1 : ℕ) : ℝ≥0)) u₀ u₁ γ)
+  have hrec : B.card * (Z.card - w) ≤ Z.card * M := by
+    calc
+      B.card * (Z.card - w)
+          ≤ ∑ i ∈ Z, (Finset.univ.filter (fun γ : F => mcaEvent (F := F)
+              ((rsCode (punctureDom dom i) k : Submodule F (Fin m → F)) :
+                Set (Fin m → F))
+              ((w : ℝ≥0) / (m : ℝ≥0))
+              (punctureWord dom i u₀) (punctureWord dom i u₁) γ)).card :=
+            weighted_puncture_badScalars hm hw dom u₀ u₁
+      _ ≤ ∑ _i ∈ Z, M := Finset.sum_le_sum (fun i hi => hcap i hi)
+      _ = Z.card * M := by rw [Finset.sum_const, smul_eq_mul]
+  change B.card * (K - w) ≤ K * M
+  exact weighted_recurrence_floor_arith hwK hK hrec
 
 end ProximityGap.Ownership.Frontier.WeightedPunctureBadScalarRecurrence
 
@@ -219,3 +293,5 @@ end ProximityGap.Ownership.Frontier.WeightedPunctureBadScalarRecurrence
   ProximityGap.Ownership.Frontier.WeightedPunctureBadScalarRecurrence.weighted_puncture_badScalars_le_div
 #print axioms
   ProximityGap.Ownership.Frontier.WeightedPunctureBadScalarRecurrence.weighted_puncture_badScalars_le_of_child_cap
+#print axioms
+  ProximityGap.Ownership.Frontier.WeightedPunctureBadScalarRecurrence.weighted_puncture_badScalars_mul_sub_le_of_zero_floor
