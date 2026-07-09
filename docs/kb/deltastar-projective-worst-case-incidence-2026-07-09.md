@@ -169,6 +169,9 @@ first direct theorem-level bridge from the MCA projective census to that spectra
 
 `ProjectiveMetricUnification.lean` proves that the two descriptions and exactness hypotheses are
 the same:
+`ProjectiveMetricUnification.lean`, together with the general module-valued bridge in
+`ProjectiveQuotientBall.lean`, proves that the two descriptions and exactness hypotheses are the
+same:
 
 ```text
 q in quotientSyndromeBall C delta
@@ -185,6 +188,32 @@ Thus the conditional metric and finite-ball census equalities are one theorem in
 systems.  The basis-free condition still does not follow from quotient rank two alone; the
 jointly-close branch remains outside the exact line-ball identity and retains the local no-joint
 clause from `mcaEventProj_iff_quotientPencilSupport`.
+
+## Unconditional proper ball
+
+`ProjectiveProperQuotientBall.lean` retains that local clause instead of discarding it.  For a
+pencil `P`, it defines
+
+```text
+ProperBall(C, delta, P) =
+  {q : exists admissible S, q in B_S and not (P <= B_S)}.
+```
+
+It is a subset of the ordinary quotient syndrome ball and gives the unconditional identity
+
+```text
+badSlotCount C delta u0 u1
+  = properProjectiveBallIncidence C delta u0 u1
+```
+
+for every row pair, including the jointly-close branch.  This counts normalized slots, so dependent
+pencils may repeat a quotient point; on the production rank-two stratum the proved slot-map
+injectivity makes it a distinct-point incidence.  This is the strongest exact census form.  It also
+splits into affine incidence plus the infinity indicator, and `properAffineBallIncidence_spectral`
+applies the exact generic Fourier identity directly to the pencil-dependent proper ball.  Thus no
+farness hypothesis is needed even for the spectral repackaging.  The unresolved difficulty is now
+to bound those Fourier sums uniformly when the set itself varies with `P`.  On a `PencilJointFar`
+pencil the properness condition is automatic, so the proper ball equals the ordinary metric ball.
 
 ## A necessary no-go
 
@@ -219,3 +248,5 @@ The substrate, downstream equivalence, rank-two reduction, sharpness section, qu
 dictionary, metric envelope, quotient-ball spectral bridge, and metric unification typecheck in the
 stable Lean overlay.  Every new exported theorem's axiom audit reports only `propext`,
 `Classical.choice`, and `Quot.sound`.
+stable Lean overlay, as do the unconditional proper-ball census and its Fourier expansion.  Every
+new exported theorem's axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

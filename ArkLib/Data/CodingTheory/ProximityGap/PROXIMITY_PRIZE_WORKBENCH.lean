@@ -17,6 +17,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveCosetWeight
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveMetricUnification
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveProperQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
@@ -715,6 +716,9 @@ theorem deltaStar_pin_mu8_F4129_witness :
   pencils remain.  `mcaEventProj_iff_quotientPencilSupport` states each bad slot exactly as a class
   lying in a witness support subspace which does not contain the whole quotient pencil.  The open
   math is the resulting worst-case incidence estimate.
+  math is the resulting worst-case incidence estimate.  `ProjectiveProperQuotientBall` retains this
+  local properness clause, gives an unconditional exact projective incidence for every pencil, and
+  supplies its affine-plus-infinity decomposition and exact affine Fourier expansion.
 
   `badSlotCount_le_lowCosetWeightCount` gives the unconditional metric envelope, and becomes an
   equality under global `not jointProximity`.  `quotientSyndromeBall` is the finite union of all
@@ -722,6 +726,9 @@ theorem deltaStar_pin_mu8_F4129_witness :
   coset-weight sublevel set and that basis-free `PencilJointFar` is equivalent to
   `not jointProximity`.  The resulting projective line--ball incidence splits into its affine chart
   and infinity point, while the affine chart feeds directly into
+  coset-weight sublevel set, while `ProjectiveQuotientBall` proves that basis-free
+  `PencilJointFar` is equivalent to `not jointProximity`.  The resulting projective line--ball
+  incidence splits into its affine chart and infinity point, while the affine chart feeds into
   `LineIncidenceSpectral.lineIncidence_spectral`. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
@@ -742,6 +749,16 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
 #check @ProximityGap.ProjectiveMetricUnification.pencilJointFar_iff_not_jointProximity
 #check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
+#check @ProximityGap.ProjectiveQuotientBall.pencilJointFar_quotientPencil_iff_not_jointProximity
+#check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
+#check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
+#check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
+#check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
+#check @ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_subset_quotientSyndromeBall
+#check @ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_eq_quotientSyndromeBall_of_pencilJointFar
+#check @ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
+#check @ProximityGap.ProjectiveProperQuotientBall.properProjectiveBallIncidence_eq_affine_add_infty
+#check @ProximityGap.ProjectiveProperQuotientBall.properAffineBallIncidence_spectral
 #check
   ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 
