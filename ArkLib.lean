@@ -1184,6 +1184,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerExpForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFGeneralToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MGFToConvergenceHub
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MixedTopFitBudgetIncompatibility
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MomentFullEnergyDeepNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MuNIteratedDoubling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MultEmptyFiberBelowBand
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.MultUniformAgreementSizeCap
