@@ -21547,3 +21547,24 @@ Klein quadric / Plücker embedding / polynomial partitioning / incidence machine
 minimal one). The energy route through Rudnev is therefore not a shortcut around the wall for THIS
 campaign; it is a formalization ceiling, recorded so future lanes do not re-scout it. VERDICT
 IRREDUCIBLE-AG-CEILING. CORE OPEN.
+
+## [466-FS8-per-frequency-almost-all-primes] CHAIN COMPLETION (Fable session): the per-frequency Gauss-period bound `‖η_b‖⁶ ≤ 15·q·n³` (all b ≠ 0) is a THEOREM at every FS6 good prime — the r54 spectral chain now fires unconditionally at almost all primes (2026-07-09)
+
+Lane: FS8 (file `Frontier/_FS8PerFrequencyAlmostAllPrimes.lean`, real locked build 3348 jobs,
+axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+`eta_sixth_le_of_good_prime`: FS5's unconditional `Depth3ExcessBounded` + FS6's good-prime
+headroom + the r54 chain (`GaussianEnergyBound → DCEnergyBound → eta_pow_le_of_dcEnergyBound`)
+compose to: at any prime of a family of primes ≥ 2^s outside the FS6-capped bad set, EVERY
+nontrivial Gauss period of μ_n (n = 2^{k+1}) obeys the sharp depth-3 Wick per-frequency bound
+‖η_b‖⁶ ≤ q·15·n³ (i.e. ‖η_b‖ ≤ 15^{1/6}·q^{1/6}·√n) — end-to-end, no named hypotheses. The
+r54 round's open input ("the r53 headroom atom") is now DISCHARGED at almost all primes.
+
+HONEST SCOPE / regime-disjointness note (recorded so nobody re-derives it hoping for more):
+depth-3 alone certifies M ≲ q^{1/6}√n, beating trivial M ≤ n only for β < 3, while the FS6 cap
+is non-vacuous only for β ≳ 6 — DISJOINT windows. So FS8 is a structural completion of the
+spectral chain, not a new sup-norm regime; the prize needs the same at depth r ≈ ln q (the
+wall). INFRA note: recurring toolchain-stale oleans (kernel `unknown constant
+Semiring.toMonoid`) — the fix is rebuilding the specific stale module via lake-locked; _R54's
+olean was refreshed mid-session (16:41) which cleared FS8's initial kernel failure.
+CORE OPEN, ON-BGK.
