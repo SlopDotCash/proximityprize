@@ -22,9 +22,10 @@ then binomial recombination gives
 r! * shadowCollisionMass <= 4^r * (2r)! * m^r.
 ```
 
-Since `(2r-1)!! = (2r)!/(2^r r!)`, this is an `8^r`-times-Wick envelope.  Thus the
-single-binomial law refuted at R346 is unnecessary: any recurrence web furnishing the normalized
-stratum census suffices.
+Since `(2r-1)!! = (2r)!/(2^r r!)`, this is an `8^r`-times-Wick envelope.  This is a
+shallow-rung consumer: beyond the DC crossover the raw collision mass contains the unavoidable
+uniform `1/|F|` floor, so the normalized census is not expected to hold.  A deep-wall argument
+must center that floor before applying an analogous recurrence-web decomposition.
 -/
 
 set_option autoImplicit false

@@ -28,11 +28,11 @@ The complete implication is axiom-clean.
 ## Significance
 
 This is the exact theorem-level interpretation of R361's finite observation that the bad
-`n=64` endpoint has 40 vectors in its first nonzero `L1` shell.  Collision multiplicity is
-handled by R322's endpoint envelope; the remaining arithmetic problem is purely to prove the
-normalized cardinality bound for short vectors in the cyclotomic evaluation kernel.
+`n=64` endpoint has 40 vectors in its first nonzero `L1` shell. Collision multiplicity is
+handled by R322's endpoint envelope in the shallow regime.
 
-The shell target demands a square-root saving over the ambient `m^(2k)` signed shell.  It is
-therefore genuine BGK/Paley content, not a completed proof of the prize, but it removes the
-failed single-binomial saturation assumption and states the multi-generator prime-ideal target
-in the exact normalization consumed by the Wick bound.
+The raw shell target demands a square-root saving over the ambient `m^(2k)` signed shell. It is
+plausible only before the DC crossover `k ≈ log_m |F|`. At deep prize moments the kernel's
+uniform population is approximately the ambient shell divided by `|F|`, so `KernelShellCensus`
+is not the correct global conjecture. The remaining deep-wall target is a centered weighted-shell
+discrepancy after subtracting that uniform term, matching `DCEnergyBound` exactly.

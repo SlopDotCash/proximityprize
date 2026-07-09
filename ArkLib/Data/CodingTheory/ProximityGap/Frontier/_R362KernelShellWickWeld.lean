@@ -17,7 +17,10 @@ the square-root shell census
 k! * #kerShell(2k) <= 3^k * m^k
 ```
 
-implies R355's `GeneratorWebCensus`, and hence its `8^r`-times-Wick collision bound.
+implies R355's `GeneratorWebCensus`, and hence its `8^r`-times-Wick collision bound.  The full
+shell census is intentionally only a shallow-rung target: at deep prize moments an index-`|F|`
+kernel has a large uniform shell population, and the correct target is its deviation from the
+`1/|F|` expectation.
 -/
 
 set_option autoImplicit false
@@ -83,7 +86,7 @@ theorem card_relationCancellationStratum_le_kernelL1Shell
       (kernelL1Shell g m (2 * (r - s))).card :=
   Finset.card_le_card (relationCancellationStratum_subset_kernelL1Shell g m r s)
 
-/-- The normalized full-shell target suggested by R361. -/
+/-- The normalized full-shell target suggested by R361, before the DC crossover. -/
 def KernelShellCensus
     {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     (g : F) (m r : ℕ) : Prop :=
