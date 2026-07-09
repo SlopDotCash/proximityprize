@@ -26,7 +26,8 @@ open Finset Polynomial
 
 namespace ArkLib.ProximityGap.Frontier.G56AllDepthPatternDecomposition
 
-open ArkLib.ProximityGap.Frontier.FS4Depth3PatternDecomposition (monomF aeval_monomF)
+open ArkLib.ProximityGap.Frontier.FS4Depth3PatternDecomposition
+  (monomF monomF_natDegree_lt monomF_coeff_abs_le aeval_monomF)
 open ArkLib.ProximityGap.Frontier.E3StrataCount (negSymCount)
 open ArkLib.ProximityGap.NegationClosedWalk (zeroSumCount)
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)
@@ -117,6 +118,28 @@ theorem aeval_foldedPattern (hm : 0 < m) (hprim : IsPrimitiveRoot ζ (2 * m))
   refine sum_congr rfl (fun i _ => ?_)
   exact aeval_monomF (F := F) (ζ := ζ) (m := m) (zeta_pow_m hm hprim) (by
     exact (t i).isLt)
+
+/-- Every all-depth folded pattern still has degree below the half-order `m`. -/
+theorem foldedPattern_natDegree_lt (hm : 0 < m) (t : Fin ell → Fin (2 * m)) :
+    (foldedPattern m ell t).natDegree < m := by
+  rw [foldedPattern]
+  refine lt_of_le_of_lt (Polynomial.natDegree_sum_le_of_forall_le _ _ ?_) (Nat.pred_lt hm.ne')
+  intro i _
+  exact Nat.le_pred_of_lt (monomF_natDegree_lt hm (t i).isLt)
+
+/-- At every depth, each folded-pattern coefficient has absolute value at most the tuple length. -/
+theorem foldedPattern_coeff_abs_le (m ell a : ℕ) (t : Fin ell → Fin (2 * m)) :
+    |(foldedPattern m ell t).coeff a| ≤ (ell : ℤ) := by
+  have hcoeff :
+      (foldedPattern m ell t).coeff a = ∑ i : Fin ell, (monomF m (t i).val).coeff a := by
+    simp [foldedPattern]
+  rw [hcoeff]
+  calc
+    |∑ i : Fin ell, (monomF m (t i).val).coeff a|
+        ≤ ∑ i : Fin ell, |(monomF m (t i).val).coeff a| := abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _i : Fin ell, (1 : ℤ) := by
+      exact sum_le_sum fun i _ => monomF_coeff_abs_le m (t i).val a
+    _ = ell := by simp
 
 /-- The coefficient of a folded pattern is the lower-half count minus the upper-half count. -/
 theorem coeff_foldedPattern_eq_count (hm : 0 < m) (t : Fin ell → Fin (2 * m)) {a : ℕ}
@@ -348,6 +371,8 @@ theorem rEnergy_Gset_eq_negSymCount_add_wraparoundExcessR (hm : 0 < m)
 
 end Bijections
 
+#print axioms foldedPattern_natDegree_lt
+#print axioms foldedPattern_coeff_abs_le
 #print axioms coeff_foldedPattern_eq_count
 #print axioms foldedPattern_eq_zero_iff_balanced
 #print axioms foldedPattern_zero_count_eq_negSymCount
