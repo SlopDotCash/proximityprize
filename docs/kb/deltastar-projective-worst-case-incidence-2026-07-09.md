@@ -81,20 +81,82 @@ The last theorem turns a projective combinatorial jump directly into the operati
 threshold, so a future incidence proof does not need to reconstruct affine probability
 plumbing.
 
+## Quotient descent and the rank-two core
+
+`MCAProjectiveEquivariance.lean` now proves that translating either row by a codeword preserves
+every projective slot and hence the full census.  In particular,
+
+```text
+badSlotCount_eq_of_quotient_mk_eq
+```
+
+shows that the census depends only on the ordered pair of classes in `(ι -> A) / C`.
+
+`ProjectiveWorstCaseIncidence.lean` then splits the quotient-rank strata.  If the two quotient
+classes are linearly dependent, their projective census is at most one.  Consequently, for every
+production budget `E >= 1`,
+
+```text
+ProjectiveWorstCaseIncidenceBounded C delta E
+  <-> the same bound on RowsIndependentModCode pairs only.
+```
+
+Thus the universal production condition has no unresolved rank-zero or rank-one part.  Its entire
+content lies on genuine two-dimensional quotient pencils.
+
+## Exact support-subspace dictionary
+
+`ProjectiveQuotientSupport.lean` packages the remaining event without a choice of pencil basis.
+For a coordinate witness set `S`, define
+
+```text
+V_S = {e : e vanishes on S}
+B_S = image(V_S -> (ι -> A) / C)
+P   = span{[u0], [u1]}.
+```
+
+The theorem `mcaEventProj_iff_quotientPencilSupport` proves exactly
+
+```text
+mcaEventProj C delta u0 u1 alpha beta
+  <-> exists admissible S,
+        [alpha*u0 + beta*u1] in B_S and not (P <= B_S).
+```
+
+The first membership says that the selected projective class has a representative supported off
+`S`; the failed inclusion says that the whole pencil is not jointly explainable there.  On the
+rank-two stratum, a bad slot is therefore a projective line of `P` cut out by a proper support
+subspace.  This is an exact theorem-level dictionary, not the missing incidence estimate.
+
+## A necessary no-go
+
+A blanket claim `badSlotCount <= block length` is false.  The axiom-clean theorem
+`genericQuotient_epsMCA_lower_bound` in
+`Frontier/_GenericQuotientInterpolationSpread.lean` constructs a stack with normalized affine
+incidence at least `choose(s,r) / p` on block length `s*m`, whenever
+`choose(choose(s,r),2) < p`.  Taking `s=8`, `m=1`, `r=3`, and `p=4129` gives numerator
+`choose(8,3)=56`, far above the block length `8` (and `choose(56,2)=1540 < 4129`).
+
+The field-size-free second-moment version gives the broader obstruction
+`(M - M^2/p)/p <= epsMCA`.  Any useful projective estimate must therefore exploit the production
+budget and the special RS support geometry; projectivity alone cannot force an `O(n)` census.
+
 ## What remains open
 
 This result does not prove the production incidence bound.  It identifies the exact object
 that must be bounded and removes a chart artifact from that task.
 
-A concrete next route is to package the now-proven generator invariance as a function on
-rank-two projective pencils, quotienting ordered row pairs by invertible row changes.  Rank-zero
-and rank-one stacks should be split off explicitly.  On the rank-two stratum, the target becomes
-a worst-case incidence bound over two-dimensional syndrome submodules rather than over arbitrary
-ordered generators.  The full row-mix census theorem supplies the mathematical descent; the
-quotient/Grassmannian packaging and the actual incidence estimate remain to be formalized.
+The next unformalized specialization is the MDS/RS circuit dictionary.  For a rank-two quotient
+pencil `P`, let `D_P` be its inverse image in the word space, a two-dimensional supercode extension
+of `C`.  The support-subspace theorem suggests indexing bad projective labels by low-support,
+support-minimal words of `D_P / C`, equivalently by short circuits after projecting parity-check
+columns along `P`.  The shallow support layers admit elementary packing bounds, but the binding
+layer can contain many private supports, as the 56-slot construction demonstrates.  Controlling
+that deep layer for every smooth-domain RS pencil is the same worst-case list-incidence wall that
+remains open.
 
 ## Validation
 
-The substrate, downstream equivalence, and sharpness section typecheck in the stable Lean
-overlay.  Every new exported theorem's axiom audit reports only `propext`, `Classical.choice`,
-and `Quot.sound`.
+The substrate, downstream equivalence, rank-two reduction, sharpness section, and quotient-support
+dictionary typecheck in the stable Lean overlay.  Every new exported theorem's axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`.

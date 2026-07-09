@@ -5,6 +5,10 @@ Authors: ArkLib Agent
 -/
 import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
+import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetRateThreeSixteenths
+import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyPinRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
 
 set_option linter.style.longLine false
 
@@ -536,6 +540,25 @@ is machine-checked here, and the gap bound is exactly the classical W4/Shkredov 
 -/
 
 end ProximityPrize
+
+/-! ## Imported exact frontier checks
+
+The production incidence condition is now exactly projective below the full-field budget, descends
+to quotient classes, and for every budget at least one only needs rank-two quotient pencils.  The
+last check gives the basis-free support-subspace event that remains to be counted.  The final four
+checks keep the finite-instance entropy and rate-only counterexamples visible next to the open
+asymptotic conjectures above; they prevent those disproved identities from being reused as exact
+finite laws.
+-/
+
+#check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_eq_of_quotient_mk_eq
+#check @ProximityGap.ProjectiveWorstCaseIncidence.worstCaseIncidenceBounded_iff_projective
+#check @ProximityGap.ProjectiveWorstCaseIncidence.projectiveWorstCaseIncidenceBounded_iff_rankTwo
+#check @ProximityGap.ProjectiveQuotientSupport.mcaEventProj_iff_quotientPencilSupport
+#check ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
+#check ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
+#check ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED
+#check ArkLib.ProximityGap.LiteralBudgetRateThreeSixteenths.literal_rate_only_threshold_REFUTED
 
 /-! ## Axiom audit (the proved structural spine) -/
 #print axioms ProximityPrize.badScalars_card_le_cosetLowWeight

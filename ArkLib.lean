@@ -2781,6 +2781,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R371ShadowKernelRotationA
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R372ShadowRelationRotationEquivariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R376PerFrequencyShadowLogMEndpoint
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R377GaloisKernelStabilityRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R378SignedDifferenceRotationInvariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
@@ -3935,6 +3936,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.PrizeSupNormHeadline
 import ArkLib.Data.CodingTheory.ProximityGap.ProductionBoundaryFailure
 import ArkLib.Data.CodingTheory.ProximityGap.ProductionJohnsonBudget
 import ArkLib.Data.CodingTheory.ProximityGap.ProductionRegimeBracket
+import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientSupport
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.PromotedHypotheses
 import ArkLib.Data.CodingTheory.ProximityGap.PromotedHypothesesA
