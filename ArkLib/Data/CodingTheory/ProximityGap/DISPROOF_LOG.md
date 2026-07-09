@@ -1,3 +1,57 @@
+## [466-antiresonance-dichotomy-reduces-to-wall] the Chapman-Mudgal anti-resonance DICHOTOMY (in the W8/A quarter-arc coset-SET language, at worst-b, thin-dyadic) is an EXACT re-encoding of the BGK sup bound; the arc-excess is an O(1)-multiple proxy for M^2/n, no independent lever, no tower descent (2026-07-09, opus-4-8 core seat)
+
+LENS: the UNRUN Chapman-Mudgal anti-resonance dichotomy (2605.15434), dossier v3 §16(D) / lines 981, 1122.
+Round 1 killed it b-blind on residues (`466-r1-antiresonance-bblind`); round 4 W8/A found the correct
+coset-SET quarter-arc VOCABULARY (`deltastar-466-w8-*`: coarse arc-concentration functionals predict |eta_b|
+and near-extremize at the worst coset) but explicitly "the correct vocabulary, NO BOUND yet" (dossier line
+981). This entry runs the DICHOTOMY itself (the two-sided envelope + tower recursion) at worst-b on thin
+dyadic subgroups and DECIDES it. Completes the near-complete legacy checkpoint (Q1 envelope + Q2 transfer)
+with the missing Q3 tower + a sharpened decisive Q4 arc-excess-scaling test.
+
+OBJECT (exact eta, PROPER thin mu_n < F_p^*, p>=n^4 beta=4, p=1 mod n, NEVER n=q-1, Parseval-checked to
+0.0e+00; n=8..128 + high-2-adic tower primes to n=64): the anti-resonant envelope M ~ R * sqrt(n * A) for
+the worst period M=max_{b!=0}|eta_b|, where A=A2q(C_{b*}) is the worst-coset quarter-arc L2 energy
+(triangular kernel, L=1/4, normalized /n) and R:=M/sqrt(nA) is the fitted envelope ratio. The dichotomy's
+sufficient condition for the prize M<=C*sqrt(n*L) (L:=log(p/n)) is A <= c*L/n (arc-excess bounded).
+Probes scripts/probes/probe_466_antiresonance_tower_worstb.py + probe_466_antiresonance_tower_only.py.
+
+RESULT (decisive, three faces):
+1. TRANSFER IS EXACT (Q1/Q2, legacy + reproduced): Cpred/C == 1.0000 to machine precision at EVERY (n,p),
+   Cpred:=R(b*)*sqrt(A2q*/L) reproduces the measured wall constant C=M/sqrt(nL). envRk*~1.000 (worst-b IS
+   the envelope extremizer). The envelope is NOT globally two-sided (Rspan 1.4e3..1.8e6: many cosets have
+   tiny A2q with nonzero |eta|), so it only binds AT worst-b -- exactly where the transfer is exact.
+2. THE FREE VARIABLE IS THE WALL (Q4, the sharpener): the EXACT identity A2q* = M^2/(n R(b*)^2), with
+   R(b*)=O(1) (measured range [1.08,1.68], mean 1.45, slowly decreasing in n), gives A2q*/L = C^2/R^2
+   (verified to machine precision). Hence A2q*/L GROWS with n: 0.41, 0.50, 0.71, 0.99, 1.40 at n=8..128.
+   The dichotomy's sufficient condition A2q* <= c*L/n (i.e. A2q*/L = O(1/n)) is FALSE -- the arc-excess free
+   variable itself scales like M^2/n = the wall. At FIXED n (Q4b), A2q* ~ (growing-in-n)*L, tracking
+   M^2 = n*C^2*L. Bounding M through the arc-excess REQUIRES the same log(p/n) certification the prize needs.
+3. NO TOWER DESCENT (Q3): the worst-b arc-excess ratio A2q*(mu_{2n})/A2q*(mu_n) has mean 1.57 (sub-2), BUT
+   R(b*) stays pinned ~1.5 at EVERY tower level, so the sub-2 ratio only reflects the wall's own M^2 growth,
+   not a spectral gap. Combined with the non-nested worst-b (`466-r1` / worst-b-non-nested), the tower map is
+   a deterministic wall relabel -- NO sub-doubling descent lever (matches the wf-F4 dyadic-descent refutation).
+
+VERDICT (REDUCES-TO-WALL, KILL as a shortcut; pre-registered decision rule): the Chapman-Mudgal anti-
+resonance dichotomy, stated in the W8/A coset-SET quarter-arc language and run at worst-b on thin dyadic
+subgroups, is an EXACT re-encoding of the open sup bound, NOT an independent lever. The correct-vocabulary
+round-4 W8/A finding ("arc concentration predicts |eta_b|") upgrades here to a NO-GO: the worst-coset
+quarter-arc energy A2q* IS an O(1)-multiple (= R(b*)^2) proxy for M^2/(nL), so bounding it is bounding the
+wall constant. No shortcut; the open object (worst-b quarter-arc energy = M^2/(n R^2), R=O(1)) is exactly
+the sup M the prize needs. CORE M(mu_n) <= C sqrt(n log(p/n)) UNCHANGED/OPEN.
+
+FORMAL KERNEL (axiom-clean, all 4 theorems #print axioms = {propext, Classical.choice, Quot.sound}, no
+sorryAx; pure BGK-free real algebra -- exactly why it is honest and why it cannot help):
+Frontier/_AntiResonanceDichotomyReducesToWall.lean --
+  - antiResonanceEnvelope_ratio_sq : A/L = C^2/R^2 (the exact identity; C:=M/sqrt(nL), R:=M/sqrt(nA)).
+  - arcExcess_ge_of_ratio_le : R <= Rmax  =>  A >= M^2/(n Rmax^2) (bounded ratio pins A at the sup scale).
+  - sup_bound_of_arcExcess_bound : A <= c L/n and R <= Rmax  =>  M <= Rmax sqrt(c) sqrt(n L) (the arc-excess
+    bound DELIVERS the prize-scale sup bound -- it is not weaker).
+  - arcExcess_bound_reduces_to_sup_bound : the packaging -- an arc-excess bound gives the sup bound at the
+    same sqrt(nL) scale AND the exact identity shows A is determined by M and the O(1) ratio R, so bounding
+    the arc-excess is EQUIVALENT (up to the bounded envelope ratio) to bounding M. REDUCES-TO-WALL.
+Probes: scripts/probes/probe_466_antiresonance_tower_worstb.py, probe_466_antiresonance_tower_only.py.
+Author Sol (opus-4-8 core seat), co-author wakesync. -- antiresdichotomy.
+
 ## [466-r14-outer-two-sided-iff] the delta*-floor is machine-checked BOTH DIRECTIONS equivalent to WorstCaseIncidenceBounded — the campaign's real two-sidedness (2026-07-04, #466 round 14)
 
 Lane: round-14 Lane I (dossier §24). Assembled the campaign's actual machine-checked two-sided reduction

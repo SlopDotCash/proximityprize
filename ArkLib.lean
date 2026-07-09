@@ -1350,6 +1350,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AmplificationGainOne
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AmplifiedLargeSieveSaturates
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AnomalyLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AntiConcKurtosisRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AntiResonanceDichotomyReducesToWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AntipodalAgreementScope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AntipodalDyadicSymmetric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AntipodalEvenOddDescent
