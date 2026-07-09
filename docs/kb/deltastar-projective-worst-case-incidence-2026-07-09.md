@@ -139,6 +139,53 @@ rank-two stratum, a bad slot is therefore a projective point on the line associa
 by a proper intersection `P ∩ B_S`.  This is an exact theorem-level dictionary, not the missing
 incidence estimate.
 
+## Metric and finite-ball forms
+
+`ProjectiveCosetWeight.lean` descends relative distance from a word to its quotient class.  It
+proves the unconditional metric envelope
+
+```text
+badSlotCount C delta u0 u1 <=
+  #{projective slots z : cosetRelWeight C z <= delta}.
+```
+
+If the row pair is not jointly close at radius `delta`, the local no-joint clause is automatic on
+every admissible witness, and the inequality is an equality.  For independent quotient rows, the
+normalized slot map is injective and its image has exactly `|F| + 1` points.  Thus the projective
+census is a genuine line intersection count, not a parametrization with repeated quotient points.
+
+`ProjectiveQuotientBall.lean` packages the union of the support subspaces `B_S` as the finite
+`quotientSyndromeBall C delta`.  It proves, without an extra hypothesis,
+
+```text
+badSlotCount C delta u0 u1 <= projectiveBallIncidence C delta u0 u1.
+```
+
+For a `PencilJointFar` pencil, meaning no admissible `B_S` contains the whole pencil, this is an
+equality.  The projective incidence splits into its affine chart plus the infinity indicator, and
+`affineBallIncidence_spectral` instantiates the generic Fourier identity
+`LineIncidenceSpectral.lineIncidence_spectral` on the actual quotient syndrome ball.  This is the
+first direct theorem-level bridge from the MCA projective census to that spectral API.
+
+`ProjectiveMetricUnification.lean` proves that the two descriptions and exactness hypotheses are
+the same:
+
+```text
+q in quotientSyndromeBall C delta
+  <-> cosetRelWeight C q <= delta,
+
+PencilJointFar C delta (quotientPencil C u0 u1)
+  <-> not jointProximity C (u0,u1) delta,
+
+projectiveBallIncidence C delta u0 u1
+  = #{projective slots z : cosetRelWeight C z <= delta}.
+```
+
+Thus the conditional metric and finite-ball census equalities are one theorem in two coordinate
+systems.  The basis-free condition still does not follow from quotient rank two alone; the
+jointly-close branch remains outside the exact line-ball identity and retains the local no-joint
+clause from `mcaEventProj_iff_quotientPencilSupport`.
+
 ## A necessary no-go
 
 A blanket claim `badSlotCount <= block length` is false.  The axiom-clean theorem
@@ -168,6 +215,7 @@ list-incidence wall that remains open.
 
 ## Validation
 
-The substrate, downstream equivalence, rank-two reduction, sharpness section, and quotient-support
-dictionary typecheck in the stable Lean overlay.  Every new exported theorem's axiom audit reports
-only `propext`, `Classical.choice`, and `Quot.sound`.
+The substrate, downstream equivalence, rank-two reduction, sharpness section, quotient-support
+dictionary, metric envelope, quotient-ball spectral bridge, and metric unification typecheck in the
+stable Lean overlay.  Every new exported theorem's axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
