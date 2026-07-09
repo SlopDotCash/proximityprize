@@ -123,19 +123,25 @@ def main() -> None:
     parser.add_argument("--tau", type=float, default=0.5)
     parser.add_argument("--step", type=float, default=0.03125)
     parser.add_argument("--rate", type=float, default=0.25)
+    parser.add_argument("--max-exact-mgf", type=float, default=None)
     parser.add_argument("--top", type=int, default=30)
     args = parser.parse_args()
 
-    rows = [
+    rows_all = [
         row
         for m in range(args.min_index, args.max_index + 1)
         if (row := row_for_m(m, args.chunk, args.trim, args.tau, args.step, args.rate)) is not None
     ]
+    rows = [
+        row for row in rows_all
+        if args.max_exact_mgf is None or row.exact_full_mgf <= args.max_exact_mgf
+    ]
     rows.sort(key=lambda row: row.budget, reverse=True)
 
     print(
-        f"R259 n=64 joint fine budget cases={len(rows)} M=[{args.min_index},{args.max_index}] "
-        f"trim={args.trim} tau={args.tau} step={args.step}"
+        f"R259 n=64 joint fine budget cases={len(rows)} filtered_from={len(rows_all)} "
+        f"M=[{args.min_index},{args.max_index}] trim={args.trim} tau={args.tau} "
+        f"step={args.step} max_exact_mgf={args.max_exact_mgf}"
     )
     print("budget  slack   exact   paid    env     Ew32    Ctail   theta  count fineMax M      p")
     print("-" * 112)
