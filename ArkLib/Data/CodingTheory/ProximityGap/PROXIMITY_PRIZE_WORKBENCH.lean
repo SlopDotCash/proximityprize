@@ -500,6 +500,19 @@ Difficulty is certification, not distribution shape.
   curve-decodability, degree-independent, black-box transference from subspace designs).
   Litsweep 2026-07-10: the analytic-core literature is unchanged — no non-Fourier certificate
   exists or is attempted anywhere.
+* **§33 ROUTE (ii) IS CLOSED WITH AN EXACT LAW (2026-07-10 late, HD arc, ledger 466-HD1…HD8).**
+  The complete multiplicative-identity web of Gauss phases (conjugation + ALL m′-fold
+  Hasse–Davenport product relations) was computed EXACTLY: nullity = φ(N)/2 (= Kubert–Lang
+  universal odd-distribution rank — the web is COMPLETE, no relations missing), and its power on
+  the ladder angles is PURE DIMENSION COUNTING: `pinned = max(0, dim θ − φ(N)/2)`. Classical
+  index-2/semiprimitive solvability = the saturated case; **index ≥ 4 (prize = 2^30) receives
+  ZERO algebraic constraint**. The missing certificate is archimedean/analytic with a
+  machine-checked reason: the algebraic side is provably empty. Do NOT re-attempt exact-identity/
+  distribution-relation routes on the ladder angles. Brick: `_HD8IdentityWebDimensionLaw.lean`
+  (saturation ⟹ exact evaluations exist — the abstract cause of all classical Gauss-sum
+  evaluations); probes `/tmp/arklib-reports/hd{5,7,8}_*.py`. Remaining §33 live routes: (i)
+  Katz vertical equidistribution along linear conditions (NB: must clear the r18 per-tuple-Weil
+  closure), (iii) genuinely new ideas vs `IterConvEnergyWick`.
 
 ⇒ **The `▼ YOUR CONJECTURE HERE ▼` slot's current best targets (post rounds 1–2, 2026-07-01;
 see dossier §14/§15):** (a) the low-profile fiber bound `D(t)`, `t < k`, feeding

@@ -24671,3 +24671,24 @@ ladder angles. §33 route (ii) is closed with a LAW, not just a verdict; the mis
 is archimedean/analytic with a machine-checked reason: the algebraic side is provably empty.
 Queued: small Lean brick for the abstract projection-rank law + documented certificates;
 Kubert–Lang citation verification. CORE OPEN / ON-BGK.
+
+### [466-G88R-ambient-sector-not-energy] G88's unrestricted cancellation sector is NOT an energy consumer: disjoint residual bags do not preserve the collision equation; corrected by G90 (2026-07-10)
+
+G88's finite decoder theorem is valid for its stated type, but the tempting promotion
+`PrimitiveCorePair = primitive additive relations` is false.  Its sector fixes only maximal
+residual depth and its core type requires only disjoint value multisets.  It does not require the
+two endpoint sums to agree.  Concrete counterexample: over `ZMod 3`, at `r=s=1`, G88's sector has
+the six unequal ordered singleton pairs, whereas the genuine equal-sum sector is empty because
+singleton sum equality forces the two labels equal and hence complete cancellation.  Thus G88 can
+charge positive core mass at a depth where the analytic primitive-relation count is zero.
+
+The corrected theorem is G90: labels `A` carry an arbitrary weight map `w : A → B` into an
+additive cancellation monoid; endpoint sectors retain equality of weighted sums; primitive cores
+retain both disjointness and equality of weighted sums.  Maximal common cancellation preserves
+that equation, and the corrected padding encoder gives
+
+`|S_s| ≤ J_s · (r descFactorial s)^2 · (r-s)! · |A|^(r-s)`.
+
+This remains an unsigned ceiling: repeated padding makes the permutation coordinate redundant.
+The exact centered consumer still requires the signed single-embedding decomposition, begun in
+G89.  CORE OPEN / ON-BGK.
