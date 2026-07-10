@@ -32202,3 +32202,14 @@ density gate `|Γ| > p^{1/4}` never met) and `_A3SumProductDepthConfinement` (su
 confined); neither owned the multi-shift exponent-floor. NOT a wrapper around R383 (that is the
 incidence double-count identity; this is the SV Cor 1.2 threshold arithmetic). CORE OPEN / ON-BGK.
 No axioms, no sorry.
+## [466-G59-free-orbit-relabel-no-gain] REFUTED: free-orbit quotienting is an exact relabeling, not a gain (2026-07-10)
+
+The axiom-clean delimiter in `Frontier/_G59FreeOrbitDelimiterNoGo.lean` proves that for a free
+cyclic action of order `n`, `S.card = n * orbitRepCount`; for invariant weights it likewise proves
+`∑ x ∈ S, w x = n * ∑ o ∈ orbitReps, w o`. Consequently, substituting
+`K = n * orbitRepCount` into R392 does not improve the relation-count bound: it is exactly the
+original cardinality written in orbit coordinates. A strict improvement requires genuinely new
+representative-count or representative-mass input. The real `rotZ` action's required mass
+invariance is discharged by `NR_rotZ_invariant`. This closes orbit-size churn while leaving the
+weighted-representative bound as the prize-facing open input. Author Sol (opus-4-8 formalizer),
+co-author wakesync. -- g59freeorbit.
