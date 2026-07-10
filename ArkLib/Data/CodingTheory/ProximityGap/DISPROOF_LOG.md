@@ -32670,3 +32670,40 @@ non-Fourier certificate"). What it adds: the Fourier⟹arc-increment direction o
 equivalence is now fully machine-checked with ZERO cancellation loss, so any future non-Fourier
 arc-occupancy certificate plugs directly into the extraction with no further analytic work. CORE
 remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G82-transversality-crt-threshold] The sole surviving CORE seam QUANTIFIED: CRT amplification across s distinct maximal ideals of index p forces p^s ≤ H for any common-intersection ideal with height certificate H — the prize-cell contradiction threshold s* = (n/4)log6/log p is EXACTLY HALF the OC-PIECEB per-relation height allowance, so the seam is coverage-blocked, NOT height-blocked (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 seam-quantification (`Frontier/_G82TransversalityCRTThreshold.lean`;
+research branch only; complements OC-PIECEB `f753961647` and OC-TAIL `a7c4ab170f`).
+
+**Target.** After G77 emptied the off-BGK list, the doctrine-v2 ranking
+(`docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md`) puts the r369 piece-(b)
+transversality seam first. OC-PIECEB capped naive same-ideal stacking but left the
+multi-embedding side unquantified ("should the census ever be shown to force Ω(n) DISTINCT
+embeddings"). This lane pins the exact amplification law and the exact threshold.
+
+**Axiom-clean Lean kernel (LANDED, 5 thms, `[propext, Classical.choice, Quot.sound]`).**
+- `natCard_quotient_iInf_eq_prod`: CRT cardinality for pairwise-distinct maximal ideals
+  (#(R/⋂𝔭ᵢ) = Π #(R/𝔭ᵢ); distinct maximal ⟹ coprime ⟹ `quotientInfRingEquivPiQuotient`).
+- `natCard_quotient_le_of_le`: quotient-factor surjection monotonicity.
+- `crt_amplification` (HEADLINE): L ≤ ⋂ᵢ 𝔭ᵢ (s distinct maximals of index p) + #(R/L) ≤ H
+  ⟹ p^s ≤ H.
+- `coverage_log_bound`: hence s·log p ≤ log H — common coverage above log H/log p is
+  CONTRADICTORY (no such census exists).
+- `crtThreshold_eq_half_heightCap`: at the prize cell (Hadamard H = 6^{n/4} for the ±1
+  support-6 census span, φ = n/2), the contradiction threshold
+  s* = (n/4)log6/log p ≈ 0.112·n/ln n (p = n⁴) is EXACTLY HALF the OC-PIECEB single-relation
+  height allowance (n/2)log6/log p ≈ 0.224·n/ln n.
+
+**Consequences (the sharpest statement of the surviving seam to date).**
+(1) The anti-coincidence input piece (b) needs only Ω(n/log n) COMMON embeddings — NOT Ω(n) as
+r369 recorded; the requirement is strictly inside what single-relation heights permit (2× slack).
+The seam is coverage-blocked only: the census concentrates at one embedding (measured coverage
+≈ 1, factor n/log n below threshold). (2) Either direction now has a concrete numeric target:
+FORCE common coverage > 0.112n/ln n for a full-rank height-1 family (fires the contradiction and
+closes piece (b)), or prove coverage stays o(n/log n) (fences the seam). This is the first
+surviving-seam boundary where required and permitted quantities differ by a bare factor 2.
+
+**HONEST SCOPE.** Engine + threshold arithmetic proven; the prize-cell instantiation (Hadamard
+for the census span; complete splitting of p in ℤ[ζ_n]) is documented, not formalized. No bound
+on M; CORE remains OPEN / ON-BGK. No axioms, no sorry.
