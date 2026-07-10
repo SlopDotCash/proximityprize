@@ -2199,6 +2199,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullFieldNoisyCharacterTr
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullLengthCharacterSumScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullRankLatticeTransferenceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FunctionFieldModelSubfieldDegeneracy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G100PerDepthCenteringCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
@@ -2263,6 +2264,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90AdaptiveDepthBudgetAss
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90SpacingRigidityProbe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90WeightedCollisionDecoderSectorBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91LowProfileFiberBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91MaximalCancellationBagDiscrepancy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
@@ -2270,6 +2272,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalCoreSlotFacto
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94JacobiCocycleMetric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96ProductionDepthFourFixedEnergy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G97ArcDilateDiscrepancy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
