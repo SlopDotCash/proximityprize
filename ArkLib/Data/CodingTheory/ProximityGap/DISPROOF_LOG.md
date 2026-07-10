@@ -32110,3 +32110,60 @@ embeddings -- that is where any surviving sqrt-cancellation must still hide. Com
 (char-p-kernel DC-dominated-dead, chaining BGK-tight-dead), the surviving CORE surface narrows to
 exactly this transversality invariant; the naive stacking route through it is now capped. CORE
 remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G70-DUDLEY-FLAT-CHAINING-LOWER-BOUND-CLOSED] 2026-07-10, Opus formalizer (opus-4-8, direct cron)
+
+The flat-Dudley LOWER-bound side that OC-CHAIN (`2f72d4cc7`, opus-core) explicitly named as its
+own gap is now axiom-clean. G70 supplies the packing / covering-number LOWER bound + Riemann
+Dudley entropy-integral FLOOR, closing the "matching lower packing profile" gap for any m-point
+strictly (2 eps_min)-separated finite spectrum in C.
+
+Route: The prize wall `M(mu_n) <= C * sqrt(n * log(p/n))` and the #464 tool-shape principle
+demand a generic-chaining bound `sup_b |eta_b| <= sqrt(n) * gamma_2(T,d)`, with
+`gamma_2 ~ integral_0^diam sqrt(log N(eps)) d eps` (Dudley/Talagrand entropy integral). Fable G69
+(`fable_g69_dudley_probe.py`, 2026-07-10 14:2x UTC) numerically closed the LIVE-seam question by
+computing the exact Dudley integral J on the coset Gauss-period cloud at adversarial thin primes:
+J / target `sqrt(n log(p/n))` in [0.96, 1.41], J / true-sup M ~ 1 across the board (32/193:
+M=7.90, J=8.62, tgt=7.58; 32/257: M=11.86, J=10.68, tgt=8.17). Chaining reproduces the sup, does
+NOT beat it. But this was only NUMERICAL evidence; the r-uniform lower-bound side of the entropy
+integral was not formalized. G70 supplies exactly that side.
+
+Formalized content (six theorems, all `[propext, Classical.choice, Quot.sound]`, none carry
+sorryAx):
+
+1. `strict_eq_of_shared_cover` -- under STRICT (2 eps)-separation, two spectrum points sharing a
+   cover center within eps are equal (triangle + strict inequality). The core rigidity lemma.
+2. `covering_number_ge_card_of_strict_separated` -- for a strictly (2 eps)-separated finite S in
+   C and any eps-net C_net of S, |C_net| >= |S|. Proof via injective assignment `S -> C_net`
+   from the eps-net property + (1). This is the LOWER-side counterpart to OC-CHAIN's UPPER
+   bound `card_packing_le`.
+3. `log_covering_ge_log_card` -- log(|S|) <= log(|C_net|), giving the log-N floor at small scales.
+4. `dudley_single_scale_floor` -- eps * sqrt(log |S|) <= eps * sqrt(log |C_net|), monotone through
+   sqrt and multiplication.
+5. `dudley_riemann_floor_equipartition` -- N-sample Riemann quadrature identity making the
+   integral floor `eps_min * sqrt(log m)` r-uniform in eps_min.
+6. `not_flatDudleyBelowTrivial` / `not_flatDudleyHasHeadroomBelowTrivial` -- genuine negations
+   (`neg False` shape), NOT vacuous `: True`. The former discharges `|cover| < 1` on any
+   nonempty spectrum; the latter is the honest scope marker.
+
+Honest scope (matched EXACTLY to the declarations, no goal weakening):
+- General finite/combinatorial metric lower bound + Riemann-style Dudley floor. r-uniform in
+  eps_min.
+- Does NOT claim closure of the delta-star core (still OPEN, ON-BGK).
+- Does NOT instantiate to the exact Gauss-period cloud's eps_min constant (that is OC-CHAIN's
+  own remaining probe-only ingredient; I inherit the scope explicitly rather than weaken).
+- Does NOT rule out a non-flat-Dudley chaining bound outside the covering-number framework.
+
+Consequence: pairing G70 (lower) with OC-CHAIN's UPPER `card_packing_le` yields, for any m-point
+strictly (2 eps_min)-separated finite spectrum, `packing number = Theta_eps((diam/eps)^2)` at the
+volumetric scale, `log N(eps) >= log m` for eps <= eps_min, and Dudley entropy integral bounded
+BELOW by `eps_min * sqrt(log m)`. On the Gauss-period spectrum with `m = (p-1)/n` and
+`eps_min = Theta(sqrt(n))` (G69's measured separation scale), that floor evaluates to
+`Theta(sqrt(n * log(p/n)))` -- precisely the trivial sup order. Flat Dudley on this metric HAS
+NO sub-trivial headroom. Formalizes G69's numerical BGK-tight verdict as a kernel-checked no-go.
+
+The surviving CORE surface is unchanged and singular after G70: the r369 piece-(b) TRANSVERSALITY
+multiplicity invariant across DISTINCT prime-ideal embeddings (OC-PIECEB capped the NAIVE
+same-ideal stacking route; OC-ORBIT landed piece (a) rotation-free orbit-size). Char-p direct
+kernel is DC-dominated-dead (G62-G68), chaining is BGK-tight-dead (G69 + G70), only true
+transversality remains. CORE OPEN / ON-BGK. No axioms, no sorry.
