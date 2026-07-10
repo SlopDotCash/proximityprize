@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5915 files, 62932 declarations
+- `ArkLib` — 5919 files, 62989 declarations
 
 ## Same short-name across multiple files (2435 groups)
 
@@ -2827,6 +2827,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.R21StepanovS1.cubic` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R21StepanovS1.lean:65](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R21StepanovS1.lean#L65) — The Stepanov cubic `f = X(X−u)(X−v)`, matching the scaffold family.
 - `def ArkLib.CodingTheory.HasseWeilInstances.cubic` [ArkLib/Data/CodingTheory/ProximityGap/HasseWeilBoundInstances.lean:41](../../../ArkLib/Data/CodingTheory/ProximityGap/HasseWeilBoundInstances.lean#L41) — A cubic, used as the right-hand side of the elliptic curves below.
 - `def ProximityGap.MCARSBoundaryArithmetic.cubic` [ArkLib/Data/CodingTheory/ProximityGap/MCARSBoundaryArithmetic.lean:65](../../../ArkLib/Data/CodingTheory/ProximityGap/MCARSBoundaryArithmetic.lean#L65) — Explicit cubic.
+
+### `decode` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.Frontier.G87CorrectedPaddingDecoder.decode` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87CorrectedPaddingDecoder.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87CorrectedPaddingDecoder.lean#L83) — Decode the corrected code into its two ordered endpoints.
+- `def ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterSmoothCounterexampleF97.decode` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSmoothCounterexampleF97.lean:333](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSmoothCounterexampleF97.lean#L333) — The explicit decode certificate for indexed scalar `j`.
+- `def ReedSolomon.decode` [ArkLib/Data/CodingTheory/ReedSolomon.lean:637](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean#L637) — The linear map that maps a Reed-Solomon codeword to its associated polynomial.
 
 ### `dedge_gt_budget` (3 declarations, 3 files)
 
@@ -6772,11 +6778,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `instance Issue29Ring.decidablePred_badPolyAgreement` [ArkLib/ProofSystem/RingSwitching/TraceTensorAlgebra.lean:42](../../../ArkLib/ProofSystem/RingSwitching/TraceTensorAlgebra.lean#L42) — (no docstring)
 - `instance KStateWeaken.decidablePred_badPolyAgreement` [ArkLib/ToMathlib/KStateWeaken.lean:74](../../../ArkLib/ToMathlib/KStateWeaken.lean#L74) — (no docstring)
-
-### `decode` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterSmoothCounterexampleF97.decode` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSmoothCounterexampleF97.lean:333](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSmoothCounterexampleF97.lean#L333) — The explicit decode certificate for indexed scalar `j`.
-- `def ReedSolomon.decode` [ArkLib/Data/CodingTheory/ReedSolomon.lean:637](../../../ArkLib/Data/CodingTheory/ReedSolomon.lean#L637) — The linear map that maps a Reed-Solomon codeword to its associated polynomial.
 
 ### `decodeMessagePhiInv` (3 declarations, 2 files)
 

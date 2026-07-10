@@ -24203,3 +24203,25 @@ requested last-door lemma). It does NOT by itself prove the campaign's cross-cel
 remains the DC-subtracted moment face, OPEN / ON-BGK per G77+G75); it certifies that the signed
 representation offers no weaker l1 certificate than the wall. No axioms, no sorry, no native_decide.
 CORE OPEN / ON-BGK.
+
+## [466-G83R-orbit-quotient-decoder-refuted] Free scaling does not reduce the raw decoder core count: the missing scale restores the factor n (axiom-clean cardinal no-go) (2026-07-10)
+
+G83 correctly proved the free-action class equation `|X| = |H| * |X/H|`, but its production
+reading then used `|X/H|` as the core cardinality in the padding decoder. This is invalid for raw
+ordered collision mass: an orbit representative does not determine the actual core; its scale
+`h : H` is additional reconstruction data.
+
+G84 proves the decisive no-go. If nonempty types satisfy `|X| = n * |Q|` with `n > 1`, there is no
+surjection `Q → X`. Instantiating `Q = X/H` for a free nontrivial action shows that a decoder whose
+core coordinate stores only an orbit representative cannot cover the actual cores. The scale
+coordinate costs exactly the factor removed by the orbit quotient.
+
+Consequences: G83's class equation and `n*J ≤ E` remain valid. Its later theorems assuming a
+padding envelope with quotient-cardinality `J` remain conditional arithmetic, but that envelope is
+unavailable for the raw sector. The claimed unconditional depth-four free-orbit rescue is
+retracted. G84 instead uses actual core counts and the genuine `(s!)²` saving from canonical
+increasing slot subsets. This repairs conditional depth four; depth five still fails even after
+propagating the optimistic `C=1` fourth-moment square bound.
+
+This refutes the decoder interpretation, not the proximity-gap conjecture or the free-action class
+equation. CORE remains OPEN.
