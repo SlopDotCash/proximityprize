@@ -24993,3 +24993,29 @@ at every accessible cell; the conjecture is empirically comfortable in its termi
 ONLY the proof is missing. Numerics cannot decide the asymptotic (dossier §10), but the
 measured excess profile (≈ 2β·n, linear in n at fixed β, no blow-up with β) is exactly the
 shape the certificate needs. CORE remains OPEN / ON-BGK.
+
+## [466-G80O-product-divisor-interval] The Cilleruelo-Garaev PRODUCT TRICK formalized: subgroup-interval counts obey T(W)² ≤ D·n below √p, with the entire subgroup/rigidity/counting skeleton machine-checked and the missing analytic input reduced to a NAT-ONLY divisor lemma — the first CG-type mechanism in-tree (axiom-clean skeleton; DivisorBound named) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80OProductDivisorInterval.lean`, real locked build, both
+theorems exactly `[propext, Classical.choice, Quot.sound]`). The declared modular-native
+thread's first rung.
+
+**Bricks.** `fiber_card_le_divisorCount`: pairs (s,t) ∈ [1,W]² with s·t = y inject into y's
+divisors. CAPSTONE `intervalCount_sq_le_of_divisorBound`: for multiplicatively closed H,
+W² < p, DivisorBound(W², D) ⟹ T(W)² ≤ D·|H| — via the product map with no-wraparound
+integer rigidity (s·t < p exact) and image ↪ H.
+
+**Quantitative reading (honest).** With the elementary d(y) ≤ 2√y the bound is VACUOUS
+(geometric mean). It becomes nontrivial with the classical constant-exponent divisor bound
+d(y) ≤ C_δ·y^δ — a PURE Nat lemma (multiplicativity: d(2^a) = a+1 ≤ C·2^{aδ}, finitely many
+sub-threshold primes absorbed into C_δ ≈ 8.4 at δ = 1/4), no subgroup content whatsoever:
+then T(W) ≤ √(C·n)·W^{1/4}, strictly below min(n, W) throughout n^{2/3} < W < n² — e.g.
+T(n) = O(n^{3/4}), the first Cilleruelo-Garaev-type saving expressible in-tree. At the true
+divisor rate δ = o(1): T(W) ≤ √n·W^{o(1)} for all W < √p, the full CG interval bound.
+
+**Honest scope.** The route is FENCED from the prize saddle by G80P regime disjointness
+(W < √p vs W = p/K ≫ √p) — no prize claim. Value: (i) the missing input for a genuine
+machine-checked CG interval bound is now textbook Nat plumbing (formalize d(y) ≤ C_δ y^δ and
+instantiate); (ii) this is the k = 2 rung of the k-fold ladder T(W)^k ≤ D_k·n (W^k < p) whose
+k → log p/log W limit is the BGK bootstrap — the formal skeleton all deeper rungs share.
+CORE remains OPEN / ON-BGK. No axioms, no sorry.
