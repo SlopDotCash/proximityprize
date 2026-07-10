@@ -2247,6 +2247,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88EqualSumCorrectedDecod
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89AllDepthWickAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89ProductionDepthThreeCollisionAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90AdaptiveDepthBudgetAssembly
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick

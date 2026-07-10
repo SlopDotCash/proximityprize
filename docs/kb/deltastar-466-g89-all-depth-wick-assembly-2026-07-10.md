@@ -22,9 +22,11 @@ depth at a time. A δ*-facing energy statement must control the sum over all dep
     depths 0, 1, 2 (sharpens G82's unsplit depth-two calibration);
   - `production_cap_three`: the cap holds with the elementary equal-sum fiber count `J = n^5`;
   - `production_cap_four_equalSum_fails`: the equal-sum fiber count `n^7` FAILS the depth-4 cap;
-  - `production_cap_four_freeOrbit`: G83's free-orbit quotient count `J = n^6` PASSES the
-    depth-4 cap even after the 111-fold split — the depth-4 rescue survives the all-depth
-    assembly (concurrent-swarm sharpening, verified in the same landing).
+  - `production_cap_four_freeOrbit`: a depth-4 count of `n^6` PASSES the cap even after the
+    111-fold split. **Scope correction (same day):** the free-orbit justification that the TRUE
+    depth-4 sector count is `≤ n^6` was retracted (`08aa56a202` — a raw-sector decoder must
+    restore the scale coordinate). The theorem stands as arithmetic; the depth-4 feed is now an
+    OPEN conditional input, not unconditional.
 - `production_allDepth_absorbed_of_deep_caps` (**headline, production**): given the envelope
   bounds at all 111 depths, shallow counts bounded by their elementary values (crude universe at
   depths ≤ 2, equal-sum fiber at depth 3, free-orbit equal-sum at depth 4), and the deep caps
@@ -35,10 +37,9 @@ depth at a time. A δ*-facing energy statement must control the sum over all dep
 
 The combinatorial superstructure (decoder, padding, orbit bookkeeping, per-depth absorptions)
 now composes into ONE production statement whose only open input is the family of deep caps
-`5 ≤ s ≤ 110`. Depths 0–4 are fed unconditionally by elementary counting; depth five is the
-first depth where genuinely new cancellation is mandatory (matching the reported G86 depth-five
-constant-gap frontier). The open analytic wall is unchanged but is now consumed through a single
-named interface.
+`5 ≤ s ≤ 110` plus the depth-4 input `J 4 ≤ n^6` (conditional after the G83 retraction).
+Depths 0–3 are fed unconditionally by elementary counting. The open analytic wall is unchanged
+but is now consumed through a single named interface.
 
 ## Honest scope
 

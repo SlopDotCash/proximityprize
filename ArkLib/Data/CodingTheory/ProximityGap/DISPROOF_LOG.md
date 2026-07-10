@@ -24280,3 +24280,24 @@ variant:** rescales the wall by exactly the uniform orbit size c
 formally pinned to the wall. The "surprising opposite" (genuine slack via first incidences) is
 proved impossible for this functional class. Quantitative-identity no-go, NOT a bound:
 `DCEnergyBound`/CORE remains OPEN / ON-BGK.
+
+## [466-G95-cardinality-cap-nogo] Raw-cardinality instantiation of the G89 all-depth budget caps is IMPOSSIBLE at production scale — the 1/p relation weighting is formally mandatory (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G95CardinalityDeepCapNoGo.lean`, pg-iterate 45s, all 5
+declarations `[propext, Classical.choice, Quot.sound]`).
+
+**Refuted approach.** Feeding the G89 all-depth Wick assembly (and hence the G82-style
+production gates) with the raw CARDINALITIES of the equal-sum maximal-cancellation depth
+fibers, for ANY choice of per-depth core counts `J`.
+
+**Obstruction lemma (reusable, upstreamable).** `card_pow_le_card_mul_addREnergy`:
+`#A^(2r) ≤ card α * addREnergy r A` — Cauchy–Schwarz pigeonhole floor on r-fold additive
+energy, dual to the in-tree `Finset.addREnergy_le`. With the exact depth partition
+`addREnergy r A = Σ_{s≤r} depthFiber A r s` (G83M depth), envelopes + caps would force
+`#A^(2r) ≤ card α * (2r-1)!! * #A^r`; at the prize shape (`#A = 2^30`, `ZMod P`,
+`P = 2^30*(2^128+192)+1`, `r = 110`) that is `2^6600 ≤ ~2^4156.2` — kernel-refuted.
+
+**What survives.** The padding/decoder superstructure and the G89 gate itself are untouched;
+their masses must be sub-cardinality (relation-weighted, `p^{-1}`-scale per collision, as in
+the DC-subtracted moment). Any future "count the sectors and win" proposal at cardinality
+level is dead on arrival by this entry. CORE remains OPEN / ON-BGK.

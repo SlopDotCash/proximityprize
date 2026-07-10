@@ -29,10 +29,14 @@ every depth satisfies its cap, then the total across all depths fits the single 
 At the production point `(n, r) = (2^30, 110)` the caps are kernel-checked to hold
 *unconditionally* with the crude universe counts at depths `0, 1, 2` (`J = n^(2s)`) and with the
 elementary equal-sum fiber count at depth `3` (`J = n^5`) — even after paying the `111`-fold
-budget split.  At depth `4`, the raw equal-sum fiber count `n^7` fails, but G83's free subgroup
-orbit quotient saves one power and the resulting `J = n^6` cap passes even after the split.
-Thus the summed gate is fed through depth four, and depth five is the first place where genuinely
-new cancellation is mandatory.
+budget split.  At depth `4`, the raw equal-sum fiber count `n^7` fails, while a count of `n^6`
+passes even after the split (`production_cap_four_freeOrbit` records that arithmetic fact).
+**Scope correction (post-G83-retraction, 2026-07-10):** the claim that the TRUE depth-4 sector
+count is `≤ n^6` via the free-orbit quotient was retracted (`08aa56a202`) — a raw-sector decoder
+must restore the scale coordinate, so the quotient saving does not transfer to the genuine
+sector.  The summed gate is therefore fed *unconditionally* only through depth `3`; the depth-4
+hypothesis `J 4 ≤ n^6` in the production consumer is an OPEN conditional input, alongside the
+deep caps.
 
 **Honest scope.**  The headline production consumer reduces the whole combinatorial
 superstructure to the deep caps `5 ≤ s ≤ 110`, which for growing `s` are the open analytic wall
