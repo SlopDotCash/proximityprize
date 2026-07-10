@@ -2,7 +2,7 @@ name: Deploy Truth Mining to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    branches: [research/proximity-prize]
     paths:
       - "website/truthmining/**"
       - ".github/workflows/truthmining-cloudflare.yml"

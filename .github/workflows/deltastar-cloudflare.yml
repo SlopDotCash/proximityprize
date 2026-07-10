@@ -2,7 +2,7 @@ name: Deploy δ* Paper to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    branches: [research/proximity-prize]
     paths:
       - "website/deltastar-paper/**"
       - ".github/workflows/deltastar-cloudflare.yml"
