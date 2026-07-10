@@ -32566,6 +32566,11 @@ enumerates every padding multiplicity vector.  The Lean file
 the antipodal core relation, the claimed RHS, the strict numerical failure, and survival of the
 safe factorial-corrected ceiling.  All headline declarations use only `[propext]`.
 
+The production calibration is also kernel-checked.  For a single linear-size depth-two orbit, the
+repaired G79S test would require `110^2 * 108! ≤ 2^30`; Lean proves the strict reverse inequality.
+Thus the missing permutation is not a harmless constant: at logarithmic saddle depth it destroys
+the proposed bounded-sector absorption mechanism quantitatively.
+
 A safe coarse repair is
 
 ```text
@@ -32577,3 +32582,31 @@ destroys G79S's intended bounded-sector absorption at logarithmic depth: `(r-s)!
 Wick-scale factor, so it cannot be discarded.  G79S remains a correct conditional arithmetic
 theorem, but its proposed R369 input is unavailable.  This refutes the mechanism, not
 `FourthPowerSaddleDCEnergy`; CORE remains OPEN.
+
+## [466-G80D-decoupling-parallel-cap-collapse] Bourgain–Demeter decoupling cannot fire on the dyadic coset tower: the caps are exact multiplicative DILATES (no transversality input), the bilinear step collapses to the linear energy at every lag, and the EXACT defect identity shows any decoupling gain ≡ the lag-decorrelation mass = the independence atom (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 novel-mathematics walk (`Frontier/_G80DDecouplingParallelCapCollapse.lean`;
+research branch only; complements `_Attack01DyadicButterfly` which owns the halving identity).
+
+**Why this walk was owed.** l²-decoupling / induction-on-scales (BDG) is the second modern engine
+(after KM, G78) whose loss class is prize-tolerable (C^ε per scale, log n scales) and which proves
+exactly square-root-cancellation statements — but it was unwalked BY NAME in the graveyard.
+
+**Mechanism (proven).** The dyadic tower's two caps at each scale are η^{(n/2)}_b and
+η^{(n/2)}_{bg} — the SAME function at multiplicative lag g (dilate-caps: algebraic parallelism, no
+curvature/transversality data exists to feed the bilinear reduction). Landed exact identities, all
+`[propext, Classical.choice, Quot.sound]`:
+- `sum_comp_mulRight`: frequency dilation invariance — every mixed cap-norm is a lag correlation.
+- `bilinear_lag_le_energy`: Σ_b |A(b)A(bu)| ≤ Σ_b A(b)² for EVERY lag u — the bilinear object
+  never beats the linear energy.
+- `decoupling_defect_identity` (HEADLINE): Σ A² − Σ A(b)A(bu) = ½·Σ (A(b) − A(bu))² EXACTLY —
+  the decoupling gain at lag u IS the lag-u decorrelation mass of the magnitude field.
+
+**Verdict.** For A(b) = |η^{(n/2)}_b|, beating the trivial decoupling constant ⟺ lower-bounding
+Σ_b (A(b) − A(bg))² — certifying decorrelation of the coset magnitude field — verbatim the
+measured-but-uncertified INDEPENDENCE form (§2.4). Decoupling is a linear-algebra gauge of the
+atom. PATTERN NOW COMPLETE ACROSS BOTH MODERN CONSTANT-LOSS ENGINES: KM sifting (G78) and BD
+decoupling (G80D) fail identically — not on strength, on a circular hypothesis. The tool-shape
+principle sharpens once more: the missing ingredient is a NON-FOURIER decorrelation/anti-
+concentration certificate for geometric-progression structure; everything downstream of that
+certificate is already available at tolerable loss. CORE remains OPEN / ON-BGK. No axioms, no sorry.
