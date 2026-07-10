@@ -1889,6 +1889,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CreateThirdBasisInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CreateTowerVarianceBootstrap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CreateWraparoundGenFn
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CreateWraparoundVariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CrtCharSumSubmultThinVacuity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclicPowerFiber
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclicPowerRangeTorsion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CyclotomicConcentration
