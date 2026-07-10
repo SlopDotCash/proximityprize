@@ -31366,3 +31366,32 @@ Wick rung at EVERY fixed depth follows at almost all primes through FS1–FS3 + 
 LEAN NOTE (recurring): `Finset.card_bij` goals carry beta-redexes — `dsimp only` before rw;
 `Fin.append` at a raw index: use explicit `append_apply_lt/ge` helpers (conv_lhs for the
 dependent rewrite) rather than `Fin.addCases`. CORE OPEN, ON-BGK.
+
+## [466-FS13-pairing-induction-wick-census] MAJOR CENSUS BRICK (Fable session): the depth-generic char-0 Wick bound `trivialCountG m r ≤ (2r−1)‼·(2m)^r` PROVEN at every depth by pairing induction — NO Lam–Leung, NO closed forms; the depth-generic ledger has no open census input left (2026-07-09)
+
+Lane: FS13 (file `Frontier/_FS13PairingInductionWick.lean`, real locked build 3319 jobs, all
+4 headline theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+On FS12's one-sided object the classical Wick union bound is a removal induction, now
+machine-checked:
+- `coeff_sum_monomF`: coeff of Σμ(cᵢ) at res < m = signed occupancy #{cᵢ=res} − #{cᵢ=res+m}.
+- `exists_partner`: every item of a zero-sum tuple has an m-shifted cancelling partner
+  (equal occupancies + membership).
+- `zeroSumCount_step`: Z(N+2) ≤ (N+1)·2m·Z(N) — explicit injection c ↦ (partner position,
+  last value, pair-removed remainder), reconstruction via Fin.snoc/insertNth_self_removeNth;
+  total classical extractors (partnerIdx/partnerIdx' with junk fallback) make the map
+  card_le_card_of_injOn-ready.
+- `zeroSumCount_le_wick`: Z(2r) ≤ (2r−1)‼(2m)^r (induction; Z(0) ≤ 1).
+- `trivialCountG_le_wick` (CAPSTONE, via FS12): trivialCountG m r ≤ (2r−1)‼·(2m)^r = Wick
+  at n = 2m — the char-0 half of the depth-r energy of μ_n, EVERY depth, unconditional.
+
+SIGNIFICANCE: (i) the long-standing "char-0 shadow is Lam–Leung, not yet Lean-formalized —
+Mathlib lacks Lam–Leung" gap (CLAUDE.md §3.5 face 3) is now CLOSED for the 2-power μ_n Wick
+INEQUALITY at all depths (the exact closed forms remain per-depth work, but the moment method
+never needed more than ≤ Wick on the char-0 side); (ii) with FS11's decomposition:
+`rEnergy(μ_n) r ≤ (2r−1)‼·n^r + wraparoundExcessG r` unconditionally at every depth in every
+field; (iii) the depth-generic T=1 ledger theorem (spawned task) is now pure packaging — all
+mathematics in-tree. HONEST SCOPE: fixed depth; exceptional-prime budgets grow n^{2r+1};
+the deep-r joint limit (prize wall) untouched. LEAN NOTES: linarith does NOT work in ℤ[X] —
+use linear_combination; card_le_card_of_injOn coerces to Set (Finset.mem_coe first); rw order
+matters when later rewrites consume earlier patterns (hrem before hp/hv). CORE OPEN, ON-BGK.
