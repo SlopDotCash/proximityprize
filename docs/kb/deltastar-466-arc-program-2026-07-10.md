@@ -165,3 +165,11 @@ Consequently all finite-field, no-wrap, and fiber-counting content of the k-fold
 discharged.  The remaining theorem is purely in `Nat`: bound `M_k(W)` by
 `W^k · polylog(W)` with dependence on `k` explicit enough for growing `k`.  No replacement by
 the lossy pointwise inequality `d_k ≤ d^(k-1)` is made here.
+
+**Prize-path correction.** G80H now formally proves `sq_lt_of_pow_lt`: for every `k ≥ 2`,
+`W^k < p` implies `W² < p`.  Increasing `k` therefore never enlarges the no-wrap method beyond
+the square-root window; it shrinks it.  Since the arc saddle has `W = p/K ≫ √p` in the
+large-β prize regime, even an optimal estimate for `M_k(W)` cannot close #466 through this
+interface.  The k-fold ladder remains a genuine unconditional interval theorem below `√p`, but
+the prize-critical continuation must be genuinely modular (the Stepanov/auxiliary-polynomial
+route identified in §3), without integer no-wrap lifting.

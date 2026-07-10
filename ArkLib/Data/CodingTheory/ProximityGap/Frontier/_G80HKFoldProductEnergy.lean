@@ -98,6 +98,16 @@ theorem card_pow_two_mul_le_productImage_mul_kMulEnergy (A : Finset ℕ) (k : �
 
 variable {p : ℕ} [Fact p.Prime] [NeZero p]
 
+/-- **No-wrap rigidity cannot move past the square-root window.** For every `k ≥ 2`, the
+k-fold hypothesis `W^k < p` already forces `W² < p`.  Thus increasing the product depth never
+extends this method to the prize saddle `W ≫ √p`; it only shrinks its admissible window. -/
+theorem sq_lt_of_pow_lt {W k p : ℕ} (hk : 2 ≤ k) (hW : W ^ k < p) :
+    W ^ 2 < p := by
+  cases W with
+  | zero => simpa using hW
+  | succ W =>
+      exact (pow_le_pow_right' (Nat.succ_le_succ (Nat.zero_le W)) hk).trans_lt hW
+
 /-- A tuple drawn from `[1,W]` has integer product at most `W^k`. -/
 theorem tupleProduct_le_pow {A : Finset ℕ} {W k : ℕ}
     (hA : ∀ a ∈ A, a ≤ W) {x : Fin k → ℕ}
@@ -176,6 +186,7 @@ end ArkLib.ProximityGap.Frontier.G80HKFoldProductEnergy
   ArkLib.ProximityGap.Frontier.G80HKFoldProductEnergy.kMulEnergy_eq_sum_sq_fibers
 #print axioms
   ArkLib.ProximityGap.Frontier.G80HKFoldProductEnergy.card_pow_two_mul_le_productImage_mul_kMulEnergy
+#print axioms ArkLib.ProximityGap.Frontier.G80HKFoldProductEnergy.sq_lt_of_pow_lt
 #print axioms ArkLib.ProximityGap.Frontier.G80HKFoldProductEnergy.productImage_card_le_subgroup
 #print axioms
   ArkLib.ProximityGap.Frontier.G80HKFoldProductEnergy.card_pow_two_mul_le_subgroup_mul_kMulEnergy
