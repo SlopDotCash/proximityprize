@@ -69,7 +69,6 @@ theorem coeffs_of_close_proximity_curve_finMapTwoWords_eq_close_proximity
   simp only [coeffs_of_close_proximity_curve, coeffs_of_close_proximity,
     ReedSolomon.toFinset, ReedSolomon.RScodeSet, Set.mem_toFinset, Set.mem_setOf_eq,
     polynomialCurveEval_eq_sum_smul]
-  rw [sum_finMapTwoWords_eq]
   constructor
   · intro hz
     have hz' :
