@@ -24839,3 +24839,65 @@ small-difference statement to δ* is machine-checked with explicit constants.
 **Honest scope.** Exact combinatorial collapse only; the small-difference bound is NOT proven
 (it IS the wall, in its terminal classical form). CORE remains OPEN / ON-BGK. No axioms, no
 sorry.
+## [466-G98-guth-maynard-gram-bootstrap] Guth–Maynard large-values / Halász–Montgomery Gram bootstrap: REDUCES-TO-FENCE F0 + VACUOUS-AT-PRIZE — the large-values Gram matrix IS the field at difference frequencies (exact transfer identity, formalized); the bootstrap admits all of [0,n] as fixed points (2026-07-10)
+
+Lane: G98 Fable, transfer of GM (arXiv 2405.20552) matrix-reformulated large-value estimates to
+M = max_b|η_b| (`Frontier/_G98LargeValuesGramBootstrap.lean`, 22 decls, ALL exactly
+`[propext, Classical.choice, Quot.sound]`; probes `scripts/probes/probe_g98_gram_bootstrap.py`,
+`probe_g98_gram_signs.py`, β=4, n=8–64, p up to 16777601). **Transfer identity (exact):**
+G_{b,b'} = η_{b−b'} (`gram_eq_period_diff`) — the large-values matrix IS the field. Base HM
+inequality formalized r-uniformly: r·V² ≤ n(n + (r−1)M') (`large_values_gram_bound` — quadratic
+in the extremizer set, NOT the linear G80 l¹ certificate, NOT a moment: a COUNT bound, dying by
+the F0 count-vs-sup fence, not the moment no-go). **Kills:** (K1) the count form certifies an
+empty level set iff V > n — trivial level — for EVERY M' (`hm_certifies_empty_iff_above_trivial`);
+truth has a LARGE target-level set (77 cosets ≥ target at n=64, C≈1.36>1). (K2) informativeness
+needs M' < V²/n ≈ log(p/n); measured extremal off-diagonals ≈ 2–3.5√n (differences of
+extremizers sit at the 0.88–0.99 value percentile — the self-reference SATURATES instead of
+bootstrapping); M ≤ f(M) admits all of [0,n] (`selfref_vacuous`,
+`selfref_bootstrap_all_fixed_points`); probe fixed point drifts to trivial n. (K3) GM's matrix
+sign cancellation IS present (signed off-diag cancels to 0.7–4.6%, effective rank ≪ r) but
+priced in: spectral HM measured saturated (n·λ_max/Σ|η_b|² = 1.02–1.08), as forced by the
+Rayleigh floor λ_max(G_B) ≥ rV²/n (`no_independent_spectral_handle`) — any spectral handle tight
+enough to help must already bound the field (the Gram IS the field: circular). GM dichotomy
+horns BOTH fail: B has no additive structure beyond forced ± symmetry (B−B distinct-coset counts
+491/496 of max at n=64), yet off-diagonals too large for the count to bite. Survivor: NONE. The
+√log excess remains the open BGK/Paley wall. CORE OPEN / ON-BGK.
+
+## [466-G99-erdos-turan-ladder-and-integer-lift-rigidity] The Esseen/Erdős–Turán harmonic ladder with the exact l² input is quantitatively non-contracting (nontrivial ONLY dense, n ≳ 3√2·√p), and the door-iv small-ball question has a NON-Fourier answer at containment scale: integer-lift multiplicative rigidity — no dilate of μ_n fits in any arc of length < √(p/2) (2026-07-10)
+
+Lane: G99 Fable (`Frontier/_G99ErdosTuranLadderCertificate.lean`, 14 decls, all
+`[propext, Classical.choice, Quot.sound]`; probe `scripts/probes/probe_g99_erdos_turan_ladder.py`).
+Answers the question posed verbatim in [door-iv-phaseset-smallball]: "any Littlewood-Offord /
+Halász small-ball bound that does NOT route through multiplicative energy?".
+
+**Fourier test side (legal per G78/G80Z doctrine).** ET bounds worst-b arc discrepancy by the
+sparse harmonic ladder Σ_{h≤H}|η_{hb}|/h; η is CONSTANT on μ_n-cosets (`eta_mul_mem`) and
+dilation permutes cosets, so under ladder distinct-coset freeness the exact in-tree Parseval
+compresses by the full factor n: Σ_{h≤H}|η_{hb}|² ≤ p−n, b-UNIFORMLY
+(`ladder_sq_le_of_distinct_cosets`), giving D*(b) ≤ n/(H+1) + 3√2·√(p−n)
+(`ladder_weighted_l1_le_of_distinct_cosets`). EXACT nontriviality window: 18(p−n) < (n−n/(H+1))²,
+i.e. n ≳ 3√2·√p — DENSE ONLY, empty at prize shape (probe: cert 1086 vs truth D*=6 vs cap n=16
+at p=65537/n=16; nontrivial at p=257/n=128 and p=65537/n=4096). The G80Z-consumer loop has AM-GM
+floor 2√(2πnΔ) (`esseen_loop_resolution_floor`): resolution-blocked (≥πn) thin, above the √p
+Gauss-sum ceiling dense — the Esseen loop is NON-CONTRACTING with the exact l² input; extends
+G78's KM verdict with sharp constants. Structural probe finding: at v₂-structured primes the
+collision-free ladder dies at H ≤ 3 (μ₁₆ = ⟨4⟩ ∋ 4,16,64 at p=65537; ord(2)=32 ⟹ 2 ∈ μ_n ∀
+dyadic n ≥ 32) — the smooth-domain structure IS the small-ratio structure. Hypothesis-free
+baseline (`completion_arc_deviation_bound`): |q·#(S∩I) − |S||I|| ≤ √(|I|(q−|I|))√(|S|(q−|S|))
+for ALL finsets — exact, never beats min(|S|,|I|); the completion route's unimprovable floor.
+
+**Non-Fourier certificate side (the new positive answer).**
+`dilated_orbit_short_interval_rigidity`: p prime, xⁿ=1, x²≠1, b≠0, 2V² < p ⟹ {b·x^k} ⊄ any
+interval of length V. Integer-lift mechanism (NO Fourier, NO mult-energy, NO Weil):
+m_k := valMinAbs(b·x^{k+1}−b·x^k) satisfies m_j·m_k ≡ m_0·m_{j+k} (mod p), both sides < 2V² < p
+⟹ ℤ-equality ⟹ geometric lift ⟹ periodicity forces m_1 = ±m_0 ⟹ x = ±1. b-uniform at every
+scale V < √(p/2). Inverse-LO/GAP detour verdict: rank-1 GAP containment of μ_n IS arc
+concentration of a dilate (definitionally circular), and containment forces V ≥ n trivially, so
+GAP-refutation adds no new algebraic surface; the integer-lift rigidity is the surviving
+non-Fourier mechanism, at total-mass scale only.
+
+Lean: classical ET itself NOT formalized — consumed only as an explicit hypothesis in
+`arc_discrepancy_of_erdosTuran_hypothesis`. VERDICT: mapped-wall quantification plus a
+containment-scale non-Fourier certificate; per-arc occupancy at deviation scale √(n log q)/K
+remains exactly the BGK/Cilleruelo–Garaev frontier. No CORE upper bound, no cancellation, no
+completion-saving, no moment-saving, no capacity claim. CORE OPEN, ON-BGK.
