@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88EqualSumCorrectedDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89AllDepthWickAssembly
+import ArkLib.ToMathlib.Combinatorics.Additive.HigherEnergy
 import Mathlib.Algebra.Order.Chebyshev
 
 /-!
