@@ -24618,3 +24618,28 @@ bound must be built from the DIRECTIONAL Diophantine object (signed best approxi
 d/p near +1, i.e., three-distance/continued-fraction data of (d−1)/p with sign), not from
 norm/height ceilings. Honest scope: probe-only; no Lean brick claimed; the G80V identities
 are unaffected. CORE remains OPEN / ON-BGK.
+### [466-HD6-exact-identity-program-CLOSED] The HD5 dichotomy is DECIDED: (C) CONSISTENCY — the complete multiplicative-identity web of Gauss phases (conjugation + ALL m′-fold Hasse–Davenport product relations, 1346 machine-verified rows, zero convention failures) has rank 191/255 with nullity 64, and the ladder angle vector is FULLY FREE inside it (θ-projection 15 of 15) — §33 live route (ii) is CLOSED as a no-go with a rank certificate; HD1's "absolute" framing corrected (2026-07-10)
+
+Probe `/tmp/arklib-reports/hd5_rank_probe.py` (p=257, m=16, face χ=char(1)). Every relation row
+is numerically verified against true Gauss sums before inclusion (self-validating design; 0
+failures across conjugation + m′-fold HD products, m′ ∈ {2,4,8,16,32}, all faces/steps).
+
+**Verdict.** rank = 191, nullity = 64 (= (p−1)/4), and the projection of the null space onto the
+15 ladder angles θ_j = γ(16j) + γ(1) − γ(16j+1) has FULL rank 15: the web imposes ZERO linear
+constraints on the ladder's angle data. The exact multiplicative-identity program (HD/route-(ii))
+cannot pin any functional of the ladder angles — in particular not the r=3 rung. CLOSED.
+
+**Correction to HD1 (honesty).** HD1's "the even half of the angle spectrum is exact arithmetic
+data" was an overclaim: the HD product formulas express coset products RELATIVE to
+collapsed-index Gauss phases (g(χ^{m′}), g(ρ^a)) — themselves free variables of the web. Chasing
+all relations to ground (this rank computation) shows the relative pinnings compose to nothing on
+θ. The HD3 transfer maps remain TRUE and exact (verified 1e-13) but are likewise relative:
+they transport angle data across (faces × levels) without ever grounding it — the renormalization
+no-contraction doctrine, now PROVEN at the identity level by explicit rank deficiency.
+
+**Frontier update.** §33's three live routes on the calibrated open core: route (ii)
+[HD coset-angle structure] is now CLOSED (this entry); route (i) [Katz vertical equidistribution
+along linear conditions in ℤ/m] and route (iii) [genuinely new ideas vs `IterConvEnergyWick`]
+remain. The doctrine-v2 verdict is unchanged and strengthened: the missing certificate must be
+ARCHIMEDEAN/analytic — no web of exact algebraic identities, however complete, touches it.
+CORE OPEN / ON-BGK. Marked down, loop continues.
