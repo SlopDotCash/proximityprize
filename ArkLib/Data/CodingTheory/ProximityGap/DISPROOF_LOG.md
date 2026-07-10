@@ -31321,3 +31321,27 @@ exceptional set explicitly machine-checked-budgeted. HONEST SCOPE: T=1 cap ≈ n
 only β ≳ 8 (worse than FS6's β ≳ 6); prize regime uncapped; deep-r wall untouched. Follow-up
 lanes spawned as session tasks: depth-4 census discharge; depth-generic T=1 ledger.
 CORE OPEN, ON-BGK.
+
+## [466-FS11-generic-depth-decomposition] DEPTH-GENERIC ENGINE (Fable session): `rEnergy(μ_n) r = trivialCountG(r) + wraparoundExcessG(r)` for EVERY depth r, one theorem — the FS4 decomposition freed from fixed arity; trivial term FIELD-FREE (2026-07-09)
+
+Lane: FS11 (file `Frontier/_FS11GenericDepthDecomposition.lean`, real locked build 3316 jobs,
+all 4 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+Generalizes FS4 to the in-tree `rEnergy` piFinset shape at arbitrary depth:
+- `patternPolyG m a b = Σᵢ μ(aᵢ) − Σᵢ μ(bᵢ)` with `deg < m` (`natDegree_sum_le_of_forall_le`)
+  and `|coeffs| ≤ 2r` — the exact FS2/FS3 annihilator-input shape (height exponent b with
+  2r ≤ 2^b), at every depth.
+- `sum_eq_iff_aeval_patternPolyG` — the depth-r energy condition ⟺ pattern vanishing.
+- `rEnergy_eq_trivial_add_excess` — the exact decomposition at EVERY r, with `trivialCountG`
+  a field-free ℤ[X] count. Key technique: `Fintype.piFinset` over an image = image of the
+  piFinset (via `choose` + componentwise `pow_inj`), so `Finset.sum_image` reindexes the
+  r-fold energy sums in one stroke — no per-arity boilerplate.
+
+STATE: FS1–FS3 (ledger/annihilator/height) + FS11 (decomposition) are now ALL depth-generic.
+What remains per depth is only the char-0 census: at r=3 it is discharged (FS5, exact); at
+general r either the closed form (r=4..6 exist carrier-relative in CharZeroEnergy*Exact) or
+the T=1 zero-excess route needs `trivialCountG ≤ Wick` (the pairing-induction union bound —
+spawned task). Immediate corollary shape available: at all but ≤ n^{2r}((k+1+b)n/s) primes,
+`rEnergy = trivialCountG` EXACTLY (field-independent) for any fixed r. HONEST SCOPE: the
+exceptional budget grows like n^{2r+1} — vacuous at prize depth r ≈ ln q; the wall stands.
+CORE OPEN, ON-BGK.
