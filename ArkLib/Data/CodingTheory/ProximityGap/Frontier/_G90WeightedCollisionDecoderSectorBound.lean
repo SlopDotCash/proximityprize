@@ -64,9 +64,7 @@ noncomputable instance instFintypeCollisionCancellationSector (r s : ℕ) :
   classical
   exact Fintype.ofInjective Subtype.val Subtype.val_injective
 
-/-- Equality of endpoint weighted sums descends through maximal common cancellation.  This is
-valid for an arbitrary weight map: map both reconstruction identities and cancel the identical
-mapped common part. -/
+/-- Equality of endpoint weighted sums descends through maximal common cancellation. -/
 theorem weighted_core_sum_eq_of_weighted_sum_eq
     {left right : Multiset A}
     (hsum : (left.map w).sum = (right.map w).sum) :
@@ -110,7 +108,6 @@ theorem exists_code_representation {r s : ℕ} (hsr : s ≤ r)
   refine ⟨(core, eLeft, eRight, padding, σ), ?_⟩
   exact Prod.ext hLeft hRight
 
-/-- Choose one corrected representation of each weighted collision-sector element. -/
 noncomputable def encodeSector {r s : ℕ} (hsr : s ≤ r)
     (q : CollisionCancellationSector A B w r s) :
     PaddingCode (PrimitiveRelationCore A B w s) A r s :=
@@ -127,8 +124,7 @@ theorem encodeSector_injective {r s : ℕ} (hsr : s ≤ r) :
   apply Subtype.ext
   rw [← decodeRaw_encodeSector w hsr x, ← decodeRaw_encodeSector w hsr y, hxy]
 
-/-- **Weighted factorial-corrected collision-sector bound.**  All additive collision semantics
-are now retained in the primitive-core cardinality. -/
+/-- **Weighted factorial-corrected collision-sector bound.** -/
 theorem card_collisionCancellationSector_le {r s : ℕ} (hsr : s ≤ r) :
     Fintype.card (CollisionCancellationSector A B w r s) ≤
       Fintype.card (PrimitiveRelationCore A B w s) * (r.descFactorial s) ^ 2 *
