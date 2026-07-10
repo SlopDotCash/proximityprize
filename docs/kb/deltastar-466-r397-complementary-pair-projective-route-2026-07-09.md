@@ -1,0 +1,65 @@
+# R397: complementary-pair projective route (2026-07-09)
+
+Status: two broad combinatorial hypotheses refuted; a sharper dyadic projective classification survives.
+
+## Complementary-pair reduction
+
+In the overlap-three saturated rate-quarter cell, an off-line point has a root block of size
+`k-1` inside a petal of size `k+1`.  Replace the block by its complementary unordered pair.
+Modulo the cubic locator of the three common anchors, compatibility says that the two block
+locators have proportional values at those anchors.
+
+For a petal `L` and pair `{x,y}` this projective value is, up to a fixed petal factor, the
+coefficient point of the monic quadratic
+
+```text
+(X-x)(X-y) = X^2-(x+y)X+xy.
+```
+
+Three distinct anchors determine a quadratic projectively, and monicity fixes the scalar.
+Thus each side's complementary-pair map is injective.  Compatibility is the intersection of two
+finite pair configurations in `P^2` under one projectivity.
+
+## Refutation 1: adjacency alone is quadratic
+
+Ignoring the locator values leaves a partial bijection between edges of two `K_v` graphs,
+`v=k+1`, in which no two selected pairs are adjacent in both coordinates.  This does not have a
+linear bound.  For `v=2m`, odd `m`, split each vertex set into two `m`-sets and select
+
+```text
+left(a,b)  = {(0,a),(1,b)},
+right(a,b) = {(0,a+b),(1,a-b)}             over Z/mZ.
+```
+
+Both projections are injective.  Sharing either left endpoint forces both right endpoints to
+differ, so the forbidden double adjacency never occurs.  The family has `m^2=v^2/4` elements,
+already exceeding the desired `4(v-1)` at `m=9`, where `81>68`.
+
+`scripts/probes/probe_rate_quarter_edge_matching_z3.py` verifies the construction and also gives
+the exact small maxima `5,9,10` for `v=5,6,7`.
+
+## Refutation 2: pair-point lines are not only stars
+
+The coefficient points `[1,-(x+y),xy]` for dyadic-domain pairs have two large line types:
+
+1. stars through a fixed endpoint, with `n-1` points;
+2. constant-product fibers `xy=c`, with `n/2` points.
+
+Exact censuses in `scripts/probes/probe_dyadic_pair_quadratic_collinearity.py` find maximum
+non-star line sizes `4` for the order-eight subgroup of `F17` and `8` for the order-sixteen
+subgroup of `F97`.  Witness pairs have exponent sums `i+j=c mod n`.
+
+Therefore the claim that every three collinear pair points share an endpoint is false.  The
+failure is nevertheless rigid: it is the multiplicative involution `x -> c/x`, the same pairing
+geometry that appears in the dyadic square-map recursion.
+
+## Surviving target
+
+A closing theorem must retain the projectivity, not just adjacency.  Classify how one projective
+transformation can map many points between two dyadic pair configurations.  Images of star lines
+must land either on star lines or on constant-product matching lines.  The star-to-star part
+induces a vertex map; the star-to-product part induces the dyadic involution.  The remaining
+problem is to show that more than `4k` compatible pairs force a globally consistent choice, which
+should return either determinant collapse or one of the already controlled packing clusters.
+
+No prize closure is claimed in this round.
