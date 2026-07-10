@@ -1,9 +1,0 @@
-AUDIT s=64 r=7 (b=29) worker 0/4: classes=828690 waysum=396899063
-TOTAL s=64 r=7 worker 0/4 classes 828690 waysum 396899063
-AUDIT s=64 r=7 (b=29) worker 1/4: classes=822493 waysum=396970624
-TOTAL s=64 r=7 worker 1/4 classes 822493 waysum 396970624
-AUDIT s=64 r=7 (b=29) worker 2/4: classes=825271 waysum=396690297
-TOTAL s=64 r=7 worker 2/4 classes 825271 waysum 396690297
-AUDIT s=64 r=7 (b=29) worker 3/4: classes=823642 waysum=396280496
-TOTAL s=64 r=7 worker 3/4 classes 823642 waysum 396280496
-# 4-way split validated: s32r5 nw=4 sums to 99512 exactly; kernel calibration s32r5=99512 s32r7=0 s16r3=672 PASS

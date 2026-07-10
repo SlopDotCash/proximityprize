@@ -1,9 +1,0 @@
-VERIFIED r=5 deep-band #bad (maximizer line (n/2+1,n-1), d=n/2):
-    n   g     #bad           K         K/2  #bad<=K  #bad<=K/2
-   16   4       89        1792         896     True       True
-   32   8     1441      139776       69888     True       True
-   64  16    22657     6444032     3222016     True       True
-  128  32   356865   243984384   121992192     True       True
-
-closed form: #bad5(g) = (4g^4 + 3g^3 - 10g^2 + 12)/12
-full_orb(g) = (4g^3 + 3g^2 - 10g)/24, #bad = 1 + (n/2)*full_orb = 1 + 2g*full_orb

@@ -1,3 +1,0 @@
-#407: pin (A) L1-walk growth law, (B) autocorr sub-Gaussian = tangent flatness
-
-  (n=8: collected 68 good primes)

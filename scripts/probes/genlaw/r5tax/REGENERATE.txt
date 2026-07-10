@@ -1,1 +1,0 @@
-# rec5.txt / rec32r5.txt regenerable byte-identically: gcc -O2 -o audit ../audit/audit_sweep64.c && ./audit 32 5 1 0 rec

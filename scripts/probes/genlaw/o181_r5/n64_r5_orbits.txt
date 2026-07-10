@@ -1,7 +1,0 @@
-n=64 r=5 (x^33,x^63) a=6: #bad=22657  0 in bad? 1
-  e-f mod n=34, gcd(n,e-f)=2, d=n/gcd=32, ord(g^{e-f})=32
-  bad set closed under gamma->g^{e-f}*gamma? YES
-  #orbits=709   #bad = sum of orbit sizes
-  orbit-size histogram: [size 1]x1 [size 32]x708 
-  CHECK: d*floor + fixed.  #bad=22657, d=32, (#bad - [0])/d = 708.0000
-DONE n64

@@ -1,7 +1,0 @@
-CLIMB s 128 r 13 b 58 restarts 400 hits 0 bestcost 2
-CLIMB s 16 r 5 b 6 restarts 400 hits 0 bestcost 1
-CLIMB s 256 r 17 b 120 restarts 400 hits 0 bestcost 3
-CLIMB s 32 r 7 b 13 restarts 400 hits 0 bestcost 1
-CLIMB s 512 r 23 b 245 restarts 400 hits 0 bestcost 7
-CLIMB s 64 r 11 b 27 restarts 400 hits 0 bestcost 3
-CLIMB s 64 r 13 b 26 restarts 400 hits 0 bestcost 5

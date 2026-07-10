@@ -1,6 +1,0 @@
-Action-Orbit #bad & #ORBITS at window (pin needs #orbits=O(1) where #bad~n=budget)
-n=8 k=2 p=4129 orbsz=8: (t3,bad24,orb3) (t4,bad8,orb1)
-n=16 k=4 p=65537 orbsz=16: (t5,bad3424,orb214)
-n=16 k=3 p=65537 orbsz=16: (t4,bad65536,orb4096) (t5,bad16,orb1)
-n=32 k=2 p=1048609 orbsz=32: (t3,bad4256,orb133) (t4,bad224,orb7)
-DONE

@@ -1,9 +1,0 @@
-Phase structure of Gauss periods. flatness~1 & KS~0 => pseudorandom (BGK genuine); structured => crack.
-   n        p       m  flatness  KS-unif  max/med
-   8     4129     516     0.986    0.326     3.83
-  16     4129     258     0.972    0.291     3.92
-  16    65537    4096     0.998    0.333     5.02
-  32    40961    1280     0.993    0.334     5.27
-  32  1048609   32769     1.000    0.329     5.94
-
-flatness~1 + KS small => periods pseudorandom => phase cancellation GENUINE/non-algebraic => BGK a real wall.
