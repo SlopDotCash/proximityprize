@@ -1,4 +1,4 @@
 {
- "note": "Upstream-inherited sorry/admit holes (Verified-zkEVM/ArkLib sync of 2026-07-08, merge f59d294fb). These pre-exist upstream and are baselined so the zero-hole gate ratchets: any NEW hole still fails CI. Remove entries as the proofs land. Tracked in lalalune/ArkLib issue #470.",
+ "note": "Upstream-inherited sorry/admit holes baseline (see #470). Emptied 2026-07-09: every entry was proven or removed on main (census: 0 live holes). Add entries ONLY for holes imported by an upstream sync, with an issue reference.",
  "holes": []
 }
