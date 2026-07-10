@@ -24555,3 +24555,23 @@ mechanism, doctrine gains "exact multiplicative identities cannot see the rung";
 pinned within O(1) ⟹ the first genuinely-new constraint discovery on the calibrated core since
 the ladder itself — formalization of the web (Mathlib `gaussSum`/`JacobiSum` API) becomes the
 campaign's top priority. Either branch is a real theorem. CORE OPEN / ON-BGK.
+
+### [466-HD5-web-closure-dichotomy] HD2′ reduced to ONE finite linear-algebra computation: the within-face relation web (conjugation + duplication-both-directions + coset products) either RIGIDIFIES the angle vector modulo a small transversal or degenerates to consistency identities — the rank of an explicit relation matrix decides (2026-07-10)
+
+Analysis (same session, follows HD4). Within one face at m = 2^k: HD1 pins the EVEN-frequency
+half of Θ = DFT(θ). The HD3 transfer pins the differences θ_{j+m/2} − θ_j — which is EXACTLY the
+ODD-frequency half (DFT support of a half-shift difference) — PROVIDED the doubled-index Gauss
+phases γ(2c) on the shifted family are known. But duplication INVERTS: g(2c) =
+g(c+LEG)·g(c)/(χ̄_c(4)·g(leg)), so the doubled indices are themselves determined by the
+in-family pair (c, c+LEG). DICHOTOMY: either (R) the combined web is of full rank on the odd
+half — the within-face angle vector is RIGID modulo a small transversal, and the rung becomes an
+EXPLICIT arithmetic functional (unprecedented; formalize immediately); or (C) the transfer
+relation is linearly DEPENDENT on the coset-product constraints (a consistency identity), the odd
+half retains ~m/4+ free dimensions, and the exact-identity program closes with the no-go
+"the 2-D web transports the rung across faces/levels but never closes it" — the renormalization
+no-contraction doctrine reproved at the identity level. DECIDE BY: building the explicit relation
+matrix over the phase variables {γ(c) : c ∈ A ∪ B} (A = dyadic family, B = shifted family) with
+rows = conjugation pairs, duplication triples (c, 2c, c+LEG), and coset-product sums; compute its
+rank mod the 2πℤ lattice at p = 257, m = 16; compare rank to dim. Expected from the doctrine:
+(C) — but (R) is not excluded and the computation is an afternoon. Either branch is a landable
+brick. CORE OPEN / ON-BGK.
