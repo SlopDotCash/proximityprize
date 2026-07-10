@@ -2274,6 +2274,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96ProductionDepthFourFixedEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G97ArcDilateDiscrepancy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G97DepthFourEnergyWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick

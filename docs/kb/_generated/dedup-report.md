@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5950 files, 63367 declarations
+- `ArkLib` — 5951 files, 63374 declarations
 
-## Same short-name across multiple files (2448 groups)
+## Same short-name across multiple files (2449 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -9603,6 +9603,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.BGKFloorSharp.rEnergy_eq_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkSuperDiagonalSqrtNLowerBound.lean:67](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkSuperDiagonalSqrtNLowerBound.lean#L67) — `rEnergy G r` unfolded as a count of pairs `(v,w)` over `piFinset` with equal sums, written as the c
 - `theorem ArkLib.ProximityGap.GeneralMomentPeriodBound.rEnergy_eq_card` [ArkLib/Data/CodingTheory/ProximityGap/GeneralMomentPeriodBound.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/GeneralMomentPeriodBound.lean#L83) — `rEnergy` equals the cardinality of its solution finset.
+
+### `rEnergy_four_le_card_pow_four_mul_two` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive.rEnergy_four_le_card_pow_four_mul_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G84CanonicalSlotsDepthFive.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G84CanonicalSlotsDepthFive.lean#L91) — Two recursion steps give `E₄ ≤ n⁴E₂`.
+- `theorem ArkLib.ProximityGap.Frontier.G97DepthFourEnergyWeld.rEnergy_four_le_card_pow_four_mul_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G97DepthFourEnergyWeld.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G97DepthFourEnergyWeld.lean#L96) — Two applications of the existing convolution recursion give `E₄ ≤ n⁴E₂`.
 
 ### `rEnergy_split_real` (2 declarations, 2 files)
 
