@@ -2213,6 +2213,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G67SignedCensusSupExtract
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G70DudleyFlatChainingLowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G73ShkredovMultiShiftExponentFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G75RawDeviationVsRelationAnomaly
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G76HigherGeneratorMomentBlindSpot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
@@ -2479,6 +2480,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelJointCumulant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelShawInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelTransferOperator2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCChainingMetricEuclideanNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCGaloisEmbeddingEquidistribution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCPieceBHeightNormCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCSidonOrbitUnitRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPDescentFromAntitoneOrbitCount

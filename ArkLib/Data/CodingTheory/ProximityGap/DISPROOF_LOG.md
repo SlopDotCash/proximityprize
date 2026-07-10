@@ -1,3 +1,27 @@
+## [466-G76-all-higher-distinct-generator-moments-blind] The entire hierarchy of higher distinct-generator moments misses the unique-root stratum, so it cannot recover the centered relation coefficient without first-incidence information (axiom-clean route no-go) (2026-07-10)
+
+R385 proved that the second off-diagonal generator moment vanishes at endpoint incidence `Z=1`.
+The tempting continuation was to use triples, quadruples, or the full hierarchy of distinct
+primitive-generator incidences.  G76 closes that continuation at once.  Define
+
+```text
+higherDistinctSignature(Z)(j) = Z.descFactorial(j+2),
+centeredCoeff(q,t,Z) = q*Z-t.
+```
+
+Every coordinate of the signature vanishes for both `Z=0` and `Z=1`, because every sampled order
+is at least two.  Their centered coefficients nevertheless differ by exactly `q`.  Therefore, for
+`q != 0`, there is no function of the *entire infinite higher-moment signature* that equals the
+centered coefficient at every incidence count.  The Lean theorem
+`no_factorization_through_higherDistinctSignature` proves this information-theoretic obstruction
+directly and is axiom-clean (`[propext]`).
+
+**Scope.** This is a route no-go, not a CORE closure.  It rules out methods depending exclusively
+on distinct-generator factorial moments of orders at least two.  It does not rule out first
+incidence, repeated-generator statistics, or genuine arithmetic cancellation across endpoints.
+But the required first-incidence statistic is exactly the unresolved signed relation wall from
+R366/R367/G75, so increasing covariance order alone supplies no escape.  CORE remains OPEN.
+
 ## [466-G75-raw-deviation-is-not-relation-anomaly] CORRECTION: G74 tested the wrong signed object; raw `E_r-Wick_r` and M-coset phase coherence do not close R366's centered relation discrepancy (2026-07-10)
 
 Fresh critic report G74 claimed to close the last signed route after testing complex linear forms in
@@ -32257,3 +32281,32 @@ representative-count or representative-mass input. The real `rotZ` action's requ
 invariance is discharged by `NR_rotZ_invariant`. This closes orbit-size churn while leaving the
 weighted-representative bound as the prize-facing open input. Author Sol (opus-4-8 formalizer),
 co-author wakesync. -- g59freeorbit.
+
+## [466-OC-EQUI-galois-embedding-equidistribution] Full Galois-stable relation pools are exactly equidistributed across primitive embeddings, so distinct-embedding coverage carries no information beyond one-embedding first incidence (axiom-clean structural no-go) (2026-07-10)
+
+The transversality seam left by OC-PIECEB asked whether a relation census could force coverage at
+many distinct prime-ideal embeddings and thereby amplify the single-embedding height/norm
+certificate. `_OCGaloisEmbeddingEquidistribution.lean` closes that refinement. For coefficient
+vectors indexed by `ZMod M`, the Galois action `galAct c` satisfies the exact evaluation identity
+`evalAt a (galAct c v) = evalAt (a*c) v`. Therefore every Galois-stable finite pool has constant
+vanishing count at all primitive embeddings (`vanishCount_eq`), and
+
+```text
+sum_a vanishCount(a) = card((ZMod M)^x) * vanishCount(1).
+```
+
+The concrete height-one/support-bounded pool is proved stable under this action. Coverage is
+all-or-nothing: one incidence at one embedding gives an incidence at every embedding by conjugating
+the relation. The exact probe confirms the theorem on the enumerated cells, including 512 relations
+at each of 16 embeddings for `(n,p)=(32,1153)` and 160 at each embedding for `p=1217`.
+
+This corrects the apparent concentration at embedding `a=1` in the earlier orbit-representative
+search: it was search bias, not a property of the full pool. A permutation zero-pattern determinant
+can also be a unit (`permutation_zero_pattern_det_unit`), so coverage alone forces no determinant
+divisibility amplification.
+
+**Scope.** This closes the *distinct-embedding coverage* refinement, not CORE. Exact symmetry
+reduces total transversal incidence to the unresolved one-embedding stacking/first-incidence count.
+Together with G76, higher distinct-generator moments cannot recover the missing `Z=1` stratum
+either. The remaining prize input is still the signed first-incidence weighted discrepancy, i.e.
+the G75/DC-energy wall. All headline theorems compile axiom-clean with `[propext]`; no sorry.
