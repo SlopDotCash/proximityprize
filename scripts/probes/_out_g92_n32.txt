@@ -1,0 +1,117 @@
+[SELF-TEST] engine vs brute, n=8 k=2 q=4129: 20 random + 4 chains
+[SELF-TEST] PASS (counts and bad-lists)
+
+[n32] primes: [1048609, 1048897]
+
+[CELL] n=32 k=4 q=1048609 a=6  (window: 6<=6, 36<=128)
+  eligible monomials (16): agreemax {4: 4, 5: 4, 6: 4, 7: 4, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 28: 4, 29: 4, 30: 4, 31: 4}
+  eligible spreads: 696/992; agreemax histogram {4: 577, 5: 119}
+  spreads with agreemax = a-1 = 5: 119 (gaps [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 15, 17, 19, 20, 21, 23, 25, 27]); floor certificate n-(a-1) = 27
+  [MONO] per-direction search max: {4: 1441, 5: 464, 6: 464, 7: 497, 12: 497, 13: 464, 14: 464, 15: 737, 20: 737, 21: 464, 22: 464, 23: 497, 28: 497, 29: 464, 30: 464, 31: 1441}
+  [MONO] baseline (search lower bound) = 1441 at x^4 [501s]
+  [SPREAD] searched 9 directions; per-direction max:
+    x^4+1*x^15 (gap 11, agreemax 5): 4021
+    x^8+1*x^28 (gap 20, agreemax 4): 769
+    x^4+1*x^5 (gap 1, agreemax 5): 389
+    x^4+1*x^21 (gap 17, agreemax 5): 365
+    x^4+1*x^7 (gap 3, agreemax 5): 344
+    x^4+1*x^23 (gap 19, agreemax 5): 343
+    x^4+1*x^13 (gap 9, agreemax 5): 217
+    x^4+1*x^25 (gap 21, agreemax 5): 125
+    x^4+2*x^21 (gap 17, agreemax 5): 38
+  [VERDICT] n=32 k=4 q=1048609 a=6: worst_spread(lb) = 4021 (x^4+1*x^15), worst_mono(lb) = 1441 (x^4), ratio = 2.790  [per-gamma(64/4021)] C=2 violated
+  [cell 1192s]
+
+[CELL] n=32 k=4 q=1048609 a=10  (window: 6<=10, 100<=128)
+  eligible monomials (24): agreemax {4: 4, 5: 4, 6: 4, 7: 4, 8: 8, 9: 8, 10: 8, 11: 8, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 8, 25: 8, 26: 8, 27: 8, 28: 4, 29: 4, 30: 4, 31: 4}
+  eligible spreads: 916/992; agreemax histogram {4: 577, 5: 119, 6: 32, 8: 172, 9: 16}
+  spreads with agreemax = a-1 = 9: 16 (gaps [1, 3, 13, 15, 17, 19]); floor certificate n-(a-1) = 23
+  [MONO] per-direction search max: {4: 4, 5: 4, 6: 4, 7: 4, 8: 17, 9: 17, 10: 17, 11: 17, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 17, 25: 17, 26: 17, 27: 17, 28: 4, 29: 4, 30: 4, 31: 4}
+  [MONO] baseline (search lower bound) = 17 at x^8 [896s]
+  [SPREAD] searched 10 directions; per-direction max:
+    x^8+1*x^25 (gap 17, agreemax 9): 25
+    x^8+1*x^27 (gap 19, agreemax 9): 25
+    x^9+1*x^10 (gap 1, agreemax 9): 25
+    x^8+1*x^9 (gap 1, agreemax 9): 24
+    x^8+1*x^11 (gap 3, agreemax 9): 24
+    x^9+1*x^24 (gap 15, agreemax 9): 24
+    x^9+1*x^26 (gap 17, agreemax 9): 24
+    x^10+1*x^11 (gap 1, agreemax 9): 24
+    x^8+1*x^28 (gap 20, agreemax 4): 7
+    x^4+1*x^14 (gap 10, agreemax 6): 4
+  [VERDICT] n=32 k=4 q=1048609 a=10: worst_spread(lb) = 25 (x^8+1*x^25), worst_mono(lb) = 17 (x^8), ratio = 1.471  [per-gamma(25/25)] 
+  [cell 1327s]
+
+[CELL] n=32 k=4 q=1048609 a=11  (window: 6<=11, 121<=128)
+  eligible monomials (24): agreemax {4: 4, 5: 4, 6: 4, 7: 4, 8: 8, 9: 8, 10: 8, 11: 8, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 8, 25: 8, 26: 8, 27: 8, 28: 4, 29: 4, 30: 4, 31: 4}
+  eligible spreads: 924/992; agreemax histogram {4: 577, 5: 119, 6: 32, 8: 172, 9: 16, 10: 8}
+  spreads with agreemax = a-1 = 10: 8 (gaps [2, 14, 18]); floor certificate n-(a-1) = 22
+  [MONO] per-direction search max: {4: 4, 5: 4, 6: 4, 7: 4, 8: 6, 9: 6, 10: 6, 11: 6, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 6, 25: 6, 26: 6, 27: 6, 28: 4, 29: 4, 30: 4, 31: 4}
+  [MONO] baseline (search lower bound) = 6 at x^8 [743s]
+  [SPREAD] searched 10 directions; per-direction max:
+    x^8+1*x^10 (gap 2, agreemax 10): 23
+    x^8+1*x^26 (gap 18, agreemax 10): 23
+    x^9+1*x^11 (gap 2, agreemax 10): 23
+    x^9+1*x^27 (gap 18, agreemax 10): 23
+    x^10+1*x^24 (gap 14, agreemax 10): 23
+    x^11+1*x^25 (gap 14, agreemax 10): 23
+    x^25+1*x^27 (gap 2, agreemax 10): 23
+    x^24+1*x^26 (gap 2, agreemax 10): 22
+    x^8+1*x^28 (gap 20, agreemax 4): 7
+    x^4+1*x^14 (gap 10, agreemax 6): 4
+  [VERDICT] n=32 k=4 q=1048609 a=11: worst_spread(lb) = 23 (x^8+1*x^10), worst_mono(lb) = 6 (x^8), ratio = 3.833  [per-gamma(23/23)] *** C=3 VIOLATED (in evidence) ***
+  [cell 1152s]
+
+[CELL] n=32 k=4 q=1048897 a=10  (window: 6<=10, 100<=128)
+  eligible monomials (24): agreemax {4: 4, 5: 4, 6: 4, 7: 4, 8: 8, 9: 8, 10: 8, 11: 8, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 8, 25: 8, 26: 8, 27: 8, 28: 4, 29: 4, 30: 4, 31: 4}
+  eligible spreads: 916/992; agreemax histogram {4: 579, 5: 117, 6: 32, 8: 172, 9: 16}
+  spreads with agreemax = a-1 = 9: 16 (gaps [1, 3, 13, 15, 17, 19]); floor certificate n-(a-1) = 23
+  [MONO] per-direction search max: {4: 4, 5: 4, 6: 4, 7: 4, 8: 17, 9: 17, 10: 17, 11: 17, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 17, 25: 17, 26: 17, 27: 17, 28: 4, 29: 4, 30: 4, 31: 4}
+  [MONO] baseline (search lower bound) = 17 at x^8 [713s]
+  [SPREAD] searched 10 directions; per-direction max:
+    x^8+1*x^9 (gap 1, agreemax 9): 24
+    x^8+1*x^11 (gap 3, agreemax 9): 24
+    x^8+1*x^25 (gap 17, agreemax 9): 24
+    x^8+1*x^27 (gap 19, agreemax 9): 24
+    x^9+1*x^10 (gap 1, agreemax 9): 24
+    x^9+1*x^24 (gap 15, agreemax 9): 24
+    x^9+1*x^26 (gap 17, agreemax 9): 24
+    x^10+1*x^11 (gap 1, agreemax 9): 24
+    x^8+1*x^28 (gap 20, agreemax 4): 7
+    x^4+1*x^14 (gap 10, agreemax 6): 4
+  [VERDICT] n=32 k=4 q=1048897 a=10: worst_spread(lb) = 24 (x^8+1*x^9), worst_mono(lb) = 17 (x^8), ratio = 1.412  [per-gamma(24/24)] 
+  [cell 1103s]
+
+[CELL] n=32 k=4 q=1048897 a=11  (window: 6<=11, 121<=128)
+  eligible monomials (24): agreemax {4: 4, 5: 4, 6: 4, 7: 4, 8: 8, 9: 8, 10: 8, 11: 8, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 8, 25: 8, 26: 8, 27: 8, 28: 4, 29: 4, 30: 4, 31: 4}
+  eligible spreads: 924/992; agreemax histogram {4: 579, 5: 117, 6: 32, 8: 172, 9: 16, 10: 8}
+  spreads with agreemax = a-1 = 10: 8 (gaps [2, 14, 18]); floor certificate n-(a-1) = 22
+  [MONO] per-direction search max: {4: 4, 5: 4, 6: 4, 7: 4, 8: 6, 9: 6, 10: 6, 11: 6, 12: 4, 13: 4, 14: 4, 15: 4, 20: 4, 21: 4, 22: 4, 23: 4, 24: 6, 25: 6, 26: 6, 27: 6, 28: 4, 29: 4, 30: 4, 31: 4}
+  [MONO] baseline (search lower bound) = 6 at x^8 [703s]
+  [SPREAD] searched 10 directions; per-direction max:
+    x^8+1*x^10 (gap 2, agreemax 10): 23
+    x^8+1*x^26 (gap 18, agreemax 10): 23
+    x^9+1*x^11 (gap 2, agreemax 10): 23
+    x^9+1*x^27 (gap 18, agreemax 10): 23
+    x^10+1*x^24 (gap 14, agreemax 10): 23
+    x^11+1*x^25 (gap 14, agreemax 10): 23
+    x^24+1*x^26 (gap 2, agreemax 10): 23
+    x^25+1*x^27 (gap 2, agreemax 10): 23
+    x^8+1*x^28 (gap 20, agreemax 4): 7
+    x^4+1*x^14 (gap 10, agreemax 6): 4
+  [VERDICT] n=32 k=4 q=1048897 a=11: worst_spread(lb) = 23 (x^8+1*x^10), worst_mono(lb) = 6 (x^8), ratio = 3.833  [per-gamma(23/23)] *** C=3 VIOLATED (in evidence) ***
+  [cell 1130s]
+
+==============================================================================
+[G92 FINAL TABLE] worst_spread(lb) / worst_mono(search-lb) per cell
+  n  k        q   a  spread  mono  ratio floor a-1 dir  winner
+ 32  4  1048609   6    4021  1441  2.790    27    True  x^4+1*x^15 [per-gamma(64/4021)]
+ 32  4  1048609  10      25    17  1.471    23    True  x^8+1*x^25 [per-gamma(25/25)]
+ 32  4  1048609  11      23     6  3.833    22    True  x^8+1*x^10 [per-gamma(23/23)]
+ 32  4  1048897  10      24    17  1.412    23    True  x^8+1*x^9 [per-gamma(24/24)]
+ 32  4  1048897  11      23     6  3.833    22    True  x^8+1*x^10 [per-gamma(23/23)]
+
+[C=3 VERDICT] cells with ratio > 3: 2
+  VIOLATION: n=32 k=4 q=1048609 a=11 spread=23 mono=6 ratio=3.833 witness u0=[522719, 156845, 913022, 905084, 816699, 858243, 897469, 182533, 895101, 704589, 824925, 915055, 380143, 630336, 367388, 233165, 354720, 633506, 185310, 268304, 469669, 522276, 220949, 1002739, 583466, 850507, 1021801, 288479, 332424, 334592, 162885, 847013]
+  VIOLATION: n=32 k=4 q=1048897 a=11 spread=23 mono=6 ratio=3.833 witness u0=[136008, 508685, 834, 314547, 907002, 796648, 460842, 277687, 799234, 558425, 341289, 507623, 823707, 370326, 982919, 253565, 475957, 507562, 797034, 354011, 112378, 542129, 183905, 196486, 198172, 769164, 734063, 570588, 783377, 408083, 782474, 1019031]
+[total 5912s]

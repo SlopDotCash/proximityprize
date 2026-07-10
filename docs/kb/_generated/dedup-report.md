@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5955 files, 63390 declarations
+- `ArkLib` — 5968 files, 63520 declarations
 
-## Same short-name across multiple files (2450 groups)
+## Same short-name across multiple files (2453 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -108,6 +108,22 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.MCAWindowInteriorExact.dom` [ArkLib/Data/CodingTheory/ProximityGap/MCAWindowInteriorExact.lean:63](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAWindowInteriorExact.lean#L63) — The evaluation domain `(1, 2, 3, 4, 5)`.
 - `def ArkLib.ProximityGap.RSPrizeDataPoint.dom` [ArkLib/Data/CodingTheory/ProximityGap/RSListSizeDataPoint.lean:42](../../../ArkLib/Data/CodingTheory/ProximityGap/RSListSizeDataPoint.lean#L42) — The smooth multiplicative domain mu_8 ⊂ (ZMod 17)ˣ : the eight 8th roots of unity, listed.
 
+### `eta_zero` (13 declarations, 13 files)
+
+- `theorem ArkLib.ProximityGap.CumulantGaussPeriodBound.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean:71](../../../ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean#L71) — **The principal frequency.** `η_0 = ∑_{y∈G} ψ(0·y) = ∑_{y∈G} 1 = \|G\|`.
+- `theorem ArkLib.ProximityGap.DCSubtractedMoment.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/DCSubtractedMoment.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/DCSubtractedMoment.lean#L30) — The DC (`b=0`) Gauss period is exactly `\|G\|`: `η_0 = ∑_{y∈G} ψ(0) = \|G\|`.
+- `lemma ArkLib.ProximityGap.EnergyCharacterTransport.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean:64](../../../ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean#L64) — The trivial-frequency subgroup Gauss sum is just the cardinality: `η_0 = \|G\|`.
+- `theorem ArkLib.ProximityGap.Frontier.AvFloor.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvFloor_MomentRatioLowerBound.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvFloor_MomentRatioLowerBound.lean#L96) — At `b = 0`: `η_0 = ∑_{x∈G} ψ(0·x) = ∑_{x∈G} ψ(0) = ∑_{x∈G} 1 = \|G\|`, so `‖η_0‖ = \|G\|`.
+- `theorem ArkLib.ProximityGap.BridgeB40.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB40.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB40.lean#L60) — The principal period is `η_0 = \|G\|`.
+- `theorem ArkLib.ProximityGap.Frontier.G99ErdosTuranLadderCertificate.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G99ErdosTuranLadderCertificate.lean:131](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G99ErdosTuranLadderCertificate.lean#L131) — The DC frequency carries the full mass: `η_0 = \|G\|`.
+- `theorem ProximityGap.Frontier.NonPrincipalClosedWalkTrace.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NonPrincipalClosedWalkTrace.lean:70](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NonPrincipalClosedWalkTrace.lean#L70) — **The DC (`b=0`) eigenvalue is the degree `η_0 = \|G\|`** (the Perron/principal eigenvalue).
+- `theorem ArkLib.ProximityGap.Frontier.R17Deg2WeilRung.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R17Deg2WeilRung.lean:896](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R17Deg2WeilRung.lean#L896) — `η_0 = \|G\|`.
+- `theorem ArkLib.ProximityGap.Frontier.R18SigmaEquidistribution.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean:172](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean#L172) — `η_0 = \|G\|`.
+- `theorem ArkLib.ProximityGap.Frontier.R18TwistedSecondMoment.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18TwistedSecondMoment.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18TwistedSecondMoment.lean#L151) — The zero frequency period is the cardinality of the support.
+- `theorem ArkLib.ProximityGap.Frontier.ResonancePhaseCoherentNonRealizable.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonancePhaseCoherentNonRealizable.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonancePhaseCoherentNonRealizable.lean#L53) — `η_0 = \|G\|` (the trivial frequency sums the all-ones character).
+- `theorem ProximityGap.Frontier.SpectralTraceZeroSignForcing.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpectralTraceZeroSignForcing.lean:97](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpectralTraceZeroSignForcing.lean#L97) — **The DC (`b=0`) eigenvalue is the degree:** `η_0 = Σ_{y∈G} ψ(0) = \|G\|` (the Perron/principal eigenv
+- `theorem ArkLib.ProximityGap.GaussPeriodCosetReduction.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean#L61) — `η_0 = \|G\|` (every term is `ψ 0 = 1`).
+
 ### `reduction` (13 declarations, 12 files)
 
 - `def KZG.CommitmentScheme.reduction` [ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean:115](../../../ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean#L115) — The reduction breaking ARSDH using a successful function-binding adversary. The reduction follows th
@@ -123,21 +139,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def Sumcheck.Spec.SingleRound.reduction` [ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean:1377](../../../ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean#L1377) — The sum-check reduction for the `i`-th round of the sum-check protocol
 - `def ToyProblem.Spec.reduction` [ArkLib/ProofSystem/ToyProblem/Spec/General.lean:499](../../../ArkLib/ProofSystem/ToyProblem/Spec/General.lean#L499) — Honest reduction for Construction 6.2: the package `{prover, verifier}` over the bundled-input `Redu
 - `def ToyProblem.SimplifiedIOR.reduction` [ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean:168](../../../ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean#L168) — Honest reduction for Construction 6.9.
-
-### `eta_zero` (12 declarations, 12 files)
-
-- `theorem ArkLib.ProximityGap.CumulantGaussPeriodBound.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean:71](../../../ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean#L71) — **The principal frequency.** `η_0 = ∑_{y∈G} ψ(0·y) = ∑_{y∈G} 1 = \|G\|`.
-- `theorem ArkLib.ProximityGap.DCSubtractedMoment.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/DCSubtractedMoment.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/DCSubtractedMoment.lean#L30) — The DC (`b=0`) Gauss period is exactly `\|G\|`: `η_0 = ∑_{y∈G} ψ(0) = \|G\|`.
-- `lemma ArkLib.ProximityGap.EnergyCharacterTransport.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean:64](../../../ArkLib/Data/CodingTheory/ProximityGap/EnergyCharacterTransport.lean#L64) — The trivial-frequency subgroup Gauss sum is just the cardinality: `η_0 = \|G\|`.
-- `theorem ArkLib.ProximityGap.Frontier.AvFloor.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvFloor_MomentRatioLowerBound.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvFloor_MomentRatioLowerBound.lean#L96) — At `b = 0`: `η_0 = ∑_{x∈G} ψ(0·x) = ∑_{x∈G} ψ(0) = ∑_{x∈G} 1 = \|G\|`, so `‖η_0‖ = \|G\|`.
-- `theorem ArkLib.ProximityGap.BridgeB40.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB40.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB40.lean#L60) — The principal period is `η_0 = \|G\|`.
-- `theorem ProximityGap.Frontier.NonPrincipalClosedWalkTrace.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NonPrincipalClosedWalkTrace.lean:70](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NonPrincipalClosedWalkTrace.lean#L70) — **The DC (`b=0`) eigenvalue is the degree `η_0 = \|G\|`** (the Perron/principal eigenvalue).
-- `theorem ArkLib.ProximityGap.Frontier.R17Deg2WeilRung.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R17Deg2WeilRung.lean:896](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R17Deg2WeilRung.lean#L896) — `η_0 = \|G\|`.
-- `theorem ArkLib.ProximityGap.Frontier.R18SigmaEquidistribution.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean:172](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean#L172) — `η_0 = \|G\|`.
-- `theorem ArkLib.ProximityGap.Frontier.R18TwistedSecondMoment.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18TwistedSecondMoment.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18TwistedSecondMoment.lean#L151) — The zero frequency period is the cardinality of the support.
-- `theorem ArkLib.ProximityGap.Frontier.ResonancePhaseCoherentNonRealizable.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonancePhaseCoherentNonRealizable.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonancePhaseCoherentNonRealizable.lean#L53) — `η_0 = \|G\|` (the trivial frequency sums the all-ones character).
-- `theorem ProximityGap.Frontier.SpectralTraceZeroSignForcing.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpectralTraceZeroSignForcing.lean:97](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpectralTraceZeroSignForcing.lean#L97) — **The DC (`b=0`) eigenvalue is the degree:** `η_0 = Σ_{y∈G} ψ(0) = \|G\|` (the Perron/principal eigenv
-- `theorem ArkLib.ProximityGap.GaussPeriodCosetReduction.eta_zero` [ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/GaussPeriodCosetReduction.lean#L61) — `η_0 = \|G\|` (every term is `ψ 0 = 1`).
 
 ### `agree` (13 declarations, 11 files)
 
@@ -1247,6 +1248,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.R23ParameterChoice.pairing` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R23ParameterChoice.lean:141](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R23ParameterChoice.lean#L141) — **The pairing lower bound** `(s+1)(b+1) ≥ q − 2`: the two sqrt floors multiply back up to `q` becaus
 - `def ProximityGap.Frontier.W6ThetaDualTransference.pairing` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W6ThetaDualTransferenceNoGo.lean:94](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W6ThetaDualTransferenceNoGo.lean#L94) — The integer `ℓ²` pairing `⟨a, b⟩ = Σ_j a_j b_j`.
 - `def ProximityGap.MCACircuitPropagation.pairing` [ArkLib/Data/CodingTheory/ProximityGap/MCACircuitPropagation.lean:50](../../../ArkLib/Data/CodingTheory/ProximityGap/MCACircuitPropagation.lean#L50) — The syndrome pairing of a dual vector against a word.
+
+### `period` (4 declarations, 4 files)
+
+- `def ArkLib.ProximityGap.A4CyclotomicGalois.period` [ArkLib/Data/CodingTheory/ProximityGap/A4CyclotomicGaloisAntipodal.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/A4CyclotomicGaloisAntipodal.lean#L129) — The period `P(ζ) = ∑_{x∈S} x` of `S`.
+- `def ProximityGap.Frontier.DyadicDeviationDecay.period` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DyadicDeviationDecayEnvelope.lean:182](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DyadicDeviationDecayEnvelope.lean#L182) — The subgroup character sum (Gaussian period) at frequency `b`: `∑_{x∈H} ψ(b·x)`.
+- `def ProximityGap.Frontier.G98LargeValuesGramBootstrap.period` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98LargeValuesGramBootstrap.lean:311](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98LargeValuesGramBootstrap.lean#L311) — The (incomplete) period sum of a unimodular additive character `e` over a domain `s` at frequency `d
+- `def ArkLib.ProximityGap.Frontier.AffineBGGapObstruction.period` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA11_affine_bg_gap_obstruction.lean:75](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA11_affine_bg_gap_obstruction.lean#L75) — The Gauss period `η_b = ∑_{x ∈ S} e_p(b·x)` over a finite multiplicative-subgroup support `S`.
 
 ### `pow_two_pow_succ` (4 declarations, 4 files)
 
@@ -3496,12 +3504,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.Frontier.Q1ArisingFamilyDescent.pencil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/Q1ArisingFamilyDescent.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/Q1ArisingFamilyDescent.lean#L69) — The two-monomial pencil `h_α(z) = z^a + α z^b`.
 - `def R15MCAGap.pencil` [ArkLib/Data/CodingTheory/ProximityGap/MCABadScalarSpreadBridge.lean:63](../../../ArkLib/Data/CodingTheory/ProximityGap/MCABadScalarSpreadBridge.lean#L63) — The pencil (affine line) of words through `f1` in direction `f2`.
 
-### `period` (3 declarations, 3 files)
-
-- `def ArkLib.ProximityGap.A4CyclotomicGalois.period` [ArkLib/Data/CodingTheory/ProximityGap/A4CyclotomicGaloisAntipodal.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/A4CyclotomicGaloisAntipodal.lean#L129) — The period `P(ζ) = ∑_{x∈S} x` of `S`.
-- `def ProximityGap.Frontier.DyadicDeviationDecay.period` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DyadicDeviationDecayEnvelope.lean:182](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DyadicDeviationDecayEnvelope.lean#L182) — The subgroup character sum (Gaussian period) at frequency `b`: `∑_{x∈H} ψ(b·x)`.
-- `def ArkLib.ProximityGap.Frontier.AffineBGGapObstruction.period` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA11_affine_bg_gap_obstruction.lean:75](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA11_affine_bg_gap_obstruction.lean#L75) — The Gauss period `η_b = ∑_{x ∈ S} e_p(b·x)` over a finite multiplicative-subgroup support `S`.
-
 ### `pow_card_le_rEnergy` (3 declarations, 3 files)
 
 - `theorem ProximityGap.Frontier.CharZeroEnergyLowerBound.pow_card_le_rEnergy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergyLowerBound.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroEnergyLowerBound.lean#L142) — **The antipodal lower bound, in `rEnergy` form.** For negation-closed `G`, the `r`-fold additive ene
@@ -5516,6 +5518,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap` [ArkLib/ProofSystem/Stir/ErrorAccumulation.lean:307](../../../ArkLib/ProofSystem/Stir/ErrorAccumulation.lean#L307) — The keystone, abstracted. `PerRoundProximityGap e ProxGapBound` says the accounting per-round error
 - `def Core2Keystone.PerRoundProximityGap` [ArkLib/ProofSystem/Whir/KeystoneReduction.lean:52](../../../ArkLib/ProofSystem/Whir/KeystoneReduction.lean#L52) — Verbatim copy of `Issue24FRISTIR.PerRoundProximityGap` (`Stir/SoundnessAccumulation.lean:253`): the
+
+### `Plantable` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.Plantable` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean#L98) — A planting configuration is *plantable* iff some **nonzero** syndrome vector is annihilated by every
+- `def ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.Plantable` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean#L111) — Restatement of `G86RankCollapseDichotomy.Plantable`: some **nonzero** syndrome vector is annihilated
 
 ### `Point` (2 declarations, 2 files)
 
@@ -9383,6 +9390,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem BCIKS20.Claim510Agreement.pi_z_aPre_eq_taylor_coeff` [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Agreement.lean:82](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Agreement.lean#L82) — **The coefficient reading**: `π_z (aPre t)` is the `t`-th Taylor coefficient of the decoded surface
 - `theorem BCIKS20.Claim510AgreementSupply.pi_z_aPre_eq_taylor_coeff` [ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AgreementSupply.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AgreementSupply.lean#L98) — The composed coefficient reading: `π_z(aPre t)` is the `t`-th Taylor coefficient of the decoded surf
+
+### `plantable_dichotomy` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.plantable_dichotomy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean:152](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean#L152) — **The G86 rank-collapse dichotomy.** Any plantable family of `r` witnesses, each contributing `m = t
+- `theorem ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_dichotomy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean#L140) — Restatement of `G86RankCollapseDichotomy.plantable_dichotomy`: generic cap OR explicit syzygy.
+
+### `plantable_linearIndependent_cap` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.plantable_linearIndependent_cap` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean:123](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean#L123) — **The sharp `−1`.** A plantable family in generic position satisfies `r·m + 1 ≤ dim V`: the annihila
+- `theorem ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_linearIndependent_cap` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean:115](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean#L115) — Restatement of `G86RankCollapseDichotomy.plantable_linearIndependent_cap`.
 
 ### `positive_sign_masses_of_coherence_lt_one_threshold` (2 declarations, 2 files)
 

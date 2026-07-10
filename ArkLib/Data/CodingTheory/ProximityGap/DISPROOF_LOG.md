@@ -25144,3 +25144,124 @@ short-interval technology is built for. Non-overlap: not a fixed-cell certificat
 transversality, not signed-anomaly, not the tensor cross-scale ceiling (OC-CROSSSCALE) — this is
 the max-vs-mean seam's algebraic-resonance branch. CORE remains OPEN / ON-BGK. No axioms, no
 sorry.
+## [466-G80J-divisor-second-moment] The divisor SECOND moment PROVEN pure-Nat: Σ_{y≤M} d(y)² ≤ M·(log₂M+1)³ — exact lcm-hyperbola identity + per-pair collapse M/lcm(a,b) = ((M/g)/a′)/b′ + gcd-triple injection + three dyadic harmonic bounds; the KB §6 target CLOSED (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80JDivisorSecondMoment.lean`, real locked build, all 4
+theorems exactly `[propext, Classical.choice, Quot.sound]` or fewer).
+
+**Bricks.** `sum_sq_card_divisors_eq`: Σ_{y≤M} d(y)² = Σ_{(a,b)∈[1,M]²} ⌊M/lcm(a,b)⌋ EXACT
+(common-multiple triple double-count). `div_lcm_eq`: M/lcm(a,b) = ((M/g)/(a/g))/(b/g) with
+g = gcd (from lcm·g = a·b and Nat.div_div_eq_div_mul). `sum_div_le_dyadic'`: shifted
+first-moment bound (X ≤ M). CAPSTONE `sum_sq_card_divisors_le`: inject pairs into gcd-triples
+(g, a/g, b/g) with EXACT per-pair value transport, dominate by the full triple box, and apply
+G80K's dyadic harmonic bound three times: Σ d(y)² ≤ M·(log₂M+1)³. Pure Nat throughout — no
+Real.log, no analysis.
+
+**Payoff.** With G80L (T(W)⁴ ≤ n·E×(A)) and E×(A) ≤ Σ_{y≤W²} d(y)² ≤ W²(log₂W²+1)³:
+T(W)⁴ ≤ n·W²·(2log₂W+2)³ ⟹ T(W) = O(n^{1/4}·√W·log^{3/4}W) — NONTRIVIAL below the n^{2/3}
+threshold where G80M dies (e.g. T(n^{2/3}) = O(n^{7/12}log^{3/4})), extending the
+unconditional window downward. Final instantiation brick (G80I = G80L × G80J join, needs
+E×(A) ≤ Σ_{y≤W²} d² which is r(y) ≤ d(y) + support-sum domination) is next-round plumbing.
+Fenced from the prize saddle (G80P). CORE remains OPEN / ON-BGK. No axioms, no sorry.
+## [466-G95-cyclic-code-weight-dictionary] The McEliece weight-period dictionary orientation: prize periods are maximally many-valued, few-weight/semiprimitive transfer IMPOSSIBLE, lattice quantization IMPOSSIBLE, power-sum integrality LANDED (2026-07-10)
+
+Lane: G95 Fable (`Frontier/_G95CyclicCodeWeightDictionary.lean`, axiom-clean, 20 audited decls,
+teeth at p=17/μ₄; probe `scripts/probes/probe_g95_cyclic_dictionary.py`, exit 0, β=4 primes
+n=8..64). Formalizes the 60-year irreducible-cyclic-code dictionary at the prize point and pins
+its orientation. (i) EXACT DICTIONARY: `eta_eq_iff_mem_coset` — η_b = η_c ⟺ c ∈ b·μ_n; the
+value multiset {η_b}_{b≠0} is exactly m = (p−1)/n pairwise-distinct values with multiplicity
+exactly n (`card_values_mul`); at the prize point 2^128 distinct real values (unconditional
+exact form of Katz many-valuedness). Engine: prime-root-sum rigidity via
+`DeBruijnIndicatorDisjointness` + new bridge ψ x = (ψ 1)^x.val. (ii) FEW-WEIGHT NO-GO:
+`few_weight_no_go` — two-valued distributions force p−1 ≤ 2n; ALL exact evaluations in the
+literature (Baumert–McEliece, Aoki semiprimitive p^j≡−1, every Schmidt–White entry) live in the
+extension-field Frobenius-collapse regime (probe: F₁₆/index-5 collapses to {−1,3}) and can NEVER
+apply to the prime-field prize family — this is why McEliece had 0 campaign hits. (iii)
+QUANTIZATION NO-GO: `eta_not_rational` — every η_b (b≠0, n+1<p) is irrational; the
+McEliece/Stickelberger integer-lattice quantization of weights has NO prime-field analogue at
+value level; "few quantized values + l2 mass ⟹ sup bound" is dead on arrival (gaps span 5
+orders of magnitude, probe). (iv) POSITIVE TRANSFER: integrality survives at symmetric-function
+level: `card_smul_sum_values_pow` welds values to in-tree N₀: n·Σ_v v^r = p·N₀(μ_n,r) − n^r;
+Σv = −1, Σv² = p−n, and below wraparound (N₀=0, all small odd r) Σ_v v^r = −n^{r−1} EXACTLY —
+dyadic v₂(P_r) = (r−1)·log₂n, probe-confirmed P₃ = −n² at n=8..64. NOT proved: any bound on M —
+distinctness has zero archimedean content. CORE stays OPEN.
+# [466-G103-syzygy-replication-no-go] A syzygy plus internally independent witness blocks does NOT bound the witness count: one valid block replicates to arbitrary cardinality (axiom-clean structural no-go) (2026-07-10)
+
+**Question red-teamed.** G86/G87 show that any production stack with at least 64 bad scalars has
+a nontrivial syzygy among its syndrome constraint rows, while each individual witness contributes
+an internally linearly independent block of `t-k` rows.  Is that endpoint already restrictive
+enough to support a count of the bad scalars?
+
+**Formal answer: no at the current abstraction level.** In
+`Frontier/_G103SyzygyReplicationNoGo.lean`, `replicatedBlock ψ (i,j) = ψ j` repeats one locally
+valid block over an arbitrary witness index type.  The file proves:
+
+- every repeated block remains linearly independent when `ψ` is;
+- any nonzero syndrome annihilated by `ψ` makes the full family plantable for every number `r` of
+  witness indices;
+- as soon as `r ≥ 2` and `m > 0`, the full family is dependent and yields exactly G86's explicit
+  coefficient-vector syzygy;
+- `exists_abstract_configuration_of_one_block` packages all three facts for arbitrary `r`, and
+  `production_abstract_syzygy_configuration` instantiates the logical calibration at
+  `r = 2^30`, `m = 2^24+1`.
+
+**Verdict.** The properties currently retained by the syndrome endpoint — common plantability,
+per-witness block independence, and existence of a global syzygy — permit unboundedly many abstract
+witnesses.  Therefore “a syzygy exists” is a localization, not a quantitative certificate.  A
+successful continuation must preserve and exploit cross-witness Reed--Solomon structure, in
+particular how distinct scalars `γ` enter the blocks; treating the blocks as arbitrary dual
+functionals cannot prove the #507 count.
+
+**Honest scope.** Replication does not construct distinct bad scalars or concrete `mcaEvent`
+witnesses, and so does not refute the wall hypothesis.  It refutes only the sufficiency of the
+present abstract/per-block endpoint.  All audited declarations use only standard Lean axioms; no
+`sorry`, named analytic hypothesis, or production closure claim.
+
+## [466-G80I-energy-route-assembly] 🏁 The SECOND unconditional CG-type theorem: T(W)⁴ ≤ n·W²·(log₂(W²)+1)³ for every multiplicative H and W² < p — ZERO hypotheses (G80L energy consumer fired by the G80J divisor second moment); the unconditional interval face is now TWO-SIDED: T(W) ≤ min(√n·W^{1/4}, n^{1/4}·√W·log^{3/4})·O(1) on all W < √p (axiom-clean milestone) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80IEnergyRouteAssembly.lean`, real locked build, both
+theorems exactly `[propext, Classical.choice, Quot.sound]`, first-pass compile).
+
+**Bricks.** `mulEnergy_le_sum_sq_divisors`: E×(A) ≤ Σ_{y≤W²} d(y)² for A ⊆ [1,W] (fiber
+partition + r(y) ≤ d(y) + product set ⊆ [1,W²]). CAPSTONE `intervalCount_pow_four_le`:
+T(W)⁴ ≤ |H|·W²·(log₂(W²)+1)³ — G80L (T⁴ ≤ n·E×) × this bridge × G80J (Σd² ≤ M·log³).
+
+**The two-sided unconditional envelope.** G80M gives T(W) = O(√n·W^{1/4}) (better for
+W ≥ n-ish); G80I gives T(W) = O(n^{1/4}·√W·log^{3/4}W) (better for W ≤ n-ish, nontrivial
+below the n^{2/3} threshold where G80M dies — e.g. T(n^{2/3}) = O(n^{7/12}·log^{3/4})). The
+crossover is at W ≈ n (both ≈ n^{3/4}). To our knowledge these are the first machine-checked
+nontrivial subgroup-interval concentration bounds anywhere, now covering the full W < √p
+window from two sides with explicit constants and zero hypotheses.
+
+**Honest scope.** Fenced from the prize saddle by G80P regime disjointness. The next rung —
+the Konyagin-Shkredov energy RECURSION (self-improvement of E× using multiplicative
+structure of A itself, not just its ambient interval) — is where the open BGK content
+begins; expect wall contact there. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+## [466-G92-spread-excess-c3-refuted-in-evidence] The bounded spread-excess law at C = 3 is REFUTED IN EVIDENCE at n = 32 (ratio 3.833, two primes, explicit witnesses), and the floor mechanism makes EVERY constant C untenable near the Johnson boundary — the last per-cell surrogate for windowed SumsetExtremal dies; the floor/kill surface is formalized (2026-07-10)
+
+Lane: G92 Fable (`Frontier/_G92SpreadExcessProbe.lean`, 23 audited decls, all
+`[propext, Classical.choice, Quot.sound]`; probe `scripts/probes/probe_g92_spread_excess_c3.py`
++ `_out_g92_n16.txt`, `_out_g92_n32.txt`; agent killed by session limit mid-report — probe
+outputs completed and refereed by the coordinator; docstring corrected to match the final
+n=32 table). **Evidence:** sweep n ∈ {8,16,32}, k ∈ {2,4}, 2–3 primes per scale, all guard
+window levels. n=16 max ratio 2.55 (a ∈ {6,7}, replicating the P5-referee 2.33) → n=32, k=4,
+a=11 (in-window, 121 ≤ 128): worst_spread = 23 vs worst_mono = 6, ratio 3.833 > 3, at BOTH
+primes 1048609 and 1048897, explicit u₀ witnesses recorded in the output files. Ratio GROWS
+with n; C=2 stays dead; at the exact Johnson boundary monomials win (ratio < 1). Caveat:
+spread values are witness-certified lower bounds, monomial baselines are symmetric-effort
+search bounds — evidence, not theorem. **Formalized (axiom-clean):** (1) invariances
+(`worstBad_smul`, `worstBad_add_codeword`); (2) in-code-component collapse: 2-component
+directions with one exponent < k have worstBad EQUAL to a monomial's — the spread-excess
+phenomenon lives entirely in the both-components-≥k sector
+(`spread_worstBad_le_monoBaseline_of_*_lt`); (3) THE FLOOR (P5 mechanism formalized):
+agreement a−1 forces worstBad ≥ n−(a−1) by explicit pencil construction
+(`worstBad_ge_of_agree_pred`), with the kill surface `spreadExcessLaw_floor_le` /
+`not_spreadExcessLaw_of_floor_beats`: any cell with C·monoBaseline < n−(a−1) refutes
+SpreadExcessLaw C — at n=32, a=11 this needs only monoBaseline ≤ 7 certified (search says 6);
+(4) worstBad is NOT subadditive in Fourier components (`worstBad_not_subadditive`,
+`worstBad_zero` = |F| vs far cap `worstBad_le_choose` consuming _SecondWitnessFloor) — the
+triangle-inequality route to any component-count-weighted bound is dead. **Mechanism reading:**
+near the Johnson boundary the monomial baseline collapses to O(1) while the elevated-agreement
+floor stays ≈ n−√(nk) — no constant C survives unless monomial baselines are proven to grow
+there. The dossier-§6 survivor (b) "bounded spread-excess law" is dead as stated; the
+surviving open question is the monomial-baseline growth law at boundary cells. CORE OPEN.
