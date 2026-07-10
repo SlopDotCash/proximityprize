@@ -32731,3 +32731,42 @@ subspace-design proximity gaps via black-box transference, degree-independent; p
 RS untouched (consistent with plain-RS-is-Paley); the row-span-constrained LCL formulation is the
 recommended re-plan target for the OPEN B2 `CurveDecodability.lean` lane. (4) JLR 2601.10047 is
 withdrawn (subsumed by GG25) — update citations. CORE OPEN / ON-BGK.
+
+## [466-G83-determinant-coverage-fence] The support-six determinant certificate now feeds the G82 half-height threshold with no arithmetic gap: p^s | D, D>0, D^2<=6^d imply p^(2s)<=6^d and s log p <= (d/2)log 6 (axiom-clean) (2026-07-10)
+
+Lane: fence-side transversality handoff
+(`Frontier/_G83DeterminantCoverageFence.lean`; issue #505 remains open).
+
+G82 documented but did not formalize the determinant calculation behind its prize-cell
+threshold. G83 packages the exact integer certificate supplied by a hypothetical full-rank
+support-six census matrix and proves three kernel-checked consumers:
+
+- `pow_two_mul_coverage_le`: divisibility `p^s ∣ D`, positivity, and `D^2 ≤ 6^d` imply
+  `p^(2s) ≤ 6^d`;
+- `coverage_log_le_half_height`: for `p ≥ 2`, this gives `s log p ≤ (d/2) log 6`;
+- `no_certificate_above_half_height`: coverage strictly beyond that threshold excludes every
+  such determinant certificate.
+
+**HONEST SCOPE.** This closes only the arithmetic handoff. It does not construct a nonzero
+determinant from the actual cyclotomic census, prove that common prime-ideal coverage yields
+`p^s ∣ D`, or establish the Euclidean Hadamard square bound for those rows. Those are the explicit
+next instantiation bridge. No production bound on `M`; CORE remains OPEN / ON-BGK. Theorems use
+only `[propext]`.
+
+### [466-maint-2026-07-10] Ledger hygiene flag for #506 + KKH-lemma pull verdict (2026-07-10)
+
+(1) **DISPROOF_LOG contains stray diff3 conflict markers / duplicated historical blocks**: lines
+~4879 and ~24513 both carry `||||||| parent of cc8699f9a` (O44 section duplicated), ~7069 and
+~26703 both carry `||||||| parent of 147828cea` (O109 section duplicated), plus a bare `=======`
+at ~21959. A past merge left base-markers and a large duplicated span in the file. Needs careful
+one-agent surgery under the #506 maintenance track (decide canonical spans, delete duplicates);
+NOT attempted here mid-swarm to avoid clobbering concurrent appends.
+
+(2) **KKH ePrint 2026/782 roots-of-unity lemma pull (from litsweep-2026-07-10): ALREADY
+SUPERSEDED IN-TREE.** Their Lemma 1 (e₁-image ≥ 2^r·C(s/2,r) for p > s^{s/2}) is the published
+form of the subset-sum bound that O38's E1/E2 already SHARPEN (better threshold
+(4·min(r,m−r))^{m/4}, exact signed count N₀, rate-1/2 coverage where their r ≤ s/2 vanishes), and
+O44's Theorem Q instantiates their Appendix A per-prime for the whole window — the determination's
+LOWER half is closed; the remaining open content is purely the UPPER half (= CORE = the wall).
+No new extraction available from 2026/782. Cross-pollination the OTHER way (our census bricks
+strengthening their counterexample family) remains a legitimate Tier-3 publishable item.
