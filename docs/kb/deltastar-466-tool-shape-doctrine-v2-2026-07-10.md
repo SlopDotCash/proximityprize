@@ -85,3 +85,21 @@ non-Fourier handle on geometric-progression anti-concentration in the thin regim
 the precise sense in which the prize contains the Paley graph conjecture. Attack surface for
 the next rounds: seam (1) quantitatively (the constants are close), and any literature
 motion on non-Fourier orbit anti-concentration.
+
+## 5. Addendum (same day): reconciliation with the §33 ladder normal form + the queued target
+
+Dossier §33 (2026-07-07, supersedes §0/§6) states the open core in the ANALYTIC gauge: the
+Jacobi-coefficient ladder `Σ_{s≠0}‖T(s)‖^{2r} = (q−1)·Σ_c ‖(J^{∗r})(c)‖²` with r=1 proven,
+r=2 proven-modulo-textbook-Weil, **r=3 = the calibrated open core** (`TripleConvEnergyBound`,
+C = 40 probe-safe, per-tuple Weil provably insufficient at β ∈ (4,6)), r ≈ ln q = the wall.
+The two gauges are consistent: transversality (this note §3.1) is the ideal-theoretic face,
+the r=3 rung the analytic face, of the same certificate. §33's live route (ii) —
+**Hasse–Davenport exact angle relations along subgroup cosets of ℤ/m** — is flagged
+"unexplored exact structure ON the ladder object" and is precisely an *exact-identity* (hence
+potentially non-circular) input of the kind this doctrine calls for: HD product/lifting
+relations impose closed-form multiplicative constraints on coset-averaged Jacobi angle sums,
+i.e. on exactly the convolution powers the r=3 rung needs. **QUEUED as the next window's
+primary swing:** read the `_R19…_R27` chain, extract the J-sequence definition, and test
+whether the HD product relation evaluates (or usefully constrains) any coset-averaged slice of
+`(J^{∗3})(c)` — probe first at n = 8/16 against exact Jacobi-sum tables, then formalize
+whichever side (identity or refutation) survives.
