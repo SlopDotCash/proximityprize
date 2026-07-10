@@ -53,6 +53,8 @@ namespace ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted
 abbrev F := ZMod 11
 abbrev V := Fin 7 -> F
 
+instance fact_prime_eleven : Fact (Nat.Prime 11) := ⟨by norm_num⟩
+
 /-- The nine distinct evaluation points `0,...,8` in `F_11`. -/
 def domain : Fin 9 ↪ F where
   toFun x := x.val
@@ -88,6 +90,57 @@ def inFourColumnSpan (u : V) (x0 x1 x2 x3 : Fin 9) : Prop :=
 /-- The projective line is contained in a displayed support span. -/
 def lineContainedInFourColumnSpan (x0 x1 x2 x3 : Fin 9) : Prop :=
   forall alpha beta : F, inFourColumnSpan (lineVector alpha beta) x0 x1 x2 x3
+
+/-- The first elementary symmetric function of four evaluation points. -/
+def sigma1 (x0 x1 x2 x3 : Fin 9) : F :=
+  domain x0 + domain x1 + domain x2 + domain x3
+
+/-- The second elementary symmetric function of four evaluation points. -/
+def sigma2 (x0 x1 x2 x3 : Fin 9) : F :=
+  domain x0 * domain x1 + domain x0 * domain x2 + domain x0 * domain x3 +
+    domain x1 * domain x2 + domain x1 * domain x3 + domain x2 * domain x3
+
+/-- The third elementary symmetric function of four evaluation points. -/
+def sigma3 (x0 x1 x2 x3 : Fin 9) : F :=
+  domain x0 * domain x1 * domain x2 + domain x0 * domain x1 * domain x3 +
+    domain x0 * domain x2 * domain x3 + domain x1 * domain x2 * domain x3
+
+/-- The fourth elementary symmetric function of four evaluation points. -/
+def sigma4 (x0 x1 x2 x3 : Fin 9) : F :=
+  domain x0 * domain x1 * domain x2 * domain x3
+
+/-- The first locator recurrence on a seven-moment syndrome. -/
+def locator0 (u : V) (x0 x1 x2 x3 : Fin 9) : F :=
+  u 4 - sigma1 x0 x1 x2 x3 * u 3 + sigma2 x0 x1 x2 x3 * u 2 -
+    sigma3 x0 x1 x2 x3 * u 1 + sigma4 x0 x1 x2 x3 * u 0
+
+/-- The second locator recurrence on a seven-moment syndrome. -/
+def locator1 (u : V) (x0 x1 x2 x3 : Fin 9) : F :=
+  u 5 - sigma1 x0 x1 x2 x3 * u 4 + sigma2 x0 x1 x2 x3 * u 3 -
+    sigma3 x0 x1 x2 x3 * u 2 + sigma4 x0 x1 x2 x3 * u 1
+
+/-- The third locator recurrence on a seven-moment syndrome. -/
+def locator2 (u : V) (x0 x1 x2 x3 : Fin 9) : F :=
+  u 6 - sigma1 x0 x1 x2 x3 * u 5 + sigma2 x0 x1 x2 x3 * u 4 -
+    sigma3 x0 x1 x2 x3 * u 3 + sigma4 x0 x1 x2 x3 * u 2
+
+/-- All three locator recurrences vanish. -/
+def LocatorZeros (u : V) (x0 x1 x2 x3 : Fin 9) : Prop :=
+  locator0 u x0 x1 x2 x3 = 0 /\ locator1 u x0 x1 x2 x3 = 0 /\
+    locator2 u x0 x1 x2 x3 = 0
+
+/-- Membership in a four-column span forces the three locator recurrences. -/
+theorem locatorZeros_of_memFourColumnSpan
+    {u : V} {x0 x1 x2 x3 : Fin 9}
+    (hmem : inFourColumnSpan u x0 x1 x2 x3) :
+    LocatorZeros u x0 x1 x2 x3 := by
+  rcases hmem with ⟨c0, c1, c2, c3, hu⟩
+  unfold LocatorZeros locator0 locator1 locator2 sigma1 sigma2 sigma3 sigma4
+  rw [hu]
+  simp [column]
+  constructor
+  · ring
+  constructor <;> ring
 
 /-- A proper projective weight-four point on the fixed line. -/
 def ProperLowWeightPoint (u : V) : Prop :=
@@ -151,104 +204,176 @@ theorem infinity_certificate :
 
 /-! ## Every displayed witness support is proper -/
 
+theorem line_not_contained_of_base_not_mem
+    {x0 x1 x2 x3 : Fin 9}
+    (hbase : Not (inFourColumnSpan basePoint x0 x1 x2 x3)) :
+    Not (lineContainedInFourColumnSpan x0 x1 x2 x3) := by
+  intro hcontained
+  apply hbase
+  have hline : lineVector 1 0 = basePoint := by
+    funext j
+    simp [lineVector]
+  have hmem := hcontained 1 0
+  rw [hline] at hmem
+  exact hmem
+
+theorem line_not_contained_of_direction_not_mem
+    {x0 x1 x2 x3 : Fin 9}
+    (hdirection : Not (inFourColumnSpan directionPoint x0 x1 x2 x3)) :
+    Not (lineContainedInFourColumnSpan x0 x1 x2 x3) := by
+  intro hcontained
+  apply hdirection
+  have hline : lineVector 0 1 = directionPoint := by
+    funext j
+    simp [lineVector]
+  have hmem := hcontained 0 1
+  rw [hline] at hmem
+  exact hmem
+
+/-- No four distinct evaluation points satisfy all locator recurrences for both
+basis vectors.  This is the finite certificate behind global farness. -/
+theorem no_common_locatorZeros :
+    forall x0 x1 x2 x3 : Fin 9,
+      x0 ≠ x1 /\ x0 ≠ x2 /\ x0 ≠ x3 /\
+      x1 ≠ x2 /\ x1 ≠ x3 /\ x2 ≠ x3 ->
+      Not (LocatorZeros basePoint x0 x1 x2 x3 /\
+        LocatorZeros directionPoint x0 x1 x2 x3) := by
+  unfold LocatorZeros locator0 locator1 locator2 sigma1 sigma2 sigma3 sigma4
+    basePoint directionPoint domain
+  decide
+
+/-- **Global farness.** No span of four distinct parity columns contains the
+fixed projective syndrome line. -/
+theorem no_fourColumnSpan_contains_line :
+    forall x0 x1 x2 x3 : Fin 9,
+      x0 ≠ x1 /\ x0 ≠ x2 /\ x0 ≠ x3 /\
+      x1 ≠ x2 /\ x1 ≠ x3 /\ x2 ≠ x3 ->
+      Not (lineContainedInFourColumnSpan x0 x1 x2 x3) := by
+  intro x0 x1 x2 x3 hdistinct hcontained
+  have hbase : inFourColumnSpan basePoint x0 x1 x2 x3 := by
+    have hmem := hcontained 1 0
+    have hline : lineVector 1 0 = basePoint := by
+      funext j
+      simp [lineVector]
+    rwa [hline] at hmem
+  have hdirection : inFourColumnSpan directionPoint x0 x1 x2 x3 := by
+    have hmem := hcontained 0 1
+    have hline : lineVector 0 1 = directionPoint := by
+      funext j
+      simp [lineVector]
+    rwa [hline] at hmem
+  exact no_common_locatorZeros x0 x1 x2 x3 hdistinct
+    ⟨locatorZeros_of_memFourColumnSpan hbase,
+      locatorZeros_of_memFourColumnSpan hdirection⟩
+
 theorem gamma_zero_support_proper :
     Not (lineContainedInFourColumnSpan 0 3 6 7) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_direction_not_mem
+  unfold inFourColumnSpan fourColumnCertificate directionPoint column domain
   decide
 
 theorem gamma_one_support_proper :
     Not (lineContainedInFourColumnSpan 0 3 5 7) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_three_support_proper :
     Not (lineContainedInFourColumnSpan 0 3 5 6) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_four_support_proper :
     Not (lineContainedInFourColumnSpan 0 2 4 8) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_five_support_proper :
     Not (lineContainedInFourColumnSpan 0 1 4 8) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_six_support_proper :
     Not (lineContainedInFourColumnSpan 0 1 2 8) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_seven_support_proper :
     Not (lineContainedInFourColumnSpan 1 2 4 8) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_nine_support_proper :
     Not (lineContainedInFourColumnSpan 0 1 2 4) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_ten_support_proper :
     Not (lineContainedInFourColumnSpan 0 5 6 7) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem infinity_support_proper :
     Not (lineContainedInFourColumnSpan 3 5 6 7) := by
-  unfold lineContainedInFourColumnSpan inFourColumnSpan fourColumnCertificate
-    lineVector basePoint directionPoint column domain
+  apply line_not_contained_of_base_not_mem
+  unfold inFourColumnSpan fourColumnCertificate basePoint column domain
   decide
 
 theorem gamma_zero_proper : ProperLowWeightPoint (linePoint 0) := by
-  exact ⟨0, 3, 6, 7, 4, 9, 5, 5, by decide,
+  exact ⟨0, 3, 6, 7, 4, 9, 5, 5,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_zero_certificate, gamma_zero_support_proper⟩
 
 theorem gamma_one_proper : ProperLowWeightPoint (linePoint 1) := by
-  exact ⟨0, 3, 5, 7, 4, 7, 6, 7, by decide,
+  exact ⟨0, 3, 5, 7, 4, 7, 6, 7,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_one_certificate, gamma_one_support_proper⟩
 
 theorem gamma_three_proper : ProperLowWeightPoint (linePoint 3) := by
-  exact ⟨0, 3, 5, 6, 4, 3, 7, 1, by decide,
+  exact ⟨0, 3, 5, 6, 4, 3, 7, 1,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_three_certificate, gamma_three_support_proper⟩
 
 theorem gamma_four_proper : ProperLowWeightPoint (linePoint 4) := by
-  exact ⟨0, 2, 4, 8, 9, 3, 6, 9, by decide,
+  exact ⟨0, 2, 4, 8, 9, 3, 6, 9,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_four_certificate, gamma_four_support_proper⟩
 
 theorem gamma_five_proper : ProperLowWeightPoint (linePoint 5) := by
-  exact ⟨0, 1, 4, 8, 6, 3, 3, 5, by decide,
+  exact ⟨0, 1, 4, 8, 6, 3, 3, 5,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_five_certificate, gamma_five_support_proper⟩
 
 theorem gamma_six_proper : ProperLowWeightPoint (linePoint 6) := by
-  exact ⟨0, 1, 2, 8, 3, 6, 8, 1, by decide,
+  exact ⟨0, 1, 2, 8, 3, 6, 8, 1,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_six_certificate, gamma_six_support_proper⟩
 
 theorem gamma_seven_proper : ProperLowWeightPoint (linePoint 7) := by
-  exact ⟨1, 2, 4, 8, 9, 5, 8, 8, by decide,
+  exact ⟨1, 2, 4, 8, 9, 5, 8, 8,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_seven_certificate, gamma_seven_support_proper⟩
 
 theorem gamma_nine_proper : ProperLowWeightPoint (linePoint 9) := by
-  exact ⟨0, 1, 2, 4, 5, 4, 10, 2, by decide,
+  exact ⟨0, 1, 2, 4, 5, 4, 10, 2,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_nine_certificate, gamma_nine_support_proper⟩
 
 theorem gamma_ten_proper : ProperLowWeightPoint (linePoint 10) := by
-  exact ⟨0, 5, 6, 7, 4, 5, 10, 3, by decide,
+  exact ⟨0, 5, 6, 7, 4, 5, 10, 3,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     gamma_ten_certificate, gamma_ten_support_proper⟩
 
 theorem infinity_proper : ProperLowWeightPoint directionPoint := by
-  exact ⟨3, 5, 6, 7, 9, 6, 6, 2, by decide,
+  exact ⟨3, 5, 6, 7, 9, 6, 6, 2,
+    by decide, by decide, by decide, by decide, by decide, by decide,
     infinity_certificate, infinity_support_proper⟩
 
 /-! ## Projective distinctness and the incidence count -/
@@ -267,6 +392,12 @@ theorem representative_projectively_injective :
     forall i j : Fin 10,
       Proportional (representative i) (representative j) -> i = j := by
   unfold Proportional representative linePoint lineVector basePoint directionPoint
+  decide
+
+/-- Every displayed representative is nonzero, so it defines a projective point. -/
+theorem representative_ne_zero :
+    forall i : Fin 10, representative i ≠ 0 := by
+  unfold representative linePoint lineVector basePoint directionPoint
   decide
 
 theorem every_representative_proper :
@@ -294,7 +425,10 @@ theorem domain_injective : Function.Injective domain := domain.injective
 /-- Every set of at most seven parity columns is linearly independent. -/
 theorem parityColumnsMDS (J : Finset (Fin 9)) (hJ : J.card <= 7) :
     LinearIndependent F (fun x : J => column x) := by
-  exact ArkLib.HigherOrderMDS.rs_columns_linearIndependent domain.injective hJ
+  simpa only [column] using
+    (ArkLib.HigherOrderMDS.rs_columns_linearIndependent
+      (K := F) (D := fun x : Fin 9 => domain x) (k := 7) (J := J)
+      domain.injective hJ)
 
 /-- The counterexample lies at the strict half-radius, two-slack, low-rate parameters. -/
 theorem strict_low_rate_hypotheses :
@@ -312,3 +446,7 @@ end ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted
   ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.representative_projectively_injective
 #print axioms
   ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.every_representative_proper
+#print axioms
+  ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.no_fourColumnSpan_contains_line
+#print axioms
+  ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.representative_ne_zero

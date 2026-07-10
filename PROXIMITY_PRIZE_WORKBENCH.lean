@@ -16,6 +16,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveRankTwoAPI
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveWorstCaseIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R383HalfRadiusMDSLineRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusConicSecantBoundaryFamily
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusStrictSlackLowRateRefuted
 
 set_option linter.style.longLine false
 
@@ -585,6 +586,10 @@ prevent disproved finite laws from being reused as exact inputs.
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentPoint_eq_secant
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentInfinity_eq_secant
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.conic_family_numerics
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.no_fourColumnSpan_contains_line
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.representative_ne_zero
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.every_representative_proper
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.strict_low_rate_hypotheses
 #check ProximityGap.PrizeEntropy.actualRateEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.actualRateBitsEntropyPin_degreeZero_F12289_REFUTED
 #check ProximityGap.PrizeEntropy.prizePinConjecture_degreeZero_F12289_REFUTED

@@ -62,7 +62,6 @@ theorem properQuotientBall_subset_quotientSyndromeBall
     (mem_properQuotientBall_iff C δ P q).1 hq
   exact (mem_quotientSyndromeBall_iff C δ q).2 ⟨S, hS, hmem⟩
 
-/-- The incidence of the normalized quotient pencil with its proper quotient ball. -/
 /-- On a jointly-far pencil, the proper quotient ball is the ordinary quotient syndrome ball. -/
 theorem properQuotientBall_eq_quotientSyndromeBall_of_pencilJointFar
     (C : Submodule F (ι → A)) (δ : ℝ≥0) (P : Submodule F ((ι → A) ⧸ C))
@@ -119,8 +118,6 @@ theorem badSlot_iff_mem_properQuotientBall
     (mcaEventProj_iff_quotientPencilSupport C δ u₀ u₁
       (slotCoords s).1 (slotCoords s).2)
 
-/-- **Unconditional exact projective incidence law.**  The MCA bad-slot census equals the
-incidence of the quotient pencil with its proper quotient ball for every row pair. -/
 /-- **Unconditional exact projective slot-incidence law.**  The MCA bad-slot census equals the
 normalized-slot incidence of the quotient pencil with its proper quotient ball for every row pair.
 -/
@@ -207,9 +204,6 @@ end ProximityGap.ProjectiveProperQuotientBall
 #print axioms
   ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_subset_quotientSyndromeBall
 #print axioms
-  ProximityGap.ProjectiveProperQuotientBall.badSlot_iff_mem_properQuotientBall
-#print axioms
-  ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
   ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_eq_quotientSyndromeBall_of_pencilJointFar
 #print axioms
   ProximityGap.ProjectiveProperQuotientBall.properProjectiveBallIncidence_eq_projectiveBallIncidence_of_pencilJointFar

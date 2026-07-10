@@ -21,6 +21,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveProperQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R383HalfRadiusMDSLineRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusConicSecantBoundaryFamily
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusStrictSlackLowRateRefuted
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -730,9 +731,10 @@ theorem deltaStar_pin_mu8_F4129_witness :
   `LineIncidenceSpectral.lineIncidence_spectral`. -/
 
 /-! The tempting field-uniform ceiling of `n` proper points on every half-radius MDS syndrome
-  line is false.  The R383 countermodel has nine proper affine points on the dyadic `[8,4]`
-  Reed--Solomon frame over `F_17`, with `2e<n` and `e+k+1=n`.  This retires the unrestricted
-  MDS/GRS conjecture but leaves the strict-slack production slice `k<=n/4` open. -/
+  line is false.  R383 has nine proper affine points on the dyadic `[8,4]` Reed--Solomon frame
+  over `F_17`.  The `[9,2]` countermodel over `F_11` still has ten proper projective points with
+  `e+k+1<n` and `k<=n/4`.  Thus only the even two-power, exact-half-predecessor production
+  specialization remains open. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
@@ -766,6 +768,10 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentPoint_eq_secant
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentInfinity_eq_secant
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.conic_family_numerics
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.no_fourColumnSpan_contains_line
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.representative_ne_zero
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.every_representative_proper
+#check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.strict_low_rate_hypotheses
 #check
   ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 

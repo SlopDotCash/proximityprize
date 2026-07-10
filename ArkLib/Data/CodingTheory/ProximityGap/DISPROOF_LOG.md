@@ -31205,3 +31205,18 @@ CONSEQUENCE: ordinary MDS, GRS/NRC structure, and dyadicity separately cannot im
 ceiling.  The strict low-rate production slice `e=n/2-1`, `k<=n/4` remains open because it has
 linear slack in `e+k+1<n`; R383 does not close or refute that slice.  Detailed source and parameter
 translation: `docs/kb/deltastar-half-radius-mds-line-refutation-2026-07-09.md`.
+
+## [466-r383-strict-slack-low-rate-mds-line-n-bound-REFUTED] strict slack and `k<=n/4` still do not force the projective `n` ceiling (2026-07-09)
+
+`Frontier/_HalfRadiusStrictSlackLowRateRefuted.lean` gives a globally far syndrome line for
+the `[9,2]` Reed--Solomon code on `0,...,8` over `F_11`.  Nine affine representatives and the
+point at infinity have explicit four-column certificates, yielding ten proper projective points
+against length nine.  The file proves all representatives nonzero and pairwise projectively
+inequivalent, verifies the seven-row Vandermonde MDS property, and uses three locator recurrences
+to prove that no four-column span contains the fixed line.  The exact arithmetic is
+`2e=8<9`, `e+k+1=7<9`, and `4k=8<=9`.  Axiom audit: only `propext`,
+`Classical.choice`, and `Quot.sound`; `pg-iterate` green.
+
+CONSEQUENCE: neither linear slack nor the low-rate inequality repairs R382 by itself.  This
+counterexample has odd length and a non-subgroup evaluation domain, so the remaining claim must
+retain the even two-power length, fixed two-power subgroup, and exact half-predecessor structure.

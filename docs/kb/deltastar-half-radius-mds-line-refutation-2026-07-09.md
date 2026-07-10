@@ -31,8 +31,49 @@ three-column decompositions for nine distinct parameters `gamma=1,...,9`.  For e
 2e = 6 < 8 = n,       e+k+1 = 3+4+1 = 8.
 ```
 
+The companion exhaustive probe
+`scripts/probes/probe_r383_half_radius_n8k4_exhaustive.py` enumerates all 89,030
+projective lines in the syndrome space.  The failure is not isolated: its exact
+proper-point histogram is
+
+```text
+8: 1,  12: 12,  13: 8,  14: 52,  15: 240,
+16: 1,985,  17: 16,672,  18: 70,060.
+```
+
+Thus 70,060 lines have all `q+1=18` projective points proper.  The formal Lean
+countermodel deliberately certifies only the nine points needed to refute the
+proposed ceiling; the exhaustive census records how far the unrestricted claim fails.
+
 This example already uses a two-power evaluation subgroup.  Its rate is `1/2`, so it refutes
 the unrestricted MDS/GRS statement but not the production restriction `k<=n/4`.
+
+## Strict-slack, low-rate countermodel
+
+`Frontier/_HalfRadiusStrictSlackLowRateRefuted.lean` gives a second machine-checked
+countermodel in the seven-dimensional syndrome space of a `[9,2]` RS code over `F_11`.
+For the evaluation domain `0,...,8`, take the projective line spanned by
+
+```text
+a = (1,4,0,2,8,10,6),       b = (1,8,6,5,7,7,7).
+```
+
+Nine affine representatives `a+gamma*b`, for
+`gamma in {0,1,3,4,5,6,7,9,10}`, and the point at infinity `b` have explicit
+four-column decompositions.  The file proves that all ten representatives are nonzero and
+pairwise projectively inequivalent, every displayed incidence is support-locally proper, and
+no span of four distinct parity columns contains the fixed line.  It also proves the full
+seven-row Vandermonde MDS property.  Thus there are ten proper projective points, while
+
+```text
+2e = 8 < 9 = n,       e+k+1 = 4+2+1 = 7 < 9,
+4k = 8 <= 9.
+```
+
+This refutes both proposed repairs when used separately: strict slack in `e+k+1<n` does not
+restore the ceiling, and neither does the low-rate condition `k<=n/4`.  The construction has
+odd length and an interval evaluation domain, so it does not decide the even two-power
+production specialization.
 
 ## Small plane model
 
@@ -86,14 +127,16 @@ the finite-field existence step instead of hiding it.
 
 ## Surviving target
 
-The refutation retires any argument based only on ordinary MDS, conic/NRC structure, generalized
-Hamming weights, or unrestricted secant geometry.  It does **not** settle the production slice
+The refutations retire any argument based only on ordinary MDS, conic/NRC structure, generalized
+Hamming weights, unrestricted secant geometry, strict slack, or the low-rate inequality alone.
+They do **not** settle the production slice
 
 ```text
 e=n/2-1,       k<=n/4,       n=2^mu,
 ```
 
 where the slack `n-(e+k+1)` is at least about `n/4`.  The corrected live question must retain
-that strict low-rate slack and the fixed two-power evaluation subgroup.  The `[8,4]` example
-shows that dyadicity alone is insufficient; the Ng--Wild family shows that merely replacing
-MDS by GRS is also insufficient.
+the conjunction of even two-power length, the fixed two-power evaluation subgroup, and the exact
+half-predecessor radius.  The `[8,4]` example shows that dyadicity alone is insufficient, the
+`[9,2]` example shows that strict low-rate slack alone is insufficient, and the Ng--Wild family
+shows that merely replacing MDS by GRS is also insufficient.

@@ -5,7 +5,8 @@ At the half-radius predecessor e = 3, each support span is a projective hyperpla
 in the four-dimensional syndrome space.  A point of a projective line is MCA-bad
 exactly when it lies in one of the 56 support hyperplanes that does not contain the
 whole line. Hyperplane-incidence bitmasks make the complete 89,030-line search small.
-The probe succeeds as soon as it finds a line with more than n proper points.
+The probe succeeds when the complete traversal finds a line with more than n
+proper points.
 """
 
 from itertools import combinations, product
@@ -145,6 +146,7 @@ def line_bad_points(a, b, masks):
 def run():
     domain, columns, supports, masks = setup_masks()
     best = (0, None)
+    found_counterexample = False
     histogram = {}
     total = 0
     for a, b in projective_lines_rref():
@@ -174,8 +176,9 @@ def run():
             })
             print({"line": total, "new_best": best}, flush=True)
         if score > N:
-            print("COUNTEREXAMPLE", best, flush=True)
-            return True
+            if not found_counterexample:
+                print("COUNTEREXAMPLE", best, flush=True)
+            found_counterexample = True
     expected_lines = P ** 4 + P ** 3 + 2 * P ** 2 + P + 1
     assert total == expected_lines
     print({
@@ -190,8 +193,9 @@ def run():
         "best": best,
         "histogram": histogram,
     })
-    print("NO COUNTEREXAMPLE FOUND", flush=True)
-    return False
+    if not found_counterexample:
+        print("NO COUNTEREXAMPLE FOUND", flush=True)
+    return found_counterexample
 
 
 if __name__ == "__main__":
