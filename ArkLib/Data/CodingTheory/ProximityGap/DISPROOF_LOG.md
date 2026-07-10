@@ -31228,3 +31228,22 @@ Weil/Stepanov-adjacent) controls; (iii) the full rung decomposition is now: exce
 excess (shifted-subgroup intersections), s5/s6 = genuine depth-3 Sidon strata — EACH sector
 has its own literature; the wall is their SIMULTANEOUS control at prize (n, β, r≈ln q).
 CORE OPEN, ON-BGK.
+
+## [466-FS9-worstcase-interface-almost-all-primes] INTERFACE TERMINATION (Fable session): `WorstCaseIncompleteSumBound ψ μ_n ((15qn³)^{1/3})` is a THEOREM at every FS6 good prime — the annihilator-ledger arc now lands directly on the δ*-side named object (2026-07-09)
+
+Lane: FS9 (file `Frontier/_FS9WorstCaseBoundAlmostAllPrimes.lean`, real locked build 3343 jobs,
+axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+`worstCaseIncompleteSumBound_of_good_prime`: FS6's good-prime `GaussianEnergyBound (μ_n) 3`
+composed with the in-tree moment bridge `worstCaseIncompleteSumBound_of_energyBound`
+(GaussPeriodMomentBound → InteriorWorstCaseIncompleteSum) gives, at every prime of a family
+of primes ≥ 2^s outside the FS6-capped bad set: the worst-case incomplete character sum over
+μ_n is ≤ M₃ = (q·15·n³)^{1/3}, i.e. ‖η_b‖ ≤ 15^{1/6}·q^{1/6}·√n — as the NAMED
+`WorstCaseIncompleteSumBound` predicate the interior δ* consumer chain reads.
+
+VALUE = INTERFACE: any future deepening of the annihilator ledger (r = 4, 5, …; each needs
+only its negSymCount closed form — everything else is depth-generic) now lands directly on
+the δ* side with zero further plumbing; minimizing over available depths reproduces the
+moment ladder within the ledger's good-prime set. HONEST SCOPE (unchanged, FS8's
+regime-disjointness note applies): M₃ beats trivial only β < 3, cap non-vacuous only β ≳ 6;
+NOT a δ* closure; the per-prime deep-r wall is untouched. CORE OPEN, ON-BGK.
