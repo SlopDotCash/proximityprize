@@ -2224,6 +2224,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79PPiAdicDigitClustering
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddleLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80MUnconditionalIntervalBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80NDivisorFourthPowerBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80OProductDivisorInterval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80PReducedFractionRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80QSmallDifferencePairForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
