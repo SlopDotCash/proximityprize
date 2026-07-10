@@ -2233,6 +2233,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81FactorialPaddingWickAb
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G82DepthTwoEnergySaddleBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G82TransversalityCRTThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83DeterminantCoverageFence
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83FreeOrbitEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83MMaximalCommonCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84AEndpointAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
