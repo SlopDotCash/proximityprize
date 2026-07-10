@@ -32349,7 +32349,7 @@ compile with `[propext, Classical.choice, Quot.sound]`; CORE remains OPEN / ON-B
 
 ## [466-G77-signed-route-fourier-gauge-detail] The R367 pair discrepancy equals the DC-subtracted moment minus (q−1)×the char-0 floor identically (axiom-clean detailed record) (2026-07-10)
 
-Lane: direct Fable 5 CORE (`Frontier/_G77RelationAnomalyFourierGauge.lean`; exact probe
+Lane: direct Fable 5 CORE (`Frontier/_G77FRelationAnomalyFourierGauge.lean`; exact probe
 `/tmp/arklib-reports/g77_fourier_gauge_probe.py`; research branch only).
 
 **Target (the sole unclosed off-BGK route).** After G73, the campaign guide records the signed

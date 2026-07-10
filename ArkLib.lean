@@ -2216,8 +2216,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G70DudleyFlatChainingLowe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G73ShkredovMultiShiftExponentFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G75RawDeviationVsRelationAnomaly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G76HigherGeneratorMomentBlindSpot
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G77RelationAnomalyFourierGauge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G77FRelationAnomalyFourierGauge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G78KMSpreadCircularity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79PrimitivePaddingSaddleLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick

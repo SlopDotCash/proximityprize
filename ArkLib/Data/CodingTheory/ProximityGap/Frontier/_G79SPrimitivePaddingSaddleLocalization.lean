@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib
 
 /-!
-# G79: bounded primitive sectors are absorbed at the saddle
+# G79S: bounded primitive sectors are absorbed at the saddle
 
 R369 isolates the surviving production-facing conjecture at the single depth
 `r = ceil(log q)`.  Its padding calculation gives the envelope
@@ -45,8 +45,11 @@ theorem le_oddWickTail_factor {r s i : ℕ} (hrs : 2 * s ≤ r + 1)
 `r^s`. -/
 theorem pow_le_oddWickTail {r s : ℕ} (hrs : 2 * s ≤ r + 1) :
     r ^ s ≤ oddWickTail r s := by
-  rw [oddWickTail, ← Finset.prod_const, Finset.card_range]
-  exact Finset.prod_le_prod' (fun i hi => le_oddWickTail_factor hrs hi)
+  calc
+    r ^ s = ∏ i ∈ Finset.range s, r := by simp
+    _ ≤ ∏ i ∈ Finset.range s, (2 * (r - i) - 1) :=
+      Finset.prod_le_prod' (fun i hi => le_oddWickTail_factor hrs hi)
+    _ = oddWickTail r s := rfl
 
 /-- R369's padded-sector envelope. -/
 def padEnvelope (n r J s : ℕ) : ℕ :=
@@ -83,10 +86,10 @@ theorem paddedSector_le_oddTailWick
     _ ≤ J * r ^ (2 * s) * n ^ (r - s) := hpad
     _ = (J * r ^ s) * r ^ s * n ^ (r - s) := by ring
     _ ≤ n ^ s * oddWickTail r s * n ^ (r - s) := by gcongr
+    _ = oddWickTail r s * (n ^ s * n ^ (r - s)) := by ring
     _ = oddWickTail r s * n ^ r := by
-      rw [← pow_add₀]
-      rw [Nat.add_sub_of_le hsr]
-      ring
+      have hexp : s + (r - s) = r := Nat.add_sub_of_le hsr
+      rw [← pow_add n s (r - s), hexp]
 
 /-- Linear primitive-orbit budgets reduce to the explicit saddle condition
 `C*r^s <= n^(s-1)`. -/
@@ -105,9 +108,26 @@ theorem paddedSector_le_oddTailWick_of_linear_orbits
     J * r ^ s ≤ (C * n) * r ^ s := by gcongr
     _ = n * (C * r ^ s) := by ring
     _ ≤ n * n ^ (s - 1) := by gcongr
-    _ = n ^ s := by
-      obtain ⟨t, rfl⟩ := Nat.exists_eq_add_of_le hs
-      simp [pow_succ]
+    _ = n ^ (s - 1) * n := by ring
+    _ = n ^ ((s - 1) + 1) := (pow_succ n (s - 1)).symm
+    _ = n ^ s := by congr 1 <;> omega
+
+/-- At the nominal production parameters `n = 2^30`, `r = 110`, every single linear-size
+primitive depth-two orbit is absorbed by the last two Wick factors. -/
+theorem production_depth_two_linear_orbit_absorbed
+    {J W : ℕ}
+    (hW : W ≤ padEnvelope (2 ^ 30) 110 J 2)
+    (hJ : J ≤ 2 ^ 30) :
+    W ≤ oddWickTail 110 2 * (2 ^ 30) ^ 110 := by
+  apply paddedSector_le_oddTailWick_of_linear_orbits
+      (n := 2 ^ 30) (r := 110) (J := J) (s := 2) (W := W) (C := 1)
+  · norm_num
+  · norm_num
+  · norm_num
+  · norm_num
+  · exact hW
+  · simpa using hJ
+  · norm_num
 
 end ArkLib.ProximityGap.Frontier.G79PrimitivePaddingSaddleLocalization
 
@@ -118,3 +138,5 @@ end ArkLib.ProximityGap.Frontier.G79PrimitivePaddingSaddleLocalization
   ArkLib.ProximityGap.Frontier.G79PrimitivePaddingSaddleLocalization.paddedSector_le_oddTailWick
 #print axioms
   ArkLib.ProximityGap.Frontier.G79PrimitivePaddingSaddleLocalization.paddedSector_le_oddTailWick_of_linear_orbits
+#print axioms
+  ArkLib.ProximityGap.Frontier.G79PrimitivePaddingSaddleLocalization.production_depth_two_linear_orbit_absorbed

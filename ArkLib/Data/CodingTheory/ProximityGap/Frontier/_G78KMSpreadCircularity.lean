@@ -119,6 +119,28 @@ theorem exists_cell_deviation_of_phase_bias
   rw [mul_div_cancel₀ _ (ne_of_gt hcard)] at hsum
   linarith
 
+/-- **Approximation-error bridge.** Suppose `Z` is the genuine phase sum and the cell model
+`∑ nT(T)c(T)` approximates it within `D`. If `Z` has norm at least `A`, then some cell deviates
+from the reference mass `w` by at least `(A - D - wB)/K`. This is the exact abstract statement
+needed before an arc model can be used: a concrete application must separately prove `happrox`
+and the representative-phase cancellation bound `hcancel`. -/
+theorem exists_cell_deviation_of_approximated_phase_bias
+    {S : Type*} (s : Finset S) (hs : s.Nonempty)
+    (nT : S → ℝ) (c : S → ℂ) (Z : ℂ) (w A B D : ℝ)
+    (hw : 0 ≤ w)
+    (hc : ∀ T ∈ s, ‖c T‖ ≤ 1)
+    (hZ : A ≤ ‖Z‖)
+    (happrox : ‖Z - ∑ T ∈ s, ((nT T : ℝ) : ℂ) * c T‖ ≤ D)
+    (hcancel : ‖∑ T ∈ s, c T‖ ≤ B) :
+    ∃ T ∈ s, (A - D - w * B) / (s.card : ℝ) ≤ |nT T - w| := by
+  have hbias : A - D ≤ ‖∑ T ∈ s, ((nT T : ℝ) : ℂ) * c T‖ := by
+    have hreverse : ‖Z‖ - ‖∑ T ∈ s, ((nT T : ℝ) : ℂ) * c T‖ ≤
+        ‖Z - ∑ T ∈ s, ((nT T : ℝ) : ℂ) * c T‖ :=
+      norm_sub_norm_le _ _
+    linarith
+  simpa [sub_sub] using
+    exists_cell_deviation_of_phase_bias s hs nT c w (A - D) B hw hc hbias hcancel
+
 /-- **The loss-class computation.**  At sampling depth `k = log(1/α)`, the Croot–Sisask
 per-step loss `(1/α)^{1/k}` is exactly `e`: the KM engine's loss lives in the constant-base
 class `C^r`, which the prize tolerates.  (Stated for any `α ∈ (0,1)` via
@@ -142,5 +164,7 @@ end ArkLib.ProximityGap.Frontier.G78KMSpreadCircularity
   ArkLib.ProximityGap.Frontier.G78KMSpreadCircularity.l1_deviation_of_phase_bias
 #print axioms
   ArkLib.ProximityGap.Frontier.G78KMSpreadCircularity.exists_cell_deviation_of_phase_bias
+#print axioms
+  ArkLib.ProximityGap.Frontier.G78KMSpreadCircularity.exists_cell_deviation_of_approximated_phase_bias
 #print axioms
   ArkLib.ProximityGap.Frontier.G78KMSpreadCircularity.km_per_step_loss_is_e
