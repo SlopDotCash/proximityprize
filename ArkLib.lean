@@ -2140,6 +2140,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS14DepthGenericLedger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS15SpectralLadderAlmostAllPrimes
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS16SharpResultantEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS17SimultaneousLadder
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS18OddVanishingMinLadder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS1Depth3AnnihilatorLedger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS2PatternAnnihilatorResultant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS3AnnihilatorHeightBound

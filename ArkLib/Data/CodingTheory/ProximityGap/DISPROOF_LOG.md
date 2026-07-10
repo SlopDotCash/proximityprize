@@ -31486,3 +31486,19 @@ HONEST SCOPE: the union budget is dominated by the deepest term ≈ n^{2R+1}/s �
 is FREE (same β ≳ 2R+2 window as the single deepest rung); the prize joint limit R ≈ ln q
 stays out of reach (FS15 closing no-go). Interface value: min_{r ≤ R} M_r at a single prime
 is now well-formed. CORE OPEN, ON-BGK.
+
+## [466-FS18-odd-vanishing-min-ladder] TAXONOMY COMPLETION (Fable session): `zeroSumCount m N = 0` for odd N (parity at x = 1) — the zero-sum census is now FULLY characterized (odd = 0, even ≤ Wick); per-frequency min-ladder well-formed at a single good prime (2026-07-09)
+
+Lane: FS18 (file `Frontier/_FS18OddVanishingMinLadder.lean`, real locked build 3351 jobs, all
+3 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `zeroSumCount_odd_eq_zero`: evaluating Σμ(cᵢ) at x = 1 gives a sum of ±1's ≡ N (mod 2);
+  odd N forces a nonzero polynomial — no odd-length zero-sum tuples (`Finset.sum_int_mod`
+  parity bookkeeping; note Int.emod: (−1) % 2 = 1 makes this clean).
+- `zeroSumCount_taxonomy`: the complete census statement — odd lengths vanish, even lengths
+  obey the FS13 Wick bound. The FS12/FS13 one-sided object is now fully characterized.
+- `eta_pow_ladder_of_good_prime`: on FS17's single good set, the per-frequency depth-r
+  moment bound for EVERY r ∈ [1,R] at once — min-over-depth per-frequency optimization is
+  per-prime well-formed.
+
+HONEST SCOPE: unchanged (windows disjoint from prize; wall untouched). CORE OPEN, ON-BGK.
