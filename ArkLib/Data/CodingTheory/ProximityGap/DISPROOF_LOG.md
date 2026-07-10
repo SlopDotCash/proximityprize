@@ -32568,8 +32568,10 @@ safe factorial-corrected ceiling.  All headline declarations use only `[propext]
 
 The production calibration is also kernel-checked.  For a single linear-size depth-two orbit, the
 repaired G79S test would require `110^2 * 108! ≤ 2^30`; Lean proves the strict reverse inequality.
-Thus the missing permutation is not a harmless constant: at logarithmic saddle depth it destroys
-the proposed bounded-sector absorption mechanism quantitatively.
+Thus the missing permutation is not a harmless constant and cannot be paid by G79S's selected
+top-`s` odd tail alone.  This does **not** rule out paying it from the remaining lower odd Wick
+factors in the *full* double factorial; the concurrent G81 draft targets exactly that repair and
+must be checked separately.
 
 A safe coarse repair is
 
@@ -32578,10 +32580,34 @@ W_r^(s) <= J_s * (r descFactorial s)^2 * (r-s)! * n^(r-s),
 ```
 
 or a sharper quotient-weighted formula using the squared padding multinomial.  This correction
-destroys G79S's intended bounded-sector absorption at logarithmic depth: `(r-s)!` is precisely a
-Wick-scale factor, so it cannot be discarded.  G79S remains a correct conditional arithmetic
-theorem, but its proposed R369 input is unavailable.  This refutes the mechanism, not
-`FourthPowerSaddleDCEnergy`; CORE remains OPEN.
+invalidates G79S's intended **odd-tail-only** consumption of the raw R369 envelope: `(r-s)!` cannot
+be discarded.  G79S remains a correct conditional arithmetic theorem, but its proposed R369 input
+is unavailable.  A full-Wick repair may survive because `(r-s)! ≤ (2(r-s)-1)!!`; that arithmetic
+consumer still needs a compiling proof and, more importantly, the corrected combinatorial
+surjection.  G80R refutes the stated envelope, not `FourthPowerSaddleDCEnergy`; CORE remains OPEN.
+
+## [466-G81-factorial-padding-wick-absorption] The G80R factorial correction is affordable in the unused Wick head (axiom-clean rescue consumer) (2026-07-10)
+
+G80R shows that a safe ordered-padding reconstruction may cost `(r-s)!`. G81 proves this does not
+by itself destroy the saddle strategy. The exact factorization
+
+```text
+(2r-1)!! = oddWickTail(r,s) * (2(r-s)-1)!!
+```
+
+splits the full Wick budget into the top `s` factors used by G79S and a lower head. Since
+`(r-s)! <= (2(r-s)-1)!!`, the lower head pays the missing padding permutation. Therefore, if
+
+```text
+W <= J_s * (r descFactorial s)^2 * (r-s)! * n^(r-s)
+and J_s * r^s <= n^s,
+```
+
+then `W <= (2r-1)!! * n^r`. The normalized primitive-sector condition is unchanged from G79S.
+This is a corrected arithmetic consumer, not yet the combinatorial reconstruction theorem: the
+factorial-corrected envelope for actual maximally-cancelled collision sectors remains to be proved.
+Three declarations in `_G81FactorialPaddingWickAbsorption.lean` pass `pg-iterate` with no
+`sorryAx`. CORE and the growing-sector count remain open.
 
 ## [466-G80D-decoupling-parallel-cap-collapse] Bourgain–Demeter decoupling cannot fire on the dyadic coset tower: the caps are exact multiplicative DILATES (no transversality input), the bilinear step collapses to the linear energy at every lag, and the EXACT defect identity shows any decoupling gain ≡ the lag-decorrelation mass = the independence atom (axiom-clean) (2026-07-10)
 
