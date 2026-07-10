@@ -24952,3 +24952,30 @@ all 7 decls exactly `[propext, Classical.choice, Quot.sound]`, no sorryAx; `forb
 clean; `sorry_census.py --fail-on-holes` 0 holes; `update-lib.sh` single barrel entry (5933
 imports); Codex review; DC-subtracted + orbit-inflation probe `g97_census_sup_inflation_probe.py`
 (exact character sums, ratios > 1 at all r, all cells).
+
+## [466-G80P-reduced-fraction-rigidity] INTEGER RIGIDITY below sqrt(p): congruent cross-products of [1,W] integers with W² < p are EQUAL as naturals, so every coset-interval intersection injects into the small-ratio census ρ_H(W) (= the OC support-2 small-height object); PLUS the regime-disjointness finding — the rigidity window K > √p and the prize saddle K ≈ √(2πn/log q) overlap only at β ≤ 1, the formal in-chain explanation of the classical CG p^{1/3}/β=3 barrier (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80PReducedFractionRigidity.lean`, real locked build, all 3
+theorems exactly `[propext, Classical.choice, Quot.sound]`).
+
+**Bricks.** `cross_mul_eq_of_congruent`: x,y,x',y' ∈ [1,W], W² < p, x·y' ≡ x'·y (mod p) ⟹
+x·y' = x'·y as naturals (both cross-products < p; equal residues in range are equal).
+`ratio_injective_on_interval`: modular ratio equality on a sub-√p val-window is integer ratio
+equality. `coset_interval_le_smallRatioCount`: for ANY subset C of a multiplicative coset
+with vals in [1,W], W² < p: |C| ≤ ρ_H(W) := #{(s,t) ∈ [1,W]² : s·t⁻¹ mod p ∈ H} — the
+small-ratio census, exactly the OC support-2 small-height relation object (s ≡ h·t ⟺
+p | Norm(s − t·ζ^k)). This is the CORRECT pair-level form of what G80T's refuted unsigned
+per-d heuristic groped for.
+
+**Regime disjointness (the honest quantitative finding).** Rigidity requires W < √p ⟺ arc
+count K = p/W > √p. The G80X saddle requires K ≈ √(2πn/log q) ≪ √p at prize scale (β ≫ 3);
+windows overlap only when p ≲ n/log q, i.e. β ≤ 1. Inside the rigidity window the G80Y
+consumer pays K·ρ ≫ √(n log q) since ρ ≥ 1 always. So integer-lifting/rational-rigidity
+technology is REGIME-DISJOINT from the prize saddle — the classical Cilleruelo-Garaev
+p^{1/3}-type barrier, now expressed formally inside our own chain with explicit constants.
+A viable certificate must be genuinely modular (non-integer-liftable), consistent with the
+G80T directional refutation and the F3 valuation/archimedean-blind fence.
+
+**Honest scope.** Unconditional reusable rigidity + census bound; regime disjointness is
+ledger prose from the formal constants (not a Lean impossibility theorem); no certificate
+produced. CORE remains OPEN / ON-BGK. No axioms, no sorry.
