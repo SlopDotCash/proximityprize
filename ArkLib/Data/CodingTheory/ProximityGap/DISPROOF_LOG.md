@@ -32797,3 +32797,62 @@ open); does NOT close the KM circularity (G78 verdict stands). What changed: the
 Fourier⟹arc-increment side (chord-arc, oscillation, cancellation, floor-width, extraction) is
 formal; the open surface is purely the converse arc-occupancy input. CORE remains OPEN /
 ON-BGK. No axioms, no sorry.
+
+---
+
+## G80 — the SIGNED l1 certificate is pinned to the wall M (last-door closure, axiom-clean, r-uniform)
+
+**Freshest surviving request, refereed.** After G72 (transversality→height precise no-go), G73
+(Shkredov–Vyugin multi-shift exponent-floored above 1/2), G74 (signed-anomaly evidence-level pin to
+M), G77 (signed relation route = exact Fourier gauge of the DC-subtracted moment), G78 (Kelley–Meka
+rank-one circular), and OC-CROSSSCALE (tensor ceiling), the G74 REFEREE left ONE explicit formalizer
+task: *"a kernel-checked lemma that the signed l1 certificate value equals M (the M-orbit being a
+single phase-coherent Frobenius orbit), completing the 'positive AND signed certificates both pinned
+to M' pair alongside G70/G72/G73 — closing the last door formally."* The referee's `fable_g74_*`
+probe verified this numerically (S1: no unit-l1 spread reaches M — uniform 0.26–0.60·M, matched
+0.41–0.72·M; S3: the wall orbit is a SINGLE complex value, orbit-avg/M = 1.0000 exactly). G80
+formalizes it.
+
+**Not a wrapper on G77.** G77 shows the signed *total value* equals the DC-subtracted moment (a
+gauge identity). G80 addresses a DIFFERENT object: the signed *l1 certificate functional* — the
+largest correlation any unit-l1 signed coefficient family can extract from the modulus spectrum — and
+proves it is exactly the sup M. This is the S1/S3 duality mechanism, orthogonal to the anomaly=moment
+gauge. It is **r-uniform**: quantified over the whole spectrum `η : ι → ℝ` (instantiate
+`η_b := ‖η_b‖^{2r}` or `‖η_b‖`), so it holds at every rung r simultaneously, and it is NOT a
+fixed-depth island.
+
+**Lean payload** (`ArkLib.ProximityGap.Frontier.G80SignedL1CertificatePinnedToWall`, 6 decls, all
+`[propext, Classical.choice, Quot.sound]`, none carry sorryAx):
+- `signedCorrelation` / `l1Mass`: the certificate functional `∑ c_b η_b` and its budget `∑ |c_b|`.
+- `signed_l1_certificate_le_wall` (**S1 upper bound**): `∑ |c_b| ≤ 1 ⟹ |∑ c_b η_b| ≤ M`, where
+  `M = s.sup' hs |η·|`. Proof: `abs_sum_le_sum_abs` → `|c_b|·|η_b| ≤ |c_b|·M` (via `le_sup'`) →
+  `(∑|c_b|)·M ≤ 1·M`. No unit-l1 spread beats the wall.
+- `wall_onehot_attains` / `signed_l1_dual_eq_wall` (**S1 tightness**): the one-hot on a wall
+  frequency `b*` (a maximizer of `|η·|`) has unit l1-mass and extracts exactly `|η_{b*}| = M`. So the
+  l1-dual of the sup norm equals M EXACTLY, attained only by concentrating on the wall.
+- `l1Mass_orbitAverage`: the uniform orbit-average family (`c_b = 1/|O|` on O) has l1-mass 1.
+- `coherent_orbit_average_eq_wall` (**S3**): if the wall orbit O is phase-coherent (`η_b = M` for all
+  `b ∈ O` — the referee's single-Gauss-period-value fact), the unit-l1 orbit average extracts EXACTLY
+  M. Signed averaging over the coherent orbit PRESERVES the wall; there is no cancellation to exploit.
+- `l1Mass_orbitAverage_over_superset` / `signedCorrelation_orbitAverage_over_superset` /
+  `coherent_orbit_average_over_spectrum_eq_wall`: the orbit average extended by zero off O into the
+  full spectrum `s ⊇ O` keeps unit l1-mass and still extracts M (off-O terms vanish, via
+  `Finset.sum_subset`). This puts the attaining certificate in the SAME feasible set (unit-l1 on `s`)
+  as the S1 upper bound, so the sup over unit-l1 certificates on `s` is genuinely ATTAINED at M
+  (closes a Codex [P2]: the two conjuncts must live over the same spectrum `s`, not O ⊊ s).
+- `signed_certificate_pinned_to_wall` (**headline, S1 ∧ S3, both over `s`**): over a spectrum with a
+  coherent wall orbit at value M, (1) no unit-l1 signed certificate on `s` exceeds M and (2) the
+  zero-extended coherent orbit average is a unit-l1 certificate ON `s` attaining M. The signed l1
+  certificate value on `s` is EXACTLY M — identical to the positive census route.
+
+**Consequence.** The last enumerated non-BGK escape (a signed cancellation identity beating the
+wall) is closed formally: signed and positive certificates both pin to M. The M-orbit's
+phase-coherence IS the Frobenius/BGK structure — the wall frequencies are one Galois-conjugate orbit
+realizing a common Gauss-period value, so signed spreading only loses magnitude and coherent
+averaging preserves M.
+
+**Scope.** Pins the signed l1 *certificate value* to M abstractly and r-uniformly (the referee's
+requested last-door lemma). It does NOT by itself prove the campaign's cross-cell endpoint (that
+remains the DC-subtracted moment face, OPEN / ON-BGK per G77+G75); it certifies that the signed
+representation offers no weaker l1 certificate than the wall. No axioms, no sorry, no native_decide.
+CORE OPEN / ON-BGK.
