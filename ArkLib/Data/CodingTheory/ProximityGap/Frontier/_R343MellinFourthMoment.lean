@@ -43,6 +43,7 @@ open ArkLib.ProximityGap.R342MellinLevelSet
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
+open Classical in
 /-- **Generalized character orthogonality**: for any two multiplicative characters,
 `∑_{b≠0} λ₁⁻¹(b)·λ₂(b)` is `q−1` when `λ₁ = λ₂` and `0` otherwise. -/
 theorem char_orthogonality (lam₁ lam₂ : MulChar F ℂ) :
@@ -145,12 +146,9 @@ theorem mellin_fourth_moment {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 
     intro b
     rw [sq, hdouble b, Finset.sum_mul_sum]
     refine Finset.sum_congr rfl fun j₁ _ => ?_
-    rw [Finset.sum_mul_sum]
-    -- now: ∑ k₁ ∑ j₃ (T j₁ k₁ * T j₃ k₃-sum) — reorder to ∑ j₃ ∑ k₁ ∑ k₃
-    rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j₃ _ => ?_
+    rw [Finset.sum_mul_sum]
     refine Finset.sum_congr rfl fun k₁ _ => ?_
-    rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun k₃ _ => ?_
     -- merge the character factors
     have hsplitInv : ((χ ^ (d * (j₁ + j₃)))⁻¹ : MulChar F ℂ)
@@ -159,8 +157,7 @@ theorem mellin_fourth_moment {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 
     have hsplitPos : (χ ^ (d * (k₁ + k₃)) : MulChar F ℂ)
         = (χ ^ (d * k₁)) * (χ ^ (d * k₃)) := by
       rw [Nat.mul_add, pow_add]
-    rw [hCh]
-    simp only [hsplitInv, hsplitPos, MulChar.mul_apply]
+    simp only [hCh, hsplitInv, hsplitPos, MulChar.mul_apply]
     ring
   rw [Finset.sum_congr rfl fun b _ => hexpand b]
   -- Step 2: move the b-sum inside the four index sums
@@ -196,7 +193,7 @@ theorem mellin_fourth_moment {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 
     rw [← Finset.sum_mul]
     have horth := char_orthogonality (F := F)
       (χ ^ (d * (j₁ + j₃))) (χ ^ (d * (k₁ + k₃)))
-    rw [hCh]
+    simp only [hCh]
     rw [horth]
     by_cases hcong : (j₁ + j₃) ≡ (k₁ + k₃) [MOD t]
     · rw [if_pos ((chi_pow_eq_iff_modEq hd hd0 hord _ _).mpr hcong), if_pos hcong]
