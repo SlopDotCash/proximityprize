@@ -19,13 +19,14 @@ It also proves the standard energy interface
 n*J <= E,    E^2 <= C^2*n^5  ==>  J^2 <= C^2*n^3,
 ```
 
-The file deliberately stops at this orbit budget: G80R refuted G79S's raw padding envelope, while
-G81 supplies the separate factorial-corrected full-Wick arithmetic.
+G80R refuted G79S's raw padding envelope. G81 repairs it arithmetically by paying the missing
+padding factorial from the unused Wick head. G82 composes its energy criterion with that corrected
+full-Wick consumer.
 
 At the nominal production point `n=2^30`, `r=110`, the arithmetic accepts `C=2`, since
 `4*110^4 <= 2^30`. Thus a full primitive depth-two energy estimate
-`E <= 2*n^(5/2)` (in the cleared square form) is sufficient for the corrected consumer's orbit
-budget. This is strictly weaker than a linear-orbit assumption.
+`E <= 2*n^(5/2)` (in the cleared square form) is sufficient to absorb a sector satisfying G81's
+factorial-corrected envelope. This is strictly weaker than a linear-orbit assumption.
 
 ## Honest residual
 

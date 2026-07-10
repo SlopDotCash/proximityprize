@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81FactorialPaddingWickAbsorption
 
 /-!
 # G82: a square-root energy saving absorbs the full primitive depth-two sector
@@ -32,6 +32,8 @@ the intended consumer is G81's factorial-corrected full-Wick envelope. Issue #46
 set_option autoImplicit false
 
 namespace ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
+
+open G81FactorialPaddingWickAbsorption
 
 /-- A square-root saving in the primitive orbit count implies the exact depth-two saddle
 condition.  The cleared hypothesis allows an explicit constant `C`. -/
@@ -69,6 +71,35 @@ theorem sq_orbit_bound_of_energy
       _ = n ^ 2 * (C ^ 2 * n ^ 3) := by ring
   exact Nat.le_of_mul_le_mul_left hmul (by positivity)
 
+/-- **Corrected depth-two energy-to-Wick consumer.** G81 pays the independently ordered
+padding factorial from the unused Wick head. G82 supplies its remaining orbit budget from a
+`C*n^(3/2)` square estimate. -/
+theorem correctedPaddedDepthTwo_le_fullWick_of_sq_orbit_bound
+    {n r J W C : ℕ}
+    (hrs : 4 ≤ r + 1)
+    (hr : 2 ≤ r)
+    (hW : W ≤ correctedPadEnvelope n r J 2)
+    (hJ : J ^ 2 ≤ C ^ 2 * n ^ 3)
+    (hsmall : C ^ 2 * r ^ 4 ≤ n) :
+    W ≤ Nat.doubleFactorial (2 * r - 1) * n ^ r := by
+  apply correctedPaddedSector_le_fullWick hrs hr hW
+  exact orbit_budget_of_sq_le hJ hsmall
+
+/-- End-to-end corrected consumer from an additive-energy-shaped estimate. -/
+theorem correctedPaddedDepthTwo_le_fullWick_of_energy
+    {n r J E W C : ℕ}
+    (hn : 0 < n)
+    (hrs : 4 ≤ r + 1)
+    (hr : 2 ≤ r)
+    (hW : W ≤ correctedPadEnvelope n r J 2)
+    (hJE : n * J ≤ E)
+    (hE : E ^ 2 ≤ C ^ 2 * n ^ 5)
+    (hsmall : C ^ 2 * r ^ 4 ≤ n) :
+    W ≤ Nat.doubleFactorial (2 * r - 1) * n ^ r := by
+  apply correctedPaddedDepthTwo_le_fullWick_of_sq_orbit_bound hrs hr hW
+  · exact sq_orbit_bound_of_energy hn hJE hE
+  · exact hsmall
+
 /-- At `(n,r)=(2^30,110)`, the `C=2` energy-sized orbit hypothesis implies the exact
 depth-two saddle budget required by the corrected padding consumer. -/
 theorem production_depth_two_orbit_budget
@@ -78,6 +109,23 @@ theorem production_depth_two_orbit_budget
   apply orbit_budget_of_sq_le hJ
   norm_num
 
+/-- Production-scale corrected sector consumer with explicit energy constant `C=2`. -/
+theorem production_corrected_depth_two_energy_absorbed
+    {J E W : ℕ}
+    (hW : W ≤ correctedPadEnvelope (2 ^ 30) 110 J 2)
+    (hJE : (2 ^ 30) * J ≤ E)
+    (hE : E ^ 2 ≤ 2 ^ 2 * (2 ^ 30) ^ 5) :
+    W ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
+  apply correctedPaddedDepthTwo_le_fullWick_of_energy
+      (n := 2 ^ 30) (r := 110) (J := J) (E := E) (W := W) (C := 2)
+  · norm_num
+  · norm_num
+  · norm_num
+  · exact hW
+  · exact hJE
+  · exact hE
+  · norm_num
+
 end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 /-! ## Axiom audit -/
@@ -86,4 +134,10 @@ end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.sq_orbit_bound_of_energy
 #print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.correctedPaddedDepthTwo_le_fullWick_of_sq_orbit_bound
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.correctedPaddedDepthTwo_le_fullWick_of_energy
+#print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_depth_two_orbit_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_corrected_depth_two_energy_absorbed
