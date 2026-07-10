@@ -122,3 +122,21 @@ divisor moment (`Σ_{y≤M} d₃(y)² ≤ M·log⁸M` next: needs the k-fold lcm
 generalizing G80J; d₃ ≤ d² reduction is too lossy — do it properly). Still fenced from the
 saddle at `W < p^{1/k}` vs `W = p/K`; the ladder closes the gap FROM BELOW as k grows but the
 fence survives all fixed k — the k → ∞ uniformity is where the wall lives on this face.
+
+## 8. Generic k-fold energy engine (G80H)
+
+`_G80HKFoldProductEnergy.lean` now makes the combinatorial half of the preceding discovery
+uniform in `k`.  For the tuple cube `X = A^k`, it defines the integer product image and the
+k-fold multiplicative energy `E_k(A)`, proves the exact fiber identity
+
+`E_k(A) = Σ_y #{x ∈ A^k : ∏x = y}²`,
+
+and proves by finite Cauchy--Schwarz
+
+`|A|^(2k) ≤ |productImage_k(A)| · E_k(A)`.
+
+This theorem is unconditional and axiom-clean.  It replaces the previously informal generic
+consumer; G80L is its `k=2` instance.  It does **not** prove the prize: the remaining analytic
+seams are (i) a reusable no-wrap lemma giving `|productImage_k(A)| ≤ |H|` from `W^k < p` and
+multiplicative closure, and (ii) divisor/energy estimates whose constants and exponents remain
+usable when `k` grows with the prize parameters.  Fixed `k` still cannot cross the saddle fence.
