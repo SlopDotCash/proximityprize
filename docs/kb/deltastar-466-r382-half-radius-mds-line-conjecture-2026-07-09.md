@@ -5,8 +5,11 @@
 > `[8,4]` RS frame over `F_17`, and Ng--Wild Theorem 4.5 gives an infinite GRS/conic family.
 > `_HalfRadiusStrictSlackLowRateRefuted.lean` further gives ten proper projective points
 > for a globally far `[9,2]` RS line with two units of strict slack and `k<=n/4`.
-> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the even,
-> two-power, exact-half-predecessor production specialization remains live.
+> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  The even,
+> exact-half-predecessor specialization is now proved at rate at most `1/16` by
+> `_HalfPredecessorIncidenceAssembly.lean` and its operational composition in
+> `_HalfPredecessorRateSixteenthPin.lean`; the rate-`1/8` and rate-`1/4` production slices
+> remain live.
 
 ## Direct target
 
@@ -18,18 +21,21 @@ B_e = union_{|T|<=e} span(H_T).
 
 The tight-budget prize-shaped examples reduce to the following finite-geometric claim.
 
-> **Half-radius MDS line conjecture.** If `2e<n` and `e+k+1<=n`, then every
+> **Prize-rate half-line conjecture.** If `2e<n`, `e+k+1<=n`, and `k<=n/4`, then every
 > projective syndrome line `P` not contained in one support span has at most `n`
 > points in `B_e`.
 
-At `e=n/2-1`, this is exactly the numerator bound needed to make the lattice
-predecessor of `1/2` good when `floor(p/2^128)=n`.  Together with the already-proven
-overlap-packing bad point at `1/2`, it would pin `mcaDeltaStar=1/2` for rates
-`1/4`, `1/8`, and `1/16` in the certified prize-shaped field.
+At `e=n/2-1`, this is the numerator bound needed to make the lattice predecessor of `1/2`
+good when `floor(p/2^128)=n`.  Together with the already-proven overlap-packing bad point at
+`1/2`, it would pin `mcaDeltaStar=1/2`.  The rate-`1/16` case is now pinned by the separate
+rich-point theorem; this line conjecture remains relevant to rates `1/8` and `1/4`.
 
-This conjecture is stronger than a dyadic-only statement.  Current evidence has not
-found a need for multiplicative-subgroup structure, although R380 shows that odd torsion
-changes the equality mechanisms.
+The earlier version omitted `k<=n/4` and is false.  R384 gives a certified
+`[7,3]` Vandermonde line over `F_29` with twelve proper weight-three points, despite
+`2e<n` and `e+k+1=n`.  At those parameters `D-e=1`: every support span is a projective
+plane in `P^3`, hence automatically meets every projective line.  The prize-rate guard
+forces `D-e=n/2-k+1` to grow linearly and excludes this mechanism.  It remains open
+whether dyadic subgroup structure is additionally necessary.
 
 ## Historical falsification status before R383
 
@@ -45,10 +51,12 @@ Small exact and sampled results:
 [4,1], e=1, F_5:  exhaustive maximum 2 <= 4
 [5,1], e=2, F_7:  exhaustive maximum 4 <= 5
 [6,2], e=2, F_7:  exhaustive maximum 6 = n
+[7,3], e=3, F_29: certified proper incidence 12 > 7 (general conjecture refuted)
 [8,2], e=3, F_17 dyadic: 500,000 sampled lines, maximum 8 = n
 [8,1], e=3, F_17 dyadic: 500,000 sampled lines, maximum 4
 [9,2], e=4, F_11 interval: exact certified line with 10 > 9
 [16,4], e=7, F_97 dyadic: 10,000 sampled sparse-point lines, maximum 8
+[12,3], e=5, F_37: constrained search reached 12 = n
 ```
 
 The `[8,2]` equality supports are the four facets of each side of a partition into
@@ -88,6 +96,12 @@ random two-endpoint lines almost never reach.  In 5,000 trials over `F_97` it fo
 four-hit trials over the second dyadic field `F_193` again reached 13 before seeding;
 no counterexample appeared.  Thus the partition value is sharp but not isolated.
 
+`Frontier/_HalfRadiusEvenThirdBlockObstruction.lean` proves the structural obstruction behind
+this census for every twelve-wise independent parity frame.  Any genuinely third eight-block
+sharing the partition-intersection pencil traps that pencil in a support span of size between
+four and seven, so the resulting incidence is improper.  A counterexample at `[16,4]` must
+therefore use general seven-support incidences rather than an odd-facet lift.
+
 ## Why the obvious proofs fail
 
 1. The ordinary secant variety is useless here.  At `e=n/2-1` and `D=n-k`, its
@@ -113,7 +127,8 @@ the combinatorial extraction from many distinct `e`-supports to those half-spans
 
 After the R383 and strict-slack refutations, this proof shape applies only to a corrected
 conjecture carrying the full even two-power production structure, not merely strict slack or
-`k<=n/4`.  It is not a proof of the unrestricted statement and does not close the prize.
+`k<=n/4`.  A different rich-point/line-core proof now closes the rate-at-most-`1/16` slice;
+this unrestricted MDS formulation remains false, while rates `1/8` and `1/4` remain open.
 
 ## Rich-hyperplane reformulation and triple dichotomy
 
