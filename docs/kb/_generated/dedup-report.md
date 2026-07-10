@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5943 files, 63291 declarations
+- `ArkLib` — 5946 files, 63314 declarations
 
-## Same short-name across multiple files (2447 groups)
+## Same short-name across multiple files (2448 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -6792,12 +6792,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `decodeRaw` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.G88CorrectedDecoderSectorBound.decodeRaw` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean#L57) — Decode the corrected code to its raw ordered endpoint pair.
-- `def ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.decodeRaw` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L83) — Decode corrected representation data to its raw ordered endpoint pair.
+- `def ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.decodeRaw` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L81) — Decode corrected representation data to its raw ordered endpoint pair.
 
 ### `decodeRaw_encodeSector` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.G88CorrectedDecoderSectorBound.decodeRaw_encodeSector` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean#L85) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.decodeRaw_encodeSector` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:119](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L119) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.decodeRaw_encodeSector` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:116](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L116) — (no docstring)
 
 ### `decoder` (2 declarations, 2 files)
 
@@ -7132,12 +7132,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `encodeSector` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.G88CorrectedDecoderSectorBound.encodeSector` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean#L81) — Choose one corrected-code representation of each sector element.
-- `def ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.encodeSector` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:114](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L114) — Choose one corrected representation of each weighted collision-sector element.
+- `def ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.encodeSector` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L111) — (no docstring)
 
 ### `encodeSector_injective` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.G88CorrectedDecoderSectorBound.encodeSector_injective` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean#L91) — The chosen corrected-code representation is injective because decoding recovers the pair.
-- `theorem ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.encodeSector_injective` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L124) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.encodeSector_injective` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:121](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L121) — (no docstring)
 
 ### `endpoint` (2 declarations, 2 files)
 
@@ -7332,7 +7332,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `exists_code_representation` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.G88CorrectedDecoderSectorBound.exists_code_representation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean:65](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G88CorrectedDecoderSectorBound.lean#L65) — Every pair in the maximal-cancellation sector has a corrected-code representation.
-- `theorem ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.exists_code_representation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L92) — Every weighted collision in a fixed maximal-cancellation sector has a corrected-code representation
+- `theorem ArkLib.ProximityGap.Frontier.G90WeightedCollisionDecoderSectorBound.exists_code_representation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean:90](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90WeightedCollisionDecoderSectorBound.lean#L90) — Every weighted collision in a fixed maximal-cancellation sector has a corrected-code representation
 
 ### `exists_coordinate_subset_with_many_nonbad_of_heavy_complement_card` (2 declarations, 2 files)
 
@@ -9663,6 +9663,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.AvW6.rate_lt_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW6_ConditionalPaleyChain.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW6_ConditionalPaleyChain.lean#L46) — **Rate < 1 at the Paley threshold (proven).** If `(c/n)·T² = 2 ln(card s) + 1`, then `card s · exp(-
 - `theorem ArkLib.ProximityGap.Frontier.AvW7.rate_lt_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW7_TailToMCAObject.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW7_TailToMCAObject.lean#L56) — **Rate < 1 at the Paley threshold (proven).** Mirrors `_AvW6.rate_lt_one` for the `nzFreq` family: w
+
+### `rawShadowOffDiag` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G89RawWordRelationAnomalyBridge.rawShadowOffDiag` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89RawWordRelationAnomalyBridge.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89RawWordRelationAnomalyBridge.lean#L35) — Ordered raw word pairs whose characteristic-zero shadows are genuinely distinct.
+- `def ArkLib.ProximityGap.Frontier.G91MaximalCancellationBagDiscrepancy.rawShadowOffDiag` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G91MaximalCancellationBagDiscrepancy.lean:37](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G91MaximalCancellationBagDiscrepancy.lean#L37) — The G89 raw domain, repeated here so this independently checkable frontier file does not require an
 
 ### `rayProj` (2 declarations, 2 files)
 

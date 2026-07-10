@@ -2224,6 +2224,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddl
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80SDirectionalStripReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80SignedL1CertificatePinnedToWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80VArcDilationCoincidenceReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80WArcPairCountIdentity
@@ -2262,6 +2263,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90AdaptiveDepthBudgetAss
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90SpacingRigidityProbe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90WeightedCollisionDecoderSectorBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91MaximalCancellationBagDiscrepancy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalCoreSlotFactorization
@@ -2292,6 +2294,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H5SchurSiegelSmythTrace
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H6GaloisChebotarevWorstCoset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H7_ConvSupNormCentralEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H8DiscriminantGeomeanCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HD8IdentityWebDimensionLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDCocyclePhaseCoupling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorCoreFreshDecode
