@@ -2374,6 +2374,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelShawInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelTransferOperator2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPDescentFromAntitoneOrbitCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPSingleOrbit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OcNegacyclicHeightNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OffBGK_AgreementDepthMerge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OffBGK_DegBadRGrowingSlack
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OffBGK_OPSingleOrbitPersistence
