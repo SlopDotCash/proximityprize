@@ -82,11 +82,8 @@ theorem slotMap_injective {r s : ℕ} (hsr : s ≤ r) (e : Fin s ↪ Fin r) :
 /-- Core and canonical padding slots cover every endpoint slot exactly once. -/
 theorem slotMap_bijective {r s : ℕ} (hsr : s ≤ r) (e : Fin s ↪ Fin r) :
     Function.Bijective (slotMap hsr e) := by
-  refine ⟨slotMap_injective hsr e, ?_⟩
-  apply Fintype.bijective_iff_injective_and_card.mpr
-  constructor
-  · exact slotMap_injective hsr e
-  · simp [Fintype.card_sum, hsr]
+  apply (Fintype.bijective_iff_injective_and_card (slotMap hsr e)).mpr
+  exact ⟨slotMap_injective hsr e, by simp [Fintype.card_sum, hsr]⟩
 
 /-- The canonical equivalence used by endpoint assembly. -/
 noncomputable def slotEquiv {r s : ℕ} (hsr : s ≤ r) (e : Fin s ↪ Fin r) :

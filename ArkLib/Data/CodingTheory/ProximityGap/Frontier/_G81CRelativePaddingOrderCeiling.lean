@@ -28,8 +28,9 @@ abbrev PaddingCode (C A : Type*) (r s : ℕ) :=
   C × (Fin s ↪ Fin r) × (Fin s ↪ Fin r) ×
     (Fin (r - s) → A) × Equiv.Perm (Fin (r - s))
 
-/-- **Exact corrected-code cardinality.**  The missing relative padding order costs precisely the
-factor `(r-s)!`. -/
+/-- **Exact corrected-code cardinality.**  The relative-permutation coordinate contributes the
+universal ceiling factor `(r-s)!`.  With repeated padding values this coordinate is redundant, so
+the exact padding-pair multiplicity can be strictly smaller. -/
 theorem card_paddingCode (C A : Type*) [Fintype C] [Fintype A] (r s : ℕ) :
     Fintype.card (PaddingCode C A r s) =
       Fintype.card C * (r.descFactorial s) ^ 2 *

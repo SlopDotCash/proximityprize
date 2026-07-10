@@ -2224,11 +2224,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddl
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ZArcArithmeticInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81CRelativePaddingOrderCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81DMultisetRelativePermutation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81FactorialPaddingWickAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G82DepthTwoEnergySaddleBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G82TransversalityCRTThreshold
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83DeterminantCoverageFence
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83MMaximalCommonCancellation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
