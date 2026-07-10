@@ -21,5 +21,5 @@ MODS=(
 )
 echo "Warming ${#MODS[@]} substrate modules (one-time, holds the build lock)…"
 # one lake invocation builds them in parallel across all cores (shared dependency graph)
-lake build "${MODS[@]}" 2>&1 | tail -2
+"$(dirname "$0")/lake-locked.sh" build "${MODS[@]}" 2>&1 | tail -2
 echo "Done. Agents may now iterate lock-free with scripts/pg-iterate.sh."
