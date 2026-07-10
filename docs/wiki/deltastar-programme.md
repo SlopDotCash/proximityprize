@@ -1,5 +1,11 @@
 # The δ* Programme
 
+> **Branch notice (2026-07-10).** The complete research corpus lives on
+> `research/proximity-prize`, not `main` (see #499 and `RESEARCH_BRANCH.md`). Campaign changes must
+> land on that branch and must never be merged wholesale into `main`. Coordination uses fork issue
+> #466, focused issues #505–#507, discussion #508, and the
+> [δ* project board](https://github.com/users/lalalune/projects/1).
+
 The mutual-correlated-agreement threshold programme: pin
 `δ*(C, ε*) = sup{δ : ε_mca(C, δ) ≤ ε*}` for explicit smooth-domain Reed–Solomon
 codes ([ABF26] Definition 4.3), with matching machine-checked bounds.
@@ -33,14 +39,15 @@ Develop in a detached `/tmp` worktree with `.lake` symlinked to the main checkou
 
 ## The state in one paragraph
 
-The granularity ladder gives δ* in closed form on every band with `3(j−1)+k ≤ n`;
-exact pins exist at two instances (deepest window: `ε* ∈ [2/17, 7/17)` at
-RS[F₁₇,⟨2⟩,4], maximal); the first exact explosion-band value (`7/17` at δ = 1/4)
-is computed and its binding law (far-coset line incidence) formalized; the
-production regime is bracketed `[(1−ρ)/3 unconditional · 1−√ρ−η modulo exactly
-`CellPackageSupply`, 1]` with the numeric budget proven and the bad side provably
-silent. The open core has four equivalent faces (Johnson supply, bad-side family,
-sub-√q subgroup character sums, line–ball incidence) — see the agent guide §3.5.
+The production conjecture remains open. The granularity ladder gives δ* in closed form on every
+band with `3(j−1)+k ≤ n`; exact finite-instance and deep-rung pins, the threshold ledger, the first
+explosion-band value, and production brackets are machine checked. The remaining production core
+has been reduced to square-root-scale cancellation for the adversarial smooth multiplicative
+subgroup (equivalently the deep DC-subtracted-energy/Paley-BGK face). The post-dossier G70 and G73
+results close flat-Dudley chaining and Shkredov–Vyugin multi-shift escape routes respectively.
+The signed cross-cell `relationAnomaly`/transversality route is the sole recorded off-BGK route not
+yet closed; it is tracked in #505. None of the existing toy pins, brackets, equivalences, or no-go
+theorems constitutes the production prize theorem.
 
 ## The boundary-band solution (2026-06-12, #371 rounds 64–75)
 
