@@ -135,8 +135,13 @@ and proves by finite Cauchy--Schwarz
 
 `|A|^(2k) ≤ |productImage_k(A)| · E_k(A)`.
 
-This theorem is unconditional and axiom-clean.  It replaces the previously informal generic
-consumer; G80L is its `k=2` instance.  It does **not** prove the prize: the remaining analytic
-seams are (i) a reusable no-wrap lemma giving `|productImage_k(A)| ≤ |H|` from `W^k < p` and
-multiplicative closure, and (ii) divisor/energy estimates whose constants and exponents remain
-usable when `k` grows with the prize parameters.  Fixed `k` still cannot cross the saddle fence.
+The file also proves the reusable no-wrap lemma
+`|productImage_k(A)| ≤ |H|` from `W^k < p`, residue containment, `1 ∈ H`, and multiplicative
+closure.  Thus the full generic consumer
+
+`|A|^(2k) ≤ |H| · E_k(A)`
+
+is now unconditional and axiom-clean; G80L is its `k=2` instance.  This does **not** prove the
+prize: the remaining analytic seam is a divisor/energy estimate whose constants and exponents
+remain usable when `k` grows with the prize parameters.  Fixed `k` still cannot cross the saddle
+fence.
