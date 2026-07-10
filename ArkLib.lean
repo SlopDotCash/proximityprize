@@ -2211,6 +2211,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G65WeightedCensusSubfloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G66SupportTwoKernelRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G67SignedCensusSupExtractionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G70DudleyFlatChainingLowerBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G73ShkredovMultiShiftExponentFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick

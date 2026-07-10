@@ -32167,3 +32167,38 @@ multiplicity invariant across DISTINCT prime-ideal embeddings (OC-PIECEB capped 
 same-ideal stacking route; OC-ORBIT landed piece (a) rotation-free orbit-size). Char-p direct
 kernel is DC-dominated-dead (G62-G68), chaining is BGK-tight-dead (G69 + G70), only true
 transversality remains. CORE OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G73-shkredov-multishift-exponent-floor] The Shkredov-Vyugin MULTI-SHIFT bound (arXiv:1102.1172 Cor 1.2) is exponent-floored strictly above 1/2 at every finite k: it can NEVER supply the sub-sqrt cross-shift cancellation the wall needs, no matter how many shifts (2026-07-10)
+
+Lane: direct Opus 4.8 formalizer (`Frontier/_G73ShkredovMultiShiftExponentFloor.lean`, real locked
+build 3297 jobs, all 9 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`). Closes the
+ONE third-party escape the G72 referee flagged as still-open: Sol's route (2), a Shkredov-Vyugin
+multi-shift coupling. The G72 referee argued SV is "thickness-essential in the wrong direction" via
+the SV *hypothesis* `p >= 4k|R|(|R|^{1/(2k+1)}+1)`. EXACT RECHECK (probe): at prize params
+`|R|=n=2^a, p=n*2^128` that hypothesis actually HOLDS (`p=2^{a+128}` >> `4k n ~ 2^~50`). The real,
+sharper obstruction is on the SV *output exponent*, not its hypothesis.
+
+**Theorem (calibrated, k-uniform, exact).** SV Cor 1.2 gives
+`|R ∩ (R+μ_1) ∩ … ∩ (R+μ_k)| <= 4(k+1)(R^{1/(2k+1)}+1)^{k+1} =: svBound R k`. For `R >= 1` and every
+`k`, `svBound R k >= R^{(k+1)/(2k+1)} = R^{1/2 + 1/(2(2k+1))} >= R^{1/2}` (`svBound_ge_rpow`,
+`svBound_ge_sqrt`); strict for `R > 1` (`svBound_gt_sqrt`). Proof: drop the `+1` in the base
+(`rpow` monotone), collapse `(R^{1/(2k+1)})^{k+1} = R^{(k+1)/(2k+1)}` (`Real.rpow_mul`), and
+`4(k+1) >= 1`. The exponent excess over 1/2 is EXACTLY `1/(2(2k+1)) > 0` for every finite `k`
+(`svExponent_excess_ge`, `svExcess_pos`), and forcing it below any `ε > 0` requires
+`2(2k+1) >= 1/ε` i.e. UNBOUNDEDLY many distinct shifts (`residual_gap_forces_many_shifts`).
+
+**Exact numeric calibration (probe).** Min-over-k of the actual SV exponent at prize cells bottoms
+out ≈ 0.67 (a=40, k=4), NEVER near 1/2: e.g. a=30 min 0.714 @ k=3, a=40 min 0.672 @ k=4. The
+`α_k → 0` claim in SV is asymptotic in `|R| → ∞` at fixed density; at the FIXED thin prize cell the
+discrete `(R^{1/(2k+1)}+1)^{k+1}` structure floors the certified exponent well above 1/2, and the
+`4(k+1)` prefactor plus the additive `+1` re-inflate it as `k` grows past the minimizer. So
+multi-shift SV is exponent-floored above the required 1/2 at the wall: it is NOT a weaker sufficient
+condition, it is inapplicable — the last non-BGK external lever (Sol route 2) is closed formally.
+
+**Scope.** Does NOT bound the campaign cross-cell / relationAnomaly (stays OPEN; Sol route (3), a
+signed-cancellation identity, is the only unclosed non-BGK hope). Certifies the named third-party SV
+multi-shift lever is exponent-floored. Complements `WF407_T02Shkredov` (single-shift E_2/E_3
+density gate `|Γ| > p^{1/4}` never met) and `_A3SumProductDepthConfinement` (sum-product depth-2
+confined); neither owned the multi-shift exponent-floor. NOT a wrapper around R383 (that is the
+incidence double-count identity; this is the SV Cor 1.2 threshold arithmetic). CORE OPEN / ON-BGK.
+No axioms, no sorry.
