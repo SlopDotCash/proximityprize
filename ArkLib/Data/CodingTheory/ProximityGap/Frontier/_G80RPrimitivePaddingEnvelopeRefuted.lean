@@ -61,6 +61,16 @@ theorem primitive_padding_envelope_fails :
 theorem factorial_corrected_envelope_survives :
     1148084928 ≤ 679477248 * ((9 - 2 : ℕ).factorial) := by norm_num
 
+/-- **The factorial repair destroys the production absorption test.**  For a single linear-size
+depth-two orbit (`J ≤ n`), G79S would need
+
+`r^2 * (r-2)! ≤ n`
+
+after inserting the missing padding-permutation factor.  At the nominal production values
+`n=2^30`, `r=110`, the inequality is reversed by an enormous margin. -/
+theorem factorial_repair_breaks_production_depth_two_absorption :
+    2 ^ 30 < 110 ^ 2 * ((108 : ℕ).factorial) := by norm_num
+
 end ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted
 
 /-! ## Axiom audit -/
@@ -69,3 +79,5 @@ end ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted
 #print axioms ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted.claimed_envelope_value
 #print axioms ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted.primitive_padding_envelope_fails
 #print axioms ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted.factorial_corrected_envelope_survives
+#print axioms
+  ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted.factorial_repair_breaks_production_depth_two_absorption

@@ -32566,6 +32566,13 @@ enumerates every padding multiplicity vector.  The Lean file
 the antipodal core relation, the claimed RHS, the strict numerical failure, and survival of the
 safe factorial-corrected ceiling.  All headline declarations use only `[propext]`.
 
+The production calibration is also kernel-checked.  For a single linear-size depth-two orbit, the
+repaired G79S test would require `110^2 * 108! ≤ 2^30`; Lean proves the strict reverse inequality.
+Thus the missing permutation is not a harmless constant and cannot be paid by G79S's selected
+top-`s` odd tail alone.  This does **not** rule out paying it from the remaining lower odd Wick
+factors in the *full* double factorial; the concurrent G81 draft targets exactly that repair and
+must be checked separately.
+
 A safe coarse repair is
 
 ```text
@@ -32573,7 +32580,59 @@ W_r^(s) <= J_s * (r descFactorial s)^2 * (r-s)! * n^(r-s),
 ```
 
 or a sharper quotient-weighted formula using the squared padding multinomial.  This correction
-destroys G79S's intended bounded-sector absorption at logarithmic depth: `(r-s)!` is precisely a
-Wick-scale factor, so it cannot be discarded.  G79S remains a correct conditional arithmetic
-theorem, but its proposed R369 input is unavailable.  This refutes the mechanism, not
-`FourthPowerSaddleDCEnergy`; CORE remains OPEN.
+invalidates G79S's intended **odd-tail-only** consumption of the raw R369 envelope: `(r-s)!` cannot
+be discarded.  G79S remains a correct conditional arithmetic theorem, but its proposed R369 input
+is unavailable.  A full-Wick repair may survive because `(r-s)! ≤ (2(r-s)-1)!!`; that arithmetic
+consumer still needs a compiling proof and, more importantly, the corrected combinatorial
+surjection.  G80R refutes the stated envelope, not `FourthPowerSaddleDCEnergy`; CORE remains OPEN.
+
+## [466-G81-factorial-padding-wick-absorption] The G80R factorial correction is affordable in the unused Wick head (axiom-clean rescue consumer) (2026-07-10)
+
+G80R shows that a safe ordered-padding reconstruction may cost `(r-s)!`. G81 proves this does not
+by itself destroy the saddle strategy. The exact factorization
+
+```text
+(2r-1)!! = oddWickTail(r,s) * (2(r-s)-1)!!
+```
+
+splits the full Wick budget into the top `s` factors used by G79S and a lower head. Since
+`(r-s)! <= (2(r-s)-1)!!`, the lower head pays the missing padding permutation. Therefore, if
+
+```text
+W <= J_s * (r descFactorial s)^2 * (r-s)! * n^(r-s)
+and J_s * r^s <= n^s,
+```
+
+then `W <= (2r-1)!! * n^r`. The normalized primitive-sector condition is unchanged from G79S.
+This is a corrected arithmetic consumer, not yet the combinatorial reconstruction theorem: the
+factorial-corrected envelope for actual maximally-cancelled collision sectors remains to be proved.
+Three declarations in `_G81FactorialPaddingWickAbsorption.lean` pass `pg-iterate` with no
+`sorryAx`. CORE and the growing-sector count remain open.
+
+## [466-G80D-decoupling-parallel-cap-collapse] Bourgain–Demeter decoupling cannot fire on the dyadic coset tower: the caps are exact multiplicative DILATES (no transversality input), the bilinear step collapses to the linear energy at every lag, and the EXACT defect identity shows any decoupling gain ≡ the lag-decorrelation mass = the independence atom (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 novel-mathematics walk (`Frontier/_G80DDecouplingParallelCapCollapse.lean`;
+research branch only; complements `_Attack01DyadicButterfly` which owns the halving identity).
+
+**Why this walk was owed.** l²-decoupling / induction-on-scales (BDG) is the second modern engine
+(after KM, G78) whose loss class is prize-tolerable (C^ε per scale, log n scales) and which proves
+exactly square-root-cancellation statements — but it was unwalked BY NAME in the graveyard.
+
+**Mechanism (proven).** The dyadic tower's two caps at each scale are η^{(n/2)}_b and
+η^{(n/2)}_{bg} — the SAME function at multiplicative lag g (dilate-caps: algebraic parallelism, no
+curvature/transversality data exists to feed the bilinear reduction). Landed exact identities, all
+`[propext, Classical.choice, Quot.sound]`:
+- `sum_comp_mulRight`: frequency dilation invariance — every mixed cap-norm is a lag correlation.
+- `bilinear_lag_le_energy`: Σ_b |A(b)A(bu)| ≤ Σ_b A(b)² for EVERY lag u — the bilinear object
+  never beats the linear energy.
+- `decoupling_defect_identity` (HEADLINE): Σ A² − Σ A(b)A(bu) = ½·Σ (A(b) − A(bu))² EXACTLY —
+  the decoupling gain at lag u IS the lag-u decorrelation mass of the magnitude field.
+
+**Verdict.** For A(b) = |η^{(n/2)}_b|, beating the trivial decoupling constant ⟺ lower-bounding
+Σ_b (A(b) − A(bg))² — certifying decorrelation of the coset magnitude field — verbatim the
+measured-but-uncertified INDEPENDENCE form (§2.4). Decoupling is a linear-algebra gauge of the
+atom. PATTERN NOW COMPLETE ACROSS BOTH MODERN CONSTANT-LOSS ENGINES: KM sifting (G78) and BD
+decoupling (G80D) fail identically — not on strength, on a circular hypothesis. The tool-shape
+principle sharpens once more: the missing ingredient is a NON-FOURIER decorrelation/anti-
+concentration certificate for geometric-progression structure; everything downstream of that
+certificate is already available at tolerable loss. CORE remains OPEN / ON-BGK. No axioms, no sorry.
