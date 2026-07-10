@@ -10,7 +10,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.BivariateVanishing
 import ArkLib.Data.CodingTheory.ProximityGap.CapacityBounds
 import ArkLib.Data.CodingTheory.ProximityGap.DG25
 import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.Data.CodingTheory.ProximityGap.ExternalDebt
 import ArkLib.Data.CodingTheory.ProximityGap.Folding
 import ArkLib.Data.CodingTheory.ProximityGap.GK16Claim16Transport
 import ArkLib.Data.CodingTheory.ProximityGap.GK16DegreeBudget
@@ -22,11 +21,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.GSCounting
 import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
 import ArkLib.Data.CodingTheory.ProximityGap.GSKernelAffineDescent
 import ArkLib.Data.CodingTheory.ProximityGap.Collapse
-import ArkLib.Data.CodingTheory.ProximityGap.Decision
-import ArkLib.Data.CodingTheory.ProximityGap.LDAttainment
 import ArkLib.Data.CodingTheory.ProximityGap.LDThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.LDThresholdElias
-import ArkLib.Data.CodingTheory.ProximityGap.LDThresholdHalfDist
 import ArkLib.Data.CodingTheory.ProximityGap.LDThresholdJohnsonSq
 import ArkLib.Data.CodingTheory.ProximityGap.Lattice
 import ArkLib.Data.CodingTheory.ProximityGap.RadiusOne
@@ -36,16 +32,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.Lattice2
 import ArkLib.Data.CodingTheory.ProximityGap.Hab25Core
 import ArkLib.Data.CodingTheory.ProximityGap.Hab25Multiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecoding
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCounting
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRefutation
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
 import ArkLib.Data.CodingTheory.ProximityGap.MCAEndpointLower
-import ArkLib.Data.CodingTheory.ProximityGap.MCAEndpointUpper
-import ArkLib.Data.CodingTheory.ProximityGap.MCAGS
 import ArkLib.Data.CodingTheory.ProximityGap.MCAGenerator
 import ArkLib.Data.CodingTheory.ProximityGap.MCASecondMoment
-import ArkLib.Data.CodingTheory.ProximityGap.PermanentlyBlocked
-import ArkLib.Data.CodingTheory.ProximityGap.MultiplicativeRigidityFiber
 import ArkLib.Data.CodingTheory.ProximityGap.MultiplicativeRigidityZMod
 import ArkLib.Data.CodingTheory.ProximityGap.ProximityGapP
 import ArkLib.Data.CodingTheory.ProximityGap.ProximityGenerators
