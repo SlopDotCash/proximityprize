@@ -2223,6 +2223,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H7_ConvSupNormCentralEner
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._H8DiscriminantGeomeanCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HDCocyclePhaseCoupling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorCoreFreshDecode
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorIncidenceAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLargeCoreCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLargeCoreCollapseDirect
@@ -2232,6 +2233,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighth
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthFullWiring
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthNumeric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthPin
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterMu16Locator
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenth
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthArithmeticBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthFullWiring
@@ -2405,6 +2407,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountGrowthLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountWallDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitSizeEqN
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OverdispersionObstructsVariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleArithmetic
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleBadCount
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleConstruction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleFinalConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleOperationalCountConnector
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P2NoExcessSoftCeilingDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P2SignedValueCumulantResum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P2ZqIrreducibilityNoGo
