@@ -2230,6 +2230,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79PPiAdicDigitClustering
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddleLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80GKFoldDivisorMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80HKFoldProductEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80IEnergyRouteAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80JDivisorSecondMoment

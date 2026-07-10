@@ -145,3 +145,23 @@ is now unconditional and axiom-clean; G80L is its `k=2` instance.  This does **n
 prize: the remaining analytic seam is a divisor/energy estimate whose constants and exponents
 remain usable when `k` grows with the prize parameters.  Fixed `k` still cannot cross the saddle
 fence.
+
+## 9. Pure-Nat k-fold divisor-moment weld (G80G)
+
+`_G80GKFoldDivisorMomentWeld.lean` defines
+
+`r_{W,k}(y) = #{x ∈ [1,W]^k : ∏x = y}`
+
+and its bounded second moment
+
+`M_k(W) = Σ_{1≤y≤W^k} r_{W,k}(y)²`.
+
+It proves, uniformly in `k`, that `A ⊆ [1,W]` implies `E_k(A) ≤ M_k(W)`, and composes this
+with G80H to obtain the axiom-clean production interface
+
+`|A|^(2k) ≤ |H| · M_k(W)` whenever `W^k < p` and the residues of `A` lie in `H`.
+
+Consequently all finite-field, no-wrap, and fiber-counting content of the k-fold ladder is now
+discharged.  The remaining theorem is purely in `Nat`: bound `M_k(W)` by
+`W^k · polylog(W)` with dependence on `k` explicit enough for growing `k`.  No replacement by
+the lossy pointwise inequality `d_k ≤ d^(k-1)` is made here.
