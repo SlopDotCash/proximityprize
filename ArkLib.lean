@@ -2411,6 +2411,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorConstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedConstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedOldAgreement
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedPairAgreement
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleArithmetic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleBadCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleConstruction
