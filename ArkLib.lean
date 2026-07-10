@@ -2238,6 +2238,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83FreeOrbitEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83MMaximalCommonCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84AEndpointAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyEquiv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
