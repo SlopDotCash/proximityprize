@@ -22,12 +22,18 @@ always check this census before treating a `*Residual` name as open proof debt.
 > `DeepShadowCollisionResidual`, and `MultiHoleTripleTradeResidual`. Residual-like near misses rose
 > from 50 to 75, principally from the rate-quarter predecessor and MGF-tail developments.
 >
-> This syntactic census is not the δ* completion ledger. In particular, G70, G73, and G75 are
-> axiom-clean theorems that narrow attack routes without discharging the production core. The live
-> signed route is tracked in fork issue #505 and remains the first-incidence weighted discrepancy
-> across genuinely distinct relation orbits; `DCEnergyBound` at production depth remains open.
-> Most campaign hypotheses do not end in `Residual` and therefore appear only in the near-miss
-> section or the canonical dossier. Preserve this addendum when regenerating the file.
+> This syntactic census is not the δ* completion ledger. In particular, G70, G73, G75, and the
+> 2026-07-10 evening arc G77–G86 (Fourier-gauge closure of the signed route, embedding rigidity,
+> factorial padding repair, deep-rung DC recovery, depth-two/three core-universe absorption,
+> endpoint assembly) plus the S2 punctured-Johnson discharge are axiom-clean theorems that narrow
+> attack routes without discharging the production core. The live open surfaces are tracked in
+> fork issue #505 and the dossier §6/§42; `DCEnergyBound` at production depth remains open
+> (G81 seals it unconditionally only for deep rungs with `(2r−1)!! ≥ |G|^r`, far above prize
+> depth; the G82 gate in `_PrizeShapeRateHalfBracket.lean` is a one-hypothesis-deep CONDITIONAL
+> pin `δ* = 31/64`, not a closure). Most campaign hypotheses do not end in `Residual` and
+> therefore appear only in the near-miss section or the canonical dossier. Regeneration was
+> re-verified 2026-07-10 evening (#506): counts and JSON unchanged since `c9baafbbec`. Preserve
+> this addendum when regenerating the file.
 
 ## Summary
 
