@@ -61,6 +61,19 @@ dilation-coincidence identity, but its pointwise maximum remains the wall. The s
 must therefore control a signed/correlated cross-arc or equivalent weighted single-embedding
 functional; no such square-root-scale estimate is currently proved.
 
+Issue #505 is CLOSED (2026-07-10 evening): G88's orbit-class Parseval makes the DC-centered
+numerator an exact PSD sum over distinct orbit classes with zero cross terms, and with G89 the
+first-incidence formulation is pinned to the wall in two independent coordinate systems. The
+successor CORE issue is #509: bound the orbit-class mass profile `(S₀, (S_γ)_γ)`. Equivalent
+current forms of the missing certificate: signed control of `K+1` prefix deviations of `b·μ_n`
+(G97 reduction into the G80Z consumer) = near-uniform small-difference pair statistics of every
+dilate (codex G80Q terminal form). Chaining is closed metric-universally (G94), the GM/HM Gram
+bootstrap is count-fenced (G98), the Esseen ladder is non-contracting (G99 — which also lands
+the first unconditional non-Fourier containment certificate: no dilate of `μ_n` fits in an
+interval shorter than `√(p/2)`), the cyclic-code few-weight dictionary provably cannot apply at
+prize shape (G95F), and the bounded spread-excess law is refuted in evidence at every constant
+near the Johnson boundary (G92). Workbench §5 item (10) is the doctrine-v3 statement.
+
 Start from:
 
 - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
@@ -73,6 +86,10 @@ Start from:
 - `Frontier/_DeltaStarDefinitive.lean` for the final threshold-facing reduction;
 - `docs/wiki/deltastar-programme.md` and `docs/wiki/residual-census.md` for programme state.
 
-GitHub control plane (fork `lalalune/ArkLib`): canonical tracker #466; live signed route #505;
-state/census maintenance #506; completion audit #507; branch refactor #499; discussion #508;
+GitHub control plane (fork `lalalune/ArkLib`): canonical tracker #466; live CORE issue #509
+(orbit-class mass profile; #505 closed 2026-07-10); state/census maintenance #506; completion
+audit #507; branch refactor #499; discussion #508;
 project `https://github.com/users/lalalune/projects/1`.
+
+Naming note (#506): both swarms minted G-numbers concurrently on 2026-07-10 — G89/G90/G91/G94/G95
+each denote two unrelated results. FILE NAMES are the primary key; cite files, not bare G-numbers.
