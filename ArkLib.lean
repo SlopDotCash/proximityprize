@@ -2252,6 +2252,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyEquiv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyMultiset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86CoreOccurrenceEmbedding
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86MaximalSplitEmbeddingExtraction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86RankCollapseDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87CorrectedPaddingDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87DepthFiveTenfoldTarget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87MaximalCancellationAssemblyRepresentation
