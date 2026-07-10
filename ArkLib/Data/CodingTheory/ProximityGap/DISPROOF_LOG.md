@@ -25237,3 +25237,31 @@ window from two sides with explicit constants and zero hypotheses.
 the Konyagin-Shkredov energy RECURSION (self-improvement of E× using multiplicative
 structure of A itself, not just its ambient interval) — is where the open BGK content
 begins; expect wall contact there. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+## [466-G92-spread-excess-c3-refuted-in-evidence] The bounded spread-excess law at C = 3 is REFUTED IN EVIDENCE at n = 32 (ratio 3.833, two primes, explicit witnesses), and the floor mechanism makes EVERY constant C untenable near the Johnson boundary — the last per-cell surrogate for windowed SumsetExtremal dies; the floor/kill surface is formalized (2026-07-10)
+
+Lane: G92 Fable (`Frontier/_G92SpreadExcessProbe.lean`, 23 audited decls, all
+`[propext, Classical.choice, Quot.sound]`; probe `scripts/probes/probe_g92_spread_excess_c3.py`
++ `_out_g92_n16.txt`, `_out_g92_n32.txt`; agent killed by session limit mid-report — probe
+outputs completed and refereed by the coordinator; docstring corrected to match the final
+n=32 table). **Evidence:** sweep n ∈ {8,16,32}, k ∈ {2,4}, 2–3 primes per scale, all guard
+window levels. n=16 max ratio 2.55 (a ∈ {6,7}, replicating the P5-referee 2.33) → n=32, k=4,
+a=11 (in-window, 121 ≤ 128): worst_spread = 23 vs worst_mono = 6, ratio 3.833 > 3, at BOTH
+primes 1048609 and 1048897, explicit u₀ witnesses recorded in the output files. Ratio GROWS
+with n; C=2 stays dead; at the exact Johnson boundary monomials win (ratio < 1). Caveat:
+spread values are witness-certified lower bounds, monomial baselines are symmetric-effort
+search bounds — evidence, not theorem. **Formalized (axiom-clean):** (1) invariances
+(`worstBad_smul`, `worstBad_add_codeword`); (2) in-code-component collapse: 2-component
+directions with one exponent < k have worstBad EQUAL to a monomial's — the spread-excess
+phenomenon lives entirely in the both-components-≥k sector
+(`spread_worstBad_le_monoBaseline_of_*_lt`); (3) THE FLOOR (P5 mechanism formalized):
+agreement a−1 forces worstBad ≥ n−(a−1) by explicit pencil construction
+(`worstBad_ge_of_agree_pred`), with the kill surface `spreadExcessLaw_floor_le` /
+`not_spreadExcessLaw_of_floor_beats`: any cell with C·monoBaseline < n−(a−1) refutes
+SpreadExcessLaw C — at n=32, a=11 this needs only monoBaseline ≤ 7 certified (search says 6);
+(4) worstBad is NOT subadditive in Fourier components (`worstBad_not_subadditive`,
+`worstBad_zero` = |F| vs far cap `worstBad_le_choose` consuming _SecondWitnessFloor) — the
+triangle-inequality route to any component-count-weighted bound is dead. **Mechanism reading:**
+near the Johnson boundary the monomial baseline collapses to O(1) while the elevated-agreement
+floor stays ≈ n−√(nk) — no constant C survives unless monomial baselines are proven to grow
+there. The dossier-§6 survivor (b) "bounded spread-excess law" is dead as stated; the
+surviving open question is the monomial-baseline growth law at boundary cells. CORE OPEN.
