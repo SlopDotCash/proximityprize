@@ -32707,3 +32707,15 @@ surviving-seam boundary where required and permitted quantities differ by a bare
 **HONEST SCOPE.** Engine + threshold arithmetic proven; the prize-cell instantiation (Hadamard
 for the census span; complete splitting of p in ℤ[ζ_n]) is documented, not formalized. No bound
 on M; CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+### [466-G82-addendum-coverage-probe] Exact census coverage measured: EVERY depth-3 relation covers exactly ONE embedding (2026-07-10)
+
+Probe `/tmp/arklib-reports/g82_common_coverage_probe.py` (n=16: p=97,193,257; n=32: p=641,769,
+1153; full support-6 ±1 census, all odd embeddings): per-relation coverage min=med=max=1 in every
+cell, full-census common coverage = 1, best pairwise common = 1 — against CRT thresholds
+s* = 1.3–2.2 and height caps 2s* = 2.7–4.4. So v_p(Norm R) = 1 identically at accessible cells
+(extends G56's v_p=1 from the canonical cell to the whole census, all cells tested; note n=16
+p=257 census is EMPTY). VERDICT: the coverage-FORCING direction of the G82 race has nothing to
+grab at accessible scales; the data supports the FENCE direction (coverage stays ≪ s*), which
+would close the CRT amplification route as a no-go — while leaving piece (b) itself needing a
+non-CRT mechanism. The seam remains open but its live half is now the fence.
