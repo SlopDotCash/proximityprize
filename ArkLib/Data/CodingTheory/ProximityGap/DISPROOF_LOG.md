@@ -25040,3 +25040,26 @@ min(n, W) throughout n^{2/3} ≪ W ≪ n² (e.g. T(n) = O(n^{3/4})). The Nat-onl
 named is CLOSED; the remaining step is the one-line instantiation brick joining the two
 files (next round). Fenced from the prize saddle by G80P regime disjointness — no prize
 claim. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G80M-unconditional-interval-bound] 🏁 THE UNCONDITIONAL CG-TYPE THEOREM LANDS: T(W)^8 <= 19680·W²·n⁴ for EVERY multiplicative H ⊆ ZMod p and EVERY W with W² < p — ZERO named hypotheses; T(W) = O(√n·W^{1/4}), strictly below min(n,W) throughout n^{2/3} ≪ W ≪ n²; to our knowledge the first machine-checked nontrivial multiplicative-subgroup interval concentration bound anywhere (axiom-clean milestone) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80MUnconditionalIntervalBound.lean`, real locked build,
+`intervalCount_pow_eight_le` exactly `[propext, Classical.choice, Quot.sound]`). Joins G80O
+(product/rigidity skeleton) with G80N (d(y)^4 ≤ 19680·y): the uniform divisor budget D is
+realized as the max divisor count over [1, W²], so DivisorBound holds by maximality and
+D^4 ≤ 19680·W² by the attained maximum.
+
+**The theorem.** For any prime p, multiplicatively closed H (|H| = n), W² < p:
+T(W)^8 ≤ 19680·W²·n⁴ where T(W) = #{s ∈ [1,W] : s mod p ∈ H}. Equivalently
+T(W) = O(√n·W^{1/4}): at W = n this is T = O(n^{3/4}) — a genuine concentration saving over
+the trivial min(n, W) throughout n^{2/3} ≪ W ≪ n². Elementary and Fourier-free end-to-end:
+integer no-wraparound rigidity + ordered-factorization fibers + the multiplicative divisor
+bound. This is the k = 2 rung of the k-fold ladder T(W)^{2k} ≤ D_k·n^k (W^k < p) whose
+k → log p/log W limit is the BGK bootstrap.
+
+**Honest scope.** The regime W < √p is fenced from the prize saddle (W = p/K ≫ √p) by G80P
+regime disjointness: this theorem advances the INTERVAL face (classical β < 3 territory),
+not the wall. Prize-ward continuation: iterate the ladder (k = 3, 4, …, each extending the
+window to W < p^{1/k}... note the window SHRINKS with k — the bootstrap trades window for
+exponent; the saddle needs the opposite trade, which is the wall). CORE remains OPEN /
+ON-BGK. No axioms, no sorry.
