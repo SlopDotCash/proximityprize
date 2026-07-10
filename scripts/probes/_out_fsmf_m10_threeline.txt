@@ -1,0 +1,15 @@
+[m10] cubic potentials: q12 roots (1, 16, 625), q23 roots (40, 601, 640), beta=323, q13 roots (318, 385, 487)
+[m10] witness-level badCount = 155 (predicted 154 = n - 6; budget n = 160; holds = True)
+[m10] all 155 witnessed gammas confirmed by GS engine
+[m10] sampled 38 non-witness gammas; unexpected bad = []
+{
+  "m": 10,
+  "n": 160,
+  "k": 40,
+  "z": 87,
+  "t": 89,
+  "field": 641,
+  "three_one_fresh_pencils_badCount": 155,
+  "budget_n": 160,
+  "holds": true
+}

@@ -1,0 +1,31 @@
+m=4: n=64 t=36 (T-1 core = 35)
+   ell=2: feasible=True maxCount=58
+   ell=3: feasible=False maxCount=None
+   ell=4: feasible=False maxCount=None
+   ell=5: feasible=False maxCount=None
+   => ansatz max = 58 via ell=2; budget n = 64; margin = 6
+m=10: n=160 t=89 (T-1 core = 88)
+   ell=2: feasible=True maxCount=144
+   ell=3: feasible=True maxCount=156
+   ell=4: feasible=False maxCount=None
+   ell=5: feasible=False maxCount=None
+   => ansatz max = 156 via ell=3; budget n = 160; margin = 4
+m=16: n=256 t=142 (T-1 core = 141)
+   ell=2: feasible=True maxCount=230
+   ell=3: feasible=True maxCount=252
+   ell=4: feasible=False maxCount=None
+   ell=5: feasible=False maxCount=None
+   => ansatz max = 252 via ell=3; budget n = 256; margin = 4
+m=22: n=352 t=195 (T-1 core = 194)
+   ell=2: feasible=True maxCount=316
+   ell=3: feasible=True maxCount=348
+   ell=4: feasible=False maxCount=None
+   ell=5: feasible=False maxCount=None
+   => ansatz max = 348 via ell=3; budget n = 352; margin = 4
+m=67108864: n=1073741824 t=592794966 (T-1 core = 592794965)
+   ell=2: feasible=True maxCount=961893718
+   ell=3: feasible=True maxCount=1073741820
+   ell=4: feasible=False maxCount=None
+   ell=5: feasible=False maxCount=None
+   => ansatz max = 1073741820 via ell=3; budget n = 1073741824; margin = 4
+all ansatz maxima within budget

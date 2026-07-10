@@ -228,7 +228,9 @@ certificate is therefore the sharper radius
 
 This falsifies the exact-half hypothesis and substantially lowers its upper
 bracket, but it does not determine rate-quarter `deltaStar`.  A subsequent
-degree-saturated common-factor amplifier gives the stronger executable radius
-`43/96+1/(3n)`; its full operational assembly is tracked separately.  An exact
-pin still requires a matching uniform lower bound or a still smaller bad
-construction.
+degree-saturated common-factor amplifier strengthens the unconditional
+literal-code upper bound to `43/96+1/(3n)`.  Combined with the independent
+unique-decoding lower bound, the current unconditional bracket is
+`3/8 <= mcaDeltaStar <= 43/96+1/(3n)`.  Exact equality remains conditional on
+the explicitly named predecessor residual, equivalently expressed through the
+structured-floor or guarded four-pencil interface.

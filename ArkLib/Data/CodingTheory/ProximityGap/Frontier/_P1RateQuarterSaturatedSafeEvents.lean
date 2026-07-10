@@ -59,6 +59,13 @@ theorem saturatedSafeSource_not_mem_oldCore (e : Coord) (he : e ≠ hole) :
     e ∉ core (saturatedSafeSource e he) :=
   P1RateQuarterScaleBadCount.safeSource_not_mem e he
 
+private theorem saturatedSafeSource_not_corePred
+    (e : Coord) (he : e ≠ hole) :
+    ¬corePred (saturatedSafeSource e he) e := by
+  intro hpred
+  apply saturatedSafeSource_not_mem_oldCore e he
+  simpa only [core, Finset.mem_filter, Finset.mem_univ, true_and] using hpred
+
 theorem saturatedSafeSource_old_mismatch (e : Coord) (he : e ≠ hole) :
     (direction (saturatedSafeSource e he)).eval (domain e) ≠ u1 e :=
   P1RateQuarterScaleBadCount.safeSource_mismatch e he
@@ -69,8 +76,10 @@ theorem saturatedSafeSource_not_mem_amplifiedCore
   intro hmem
   rw [amplifiedCoreSet, Finset.mem_union] at hmem
   rcases hmem with hold | hcommon
-  · exact saturatedSafeSource_not_mem_oldCore e he
-      (Finset.mem_sdiff.mp hold).1
+  · rw [Finset.mem_sdiff] at hold
+    rcases hold with ⟨hcore, -⟩
+    simp only [core, Finset.mem_filter, Finset.mem_univ, true_and] at hcore
+    exact saturatedSafeSource_not_corePred e he hcore
   · exact hroot hcommon
 
 theorem saturated_safe_direction_mismatch
@@ -117,9 +126,10 @@ theorem saturated_safe_mcaEvent
   · exact amplifiedCoreSet_size_condition i
   · exact amplified_core_pair_agreement_stack L i
   · have hfresh := saturated_safe_fresh_agreement L e he hnew
-    simpa only [i] using hfresh
+    simpa only [i, amplifiedU_zero, amplifiedU_one] using hfresh
   · intro hpairs
     apply saturated_safe_direction_mismatch L e he hnew hroot
-    exact congrArg Prod.snd hpairs
+    have hsecond := congrArg (fun p : F × F => p.2) hpairs
+    simpa only [i, amplifiedU_one] using hsecond
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction

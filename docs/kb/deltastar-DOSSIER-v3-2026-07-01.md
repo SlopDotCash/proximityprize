@@ -27,11 +27,44 @@
 > `_P1RateQuarterOperationalBracket.lean` applies the full unique-decoding MCA bound at the
 > exact rate-quarter radius `3/8`, proving the unconditional two-sided interval
 > `3/8 <= mcaDeltaStar <= 23/48-2/(3N)` on that same concrete code and error target.
-> A degree-saturated common-factor construction gives the stronger executable candidate
-> `43/96+1/(3N)`, whose operational Lean assembly is still in progress.  These are upper
-> and lower bounds, not an exact pin; closing the interval and the separate asymptotic BGK wall
-> remain open.  See `deltastar-466-rate-quarter-thickened-isolated-upper-2026-07-10.md` and
-> `deltastar-466-rate-quarter-common-factor-amplifier-2026-07-10.md`.
+> Threshold-level reindexing transports the lower bound to the literal `evalCode` surface, and
+> the degree-saturated common-factor construction proves there
+> `mcaDeltaStar <= 43/96+1/(3N) < 1/2`.  Thus the unconditional literal-code bracket is
+> `3/8 <= mcaDeltaStar <= 43/96+1/(3N) < 1/2`.  The endpoints do not match.  Exact equality at
+> the upper endpoint is proved only under either `PredecessorStructuredFloorResidual
+> canonicalDomain` or the guarded `CanonicalLargeBadFourPencilExtraction`; both are equivalent
+> to the same uniform predecessor count, and neither is discharged.  Closing this interval and
+> the separate asymptotic BGK wall remain open.  The predecessor residual is now localized further:
+> any over-budget stack is quotient-rank two and every nonzero projective row combination is near
+> the code (`_P1RateQuarterProjectiveStructuredSplit.lean`).  In every invertible row chart, the
+> translated direction either has support above `55,920,000` or its zero-direction unsafety
+> yields a threshold-size joint agreement transported back to the original rows; the safe branch
+> pays at most `1,013,444,618+1<N` including the omitted projective slot
+> (`_P1RateQuarterProjectiveExtremeZeroSplit.lean`).  Conversely, the raw
+> interleaved-collapse route is formally blocked because its arithmetic requires a uniform list cap
+> `L<=1`, refuted at the zero stack.  Abstract pair/core/source-line constraints admit `N+1` events
+> even at literal P1 parameters; the missing information is simultaneous divided-difference /
+> Vandermonde interpolation rank across all witness supports.  The operator, global-pencil kernel,
+> two-anchor gauge, and conditional jointness consumer are now axiom-clean.  The initially named
+> universal `AnchoredKernelRigid` input is **REFUTED**: because it ranged over unrestricted
+> polynomials, a domain-vanishing polynomial in any non-anchor component is a nonzero gauged-kernel
+> element.  `_SupportDividedDifferenceUnrestrictedKernelRefuted.lean` proves this axiom-clean and
+> replaces it by `DegreeAnchoredKernelRigid`, restricted to the actual decoded degree `<K`; the
+> corrected residual still implies joint RS agreement.  A first unconditional bootstrap theorem
+> now discharges it whenever one anchor pair is jointly incident with every label on at least `K`
+> coordinates: the divided-difference row forces `K` roots, hence the corresponding degree-`<K`
+> polynomial is zero.  The iterative form is also axiom-clean: a rank ordering in which each new
+> label has two lower-rank parents and a `K`-coordinate triple support forces full rigidity.  It
+> does not fire on the existing `N=64` abstract countermodel, whose triple intersections are all
+> `<K`, even though its complete divided-difference matrix has full rank for consecutive labels
+> and for 15 additional random distinct-label trials over three smooth fields.  Thus the remaining
+> A six-label subsystem is stronger still: fixing four labels to `0,1,2,3` over `F_193`, all
+> `35,532` ordered distinct choices of the final two labels have full gauged rank `64`.  Thus the
+> remaining target is a distributed block-Vandermonde/GM-MDS rank theorem, plausibly with a
+> collision-only determinant factorization, not triple-core bootstrap alone.  See
+> `deltastar-466-rate-quarter-thickened-isolated-upper-2026-07-10.md` and
+> `deltastar-466-rate-quarter-common-factor-amplifier-2026-07-10.md`, plus
+> `deltastar-466-rate-quarter-abstract-incidence-rank-barrier-2026-07-10.md`.
 
 ---
 

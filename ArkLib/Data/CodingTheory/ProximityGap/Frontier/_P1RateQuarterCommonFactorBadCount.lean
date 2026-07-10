@@ -65,26 +65,36 @@ theorem hole_mem_univ_sdiff_commonRoots_union_newHoles :
 theorem saturatedSafeIndex_card :
     Fintype.card SaturatedSafeIndex = N - 2 * d - (d + 1) := by
   rw [Fintype.card_coe, saturatedSafeCoords,
-    Finset.card_erase_of_mem hole_mem_univ_sdiff_commonRoots_union_newHoles,
+    Finset.card_erase_of_mem (by
+      simp only [Finset.mem_sdiff, Finset.mem_univ, true_and,
+        Finset.mem_union]
+      push Not
+      exact ⟨hole_not_mem_commonRoots, hole_not_mem_newHoles⟩),
     Finset.card_sdiff_of_subset (Finset.subset_univ _), Finset.card_univ,
     card_coord, commonRoots_union_newHoles_card]
   norm_num [N, d, m]
 
 theorem saturatedSafeIndex_ne_hole (e : SaturatedSafeIndex) :
-    (e : Coord) ≠ hole :=
-  (Finset.mem_erase.mp e.property).1
+    (e : Coord) ≠ hole := by
+  rcases e with ⟨e, hmem⟩
+  simp only [saturatedSafeCoords, Finset.mem_erase] at hmem
+  exact hmem.1
 
 theorem saturatedSafeIndex_not_mem_commonRoots (e : SaturatedSafeIndex) :
     (e : Coord) ∉ commonRoots := by
-  have hnotUnion :=
-    (Finset.mem_sdiff.mp (Finset.mem_erase.mp e.property).2).2
+  rcases e with ⟨e, hmem⟩
+  simp only [saturatedSafeCoords, Finset.mem_erase, Finset.mem_sdiff,
+    Finset.mem_univ, true_and] at hmem
+  have hnotUnion := hmem.2
   intro hroot
   exact hnotUnion (Finset.mem_union_left newHoles hroot)
 
 theorem saturatedSafeIndex_not_mem_newHoles (e : SaturatedSafeIndex) :
     (e : Coord) ∉ newHoles := by
-  have hnotUnion :=
-    (Finset.mem_sdiff.mp (Finset.mem_erase.mp e.property).2).2
+  rcases e with ⟨e, hmem⟩
+  simp only [saturatedSafeCoords, Finset.mem_erase, Finset.mem_sdiff,
+    Finset.mem_univ, true_and] at hmem
+  have hnotUnion := hmem.2
   intro hnew
   exact hnotUnion (Finset.mem_union_right commonRoots hnew)
 
@@ -92,7 +102,7 @@ theorem saturatedSafeIndex_not_mem_newHoles (e : SaturatedSafeIndex) :
 
 theorem saturatedHoleIndex_card :
     Fintype.card SaturatedHoleIndex = d + 1 := by
-  simp [SaturatedHoleIndex, Fintype.card_sum, card_selectedFibreIndex]
+  rw [Fintype.card_sum, card_selectedFibreIndex, Fintype.card_fin]
 
 abbrev SaturatedCertificate :=
   ThreePerHoleIndex SaturatedSafeIndex SaturatedHoleIndex
@@ -143,6 +153,8 @@ theorem saturatedUnsafeGamma_injective :
       (saturatedHole_domain_pow_m h') heq'
   have hkind := congrArg Prod.fst hkindLine
   have hline := congrArg Prod.snd hkindLine
+  change saturatedHoleKind h = saturatedHoleKind h' at hkind
+  change i = j at hline
   have hcoordField :
       domain (saturatedHoleCoord h) = domain (saturatedHoleCoord h') := by
     apply holeLabel_coordinate_eq (saturatedHoleKind h) i
@@ -194,8 +206,10 @@ theorem saturatedBadScalars_card : saturatedBadScalars.card = N + 2 := by
 theorem saturatedBadScalars_mcaEvent
     (L : CommonLocatorData) {gamma : F} (hgamma : gamma ∈ saturatedBadScalars) :
     mcaEvent certificateCode δsat (amplifiedU L 0) (amplifiedU L 1) gamma := by
-  exact badLabelImage_mcaEvent certificateCode δsat (amplifiedU L)
-    saturatedScalarLabel (saturatedScalarLabel_mcaEvent L) hgamma
+  simp only [saturatedBadScalars, badLabelImage, Finset.mem_image,
+    Finset.mem_univ, true_and] at hgamma
+  obtain ⟨x, rfl⟩ := hgamma
+  exact saturatedScalarLabel_mcaEvent L x
 
 theorem saturated_badScalar_filter_card_ge_N_add_two (L : CommonLocatorData) :
     N + 2 ≤ (Finset.univ.filter fun gamma : F =>

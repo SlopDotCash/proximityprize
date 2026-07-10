@@ -46,12 +46,12 @@ An independent executable check is
 scripts/probes/probe_rate_quarter_common_factor_trade.py.
 ```
 
-The last composition into the full P1 received stack and operational
-`deltaStar` ledger is not yet landed.  Accordingly this is an exact executable
-P1 certificate plus axiom-clean abstract Lean infrastructure, not yet a single
-kernel theorem asserting the operational upper bound.  It is an upper
-construction only; it does not supply the matching lower bound needed to solve
-the prize.
+The full composition is kernel checked.  `_P1RateQuarterCommonFactorBadCount.lean`
+proves the literal `n+2` event count and operational upper ledger on the
+fibre-indexed code; `_P1RateQuarterCommonFactorCanonicalBridge.lean` transports it
+to the literal prize code and proves
+`mcaDeltaStar <= 43/96+1/(3n) < 1/2`.  This is an unconditional upper bound,
+not an exact pin; it does not supply the matching predecessor lower bound.
 
 ### Discovery chain now formalized
 
@@ -307,7 +307,7 @@ error count          = 480,946,859,
 bad scalars          = 1,073,741,826 = n+2.
 ```
 
-## 6. Red-team audit and remaining work
+## 6. Red-team audit and remaining lower-bound work
 
 The following possible failure modes were checked explicitly.
 
@@ -328,15 +328,17 @@ The following possible failure modes were checked explicitly.
 * **Insufficient private coordinates:** `d_max<m`, while each selected
   private quotient fibre has size `m`.
 
-What remains is integration, not another informal arithmetic step:
-
-1. instantiate the common locator and reclassified core sets inside the P1
-   scale-construction Lean module;
-2. connect every safe and isolated witness to the nonjoint bad-event API;
-3. connect the resulting `n+2` family at threshold `t` to the operational
-   `deltaStar` ledger;
-4. independently seek a matching uniform lower bound.  Nothing here proves
-   optimality of `43/96+1/(3n)`.
+Operational integration is complete.  What remains is goodness at the
+immediately preceding lattice radius `480946858/n`.
+`_P1RateQuarterPredecessorGenericSplit.lean` reduces this to
+`PredecessorStructuredFloorResidual canonicalDomain`.
+`_P1RateQuarterFourPencilExactPin.lean` gives an alternative conditional route
+through guarded favorable four-pencil extraction with a two-fresh cutoff and
+no saturated core-size lower bound.  The two global residual interfaces are
+proved equivalent to the same uniform predecessor count in
+`_P1RateQuarterPredecessorResidualEquiv.lean`.  Under either hypothesis the
+adjacent-floor connector proves exact equality at `43/96+1/(3n)`.  Neither
+hypothesis is proved here.
 
 ## 7. Multi-line frontier after saturation
 

@@ -32,6 +32,20 @@ shows that all `3*31=93` defect functionals are nonzero and pairwise projectivel
 In fact coordinate 6 is nonzero in every reduced representative, and the 93 ratios
 `coordinate_15/coordinate_6` are pairwise distinct.  Thus one two-coordinate projective chart
 certifies the entire base separation; a formal certificate need not compare every vector pair.
+`Frontier/_W7RateHalfFingerprintSeal.lean` recomputes the reduced representatives from the
+literal domain, core, and row-reduction tables using natural-number modular arithmetic.  Lean's
+kernel checks all 186 scalar evaluation facts
+
+```text
+reducedDirection_j[6] != 0,
+reducedDirection_j[15] / reducedDirection_j[6] = fingerprint_j
+```
+
+for `j : Fin 93`, proves the cast bridge into the certified field, and derives projective
+separation and the Vandermonde lift without a named hypothesis.  Thus the base fingerprint
+certificate is closed.  The remaining construction work is the downstream identification of
+these computed defect rows with the literal lifted core/fresh MCA certificates; the counting,
+tensor separation, hyperplane avoidance, and field budgets are already kernel-checked.
 
 ## Radix lift
 

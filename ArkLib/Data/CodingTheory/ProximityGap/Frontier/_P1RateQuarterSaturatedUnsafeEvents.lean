@@ -51,8 +51,16 @@ theorem saturatedHoleCoord_injective : Function.Injective saturatedHoleCoord := 
   rcases a with q | a <;> rcases b with q' | b
   · apply congrArg Sum.inl
     exact (selectedCoordEmbedding 13).injective h
-  · cases h
-  · cases h
+  · exfalso
+    have hsnd : (13 : Fin 16) = 15 := by
+      simpa only [saturatedHoleCoord, selectedCoordEmbedding, hole] using
+        congrArg Prod.snd h
+    exact (by decide : (13 : Fin 16) ≠ 15) hsnd
+  · exfalso
+    have hsnd : (15 : Fin 16) = 13 := by
+      simpa only [saturatedHoleCoord, selectedCoordEmbedding, hole] using
+        congrArg Prod.snd h
+    exact (by decide : (15 : Fin 16) ≠ 13) hsnd
   · exact congrArg Sum.inr (Subsingleton.elim a b)
 
 theorem saturatedHoleCoord_mem_newHoles (q : SelectedFibreIndex) :
@@ -81,10 +89,22 @@ theorem saturatedHoleCoord_not_mem_amplifiedCore
   intro hmem
   rw [amplifiedCoreSet, Finset.mem_union] at hmem
   rcases hmem with hold | hroot
-  · rcases h with q | a
-    · exact (Finset.mem_sdiff.mp hold).2
-        (saturatedHoleCoord_mem_newHoles q)
-    · exact hole_not_mem_core i (Finset.mem_sdiff.mp hold).1
+  · rw [Finset.mem_sdiff] at hold
+    rcases hold with ⟨hcore, hnotNew⟩
+    rcases h with q | a
+    · apply hnotNew
+      exact (mem_selectedCoords_iff 13 _).2 ⟨q, rfl⟩
+    ·
+      simp only [core, corePred, Finset.mem_filter, Finset.mem_univ,
+        true_and] at hcore
+      rcases hcore with hbase | htransfer
+      · apply fifteen_not_mem_baseCore i
+        simpa only [saturatedHoleCoord, hole] using hbase
+      · obtain ⟨⟨q, hq⟩, -⟩ := htransfer
+        have himpossible :
+            (Sum.inr (0 : Fin 1) : FibreIndex) = Sum.inl (i, q) := by
+          simpa only [saturatedHoleCoord, hole] using hq
+        cases himpossible
   · exact saturatedHoleCoord_not_mem_commonRoots h hroot
 
 theorem saturatedHole_domain_pow_m (h : SaturatedHoleIndex) :
@@ -112,9 +132,14 @@ theorem direction_eval_saturatedHole (i : Fin 3) (h : SaturatedHoleIndex) :
     (direction i).eval (domain (saturatedHoleCoord h)) =
       saturatedHoleValue (saturatedHoleKind h) i := by
   rcases h with q | a
-  · exact direction_eval_newHole i (saturatedHoleCoord_mem_newHoles q)
-  · simpa [saturatedHoleCoord, saturatedHoleKind, saturatedHoleValue, hole]
-      using direction_eval_hole_fibre i (Sum.inr 0)
+  · have hdir :
+        (direction i).eval (domain (saturatedHoleCoord (Sum.inl q))) =
+          newHoleValue i := by
+      apply direction_eval_newHole i
+      exact (mem_selectedCoords_iff 13 _).2 ⟨q, rfl⟩
+    simpa only [saturatedHoleKind, saturatedHoleValue] using hdir
+  · simpa only [saturatedHoleCoord, saturatedHoleKind, saturatedHoleValue,
+      hole] using direction_eval_hole_fibre i (Sum.inr 0)
 
 theorem saturatedHoleConstant_cross (a : Fin 2) (i : Fin 3) :
     holeConstant a i * (2 - saturatedHoleValue a i) =
@@ -141,11 +166,11 @@ theorem amplifiedU_rows_saturatedHole
       amplifiedU1 L (saturatedHoleCoord h) =
         L.polynomial.eval (domain (saturatedHoleCoord h)) * 2 := by
   rcases h with q | a
-  · exact amplifiedU_rows_of_mem_newHoles L
-      (saturatedHoleCoord_mem_newHoles q)
+  · apply amplifiedU_rows_of_mem_newHoles L
+    exact (mem_selectedCoords_iff 13 _).2 ⟨q, rfl⟩
   · have hrows := amplifiedU_rows_of_not_mem_newHoles L
         (show hole ∉ newHoles from hole_not_mem_newHoles)
-    simpa [saturatedHoleCoord, hole_rows.1, hole_rows.2] using hrows
+    simpa only [saturatedHoleCoord, hole_rows.1, hole_rows.2] using hrows
 
 noncomputable def saturatedUnsafeGamma
     (h : SaturatedHoleIndex) (i : Fin 3) : F :=

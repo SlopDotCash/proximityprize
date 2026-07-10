@@ -14464,8 +14464,9 @@ event count, strict `2^-128` mass inequality, and operational threshold ledger
 land in `_HalfPredecessorRateQuarterMu16Locator.lean`,
 `_P1RateQuarterScaleConstruction.lean`, `_P1RateQuarterScaleBadCount.lean`,
 and `_P1RateQuarterScaleFinalConsumer.lean`.  The later common-factor
-amplifier gives a stronger executable `43/96+1/(3n)` certificate whose final
-operational assembly remains open.
+amplifier and canonical transport prove the stronger unconditional literal-code
+upper bound `43/96+1/(3n) < 1/2` in
+`_P1RateQuarterCommonFactorCanonicalBridge.lean`.
 
 Formal kernel:
 `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSmoothCounterexampleF97.lean`.
@@ -14492,12 +14493,85 @@ does not pin the threshold.  The full unique-decoding connector now supplies
 the good side at `3/8`, giving the unconditional operational interval
 
 ```text
-3/8 <= mcaDeltaStar <= 23/48 - 2/(3*2^30) < 1/2.
+3/8 <= mcaDeltaStar <= 43/96 + 1/(3*2^30) < 1/2.
 ```
 
-The endpoints do not match, and the stronger common-factor endpoint
-`43/96+1/(3N)` is not yet operationally wired.
+The endpoints do not match.  Exact equality at the upper endpoint is proved
+only under the immediate-predecessor uniform count, exposed equivalently as
+`PredecessorStructuredFloorResidual canonicalDomain` or guarded
+`CanonicalLargeBadFourPencilExtraction`.  Neither hypothesis is proved.
 
 Formal kernel:
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterScaleFinalConsumer.lean` and
-`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterOperationalBracket.lean`.
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCanonicalOperationalBracket.lean`,
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorCanonicalBridge.lean`,
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterAdjacentExactPin.lean`, and
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterFourPencilExactPin.lean`.
+
+## [rate-quarter-predecessor-raw-interleaved-collapse] uniform list route refuted (2026-07-10)
+
+Lane: immediate-predecessor lower bound at the first rate-quarter prize prime.
+
+The two-row interleaved collapse queries agreement `A=2T-N=111,848,108`.
+Its numerator fits the prize count `N` if and only if the uniform interleaved
+list cap is `L<=1`; already `L=2` gives `1,923,787,433>N`.  The required
+uniform singleton premise is false.  At the zero received stack, the zero
+pair and a nonzero degree-`A` vanishing-polynomial evaluation give two
+distinct list members for every injective evaluation domain.
+
+This refutes the raw all-stack interleaved-list proof architecture, not the
+predecessor count itself.  A successful list route must prune by the MCA
+nonjoint event or exploit a coupled support invariant.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterInterleavedCollapseNoGo.lean`.
+
+## [rate-quarter-predecessor-abstract-incidence-only] source-line constraints refuted (2026-07-10)
+
+Lane: immediate-predecessor four-pencil/source-incidence extraction.
+
+The current abstract constraints on agreement-set sizes, pair cores, triple
+root caps, fresh petals, source-line packing, and a distinguished near
+direction do not imply `#bad<=N`.  An exact `N=64`, `M=65` certificate
+satisfies all of them, and a literal-P1 independent-set construction satisfies
+their exact analogues with positive probability (the Hoeffding union-bound
+failure probability is below `10^-101188`).
+
+These are abstract incidence countermodels, not Reed--Solomon bad stacks.
+For the specific consecutive labels `gamma_i=i`, exact ranks on the finite
+certificate show what the abstraction omitted: the support-dependent
+divided-difference/Vandermonde operator has full rank after quotienting the
+global joint pencil over three tested smooth fields.  This is not a
+label-uniform rank claim.  The listed abstract incidence axioms and universal
+finite-set identities do not entail the desired cap; an inequality using
+polynomial realizability remains possible and is exactly what the rank route
+seeks.
+
+The missing invariant now has an axiom-clean interface in
+`Frontier/_SupportDividedDifferenceOperator.lean`: supported decoded families
+enter a genuine divided-difference kernel and global pencils lie in that
+kernel.  The unrestricted residual is refuted below; the viable rank target
+must restrict every component to the decoded degree bound.
+
+Reproducing probe:
+`scripts/probes/probe_rate_quarter_p1_abstract_incidence_rank.py`.
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-abstract-incidence-rank-barrier-2026-07-10.md`.
+
+## [rate-quarter-unrestricted-anchored-kernel] universal rank residual refuted (2026-07-10)
+
+Lane: simultaneous divided-difference/Vandermonde interpolation rank.
+
+The original `AnchoredKernelRigid` residual quantifies over arbitrary polynomial
+families.  On every finite evaluation domain and with any third non-anchor label,
+put the domain-vanishing polynomial in that component and zero in all others.
+Every divided-difference row evaluates to zero and both anchor entries vanish,
+but the family is nonzero.  Hence the unrestricted residual is false for every
+support pattern, including the P1 predecessor supports.
+
+This refutes only the over-broad interface, not the simultaneous-rank route.
+The same formal module defines `DegreeAnchoredKernelRigid`, restricting each
+component to the actual decoded degree bound, and proves that this corrected
+residual still yields the intended global pencil and joint RS agreement.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupportDividedDifferenceUnrestrictedKernelRefuted.lean`.

@@ -40,10 +40,28 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleOperati
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleFinalConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterOperationalBracket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCanonicalCodeBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MCAReindexThresholdEquiv
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCanonicalOperationalBracket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterCommonFactorOwnershipAmplifier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorArithmetic
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorBadCount
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorCanonicalBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MCAAdjacentFloorExactPin
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterPredecessorGenericSplit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAdjacentExactPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterSaturatedFiveCoreBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterPredecessorFourClusterCapacity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterPredecessorFourPencilReduction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterFourPencilExactPin
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterPredecessorResidualEquiv
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterProjectiveStructuredSplit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterExtremeZeroJohnsonBand
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterProjectiveExtremeZeroSplit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterInterleavedCollapseNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceOperator
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceUnrestrictedKernelRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceUnrestrictedKernelRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W7RateHalfFingerprintSeal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterNextLatticeFourCoreBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterDeterminantMultiplicity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterCollapsedClusterInjection
@@ -75,6 +93,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarte
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSyndromeReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSignatureRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSixRootSupport
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSixLongStratum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSixSignatureRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSevenRootFiber
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterKFourNoEightSevenLongStratum
@@ -831,15 +850,38 @@ theorem deltaStar_pin_mu8_F4129_witness :
   prime, the exact executable fibre lift and maximal private thickening give `n+2` bad scalars
   at radius `23/48-2/(3n)`.  `P1RateQuarterScaleFinalConsumer` kernel-checks the literal count,
   strict `2^-128` mass inequality, and resulting operational `mcaDeltaStar` upper bound.
-  The full unique-decoding connector supplies the matching operational lower bracket `3/8`,
-  so the fibre-indexed threshold is unconditionally trapped between `3/8` and this upper bound.
-  `P1RateQuarterCanonicalCodeBridge` transports that certificate across the proved coordinate
-  equivalence and states the bound on the prize's literal `evalCode g N (k-1)` surface.  A
-  degree-saturated common-factor ownership trade strengthens the executable endpoint to
-  `43/96+1/(3n)`.  Its abstract algebra and exact field arithmetic are kernel checked, while
-  its amplified billion-coordinate stack assembly and literal bad-count theorem remain in progress.
-  Therefore the `n=16,k=4` residual program below is local structure/lower-bound substrate,
-  not a route to a universal exact-half theorem.  The exact rate-quarter delta-star remains open. -/
+  The full unique-decoding connector supplies the unconditional lower bound `3/8`.
+  Threshold-level Reed--Solomon reindexing transports the entire fibre result to the literal
+  `evalCode g N (k-1)` surface, giving `3/8 <= mcaDeltaStar <= 23/48-2/(3n)`.
+  The saturated common-factor stack and its exact `n+2` bad-label count strengthen the literal
+  upper endpoint unconditionally to `43/96+1/(3n) < 1/2`.
+
+  Exact equality at that endpoint is proved only if the immediately preceding lattice radius is
+  good.  `PredecessorStructuredFloorResidual canonicalDomain` and the guarded
+  `CanonicalLargeBadFourPencilExtraction` are two named interfaces for this missing step; they are
+  each equivalent to the same uniform predecessor bad-count target, and neither is discharged.
+  The four-pencil payload now needs only four favorable two-fresh source pencils, with no saturated
+  core-size lower bound, but its global large-family guard does not weaken the target logically.
+  The source-six long-stratum mirror below is local `k=4` geometry, not a discharge of either
+  predecessor interface.
+
+  Projective equivariance now shrinks every hypothetical over-budget predecessor stack further:
+  its quotient rows are independent and every nonzero projective row combination is near the code.
+  In every invertible row chart, translating the mixed direction by its nearby codeword now gives
+  an exact dichotomy: either the remaining support exceeds `55,920,000`, or zero-direction
+  unsafety supplies a threshold-size joint RS agreement which transports back to the original
+  rows.  Indeed the zero-safe sub-branch has exact affine weight `1,013,444,618`, and remains
+  below `n` after paying for the omitted projective slot.  The raw interleaved-collapse route
+  cannot finish the job: its prize arithmetic requires a uniform list cap `L <= 1`, and that
+  premise is formally refuted at the zero stack.
+
+  Abstract pair/core incidence constraints are also insufficient.  The missing simultaneous
+  constraint is now a genuine support-dependent divided-difference linear map: supported decoded
+  families lie in its kernel and global polynomial pencils form the evident kernel.  Unrestricted
+  two-anchor rigidity is formally refuted by the finite-domain vanishing polynomial.  After
+  restricting every component to decoded degree `<K`, the corrected rigidity hypothesis again
+  forces one global pencil and joint RS agreement.  That degree-restricted rank statement remains
+  open.  Therefore the exact rate-quarter delta-star remains open. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
@@ -912,12 +954,48 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterScaleFinalConsumer.rateQuarter_mcaDeltaStar_le_twentyThree_over_fortyEight_correction
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterOperationalBracket.rateQuarter_mcaDeltaStar_mem_operational_bracket
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterCanonicalCodeBridge.evalCode_rateQuarter_mcaDeltaStar_le_advertised
+#check ArkLib.ProximityGap.Frontier.MCAReindexThresholdEquiv.mcaDeltaStar_reindex_reedSolomon_eq
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterCanonicalOperationalBracket.evalCode_rateQuarter_mcaDeltaStar_mem_operational_bracket
 #check ArkLib.ProximityGap.Frontier.RateQuarterCommonFactorOwnershipAmplifier.amplified_ownership_budget
 #check ArkLib.ProximityGap.Frontier.RateQuarterCommonFactorOwnershipAmplifier.amplified_threshold_le_saturated_of_degree
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorArithmetic.delta_eq_fortyThree_over_ninetySix_correction
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorArithmetic.unsafeCosetIdentifier_injective
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorBadCount.saturated_badScalar_filter_card_ge_N_add_two
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorBadCount.rateQuarter_commonFactor_mcaDeltaStar_le_fortyThree_over_ninetySix_correction
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorCanonicalBridge.evalCode_commonFactor_mcaDeltaStar_le_fortyThree_over_ninetySix_correction
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorCanonicalBridge.evalCode_commonFactor_mcaDeltaStar_lt_half
+#check ArkLib.ProximityGap.Frontier.MCAAdjacentFloorExactPin.mcaDeltaStar_eq_latticeRadius_iff_predecessor_good_of_upper
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorGenericSplit.predecessorDelta_le_mcaDeltaStar
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterAdjacentExactPin.evalCode_rateQuarter_mcaDeltaStar_eq_advertised_of_structured
 #check ArkLib.ProximityGap.Frontier.RateQuarterSaturatedFiveCoreBarrier.not_five_saturated_cores_in_primitive_cluster
+#check ArkLib.ProximityGap.Frontier.RateQuarterPredecessorFourClusterCapacity.fourTwoFreshCluster_label_card_le_universe
 #check ArkLib.ProximityGap.Frontier.RateQuarterPredecessorFourClusterCapacity.fourSaturatedCluster_label_card_le
+#check ArkLib.ProximityGap.Frontier.RateQuarterPredecessorFourPencilReduction.P1.mcaBadCount_le_N_of_favorableFourTwoFreshPencilExtraction
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterFourPencilExactPin.CanonicalLargeBadFourPencilExtraction
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterFourPencilExactPin.evalCode_rateQuarter_mcaDeltaStar_eq_advertised_of_largeBad_fourPencil
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorResidualEquiv.predecessorStructuredFloorResidual_iff_largeBadFourPencilExtraction
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.projectivelyStructuredRankTwo_of_N_lt_badCount
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.projectivelyNear_exists_support_le
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.predecessorStructuredFloorResidual_of_projectivelyStructured
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterExtremeZeroJohnsonBand.predecessor_lineBadScalars_card_le_N_of_support_le_twoTier
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterExtremeZeroJohnsonBand.predecessor_mcaEvent_filter_card_le_N_of_support_le_twoTier
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterExtremeZeroJohnsonBand.predecessor_mcaEvent_filter_card_le_N_of_zero_card_ge_twoTier
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveExtremeZeroSplit.twoTierClosedBudget_add_one_lt_N
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveExtremeZeroSplit.support_gt_twoTierCap_or_zeroDirectionUnsafe_of_N_lt_badCount_rowMix
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveExtremeZeroSplit.support_gt_twoTierCap_or_transported_jointAgreement_of_N_lt_badCount_rowMix
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterInterleavedCollapseNoGo.collapseNumerator_le_N_iff
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterInterleavedCollapseNoGo.not_uniform_interleavedList_card_le_one
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceOperator.supportDividedDifference
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceOperator.anchoredKernelRigid_iff_gauged_ker_eq_bot
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceOperator.pairJointAgreesOn_of_anchoredKernelRigid
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.not_anchoredKernelRigid_of_third
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.DegreeAnchoredKernelRigid
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_commonAnchorCoverage
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_bootstrap
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.pairJointAgreesOn_of_degreeAnchoredKernelRigid
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.not_anchoredKernelRigid_of_third
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_commonAnchorCoverage
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.pairJointAgreesOn_of_degreeAnchoredKernelRigid
 #check ArkLib.ProximityGap.Frontier.RateQuarterNextLatticeFourCoreBarrier.exists_pair_inter_card_ge_three_mul_add_one_of_three_next_cores
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant_eq_zero_of_core_card_sum_sub_domain_gt
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant_eq_zero_of_jointCore_card_sum_sub_domain_gt
@@ -967,6 +1045,10 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSyndromeReduction.noEight_sparse_syndrome_dichotomy
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSignatureRefuted.abstractNoEightSignatureCap_REFUTED
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixRootSupport.sourceSix_weight_four_support_coupling
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixLongStratum.three_add_root_inter_le_sourceMissed_union_of_noEight_source_six
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixLongStratum.three_le_sourceMissed_union_of_noEight_source_six
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixLongStratum.third_outside_mem_pointsOn_secant_of_sourceSix_root_missed_balance
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixLongStratum.false_of_five_sourceSix_outsiders_root_missed_balance
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixSignatureRefuted.abstractNoEightSixSignatureCap_REFUTED
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSevenRootSupport.two_add_root_inter_le_missed_union_of_noEight_source_seven
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSevenRootFiber.sourceSeven_outside_regularFiberCapped_or_missed_card_le_two

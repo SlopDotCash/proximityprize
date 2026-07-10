@@ -16,6 +16,7 @@ into separate modules to keep elaboration memory bounded.
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
 set_option linter.constructorNameAsVariable false
+set_option maxHeartbeats 1200000
 set_option maxRecDepth 250000
 
 open Finset Polynomial
@@ -158,12 +159,16 @@ theorem core_zero_sdiff_inter_commonRoots :
     rw [commonRoots, Finset.mem_union] at hroot
     rcases hroot with hfour | heleven
     · exact hfour
-    · exact (rootEleven_not_mem_core_zero heleven hcore).elim
+    · rw [mem_core_iff_of_residue 0 (by decide)
+        (snd_eq_of_mem_selectedCoords (11 : Fin 16) heleven)] at hcore
+      exact ((by decide : (11 : Fin 16) ∉ baseCore 0) hcore).elim
   · intro hfour
     have hcommon : e ∈ commonRoots :=
       Finset.mem_union_left rootEleven hfour
-    exact ⟨⟨rootFour_mem_core_zero hfour,
-      commonRoot_not_mem_newHoles hcommon⟩, hcommon⟩
+    refine ⟨⟨?_, commonRoot_not_mem_newHoles hcommon⟩, hcommon⟩
+    rw [mem_core_iff_of_residue 0 (by decide)
+      (snd_eq_of_mem_selectedCoords (4 : Fin 16) hfour)]
+    decide
 
 theorem core_one_sdiff_inter_commonRoots :
     (core 1 \ newHoles) ∩ commonRoots = rootEleven := by
@@ -173,13 +178,17 @@ theorem core_one_sdiff_inter_commonRoots :
   · rintro ⟨⟨hcore, -⟩, hroot⟩
     rw [commonRoots, Finset.mem_union] at hroot
     rcases hroot with hfour | heleven
-    · exact (rootFour_not_mem_core_one hfour hcore).elim
+    · rw [mem_core_iff_of_residue 1 (by decide)
+        (snd_eq_of_mem_selectedCoords (4 : Fin 16) hfour)] at hcore
+      exact ((by decide : (4 : Fin 16) ∉ baseCore 1) hcore).elim
     · exact heleven
   · intro heleven
     have hcommon : e ∈ commonRoots :=
       Finset.mem_union_right rootFour heleven
-    exact ⟨⟨rootEleven_mem_core_one heleven,
-      commonRoot_not_mem_newHoles hcommon⟩, hcommon⟩
+    refine ⟨⟨?_, commonRoot_not_mem_newHoles hcommon⟩, hcommon⟩
+    rw [mem_core_iff_of_residue 1 (by decide)
+      (snd_eq_of_mem_selectedCoords (11 : Fin 16) heleven)]
+    decide
 
 theorem core_two_sdiff_inter_commonRoots :
     (core 2 \ newHoles) ∩ commonRoots = ∅ := by
@@ -189,10 +198,13 @@ theorem core_two_sdiff_inter_commonRoots :
   · rintro ⟨⟨hcore, -⟩, hroot⟩
     rw [commonRoots, Finset.mem_union] at hroot
     rcases hroot with hfour | heleven
-    · exact (rootFour_not_mem_core_two hfour hcore).elim
-    · exact (rootEleven_not_mem_core_two heleven hcore).elim
-  · intro hempty
-    simp only [Finset.not_mem_empty] at hempty
+    · rw [mem_core_iff_of_residue 2 (by decide)
+        (snd_eq_of_mem_selectedCoords (4 : Fin 16) hfour)] at hcore
+      exact ((by decide : (4 : Fin 16) ∉ baseCore 2) hcore).elim
+    · rw [mem_core_iff_of_residue 2 (by decide)
+        (snd_eq_of_mem_selectedCoords (11 : Fin 16) heleven)] at hcore
+      exact ((by decide : (11 : Fin 16) ∉ baseCore 2) hcore).elim
+  · simp
 
 theorem core_sdiff_inter_commonRoots (i : Fin 3) :
     (core i \ newHoles) ∩ commonRoots =
@@ -205,8 +217,19 @@ theorem core_sdiff_inter_commonRoots (i : Fin 3) :
 theorem core_sdiff_inter_commonRoots_card (i : Fin 3) :
     ((core i \ newHoles) ∩ commonRoots).card =
       if i = 2 then 0 else d := by
-  rw [core_sdiff_inter_commonRoots]
-  fin_cases i <;> simp [rootFour_card, rootEleven_card]
+  fin_cases i
+  · change ((core 0 \ newHoles) ∩ commonRoots).card =
+      if (0 : Fin 3) = 2 then 0 else d
+    rw [core_zero_sdiff_inter_commonRoots, rootFour_card]
+    rw [if_neg (by decide : (0 : Fin 3) ≠ 2)]
+  · change ((core 1 \ newHoles) ∩ commonRoots).card =
+      if (1 : Fin 3) = 2 then 0 else d
+    rw [core_one_sdiff_inter_commonRoots, rootEleven_card]
+    rw [if_neg (by decide : (1 : Fin 3) ≠ 2)]
+  · change ((core 2 \ newHoles) ∩ commonRoots).card =
+      if (2 : Fin 3) = 2 then 0 else d
+    rw [core_two_sdiff_inter_commonRoots, Finset.card_empty]
+    rw [if_pos rfl]
 
 /-! ## Exact amplified cores -/
 
@@ -216,12 +239,21 @@ noncomputable def amplifiedCoreSet (i : Fin 3) : Finset Coord :=
 
 theorem amplifiedCoreSet_card (i : Fin 3) :
     (amplifiedCoreSet i).card = amplifiedCore := by
-  have hbook := Finset.card_union_add_card_inter
-    (core i \ newHoles) commonRoots
-  rw [← amplifiedCoreSet, core_sdiff_newHoles_card, commonRoots_card,
-    core_sdiff_inter_commonRoots_card] at hbook
-  fin_cases i <;> simp at hbook <;>
-    norm_num [amplifiedCore, d, m, r] at hbook ⊢ <;> omega
+  fin_cases i
+  · change (amplifiedCoreSet 0).card = amplifiedCore
+    rw [amplifiedCoreSet, Finset.card_union, core_sdiff_newHoles_card,
+      commonRoots_card, core_sdiff_inter_commonRoots_card]
+    simp only [if_neg (by decide : (0 : Fin 3) ≠ 2)]
+    norm_num [amplifiedCore, d, m, r]
+  · change (amplifiedCoreSet 1).card = amplifiedCore
+    rw [amplifiedCoreSet, Finset.card_union, core_sdiff_newHoles_card,
+      commonRoots_card, core_sdiff_inter_commonRoots_card]
+    simp only [if_neg (by decide : (1 : Fin 3) ≠ 2)]
+    norm_num [amplifiedCore, d, m, r]
+  · change (amplifiedCoreSet 2).card = amplifiedCore
+    rw [amplifiedCoreSet, Finset.card_union, core_sdiff_newHoles_card,
+      commonRoots_card, core_sdiff_inter_commonRoots_card]
+    norm_num [amplifiedCore, d, m, r]
 
 theorem amplifiedCoreSet_card_ge_k (i : Fin 3) :
     k ≤ (amplifiedCoreSet i).card := by
@@ -236,10 +268,43 @@ theorem amplifiedCoreSet_size_condition (i : Fin 3) :
 /-! ## Agreement of the amplified stack on every amplified core -/
 
 @[simp] theorem amplifiedU_zero (L : CommonLocatorData) :
-    amplifiedU L 0 = amplifiedU0 L := rfl
+    amplifiedU L 0 = amplifiedU0 L := by
+  simp only [amplifiedU, Fin.cases_zero]
 
 @[simp] theorem amplifiedU_one (L : CommonLocatorData) :
-    amplifiedU L 1 = amplifiedU1 L := rfl
+    amplifiedU L 1 = amplifiedU1 L := by
+  have hone : (1 : Fin 2) = Fin.succ 0 := by rfl
+  rw [hone]
+  simp only [amplifiedU, Fin.cases_succ]
+
+private theorem core_pred_pair_agreement
+    (i : Fin 3) (e : Coord) (he : corePred i e) :
+    (intercept i).eval (domain e) = u0 e ∧
+      (direction i).eval (domain e) = u1 e := by
+  rcases he with hbase | heTransfer
+  · have hne15 : e.2 ≠ (15 : Fin 16) := by
+      intro h
+      rw [h] at hbase
+      exact fifteen_not_mem_baseCore i hbase
+    have hcompat := ordinaryLine_compatible i e.2 hbase
+    have hline : lineAt e = some (ordinaryLine e.2) := by
+      simp [lineAt, hne15]
+    have hu0 :
+        u0 e = domain e * (direction (ordinaryLine e.2)).eval (domain e) := by
+      simp only [u0, hline]
+    have hu1 :
+        u1 e = (direction (ordinaryLine e.2)).eval (domain e) := by
+      simp only [u1, hline]
+    constructor
+    · rw [intercept, eval_mul, eval_X, hu0, direction_eval, direction_eval,
+        hcompat]
+    · rw [hu1, direction_eval, direction_eval, hcompat]
+  · obtain ⟨⟨q, heq1⟩, heq2⟩ := heTransfer
+    have heq : e = (Sum.inl (i, q), (15 : Fin 16)) := Prod.ext heq1 heq2
+    subst e
+    constructor
+    · simp only [intercept, eval_mul, eval_X, u0, lineAt_transfer]
+    · simp only [u1, lineAt_transfer]
 
 theorem amplified_core_pair_agreement
     (L : CommonLocatorData) (i : Fin 3) (e : Coord)
@@ -248,19 +313,52 @@ theorem amplified_core_pair_agreement
       (amplifiedDirection L i).eval (domain e) = amplifiedU1 L e := by
   rw [amplifiedCoreSet, Finset.mem_union] at he
   rcases he with hold | hroot
-  · have hcore : e ∈ core i := (Finset.mem_sdiff.mp hold).1
-    have hnotHole : e ∉ newHoles := (Finset.mem_sdiff.mp hold).2
-    have holdAgree := core_pair_agreement i e hcore
-    have hrows := amplifiedU_rows_of_not_mem_newHoles L hnotHole
-    rw [amplifiedIntercept_eval, amplifiedDirection_eval, hrows.1, hrows.2,
-      holdAgree.1, holdAgree.2]
-    constructor <;> ring
-  · have hzero := L.eval_zero hroot
-    have hnotHole : e ∉ newHoles := commonRoot_not_mem_newHoles hroot
-    have hrows := amplifiedU_rows_of_not_mem_newHoles L hnotHole
-    rw [amplifiedIntercept_eval, amplifiedDirection_eval, hrows.1, hrows.2,
-      hzero]
-    simp
+  · rw [Finset.mem_sdiff] at hold
+    rcases hold with ⟨hcore, hnotHole⟩
+    simp only [core, Finset.mem_filter, Finset.mem_univ, true_and] at hcore
+    obtain ⟨hold0raw, hold1⟩ := core_pred_pair_agreement i e hcore
+    have hold0 : domain e * (direction i).eval (domain e) = u0 e := by
+      simpa only [intercept, eval_mul, eval_X] using hold0raw
+    have hrows := amplifiedU_rows_of_not_mem_newHoles (e := e) L hnotHole
+    constructor
+    · rw [amplifiedIntercept_eval, amplifiedDirection_eval]
+      calc
+        domain e * (L.polynomial.eval (domain e) *
+            (direction i).eval (domain e)) =
+            L.polynomial.eval (domain e) *
+              (domain e * (direction i).eval (domain e)) := by ring
+        _ = L.polynomial.eval (domain e) * u0 e :=
+          congrArg (fun x : F => L.polynomial.eval (domain e) * x) hold0
+        _ = amplifiedU0 L e := hrows.1.symm
+    · rw [amplifiedDirection_eval]
+      calc
+        L.polynomial.eval (domain e) * (direction i).eval (domain e) =
+            L.polynomial.eval (domain e) * u1 e :=
+          congrArg (fun x : F => L.polynomial.eval (domain e) * x) hold1
+        _ = amplifiedU1 L e := hrows.2.symm
+  · have hzero := L.eval_zero (e := e) hroot
+    have hnotHole : e ∉ newHoles :=
+      commonRoot_not_mem_newHoles (e := e) hroot
+    have hrows := amplifiedU_rows_of_not_mem_newHoles (e := e) L hnotHole
+    constructor
+    · calc
+        (amplifiedIntercept L i).eval (domain e) =
+            domain e * (amplifiedDirection L i).eval (domain e) :=
+          amplifiedIntercept_eval L i e
+        _ =
+            domain e * (L.polynomial.eval (domain e) *
+              (direction i).eval (domain e)) :=
+          congrArg (fun x : F => domain e * x) (amplifiedDirection_eval L i e)
+        _ = 0 := by rw [hzero]; ring
+        _ = L.polynomial.eval (domain e) * u0 e := by rw [hzero]; simp
+        _ = amplifiedU0 L e := hrows.1.symm
+    · calc
+        (amplifiedDirection L i).eval (domain e) =
+            L.polynomial.eval (domain e) *
+              (direction i).eval (domain e) := amplifiedDirection_eval L i e
+        _ = 0 := by rw [hzero]; simp
+        _ = L.polynomial.eval (domain e) * u1 e := by rw [hzero]; simp
+        _ = amplifiedU1 L e := hrows.2.symm
 
 theorem amplified_core_pair_agreement_stack
     (L : CommonLocatorData) (i : Fin 3) (e : Coord)
@@ -268,6 +366,53 @@ theorem amplified_core_pair_agreement_stack
     (amplifiedIntercept L i).eval (domain e) = amplifiedU L 0 e ∧
       (amplifiedDirection L i).eval (domain e) = amplifiedU L 1 e := by
   rw [amplifiedU_zero, amplifiedU_one]
-  exact amplified_core_pair_agreement L i e he
+  rw [amplifiedCoreSet, Finset.mem_union] at he
+  rcases he with hold | hroot
+  · rw [Finset.mem_sdiff] at hold
+    rcases hold with ⟨hcore, hnotHole⟩
+    simp only [core, Finset.mem_filter, Finset.mem_univ, true_and] at hcore
+    obtain ⟨hold0raw, hold1⟩ := core_pred_pair_agreement i e hcore
+    have hold0 : domain e * (direction i).eval (domain e) = u0 e := by
+      simpa only [intercept, eval_mul, eval_X] using hold0raw
+    have hrows := amplifiedU_rows_of_not_mem_newHoles (e := e) L hnotHole
+    constructor
+    · rw [amplifiedIntercept_eval, amplifiedDirection_eval]
+      calc
+        domain e * (L.polynomial.eval (domain e) *
+            (direction i).eval (domain e)) =
+            L.polynomial.eval (domain e) *
+              (domain e * (direction i).eval (domain e)) := by ring
+        _ = L.polynomial.eval (domain e) * u0 e :=
+          congrArg (fun x : F => L.polynomial.eval (domain e) * x) hold0
+        _ = amplifiedU0 L e := hrows.1.symm
+    · rw [amplifiedDirection_eval]
+      calc
+        L.polynomial.eval (domain e) * (direction i).eval (domain e) =
+            L.polynomial.eval (domain e) * u1 e :=
+          congrArg (fun x : F => L.polynomial.eval (domain e) * x) hold1
+        _ = amplifiedU1 L e := hrows.2.symm
+  · have hzero := L.eval_zero (e := e) hroot
+    have hnotHole : e ∉ newHoles :=
+      commonRoot_not_mem_newHoles (e := e) hroot
+    have hrows := amplifiedU_rows_of_not_mem_newHoles (e := e) L hnotHole
+    constructor
+    · calc
+        (amplifiedIntercept L i).eval (domain e) =
+            domain e * (amplifiedDirection L i).eval (domain e) :=
+          amplifiedIntercept_eval L i e
+        _ =
+            domain e * (L.polynomial.eval (domain e) *
+              (direction i).eval (domain e)) :=
+          congrArg (fun x : F => domain e * x) (amplifiedDirection_eval L i e)
+        _ = 0 := by rw [hzero]; ring
+        _ = L.polynomial.eval (domain e) * u0 e := by rw [hzero]; simp
+        _ = amplifiedU0 L e := hrows.1.symm
+    · calc
+        (amplifiedDirection L i).eval (domain e) =
+            L.polynomial.eval (domain e) *
+              (direction i).eval (domain e) := amplifiedDirection_eval L i e
+        _ = 0 := by rw [hzero]; simp
+        _ = L.polynomial.eval (domain e) * u1 e := by rw [hzero]; simp
+        _ = amplifiedU1 L e := hrows.2.symm
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction

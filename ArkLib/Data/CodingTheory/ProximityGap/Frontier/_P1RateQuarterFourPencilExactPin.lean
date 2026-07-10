@@ -135,7 +135,8 @@ private theorem natCast_div_le_inv_of_mul_le {E Q p : ℕ}
 theorem N_div_P_le_prizeEpsilon :
     (N : ℝ≥0∞) / (P : ℝ≥0∞) ≤ epsilonP1 := by
   apply natCast_div_le_inv_of_mul_le (by norm_num) prime_P.pos
-  norm_num [N, P]
+  norm_num [P1RateQuarterScaleArithmetic.N,
+    ArkLib.ProximityGap.PrizeShapePrimeP30.P]
 
 /-- Guarded large-family four-pencil extraction makes the immediate
 predecessor good at the literal prize error. -/
