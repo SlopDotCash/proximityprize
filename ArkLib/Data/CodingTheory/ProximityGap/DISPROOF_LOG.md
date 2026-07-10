@@ -25304,3 +25304,36 @@ support labels cannot close #507.
 and not a refutation of the wall hypothesis.  It narrows the next theorem shape to quantitative
 intersection/multiplicity control for the support-indexed annihilator subspaces.  All four audited
 declarations use only standard Lean axioms; no `sorry` or named hypothesis.
+
+## [466-G100F-integer-lift-smalldiff-counting] The G99 integer-lift mechanism COUNTS: the CG product trick extends from the subgroup to EVERY coset, giving the first unconditional non-Fourier counting bound on the G80Q terminal object — smallDiffPairs(b·H, W)^8 ≤ 314880·W²·n^12 for every window 2W² < p (axiom-clean) (2026-07-10)
+
+Lane: G100F Fable (`Frontier/_G100FIntegerLiftSmallDiffCounting.lean`, 7 theorems, all exactly
+`[propext, Classical.choice, Quot.sound]`; probe
+`scripts/probes/probe_466_g100f_smalldiff_counting.py`, 9 cells n=16..256, β=2..4, up to 400
+cosets).
+
+**Bricks.** `valMinAbs_mul_of_natAbs_le`: lift(w₁w₂) = lift(w₁)·lift(w₂) for strip values at
+2W² < p — G99's congruence freed from the consecutive-difference case; `lift_cross_relation`:
+every modular multiplicative relation among four strip values holds in ℤ among the lifts;
+`same_ratio_lift_ratio_mem`: same-ratio lifted differences have modular ratio in H (probe:
+100%, 212/212). `coset_strip_pairs_le`: N_c(W)² ≤ 2·D·n — the per-ratio strip count is a
+COSET-interval count, its lifted product map lands in the single coset (cb)²·H (image ≤ n)
+with divisor fibers ≤ 2d(|y|): the G80O/G80M product trick extended beyond the subgroup.
+CAPSTONE `smallDiffPairs_pow_eight_le` via the exact G80Q ratio decomposition:
+sdp(b·H, W)^8 ≤ 314880·W²·n^12, i.e. sdp ≤ 4.88·n^{3/2}·W^{1/4} — nontrivial vs min(n², 2Wn)
+throughout n^{2/3} ≪ W ≪ n², first counting statement on the terminal object in the
+intermediate window.
+
+**Probe findings.** (i) sdp leaves 0 at the BIRTHDAY scale p/(2n²) (min gap down to 1), not at
+G99's √(p/2) — containment scale and counting onset are unrelated (correction to the lane
+premise); (ii) the window [√p, p/K] is uniform-like and THIN: worst-coset/uniform decays
+monotonically to 1.1–1.5 at the prize W = p/K, no spike — the wall is purely the polylog
+excess/max-vs-mean; (iii) lifted differences are few and gcd-heavy (distinct |lifts| ≈ 25–35%,
+max pairwise gcd 722) — quasi-closure exact in evidence; (iv) capstone holds with ≥8× margin
+everywhere measured (content is the exponent, not the constant).
+
+**Honest scope.** Window 2W² < p only; G80P regime disjointness fences it from the prize saddle
+W = p/K ≫ √p — no prize claim. Bound exponent n^{3/2}W^{1/4} is far above the uniform main
+term; value is structural: the integer-lift mechanism provably counts (not merely refutes
+containment), and the surviving gap is exactly (a) crossing √p, (b) uniform-main-term strength.
+CORE remains OPEN / ON-BGK. No axioms, no sorry.
