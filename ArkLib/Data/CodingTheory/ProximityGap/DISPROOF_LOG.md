@@ -31858,3 +31858,66 @@ vanishing but reverses the histogram inequality. Any useful recursion would need
 the FULL preimage fiber that cancels the measured `10^5..10^10` expansion and the >50% support
 escape; that estimate is again the per-prime weighted-kernel equidistribution/Paley wall. CORE OPEN,
 ON-BGK.
+
+## [466-G64-FS-deep-rung-forced-exceptional] The FS15-FS18 almost-all-prime ladder is forced exceptional at the explicit prize field already at depth six: Parseval forces a nonzero characteristic-p relation before the moment saddle (2026-07-10)
+
+Lane: direct GPT-5.6 Sol CORE (`Frontier/_G64FSDeepRungForcedExceptional.lean`; exact probe
+`/tmp/arklib-reports/g64_forced_exception_probe.py`; research branch only).
+
+**Question.** FS15-FS18 give raw Wick rungs simultaneously outside a resultant-defined exceptional
+set. Can their almost-all-prime existence statement satisfy the prize's fixed explicit-field
+quantifier, perhaps because FS16 sharply reduces the resultant envelope?
+
+**Axiom-clean answer: NO, and the obstruction is stronger than a vacuous union bound.** FS14 says
+`excessCount = 0` implies the raw `GaussianEnergyBound`. The DC/Parseval lower bound says that raw
+bound is false whenever
+
+`q * (2r-1)!! * n^r < n^(2r)`, equivalently `q*(2r-1)!! < n^r`.
+
+`deep_rung_forces_bad_prime` takes the contrapositive through the actual FS14 theorem and proves
+that the characteristic prime belongs to the depth-r exceptional set. Thus at least one nonzero
+folded integer relation polynomial vanishes at the order-n root in characteristic p. The FS
+exception is forced by the principal-frequency mass, not merely permitted by a loose resultant
+count. `deep_rung_forces_ladder_exception` inserts the witness into the exact existential predicate
+used by FS17's simultaneous ladder.
+
+**Prize arithmetic.** At `n=2^30` and every field with `q<=2^158` (the nominal
+`beta<=158/30=5.2667` regime), depth six is already forced exceptional:
+
+- r=5: `log2(n^r/(q*9!!)) = -17.8842`;
+- r=6: `log2(n^r/(q*11!!)) = +8.6564`.
+
+`prize_scale_depth_six_forces_wraparound` proves the exact integer-power inequality in Lean and
+concludes `excessCount (patsG 29 6) (BadPatG 29 6) p >= 1`; every simultaneous ladder `R>=6`
+therefore contains a bad rung. Asymptotically, for `q=n^beta` and fixed beta, the first forced depth
+is `r=floor(beta)+1` once n dominates `(2r-1)!!`; it is constant-depth, far before
+`r≈ln q`.
+
+**Exact characteristic-p probes.** Ordered tuple enumeration separated char-0 folded-histogram
+coincidences from genuine modular wraparound:
+
+- `n=16,p=17,v2(p-1)=4,r=2`: 3,136 nontrivial wrap pairs, raw `E_r/Wick=5.020833`, witness
+  folded relation `3-X` (`1+1 = zeta+zeta^8 mod 17`);
+- `n=32,p=97,v2(p-1)=5,r=2`: 8,448 nontrivial wrap pairs, `E_r/Wick=3.71875`, witness
+  `2+X-X^3`;
+- `n=16,p=97,r=3`: 141,120 nontrivial wrap pairs, `E_r/Wick=3.119792`, witness
+  `3-X+X^3-X^4`.
+
+The first two primes have the adversarial exact 2-adic shape `v2(p-1)=log2 n`; surplus 2-adic
+valuation is not the cause.
+
+**Literature/mechanism integration.** Lam-Leung/Mann rigidity supplies the characteristic-zero
+pairing baseline consumed by FS13/FS18. Cyclotomic resultants (FS16) show that each nontrivial
+modular relation makes p divide an explicit integer norm, so only finitely many primes are bad at
+fixed `(n,r)`. Parseval supplies the orthogonal converse at the explicit field: once the number of
+ordered sums crosses the field-scaled Wick budget, some non-Lam-Leung collision MUST occur. A
+sharper archimedean norm can reduce an upper bound on how many primes are exceptional, but cannot
+remove the forced target prime. This is the deterministic birthday/finite Littlewood-Offord
+threshold; controlling the *excess mass* after forced relations appear is exactly the
+DC-subtracted Paley/BGK problem.
+
+**Verdict.** FS15-FS18 are valid almost-all-prime theorems but cannot discharge the explicit prize
+field: at nominal parameters that field is theorem-level exceptional by depth six. The route's
+remaining possible content is no longer exceptional-set avoidance, only a quantitative weighted
+bound on the forced wraparound mass, which G63 pins at the DC floor and CORE asks to control after
+DC subtraction. CORE OPEN, ON-BGK.
