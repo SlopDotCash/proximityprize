@@ -107,7 +107,7 @@ theorem pointsOn_card_le_half
     {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
     {u : WordStack F (Fin 2) ι}
     (family : BadScalarRichPointFamily dom k delta u)
-    (hh : 1 ≤ h) (hn : Fintype.card ι = 2 * h)
+    (hn : Fintype.card ι = 2 * h)
     (hthreshold : h + 1 ≤
       ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊)
     {line : LineParameter F} (hline : line ∈ lineParameters family) :
@@ -131,11 +131,6 @@ theorem pointsOn_card_le_half
   have hpacking := line_card_mul_max_add_core_le
     dom (u 0) (u 1) line.1 line.2
     (pointsOn family line) (h + 1) hlarge hproper
-  have hz : (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ 2 * h := by
-    have := Finset.card_le_univ
-      (jointCore dom (u 0) (u 1) line.1 line.2)
-    rw [hn] at this
-    exact this
   rw [hn] at hpacking
   exact line_card_le_half_of_packing hpacking
 
@@ -149,7 +144,7 @@ theorem outside_triple_slope_eq_of_largeCore
     {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
     {u : WordStack F (Fin 2) ι}
     (family : BadScalarRichPointFamily dom k delta u)
-    (hh : 1 ≤ h) (hk : 1 ≤ k)
+    (hk : 1 ≤ k)
     (hn : Fintype.card ι = 2 * h)
     (hthreshold : h + 1 ≤
       ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊)
@@ -242,7 +237,7 @@ theorem outsideLine_subset_pointsOn_secant_of_largeCore
     {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
     {u : WordStack F (Fin 2) ι}
     (family : BadScalarRichPointFamily dom k delta u)
-    (hh : 1 ≤ h) (hk : 1 ≤ k)
+    (hk : 1 ≤ k)
     (hn : Fintype.card ι = 2 * h)
     (hthreshold : h + 1 ≤
       ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊)
@@ -267,7 +262,7 @@ theorem outsideLine_subset_pointsOn_secant_of_largeCore
       ((mem_outsideLine_iff family line gamma2).mp hgamma2 |>.1) h12
   · have h13 : gamma1 ≠ gamma := fun h => hgamma1eq h.symm
     have hslope := outside_triple_slope_eq_of_largeCore
-      family hh hk hn hthreshold hline
+      family hk hn hthreshold hline
       hgamma1 hgamma2 hgamma h12 h13 hcore
     rw [mem_pointsOn_iff]
     refine ⟨hgammaG, ?_⟩
@@ -281,7 +276,7 @@ theorem card_le_two_mul_of_largeCore_and_two_outside
     {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
     {u : WordStack F (Fin 2) ι}
     (family : BadScalarRichPointFamily dom k delta u)
-    (hh : 1 ≤ h) (hk : 1 ≤ k)
+    (hk : 1 ≤ k)
     (hn : Fintype.card ι = 2 * h)
     (hthreshold : h + 1 ≤
       ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊)
@@ -298,10 +293,10 @@ theorem card_le_two_mul_of_largeCore_and_two_outside
   have hsecantLine := secantParameter_mem_lineParameters
     family hgamma1G hgamma2G h12
   have houtSub := outsideLine_subset_pointsOn_secant_of_largeCore
-    family hh hk hn hthreshold hline hgamma1 hgamma2 h12 hcore
-  have hfirst := pointsOn_card_le_half family hh hn hthreshold hline
+    family hk hn hthreshold hline hgamma1 hgamma2 h12 hcore
+  have hfirst := pointsOn_card_le_half family hn hthreshold hline
   have hsecond := pointsOn_card_le_half
-    family hh hn hthreshold hsecantLine
+    family hn hthreshold hsecantLine
   have hout : (outsideLine family line).card ≤ h :=
     (Finset.card_le_card houtSub).trans hsecond
   have hpartition := pointsOn_card_add_outsideLine_card family line
@@ -324,13 +319,13 @@ theorem largeCore_contradiction_of_card_gt_two_mul
     (hcore : h + 4 * (k - 1) <
       2 * (jointCore dom (u 0) (u 1) line.1 line.2).card + 3) :
     False := by
-  have hlineCard := pointsOn_card_le_half family hh hn hthreshold hline
+  have hlineCard := pointsOn_card_le_half family hn hthreshold hline
   have hpartition := pointsOn_card_add_outsideLine_card family line
   have houtside : 1 < (outsideLine family line).card := by omega
   obtain ⟨gamma1, hgamma1, gamma2, hgamma2, h12⟩ :=
     Finset.one_lt_card.mp houtside
   have hle := card_le_two_mul_of_largeCore_and_two_outside
-    family hh hk hn hthreshold hline hgamma1 hgamma2 h12 hcore
+    family hk hn hthreshold hline hgamma1 hgamma2 h12 hcore
   omega
 
 end ArkLib.ProximityGap.Frontier.HalfPredecessorLargeCoreCollapse
