@@ -346,14 +346,13 @@ condition `AppendCoherent V₁` (the same kind of side condition resolved by
 def emitOStmt₂Query (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
     [coh : AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
     (i : ιₛ₂) (q : (Oₛ₂ i).Query) :
-    OracleComp (oSpec + ([OStmt₁]ₒ + [(pSpec₁ ++ₚ pSpec₂).Message]ₒ)) ((Oₛ₂ i).Response q) := by
-  -- Case on how `V₁.embed` derives `OStmt₂ i`.
-  cases h : V₁.embed i with
-  | inl k =>
-      exact emitOStmtQueryInl (Oₛ₁ := Oₛ₁) (pSpec₂ := pSpec₂)
+    OracleComp (oSpec + ([OStmt₁]ₒ + [(pSpec₁ ++ₚ pSpec₂).Message]ₒ)) ((Oₛ₂ i).Response q) :=
+  match h : V₁.embed i with
+  | Sum.inl k =>
+      emitOStmtQueryInl (Oₛ₁ := Oₛ₁) (pSpec₂ := pSpec₂)
         (Oₛ₂ i) k (hEqInl V₁ i k h) (coh.hCohInl i k h) q
-  | inr k =>
-      exact emitOStmtQueryInr (Oₛ₁ := Oₛ₁) (pSpec₂ := pSpec₂)
+  | Sum.inr k =>
+      emitOStmtQueryInr (Oₛ₁ := Oₛ₁) (pSpec₂ := pSpec₂)
         (Oₛ₂ i) k (hEqInr V₁ i k h) (coh.hCohInr i k h) q
 
 /-- Router carrying `V₂`'s oracle context into the appended-spec oracle context: `oSpec` passes
@@ -382,6 +381,172 @@ def verify
     by simpa [ChallengeIdx.inl, ProtocolSpec.append] using challenges (ChallengeIdx.inl chal)))
   simulateQ (router₂ V₁) (V₂.verify stmt₂ (fun chal =>
     by simpa [ChallengeIdx.inr, ProtocolSpec.append] using challenges (ChallengeIdx.inr chal)))
+
+/-! ### `toVerifier` / `append` bridge infrastructure -/
+
+lemma simulateQ_simOracle2_leftQuery {ιₒ : Type} {spec : OracleSpec ιₒ}
+    {κ₁ : Type} {U₁ : κ₁ → Type} [∀ i, OracleInterface (U₁ i)]
+    {κ₂ : Type} {U₂ : κ₂ → Type} [∀ i, OracleInterface (U₂ i)]
+    (u₁ : ∀ i, U₁ i) (u₂ : ∀ i, U₂ i) (qs : ([U₁]ₒ).Domain) :
+    simulateQ (OracleInterface.simOracle2 spec u₁ u₂)
+      (query (spec := spec + ([U₁]ₒ + [U₂]ₒ)) (Sum.inr (Sum.inl qs)))
+      = (pure (OracleInterface.answer (u₁ qs.1) qs.2) : OracleComp spec _) := by
+  change simulateQ (OracleInterface.simOracle2 spec u₁ u₂)
+      (liftM ((spec + ([U₁]ₒ + [U₂]ₒ)).query (Sum.inr (Sum.inl qs)))) = _
+  rw [simulateQ_spec_query]
+  simp only [OracleInterface.simOracle2, QueryImpl.addLift_def, QueryImpl.add_apply_inr,
+    QueryImpl.add_apply_inl, QueryImpl.liftTarget_apply]
+  change liftM (OracleInterface.simOracle0 U₁ u₁ qs) = _
+  simp only [OracleInterface.simOracle0]
+  rfl
+
+lemma simulateQ_simOracle2_rightQuery {ιₒ : Type} {spec : OracleSpec ιₒ}
+    {κ₁ : Type} {U₁ : κ₁ → Type} [∀ i, OracleInterface (U₁ i)]
+    {κ₂ : Type} {U₂ : κ₂ → Type} [∀ i, OracleInterface (U₂ i)]
+    (u₁ : ∀ i, U₁ i) (u₂ : ∀ i, U₂ i) (qm : ([U₂]ₒ).Domain) :
+    simulateQ (OracleInterface.simOracle2 spec u₁ u₂)
+      (query (spec := spec + ([U₁]ₒ + [U₂]ₒ)) (Sum.inr (Sum.inr qm)))
+      = (pure (OracleInterface.answer (u₂ qm.1) qm.2) : OracleComp spec _) := by
+  change simulateQ (OracleInterface.simOracle2 spec u₁ u₂)
+      (liftM ((spec + ([U₁]ₒ + [U₂]ₒ)).query (Sum.inr (Sum.inr qm)))) = _
+  rw [simulateQ_spec_query]
+  simp only [OracleInterface.simOracle2, QueryImpl.addLift_def, QueryImpl.add_apply_inr,
+    QueryImpl.liftTarget_apply]
+  change liftM (OracleInterface.simOracle0 U₂ u₂ qm) = _
+  simp only [OracleInterface.simOracle0]
+  rfl
+
+theorem messages_fst_heq (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) (k : pSpec₁.MessageIdx) :
+    HEq (tr.fst.messages k) (tr.messages (MessageIdx.inl k)) := by
+  show HEq (tr.fst k.val) (tr (MessageIdx.inl k).val)
+  unfold FullTranscript.fst
+  simp only [MessageIdx.inl]
+  exact cast_heq _ _
+
+theorem messages_snd_heq (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) (k : pSpec₂.MessageIdx) :
+    HEq (tr.snd.messages k) (tr.messages (MessageIdx.inr k)) := by
+  show HEq (tr.snd k.val) (tr (MessageIdx.inr k).val)
+  unfold FullTranscript.snd
+  simp only [MessageIdx.inr]
+  exact cast_heq _ _
+
+theorem challenges_fst_heq (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) (i : ChallengeIdx pSpec₁) :
+    HEq (tr.fst.challenges i) (tr.challenges (ChallengeIdx.inl i)) := by
+  show HEq (tr.fst i.val) (tr (ChallengeIdx.inl i).val)
+  unfold FullTranscript.fst
+  simp only [ChallengeIdx.inl]
+  exact cast_heq _ _
+
+theorem challenges_snd_heq (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) (i : ChallengeIdx pSpec₂) :
+    HEq (tr.snd.challenges i) (tr.challenges (ChallengeIdx.inr i)) := by
+  show HEq (tr.snd i.val) (tr (ChallengeIdx.inr i).val)
+  unfold FullTranscript.snd
+  simp only [ChallengeIdx.inr]
+  exact cast_heq _ _
+
+theorem emitMessageQuery_simulateQ (oStmt : ∀ i, OStmt₁ i)
+    (msgs : ∀ j, (pSpec₁ ++ₚ pSpec₂).Message j)
+    {T₁ : Type} (O₁ : OracleInterface T₁) (j : (pSpec₁ ++ₚ pSpec₂).MessageIdx)
+    (hMsg : (pSpec₁ ++ₚ pSpec₂).Message j = T₁)
+    (hO : O₁ = _root_.cast (congrArg OracleInterface hMsg)
+      (instOracleInterfaceMessageAppend (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂) j))
+    (q : O₁.Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs) (emitMessageQuery O₁ j hMsg hO q)
+      = pure (O₁.answer (hMsg ▸ msgs j) q) := by
+  subst hMsg; subst hO
+  simp only [emitMessageQuery, simulateQ_query]
+  rfl
+
+theorem simulateQ_emitMessageInl (oStmt : ∀ i, OStmt₁ i)
+    (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) (i : pSpec₁.MessageIdx) (q : (Oₘ₁ i).Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages) (emitMessageInl i q)
+      = pure ((Oₘ₁ i).answer (tr.fst.messages i) q) := by
+  rw [emitMessageInl, emitMessageQuery_simulateQ]
+  congr 1 <;> exact eq_of_heq ((eqRec_heq _ _).trans (messages_fst_heq tr i).symm)
+
+lemma router1_collapse (oStmt : ∀ i, OStmt₁ i) (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) :
+    (OracleInterface.simOracle2 oSpec oStmt tr.messages) ∘ₛ router₁
+      = OracleInterface.simOracle2 oSpec oStmt tr.fst.messages := by
+  funext q
+  rw [QueryImpl.apply_compose]
+  rcases q with t | (t | ⟨i, q⟩) <;> dsimp only [router₁]
+  · rfl
+  · rfl
+  · exact simulateQ_emitMessageInl oStmt tr i q
+
+theorem simulateQ_emitMessageInr (oStmt : ∀ i, OStmt₁ i)
+    (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) (i : pSpec₂.MessageIdx) (q : (Oₘ₂ i).Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages) (emitMessageInr i q)
+      = pure ((Oₘ₂ i).answer (tr.snd.messages i) q) := by
+  rw [emitMessageInr, emitMessageQuery_simulateQ]
+  congr 1 <;> exact eq_of_heq ((eqRec_heq _ _).trans (messages_snd_heq tr i).symm)
+
+theorem emitOStmtQueryInl_simulateQ (oStmt : ∀ i, OStmt₁ i)
+    (msgs : ∀ j, (pSpec₁ ++ₚ pSpec₂).Message j)
+    {T : Type} (O : OracleInterface T) (k : ιₛ₁) (hSt : OStmt₁ k = T)
+    (hO : O = _root_.cast (congrArg OracleInterface hSt) (Oₛ₁ k)) (q : O.Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
+        (emitOStmtQueryInl (Oₛ₁ := Oₛ₁) (pSpec₂ := pSpec₂) O k hSt hO q)
+      = pure (O.answer (hSt ▸ oStmt k) q) := by
+  subst hSt; subst hO
+  show simulateQ (OracleInterface.simOracle2 oSpec oStmt msgs)
+      (query (spec := oSpec + ([OStmt₁]ₒ + [(pSpec₁ ++ₚ pSpec₂).Message]ₒ))
+        (Sum.inr (Sum.inl ⟨k, q⟩))) = _
+  exact simulateQ_simOracle2_leftQuery oStmt msgs ⟨k, q⟩
+
+theorem emitOStmtQueryInr_simulateQ (oStmt : ∀ i, OStmt₁ i)
+    (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂))
+    {T : Type} (O : OracleInterface T) (k : pSpec₁.MessageIdx) (hSt : pSpec₁.Message k = T)
+    (hO : O = _root_.cast (congrArg OracleInterface hSt) (Oₘ₁ k)) (q : O.Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+        (emitOStmtQueryInr (Oₛ₁ := Oₛ₁) (pSpec₂ := pSpec₂) O k hSt hO q)
+      = pure (O.answer (hSt ▸ tr.fst.messages k) q) := by
+  subst hSt; subst hO
+  show simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+      (emitMessageInl (OStmt₁ := OStmt₁) (pSpec₂ := pSpec₂) k q) = _
+  exact simulateQ_emitMessageInl oStmt tr k q
+
+theorem simulateQ_emitOStmt₂Query (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
+    [coh : AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+    (oStmt : ∀ i, OStmt₁ i) (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂))
+    (i : ιₛ₂) (q : (Oₛ₂ i).Query) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages) (emitOStmt₂Query V₁ i q)
+      = pure ((Oₛ₂ i).answer
+          (mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst i) q) := by
+  unfold emitOStmt₂Query mkVerifierOStmtOut
+  split <;> rename_i k h
+  · rw [emitOStmtQueryInl_simulateQ]
+    split <;> rename_i k' h'
+    · obtain rfl : k = k' := Sum.inl.inj (h.symm.trans h')
+      congr 1; congr 1
+      simp only [eqRec_eq_cast, cast_cast]
+    · exact absurd (h.symm.trans h') (by simp)
+  · rw [emitOStmtQueryInr_simulateQ]
+    split <;> rename_i k' h'
+    · exact absurd (h.symm.trans h') (by simp)
+    · obtain rfl : k = k' := Sum.inr.inj (h.symm.trans h')
+      congr 1; congr 1
+      simp only [eqRec_eq_cast, cast_cast]
+
+lemma router2_collapse (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
+    [coh : AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+    (oStmt : ∀ i, OStmt₁ i) (tr : FullTranscript (pSpec₁ ++ₚ pSpec₂)) :
+    (OracleInterface.simOracle2 oSpec oStmt tr.messages) ∘ₛ (router₂ V₁)
+      = OracleInterface.simOracle2 oSpec
+          (mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst) tr.snd.messages := by
+  funext q
+  rcases q with t | (⟨i, q⟩ | ⟨i, q⟩)
+  · rfl
+  · show simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+        (emitOStmt₂Query V₁ i q) = _
+    rw [simulateQ_emitOStmt₂Query]
+    exact (simulateQ_simOracle2_leftQuery
+      (mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst) tr.snd.messages ⟨i, q⟩).symm
+  · show simulateQ (OracleInterface.simOracle2 oSpec oStmt tr.messages)
+        (emitMessageInr (pSpec₁ := pSpec₁) i q) = _
+    rw [simulateQ_emitMessageInr]
+    exact (simulateQ_simOracle2_rightQuery
+      (mkVerifierOStmtOut V₁.embed V₁.hEq oStmt tr.fst) tr.snd.messages ⟨i, q⟩).symm
 
 end OracleVerifier.Append
 
