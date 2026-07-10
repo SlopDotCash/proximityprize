@@ -2218,6 +2218,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G75RawDeviationVsRelation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G76HigherGeneratorMomentBlindSpot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G77FRelationAnomalyFourierGauge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G78KMSpreadCircularity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G78WeightedRelationEmbeddingRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79PPiAdicDigitClustering
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddleLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
