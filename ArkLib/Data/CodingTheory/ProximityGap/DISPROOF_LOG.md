@@ -24251,3 +24251,32 @@ ON-BGK. No axioms, no sorry, no native_decide.
 **Honest scope**: negative-space result. Nothing here bounds M or ‖η_b‖; the n^{2/3} floor is
 probe-verified (6 cells, monotone) with the AM–GM half formal and the fluctuation floor
 empirical. CORE remains OPEN / ON-BGK.
+
+## [466-G89-first-incidence-wall-equivalence] #505 HONEST-CLOSURE HALF LANDED: the first-incidence cross-orbit formulation is QUANTITATIVELY IDENTICAL to the wall — sandwich constant exactly 1, transversal-independent, no weaker sufficient condition exists in this functional class (2026-07-10)
+
+Lane: #505 exit criterion 2 (`Frontier/_G89FirstIncidenceWallEquivalence.lean`, 659 lines, 18
+decls, all `[propext, Classical.choice, Quot.sound]` or better, no sorry/axiom/native_decide).
+**(1) Full negacyclic orbit substrate:** `rotZ^[m] = −id`, `rotZ^[2m] = id`
+(`iterate_rotZ_m`/`iterate_rotZ_two_m`); the full 2m-step orbits form an equal-or-disjoint block
+system (`negacyclicOrbit_eq_of_mem`/`negacyclicOrbit_disjoint_of_not_mem`) — unlike R380's
+half-orbit, whose membership is not symmetric; the signed summand is constant across the whole
+orbit including the d ↦ −d crossing. **(2) Transversals exist, canonical-free:**
+`IsOrbitTransversal`, `transversal_rep_unique`, constructive `exists_orbitTransversal`
+(orbit-peeling recursion); all results quantified over EVERY transversal. **(3) Exact
+compression, constant 1:** `firstIncidenceDiscrepancy_eq_relationAnomaly` — the orbit-size-
+weighted first-incidence functional EQUALS R366's centered relation anomaly (identity, not
+estimate; `firstIncidenceDiscrepancy_transversal_independent`: no lucky-representative escape).
+Proof crosses the transversal structure via `sum_biUnion` over disjoint orbit tiles + orbit
+constancy — not a rename. **(4) HEADLINE `firstIncidence_bound_iff_wall`:** at prize shape
+(orderOf g = n = 2m, g^m = −1) the first-incidence bound at the Wick budget ⟺ `DCEnergyBound`;
+`firstIncidence_le_iff_relationAnomaly_le` makes the sufficient-threshold sets coincide exactly.
+**(5) Literal wall pin:** `firstIncidence_eq_dcMoment_sub_floor` via G77. **(6) Unweighted
+variant:** rescales the wall by exactly the uniform orbit size c
+(`relationAnomaly_eq_orbitSize_mul_rawFirstIncidence`/`rawFirstIncidence_le_iff_wall_scaled`);
+`abs_sum_negacyclicOrbit_eq_sum_abs` extends R382 no-cancellation to the full 2m-orbit.
+
+**Consequence.** Combined with G77 (total value = Fourier gauge), G78 (embedding slack = 0), G80
+(signed l1 certificate = M): every recorded formulation of the signed relation route is now
+formally pinned to the wall. The "surprising opposite" (genuine slack via first incidences) is
+proved impossible for this functional class. Quantitative-identity no-go, NOT a bound:
+`DCEnergyBound`/CORE remains OPEN / ON-BGK.
