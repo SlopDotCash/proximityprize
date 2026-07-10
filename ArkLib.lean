@@ -2200,6 +2200,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullLengthCharacterSumSca
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullRankLatticeTransferenceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FunctionFieldModelSubfieldDegeneracy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G100PerDepthCenteringCancellation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101ExactSignedDepthWeld
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101OrbitClassVarianceNormalForm
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G102DepthZeroAnomalyFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103SyzygyReplicationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
@@ -2219,13 +2222,16 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G73ShkredovMultiShiftExpo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G75RawDeviationVsRelationAnomaly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G76HigherGeneratorMomentBlindSpot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G77FRelationAnomalyFourierGauge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G77FirstIncidenceJordanDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G78KMSpreadCircularity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G78WeightedRelationEmbeddingRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79PPiAdicDigitClustering
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddleLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80IEnergyRouteAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80JDivisorSecondMoment
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80JEnergySecondMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80KDivisorFirstMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80LEnergyRefinedConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80MUnconditionalIntervalBound
@@ -2278,6 +2284,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90WeightedCollisionDecod
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91LowProfileFiberBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91MaximalCancellationBagDiscrepancy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G92SpreadExcessProbe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalCoreSlotFactorization
@@ -2285,6 +2292,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalSlotDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94JacobiCocycleMetric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CanonicalDepthFourAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CyclicCodeWeightDictionary
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96ProductionDepthFourFixedEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G97ArcDilateDiscrepancy
