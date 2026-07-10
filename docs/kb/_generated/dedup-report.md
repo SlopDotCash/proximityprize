@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5884 files, 62669 declarations
+- `ArkLib` — 5900 files, 62824 declarations
 
-## Same short-name across multiple files (2414 groups)
+## Same short-name across multiple files (2432 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -11124,6 +11124,26 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma R15.alpha12_injective` [ArkLib/Data/CodingTheory/ProximityGap/SudanListBound.lean:388](../../../ArkLib/Data/CodingTheory/ProximityGap/SudanListBound.lean#L388) — Injectivity of the evaluation points `0, 1, …, 11` in `ZMod 13`.
 - `lemma R15.alpha12_injective` [ArkLib/Data/CodingTheory/ProximityGap/SudanListBoundFull.lean:388](../../../ArkLib/Data/CodingTheory/ProximityGap/SudanListBoundFull.lean#L388) — Injectivity of the evaluation points `0, 1, …, 11` in `ZMod 13`.
 
+### `amplifiedCoreSet` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:238](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L238) — Filtering by a proposition keeps downstream membership elimination from normalizing the billion-scal
+- `def ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:214](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L214) — Remove the new holes and promote all common roots into every core.
+
+### `amplifiedCoreSet_card` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:256](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L256) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:217](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L217) — (no docstring)
+
+### `amplifiedCoreSet_card_ge_k` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet_card_ge_k` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:281](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L281) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet_card_ge_k` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:226](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L226) — (no docstring)
+
+### `amplifiedCoreSet_size_condition` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet_size_condition` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:286](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L286) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedCoreSet_size_condition` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:231](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L231) — (no docstring)
+
 ### `anchoredFrom_of_at` (2 declarations, 2 files)
 
 - `theorem DuplexSpongeFS.EagerLazyDS.anchoredFrom_of_at` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Extraction.lean:70](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Extraction.lean#L70) — **Positional anchoring**: a `collisionStep` at any position (against the prefix fold) yields `Anchor
@@ -11364,6 +11384,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.commonLocatorResidual` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean#L57) — Intended discharge of the construction residual; elaboration is performance blocked.
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.commonLocatorResidual` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConstruction.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConstruction.lean#L195) — (no docstring)
 
+### `commonRoot_not_mem_newHoles` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.commonRoot_not_mem_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:135](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L135) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.commonRoot_not_mem_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:148](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L148) — (no docstring)
+
 ### `concreteCommonLocator_eval_ne_zero` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.concreteCommonLocator_eval_ne_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean#L33) — (no docstring)
@@ -11428,6 +11453,21 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem DuplexSpongeFS.EagerLazyDS.consistent_inv_hit_pair_mem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean:785](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Correspondence.lean#L785) — A consistent inverse hit puts the entry's exact pair in the cache.
 - `theorem DuplexSpongeFS.EagerLazyDS.consistent_inv_hit_pair_mem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean:785](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean#L785) — A consistent inverse hit puts the entry's exact pair in the cache.
+
+### `core_one_disjoint_newHoles` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.core_one_disjoint_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L105) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.core_one_disjoint_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L85) — (no docstring)
+
+### `core_sdiff_newHoles_card` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.core_sdiff_newHoles_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:115](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L115) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.core_sdiff_newHoles_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:128](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L128) — (no docstring)
+
+### `core_zero_disjoint_newHoles` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.core_zero_disjoint_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L95) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.core_zero_disjoint_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L78) — (no docstring)
 
 ### `decodeLT_ne_of_val_ne` (2 declarations, 2 files)
 
@@ -12476,6 +12516,21 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec` [ArkLib/Data/CodingTheory/ProximityGap/LineDecodingSpec.lean:1487](../../../ArkLib/Data/CodingTheory/ProximityGap/LineDecodingSpec.lean#L1487) — Add the immediate lower and adjacent upper lattice brackets to a concrete adjacent `mcaPrizeLatticeR
 - `theorem ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_with_spec_and_adjacent_brackets_of_with_spec` [ArkLib/Data/CodingTheory/ProximityGap/MCAGSLatticeSpec.lean:882](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAGSLatticeSpec.lean#L882) — Add the immediate lower and adjacent upper lattice brackets to a concrete adjacent `mcaPrizeLatticeR
 
+### `mem_core_iff_of_mem_newHoles` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.mem_core_iff_of_mem_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L81) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.mem_core_iff_of_mem_newHoles` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:66](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L66) — (no docstring)
+
+### `mem_core_iff_of_mem_rootEleven` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.mem_core_iff_of_mem_rootEleven` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:75](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L75) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.mem_core_iff_of_mem_rootEleven` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L60) — (no docstring)
+
+### `mem_core_iff_of_mem_rootFour` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.mem_core_iff_of_mem_rootFour` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L69) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.mem_core_iff_of_mem_rootFour` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L54) — (no docstring)
+
 ### `mem_dil` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.mem_dil` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:97](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L97) — For `u ≠ 0`, membership in the dilate: `x ∈ u • S ↔ u⁻¹ x ∈ S`.
@@ -12610,6 +12665,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.ne_zero_of_mem_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:168](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L168) — Members of a finite multiplicative subgroup are nonzero.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.ne_zero_of_mem_finSubgroup` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:168](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L168) — Members of a finite multiplicative subgroup are nonzero.
+
+### `newHoles_subset_core_two` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.newHoles_subset_core_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L87) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.newHoles_subset_core_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L72) — (no docstring)
 
 ### `noRedundant_pairwise_classDistinct` (2 declarations, 2 files)
 
@@ -12953,6 +13013,36 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.RadicalWire304.rootDecodedRadical_val_monic` [ArkLib/ToMathlib/MinimalSurfaceChain.lean:331](../../../ArkLib/ToMathlib/MinimalSurfaceChain.lean#L331) — The base-point fact at the radical decoded root (monic case): the value is exactly the surface's cen
 - `theorem ArkLib.RadicalWire304.rootDecodedRadical_val_monic` [ArkLib/ToMathlib/RadicalAssembler.lean:350](../../../ArkLib/ToMathlib/RadicalAssembler.lean#L350) — The base-point fact at the radical decoded root (monic case): the value is exactly the surface's cen
+
+### `rootEleven_mem_core_one` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootEleven_mem_core_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:164](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L164) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootEleven_mem_core_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:116](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L116) — (no docstring)
+
+### `rootEleven_not_mem_core_two` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootEleven_not_mem_core_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:180](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L180) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootEleven_not_mem_core_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:122](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L122) — (no docstring)
+
+### `rootEleven_not_mem_core_zero` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootEleven_not_mem_core_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:171](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L171) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootEleven_not_mem_core_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:110](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L110) — (no docstring)
+
+### `rootFour_mem_core_zero` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootFour_mem_core_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L139) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootFour_mem_core_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L92) — (no docstring)
+
+### `rootFour_not_mem_core_one` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootFour_not_mem_core_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:146](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L146) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootFour_not_mem_core_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L98) — (no docstring)
+
+### `rootFour_not_mem_core_two` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootFour_not_mem_core_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean:155](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedConstruction.lean#L155) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.rootFour_not_mem_core_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSaturatedCore.lean#L104) — (no docstring)
 
 ### `sameClass` (2 declarations, 2 files)
 
