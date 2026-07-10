@@ -2253,6 +2253,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKB
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
