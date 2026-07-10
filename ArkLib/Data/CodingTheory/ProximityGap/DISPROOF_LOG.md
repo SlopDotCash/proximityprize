@@ -31470,3 +31470,19 @@ the envelope predicted: fixed r ⟹ finite Paley-independent bad-prime ceilings;
 `Polynomial.Splits` (`IsAlgClosed.splits`) are the working combo; `Int.abs_eq_natAbs` as a
 simp lemma loops (use `Nat.cast_natAbs` + `Int.cast_abs`); Complex.isAlgClosed lives in
 `Mathlib.Analysis.Complex.Polynomial.Basic`. CORE OPEN, ON-BGK.
+
+## [466-FS17-simultaneous-ladder] LADDER UNIFICATION (Fable session): ONE good-prime set on which ALL Wick rungs r ∈ [1,R] hold simultaneously — union cap Σ_r n^{2r}((k+1+r)n/s); min-over-depth moment optimization now a single-event statement (2026-07-09)
+
+Lane: FS17 (file `Frontier/_FS17SimultaneousLadder.lean`, real locked build 3346 jobs, both
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `ladderBadSet k R P` — primes bad at ANY depth r ∈ [1,R]; `simultaneous_badPrime_cap`
+  bounds it by the sum of the per-depth FS14 T=1 caps (biUnion + card_biUnion_le).
+- `gaussianEnergyBound_ladder_of_good_prime` — off that ONE set, `GaussianEnergyBound (μ_n) r`
+  for every r ∈ [1,R] simultaneously in every char-p field with a primitive n-th root
+  (b := r via the clean `two_mul_le_two_pow`).
+
+HONEST SCOPE: the union budget is dominated by the deepest term ≈ n^{2R+1}/s — simultaneity
+is FREE (same β ≳ 2R+2 window as the single deepest rung); the prize joint limit R ≈ ln q
+stays out of reach (FS15 closing no-go). Interface value: min_{r ≤ R} M_r at a single prime
+is now well-formed. CORE OPEN, ON-BGK.
