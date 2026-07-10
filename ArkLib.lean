@@ -2201,6 +2201,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58LowHeightPaddingObstru
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G59CharZeroFloorInsufficiency
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G61PureDCGateStrictlyStronger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G62BinaryNormFoldWeightNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G63PrimitiveCensusPinnedAtDCFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
