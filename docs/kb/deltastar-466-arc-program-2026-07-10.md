@@ -78,3 +78,20 @@ exponents than k = 2 (e.g. `n^{5/6}` at k = 3); the genuine CG/BGK bootstrap rep
 crude fiber bound with multiplicative-energy control — exactly the open content. Do not land
 the crude ladder; the prize-ward continuation is energy-refined fibers, or the saddle-side
 certificate directly.
+
+## 6. Next-session target (precisely scoped): the divisor second moment
+
+**Lemma to land (pure Nat, ~200–400 lines):**
+`Σ_{y ≤ M} d(y)² ≤ C·M·(log₂ M + 1)³` — proof sketch: exact identity
+`Σ_{y≤M} d(y)² = Σ_{a,b ≤ M} ⌊M/lcm(a,b)⌋`; write `lcm = ab/g`, group by `g = gcd`:
+`≤ M·Σ_g (1/g)·(Σ_{a' ≤ M/g} 1/a')²`; bound each harmonic sum dyadically in Nat
+(`Σ_{a ∈ [2^j, 2^{j+1})} M/a ≤ M` per block, `≤ log₂M + 1` blocks — no Real.log needed).
+
+**Payoff (with G80L):** `E×(A) ≤ Σ_{y≤W²} d(y)² ≤ C·W²·log³W` gives
+`T(W) ≤ C'·n^{1/4}·√W·log^{3/4}W` — nontrivial BELOW the `n^{2/3}` threshold where G80M dies
+(e.g. `T(n^{2/3}) = O(n^{7/12}·log)`), extending the unconditional window downward. Note the
+`E ≤ Σ_{y∈P} d²` restriction to the ≤ n product set is WORSE (n·d_max²) — sum over ALL
+`y ≤ W²` is the right form here.
+
+**After that:** the third rung is the genuine energy recursion (Konyagin–Shkredov-style
+`E×(A)` self-improvement) — that is where the open BGK content begins; expect wall contact.
