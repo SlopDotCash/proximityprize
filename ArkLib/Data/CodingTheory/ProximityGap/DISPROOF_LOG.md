@@ -1,3 +1,42 @@
+## [466-G59-free-orbit-relabel-no-gain] substituting K = n*orbitRepCount into R392 is an EXACT relabeling of the open relation count, NOT a gain; the rotZ quotient pins orbit size at n and cannot lower K; the one prize-facing input is a WEIGHTED-REPRESENTATIVE hypothesis (few orbits OR light representatives) (2026-07-10, #466 G59, opus-4-8 formalizer)
+
+Lane: arklib-opus-formalizer (opus-4-8). Formalizes the smallest axiom-clean delimiter surviving G59 and
+the fable-critic question ("can the weighted orbit-representative route after G59 improve R392 at log depth").
+R392 (`_R392RelationCountCapstone`) reduces the whole r300-r392 moment arc to ONE open Prop:
+`RealizedRelationCountBound g n m r K := (∑_{s∈range(m+1)} #sectorRelations g n m r s) ≤ K`, consumed by
+`E_r ≤ (1+K)·shadowEnergy`. The r371/r372 rotation `rotZ` (the `z ↦ ζ·z` shadow twist, ζ primitive 2m-th root,
+order n=2m) acts on the R388 relation set: `NR_rotZ` (mass-invariant), `rotZ_eval_zero_iff` (vanishing-stable),
+`keysR_rotZ`, `rotZ_height_le`. The tempting "quotient gain" is to bound K by n·(#orbits) and hope #orbits is
+small. THIS FILE PROVES THAT MOVE CANNOT HELP.
+
+LANDED AXIOM-CLEAN (`Frontier/_G59FreeOrbitDelimiterNoGo.lean`, 8 thms, all `#print axioms`
+= [propext, Classical.choice, Quot.sound], no sorryAx, real LOCKED build 3346 jobs, autoImplicit=false,
+Codex-reviewed clean):
+* `orbitOf_card` / `freeOrbit_card`: for a FREE C_n action (`σ^n = id` on S, no power 1≤k<n fixes any point),
+  `S.card = n · orbitRepCount` — an EXACT IDENTITY, not a bound. Orbit size is PINNED at n; churn is impossible.
+* `mass_eq_n_mul_repMass`: a `σ`-invariant weight w has `∑_{x∈S} w x = n · ∑_{o∈reps} w o` — the exact free-orbit
+  MASS decomposition (every orbit member carries the representative's identical weight).
+* `relCountBound_of_free_orbit`: taking `K := n·orbitRepCount`, the R392 input `S.card ≤ K` holds with EQUALITY.
+* `energy_eq_relabel_no_gain` (THE NO-GO): `(1 + n·orbitRepCount)·shadowE = (1 + S.card)·shadowE`, so the R392
+  consumer bound at `K = n·orbitRepCount` is LITERALLY the bound at the exact count — a change of variables, not
+  an improvement.
+* `no_gain_without_representative_hypothesis` (THE DELIMITER): any strict improvement `K' < S.card` is
+  EQUIVALENT to `K' < n·orbitRepCount` — the free-orbit identity pins S.card with NO slack, so such a K' cannot
+  come from the orbit decomposition; it requires a NEW representative-COUNT bound.
+* `mass_no_gain_without_weighted_representative`: `(∑_{x∈S} w x ≤ M) ↔ (n·∑_{o∈reps} w o ≤ M)` — a sub-Wick
+  mass certificate is EQUIVALENT to a representative-MASS bound; the factor n and per-orbit multiplicity are fixed.
+* `NR_rotZ_invariant`: discharges the mass-invariance hypothesis for the REAL action via r372's `NR_rotZ`.
+
+VERDICT (RELABEL-NO-GAIN, permanent): the rotZ quotient reorganizes the open relation count K into
+n·orbitRepCount EXACTLY and cannot lower it — orbit-size churn is closed forever. The two ways to actually
+beat the exact K are isolated as genuinely NEW inputs the quotient does NOT supply: (i) a representative-COUNT
+hypothesis `orbitRepCount ≤ B`, or (ii) a representative-MASS hypothesis dropping zero-mass orbits. Both are the
+single prize-facing object: a WEIGHTED-REPRESENTATIVE bound. This matches the weighted-puncture-recurrence kb
+note's exact-remaining-target (a global stability theorem across scalar colours) and the R392 capstone's "K of
+Wick scale" open core. NOTHING here is BGK; it is exact free-orbit algebra over the landed rotZ action. Does NOT
+overlap G56's empirical weighted-mass probe or Opus CORE's negacyclic short-vector lane. CORE OPEN, ON-BGK.
+Author Sol (opus-4-8 formalizer), co-author wakesync. -- g59freeorbit.
+
 ## [466-antiresonance-dichotomy-reduces-to-wall] the Chapman-Mudgal anti-resonance DICHOTOMY (in the W8/A quarter-arc coset-SET language, at worst-b, thin-dyadic) is an EXACT re-encoding of the BGK sup bound; the arc-excess is an O(1)-multiple proxy for M^2/n, no independent lever, no tower descent (2026-07-09, opus-4-8 core seat)
 
 LENS: the UNRUN Chapman-Mudgal anti-resonance dichotomy (2605.15434), dossier v3 §16(D) / lines 981, 1122.

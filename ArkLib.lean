@@ -2197,6 +2197,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecompo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58LowHeightPaddingObstruction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G59FreeOrbitDelimiterNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
