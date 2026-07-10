@@ -39,6 +39,7 @@ namespace ArkLib.ProximityGap.Frontier.G77FirstIncidenceJordanDecomposition
 
 open ArkLib.ProximityGap.Frontier.R383GeneratorAveragingDoubleCount
 open ArkLib.ProximityGap.Frontier.R384CenteredGeneratorAverage
+open ArkLib.ProximityGap.Frontier.R385CrossGeneratorCovarianceBlindSpot
 
 variable {A D : Type*} [DecidableEq A] [DecidableEq D]
 
@@ -70,6 +71,12 @@ noncomputable def excessIncidenceWeight
     (T : Finset A) (S : Finset D) (w : D → ℕ) (rel : A → D → Prop)
     [DecidableRel rel] : ℝ :=
   ∑ d ∈ S, (w d : ℝ) * (endpointIncidence T rel d - 1 : ℕ)
+
+/-- Weighted ordered distinct-generator covariance mass. -/
+noncomputable def offDiagIncidenceWeight
+    (T : Finset A) (S : Finset D) (w : D → ℕ) (rel : A → D → Prop)
+    [DecidableRel rel] : ℝ :=
+  ∑ d ∈ S, (w d : ℝ) * offDiagEndpointIncidence T rel d
 
 /-- **Pointwise first-incidence decomposition.** -/
 theorem centeredEndpointIncidence_eq_first_add_excess_sub_uncovered
@@ -201,6 +208,62 @@ theorem excessIncidenceWeight_nonneg
   unfold excessIncidenceWeight
   positivity
 
+/-- The sharp pointwise comparison: after the unique-incidence stratum is removed, the second
+factorial moment pays every remaining incidence with factor two.  Equality holds at incidence
+two, so the constant cannot be improved in this abstraction. -/
+theorem two_mul_excess_le_offDiagEndpointIncidence
+    (T : Finset A) (rel : A → D → Prop) [DecidableRel rel] (d : D) :
+    (2 : ℝ) * (endpointIncidence T rel d - 1 : ℕ) ≤
+      offDiagEndpointIncidence T rel d := by
+  rw [offDiagEndpointIncidence_eq]
+  let Z := endpointIncidence T rel d
+  change (2 : ℝ) * (Z - 1 : ℕ) ≤ (Z * Z - Z : ℕ)
+  by_cases hzero : Z = 0
+  · simp [Z, hzero]
+  by_cases hone : Z = 1
+  · simp [Z, hone]
+  have htwo : 2 ≤ Z := by omega
+  have honele : 1 ≤ Z := by omega
+  have hZmul : Z ≤ Z * Z := by
+    exact Nat.le_mul_of_pos_right Z (Nat.pos_of_ne_zero hzero)
+  push_cast [Nat.cast_sub honele, Nat.cast_sub hZmul]
+  have htwo' : (2 : ℝ) ≤ Z := by exact_mod_cast htwo
+  have honele' : (1 : ℝ) ≤ Z := by exact_mod_cast honele
+  have hprod : (0 : ℝ) ≤ ((Z : ℝ) - 1) * ((Z : ℝ) - 2) :=
+    mul_nonneg (sub_nonneg.mpr honele') (sub_nonneg.mpr htwo')
+  nlinarith
+
+/-- **Covariance discharges all excess multiplicity.** The weighted second factorial moment is at
+least twice the full excess-incidence tax.  Thus R385/G76's blind spot is exactly binary first
+coverage, not multiplicity `Z ≥ 2`. -/
+theorem two_mul_excessIncidenceWeight_le_offDiagIncidenceWeight
+    (T : Finset A) (S : Finset D) (w : D → ℕ) (rel : A → D → Prop)
+    [DecidableRel rel] :
+    2 * excessIncidenceWeight T S w rel ≤ offDiagIncidenceWeight T S w rel := by
+  unfold excessIncidenceWeight offDiagIncidenceWeight
+  rw [Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro d hd
+  calc
+    2 * ((w d : ℝ) * (endpointIncidence T rel d - 1 : ℕ)) =
+        (w d : ℝ) * (2 * (endpointIncidence T rel d - 1 : ℕ)) := by ring
+    _ ≤ (w d : ℝ) * offDiagEndpointIncidence T rel d :=
+      mul_le_mul_of_nonneg_left
+        (two_mul_excess_le_offDiagEndpointIncidence T rel d) (by positivity)
+
+/-- With nonnegative field scale, covariance gives a complete upper bound for the excess term.
+Only the binary covered-versus-uncovered discrepancy remains outside this bound. -/
+theorem sum_centeredEndpointIncidence_le_coverage_add_half_covariance
+    (q : ℝ) (T : Finset A) (S : Finset D) (w : D → ℕ) (rel : A → D → Prop)
+    [DecidableRel rel] (hq : 0 ≤ q) :
+    (∑ d ∈ S, (w d : ℝ) * centeredEndpointIncidence q T rel d) ≤
+      (q - T.card) * coveredWeight T S w rel +
+        (q / 2) * offDiagIncidenceWeight T S w rel -
+          T.card * uncoveredWeight T S w rel := by
+  rw [sum_centeredEndpointIncidence_eq_jordan]
+  have hcov := two_mul_excessIncidenceWeight_le_offDiagIncidenceWeight T S w rel
+  nlinarith
+
 /-- At field scale at least the number of generators, every covered endpoint has nonnegative
 centered coefficient.  Hence two covered relation orbits cannot cancel each other by sign. -/
 theorem centeredEndpointIncidence_nonneg_of_covered
@@ -225,6 +288,9 @@ theorem centeredEndpointIncidence_eq_neg_card_of_uncovered
 #print axioms card_mul_centeredLoad_eq_firstIncidenceJordan
 #print axioms centeredLoad_le_iff_firstIncidenceJordan_le_of_uniform
 #print axioms excessIncidenceWeight_nonneg
+#print axioms two_mul_excess_le_offDiagEndpointIncidence
+#print axioms two_mul_excessIncidenceWeight_le_offDiagIncidenceWeight
+#print axioms sum_centeredEndpointIncidence_le_coverage_add_half_covariance
 #print axioms centeredEndpointIncidence_nonneg_of_covered
 #print axioms centeredEndpointIncidence_eq_neg_card_of_uncovered
 
