@@ -92,7 +92,7 @@ theorem sum_sq_card_divisors_eq (M : ℕ) :
         Finset.sum_congr rfl fun ab _ => card_dvd_Icc M _
 
 /-- Per-pair collapse: `M / lcm(a,b) = ((M / g) / (a/g)) / (b/g)` with `g = gcd(a,b)`. -/
-theorem div_lcm_eq {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) (M : ℕ) :
+theorem div_lcm_eq {a b : ℕ} (ha : 1 ≤ a) (M : ℕ) :
     M / Nat.lcm a b = ((M / Nat.gcd a b) / (a / Nat.gcd a b)) / (b / Nat.gcd a b) := by
   have hg : 0 < Nat.gcd a b := Nat.pos_of_ne_zero fun h =>
     absurd (Nat.gcd_eq_zero_iff.mp h).1 (by omega)
@@ -142,7 +142,7 @@ theorem sum_sq_card_divisors_le (M : ℕ) :
         M / Nat.lcm ab.1 ab.2 = ((M / (φ ab).1) / (φ ab).2.1) / (φ ab).2.2 := by
       rintro ⟨a, b⟩ hab
       simp only [Finset.mem_product, Finset.mem_Icc] at hab
-      exact div_lcm_eq hab.1.1 hab.2.1 M
+      exact div_lcm_eq hab.1.1 M
     have hinjective : Set.InjOn φ
         ((((Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M) : Finset (ℕ × ℕ))) : Set (ℕ × ℕ)) := by
       rintro ⟨a, b⟩ hab ⟨c, d⟩ hcd heq
