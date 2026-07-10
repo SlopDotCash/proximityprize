@@ -1,5 +1,13 @@
 # The δ* Programme — Agent Guide (issue lineage #232 → #334 → #357 → #444 → #464 → #466)
 
+> # ⚠️ 2026-07-09: CAMPAIGN HOME IS MOVING → branch `research/proximity-prize`
+> A structural refactor is in progress (issue **#499**, see root `REFACTOR_NOTICE.md`).
+> **Push all δ*/#466 campaign work (rungs, Frontier files, DISPROOF_LOG entries, kb notes) to the
+> branch `research/proximity-prize`, NOT `main`.** `main` keeps only the upstream-canonical
+> ProximityGap surface; everything else in this directory lives on the research branch
+> (snapshot tag `archive/pre-refactor-2026-07-09`). Nothing is deleted from history.
+
+
 > ## 🎯 CURRENT CAMPAIGN: issue #466 · dossier v3 (2026-07-01)
 > The live issue is **#466** ("Prove δ* — complete research dossier (v3)"). Its body = the
 > canonical dossier **`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`** — read it FIRST: the exact
