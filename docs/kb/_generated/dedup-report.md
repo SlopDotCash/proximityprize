@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5926 files, 63084 declarations
+- `ArkLib` — 5937 files, 63241 declarations
 
-## Same short-name across multiple files (2440 groups)
+## Same short-name across multiple files (2442 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -57,6 +57,23 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.WallBetaPlusOne.wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallBetaPlusOneLocalization.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallBetaPlusOneLocalization.lean#L53) — The Wick reference value `(2r−1)‼·n^r` as a real.
 - `def ArkLib.ProximityGap.Frontier.W5KStabilityTower.wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf7W5_kstability_tower.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf7W5_kstability_tower.lean#L68) — The Wick / Gaussian value `Wick(n,r) = (2r−1)‼·n^r`, packaged with `dfac r = (2r−1)‼` as an abstract
 
+### `isPrizeClosure` (14 declarations, 14 files)
+
+- `def ProximityGap.Frontier.ARX1.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:219](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean#L219) — Honest scope marker: this file does NOT close the prize. The Stein/Poisson route is fully assembled
+- `def ArkLib.ProximityGap.UniformNoWraparoundTheory.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean:344](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean#L344) — The theory is NOT a prize closure: `isPrizeClosure = false`. The for-all-`q` prize needs the obligat
+- `def ArkLib.ProximityGap.Frontier.BilinearDFTBeat.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BilinearDFTBeat.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BilinearDFTBeat.lean#L138) — **NOT prize closure.** Good-prime-conditional, high side of the wall, and a fixed power law cannot m
+- `def ArkLib.ProximityGap.Frontier.CrtCharSumSubmult.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean:200](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean#L200) — Honest scope flag: this file is a route-elimination + structural invariant, NOT a prize closure.
+- `def ProximityGap.FoldedPin.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean:478](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean#L478) — Honest classification: this lane banks folded-domain (FRI/STIR/WHIR-facing) soundness; it does NOT c
+- `def ProximityGap.FoldedPinWeld.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean:585](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean#L585) — Honest classification: this brick closes gap G4 of the folded-pin map as a conditional reduction (de
+- `def ArkLib.ProximityGap.Frontier.G62BinaryNormFoldWeightNoGo.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean:120](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean#L120) — Honest scope marker: this is a norm-fold route no-go, not a prize closure.
+- `def ArkLib.ProximityGap.Frontier.G64FSDeepRungForcedExceptional.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean#L142) — Honest scope marker: G64 is a forced-exception theorem for the raw FS ladder, not a proof of the DC-
+- `def ArkLib.ProximityGap.Frontier.G66SupportTwoKernelRigidity.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean:137](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean#L137) — Honest scope marker: G66 removes the support-two/binomial sector from the prize-scale wraparound bud
+- `def ArkLib.CodingTheory.ProximityGap.Frontier.G94JacobiCocycleMetric.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94JacobiCocycleMetric.lean:459](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94JacobiCocycleMetric.lean#L459) — This lane is a no-go map plus a probe; it is NOT a prize closure.
+- `def ArkLib.ProximityGap.Frontier.OCChaining.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean:284](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean#L284) — The core is NOT claimed closed by this file (honest scope marker; depends on no axioms).
+- `def ArkLib.ProximityGap.Frontier.OCSidonOrbitUnitRigidity.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean:219](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean#L219) — Honest scope marker: this file supplies the orbit-unit rigidity (r369 piece a), not the anti-coincid
+- `def ArkLib.ProximityGap.Frontier.OcNegacyclicHeightNoGo.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean:177](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean#L177) — Honest scope marker: this file is a NO-GO. It does not bound the prize object `M(μ_n)` and does not
+- `def ArkLib.ProximityGap.Frontier.WallNewEnergyExhaustion.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallNewEnergyExhaustion.lean:233](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallNewEnergyExhaustion.lean#L233) — **NOT prize closure.** Every exponent here is `≥ 7/8 ≫ 1/2`; a fixed power law cannot move δ* (`delt
+
 ### `mStar` (14 declarations, 14 files)
 
 - `def ProximityGap.Frontier.AvL7OrbitSizeAtBinder.mStar` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvL7_OrbitSizeAtBinder.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvL7_OrbitSizeAtBinder.lean#L95) — The **binding depth** (over-determination) `m* = s* − k`.
@@ -90,22 +107,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.MCARSBoundaryArithmetic.dom` [ArkLib/Data/CodingTheory/ProximityGap/MCARSBoundaryArithmetic.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/MCARSBoundaryArithmetic.lean#L54) — The evaluation domain `(1, …, 8)`.
 - `def ProximityGap.MCAWindowInteriorExact.dom` [ArkLib/Data/CodingTheory/ProximityGap/MCAWindowInteriorExact.lean:63](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAWindowInteriorExact.lean#L63) — The evaluation domain `(1, 2, 3, 4, 5)`.
 - `def ArkLib.ProximityGap.RSPrizeDataPoint.dom` [ArkLib/Data/CodingTheory/ProximityGap/RSListSizeDataPoint.lean:42](../../../ArkLib/Data/CodingTheory/ProximityGap/RSListSizeDataPoint.lean#L42) — The smooth multiplicative domain mu_8 ⊂ (ZMod 17)ˣ : the eight 8th roots of unity, listed.
-
-### `isPrizeClosure` (13 declarations, 13 files)
-
-- `def ProximityGap.Frontier.ARX1.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:219](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean#L219) — Honest scope marker: this file does NOT close the prize. The Stein/Poisson route is fully assembled
-- `def ArkLib.ProximityGap.UniformNoWraparoundTheory.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean:344](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean#L344) — The theory is NOT a prize closure: `isPrizeClosure = false`. The for-all-`q` prize needs the obligat
-- `def ArkLib.ProximityGap.Frontier.BilinearDFTBeat.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BilinearDFTBeat.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BilinearDFTBeat.lean#L138) — **NOT prize closure.** Good-prime-conditional, high side of the wall, and a fixed power law cannot m
-- `def ArkLib.ProximityGap.Frontier.CrtCharSumSubmult.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean:200](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean#L200) — Honest scope flag: this file is a route-elimination + structural invariant, NOT a prize closure.
-- `def ProximityGap.FoldedPin.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean:478](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean#L478) — Honest classification: this lane banks folded-domain (FRI/STIR/WHIR-facing) soundness; it does NOT c
-- `def ProximityGap.FoldedPinWeld.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean:585](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean#L585) — Honest classification: this brick closes gap G4 of the folded-pin map as a conditional reduction (de
-- `def ArkLib.ProximityGap.Frontier.G62BinaryNormFoldWeightNoGo.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean:120](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean#L120) — Honest scope marker: this is a norm-fold route no-go, not a prize closure.
-- `def ArkLib.ProximityGap.Frontier.G64FSDeepRungForcedExceptional.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean#L142) — Honest scope marker: G64 is a forced-exception theorem for the raw FS ladder, not a proof of the DC-
-- `def ArkLib.ProximityGap.Frontier.G66SupportTwoKernelRigidity.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean:137](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean#L137) — Honest scope marker: G66 removes the support-two/binomial sector from the prize-scale wraparound bud
-- `def ArkLib.ProximityGap.Frontier.OCChaining.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean:284](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean#L284) — The core is NOT claimed closed by this file (honest scope marker; depends on no axioms).
-- `def ArkLib.ProximityGap.Frontier.OCSidonOrbitUnitRigidity.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean:219](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean#L219) — Honest scope marker: this file supplies the orbit-unit rigidity (r369 piece a), not the anti-coincid
-- `def ArkLib.ProximityGap.Frontier.OcNegacyclicHeightNoGo.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean:177](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean#L177) — Honest scope marker: this file is a NO-GO. It does not bound the prize object `M(μ_n)` and does not
-- `def ArkLib.ProximityGap.Frontier.WallNewEnergyExhaustion.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallNewEnergyExhaustion.lean:233](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallNewEnergyExhaustion.lean#L233) — **NOT prize closure.** Every exponent here is `≥ 7/8 ≫ 1/2`; a fixed power law cannot move δ* (`delt
 
 ### `reduction` (13 declarations, 12 files)
 
@@ -184,6 +185,20 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.R284ThirdShoulderFinalSocket.SurvivorCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R284ThirdShoulderFinalSocket.lean:23](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R284ThirdShoulderFinalSocket.lean#L23) — Survivor count at threshold `θ`.
 - `def ArkLib.ProximityGap.Frontier.R285FourthShoulderFinalSocket.SurvivorCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R285FourthShoulderFinalSocket.lean:23](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R285FourthShoulderFinalSocket.lean#L23) — Survivor count at threshold `θ`.
 
+### `not_prizeClosure` (11 declarations, 11 files)
+
+- `theorem ProximityGap.Frontier.ARX1.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:221](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean#L221) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.CrtCharSumSubmult.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean:202](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean#L202) — (no docstring)
+- `theorem ProximityGap.FoldedPin.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean:480](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean#L480) — (no docstring)
+- `theorem ProximityGap.FoldedPinWeld.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean:587](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean#L587) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G62BinaryNormFoldWeightNoGo.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean:122](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean#L122) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G64FSDeepRungForcedExceptional.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean:144](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean#L144) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G66SupportTwoKernelRigidity.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean#L139) — (no docstring)
+- `theorem ArkLib.CodingTheory.ProximityGap.Frontier.G94JacobiCocycleMetric.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94JacobiCocycleMetric.lean:461](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94JacobiCocycleMetric.lean#L461) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.OCChaining.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean:286](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean#L286) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.OCSidonOrbitUnitRigidity.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean:221](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean#L221) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.OcNegacyclicHeightNoGo.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean:179](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean#L179) — (no docstring)
+
 ### `oracleVerifier` (11 declarations, 10 files)
 
 - `def CheckClaim.oracleVerifier` [ArkLib/ProofSystem/Component/CheckClaim.lean:250](../../../ArkLib/ProofSystem/Component/CheckClaim.lean#L250) — The oracle verifier for the `CheckClaim` oracle reduction.
@@ -223,19 +238,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.wfS5ThetaCountWick.l1Norm` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS5_theta_count_wick.lean:66](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS5_theta_count_wick.lean#L66) — `ℓ¹`-weight of an integer coefficient vector (the theta grading).
 - `def ArkLib.ProximityGap.IdealSVPGirthVerdict.l1Norm` [ArkLib/Data/CodingTheory/ProximityGap/IdealSVPGirthVerdict.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/IdealSVPGirthVerdict.lean#L81) — `ℓ¹`-weight of an integer coefficient vector (the wrap budget norm).
 - `def ArkLib.Lattices.CenteredCoeffView.l1Norm` [ArkLib/Data/Lattices/CyclotomicRing/Norms.lean:64](../../../ArkLib/Data/Lattices/CyclotomicRing/Norms.lean#L64) — `ℓ₁` norm of a `CPolynomial`: `Σᵢ \|cᵢ\|`.
-
-### `not_prizeClosure` (10 declarations, 10 files)
-
-- `theorem ProximityGap.Frontier.ARX1.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:221](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean#L221) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.CrtCharSumSubmult.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean:202](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean#L202) — (no docstring)
-- `theorem ProximityGap.FoldedPin.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean:480](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean#L480) — (no docstring)
-- `theorem ProximityGap.FoldedPinWeld.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean:587](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean#L587) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.G62BinaryNormFoldWeightNoGo.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean:122](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean#L122) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.G64FSDeepRungForcedExceptional.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean:144](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean#L144) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.G66SupportTwoKernelRigidity.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean#L139) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.OCChaining.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean:286](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCChainingMetricEuclideanNoGo.lean#L286) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.OCSidonOrbitUnitRigidity.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean:221](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OCSidonOrbitUnitRigidity.lean#L221) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.OcNegacyclicHeightNoGo.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean:179](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean#L179) — (no docstring)
 
 ### `oracleReduction` (11 declarations, 9 files)
 
@@ -2600,6 +2602,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.WBPencil.agreementSet` [ArkLib/Data/CodingTheory/ProximityGap/RungAgreementFisher.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/RungAgreementFisher.lean#L43) — The agreement set of the direction row with a cross polynomial.
 - `def StirIOP.Round3.agreementSet` [ArkLib/ProofSystem/Stir/SpotCheckBound.lean:30](../../../ArkLib/ProofSystem/Stir/SpotCheckBound.lean#L30) — The agreement set of two words over the queried index space.
 
+### `annihilator` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.G93AdditiveModelDissolution.annihilator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G93AdditiveModelDissolution.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G93AdditiveModelDissolution.lean#L98) — The **annihilator** `s^⊥ = {b \| x ↦ ψ(b·x) is trivial on s}` of a `SetLike` domain `s ⊆ F` with resp
+- `def ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.annihilator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.lean#L56) — A support annihilator for each of the thirteen witnesses.
+- `def ArkLib.ProximityGap.Frontier.R384GeneralMDSHalfLineBoundRefuted.annihilator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R384GeneralMDSHalfLineBoundRefuted.lean:42](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R384GeneralMDSHalfLineBoundRefuted.lean#L42) — (no docstring)
+
 ### `antipodal_of_sum_zero` (3 declarations, 3 files)
 
 - `theorem R12J.antipodal_of_sum_zero` [ArkLib/Data/CodingTheory/ProximityGap/JointT2Unconditional.lean:118](../../../ArkLib/Data/CodingTheory/ProximityGap/JointT2Unconditional.lean#L118) — **Antipodal tightness engine.** If the first `N` powers of `g` are `K`-linearly independent, any sub
@@ -2797,6 +2805,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.JacKatz.conj_gaussSum_same` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacKatzBoundedConductorFamily.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacKatzBoundedConductorFamily.lean#L112) — `conj(g(χ,ψ)) = χ(-1) · g(χ⁻¹, ψ)`.
 - `theorem ArkLib.ProximityGap.Frontier.JAC3.conj_gaussSum_same` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacRecursionKernelOneOrderDown.lean:99](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacRecursionKernelOneOrderDown.lean#L99) — `conj(g(χ,ψ)) = χ(-1)·g(χ⁻¹,ψ)`, same primitive `ψ` on both sides. Combines `conj_gaussSum` (`conj g
 - `theorem ArkLib.ProximityGap.Frontier.JAC4.conj_gaussSum_same` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacVarietyCollapsesToCurve.lean:93](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacVarietyCollapsesToCurve.lean#L93) — `conj(g(χ,ψ)) = χ(-1)·g(χ⁻¹,ψ)`, same primitive `ψ`. (Re-derived for self-containment.)
+
+### `coreAt` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean#L30) — Read the core entries of an endpoint at the embedded core slots.
+- `def ArkLib.ProximityGap.Frontier.G85EndpointAssemblyMultiset.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyMultiset.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyMultiset.lean#L59) — Restrict an endpoint word to the selected core slots.
+- `def ArkLib.ProximityGap.Frontier.G86CoreOccurrenceEmbedding.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean:29](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean#L29) — (no docstring)
 
 ### `coreInteractionOracleReduction` (3 declarations, 3 files)
 
@@ -5808,11 +5822,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.CodingTheory.TinyInteriorPin.all_agree_ge_three` [ArkLib/Data/CodingTheory/ProximityGap/ListInteriorDataPointF7.lean:148](../../../ArkLib/Data/CodingTheory/ProximityGap/ListInteriorDataPointF7.lean#L148) — **Interior agreement.** Every codeword in `L` agrees with the received word `w` on `≥ 3` coordinates
 - `theorem ArkLib.CodingTheory.Round3SmoothF17.all_agree_ge_three` [ArkLib/Data/CodingTheory/ProximityGap/ListInteriorPinF17Subgroup.lean:181](../../../ArkLib/Data/CodingTheory/ProximityGap/ListInteriorPinF17Subgroup.lean#L181) — **Interior agreement.** Every codeword in `L` agrees with the received word `w` on `≥ 3` coordinates
 
-### `annihilator` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.annihilator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.lean#L56) — A support annihilator for each of the thirteen witnesses.
-- `def ArkLib.ProximityGap.Frontier.R384GeneralMDSHalfLineBoundRefuted.annihilator` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R384GeneralMDSHalfLineBoundRefuted.lean:42](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R384GeneralMDSHalfLineBoundRefuted.lean#L42) — (no docstring)
-
 ### `annihilator_direction_ne_zero` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.annihilator_direction_ne_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightBareSyndromeRefuted.lean#L101) — The same functional does not kill the line direction, proving properness.
@@ -6563,11 +6572,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def CodingTheory.ExtensionFieldPresentation.coord` [ArkLib/Data/CodingTheory/ExtensionCodes.lean:100](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean#L100) — The `j`-th coordinate `φᵢ : F →ₗ[B] B` of an extension-field presentation, as a `B`-linear map.
 - `def MuTwoPowDerandRefutation.coord` [ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean#L49) — The coordinate (in `Fin 8`) of the edge represented by each row of `rimMatrix`.
-
-### `coreAt` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean#L30) — Read the core entries of an endpoint at the embedded core slots.
-- `def ArkLib.ProximityGap.Frontier.G86CoreOccurrenceEmbedding.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean:29](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean#L29) — (no docstring)
 
 ### `coreInteractionOracleRbrKnowledgeError` (2 declarations, 2 files)
 
@@ -10619,6 +10623,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.vacuity_concrete_n64_r5` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:208](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L208) — **Concrete vacuity at `n = 64`, depth `r = 5`** — the floor keeps dominating as depth grows (the gap
 - `theorem ArkLib.ProximityGap.wfA04WeilEnvelopeVacuity.vacuity_concrete_n64_r5` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean:211](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean#L211) — **Concrete vacuity at `n = 64`, depth `r = 5`** — the envelope keeps dominating as depth grows (the
+
+### `valueMultiset` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G85EndpointAssemblyMultiset.valueMultiset` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyMultiset.lean:29](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyMultiset.lean#L29) — The multiset of values of a function on a finite index type, with multiplicity.
+- `def ArkLib.PowerSeriesComposition.valueMultiset` [ArkLib/Data/Polynomial/PowerSeriesComposition.lean:24](../../../ArkLib/Data/Polynomial/PowerSeriesComposition.lean#L24) — The **multiset of values** of a weak composition `l` over the index set `s`.
+
+### `valueMultiset_sum` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G85EndpointAssemblyMultiset.valueMultiset_sum` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyMultiset.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyMultiset.lean#L43) — A word on a sum type enumerates as the sum of the two component value multisets.
+- `theorem ArkLib.PowerSeriesComposition.valueMultiset_sum` [ArkLib/Data/Polynomial/PowerSeriesComposition.lean:32](../../../ArkLib/Data/Polynomial/PowerSeriesComposition.lean#L32) — (no docstring)
 
 ### `vanishPoly` (2 declarations, 2 files)
 

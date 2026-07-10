@@ -24501,3 +24501,28 @@ easier than) the sup-form pin; both are faces of the one missing non-Fourier inp
 (G80/G80Z/G80Y/G80X/G80W) is complete: every known constant-loss engine now consumes the ONE
 open object through machine-checked interfaces on both sides and in both norms. CORE remains
 OPEN / ON-BGK. No axioms, no sorry.
+
+### [466-HD3-duplication-transfer-DISCOVERY] Fork (i) OPENS: the 2-adic tower of Jacobi families has EXACT transfer maps — the half-shift ratio J_{j+m/2}/J_j is closed-form through the squared family (HD duplication), verified to 1e-13; the odd/even pairing is ARITHMETIC, not free, and HD2's refutation over-freed the adversary (2026-07-10)
+
+Probe `/tmp/arklib-reports/hd3_duplication_transfer_probe.py` (p=257/m=16, p=17/m=2; worst rel
+err 1.73e-13). Verified: (A) the HD duplication formula `g(λ·leg) = λ̄(4)·g(λ²)·g(leg)/g(λ)`
+for the in-tree dual family; (B) hence the EXACT half-shift transfer on the ladder:
+`J_{j+m/2}/J_j = [λ̄_j(4)·g(λ_j²)/g(λ_j)²] / [(λ_jχ)‾(4)·g((λ_jχ)²)/g(λ_jχ)²]` — every
+even/odd pair of ladder coefficients is tied by a closed-form arithmetic factor built from the
+squared (level-m/2) family and the level-m Gauss sums.
+
+**Consequences.** (1) HD2's degrees-of-freedom refutation stands only against even-coset-sums
+ALONE: its random odd-halves VIOLATE the duplication identities. The true constraint web
+(coset products + duplication transfer) cuts the free phases from m to ≈ m/4 (transversal of
+the odd j ↦ j+m/2 pairing; even-index freedom recurses down the tower, F(m) = F(m/2) + m/4).
+(2) The ladder is a RENORMALIZATION RECURSION WITH EXACT COEFFICIENTS on the calibrated open
+core — unlike the norm-level doubling map (spectral radius 2, no-contraction), the transfer here
+is exact and its effect on the rung functional is now a COMPUTABLE question.
+
+**Queued next (the sharpened experiment + formalization).** (i) HD2′: rerun the DOF probe
+resampling ONLY the genuine ~m/4 transversal phases (respecting duplication + coset products);
+if the rung is still unconstrained the HD program dies entirely — else fork (i) is hot and the
+constraint web is worth full formalization. (ii) Check Mathlib's `JacobiSum`/`gaussSum` API for
+the duplication formula (known formalization target; classical proof ≈ 1 page). (iii) The
+even-half fold K_j = J_j(1 + ratio_j) with ratio_j exact — attempt the fork-(iii) partial
+theorem on the folded rung. CORE OPEN / ON-BGK; marked down honestly: a discovery, not a bound.

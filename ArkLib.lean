@@ -2225,6 +2225,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80SignedL1CertificatePinnedToWall
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80WArcPairCountIdentity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80XArcCertificateEndpoint
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80YArcEquivalenceConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ZArcArithmeticInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81CRelativePaddingOrderCeiling
@@ -2238,11 +2240,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83FreeOrbitEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83MMaximalCommonCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84AEndpointAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84CanonicalSlotsDepthFive
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84IEndpointSplitEquiv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EOccurrenceEmbedding
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyEquiv
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyMultiset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86CoreOccurrenceEmbedding
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87CorrectedPaddingDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87DepthFiveTenfoldTarget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88CrossOrbitFirstIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88EqualSumCorrectedDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89AllDepthWickAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89FirstIncidenceWallEquivalence
@@ -2252,6 +2258,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90SpacingRigidityProbe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalCoreSlotFactorization
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94JacobiCocycleMetric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
