@@ -36,6 +36,13 @@ namespace ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 open G81FactorialPaddingWickAbsorption
 open G79PrimitivePaddingSaddleLocalization
 
+/-- The deliberately unrestricted type of ordered depth-two core pairs has cardinality `n^4`.
+No equal-sum, disjointness, primitivity, or orbit quotient is used. -/
+theorem card_orderedDepthTwoCorePairs (A : Type*) [Fintype A] :
+    Fintype.card ((Fin 2 → A) × (Fin 2 → A)) = (Fintype.card A) ^ 4 := by
+  simp only [Fintype.card_prod, Fintype.card_fun, Fintype.card_fin]
+  ring
+
 /-- A square-root saving in the primitive orbit count implies the exact depth-two saddle
 condition.  The cleared hypothesis allows an explicit constant `C`. -/
 theorem orbit_budget_of_sq_le
@@ -211,6 +218,8 @@ theorem production_all_depth_two_sector_absorbed
 end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 /-! ## Axiom audit -/
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.card_orderedDepthTwoCorePairs
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.orbit_budget_of_sq_le
 #print axioms
