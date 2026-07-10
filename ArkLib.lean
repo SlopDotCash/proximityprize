@@ -2472,6 +2472,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelFiniteFreeEdge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelJointCumulant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelShawInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelTransferOperator2
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCChainingMetricEuclideanNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPDescentFromAntitoneOrbitCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPSingleOrbit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OcNegacyclicHeightNoGo
@@ -2518,6 +2519,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorConcreteLocatorAttempt
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorConstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonLocator
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterForcedSecantMatching
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterFourPencilExactPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterMu32MinorNormBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterOperationalBracket
