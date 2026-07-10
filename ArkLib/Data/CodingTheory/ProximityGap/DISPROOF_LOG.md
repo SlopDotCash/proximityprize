@@ -32011,3 +32011,45 @@ all [propext, Classical.choice, Quot.sound]; not_prizeClosure NONE):
 that Ω(n) simultaneous primitive orbits cannot vanish at p > poly(n) — which is where the prize
 wall (rank-vs-height / Paley) still lives, and which r370b shows must be stated per-sector (the
 rung inherits the depth-2 s4h1 sector's bad primes). CORE OPEN, ON-BGK. No axioms, no sorry.
+
+## [466-G67-signed-census-sup-extraction-no-go] The SIGNED census-functional lever is contentless: a moment→sup lower bound needs the transfer polynomial P(t)=Σ w_r t^r to evaluate NONNEGATIVE at the sup M², but a negative dominating-depth weight makes P(M²)<0, which certifies no nonnegative sup target — signed depth reweighting only INVERTS the census pinning, never bounds the sup norm (axiom-clean; the dominating-depth negative-weight witness, complementing G65's nonneg side) (2026-07-10)
+
+Lane: direct Opus 4.8 formalizer (`Frontier/_G67SignedCensusSupExtractionNoGo.lean`; complements
+G65 nonneg no-go; motivated by the fable-critic exact signed-weight probe
+`/tmp/arklib-reports/fable_g65_signed_weight_probe.py`; research branch only).
+
+**Target (the last census-side degree of freedom).** G65 closed the NONNEGATIVE depth-reweighting
+lever: no `w ≥ 0` drops `q·census` strictly below the weighted DC floor `Σ w_r n^{2r}`. The one
+remaining census-side hope the adversarial critic flagged was SIGNED reweighting: could a weight
+family negative at some depths — forming a moment→sup transfer polynomial `P(t) = Σ_{r∈S} w_r t^r`
+— produce a genuine sup-norm bound where G65's nonneg pinning does not apply? The critic's exact
+signed-weight probe answered NO with a precise structural reason (verified numerically at the
+adversarial thin primes n=8/p=17, n=16/p=97, n=16/p=193): signed weights give only CONTENTLESS
+INVERSIONS. This lane turns that reason into axiom-clean r-uniform Lean.
+
+**Mechanism (the sup-extraction obstruction).** A moment→sup LOWER bound is an inference of the
+form `Σ_b P(|η_b|²) ≥ P(M²)` with `M² = max_b |η_b|²`, so the certificate the functional produces
+is the transfer value `P(M²)`; certifying a sup target means `P(M²) ≥ T` for a NONNEGATIVE target
+`T ≥ 0`. But if a dominating depth carries a NEGATIVE weight, `P(M²)` is itself negative (pure
+dominating monomial `w·(M²)^r < 0` for `w<0`, `M²>0`), so the required `T ≤ P(M²)` degenerates to
+`(nonneg) ≤ (negative)` — impossible. The signed weights invert the census pinning (G63/G65)
+without ever bounding the sup norm. This is exactly the critic's `w(r₀) = -1` witness: `P(M²) < 0`.
+
+**Axiom-clean Lean kernel (LANDED).** File `Frontier/_G67SignedCensusSupExtractionNoGo.lean`
+(4 decls, all `[propext, Classical.choice, Quot.sound]`; scope marker no extra axioms):
+- `neg_eval_cannot_certify_nonneg_target`: `Pval < 0 ∧ 0 ≤ T ⟹ ¬ (T ≤ Pval)` — the obstruction.
+- `single_neg_dominating_weight_eval_neg`: `w < 0 ∧ 0 < t ⟹ w · t^r < 0` — the negative-value
+  producer (critic's `w(r₀)=-1` signed witness).
+- `signed_census_functional_no_sup_certificate`: `w<0 ∧ 0<M² ∧ 0≤T ⟹ ¬ (T ≤ w·(M²)^r)` — combined
+  no-go: the dominating-depth negative-weight census functional certifies no nonnegative sup target.
+- `signedCensusYieldsSupBound` / `not_signedCensusYieldsSupBound`: honest scope marker, no axioms.
+
+**HONEST SCOPE.** Precise ROUTE no-go on the signed side, complementing G65 (nonneg side). SCOPE
+matched exactly to the declarations: the no-go covers a NEGATIVE transfer value — the pure
+dominating-depth negative-weight functional `w·t^r`, `w<0` — which is exactly the critic's
+`w(r₀)=-1` signed witness. It does NOT by itself rule out a general mixed-sign finite-window
+polynomial that evaluates nonnegative at the sup despite a negative coefficient (`-t+2t²` at `t=1`
+is positive); that regime needs a separate dominance hypothesis. So G65 closes the nonneg regime
+(pinned at-or-above the weighted DC floor) and G67 closes the dominating-negative regime (certifies
+no nonnegative sup norm); the mixed-sign-with-nonneg-sup case is out of scope. It does NOT bound
+`wraparoundExcessR`; CORE (`M(μ_n) ≤ C·√(n·log(p/n))`) remains OPEN / ON-BGK. No axioms, no sorry.
