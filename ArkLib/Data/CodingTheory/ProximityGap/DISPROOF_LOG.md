@@ -24356,3 +24356,29 @@ bounding the ℓ²-profile (S₀, (S_γ)_γ); conversely no cross-orbit cancella
 beat the kernel floor. With G89 (first-incidence ≡ wall, constant 1) this completes BOTH #505
 exit readings. Exact identities and two-sided brackets, NOT a bound: the size of S₀ and the
 realized class-mass profile remain the open arithmetic content. CORE OPEN / ON-BGK.
+## [466-G80Y-arc-equivalence-converse] The rank-one arc equivalence is now TWO-SIDED and fully machine-checked: an arc-occupancy epsilon-uniformity certificate bounds the character sum by K*eps + #S*(2pi/K) — the doctrine-v2 "single missing non-Fourier certificate" has an exact positive-form formal consumer (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80YArcEquivalenceConverse.lean`, real locked build 3323 jobs,
+both theorems exactly `[propext, Classical.choice, Quot.sound]`). Completes the G80/G80Z arc
+program: G80Z gave Fourier-bias ⟹ arc deviation ≥ (A − #S·2π/K)/K; this lane gives the CONVERSE.
+
+**Bricks.** `charSum_le_of_arc_l1_discrepancy` (abstract): for K ≥ 2 equally spaced arcs, ANY
+reference mass m, `‖Σ_x e^{iθ(x)}‖ ≤ Σ_{j<K} |n_j − m| + #pts·wid` — proof: recentre the cell
+model by m (legal because the equally-spaced centers sum to EXACTLY zero, G80), bound the
+recentred model by the ℓ¹ discrepancy (unit centers), pay the oscillation cost once (G80 grouped
+approximation). `charSum_le_of_arc_uniformity` (ZMod p capstone): every arc within ε of m ⟹
+`‖Σ_{y∈S} e(val(y)/p)‖ ≤ K·ε + #S·(2π/K)`.
+
+**The two-sided equivalence (explicit constants, zero slack).** With G80Z:
+`(‖charSum‖ − #S·2π/K)/K ≤ max_j |n_j − m|` AND `‖charSum‖ ≤ K·max_j|n_j − m| + #S·2π/K`.
+At S = b·μ_n: `‖η_b‖ ≍_K arc-discrepancy of the dilated subgroup` — the rank-one equivalence
+G78's probe measured (dev/(M/n) ∈ [3.1, 6.9]) is now a THEOREM PAIR. Prize plumbing: a
+non-Fourier certificate `ε = O(√(n log q)/K)` uniformly in b, at `K ≍ √(n/log q)`, yields
+`M = O(√(n log q))` by direct instantiation — no analysis left between the certificate and δ*.
+
+**Honest scope.** Consumer interface only. The certificate itself (anti-concentration of the
+dilated multiplicative subgroup in arcs WITHOUT Fourier — BGK/Cilleruelo–Garaev frontier) is
+THE open core; G78's circularity verdict stands (a Fourier-derived uniformity input would be
+circular). What changed across G80/G80Z/G80Y: the entire analytic scaffolding on BOTH sides of
+the missing certificate is machine-checked; the open surface is now purely arithmetic. CORE
+remains OPEN / ON-BGK. No axioms, no sorry.
