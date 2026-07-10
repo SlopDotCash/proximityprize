@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5636 files, 59536 declarations
+- `ArkLib` — 5648 files, 59624 declarations
 
-## Same short-name across multiple files (2301 groups)
+## Same short-name across multiple files (2302 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -945,6 +945,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ProximityGap.T3InverseRigidity.dilate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_T3InverseRigidityAffineBlind.lean:74](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_T3InverseRigidityAffineBlind.lean#L74) — The dilate `b • S = {b * x : x ∈ S}`.
 - `def ArkLib.ProximityGap.SubgroupGaussSumSecondMoment.dilate` [ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumDilationRecursion.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumDilationRecursion.lean#L61) — The **dilated set** `ζ•G = {ζ·x : x ∈ G}`.
 
+### `doubleFactorial_le_crude` (4 declarations, 4 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L101) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r}(2j+1) = (2r−1)‼`: each of the `r` factors `2j+1`
+- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L112) — `∏_{j<r}(2j+1) ≤ (2r)^r` (each factor `2j+1 ≤ 2r`).
+- `theorem ArkLib.ProximityGap.Frontier.G58AllDepthLedgerReversal.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean#L96) — **`(2r−1)‼ ≤ (2r)^r`.** Each of the `r` factors `2j+1` (for `j < r`) is `≤ 2r`.
+- `theorem ArkLib.ProximityGap.wfA04WeilEnvelopeVacuity.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean#L105) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r} (2j+1) = (2r−1)‼`: each of the `r` factors `2j+1
+
 ### `doubleFactorial_step` (4 declarations, 4 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.AmbHolonomicWZ.doubleFactorial_step` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbHolonomicWZ.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AmbHolonomicWZ.lean#L129) — **The double-factorial step.**  `(2r−1)‼ = (2r−1)·(2r−3)‼` for `r ≥ 1`, the order-1 recurrence of th
@@ -1140,6 +1147,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem NoInteraction.reduction_completeness` [ArkLib/ProofSystem/Component/NoInteraction.lean:93](../../../ArkLib/ProofSystem/Component/NoInteraction.lean#L93) — Completeness of a no-interaction reduction. **Faithfulness of the hypothesis `hRel`.** `Reduction.ru
 - `theorem ReduceClaim.reduction_completeness` [ArkLib/ProofSystem/Component/ReduceClaim.lean:66](../../../ArkLib/ProofSystem/Component/ReduceClaim.lean#L66) — The `ReduceClaim` reduction satisfies perfect completeness for any relation.
 - `theorem SendWitness.reduction_completeness` [ArkLib/ProofSystem/Component/SendWitness.lean:174](../../../ArkLib/ProofSystem/Component/SendWitness.lean#L174) — The `SendWitness` reduction satisfies perfect completeness.
+
+### `rho` (4 declarations, 4 files)
+
+- `def ProximityGap.Frontier.DCStieltjesRatioAntitone.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean:115](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean#L115) — The raw log-convex ratio `ρ_r := A_{r+1} / A_r`.
+- `def ArkLib.ProximityGap.Frontier.FarLineProxyTowerN32.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FarLineProxyTowerN32Corrected.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FarLineProxyTowerN32Corrected.lean#L54) — The prize line `rho = 1/4`.
+- `def ProximityGap.FluctuationSharpening.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean#L47) — The prize criterion ratio `ρ_r = S_r / ((p−1)·Wick)`.
+- `def ProximityGap.RhoDecomposition.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RhoDecomposition.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RhoDecomposition.lean#L39) — The prize criterion ratio `ρ_r = S_r / ((p−1)·Wick)`.
 
 ### `rung_n128` (4 declarations, 4 files)
 
@@ -2711,11 +2725,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma ArkLib.ProximityGap.P6ReverseHolderTelescope.doubleFactOdd_zero` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean#L87) — (no docstring)
 - `theorem ArkLib.ProximityGap.MomentWickBridge.doubleFactOdd_zero` [ArkLib/Data/CodingTheory/ProximityGap/MomentWickBridge.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/MomentWickBridge.lean#L49) — (no docstring)
 
-### `doubleFactorial_le_crude` (3 declarations, 3 files)
+### `doubleFactorial_eq_prod` (3 declarations, 3 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L101) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r}(2j+1) = (2r−1)‼`: each of the `r` factors `2j+1`
-- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L112) — `∏_{j<r}(2j+1) ≤ (2r)^r` (each factor `2j+1 ≤ 2r`).
-- `theorem ArkLib.ProximityGap.wfA04WeilEnvelopeVacuity.doubleFactorial_le_crude` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean#L105) — **`(2r−1)‼ ≤ (2r)^r`** in the product form `∏_{j<r} (2j+1) = (2r−1)‼`: each of the `r` factors `2j+1
+- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L124) — The product form of the double factorial: `(2r−1)‼ = ∏_{j<r}(2j+1)`.
+- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L105) — `(2r−1)‼ = ∏_{j<r}(2j+1)`.
+- `theorem ArkLib.ProximityGap.Frontier.G58AllDepthLedgerReversal.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G58AllDepthLedgerReversal.lean#L79) — Product form of the double factorial `(2r−1)‼ = ∏_{j<r} (2j+1)`.
 
 ### `doubleFactorial_two_sub_one_le` (3 declarations, 3 files)
 
@@ -3286,12 +3300,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma RingSwitching.SumcheckPhase.rename_finCongr_heq` [ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean:317](../../../ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean#L317) — Renaming a polynomial along the canonical index `finCongr` of a (propositional) dimension equality `
 - `lemma Sumcheck.Structured.rename_finCongr_heq` [ArkLib/ProofSystem/Sumcheck/Structured/SingleRound.lean:140](../../../ArkLib/ProofSystem/Sumcheck/Structured/SingleRound.lean#L140) — Renaming a polynomial along the canonical index `finCongr` of a dimension equality is heterogeneousl
 - `theorem MvPolynomial.rename_finCongr_heq` [ArkLib/ToMathlib/PolynomialCombinatorialAuxiliary.lean:46](../../../ArkLib/ToMathlib/PolynomialCombinatorialAuxiliary.lean#L46) — Renaming along the canonical `finCongr` of a dimension equality is heterogeneously equal to the orig
-
-### `rho` (3 declarations, 3 files)
-
-- `def ArkLib.ProximityGap.Frontier.FarLineProxyTowerN32.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FarLineProxyTowerN32Corrected.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FarLineProxyTowerN32Corrected.lean#L54) — The prize line `rho = 1/4`.
-- `def ProximityGap.FluctuationSharpening.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean#L47) — The prize criterion ratio `ρ_r = S_r / ((p−1)·Wick)`.
-- `def ProximityGap.RhoDecomposition.rho` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RhoDecomposition.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RhoDecomposition.lean#L39) — The prize criterion ratio `ρ_r = S_r / ((p−1)·Wick)`.
 
 ### `root` (3 declarations, 3 files)
 
@@ -6640,11 +6648,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.MomentMethodPrizeDepthNoGo.doubleFactOdd_succ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean#L92) — (no docstring)
 - `lemma ArkLib.ProximityGap.P6ReverseHolderTelescope.doubleFactOdd_succ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean:89](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P6_ReverseHolderTelescope.lean#L89) — (no docstring)
 
-### `doubleFactorial_eq_prod` (2 declarations, 2 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L124) — The product form of the double factorial: `(2r−1)‼ = ∏_{j<r}(2j+1)`.
-- `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L105) — `(2r−1)‼ = ∏_{j<r}(2j+1)`.
-
 ### `doubleFactorial_le_pow` (2 declarations, 2 files)
 
 - `theorem ProximityGap.Frontier.NewtonPolygonDepthOpt.doubleFactorial_le_pow` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M4_NewtonPolygonDepthOpt.lean:77](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M4_NewtonPolygonDepthOpt.lean#L77) — **The double-factorial size atom (ℕ):** `(2r-1)‼ ≤ (2r)^r`.  The product `(2r-1)·(2r-3)···3·1` has `
@@ -9864,6 +9867,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.R18SigmaEquidistribution.twisted_secondMoment_eq_gaussSums` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean#L69) — The `χ`-twisted second moment `A_χ = ∑_b χ(b)·η_b·conj(η_b)` expands exactly into off-diagonal Gauss
 - `theorem ArkLib.ProximityGap.Frontier.R18TwistedSecondMoment.twisted_secondMoment_eq_gaussSums` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18TwistedSecondMoment.lean:39](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18TwistedSecondMoment.lean#L39) — The `χ`-twisted second moment expands exactly into Gauss sums indexed by pairs `(x,y) ∈ G²`.
+
+### `twoAtom` (2 declarations, 2 files)
+
+- `def ProximityGap.Frontier.DCStieltjesRatioAntitone.twoAtom` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean:246](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean#L246) — A concrete two-atom moment sequence: `A r = w·s^r + t^r`, the `r`-th moment of `w·δ_s + δ_t`. For `w
+- `def ArkLib.ProximityGap.FrontierFiniteFreeStress.twoAtom` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrontierFiniteFreeStress.lean:122](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrontierFiniteFreeStress.lean#L122) — The two-atom spectrum `(A, −A) : Fin 2 → ℝ`.
 
 ### `twoPieceNormCoherence` (2 declarations, 2 files)
 

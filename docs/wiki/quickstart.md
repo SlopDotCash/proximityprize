@@ -145,6 +145,26 @@ For website or blueprint output, run:
 python3 -m pip install leanblueprint
 ```
 
+## Stale-Olean Kernel Errors (`unknown constant Semiring.toMonoid` etc.)
+
+Symptom: `lake env lean <file>` (or `pg-iterate.sh`) fails with a KERNEL error
+`(kernel) unknown constant 'Semiring.toMonoid'` (or another long-renamed instance path),
+usually pointing at a line that merely *applies* an imported theorem. Cause: a `.olean` in the
+import cone was compiled against a different toolchain/Mathlib revision (toolchain drift in the
+shared checkout); the elaborator inlines a constant name that no longer exists.
+
+Fix (verified 2026-07-09, three occurrences in one session):
+
+```bash
+./scripts/lake-locked.sh build <TheStaleModule>   # rebuild JUST the suspect module
+```
+
+Isolation recipe: binary-search the import cone with tiny `/tmp` test files that `#check` and
+then *apply* the suspect theorems — `#check` alone does not force the failure; an application
+in a real `theorem` does. Suspect first any module whose `.olean` mtime predates the last
+toolchain bump (`ls -la .lake/build/lib/lean/.../*.olean`). Both ArkLib and Mathlib modules
+can be affected (`Mathlib.LinearAlgebra.Matrix.AbsoluteValue` was one instance).
+
 ## Important Notes
 
 - `./scripts/validate.sh` is the recommended convenience wrapper for routine local validation.

@@ -3,6 +3,8 @@
 > **Status update.** The unrestricted `#(P inter B_e)<=n` conjecture below is false.
 > `_R383HalfRadiusMDSLineRefuted.lean` gives nine proper affine points for the dyadic
 > `[8,4]` RS frame over `F_17`, and Ng--Wild Theorem 4.5 gives an infinite GRS/conic family.
+> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the strict-slack,
+> low-rate production specialization remains live.
 > `_HalfRadiusStrictSlackLowRateRefuted.lean` further gives ten proper projective points
 > for a globally far `[9,2]` RS line with two units of strict slack and `k<=n/4`.
 > See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the even,
@@ -111,6 +113,9 @@ should force one pencil into three or more half-support spans, after which an MD
 intersection inequality gives a contradiction.  The missing implication is precisely
 the combinatorial extraction from many distinct `e`-supports to those half-spans.
 
+After the R383 refutation, this proof shape applies only to a corrected conjecture carrying
+strict low-rate slack (in particular the production condition `k<=n/4`).  It is not a proof
+of the unrestricted statement and does not close the prize.
 After the R383 and strict-slack refutations, this proof shape applies only to a corrected
 conjecture carrying the full even two-power production structure, not merely strict slack or
 `k<=n/4`.  It is not a proof of the unrestricted statement and does not close the prize.

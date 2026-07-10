@@ -52,6 +52,49 @@ Frontier/_AntiResonanceDichotomyReducesToWall.lean --
 Probes: scripts/probes/probe_466_antiresonance_tower_worstb.py, probe_466_antiresonance_tower_only.py.
 Author Sol (opus-4-8 core seat), co-author wakesync. -- antiresdichotomy.
 
+## [466-G58-ledger-reverses-with-depth] the all-depth annihilator ledger WORSENS with depth — G56's all-depth identity moves the BGK-free ledger the WRONG way; branch CLOSED (2026-07-09, #466 G58)
+
+Lane: arklib-opus-formalizer (opus-4-8). Answers the question raised by the G56/G57 calibration audit:
+*does the all-depth folded-pattern identity strengthen the BGK-free annihilator ledger route?* **NO — it
+strictly weakens it.** Landed axiom-clean in `Frontier/_G58AllDepthLedgerReversal.lean` (5 thms, all
+`#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, locked build 3350 jobs).
+
+CALIBRATION FIRST (why no new consumer is landed). `DCEnergyBound (Gset ζ m) r` is definitionally
+`q·E_r − n^{2r} ≤ q·Wickₚ` (`n = |Gset| = 2m`, `Wickₚ = (2r−1)‼·n^r`). Substituting G56's exact identity
+`E_r = negSymCount(2r) + W` turns it into the EXACT equivalent `q·W ≤ n^{2r} + q·(Wickₚ − negSymCount(2r))`
+— the sharp slack-aware criterion implied by `rEnergy = negSymCount + W` together with
+`negSymCount(2r) ≤ Wickₚ` (`G57.negSymCount_le_wick`). This is a genuine `↔`-rewrite of the OPEN
+`DCEnergyBound` prop, i.e. a RELABELING whose slack term `q·(Wickₚ − negSymCount)` is itself the residual
+BGK content. G57 already lands the weaker sufficient gate `q·W ≤ n^{2r}`; the sharp criterion exposes the
+exact remaining obligation but does NOT discharge it, so per brief NO stronger-looking wrapper around the
+same open prop is landed.
+
+THE NO-GO WE DO LAND. The BGK-free ledger (`FS1.annihilator_ledger_badPrime_cap`) bounds bad primes by
+`|pats|·(L/s)/T`. At depth `r`: pattern count `|pats| = |expTupleSet m (2r)| = n^{2r}` (proved exactly:
+`expTupleSet_card`, `Fintype.card_piFinset_const` + `Gset_card`), Wick headroom threshold scale
+`T_r = (2r−1)‼·n^r`. The decisive ratio `ledgerRatio r = |pats|/T_r = n^r/(2r−1)‼`. We prove the exact
+Nat/double-factorial bounds:
+* `wick_le_patternCount` : `(2r−1)‼·n^r ≤ n^{2r}` for `2r ≤ n` (ledgerRatio ≥ 1).
+* `ledger_ratio_growth` : `((2r−1)‼·n^r)·n^r ≤ n^{2r}·(2r)^r` (cross-multiplied `ledgerRatio ≥ (n/2r)^r`),
+  via the crude ceiling `(2r−1)‼ ≤ (2r)^r` (`doubleFactorial_le_crude`, product form).
+* `ledger_ratio_step_mono` : `n^r·(2(r+1)−1)‼ ≤ n^{r+1}·(2r−1)‼` for `2r+1 ≤ n` — the EXACT step
+  monotonicity: the ratio `n^r/(2r−1)‼` weakly INCREASES from depth `r` to `r+1` (one-step factor
+  `n/(2r+1) ≥ 1`). This is the correct monotonicity carrier (NOT a `(n/(2r))^r`-monotone claim, which is
+  FALSE near the `2r ≤ n` boundary, e.g. `(10/4)^2 > (10/6)^3` — caught in Codex review).
+* `ledger_gain_reverses_with_depth` : the packaged no-go on the real objects — pattern count is exactly
+  `n^{2r}`, `T_r ≤ n^{2r}`, `T_r·n^r ≤ n^{2r}·(2r)^r`, AND the step monotonicity above.
+
+Iterating `ledger_ratio_step_mono` from `r = 3` upward — valid at every step throughout the prize regime
+(`n = 2^30`, `r ≈ ln q ≈ 83 ≪ n`, so `2r+1 ≤ n` holds), the all-depth ledger's pattern-count-over-headroom
+ratio is monotone non-decreasing in depth and strictly LARGER at every depth `r ≥ 4` than at `r = 3` — so
+the all-depth cap needs a strictly larger prime family to stay non-vacuous. VERDICT: the all-depth folded-pattern identity does NOT help the annihilator
+ledger; it moves it the wrong way. This converts Fable's informal "moves the wrong way" (fable-implications
+report, 2026-07-09) into an in-tree theorem. NOTHING here is BGK — the ledger route never touches per-
+character incomplete Gauss sums; the price (as always) is that it can only certify Wick where the ratio
+stays bounded, and this file proves that ratio provably blows up with depth. DISTINCT from `_wfA04` (the
+Weil/toric envelope vacuity, a Deligne/Weil-II object) and from the padding-persistence probe: this is the
+FS1-ledger pattern-count/headroom ratio. CORE stays OPEN, ON-BGK — consistent with and sharpened by G58.
+
 ## [466-r14-outer-two-sided-iff] the delta*-floor is machine-checked BOTH DIRECTIONS equivalent to WorstCaseIncidenceBounded — the campaign's real two-sidedness (2026-07-04, #466 round 14)
 
 Lane: round-14 Lane I (dossier §24). Assembled the campaign's actual machine-checked two-sided reduction
@@ -31186,6 +31229,24 @@ excess (shifted-subgroup intersections), s5/s6 = genuine depth-3 Sidon strata �
 has its own literature; the wall is their SIMULTANEOUS control at prize (n, β, r≈ln q).
 CORE OPEN, ON-BGK.
 
+## [466-FS9-worstcase-interface-almost-all-primes] INTERFACE TERMINATION (Fable session): `WorstCaseIncompleteSumBound ψ μ_n ((15qn³)^{1/3})` is a THEOREM at every FS6 good prime — the annihilator-ledger arc now lands directly on the δ*-side named object (2026-07-09)
+
+Lane: FS9 (file `Frontier/_FS9WorstCaseBoundAlmostAllPrimes.lean`, real locked build 3343 jobs,
+axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+`worstCaseIncompleteSumBound_of_good_prime`: FS6's good-prime `GaussianEnergyBound (μ_n) 3`
+composed with the in-tree moment bridge `worstCaseIncompleteSumBound_of_energyBound`
+(GaussPeriodMomentBound → InteriorWorstCaseIncompleteSum) gives, at every prime of a family
+of primes ≥ 2^s outside the FS6-capped bad set: the worst-case incomplete character sum over
+μ_n is ≤ M₃ = (q·15·n³)^{1/3}, i.e. ‖η_b‖ ≤ 15^{1/6}·q^{1/6}·√n — as the NAMED
+`WorstCaseIncompleteSumBound` predicate the interior δ* consumer chain reads.
+
+VALUE = INTERFACE: any future deepening of the annihilator ledger (r = 4, 5, …; each needs
+only its negSymCount closed form — everything else is depth-generic) now lands directly on
+the δ* side with zero further plumbing; minimizing over available depths reproduces the
+moment ladder within the ledger's good-prime set. HONEST SCOPE (unchanged, FS8's
+regime-disjointness note applies): M₃ beats trivial only β < 3, cap non-vacuous only β ≳ 6;
+NOT a δ* closure; the per-prime deep-r wall is untouched. CORE OPEN, ON-BGK.
 ## [466-r383-half-radius-mds-line-n-bound-REFUTED] the unrestricted projective `n` ceiling is false for dyadic RS and for an infinite conic family (2026-07-09)
 
 R382 proposed: if `H` is an `[n,k]` MDS parity frame, `2e<n`, and `e+k+1<=n`, then
@@ -31220,3 +31281,21 @@ to prove that no four-column span contains the fixed line.  The exact arithmetic
 CONSEQUENCE: neither linear slack nor the low-rate inequality repairs R382 by itself.  This
 counterexample has odd length and a non-subgroup evaluation domain, so the remaining claim must
 retain the even two-power length, fixed two-power subgroup, and exact half-predecessor structure.
+
+## [466-FS10-exact-energy-almost-all-primes] TAXONOMIC CLOSURE (Fable session): r50's `Depth3WraparoundVanishing` — refuted as UNIVERSAL by r52 — is PROVEN at all but ≤ n⁶·((k+4)n/s) primes, with the EXACT char-0 value `addEnergy3(μ_n) = 15n³−45n²+40n` (2026-07-09)
+
+Lane: FS10 (file `Frontier/_FS10ExactEnergyAlmostAllPrimes.lean`, real locked build 3343 jobs,
+all 3 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+The T = 1 instantiation of the FS6 ledger: `strictBadPrime_cap` caps the primes at which ANY
+nontrivial depth-3 pattern vanishes; `wraparoundExcess_eq_zero_of_strict_good_prime` gives zero
+excess elsewhere; `depth3WraparoundVanishing_of_strict_good_prime` then collapses FS5's exact
+decomposition to the EXACT characteristic-zero value (ℕ-form `15n³+40n−45n²`, truncation-safe;
+NOTE the naive ℕ ordering `15n³−45n²+40n` is WRONG at n=2 — caught during the round).
+
+RESOLVES THE r50/r52/r53 TRICHOTOMY: exact-vanishing (r50, named) → refuted-as-universal (r52,
+bad primes carry excess) → headroom downgrade (r53) → NOW: exact at almost all primes with the
+exceptional set explicitly machine-checked-budgeted. HONEST SCOPE: T=1 cap ≈ n⁷/s, non-vacuous
+only β ≳ 8 (worse than FS6's β ≳ 6); prize regime uncapped; deep-r wall untouched. Follow-up
+lanes spawned as session tasks: depth-4 census discharge; depth-generic T=1 ledger.
+CORE OPEN, ON-BGK.

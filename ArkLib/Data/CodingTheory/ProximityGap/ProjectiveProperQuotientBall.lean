@@ -204,6 +204,10 @@ end ProximityGap.ProjectiveProperQuotientBall
 #print axioms
   ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_subset_quotientSyndromeBall
 #print axioms
+  ProximityGap.ProjectiveProperQuotientBall.badSlot_iff_mem_properQuotientBall
+#print axioms
+  ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
+#print axioms
   ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_eq_quotientSyndromeBall_of_pencilJointFar
 #print axioms
   ProximityGap.ProjectiveProperQuotientBall.properProjectiveBallIncidence_eq_projectiveBallIncidence_of_pencilJointFar
