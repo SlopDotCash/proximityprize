@@ -25163,3 +25163,25 @@ threshold where G80M dies (e.g. T(n^{2/3}) = O(n^{7/12}log^{3/4})), extending th
 unconditional window downward. Final instantiation brick (G80I = G80L × G80J join, needs
 E×(A) ≤ Σ_{y≤W²} d² which is r(y) ≤ d(y) + support-sum domination) is next-round plumbing.
 Fenced from the prize saddle (G80P). CORE remains OPEN / ON-BGK. No axioms, no sorry.
+## [466-G95-cyclic-code-weight-dictionary] The McEliece weight-period dictionary orientation: prize periods are maximally many-valued, few-weight/semiprimitive transfer IMPOSSIBLE, lattice quantization IMPOSSIBLE, power-sum integrality LANDED (2026-07-10)
+
+Lane: G95 Fable (`Frontier/_G95CyclicCodeWeightDictionary.lean`, axiom-clean, 20 audited decls,
+teeth at p=17/μ₄; probe `scripts/probes/probe_g95_cyclic_dictionary.py`, exit 0, β=4 primes
+n=8..64). Formalizes the 60-year irreducible-cyclic-code dictionary at the prize point and pins
+its orientation. (i) EXACT DICTIONARY: `eta_eq_iff_mem_coset` — η_b = η_c ⟺ c ∈ b·μ_n; the
+value multiset {η_b}_{b≠0} is exactly m = (p−1)/n pairwise-distinct values with multiplicity
+exactly n (`card_values_mul`); at the prize point 2^128 distinct real values (unconditional
+exact form of Katz many-valuedness). Engine: prime-root-sum rigidity via
+`DeBruijnIndicatorDisjointness` + new bridge ψ x = (ψ 1)^x.val. (ii) FEW-WEIGHT NO-GO:
+`few_weight_no_go` — two-valued distributions force p−1 ≤ 2n; ALL exact evaluations in the
+literature (Baumert–McEliece, Aoki semiprimitive p^j≡−1, every Schmidt–White entry) live in the
+extension-field Frobenius-collapse regime (probe: F₁₆/index-5 collapses to {−1,3}) and can NEVER
+apply to the prime-field prize family — this is why McEliece had 0 campaign hits. (iii)
+QUANTIZATION NO-GO: `eta_not_rational` — every η_b (b≠0, n+1<p) is irrational; the
+McEliece/Stickelberger integer-lattice quantization of weights has NO prime-field analogue at
+value level; "few quantized values + l2 mass ⟹ sup bound" is dead on arrival (gaps span 5
+orders of magnitude, probe). (iv) POSITIVE TRANSFER: integrality survives at symmetric-function
+level: `card_smul_sum_values_pow` welds values to in-tree N₀: n·Σ_v v^r = p·N₀(μ_n,r) − n^r;
+Σv = −1, Σv² = p−n, and below wraparound (N₀=0, all small odd r) Σ_v v^r = −n^{r−1} EXACTLY —
+dyadic v₂(P_r) = (r−1)·log₂n, probe-confirmed P₃ = −n² at n=8..64. NOT proved: any bound on M —
+distinctness has zero archimedean content. CORE stays OPEN.
