@@ -31395,3 +31395,33 @@ mathematics in-tree. HONEST SCOPE: fixed depth; exceptional-prime budgets grow n
 the deep-r joint limit (prize wall) untouched. LEAN NOTES: linarith does NOT work in ℤ[X] —
 use linear_combination; card_le_card_of_injOn coerces to Set (Finset.mem_coe first); rw order
 matters when later rewrites consume earlier patterns (hrem before hp/hv). CORE OPEN, ON-BGK.
+
+## [466-FS14-depth-generic-ledger-SEALED] ARC GRAND CAPSTONE (Fable session): `GaussianEnergyBound (μ_n) r` at almost all primes for EVERY fixed depth r — one theorem, all inputs in-tree, none named (2026-07-09)
+
+Lane: FS14 (file `Frontier/_FS14DepthGenericLedger.lean`, real locked build 3345 jobs, all 3
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+THE COMPOSED DEPTH-GENERIC THEOREM (n = 2^{k+1}, any family P of primes ≥ 2^s, any fixed r,
+2r ≤ 2^b):
+- `badPrime_capG`: #{p ∈ P : any nontrivial depth-r pattern vanishes in char p}
+  ≤ n^r·n^r·((k+1+b)·n/s) — FS1 ledger × FS3 resultant annihilators × FS11 pattern shape.
+- `gaussianEnergyBound_of_good_prime`: at every other prime, in every char-p field with a
+  primitive n-th root, `rEnergy(μ_n) r = trivialCountG` EXACTLY (zero wraparound excess,
+  field-free char-0 value) and ≤ (2r−1)‼·n^r by the FS13 pairing census — the depth-r Wick
+  rung `GaussianEnergyBound (μ_n) r`, at almost all primes, at EVERY depth simultaneously.
+
+This generalizes the r=3-specific FS6 (which used the exact 15n³−45n²+40n census) to all
+depths with zero per-depth counting work, and supersedes the "depth-generic T=1 ledger"
+spawned task (dismissed→packaging task now also complete in-session). The full Fable arc:
+FS1 ledger / FS2 resultant / FS3 height / FS4+FS11 decomposition (r=3 exact + generic) /
+FS5 closed-form weld / FS6+FS8+FS9+FS10 r=3 pipeline to the δ*-interface / FS12 shift
+bijection / FS13 Wick census / FS14 this capstone.
+
+HONEST SCOPE (unchanged, final): fixed depth r — exceptional budget ~n^{2r+1}/s needs prime
+families β ≳ 2r+2; the prize joint limit r ≈ ln q at β ≈ 5.3 is out of reach of ANY
+fixed-depth ledger (the exceptional set would need to be empty, i.e. per-prime uniformity —
+the Paley/BGK wall, the genuine δ* core, untouched and not claimed). What the arc buys the
+campaign: every fixed-depth rung of the moment ladder is now systematically TRUE at almost
+all primes with machine-checked budgets, localizing the entire open problem in (i) the
+per-prime exceptional sets and (ii) the depth-uniformity of the joint limit. CORE OPEN,
+ON-BGK.
