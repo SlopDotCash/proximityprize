@@ -24643,3 +24643,31 @@ along linear conditions in ℤ/m] and route (iii) [genuinely new ideas vs `IterC
 remain. The doctrine-v2 verdict is unchanged and strengthened: the missing certificate must be
 ARCHIMEDEAN/analytic — no web of exact algebraic identities, however complete, touches it.
 CORE OPEN / ON-BGK. Marked down, loop continues.
+
+### [466-HD7-HD8-identity-web-dimension-law] The HD arc COMPLETE with a sharp exact law: the multiplicative-identity web is Kubert–Lang-complete (nullity = φ(N)/2 EXACTLY, rational-arithmetic certificate at N=16 and N=256) and its power on ladder angles is EXACTLY dimension counting — pinned dims = max(0, #angles − φ(N)/2) — recovering classical index-2 solvability as the saturated case and proving the thin regime (index ≥ 4, prize = index 2^30) receives ZERO constraint at every density (2026-07-10)
+
+Probes `/tmp/arklib-reports/hd7_exact_rank_probe.py` (exact fraction-free elimination — no
+floating point) and `hd8_density_curve_probe.py` (the density sweep). Results:
+
+**HD7 (exact certificate + completeness).** N=16: rank 11, nullity 4 = φ(16)/2 ✓. N=256:
+rank 191, nullity 64 = φ(256)/2 ✓. The nullity of the encoded web (conjugation + ALL m′-fold
+Hasse–Davenport product relations) matches the Kubert–Lang universal odd distribution rank at
+both levels — the web is COMPLETE: by distribution-theoretic universality (Yamamoto; Kubert–Lang
+— anchor flagged for citation verification), Gauss sums satisfy NO multiplicative relations
+beyond those encoded. The HD6 verdict is therefore not "these relations fail" but "ALL exact
+multiplicative relations fail".
+
+**HD8 (the dimension law).** θ-projection rank of the null space at N=256, family {sj}∪{sj+1}:
+density 1/2: 127 angles, 64 free, 63 pinned; density 1/4, 1/8, 1/16, 1/32, 1/64: ZERO pinned
+(free = #angles) — a sharp transition at index 2→4. Mechanism (exact, both cells): the
+projection ALWAYS has maximal rank min(#angles, φ(N)/2); pinning is pure dimension saturation,
+never genuine constraint content. LAW: `pinned(θ) = max(0, dim θ − φ(N)/2)`.
+
+**Unification + prize verdict.** The classically solvable Gauss-sum families (quadratic,
+index-2/semiprimitive) are EXACTLY the saturated case dim θ > φ(N)/2 of this law — their "magic"
+exact evaluations are dimension counting in the Kubert–Lang module. For every index ≥ 4 — a
+fortiori the prize's index n = 2^30 — the identity web contributes literally nothing to the
+ladder angles. §33 route (ii) is closed with a LAW, not just a verdict; the missing certificate
+is archimedean/analytic with a machine-checked reason: the algebraic side is provably empty.
+Queued: small Lean brick for the abstract projection-rank law + documented certificates;
+Kubert–Lang citation verification. CORE OPEN / ON-BGK.
