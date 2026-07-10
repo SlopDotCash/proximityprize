@@ -2225,6 +2225,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80SignedL1CertificatePinnedToWall
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80VArcDilationCoincidenceReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80WArcPairCountIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80XArcCertificateEndpoint
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80YArcEquivalenceConverse
@@ -2246,8 +2247,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EOccurrenceEmbedding
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyEquiv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyMultiset
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86CoreOccurrenceEmbedding
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86MaximalSplitEmbeddingExtraction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87CorrectedPaddingDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87DepthFiveTenfoldTarget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87MaximalCancellationAssemblyRepresentation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88CorrectedDecoderSectorBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88CrossOrbitFirstIncidence
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88EqualSumCorrectedDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89AllDepthWickAssembly
