@@ -31921,3 +31921,44 @@ field: at nominal parameters that field is theorem-level exceptional by depth si
 remaining possible content is no longer exceptional-set avoidance, only a quantitative weighted
 bound on the forced wraparound mass, which G63 pins at the DC floor and CORE asks to control after
 DC subtraction. CORE OPEN, ON-BGK.
+
+## [466-G66-support-two-kernel-rigidity] Fixed-prime support-two relations have only one exponent lag, so the entire binomial kernel sector is uniformly below 5.22e-5 Wick at the nominal prize saddle (2026-07-10)
+
+Lane: direct GPT-5.6 Sol CORE (`Frontier/_G66SupportTwoKernelRigidity.lean`; exact probe
+`/tmp/arklib-reports/g56_support2_kernel_probe.py`; research branch only).
+
+**Mechanism.** The characteristic-zero full-shape histogram places a two-coordinate endpoint in
+`m(m-1)` ordered pairs of antipodal classes. At one fixed characteristic-`p` kernel, a relation
+`a*zeta^i + b*zeta^j = 0` with fixed nonzero `(a,b)` has at most ONE second exponent `j` for each
+first exponent `i`: two choices would give `zeta^j = zeta^j'`, and primitivity forces `j=j'`.
+Therefore a fixed coefficient pair has at most `m=n/2` placements. This is a genuine fixed-prime
+factor-`m` saving, not the already-closed generic cyclic-orbit quotient. Primitive depth one is
+impossible: distinct half-domain powers are neither equal nor negatives, since negation shifts the
+exponent by exactly `m` (`zeta^m=-1`).
+
+**Axiom-clean Lean.** `fst_injOn_twoTermPlacements` proves projection injectivity;
+`twoTermPlacements_card_le` proves the at-most-`m` placement cap;
+`pow_ne_pow_of_lt_half` and `pow_ne_neg_pow_of_lt_half` prove the depth-one exclusion. All depend
+only on `[propext, Classical.choice, Quot.sound]`; no new assumptions.
+
+**Exact weighted envelope.** If primitive depth is `s=(|a|+|b|)/2`, decomposing a length-`2r`
+signed walk into `2s` excess steps and `r-s` cancelling pairs gives
+
+`m*NR_r(a,b)/Wick_r <= r!/(r-s)! / (m^(s-1)*|a|!*|b|!)`.
+
+Summing every ordered nonzero signed coefficient pair, with `s>=2`, yields
+
+`Support2/Wick <= 4*Sum_{s=2}^r [r!/(r-s)!]*(4^s-2)/[(2s)!*m^(s-1)]`.
+
+The probe enumerated every support-two endpoint and exact signed-walk mass in 15 cells
+(`n=8,16,32`, thin and surplus-2-adic primes). Every coefficient pair had `maxlag=1`; the bound
+held throughout. At `n=2^30`, `r=ceil(ln(n*2^128))=110`, the exact rational envelope evaluates to
+`5.21106040058e-5`. Thus rank-one/binomial wraparound consumes under `0.006%` of one Wick budget,
+uniformly even at resonant primes (`3 in mu_n`, etc.). It cannot carry the deep wall.
+
+**Literature integration and frontier.** This removes the rank-one structured outcome that inverse
+Littlewood-Offord theory would diagnose. It also explains Shaw r366-r370b: the binomial-web
+criterion captured only 2/20 beta>=3 violators; mass migrated to trinomial and eventually maximal
+support sectors. Heath-Brown-Konyagin / Garcia-Voloch / Shkredov shifted-subgroup estimates engage
+support three, but r368 shows support six becomes dominant. The surviving object is therefore the
+support>=3 relation web, not a hidden support-two resonance. CORE remains OPEN, ON-BGK.
