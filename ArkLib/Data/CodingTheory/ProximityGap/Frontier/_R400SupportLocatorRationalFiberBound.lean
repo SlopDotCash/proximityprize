@@ -26,8 +26,8 @@ open Finset Polynomial
 
 namespace ArkLib.ProximityGap.Frontier.R400SupportLocatorRationalFiberBound
 
-variable {I F : Type} [Fintype I] [DecidableEq I]
-variable [Field F] [DecidableEq F]
+variable {I F : Type} [Fintype I]
+variable [Field F]
 
 /-- A lower-degree nonzero numerator cannot be a scalar multiple of the
 degree-`s` denominator. -/
@@ -46,6 +46,7 @@ theorem sub_C_mul_ne_zero_of_natDegree_lt
     rw [heq, hdeg, hHdeg] at hrdeg
     omega
 
+open Classical in
 /-- **Support-locator fiber bound.**  On any injected evaluation domain, the
 fiber `r(x)=a*H(x)` has cardinality at most `deg H = s`. -/
 theorem rationalFiber_card_le
