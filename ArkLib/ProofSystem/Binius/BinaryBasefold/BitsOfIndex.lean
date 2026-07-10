@@ -20,14 +20,6 @@ open MvPolynomial Finset
 
 variable {L : Type} [Field L]
 
-/-- Binary expansion of an index in fold-order coordinates. -/
-def bitsOfIndex {n : ℕ} (k : Fin (2 ^ n)) : Fin n → L :=
-  fun j => if Nat.getBit j.val k.val = 1 then 1 else 0
-
-/-- Binary expansion of an index in statement-order coordinates. -/
-def statementOrderBitsOfIndex {n : ℕ} (k : Fin (2 ^ n)) : Fin n → L :=
-  fun j => bitsOfIndex (L := L) k (Fin.rev j)
-
 /-- Coordinate form of `bitsOfIndex`. -/
 theorem bitsOfIndex_apply {n : ℕ} (k : Fin (2 ^ n)) (j : Fin n) :
     bitsOfIndex (L := L) k j = if Nat.getBit j.val k.val = 1 then 1 else 0 :=
