@@ -32636,3 +32636,86 @@ decoupling (G80D) fail identically — not on strength, on a circular hypothesis
 principle sharpens once more: the missing ingredient is a NON-FOURIER decorrelation/anti-
 concentration certificate for geometric-progression structure; everything downstream of that
 certificate is already available at tolerable loss. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G80-arc-oscillation-weld] G78's owed arc model PAID: chord-arc oscillation estimate + exact equally-spaced-center cancellation (B = 0), welded into the machine-checked rank-one arc-increment extraction — some arc deviates from ANY reference mass by (A − #pts·wid)/K whenever the phase sum has norm ≥ A (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 debt-cleanup (`Frontier/_G80ArcOscillationWeld.lean`, real locked build 3321
+jobs, all 5 theorems exactly `[propext, Classical.choice, Quot.sound]`). G78
+(`_G78KMSpreadCircularity.lean`) proved the abstract KM increment-extraction chain and recorded in
+its scope: "the rank-one arc application and its oscillation estimate remain to be formalized" —
+the two concrete inputs `happrox` and `hcancel` of
+`exists_cell_deviation_of_approximated_phase_bias`. This lane supplies both and fires the chain.
+
+**Bricks.**
+- `norm_expI_sub_expI_le`: chord ≤ arc on the unit circle, `‖e^{ia} − e^{ib}‖ ≤ |a−b|` (factor
+  through `Real.norm_exp_I_mul_ofReal_sub_one_le`, i.e. `2|sin(x/2)| ≤ |x|`).
+- `phase_sum_arc_approx`: single-arc oscillation estimate `‖Σ_T e^{iθ} − #T·e^{iγ}‖ ≤ #T·wid`.
+- `grouped_phase_sum_approx`: fiberwise K-cell model error ≤ `#pts·wid` — G78's `happrox` with
+  `D = #pts·wid`, for ANY cell assignment and centers.
+- `sum_equally_spaced_centers_eq_zero`: the K ≥ 2 equally spaced centers `2πj/K` are the K-th
+  roots of unity and sum to EXACTLY zero (IsPrimitiveRoot.geom_sum_eq_zero) — G78's `hcancel`
+  with `B = 0`: the reference-mass cancellation term vanishes identically, so the extraction is
+  CLEAN (no `w·B` loss at all).
+- `exists_arc_deviation_equally_spaced` (CAPSTONE): phase sum norm ≥ A + phases within `wid` of
+  their arc centers ⟹ ∃ arc whose occupancy deviates from ANY reference mass m by
+  `≥ (A − #pts·wid)/K`. With the canonical instantiation `wid = 2π/K` this is the rank-one
+  arc-density increment G78's probe measured two-sidedly (dev/(M/n) ∈ [3.1, 6.9]).
+
+**Honest scope.** Completes the arc MODEL abstractly (arbitrary phases θ, arc assignment κ). The
+remaining gap to the arithmetic cell is mechanical plumbing (θ x = 2π·val(bx)/p on μ_n, κ = arc
+index, wid = 2π/K by construction). Does NOT close the KM spreadness circularity — G78's verdict
+stands (constant-loss loop, no contraction; the non-circular input remains the
+BGK/Cilleruelo–Garaev anti-concentration frontier, per the tool-shape doctrine v2 "single missing
+non-Fourier certificate"). What it adds: the Fourier⟹arc-increment direction of the rank-one
+equivalence is now fully machine-checked with ZERO cancellation loss, so any future non-Fourier
+arc-occupancy certificate plugs directly into the extraction with no further analytic work. CORE
+remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G82-transversality-crt-threshold] The sole surviving CORE seam QUANTIFIED: CRT amplification across s distinct maximal ideals of index p forces p^s ≤ H for any common-intersection ideal with height certificate H — the prize-cell contradiction threshold s* = (n/4)log6/log p is EXACTLY HALF the OC-PIECEB per-relation height allowance, so the seam is coverage-blocked, NOT height-blocked (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 seam-quantification (`Frontier/_G82TransversalityCRTThreshold.lean`;
+research branch only; complements OC-PIECEB `f753961647` and OC-TAIL `a7c4ab170f`).
+
+**Target.** After G77 emptied the off-BGK list, the doctrine-v2 ranking
+(`docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md`) puts the r369 piece-(b)
+transversality seam first. OC-PIECEB capped naive same-ideal stacking but left the
+multi-embedding side unquantified ("should the census ever be shown to force Ω(n) DISTINCT
+embeddings"). This lane pins the exact amplification law and the exact threshold.
+
+**Axiom-clean Lean kernel (LANDED, 5 thms, `[propext, Classical.choice, Quot.sound]`).**
+- `natCard_quotient_iInf_eq_prod`: CRT cardinality for pairwise-distinct maximal ideals
+  (#(R/⋂𝔭ᵢ) = Π #(R/𝔭ᵢ); distinct maximal ⟹ coprime ⟹ `quotientInfRingEquivPiQuotient`).
+- `natCard_quotient_le_of_le`: quotient-factor surjection monotonicity.
+- `crt_amplification` (HEADLINE): L ≤ ⋂ᵢ 𝔭ᵢ (s distinct maximals of index p) + #(R/L) ≤ H
+  ⟹ p^s ≤ H.
+- `coverage_log_bound`: hence s·log p ≤ log H — common coverage above log H/log p is
+  CONTRADICTORY (no such census exists).
+- `crtThreshold_eq_half_heightCap`: at the prize cell (Hadamard H = 6^{n/4} for the ±1
+  support-6 census span, φ = n/2), the contradiction threshold
+  s* = (n/4)log6/log p ≈ 0.112·n/ln n (p = n⁴) is EXACTLY HALF the OC-PIECEB single-relation
+  height allowance (n/2)log6/log p ≈ 0.224·n/ln n.
+
+**Consequences (the sharpest statement of the surviving seam to date).**
+(1) The anti-coincidence input piece (b) needs only Ω(n/log n) COMMON embeddings — NOT Ω(n) as
+r369 recorded; the requirement is strictly inside what single-relation heights permit (2× slack).
+The seam is coverage-blocked only: the census concentrates at one embedding (measured coverage
+≈ 1, factor n/log n below threshold). (2) Either direction now has a concrete numeric target:
+FORCE common coverage > 0.112n/ln n for a full-rank height-1 family (fires the contradiction and
+closes piece (b)), or prove coverage stays o(n/log n) (fences the seam). This is the first
+surviving-seam boundary where required and permitted quantities differ by a bare factor 2.
+
+**HONEST SCOPE.** Engine + threshold arithmetic proven; the prize-cell instantiation (Hadamard
+for the census span; complete splitting of p in ℤ[ζ_n]) is documented, not formalized. No bound
+on M; CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+### [466-G82-addendum-coverage-probe] Exact census coverage measured: EVERY depth-3 relation covers exactly ONE embedding (2026-07-10)
+
+Probe `/tmp/arklib-reports/g82_common_coverage_probe.py` (n=16: p=97,193,257; n=32: p=641,769,
+1153; full support-6 ±1 census, all odd embeddings): per-relation coverage min=med=max=1 in every
+cell, full-census common coverage = 1, best pairwise common = 1 — against CRT thresholds
+s* = 1.3–2.2 and height caps 2s* = 2.7–4.4. So v_p(Norm R) = 1 identically at accessible cells
+(extends G56's v_p=1 from the canonical cell to the whole census, all cells tested; note n=16
+p=257 census is EMPTY). VERDICT: the coverage-FORCING direction of the G82 race has nothing to
+grab at accessible scales; the data supports the FENCE direction (coverage stays ≪ s*), which
+would close the CRT amplification route as a no-go — while leaving piece (b) itself needing a
+non-CRT mechanism. The seam remains open but its live half is now the fence.
