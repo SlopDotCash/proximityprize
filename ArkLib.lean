@@ -2226,7 +2226,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLargeCoreC
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLineCoreGeometry
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLineCorePacking
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthCombinatorics
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthFullWiring
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthNumeric
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenth
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthArithmeticBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthPin
@@ -2798,6 +2800,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R342MellinLevelSet
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R343MellinFourthMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R344MellinWickSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R345PropagationThresholdNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R347StickelbergerRankCertificates
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R348PeriodSquareRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R349EndpointLengthExclusion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadLambdaCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R34QuadWeilBound
@@ -2837,11 +2841,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R387RateEighthPruning
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R387SectorSupportDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R388SectorRelationCountBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R389CensusIdentityExactFiber
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R389WickBudgetSupBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R390PerFrequencyShadowEnergyConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R390RelationResultantCertificate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R391RelationHeightLedger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R392RelationCountCapstone
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R393KernelIdealLatticeFrame
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R394L1KernelCertificate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R395MellinFourthMomentHBKTrim
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R40CubeClassExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R41SexticInputSplit
