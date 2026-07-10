@@ -6,36 +6,36 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapeLowRateExactPins
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PackingBudgetFirstJump
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthFullWiring
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KKH26InteriorCeilingLatticeBridge
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConverse
 
 /-!
 # The real-valued Grand MCA predicate fails at the first prize-shaped prime
 
-The operational good-radius set at rates `1/8` and `1/16` has supremum `1/2`, but
-the endpoint `1/2` is bad at budget `2^-128`.  Consequently it has no largest
+The operational good-radius set at rate `1/16` has supremum `1/2`, but the
+endpoint `1/2` is bad at budget `2^-128`.  Consequently it has no largest
 element.  This refutes the real-valued `GrandMCAResolution` / `mcaPrize` predicate
 for the certified smooth domain.  The faithful lattice threshold is unaffected.
 -/
 
 set_option autoImplicit false
-set_option maxRecDepth 100000
 
 open scoped NNReal ENNReal
 open ProximityGap ProximityGap.MCAThresholdLedger
 open ProximityGap.GrandChallenges
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
+open ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring
 
 namespace ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation
 
 local instance firstPrimeFact : Fact (Nat.Prime PrizeShapePrimeP30.P) :=
   ⟨PrizeShapePrimeP30.prime_P⟩
 
+open Classical in
 /-- A bad operational supremum cannot be represented by the attained-maximum
 field of `GrandMCAResolution`. -/
 theorem not_nonempty_resolution_of_bad_at_deltaStar
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F]
     {n : ℕ} [NeZero n] (C : Set (Fin n → F)) (epsilonStar : ℝ≥0)
     (hbad : (epsilonStar : ENNReal) <
       epsMCA (F := F) (A := F) C
@@ -77,7 +77,7 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half_local :
   intro u
   letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
   have hcount :=
-    ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.halfPredecessor_badScalar_filter_card_le_length
+    halfPredecessor_badScalar_filter_card_le_length
       (F := ZMod PrizeShapePrimeP30.P) (n := 2 ^ 30) (h := 2 ^ 29) (k := 2 ^ 26)
       firstPrimeDomain (by norm_num) (by norm_num) (by norm_num) u
   have hcode :
@@ -128,7 +128,7 @@ theorem prizeRateSixteenth_floor :
   norm_num [prizeRates]
 
 /-- **Formal prize verdict.**  The real-valued ABF26 MCA prize predicate is false
-on the first certified smooth domain because its rate-`1/8` good-radius set has no
+on the first certified smooth domain because its rate-`1/16` good-radius set has no
 largest element. -/
 theorem not_mcaPrize_firstPrimeDomain : ¬ mcaPrize firstPrimeDomain := by
   intro hprize
