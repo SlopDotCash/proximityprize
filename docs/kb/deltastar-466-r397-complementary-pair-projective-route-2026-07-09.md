@@ -2,10 +2,10 @@
 
 Status: two broad combinatorial hypotheses refuted; a sharper dyadic projective classification survives.
 
-## Complementary-pair reduction
+## Complementary-pair reduction (`k=4` only)
 
-In the overlap-three saturated rate-quarter cell, an off-line point has a root block of size
-`k-1` inside a petal of size `k+1`.  Replace the block by its complementary unordered pair.
+In the `k=4` overlap-three saturated rate-quarter cell, an off-line point has a root block of size
+three inside a petal of size five.  Replace the block by its complementary unordered pair.
 Modulo the cubic locator of the three common anchors, compatibility says that the two block
 locators have proportional values at those anchors.
 
@@ -53,13 +53,24 @@ Therefore the claim that every three collinear pair points share an endpoint is 
 failure is nevertheless rigid: it is the multiplicative involution `x -> c/x`, the same pairing
 geometry that appears in the dyadic square-map recursion.
 
+## Scope correction
+
+This pair model does **not** generalize verbatim.  For arbitrary `k`, two size-`2k` cores with
+intersection three have petals of size `2k-3`; a saturated root block has size `k-1`, and its
+complement has size `k-2`.  The general invariant is therefore a subset-product point in `P^2`,
+not a quadratic coefficient point.  R397 explains the completed `k=4` geometry and refutes two
+possible abstractions, but it is not by itself an induction step.
+
 ## Surviving target
 
-A closing theorem must retain the projectivity, not just adjacency.  Classify how one projective
-transformation can map many points between two dyadic pair configurations.  Images of star lines
-must land either on star lines or on constant-product matching lines.  The star-to-star part
-induces a vertex map; the star-to-product part induces the dyadic involution.  The remaining
-problem is to show that more than `4k` compatible pairs force a globally consistent choice, which
-should return either determinant collapse or one of the already controlled packing clusters.
+A closing theorem must retain the diagonal projectivity in the three-anchor evaluation basis.
+For general `k`, bound fibers of the map sending a `(k-1)`-subset `S` of a `(2k-3)`-petal to
+
+```text
+[prod_{x in S}(a_0-x), prod_{x in S}(a_1-x), prod_{x in S}(a_2-x)] in P^2.
+```
+
+The pair-line classification remains a useful base-case model, while the general target is a
+three-anchor subset-product collision theorem on the dyadic domain.
 
 No prize closure is claimed in this round.
