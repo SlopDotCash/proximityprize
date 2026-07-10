@@ -251,7 +251,7 @@ support_gt_twoTierCap_or_transported_jointAgreement_of_N_lt_badCount_rowMix
 in `Frontier/_P1RateQuarterProjectiveExtremeZeroSplit.lean`.  It does not
 close the large-support alternative.
 
-## 6. Two proof architectures ruled out
+## 6. Four refuted shortcuts and the surviving global residual
 
 The raw two-row interleaved collapse queries agreement
 `2T-n=111,848,108`.  Its numerator fits the prize budget exactly when its
@@ -259,6 +259,71 @@ uniform interleaved-list cap satisfies `L<=1`.  A degree-`111,848,108`
 vanishing polynomial gives two distinct list members at the zero stack, so
 that premise is false for every injective P1 domain.  See
 `_P1RateQuarterInterleavedCollapseNoGo.lean`.
+
+The joint witness supplied by the projective zero-unsafe branch can be used
+more efficiently than this raw all-stack list.  Ordinary exact-diagonal
+Johnson bounds the predecessor threshold joint-pair list by `5`.  For any one
+known threshold-size joint-agreement set, every MCA event has an escape
+coordinate outside it.  If the bad family has more than `n` members, then any
+choice of those coordinates has a fiber containing at least three scalars:
+
+```text
+n - T = 480,946,858,
+2(n - T) < n < 3(n - T),
+5(n - T) = 2,404,734,290.
+```
+
+Thus the fixed-witness branch is reduced to RS-specific control of three MCA
+witnesses sharing one fresh coordinate.  Injectivity cannot be inferred from
+the abstract event clauses: `_P1RateQuarterJointWitnessCharge.lean` gives a
+two-coordinate `F_3` arbitrary-set-code example with two bad scalars and only
+one possible escape coordinate.  This refutes only the bare charging step,
+not the predecessor cap.  The stronger generic-RS exclusion is false as
+well: `_RateQuarterSharedFreshCoordinateCounterexampleF11.lean` gives a
+kernel-checked `RS[8,2]` code over `F_11` with three distinct half-radius
+MCA-bad scalars whose witnesses share one coordinate outside the maximal
+joint-agreement set of a known pair.  The example has rate `1/4` but not the
+P1 length or threshold, so the live target is specifically P1-scale control,
+not a code-agnostic or rate-only triple-impossibility lemma.  Its executable
+certificate is `scripts/probes/probe_rate_quarter_p1_shared_fresh_coordinate.py`.
+
+`_P1RateQuarterSharedFreshCoordinate.lean` isolates the forced local
+structure.  Two distinct witness scalars give a codeword pencil jointly
+agreeing on their witness intersection, and the witness sets are incomparable.
+An intersection with the known joint set of size at least `K` absorbs that
+pencil into the known pair, but the P1 counts do not force the premise.  If
+three witness codewords are collinear, their common pencil agrees on the full
+two-cover region, whose exact floor is `352,321,537 >= K`; this is still below
+the event threshold `T`, so it is not a contradiction.
+
+The same module introduced the sufficient proposition `SharedFreshTripleFree`
+and proved `badFamily_card_le_N_of_sharedFreshTripleFree`.  That proposition is
+now refuted even at literal P1.  `_P1RateQuarterSharedFreshTripleRefuted.lean`
+uses a root-product pair on a threshold initial segment and zero rows on its
+complement to construct `N-T+1=480,946,859` distinct bad scalars through one
+fixed fresh coordinate, for every injective P1 domain.  The conditional
+consumer remains valid, but its premise cannot close the branch.
+
+The correct collinear statement is global rather than triple-local.
+`_P1RateQuarterCollinearMismatchCharge.lean` proves that a whole selected
+family lying on one fixed codeword pencil charges injectively to coordinates
+where that pencil mismatches the received pair, hence has size at most `N`.
+The surviving fixed-witness work is therefore genuinely non-collinear and
+simultaneous; local shared-fresh exclusion is not a valid residual.
+
+The improved BCHKS25 Guruswami--Sudan/Hensel architecture also remains far
+above the prize coefficient.  Exact optimization of its integer interpolation
+cells and Equation (13) lowers the printed threshold to
+
+```text
+11,510,231,640,868 bad scalars to fire,
+```
+
+so the contrapositive cap is `11,510,231,640,867`, strictly between
+`10,719*n` and `10,720*n`.  The predecessor supplies only the `n+1` trigger.
+This is an exact barrier for that universal rank-nullity architecture, not a
+counterexample to the desired `n` cap; see
+`deltastar-466-rate-quarter-bchks25-eq13-exact-barrier-2026-07-10.md`.
 
 Pure set/source-line incidence is also insufficient.  A literal-P1
 probabilistic construction has `n+1` abstract events while satisfying the
@@ -293,8 +358,18 @@ Two unconditional consumers narrow that rank target.  If one anchor pair is
 jointly incident with every label on at least `K` coordinates,
 `degreeAnchoredKernelRigid_of_commonAnchorCoverage` closes the kernel by the
 ordinary root bound.  More generally,
-`degreeAnchoredKernelRigid_of_bootstrap` permits an acyclic parent relation:
-each new label needs `K` common coordinates with two already-vanishing parent
-labels.  The remaining combinatorial task is to extract such a coverage tree,
-or a suitable weakening, from every hypothetical over-budget P1 support
-family.
+`degreeAnchoredKernelRigid_of_coordinateBootstrap` permits the two
+already-vanishing parents to vary with the coordinate, provided they have
+lower rank.  The remaining combinatorial task is to extract such a coverage
+ordering, or a suitable coupled-core certificate, from every hypothetical
+over-budget P1 support family.
+
+In the deterministic `N=64` rank witness, the selected minor admits an exact
+leaf/core decomposition: 45 label blocks peel as disjoint `16 x 16`
+Vandermonde blocks, leaving an 18-label `288 x 288` core.  Its determinant is
+algebraically independent of every peeled label.  This validates the
+coordinate-bootstrap mechanism on the leaf portion but leaves a coupled core
+rank problem.  Indeed 29 tested distinct-label substitutions make that fixed
+minor singular, although the full operator remains rank `1008` after fallback
+elimination in every case.  The result remains evidence for one support
+family, not a P1 theorem.

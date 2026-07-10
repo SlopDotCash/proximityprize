@@ -22,13 +22,17 @@ For each of F_193, F_257, and F_449 the probe also constructs every one-label
 update kernel ``D_e B^{-1}`` on its changed rows.  Leaf kernels are exactly
 zero.  Every core kernel has a nonzero trace-of-a-power witness and is
 therefore nonnilpotent, proving that the corresponding one-variable slice of
-the fixed minor determinant is nonconstant in each tested field.
+the fixed minor determinant is nonconstant in each tested field.  Exhaustive
+core-slice root scans find roots away from the core anchor labels, refuting a
+pure anchor-difference factorization of the residual.  Full elimination at
+all 29 pairwise-distinct such roots shows that other rows repair the fixed
+minor: the full operator remains rank 1008 in every case.
 
 This is a structural theorem about one selected minor of one fixed support
 family.  It is not a rank theorem for arbitrary supports or a proof of the P1
 predecessor residual.
 
-Requires NumPy.  Deterministic; expected runtime is under one minute.
+Requires NumPy.  Deterministic; expected runtime is under two minutes.
 """
 
 from __future__ import annotations
@@ -81,8 +85,34 @@ EXPECTED_UPDATE_HASHES = {
     257: "b1542aa6bfe44a478d878bfdf1da94e85840ae3f7d611fb4c0e8ef32cb954dae",
     449: "c804753147a6d482ce93cfdf4253b5be6e9e479310fb341615c5707278c3d7e3",
 }
+EXPECTED_CORE_ROOTS = {
+    193: {
+        2: (0, 1, 3, 5, 9, 82), 3: (0, 1, 2, 4, 6, 8, 78),
+        4: (0, 1, 3, 8), 5: (2,), 6: (0, 3), 8: (3, 4), 9: (2,),
+        11: (27, 32, 116), 12: (86,), 23: (189,), 24: (), 25: (),
+        26: (2,), 30: (85,), 34: (62, 191), 36: (171,), 39: (77,), 48: (),
+    },
+    257: {
+        2: (0, 1, 3, 5, 9, 186), 3: (0, 1, 2, 4, 6, 8, 62),
+        4: (0, 1, 3, 8), 5: (2,), 6: (0, 3), 8: (3, 4), 9: (2,),
+        11: (), 12: (199,), 23: (69,), 24: (178,), 25: (), 26: (226,),
+        30: (95,), 34: (104, 220), 36: (4,), 39: (6,), 48: (),
+    },
+    449: {
+        2: (0, 1, 3, 5, 9, 73), 3: (0, 1, 2, 4, 6, 8),
+        4: (0, 1, 3, 8), 5: (2,), 6: (0, 3), 8: (3, 4), 9: (2,),
+        11: (342,), 12: (218,), 23: (), 24: (), 25: (91,), 26: (267,),
+        30: (78,), 34: (87, 430), 36: (231,), 39: (46,),
+        48: (77, 156, 179),
+    },
+}
+EXPECTED_CORE_ROOT_SCAN_HASHES = {
+    193: "ffef236337774555d7d98927baa5aec024723949b1940dade038078936cb1478",
+    257: "3237c00f4dcebf44b64e27fec13c8b9a7a017ed4c356e0bc81a3fc38924115ee",
+    449: "365dba5b194355701d96453bb9ea7dbece74843bb9b4873bd0ada528f1083f33",
+}
 EXPECTED_REPORT_SHA256 = (
-    "b76d96dc3dc6aa099c897e9e8d8767360308ec1db55d2e072f9c3b250ce7519d"
+    "5294e9046f9d90d89ecd97541e4a9498f9f50d3c249c5eb90a8c8c101c6c9f08"
 )
 
 
@@ -350,8 +380,10 @@ def field_audit(
         assert not np.any(leaf_block[before:after, after:])
 
     updates = []
+    derivatives: dict[int, np.ndarray] = {}
     for event in EVENTS:
         derivative = selected_derivative(prime, event, selected)
+        derivatives[event] = derivative
         changed_rows = np.flatnonzero(np.any(derivative, axis=1))
         kernel = (
             derivative[changed_rows].dot(inverse[:, changed_rows]) % prime
@@ -395,6 +427,68 @@ def field_audit(
         if update["update_kernel_state"] == "nonnilpotent"
     ] == list(core_events)
 
+    # Exhaust every value of each core label in the residual determinant.
+    # Non-core-anchor roots prove that the 288-degree residual is not merely a
+    # product of pairwise differences.  Values >= M remain distinct from all
+    # other baseline labels; full elimination checks that singularity of this
+    # particular minor is repaired by other rows of the 2212-row operator.
+    core_inverse = sensitivity.solve_square(
+        core_block, np.eye(core_block.shape[0], dtype=np.int64), prime
+    )
+    core_anchor_values = {0, 1, *core_events}
+    core_root_scans = []
+    full_matrix_fallbacks = []
+    for event in core_events:
+        core_derivative = derivatives[event][np.ix_(core_rows, core_columns)]
+        changed_core_rows = np.flatnonzero(np.any(core_derivative, axis=1))
+        assert len(changed_core_rows) < prime
+        core_kernel = (
+            core_derivative[changed_core_rows].dot(
+                core_inverse[:, changed_core_rows]
+            ) % prime
+        )
+        identity = np.eye(len(changed_core_rows), dtype=np.int64)
+        roots = [
+            value for value in range(prime)
+            if base.modular_rank(
+                (identity + (value - event) * core_kernel) % prime, prime
+            ) < len(changed_core_rows)
+        ]
+        assert tuple(roots) == EXPECTED_CORE_ROOTS[prime][event]
+        off_core_anchor_roots = [
+            value for value in roots if value not in core_anchor_values - {event}
+        ]
+        admissible_distinct_roots = [
+            value for value in roots if value >= base.M
+        ]
+        core_root_scans.append({
+            "event": event,
+            "slice_degree_upper_bound": len(changed_core_rows),
+            "core_update_kernel_rank": base.modular_rank(core_kernel, prime),
+            "roots": roots,
+            "off_core_anchor_roots": off_core_anchor_roots,
+            "admissible_distinct_roots": admissible_distinct_roots,
+        })
+        for value in admissible_distinct_roots:
+            labels = baseline_labels.copy()
+            labels[event] = value
+            matrix = base.divided_difference_matrix(prime, labels)
+            rank = base.modular_rank(matrix, prime)
+            fixed_minor_rank = base.modular_rank(matrix[witness_rows], prime)
+            assert fixed_minor_rank == (base.M - 2) * base.K - 1
+            assert rank == (base.M - 2) * base.K
+            full_matrix_fallbacks.append({
+                "event": event,
+                "replacement_label": value,
+                "fixed_minor_rank": fixed_minor_rank,
+                "full_matrix_rank": rank,
+                "full_matrix_nullity": (base.M - 2) * base.K - rank,
+                "assignment_sha256": sensitivity.assignment_sha256(prime, labels),
+            })
+    assert any(scan["off_core_anchor_roots"] for scan in core_root_scans)
+    assert full_matrix_fallbacks
+    assert len(full_matrix_fallbacks) == {193: 9, 257: 8, 449: 12}[prime]
+
     # Independently validate the symbolic derivative formula for every event
     # in one characteristic.  The alternate value 65 is unused and distinct.
     if prime == PRIMES[0]:
@@ -425,10 +519,18 @@ def field_audit(
         "nonnilpotent_update_events": list(core_events),
         "nonzero_nilpotent_update_events": [],
         "collision_values_covered_for_leaf_events": True,
+        "core_is_pure_anchor_difference_product": False,
+        "core_root_scans": core_root_scans,
+        "core_root_scans_sha256": sha256_json(core_root_scans),
+        "admissible_singular_minor_full_matrix_fallbacks": full_matrix_fallbacks,
         "updates": updates,
         "updates_sha256": sha256_json(update_payload),
     }
     assert result["updates_sha256"] == EXPECTED_UPDATE_HASHES[prime]
+    assert (
+        result["core_root_scans_sha256"]
+        == EXPECTED_CORE_ROOT_SCAN_HASHES[prime]
+    )
     return result
 
 
@@ -474,6 +576,12 @@ def main() -> None:
                 "product(anchor differences with recorded exponents) * "
                 "det(288x288 core), up to row/column permutation sign"
             ),
+            "core_is_pure_anchor_difference_product": False,
+            "admissible_singular_minor_assignments_checked_by_full_elimination": sum(
+                len(field["admissible_singular_minor_full_matrix_fallbacks"])
+                for field in fields
+            ),
+            "full_operator_rank_drops_at_those_assignments": 0,
         },
     }
     canonical = json.dumps(

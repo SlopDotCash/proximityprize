@@ -212,8 +212,86 @@ that pencil at every coordinate, contradicting event nonjointness.  All 15
 additional full-size trials also have rank `1008` and nullity zero.  For the
 first six events, fixing labels `0,1,2,3` and exhausting all `35,532` ordered
 distinct choices of the final two labels over `F_193` always gives full gauged
-rank `64`.  Rank could still depend on the remaining labels or field/domain;
-these computations are not a uniform theorem.
+rank `64`.  This is certified by three explicit adjacent maximal minors sharing
+63 rows; their successive common-zero counts are exactly `189, 1, 0`.  Rank
+could still depend on the remaining labels or field/domain; these computations
+are not a uniform theorem.
+
+### 3.1 The Hall obstruction is supported on at most six labels
+
+For a label subset `U`, define the projected Hall-budget contribution at
+coordinate `x` by
+
+```text
+min(|S_x intersect U|, |S_x|-2).
+```
+
+For distinct labels this is the expected projected local constraint rank: the
+local kernel has the two affine degrees of freedom isolated in
+`_SupportDividedDifferenceLocalRigidity.lean`.  The corresponding explicit
+finrank identity is not yet exported in Lean.  What is proved axiom-clean in
+`_P1RateQuarterSmallSubsetRankLocalization.lean` is the combinatorial budget
+ledger below.  The contribution is at least `|S_x intersect U|-2`.
+Double-counting incidences and using that every selected explanation has at
+least `T` coordinates gives projected budget at least `|U|*T-2N`.  At the
+literal P1 constants,
+`7*(T-K)>2N`.  Therefore every `|U|>=7` automatically has budget at least
+`K*|U|`; only subsets of sizes `1..6` can violate the block-Vandermonde Hall
+inequalities.
+
+The complement labels improve this further.  A coordinate with zero outside
+labels costs two dimensions, one outside label costs one, and two cost none.
+Weighting these losses by the complement cardinality and charging them against
+the complement labels' own `T` incidences gives global loss at most `2(N-T)`.
+Because `3*(T-K)>2(N-T)`, every subset of size at least three is Hall-safe as
+soon as two complement labels remain.  Thus only singleton and pair subsets
+can obstruct Hall in an over-budget family.  This still does not turn Hall
+inequalities into rank; that remaining arrow is the explicit-domain
+GM-MDS/determinant step.
+
+The singleton case has an exact census.  Its projected budget plus the number
+of incident coordinates of total family multiplicity at most two equals the
+label's support size.  Therefore singleton Hall failure forces at least
+`T-K+1` such low-multiplicity coordinates.  The crude `2N` mass bound gives six
+exceptions.  The sharp pointwise tradeoff
+
+```text
+2*d_x + (M-2)*low_x <= 2*M
+```
+
+combined with total incidence `>=M*T` reduces this to **at most two** when
+`M=N+1`.  The localization module then chooses two distinct gauge anchors
+covering every singleton exception.  These results are axiom-clean.
+
+The pair case is equally exact.  For distinct labels `j,k`,
+
+```text
+pairBudget(j,k) + exactMultiplicityThreePairCoords(j,k)
+  = singletonBudget(j) + singletonBudget(k).
+```
+
+Hence, after the singleton census, every pair Hall deficit is carried solely
+by coordinates containing `j`, `k`, and exactly one third selected label.  The
+exact-three count must strictly exceed
+`(singletonBudget(j)-K)+(singletonBudget(k)-K)`.  The
+remaining structural question is now a labelled ternary-incidence/pencil
+problem rather than an unrestricted matrix-rank problem.
+
+The matching capstone is now closed end-to-end.  Four vertex-disjoint bad
+pairs have pairwise-disjoint exact-three coordinate sets (four distinct
+endpoints cannot fit in a multiplicity-three support), while their eight
+endpoint surpluses and the sharp weighted low-mass ledger force total mass
+past `N`.  Thus four such pairs are impossible: the bad-pair graph has
+matching number at most three, and a maximal matching gives a vertex cover of
+size at most six.  Reducing that cover to the two chosen anchors still
+requires polynomial/source-pencil structure.
+
+For the exact `N=64` support certificate, the new executable Hall audit finds
+zero singleton-bad labels and zero pair-bad edges.  Combined with the
+size-at-least-three theorem, every nonempty label subset is Hall-safe in that
+miniature.  This explains why its full matrix ranks persist across the tested
+label assignments; it remains finite evidence, not the explicit-domain
+GM-MDS arrow.
 
 ## 4. Consequence for the exact-pin programme
 
@@ -251,16 +329,65 @@ the decoded degree is `<K<N`, so this counterexample is excluded from the
 corrected source space rather than ignored.
 
 The first rank bootstrap is also formal.  A component is forced to zero when
-it shares at least `K` support coordinates with two already-zero components;
-iterating this along any well-founded parent ranking proves the corrected
-degree-restricted rigidity.  Thus one concrete sufficient target is a
-two-parent coverage ordering of the decoded labels.  Whether every
-over-budget P1 support family contains such an ordering remains open.
+at least `K` coordinates each contain it and some two distinct already-zero
+components; that parent pair may vary by coordinate.  Iterating this along a
+well-founded rank proves the corrected degree-restricted rigidity.  Thus one
+concrete sufficient target is a two-neighbor coverage ordering of the decoded
+labels.  Whether every over-budget P1 support family contains such an ordering
+or needs a genuinely coupled core certificate remains open.
 
 The rank data above is evidence for this route only.  It checks one support
 family and three small smooth primes, with partial rather than complete label
 exhaustion.  It establishes neither label-uniform rank for the full miniature
 nor a universal rank theorem at the prize prime.
+
+### Label sensitivity and leaf/core localization
+
+Two deterministic follow-ups sharpen that caveat.  Across the three fields,
+102 algebraic, support-correlated, matching-based, and pseudorandom
+distinct-label assignments all keep the same baseline minor at full rank.
+Exhaustively varying each of five tail labels through every value distinct
+from the other 64 gives 3,535 admissible assignments counted with repetitions
+and no rank drop.  The report hash is
+
+```text
+526e31e500e2e3d611f89b2a26f479e23f87780d997595467966f88160ccd625.
+```
+
+The fixed minor has an exact combinatorial decomposition.  Forty-five event
+blocks each occur in exactly `K=16` selected rows, their row supports are
+pairwise disjoint, and their coordinates are distinct within each block.
+After row and column permutation, they give a `720 x 720` block diagonal of
+ordinary Vandermonde matrices times opposite-label differences.  The residual
+core is `288 x 288` on 18 event labels.  Thus the determinant is algebraically
+independent of all 45 leaf labels; every tested core-label slice is genuinely
+nonconstant.  Exact hashes are
+
+```text
+structure = 8c0feff5a424edd13f4f2e4d3bf314e6b244ce94d44fb00f61c5d497c0e957bb
+report    = 5294e9046f9d90d89ecd97541e4a9498f9f50d3c249c5eb90a8c8c101c6c9f08.
+```
+
+The core is not merely another product of pairwise label differences.  The
+one-label core scans find 29 admissible distinct-label assignments at which
+this fixed minor loses one rank; full elimination of the complete 2,212-row
+operator restores rank `1008` in every one of those fallback cases.  This
+localizes the miniature's label dependence to the coupled 18-label core and
+shows that a universal proof must select minors adaptively or control the
+whole operator.  It proves neither full rank for every distinct label tuple
+nor anything universal about P1 supports.
+
+The matching algebraic consumer is formal in
+`Frontier/_MaximalMinorIdealCertificate.lean`.  For a symbolic rectangular
+matrix, a Bezout identity expressing a power of the Vandermonde discriminant
+as a combination of maximal minors forces at least one minor to remain
+nonzero after every injective label specialization, hence makes the full
+specialized matrix injective.  This uses an adaptive family of minors rather
+than privileging the fixed probe minor.  The exact concrete gauged coefficient
+matrix and the injectivity-to-`DegreeAnchoredKernelRigid` consumer are now
+formal in `Frontier/_SupportDividedDifferenceMaximalMinorBridge.lean`.  The
+symbolic P1 lift, its equality after specialization to that concrete matrix,
+and the certificate for every surviving support family remain open.
 
 ## 5. Reproduction
 
@@ -268,12 +395,15 @@ Run:
 
 ```bash
 python3 scripts/probes/probe_rate_quarter_p1_abstract_incidence_rank.py
+python3 scripts/probes/probe_rate_quarter_p1_label_sensitivity.py
+python3 scripts/probes/probe_rate_quarter_p1_minor_leaf_core.py
 ```
 
 The probe verifies the embedded mask hash and all finite incidence statistics,
 performs the 18 full-size exact modular ranks and the `35,532`-case six-label
-exhaustion, and recomputes the literal-P1 Hoeffding ledger.  NumPy is the only
-non-stdlib dependency.
+exhaustion, and recomputes the literal-P1 Hoeffding ledger.  The follow-ups
+audit broader label sensitivity and the fixed minor's leaf/core factorization.
+NumPy is the only non-stdlib dependency.
 
 Related interfaces and barriers:
 

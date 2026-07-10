@@ -143,6 +143,296 @@ These are the Lean theorems
 
 ## 3. Amplified polynomial lines
 
+### Exact one-step architecture barrier
+
+`_P1RateQuarterCommonFactorOneStepNoGo.lean` quantifies the final lattice gap over every possible
+amplifier parameter `d0`, rather than only checking the concrete saturated choice.  It proves
+
+```text
+2*d0 + 1 < m  <->  d0 <= (m-2)/2
+```
+
+at the literal P1 scale, and therefore
+
+```text
+2*d0 + 1 < m
+  -> 8*m+r+d0+1 < 592794966.
+```
+
+Conversely, making this architecture reach the predecessor threshold forces
+`m <= 2*d0+1`, which overruns the degree budget.  Thus the missing agreement cannot be obtained by
+choosing a larger common locator inside the existing `(X,1)` primitive-direction construction.
+A successful direct predecessor counterexample must change the base proper-pair locator, primitive
+direction, or ownership architecture; parameter thickening alone is exhausted.
+
+The same file also proves that the primitive-direction tax is intrinsic to any factored polynomial
+replacement.  For a projective direction `(A,B)`, the fresh label at `x` is
+`-A(x)/B(x)`.  If two coordinates receive different labels—and hence in particular if the label
+map is injective—then
+
+```text
+1 <= max (natDegree A) (natDegree B).
+```
+
+So merely replacing `(X,1)` by another polynomial direction cannot reclaim its one degree while
+retaining distinct safe-coordinate labels.  A successful construction must instead alter the
+factorization/ownership mechanism itself or tolerate and control label collisions.
+
+There is a uniquely tight attempted escape.  Take `2d+1` common roots and retain `d+1` holes.  Its
+formal ownership and core ledgers are exactly
+
+```text
+nominal charged labels = N+1,
+agreement threshold    = 592794966.
+```
+
+So this would directly refute the predecessor residual.  The new no-go file proves why it cannot
+work in the factored architecture: the degree inequality
+
+```text
+3*m + (2*d+1) + directionDegree < k
+```
+
+forces `directionDegree=0`.  A constant projective direction gives the same fresh label at every
+safe coordinate, whereas two distinct labels already force direction degree at least one.  The
+nominal endpoint has only one scalar of excess, and the exact ledger proves that one collision
+drops `N+1` back to `N`.  Thus the last-step obstruction is a sharp trilemma: retain the degree
+bound, retain injective labels, or reach the predecessor—this factored architecture can satisfy at
+most two.
+
+Nor can the missing degree be recovered by merely lowering the old source-factor degrees while
+preserving the proper-pair cells.  The generic theorem
+`three_mul_m_le_max_source_natDegree` proves that two distinct factors agreeing on an injectively
+evaluated `3m`-coordinate block satisfy
+
+```text
+3*m <= max (natDegree f) (natDegree g).
+```
+
+This is the sharp polynomial root count for each proper-pair block.  Accordingly both terms in the
+degree ledger are structural: the base factors pay `3m` for their pair block, and an injective
+projective direction pays at least one more degree.  Coefficient changes within the same
+three-source factorization cannot free either term.
+
+The combined theorem `factored_odd_endpoint_not_degree_lt_k` packages the complete wall.  For
+arbitrary source factors `f,g` and arbitrary projective direction `A,B`, the conjunction of
+
+* a `3m`-coordinate proper-pair block for distinct `f,g`,
+* the `2d+1` common roots needed at the predecessor, and
+* merely two distinct projective fresh labels
+
+forces
+
+```text
+k <= max(deg f,deg g) + (2*d+1) + max(deg A,deg B).
+```
+
+Hence the factored odd-root endpoint cannot satisfy a strict degree-`<k` budget.  This is no longer
+a statement about the concrete locator coefficients or the particular direction `(X,1)`; it rules
+out the whole three-source factored template with those exact block sizes.
+
+### Saturation forces an affine locator triangle
+
+The remaining non-factored three-line escape can also be normalized sharply at the exact endpoint.
+`eq_C_mul_domainRootProduct_of_saturated_roots` proves that any polynomial of degree `<K` with
+exactly `K-1` prescribed distinct roots is a scalar multiple of their monic root product.  Applying
+this to the three cyclic line differences gives
+
+```text
+c12 * L12 + c23 * L23 + c31 * L31 = 0
+```
+
+with scalar—not polynomial—coefficients.  This is formalized by
+`saturated_pair_cycle_forces_affine_locator_triangle`.
+
+This strengthens the general split-locator necessity lane at the saturated endpoint: its
+positive-degree quotient syzygy collapses to the precise affine locator-triangle interface studied
+by the `mu_32` and `mu_64` P1 obstruction files.  Thus arbitrary coefficient choices in three
+degree-`<K` polynomial lines do not evade the locator obstruction once each pair difference uses
+the full `K-1` root budget.
+
+The strengthened theorem
+`saturated_pair_cycle_forces_nondegenerate_affine_locator_triangle` assumes the three source
+factors are pairwise distinct and proves `c12,c23,c31` are all nonzero.  Consequently the exported
+triangle is genuinely three-term; it cannot satisfy the interface through a zero coefficient or a
+coincident source line.
+
+Finally, `cancel_common_root_block_from_affine_locator_triangle` handles the normalization needed
+by the dyadic obstruction.  If each saturated root set decomposes as a disjoint union
+
+```text
+common block C  union  proper pair block Pij,
+```
+
+then its locator factors as `L(C)*L(Pij)`.  The common monic locator is nonzero and cancels from the
+three-term affine relation, yielding
+
+```text
+c12*L(P12) + c23*L(P23) + c31*L(P31) = 0.
+```
+
+Thus the output is now exactly a nondegenerate affine triangle among the disjoint proper-pair
+locators, with the shared common-root block removed.
+
+`affine_combination_of_monic_triangle` then converts the homogeneous relation into the normalized
+form used by coefficient-minor tests.  For equal-degree monic `P,Q,R`, a relation with nonzero
+`R`-coefficient yields scalars `alpha,beta` such that
+
+```text
+alpha + beta = 1,
+R = alpha*P + beta*Q.
+```
+
+The weight-sum identity is forced by the common leading coefficient `1`; it is not an additional
+hypothesis.  The bridge therefore reaches the literal affine-collinearity formulation without a
+projective normalization gap.
+
+The final adapter `coefficient_minors_vanish_of_monic_triangle` converts this affine relation into
+the executable obstruction format.  For every pair of coefficient indices `i,j`, it proves
+
+```text
+(R_i-P_i)*(Q_j-P_j) - (R_j-P_j)*(Q_i-P_i) = 0.
+```
+
+These are precisely the anchored `2 x 2` minors used by finite locator censuses and norm-lift
+arguments.  The chain from a saturated three-line predecessor architecture to coefficient-minor
+vanishing is therefore fully kernel checked.
+
+There is also a rigidity payoff beyond the minor interface.  Two distinct equal-degree monic
+locators are linearly independent, so three locators on an affine line have a one-dimensional
+space of scalar relations.  The theorems
+
+```text
+monic_same_degree_pair_linear_independent
+affine_locator_relation_coefficients_unique
+affine_locator_relation_space_one_dimensional
+```
+
+prove that any two coefficient triples annihilating the same locator triangle are proportional.
+The theorem `saturated_two_component_lines_have_constant_projective_direction` performs that
+application explicitly: from both component factorizations it produces `t` for which
+
+```text
+B1 - t*A1 = B2 - t*A2 = B3 - t*A3.
+```
+
+Thus an arbitrary saturated three-line polynomial-pair construction cannot use two independent
+component syzygies; it collapses to a single constant projective direction.  Turning this collapse
+into the full predecessor bad-scalar cap still requires an event-counting argument for that
+constant-direction branch, so it is not yet claimed as the exact pin.
+
+The normalization corollary
+`saturated_two_component_lines_normalize_to_common_second_component` packages the next handoff.  It
+produces `t,H` with
+
+```text
+B1-t*A1 = B2-t*A2 = B3-t*A3 = H.
+```
+
+Hence the invertible row operation `B ↦ B-tA`, followed by translation by the common codeword `H`,
+puts all three source lines into zero-second-component form.  The remaining task is now sharply
+localized: connect this normalized saturated branch to the existing projective extreme-zero
+bad-count machinery, rather than proving a new locator theorem.
+
+That quantitative connection is now proved.  Exact three-set inclusion--exclusion gives, for
+three cores of size at least `592794965`, pair intersections at most `K-1`, and triple intersection
+at least `2d+1`,
+
+```text
+|S1 union S2 union S3| >= 1,040,187,393
+                         > 1,017,821,824.
+```
+
+The latter number is exactly the two-tier extreme-zero threshold `N-55,920,000`.
+`saturated_three_cores_force_twoTier_direction_zero_set` proves that when the normalized direction
+vanishes on the three cores, its zero set has cardinality at least `1,017,821,824`.  Therefore its
+support is within the already-proved two-tier Johnson cap.  The safe normalized branch is ready for
+the existing theorem `predecessor_mcaEvent_filter_card_le_N_of_zero_card_ge_twoTier`.
+
+The MCA-facing theorem
+`predecessor_mcaEvent_filter_card_le_N_of_saturated_three_zero_cores` now performs that invocation
+directly and concludes that the predecessor event-filter cardinality is at most `N`.  Thus the
+zero-direction-safe normalized saturated three-core branch is closed end to end.  The only logical
+alternative is zero-direction unsafety, which the projective extreme-zero split turns into a
+threshold-size joint explanation.
+
+The unsafe alternative is now eliminated directly under the natural nonjoint hypothesis.
+`zeroDirectionSafeLine_of_no_threshold_pairJointAgreement` proves that an unsafe codeword, paired
+with the zero codeword, would jointly explain the two rows on its threshold-size zero-direction
+agreement set.  Therefore no threshold joint explanation implies safety.  The assembled theorem
+
+```text
+predecessor_mcaEvent_filter_card_le_N_of_nonjoint_saturated_three_zero_cores
+```
+
+concludes the literal `<= N` predecessor event count from the saturated three-core geometry and
+nonjointness alone.  This branch is closed; it is no longer a conditional handoff to either the
+safe or unsafe extreme-zero subcase.
+
+For extraction work, the hypotheses are bundled as
+`NonjointSaturatedThreeZeroCoreCertificate`.  Its direct consumer
+
+```text
+mcaBadCount_le_N_of_nonjointSaturatedThreeZeroCoreCertificate
+```
+
+returns the canonical `mcaBadCount <= N` statement for the stack.  This gives other lanes a compact
+alternative terminal certificate: they need only construct the three normalized cores and their
+cardinality/intersection data, without importing the locator, normalization, or Johnson proof
+chain.
+
+The extraction interface is also projectively invariant.  A
+`ProjectiveNonjointSaturatedThreeZeroCoreCertificate` contains an arbitrary invertible row chart and
+a Reed--Solomon codeword subtracted from the mixed direction, with the three-core certificate stated
+on those normalized rows.  Its consumer
+
+```text
+mcaBadCount_lt_N_of_projectiveNonjointSaturatedThreeZeroCoreCertificate
+```
+
+transports through both operations and proves the **original** stack has bad count strictly below
+`N`.  The sharper two-tier closed budget absorbs the one affine slot potentially lost by moving
+through a projective chart.  Extraction lanes therefore need not normalize their input stack in
+advance or prove exact affine-count invariance themselves.
+
+Finally, `CanonicalLargeBadProjectiveSaturatedThreeCoreExtraction` promotes the certificate to a
+single global extraction residual: every allegedly over-budget canonical stack must emit such a
+projective certificate.  Since the certificate consumer proves the same stack is actually below
+`N`, the residual yields the uniform predecessor count.  The file wires this through the existing
+structured-floor and adjacent-lattice connectors and proves
+
+```text
+canonical_mcaDeltaStar_eq_common_delta_of_projectiveSaturatedExtraction
+```
+
+namely exact equality at `43/96 + 1/(3N)` under this one new extraction hypothesis.  All analytic,
+transport, endpoint, and upper-construction work is discharged; the only remaining content of this
+route is producing the projective saturated-three-core certificate from an arbitrary over-budget
+canonical stack.
+
+### Logical-strength audit
+
+The global guarded extraction residual is **not** claimed to be logically weaker than the original
+predecessor target.  The theorem
+
+```text
+canonicalLargeBadProjectiveSaturatedExtraction_iff_uniform_badCount
+```
+
+proves they are equivalent.  Forward, the emitted certificate contradicts the over-budget guard.
+Reverse, a uniform bound makes that guard false, so extraction holds vacuously and constructs no
+cores.  This is the same logical phenomenon as the guarded four-pencil interface.  The value of the
+new lane is its concrete local terminal certificate and its fully discharged consumer; genuine
+remaining work is a nonvacuous geometric derivation under an assumed over-budget stack.
+
+For direct downstream citation, the endpoint is also exported on the literal prize code as
+
+```text
+evalCode_mcaDeltaStar_eq_advertised_of_projectiveSaturatedExtraction
+```
+
+with conclusion `mcaDeltaStar (evalCode g N (k-1)) 2^-128 = 43/96 + 1/(3N)`.
+
 The old universal cell uses factors
 
 ```text

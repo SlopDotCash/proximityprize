@@ -14575,3 +14575,184 @@ residual still yields the intended global pencil and joint RS agreement.
 
 Formal kernel:
 `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupportDividedDifferenceUnrestrictedKernelRefuted.lean`.
+
+## [rate-quarter-bchks25-eq13-coefficient] optimized GS/Hensel bound still misses by 10,719x (2026-07-10)
+
+At the exact P1 predecessor, BCHKS25 Theorem 1.5 uses multiplicity `m=5`.
+Exhaustive exact optimization of the integer ceiling cells behind Equations
+(10)--(13) finds the best cell `(ceil DX,ceil DY,ceil DZ) =
+(2959337223,10,25)`, with 155 more variables than equations.  The smallest
+integer bad-set size which fires Equation (13) is `11,510,231,640,868`; its
+contrapositive exceptional cap is `11,510,231,640,867`, strictly between
+`10,719N` and `10,720N`.  Hence `N+1` cannot trigger this architecture.  This
+is a coefficient no-go for the universal GS/Hensel dimension-count proof, not
+a refutation of the predecessor bound.
+
+Probe: `scripts/probes/probe_rate_quarter_p1_bchks25_eq13_exact.py`.
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-bchks25-eq13-exact-barrier-2026-07-10.md`.
+
+## [rate-quarter-joint-witness-bare-charge] bare MCA clauses do not make the escape charge injective (2026-07-10)
+
+Lane: immediate-predecessor joint-witness branch after the projective
+extreme-zero split.
+
+A known threshold-size joint RS agreement forces every MCA event witness to
+use a coordinate outside that agreement set.  Ordinary exact-diagonal Johnson
+bounds the corresponding predecessor joint-pair list by `5`, and the exact
+complement has size `N-T=480,946,858`.  Hence two complement-size fibers fit
+below `N`, while any over-budget selected charge has three scalars on one
+fresh coordinate and already `3(N-T)>N`.
+
+The missing injectivity is not a consequence of the MCA clauses alone.  An
+explicit two-coordinate arbitrary set code over `F_3` has two MCA-bad scalars,
+one known joint coordinate, and the same unique fresh coordinate for both.
+This refutes the bare injective-charge inference, not the predecessor RS cap.
+The next valid target is RS-specific impossibility or control of the resulting
+three-scalar shared-fresh-coordinate configuration.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterJointWitnessCharge.lean`.
+
+## [rate-quarter-shared-fresh-triple-generic-rs] generic RS triple exclusion refuted (2026-07-10)
+
+Lane: fixed joint-witness charging after the P1 projective extreme-zero
+split.
+
+The bare-clause counterexample above leaves open the tempting stronger claim
+that Reed--Solomon structure itself forbids three bad scalars from sharing one
+fresh coordinate.  This is false even at rate `1/4`.  An explicit `RS[8,2]`
+code over `F_11` has a known joint pair whose maximal agreement set is
+`{0,1,2,3}` and three distinct half-radius MCA-bad scalars with four-coordinate
+witnesses all containing coordinate `4` outside that set.  The witness
+codewords are noncollinear.
+
+This refutes a code-agnostic, rate-only, or generic-RS shared-triple
+impossibility lemma.  It does not refute the exact P1 predecessor cap: the P1
+length, threshold, field, and smooth domain are absent.  Any successful charge
+route must exploit those P1-scale constraints.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RateQuarterSharedFreshCoordinateCounterexampleF11.lean`.
+Probe: `scripts/probes/probe_rate_quarter_p1_shared_fresh_coordinate.py`.
+
+## [rate-quarter-pencil-propagation-cardinality] secant-core sizes do not force the gluing overlap (2026-07-10)
+
+Lane: degree-restricted divided-difference kernel propagation.
+
+Two degree-`<K` polynomial pencils are equal if their affine evaluations agree
+at a supplied pair of distinct labels on each of `K` injective domain points;
+the label pair may vary by coordinate.  At P1, however, core cardinalities
+alone cannot provide this certificate: `K^2 <= N*(K-1)`, `2K <= N`, and two
+disjoint `K`-cores leave exactly `2^29` coordinates unused.  Thus the
+second-stage Plotkin denominator is nonpositive and inclusion--exclusion has
+no positive overlap floor.
+
+This is a no-go for cardinality-only extraction, not for the conditional
+propagation theorem or the global rank route.  Polynomial geometry, a
+connected chart certificate, or the support-dependent determinant remains
+necessary.
+
+Formal kernels:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupportDividedDifferencePencilPropagation.lean` and
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPropagationPlotkinNoGo.lean`.
+
+## [466-r3-hasse-davenport-coset-triple-collapse] the HD product relation collapses coset-diagonal triple products of the Jacobi ladder to depth-1 phases; off-coset collapse REFUTED (2026-07-10)
+
+Lane: r=3 rung `TripleConvEnergyBound`, route (ii) — Hasse–Davenport exact
+angle relations along subgroup cosets of ℤ/m (previously unexplored on the
+ladder object).
+
+NEW EXACT STRUCTURE (positive half). Applying the classical Hasse–Davenport
+PRODUCT relation to both Gauss-sum factors of `J_j = g(λ^j)g(χ)/g(λ^jχ)`
+along a coset `{j, j+u, j+2u}` of the order-3 subgroup of ℤ/m (`u = m/3`),
+the auxiliary Gauss-sum products cancel and:
+
+  (I3)  J_j · J_{j+u} · J_{j+2u} = κ · J₃(3j)   for EVERY j : ℤ/m,
+        κ = χ(3)³·J(χ,χ)·J(χ²,χ)  (j-independent, ‖κ‖ = q),
+        J₃ = jacobiCoeff(χ³, λ)  — a DEPTH-1 ladder object,
+  under 3∣m, p≠3, χ² and χ³ nontrivial.  The k=2 analogue (I2) and the
+  aggregate vertical descent (AGG3)
+  `∑_j J_j J_{j+u} J_{j+2u} = κ·m·W_{χ³,G'}(1)` (G' = index-(m/3) coarsening
+  of G) hold likewise.  Probe: 75 (q,m,χ) instances, EXACT at every index j
+  including all per-index degeneracies (λ^{3j}χ³ trivial, λ^{3j} trivial,
+  λ^{j+au}χ trivial — both sides degenerate consistently, no exclusions);
+  the χ²-trivial branch fails by the EXACT factor q (verified as identity
+  D3a: lhs = q·κ·J₃(3j)).
+
+REFUTATION (negative half). The natural extension — the same κ-collapse for
+perturbed OFF-coset triples (j, j+u+1, j+2u−1) — is FALSE at 0/m indices in
+every probed non-vacuous cell (m ≥ 6): the exact angle rigidity is EXACTLY
+the coset structure and does not leak to neighboring strata.  Consequence
+for the rung: HD (route ii) pins the coset-diagonal stratum of `tripleConv`
+at Wick scale with m² headroom (energy ≤ m·q³ vs budget C·m³·q³) but is
+mechanically incapable of reaching the generic off-coset strata, which
+carry the open content of `TripleConvEnergyBound`.  Route (ii) is hereby
+CALIBRATED: exact, real, and stratum-local — not a rung closer alone.
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 7s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R297HasseDavenportCosetTriple.lean`
+(`HDCosetTripleCollapse` named input pinned to the classical instantiation;
+unconditional: `sum_cosetTripleProduct_eq`,
+`sum_jacobiCoeff_subgroup_eq_shiftedSum` (Fubini/indicator descent),
+`sum_cosetTripleProduct_eq_shiftedSum` (depth-3 → depth-1 exact descent),
+`norm_cosetTripleProduct_le`, `cosetTripleProduct_energy_le`).
+Probe: `scripts/probes/probe_466_r3_hasse_davenport_coset.py`.
+Analysis:
+`docs/kb/deltastar-466-r3-hasse-davenport-coset-collapse-2026-07-10.md`.
+
+## [w15-lowprofile-mcaevent-support-ladder-floor] pencil-scale (O(1)) mcaEvent budgets on the safe large-zero branch REFUTED — unconditional n−a floor via the support ladder (2026-07-10)
+
+CONTEXT (lane ll:low-profile-fiber, successor of W9). W9
+(`_W9LowProfilePencilSaturation.lean`) killed the `lineBadScalars`-vocabulary
+safe large-zero branch (root pencil forces every budget ≥ |F|) and left one
+survivor: the same branch in the `mcaEvent` vocabulary — the weld's original
+`hlow` in `mcaDeltaStar_ge_of_farLineListBudgeted` — where the pencil probe
+measured only `1 + |W| ≤ 3` true events (the joint pair `(0, e)` explains
+every pencil scalar). Open sharp question: is the true safe-branch mcaEvent
+count O(1) (pencil scale) or growing?
+
+VERDICT: GROWING — pencil scale is REFUTED; the count has an unconditional
+`n − a` floor, at every shape `1 ≤ k`, `k+1 ≤ a ≤ n`, `(1−δ)n ≤ a`, every
+field, every injective domain.
+
+MECHANISM (the support ladder). `|Z| = a`, marked `z₀ ∈ Z`; direction
+`u₁ = 1_Zᶜ`; offset `u₀ = 0` on `Z∖{z₀}`, `1` at `z₀`, `−dom(i)` at each
+support point `i ∉ Z`. For every support point, `γ = dom(i)` fires mcaEvent
+with witness `S = (Z∖{z₀}) ∪ {i}` (size `a`): the ZERO codeword lies on the
+line over S, and any joint pair needs a codeword equal to `u₁` on S — i.e.
+vanishing on `a−1 ≥ k` points (hence ≡ 0) yet `= 1` at `i`. The joint-pair
+escape hatch that neutralized the W9 pencil is closed at every rung. The
+line is zero-direction-safe by the same degree count (agreement with u₀ on
+all of Z forces the codeword to 0, then fails at z₀). ⇒ `≥ n − a` distinct
+bad scalars `{dom(i)}`.
+
+CONSEQUENCES.
+* Weld `hlow` forces `B_near ≥ n − a`; even restricted to the SAFE
+  non-support-eligible class the floor stands
+  (`safe_mcaEvent_budget_forces_n_sub_a`).
+* Every instantiation of the weld's budget arithmetic certifies at best
+  `ε* ≥ (n − a)/q`.
+* Rate-quarter shape (n=16, a=9): floor 7 > 3 = the W9 probe's pencil count
+  (`pencilScale_budget_refuted_rateQuarter`).
+
+HONESTY (what survives). This is a LINEAR-in-n floor, NOT a q-saturation —
+`ε* ≥ (n−a)/q` is exactly the BCIKS-shaped regime the route aims for, so the
+mcaEvent-vocabulary safe branch REMAINS ALIVE. The production obligation is
+now two-sided: this file closes the lower bound (`≥ n − a`); the open half
+is the upper bound `B_near ≤ C·n`. The ladder itself cannot go superlinear
+(its base codeword is pinned by u₀ on a−1 ≥ k points); whether multi-base
+interleavings can is undecided.
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 7s, 11/11 audits clean):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15LargeZeroMcaEventFloor.lean`
+(`ladder_mcaEvent`, `ladder_mcaEvent_filter_card_ge`,
+`ladder_zeroDirectionSafeLine`, `weld_hlow_forces_n_sub_a`,
+`safe_mcaEvent_budget_forces_n_sub_a`,
+`weld_budget_forces_epsilon_ge_n_sub_a_div_q`,
+`pencilScale_budget_refuted_rateQuarter`).
+No probe needed: constructive floor, fully machine-checked.
+Analysis:
+`docs/kb/deltastar-466-lowprofile-mcaevent-support-ladder-floor-2026-07-10.md`.

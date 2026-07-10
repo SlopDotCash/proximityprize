@@ -40,9 +40,26 @@
 > translated direction either has support above `55,920,000` or its zero-direction unsafety
 > yields a threshold-size joint agreement transported back to the original rows; the safe branch
 > pays at most `1,013,444,618+1<N` including the omitted projective slot
-> (`_P1RateQuarterProjectiveExtremeZeroSplit.lean`).  Conversely, the raw
+> (`_P1RateQuarterProjectiveExtremeZeroSplit.lean`).  For that fixed joint witness, ordinary
+> exact-diagonal Johnson bounds the threshold joint-pair list by `5`, and every MCA event must
+> escape the witness set.  Since `2(N-T)<N<3(N-T)`, an over-budget selection forces three scalars
+> to share one fresh coordinate.  Bare MCA clauses do not make this charge injective: an explicit
+> arbitrary set code over `F_3` refutes that inference.  Moreover a kernel-checked `RS[8,2]`
+> example over `F_11` has three distinct bad scalars sharing a genuinely fresh coordinate at rate
+> `1/4`, so even a generic-RS or rate-only triple exclusion is false.  The proposed P1-only
+> `SharedFreshTripleFree` residual is now **REFUTED** as well.  On every injective literal-P1
+> domain, a root-product construction gives a threshold joint set and a fixed fresh coordinate
+> carrying `N-T+1=480,946,859` distinct bad scalars
+> (`_P1RateQuarterSharedFreshTripleRefuted.lean`).  Its earlier bad-family consumer is logically
+> valid but has a false premise.  The correct collinear replacement is global: a family whose
+> decoded witnesses all lie on one fixed codeword pencil charges injectively to nonjoint mismatch
+> coordinates, hence has size at most `N`
+> (`_P1RateQuarterCollinearMismatchCharge.lean`).  The predecessor target therefore returns to
+> genuinely non-collinear/simultaneous structure.  Conversely, the raw
 > interleaved-collapse route is formally blocked because its arithmetic requires a uniform list cap
-> `L<=1`, refuted at the zero stack.  Abstract pair/core/source-line constraints admit `N+1` events
+> `L<=1`, refuted at the zero stack.  Exact optimization of the improved BCHKS25 Equation (13)
+> still permits `11,510,231,640,867`, between `10,719N` and `10,720N`, so its GS/Hensel route
+> cannot fire from `N+1`.  Abstract pair/core/source-line constraints admit `N+1` events
 > even at literal P1 parameters; the missing information is simultaneous divided-difference /
 > Vandermonde interpolation rank across all witness supports.  The operator, global-pencil kernel,
 > two-anchor gauge, and conditional jointness consumer are now axiom-clean.  The initially named
@@ -50,7 +67,11 @@
 > polynomials, a domain-vanishing polynomial in any non-anchor component is a nonzero gauged-kernel
 > element.  `_SupportDividedDifferenceUnrestrictedKernelRefuted.lean` proves this axiom-clean and
 > replaces it by `DegreeAnchoredKernelRigid`, restricted to the actual decoded degree `<K`; the
-> corrected residual still implies joint RS agreement.  A first unconditional bootstrap theorem
+> corrected residual still implies joint RS agreement.  Coefficient reconstruction and the exact
+> gauged concrete matrix now connect concrete injectivity, and then a symbolic maximal-minor
+> Vandermonde certificate, directly to this residual
+> (`_SupportDividedDifferenceMaximalMinorBridge.lean`).  The exact P1 symbolic specialization and
+> Bezout certificate remain open.  A first unconditional bootstrap theorem
 > now discharges it whenever one anchor pair is jointly incident with every label on at least `K`
 > coordinates: the divided-difference row forces `K` roots, hence the corresponding degree-`<K`
 > polynomial is zero.  The iterative form is also axiom-clean: a rank ordering in which each new
@@ -59,9 +80,31 @@
 > `<K`, even though its complete divided-difference matrix has full rank for consecutive labels
 > and for 15 additional random distinct-label trials over three smooth fields.  Thus the remaining
 > A six-label subsystem is stronger still: fixing four labels to `0,1,2,3` over `F_193`, all
-> `35,532` ordered distinct choices of the final two labels have full gauged rank `64`.  Thus the
+> `35,532` ordered distinct choices of the final two labels have full gauged rank `64`.  Three
+> adjacent maximal minors sharing 63 rows certify this with common-zero counts `189 -> 1 -> 0`.
+> Thus the
 > remaining target is a distributed block-Vandermonde/GM-MDS rank theorem, plausibly with a
-> collision-only determinant factorization, not triple-core bootstrap alone.  See
+> collision-only determinant factorization, not triple-core bootstrap alone.  The Hall side now
+> has a scalable axiom-clean localization: local codimension-two truncation loses at most `2` per
+> coordinate, so every label subset `U` has projected budget at least `|U|*T-2N`.  Charging that
+> loss against the complement labels' own incidences sharpens it to `|U|*T-2(N-T)` whenever two
+> complement labels remain.  Since `3*(T-K)>2(N-T)`, **all subsets of size at least three are
+> automatically Hall-safe** in an over-budget family.  Only singleton and pair subsets can
+> obstruct the rank theorem.  Singleton failure is itself sparse: it forces more than `T-K`
+> incidences on coordinates of total family multiplicity at most two.  Weighting low mass against
+> the family's total incidence sharpens the census to **at most two singleton-Hall-bad labels**
+> when exactly `N+1` labels are selected; the two gauge anchors can therefore be chosen to cover
+> all singleton exceptions.  See
+> Pair deficiency has an exact companion identity: pair budget plus the exact-multiplicity-three
+> co-occurrence count equals the sum of the two singleton budgets.  Thus every remaining pair
+> obstruction is carried entirely by coordinates containing those two labels and exactly one
+> third label, and its exact-three count must strictly exceed the sum of both singleton surpluses
+> above `K`.  Four vertex-disjoint singleton-safe pair obstructions are now ruled out end-to-end:
+> their exact-three sets are proved disjoint and the eight-endpoint low-mass ledger exceeds `N`.
+> Hence the pair-obstruction graph has matching number at most three.  The greedy
+> maximal-matching argument and its concrete P1 instantiation are now formalized: there is a
+> label set of cardinality at most six outside which every distinct singleton-safe pair has full
+> `2K` projected budget.  See
 > `deltastar-466-rate-quarter-thickened-isolated-upper-2026-07-10.md` and
 > `deltastar-466-rate-quarter-common-factor-amplifier-2026-07-10.md`, plus
 > `deltastar-466-rate-quarter-abstract-incidence-rank-barrier-2026-07-10.md`.

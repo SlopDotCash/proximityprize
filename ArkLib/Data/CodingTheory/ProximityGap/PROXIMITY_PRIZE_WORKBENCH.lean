@@ -57,10 +57,20 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterPredecessorR
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterProjectiveStructuredSplit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterExtremeZeroJohnsonBand
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterProjectiveExtremeZeroSplit
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterJointWitnessCharge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterSharedFreshCoordinateCounterexampleF11
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSharedFreshCoordinate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSharedFreshTripleRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCollinearMismatchCharge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterInterleavedCollapseNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceOperator
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceLocalRigidity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferencePencilPropagation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterPropagationPlotkinNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MaximalMinorIdealCertificate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceMaximalMinorBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceUnrestrictedKernelRefuted
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceUnrestrictedKernelRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSmallSubsetRankLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W7RateHalfFingerprintSeal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterNextLatticeFourCoreBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterDeterminantMultiplicity
@@ -873,15 +883,52 @@ theorem deltaStar_pin_mu8_F4129_witness :
   rows.  Indeed the zero-safe sub-branch has exact affine weight `1,013,444,618`, and remains
   below `n` after paying for the omitted projective slot.  The raw interleaved-collapse route
   cannot finish the job: its prize arithmetic requires a uniform list cap `L <= 1`, and that
-  premise is formally refuted at the zero stack.
+  premise is formally refuted at the zero stack.  Exact integer-cell optimization of the improved
+  BCHKS25 Guruswami--Sudan/Hensel bound still gives more than `10,719*n` exceptions, so it also
+  cannot fire from the predecessor's `n+1` trigger.
+
+  The threshold joint-witness branch is now quantified separately.  Ordinary exact-diagonal
+  Johnson bounds its interleaved RS list by five, and every MCA event must expose a coordinate
+  outside any fixed joint-agreement set.  An over-budget family of selected escape coordinates
+  therefore has three scalars sharing one fresh coordinate.  This is a sharp pigeonhole output:
+  two complement-size fibers fit below `n`, but three exceed it, while a concrete arbitrary
+  `F_3` set code proves that the bare MCA clauses do not make the escape charge injective.  A
+  kernel-checked `RS[8,2]` example over `F_11` goes further: three distinct bad scalars can share
+  a genuinely fresh coordinate even at rate `1/4`.  Thus a generic-RS triple exclusion is false;
+  and the proposed P1-only exclusion is false as well.  A root-product construction on every
+  injective literal P1 domain gives a threshold joint set and `480,946,859` distinct bad scalars
+  through one fixed fresh coordinate.  In particular `SharedFreshTripleFree` is refuted; its
+  conditional bad-family consumer remains logically valid but cannot close this branch.
+  Pairwise witnesses
+  do force a joint pencil on their intersection, witness sets are incomparable, a `K`-point
+  overlap with the known joint set absorbs the fresh coordinate, and a collinear triple forces
+  joint agreement on `352,321,537 >= K` points.  None contradicts the event threshold.  The
+  correct collinear statement is instead global: whenever all selected decoded witnesses lie on
+  one fixed codeword pencil, nonjointness chooses a mismatch coordinate and the affine agreement
+  equation determines the scalar uniquely there.  This injective mismatch charge bounds the
+  whole collinear family by `n`; only genuinely non-collinear/global configurations can remain
+  over budget.
 
   Abstract pair/core incidence constraints are also insufficient.  The missing simultaneous
   constraint is now a genuine support-dependent divided-difference linear map: supported decoded
   families lie in its kernel and global polynomial pencils form the evident kernel.  Unrestricted
-  two-anchor rigidity is formally refuted by the finite-domain vanishing polynomial.  After
-  restricting every component to decoded degree `<K`, the corrected rigidity hypothesis again
-  forces one global pencil and joint RS agreement.  That degree-restricted rank statement remains
-  open.  Therefore the exact rate-quarter delta-star remains open. -/
+  two-anchor rigidity is formally refuted by the finite-domain vanishing polynomial.  At any
+  coordinate supplied with two distinctly labelled anchors, kernel membership is exactly local
+  affine-stack consistency, so no stronger purely local-row constraint remains.  Two degree-`<K`
+  candidate pencils do propagate when, at each of `K` injective points, they agree at a supplied
+  pair of distinct labels; that pair may vary by coordinate.  This conditional consumer does not
+  extract the overlaps, and secant-core cardinalities alone cannot force them at P1: the
+  corresponding Plotkin denominator is nonpositive and even two disjoint `K`-cores fit.  Because
+  a fixed maximal minor can vanish while the full operator stays injective, the adaptive target
+  is a maximal-minor-family ideal certificate: expressing a power of the symbolic Vandermonde
+  through selected maximal minors forces one of them to survive every injective label
+  specialization.  Coefficient reconstruction, the exact gauged concrete matrix, and both the
+  concrete-injectivity and symbolic-certificate consumers now bridge this criterion all the way
+  to degree-restricted rigidity.  What remains is the actual P1 symbolic matrix specialization
+  and its Vandermonde/maximal-minor Bezout certificate.  After restricting every component to
+  decoded degree `<K`, the corrected rigidity hypothesis again forces one global pencil and joint
+  RS agreement.  That degree-restricted rank statement remains open.  Therefore the exact
+  rate-quarter delta-star remains open. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
@@ -983,19 +1030,59 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveExtremeZeroSplit.twoTierClosedBudget_add_one_lt_N
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveExtremeZeroSplit.support_gt_twoTierCap_or_zeroDirectionUnsafe_of_N_lt_badCount_rowMix
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveExtremeZeroSplit.support_gt_twoTierCap_or_transported_jointAgreement_of_N_lt_badCount_rowMix
+#check ProximityGap.JointWitnessCharge.mcaEvent_exists_fresh_coordinate
+#check ProximityGap.JointWitnessCharge.card_le_complement_of_injective_fresh_charge
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterJointWitnessCharge.predecessorJointList_card_le_five
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterJointWitnessCharge.N_lt_johnsonCap_mul_freshComplement
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterJointWitnessCharge.exists_fresh_coordinate_with_three_charges_of_threshold_overBudget
+#check ProximityGap.JointWitnessCharge.ClauseOnlyCounterexample.not_exists_injective_fresh_charge
+#check ArkLib.ProximityGap.Frontier.RateQuarterSharedFreshCoordinateCounterexampleF11.shared_fresh_triple
+#check ProximityGap.SharedFreshPencil.pairJointAgreesOn_inter
+#check ProximityGap.SharedFreshPencil.witness_not_subset
+#check ProximityGap.SharedFreshPencil.pencil_absorption
+#check ProximityGap.SharedFreshPencil.collinear_agrees_on_pairCover
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate.SharedFreshTripleFree
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate.badFamily_card_le_N_of_sharedFreshTripleFree
+#check ArkLib.ProximityGap.Frontier.SharedFreshRealizabilityF11.sharedFreshTriple_realizable
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshTripleRefuted.sharedFresh_family_card
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshTripleRefuted.not_sharedFreshTripleFree
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterCollinearMismatchCharge.card_le_domain_of_collinear_witnesses
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterInterleavedCollapseNoGo.collapseNumerator_le_N_iff
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterInterleavedCollapseNoGo.not_uniform_interleavedList_card_le_one
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceOperator.supportDividedDifference
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceOperator.anchoredKernelRigid_iff_gauged_ker_eq_bot
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceOperator.pairJointAgreesOn_of_anchoredKernelRigid
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceLocalRigidity.eval_eq_local_affine_of_mem_ker
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceLocalRigidity.mem_ker_iff_exists_supportedAgreement
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferencePencilPropagation.polynomialPencil_eq_of_coordinatewise_two_labels_agree_on
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferencePencilPropagation.polynomialPencil_eq_of_two_labels_agree_on
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferencePencilPropagation.all_labels_agree_of_coordinatewise_two_labels_agree_on
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferencePencilPropagation.all_labels_agree_of_two_labels_agree_on
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterPropagationPlotkinNoGo.secantCore_plotkin_denominator_nonpositive
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterPropagationPlotkinNoGo.domain_sub_two_secantCore_weights
+#check ArkLib.ProximityGap.Frontier.MaximalMinorIdealCertificate.mulVec_injective_of_maximalMinor_certificate
+#check ArkLib.ProximityGap.Frontier.MaximalMinorIdealCertificate.mulVec_injective_of_symbolicVandermonde_certificate
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceMaximalMinorBridge.gaugedCoefficientMatrix_mulVec_gaugedCoefficientVector
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceMaximalMinorBridge.degreeAnchoredKernelRigid_of_gaugedCoefficientMatrix_injective
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceMaximalMinorBridge.degreeAnchoredKernelRigid_of_symbolicVandermonde_certificate
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.not_anchoredKernelRigid_of_third
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.DegreeAnchoredKernelRigid
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.component_eq_zero_of_twoZeroCoverage
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_commonAnchorCoverage
+#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_coordinateBootstrap
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_bootstrap
 #check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.pairJointAgreesOn_of_degreeAnchoredKernelRigid
-#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.not_anchoredKernelRigid_of_third
-#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.degreeAnchoredKernelRigid_of_commonAnchorCoverage
-#check ArkLib.ProximityGap.Frontier.SupportDividedDifferenceUnrestrictedKernelRefuted.pairJointAgreesOn_of_degreeAnchoredKernelRigid
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.p1_card_mul_K_le_projectedBudget_of_seven_le
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.p1_card_mul_K_le_projectedBudget_of_three_le
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.p1_singletonHallBad_card_le_six
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.p1_singletonHallBad_card_le_two
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.exists_anchor_pair_covering_singletonHallBad
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.pair_projectedBudget_add_exactThree_eq_singletons
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.exactThree_gt_singleton_surplus_of_pair_bad
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.p1_no_four_pair_obstruction_ledger
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.not_four_disjoint_pairHallBad
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.exists_six_cover_of_not_four_disjoint
+#check ArkLib.ProximityGap.Frontier.P1RateQuarterSmallSubsetRankLocalization.exists_six_label_pairHall_cover
 #check ArkLib.ProximityGap.Frontier.RateQuarterNextLatticeFourCoreBarrier.exists_pair_inter_card_ge_three_mul_add_one_of_three_next_cores
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant_eq_zero_of_core_card_sum_sub_domain_gt
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant_eq_zero_of_jointCore_card_sum_sub_domain_gt

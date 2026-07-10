@@ -13,8 +13,9 @@ This probe has two deliberately separate parts.
    current pair/core/packing consequences, but not polynomial realizability.
 
 2. It forms the support-dependent Reed--Solomon divided-difference matrix for
-   consecutive labels and five deterministic random distinct-label samples per field.  After quotienting
-   the `2K`-dimensional globally joint pencils, exact modular elimination shows
+   consecutive labels and five deterministic random distinct-label samples
+   per field.  After quotienting the `2K`-dimensional globally joint pencils,
+   exact modular elimination shows
    full column rank over smooth order-64 domains in `F_193`, `F_257`, and
    `F_449`.  Thus this support family has only the joint solution for those
    tested domains and all 18 tested labellings.  The computation is not a
@@ -131,6 +132,27 @@ def exact_incidence_audit() -> dict[str, object]:
 
     five_set_margin = 20 * T - (6 * N + 20 * (K - 1))
     assert five_set_margin > 0
+    supports_by_coordinate = [
+        {event for event, mask in enumerate(MASKS) if (mask >> coordinate) & 1}
+        for coordinate in range(N)
+    ]
+
+    def projected_budget(labels: set[int]) -> int:
+        return sum(
+            min(len(labels & incident), len(incident) - 2)
+            for incident in supports_by_coordinate
+        )
+
+    singleton_hall_bad = [
+        event for event in range(M) if projected_budget({event}) < K
+    ]
+    pair_hall_bad = [
+        [left, right]
+        for left, right in itertools.combinations(range(M), 2)
+        if projected_budget({left, right}) < 2 * K
+    ]
+    assert not singleton_hall_bad
+    assert not pair_hall_bad
     return {
         "parameters": {"N": N, "M": M, "K": K, "T": T, "A1star": A1STAR},
         "budget_excess": M - N,
@@ -150,6 +172,8 @@ def exact_incidence_audit() -> dict[str, object]:
         "thin_edge_count": len(thin_edges),
         "thin_graph_clique_number": 2,
         "five_set_forcing_margin": five_set_margin,
+        "singleton_hall_bad_count": len(singleton_hall_bad),
+        "pair_hall_bad_count": len(pair_hall_bad),
         "family_sha256": family_hash,
     }
 
@@ -314,7 +338,7 @@ def six_label_exhaustive_audit() -> dict[str, int | bool]:
         for event in incident[2:]:
             templates.append((anchor_a, anchor_b, event, powers))
 
-    def subsystem_rank(labels: list[int]) -> int:
+    def subsystem_matrix(labels: list[int]) -> np.ndarray:
         rows = []
         for anchor_a, anchor_b, event, powers in templates:
             row = np.zeros(4 * K, dtype=np.int64)
@@ -332,23 +356,65 @@ def six_label_exhaustive_audit() -> dict[str, int | bool]:
                     row[start:start + K] + (coefficient % prime) * powers
                 ) % prime
             rows.append(row)
-        return modular_rank(np.array(rows, dtype=np.int64), prime)
+        return np.array(rows, dtype=np.int64)
+
+    def modular_det(matrix: np.ndarray) -> int:
+        matrix = matrix.copy()
+        value = 1
+        for column in range(matrix.shape[1]):
+            candidates = np.flatnonzero(matrix[column:, column])
+            if not len(candidates):
+                return 0
+            selected = column + int(candidates[0])
+            if selected != column:
+                matrix[[column, selected]] = matrix[[selected, column]]
+                value = -value
+            pivot = int(matrix[column, column])
+            value = (value * pivot) % prime
+            inverse = pow(pivot, prime - 2, prime)
+            matrix[column, column:] = (
+                matrix[column, column:] * inverse
+            ) % prime
+            lower_rows = np.flatnonzero(matrix[column + 1:, column]) + column + 1
+            if len(lower_rows):
+                factors = matrix[lower_rows, column].copy()
+                matrix[lower_rows, column:] = (
+                    matrix[lower_rows, column:]
+                    - factors[:, None] * matrix[column, column:]
+                ) % prime
+        return value % prime
+
+    # These three 64-row minors share rows 0..62.  Rows 63,64,65 are the
+    # point-3/4/5 constraints in the same coordinate-44 local block.
+    minor_rows = [list(range(63)) + [last] for last in (63, 64, 65)]
 
     candidates = [value for value in range(prime) if value not in (0, 1, 2, 3)]
     tested = 0
+    first_minor_zeros = 0
+    first_two_common_zeros = 0
+    all_three_common_zeros = 0
     for label_four in candidates:
         for label_five in candidates:
             if label_four == label_five:
                 continue
             tested += 1
-            assert subsystem_rank([0, 1, 2, 3, label_four, label_five]) == 4 * K
+            matrix = subsystem_matrix([0, 1, 2, 3, label_four, label_five])
+            determinants = [modular_det(matrix[rows, :]) for rows in minor_rows]
+            first_minor_zeros += determinants[0] == 0
+            first_two_common_zeros += determinants[0] == 0 and determinants[1] == 0
+            all_three_common_zeros += all(value == 0 for value in determinants)
+            assert any(value != 0 for value in determinants)
     assert tested == 35532
+    assert (first_minor_zeros, first_two_common_zeros, all_three_common_zeros) == (189, 1, 0)
     return {
         "field_order": prime,
         "event_count": len(event_ids),
         "fixed_labels": 4,
         "exhausted_distinct_ordered_pairs": tested,
         "columns_after_global_pencil_gauge": 4 * K,
+        "adjacent_minor_common_zero_counts": [
+            first_minor_zeros, first_two_common_zeros, all_three_common_zeros
+        ],
         "all_full_rank": True,
     }
 
@@ -416,8 +482,8 @@ def main() -> None:
     report = {
         "scope": (
             "abstract incidence barrier plus finite computational rank checks "
-            "for consecutive scalar labels; not a Reed-Solomon or delta-star "
-            "theorem"
+            "with sampled and partially exhausted scalar labels; not a "
+            "label-uniform, Reed-Solomon, or delta-star theorem"
         ),
         "exact_abstract_miniature": exact_incidence_audit(),
         "exact_divided_difference_ranks": exact_rank_audit(),
