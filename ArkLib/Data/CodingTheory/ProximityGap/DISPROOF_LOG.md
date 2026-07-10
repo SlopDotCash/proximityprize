@@ -24901,3 +24901,54 @@ Lean: classical ET itself NOT formalized — consumed only as an explicit hypoth
 containment-scale non-Fourier certificate; per-arc occupancy at deviation scale √(n log q)/K
 remains exactly the BGK/Cilleruelo–Garaev frontier. No CORE upper bound, no cancellation, no
 completion-saving, no moment-saving, no capacity claim. CORE OPEN, ON-BGK.
+
+## [466-G97-census-sup-orbit-inflation] The depth-`r` census CANNOT reach the sup wall `M` — the extraction is inflated by the Frobenius-orbit multiplicity at EVERY rung (axiom-clean, r-uniform) (2026-07-10)
+
+**Object.** The G96 referee (`fable_g96_hbk_input_probe` + `fable_g96b_object_match`) refereed the
+G86–G91 depth-census program (`_G91DepthFiveUnorderedHBKBridge`) and returned the binding
+obstruction: the depth-`r` census `E_r = p⁻¹Σ_b‖η_b‖^{2r}` bounds the AVERAGE `2r`-moment, but the
+single-embedding wall is the SUP `M = max_{b≠0}‖η_b‖`; because the `‖η_b‖=M` frequencies form a full
+`φ(n)`-size phase-coherent Frobenius orbit (G74), `Σ‖η_b‖^{2r} ≥ φ(n)·M^{2r}`, so
+`(p·E_r)^{1/2r} ≥ φ^{1/2r}·M > M` — every census/energy bound is inflated above the true wall and
+CANNOT close the single-embedding `M` bound at any depth. Measured inflation `(p·E₅−n^{10})^{1/10}/M
+∈ [1.31,1.43]` (referee); DC-subtracted probe `g97_census_sup_inflation_probe.py` confirms the
+extracted ratio `(Σ_{b≠0}‖η_b‖^{2r})^{1/2r}/M > 1` at EVERY rung r=1..6 and every adversarial thin
+cell (1.25–2.30 at the n=8..32 walls), decreasing toward 1 but never reaching it. Also confirmed
+`n ≥ M` at every cell, so the DC term `n^{2r}` alone already forces the extraction `≥ n ≥ M`.
+
+**Formal payload** (`Frontier/_G97CensusSupOrbitInflation.lean`, 7 theorems, all axiom-clean
+`[propext, Classical.choice, Quot.sound]`, none carry `sorryAx`; abstract over `η : ι → ℝ`,
+instantiate `η_b := ‖η_b‖` → holds at EVERY rung r, not a fixed-depth island):
+- `censusTerm_nonneg` / `censusTotal_nonneg`: even-power census terms/total are nonneg.
+- `card_orbit_mul_pow_le_censusTotal` (**orbit floor**): if `O ⊆ s` is pinned to `M` (`η b = M` on
+  `O`), then `(card O)·M^{2r} ≤ Σ_{b∈s}(η b)^{2r}` — drop nonneg non-orbit terms, pin orbit terms.
+- `censusExtraction_ge_orbitFactor_mul`: the `(2r)`-th root extraction `(censusTotal)^{1/2r} ≥
+  (card O)^{1/2r}·M` (via `Real.rpow` monotonicity + `mul_rpow` factoring).
+- `orbitFactor_gt_one`: `(card O)^{1/2r} > 1` whenever `card O ≥ 2`, `r ≥ 1`.
+- `census_extraction_strictly_exceeds_wall` (**HEADLINE**): if `≥2` entries are pinned to `M > 0`,
+  then `M < (censusTotal)^{1/2r}` for EVERY r ≥ 1 — the census extraction strictly overshoots the
+  wall at every rung. r-uniform census→sup blindness.
+- `census_extraction_ge_dc` (**DC corollary**): a single frequency of modulus `N ≥ M` forces the
+  raw extraction `≥ N ≥ M` — records the second inflation source (the DC term alone).
+
+**Deconfliction (NOT a wrapper).** G67 (`_G67SignedCensusSupExtractionNoGo`) closes the SIGNED
+depth-reweighting lever (negative transfer weight inverts the census) — different object (weights,
+not orbit multiplicity of the sup). G80 (`_G80SignedL1CertificatePinnedToWall`) pins the signed
+`l1` certificate value to `M` — different functional (unit-`l1` correlation, not a `2r`-moment
+census). `RealizerL2NotSup` / `_Attack07L2LinfGap` prove an `L²/L∞` gap for a SINGLE concrete
+incidence realizer / degenerate-direction spike — fixed-object, single-`r`. G97 is the `r`-UNIFORM
+depth-census statement: the inflation factor `(card O)^{1/2r} > 1` at EVERY rung, so the ENTIRE
+G86–G91 depth-census line is structurally blind to the wall, not merely one moment.
+
+**Consequence.** Endpoint-2 (the single-embedding / non-Fourier `M` bound) is NOT reachable by any
+additive-energy depth census, no matter how tight the depth-quotient — this closes the entire
+census-tightening program as a route to the wall at the theorem level. Does NOT claim the wall is
+unreachable by a genuine sup-side / cancellation argument; only that the average-moment (census)
+route is provably inflated above the sup at every rung. δ* CORE OPEN, ON-BGK/Paley.
+
+**Validation.** `lake env lean` elaboration RC=0 (no error/warning); `lake-locked build
+…_G97CensusSupOrbitInflation` 2010 jobs success (RC=0, no long-line warnings); `#print axioms` on
+all 7 decls exactly `[propext, Classical.choice, Quot.sound]`, no sorryAx; `forbidden_tokens.py`
+clean; `sorry_census.py --fail-on-holes` 0 holes; `update-lib.sh` single barrel entry (5933
+imports); Codex review; DC-subtracted + orbit-inflation probe `g97_census_sup_inflation_probe.py`
+(exact character sums, ratios > 1 at all r, all cells).
