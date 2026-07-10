@@ -48,8 +48,11 @@ variable {F₀ : Type} [Field F₀] [Fintype F₀] [DecidableEq F₀]
 /-- **Distinct positive-degree irreducible factors are at most `deg_Y`-many**: their
 product divides the factors-product (distinct elements of the multiset), which is
 associated to `Q₀`, and degrees add over the product. -/
-theorem card_posYDegree_factors_le {R : Type} [CommRing R] [IsDomain R]
-    [UniqueFactorizationMonoid R] {Q₀ : Polynomial R} (hQ₀ : Q₀ ≠ 0) :
+theorem card_posYDegree_factors_le {Q₀ : (F₀[X])[X][Y]} (hQ₀ : Q₀ ≠ 0) :
+    -- Stated at the concrete polynomial tower (not generic `[CommRing R]`): the generic form's
+    -- `natDegree` semiring instance takes the `CommRing.toSemiring` path while every consumer in
+    -- this file carries the field-tower synthesis path, and reconciling the two at `le_trans`
+    -- is a structure-eta defeq across three polynomial layers that blows the heartbeat budget.
     ((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
       (fun S => 1 ≤ S.natDegree)).card ≤ Q₀.natDegree := by
   classical
