@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapeLowRateExactPins
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PackingPrizeP30Ceilings
 import ArkLib.Data.CodingTheory.ProximityGap.RatesBracket
 
 /-!
@@ -46,6 +47,12 @@ noncomputable abbrev firstPrimeRateEighthThreshold : ℝ≥0 :=
     (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 27 - 1))
     (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
 
+noncomputable abbrev firstPrimeRateQuarterThreshold : ℝ≥0 :=
+  mcaDeltaStar
+    (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)
+    (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 28 - 1))
+    (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
+
 noncomputable abbrev firstPrimeRateSixteenthThreshold : ℝ≥0 :=
   mcaDeltaStar
     (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)
@@ -68,6 +75,16 @@ theorem firstPrime_rateEighth_deltaStar_lt_johnson :
   rw [firstPrime_rateEighth_deltaStar_eq_half]
   exact lt_trans (by norm_num : (1 / 2 : ℝ) < 0.64644)
     ArkLib.CodingTheory.PrizeRatesBracket.bracket_rate_eighth.1
+
+/-- **Rate one quarter reaches at most Johnson.**  Here Johnson is exactly
+`1/2`, and overlap packing supplies the matching operational ceiling. -/
+theorem firstPrime_rateQuarter_deltaStar_le_johnson :
+    (firstPrimeRateQuarterThreshold : ℝ) ≤
+      1 - Real.sqrt (1 / 4 : ℝ) := by
+  unfold firstPrimeRateQuarterThreshold
+  rw [ArkLib.CodingTheory.PrizeRatesBracket.bracket_rate_quarter.1]
+  exact_mod_cast
+    ArkLib.ProximityGap.PackingPrizeP30Ceilings.rateQuarter_mcaDeltaStar_le_half
 
 /-- **Rate one sixteenth is below Johnson.**  The certified operational
 threshold is `1/2`, while the Johnson radius is exactly `3/4`. -/
@@ -149,12 +166,42 @@ theorem firstPrime_rateSixteenth_not_good_at_or_above_johnson
     (1 - Real.sqrt (1 / 16 : ℝ))
     firstPrime_rateSixteenth_deltaStar_lt_johnson delta hJ hdelta
 
+/-- **The entire advertised rate-`1/4` Johnson window misses the security
+budget.**  Unlike the lower rates, this uses the explicit bad point at Johnson
+itself, since the current threshold ceiling need not be strict. -/
+theorem firstPrime_rateQuarter_not_good_at_or_above_johnson
+    (delta : ℝ≥0)
+    (hJ : 1 - Real.sqrt (1 / 4 : ℝ) ≤ (delta : ℝ)) :
+    ¬epsMCA
+      (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)
+      (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 28 - 1)) delta ≤
+        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
+  intro hgood
+  have hhalfR : (1 / 2 : ℝ) ≤ (delta : ℝ) := by
+    rw [← ArkLib.CodingTheory.PrizeRatesBracket.bracket_rate_quarter.1]
+    exact hJ
+  have hhalf : (1 / 2 : ℝ≥0) ≤ delta := by exact_mod_cast hhalfR
+  have hmono := epsMCA_mono
+    (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)
+    (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 28 - 1)) hhalf
+  have hle : epsMCA
+      (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)
+      (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 28 - 1))
+      (1 / 2 : ℝ≥0) ≤ (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) :=
+    hmono.trans hgood
+  exact (not_lt_of_ge hle) <|
+    ArkLib.ProximityGap.PackingBudgetFirstJump.inv_lt_epsMCA_half_of_floor_eq_length
+      PrizeShapePrimeP30.orderOf_g (by norm_num) (by norm_num) (by norm_num)
+      PrizeShapePrimeP30.P_div_two_pow_128 (by norm_num) (by norm_num)
+
 #print axioms firstPrime_rateEighth_deltaStar_lt_johnson
+#print axioms firstPrime_rateQuarter_deltaStar_le_johnson
 #print axioms firstPrime_rateSixteenth_deltaStar_lt_johnson
 #print axioms not_johnson_le_firstPrime_rateEighth_deltaStar
 #print axioms not_johnson_le_firstPrime_rateSixteenth_deltaStar
 #print axioms prizeShape_rateSixteenth_threshold_field_sensitive
 #print axioms firstPrime_rateEighth_not_good_at_or_above_johnson
 #print axioms firstPrime_rateSixteenth_not_good_at_or_above_johnson
+#print axioms firstPrime_rateQuarter_not_good_at_or_above_johnson
 
 end ArkLib.ProximityGap.Frontier.PrizeShapeFirstPrimeBelowJohnson

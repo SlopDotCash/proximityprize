@@ -39,6 +39,10 @@ These are faithful `mcaDeltaStar` equalities, not far-line surrogates or conditi
 
 Therefore both exact operational thresholds are strictly below Johnson.
 
+At rate `1/4`, overlap packing proves `delta* <= 1/2`, and `1/2` is exactly Johnson.  The
+explicit packing point already violates the security budget at Johnson itself, so equality of the
+threshold is not needed to exclude the advertised open window.
+
 ## Empty advertised windows
 
 The file proves the stronger budget statement.  For every valid radius `delta`:
@@ -54,6 +58,16 @@ delta >= 1-sqrt(1/16)
 Thus the entire advertised above-Johnson MCA window is empty for these two certified instances.
 This follows rigorously from the exact threshold equalities and the operational ledger's rule that
 any good radius is at most `mcaDeltaStar`.
+
+The same file proves the rate-`1/4` statement directly from monotonicity:
+
+```text
+delta >= 1-sqrt(1/4) = 1/2
+  => not (epsMCA(RS[P,n,n/4],delta) <= 2^-128).
+```
+
+Consequently one certified production-shaped field has empty above-Johnson operational windows at
+all three lower advertised rates `1/4`, `1/8`, and `1/16`.
 
 ## Field sensitivity
 
