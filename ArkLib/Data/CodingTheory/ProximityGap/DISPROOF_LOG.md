@@ -24327,3 +24327,32 @@ increment sub-Gaussianity over GENUINE randomness = the Wick atom / independence
 chaining is void until that atom is paid, after which chaining is unnecessary. Side-audit:
 spacing law b_j²−b_{j−1}² ≤ (1+ε)n reconfirmed (ramp max 0.99n at Fermat 65537). No CORE upper
 bound, cancellation, completion, anti-concentration, or capacity claim. CORE OPEN / ON-BGK.
+
+## [466-G88-cross-orbit-parseval] #505 DIRECT HALF LANDED: the DC-centered deep-wall numerator is an EXACT positive-semidefinite sum of squares over genuinely distinct orbit classes with ZERO cross terms — cross-orbit interaction carries no sign degrees of freedom; the wall = a bound on the orbit-class quadratic form (2026-07-10)
+
+Lane: #505 route (c) Fable (`Frontier/_G88CrossOrbitFirstIncidence.lean`, 868 lines, 36 decls,
+ALL exactly `[propext, Classical.choice, Quot.sound]`, probe `probe_g88.py` pre-verified the
+identities at (p,n,r) = (17,4,2..3), (97,8,2..3), (193,16,2)). **Layer 1 — collision
+trichotomy:** `frameCollisionCount_trichotomy`: rotation-frame pair collisions are QUANTIZED to
+{0, n, n²} (n² iff both kernel; n iff same n-th-power class, = the ⟨g⟩-coset relation via
+`exists_pow_mul_of_class_eq`; 0 across distinct classes — full cross-orbit orthogonality).
+`frameCollisionCount_eq_of_incident`: a FIRST incidence between nonzero frames forces same-class
+and exactly n incidences. `crossFrameSigned_pos_of_first_incidence`: at q > n one first
+incidence across distinct non-kernel orbits makes the signed pair mass strictly POSITIVE — no
+signed cancellation available cross-orbit. **Layer 2 — orbit-class Parseval (headline):**
+`centeredShadowMass_orbitClassParseval`: n·centeredShadowMass = q·(n·S₀² + Σ_γ S_γ²) − n·n^(2r)
+with S₀ = kernel mass, S_γ = per-class masses (each class fiber has exactly n elements, R
+constant on it via new tuple-level `repRF_mul_left`). Corollaries:
+`kernel_sq_le_centeredShadowMass` (kernel floor — no reshuffling goes below);
+`centeredShadowMass_le_kernel_concentration` (Cauchy–Schwarz ceiling, single-class concentration
+extremal); `equidistribution_minimizes_centeredShadowMass` (the untried extremal-reshuffling
+angle: equidistribution is the minimizer); `relationAnomaly_orbitClassParseval`;
+`dcEnergyBound_iff_orbitClassParseval_le` (the wall IS a bound on the orbit-class quadratic
+form — cross-orbit coordinates); `weighted_crossFrame_eq_centeredShadowMass` (layer weld).
+
+**Consequence.** Cross-orbit interaction carries zero sign degrees of freedom (orthogonality +
+first-incidence positivity + quantization): the signed cross-orbit route reduces LOSSLESSLY to
+bounding the ℓ²-profile (S₀, (S_γ)_γ); conversely no cross-orbit cancellation/reshuffling can
+beat the kernel floor. With G89 (first-incidence ≡ wall, constant 1) this completes BOTH #505
+exit readings. Exact identities and two-sided brackets, NOT a bound: the size of S₀ and the
+realized class-mass profile remain the open arithmetic content. CORE OPEN / ON-BGK.
