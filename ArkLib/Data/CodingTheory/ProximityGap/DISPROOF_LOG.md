@@ -24979,3 +24979,17 @@ G80T directional refutation and the F3 valuation/archimedean-blind fence.
 **Honest scope.** Unconditional reusable rigidity + census bound; regime disjointness is
 ledger prose from the formal constants (not a Lean impossibility theorem); no certificate
 produced. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G80Q-terminal-census] PROBE ADDENDUM: the terminal small-difference certificate is empirically COMFORTABLE — worst-coset excess over uniform is ≈ 2n·log_n(q), well inside the n·polylog(q) tolerance at every measured cell including the canonical n=64/p=264961 r369 cell (2026-07-10)
+
+Probe `scripts/probes/probe_466_g80q_smalldiff_terminal_census.py`: direct census of the G80Q
+terminal object smallDiff(b) = #{(u,z) ∈ (b·μ_n)²: u≠z, u−z ∈ Strip(p/K)} at the saddle K,
+one representative per coset (coset-invariance is a theorem), ALL (p−1)/n cosets swept. Cells
+n ∈ {16,32,64}, β ∈ [2,4] incl. the canonical r369 cell (n=64, p=264961): max/uniform ∈
+[1.22, 1.45] bounded; per-element worst excess (max−uniform)/n ∈ [2.1, 7.1] ≈ 2β = 2·log_n q
+— comfortably within the certificate tolerance n·polylog(q) (measured n·log q ∈ [89, 799] vs
+worst absolute excess ∈ [33, 397]). VERDICT: the terminal certificate holds with large margin
+at every accessible cell; the conjecture is empirically comfortable in its terminal form and
+ONLY the proof is missing. Numerics cannot decide the asymptotic (dossier §10), but the
+measured excess profile (≈ 2β·n, linear in n at fixed β, no blow-up with β) is exactly the
+shape the certificate needs. CORE remains OPEN / ON-BGK.
