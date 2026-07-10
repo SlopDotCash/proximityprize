@@ -51,6 +51,16 @@ line-list surface, S2 discharges the within-Johnson side of `PuncturedListBudget
 the one-hypothesis-deep CONDITIONAL production gate `mcaDeltaStar = 31/64` in
 `Frontier/_PrizeShapeRateHalfBracket.lean` — a conditional reduction, not a closure.
 
+The corrected maximal-cancellation decoder is now formal, and the production depth-three collision
+sector is discharged; depth four is the first open decoder-side sector. Adaptive all-depth Wick
+budgets are available, but G95 proves raw sector cardinalities cannot satisfy them: the live masses
+must be normalized, signed/relation-weighted quantities. On the analytic side G89 proves the
+first-incidence cross-orbit functional equals the wall with constant exactly one, while G90
+refutes the unsigned sup-arc certificate shape at the required strength. G80V proves the averaged
+dilation-coincidence identity, but its pointwise maximum remains the wall. The surviving CORE input
+must therefore control a signed/correlated cross-arc or equivalent weighted single-embedding
+functional; no such square-root-scale estimate is currently proved.
+
 Start from:
 
 - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
