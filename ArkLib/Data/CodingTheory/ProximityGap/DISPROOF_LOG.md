@@ -31446,3 +31446,27 @@ r ≈ ln q — the Paley/BGK wall, i.e. the δ* core, exactly as the tetrachotom
 The arc is CLOSED as a method: maximal honest output extracted (fixed-depth rungs true at
 almost all primes, all depths, interfaces wired); its intrinsic ceiling proven-in-prose and
 logged. CORE OPEN, ON-BGK.
+
+## [466-FS16-sharp-resultant-envelope] ENVELOPE DISCHARGED (Fable session): `|Res(x^m+1, g)| ≤ (coeffMass g)^m` PROVEN — the WraparoundExactCount per-config envelope shape `(2r)^{n/2}` is now a theorem, sharpening every FS-ledger height from 2^{Θ(n log n)} to 2^{Θ(n log r)} (2026-07-09)
+
+Lane: FS16 (file `Frontier/_FS16SharpResultantEnvelope.lean`, real locked build 3139 jobs, all
+3 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `norm_eval_le_coeffMass`: ‖g(ω)‖ ≤ Σ|coeffs| at unit modulus.
+- `norm_root_fpoly_eq_one`: roots of x^m+1 over ℂ have ‖ω‖ = 1 (ω^m = −1 trichotomy).
+- `patternResultant_natAbs_le_pow` (MAIN): for m = 2^k, deg g < m:
+  |patternResultant m g| = ∏_{ω^m=−1} |g(ω)| ≤ (coeffMass g)^m — via Mathlib's new
+  `resultant_eq_prod_eval` (monic + `IsAlgClosed.splits`, lc = 1) + a multiset-product
+  induction on norms.
+
+CONSEQUENCES: (i) the #464 `WraparoundExactCount.resultantHeightEnvelope (2r)^{n/2}` — recorded
+there only as an abstract shape ("we record only the shape…") — is DISCHARGED: depth-r patterns
+have coeffMass ≤ 2r, so the envelope is a theorem; (ii) FS3's factorial/Hadamard height
+(m+d)!·B^{m+d} ≈ 2^{Θ(n log n)} sharpens to (2r)^{n/2} = 2^{(n/2)log₂(2r)} — a log n/log r
+factor in L throughout FS6/FS10/FS14/FS15 budgets (constants only; the β-windows are set by
+the n^{2r} pattern count, unchanged); (iii) machine-checks the Paley-dependence localization
+the envelope predicted: fixed r ⟹ finite Paley-independent bad-prime ceilings; r ≈ ln q ⟹
+2^{Θ(n log log q)} — the wall. LEAN NOTES: `resultant_eq_prod_eval` + one-arg
+`Polynomial.Splits` (`IsAlgClosed.splits`) are the working combo; `Int.abs_eq_natAbs` as a
+simp lemma loops (use `Nat.cast_natAbs` + `Int.cast_abs`); Complex.isAlgClosed lives in
+`Mathlib.Analysis.Complex.Polynomial.Basic`. CORE OPEN, ON-BGK.
