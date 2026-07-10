@@ -1,0 +1,18 @@
+n=8 p=761: pairs with |Deta|<1e-8: 0, max d_tm on those: nan (value-factoring: should be ~0)
+   min spacing of eta values: 2.314e-03 (near-degenerate pairs are where any injective-in-b metric hope dies: cocycle data identical, frequencies distinct)
+   top domination-forcing pairs for d_tm (Deta, d_tm, eta_i, eta_j):
+     Deta=  5.4398 d_tm=     0.189 eta=(  3.8504, -1.5894) ratio=     28.8
+     Deta=  5.4375 d_tm=    0.1905 eta=(  3.8481, -1.5894) ratio=     28.5
+     Deta=  5.4221 d_tm=    0.2026 eta=(  3.8327, -1.5894) ratio=     26.8
+     Deta=  5.5521 d_tm=    0.2329 eta=(  3.8327, -1.7194) ratio=     23.8
+     Deta=  5.5674 d_tm=    0.2381 eta=(  3.8481, -1.7194) ratio=     23.4
+   sup coset eta=-6.9443 vs bulk eta=-0.0429: Deta=6.9013, d_tm=4.319, d_val=6.9013
+n=16 p=6529: pairs with |Deta|<1e-8: 0, max d_tm on those: nan (value-factoring: should be ~0)
+   min spacing of eta values: 2.573e-04 (near-degenerate pairs are where any injective-in-b metric hope dies: cocycle data identical, frequencies distinct)
+   top domination-forcing pairs for d_tm (Deta, d_tm, eta_i, eta_j):
+     Deta=  6.6501 d_tm=    0.1648 eta=(  1.3897, -5.2604) ratio=     40.3
+     Deta=  6.6629 d_tm=    0.1661 eta=(  1.4025, -5.2604) ratio=     40.1
+     Deta=  6.6663 d_tm=    0.1665 eta=(  1.4060, -5.2604) ratio=       40
+     Deta=  6.6710 d_tm=    0.1672 eta=(  1.4107, -5.2604) ratio=     39.9
+     Deta=  6.5123 d_tm=    0.1688 eta=( -5.4269,  1.0855) ratio=     38.6
+   sup coset eta=-11.2789 vs bulk eta=0.2400: Deta=11.5189, d_tm=8.742, d_val=11.5189

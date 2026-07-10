@@ -24301,3 +24301,29 @@ energy, dual to the in-tree `Finset.addREnergy_le`. With the exact depth partiti
 their masses must be sub-cardinality (relation-weighted, `p^{-1}`-scale per collision, as in
 the DC-subtracted moment). Any future "count the sectors and win" proposal at cardinality
 level is dead on arrival by this entry. CORE remains OPEN / ON-BGK.
+
+## [466-G94-jacobi-cocycle-metric-collapse] no Jacobi-cocycle (or any) metric opens the chaining door — deterministic gauge collapse, metric-UNIVERSAL (2026-07-10)
+
+Lane: #466 G94 Fable (`scripts/probes/probe_g94_jacobi_cocycle_metric{,_supplement}.py` +
+`_out_g94_*`; Lean `Frontier/_G94JacobiCocycleMetric.lean`, 15 decls axiom-clean
+`[propext, Classical.choice, Quot.sound]`). The tool-shape doctrine's last chaining hope ("the
+Jacobi cocycle could supply a DIFFERENT metric with sub-Gaussian increments and
+γ₂ ≍ √(n log p)") is CLOSED metric-independently. Constructed and probed 7 candidate metrics
+from the spectral-measure Jacobi matrix / transfer cocycle (CD-embedding, transfer-product,
+projective direction, m-function hyperbolic, Lyapunov, ×2-orbit path) over 8 instances
+n ∈ {8,16,32}, β≈3.2 incl. Fermat 65537: after rescaling to the largest sub-Gaussian-legal
+scale, min γ₂ₙ/spread = 0.74–0.89 (theorem floor 0.6005), best metric always plain
+d_val = |Δη| (γ₂ₙ/M ≈ 1.4–1.5); all genuine cocycle metrics strictly worse (3× to 10⁷×;
+domination forced by lone-spike-shaped pairs, e.g. Δη = 6.65 at d_tm = 0.165). MECHANISM
+(proven): for a deterministic field the tail condition P(|Δ|>t) ≤ 2exp(−t²/d²) collapses to
+domination |Δ| ≤ √(log 2)·d (`abs_le_of_detSubGaussianPair`), hence diam ≥ spread/√(log 2) and
+net-form γ₂ ≥ diam/2, so `no_subSpread_gamma2_certificate`: spread ≤ 2√(log 2)·γ₂ for EVERY
+metric — the certificate is the conclusion (`gamma2_certificate_is_conclusion`, circularity
+exact); `cocycle_metric_dichotomy` leaves no third branch; `loneSpike_defeats_every_gauge`
+passes the standing filter. Value-factoring proven+probed: every cocycle candidate reads b only
+through η_b, descending to the G70-closed 1-D cloud. G70 (Euclidean entropy floor) is
+subsumed-and-generalized on the gauge side, not re-derived. SURVIVOR (named, open, untouched):
+increment sub-Gaussianity over GENUINE randomness = the Wick atom / independence form (§2.4) —
+chaining is void until that atom is paid, after which chaining is unnecessary. Side-audit:
+spacing law b_j²−b_{j−1}² ≤ (1+ε)n reconfirmed (ramp max 0.99n at Fermat 65537). No CORE upper
+bound, cancellation, completion, anti-concentration, or capacity claim. CORE OPEN / ON-BGK.
