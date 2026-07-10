@@ -57,6 +57,12 @@ fits in the production Wick budget. Once the actual factorial-corrected decoder 
 the whole depth-two sector can be absorbed by this crude universe bound; neither `n*J <= E` nor
 an additive-energy estimate is needed for this depth.
 
+This method stops sharply at depth three. The analogous unrestricted universe has `n^6` ordered
+core pairs, and G82 proves the strict reverse production inequality: its corrected envelopes
+exceed the full Wick budget by about `2^4.52`. This does not refute the actual equal-sum depth-three
+sector; it shows exactly where genuine additive-energy/family-cancellation structure first becomes
+necessary, matching the dossier's independently identified sextic core.
+
 ## Honest residual
 
 This does not prove the factorial-corrected maximal-cancellation decoder. That decoder is now the

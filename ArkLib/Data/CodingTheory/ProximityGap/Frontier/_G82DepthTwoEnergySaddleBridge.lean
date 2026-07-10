@@ -215,6 +215,15 @@ theorem production_all_depth_two_sector_absorbed
     W ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 :=
   hW.trans production_all_depth_two_core_pairs_le_fullWick
 
+/-- **Sharp cutoff of the unrestricted-core method.** Repeating the same deliberately crude
+overcount at primitive depth three exceeds the full production Wick budget. This does not refute
+the actual depth-three sector, which is much smaller than the unrestricted `n^6` core universe;
+it proves that depth three needs genuine equal-sum/energy structure. -/
+theorem production_all_depth_three_core_pairs_exceed_fullWick :
+    Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 <
+      (2 ^ 30) ^ 6 * correctedPadEnvelope (2 ^ 30) 110 1 3 := by
+  norm_num [correctedPadEnvelope, Nat.doubleFactorial]
+
 end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 /-! ## Axiom audit -/
@@ -244,3 +253,5 @@ end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_two_core_pairs_le_fullWick
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_two_sector_absorbed
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_three_core_pairs_exceed_fullWick
