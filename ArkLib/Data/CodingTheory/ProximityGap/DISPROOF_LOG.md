@@ -24085,6 +24085,23 @@ determinant from the actual cyclotomic census, prove that common prime-ideal cov
 next instantiation bridge. No production bound on `M`; CORE remains OPEN / ON-BGK. Theorems use
 only `[propext]`.
 
+## [466-G85-endpoint-assembly-multiset] Ordered endpoint assembly is now compatible with maximal multiset cancellation, including an exact fixed-embedding inverse and padding cancellation law (axiom-clean) (2026-07-10)
+
+Lane: factorial-corrected decoder assembly
+(`Frontier/_G85EndpointAssemblyMultiset.lean`; issue #505 remains open).
+
+G85 defines the multiplicity-preserving value multiset of a finite word and proves that it is
+invariant under equivalence reindexing. Consequently, G84A assembly has value multiset exactly
+`coreBag + padBag`. For any fixed core-slot embedding, restricting an endpoint to the core slots
+and canonical complementary slots reassembles the endpoint definitionally, and if the selected
+core restriction has the prescribed core bag then additive cancellation forces the complementary
+restriction to have the prescribed padding bag.
+
+**HONEST SCOPE.** The remaining inverse step is selecting a core-position embedding whose values
+realize G83M's residual core multiset. G85 does not prove that selection theorem, decoder
+surjectivity, growing-depth primitive-core bounds, or the production bound on `M`. CORE remains
+OPEN / ON-BGK. All declarations use only `[propext]`.
+
 ### [466-maint-2026-07-10] Ledger hygiene flag for #506 + KKH-lemma pull verdict (2026-07-10)
 
 (1) **DISPROOF_LOG contains stray diff3 conflict markers / duplicated historical blocks**: lines
@@ -24458,3 +24475,29 @@ budget (consistent with §33's probe-safe constant). SURVIVORS: fork (i) — an 
 analogue (twisted/quadratic-coset HD; the χ-shifted family); fork (iii) — an unconditional
 partial theorem bounding the even-half ℓ⁶ mass from HD data alone (would be the first
 POSITIVE exact-arithmetic input on the calibrated open core). Marked down; CORE OPEN / ON-BGK.
+
+## [466-G80W-arc-pair-count-identity] The KM-arc and decoupling-lag hypotheses are formally ONE object: same-arc pair count = Σ_j n_j² exactly, so the ℓ² arc discrepancy IS the pair excess over uniform, and a difference-anti-concentration bound Δ feeds the arc consumer as ‖charSum‖ <= √K·√Δ + #S·2π/K (axiom-clean weld) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80WArcPairCountIdentity.lean`, real locked build, all 4
+theorems exactly `[propext, Classical.choice, Quot.sound]`). Completes the engine unification
+the doctrine-v2 synthesis conjectured: KM (G78, arc-occupancy spreadness) and Bourgain-Demeter
+decoupling (G80D, lag-decorrelation defect) consume the SAME missing certificate.
+
+**Bricks.** `pairCount_eq_sum_sq_occupancy`: #{(x,y) ∈ S²: same arc} = Σ_{j<K} n_j² (exact
+biUnion partition, disjointness machine-checked). `sum_sq_dev_eq_pairCount_excess`: at the
+uniform mass m = #S/K, Σ_j (n_j − m)² = pairCount − #S²/K EXACTLY — the ℓ² arc discrepancy IS
+the same-arc pair excess. `l1_dev_le_sqrt_card_mul_l2`: Cauchy-Schwarz (Chebyshev special
+case). CAPSTONE `charSum_le_of_pair_excess`: pairCount ≤ #S²/K + Δ ⟹ ‖Σ_{y∈S} e(val(y)/p)‖ ≤
+√K·√Δ + #S·(2π/K).
+
+**Reading at S = b·μ_n.** Same-arc pairs = #{(x,y) ∈ μ_n²: bx, by in one length-p/K window} —
+anti-concentration of the dilated DIFFERENCE structure, exactly G80D's decorrelation mass. So
+the two constant-loss engines' hypotheses are one object in two norms: sup-form ε (G80X pin:
+ε ≍ log q) and pair-form Δ. Loss accounting (honest): the ℓ²→ℓ¹ step costs √K, so the pair
+route needs Δ within a CONSTANT factor of the uniform window count — consistent with (not
+easier than) the sup-form pin; both are faces of the one missing non-Fourier input.
+
+**Honest scope.** Exact-weld consumer arithmetic; no certificate produced. The arc program
+(G80/G80Z/G80Y/G80X/G80W) is complete: every known constant-loss engine now consumes the ONE
+open object through machine-checked interfaces on both sides and in both norms. CORE remains
+OPEN / ON-BGK. No axioms, no sorry.
