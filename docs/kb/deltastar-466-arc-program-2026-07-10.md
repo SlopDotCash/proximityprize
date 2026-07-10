@@ -64,3 +64,17 @@ of concept that Hasse-strength bounds are reachable without Weil).
   depth (r18), Fourier-derived spreadness (G78 circularity).
 - The b-averaged and coset-averaged forms are THEOREMS (G80V, G80S mean); only the max/sup
   over the `(p−1)/n` cosets is open.
+
+## 5. Addendum (same day): the unconditional interval milestone (G80O → G80N → G80M)
+
+| lane | file | content |
+|------|------|---------|
+| G80O | `_G80OProductDivisorInterval.lean` | CG product trick: `T(W)² ≤ D·n` below √p; fiber ↪ divisors; input = Nat-only `DivisorBound` |
+| G80N | `_G80NDivisorFourthPowerBound.lean` | **`d(y)⁴ ≤ 19680·y` proven** (per-prime constants 41/10/4/3/2/2; first machine-checked constant-exponent divisor bound) |
+| G80M | `_G80MUnconditionalIntervalBound.lean` | 🏁 **`T(W)⁸ ≤ 19680·W²·n⁴`, zero hypotheses** — `T(W) = O(√n·W^{1/4})`, e.g. `T(n) = O(n^{3/4})`; first machine-checked nontrivial subgroup-interval concentration bound |
+
+Honest ladder note: the crude k-fold generalization (fiber ≤ `d(y)^{k-1}`) gives WORSE
+exponents than k = 2 (e.g. `n^{5/6}` at k = 3); the genuine CG/BGK bootstrap replaces the
+crude fiber bound with multiplicative-energy control — exactly the open content. Do not land
+the crude ladder; the prize-ward continuation is energy-refined fibers, or the saddle-side
+certificate directly.
