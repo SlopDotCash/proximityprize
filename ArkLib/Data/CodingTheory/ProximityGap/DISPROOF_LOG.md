@@ -24225,3 +24225,29 @@ propagating the optimistic `C=1` fourth-moment square bound.
 
 This refutes the decoder interpretation, not the proximity-gap conjecture or the free-action class
 equation. CORE remains OPEN.
+
+## [466-G90-spacing-rigidity-probe] The Denjoy–Koksma / interval-exchange angle is structurally DEAD (gap-rigidity dichotomy, axiom-clean), and the G80Z sup-arc certificate is FALSE at the needed strength: unsigned arc-occupancy certificates have an n^{2/3} cost floor — the missing non-Fourier certificate must be a SIGNED cross-arc functional (2026-07-10)
+
+Lane: fresh angle (c) on the doctrine-v2 "single missing non-Fourier certificate"
+(`Frontier/_G90SpacingRigidityProbe.lean`, 20 decls, 11 on `[propext, Classical.choice,
+Quot.sound]`, 9 decide-pins on `[propext]`). Probes: `scripts/probes/probe_g90_{spacing,branches,
+costfloor}.py`, cells n=16..512, p≈n², all cosets. **(1) DK dead:**
+`gap_fixed_iff_one`/`gap_reversed_iff_neg_one` — a single preserved (resp. reversed) val-gap
+forces h=1 (resp. −1); every μ_n element of order ≥3 preserves NO gap
+(`gap_scrambled_of_three_le_orderOf`); probe: 0 gap-preserving pairs in every tested (h,cell),
+generator branch count = n (vs ≤3 for rotations); toy pin μ₁₆=⟨2⟩ mod 257: adjacency 13→10→6
+under ×2→×4→×16, gaps never. **(2) Discrepancy of b·μ_n is random-like:**
+D*max/√(n log(p/n)) ∈ [0.47, 0.81] over 11 cells, bracketing iid controls — no sub-random
+rigidity to mine. **(3) The certificate as shaped is FALSE:**
+min_K [K·ε(K)+2πn/K]/√(n log(p/n)) = 5.57→9.17 GROWING ≈ n^{1/6} (flat ≈6–9 against n^{2/3});
+formal half: `arc_certificate_cost_floor`/`supArc_route_floor`/`no_admissible_K`
+(K·ε+2πn/K ≥ 2√(2πn·ε₀), AM–GM); empirical half: ε(K) ≍ √(n/K) unavoidable. So the G80Z
+contrapositive can never certify below n^{2/3}: the √-scale content is signed cross-arc
+cancellation = η_b itself (G78 circularity in arc dialect). NOT a closure of G80Z (the
+implication stands); a REFUTATION of its converse input shape + a precise re-target: any viable
+non-Fourier certificate must control a signed/correlated arc functional. CORE remains OPEN /
+ON-BGK. No axioms, no sorry, no native_decide.
+
+**Honest scope**: negative-space result. Nothing here bounds M or ‖η_b‖; the n^{2/3} floor is
+probe-verified (6 cells, monotone) with the AM–GM half formal and the fluctuation floor
+empirical. CORE remains OPEN / ON-BGK.
