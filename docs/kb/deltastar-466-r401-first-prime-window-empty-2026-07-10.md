@@ -85,6 +85,21 @@ the exact field size or normalized budget must be retained.
 
 ## Prize interpretation
 
+`Frontier/_PrizeShapeGrandChallengeRefutation.lean` additionally checks the attainment issue in
+the repository's official real-valued statement.  At rate `1/16`, every radius strictly below
+`1/2` is good, `1/2` is bad, and the supremum is exactly `1/2`.  Hence the good-radius set has
+no largest element, whereas `GrandMCAResolution` requires a good attained maximum.  Lean proves
+
+```text
+not_grandMCAChallengeRS_rateSixteenth
+not_mcaPrize_firstPrimeDomain
+```
+
+The last theorem uses the official `prizeRates` index and machine-checks that its floored
+rate-`1/16` dimension is `2^26`.  This is a formal refutation of the current real-valued `mcaPrize`
+predicate on the certified smooth domain.  It is not a refutation of the faithful lattice
+challenge: there the maximal good point is the predecessor rung, exactly as intended.
+
 This is a decisive correction to any universal claim that every advertised low-rate production
 instance has its operational threshold inside the above-Johnson window.  It does not prove or
 refute the ignored-source polynomial `mcaConjecture`, whose right-hand side is not fixed to the
