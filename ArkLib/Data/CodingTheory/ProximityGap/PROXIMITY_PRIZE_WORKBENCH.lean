@@ -472,6 +472,35 @@ independent-Gaussian behaviour of the period field: sub-Gaussian tail `P(|η_b| 
 to depth `r ≈ log p`, equivalently `E_r⁺(μ_n) − n^{2r}/p ≤ C^r·r!·n^r` at logarithmic depth.
 Difficulty is certification, not distribution shape.
 
+**(9) DOCTRINE v2 UPDATE (2026-07-10, G77–G82 round — supersedes the ranking in (7); full text
+`docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md`).**
+* **The off-BGK route list is EMPTY.** The signed relation route (R366/R367, "Sol route 3") is
+  gauge: `relationAnomaly = Σ_{b≠0}|η_b|^{2r} − (q−1)·shadowEnergy` exactly, zero-slack iff
+  transport (`_G77FRelationAnomalyFourierGauge.lean`).
+* **Constant-base `K^r` losses are FREE** (`M ≤ √(2eK)·√(n ln q)` at `r ≈ ln q`) — and BOTH
+  modern constant-loss engines are now walked: Kelley–Meka sifting (`_G78KMSpreadCircularity`,
+  rank-one spreadness ⟺ the sup bound, two-sided constants ∈ [3.1, 6.9]) and Bourgain–Demeter
+  decoupling (`_G80DDecouplingParallelCapCollapse`, gain ≡ lag-decorrelation mass, exact defect
+  identity). The wall is NOT strength; it is a single circular hypothesis. **The whole prize =
+  ONE non-Fourier anti-concentration certificate for a geometric progression in arcs.** The (7)
+  tool-shape line ("γ₂ canonical") is superseded: chaining on the Euclidean metric is BGK-tight
+  (G69/G70); any survivor supplies the certificate, in any gauge, then rides KM- or BD-shaped
+  machinery at tolerable loss.
+* **p-adic separation with exact depth:** `v_π(η_b − n) = n` for every `b ≠ 0`; the first
+  b-sensitive digit is the pure coset character `n·bⁿ/n!` (`_G79PPiAdicDigitClustering`).
+  Valuation functionals cannot see `M` below depth n; the discriminant is already saturated.
+* **The ON-BGK transversality seam is quantified:** CRT amplification `p^s ≤ H` with the
+  contradiction threshold `s* = (n/4)log6/log p` = HALF the height allowance
+  (`_G82TransversalityCRTThreshold`) — but the census coverage probe measures EXACTLY one
+  embedding per relation at every accessible cell, so the live half is the FENCE direction
+  (`_G83DeterminantCoverageFence`, in progress).
+* **Protocol layer (Tier 3):** the determination's LOWER half is closed per-prime (O44 Thm Q via
+  KKH 2026/782, superseded in-tree by O38 E1/E2); the open content is purely the UPPER half =
+  CORE. Lane B2 re-plan target: GGSW arXiv:2607.08516 (row-span-constrained LCL form of
+  curve-decodability, degree-independent, black-box transference from subspace designs).
+  Litsweep 2026-07-10: the analytic-core literature is unchanged — no non-Fourier certificate
+  exists or is attempted anywhere.
+
 ⇒ **The `▼ YOUR CONJECTURE HERE ▼` slot's current best targets (post rounds 1–2, 2026-07-01;
 see dossier §14/§15):** (a) the low-profile fiber bound `D(t)`, `t < k`, feeding
 `mcaDeltaStar_ge_of_farLineListBudgeted` (the PRIMARY surface; `_LowProfileFiberBound` +
