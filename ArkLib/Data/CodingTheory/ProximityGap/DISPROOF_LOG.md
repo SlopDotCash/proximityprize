@@ -25020,6 +25020,7 @@ instantiate); (ii) this is the k = 2 rung of the k-fold ladder T(W)^k ≤ D_k·n
 k → log p/log W limit is the BGK bootstrap — the formal skeleton all deeper rungs share.
 CORE remains OPEN / ON-BGK. No axioms, no sorry.
 
+
 ## [466-G80N-divisor-fourth-power-bound] The PURE-Nat divisor input PROVEN: d(y)^4 <= 19680*y unconditionally — G80O's DivisorBound fires at exponent 1/4, making the first machine-checked nontrivial subgroup-interval concentration bound reachable (one instantiation away) (2026-07-10)
 
 Lane: direct Fable 5 (`Frontier/_G80NDivisorFourthPowerBound.lean`, real locked build, all
@@ -25084,6 +25085,7 @@ W < √p. The subgroup content of the entire chain is now complete; everything r
 interval face is integer arithmetic. Still fenced from the prize saddle by G80P regime
 disjointness — no prize claim. CORE remains OPEN / ON-BGK. No axioms, no sorry.
 
+
 ## [466-G80K-divisor-first-moment] The divisor FIRST moment machine-checked pure-Nat: exact hyperbola identity Σ_{y≤M} d(y) = Σ_{a≤M} ⌊M/a⌋ + dyadic harmonic bound Σ⌊M/a⌋ ≤ M(log₂M+1) — the classical average-divisor bound with no analysis (Real.log-free); stepping stone to the KB §6 second moment that upgrades G80L to the full CG interval bound (axiom-clean) (2026-07-10)
 
 Lane: direct Fable 5 (`Frontier/_G80KDivisorFirstMoment.lean`, real locked build, all 3
@@ -25101,3 +25103,44 @@ classical d̄ = O(log M).
 E×(A) ≤ Σ_{y≤W²} d(y)² ⟹ T(W) ≤ C·n^{1/4}·√W·log^{3/4}W — nontrivial BELOW the n^{2/3}
 threshold where G80M dies, extending the unconditional window downward. Still fenced from
 the prize saddle (G80P). CORE remains OPEN / ON-BGK. No axioms, no sorry.
+## [466-OC-ARCPEAK-not-subgroup-resonance] The arc max-vs-mean wall is NOT an algebraic subgroup resonance: the argmax coset's peak-arc cluster is never a coset of a proper subgroup μ_m<μ_n — closing the "sub-2-power resonance amplifies the worst coset" reopening of the b-averaged arc program (axiom-clean STRUCTURAL no-go) (2026-07-10)
+
+Lane: direct Opus 4.8 (`Frontier/_OCArcPeakNotSubgroupResonance.lean`, real locked build,
+all decls exactly `[propext, Classical.choice, Quot.sound]`; probes
+`scratchpad/probe_466_ocarcpeak_*.py`).
+
+**Open seam addressed.** The arc program reduced δ* to ONE small-difference certificate and
+proved the b-AVERAGED same-arc pair count is a theorem (G80V grand identity); the single OPEN
+object is the max/sup over the (p−1)/n cosets (G80V honest scope: "the wall hides in
+max-vs-mean"). A natural reopening of the averaging route is that the worst coset's arc
+concentration is an ALGEBRAIC resonance — the peak arc of the argmax coset capturing a coset of
+a proper multiplicative subgroup μ_m ≤ μ_n (m∣n, m<n), letting subgroup structure (not
+analysis) drive the max. This lane probes and formally KILLS that hope.
+
+**Probe (decisive).** `probe_466_ocarcpeak_nogo_subgroup_resonance.py`, cells n∈{8,16,32,64,128}
+incl. canonical Fermat p=65537,n=128,K=9. For each cell: compute the argmax coset b, its
+peak-arc cluster P⊆H, and test whether P is a coset of a proper subgroup of H. Result: P is
+NEVER a subgroup coset (mult-closure fails); peak fraction |P|/n = 0.75, 0.44, 0.56, 0.31, 0.26
+— DECAYING, and never the fixed 1/2, 1/4, … a subgroup coset would force; the cluster is a
+short-interval (Cilleruelo-Garaev) run in the additive lift, not algebraic. A companion
+concentration probe shows the real subgroup max EXCEEDS a random-coloring null at n≥32
+(real 398>330 null at n=32; 980>850 at n=64) with tail z-score ~2× Gaussian — the anomaly is a
+genuine subgroup effect, but a short-interval one, not a sub-subgroup one.
+
+**Formal invariant.** For a finite subgroup Gsub of a finite group G and a peak set P that is a
+coset of Gsub: `peak_card_eq_of_isCoset` (|P|=Nat.card Gsub), `peak_card_dvd_of_isCoset` (|P| ∣
+Nat.card G, Lagrange), `peak_index_exists_of_isCoset` (|P|·c=Nat.card G, c≥1 — unit-fraction
+index). HEADLINE `no_subgroup_resonance_of_not_dvd`: if |P| ∤ Nat.card G then P is not a coset of
+ANY subgroup. Concrete r-uniform closers `peak18_not_dvd_32`, `peak20_not_dvd_64`,
+`peak33_not_dvd_128`, `peak6_not_dvd_8` certify the measured argmax peak sizes are non-algebraic
+at the canonical cells.
+
+**Honest scope.** STRUCTURAL no-go: removes the algebraic-subgroup-resonance explanation for the
+arc max-vs-mean wall, leaving the short-interval (CG) object as the ONLY surviving mechanism —
+exactly the fence-3 (integer-liftability, G80P) prediction. Does NOT bound the max itself (still
+the open prize object) and does NOT assume the analytic certificate. What it BUYS: any future
+max-side argument may assume the peak is NON-algebraic (purely additive), the regime CG/HBK
+short-interval technology is built for. Non-overlap: not a fixed-cell certificate, not
+transversality, not signed-anomaly, not the tensor cross-scale ceiling (OC-CROSSSCALE) — this is
+the max-vs-mean seam's algebraic-resonance branch. CORE remains OPEN / ON-BGK. No axioms, no
+sorry.

@@ -2224,6 +2224,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79PPiAdicDigitClustering
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddleLocalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80KDivisorFirstMoment
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80LEnergyRefinedConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80MUnconditionalIntervalBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80NDivisorFourthPowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80OProductDivisorInterval
@@ -2554,6 +2556,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelFiniteFreeEdge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelJointCumulant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelShawInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelTransferOperator2
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCArcPeakNotSubgroupResonance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCChainingMetricEuclideanNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCCrossScaleTensorCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCGaloisEmbeddingEquidistribution
