@@ -24734,3 +24734,14 @@ the pair face is intrinsically √K-lossy, so the SUP-form face (per-arc ε ≍ 
 the binding formulation of the missing certificate. The max-vs-mean gap [1.4, 1.8] measured
 here is the wall in its sharpest numerical form: mean is a theorem (G80V grand identity +
 near-generic R), max is the prize.
+
+### [466-HD8-brick-landed] `_HD8IdentityWebDimensionLaw.lean` LANDED axiom-clean (2026-07-10)
+
+Three theorems, all `[propext, Classical.choice, Quot.sound]`: `finrank_projected_null_le`
+(projected null space ≤ null space — the saturation lower bound), 
+`exists_exact_evaluation_of_not_surjective` (POSITIVE HALF: non-surjective projection forces a
+nonzero web-determined evaluation functional — the abstract cause of classical index-2/
+semiprimitive Gauss-sum evaluability; quotient-functional proof via
+`Module.Projective.exists_dual_ne_zero`), `pinned_dims_ge` (the pinned-dimension count).
+The negative half (thin regime: projection surjective ⟹ zero pinning) is the exact rational
+certificate of hd7/hd8 probes, documented in the module. HD arc complete: HD1–HD8 all landed.
