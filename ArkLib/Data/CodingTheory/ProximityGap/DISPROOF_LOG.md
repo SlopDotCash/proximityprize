@@ -32636,3 +32636,37 @@ decoupling (G80D) fail identically — not on strength, on a circular hypothesis
 principle sharpens once more: the missing ingredient is a NON-FOURIER decorrelation/anti-
 concentration certificate for geometric-progression structure; everything downstream of that
 certificate is already available at tolerable loss. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G80-arc-oscillation-weld] G78's owed arc model PAID: chord-arc oscillation estimate + exact equally-spaced-center cancellation (B = 0), welded into the machine-checked rank-one arc-increment extraction — some arc deviates from ANY reference mass by (A − #pts·wid)/K whenever the phase sum has norm ≥ A (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 debt-cleanup (`Frontier/_G80ArcOscillationWeld.lean`, real locked build 3321
+jobs, all 5 theorems exactly `[propext, Classical.choice, Quot.sound]`). G78
+(`_G78KMSpreadCircularity.lean`) proved the abstract KM increment-extraction chain and recorded in
+its scope: "the rank-one arc application and its oscillation estimate remain to be formalized" —
+the two concrete inputs `happrox` and `hcancel` of
+`exists_cell_deviation_of_approximated_phase_bias`. This lane supplies both and fires the chain.
+
+**Bricks.**
+- `norm_expI_sub_expI_le`: chord ≤ arc on the unit circle, `‖e^{ia} − e^{ib}‖ ≤ |a−b|` (factor
+  through `Real.norm_exp_I_mul_ofReal_sub_one_le`, i.e. `2|sin(x/2)| ≤ |x|`).
+- `phase_sum_arc_approx`: single-arc oscillation estimate `‖Σ_T e^{iθ} − #T·e^{iγ}‖ ≤ #T·wid`.
+- `grouped_phase_sum_approx`: fiberwise K-cell model error ≤ `#pts·wid` — G78's `happrox` with
+  `D = #pts·wid`, for ANY cell assignment and centers.
+- `sum_equally_spaced_centers_eq_zero`: the K ≥ 2 equally spaced centers `2πj/K` are the K-th
+  roots of unity and sum to EXACTLY zero (IsPrimitiveRoot.geom_sum_eq_zero) — G78's `hcancel`
+  with `B = 0`: the reference-mass cancellation term vanishes identically, so the extraction is
+  CLEAN (no `w·B` loss at all).
+- `exists_arc_deviation_equally_spaced` (CAPSTONE): phase sum norm ≥ A + phases within `wid` of
+  their arc centers ⟹ ∃ arc whose occupancy deviates from ANY reference mass m by
+  `≥ (A − #pts·wid)/K`. With the canonical instantiation `wid = 2π/K` this is the rank-one
+  arc-density increment G78's probe measured two-sidedly (dev/(M/n) ∈ [3.1, 6.9]).
+
+**Honest scope.** Completes the arc MODEL abstractly (arbitrary phases θ, arc assignment κ). The
+remaining gap to the arithmetic cell is mechanical plumbing (θ x = 2π·val(bx)/p on μ_n, κ = arc
+index, wid = 2π/K by construction). Does NOT close the KM spreadness circularity — G78's verdict
+stands (constant-loss loop, no contraction; the non-circular input remains the
+BGK/Cilleruelo–Garaev anti-concentration frontier, per the tool-shape doctrine v2 "single missing
+non-Fourier certificate"). What it adds: the Fourier⟹arc-increment direction of the rank-one
+equivalence is now fully machine-checked with ZERO cancellation loss, so any future non-Fourier
+arc-occupancy certificate plugs directly into the extraction with no further analytic work. CORE
+remains OPEN / ON-BGK. No axioms, no sorry.
