@@ -24102,6 +24102,29 @@ realize G83M's residual core multiset. G85 does not prove that selection theorem
 surjectivity, growing-depth primitive-core bounds, or the production bound on `M`. CORE remains
 OPEN / ON-BGK. All declarations use only `[propext]`.
 
+## [466-G86-G88-corrected-decoder-sector] The factorial-corrected maximal-cancellation decoder is now complete as a finite injective encoding, yielding the concrete sector cardinality bound with no surjectivity hypothesis (axiom-clean) (2026-07-10)
+
+Lane: corrected padding decoder completion
+(`_G86MaximalSplitEmbeddingExtraction.lean`,
+`_G87MaximalCancellationAssemblyRepresentation.lean`, and
+`_G88CorrectedDecoderSectorBound.lean`).
+
+G86 selects occurrence-correct core embeddings from G83M's multiset split, including repeated
+values, and proves both canonical complements enumerate the same common padding bag. G87 converts
+that equality into one relative padding permutation and reconstructs both ordered endpoints.
+G88 defines the exact finite type of ordered disjoint primitive-core pairs and the depth-`s`
+maximal-cancellation sector, chooses a corrected-code representation for every sector element,
+proves the encoding injective by decoding, and obtains
+
+`|Sector(r,s)| ≤ |PrimitiveCorePair(A,s)| · (r descFactorial s)^2 · (r-s)! · |A|^(r-s)`.
+
+**HONEST SCOPE.** This completes the finite decoder/counting interface, not the production bound.
+The open quantitative input is now the growing-depth cardinality/mass of
+`PrimitiveCorePair(A,s)` strong enough for the Wick/energy saddle, together with the independent
+non-Fourier arc-uniformity (or equivalent single-embedding discrepancy) theorem controlling `M`.
+CORE remains OPEN / ON-BGK. Audited declarations use only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
 ### [466-maint-2026-07-10] Ledger hygiene flag for #506 + KKH-lemma pull verdict (2026-07-10)
 
 (1) **DISPROOF_LOG contains stray diff3 conflict markers / duplicated historical blocks**: lines
@@ -24575,3 +24598,23 @@ rows = conjugation pairs, duplication triples (c, 2c, c+LEG), and coset-product 
 rank mod the 2πℤ lattice at p = 257, m = 16; compare rank to dim. Expected from the doctrine:
 (C) — but (R) is not excluded and the computation is an afternoon. Either branch is a landable
 brick. CORE OPEN / ON-BGK.
+
+## [466-G80T-arc-lattice-height-weld-REFUTED-as-unsigned] PROBE FINDING (no Lean claim): the conjectured weld "R(d) anomaly ⟺ small lattice shortest vector" is REFUTED in unsigned form — corr(R − p/K, p/λ₁(L_d)) is NEGATIVE (−0.67..−0.96) and the d−1 refinement stays negative; the dilation-coincidence anomaly is DIRECTIONAL (proximity to positive small ratios near the diagonal), which unsigned height functionals forget — the archimedean-blindness failure mode reappearing at the arc face (2026-07-10)
+
+Probe `scripts/probes/probe_466_g80t_arc_lattice_height_weld.py` (4 cells to n=32, p=1153,
+K∈{16,64}). Hypothesis tested: R(d) large ⟺ λ₁(L_d) ≤ K where L_d = {(a,b): b ≡ da mod p} —
+this would have welded the arc program (G80V's R-reduction) to the OC height-norm machinery
+(bad d ⟺ p | Norm(b − aζ^k), small height). DECISIVE: correlation is NEGATIVE everywhere
+(−0.964, −0.816, −0.669, −0.757), and the refined predictor λ₁(L_{d−1}) (motivated by
+"(d−1)v small ⟹ same arc") is also negative (−0.948..−0.245). Mechanism visible in the data:
+d = −1 has λ₁ = 1 (maximally structured) but R = 0 (mirror map, minimal coincidence); d = 2
+(λ₁ = 2) gives R exactly p/K; the R-maxima sit at MODERATE λ₁ with the small ratio b/a
+positive and near 1 (diagonal direction). So the coincidence anomaly depends on the SIGN and
+DIRECTION of the small ratio, not its height: unsigned λ₁/height functionals cannot certify
+R bounds in either direction. This is the barrier map's archimedean-blindness failure mode
+(M lives in arg τ; R lives in the direction of the approach to the diagonal) reappearing
+concretely at the arc face. CONSEQUENCE for the certificate hunt: a viable non-Fourier R
+bound must be built from the DIRECTIONAL Diophantine object (signed best approximations of
+d/p near +1, i.e., three-distance/continued-fraction data of (d−1)/p with sign), not from
+norm/height ceilings. Honest scope: probe-only; no Lean brick claimed; the G80V identities
+are unaffected. CORE remains OPEN / ON-BGK.
