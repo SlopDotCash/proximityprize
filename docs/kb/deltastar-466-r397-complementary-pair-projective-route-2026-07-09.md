@@ -1,6 +1,7 @@
 # R397: complementary-pair projective route (2026-07-09)
 
-Status: two broad combinatorial hypotheses refuted; a sharper dyadic projective classification survives.
+Status: two broad combinatorial hypotheses refuted; the surviving pair-line object is a general
+Möbius-involution fiber, not only a multiplicative pairing.
 
 ## Complementary-pair reduction (`k=4` only)
 
@@ -40,18 +41,20 @@ the exact small maxima `5,9,10` for `v=5,6,7`.
 
 ## Refutation 2: pair-point lines are not only stars
 
-The coefficient points `[1,-(x+y),xy]` for dyadic-domain pairs have two large line types:
-
-1. stars through a fixed endpoint, with `n-1` points;
-2. constant-product fibers `xy=c`, with `n/2` points.
+The coefficient points `[1,-(x+y),xy]` for dyadic-domain pairs have stars through a fixed
+endpoint, with `n-1` points.  A general non-star projective line imposes a fractional-linear
+relation between the two endpoints: a Möbius involution.  Constant-product and constant-sum
+fibers are special cases, not an exhaustive classification.
 
 Exact censuses in `scripts/probes/probe_dyadic_pair_quadratic_collinearity.py` find maximum
 non-star line sizes `4` for the order-eight subgroup of `F17` and `8` for the order-sixteen
-subgroup of `F97`.  Witness pairs have exponent sums `i+j=c mod n`.
+subgroup of `F97`.  At order sixteen, the eight antipodal pairs `{x,-x}` already realize such a
+line: their sums are all zero while their products vary.
 
 Therefore the claim that every three collinear pair points share an endpoint is false.  The
-failure is nevertheless rigid: it is the multiplicative involution `x -> c/x`, the same pairing
-geometry that appears in the dyadic square-map recursion.
+failure is nevertheless rigid at the projective level, but the correct rigidity statement must
+allow general Möbius involutions.  Restricting to `x -> c/x` misses the constant-sum antipodal line
+and many smaller non-star fibers.
 
 ## Scope correction
 
@@ -70,7 +73,7 @@ For general `k`, bound fibers of the map sending a `(k-1)`-subset `S` of a `(2k-
 [prod_{x in S}(a_0-x), prod_{x in S}(a_1-x), prod_{x in S}(a_2-x)] in P^2.
 ```
 
-The pair-line classification remains a useful base-case model, while the general target is a
+The Möbius pair-line model remains a useful base-case model, while the general target is a
 three-anchor subset-product collision theorem on the dyadic domain.
 
 No prize closure is claimed in this round.

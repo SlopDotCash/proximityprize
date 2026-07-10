@@ -3,7 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterDeterminantCollapse
+import Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.Tactic.Ring
 
 /-!
 # Polynomial-line Plucker syzygies
@@ -22,11 +23,19 @@ half-predecessor problem.
 set_option autoImplicit false
 
 open Polynomial
-open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantCollapse
 
 namespace ArkLib.ProximityGap.Frontier.R396PolynomialLinePluckerSyzygy
 
 variable {F : Type} [Field F]
+
+/-- A decoded polynomial line, represented by its intercept and slope. -/
+abbrev PolynomialLine (F : Type) [Semiring F] := F[X] × F[X]
+
+/-- The oriented `2 × 2` determinant of three polynomial lines. -/
+noncomputable def lineDeterminant
+    (line1 line2 line3 : PolynomialLine F) : F[X] :=
+  (line2.1 - line1.1) * (line3.2 - line1.2) -
+    (line3.1 - line1.1) * (line2.2 - line1.2)
 
 /-- The four oriented affine areas form a simplicial cocycle. -/
 theorem lineDeterminant_cocycle
