@@ -24526,3 +24526,32 @@ constraint web is worth full formalization. (ii) Check Mathlib's `JacobiSum`/`ga
 the duplication formula (known formalization target; classical proof ≈ 1 page). (iii) The
 even-half fold K_j = J_j(1 + ratio_j) with ratio_j exact — attempt the fork-(iii) partial
 theorem on the folded rung. CORE OPEN / ON-BGK; marked down honestly: a discovery, not a bound.
+
+### [466-HD4-relation-web-inventory] The HD2′ protocol pinned: the ladder's exact-relation web is TWO-DIMENSIONAL (faces × levels) — conjugation couples χ-face to χ̄-face, duplication couples level m to m/2, coset products pin subgroup sums; the decisive experiment is specified (2026-07-10)
+
+Follow-on to HD3 (same session). Writing J_j = g(λ_j)·g(χ)/g(λ_jχ), the ladder's phase data
+lives on Gauss phases γ(c) = arg g(c) over TWO index families: the dyadic family {jn} and the
+χ-shifted family {jn+1}. The complete inventory of EXACT algebraic relations (each classical,
+each machine-verifiable):
+1. **Conjugation** g(c)·g(−c) = χ_c(−1)·p — pairs c ↔ −c; on the shifted family it maps
+   {jn+1} to {jn−1}, i.e. COUPLES THE χ-FACE TO THE χ̄-FACE: the ladders of χ and χ̄ are not
+   independent objects. (Not yet exploited anywhere in the R19–R27 chain.)
+2. **Duplication** (HD3, verified 1e-13) g(c+LEG) = χ̄_c(4)·g(2c)·g(leg)/g(c) — couples
+   level m to level m/2 within a face; on the shifted family it drags in {2jn+2} (the
+   χ²-face's shifted family at level m/2) — so duplication also moves ACROSS faces.
+3. **Coset products** (HD1, verified) — pin all subgroup-coset phase sums (even spectrum).
+4. Trivial web: |g(c)| = √p (nondegenerate), g at degenerate indices explicit.
+
+The (face, level) lattice: relations 1–2 generate a groupoid action on faces χ^s and levels
+2^i; the ladder rung at ONE face-level is constrained by data across the whole orbit. The
+free-phase count must be recomputed on the FULL web (single-face count ~m/4 from HD3 is an
+overestimate of freedom).
+
+**HD2′ (decisive, next window):** enumerate the web at p=257 (m=16) exactly over all faces
+χ^s reachable from s=1 by the groupoid; compute the true dimension of the constraint variety;
+resample ONLY genuine transversal phases; measure the rung's range. Outcomes: (a) rung still
+free ⟹ the entire HD/exact-identity program is insufficient — land the no-go with the web as
+mechanism, doctrine gains "exact multiplicative identities cannot see the rung"; (b) rung
+pinned within O(1) ⟹ the first genuinely-new constraint discovery on the calibrated core since
+the ladder itself — formalization of the web (Mathlib `gaussSum`/`JacobiSum` API) becomes the
+campaign's top priority. Either branch is a real theorem. CORE OPEN / ON-BGK.
