@@ -32,7 +32,7 @@ noncomputable def assemble {A : Type*} {r s : ℕ} (hsr : s ≤ r)
 @[simp] theorem assemble_core {A : Type*} {r s : ℕ} (hsr : s ≤ r)
     (e : Fin s ↪ Fin r) (core : Fin s → A) (pad : Fin (r - s) → A) (i : Fin s) :
     assemble hsr e core pad (e i) = core i := by
-  unfold assemble Function.comp_def
+  change Sum.elim core pad ((slotEquiv hsr e).symm (e i)) = core i
   rw [← slotEquiv_inl hsr e i, Equiv.symm_apply_apply]
   rfl
 
@@ -40,7 +40,7 @@ noncomputable def assemble {A : Type*} {r s : ℕ} (hsr : s ≤ r)
     (e : Fin s ↪ Fin r) (core : Fin s → A) (pad : Fin (r - s) → A)
     (j : Fin (r - s)) :
     assemble hsr e core pad (padSlots hsr e j) = pad j := by
-  unfold assemble Function.comp_def
+  change Sum.elim core pad ((slotEquiv hsr e).symm (padSlots hsr e j)) = pad j
   rw [← slotEquiv_inr hsr e j, Equiv.symm_apply_apply]
   rfl
 
