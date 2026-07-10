@@ -1,3 +1,17 @@
+## [466-G78-weighted-embedding-rigidity] the single-embedding qualifier in #505 carries ZERO slack: the full NR-weighted signed relation structure (shadowCollisionMass, relationAnomaly, signedShadowPairDiscrepancy, the G75/DCEnergyBound target) is LITERALLY IDENTICAL at every primitive embedding g ↦ g^a, gcd(a,n)=1 (2026-07-10, #466 G78)
+
+OC equidistribution pinned only the unweighted marginal vanishing counts and honestly recorded
+that weighted first-incidence mass was out of scope; R384's no-gain audit consumed a
+uniform-centered-load hypothesis. G78 closes both seams unconditionally: `powerRootSet (g^a) n =
+powerRootSet g n` (unit dilation permutes residues mod n), and R312's exact subtraction identity
+`C = rEnergy(powerRootSet) − B` expresses the weighted collision mass through the power-root SET
+and embedding-free char-0 shadow data only. Hence no primitive embedding of the same subgroup is
+easier than another: any admissible single-embedding first-incidence route must already work at
+the Galois average, which G75 calibrates exactly to `DCEnergyBound`. Rigidity pin, NOT a bound;
+CORE remains OPEN. Formal payload:
+`Frontier/_G78WeightedRelationEmbeddingRigidity.lean` (imports R366+R367 only; axiom-clean,
+no sorryAx). Complements G77's first-incidence Jordan decomposition without overlap.
+
 ## [466-G76-all-higher-distinct-generator-moments-blind] The entire hierarchy of higher distinct-generator moments misses the unique-root stratum, so it cannot recover the centered relation coefficient without first-incidence information (axiom-clean route no-go) (2026-07-10)
 
 R385 proved that the second off-diagonal generator moment vanishes at endpoint incidence `Z=1`.
@@ -32420,7 +32434,6 @@ geometric progression in arcs WITHOUT Fourier — is exactly the BGK/Cilleruelo�
 instantiation and not a closure. The rank-one arc application and its oscillation estimate remain
 to be formalized. It does not prove that no non-Fourier spreadness certificate can exist. CORE
 OPEN / ON-BGK.
-
 ## [466-OC-CROSSSCALE-tensor-ceiling] Cross-scale PRODUCT (tensor) certificates strictly AMPLIFY the BGK-normalized wall above the square-root-cancellation floor, closing the last conceptual non-BGK escape (super-additivity across distinct n-scales) as an axiom-clean structural no-go (2026-07-10)
 
 After the fixed-cell ledger was fully wall-pinned — positive census (`_AnomalyLocalization`),
@@ -32460,3 +32473,107 @@ constructive cross-scale proposal on the board reduces to the tensor spectrum. C
 fully wall-pinned fixed-cell ledger, the honest frontier statement holds: δ* CORE is ON-BGK/Paley at
 the adversarial thin subgroup; neither fixed-cell certificates nor their tensor products escape the
 wall. No axioms, no sorry, no native_decide. CORE OPEN / ON-BGK.
+## [466-OC-TAIL-cross-prime-stacking-ceiling] Fixed-depth stacked-violator primes are finite in the whole tail, with an explicit candidate×logarithmic-multiplicity ceiling (axiom-clean cross-prime double count) (2026-07-10)
+
+`_OCStackingTailCensusCeiling.lean` combines the per-candidate norm certificate across *distinct
+primes* with the per-violator orbit floor. If every candidate has nonzero certificate
+`N(a) ≤ H^phi`, incidence at a prime `p ≥ P` forces `p | N(a)`, and every violator consumes at
+least `K` candidates, then every finite violator set `V` satisfies
+
+```text
+card(V) * K ≤ card(Cand) * Nat.log P (H^phi).
+```
+
+The cap is uniform in `V`, so `violatorSet_finite` proves the entire infinite-tail violator set is
+finite. The depth-three specialization uses `H=6`, `phi=n/2`, and `K=n/16`. The exact full-pool
+probe at `n=16` verifies certificate equivalence, the height ceiling, and cross-prime multiplicity;
+only prime 577 violates in `[512,120000)`, well within the theorem's ceiling.
+
+**Scope.** This is fixed-depth exceptional-prime census control, not an explicit-prize-field
+theorem. It cannot remove the known exceptional production prime or prove the logarithmic-depth
+DC-energy bound. Six headline theorems compile with `[propext]`; CORE remains OPEN / ON-BGK.
+## [466-G79P-falling-factorial-digit-clustering] The first nonzero subgroup falling-factorial digit occurs at the subgroup order (axiom-clean structural fence) (2026-07-10)
+
+`_G79PPiAdicDigitClustering.lean` proves for every finite multiplicative subgroup `H` of order
+`n` that subgroup summation reads only the constant and degree-`n` coefficients of every
+polynomial of degree at most `n`. Applied to
+`fallingPoly(b,k)=prod_{i<k}(bX-i)`, this gives
+
+```text
+sum_{x in H} prod_{i<k}(bx-i) = 0       for 1 <= k < n,
+sum_{x in H} prod_{i<n}(bx-i) = n*b^n  at k=n.
+```
+
+These are the finite-field digit identities underlying the proposed cyclotomic statement
+`v_pi(eta_b-n)=n`. The Lean file does not formalize the binomial-series or cyclotomic-valuation
+bridge, so that valuation equality remains documented arithmetic rather than a proved declaration.
+Even with that bridge, the result is a valuation-blindness fence, not an archimedean bound on the
+Gauss-period maximum and not a bound on the growing primitive sectors needed by G79S. Four headline
+theorems pass `pg-iterate` with `[propext, Classical.choice, Quot.sound]`; CORE remains open.
+
+## [466-G80R-primitive-padding-envelope-refuted] Independent padding order refutes the R369/G79S bridge (exact saddle counterexample) (2026-07-10)
+
+The proposed sector estimate
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * n^(r-s)
+```
+
+is false because maximal cancellation leaves a common multiset whose two endpoint tuples may
+order their padding independently. The exact probe at `mu_4 subset F_3001`, saddle `r=9`, and
+primitive depth `s=2` gives `J_2=8` and
+
+```text
+W_9^(2) = 1148084928 > 679477248
+          = 8 * (9 descFactorial 2)^2 * 4^7.
+```
+
+`_G80RPrimitivePaddingEnvelopeRefuted.lean` kernel-checks the fourth root, primitive core,
+claimed envelope value, strict failure, and that multiplying this witness's bound by `(r-s)!`
+is safe. This refutes the bridge into G79S, not G79S's conditional arithmetic theorem and not
+`FourthPowerSaddleDCEnergy`. A replacement must use permutation-quotiented weights or pay the
+common-padding permutation multiplicity. Five declarations pass `pg-iterate` without `sorryAx`.
+## [466-G80R-primitive-padding-envelope-refuted] R369/G80's ordered-tuple padding envelope is false at the exact saddle: independent padding orders require an extra permutation factor (axiom-clean witness + exact count-vector probe) (2026-07-10)
+
+R369 proposed that primitive disjoint depth-`s` cores with ordered count `J_s` contribute at most
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * n^(r-s).
+```
+
+The intended reconstruction chooses one ordered common padding tuple and inserts it into both
+endpoints.  Maximal common cancellation, however, identifies only an equal padding **multiset**.
+The two endpoint tuples order that multiset independently.  A universal reconstruction therefore
+needs an additional permutation of `Fin (r-s)` (or exact `Multiset.countPerms` weights).
+
+The failure occurs on an actual dyadic subgroup at the exact R369 saddle.  Let
+
+```text
+p = 3001,  H = mu_4 = {1,1353,3000,1648},  r = ceil(log p) = 9,  s = 2.
+```
+
+The two antipodal pairs give `J_2=8` ordered primitive cores.  Exact count-vector enumeration gives
+
+```text
+W_9^(2) = 1,148,084,928
+claimed RHS = 8 * (9 descFactorial 2)^2 * 4^7 = 679,477,248,
+ratio = 1.689659118652 > 1.
+```
+
+The probe `scripts/probes/probe_466_g80_padding_envelope_refutation.py` uses exact integers and
+enumerates every padding multiplicity vector.  The Lean file
+`Frontier/_G80RPrimitivePaddingEnvelopeRefuted.lean` kernel-checks the primitive fourth root,
+the antipodal core relation, the claimed RHS, the strict numerical failure, and survival of the
+safe factorial-corrected ceiling.  All headline declarations use only `[propext]`.
+
+A safe coarse repair is
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * (r-s)! * n^(r-s),
+```
+
+or a sharper quotient-weighted formula using the squared padding multinomial.  This correction
+destroys G79S's intended bounded-sector absorption at logarithmic depth: `(r-s)!` is precisely a
+Wick-scale factor, so it cannot be discarded.  G79S remains a correct conditional arithmetic
+theorem, but its proposed R369 input is unavailable.  This refutes the mechanism, not
+`FourthPowerSaddleDCEnergy`; CORE remains OPEN.
