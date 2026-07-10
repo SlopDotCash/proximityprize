@@ -32310,6 +32310,7 @@ reduces total transversal incidence to the unresolved one-embedding stacking/fir
 Together with G76, higher distinct-generator moments cannot recover the missing `Z=1` stratum
 either. The remaining prize input is still the signed first-incidence weighted discrepancy, i.e.
 the G75/DC-energy wall. All headline theorems compile axiom-clean with `[propext]`; no sorry.
+
 ## [466-G77-relation-anomaly-fourier-gauge] The signed discrepancy is exactly the nonzero-frequency DC moment minus a fixed floor, with zero slack (axiom-clean gauge equivalence) (2026-07-10)
 
 G75 calibrated `relationAnomaly` against raw energy and left open whether its signed pair form could
@@ -32419,3 +32420,43 @@ geometric progression in arcs WITHOUT Fourier — is exactly the BGK/Cilleruelo�
 instantiation and not a closure. The rank-one arc application and its oscillation estimate remain
 to be formalized. It does not prove that no non-Fourier spreadness certificate can exist. CORE
 OPEN / ON-BGK.
+
+## [466-OC-CROSSSCALE-tensor-ceiling] Cross-scale PRODUCT (tensor) certificates strictly AMPLIFY the BGK-normalized wall above the square-root-cancellation floor, closing the last conceptual non-BGK escape (super-additivity across distinct n-scales) as an axiom-clean structural no-go (2026-07-10)
+
+After the fixed-cell ledger was fully wall-pinned — positive census (`_AnomalyLocalization`),
+signed anomaly pinned to `M` (fable G74), embedding transversality
+(`_OCPieceBHeightNormCeiling` / `_OCGaloisEmbeddingEquidistribution` / #505), Shkredov-Vyugin
+multi-shift exponent-floored (G73), chaining flat-Dudley BGK-tight (G69/G70) — BOTH the
+fable-critic (G74 rank-one next target) and the G56 frontier lane (final receipt) converged on the
+SAME single surviving conceptual hope: a SUPER-ADDITIVE combination across DISTINCT n-scales, a
+genuinely new object OUTSIDE the fixed-cell BGK ledger. `_OCCrossScaleTensorCeiling.lean` closes it
+for the canonical cross-scale construction (the direct-product / tensor walk on `μ_{n₁} × μ_{n₂}`).
+
+Exact probes (`oc_crossscale_superadditive_probe.py`, `oc_crossscale_correct_normalization_probe.py`):
+the product-walk Gauss-period spectrum is the OUTER PRODUCT `η^{prod}_{(b,c)} = η₁_b · η₂_c`, so the
+adversarial wall multiplies `M_prod = M₁·M₂` and the even moments multiply. The CORRECT BGK-normalized
+wall is `g(n) = M/√n` (the square-root-cancellation floor gives `g ≥ 1` on every adversarial thin
+cell; empirically `g ∈ [1.69, 2.31]` on all `v₂(p-1) ≥ log₂ n` cells `n ∈ {4,8,16}`). Under the tensor
+the normalized wall is EXACTLY multiplicative: `g_prod = M₁M₂/√(n₁n₂) = g₁·g₂`. The v1 probe's
+apparent "super-additive gain" was a normalization artifact (comparing `M/n` products against `min`
+of the two smaller-scale walls rather than against the size-`N=n₁n₂` BGK √-floor); the corrected
+object shows `g_prod = g₁·g₂ ≫ max(g₁,g₂)`, a STRICT amplification.
+
+Lean payload (`ArkLib.ProximityGap.Frontier.OCCrossScaleTensorCeiling`, 7 decls, all
+`[propext, Classical.choice, Quot.sound]`):
+- `g_tensor`: `g(c ⊗ d) = g c · g d` (exact tensor identity via `Real.sqrt_mul`).
+- `g_le_g_tensor_of_floor` / `max_g_le_g_tensor_of_floor`: at/above the floor (`1 ≤ g`), the tensor
+  wall dominates each factor, hence the MAX.
+- `g_lt_g_tensor_of_strict`: STRICTLY above the floor (`1 < g`), the tensor is STRICTLY worse than
+  either factor — no super-additive gain.
+- `no_superadditive_escape` (headline): on the thin regime (`1 < g c`, `1 < g d`), the product wall
+  is `≥ min(g c, g d)`; NO cross-scale product certificate drops below the thinnest fixed cell.
+- `tensor_gain_eq_partner`: the gain factor `g(c⊗d)/g c = g d > 1` — the product amplifies.
+
+**Scope.** Precise STRUCTURAL no-go on the *product / tensor* cross-scale object: it strictly
+amplifies the BGK-normalized wall above the √-cancellation floor, so it can never dip below a
+single-cell wall. Does NOT by itself exclude a hypothetical NON-product joint coupling, but every
+constructive cross-scale proposal on the board reduces to the tensor spectrum. Combined with the
+fully wall-pinned fixed-cell ledger, the honest frontier statement holds: δ* CORE is ON-BGK/Paley at
+the adversarial thin subgroup; neither fixed-cell certificates nor their tensor products escape the
+wall. No axioms, no sorry, no native_decide. CORE OPEN / ON-BGK.
