@@ -1,3 +1,47 @@
+## [466-G75-raw-deviation-is-not-relation-anomaly] CORRECTION: G74 tested the wrong signed object; raw `E_r-Wick_r` and M-coset phase coherence do not close R366's centered relation discrepancy (2026-07-10)
+
+Fresh critic report G74 claimed to close the last signed route after testing complex linear forms in
+the Gauss periods, the sign of `E_r-Wick_r`, and the average phase on the maximum-magnitude orbit.
+That conclusion conflates three different objects. R366's `relationAnomaly` is the real weighted
+shadow-pair discrepancy
+
+```text
+Anom_r = q * shadowCollisionMass - (n^(2r) - shadowEnergy),
+```
+
+with coefficient `q-1` on kernel pairs and `-1` on non-kernel pairs. It is not a complex linear
+form `sum c_b eta_b`. Moreover `eta_{bg}=eta_b` for `g in G`, so G74's M-orbit phase coherence is
+the defining coset invariance of a Gauss period. It only forbids cancellation inside one
+multiplicative coset. R367's cancellation is across kernel and non-kernel difference orbits;
+R378 already proves each individual rotation orbit is sign/mass coherent and leaves the cross-orbit
+discrepancy open.
+
+G75 proves the exact missing calibration. Writing `B_r=shadowEnergy`,
+`C_r=shadowCollisionMass`, `E_r=B_r+C_r`, and `W_r` for the Wick scale, the R366 budget is
+`K_r=q W_r-(q-1)B_r`, and
+
+```text
+Anom_r - K_r = q * (E_r - W_r) - n^(2r).
+```
+
+Hence `Anom_r <= K_r` iff `q(E_r-W_r) <= n^(2r)`. The raw sign test `E_r-W_r <= 0` is sufficient
+but strictly stronger; a positive raw deviation is allowed up to the full DC margin `n^(2r)/q`.
+FS15--FS18 prove the stronger raw inequality only off their bad-prime set, while G64's forced
+`E_r>W_r` at deep prize rungs does not decide whether the excess fits inside this DC allowance.
+
+Exact probes on the R366 normalization confirm both sides. At the max-2-adic beta-4 cell
+`n=64,p=16777729,v2(p-1)=9`, `Anom/budget` stays negative through `r=40`. But the canonical
+structured cells `n=64,p=355009` and `p=4017089` genuinely fail the centered budget on the saddle
+range: for `p=4017089`, the ratios at `r=2,3,4,5,6,8,10,12` are
+`7.98, 9.22, 11.29, 14.52, 19.18, 32.92, 48.99, 59.35`, returning below one only near `r=32`
+when the factorial shadow ceiling becomes huge. Conversely `n=64,p=264961,v2=8` stays negative,
+so `v2` alone does not control the signed discrepancy. The live arithmetic is weighted
+cross-orbit equidistribution, exactly R366/R367's relation-coordinate form of the generalized-Paley
+spectral wall (Podesta--Videla, arXiv:1911.08549), not M-orbit coherence.
+
+Formal payload: `Frontier/_G75RawDeviationVsRelationAnomaly.lean`, axiom-clean. This is a correction
+and exact handoff, not a CORE closure and not a revival of generic positive moments.
+
 ## [466-R399-pair-multiplicity-eight] REFUTED: the repaired constant pair cap also fails, while `rep4<=105n` survives (2026-07-10)
 
 Canonicalizing R393's residual-coordinate permutations sharpened its coefficient from 24 to 12,
