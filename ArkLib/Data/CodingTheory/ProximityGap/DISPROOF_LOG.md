@@ -31962,3 +31962,52 @@ criterion captured only 2/20 beta>=3 violators; mass migrated to trinomial and e
 support sectors. Heath-Brown-Konyagin / Garcia-Voloch / Shkredov shifted-subgroup estimates engage
 support three, but r368 shows support six becomes dominant. The surviving object is therefore the
 support>=3 relation web, not a hidden support-two resonance. CORE remains OPEN, ON-BGK.
+
+## [466-OC-ORBIT-sidon-orbit-unit-rigidity] r369 piece (a) PROVEN: the depth-3 Sidon (s6h1) orbit unit is rotation-free of size exactly n because the ONLY possible nontrivial μ_n-rotation stabilizer of a 6-set is the half-shift (gcd(6,2^k)=2), and every half-shift-symmetric relation vanishes IDENTICALLY (z^{n/2}=−1), hence is char-0 not char-p-only — axiom-clean structural lemmas (2026-07-10)
+
+Lane: direct Opus 4.8 CORE (`Frontier/_OCSidonOrbitUnitRigidity.lean`; exact probes
+`/tmp/arklib-reports/oc_orbit_stabilizer_probe.py`, `oc_orbit_structure_probe.py`,
+`oc_charp_sidon_rigidity_probe.py`, `oc_rotationfree_mechanism_probe.py`; research branch only).
+
+**Target (non-overlapping seam).** The r368-r370b census converged the depth-3 exact-Wick rung
+onto the s6h1 Sidon sector (signed six-term ±1 relations Σ s_i ζ^{e_i}=0 on distinct μ_n elements).
+r369 asserted the ORBIT-QUANTIZATION LAW — violation ⟺ Ω(n) simultaneous vanishing primitive
+orbits — CONDITIONAL on "piece (a): each primitive char-p-only relation is rotation-free (orbit
+size exactly n)", flagged "combinatorial, provable" but NEVER proven. This lane proves piece (a)
+with the exact structural dichotomy. NOT the census/norm-fold seams (G62-G66), NOT the chaining
+metric (OC-CHAIN), NOT CRT sub-mult (OC-CRT). This is the ORBIT-STABILIZER rigidity.
+
+**Exact probe dichotomy (n∈{8,16,32}, all thin primes tested, ZERO exceptions).**
+- char-0 vanishing 6-term ±1 relations = EXACTLY the half-shift-symmetric family (support
+  S∪(S+n/2)), counted precisely by C(n/2,3)·2²  (n=8:16, n=16:224, matched exactly); orbit size
+  EXACTLY n/2 (stabilizer order 2 = the plain half-shift, NOT antipodal — 0 antipodally-symmetric).
+- char-p-ONLY (wraparound/violator) vanishing relations: orbit size EXACTLY n, stabilizer trivial
+  (n=16: p=97→2000 rels, p=193→1088, p=257→608, all orbit 16, |stab|>1 = 0).
+- z^{n/2} = −1 verified at p∈{41,97,257,193,577}; gcd(6,2^k)=2 for k∈{3..7}; every
+  half-shift-symmetric set vanishes mod p identically.
+
+**Mechanism (arithmetic-free structural proof).** (i) A nontrivial rotation stabilizer t of a
+6-set forces the set to be a union of ⟨t⟩-cosets, so |⟨t⟩| ∣ gcd(6,2^k) = 2 — the ONLY nontrivial
+stabilizer is the half-shift n/2 (THINNESS-ESSENTIAL: gcd(6,2^k)=2 is exactly where μ_n enters).
+(ii) z^{n/2} is the unique order-2 element = −1, so a half-shift pair s·z^e + s·z^{e+n/2} =
+s·z^e·(1+(−1)) = 0: a half-shift-symmetric set vanishes IDENTICALLY in every field with a
+primitive 2^k-th root, hence over ℚ(ζ) too — it is char-0, never char-p-only. CONTRAPOSITIVE: a
+char-p-only vanisher is not half-shift-symmetric ⟹ rotation-free ⟹ μ_n-orbit size exactly n. This
+is r369 piece (a) rigorously; the orbit unit is Θ(n), so the linear-coincidence law is real.
+
+**Axiom-clean Lean kernel (LANDED).** File `Frontier/_OCSidonOrbitUnitRigidity.lean` (7 decls,
+all [propext, Classical.choice, Quot.sound]; not_prizeClosure NONE):
+- `zpow_half_eq_negOne`: z^(2m)=1 ∧ z^m≠1 ⟹ z^m=−1 (order-2 element).
+- `halfShiftPair_sum_eq_zero`: s·z^e + s·z^(e+m) = 0 when z^m=−1.
+- `halfShiftSymmetric_sum_eq_zero` (HEADLINE A): three half-shift pairs sum to 0 in any field
+  with z^m=−1 — structural (field-independent) vanishing.
+- `gcd_six_two_pow_eq_two` (HEADLINE B): gcd(6,2^k)=2 for k≥1 — coset-partition thinness fact.
+- `stabilizer_order_dvd_two`: d∣6 ∧ d∣2^k ⟹ d∣2 (the only nontrivial stabilizer is order 2).
+- `signedSum_eq_zero_of_halfShiftSymmetric` / `not_halfShiftSymmetric_of_signedSum_ne_zero`
+  (HEADLINE C): the contrapositive rotation-freeness packaging.
+
+**HONEST SCOPE.** This is the LOWER structural half of the linear-coincidence law (orbit unit =
+Θ(n), char-p mass rotation-free). It does NOT prove r369 piece (b) — the anti-coincidence input
+that Ω(n) simultaneous primitive orbits cannot vanish at p > poly(n) — which is where the prize
+wall (rank-vs-height / Paley) still lives, and which r370b shows must be stated per-sector (the
+rung inherits the depth-2 s4h1 sector's bad primes). CORE OPEN, ON-BGK. No axioms, no sorry.
