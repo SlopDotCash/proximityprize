@@ -24792,3 +24792,27 @@ arcs to K+1 prefix counts. Honest scope: prefix deviation of b·μ_n itself unto
 herdisc of the "multiplicatively translated intervals" system appears unstudied in the
 literature (publishable observation); distinct from R367/G77 signed pair discrepancy and
 in-tree lattice-Banaszczyk. CORE OPEN / ON-BGK.
+
+## [466-G80S-directional-strip-reduction] The G80T directional finding realized as the SIGNED object: same-arc coincidence forces the difference into the centered strip of width p/K, so R(d) <= StripCount(d-1) and the pair certificate reduces to SHORT-INTERVAL CONCENTRATION of coset dilates by the SHIFTED subgroup H-1 — the machine-checked weld from delta* to the Heath-Brown-Konyagin/Cilleruelo-Garaev frontier (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80SDirectionalStripReduction.lean`, real locked build 3328
+jobs, all 4 theorems exactly `[propext, Classical.choice, Quot.sound]`; landed via integration
+commit `976e653adc`). Successor to G80V (R-reduction) and G80T (unsigned-height weld REFUTED).
+
+**Bricks.** `sub_mem_strip_of_same_arc`: arcIndex K x = arcIndex K y ⟹ (x−y) ∈ Strip(p/K) :=
+{w : val(w) ≤ p/K ∨ val(w) ≥ p − p/K} — pure Nat floor arithmetic, the SIGNED window (exactly
+what unsigned λ₁ forgot in G80T). `dilCoincidence_le_stripCount`: R(d) ≤ #{v ≠ 0 : (d−1)v ∈
+Strip}. `stripCount_avg`: Σ_{c≠0} StripCount(c) = (p−1)·(|Strip|−1) EXACT (mean ≈ 2p/K —
+certificate-compatible on the mean). `pairCount_le_strip_sum` (CAPSTONE): for every dilation
+b, pairCount(b·H) ≤ |H| + Σ_{d∈H,d≠1} #{z ∈ b·H : (d−1)z ∈ Strip(p/K)}.
+
+**What this identifies.** The open certificate in classical terms: concentration of the coset
+b·H in short centered intervals after dilation by SHIFTED-subgroup elements d−1 ∈ H−1 (the
+HBK/Cilleruelo-Garaev/Bourgain object; H−1 as in the G73/Shkredov context). Machine-checked
+chain: strip concentration ⟹ pair certificate (this brick) ⟹ ℓ¹ arc bound (G80W) ⟹
+character-sum bound (G80Y/G80X) ⟹ δ*-side sup norm. Needed strength: per-b, the d-averaged
+strip count ≤ n·2/K·(1 + polylog slack).
+
+**Honest scope.** Reduction + exact mean only; the strip-concentration bound for subgroup
+dilates (the wall) is NOT proven; straddle slack ≤ 2 is polylog-harmless. CORE remains OPEN /
+ON-BGK. No axioms, no sorry.
