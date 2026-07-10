@@ -200,6 +200,47 @@ theorem grand_upper_of_R_bound (K : ℕ) (ρ : ℕ) (h1 : (1 : ZMod p) ∈ H)
     _ = (p - 1) + (H.card - 1) * ρ := by
         rw [Finset.sum_const, smul_eq_mul, hcard]
 
+include h0 hdiv hmul in
+/-- **Coset invariance** (probe-confirmed: argmax sets are unions of cosets): the same-arc
+pair count of `b·H` depends only on the coset `b·H` — for `h ∈ H`, dilating by `b·h` permutes
+the pair set of `b·H`. The sup over `p − 1` dilations is a sup over `(p−1)/|H|` cosets: the
+Gauss-period spectrum's index set. -/
+theorem pairCount_coset_invariant (K : ℕ) (b : ZMod p) {h : ZMod p} (hh : h ∈ H) :
+    ((H ×ˢ H).filter
+        (fun q => arcIndex K (b * h * q.1) = arcIndex K (b * h * q.2))).card
+      = ((H ×ˢ H).filter
+        (fun q => arcIndex K (b * q.1) = arcIndex K (b * q.2))).card := by
+  have hh0 : h ≠ 0 := fun h' => h0 (h' ▸ hh)
+  refine Finset.card_nbij' (fun q => (h * q.1, h * q.2)) (fun q => (h⁻¹ * q.1, h⁻¹ * q.2))
+    ?_ ?_ ?_ ?_
+  · rintro ⟨x, y⟩ hq
+    simp only [Finset.mem_coe, mem_filter, mem_product] at hq ⊢
+    obtain ⟨⟨hx, hy⟩, hcond⟩ := hq
+    refine ⟨⟨hmul h hh x hx, hmul h hh y hy⟩, ?_⟩
+    rw [show b * (h * x) = b * h * x by ring, show b * (h * y) = b * h * y by ring]
+    exact hcond
+  · rintro ⟨x, y⟩ hq
+    simp only [Finset.mem_coe, mem_filter, mem_product] at hq ⊢
+    obtain ⟨⟨hx, hy⟩, hcond⟩ := hq
+    have hinv : h⁻¹ ∈ H := by
+      have := hdiv h hh h hh
+      have h1 : (1 : ZMod p) ∈ H := by
+        have := hdiv h hh h hh
+        rwa [mul_inv_cancel₀ hh0] at this
+      have := hdiv 1 h1 h hh
+      rwa [one_mul] at this
+    refine ⟨⟨hmul h⁻¹ hinv x hx, hmul h⁻¹ hinv y hy⟩, ?_⟩
+    rw [show b * h * (h⁻¹ * x) = b * (h * h⁻¹) * x by ring,
+      show b * h * (h⁻¹ * y) = b * (h * h⁻¹) * y by ring,
+      mul_inv_cancel₀ hh0, mul_one]
+    exact hcond
+  · rintro ⟨x, y⟩ _
+    simp only [Prod.mk.injEq]
+    constructor <;> field_simp
+  · rintro ⟨x, y⟩ _
+    simp only [Prod.mk.injEq]
+    constructor <;> field_simp
+
 end ArkLib.ProximityGap.Frontier.G80VArcDilationCoincidenceReduction
 
 /-! ## Axiom audit -/
@@ -213,3 +254,5 @@ end ArkLib.ProximityGap.Frontier.G80VArcDilationCoincidenceReduction
   ArkLib.ProximityGap.Frontier.G80VArcDilationCoincidenceReduction.dilCoincidence_one
 #print axioms
   ArkLib.ProximityGap.Frontier.G80VArcDilationCoincidenceReduction.grand_upper_of_R_bound
+#print axioms
+  ArkLib.ProximityGap.Frontier.G80VArcDilationCoincidenceReduction.pairCount_coset_invariant

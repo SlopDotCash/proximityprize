@@ -24692,3 +24692,45 @@ that equation, and the corrected padding encoder gives
 This remains an unsigned ceiling: repeated padding makes the permutation coordinate redundant.
 The exact centered consumer still requires the signed single-embedding decomposition, begun in
 G89.  CORE OPEN / ON-BGK.
+
+## [466-G80V-dilation-coincidence-reduction] The b-averaged same-arc pair certificate factors EXACTLY through n evaluations of the Fourier-free floor object R(d) = #{v≠0 : arcIndex(dv)=arcIndex(v)} — grand identity Σ_b pairCount(b·H) = |H|·Σ_{d∈H} R(d), with R measured near-generic on subgroup ratios (axiom-clean exact identities + probe) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80VArcDilationCoincidenceReduction.lean`, real locked build,
+all 5 theorems exactly `[propext, Classical.choice, Quot.sound]`; probe
+`scripts/probes/probe_466_g80v_dilation_coincidence.py`). Continues the arc program
+(G80/Z/Y/X/W) toward the certificate itself.
+
+**Bricks.** `pair_decomposition`: for every dilation b, pairCount(b·H) = Σ_{d∈H} #{y ∈ H :
+arcIndex(b·d·y) = arcIndex(b·y)} (pairs indexed by ratio d = x/y; needs only H
+multiplicatively closed, 0 ∉ H). `sum_dilations_eq_dilCoincidence`: at fixed y ≠ 0, the
+b-sweep substitutes v = b·y and gives EXACTLY R(d) — no error term. GRAND IDENTITY
+`grand_dilation_identity`: Σ_{b≠0} pairCount(b·H) = |H| · Σ_{d∈H} R(d).
+`dilCoincidence_one`: R(1) = p−1. `grand_upper_of_R_bound`: R ≤ ρ off 1 ⟹ Σ_b pairCount ≤
+|H|·((p−1) + (|H|−1)ρ).
+
+**What R is.** R(d) counts nonzero v with ⌊Kv/p⌋ = ⌊K(dv mod p)/p⌋ — a Steinhaus/
+three-distance-type floor-lattice quantity: NO Fourier, NO subgroup content (the subgroup
+enters only through WHICH n ratio points are sampled). Probe (5 cells to n=32, p=1153, K=16):
+grand identity exact everywhere; R(1)=p−1 exact; on μ_n∖{1} max R/(p/K) ∈ [1.00, 1.50] —
+near-generic, no subgroup anomaly at these cells.
+
+**Honest scope.** The b-AVERAGE is not the max: the prize needs the pair bound at EVERY b
+(per-orbit coincidence sums where y ranges over the SUBGROUP; the b-sweep frees y to all of
+F_p^* and is exactly where max-vs-mean — the wall — hides). New content: (i) the certificate's
+average form = n evaluations of a classical Fourier-free floor function (first such reduction
+in-tree), (ii) measured near-genericity of R on subgroup ratios, (iii) a pointwise-in-b
+R-type reduction would inherit the ready consumer chain (G80W → G80Y → G80X). CORE remains
+OPEN / ON-BGK. No axioms, no sorry.
+
+**Addendum (pointwise probe + coset invariance).** `pairCount_coset_invariant` (6th theorem):
+C(b·h) = C(b) for h ∈ H — the per-b pair count is a function of the coset b·H only, so the
+prize's sup over p−1 dilations is a sup over the (p−1)/n cosets, the Gauss-period spectrum's
+own index set. Pointwise probe (`probe_466_g80u_pointwise_orbit_coincidence.py`, 5 cells to
+n=32): argmax sets are exact unions of cosets (consistency check on the theorem); mean C ≈
+n²/K + n (uniform prediction, exact to 2%); max C/mean ∈ [1.43, 1.80] bounded; max pair
+EXCESS over uniform ≈ 1.5n–3.1n (coefficient drifting like log n). Honest loss accounting
+re-confirmed: even Δ = O(n log n) excess through the ℓ²→ℓ¹ route gives only M = O(n^{2/3});
+the pair face is intrinsically √K-lossy, so the SUP-form face (per-arc ε ≍ log q, G80X) is
+the binding formulation of the missing certificate. The max-vs-mean gap [1.4, 1.8] measured
+here is the wall in its sharpest numerical form: mean is a theorem (G80V grand identity +
+near-generic R), max is the prize.
