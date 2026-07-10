@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CharPMomentRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81FactorialPaddingWickAbsorption
-import Mathlib.Data.Fintype.Powerset
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84CanonicalSlotCode
 
 /-!
 # G84: canonical core slots close depth four, but not depth five
@@ -35,39 +35,6 @@ namespace ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive
 
 open ArkLib.ProximityGap.CharPMomentRecursion
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
-
-/-- An unordered set of `s` core positions in an endpoint of length `r`. -/
-abbrev CoreSlots (r s : ℕ) := {t : Finset (Fin r) // t.card = s}
-
-/-- Corrected padding code with canonical increasing core positions. -/
-abbrev CanonicalPaddingCode (C A : Type*) (r s : ℕ) :=
-  C × CoreSlots r s × CoreSlots r s ×
-    (Fin (r - s) → A) × Equiv.Perm (Fin (r - s))
-
-/-- Exact canonical-code cardinality. Each descending factorial in G81C becomes one binomial
-coefficient. -/
-theorem card_canonicalPaddingCode
-    (C A : Type*) [Fintype C] [Fintype A] (r s : ℕ) :
-    Fintype.card (CanonicalPaddingCode C A r s) =
-      Fintype.card C * (r.choose s) ^ 2 *
-        (r - s).factorial * (Fintype.card A) ^ (r - s) := by
-  simp only [CanonicalPaddingCode, CoreSlots, Fintype.card_prod,
-    Fintype.card_finset_len, Fintype.card_fin, Fintype.card_fun, Fintype.card_perm]
-  ring
-
-/-- The numeric envelope supplied by the canonical code. -/
-def canonicalPadEnvelope (n r K s : ℕ) : ℕ :=
-  K * (r.choose s) ^ 2 * (r - s).factorial * n ^ (r - s)
-
-/-- Any surjective canonical decoder gives the sharpened envelope. -/
-theorem card_le_canonicalPadEnvelope
-    (X C A : Type*) [Fintype X] [Fintype C] [Fintype A]
-    (r s : ℕ) (decode : CanonicalPaddingCode C A r s → X)
-    (hdecode : Function.Surjective decode) :
-    Fintype.card X ≤ Fintype.card C * (r.choose s) ^ 2 *
-      (r - s).factorial * (Fintype.card A) ^ (r - s) := by
-  rw [← card_canonicalPaddingCode]
-  exact Fintype.card_le_of_surjective decode hdecode
 
 /-- **Orbit-quotient decoder no-go.** If a nonempty core type has cardinality `n` times its orbit
 representative type with `n>1`, no decoder from representatives alone can be surjective onto the
@@ -184,10 +151,6 @@ theorem production_depth_five_C1_square_envelope_exceeds :
 end ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive
 
 /-! ## Axiom audit -/
-#print axioms
-  ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive.card_canonicalPaddingCode
-#print axioms
-  ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive.card_le_canonicalPadEnvelope
 #print axioms
   ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive.no_surjective_decoder_from_orbit_representatives
 #print axioms

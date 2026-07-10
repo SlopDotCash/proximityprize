@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5951 files, 63374 declarations
+- `ArkLib` — 5954 files, 63386 declarations
 
-## Same short-name across multiple files (2449 groups)
+## Same short-name across multiple files (2450 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -6573,6 +6573,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def CodingTheory.ExtensionFieldPresentation.coord` [ArkLib/Data/CodingTheory/ExtensionCodes.lean:100](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean#L100) — The `j`-th coordinate `φᵢ : F →ₗ[B] B` of an extension-field presentation, as a `B`-linear map.
 - `def MuTwoPowDerandRefutation.coord` [ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean#L49) — The coordinate (in `Fin 8`) of the edge represented by each row of `rimMatrix`.
 
+### `coreEmbedding` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G85EOccurrenceEmbedding.coreEmbedding` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EOccurrenceEmbedding.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EOccurrenceEmbedding.lean#L33) — Endpoint positions matched to the ordered core prefix.
+- `def ArkLib.ProximityGap.Frontier.G94CanonicalSlotDecoder.coreEmbedding` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94CanonicalSlotDecoder.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94CanonicalSlotDecoder.lean#L35) — Increasing enumeration of a stored core-position subset.
+
 ### `coreInteractionOracleRbrKnowledgeError` (2 declarations, 2 files)
 
 - `def coreInteractionOracleRbrKnowledgeError` [ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean:1158](../../../ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean#L1158) — (no docstring)
@@ -9606,7 +9611,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `rEnergy_four_le_card_pow_four_mul_two` (2 declarations, 2 files)
 
-- `theorem ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive.rEnergy_four_le_card_pow_four_mul_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G84CanonicalSlotsDepthFive.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G84CanonicalSlotsDepthFive.lean#L91) — Two recursion steps give `E₄ ≤ n⁴E₂`.
+- `theorem ArkLib.ProximityGap.Frontier.G84CanonicalSlotsDepthFive.rEnergy_four_le_card_pow_four_mul_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G84CanonicalSlotsDepthFive.lean:58](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G84CanonicalSlotsDepthFive.lean#L58) — Two recursion steps give `E₄ ≤ n⁴E₂`.
 - `theorem ArkLib.ProximityGap.Frontier.G97DepthFourEnergyWeld.rEnergy_four_le_card_pow_four_mul_two` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G97DepthFourEnergyWeld.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G97DepthFourEnergyWeld.lean#L96) — Two applications of the existing convolution recursion give `E₄ ≤ n⁴E₂`.
 
 ### `rEnergy_split_real` (2 declarations, 2 files)

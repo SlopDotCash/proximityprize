@@ -2242,6 +2242,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83DeterminantCoverageFen
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83FreeOrbitEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G83MMaximalCommonCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84AEndpointAssembly
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84CanonicalSlotCode
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84CanonicalSlotsDepthFive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84IEndpointSplitEquiv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
@@ -2269,7 +2270,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91MaximalCancellationBag
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalCoreSlotFactorization
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94CanonicalSlotDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94JacobiCocycleMetric
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CanonicalDepthFourAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96ProductionDepthFourFixedEnergy
