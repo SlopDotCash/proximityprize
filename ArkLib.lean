@@ -2132,6 +2132,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FCPhaseAwareChainingMetri
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FErightedgeLDPRateFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FFCompositeDiscrepancyChaining
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FIResolventEdgePerturbation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS10ExactEnergyAlmostAllPrimes
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS1Depth3AnnihilatorLedger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS2PatternAnnihilatorResultant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS3AnnihilatorHeightBound

@@ -31281,3 +31281,21 @@ to prove that no four-column span contains the fixed line.  The exact arithmetic
 CONSEQUENCE: neither linear slack nor the low-rate inequality repairs R382 by itself.  This
 counterexample has odd length and a non-subgroup evaluation domain, so the remaining claim must
 retain the even two-power length, fixed two-power subgroup, and exact half-predecessor structure.
+
+## [466-FS10-exact-energy-almost-all-primes] TAXONOMIC CLOSURE (Fable session): r50's `Depth3WraparoundVanishing` — refuted as UNIVERSAL by r52 — is PROVEN at all but ≤ n⁶·((k+4)n/s) primes, with the EXACT char-0 value `addEnergy3(μ_n) = 15n³−45n²+40n` (2026-07-09)
+
+Lane: FS10 (file `Frontier/_FS10ExactEnergyAlmostAllPrimes.lean`, real locked build 3343 jobs,
+all 3 theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+The T = 1 instantiation of the FS6 ledger: `strictBadPrime_cap` caps the primes at which ANY
+nontrivial depth-3 pattern vanishes; `wraparoundExcess_eq_zero_of_strict_good_prime` gives zero
+excess elsewhere; `depth3WraparoundVanishing_of_strict_good_prime` then collapses FS5's exact
+decomposition to the EXACT characteristic-zero value (ℕ-form `15n³+40n−45n²`, truncation-safe;
+NOTE the naive ℕ ordering `15n³−45n²+40n` is WRONG at n=2 — caught during the round).
+
+RESOLVES THE r50/r52/r53 TRICHOTOMY: exact-vanishing (r50, named) → refuted-as-universal (r52,
+bad primes carry excess) → headroom downgrade (r53) → NOW: exact at almost all primes with the
+exceptional set explicitly machine-checked-budgeted. HONEST SCOPE: T=1 cap ≈ n⁷/s, non-vacuous
+only β ≳ 8 (worse than FS6's β ≳ 6); prize regime uncapped; deep-r wall untouched. Follow-up
+lanes spawned as session tasks: depth-4 census discharge; depth-generic T=1 ledger.
+CORE OPEN, ON-BGK.
