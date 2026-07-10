@@ -28,6 +28,19 @@ At the nominal production point `n=2^30`, `r=110`, the arithmetic accepts `C=2`,
 `E <= 2*n^(5/2)` (in the cleared square form) is sufficient to absorb a sector satisfying G81's
 factorial-corrected envelope. This is strictly weaker than a linear-orbit assumption.
 
+The sharp version keeps the exact insertion factor `(r descFactorial 2)^2` and exact two-factor
+Wick tail `(2r-1)(2r-3)` instead of bounding them separately by `r^4` and `r^2`. The resulting
+condition is
+
+```text
+C^2 * (r descFactorial 2)^4 <= oddWickTail(r,2)^2 * n.
+```
+
+At `(2^30,110)` this accepts `C=10` (with about 17% squared slack). The theorem
+`production_corrected_depth_two_energy_absorbed_sharp` kernel-checks the full corrected envelope
+from `E^2 <= 100*n^5`. This factor-five constant improvement is important because the remaining
+analytic input is an explicit-constant subgroup additive-energy estimate.
+
 ## Honest residual
 
 This does not prove the energy estimate or the canonical orbit-to-energy injection. The next

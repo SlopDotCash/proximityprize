@@ -34,6 +34,7 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 open G81FactorialPaddingWickAbsorption
+open G79PrimitivePaddingSaddleLocalization
 
 /-- A square-root saving in the primitive orbit count implies the exact depth-two saddle
 condition.  The cleared hypothesis allows an explicit constant `C`. -/
@@ -100,6 +101,55 @@ theorem correctedPaddedDepthTwo_le_fullWick_of_energy
   · exact sq_orbit_bound_of_energy hn hJE hE
   · exact hsmall
 
+/-- **Exact depth-two budget.** Keeping the true two insertion factors and the true final two
+odd Wick factors avoids the factor-four loss in `r^4` versus `r^2`. -/
+theorem correctedPaddedDepthTwo_le_fullWick_of_exact_budget
+    {n r J W : ℕ}
+    (hr : 2 ≤ r)
+    (hW : W ≤ correctedPadEnvelope n r J 2)
+    (hJ : J * (r.descFactorial 2) ^ 2 ≤ oddWickTail r 2 * n ^ 2) :
+    W ≤ Nat.doubleFactorial (2 * r - 1) * n ^ r := by
+  have hfac := factorial_le_oddDoubleFactorial (r - 2)
+  calc
+    W ≤ correctedPadEnvelope n r J 2 := hW
+    _ = (J * (r.descFactorial 2) ^ 2) * (r - 2).factorial * n ^ (r - 2) := by
+      simp only [correctedPadEnvelope]
+    _ ≤ (oddWickTail r 2 * n ^ 2) *
+        Nat.doubleFactorial (2 * (r - 2) - 1) * n ^ (r - 2) := by gcongr
+    _ = (oddWickTail r 2 * Nat.doubleFactorial (2 * (r - 2) - 1)) *
+        (n ^ 2 * n ^ (r - 2)) := by ring
+    _ = Nat.doubleFactorial (2 * r - 1) * n ^ r := by
+      rw [← oddDoubleFactorial_split hr, ← pow_add, Nat.add_sub_of_le hr]
+
+/-- A square-root orbit estimate supplies the exact depth-two budget without rounding the
+insertion and Wick factors separately. -/
+theorem exact_budget_of_sq_orbit_bound
+    {n r J C : ℕ}
+    (hJ : J ^ 2 ≤ C ^ 2 * n ^ 3)
+    (hsmall : C ^ 2 * (r.descFactorial 2) ^ 4 ≤
+      (oddWickTail r 2) ^ 2 * n) :
+    J * (r.descFactorial 2) ^ 2 ≤ oddWickTail r 2 * n ^ 2 := by
+  apply (Nat.pow_le_pow_iff_left (by norm_num : (2 : ℕ) ≠ 0)).mp
+  calc
+    (J * (r.descFactorial 2) ^ 2) ^ 2 =
+        J ^ 2 * (r.descFactorial 2) ^ 4 := by ring
+    _ ≤ (C ^ 2 * n ^ 3) * (r.descFactorial 2) ^ 4 := by gcongr
+    _ = n ^ 3 * (C ^ 2 * (r.descFactorial 2) ^ 4) := by ring
+    _ ≤ n ^ 3 * ((oddWickTail r 2) ^ 2 * n) := by gcongr
+    _ = (oddWickTail r 2 * n ^ 2) ^ 2 := by ring
+
+/-- Corrected full-Wick absorption from the exact-factor square-root orbit estimate. -/
+theorem correctedPaddedDepthTwo_le_fullWick_of_exact_sq_orbit_bound
+    {n r J W C : ℕ}
+    (hr : 2 ≤ r)
+    (hW : W ≤ correctedPadEnvelope n r J 2)
+    (hJ : J ^ 2 ≤ C ^ 2 * n ^ 3)
+    (hsmall : C ^ 2 * (r.descFactorial 2) ^ 4 ≤
+      (oddWickTail r 2) ^ 2 * n) :
+    W ≤ Nat.doubleFactorial (2 * r - 1) * n ^ r := by
+  apply correctedPaddedDepthTwo_le_fullWick_of_exact_budget hr hW
+  exact exact_budget_of_sq_orbit_bound hJ hsmall
+
 /-- At `(n,r)=(2^30,110)`, the `C=2` energy-sized orbit hypothesis implies the exact
 depth-two saddle budget required by the corrected padding consumer. -/
 theorem production_depth_two_orbit_budget
@@ -126,6 +176,21 @@ theorem production_corrected_depth_two_energy_absorbed
   · exact hE
   · norm_num
 
+/-- **Sharp production calibration.** Keeping exact insertion/Wick factors raises the accepted
+energy constant from `C=2` to `C=10`. -/
+theorem production_corrected_depth_two_energy_absorbed_sharp
+    {J E W : ℕ}
+    (hW : W ≤ correctedPadEnvelope (2 ^ 30) 110 J 2)
+    (hJE : (2 ^ 30) * J ≤ E)
+    (hE : E ^ 2 ≤ 10 ^ 2 * (2 ^ 30) ^ 5) :
+    W ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
+  apply correctedPaddedDepthTwo_le_fullWick_of_exact_sq_orbit_bound
+      (n := 2 ^ 30) (r := 110) (J := J) (W := W) (C := 10)
+  · norm_num
+  · exact hW
+  · exact sq_orbit_bound_of_energy (by norm_num) hJE hE
+  · norm_num [oddWickTail]
+
 end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 /-! ## Axiom audit -/
@@ -138,6 +203,14 @@ end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.correctedPaddedDepthTwo_le_fullWick_of_energy
 #print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.correctedPaddedDepthTwo_le_fullWick_of_exact_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.exact_budget_of_sq_orbit_bound
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.correctedPaddedDepthTwo_le_fullWick_of_exact_sq_orbit_bound
+#print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_depth_two_orbit_budget
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_corrected_depth_two_energy_absorbed
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_corrected_depth_two_energy_absorbed_sharp
