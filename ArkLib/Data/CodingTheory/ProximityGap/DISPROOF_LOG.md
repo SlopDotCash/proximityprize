@@ -24442,3 +24442,19 @@ angle data + modulus rigidity is consistent with rung-violating odd halves (a co
 count: m/2 free angles vs 1 rung inequality — likely refutation, land with mechanism), or (iii)
 the constructive middle: an unconditional bound on the EVEN-half ℓ⁶ mass from HD data alone
 (a genuine partial theorem on the calibrated open core). CORE OPEN / ON-BGK.
+
+### [466-HD2-even-half-insufficient-REFUTED] HD fork (ii) DECIDED same-day: exact even-half angle data + modulus rigidity + odd-power budget CANNOT certify the r=3 rung — odd-half resamples at equal power span [0.48x, 12.4x] the true rung (66% above), so the HD-coset input alone is structurally insufficient; surviving forks are (i) an odd-half exact analogue and (iii) the even-half partial theorem (2026-07-10)
+
+Probe `/tmp/arklib-reports/hd_fork2_dof_probe.py` (p=257, n=16, m=16, 400 conjugate-symmetric
+odd-half resamples with the true odd-half total power): holding the HD-pinned even-frequency DFT
+of the angle vector θ_j = arg J_j EXACT and rebuilding Ĵ from the rigid moduli ‖J_j‖ = √q, the
+rung L6 = Σ_t‖Ĵ(t)‖⁶ ranges min 0.480 / med 1.246 / max 12.415 × the true value. The
+degrees-of-freedom verdict is confirmed: the m/2 odd angles carry enough freedom to violate any
+rung-scale bound, so no theorem of the form "HD coset products ⟹ TripleConvEnergyBound" exists.
+MECHANISM: HD multiplicativity constrains only subgroup-coset angle SUMS (even spectrum); the
+rung is an ℓ⁶ functional dominated by the primitive (odd) spectrum — the same even/odd split
+measured in HD1 (22–34% even mass). Sanity: true rung has C_eff ≈ 2.9 vs the calibrated C = 40
+budget (consistent with §33's probe-safe constant). SURVIVORS: fork (i) — an exact odd-half
+analogue (twisted/quadratic-coset HD; the χ-shifted family); fork (iii) — an unconditional
+partial theorem bounding the even-half ℓ⁶ mass from HD data alone (would be the first
+POSITIVE exact-arithmetic input on the calibrated open core). Marked down; CORE OPEN / ON-BGK.
