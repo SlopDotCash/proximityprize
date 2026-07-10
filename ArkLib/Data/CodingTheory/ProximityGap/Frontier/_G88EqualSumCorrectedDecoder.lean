@@ -183,6 +183,22 @@ noncomputable instance collisionSectorFintype
 
 /-- The actual equal-sum maximal-depth collision sector satisfies the elementary
 `n^(2s-1)` factorial-corrected envelope. -/
+theorem card_collisionSector_le_correctedCoreCount
+    (A B : Type*) [AddCancelCommMonoid B] [Fintype A] [DecidableEq A]
+    (ι : A → B) (r s : ℕ) (hsr : s ≤ r) :
+    Fintype.card (MaxCancellationCollisionSector A B ι r s) ≤
+      Fintype.card (EqualSumCorePair A B ι s) * (r.descFactorial s) ^ 2 *
+        (r - s).factorial * (Fintype.card A) ^ (r - s) := by
+  classical
+  calc
+    Fintype.card (MaxCancellationCollisionSector A B ι r s) ≤
+        Fintype.card (PaddingCode (EqualSumCorePair A B ι s) A r s) :=
+      Fintype.card_le_of_injective (encodeCollisionSector ι hsr)
+        (encodeCollisionSector_injective ι hsr)
+    _ = _ := card_paddingCode (EqualSumCorePair A B ι s) A r s
+
+/-- The actual equal-sum maximal-depth collision sector satisfies the elementary
+`n^(2s-1)` factorial-corrected envelope. -/
 theorem card_collisionSector_le_factorialCorrected
     (A B : Type*) [AddCancelCommMonoid B] [Fintype A] [DecidableEq A]
     (ι : A → B) (hι : Function.Injective ι)
@@ -193,12 +209,9 @@ theorem card_collisionSector_le_factorialCorrected
   classical
   calc
     Fintype.card (MaxCancellationCollisionSector A B ι r s) ≤
-        Fintype.card (PaddingCode (EqualSumCorePair A B ι s) A r s) :=
-      Fintype.card_le_of_injective (encodeCollisionSector ι hsr)
-        (encodeCollisionSector_injective ι hsr)
-    _ = Fintype.card (EqualSumCorePair A B ι s) * (r.descFactorial s) ^ 2 *
-        (r - s).factorial * (Fintype.card A) ^ (r - s) :=
-      card_paddingCode (EqualSumCorePair A B ι s) A r s
+        Fintype.card (EqualSumCorePair A B ι s) * (r.descFactorial s) ^ 2 *
+          (r - s).factorial * (Fintype.card A) ^ (r - s) :=
+      card_collisionSector_le_correctedCoreCount A B ι r s hsr
     _ ≤ (Fintype.card A) ^ (2 * s - 1) * (r.descFactorial s) ^ 2 *
         (r - s).factorial * (Fintype.card A) ^ (r - s) := by
       gcongr
@@ -210,5 +223,7 @@ end ArkLib.ProximityGap.Frontier.G88EqualSumCorrectedDecoder
 #print axioms ArkLib.ProximityGap.Frontier.G88EqualSumCorrectedDecoder.wordSum_assemble
 #print axioms ArkLib.ProximityGap.Frontier.G88EqualSumCorrectedDecoder.exists_equalSumCode_of_maximalDepth
 #print axioms ArkLib.ProximityGap.Frontier.G88EqualSumCorrectedDecoder.card_equalSumCorePair_le
+#print axioms
+  ArkLib.ProximityGap.Frontier.G88EqualSumCorrectedDecoder.card_collisionSector_le_correctedCoreCount
 #print axioms
   ArkLib.ProximityGap.Frontier.G88EqualSumCorrectedDecoder.card_collisionSector_le_factorialCorrected
