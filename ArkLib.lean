@@ -3290,6 +3290,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._S2PuncturedJohnsonDischar
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SSTMultiplierAntipode
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SampledOctaveUniformityGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondDescentParity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondMomentExact
