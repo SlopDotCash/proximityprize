@@ -32478,3 +32478,21 @@ only prime 577 violates in `[512,120000)`, well within the theorem's ceiling.
 **Scope.** This is fixed-depth exceptional-prime census control, not an explicit-prize-field
 theorem. It cannot remove the known exceptional production prime or prove the logarithmic-depth
 DC-energy bound. Six headline theorems compile with `[propext]`; CORE remains OPEN / ON-BGK.
+## [466-G79P-falling-factorial-digit-clustering] The first nonzero subgroup falling-factorial digit occurs at the subgroup order (axiom-clean structural fence) (2026-07-10)
+
+`_G79PPiAdicDigitClustering.lean` proves for every finite multiplicative subgroup `H` of order
+`n` that subgroup summation reads only the constant and degree-`n` coefficients of every
+polynomial of degree at most `n`. Applied to
+`fallingPoly(b,k)=prod_{i<k}(bX-i)`, this gives
+
+```text
+sum_{x in H} prod_{i<k}(bx-i) = 0       for 1 <= k < n,
+sum_{x in H} prod_{i<n}(bx-i) = n*b^n  at k=n.
+```
+
+These are the finite-field digit identities underlying the proposed cyclotomic statement
+`v_pi(eta_b-n)=n`. The Lean file does not formalize the binomial-series or cyclotomic-valuation
+bridge, so that valuation equality remains documented arithmetic rather than a proved declaration.
+Even with that bridge, the result is a valuation-blindness fence, not an archimedean bound on the
+Gauss-period maximum and not a bound on the growing primitive sectors needed by G79S. Four headline
+theorems pass `pg-iterate` with `[propext, Classical.choice, Quot.sound]`; CORE remains open.
