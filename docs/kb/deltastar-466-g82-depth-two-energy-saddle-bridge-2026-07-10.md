@@ -57,18 +57,33 @@ fits in the production Wick budget. Once the actual factorial-corrected decoder 
 the whole depth-two sector can be absorbed by this crude universe bound; neither `n*J <= E` nor
 an additive-energy estimate is needed for this depth.
 
-This method stops sharply at depth three. The analogous unrestricted universe has `n^6` ordered
-core pairs, and G82 proves the strict reverse production inequality: its corrected envelopes
-exceed the full Wick budget by about `2^4.52`. This does not refute the actual equal-sum depth-three
-sector; it shows exactly where genuine additive-energy/family-cancellation structure first becomes
-necessary, matching the dossier's independently identified sextic core.
+The unrestricted method stops at depth three. The analogous unrestricted universe has `n^6`
+ordered core pairs, and G82 proves the strict reverse production inequality: its corrected
+envelopes exceed the full Wick budget by about `2^4.52`.
+
+However, actual depth-three cores satisfy an equal-sum equation. The existing elementary fiber
+theorem `Finset.addREnergy_le` bounds their universe by `n^(2*3-1) = n^5`: after choosing one
+triple and the first two entries of the other, its last entry is forced. G82 now connects that
+theorem to the saddle calculation and kernel-checks
+
+```text
+(2^30)^5 * correctedPadEnvelope(2^30, 110, 1, 3)
+  <= (2*110-1)!! * (2^30)^110.
+```
+
+Thus the trivial equal-sum bound rescues the full depth-three overcount; no sub-trivial sextic
+energy estimate is needed at the nominal production point. The first honest cutoff moves to
+depth four: the corresponding `n^7` equal-sum overcount exceeds the Wick budget (by about
+`2^12`). This does not refute the actual depth-four sector, but it proves that further orbit
+savings or collective cancellation first become arithmetically necessary there.
 
 ## Honest residual
 
-This does not prove the factorial-corrected maximal-cancellation decoder. That decoder is now the
-only remaining depth-two obligation. The energy bridge remains useful for other parameter cells,
-but it is no longer load-bearing at the nominal production point. Higher primitive depths still
-require collective control and are not discharged by the depth-two universe count.
+This does not prove the factorial-corrected maximal-cancellation decoder. That decoder remains the
+combinatorial obligation needed to connect actual moment words to these corrected envelopes. The
+energy bridge remains useful for other parameter cells, but it is no longer load-bearing at the
+nominal production point through depth three. Primitive depths four and above still require
+additional orbit savings or collective control.
 
 ## Verification
 

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81FactorialPaddingWickAbsorption
+import ArkLib.ToMathlib.Combinatorics.Additive.HigherEnergy
 
 /-!
 # G82: a square-root energy saving absorbs the full primitive depth-two sector
@@ -224,6 +225,38 @@ theorem production_all_depth_three_core_pairs_exceed_fullWick :
       (2 ^ 30) ^ 6 * correctedPadEnvelope (2 ^ 30) 110 1 3 := by
   norm_num [correctedPadEnvelope, Nat.doubleFactorial]
 
+/-- The equal-sum constraint removes one free core coordinate at every positive depth. This is
+the elementary higher-energy fiber bound, specialized to depth three. -/
+theorem depth_three_equal_sum_core_pairs_le
+    {A : Type*} [AddCommGroup A] [DecidableEq A] (S : Finset A) :
+    Finset.addREnergy 3 S ≤ S.card ^ 5 := by
+  simpa using Finset.addREnergy_le (r := 3) (by norm_num) S
+
+/-- **Equal-sum rescue at depth three.** Although the unrestricted `n^6` universe just misses
+the production Wick budget, the actual equal-sum universe has size at most `n^5`, and its full
+factorial-corrected padding overcount fits. No sub-trivial additive-energy estimate is needed. -/
+theorem production_all_equal_sum_depth_three_core_pairs_le_fullWick :
+    (2 ^ 30) ^ 5 * correctedPadEnvelope (2 ^ 30) 110 1 3 ≤
+      Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
+  norm_num [correctedPadEnvelope, Nat.doubleFactorial]
+
+/-- Any depth-three sector bounded by the elementary equal-sum universe is absorbed at the
+nominal production point. -/
+theorem production_all_equal_sum_depth_three_sector_absorbed
+    {W : ℕ}
+    (hW : W ≤ (2 ^ 30) ^ 5 * correctedPadEnvelope (2 ^ 30) 110 1 3) :
+    W ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 :=
+  hW.trans production_all_equal_sum_depth_three_core_pairs_le_fullWick
+
+/-- **First cutoff of the elementary equal-sum method.** At depth four the trivial fiber bound
+`n^(2s-1) = n^7`, even before decoder multiplicities, exceeds the production Wick budget. This
+does not refute the actual sector; it identifies depth four as the first place where further
+orbit savings or collective cancellation are genuinely required. -/
+theorem production_equal_sum_depth_four_overcount_exceeds_fullWick :
+    Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 <
+      (2 ^ 30) ^ 7 * correctedPadEnvelope (2 ^ 30) 110 1 4 := by
+  norm_num [correctedPadEnvelope, Nat.doubleFactorial]
+
 end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 /-! ## Axiom audit -/
@@ -255,3 +288,11 @@ end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_two_sector_absorbed
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_three_core_pairs_exceed_fullWick
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.depth_three_equal_sum_core_pairs_le
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_equal_sum_depth_three_core_pairs_le_fullWick
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_equal_sum_depth_three_sector_absorbed
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_equal_sum_depth_four_overcount_exceeds_fullWick
