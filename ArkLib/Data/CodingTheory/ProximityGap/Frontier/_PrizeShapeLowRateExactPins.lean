@@ -71,10 +71,11 @@ theorem natCast_div_le_inv_of_mul_le {E Q p : ℕ}
       exact_mod_cast hbudget
     _ = (Q : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := mul_comm _ _
 
+open Classical in
 /-- A literal uniform bad-scalar count gives an operational lower bracket at any radius. -/
 theorem radius_le_mcaDeltaStar_of_badCount_le
-    {ι F : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    [Field F] [Fintype F] [DecidableEq F]
+    {ι F : Type} [Fintype ι] [Nonempty ι]
+    [Field F] [Fintype F]
     (C : Set (ι → F)) (delta : ℝ≥0) (E : ℕ) (epsilonStar : ℝ≥0∞)
     (hdelta : delta ≤ 1)
     (hcount : ∀ u : WordStack F (Fin 2) ι,
@@ -210,9 +211,10 @@ end ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
 
 /-! ## Axiom audit -/
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le
-#print axioms
-  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
-#print axioms
-  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
+namespace ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
+
+#print axioms evalCode_deltaStar_eq_half_of_predecessor_badCount_le
+#print axioms firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
+#print axioms secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
+
+end ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins

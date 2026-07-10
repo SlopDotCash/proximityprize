@@ -26,8 +26,9 @@ sets, a sampled configuration has a fiber of size
 
 The enumeration is exact for each sampled configuration: both sides have
 `C(13,7)=1716` blocks, and all `1716^2` pairs are assigned to their projective ratio.  At the
-`k=4,n=16` base case, analogous sampled maxima are only two, confirming that the completed
-quadratic-complement argument is exceptional to low dimension.
+`k=4,n=16` base case, analogous searches reach a sampled maximum of four (still well below
+`4k=16`).  The probe therefore supports a strong low-dimensional separation, but does not certify
+the earlier claimed maximum of two.
 
 ## Correction: the faithful compatibility parameter is the identity
 

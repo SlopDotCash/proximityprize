@@ -283,6 +283,51 @@ theorem mcaDeltaStar_le_first_deep_packing_of_floor_budget
   exact mcaDeltaStar_le_of_bad _ _ (lt_of_lt_of_le hbudget hlower)
 
 open Classical in
+/-- **The tight-budget half-radius point is explicitly bad.**  If `p/Q=n`, `n` is
+even, and the RS dimension is at most `n/2-1`, the tuned overlap family contains
+`n+2` bad scalars at radius `1/2`.  Four scalars outside the evaluation domain
+discharge freshness, and `p<Q(n+1)<Q(n+2)` makes its mass strictly exceed `Q⁻¹`.
+
+Unlike a threshold ceiling, this statement exposes the strict `epsMCA` comparison
+needed by incidence audits and by the exact dimension-two jump theorem. -/
+theorem inv_lt_epsMCA_half_of_floor_eq_length
+    {p n k Q : ℕ} [Fact p.Prime] [NeZero n]
+    {g : ZMod p} (hg : orderOf g = n)
+    (hQ : 0 < Q) (hk : 2 ≤ k) (hnEven : n % 2 = 0)
+    (hfloor : p / Q = n) (hkhalf : k ≤ n / 2 - 1)
+    (hsupply : 4 ≤ p - n) :
+    ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
+      epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1))
+        (1 / 2 : ℝ≥0) := by
+  have hn2 : n = 2 * (n / 2) := by omega
+  have hlower := overlap_epsMCA_lower_bound_of_supply (p := p) (n := n)
+    (k := k) (e := n / 2) (g := g) hg hk (by omega) (by omega) (by omega)
+  have hn0 : (n : ℝ≥0) ≠ 0 := by
+    simp only [ne_eq, Nat.cast_eq_zero]
+    exact NeZero.ne n
+  have hratio_half : (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
+    have hnsub : n - n / 2 = n / 2 := by omega
+    rw [hnsub]
+    apply (div_eq_iff hn0).2
+    have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by
+      exact_mod_cast hn2
+    rw [hncast]
+    ring
+  have hradius : (1 : ℝ≥0) -
+      (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
+    rw [hratio_half, tsub_eq_iff_eq_add_of_le (by norm_num : (1 / 2 : ℝ≥0) ≤ 1)]
+    norm_num
+  rw [hradius] at hlower
+  have hpQ : p < Q * (n + 1) := by
+    simpa [hfloor] using Nat.lt_mul_div_succ p hQ
+  have hpW : p < Q * (n + 2) := lt_of_lt_of_le hpQ (by gcongr; omega)
+  have hlower' : ((n + 2 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) ≤
+      epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1)) (1 / 2 : ℝ≥0) := by
+    have hcount : 2 * (n / 2) + 2 = n + 2 := by omega
+    simpa only [hcount] using hlower
+  exact (inv_natCast_lt_natCast_div hQ (Fact.out (p := p.Prime)).pos hpW).trans_le hlower'
+
+open Classical in
 /-- **Tight-budget specialization.**  When `floor(p/Q)=n`, every even-length
 rate-at-most-`1/4` RS code (`2 ≤ k ≤ n/4`) has an explicit overlap-packing bad point
 at radius `1/2`, provided four scalars remain outside the evaluation domain.  Therefore
@@ -361,11 +406,12 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
   have hn0 : (n : ℝ≥0) ≠ 0 := by exact_mod_cast hnpos.ne'
   have hn2 : n = 2 * (n / 2) := by omega
   have ha : a ≤ n := by dsimp only [a]; omega
+  have ha_card : a ≤ Fintype.card (Fin n) := by simpa using ha
   have hw : w = n / 2 - 1 := by dsimp only [w, a]; omega
   have hprev_mul : δprev * (n : ℝ≥0) = (w : ℝ≥0) := by
     dsimp only [δprev, w]
     simpa [Fintype.card_fin] using
-      (ProximityGap.one_sub_div_mul_cast (ι := Fin n) a ha)
+      (ProximityGap.one_sub_div_mul_cast (ι := Fin n) a ha_card)
   have hprev_ratio : δprev = (w : ℝ≥0) / (n : ℝ≥0) := by
     apply mul_right_cancel₀ hn0
     rw [hprev_mul, div_mul_cancel₀ _ hn0]
@@ -402,25 +448,31 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
   have hgood_prev : epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n 1) δprev ≤
       ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
     rw [hcode]
-    refine le_trans (ProximityGap.UDR2.epsMCA_rs_udr2_le dom 2 (by omega) δprev ?_ ?_ ?_)
-      hbudget_good
+    have hbudget_good' : ((Fintype.card (Fin n) : ℕ) : ℝ≥0∞) /
+        (Fintype.card (ZMod p) : ℝ≥0∞) ≤ ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
+      simpa [Fintype.card_fin, ZMod.card] using hbudget_good
+    refine le_trans (ProximityGap.UDR2.epsMCA_rs_udr2_le dom 2 (by simp; omega)
+      δprev ?_ ?_ ?_) hbudget_good'
     · rw [hprev_ratio]
-      apply (Code.dist_le_UDR_iff_relDist_le_relUDR
-        (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) w).1
-      rw [ReedSolomon.uniqueDecodingRadius_RS_eq' (n := 2) (by simp; omega)]
-      rw [hw]
-      omega
+      have hwudr : w ≤ Code.uniqueDecodingRadius
+          (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) := by
+        rw [ReedSolomon.uniqueDecodingRadius_RS_eq' (n := 2) (by simp; omega)]
+        rw [Fintype.card_fin, hw]
+        omega
+      have hdist := (Code.dist_le_UDR_iff_relDist_le_relUDR
+        (ReedSolomon.code dom 2 : Set (Fin n → ZMod p)) w).1 hwudr
+      simpa [Fintype.card_fin] using hdist
     · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
         dsimp only [δprev]
         simpa [Fintype.card_fin] using
-          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha)
+          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha_card)
       rw [hceil, Fintype.card_fin]
       dsimp only [a]
       omega
     · have hceil : ⌈(1 - δprev) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = a := by
         dsimp only [δprev]
         simpa [Fintype.card_fin] using
-          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha)
+          (ProximityGap.ceil_one_sub_one_sub_div (ι := Fin n) a ha_card)
       rw [hceil, Fintype.card_fin]
       dsimp only [a]
       omega
@@ -431,8 +483,7 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
       ((n + 2 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) :=
     inv_natCast_lt_natCast_div hQ (Fact.out (p := p.Prime)).pos hpW
   have hlower := overlap_epsMCA_lower_bound_of_supply (p := p) (n := n)
-    (k := 2) (e := n / 2) (g := g) hg (by norm_num) (by omega) (by omega) (by
-      simpa [hn2] using hsupply)
+    (k := 2) (e := n / 2) (g := g) hg (by norm_num) (by omega) (by omega) (by omega)
   have hratio_half : (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
     have hnsub : n - n / 2 = n / 2 := by omega
     rw [hnsub]
@@ -448,7 +499,11 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
       rw [hratio_half, tsub_eq_iff_eq_add_of_le (by norm_num : (1 / 2 : ℝ≥0) ≤ 1)]
       norm_num
     rw [hradius] at hlower
-    exact lt_of_lt_of_le hbudget_bad hlower
+    have hlower' : ((n + 2 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) ≤
+        epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n 1) (1 / 2 : ℝ≥0) := by
+      have hcount : 2 * (n / 2) + 2 = n + 2 := by omega
+      simpa only [hcount, Nat.reduceSub] using hlower
+    exact lt_of_lt_of_le hbudget_bad hlower'
   apply ProximityGap.MCAListBracketInterpolation.mcaDeltaStar_eq_of_jump
   · norm_num
   · intro δ hδ
@@ -456,11 +511,11 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
     · exact le_trans (epsMCA_mono (evalCode g n 1) hle) hgood_prev
     · have hprevδ : δprev < δ := lt_of_not_ge hle
       have hlowerFloor : (w : ℝ≥0) ≤ δ * (n : ℝ≥0) := by
-        have hm := mul_lt_mul_of_pos_right hprevδ (by exact_mod_cast hnpos)
+        have hm := mul_lt_mul_of_pos_right hprevδ (by positivity)
         rw [hprev_mul] at hm
         exact hm.le
       have hupperFloor : δ * (n : ℝ≥0) < ((n / 2 : ℕ) : ℝ≥0) := by
-        have hm := mul_lt_mul_of_pos_right hδ (by exact_mod_cast hnpos)
+        have hm := mul_lt_mul_of_pos_right hδ (by positivity)
         rwa [hhalf_mul] at hm
       have hfloorδ : Nat.floor (δ * (Fintype.card (Fin n) : ℝ≥0)) = w := by
         rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
@@ -468,7 +523,10 @@ theorem mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
         · exact hlowerFloor
         · rw [hw]
           have : n / 2 - 1 + 1 = n / 2 := by omega
-          simpa [this] using hupperFloor
+          have hcast : (((n / 2 - 1 : ℕ) : ℝ≥0) + 1) = ((n / 2 : ℕ) : ℝ≥0) := by
+            exact_mod_cast this
+          rw [hcast]
+          exact hupperFloor
       have hfloorPrev : Nat.floor (δprev * (Fintype.card (Fin n) : ℝ≥0)) = w := by
         rw [Fintype.card_fin, hprev_mul, Nat.floor_natCast]
       rw [ProximityGap.epsMCA_eq_of_floor_eq (F := ZMod p) (A := ZMod p)
@@ -498,9 +556,14 @@ end ArkLib.ProximityGap.PackingBudgetFirstJump
 
 /-! ## Axiom audit -/
 
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_overlapFreshScalars
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.overlap_epsMCA_lower_bound_of_supply
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_first_deep_packing_of_floor_budget
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_half_of_floor_eq_length
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_order_mcaDeltaStar_le_half_of_floor_eq_length
+namespace ArkLib.ProximityGap.PackingBudgetFirstJump
+
+#print axioms exists_overlapFreshScalars
+#print axioms overlap_epsMCA_lower_bound_of_supply
+#print axioms mcaDeltaStar_le_first_deep_packing_of_floor_budget
+#print axioms inv_lt_epsMCA_half_of_floor_eq_length
+#print axioms mcaDeltaStar_le_half_of_floor_eq_length
+#print axioms mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
+#print axioms exists_order_mcaDeltaStar_le_half_of_floor_eq_length
+
+end ArkLib.ProximityGap.PackingBudgetFirstJump
