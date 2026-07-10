@@ -2785,6 +2785,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R378SignedDifferenceRotat
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R379SparseOrbitSupportBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R37SexticExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R381DyadicCubicResonanceExcluded
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R383RichHyperplaneTripleDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R40CubeClassExact
