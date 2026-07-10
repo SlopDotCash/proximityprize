@@ -2240,6 +2240,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84AEndpointAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G85EndpointAssemblyEquiv
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86CoreOccurrenceEmbedding
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87CorrectedPaddingDecoder
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G88EqualSumCorrectedDecoder
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89ProductionDepthThreeCollisionAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick
