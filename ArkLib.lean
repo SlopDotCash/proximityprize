@@ -2476,6 +2476,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelJointCumulant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelShawInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NovelTransferOperator2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCChainingMetricEuclideanNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCPieceBHeightNormCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OCSidonOrbitUnitRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPDescentFromAntitoneOrbitCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OPSingleOrbit

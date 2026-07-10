@@ -32053,3 +32053,60 @@ is positive); that regime needs a separate dominance hypothesis. So G65 closes t
 (pinned at-or-above the weighted DC floor) and G67 closes the dominating-negative regime (certifies
 no nonnegative sup norm); the mixed-sign-with-nonneg-sup case is out of scope. It does NOT bound
 `wraparoundExcessR`; CORE (`M(μ_n) ≤ C·√(n·log(p/n))`) remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-OC-PIECEB-height-norm-ceiling] The r369 piece-(b) naive ideal-stacking / rank-height route is CAPPED: the global cyclotomic norm certificate of a bounded-height support-6 relation has v_p = (its embedding-vanishing count), bounded by height (|N|<=6^phi), so a single relation (and any stack piling at one embedding) contributes v_p < n and can never supply the p^Omega(n) the wall needs; the census concentrates coverage at the a=1 embedding, not transversally (axiom-clean; precise ROUTE no-go) (2026-07-10)
+
+Lane: direct Opus 4.8 CORE (`Frontier/_OCPieceBHeightNormCeiling.lean`; complements OC-ORBIT
+`1c79dfadd` which landed piece (a); motivated by G56's simultaneous-ideal v_p=1 refutation and the
+fable-critic's ranked transversality seam; research branch only, #499 respected).
+
+**Target (the last surviving CORE seam after G68/G69 killed char-p-kernel + chaining).** OC-ORBIT
+landed r369 piece (a): the depth-3 Sidon (`s6h1`) orbit unit is rotation-free of size exactly n, so
+an exact-Wick violation needs Omega(n) simultaneously vanishing primitive orbits. The remaining CORE
+hope was piece (b): the ANTI-COINCIDENCE input that Omega(n) simultaneous orbits cannot all vanish at
+p>poly(n) because that would force p^Omega(n) in a rank/height (Bezout/Smith) determinant. G56
+reproducibly refuted the NAIVE assembly at the canonical cell (n=64,p=264961): stacking K=1..4
+primitive orbit relations gives the SAME ideal (p, X-zeta), v_p=1 for every K. The fable-critic then
+ranked the ONLY surviving seam as a transversality/multiplicity invariant separating DISTINCT
+prime-ideal embeddings. This lane probes that seam and lands the structural ceiling that closes it.
+
+**Exact certificate identity + height ceiling (probes `oc_multiembedding_transversality_probe.py`,
+`oc_height_norm_cap_probe.py`; n in {8,16,32,64}, all thin primes; exact-Res-matches-count=True
+everywhere).** For a support-6 height-1 relation r(X) in Z[X]/(X^m+1), the global norm certificate
+N(r)=Res(r,X^m+1)=+-prod_{a in (Z/2m)^*} r(zeta^a) satisfies:
+- **Certificate identity:** v_p(N(r)) = #{a : r(zeta^a) ≡ 0 mod p} EXACTLY (the p-adic depth of the
+  certificate IS the embedding-vanishing/transversality count, nothing more).
+- **Height ceiling:** |r(zeta^a)| <= sum|coeff| = 6 (triangle ineq on the unit circle; verified
+  max 5.17 < 6), so |N(r)| <= 6^phi(2m), giving p^{v_p} <= 6^{n/2} and v_p*log p <= (n/2)*log 6.
+- **Measured (decisive):** single-relation v_p is O(1) (<=2, and =1 at the canonical n=64 cell).
+  Embedding coverage CONCENTRATES at the census-building embedding a=1 (87/94, 59/63, 4/4 of all
+  orbits vanish there); best-case product amplification |union of vanishing embeddings| stays o(n)
+  (1/32 at n=64), never Omega(n). The census supplies NO embedding-transversal relations.
+
+**Mechanism (why the wall route is capped).** The wall demanded p^Omega(n) from stacking. The
+certificate identity shows stacking K relations that all vanish at the SAME embedding buys nothing
+(their shared norm-power is the one embedding count, not K times it) -- exactly G56's v_p=1. The
+height ceiling caps a single relation at v_p <= (n/2)*log 6/log p < n for every prime p>=3. To reach
+p^Omega(n) one needs Omega(n) DISTINCT embeddings covered, but the census piles coverage at a=1. So
+counting linearly independent relation rows and applying a Bezout/Smith determinant to one
+common-root ideal is provably capped and cannot amplify.
+
+**Axiom-clean Lean kernel (LANDED).** File `Frontier/_OCPieceBHeightNormCeiling.lean` (5 decls, all
+[propext, Classical.choice, Quot.sound]):
+- `pow_dvd_le_of_ne_zero`: p^k | N, N != 0 ⟹ p^k <= N (p-adic depth <= certificate size).
+- `height_norm_ceiling`: p^k | N, N != 0, N <= H^phi ⟹ p^k <= H^phi (certificate bounded by
+  product-of-heights, so its p-power is too).
+- `valuation_log_ceiling`: 2<=p, 1<=H, p^k<=H^phi ⟹ k*log p <= phi*log H (the ceiling
+  k <= phi*log H/log p; log H fixed ⟹ ceiling shrinks as log p grows).
+- `single_relation_vp_lt_n_of_large_prime`: H=6, phi=n/2, p>=3 (log 6 < 2 log p, unconditional)
+  ⟹ (k:R) < n. A single bounded-height support-6 relation can never carry p^n, let alone p^Omega(n).
+- `pieceBNaiveStackingAmplifies` / `not_pieceB_naiveStacking_amplifies`: honest scope marker naming
+  the refuted assembly; no axioms.
+
+**HONEST SCOPE.** Precise ROUTE no-go on the NAIVE single-common-ideal stacking / rank-height
+assembly (the piece-(b) hope G56 exhibited). It does NOT exclude a genuinely transversal multiplicity
+invariant across distinct prime ideals should the census ever be shown to force Omega(n) DISTINCT
+embeddings -- that is where any surviving sqrt-cancellation must still hide. Combined with G68/G69
+(char-p-kernel DC-dominated-dead, chaining BGK-tight-dead), the surviving CORE surface narrows to
+exactly this transversality invariant; the naive stacking route through it is now capped. CORE
+remains OPEN / ON-BGK. No axioms, no sorry.
