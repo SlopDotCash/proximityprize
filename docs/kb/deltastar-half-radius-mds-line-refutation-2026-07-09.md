@@ -31,6 +31,15 @@ three-column decompositions for nine distinct parameters `gamma=1,...,9`.  For e
 2e = 6 < 8 = n,       e+k+1 = 3+4+1 = 8.
 ```
 
+The bundled theorem `unrestricted_halfRadius_mds_line_refuted` additionally certifies that the
+dyadic domain has eight points, its Vandermonde columns are an MDS parity frame, the fixed line
+is globally far from every support of size at most three, and the nine affine representatives
+are nonzero and projectively distinct.
+
+This bundle is stated in explicit parity-coordinate predicates.  A typed bridge from those
+predicates to the library's `PencilJointFar` and projective quotient-incidence API remains to be
+written; the finite-geometric countermodel itself does not depend on that interface bridge.
+
 The companion exhaustive probe
 `scripts/probes/probe_r383_half_radius_n8k4_exhaustive.py` enumerates all 89,030
 projective lines in the syndrome space.  The failure is not isolated: its exact

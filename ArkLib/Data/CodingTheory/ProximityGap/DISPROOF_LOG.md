@@ -31282,6 +31282,28 @@ CONSEQUENCE: neither linear slack nor the low-rate inequality repairs R382 by it
 counterexample has odd length and a non-subgroup evaluation domain, so the remaining claim must
 retain the even two-power length, fixed two-power subgroup, and exact half-predecessor structure.
 
+## [466-half-predecessor-rate-sixteenth-PROVED] the exact half-predecessor good side and `delta-star=1/2` pin close at rate at most `1/16` (2026-07-09)
+
+The rich-point route is fully machine checked.  `BadEventRichPointBridge` chooses one
+degree-`<k` polynomial for every literal bad scalar.  Canonical secant lines and fresh-fibre
+packing give a large-core two-line collapse; its complement forces every determined line to
+have at most four selected points.  Noncollinear triples have codegree at most `k-1`, collinear
+triples are charged through their joint core, and the exact third-incidence identity plus
+discrete Jensen contradict the numeric upper bound when `16k<=n` and more than `n` scalars are
+selected.
+
+`Frontier/_HalfPredecessorIncidenceAssembly.lean` exports
+`badScalarRichPointFamily_card_le_two_mul`.  `Frontier/_HalfPredecessorRateSixteenthPin.lean`
+exports `epsMCA_halfPredecessor_rateSixteenth_le` for every distinct evaluation domain and
+`evalCode_mcaDeltaStar_eq_half_of_rateSixteenth` under the explicit smooth-domain order, tight
+field-floor, and overlap-supply hypotheses.  Source-level `pg-iterate`, an independent
+Direct/coarse formalization, a line-by-line red-team audit, and the serialized project build all
+agree; headline axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
+
+CONSEQUENCE: the Proximity Prize half-predecessor branch is exactly pinned at rate `1/16`.
+The analogous rates `1/8` and `1/4` remain open and require a stronger treatment of rich-line
+collinear excess.
+
 ## [466-FS10-exact-energy-almost-all-primes] TAXONOMIC CLOSURE (Fable session): r50's `Depth3WraparoundVanishing` — refuted as UNIVERSAL by r52 — is PROVEN at all but ≤ n⁶·((k+4)n/s) primes, with the EXACT char-0 value `addEnergy3(μ_n) = 15n³−45n²+40n` (2026-07-09)
 
 Lane: FS10 (file `Frontier/_FS10ExactEnergyAlmostAllPrimes.lean`, real locked build 3343 jobs,

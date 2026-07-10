@@ -22,6 +22,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.ProjectiveQuotientBall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R383HalfRadiusMDSLineRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusConicSecantBoundaryFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusStrictSlackLowRateRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthPin
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfRadiusEvenThirdBlockObstruction
 -- §2.3 live reduction dossier (#371 closed, #389 open):
 import ArkLib.Data.CodingTheory.ProximityGap.CensusDominationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DeltaStarPinAllWitness
@@ -733,8 +735,8 @@ theorem deltaStar_pin_mu8_F4129_witness :
 /-! The tempting field-uniform ceiling of `n` proper points on every half-radius MDS syndrome
   line is false.  R383 has nine proper affine points on the dyadic `[8,4]` Reed--Solomon frame
   over `F_17`.  The `[9,2]` countermodel over `F_11` still has ten proper projective points with
-  `e+k+1<n` and `k<=n/4`.  Thus only the even two-power, exact-half-predecessor production
-  specialization remains open. -/
+  `e+k+1<n` and `k<=n/4`.  The rich-point third-moment theorem closes the exact predecessor
+  at rate at most `1/16`; the even two-power rates `1/8` and `1/4` remain open. -/
 
 #check @ProximityGap.MCAProjectiveEquivariance.rowMixSlotEquiv
 #check @ProximityGap.MCAProjectiveEquivariance.badSlotCount_row_mix
@@ -765,6 +767,7 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check @ProximityGap.ProjectiveProperQuotientBall.properAffineBallIncidence_spectral
 #check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.exists_more_than_eight_proper_points
 #check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.conjecture_hypotheses_hold
+#check ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.unrestricted_halfRadius_mds_line_refuted
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentPoint_eq_secant
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.tangentInfinity_eq_secant
 #check ArkLib.ProximityGap.Frontier.HalfRadiusConicSecantBoundaryFamily.conic_family_numerics
@@ -772,6 +775,10 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.representative_ne_zero
 #check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.every_representative_proper
 #check ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.strict_low_rate_hypotheses
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorIncidenceAssembly.badScalarRichPointFamily_card_le_two_mul
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthPin.epsMCA_halfPredecessor_rateSixteenth_le
+#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthPin.evalCode_mcaDeltaStar_eq_half_of_rateSixteenth
+#check ArkLib.ProximityGap.Frontier.HalfRadiusEvenThirdBlockObstruction.thirdBlock_sharedSubmodule_is_supportImproper
 #check
   ProximityGap.ProjectiveWorstCaseIncidenceBoundary.worstCaseIncidenceBounded_iff_projective_fails_at_full_field
 
