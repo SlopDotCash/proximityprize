@@ -3,12 +3,13 @@
 > **Status update.** The unrestricted `#(P inter B_e)<=n` conjecture below is false.
 > `_R383HalfRadiusMDSLineRefuted.lean` gives nine proper affine points for the dyadic
 > `[8,4]` RS frame over `F_17`, and Ng--Wild Theorem 4.5 gives an infinite GRS/conic family.
-> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the strict-slack,
-> low-rate production specialization remains live.
 > `_HalfRadiusStrictSlackLowRateRefuted.lean` further gives ten proper projective points
 > for a globally far `[9,2]` RS line with two units of strict slack and `k<=n/4`.
-> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the even,
-> two-power, exact-half-predecessor production specialization remains live.
+> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  The even,
+> exact-half-predecessor specialization is now proved at rate at most `1/16` by
+> `_HalfPredecessorIncidenceAssembly.lean` and its operational composition in
+> `_HalfPredecessorRateSixteenthPin.lean`; the rate-`1/8` and rate-`1/4` production slices
+> remain live.
 
 ## Direct target
 
@@ -24,10 +25,10 @@ The tight-budget prize-shaped examples reduce to the following finite-geometric 
 > projective syndrome line `P` not contained in one support span has at most `n`
 > points in `B_e`.
 
-At `e=n/2-1`, this is exactly the numerator bound needed to make the lattice
-predecessor of `1/2` good when `floor(p/2^128)=n`.  Together with the already-proven
-overlap-packing bad point at `1/2`, it would pin `mcaDeltaStar=1/2` for rates
-`1/4`, `1/8`, and `1/16` in the certified prize-shaped field.
+At `e=n/2-1`, this is the numerator bound needed to make the lattice predecessor of `1/2`
+good when `floor(p/2^128)=n`.  Together with the already-proven overlap-packing bad point at
+`1/2`, it would pin `mcaDeltaStar=1/2`.  The rate-`1/16` case is now pinned by the separate
+rich-point theorem; this line conjecture remains relevant to rates `1/8` and `1/4`.
 
 This conjecture is stronger than a dyadic-only statement.  Current evidence has not
 found a need for multiplicative-subgroup structure, although R380 shows that odd torsion
@@ -90,6 +91,12 @@ random two-endpoint lines almost never reach.  In 5,000 trials over `F_97` it fo
 four-hit trials over the second dyadic field `F_193` again reached 13 before seeding;
 no counterexample appeared.  Thus the partition value is sharp but not isolated.
 
+`Frontier/_HalfRadiusEvenThirdBlockObstruction.lean` proves the structural obstruction behind
+this census for every twelve-wise independent parity frame.  Any genuinely third eight-block
+sharing the partition-intersection pencil traps that pencil in a support span of size between
+four and seven, so the resulting incidence is improper.  A counterexample at `[16,4]` must
+therefore use general seven-support incidences rather than an odd-facet lift.
+
 ## Why the obvious proofs fail
 
 1. The ordinary secant variety is useless here.  At `e=n/2-1` and `D=n-k`, its
@@ -113,12 +120,10 @@ should force one pencil into three or more half-support spans, after which an MD
 intersection inequality gives a contradiction.  The missing implication is precisely
 the combinatorial extraction from many distinct `e`-supports to those half-spans.
 
-After the R383 refutation, this proof shape applies only to a corrected conjecture carrying
-strict low-rate slack (in particular the production condition `k<=n/4`).  It is not a proof
-of the unrestricted statement and does not close the prize.
 After the R383 and strict-slack refutations, this proof shape applies only to a corrected
 conjecture carrying the full even two-power production structure, not merely strict slack or
-`k<=n/4`.  It is not a proof of the unrestricted statement and does not close the prize.
+`k<=n/4`.  A different rich-point/line-core proof now closes the rate-at-most-`1/16` slice;
+this unrestricted MDS formulation remains false, while rates `1/8` and `1/4` remain open.
 
 ## Rich-hyperplane reformulation and triple dichotomy
 

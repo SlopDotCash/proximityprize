@@ -1,8 +1,8 @@
 # A half-predecessor good theorem at rate at most `1/16`
 
-Date: 2026-07-09  
-Campaign: #466  
-Status: paper proof, with the finite incidence/numeric core being formalized separately
+Date: 2026-07-09
+Campaign: #466
+Status: machine-checked theorem and exact operational pin
 
 ## 1. Result
 
@@ -29,6 +29,27 @@ an arbitrary distinct evaluation domain.  It does not use multiplicative-subgrou
 The proof is an incidence theorem for rich points in a Vandermonde hyperplane arrangement.
 The constant `1/16` is where a line-richness dichotomy leaves every rich affine line with at
 most four selected points; a third-moment count then closes with strict slack.
+
+### Machine-checked implementation
+
+The proof is now assembled without a named incidence residual:
+
+* `_HalfPredecessorBadEventRichPointBridge.lean` chooses full-agreement witnesses for the
+  literal MCA bad-scalar filter.
+* `_HalfPredecessorSecantLines.lean` and `_HalfPredecessorLargeCoreCollapse.lean` prove line
+  uniqueness, fresh-fibre packing, and the two-line collapse above a large core.
+* `_HalfPredecessorThirdMomentUpper.lean`, `_HalfPredecessorThirdMomentJensen.lean`, and
+  `_HalfPredecessorRateSixteenth.lean` prove the upper moment, discrete Jensen lower moment,
+  and strict numeric separation.
+* `_HalfPredecessorIncidenceAssembly.lean` combines them in
+  `badScalarRichPointFamily_card_le_two_mul`.
+* `_HalfPredecessorRateSixteenthPin.lean` derives
+  `epsMCA_halfPredecessor_rateSixteenth_le` and the exact operational theorem
+  `evalCode_mcaDeltaStar_eq_half_of_rateSixteenth`.
+
+All headline theorems audit to the standard axioms only: `propext`, `Classical.choice`, and
+`Quot.sound`.  The incidence assembly and canonical workbench also passed the serialized
+project build.
 
 ## 2. Lift to rich points and choose full agreement sets
 
@@ -415,8 +436,9 @@ Consequently the operational threshold is exactly
 mcaDeltaStar(RS,1/Q) = 1/2
 ```
 
-on this branch, once the already-separated arithmetic field/order certificate and the standard
-threshold-ledger/lattice bridges are instantiated.
+on this branch.  This composition is the theorem
+`HalfPredecessorRateSixteenthPin.evalCode_mcaDeltaStar_eq_half_of_rateSixteenth`; its statement
+exposes the field order, tight floor, and packing-supply hypotheses.
 
 ## 11. Scope and next target
 
@@ -425,11 +447,10 @@ At `k=n/8`, the inequality `8d<=h-8` is replaced by `4d<=h-4`; avoiding the two-
 then permits rich lines of order `h/5`, and their collinear-triple correction is of the same leading
 order as the third-moment margin.  A stronger weighted line-core/syzygy argument is needed there.
 
-The reusable route is:
+The reusable route is now complete through rate `1/16`:
 
-1. formalize the abstract rich-point incidence theorem above;
-2. wire RS event witnesses to its hypotheses;
-3. compose with the packing bad side and lattice threshold bridge;
+1. the abstract rich-point incidence theorem is formalized;
+2. RS event witnesses are wired to its hypotheses;
+3. the packing bad side and lattice threshold bridge are composed into the exact pin;
 4. attack `1/8` by replacing the crude collinear-triple count with a coordinate-charging theorem
    for compatible core syzygies.
-

@@ -4,14 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorIncidenceAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R382HalfRadiusPinConnector
 
 /-!
 # Operational rate-1/16 pin from the half-predecessor incidence bound
 
-This file isolates the operational payoff of the rate-`1/16` rich-point argument.  Its only
-unresolved incidence input is a uniform bound on the scalar set `G` of every canonical
-`BadScalarRichPointFamily` at `halfPredecessorRadius n`.
+This file records the operational payoff of the rate-`1/16` rich-point argument.  It first
+isolates a uniform bound on the scalar set `G` of every canonical
+`BadScalarRichPointFamily` at `halfPredecessorRadius n`, then discharges that input using
+`HalfPredecessorIncidenceAssembly`.
 
 The first theorem converts that finite-family bound into
 
@@ -20,9 +22,10 @@ epsMCA <= n / q.
 ```
 
 At a tight field-normalized budget `floor(p / Q) = n`, this is at most `Q^-1`.  The existing
-half-predecessor step-function bridge then gives `mcaDeltaStar >= 1/2`, while overlap packing
+The half-predecessor step-function bridge gives `mcaDeltaStar >= 1/2`, while overlap packing
 gives the matching upper bound.  The rate assumption `16*k <= n` supplies the `k <= n/4`
-hypothesis required by the packing theorem.
+hypothesis required by the packing theorem.  The final theorem is unconditional apart from
+the explicit field, order, budget, and packing-supply hypotheses in its statement.
 -/
 
 set_option autoImplicit false
@@ -34,6 +37,8 @@ open _root_.ProximityGap Code ProximityGap.MCAThresholdLedger
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.PackingBudgetFirstJump
 open ArkLib.ProximityGap.Frontier.HalfPredecessorBadEventRichPointBridge
+open ArkLib.ProximityGap.Frontier.HalfPredecessorIncidenceAssembly
+open ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthArithmeticBridge
 open ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector
 
 namespace ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthPin
@@ -74,6 +79,40 @@ theorem epsMCA_halfPredecessor_le_of_canonicalRichPointFamily_card_le
       (n : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
   epsMCA_le_card_div_of_canonicalRichPointFamily_card_le
     dom (B := n) (halfPredecessorRadius n) hk hrich
+
+/-- The geometric incidence assembly discharges the canonical rich-point residual at rate at
+most `1/16`. -/
+theorem canonicalRichPointFamily_card_le_length_at_halfPredecessor
+    {n h k : ℕ} [NeZero n] (dom : Fin n ↪ F)
+    (hn : n = 2 * h) (hk : 1 ≤ k) (hrate : 16 * k ≤ n)
+    (u : WordStack F (Fin 2) (Fin n)) :
+    (canonicalBadScalarRichPointFamily dom (k := k)
+      (halfPredecessorRadius n) u hk).G.card ≤ n := by
+  have hh : 1 ≤ h := by omega
+  have hcard : Fintype.card (Fin n) = 2 * h := by simp only [Fintype.card_fin, hn]
+  have hthreshold :
+      ⌈(1 - halfPredecessorRadius n) * (Fintype.card (Fin n) : ℝ≥0)⌉₊ = h + 1 := by
+    simpa only [Fintype.card_fin] using
+      (halfPredecessor_ceiling_agreement_eq hn hh)
+  have hle := badScalarRichPointFamily_card_le_two_mul
+    (canonicalBadScalarRichPointFamily dom (k := k)
+      (halfPredecessorRadius n) u hk)
+    hk hcard hthreshold (by omega : 16 * k ≤ 2 * h)
+  simpa only [hn] using hle
+
+/-- Unconditional half-predecessor good side for every distinct evaluation domain at rate at
+most `1/16`. -/
+theorem epsMCA_halfPredecessor_rateSixteenth_le
+    {n h k : ℕ} [NeZero n] (dom : Fin n ↪ F)
+    (hn : n = 2 * h) (hk : 1 ≤ k) (hrate : 16 * k ≤ n) :
+    epsMCA (F := F) (A := F)
+        ((ReedSolomon.code dom k : Set (Fin n → F)))
+        (halfPredecessorRadius n) ≤
+      (n : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
+  epsMCA_halfPredecessor_le_of_canonicalRichPointFamily_card_le
+    dom hk fun u =>
+      canonicalRichPointFamily_card_le_length_at_halfPredecessor
+        dom hn hk hrate u
 
 open Classical in
 /-- **Conditional rate-`1/16` operational pin.**  At a tight normalized field budget, a
@@ -146,9 +185,34 @@ theorem evalCode_mcaDeltaStar_eq_half_of_rateSixteenth_richPointBound
       hg hQ hk hnEven hfloor hkquarter hsupply
   exact le_antisymm hupper hlower
 
+open Classical in
+/-- **Unconditional rate-`1/16` exact pin.**  The rich-point incidence theorem supplies the
+sole residual of `evalCode_mcaDeltaStar_eq_half_of_rateSixteenth_richPointBound`. -/
+theorem evalCode_mcaDeltaStar_eq_half_of_rateSixteenth
+    {p n k Q : ℕ} [Fact p.Prime] [NeZero n]
+    {g : ZMod p} (hg : orderOf g = n)
+    (hQ : 0 < Q) (hk : 2 ≤ k) (hnEven : n % 2 = 0)
+    (hfloor : p / Q = n) (hrate : 16 * k ≤ n)
+    (hsupply : 4 ≤ p - n) :
+    mcaDeltaStar (F := ZMod p) (A := ZMod p)
+        (evalCode g n (k - 1)) ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) =
+      (1 / 2 : ℝ≥0) := by
+  apply evalCode_mcaDeltaStar_eq_half_of_rateSixteenth_richPointBound
+    hg hQ hk hnEven hfloor hrate hsupply
+  dsimp only
+  intro u
+  have hn : n = 2 * (n / 2) := by omega
+  exact canonicalRichPointFamily_card_le_length_at_halfPredecessor
+    (ProximityGap.KKH26RegimeSplit.powDomain g hg
+      (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq hg))
+    hn (by omega) hrate u
+
 end ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthPin
 
 /-! ## Axiom audit -/
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthPin
 #print axioms epsMCA_halfPredecessor_le_of_canonicalRichPointFamily_card_le
+#print axioms canonicalRichPointFamily_card_le_length_at_halfPredecessor
+#print axioms epsMCA_halfPredecessor_rateSixteenth_le
 #print axioms evalCode_mcaDeltaStar_eq_half_of_rateSixteenth_richPointBound
+#print axioms evalCode_mcaDeltaStar_eq_half_of_rateSixteenth

@@ -129,14 +129,17 @@ the finite-field existence step instead of hiding it.
 
 The refutations retire any argument based only on ordinary MDS, conic/NRC structure, generalized
 Hamming weights, unrestricted secant geometry, strict slack, or the low-rate inequality alone.
-They do **not** settle the production slice
+They do **not** settle the full production slice
 
 ```text
 e=n/2-1,       k<=n/4,       n=2^mu,
 ```
 
-where the slack `n-(e+k+1)` is at least about `n/4`.  The corrected live question must retain
-the conjunction of even two-power length, the fixed two-power evaluation subgroup, and the exact
-half-predecessor radius.  The `[8,4]` example shows that dyadicity alone is insufficient, the
-`[9,2]` example shows that strict low-rate slack alone is insufficient, and the Ng--Wild family
-shows that merely replacing MDS by GRS is also insufficient.
+where the slack `n-(e+k+1)` is at least about `n/4`.  The rate-at-most-`1/16` sub-slice is now
+proved by the canonical rich-point incidence theorem in
+`_HalfPredecessorIncidenceAssembly.lean`, and `_HalfPredecessorRateSixteenthPin.lean` composes it
+to the exact tight-budget operational threshold.  The corrected live question at rates `1/8`
+and `1/4` must retain the conjunction of even two-power length, the fixed two-power evaluation
+subgroup, and the exact half-predecessor radius.  The `[8,4]` example shows that dyadicity alone is
+insufficient, the `[9,2]` example shows that strict low-rate slack alone is insufficient, and the
+Ng--Wild family shows that merely replacing MDS by GRS is also insufficient.
