@@ -2284,6 +2284,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90WeightedCollisionDecod
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91LowProfileFiberBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91MaximalCancellationBagDiscrepancy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G92DyadicOddPairStabilizer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G92SpreadExcessProbe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
