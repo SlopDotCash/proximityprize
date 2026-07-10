@@ -2442,6 +2442,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrimeCapacityUncertainty
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeCharZeroWired
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeConditionalCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeFloorOfBGK
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapeFirstPrimeBelowJohnson
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapeLowRateExactPins
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePackingCounterexample
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30
