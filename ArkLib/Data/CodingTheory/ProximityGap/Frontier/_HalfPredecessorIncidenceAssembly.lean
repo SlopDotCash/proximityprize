@@ -353,9 +353,51 @@ theorem weightedTripleSum_rat_upper
           (family.G.card - 1) ≤
         2 * (5 * (h : ℚ) / 8 - 5 / 2) * family.G.card *
           (family.G.card - 1) := by
-    gcongr <;> linarith
+    gcongr
+    linarith
   exact hcast.trans (by
     simpa only [upperSix] using add_le_add hfirst hsecond)
+
+/-! ## Final half-predecessor bound -/
+
+/-- **Rate-`1/16` half-predecessor incidence theorem.** Any selected bad-scalar rich-point
+family at the exact half-predecessor threshold has at most `2h` points. -/
+theorem badScalarRichPointFamily_card_le_two_mul
+    {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
+    {u : WordStack F (Fin 2) ι}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hk : 1 ≤ k) (hn : Fintype.card ι = 2 * h)
+    (hthreshold : ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊ = h + 1)
+    (hrate : 16 * k ≤ 2 * h) :
+    family.G.card ≤ 2 * h := by
+  by_contra hnot
+  have hcard : 2 * h < family.G.card := by omega
+  have hh : 8 ≤ h := eight_le_half_of_rateSixteenth rfl hk hrate
+  have hN : 2 * h + 1 ≤ family.G.card := by omega
+  have hsum : family.G.card * (h + 1) ≤
+      ∑ i, incidenceMultiplicity family i :=
+    total_incidence_lower family hthreshold
+  have hlower : lowerSix h family.G.card ≤
+      6 * ∑ i, ((incidenceMultiplicity family i).choose 3 : ℚ) := by
+    simpa only [lowerSix] using
+      (thirdMoment_jensen_lower_rat (incidenceMultiplicity family)
+        h family.G.card (by omega) hn hN hsum)
+  have hmomentNat := thirdMoment_eq_weightedTripleSum family
+  have hmoment :
+      (∑ i, ((incidenceMultiplicity family i).choose 3 : ℚ)) =
+        ∑ T ∈ family.G.powersetCard 3, (tripleWeight family T : ℚ) := by
+    have hcast := congrArg (fun n : ℕ => (n : ℚ)) hmomentNat
+    push_cast at hcast
+    exact hcast
+  have hupper :
+      6 * ∑ i, ((incidenceMultiplicity family i).choose 3 : ℚ) ≤
+        upperSix h family.G.card := by
+    rw [hmoment]
+    exact weightedTripleSum_rat_upper
+      family hk hn hthreshold hrate hcard
+  have hle := card_le_two_mul_of_thirdMoment_bounds h family.G.card
+    (∑ i, ((incidenceMultiplicity family i).choose 3 : ℚ)) hh hlower hupper
+  omega
 
 end ArkLib.ProximityGap.Frontier.HalfPredecessorIncidenceAssembly
 
@@ -368,3 +410,4 @@ open ArkLib.ProximityGap.Frontier.HalfPredecessorIncidenceAssembly
 #print axioms tripleWeight_le_degree_pred_add_excess_of_collinear
 #print axioms weightedTripleSum_nat_upper
 #print axioms weightedTripleSum_rat_upper
+#print axioms badScalarRichPointFamily_card_le_two_mul

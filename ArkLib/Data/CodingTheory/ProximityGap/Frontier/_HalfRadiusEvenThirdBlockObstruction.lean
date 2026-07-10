@@ -28,7 +28,7 @@ not a proper third-block extension.
 
 set_option autoImplicit false
 
-open Finset Set Submodule
+open Finset Submodule
 
 namespace ArkLib.ProximityGap.Frontier.HalfRadiusEvenThirdBlockObstruction
 
@@ -43,8 +43,9 @@ def columnSpan (v : iota -> V) (S : Finset iota) : Submodule F V :=
 the common indexed columns survive. -/
 theorem columnSpan_inf_eq_inter
     (v : iota -> V) (S C : Finset iota)
-    (hLI : LinearIndepOn F v ((S : Set iota) ∪ (C : Set iota))) :
-    columnSpan v S ⊓ columnSpan v C = columnSpan v (S ∩ C) := by
+    (hLI : LinearIndepOn F v ((S ∪ C : Finset iota) : Set iota)) :
+    columnSpan (F := F) v S ⊓ columnSpan (F := F) v C =
+      columnSpan (F := F) v (S ∩ C) := by
   apply le_antisymm
   · intro z hz
     have hzS : z ∈ Submodule.span F (v '' (S : Set iota)) := hz.1
@@ -53,32 +54,39 @@ theorem columnSpan_inf_eq_inter
     obtain ⟨f, hfS, hfz⟩ := hzS
     obtain ⟨g, hgC, hgz⟩ := hzC
     have hfU : f ∈ Finsupp.supported F F
-        ((S : Set iota) ∪ (C : Set iota)) := by
+        ((S ∪ C : Finset iota) : Set iota) := by
       rw [Finsupp.mem_supported] at hfS ⊢
-      exact hfS.trans Set.subset_union_left
+      exact fun x hx => Finset.mem_union_left C (hfS hx)
     have hgU : g ∈ Finsupp.supported F F
-        ((S : Set iota) ∪ (C : Set iota)) := by
+        ((S ∪ C : Finset iota) : Set iota) := by
       rw [Finsupp.mem_supported] at hgC ⊢
-      exact hgC.trans Set.subset_union_right
+      exact fun x hx => Finset.mem_union_right S (hgC hx)
     have hfg : f = g :=
       (linearIndepOn_iffₛ.mp hLI) f hfU g hgU (hfz.trans hgz.symm)
     subst g
     have hfI : f ∈ Finsupp.supported F F
-        ((S : Set iota) ∩ (C : Set iota)) := by
+        ((S ∩ C : Finset iota) : Set iota) := by
       rw [Finsupp.mem_supported] at hfS hgC ⊢
-      exact fun x hx => ⟨hfS hx, hgC hx⟩
+      exact fun x hx => Finset.mem_inter.mpr ⟨hfS hx, hgC hx⟩
     exact (Finsupp.mem_span_image_iff_linearCombination F).2 ⟨f, hfI, hfz⟩
   · apply le_inf
-    · exact Submodule.span_mono (Set.image_mono Set.inter_subset_left)
-    · exact Submodule.span_mono (Set.image_mono Set.inter_subset_right)
+    · apply Submodule.span_mono
+      apply Set.image_mono
+      intro x hx
+      exact (Finset.mem_inter.mp hx).1
+    · apply Submodule.span_mono
+      apply Set.image_mono
+      intro x hx
+      exact (Finset.mem_inter.mp hx).2
 
 /-- A submodule lying in both locally independent column spans lies in the
 span of the common columns. -/
 theorem sharedSubmodule_le_commonSpan
     (v : iota -> V) (S C : Finset iota) (P : Submodule F V)
-    (hLI : LinearIndepOn F v ((S : Set iota) ∪ (C : Set iota)))
-    (hPS : P ≤ columnSpan v S) (hPC : P ≤ columnSpan v C) :
-    P ≤ columnSpan v (S ∩ C) := by
+    (hLI : LinearIndepOn F v ((S ∪ C : Finset iota) : Set iota))
+    (hPS : P ≤ columnSpan (F := F) v S)
+    (hPC : P ≤ columnSpan (F := F) v C) :
+    P ≤ columnSpan (F := F) v (S ∩ C) := by
   rw [← columnSpan_inf_eq_inter v S C hLI]
   exact le_inf hPS hPC
 
@@ -105,7 +113,7 @@ theorem inter_card_add_inter_card_eq
     exact hdisj.mono inter_subset_left inter_subset_left
   have hcard := Finset.card_union_of_disjoint hparts
   rw [hsplit] at hcard
-  exact hcard
+  exact hcard.symm
 
 /-- If both parents and the third block have size eight, some parent overlaps
 the third block in at least four coordinates. -/
@@ -183,20 +191,21 @@ theorem thirdBlock_sharedSubmodule_is_supportImproper
     (hA : A.card = 8) (hB : B.card = 8) (hC : C.card = 8)
     (hCA : C ≠ A) (hCB : C ≠ B)
     (hMDS12 : IndependentUpTo (F := F) v 12)
-    (hPA : P ≤ columnSpan v A) (hPB : P ≤ columnSpan v B)
-    (hPC : P ≤ columnSpan v C) :
+    (hPA : P ≤ columnSpan (F := F) v A)
+    (hPB : P ≤ columnSpan (F := F) v B)
+    (hPC : P ≤ columnSpan (F := F) v C) :
     ∃ S : Finset iota,
       (S = A ∨ S = B) ∧ 4 ≤ (S ∩ C).card ∧
-      (S ∩ C).card ≤ 7 ∧ P ≤ columnSpan v (S ∩ C) := by
+      (S ∩ C).card ≤ 7 ∧ P ≤ columnSpan (F := F) v (S ∩ C) := by
   obtain ⟨S, hSparent, hfour, hseven⟩ :=
     exists_parent_with_medium_overlap A B C hdisj hcover hA hB hC hCA hCB
   have hS : S.card = 8 := by rcases hSparent with rfl | rfl <;> assumption
   have hunionCard := Finset.card_union_add_card_inter S C
   have hunion : (S ∪ C).card ≤ 12 := by omega
   have hLI' := hMDS12 (S ∪ C) hunion
-  have hLI : LinearIndepOn F v ((S : Set iota) ∪ (C : Set iota)) := by
-    simpa only [Finset.coe_union] using hLI'
-  have hPS : P ≤ columnSpan v S := by
+  have hLI : LinearIndepOn F v ((S ∪ C : Finset iota) : Set iota) := by
+    simpa only [LinearIndepOn] using hLI'
+  have hPS : P ≤ columnSpan (F := F) v S := by
     rcases hSparent with rfl | rfl
     · exact hPA
     · exact hPB
