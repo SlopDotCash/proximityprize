@@ -512,6 +512,70 @@ Talagrand γ₂/generic chaining is the canonical candidate shape (L∞-native; 
 increments under SOME metric — the needed increment sub-Gaussianity is currently exactly the open
 Wick atom, but the Jacobi cocycle could conceivably supply a different metric).
 
+### §6 addendum — 2026-07-10 evening (#506 refresh; landings after `fe7d48c6c`)
+
+All items below are axiom-clean and in-tree on `research/proximity-prize`; none closes CORE.
+The production δ* conjecture remains **open**.
+
+- **Line-list lane (item 2) — within-Johnson side DISCHARGED.**
+  `Frontier/_S2PuncturedJohnsonDischarge.lean` (commit `981b38e62`) proves
+  `puncturedListBudget_of_johnson`: the `hlow`/low-profile obligation holds unconditionally
+  whenever the punctured parameters sit inside the squared Johnson region (essentially
+  `(a−s)² ≳ z(k−1)` up to `1/q` terms). The window probe
+  `scripts/probes/probe_s2_punctured_johnson_window.py` (commit `dcf7ca728`, kb
+  `deltastar-466-s2-johnson-window-probe-2026-07-10.md`) quantifies the discharged region at
+  prize shapes: the surviving open region is a single beyond-Johnson `z`-band per line
+  family. The open part of this lane is therefore pinned to exactly beyond-Johnson
+  (Johnson-equivalent-hard per the hlow map); do not re-attack the within-Johnson side.
+- **CORE lane — G75→G78→G81 localization; the open rung window is now FINITE in depth.**
+  Shallow rungs were already sealed (r=2 unconditional via the Stepanov weld, §29/§41);
+  `Frontier/_G81DeepRungDCRecovery.lean` (commit `2ee6e69f7`) seals the deep end
+  unconditionally: `DCEnergyBound G r` holds outright once `(2r−1)!! ≥ |G|^r` (the crude
+  ceiling `E_r ≤ |G|^{2r}` sits inside the Wick budget). Honest scope: prize depth
+  `r ≈ log p ≪ n` remains far inside the still-open middle window — no prize contact.
+  Along the way: G77+G78 (commits `e78e41383`, `1c7b20205`, `dc39c89e3`) close the signed
+  `relationAnomaly` route as a Fourier gauge, and prove the #505 single-embedding qualifier
+  has zero slack (`_G78WeightedRelationEmbeddingRigidity.lean`: the weighted signed
+  structure is invariant under every primitive embedding `g ↦ g^a`, gcd(a,n)=1); the
+  Kelley–Meka spread walk is loss-class-compatible but rank-one circular
+  (`_G78KMSpreadCircularity.lean`). Synthesis:
+  `deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` (the single missing certificate is
+  NON-Fourier anti-concentration) and workbench §5.9 doctrine addendum (commit `a87271b8b`).
+- **Factorial padding repair arc (G79S/G80R → G81C → G83M/G84S/G84A/G85/G86).**
+  `_G80RPrimitivePaddingEnvelopeRefuted.lean` (commit `c2cf969b2`) refutes the naive padding
+  envelope exactly; the corrected reconstruction code and its exact cardinality
+  `|Core|·(r desc s)²·(r−s)!·|A|^(r−s)` land in `_G81CRelativePaddingOrderCeiling.lean`,
+  with saddle localization `_G79SPrimitivePaddingSaddleLocalization.lean` (landed in commit
+  `b849784ce`) and the decoder chain completed through slot partition and endpoint
+  assembly (`_G84SCorePaddingSlotPartition.lean`, `_G84AEndpointAssembly.lean`,
+  `_G85EndpointAssemblyEquiv.lean` commits `cfa506a38`/`65893d439`,
+  `_G86CoreOccurrenceEmbedding.lean` commit `03e7e895a`).
+- **G80 arc-model arc.** `_G80SignedL1CertificatePinnedToWall.lean` (commit `4fc4db2e6`):
+  the signed ℓ¹ certificate is pinned to the wall M (r-uniform, last-door closure).
+  `_G80ArcOscillationWeld.lean` (commit `227597af5`) pays G78's owed arc model;
+  `_G80ZArcArithmeticInstantiation.lean` (commit `f8323ecb4`) instantiates it end-to-end on
+  `ZMod p`; converse direction `_G80YArcEquivalenceConverse.lean` (commit `486790cb6`);
+  decoupling parallel-cap collapse `_G80DDecouplingParallelCapCollapse.lean` (`84aa3e0fc`).
+- **G82/#507 production gate — CONDITIONAL pin, one hypothesis deep.** Audit note
+  `deltastar-466-g82-production-gate-audit-2026-07-10.md` (commit `203395261`): the
+  end-to-end gate already exists in `Frontier/_PrizeShapeRateHalfBracket.lean` —
+  `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count` gives
+  `mcaDeltaStar = 31/64` EXACTLY at production parameters (n = 2^30, rate 1/2,
+  ε* = 2^-128) from ONE open hypothesis (the n-scalar bad-count cap at radius
+  `31/64 − 2^-30`), with the unconditional bracket `178956971/2^30 ≤ δ* ≤ 31/64` around it.
+  This is a conditional reduction, NOT a closure. G82 also lands the depth-two/three
+  core-universe absorption + CRT transversality threshold
+  (`_G82DepthTwoEnergySaddleBridge.lean`, `_G82TransversalityCRTThreshold.lean`, commits
+  `74d694d8e`/`fc5989b0c`/`e80dabc8f`/`59b59f5d9`/`2cdde513a`/`cdca83b80`), and G83 the
+  determinant coverage fence + free-orbit energy bridge
+  (`_G83DeterminantCoverageFence.lean`, `_G83FreeOrbitEnergyBridge.lean`, commit
+  `a0b363326`; maximal common cancellation `_G83MMaximalCommonCancellation.lean`).
+- **Lane B2 re-pointed.** Literature sweep 2026-07-10 (commits `ddeed917f`/`9936ff7bb`, kb
+  `deltastar-466-litsweep-2026-07-10.md`): analytic core unchanged; B2 curve-decodability
+  now pointed at the GGSW 2607.08516 row-span LCL formulation; JLR withdrawal flagged.
+- **OC tail ceilings.** Cross-prime stacking-census tail ceiling (commit `82637b6dd`) and
+  cross-scale super-additivity no-go (commit `a7c580b97`).
+
 ---
 
 ## 7. The synthesis essays (conceptual scaffolding)

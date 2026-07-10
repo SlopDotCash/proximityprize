@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5911 files, 62901 declarations
+- `ArkLib` — 5915 files, 62932 declarations
 
-## Same short-name across multiple files (2432 groups)
+## Same short-name across multiple files (2435 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -753,6 +753,14 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma ArkLib.ProximityGap.KKH26DimTwo.pow_inj_below_order` [ArkLib/Data/CodingTheory/ProximityGap/KKH26DimTwoPin.lean:508](../../../ArkLib/Data/CodingTheory/ProximityGap/KKH26DimTwoPin.lean#L508) — Injectivity of `i ↦ g^i` below the order of `g` (local copy of the `KKH26WitnessSpread` cancellation
 - `lemma ArkLib.ProximityGap.KKH26.pow_inj_below_order` [ArkLib/Data/CodingTheory/ProximityGap/KKH26WitnessSpread.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/KKH26WitnessSpread.lean#L79) — Injectivity of `i ↦ g^i` below the order of `g`, for nonzero `g` in a field (elementary cancellation
 
+### `rEnergy_le_card_pow` (5 declarations, 5 files)
+
+- `theorem ArkLib.ProximityGap.EtaShallowTailUncond.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/EtaShallowTailUncond.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/EtaShallowTailUncond.lean#L101) — **The unconditional `r`-fold additive-energy bound `E_r(G) ≤ \|G\|^{2r-1}` for `r ≥ 1`.** `rEnergy G (
+- `theorem ArkLib.ProximityGap.Frontier.G81DeepRungDCRecovery.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G81DeepRungDCRecovery.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G81DeepRungDCRecovery.lean#L54) — **Crude energy ceiling.** `E_r(G) ≤ \|G\|^{2r}`: the `L²` mass of the `r`-fold representation function
+- `theorem ArkLib.ProximityGap.GeneralMomentPeriodBound.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/GeneralMomentPeriodBound.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/GeneralMomentPeriodBound.lean#L92) — **Trivial unconditional `r`-energy ceiling: `E_r(G) ≤ \|G\|^{2r-1}` for `r ≥ 1`.** The solution set in
+- `theorem ArkLib.ProximityGap.MaximalEnergyUniformBound.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean:175](../../../ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean#L175) — **The energy form `E_r(G) ≤ \|G\|^{2r-1}` (`r ≥ 1`, negation-closed `G`).** Since `E_r(G) = N₀(G,2r)`
+- `theorem ArkLib.ProximityGap.REnergyMaxFiberBound.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/REnergyMaxFiberBound.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/REnergyMaxFiberBound.lean#L87) — **The trivial max-fiber bound on the `r`-fold additive energy.**  `E_r(G) ≤ \|G\|^{2r−1}` for `r = s+1
+
 ### `rEnergy_one` (5 declarations, 5 files)
 
 - `theorem ArkLib.ProximityGap.CharPDeepMomentTail.rEnergy_one` [ArkLib/Data/CodingTheory/ProximityGap/CharPDeepMomentTail.lean:94](../../../ArkLib/Data/CodingTheory/ProximityGap/CharPDeepMomentTail.lean#L94) — `E_1 = \|G\|`: the `1`-fold additive energy is just the diagonal count `#{(x,y)∈G² : x = y}`. Proven v
@@ -1286,13 +1294,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.LadderSaddle.pushSum_id` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean:94](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean#L94) — (no docstring)
 - `theorem ArkLib.ProximityGap.UniformNoWraparoundObligation.pushSum_id` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean:77](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean#L77) — (no docstring)
 - `theorem ArkLib.ProximityGap.NoExcessOnset.pushSum_id` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean:97](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean#L97) — (no docstring)
-
-### `rEnergy_le_card_pow` (4 declarations, 4 files)
-
-- `theorem ArkLib.ProximityGap.EtaShallowTailUncond.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/EtaShallowTailUncond.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/EtaShallowTailUncond.lean#L101) — **The unconditional `r`-fold additive-energy bound `E_r(G) ≤ \|G\|^{2r-1}` for `r ≥ 1`.** `rEnergy G (
-- `theorem ArkLib.ProximityGap.GeneralMomentPeriodBound.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/GeneralMomentPeriodBound.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/GeneralMomentPeriodBound.lean#L92) — **Trivial unconditional `r`-energy ceiling: `E_r(G) ≤ \|G\|^{2r-1}` for `r ≥ 1`.** The solution set in
-- `theorem ArkLib.ProximityGap.MaximalEnergyUniformBound.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean:175](../../../ArkLib/Data/CodingTheory/ProximityGap/MaximalEnergyUniformBound.lean#L175) — **The energy form `E_r(G) ≤ \|G\|^{2r-1}` (`r ≥ 1`, negation-closed `G`).** Since `E_r(G) = N₀(G,2r)`
-- `theorem ArkLib.ProximityGap.REnergyMaxFiberBound.rEnergy_le_card_pow` [ArkLib/Data/CodingTheory/ProximityGap/REnergyMaxFiberBound.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/REnergyMaxFiberBound.lean#L87) — **The trivial max-fiber bound on the `r`-fold additive energy.**  `E_r(G) ≤ \|G\|^{2r−1}` for `r = s+1
 
 ### `reduction_completeness` (4 declarations, 4 files)
 
@@ -6557,6 +6558,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def CodingTheory.ExtensionFieldPresentation.coord` [ArkLib/Data/CodingTheory/ExtensionCodes.lean:100](../../../ArkLib/Data/CodingTheory/ExtensionCodes.lean#L100) — The `j`-th coordinate `φᵢ : F →ₗ[B] B` of an extension-field presentation, as a `B`-linear map.
 - `def MuTwoPowDerandRefutation.coord` [ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/MuTwoPowDerandRIMRank.lean#L49) — The coordinate (in `Fin 8`) of the edge represented by each row of `rimMatrix`.
 
+### `coreAt` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean#L30) — Read the core entries of an endpoint at the embedded core slots.
+- `def ArkLib.ProximityGap.Frontier.G86CoreOccurrenceEmbedding.coreAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean:29](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean#L29) — (no docstring)
+
 ### `coreInteractionOracleRbrKnowledgeError` (2 declarations, 2 files)
 
 - `def coreInteractionOracleRbrKnowledgeError` [ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean:1158](../../../ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean#L1158) — (no docstring)
@@ -8343,6 +8349,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem Verifier.knowledgeSoundness.mono_relations` [ArkLib/OracleReduction/Security/Basic.lean:397](../../../ArkLib/OracleReduction/Security/Basic.lean#L397) — Straightline knowledge soundness is monotone in the input and output relations. If knowledge soundne
 - `theorem Verifier.StateRestoration.knowledgeSoundness.mono_relations` [ArkLib/OracleReduction/Security/StateRestoration.lean:232](../../../ArkLib/OracleReduction/Security/StateRestoration.lean#L232) — State-restoration knowledge soundness is monotone under enlarging the valid input relation and shrin
 
+### `l1Mass` (2 declarations, 2 files)
+
+- `def ProximityGap.Frontier.DoorIVTwoPieceAngularDeficit.l1Mass` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoPieceAngularDeficit.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoPieceAngularDeficit.lean#L151) — `L¹` mass of a list: `Σ ‖z_i‖`.
+- `def ArkLib.ProximityGap.Frontier.G80SignedL1CertificatePinnedToWall.l1Mass` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G80SignedL1CertificatePinnedToWall.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G80SignedL1CertificatePinnedToWall.lean#L78) — The `l1` mass `∑_b \|c_b\|` of a signed coefficient family — the certificate budget.
+
 ### `l1Norm_eq_zero_iff` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.CyclotomicLatticeWrapOnset.l1Norm_eq_zero_iff` [ArkLib/Data/CodingTheory/ProximityGap/CyclotomicLatticeWrapOnset.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/CyclotomicLatticeWrapOnset.lean#L79) — `l1Norm c = 0 ↔ c = 0`. The `ℓ¹`-norm detects the zero vector.
@@ -9177,6 +9188,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def R1CS.pad` [ArkLib/ProofSystem/ConstraintSystem/R1CS.lean:73](../../../ArkLib/ProofSystem/ConstraintSystem/R1CS.lean#L73) — Pad an R1CS instance (on the right) from `sz₁` to `sz₂` with zeros. Note that this results in trunca
 - `theorem ArkLib.SectionNewtonCleared.Cleared.pad` [ArkLib/ToMathlib/SectionNewtonCleared.lean:83](../../../ArkLib/ToMathlib/SectionNewtonCleared.lean#L83) — (no docstring)
+
+### `paddingAt` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.paddingAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean:34](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean#L34) — Read the padding entries in the canonical increasing order of complementary slots.
+- `def ArkLib.ProximityGap.Frontier.G86CoreOccurrenceEmbedding.paddingAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean:32](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86CoreOccurrenceEmbedding.lean#L32) — (no docstring)
 
 ### `pairMult` (2 declarations, 2 files)
 
