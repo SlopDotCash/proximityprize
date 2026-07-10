@@ -283,6 +283,51 @@ theorem mcaDeltaStar_le_first_deep_packing_of_floor_budget
   exact mcaDeltaStar_le_of_bad _ _ (lt_of_lt_of_le hbudget hlower)
 
 open Classical in
+/-- **The tight-budget half-radius point is explicitly bad.**  If `p/Q=n`, `n` is
+even, and the RS dimension is at most `n/2-1`, the tuned overlap family contains
+`n+2` bad scalars at radius `1/2`.  Four scalars outside the evaluation domain
+discharge freshness, and `p<Q(n+1)<Q(n+2)` makes its mass strictly exceed `Q⁻¹`.
+
+Unlike a threshold ceiling, this statement exposes the strict `epsMCA` comparison
+needed by incidence audits and by the exact dimension-two jump theorem. -/
+theorem inv_lt_epsMCA_half_of_floor_eq_length
+    {p n k Q : ℕ} [Fact p.Prime] [NeZero n]
+    {g : ZMod p} (hg : orderOf g = n)
+    (hQ : 0 < Q) (hk : 2 ≤ k) (hnEven : n % 2 = 0)
+    (hfloor : p / Q = n) (hkhalf : k ≤ n / 2 - 1)
+    (hsupply : 4 ≤ p - n) :
+    ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
+      epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1))
+        (1 / 2 : ℝ≥0) := by
+  have hn2 : n = 2 * (n / 2) := by omega
+  have hlower := overlap_epsMCA_lower_bound_of_supply (p := p) (n := n)
+    (k := k) (e := n / 2) (g := g) hg hk (by omega) (by omega) (by omega)
+  have hn0 : (n : ℝ≥0) ≠ 0 := by
+    simp only [ne_eq, Nat.cast_eq_zero]
+    exact NeZero.ne n
+  have hratio_half : (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
+    have hnsub : n - n / 2 = n / 2 := by omega
+    rw [hnsub]
+    apply (div_eq_iff hn0).2
+    have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by
+      exact_mod_cast hn2
+    rw [hncast]
+    ring
+  have hradius : (1 : ℝ≥0) -
+      (((n - n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
+    rw [hratio_half, tsub_eq_iff_eq_add_of_le (by norm_num : (1 / 2 : ℝ≥0) ≤ 1)]
+    norm_num
+  rw [hradius] at hlower
+  have hpQ : p < Q * (n + 1) := by
+    simpa [hfloor] using Nat.lt_mul_div_succ p hQ
+  have hpW : p < Q * (n + 2) := lt_of_lt_of_le hpQ (by gcongr; omega)
+  have hlower' : ((n + 2 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) ≤
+      epsMCA (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1)) (1 / 2 : ℝ≥0) := by
+    have hcount : 2 * (n / 2) + 2 = n + 2 := by omega
+    simpa only [hcount] using hlower
+  exact (inv_natCast_lt_natCast_div hQ (Fact.out (p := p.Prime)).pos hpW).trans_le hlower'
+
+open Classical in
 /-- **Tight-budget specialization.**  When `floor(p/Q)=n`, every even-length
 rate-at-most-`1/4` RS code (`2 ≤ k ≤ n/4`) has an explicit overlap-packing bad point
 at radius `1/2`, provided four scalars remain outside the evaluation domain.  Therefore
@@ -511,9 +556,14 @@ end ArkLib.ProximityGap.PackingBudgetFirstJump
 
 /-! ## Axiom audit -/
 
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_overlapFreshScalars
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.overlap_epsMCA_lower_bound_of_supply
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_first_deep_packing_of_floor_budget
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_half_of_floor_eq_length
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
-#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_order_mcaDeltaStar_le_half_of_floor_eq_length
+namespace ArkLib.ProximityGap.PackingBudgetFirstJump
+
+#print axioms exists_overlapFreshScalars
+#print axioms overlap_epsMCA_lower_bound_of_supply
+#print axioms mcaDeltaStar_le_first_deep_packing_of_floor_budget
+#print axioms inv_lt_epsMCA_half_of_floor_eq_length
+#print axioms mcaDeltaStar_le_half_of_floor_eq_length
+#print axioms mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
+#print axioms exists_order_mcaDeltaStar_le_half_of_floor_eq_length
+
+end ArkLib.ProximityGap.PackingBudgetFirstJump
