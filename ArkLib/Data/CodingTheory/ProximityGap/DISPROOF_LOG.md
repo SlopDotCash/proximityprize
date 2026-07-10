@@ -25185,3 +25185,34 @@ level: `card_smul_sum_values_pow` welds values to in-tree N₀: n·Σ_v v^r = p�
 Σv = −1, Σv² = p−n, and below wraparound (N₀=0, all small odd r) Σ_v v^r = −n^{r−1} EXACTLY —
 dyadic v₂(P_r) = (r−1)·log₂n, probe-confirmed P₃ = −n² at n=8..64. NOT proved: any bound on M —
 distinctness has zero archimedean content. CORE stays OPEN.
+# [466-G103-syzygy-replication-no-go] A syzygy plus internally independent witness blocks does NOT bound the witness count: one valid block replicates to arbitrary cardinality (axiom-clean structural no-go) (2026-07-10)
+
+**Question red-teamed.** G86/G87 show that any production stack with at least 64 bad scalars has
+a nontrivial syzygy among its syndrome constraint rows, while each individual witness contributes
+an internally linearly independent block of `t-k` rows.  Is that endpoint already restrictive
+enough to support a count of the bad scalars?
+
+**Formal answer: no at the current abstraction level.** In
+`Frontier/_G103SyzygyReplicationNoGo.lean`, `replicatedBlock ψ (i,j) = ψ j` repeats one locally
+valid block over an arbitrary witness index type.  The file proves:
+
+- every repeated block remains linearly independent when `ψ` is;
+- any nonzero syndrome annihilated by `ψ` makes the full family plantable for every number `r` of
+  witness indices;
+- as soon as `r ≥ 2` and `m > 0`, the full family is dependent and yields exactly G86's explicit
+  coefficient-vector syzygy;
+- `exists_abstract_configuration_of_one_block` packages all three facts for arbitrary `r`, and
+  `production_abstract_syzygy_configuration` instantiates the logical calibration at
+  `r = 2^30`, `m = 2^24+1`.
+
+**Verdict.** The properties currently retained by the syndrome endpoint — common plantability,
+per-witness block independence, and existence of a global syzygy — permit unboundedly many abstract
+witnesses.  Therefore “a syzygy exists” is a localization, not a quantitative certificate.  A
+successful continuation must preserve and exploit cross-witness Reed--Solomon structure, in
+particular how distinct scalars `γ` enter the blocks; treating the blocks as arbitrary dual
+functionals cannot prove the #507 count.
+
+**Honest scope.** Replication does not construct distinct bad scalars or concrete `mcaEvent`
+witnesses, and so does not refute the wall hypothesis.  It refutes only the sufficiency of the
+present abstract/per-block endpoint.  All audited declarations use only standard Lean axioms; no
+`sorry`, named analytic hypothesis, or production closure claim.
