@@ -2228,6 +2228,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80YArcEquivalenceConvers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ZArcArithmeticInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81CRelativePaddingOrderCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81DMultisetRelativePermutation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81DeepRungDCRecovery
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81FactorialPaddingWickAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G82DepthTwoEnergySaddleBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G82TransversalityCRTThreshold
