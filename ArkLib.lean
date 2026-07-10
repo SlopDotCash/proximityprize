@@ -1047,6 +1047,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergySevenExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergySixExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergyThreeExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroHLLPairing
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroHistogramShapeM31
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroSharpNewtonBase
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroSharpNewtonR2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroSlackLeadingCoeff
@@ -2203,6 +2204,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCCo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58LowHeightPaddingObstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G59CharZeroFloorInsufficiency
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G59FreeOrbitDelimiterNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G61PureDCGateStrictlyStronger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G62BinaryNormFoldWeightNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G63PrimitiveCensusPinnedAtDCFloor
@@ -2214,6 +2216,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G70DudleyFlatChainingLowe
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G73ShkredovMultiShiftExponentFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G75RawDeviationVsRelationAnomaly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G76HigherGeneratorMomentBlindSpot
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G78WeightedRelationEmbeddingRigidity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25AffineFactorInstance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GG25CurveDecodNextBrick

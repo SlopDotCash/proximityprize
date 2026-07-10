@@ -1,3 +1,17 @@
+## [466-G78-weighted-embedding-rigidity] the single-embedding qualifier in #505 carries ZERO slack: the full NR-weighted signed relation structure (shadowCollisionMass, relationAnomaly, signedShadowPairDiscrepancy, the G75/DCEnergyBound target) is LITERALLY IDENTICAL at every primitive embedding g ↦ g^a, gcd(a,n)=1 (2026-07-10, #466 G78)
+
+OC equidistribution pinned only the unweighted marginal vanishing counts and honestly recorded
+that weighted first-incidence mass was out of scope; R384's no-gain audit consumed a
+uniform-centered-load hypothesis. G78 closes both seams unconditionally: `powerRootSet (g^a) n =
+powerRootSet g n` (unit dilation permutes residues mod n), and R312's exact subtraction identity
+`C = rEnergy(powerRootSet) − B` expresses the weighted collision mass through the power-root SET
+and embedding-free char-0 shadow data only. Hence no primitive embedding of the same subgroup is
+easier than another: any admissible single-embedding first-incidence route must already work at
+the Galois average, which G75 calibrates exactly to `DCEnergyBound`. Rigidity pin, NOT a bound;
+CORE remains OPEN. Formal payload:
+`Frontier/_G78WeightedRelationEmbeddingRigidity.lean` (imports R366+R367 only; axiom-clean,
+no sorryAx). Complements G77's first-incidence Jordan decomposition without overlap.
+
 ## [466-G76-all-higher-distinct-generator-moments-blind] The entire hierarchy of higher distinct-generator moments misses the unique-root stratum, so it cannot recover the centered relation coefficient without first-incidence information (axiom-clean route no-go) (2026-07-10)
 
 R385 proved that the second off-diagonal generator moment vanishes at endpoint incidence `Z=1`.
