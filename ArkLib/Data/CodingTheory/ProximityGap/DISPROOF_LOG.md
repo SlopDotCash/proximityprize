@@ -25063,3 +25063,23 @@ not the wall. Prize-ward continuation: iterate the ladder (k = 3, 4, …, each e
 window to W < p^{1/k}... note the window SHRINKS with k — the bootstrap trades window for
 exponent; the saddle needs the opposite trade, which is the wall). CORE remains OPEN /
 ON-BGK. No axioms, no sorry.
+
+## [466-G80L-energy-refined-consumer] The Cauchy-Schwarz ENERGY consumer: |A|^4 <= |A·A|·E×(A) exact, and T(W)^4 <= n·E×(A) below sqrt(p) — the subgroup enters ONLY through the ≤ n product-set cap (proven); the open input is now the PURE-INTEGER multiplicative energy of an interval piece, the sum-product literature's central object (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80LEnergyRefinedConsumer.lean`, real locked build, both
+theorems exactly `[propext, Classical.choice, Quot.sound]`). The energy-refined rung the crude
+k-fold ladder lacked (crude fiber d^{k-1} worsens with k; the genuine CG/BGK bootstrap refines
+the fiber SECOND moment).
+
+**Bricks.** `mulEnergy A = #{(a,b,c,d) ∈ A⁴ : ab = cd}` (integer multiplicative energy).
+`sq_card_le_card_mul_energy`: |A|⁴ = (Σ_y r(y))² ≤ |A·A|·Σ_y r(y)² = |A·A|·E×(A) — exact
+fiber partition + Chebyshev/Cauchy-Schwarz. CAPSTONE `intervalCount_pow_four_le_energy`: for
+multiplicatively closed H, W² < p: T(W)⁴ ≤ |H|·E×(A) where A is the interval piece — the
+product set collapses into H by no-wraparound rigidity.
+
+**What this opens.** The known integer-energy bound E×(A) ≤ |A|²·W^{o(1)} for A ⊆ [1,W]
+(divisor-moment methods, Σ_{y≤M} d(y)² ≈ M·log³M — pure-Nat partial-summation plumbing, the
+declared next target) would upgrade G80M to the FULL CG bound T(W) ≤ √n·W^{o(1)} for all
+W < √p. The subgroup content of the entire chain is now complete; everything remaining on the
+interval face is integer arithmetic. Still fenced from the prize saddle by G80P regime
+disjointness — no prize claim. CORE remains OPEN / ON-BGK. No axioms, no sorry.
