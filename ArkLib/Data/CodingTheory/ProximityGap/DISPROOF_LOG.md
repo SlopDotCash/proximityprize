@@ -31425,3 +31425,24 @@ campaign: every fixed-depth rung of the moment ladder is now systematically TRUE
 all primes with machine-checked budgets, localizing the entire open problem in (i) the
 per-prime exceptional sets and (ii) the depth-uniformity of the joint limit. CORE OPEN,
 ON-BGK.
+
+## [466-FS15-spectral-ladder-almost-all-primes] LADDER COMPLETION (Fable session): per-frequency `‖η_b‖^{2r} ≤ q(2r−1)‼n^r` and `WorstCaseIncompleteSumBound` at scale M_r — at EVERY depth, at every FS14 good prime; PLUS the closing regime-disjointness no-go for fixed-depth ledgers (2026-07-09)
+
+Lane: FS15 (file `Frontier/_FS15SpectralLadderAlmostAllPrimes.lean`, real locked build 3350
+jobs, both theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `eta_pow_le_of_good_prime`: FS14's good-prime Wick rung through the depth-generic DC chain
+  (`dcEnergyBound_of_gaussianEnergyBound` → `eta_pow_le_of_dcEnergyBound`) — the whole
+  per-frequency moment LADDER at almost all primes, every fixed depth.
+- `worstCaseIncompleteSumBound_of_good_prime`: the δ*-interface object at scale
+  M_r = (q(2r−1)‼n^r)^{1/r}, every depth, at good primes.
+
+CLOSING NO-GO (recorded in the file header so nobody re-derives hoping otherwise): goodness
+at depth r costs bad-set budget ≈ n^{2r+1}/s, non-vacuous only at β ≳ 2r+2 — and there
+M_r^{1/2} ≈ q^{1/2r}√(rn) ≥ n^{β/2r+1/2} > n stays above the trivial sup bound for every
+admissible (r, β) pairing. A FIXED-depth annihilator ledger can never beat trivial M ≤ n;
+breaking it needs empty exceptional sets (per-prime uniformity) or depth-uniformity to
+r ≈ ln q — the Paley/BGK wall, i.e. the δ* core, exactly as the tetrachotomy predicted.
+The arc is CLOSED as a method: maximal honest output extracted (fixed-depth rungs true at
+almost all primes, all depths, interfaces wired); its intrinsic ceiling proven-in-prose and
+logged. CORE OPEN, ON-BGK.
