@@ -5,7 +5,7 @@ Authors: Tobias Rothmann
 -/
 
 import ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Basic
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ArkLib.OracleReduction.Composition.Sequential.AppendToVerifierKeystone
 
 /-!
   # Composition for Coordinate-Wise Special Soundness
@@ -450,6 +450,7 @@ omit [∀ i, SampleableType (pSpec₂.Challenge i)] in
 /-- Oracle-verifier wrapper for binary CWSS append. -/
 theorem append_coordinateWiseSpecialSound
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
+    [Append.AppendCoherent V₁]
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     (D₁ : CWSSStructure pSpec₁) (D₂ : CWSSStructure pSpec₂)
     (verify₁ :
@@ -462,7 +463,7 @@ theorem append_coordinateWiseSpecialSound
   unfold OracleVerifier.coordinateWiseSpecialSound at h₁ h₂ ⊢
   convert Verifier.append_coordinateWiseSpecialSound init impl V₁.toVerifier V₂.toVerifier
     D₁ D₂ verify₁ hV₁ h₁ h₂
-  simp only [append_toVerifier]
+  rw [OracleReduction.oracleVerifier_append_toVerifier]
 
 end OracleVerifier
 

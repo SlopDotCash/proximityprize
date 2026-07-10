@@ -5,6 +5,10 @@
 > `[8,4]` RS frame over `F_17`, and Ng--Wild Theorem 4.5 gives an infinite GRS/conic family.
 > See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the strict-slack,
 > low-rate production specialization remains live.
+> `_HalfRadiusStrictSlackLowRateRefuted.lean` further gives ten proper projective points
+> for a globally far `[9,2]` RS line with two units of strict slack and `k<=n/4`.
+> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  Only the even,
+> two-power, exact-half-predecessor production specialization remains live.
 
 ## Direct target
 
@@ -45,6 +49,7 @@ Small exact and sampled results:
 [6,2], e=2, F_7:  exhaustive maximum 6 = n
 [8,2], e=3, F_17 dyadic: 500,000 sampled lines, maximum 8 = n
 [8,1], e=3, F_17 dyadic: 500,000 sampled lines, maximum 4
+[9,2], e=4, F_11 interval: exact certified line with 10 > 9
 [16,4], e=7, F_97 dyadic: 10,000 sampled sparse-point lines, maximum 8
 ```
 
@@ -111,6 +116,9 @@ the combinatorial extraction from many distinct `e`-supports to those half-spans
 After the R383 refutation, this proof shape applies only to a corrected conjecture carrying
 strict low-rate slack (in particular the production condition `k<=n/4`).  It is not a proof
 of the unrestricted statement and does not close the prize.
+After the R383 and strict-slack refutations, this proof shape applies only to a corrected
+conjecture carrying the full even two-power production structure, not merely strict slack or
+`k<=n/4`.  It is not a proof of the unrestricted statement and does not close the prize.
 
 ## Rich-hyperplane reformulation and triple dichotomy
 
@@ -151,3 +159,16 @@ of rich hyperplanes: collinear clusters obey the private-coordinate inequality a
 while every cross-cluster triple has intersection at most `k-1`.  This is stronger and
 more structured than the earlier unsupported claim that `>n` supports must directly
 produce three containing half-spans.
+
+The non-affine branch is now axiom-clean Lean:
+
+```text
+R383RichHyperplaneTripleDichotomy.
+  card_commonSelectorZeros_lt_of_nonzero_relation
+```
+
+It is stated for an arbitrary finite selector family, not only three selectors.  Any
+scalar relation that cancels both quotient-coordinate columns and leaves a nonzero RS
+codeword forces the common selector-zero set to have cardinality `<k`.  The sole
+remaining branch is exactly a zero codeword relation, i.e. linear dependence of the
+selector normals, which is the cluster/private-coordinate side above.

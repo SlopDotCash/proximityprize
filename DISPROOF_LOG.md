@@ -6452,6 +6452,69 @@ VERDICT: this does NOT close CORE. It refutes the naive/raw index-2 coset-half a
 
 Co-authored-by: wakesync <shadow@shad0w.xyz>
 
+## [466-r382-rotation-orbit-compression-cosmetic] exact signed blocks have zero internal cancellation (2026-07-09)
+
+Lane: exact centered shadow discrepancy, negacyclic rotation audit.
+
+R365--R369 rewrite the DC-subtracted energy as a signed sum of doubled-walk endpoint masses.
+R371--R381 prove that negacyclic rotation preserves the evaluation-kernel sign, endpoint mass,
+and doubled-walk multiplicity, and that every nonzero sparse endpoint has an orbit satisfying
+`m <= card(orbit) * 2r`.
+
+R382 performs the missing adversarial check. It proves axiom-clean that on every orbit
+
+```text
+abs(sum signedEndpointSummand) = sum abs(signedEndpointSummand).
+```
+
+Thus the apparent orbit-size gain is repaid exactly by equal repeated summands: triangle
+inequality is an equality on each block. Pure rotation-orbit compression cannot improve the
+centered discrepancy bound. A closing argument must produce cancellation between distinct
+orbits or use arithmetic data beyond rotation, support, endpoint L1, kernel membership, and
+doubled-walk multiplicity. This is the exact centered-discrepancy counterpart of the earlier SST
+orbit-compression verdict. CORE remains OPEN.
+
+## [466-r383-generator-averaging-insufficient-alone] primitive-root incidence saves at most n, not q (2026-07-09)
+
+R377's fixed-generator Galois refutation leaves a valid alternative: average the common kernel
+load over every primitive generator. R383 proves the exact incidence double count
+`card(T)*L <= B*totalMass`, where `B` is the maximum number of primitive generators at which one
+endpoint polynomial vanishes. Exact endpoint censuses found `B=1` in six non-hostile cells and
+`B=4` at the known hostile `(n,p,r)=(16,17,4)` cell.
+
+The route is nevertheless quantitatively insufficient by itself even under the dream input
+`B=1`. There are only `phi(n)=n/2` primitive generators, so it saves at most order `n` from total
+doubled-walk mass, while DC centering operates at order `q` (`q/n` approximately `n^3` remains).
+At `n=2^30,r=89`, the dream generator bound overshoots the Wick fluctuation by `2103.56` bits,
+about `10^633`. A sharper primitive-root multiplicity theorem alone cannot close CORE; the route
+would still require centered cancellation across generators of the missing `q/n` magnitude.
+
+## [466-r384-centered-generator-average-equivalent] primitive-root incidence is an exact reparameterization (2026-07-09)
+
+R384 restores the negative mass omitted by R383. If `Z(d)` is the number of primitive generators
+at which endpoint `d` vanishes, the exact averaged coefficient is `q*Z(d)-phi(n)`. Under the
+generator-independent subgroup load, the full weighted sum equals `phi(n)` times the original
+centered discrepancy. `centeredLoad_le_iff_average_le` proves the corresponding upper bounds are
+equivalent both ways for every nonempty generator family, with exactly the cardinality factor and
+no slack.
+
+VERDICT: primitive-generator averaging supplies a clean cross-kernel coordinate system, but its
+required weighted equidistribution at density `phi(n)/q` is precisely the original DC-subtracted
+energy wall. Pointwise root-count bounds cannot replace the signed comparison. CORE remains OPEN.
+
+## [466-r385-cross-generator-covariance-blind] distinct-generator moments miss the unique-root stratum (2026-07-09)
+
+R385 proves that an endpoint with primitive-generator root count `Z` contributes exactly
+`Z*(Z-1)` ordered distinct-generator pairs. Hence every `Z=1` endpoint is invisible to any
+off-diagonal cross-generator covariance estimate, while its centered coefficient remains
+`q-phi(n) != 0`. The R383 exact censuses show this one-root stratum dominates all tested
+non-hostile cells.
+
+VERDICT: imposing two simultaneous generator equations and applying Weil/Deligne cannot by itself
+bound the centered discrepancy. It requires a separate first-incidence estimate on `Z=1`, which
+is the original wall. Future generator-moment lanes must demonstrate control of the linear
+incidence term, not only factorial moments beginning with `Z*(Z-1)`. CORE remains OPEN.
+
 ## [door-iv-multipiece-sign-coherence] negation-stable refinements still have sign-saturation, so subdivision alone does not create phase anti-concentration (2026-06-18, g55)
 
 Lane: Door-(iv) localized coherence object, Lane 1/3 constraint.  After the raw index-2 split saturated
