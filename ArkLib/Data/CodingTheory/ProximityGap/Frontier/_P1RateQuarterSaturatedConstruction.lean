@@ -226,25 +226,52 @@ theorem core_two_disjoint_commonRoots : Disjoint (core 2) commonRoots := by
 
 /-! ## Exact amplified cores -/
 
-/-- Promote the missing common-root cell into each of the first two cores;
-remove the new holes and promote both cells into the third core.  This
-case-split presentation prevents reduction of the billion-scale finsets. -/
-noncomputable def amplifiedCoreSet (i : Fin 3) : Finset Coord :=
+/-- Small logical predicate underlying amplified-core membership. -/
+def amplifiedCorePred (i : Fin 3) (e : Coord) : Prop :=
   match i with
-  | 0 => core 0 ∪ rootEleven
-  | 1 => core 1 ∪ rootFour
-  | 2 => (core 2 \ newHoles) ∪ commonRoots
+  | 0 => (e ∈ core 0 ∧ e ∉ newHoles) ∨ e ∈ rootEleven
+  | 1 => (e ∈ core 1 ∧ e ∉ newHoles) ∨ e ∈ rootFour
+  | 2 => (e ∈ core 2 ∧ e ∉ newHoles) ∨ e ∈ commonRoots
+
+/-- Filtering by a proposition keeps downstream membership elimination from
+normalizing the billion-scale union representation. -/
+noncomputable def amplifiedCoreSet (i : Fin 3) : Finset Coord :=
+  Finset.univ.filter (amplifiedCorePred i)
+
+theorem amplifiedCoreSet_zero_eq :
+    amplifiedCoreSet 0 = (core 0 \ newHoles) ∪ rootEleven := by
+  ext e
+  simp [amplifiedCoreSet, amplifiedCorePred]
+
+theorem amplifiedCoreSet_one_eq :
+    amplifiedCoreSet 1 = (core 1 \ newHoles) ∪ rootFour := by
+  ext e
+  simp [amplifiedCoreSet, amplifiedCorePred]
+
+theorem amplifiedCoreSet_two_eq :
+    amplifiedCoreSet 2 = (core 2 \ newHoles) ∪ commonRoots := by
+  ext e
+  simp [amplifiedCoreSet, amplifiedCorePred]
 
 theorem amplifiedCoreSet_card (i : Fin 3) :
     (amplifiedCoreSet i).card = amplifiedCore := by
   fin_cases i
-  · change (core 0 ∪ rootEleven).card = amplifiedCore
-    rw [Finset.card_union_of_disjoint core_zero_disjoint_rootEleven,
-      core_card, rootEleven_card]
-  · change (core 1 ∪ rootFour).card = amplifiedCore
-    rw [Finset.card_union_of_disjoint core_one_disjoint_rootFour,
-      core_card, rootFour_card]
-  · change ((core 2 \ newHoles) ∪ commonRoots).card = amplifiedCore
+  · change (amplifiedCoreSet 0).card = amplifiedCore
+    rw [amplifiedCoreSet_zero_eq]
+    have hdisjoint : Disjoint (core 0 \ newHoles) rootEleven :=
+      Disjoint.mono_left Finset.sdiff_subset core_zero_disjoint_rootEleven
+    rw [Finset.card_union_of_disjoint hdisjoint,
+      core_sdiff_newHoles_card, rootEleven_card]
+    simp [amplifiedCore]
+  · change (amplifiedCoreSet 1).card = amplifiedCore
+    rw [amplifiedCoreSet_one_eq]
+    have hdisjoint : Disjoint (core 1 \ newHoles) rootFour :=
+      Disjoint.mono_left Finset.sdiff_subset core_one_disjoint_rootFour
+    rw [Finset.card_union_of_disjoint hdisjoint,
+      core_sdiff_newHoles_card, rootFour_card]
+    simp [amplifiedCore]
+  · change (amplifiedCoreSet 2).card = amplifiedCore
+    rw [amplifiedCoreSet_two_eq]
     have hdisjoint : Disjoint (core 2 \ newHoles) commonRoots :=
       Disjoint.mono_left Finset.sdiff_subset core_two_disjoint_commonRoots
     rw [Finset.card_union_of_disjoint hdisjoint,
