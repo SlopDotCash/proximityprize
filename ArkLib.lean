@@ -2224,6 +2224,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G79SPrimitivePaddingSaddl
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ArcOscillationWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80DDecouplingParallelCapCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80RPrimitivePaddingEnvelopeRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80SignedL1CertificatePinnedToWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80YArcEquivalenceConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ZArcArithmeticInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G81CRelativePaddingOrderCeiling
