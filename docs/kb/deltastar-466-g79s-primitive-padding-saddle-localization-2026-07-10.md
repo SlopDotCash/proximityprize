@@ -50,7 +50,10 @@ either many primitive orbits at a fixed depth or primitive depth growing with `r
 
 ## Honest scope
 
-G79S does not prove the combinatorial padding envelope; R369 currently records that step in prose.
+G79S does not prove the combinatorial padding envelope. G80R subsequently refuted that proposed
+envelope at `(n,p,r,s)=(4,3001,9,2)`: independent ordering of the common padding multiset creates
+an omitted multiplicity. Thus G79S remains a valid conditional arithmetic consumer, but the R369
+bridge into it cannot be used as stated.
 It does not claim that the union of all primitive depth-`s` orbits has linear size.  Only each
 individual free rotation orbit does.  The next exact theorem is a maximal-cancellation core
 decomposition and padding surjection, followed by a quantitative orbit-count bound or a growing-core

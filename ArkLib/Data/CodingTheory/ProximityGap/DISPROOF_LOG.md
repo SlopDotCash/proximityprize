@@ -32496,3 +32496,70 @@ bridge, so that valuation equality remains documented arithmetic rather than a p
 Even with that bridge, the result is a valuation-blindness fence, not an archimedean bound on the
 Gauss-period maximum and not a bound on the growing primitive sectors needed by G79S. Four headline
 theorems pass `pg-iterate` with `[propext, Classical.choice, Quot.sound]`; CORE remains open.
+
+## [466-G80R-primitive-padding-envelope-refuted] Independent padding order refutes the R369/G79S bridge (exact saddle counterexample) (2026-07-10)
+
+The proposed sector estimate
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * n^(r-s)
+```
+
+is false because maximal cancellation leaves a common multiset whose two endpoint tuples may
+order their padding independently. The exact probe at `mu_4 subset F_3001`, saddle `r=9`, and
+primitive depth `s=2` gives `J_2=8` and
+
+```text
+W_9^(2) = 1148084928 > 679477248
+          = 8 * (9 descFactorial 2)^2 * 4^7.
+```
+
+`_G80RPrimitivePaddingEnvelopeRefuted.lean` kernel-checks the fourth root, primitive core,
+claimed envelope value, strict failure, and that multiplying this witness's bound by `(r-s)!`
+is safe. This refutes the bridge into G79S, not G79S's conditional arithmetic theorem and not
+`FourthPowerSaddleDCEnergy`. A replacement must use permutation-quotiented weights or pay the
+common-padding permutation multiplicity. Five declarations pass `pg-iterate` without `sorryAx`.
+## [466-G80R-primitive-padding-envelope-refuted] R369/G80's ordered-tuple padding envelope is false at the exact saddle: independent padding orders require an extra permutation factor (axiom-clean witness + exact count-vector probe) (2026-07-10)
+
+R369 proposed that primitive disjoint depth-`s` cores with ordered count `J_s` contribute at most
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * n^(r-s).
+```
+
+The intended reconstruction chooses one ordered common padding tuple and inserts it into both
+endpoints.  Maximal common cancellation, however, identifies only an equal padding **multiset**.
+The two endpoint tuples order that multiset independently.  A universal reconstruction therefore
+needs an additional permutation of `Fin (r-s)` (or exact `Multiset.countPerms` weights).
+
+The failure occurs on an actual dyadic subgroup at the exact R369 saddle.  Let
+
+```text
+p = 3001,  H = mu_4 = {1,1353,3000,1648},  r = ceil(log p) = 9,  s = 2.
+```
+
+The two antipodal pairs give `J_2=8` ordered primitive cores.  Exact count-vector enumeration gives
+
+```text
+W_9^(2) = 1,148,084,928
+claimed RHS = 8 * (9 descFactorial 2)^2 * 4^7 = 679,477,248,
+ratio = 1.689659118652 > 1.
+```
+
+The probe `scripts/probes/probe_466_g80_padding_envelope_refutation.py` uses exact integers and
+enumerates every padding multiplicity vector.  The Lean file
+`Frontier/_G80RPrimitivePaddingEnvelopeRefuted.lean` kernel-checks the primitive fourth root,
+the antipodal core relation, the claimed RHS, the strict numerical failure, and survival of the
+safe factorial-corrected ceiling.  All headline declarations use only `[propext]`.
+
+A safe coarse repair is
+
+```text
+W_r^(s) <= J_s * (r descFactorial s)^2 * (r-s)! * n^(r-s),
+```
+
+or a sharper quotient-weighted formula using the squared padding multinomial.  This correction
+destroys G79S's intended bounded-sector absorption at logarithmic depth: `(r-s)!` is precisely a
+Wick-scale factor, so it cannot be discarded.  G79S remains a correct conditional arithmetic
+theorem, but its proposed R369 input is unavailable.  This refutes the mechanism, not
+`FourthPowerSaddleDCEnergy`; CORE remains OPEN.
