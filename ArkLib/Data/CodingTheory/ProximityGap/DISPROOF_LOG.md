@@ -32770,3 +32770,30 @@ O44's Theorem Q instantiates their Appendix A per-prime for the whole window —
 LOWER half is closed; the remaining open content is purely the UPPER half (= CORE = the wall).
 No new extraction available from 2026/782. Cross-pollination the OTHER way (our census bricks
 strengthening their counterexample family) remains a legitimate Tier-3 publishable item.
+
+## [466-G80Z-arc-arithmetic-instantiation] The G80 arc model is now END-TO-END arithmetic on ZMod p: character-sum bias forces an arc-occupancy increment for any point set — the Fourier⟹arc direction of the rank-one equivalence is fully machine-checked with zero analytic slack; the "single missing non-Fourier certificate" now has a precise formal consumer (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80ZArcArithmeticInstantiation.lean`, real locked build 3322
+jobs, all 3 audited theorems exactly `[propext, Classical.choice, Quot.sound]`). Closes the
+"pure plumbing" gap G80 recorded.
+
+**Bricks.** `arcIndex K y = ⌊K·val(y)/p⌋` with `arcIndex_mem_range`; `arcIndex_width` — the
+floor construction gives `j·p ≤ K·v < (j+1)·p`, hence `|2π·val(y)/p − 2π·arcIndex(y)/K| ≤ 2π/K`
+(width by construction, no measure theory); CAPSTONE `exists_arc_deviation_of_charSum_bias`:
+for ANY `S ⊆ ZMod p`, `K ≥ 2`, `m ≥ 0`: if `A ≤ ‖Σ_{y∈S} e(val(y)/p)‖` then some arc `j < K`
+has `|#(S ∩ arc_j) − m| ≥ (A − #S·(2π/K))/K`. Composition: G80 chord-arc + fiberwise model
+error + EXACT equally-spaced center cancellation (B = 0) + G78 extraction.
+
+**Prize-facing reading.** At `S = b·μ_n` the phase sum IS the Gauss-period frequency η_b, so
+`‖η_b‖ ≥ A` forces a value-arc where the dilated subgroup deviates from uniform by
+`(A − 2πn/K)/K`; at `K ≍ n/√(n log q)` the increment is `≳ A/(2K)` — exactly the
+spreadness-failure certificate shape the KM engine consumes. CONTRAPOSITIVE (the usable
+direction): any NON-FOURIER proof that every arc's occupancy is within `ε` of uniform, for
+every dilation b, bounds `‖η_b‖ ≤ K·ε + 2πn/K` — the doctrine-v2 "single missing certificate"
+now plugs into a formal consumer with no further analytic work.
+
+**Honest scope.** Does NOT produce the non-Fourier certificate (BGK/Cilleruelo–Garaev frontier,
+open); does NOT close the KM circularity (G78 verdict stands). What changed: the entire
+Fourier⟹arc-increment side (chord-arc, oscillation, cancellation, floor-width, extraction) is
+formal; the open surface is purely the converse arc-occupancy input. CORE remains OPEN /
+ON-BGK. No axioms, no sorry.
