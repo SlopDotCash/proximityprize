@@ -44,12 +44,14 @@ def rightCore (left right : Multiset A) : Multiset A := right - commonPart left 
 
 theorem left_reconstruct (left right : Multiset A) :
     leftCore left right + commonPart left right = left := by
+  rw [leftCore, commonPart, Multiset.sub_inter]
   exact Multiset.sub_add_inter left right
 
 theorem right_reconstruct (left right : Multiset A) :
     rightCore left right + commonPart left right = right := by
   unfold rightCore commonPart
   rw [Multiset.inter_comm]
+  rw [Multiset.sub_inter]
   exact Multiset.sub_add_inter right left
 
 /-- **Primitivity.**  Maximal cancellation leaves disjoint residual supports. -/
@@ -59,15 +61,15 @@ theorem core_disjoint (left right : Multiset A) :
   ext a
   simp only [Multiset.count_inter, Multiset.count_zero, leftCore, rightCore, commonPart,
     Multiset.count_sub]
-  rw [Multiset.count_inter]
   omega
 
 /-- Equal-length endpoints leave residual cores of equal depth. -/
 theorem core_card_eq {left right : Multiset A} (hcard : left.card = right.card) :
     (leftCore left right).card = (rightCore left right).card := by
-  rw [Multiset.card_sub Multiset.inter_le_left,
-    Multiset.card_sub Multiset.inter_le_right]
-  exact Nat.sub_eq_sub_right_iff.mpr (Or.inl hcard)
+  have hleft := congrArg Multiset.card (left_reconstruct left right)
+  have hright := congrArg Multiset.card (right_reconstruct left right)
+  simp only [Multiset.card_add] at hleft hright
+  omega
 
 /-- **Maximality.**  Every multiset contained in both endpoints is contained in `commonPart`. -/
 theorem le_commonPart {padding left right : Multiset A}
