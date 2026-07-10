@@ -229,9 +229,9 @@ theorem core_two_disjoint_commonRoots : Disjoint (core 2) commonRoots := by
 /-- Small logical predicate underlying amplified-core membership. -/
 def amplifiedCorePred (i : Fin 3) (e : Coord) : Prop :=
   match i with
-  | 0 => (e ∈ core 0 ∧ e ∉ newHoles) ∨ e ∈ rootEleven
-  | 1 => (e ∈ core 1 ∧ e ∉ newHoles) ∨ e ∈ rootFour
-  | 2 => (e ∈ core 2 ∧ e ∉ newHoles) ∨ e ∈ commonRoots
+  | 0 => (corePred 0 e ∧ e ∉ newHoles) ∨ e ∈ rootEleven
+  | 1 => (corePred 1 e ∧ e ∉ newHoles) ∨ e ∈ rootFour
+  | 2 => (corePred 2 e ∧ e ∉ newHoles) ∨ e ∈ commonRoots
 
 /-- Filtering by a proposition keeps downstream membership elimination from
 normalizing the billion-scale union representation. -/
@@ -241,17 +241,17 @@ noncomputable def amplifiedCoreSet (i : Fin 3) : Finset Coord :=
 theorem amplifiedCoreSet_zero_eq :
     amplifiedCoreSet 0 = (core 0 \ newHoles) ∪ rootEleven := by
   ext e
-  simp [amplifiedCoreSet, amplifiedCorePred]
+  simp [amplifiedCoreSet, amplifiedCorePred, core]
 
 theorem amplifiedCoreSet_one_eq :
     amplifiedCoreSet 1 = (core 1 \ newHoles) ∪ rootFour := by
   ext e
-  simp [amplifiedCoreSet, amplifiedCorePred]
+  simp [amplifiedCoreSet, amplifiedCorePred, core]
 
 theorem amplifiedCoreSet_two_eq :
     amplifiedCoreSet 2 = (core 2 \ newHoles) ∪ commonRoots := by
   ext e
-  simp [amplifiedCoreSet, amplifiedCorePred]
+  simp [amplifiedCoreSet, amplifiedCorePred, core]
 
 theorem amplifiedCoreSet_card (i : Fin 3) :
     (amplifiedCoreSet i).card = amplifiedCore := by
