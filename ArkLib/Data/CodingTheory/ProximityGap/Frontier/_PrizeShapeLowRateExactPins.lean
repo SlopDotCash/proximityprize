@@ -32,12 +32,22 @@ set_option linter.unusedSectionVars false
 
 open Finset
 open scoped NNReal ENNReal
-open ProximityGap ProximityGap.MCAThresholdLedger
+open ProximityGap ProximityGap.MCAThresholdLedger Code
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.PackingBudgetFirstJump
 open ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector
 
 namespace ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
+
+attribute [local instance] Classical.propDecidable
+
+local instance firstPrimeFact :
+    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
+  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩
+
+local instance secondPrimeFact :
+    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) :=
+  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩
 
 /-- A finite count budget `E * Q <= p` is exactly the normalized inequality
 `E/p <= Q⁻¹` used by the prize ledger. -/
@@ -175,7 +185,7 @@ theorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount
       (2 ^ 30) (2 ^ 26 - 1))
     (17 / 32 : ℝ≥0) (2 ^ 31)
     (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
-    (by norm_num) hcount hbudget
+    (by rw [div_le_one (by norm_num : (0 : ℝ≥0) < 32)]; norm_num) hcount hbudget
 
 /-- The second-prime conclusion is genuinely separated from the first-prime half pin. -/
 theorem secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
