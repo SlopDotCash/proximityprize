@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84SCorePaddingSlotPartition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G84AEndpointAssembly
 
 /-!
 # G85: endpoint assembly is an equivalence
@@ -24,11 +24,7 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv
 
 open G84SCorePaddingSlotPartition
-
-/-- Assemble an endpoint from its ordered core and padding words. -/
-noncomputable def assemble {A : Type*} {r s : ℕ} (hsr : s ≤ r)
-    (e : Fin s ↪ Fin r) (core : Fin s → A) (padding : Fin (r - s) → A) : Fin r → A :=
-  Sum.elim core padding ∘ (slotEquiv hsr e).symm
+open G84AEndpointAssembly
 
 /-- Read the core entries of an endpoint at the embedded core slots. -/
 def coreAt {A : Type*} {r s : ℕ} (e : Fin s ↪ Fin r) (word : Fin r → A) : Fin s → A :=
@@ -39,32 +35,17 @@ noncomputable def paddingAt {A : Type*} {r s : ℕ} (hsr : s ≤ r)
     (e : Fin s ↪ Fin r) (word : Fin r → A) : Fin (r - s) → A :=
   word ∘ padSlots hsr e
 
-@[simp] theorem assemble_core {A : Type*} {r s : ℕ} (hsr : s ≤ r)
-    (e : Fin s ↪ Fin r) (core : Fin s → A) (padding : Fin (r - s) → A) (i : Fin s) :
-    assemble hsr e core padding (e i) = core i := by
-  change Sum.elim core padding ((slotEquiv hsr e).symm (e i)) = core i
-  rw [← slotEquiv_inl hsr e i, Equiv.symm_apply_apply]
-  rfl
-
-@[simp] theorem assemble_padding {A : Type*} {r s : ℕ} (hsr : s ≤ r)
-    (e : Fin s ↪ Fin r) (core : Fin s → A) (padding : Fin (r - s) → A)
-    (j : Fin (r - s)) :
-    assemble hsr e core padding (padSlots hsr e j) = padding j := by
-  change Sum.elim core padding ((slotEquiv hsr e).symm (padSlots hsr e j)) = padding j
-  rw [← slotEquiv_inr hsr e j, Equiv.symm_apply_apply]
-  rfl
-
 @[simp] theorem coreAt_assemble {A : Type*} {r s : ℕ} (hsr : s ≤ r)
     (e : Fin s ↪ Fin r) (core : Fin s → A) (padding : Fin (r - s) → A) :
     coreAt e (assemble hsr e core padding) = core := by
   funext i
-  exact assemble_core hsr e core padding i
+  exact G84AEndpointAssembly.assemble_core hsr e core padding i
 
 @[simp] theorem paddingAt_assemble {A : Type*} {r s : ℕ} (hsr : s ≤ r)
     (e : Fin s ↪ Fin r) (core : Fin s → A) (padding : Fin (r - s) → A) :
     paddingAt hsr e (assemble hsr e core padding) = padding := by
   funext j
-  exact assemble_padding hsr e core padding j
+  exact G84AEndpointAssembly.assemble_pad hsr e core padding j
 
 /-- Decomposing an endpoint and reassembling it returns the original endpoint. -/
 @[simp] theorem assemble_coreAt_paddingAt {A : Type*} {r s : ℕ} (hsr : s ≤ r)
@@ -77,13 +58,15 @@ noncomputable def paddingAt {A : Type*} {r s : ℕ} (hsr : s ≤ r)
         have := congrArg (slotEquiv hsr e) h
         simpa using this
       subst k
-      exact assemble_core hsr e (coreAt e word) (paddingAt hsr e word) i
+      exact G84AEndpointAssembly.assemble_core
+        hsr e (coreAt e word) (paddingAt hsr e word) i
   | inr j =>
       have hk : k = padSlots hsr e j := by
         have := congrArg (slotEquiv hsr e) h
         simpa using this
       subst k
-      exact assemble_padding hsr e (coreAt e word) (paddingAt hsr e word) j
+      exact G84AEndpointAssembly.assemble_pad
+        hsr e (coreAt e word) (paddingAt hsr e word) j
 
 /-- Fixed core positions induce an explicit equivalence between `(core,padding)` data and an
 ordered endpoint. -/
@@ -97,7 +80,5 @@ noncomputable def endpointEquiv {A : Type*} {r s : ℕ} (hsr : s ≤ r)
 end ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv
 
 /-! ## Axiom audit -/
-#print axioms ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.assemble_core
-#print axioms ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.assemble_padding
 #print axioms ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.assemble_coreAt_paddingAt
 #print axioms ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.endpointEquiv
