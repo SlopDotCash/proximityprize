@@ -41,14 +41,28 @@ At `(2^30,110)` this accepts `C=10` (with about 17% squared slack). The theorem
 from `E^2 <= 100*n^5`. This factor-five constant improvement is important because the remaining
 analytic input is an explicit-constant subgroup additive-energy estimate.
 
+## Stronger production overcount: energy is unnecessary at depth two
+
+The full double factorial has much more slack than the factorwise G81/G82 comparison uses. The
+entire universe of ordered depth-two core pairs has cardinality at most `n^4`, before imposing any
+equal-sum, disjointness, primitivity, or rotation-orbit condition. G82 now kernel-checks
+
+```text
+(2^30)^4 * correctedPadEnvelope(2^30, 110, 1, 2)
+  <= (2*110-1)!! * (2^30)^110.
+```
+
+Thus even assigning one complete factorial-corrected padding envelope to every ordered core pair
+fits in the production Wick budget. Once the actual factorial-corrected decoder is constructed,
+the whole depth-two sector can be absorbed by this crude universe bound; neither `n*J <= E` nor
+an additive-energy estimate is needed for this depth.
+
 ## Honest residual
 
-This does not prove the energy estimate or the canonical orbit-to-energy injection. The next
-load-bearing step is to construct the factorial-corrected maximal-cancellation encoding, connect
-its primitive count to the actual depth-two additive energy, and prove `n*J <= E`. After that,
-one needs an explicit-constant subgroup energy
-bound strong enough for `C=2` at the production cell. No Paley/sup-norm estimate is assumed by
-the G82 arithmetic itself.
+This does not prove the factorial-corrected maximal-cancellation decoder. That decoder is now the
+only remaining depth-two obligation. The energy bridge remains useful for other parameter cells,
+but it is no longer load-bearing at the nominal production point. Higher primitive depths still
+require collective control and are not discharged by the depth-two universe count.
 
 ## Verification
 

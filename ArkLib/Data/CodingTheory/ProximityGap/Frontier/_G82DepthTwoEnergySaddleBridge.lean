@@ -191,6 +191,23 @@ theorem production_corrected_depth_two_energy_absorbed_sharp
   · exact sq_orbit_bound_of_energy (by norm_num) hJE hE
   · norm_num [oddWickTail]
 
+/-- **All-core-pairs production calibration.** There are at most `n^4` ordered pairs of
+depth-two words before imposing disjointness, equal sums, primitivity, or quotienting by
+rotation. Even assigning one full factorial-corrected padding envelope to every such pair fits
+inside the production Wick budget. This bypasses additive energy entirely at depth two. -/
+theorem production_all_depth_two_core_pairs_le_fullWick :
+    (2 ^ 30) ^ 4 * correctedPadEnvelope (2 ^ 30) 110 1 2 ≤
+      Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
+  norm_num [correctedPadEnvelope, Nat.doubleFactorial]
+
+/-- Any actual depth-two sector bounded by the deliberately overcounted universe of all
+ordered core pairs is absorbed at production scale. -/
+theorem production_all_depth_two_sector_absorbed
+    {W : ℕ}
+    (hW : W ≤ (2 ^ 30) ^ 4 * correctedPadEnvelope (2 ^ 30) 110 1 2) :
+    W ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 :=
+  hW.trans production_all_depth_two_core_pairs_le_fullWick
+
 end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
 
 /-! ## Axiom audit -/
@@ -214,3 +231,7 @@ end ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_corrected_depth_two_energy_absorbed
 #print axioms
   ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_corrected_depth_two_energy_absorbed_sharp
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_two_core_pairs_le_fullWick
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82DepthTwoEnergySaddleBridge.production_all_depth_two_sector_absorbed
