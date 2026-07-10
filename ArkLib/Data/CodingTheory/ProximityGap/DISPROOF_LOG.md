@@ -31502,3 +31502,56 @@ Lane: FS18 (file `Frontier/_FS18OddVanishingMinLadder.lean`, real locked build 3
   per-prime well-formed.
 
 HONEST SCOPE: unchanged (windows disjoint from prize; wall untouched). CORE OPEN, ON-BGK.
+
+## [466-G62-binary-normfold-weight-reversal] 2-adic binary norm folding preserves characteristic-p relations but is ANTI-CONTRACTIVE for the exact factorial/Bessel kernel census: depth squares, dominant mass exits the rung, and only O(log log r) folds fit (2026-07-10)
+
+Lane: direct GPT-5.6 Sol CORE (`Frontier/_G62BinaryNormFoldWeightNoGo.lean`, exact probe
+`/tmp/arklib-reports/g56_binary_normfold_probe.py`; research branch only).
+
+**Attempt.** Use the 2-power tower load-bearingly. Write a folded relation as
+`D(X)=A(X²)+X·B(X²)`. If `D(ζ)=0 mod p`, multiply by the `ζ↦−ζ` conjugate and recurse on
+`N₂(D)(Y)=A(Y)²−Y·B(Y)²`, which vanishes at `ζ²`. Unlike the already-dead unweighted
+norm-height route, test whether the exact endpoint weight `1/∏|d_j|!` turns this into a
+contracting recursion for total wraparound mass.
+
+**Axiom-clean result.** `binaryNormFold_vanishes_of_evenOdd_vanishes` proves the relation
+recursion. But `binaryNormFold_resonant` shows the dominant two-term family `X−a` maps to
+`a²−X`; `no_uniform_linear_depth_control` proves there is NO coefficient-independent linear
+control on primitive depth under one fold. For the exact dominant `a=3` relation the depths are
+`2→5→41→3281`; at nominal prize depth `r=110`, only two folds fit, reducing dimension by only
+4 while the subgroup needs `log₂ n` folds. The first coefficient-factorial denominator reverses
+by `9!/3!=60480` (`resonant_three_factorial_weight_reversal`).
+
+**Exact probe.** Every tested relation was folded directly and the lower-level vanishing was
+integer-verified:
+
+- `n=8,p=41,r=8`: 52.64% of source mass maps beyond the same-depth support; source/termwise-folded
+  mass = `2.466e5`.
+- `n=16,p=3281,r=8`: 59.20% beyond support; ratio `1.938e6`.
+- thin `n=32,p=21523361,r=17`, every primitive-depth `s≤8` endpoint (94,624 relations): 66.21%
+  beyond support; ratio `3.089e10`.
+
+The dominant `(-3,1)` endpoint alone changes denominator `3!→9!` and, at the n=32 cell, its
+exact same-r histogram mass drops by factor `3.55e9`. The fold is therefore a valid arithmetic
+relation producer but the wrong-direction map for weighted mass: coefficient squaring overwhelms
+factorial decay, and most source mass has no image inside the target rung. Iterating cannot reach
+macroscopic tower depth because the recurrence `s↦2s²−2s+1` is doubly exponential.
+
+**Literature integration / binding inequality.** FS16's sharp resultant envelope controls one
+pattern by its coefficient L1 mass; this fold is the recursive version of that cyclotomic norm.
+The probe shows why it cannot upgrade FS15-FS18's almost-all-prime ledger to the adversarial prime:
+the norm map worsens the exact weighted mass before any prime averaging. In random-walk language,
+the desired kernel mass is the finite-field concentration/return probability; inverse
+Littlewood-Offord structure theorems (Tao-Vu and successors) diagnose large concentration via
+additive structure but do not supply the required uniform `1/p` equidistribution for this geometric
+progression. The only literature machinery that does engage that mixing is BGK/sum-product, with
+its known `n^{1-o(1)}` ceiling here. Zsigmondy supplies primitive divisors realizing the resonant
+family at every 2-power order (outside its standard exceptions), but does not place those divisors
+in the polynomial-size prize window; it cannot rescue a prize-scale recursion.
+
+**Verdict.** This is a new mechanism-changing test of weighted norm folding, not a repeat of the
+unweighted norm-height no-go. It fails decisively and axiom-cleanly: the 2-adic fold preserves
+vanishing but reverses the histogram inequality. Any useful recursion would need a new estimate on
+the FULL preimage fiber that cancels the measured `10^5..10^10` expansion and the >50% support
+escape; that estimate is again the per-prime weighted-kernel equidistribution/Paley wall. CORE OPEN,
+ON-BGK.
