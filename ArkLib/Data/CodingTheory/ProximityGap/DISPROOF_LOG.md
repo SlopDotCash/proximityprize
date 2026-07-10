@@ -25144,3 +25144,22 @@ short-interval technology is built for. Non-overlap: not a fixed-cell certificat
 transversality, not signed-anomaly, not the tensor cross-scale ceiling (OC-CROSSSCALE) — this is
 the max-vs-mean seam's algebraic-resonance branch. CORE remains OPEN / ON-BGK. No axioms, no
 sorry.
+## [466-G80J-divisor-second-moment] The divisor SECOND moment PROVEN pure-Nat: Σ_{y≤M} d(y)² ≤ M·(log₂M+1)³ — exact lcm-hyperbola identity + per-pair collapse M/lcm(a,b) = ((M/g)/a′)/b′ + gcd-triple injection + three dyadic harmonic bounds; the KB §6 target CLOSED (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80JDivisorSecondMoment.lean`, real locked build, all 4
+theorems exactly `[propext, Classical.choice, Quot.sound]` or fewer).
+
+**Bricks.** `sum_sq_card_divisors_eq`: Σ_{y≤M} d(y)² = Σ_{(a,b)∈[1,M]²} ⌊M/lcm(a,b)⌋ EXACT
+(common-multiple triple double-count). `div_lcm_eq`: M/lcm(a,b) = ((M/g)/(a/g))/(b/g) with
+g = gcd (from lcm·g = a·b and Nat.div_div_eq_div_mul). `sum_div_le_dyadic'`: shifted
+first-moment bound (X ≤ M). CAPSTONE `sum_sq_card_divisors_le`: inject pairs into gcd-triples
+(g, a/g, b/g) with EXACT per-pair value transport, dominate by the full triple box, and apply
+G80K's dyadic harmonic bound three times: Σ d(y)² ≤ M·(log₂M+1)³. Pure Nat throughout — no
+Real.log, no analysis.
+
+**Payoff.** With G80L (T(W)⁴ ≤ n·E×(A)) and E×(A) ≤ Σ_{y≤W²} d(y)² ≤ W²(log₂W²+1)³:
+T(W)⁴ ≤ n·W²·(2log₂W+2)³ ⟹ T(W) = O(n^{1/4}·√W·log^{3/4}W) — NONTRIVIAL below the n^{2/3}
+threshold where G80M dies (e.g. T(n^{2/3}) = O(n^{7/12}log^{3/4})), extending the
+unconditional window downward. Final instantiation brick (G80I = G80L × G80J join, needs
+E×(A) ≤ Σ_{y≤W²} d² which is r(y) ≤ d(y) + support-sum domination) is next-round plumbing.
+Fenced from the prize saddle (G80P). CORE remains OPEN / ON-BGK. No axioms, no sorry.
