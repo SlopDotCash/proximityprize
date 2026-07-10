@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5919 files, 62989 declarations
+- `ArkLib` — 5926 files, 63084 declarations
 
-## Same short-name across multiple files (2435 groups)
+## Same short-name across multiple files (2440 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -8300,6 +8300,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.R30IterConvEnergyRecursion.iterConv_two_eq_selfConv` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R30IterConvEnergyRecursion.lean:218](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R30IterConvEnergyRecursion.lean#L218) — **Depth two is exactly the punctured self-convolution.**  This identifies the round-27 full-tower AP
 - `theorem ArkLib.ProximityGap.Frontier.R66TripleConvIterWickAdapter.iterConv_two_eq_selfConv` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R66TripleConvIterWickAdapter.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R66TripleConvIterWickAdapter.lean#L53) — The second iterated convolution is R21's punctured self-convolution.
 
+### `iterate_rotZ_head` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G89FirstIncidenceWallEquivalence.iterate_rotZ_head` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean#L140) — After `m − j` steps, coordinate `j` arrives at the head with a sign flip.
+- `theorem ArkLib.ProximityGap.Frontier.R395OrbitCompressedCertificate.iterate_rotZ_head` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R395OrbitCompressedCertificate.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R395OrbitCompressedCertificate.lean#L76) — After `m − j` steps, coordinate `j` arrives at the head with a sign flip.
+
 ### `iterated_fold_to_const_strict` (2 declarations, 2 files)
 
 - `lemma Binius.BinaryBasefold.CoreInteraction.iterated_fold_to_const_strict` [ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean:1325](../../../ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean#L1325) — **Strict version**: When folding the last oracle to level `ℓ` (final sumcheck), the iterated fold of
@@ -8749,6 +8754,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def StirIOP.MultiRound.msgAns` [ArkLib/ProofSystem/Stir/CheckingVerifier.lean:184](../../../ArkLib/ProofSystem/Stir/CheckingVerifier.lean#L184) — The honest answer of a message oracle (ascribed at `F`).
 - `def Whir302Checked.msgAns` [ArkLib/ProofSystem/Whir/CheckedVerifier.lean:125](../../../ArkLib/ProofSystem/Whir/CheckedVerifier.lean#L125) — The honest answer of a message oracle (ascribed at `F`).
+
+### `mu16` (2 declarations, 2 files)
+
+- `def ProximityGap.Frontier.FloorAsymptotic.mu16` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorAsymptoticRadius.lean:65](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/FloorAsymptoticRadius.lean#L65) — `μ_16 ⊂ ZMod 17` is the full multiplicative group `F₁₇ˣ` (`16 = 17-1`).
+- `def ArkLib.ProximityGap.Frontier.G90SpacingRigidityProbe.mu16` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90SpacingRigidityProbe.lean:248](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G90SpacingRigidityProbe.lean#L248) — The sorted sixteenth roots of unity mod 257 (= `⟨2⟩`, since `ord₂₅₇(2) = 16`).
 
 ### `mulChar_mul_conj` (2 declarations, 2 files)
 
@@ -9809,6 +9819,21 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ProximityGap.Frontier.RThinRealizabilityCodim.rootProd_monic` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RThinRealizabilityCodim.lean:37](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RThinRealizabilityCodim.lean#L37) — `∏_{x∈S}(X−x)` is monic.
 - `theorem ProximityGap.Frontier.RThinResidueDegree.rootProd_monic` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RThinResidueDegree.lean:32](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RThinResidueDegree.lean#L32) — `∏_{x∈S}(X−x)` is monic.
+
+### `rotZ_head` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G89FirstIncidenceWallEquivalence.rotZ_head` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean:113](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean#L113) — The head coordinate after one rotation: wrap with a sign flip.
+- `theorem ArkLib.ProximityGap.Frontier.R395OrbitCompressedCertificate.rotZ_head` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R395OrbitCompressedCertificate.lean:50](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R395OrbitCompressedCertificate.lean#L50) — (no docstring)
+
+### `rotZ_shadowDifference` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G89FirstIncidenceWallEquivalence.rotZ_shadowDifference` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean:276](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean#L276) — Rotation commutes with taking a shadow difference (local re-derivation of R381's lemma, kept here to
+- `theorem ArkLib.ProximityGap.Frontier.R381SignedRotationOrbitBlock.rotZ_shadowDifference` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R381SignedRotationOrbitBlock.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R381SignedRotationOrbitBlock.lean#L33) — Rotation commutes with taking a shadow difference.
+
+### `rotZ_tail` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G89FirstIncidenceWallEquivalence.rotZ_tail` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean:119](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89FirstIncidenceWallEquivalence.lean#L119) — A tail coordinate after one rotation: shift down by one slot, no sign.
+- `theorem ArkLib.ProximityGap.Frontier.R395OrbitCompressedCertificate.rotZ_tail` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R395OrbitCompressedCertificate.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R395OrbitCompressedCertificate.lean#L55) — (no docstring)
 
 ### `roundKnowledgeError` (2 declarations, 2 files)
 
@@ -13546,7 +13571,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 575 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 577 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 

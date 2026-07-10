@@ -2249,6 +2249,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89FirstIncidenceWallEqui
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G89ProductionDepthThreeCollisionAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90AdaptiveDepthBudgetAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G90SpacingRigidityProbe
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G91DepthFiveUnorderedHBKBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93AdditiveModelDissolution
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G93DepthFiveExceptionalSlackWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GFCeilingInstance65537
