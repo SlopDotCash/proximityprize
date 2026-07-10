@@ -527,6 +527,44 @@ valid; note round 2 KILLED the positivity/Christoffel upgrade — any such propo
 beat the lone-spike countermodel, DISPROOF `466-r2-cmk-lonespike-refuted`). All are faces of the
 ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — dossier v3 §2 forms (A)–(D).
 
+**(10) DOCTRINE v3 UPDATE (2026-07-10 evening, Fable G88–G99 wave + codex G80Q/S — supersedes
+(9)'s certificate shape and (7)/(9)'s survivor list; log entries `466-G88…` through
+`466-G99…`).**
+* **#505 CLOSED (→ #509).** The signed relation route is pinned to the wall in every recorded
+  formulation: G89 first-incidence ≡ relationAnomaly (constant exactly 1, transversal-free);
+  G88 orbit-class Parseval `n·centeredShadowMass = q·(n·S₀² + Σ_γ S_γ²) − n·n^{2r}` — PSD over
+  distinct orbit classes, ZERO cross terms, collision trichotomy {0,n,n²}, equidistribution is
+  the minimizer, and `DCEnergyBound` ⟺ a bound on this quadratic form. The open content is
+  exactly the class-mass ℓ²-profile `(S₀, (S_γ)_γ)` (#509).
+* **The certificate target is RESHAPED (G90 + G97 + codex G80Q).** Unsigned sup-arc occupancy
+  is FALSE at needed strength (n^{2/3} cost floor, `466-G90…`); hereditary-discrepancy
+  transference is a structural no-go but arcs reduce losslessly to K+1 PREFIX counts
+  (`466-G97…`); the codex arc program terminates at the Cilleruelo–Garaev small-difference
+  form (G80Q). Current sharpest statement of the missing object: **signed control of K+1
+  prefix deviations of `b·μ_n`, equivalently near-uniform small-difference pair statistics of
+  every dilate** — CG/BGK proves it only for β < 3; prize β ≫ 3.
+* **More doors closed as theorems:** chaining dies METRIC-UNIVERSALLY (G94: deterministic
+  sub-Gaussian increments collapse to domination; any legal γ₂ certificate contains the
+  conclusion; every Jacobi-cocycle metric strictly worse than the G70-closed Euclidean one);
+  Guth–Maynard/Halász–Montgomery Gram bootstrap is count-vs-sup-fenced and vacuous at prize
+  (G98 — the large-values Gram IS the field: `G_{b,b'} = η_{b−b'}`); the Esseen/Erdős–Turán
+  ladder with the exact l² input is non-contracting, nontrivial only dense n ≳ 3√2·√p (G99);
+  the cyclic-code few-weight/quantization dictionary can never apply at prime-field prize
+  shape (G95: values maximally many-valued, irrational); the spread-excess law is dead at
+  EVERY constant near the Johnson boundary (G92: C=3 refuted in evidence at n=32, ratio
+  3.833, two primes; floor mechanism formalized).
+* **New POSITIVE substrate:** the additive/Binius model theorem (G93: production-shaped bound
+  with C = 1, exact index law, lossless S^⊥ relocation — hardness = additive non-closure of
+  μ_n, not thinness); the q-free low-profile fiber bound D(S) ≤ C(s, a−t) with census
+  dichotomy both ways (G91F); the r-uniform finite HM/Gram inequality set (G98); the
+  integer-lift rigidity `dilated_orbit_short_interval_rigidity` — **the first unconditional
+  non-Fourier certificate on the small-difference object**: no dilate of μ_n fits in any
+  interval shorter than √(p/2) (G99, containment scale).
+* **Live lanes:** #509 (orbit-class profile); G100F — push the integer-lift mechanism from
+  containment to COUNTING scale on the G80Q terminal object (the sharpest current attack);
+  G96 capacity/house extremal (relaunch pending); monomial-baseline growth law at Johnson
+  boundary cells (the G92 successor question).
+
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim
 ##      every published route provably misses the prize regime (plain RS, s=1).
