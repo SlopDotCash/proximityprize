@@ -95,3 +95,30 @@ certificate directly.
 
 **After that:** the third rung is the genuine energy recursion (Konyagin–Shkredov-style
 `E×(A)` self-improvement) — that is where the open BGK content begins; expect wall contact.
+
+## 7. The unconditional ladder (G80O→N→M→L→K→J→I) and the k-fold ENERGY discovery
+
+Landed same session, all zero-hypothesis, axiom-clean:
+
+| brick | statement |
+|-------|-----------|
+| G80N | `d(y)⁴ ≤ 19680·y` (first machine-checked constant-exponent divisor bound) |
+| G80M | 🏁 `T(W)⁸ ≤ 19680·W²·n⁴` (`W² < p`) — `T = O(√n·W^{1/4})` |
+| G80K | `Σ_{y≤M} d(y) = Σ ⌊M/a⌋ ≤ M(log₂M+1)` (exact hyperbola + dyadic harmonics, Real.log-free) |
+| G80J | `Σ_{y≤M} d(y)² ≤ M(log₂M+1)³` (lcm-hyperbola + gcd-triple injection + 3 dyadic bounds) |
+| G80L | `T(W)⁴ ≤ n·E×(A)` (Cauchy–Schwarz energy consumer; subgroup enters only via ≤ n product cap) |
+| G80I | 🏁 `T(W)⁴ ≤ n·W²(log₂W²+1)³` — `T = O(n^{1/4}√W·log^{3/4})`, nontrivial below `n^{2/3}` |
+
+Two-sided envelope on all `W < √p`: `T(W) ≤ min(√n·W^{1/4}, n^{1/4}√W·log^{3/4})·O(1)`.
+
+**The k-fold ENERGY ladder (next target, discovered this round):** unlike the crude divisor
+k-ladder (worse with k — §5), the ENERGY k-ladder IMPROVES: Cauchy–Schwarz on k-fold products
+gives `T(W)^{2k} ≤ n·E_k(A)` with the SAME ≤ n product-set cap (rigidity needs `W^k < p`), and
+`E_k(A) ≤ Σ_{y≤W^k} d_k(y)²`; with the classical `Σ d_k² ≤ M·polylog` this yields
+`T(W) ≤ n^{1/(2k)}·√W·polylog` — approaching `√W·polylog` as `k → log p/log W`. At prize β ≫ 3
+the admissible k grows with β: thinner subgroups get STRONGER interval bounds — the correct
+direction, the BGK bootstrap shape, and each rung's ONLY missing input is another pure-Nat
+divisor moment (`Σ_{y≤M} d₃(y)² ≤ M·log⁸M` next: needs the k-fold lcm-hyperbola machinery
+generalizing G80J; d₃ ≤ d² reduction is too lossy — do it properly). Still fenced from the
+saddle at `W < p^{1/k}` vs `W = p/K`; the ladder closes the gap FROM BELOW as k grows but the
+fence survives all fixed k — the k → ∞ uniformity is where the wall lives on this face.
