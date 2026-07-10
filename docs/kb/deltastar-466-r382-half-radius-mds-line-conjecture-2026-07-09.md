@@ -1,4 +1,15 @@
-# R382: half-radius MDS line conjecture (2026-07-09)
+# R382: half-radius MDS line conjecture, refuted as stated (2026-07-09)
+
+> **Status update.** The unrestricted `#(P inter B_e)<=n` conjecture below is false.
+> `_R383HalfRadiusMDSLineRefuted.lean` gives nine proper affine points for the dyadic
+> `[8,4]` RS frame over `F_17`, and Ng--Wild Theorem 4.5 gives an infinite GRS/conic family.
+> `_HalfRadiusStrictSlackLowRateRefuted.lean` further gives ten proper projective points
+> for a globally far `[9,2]` RS line with two units of strict slack and `k<=n/4`.
+> See `deltastar-half-radius-mds-line-refutation-2026-07-09.md`.  The even,
+> exact-half-predecessor specialization is now proved at rate at most `1/16` by
+> `_HalfPredecessorIncidenceAssembly.lean` and its operational composition in
+> `_HalfPredecessorRateSixteenthPin.lean`; the rate-`1/8` and rate-`1/4` production slices
+> remain live.
 
 ## Direct target
 
@@ -14,21 +25,22 @@ The tight-budget prize-shaped examples reduce to the following finite-geometric 
 > projective syndrome line `P` not contained in one support span has at most `n`
 > points in `B_e`.
 
-At `e=n/2-1`, this is exactly the numerator bound needed to make the lattice
-predecessor of `1/2` good when `floor(p/2^128)=n`.  Together with the already-proven
-overlap-packing bad point at `1/2`, it would pin `mcaDeltaStar=1/2` for rates
-`1/4`, `1/8`, and `1/16` in the certified prize-shaped field.
+At `e=n/2-1`, this is the numerator bound needed to make the lattice predecessor of `1/2`
+good when `floor(p/2^128)=n`.  Together with the already-proven overlap-packing bad point at
+`1/2`, it would pin `mcaDeltaStar=1/2`.  The rate-`1/16` case is now pinned by the separate
+rich-point theorem; this line conjecture remains relevant to rates `1/8` and `1/4`.
 
 This conjecture is stronger than a dyadic-only statement.  Current evidence has not
 found a need for multiplicative-subgroup structure, although R380 shows that odd torsion
 changes the equality mechanisms.
 
-## Falsification status
+## Historical falsification status before R383
 
 The sharper proposed bound `2e+1` is false.  R380 certifies an `[6,2]` MDS syndrome
 line over `F_7` with six proper weight-two points, while `2e+1=5`.  Its mechanism is
 cubic torsion; R381 proves that exact resonance cannot occur in a two-power subgroup.
-The weaker `n` bound is saturated, not refuted.
+At that stage the weaker `n` bound was saturated but not yet refuted.  R383 subsequently
+refuted it with nine proper affine points at `[8,4]`.
 
 Small exact and sampled results:
 
@@ -38,6 +50,7 @@ Small exact and sampled results:
 [6,2], e=2, F_7:  exhaustive maximum 6 = n
 [8,2], e=3, F_17 dyadic: 500,000 sampled lines, maximum 8 = n
 [8,1], e=3, F_17 dyadic: 500,000 sampled lines, maximum 4
+[9,2], e=4, F_11 interval: exact certified line with 10 > 9
 [16,4], e=7, F_97 dyadic: 10,000 sampled sparse-point lines, maximum 8
 ```
 
@@ -64,6 +77,26 @@ canonical partition intersection.  No third half-span contains a two-dimensional
 pencil.  The partition construction attains exactly sixteen distinct proper points;
 no structured counterexample above sixteen was found.
 
+A stronger Schubert-style search prescribes four support incidences simultaneously by
+solving
+
+```text
+b + gamma_j d = H_(T_j) a_j,  j=1,2,3,4.
+```
+
+At `[16,4]` this is a homogeneous `48 x 52` system, so it samples components that
+random two-endpoint lines almost never reach.  In 5,000 trials over `F_97` it found a
+13-point proper pencil.  A seeded component walk from that pencil immediately reached
+16 points and explored 3,000 neighboring systems without finding 17.  Repeating 10,000
+four-hit trials over the second dyadic field `F_193` again reached 13 before seeding;
+no counterexample appeared.  Thus the partition value is sharp but not isolated.
+
+`Frontier/_HalfRadiusEvenThirdBlockObstruction.lean` proves the structural obstruction behind
+this census for every twelve-wise independent parity frame.  Any genuinely third eight-block
+sharing the partition-intersection pencil traps that pencil in a support span of size between
+four and seven, so the resulting incidence is improper.  A counterexample at `[16,4]` must
+therefore use general seven-support incidences rather than an odd-facet lift.
+
 ## Why the obvious proofs fail
 
 1. The ordinary secant variety is useless here.  At `e=n/2-1` and `D=n-k`, its
@@ -87,5 +120,60 @@ should force one pencil into three or more half-support spans, after which an MD
 intersection inequality gives a contradiction.  The missing implication is precisely
 the combinatorial extraction from many distinct `e`-supports to those half-spans.
 
-This is now the shortest direct route to an exact operational pin on the tight-budget
-branch.  It remains a conjecture, not a proven prize closure.
+After the R383 and strict-slack refutations, this proof shape applies only to a corrected
+conjecture carrying the full even two-power production structure, not merely strict slack or
+`k<=n/4`.  A different rich-point/line-core proof now closes the rate-at-most-`1/16` slice;
+this unrestricted MDS formulation remains false, while rates `1/8` and `1/4` remain open.
+
+## Rich-hyperplane reformulation and triple dichotomy
+
+Let `D` be the `(k+2)`-dimensional supercode generated by the RS code and the two
+received rows.  A bad projective quotient point `[a:b]` has a representative
+
+```text
+f + a*u0 + b*u1
+```
+
+of weight at most `e`.  Equivalently, the projective normal `(f,a,b)` defines a
+hyperplane containing at least `t=n-e` of the `n` lifted evaluation columns
+
+```text
+(1,x,...,x^(k-1),u0(x),u1(x)).
+```
+
+This gives an exact extremal-geometric attack.  For three distinct quotient directions,
+there is a unique all-nonzero linear combination eliminating their last two coordinates
+`(a,b)`.  Two cases remain:
+
+1. The resulting degree-`<k` polynomial is nonzero.  Then the three rich hyperplanes
+   have at most `k-1` common evaluation columns.
+2. The polynomial is zero.  Then the three normals are collinear in coefficient
+   projective space and belong to one affine-selector pencil.
+
+For every collinear group of `l` rich normals, let `J` be the common base-locus size.
+No-jointness gives `J<t`.  Every evaluation coordinate outside the base lies on at most
+one hyperplane of the pencil, so the non-base agreements are disjoint and
+
+```text
+l * (t-J) <= n-J.
+```
+
+The partition equality family is exactly the case `J=t-1` and `l=n-t+1=e+1`.
+Therefore a proof of the `n` bound can be organized as a stability theorem for a family
+of rich hyperplanes: collinear clusters obey the private-coordinate inequality above,
+while every cross-cluster triple has intersection at most `k-1`.  This is stronger and
+more structured than the earlier unsupported claim that `>n` supports must directly
+produce three containing half-spans.
+
+The non-affine branch is now axiom-clean Lean:
+
+```text
+R383RichHyperplaneTripleDichotomy.
+  card_commonSelectorZeros_lt_of_nonzero_relation
+```
+
+It is stated for an arbitrary finite selector family, not only three selectors.  Any
+scalar relation that cancels both quotient-coordinate columns and leaves a nonzero RS
+codeword forces the common selector-zero set to have cardinality `<k`.  The sole
+remaining branch is exactly a zero codeword relation, i.e. linear dependence of the
+selector normals, which is the cluster/private-coordinate side above.

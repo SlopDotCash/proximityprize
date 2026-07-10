@@ -67,8 +67,10 @@ theorem rotationOrbit_subset_allShadowDifferences
   induction t with
   | zero => simpa using hd
   | succ t ih =>
+      have ht' : t ∈ Finset.range m := Finset.mem_range.mpr
+        (lt_trans (Nat.lt_succ_self t) (Finset.mem_range.mp ht))
       rw [Function.iterate_succ_apply']
-      exact allShadowDifferences_rotZ m r hm ih
+      exact allShadowDifferences_rotZ m r hm (ih ht')
 
 /-- Every member of a rotation orbit has the representative's signed summand. -/
 theorem signedEndpointSummand_eq_of_mem_rotationOrbit
@@ -82,7 +84,9 @@ theorem signedEndpointSummand_eq_of_mem_rotationOrbit
   induction t with
   | zero => rfl
   | succ t ih =>
-      rw [Function.iterate_succ_apply', signedEndpointSummand_rotZ, ih]
+      have ht' : t ∈ Finset.range m := Finset.mem_range.mpr
+        (lt_trans (Nat.lt_succ_self t) (Finset.mem_range.mp ht))
+      rw [Function.iterate_succ_apply', signedEndpointSummand_rotZ g m r hm hg hg0, ih ht']
 
 /-- **Orbit block identity.** -/
 theorem sum_rotationOrbit_signedEndpointSummand

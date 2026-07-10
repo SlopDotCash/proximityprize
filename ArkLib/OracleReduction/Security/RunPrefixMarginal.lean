@@ -37,6 +37,8 @@ open scoped ENNReal NNReal
 
 namespace Prover
 
+universe v
+
 section Generic
 
 variable {α β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]

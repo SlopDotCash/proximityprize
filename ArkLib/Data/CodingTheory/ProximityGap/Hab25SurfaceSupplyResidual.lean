@@ -61,14 +61,14 @@ BCIKS20 Proposition 5.5's many-fibers⟹section core (§5 Hensel machinery, the 
 S10-converse lane). -/
 def HeavyCellSurfaceSupply {n L : ℕ} (domain : Fin n ↪ F₀)
     (u : WordStack F₀ (Fin L) (Fin n)) (δ : ℝ≥0) (k Nmin Wdeg Bw : ℕ) : Prop :=
-  ∀ R : (F₀[X])[X][Y], Irreducible R →
+  ∀ R : Polynomial (Polynomial (Polynomial F₀)), Irreducible R →
     ∀ (G' : Finset F₀) (P : F₀ → F₀[X]),
       (∀ γ ∈ G', (Polynomial.X - Polynomial.C (P γ)) ∣
         R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
       (∀ γ ∈ G', (P γ).natDegree < k ∧
         δᵣ(∑ j : Fin L, (γ ^ (j : ℕ)) • u j, (P γ).eval ∘ domain) ≤ δ) →
       Nmin ≤ G'.card →
-      ∃ w : F₀[X][Y],
+      ∃ w : Polynomial (Polynomial F₀),
         (Polynomial.X - Polynomial.C w) ∣ R ∧
         w.natDegree ≤ Wdeg ∧
         ∀ i, (w.coeff i).natDegree ≤ Bw

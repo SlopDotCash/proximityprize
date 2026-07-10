@@ -45,14 +45,15 @@ attribute [local instance] Classical.propDecidable
 
 variable {F₀ : Type} [Field F₀] [Fintype F₀] [DecidableEq F₀]
 
+noncomputable local instance poly3DecidableEq : DecidableEq ((F₀[X])[X][Y]) :=
+  Classical.decEq _
+
 /-- **Distinct positive-degree irreducible factors are at most `deg_Y`-many**: their
 product divides the factors-product (distinct elements of the multiset), which is
 associated to `Q₀`, and degrees add over the product. -/
-theorem card_posYDegree_factors_le {Q₀ : (F₀[X])[X][Y]} (hQ₀ : Q₀ ≠ 0) :
-    -- Stated at the concrete polynomial tower (not generic `[CommRing R]`): the generic form's
-    -- `natDegree` semiring instance takes the `CommRing.toSemiring` path while every consumer in
-    -- this file carries the field-tower synthesis path, and reconciling the two at `le_trans`
-    -- is a structure-eta defeq across three polynomial layers that blows the heartbeat budget.
+theorem card_posYDegree_factors_le {R : Type} [CommRing R] [IsDomain R]
+    [UniqueFactorizationMonoid R] [decEq : DecidableEq (Polynomial R)]
+    {Q₀ : Polynomial R} (hQ₀ : Q₀ ≠ 0) :
     ((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
       (fun S => 1 ≤ S.natDegree)).card ≤ Q₀.natDegree := by
   classical
@@ -99,6 +100,7 @@ theorem one_le_natDegree_of_catching {R : (F₀[X])[X][Y]} {γ : F₀} {p : F₀
     have : (Polynomial.X - Polynomial.C p).natDegree = 1 := Polynomial.natDegree_X_sub_C p
     omega
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **The uniform `(ℓ, T)` heavy-cell attribution (#304, bookkeeping brick closed).**
 Share and budget both explicit in `(n, k, m, L)`:
 `ℓ = gs_degree_bound k n m`, `T = n·|constraintIndices m|·(gs_degree_bound·(L−1))`. -/
@@ -154,21 +156,23 @@ theorem exists_heavy_factor_cell_uniform {n k m L : ℕ} [NeZero n]
     rcases hRor with h | ⟨γ, hγ⟩
     · exact absurd h (Option.some_ne_none R)
     · obtain ⟨hRmem, hRdvd⟩ := hfactor R hRIdx
+      have hRfac : R ∈ UniqueFactorizationMonoid.factors Q₀ := by
+        simpa only [Multiset.mem_toFinset] using hRmem
       obtain ⟨hz, hdvd⟩ := hRdvd γ hγ
       have hzR : R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 := by
         intro h0
-        obtain ⟨c, hc⟩ := Multiset.dvd_prod
-          (Multiset.mem_toFinset.mp hRmem)
+        obtain ⟨c, hc⟩ := Multiset.dvd_prod hRfac
         apply hz
         have hQdvd : R ∣ Q₀ :=
-          dvd_trans (Multiset.dvd_prod (Multiset.mem_toFinset.mp hRmem))
+          dvd_trans (Multiset.dvd_prod hRfac)
             (UniqueFactorizationMonoid.factors_prod hQ₀0).dvd
         obtain ⟨c', hc'⟩ := hQdvd
         rw [hc', Polynomial.map_mul, h0, zero_mul]
       have hdvdR : (Polynomial.X - Polynomial.C (P γ)) ∣
           R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) := hdvd
       exact Or.inl (Finset.mem_filter.mpr
-        ⟨hRmem, one_le_natDegree_of_catching hzR hdvdR⟩)
+        ⟨by simpa only [Multiset.mem_toFinset] using hRfac,
+          one_le_natDegree_of_catching hzR hdvdR⟩)
   -- |Index'| ≤ |Cat| + 1 via the injection some⁻¹ into `Cat` (empty cells dropped below)
   -- run the pigeonhole on the SUB-index of genuinely nonempty cells
   have hcover' : ∀ γ ∈ G, ∃ ij ∈ Index', γ ∈ Ecell ij := by
@@ -201,11 +205,15 @@ theorem exists_heavy_factor_cell_uniform {n k m L : ℕ} [NeZero n]
   -- the heavy factor's data
   have hRIdx : some R ∈ Index := (Finset.mem_filter.mp hRIdx').1
   obtain ⟨hRmem, hRdvd⟩ := hfactor R hRIdx
+  have hRfac : R ∈ UniqueFactorizationMonoid.factors Q₀ := by
+    simpa only [Multiset.mem_toFinset] using hRmem
   -- the catching count is at most the Y-degree, which is at most the degree bound
   have hCatle : Cat.card ≤ gs_degree_bound k n m :=
-    le_trans (card_posYDegree_factors_le hQ₀0) hYdeg
+    le_trans (by
+      simpa only [hCatdef] using
+        card_posYDegree_factors_le (decEq := poly3DecidableEq) hQ₀0) hYdeg
   refine ⟨R, UniqueFactorizationMonoid.irreducible_of_factor R
-    (Multiset.mem_toFinset.mp hRmem), Ecell (some R), hsubG _, ?_, ?_⟩
+    hRfac, Ecell (some R), hsubG _, ?_, ?_⟩
   · calc G.card ≤ B + Cat.card * (Ecell (some R)).card := hRcount
       _ ≤ B + gs_degree_bound k n m * (Ecell (some R)).card :=
           Nat.add_le_add_left (Nat.mul_le_mul_right _ hCatle) _

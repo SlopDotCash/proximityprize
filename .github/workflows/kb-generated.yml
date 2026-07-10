@@ -98,4 +98,7 @@ jobs:
               --body-file "$body")"
           fi
 
-          gh pr merge "$pr_url" --auto --squash --delete-branch
+          if ! gh pr merge "$pr_url" --auto --squash --delete-branch; then
+            echo "Auto-merge was unavailable; attempting an immediate squash merge."
+            gh pr merge "$pr_url" --squash --delete-branch
+          fi
