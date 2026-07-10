@@ -2407,6 +2407,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountGrowthLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountWallDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitSizeEqN
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OverdispersionObstructsVariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorArithmetic
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorConstruction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedConstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleArithmetic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleBadCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleConstruction
@@ -2965,6 +2968,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RadicalContainerCodegreeO
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RaggedRootBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomDomainTransferGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RandomSignTypicalNotAllOnesGate
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterCommonFactorOwnershipAmplifier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RefinedProfileFloorBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementFlatnessCriterion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceAgreementOffDiagCorridor
