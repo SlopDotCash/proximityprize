@@ -25083,3 +25083,21 @@ declared next target) would upgrade G80M to the FULL CG bound T(W) ≤ √n·W^{
 W < √p. The subgroup content of the entire chain is now complete; everything remaining on the
 interval face is integer arithmetic. Still fenced from the prize saddle by G80P regime
 disjointness — no prize claim. CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G80K-divisor-first-moment] The divisor FIRST moment machine-checked pure-Nat: exact hyperbola identity Σ_{y≤M} d(y) = Σ_{a≤M} ⌊M/a⌋ + dyadic harmonic bound Σ⌊M/a⌋ ≤ M(log₂M+1) — the classical average-divisor bound with no analysis (Real.log-free); stepping stone to the KB §6 second moment that upgrades G80L to the full CG interval bound (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80KDivisorFirstMoment.lean`, real locked build, all 3
+theorems exactly `[propext, Classical.choice, Quot.sound]`).
+
+**Bricks.** `card_dvd_Icc`: each a ≥ 1 divides exactly ⌊M/a⌋ integers in [1,M]
+(Nat.card_multiples + shift bijection). `sum_card_divisors_eq`: the EXACT hyperbola double
+count Σ_{y≤M} d(y) = Σ_{a≤M} ⌊M/a⌋. `sum_div_le_dyadic`: dyadic blocks [2^j, 2^{j+1}) each
+contribute ≤ 2^j·(M/2^j) ≤ M and there are ≤ log₂M + 1 blocks — the harmonic-sum bound in
+pure Nat, no Real.log. Corollary `sum_card_divisors_le`: Σ_{y≤M} d(y) ≤ M(log₂M+1) — the
+classical d̄ = O(log M).
+
+**Next (KB §6).** The second moment Σ_{y≤M} d(y)² ≤ C·M·(log₂M+1)³ via the same machinery
+(Σ d² = Σ_{a,b} ⌊M/lcm(a,b)⌋, group by gcd, three dyadic harmonic sums) feeds G80L:
+E×(A) ≤ Σ_{y≤W²} d(y)² ⟹ T(W) ≤ C·n^{1/4}·√W·log^{3/4}W — nontrivial BELOW the n^{2/3}
+threshold where G80M dies, extending the unconditional window downward. Still fenced from
+the prize saddle (G80P). CORE remains OPEN / ON-BGK. No axioms, no sorry.
