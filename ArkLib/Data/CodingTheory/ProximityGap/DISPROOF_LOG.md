@@ -24415,3 +24415,30 @@ anti-concentration of dilated multiplicative subgroups in arcs — BGK/Cilleruel
 frontier) remains THE open core, and a Fourier-derived uniformity input stays circular (G78).
 The arc program is complete on both sides of that single missing input. CORE remains OPEN /
 ON-BGK. No axioms, no sorry.
+
+### [466-HD1-hasse-davenport-coset-opening] The §33 route-(ii) swing OPENED: HD product relations pin coset products of the ladder's Jacobi coefficients EXACTLY (verified); the angle spectrum's even half is exact arithmetic data; the r=3 rung carries 22–34% of its mass there (2026-07-10)
+
+Lane: direct Fable 5, §33 live route (ii) (probe `/tmp/arklib-reports/hd_coset_angles_probe.py`;
+plan in doctrine-v2 §5 addendum; research branch only).
+
+**Verified (4 cells: p=17/41/113/257).** (A) The Hasse–Davenport product relation
+`Π_{a mod m'} g(χρ^a) = g(χ^{m'})·χ̄^{m'}(m')·Π_a g(ρ^a)` holds numerically for the in-tree dual
+family (ρ = ψ of order m). (B) Hence coset products `Π_{j∈j₀+H} J_j` over cosets of subgroups
+H ≤ ℤ/m are CLOSED FORM: at the dyadic cell p=257/m=16 the odd coset gives |Π J| = q^{|H|/2} =
+257⁴ to ten digits (all-nondegenerate), the even coset carries the degenerate spikes (j=0 and
+λ_jχ-trivial positions). (C) With ‖J_j‖ = √q rigid, the closed-form coset products pin
+Σ_{j∈coset} arg J_j exactly — for m = 2^k, ALL nontrivial-subgroup coset sums ⟹ the EVEN-frequency
+half of the angle vector's DFT is exact arithmetic data (from Gauss-sum multiplicativity — a
+NON-PARSEVAL, non-circular input class, exactly what doctrine v2 calls for).
+
+**Quantification (the honest number).** The r=3 rung `Σ_t ‖Ĵ(t)‖⁶` splits: even-frequency share
+0.225 (p=17), 0.335 (p=257); odd (HD-free) share 0.665–0.775. So HD-coset data alone cannot close
+the rung (majority mass is odd-half) but is NON-vacuous on a third of it.
+
+**Next (queued).** Either (i) find the odd-half analogue (HD LIFTING along field extensions is
+unavailable at prime p; a twisted/quadratic-coset variant pinning odd sums would close the gap —
+check the χ-shifted family ψ^{j}·quadratic), or (ii) prove the adversarial no-go: exact even-half
+angle data + modulus rigidity is consistent with rung-violating odd halves (a compactness/DOF
+count: m/2 free angles vs 1 rung inequality — likely refutation, land with mechanism), or (iii)
+the constructive middle: an unconditional bound on the EVEN-half ℓ⁶ mass from HD data alone
+(a genuine partial theorem on the calibrated open core). CORE OPEN / ON-BGK.

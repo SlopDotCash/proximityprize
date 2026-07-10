@@ -40,15 +40,10 @@ theorem assemble_restrict {A : Type*} {r s : ℕ} (hsr : s ≤ r)
     (e : Fin s ↪ Fin r) (endpoint : Fin r → A) :
     assemble hsr e (restrictCore e endpoint) (restrictPad hsr e endpoint) = endpoint := by
   funext j
-  let z := (slotEquiv hsr e).symm j
-  have hz : slotEquiv hsr e z = j := Equiv.apply_symm_apply _ j
+  obtain ⟨z, rfl⟩ := (slotEquiv hsr e).surjective j
   cases z with
-  | inl i =>
-      rw [← hz]
-      simp [restrictCore]
-  | inr k =>
-      rw [← hz]
-      simp [restrictPad]
+  | inl i => simp [restrictCore]
+  | inr k => simp [restrictPad]
 
 /-- Core/padding restriction after assembly recovers both source words. -/
 theorem restrict_assemble {A : Type*} {r s : ℕ} (hsr : s ≤ r)
