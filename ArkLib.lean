@@ -2134,6 +2134,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FFCompositeDiscrepancyCha
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FIResolventEdgePerturbation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS10ExactEnergyAlmostAllPrimes
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS11GenericDepthDecomposition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS12ZeroSumCountBijection
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS1Depth3AnnihilatorLedger
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS2PatternAnnihilatorResultant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FS3AnnihilatorHeightBound
@@ -2837,6 +2838,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R390PerFrequencyShadowEnergyConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R390RelationResultantCertificate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R391RelationHeightLedger
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R392RelationCountCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R40CubeClassExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R41SexticInputSplit

@@ -31345,3 +31345,24 @@ spawned task). Immediate corollary shape available: at all but ≤ n^{2r}((k+1+b
 `rEnergy = trivialCountG` EXACTLY (field-independent) for any fixed r. HONEST SCOPE: the
 exceptional budget grows like n^{2r+1} — vacuous at prize depth r ≈ ln q; the wall stands.
 CORE OPEN, ON-BGK.
+
+## [466-FS12-zerosum-shift-bijection] REDUCTION BRICK (Fable session): `trivialCountG m r = zeroSumCount m (r+r)` — the two-sided depth-r census collapses to a ONE-SIDED zero-sum tuple count via the fold flip `μ(x±m) = −μ(x)` (2026-07-09)
+
+Lane: FS12 (file `Frontier/_FS12ZeroSumCountBijection.lean`, real locked build 3317 jobs, all 3
+theorems axiom-clean `[propext, Classical.choice, Quot.sound]`).
+
+- `monomF_mshift`: the m-shift `x ↦ x ± m` on [0,2n... [0,2m) exponents flips the folded
+  monomial's sign: `μ(shift x) = −μ(x)` (involutive, range-preserving).
+- `sum_append_eq_pattern`: `Σ_{Fin(r+r)} μ((a ++ shift∘b)(i)) = patternPolyG m a b`.
+- `trivialCountG_eq_zeroSumCount` (Fin.append bijection): the FS11 field-free census equals
+  `zeroSumCount m (r+r) = #{c : Fin(r+r) → [0,2m) : Σ μ(cᵢ) = 0}`.
+
+VALUE: the depth-generic ledger's ONLY remaining census input, `trivialCountG ≤ (2r−1)‼(2m)^r`,
+is now a statement about a single unsigned tuple family, where the Wick union bound is the clean
+pairing induction `Z(N) ≤ (N−1)·2m·Z(N−2)` (the last item must cancel an m-shifted partner —
+coefficient at its residue is a signed item count; Z(odd) = 0 by parity). No two-sided
+bookkeeping. That induction = the spawned "depth-generic T=1 ledger" task's core; with it, the
+Wick rung at EVERY fixed depth follows at almost all primes through FS1–FS3 + FS11 + this brick.
+LEAN NOTE (recurring): `Finset.card_bij` goals carry beta-redexes — `dsimp only` before rw;
+`Fin.append` at a raw index: use explicit `append_apply_lt/ge` helpers (conv_lhs for the
+dependent rewrite) rather than `Fin.addCases`. CORE OPEN, ON-BGK.
