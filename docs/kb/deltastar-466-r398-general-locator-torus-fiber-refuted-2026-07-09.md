@@ -29,6 +29,14 @@ The enumeration is exact for each sampled configuration: both sides have
 `k=4,n=16` base case, analogous sampled maxima are only two, confirming that the completed
 quadratic-complement argument is exceptional to low dimension.
 
+## Correction: the faithful compatibility parameter is the identity
+
+The arbitrary diagonal torus parameter is itself an over-relaxation.  Both block locators are
+evaluated at the same three common anchors, and their leading coefficients absorb the one scalar
+of proportionality.  Literal compatibility is equality of their projective locator points.
+Thus the `404` counterexample refutes every proof that forgets the fixed parameter, but it does
+not refute the identity-fiber intersection used by the full factorization equations.
+
 ## Consequence
 
 Three-anchor locator compatibility alone cannot close the general overlap-three cell.  A real
@@ -39,5 +47,6 @@ witness carries additional equations omitted by this abstraction:
 3. agreement at all three coordinates outside the two-core union;
 4. the received rows are fixed globally across every witness.
 
-The next viable invariant is the simultaneous interpolation system on those three uncovered
-coordinates, not the projective locator fiber by itself.  No prize closure is claimed here.
+The next viable invariant is the simultaneous identity-fiber and interpolation-line system on
+the three uncovered coordinates, not an arbitrary projective locator fiber.  No prize closure is
+claimed here.
