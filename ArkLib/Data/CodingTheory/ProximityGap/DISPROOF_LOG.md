@@ -32719,3 +32719,15 @@ p=257 census is EMPTY). VERDICT: the coverage-FORCING direction of the G82 race 
 grab at accessible scales; the data supports the FENCE direction (coverage stays ≪ s*), which
 would close the CRT amplification route as a no-go — while leaving piece (b) itself needing a
 non-CRT mechanism. The seam remains open but its live half is now the fence.
+
+### [466-litsweep-2026-07-10] Post-doctrine sweep: analytic core literature UNCHANGED (no non-Fourier certificate attempted anywhere); iterated-KM (Raghavan 2603.27045) fails at the same G78 point; ONE pull — GGSW arXiv:2607.08516 (2026-07-09) casts curve-decodability as row-span-constrained LCL, feeds lane B2 + amplifies the folded-RS pin (2026-07-10)
+
+Full report in `docs/kb/deltastar-466-litsweep-2026-07-10.md`. Headlines: (1) no 2025–26 work
+touches n ≈ p^{1/4} at √-scale; the doctrine-v2 missing-ingredient diagnosis now has a fresh
+literature floor. (2) Raghavan's iterated sifting (3AP exponent 1/9→1/6) improves the dense
+regime only; the spreadness hypothesis remains Fourier-certified — G78's rank-one circularity
+applies verbatim to the iterated engine. (3) GGSW 2607.08516: random ensembles now match GG25
+subspace-design proximity gaps via black-box transference, degree-independent; plain smooth-domain
+RS untouched (consistent with plain-RS-is-Paley); the row-span-constrained LCL formulation is the
+recommended re-plan target for the OPEN B2 `CurveDecodability.lean` lane. (4) JLR 2601.10047 is
+withdrawn (subsumed by GG25) — update citations. CORE OPEN / ON-BGK.
