@@ -141,8 +141,10 @@ theorem canonical_quartet_products_antipodal {μ : ℕ} {w : L}
       Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons, Matrix.cons_val_three]
     · simp
     · exact hw
-    · rw [← pow_mul, mul_comm, pow_mul, hw, one_pow]
-    · rw [neg_pow, hw, mul_one]
+    · change (w ^ 2) ^ (2 ^ μ) = 1
+      rw [← pow_mul, mul_comm, pow_mul, hw, one_pow]
+    · change (-w) ^ (2 ^ μ) = 1
+      rw [neg_pow, hw, mul_one]
       rcases Nat.even_or_odd (2 ^ μ) with ⟨m, hm⟩ | ⟨m, hm⟩
       · rw [hm]; ring_nf; rw [pow_mul]; simp
       · exfalso

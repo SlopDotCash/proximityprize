@@ -46,3 +46,20 @@ the off-diagonal remainder and bounds only that remainder at Wick scale.
 
 The finite-field equality `max rep4(c)=12n-24` is probe evidence, not yet a Lean theorem. Small
 hostile fields violate it, so any theorem needs an explicit prize-regime or no-extra-fiber guard.
+
+## Exhaustive-prime falsification (2026-07-09)
+
+An exhaustive sweep of every prime `p < 200000` with `n | p-1` shows that a simple density guard
+such as `p > n^3` does **not** imply the sharp law.  For example,
+
+```text
+n=32, p=194977 (> 5*n^3): max rep4(c)=836 > 360=12*n-24.
+```
+
+Exceptions persist to `p=41521` for `n=16` and throughout the searched range for `n=32`.
+Thus exact characteristic-zero transfer is the wrong finite-field target.  On the other hand, all
+searched exceptions remain far below R390's coarse `105n` envelope.  The live route is now:
+
+1. prove a coarse finite-characteristic `O(n)` nonzero-fiber envelope in the prize range; and
+2. use it only inside a DC-centered variance/switching identity, since raw pointwise domination
+   cannot pay the Wick budget.

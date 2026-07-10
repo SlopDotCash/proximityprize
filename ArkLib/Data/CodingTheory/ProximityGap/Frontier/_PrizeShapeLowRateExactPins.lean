@@ -3,9 +3,13 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R382HalfRadiusPinConnector
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PackingBudgetFirstJump
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateEighthFullWiring
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateSixteenthFullWiring
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SeventeenThirtyTwoFullWiring
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30Second
+import ArkLib.Data.CodingTheory.ProximityGap.KKH26RegimeSplit
 import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
 
 /-!
@@ -22,32 +26,89 @@ There are two prize-shaped arithmetic branches.
 * For `P₂ / 2^128 = 2^31 = 2n`, a count at most `2n` at `17/32` proves the strict lower pin
   `mcaDeltaStar >= 17/32 > 1/2`.
 
-The concrete corollaries presently expose the corresponding literal count as a theorem
-hypothesis.  Once the rate-`1/16` and rate-`1/8` rich-point capstones are imported, their
-unconditional specializations are one-line applications of these corollaries.
+The generic connectors expose the corresponding literal count as a theorem hypothesis.  The
+rate-`1/8` and rate-`1/16` incidence capstones discharge it for the first certified field, and
+the rate-`1/16` `17/32` capstone gives the separated lower pin for the second field.  All of
+the resulting concrete conclusions are unconditional.
 -/
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option maxRecDepth 100000
 
 open Finset
 open scoped NNReal ENNReal
 open ProximityGap ProximityGap.MCAThresholdLedger Code
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.PackingBudgetFirstJump
-open ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector
 
 namespace ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
 
 attribute [local instance] Classical.propDecidable
 
-local instance firstPrimeFact :
-    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
-  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩
+/-- The last Hamming lattice radius below `1/2` at even length.  This local definition keeps
+the literal-count connector independent of the heavier projective R382 stack. -/
+noncomputable def halfPredecessorRadius (n : ℕ) : ℝ≥0 :=
+  ((n / 2 - 1 : ℕ) : ℝ≥0) / (n : ℝ≥0)
 
-local instance secondPrimeFact :
-    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) :=
-  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩
+/-- A good half predecessor fills the whole open interval below `1/2`, because `epsMCA`
+depends only on `floor(delta*n)`. -/
+theorem half_le_mcaDeltaStar_of_predecessor_good
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {n : ℕ} [NeZero n] (hnEven : n % 2 = 0) (hn2 : 2 ≤ n)
+    (C : Set (Fin n → F)) (epsilonStar : ℝ≥0∞)
+    (hprev : epsMCA (F := F) (A := F) C (halfPredecessorRadius n) ≤ epsilonStar) :
+    (1 / 2 : ℝ≥0) ≤ mcaDeltaStar (F := F) (A := F) C epsilonStar := by
+  let w : ℕ := n / 2 - 1
+  let deltaPrev : ℝ≥0 := halfPredecessorRadius n
+  have hnpos : 0 < n := by omega
+  have hn0 : (n : ℝ≥0) ≠ 0 := by exact_mod_cast hnpos.ne'
+  have hnHalf : n = 2 * (n / 2) := by omega
+  have hprevMul : deltaPrev * (n : ℝ≥0) = (w : ℝ≥0) := by
+    dsimp only [deltaPrev, halfPredecessorRadius, w]
+    exact div_mul_cancel₀ _ hn0
+  have hhalfMul : (1 / 2 : ℝ≥0) * (n : ℝ≥0) = ((n / 2 : ℕ) : ℝ≥0) := by
+    have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by
+      exact_mod_cast hnHalf
+    rw [hncast]
+    field_simp
+  have hgood : ∀ delta : ℝ≥0, delta < (1 / 2 : ℝ≥0) →
+      epsMCA (F := F) (A := F) C delta ≤ epsilonStar := by
+    intro delta hdelta
+    by_cases hle : delta ≤ deltaPrev
+    · exact le_trans (epsMCA_mono C hle) hprev
+    · have hprevDelta : deltaPrev < delta := lt_of_not_ge hle
+      have hlowerFloor : (w : ℝ≥0) ≤ delta * (n : ℝ≥0) := by
+        have hm := mul_lt_mul_of_pos_right hprevDelta (by positivity)
+        rw [hprevMul] at hm
+        exact hm.le
+      have hupperFloor : delta * (n : ℝ≥0) < ((n / 2 : ℕ) : ℝ≥0) := by
+        have hm := mul_lt_mul_of_pos_right hdelta (by positivity)
+        rwa [hhalfMul] at hm
+      have hfloorDelta :
+          Nat.floor (delta * (Fintype.card (Fin n) : ℝ≥0)) = w := by
+        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        constructor
+        · exact hlowerFloor
+        · dsimp only [w]
+          have hsucc : n / 2 - 1 + 1 = n / 2 := by omega
+          have hcast : (((n / 2 - 1 : ℕ) : ℝ≥0) + 1) =
+              ((n / 2 : ℕ) : ℝ≥0) := by
+            exact_mod_cast hsucc
+          rw [hcast]
+          exact hupperFloor
+      have hfloorPrev :
+          Nat.floor (deltaPrev * (Fintype.card (Fin n) : ℝ≥0)) = w := by
+        rw [Fintype.card_fin, hprevMul, Nat.floor_natCast]
+      rw [ProximityGap.epsMCA_eq_of_floor_eq (F := F) (A := F) C
+        (hfloorDelta.trans hfloorPrev.symm)]
+      exact hprev
+  by_contra hnot
+  rw [not_le] at hnot
+  obtain ⟨delta, hstarDelta, hdeltaHalf⟩ := exists_between hnot
+  have hdeltaLe := le_mcaDeltaStar_of_good (F := F) (A := F) C epsilonStar
+    (le_trans hdeltaHalf.le (by norm_num)) (hgood delta hdeltaHalf)
+  exact (not_lt_of_ge hdeltaLe) hstarDelta
 
 /-- A finite count budget `E * Q <= p` is exactly the normalized inequality
 `E/p <= Q⁻¹` used by the prize ledger. -/
@@ -71,11 +132,10 @@ theorem natCast_div_le_inv_of_mul_le {E Q p : ℕ}
       exact_mod_cast hbudget
     _ = (Q : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := mul_comm _ _
 
-open Classical in
 /-- A literal uniform bad-scalar count gives an operational lower bracket at any radius. -/
 theorem radius_le_mcaDeltaStar_of_badCount_le
-    {ι F : Type} [Fintype ι] [Nonempty ι]
-    [Field F] [Fintype F]
+    {ι F : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    [Field F] [Fintype F] [DecidableEq F]
     (C : Set (ι → F)) (delta : ℝ≥0) (E : ℕ) (epsilonStar : ℝ≥0∞)
     (hdelta : delta ≤ 1)
     (hcount : ∀ u : WordStack F (Fin 2) ι,
@@ -130,6 +190,14 @@ theorem evalCode_deltaStar_eq_half_of_predecessor_badCount_le
 
 /-! ## Concrete prize-shaped arithmetic specializations -/
 
+local instance firstPrimeFact :
+    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
+  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩
+
+local instance secondPrimeFact :
+    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) :=
+  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩
+
 /-- At the first certified prize-shaped prime, the literal rate-`1/16` predecessor count
 immediately pins the operational threshold to `1/2`. -/
 theorem firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
@@ -144,14 +212,93 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
       (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
       (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))
       (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by
-  letI : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
-    ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩
   letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
   exact evalCode_deltaStar_eq_half_of_predecessor_badCount_le
     ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g
     (by norm_num) (by norm_num) (by norm_num)
     ArkLib.ProximityGap.PrizeShapePrimeP30.P_div_two_pow_128
     (by norm_num) (by norm_num) hcount
+
+/-- **Unconditional first-prime rate-`1/16` pin.**  The fully assembled rich-point
+incidence theorem supplies the literal predecessor count, so the prize-shaped operational
+threshold is exactly `1/2` with no named geometric residual. -/
+theorem firstPrime_rateSixteenth_deltaStar_eq_half :
+    mcaDeltaStar
+      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
+      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
+      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))
+      (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by
+  apply firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
+  intro u
+  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
+  have hg0 : ArkLib.ProximityGap.PrizeShapePrimeP30.g ≠ 0 :=
+    ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g
+  let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P :=
+    ProximityGap.KKH26RegimeSplit.powDomain
+      ArkLib.ProximityGap.PrizeShapePrimeP30.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
+  have hcount :=
+    ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.halfPredecessor_badScalar_filter_card_le_length
+        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
+        (n := 2 ^ 30) (h := 2 ^ 29) (k := 2 ^ 26)
+        dom (by norm_num) (by norm_num) (by norm_num) u
+  have hcode :
+      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g
+          (2 ^ 30) (2 ^ 26 - 1) =
+        (ReedSolomon.code dom (2 ^ 26) :
+          Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
+    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
+      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+        ArkLib.ProximityGap.PrizeShapePrimeP30.g
+        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
+        (2 ^ 26 - 1))
+  rw [← hcode] at hcount
+  simpa only [halfPredecessorRadius,
+    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]
+    using hcount
+
+/-- **Unconditional first-prime rate-`1/8` pin.**  The complete exceptional-line
+pruning and third-moment incidence theorem bounds the literal predecessor bad-scalar
+set by the code length, so the operational threshold is exactly `1/2`. -/
+theorem firstPrime_rateEighth_deltaStar_eq_half :
+    mcaDeltaStar
+      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
+      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
+      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 27 - 1))
+      (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by
+  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
+  apply evalCode_deltaStar_eq_half_of_predecessor_badCount_le
+    ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g
+    (by norm_num) (by norm_num) (by norm_num)
+    ArkLib.ProximityGap.PrizeShapePrimeP30.P_div_two_pow_128
+    (by norm_num) (by norm_num)
+  intro u
+  have hg0 : ArkLib.ProximityGap.PrizeShapePrimeP30.g ≠ 0 :=
+    ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g
+  let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P :=
+    ProximityGap.KKH26RegimeSplit.powDomain
+      ArkLib.ProximityGap.PrizeShapePrimeP30.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
+  have hcount :=
+    ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthFullWiring.halfPredecessor_badScalar_filter_card_le_two_pow_thirty
+      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)
+      (k := 2 ^ 27) dom (by norm_num) (by norm_num) u
+  have hcode :
+      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g
+          (2 ^ 30) (2 ^ 27 - 1) =
+        (ReedSolomon.code dom (2 ^ 27) :
+          Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
+    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 27)] using
+      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+        ArkLib.ProximityGap.PrizeShapePrimeP30.g
+        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
+        (2 ^ 27 - 1))
+  rw [← hcode] at hcount
+  simpa only [halfPredecessorRadius,
+    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]
+    using hcount
 
 /-- At the second certified prime, a literal `2n` bad-count bound at `17/32` gives a
 strictly-beyond-half operational lower pin. -/
@@ -170,8 +317,6 @@ theorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount
         (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
           (2 ^ 30) (2 ^ 26 - 1))
         (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
-  letI : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) :=
-    ⟨ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩
   have hp : 0 < ArkLib.ProximityGap.PrizeShapePrimeP30Second.P :=
     ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P.pos
   have hmul : (2 ^ 31 : ℕ) * 2 ^ 128 ≤
@@ -186,7 +331,9 @@ theorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount
       (2 ^ 30) (2 ^ 26 - 1))
     (17 / 32 : ℝ≥0) (2 ^ 31)
     (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)
-    (by rw [div_le_one (by norm_num : (0 : ℝ≥0) < 32)]; norm_num) hcount hbudget
+    (by
+      rw [div_le_iff₀ (by norm_num : (0 : ℝ≥0) < 32)]
+      norm_num) hcount hbudget
 
 /-- The second-prime conclusion is genuinely separated from the first-prime half pin. -/
 theorem secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
@@ -207,14 +354,70 @@ theorem secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
   exact lt_of_lt_of_le (by norm_num)
     (secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount hcount)
 
+/-- **Unconditional second-prime rate-`1/16` lower pin.**  The assembled
+`17/32` incidence theorem supplies the literal `2n` scalar budget. -/
+theorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar :
+    (17 / 32 : ℝ≥0) ≤
+      mcaDeltaStar
+        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
+        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
+        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+          (2 ^ 30) (2 ^ 26 - 1))
+        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by
+  apply secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount
+  intro u
+  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
+  have hg0 : ArkLib.ProximityGap.PrizeShapePrimeP30Second.g ≠ 0 :=
+    ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g
+  let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P :=
+    ProximityGap.KKH26RegimeSplit.powDomain
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0
+  have hcount :=
+    ArkLib.ProximityGap.Frontier.SeventeenThirtyTwoFullWiring.seventeenThirtyTwo_badScalar_filter_card_le_two_mul_length
+      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
+      (n := 2 ^ 30) (m := 2 ^ 25) (k := 2 ^ 26)
+      dom (by norm_num) (by norm_num) (by norm_num) u
+  have hcode :
+      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+          (2 ^ 30) (2 ^ 26 - 1) =
+        (ReedSolomon.code dom (2 ^ 26) :
+          Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by
+    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
+      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+        ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+        ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0
+        (2 ^ 26 - 1))
+  rw [← hcode] at hcount
+  simpa only [show 2 * 2 ^ 30 = 2 ^ 31 by norm_num] using hcount
+
+/-- The two certified prize-shaped fields have genuinely different operational
+rate-`1/16` thresholds: the second lies strictly above the first field's exact half pin. -/
+theorem secondPrime_rateSixteenth_half_lt_deltaStar :
+    (1 / 2 : ℝ≥0) <
+      mcaDeltaStar
+        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
+        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)
+        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+          (2 ^ 30) (2 ^ 26 - 1))
+        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) :=
+  lt_of_lt_of_le (by norm_num)
+    secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar
+
 end ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
 
 /-! ## Axiom audit -/
 
-namespace ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
-
-#print axioms evalCode_deltaStar_eq_half_of_predecessor_badCount_le
-#print axioms firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
-#print axioms secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
-
-end ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
+#print axioms
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le
+#print axioms
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
+#print axioms
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half
+#print axioms
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateEighth_deltaStar_eq_half
+#print axioms
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount
+#print axioms
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar

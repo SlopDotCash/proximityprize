@@ -31,6 +31,7 @@ side and pins the tight-budget operational threshold exactly at `1/2`.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option maxRecDepth 100000
 
 open Finset
 open scoped NNReal ENNReal
@@ -366,7 +367,8 @@ theorem mcaDeltaStar_le_half_of_floor_eq_length
   have hnsub : n - n / 2 = n / 2 := by omega
   rw [hnsub] at h
   have hhalf : (((n / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0)) = 1 / 2 := by
-    have hn0 : (n : ℝ≥0) ≠ 0 := by positivity
+    have hnpos : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
+    have hn0 : (n : ℝ≥0) ≠ 0 := by exact_mod_cast hnpos.ne'
     apply (div_eq_iff hn0).2
     have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by
       exact_mod_cast hn2
@@ -556,14 +558,10 @@ end ArkLib.ProximityGap.PackingBudgetFirstJump
 
 /-! ## Axiom audit -/
 
-namespace ArkLib.ProximityGap.PackingBudgetFirstJump
-
-#print axioms exists_overlapFreshScalars
-#print axioms overlap_epsMCA_lower_bound_of_supply
-#print axioms mcaDeltaStar_le_first_deep_packing_of_floor_budget
-#print axioms inv_lt_epsMCA_half_of_floor_eq_length
-#print axioms mcaDeltaStar_le_half_of_floor_eq_length
-#print axioms mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
-#print axioms exists_order_mcaDeltaStar_le_half_of_floor_eq_length
-
-end ArkLib.ProximityGap.PackingBudgetFirstJump
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_overlapFreshScalars
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.overlap_epsMCA_lower_bound_of_supply
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_first_deep_packing_of_floor_budget
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.inv_lt_epsMCA_half_of_floor_eq_length
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_le_half_of_floor_eq_length
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.mcaDeltaStar_eq_half_dim_two_of_floor_eq_length
+#print axioms ArkLib.ProximityGap.PackingBudgetFirstJump.exists_order_mcaDeltaStar_le_half_of_floor_eq_length

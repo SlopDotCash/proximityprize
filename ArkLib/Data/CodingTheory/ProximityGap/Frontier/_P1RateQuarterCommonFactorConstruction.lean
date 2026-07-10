@@ -7,7 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterScaleBadCoun
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCommonFactorArithmetic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterCommonFactorOwnershipAmplifier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterOverlapThreeFactorization
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorRateQuarterOverlapThreeFactorization
 
 /-!
 # Concrete P1 common-factor construction
@@ -153,16 +152,16 @@ theorem hole_not_mem_commonRoots : hole ∉ commonRoots := by
 
 /-! ## Common locator and amplified lines -/
 
-/-- The single concrete residual left by the reduction-heavy billion-scale
-locator product.  It states exactly the three properties used downstream:
-degree, vanishing on the selected roots, and nonvanishing elsewhere. -/
+/-- The locator interface used downstream: a degree bound, vanishing on the
+selected roots, and nonvanishing everywhere else in the evaluation domain. -/
 structure CommonLocatorData where
   polynomial : F[X]
   natDegree_le : polynomial.natDegree ≤ 2 * d
   eval_zero : ∀ {e : Coord}, e ∈ commonRoots → polynomial.eval (domain e) = 0
   eval_ne_zero : ∀ {e : Coord}, e ∉ commonRoots → polynomial.eval (domain e) ≠ 0
 
-/-- Existence of the concrete locator is the sole named residual. -/
+/-- Existence proposition for a package satisfying the locator interface.
+`commonLocatorResidual` below discharges it unconditionally. -/
 def CommonLocatorResidual : Prop := Nonempty CommonLocatorData
 
 theorem eval_domainRootProduct_eq_zero_iff_mem
@@ -296,5 +295,10 @@ end ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction
 #print axioms selectedCoords_card
 #print axioms commonRoots_card
+#print axioms concreteCommonLocator_natDegree
+#print axioms concreteCommonLocator_eval_zero
+#print axioms concreteCommonLocator_eval_ne_zero
+#print axioms commonLocatorResidual
+#print axioms commonLocatorData
 #print axioms amplifiedAffine_degree_lt_k
 #print axioms direction_eval_newHole

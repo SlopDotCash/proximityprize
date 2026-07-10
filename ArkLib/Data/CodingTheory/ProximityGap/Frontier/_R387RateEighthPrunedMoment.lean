@@ -301,11 +301,12 @@ theorem card_le_thirtyTwo_mul_of_pruned_geometry
   let M : ℕ := B.card
   have hpruned : 144 * m + 7 ≤ 7 * M := by
     dsimp only [M, B]
+    have hRcard' : 7 * R.card ≤ 5 * (16 * m) := by nlinarith [hRcard]
     have := nine_mul_add_seven_le_seven_mul_card_sdiff
-      (16 * m) G R hRG (by omega) hRcard
+      (16 * m) G R hRG (by omega) hRcard'
     nlinarith
   have hM : 144 * m + 1 ≤ 7 * M := by omega
-  have havgTwo : 64 * m ≤ M * (16 * m + 1) := by
+  have havgTwo : 4 * (16 * m) ≤ M * (16 * m + 1) := by
     exact average_two_of_nine_mul_add_one_le_seven_mul
       (h := 16 * m) (M := M) (by omega) (by nlinarith [hM])
   have hsum : M * (16 * m + 1) ≤
@@ -315,10 +316,13 @@ theorem card_le_thirtyTwo_mul_of_pruned_geometry
       exact hsize gamma hgamma)
   have hlower : lowerSix m M ≤
       6 * ∑ i : U, ((incidenceMultiplicity B A i).choose 3 : ℚ) := by
+    have hU' : Fintype.card U = 2 * (16 * m) := by omega
     have hJ := thirdMoment_jensen_lower_rat_of_average_two
       (fun i ↦ incidenceMultiplicity B A i) (16 * m) M
-      (by omega) (by simpa [mul_assoc] using hU) havgTwo hsum
-    simpa only [lowerSix] using hJ
+      (by omega) hU' havgTwo hsum
+    dsimp only at hJ
+    dsimp only [lowerSix]
+    convert hJ using 1 <;> push_cast <;> ring
   have hupperNat :
       6 * ∑ i : U, (incidenceMultiplicity B A i).choose 3 ≤
         (4 * m - 1) * M * (M - 1) * (M - 2) +
@@ -350,8 +354,8 @@ theorem card_le_thirtyTwo_mul_of_pruned_geometry
     have hm12 : 3 ≤ 12 * m := by omega
     have hM1 : 1 ≤ M := by omega
     have hM2 : 2 ≤ M := by omega
-    rw [Nat.cast_sub hm4, Nat.cast_sub hm12, Nat.cast_sub hM1,
-      Nat.cast_sub hM2] at hcast
+    push_cast [Nat.cast_sub hm4, Nat.cast_sub hm12,
+      Nat.cast_sub hM1, Nat.cast_sub hM2] at hcast
     simpa only [upperSix] using hcast
   have hgap := upperSix_lt_lowerSix m M (by omega) hM
   linarith

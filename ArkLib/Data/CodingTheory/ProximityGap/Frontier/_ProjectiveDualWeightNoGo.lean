@@ -32,7 +32,7 @@ open Finset
 open scoped NNReal ENNReal
 open ProximityGap
 
-namespace ProximityGap.Frontier.ProjectiveDualWeightNoGo
+namespace ArkLib.ProximityGap.Frontier.ProjectiveDualWeightNoGo
 
 open MCAProjectiveEquivariance
 open ProjectiveQuotientBall
@@ -41,6 +41,7 @@ open ProjectiveRankTwoAPI
 open ArkLib.HigherOrderMDS
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.Frontier.GenericQuotientInterpolationSpread
+open ProximityGap.Ownership
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -51,18 +52,19 @@ variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 /-- A nonzero point in a proper intersection with a two-dimensional subspace forces that
 intersection to have dimension exactly one. -/
 theorem finrank_inf_eq_one_of_finrank_eq_two_of_mem_of_not_le
-    (P B : Submodule F ((ι → A) ⧸ C))
+    (C : Submodule F (ι → A)) (P B : Submodule F ((ι → A) ⧸ C))
     (hP : Module.finrank F P = 2) (q : (ι → A) ⧸ C)
     (hq0 : q ≠ 0) (hqP : q ∈ P) (hqB : q ∈ B) (hnot : ¬ P ≤ B) :
-    Module.finrank F (P ⊓ B) = 1 := by
+    Module.finrank F ↥(P ⊓ B) = 1 := by
   let I : Submodule F ((ι → A) ⧸ C) := P ⊓ B
   have hqI : q ∈ I := ⟨hqP, hqB⟩
   have hIbot : I ≠ ⊥ := by
     intro hbot
     have : q = 0 := by
-      apply Submodule.mem_bot.mp
-      rw [← hbot]
-      exact hqI
+      have hqbot : q ∈ (⊥ : Submodule F ((ι → A) ⧸ C)) := by
+        rw [← hbot]
+        exact hqI
+      simpa using hqbot
     exact hq0 this
   have hIpos : 1 ≤ Module.finrank F I :=
     Submodule.one_le_finrank_iff.mpr hIbot
@@ -75,7 +77,12 @@ theorem finrank_inf_eq_one_of_finrank_eq_two_of_mem_of_not_le
       Submodule.eq_of_le_of_finrank_eq inf_le_left (hI.trans hP.symm)
     apply hnot
     intro x hx
-    exact inf_le_right (hIP ▸ hx)
+    have hxI : x ∈ I := by
+      rw [hIP]
+      exact hx
+    change x ∈ P ⊓ B at hxI
+    exact hxI.2
+  change Module.finrank F I = 1
   omega
 
 /-- A normalized projective point of an independent quotient-row pair is nonzero. -/
@@ -117,7 +124,7 @@ theorem badSlot_witnesses_rankOne_supportIntersection
       WitnessAdmissible δ S ∧
       quotientSlotPoint C u₀ u₁ s ∈ quotientSupportSubmodule C S ∧
       Module.finrank F
-        (quotientPencil C u₀ u₁ ⊓ quotientSupportSubmodule C S) = 1 := by
+        ↥(quotientPencil C u₀ u₁ ⊓ quotientSupportSubmodule C S) = 1 := by
   obtain ⟨S, hS, hmem, hproper⟩ :=
     (mcaEventProj_iff_quotientPencilSupport C δ u₀ u₁
       (slotCoords s).1 (slotCoords s).2).1 hbad
@@ -205,17 +212,27 @@ theorem f4129_orderTwoHigherMDS_not_lengthBound :
   have h := orderTwoHigherMDS_not_linearMCA_of_choose_gt
     (p := 4129) (s := 8) (m := 1) (r := 3) (K := 1)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-    orderOf_2386 (by norm_num) (by norm_num)
-  convert h using 1 <;> norm_num
+    orderOf_2386 (by norm_num [Nat.choose]) (by norm_num [Nat.choose])
+  rcases h with ⟨hmds, hrs, hnot⟩
+  refine ⟨?_, ?_, ?_⟩
+  · simpa using hmds
+  · simpa using hrs
+  · have hradius :
+        (1 : NNReal) - ((3 : Nat) : NNReal) / ((8 : Nat) : NNReal) =
+          (5 : NNReal) / 8 := by
+      refine tsub_eq_of_eq_add ?_
+      norm_num
+    rw [hradius] at hnot
+    simpa using hnot
 
-end ProximityGap.Frontier.ProjectiveDualWeightNoGo
+end ArkLib.ProximityGap.Frontier.ProjectiveDualWeightNoGo
 
 /-! ## Axiom audit -/
 #print axioms
-  ProximityGap.Frontier.ProjectiveDualWeightNoGo.finrank_inf_eq_one_of_finrank_eq_two_of_mem_of_not_le
+  ArkLib.ProximityGap.Frontier.ProjectiveDualWeightNoGo.finrank_inf_eq_one_of_finrank_eq_two_of_mem_of_not_le
 #print axioms
-  ProximityGap.Frontier.ProjectiveDualWeightNoGo.badSlot_witnesses_rankOne_supportIntersection
+  ArkLib.ProximityGap.Frontier.ProjectiveDualWeightNoGo.badSlot_witnesses_rankOne_supportIntersection
 #print axioms
-  ProximityGap.Frontier.ProjectiveDualWeightNoGo.orderTwoHigherMDS_not_linearMCA_of_choose_gt
+  ArkLib.ProximityGap.Frontier.ProjectiveDualWeightNoGo.orderTwoHigherMDS_not_linearMCA_of_choose_gt
 #print axioms
-  ProximityGap.Frontier.ProjectiveDualWeightNoGo.f4129_orderTwoHigherMDS_not_lengthBound
+  ArkLib.ProximityGap.Frontier.ProjectiveDualWeightNoGo.f4129_orderTwoHigherMDS_not_lengthBound

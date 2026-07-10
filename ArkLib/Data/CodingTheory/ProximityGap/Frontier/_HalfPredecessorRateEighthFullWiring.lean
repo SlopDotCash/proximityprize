@@ -20,6 +20,9 @@ divisibility assumption on `h` is used.  The two Johnson strata use
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+set_option linter.style.longLine false
 
 open Finset Polynomial
 open _root_.ProximityGap Code
@@ -47,7 +50,7 @@ variable [Field F] [Fintype F] [DecidableEq F]
 including all four possible residues of `h` modulo four. -/
 theorem exceptional_core_family_card_le_fifteen_generic
     {U Line : Type*} [Fintype U] [DecidableEq U] [DecidableEq Line]
-    (h k : ℕ) (hh : 2048 ≤ h) (hk : 1 ≤ k) (hrate : 4 * k ≤ h)
+    (h k : ℕ) (hh : 1699 ≤ h) (hk : 1 ≤ k) (hrate : 4 * k ≤ h)
     (hU : Fintype.card U = 2 * h)
     (E : Finset Line) (core : Line → Finset U)
     (hsize : ∀ line ∈ E, 3 * (h / 4) + 2 ≤ (core line).card)
@@ -55,7 +58,7 @@ theorem exceptional_core_family_card_le_fifteen_generic
       (core line ∩ core line').card ≤ k - 1) :
     E.card ≤ 15 := by
   let q := h / 4
-  have hq : 512 ≤ q := by
+  have hq : 1 ≤ q := by
     dsimp only [q]
     omega
   have hkq : k ≤ q := by
@@ -112,7 +115,7 @@ theorem exceptional_core_family_card_le_fifteen_generic
 possible residues of `h` modulo sixteen. -/
 theorem ultra_core_family_card_le_three_generic
     {U Line : Type*} [Fintype U] [DecidableEq U] [DecidableEq Line]
-    (h k : ℕ) (hh : 2048 ≤ h) (hk : 1 ≤ k) (hrate : 4 * k ≤ h)
+    (h k : ℕ) (hh : 1699 ≤ h) (hk : 1 ≤ k) (hrate : 4 * k ≤ h)
     (hU : Fintype.card U = 2 * h)
     (Q : Finset Line) (core : Line → Finset U)
     (hsize : ∀ line ∈ Q, 15 * (h / 16) + 1 ≤ (core line).card)
@@ -120,7 +123,7 @@ theorem ultra_core_family_card_le_three_generic
       (core line ∩ core line').card ≤ k - 1) :
     Q.card ≤ 3 := by
   let q := h / 16
-  have hq : 128 ≤ q := by
+  have hq : 26 ≤ q := by
     dsimp only [q]
     omega
   have hhq : 16 * q ≤ h := by
@@ -138,7 +141,7 @@ theorem ultra_core_family_card_le_three_generic
   rw [hU] at hJ
   by_contra hnot
   have hQ : 4 ≤ Q.card := by omega
-  have hqR : (128 : ℝ) ≤ q := by exact_mod_cast hq
+  have hqR : (26 : ℝ) ≤ q := by exact_mod_cast hq
   have hhqR : (16 : ℝ) * q ≤ h := by exact_mod_cast hhq
   have hhqR' : (h : ℝ) ≤ 16 * q + 15 := by exact_mod_cast hhq'
   have hkqR : ((k - 1 : ℕ) : ℝ) ≤ 4 * q + 2 := by
@@ -152,7 +155,7 @@ theorem ultra_core_family_card_le_three_generic
   have hpolypos : (0 : ℝ) <
       (15 * (q : ℝ) + 1) ^ 2 -
         2 * (16 * (q : ℝ) + 15) * (4 * (q : ℝ) + 2) := by
-    nlinarith [sq_nonneg ((q : ℝ) - 128)]
+    nlinarith [sq_nonneg ((q : ℝ) - 26)]
   have hcoef : (0 : ℝ) <
       (15 * (q : ℝ) + 1) ^ 2 - 2 * (h : ℝ) * (k - 1 : ℕ) := by
     nlinarith
@@ -167,7 +170,7 @@ theorem ultra_core_family_card_le_three_generic
         2 * (h : ℝ) *
           (15 * (q : ℝ) + 1 - ((k - 1 : ℕ) : ℝ)) := by
     convert hJ using 1 <;> push_cast <;> ring
-  nlinarith [sq_nonneg ((q : ℝ) - 128)]
+  nlinarith [sq_nonneg ((q : ℝ) - 26)]
 
 /-! ## A generic pruned-moment consumer -/
 
@@ -178,7 +181,7 @@ so no rounding loss occurs when `4 ∤ h`. -/
 theorem card_le_two_mul_of_pruned_geometry
     {U Gamma Line : Type*} [Fintype U] [DecidableEq U]
     [DecidableEq Gamma] [DecidableEq Line]
-    (h k : ℕ) (hh : 2048 ≤ h) (hk : 1 ≤ k) (hrate : 4 * k ≤ h)
+    (h k : ℕ) (hh : 1699 ≤ h) (hk : 1 ≤ k) (hrate : 4 * k ≤ h)
     (hU : Fintype.card U = 2 * h)
     (G R : Finset Gamma) (A : Gamma → Finset U)
     (onLine : Line → Gamma → Prop) (determinedLine : Gamma → Gamma → Line)
@@ -443,7 +446,7 @@ theorem badScalarRichPointFamily_card_le_two_mul
     {dom : ι ↪ F} {k h : ℕ} {delta : ℝ≥0}
     {u : WordStack F (Fin 2) ι}
     (family : BadScalarRichPointFamily dom k delta u)
-    (hh : 2048 ≤ h) (hk : 1 ≤ k)
+    (hh : 1699 ≤ h) (hk : 1 ≤ k)
     (hn : Fintype.card ι = 2 * h)
     (hthreshold : ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊ = h + 1)
     (hrate : 4 * k ≤ h) :
@@ -629,7 +632,7 @@ theorem badScalarRichPointFamily_card_le_two_mul
 the code length many members. -/
 theorem canonicalRichPointFamily_card_le_two_mul
     (dom : ι ↪ F) {k h : ℕ} (delta : ℝ≥0)
-    (u : WordStack F (Fin 2) ι) (hh : 2048 ≤ h) (hk : 1 ≤ k)
+    (u : WordStack F (Fin 2) ι) (hh : 1699 ≤ h) (hk : 1 ≤ k)
     (hn : Fintype.card ι = 2 * h)
     (hthreshold :
       ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊ = h + 1)
@@ -643,7 +646,7 @@ theorem canonicalRichPointFamily_card_le_two_mul
 `h+1`. -/
 theorem badScalar_filter_card_le_two_mul
     (dom : ι ↪ F) {k h : ℕ} (delta : ℝ≥0)
-    (u : WordStack F (Fin 2) ι) (hh : 2048 ≤ h) (hk : 1 ≤ k)
+    (u : WordStack F (Fin 2) ι) (hh : 1699 ≤ h) (hk : 1 ≤ k)
     (hn : Fintype.card ι = 2 * h)
     (hthreshold :
       ⌈(1 - delta) * (Fintype.card ι : ℝ≥0)⌉₊ = h + 1)
@@ -658,7 +661,7 @@ theorem badScalar_filter_card_le_two_mul
 /-- Operational half-predecessor form for an arbitrary even code length. -/
 theorem canonical_halfPredecessor_card_le_length
     {n h k : ℕ} [NeZero n] (dom : Fin n ↪ F)
-    (hn : n = 2 * h) (hh : 2048 ≤ h) (hk : 1 ≤ k)
+    (hn : n = 2 * h) (hh : 1699 ≤ h) (hk : 1 ≤ k)
     (hrate : 8 * k ≤ n)
     (u : WordStack F (Fin 2) (Fin n)) :
     (canonicalBadScalarRichPointFamily dom (k := k)
@@ -674,11 +677,11 @@ theorem canonical_halfPredecessor_card_le_length
   simpa only [hn] using hbound
 
 /-- **Literal uniform rate-`1/8` predecessor bad-count theorem.**  For every
-received affine word and every even length `n=2h` with `h≥2048`, at most `n`
+received affine word and every even length `n=2h` with `h≥1699`, at most `n`
 scalars trigger the MCA bad event whenever `8k≤n`. -/
 theorem halfPredecessor_badScalar_filter_card_le_length
     {n h k : ℕ} [NeZero n] (dom : Fin n ↪ F)
-    (hn : n = 2 * h) (hh : 2048 ≤ h) (hk : 1 ≤ k)
+    (hn : n = 2 * h) (hh : 1699 ≤ h) (hk : 1 ≤ k)
     (hrate : 8 * k ≤ n)
     (u : WordStack F (Fin 2) (Fin n)) :
     (Finset.univ.filter fun gamma : F ↦

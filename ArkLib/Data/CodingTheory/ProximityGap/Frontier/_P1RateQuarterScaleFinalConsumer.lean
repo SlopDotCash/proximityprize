@@ -27,6 +27,7 @@ namespace ArkLib.ProximityGap.Frontier.P1RateQuarterScaleFinalConsumer
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open P1RateQuarterScaleArithmetic
 open P1RateQuarterScaleConstruction
+open P1RateQuarterScaleOperationalCountConnector
 
 local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
@@ -60,7 +61,7 @@ theorem N_lt_badScalar_filter_card :
 theorem rateQuarter_epsMCA_lower_bound :
     ((N + 2 : ℕ) : ℝ≥0∞) / (P : ℝ≥0∞) ≤
       epsMCA (F := F) (A := F) certificateCode delta := by
-  exact P1RateQuarterScaleOperationalCountConnector.epsMCA_ge_N_add_two_div_P_of_badScalar_filter_card
+  exact epsMCA_ge_N_add_two_div_P_of_badScalar_filter_card
     certificateCode u
     P1RateQuarterScaleBadCount.badScalar_filter_card_ge_N_add_two
 
@@ -68,12 +69,19 @@ theorem rateQuarter_epsMCA_lower_bound :
 theorem prizeEpsilon_lt_certificateMass :
     ((((2 : ℕ) ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
       ((N + 2 : ℕ) : ℝ≥0∞) / (P : ℝ≥0∞) := by
-  exact P1RateQuarterScaleOperationalCountConnector.prizeEpsilon_lt_N_add_two_div_P
+  exact prizeEpsilon_lt_N_add_two_div_P
 
 theorem prizeEpsilon_lt_rateQuarter_epsMCA :
     ((((2 : ℕ) ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
       epsMCA (F := F) (A := F) certificateCode delta :=
   prizeEpsilon_lt_certificateMass.trans_le rateQuarter_epsMCA_lower_bound
+
+/-- The prize error is already exceeded at the rate-quarter Johnson radius. -/
+theorem prizeEpsilon_lt_rateQuarter_epsMCA_half :
+    ((((2 : ℕ) ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
+      epsMCA (F := F) (A := F) certificateCode (1 / 2) :=
+  prizeEpsilon_lt_rateQuarter_epsMCA.trans_le
+    (epsMCA_mono certificateCode delta_lt_half.le)
 
 /-- Operational prize-scale upper ledger at the strongest thickened rate-quarter radius. -/
 theorem rateQuarter_mcaDeltaStar_le :
@@ -83,6 +91,15 @@ theorem rateQuarter_mcaDeltaStar_le :
       delta :=
   ProximityGap.MCAThresholdLedger.mcaDeltaStar_le_of_bad _ _
     prizeEpsilon_lt_rateQuarter_epsMCA
+
+/-- The operational threshold lies strictly below the rate-quarter Johnson
+radius `1-sqrt(1/4)=1/2`. -/
+theorem rateQuarter_mcaDeltaStar_lt_half :
+    ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := F)
+        certificateCode
+        ((((2 : ℕ) ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) <
+      (1 / 2 : ℝ≥0) :=
+  rateQuarter_mcaDeltaStar_le.trans_lt delta_lt_half
 
 /-- The ledger radius has the advertised correction below `23/48`. -/
 theorem rateQuarter_mcaDeltaStar_le_twentyThree_over_fortyEight_correction :
@@ -95,6 +112,8 @@ theorem rateQuarter_mcaDeltaStar_le_twentyThree_over_fortyEight_correction :
 
 #print axioms N_lt_badScalar_filter_card
 #print axioms rateQuarter_epsMCA_lower_bound
+#print axioms prizeEpsilon_lt_rateQuarter_epsMCA_half
+#print axioms rateQuarter_mcaDeltaStar_lt_half
 #print axioms rateQuarter_mcaDeltaStar_le_twentyThree_over_fortyEight_correction
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterScaleFinalConsumer

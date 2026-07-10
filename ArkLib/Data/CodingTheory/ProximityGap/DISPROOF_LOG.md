@@ -1,3 +1,63 @@
+## [466-R399-pair-multiplicity-eight] REFUTED: the repaired constant pair cap also fails, while `rep4<=105n` survives (2026-07-10)
+
+Canonicalizing R393's residual-coordinate permutations sharpened its coefficient from 24 to 12,
+making `PairMultiplicityEight + PrimitiveFourBoundNine` a valid conditional `105n` capstone.
+However, `PairMultiplicityEight` is not universal. At
+
+```text
+n=256, p=67280421310721 = 1 (mod 256) > 256^4,
+```
+
+the sum-2 fiber has five unordered supports
+`(0,0),(6,9),(67,131),(70,140),(73,134)` and nine ordered representations. Thus `rep2(2)=9>8`.
+
+The prize-facing bound itself survives: direct exact convolution gives
+`rep4(1)=rep4(2)=24865=97.12890625*n < 105n=26880`. This separates the true target from the failed
+surrogate. Both constant pair caps are retired as universal inputs; the direct nonzero four-fiber
+bound remains live.
+
+## [466-R398-Stein-jump-energy] REFUTED: period-square Stein regression does not have `O(n)` tilted jump energy (2026-07-10)
+
+R398 turns the exact period-square recursion into a reversible quadratic-regression Stein identity.
+This suggested bounding the conditional jump energy under the saddle exponential tilt by `C*n`,
+which would yield a sub-Gaussian upper tail without iterating raw moments. Quartic-diagonal probes
+refute the required uniform constant:
+
+```text
+ n     p near n^4       E_theta[D]/n
+16       65537              0.984
+32     1048609              2.274
+64    16777601              4.818
+```
+
+Here `theta=sqrt(2 log((p-1)/n)/n)` and
+`D(b)=avg_{v!=1}(X_{b(v-1)}-X_b)^2`. The ratio roughly doubles under `n -> 2n`, so the tilted jump
+energy trends like `n^2`, not `n`. The exact Lean identity remains valid and axiom-clean, but the
+direct exchangeable-pairs concentration bypass returns the known quartic wall and is retired.
+
+## [466-R397-quartic-pair-multiplicity] REFUTED: `p>n^4` does not imply pair multiplicity at most four (2026-07-10)
+
+R394/R395 proposed bounding every nonzero two-sum fiber of the dyadic root subgroup by four.
+R397 reduced the diagonal branch exactly to a Lucas/subresultant obstruction. At `n=128`, its
+degree-one subresultant content has the prime factor
+
+```text
+p = 9430378268417 = 1 (mod 128) > 128^4 = 268435456.
+```
+
+This is a genuine counterexample. For `z=3^((p-1)/128)` modulo `p`, the equation
+`z^i+z^j=2` has the five ordered solutions
+
+```text
+(0,0), (5,87), (87,5), (23,110), (110,23).
+```
+
+Hence there are three unordered supports and `rep2(2)=5>4`. The R397 prime-selective quartic
+bound and the unconditional use of `PairMultiplicityFour` are retired. The Lean Lucas reduction
+remains valid. R393 was subsequently sharpened from 24 to 12 canonical permutations, yielding a
+corrected R394 capstone from `PairMultiplicityEight` plus `PrimitiveFourBoundNine`; thus this
+counterexample kills the old component hypothesis, not the repaired finite `105n` program.
+
 ## [466-antiresonance-dichotomy-reduces-to-wall] the Chapman-Mudgal anti-resonance DICHOTOMY (in the W8/A quarter-arc coset-SET language, at worst-b, thin-dyadic) is an EXACT re-encoding of the BGK sup bound; the arc-excess is an O(1)-multiple proxy for M^2/n, no independent lever, no tower descent (2026-07-09, opus-4-8 core seat)
 
 LENS: the UNRUN Chapman-Mudgal anti-resonance dichotomy (2605.15434), dossier v3 §16(D) / lines 981, 1122.
@@ -20505,6 +20565,28 @@ contribution is the route to the SHARP constant, while closing the bound still n
 Katz-class input or a new idea. Live-route map refined; C = 40 calibration unchanged.
 CORE OPEN, ON-BGK.
 
+## [466-rate-half-three-core-radix] REFUTED: the all-stack `n`-scalar cap at the predecessor of `31/64` (2026-07-10)
+
+The conditional hypothesis in
+`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count` is false.  At the first
+certified prize field and `n=64m=2^30`, three explicit 33-fiber cores produce 93 pairwise distinct
+base external-defect directions.  Radix lifting tensors these with the `m=2^24` evaluation vectors
+inside each fiber, producing `93m=1,560,281,088` projective directions, which exceeds the proposed
+budget `n=64m` by `29m=486,539,264`.  Since both `93m` and `C(93m,2)` are below the field size,
+two elementary finite-union-of-hyperplanes steps choose stack rows for which all direction ratios
+are finite and distinct.  Every ratio gives a genuine core-plus-one `mcaEvent` with
+`33m+1` agreements; the nonzero denominator defect rules out joint agreement on that witness.
+
+Exact base calculation and arithmetic:
+`scripts/probes/probe_rate_half_three_core_radix_counterexample.py`.  Derivation:
+`docs/kb/deltastar-466-rate-half-three-core-radix-counterexample-2026-07-10.md`.
+
+CONSEQUENCE: the attempted exact `31/64` rate-half pin is closed as a false route.  The
+codimension-two/projective-locator formulation remains valid, but it admits multi-core spline
+families larger than `n`; any useful upper bound must operate closer to the genuine interior
+threshold and account for this radix-amplified construction.  This is a refutation of a campaign
+residual, not a solution of the original proximity prize.  CORE remains OPEN.
+
 ## [466-r20-mobius-discharged-stepanov-scaffold-depth-twosided] ROUND 20: MobiusCrossRatioIdentity DISCHARGED (quadratic face of QuarticWeilInput = LegendreCubicHasse ALONE); Stepanov scaffold + one-sided halving; tower⟺AwaySupBound TWO-SIDED (constant 3) at depth r ≥ log₃q; magnitude-only reverse refuted below depth (2026-07-07)
 
 Four lanes + four adversarial skeptics (CASTBRIDGE/STEPANOV/RHO minor; SUBWICK **major** — see
@@ -31301,8 +31383,229 @@ Direct/coarse formalization, a line-by-line red-team audit, and the serialized p
 agree; headline axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
 
 CONSEQUENCE: the Proximity Prize half-predecessor branch is exactly pinned at rate `1/16`.
-The analogous rates `1/8` and `1/4` remain open and require a stronger treatment of rich-line
-collinear excess.
+The rate-`1/8` branch is closed separately below; rate `1/4` remains open and requires a
+stronger treatment of exceptional rich-line cores.
+
+## [466-half-predecessor-rate-eighth-PROVED] Johnson pruning closes the exact half-predecessor good side and `delta-star=1/2` pin at rate at most `1/8` (2026-07-09)
+
+The complete rate-`1/8` connector is machine checked.  In a hypothetical family with more than
+`n=2h` selected bad scalars, every five-point secant has core size at least
+`3*floor(h/4)+2`; distinct secant cores meet in at most `k-1`.  Johnson packing leaves at most
+fifteen such exceptional lines.  A second threshold at `15*floor(h/16)+1` leaves at most three
+ultra lines.  The global core ceiling gives `5L<=h+4` on ultra lines, while ordinary exceptional
+lines have `L<=16`.  Their point union `R` therefore satisfies `7|R|<=5h`.  Removing `R` leaves
+more than `9h/7` points and no five-point line, so the exact pruned third-moment/Jensen inequality
+contradicts the remaining family.
+
+`Frontier/_HalfPredecessorRateEighthFullWiring.lean` exports
+`badScalarRichPointFamily_card_le_two_mul`, the canonical and literal bad-event wrappers, and the
+`n=2^30` specialization.  It works for every field and distinct evaluation domain with `n=2h`,
+`h>=1699`, and `8k<=n`; no divisibility condition on `h` is used.  The separate cutoff arithmetic
+module proves that the exceptional Johnson stratum is scale-free, the ultra stratum already holds
+at `h>=416`, and exact integer exceptional-union arithmetic sets the exported cutoff `h>=1699`
+(the envelope still fails at `h=1698`).
+`Frontier/_HalfPredecessorRateEighthPin.lean` exports
+`epsMCA_halfPredecessor_rateEighth_le` and
+`evalCode_mcaDeltaStar_eq_half_of_rateEighth`, proving the normalized `n/|F|` bound and the exact
+operational threshold `1/2` under the explicit smooth-domain order, tight field-floor, and
+overlap-supply hypotheses.  Source iteration, an independent implementation, and an adversarial
+line-by-line audit agree; headline axioms are exactly `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+CONSEQUENCE: the rate-at-most-`1/8` half-predecessor branch and its certified first-prime
+prize-shaped instance are exactly pinned.  This is an operational field/budget theorem; it does
+not close rate `1/4`, the interior-window threshold, or the full proximity-gap grand challenge.
+
+## [466-seventeen-thirty-two-second-prime-BRACKETED] the rate-`1/16` incidence theorem gives a strict beyond-half lower bracket on the certified second field (2026-07-09)
+
+`Frontier/_SeventeenThirtyTwoFullWiring.lean` proves the literal bad-scalar count `<=2n` at
+radius `17/32` for lengths divisible by `32` and rate at most `1/16`.
+`Frontier/_SeventeenThirtyTwoDeltaStarFloor.lean` normalizes this as
+`epsMCA(RS,17/32)<=2n/|F|` and converts any budget `(2n)Q<=p` into
+`17/32<=mcaDeltaStar(RS,1/Q)`.  The same file proves that this budget is incompatible with the
+tight branch `floor(p/Q)=n`, so it does not improve the exact first-prime half pin.
+
+For the certified second prize-shaped prime, an independent generic-quotient second-moment
+ceiling combines with the new lower point to give the axiom-clean bracket
+
+```text
+17/32 <= mcaDeltaStar(RS,2^-128) <= 119/128.
+```
+
+The endpoints do not coincide.  This is a stronger unconditional field-specific bracket, not an
+exact delta-star pin.
+
+## [466-half-predecessor-rate-quarter-obtuse-determinant-REDUCED] the rate-`1/4` half-predecessor residual localizes to exceptional secants, with the three-core determinant premise proved (2026-07-09)
+
+`Frontier/_HalfPredecessorRateQuarterObtuse.lean` proves the sharp endpoint set-system bound:
+equal `(h+1)`-subsets of a `2h`-coordinate universe with pair intersections at most `k+1` have
+cardinality at most `2h` whenever `2k<=h`.  The proof uses centered incidence vectors and
+Mathlib's Rankin--Serre obtuse-vector lemma.  It is wired to selected rich-point families and the
+literal `mcaEvent` filter.  The theorem `card_le_two_mul_or_exists_large_pair` makes the exact
+residual explicit: either the desired `|G|<=2h` bound already holds, or two distinct selected
+agreements meet in at least `k+2` coordinates.  The older far-direction Johnson branch is also
+recorded in `_HalfPredecessorRateQuarterFarDirection.lean`.
+
+The endpoint theorem is in fact rate-independent in its pair cap: a uniform cap `s` closes as
+soon as `2s<=h+2`.  Thus `card_le_two_mul_or_exists_pair_core_ge_half_add_two` raises the exact
+residual to an agreement intersection of size at least `floor(h/2)+2` (equal to `k+2` only at
+the saturated boundary `h=2k`).  With `2k+2<=h`, the entire `k+2` band is already closed and the
+first possible exceptional pair has core size at least `k+3`.
+
+For three decoded polynomial-line core pairs, the new
+`Frontier/_HalfPredecessorRateQuarterDeterminantMultiplicity.lean` proves that
+`|D1|+|D2|+|D3|-n>2k-2` forces their determinant to vanish.  A coordinate in two cores supplies a
+simple root and a coordinate in all three supplies a double root via literal divisibility by
+`(X-C x)^2`; summing root multiplicities over the injective domain closes the degree argument in
+arbitrary characteristic.  All headline declarations use only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+`Frontier/_HalfPredecessorRateQuarterCollapsedClusterInjection.lean` proves the next incidence
+step conditionally but exactly: once all source and target decoded lines are determinant-collapsed
+against a fixed transverse reference pair, one fresh cross-core petal per scalar reads that scalar
+from a single coordinate function, so distinct scalars inject into the coordinate domain.
+`Frontier/_HalfPredecessorRateQuarterCrossCoreScalar.lean` proves from literal `jointCore` and
+`fullAgreement` membership that every such fresh cross-core petal is automatically transverse
+and satisfies the required scalar-ratio identity.
+`Frontier/_HalfPredecessorRateQuarterComplementaryCores.lean` separately closes the extremal
+two-core packing branch whenever the two cores cover the domain (and quantitatively whenever the
+uncovered-coordinate budget plus `2(k-1)` is below `h+1`).
+`Frontier/_HalfPredecessorRateQuarterFreshPetalAssembly.lean` eliminates the explicit petal map
+when the collapsed cluster's core union has enough coverage: richness constructs a fresh target
+core coordinate for every scalar and the collapsed-cluster injection gives `|G|<=n`.
+
+`Frontier/_HalfPredecessorRateQuarterCoreBandSynthesis.lean` composes the endpoint,
+complementary-core, and large-core branches.  In a counterexample every relevant core satisfies
+`2|D|+3<=h+4(k-1)`; the canonical exceptional core has size at least `floor(h/2)+2` and its union
+with every relevant partner misses at least three coordinates.  At the saturated boundary
+`h=2k`, the surviving core band is exactly `k+2<=|D|<=3k-4`.
+`Frontier/_HalfPredecessorRateQuarterFreshPetalPruning.lean` sharpens the intermediate branch:
+at `h=2k`, a counterexample forces an outsider secant petal of size at least `floor(k/3)+2` beyond
+the canonical intermediate core; the matching cap `floor(k/3)+1` closes that branch.  By itself,
+this pruning theorem leaves control of overlap among successive forced petals.
+`Frontier/_HalfPredecessorRateQuarterPetalOverlapGrowth.lean` gives the exact recurrence: the
+weighted overlap of two target petals is the sum of their base-core intersections and their
+mutual petal intersection.  Excess overlap forces determinant collapse; otherwise three petals
+obey a sharp union-growth inequality.  This recurrence leaves a selection theorem that supplies
+several forced petals with usable determinant or base-intersection control.
+`Frontier/_HalfPredecessorRateQuarterPetalIteration.lean` shows that the first forced large petal
+can be fixed as an anchor carrying uniform one- and two-companion increment rules.  This closes
+anchor compatibility, but it neither produces noncollapsed companions nor iterates to arbitrary
+length.
+`Frontier/_HalfPredecessorRateQuarterGlobalAnchoredPetalSynthesis.lean` attaches those same
+uniform rules to both branches of the global petal dichotomy, without changing the high-core
+`floor(k/2)+3` or intermediate-core `floor(k/3)+2` witness.
+The tempting next inference is false abstractly: the axiom-clean `k=7,n=28` sunflower in
+`Frontier/_HalfPredecessorRateQuarterPetalSelectionRefuted.lean` exactly saturates every current
+two-/three-petal and one-/two-companion inequality while three companions still leave six
+coordinates unused.  Its `4k+1` labels are deliberately not attached to RS secants, so it refutes
+only a cardinal-only closure.  The exact `F29,n=28,k=7` executable certificate
+`scripts/probes/probe_rate_quarter_sunflower_rs_realization.cpp` goes further: four degree-six
+decoded lines realize exactly those `6+4` cores, every triple determinant is nonzero, and six
+pair-crossing scalars are genuinely nonjoint with 15 agreements.  Exhaustive interpolation of all
+`C(28,7)=1,184,040` information sets over all 29 scalars finds precisely those six candidates and
+no off-line extras.  The realization is therefore far below `|G|>28`; any threat with the same
+four lines needs at least 17 selected points off all four.  Further progress must control that
+off-line population, not merely exclude the sunflower core geometry.  This is a native exhaustive
+certificate, not a Lean-kernel theorem.
+`Frontier/_R396PolynomialLinePluckerSyzygy.lean` proves the exact determinant cocycle,
+componentwise Plucker identities, and local zero propagation.  It is compatible with this RS
+sunflower: `L_i=(a_i H,r_i H)` makes every nonzero determinant `c_ijk H^2`, saturating the full
+root budget.  Thus the syzygy is a compatibility brick, not an anti-sunflower theorem; a closing
+use needs off-line population or strict root surplus.
+`Frontier/_HalfPredecessorRateQuarterHighCoreFreshPetalDichotomy.lean` sharpens the high-core
+branch: given two relevant half-core references, determinant collapse plus a root count reduces
+the problem to equal reference slopes, failure of half-core line coverage, or a scalar with at
+most `k-1` fresh coordinates in every half-core target.
+`Frontier/_HalfPredecessorRateQuarterHighCorePetalGrowth.lean` handles one half-core reference:
+a counterexample at `h=2k` unconditionally forces a fresh petal of size at least
+`floor(k/2)+3`, and conditionally produces a distinct second half core.  Its dichotomy isolates
+the precise reduced-universe budget failure that blocks the unconditional second-core step.
+`Frontier/_HalfPredecessorRateQuarterHighCoreReducedBudgetBarrier.lean` proves that this failure
+is automatic on the global high-core band: for `0<k` and `2k<=z<=3k-4`,
+`(k+2)^2-1 < (4k-z)(2k-1)`.  Hence the cap-`h-1` premise cannot force a second half core there;
+the complete residual is diagnostic unless a sharper cap or different argument is supplied.
+`Frontier/_HalfPredecessorRateQuarterGlobalPetalSynthesis.lean` packages the band theorem and
+both pruning increments: every counterexample has either a high-core `floor(k/2)+3` petal or an
+intermediate-core `floor(k/3)+2` petal with failed-cover data.  This is a global dichotomy, not a
+contradiction in either branch.
+`Frontier/_HalfPredecessorRateQuarterHighCoreUnionSupply.lean` replaces target-by-target
+starvation in the non-equal-slope case by one explicit forbidden-capacity inequality over the
+union of all half cores.  In the equal-slope case,
+`Frontier/_HalfPredecessorRateQuarterEqualSlopeJohnsonClosure.lean` proves the sharp bound
+`L*(4k+e*(k-1)) <= (4k-e)*(k+1)` and hence `L*e<=4k`.  Thus two distinct equal-slope half cores
+plus coverage of `G` by half-core lines already imply `|G|<=2h`.  The remaining high-core
+obstructions are scalars outside every half-core line and the non-equal-slope forbidden-capacity
+failure.  `_HalfPredecessorRateQuarterHighCoreUnifiedClosure.lean` packages those alternatives
+for two distinct references.  `_HalfPredecessorRateQuarterHighCoreCompleteResidual.lean` starts
+from only one reference and returns the exact reduced-universe second-core budget failure, an
+uncovered scalar, or a distinct unequal-slope reference with the forbidden-capacity witness.
+`Frontier/_HalfPredecessorRateQuarterOverlapThreeRigidity.lean` pins the first surviving
+two-half-core overlap cell: at `h=2k`, overlap three forces every point off both lines to use all
+three uncovered coordinates, avoid the core intersection, and saturate both `k-1` off-line root
+caps.  `Frontier/_HalfPredecessorRateQuarterOverlapThreeFactorization.lean` further factors the
+two saturated residuals through their monic root locators and proves their exact affine
+reconciliation.  The common-core cubic factor module rewrites the decoded-line differences as
+that cubic times degree-`<k-3` quotients, and the anchor-rigidity module proves that the two
+saturated locator quotients coincide on the three common-core anchors.  Neither statement yet
+constructs a smaller bad family or forces the degree-`k-1` locators to agree.  Overlap at most two
+is already closed by the complementary-core theorem.  At `k=4,n=16`,
+`_HalfPredecessorRateQuarterOverlapThreeKFour.lean` proves the quotient pencil is constant, the
+two decoded-line differences share one cubic scalar factor, and distinct decoded lines have at
+most one common scalar point.  The population module then proves that compatible three-root
+blocks across a five-coordinate petal form a matching.  Under the explicit cap that every
+relevant core has size at most eight, this bounds points off both reference lines by ten; equal
+reference slopes bound each line by three and close the cell at `|G|<=10+3+3=16`.  The
+unequal-residual module next bounds the reference-line union by seven and shows that any failure
+of `|G|<=16` would have the exact population `17=3+3+1+10`.  The final unequal-closure module
+rules out those ten off-both signatures: determinant noncollapse forbids simultaneous
+overlap-two adjacency in both five-point petals, while two bijections onto the ten triples of a
+five-set force such a double adjacency.  Hence `offBoth<=9` and the entire
+`n=16,k=4`, overlap-three/core-cap-eight cell is closed at `7+9=16`, for both slope branches.
+
+The dead cap-`h-1` high-core bridge has also been replaced rather than reused.
+`_HalfPredecessorRateQuarterHighCoreSharpSecantExtraction.lean` takes the exact quotient cap
+`floor(((k+2)^2-1)/(4k-z))`; at `z=3k-4` it forces a secant petal of size exactly `k+1` whose
+union with the source core misses exactly three coordinates.  At `n=16,k=4`, the long-outsider
+module proves that two outsiders with at least seven fresh agreements already trigger the
+two-core complement closure.  Thus a counterexample has at most one such outsider and at least
+eight regular outsiders saturating `9=6+3` (fresh plus source-core agreements).
+`_HalfPredecessorRateQuarterKFourGlobalCoreSynthesis.lean` now closes every case with two
+distinct size-eight cores and classifies the full `n=16,k=4` counterexample residual.  Either one
+unique eight-core has a distinct five-petal secant leaving exactly three holes, with secant-core
+size `5`, `6`, or `7`, or there is no eight-core and an isolated size-six/seven core under global
+cap seven forces a petal of size at least three.  These two one-reference packages remain open.
+`_HalfPredecessorRateQuarterKFourRegularSignatureRigidity.lean` now constrains the unique-eight-core
+package using the actual degree-three residuals.  Three distinct regular outsiders with one
+three-coordinate source-root block cannot have pairwise-disjoint missed two-edges: common-locator
+factorization and affine-row filling would remove every miss.  Intersecting missed edges give five
+common fresh agreements, hence a second core of size at least eight with source overlap exactly
+three.  Under the global cap it is another size-eight core, so the two-core closure implies that
+each root triple occurs at most twice in a surviving counterexample.  This is not a pigeonhole
+closure: there are 56 possible triples, while the current funnel supplies only eight outsiders.
+
+The independent line-list route now has an exact constant-weight Plotkin engine.  On a zero-safe
+`RS[16,4]` line at agreement nine, support `0`, `1`, and `2` have bad-scalar endpoints `0`, `3`,
+and `14`.  The method stops honestly at support three because the first surviving stratum has
+Plotkin gap `6^2-13*3<0`; unsafe lines still saturate the field.
+`Frontier/_HalfPredecessorRateQuarterCocircuitRigidity.lean` independently proves that every
+selected error is support-minimal in the two-row Reed--Solomon extension.  Two-cocircuit
+elimination only recovers the existing secant-line petal partition.  The corresponding abstract
+majority-cocircuit count is false even for simple represented matroids at the same rank ratio, so
+any replacement must retain the Reed--Solomon/Vandermonde subcode structure.  The landed
+`K8/F59` certificate has 36 distinct affine-gamma cocircuits of weights 7 or 12 on 28 edges at
+rank 7; the accompanying Python probe independently checks rank, minimality, weights, and affine
+injectivity.
+
+CONSEQUENCE: the rate-`1/4` problem is no longer a global direction-cap conjecture.  Its live
+branch is the isolated exceptional-secant band beginning at core size `floor(h/2)+2`; the
+ultra-three-core algebra collapses to rational collinearity once the determinant threshold is
+crossed.  The base overlap-three cell is closed and one high core now supplies eight exact regular
+outsiders, with root-triple multiplicity at most two, but the remaining cross-triple signature
+problem, intermediate cores, and higher lengths remain.
+The abstract iterable-petal inference is refuted, so the live work is to exploit RS polynomial
+incidence against those exact residuals or discharge the explicit one-core/forbidden-capacity
+inequalities.  No rate-`1/4` exact pin is claimed.
 
 ## [466-FS10-exact-energy-almost-all-primes] TAXONOMIC CLOSURE (Fable session): r50's `Depth3WraparoundVanishing` — refuted as UNIVERSAL by r52 — is PROVEN at all but ≤ n⁶·((k+4)n/s) primes, with the EXACT char-0 value `addEnergy3(μ_n) = 15n³−45n²+40n` (2026-07-09)
 

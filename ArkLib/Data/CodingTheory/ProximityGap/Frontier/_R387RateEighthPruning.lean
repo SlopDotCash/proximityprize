@@ -148,13 +148,15 @@ private theorem sum_eq_sum_subset_add_sdiff
 /-- **Weighted exceptional-line union bound.**  Suppose `E` has at most fifteen
 lines, `Q ⊆ E` has at most three ultra-core lines, every ultra line obeys
 `5|P_l| ≤ h+4`, and every other exceptional line has at most sixteen points.
-For `h ≥ 1701`, the union of all their point sets has size at most `5h/7`.
+For `h ≥ 1699`, the union of all their point sets has size at most `5h/7`.
+The cutoff is discrete: the final implication uses the integrality of the union
+cardinality, rather than relaxing it to a real-valued inequality.
 
 The point sets need not be disjoint: the ordinary union bound is in the favorable
 direction. -/
 theorem exceptional_biUnion_seven_mul_card_le_five_mul
     {Line Point : Type*} [DecidableEq Line] [DecidableEq Point]
-    (h : ℕ) (hh : 1701 ≤ h)
+    (h : ℕ) (hh : 1699 ≤ h)
     (E Q : Finset Line) (points : Line → Finset Point)
     (hQE : Q ⊆ E) (hE : E.card ≤ 15) (hQ : Q.card ≤ 3)
     (hultra : ∀ line ∈ Q, 5 * (points line).card ≤ h + 4)
@@ -214,7 +216,12 @@ theorem exceptional_biUnion_seven_mul_card_le_five_mul
     exact_mod_cast htargetZ
   have hfiveUnion : 5 * (E.biUnion points).card ≤ 3 * h + 972 := by
     nlinarith
-  nlinarith
+  by_contra hnot
+  have hstrict : 5 * h < 7 * (E.biUnion points).card := by omega
+  have hupper : h ≤ 1699 := by nlinarith
+  have heq : h = 1699 := by omega
+  subst h
+  omega
 
 /-- **Complete Johnson-pruning bound at rate `1/8`.**  This packages the two
 Johnson estimates and the weighted union calculation. -/
@@ -240,7 +247,7 @@ theorem rateEighth_exceptional_union_bound
     exact hinter line (hQE hline) line' (hQE hline') hne
   have hQ := ultra_core_family_card_le_three
     m hm1 hU Q core hQcore hQinter
-  have hh : 1701 ≤ 16 * m := by omega
+  have hh : 1699 ≤ 16 * m := by omega
   have hbound := exceptional_biUnion_seven_mul_card_le_five_mul
     (16 * m) hh E Q points hQE hE hQ hultra hordinary
   nlinarith

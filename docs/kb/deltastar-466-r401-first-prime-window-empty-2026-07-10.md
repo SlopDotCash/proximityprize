@@ -20,29 +20,28 @@ advertised length and security scale.  Moreover
 floor(P / 2^128) = 2^30 = n.
 ```
 
-## Threshold ceilings
+## Exact thresholds
 
-The overlap-packing witness proves the faithful operational ceilings
+The previously assembled all-stack incidence theorems and overlap-packing witness prove
 
 ```text
-delta*(rate 1/4)  <= 1/2,
-delta*(rate 1/8)  <= 1/2,
-delta*(rate 1/16) <= 1/2.
+delta*(rate 1/8)  = 1/2,
+delta*(rate 1/16) = 1/2.
 ```
 
-These are faithful `mcaDeltaStar` bounds, not far-line surrogates or conditional named Props.
-`Frontier/_PrizeShapeFirstPrimeBelowJohnson.lean` records their Johnson comparison:
+These are faithful `mcaDeltaStar` equalities, not far-line surrogates or conditional named Props.
+`Frontier/_PrizeShapeFirstPrimeBelowJohnson.lean` now records their missing consequence:
 
 ```text
 1/2 < 1 - sqrt(1/8),
 1/2 < 1 - sqrt(1/16) = 3/4.
 ```
 
-Therefore the operational thresholds at rates `1/8` and `1/16` are strictly below Johnson.
+Therefore both exact operational thresholds are strictly below Johnson.
 
-At rate `1/4`, `1/2` is exactly Johnson.  The ceiling excludes every radius strictly above
-Johnson, which is the advertised open window; it does not decide goodness at the Johnson endpoint
-or claim an exact threshold.
+At rate `1/4`, overlap packing proves `delta* <= 1/2`, and `1/2` is exactly Johnson.  The
+explicit packing point already violates the security budget at Johnson itself, so equality of the
+threshold is not needed to exclude the advertised open window.
 
 ## Empty advertised windows
 
@@ -57,18 +56,32 @@ delta >= 1-sqrt(1/16)
 ```
 
 Thus the entire advertised above-Johnson MCA window is empty for these two certified instances.
-This follows from the strict threshold ceilings and the operational ledger's rule that any good
-valid radius is at most `mcaDeltaStar`.
+This follows rigorously from the exact threshold equalities and the operational ledger's rule that
+any good radius is at most `mcaDeltaStar`.
 
-The same file proves the rate-`1/4` open-window statement:
+The same file proves the rate-`1/4` statement directly from monotonicity:
 
 ```text
-delta > 1-sqrt(1/4) = 1/2
+delta >= 1-sqrt(1/4) = 1/2
   => not (epsMCA(RS[P,n,n/4],delta) <= 2^-128).
 ```
 
 Consequently one certified production-shaped field has empty above-Johnson operational windows at
 all three lower advertised rates `1/4`, `1/8`, and `1/16`.
+
+## Field sensitivity
+
+A second certified prize-shaped prime has the same length, rate `1/16`, and security target, but
+its normalized scalar budget is `2n`.  The existing `17/32` theorem gives
+
+```text
+delta*(second prime, rate 1/16) >= 17/32 > 1/2
+  = delta*(first prime, rate 1/16).
+```
+
+R401 packages this as an unconditional strict field-sensitivity theorem.  Consequently no formula
+depending only on `(n,rho,epsilon*)` can describe the operational threshold across these fields;
+the exact field size or normalized budget must be retained.
 
 ## Prize interpretation
 
@@ -90,7 +103,7 @@ challenge: there the maximal good point is the predecessor rung, exactly as inte
 This is a decisive correction to any universal claim that every advertised low-rate production
 instance has its operational threshold inside the above-Johnson window.  It does not prove or
 refute the ignored-source polynomial `mcaConjecture`, whose right-hand side is not fixed to the
-security budget.  It also leaves the rate-`1/2`, the exact rate-`1/4` threshold and Johnson
-endpoint, and larger-budget threshold curves open.
+security budget.  It also leaves the rate-`1/2`, saturated rate-`1/4`, and larger-budget threshold
+curves open.
 
 The Lean axiom audit contains no `sorryAx`; only the standard logical quotient axioms occur.

@@ -14322,3 +14322,182 @@ constant is even more bounded than câ‚€ alone implies. CONSTRAINT: any wall (M â
 POSITIVE extreme dependence among the worst frequencies; the data shows the opposite (negative, growing in n).
 No new Lean (the NA substrate already exists; this is the empirical motivation + a sub-iid constraint). No
 completion/moment/anti-concentration-beats-energy claim. CORE stays OPEN; door (iv) the only live door.
+
+## [rate-quarter-no-eight-cardinal-signature-cap] abstract signature count is false (2026-07-10)
+
+Lane: exact `n=16`, `k=4`, threshold-nine rate-quarter base case.
+
+The proposed cardinal-only closure for the no-eight residual is false.  There
+are 24 abstract pairs `(T_i,E_i)` with `|T_i|=|E_i|=3` satisfying
+
+```text
+2 + |T_i intersect T_j| <= |E_i union E_j|    for i != j.
+```
+
+The construction uses two disjoint root triples and, over each root triple,
+the 12 lines of `AG(2,3)` as missed triples.  Thus the pair-intersection law
+alone does not imply a cap of sixteen.  This is an abstract set-system
+countermodel, not a Reed--Solomon realization: a successful closure must use
+the polynomial relation between each root signature and missed signature.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightSignatureRefuted.lean`.
+The exported refutation is axiom-clean up to the standard
+`propext`/`Classical.choice`/`Quot.sound` set.
+
+## [rate-quarter-exceptional-direction-plotkin-band] direct Plotkin closure stops at 13 (2026-07-10)
+
+Lane: exact `n=16`, `k=4`, threshold-nine rate-quarter base case.
+
+Exceptional-direction puncturing proves that every surviving counterexample
+has a direction-agreement core of size `z` with `6<=z<=13`, plus a fresh
+full-agreement coordinate outside that core for every selected scalar.  A
+direct constant-weight Plotkin attack cannot close this remaining band:
+
+```text
+(z-7)^2 <= 3z    for every 6<=z<=13,
+```
+
+while the inequality first becomes strict in the useful direction at `z=14`.
+This refutes only the bare Plotkin continuation, not the rate-quarter bound.
+Near the top of the band a separate polynomial argument forces source-slope
+alignment (`source core + z >= 20`), so the surviving aligned cells remain
+legitimate targets.
+
+Formal kernels:
+`_HalfPredecessorRateQuarterExceptionalDirectionPuncture.lean`,
+`_HalfPredecessorRateQuarterDirectionCapGlobalConsumer.lean`, and
+`_HalfPredecessorRateQuarterDirectionSourceAlignment.lean`.
+
+## [rate-quarter-support-four-plotkin-zero] the size-six stratum is the exact obstruction (2026-07-10)
+
+Lane: zero-safe `RS[16,4]` lines at threshold nine.
+
+Supports zero through three are now bounded by sixteen, but the same direct
+strategy does not automatically continue to support four.  On the twelve
+zero coordinates, the size-six trace family has pair-intersection cap three
+and exact Plotkin denominator
+
+```text
+6^2 - 12*3 = 0.
+```
+
+The neighboring strata are controlled: size five has cap four by a common
+cubic-kernel argument, size seven has Plotkin cap three, and a union count
+sharpens size eight to one.  Accounting for scalar weights leaves the honest
+residual
+
+```text
+#bad scalars <= (# size-six stratum) + 14.
+```
+
+This is a constraint lock on the direct Plotkin continuation, not a
+counterexample to a support-four bound.  The all-four-support subfamily of
+the size-six stratum has cap three; every remaining codeword agrees on
+exactly three of the four moving coordinates, so its four possible cubic
+locator classes require a new cross-class argument.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSupportFourSafeLine.lean`.
+
+## [rate-quarter-support-four-t6-cap-four] zero-safe smooth counterexample with five codewords (2026-07-10)
+
+Lane: zero-safe `RS[16,4]` lines at threshold nine.
+
+The proposed universal cap `#t6<=4` is false.  Over `F_17` on the smooth
+domain `F_17^*={1,...,16}`, take a direction supported on the first four
+coordinates with nonzero values `(1,12,8,6)`.  On the twelve fixed
+coordinates, take the received offset from
+
+```text
+W(X) = X^8 + 7 X^7 + 14 X^6 + 10 X^5 + 3 X^4.
+```
+
+The line is zero-direction safe: for every degree-below-four `p`, `W-p` is a
+nonzero degree-eight polynomial and therefore has at most eight fixed-domain
+roots.  Five explicit degree-below-four codewords nevertheless have six fixed
+agreements and three moving agreements, at the distinct scalars
+`{2,5,10,12,15}`.  Hence the size-six stratum has cardinality at least five.
+
+The exhaustive `17^4` companion census finds no appearing size-five,
+size-seven, or size-eight codeword and exactly five bad scalars.  Thus this is
+not a counterexample to `#bad<=16`; it refutes only the hoped-for size-six cap
+and proves that the exact three-of-four locator classes genuinely interact.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSupportFourSixStratumRefuted.lean`.
+Executable certificate:
+`scripts/probes/probe_rate_quarter_support4_t6_f17.py`.
+
+## [rate-quarter-half-predecessor-n-scalar-law] smooth-domain law refuted in Lean (2026-07-10)
+
+Lane: rate-quarter half-predecessor exact-bound campaign.
+
+The hoped-for extension of the rate-`1/8` and rate-`1/16` half-predecessor
+bound to rate `1/4` is false.  On the genuine order-32 subgroup `mu_32` of
+`F_97`, the explicit `RS[32,8]` stack at radius `15/32` has 36 distinct
+MCA-bad scalars at agreement threshold 17:
+
+```text
+36 > 32 = n.
+```
+
+The Lean certificate uses three degree-below-eight polynomial lines with
+sixteen-coordinate cores.  Each scalar has one displayed fresh coordinate;
+the core root bound uniquely fixes any hypothetical joint explanation to the
+source line, and the fresh mismatch excludes it.  The proof therefore does
+not trust an enumeration of the Reed--Solomon code.
+
+This is a kernel-checked refutation of the universal `#bad<=n` law on smooth
+rate-quarter domains.  It is not an exact delta-star computation.  At the
+first prize-shaped prime, the formal fibre lift produces `(9/8)n` bad scalars
+at the half predecessor.  Maximal disjoint thickening leaves one hole
+coordinate and formally produces `n+2` bad scalars at the sharper radius
+
+```text
+23/48 - 1/(24*2^26).
+```
+
+Thus the operational upper certificate is kernel checked at about
+`0.4791667`.  The `mu_16` locator identity, billion-coordinate stack, literal
+event count, strict `2^-128` mass inequality, and operational threshold ledger
+land in `_HalfPredecessorRateQuarterMu16Locator.lean`,
+`_P1RateQuarterScaleConstruction.lean`, `_P1RateQuarterScaleBadCount.lean`,
+and `_P1RateQuarterScaleFinalConsumer.lean`.  The later common-factor
+amplifier gives a stronger executable `43/96+1/(3n)` certificate whose final
+operational assembly remains open.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSmoothCounterexampleF97.lean`.
+Finite and prize-scale probes:
+`scripts/probes/probe_rate_quarter_smooth_isolated_counterexample.py` and
+`scripts/probes/probe_rate_quarter_prize_p1_isolated_counterexample.py`.
+
+## [rate-quarter-first-prime-above-johnson-location] exact window placement is false (2026-07-10)
+
+Lane: operational first-prime rate-quarter threshold.
+
+The July 1 working assumption that the exact prize threshold lies at or above
+the rate-quarter Johnson radius `1/2` is false for the certified first prime.
+The literal `N+2` bad-label family proves
+
+```text
+mcaDeltaStar(RS[P1, mu_(2^30), 2^28], 2^-128)
+  <= 23/48 - 2/(3*2^30) < 1/2.
+```
+
+This is an operational Lean theorem, not a numerical inference.  Monotonicity
+also proves that `epsMCA` already exceeds `2^-128` at radius `1/2`.  The result
+does not pin the threshold.  The full unique-decoding connector now supplies
+the good side at `3/8`, giving the unconditional operational interval
+
+```text
+3/8 <= mcaDeltaStar <= 23/48 - 2/(3*2^30) < 1/2.
+```
+
+The endpoints do not match, and the stronger common-factor endpoint
+`43/96+1/(3N)` is not yet operationally wired.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterScaleFinalConsumer.lean` and
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterOperationalBracket.lean`.

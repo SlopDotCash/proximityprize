@@ -21,7 +21,7 @@ B_e = union_{|T|<=e} span(H_T).
 
 The tight-budget prize-shaped examples reduce to the following finite-geometric claim.
 
-> **Half-radius MDS line conjecture.** If `2e<n` and `e+k+1<=n`, then every
+> **Prize-rate half-line conjecture.** If `2e<n`, `e+k+1<=n`, and `k<=n/4`, then every
 > projective syndrome line `P` not contained in one support span has at most `n`
 > points in `B_e`.
 
@@ -30,9 +30,12 @@ good when `floor(p/2^128)=n`.  Together with the already-proven overlap-packing 
 `1/2`, it would pin `mcaDeltaStar=1/2`.  The rate-`1/16` case is now pinned by the separate
 rich-point theorem; this line conjecture remains relevant to rates `1/8` and `1/4`.
 
-This conjecture is stronger than a dyadic-only statement.  Current evidence has not
-found a need for multiplicative-subgroup structure, although R380 shows that odd torsion
-changes the equality mechanisms.
+The earlier version omitted `k<=n/4` and is false.  R384 gives a certified
+`[7,3]` Vandermonde line over `F_29` with twelve proper weight-three points, despite
+`2e<n` and `e+k+1=n`.  At those parameters `D-e=1`: every support span is a projective
+plane in `P^3`, hence automatically meets every projective line.  The prize-rate guard
+forces `D-e=n/2-k+1` to grow linearly and excludes this mechanism.  It remains open
+whether dyadic subgroup structure is additionally necessary.
 
 ## Historical falsification status before R383
 
@@ -48,10 +51,12 @@ Small exact and sampled results:
 [4,1], e=1, F_5:  exhaustive maximum 2 <= 4
 [5,1], e=2, F_7:  exhaustive maximum 4 <= 5
 [6,2], e=2, F_7:  exhaustive maximum 6 = n
+[7,3], e=3, F_29: certified proper incidence 12 > 7 (general conjecture refuted)
 [8,2], e=3, F_17 dyadic: 500,000 sampled lines, maximum 8 = n
 [8,1], e=3, F_17 dyadic: 500,000 sampled lines, maximum 4
 [9,2], e=4, F_11 interval: exact certified line with 10 > 9
 [16,4], e=7, F_97 dyadic: 10,000 sampled sparse-point lines, maximum 8
+[12,3], e=5, F_37: constrained search reached 12 = n
 ```
 
 The `[8,2]` equality supports are the four facets of each side of a partition into

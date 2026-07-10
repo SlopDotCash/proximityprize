@@ -269,9 +269,9 @@ theorem global_core_ceiling_line_budget
 fifteen exceptional lines, at most three of them are ultra, ultra lines have
 `5L<=h+4`, and ordinary exceptional lines have `L<=16`, then any union whose
 fivefold size is bounded by the corresponding sum occupies at most `5h/7`
-coordinates once `h>=1701`. -/
+coordinates once `h>=1699`. -/
 theorem exceptional_union_seven_mul_le_five_mul
-    {h R u m : ℕ} (hh : 1701 ≤ h) (hu : u ≤ 3) (hum : u ≤ m)
+    {h R u m : ℕ} (hh : 1699 ≤ h) (hu : u ≤ 3) (hum : u ≤ m)
     (hm : m ≤ 15)
     (hbudget : 5 * R ≤ u * (h + 4) + 5 * (m - u) * 16) :
     7 * R ≤ 5 * h := by
@@ -287,6 +287,11 @@ theorem exceptional_union_seven_mul_le_five_mul
   have hbound : 5 * R ≤ 3 * h + 972 := by
     rw [hrearrange] at hbudget
     nlinarith
+  by_contra hnot
+  have hstrict : 5 * h < 7 * R := by omega
+  have hupper : h ≤ 1699 := by nlinarith
+  have heq : h = 1699 := by omega
+  subst h
   omega
 
 /-- Removing a set of size at most `5h/7` from a counterexample of size at

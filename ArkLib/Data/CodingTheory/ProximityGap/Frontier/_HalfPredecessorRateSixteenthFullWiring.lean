@@ -27,10 +27,11 @@ open ArkLib.ProximityGap.Frontier.HalfPredecessorIncidenceAssembly
 
 namespace ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring
 
-variable {ι F : Type} [Fintype ι] [Nonempty ι]
-variable [Field F] [Fintype F]
+attribute [local instance] Classical.propDecidable
 
-open Classical in
+variable {ι F : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+variable [Field F] [Fintype F] [DecidableEq F]
+
 /-- The canonical selected family has at most the coordinate length. -/
 theorem canonicalRichPointFamily_card_le_two_mul
     (dom : ι ↪ F) {k h : ℕ} (delta : ℝ≥0)
@@ -44,7 +45,6 @@ theorem canonicalRichPointFamily_card_le_two_mul
     (canonicalBadScalarRichPointFamily dom delta u hk)
     hk hn hthreshold hrate
 
-open Classical in
 /-- Literal bad-event-filter form at any radius whose agreement ceiling is
 `h+1`. -/
 theorem badScalar_filter_card_le_two_mul
@@ -61,7 +61,6 @@ theorem badScalar_filter_card_le_two_mul
     canonicalRichPointFamily_card_le_two_mul
       dom delta u hk hn hthreshold hrate
 
-open Classical in
 /-- Uniform operational half-predecessor form for an even code length. -/
 theorem canonical_halfPredecessor_card_le_length
     {n h k : ℕ} [NeZero n] (dom : Fin n ↪ F)
@@ -82,7 +81,6 @@ theorem canonical_halfPredecessor_card_le_length
     (by omega)
   simpa only [hn] using hbound
 
-open Classical in
 /-- **Literal uniform predecessor bad-count theorem.** For every received
 affine word, at most `n` scalars trigger the MCA bad event. -/
 theorem halfPredecessor_badScalar_filter_card_le_length
@@ -100,9 +98,7 @@ end ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring
 
 /-! ## Axiom audit -/
 
-namespace ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring
-
-#print axioms badScalar_filter_card_le_two_mul
-#print axioms halfPredecessor_badScalar_filter_card_le_length
-
-end ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring
+#print axioms
+  ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.badScalar_filter_card_le_two_mul
+#print axioms
+  ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.halfPredecessor_badScalar_filter_card_le_length

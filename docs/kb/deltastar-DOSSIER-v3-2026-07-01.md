@@ -19,6 +19,20 @@
 > machine countermodels are *wins*. Never fabricate closure. The open core is a recognized open
 > problem in analytic number theory; carrying it as a named `Prop` is modularity, not incompleteness.
 
+> **2026-07-10 rate-quarter correction.**  The exact first-prime prize instance is not confined
+> to the above-Johnson window asserted by the July 1 snapshot.  The axiom-clean modules
+> `_P1RateQuarterScaleConstruction.lean`, `_P1RateQuarterScaleBadCount.lean`, and
+> `_P1RateQuarterScaleFinalConsumer.lean` construct `N+2` literal bad scalars and prove
+> `mcaDeltaStar <= 23/48-2/(3N) < 1/2` for `N=2^30`, rate `1/4`, and error `2^-128`.
+> `_P1RateQuarterOperationalBracket.lean` applies the full unique-decoding MCA bound at the
+> exact rate-quarter radius `3/8`, proving the unconditional two-sided interval
+> `3/8 <= mcaDeltaStar <= 23/48-2/(3N)` on that same concrete code and error target.
+> A degree-saturated common-factor construction gives the stronger executable candidate
+> `43/96+1/(3N)`, whose operational Lean assembly is still in progress.  These are upper
+> and lower bounds, not an exact pin; closing the interval and the separate asymptotic BGK wall
+> remain open.  See `deltastar-466-rate-quarter-thickened-isolated-upper-2026-07-10.md` and
+> `deltastar-466-rate-quarter-common-factor-amplifier-2026-07-10.md`.
+
 ---
 
 ## 0. TL;DR — where the prize stands (2026-07-01)

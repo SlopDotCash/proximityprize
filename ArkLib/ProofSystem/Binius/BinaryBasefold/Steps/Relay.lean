@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
 /-!
 # Binary Basefold Relay Step
@@ -140,7 +141,7 @@ lemma strictRoundRelation_relay_preserved (i : Fin ℓ)
       intro (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))
       have h_toOutCodewordsCount_eq : toOutCodewordsCount ℓ ϑ i.succ =
         toOutCodewordsCount ℓ ϑ i.castSucc := (h_oracle_size_eq_relay i hNCR).symm
-      exact h_relIn.2.2 ⟨j, by omega⟩
+      exact h_relIn.2.2 (Fin.cast h_toOutCodewordsCount_eq j)
 
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in
 theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : Fin ℓ)
@@ -155,6 +156,7 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
         i hNCR)
       (init := init)
       (impl := impl) := by
+  letI : [pSpecRelay.Challenge]ₒ.Fintype := ProtocolSpec.challengeOracle_fintype _
   -- must use `ProtocolSpec.challengeOracleInterface`
   rw [OracleReduction.unroll_0_message_reduction_perfectCompleteness (oSpec := []ₒ)
     (pSpec := pSpecRelay) (init := init) (impl := impl) (hInit := hInit)
@@ -275,8 +277,11 @@ def relayKStateProp (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i)
   : Prop :=
   -- Relay step inherits sumcheckConsistency from foldStepRelOut (relIn) and preserves it
   let sumCheckConsistency: Prop := sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H
-  masterKStateProp (mp := mp) (ϑ := ϑ) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) -- (𝓑 := 𝓑)
+  masterKStateProp (mp := mp) (𝓑 := 𝓑) (ϑ := ϑ) 𝔽q β
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdx i.succ)
+    (h_le := OracleFrontierIndex.val_le_i i.succ
+      (OracleFrontierIndex.mkFromStmtIdx i.succ))
     (stmt := stmtIn) (wit := witMid) (oStmt := mapOStmtOutRelayStep
       𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn)
     (localChecks := sumCheckConsistency)

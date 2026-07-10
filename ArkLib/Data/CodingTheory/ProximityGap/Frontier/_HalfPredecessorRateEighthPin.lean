@@ -16,6 +16,7 @@ field-normalized budget, the operational MCA threshold is exactly `1/2`.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
 
 open scoped ENNReal NNReal
 open _root_.ProximityGap Code ProximityGap.MCAThresholdLedger
@@ -31,7 +32,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 /-- The literal rate-`1/8` rich-point bound, normalized by the field size. -/
 theorem epsMCA_halfPredecessor_rateEighth_le
     {n h k : ℕ} [NeZero n] (dom : Fin n ↪ F)
-    (hn : n = 2 * h) (hh : 2048 ≤ h) (hk : 1 ≤ k)
+    (hn : n = 2 * h) (hh : 1699 ≤ h) (hk : 1 ≤ k)
     (hrate : 8 * k ≤ n) :
     epsMCA (F := F) (A := F)
         ((ReedSolomon.code dom k : Set (Fin n → F)))
@@ -50,7 +51,7 @@ theorem evalCode_mcaDeltaStar_eq_half_of_rateEighth
     {p n h k Q : ℕ} [Fact p.Prime] [NeZero n]
     {g : ZMod p} (hg : orderOf g = n)
     (hQ : 0 < Q) (hk : 2 ≤ k)
-    (hn : n = 2 * h) (hh : 2048 ≤ h)
+    (hn : n = 2 * h) (hh : 1699 ≤ h)
     (hfloor : p / Q = n) (hrate : 8 * k ≤ n)
     (hsupply : 4 ≤ p - n) :
     mcaDeltaStar (F := ZMod p) (A := ZMod p)
@@ -109,7 +110,6 @@ theorem evalCode_mcaDeltaStar_eq_half_of_rateEighth
 end ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthPin
 
 /-! ## Axiom audit -/
-#print axioms
-  ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthPin.epsMCA_halfPredecessor_rateEighth_le
-#print axioms
-  ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthPin.evalCode_mcaDeltaStar_eq_half_of_rateEighth
+open ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthPin
+#print axioms epsMCA_halfPredecessor_rateEighth_le
+#print axioms evalCode_mcaDeltaStar_eq_half_of_rateEighth

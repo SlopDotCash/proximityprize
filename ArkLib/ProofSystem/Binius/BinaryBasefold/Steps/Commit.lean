@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
 /-!
 # Binary Basefold Commit Step
@@ -157,6 +158,8 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp) i hCR)
       (init := init)
       (impl := impl) := by
+  letI : [(pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).Challenge]ₒ.Fintype :=
+    ProtocolSpec.challengeOracle_fintype _
   -- Step 1: Unroll the 1-message reduction
   rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_P_to_V (oSpec := []ₒ)
     (hInit := hInit) (pSpec := pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)
@@ -366,8 +369,10 @@ def commitKStateProp (i : Fin ℓ) (m : Fin (1 + 1))
   : Prop :=
   match m with
   | ⟨0, _⟩ => -- same as relIn
-    masterKStateProp (mp := mp) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) -- (𝓑 := 𝓑)
+    masterKStateProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i)
+      (h_le := OracleFrontierIndex.val_le_i i.succ
+        (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i))
       (stmt := stmtIn) (wit := witMid) (oStmt := oStmtIn)
       (localChecks := sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H)
   | ⟨1, _⟩ => -- implied by relOut: use transcript message as oracle (what verifier sees)
@@ -375,8 +380,10 @@ def commitKStateProp (i : Fin ℓ) (m : Fin (1 + 1))
     let newOracle := tr.messages ⟨0, rfl⟩
     let oStmtOut := snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (oStmtIn := oStmtIn) (newOracleFn := newOracle) (h_destIdx := by rfl)
-    masterKStateProp (mp := mp) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) -- (𝓑 := 𝓑)
+    masterKStateProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdx i.succ)
+      (h_le := OracleFrontierIndex.val_le_i i.succ
+        (OracleFrontierIndex.mkFromStmtIdx i.succ))
       (stmt := stmtIn) (wit := witMid) (oStmt := oStmtOut)
       (localChecks := sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witMid.H)
 

@@ -498,6 +498,7 @@ The output `s'` is computed via `single_point_localized_fold_matrix_form` using:
 The input `c_k` is only used for the guard check (validating consistency when `i > 0`),
 but it does NOT affect the computation of the output value `s'`.
 -/
+set_option maxHeartbeats 4000000 in
 lemma query_phase_step_preserves_fold
     {k : Fin (ℓ / ϑ)}
     (v : sDomain 𝔽q β h_ℓ_add_R_rate 0)
@@ -650,8 +651,9 @@ lemma query_phase_step_preserves_fold
     set challenges_mid := getFoldingChallenges (𝓡 := 𝓡) (r := r) (ϑ := k.val * ϑ)
       (i := Fin.last ℓ) stmtIn.challenges (k := 0)
       (h := by simp only [zero_add, Fin.val_last]; omega) with h_challenges_mid_defs
-    set challenges_last : Fin ϑ → L := (fun j ↦ stmtIn.challenges ⟨↑k * ϑ + ↑j, by
-      simp only [Fin.val_last]; omega⟩) with h_challenges_last_defs
+    set challenges_last : Fin ϑ → L := fun j =>
+      foldOrderChallenges (ℓ := ℓ) (i := Fin.last ℓ) stmtIn.challenges
+        ⟨k.val * ϑ + j.val, by simp only [Fin.val_last]; omega⟩ with h_challenges_last_defs
     set y_left := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
       (destIdx := ⟨k.val * ϑ + ϑ, by omega⟩) (h_destIdx_le := by omega) with hy_left_defs
     set y_right := extractSuffixFromChallenge 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (v := v)
@@ -716,14 +718,33 @@ lemma query_phase_step_preserves_fold
     let f₀ := polyToOracleFunc 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (domainIdx := 0) (P := P₀)
     conv_lhs => dsimp only [midIdx]
     conv_lhs => simp only [cast_eq, Fin.val_last]; rw [←fun_eta_expansion]
-    conv_lhs =>
-      rw [iterated_fold_transitivity 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_destIdx := by
-        simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add, Nat.add_right_cancel_iff,
-          mul_eq_mul_right_iff]; left; rfl
-      )]
     dsimp only [k_oracle_idx]
+    have h_f₀_def :
+        (fun y : sDomain 𝔽q β h_ℓ_add_R_rate (0 : Fin r) => P₀.val.eval y.val) = f₀ := rfl
+    rw [h_f₀_def]
+    conv_lhs => rw [← fun_eta_expansion]
+    conv_lhs => rw [← fun_eta_expansion]
+    have h_transitivity := iterated_fold_transitivity 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (i := (0 : Fin r))
+      (midIdx := ⟨k.val * ϑ, by omega⟩)
+      (destIdx := ⟨k.val * ϑ + ϑ, by omega⟩)
+      (steps₁ := k.val * ϑ) (steps₂ := ϑ)
+      (h_midIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add])
+      (h_midIdx_le := by omega)
+      (h_destIdx := by simp only [Nat.add_right_cancel_iff])
+      (h_destIdx_le := by omega)
+      (f := f₀)
+      (r_challenges₁ := getFoldingChallenges (𝓡 := 𝓡) (r := r)
+        (Fin.last ℓ) stmtIn.challenges 0 (by simp only [zero_add, Fin.val_last]; omega))
+      (r_challenges₂ := fun j =>
+        foldOrderChallenges (ℓ := ℓ) (i := Fin.last ℓ) stmtIn.challenges
+          ⟨k.val * ϑ + j.val, by simp only [Fin.val_last]; omega⟩)
+    have h_transitivity_at := congrFun h_transitivity y_left
+    refine h_transitivity_at.trans ?_
     -- Step 1: Align steps (k * ϑ + ϑ = (k + 1) * ϑ)
     have h_steps_eq : k.val * ϑ + ϑ = (k.val + 1) * ϑ := by rw [Nat.add_mul, Nat.one_mul]
+    rw [← h_challenges_mid_defs, ← h_challenges_last_defs]
     conv_lhs =>
       rw [iterated_fold_congr_steps_index 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)
         (steps := k.val * ϑ + ϑ) (steps' := (k.val + 1) * ϑ)
@@ -763,9 +784,13 @@ lemma query_phase_step_preserves_fold
           eq_rec_constant]
         congr 1; simp only [Fin.val_last, zero_add, Fin.mk.injEq]; omega
     conv_lhs => rw [h_challenges_eq]
+    have h_idx_eq : (⟨k.val * ϑ + ϑ, by omega⟩ : Fin r)
+      = ⟨(↑k + 1) * ϑ, by omega⟩ := by
+      apply Fin.eq_of_val_eq
+      omega
     have h_sDomain_eq : sDomain 𝔽q β h_ℓ_add_R_rate ⟨k.val * ϑ + ϑ, by omega⟩
       = sDomain 𝔽q β h_ℓ_add_R_rate ⟨(↑k + 1) * ϑ, by omega⟩ := by
-      apply sDomain_eq_of_eq; apply Fin.eq_of_val_eq; simp only; omega
+      rw [h_idx_eq]
     -- Step 5: Align points
     have h_y_eq : cast (by rw [h_sDomain_eq]) y_left = y_right := by
       dsimp only [y_left, y_right]
@@ -783,7 +808,11 @@ lemma query_phase_step_preserves_fold
       have : k.val > 0 := Nat.pos_of_ne_zero h_ne
       have : k.val * ϑ > 0 := Nat.mul_pos this (Nat.pos_of_neZero ϑ)
       omega
-    simp only [h_k_eq_0, zero_mul, zero_add] at h_s'_mem ⊢
+    let k_zero : Fin (ℓ / ϑ) := ⟨0, by omega⟩
+    have h_k_eq_zero : k = k_zero := Fin.eq_of_val_eq h_k_eq_0
+    subst k
+    dsimp only [k_zero, Fin.val_mk] at h_s'_mem ⊢
+    simp only [zero_mul, zero_add] at h_s'_mem ⊢
     simp only [MessageIdx, Message, gt_iff_lt, lt_self_iff_false, ↓reduceDIte, Fin.mk_zero',
       Fin.val_last, bind_pure_comp, ReduceClaim.support_mk,
       Set.mem_setOf_eq] at h_s'_mem
@@ -880,16 +909,13 @@ lemma query_phase_step_preserves_fold
         (sourceIdx₂ := 0) (h_sourceIdx_eq := h_i_eq)
         (h_destIdx := by dsimp only [destIdx]; rw [Nat.add_mul, Nat.one_mul])
         (h_destIdx_le := by omega) (y := y) (x := x)
-      rw [←hsrc_fun]
-      have hdest_congr := qMap_total_fiber_congr_dest 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (sourceIdx := ⟨k * ϑ, by omega⟩) (steps := ϑ) (destIdx₁ := ⟨k.val * ϑ + ϑ, by omega⟩)
-        (destIdx₂ := destIdx) (h_destIdx_congr := by omega) (h_destIdx := by dsimp only)
-        (h_destIdx_le := by omega)
-      rw [hdest_congr]
+      rw [← hsrc_fun]
       congr 1
-      rw [←extractSuffixFromChallenge_congr_destIdx 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      rw [hy_def]
+      rw [← extractSuffixFromChallenge_congr_destIdx 𝔽q β
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (v := v) (destIdx := destIdx) (destIdx' := ⟨k.val * ϑ + ϑ, by omega⟩)
-        (h_idx_eq := by omega) (h_le := by omega) (h_le' := by omega)]
+        (h_idx_eq := h_destIdx_eq.symm) (h_le := by omega) (h_le' := by omega)]
     rw [h_fiber_vec_get]
     -- Step 4: Apply the congruence lemma of single_point_localized_fold_matrix_form
       -- 1. Establish that the step counts are equal
@@ -897,10 +923,12 @@ lemma query_phase_step_preserves_fold
       simp only [h_k_eq_0, zero_add, one_mul]
     -- 2. Apply the Step Congruence Lemma to the RHS
     --    We rewrite the RHS to use 'ϑ' instead of '(k+1)*ϑ'
-    conv_rhs => rw [single_point_localized_fold_matrix_form_congr_steps_index 𝔽q β
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (steps' := ϑ) (h_steps_eq_steps' := h_steps_eq.symm)]
+    conv_rhs => rw [iterated_fold_congr_steps_index 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0) (steps := (k.val + 1) * ϑ)
+      (steps' := ϑ) (h_steps_eq_steps' := h_steps_eq.symm)]
     have h_challenges_eq :
-      (fun (j : Fin ϑ) => stmtIn.challenges ⟨j.val, by simp only [Fin.val_last]; omega⟩)
+      (fun (j : Fin ϑ) => foldOrderChallenges (i := Fin.last ℓ) stmtIn.challenges
+        ⟨j.val, by simp only [Fin.val_last]; omega⟩)
       = fun (j : Fin ϑ) => challenges_full ⟨j.val, by omega⟩ := by
         funext j
         dsimp only [challenges_full, getFoldingChallenges]

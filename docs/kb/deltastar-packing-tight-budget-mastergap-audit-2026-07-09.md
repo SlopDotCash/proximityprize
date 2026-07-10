@@ -88,6 +88,49 @@ as prime (`prime_P`), proves `P / 2^128 = 2^30` (`P_div_two_pow_128`), and suppl
 `g : ZMod P` of order `2^30` (`orderOf_g`).  Therefore the tight-budget branch contains a fully
 certified smooth prize-shaped field; it is not a hypothetical compatibility corner.
 
+This field is inside every numerical restriction stated by the published challenge:
+
+* `P` is a 159-bit prime, hence `P < 2^256`;
+* `P-1` is divisible by `2^30`, giving the required smooth evaluation subgroup;
+* the advertised dimensions `2^29,2^28,2^27,2^26` are all below `2^40`;
+* `P > 2^30 * 2^128`, hence `n/P < 2^-128`, which is precisely the paper's informal
+  field-normalization criterion.
+
+Neither the [official challenge](https://proximityprize.org/) nor
+[ABF26](https://eprint.iacr.org/2026/680.pdf) states a stronger lower bound that would exclude
+this prime.  The challenge takes a given code and the paper explicitly seeks a result covering
+every field/domain/dimension choice.  Thus the packing ceiling is a counterexample to a
+*field-uniform beyond-Johnson conclusion in the published regime*, not an artifact outside the
+problem's scope.  The official page does mark the conditions as preliminary.
+
+The published Johnson estimate also does not exclude this branch.  ABF26 Theorem 4.12 has no
+minimum-field hypothesis, but converting its count into the `2^-128` probability budget requires
+`p/(n 2^128)` to be at least about `990.36`, `2801.17`, `7922.90`, and `22409.33` at rates
+`1/2`, `1/4`, `1/8`, and `1/16`, respectively, even after retaining only its smallest positive
+term.  Here `P/(n 2^128)=1+5.642...*10^-37`.  The estimate therefore simply cannot certify the
+good side at this field size; it does not supply a scope escape.
+
+## The literal maximum is not the operational threshold
+
+There is a separate statement-level defect in the phrase "largest real `delta`".  The theorem
+`Collapse.epsMCA_eq_of_floor_eq` proves that `epsMCA(C,delta)` depends only on
+`floor(delta*n)`.  Consequently, if the first bad lattice radius is `b/n`, the real good set is
+`[0,b/n)`: it has supremum `b/n` but no largest element.  Any proposed good `delta*<1` has a
+strictly larger point in the same Hamming plateau, contradicting a clause requiring every larger
+real radius to be bad.
+
+The faithful object is therefore
+
+```text
+mcaDeltaStar(C, epsilon*) = sup {delta in [0,1] | epsMCA(C,delta) <= epsilon*},
+```
+
+with goodness required for `delta < mcaDeltaStar` and badness for
+`delta > mcaDeltaStar`, but no boundary-attainment requirement.  Equivalently one may ask for the
+largest **lattice** index that is good.  If that largest index is `j<n`, the operational supremum
+is `(j+1)/n`, one lattice step to its right.  Any family-level answer must also retain `p`, or at
+least `B=floor(p/2^128)`, as an input; `(rho,n,epsilon*)` alone is not field-faithful.
+
 ## Audit of the window reductions
 
 The conditional reduction files remain logically valid, but their hypotheses do not bypass the
@@ -150,5 +193,6 @@ the good side to the production dimensions `2^28,2^27,2^26`.
 ## Validation
 
 `scripts/pg-iterate.sh` passes on
-`Frontier/_PackingBudgetFirstJump.lean`; the new theorems report only the standard
+`Frontier/_PackingBudgetFirstJump.lean`, `Frontier/_PackingPrizeP30Ceilings.lean`, and
+`Frontier/_PrizeShapePackingCounterexample.lean`; the new theorems report only the standard
 `propext`, `Classical.choice`, and `Quot.sound` axioms and contain no `sorry`.

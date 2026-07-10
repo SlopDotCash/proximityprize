@@ -46,7 +46,7 @@ theorem rateQuarter_mcaDeltaStar_le_half :
     (p := P) (n := 2 ^ 30) (k := 2 ^ 28) (Q := 2 ^ 128) (g := g)
     orderOf_g (by norm_num) (by norm_num) (by norm_num) P_div_two_pow_128
     (by norm_num) ?_
-  norm_num [ArkLib.ProximityGap.PrizeShapePrimeP30.P]
+  norm_num
 
 /-- At rate `1/8` (`k = 2^27`), the faithful operational threshold is at most `1/2`,
 strictly below the Johnson radius. -/
@@ -59,7 +59,7 @@ theorem rateEighth_mcaDeltaStar_le_half :
     (p := P) (n := 2 ^ 30) (k := 2 ^ 27) (Q := 2 ^ 128) (g := g)
     orderOf_g (by norm_num) (by norm_num) (by norm_num) P_div_two_pow_128
     (by norm_num) ?_
-  norm_num [ArkLib.ProximityGap.PrizeShapePrimeP30.P]
+  norm_num
 
 /-- At rate `1/16` (`k = 2^26`), the faithful operational threshold is at most `1/2`,
 strictly below the Johnson radius `3/4`. -/
@@ -72,7 +72,7 @@ theorem rateSixteenth_mcaDeltaStar_le_half :
     (p := P) (n := 2 ^ 30) (k := 2 ^ 26) (Q := 2 ^ 128) (g := g)
     orderOf_g (by norm_num) (by norm_num) (by norm_num) P_div_two_pow_128
     (by norm_num) ?_
-  norm_num [ArkLib.ProximityGap.PrizeShapePrimeP30.P]
+  norm_num
 
 /-- The three prize rates below `1/2`, packaged as one audit-facing result. -/
 theorem three_lower_prize_rates_mcaDeltaStar_le_half :

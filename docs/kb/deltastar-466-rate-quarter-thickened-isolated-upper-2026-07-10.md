@@ -44,11 +44,26 @@ delta_bad = 1-t/n
 Thus the first-prime operational rate-quarter threshold satisfies
 `deltaStar <= delta_bad`.  The complete connector now lands in
 `_P1RateQuarterScaleBadCount.lean` and `_P1RateQuarterScaleFinalConsumer.lean`.
+The generic cross-type transport in `_MCAReindexEquiv.lean` and its concrete
+specialization `_P1RateQuarterCanonicalCodeBridge.lean` additionally identify
+the fibre-indexed certificate with the prize's literal
+`evalCode g N (k-1)` on `Fin N`; no coordinate-reindexing assumption remains.
 Lean checks the billion-scale domain parametrically: the `N-1` covered
 coordinates give injective labels `gamma=-x`, the three hole labels are
 injective and disjoint by their `N`th powers, and all `N+2` labels fire the
 literal `mcaEvent`.  The resulting operational upper bound is unconditional
 and contains no named residual.
+
+The full unique-decoding MCA connector also proves the good side at the exact
+rate-quarter unique-decoding radius.  Consequently the same concrete
+fibre-indexed threshold and prize error satisfy the unconditional bracket
+
+```text
+3/8 <= deltaStar <= 23/48 - 2/(3n) < 1/2.
+```
+
+This lower endpoint lands in `_P1RateQuarterOperationalBracket.lean`.  The two
+endpoints do not match, so this is not an exact delta-star pin.
 
 The principal final theorems are
 
@@ -56,6 +71,7 @@ The principal final theorems are
 badScalar_filter_card_ge_N_add_two
 firstPrime_rateQuarter_mcaDeltaStar_le_delta
 rateQuarter_mcaDeltaStar_le_twentyThree_over_fortyEight_correction
+rateQuarter_mcaDeltaStar_mem_operational_bracket
 ```
 
 Their axiom audits contain no `sorryAx`; only `propext`, `Classical.choice`,
