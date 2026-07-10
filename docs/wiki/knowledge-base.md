@@ -38,6 +38,9 @@ The current KB policy is:
 - Keep process guidance here in `docs/wiki/`; keep paper content in `docs/kb/`.
 - Prefer persistent pages over branch-local scratch notes when the result will help future PRs or
   reviewers.
+- Pushes to `main` that change Lean or KB inputs run the `Refresh KB Generated Files` workflow.
+  When regeneration changes derived files, the workflow opens a generated-only PR and either
+  enables auto-merge or merges it immediately when no required checks block it.
 
 ## Review Integration
 
