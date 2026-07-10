@@ -60,7 +60,8 @@ lemma evalDist_uniformSample_bind_update_dep (t : ι) :
   classical
   haveI : Nonempty (∀ i, R i) := ⟨fun i => Classical.arbitrary (R i)⟩
   refine evalDist_ext fun h => ?_
-  rw [probOutput_uniformSample (∀ i, R i) h, probOutput_bind_eq_sum_fintype]
+  rw [probOutput_uniformSample (∀ i, R i) h,
+    HasEvalSPMF.probOutput_bind_eq_sum_fintype]
   have hinner : ∀ u : R t,
       Pr[= h | (do let g ← $ᵗ (∀ i, R i); pure (Function.update g t u))]
         = (if u = h t then

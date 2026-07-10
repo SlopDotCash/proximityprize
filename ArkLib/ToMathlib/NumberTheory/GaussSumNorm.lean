@@ -4,6 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.GaussSum
+import Mathlib.NumberTheory.MulChar.Lemmas
+import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
+import Mathlib.FieldTheory.Finite.Basic
 
 /-!
 # The norm of a Gauss sum over a finite field
@@ -27,6 +30,19 @@ lives; a general `RCLike` target would need a `star_gaussSum_eq` generalization 
 -/
 
 variable {F : Type*} [Field F] [Fintype F]
+
+/-- The complex conjugate of a Gauss sum over a finite field is the Gauss sum of the inverse
+characters.  (Planned as Mathlib `star_gaussSum_eq`; supplied here until that lands.) -/
+private lemma star_gaussSum_eq {χ : MulChar F ℂ} {ψ : AddChar F ℂ} :
+    star (gaussSum χ ψ) = gaussSum χ⁻¹ ψ⁻¹ := by
+  have hchar : 0 < ringChar F := by
+    obtain ⟨n, hp, -⟩ := FiniteField.card F (ringChar F)
+    exact hp.pos
+  unfold gaussSum
+  rw [star_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [star_mul', MulChar.star_apply' χ a, ← starRingEnd_apply,
+    AddChar.starComp_apply hchar a]
 
 /-- The squared norm of the Gauss sum of a nontrivial multiplicative character `χ : MulChar F ℂ`
 and a primitive additive character `ψ` on a finite field `F` is the cardinality of `F`. -/
