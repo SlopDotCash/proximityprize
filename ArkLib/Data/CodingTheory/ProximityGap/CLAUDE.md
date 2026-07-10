@@ -40,17 +40,26 @@ the production statement.
 
 The binding analytic target is square-root-scale cancellation for the adversarial smooth
 multiplicative subgroup, equivalently the deep DC-subtracted energy / Paley-BGK face. G70 rules out
-flat-Dudley chaining as an improvement; G73 proves the Shkredov–Vyugin multi-shift bound remains
-strictly above exponent `1/2` for every finite number of shifts. After G73, the signed cross-cell
-`relationAnomaly`/transversality route is the sole recorded off-BGK route not yet closed. Otherwise
-the core remains ON-BGK.
+flat-Dudley chaining; G73 proves the Shkredov–Vyugin multi-shift bound remains strictly above
+exponent `1/2` for every finite number of shifts. The 2026-07-10 evening arc localized further:
+G77 closes the signed `relationAnomaly` route as a Fourier gauge and G78 proves the weighted
+embedding qualifier has zero slack (commits `e78e41383`, `1c7b20205`); G81 seals the deep rungs
+unconditionally — `DCEnergyBound` holds once `(2r-1)!! >= |G|^r` (commit `2ee6e69f7`) — so the
+open rung window is finite in depth, but it still contains the prize depth `r ~ log p`. On the
+line-list surface, S2 discharges the within-Johnson side of `PuncturedListBudget` (commit
+`981b38e62`); the open band is exactly beyond-Johnson. The G82 audit (commit `203395261`) records
+the one-hypothesis-deep CONDITIONAL production gate `mcaDeltaStar = 31/64` in
+`Frontier/_PrizeShapeRateHalfBracket.lean` — a conditional reduction, not a closure.
 
 Start from:
 
-- `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map;
+- `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
+  (its §6 addendum dated 2026-07-10 is the latest frontier snapshot);
 - `DISPROOF_LOG.md` (tail first) for results after the dossier snapshot;
-- `Frontier/_R366CenteredRelationAnomaly.lean` and
-  `Frontier/_R367SignedShadowPairDiscrepancy.lean` for the live signed route;
+- `docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` for the positive specification
+  of any CORE closure (the single missing non-Fourier certificate);
+- `Frontier/_G81DeepRungDCRecovery.lean`, `Frontier/_S2PuncturedJohnsonDischarge.lean`, and
+  `Frontier/_PrizeShapeRateHalfBracket.lean` for the sharpest current pins;
 - `Frontier/_DeltaStarDefinitive.lean` for the final threshold-facing reduction;
 - `docs/wiki/deltastar-programme.md` and `docs/wiki/residual-census.md` for programme state.
 
