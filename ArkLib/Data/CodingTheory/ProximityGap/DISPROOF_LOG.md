@@ -6,6 +6,18 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G105-depth-ledger-lossless-no-go] Depth-graded signed ledgers are lossless average-census re-slicings; floors spend slack and empty fibers provide no compensation (2026-07-10, #466 G105)
+
+Fable G104 refereed the newest signed-depth ladder (G101/G102/G104): partitioning relation/census mass by collision depth gives honest per-depth bookkeeping, but the full depth sum is exactly the original `rEnergy`/average-census object. G105 makes that obstruction kernel-checked in its smallest reusable form. For any finite universe `U`, grade map `depth : α → σ` (with `σ` allowed infinite, e.g. `ℕ`), and signed weight `w`,
+
+```text
+Σ_{s∈depth(U)} Σ_{x∈U, depth(x)=s} w(x) = Σ_{x∈U} w(x).
+```
+
+Therefore a target stated only as a bound on the observed full graded sum is iff the ungraded total target. If a subset of depths has a lower floor `L`, then any proof of total budget `B` must force the remaining depths into `≤ B-L`; the floor spends slack rather than creating cancellation. If a depth fiber is empty, its contribution is exactly zero, so it supplies no negative compensation. This closes the depth-grading/per-depth-sign ladder as a route to the prize-facing sup wall: re-slicing an average census cannot recover a sup-side/non-Fourier certificate. CORE remains open; the surviving positive direction is still the G80Q/G99 small-difference counting object, not another depth-sign pin.
+
+Formal payload: `Frontier/_G105DepthLedgerLosslessNoGo.lean` with five axiom-clean theorems (`sum_depthLedgers_eq_total`, `depthLedger_target_iff_total_target`, `depthLedger_eq_zero_of_no_depth`, `floor_consumes_remaining_budget`, `depthFloor_consumes_remaining_budget`).
+
 ## [466-G78-weighted-embedding-rigidity] the single-embedding qualifier in #505 carries ZERO slack: the full NR-weighted signed relation structure (shadowCollisionMass, relationAnomaly, signedShadowPairDiscrepancy, the G75/DCEnergyBound target) is LITERALLY IDENTICAL at every primitive embedding g ↦ g^a, gcd(a,n)=1 (2026-07-10, #466 G78)
 
 OC equidistribution pinned only the unweighted marginal vanishing counts and honestly recorded
