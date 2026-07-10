@@ -24356,3 +24356,50 @@ bounding the ℓ²-profile (S₀, (S_γ)_γ); conversely no cross-orbit cancella
 beat the kernel floor. With G89 (first-incidence ≡ wall, constant 1) this completes BOTH #505
 exit readings. Exact identities and two-sided brackets, NOT a bound: the size of S₀ and the
 realized class-mass profile remain the open arithmetic content. CORE OPEN / ON-BGK.
+
+## [466-G91F-lowprofile-fiber-census-bound] the first non-circular q-FREE low-profile fiber bound: D(S) ≤ C(s, a−t) on the census class, with the consumer discharged and the census dichotomy pinned both ways (theorem under unique decoding, FALSE at every prize shape) (2026-07-10)
+
+Lane: dossier §6 Tier-1 item 2 Fable (`Frontier/_G91LowProfileFiberBound.lean`, 15 theorems, all
+exactly `[propext, Classical.choice, Quot.sound]`; probe
+`scripts/probes/probe_466_g91_lowprofile_fiber.py` + `_out_466_g91_lowprofile_fiber.txt`: n=8,
+k=2, a=4, q=17, 35708 far (S,t) instances, 0 violations; D = 2 > 1 realized at t = 1 < k so no
+uniqueness-type bound covers low profiles; failure branch realizes D = 14 — the census is
+load-bearing). Mixed-profile top-fit at z = n NOT retargeted: already decided negatively in-tree
+(`MixedTopFitBudgetIncompatibility.lean`). Mechanism: exclude the zero codeword and localize
+incidence-ownership to a single exact profile S — each heavy incidence owns a private
+(a−t)-subset of the MOVING support; cross-scalar sharing produces a nonzero codeword vanishing
+on S agreeing with u₁ on a points; within-scalar sharing forces witness equality on a ≥ k
+points. HEADLINE `exactAppearingZeroAgreementFiber_card_le_choose_of_sVanishingFar`:
+D(S) ≤ C(s, a−t), s = #support(u₁) — q-free (survives q → ∞; degenerates to R2B stratum
+emptiness when a−t > s), under `SVanishingFarDirection` (direction-only census, no u₀).
+Unconditional dichotomy `exactFiber_card_le_choose_or_exists_nonzero_vanishing_agreeing`.
+CONSUMER FIRES: `uniformLineBadScalarsBudgeted_of_census_mixedChooseProfileSumsFit` composes
+with in-tree `uniformLineBadScalarsBudgeted_of_lowExact_mixedChooseProfileSumsFit`, discharging
+its hExactLow slot. Skeptic guards both ways:
+`nonzeroAgreementFarDirection_of_largeZero_of_unique_decoding` (census is a THEOREM when
+n+k ≤ 2a) and `not_nonzeroAgreementFar_census_of_two_mul_le` (uniform census FALSE at 2a ≤ n =
+every prize shape — step direction + constant codeword). Honest scope: does not discharge hlow
+at prize budgets (downstream choose-profile arithmetic explodes independently; in-window census
+open on the adversarial direction class). CORE OPEN.
+
+## [466-G97-arc-dilate-discrepancy] Combinatorial-discrepancy first contact: the arc×dilate system is a k-permutation system with herdisc ~O(1)–polylog while the SPECIFIC set b·μ_n deviates at Θ(√n) — LSV/Banaszczyk/MNT transference is a proven structural no-go; positive payoff: the G80Z arc certificate reduces with zero loss beyond a factor 2 to K+1 PREFIX counts (2026-07-10)
+
+Lane: G97 Fable (`Frontier/_G97ArcDilateDiscrepancy.lean`, 11 decls, all ⊆
+`[propext, Classical.choice, Quot.sound]`; probe
+`scripts/probes/probe_g97_arc_dilate_discrepancy.py`). Probe: D(b·μ_n) at 0.26–0.39·√(n log p),
+TYPICAL among random n-sets (within [med, q95] everywhere — no hidden rigidity, no pathology);
+system herdisc tiny (detlb ≤ 1.14, γ2-LB ≤ 2.9, coloring disc ≤ 6 at 216×341); separation
+specific-set/coloring-disc grows 1.8×→19× with n. Bricks: `signedPrefix_eq_parity` +
+`hereditary_interval_disc_le_one` (herdisc(prefixes/intervals) = 1 EXACT, hereditary, every
+ground set), `scaledPrefix_succ`/`arc_card_dev_le_two_mul` (arc = difference of two scaled
+prefixes, exact), `per_dilate_arc_coloring` (k-permutation identification),
+`specific_set_escapes_hereditary_control` + `hereditary_control_cannot_yield_certificate`
+(NO-GO headline: herdisc(intervals) = 1 exactly while specific-set measure deviation is
+unbounded — transference bounds roundings of the fractional vector, never ONE given indicator),
+CAPSTONE `charSum_norm_le_of_scaledPrefix_equidistribution`: K+1 prefix counts within ε of
+uniform ⟹ ‖Σ_{y∈S} e(val y/p)‖ ≤ #S·(2π/K) + 2εK, composed end-to-end with G80Z's
+`exists_arc_deviation_of_charSum_bias` — the missing non-Fourier certificate SHRINKS from all
+arcs to K+1 prefix counts. Honest scope: prefix deviation of b·μ_n itself untouched; the
+herdisc of the "multiplicatively translated intervals" system appears unstudied in the
+literature (publishable observation); distinct from R367/G77 signed pair discrepancy and
+in-tree lattice-Banaszczyk. CORE OPEN / ON-BGK.

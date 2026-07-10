@@ -1,0 +1,18 @@
+lines run: 978
+(S,t) instances with S-vanishing-far direction checked: 35708
+  violations of D <= C(s, a-t): 0
+  nonempty fibers among far instances: 1818
+(S,t) instances where far FAILS (dichotomy other branch): 70
+  nonempty fibers there: 9, max D = 14
+
+max realized D per (t, s) on far instances  [D, bound C(s,a-t), q^(k-t)]:
+  t=0 s=4: D=1  C(s,a-t)=1  fieldpow=289
+  t=1 s=3: D=1  C(s,a-t)=1  fieldpow=17
+  t=1 s=4: D=2  C(s,a-t)=4  fieldpow=17
+  t=2 s=2: D=1  C(s,a-t)=1  fieldpow=1
+  t=2 s=3: D=1  C(s,a-t)=3  fieldpow=1
+  t=2 s=4: D=1  C(s,a-t)=6  fieldpow=1
+  t=3 s=1: D=1  C(s,a-t)=1  fieldpow=0.058823529411764705
+  t=3 s=2: D=1  C(s,a-t)=2  fieldpow=0.058823529411764705
+  t=3 s=3: D=1  C(s,a-t)=3  fieldpow=0.058823529411764705
+  t=3 s=4: D=1  C(s,a-t)=4  fieldpow=0.058823529411764705
