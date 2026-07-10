@@ -32420,7 +32420,6 @@ geometric progression in arcs WITHOUT Fourier — is exactly the BGK/Cilleruelo�
 instantiation and not a closure. The rank-one arc application and its oscillation estimate remain
 to be formalized. It does not prove that no non-Fourier spreadness certificate can exist. CORE
 OPEN / ON-BGK.
-
 ## [466-OC-CROSSSCALE-tensor-ceiling] Cross-scale PRODUCT (tensor) certificates strictly AMPLIFY the BGK-normalized wall above the square-root-cancellation floor, closing the last conceptual non-BGK escape (super-additivity across distinct n-scales) as an axiom-clean structural no-go (2026-07-10)
 
 After the fixed-cell ledger was fully wall-pinned — positive census (`_AnomalyLocalization`),
@@ -32460,3 +32459,22 @@ constructive cross-scale proposal on the board reduces to the tensor spectrum. C
 fully wall-pinned fixed-cell ledger, the honest frontier statement holds: δ* CORE is ON-BGK/Paley at
 the adversarial thin subgroup; neither fixed-cell certificates nor their tensor products escape the
 wall. No axioms, no sorry, no native_decide. CORE OPEN / ON-BGK.
+## [466-OC-TAIL-cross-prime-stacking-ceiling] Fixed-depth stacked-violator primes are finite in the whole tail, with an explicit candidate×logarithmic-multiplicity ceiling (axiom-clean cross-prime double count) (2026-07-10)
+
+`_OCStackingTailCensusCeiling.lean` combines the per-candidate norm certificate across *distinct
+primes* with the per-violator orbit floor. If every candidate has nonzero certificate
+`N(a) ≤ H^phi`, incidence at a prime `p ≥ P` forces `p | N(a)`, and every violator consumes at
+least `K` candidates, then every finite violator set `V` satisfies
+
+```text
+card(V) * K ≤ card(Cand) * Nat.log P (H^phi).
+```
+
+The cap is uniform in `V`, so `violatorSet_finite` proves the entire infinite-tail violator set is
+finite. The depth-three specialization uses `H=6`, `phi=n/2`, and `K=n/16`. The exact full-pool
+probe at `n=16` verifies certificate equivalence, the height ceiling, and cross-prime multiplicity;
+only prime 577 violates in `[512,120000)`, well within the theorem's ceiling.
+
+**Scope.** This is fixed-depth exceptional-prime census control, not an explicit-prize-field
+theorem. It cannot remove the known exceptional production prime or prove the logarithmic-depth
+DC-energy bound. Six headline theorems compile with `[propext]`; CORE remains OPEN / ON-BGK.
