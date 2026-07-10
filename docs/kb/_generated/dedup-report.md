@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 5968 files, 63520 declarations
+- `ArkLib` — 5981 files, 63683 declarations
 
-## Same short-name across multiple files (2453 groups)
+## Same short-name across multiple files (2457 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -1206,6 +1206,13 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.ProveAssembly.moment_saddle_value` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProveAssembly.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProveAssembly.lean#L55) — **Moment ⟹ sup value.** `M^{2r} ≤ p·B^r` (`B ≥ 0`) gives `M ≤ p^{1/2r}·√B` (take the `2r`-th root).
 - `theorem ArkLib.ProximityGap.Frontier.ProveAssemblyConcrete.moment_saddle_value` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProveAssemblyConcrete.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ProveAssemblyConcrete.lean#L59) — `M^{2r} ≤ p·B^r` (`B ≥ 0`) ⟹ `M ≤ p^{1/2r}·√B`.
 - `theorem ArkLib.ProximityGap.Frontier.ThesisCapstone.moment_saddle_value` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThesisCapstone.lean:123](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ThesisCapstone.lean#L123) — `M^{2r} ≤ p·B^r` (`B ≥ 0`) ⟹ `M ≤ p^{1/2r}·√B` — the saddle inversion.
+
+### `ne_zero_of_mem` (4 declarations, 4 files)
+
+- `theorem ArkLib.ProximityGap.G95CyclicCodeWeightDictionary.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean#L195) — Elements of a `0`-avoiding set are nonzero.
+- `theorem ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R16DiagonalExactValue.lean:84](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R16DiagonalExactValue.lean#L84) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.R18PlateauLaw.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18PlateauLaw.lean:119](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18PlateauLaw.lean#L119) — (no docstring)
+- `theorem ArkLib.ProximityGap.AdditiveEnergyRepBound.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/RepCountShiftedPower.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/RepCountShiftedPower.lean#L35) — An element of a root-of-unity subgroup is nonzero.
 
 ### `nodePoly` (4 declarations, 4 files)
 
@@ -3378,12 +3385,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterSupportThreeSafeLine.natDegree_lt_of_degree_lt_of_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSupportThreeSafeLine.lean:163](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSupportThreeSafeLine.lean#L163) — (no docstring)
 - `theorem CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.natDegree_lt_of_degree_lt_of_pos` [ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernelUD.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/Hab25CaptureKernelUD.lean#L80) — `degree < k` and `0 < k` give `natDegree < k` (including the zero polynomial).
 
-### `ne_zero_of_mem` (3 declarations, 3 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R16DiagonalExactValue.lean:84](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R16DiagonalExactValue.lean#L84) — (no docstring)
-- `theorem ArkLib.ProximityGap.Frontier.R18PlateauLaw.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18PlateauLaw.lean:119](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18PlateauLaw.lean#L119) — (no docstring)
-- `theorem ArkLib.ProximityGap.AdditiveEnergyRepBound.ne_zero_of_mem` [ArkLib/Data/CodingTheory/ProximityGap/RepCountShiftedPower.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/RepCountShiftedPower.lean#L35) — An element of a root-of-unity subgroup is nonzero.
-
 ### `ne_zero_of_pow_eq_one` (3 declarations, 3 files)
 
 - `theorem ArkLib.ProximityGap.C71BinomialIncidence.ne_zero_of_pow_eq_one` [ArkLib/Data/CodingTheory/ProximityGap/C71BinomialIncidence.lean:67](../../../ArkLib/Data/CodingTheory/ProximityGap/C71BinomialIncidence.lean#L67) — A positive-order root of unity in a field is nonzero. This is the binomial-strata version of the pun
@@ -5253,6 +5254,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `abbrev ProximityGap.UncertaintyTwoPower.FreqSupport` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerBounds.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerBounds.lean#L51) — A finite "frequency" support `T ⊆ ZMod n` — the Fourier support of the far-line function.
 - `abbrev ProximityGap.UncertaintyTwoPowerExtremal.FreqSupport` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerExtremal.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerExtremal.lean#L79) — A finite "frequency" support `T ⊆ ZMod n` — the Fourier support of the far-line function.
 
+### `G17` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.G95CyclicCodeWeightDictionary.G17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean:530](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean#L530) — `μ₄ ⊂ F₁₇^×` as an explicit finset.
+- `def ArkLib.ProximityGap.MomentCollisionSubgroupData.G17` [ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean:100](../../../ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean#L100) — The order-`8` multiplicative subgroup `⟨2⟩ = {x : x⁸ = 1}` of `F₁₇` — a genuine smooth (power-of-two
+
+### `G17_card` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.G95CyclicCodeWeightDictionary.G17_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean:536](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean#L536) — (no docstring)
+- `theorem ArkLib.ProximityGap.MomentCollisionSubgroupData.G17_card` [ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean:103](../../../ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean#L103) — `\|G17\| = 8`.
+
 ### `G_eighth_roots` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.SubgroupAdditiveEnergyF17.G_eighth_roots` [ArkLib/Data/CodingTheory/ProximityGap/SubgroupAdditiveEnergyF17.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/SubgroupAdditiveEnergyF17.lean#L49) — (no docstring)
@@ -5940,6 +5951,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def StirIOP.MultiRound.askMsg` [ArkLib/ProofSystem/Stir/CheckingVerifier.lean:148](../../../ArkLib/ProofSystem/Stir/CheckingVerifier.lean#L148) — Query the `j`-th prover message oracle at a vector position.
 - `def Whir302Checked.askMsg` [ArkLib/ProofSystem/Whir/CheckedVerifier.lean:56](../../../ArkLib/ProofSystem/Whir/CheckedVerifier.lean#L56) — Query the `j`-th prover message oracle at a vector position.
 
+### `assemble_coreAt_paddingAt` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G85EndpointAssemblyEquiv.assemble_coreAt_paddingAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G85EndpointAssemblyEquiv.lean#L51) — Decomposing an endpoint and reassembling it returns the original endpoint.
+- `theorem ArkLib.ProximityGap.Frontier.G98CanonicalSlotCollisionDecoder.assemble_coreAt_paddingAt` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98CanonicalSlotCollisionDecoder.lean:109](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98CanonicalSlotCollisionDecoder.lean#L109) — Assembly from the values read at any core embedding and its canonical complement recovers the whole
+
 ### `autocorr_le_energy` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.CharPMomentRecursion.autocorr_le_energy` [ArkLib/Data/CodingTheory/ProximityGap/CharPMomentRecursion.lean:146](../../../ArkLib/Data/CodingTheory/ProximityGap/CharPMomentRecursion.lean#L146) — **The autocorrelation diagonal bound `C_r(δ) ≤ E_r`** for every offset `δ`. Elementary AM–GM (`a·b ≤
@@ -6204,6 +6220,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ProximityGap.MCAHalfDistanceGeneralRefuted.card_clause8` [ArkLib/Data/CodingTheory/ProximityGap/MCAHalfDistanceGeneralRefuted.lean:105](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAHalfDistanceGeneralRefuted.lean#L105) — The witness-size clause at `δ = 1/4`, `n = 8`, for the six-point witnesses.
 - `theorem ProximityGap.MCARSBoundaryArithmetic.card_clause8` [ArkLib/Data/CodingTheory/ProximityGap/MCARSBoundaryArithmetic.lean:118](../../../ArkLib/Data/CodingTheory/ProximityGap/MCARSBoundaryArithmetic.lean#L118) — The witness-size clause at `δ = 1/4`, `n = 8`: six points suffice.
+
+### `card_collisionSector_le_canonical` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G94CanonicalSlotDecoder.card_collisionSector_le_canonical` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94CanonicalSlotDecoder.lean:175](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94CanonicalSlotDecoder.lean#L175) — **Actual canonical-slot sector bound.**
+- `theorem ArkLib.ProximityGap.Frontier.G98CanonicalSlotCollisionDecoder.card_collisionSector_le_canonical` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98CanonicalSlotCollisionDecoder.lean:218](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98CanonicalSlotCollisionDecoder.lean#L218) — **G98 headline: actual canonical-slot collision-sector bound.** G84's `(s!)²` saving now applies to
 
 ### `card_dilate` (2 declarations, 2 files)
 

@@ -25265,3 +25265,30 @@ near the Johnson boundary the monomial baseline collapses to O(1) while the elev
 floor stays ≈ n−√(nk) — no constant C survives unless monomial baselines are proven to grow
 there. The dossier-§6 survivor (b) "bounded spread-excess law" is dead as stated; the
 surviving open question is the monomial-baseline growth law at boundary cells. CORE OPEN.
+# [466-G104-affine-triple-syzygy-no-go] Retaining affine dependence on distinct scalars still makes syzygies automatic on every shared-row stratum of size three (axiom-clean structural no-go) (2026-07-10)
+
+**Strengthening of G103.** G103 allowed arbitrary replication of one dual-functional block.  The
+real G87 bridge retains more structure: its rows have affine scalar shape.  Could distinct `γ`
+therefore make the syzygy disjunct rare enough to count?
+
+**Formal answer on a shared-row stratum: no.** `Frontier/_G104AffineTripleSyzygyNoGo.lean`
+defines `affineRow a b γ = a + γ • b` and proves the exact Lagrange identity
+
+`(γ₁-γ₂)•row(γ₀) + (γ₂-γ₀)•row(γ₁) + (γ₀-γ₁)•row(γ₂) = 0`.
+
+If `γ₁ ≠ γ₂`, the certificate is nonzero, so every three affine copies are linearly dependent.
+The block theorem applies rowwise to an `m`-row family: even assuming all three witness blocks are
+internally linearly independent and the scalar parametrization is injective, each row across the
+three witnesses has an unavoidable syzygy.
+
+**Verdict.** Affine dependence on distinct scalars does not by itself turn the G86/G87 syzygy into
+a rare event.  The useful information must be how the witness row spaces vary and intersect across
+supports.  In the literal event, distinct scalars cannot merely reuse one agreement support (the
+existing aligned-set disjointness/unique-`γ` results detect that degeneracy), so the genuine
+residual is cross-support Reed--Solomon incidence geometry.  A rank argument that forgets those
+support labels cannot close #507.
+
+**Honest scope.** This is a shared-row-stratum no-go, not a construction of concrete bad scalars
+and not a refutation of the wall hypothesis.  It narrows the next theorem shape to quantitative
+intersection/multiplicity control for the support-indexed annihilator subspaces.  All four audited
+declarations use only standard Lean axioms; no `sorry` or named hypothesis.
