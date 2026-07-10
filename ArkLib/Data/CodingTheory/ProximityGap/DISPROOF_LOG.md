@@ -25216,3 +25216,24 @@ functionals cannot prove the #507 count.
 witnesses, and so does not refute the wall hypothesis.  It refutes only the sufficiency of the
 present abstract/per-block endpoint.  All audited declarations use only standard Lean axioms; no
 `sorry`, named analytic hypothesis, or production closure claim.
+
+## [466-G80I-energy-route-assembly] 🏁 The SECOND unconditional CG-type theorem: T(W)⁴ ≤ n·W²·(log₂(W²)+1)³ for every multiplicative H and W² < p — ZERO hypotheses (G80L energy consumer fired by the G80J divisor second moment); the unconditional interval face is now TWO-SIDED: T(W) ≤ min(√n·W^{1/4}, n^{1/4}·√W·log^{3/4})·O(1) on all W < √p (axiom-clean milestone) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80IEnergyRouteAssembly.lean`, real locked build, both
+theorems exactly `[propext, Classical.choice, Quot.sound]`, first-pass compile).
+
+**Bricks.** `mulEnergy_le_sum_sq_divisors`: E×(A) ≤ Σ_{y≤W²} d(y)² for A ⊆ [1,W] (fiber
+partition + r(y) ≤ d(y) + product set ⊆ [1,W²]). CAPSTONE `intervalCount_pow_four_le`:
+T(W)⁴ ≤ |H|·W²·(log₂(W²)+1)³ — G80L (T⁴ ≤ n·E×) × this bridge × G80J (Σd² ≤ M·log³).
+
+**The two-sided unconditional envelope.** G80M gives T(W) = O(√n·W^{1/4}) (better for
+W ≥ n-ish); G80I gives T(W) = O(n^{1/4}·√W·log^{3/4}W) (better for W ≤ n-ish, nontrivial
+below the n^{2/3} threshold where G80M dies — e.g. T(n^{2/3}) = O(n^{7/12}·log^{3/4})). The
+crossover is at W ≈ n (both ≈ n^{3/4}). To our knowledge these are the first machine-checked
+nontrivial subgroup-interval concentration bounds anywhere, now covering the full W < √p
+window from two sides with explicit constants and zero hypotheses.
+
+**Honest scope.** Fenced from the prize saddle by G80P regime disjointness. The next rung —
+the Konyagin-Shkredov energy RECURSION (self-improvement of E× using multiplicative
+structure of A itself, not just its ambient interval) — is where the open BGK content
+begins; expect wall contact there. CORE remains OPEN / ON-BGK. No axioms, no sorry.
