@@ -1,4 +1,17 @@
-# Issue #466/#505: per-depth anomaly census — odd-depth nonpositivity is a SUBGROUP law
+# Issue #466/#505: per-depth anomaly census — odd-depth nonpositivity at small n (CORRECTED)
+
+> **CORRECTION (same day, ~1 h after landing).** The "subgroup law" framing below is
+> **refuted at n = 32**: the concurrent G106 kernel certificate
+> (`_G106OddDepthSignArithmeticRefutation.lean`, `p = 21523361`, `r = s = 5`) exhibits a
+> strictly POSITIVE depth-five anomaly for an order-32 subgroup, and the concurrent
+> falsification sweep found `DCEnergyBound` itself FALSE at `(n, p, r) = (64, 16778497, 5)`.
+> What survives of this census: (i) the sharp subgroup-vs-random contrast at `n ≤ 16`
+> (0/14 vs 16/44 violations) — subgroups are far more sign-structured than generic sets,
+> but the structure DEGRADES with n and is not production-uniform; (ii) the per-depth and
+> global budget checks (points 3–5); (iii) the probe itself, which measures the exact
+> G96/G101 objects and remains the reference implementation for depth censuses at n ≤ 16.
+> Do NOT build an odd-nonpos producer on this census. The G105 consumer's hypothesis must be
+> per-prime or density-based, not uniform.
 
 Date: 2026-07-10. Probe: `scripts/probes/probe_466_depth_anomaly_census.py` (exact integer
 arithmetic; multiset enumeration + exchangeability DP for population fibers; reproducible,
