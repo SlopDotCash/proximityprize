@@ -25019,3 +25019,24 @@ machine-checked CG interval bound is now textbook Nat plumbing (formalize d(y) �
 instantiate); (ii) this is the k = 2 rung of the k-fold ladder T(W)^k ≤ D_k·n (W^k < p) whose
 k → log p/log W limit is the BGK bootstrap — the formal skeleton all deeper rungs share.
 CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G80N-divisor-fourth-power-bound] The PURE-Nat divisor input PROVEN: d(y)^4 <= 19680*y unconditionally — G80O's DivisorBound fires at exponent 1/4, making the first machine-checked nontrivial subgroup-interval concentration bound reachable (one instantiation away) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80NDivisorFourthPowerBound.lean`, real locked build, all
+audited theorems exactly `[propext, Classical.choice, Quot.sound]`).
+
+**Bricks.** `pow_four_le_cpr_mul`: for every prime p and a ≥ 1, (a+1)^4 ≤ c_p·p^a with
+c = 41/10/4/3/2/2 at p = 2/3/5/7/11/13 and c = 1 for p ≥ 17 (the ≥17 case by the clean
+ratio induction (a+2)^4 ≤ 16(a+1)^4 < 17(a+1)^4; small exponents by finite check; a ≥ 9 by
+the generic step (a+2)^4 ≤ 2(a+1)^4 for a ≥ 8). `prod_cpr_le`: the product of the constants
+over ANY finset is ≤ 19680 = 41·10·4·3·2·2. CAPSTONE `card_divisors_pow_four_le`:
+d(y)^4 ≤ 19680·y for every y ≥ 1 (multiplicative assembly via Nat.card_divisors over
+primeFactors). To our knowledge the first machine-checked constant-exponent divisor bound
+(d(y) = O(y^{1/4}) with explicit constant) in a proof assistant.
+
+**Consequence (with G80O).** DivisorBound(W², D) holds with D = ⌈(19680·W²)^{1/4}⌉-shape:
+T(W)^8 ≤ (D·n)^4 ≤ 19680·W²·n^4, i.e. T(W) = O(√n·W^{1/4}) for all W² < p — strictly below
+min(n, W) throughout n^{2/3} ≪ W ≪ n² (e.g. T(n) = O(n^{3/4})). The Nat-only input G80O
+named is CLOSED; the remaining step is the one-line instantiation brick joining the two
+files (next round). Fenced from the prize saddle by G80P regime disjointness — no prize
+claim. CORE remains OPEN / ON-BGK. No axioms, no sorry.
