@@ -103,6 +103,27 @@ theorem crt_amplification
     _ ≤ Nat.card (R ⧸ L) := natCard_quotient_le_of_le hL
     _ ≤ H := hH
 
+/-- **Mixed-index / CROSS-PRIME amplification.**  Distinct maximal ideals of possibly
+DIFFERENT indices `P i` (e.g. degree-1 primes above different rational primes): a common
+relation web forces `Π P i ≤ H`.  This is the ideal-theoretic general form of OC-TAIL's
+cross-prime finiteness: one bounded-height relation family cannot be simultaneously
+exceptional at rational primes whose product exceeds its height certificate — the
+stacked-violator prime set is finite in the whole tail, with the exact budget `Π p_i ≤ H`. -/
+theorem crt_amplification_mixed
+    {ι : Type*} [Fintype ι] (f : ι → Ideal R) (P : ι → ℕ) (H : ℕ)
+    (hmax : ∀ i, (f i).IsMaximal) (hne : Pairwise fun i j => f i ≠ f j)
+    (hcard : ∀ i, Nat.card (R ⧸ f i) = P i)
+    (L : Ideal R) (hL : L ≤ ⨅ i, f i) [Finite (R ⧸ L)]
+    (hH : Nat.card (R ⧸ L) ≤ H) :
+    ∏ i, P i ≤ H := by
+  classical
+  have hinf : Nat.card (R ⧸ ⨅ i, f i) = ∏ i, P i := by
+    rw [natCard_quotient_iInf_eq_prod f hmax hne]
+    exact Finset.prod_congr rfl fun i _ => hcard i
+  calc ∏ i, P i = Nat.card (R ⧸ ⨅ i, f i) := hinf.symm
+    _ ≤ Nat.card (R ⧸ L) := natCard_quotient_le_of_le hL
+    _ ≤ H := hH
+
 /-- **The logarithmic coverage bound**: `p^s ≤ H` pins common coverage at
 `s ≤ log H / log p`; coverage above the threshold is contradictory. -/
 theorem coverage_log_bound (p H s : ℕ) (hp : 2 ≤ p) (hH : 1 ≤ H)
@@ -139,6 +160,8 @@ end ArkLib.ProximityGap.Frontier.G82TransversalityCRTThreshold
   ArkLib.ProximityGap.Frontier.G82TransversalityCRTThreshold.natCard_quotient_le_of_le
 #print axioms
   ArkLib.ProximityGap.Frontier.G82TransversalityCRTThreshold.crt_amplification
+#print axioms
+  ArkLib.ProximityGap.Frontier.G82TransversalityCRTThreshold.crt_amplification_mixed
 #print axioms
   ArkLib.ProximityGap.Frontier.G82TransversalityCRTThreshold.coverage_log_bound
 #print axioms

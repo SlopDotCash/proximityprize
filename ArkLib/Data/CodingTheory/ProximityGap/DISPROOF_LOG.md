@@ -24382,3 +24382,12 @@ THE open core; G78's circularity verdict stands (a Fourier-derived uniformity in
 circular). What changed across G80/G80Z/G80Y: the entire analytic scaffolding on BOTH sides of
 the missing certificate is machine-checked; the open surface is now purely arithmetic. CORE
 remains OPEN / ON-BGK. No axioms, no sorry.
+
+### [466-G82-mixed-index] Cross-prime CRT amplification added to the G82 engine (2026-07-10)
+
+`crt_amplification_mixed` (axiom-clean, `_G82TransversalityCRTThreshold.lean`): distinct maximal
+ideals of possibly DIFFERENT indices P_i — a common relation web forces Π P_i ≤ H. This is the
+ideal-theoretic general form of OC-TAIL's cross-prime finiteness: one bounded-height relation
+family cannot be simultaneously exceptional at rational primes whose product exceeds its height
+certificate; the stacked-violator prime budget is exactly Π p_i ≤ H. Unifies the vertical
+(cross-prime, OC-TAIL) and horizontal (cross-embedding, G82) amplification laws in one engine.
