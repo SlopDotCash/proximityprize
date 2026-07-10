@@ -2837,6 +2837,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R390PerFrequencyShadowEnergyConverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R390RelationResultantCertificate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R391RelationHeightLedger
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R392RelationCountCapstone
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R393KernelIdealLatticeFrame
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R3FixedWidthDominationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R40CubeClassExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R41SexticInputSplit
