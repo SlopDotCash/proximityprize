@@ -24391,3 +24391,27 @@ ideal-theoretic general form of OC-TAIL's cross-prime finiteness: one bounded-he
 family cannot be simultaneously exceptional at rational primes whose product exceeds its height
 certificate; the stacked-violator prime budget is exactly Π p_i ≤ H. Unifies the vertical
 (cross-prime, OC-TAIL) and horizontal (cross-embedding, G82) amplification laws in one engine.
+
+## [466-G80X-arc-certificate-endpoint] The arc program CLOSES on the consumer side: formal K-optimization (AM-GM in the unit bracket above sqrt(2*pi*#S/eps)) turns an eps-uniformity certificate into ‖charSum‖ <= 2*sqrt(2*pi*#S*eps) + eps — eps = C log q formally yields the prize shape M = O(sqrt(n log q)) (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80XArcCertificateEndpoint.lean`, real locked build, both
+theorems exactly `[propext, Classical.choice, Quot.sound]`). Completes the arc program
+G80 → G80Z → G80Y → G80X.
+
+**Bricks.** `amgm_arc_budget`: for K in [s, s+1], s = sqrt(2*pi*n/eps): K*eps + 2*pi*n/K <=
+2*sqrt(2*pi*n*eps) + eps (pure real arithmetic; the two square-root identities s*eps =
+sqrt(2*pi*n*eps) and s*sqrt(2*pi*n*eps) = 2*pi*n drive it, no case split needed).
+`charSum_le_sqrt_of_arc_uniformity` (ZMod p capstone): an arc-occupancy eps-uniformity
+certificate at one bracketed K yields ‖Σ_{y∈S} e(val(y)/p)‖ <= 2*sqrt(2*pi*#S*eps) + eps.
+
+**The pinned endpoint.** At S = b·μ_n: certificate strength eps ⟹ ‖η_b‖ <= 2√(2πn·eps) + eps.
+eps = C·log q gives M <= 2√(2πC)·√(n log q) + C log q — THE prize bound with explicit
+constants. G80Z's forward direction shows uniformity below (M − 2πn/K)/K is impossible, so
+eps ≍ log q at the bracketed K is exactly the certificate the prize requires: the missing
+non-Fourier input is now pinned two-sidedly in strength AND has a zero-slack formal consumer.
+
+**Honest scope.** Consumer-side arithmetic only; the certificate itself (non-Fourier
+anti-concentration of dilated multiplicative subgroups in arcs — BGK/Cilleruelo–Garaev
+frontier) remains THE open core, and a Fourier-derived uniformity input stays circular (G78).
+The arc program is complete on both sides of that single missing input. CORE remains OPEN /
+ON-BGK. No axioms, no sorry.
