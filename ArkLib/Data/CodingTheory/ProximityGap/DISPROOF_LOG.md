@@ -24816,3 +24816,26 @@ strip count ≤ n·2/K·(1 + polylog slack).
 **Honest scope.** Reduction + exact mean only; the strip-concentration bound for subgroup
 dilates (the wall) is NOT proven; straddle slack ≤ 2 is polylog-harmless. CORE remains OPEN /
 ON-BGK. No axioms, no sorry.
+
+## [466-G80Q-small-difference-pair-form] TERMINAL SIMPLIFICATION of the arc program: the bijection (d,z) ↦ (dz,z) collapses the G80S ratio sum, so the certificate takes its final classical shape — pairCount(bH) ≤ |H| + #{(u,z) ∈ (bH)² : u ≠ z, u−z ∈ Strip(p/K)} — the Cilleruelo-Garaev SMALL-DIFFERENCE object verbatim, with the whole chain to δ* machine-checked (axiom-clean) (2026-07-10)
+
+Lane: direct Fable 5 (`Frontier/_G80QSmallDifferencePairForm.lean`, real locked build, both
+theorems exactly `[propext, Classical.choice, Quot.sound]`).
+
+**Bricks.** `strip_sum_eq_smallDiffPairs`: Σ_{d∈H∖1} #{z ∈ bH : (d−1)z ∈ Strip} =
+#{(u,z) ∈ (bH)² : u ≠ z, u−z ∈ Strip} EXACTLY (partition of off-diagonal pairs by ratio
+u/z ∈ H, injectivity and disjointness machine-checked). CAPSTONE `pairCount_le_smallDiffPairs`:
+for every dilation b ≠ 0, pairCount(bH) ≤ |H| + smallDiffPairs(bH, p/K).
+
+**The certificate, final form.** Chaining G80Q → G80W → G80Y → G80X: δ*-side M = O(√(n log q))
+follows from ONE classical statement — every coset C = b·μ_n, window W = p/K, K ≈ √(2πn/log q):
+#{(u,z) ∈ C²: u ≠ z, signed |u−z| < W} ≤ n²·(2W/p)·O(1) + n·polylog(q). "Every dilate of the
+smooth subgroup has near-uniform small-difference statistics" — the Cilleruelo-Garaev object
+verbatim. Known CG/BGK technology proves such bounds only in |H| > p^{1/3}-type regimes
+(β < 3); the prize regime β ≈ log q/log n ≫ 3 is exactly the wall. The arc program
+(G80/Z/Y/X/W/V/T/S/Q) is now COMPLETE as a reduction: every step from this single
+small-difference statement to δ* is machine-checked with explicit constants.
+
+**Honest scope.** Exact combinatorial collapse only; the small-difference bound is NOT proven
+(it IS the wall, in its terminal classical form). CORE remains OPEN / ON-BGK. No axioms, no
+sorry.
