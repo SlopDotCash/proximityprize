@@ -24301,3 +24301,58 @@ energy, dual to the in-tree `Finset.addREnergy_le`. With the exact depth partiti
 their masses must be sub-cardinality (relation-weighted, `p^{-1}`-scale per collision, as in
 the DC-subtracted moment). Any future "count the sectors and win" proposal at cardinality
 level is dead on arrival by this entry. CORE remains OPEN / ON-BGK.
+
+## [466-G94-jacobi-cocycle-metric-collapse] no Jacobi-cocycle (or any) metric opens the chaining door — deterministic gauge collapse, metric-UNIVERSAL (2026-07-10)
+
+Lane: #466 G94 Fable (`scripts/probes/probe_g94_jacobi_cocycle_metric{,_supplement}.py` +
+`_out_g94_*`; Lean `Frontier/_G94JacobiCocycleMetric.lean`, 15 decls axiom-clean
+`[propext, Classical.choice, Quot.sound]`). The tool-shape doctrine's last chaining hope ("the
+Jacobi cocycle could supply a DIFFERENT metric with sub-Gaussian increments and
+γ₂ ≍ √(n log p)") is CLOSED metric-independently. Constructed and probed 7 candidate metrics
+from the spectral-measure Jacobi matrix / transfer cocycle (CD-embedding, transfer-product,
+projective direction, m-function hyperbolic, Lyapunov, ×2-orbit path) over 8 instances
+n ∈ {8,16,32}, β≈3.2 incl. Fermat 65537: after rescaling to the largest sub-Gaussian-legal
+scale, min γ₂ₙ/spread = 0.74–0.89 (theorem floor 0.6005), best metric always plain
+d_val = |Δη| (γ₂ₙ/M ≈ 1.4–1.5); all genuine cocycle metrics strictly worse (3× to 10⁷×;
+domination forced by lone-spike-shaped pairs, e.g. Δη = 6.65 at d_tm = 0.165). MECHANISM
+(proven): for a deterministic field the tail condition P(|Δ|>t) ≤ 2exp(−t²/d²) collapses to
+domination |Δ| ≤ √(log 2)·d (`abs_le_of_detSubGaussianPair`), hence diam ≥ spread/√(log 2) and
+net-form γ₂ ≥ diam/2, so `no_subSpread_gamma2_certificate`: spread ≤ 2√(log 2)·γ₂ for EVERY
+metric — the certificate is the conclusion (`gamma2_certificate_is_conclusion`, circularity
+exact); `cocycle_metric_dichotomy` leaves no third branch; `loneSpike_defeats_every_gauge`
+passes the standing filter. Value-factoring proven+probed: every cocycle candidate reads b only
+through η_b, descending to the G70-closed 1-D cloud. G70 (Euclidean entropy floor) is
+subsumed-and-generalized on the gauge side, not re-derived. SURVIVOR (named, open, untouched):
+increment sub-Gaussianity over GENUINE randomness = the Wick atom / independence form (§2.4) —
+chaining is void until that atom is paid, after which chaining is unnecessary. Side-audit:
+spacing law b_j²−b_{j−1}² ≤ (1+ε)n reconfirmed (ramp max 0.99n at Fermat 65537). No CORE upper
+bound, cancellation, completion, anti-concentration, or capacity claim. CORE OPEN / ON-BGK.
+
+## [466-G88-cross-orbit-parseval] #505 DIRECT HALF LANDED: the DC-centered deep-wall numerator is an EXACT positive-semidefinite sum of squares over genuinely distinct orbit classes with ZERO cross terms — cross-orbit interaction carries no sign degrees of freedom; the wall = a bound on the orbit-class quadratic form (2026-07-10)
+
+Lane: #505 route (c) Fable (`Frontier/_G88CrossOrbitFirstIncidence.lean`, 868 lines, 36 decls,
+ALL exactly `[propext, Classical.choice, Quot.sound]`, probe `probe_g88.py` pre-verified the
+identities at (p,n,r) = (17,4,2..3), (97,8,2..3), (193,16,2)). **Layer 1 — collision
+trichotomy:** `frameCollisionCount_trichotomy`: rotation-frame pair collisions are QUANTIZED to
+{0, n, n²} (n² iff both kernel; n iff same n-th-power class, = the ⟨g⟩-coset relation via
+`exists_pow_mul_of_class_eq`; 0 across distinct classes — full cross-orbit orthogonality).
+`frameCollisionCount_eq_of_incident`: a FIRST incidence between nonzero frames forces same-class
+and exactly n incidences. `crossFrameSigned_pos_of_first_incidence`: at q > n one first
+incidence across distinct non-kernel orbits makes the signed pair mass strictly POSITIVE — no
+signed cancellation available cross-orbit. **Layer 2 — orbit-class Parseval (headline):**
+`centeredShadowMass_orbitClassParseval`: n·centeredShadowMass = q·(n·S₀² + Σ_γ S_γ²) − n·n^(2r)
+with S₀ = kernel mass, S_γ = per-class masses (each class fiber has exactly n elements, R
+constant on it via new tuple-level `repRF_mul_left`). Corollaries:
+`kernel_sq_le_centeredShadowMass` (kernel floor — no reshuffling goes below);
+`centeredShadowMass_le_kernel_concentration` (Cauchy–Schwarz ceiling, single-class concentration
+extremal); `equidistribution_minimizes_centeredShadowMass` (the untried extremal-reshuffling
+angle: equidistribution is the minimizer); `relationAnomaly_orbitClassParseval`;
+`dcEnergyBound_iff_orbitClassParseval_le` (the wall IS a bound on the orbit-class quadratic
+form — cross-orbit coordinates); `weighted_crossFrame_eq_centeredShadowMass` (layer weld).
+
+**Consequence.** Cross-orbit interaction carries zero sign degrees of freedom (orthogonality +
+first-incidence positivity + quantization): the signed cross-orbit route reduces LOSSLESSLY to
+bounding the ℓ²-profile (S₀, (S_γ)_γ); conversely no cross-orbit cancellation/reshuffling can
+beat the kernel floor. With G89 (first-incidence ≡ wall, constant 1) this completes BOTH #505
+exit readings. Exact identities and two-sided brackets, NOT a bound: the size of S₀ and the
+realized class-mass profile remain the open arithmetic content. CORE OPEN / ON-BGK.
