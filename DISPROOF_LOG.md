@@ -16175,3 +16175,48 @@ No delta-star movement (refutation concerns adversarial domains; bracket
 Files: `_P1RateQuarterStepanovWeld.lean`,
 `scripts/probes/probe_rate_quarter_p1_stepanov_weld.py`,
 `docs/kb/deltastar-466-rate-quarter-stepanov-weld-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: DYADIC-DOMAIN round — the 2-adic obstruction:
+## the subgroup refutation does NOT transport to the literal prize domain
+## mu_{2^30}; StallResidual there UNREFUTED, all known escape classes blocked
+
+Decisive domain round.  Probe
+`scripts/probes/probe_rate_quarter_p1_dyadic_domain_escape.py` (exact):
+
+* 2-ADIC WINDOW OBSTRUCTION: a binomial escape needs subgroup order n in
+  [234881024, 268435455] (coverage 3n >= M = 704643071, degree n <= k−1) and
+  that window lies STRICTLY between 2^27 = 134217728 and 2^28 = 268435456 —
+  no 2-power (hence no subgroup order of mu_{2^30}) qualifies.  The weld
+  refutation worked exactly because 7·2^25 is not dyadic.  Scale-invariant
+  (window inside (k/2, k), k the 2-power; mu_256 analogue [56,63] c (32,64)).
+* TWO-LEVEL variants blocked by triple-point counting: demand
+  |T_alpha| >= 150994944 vs budget 134217727 (deficit 2^24 + 1); coset unions
+  reduce self-similarly one level down.
+* CENSUS ON THE LITERAL DYADIC DOMAIN (mu_256 c F_65537, actual roots of
+  unity): exact Bezout dimension 0 across all dyadic-structured geometries;
+  stall census topped out at the two-pencil capacity 2(N−T+1) = 230 < 256 —
+  no over-budget family found.
+
+CONSEQUENCE: StallResidual(mu_{2^30}) is UNREFUTED; the adversarial refutation
+is confined to non-dyadic domains; the margin machinery (rounds 2–3) is the
+live route for the literal prize domain.  The domain question is now sharply
+posed: no >= 167772161-fold evaluation rank-drop for vanishing-constrained
+codeword pencils on mu_{2^30} (2-group analogue of the BGK/Paley window
+statements; FALSE for groups with an order-7·2^25 subgroup, per the weld).
+
+FORMALIZED (`_P1RateQuarterDyadicDomainEscape.lean`; FULL axiom lists read
+manually via `lake env lean`: 5 theorems exactly
+[propext, Classical.choice, Quot.sound], 2 [propext]; no sorryAx):
+dyadic_element_order (x^(2^30) = 1 => orderOf = 2^i), dyadic_window_empty,
+escape_window_constants, no_dyadic_binomial_escape (divisors of 2^30 vs the
+window via Nat.dvd_prime_pow), two_level_blocked, mu256_dyadic_obstruction,
+unclassified_escape_rank_drop.
+
+HONESTY: FullyAlignedTripleFree for mu_{2^30} NOT proven (unclassified escapes
+= open rank-drop statement, probe-supported negative); StallResidual(mu_{2^30})
+remains OPEN.  No delta-star movement.  Arc closes at five rounds / 50 kernel
+theorems / five probes; final residual map in the kb note.  The lane rests.
+
+Files: `_P1RateQuarterDyadicDomainEscape.lean`,
+`scripts/probes/probe_rate_quarter_p1_dyadic_domain_escape.py`,
+`docs/kb/deltastar-466-rate-quarter-dyadic-domain-escape-2026-07-11.md`.
