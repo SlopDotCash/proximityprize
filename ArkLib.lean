@@ -2208,6 +2208,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104AffineTripleSyzygyNoG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G105DepthLedgerLosslessNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G121DescentMatchingIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G123TriangularMomentLadder
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G124MomentLPDepthConstraints
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
