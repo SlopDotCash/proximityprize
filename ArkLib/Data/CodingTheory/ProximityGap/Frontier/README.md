@@ -128,6 +128,12 @@ matched pair it chooses a centre, an endpoint on the outside pair, and an endpoi
 and returns the literal `K`-overlap certificate for those witnesses.  The graph/existential layer
 is therefore closed.  A next producer can consume four fixed centres and one uniform routed
 cross-secant equation per outside pair, with no remaining choice or orientation bookkeeping.
+`pairInteracts_exists_crossSecant_core` completes the decoded-family weld for one routed edge:
+the selected cross endpoints determine their literal canonical polynomial secant, and its joint
+core has cardinality at least `K`.  Thus the four-centre output is no longer merely a set-overlap
+graph; it is a routed supply of large-core canonical cross-secants.  The remaining propagation
+question is whether this star of cross-secants forces the outside pair's original secant into a
+bounded polynomial-line cluster around its centre.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

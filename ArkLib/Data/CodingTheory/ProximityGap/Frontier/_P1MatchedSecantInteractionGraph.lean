@@ -287,6 +287,63 @@ theorem exists_four_centres_with_oriented_routing
   intro p
   exact interactionOrientation_spec witness p.1.1 (centre p).1.1 (hcentre p)
 
+/-! ## Decoded-family cross-secant connector -/
+
+open _root_.ProximityGap Code
+open HalfPredecessorBadEventRichPointBridge
+open HalfPredecessorLineCoreGeometry
+open HalfPredecessorSecantLines
+
+/-- Agreement witness set attached to one selected decoded scalar. -/
+noncomputable def familyWitness
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom K delta u) (gamma : F) : Finset (Fin N) :=
+  fullAgreement dom (u 0) (u 1) gamma (family.q gamma)
+
+/-- **One routed interaction is a literal large-core cross-secant.**  If two endpoint-disjoint
+matched pairs interact, some oriented cross-pair canonical secant has joint core at least `K`. -/
+theorem pairInteracts_exists_crossSecant_core
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom K delta u)
+    (p q : F × F)
+    (hp : p.1 ∈ family.G ∧ p.2 ∈ family.G)
+    (hq : q.1 ∈ family.G ∧ q.2 ∈ family.G)
+    (hcross : ∀ e f : Fin 2, endpointAt p e ≠ endpointAt q f)
+    (hinteract : PairInteracts (familyWitness family) p q) :
+    ∃ e f : Fin 2,
+      K ≤ (jointCore dom (u 0) (u 1)
+        (secantParameter family (endpointAt p e) (endpointAt q f)).1
+        (secantParameter family (endpointAt p e) (endpointAt q f)).2).card := by
+  obtain ⟨e, f, hoverlap⟩ :=
+    (pairInteracts_iff_exists_orientation (familyWitness family) p q).mp hinteract
+  let gamma := endpointAt p e
+  let beta := endpointAt q f
+  have hgamma : gamma ∈ family.G := by
+    fin_cases e
+    · simpa only [gamma, endpointAt_zero] using hp.1
+    · simpa only [gamma, endpointAt_one] using hp.2
+  have hbeta : beta ∈ family.G := by
+    fin_cases f
+    · simpa only [beta, endpointAt_zero] using hq.1
+    · simpa only [beta, endpointAt_one] using hq.2
+  have hne : gamma ≠ beta := hcross e f
+  let line := secantParameter family gamma beta
+  have hgammaOn : gamma ∈ pointsOn family line :=
+    first_point_mem_pointsOn_secant family hgamma
+  have hbetaOn : beta ∈ pointsOn family line :=
+    second_point_mem_pointsOn_secant family hbeta hne
+  have hgammaLine := (mem_pointsOn_iff family line gamma).mp hgammaOn |>.2
+  have hbetaLine := (mem_pointsOn_iff family line beta).mp hbetaOn |>.2
+  refine ⟨e, f, ?_⟩
+  show K ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card
+  rw [← fullAgreement_inter_eq_jointCore
+    dom (u 0) (u 1) line.1 line.2 hne]
+  simpa only [familyWitness, gamma, beta, line, hgammaLine, hbetaLine] using hoverlap
+
 end ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 
 open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
@@ -300,3 +357,4 @@ open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 #print axioms exists_dominating_indep_card_le_four
 #print axioms exists_four_interaction_centres
 #print axioms exists_four_centres_with_oriented_routing
+#print axioms pairInteracts_exists_crossSecant_core

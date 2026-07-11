@@ -272,9 +272,43 @@ theorem freshPointedEquiv_phase (G : Finset F) (r : Nat) (z : FreshMarkedJoin G 
     pointedLabelSubsetSum G (r + 1) (freshPointedEquiv G r z) =
       newtonJoinPhase G 1 r z.1 := by
   classical
-  dsimp only [pointedLabelSubsetSum, labelSubsetSum, freshPointedEquiv, newtonJoinPhase]
+  unfold pointedLabelSubsetSum labelSubsetSum newtonJoinPhase
+  rw [show (freshPointedEquiv G r z).1.1.1 = insert z.1.1 z.1.2.1 from rfl]
   rw [Finset.sum_insert z.2]
   ring
+
+/-- Sigma presentation of pointed labelled subsets, convenient for exact fibre counting. -/
+abbrev PointedLabelSigma (G : Finset F) (d : Nat) :=
+  Σ S : SubsetAt G d, {x : {a : F // a ∈ G} // x ∈ S.1}
+
+/-- The subtype and sigma presentations of a pointed labelled subset are equivalent. -/
+def pointedLabelSigmaEquiv (G : Finset F) (d : Nat) :
+    PointedLabelSubset G d ≃ PointedLabelSigma G d where
+  toFun z := ⟨z.1.1, ⟨z.1.2, z.2⟩⟩
+  invFun z := ⟨(z.1, z.2.1), z.2.2⟩
+  left_inv z := rfl
+  right_inv z := by rcases z with ⟨S, x⟩; rfl
+
+/-- Sum map in the sigma presentation. -/
+noncomputable def pointedLabelSigmaSum (G : Finset F) (d : Nat)
+    (z : PointedLabelSigma G d) : F :=
+  labelSubsetSum G d z.1
+
+theorem pointedLabelSigmaEquiv_phase (G : Finset F) (d : Nat)
+    (z : PointedLabelSubset G d) :
+    pointedLabelSigmaSum G d (pointedLabelSigmaEquiv G d z) =
+      pointedLabelSubsetSum G d z := rfl
+
+/-- Pointed-subset fibres agree in the subtype and sigma presentations. -/
+theorem pointedLabelSubsetFiber_eq_sigmaFiber (G : Finset F) (d : Nat) (y : F) :
+    phaseFiberCount (pointedLabelSubsetSum G d) y =
+      phaseFiberCount (pointedLabelSigmaSum G d) y := by
+  classical
+  let e : {z : PointedLabelSubset G d // pointedLabelSubsetSum G d z = y} ≃
+      {z : PointedLabelSigma G d // pointedLabelSigmaSum G d z = y} :=
+    (pointedLabelSigmaEquiv G d).subtypeEquiv fun z => by
+      rw [pointedLabelSigmaEquiv_phase G d z]
+  simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
 
 /-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
 def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (_hr : 0 < r) :
@@ -334,6 +368,18 @@ noncomputable def freshTwoPhase (G : Finset F) (r : Nat)
 noncomputable def freshOnePhase (G : Finset F) (r : Nat)
     (z : FreshMarkedJoin G r) : F :=
   newtonJoinPhase G 1 r z.1
+
+/-- Fresh-join fibres are exactly pointed-subset fibres. -/
+theorem freshOneFiber_eq_pointedLabelSubsetFiber (G : Finset F) (r : Nat) (y : F) :
+    phaseFiberCount (freshOnePhase G r) y =
+      phaseFiberCount (pointedLabelSubsetSum G (r + 1)) y := by
+  classical
+  let e : {z : FreshMarkedJoin G r // freshOnePhase G r z = y} ≃
+      {z : PointedLabelSubset G (r + 1) // pointedLabelSubsetSum G (r + 1) z = y} :=
+    (freshPointedEquiv G r).subtypeEquiv fun z => by
+      rw [freshPointedEquiv_phase G r z]
+      rfl
+  simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
 
 /-- Restricted phase of the repeated part of `U2`. -/
 noncomputable def repeatedTwoPhase (G : Finset F) (r : Nat)

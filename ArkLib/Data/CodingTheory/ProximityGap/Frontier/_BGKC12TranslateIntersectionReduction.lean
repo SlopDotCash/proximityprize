@@ -28,7 +28,10 @@ where
 
 Thus the desired lower bound is an alignment theorem between a cyclotomic intersection row and a
 higher subset-correlation row.  The regular-simplex Gram law for the base colours does not contain
-that alignment information.
+that alignment information.  The two row masses are exactly `n^2` and
+`choose(n,r)*choose(n,r-1)`.  Subtracting their product leaves one centered alignment numerator;
+the `r=5` and `r=6` production gates are rewritten below as explicit lower bounds on that term.
+At `n=2^30`, the two mean products lie respectively in `(2^318,2^319)` and `(2^373,2^374)`.
 
 The last section gives a sharp abstract no-go.  Two nonnegative two-cell profiles can have the
 same masses and the same individual square masses while their cross inner product is either zero
@@ -444,6 +447,13 @@ theorem same_marginals_and_squareMass_cross_inner_ranges_from_zero_to_full (A B 
 /-! ## Axiom audit -/
 
 #print axioms newtonJoinCollisionCount_one_two_eq_intersectionCorrelation
+#print axioms sum_markedDifferenceMultiplicity
+#print axioms sum_subsetDifferenceMultiplicity
+#print axioms card_mul_newtonJoinCollisionCount_one_two_eq_massProduct_add_centeredAlignment
+#print axioms production_fifth_crossGate_iff_centeredAlignment
+#print axioms production_sixth_crossGate_iff_centeredAlignment
+#print axioms productionMeanMassFive_binary_window
+#print axioms productionMeanMassSix_binary_window
 #print axioms same_marginals_and_squareMass_cross_inner_ranges_from_zero_to_full
 
 end MarginalNoGo

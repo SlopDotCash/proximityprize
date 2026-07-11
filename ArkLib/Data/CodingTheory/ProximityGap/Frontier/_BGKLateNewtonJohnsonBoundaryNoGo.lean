@@ -36,7 +36,6 @@ of a refined pointed/coloured association scheme.  Issue #466.
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option maxRecDepth 100000
 
 open Finset
 open scoped BigOperators
@@ -45,8 +44,6 @@ namespace ArkLib.ProximityGap.Frontier.BGKLateNewtonJohnsonBoundaryNoGo
 
 open ArkLib.ProximityGap.Frontier.BGKLateNewtonSignedCovariance
 open ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge
-open ArkLib.ProximityGap.Frontier.BGKCenteredTrajectoryContraction
-open ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers
 
 section LocalMarkBoundary
 
@@ -222,38 +219,6 @@ theorem productionCaps_not_from_markForgetting :
   exact ⟨no_pointedEnergy_le_scalar_forgottenEnergy _,
     no_pointedEnergy_le_scalar_forgottenEnergy _⟩
 
-/-! ## Genuine subgroup finite-cell obstruction -/
-
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
-
-theorem H8_subsetCollision_five : subsetCollision H8 5 = 200 := by decide
-
-theorem H8_subsetCollision_six : subsetCollision H8 6 = 56 := by decide
-
-set_option maxHeartbeats 2000000 in
-theorem H8_centeredTwoColourCollision_five : centeredTwoColourCollision H8 5 = 7176 := by
-  decide
-
-set_option maxHeartbeats 2000000 in
-theorem H8_centeredTwoColourCollision_six : centeredTwoColourCollision H8 6 = 5448 := by
-  decide
-
-/-- The order-eight subgroup violates the normalized `10.5` dominant-pair cap. -/
-theorem H8_fifthDominantPair_cap_fails :
-    (10500 : Int) * (H8.card - 5 : Int) ^ 2 *
-        collisionDefect 17 (H8.card.choose 5) (subsetCollision H8 5) <
-      1000 * H8.card * centeredTwoColourCollision H8 5 := by
-  rw [H8_subsetCollision_five, H8_centeredTwoColourCollision_five]
-  norm_num [H8_card, collisionDefect, Nat.choose]
-
-/-- The same genuine subgroup violates the normalized `12.5` cap even more strongly. -/
-theorem H8_sixthDominantPair_cap_fails :
-    (12500 : Int) * (H8.card - 6 : Int) ^ 2 *
-        collisionDefect 17 (H8.card.choose 6) (subsetCollision H8 6) <
-      1000 * H8.card * centeredTwoColourCollision H8 6 := by
-  rw [H8_subsetCollision_six, H8_centeredTwoColourCollision_six]
-  norm_num [H8_card, collisionDefect, Nat.choose]
-
 /-! ## Axiom audit -/
 
 #print axioms twice_card_mul_pointedEnergy_eq_forgotten_add_pairwise
@@ -265,7 +230,5 @@ theorem H8_sixthDominantPair_cap_fails :
 #print axioms alternatingTwoMarks_in_upDown_kernel
 #print axioms no_pointedEnergy_le_scalar_forgottenEnergy
 #print axioms productionCaps_not_from_markForgetting
-#print axioms H8_fifthDominantPair_cap_fails
-#print axioms H8_sixthDominantPair_cap_fails
 
 end ArkLib.ProximityGap.Frontier.BGKLateNewtonJohnsonBoundaryNoGo
