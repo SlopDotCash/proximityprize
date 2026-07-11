@@ -2212,6 +2212,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G124MomentLPDepthConstrai
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G125DisjointSectorIsolation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G126DisjointCensusGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G127MomentLPDual
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G128ProductionDescentBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
