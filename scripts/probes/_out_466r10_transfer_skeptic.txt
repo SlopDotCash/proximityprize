@@ -1,0 +1,39 @@
+==============================================================================
+(A) Does ANY pair of primes at n=32 share (E2,E3)? (worker grouping vacuity)
+==============================================================================
+  14 primes, 14 distinct (E2,E3) keys, 0 keys with >1 prime.
+  => worker's within-(E2,E3) 'M varies / corr(M,E4)' analysis ran on 0 groups.
+  *** VACUOUS: the printed 'Reading' is boilerplate, not supported by any grouped data.
+
+==============================================================================
+(B) TRANSFER gauge: is joint C=<|eta_b|^2 |eta_gb|^2> a fn of marginals?
+==============================================================================
+  Compare across primes: does the JOINT cross-coset 2nd moment carry info beyond the
+  marginal |eta| moment ladder? We report C_norm = C / (mean|eta|^2)^2 (=1 if independent).
+           p  v2         E2/n     meanA2              C  C/(meanA2)^2
+     1048609   5     97487869    31.9991      1023.0010      0.999083
+     1048897   6     97514653    31.9991      1023.0013      0.999084
+     1049057   5     97529533    31.9991      1023.0014      0.999084
+     1049089   9     97532509    31.9991      1023.0015      0.999084
+     1049281   6     97550365    31.9991      1023.0016      0.999084
+     1049473   7     97568221    31.9991      1023.0018      0.999084
+     1049537   6     97574173    31.9991      1023.0019      0.999084
+     1049569   5     97577149    31.9991      1023.0019      0.999084
+
+  READ: eta_{gb} where gb=g^{i+1} — but note b -> gb is the coset SHIFT, and the correlation
+  between adjacent cosets is what the TOWER STEP eta_b(2N)=eta_b(N)+eta_gb(N) actually uses.
+  If C/(meanA2)^2 == 1 (adjacent cosets uncorrelated) across all primes AND equals the marginal
+  prediction, the joint is gauge. If it deviates and VARIES beyond what marginals fix, that is the
+  surviving crack the worker's marginal-multiset argument misses.
+
+==============================================================================
+(C) Independent reproduction of transient ratio at deep prime (n up to 128)
+==============================================================================
+  p=268437889, v2=7, m_top=2097171
+  j=1 n=   2 M=    2.0000 M/sqrt(n)=  1.4142 ratio=     nan /sqrt2=     nan
+  j=2 n=   4 M=    4.0000 M/sqrt(n)=  2.0000 ratio=  2.0000 /sqrt2=  1.4142
+  j=3 n=   8 M=    7.9980 M/sqrt(n)=  2.8277 ratio=  1.9995 /sqrt2=  1.4139
+  j=4 n=  16 M=   15.6666 M/sqrt(n)=  3.9167 ratio=  1.9588 /sqrt2=  1.3851
+  j=5 n=  32 M=   27.3846 M/sqrt(n)=  4.8410 ratio=  1.7480 /sqrt2=  1.2360
+  j=6 n=  64 M=   39.2200 M/sqrt(n)=  4.9025 ratio=  1.4322 /sqrt2=  1.0127
+  j=7 n= 128 M=   55.0643 M/sqrt(n)=  4.8670 ratio=  1.4040 /sqrt2=  0.9928
