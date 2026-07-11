@@ -50895,3 +50895,59 @@ Both files now build locked and clean (`[propext, Classical.choice, Quot.sound]`
 `sectorMass_le_sharpEnvelope` identity is proved and landed; re-weld then. The surviving
 mathematical content is unchanged: depth-four pair-sum concentration is proved and discharged;
 only the (unproven) sharp-envelope-to-sector composition is deferred. CORE remains OPEN / ON-BGK.
+
+---
+
+## [466-G172-rate-half-syzygy-gap-slack] rate-1/2 SylvesterInjective is degree-forced (field-INDEPENDENT); SYZ39 bad primes are a rate>1/2 phenomenon
+
+**Seam.** SYZ38 localised the entire rate-`1/2` proximity residual to `SylvesterInjective` and framed
+the 3-support stratum as "genuinely resultant-type (field-dependent)"; SYZ39 recorded a bad-prime law
+(e.g. `n=13`, rate `7/13>1/2`: bad primes `53,79,103,…`). The fresh referee (11:52 UTC) claimed the
+opposite — at rate EXACTLY `1/2` injectivity follows from a pure degree count `bAC+bBC<degWAB`, no
+resultant. **Both are partly right; neither reason is correct.** This entry adjudicates it exactly.
+
+**Probes (reproducible).**
+- `scripts/probes/probe_466_g172_sylvester_ratehalf_rank.py`: exact GF(p) rank of the generalized
+  Sylvester map on the in-budget window, rate EXACTLY `1/2` (`2k=n`), interior band `2n/3<s<3n/4`.
+- `scripts/probes/probe_466_g172_margin_robustness.py`: worst-case margin `d1-budget` and max
+  μ-basis imbalance over **5542** triples, `n=16..56`, primes `{101,257,1009,65537}`, root families
+  {generic, arithmetic-progression, geometric, clustered}.
+
+**Findings (all field-independent at rate 1/2).**
+1. **Syzygy degree-sum law** `d1+d2 = a+b+c` (`a=mAB−t,b=mAC−t,c=mBC−t`): `52/52`, all primes.
+2. **Balanced module** `d1 = ⌊(a+b+c)/2⌋` generically; **μ-basis imbalance `ι = ⌊(a+b+c)/2⌋−d1 ≤ 1`**
+   (MAX imbalance over 5542 adversarial triples = `1`), and `ι=1` occurs ONLY when the balanced gap
+   is `2` (even `a+b+c`).
+3. **Combinatorial slack** `mAB+mAC+mBC ≥ n+t+1` on every interior cover (`384/384`), from
+   inclusion-exclusion + strict interior `3s ≥ 2n+1`. ⟹ `a+b+c ≥ 2(k−t)+1` ⟹ balanced min degree
+   `⌊(a+b+c)/2⌋ ≥ k−t = budget+1`.
+4. **MIN margin `d1−budget` = 1** across all 5542 adversarial triples; **zero in-budget syzygies**
+   (`SylvesterInjective` never false at rate 1/2). Zero field-flips.
+
+**Verdict.** At rate EXACTLY `1/2`, `SylvesterInjective` is **degree-forced and field-INDEPENDENT**:
+the minimal syzygy degree exceeds the budget window because the interior combinatorial slack makes
+the *balanced* minimal degree `≥ budget+1`, and the bounded μ-basis imbalance (`≤1`, and only when
+the gap is `2`) can never close that margin. It is NOT Fable's summed-budget count `bAC+bBC<degWAB`
+(that inequality holds — margin `≥3` — but does not itself force injectivity; the products
+`WAC·rAC` have degree far above `degWAB`). It IS Shaw's μ-basis-balance object, but at rate `1/2`
+the balance is bounded enough to be a theorem. **SYZ39's genuine field-dependent bad primes require
+imbalance `≥2`, which occurs only at rate `>1/2`** (all cited witnesses `n=13,k=7`; `n=16,k=9`;
+`n=10,k=6` have `2k>n`). No bad prime at the prize rate.
+
+**Landed (axiom-clean, `[propext, Classical.choice, Quot.sound]`).**
+`Frontier/_G172RateHalfSyzygyGapSlack.lean` (9 theorems):
+- `interior_overlap_sum_lower`, `reduced_degree_sum_lower` — the combinatorial slack (pure `ℕ`).
+- `balanced_syzygy_gap`, `balanced_min_degree_gt_budget` — balanced min degree `≥ budget+1`.
+- `degree_gap_survives_imbalance` — slack absorbs bounded imbalance (pure `ℕ` skeleton).
+- `eq_zero_of_dvd_of_natDegree_lt`, `sylvester_injective_of_diff_natDegree_lt` — the elementary
+  degree-count injectivity criterion (polynomial, NO resultant), discharging `SYZ38.SylvesterInjective`
+  in the out-of-reach regime.
+- `failure_forces_imbalance_ge_two`, `gap_one_failure_forces_imbalance_ge_one` — **NO-GO**: any
+  rate-`1/2` injectivity failure requires μ-basis imbalance `≥2`, confining the residual to the
+  SYZ39 resultant regime that never fires below the prize characteristic.
+
+**Honest scope.** The two μ-basis facts (`d1+d2=a+b+c`, `ι≤1`) are the genuine resultant content and
+are NOT proved here (matching SYZ38/SYZ39's honest framing); this file proves the pure-`ℕ` slack
+skeleton + the elementary injectivity criterion + the no-go locating the residual. Discharges only
+SYZ33 lemma 2 at rate 1/2; production δ* wire still needs lemma-1 supports, general-D peel, SYZ22
+realizability, `MCAThresholdLedger` BGK lower bound. CORE OPEN / ON-BGK.
