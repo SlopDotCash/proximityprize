@@ -16127,3 +16127,51 @@ untouched.
 Files: `_P1RateQuarterDimensionDeficit.lean`,
 `scripts/probes/probe_rate_quarter_p1_dimension_deficit.py`,
 `docs/kb/deltastar-466-rate-quarter-dimension-deficit-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: STEPANOV-WELD round — subgroup escape EXISTS at
+## the prize modulus; StallResidual is REFUTED for adversarial evaluation domains
+## (probe-verified end-to-end); residual re-scoped to a DOMAIN condition
+
+Final round of the three-pencil arc.  Probe
+`scripts/probes/probe_rate_quarter_p1_stepanov_weld.py` (exact):
+
+* P − 1 = 2^36·(2^122 + 3) with 7 | 2^122 + 3, so n = 7·2^25 = 234881024 | P−1
+  sits in the escape window with an EXACT fit: 3n = M + 1
+  (M = 3(T−1) − N = 704643071), escape rows (x^n−s)·x of degree n+1 < k, and
+  the three-region geometry tiles the domain to N−1 points + one junk
+  coordinate.  For ANY three distinct n-th powers s,t,w, lambda = (s−w)/(w−t)
+  gives (x^n−s) + lam(x^n−t) = (1+lam)(x^n−w) — three completely-split
+  binomials in a pencil (verified over the 158-bit prime).
+* END-TO-END synthetic census (q=1009, n=144, N=613, T=349, k=150): the coset
+  triple realized as three actual pencils on an adversarial domain, shared-
+  factor difference rows with injective ratio map gamma = −x:
+  #bad = 614 > N = 613 — every BadFamilyData clause checked exactly (aligned
+  sets exact, agreement exactly T, non-jointness forced); pools at N−T = top
+  of the stall band at P1 ratios.
+
+CONSEQUENCE (major): StallResidual dom — and round-3's FullyAlignedTripleFree —
+is FALSE for evaluation domains containing three cosets of the order-n subgroup
+of F_P^*.  The P1 predecessor counting branch CANNOT close domain-uniformly;
+the open content is now a DOMAIN condition (standard windows must avoid large
+multiplicative-coset traces — BGK/Paley-type, the campaign's global wall on the
+domain side).  The earlier margin/dichotomy theorems remain valid as the live
+route for structured domains.  The in-tree Stepanov engines (quadratic-
+character Hasse) are not the right tool for the domain condition.
+
+FORMALIZED (`_P1RateQuarterStepanovWeld.lean`; FULL axiom lists read manually
+via `lake env lean`: 8 theorems exactly [propext, Classical.choice, Quot.sound],
+1 [propext]; no sorryAx): P_sub_one_factorization, escape_modulus_divides,
+escape_window_exact_fit, escape_domain_tiling, coset_pencil_identity,
+coset_lambda_witness, sharedFactor_pins_scalar, sharedFactor_vote_value
+(per-coordinate pinning: why the refutation overshoots by a hair, ceiling
+N+2 — refutation_margin_arith), all at the prize shape or field-generic.
+
+HONESTY: the refuting construction over F_P is probe-verified, NOT yet
+Lean-formalized (Mathlib nthRoots route feasible; flagged engineering).
+No delta-star movement (refutation concerns adversarial domains; bracket
+3/8 <= delta* <= 43/96 + eps untouched).  Arc retrospective (4 rounds,
+43 kernel theorems, 4 probes) in the kb note.  The lane rests.
+
+Files: `_P1RateQuarterStepanovWeld.lean`,
+`scripts/probes/probe_rate_quarter_p1_stepanov_weld.py`,
+`docs/kb/deltastar-466-rate-quarter-stepanov-weld-2026-07-11.md`.
