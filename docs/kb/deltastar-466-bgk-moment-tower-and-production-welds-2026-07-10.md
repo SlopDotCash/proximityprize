@@ -55,3 +55,19 @@ input for the δ* floor itself.
 - Frontier files importing other Frontier files need the imported module's olean:
   `lake-locked.sh build <Module>` once; `pg-iterate.sh` alone fails on a missing olean.
 - The build lock can queue ≥10 min behind concurrent agents; run locked builds in background.
+
+## Addendum 2026-07-11: depth-9 threshold + Wick probe + instance ladder
+
+- `_BGKDepthNineThreshold.lean` (4fb1e30a7): depth-≤7 moment certificates provably cannot
+  reach M ≤ 2⁵¹ (diagonal floor); depth-9 Wick `E₉ ≤ 17‼·n⁹` at q ≤ 2¹⁵⁹ closes the lane —
+  sup-bound Prop ELIMINATED in favor of this one counting inequality.
+- `_BGKProvenInstanceFullGroup.lean` (d2d0abe33): FIRST discharged instance of the Prop
+  (index 1, M = 1 exact, Ramanujan). `_BGKConstIndexMomentTower.lean` (986122aad): composed
+  with the in-tree Gauss-period discharge — unconditional every-depth tower/energy law for ALL
+  constant-index subgroups. Ladder: index 1 + constant index PROVEN; prize index 2¹²⁸ open
+  (Gauss-period route floors at √q = 2⁷⁹ ≫ 2²⁵·⁵ — can never reach the prize regime).
+- **Wick-ratio probe** (`probe_bgk_depth9_wick_ratio.py`): E₉/(17‼·n⁹) at small scale:
+  ratio ≈ 3973 at (n=32, p=257) — exact Wick FAILS shallow (echoes the depth-3 refutation) —
+  but decays with p/n²: n=16 crosses 1 at p/n² ≈ 8 (0.31 at p/n² = 30); n=32: 83 → 38 → 23
+  at p/n² = 12/26/64. Prize regime p/n² = 2⁹⁸: numerics support truth; excess grows with n at
+  fixed p/n², which IS the certification difficulty. The weld tolerates ratio ≤ 32.
