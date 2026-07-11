@@ -6,6 +6,18 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G167-negation-stabilizer-collapse] The negation stabilizer collapses every minimal zero-sum support to a `{x,-x}` pair; the primitive-residue accident sector is exactly size two (2026-07-11, #466 G167)
+
+The G165 scaling-ladder arc reduces the primitive census residue mod `2^k` to the action of the cyclic 2-Sylow `H <= F_p^*` on the minimal zero-sum supports. The Fable coset-stabilizer sketch proposed that dyadic sizes `s in {2,4,8,...}` could carry nontrivial stabilizers, with `c_s` minimal order-`s` cosets per dyadic `s`. Exact enumeration (`p = 17, 41, 97`) refutes the dyadic part and gives a sharper, simpler truth: the ONLY minimal zero-sum support with any nontrivial 2-power stabilizer is a `{x,-x}` antipodal pair, stabilized only by `-1`.
+
+The mechanism is a subcoset obstruction the coset sketch missed. Any nontrivial 2-power scaling `u` of order `d >= 2` has `u^(d/2) = -1` (the unique order-two element of a field), so `u*S = S` already forces `-1*S = S`, i.e. `S = -S`. In characteristic `!= 2` a negation-symmetric set of nonzero field elements is a disjoint union of two-element antipodal pairs `{x,-x}`, and each such pair is itself zero-sum (a nontrivial subgroup sum vanishes, `Mathlib.sum_subgroup_units_eq_zero`). Minimality forbids a proper nonempty zero-sum subset, so `S` is exactly one pair and `|S| = 2`.
+
+Consequences: the primitive-residue accident sector is EXACTLY the size-two supports; for every `s != 2` the involution `-1` (hence any 2-power scaling group containing it, up to the full `H`) acts fixed-point-freely, so `2^k | N_s` for `s != 2`; the arc is a congruence, not a magnitude bound, and cannot move the production census scale, which is where BGK/Paley still binds. For `s = 2`, `N_2 = (p-1)/2` is divisible by `2^(k-1)` only, exactly as the enumeration shows (`2^k | N_2` is FALSE, correctly).
+
+Verdict: the accident sector of the negation/2-power action on minimal zero-sum supports is exactly classified (size two, single antipodal pair) — a clean sharpening of G165 that closes the coset-stabilizer subroute in favor of a fixed-point-free free-action census on all other sizes. It supplies no magnitude bound. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G167NegationStabilizerCollapse.lean`, axiom-clean over any field of characteristic `!= 2` (`card_eq_two_of_neg_invariant`, `no_neg_invariant_support_of_card_ne_two`, `sum_antipodal_pair`, `card_antipodal_pair`, `ne_neg_self_of_ne_zero`). Reproducible probe: `scripts/probes/probe_466_g167_negation_stabilizer_collapse.py` (PASS; `p = 17, 41, 97`, all symmetric minimal supports size two, `2^k | N_s` for every `s != 2`).
+
 ## [466-G131-additive-lift-saddle-no-go] Additive-lift Capstone A crosses sqrt(p) but cannot certify the arc-saddle target, even with rho=1 (2026-07-11, #466 G131)
 
 G102F's additive lift gives the terminal small-difference envelope `x^2 <= n*x + 4*rho*W*n^2` for `x = smallDiffPairs(C,W)`, valid on the modular window `4W < p`. This entry records the exact no-go for using that envelope alone as the G80Q arc-saddle certificate. If the witness `T+1` still satisfies the envelope, then the envelope cannot imply `x <= T`; the Lean theorem `capstoneA_witness_blocks_certificate` is this contrapositive as a reusable Nat lemma.
