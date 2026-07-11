@@ -3344,6 +3344,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ22StripBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ23DirectnessStrip
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ24CrossCoreCompatibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ25MDSGeneration
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ26LiftingTest
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
