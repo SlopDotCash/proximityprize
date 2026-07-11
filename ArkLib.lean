@@ -3369,6 +3369,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ39SylvesterArithmetic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ40FinalAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ41SyzdimBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ42Realizability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
