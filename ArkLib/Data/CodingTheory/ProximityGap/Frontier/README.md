@@ -52,6 +52,12 @@ any eight labels from an `N+1` predecessor family still leaves two Hall-safe-com
 whose agreement sets overlap on at least `K` coordinates.  The constant-width kernel therefore
 cannot quarantine the large-core geometry; the next live bridge is to iterate or cluster these
 forced secants into the existing polynomial-pencil consumers.
+`_P1EightLabelHallSafeSecantMatching.lean` performs that iteration using the established greedy
+matching extractor: an over-budget family retains at least `2^29-6 = 536870906` vertex-disjoint
+`K`-core secants after deletion of any eight labels.  For the Hall-kernel exceptional set, all
+endpoints lie in the Hall-safe complement.  The live algebraic/geometric target is therefore
+simultaneous consolidation of this half-billion-secants matching, not recovery from bare Hall
+budgets.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

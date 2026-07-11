@@ -158,10 +158,16 @@ theorem clearedTransitionAt_iff_compact
   have hNrNat : 0 < n.choose r :=
     Nat.choose_pos (le_trans (Nat.le_add_right r 1) hr)
   have hstepNat := Nat.choose_succ_right_eq n r
+  have hnr : r ≤ n := le_trans (Nat.le_add_right r 1) hr
   have hstep :
       (n.choose (r + 1) : Int) * (r + 1 : Int) =
         (n.choose r : Int) * (n - r : Int) := by
-    exact_mod_cast hstepNat
+    calc
+      (n.choose (r + 1) : Int) * (r + 1 : Int) =
+          ((n.choose (r + 1) * (r + 1) : Nat) : Int) := by push_cast; rfl
+      _ = ((n.choose r * (n - r) : Nat) : Int) := by rw [hstepNat]
+      _ = (n.choose r : Int) * (n - r : Int) := by
+        rw [Nat.cast_mul, Int.ofNat_sub hnr]
   have hstepSq :
       (n.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2 =
         (n.choose r : Int) ^ 2 * (n - r : Int) ^ 2 := by
