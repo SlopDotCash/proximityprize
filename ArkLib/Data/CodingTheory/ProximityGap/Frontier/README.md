@@ -43,6 +43,15 @@ absolute constants); uniform `TwoCharacterWeilInput` contradicted at Θ(q). Rema
 B-side input = one √m-saving Jacobi-angle cancellation (three equivalent two-input routes).
 Bracket unchanged; core open.
 
+**2026-07-11 part 3, session final — dossier v3 §45 (COMPLETE residual inventory).** Cross-cone
+bridge: moment layers = one identity family, but the open layers are a calibrated NON-bridge
+(`swarm_sub_burgess` — the "one wall" is class-level, not reduction-level); fiber-Chebyshev
+u-relative hope refuted (F0 unmoved), codeword-pair (k−1) cap landed; junk-slice composition
+no-improvement closes the P1 arc (11 rounds, 93 kernel theorems); W15 width-k gap closed —
+sharp dichotomy L_near = 1 ⟺ 2n+k ≤ 3a (parts 1–6 complete). Residuals: B-side lag⟺moment⟺tower
+pair + DIST rungs m ≥ 12; P1 `SwarmResidual`; W15 strip sliver / Λ ≤ 2 (empirical) / `hunsafe` /
+`hfarL`. Bracket unchanged; core open.
+
 ## The BGK depth-ladder lane (2026-07-10)
 
 **DC correction (2026-07-11).**  The later raw endpoint

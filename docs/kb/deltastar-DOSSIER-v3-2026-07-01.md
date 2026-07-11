@@ -2194,3 +2194,108 @@ FourthMomentBound` log-only rung remains valid as the fallback);
 **P1 side — `SwarmResidual`** (§43, unchanged). Probe-only items flagged
 above (all K₄/K₆/K₈/lag calibrations, prize-scale rigidity). **CORE OPEN,
 ON-BGK. No fabricated closure.**
+
+## §45. Session 2026-07-11 (part 3, final) — cross-cone bridge (identity + calibrated NON-bridge); fiber-Chebyshev; junk-slice close; W15 width-k gap closed; COMPLETE RESIDUAL INVENTORY
+
+DISPROOF tags: the untagged 2026-07-11 entries "CROSS-CONE BRIDGE",
+"FIBER-CHEBYSHEV round", "JUNK-SLICE LEDGER (session close)", and
+`w15-widthk-gap-closed`. All kernel results axiom-clean
+(`[propext, Classical.choice, Quot.sound]`, full axiom lists read manually,
+no `sorryAx`); measurements flagged probe-only.
+
+**(1) Cross-cone bridge — the moment layers ARE one identity family; the
+OPEN layers are a calibrated NON-bridge.**
+`_P1RateQuarterCrossConeBridge.lean` (6 theorems) is the FIRST file
+importing both cones (`_R309TowerRungFour` + `_P1RateQuarterPencilHarvestCap`).
+PARTIAL BRIDGE (real, formal): swarm riders on a direction are fibers of
+the ratio map ρ_w = (u1−w)/D, and the second/fourth-moment layers of both
+cones are ONE generic identity family — `hatF_fiberCount` (the P1
+obstruction object in the B-side DFT vocabulary),
+`swarm_secondMoment_bridge`, `swarm_fourthMoment_lag_bridge` (LITERALLY the
+B-side `fourthMoment_eq_lag_energy` at f = fiberCount),
+`swarm_lag_bridge_at_prize` (at F = ZMod P). CALIBRATED NON-BRIDGE (the
+honest core, kernel-pinned): `swarm_sub_burgess` — N⁴ < P < N⁶, so the
+swarm's incomplete sums have length exponent ≈ 0.19 < 1/4 (BELOW Burgess;
+only subgroup/BGK methods apply), while B-side sums are COMPLETE
+(ratio 1, Weil √q each); depth mismatch (fixed-depth family averages vs
+LIST-level bounds — exact second moment gives only Chebyshev ~ P^{k−2},
+`swarm_single_map_chebyshev_scale`). VERDICT: a reduction would have to
+transport across completeness ratio (2⁻¹²⁸ ↔ 1) AND depth (list ↔ r=4);
+character-sum technology does neither. **The "one wall" convergence (§42 D)
+is CLASS-level, not reduction-level** — the two walls' structural
+distinction is now kernel-pinned. Neither residual discharged or
+transported.
+
+**(2) Fiber-Chebyshev round — u-relative hope REFUTED; codeword-pair
+refinement real and tight.** `_P1RateQuarterFiberChebyshevRefinement.lean`
+(8 theorems). REFUTATION (honesty-critical): the derecursion stall ledger's
+ratio map ρ = (u1−w)/D has neither component a codeword; an adversarial
+u1 = w + s0·D realizes a 200-coordinate fiber (>> k−1 = 63 at μ₂₅₆) —
+**the stall boundary F0 = 75,018,133 does NOT move**; stall band and
+`SwarmResidual` unchanged, no fake recomputation attempted. REAL
+REFINEMENT (kernel, both ratio rows codewords): `codeword_zero_set_le`,
+`foreign_vote_fiber_le` (≤ k−1 foreign votes per non-exceptional rider —
+TIGHT, fiber = 63 realized at μ₂₅₆), `exceptional_scalar_subsingleton`,
+`foreign_region_rider_energy` (the fiber-Chebyshev second moment
+S.card·m² ≤ (k−1)·|R|), `no_fully_foreign_rider`
+(k−1 = 268,435,455 < N−T = 480,946,858), crossover rung effective iff
+A < T−k+1 = 324,359,511 (factor ≈ 1.79 at the pair-pencil floor).
+
+**(3) Junk-slice ledger (P1 session close) — composition does NOT improve
+the master.** `_P1RateQuarterJunkSliceLedger.lean` (5 theorems):
+`vote_decomposition_two_regions` (votes ≤ 2(k−1) + junk),
+`junk_forced_riders`, `fiveCover_fiber_capacity`,
+`two_region_crossover_empty` — the crossover A < T−2(k−1) = 55,924,056 is
+BELOW the pair-pencil floor 2T−N = 111,848,108 (binding range EMPTY);
+`master_margin_no_improvement` (five-cover geometry 4(k−1) ≥ T never
+forces; margin demand 13 is seven orders under the cap). The five-pencil
+master ledger is UNCHANGED. **P1 11-round session totals** (retrospective
+in the kb note): 11 lane files, 93 kernel theorems (every axiom list read
+manually in full), 9 exact probes, 2 refutations (adversarial-domain
+StallResidual via the 7·2²⁵ subgroup escape; u-relative fiber cap), 3 no-go
+theorems (packing jaw, second-moment jaw, junk-slice composition), 1
+cross-cone identity bridge. FINAL RESIDUAL FORM unchanged from §43:
+StallResidual(μ_{2^30}) ≤ `SwarmResidual`.
+
+**(4) W15 part 6 — the width-k gap CLOSED; trichotomy → sharp dichotomy.**
+`_W15WidthKGapClosed.lean` (10 theorems): the strip 2n < 3a < 2n+k is
+REFUTED for L_near = 1 via the SECANT-PAIR line (zero codeword paired with
+a monic degree-(k−1) codeword constant on the shared support — the
+symmetric-function coincidence e₁(R) = e₁(W), e₂(R) = e₂(W));
+`secantPair_not_largeZeroSafeLineListBudgeted_one` (parametric, appearance
+certificates as hypotheses) and CONCRETE
+`strip_shape_16_4_11_L_one_refuted` (F = ZMod 17, kernel `decide`
+certificates, e = X(X−1)(X−2)); failure anatomy as theorems
+(`twoBlock_gate_fails_at_11`, `udplus_gate_fails_at_11`). DICHOTOMY: at
+n = 16, k = 4 the L = 1 question is decided at EVERY a ≥ 9 — refuted at
+a ∈ {9,10} (two-block) and a = 11 (secant pair), proved at a ≥ 12
+(UD-plus); **sharp dichotomy L_near = 1 ⟺ 2n+k ≤ 3a** at this family.
+HONESTY: the concrete strip refutation is per-shape (ZMod 17); the
+parametric form needs the symmetric coincidence (generically solvable;
+existence lemma NOT proved) — a uniform all-fields strip refutation is the
+remaining thin sliver. W15 parts 1–6 COMPLETE.
+
+**═══ SESSION-FINAL STATE — the campaign's COMPLETE residual inventory
+(as of 2026-07-11 end) ═══** Bracket UNCHANGED:
+`3/8 ≤ mcaDeltaStar ≤ 43/96 + 1/(3·2^30) < 1/2`; no δ* movement at any
+point this session.
+* **B-side (r=3 rung):** ONE two-input pair from the equivalence class
+  {`OffZeroLagBound`, `OffZeroQuadLagBound`} ⟺ {`FourthMomentBound`,
+  `EighthMomentBound`} ⟺ {`IterConvEnergyWick@2`, `@4`} (§44) — √m-saving
+  Jacobi-angle cancellation statements, probe-measured at their conjectured
+  scales; log-only fallback `FullDFTFlatLog ∧ FourthMomentBound` (§43).
+  Plus the `DistStratumEnergyBound` ladder rungs open from m = 12 upward
+  (§42-era; m = 3, 6, 9 discharged — unchanged).
+* **P1 side:** `SwarmResidual` (⟹ StallResidual ⟹
+  `predecessorDelta_le_mcaDeltaStar_of_stall`) = (i) 3-to-5 near-full
+  pencil clusters (rank-drop floors X₃/X₄/X₅, constructors dyadically
+  blocked on μ_{2^30}) + (ii) the sub-Johnson pair-cloud swarm
+  (counting-immune; a sub-Burgess incomplete-sum LIST problem — now
+  kernel-pinned as DISTINCT from the B-side wall, `swarm_sub_burgess`).
+* **W15 line-list branch:** the uniform all-fields strip-refuter existence
+  sliver; the Λ ≤ 2 campaign-shape upper bound (empirical only, §42);
+  the weld slots `hunsafe` (unsafe large-zero branch) and `hfarL`
+  (far-line lists).
+Everything else this campaign touched is kernel-discharged, kernel-refuted,
+or explicitly probe-only-flagged above. **CORE OPEN, ON-BGK. No fabricated
+closure.**

@@ -558,6 +558,20 @@ no FourCharacterWeilInput named. Three equivalent two-input routes ({OffZeroLag,
 Jacobi-angle cancellation, probe-measured at its conjectured scale (prize-scale K₄/K₈ fall below
 Gaussian at q ≫ m³). Bracket unchanged. CORE OPEN, ON-BGK.
 
+**⇒ UPDATE 2026-07-11 part 3, session final (dossier v3 §45 — read for the COMPLETE residual
+inventory).** Cross-cone bridge: the two cones' moment layers are ONE identity family
+(`swarm_fourthMoment_lag_bridge`), but the OPEN layers are a calibrated NON-bridge
+(`swarm_sub_burgess`: swarm = sub-Burgess incomplete sums, length exponent ≈ 0.19; B-side =
+complete sums) — the "one wall" convergence is CLASS-level, not reduction-level.
+Fiber-Chebyshev: u-relative boundary-moving REFUTED (F0 unmoved; 200-fiber counterexample);
+codeword-pair (k−1) cap real and tight (`foreign_region_rider_energy`). Junk-slice: composition
+does NOT improve the master (binding range empty); P1 arc closes at 11 rounds / 93 kernel
+theorems. W15 part 6: width-k strip closed by the secant-pair refuter
+(`strip_shape_16_4_11_L_one_refuted`) — sharp dichotomy L_near = 1 ⟺ 2n+k ≤ 3a. Residual
+inventory: B-side one two-input lag⟺moment⟺tower pair (+ DIST rungs m ≥ 12); P1 `SwarmResidual`;
+W15 uniform-fields strip sliver, Λ ≤ 2 campaign bound (empirical), `hunsafe`, `hfarL`. Bracket
+unchanged. CORE OPEN, ON-BGK.
+
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim
 ##      every published route provably misses the prize regime (plain RS, s=1).
