@@ -314,3 +314,73 @@ The most credible near-term theorem targets are:
 
 Every other cell remains in the portfolio, but it must pass its stated first test before receiving a
 large formalization budget.
+
+## Post-wave result ledger
+
+The first parallel wave did not prove the Paley or proximity-gap conjecture.  It did separate one
+production theorem, three narrower structural survivors, and several exact method-class
+obstructions.  “Negative” below means that the stated mechanism was actually falsified or fenced;
+it does not mean that the surrounding mathematical field is irrelevant.
+
+| Field | Strongest result from this wave | Honest status |
+|---|---|---|
+| Spectral/operator | The first exact G133 support-bucket tests have same-sign puncture corrections, so regrouping supports supplies no hidden cancellation there. | Finite falsifier for the proposed regrouping, not a general spectral theorem. |
+| Additive combinatorics | The HBK auxiliary-polynomial chain now gives `E(mu_(2^30))^2 <= 128*(2^30)^5` at both certified primes. | **Production theorem.** It closes the depth-four/HBK input, not the logarithmic-depth Paley maximum. |
+| Probability/census | Exact orbit-compressed censuses locate the first fully-disjoint mass at small matched-regime cells and distinguish characteristic-zero from prime-field excess. | Proof-producing calibration; it exposes rather than closes the high-depth sector. |
+| Cyclotomic/norm | Rung-two accidents are stable under an order-four re-rooting action, hence occur in packets of at least four; `#accidents <= 3` is exactly accident-freeness. | Axiom-clean sharpening of G136; production accident-freeness is still unproved. |
+| p-adic | Valuation, Newton-polygon, and dyadic-tower formulations still fail to return an individual complex embedding; no tested slope statement controls the maximum. | No production survivor without a new archimedean-distribution bridge. |
+| Geometry/sheaves | Tensor invariants and connected collision strata identify the right object, but conductor grows with the subgroup order and ordinary Deligne bounds revert to Weil. | The live geometric target is logarithmic-depth connected-stratum control with vertical, fixed-prime constants. |
+| Coding/syzygy | A nonzero divided-difference kernel pair has at most one critical external-anchor channel.  Raw scalar-to-decoded-codeword injection is explicitly false. | Useful guarded rigidity rung; the event-level charge/extraction theorem remains open. |
+| Convex/information | Every positive matching-moment row vanishes on the fully-disjoint coordinate; their common nonnegative recession cone is exactly that ray. | Exact LP/SOS/entropy method-class no-go unless a new arithmetic row sees full depth. |
+| Dynamics/transfer | Both unweighted and unit-phase dyadic sibling transfers have norm-preserving right inverses and centered fixed modes. | Exact unrestricted-contraction no-go; only arithmetic range avoidance can survive. |
+| Proof-producing computation | Exact integer probes and SHA-pinned outputs certify the small-cell onset and orbit expansion. | Discovery/certificate infrastructure, not an extrapolation theorem. |
+
+The HBK chain received an independent line-by-line audit.  It matches the coefficient and
+constraint counts of HBK Lemma 5, validates the triangular conversion from iterates of
+`X(X-1)d/dX` to ordinary multiplicity, checks the Lemma 6 nonvanishing conditions, and exhaustively
+checks all `1 <= k <= 4096` production prefixes.  It also passed 2,514 admissible small-prime test
+instances.  Direct per-file checks of both prize-prime endpoints report only the standard Lean
+axioms and no `sorryAx`.  A serialized landing build is still pending because another shared build
+owns the repository lock.
+
+## New synthesis: the Moebius--Mann full-depth calculus
+
+The ten fields point to one common object.  Turn an equal-sum pair
+
+`x_1+...+x_r = y_1+...+y_r`
+
+into the signed zero-sum word
+
+`x_1,...,x_r,-y_1,...,-y_r` in `G`.
+
+Because `-1` lies in the dyadic subgroup, this remains a word in `G`.  Ordinary Wick terms are the
+two-letter zero-sum packets.  The fully-disjoint G133 sector is precisely the part with no
+left--right two-letter packet.  The genuinely arithmetic objects are therefore the primitive
+zero-sum packets of lengths `3,...,2r`, together with the ways they intersect and assemble.
+
+This suggests a concrete theory rather than another analogy:
+
+1. **Moebius layer.**  Invert the partition lattice of the `2r` signed positions.  Pair blocks give
+   the Wick main term; connected non-pair blocks define arithmetic cumulants.
+2. **Mann layer.**  Classify short primitive blocks up to projective re-rooting and permutation.
+   ANT46 is the first nontrivial orbit law in this layer.
+3. **HBK layer.**  Bound the aggregate supply of short blocks by auxiliary-polynomial incidence
+   estimates.  The new coefficient-128 theorem provides the first production-scale input.
+4. **Intersection layer.**  Charge overlaps of primitive blocks by the G143--G145 intersection
+   multiplicities or by guarded divided-difference syzygies.
+5. **Full-depth layer.**  Prove that the exponential generating function of connected blocks stays
+   below the Wick budget through `r=110`; this is exactly the missing implication to the Paley
+   maximum rather than a reformulation in moment language.
+
+The associated falsifier is sharp.  Any proposed invariant should be evaluated on the pure
+full-depth basis vector before further work.  If its coefficient is zero, CXI01 puts it in the
+overlap-blind cone.  If its dyadic evolution is an unrestricted sibling average, DYN09 supplies a
+norm-preserving obstruction.  If it merely partitions the puncture correction by support, SAC01's
+same-sign cells show why no cancellation appears.  A surviving invariant must instead be nonzero
+on primitive disjoint packets, annihilate lawful pairings, and admit an arithmetic bound independent
+of the unknown top moment.
+
+The next formal theorem target is consequently a **connected-packet expansion** for the G133
+census, followed by exact classification of packet sizes `3` and `4` at the two production primes.
+That target composes the strongest positive outputs of the wave; it is also honest about the wall:
+no bound for connected packet sizes through `220` has yet been proved.
