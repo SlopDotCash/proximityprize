@@ -18,6 +18,18 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 `../PROXIMITY_PRIZE_WORKBENCH.lean` §5 — go there for what to attack; this README only records
 the status of the original #334-era lane files below.
 
+## The BGK depth-ladder lane (2026-07-10)
+
+The `_BGK*` files landed 2026-07-10 hang the ENTIRE depth ladder off the single named open
+Prop `WorstCaseIncompleteSumBound` (the BGK sup-bound), end to end at literal prize numbers:
+`_BGKSupBoundMomentTower` (every-depth moment tower) → `_BGKDepthREnergyLaw` (exact
+`∑‖η_b‖^{2r} = q·E_r`; §8 independence form mod BGK) → `_BGKProductionDepthFiveWeld` /
+`_BGKInjectiveFiveWeld` / `_BGKFiberSquareCensusBridge` (BGK ⟹ the G112 production socket's
+exact conclusion, replacing its open variance certificate) → `_BGKNineBitGap` (**the sharpest
+open sub-target**: trivial anchor `M = 2⁶⁰` proven; weld fires at `M ≤ 2⁵¹`; the whole
+depth-five lane = a 2⁹ sup-bound saving over trivial, i.e. `‖η_b‖ ≤ |G|^0.85`). See
+`docs/kb/deltastar-466-bgk-moment-tower-and-production-welds-2026-07-10.md`.
+
 ## Status of the original #334 lane files
 
 | file | target | status (2026-07-01) |
