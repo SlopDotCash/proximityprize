@@ -51377,3 +51377,56 @@ All three declarations axiom-clean (`[propext, Classical.choice, Quot.sound]`); 
 green (3354 jobs). Formal payload: `Frontier/_G182DyadicKernelCeiling.lean`; consumes G181
 `antipodalPair`/`gsumR_antipodalPair_eq_zero`/`antipodalPair_injective` + R308 `repRF`/`gsumR` +
 G88 `kernel_sq_le_centeredShadowMass`. Issue #509.
+
+### [466-G205-late-alignment-sign-nogo] The late-Newton alignment SIGN admits NO field-uniform, one-directional, or sign-based single-depth certificate: all four `(sign A₅, sign A₆)` quadrants are realized at exact integer dyadic cells (2026-07-11)
+
+Shaw's BGK late-Newton / two-colour alignment weld reduces the `r = 5, 6` production positivity gates
+to lower bounds on the centered alignments `A_r = q·C₁₂(r) − n²·C(n,r)·C(n,r−1)`, with
+`C₁₂(r) = Σ_t W_G(t)·R_r(t)`, `W_G(t) = #{y∈G : 2y−t∈G}`, `R_r(t) = #{(A,B): |A|=r, |B|=r−1,
+(ΣA)−(ΣB)=t}`, over the 2-power (dyadic) subgroup `G = ⟨g⟩ ⊆ 𝔽_q^*`, `|G| = n = 2^μ`. The gate needs
+`A₅ ≥ 0 ∧ A₆ ≥ 0` at two production primes.
+
+**The cheap escape closed.** A field-uniform sign law would collapse the two-depth gate to one depth:
+joint positivity forced by dyadic structure, or a monotone one-directional rule `A₅ < 0 ⟹ A₆ < 0`
+(then certifying `A₅ ≥ 0` suffices) or its converse. G56's exact four-colour Newton/Gauss-period
+rewrite + exact integer sweeps and Fable's extended sweep produce EXACT integer witnesses in EVERY
+sign quadrant. G205 records those witnesses as axiom-clean ℤ constants and proves, by pure decidable
+ℤ arithmetic (ZERO axioms — not even propext/Classical.choice; `#print axioms` = "does not depend on
+any axioms" for all 10 declarations):
+
+- `no_uniform_joint_positivity` — `𝔽_257, n=32`: `A₅ = +867295552 > 0`, `A₆ = −204107712 < 0` `(+,−)`.
+  Joint positivity is NOT forced by dyadicity / equal masses / cyclotomic invariance / marginal data.
+- `no_forward_implication` — `𝔽_1217, n=64`: `A₅ = −468928448 < 0`, `A₆ = +5845364160 > 0` `(−,+)`.
+  Refutes `A₅<0 ⟹ A₆<0` (Fable's extended-sweep witness).
+- `no_backward_implication` — `𝔽_257, n=32` `(+,−)` refutes the converse `A₆<0 ⟹ A₅<0`.
+- `all_four_quadrants_realized` — `(+,+)` `𝔽_193,n=16`; `(+,−)` `𝔽_257,n=32`; `(−,+)` `𝔽_1217,n=64`;
+  `(−,−)` `𝔽_97,n=16`. Census SATURATED.
+- `no_sign_single_depth_certificate` (calibrated consumer) — for ANY `f : ℤ → ℤ` claiming
+  `sign A₆ = f(sign A₅)` on the recorded cells, `𝔽_97,n=16` and `𝔽_1217,n=64` BOTH have `sign A₅ = −1`
+  yet OPPOSITE `sign A₆`, forcing `f(−1) = −1` and `f(−1) = +1`, contradiction. The depth-6 sign is
+  provably NOT a function of the depth-5 sign.
+
+Each `A_r` value is an EXACT integer reproduced independently from `scripts/probes/g56_late_alignment_probe.py`
+(exact subgroup gen, exact integer subset-sum DP, exact integer `W`, FFT correlation accepted only
+after integral rounding + nonnegativity + exact total-mass checks) and satisfies the algebraic
+identity `A_r = q·C₁₂(r) − n²·C(n,r)·C(n,r−1)` (verified: `𝔽_257`, `C₁₂(5)=28856590656`,
+`C₁₂(6)=727100248128`).
+
+**Thinness-essential.** The alignment object exists ONLY for the 2-power smooth subgroup (`W_G`, `R_r`
+defined on `G = ⟨g⟩`, mixed-sign phenomenon is dyadic-quotient placement per G56's exact identity
+`A_r = q·n·Cov((w_i),(r_i)) + zero correction`). No odd-order / generic-thick set produces this
+two-depth cyclotomic-covariance census.
+
+**Consequence.** Any valid certificate for the production gate must be a SIMULTANEOUS two-depth lower
+bound (a joint cyclotomic-class covariance bound at `r=5` AND `r=6`), assembled from NO single-depth
+sub-lemma. This CLOSES the partial-gate escape and re-pins the surviving object squarely on BGK — the
+same direction as G56/Fable, one rung sharper (a kernel-checked no-go, not just a probe verdict).
+
+**Scope (honest).** Calibrated no-go / countermodel consumer only. Does NOT prove the production gate,
+does NOT touch the BGK wall, does NOT compute the sponsor's two production primes (open; may have
+favorable arithmetic). CORE remains OPEN / ON-BGK.
+
+All 10 declarations axiom-free (`#print axioms` = no axioms); locked module build green (778 jobs).
+Formal payload: `Frontier/_G205LateAlignmentSignNoGo.lean` (self-contained, imports only
+`Mathlib.Tactic.NormNum`). Referee/probe: `scripts/probes/g56_late_alignment_probe.py`,
+`g56_late_alignment_exact_cells.py`, `fable_syz69_quadrant.py`. Issue #466.
