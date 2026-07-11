@@ -51430,3 +51430,60 @@ All 10 declarations axiom-free (`#print axioms` = no axioms); locked module buil
 Formal payload: `Frontier/_G205LateAlignmentSignNoGo.lean` (self-contained, imports only
 `Mathlib.Tactic.NormNum`). Referee/probe: `scripts/probes/g56_late_alignment_probe.py`,
 `g56_late_alignment_exact_cells.py`, `fable_syz69_quadrant.py`. Issue #466.
+
+---
+
+### [466-G207-weighted-kernel-magnitude-nogo] Collision-free (injective) weighted-kernel support does NOT suppress the late-Newton alignment MAGNITUDE either: exact integer cells refute magnitude suppression in BOTH directions, so kernel sparsity yields no magnitude-only partial certificate (2026-07-11)
+
+**What was open.** `G206` (G56) proved the SIGN no-go for the injective weighted-kernel route:
+`φ₂ : u ∈ G ↦ (2-u)^n` injective (maximal `0/1` kernel-class sparsity of the collision count
+`W_G(t) = #{y ∈ G : 2y - t ∈ G}`) realizes every sign pattern of the centered alignments `A_r`, so
+sparsity does not control the SIGN of the placement of `supp W_G` against `R_r`. The production
+gates are QUANTITATIVE lower bounds on `A_r`, so `G206` left one cheap escape untested: does
+injectivity suppress the MAGNITUDE of the normalized alignment `ρ_r = Cov_t(W_G,R_r)/(σ_W σ_R)`?
+If `|ρ_r|·√q` were systematically smaller on injective cells, `0/1` kernel support would still be a
+usable magnitude-only partial certificate and the injectivity route would stay alive. Fable's
+2026-07-11 22:45 referee section (`fable_g206_magnitude_probe.py`, 317 exact cells) found the
+direction is actually INVERTED (injective medians 2–6× LARGER, ranges fully overlapping) but only as
+a statistical probe verdict.
+
+**The cheap escape closed (kernel-checked).** Writing `M_r² = ρ_r²·q`, the exact rational value is
+`M_r² = A_r²·q³ / (Q_W · Q_R)` with the exact integers `A_r = q·Σ_t W_G R_r − n²·C(n,r)·C(n,r−1)`,
+`Q_W = Σ_t (q·W_G(t) − n²)² = q³·Var W_G`, `Q_R = Σ_t (q·R_r(t) − n²·C(n,r)·C(n,r−1))² = q³·Var R_r`.
+Comparison across cells is a purely decidable integer inequality after cross-multiplying
+(`M_r²(a) > M_r²(b) ↔ A_a²·q_a³·Q_{W,b}·Q_{R,b} > A_b²·q_b³·Q_{W,a}·Q_{R,a}`). G207 records four exact
+`n=8` cells (`2 ∉ G`, non-degenerate `φ₂`) and proves by `norm_num`/`omega`:
+
+- `no_magnitude_suppression` — injective `𝔽_449` (`A₅=449560`, `Q_W=11063360`, `Q_R=27405361854544`)
+  has STRICTLY LARGER `M₅²` than non-injective `𝔽_41` (`A₅=10536`, ...): injectivity does NOT suppress
+  magnitude (the direction a partial certificate would need). `M₅²(449)≈0.0603 > M₅²(41)≈0.0000413`.
+- `no_magnitude_separation` — non-injective `𝔽_73` (`A₅=-19616`, ...) has STRICTLY LARGER `M₅²` than
+  injective `𝔽_113` (`A₅=-13128`, the same injective cell recorded in G206): the injective and
+  non-injective magnitude ranges OVERLAP, so there is no separation law in the reverse direction
+  either. `M₅²(73)≈0.000158 > M₅²(113)≈0.000102`.
+- `no_magnitude_single_depth_certificate` (calibrated consumer) — for any monotone reading `order`
+  of the injectivity flag as a magnitude order, both the injective→smaller and injective→larger
+  directions are refuted at exact integer cells; the normalized alignment magnitude is provably NOT
+  a monotone function of the injectivity flag in either direction.
+
+**Thinness-essential.** Same as G205/G206: the alignment object (`W_G`, `R_r`) exists only for the
+2-power smooth subgroup; the mixed magnitude census is dyadic-quotient placement. No odd-order /
+generic-thick set produces this object.
+
+**Consequence.** The injective weighted-kernel route is now DOUBLY fenced: sign (G205/G206) AND
+magnitude (G207). Any production certificate must control the full signed joint two-depth
+cyclotomic-class covariance bound (the literal BGK weighted-collision object), with NO sparsity
+shortcut for sign OR size. Do NOT spend a lane on any "sparsity ⇒ cancellation" or
+"kernel-multiplicity ⇒ alignment bound" refinement of this route; both halves are exact-cell-refuted.
+One rung sharper than Fable's probe verdict (kernel-checked, not statistical).
+
+**Scope (honest).** Calibrated no-go / countermodel consumer only. Does NOT prove the production
+gate, does NOT touch the BGK wall, does NOT compute the sponsor's two production primes. CORE
+remains OPEN / ON-BGK.
+
+All declarations use only the standard `[propext, Classical.choice, Quot.sound]` (no `sorryAx`, no
+`native_decide`); locked module build green (778 jobs). Formal payload:
+`Frontier/_G207WeightedKernelMagnitudeNoGo.lean` (self-contained, imports only `Mathlib.Tactic.NormNum`).
+Reproducible probe: `scripts/probes/g207_weighted_kernel_magnitude_nogo.py` (exact subgroup
+generation, exact integer subset-sum histograms, exact circular correlation with total-mass /
+nonnegativity checks, and the identity above). Referee source: `fable_g206_magnitude_probe.py`. Issue #466.
