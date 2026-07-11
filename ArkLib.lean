@@ -3347,6 +3347,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ24CrossCoreCompatibili
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ25MDSGeneration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ26LiftingTest
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ27InteriorGluing
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ28D3CoplanarCrack
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
