@@ -77,14 +77,16 @@ input for the δ* floor itself.
 Landed after the first addendum: coset amplification (`_BGKCosetAmplification.lean`, threshold
 9→7), the depth-6 amplified no-go (`_BGKDepthSixAmplifiedNoGo.lean`, threshold EXACTLY 7), and
 the consolidated residual `DepthSevenFlatnessResidual` (`_BGKDepthSevenFlatnessResidual.lean`)
-with both consumers proven.
+with both consumers proven.  **This raw interface is subsequently refuted and corrected in
+Addendum 3 below.**
 
 **Exponent ladder for `M(n) = max‖η_b‖`, `n = 2³⁰` (δ in `M ≤ n^{1−δ}`):**
 - trivial: δ = 0 (`M = n`).
 - published SOTA (BGK/di Benedetto): δ ≈ 0.011 — machine-checked INSUFFICIENT for the prize
   (`_BGKSOTAInsufficiency.lean`) AND out of regime (valid `n ≳ q^{1/4}`; prize `n = q^{0.19}`).
 - **the depth-five lane's nine-bit target (this session): δ = 0.15** (`M ≤ n^{0.85} = 2²⁵·⁵`)
-  ⟸ `DepthSevenFlatnessResidual` — 14× the published exponent, 3.3× less than Paley.
+  was originally routed through the raw `DepthSevenFlatnessResidual`; the valid route is the
+  DC-subtracted successor in Addendum 3 — 14× the published exponent, 3.3× less than Paley.
 - full prize floor: δ = 1/2 − o(1) (Paley-graph conjecture scale).
 
 **Terminal state of the goal "prove BGK":** the condition requires cancellation exponents
@@ -92,3 +94,135 @@ with both consumers proven.
 literature — not merely the formalized subset — provides none. Machine-checked in-tree: SOTA
 insufficiency + regime exclusion. No agent session can honestly discharge it; the residual is
 the sharp, fully-consumed, numerically-supported handoff point.
+
+## Addendum 3: mandatory DC correction (2026-07-11)
+
+The raw `DepthSevenFlatnessResidual` in Addendum 2 is **REFUTED**.  It bounded the full energy
+`E_7`, but the zero frequency contributes `n^14` to `q E_7`.  At `n=2^30`, `q≤2^159`:
+
+```text
+DC floor:          2^420 = n^14 ≤ q E_7
+raw proposed cap:  q E_7 ≤ 2^159 · 2^18 · 2^210 = 2^387.
+```
+
+The contradiction is formalized in `_BGKDepthSevenFlatnessResidualRefuted.lean`; the historical
+raw file is retained only because its conditional implications are logically valid.
+
+The corrected live residual is
+
+```text
+q E_7 - n^14 ≤ q · 2^18 · n^7,
+```
+
+equivalently an off-zero fourteenth-moment bound.  This gives the exact coset-amplification budget
+
+```text
+Σ_{b≠0}|eta_b|^14 ≤ n · (2^51)^7 = 2^387,
+```
+
+and the new file proves both the `WorstCaseIncompleteSumBound` and production depth-five consumers.
+The coefficient `2^18` is `1.9399...` times the Gaussian constant `13!!=135135`; the correction
+therefore preserves the intended factor-two cushion while restoring the mandatory DC baseline.
+At the exact production cardinality the largest integral coefficient permitted by the numeric
+budget is `2^19-1`, but `2^18` is the uniform power-of-two coefficient under only `q≤2^159`.
+
+`_BGKRenergyRepresentationBridge.lean` closes a separate representation seam exposed by the audit:
+the BGK lane and the older census library used extensionally equal but non-definitionally-equal
+`rEnergy` definitions.  The bridge proves equality unconditionally and shows that the standard
+depth-seven `DCEnergyBound` (coefficient `13!!`) implies the repaired BGK residual (coefficient
+`2^18`).  Consequently G121--G145-style census work and the BGK consumer now target the same exact
+centered quantity.
+
+The live BGK gate remains genuine: prove the **centered** depth-seven flatness residual, not the
+impossible raw-energy statement.
+
+## Addendum 4: exact centered convolution collapse (2026-07-11)
+
+`_BGKCenteredConvolutionCollapse.lean` rewrites the corrected residual without characters or
+division.  For the ordered `r`-fold representation count `f_r` and its autocorrelation
+`C_r(delta)=sum_d f_r(d)f_r(d+delta)`, it proves
+
+```text
+q E_(r+1) - n^(2r+2)
+  = sum_(s,t in G) (q C_r(s-t) - n^(2r))
+  = n * sum_(u in G) (q C_r(1-u) - n^(2r)).
+```
+
+The second equality uses the multiplicative-subgroup dilation symmetry and the reindexing
+`t=s*u`.  At `r=6`, this is exactly the repaired depth-seven numerator.  Consequently the
+coefficient-`2^18` residual is equivalent to
+
+```text
+n * sum_(u in G) (q C_6(1-u) - n^12) <= q * 2^18 * n^7.
+```
+
+At the production parameters `n=2^30`, `q<=2^159`, division by `n` gives the explicit
+one-dimensional budget `2^357`.  The file also proves
+`sum_delta (q C_r(delta)-n^(2r))=0`: this is a zero-global-mean signed discrepancy.  It explains
+why the positive FS11/primitive-packet census can supply useful structure yet cannot by itself
+close the repaired residual; a closing argument must preserve cancellation along `1-G`.
+
+For honesty, the same file proves the Fourier-side audit
+
+```text
+n * sum_(u in G) (q C_6(1-u)-n^12) = sum_(b != 0) |eta_b|^14.
+```
+
+Hence the individual translate terms are signed but their whole sum is nonnegative.  This is an
+exact lower-dimensional face of the off-zero fourteenth moment, not an aggregate-method escape.
+
+## Addendum 5: projective accident packet classifier (2026-07-11)
+
+`_ANT46RungTwoAccidentOrbit.lean` now proves the full `S_4` re-rooting classifier after closing a
+scalar-symmetry seam that is false for arbitrary zero-sum quadruples.  Under the accident and
+odd-characteristic hypotheses, any nontrivial common scalar would force a signed coordinate to be
+`1`, hence a lawful Mann family.  The projective identity fibre therefore has size exactly
+`1`, `2`, or `6`, according to the signed-coordinate equality partition.
+
+The `2+2` pattern is lawful.  At both certified production primes the existing `-3` certificate
+also excludes the `3+1` pattern.  Consequently every production accident orbit has size `24` or
+`12`, and the total accident count is divisible by `12`.  This sharpens the old packet-of-four
+result but does not establish emptiness; any independent production upper bound `<12` would now
+close the rung-two accident residual.
+
+## Addendum 6: weighted collision moments and Jacobi equivalence (2026-07-11)
+
+`_BGKWeightedCollisionMoment.lean` proves the coefficient-weighted master identity
+
+```text
+sum_b (prod_i eta_(c_i b)) (prod_j eta_(-d_j b))
+  = q * weightedCollisionCount(G,c,d),
+```
+
+and its nonzero-frequency/DC-subtracted form. The first set-partition stratum with one repeated
+left coordinate is therefore represented exactly by
+
+```text
+sum_(b != 0) eta_(2b) * eta_b^5 * eta_(-b)^7
+  = q * oneRepeatCollisionCount - n^13.
+```
+
+This is the current signed socket for the repeated-coordinate part of the primitive-packet
+decomposition. It preserves the DC cancellation that a positive collision envelope loses.
+
+`_AJT13CenteredMomentEquivalence.lean` records a complementary no-shortcut result. If `K` is
+the annihilator of `G`, `m=|K|`, and `eta_c` are the quotient Gauss periods, complete character
+orthogonality gives
+
+```text
+S13(K) = (m^13/q^7) * sum_c (eta_c + 1/m)^14.
+```
+
+Thus `S13 <= C*m^7*((q-1)/q)^6` is equivalent to the centered physical bound
+`sum_c(eta_c+1/m)^14 <= C*q*n^6`. Jacobi tensorization remains a useful coordinate system for
+off-diagonal structure, but the bare `m^7` statement is the original centered wall rather than a
+new analytic input. An aligned-phase array has the exact second-moment scale while violating the
+public fourteenth-moment coefficient, so coefficient moduli and cyclic product geometry alone are
+insufficient.
+
+`_AJT13CenteredBoundaryBridge.lean` closes the remaining principal-character bookkeeping at the
+natural Gaussian constant.  Weighted convexity proves
+`(x-c)^14 <= (21/20)^13*x^14 + 21^13*c^14`; after summing `m` coordinates with `c=1/m`, the
+translation error is at most one for `m>=21`, and the exact rational calculation
+`135135*(21/20)^13+1 < 2^18` leaves over 7,326 coefficient units.  Therefore a centered
+Wick-scale theorem is already a complete consumer for the original public moment target.

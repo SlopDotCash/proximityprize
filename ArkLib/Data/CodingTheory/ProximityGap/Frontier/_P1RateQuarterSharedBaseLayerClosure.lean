@@ -292,6 +292,33 @@ theorem combinedTwoRider_family_card_le_five
   apply combinedTwoRider_johnson_arithmetic
   simpa only [Fintype.card_coe, Finset.card_univ, hU] using hJ
 
+/-- **Disjoint erased-fiber summation.**  Pairwise-disjoint non-base rider fibers contained in a
+global bad-scalar set consume at most that set with the base scalar erased. -/
+theorem disjointErasedFibers_sum_le_global
+    {PIdx F0 : Type*} [DecidableEq PIdx] [DecidableEq F0]
+    (Fam : Finset PIdx) (R : PIdx → Finset F0) (G : Finset F0) (gamma0 : F0)
+    (hsub : ∀ π ∈ Fam, R π ⊆ G.erase gamma0)
+    (hpair : ∀ π ∈ Fam, ∀ π' ∈ Fam, π ≠ π' → Disjoint (R π) (R π')) :
+    ∑ π ∈ Fam, (R π).card ≤ (G.erase gamma0).card := by
+  classical
+  rw [← Finset.card_biUnion (fun π hπ π' hπ' hne => hpair π hπ π' hπ' hne)]
+  exact Finset.card_le_card (by
+    intro x hx
+    rw [Finset.mem_biUnion] at hx
+    obtain ⟨π, hπ, hxR⟩ := hx
+    exact hsub π hπ hxR)
+
+/-- With the base scalar present globally, the disjoint erased fibers use at most `|G|-1` slots. -/
+theorem disjointErasedFibers_sum_le_global_sub_one
+    {PIdx F0 : Type*} [DecidableEq PIdx] [DecidableEq F0]
+    (Fam : Finset PIdx) (R : PIdx → Finset F0) (G : Finset F0) (gamma0 : F0)
+    (hgamma0 : gamma0 ∈ G)
+    (hsub : ∀ π ∈ Fam, R π ⊆ G.erase gamma0)
+    (hpair : ∀ π ∈ Fam, ∀ π' ∈ Fam, π ≠ π' → Disjoint (R π) (R π')) :
+    ∑ π ∈ Fam, (R π).card ≤ G.card - 1 := by
+  simpa [Finset.card_erase_of_mem hgamma0] using
+    disjointErasedFibers_sum_le_global Fam R G gamma0 hsub hpair
+
 /-! ## Exact base-rider inclusion crossover -/
 
 /-- If a threshold-size base carrier can accommodate three non-base vote sets of forced size
@@ -485,6 +512,8 @@ end ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.twoRider_matching_floor_rootBudget_slack
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.combinedTwoRider_johnson_arithmetic
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.combinedTwoRider_family_card_le_five
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.disjointErasedFibers_sum_le_global
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.disjointErasedFibers_sum_le_global_sub_one
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.heavy_sharedBase_arithmetic_sharp
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.heavyEnvelope_add_lightSlots_le_N
 #print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSharedBaseLayerClosure.heavy_family_slots_le_N

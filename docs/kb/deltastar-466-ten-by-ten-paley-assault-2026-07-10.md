@@ -1,5 +1,10 @@
 # Ten-by-ten Paley / proximity assault (2026-07-10)
 
+> **2026-07-11 successor:** the raw depth-seven endpoint used during this wave required a DC
+> correction.  For the current exact target, updated literature, quantitative kill tests, and a
+> new 100-cell ranking, use
+> [`deltastar-466-ten-by-ten-centered-attack-matrix-2026-07-11.md`](deltastar-466-ten-by-ten-centered-attack-matrix-2026-07-11.md).
+
 ## Contract
 
 The production core is the nonprincipal Gauss-period maximum

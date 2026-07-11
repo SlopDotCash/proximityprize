@@ -478,6 +478,237 @@ reuse coordinates.  The new kernel isolates exactly what such reuse means.
   bases by the defining formula `p₀−γ₀·direction`.  Downstream fiber arguments
   can therefore consume literal pencil equality without reconstructing it
   from the slope theorem.
+  The family-level form is now explicit:
+  `commonBase_distinctPencils_nonbaseRiders_disjoint` proves that distinct
+  common-base pencils have disjoint rider sets after erasing `γ₀`.
+  `disjointErasedFibers_sum_le_global(_sub_one)` packages the corresponding
+  summation bound: all erased fibers together consume at most `|G|−1` global
+  non-base scalars.  This is the exact adapter required by layer-budget sums,
+  and applies equally to two-, three-, and heavier fixed-witness fibers.
+  That disjointness is a partition input, not by itself the missing absolute
+  budget.  A genuinely cross-fiber bridge is now also formalized.  For any two
+  distinct scalars, the intersection of their fixed witnesses is contained in
+  the agreement set of their divided-difference direction with `u₁`
+  (`fixedWitness_inter_subset_pencilDir_agreeSet`).  Since both witnesses have
+  size at least `T`, this direction agrees on at least
+  `2T−N=111,848,108` coordinates
+  (`fixedWitness_pencilDir_agreeSet_card_ge_111848108`).  The count is below
+  unique decoding but applies to every cross-fiber pair, making it the proper
+  input for a second-moment/Johnson argument across different pencils rather
+  than another within-fiber layer identity.
+  Composing with the independently landed integral five-set overlap theorem
+  gives a sharper extraction:
+  `fiveFixedWitnesses_exists_pencilDir_agreeSet_card_ge_k` proves that among
+  any five distinct fixed scalars, some witness pair has a secant direction
+  agreeing with `u₁` on at least `k=268,435,456` coordinates.  This is exactly
+  the interpolation threshold, so that direction is pinned by the received
+  values on the extracted overlap.  The remaining global step is to turn the
+  abundance of these pinned secants into repeated directions/large pencil
+  fibers (or a contradiction), rather than merely extracting one edge per
+  five vertices.  `exists_pinnedSecant_of_five_le_card` supplies the direct
+  finite-family interface: any `G` with `5≤|G|` yields two named members of
+  `G` and their interpolation-pinned secant, with no `Fin 5` indexing exposed
+  to downstream Turán or greedy-extraction code.
+
+- The sharp four-part Turán count now has an exact endpoint concentration
+  lemma.  For `m = N + 1`, twice the guaranteed edge floor is strictly larger
+  than `m * (k - 1)`; the handshake identity therefore forces a vertex of
+  degree at least `k`.  Thus an exactly over-budget overlap graph contains one
+  scalar incident to at least `k` interpolation-pinned secants.  This is a
+  concentration interface, not yet a proof that those secants share a source
+  pencil or direction.
+
+- The obvious next inference from that star is now sharply audited.  A formal
+  sunflower `degreeKStarCore` supplies `k` distinct cores of size `k`, with
+  every pair meeting in exactly `k-1`; all of them fit inside a single
+  threshold-sized base agreement universe.  Therefore degree `k`, the
+  pairwise RS cap, and the base agreement cardinality alone cannot force a
+  repeated source line.
+
+- There is nevertheless extra polynomial rigidity at the extremal common-core
+  boundary.  `direction_sub_eq_locator_mul_C_of_commonCore` proves that two
+  degree-`<k` directions agreeing on a `(k-1)`-set differ by a scalar multiple
+  of its monic locator.  Its affine packaging shows that every direction in a
+  genuine common-core sunflower lies on one affine line in `F[X]`.  The next
+  viable closure target is consequently a constraint on these locator
+  coefficients and endpoint scalars, rather than another set-incidence bound.
+
+- The locator coefficients now have a direct incidence interpretation.  At an
+  off-locator coordinate, three agreeing affine-locator neighbors force their
+  parameter points `(a,a*c)` to be collinear.  The denominator-cleared endpoint
+  theorem then transports this parameter collinearity to a common polynomial
+  source secant.  This bridge is unconditional once the neighbors share the
+  same `(k-1)` locator.
+
+- The accompanying star charge is numerically overwhelming and fully
+  formalized.  Remove at most four exceptional lines of at most `215` neighbors
+  each.  Every remaining core below `590558003` contributes at least `2236964`
+  off-base coordinates, and
+  `215*(N-T) < (k-4*215)*2236964`.  Hence
+  `lowCoreStar_load_216_forced` produces an off-base coordinate carried by at
+  least `216` remaining neighbors.
+
+  The honest remaining weld is structural, not arithmetic: a generic
+  degree-`k` overlap star need not yet share one `(k-1)` locator.  One must
+  either extract a sufficiently large common-locator substar or prove a
+  cross-coordinate matching theorem that upgrades the forced load-`216`
+  coordinate to one polynomial source line.  The current theorem does not
+  silently assume that upgrade.
+
+- A degree-one countermodel now rules out that upgrade from one coordinate:
+  `parabolaEndpoint gamma = gamma^2 * X`.  Every endpoint evaluates to zero at
+  `X=0`, so a coordinate can have arbitrary load, while any three distinct
+  parameters fail the denominator-cleared polynomial collinearity identity.
+  Evaluation-line incidence is therefore strictly weaker than source-line
+  incidence even at degree one.
+
+- The exact cross-coordinate repair is proven.  If the *same triple* of
+  degree-`<k` endpoints is evaluation-collinear on at least `k` injected
+  coordinates, its denominator-cleared collinearity polynomial has degree
+  `<k`, vanishes identically, and the triple lies on one polynomial source
+  line (`source_collinear_of_eval_collinear_on_k`).  The remaining target is
+  thus a repeated-triple matching theorem, not a high-load theorem.
+
+- Plain third-moment averaging does not reach that target.  The formal numeric
+  audit `uniformTripleMoment_below_crossCoordinate_budget` shows that even the
+  forced average load `1248534` on every off-base coordinate leaves the raw
+  triple-incidence lower benchmark far below the `(k-1)` recurrence capacity
+  of all regular triples.  Any successful repeated-triple argument must use
+  the polynomial/cross-coordinate structure rather than an unstructured
+  convexity estimate.
+
+- The third-incidence constraint is now available globally rather than only as
+  a per-triple statement.  `sum_choose_three_support_eq_sum_tripleContainment`
+  proves the exact double count
+  `sum_x choose(load(x),3) = sum_{|U|=3} |commonCoords(U)|`.
+  Consequently `sum_choose_three_support_le_of_triple_cap` turns the
+  non-source-collinear root cap `|commonCoords(U)| <= k-1` into a global
+  hypergraph moment bound.  This is designed as an input to the distributed
+  block-Vandermonde/GM-MDS rank lane: the upper side is now axiom-clean; the
+  missing ingredient is a structured lower bound stronger than ordinary
+  convexity at the literal P1 constants.
+
+- This census is now wired to `BadScalarRichPointFamily`, rather than left as
+  an abstract set-system interface.  `richFamilySupport` is the coordinate-side
+  support hypergraph, and its three-label containment coordinates are exactly
+  the intersection of the corresponding three `fullAgreement` sets.
+  `richFamilyTripleCoords_card_le_k_pred_of_not_sourceCollinear` uses the
+  selected polynomials' decoded degree bounds to prove the `k-1` cap for every
+  triple failing the polynomial source-collinearity identity.  Thus the upper
+  side of the global third-incidence argument no longer requires a separately
+  supplied combinatorial or rigidity hypothesis.
+
+- The fully quantified consumer is now packaged as
+  `richFamily_exists_sourceCollinear_of_thirdMoment_gt`: if the actual rich
+  family exceeds `choose(|G|,3)*(k-1)` triple incidences, three distinct decoded
+  points lie on one polynomial source line.  Conversely,
+  `richFamily_thirdMoment_le_of_no_sourceCollinear` supplies the exact global
+  cap when no such triple exists.
+
+- Literal arithmetic shows why this still does not close from degree data
+  alone.  For `|G|=N+1`, the balanced distribution of `(N+1)T` mandatory
+  incidences has load `T+1` on `T` coordinates and `T` on the rest.  The exact
+  theorem `uniformFullFamily_thirdMoment_below_sourceCollinear_capacity` proves
+  its third moment is strictly below `choose(N+1,3)*(k-1)` (the capacity is
+  about `1.486` times the balanced floor).  Thus the remaining lower bound must
+  certify substantial nonuniformity or correlated support structure; support
+  cardinalities and ordinary convexity cannot do so.
+
+- The rank-two/source-pencil branch now has a direct terminal consumer.
+  A denominator-cleared collinearity identity with one fixed distinct anchor
+  pair puts the third decoded point on the anchors' canonical `secantParameter`.
+  If the identity holds for every selected point, `pointsOn` equals the whole
+  rich family and the existing line-core packing inequality gives `|G| <= N`
+  (`richFamily_card_le_N_of_anchorCrossProducts`).  The family-wide wrapper
+  `richFamily_card_le_N_of_allTriplesSourceCollinear` shows it suffices that
+  every three distinct selected points be polynomial-source-collinear.  Thus a
+  future distributed-rank theorem concluding rank at most two now plugs into
+  the exact prize budget without another geometric residual.
+
+- Taking the contrapositive gives a concrete rank-three seed for every
+  over-budget family: `exists_nonSourceCollinearTriple_of_N_lt_richFamily_card`
+  produces three distinct decoded points failing the source-collinearity
+  identity.  Three-set Bonferroni at the literal threshold further forces one
+  of their pairwise agreement cores to have size at least `234881025`.
+  `exists_nonSourceCollinearTriple_with_largePairCore` packages both facts.
+  This core is exactly `33554431` coordinates short of `k`, so the new seed is
+  near the interpolation boundary but does not falsely claim that the pair
+  already determines joint agreement.  It is a concrete starting minor for
+  distributed-rank amplification.
+
+- Choosing the anchors before the third point sharpens this substantially.
+  Exact constant-weight Plotkin at `|G|>N` forces a pair intersection of at
+  least `327272221`; every fixed distinct pair then has a noncollinear third,
+  since otherwise the fixed-anchor closure would give `|G|<=N`.
+  `exists_nonSourceCollinearTriple_with_interpolationPinnedAnchor` packages
+  the result.  Its anchor core exceeds `k` by `58836765`, but is also exactly
+  one coordinate below the established saturation-overlap ceiling
+  `327272222`.  This one-coordinate boundary is honest and potentially useful:
+  ordinary constant-weight averaging cannot improve it at the minimal
+  `N+1` trigger, so the missing `+1` must come from noncollinearity or the
+  divided-difference specialization rather than another Plotkin pass.
+
+- Line-core packing now turns that seed into a clean structural split.
+  `three_pointsOn_force_core_ge_352321537` proves that any relevant line with
+  three selected threshold points has core at least `352321537`, the exact
+  floor `ceil((3T-N)/2)`.  Its contrapositive wrapper proves that below this
+  floor a relevant line contains exactly two points.  Hence the pinned anchor
+  line either jumps another `25049316` coordinates above the Plotkin-extracted
+  core, or it is an isolated two-point secant and every other selected point is
+  off that line.  Both branches are concrete inputs for further rank/core
+  amplification; neither is silently identified with closure.
+
+- The next multiplicity rung is also exact: four selected points on a relevant
+  line force core at least `432479347 = ceil((4T-N)/3)`; below that floor the
+  line carries at most three points.  The packaged alternatives
+  `relevantLine_core_ge_352321537_or_card_eq_two` and
+  `relevantLine_core_ge_432479347_or_card_le_three` expose the ladder directly
+  to downstream K4/high-core code.  The already known five-point floor is
+  `472558252`, so the anchor branch is now localized into narrow two-, three-,
+  four-, and saturated-line regimes rather than one undifferentiated high-core
+  case.
+
+- The three-line determinant route has been audited separately in
+  `_P1RateQuarterRankThreeDeterminantAudit.lean`.  Determinant multiplicity
+  requires total core mass at least `1610612735`.  Three-set Bonferroni supplies
+  only `704643074` (deficit `905969661`), while the pinned anchor plus two
+  universal pair floors supplies `550968437` (deficit `1059644298`).  Thus the
+  determinant theorem is an amplifier, not a consequence of the current seed.
+  After paying the `327272221` anchor, the other two cores must sum to
+  `1283340514`, forcing one to reach `641670257`.  This exact threshold is the
+  honest core-growth target for any determinant-collapse continuation.
+
+- The isolated two-point anchor branch now has a P1-specific reduced-universe
+  increment in `_P1RateQuarterPinnedAnchorPetalGrowth.lean`.  The anchor core
+  leaves at most `746469603` coordinates; every outsider has at least
+  `T-(k-1)=324359511` fresh agreements there.  The exact Rankin budget
+  `746469603*140942232 <= 324359511^2-1` forces two outsiders with secant petal
+  at least `140942233`.  That petal lies in a distinct relevant secant core of
+  the same size.  Thus the isolated anchor does not merely leave an
+  unstructured outside population: it generates a second, quantitatively
+  large core, though still below the half-domain/high-core regime.
+
+- The recursive two-core supply is now formalized as well.  The anchor line
+  has two points and the second line has core at least `140942233`, so at least
+  `140942232` selected points lie off both lines.  Every such point retains at
+  least `T-2(k-1)=55924056` agreements outside the two-core union.  The two
+  certified disjoint contributions leave at most `605527370` coordinates.
+  Exact constant-weight arithmetic refutes a pair cap `5164919` for this
+  population/weight/universe triple, identifying `5164920` as the next forced
+  fresh-intersection target.  The supply and arithmetic are proven; the
+  remaining work is the reduced-subtype Plotkin extraction that turns them
+  into a named third secant core.
+
+- That subtype weld is now closed.  The off-both fresh sets are trimmed to
+  weight `55924056`, transported into the complement subtype without changing
+  cardinalities or intersections, and fed to exact constant-weight Plotkin.
+  `exists_outsideBoth_secantPetal_card_ge_5164920` produces two off-both
+  points whose canonical secant contributes `5164920` genuinely new
+  coordinates outside both earlier cores.  The geometric wrapper produces a
+  third relevant line, distinct from the anchor and second line, carrying that
+  new core petal.  The isolated-anchor branch therefore yields a certified
+  three-line core-growth chain with disjoint increments
+  `327272221`, `140942233`, and `5164920`.
   The cross-label information discarded by the binary abstraction is now
   retained explicitly.  Writing
   `E(x)=u₀(x)+γ₀u₁(x)−p₀(x)`, a coordinate labelled `γ` in one pencil and `δ`

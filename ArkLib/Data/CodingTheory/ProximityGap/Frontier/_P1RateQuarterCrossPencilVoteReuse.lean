@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterPencilCountCharge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilPairwiseBonferroni
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAgreementOverlapGraph
 
 /-!
 # Cross-pencil vote reuse is necessary at the P1 predecessor
@@ -30,8 +31,8 @@ is kept separate so it is not confused with the exact prize-scale count.)
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 3000
-set_option maxRecDepth 100000
+set_option linter.style.longFile 4100
+set_option maxRecDepth 500000
 set_option maxHeartbeats 1000000
 
 open Finset
@@ -1928,6 +1929,95 @@ theorem commonBase_alignedSet_eq_baseAgree_inter_directionAgree
     rw [hdir] at hrepro
     linear_combination hbase - hrepro
 
+/-- The intersection of two fixed scalar witnesses forces their divided-difference direction to
+agree with the received direction `u1`.  This is the global cross-fiber bridge used by moment
+arguments across different base pencils. -/
+theorem fixedWitness_inter_subset_pencilDir_agreeSet
+    {gamma delta : F} (hne : gamma ≠ delta)
+    (pGamma pDelta u0 u1 : Fin N → F)
+    (Sgamma Sdelta : Finset (Fin N))
+    (hgamma : ∀ x ∈ Sgamma, pGamma x = u0 x + gamma * u1 x)
+    (hdelta : ∀ x ∈ Sdelta, pDelta x = u0 x + delta * u1 x) :
+    Sgamma ∩ Sdelta ⊆ agreeSet (pencilDir gamma delta pGamma pDelta) u1 := by
+  intro x hx
+  obtain ⟨hxg, hxd⟩ := Finset.mem_inter.mp hx
+  rw [agreeSet, Finset.mem_filter]
+  refine ⟨Finset.mem_univ _, ?_⟩
+  have hg := hgamma x hxg
+  have hd := hdelta x hxd
+  simp only [pencilDir, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
+  have hsub : delta - gamma ≠ 0 := sub_ne_zero.mpr hne.symm
+  field_simp
+  linear_combination hd - hg
+
+/-- Any two threshold witnesses overlap on at least `2T-N = 111848108` coordinates, all of
+which are direction-agreement coordinates by the preceding bridge. -/
+theorem fixedWitness_pencilDir_agreeSet_card_ge_111848108
+    {gamma delta : F} (hne : gamma ≠ delta)
+    (pGamma pDelta u0 u1 : Fin N → F)
+    (Sgamma Sdelta : Finset (Fin N))
+    (hSgamma : predecessorThreshold ≤ Sgamma.card)
+    (hSdelta : predecessorThreshold ≤ Sdelta.card)
+    (hgamma : ∀ x ∈ Sgamma, pGamma x = u0 x + gamma * u1 x)
+    (hdelta : ∀ x ∈ Sdelta, pDelta x = u0 x + delta * u1 x) :
+    111848108 ≤ (agreeSet (pencilDir gamma delta pGamma pDelta) u1).card := by
+  have hsub := fixedWitness_inter_subset_pencilDir_agreeSet hne
+    pGamma pDelta u0 u1 Sgamma Sdelta hgamma hdelta
+  have hcard := Finset.card_le_card hsub
+  have hunion : (Sgamma ∪ Sdelta).card ≤ N := by
+    simpa only [Fintype.card_fin] using Finset.card_le_univ (Sgamma ∪ Sdelta)
+  have hinc := Finset.card_union_add_card_inter Sgamma Sdelta
+  have hT := predecessorThreshold_eq
+  omega
+
+/-- **Five-witness secant extraction.**  Among any five distinct fixed scalars with threshold
+witnesses, some divided-difference direction agrees with `u1` on at least `k` coordinates.  This
+composes the integral five-set overlap theorem with the fixed-witness direction bridge. -/
+theorem fiveFixedWitnesses_exists_pencilDir_agreeSet_card_ge_k
+    (gamma : Fin 5 → F) (hgammaInj : Function.Injective gamma)
+    (p : Fin 5 → Fin N → F) (S : Fin 5 → Finset (Fin N))
+    (u0 u1 : Fin N → F)
+    (hsize : ∀ i, predecessorThreshold ≤ (S i).card)
+    (hagree : ∀ i, ∀ x ∈ S i, p i x = u0 x + gamma i * u1 x) :
+    ∃ i j : Fin 5, i ≠ j ∧
+      k ≤ (agreeSet (pencilDir (gamma i) (gamma j) (p i) (p j)) u1).card := by
+  have hex :=
+    P1RateQuarterAgreementOverlapGraph.exists_pair_inter_card_ge_K_of_five S (fun i => by
+      simpa [P1RateQuarterAgreementOverlapGraph.T, predecessorThreshold_eq] using hsize i)
+  obtain ⟨i, j, hij, hinter⟩ := hex
+  refine ⟨i, j, hij, ?_⟩
+  have hsub := fixedWitness_inter_subset_pencilDir_agreeSet
+    (hgammaInj.ne hij) (p i) (p j) u0 u1 (S i) (S j) (hagree i) (hagree j)
+  have hcard := Finset.card_le_card hsub
+  simpa [P1RateQuarterAgreementOverlapGraph.K, k] using hinter.trans hcard
+
+/-- Finite-family interface to the five-witness secant extraction. -/
+theorem exists_pinnedSecant_of_five_le_card
+    (G : Finset F) (p : F → Fin N → F) (S : F → Finset (Fin N))
+    (u0 u1 : Fin N → F)
+    (hG : 5 ≤ G.card)
+    (hsize : ∀ gamma ∈ G, predecessorThreshold ≤ (S gamma).card)
+    (hagree : ∀ gamma ∈ G, ∀ x ∈ S gamma,
+      p gamma x = u0 x + gamma * u1 x) :
+    ∃ gamma ∈ G, ∃ delta ∈ G, gamma ≠ delta ∧
+      k ≤ (agreeSet (pencilDir gamma delta (p gamma) (p delta)) u1).card := by
+  classical
+  obtain ⟨G5, hG5sub, hG5card⟩ := Finset.exists_subset_card_eq hG
+  have he : G5 ≃ Fin 5 := by
+    rw [← hG5card]
+    exact G5.equivFin
+  let gamma : Fin 5 → F := fun i => (he.symm i : F)
+  have hgammaInj : Function.Injective gamma := by
+    intro i j hij
+    apply he.symm.injective
+    exact Subtype.ext hij
+  have hmem : ∀ i, gamma i ∈ G := fun i => hG5sub (he.symm i).2
+  obtain ⟨i, j, hij, hpinned⟩ :=
+    fiveFixedWitnesses_exists_pencilDir_agreeSet_card_ge_k gamma hgammaInj
+      (fun i => p (gamma i)) (fun i => S (gamma i)) u0 u1
+      (fun i => hsize _ (hmem i)) (fun i => hagree _ (hmem i))
+  exact ⟨gamma i, hmem i, gamma j, hmem j, hgammaInj.ne hij, hpinned⟩
+
 /-- **Full combined-set overlap cap.**  For a fixed non-base rider, each pencil's aligned core
 lies in `B` and its vote set lies in `Bᶜ`; hence cross terms vanish.  The intersection of the
 full combined sets `aligned ∪ vote` is exactly matching-type overlap and has size at most `k-1`
@@ -2061,6 +2151,33 @@ theorem commonBase_sameFixedWitnessRider_pencils_eq
   have hdir := commonBase_sameFixedWitnessRider_directions_eq dom hgamma
     p0 p1 p2 u0 u1 R1 R2 Sf hp0 hp1 hp2 hrides1 hrides2 hgamma1 hgamma2
   exact Prod.ext (commonBase_pencilBase_eq_of_direction_eq p0 p1 p2 hdir) hdir
+
+/-- **Distinct-pencil erased fibers are disjoint.**  Under global fixed witnesses, two distinct
+common-base pencils cannot share any non-base rider.  This is the family-level form consumed by
+layer-budget sums. -/
+theorem commonBase_distinctPencils_nonbaseRiders_disjoint
+    (dom : Fin N ↪ F)
+    {gamma0 gamma1 gamma2 : F}
+    (p0 p1 p2 u0 u1 : Fin N → F)
+    (R1 R2 : Finset F) (Sf : F → Finset (Fin N))
+    (hp0 : p0 ∈ predecessorCode dom)
+    (hp1 : p1 ∈ predecessorCode dom)
+    (hp2 : p2 ∈ predecessorCode dom)
+    (hrides1 : RidesAll dom u0 u1
+      (pencilBase gamma0 gamma1 p0 p1) (pencilDir gamma0 gamma1 p0 p1) R1 Sf)
+    (hrides2 : RidesAll dom u0 u1
+      (pencilBase gamma0 gamma2 p0 p2) (pencilDir gamma0 gamma2 p0 p2) R2 Sf)
+    (hpencils :
+      (pencilBase gamma0 gamma1 p0 p1, pencilDir gamma0 gamma1 p0 p1) ≠
+        (pencilBase gamma0 gamma2 p0 p2, pencilDir gamma0 gamma2 p0 p2)) :
+    Disjoint (R1.erase gamma0) (R2.erase gamma0) := by
+  rw [Finset.disjoint_left]
+  intro gamma hgamma1 hgamma2
+  have hne : gamma ≠ gamma0 := (Finset.mem_erase.mp hgamma1).1
+  apply hpencils
+  exact commonBase_sameFixedWitnessRider_pencils_eq dom hne
+    p0 p1 p2 u0 u1 R1 R2 Sf hp0 hp1 hp2 hrides1 hrides2
+    (Finset.mem_of_mem_erase hgamma1) (Finset.mem_of_mem_erase hgamma2)
 
 /-- A saturated full fiber containing the base scalar forces the base codeword's agreement
 set to have exactly threshold size. -/
@@ -2798,6 +2915,940 @@ theorem three_distinct_commonBase_nearThreshold_fibers_sum_le_N
   have hN : N = 1073741824 := by norm_num [N]
   omega
 
+/-! ## Exact Turán-to-star concentration at the over-budget endpoint -/
+
+/-- At exactly one more than the prize budget, the sharp four-part Turán lower bound
+is large enough that average large-overlap degree exceeds `k - 1`. -/
+theorem overBudget_fourPart_edgeFloor_twice_gt_vertices_mul_k_pred :
+    let m := N + 1
+    let e := m.choose 2 -
+      ((m ^ 2 - (m % 4) ^ 2) * 3 / 8 + (m % 4).choose 2)
+    m * (k - 1) < 2 * e := by
+  norm_num [N, k]
+
+/-- A graph with the exact over-budget four-part Turán edge floor has a vertex of
+degree at least `k`.  This is the handshake upgrade from mere existence of pinned
+secants to a single scalar incident to `k` of them. -/
+theorem exists_degree_ge_k_of_overBudget_fourPart_edgeFloor
+    {V : Type} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V)
+    (hcard : Fintype.card V = N + 1)
+    (hedges : (N + 1).choose 2 -
+        ((((N + 1) ^ 2 - ((N + 1) % 4) ^ 2) * 3 / 8) +
+          ((N + 1) % 4).choose 2) ≤ #G.edgeFinset) :
+    ∃ v, k ≤ G.degree v := by
+  classical
+  by_contra hnot
+  push_neg at hnot
+  have hdegree : ∀ v, G.degree v ≤ k - 1 := by
+    intro v
+    omega
+  have hsum : (∑ v, G.degree v) ≤ Fintype.card V * (k - 1) := by
+    calc
+      (∑ v, G.degree v) ≤ ∑ _v : V, (k - 1) :=
+        Finset.sum_le_sum fun v _hv => hdegree v
+      _ = Fintype.card V * (k - 1) := by simp
+  have hhandshake := G.sum_degrees_eq_twice_card_edges
+  have hfloor := overBudget_fourPart_edgeFloor_twice_gt_vertices_mul_k_pred
+  dsimp only at hfloor
+  rw [hcard] at hsum
+  omega
+
+/-! The degree conclusion alone does not consolidate the star.  The following exact
+sunflower realizes all presently available core-incidence constraints with `k` distinct
+petals: every core has size `k`, while every two distinct cores meet in exactly `k - 1`. -/
+
+/-- The abstract sharp sunflower modelling `k` distinct secant cores through one base. -/
+noncomputable def degreeKStarCore (i : Fin k) : Finset Nat :=
+  Finset.range (k - 1) ∪ {k - 1 + i.1}
+
+theorem degreeKStarCore_card (i : Fin k) :
+    (degreeKStarCore i).card = k := by
+  rw [degreeKStarCore, Finset.card_union_of_disjoint]
+  · simp [k]
+  · rw [Finset.disjoint_singleton_right]
+    simp only [Finset.mem_range]
+    omega
+
+/-- All `k` sunflower cores fit inside a single set of threshold cardinality `T`, so the
+actual size of the base agreement set does not rule out the model. -/
+theorem degreeKStarCore_subset_thresholdUniverse (i : Fin k) :
+    degreeKStarCore i ⊆ Finset.range predecessorThreshold := by
+  intro x hx
+  simp only [degreeKStarCore, Finset.mem_union, Finset.mem_range,
+    Finset.mem_singleton] at hx ⊢
+  rcases hx with hx | rfl
+  · have hk : k = 268435456 := by norm_num [k]
+    have hT := predecessorThreshold_eq
+    omega
+  · have hi : i.1 < k := i.2
+    have hk : k = 268435456 := by norm_num [k]
+    have hT := predecessorThreshold_eq
+    omega
+
+theorem degreeKStarCore_inter_eq (i j : Fin k) (hij : i ≠ j) :
+    degreeKStarCore i ∩ degreeKStarCore j = Finset.range (k - 1) := by
+  ext x
+  simp only [degreeKStarCore, Finset.mem_inter, Finset.mem_union,
+    Finset.mem_range, Finset.mem_singleton]
+  constructor
+  · rintro ⟨hxi | hxi, hxj | hxj⟩
+    · exact hxi
+    · exact hxi
+    · exact hxj
+    · exfalso
+      apply hij
+      apply Fin.ext
+      omega
+  · intro hx
+    exact ⟨Or.inl hx, Or.inl hx⟩
+
+theorem degreeKStarCore_inter_card (i j : Fin k) (hij : i ≠ j) :
+    (degreeKStarCore i ∩ degreeKStarCore j).card = k - 1 := by
+  rw [degreeKStarCore_inter_eq i j hij, Finset.card_range]
+
+theorem degreeKStarCore_injective : Function.Injective degreeKStarCore := by
+  intro i j heq
+  by_contra hij
+  have hinter := congrArg Finset.card
+    (congrArg (fun S => S ∩ degreeKStarCore j) heq)
+  rw [degreeKStarCore_inter_card i j hij, Finset.inter_self,
+    degreeKStarCore_card] at hinter
+  have hkpos : 0 < k := by norm_num [k]
+  omega
+
+/-- **Common-core rigidity.**  If two degree-`<k` secant directions agree on exactly
+`k-1` injected coordinates, their difference is a scalar multiple of the common-core
+locator.  Consequently a sunflower star at the interpolation cap is not arbitrary: all
+of its directions lie on one affine line in the polynomial space. -/
+theorem direction_sub_eq_locator_mul_C_of_commonCore
+    (dom : Fin N ↪ F) (Cset : Finset (Fin N)) (r₀ r : F[X])
+    (hcard : Cset.card = k - 1)
+    (hr₀ : r₀.natDegree < k) (hr : r.natDegree < k)
+    (hagree : ∀ x ∈ Cset, r.eval (dom x) = r₀.eval (dom x)) :
+    r - r₀ = (Cset.prod fun x => X - C (dom x)) * C (r - r₀).leadingCoeff := by
+  let L : F[X] := Cset.prod fun x => X - C (dom x)
+  have hLmonic : L.Monic := by
+    exact Finset.monic_prod_of_monic _ fun x _ => monic_X_sub_C (dom x)
+  have hLdeg : L.natDegree = k - 1 := by
+    rw [L, natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
+    simpa using hcard
+  have hdiffdeg : (r - r₀).natDegree ≤ k - 1 := by
+    exact (natDegree_sub_le r r₀).trans (max_le (by omega) (by omega))
+  by_cases hzero : r - r₀ = 0
+  · simp [hzero]
+  have hdvd : L ∣ r - r₀ := by
+    apply ProximityGap.WBPencil.vanishing_prod_dvd dom hzero
+    intro x hx
+    simp only [eval_sub]
+    exact sub_eq_zero.mpr (hagree x hx)
+  exact eq_mul_leadingCoeff_of_monic_of_dvd_of_natDegree_le
+    hLmonic hdvd (hLdeg.symm ▸ hdiffdeg)
+
+/-- Affine-line packaging of common-core rigidity.  This is the usable output for a
+degree-`k` overlap star: once a common `(k-1)`-core is identified, every incident
+direction is parametrized by one field scalar. -/
+theorem exists_direction_eq_base_add_locator_mul_C_of_commonCore
+    (dom : Fin N ↪ F) (Cset : Finset (Fin N)) (r₀ r : F[X])
+    (hcard : Cset.card = k - 1)
+    (hr₀ : r₀.natDegree < k) (hr : r.natDegree < k)
+    (hagree : ∀ x ∈ Cset, r.eval (dom x) = r₀.eval (dom x)) :
+    ∃ c : F, r = r₀ + (Cset.prod fun x => X - C (dom x)) * C c := by
+  let c := (r - r₀).leadingCoeff
+  refine ⟨c, ?_⟩
+  exact sub_eq_iff_eq_add.mp
+    (direction_sub_eq_locator_mul_C_of_commonCore
+      dom Cset r₀ r hcard hr₀ hr hagree)
+
+/-! ## Locator-coefficient incidence geometry -/
+
+/-- Three affine-locator neighbors agreeing at one coordinate off the locator zero set
+force their parameter points `(a, a*c)` to be collinear.  This is the local algebraic
+bridge from coordinate agreement multiplicity to a common source pencil. -/
+theorem three_affineLocator_agreements_force_parameter_collinear
+    (D R L a₁ a₂ a₃ c₁ c₂ c₃ : F)
+    (hL : L ≠ 0)
+    (h₁ : D + a₁ * (R + c₁ * L) = 0)
+    (h₂ : D + a₂ * (R + c₂ * L) = 0)
+    (h₃ : D + a₃ * (R + c₃ * L) = 0) :
+    (a₁ - a₂) * (a₁ * c₁ - a₃ * c₃) =
+      (a₁ - a₃) * (a₁ * c₁ - a₂ * c₂) := by
+  have h₁₂ : (a₁ - a₂) * R + (a₁ * c₁ - a₂ * c₂) * L = 0 := by
+    linear_combination h₁ - h₂
+  have h₁₃ : (a₁ - a₃) * R + (a₁ * c₁ - a₃ * c₃) * L = 0 := by
+    linear_combination h₁ - h₃
+  have hdet : ((a₁ - a₂) * (a₁ * c₁ - a₃ * c₃) -
+      (a₁ - a₃) * (a₁ * c₁ - a₂ * c₂)) * L = 0 := by
+    linear_combination (a₁ - a₂) * h₁₃ - (a₁ - a₃) * h₁₂
+  have := (mul_eq_zero.mp hdet).resolve_right hL
+  exact sub_eq_zero.mp this
+
+/-- Polynomial endpoint represented by an affine-locator parameter point `(a, a*c)`. -/
+noncomputable def affineLocatorEndpoint
+    (q₀ r₀ L : F[X]) (a c : F) : F[X] :=
+  q₀ + C a * (r₀ + C c * L)
+
+/-- Parameter-plane collinearity is exactly source-polynomial collinearity: the three
+endpoint polynomials satisfy the denominator-cleared secant identity. -/
+theorem endpoint_crossProduct_eq_of_parameter_collinear
+    (q₀ r₀ L : F[X]) (a₁ a₂ a₃ c₁ c₂ c₃ : F)
+    (hcol : (a₁ - a₂) * (a₁ * c₁ - a₃ * c₃) =
+      (a₁ - a₃) * (a₁ * c₁ - a₂ * c₂)) :
+    C (a₁ - a₃) *
+        (affineLocatorEndpoint q₀ r₀ L a₁ c₁ -
+          affineLocatorEndpoint q₀ r₀ L a₂ c₂) =
+      C (a₁ - a₂) *
+        (affineLocatorEndpoint q₀ r₀ L a₁ c₁ -
+          affineLocatorEndpoint q₀ r₀ L a₃ c₃) := by
+  have hC := congrArg C hcol
+  simp only [map_mul, map_sub] at hC
+  unfold affineLocatorEndpoint
+  linear_combination hC * L
+
+/-! ## Exact star-charge closure arithmetic -/
+
+/-- After discarding at most four source lines with at most `215` neighbors each, the
+remaining low-core neighbors contribute far more off-base incidences than a universe of
+size `N-T` can carry at coordinate load `215`. -/
+theorem lowCoreStar_charge_strictly_exceeds_215_capacity :
+    215 * (N - predecessorThreshold) <
+      (k - 4 * 215) *
+        (predecessorThreshold -
+          (P1RateQuarterAgreementOverlapGraph.FourLineCoreFloor - 1)) := by
+  norm_num [N, k, predecessorThreshold,
+    P1RateQuarterAgreementOverlapGraph.FourLineCoreFloor]
+
+/-- Double-counting interface for the upper side of the star charge.  Petals supported
+outside a base set `A`, with coordinate load at most `215`, have total size at most
+`215 * (N - |A|)`. -/
+theorem sum_petal_card_le_215_mul_complement
+    {J : Type} [DecidableEq J]
+    (B : Finset J) (A : Finset (Fin N)) (petal : J → Finset (Fin N))
+    (hsub : ∀ j ∈ B, petal j ⊆ Aᶜ)
+    (hload : ∀ x, petalLoad B petal x ≤ 215) :
+    (∑ j ∈ B, (petal j).card) ≤ 215 * (N - A.card) := by
+  have hzero : ∀ x ∈ A, petalLoad B petal x = 0 := by
+    intro x hx
+    rw [petalLoad, Finset.card_eq_zero]
+    simp only [Finset.filter_eq_empty_iff]
+    intro j hj
+    exact fun hxpetal => (Finset.mem_compl.mp (hsub j hj hxpetal)) hx
+  rw [← sum_petalLoad_eq_sum_card B petal]
+  calc
+    (∑ x : Fin N, petalLoad B petal x) ≤
+        ∑ x : Fin N, if x ∈ A then 0 else 215 := by
+      exact Finset.sum_le_sum fun x _hx => by
+        split_ifs with hx
+        · simp [hzero x hx]
+        · exact hload x
+    _ = 215 * (N - A.card) := by
+      simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_const,
+        nsmul_eq_mul, Fintype.card_fin]
+      omega
+
+/-- Abstract counting closure for the concentrated star.  Once at most `4*215` exceptional
+neighbors are removed, low-core petals of the exact forced size cannot all have total
+coordinate capacity at most `215*(N-T)`. -/
+theorem lowCoreStar_charge_contradiction
+    {J : Type} [DecidableEq J]
+    (B E : Finset J) (petal : J → Finset (Fin N))
+    (hB : k ≤ B.card)
+    (hEsub : E ⊆ B)
+    (hE : E.card ≤ 4 * 215)
+    (hpetal : ∀ j ∈ B \ E,
+      predecessorThreshold -
+          (P1RateQuarterAgreementOverlapGraph.FourLineCoreFloor - 1) ≤
+        (petal j).card)
+    (hcapacity : (∑ j ∈ B \ E, (petal j).card) ≤
+      215 * (N - predecessorThreshold)) : False := by
+  let s := predecessorThreshold -
+    (P1RateQuarterAgreementOverlapGraph.FourLineCoreFloor - 1)
+  have hregular : k - 4 * 215 ≤ (B \ E).card := by
+    rw [Finset.card_sdiff hEsub]
+    omega
+  have hlower : (B \ E).card * s ≤ ∑ j ∈ B \ E, (petal j).card := by
+    calc
+      (B \ E).card * s = ∑ _j ∈ B \ E, s := by simp
+      _ ≤ ∑ j ∈ B \ E, (petal j).card := by
+        exact Finset.sum_le_sum fun j hj => hpetal j hj
+  have hmono : (k - 4 * 215) * s ≤ (B \ E).card * s :=
+    Nat.mul_le_mul_right s hregular
+  have harith := lowCoreStar_charge_strictly_exceeds_215_capacity
+  dsimp only [s] at hlower hmono
+  omega
+
+/-- Ready-to-use star closure: threshold-sized base support, low-core petal floor, and
+coordinate load at most `215` are jointly inconsistent for a degree-`k` star after the
+four exceptional `215`-point lines are removed. -/
+theorem lowCoreStar_load_216_forced
+    {J : Type} [DecidableEq J]
+    (B E : Finset J) (A : Finset (Fin N)) (petal : J → Finset (Fin N))
+    (hB : k ≤ B.card)
+    (hEsub : E ⊆ B)
+    (hE : E.card ≤ 4 * 215)
+    (hA : predecessorThreshold ≤ A.card)
+    (hsub : ∀ j ∈ B \ E, petal j ⊆ Aᶜ)
+    (hpetal : ∀ j ∈ B \ E,
+      predecessorThreshold -
+          (P1RateQuarterAgreementOverlapGraph.FourLineCoreFloor - 1) ≤
+        (petal j).card) :
+    ∃ x, 216 ≤ petalLoad (B \ E) petal x := by
+  by_contra hnot
+  push_neg at hnot
+  have hload : ∀ x, petalLoad (B \ E) petal x ≤ 215 := by
+    intro x
+    omega
+  have hcapA := sum_petal_card_le_215_mul_complement
+    (B \ E) A petal hsub hload
+  have hcap : (∑ j ∈ B \ E, (petal j).card) ≤
+      215 * (N - predecessorThreshold) := by
+    have hcomp : N - A.card ≤ N - predecessorThreshold :=
+      Nat.sub_le_sub_left hA N
+    exact hcapA.trans (Nat.mul_le_mul_left 215 hcomp)
+  exact lowCoreStar_charge_contradiction B E petal hB hEsub hE hpetal hcap
+
+/-! ## One-coordinate consolidation is false -/
+
+/-- Degree-one polynomial endpoints on the parameter parabola. -/
+noncomputable def parabolaEndpoint (gamma : F) : F[X] := C (gamma ^ 2) * X
+
+/-- Every parabola endpoint collapses to the same value at coordinate `0`. -/
+theorem parabolaEndpoint_eval_zero (gamma : F) :
+    (parabolaEndpoint gamma).eval 0 = 0 := by
+  simp [parabolaEndpoint]
+
+/-- Three pairwise-distinct parabola parameters are not on one polynomial source line,
+despite all agreeing at coordinate `0`.  Thus even enormous one-coordinate load cannot by
+itself be upgraded to a polynomial pencil; genuine cross-coordinate matching is necessary. -/
+theorem parabolaEndpoint_three_not_source_collinear
+    (gamma₀ gamma₁ gamma₂ : F)
+    (h₀₁ : gamma₀ ≠ gamma₁)
+    (h₀₂ : gamma₀ ≠ gamma₂)
+    (h₁₂ : gamma₁ ≠ gamma₂) :
+    C (gamma₀ - gamma₂) *
+        (parabolaEndpoint gamma₀ - parabolaEndpoint gamma₁) ≠
+      C (gamma₀ - gamma₁) *
+        (parabolaEndpoint gamma₀ - parabolaEndpoint gamma₂) := by
+  intro hcol
+  have hc := congrArg (fun p : F[X] => p.coeff 1) hcol
+  simp only [parabolaEndpoint, coeff_mul_X, coeff_C, if_pos, map_sub] at hc
+  have hprod : (gamma₀ - gamma₁) * (gamma₀ - gamma₂) *
+      (gamma₁ - gamma₂) = 0 := by
+    linear_combination hc
+  rcases mul_eq_zero.mp hprod with hprod | h₁₂zero
+  · rcases mul_eq_zero.mp hprod with h₀₁zero | h₀₂zero
+    · exact h₀₁ (sub_eq_zero.mp h₀₁zero)
+    · exact h₀₂ (sub_eq_zero.mp h₀₂zero)
+  · exact h₁₂ (sub_eq_zero.mp h₁₂zero)
+
+/-- **Exact cross-coordinate repair.**  If the same three degree-`<k` endpoint
+polynomials are evaluation-collinear on at least `k` injected coordinates, then they are
+collinear as polynomial source points.  The parabola countermodel shows that replacing
+`k` by one is impossible. -/
+theorem source_collinear_of_eval_collinear_on_k
+    (dom : Fin N ↪ F) (S : Finset (Fin N))
+    (gamma₀ gamma₁ gamma₂ : F) (q₀ q₁ q₂ : F[X])
+    (hq₀ : q₀.natDegree < k) (hq₁ : q₁.natDegree < k)
+    (hq₂ : q₂.natDegree < k) (hcard : k ≤ S.card)
+    (hcol : ∀ x ∈ S,
+      (gamma₀ - gamma₂) * (q₀.eval (dom x) - q₁.eval (dom x)) =
+        (gamma₀ - gamma₁) * (q₀.eval (dom x) - q₂.eval (dom x))) :
+    C (gamma₀ - gamma₂) * (q₀ - q₁) =
+      C (gamma₀ - gamma₁) * (q₀ - q₂) := by
+  let M := C (gamma₀ - gamma₂) * (q₀ - q₁) -
+    C (gamma₀ - gamma₁) * (q₀ - q₂)
+  have hMdeg : M.natDegree < k := by
+    apply lt_of_le_of_lt (natDegree_sub_le _ _)
+    apply max_lt
+    · exact (natDegree_mul_le.trans (Nat.add_lt_of_left_lt hq₀.max hq₁))
+    · exact (natDegree_mul_le.trans (Nat.add_lt_of_left_lt hq₀.max hq₂))
+  have hMzero : M = 0 := by
+    by_contra hne
+    have hdvd : (S.prod fun x => X - C (dom x)) ∣ M := by
+      apply ProximityGap.WBPencil.vanishing_prod_dvd dom hne
+      intro x hx
+      simp only [M, eval_sub, eval_mul, eval_C]
+      exact sub_eq_zero.mpr (hcol x hx)
+    have hlocDegree : (S.prod fun x => X - C (dom x)).natDegree = S.card := by
+      rw [natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
+      simp
+    have hle := natDegree_le_of_dvd hdvd hne
+    rw [hlocDegree] at hle
+    omega
+  exact sub_eq_zero.mp hMzero
+
+/-- The naive third-moment pigeonhole is millions-fold short: even assigning the forced
+average low-core load `1,248,534` to every off-base coordinate does not force one triple
+to recur on `k` coordinates.  A successful matching argument must exploit more than the
+unstructured triple-incidence moment. -/
+theorem uniformTripleMoment_below_crossCoordinate_budget :
+    (N - predecessorThreshold) * Nat.choose 1248534 3 <
+      (k - 1) * Nat.choose (k - 4 * 215) 3 := by
+  norm_num [N, k, predecessorThreshold, Nat.choose]
+
+/-! ## Global triple-incidence census -/
+
+/-- Coordinates on which every label of a finite triple is supported. -/
+def tripleContainmentCoords
+    {X J : Type} [Fintype X] [DecidableEq X] [DecidableEq J]
+    (support : X → Finset J) (U : Finset J) : Finset X :=
+  Finset.univ.filter fun x => U ⊆ support x
+
+/-- Exact third-incidence double count: choosing three supported labels at each coordinate
+is the same as summing the common-coordinate count over all three-label subsets. -/
+theorem sum_choose_three_support_eq_sum_tripleContainment
+    {X J : Type} [Fintype X] [DecidableEq X] [Fintype J] [DecidableEq J]
+    (support : X → Finset J) :
+    (∑ x : X, (support x).card.choose 3) =
+      ∑ U ∈ (Finset.univ : Finset J).powersetCard 3,
+        (tripleContainmentCoords support U).card := by
+  classical
+  simp only [tripleContainmentCoords, Finset.card_eq_sum_ones, Finset.sum_filter]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro x _hx
+  let triplesAtX := ((Finset.univ : Finset J).powersetCard 3).filter
+    (fun U => U ⊆ support x)
+  have htriples : triplesAtX = (support x).powersetCard 3 := by
+    ext U
+    simp [triplesAtX, and_left_comm, and_assoc]
+  change (support x).card.choose 3 = triplesAtX.card
+  rw [htriples, Finset.card_powersetCard]
+
+/-- If every three-label set occurs on at most `k-1` coordinates, the whole support design
+obeys the corresponding global third-incidence cap. -/
+theorem sum_choose_three_support_le_of_triple_cap
+    {X J : Type} [Fintype X] [DecidableEq X] [Fintype J] [DecidableEq J]
+    (support : X → Finset J)
+    (hcap : ∀ U ∈ (Finset.univ : Finset J).powersetCard 3,
+      (tripleContainmentCoords support U).card ≤ k - 1) :
+    (∑ x : X, (support x).card.choose 3) ≤
+      (Fintype.card J).choose 3 * (k - 1) := by
+  rw [sum_choose_three_support_eq_sum_tripleContainment support]
+  calc
+    (∑ U ∈ (Finset.univ : Finset J).powersetCard 3,
+        (tripleContainmentCoords support U).card) ≤
+      ∑ _U ∈ (Finset.univ : Finset J).powersetCard 3, (k - 1) := by
+        exact Finset.sum_le_sum fun U hU => hcap U hU
+    _ = (Fintype.card J).choose 3 * (k - 1) := by simp
+
+/-! ## Rich-family triple root cap -/
+
+/-- Common full-agreement coordinates of three selected rich points. -/
+def richFamilyTripleCoords
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (gamma₀ gamma₁ gamma₂ : family.G) : Finset (Fin N) :=
+  fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+    fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1) ∩
+      fullAgreement dom (u 0) (u 1) gamma₂.1 (family.q gamma₂.1)
+
+/-- Coordinate-side support hypergraph of a rich-point family. -/
+def richFamilySupport
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u) (x : Fin N) : Finset family.G :=
+  Finset.univ.filter fun gamma =>
+    x ∈ fullAgreement dom (u 0) (u 1) gamma.1 (family.q gamma.1)
+
+/-- The abstract containment-coordinate construction specializes exactly to the intersection
+of the three selected full-agreement sets. -/
+theorem tripleContainmentCoords_richFamilySupport
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (gamma₀ gamma₁ gamma₂ : family.G) :
+    tripleContainmentCoords (richFamilySupport family) {gamma₀, gamma₁, gamma₂} =
+      richFamilyTripleCoords family gamma₀ gamma₁ gamma₂ := by
+  ext x
+  simp only [tripleContainmentCoords, richFamilySupport, richFamilyTripleCoords,
+    Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert,
+    Finset.mem_singleton, Finset.insert_subset_iff, Finset.singleton_subset_iff,
+    Finset.mem_inter]
+  tauto
+
+/-- In an actual rich-point family, every triple that is not polynomial-source-collinear
+has at most `k-1` common support coordinates.  This discharges the abstract cap hypothesis
+of the global third-incidence census directly from decoded degree bounds. -/
+theorem richFamilyTripleCoords_card_le_k_pred_of_not_sourceCollinear
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (gamma₀ gamma₁ gamma₂ : family.G)
+    (hnoncol :
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) ≠
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1)) :
+    (richFamilyTripleCoords family gamma₀ gamma₁ gamma₂).card ≤ k - 1 := by
+  by_contra hnot
+  have hcard : k ≤ (richFamilyTripleCoords family gamma₀ gamma₁ gamma₂).card := by
+    omega
+  apply hnoncol
+  apply source_collinear_of_eval_collinear_on_k dom
+    (richFamilyTripleCoords family gamma₀ gamma₁ gamma₂)
+    gamma₀.1 gamma₁.1 gamma₂.1
+    (family.q gamma₀.1) (family.q gamma₁.1) (family.q gamma₂.1)
+    (family.degree_lt gamma₀.1 gamma₀.2)
+    (family.degree_lt gamma₁.1 gamma₁.2)
+    (family.degree_lt gamma₂.1 gamma₂.2) hcard
+  intro x hx
+  simp only [richFamilyTripleCoords, Finset.mem_inter, fullAgreement,
+    Finset.mem_filter, Finset.mem_univ, true_and] at hx
+  rcases hx with ⟨⟨h₀, h₁⟩, h₂⟩
+  rw [h₀, h₁, h₂]
+  ring
+
+/-- **Integrated rich-family third-moment cap.**  If no three distinct selected decoded
+points lie on one polynomial source line, then the actual coordinate support hypergraph
+satisfies the global `k-1` triple-recurrence bound. -/
+theorem richFamily_thirdMoment_le_of_no_sourceCollinear
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hnoncol : ∀ gamma₀ gamma₁ gamma₂ : family.G,
+      gamma₀ ≠ gamma₁ → gamma₀ ≠ gamma₂ → gamma₁ ≠ gamma₂ →
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) ≠
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1)) :
+    (∑ x : Fin N, (richFamilySupport family x).card.choose 3) ≤
+      family.G.card.choose 3 * (k - 1) := by
+  have hcap : ∀ U ∈ (Finset.univ : Finset family.G).powersetCard 3,
+      (tripleContainmentCoords (richFamilySupport family) U).card ≤ k - 1 := by
+    intro U hU
+    have hUcard : U.card = 3 := (Finset.mem_powersetCard.mp hU).2
+    obtain ⟨gamma₀, gamma₁, gamma₂, h₀₁, h₀₂, h₁₂, rfl⟩ :=
+      Finset.card_eq_three.mp hUcard
+    rw [tripleContainmentCoords_richFamilySupport]
+    exact richFamilyTripleCoords_card_le_k_pred_of_not_sourceCollinear
+      family gamma₀ gamma₁ gamma₂
+        (hnoncol gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂)
+  have hglobal := sum_choose_three_support_le_of_triple_cap
+    (richFamilySupport family) hcap
+  simpa using hglobal
+
+/-- Consumer form: exceeding the exact third-incidence capacity forces three distinct
+decoded points onto one polynomial source line. -/
+theorem richFamily_exists_sourceCollinear_of_thirdMoment_gt
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hlarge : family.G.card.choose 3 * (k - 1) <
+      ∑ x : Fin N, (richFamilySupport family x).card.choose 3) :
+    ∃ gamma₀ gamma₁ gamma₂ : family.G,
+      gamma₀ ≠ gamma₁ ∧ gamma₀ ≠ gamma₂ ∧ gamma₁ ≠ gamma₂ ∧
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) =
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1) := by
+  by_contra hnot
+  push_neg at hnot
+  have hcap := richFamily_thirdMoment_le_of_no_sourceCollinear family
+    (fun gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂ =>
+      hnot gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂)
+  omega
+
+/-- Exact literal-P1 audit of the third-moment consumer.  Distributing the mandatory
+`(N+1)*T` incidences as evenly as possible gives load `T+1` on `T` coordinates and `T`
+on the others; that convexity floor remains strictly below the no-collinear-triple
+capacity.  Hence support sizes alone cannot fire the consumer. -/
+theorem uniformFullFamily_thirdMoment_below_sourceCollinear_capacity :
+    predecessorThreshold * Nat.choose (predecessorThreshold + 1) 3 +
+      (N - predecessorThreshold) * Nat.choose predecessorThreshold 3 <
+        Nat.choose (N + 1) 3 * (k - 1) := by
+  norm_num [N, k, predecessorThreshold, Nat.choose]
+
+/-! ## Fixed-anchor rank-two consolidation -/
+
+/-- The denominator-cleared collinearity identity with a fixed distinct anchor pair places
+the third decoded point on the anchors' canonical polynomial secant. -/
+theorem mem_pointsOn_anchorSecant_of_crossProduct_eq
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    {gamma₀ gamma₁ gamma : F}
+    (hgamma : gamma ∈ family.G)
+    (h₀₁ : gamma₀ ≠ gamma₁) (h₀gamma : gamma₀ ≠ gamma)
+    (hcol : C (gamma₀ - gamma) *
+        (family.q gamma₀ - family.q gamma₁) =
+      C (gamma₀ - gamma₁) *
+        (family.q gamma₀ - family.q gamma)) :
+    gamma ∈ pointsOn family (secantParameter family gamma₀ gamma₁) := by
+  rw [mem_pointsOn_iff]
+  refine ⟨hgamma, ?_⟩
+  have hslope : slopePolynomial gamma₀ gamma (family.q gamma₀) (family.q gamma) =
+      slopePolynomial gamma₀ gamma₁ (family.q gamma₀) (family.q gamma₁) := by
+    simp only [slopePolynomial]
+    have h₀gamma' : gamma₀ - gamma ≠ 0 := sub_ne_zero.mpr h₀gamma
+    have h₀₁' : gamma₀ - gamma₁ ≠ 0 := sub_ne_zero.mpr h₀₁
+    rw [← C_inv, ← C_inv]
+    apply (mul_left_cancel₀ (C (gamma₀ - gamma) * C (gamma₀ - gamma₁)))
+    rw [mul_assoc, mul_assoc, C_mul, mul_inv_cancel₀ h₀gamma', C_1, one_mul,
+      mul_left_comm, C_mul, mul_inv_cancel₀ h₀₁', C_1, one_mul]
+    exact hcol.symm
+  simpa only [secantParameter] using
+    (third_point_on_secant_line_of_slope_eq h₀gamma hslope)
+
+/-- If every selected point satisfies the fixed-anchor cross-product identity, the entire
+rich family is exactly the point set of one canonical polynomial source line. -/
+theorem pointsOn_anchorSecant_eq_G_of_all_crossProducts
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    {gamma₀ gamma₁ : F} (h₀₁ : gamma₀ ≠ gamma₁)
+    (hall : ∀ gamma ∈ family.G, gamma₀ ≠ gamma →
+      C (gamma₀ - gamma) * (family.q gamma₀ - family.q gamma₁) =
+        C (gamma₀ - gamma₁) * (family.q gamma₀ - family.q gamma)) :
+    pointsOn family (secantParameter family gamma₀ gamma₁) = family.G := by
+  apply Finset.Subset.antisymm (pointsOn_subset_G family _)
+  intro gamma hgamma
+  by_cases hgamma₀ : gamma = gamma₀
+  · subst gamma
+    exact first_point_mem_pointsOn_secant family hgamma
+  · exact mem_pointsOn_anchorSecant_of_crossProduct_eq family hgamma h₀₁
+      hgamma₀ (hall gamma hgamma hgamma₀)
+
+/-- **Rank-two branch closed.**  If one selected distinct anchor pair is source-collinear
+with every selected decoded point, the bad rich family has cardinality at most the coordinate
+domain.  This composes fixed-anchor consolidation with the unconditional line-core packing law. -/
+theorem richFamily_card_le_N_of_anchorCrossProducts
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    {gamma₀ gamma₁ : F}
+    (hgamma₀ : gamma₀ ∈ family.G) (hgamma₁ : gamma₁ ∈ family.G)
+    (h₀₁ : gamma₀ ≠ gamma₁)
+    (hall : ∀ gamma ∈ family.G, gamma₀ ≠ gamma →
+      C (gamma₀ - gamma) * (family.q gamma₀ - family.q gamma₁) =
+        C (gamma₀ - gamma₁) * (family.q gamma₀ - family.q gamma)) :
+    family.G.card ≤ N := by
+  let line := secantParameter family gamma₀ gamma₁
+  have hline : line ∈ lineParameters family :=
+    secantParameter_mem_lineParameters family hgamma₀ hgamma₁ h₀₁
+  have heq : pointsOn family line = family.G :=
+    pointsOn_anchorSecant_eq_G_of_all_crossProducts family h₀₁ hall
+  have hpack := pointsOn_card_mul_max_add_core_le family hline
+  simp only [Fintype.card_fin] at hpack
+  rw [heq] at hpack
+  have hone : 1 ≤ max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+        (jointCore dom (u 0) (u 1) line.1 line.2).card) := le_max_left _ _
+  have hmul : family.G.card ≤ family.G.card * max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+        (jointCore dom (u 0) (u 1) line.1 line.2).card) := by
+    simpa only [Nat.mul_one] using Nat.mul_le_mul_left family.G.card hone
+  omega
+
+/-- Family-wide rank-two form: if every three distinct selected decoded points are
+source-collinear, then one anchor pair consolidates the whole family and the prize budget
+follows. -/
+theorem richFamily_card_le_N_of_allTriplesSourceCollinear
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (htwo : 2 ≤ family.G.card)
+    (hall : ∀ gamma₀ gamma₁ gamma₂ : family.G,
+      gamma₀ ≠ gamma₁ → gamma₀ ≠ gamma₂ → gamma₁ ≠ gamma₂ →
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) =
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1)) :
+    family.G.card ≤ N := by
+  obtain ⟨gamma₀, hgamma₀, gamma₁, hgamma₁, h₀₁⟩ :=
+    Finset.one_lt_card.mp (by omega : 1 < family.G.card)
+  apply richFamily_card_le_N_of_anchorCrossProducts family hgamma₀ hgamma₁ h₀₁
+  intro gamma hgamma h₀gamma
+  by_cases hgammaEq₁ : gamma = gamma₁
+  · subst gamma
+    rfl
+  · exact hall ⟨gamma₀, hgamma₀⟩ ⟨gamma₁, hgamma₁⟩ ⟨gamma, hgamma⟩
+      (by exact fun h => h₀₁ (Subtype.ext_iff.mp h))
+      (by exact fun h => h₀gamma (Subtype.ext_iff.mp h))
+      (by exact fun h => hgammaEq₁ (Subtype.ext_iff.mp h).symm)
+
+/-- Every over-budget rich family contains a genuinely rank-three seed: three distinct
+decoded points failing the polynomial source-collinearity identity. -/
+theorem exists_nonSourceCollinearTriple_of_N_lt_richFamily_card
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card) :
+    ∃ gamma₀ gamma₁ gamma₂ : family.G,
+      gamma₀ ≠ gamma₁ ∧ gamma₀ ≠ gamma₂ ∧ gamma₁ ≠ gamma₂ ∧
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) ≠
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1) := by
+  by_contra hnot
+  push_neg at hnot
+  have hle := richFamily_card_le_N_of_allTriplesSourceCollinear family (by omega)
+    (fun gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂ =>
+      hnot gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂)
+  omega
+
+/-- Three threshold-size agreement sets force total pair-intersection mass at least
+`704,643,074`; hence one of the three secant cores has size at least `234,881,025`. -/
+theorem richFamily_three_pairIntersections_one_ge_234881025
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    (gamma₀ gamma₁ gamma₂ : family.G) :
+    234881025 ≤
+        (fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+          fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1)).card ∨
+      234881025 ≤
+        (fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+          fullAgreement dom (u 0) (u 1) gamma₂.1 (family.q gamma₂.1)).card ∨
+      234881025 ≤
+        (fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1) ∩
+          fullAgreement dom (u 0) (u 1) gamma₂.1 (family.q gamma₂.1)).card := by
+  let A i := fullAgreement dom (u 0) (u 1) i.1 (family.q i.1)
+  have hsize : ∀ i : family.G, predecessorThreshold ≤ (A i).card := fun i =>
+    hthreshold.trans (family.threshold_le i.1 i.2)
+  have hbon := biUnion_card_ge_sub_pairwise (r := 3)
+    (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i)
+  simp only [Fin.sum_univ_three, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val_two, Fin.isValue] at hbon
+  have hunion : (Finset.univ.biUnion
+      (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i)).card ≤ N := by
+    simpa only [Fintype.card_fin] using Finset.card_le_univ
+      (Finset.univ.biUnion (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i))
+  by_contra hnot
+  push_neg at hnot
+  have hT := predecessorThreshold_eq
+  omega
+
+/-- Combined rank-three seed: an over-budget threshold family contains a non-source-collinear
+triple for which at least one pair shares `234,881,025` agreement coordinates. -/
+theorem exists_nonSourceCollinearTriple_with_largePairCore
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊) :
+    ∃ gamma₀ gamma₁ gamma₂ : family.G,
+      gamma₀ ≠ gamma₁ ∧ gamma₀ ≠ gamma₂ ∧ gamma₁ ≠ gamma₂ ∧
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) ≠
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1) ∧
+      (234881025 ≤
+          (fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+            fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1)).card ∨
+        234881025 ≤
+          (fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+            fullAgreement dom (u 0) (u 1) gamma₂.1 (family.q gamma₂.1)).card ∨
+        234881025 ≤
+          (fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1) ∩
+            fullAgreement dom (u 0) (u 1) gamma₂.1 (family.q gamma₂.1)).card) := by
+  obtain ⟨gamma₀, gamma₁, gamma₂, h₀₁, h₀₂, h₁₂, hnoncol⟩ :=
+    exists_nonSourceCollinearTriple_of_N_lt_richFamily_card family hover
+  exact ⟨gamma₀, gamma₁, gamma₂, h₀₁, h₀₂, h₁₂, hnoncol,
+    richFamily_three_pairIntersections_one_ge_234881025
+      family hthreshold gamma₀ gamma₁ gamma₂⟩
+
+/-- **Exact global high-pair extraction.**  An over-budget threshold family contains two
+agreement sets meeting on at least `327,272,221` coordinates.  This is the sharp integral
+Plotkin onset at `N+1` for the literal P1 parameters. -/
+theorem exists_richFamily_pair_inter_card_ge_327272221
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊) :
+    ∃ gamma₀ gamma₁ : family.G, gamma₀ ≠ gamma₁ ∧
+      327272221 ≤
+        (fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+          fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1)).card := by
+  classical
+  by_contra hnot
+  push_neg at hnot
+  let A : family.G → Finset (Fin N) := fun gamma =>
+    fullAgreement dom (u 0) (u 1) gamma.1 (family.q gamma.1)
+  let A' : family.G → Finset (Fin N) := fun gamma =>
+    Classical.choose (Finset.exists_subset_card_eq
+      (hthreshold.trans (family.threshold_le gamma.1 gamma.2)))
+  have hA'sub : ∀ gamma, A' gamma ⊆ A gamma := fun gamma =>
+    (Classical.choose_spec (Finset.exists_subset_card_eq
+      (hthreshold.trans (family.threshold_le gamma.1 gamma.2)))).1
+  have hA'card : ∀ gamma, (A' gamma).card = predecessorThreshold := fun gamma =>
+    (Classical.choose_spec (Finset.exists_subset_card_eq
+      (hthreshold.trans (family.threshold_le gamma.1 gamma.2)))).2
+  have hpair : ∀ gamma₀ gamma₁, gamma₀ ≠ gamma₁ →
+      (A' gamma₀ ∩ A' gamma₁).card ≤ 327272220 := by
+    intro gamma₀ gamma₁ hne
+    have hle := Finset.card_le_card
+      (Finset.inter_subset_inter (hA'sub gamma₀) (hA'sub gamma₁))
+    have hlt := hnot gamma₀ gamma₁ hne
+    omega
+  have hplot := ConstantWeightPlotkinBound.constantWeight_plotkin
+    A' predecessorThreshold 327272220 hA'card hpair
+  simp only [Fintype.card_coe, Fintype.card_fin] at hplot
+  have hT := predecessorThreshold_eq
+  norm_num [N] at hover hplot
+  omega
+
+/-- Any fixed distinct selected anchor pair in an over-budget family has a third selected
+point that is genuinely noncollinear with it. -/
+theorem exists_nonSourceCollinear_third_of_anchorPair_of_overBudget
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (gamma₀ gamma₁ : family.G) (h₀₁ : gamma₀ ≠ gamma₁) :
+    ∃ gamma₂ : family.G, gamma₀ ≠ gamma₂ ∧ gamma₁ ≠ gamma₂ ∧
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) ≠
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1) := by
+  by_contra hnot
+  push_neg at hnot
+  have hle := richFamily_card_le_N_of_anchorCrossProducts family
+    gamma₀.2 gamma₁.2 (fun h => h₀₁ (Subtype.ext h))
+    (fun gamma hgamma h₀gamma => by
+      by_cases hgamma₁ : gamma = gamma₁.1
+      · subst gamma; rfl
+      · exact hnot ⟨gamma, hgamma⟩
+          (fun h => h₀gamma (Subtype.ext_iff.mp h))
+          (fun h => hgamma₁ (Subtype.ext_iff.mp h).symm))
+  omega
+
+/-- **Sharper rank-three seed.**  Every over-budget threshold family contains a
+non-source-collinear triple whose chosen anchor pair already shares `327,272,221`
+coordinates, exceeding the interpolation dimension by `58,836,765`. -/
+theorem exists_nonSourceCollinearTriple_with_interpolationPinnedAnchor
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊) :
+    ∃ gamma₀ gamma₁ gamma₂ : family.G,
+      gamma₀ ≠ gamma₁ ∧ gamma₀ ≠ gamma₂ ∧ gamma₁ ≠ gamma₂ ∧
+      327272221 ≤
+        (fullAgreement dom (u 0) (u 1) gamma₀.1 (family.q gamma₀.1) ∩
+          fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1)).card ∧
+      C (gamma₀.1 - gamma₂.1) *
+          (family.q gamma₀.1 - family.q gamma₁.1) ≠
+        C (gamma₀.1 - gamma₁.1) *
+          (family.q gamma₀.1 - family.q gamma₂.1) := by
+  obtain ⟨gamma₀, gamma₁, h₀₁, hcore⟩ :=
+    exists_richFamily_pair_inter_card_ge_327272221 family hover hthreshold
+  obtain ⟨gamma₂, h₀₂, h₁₂, hnoncol⟩ :=
+    exists_nonSourceCollinear_third_of_anchorPair_of_overBudget
+      family hover gamma₀ gamma₁ h₀₁
+  exact ⟨gamma₀, gamma₁, gamma₂, h₀₁, h₀₂, h₁₂,
+    hcore, hnoncol⟩
+
+theorem highPairCore_interpolation_margin : 327272221 - k = 58836765 := by
+  norm_num [k]
+
+/-- A relevant P1 line containing at least three selected threshold points has joint core
+at least `352,321,537`.  This is the exact three-point packing floor
+`ceil((3*T-N)/2)`. -/
+theorem three_pointsOn_force_core_ge_352321537
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hthree : 3 ≤ (pointsOn family line).card) :
+    352321537 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card := by
+  let z := (jointCore dom (u 0) (u 1) line.1 line.2).card
+  let L := (pointsOn family line).card
+  have hpack := pointsOn_card_mul_max_add_core_le family hline
+  simp only [Fintype.card_fin] at hpack
+  change L * max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) + z ≤ N at hpack
+  have hfactor : predecessorThreshold - z ≤ max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+    (Nat.sub_le_sub_right hthreshold z).trans (le_max_right _ _)
+  have hmul : 3 * (predecessorThreshold - z) ≤
+      L * max 1
+        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+    Nat.mul_le_mul hthree hfactor
+  have hbase : 3 * (predecessorThreshold - z) + z ≤ N :=
+    (Nat.add_le_add_right hmul z).trans hpack
+  have hT := predecessorThreshold_eq
+  norm_num [N] at hbase ⊢
+  omega
+
+/-- Below the three-point core floor, a relevant line contains exactly its determining pair. -/
+theorem pointsOn_card_eq_two_of_core_lt_352321537
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hcore : (jointCore dom (u 0) (u 1) line.1 line.2).card < 352321537) :
+    (pointsOn family line).card = 2 := by
+  have htwo := two_le_pointsOn_card_of_mem_lineParameters family hline
+  have hnotthree : ¬ 3 ≤ (pointsOn family line).card := by
+    intro hthree
+    exact (Nat.not_le_of_lt hcore)
+      (three_pointsOn_force_core_ge_352321537 family hthreshold hline hthree)
+  omega
+
+/-- A relevant P1 line containing at least four selected threshold points has joint core
+at least `432,479,347`, the exact floor `ceil((4*T-N)/3)`. -/
+theorem four_pointsOn_force_core_ge_432479347
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hfour : 4 ≤ (pointsOn family line).card) :
+    432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card := by
+  let z := (jointCore dom (u 0) (u 1) line.1 line.2).card
+  let L := (pointsOn family line).card
+  have hpack := pointsOn_card_mul_max_add_core_le family hline
+  simp only [Fintype.card_fin] at hpack
+  change L * max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) + z ≤ N at hpack
+  have hfactor : predecessorThreshold - z ≤ max 1
+      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+    (Nat.sub_le_sub_right hthreshold z).trans (le_max_right _ _)
+  have hmul : 4 * (predecessorThreshold - z) ≤
+      L * max 1
+        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+    Nat.mul_le_mul hfour hfactor
+  have hbase : 4 * (predecessorThreshold - z) + z ≤ N :=
+    (Nat.add_le_add_right hmul z).trans hpack
+  have hT := predecessorThreshold_eq
+  norm_num [N] at hbase ⊢
+  omega
+
+/-- Below the four-point floor, a relevant threshold line carries at most three points. -/
+theorem pointsOn_card_le_three_of_core_lt_432479347
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hcore : (jointCore dom (u 0) (u 1) line.1 line.2).card < 432479347) :
+    (pointsOn family line).card ≤ 3 := by
+  by_contra hnot
+  have hfour : 4 ≤ (pointsOn family line).card := by omega
+  exact (Nat.not_le_of_lt hcore)
+    (four_pointsOn_force_core_ge_432479347 family hthreshold hline hfour)
+
+/-- First two rungs of the exact P1 line-multiplicity ladder. -/
+theorem relevantLine_core_ge_352321537_or_card_eq_two
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family) :
+    352321537 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card ∨
+      (pointsOn family line).card = 2 := by
+  by_cases hcore : 352321537 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card
+  · exact Or.inl hcore
+  · exact Or.inr (pointsOn_card_eq_two_of_core_lt_352321537
+      family hthreshold hline (by omega))
+
+theorem relevantLine_core_ge_432479347_or_card_le_three
+    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : predecessorThreshold ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family) :
+    432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card ∨
+      (pointsOn family line).card ≤ 3 := by
+  by_cases hcore : 432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card
+  · exact Or.inl hcore
+  · exact Or.inr (pointsOn_card_le_three_of_core_lt_432479347
+      family hthreshold hline (by omega))
+
 #print axioms private_petals_card_le_N
 #print axioms cross_pencil_reuse_of_N_lt_card
 #print axioms vote_reuse_of_overBudget
@@ -2869,6 +3920,7 @@ theorem three_distinct_commonBase_nearThreshold_fibers_sum_le_N
 #print axioms commonBase_sameFixedWitnessRider_directions_eq
 #print axioms commonBase_pencilBase_eq_of_direction_eq
 #print axioms commonBase_sameFixedWitnessRider_pencils_eq
+#print axioms commonBase_distinctPencils_nonbaseRiders_disjoint
 #print axioms commonBase_crossVote_directionDiff_identity
 #print axioms commonBase_reverseCrossVote_directionDiff_identity
 #print axioms commonBase_crossVote_directionDiff_square_identity
@@ -2876,6 +3928,10 @@ theorem three_distinct_commonBase_nearThreshold_fibers_sum_le_N
 #print axioms commonBase_sharedRider_directions_eq_of_complement_packing
 #print axioms commonBase_agreeSet_eq_aligned_union_baseVote
 #print axioms commonBase_alignedSet_eq_baseAgree_inter_directionAgree
+#print axioms fixedWitness_inter_subset_pencilDir_agreeSet
+#print axioms fixedWitness_pencilDir_agreeSet_card_ge_111848108
+#print axioms fiveFixedWitnesses_exists_pencilDir_agreeSet_card_ge_k
+#print axioms exists_pinnedSecant_of_five_le_card
 #print axioms saturatedFullFiber_commonBase_agreeSet_card_eq_threshold
 #print axioms two_saturatedFullFiber_commonBase_aligned_inter_card_ge_threshold_sub_two
 #print axioms two_saturatedFullFiber_commonBase_pencils_eq
@@ -2895,5 +3951,48 @@ theorem three_distinct_commonBase_nearThreshold_fibers_sum_le_N
 #print axioms commonBase_nearThreshold_riders_card_le_156587350
 #print axioms three_commonBase_nearThreshold_partner_slots_le_N
 #print axioms three_distinct_commonBase_nearThreshold_fibers_sum_le_N
+#print axioms overBudget_fourPart_edgeFloor_twice_gt_vertices_mul_k_pred
+#print axioms exists_degree_ge_k_of_overBudget_fourPart_edgeFloor
+#print axioms degreeKStarCore_card
+#print axioms degreeKStarCore_subset_thresholdUniverse
+#print axioms degreeKStarCore_inter_eq
+#print axioms degreeKStarCore_inter_card
+#print axioms degreeKStarCore_injective
+#print axioms direction_sub_eq_locator_mul_C_of_commonCore
+#print axioms exists_direction_eq_base_add_locator_mul_C_of_commonCore
+#print axioms three_affineLocator_agreements_force_parameter_collinear
+#print axioms endpoint_crossProduct_eq_of_parameter_collinear
+#print axioms lowCoreStar_charge_strictly_exceeds_215_capacity
+#print axioms sum_petal_card_le_215_mul_complement
+#print axioms lowCoreStar_charge_contradiction
+#print axioms lowCoreStar_load_216_forced
+#print axioms parabolaEndpoint_eval_zero
+#print axioms parabolaEndpoint_three_not_source_collinear
+#print axioms source_collinear_of_eval_collinear_on_k
+#print axioms uniformTripleMoment_below_crossCoordinate_budget
+#print axioms sum_choose_three_support_eq_sum_tripleContainment
+#print axioms sum_choose_three_support_le_of_triple_cap
+#print axioms richFamilyTripleCoords_card_le_k_pred_of_not_sourceCollinear
+#print axioms tripleContainmentCoords_richFamilySupport
+#print axioms richFamily_thirdMoment_le_of_no_sourceCollinear
+#print axioms richFamily_exists_sourceCollinear_of_thirdMoment_gt
+#print axioms uniformFullFamily_thirdMoment_below_sourceCollinear_capacity
+#print axioms mem_pointsOn_anchorSecant_of_crossProduct_eq
+#print axioms pointsOn_anchorSecant_eq_G_of_all_crossProducts
+#print axioms richFamily_card_le_N_of_anchorCrossProducts
+#print axioms richFamily_card_le_N_of_allTriplesSourceCollinear
+#print axioms exists_nonSourceCollinearTriple_of_N_lt_richFamily_card
+#print axioms richFamily_three_pairIntersections_one_ge_234881025
+#print axioms exists_nonSourceCollinearTriple_with_largePairCore
+#print axioms exists_richFamily_pair_inter_card_ge_327272221
+#print axioms exists_nonSourceCollinear_third_of_anchorPair_of_overBudget
+#print axioms exists_nonSourceCollinearTriple_with_interpolationPinnedAnchor
+#print axioms highPairCore_interpolation_margin
+#print axioms three_pointsOn_force_core_ge_352321537
+#print axioms pointsOn_card_eq_two_of_core_lt_352321537
+#print axioms four_pointsOn_force_core_ge_432479347
+#print axioms pointsOn_card_le_three_of_core_lt_432479347
+#print axioms relevantLine_core_ge_352321537_or_card_eq_two
+#print axioms relevantLine_core_ge_432479347_or_card_le_three
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCrossPencilVoteReuse

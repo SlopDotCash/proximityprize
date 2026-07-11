@@ -31858,3 +31858,48 @@ vanishing but reverses the histogram inequality. Any useful recursion would need
 the FULL preimage fiber that cancels the measured `10^5..10^10` expansion and the >50% support
 escape; that estimate is again the per-prime weighted-kernel equidistribution/Paley wall. CORE OPEN,
 ON-BGK.
+
+## [466-bgk-depth7-raw-dc-omission] the named raw depth-seven residual is impossible by 33 bits; corrected successor is the off-zero/DC-subtracted moment (2026-07-11)
+
+Lane: BGK coset-amplified depth ladder, immediately after
+`_BGKDepthSevenFlatnessResidual.lean`.
+
+**Claim tested.**  The raw ordered energy bound
+
+`rEnergy G 7 ≤ 2^18 * |G|^7`
+
+at `|G|=2^30`, `q≤2^159` is the sharp live residual closing the nine-bit sup-bound gap.
+
+**Verdict: REFUTED.**  The zero frequency contributes `|G|^14` to the full fourteenth moment,
+so the lane-local exact moment law forces
+
+`2^420 = |G|^14 ≤ q * rEnergy G 7`.
+
+The proposed raw cap instead gives
+
+`q * rEnergy G 7 ≤ 2^159 * 2^18 * 2^210 = 2^387`.
+
+The contradiction is axiom-clean in
+`Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean`.  The check is stated directly for the
+BGK lane's own `rEnergy` definition; this matters because the repository also contains an older,
+extensionally equivalent but not definitionally identical `rEnergy` representation.
+
+**Corrected survivor.**  Coset amplification only needs the off-zero moment
+
+`q * rEnergy G 7 - |G|^14 = Σ_{b≠0}|eta_b|^14`.
+
+The corrected sufficient residual
+
+`q * rEnergy G 7 - |G|^14 ≤ q * 2^18 * |G|^7`
+
+implies the exact budget `≤ |G|*(2^51)^7 = 2^387` and therefore the existing nine-bit
+worst-frequency and production depth-five consumers.  The coefficient `2^18` retains a
+`262144/135135 ≈ 1.94` cushion over the depth-seven Gaussian constant `13!!`; the corrected
+residual is plausible but remains genuine BGK/Paley content.
+
+`Frontier/_BGKRenergyRepresentationBridge.lean` discharges the representation seam: it proves the
+BGK filtered-cardinality energy equals the standard nested-indicator energy, their DC excesses are
+identical, and standard `DCEnergyBound G 7` implies the repaired coefficient-`2^18` BGK residual.
+
+Reproducer: `scripts/probes/probe_bgk_depth7_dc_centering.py`, golden output
+`scripts/probes/_out_bgk_depth7_dc_centering.txt`.  Do not attack the historical raw Prop.

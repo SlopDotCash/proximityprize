@@ -18,7 +18,69 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 `../PROXIMITY_PRIZE_WORKBENCH.lean` §5 — go there for what to attack; this README only records
 the status of the original #334-era lane files below.
 
+**2026-07-10/11 state change — read dossier v3 §42 first.** The r=3 B-side rung is now the
+lossless graded ladder `OffDiagQuadrupleBound ⟹ FourthMomentBound ⟹ DistStratumEnergyBound`
+(lossless = `FullDFTFlat`; R297–R304, rungs m=3/6/9 discharged, all three ladder Props OPEN);
+the P1 rate-quarter predecessor D-charge cone is COMPLETE with pin =
+`SmallPoolClosure ∧ StallResidual` (heavy window closed, three architectures kernel-refuted,
+two-cover window REALIZED); W15 safe branch closed at UD-plus (window
+`LargeZeroSafeLineListBudgeted` open). Machine-checked convergence: both cones terminate at the
+same beyond-Johnson wall. Bracket unchanged; core open. Full record:
+`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §42.
+
 ## The BGK depth-ladder lane (2026-07-10)
+
+**DC correction (2026-07-11).**  The later raw endpoint
+`DepthSevenFlatnessResidual : E₇ ≤ 2¹⁸|G|⁷` is formally refuted at production: the mandatory
+zero-frequency term gives `2⁴²⁰ ≤ qE₇`, while the raw residual and `q≤2¹⁵⁹` give
+`qE₇≤2³⁸⁷`.  The live successor is the DC-subtracted residual
+
+`qE₇ - |G|¹⁴ ≤ q·2¹⁸·|G|⁷`,
+
+formalized with its full consumer in `_BGKDepthSevenFlatnessResidualRefuted.lean`.  Do not attack
+the historical raw Prop in `_BGKDepthSevenFlatnessResidual.lean`.
+`_BGKRenergyRepresentationBridge.lean` identifies the BGK lane-local energy with the standard
+library energy and proves that standard `DCEnergyBound G 7` implies the repaired coefficient-`2^18`
+residual, so the census and BGK lanes now share one exact centered object.
+
+**Centered convolution collapse (2026-07-11).**
+`_BGKCenteredConvolutionCollapse.lean` gives the repaired object an exact one-dimensional form.
+If `f₆` is the six-fold additive representation function and
+`C₆(δ)=Σ_d f₆(d)f₆(d+δ)`, multiplicative invariance gives
+
+`qE₇-|G|¹⁴ = |G|·Σ_{u∈G}(qC₆(1-u)-|G|¹²)`.
+
+Thus the live coefficient-`2^18` residual is equivalent to a **signed** average along `1-G`, not
+a positive packet count.  At `|G|=2^30`, `q≤2^159`, the normalized sum has the explicit target
+`Σ_{u∈G}(qC₆(1-u)-|G|¹²) ≤ 2^357`.  The centered autocorrelation has exact global mean zero, so
+absolute-value or packet-positive envelopes destroy precisely the cancellation this formulation
+exposes.  A primitive-character audit also proves that `|G|` times this signed sum is exactly
+`Σ_{b≠0}|η_b|^14`; in particular the total sum is nonnegative.  The collapse is therefore a
+structural one-dimensional rerouting of the off-zero moment, not a moment-method bypass.
+The updated research control plane is the
+[`10 x 10 centered attack matrix`](../../../../../docs/kb/deltastar-466-ten-by-ten-centered-attack-matrix-2026-07-11.md),
+with the focused 2026 theorem screen in
+[`depth-seven per-prime literature audit`](../../../../../docs/kb/deltastar-466-depth7-per-prime-literature-audit-2026-07-11.md).
+
+**Weighted collision and Jacobi audit (2026-07-11).**
+`_BGKWeightedCollisionMoment.lean` generalizes the Fourier/collision identity to arbitrary
+integer coefficient patterns. In particular, the leading one-repeat partition is the exact
+centered mixed moment
+`sum_(b != 0) eta_(2b) eta_b^5 eta_(-b)^7`, giving the repeated-sector lane a concrete signed
+socket rather than a positive union bound. `_AJT13CenteredMomentEquivalence.lean` closes a
+different audit: the proposed 13-variable annihilator Jacobi tensor is exactly the centered
+fourteenth moment after deleting the principal character. Its `m^7` bound is therefore an
+equivalent dual-coordinate target, not an independent orthogonality saving.
+`_AJT13CenteredBoundaryBridge.lean` then proves that a centered Wick-coefficient bound
+(`13!!=135135`) absorbs the `1/m` translation inside the public coefficient `2^18` whenever
+`m>=21`; the principal-character boundary is no longer a separate Wick-scale residual.
+
+**Projective accident packets (2026-07-11).**  `_ANT46RungTwoAccidentOrbit.lean` now closes the
+full projective `S₄` classifier.  For an odd-characteristic accident the identity fibre has size
+`1`, `2`, or `6`; the two-pair pattern is lawful, and the certified production `-3` exclusion
+removes the `3+1` pattern.  Hence every production accident orbit has size `24` or `12`, and the
+total accident count is divisible by `12`.  This does not prove accident-freeness: the exact next
+socket is any independent bound `<12` (or a direct emptiness/resultant certificate).
 
 The `_BGK*` files landed 2026-07-10 hang the ENTIRE depth ladder off the single named open
 Prop `WorstCaseIncompleteSumBound` (the BGK sup-bound), end to end at literal prize numbers:
