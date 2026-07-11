@@ -3320,6 +3320,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SP_EnergyFromBSG2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SSTMultiplierAntipode
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ10BCIKS57Chunk1
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ11BCIKS57Chunk3
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ12BCIKS57Chunks56
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
