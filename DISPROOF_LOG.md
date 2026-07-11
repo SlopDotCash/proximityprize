@@ -16304,3 +16304,51 @@ bracket 3/8 <= delta* <= 43/96 + eps untouched.
 
 Files: `_P1RateQuarterPairCloudSecondMoment.lean`,
 `docs/kb/deltastar-466-rate-quarter-pair-cloud-second-moment-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: CLUSTER CONFINEMENT — compounded rank-drop
+## floors X_4/X_5, dyadic blocking at every confined size, five-pencil master
+## budget, and the FINAL residual form StallResidual <= SwarmResidual
+
+Eighth round of the arc.  Constants Python-verified exactly, then kernel-pinned.
+
+(1) COMPOUNDED RANK-DROP FLOORS: m-cluster difference lattices have generic
+deficit X_m = m(T−5) − N − (m−1)k: X_3 = 167772147, X_4 = 492131652,
+X_5 = 816491157, growth (T−5)−k = 324359505 per pencil — Bezout escapes at
+larger cluster sizes must defeat proportionally more evaluation constraints
+(cluster_rank_drop_floors; structural support: bonferroni_double, a general
+m-set Bonferroni by Finset induction, + cluster_overlap_mass).
+
+(2) DYADIC BLOCKING AT EVERY CONFINED SIZE: the binomial-constructor windows
+[ceil((m(T−5)−N)/C(m,2)), k−1] = [234881020,…], [216239670,…],
+[189023299, 268435455] for m = 3,4,5 ALL sit inside the dyadic gap (2^27, 2^28)
+(dyadic_gap, cluster_windows_dyadic_free): on mu_{2^30} every known constructor
+class is blocked at every confined cluster size.
+
+(3) MASTER BUDGET + FINAL FORM: six_sets_impossible_param (parametric
+second-moment six-set impossibility) at theta = T−12 gives
+sixPencil_margin13_forced (margin >= 13 among any six distinct pencils);
+margined_riders_le_of_thirteen (<= 36995913);
+stall_budget_of_five_pencil_cover — two arbitrary + three margin-13 pencils:
+#bad <= 1072881457 <= N (slack 860367);
+stallResidual_of_swarmResidual — THE FINAL FORM: SwarmResidual dom ->
+StallResidual dom, where SwarmResidual is the budget restricted to families
+with NO margined five-pencil cover (FiveCoverForm).  All five-pencil-coverable
+families are discharged unconditionally.
+
+RESIDUAL MAP: StallResidual(mu_{2^30}) <= SwarmResidual = (i) 3-to-5 near-full
+clusters (rank drops >= X_m, constructors dyadically blocked) + (ii) the
+sub-Johnson swarm (counting-immune per round 7 no-gos; beyond-Johnson list
+input = the global wall).  Everything else kernel-discharged.
+
+AUDIT (`_P1RateQuarterClusterConfinement.lean`; FULL axiom lists read manually
+via `lake env lean`): 9 theorems exactly [propext, Classical.choice,
+Quot.sound], 2 [propext]; no sorryAx, no warnings.
+
+HONESTY: StallResidual(mu_{2^30}) remains OPEN (reduced, not discharged); no
+delta-star movement; bracket 3/8 <= delta* <= 43/96 + eps untouched.  Arc
+total: eight files, 68 kernel theorems, six probes, one refutation, two no-go
+theorems; the P1 counting branch reduced to the single named Prop
+SwarmResidual.
+
+Files: `_P1RateQuarterClusterConfinement.lean`,
+`docs/kb/deltastar-466-rate-quarter-cluster-confinement-2026-07-11.md`.
