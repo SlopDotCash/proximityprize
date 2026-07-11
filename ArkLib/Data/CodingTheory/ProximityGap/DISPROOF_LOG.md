@@ -51109,3 +51109,14 @@ K_eff bookkeeping of the #444 window-interior campaign. Flagged to the G106 owne
 for the S/L pin before further lane investment. If S = μ_n was intended, this entry is a
 REFUTATION of that form; if S = padded support, this entry calibrates the boundary the
 transfer must respect. CORE remains OPEN / ON-BGK.
+
+### [466-J2-addendum-minimality] The AOR violations are IRREDUCIBLE: 100% of pair-free length-6 census relations are MINIMAL (no vanishing proper sub-sum) at 5 of 6 accessible cells (2880/2880, 2176/2176, 56448/56448, 72320/72320, 38016/38016; the exception (16,257): 256/576) — genuine char-p counterexamples to the Lam-Leung antipodal structure, not decomposition artifacts (2026-07-11)
+
+Sub-sum check over all proper subsets (sizes 1-3 + complement symmetry) of each pair-free
+row's term multiset. Consequence: the char-0 → char-p Lam–Leung transfer fails MAXIMALLY
+at accessible primitive cells — the forbidden objects (minimal non-antipodal vanishing
+sums) are not merely present but constitute the majority of the census and are almost
+all irreducible. Any viable form of the G106 surrogate must scope S/L/p so that the
+counting expectation C(|S|,L')·2^{L'}/p ≪ 1 for all L' ≤ L — the full-subgroup form is
+dead at every scale tested and heuristically dead at production. CORE remains OPEN /
+ON-BGK.
