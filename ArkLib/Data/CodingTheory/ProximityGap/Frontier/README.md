@@ -140,6 +140,12 @@ the unseen partner changes the outside pair's original secant from `(0,0)` to `(
 four-centre star cannot cluster original lines from one-endpoint routing alone.  A viable successor
 must route both endpoints to centres, force a second independent cross-equation, or exploit a
 global decoded-family invariant coupling the unobserved partner.
+`exists_eight_centres_dominating_both_endpoints` supplies exactly that repair.  Apply the sharp
+five-set theorem separately to endpoint zero and endpoint one: each fixed-endpoint interaction
+graph has four dominating centres, so their union has cardinality at most eight.  Outside this
+union, both endpoints of every matched pair have same-oriented `K`-overlaps with centre endpoints.
+The one-endpoint blindness is therefore removed at the cost of enlarging four centres to eight;
+the next algebraic target is a two-cross-equation reconstruction of the outside original secant.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

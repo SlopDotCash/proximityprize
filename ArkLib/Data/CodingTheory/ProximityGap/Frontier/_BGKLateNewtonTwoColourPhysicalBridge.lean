@@ -333,6 +333,98 @@ theorem pointedLabelSigmaFiber_eq_mul_labelSubsetFiber
   · simp [pointedLabelSigmaSum, hsum, Fintype.card_coe, hScard]
   · simp [pointedLabelSigmaSum, hsum]
 
+/-! ### Removing the labels -/
+
+/-- Forget the membership proof on an element of `G`. -/
+def labelToValueEmbedding (G : Finset F) : {x : F // x ∈ G} ↪ F :=
+  Function.Embedding.subtype _
+
+/-- Regard an element of `A ⊆ G` as an element of the labelled copy of `G`. -/
+def valueToLabelEmbedding (G A : Finset F) (hA : A ⊆ G) :
+    {x : F // x ∈ A} ↪ {x : F // x ∈ G} where
+  toFun x := ⟨x.1, hA x.2⟩
+  inj' _ _ h := Subtype.ext (congrArg (fun z : {x : F // x ∈ G} => z.1) h)
+
+/-- Forget labels on a fixed-cardinality subset. -/
+def labelSubsetToValue (G : Finset F) (d : Nat) (S : SubsetAt G d) :
+    ValueSubsetAt G d := by
+  refine ⟨S.1.map (labelToValueEmbedding G), ?_⟩
+  apply Finset.mem_powersetCard.mpr
+  constructor
+  · intro x hx
+    rw [Finset.mem_map] at hx
+    obtain ⟨a, _ha, rfl⟩ := hx
+    exact a.2
+  · rw [Finset.card_map]
+    exact (Finset.mem_powersetCard.mp S.2).2
+
+/-- Restore labels on a value subset known to lie in `G`. -/
+def valueSubsetToLabel (G : Finset F) (d : Nat) (A : ValueSubsetAt G d) :
+    SubsetAt G d := by
+  have hsub : A.1 ⊆ G := (Finset.mem_powersetCard.mp A.2).1
+  refine ⟨A.1.attach.map (valueToLabelEmbedding G A.1 hsub), ?_⟩
+  apply Finset.mem_powersetCard.mpr
+  refine ⟨Finset.subset_univ _, ?_⟩
+  rw [Finset.card_map, Finset.card_attach]
+  exact (Finset.mem_powersetCard.mp A.2).2
+
+theorem mem_labelSubsetToValue (G : Finset F) (d : Nat) (S : SubsetAt G d) (x : F) :
+    x ∈ (labelSubsetToValue G d S).1 ↔ ∃ a ∈ S.1, a.1 = x := by
+  classical
+  simp [labelSubsetToValue, labelToValueEmbedding]
+
+theorem mem_valueSubsetToLabel (G : Finset F) (d : Nat) (A : ValueSubsetAt G d)
+    (x : {a : F // a ∈ G}) :
+    x ∈ (valueSubsetToLabel G d A).1 ↔ x.1 ∈ A.1 := by
+  classical
+  unfold valueSubsetToLabel
+  simp only [Finset.mem_map, Finset.mem_attach, exists_const]
+  constructor
+  · rintro ⟨a, ha, hax⟩
+    have haeq : a = x.1 := congrArg (fun z : {u : F // u ∈ G} => z.1) hax
+    simpa [haeq] using ha
+  · intro hx
+    refine ⟨x.1, hx, ?_⟩
+    apply Subtype.ext
+    rfl
+
+/-- Labelled and ordinary value subsets are canonically equivalent. -/
+def labelValueSubsetEquiv (G : Finset F) (d : Nat) :
+    SubsetAt G d ≃ ValueSubsetAt G d where
+  toFun := labelSubsetToValue G d
+  invFun := valueSubsetToLabel G d
+  left_inv S := by
+    apply Subtype.ext
+    ext x
+    rw [mem_valueSubsetToLabel, mem_labelSubsetToValue]
+    constructor
+    · rintro ⟨a, ha, haval⟩
+      have hax : a = x := Subtype.ext haval
+      simpa [hax] using ha
+    · intro hx
+      exact ⟨x, hx, rfl⟩
+  right_inv A := by
+    apply Subtype.ext
+    ext x
+    rw [mem_labelSubsetToValue]
+    constructor
+    · rintro ⟨a, ha, rfl⟩
+      exact (mem_valueSubsetToLabel G d A a).mp ha
+    · intro hx
+      have hxG : x ∈ G := (Finset.mem_powersetCard.mp A.2).1 hx
+      let a : {z : F // z ∈ G} := ⟨x, hxG⟩
+      exact ⟨a, (mem_valueSubsetToLabel G d A a).mpr hx, rfl⟩
+
+/-- Forgetting labels preserves the subset sum. -/
+theorem labelValueSubsetEquiv_phase (G : Finset F) (d : Nat) (S : SubsetAt G d) :
+    valueSubsetSum G d (labelValueSubsetEquiv G d S) = labelSubsetSum G d S := by
+  classical
+  unfold valueSubsetSum labelSubsetSum
+  rw [show (labelValueSubsetEquiv G d S).1 =
+      S.1.map (labelToValueEmbedding G) from rfl]
+  rw [Finset.sum_map]
+  rfl
+
 /-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
 def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (_hr : 0 < r) :
     RepeatedMarkedJoin G r -> FreshMarkedJoin G (r - 1) := by

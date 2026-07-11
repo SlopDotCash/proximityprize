@@ -344,6 +344,86 @@ theorem pairInteracts_exists_crossSecant_core
     dom (u 0) (u 1) line.1 line.2 hne]
   simpa only [familyWitness, gamma, beta, line, hgammaLine, hbetaLine] using hoverlap
 
+/-! ## Two-sided endpoint domination -/
+
+/-- Fixed-endpoint overlap graph: compare endpoint `e` on both matched pairs. -/
+noncomputable def fixedEndpointGraph
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (e : Fin 2) : SimpleGraph M where
+  Adj p q := p ≠ q ∧
+    K ≤ (witness (endpointAt p.1 e) ∩ witness (endpointAt q.1 e)).card
+  symm := by
+    intro p q h
+    exact ⟨h.1.symm, by simpa only [Finset.inter_comm] using h.2⟩
+  loopless := ⟨fun p h => h.1 rfl⟩
+
+/-- Each fixed-endpoint graph separately has independence number at most four. -/
+theorem fixedEndpointGraph_compl_cliqueFree_five
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (e : Fin 2)
+    (hsize : ∀ p ∈ M, T ≤ (witness (endpointAt p e)).card) :
+    (fixedEndpointGraph witness M e)ᶜ.CliqueFree 5 := by
+  classical
+  intro G5 hG5
+  have heq : G5 ≃ Fin 5 := by
+    rw [← hG5.card_eq]
+    exact G5.equivFin
+  let vertex : Fin 5 → M := fun i => (heq.symm i).1
+  let S : Fin 5 → Finset (Fin N) := fun i => witness (endpointAt (vertex i).1 e)
+  obtain ⟨i, j, hij, hoverlap⟩ :=
+    exists_pair_inter_card_ge_K_of_five S (fun i => hsize (vertex i).1 (vertex i).2)
+  have hvij : vertex i ≠ vertex j := by
+    intro h
+    exact hij (heq.symm.injective (Subtype.ext h))
+  have hadj : (fixedEndpointGraph witness M e).Adj (vertex i) (vertex j) :=
+    ⟨hvij, by simpa only [S] using hoverlap⟩
+  have hi : vertex i ∈ G5 := (heq.symm i).2
+  have hj : vertex j ∈ G5 := (heq.symm j).2
+  have hcompl := hG5.isClique hi hj hvij
+  exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
+
+/-- One fixed endpoint is dominated by at most four centre pairs. -/
+theorem exists_four_fixedEndpoint_centres
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (e : Fin 2)
+    (hsize : ∀ p ∈ M, T ≤ (witness (endpointAt p e)).card) :
+    ∃ I : Finset M, I.card ≤ 4 ∧ ∀ p : M, p ∉ I →
+      ∃ q ∈ I, K ≤
+        (witness (endpointAt p.1 e) ∩ witness (endpointAt q.1 e)).card := by
+  obtain ⟨I, hIcard, _hIindep, hdom⟩ :=
+    exists_dominating_indep_card_le_four (fixedEndpointGraph witness M e)
+      (fixedEndpointGraph_compl_cliqueFree_five witness M e hsize)
+  refine ⟨I, hIcard, ?_⟩
+  intro p hp
+  obtain ⟨q, hq, hadj⟩ := hdom p hp
+  exact ⟨q, hq, hadj.2⟩
+
+/-- **Eight-centre two-endpoint domination.**  Outside one set of at most eight matched pairs,
+both endpoints of every pair have a same-oriented `K`-overlap with an endpoint of a centre pair.
+This supplies the two independent routed equations missing from one-endpoint propagation. -/
+theorem exists_eight_centres_dominating_both_endpoints
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J))
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
+    ∃ C : Finset M, C.card ≤ 8 ∧ ∀ p : M, p ∉ C →
+      (∃ q ∈ C, K ≤ (witness p.1.1 ∩ witness q.1.1).card) ∧
+      (∃ q ∈ C, K ≤ (witness p.1.2 ∩ witness q.1.2).card) := by
+  obtain ⟨I₀, hI₀card, hdom₀⟩ :=
+    exists_four_fixedEndpoint_centres witness M 0 (fun p hp => by
+      simpa only [endpointAt_zero] using (hsize p hp).1)
+  obtain ⟨I₁, hI₁card, hdom₁⟩ :=
+    exists_four_fixedEndpoint_centres witness M 1 (fun p hp => by
+      simpa only [endpointAt_one] using (hsize p hp).2)
+  refine ⟨I₀ ∪ I₁, (Finset.card_union_le I₀ I₁).trans
+    (Nat.add_le_add hI₀card hI₁card), ?_⟩
+  intro p hp
+  have hp₀ : p ∉ I₀ := fun h => hp (Finset.mem_union_left I₁ h)
+  have hp₁ : p ∉ I₁ := fun h => hp (Finset.mem_union_right I₀ h)
+  obtain ⟨q₀, hq₀, hover₀⟩ := hdom₀ p hp₀
+  obtain ⟨q₁, hq₁, hover₁⟩ := hdom₁ p hp₁
+  exact ⟨⟨q₀, Finset.mem_union_left I₁ hq₀, by simpa only [endpointAt_zero] using hover₀⟩,
+    ⟨q₁, Finset.mem_union_right I₀ hq₁, by simpa only [endpointAt_one] using hover₁⟩⟩
+
 end ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 
 open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
@@ -358,3 +438,6 @@ open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 #print axioms exists_four_interaction_centres
 #print axioms exists_four_centres_with_oriented_routing
 #print axioms pairInteracts_exists_crossSecant_core
+#print axioms fixedEndpointGraph_compl_cliqueFree_five
+#print axioms exists_four_fixedEndpoint_centres
+#print axioms exists_eight_centres_dominating_both_endpoints
