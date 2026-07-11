@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic.Nlinarith
+import Mathlib.Tactic
 
 /-!
 # G115: sharp continuous optimizer for the effective HBK parameters
@@ -27,17 +27,14 @@ namespace ArkLib.ProximityGap.Frontier.G115HBKContinuousParameterOptimizer
 
 /-- Eliminating `a` from the two Stepanov feasibility constraints. -/
 theorem reduced_feasibility
-    {a b d : ℝ} (hb : 0 < b) (hd : 0 < d)
+    {a b d : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hab : a * b ≤ 1) (hmult : d * (a + d) ≤ a * b ^ 2) :
     b * d ^ 2 + d ≤ b ^ 2 := by
   have hbd : 0 ≤ b ^ 2 - d := by
     by_contra h
     have hneg : b ^ 2 - d < 0 := lt_of_not_ge h
-    have ha_nonneg : 0 ≤ a := by
-      by_contra ha
-      have ha_neg : a < 0 := lt_of_not_ge ha
-      nlinarith [sq_nonneg d]
-    nlinarith [mul_nonpos_of_nonneg_of_nonpos ha_nonneg hneg]
+    have hprod : a * (b ^ 2 - d) < 0 := mul_neg_of_pos_of_neg ha hneg
+    nlinarith [sq_nonneg d]
   have hfirst : d ^ 2 ≤ a * (b ^ 2 - d) := by
     nlinarith
   have hscaled : b * d ^ 2 ≤ (a * b) * (b ^ 2 - d) := by
@@ -49,24 +46,40 @@ theorem reduced_feasibility
 /-- **Sharp optimizer inequality.** Every positive feasible parameter triple satisfies
 `b^3 ≥ 4d^3`, equivalently `(2b/d)^3 ≥ 32`. -/
 theorem sharp_cubic_ratio
-    {a b d : ℝ} (hb : 0 < b) (hd : 0 < d)
+    {a b d : ℝ} (ha : 0 < a) (hb : 0 < b) (hd : 0 < d)
     (hab : a * b ≤ 1) (hmult : d * (a + d) ≤ a * b ^ 2) :
     4 * d ^ 3 ≤ b ^ 3 := by
-  have hred := reduced_feasibility hb hd hab hmult
-  have hsquare : 0 ≤ (d - b * d ^ 2) ^ 2 := sq_nonneg _
+  have hred := reduced_feasibility ha hb hab hmult
+  have hx : 0 ≤ b * d ^ 2 + d := by positivity
+  have hsqle : (b * d ^ 2 + d) ^ 2 ≤ (b ^ 2) ^ 2 :=
+    (sq_le_sq₀ hx (sq_nonneg b)).2 hred
+  have hamgm : 4 * b * d ^ 3 ≤ (b * d ^ 2 + d) ^ 2 := by
+    nlinarith [sq_nonneg (b * d ^ 2 - d)]
   have hfour : 4 * b * d ^ 3 ≤ b ^ 4 := by
-    nlinarith [sq_nonneg (b ^ 2 - (b * d ^ 2 + d))]
-  nlinarith [mul_pos hb (pow_pos hd 3)]
+    calc
+      4 * b * d ^ 3 ≤ (b * d ^ 2 + d) ^ 2 := hamgm
+      _ ≤ (b ^ 2) ^ 2 := hsqle
+      _ = b ^ 4 := by ring
+  apply le_of_mul_le_mul_left (a := b) (by
+    show b * (4 * d ^ 3) ≤ b * b ^ 3
+    nlinarith [hfour]) hb
 
 /-- Ratio form of the sharp lower bound, avoiding real cube roots. -/
 theorem normalized_prefix_coefficient_cube_ge
-    {a b d K : ℝ} (hb : 0 < b) (hd : 0 < d)
+    {a b d K : ℝ} (ha : 0 < a) (hb : 0 < b) (hd : 0 < d)
     (hab : a * b ≤ 1) (hmult : d * (a + d) ≤ a * b ^ 2)
     (hK : K * d = 2 * b) :
     32 ≤ K ^ 3 := by
-  have hsharp := sharp_cubic_ratio hb hd hab hmult
+  have hsharp := sharp_cubic_ratio ha hb hd hab hmult
   have hd3 : 0 < d ^ 3 := pow_pos hd 3
-  nlinarith [sq_nonneg (K * d), sq_nonneg (K ^ 3 - 32)]
+  have hcubes := congrArg (fun x : ℝ => x ^ 3) hK
+  have hscaled : 32 * d ^ 3 ≤ 8 * b ^ 3 := by nlinarith
+  have heq : K ^ 3 * d ^ 3 = 8 * b ^ 3 := by
+    calc
+      K ^ 3 * d ^ 3 = (K * d) ^ 3 := by ring
+      _ = (2 * b) ^ 3 := hcubes
+      _ = 8 * b ^ 3 := by ring
+  nlinarith
 
 /-- The cube-root parameter choice attains both feasibility constraints with equality. -/
 theorem equality_witness_feasible

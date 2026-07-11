@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._GaugedLocalParityTensorModel
+import Mathlib.Algebra.Field.ZMod
 
 /-!
 # Gauged tensor-span fullness is not automatic: an explicit F_7 counterexample
@@ -64,15 +65,15 @@ def slope : Coord → F7
   | 5 => 2
 
 theorem domain_injective : Function.Injective domain := by
-  native_decide
+  decide
 
 theorem label_injective : Function.Injective label := by
-  native_decide
+  decide
 
 /-- Every label occurs on at least the degree bound's two coordinates. -/
 theorem every_label_degree_ge_two (j : Label) :
     2 ≤ (Finset.univ.filter fun x : Coord => j ∈ support x).card := by
-  fin_cases j <;> native_decide
+  fin_cases j <;> decide
 
 /-- The three non-anchor labels whose polynomial coefficients remain after gauging. -/
 def nonAnchors : Finset Label := {2, 3, 4}
@@ -87,18 +88,22 @@ is genuinely a maximal-recoverability failure, not a dimension-budget obstructio
 theorem projectedHall_safe :
     ∀ U : Finset Label, U ⊆ nonAnchors →
       2 * U.card ≤ projectedBudget U := by
-  native_decide
+  decide
 
 theorem q_degreeLT_two (j : Label) : q j ∈ Polynomial.degreeLT F7 2 := by
-  rw [Polynomial.mem_degreeLT, ← Polynomial.natDegree_lt_iff_degree_lt]
-  fin_cases j <;> simp [q] <;> compute_degree!
+  rw [Polynomial.mem_degreeLT, Polynomial.degree_lt_iff_coeff_zero]
+  intro n hn
+  have hn0 : n ≠ 0 := by omega
+  have hn1 : n ≠ 1 := by omega
+  have hn1' : 1 ≠ n := Ne.symm hn1
+  fin_cases j <;> simp [q, Polynomial.coeff_C, Polynomial.coeff_X, hn0, hn1']
 
 theorem q_supportedAgreement :
     SupportedAgreement domain support label q (fun _ => 0) slope := by
   intro x j hj
   fin_cases x <;> fin_cases j <;>
     simp [support] at hj <;>
-    simp [q, domain, label, slope] <;> norm_num
+    simp [q, domain, label, slope] <;> decide
 
 theorem q_mem_kernel :
     q ∈ (supportDividedDifference domain support label).ker :=
@@ -111,7 +116,8 @@ theorem q_ne_zero : q ≠ 0 := by
   intro h
   have h2 := congrFun h (2 : Label)
   have hc := congrArg (fun p : F7[X] => p.coeff 0) h2
-  norm_num [q] at hc
+  have hfour : (4 : F7) ≠ 0 := by decide
+  exact hfour (by simpa [q] using hc)
 
 /-- **Concrete refutation.**  The gauged local-parity/Vandermonde tensor rows do not span the full
 six-dimensional non-anchor coefficient dual. -/

@@ -28,6 +28,9 @@ the base proper-pair locators, the primitive direction `(X,1)`, or the ownership
 
 set_option autoImplicit false
 set_option maxRecDepth 100000
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+set_option linter.style.longLine false
 
 open Polynomial
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeFactorization

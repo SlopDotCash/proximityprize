@@ -14756,3 +14756,673 @@ sorryAx; pg-iterate 7s, 11/11 audits clean):
 No probe needed: constructive floor, fully machine-checked.
 Analysis:
 `docs/kb/deltastar-466-lowprofile-mcaevent-support-ladder-floor-2026-07-10.md`.
+
+## [w15-safe-branch-ceiling-and-subjohnson-saturation] unconditional B_near ≤ C·n on the safe branch REFUTED sub-Johnson (empirical q-saturation); unconditional ceiling count ≤ Λ·|supp| PROVED, closing the bracket to L_near·(n−a) under a near-code list budget (2026-07-10)
+
+CONTEXT (lane ll:low-profile-fiber, W15 part 2 — the UPPER side of the
+two-sided obligation left by `_W15LargeZeroMcaEventFloor.lean`).
+
+PROBE (`scripts/probes/probe_466_w15_multibase_ladder.py`, deterministic,
+exit 0; 8 shapes, single/multi-base ladders + 60 random safe large-zero
+lines each, exact ground-truth mcaEvent counts):
+* Candidate ceiling `count ≤ Λ·|supp|` (Λ = line-appearing codewords at
+  threshold a): ZERO violations anywhere.
+* Above-Johnson campaign shape (q=17,n=16,k=4,a=9; a²=81>64=nk): count = 7
+  = n−a EXACTLY, Λ = 1 — the W15 floor is the truth; bracket closes.
+* Deep sub-Johnson shapes ((13,12,2,3),(13,12,3,5),(29,24,2,3),(29,24,3,5),
+  …; a² < nk): count SATURATES TO q on EVERY line probed (including the
+  single-base ladder), driven by Λ exploding (up to 769 at (29,24,3,5)):
+  per-scalar lists are nonempty and generic witnesses unexplainable.
+  ⇒ NO unconditional `B_near ≤ C·n` theorem exists at sub-Johnson shapes;
+  the coordinator's "linear ceiling" option is only available conditionally.
+* Constant multi-base ladders (M distinct constant bases on disjoint
+  (a−1)-anchors; safety caps M(k−1) < a) never beat saturation and stay
+  O(n): no superlinear CONSTRUCTION found either — superlinearity below
+  Johnson is real but is `q`-saturation, not a designed ladder.
+
+PROVED (Lean, unconditional):
+* `mcaEvent_witness_meets_support` — on a ZeroDirectionSafeLine, every
+  mcaEvent witness contains a direction-support point (its zero part sits
+  in the line codeword's directionZeroAgreementSet, capped < a by safety).
+* `safe_mcaEvent_filter_card_le_lambda_mul_support` — THE CEILING:
+  count ≤ Λ·|supp| (bad γ ↦ (witness codeword, support point) is injective:
+  the pair pins γ = (w i − u₀ i)/u₁ i).
+* `safe_largeZero_mcaEvent_filter_card_le` — with a per-line list budget L,
+  count ≤ L·(n−a) on the large-zero class.
+* NEW honest named residual `LargeZeroSafeLineListBudgeted` (near-code
+  line-list budget — class disjoint from the far-branch obligation) and the
+  upgraded weld consumer `mcaDeltaStar_ge_of_farLineList_and_nearCodeList`:
+  the W9-refuted `hsafe` slot is replaced by `L_near·(n−a)`.
+
+STATE OF THE BRANCH. Two-sided bracket:
+  n − a ≤ B_near^true ≤ L_near·(n − a),
+EXACT at L_near = 1 (probe: true at the rate-quarter campaign shape).
+The safe large-zero branch of the weld is now fully reduced to ONE open
+input: the near-code list budget L_near, whose truth is Johnson-gated
+(probe: L_near = 1 above Johnson; unboundedly false deep sub-Johnson —
+consumers must stay above Johnson for the safe branch to close).
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 40s, 6/6 audits clean):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15SafeBranchLinearCeiling.lean`.
+Probe: `scripts/probes/probe_466_w15_multibase_ladder.py` (exit 0).
+Analysis:
+`docs/kb/deltastar-466-lowprofile-safe-branch-ceiling-2026-07-10.md`.
+
+## [466-r3-mixed-depth-orthogonality-refuted-localization-landed] (I3) as a change of variables in the sextic energy: strata are NOT orthogonal, but the r=3 rung two-sidedly LOCALIZES to the off-coset remainder (2026-07-10)
+
+Lane: r=3 rung, route (ii) successor to
+[466-r3-hasse-davenport-coset-triple-collapse].
+
+EXACT STRUCTURE (positive). Inside the Lean `tripleConv` (nonzero-index
+convention), the ordered triples that are permutations of a full coset
+{j, j+u, j+2u} all have index sum 3j, and the tripling fiber {j : 3j = d} IS
+that unique coset. Hence the coset-diagonal stratum, as a function of d, is
+  (P1)  A(d) = 2·∑_{3j=d, d≠0} J_j J_{j+u} J_{j+2u}
+        (d=0 vanishes: the only candidate coset is H ∋ 0, excluded), and by (I3)
+  (M1)  A(d) = 6·κ·J₃(d) on 3ℤ/m∖{0}, 0 elsewhere — a pure DEPTH-1 object.
+tripleConv = A + R exactly. Probe (18 nondegenerate (q,m,χ) instances, q ≤ 73):
+(P1), (M1), and the energy split identity hold with ZERO failures.
+
+REFUTATION (negative). The candidate mixed-depth ORTHOGONALITY
+∑_d A(d)·conj(R(d)) = 0 is FALSE in 18/18 instances: normalized correlation
+|X|/√(E_A·E_R) ∈ [0.08, 0.63], |X| ≈ m²q³. No exact Pythagoras between the HD
+stratum and the remainder; any exact-identity route through stratum
+orthogonality is DEAD.
+
+CALIBRATED CORRECTED FORM (landed). The ℓ²-triangle split gives the TWO-SIDED
+localization with explicit absolute constants: under HD (‖κ‖ ≤ q, ‖J₃‖² ≤ q,
+k₀ = card{3j=0} ≤ 3),
+  OffCosetRemainderEnergyBound C_R  ⟹  TripleConvEnergyBound (2C_R + 72)
+  TripleConvEnergyBound C           ⟹  OffCosetRemainderEnergyBound (2C + 72)
+— the calibrated r=3 open core and the off-coset stratum bound are the SAME
+open problem up to constants. The diagonal stratum costs ≤ 36·m·q³ (1/m² of
+the Wick budget). New corrected core: `OffCosetRemainderEnergyBound` (strict
+sub-object; probe: it carries ~all the energy, ER/wick ≈ 0.1–0.6 — the
+localization is structural, not a mass reduction).
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 48s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R298MixedDepthCorrelation.lean`
+(`cosetDiag`/`offCosetRemainder` exact split; `cosetDiag_collapse`;
+`card_fiber_le_card_kernel` (fiber ↪ 3-torsion kernel, proven);
+`cosetDiag_energy_le`; `tripleConvEnergyBound_of_offCosetRemainder` +
+`offCosetRemainderEnergyBound_of_tripleConvEnergyBound` = the two-sided
+localization).
+Probe: `scripts/probes/probe_466_r3_mixed_depth_correlation.py`.
+Analysis:
+`docs/kb/deltastar-466-r3-mixed-depth-localization-2026-07-10.md`.
+
+## [466-r3-pattern-stratification-hd-exhausted] pattern census of the off-coset remainder: (I2) pair-twist stratum is r=2-REDUCIBLE; within-pattern collapse REFUTED; TWO/DIST = the irreducible carrier (2026-07-10)
+
+Lane: r=3 rung, route (ii) third brick, successor to
+[466-r3-mixed-depth-orthogonality-refuted-localization-landed].
+
+MASS CENSUS (probe, exact, 14 nondegenerate cells + fixed-m growth ladder to
+p=181, 0 structural failures). Partition ordered nonzero triples by the
+multiset of H-cosets (H = {0,u,2u}, u=m/3): FULL and SAME3 carry ≤3% of the
+energy each; TWO (exactly two share a coset) and DIST (all distinct) carry
+essentially everything, each O(0.1–0.5)·Wick and FLAT in p along fixed m —
+square-root cancellation is numerically present in both generic classes.
+
+EXACT STRUCTURE (positive, HP1). With v = m/2 (the FULL order-2-subgroup
+offset; 2|m, χ² nontrivial), the pair-twist stratum
+S(d) = ∑_j J_j·J_{j+v}·J_{d−2j−v} collapses EXACTLY to κ₂·M(d),
+κ₂ = χ(2)²·J(χ,χ) (‖κ₂‖=√q), M = mixed depth-(1,1) convolution J₂⋆J
+(J₂ = jacobiCoeff χ² lam). Verified at every d in every cell; measured
+∑‖M‖²/(m²q²) ≈ 1.0–1.9 (Wick-flat at the r=2-type scale). Consequence: every
+triple carrying an m/2-pair is REDUCIBLE TO THE r=2 RUNG (closed mod textbook
+Weil), with stratum energy ≤ C·m²·q³ = (C/6m)·Wick.
+
+REFUTATION (negative). The offset the TWO class would need is u = m/3 — NOT a
+full order-2 coset — and the candidate constant-ratio collapse
+J_j·J_{j+u} = c·J₂(2j+u) FAILS with ratio spread O(q) in every tested cell
+(p=13/19/31/37). HD pair rigidity exists at the subgroup offset m/2 and
+nowhere else. With (I3) (order-3 coset, R297/R298) and (I2) (order-2 offset,
+this brick) both spent, EVERY HD-type exact collapse available on the ladder
+is exhausted: the TWO/DIST generic-pattern classes are the irreducible
+carrier of `OffCosetRemainderEnergyBound` (which stays the minimal open Prop,
+now with sharpened content — closing it requires genuinely analytic input,
+Katz route (i), not further exact HD structure).
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 33s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R299PatternStratification.lean`
+(`HDPairCollapse` named (I2) input; `pairTwistStratum`/`mixedConv`;
+`pairTwistStratum_collapse` exact; `pairTwistStratum_energy_eq` exact
+transfer; `MixedConvEnergyBound` r=2-type named input, probe C≈2;
+`pairTwistStratum_energy_le` consumer).
+Probe: `scripts/probes/probe_466_r3_pattern_stratification.py`.
+Analysis:
+`docs/kb/deltastar-466-r3-pattern-stratification-2026-07-10.md`.
+
+## [w15-nearcode-johnson-budget] LargeZeroSafeLineListBudgeted DISCHARGED from the in-tree Johnson substrate via the offset collapse: explicit budget above the doubled-Johnson margin + L_near = 1 at unique-decoding-plus; safe branch of the weld CLOSED there; Johnson-to-margin window remains the honest residual (2026-07-10)
+
+CONTEXT (lane ll:low-profile-fiber, W15 part 3). Part 2 reduced the weld's
+safe large-zero mcaEvent branch to one open input, the near-code line-list
+budget `LargeZeroSafeLineListBudgeted dom k a L`.
+
+MECHANISM (offset collapse). On a large-zero line (z = |zeroSet(u₁)| ≥ a),
+EVERY line word u₀ + γu₁ equals u₀ on Z; an appearing codeword (agreement
+≥ a with some line word) loses at most n − z ≤ n − a support coordinates,
+so it agrees with the SINGLE word u₀ on ≥ 2a − n points: the union-over-γ
+line list injects into one per-word agreement list of u₀ at the reduced
+threshold 2a − n. Then:
+* `nearCodeList_of_doubled_johnson_margin` — via the in-tree Johnson bound
+  `rsCode_agreement_list_card_le`: budget L = n²/((2a−n)² − n(k−1)) whenever
+  n(k−1) < (2a−n)². Safety not even needed (large-zero suffices).
+* `nearCodeList_one_of_two_n_add_k_le_three_a` — L = 1 whenever 2n+k ≤ 3a
+  (unique-decoding-plus): two distinct appearing codewords put two
+  (a−(n−z))-sized agree-with-u₀ sets inside Z overlapping ≤ k−1 (RS
+  pairwise), and inclusion-exclusion in Z counts them out for every z ≥ a.
+* `mcaDeltaStar_ge_with_safe_branch_discharged` — COMPOSED COROLLARY: at
+  2n+k ≤ 3a the weld consumer holds with the safe large-zero slot filled
+  unconditionally by n − a (exact against the W15 part-1 floor). Remaining
+  named residuals: hfarL (far-line lists — still OPEN, not claimed) and
+  hunsafe (unsafe large-zero branch).
+
+HONESTY (the uncovered window). The campaign rate-quarter shape
+(n=16,k=4,a=9; above Johnson: 81 > 64) satisfies NEITHER regime
+((2a−n)² = 4 < 48; 3a = 27 < 36) — `campaign_shape_not_covered`. There the
+probe certifies Λ = 1 empirically, but a proof must use the support-side
+agreements the offset collapse discards. The window between the Johnson
+line (a² > nk) and the doubled-Johnson margin ((2a−n)² > n(k−1),
+asymptotically α > (1+√ρ)/2 vs Johnson α > √ρ) is the remaining open
+content of `LargeZeroSafeLineListBudgeted`. Non-vacuity: n=16,k=4,a=12 has
+both regimes (L=1; general form L=16) — `discharge_regimes_nonvacuous`.
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 36-44s, 7/7 audits clean; part-2 file built to olean
+via lake-locked, no source changes beyond a lint-driven line wrap in the
+author's own part-2 file):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15NearCodeJohnsonBudget.lean`.
+Analysis:
+`docs/kb/deltastar-466-lowprofile-nearcode-johnson-budget-2026-07-10.md`.
+
+## [466-r3-dist-stratum-accounting-final] the r=3 rung's dependency graph collapses to ONE Prop: DistStratumEnergyBound; every non-distinct stratum priced UNCONDITIONALLY by counting; m=3/m=6 rungs discharged at C=0 (2026-07-10)
+
+Lane: r=3 rung, route (ii) capstone, successor to
+[466-r3-pattern-stratification-hd-exhausted].
+
+ACCOUNTING DISCOVERY (stronger than the HD pricing and unconditional). Split
+tripleConv by whether the ordered triple (i, d−j−i, j) has all three H-coset
+labels distinct (H = {0,u,2u}, u = m/3). The non-distinct part is COUNT-THIN:
+for fixed (d,j) the bad i-set is contained in two explicit translate-triples
+plus three doubling-fibers, ≤ 6+3k₂ elements (k₂ = #{2i=0} = gcd(2,m) ≤ 2).
+Hence with ONLY the classical envelope ‖J‖² ≤ q:
+  ∑_d ‖nonDist(d)‖² ≤ (6+3k₂)²·m³·q³ ≤ 144·m³·q³   — UNCONDITIONAL,
+no HD, no cancellation. The R23 baseline's m² loss is provably confined to
+the all-distinct-coset triples.
+
+THE FINAL DEPENDENCY GRAPH OF THE r=3 RUNG. Two-sided with absolute
+constants (given ‖J‖² ≤ q, k₂ ≤ 2):
+  DistStratumEnergyBound C_D  ⟹  TripleConvEnergyBound (2C_D + 288)
+  TripleConvEnergyBound C     ⟹  DistStratumEnergyBound (2C + 288)
+so the calibrated open core (§33 normal form) ⟺ DistStratumEnergyBound ALONE.
+The HD inputs (HDCosetTripleCollapse, HDPairCollapse — classical, a Mathlib
+Gauss-sum gap) and the r=2-class MixedConvEnergyBound price the finer exact
+structure of the non-distinct strata but are NOT needed for scale.
+
+INSTANTIABILITY + LADDER RUNGS. `distStratumEnergyBound_trivial`: C = m²
+always (the baseline gap, now localized). Rungs m = 3 (u=1) and m = 6 (u=2):
+the DIST pattern is EMPTY by pigeonhole (≤ 2 cosets), kernel-checked by
+`decide`; the open Prop holds with C = 0 for EVERY coefficient sequence and
+every q — matching the probe (E_DIST ≡ 0 at m=6). First open m-values: m with
+u = m/3 ≥ 3, i.e. m = 9, 12, 15, …
+
+Route (i) is the literature path for the general form (see kb note): Katz
+vertical equidistribution of Jacobi angle triples along distinct-coset linear
+conditions (GKM-style big monodromy); NOT named as a Lean Prop (statement not
+yet pinned faithfully).
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 45s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R300DistStratumAccounting.lean`
+(decidable pattern split `tripleConv_eq_dist_add_nonDist`;
+`nonDist_inner_subset` + `card_nonDist_inner_le` count-thinness;
+`nonDistStratum_energy_le`(+`_of_sq_bound` at 144); the two accounting
+theorems; `distStratumEnergyBound_trivial`; rungs
+`distStratumEnergyBound_rung_m3`/`_m6` via `decide`).
+Analysis:
+`docs/kb/deltastar-466-r3-dist-stratum-accounting-2026-07-10.md`.
+
+## [rate-quarter-shared-fresh-coordinate-structure] triple forced structure proved; bare impossibility refuted (2026-07-10)
+
+Lane: immediate-predecessor joint-witness branch, successor of
+`[rate-quarter-joint-witness-bare-charge]`.
+
+The three-scalar shared-fresh-coordinate configuration is now exactly
+characterized for Reed--Solomon (linear) codes.  Proved forced structure,
+all axiom-clean: every pair of distinct bad scalars yields a
+divided-difference pencil which is a joint explanation of the stack on the
+pairwise witness intersection (at least `2T-N = 111,848,108` coordinates at
+the predecessor); witness sets of distinct bad scalars are never nested;
+witness-codeword values at a shared coordinate are pairwise distinct whenever
+the direction row is nonzero there; if the two witnesses meet a known joint
+set in at least `k` coordinates, the pencil *is* the known pair and the
+shared coordinate is absorbed into its maximal joint-agreement set; and a
+*collinear* shared triple forces a single joint pencil agreeing with the
+stack on the two-cover region, of size at least `352,321,537 >= k = 2^28`,
+i.e. beyond-unique-decoding agreement (still below `T = 592,794,966`, so
+collinearity alone contradicts nothing).
+
+The hoped-for bare impossibility is false.  The absorption premise is not
+forced at P1 (`3T <= 2N + k - 1`), and an explicit `RS[8,2]` stack over
+`F_11` realizes the full non-absorbed configuration: joint set `J={0,1,2,3}`
+explained by `(1+2X, 3+X)`, bad scalars `1,2,3` at radius `1/2` with
+threshold-size witnesses `{0,4,5,6}`, `{1,4,5,7}`, `{2,4,6,7}` all through
+the fresh coordinate `4 \notin J`, and no joint pair explains `J u {4}`.
+This is a kernel-checked refutation of any code-generic exclusion of the
+shared-fresh triple; only P1-specific counting can close the branch.
+
+The surviving exact target is the named residual `SharedFreshTripleFree`:
+at the literal P1 predecessor no fresh coordinate outside a threshold joint
+set carries three distinct bad scalars.  Its consumer theorem is proved:
+the residual yields `#bad <= N` for every stack admitting a threshold
+joint-agreement set, via the fresh-coordinate pigeonhole.  The next valid
+attack is the non-collinear case: three pairwise pencils, each a joint-list
+member at agreement `2T-N`, mutually consistent at the shared coordinate,
+with the collinear case already pinned at two-cover agreement `>= k`.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSharedFreshCoordinate.lean`.
+Executable certificate:
+`scripts/probes/probe_rate_quarter_p1_shared_fresh_coordinate.py`.
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-shared-fresh-coordinate-2026-07-10.md`.
+
+## [w15-window-two-reference] L_near = 1 in the Johnson-to-doubled-Johnson window REFUTED (two-block lines; campaign rate-quarter shape included) + the secant multiplicity dichotomy; the part-3 UD-plus discharge is tight up to a width-k gap (2026-07-10)
+
+CONTEXT (lane ll:low-profile-fiber, W15 part 4). Part 3 discharged
+`LargeZeroSafeLineListBudgeted dom k a 1` at 2n+k ≤ 3a and left the window
+√ρ < α ≤ (1+√ρ)/2 (containing the campaign shape (16,4,9)) open; the part-2
+probe's random lines suggested Λ = 1 there.
+
+VERDICT: the suggestion was NOT worst-case — `L_near = 1` is FALSE in the
+window.
+
+MECHANISM (two-block refuter). Z = B₀ ⊔ B₁ with |B_j| = n−a; offset 0 on
+B₀, 1 on B₁, 0 on the s = 2a−n support points; direction = 1_supp. The
+constant codewords 0 and 1 BOTH appear (γ = 0 resp. γ = 1, agreement
+exactly a = (n−a)+(2a−n) each); the line is zero-direction-safe (constants
+score n−a < a on Z, everything else ≤ 2k−2 < a) and large-zero
+(|Z| = 2(n−a) ≥ a). Valid whenever 1 ≤ k, n+1 ≤ 2a, 3a ≤ 2n, 2k−1 ≤ a.
+Probe `scripts/probes/probe_466_w15_window_two_reference.py` (exit 0)
+verifies at (17,16,4,9): Λ = 2, safe, large-zero, mcaEvent count 2; the
+multiplicity census also catches a natural Λ = 2 line with a
+multiplicity-7 codeword.
+
+POSITIVE HALF (the secant). `secant_appearing_agrees_offset`: a codeword
+appearing at two distinct scalars agrees with the OFFSET u₀ on ≥ 2a−n
+coordinates (on the common agreement set the direction vanishes) —
+unconditional, no code membership needed. `appearing_dichotomy`: every
+appearing codeword uses a unique scalar or is u₀-pinned at 2a−n. This is
+the structural handle for the window's remaining open question.
+
+BOUNDARY (machine-pinned). `three_a_trichotomy`: every shape is in the
+part-3 discharge regime (2n+k ≤ 3a: L=1 PROVED), the refuted regime
+(3a ≤ 2n: L=1 FALSE), or the width-k gap 2n < 3a < 2n+k. The part-3
+UD-plus condition is therefore essentially TIGHT.
+`campaign_rateQuarter_L_one_refuted`: (16,4,9) is in the refuted regime.
+
+WHAT REMAINS OPEN. The window's true L_near is bracketed
+2 ≤ L_near^true (this file) ≤ n²/((2a−n)²−n(k−1)) where the doubled-Johnson
+margin holds (part 3); in the deep window (margin fails) no finite in-tree
+upper bound exists yet — open content: bound the number of ACTIVE scalars
+(single-appearance codewords are per-scalar Johnson; multi-appearance ones
+are secant-pinned through u₀). The two-block family cannot pass Λ = 2 at
+minimal support (M ≤ 2 blocks forced); whether L_near^true = 2 in the
+window is open. Weld consequence: at window shapes the safe branch cannot
+close exactly at the n−a floor via the near-code-list route with L = 1.
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 35s, 9/9 audits clean):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15WindowTwoReference.lean`.
+Probe: `scripts/probes/probe_466_w15_window_two_reference.py` (exit 0).
+Analysis:
+`docs/kb/deltastar-466-lowprofile-window-two-reference-2026-07-10.md`.
+
+## [466-r3-m9-rung-discharged-cyclotomy-refuted] the m=9 DIST rung DISCHARGES unconditionally (support collapse + counting, C=10); cubic-cyclotomy closed forms REFUTED with mechanism (2026-07-10)
+
+Lane: r=3 rung, m = 9 (the smallest instance left open by
+[466-r3-dist-stratum-accounting-final]).
+
+DISCHARGE (positive, formalized). At m = 9 (u = 3) there are exactly three
+H-cosets, so a DIST triple carries label multiset {0,1,2} with sum ≡ 0 mod 3:
+distStratum(d) = 0 off d ∈ {0,3,6} (kernel-checked, 729 cases), and the
+per-(d,j) DIST index count is ≤ 6 (kernel-checked, 81 cases). Counting gives
+‖DIST(d)‖ ≤ 48·q^{3/2} and hence, for EVERY coefficient sequence with the
+classical envelope ‖J‖² ≤ q:
+  DistStratumEnergyBound J 3 q 10   (3·48² = 6912 ≤ 10·9³ = 7290)
+— UNCONDITIONAL, no cancellation, no named inputs. Probe-measured sharp
+constant over 32 primes p ≡ 1 mod 9 (up to 1171): C_D(9) = 1.87 (5× headroom).
+With R300's m = 3, 6 rungs (C = 0): the first m with genuinely open DIST
+content is m = 12 (u = 4: four cosets, no support collapse, Θ(m²) counts).
+
+REFUTATIONS (cyclotomy, with mechanism).
+(1) Per-character E_DIST is NOT a function of p: switching the primitive root
+changes it by ~25% at p = 109. Mechanism: χ = λ picks one Galois conjugate of
+the six order-9 characters and E_DIST is not Galois-invariant ⇒ NO closed
+form in Gauss's cubic invariants (L,M), 4p = L²+27M², for fixed χ.
+(2) The Galois-AVERAGED energy IS an exact integer at every probed prime
+(distance to ℤ < 10⁻⁴ at magnitude 10¹¹ — Galois invariance + algebraic
+integrality; probe-only, honestly NOT formalized: needs ANT machinery with no
+in-tree counterpart). But even it admits NO exact fit on the monomial basis
+{p³, p², p²L, pL², pM², p, 1} (LSQ residual 4×10², total failure). Mechanism:
+the DIST energy lives in nonic cyclotomy (ℚ(ζ₉), degree 6) and is not
+determined by the cubic-subfield data (L,M); any exact evaluation must use
+the ℤ[ζ₉] prime decomposition of p.
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 43s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R301CubicCyclotomyM9.lean`
+(`m9_dist_support`, `distStratum_m9_eq_zero`, `m9_inner_card_le`,
+`norm_distStratum_m9_le`, `distStratumEnergyBound_rung_m9`).
+Probe: `scripts/probes/probe_466_r3_m9_cubic_cyclotomy.py`.
+Analysis:
+`docs/kb/deltastar-466-r3-m9-cubic-cyclotomy-2026-07-10.md`.
+
+## [w15-multiblock-ladder] L_near = 2 is NOT a universal ceiling: three-block refuter (L=2 FALSE at (10,2,6)-shapes, probe Λ=3) + shape-dependent constant-block ladder; campaign shape capped at M=2 (gate ¬(3(k−1)+1 ≤ 9)) with empirical ceiling Λ=2 (2026-07-10)
+
+CONTEXT (lane ll:low-profile-fiber, W15 part 5 — deciding L_near^true = 2
+after part 4's L=1 refutation).
+
+PROBE (`scripts/probes/probe_466_w15_active_scalar_ceiling.py`, exit 0):
+* (11,10,2,6): the THREE-constant-block line (blocks of size 2, z = 6,
+  support 4, constants 0/1/2) is safe + large-zero with Λ = 3; hill-climb
+  max also 3; M=4 and b=3 variants correctly fail appearance (n−(M−1)b < a).
+* (17,16,4,9) campaign shape: constant blocks capped at M = 2 by the
+  safety gate M(k−1) < a (9 ≥ 9); structured non-constant three-piece
+  search found 0 feasible triples in 4000 samples (needs ≥ 7 coordinated
+  pairwise Z-overlap among degree-<4 codewords); hill-climbs at z ∈ {9,14}
+  top out at Λ = 2. Empirical ceiling 2 there — measurement, NOT proof.
+
+PROVED (Lean):
+* `not_largeZeroSafeLineListBudgeted_two` — the three-block refuter: for
+  any b with a ≤ 3b, a + 2b ≤ n, b+1 ≤ a, 3(k−1)+1 ≤ a, 1 ≤ k and any
+  μ ∉ {0,1}: `LargeZeroSafeLineListBudgeted dom k a 2` is FALSE (constants
+  0, 1, μ all appear; line safe: constants score b ≤ a−1 on Z, generic
+  ≤ 3(k−1) < a).
+* `elevenShape_L_two_refuted` — (n,k,a) = (10,2,6), b = 2, any field with
+  ≥ 3 elements: L_near^true ≥ 3.
+* `campaign_constant_cap` — the campaign shape fails the M=3 gate: the
+  constant ladder cannot pass M = 2 there.
+
+CORRECTED LOWER LADDER (shape-dependent). M constant blocks of size b
+refute L = M−1 whenever Mb ≥ a, n−(M−1)b ≥ a, b ≤ a−1, M(k−1) < a, M ≤ q:
+L_near^true ≥ M_max(shape); M_max ≥ 2 throughout 3a ≤ 2n (part 4), = 3 at
+(10,2,6)-like shapes, = 2 (constants) at the campaign shape. M = 3 rung
+formalized; general M is a mechanical extension left un-landed.
+
+HONESTY. No upper bound Λ ≤ 2 is proved at the campaign shape; the open
+content of `LargeZeroSafeLineListBudgeted` in the deep window is now:
+prove Λ ≤ 2 at shapes with 3(k−1) ≥ a (where any third codeword must be
+non-constant with coordinated Z-overlaps — the part-4 secant dichotomy is
+the handle) or find a non-constant refuter. Weld consequence: safe-branch
+factor ≥ 3 at (10,2,6)-shapes, ≥ 2 (empirically = 2) at the campaign
+shape, over the n−a floor.
+
+Formal kernel (axiom-clean, [propext, Classical.choice, Quot.sound], no
+sorryAx; pg-iterate 41s, 7/7 audits clean):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15MultiBlockRefuter.lean`.
+Probe: `scripts/probes/probe_466_w15_active_scalar_ceiling.py` (exit 0).
+Analysis:
+`docs/kb/deltastar-466-lowprofile-multiblock-ladder-2026-07-10.md`.
+LANE STATUS: W15 parts 1-5 complete; lane rests for consolidation.
+
+## [rate-quarter-noncollinear-shared-triple] pencil rigidity proved; collapse-to-collinear refuted at P1 shape (2026-07-10)
+
+Lane: immediate-predecessor joint-witness branch, successor of
+`[rate-quarter-shared-fresh-coordinate-structure]`.
+
+Pencil rigidity is now a theorem: if the three witness sets of three distinct
+bad scalars share at least `k` common coordinates, the pairwise
+divided-difference pencils coincide and the three witness codewords lie on
+ONE pencil.  With the collinear two-cover boost this yields the exact P1
+dichotomy: every shared triple of threshold witnesses either carries a single
+joint pencil with agreement at least `352,321,537 >= k = 2^28`, or has triple
+overlap at most `k-1`.
+
+The hoped-for unconditional collapse of the non-collinear branch is false
+twice over.  First, arithmetically: `3T - 2N = -369,098,750 < 0`, so the
+triple-overlap floor is vacuous and the rigidity premise is never forced at
+P1.  Second, constructively: an explicit `RS[32,8]` stack over `F_37`,
+satisfying every P1 shape inequality (`2T-n = 4 > 0`, `3T-2n = -10 < 0`,
+`2T <= n+k-1`, `k/n = 1/4`, `T/n = 0.5625`), realizes a NON-collinear
+shared-fresh triple: bad scalars `1,2,3` at radius `7/16` with
+eighteen-coordinate witnesses through the fresh coordinate `18` outside the
+joint set `J = {0..17}`, non-absorbed, triple overlap exactly `6 <= k-1 = 7`,
+and kernel-checked non-collinearity (no pencil of arbitrary functions
+reproduces the three witness codewords; the coordinate-`0` values violate the
+pencil identity by `12 != 0`).
+
+The construction plants the roots of the second divided difference
+`(g3-g2)c1*A1 - (g3-g1)c2*A2` inside the fresh region using only products of
+linear factors, which are coset-friendly on the literal smooth P1 domain
+(products over subgroup cosets are of the shape `x^m - c`).  The
+`SharedFreshTripleFree` residual is therefore conjecturally FALSE at P1; a
+kernel-checked P1-scale lift of this construction is the designated refuting
+move, and would kill the fixed-witness charge branch outright.
+
+Landed axiom-clean: `triple_pencil_rigidity`, `shared_triple_dichotomy`,
+`noncollinear_triple_overlap_le`, `triple_floor_negative`, and the residual
+split `SharedFreshTripleFree <- CollinearTripleFree /\ NonCollinearTripleFree`
+(`sharedFreshTripleFree_of_split`), plus the full `F_37` certificate.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterNonCollinearTriple.lean`.
+Executable certificate:
+`scripts/probes/probe_rate_quarter_p1_noncollinear_triple.py`.
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-noncollinear-triple-2026-07-10.md`.
+
+## [rate-quarter-shared-fresh-triple-p1-refuted] SharedFreshTripleFree is FALSE at the literal P1 predecessor (2026-07-10)
+
+Lane: immediate-predecessor joint-witness branch, closes the arc
+`[rate-quarter-joint-witness-bare-charge]` ->
+`[rate-quarter-shared-fresh-coordinate-structure]` ->
+`[rate-quarter-noncollinear-shared-triple]`.
+
+The predicted smooth-domain lift is kernel-checked.  On the literal canonical
+P1 domain (`powDomain g` for the certified order-`2^30` generator `g` of
+`F_P`), the residual `SharedFreshTripleFree` is false: three distinct bad
+scalars DO share one fresh coordinate outside a threshold joint set.  The
+certificate is purely generator-symbolic.  With `omega = g^(2^26)` of order 16
+and residue classes `t = e mod 16`:
+
+```text
+J    = cosets {0,1,2,3,4,8,9,10,11},  |J| = 9*2^26 = 603979776 >= T
+u    = ((g^e)^(2^27), 1) on the 7 fresh cosets, (0,0) on J
+gam_j = -omega^(2j), j = 0,1,2   (distinct: omega has order 16)
+p_j  = X^(2^27) + gam_j          (degree 2^27 < k = 2^28)
+S_j  = 7 fresh cosets + cosets {j, j+8}   (9 cosets >= T)
+```
+
+The pair `(0,0)` explains `J`; `p_j` agrees with the line on `S_j` because
+`omega^(2t) = -gam_j` exactly at `t = j, j+8`; non-jointness holds because
+any degree-`<k` explanation of the second row is pinned to the constant `1`
+on `7*2^26 >= k` fresh points but `u_1 = 0` on the `J`-part anchor; and the
+fresh coordinate (residue 5) lies in every witness and outside `J`.  No field
+numeral beyond the certified generator facts enters; the coset counting is a
+20-line `Fin`-bijection lemma.
+
+Consequence, stated honestly: the fixed-witness escape-charge branch is DEAD
+at the canonical P1 domain.  The consumer
+`badFamily_card_le_N_of_sharedFreshTripleFree` can never be instantiated
+there, and per-coordinate injective or 2-bounded charges cannot prove the
+predecessor cap.  This refutes the proof route only: the constructed stack
+exhibits exactly three bad scalars, so the predecessor count and the bracket
+`3/8 <= mcaDeltaStar <= 43/96 + 1/(3*2^30) < 1/2` are untouched.  The lane
+successor is counting that tolerates shared triples: bound the number of
+fresh coordinates carrying triples, or run a global pencil count at pairwise
+agreement `2T - N`, using the landed structure (pencil transport, witness
+incomparability, absorption dichotomy, collinear boost, triple rigidity).
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSharedFreshTripleP1Refuted.lean`
+(`sharedFreshTripleFree_canonicalDomain_refuted`, axiom-clean).
+Executable certificate:
+`scripts/probes/probe_rate_quarter_p1_shared_fresh_triple_refuted.py`
+(full enumeration at the mid-scale image `mu_256 = F_257^*` plus all
+coset-level identities at the literal `P`).
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-shared-fresh-triple-p1-refuted-2026-07-10.md`.
+
+## [rate-quarter-pencil-count-charge] exact per-pencil rider caps + fiber reduction; the ten-rider Johnson crossover (2026-07-10)
+
+Lane: immediate-predecessor counting after the shared-fresh refutation killed
+per-coordinate charges.
+
+Bad scalars are now counted by the divided-difference pencils their witnesses
+ride, and the counting is exact, all axiom-clean.  For a pencil `(w0,w1)` with
+`A` aligned coordinates (both rows matching the stack): every non-aligned
+coordinate votes for at most one rider, non-jointness forces every rider to
+vote, and therefore
+
+```text
+riders*(T-A) <= N-A   (A <= T),      riders <= N-A,
+riders <= N-T+1 = 480946859          (uniform cap, any pencil),
+riders*T <= N + (riders-1)*A          (alignment ladder).
+```
+
+The ladder crosses the Johnson threshold exactly at TEN riders: ten riders
+force `A >= 539356427` with `539356427^2 > N(k-1)`, while the nine-rider
+floor `532676609` stays below (`532676609^2 <= N(k-1)`).  Distinct pencils'
+aligned regions intersect in `< k` coordinates, so the pencils with >= 10
+riders form a Johnson-packable family; pencils with <= 9 riders are the
+unbounded-family regime.
+
+Fiber reduction: fixing a base scalar and mapping every other bad scalar to
+its pair pencil partitions the family, each fiber has at most `N-T` members,
+hence `#bad <= 1 + P*(N-T)` where `P` is the number of distinct pencils
+through the base.  Two pencils close the prize budget
+(`1 + 2*(N-T) = 961893717 <= N`), so over-budget forces at least THREE
+distinct pencils through EVERY base scalar.  The surviving named residual is
+`BasePencilImageCap` (image cap 2, OPEN): the probe constructs a genuine bad
+family at the P1 shape with exactly TWO pencils through the base
+(`mu_256/F_257`, base riding `(x^16, 1)` and `(x^16-x^8+1, x^8)`), so the cap
+sits on the realizability boundary.  Pairwise-only three-pencil designs are
+impossible: `4T > 2N`, so ANY four threshold witnesses share a triple-covered
+coordinate (`four_witnesses_triple_overlap`, sum-free proof) — a third pencil
+must enter through the triple-overlap machinery of the previous rungs, where
+rigidity and the collinear boost apply.  The weighted refinement
+`Sigma_pi (N-T)/(T-A_pi) <= N-1` is the true remaining quantity.
+
+Nothing here is a delta-star change; the bracket is untouched.  This rung
+replaces the dead per-coordinate charge with the exact per-pencil ledger and
+isolates the surviving inequality.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPencilCountCharge.lean`
+(15 theorems, axiom-clean).
+Executable certificate:
+`scripts/probes/probe_rate_quarter_p1_pencil_count_charge.py`.
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-pencil-count-charge-2026-07-10.md`.
+
+## [rate-quarter-third-pencil-exclusion] exclusion fails: BasePencilImageCap refuted at literal P1 (2026-07-10)
+
+Lane: pencil-count charge, closing round of the base-pencil arc.
+
+The third pencil through a base scalar cannot be excluded; it is
+kernel-checked to EXIST at the literal canonical P1 domain.
+
+Characterization half (proved): the base-partner witness intersections are
+absorbed into the pair pencils' aligned regions, so for two distinct pencils
+through the base the triple overlap `S_0 /\ S_i /\ S_j` has at most `k-1`
+coordinates -- the exact structural constraint a third pencil must satisfy.
+All naive exclusion arithmetic is vacuous at P1 (`4T-3N < 0`, Bonferroni
+slack below `k-1`).
+
+Refutation half (kernel-checked): the partners-collinear construction puts
+three partners on the single pencil `sigma = (x^(2m), 1)` with the base
+witness OFF sigma, making the three pair pencils pairwise distinct
+automatically.  With `m = 2^25` (folding `mu_{2^30}` onto `mu_32`), base
+`gamma_0 = 2` (not a 32nd root of unity since `2^32 - 1 < P`), partners
+`3, 4, 5`:
+
+```text
+p_0 = x^(2m) + x^m,   p_j = x^(2m) + gamma_j,
+dir_j = (gamma_j - x^m)/(gamma_j - 2),  dir_i - dir_j prop. (x^m - 2) != 0,
+B = 14 classes (sigma-aligned, 14*2^25 >= k) pins the partners' second row,
+P_1 = 10 classes (pi_1-aligned, 10*2^25 >= k) pins the base's second row,
+witnesses 18 classes = 603979776 >= T each.
+```
+
+`basePencilImageCap_canonicalDomain_refuted` lands axiom-clean: a genuine
+bad family (4 scalars) with THREE distinct divided-difference pencils
+through its base scalar at the canonical domain.  The class budget also
+admits four pencils; since the fiber consumer needed `P <= 2`, no uniform
+base-pencil cap of the form `1 + P*(N-T) <= N` survives.
+
+Honest state of the predecessor branch after this arc: per-coordinate
+charges (shared-fresh) dead; uniform per-base pencil caps dead; per-pencil
+rider caps, the alignment ladder, the ten-rider Johnson crossover, and the
+weighted per-fiber inequality `fiber*(T-A) <= N-T` all remain valid and
+axiom-clean.  The surviving quantitative object is the layered/weighted
+budget: sum over the base's pencils of `(N-T)/(T-A_pi)`, with the heavy
+layer (`fiber >= 9`, alignment above the Johnson threshold) Johnson-packable
+and the light layers unbounded by pure counting.  Estimating that layered
+sum exactly is the designated successor; no clean named cap residual is
+recorded because every uniform one is now refuted or insufficient.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterThirdPencilExclusion.lean`.
+Executable certificate:
+`scripts/probes/probe_rate_quarter_p1_third_pencil.py`.
+Analysis:
+`docs/kb/deltastar-466-rate-quarter-third-pencil-2026-07-10.md`.
+
+## [rate-quarter-layer-cake-budget] the pure counting surface is exhausted; exact layer caps landed (2026-07-10)
+
+Lane: pencil-count charge, session-closing round.
+
+The layered/weighted budget is now computed exactly and formalized.  The
+Johnson-packed objects are the pencil PAIRS `(w0,w1)`, packed through their
+aligned regions, with pairwise `< k` intersections from `predecessor_sep`.
+Landed axiom-clean:
+
+```text
+alignedFamily_johnson     : exact-diagonal Johnson at any level a^2 > N(k-1)
+tenRiderLevel  (539356427): at most 108 pencils
+threshold-1    (592794965): at most 5 pencils (the classical five)
+johnson threshold          : floor sqrt(N(k-1)) = 536870910
+subJohnson_riders_le_nine  : pencils aligned <= 536870910 carry <= 9 riders
+```
+
+The verdict is negative and exact: counting ADMITS over-budget.  Three
+pencils at alignment `T-1` pass the Johnson count (`J(T-1) = 5 >= 3`), fit
+the aligned-region packing (`3(T-1) <= N + 3(k-1)`), and their full fibers
+`N-T` carry `1 + 3(N-T) = 1,442,840,575 > N` bad scalars
+(`counting_admits_three_heavy_overBudget`).  The greedy heavy-side
+layer-cake maximum is `2,404,735,416 > 2N`, and the sub-Johnson light side
+is unbounded in pencil count.  No further uniform counting theorem can
+close the predecessor budget.
+
+The minimal open statement in this branch is now pinned to a concrete
+algebraic window (`three_heavy_twoCover_window`): three near-threshold
+joint pairs through one base codeword must two-cover `3(T-1) - N =
+704,643,071` coordinates out of at most `3(k-1) = 805,306,365` allowed
+pairwise overlaps -- an 87.5%-saturated packing that RS algebra (not
+counting) must exclude or admit.  The alternative remains the
+structured-floor route (`PredecessorStructuredFloorResidual`).
+
+LANE RETROSPECTIVE (P1 predecessor arc, this session, all kernel-checked):
+dead proof routes -- per-coordinate escape charges (SharedFreshTripleFree
+refuted at the canonical domain by the mu_32 coset certificate), collinear
+triple freeness, uniform base-pencil caps (BasePencilImageCap refuted by the
+partners-collinear three-pencil certificate), and now every uniform counting
+cap.  Standing toolkit -- pencil transport, witness incomparability,
+absorption dichotomy, triple rigidity, collinear boost, vote-partition rider
+caps, alignment ladder, ten-rider Johnson crossover, fiber partition,
+base-triple `< k` overlap, four-witness pigeonhole, and the layer caps
+above.  The bracket `3/8 <= mcaDeltaStar <= 43/96 + 1/(3*2^30) < 1/2` is
+unchanged throughout; the predecessor uniform count is open, concentrated in
+the two named surfaces above.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterLayerCakeBudget.lean`.
+Executable certificate:
+`scripts/probes/probe_rate_quarter_p1_layer_cake.py`.
+Analysis (with full retrospective):
+`docs/kb/deltastar-466-rate-quarter-layer-cake-2026-07-10.md`.
