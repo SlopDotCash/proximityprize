@@ -70,6 +70,12 @@ contained in the literal joint core of a degree-`<K` polynomial line.  Thus indi
 realizability also does not rescue the cardinality argument.  The remaining potentially positive
 invariant is simultaneous control—distinctness of the interpolated secant parameters and absence
 of extra core points under the actual decoded-family compatibility equations.
+An explicit nodal companion in the same file proves that the packing index also supports `2K`
+genuinely distinct degree-`<K` polynomial parameters: delete one base root and use either of two
+distinct nonzero scalar weights.  This closes the separate parameter-count objection.  The two
+constructions are not yet welded—the remaining exact question is whether one shared received
+stack can simultaneously make those distinct nodal parameters agree on the prescribed packed
+cores without creating the prize-forbidden structure.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

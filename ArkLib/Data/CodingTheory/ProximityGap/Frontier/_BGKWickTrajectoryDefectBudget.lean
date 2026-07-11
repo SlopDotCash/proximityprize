@@ -60,6 +60,12 @@ def productionInjectiveMass : Nat := productionN.descFactorial 7
 /-- Remaining injective coefficient after the repeated sector is absorbed. -/
 def injectiveCoefficient : Nat := 126871
 
+/-- Total excess coefficient available before reserving the repeated-coordinate sector. -/
+def totalExcessCoefficient : Nat := 127009
+
+/-- Existing repeated-coordinate reservation. -/
+def repeatedSectorAllowance : Nat := 138
+
 /-- The numerator of the exact normalized six-transition allowance. -/
 def trajectoryAllowanceNumerator : Nat :=
   injectiveCoefficient * productionQ * productionN ^ 14
@@ -135,6 +141,14 @@ theorem wick_product_exact_gap :
     (∏ i : Fin 6, wickStepNumerator i) - 126871 = 8264 := by
   rw [wickStepNumerator_product]
   norm_num
+
+/-- Even eliminating the complete repeated-coordinate reservation would leave a primitive Wick
+gap of `8126`.  Covariance internal to the repeated defect can therefore complement, but not
+replace, a signed injective-transition theorem. -/
+theorem wick_gap_if_repeated_sector_were_free :
+    injectiveCoefficient + repeatedSectorAllowance = totalExcessCoefficient ∧
+      135135 - totalExcessCoefficient = 8126 := by
+  norm_num [injectiveCoefficient, repeatedSectorAllowance, totalExcessCoefficient]
 
 /-- Improving any one of the six integer Wick numerators by one is already enough.  The weakest
 such improvement is the last one, `13 -> 12`, whose product is `124740`. -/
@@ -390,6 +404,8 @@ end ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget
   ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.productionTrajectoryAllowance_strict_window
 #print axioms
   ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.product_lt_productionTrajectoryAllowance_of_oneUnitImproved
+#print axioms
+  ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.wick_gap_if_repeated_sector_were_free
 #print axioms
   ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.sixStepRatioProduct_eq
 #print axioms

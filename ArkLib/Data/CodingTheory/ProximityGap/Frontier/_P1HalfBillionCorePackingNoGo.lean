@@ -206,6 +206,82 @@ theorem core_subset_jointCore_packedLine
     interpolant_eval_of_mem (fun x => domain x) u₁ (core p)
       domain.injective hx⟩
 
+/-! ## Explicitly distinct nodal line parameters -/
+
+/-- The root polynomial of the base block with the coordinate `i` deleted. -/
+noncomputable def erasedBaseNodal
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F) (i : Fin k) : F[X] :=
+  Lagrange.nodal (Finset.univ.erase i) (fun j => domain (basePoint j))
+
+theorem erasedBaseNodal_eval_self_ne_zero
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (hdomain : Function.Injective domain) (i : Fin k) :
+    (erasedBaseNodal domain i).eval (domain (basePoint i)) ≠ 0 := by
+  apply Lagrange.eval_nodal_not_at_node
+  intro j hj h
+  have hij : i = j := basePoint_injective (hdomain h)
+  exact (Finset.mem_erase.mp hj).1 hij.symm
+
+theorem erasedBaseNodal_eval_other_eq_zero
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    {i j : Fin k} (hij : i ≠ j) :
+    (erasedBaseNodal domain j).eval (domain (basePoint i)) = 0 := by
+  unfold erasedBaseNodal
+  change Polynomial.eval ((fun t : Fin k => domain (basePoint t)) i)
+    (Lagrange.nodal (Finset.univ.erase j)
+      (fun t : Fin k => domain (basePoint t))) = 0
+  exact Lagrange.eval_nodal_at_node
+    (R := F) (s := Finset.univ.erase j)
+    (v := fun t : Fin k => domain (basePoint t))
+    (Finset.mem_erase.mpr ⟨hij, Finset.mem_univ i⟩)
+
+/-- Two weighted copies of every erased-base nodal polynomial. -/
+noncomputable def nodalParameter
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (p : CoreIndex k) : F[X] :=
+  C (weight p.1) * erasedBaseNodal domain p.2
+
+theorem nodalParameter_mem_degreeLT
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0) (p : CoreIndex k) :
+    nodalParameter domain weight p ∈ Polynomial.degreeLT F k := by
+  have hk : 0 < k := lt_of_le_of_lt (Nat.zero_le _) p.2.isLt
+  have hnodal : erasedBaseNodal domain p.2 ∈ Polynomial.degreeLT F k := by
+    rw [Polynomial.mem_degreeLT, erasedBaseNodal, Lagrange.degree_nodal,
+      Finset.card_erase_of_mem (Finset.mem_univ p.2), Finset.card_univ]
+    rw [Fintype.card_fin]
+    exact_mod_cast (Nat.sub_lt (by omega : 0 < k) one_pos)
+  rw [nodalParameter, ← Polynomial.smul_eq_C_mul]
+  exact (Polynomial.degreeLT F k).smul_mem (weight p.1) hnodal
+
+/-- **The `2k` nodal polynomial parameters are genuinely distinct.** -/
+theorem nodalParameter_injective
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (hdomain : Function.Injective domain)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0)
+    (hweightInj : Function.Injective weight) :
+    Function.Injective (nodalParameter domain weight : CoreIndex k → F[X]) := by
+  intro p q hpq
+  by_cases hi : p.2 = q.2
+  · have heval := congrArg
+      (fun f : F[X] => f.eval (domain (basePoint p.2))) hpq
+    simp only [nodalParameter, eval_mul, eval_C] at heval
+    rw [hi] at heval
+    have hn := erasedBaseNodal_eval_self_ne_zero domain hdomain q.2
+    have hw : weight p.1 = weight q.1 := by
+      exact mul_right_cancel₀ hn heval
+    exact Prod.ext (hweightInj hw) hi
+  · have heval := congrArg
+      (fun f : F[X] => f.eval (domain (basePoint p.2))) hpq
+    simp only [nodalParameter, eval_mul, eval_C] at heval
+    rw [erasedBaseNodal_eval_other_eq_zero domain hi] at heval
+    have hleft : weight p.1 *
+        (erasedBaseNodal domain p.2).eval (domain (basePoint p.2)) ≠ 0 :=
+      mul_ne_zero (hweight p.1)
+        (erasedBaseNodal_eval_self_ne_zero domain hdomain p.2)
+    rw [mul_zero] at heval
+    exact (hleft heval).elim
+
 end ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 
 open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
@@ -219,3 +295,5 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms interpolant_mem_degreeLT
 #print axioms packedLine_degreeLT
 #print axioms core_subset_jointCore_packedLine
+#print axioms nodalParameter_mem_degreeLT
+#print axioms nodalParameter_injective

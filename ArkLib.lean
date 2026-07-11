@@ -1703,6 +1703,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKDilationColoredNewtonO
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKDilationPermutationCopulaNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKEffectiveHalfPlateau
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKFiberSquareCensusBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKFirstCollisionCovarianceLedgerBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKFourteenFactorYoung
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKHashimotoWickSeparationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKInjectiveFactorialCovarianceAudit
@@ -1711,6 +1712,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKInjectivePacketDefectC
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJacobiTensorProductionGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonKneserDepthSevenNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonPhaseGradeNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonSignedCovariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLaterTransitionDefectLedgers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLowerMomentOrbitSpikeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKMarkedSunflowerInverse
