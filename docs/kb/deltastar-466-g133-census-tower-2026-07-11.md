@@ -36,3 +36,14 @@ rung) consumes DCEnergyBound directly.
 
 No claim any of these hold. CORE remains OPEN — but its statement has never been this
 localized.
+
+## Empirical grounding (same day)
+
+Exact-integer check of the census shape `2·q·depthFiber G t t ≤ 2·q·Wick_t + n^{2t}` at all
+accessible cells (n ∈ {4,8,16}, two primes each, t = 2..6 where feasible): **28/28 PASS**,
+worst ratio 0.46 (n = 16, t = 2), typically ≤ 0.28. The hypotheses of the tower are
+empirically well-shaped at small scale. Ratios grow with n — consistent with the true
+difficulty living at production scale, and with the (64, 16778497, 5) DCEnergy failure
+implying that at THAT prime some census statement or low-rung anchor at rung ≤ 5 must fail.
+Identifying which (a targeted disjoint-fiber probe at n = 64, r = 5 with sum-class pruning)
+is the sharpest next red-team item.
