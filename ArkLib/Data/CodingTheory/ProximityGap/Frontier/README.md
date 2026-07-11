@@ -167,7 +167,14 @@ remain distinct and degree-`<K`, and simultaneously carry their prescribed `K`-p
 against one received stack.  Thus neither bounded centres nor large-core incidence at one centre
 can cluster the routed lines.  A surviving P1 proof must use compatibility between the two routed
 centre pencils for each matched pair together with the original threshold-size endpoint witness
-sets; treating either routed endpoint separately is now closed sharply.
+sets; treating either routed endpoint separately is now closed sharply.  The new
+`nodalPencilLine_two_routes_and_original` closes the core-only coupled variant too: choose two
+distinct outside scalars on one packed pencil line and route both to its common centre.  Both
+cross-secants and the outside pair's original canonical secant are exactly that same line, while
+the shared stack still supplies its `K`-core.  Hence two-route algebraic compatibility plus the
+`K`-core condition is still insufficient.  The quantitatively larger `T`-element full-agreement
+witness at each outside scalar is now the precise live ingredient; it cannot be discarded in
+favor of secant cores alone.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

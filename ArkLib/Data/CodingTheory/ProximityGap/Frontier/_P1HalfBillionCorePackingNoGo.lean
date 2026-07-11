@@ -504,6 +504,74 @@ theorem rawSecantParameter_nodal
         nodalLine domain weight p := by
   exact rawSecantParameter_same_polynomial gamma beta (nodalParameter domain weight p)
 
+/-- A line is recovered exactly as the canonical secant of its values at any two distinct
+scalars. -/
+theorem rawSecantParameter_lineValues
+    {F : Type} [Field F] {gamma beta : F} (hne : gamma ≠ beta)
+    (line : F[X] × F[X]) :
+    rawSecantParameter gamma beta
+      (line.1 + C gamma * line.2) (line.1 + C beta * line.2) = line := by
+  have hslope : slopePolynomial gamma beta
+      (line.1 + C gamma * line.2) (line.1 + C beta * line.2) = line.2 := by
+    simp only [slopePolynomial]
+    rw [show line.1 + C gamma * line.2 - (line.1 + C beta * line.2) =
+        C (gamma - beta) * line.2 by rw [C_sub]; ring]
+    rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ (sub_ne_zero.mpr hne), C_1, one_mul]
+  simp only [rawSecantParameter, hslope]
+  apply Prod.ext
+  · simp only
+    ring
+  · rfl
+
+/-- **Coupled two-route compatibility no-go.**  Put both outside lifted endpoints on one nodal
+pencil line and route each back to the common centre.  Both cross-secants and the outside pair's
+original secant are literally the same line, which still carries its prescribed `k`-core in the
+shared received stack.  Thus even exact compatibility of two routed `k`-core secants does not
+cluster the family. -/
+theorem nodalPencilLine_two_routes_and_original
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {k : Nat}
+    (domain : Coord k ↪ F) (weight : Fin 2 → F)
+    {gamma beta delta : F} (hgd : gamma ≠ delta) (hbd : beta ≠ delta)
+    (hgb : gamma ≠ beta) (qDelta : F[X]) (p : CoreIndex k) :
+    let line := nodalPencilLine (fun x => domain x) weight delta qDelta p
+    rawSecantParameter gamma delta
+        (line.1 + C gamma * line.2) qDelta = line ∧
+      rawSecantParameter beta delta
+        (line.1 + C beta * line.2) qDelta = line ∧
+      rawSecantParameter gamma beta
+        (line.1 + C gamma * line.2) (line.1 + C beta * line.2) = line ∧
+      k ≤ (jointCore domain
+        (pencilReceived₀ (fun x => domain x) weight delta qDelta)
+        (nodalReceived (fun x => domain x) weight) line.1 line.2).card := by
+  let line := nodalPencilLine (fun x => domain x) weight delta qDelta p
+  change rawSecantParameter gamma delta
+      (line.1 + C gamma * line.2) qDelta = line ∧
+    rawSecantParameter beta delta
+      (line.1 + C beta * line.2) qDelta = line ∧
+    rawSecantParameter gamma beta
+      (line.1 + C gamma * line.2) (line.1 + C beta * line.2) = line ∧
+    k ≤ (jointCore domain
+      (pencilReceived₀ (fun x => domain x) weight delta qDelta)
+      (nodalReceived (fun x => domain x) weight) line.1 line.2).card
+  have hcentre : line.1 + C delta * line.2 = qDelta := by
+    exact nodalPencilLine_at_centre (fun x => domain x) weight delta qDelta p
+  have hgamma : rawSecantParameter gamma delta
+      (line.1 + C gamma * line.2) qDelta = line := by
+    rw [← hcentre]
+    exact rawSecantParameter_lineValues hgd line
+  have hbeta : rawSecantParameter beta delta
+      (line.1 + C beta * line.2) qDelta = line := by
+    rw [← hcentre]
+    exact rawSecantParameter_lineValues hbd line
+  have horiginal : rawSecantParameter gamma beta
+      (line.1 + C gamma * line.2) (line.1 + C beta * line.2) = line :=
+    rawSecantParameter_lineValues hgb line
+  have hcore : k ≤ (jointCore domain
+      (pencilReceived₀ (fun x => domain x) weight delta qDelta)
+      (nodalReceived (fun x => domain x) weight) line.1 line.2).card := by
+    exact nodalPencilLine_core_card_ge domain weight delta qDelta p
+  exact ⟨hgamma, hbeta, horiginal, hcore⟩
+
 /-- Literal P1 predecessor agreement threshold. -/
 abbrev T : Nat := 592794966
 
@@ -677,6 +745,8 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms nodalPencilLine_core_card_ge
 #print axioms rawSecantParameter_same_polynomial
 #print axioms rawSecantParameter_nodal
+#print axioms rawSecantParameter_lineValues
+#print axioms nodalPencilLine_two_routes_and_original
 #print axioms production_threshold_deficit
 #print axioms not_five_nodalLines_all_of_integralJohnson
 #print axioms not_five_nodalLines_all_threshold
