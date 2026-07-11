@@ -21,12 +21,33 @@ face.
 | Pins | `_G134ProductionCrossoverPin` | bump at rungs 5–6 = kernel fact; in-tree rung-2 anchor does NOT cover production (Sidon threshold fails astronomically) |
 | End-to-end | `_G135CensusToSupBound` | census family + anchors ⟹ `‖η_b‖^220 ≤ q·219!!·n^110` (M ≤ ~2^19.7) — conditional |
 
+## The accident programme (G136, complete at rung 2 — six axiom-clean files)
+
+| Part | File | Content |
+|---|---|---|
+| 0 | `_G136AnchorConstantSharp` | `3n²−3n ≤ E₂` for negation-closed sets — the constant 3 is optimal (zero-sum plane) |
+| 1 | `_G136UnitCircleMann` | universal Mann: unit-modulus `a+b = c+1 ⟹ a=1 ∨ b=1 ∨ (c=−1 ∧ b=−a)` — elementary conjugate trick, every order at once |
+| 2a | `_G136EnergySolutionBijection` | `E₂(H) = #H·#{(a,b,c) ∈ H³ : a+b=c+1}` for multiplicatively closed H |
+| 2b+cap | `_G136LawfulCount` | lawful count `3n−3`; `rung2_anchor_iff_accidents`: anchor ⟺ #accidents ≤ 3 |
+| 3a | `_G136AccidentTolerance` | exact tolerance arithmetic (ℕ iff; A ≤ 3 at production) |
+| prod | `_G136ProductionInstantiation` | the concrete equivalence at `rootsFinset ω 2^30` from `IsPrimitiveRoot` alone |
+
+**Consequence**: the production rung-2 anchor IS "the certified prime admits ≤ 3
+solutions of a+b = c+1 in μ_{2^30} beyond the Mann families" — finite, Diophantine,
+per-prime (expected count 2^{-68}), attackable by cyclotomic divisibility rather than
+exponential sums. Extension surface: rungs 3–10 need the 2t-term 2-power Mann
+(pair-decomposition via cyclotomic tower induction on the basis {1, ζ} of
+ℚ(ζ_{2^m})/ℚ(ζ_{2^{m−1}}) — the 4-term case had an elementary shortcut; 6-term likely
+needs the real induction) plus the analogous bijections.
+
 ## The wall (the only open objects on this face)
 
 1. **Production anchors, rungs 2–10** (`DCShape F G t` at #G = 2^30, certified primes):
    bump at rungs 5–6 (kernel fact); prime-individual arithmetic (the (64,16778497,5)
-   failure is prime-exceptional — autopsy); zero in-tree coverage (G134 audit).
-   Heuristics favorable (expected nontrivial quadruples ≈ 2^-68 at rung 2). BGK-face.
+   failure is prime-exceptional — autopsy); zero in-tree coverage (G134 audit; the
+   in-tree rung-2 Sidon-threshold anchor fails astronomically at production size).
+   RUNG 2 now fully converted (G136): anchor ⟺ ≤ 3 accidents — the open content is the
+   accident count at the certified primes, a finite Diophantine fact.
 2. **Deep census family, rungs 11–110**: `2·q·depthFiber G t t ≤ 2·q·Wick_t + n^{2t}`.
    Zero evidence against; passes 28/28 accessible cells; far from all bumps.
 
