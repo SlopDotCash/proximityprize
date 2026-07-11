@@ -3,7 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLineCoreGeometry
+import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # P1: a half-billion `K`-cores need not consolidate
@@ -148,6 +149,63 @@ theorem production_matching_lower_fits : 2 ^ 29 - 6 ≤ Fintype.card (CoreIndex 
   rw [production_core_count]
   omega
 
+/-! ## Every packed core has a degree-`<k` line realization -/
+
+open Polynomial
+open HalfPredecessorLineCoreGeometry
+
+noncomputable def interpolant
+    {F X : Type} [Field F] [DecidableEq X]
+    (domain : X → F) (u : X → F) (S : Finset X) : F[X] :=
+  Lagrange.interpolate S domain u
+
+theorem interpolant_mem_degreeLT
+    {F X : Type} [Field F] [DecidableEq X]
+    (domain : X → F) (u : X → F) (S : Finset X)
+    (hdomain : Function.Injective domain) {k : Nat} (hcard : S.card = k) :
+    interpolant domain u S ∈ Polynomial.degreeLT F k := by
+  rw [Polynomial.mem_degreeLT, interpolant, ← hcard]
+  exact Lagrange.degree_interpolate_lt u hdomain.injOn
+
+theorem interpolant_eval_of_mem
+    {F X : Type} [Field F] [DecidableEq X]
+    (domain : X → F) (u : X → F) (S : Finset X)
+    (hdomain : Function.Injective domain) {x : X} (hx : x ∈ S) :
+    (interpolant domain u S).eval (domain x) = u x := by
+  exact Lagrange.eval_interpolate_at_node u hdomain.injOn hx
+
+/-- The degree-`<k` polynomial line obtained by interpolating the two received-word coordinates
+on one packed core. -/
+noncomputable def packedLine
+    {F : Type} [Field F] {k : Nat}
+    (domain : Coord k → F) (u₀ u₁ : Coord k → F) (p : CoreIndex k) : F[X] × F[X] :=
+  (interpolant domain u₀ (core p), interpolant domain u₁ (core p))
+
+theorem packedLine_degreeLT
+    {F : Type} [Field F] {k : Nat}
+    (domain : Coord k → F) (hdomain : Function.Injective domain)
+    (u₀ u₁ : Coord k → F) (p : CoreIndex k) :
+    (packedLine domain u₀ u₁ p).1 ∈ Polynomial.degreeLT F k ∧
+      (packedLine domain u₀ u₁ p).2 ∈ Polynomial.degreeLT F k := by
+  exact ⟨interpolant_mem_degreeLT domain u₀ (core p) hdomain (core_card p),
+    interpolant_mem_degreeLT domain u₁ (core p) hdomain (core_card p)⟩
+
+/-- **Polynomial realization of the packing.**  Against any shared received stack and any
+injective field embedding of the `4k` coordinates, every packed set is contained in the literal
+joint core of its degree-`<k` Lagrange-interpolated line. -/
+theorem core_subset_jointCore_packedLine
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {k : Nat}
+    (domain : Coord k ↪ F) (u₀ u₁ : Coord k → F) (p : CoreIndex k) :
+    core p ⊆ jointCore domain u₀ u₁
+      (packedLine (fun x => domain x) u₀ u₁ p).1
+      (packedLine (fun x => domain x) u₀ u₁ p).2 := by
+  intro x hx
+  simp only [jointCore, Finset.mem_filter, Finset.mem_univ, true_and]
+  exact ⟨interpolant_eval_of_mem (fun x => domain x) u₀ (core p)
+      domain.injective hx,
+    interpolant_eval_of_mem (fun x => domain x) u₁ (core p)
+      domain.injective hx⟩
+
 end ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 
 open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
@@ -158,3 +216,6 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms production_core_count
 #print axioms production_coord_count
 #print axioms production_matching_lower_fits
+#print axioms interpolant_mem_degreeLT
+#print axioms packedLine_degreeLT
+#print axioms core_subset_jointCore_packedLine

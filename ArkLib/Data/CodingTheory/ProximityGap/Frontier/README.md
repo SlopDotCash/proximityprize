@@ -64,6 +64,12 @@ distinct `K`-cores, while every two distinct cores intersect in fewer than `K` c
 is six more cores than the matching lower bound.  A successful consolidation theorem must use the
 joint arithmetic of secant parameters and core locations; a second Plotkin/pigeonhole step on the
 core set system is formally ruled out.
+The same file now lifts every packed core through Lagrange interpolation: for any shared received
+stack and any injective embedding of the `4K` coordinates into a field, each packed `K`-set is
+contained in the literal joint core of a degree-`<K` polynomial line.  Thus individual polynomial
+realizability also does not rescue the cardinality argument.  The remaining potentially positive
+invariant is simultaneous control—distinctness of the interpolated secant parameters and absence
+of extra core points under the actual decoded-family compatibility equations.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
