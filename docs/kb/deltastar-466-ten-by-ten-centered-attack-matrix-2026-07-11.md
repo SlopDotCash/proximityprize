@@ -156,7 +156,7 @@ prove chi-square mixing at ambient, rather than support, scale.
 | ESM-7 Stein coupling on cosets | **ACTIVE** | Build an exchangeable pair by multiplying a random summand by a random subgroup element; bound the Stein remainder in fourteenth norm. |
 | ESM-8 mod-Gaussian correction | **SCALAR MOMENTS THROUGH SIX REFUTED / joint cumulant active** | `_BGKLowerMomentOrbitSpikeNoGo` passes even hypothetical Wick ceilings for powers `s^2,...,s^6` with `s=|eta|^2`, yet fails the `s^7` target by 15--16 bits. A viable correction must constrain the joint orbit profile at seventh order. |
 | ESM-9 concentration over frequency | **INSUFFICIENT for worst case** | Average tail bounds can tolerate a bad orbit; coset invariance reduces `q-1` frequencies to `m` but does not remove the maximum. |
-| ESM-10 entropy-production inverse theorem | **PHYSICAL TWO-COLOUR SOCKET / production estimate open** | At 2→3 Young drops the required signed mass. At 5→6/6→7, `L=V(U1-U2)` is literal: `C11+C22−2C12` minus exact DC. Erase/insert cancels repeated-U1 with fresh-U2 and leaves fresh weight1 minus fresh weight3. Defined tails feed the `10500+21`/`12500+25` ledgers; only the production estimates remain. |
+| ESM-10 entropy-production inverse theorem | **PHYSICAL TWO-COLOUR SOCKET / production estimate open** | At 2→3 Young drops the required signed mass. At 5→6/6→7, `L=V(U1-U2)` is literal: `C11+C22−2C12` minus exact DC. Erase/insert gives `U1−U2=(r+1)a_(r+1)−freshWeight3`. Defined tails feed the `10500+21`/`12500+25` ledgers; only the production estimates remain. |
 
 ## Angle 8: Projective Accident Orbit Rigidity (PAOR) -- incidence geometry
 

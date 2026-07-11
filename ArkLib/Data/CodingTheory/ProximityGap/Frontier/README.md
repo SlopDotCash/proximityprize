@@ -158,7 +158,16 @@ centre-pencil line at an outside scalar produces a decoded polynomial whose cano
 is literally that line.  Distinct slopes remain distinct, so one centre contains an injective copy
 of the entire polynomial space.  Any multiplicity bound must therefore use the `K`-core incidence
 condition (and likely simultaneous compatibility of those cores), not merely bounded centres,
-degree-free secant algebra, or two-endpoint reconstruction.
+degree-free secant algebra, or two-endpoint reconstruction.  The strengthened construction in
+`_P1HalfBillionCorePackingNoGo.lean` now refutes even that single-centre `K`-core multiplicity
+socket at production scale.  Use each of the `2K` distinct degree-`<K` nodal polynomials as a
+slope `r_p`, set its intercept to `qDelta-C(delta)r_p`, and couple the first received coordinate
+to the shared nodal slope word.  All `2K=2^29` lines then pass through the same lifted centre,
+remain distinct and degree-`<K`, and simultaneously carry their prescribed `K`-point joint cores
+against one received stack.  Thus neither bounded centres nor large-core incidence at one centre
+can cluster the routed lines.  A surviving P1 proof must use compatibility between the two routed
+centre pencils for each matched pair together with the original threshold-size endpoint witness
+sets; treating either routed endpoint separately is now closed sharply.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
@@ -452,7 +461,8 @@ success.  The new theorem-shaped target is a production bound on the centered en
 `C_11+C_22-2*C_12` is the physical square mass of `U_1-U_2`, subtracts the exact DC imbalance,
 defines literal complementary tails, and feeds the `10500/21` and `12500/25` sockets with actual
 field collision counts.  Erase/insert equivalences cancel the common repeated-`U_1`/fresh-`U_2`
-sector fibrewise; the surviving profile is exactly fresh weight one minus fresh weight three.
+sector fibrewise.  Fresh weight one is exactly `(r+1)` copies of the ordinary next-subset
+histogram, so the surviving profile is `(r+1)*a_(r+1)` minus the fresh weight-three residual.
 Thus the live bound is a signed boundary-profile estimate, not a heuristic covariance split.
 `_BGKC12TranslateIntersectionReduction.lean` separates the actual favorable cross count as
 `C_12=sum_t W_G(t)*R_r(t)`, where `W_G(t)=#{y in G:2*y-t in G}` is a literal shifted cyclotomic

@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 441,
+    "files_with_citations": 442,
     "keys_cited": 35,
-    "total_citation_edges": 501
+    "total_citation_edges": 502
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -417,6 +417,9 @@
       "Jo26"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W17CurveDecodStitching.lean": [
+      "Jo26"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean": [
       "Jo26"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZW17RecursivePeeling.lean": [
@@ -1830,6 +1833,7 @@
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W17CurveDecodStitching.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ZW17RecursivePeeling.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/GG25CurveDecodability.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/GG25CurveDecodabilityB2Capstone.lean",

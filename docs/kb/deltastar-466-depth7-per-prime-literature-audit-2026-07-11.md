@@ -703,10 +703,11 @@ that common sector cancels before any norm inequality.  A second erase identifie
 repeated `U_2` sector with the fresh weight-three join.  Therefore
 
 ```text
-U_1-U_2 = fresh(weight 1) - fresh(weight 3)
+U_1-U_2 = (r+1)*a_(r+1) - fresh(weight 3)
 ```
 
-fibrewise, and its nonzero energy is the exact centered
+fibrewise: the pointed-subset bijection gives exactly `r+1` fresh marks over every ordinary
+next-subset fibre.  Its nonzero energy is the exact centered
 `q(C_11+C_22-2*C_12)-DC^2`.  Literal leading/tail definitions feed the robust late sockets; only
 their production arithmetic estimates remain open.  The cross count itself factors as
 

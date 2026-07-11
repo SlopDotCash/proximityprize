@@ -778,8 +778,12 @@ the marked point.  Repeating the operation identifies repeated `U_2` with a fres
 join.  Fibrewise,
 
 ```text
-U_1-U_2 = fresh(weight 1, depth r) - fresh(weight 3, depth r-2).
+U_1-U_2 = (r+1)*a_(r+1) - fresh(weight 3, depth r-2).
 ```
+
+Here a proved pointed-subset bijection shows that every `(r+1)`-subset in a fixed sum fibre has
+exactly `r+1` fresh marks.  Thus only the weight-three diagonal residual remains outside the
+literal next-subset histogram.
 
 The file defines the complementary fifth and sixth tails, proves the exact Newton splits, and
 specializes the `10500/12500` budgets to the actual `C_11,C_22,C_12` field counts.  No sign of the

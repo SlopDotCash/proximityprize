@@ -389,6 +389,96 @@ theorem core_subset_jointCore_nodalLine
     nodalLine, eval_zero]
   exact ⟨nodalParameter_agrees_on_core (fun x => domain x) weight p x hx, trivial⟩
 
+/-! ## A half-billion large-core lines through one fixed lifted centre -/
+
+/-- Couple the first received coordinate to the nodal received slope so that every line passes
+through the same lifted centre `(delta,qDelta)`. -/
+noncomputable def pencilReceived₀
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (delta : F) (qDelta : F[X]) (x : Coord k) : F :=
+  qDelta.eval (domain x) - delta * nodalReceived domain weight x
+
+/-- The line of nodal slope `r_p` through the common lifted centre `(delta,qDelta)`. -/
+noncomputable def nodalPencilLine
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (delta : F) (qDelta : F[X])
+    (p : CoreIndex k) : F[X] × F[X] :=
+  (qDelta - C delta * nodalParameter domain weight p,
+    nodalParameter domain weight p)
+
+/-- Every nodal pencil line passes through the same lifted centre. -/
+@[simp]
+theorem nodalPencilLine_at_centre
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (delta : F) (qDelta : F[X]) (p : CoreIndex k) :
+    (nodalPencilLine domain weight delta qDelta p).1 +
+      C delta * (nodalPencilLine domain weight delta qDelta p).2 = qDelta := by
+  simp [nodalPencilLine]
+
+/-- **Simultaneous common-centre realization.**  The same received stack supports the prescribed
+`k`-point packed core for every nodal pencil line. -/
+theorem core_subset_jointCore_nodalPencilLine
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {k : Nat}
+    (domain : Coord k ↪ F) (weight : Fin 2 → F) (delta : F) (qDelta : F[X])
+    (p : CoreIndex k) :
+    core p ⊆ jointCore domain
+      (pencilReceived₀ (fun x => domain x) weight delta qDelta)
+      (nodalReceived (fun x => domain x) weight)
+      (nodalPencilLine (fun x => domain x) weight delta qDelta p).1
+      (nodalPencilLine (fun x => domain x) weight delta qDelta p).2 := by
+  intro x hx
+  have hagree := nodalParameter_agrees_on_core
+    (fun x => domain x) weight p x hx
+  simp only [jointCore, Finset.mem_filter, Finset.mem_univ, true_and,
+    nodalPencilLine, pencilReceived₀, eval_sub, eval_mul, eval_C]
+  constructor
+  · rw [hagree]
+  · exact hagree
+
+/-- Distinct nodal slopes remain distinct lines after forcing the common centre. -/
+theorem nodalPencilLine_injective
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (hdomain : Function.Injective domain)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0)
+    (hweightInj : Function.Injective weight) (delta : F) (qDelta : F[X]) :
+    Function.Injective
+      (nodalPencilLine domain weight delta qDelta : CoreIndex k → F[X] × F[X]) := by
+  intro p q h
+  apply nodalParameter_injective domain hdomain weight hweight hweightInj
+  exact congrArg Prod.snd h
+
+/-- If the common centre polynomial has degree `<k`, then both coordinates of every pencil line
+also have degree `<k`. -/
+theorem nodalPencilLine_degreeLT
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0)
+    (delta : F) (qDelta : F[X]) (hqDelta : qDelta ∈ Polynomial.degreeLT F k)
+    (p : CoreIndex k) :
+    (nodalPencilLine domain weight delta qDelta p).1 ∈ Polynomial.degreeLT F k ∧
+      (nodalPencilLine domain weight delta qDelta p).2 ∈ Polynomial.degreeLT F k := by
+  have hr := nodalParameter_mem_degreeLT domain weight hweight p
+  constructor
+  · simp only [nodalPencilLine]
+    apply (Polynomial.degreeLT F k).sub_mem hqDelta
+    rw [← Polynomial.smul_eq_C_mul]
+    exact (Polynomial.degreeLT F k).smul_mem delta hr
+  · exact hr
+
+/-- Each common-centre line has a joint core of size at least `k`. -/
+theorem nodalPencilLine_core_card_ge
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {k : Nat}
+    (domain : Coord k ↪ F) (weight : Fin 2 → F) (delta : F) (qDelta : F[X])
+    (p : CoreIndex k) :
+    k ≤ (jointCore domain
+      (pencilReceived₀ (fun x => domain x) weight delta qDelta)
+      (nodalReceived (fun x => domain x) weight)
+      (nodalPencilLine (fun x => domain x) weight delta qDelta p).1
+      (nodalPencilLine (fun x => domain x) weight delta qDelta p).2).card := by
+  calc
+    k = (core p).card := (core_card p).symm
+    _ ≤ _ := Finset.card_le_card
+      (core_subset_jointCore_nodalPencilLine domain weight delta qDelta p)
+
 /-! ## Canonical secant realization and the exact threshold deficit -/
 
 /-- Family-free form of the canonical polynomial secant used by `secantParameter`. -/
@@ -580,6 +670,11 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms nodalParameter_agrees_on_core
 #print axioms nodalLine_injective
 #print axioms core_subset_jointCore_nodalLine
+#print axioms nodalPencilLine_at_centre
+#print axioms core_subset_jointCore_nodalPencilLine
+#print axioms nodalPencilLine_injective
+#print axioms nodalPencilLine_degreeLT
+#print axioms nodalPencilLine_core_card_ge
 #print axioms rawSecantParameter_same_polynomial
 #print axioms rawSecantParameter_nodal
 #print axioms production_threshold_deficit
