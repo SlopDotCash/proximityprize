@@ -37,7 +37,7 @@ Concretely this is the conjunction of three Props, each a *face* of that syzygy 
 
 | # | face | Lean Prop | one-line content |
 |---|------|-----------|------------------|
-| **F1** | imbalance / generator-gap | `SYZ40.StripMasterHypothesis''.uniformSylvester` = `SYZ38.UniformSylvesterInjective K n k`; sole open sub-fact `ι ≤ 1`, equivalently **Hilbert–Burch gap `δ₂−δ₁ ≤ 1`** | the μ-basis of a balanced pairwise-coprime band triple `(W_AB,W_AC,W_BC)` on `μ_n` is near-balanced |
+| **F1** | imbalance / generator-gap | `SYZ40.StripMasterHypothesis''.uniformSylvester` = `SYZ38.UniformSylvesterInjective K n k`; sole open sub-fact `ι ≤ 1`, equivalently **Hilbert–Burch gap `δ₂−δ₁ ≤ 2`** (SYZ68 parity-corrected target; even `S`: `g ≤ 2`, odd `S`: `g ∈ {1,3}` — SYZ54's `g ≤ 1` was FALSE) | the μ-basis of a balanced pairwise-coprime band triple `(W_AB,W_AC,W_BC)` on `μ_n` is near-balanced |
 | **F2** | bad-count ceiling | `SYZ66.StripSyzygyControlledCeiling` (≡ `SYZ60Dictionary.BadCountCeiling` ≡ `SYZ57Transport.CountingDictionary`) | a stack with `≥ 6` bad scalars carries a syzygy among the G87 bridge functionals; does that syzygy keep the count `≤ 2³⁰`? |
 | **F3** | union-rank realizability | `hrank` (SYZ42/SYZ43 `RealizabilityCore` residue): `finrank F (span F (range φ)) = 2(Ucard − k)` | the `Sᵢ`-anchored doubled shortenings of the witness family span their union |
 
@@ -69,9 +69,25 @@ Props `RankNullity ∧ TwoRamp` — is now **an unconditional theorem** given on
 `ι = ⌊(δ₂−δ₁)/2⌋` (`_SYZ53GeneratorGapCalibration.lean`, consuming only the degree-sum law), the
 imbalance bound has been reduced to a **single crisp Hilbert–Burch statement**:
 
-> **the μ-basis of a balanced pairwise-coprime band triple has generator gap `δ₂−δ₁ ≤ 1`.**
+> **the μ-basis of a balanced pairwise-coprime band triple is near-balanced (`ι ≤ 1`), i.e. has
+> generator gap `δ₂−δ₁ ≤ 2` (SYZ68 parity-corrected; even `S`: `g ≤ 2`, odd `S`: `g ∈ {1,3}`).**
 
 That is the *entire* open content of F1. Everything else on the Sylvester side is proved.
+
+**SYZ68/SYZ69 parity correction (`0a4d50c9d` + this addendum).** SYZ68 `gap_parity` proves the
+zero-field-content invariant `g ≡ S (mod 2)` (forced by the degree-sum `δ₁+δ₂=S`), which **refutes
+SYZ54's class target `g ≤ 1`** (there are genuine even-`S` gap = 2, `ι = 1` witnesses, e.g.
+`p=61, a=b=c=6`) and collapses SYZ53's parity-free `g ≤ 3` to the sharp `g ≤ 2` on the even-`S`
+class. The class-true uniform invariant is `ι ≤ 1`; its gap reading is parity-dependent (even `S`:
+`g ≤ 2`; odd `S`: `g ∈ {1,3}`). SYZ69 `_SYZ69ParityClassification.lean` assembles this into the
+**two-class law** (conditional on the empty-middle census `¬ middleBand`): every realizable interior
+triple is *floor-attained* (`δ₁ = max`, constant-syzygy family, `g = S − 2·max`; balanced `d,d,d ⇒
+g = d`) **or** *near-balance* (`ι ≤ 1`). The open residual is the **exclusion of the middle band**,
+restated minimally in parity-corrected gap form (`open_exclusion_gap_form`): no realizable interior
+triple carries a parity-consistent gap `≥ 4` above the floor (even `S`: `g ∈ {4,6,…}`, odd `S`:
+`g ∈ {5,7,…}`). **Consumer audit:** G172 consumes `ι ≤ 1` (imbalance), *not* a gap-language
+threshold, so the parity refinement is a per-class tightening that leaves every landed consumer
+unchanged (`ι ≤ 1 ⟺ g ≤ 3` always; parity only sharpens the even-`S` gap picture to `g ≤ 2`).
 
 **Convention note (SYZ59, `840279493`):** two degree conventions coexist — PRODUCT-degree
 (SYZ44/45/47, `δ₁+δ₂=S`, floor `δ₁ ≥ max(a,b,c)`) and COFACTOR-degree (SYZ55 prose, `δ₁=0` for a
@@ -92,16 +108,18 @@ re-open the apparent SYZ55/SYZ47 contradiction (SYZ59 resolved it).
   `StripMasterHypothesis''.uniformSylvester` (SYZ40/SYZ42).
 - **Reduced open content:** the merged branch (`m ≤ 3`) is **unconditional**
   (`SYZ40.merged_branch_unconditional`). The spread branch (`m ≥ 4`) reduces — via the now-complete
-  §2 μ-basis chain + SYZ53's `ι = ⌊(δ₂−δ₁)/2⌋` — to the **Hilbert–Burch gap** `δ₂−δ₁ ≤ 1` on
-  band-realizable balanced interior profiles.
+  §2 μ-basis chain + SYZ53's `ι = ⌊(δ₂−δ₁)/2⌋` — to the **Hilbert–Burch near-balance** `ι ≤ 1`
+  (parity-corrected gap `δ₂−δ₁ ≤ 2`, SYZ68/SYZ69) on band-realizable balanced interior profiles.
 - **Empirical status:** SYZ53 `p`-scaling (`22100394c`) ran the mandatory rigorous prime sweep: the
   ι=2 balanced-interior excess **collapses** to the generic pencil floor `3` by `p* ∈ (197,1009)`
   and stays flat through `p = 2³¹`; at production field `P ~ 2¹⁵⁸ ≫ p*` the excess contributes
-  **zero**. δ*=1/3 **survives**. The referee-measured near-balance gap is `δ₂−δ₁ ≤ 1`
-  (one unit tighter than SYZ52's loose `δ₂ ≤ ⌈S/2⌉+1`). SYZ55's coverage census: **empty middle** —
-  every band-realizable interior witness is either near-balance (`gap ≤ 3`, `ι ≤ 1`) or a
-  constant-syzygy level-set witness (`δ₁ = max`, harmless floor lift); no intermediate case.
-- **Not closed:** the gap-`≤1` bound is not a polynomial identity — SYZ45 showed it needs band
+  **zero**. δ*=1/3 **survives**. The referee-measured near-balance gap is `ι ≤ 1`, i.e. gap
+  `δ₂−δ₁ ≤ 2` at even `S` / `∈ {1,3}` at odd `S` (SYZ68 parity-corrected; SYZ54's `≤ 1` was FALSE —
+  even-`S` gap = 2 witnesses). SYZ55/SYZ69's coverage census: **empty middle** two-class law —
+  every band-realizable interior witness is either near-balance (`ι ≤ 1`) or a
+  constant-syzygy level-set witness (`δ₁ = max`, floor-attained, `g = S − 2·max`); no intermediate
+  case (the exclusion of the middle band `¬ middleBand` is the open residual).
+- **Not closed:** the `ι ≤ 1` bound is not a polynomial identity — SYZ45 showed it needs band
   realizability, not just coprimality. This is where BGK enters (§4).
 
 ### F2 — bad-count ceiling  (the census / transport branch)
@@ -191,9 +209,13 @@ would have to route through one of these three combinatorial faces. **CORE remai
 The conditional bracket `357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰` (ceiling half **unconditional** via
 SYZ6; only the floor consumes hypotheses) is conditional on **exactly** these, and nothing hidden:
 
-1. **F1** `StripMasterHypothesis''.uniformSylvester` — reduced open content = Hilbert–Burch gap
-   `δ₂−δ₁ ≤ 1` (≡ `ι ≤ 1`) on band-realizable balanced interior; = BGK level-set (SYZ49). The
-   entire μ-basis classical column beneath it is **proved** (§2).
+1. **F1** `StripMasterHypothesis''.uniformSylvester` — reduced open content = Hilbert–Burch
+   near-balance `ι ≤ 1` (parity-corrected gap `δ₂−δ₁ ≤ 2` at even `S`, SYZ68/SYZ69; SYZ54's `≤ 1`
+   refuted) on band-realizable balanced interior; = BGK level-set (SYZ49). The two-class law
+   (`SYZ69.two_class_law`) is proved given the empty-middle census; the open geometric obligation is
+   the exclusion of the middle band (`SYZ69.open_exclusion_gap_form`: no realizable triple has a
+   parity-consistent gap `≥ 4` above the floor). The entire μ-basis classical column beneath it is
+   **proved** (§2).
 2. **F2** `StripSyzygyControlledCeiling` (≡ `BadCountCeiling` ≡ `CountingDictionary`) — non-syzygy
    regime **proved** capped at 5; open = the dependent bulk `[6, 2³⁰]` = SYZ29 `#fresh = 0` +
    pool-sum, SYZ56-blocked on chaining.
@@ -218,8 +240,10 @@ half, the SYZ49 BGK identification, the SYZ58 rate-`1/4` curve-event scope barri
 
 ## 6. Where to start (for the next prover)
 
-- **If you attack F1 (recommended, non-BGK-looking but BGK-equivalent):** target `δ₂−δ₁ ≤ 1` on the
-  balanced band-realizable interior. The classical apparatus is all in `_SYZ61…`–`_SYZ65…`;
+- **If you attack F1 (recommended, non-BGK-looking but BGK-equivalent):** target `ι ≤ 1`
+  (parity-corrected gap `δ₂−δ₁ ≤ 2` at even `S`; do NOT target the refuted `≤ 1`) on the
+  balanced band-realizable interior — concretely, discharge `SYZ69.open_exclusion_gap_form`'s middle
+  exclusion `¬ middleBand`. The classical apparatus is all in `_SYZ61…`–`_SYZ65…`;
   `_SYZ53GeneratorGapCalibration.lean` gives `ι = ⌊(δ₂−δ₁)/2⌋`. Remember SYZ49: it is the BGK
   level-set — a genuinely-BGK-free proof would be a breakthrough on the CORE wall.
 - **If you attack F2:** the isolated residual is `StripSyzygyControlledCeiling`; the proven `≤5` cap
