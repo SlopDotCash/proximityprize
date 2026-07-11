@@ -25439,3 +25439,42 @@ systems. floor/best ≤ 2.75 at every searched cell.
 floor is O(1) there; no upper bound on monoBaseline exists beyond C(n,a), so every constant C
 is open in BOTH directions: a kill now needs an o(n) UPPER bound on the baseline, survival
 needs spread control against growing baselines. CORE OPEN.
+
+## [466-G103F-collision-bound-LANDED] the classical additive-collision bound #(H∩(H+c)) ≤ 4B² ≈ 6.4·|H|^{2/3} is now a Lean theorem (two-relation Stepanov, Mit'kin/García–Voloch/HBK); G102F's Capstone A is UNCONDITIONAL (2026-07-10)
+
+Lane: G103F Fable (`Frontier/_G103FSubgroupCollisionBound.lean`, 660 lines, 13 decls, ALL
+exactly `[propext, Classical.choice, Quot.sound]`, no sorry/axiom/native_decide/named
+hypotheses; probe `scripts/probes/probe_g103f_collision_growth.py`). Route: Vyugin–Shkredov
+single-shift parameterization (arXiv:1102.1172 Lemma 4.1); the hard non-vanishing step was
+already in-tree (`StepanovGeneratorIndep.stepanov_generators_linearIndependent`), as were the
+counting lemma and the char-free Hasse↔multiplicity bridge. NEW: closed-form Hasse bricks;
+the conditions-degeneracy identity Xⁿ(X−c)ⁿ·Dⁿ[X^{a+tb}(X−c)^{tb′}] =
+X^{tb}(X−c)^{tb′}·P_{n,a,b,b′} with deg P ≤ a+n independent of (b,b′) — exactly the
+degeneracy count `StepanovGenericInsufficiency` said the generic engine cannot supply
+(D(2D−1) identity conditions vs D·B² unknowns); ZMod-p wiring; full assembly.
+
+**Theorems.** `stepanov_collision_bound` (master, exact): D·#{x∈H : x−c∈H} ≤ (D−1)+2t(B−1)
+under DB ≤ t, 2D ≤ B², tB ≤ p. `card_collision_le_four_sq`: #(H∩(H+c)) ≤ 4B² for 2 ≤ B,
+2B ≤ t, 2t ≤ B³, tB ≤ p — at optimal B ≈ (2t)^{1/3}: ≈6.35·t^{2/3} throughout the HBK range
+t ≲ p^{3/4} (classical constant 4; slack from ⌊t/B⌋, documented).
+`addCollisionBound_of_closure`: G102F's named residual DISCHARGED from closure hypotheses
+alone; sub-trivial from n = 512; concrete ρ ≤ 1764 at n = 4096. CAPSTONE
+`smallDiffPairs_sq_le_unconditional_stepanov`: sdp(W)² ≤ n·sdp(W) + 16B²·W·n² for every
+4W < p — the first in-tree √p-crossing counting bound on the G80Q terminal object with ZERO
+collision hypothesis.
+
+**Stepanov no-go reading (verified).** C36/I008/`stepanov_collapses_to_degree` kill
+SINGLE-relation sup-norm auxiliaries (X^n−1 separable ⟹ no multiplicity). The collision set
+carries TWO relations (x^t = 1 AND (x−c)^t = 1), collapsing the Hasse-condition rank to
+< 2D² while separability is untouched. Count bound (t^{2/3}), not √-cancellation; nothing
+contradicts C36; BGK untouched.
+
+**Probe (exact, n ≤ 1024).** Truth: ρ ≤ 10 at β=2 (growth ≈ n^{0.28}); ρ = EXACTLY 2 at
+β ∈ {3,4} for every n ≥ 16 (near-perfect difference-Sidon). Truth/classical ratio ρ/n^{2/3}
+falls 0.63 → 0.02 — the classical exponent is far above the smooth-subgroup truth
+(conjecturally n^{o(1)}).
+
+**Honest scope.** The welded window 4B² < W < n²/(16B²) crosses √p only for p ≲ n^{8/3}
+(β ≲ 8/3) — a genuine unconditional tool below that, NOT a prize-band certificate (prize
+β ∈ [4,5]). The truth-vs-classical gap (ρ = 2 at β ≥ 3 vs t^{2/3} provable) is now the
+sharpest quantified statement of what a better collision bound would buy. CORE OPEN / ON-BGK.
