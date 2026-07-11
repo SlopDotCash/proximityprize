@@ -51145,3 +51145,43 @@ combined affine orbit multiplication as a new mechanism and leaves G59's exact
 Formal payload: `Frontier/_G179AffineFixedRootCollapse.lean`; probe:
 `scripts/probes/probe_g179_affine_fixed_root.py`; KB:
 `docs/kb/deltastar-466-g179-affine-fixed-root-collapse-2026-07-11.md`.
+
+### [466-G180-central-symmetry-covering] A dilated smooth orbit of EVEN order exactly `n = 2m` is CENTRALLY SYMMETRIC (`O = -O`, forced by `x^m = -1`), which excludes off-center short arcs at the FAR coarser scale `V < p/4` — a non-Fourier, non-integer-lift covering no-go strictly COMPLEMENTARY to G99 HEADLINE C, whose `√(p/2)` difference certificate is arc-location-blind (2026-07-11)
+
+G99's `not_dilated_orbit_subset_interval` bars single-arc containment once `2V² < p`,
+using ONLY the geometric-progression structure of the consecutive differences
+`m_k = b x^k(x-1)`; it is uniform in — hence blind to — the arc CENTER `a`. This lane
+isolates a genuinely different binding mechanism, thinness-essential in the 2-power sense.
+
+**Hypothesis sharpening (verified necessary).** G99 assumes `x^n = 1 ∧ x^2 ≠ 1`. That does
+NOT force central symmetry: order-4 elements with `n = 8` have `x^{n/2} = 1 ≠ -1`
+(`probe_g180_hypothesis_necessity.py`: 96 counterexamples over accessible cells). The correct
+hypothesis is *order exactly `n = 2m`* (the smooth-subgroup GENERATOR), encoded axiom-cleanly
+as `x^{2m} = 1 ∧ x^m ≠ 1`. In a field the unique non-identity square root of one is `-1`, so
+`x^m = -1` (`pow_half_eq_neg_one`), hence `b·x^{k+m} = -(b·x^k)` (`orbit_shift_half_neg`) and
+the orbit set satisfies `O = -O` (`x^{n/2} = -1` verified at every accessible cell,
+`probe_g180_central_symmetry.py`; also pins the census invariant that consecutive differences
+come in EXACTLY `n/2` antipodal-paired magnitudes).
+
+**The no-go.** If `O ⊆ interval a V` then `-O ⊆ interval a V` too, so both `b` and `-b` lie in
+the arc; the two offsets sum to `-(2·a)` with `2·a = -(t)`, `t < 2V` (`two_center_small_of_mem_and_neg`).
+Thus the doubled center is within `2V` of `0`, i.e. `a` is within `V` of a 2-torsion point
+`{0, p/2}` (`dilated_orbit_center_forced`). Any center bounded away from `{0, p/2}` by more than
+`V` therefore admits NO covering arc — at scale `V < p/4`, with NO `2V² < p` condition
+(`not_dilated_orbit_subset_offcenter_interval`). Probe `probe_g180_center_forcing.py`: at
+prize-flavored cells (`p=65537`, `n∈{16,32}`, `p=7681`, `p=40961`) even `V = 2·√(p/2)` admits
+zero covering centers — the orbit spreads past every short arc, consistent with both certificates.
+
+**Composition.** The two elementary non-Fourier certificates tile the covering question: this
+lane excludes every OFF-center arc at `V < p/4`; G99 excludes the residual 2-torsion-centered
+arc at `V < √(p/2)`. Together, NO dilate of an even-order smooth subgroup concentrates in any
+arc shorter than `√(p/2)` at ANY center. **Scope (honest).** Like G99 this is a total-mass /
+containment statement; it does NOT bound the BGK atom `M` at prize shape and does NOT move CORE.
+The value is a clean, axiom-clean structural invariant (`O = -O`) that closes the arc-location
+gap G99 left open, and a reusable 2-power-torsion brick (`pow_half_eq_neg_one`). CORE remains
+OPEN / ON-BGK.
+
+All declarations axiom-clean (`propext, Classical.choice, Quot.sound`); locked build 1200 jobs
+green. Formal payload: `Frontier/_G180CentralSymmetryCovering.lean`; probes:
+`scripts/probes/probe_g180_central_symmetry.py`, `scripts/probes/probe_g180_hypothesis_necessity.py`,
+`scripts/probes/probe_g180_center_forcing.py`.
