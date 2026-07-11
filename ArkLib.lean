@@ -2213,6 +2213,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103CenteredTripleDepthFi
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103FSubgroupCollisionBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103SyzygyReplicationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104AffineTripleSyzygyNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104DepthSixStratifiedConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G105DepthLedgerLosslessNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G121DescentMatchingIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G123TriangularMomentLadder
@@ -3355,6 +3356,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutat
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ30LemmasOneThree
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ31SetGeometryFacts
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ32ClusterRouting
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ33FinalTwoLemmas
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
