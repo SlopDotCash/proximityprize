@@ -14584,3 +14584,39 @@ Executable certificate:
 Full synthesis:
 `docs/kb/deltastar-466-mobius-mann-connected-packet-no-go-2026-07-11.md`.
 CORE remains OPEN / ON-BGK.
+
+## [466-centered-cumulant-packet-no-go] centering first still gives signed partition cumulants (2026-07-11)
+
+Lane: direct characteristic-`p` packet/cumulant repair.
+
+After the uncentered Möbius-Mann packet route failed by amplifying the DC bulk, the natural repair
+was to subtract the uniform finite-field main term first and then apply the same ordinary
+partition-connected recurrence.  The repair is also not a positive packet census.  In the exact
+cell `μ_8 ⊂ F_41`, raw ordered zero-sum counts through depth four are
+
+```text
+M_1=0, M_2=8, M_3=0, M_4=200.
+```
+
+Centering gives
+
+```text
+M^c_1=-8/41, M^c_2=264/41, M^c_3=-512/41, M^c_4=4104/41,
+```
+
+and the ordinary fourth connected coefficient is
+
+```text
+K^c_4 = -87878392 / 2825761 < 0.
+```
+
+Therefore center-first partition connectedness is a signed Ursell/fluctuation transform, not a
+literal nonnegative packet-counting invariant.  A viable packet calculus must introduce a new
+positive canonical minimal-zero-sum packetization with controlled overlap; ordinary partition
+cumulants, centered or uncentered, are not that object.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G146CenteredCumulantPacketNoGo.lean`.
+Executable certificate:
+`scripts/probes/probe_466_centered_cumulant_packet_no_go.py`.
+CORE remains OPEN / ON-BGK.
