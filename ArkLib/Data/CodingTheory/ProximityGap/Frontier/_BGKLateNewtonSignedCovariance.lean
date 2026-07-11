@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKActualJointPeriodLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCenteredTrajectoryContraction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLaterTransitionDefectLedgers
+import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumPigeonholeManyTargets
 
 /-!
 # Signed Newton covariance at the two dense subset transitions
@@ -26,6 +27,10 @@ two gives the full `L2` energy of `J_6` and `J_7` as one signed quadratic form, 
 separate cross-term proofs.  Removing frequency zero subtracts the exact ordered-injective DC
 masses `(6! * C(n,6))^2` and `(7! * C(n,7))^2`.
 
+An independent subset-sum Parseval calculation closes the normalization seam: the two raw forms
+are exactly `36*C_6` and `49*C_7`.  Hence their nonzero ledgers are literally
+`(6!)^2*Delta_6` and `(7!)^2*Delta_7`, not merely parallel Newton coordinates.
+
 The sign ledger is alternating.  Thus opposite-parity join pairs carry the negative algebraic
 coefficient in the **full-frequency raw collision form**: nine unordered pairs at depth six and
 twelve at depth seven.  This is not a sign claim about an individual centered covariance; DC
@@ -38,7 +43,9 @@ in the compact transition ledgers.  The distributed late obligations become exac
 `1000*n*E_7 <= 12525*(n-6)^2*E_6`,
 
 where `E_r=(r!)^2*Delta_r` is the ordered-injective nonzero energy ledger.  This is an exact
-socket, not an estimate of the open signed cancellation.  Issue #466.
+socket, not an estimate of the open signed cancellation.  The repeated-sector allowance can
+recover at most `138` of the `8264` Wick-gap units, so `8126` still have to come from this
+injective signed law.  Issue #466.
 -/
 
 set_option autoImplicit false
@@ -240,7 +247,8 @@ theorem sum_subsetSumPeriod_mul_conj_eq_subsetCollision
     (∑ b : F, subsetSumPeriod psi G d b *
       (starRingEnd Complex) (subsetSumPeriod psi G d b)) =
       (Fintype.card F : Complex) * subsetCollision G d := by
-  rw [subsetSumPeriod, sum_phaseFamilyPeriod_mul_conj_eq_crossCollision hpsi,
+  unfold subsetSumPeriod
+  rw [sum_phaseFamilyPeriod_mul_conj_eq_crossCollision hpsi,
     phaseCrossCollisionCount_valueSubsetSum_eq_subsetCollision]
 
 /-- Elementary-symmetric form of the ordinary subset-sum period. -/
@@ -474,6 +482,20 @@ theorem lateNewtonPacket_seven_eq_injectiveSevenTransform
   rw [lateNewtonPacket_seven_eq_orderedInjectiveTransform]
   rfl
 
+theorem lateNewtonPacket_six_eq_factorial_mul_subsetSumPeriod
+    (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 6 b =
+      (Nat.factorial 6 : Complex) * subsetSumPeriod psi G 6 b := by
+  rw [lateNewtonPacket_six_eq_orderedInjectiveTransform,
+    orderedInjectiveTransform_eq_factorial_mul_subsetSumPeriod]
+
+theorem lateNewtonPacket_seven_eq_factorial_mul_subsetSumPeriod
+    (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 7 b =
+      (Nat.factorial 7 : Complex) * subsetSumPeriod psi G 7 b := by
+  rw [lateNewtonPacket_seven_eq_orderedInjectiveTransform,
+    orderedInjectiveTransform_eq_factorial_mul_subsetSumPeriod]
+
 /-- The zero-frequency ordered-injective transform is the falling-factorial source mass. -/
 theorem orderedInjectiveTransform_subgroupPhase_zero
     (psi : AddChar F Complex) (G : Finset F) (d : Nat) :
@@ -550,6 +572,112 @@ theorem sum_lateNewtonPacket_mul_conj_eq_signedCollision
       rw [sum_newtonJoinPeriod_mul_conj_eq_collision hpsi]
       ring
 
+/-- Independent full-frequency `J_6` energy in the ordinary subset-collision coordinates. -/
+theorem sum_lateNewtonPacket_six_mul_conj_eq_subsetCollision
+    {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) :
+    (∑ b : F, lateNewtonPacket psi G 6 b *
+      (starRingEnd Complex) (lateNewtonPacket psi G 6 b)) =
+      (Nat.factorial 6 : Complex) ^ 2 *
+        (Fintype.card F : Complex) * subsetCollision G 6 := by
+  simp_rw [lateNewtonPacket_six_eq_factorial_mul_subsetSumPeriod]
+  simp only [map_mul, map_natCast]
+  calc
+    (∑ b : F,
+        ((Nat.factorial 6 : Complex) * subsetSumPeriod psi G 6 b) *
+          ((Nat.factorial 6 : Complex) *
+            (starRingEnd Complex) (subsetSumPeriod psi G 6 b))) =
+        (Nat.factorial 6 : Complex) ^ 2 *
+          ∑ b : F, subsetSumPeriod psi G 6 b *
+            (starRingEnd Complex) (subsetSumPeriod psi G 6 b) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro b _hb
+      ring
+    _ = (Nat.factorial 6 : Complex) ^ 2 *
+        (Fintype.card F : Complex) * subsetCollision G 6 := by
+      rw [sum_subsetSumPeriod_mul_conj_eq_subsetCollision hpsi]
+      ring
+
+/-- Independent full-frequency `J_7` energy in the ordinary subset-collision coordinates. -/
+theorem sum_lateNewtonPacket_seven_mul_conj_eq_subsetCollision
+    {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) :
+    (∑ b : F, lateNewtonPacket psi G 7 b *
+      (starRingEnd Complex) (lateNewtonPacket psi G 7 b)) =
+      (Nat.factorial 7 : Complex) ^ 2 *
+        (Fintype.card F : Complex) * subsetCollision G 7 := by
+  simp_rw [lateNewtonPacket_seven_eq_factorial_mul_subsetSumPeriod]
+  simp only [map_mul, map_natCast]
+  calc
+    (∑ b : F,
+        ((Nat.factorial 7 : Complex) * subsetSumPeriod psi G 7 b) *
+          ((Nat.factorial 7 : Complex) *
+            (starRingEnd Complex) (subsetSumPeriod psi G 7 b))) =
+        (Nat.factorial 7 : Complex) ^ 2 *
+          ∑ b : F, subsetSumPeriod psi G 7 b *
+            (starRingEnd Complex) (subsetSumPeriod psi G 7 b) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro b _hb
+      ring
+    _ = (Nat.factorial 7 : Complex) ^ 2 *
+        (Fintype.card F : Complex) * subsetCollision G 7 := by
+      rw [sum_subsetSumPeriod_mul_conj_eq_subsetCollision hpsi]
+      ring
+
+/-- The depth-six raw signed collision form is exactly `6^2` times the ordinary subset census. -/
+theorem lateNewtonSignedCollisionForm_six_eq (G : Finset F) :
+    lateNewtonSignedCollisionForm G 6 = 36 * subsetCollision G 6 := by
+  obtain ⟨psi, hpsi⟩ := exists_primitive_addChar (F := F)
+  have hEq := (sum_lateNewtonPacket_mul_conj_eq_signedCollision hpsi G 6).symm.trans
+    (sum_lateNewtonPacket_six_mul_conj_eq_subsetCollision hpsi G)
+  have hq : (Fintype.card F : Complex) ≠ 0 := by
+    exact_mod_cast (Fintype.card_pos : 0 < Fintype.card F).ne'
+  have hcommon :
+      ((120 : Complex) ^ 2 * Fintype.card F) *
+          (lateNewtonSignedCollisionForm G 6 : Complex) =
+        ((120 : Complex) ^ 2 * Fintype.card F) *
+          (36 * subsetCollision G 6 : Int) := by
+    norm_num [Nat.factorial] at hEq
+    calc
+      ((120 : Complex) ^ 2 * Fintype.card F) *
+          (lateNewtonSignedCollisionForm G 6 : Complex) =
+          14400 * Fintype.card F * (lateNewtonSignedCollisionForm G 6 : Complex) := by ring
+      _ = 518400 * Fintype.card F * (subsetCollision G 6 : Complex) := hEq
+      _ = ((120 : Complex) ^ 2 * Fintype.card F) *
+          (36 * subsetCollision G 6 : Int) := by
+        push_cast
+        ring
+  have hcoef : ((120 : Complex) ^ 2 * Fintype.card F) ≠ 0 :=
+    mul_ne_zero (by norm_num) hq
+  exact_mod_cast (mul_left_cancel₀ hcoef hcommon)
+
+/-- The depth-seven raw signed collision form is exactly `7^2` times the ordinary subset census. -/
+theorem lateNewtonSignedCollisionForm_seven_eq (G : Finset F) :
+    lateNewtonSignedCollisionForm G 7 = 49 * subsetCollision G 7 := by
+  obtain ⟨psi, hpsi⟩ := exists_primitive_addChar (F := F)
+  have hEq := (sum_lateNewtonPacket_mul_conj_eq_signedCollision hpsi G 7).symm.trans
+    (sum_lateNewtonPacket_seven_mul_conj_eq_subsetCollision hpsi G)
+  have hq : (Fintype.card F : Complex) ≠ 0 := by
+    exact_mod_cast (Fintype.card_pos : 0 < Fintype.card F).ne'
+  have hcommon :
+      ((720 : Complex) ^ 2 * Fintype.card F) *
+          (lateNewtonSignedCollisionForm G 7 : Complex) =
+        ((720 : Complex) ^ 2 * Fintype.card F) *
+          (49 * subsetCollision G 7 : Int) := by
+    norm_num [Nat.factorial] at hEq
+    calc
+      ((720 : Complex) ^ 2 * Fintype.card F) *
+          (lateNewtonSignedCollisionForm G 7 : Complex) =
+          518400 * Fintype.card F * (lateNewtonSignedCollisionForm G 7 : Complex) := by ring
+      _ = 25401600 * Fintype.card F * (subsetCollision G 7 : Complex) := hEq
+      _ = ((720 : Complex) ^ 2 * Fintype.card F) *
+          (49 * subsetCollision G 7 : Int) := by
+        push_cast
+        ring
+  have hcoef : ((720 : Complex) ^ 2 * Fintype.card F) ≠ 0 :=
+    mul_ne_zero (by norm_num) hq
+  exact_mod_cast (mul_left_cancel₀ hcoef hcommon)
+
 /-- Exact nonzero-frequency `J_6` energy, including its DC subtraction. -/
 theorem sum_nonzero_lateNewtonPacket_six_eq_ledger
     {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) :
@@ -589,6 +717,64 @@ section FactorialScaling
 /-- Ordered-injective energy ledger corresponding to an unordered collision defect. -/
 def factorialScaledEnergy (D : Nat -> Int) (r : Nat) : Int :=
   (Nat.factorial r : Int) ^ 2 * D r
+
+/-- The actual centered subset-collision defect at an arbitrary finite field and ground set. -/
+noncomputable def subsetCollisionDefect {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (G : Finset F) (r : Nat) : Int :=
+  collisionDefect (Fintype.card F) (G.card.choose r) (subsetCollision G r)
+
+/-- The exact `J_6` nonzero ledger is `(6!)^2 * Delta_6`. -/
+theorem lateNewtonNonzeroEnergyLedger_six_eq_factorialScaledEnergy
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F) :
+    lateNewtonNonzeroEnergyLedger G 6 =
+      factorialScaledEnergy (subsetCollisionDefect G) 6 := by
+  unfold lateNewtonNonzeroEnergyLedger factorialScaledEnergy subsetCollisionDefect collisionDefect
+  rw [lateNewtonSignedCollisionForm_six_eq]
+  norm_num [Nat.factorial]
+  ring
+
+/-- The exact `J_7` nonzero ledger is `(7!)^2 * Delta_7`. -/
+theorem lateNewtonNonzeroEnergyLedger_seven_eq_factorialScaledEnergy
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F) :
+    lateNewtonNonzeroEnergyLedger G 7 =
+      factorialScaledEnergy (subsetCollisionDefect G) 7 := by
+  unfold lateNewtonNonzeroEnergyLedger factorialScaledEnergy subsetCollisionDefect collisionDefect
+  rw [lateNewtonSignedCollisionForm_seven_eq]
+  norm_num [Nat.factorial]
+  ring
+
+/-- Under the production cardinalities, the generic subset defect is the existing production
+defect profile. -/
+theorem subsetCollisionDefect_eq_production
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F)
+    (hq : Fintype.card F = BGKLaterTransitionDefectLedgers.productionQ)
+    (hn : G.card = BGKLaterTransitionDefectLedgers.productionN) (r : Nat) :
+    subsetCollisionDefect G r =
+      productionCollisionDefect (fun s => subsetCollision G s) r := by
+  unfold subsetCollisionDefect productionCollisionDefect
+  rw [hq, hn]
+
+theorem production_lateNewtonNonzeroEnergyLedger_six
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F)
+    (hq : Fintype.card F = BGKLaterTransitionDefectLedgers.productionQ)
+    (hn : G.card = BGKLaterTransitionDefectLedgers.productionN) :
+    lateNewtonNonzeroEnergyLedger G 6 =
+      factorialScaledEnergy
+        (productionCollisionDefect (fun s => subsetCollision G s)) 6 := by
+  rw [lateNewtonNonzeroEnergyLedger_six_eq_factorialScaledEnergy]
+  unfold factorialScaledEnergy
+  rw [subsetCollisionDefect_eq_production G hq hn]
+
+theorem production_lateNewtonNonzeroEnergyLedger_seven
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F)
+    (hq : Fintype.card F = BGKLaterTransitionDefectLedgers.productionQ)
+    (hn : G.card = BGKLaterTransitionDefectLedgers.productionN) :
+    lateNewtonNonzeroEnergyLedger G 7 =
+      factorialScaledEnergy
+        (productionCollisionDefect (fun s => subsetCollision G s)) 7 := by
+  rw [lateNewtonNonzeroEnergyLedger_seven_eq_factorialScaledEnergy]
+  unfold factorialScaledEnergy
+  rw [subsetCollisionDefect_eq_production G hq hn]
 
 /-- Factorial scaling absorbs the adjacent square `(r+1)^2` exactly. -/
 theorem compactTransitionLedger_iff_factorialScaledEnergy
@@ -653,17 +839,64 @@ theorem production_halfUnit_six_iff_orderedEnergy (D : Nat -> Int) :
     (by norm_num [BGKLaterTransitionDefectLedgers.productionN]) (by norm_num)]
   norm_num
 
+/-- Actual `5 -> 6` obligation: the left side is the literal nonzero `J_6` energy ledger. -/
+theorem production_halfUnit_five_iff_actualLateNewton
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F)
+    (hq : Fintype.card F = BGKLaterTransitionDefectLedgers.productionQ)
+    (hn : G.card = BGKLaterTransitionDefectLedgers.productionN) :
+    RationalTransitionAt BGKLaterTransitionDefectLedgers.productionN 5 (21 * 501) 1000
+        (productionCollisionDefect (fun s => subsetCollision G s)) <->
+      (1000 : Int) * BGKLaterTransitionDefectLedgers.productionN *
+          lateNewtonNonzeroEnergyLedger G 6 <=
+        10521 * (BGKLaterTransitionDefectLedgers.productionN - 5 : Int) ^ 2 *
+          factorialScaledEnergy
+            (productionCollisionDefect (fun s => subsetCollision G s)) 5 := by
+  rw [production_halfUnit_five_iff_orderedEnergy,
+    ← production_lateNewtonNonzeroEnergyLedger_six G hq hn]
+
+/-- Actual `6 -> 7` obligation: both sides are the literal nonzero late-Newton ledgers. -/
+theorem production_halfUnit_six_iff_actualLateNewton
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F] (G : Finset F)
+    (hq : Fintype.card F = BGKLaterTransitionDefectLedgers.productionQ)
+    (hn : G.card = BGKLaterTransitionDefectLedgers.productionN) :
+    RationalTransitionAt BGKLaterTransitionDefectLedgers.productionN 6 (25 * 501) 1000
+        (productionCollisionDefect (fun s => subsetCollision G s)) <->
+      (1000 : Int) * BGKLaterTransitionDefectLedgers.productionN *
+          lateNewtonNonzeroEnergyLedger G 7 <=
+        12525 * (BGKLaterTransitionDefectLedgers.productionN - 6 : Int) ^ 2 *
+          lateNewtonNonzeroEnergyLedger G 6 := by
+  rw [production_halfUnit_six_iff_orderedEnergy,
+    ← production_lateNewtonNonzeroEnergyLedger_seven G hq hn,
+    ← production_lateNewtonNonzeroEnergyLedger_six G hq hn]
+
+/-- The repeated-sector allowance can account for at most `138` of the `8264`-unit Wick gap;
+`8126` coefficient units still require injective signed cancellation. -/
+theorem repeatedEnvelope_leaves_8126_injective_gap :
+    135135 = 126871 + 138 + 8126 := by norm_num
+
 end FactorialScaling
 
 /-! ## Axiom audit -/
 
 #print axioms sum_phaseFamilyPeriod_mul_conj_eq_crossCollision
 #print axioms newtonJoinPeriod_eq_powerSum_mul_esymm
+#print axioms phaseCrossCollisionCount_valueSubsetSum_eq_subsetCollision
 #print axioms sum_linearCombination_mul_conj_eq_signedCovarianceForm
 #print axioms lateNewtonSignedCollisionForm_eq_sameSign_sub_oppositeSign
+#print axioms lateNewtonPacket_six_eq_orderedInjectiveTransform
+#print axioms lateNewtonPacket_seven_eq_orderedInjectiveTransform
+#print axioms orderedInjectiveTransform_subgroupPhase_zero
 #print axioms sum_lateNewtonPacket_mul_conj_eq_signedCollision
+#print axioms sum_nonzero_lateNewtonPacket_six_eq_ledger
+#print axioms sum_nonzero_lateNewtonPacket_seven_eq_ledger
+#print axioms lateNewtonSignedCollisionForm_six_eq
+#print axioms lateNewtonSignedCollisionForm_seven_eq
+#print axioms lateNewtonNonzeroEnergyLedger_six_eq_factorialScaledEnergy
+#print axioms lateNewtonNonzeroEnergyLedger_seven_eq_factorialScaledEnergy
 #print axioms compactTransitionLedger_iff_factorialScaledEnergy
 #print axioms production_halfUnit_five_iff_orderedEnergy
 #print axioms production_halfUnit_six_iff_orderedEnergy
+#print axioms production_halfUnit_five_iff_actualLateNewton
+#print axioms production_halfUnit_six_iff_actualLateNewton
 
 end ArkLib.ProximityGap.Frontier.BGKLateNewtonSignedCovariance

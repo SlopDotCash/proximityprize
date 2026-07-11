@@ -728,8 +728,11 @@ Generic cross Parseval identifies each matrix entry with a structured collision 
 coefficient-vector identity expands the complete alternating packet.  The opposite-parity entries
 carry the favorable algebraic coefficient: nine unordered pairs for `d=6`, twelve for `d=7`.
 This does not assert that each centered covariance has a favorable sign.  Factorial
-scaling removes the adjacent `(r+1)^2` from the late ledgers exactly.  This is a signed collision
-coordinate system, not an estimate of its entries.
+scaling removes the adjacent `(r+1)^2` from the late ledgers exactly.  The packet/J seam and DC
+normalization are now formal rather than interpretive: the two packets equal `J_6,J_7`, their raw
+signed collision forms equal `36*C_6` and `49*C_7`, and their nonzero ledgers equal
+`(6!)^2*Delta_6` and `(7!)^2*Delta_7`.  Thus the `10521/12525` actual-Newton consumers are direct
+theorems.  This is a signed collision coordinate system, not an estimate of its entries.
 
 Exact finite-cell decomposition then isolates a smaller target.  If `U_j` is the physical
 histogram of `p_j e_(r+1-j)`, write
@@ -774,7 +777,7 @@ V(J+P) = V(J) + [sum_i V(P_i) + Cov_off(P) + 2*Cov(J,P)].
 The bracket needs a lower bound to delete `P`; internal negative covariance alone gives the wrong
 quantity.  A two-target nonnegative counterprofile has perfect internal cancellation and still
 fails the `5 -> 6` ledger.  G191 separately gives a genuine subgroup with lexicographic
-`(sum V_i,Cov_off)=(36,64)`, and G192 reports positive covariance for the symmetric depth-three
+`(sum V_i,Cov_off)=(36,64)`, and G193 proves covariance `9>0` for G192's symmetric depth-three
 partition.  Finally, freeing the entire repeated-sector reservation only changes the allowance by
 `138`, from `126871` to `127009`; the Wick product still exceeds it by `8126`.  Consequently the
 main saving must be an injective/Newton transition theorem, not a generic internal repetition-sign

@@ -107,6 +107,11 @@ coordinates.  Any five vertex-disjoint matched pairs contain two distinct intera
 equivalently, the pair-interaction graph has independence number at most four.  This promotes the
 sharp five-set forcing from scalar witnesses to the half-billion matched-secant population and
 creates the correct graph for density and polynomial-line propagation arguments.
+The file now packages this as `interactionGraph` for every finite endpoint-disjoint matching and
+proves `interactionGraph_compl_cliqueFree_five`.  This is the reusable global statement: standard
+four-part Turán extremal machinery may be applied directly to obtain a quadratic interaction
+supply.  The remaining prize-specific step is to turn those cross-endpoint overlaps into equality
+or bounded clustering of the original matched secant parameters.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
@@ -383,7 +388,10 @@ alone is therefore refuted; the remaining theorem must use the actual joint-peri
 `_BGKLateNewtonSignedCovariance.lean` now gives that arithmetic an exact signed coordinate system.
 The `j`th Newton join has physical phase `j*x + sum S`, its Fourier transform is
 `p_j*e_(d-j)`, and cross Parseval turns every entry of the depth-six or depth-seven covariance
-matrix into one structured collision count.  The alternating Newton signs leave nine
+matrix into one structured collision count.  The alternating packets are proved equal to the
+existing ordered-injective transforms `J_6,J_7`; after exact DC subtraction their raw signed
+forms are `36*C_6` and `49*C_7`, so the nonzero ledgers are literally `(6!)^2*Delta_6` and
+`(7!)^2*Delta_7`.  The alternating Newton signs leave nine
 favorable-sign unordered pairs at depth six and twelve at depth seven; this describes their
 algebraic coefficients, not the sign of each centered covariance.  Unsigned Young/triangle
 estimates erase them.  `_BGKLateNewtonDominantPairSocket.lean` isolates the empirically dominant two-colour
@@ -393,13 +401,13 @@ two-sided: favorable cells pass the combined `U_1-U_2` cap with a nonpositive ta
 cells can still have ample negative `E_12`; covariance alone therefore does not distinguish
 success.  The new theorem-shaped target is a production bound on the centered energy of
 `U_1-U_2`, plus the displayed small signed-tail budgets.  The probe is not a production theorem.
-`_BGKFirstCollisionCovarianceLedgerBridge.lean` audits the adjacent G189--G192 repetition route.
+`_BGKFirstCollisionCovarianceLedgerBridge.lean` audits the adjacent G189--G193 repetition route.
 It proves the exact `29/30` and `41/42` internal cancellation thresholds, but also the correct
 deletion identity
 `V(J+P)=V(J)+sum_i V(P_i)+Cov_off(P)+2*Cov(J,P)`.  Thus internal repetition covariance is not the
 injective ledger carrier.  A formal counterprofile has perfect internal cancellation and still
 fails the late ledger; G191 proves positive covariance for a genuine lexicographic subgroup
-partition, while G192 reports the same sign empirically for its symmetric depth-three replacement.
+partition, while G193 proves the same sign for G192's symmetric depth-three replacement.
 Even returning the full repeated-sector reservation changes `126871` only to
 `127009`, still `8126` below Wick's `135135`.  The principal saving must occur in the injective
 Newton trajectory, not in a generic repetition-sector sign claim.

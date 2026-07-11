@@ -144,6 +144,44 @@ theorem sum_signedPhaseFiberProfile_sq_eq_crossCollisionForm
         ring
       rw [htwo, ← h12]
 
+/-- A physical fibre partitions exactly into a predicate sector and its complement. -/
+theorem phaseFiberCount_eq_subtype_add_compl (phi : X -> T) (p : X -> Prop)
+    [DecidablePred p] (t : T) :
+    phaseFiberCount phi t =
+      phaseFiberCount (fun z : {x : X // p x} => phi z.1) t +
+        phaseFiberCount (fun z : {x : X // ¬ p x} => phi z.1) t := by
+  classical
+  have hpart := Finset.card_filter_add_card_filter_not
+    (s := (Finset.univ : Finset X).filter fun x => phi x = t) p
+  have hpos :
+      phaseFiberCount (fun z : {x : X // p x} => phi z.1) t =
+        ((Finset.univ : Finset X).filter fun x => p x ∧ phi x = t).card := by
+    unfold phaseFiberCount
+    calc
+      ((Finset.univ.filter fun z : {x : X // p x} => phi z.1 = t).card) =
+          Fintype.card {z : {x : X // p x} // phi z.1 = t} :=
+        (Fintype.card_subtype _).symm
+      _ = Fintype.card {x : X // p x ∧ phi x = t} :=
+        Fintype.card_congr (Equiv.subtypeSubtypeEquivSubtypeInter p fun x => phi x = t)
+      _ = ((Finset.univ : Finset X).filter fun x => p x ∧ phi x = t).card :=
+        Fintype.card_subtype _
+  have hneg :
+      phaseFiberCount (fun z : {x : X // ¬ p x} => phi z.1) t =
+        ((Finset.univ : Finset X).filter fun x => ¬ p x ∧ phi x = t).card := by
+    unfold phaseFiberCount
+    calc
+      ((Finset.univ.filter fun z : {x : X // ¬ p x} => phi z.1 = t).card) =
+          Fintype.card {z : {x : X // ¬ p x} // phi z.1 = t} :=
+        (Fintype.card_subtype _).symm
+      _ = Fintype.card {x : X // ¬ p x ∧ phi x = t} :=
+        Fintype.card_congr
+          (Equiv.subtypeSubtypeEquivSubtypeInter (fun x => ¬ p x) fun x => phi x = t)
+      _ = ((Finset.univ : Finset X).filter fun x => ¬ p x ∧ phi x = t).card :=
+        Fintype.card_subtype _
+  rw [hpos, hneg]
+  unfold phaseFiberCount
+  simpa only [Finset.filter_filter, Finset.mem_univ, true_and, and_comm] using hpart.symm
+
 end SignedFibres
 
 /-! ## The two-colour Newton packet -/
@@ -173,6 +211,177 @@ ordered at arbitrary parameters. -/
 def twoColourDC (G : Finset F) (r : Nat) : Int :=
   (G.card : Int) * (G.card.choose r : Int) -
     (G.card : Int) * (G.card.choose (r - 1) : Int)
+
+/-! ### Erase/insert cancellation of the common physical sector -/
+
+/-- Newton joins in which the marked point is already present in the subset. -/
+abbrev RepeatedMarkedJoin (G : Finset F) (r : Nat) :=
+  {z : NewtonJoin G r // z.1 ∈ z.2.1}
+
+/-- Newton joins in which the marked point is fresh relative to the subset. -/
+abbrev FreshMarkedJoin (G : Finset F) (r : Nat) :=
+  {z : NewtonJoin G r // z.1 ∉ z.2.1}
+
+/-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
+def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (hr : 0 < r) :
+    RepeatedMarkedJoin G r -> FreshMarkedJoin G (r - 1) := by
+  intro z
+  have hcard : z.1.2.1.card = r :=
+    (Finset.mem_powersetCard.mp z.1.2.2).2
+  have heraseCard : (z.1.2.1.erase z.1.1).card = r - 1 := by
+    rw [Finset.card_erase_of_mem z.2, hcard]
+  refine ⟨⟨z.1.1, ⟨z.1.2.1.erase z.1.1,
+    Finset.mem_powersetCard.mpr ⟨Finset.subset_univ _, heraseCard⟩⟩⟩, ?_⟩
+  simp
+
+/-- Inserting a fresh marked point raises the subset depth by one and makes it repeated. -/
+def insertFreshMarkedJoin (G : Finset F) {r : Nat} (hr : 0 < r) :
+    FreshMarkedJoin G (r - 1) -> RepeatedMarkedJoin G r := by
+  intro z
+  have hcard : z.1.2.1.card = r - 1 :=
+    (Finset.mem_powersetCard.mp z.1.2.2).2
+  have hinsertCard : (insert z.1.1 z.1.2.1).card = r := by
+    rw [Finset.card_insert_of_notMem z.2, hcard]
+    omega
+  refine ⟨⟨z.1.1, ⟨insert z.1.1 z.1.2.1,
+    Finset.mem_powersetCard.mpr ⟨Finset.subset_univ _, hinsertCard⟩⟩⟩, ?_⟩
+  exact Finset.mem_insert_self z.1.1 z.1.2.1
+
+/-- **The common-sector bijection.**  Repeated `U1` configurations are exactly fresh `U2`
+configurations after erasing the marked point. -/
+def repeatedFreshEquiv (G : Finset F) {r : Nat} (hr : 0 < r) :
+    RepeatedMarkedJoin G r ≃ FreshMarkedJoin G (r - 1) where
+  toFun := eraseRepeatedMarkedJoin G hr
+  invFun := insertFreshMarkedJoin G hr
+  left_inv z := by
+    apply Subtype.ext
+    apply Prod.ext
+    · rfl
+    · apply Subtype.ext
+      exact Finset.insert_erase z.2
+  right_inv z := by
+    apply Subtype.ext
+    apply Prod.ext
+    · rfl
+    · apply Subtype.ext
+      exact Finset.erase_insert z.2
+
+/-- Restricted phase of the repeated part of `U1`. -/
+noncomputable def repeatedOnePhase (G : Finset F) (r : Nat)
+    (z : RepeatedMarkedJoin G r) : F :=
+  newtonJoinPhase G 1 r z.1
+
+/-- Restricted phase of the fresh part of `U2`. -/
+noncomputable def freshTwoPhase (G : Finset F) (r : Nat)
+    (z : FreshMarkedJoin G (r - 1)) : F :=
+  newtonJoinPhase G 2 (r - 1) z.1
+
+/-- Restricted phase of the fresh part of `U1`. -/
+noncomputable def freshOnePhase (G : Finset F) (r : Nat)
+    (z : FreshMarkedJoin G r) : F :=
+  newtonJoinPhase G 1 r z.1
+
+/-- Restricted phase of the repeated part of `U2`. -/
+noncomputable def repeatedTwoPhase (G : Finset F) (r : Nat)
+    (z : RepeatedMarkedJoin G (r - 1)) : F :=
+  newtonJoinPhase G 2 (r - 1) z.1
+
+/-- Fresh weight-three phase obtained after erasing the marked point from repeated `U2`. -/
+noncomputable def freshThreePhase (G : Finset F) (r : Nat)
+    (z : FreshMarkedJoin G (r - 2)) : F :=
+  newtonJoinPhase G 3 (r - 2) z.1
+
+/-- Erasing a repeated marked point increases its weight by one and preserves the phase. -/
+theorem eraseRepeatedMarkedJoin_phase (G : Finset F) {r : Nat} (hr : 0 < r)
+    (k : Nat) (z : RepeatedMarkedJoin G r) :
+    newtonJoinPhase G (k + 1) (r - 1) (eraseRepeatedMarkedJoin G hr z).1 =
+      newtonJoinPhase G k r z.1 := by
+  classical
+  dsimp only [eraseRepeatedMarkedJoin, newtonJoinPhase]
+  rw [← Finset.sum_erase_add _ (fun y : {x : F // x ∈ G} => y.1) z.2]
+  push_cast
+  ring
+
+/-- The erase/insert bijection preserves the physical phase exactly. -/
+theorem repeatedFreshEquiv_phase (G : Finset F) {r : Nat} (hr : 0 < r)
+    (z : RepeatedMarkedJoin G r) :
+    freshTwoPhase G r (repeatedFreshEquiv G hr z) = repeatedOnePhase G r z := by
+  classical
+  change freshTwoPhase G r (eraseRepeatedMarkedJoin G hr z) = repeatedOnePhase G r z
+  exact eraseRepeatedMarkedJoin_phase G hr 1 z
+
+/-- Consequently the repeated `U1` and fresh `U2` physical histograms agree fibre by fibre. -/
+theorem repeatedOneFiber_eq_freshTwoFiber (G : Finset F) {r : Nat} (hr : 0 < r) (y : F) :
+    phaseFiberCount (repeatedOnePhase G r) y =
+      phaseFiberCount (freshTwoPhase G r) y := by
+  classical
+  let e : {z : RepeatedMarkedJoin G r // repeatedOnePhase G r z = y} ≃
+      {z : FreshMarkedJoin G (r - 1) // freshTwoPhase G r z = y} :=
+    (repeatedFreshEquiv G hr).subtypeEquiv fun z => by
+      rw [repeatedFreshEquiv_phase G hr z]
+  simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
+
+/-- Repeating the same erase/insert argument one level later identifies repeated `U2` with the
+fresh weight-three join of depth `r-2`. -/
+theorem repeatedTwoFiber_eq_freshThreeFiber
+    (G : Finset F) {r : Nat} (hr : 1 < r) (y : F) :
+    phaseFiberCount (repeatedTwoPhase G r) y =
+      phaseFiberCount (freshThreePhase G r) y := by
+  classical
+  have hr1 : 0 < r - 1 := by omega
+  let e0 := repeatedFreshEquiv G hr1
+  have hphase (z : RepeatedMarkedJoin G (r - 1)) :
+      freshThreePhase G r (e0 z) = repeatedTwoPhase G r z := by
+    dsimp only [e0]
+    change newtonJoinPhase G 3 (r - 2) (eraseRepeatedMarkedJoin G hr1 z).1 =
+      newtonJoinPhase G 2 (r - 1) z.1
+    simpa [Nat.sub_sub] using eraseRepeatedMarkedJoin_phase G hr1 2 z
+  let e : {z : RepeatedMarkedJoin G (r - 1) // repeatedTwoPhase G r z = y} ≃
+      {z : FreshMarkedJoin G (r - 2) // freshThreePhase G r z = y} :=
+    e0.subtypeEquiv fun z => by rw [hphase z]
+  simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
+
+/-- The first Newton join splits into its repeated and fresh marked sectors. -/
+theorem oneFiber_eq_repeated_add_fresh (G : Finset F) (r : Nat) (y : F) :
+    phaseFiberCount (newtonJoinPhase G 1 r) y =
+      phaseFiberCount (repeatedOnePhase G r) y +
+        phaseFiberCount (freshOnePhase G r) y := by
+  simpa only [repeatedOnePhase, freshOnePhase] using
+    phaseFiberCount_eq_subtype_add_compl (newtonJoinPhase G 1 r)
+      (fun z : NewtonJoin G r => z.1 ∈ z.2.1) y
+
+/-- The second Newton join splits into its repeated and fresh marked sectors. -/
+theorem twoFiber_eq_repeated_add_fresh (G : Finset F) (r : Nat) (y : F) :
+    phaseFiberCount (newtonJoinPhase G 2 (r - 1)) y =
+      phaseFiberCount (repeatedTwoPhase G r) y +
+        phaseFiberCount (freshTwoPhase G r) y := by
+  simpa only [repeatedTwoPhase, freshTwoPhase] using
+    phaseFiberCount_eq_subtype_add_compl (newtonJoinPhase G 2 (r - 1))
+      (fun z : NewtonJoin G (r - 1) => z.1 ∈ z.2.1) y
+
+/-- **Exact cancellation theorem.**  After the common repeated-`U1`/fresh-`U2` sector is
+cancelled by `repeatedFreshEquiv`, the dominant physical profile is precisely fresh `U1` minus
+repeated `U2`. -/
+theorem twoColourPhysicalProfile_eq_fresh_sub_repeated
+    (G : Finset F) {r : Nat} (hr : 0 < r) (y : F) :
+    twoColourPhysicalProfile G r y =
+      (phaseFiberCount (freshOnePhase G r) y : Int) -
+        phaseFiberCount (repeatedTwoPhase G r) y := by
+  unfold twoColourPhysicalProfile signedPhaseFiberProfile
+  rw [oneFiber_eq_repeated_add_fresh, twoFiber_eq_repeated_add_fresh,
+    repeatedOneFiber_eq_freshTwoFiber G hr y]
+  push_cast
+  ring
+
+/-- At depths at least two, the residual repeated-`U2` sector is itself the fresh weight-three
+join.  Thus the dominant packet is fresh weight one minus fresh weight three. -/
+theorem twoColourPhysicalProfile_eq_freshOne_sub_freshThree
+    (G : Finset F) {r : Nat} (hr : 1 < r) (y : F) :
+    twoColourPhysicalProfile G r y =
+      (phaseFiberCount (freshOnePhase G r) y : Int) -
+        phaseFiberCount (freshThreePhase G r) y := by
+  rw [twoColourPhysicalProfile_eq_fresh_sub_repeated G (by omega) y,
+    repeatedTwoFiber_eq_freshThreeFiber G hr y]
 
 /-- Fourier-side product form `p1*e_r-p2*e_(r-1)`. -/
 theorem twoColourPeriod_eq_powerSum_esymm
@@ -258,42 +467,105 @@ end TwoColour
 
 section Gates
 
-/-- Generic algebraic form of the dominant-pair budget: it is exactly a lower bound on the
-favourable cross collision `C12`. -/
-theorem dominantPairBudget_iff_crossCollisionLowerBound
-    (n q cap : Int) (previous C11 C22 C12 dc : Int) :
+/-- Generic algebraic form of a depth-`r` dominant-pair budget: it is exactly a lower bound on
+the favourable cross collision `C12`. -/
+theorem dominantPairBudgetAt_iff_crossCollisionLowerBound
+    (n q cap r : Int) (previous C11 C22 C12 dc : Int) :
     1000 * n * (q * (C11 + C22 - 2 * C12) - dc ^ 2) <=
-        cap * (n - 5) ^ 2 * previous <->
+        cap * (n - r) ^ 2 * previous <->
       2000 * n * q * C12 >=
         1000 * n * (q * (C11 + C22) - dc ^ 2) -
-          cap * (n - 5) ^ 2 * previous := by
+          cap * (n - r) ^ 2 * previous := by
   constructor <;> intro h <;> nlinarith
 
 /-- Exact `r=5` target selected by the dominant-pair socket. -/
 theorem fifthDominantPairBudget_iff_crossCollisionLowerBound
-    (q previous C11 C22 C12 dc : Int) :
-    FifthDominantPairBudget (fun r => if r = 5 then previous else 0)
+    (D : Nat -> Int) (q C11 C22 C12 dc : Int) :
+    FifthDominantPairBudget D
         (q * (C11 + C22 - 2 * C12) - dc ^ 2) <->
       2000 * BGKLaterTransitionDefectLedgers.productionN * q * C12 >=
         1000 * BGKLaterTransitionDefectLedgers.productionN *
             (q * (C11 + C22) - dc ^ 2) -
-          10500 * (BGKLaterTransitionDefectLedgers.productionN - 5 : Int) ^ 2 * previous := by
+          10500 * (BGKLaterTransitionDefectLedgers.productionN - 5 : Int) ^ 2 * D 5 := by
   unfold FifthDominantPairBudget
-  simp only [if_pos]
   constructor <;> intro h <;> nlinarith
 
 /-- Exact `r=6` target selected by the dominant-pair socket. -/
 theorem sixthDominantPairBudget_iff_crossCollisionLowerBound
-    (q previous C11 C22 C12 dc : Int) :
-    SixthDominantPairBudget (fun r => if r = 6 then previous else 0)
+    (D : Nat -> Int) (q C11 C22 C12 dc : Int) :
+    SixthDominantPairBudget D
         (q * (C11 + C22 - 2 * C12) - dc ^ 2) <->
       2000 * BGKLaterTransitionDefectLedgers.productionN * q * C12 >=
         1000 * BGKLaterTransitionDefectLedgers.productionN *
             (q * (C11 + C22) - dc ^ 2) -
-          12500 * (BGKLaterTransitionDefectLedgers.productionN - 6 : Int) ^ 2 * previous := by
+          12500 * (BGKLaterTransitionDefectLedgers.productionN - 6 : Int) ^ 2 * D 6 := by
   unfold SixthDominantPairBudget
-  simp only [if_pos]
   constructor <;> intro h <;> nlinarith
+
+/-! ### Literal socket integration -/
+
+/-- The remaining centered Newton energy after removing the physical two-colour leading term at
+`5 -> 6`.  This definition is exact and makes no sign claim about the tail. -/
+noncomputable def fifthTwoColourTail {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (D : Nat -> Int) (G : Finset F) : Int :=
+  36 * D 6 - centeredTwoColourCollision G 5
+
+/-- The analogous exact tail at `6 -> 7`. -/
+noncomputable def sixthTwoColourTail {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (D : Nat -> Int) (G : Finset F) : Int :=
+  49 * D 7 - centeredTwoColourCollision G 6
+
+/-- The actual physical leading term and its complementary tail satisfy the literal fifth socket. -/
+theorem fifthNewtonSplit_twoColour {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (D : Nat -> Int) (G : Finset F) :
+    FifthNewtonSplit D (centeredTwoColourCollision G 5) (fifthTwoColourTail D G) := by
+  unfold FifthNewtonSplit fifthTwoColourTail
+  ring
+
+/-- The actual physical leading term and its complementary tail satisfy the literal sixth socket. -/
+theorem sixthNewtonSplit_twoColour {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (D : Nat -> Int) (G : Finset F) :
+    SixthNewtonSplit D (centeredTwoColourCollision G 6) (sixthTwoColourTail D G) := by
+  unfold SixthNewtonSplit sixthTwoColourTail
+  ring
+
+/-- **Actual field-data form of the fifth cross-collision gate.** -/
+theorem fifthTwoColourBudget_iff_actualCrossCollision
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (D : Nat -> Int) (G : Finset F) :
+    FifthDominantPairBudget D (centeredTwoColourCollision G 5) <->
+      2000 * BGKLaterTransitionDefectLedgers.productionN * (Fintype.card F : Int) *
+          (newtonJoinCollisionCount G 1 5 2 4 : Int) >=
+        1000 * BGKLaterTransitionDefectLedgers.productionN *
+            ((Fintype.card F : Int) *
+                ((newtonJoinCollisionCount G 1 5 1 5 : Int) +
+                  newtonJoinCollisionCount G 2 4 2 4) - twoColourDC G 5 ^ 2) -
+          10500 * (BGKLaterTransitionDefectLedgers.productionN - 5 : Int) ^ 2 * D 5 := by
+  simpa [centeredTwoColourCollision, twoColourCollisionForm] using
+    fifthDominantPairBudget_iff_crossCollisionLowerBound D
+      (Fintype.card F : Int)
+      (newtonJoinCollisionCount G 1 5 1 5 : Int)
+      (newtonJoinCollisionCount G 2 4 2 4 : Int)
+      (newtonJoinCollisionCount G 1 5 2 4 : Int) (twoColourDC G 5)
+
+/-- **Actual field-data form of the sixth cross-collision gate.** -/
+theorem sixthTwoColourBudget_iff_actualCrossCollision
+    {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    (D : Nat -> Int) (G : Finset F) :
+    SixthDominantPairBudget D (centeredTwoColourCollision G 6) <->
+      2000 * BGKLaterTransitionDefectLedgers.productionN * (Fintype.card F : Int) *
+          (newtonJoinCollisionCount G 1 6 2 5 : Int) >=
+        1000 * BGKLaterTransitionDefectLedgers.productionN *
+            ((Fintype.card F : Int) *
+                ((newtonJoinCollisionCount G 1 6 1 6 : Int) +
+                  newtonJoinCollisionCount G 2 5 2 5) - twoColourDC G 6 ^ 2) -
+          12500 * (BGKLaterTransitionDefectLedgers.productionN - 6 : Int) ^ 2 * D 6 := by
+  simpa [centeredTwoColourCollision, twoColourCollisionForm] using
+    sixthDominantPairBudget_iff_crossCollisionLowerBound D
+      (Fintype.card F : Int)
+      (newtonJoinCollisionCount G 1 6 1 6 : Int)
+      (newtonJoinCollisionCount G 2 5 2 5 : Int)
+      (newtonJoinCollisionCount G 1 6 2 5 : Int) (twoColourDC G 6)
 
 end Gates
 

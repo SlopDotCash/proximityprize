@@ -682,7 +682,9 @@ U_j(y) = sum_(x in G) a_(r+1-j)(y-j*x),
 and `_BGKLateNewtonSignedCovariance.lean` gives cross Parseval for every pair `U_j,U_k`.  The full
 alternating packet has nine opposite-parity unordered pairs at depth six and twelve at depth
 seven; those are coefficient signs, not a theorem about covariance signs.  Exact reconnaissance
-shows that the stable leading object is not `Cov(U_1,U_2)` alone but
+is wired to the actual trajectory: the packets equal `J_6,J_7`, exact DC deletion gives
+`(6!)^2*Delta_6,(7!)^2*Delta_7`, and the raw signed forms are `36*C_6,49*C_7`.  It then shows that
+the stable leading object is not `Cov(U_1,U_2)` alone but
 
 ```text
 L_r = V(U_1-U_2) = E_11+E_22-2E_12,
@@ -695,12 +697,12 @@ the `U_1` diagonal is super-Wick.  Thus neither birthday density nor a covarianc
 the remaining theorem.  A useful analytic input must bound the combined centered two-colour
 energy and the small signed tail at the production subgroup.
 
-The G189--G192 first-collision route does not transfer this saving from the repetition sector.
+The G189--G193 first-collision route does not transfer this saving from the repetition sector.
 Although the exact G190 polarization gives formal `29/30` and `41/42` cancellation gates, the
 actual deletion formula contains the additional injective--repetition term `2 Cov(J,P)`.  A formal
 counterprofile has perfect internal repetition cancellation and still fails the injective ledger;
-G191 gives positive lexicographic covariance on a genuine subgroup, and G192 reports a positive
-empirical example for the symmetric depth-three partition.  Even making the entire repeated sector free recovers only
+G191 gives positive lexicographic covariance on a genuine subgroup, and G193 proves covariance
+`9>0` for G192's symmetric depth-three partition.  Even making the entire repeated sector free recovers only
 `138`, leaving an `8126` coefficient gap to Wick.  These results close the generic internal-
 covariance shortcut while leaving production-specific signed injective arithmetic open.
 

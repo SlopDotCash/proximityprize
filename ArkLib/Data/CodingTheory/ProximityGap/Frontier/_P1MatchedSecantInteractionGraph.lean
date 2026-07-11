@@ -88,6 +88,77 @@ theorem not_five_pairwise_noninteracting
     exists_interacting_pair_of_five witness pair hendpoint hsize
   exact hnone i j hij hinteract
 
+/-! ## The global interaction graph on an arbitrary matching -/
+
+/-- Endpoint-disjointness data carried by a matching of scalar pairs. -/
+def PairMatching {J : Type} (M : Finset (J × J)) : Prop :=
+  (∀ p ∈ M, p.1 ≠ p.2) ∧
+  ∀ p ∈ M, ∀ q ∈ M, p ≠ q →
+    p.1 ≠ q.1 ∧ p.1 ≠ q.2 ∧ p.2 ≠ q.1 ∧ p.2 ≠ q.2
+
+/-- Graph on the matched pairs, with an edge for any cross-endpoint `K`-overlap. -/
+noncomputable def interactionGraph
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) : SimpleGraph M where
+  Adj p q := p ≠ q ∧ PairInteracts witness p.1 q.1
+  symm := by
+    intro p q h
+    exact ⟨h.1.symm, h.2.symm⟩
+  loopless := ⟨fun p h => h.1 rfl⟩
+
+/-- The complement interaction graph is `K₅`-free. -/
+theorem interactionGraph_compl_cliqueFree_five
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (hmatching : PairMatching M)
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
+    (interactionGraph witness M)ᶜ.CliqueFree 5 := by
+  classical
+  intro G5 hG5
+  have he : G5 ≃ Fin 5 := by
+    rw [← hG5.card_eq]
+    exact G5.equivFin
+  let pair : Fin 5 → J × J := fun i => (he.symm i).1.1
+  have hpairM : ∀ i, pair i ∈ M := fun i => (he.symm i).1.2
+  have hpairNe : ∀ i j, i ≠ j → pair i ≠ pair j := by
+    intro i j hij hp
+    apply hij
+    apply he.symm.injective
+    apply Subtype.ext
+    apply Subtype.ext
+    exact hp
+  have hendpoint : Function.Injective (endpoint pair) := by
+    rintro ⟨i, e⟩ ⟨j, f⟩ h
+    by_cases hij : i = j
+    · subst j
+      fin_cases e <;> fin_cases f <;> simp only [endpoint_zero, endpoint_one] at h ⊢
+      · exact (hmatching.1 (pair i) (hpairM i) h).elim
+      · exact (hmatching.1 (pair i) (hpairM i) h.symm).elim
+    · have hpq := hmatching.2 (pair i) (hpairM i) (pair j) (hpairM j)
+          (hpairNe i j hij)
+      fin_cases e <;> fin_cases f <;> simp only [endpoint_zero, endpoint_one] at h ⊢
+      · exact (hpq.1 h).elim
+      · exact (hpq.2.1 h).elim
+      · exact (hpq.2.2.1 h).elim
+      · exact (hpq.2.2.2 h).elim
+  have hendpointSize : ∀ z : Fin 5 × Fin 2,
+      T ≤ (witness (endpoint pair z)).card := by
+    rintro ⟨i, e⟩
+    fin_cases e
+    · simpa only [endpoint_zero] using (hsize (pair i) (hpairM i)).1
+    · simpa only [endpoint_one] using (hsize (pair i) (hpairM i)).2
+  obtain ⟨i, j, hij, hpij, hinteract⟩ :=
+    exists_interacting_pair_of_five witness pair hendpoint hendpointSize
+  let vi : M := ⟨pair i, hpairM i⟩
+  let vj : M := ⟨pair j, hpairM j⟩
+  have hvij : vi ≠ vj := by
+    intro h
+    exact hpij (congrArg Subtype.val h)
+  have hadj : (interactionGraph witness M).Adj vi vj := ⟨hvij, hinteract⟩
+  have hi : vi ∈ G5 := (he.symm i).2
+  have hj : vj ∈ G5 := (he.symm j).2
+  have hcompl := hG5.isClique hi hj hvij
+  exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
+
 end ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 
 open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
@@ -95,3 +166,4 @@ open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 #print axioms PairInteracts.symm
 #print axioms exists_interacting_pair_of_five
 #print axioms not_five_pairwise_noninteracting
+#print axioms interactionGraph_compl_cliqueFree_five

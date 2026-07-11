@@ -46,9 +46,9 @@ saving; that saving must occur in the raw/injective transition or Newton covaria
 The sign hypothesis is also not a plausible generic theorem.  G191 gives a genuine subgroup
 counterexample to even `Cov_off <= 0` for the lexicographic partition: at depth three in
 `F_5^times` its stratum-mass/covariance pair is `(36,64)`.  G192 replaces lexicographic colours by
-the permutation-symmetric `2+1` and `3` kernel types, but the order-three subgroup of `F_7^times`
-already has positive empirical covariance `9`.  Hence the `29/30` and `41/42` bounds below are
-calibrated sufficient sockets, not conjectured universal signs.
+the permutation-symmetric `2+1` and `3` kernel types; G193 proves that the order-three subgroup of
+`F_7^times` has positive covariance `9` there as well.  Hence the `29/30` and `41/42` bounds below
+are calibrated sufficient sockets, not conjectured universal signs.
 
 Issue #466.
 -/
