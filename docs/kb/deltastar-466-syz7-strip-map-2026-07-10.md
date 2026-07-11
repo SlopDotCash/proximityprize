@@ -156,6 +156,16 @@ in-tree BCIKS "correlated-agreement at Johnson" theorem is currently discharged 
    Effect: closes the entire FLOOR sub-strip `[0.16667, 0.29289]` and brings the unconditional
    bracket to `[Johnson, 1/3]`. This is the single most valuable theorem on the board — it is the
    one named residual and it moves the floor by `0.126`.
+   **SYZ8 update (2026-07-10):** the residual is re-based on its strictly-smaller disc-locus
+   form `CellPackageSupplyDiscLocus` (`Frontier/_SYZ8CellPackageSupply.lean`):
+   `cellPackageSupply_of_discLocus` proves disc-locus supply ⟹ `CellPackageSupply`, and
+   `production_good_johnson_of_discLocusSupply` /
+   `johnsonDischargeStatement_of_discLocusSupply` re-wire the floor jump off the smaller
+   residual. What an implementor must produce is now: per large cell, the surface data
+   (`H`, `x₀`, degree grading, `Ppoly`), the Y-root divisor `w`, ONE nonzero `disc` with a
+   single base + separability certificate over its non-vanishing locus, and disc-locus
+   matching/heavy sets — the [BCIKS20] Claim 5.7 production, genuinely open. See
+   `docs/kb/deltastar-466-syz8-cell-package-supply-2026-07-10.md`.
 
 2. **[CEILING, formalize the barrier] The degenerate-channel rank-budget wall `δ_channel ≥ (1−ρ)/(2−ρ)`.**
    Precise: prove that any stack whose certified `mcaEvent`-bad count exceeds the budget through the
