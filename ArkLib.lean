@@ -1710,6 +1710,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKInjectivePacketDefectC
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJacobiTensorProductionGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonKneserDepthSevenNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonPhaseGradeNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLaterTransitionDefectLedgers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLowerMomentOrbitSpikeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKMarkedSunflowerInverse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKModernToolCeiling
@@ -2638,6 +2639,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCrossPencilV
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterDChargeDerecursion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterDimensionDeficit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterDyadicDomainEscape
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterEightLabelHallKernel
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterExceptionalPairAmplification
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterExtremeZeroJohnsonBand
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterFiberChebyshevRefinement
@@ -3510,6 +3512,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15LargeZeroMcaEventFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15MultiBlockRefuter
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15NearCodeJohnsonBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15SafeBranchLinearCeiling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15StripExistenceUniform
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15WidthKGapClosed
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W15WindowTwoReference
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._W16TZDyadicRungs16to20

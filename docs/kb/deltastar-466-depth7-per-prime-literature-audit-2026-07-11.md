@@ -628,6 +628,9 @@ Its abstract six-ratio telescopes prove the final depth-seven target from either
 robust profile.  Thus a single one-unit Wick
 defect at any transition is sufficient while the other five remain at Wick scale; proving that
 defect for the actual subgroup trajectory is still open.
+There is also a robust distributed consumer: lowering the final two numerators to `10.5` and
+`12.5` gives product `124031.25`, or `125527.08...` after the sixfold `501/500` overhead.  This
+replaces one large local saving by two half-unit late savings without weakening the endpoint.
 
 The actual trajectory rules out one of those six locations.  `_BGKCenteredTrajectoryContraction`
 proves the exact six-step variance consumer and the full deleted-diagonal Newton transition, then

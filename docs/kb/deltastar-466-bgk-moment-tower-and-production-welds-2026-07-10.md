@@ -653,8 +653,11 @@ between `126871` and `126872`.  Replacing any one Wick numerator by its predeces
 product at most `124740<126871`.  The spare margin even permits multiplying every transition
 bound by `501/500`, a uniform `0.2%` overhead at all six steps.  Formal six-ratio telescopes consume
 both the exact and robust profiles and prove the final depth-seven discrepancy target.  This does
-not prove the missing transition estimate: it shows that one integer unit of improvement at one
-step suffices even after small, explicitly budgeted finite-population losses elsewhere.
+not prove the missing transition estimate.  A second exact consumer distributes the saving across
+the two dense final transitions: `11 -> 21/2` and `13 -> 25/2`, with profile product
+`496125/4=124031.25`; after the same sixfold overhead it is still
+`125527.08...<126871`.  Thus either one full unit at one step or half a unit at each final step
+suffices after small, explicitly budgeted finite-population losses elsewhere.
 
 `_BGKCenteredTrajectoryContraction.lean` supplies the actual subset-trajectory consumer.  Writing
 `Z_r` for centered `r`-subset discrepancy, six inequalities `n*Z_(r+1)<=c_r*Z_r` with
