@@ -1689,6 +1689,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCenteredTranslateConeD
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCenteredTranslatePDNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKConstIndexMomentTower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCosetAmplification
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCubicSignedWeightedCollision
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCyclotomicIntersectionIntegralityAudit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCyclotomicKreinSchurNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKDepthNineThreshold
@@ -1719,6 +1720,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKNineBitGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKPeriodProfileArithmeticAudit
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKPrimitiveDepthSevenSparseCodeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKPrimitiveFoldedAlphabet
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKProductionBirthdayCrossover
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKProductionDepthFiveWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKProvenInstanceFullGroup
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKRenergyRepresentationBridge
@@ -2617,6 +2619,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountGrowthLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountWallDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitSizeEqN
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OverdispersionObstructsVariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1EightLabelHallToRigidityRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAdjacentExactPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAgreementOverlapGraph
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterBadLabelFamilyConnector

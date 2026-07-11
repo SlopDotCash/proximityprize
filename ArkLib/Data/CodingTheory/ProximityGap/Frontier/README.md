@@ -42,6 +42,11 @@ set of cardinality at most eight such that every nonempty subset of its compleme
 divided-difference budget at least `K` times its cardinality.  Thus any remaining failure of a
 Hall-to-block-Vandermonde injectivity theorem is confined to eight labels; this is a localization,
 not yet a discharge of `SwarmResidual` or an exact delta-star pin.
+`_P1EightLabelHallToRigidityRefuted.lean` records the sharp limitation: an exact `F_7` system has
+only two exceptional anchor labels and every complement subset satisfies the same Hall budgets,
+but its degree-two anchored kernel is nontrivial.  Therefore the eight-label theorem cannot feed
+a Hall-only local-to-global argument; a surviving producer must use the P1 event geometry or a
+genuine maximal-recoverability/determinantal input.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

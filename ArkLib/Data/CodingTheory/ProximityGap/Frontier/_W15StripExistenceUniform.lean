@@ -129,7 +129,7 @@ def uniDom (hchar : CharGe17 F) : Fin 16 ↪ F where
     · have hlt : j.val < i.val := by
         rcases Nat.lt_or_ge j.val i.val with h' | h'
         · exact h'
-        · exact absurd (Fin.ext (le_antisymm hge h')) hne
+        · exact absurd (Fin.ext (le_antisymm h' hge)) hne
       have hz : ((i.val - j.val : ℕ) : F) = 0 := by
         push_cast [Nat.cast_sub hlt.le]
         simp only [uniDomFun] at h
@@ -192,15 +192,21 @@ theorem ePTE_ne_zero_on_dU (hchar : CharGe17 F) : ∀ i ∈ dU, ePTE (F := F) i 
       rw [h]
       ring
     exact hchar (x - y) (by omega) (by omega) hz
+  have hpoint : ∀ x : ℕ, 7 < x → x ≤ 15 →
+      ((x : ℕ) : F) * (((x : ℕ) : F) - 5) * (((x : ℕ) : F) - 7) ≠ 0 := by
+    intro x h7 h15
+    refine mul_ne_zero (mul_ne_zero ?_ ?_) ?_
+    · exact hchar x (by omega) h15
+    · have := hfac x 5 (by omega) h15
+      exact_mod_cast this
+    · have := hfac x 7 (by omega) h15
+      exact_mod_cast this
   intro i hi
-  fin_cases hi <;>
-    · simp only [ePTE]
-      refine mul_ne_zero (mul_ne_zero ?_ ?_) ?_
-      · exact_mod_cast hchar _ (by norm_num) (by norm_num)
-      · have := hfac _ 5 (by norm_num) (by norm_num)
-        exact_mod_cast this
-      · have := hfac _ 7 (by norm_num) (by norm_num)
-        exact_mod_cast this
+  fin_cases hi
+  · exact hpoint 10 (by norm_num) (by norm_num)
+  · exact hpoint 11 (by norm_num) (by norm_num)
+  · exact hpoint 12 (by norm_num) (by norm_num)
+  · exact hpoint 13 (by norm_num) (by norm_num)
 
 /-! ### 3. The uniform strip refutation -/
 
@@ -232,7 +238,9 @@ theorem strip_16_4_11_L_one_refuted_uniform (hchar : CharGe17 F) :
         (0 : F) = secantOffset pU dU ePTE wU i + (0 : F) • secantDirection pU dU i := by
       intro i hi
       fin_cases hi <;>
-        norm_num [secantOffset, secantDirection, wU, pU, dU]
+        · simp +decide only [secantOffset, secantDirection, wU, pU, dU, smul_eq_mul,
+            mul_zero, mul_one, add_zero, zero_add, zero_mul]
+          try norm_num
     have hsub : t0U ⊆ agreeSet (0 : Fin 16 → F)
         (fun i => secantOffset pU dU ePTE wU i + (0 : F) • secantDirection pU dU i) := by
       intro i hi
@@ -242,12 +250,16 @@ theorem strip_16_4_11_L_one_refuted_uniform (hchar : CharGe17 F) :
       _ ≤ _ := Finset.card_le_card hsub
   · -- codeword e at γ = 24 on t1U
     have hpt : ∀ i ∈ t1U,
-        ePTE i = secantOffset pU dU ePTE wU i + (24 : F) • secantDirection pU dU i := by
+        ePTE (F := F) i
+          = secantOffset pU dU ePTE wU i + (24 : F) • secantDirection pU dU i := by
       intro i hi
       fin_cases hi <;>
-        · norm_num [ePTE, secantOffset, secantDirection, wU, pU, dU]
-          try ring
-    have hsub : t1U ⊆ agreeSet ePTE
+        · simp +decide only [secantOffset, secantDirection, wU, pU, dU, ePTE,
+            smul_eq_mul, mul_zero, mul_one, add_zero, zero_add]
+          try push_cast
+          try ring_nf
+          try norm_num
+    have hsub : t1U ⊆ agreeSet (ePTE (F := F))
         (fun i => secantOffset pU dU ePTE wU i + (24 : F) • secantDirection pU dU i) := by
       intro i hi
       rw [agreeSet, Finset.mem_filter]
@@ -255,13 +267,16 @@ theorem strip_16_4_11_L_one_refuted_uniform (hchar : CharGe17 F) :
     calc (11 : ℕ) = t1U.card := by decide
       _ ≤ _ := Finset.card_le_card hsub
 
+/-- `ZMod p` satisfies the characteristic hypothesis for every prime `p ≥ 17`. -/
+theorem zmod_charGe17 (p : ℕ) [Fact p.Prime] (hp : 17 ≤ p) : CharGe17 (ZMod p) := by
+  intro m h1 h2 hz
+  haveI : NeZero p := ⟨(Fact.out : p.Prime).ne_zero⟩
+  have hdvd := (ZMod.natCast_eq_zero_iff m p).mp hz
+  exact absurd (Nat.le_of_dvd h1 hdvd) (by omega)
+
 /-- The prime-field corollary: every prime `p ≥ 17`. -/
 theorem strip_16_4_11_L_one_refuted_zmod (p : ℕ) [Fact p.Prime] (hp : 17 ≤ p) :
-    ¬ LargeZeroSafeLineListBudgeted
-      (uniDom (F := ZMod p) (fun m h1 h2 hz => by
-        rw [ZMod.natCast_self_eq_zero.symm] at hz
-        exact absurd (Nat.le_of_dvd h1 ((ZMod.natCast_zmod_eq_zero_iff_dvd m p).mp hz))
-          (by omega))) 4 11 1 :=
+    ¬ LargeZeroSafeLineListBudgeted (uniDom (zmod_charGe17 p hp)) 4 11 1 :=
   strip_16_4_11_L_one_refuted_uniform _
 
 end ProximityGap.Frontier.W15StripExistenceUniform

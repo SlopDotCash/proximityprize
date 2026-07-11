@@ -38,7 +38,7 @@ caps are included below.  No analytic collision estimate is asserted.  Issue #46
 
 set_option autoImplicit false
 set_option exponentiation.threshold 2048
-set_option maxRecDepth 100000
+set_option maxRecDepth 1000000
 
 open Finset BigOperators
 
@@ -88,8 +88,10 @@ theorem rationalTransitionAt_iff_cleared
   have hNrNat : 0 < productionN.choose r :=
     Nat.choose_pos (le_trans (Nat.le_add_right r 1) hr)
   have hNsNat : 0 < productionN.choose (r + 1) := Nat.choose_pos hr
-  have hNr : (0 : ℚ) < (productionN.choose r : ℚ) ^ 2 := by positivity
-  have hNs : (0 : ℚ) < (productionN.choose (r + 1) : ℚ) ^ 2 := by positivity
+  have hNrQ : (0 : ℚ) < productionN.choose r := by exact_mod_cast hNrNat
+  have hNsQ : (0 : ℚ) < productionN.choose (r + 1) := by exact_mod_cast hNsNat
+  have hNr : (0 : ℚ) < (productionN.choose r : ℚ) ^ 2 := pow_pos hNrQ 2
+  have hNs : (0 : ℚ) < (productionN.choose (r + 1) : ℚ) ^ 2 := pow_pos hNsQ 2
   have hcapQ : (0 : ℚ) < capDenominator := by exact_mod_cast hcap
   have hright : (0 : ℚ) <
       (capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2 :=
@@ -102,18 +104,46 @@ theorem rationalTransitionAt_iff_cleared
             (productionN.choose (r + 1) : ℚ) ^ 2 ≤
           ((capNumerator : ℚ) * (D r : ℚ)) /
             ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) := by
-      simpa [div_eq_mul_inv] using h
+      calc
+        ((productionN : ℚ) * (D (r + 1) : ℚ)) /
+            (productionN.choose (r + 1) : ℚ) ^ 2 =
+            (productionN : ℚ) *
+              ((D (r + 1) : ℚ) / (productionN.choose (r + 1) : ℚ) ^ 2) := by ring
+        _ ≤ ((capNumerator : ℚ) / capDenominator) *
+              ((D r : ℚ) / (productionN.choose r : ℚ) ^ 2) := h
+        _ = ((capNumerator : ℚ) * (D r : ℚ)) /
+            ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) := by ring
     have hcross := (div_le_div_iff₀ hNs hright).mp hfrac
-    exact_mod_cast hcross
+    have hcrossInt :
+        ((productionN : Int) * D (r + 1)) *
+            ((capDenominator : Int) * (productionN.choose r : Int) ^ 2) ≤
+          ((capNumerator : Int) * D r) *
+            (productionN.choose (r + 1) : Int) ^ 2 := by
+      exact_mod_cast hcross
+    convert hcrossInt using 1 <;> ring
   · intro h
+    have hcrossInt :
+        ((productionN : Int) * D (r + 1)) *
+            ((capDenominator : Int) * (productionN.choose r : Int) ^ 2) ≤
+          ((capNumerator : Int) * D r) *
+            (productionN.choose (r + 1) : Int) ^ 2 := by
+      convert h using 1 <;> ring
     have hcross :
         ((productionN : ℚ) * (D (r + 1) : ℚ)) *
             ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) ≤
           ((capNumerator : ℚ) * (D r : ℚ)) *
             (productionN.choose (r + 1) : ℚ) ^ 2 := by
-      exact_mod_cast h
+      exact_mod_cast hcrossInt
     have hfrac := (div_le_div_iff₀ hNs hright).mpr hcross
-    simpa [div_eq_mul_inv] using hfrac
+    calc
+      (productionN : ℚ) *
+          ((D (r + 1) : ℚ) / (productionN.choose (r + 1) : ℚ) ^ 2) =
+          ((productionN : ℚ) * (D (r + 1) : ℚ)) /
+            (productionN.choose (r + 1) : ℚ) ^ 2 := by ring
+      _ ≤ ((capNumerator : ℚ) * (D r : ℚ)) /
+          ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) := hfrac
+      _ = ((capNumerator : ℚ) / capDenominator) *
+          ((D r : ℚ) / (productionN.choose r : ℚ) ^ 2) := by ring
 
 /-- Adjacent binomial masses cancel, leaving the compact integer defect ledger. -/
 def CompactTransitionLedger (r capNumerator capDenominator : Nat)
@@ -162,9 +192,17 @@ theorem clearedTransitionAt_iff_compact
               (r + 1 : Int) ^ 2 := hs
         _ = (productionN.choose r : Int) ^ 2 *
             ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := by
-          rw [mul_assoc, hstepSq]
-          ring
-    exact (mul_le_mul_left hNrSq).mp hs'
+          calc
+            ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) *
+                (r + 1 : Int) ^ 2 =
+                (capNumerator : Int) * D r *
+                  ((productionN.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2) := by ring
+            _ = (capNumerator : Int) * D r *
+                  ((productionN.choose r : Int) ^ 2 * (productionN - r : Int) ^ 2) := by
+              rw [hstepSq]
+            _ = (productionN.choose r : Int) ^ 2 *
+                ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := by ring
+    exact le_of_mul_le_mul_left hs' hNrSq
   · intro h
     have hs := mul_le_mul_of_nonneg_left h
       (show (0 : Int) ≤ (productionN.choose r : Int) ^ 2 by positivity)
@@ -184,9 +222,17 @@ theorem clearedTransitionAt_iff_compact
               ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := hs
         _ = (r + 1 : Int) ^ 2 *
             ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) := by
-          rw [mul_assoc, ← hstepSq]
-          ring
-    exact (mul_le_mul_left hrsq).mp hs'
+          calc
+            (productionN.choose r : Int) ^ 2 *
+                ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) =
+                (capNumerator : Int) * D r *
+                  ((productionN.choose r : Int) ^ 2 * (productionN - r : Int) ^ 2) := by ring
+            _ = (capNumerator : Int) * D r *
+                  ((productionN.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2) := by
+              rw [hstepSq]
+            _ = (r + 1 : Int) ^ 2 *
+                ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) := by ring
+    exact le_of_mul_le_mul_left hs' hrsq
 
 /-- Fully consolidated denominator-clearing theorem. -/
 theorem rationalTransitionAt_iff_compact
@@ -265,7 +311,9 @@ theorem production_choose_five_field_window :
     2 ^ 14 * productionN.choose 5 < productionQ ∧
       productionQ < 2 ^ 15 * productionN.choose 5 := by
   have hdesc : productionN.descFactorial 5 = 120 * productionN.choose 5 := by
-    simpa using Nat.descFactorial_eq_factorial_mul_choose productionN 5
+    have h := Nat.descFactorial_eq_factorial_mul_choose productionN 5
+    norm_num only [Nat.factorial] at h
+    exact h
   have hlo : 2 ^ 14 * productionN.descFactorial 5 < 120 * productionQ := by
     norm_num [productionN, productionQ, productionM, Nat.descFactorial_succ,
       Nat.descFactorial_zero]
@@ -279,7 +327,9 @@ theorem production_choose_six_field_window :
     2 ^ 12 * productionQ < productionN.choose 6 ∧
       productionN.choose 6 < 2 ^ 13 * productionQ := by
   have hdesc : productionN.descFactorial 6 = 720 * productionN.choose 6 := by
-    simpa using Nat.descFactorial_eq_factorial_mul_choose productionN 6
+    have h := Nat.descFactorial_eq_factorial_mul_choose productionN 6
+    norm_num only [Nat.factorial] at h
+    exact h
   have hlo : 720 * (2 ^ 12 * productionQ) < productionN.descFactorial 6 := by
     norm_num [productionN, productionQ, productionM, Nat.descFactorial_succ,
       Nat.descFactorial_zero]
@@ -291,9 +341,7 @@ theorem production_choose_six_field_window :
 /-- Exact location of the first ambient birthday crossover. -/
 theorem production_birthday_crossover :
     productionN.choose 5 < productionQ ∧ productionQ < productionN.choose 6 := by
-  constructor
-  · exact lt_of_mul_lt_mul_left production_choose_five_field_window.1
-  · exact lt_of_mul_lt_mul_left production_choose_six_field_window.1
+  omega
 
 /-! ## Ranking and the distributed late half-unit socket -/
 
@@ -325,7 +373,7 @@ theorem product_lt_injectiveCoefficient_of_distributedLateHalfUnit
     ∏ i : Fin 6, c i < injectiveCoefficient := by
   have hprod : (∏ i : Fin 6, c i) ≤
       ∏ i : Fin 6, robustWickScale * distributedLateHalfUnit i :=
-    Finset.prod_le_prod (fun i _ ⇒ hc0 i) (fun i _ ⇒ hc i)
+    Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
   calc
     (∏ i : Fin 6, c i) ≤
         robustWickScale ^ 6 * ∏ i : Fin 6, distributedLateHalfUnit i := by
