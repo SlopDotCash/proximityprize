@@ -82,13 +82,22 @@ moment 14, and the quadratic anticorrelation `sum_(b != 0) eta_G(b)eta_G(ba)=-|G
 a rational mean-zero sibling array can have negative cross-correlation while its coarse
 fourteenth moment grows far beyond the Gaussian factor `2^7`. The live DQR residual is therefore
 a higher mixed-moment sign law, not a second-moment estimate.
+`_DQR4CrossMomentRepLocalization.lean` makes that law pointwise: every `(k,1)` cross moment is
+exactly `q*|G|*(f_k(a)-|G|^k/q)`, the centered `k`-fold representation count at the adjoining
+twist `a`.
 
 **Projective accident packets (2026-07-11).**  `_ANT46RungTwoAccidentOrbit.lean` now closes the
 full projective `S₄` classifier.  For an odd-characteristic accident the identity fibre has size
 `1`, `2`, or `6`; the two-pair pattern is lawful, and the certified production `-3` exclusion
 removes the `3+1` pattern.  Hence every production accident orbit has size `24` or `12`, and the
 total accident count is divisible by `12`.  This does not prove accident-freeness: the exact next
-socket is any independent bound `<12` (or a direct emptiness/resultant certificate).
+socket is any independent bound `<12` (or a direct emptiness/resultant certificate).  The same
+file now gives that certificate an exact cyclotomic-unit form: for
+`kappa_n(x)=(x-1)^n`, accident-freeness is equivalent to injectivity modulo inversion, and
+`#accidents=sum_v(k_v^2-2k_v+s_v)=sum_v k_v^2-2n+3` over the signature fibres.  At production it
+suffices to exclude `P_i | Disc(K_n) K_n(2^n)` for a canonical degree-`2^29-1` polynomial; the
+remaining algorithmic problem is a dyadic discriminant/resultant recurrence, not triple
+enumeration.
 
 The `_BGK*` files landed 2026-07-10 hang the ENTIRE depth ladder off the single named open
 Prop `WorstCaseIncompleteSumBound` (the BGK sup-bound), end to end at literal prize numbers:

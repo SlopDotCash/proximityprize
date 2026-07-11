@@ -170,9 +170,9 @@ exactly, then charge geometric orbits rather than ordered tuples.
 | PAOR-3 fibre `1/2/6` classifier | **THEOREM** | Signed-injective gives 1, one repeated pair gives 2, and a `3+1` pattern gives 6; scalar symmetries are excluded for odd-characteristic accidents. |
 | PAOR-4 orbit size `24/12` | **THEOREM at production** | Two-pair patterns are lawful and the certified `-3` test excludes `3+1`, so every production accident orbit has size 24 or 12 and the total count is divisible by 12. |
 | PAOR-5 depth-seven higher symmetric group | **ACTIVE** | Generalize from quadruple `S_4` to the signed 14-coordinate action relevant to `E_7`; classify stabilizers by set partition. |
-| PAOR-6 projective completion incidence | **ACTIVE** | Bound how many depth-seven tuples contain a fixed accident orbit. This is the geometric form of PPCT-7. |
-| PAOR-7 cross-ratio invariant | **ACTIVE** | Parametrize lawful-free quadruple orbits by cross-ratio and determine which values lift to subgroup points. |
-| PAOR-8 algebraic curve fibres | **ACTIVE** | Realize each orbit class as a fibre of a low-degree curve and apply a per-fibre point bound, keeping the number of fibres explicit. |
+| PAOR-6 exact signature-fibre count | **THEOREM / production histogram open** | For fibre sizes `k_v` of `kappa_n(x)=(x-1)^n`, `#accidents=sum_v(k_v^2-2k_v+s_v)=sum_v k_v^2-2n+3`. This reduces `n^2` triples to an `n-1` histogram but is still too large directly. |
+| PAOR-7 cyclotomic-unit signature | **THEOREM exact quotient** | For the exact root support, `accidents H=empty` iff `kappa_n` is injective modulo `x~x^-1`; both directions and two production adapters are formalized. |
+| PAOR-8 canonical discriminant recurrence | **ACTIVE, exact production socket** | It suffices to prove `P_i` does not divide `Disc(K_n)*K_n(2^n)`, `deg K_n=2^29-1`. Derive a dyadic recurrence; direct materialization is infeasible. |
 | PAOR-9 incidence theorem regime check | **INSUFFICIENT unless subgroup-sensitive** | Generic point-line/point-curve incidence bounds lose powers of `q` at `n=q^0.19`. |
 | PAOR-10 signed orbit census | **ACTIVE** | Attach a sign/centered weight to each projective orbit so orbit compression preserves DC cancellation instead of counting all accidents positively. |
 
@@ -186,7 +186,7 @@ that the bad component contracts when one adjoins square roots.
 | DQR-1 subgroup tower | **THEOREM** | `G_j` is the square image of `G_{j+1}` and `G_{j+1}=G_j union aG_j`. |
 | DQR-2 period two-scale equation | **THEOREM** | `_DQR23TwoScaleCenteredRecursion` proves `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)` and realness under `-1 in G`. |
 | DQR-3 centered-energy recursion | **THEOREM ledger** | The same file expands the off-zero fourteenth moment into all 15 signed binomial cross moments, without absolute-value loss. |
-| DQR-4 contraction coefficient | **ACTIVE / quadratic shortcut refuted** | Sibling cross-correlation is exactly `-n^2`, but `_DQRSecondMomentAnticorrelationNoGo` gives a mean-zero, negatively correlated paired array whose 14th moment expands far beyond `2^7`. Higher mixed structure is mandatory. |
+| DQR-4 contraction coefficient | **THEOREM localization / contraction open** | The `(k,1)` cross moment is exactly `q*n*(f_k(a)-n^k/q)` at the twist. Quadratic sibling correlation is `-n^2`, but `_DQRSecondMomentAnticorrelationNoGo` proves that sign alone cannot force the `2^7` factor; joint higher representation deficits are mandatory. |
 | DQR-5 Hasse--Davenport lift | **INSUFFICIENT as currently used** | Known product identities reduce some phase degrees of freedom but stop with a linear-size residual. |
 | DQR-6 renormalized Jacobi cocycle | **ACTIVE** | Track AJT normalized Jacobi phases under `K_j -> K_{j+1}` and look for a martingale-difference law. |
 | DQR-7 exceptional-level budget | **ACTIVE** | Permit finitely many expanding levels, provided the product of level constants through 30 stays below the exact coefficient budget. |

@@ -718,6 +718,16 @@ reuse coordinates.  The new kernel isolates exactly what such reuse means.
   next recursion interface: high-core machinery handles the first outcome;
   another reduced-universe pass can continue from the three-isolated-line
   outcome.
+
+- The complementary high-core branch now has its own P1 increment.  At core
+  `352321537`, a line below the four-point floor carries at most three points;
+  its complement has at most `721420287` coordinates, while every outsider
+  again has `324359511` fresh agreements.  Reduced Rankin forces an outsider
+  secant petal of size `145836060`.  The packaged continuation says: a
+  `352321537` core either jumps to `432479347`, or emits that petal.  Conversely,
+  the three-isolated-line recursion cannot be extended by naive subtraction:
+  `T-3(k-1)=0`.  Any fourth-line step must therefore use determinant/petal
+  overlap structure rather than another independent root cap.
   The cross-label information discarded by the binary abstraction is now
   retained explicitly.  Writing
   `E(x)=u₀(x)+γ₀u₁(x)−p₀(x)`, a coordinate labelled `γ` in one pencil and `δ`

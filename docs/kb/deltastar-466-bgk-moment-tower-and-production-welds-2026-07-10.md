@@ -185,6 +185,20 @@ also excludes the `3+1` pattern.  Consequently every production accident orbit h
 result but does not establish emptiness; any independent production upper bound `<12` would now
 close the rung-two accident residual.
 
+The exact residual is now one-dimensional.  Put `kappa_n(x)=(x-1)^n` on nontrivial `n`-th roots.
+The file proves
+
+```text
+accidents H = empty  <->  kappa_n is injective modulo x ~ x^(-1),
+#accidents = sum_v (k_v^2 - 2*k_v + s_v) = sum_v k_v^2 - 2*n + 3,
+```
+
+where `k_v` is a signature-fibre size and `s_v` records the unique self-inverse root.  The
+small-prime probe independently matches this formula against direct triples at 409 bad cells and
+refutes `p>n^3` as a cleanliness criterion.  For production, a sufficient exact certificate is
+`P_i` not dividing `Disc(K_n)*K_n(2^n)`, with `deg K_n=2^29-1`; direct construction is infeasible,
+so the new live PAOR socket is a logarithmic dyadic resultant/discriminant recurrence.
+
 ## Addendum 6: weighted collision moments and Jacobi equivalence (2026-07-11)
 
 `_BGKWeightedCollisionMoment.lean` proves the coefficient-weighted master identity
