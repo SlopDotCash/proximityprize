@@ -120,6 +120,28 @@ theorem petalUpdate_fixedPoint_below_universal_pair_floor :
     petalUpdate 109061044 < 2 * T - N := by
   norm_num [petalUpdate, freshAgreementFloor, T, k, N]
 
+/-! ## External common-lift defect onset -/
+
+/-- The first external-core size whose inclusion--exclusion overlap with one
+threshold-size base agreement reaches `k` roots of the degree-`<k` external
+common-lift defect. -/
+abbrev externalDefectCoreOnset : Nat := N - T + k
+
+theorem externalDefectCoreOnset_eq :
+    externalDefectCoreOnset = 749382314 := by
+  norm_num [externalDefectCoreOnset, T, N, k]
+
+/-- At the onset, the forced base-agreement/core overlap is exactly `k`. -/
+theorem threshold_add_externalDefectCoreOnset_sub_domain_eq_k :
+    T + externalDefectCoreOnset - N = k := by
+  norm_num [externalDefectCoreOnset, T, N, k]
+
+/-- The current four-point core floor remains far below the external-defect
+collapse onset; a further `316,902,967` coordinates of core growth are needed. -/
+theorem fourPointCore_externalDefect_deficit_eq :
+    externalDefectCoreOnset - 432479347 = 316902967 := by
+  norm_num [externalDefectCoreOnset, T, N, k]
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
@@ -137,3 +159,6 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 #print axioms petalUpdate_145836060_eq
 #print axioms petalUpdate_fixedPoint_eq
 #print axioms petalUpdate_fixedPoint_below_universal_pair_floor
+#print axioms externalDefectCoreOnset_eq
+#print axioms threshold_add_externalDefectCoreOnset_sub_domain_eq_k
+#print axioms fourPointCore_externalDefect_deficit_eq

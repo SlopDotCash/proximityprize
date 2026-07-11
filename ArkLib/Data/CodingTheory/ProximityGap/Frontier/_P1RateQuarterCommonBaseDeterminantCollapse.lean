@@ -297,6 +297,28 @@ theorem commonLift_externalDefect_natDegree_lt
   exact lt_of_le_of_lt (Polynomial.natDegree_sub_le _ _)
     (max_lt hq0 hadd)
 
+/-- **External defect root-count consumer.**  If the base polynomial's full
+agreement and an external line core meet in at least `k` coordinates, the
+degree-`<k` external defect vanishes identically, so the external line joins
+the common-lift cluster. -/
+theorem external_commonLift_of_k_le_baseAgreement_inter_jointCore
+    {iota F : Type} [Fintype iota] [Nonempty iota] [DecidableEq iota]
+    [Field F] [Fintype F] [DecidableEq F]
+    (dom : iota ↪ F) (u0 u1 : iota → F)
+    {k : Nat} (hk : 1 ≤ k) (gamma0 : F) (q0 : F[X])
+    (external : PolynomialLine F)
+    (hq0 : q0.natDegree < k)
+    (ha : external.1.natDegree < k)
+    (hr : external.2.natDegree < k)
+    (hlarge : k ≤
+      (fullAgreement dom u0 u1 gamma0 q0 ∩
+        jointCore dom u0 u1 external.1 external.2).card) :
+    q0 = external.1 + C gamma0 * external.2 := by
+  by_contra hoff
+  have hcap := fullAgreement_inter_jointCore_card_le
+    dom u0 u1 hk hq0 ha hr hoff
+  omega
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
@@ -314,3 +336,4 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 #print axioms external_commonLift_of_lineDeterminant_eq_zero
 #print axioms external_commonLift_of_distinct_commonLift_determinant_zero
 #print axioms commonLift_externalDefect_natDegree_lt
+#print axioms external_commonLift_of_k_le_baseAgreement_inter_jointCore

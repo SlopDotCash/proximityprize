@@ -1,0 +1,6 @@
+INJECTIVE_D7_DISTINCT_ROOT_CLUSTER
+n=64 depth=7 normalization=(n)_7=3130929607680
+p=65537 normalized_abs_D7=0.999990067476509 analytic_cos_lower=0.999106346604502
+p=1000003 normalized_abs_D7=0.999999957338892 analytic_cos_lower=0.999996161124422
+p=1000000007 normalized_abs_D7=0.999999999999958 analytic_cos_lower=0.999999999996161
+VERDICT=no universal c<1 bound follows from distinct unit phases or sampling-without-replacement; subgroup mixing is essential

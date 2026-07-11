@@ -845,6 +845,19 @@ pair.  This factorization is stronger than the generic degree-`2(k-1)` view:
 future root counting can charge roots separately to the reference-direction
 factor and to one degree-`<k` external-defect polynomial.
 
+The incidence-to-root weld is now formal as well.  Every coordinate in the
+intersection of the base polynomial's full-agreement set and an external
+line's joint core is a root of that degree-`<k` defect.  An intersection of
+size at least `k` therefore forces the external line into the common-base
+cluster.  At literal P1, a threshold-size base agreement guarantees this once
+the external core reaches
+`N-T+k = 749382314`; indeed
+`T+749382314-N = 268435456 = k`.  This is a real one-factor improvement over
+the generic three-core onset, but the present four-point core floor
+`432479347` still misses it by `316902967`.  The external-factor route thus
+needs substantial new core growth or a second source of certified defect
+roots; the factorization alone does not close P1.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;
