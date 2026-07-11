@@ -14620,3 +14620,37 @@ Formal kernel:
 Executable certificate:
 `scripts/probes/probe_466_centered_cumulant_packet_no_go.py`.
 CORE remains OPEN / ON-BGK.
+
+## [466-G206-weighted-kernel-injection-no-go] collision-free quotient support does not control late alignment (2026-07-11)
+
+Lane: direct characteristic-`p` weighted kernel-relation structure.
+
+For `W_G(t)=#{y in G : 2y-t in G}`, writing `u=(2y-t)/y` identifies its nonzero orbit-class
+weights with the fiber multiplicities of the quotient map
+
+```text
+phi_2 : u in G |-> (2-u)^n in F_p.
+```
+
+A collision is exactly the weighted relation `(2-u)/(2-v)=a in G`, equivalently
+`u-a*v=2*(1-a)`.  The strongest cheap structural case is injectivity of `phi_2`, when every
+class weight is `0` or `1` and the support has exactly `n` classes.
+
+Exact probes refute this as an alignment certificate:
+
+```text
+n=8,  p=113:  phi_2 injective, A5=-13128,       A6=-7240
+n=16, p=2593: phi_2 injective, A5=+24201296,    A6=-13779712
+n=32, p=3617: phi_2 injective, A5=-17378716512, A6=-132640776608
+```
+
+Thus even collision-free weighted-kernel support allows both `(-,-)` and `(+,-)` signs.  The
+remaining production input is the placement of this sparse support against both adjacent-rank
+profiles `R_5,R_6`, not the kernel collision count or support size.  This sharpens G205 by showing
+its sign no-go survives under maximal direct-kernel sparsity.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G206WeightedKernelInjectionNoGo.lean`.
+Executable certificate:
+`scripts/probes/g206_weighted_kernel_injective_nogo.py`.
+CORE remains OPEN / ON-BGK.

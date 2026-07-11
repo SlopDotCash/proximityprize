@@ -2251,6 +2251,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G180CentralSymmetryCoveri
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G181DyadicKernelFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G182DyadicKernelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G205LateAlignmentSignNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G206WeightedKernelInjectionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
