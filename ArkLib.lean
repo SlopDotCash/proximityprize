@@ -2246,6 +2246,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G169StepanovThicknessFenc
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G170GeneralEnvelopeCharacterization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G172RateHalfSyzygyGapSlack
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G173PrimitiveTransferThresholdRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G179AffineFixedRootCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

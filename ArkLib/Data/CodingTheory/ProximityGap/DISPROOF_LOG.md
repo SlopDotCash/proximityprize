@@ -51120,3 +51120,28 @@ all irreducible. Any viable form of the G106 surrogate must scope S/L/p so that 
 counting expectation C(|S|,L')·2^{L'}/p ≪ 1 for all L' ≤ L — the full-subgroup form is
 dead at every scale tested and heuristically dead at production. CORE remains OPEN /
 ON-BGK.
+### [466-G179-affine-fixed-root-collapse] Galois×rotation amplification is a norm-certificate mirage: on the exact G173 relation, all 2048 affine transforms are distinct but only the 64 pure rotations vanish at the fixed deployed root (2026-07-11)
+
+At `n=64`, `p=17318209`, `ω=7937154`, G173 gives
+`ω^8+ω^13−ω^14−ω^20=0`. The tempting combined action sends exponents to `ae+b`,
+`a∈(Z/64Z)^×`, `b∈Z/64Z`, suggesting a packet of size `64·φ(64)=2048` and an extra
+linear factor over the known rotation orbit. Exact enumeration and kernel-checked finite evaluation
+show:
+
+- all 2048 affine coefficient vectors are distinct;
+- exactly 64 vanish at the fixed root;
+- their multiplier set is exactly `{1}`: they are the pure rotations, arbitrary `b`;
+- the lost certificate-to-fixed-root factor is exactly `φ(64)=32`.
+
+Mechanism: Galois exponent multiplication preserves the cyclotomic norm/resultant and permutes split
+prime embeddings; it does not preserve evaluation at one selected root. Rotation does preserve it,
+by multiplying the relation by `ω^b`. Thus FS15-FS18 can exploit Galois closure only on the
+almost-all-prime/resultant side, not as extra weighted-kernel mass at the deployed field. For dyadic
+`n`, the proposed `nφ(n)` packet collapses to `n`; recovering `φ(n)` requires simultaneous
+multi-embedding vanishing, the transversality/height seam already closed by G88V/FS16. This closes
+combined affine orbit multiplication as a new mechanism and leaves G59's exact
+`mass = n·representativeMass` binding. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G179AffineFixedRootCollapse.lean`; probe:
+`scripts/probes/probe_g179_affine_fixed_root.py`; KB:
+`docs/kb/deltastar-466-g179-affine-fixed-root-collapse-2026-07-11.md`.
