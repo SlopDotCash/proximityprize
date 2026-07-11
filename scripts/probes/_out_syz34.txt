@@ -1,0 +1,30 @@
+# probe_syz34.py — random band triples: dim law + deficiency 0
+n=12 k=6 p=101: tested=0  dim>max(0,target) fails=0  dim!=formula=0
+n=16 k=8 p=101: tested=129  dim>max(0,target) fails=0  dim!=formula=0
+n=20 k=10 p=101: tested=54  dim>max(0,target) fails=0  dim!=formula=0
+n=24 k=12 p=101: tested=28  dim>max(0,target) fails=0  dim!=formula=0
+n=30 k=15 p=101: tested=40  dim>max(0,target) fails=0  dim!=formula=0
+
+# probe_syz34b.py — constructed band triples, 3 fields, sizes to n=32
+n=16 k=8 p=61: tested=311 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=20 k=10 p=61: tested=241 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=24 k=12 p=61: tested=218 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=28 k=14 p=61: tested=316 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=32 k=16 p=61: tested=264 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=16 k=8 p=101: tested=304 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=20 k=10 p=101: tested=258 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=24 k=12 p=101: tested=183 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=28 k=14 p=101: tested=301 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=32 k=16 p=101: tested=228 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=16 k=8 p=257: tested=322 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=20 k=10 p=257: tested=246 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=24 k=12 p=257: tested=213 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=28 k=14 p=257: tested=294 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+n=32 k=16 p=257: tested=259 law!=fails=0 '<='fails=0 pairwise-nonzero=0 max_deficiency=0
+
+# probe_syz34c.py — fiber-product identity dim((A+B)cap C)=dimA+dimB-dim(piA+piB)=dim(piA cap piB)
+n=16 p=101: tested=139  LHS!=dimA+dimB-dim(pA+pB): 0   LHS!=dim(pA cap pB): 0
+n=20 p=101: tested=60  LHS!=dimA+dimB-dim(pA+pB): 0   LHS!=dim(pA cap pB): 0
+n=24 p=101: tested=17  LHS!=dimA+dimB-dim(pA+pB): 0   LHS!=dim(pA cap pB): 0
+n=28 p=101: tested=347  LHS!=dimA+dimB-dim(pA+pB): 0   LHS!=dim(pA cap pB): 0
+n=32 p=101: tested=243  LHS!=dimA+dimB-dim(pA+pB): 0   LHS!=dim(pA cap pB): 0
