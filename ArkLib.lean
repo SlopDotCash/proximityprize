@@ -3364,6 +3364,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ35PairInteriorLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ36UnionGeneration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ37RateHalfAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ38SylvesterInjectivity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ39SylvesterArithmetic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
