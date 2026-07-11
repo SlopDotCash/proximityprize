@@ -31,7 +31,7 @@ theorem transversal_label_fibers_pairwiseDisjoint
     (T : Set F).PairwiseDisjoint
       (fun t => (nonzeroFreqs F).filter (fun x => cosetLabel n x = cosetLabel n t)) := by
   intro t₁ ht₁ t₂ ht₂ hne
-  rw [Finset.disjoint_left]
+  apply Finset.disjoint_left.mpr
   intro x hx₁ hx₂
   simp only [Finset.mem_filter] at hx₁ hx₂
   apply hne

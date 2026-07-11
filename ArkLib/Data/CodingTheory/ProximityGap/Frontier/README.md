@@ -211,12 +211,23 @@ polynomial `T*z^7*(1+z)^(n-14)`.  Even eliminating every proper depth leaves
 also supplies a coefficientwise and additive-character-valued sunflower transform, with a
 modulo-29 coefficient vector that reflects every depth-seven characteristic-zero label.
 `_BGKPrimitiveDepthSevenSparseCodeNoGo.lean` makes that arithmetic target literal at both
-production primes: a primitive witness yields a nonzero integer polynomial of degree `<2^29`,
-support and `l1` mass at most `14`, coefficient height at most `14`, and a production root.
-Forgetting the small alphabet turns this into a one-check field code of exact distance two, with
-all nonzero evaluation roots support-isometric.  Kelley's optimistic 14-nomial root cap is still
-at scale `2^146--2^149`, over 116 bits above the `2^30` subgroup.  The live code problem is thus
-restricted-alphabet/list recovery, not ordinary BCH, Hamming, Singleton, or uncertainty theory.
+production primes, and `_BGKPrimitiveFoldedAlphabet.lean` sharpens every actual primitive witness
+to coefficient alphabet `{-2,-1,0,1,2}`, support and `l1` mass at most `14`, and a nonzero
+degree-`<2^29` polynomial.  It also classifies the exact nine local source profiles and attaches a
+nonzero resultant `N` with `P | N` and `P <= |N| <= 14^(2^29)` at each production root; the norm
+base remains `14` because the endpoint `l1` bound did not improve.  The alphabet is sharp: for
+`g=3` in `ZMod 17`, globally disjoint seven-subsets collide with folded vector
+`[1,2,1,2,2,2,2,0]`.  Thus alphabet-only kernel-freeness is false even at power-of-two order.
+The exact local-profile refinement assigns weights `w_(+-2)=xy`, `w_(+-1)=x+y`, and
+`w_0=1+x^2+y^2`.  Its occupancy identity `2A+B+2Z=14` makes the number `B` of unit letters even;
+the unique 14-coordinate sector consists entirely of `+-1` letters, and its formal fixed-label
+ordered factor is `(7!)^2*C(14,7)=14!`.  All nonunit sectors use at most 13 folded coordinates.
+This isolates the leading arithmetic target but supplies no collision saving without
+equidistribution; the full cardinality-to-generating-function bijection is not formalized here.
+Forgetting the small alphabet still gives a one-check field code of exact distance two, and
+Kelley's optimistic 14-nomial root cap remains over 116 bits above the subgroup.  The live code
+problem is production arithmetic or an average restricted-alphabet count, not ordinary BCH,
+Hamming, Singleton, uncertainty theory, or a universal five-letter obstruction.
 `_BGKHashimotoWickSeparationNoGo.lean` closes the ordinary graph-normal-ordering variant.  The
 degree-fourteen Ihara--Bass polynomial removes only the 14 cyclically adjacent reversals, whereas
 Wick subtraction sees all `C(14,2)=91` first-pair placements; the residual coefficient is exactly
@@ -242,6 +253,15 @@ dilation action.  On `ZMod 13`, two equimeasurable sign profiles generate colour
 their normalized Newton energies satisfy `953600<13*126871<64641152`.  These profiles are not
 claimed to be subgroup periods; the theorem isolates the extra missing datum precisely as
 Fourier-of-a-multiplicative-subgroup arithmetic, beyond dilation compatibility itself.
+`_BGKActualJointPeriodLaw.lean` now pins the first layer of that missing datum.  Every mixed
+coloured moment is exactly `q` times a weighted subgroup collision count.  Exact modular checks
+put `1,...,7` in distinct cyclotomic classes at both production primes, so their nonzero-frequency
+Gram matrix is a regular simplex: diagonal `q*n-n^2`, off diagonal `-n^2`.  This refutes aligned
+copulas for the actual periods, but its pair correlation is 123--124 bits below the leakage needed
+for `8264`.  The exact first deleted-pair energy is `q*(A+n-2M)`, where `A` is additive energy and
+`M` counts midpoint resonances.  Under a nonzero-shift representation cap `2^22`, the first-prime
+antipodal floor makes a selected `3 -> 2` Wick defect demand `M>2^59` while the cap gives
+`M<=2^52`.  Higher signed weighted-collision correlations remain open.
 `_BGKSevenStepFlatteningProductionNoGo.lean` gives the entropy route an exact positive socket.
 The normalized injective chi-square allowance lies between `2^-36` and `2^-35`.  Across the six
 transitions after the first step, uniform contraction numerators must have product at most
@@ -251,6 +271,23 @@ classical shifted-intersection cap `4*n^(2/3)=2^22` supplies only eight bits, ex
 step; Hart's sixfold-covering density gate is reversed by over 1048 cleared bits.  The viable
 entropy theorem must be centered and trajectory-weighted, not a raw-energy inverse theorem or a
 support-growth statement.
+`_BGKWickTrajectoryDefectBudget.lean` sharpens this to a one-unit target.  The natural six Wick
+numerators are `3,5,7,9,11,13`, with product `135135`, while the exact production trajectory
+allowance lies strictly between `126871` and `126872`.  Lowering any one numerator by one makes
+the product at most `124740<126871`; enough margin remains to multiply all six profile bounds by
+`501/500` (a `0.2%` per-step overrun).  Abstract six-ratio telescoping theorems then prove the
+end-to-end depth-seven target from either the exact or robust profile.  This is a sharp new socket,
+not a closure: the missing theorem must produce the one-unit Wick defect at some step while
+keeping all finite-population losses inside the certified robust margin.
+`_BGKCenteredTrajectoryContraction.lean` installs this on the actual forward subset trajectory.
+Its six local bounds telescope to the coefficient-`126871` variance target, and its deleted-
+diagonal Newton identity retains all colours `eta_b,...,eta_(7b)`.  A genuine order-eight subgroup
+in `F_17` forces every universal six-step product to be at least `8^6`, ruling out a field-uniform
+contraction theorem.  At production, the forced antipodal zero-sum fiber gives the unconditional
+first-ratio lower bound `n*Z_2/Z_1 > 3+2^-29`.  Thus neither Wick `3` nor the robust selected cap
+`2*(501/500)` is valid at the first transition: the one-unit defect must occur at one of the five
+later transitions.  The antipodal lower envelope lies below the ordinary robust cap `3.006`, but
+this is not an upper bound on the complete first ratio.
 `_BGKCyclotomicKreinSchurNoGo.lean` closes the positivity-only association-scheme variant.
 Pointwise multiplication of translation kernels is additive convolution of their Fourier
 profiles, and every nonnegative multiplicative-orbit profile remains nonnegative and

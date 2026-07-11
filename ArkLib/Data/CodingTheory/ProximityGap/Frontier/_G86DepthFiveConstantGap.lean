@@ -34,7 +34,7 @@ def correctedEnvelope (n r J s : ℕ) : ℕ :=
 
 /-- The evident ordering symmetry factor at depth five: left permutations, right permutations,
 and side swap. -/
-def depthFiveOrderingSymmetry : ℕ := 2 * (5.factorial) ^ 2
+def depthFiveOrderingSymmetry : ℕ := 2 * ((5 : ℕ).factorial) ^ 2
 
 theorem depthFiveOrderingSymmetry_eq : depthFiveOrderingSymmetry = 28800 := by
   norm_num [depthFiveOrderingSymmetry, Nat.factorial]

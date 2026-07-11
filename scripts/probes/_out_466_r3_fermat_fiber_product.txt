@@ -1,0 +1,30 @@
+#466 r=3 R304: the off-diagonal quadruple sum via Fermat fiber products —
+
+(V1) torus/fiber-product identity, direct (t,x,y,z) enumeration:
+  m= 9 p= 19: m^3*M4T =     28431.0000  torus =     28431.0000-2.7e-12i  |torus|/q^2 =   78.756 (A-S ceiling ~ m^3 = 729)  OK
+  m= 9 p= 37: m^3*M4T =     89242.9270  torus =     89242.9270+6.3e-11i  |torus|/q^2 =   65.188 (A-S ceiling ~ m^3 = 729)  OK
+  m=12 p= 13: m^3*M4T =     19008.0000  torus =     19008.0000+0.0e+00i  |torus|/q^2 =  112.473 (A-S ceiling ~ m^3 = 1728)  OK
+  m=12 p= 37: m^3*M4T =    200820.1945  torus =    200820.1945-3.9e-12i  |torus|/q^2 =  146.691 (A-S ceiling ~ m^3 = 1728)  OK
+  m=15 p= 31: m^3*M4T =    253125.0000  torus =    253125.0000+3.9e-11i  |torus|/q^2 =  263.398 (A-S ceiling ~ m^3 = 3375)  OK
+  m=18 p= 19: m^3*M4T =     99144.0000  torus =     99144.0000+0.0e+00i  |torus|/q^2 =  274.637 (A-S ceiling ~ m^3 = 5832)  OK
+  m=18 p= 37: m^3*M4T =    542376.0000  torus =    542376.0000+5.2e-11i  |torus|/q^2 =  396.184 (A-S ceiling ~ m^3 = 5832)  OK
+
+(V2) Mobius stratum accounting (moderate p): LHS = sum_d d*mu(m/d)*N4_d;
+     top strata N4_d ~ q^4/(m^3 d) cancel; residual signal is q^2-scale;
+     per-variety fluctuation of N4_d measured against q^{7/2}/(m^3 d):
+  m= 9 p=  37: avg4th =         798.00 mobius =         798.00 OK; signal/q^2 =   0.583; max stratum |N-main|/(q^3.5/(m^3 d)) =  1.519 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m= 9 p=  73: avg4th =        3438.00 mobius =        3438.00 OK; signal/q^2 =   0.645; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.830 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m= 9 p= 109: avg4th =        5718.00 mobius =        5718.00 OK; signal/q^2 =   0.481; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.707 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m= 9 p= 163: avg4th =       14910.00 mobius =       14910.00 OK; signal/q^2 =   0.561; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.593 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m= 9 p= 199: avg4th =       26250.00 mobius =       26250.00 OK; signal/q^2 =   0.663; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.542 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m=12 p=  37: avg4th =         548.00 mobius =         548.00 OK; signal/q^2 =   0.400; max stratum |N-main|/(q^3.5/(m^3 d)) =  7.041 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m=12 p=  61: avg4th =        1364.00 mobius =        1364.00 OK; signal/q^2 =   0.367; max stratum |N-main|/(q^3.5/(m^3 d)) =  3.126 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m=12 p=  97: avg4th =        3308.00 mobius =        3308.00 OK; signal/q^2 =   0.352; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.996 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m=12 p= 157: avg4th =       11116.00 mobius =       11116.00 OK; signal/q^2 =   0.451; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.619 (error scale q^3.5 >> signal q^2: NO main/error split)
+  m=12 p= 193: avg4th =       15860.00 mobius =       15860.00 OK; signal/q^2 =   0.426; max stratum |N-main|/(q^3.5/(m^3 d)) =  0.544 (error scale q^3.5 >> signal q^2: NO main/error split)
+
+(V4) K_off = |quad_total - diagR|/(m^2 q^2) (canonical chi):
+  m= 9: 32 primes; K_off max = 1.074, median = 0.233 (unconditional ceiling m+2 = 11; open target O(1))
+  m=12: 44 primes; K_off max = 1.208, median = 0.281 (unconditional ceiling m+2 = 14; open target O(1))
+  m=15: 21 primes; K_off max = 0.513, median = 0.193 (unconditional ceiling m+2 = 17; open target O(1))
+  m=18: 32 primes; K_off max = 0.951, median = 0.290 (unconditional ceiling m+2 = 20; open target O(1))

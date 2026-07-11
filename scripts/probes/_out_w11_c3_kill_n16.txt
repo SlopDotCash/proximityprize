@@ -1,0 +1,64 @@
+
+##############################################################################
+STAGE n=16 k=4 a=7 (window: k+2=6<=a, a^2=49<=nk=64)
+
+== q=65617 v2=4 omega=53618 C(n,k)=1820
+  [x4+x14] agreemax=6 (7-far), elevated pencils: 7
+    lock m=7 (dim=6): new best exact count 16 [5s]
+    lock m=5 (dim=8): new best exact count 22 [51s]
+    lock m=4 (dim=10): new best exact count 28 [74s]
+    lock m=4 (dim=8): new best exact count 34 [80s]
+  [x4+x14] FINAL certified worstBad >= 34 (every gamma certificate-verified) [216s]
+  [x4+12303x14] agreemax=6 (7-far), elevated pencils: 7
+    lock m=7 (dim=6): new best exact count 16 [6s]
+    lock m=5 (dim=8): new best exact count 38 [80s]
+  [x4+12303x14] FINAL certified worstBad >= 38 (every gamma certificate-verified) [226s]
+  [x6-12303x4] agreemax=6 (7-far), elevated pencils: 3
+    lock m=3 (dim=10): new best exact count 30 [6s]
+  [x6-12303x4] FINAL certified worstBad >= 30 (every gamma certificate-verified) [111s]
+
+-- monomial baseline q=65617:
+    mono j=4: agreemax=4 worst=9
+    mono j=5: agreemax=4 worst=9
+    mono j=6: agreemax=4 worst=9
+    mono j=7: agreemax=4 worst=9
+    mono j=12: agreemax=4 worst=9
+    mono j=13: agreemax=4 worst=9
+    mono j=14: agreemax=4 worst=9
+    mono j=15: agreemax=4 worst=9
+  monomial baseline (certified search max) = 9  far-monos=[(4, 9), (5, 9), (6, 9), (7, 9), (12, 9), (13, 9), (14, 9), (15, 9)]
+
+>>> n=16 q=65617: best spread (certified) = 38 [x4+12303x14], mono baseline = 9, RATIO = 4.222 -> C=3 KILLED (in evidence)
+
+== q=65633 v2=5 omega=5013 C(n,k)=1820
+  [x4+x14] agreemax=6 (7-far), elevated pencils: 7
+    lock m=7 (dim=6): new best exact count 16 [1s]
+    lock m=5 (dim=8): new best exact count 24 [16s]
+    lock m=4 (dim=8): new best exact count 34 [23s]
+  [x4+x14] FINAL certified worstBad >= 34 (every gamma certificate-verified) [52s]
+  [x4+5173x14] agreemax=6 (7-far), elevated pencils: 7
+    lock m=7 (dim=6): new best exact count 16 [1s]
+    lock m=5 (dim=8): new best exact count 24 [8s]
+    lock m=4 (dim=8): new best exact count 34 [12s]
+  [x4+5173x14] FINAL certified worstBad >= 34 (every gamma certificate-verified) [33s]
+  [x6-5173x4] agreemax=6 (7-far), elevated pencils: 3
+    lock m=3 (dim=10): new best exact count 30 [1s]
+  [x6-5173x4] FINAL certified worstBad >= 30 (every gamma certificate-verified) [10s]
+
+-- monomial baseline q=65633:
+    mono j=4: agreemax=4 worst=9
+    mono j=5: agreemax=4 worst=9
+    mono j=6: agreemax=4 worst=9
+    mono j=7: agreemax=4 worst=9
+    mono j=12: agreemax=4 worst=9
+    mono j=13: agreemax=4 worst=9
+    mono j=14: agreemax=4 worst=9
+    mono j=15: agreemax=4 worst=9
+  monomial baseline (certified search max) = 9  far-monos=[(4, 9), (5, 9), (6, 9), (7, 9), (12, 9), (13, 9), (14, 9), (15, 9)]
+
+>>> n=16 q=65633: best spread (certified) = 34 [x4+x14], mono baseline = 9, RATIO = 3.778 -> C=3 KILLED (in evidence)
+
+==============================================================================
+W11 C=3 KILL SUMMARY (spread counts certificate-verified; baseline = hardest-pushed search plateau, honest lower bound):
+  n16 q=65617: spread=38 [x4+12303x14] baseline=9 ratio=4.222222222222222
+  n16 q=65633: spread=34 [x4+x14] baseline=9 ratio=3.7777777777777777

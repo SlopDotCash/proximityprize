@@ -245,6 +245,17 @@ modewise Weil estimates miss the collision-injectivity floor by 127--129 bits.  
 `P>(sqrt(14))^k`; both production primes instead satisfy `P^2<14^k`.  The paper therefore does not
 certify the projected separation.
 
+There is now an exact finite certificate format.  `_ANT46ProjectedKappaBucketCertificate.lean` proves that
+per-bucket value `Nodup` plus cross-bucket disjointness certifies the projected map, with a keyed
+variant in which disjointness is automatic.  Its natural modular evaluators are formally bridged
+to both production maps.  The certificate necessarily evaluates all `2^29=536870912`
+inversion-class representatives; a raw 20-byte table is 10 GiB, and `2^20` buckets only reduce the
+working set to 512 entries per bucket.  Thus this is plausible finite verification, not analytic
+compression or a proof already in hand.  The recent general hardness result of
+[Qiu--Cao--Huang--Feng--Gao](https://arxiv.org/abs/2606.12144) for roots-of-unity detection of
+sparse finite-field polynomials further cautions against expecting a generic output-sensitive
+shortcut; it does not preclude a production-specific certificate.
+
 ### The published subset-sum asymptotic is vacuous in the thin-subgroup cell
 
 The exterior-power reformulation makes one older theorem look almost tailor-made.  If
@@ -441,9 +452,25 @@ small exponent gcds excludes precisely the subgroup quotient exponent.
 There is now an exact sparse-polynomial formulation of the primitive packet itself.
 `_BGKPrimitiveDepthSevenSparseCodeNoGo.lean` proves that every production primitive witness gives
 a nonzero integer polynomial of degree `<2^29`, support and `l1` mass at most `14`, coefficient
-height at most `14`, and a certified production root.  The ambient field-coefficient relaxation
-is only a one-check code of exact distance two, support-isometric for every nonzero root, so
-ordinary coding parameters are blind to the arithmetic.
+height at most `14`, and a certified production root.  `_BGKPrimitiveFoldedAlphabet.lean` sharpens
+the actual-witness height to `2`, proves the coefficient alphabet `{-2,-1,0,1,2}`, and classifies
+the exact nine local source profiles.  At each production root it retains a nonzero resultant
+divisible by `P` with absolute value at most `14^(2^29)`; the norm base does not improve because
+the `l1` mass remains `14`.  The five-letter class is not universally kernel-free: an exact
+order-`16` collision at `g=3` in `ZMod 17` has globally disjoint petals and folded vector
+`[1,2,1,2,2,2,2,0]`, proving coefficient height `2` sharp.  Hence the surviving input must be
+production-specific arithmetic or an average count, not alphabet alone.  The ambient
+field-coefficient relaxation remains a one-check code of exact distance two, support-isometric for
+every nonzero root, so ordinary coding parameters are blind to the arithmetic.
+
+The source fibers now have an exact local law and a formal global enumerator.  Their weights are
+`xy`, `x+y`, and
+`1+x^2+y^2` for letters of absolute value two, one, and zero.  The resulting occupancy law makes
+the unit-letter count even and shows the only 14-coordinate sector is the all-`+-1` sector, with
+formal fixed-label ordered factor `14!`; every nonunit sector uses at most 13 coordinates.  Its
+smaller ambient source mass cannot be transferred to the collision event without the same missing
+equidistribution input, so this refines rather than closes the production-specific count; the full
+cardinality equivalence is not yet packaged in Lean.
 
 [Kelley, *Roots of Sparse Polynomials over a Finite Field*](https://arxiv.org/abs/1602.00208)
 bounds roots of a `t`-nomial by
@@ -526,7 +553,97 @@ adjacency-side data in the regular case.  A graph-theoretic survivor must theref
 dilation-coloured operator theory retaining `b,2b,...,7b`, followed by the same primitive
 sunflower arithmetic; ordinary Ihara--Bass is not an independent source of the 6.115% saving.
 
-## 9. Ranked research consequences
+That coloured object is now exact.  `_BGKDilationColoredNewtonOperatorNoGo.lean` proves the seven
+dilated convolution operators commute, diagonalize on additive characters with eigenvalues
+`eta_b,...,eta_(7b)`, and recover the ordered-injective transform through the full Newton
+polynomial.  It also proves why individual operator bounds cannot finish the argument: dilation
+permutes frequencies, so every colour has the same complete marginal Schatten profile.  Two
+commuting real diagonal joint spectra with identical marginal profiles lie on opposite sides of
+the production allowance, with energies `66816<126871<25401600`, and the Newton scalar has both
+signs on commuting contractions.  The graph survivor is therefore a genuinely mixed arithmetic
+joint-spectral inequality, not another one-colour trace estimate or generic SOS argument.
+
+The same obstruction survives a common dilation action.  In
+`_BGKDilationPermutationCopulaNoGo.lean`, two equimeasurable sign profiles on `ZMod 13` generate
+all colours by `f(jb)`, so every colour really is the same base spectrum pulled back by a
+multiplier permutation.  All marginal moments agree, but the normalized Newton energies satisfy
+`953600<13*126871<64641152`.  The profiles are not asserted to be actual periods; the result says
+the missing theorem must use the Fourier-of-subgroup realization, not dilation compatibility
+alone.
+
+The actual subgroup joint law is now exact at second order and reduced to collisions at every
+higher order.  `_BGKActualJointPeriodLaw.lean` proves a general weighted mixed-moment identity and
+certifies that colours `1,...,7` occupy distinct cyclotomic classes at both production primes.
+Their nonzero-frequency Gram matrix is therefore a regular simplex with diagonal `q*n-n^2` and
+off diagonal `-n^2`.  This excludes the aligned abstract copula, but the pair correlation is
+123--124 bits below the required leakage.  The first deleted-pair transition is
+`q*(A+n-2M)`; under a `2^22` nonzero-shift representation cap, antipodal energy makes a
+`3 -> 2` defect require `M>2^59` while the cap gives `M<=2^52`.  Pairwise information therefore
+does not supply the later signed higher-collision correlation that remains open.
+
+All convolution-power Schur/Krein nonnegativity and orbit-invariance constraints in the enlarged
+spectral cone are also insufficient.  In the translation scheme, entrywise multiplication of
+kernels is additive convolution of their Fourier profiles.
+`_BGKCyclotomicKreinSchurNoGo.lean` proves that nonnegative multiplicative-orbit profiles remain
+admissible under every convolution power, so the single-orbit extremizer survives all Schur powers
+and the cone optimum is still exactly the worst period square.  The generic valency relaxation
+misses by 191--192 bits.  [Nomura and Terwilliger](https://arxiv.org/abs/2405.10491) identify the
+intersection/Krein equality in the formally self-dual setting; the surviving cyclotomic-scheme
+route must use the actual arithmetic intersection numbers and their nonlinear coupling, not only
+Krein nonnegativity.
+
+The first exact-integrality follow-up is also now bounded.  For the literal translation-relation
+intersection count `p_ST(z)=#{x in S:z-x in T}`,
+`_BGKCyclotomicIntersectionIntegralityAudit.lean` proves that its character transform is the
+product of the relation periods, together with its exact row mass and multiplier-orbit
+invariance.  Cauchy--Davenport excludes concentration on one cyclotomic class at either production
+prime, but the resulting integral relaxation admits `(2^30-1,1)`.  It forces one leaked unit; the
+primitive ratio requires exactly `65,663,244`, between `2^25` and `2^26`.  Hence a useful
+cyclotomic-matrix identity must constrain the correlated values or placement of many entries;
+integrality, row sums, and two-cell support alone miss by 25--26 bits.
+
+## 9. Standard seven-step flattening inputs miss the exact entropy budget
+
+`_BGKSevenStepFlatteningProductionNoGo.lean` rewrites the injective target as an exact collision-
+entropy statement.  The permitted normalized chi-square divergence is between `2^-36` and
+`2^-35`.  A six-transition proof with uniform normalized integer contraction numerator `c` needs
+
+```text
+c^6 <= 126871;   7^6 = 117649 < 126871 < 262144 = 8^6.
+```
+
+Thus each convolution needs more than 27 `L2` bits of contraction.  The positive BSG scale loses
+98--99 bits before extracting one point.  Even granting the shifted-subgroup cap
+`4*n^(2/3)=2^22` from the Shkredov--Vyugin intersection theory saves only eight bits, leaving an
+exact 19-bit one-step gap.  [Hart's sixfold-covering theorem](https://arxiv.org/abs/1303.2729)
+requires a density inequality whose production specialization is reversed by over 1048 bits, and
+support covering alone does not upper-bound collision entropy.  The viable invention is a
+centered trajectory-weighted flattening theorem, not ordinary raw-energy BSG or sumset growth.
+
+`_BGKWickTrajectoryDefectBudget.lean` pins the smallest useful improvement.  The Wick transition
+numerators `3,5,7,9,11,13` multiply to `135135`, whereas the exact production trajectory allowance
+is strictly between `126871` and `126872`.  Decreasing any one numerator by one makes the product
+at most `124740<126871`; multiplying all six improved-profile bounds by `501/500` still fits.
+Its abstract six-ratio telescopes prove the final depth-seven target from either the exact or this
+robust profile.  Thus a single one-unit Wick
+defect at any transition is sufficient while the other five remain at Wick scale; proving that
+defect for the actual subgroup trajectory is still open.
+
+The actual trajectory rules out one of those six locations.  `_BGKCenteredTrajectoryContraction`
+proves the exact six-step variance consumer and the full deleted-diagonal Newton transition, then
+uses the forced antipodal zero-sum fiber to show
+
+```text
+n*Z_2/Z_1 > 3 + 2^-29.
+```
+
+Consequently the first transition obeys neither Wick `3` nor the robust selected cap
+`2*(501/500)`; the defect must occur among the five later steps.  An order-eight subgroup in
+`ZMod 17` also forces a universal product at least `8^6`, so no field-uniform version can close
+the production target.  The forced first-step lower proxy lies within the ordinary `3.006` robust
+allowance, but no matching upper bound is claimed.
+
+## 10. Ranked research consequences
 
 1. **Exact dual coordinate, not a shortcut:** the annihilator-sensitive 13-variable Jacobi law
    is equivalent to the centered fourteenth moment after the principal-character shift. Attack
@@ -535,15 +652,18 @@ sunflower arithmetic; ordinary Ihara--Bass is not an independent source of the 6
 2. **Best exact arithmetic target:** couple the full ramified Galois orbit or the simultaneous
    period-power residues strongly enough to exclude the remaining integral spike. One Jacobi
    determinant, one congruence, norm, trace, and irreducibility are now formally insufficient.
-3. **Correct probabilistic formulation:** seek centered `L2` fixed-depth mixing at ambient scale
-   `1/q`; generic inverse-LO `L-infinity` contraction at scale `1/n` is off by the entire density
-   ratio.
-4. **Correct sparse formulation:** count the support-14, `l1<=14` integer kernel slice at the two
-   explicit roots. Ambient BCH/Singleton/Hamming invariants and generic fewnomial root counts have
-   been proved quantitatively blind.
+3. **Correct probabilistic formulation:** seek centered, trajectory-weighted `L2` fixed-depth
+   mixing at ambient scale `1/q`.  The first transition is excluded; it suffices to lower one of
+   the five later Wick numerators by one while keeping every step inside the `501/500` robust
+   envelope. Standard positive BSG, one-shift intersections, and support covering are
+   quantitatively excluded.
+4. **Correct sparse formulation:** count the five-letter, support-14, `l1<=14` integer kernel slice
+   at the two explicit roots.  Its nine local profiles are formal, but the sharp `ZMod 17`
+   collision rules out universal alphabet-only kernel-freeness; ambient coding invariants and
+   generic fewnomial root counts are quantitatively blind.
 5. **Do not reopen:** arbitrary-set Chang, small-gcd sparse polynomial estimates, exact additive
    irreducibility, determinant-only cyclotomic identities, or fourth-energy interpolation. Their
    production failures above are numerical or structural, not a matter of optimizing constants.
 
-The current literature therefore supplies a sharper research object and two useful formal
+The current literature therefore supplies a sharper research object and several useful formal
 no-go certificates, but no proof of the repaired depth-seven inequality.

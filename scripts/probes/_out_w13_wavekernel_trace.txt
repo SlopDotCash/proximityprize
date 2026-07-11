@@ -1,0 +1,47 @@
+probe_w13_wavekernel_trace.py -- arXiv 2606.27075 wave-kernel trace identities vs
+the wall M(mu_n) <= C sqrt(n log(p/n)).  THREAD wall:probe-batch, prefix w13.
+
+==============================================================================
+F1: exact dictionary -- Hashimoto / NB-walk / wave-kernel traces from power sums
+==============================================================================
+  n=  8 p=   89 (m=(p-1)/n= 11): powsum FFT-vs-walk rel err 1.3e-13; tr(B^m) rel err 2.3e-13; tr(N_m) 2.3e-13; tr(K_t) 9.2e-14 [OK]
+  n=  8 p=  233 (m=(p-1)/n= 29): powsum FFT-vs-walk rel err 1.5e-11; tr(B^m) rel err 1.8e-11; tr(N_m) 1.8e-11; tr(K_t) 1.8e-11 [OK]
+  n= 16 p=  257 (m=(p-1)/n= 16): powsum FFT-vs-walk rel err 1.4e-14; tr(B^m) rel err 1.4e-14; tr(N_m) 1.4e-14; tr(K_t) 1.4e-14 [OK]
+  n= 16 p=  337 (m=(p-1)/n= 21): powsum FFT-vs-walk rel err 5.5e-12; tr(B^m) rel err 6.7e-12; tr(N_m) 6.3e-12; tr(K_t) 6.3e-12 [OK]
+
+F2: instance-blindness -- exact-rational triangles identical across p at fixed n
+  n=  8: triangle(p=89) == triangle(p=233) (Chebyshev+wave+NB, exact rationals): True
+  n= 16: triangle(p=257) == triangle(p=337) (Chebyshev+wave+NB, exact rationals): True
+
+==============================================================================
+F3: bounded-depth moment blindness at regime scale (n=16, beta~4)
+    pair from 466-r1-hankel-bounded-window-refuted: p=65617 vs p=65633
+==============================================================================
+  p=65617: Parseval rel err 0.0e+00; M = 13.294805; M/sqrt(n log(p/n)) = 1.1524
+  p=65633: Parseval rel err 0.0e+00; M = 13.926536; M/sqrt(n log(p/n)) = 1.2071
+  M relative difference: 4.54%
+   j | m_j(p=65617)  m_j(p=65633)  rel diff
+   1 |    -0.000061     -0.000061  2.44e-04
+   2 |     0.999756      0.999756  5.95e-08
+   3 |    -0.000975     -0.000975  2.44e-04
+   4 |     2.808599      2.808600  3.39e-07
+   5 |    -0.015606     -0.015602  2.44e-04
+   6 |    12.281327     12.281342  1.24e-06
+   7 |    -0.249691     -0.249631  2.44e-04
+   8 |    69.949721     69.949964  3.48e-06
+  low-depth (j<=6) max rel moment diff 2.44e-04 vs M diff 4.54e-02 -> bounded-depth trace identities CANNOT separate the pair (blind)
+
+==============================================================================
+VERDICT
+==============================================================================
+DEAD (repackaging).  (F1) wave-kernel traces, NB-walk traces and Hashimoto
+moments on Cay(F_p, mu_n) are reconstructed EXACTLY from adjacency power sums
+{P_j} -- the E_r wall vocabulary; (F2) the reconstruction coefficients are
+exact rationals in (m, q=n-1) only, bitwise identical across primes: the
+2606.27075 trace formula can produce only instance-blind identities WITHIN the
+moment ladder, zero new p-arithmetic; (F3) at regime scale the known pair
+(65617, 65633) has identical low-depth moments (max rel diff 2.4e-04, j<=6)
+yet M differs 4.5% -- bounded-depth trace identities cannot pin M.
+Composes with 466-r1-nonbacktracking-relabeling (radius side) to close the
+paper on BOTH faces: radius = monotone relabel of M; identities = moment
+repackaging.  The L-infinity target still requires depth r ~ log p = the wall.

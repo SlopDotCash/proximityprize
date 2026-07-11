@@ -1,0 +1,36 @@
+#466 r=3 R305: is FullDFTFlat K = O(1) TRUE?  Scaling probe to m ~ 1000.
+
+(S0) validation m=9 q=19 max over k: K = 1.865 (R302 exact probe: 1.865)  OK
+
+(S1) K vs m (5 primes x up to 3 characters per m):
+    m   q_min   K_med   K_max  K/log m argmax@0?
+    9      19   1.608   2.492    0.732      0.27
+   12      13   1.908   2.592    0.768      0.27
+   18      19   2.136   4.244    0.739      0.20
+   24      73   2.735   3.389    0.861      0.13
+   36      37   2.454   6.055    0.685      0.00
+   48      97   3.061   5.037    0.791      0.00
+   72      73   3.418   5.794    0.799      0.07
+   96      97   3.021   4.914    0.662      0.07
+  108     109   3.603   6.344    0.769      0.00
+  144     433   3.778   4.971    0.760      0.07
+  192     193   3.581   4.680    0.681      0.00
+  240     241   4.572   7.002    0.834      0.07
+  288     577   3.963   7.486    0.700      0.00
+  384     769   4.479   7.707    0.753      0.00
+  480    3361   5.643   9.967    0.914      0.00
+  576     577   4.239   7.138    0.667      0.00
+  720    2161   5.335  10.230    0.811      0.00
+  960    4801   5.419   7.419    0.789      0.13
+ 1200    1201   5.404   9.795    0.762      0.00
+
+  fit K_med = -0.112 + 0.787·log m   (resid sd 0.345)
+  fit K_med = 1.119·m^0.235          (log-resid sd 0.096)
+  Gumbel prediction: b ≈ 1 (K ~ log m + O(1)); power exponent d ≈ (log-slope of log log m) — small d mimics log.
+  VERDICT: K grows with m ⇒ FullDFTFlat with ABSOLUTE K is REFUTED (growth measured)
+
+(S3) fixed m, K vs q (k = 1):
+  m=60: 61:1.02 181:2.80 241:2.71 421:2.68 541:2.64 601:4.66 661:2.81 1021:4.66 1201:4.62 1321:3.52 1381:3.26 1621:4.59
+    -> spread [1.02, 4.66], no q-trend expected (sup is over m modes, not q/m)
+  m=120: 241:2.00 601:3.52 1201:4.71 1321:3.83 1801:3.97 2161:3.90 2281:3.33 2521:3.97 3001:3.64 3121:3.15 3361:4.50 4201:6.80
+    -> spread [2.00, 6.80], no q-trend expected (sup is over m modes, not q/m)

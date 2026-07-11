@@ -144,6 +144,40 @@ theorem scaled_covariance_gate_iff {X : Type*} [Fintype X]
   rw [scaled_repetition_polarization r A R]
   constructor <;> intro h <;> linarith
 
+/-! ## Exact coefficient-8264 signed covariance socket -/
+
+/-- **Sufficient signed saving at the Wick envelope.**  If the all-tuples
+profile has centered mass at most `135135·S`, then the exact missing saving
+`135135 - 126871 = 8264` is supplied by the polarization correction
+`V(defect) + 2 Cov(injective,defect)`.  No positivity of either summand is
+assumed; the combined signed expression is the invariant that matters. -/
+theorem injective_mass_le_of_wick_and_signedCovariance
+    {X : Type*} [Fintype X] (r : ℕ) (A R : X → ℝ) (S : ℝ)
+    (hwick : centeredMass R ≤ 135135 * S)
+    (hsigned : 8264 * S ≤
+      centeredMass (repetitionDefect r A R) +
+        2 * centeredInner (injectiveProfile r A) (repetitionDefect r A R)) :
+    centeredMass (injectiveProfile r A) ≤ 126871 * S := by
+  have hpolar := scaled_repetition_polarization r A R
+  linarith
+
+/-- **Necessity at Wick saturation.**  When the tuple profile exactly attains
+`135135·S`, achieving the injective coefficient `126871` is equivalent to the
+same signed polarization correction being at least `8264·S`.  Thus the socket
+above loses no coefficient at the extremal Wick boundary. -/
+theorem injective_target_iff_signedCovariance_of_wick_eq
+    {X : Type*} [Fintype X] (r : ℕ) (A R : X → ℝ) (S : ℝ)
+    (hwick : centeredMass R = 135135 * S) :
+    centeredMass (injectiveProfile r A) ≤ 126871 * S ↔
+      8264 * S ≤ centeredMass (repetitionDefect r A R) +
+        2 * centeredInner (injectiveProfile r A) (repetitionDefect r A R) := by
+  have hpolar := scaled_repetition_polarization r A R
+  constructor <;> intro h <;> linarith
+
+/-- The coefficient arithmetic used by the signed gate is exact. -/
+theorem wick_minus_injectiveCoefficient : (135135 : ℕ) - 126871 = 8264 := by
+  norm_num
+
 /-! ## Minimal genuine sampling counterprofile -/
 
 /-- Distinct two-subset sum histogram for the full two-element additive group. -/
@@ -266,6 +300,9 @@ theorem generic_sampling_error_exceeds_target_by_141_bits :
 #print axioms centeredMass_injectiveProfile
 #print axioms scaled_repetition_polarization
 #print axioms scaled_covariance_gate_iff
+#print axioms injective_mass_le_of_wick_and_signedCovariance
+#print axioms injective_target_iff_signedCovariance_of_wick_eq
+#print axioms wick_minus_injectiveCoefficient
 #print axioms not_twoPoint_scaled_contraction
 #print axioms factorial_seven_sq_vs_targetCoefficient
 #print axioms depthSeven_target_rhs_explicit_factorial

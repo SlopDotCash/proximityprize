@@ -168,6 +168,21 @@ theorem unclassified_escape_rank_drop :
     3 * (predecessorThreshold - 1) - N - 2 * (k - 1) = 167772161 := by
   constructor <;> norm_num [predecessorThreshold_eq, N, k]
 
+/-- **Sparse-uncertainty scale no-go.**  The first genuinely higher dyadic
+sparse extremizer (`s=2`, four terms) already has `3N/4 = 805306368` roots,
+whereas an unclassified Bezout escape needs only `167772160` ranks of defect.
+Thus any argument that treats one relation polynomial solely through a generic
+dyadic sparse-root upper bound has over `637` million coordinates of slack and
+cannot exclude the required rank drop.  A successful proof must use the coupled
+identity among all three Bezout polynomials, not single-polynomial uncertainty. -/
+theorem dyadic_sparse_floor_far_exceeds_escape_rank_drop :
+    3 * (N / 4) = 805306368 ∧
+      3 * (predecessorThreshold - 1) - N - 2 * k + 1 = 167772160 ∧
+      167772160 + 637534208 = 3 * (N / 4) := by
+  constructor
+  · norm_num [N]
+  constructor <;> norm_num [predecessorThreshold_eq, N, k]
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterDyadicDomainEscape
 
 /-! ## Axiom audit -/
@@ -181,3 +196,4 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterDyadicDomainEscape
 #print axioms two_level_blocked
 #print axioms mu256_dyadic_obstruction
 #print axioms unclassified_escape_rank_drop
+#print axioms dyadic_sparse_floor_far_exceeds_escape_rank_drop

@@ -64,7 +64,7 @@ but measure signed completion multiplicity rather than positive packet existence
 | PPCT-5 primitive nonzero leaf existence | **THEOREM on G153 chain** | Every injective depth-seven wraparound tuple reaches a primitive balanced leaf with nonzero cyclotomic label. |
 | PPCT-6 charge-mass sandwich | **THEOREM / INSUFFICIENT** | Primitive charge mass lies between one and three times the injective excess; this is only a factor-three re-encoding. |
 | PPCT-7 completion multiplicity | **NAIVE CAP AND PROPER-LEAF RECURSION REFUTED** | Small cells have fibres as large as `7242` and up to `44` packets per configuration. At `(n,p)=(16,337)` there are exactly `48` nonzero primitive depth-seven disjoint subset pairs, so recursion through leaves of depth at most six is false. |
-| PPCT-8 signed leaf charge | **THEOREM sockets / exact restricted kernel target** | The coefficient-`126871` target is exactly seven-subset histogram variance. The correct ordered profile is `J=7!A`, with `V(J)=25401600 V(A)`; a universal factorial-normalized covariance contraction is false. Coefficientwise sunflower Fourier survives, and every primitive witness gives a nonzero degree-`<2^29`, support/`l1<=14` integer polynomial vanishing at a production root. Ambient linear-code bounds are distance-2 blind. |
+| PPCT-8 signed leaf charge | **EXACT LOCAL/FIBER-CONSERVATION THEOREMS / production count open** | Actual witnesses lie in the five-letter alphabet with `l1<=14`. Exact local profiles dictate the formal kernel `(7!)^2[x^7y^7](xy)^A(x+y)^B(1+x^2+y^2)^C`; `2A+B+2Z=14`, so only the all-`+-1` sector uses 14 coordinates and its formal fixed-label factor is `14!`. Nonunit sectors use at most 13 coordinates, but source rarity cannot bound collision rarity; the full cardinality bijection is not packaged. The `ZMod 17` vector `[1,2,1,2,2,2,2,0]` refutes alphabet-only kernel-freeness. |
 | PPCT-9 repeated-coordinate recursion | **THEOREM / FULLY CLOSED MODULO INJECTIVE INPUT** | All 88 Newton monomials, exact `B_k` masses, eta-to-rpow bridge, fixed `R=79880` target `<138`, `1/1024` secant, and end-to-end field consumer are formal. `productionSlackBarrier_of_actualEtaEnvelope` needs only the intended moment decomposition, recurrence, and injective `126871` allocation. |
 | PPCT-10 BSG inverse theorem | **EQUIVALENT risk** | Large centered `E_7` should produce an approximate additive subgroup inside `G`; quantify parameters. Generic BSG losses must be checked against all 18 coefficient bits. |
 
@@ -134,9 +134,9 @@ automatically subtracts tree/Wick excursions and isolates finite-field cycles.
 | NWS-3 cyclotomic matrix Schatten bridge | **THEOREM-level identity; formalization pending** | Wu--Wang's `A=VDV` gives `s_j(A)=m|eta_j|` and exact Schatten-14 equivalence. |
 | NWS-4 determinant/geometric mean | **INSUFFICIENT / FORMAL HOUSE FALSIFIER** | Product of singular values cannot upper-bound the fourteenth power sum. Separately, an irreducible monic integer family has fixed norm, trace, and the exact Wu--Wang--Pan linear-coefficient coordinate but an arbitrarily large real root, so one Jacobi determinant does not bound the period house. |
 | NWS-5 nonbacktracking trace polynomial | **ORDINARY HASHIMOTO FORM REFUTED** | The exact degree-14 Ihara polynomial removes 14 cyclically adjacent reversals, versus all `C(14,2)=91` Wick first-pair placements, leaving coefficient `77d+14`. A closed nonbacktracking repeated-direction word survives, and equal adjacency eigenvalues can have opposite injective transforms. A univariate polynomial cannot isolate the packet. |
-| NWS-6 Ihara zeta quotient | **REGULAR COLLAPSE / coloured variant open** | On the regular Paley graph Ihara--Bass is adjacency-side data, hence a spectral relabeling. A viable graph normal-ordering must retain the seven dilation-coloured operators `A_G,A_(2G),...,A_(7G)` and the subsequent sunflower subtraction. |
-| NWS-7 nonlinear period fixed point | **THEOREM identity / ACTIVE bound** | `|eta_b|^2=n+sum_(u!=1)eta_{b(u-1)}`. Seek a maximum principle using the cyclotomic transition kernel beyond row-sum positivity. |
-| NWS-8 transition-kernel spectral gap | **EQUIVALENT risk** | The kernel eigenvalues are incomplete character/Jacobi sums; bounding them at square-root scale is another Paley face. |
+| NWS-6 Ihara zeta quotient / coloured Newton operator | **ACTUAL PAIR LAW CLOSED / higher mixed arithmetic open** | The coloured Newton operator is exact. Every actual mixed moment is `q` times a weighted collision count, and both production seven-colour Gram matrices are regular simplices (diagonal `qn-n^2`, offdiag `-n^2`) after certified class separation. This kills aligned copulas, but pair correlation misses required leakage by 123--124 bits; favorable signed higher collisions remain open. |
+| NWS-7 nonlinear period fixed point / Krein cone | **ALL-ORDERS POSITIVITY NO-GO / arithmetic active** | `|eta_b|^2=n+sum_(u!=1)eta_{b(u-1)}`. Schur multiplication is Fourier-profile convolution, and every nonnegative orbit profile survives all convolution powers. These positivity constraints leave the enlarged-cone LP at the worst-period square; fixed intersection values remain live. |
+| NWS-8 transition/intersection arithmetic | **EXACT COUPLING / standard integrality NO-GO; correlated values active** | Literal intersection rows transform to products of periods. Cauchy--Davenport forces two-class support, but `(2^30-1,1)` remains legal: one leaked unit versus the exact `65,663,244` required (`2^25`--`2^26`). Only correlated placement/values of many entries survives. |
 | NWS-9 dyadic interlacing | **ACTIVE** | Compare spectra for nested order-`2^j` subgroups via equitable partitions. Falsifier: no deterministic interlacing after changing the Cayley connection set. |
 | NWS-10 deterministic lift theory | **ACTIVE** | Model `G_j -> G_{j+1}` as a signed graph lift and prove the new spectrum remains controlled. Random 2-lift theorems do not apply without pseudorandom signs. |
 
@@ -147,16 +147,16 @@ prove chi-square mixing at ambient, rather than support, scale.
 
 | sub-angle | status | exact attack / falsifier |
 |---|---|---|
-| ESM-1 chi-square identity | **THEOREM / EQUIVALENT** | The target is `sum_x (r_7(x)/n^7-1/q)^2 <= 2^18/n^7`. |
+| ESM-1 chi-square identity | **THEOREM / EQUIVALENT** | The target is `sum_x (r_7(x)/n^7-1/q)^2 <= 2^18/n^7`; for the injective law the exact normalized allowance lies between `2^-36` and `2^-35`. |
 | ESM-2 fixed-depth inverse Littlewood--Offord | **INSUFFICIENT** | Costa's applicable bound is at scale `1/n`; its centered consequence misses by strictly `2^161` to `2^162`. |
-| ESM-3 entropic CLT | **ACTIVE** | Prove each convolution step gains a fixed fraction of the remaining Renyi-2 entropy deficit using multiplicative structure. Seven gains must reach ambient scale. |
+| ESM-3 entropic CLT | **ROBUST LATER-STEP WICK SOCKET / five transitions open** | Improving one of `3,5,7,9,11,13` by one and multiplying all six bounds by `501/500` still closes. But antipodal pairs prove the actual first ratio exceeds `3+2^-29`, refuting both Wick 3 and selected cap `2*(501/500)` there. The defect must occur at one of transitions 2→3 through 6→7. |
 | ESM-4 log-Sobolev Cayley walk | **EQUIVALENT risk** | The log-Sobolev/spectral constant of the additive walk generated by `G` is governed by the same worst period. |
 | ESM-5 collision-entropy tensorization | **GENERIC DISTINCT-SAMPLING ROUTE REFUTED / subgroup-specific active** | Coupling misses by over `141` energy bits and leaves a period ceiling `1835x` too large. Even `p_1,...,p_7=0` can leave `75%` of phase mass in Johnson grades 1--6, so Newton subtraction does not isolate the top exterior grade. |
 | ESM-6 exchangeable Gaussian model | **PROBE only** | It explains the observed `sqrt(2n log m)` extreme scale but supplies no deterministic per-prime tail. |
 | ESM-7 Stein coupling on cosets | **ACTIVE** | Build an exchangeable pair by multiplying a random summand by a random subgroup element; bound the Stein remainder in fourteenth norm. |
 | ESM-8 mod-Gaussian correction | **SCALAR MOMENTS THROUGH SIX REFUTED / joint cumulant active** | `_BGKLowerMomentOrbitSpikeNoGo` passes even hypothetical Wick ceilings for powers `s^2,...,s^6` with `s=|eta|^2`, yet fails the `s^7` target by 15--16 bits. A viable correction must constrain the joint orbit profile at seventh order. |
 | ESM-9 concentration over frequency | **INSUFFICIENT for worst case** | Average tail bounds can tolerate a bad orbit; coset invariance reduces `q-1` frequencies to `m` but does not remove the maximum. |
-| ESM-10 entropy-production inverse theorem | **ACTIVE** | If Renyi-2 entropy fails to grow at one step, force an additive approximate subgroup compatible with multiplicative closure, then rule it out quantitatively. |
+| ESM-10 entropy-production inverse theorem | **FIRST STEP EXCLUDED / later centered defect open** | The exact first deleted-pair law is `q(A+n-2M)`: a selected defect forces `M>2^59`, while a `2^22` shifted-representation cap gives `M<=2^52`; independently the actual ratio is unconditionally above Wick 3. The target is one later one-unit defect with every other transition inside the `501/500` envelope. |
 
 ## Angle 8: Projective Accident Orbit Rigidity (PAOR) -- incidence geometry
 
@@ -172,7 +172,7 @@ exactly, then charge geometric orbits rather than ordered tuples.
 | PAOR-5 depth-seven higher symmetric group | **ACTIVE** | Generalize from quadruple `S_4` to the signed 14-coordinate action relevant to `E_7`; classify stabilizers by set partition. |
 | PAOR-6 exact signature-fibre count | **THEOREM / production histogram open** | For fibre sizes `k_v` of `kappa_n(x)=(x-1)^n`, `#accidents=sum_v(k_v^2-2k_v+s_v)=sum_v k_v^2-2n+3`. This reduces `n^2` triples to an `n-1` histogram but is still too large directly. |
 | PAOR-7 cyclotomic-unit signature | **THEOREM exact quotient / production injectivity open** | For exact root support, `accidents H=empty` iff `kappa_n` is injective modulo `x~x^-1`. This now conditionally forces marked `D_2=0` for both production primes, but no in-tree theorem proves the required `n=2^30` injectivity. |
-| PAOR-8 canonical discriminant recurrence | **THEOREM reductions / PROJECTED LITERATURE NO-GO** | `K_(2n)=Sq(K_n)*J_(2n)` is formal. A transversal certificate has degree `536870911` and Sylvester order `1073741821`; prime-factor projection gives 59/67-bit targets. Exact Jacobi, cyclotomic-intersection, unit, and Kummer forms are formal, but Weil misses by 127--129 bits and the Do Duc--Leung--Schmidt threshold is reversed (`P^2<14^k`). Projected separation remains open. |
+| PAOR-8 canonical discriminant recurrence | **THEOREM reductions / exact finite certificate format / analytic open** | `K_(2n)=Sq(K_n)*J_(2n)` is formal. Projection gives 59/67-bit targets; Weil misses by 127--129 bits and the cyclotomic-number threshold reverses. A keyed-bucket `Nodup` format is wired to both production maps, but no table is populated and every certificate needs all `2^29` rows (10 GiB at 20 bytes each). |
 | PAOR-9 incidence theorem regime check | **INSUFFICIENT unless subgroup-sensitive** | Generic point-line/point-curve incidence bounds lose powers of `q` at `n=q^0.19`. |
 | PAOR-10 signed orbit census | **ACTIVE** | Attach a sign/centered weight to each projective orbit so orbit compression preserves DC cancellation instead of counting all accidents positively. |
 
@@ -209,7 +209,7 @@ so every numerical claim is independently checkable and every extrapolation has 
 | CPPD-6 trace/cohomology computation | **ACTIVE** | Use exact finite-field cohomology for small arities to identify which FPTC strata actually carry the excess. |
 | CPPD-7 production direct enumeration | **REFUTED by scale** | `m` is about `2^128`; neither coset FFT nor matrix construction is feasible at production. |
 | CPPD-8 interval/rounding discipline | **THEOREM practice** | Use integer squaring for square-root comparisons and rational enclosures for logarithms; keep diagnostics separate from verdicts. |
-| CPPD-9 Lean socket library | **THEOREM-rich / ACTIVE capstone** | CTR/AJT equivalences, exact subset variance, factorial covariance, coefficientwise sunflower characters, projected-kappa Jacobi/Kummer forms, and the two-prime restricted sparse kernel are formal. The remaining library task is the eventual production-specific seventh-order consumer. |
+| CPPD-9 Lean socket library | **THEOREM-rich / ACTIVE capstone** | CTR/AJT equivalences, exact subset variance, factorial covariance, coefficientwise sunflower characters, projected-kappa Jacobi/Kummer forms, exact two-prime modular table evaluators/bucket adapters, the coloured Newton operator, and the restricted sparse kernel are formal. The remaining library task is the production-specific seventh-order consumer or a checked finite certificate. |
 | CPPD-10 hybrid closure | **ACTIVE** | Ideal endgame: an analytic theorem handles all but finitely many explicitly bounded strata/levels, and machine certificates close the finite remainder. |
 
 ## Ranked live queue after all 100 cells
@@ -224,17 +224,23 @@ so every numerical claim is independently checkable and every extrapolation has 
 2. **CTR-4/5/7:** exploit the exact zero-mean restriction structure on `1-G` without taking
    absolute values and with genuinely production-specific arithmetic.  The orbit-spectral cone
    is exactly dual to the worst-period problem. Galois rationality and moment congruences remove
-   the literal spike, but an integral trace-correct profile still misses by 8--9 bits, so the new
-   input must couple the actual ramified conjugates quantitatively at seventh order.
+   the literal spike, but an integral trace-correct profile still misses by 8--9 bits; likewise,
+   exact intersection-row integrality and support miss by 25--26 bits.  The new input must couple
+   actual ramified conjugates or many intersection values quantitatively at seventh order.
 3. **PPCT-8 restricted sparse kernel:** count the support-14, `l1<=14` integer kernel slice at
    either explicit production root. Ordinary BCH/Hamming/Singleton/uncertainty bounds see only a
    distance-two single-check code, and generic fewnomial root bounds miss the subgroup by 116 bits.
+   The sharp folded alphabet `{-2,-1,0,1,2}` and its nine local profiles are now formal, but the
+   `ZMod 17` countermodel rules out universal kernel-freeness.  Exploit production arithmetic or
+   average the restricted slice rather than trying to lower coefficient height further.
 4. **PAOR-8 norm-collapse invariant:** accident emptiness is exactly kappa-signature injectivity,
-   and its dyadic recurrence and projected character forms are proved. Compress the exponentially
-   wide norm state or certify simultaneous Frobenius separation; generic Weil/cyclotomic-number
-   estimates are now quantitatively excluded.
-5. **AJT-5/6/9:** retain only off-diagonal or production-specific phase structure. AJT-3 itself
-   is now known to be the centered moment wall in dual coordinates.
+   and its dyadic recurrence, projected character forms, and exact modular table adapters are
+   proved.  The finite fallback is `2^29` evaluations (10 GiB at 20 bytes per row); compress that
+   state arithmetically or generate and independently verify the certificate.  Generic
+   Weil/cyclotomic-number estimates are quantitatively excluded.
+5. **AJT-5/6/9 and NWS-6:** retain only off-diagonal or production-specific joint phase structure.
+   AJT-3 is the centered moment wall in dual coordinates, while the exact dilation-coloured Newton
+   operator shows that all one-colour Schatten data are permutation-blind.
 6. **FPTC-5/9/10:** compute monodromy only if it controls the off-diagonal remainder with an
    explicit constant; raw Weil bounds are already known to lose the family cardinality.
 

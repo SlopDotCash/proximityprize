@@ -239,6 +239,21 @@ theorem lowerDepthWickCompletionTotal_eq :
   norm_num [lowerDepthWickCompletionTotal, wickCompletionTwo, wickCompletionThree,
     wickCompletionFour, wickCompletionFive, wickCompletionSix]
 
+/-- Even perfect annihilation of the marked depth-two accident sector does not
+produce the one-unit Wick-trajectory improvement by positive bookkeeping.  The
+remaining depth-three through depth-six completion coefficients total
+`2555595`, still more than twenty full injective allowances.  Connecting
+accident-freeness to the trajectory target therefore requires signed
+covariance cancellation, not deletion of the positive depth-two term alone. -/
+theorem positive_completion_without_depthTwo_still_exceeds_twenty_allowances :
+    lowerDepthWickCompletionTotal - wickCompletionTwo = 2555595 ∧
+      20 * injectiveAllowance <
+        lowerDepthWickCompletionTotal - wickCompletionTwo := by
+  constructor <;>
+    norm_num [lowerDepthWickCompletionTotal, wickCompletionTwo,
+      wickCompletionThree, wickCompletionFour, wickCompletionFive,
+      wickCompletionSix, injectiveAllowance]
+
 /-- The positive lower-depth Wick completion envelope costs strictly between 21 and 22 complete
 copies of the coefficient-`126871` allowance. -/
 theorem positive_wick_completion_between_twentyOne_and_twentyTwo_allowances :
@@ -439,6 +454,7 @@ end AccidentBridge
 #print axioms markedDisjointCollisionPairs_one_eq_empty
 #print axioms production_markedSeven_ledger
 #print axioms positive_wick_completion_between_twentyOne_and_twentyTwo_allowances
+#print axioms positive_completion_without_depthTwo_still_exceeds_twenty_allowances
 #print axioms oriented_marked_depthTwo_normalizes_to_accident
 #print axioms marked_depthTwo_pair_normalizes_to_accident
 #print axioms markedDisjointCollisionPairs_two_eq_empty_of_accidents_eq_empty

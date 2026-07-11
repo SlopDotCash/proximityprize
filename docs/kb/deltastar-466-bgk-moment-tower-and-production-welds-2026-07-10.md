@@ -452,25 +452,47 @@ coefficient-vector reduction modulo `29` that reflects zero for every depth-seve
 below `2^29` and coefficient height at most `14`.
 
 `_BGKPrimitiveDepthSevenSparseCodeNoGo.lean` turns the surviving primitive object into an exact
-small-alphabet code.  Folding an order-`2^30` root at its half-order relation `g^(2^29)=-1`, every
-globally disjoint seven-petal collision produces a nonzero integer vector `d` with
+small-alphabet code.  `_BGKPrimitiveFoldedAlphabet.lean` now proves the sharp source-sensitive
+version: folding an order-`2^30` root at `g^(2^29)=-1`, every globally disjoint seven-petal
+collision produces a nonzero integer vector `d` with
 
 ```text
-eval_g(d)=0,   ||d||_1 <= 14,   |supp(d)| <= 14,
+eval_g(d)=0,   d_j in {-2,-1,0,1,2},   ||d||_1 <= 14,   |supp(d)| <= 14.
 ```
 
-and therefore a nonzero integer polynomial of degree `<2^29`, support at most `14`, coefficient
-height at most `14`, and root `g`.  Both certified production roots instantiate this socket.
-If coefficients are relaxed to the full prime field, however, evaluation is only one parity
-check: its kernel has exact Hamming distance two, and diagonal coordinate rescaling makes the
-kernels for all nonzero roots support-isometric.  Ordinary BCH, Hamming, Singleton, or linear
-uncertainty bounds cannot see the production arithmetic.
+The proof also classifies the exact nine local source profiles.  At both certified production
+roots it supplies a nonzero integer resultant `N` with `P | N` and
+`P <= |N| <= 14^(2^29)`.  The height improvement `14 -> 2` does not lower that norm base because
+the resultant envelope sees the unchanged endpoint `l1` mass.  Moreover the five-letter alphabet
+is sharp and not universally kernel-free: in `ZMod 17`, `g=3` has order `16`, and globally
+disjoint seven-subsets collide with folded vector `[1,2,1,2,2,2,2,0]`.  Thus a production proof
+must use arithmetic special to the two roots or an average/counting theorem.  If coefficients are
+relaxed to the full prime field, evaluation is only one parity check of exact Hamming distance two,
+so ordinary BCH, Hamming, Singleton, or linear uncertainty bounds remain blind.
+
+The same file now gives the formal source-fiber enumerator dictated by the exact local profiles.
+With
+`A=#{j:|d_j|=2}`, `B=#{j:|d_j|=1}`, and `C=#{j:d_j=0}`, its bivariate kernel is
+
+```text
+(7!)^2 [x^7 y^7] (xy)^A (x+y)^B (1+x^2+y^2)^C.
+```
+
+For every actual lift, `2A+B+2Z=14`, where `Z` counts occupied zero-label coordinates.  Hence
+`B` is even and the occupied folded-coordinate count is `7+B/2`.  The unique degree-14 sector is
+fourteen distinct `+-1` coordinates; its formal fixed-label ordered factor is
+`(7!)^2*C(14,7)=14!`.  Every nonunit sector has degree at most 13, and global disjointness already
+forces the folded label nonzero because each side has odd size seven.  This is a genuine target
+compression, not an `8264` saving: the lower-degree sectors are rare among all sources but may be
+arbitrarily enriched among collisions until a production equidistribution estimate is proved.
+The full source-cardinality bijection for the displayed generating function remains to be packaged.
 
 [Kelley's sparse-polynomial root theorem](https://arxiv.org/abs/1602.00208) does retain the number
 of monomials, but its optimistic `t=14`, `C=1` scale is between `2^146` and `2^148` at the first
 prime and between `2^147` and `2^149` at the second.  This is over 116 bits above the complete
-`2^30` root subgroup.  The live coding statement is therefore a restricted-alphabet/list-recovery
-bound on the `{-1,0,1}`-dominated weight-14 slice, not a theorem about the ambient linear code.
+`2^30` root subgroup.  The live coding statement is therefore a production-specific count on the
+five-letter, support-14, `l1<=14` slice, not a theorem about the ambient linear code or universal
+kernel-freeness of that slice.
 
 The correct subset/tuple covariance normalization is also formal.  If `A` is the unordered
 `r`-subset histogram, then the ordered-injective histogram is `J=r!*A`, not `A`, and
@@ -496,6 +518,27 @@ constant intersection cap under `p>(sqrt(14))^k`; the production arithmetic prov
 comparison `P^2<14^k` at both primes.  Kummer reciprocity consequently exposes a simultaneous
 Frobenius-separation problem for roughly `2^29` cyclotomic units, but does not supply its
 certificate.
+
+`_ANT46ProjectedKappaBucketCertificate.lean` supplies the exact deterministic certificate format
+for that finite problem.  Cover the inversion transversal by buckets, require the projected-value
+list in each bucket to be `Nodup`, and require distinct bucket ranges to be disjoint; a keyed
+variant makes the second condition automatic.  Natural-number square-and-multiply evaluators are
+proved equal to both projected production maps and feed the existing inversion-transversal
+adapter.  The exact dimensions are
+
+```text
+inputs = 2^29 = 536870912,
+pairs = C(2^29,2) = 144115187807420416,
+2^20 buckets * 512 rows = 2^29 rows,
+20 bytes * 2^29 = 10 GiB.
+```
+
+The projection exponents have 100 and 93 bits and the target prime-order groups have 59 and 67
+bits.  Bucketization therefore changes the working set but does not compress the certificate:
+every exact cover contains at least `2^29` row entries.  A formal `ZMod 7` counterexample also
+shows that one scalar product fingerprint cannot certify `Nodup`.  This is a feasible
+certificate-carrying per-prime route, not a completed injectivity proof; the full table still has
+to be generated and independently checked, or replaced by genuinely new arithmetic compression.
 
 Finally, `_BGKPeriodProfileArithmeticAudit.lean` tests arithmetic omitted by the scalar orbit
 spike.  Galois transitivity excludes a single rational squared conjugate, and the necessary
@@ -534,5 +577,126 @@ second formal counterexample gives two unit-phase families with the same first p
 ordered-injective transforms `-5040` and `5040`.  Hence no univariate adjacency/Hashimoto
 polynomial can isolate `D7`.  A dilation-coloured theory would need the full Newton inputs
 `eta_b,...,eta_(7b)` and would still face the primitive common-core subtraction.  A genuinely new
-Ramanujan cap would imply coefficient `4096<126871`; Ihara--Bass itself supplies no such cap on a
-regular generalized Paley graph.
+Ramanujan cap would close the public raw-moment route with coefficient `4096`; this is not by
+itself a direct `D7` extraction, and Ihara--Bass supplies no such cap on a regular generalized
+Paley graph.
+
+`_BGKDilationColoredNewtonOperatorNoGo.lean` then builds the correct multicolour replacement.
+Convolution by `G,2G,...,7G` gives seven commuting operators with a common additive-character
+eigenbasis, and the full degree-seven Newton polynomial in those operators has eigenvalue exactly
+the ordered-injective transform `7!*e_7`.  This retains all seven power sums that univariate Ihara
+discarded.  Nevertheless every nonzero colour has the same entire marginal Schatten profile by
+the permutation `b -> jb`.  A two-frequency coefficient-scale model of commuting real diagonal
+joint spectra with identical marginal norm moments for every colour and exponent has exact Newton
+energies
+
+```text
+66816 < 126871 < 25401600 = (7!)^2.
+```
+
+The Newton scalar is sign-indefinite even on commuting real diagonal contractions.  Thus neither
+separate Schatten estimates nor a generic Schur/SOS certificate can close the operator lane.  Its
+precise live theorem is a mixed subgroup-arithmetic correlation bound for
+`(eta_b,eta_(2b),...,eta_(7b))`, whose squared Newton trace is the injective variance itself.
+
+`_BGKDilationPermutationCopulaNoGo.lean` verifies that this is not merely an artifact of allowing
+unrelated colour permutations.  On the genuine multiplier action of `1,...,7` on `ZMod 13`, two
+base sign profiles with the same value multiset produce identical marginal moments for every
+colour and exponent, yet
+
+```text
+953600 < 13*126871 < 64641152.
+```
+
+Their normalized Newton traces therefore straddle the allowance.  This is deliberately an
+abstract dilation copula, not an additive Fourier transform of a multiplicative subgroup.  It
+shows that the live input must use that latter arithmetic realization, not only the common
+dilation action.
+
+`_BGKActualJointPeriodLaw.lean` computes the first exact layer of that realization.  For arbitrary
+colour weights, every mixed product of periods and conjugate periods is `q` times the matching
+weighted additive collision count.  The powers of the seven production colours `1,...,7` are
+certifiably distinct at both primes, giving the exact nonzero-frequency Gram law
+
+```text
+diagonal = q*n-n^2,        off diagonal = -n^2.
+```
+
+Thus the actual profiles form a regular-simplex frame and cannot realize the aligned-copula
+countermodel.  Pairwise correlation is nevertheless 123--124 bits below the `65,663,244`-unit
+leakage scale.  At the first transition the deleted-pair energy is exactly `q*(A+n-2M)`, with
+`A` the ordered additive energy and `M=#{x+y=2z}`.  The production antipodal floor on `A` makes a
+selected `3 -> 2` defect require `M>2^59`; a nonzero-shift representation cap `2^22` gives
+`M<=n*2^22=2^52`.  The surviving joint-law input is therefore a favorable signed higher
+weighted-collision correlation, not pairwise orthogonality.
+
+`_BGKSevenStepFlatteningProductionNoGo.lean` isolates the exact entropy socket.  The normalized
+injective chi-square allowance is strictly between `2^-36` and `2^-35`.  If the first summand is
+followed by six uniform normalized contractions, their integer numerators must have product at
+most `126871`; hence `7^6=117649` fits while `8^6=262144` fails.  Each transition must save more
+than 27 `L2` bits.  Ordinary positive BSG loses 98--99 bits before extracting one production
+subgroup point.  Even granting the classical shifted-intersection scale `4*n^(2/3)=2^22` saves
+only eight bits, leaving an exact 19-bit one-step deficit, while Hart's sixfold-covering size gate
+is reversed by over 1048 cleared bits.  The remaining probabilistic target is therefore a
+centered, trajectory-weighted six-step flattening inequality whose contraction numerators multiply
+to at most `126871`.
+
+`_BGKWickTrajectoryDefectBudget.lean` identifies a much sharper sufficient input.  The six
+Gaussian/Wick transition numerators are
+
+```text
+3, 5, 7, 9, 11, 13,       product = 135135.
+```
+
+The literal production allowance, including the finite-population/DC normalization, lies strictly
+between `126871` and `126872`.  Replacing any one Wick numerator by its predecessor leaves a
+product at most `124740<126871`.  The spare margin even permits multiplying every transition
+bound by `501/500`, a uniform `0.2%` overhead at all six steps.  Formal six-ratio telescopes consume
+both the exact and robust profiles and prove the final depth-seven discrepancy target.  This does
+not prove the missing transition estimate: it shows that one integer unit of improvement at one
+step suffices even after small, explicitly budgeted finite-population losses elsewhere.
+
+`_BGKCenteredTrajectoryContraction.lean` supplies the actual subset-trajectory consumer.  Writing
+`Z_r` for centered `r`-subset discrepancy, six inequalities `n*Z_(r+1)<=c_r*Z_r` with
+`prod c_r<=126871` imply the exact remaining seven-subset variance target.  Its deleted-diagonal
+Newton transition retains all seven dilation colours.  A real subgroup counterexample in
+`ZMod 17` has `Z_7=Z_1>0`, forcing every universal product to be at least
+`8^6=262144`; the theorem must be production-specific.  More sharply, at the production
+parameters the antipodal zero-sum fiber forces
+
+```text
+n*Z_2/Z_1 > 3 + 2^-29.
+```
+
+The first transition therefore satisfies neither the Wick cap `3` nor the robust selected-defect
+cap `2*(501/500)`.  The selected one-unit improvement must be sought at one of transitions
+`2 -> 3`, ..., `6 -> 7`.  The antipodal lower proxy is below the ordinary robust cap `3.006`, but
+that comparison is explicitly not an upper bound on the full first ratio.
+
+`_BGKCyclotomicKreinSchurNoGo.lean` performs the all-orders positivity audit on the enlarged
+orbit-spectral cone.  For a translation kernel, Schur multiplication is additive convolution of
+its Fourier profile.
+Nonnegative multiplicative-orbit profiles are closed under that convolution, so every Schur power
+is automatically Krein-admissible.  The single-orbit extremizer consequently survives the full
+hierarchy, and the unit-mass cone optimum remains exactly the worst period square.  Combining only
+this positivity with the valency bound misses the production target by 191--192 bits.  In the
+formally self-dual dictionary of [Nomura--Terwilliger](https://arxiv.org/abs/2405.10491), a useful
+next theorem must therefore impose the exact arithmetic values and coupling of the intersection
+numbers, rather than merely their nonnegativity.
+
+`_BGKCyclotomicIntersectionIntegralityAudit.lean` keeps the actual integer structure constants.
+For `p_ST(z)=#{x in S : z-x in T}`, the additive-character transform is exactly the product of
+the two relation periods; total mass and multiplicative-orbit invariance are also formal.  At both
+certified primes, Cauchy--Davenport rules out a product row supported on only one cyclotomic class.
+That sharp support statement is still almost vacuous quantitatively: the standard integral row
+constraints admit `(n-1,1)`.  At `n=2^30` they force one leaked unit, while reducing the primitive
+coefficient by `8264` requires
+
+```text
+ceil(8264*2^30/135135) = 65663244,
+2^25 < 65663244 < 2^26.
+```
+
+Thus exact integrality, row mass, and support size are 25--26 bits short.  The surviving
+association-scheme theorem must force a quantitative spread or signed correlation among many
+specific cyclotomic intersection numbers.

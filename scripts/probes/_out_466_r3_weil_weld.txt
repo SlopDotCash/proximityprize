@@ -1,0 +1,28 @@
+#466 r=3 R308: the Weil weld — master identity Σ_a‖Ŝ‖^{2r} = m·Σ_c‖J^{∗r}(c)‖²
+
+(W1) master identity Σ_a‖Ŝ‖^{2r} = m·Σ_c‖J^{∗r}(c)‖², r = 1..4:
+  m= 9 p= 19 r=1: lhs=1.206000e+03 rhs=1.206000e+03 OK
+  m= 9 p= 19 r=2: lhs=2.560565e+05 rhs=2.560565e+05 OK
+  m= 9 p= 19 r=3: lhs=6.388882e+07 rhs=6.388882e+07 OK
+  m= 9 p= 19 r=4: lhs=1.714311e+10 rhs=1.714311e+10 OK
+  m=12 p= 37 r=1: lhs=4.452000e+03 rhs=4.452000e+03 OK
+  m=12 p= 37 r=2: lhs=2.368374e+06 rhs=2.368374e+06 OK
+  m=12 p= 37 r=3: lhs=1.518965e+09 rhs=1.518965e+09 OK
+  m=12 p= 37 r=4: lhs=1.085131e+12 rhs=1.085131e+12 OK
+  m=15 p= 31 r=1: lhs=6.060000e+03 rhs=6.060000e+03 OK
+  m=15 p= 31 r=2: lhs=3.825028e+06 rhs=3.825028e+06 OK
+  m=15 p= 31 r=3: lhs=2.751475e+09 rhs=2.751475e+09 OK
+  m=15 p= 31 r=4: lhs=2.109003e+12 rhs=2.109003e+12 OK
+
+(W2) implied R27 tower constants (medians of 5 primes x 3 chars):
+    m C2=√(K4/2) C4=(K8/24)^.25
+    9      0.679          0.519
+   24      0.872          0.735
+   96      0.892          0.753
+  288      0.939          0.833
+  720      0.970          0.902
+ 1200      0.961          0.887
+
+  both ≈ 0.9–1.0 (sub-Gaussian): the tower rungs r=2, r=4 hold at C ≈ 1;
+  r=2 is discharged in-tree mod TwoCharacterWeilInput (R144); r=4 is the
+  single remaining open average for the absolute-C r=3 rung.
