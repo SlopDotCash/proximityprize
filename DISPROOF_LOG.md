@@ -16220,3 +16220,43 @@ theorems / five probes; final residual map in the kb note.  The lane rests.
 Files: `_P1RateQuarterDyadicDomainEscape.lean`,
 `scripts/probes/probe_rate_quarter_p1_dyadic_domain_escape.py`,
 `docs/kb/deltastar-466-rate-quarter-dyadic-domain-escape-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: PENCIL-COVER round (residual c) — pair-pencil
+## existence with 2T−N alignment floor + MARGIN-FREE four-pencil pair-cover
+## budget; open content = the many-pencil regime
+
+Residual (c) round.  Probe `scripts/probes/probe_rate_quarter_p1_pencil_cover.py`
+(exact): the census's extremal dual family (B = 230 = 2c' at mu_256/q=1031) has
+pair-pencil distribution {m=115: 2, m=2: 13225} over 13227 distinct pencils and
+the partition identity Sum m(m−1) = B(B−1) = 52670 holds exactly — extremal
+families are MANY-pencil objects (two capacity pencils + a quadratic cloud of
+pair-only pencils).
+
+MATH: every pair of bad scalars rides its divided-difference pencil, whose
+aligned set contains the pairwise witness intersection (>= 2T−N = 111848108) —
+cover EXISTENCE is a theorem; distinct pencils share <= 1 rider so pencils
+partition pairs; pigeonhole with the unconditional cap c = N−T+1 = 480946859:
+a pair-cover by P pencils forces B^2 <= P·c^2; P = 4 gives B <= 2c =
+961893718 <= N; P = 5 fails ((N+1)^2 <= 5c^2).
+
+FORMALIZED (`_P1RateQuarterPencilCoverTheorem.lean`; FULL axiom lists read
+manually via `lake env lean`: 5 theorems exactly
+[propext, Classical.choice, Quot.sound], 1 [propext]; no sorryAx, no warnings):
+* pair_pencil_aligned_floor + pairPencil_floor_constant (cover existence,
+  2T−N = 111848108 floor, via in-tree pencil_agrees_on_inter);
+* stall_budget_of_four_pair_pencil_cover — bad families whose PAIRS are covered
+  by four pencils obey the StallResidual budget, NO margin/alignment/pool
+  hypotheses (ordered-square covering + B^2 <= 4c^2 + (2c+1)^2 > 4c^2);
+* overBudget_no_four_pencil_pair_cover (contrapositive);
+* pair_pigeonhole_ledger, five_cover_insufficient.
+
+Cover-class budget map now: 1-pencil (no hyp) / 2-pencil (no hyp) / 3–4-pencil
+(scalar, probe-forced margins) / <= 4-pencil PAIR level (no hyp) all obey the
+budget; open content = pair-clouds over >= 5 (extremally thousands of) distinct
+(2T−N)-aligned pencils — the sub-Johnson direction swarm, i.e. the same wall.
+StallResidual(mu_{2^30}) remains OPEN.  No delta-star movement; bracket
+3/8 <= delta* <= 43/96 + eps untouched.
+
+Files: `_P1RateQuarterPencilCoverTheorem.lean`,
+`scripts/probes/probe_rate_quarter_p1_pencil_cover.py`,
+`docs/kb/deltastar-466-rate-quarter-pencil-cover-theorem-2026-07-11.md`.
