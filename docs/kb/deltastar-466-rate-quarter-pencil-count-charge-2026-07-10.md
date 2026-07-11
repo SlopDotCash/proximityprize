@@ -821,6 +821,30 @@ common-base lines.  A successful charge must introduce a transverse line from
 outside the common-base cluster, or use the Möbius labels directly rather than
 the collapsed-cluster ratio.
 
+The coordinate-only version of the latter alternative is also now ruled out.
+At a fixed mismatch coordinate with nonzero mismatch value `d`, the common-base
+direction label is `u1 + (gamma-gamma0)^(-1)d`.  The theorem
+`mobiusDirectionValue_injOn_nonbase` proves this map is injective over all
+nonbase riders.  Therefore one coordinate can legitimately carry many riders,
+distinguished by their direction values; the `55924057`-fold load spike is
+consistent with the exact algebra and is not a capacity contradiction.  Any
+direct-label charge must also control the number of allowable direction
+values (equivalently, use cross-coordinate low-degree consistency).  That is
+precisely where a genuine polynomial/list-decoding input enters.
+
+There is nevertheless a sharper external-line invariant.  For two distinct
+common-base references `L0,L1` and an arbitrary line `L`, the determinant
+factors exactly as
+`Delta(L0,L1,L)=(r1-r0)*(q0-(a+gamma0*r))`.  The second factor is the external
+line's defect from passing through the common lifted point.  Since distinct
+common-base lines have distinct direction polynomials, determinant collapse
+with the reference pair forces this defect to vanish: the external line must
+join the same common-base cluster.  Thus the cluster is maximal, and every
+genuinely transverse external line has a nonzero determinant with the fixed
+pair.  This factorization is stronger than the generic degree-`2(k-1)` view:
+future root counting can charge roots separately to the reference-direction
+factor and to one degree-`<k` external-defect polynomial.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;

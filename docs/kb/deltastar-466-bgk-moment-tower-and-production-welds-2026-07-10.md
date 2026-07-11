@@ -246,8 +246,12 @@ The absolute coefficient masses by factor count start `B_13=42`, `B_12=791` and 
 bootstrap reserves `138` units for repeated strata and leaves `126871` for the signed injective
 packet defect.  The file proves the arithmetic, Newton identity, DC bridge, and noncircular
 secant barrier.  `_BGKFourteenFactorYoung.lean` proves the underlying fourteen-factor AM--GM and
-optimized-padding lemma; a final eta/dilation adapter remains before the repeated envelope is a
-fully wired analytic consumer.
+optimized-padding lemma. `_BGKShiftedEtaPaddedHolder.lean` additionally proves the exact
+nonzero-frequency dilation law, handles all coefficient shifts `1,...,7`, constructs the
+canonical NNReal padding scale even when the moment vanishes, and supplies a witness-free Holder
+bound for every `k<=13` Newton monomial.  The only remaining repeated-sector seam is algebraic:
+kernel-check the full expanded monomial list and its grouping into the `B_k` envelope before
+feeding the already-formal `<138` tangent/bootstrap consumer.
 
 `_AJT13CenteredMomentEquivalence.lean` records a complementary no-shortcut result. If `K` is
 the annihilator of `G`, `m=|K|`, and `eta_c` are the quotient Gauss periods, complete character

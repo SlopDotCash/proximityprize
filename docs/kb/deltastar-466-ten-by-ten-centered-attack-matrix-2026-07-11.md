@@ -65,7 +65,7 @@ but measure signed completion multiplicity rather than positive packet existence
 | PPCT-6 charge-mass sandwich | **THEOREM / INSUFFICIENT** | Primitive charge mass lies between one and three times the injective excess; this is only a factor-three re-encoding. |
 | PPCT-7 completion multiplicity | **NAIVE CAP REFUTED / exact threshold active** | Small cells have canonical fibres as large as `7242`, depth `2`, and one configuration can contain `44` bad packets. The production cap must satisfy the exact G154/G155 budget, not merely be finite. |
 | PPCT-8 signed leaf charge | **THEOREM socket on G154/G155 chain** | Centered completion defects telescope exactly; packet credits sum to the injective baseline. The remaining theorem must bound the signed packet defect together with the repeated-sector defect. |
-| PPCT-9 repeated-coordinate recursion | **THEOREM reduction / eta adapter active** | Newton--Mobius gives exact masses `B13=42`, `B12=791`, total `25401599`; production Young/Hölder cost is `<138`, leaving the exact injective coefficient `126871`. The noncircular `1/1024`-slope bootstrap is formalized. |
+| PPCT-9 repeated-coordinate recursion | **THEOREM analytic adapter / envelope list active** | Newton--Mobius gives masses `B13=42`, `B12=791`, total `25401599`; eta dilation, canonical padding, and k-factor Hölder are formal. Kernel-check the full monomial list to connect it to the `<138` bootstrap and injective coefficient `126871`. |
 | PPCT-10 BSG inverse theorem | **EQUIVALENT risk** | Large centered `E_7` should produce an approximate additive subgroup inside `G`; quantify parameters. Generic BSG losses must be checked against all 18 coefficient bits. |
 
 ## Angle 3: Annihilator Jacobi Tensorization (AJT) -- character-sum theory

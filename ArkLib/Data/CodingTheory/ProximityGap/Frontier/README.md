@@ -78,8 +78,12 @@ equivalent dual-coordinate target, not an independent orthogonality saving.
 identities.  Its exact Möbius masses begin `42,791,8820,...`, total `25401599`; the production
 Hölder envelope is `137.8488...<138`, and a formal sublinear barrier splits the wrap allowance as
 `126871+138=127009`.  `_BGKFourteenFactorYoung.lean` supplies the kernel-checked 14-factor
-AM--GM and optimized-padding socket.  The live depth-seven core is consequently the **signed
-injective** packet defect at coefficient `126871`; the final eta/dilation adapter is being wired.
+AM--GM and optimized-padding socket. `_BGKShiftedEtaPaddedHolder.lean` now closes the analytic
+adapter for every `k<=13` shifted eta monomial: unit dilation, coefficients `1,...,7`, the exact
+erased-frequency model, and the canonical padding scale are all formal.  The sole repeated-sector
+bookkeeping seam is to kernel-check the full Newton monomial list against the `B_k` envelope.  The
+live depth-seven core is consequently the **signed injective** packet defect at coefficient
+`126871` once that list adapter is connected.
 
 **Dyadic two-scale recursion (2026-07-11).** `_DQR23TwoScaleCenteredRecursion.lean` proves the
 exact sibling law `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)`, the full signed binomial ledger at

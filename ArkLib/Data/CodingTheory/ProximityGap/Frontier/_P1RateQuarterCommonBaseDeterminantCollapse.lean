@@ -181,6 +181,100 @@ theorem commonLift_no_transverse_pairEquation
   exact htrans (commonLift_pairEquation_forces_direction_eval_eq
     gamma0 gamma x q0 source target hgamma hsource htarget hequation)
 
+/-! ## Direct Möbius-label charge no-go -/
+
+/-- Direction value carried at one common-base mismatch coordinate. -/
+noncomputable def mobiusDirectionValue
+    {F : Type} [Field F] (gamma0 u1 mismatch gamma : F) : F :=
+  u1 + (gamma - gamma0)⁻¹ * mismatch
+
+/-- At a nonzero base mismatch, the direction value at one fixed coordinate
+is injective in the nonbase rider.  Consequently a coordinate can carry many
+different riders with distinct direction labels; forgetting the label cannot
+give a coordinate-only injection. -/
+theorem mobiusDirectionValue_injOn_nonbase
+    {F : Type} [Field F] (gamma0 u1 mismatch : F)
+    (hmismatch : mismatch ≠ 0) :
+    Set.InjOn (mobiusDirectionValue gamma0 u1 mismatch)
+      {gamma : F | gamma ≠ gamma0} := by
+  intro gamma hgamma beta hbeta heq
+  simp only [Set.mem_setOf_eq] at hgamma hbeta
+  simp only [mobiusDirectionValue] at heq
+  have hinv : (gamma - gamma0)⁻¹ = (beta - gamma0)⁻¹ := by
+    apply mul_right_cancel₀ hmismatch
+    linear_combination heq
+  have hsub : gamma - gamma0 = beta - gamma0 := inv_injective hinv
+  linear_combination hsub
+
+/-! ## External-line determinant factorization -/
+
+/-- **External defect factorization.**  Relative to two lines through the
+same lifted point `(gamma0,q0)`, the three-line determinant is the product of
+their direction difference and the polynomial defect measuring whether the
+external line also passes through that lifted point. -/
+theorem lineDeterminant_commonLift_factorization
+    {F : Type} [Field F]
+    (gamma0 : F) (q0 : F[X])
+    (line0 line1 external : PolynomialLine F)
+    (hline0 : q0 = line0.1 + C gamma0 * line0.2)
+    (hline1 : q0 = line1.1 + C gamma0 * line1.2) :
+    lineDeterminant line0 line1 external =
+      (line1.2 - line0.2) *
+        (q0 - (external.1 + C gamma0 * external.2)) := by
+  have ha0 : line0.1 = q0 - C gamma0 * line0.2 := by
+    linear_combination -hline0
+  have ha1 : line1.1 = q0 - C gamma0 * line1.2 := by
+    linear_combination -hline1
+  rw [lineDeterminant, ha0, ha1]
+  ring
+
+/-- Two distinct lines through one lifted point necessarily have distinct
+direction polynomials. -/
+theorem direction_ne_of_commonLift_line_ne
+    {F : Type} [Field F]
+    (gamma0 : F) (q0 : F[X])
+    (line0 line1 : PolynomialLine F)
+    (hline0 : q0 = line0.1 + C gamma0 * line0.2)
+    (hline1 : q0 = line1.1 + C gamma0 * line1.2)
+    (hne : line0 ≠ line1) : line1.2 ≠ line0.2 := by
+  intro hdir
+  apply hne
+  apply Prod.ext
+  · linear_combination -hline0 + hline1 + C gamma0 * hdir
+  · exact hdir.symm
+
+/-- **Maximality of a nondegenerate common-lift cluster.**  If the two
+reference directions are distinct, an external line determinant-collapses
+with them exactly only if it passes through the same lifted base point. -/
+theorem external_commonLift_of_lineDeterminant_eq_zero
+    {F : Type} [Field F]
+    (gamma0 : F) (q0 : F[X])
+    (line0 line1 external : PolynomialLine F)
+    (hline0 : q0 = line0.1 + C gamma0 * line0.2)
+    (hline1 : q0 = line1.1 + C gamma0 * line1.2)
+    (hdirection : line1.2 ≠ line0.2)
+    (hdet : lineDeterminant line0 line1 external = 0) :
+    q0 = external.1 + C gamma0 * external.2 := by
+  rw [lineDeterminant_commonLift_factorization
+    gamma0 q0 line0 line1 external hline0 hline1] at hdet
+  have hdir : line1.2 - line0.2 ≠ 0 := sub_ne_zero.mpr hdirection
+  exact sub_eq_zero.mp ((mul_eq_zero.mp hdet).resolve_left hdir)
+
+/-- Distinct-reference form of common-lift maximality. -/
+theorem external_commonLift_of_distinct_commonLift_determinant_zero
+    {F : Type} [Field F]
+    (gamma0 : F) (q0 : F[X])
+    (line0 line1 external : PolynomialLine F)
+    (hline0 : q0 = line0.1 + C gamma0 * line0.2)
+    (hline1 : q0 = line1.1 + C gamma0 * line1.2)
+    (hne : line0 ≠ line1)
+    (hdet : lineDeterminant line0 line1 external = 0) :
+    q0 = external.1 + C gamma0 * external.2 := by
+  exact external_commonLift_of_lineDeterminant_eq_zero
+    gamma0 q0 line0 line1 external hline0 hline1
+      (direction_ne_of_commonLift_line_ne
+        gamma0 q0 line0 line1 hline0 hline1 hne) hdet
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
@@ -192,3 +286,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 #print axioms commonBase_secantDirection_sub_eval_ne_zero
 #print axioms commonLift_pairEquation_forces_direction_eval_eq
 #print axioms commonLift_no_transverse_pairEquation
+#print axioms mobiusDirectionValue_injOn_nonbase
+#print axioms lineDeterminant_commonLift_factorization
+#print axioms direction_ne_of_commonLift_line_ne
+#print axioms external_commonLift_of_lineDeterminant_eq_zero
+#print axioms external_commonLift_of_distinct_commonLift_determinant_zero
