@@ -6,6 +6,16 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G131-additive-lift-saddle-no-go] Additive-lift Capstone A crosses sqrt(p) but cannot certify the arc-saddle target, even with rho=1 (2026-07-11, #466 G131)
+
+G102F's additive lift gives the terminal small-difference envelope `x^2 <= n*x + 4*rho*W*n^2` for `x = smallDiffPairs(C,W)`, valid on the modular window `4W < p`. This entry records the exact no-go for using that envelope alone as the G80Q arc-saddle certificate. If the witness `T+1` still satisfies the envelope, then the envelope cannot imply `x <= T`; the Lean theorem `capstoneA_witness_blocks_certificate` is this contrapositive as a reusable Nat lemma.
+
+At the production-shaped concrete window `n = 2^30`, `p = 2^160`, `K = 2^13`, `W = p/K = 2^147`, the side condition `4W < p` holds and the uniform-main target is `T = 2*n^2/K = 2^48`. Even granting the impossible best additive-collision value `rho = 1`, the witness `T+1` satisfies `x^2 <= n*x + 4*rho*W*n^2`. Therefore the Capstone-A quadratic envelope is compatible with counts strictly above the terminal target and cannot close the small-difference certificate. Probe `scripts/probes/probe_466_g131_additive_lift_saddle.py` measures the same obstruction in small cells and gives production root/target gaps of about `2^56.5` to `2^57`.
+
+Verdict: the additive lift is a real modular mechanism beyond the `sqrt(p)` integer-product fence, but additive collision control alone is off by a production-scale square-root quotient. Closing the terminal object needs additional signed/modular cancellation across quotient slices or arc deviations, not merely `rho << n`. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G131AdditiveLiftSaddleNoGo.lean`, axiom-clean (`capstoneA_witness_blocks_certificate`, `production_K8192_window`, `production_K8192_uniform_target`, `production_K8192_even_rho_one_witness`, `production_K8192_even_rho_one_not_certify_uniform`).
+
 ## [466-G105-depth-ledger-lossless-no-go] Depth-graded signed ledgers are lossless average-census re-slicings; floors spend slack and empty fibers provide no compensation (2026-07-10, #466 G105)
 
 Fable G104 refereed the newest signed-depth ladder (G101/G102/G104): partitioning relation/census mass by collision depth gives honest per-depth bookkeeping, but the full depth sum is exactly the original `rEnergy`/average-census object. G105 makes that obstruction kernel-checked in its smallest reusable form. For any finite universe `U`, grade map `depth : α → σ` (with `σ` allowed infinite, e.g. `ℕ`), and signed weight `w`,

@@ -2199,10 +2199,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullFieldNoisyCharacterTr
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullLengthCharacterSumScaleGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FullRankLatticeTransferenceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FunctionFieldModelSubfieldDegeneracy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G100FIntegerLiftSmallDiffCounting
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G100PerDepthCenteringCancellation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101ExactSignedDepthWeld
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101FMonomialBaselineGrowth
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101OrbitClassVarianceNormalForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G102DepthZeroAnomalyFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G102FAdditiveLiftAmplification
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103SyzygyReplicationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104AffineTripleSyzygyNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G105DepthLedgerLosslessNoGo
@@ -2215,6 +2218,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G127MomentLPDual
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G128ProductionDescentBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G129FullDescentBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G130UniformRungBudgets
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G131AdditiveLiftSaddleNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G131PerRungDescentSeries
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G132PerRungBudgetAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G133CensusTower
@@ -2312,6 +2316,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G94JacobiCocycleMetric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CanonicalDepthFourAbsorption
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CardinalityDeepCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G95CyclicCodeWeightDictionary
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96CapacityHouseExtremal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96DepthMomentWeld
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G96ProductionDepthFourFixedEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G97ArcDilateDiscrepancy
