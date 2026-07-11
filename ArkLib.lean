@@ -2248,6 +2248,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G172RateHalfSyzygyGapSlac
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G173PrimitiveTransferThresholdRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G179AffineFixedRootCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G180CentralSymmetryCovering
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G181DyadicKernelFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

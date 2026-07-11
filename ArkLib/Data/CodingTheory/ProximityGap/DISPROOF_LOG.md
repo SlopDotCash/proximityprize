@@ -51233,3 +51233,54 @@ All six declarations axiom-clean (`propext, Quot.sound`; iff-forms add `Classica
 locked build 8320 jobs green. Formal payload: `Frontier/_SYZ53GeneratorGapCalibration.lean`.
 Consumes SYZ44 `degree_sum_of_hilbert` + SYZ45 `imbalance`; complementary to SYZ52 (which it
 supersedes as the downstream target phrasing). Referee source: `fable_syz52_delta2.py`.
+
+### [466-G181-dyadic-kernel-floor] The 2-power torsion `g^m = -1` forces an UNCONDITIONAL, `q`-independent LOWER bound on the deep-wall kernel-class mass: `n ≤ repRF g n 2 0`, hence `q·n² − n⁴ ≤ centeredShadowMass` — exactly `1/3` of the depth-2 prize target at EVERY dyadic `n`. A thinness-essential floor on the CORE object (#509), unavailable to any odd-order (non-antipodal) subgroup (2026-07-11)
+
+G88 (`_G88CrossOrbitFirstIncidence.lean`) reduced the deep prize wall to the orbit-class
+ℓ²-profile `(S₀, (S_γ)_γ)` and proved the kernel floor `q·S₀² − n^{2r} ≤ centeredShadowMass`,
+leaving the SIZE of `S₀ = repRF g n r 0` (the depth-`r` root-tuple zero-sum count) as the open
+arithmetic content. This lane supplies the thinness-essential arithmetic on the *lower* side.
+
+**The mechanism (antipodal cancellation, 2-power-essential).** For a smooth subgroup `⟨g⟩` of
+even order `n = 2m` the torsion relation is `g^m = -1` (G180's `pow_half_eq_neg_one` brick), so
+the root set is closed under negation: `g^{j+m} = -g^j`. Hence the `n` ordered depth-`2` pairs
+`t_j = (j, j+m)`, `j ∈ Fin n`, each satisfy `gsumR = g^j + g^{j+m} = g^j(1 + g^m) = 0`
+(`gsumR_antipodalPair_eq_zero`, holding in EVERY characteristic) and are pairwise distinct
+(distinct first coordinate, `antipodalPair_injective`). This injects `Fin n` into the depth-`2`
+zero-sum fiber:
+
+  `n ≤ repRF g n 2 0`   (`n_le_repRF_two_zero`), unconditional.
+
+**The wall floor.** Composing with G88's `kernel_sq_le_centeredShadowMass` at `r = 2`:
+
+  `q·n² − n⁴ ≤ centeredShadowMass g n m 2`   (`dyadic_kernel_floor_two`).
+
+**Sharpness / scale-invariance.** The depth-`2` prize target (`DCEnergyBound`) is
+`q·(2·2−1)!!·n² = 3·q·n²`, so the dyadic kernel floor `q·n²` is EXACTLY one third of the prize
+ceiling for every dyadic `n`, production `n = 2^30` included
+(`probe_oc_dyadic_profile_rigidity.py`, `probe_oc_kernel_formula.py`: `A(n,2) = n`,
+`A(n,4) = 3n(n−1)`, stabilized-`S₀` matches the antipodal count `A(n,r)` for `p > p*`, with `p*`
+the SYZ53 small-field saturation threshold; e.g. `p*(8,4)=73`). This pins WHY the wall is
+genuinely present (a constant-fraction floor) yet NOT self-refuting (`1/3 < 1`): the kernel term
+alone cannot close CORE. The `1/3` ratio is field-independent and depth-`2`-exact.
+
+**Thinness-essential (verified).** The antipodal injection requires `g^m = -1`. For ODD `n`
+(no antipodal partner) the depth-`2` kernel mass is `q`-DEPENDENT and admits no such combinatorial
+floor; the analogous antipodal count is `0` (`probe_oc_kernel_mass_dyadic.py`,
+`probe_oc_kernel_formula.py`: odd-`n` rows). The floor `S₀ ≥ n` is available ONLY to the 2-power
+smooth subgroup — a genuine thinness invariant, not a generic-group fact.
+
+**Scope (honest).** This is an unconditional LOWER bound on `centeredShadowMass` (the wall is at
+least a fixed fraction of the prize target); it does NOT provide the UPPER bound the prize needs
+(`DCEnergyBound`), which is exactly the cross-orbit `Σ_γ S_γ²` tail G88 isolates and which carries
+zero algebraic constraint (doctrine v2). The empirical stabilization `S₀ = A(n,r)` above `p*` is
+measured but NOT claimed formally (only the unconditional `≥` direction is proved; accidental
+char-`p` zero-sums below `p*` inflate `S₀`, per SYZ53 small-field discipline). CORE remains OPEN /
+ON-BGK. Value: an exact, kernel-checked, thinness-forced constant on the floor side of the wall,
+and the reuse of the 2-power antipodal brick in the deep-wall representation-count coordinates.
+
+All three declarations axiom-clean (`propext, Classical.choice, Quot.sound`); locked umbrella
+build green. Formal payload: `Frontier/_G181DyadicKernelFloor.lean`; consumes G88
+`kernel_sq_le_centeredShadowMass` + R308 `repRF`/`gsumR`. Probes:
+`scripts/probes/probe_oc_dyadic_profile_rigidity.py`,
+`scripts/probes/probe_oc_kernel_mass_dyadic.py`, `scripts/probes/probe_oc_kernel_formula.py`.
