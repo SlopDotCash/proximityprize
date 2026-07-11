@@ -126,6 +126,46 @@ theorem offZero_fourteenth_two_scale (ψ : AddChar F ℂ) (G : Finset F) {a : F}
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl (fun b _ => by ring)
 
+/-- **The exact pairing cross-correlation (new identity).** For any evaluation set `G` and
+dilation `a` with `−a ∉ G·G⁻¹` — at a dyadic tower step, `−a ∉ G_j` since `−a ∈ aG_j` and the
+cosets are disjoint — encoded pointwise as `y + a·z ≠ 0` on `G × G`:
+
+  `∑_{b≠0} η_b · η_{b·a} = −|G|²`.
+
+Consequence for the pair-and-sum renormalization flow: at every dyadic level the coset
+involution `b ↦ b·a` pairs the spectrum with TOTAL cross-correlation exactly `−|G_j|²`
+(per-pair average `−|G_j|/2` on the coset space) — the pairing is almost exactly orthogonal,
+never coherent in the mean. Pure orthogonality; no open input. -/
+theorem cross_correlation_exact {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) (a : F)
+    (hfree : ∀ y ∈ G, ∀ z ∈ G, y + a * z ≠ 0) :
+    ∑ b ∈ Finset.univ.erase (0 : F), eta ψ G b * eta ψ G (b * a)
+      = -((G.card : ℂ)) ^ 2 := by
+  have hfull : ∑ b : F, eta ψ G b * eta ψ G (b * a) = 0 := by
+    calc ∑ b : F, eta ψ G b * eta ψ G (b * a)
+        = ∑ b : F, ∑ y ∈ G, ∑ z ∈ G, ψ (b * (y + a * z)) := by
+          refine Finset.sum_congr rfl (fun b _ => ?_)
+          rw [eta, eta, Finset.sum_mul_sum]
+          refine Finset.sum_congr rfl (fun y _ => Finset.sum_congr rfl (fun z _ => ?_))
+          rw [← AddChar.map_add_eq_mul]
+          ring_nf
+      _ = ∑ y ∈ G, ∑ z ∈ G, ∑ b : F, ψ (b * (y + a * z)) := by
+          rw [Finset.sum_comm]
+          exact Finset.sum_congr rfl (fun y _ => Finset.sum_comm)
+      _ = 0 := by
+          refine Finset.sum_eq_zero (fun y hy => Finset.sum_eq_zero (fun z hz => ?_))
+          rw [AddChar.sum_mulShift _ hψ]
+          simp [hfree y hy z hz]
+  have hzero : eta ψ G (0 : F) * eta ψ G ((0 : F) * a) = ((G.card : ℂ)) ^ 2 := by
+    rw [zero_mul, ArkLib.ProximityGap.Frontier.BGKSupBoundMomentTower.eta_zero]
+    ring
+  have hsplit : ∑ b : F, eta ψ G b * eta ψ G (b * a)
+      = eta ψ G 0 * eta ψ G (0 * a)
+        + ∑ b ∈ Finset.univ.erase (0 : F), eta ψ G b * eta ψ G (b * a) :=
+    (Finset.add_sum_erase _ (fun b => eta ψ G b * eta ψ G (b * a)) (Finset.mem_univ 0)).symm
+  rw [hsplit, hzero] at hfull
+  linear_combination hfull
+
 end ArkLib.ProximityGap.Frontier.DQR23TwoScaleCenteredRecursion
 
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only) -/
@@ -134,3 +174,5 @@ end ArkLib.ProximityGap.Frontier.DQR23TwoScaleCenteredRecursion
 #print axioms ArkLib.ProximityGap.Frontier.DQR23TwoScaleCenteredRecursion.norm_pow_even_eq
 #print axioms
   ArkLib.ProximityGap.Frontier.DQR23TwoScaleCenteredRecursion.offZero_fourteenth_two_scale
+#print axioms
+  ArkLib.ProximityGap.Frontier.DQR23TwoScaleCenteredRecursion.cross_correlation_exact

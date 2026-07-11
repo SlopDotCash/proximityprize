@@ -22,7 +22,8 @@ secant petal—has size at least `140942233`.
 -/
 
 set_option autoImplicit false
-set_option maxRecDepth 200000
+set_option maxRecDepth 1000000
+set_option maxHeartbeats 1000000
 
 open Finset Polynomial
 open _root_.ProximityGap Code
