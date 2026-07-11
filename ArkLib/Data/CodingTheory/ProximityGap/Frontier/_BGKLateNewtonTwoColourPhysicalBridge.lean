@@ -223,7 +223,7 @@ abbrev FreshMarkedJoin (G : Finset F) (r : Nat) :=
   {z : NewtonJoin G r // z.1 ∉ z.2.1}
 
 /-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
-def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (hr : 0 < r) :
+def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (_hr : 0 < r) :
     RepeatedMarkedJoin G r -> FreshMarkedJoin G (r - 1) := by
   intro z
   have hcard : z.1.2.1.card = r :=
@@ -406,8 +406,7 @@ theorem card_newtonJoin (G : Finset F) (m : Nat) :
 theorem twoColourPeriod_zero (psi : AddChar F Complex) (G : Finset F) (r : Nat) :
     twoColourPeriod psi G r 0 = (twoColourDC G r : Complex) := by
   classical
-  simp [twoColourPeriod, newtonJoinPeriod, phaseFamilyPeriod, twoColourDC,
-    card_newtonJoin]
+  simp [twoColourPeriod, newtonJoinPeriod, phaseFamilyPeriod, twoColourDC]
 
 /-- The weighted collision form is the nonnegative physical square mass. -/
 theorem twoColourCollisionForm_eq_physicalSquare (G : Finset F) (r : Nat) :
@@ -424,7 +423,7 @@ theorem sum_twoColourPeriod_mul_conj_eq_collisionForm
       (Fintype.card F : Complex) * (twoColourCollisionForm G r : Complex) := by
   classical
   unfold twoColourPeriod
-  simp only [map_sub, Finset.sum_sub_distrib, Finset.sum_add_distrib, sub_mul, mul_sub]
+  simp only [map_sub, Finset.sum_sub_distrib, sub_mul, mul_sub]
   rw [sum_newtonJoinPeriod_mul_conj_eq_collision hpsi,
     sum_newtonJoinPeriod_mul_conj_eq_collision hpsi,
     sum_newtonJoinPeriod_mul_conj_eq_collision hpsi,
@@ -573,10 +572,17 @@ end Gates
 
 #print axioms phaseCrossCollisionCount_eq_fiberInner
 #print axioms sum_signedPhaseFiberProfile_sq_eq_crossCollisionForm
+#print axioms repeatedFreshEquiv_phase
+#print axioms twoColourPhysicalProfile_eq_fresh_sub_repeated
+#print axioms twoColourPhysicalProfile_eq_freshOne_sub_freshThree
 #print axioms twoColourPeriod_eq_powerSum_esymm
 #print axioms twoColourCollisionForm_eq_physicalSquare
 #print axioms sum_nonzero_twoColourPeriod_mul_conj_eq_centeredCollision
+#print axioms fifthNewtonSplit_twoColour
+#print axioms sixthNewtonSplit_twoColour
 #print axioms fifthDominantPairBudget_iff_crossCollisionLowerBound
 #print axioms sixthDominantPairBudget_iff_crossCollisionLowerBound
+#print axioms fifthTwoColourBudget_iff_actualCrossCollision
+#print axioms sixthTwoColourBudget_iff_actualCrossCollision
 
 end ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge

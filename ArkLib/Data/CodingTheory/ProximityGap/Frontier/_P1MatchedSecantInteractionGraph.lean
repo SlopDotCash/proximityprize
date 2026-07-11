@@ -57,6 +57,54 @@ theorem PairInteracts.symm
   · exact Or.inr (Or.inl (by simpa only [Finset.inter_comm] using h))
   · exact Or.inr (Or.inr (Or.inr (by simpa only [Finset.inter_comm] using h)))
 
+/-- Select one endpoint of an unindexed pair. -/
+def endpointAt {J : Type} (p : J × J) (e : Fin 2) : J :=
+  if e = 0 then p.1 else p.2
+
+@[simp]
+theorem endpointAt_zero {J : Type} (p : J × J) : endpointAt p 0 = p.1 := by
+  simp [endpointAt]
+
+@[simp]
+theorem endpointAt_one {J : Type} (p : J × J) : endpointAt p 1 = p.2 := by
+  simp [endpointAt]
+
+/-- Exact four-colour orientation form of pair interaction. -/
+theorem pairInteracts_iff_exists_orientation
+    {J : Type} (witness : J → Finset (Fin N)) (p q : J × J) :
+    PairInteracts witness p q ↔
+      ∃ e f : Fin 2,
+        K ≤ (witness (endpointAt p e) ∩ witness (endpointAt q f)).card := by
+  constructor
+  · intro h
+    rcases h with h | h | h | h
+    · exact ⟨0, 0, by simpa using h⟩
+    · exact ⟨0, 1, by simpa using h⟩
+    · exact ⟨1, 0, by simpa using h⟩
+    · exact ⟨1, 1, by simpa using h⟩
+  · rintro ⟨e, f, h⟩
+    fin_cases e <;> fin_cases f <;> simp only [endpointAt_zero, endpointAt_one] at h
+    · exact Or.inl h
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr (Or.inl h))
+    · exact Or.inr (Or.inr (Or.inr h))
+
+/-- Canonical chosen endpoint orientation for an interacting pair of pair-vertices. -/
+noncomputable def interactionOrientation
+    {J : Type} (witness : J → Finset (Fin N)) (p q : J × J)
+    (h : PairInteracts witness p q) : Fin 2 × Fin 2 :=
+  let hex := (pairInteracts_iff_exists_orientation witness p q).mp h
+  (Classical.choose hex, Classical.choose (Classical.choose_spec hex))
+
+/-- The chosen orientation really carries a `K`-overlap. -/
+theorem interactionOrientation_spec
+    {J : Type} (witness : J → Finset (Fin N)) (p q : J × J)
+    (h : PairInteracts witness p q) :
+    K ≤ (witness (endpointAt p (interactionOrientation witness p q h).1) ∩
+      witness (endpointAt q (interactionOrientation witness p q h).2)).card := by
+  exact Classical.choose_spec (Classical.choose_spec
+    ((pairInteracts_iff_exists_orientation witness p q).mp h))
+
 /-- **Five-pair interaction forcing.**  Five vertex-disjoint matched pairs with threshold-size
 endpoint witnesses contain two distinct pair-vertices that interact. -/
 theorem exists_interacting_pair_of_five
@@ -164,6 +212,8 @@ end ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 
 #print axioms PairInteracts.symm
+#print axioms pairInteracts_iff_exists_orientation
+#print axioms interactionOrientation_spec
 #print axioms exists_interacting_pair_of_five
 #print axioms not_five_pairwise_noninteracting
 #print axioms interactionGraph_compl_cliqueFree_five

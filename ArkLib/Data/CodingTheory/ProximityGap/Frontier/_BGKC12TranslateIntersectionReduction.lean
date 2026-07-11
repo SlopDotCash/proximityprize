@@ -126,15 +126,24 @@ def reassociateNewtonPairs (G : Finset F) (r : Nat) :
   left_inv := by intro p; rfl
   right_inv := by intro p; rfl
 
+@[simp] theorem reassociateNewtonPairs_apply (G : Finset F) (r : Nat)
+    (p : NewtonJoin G r × NewtonJoin G (r - 1)) :
+    reassociateNewtonPairs G r p = ((p.1.1, p.2.1), (p.1.2, p.2.2)) := rfl
+
 /-- The original `U1/U2` collision equation is exactly equality of the two difference phases. -/
 theorem newton_collision_iff_difference_collision (G : Finset F) (r : Nat)
     (p : NewtonJoin G r × NewtonJoin G (r - 1)) :
     newtonJoinPhase G 1 r p.1 = newtonJoinPhase G 2 (r - 1) p.2 ↔
       markedDifferencePhase G (reassociateNewtonPairs G r p).1 =
         subsetDifferencePhase G r (reassociateNewtonPairs G r p).2 := by
+  rw [reassociateNewtonPairs_apply]
   simp only [newtonJoinPhase, markedDifferencePhase, subsetDifferencePhase,
-    reassociateNewtonPairs, Nat.cast_one, one_mul, Nat.cast_ofNat]
-  constructor <;> intro h <;> linear_combination h
+    Nat.cast_one, one_mul, Nat.cast_ofNat]
+  constructor
+  · intro h
+    linear_combination -2 * h
+  · intro h
+    linear_combination 2 * h
 
 /-- **Exact variable-separation identity.**  The late favourable collision count is a cross
 collision between the marked translate row and the adjacent subset-difference row. -/
@@ -188,11 +197,15 @@ theorem markedDifferenceMultiplicity_eq_doubledTranslateIntersection
       linear_combination hz
     exact hx.symm ▸ z.1.2
   · intro z hz z' hz' heq
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz hz'
+    unfold markedDifferencePhase at hz hz'
+    have hx : (z.1.1 : F) = 2 * z.2.1 - t := by
+      linear_combination -hz
+    have hx' : (z'.1.1 : F) = 2 * z'.2.1 - t := by
+      linear_combination -hz'
     apply Prod.ext
     · apply Subtype.ext
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz hz'
-      unfold markedDifferencePhase at hz hz'
-      linear_combination hz - hz' - 2 * heq
+      exact hx.trans ((congrArg (fun y : F => 2 * y - t) heq).trans hx'.symm)
     · exact Subtype.ext heq
   · intro y hy
     simp only [Finset.mem_filter] at hy

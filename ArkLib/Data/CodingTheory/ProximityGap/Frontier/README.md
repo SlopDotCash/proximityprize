@@ -112,6 +112,11 @@ proves `interactionGraph_compl_cliqueFree_five`.  This is the reusable global st
 four-part Turán extremal machinery may be applied directly to obtain a quadratic interaction
 supply.  The remaining prize-specific step is to turn those cross-endpoint overlaps into equality
 or bounded clustering of the original matched secant parameters.
+Every interaction is now given an exact four-colour orientation socket by
+`pairInteracts_iff_exists_orientation`; `interactionOrientation_spec` selects a canonical endpoint
+pair and retains its `K`-overlap.  This removes disjunctive endpoint bookkeeping from the next
+algebraic layer.  A finite interaction supply can therefore be split into four uniform cross-
+secant formulas before applying determinant or polynomial-line propagation arguments.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
