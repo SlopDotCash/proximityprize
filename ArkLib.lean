@@ -3354,6 +3354,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ29YieldLawD4Gluing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ30LemmasOneThree
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ31SetGeometryFacts
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ32ClusterRouting
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
