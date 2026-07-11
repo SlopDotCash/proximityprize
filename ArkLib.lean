@@ -2238,6 +2238,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136UnitCircleMann
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G139AccidentQuantizationConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G146CenteredCumulantPacketNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G167NegationStabilizerCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G168ScalingCosetConfinement
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

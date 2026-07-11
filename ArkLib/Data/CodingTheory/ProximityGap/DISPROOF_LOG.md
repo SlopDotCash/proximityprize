@@ -18,6 +18,18 @@ Verdict: the accident sector of the negation/2-power action on minimal zero-sum 
 
 Formal payload: `Frontier/_G167NegationStabilizerCollapse.lean`, axiom-clean over any field of characteristic `!= 2` (`card_eq_two_of_neg_invariant`, `no_neg_invariant_support_of_card_ne_two`, `sum_antipodal_pair`, `card_antipodal_pair`, `ne_neg_self_of_ne_zero`). Reproducible probe: `scripts/probes/probe_466_g167_negation_stabilizer_collapse.py` (PASS; `p = 17, 41, 97`, all symmetric minimal supports size two, `2^k | N_s` for every `s != 2`).
 
+## [466-G168-scaling-coset-confinement] The general order-`d` ladder: a scaling of order `d` fixing a minimal zero-sum support confines it to one coset `x<g>`, so `|S| = d` (2026-07-11, #466 G168)
+
+The Fable referee (2026-07-11 06:35 UTC) refereed Shaw's G165 scaling-ladder (`ac6b62994`) and explicitly ranked the coset-stabilizer lemma as the single decisive next proof for the formalizer, with mechanism: if `g` has multiplicative order `d > 1` and `g*S = S`, then `S` is a union of multiplicative cosets `x<g>`; the sum of any nontrivial finite subgroup of `F_p^*` vanishes, so each coset is itself zero-sum; minimality forbids a proper zero-sum subset, so `S` is a SINGLE coset, `|S| = d = ord(g)`, and the stabilizer is exactly `<g>`.
+
+G167 (opus-core, landed `e3f9843b1`) covers only the negation special case `d = 2` (`g = -1`), giving `|S| = 2`. G168 proves the general order-`d` ladder of which G167 is the `d = 2` instance.
+
+The new arithmetic content beyond G167 is the coset geometric-sum vanishing `sum_{i<d} x*g^i = x*(sum g^i) = 0` for a nontrivial `d`-th root of unity (Mathlib `geom_sum_mul` factoring `g^d - 1 = 0` in a field, then `g - 1 != 0`), plus the distinct-powers count `|{x*g^i : i < d}| = d`. Together with minimality this pins any fixed minimal zero-sum support to one coset of exactly `d` elements.
+
+Consequences: the accident sector of the 2-Sylow scaling action is concentrated on sizes equal to the order of some fixing element (dyadic `s = 2^j` at production `H = 2^30`); every size not equal to any fixing order is a free `H`-orbit, so `2^k | N_s` there. This is a congruence/classification, not a magnitude bound: it does not bound `N_s` in size and does not touch BGK/Paley, which still binds the free-orbit magnitudes at production depth. With this capstone the congruence arc of G165/G167 is complete; the only remaining prize-facing object is a magnitude bound on the free minimal-zero-sum support counts. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G168ScalingCosetConfinement.lean`, axiom-clean over any field (`geom_sum_eq_zero_of_pow_eq_one`, `sum_scalingOrbit_eq_zero`, `card_scalingOrbit`, `card_eq_order_of_scaling_fixes`, `no_scaling_fix_of_card_ne`, `card_eq_two_of_neg_scaling`); `#print axioms` = `{propext, Classical.choice, Quot.sound}`. Reproducible probe: `scripts/probes/probe_466_g168_scaling_coset_confinement.py` (PASS; `p = 7, 11, 13, 17, 41, 97`; geometric-sum vanishing and coset zero-sum over all elements, coset-confinement `|S| = ord(g)` for every fixed minimal support).
+
 ## [466-G131-additive-lift-saddle-no-go] Additive-lift Capstone A crosses sqrt(p) but cannot certify the arc-saddle target, even with rho=1 (2026-07-11, #466 G131)
 
 G102F's additive lift gives the terminal small-difference envelope `x^2 <= n*x + 4*rho*W*n^2` for `x = smallDiffPairs(C,W)`, valid on the modular window `4W < p`. This entry records the exact no-go for using that envelope alone as the G80Q arc-saddle certificate. If the witness `T+1` still satisfies the envelope, then the envelope cannot imply `x <= T`; the Lean theorem `capstoneA_witness_blocks_certificate` is this contrapositive as a reusable Nat lemma.
