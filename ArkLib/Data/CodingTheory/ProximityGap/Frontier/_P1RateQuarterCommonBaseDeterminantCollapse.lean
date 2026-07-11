@@ -275,6 +275,28 @@ theorem external_commonLift_of_distinct_commonLift_determinant_zero
       (direction_ne_of_commonLift_line_ne
         gamma0 q0 line0 line1 hline0 hline1 hne) hdet
 
+/-- The external common-lift defect retains the original degree bound `<k`;
+the factorization therefore exposes two separate one-degree budgets rather
+than one opaque determinant budget of size `2(k-1)`. -/
+theorem commonLift_externalDefect_natDegree_lt
+    {F : Type} [Field F] {k : Nat}
+    (gamma0 : F) (q0 : F[X]) (external : PolynomialLine F)
+    (hq0 : q0.natDegree < k)
+    (ha : external.1.natDegree < k)
+    (hr : external.2.natDegree < k) :
+    (q0 - (external.1 + C gamma0 * external.2)).natDegree < k := by
+  have hCmul : (C gamma0 * external.2).natDegree ≤
+      external.2.natDegree := by
+    calc
+      _ ≤ (C gamma0).natDegree + external.2.natDegree :=
+        Polynomial.natDegree_mul_le
+      _ ≤ external.2.natDegree := by simp
+  have hadd : (external.1 + C gamma0 * external.2).natDegree < k := by
+    exact lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
+      (max_lt ha (hCmul.trans_lt hr))
+  exact lt_of_le_of_lt (Polynomial.natDegree_sub_le _ _)
+    (max_lt hq0 hadd)
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
@@ -291,3 +313,4 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 #print axioms direction_ne_of_commonLift_line_ne
 #print axioms external_commonLift_of_lineDeterminant_eq_zero
 #print axioms external_commonLift_of_distinct_commonLift_determinant_zero
+#print axioms commonLift_externalDefect_natDegree_lt
