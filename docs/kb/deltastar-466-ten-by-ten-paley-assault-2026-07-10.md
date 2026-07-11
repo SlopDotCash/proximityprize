@@ -327,7 +327,7 @@ it does not mean that the surrounding mathematical field is irrelevant.
 | Spectral/operator | The first exact G133 support-bucket tests have same-sign puncture corrections, so regrouping supports supplies no hidden cancellation there. | Finite falsifier for the proposed regrouping, not a general spectral theorem. |
 | Additive combinatorics | The HBK auxiliary-polynomial chain now gives `E(mu_(2^30))^2 <= 128*(2^30)^5` at both certified primes. | **Production theorem.** It closes the depth-four/HBK input, not the logarithmic-depth Paley maximum. |
 | Probability/census | Exact orbit-compressed censuses locate the first fully-disjoint mass at small matched-regime cells and distinguish characteristic-zero from prime-field excess. | Proof-producing calibration; it exposes rather than closes the high-depth sector. |
-| Cyclotomic/norm | Rung-two accidents are stable under an order-four re-rooting action, hence occur in packets of at least four; `#accidents <= 3` is exactly accident-freeness. | Axiom-clean sharpening of G136; production accident-freeness is still unproved. |
+| Cyclotomic/norm | Rung-two accidents are stable under an order-four re-rooting action, hence occur in packets of at least four; `#accidents <= 3` is exactly accident-freeness.  A triple-equal signed packet forces `-3` into the subgroup, and exact certificates exclude that stratum at both prize primes. | Axiom-clean sharpening of G136.  Full production accident-freeness is still unproved; the remaining expected projective orbit sizes are 12 and 24. |
 | p-adic | Valuation, Newton-polygon, and dyadic-tower formulations still fail to return an individual complex embedding; no tested slope statement controls the maximum. | No production survivor without a new archimedean-distribution bridge. |
 | Geometry/sheaves | Tensor invariants and connected collision strata identify the right object, but conductor grows with the subgroup order and ordinary Deligne bounds revert to Weil. | The live geometric target is logarithmic-depth connected-stratum control with vertical, fixed-prime constants. |
 | Coding/syzygy | A nonzero divided-difference kernel pair has at most one critical external-anchor channel.  Raw scalar-to-decoded-codeword injection is explicitly false. | Useful guarded rigidity rung; the event-level charge/extraction theorem remains open. |
@@ -363,7 +363,8 @@ This suggests a concrete theory rather than another analogy:
 1. **Moebius layer.**  Invert the partition lattice of the `2r` signed positions.  Pair blocks give
    the Wick main term; connected non-pair blocks define arithmetic cumulants.
 2. **Mann layer.**  Classify short primitive blocks up to projective re-rooting and permutation.
-   ANT46 is the first nontrivial orbit law in this layer.
+   ANT46 is the first nontrivial orbit law in this layer, and its production certificates eliminate
+   the only triple-equal/size-four projective stratum at both certified primes.
 3. **HBK layer.**  Bound the aggregate supply of short blocks by auxiliary-polynomial incidence
    estimates.  The new coefficient-128 theorem provides the first production-scale input.
 4. **Intersection layer.**  Charge overlaps of primitive blocks by the G143--G145 intersection
@@ -381,6 +382,6 @@ on primitive disjoint packets, annihilate lawful pairings, and admit an arithmet
 of the unknown top moment.
 
 The next formal theorem target is consequently a **connected-packet expansion** for the G133
-census, followed by exact classification of packet sizes `3` and `4` at the two production primes.
-That target composes the strongest positive outputs of the wave; it is also honest about the wall:
-no bound for connected packet sizes through `220` has yet been proved.
+census, followed by the full `S_4` orbit-card theorem and classification of the exact `720n`
+depth-three onset family.  That target composes the strongest positive outputs of the wave; it is
+also honest about the wall: no bound for connected packet sizes through `220` has yet been proved.

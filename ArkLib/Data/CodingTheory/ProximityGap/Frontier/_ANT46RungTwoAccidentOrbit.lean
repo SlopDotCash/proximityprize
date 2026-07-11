@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapePrimeP30Second
 
 /-!
 # Rung-two reduction accidents occur in packets of at least four
@@ -36,6 +38,7 @@ arithmetic obligation from a count to an emptiness/resultant certificate.
 -/
 
 set_option autoImplicit false
+set_option maxRecDepth 100000
 
 namespace ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit
 
@@ -306,9 +309,185 @@ theorem card_accidents_le_three_iff_eq_zero {H : Finset F}
   · intro h
     omega
 
+/-! ## Triple-equal projective stratum -/
+
+/-- Three equal entries in the signed quadruple `(a,b,-c,-1)`. The four disjuncts record
+which entry is omitted. -/
+def HasTripleEqualSigned (x : Triple F) : Prop :=
+  (x.a = x.b ∧ x.b = -x.c) ∨
+  (x.a = x.b ∧ x.b = -1) ∨
+  (x.a = -x.c ∧ -x.c = -1) ∨
+  (x.b = -x.c ∧ -x.c = -1)
+
+/-- A triple-equal signed accident forces `-3` into its supporting multiplicative subgroup.
+Indeed, if three entries are `r`, the fourth is `-3r`. -/
+theorem neg_three_mem_of_tripleEqual_accident {H : Finset F}
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H) {x : Triple F}
+    (hx : x ∈ accidents H) (htriple : HasTripleEqualSigned x) :
+    (-3 : F) ∈ H := by
+  rw [mem_accidents_iff] at hx
+  rcases hx with ⟨ha, hb, hc, hsol, _⟩
+  have ha0 : x.a ≠ 0 := fun h => h0 (h ▸ ha)
+  have hone : (1 : F) ∈ H := by
+    rw [← mul_inv_cancel₀ ha0]
+    exact hmul _ ha _ (hinv _ ha)
+  rcases htriple with h012 | h013 | h023 | h123
+  · rcases h012 with ⟨hab, hbc⟩
+    have hba : x.b = x.a := hab.symm
+    have hca : x.c = -x.a := by linear_combination hbc + hab
+    have h3a : 3 * x.a = 1 := by
+      unfold IsSolution at hsol
+      rw [hba, hca] at hsol
+      linear_combination hsol
+    have heq : (-3 : F) = (-1) * x.a⁻¹ := by
+      field_simp [ha0]
+      linear_combination -h3a
+    rw [heq]
+    exact hmul _ (hneg _ hone) _ (hinv _ ha)
+  · rcases h013 with ⟨hab, hb1⟩
+    have ha1 : x.a = -1 := hab.trans hb1
+    have hc3 : x.c = -3 := by
+      unfold IsSolution at hsol
+      rw [ha1, hb1] at hsol
+      linear_combination -hsol
+    rwa [← hc3]
+  · rcases h023 with ⟨hac, hc1⟩
+    have ha1 : x.a = -1 := hac.trans hc1
+    have hcpos : x.c = 1 := by linear_combination -hc1
+    have hb3 : x.b = 3 := by
+      unfold IsSolution at hsol
+      rw [ha1, hcpos] at hsol
+      linear_combination hsol
+    simpa [hb3] using hneg _ hb
+  · rcases h123 with ⟨hbc, hc1⟩
+    have hb1 : x.b = -1 := hbc.trans hc1
+    have hcpos : x.c = 1 := by linear_combination -hc1
+    have ha3 : x.a = 3 := by
+      unfold IsSolution at hsol
+      rw [hb1, hcpos] at hsol
+      linear_combination hsol
+    simpa [ha3] using hneg _ ha
+
+/-- If `-3` is absent from the subgroup, no supported accident has a triple-equal signed
+quadruple. -/
+theorem not_tripleEqual_of_neg_three_notMem {H : Finset F}
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H) (h3 : (-3 : F) ∉ H)
+    {x : Triple F} (hx : x ∈ accidents H) :
+    ¬ HasTripleEqualSigned x := by
+  intro htriple
+  exact h3 (neg_three_mem_of_tripleEqual_accident hneg hmul hinv h0 hx htriple)
+
+/-! ## Kernel-cheap certificate at the first production prime -/
+
+private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
+  | 0 => 1
+  | fuel + 1 =>
+      if n = 0 then 1
+      else if n % 2 = 0 then binaryPowAux (a * a) (n / 2) fuel
+      else a * binaryPowAux (a * a) (n / 2) fuel
+
+private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
+  binaryPowAux a n (n + 1)
+
+private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
+    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
+  induction fuel generalizing a n with
+  | zero => omega
+  | succ fuel ih =>
+      rw [binaryPowAux]
+      split_ifs with h0 heven
+      · subst n
+        simp
+      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
+        have hhalf : n / 2 < fuel :=
+          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
+        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
+        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
+        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
+        congr 1
+      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
+        have hhalf : n / 2 < fuel :=
+          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
+        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
+        have hnmod : n % 2 = 1 := by omega
+        have hdecomp := Nat.mod_add_div n 2
+        congr 1
+        omega
+
+private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
+    binaryPow a n = a ^ n := by
+  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
+
+open ArkLib.ProximityGap.PrizeShapePrimeP30
+
+local instance firstPrimeFact : Fact (Nat.Prime P) := ⟨prime_P⟩
+
+/-- Exact residue certificate: `-3` is not a `2^30`-th root of unity in the first certified
+production field. -/
+theorem firstPrime_neg_three_pow_ne_one :
+    ((-3 : ZMod P) ^ (2 ^ 30 : ℕ)) ≠ 1 := by
+  rw [← binaryPow_eq_pow]
+  decide
+
+/-- Production specialization. Any multiplicative support in the first certified field whose
+elements are `2^30`-th roots of unity has no triple-equal signed accident.  G136's concrete
+`rootsFinset g (2^30)` supplies the final `hpow` premise directly from `orderOf_g`. -/
+theorem firstPrime_no_tripleEqual_accident {H : Finset (ZMod P)}
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : ZMod P) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1)
+    {x : Triple (ZMod P)} (hx : x ∈ accidents H) :
+    ¬ HasTripleEqualSigned x := by
+  have h3 : (-3 : ZMod P) ∉ H := by
+    intro hmem
+    exact firstPrime_neg_three_pow_ne_one (hpow _ hmem)
+  exact not_tripleEqual_of_neg_three_notMem hneg hmul hinv h0 h3 hx
+
+/-! The second certified endpoint has the same exclusion, although `-3` is a quadratic
+residue there; the direct `2^30`-th-power certificate is therefore the right invariant. -/
+
+local instance secondPrimeFact :
+    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) :=
+  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩
+
+theorem secondPrime_neg_three_pow_ne_one :
+    ((-3 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ^
+      (2 ^ 30 : ℕ)) ≠ 1 := by
+  rw [← binaryPow_eq_pow]
+  decide
+
+/-- Second-production-prime version of `firstPrime_no_tripleEqual_accident`. -/
+theorem secondPrime_no_tripleEqual_accident
+    {H : Finset (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)}
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1)
+    {x : Triple (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)}
+    (hx : x ∈ accidents H) : ¬ HasTripleEqualSigned x := by
+  have h3 :
+      (-3 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ∉ H := by
+    intro hmem
+    exact secondPrime_neg_three_pow_ne_one (hpow _ hmem)
+  exact not_tripleEqual_of_neg_three_notMem hneg hmul hinv h0 h3 hx
+
 end ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.step_four
 #print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.four_le_card_accidents_of_nonempty
 #print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.card_accidents_le_three_iff_eq_zero
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.neg_three_mem_of_tripleEqual_accident
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.firstPrime_neg_three_pow_ne_one
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.firstPrime_no_tripleEqual_accident
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.secondPrime_neg_three_pow_ne_one
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.secondPrime_no_tripleEqual_accident
