@@ -3404,6 +3404,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ62GradedExchange
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ63ExchangeStep
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ64WindowBookkeeping
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ65RankNullity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ66BadCountBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ9ChannelRankWall
