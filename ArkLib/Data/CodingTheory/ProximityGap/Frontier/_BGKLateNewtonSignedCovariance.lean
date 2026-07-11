@@ -52,6 +52,7 @@ open scoped BigOperators
 namespace ArkLib.ProximityGap.Frontier.BGKLateNewtonSignedCovariance
 
 open ArkLib.ProximityGap.Round4CharacterSum
+open ArkLib.ProximityGap.Round5SecondMoment
 open ArkLib.ProximityGap.MomentCollisionRigidity
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw
@@ -203,6 +204,73 @@ theorem sum_newtonJoinPeriod_mul_conj_eq_collision
 theorem newtonJoinCollisionCount_swap (G : Finset F) (k m ell t : Nat) :
     newtonJoinCollisionCount G k m ell t = newtonJoinCollisionCount G ell t k m :=
   phaseCrossCollisionCount_swap _ _
+
+/-! ### Literal subset-sum phase family -/
+
+/-- The ordinary unlabelled `d`-subsets used by the trajectory collision count. -/
+abbrev ValueSubsetAt (G : Finset F) (d : Nat) := {S : Finset F // S ∈ G.powersetCard d}
+
+/-- Subset-sum phase map. -/
+noncomputable def valueSubsetSum (G : Finset F) (d : Nat) (S : ValueSubsetAt G d) : F :=
+  ∑ x ∈ S.1, x
+
+/-- Fourier transform of the ordinary `d`-subset sum histogram. -/
+noncomputable def subsetSumPeriod (psi : AddChar F Complex) (G : Finset F)
+    (d : Nat) (b : F) : Complex :=
+  phaseFamilyPeriod psi (valueSubsetSum G d) b
+
+/-- The structured phase collision count is the existing subset collision census. -/
+theorem phaseCrossCollisionCount_valueSubsetSum_eq_subsetCollision
+    (G : Finset F) (d : Nat) :
+    phaseCrossCollisionCount (valueSubsetSum G d) (valueSubsetSum G d) =
+      subsetCollision G d := by
+  classical
+  unfold phaseCrossCollisionCount valueSubsetSum subsetCollision
+  rw [sum_sq_subsetSumCount_eq_pairCollision]
+  unfold pairCollisionCount
+  rw [Finset.card_filter, Finset.sum_product]
+  rw [Finset.sum_subtype (G.powersetCard d) (fun _ => Iff.rfl)]
+  apply Finset.sum_congr rfl
+  intro S _hS
+  rw [Finset.sum_subtype (G.powersetCard d) (fun _ => Iff.rfl)]
+
+/-- Full Parseval for the ordinary subset-sum period. -/
+theorem sum_subsetSumPeriod_mul_conj_eq_subsetCollision
+    {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) (d : Nat) :
+    (∑ b : F, subsetSumPeriod psi G d b *
+      (starRingEnd Complex) (subsetSumPeriod psi G d b)) =
+      (Fintype.card F : Complex) * subsetCollision G d := by
+  rw [subsetSumPeriod, sum_phaseFamilyPeriod_mul_conj_eq_crossCollision hpsi,
+    phaseCrossCollisionCount_valueSubsetSum_eq_subsetCollision]
+
+/-- Elementary-symmetric form of the ordinary subset-sum period. -/
+theorem subsetSumPeriod_eq_esymm
+    (psi : AddChar F Complex) (G : Finset F) (d : Nat) (b : F) :
+    subsetSumPeriod psi G d b =
+      (G.val.map (fun x => psi (b * x))).esymm d := by
+  classical
+  unfold subsetSumPeriod phaseFamilyPeriod valueSubsetSum
+  rw [Finset.esymm_map_val]
+  rw [Finset.sum_subtype (G.powersetCard d) (fun _ => Iff.rfl)]
+  apply Finset.sum_congr rfl
+  intro S _hS
+  rw [prod_addChar_eq, Finset.mul_sum]
+
+/-- The existing ordered-injective transform is `d!` times the literal subset-sum period. -/
+theorem orderedInjectiveTransform_eq_factorial_mul_subsetSumPeriod
+    (psi : AddChar F Complex) (G : Finset F) (d : Nat) (b : F) :
+    orderedInjectiveTransform (subgroupPhase psi G b) d =
+      (Nat.factorial d : Complex) * subsetSumPeriod psi G d b := by
+  classical
+  unfold orderedInjectiveTransform
+  rw [subsetSumPeriod_eq_esymm]
+  congr 1
+  have hmap : Finset.univ.val.map (subgroupPhase psi G b) =
+      G.val.map (fun x => psi (b * x)) := by
+    rw [Finset.univ_eq_attach, Finset.attach_val]
+    simpa [subgroupPhase] using
+      (Multiset.attach_map_val' G.val (fun x => psi (b * x)))
+  rw [hmap]
 
 end NewtonJoins
 

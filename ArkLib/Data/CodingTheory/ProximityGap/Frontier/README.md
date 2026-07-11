@@ -101,6 +101,12 @@ core.  Their union has size `2T-K=917154476<N`, leaving `156587348` coordinates 
 one differing-polynomial secant has ample room to support two predecessor witnesses; the
 obstruction is exclusively simultaneous compatibility across the half-billion matched pairs,
 not the geometry or counting of one pair.
+`_P1MatchedSecantInteractionGraph.lean` supplies the first quotient-level simultaneous law.
+Pair-vertices interact when some cross-pair endpoint witnesses overlap on at least `K`
+coordinates.  Any five vertex-disjoint matched pairs contain two distinct interacting vertices;
+equivalently, the pair-interaction graph has independence number at most four.  This promotes the
+sharp five-set forcing from scalar witnesses to the half-billion matched-secant population and
+creates the correct graph for density and polynomial-line propagation arguments.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

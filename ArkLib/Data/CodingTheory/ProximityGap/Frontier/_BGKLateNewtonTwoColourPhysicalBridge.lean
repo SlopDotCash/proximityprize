@@ -125,17 +125,24 @@ theorem sum_signedPhaseFiberProfile_sq_eq_crossCollisionForm
   unfold signedPhaseFiberProfile
   calc
     (∑ t : T, ((phaseFiberCount phi t : Int) - phaseFiberCount chi t) ^ 2) =
-        ∑ t : T, (phaseFiberCount phi t : Int) * phaseFiberCount phi t +
+        ∑ t : T, ((phaseFiberCount phi t : Int) * phaseFiberCount phi t +
           (phaseFiberCount chi t : Int) * phaseFiberCount chi t -
-            2 * (phaseFiberCount phi t : Int) * phaseFiberCount chi t := by
+            2 * (phaseFiberCount phi t : Int) * phaseFiberCount chi t) := by
       apply Finset.sum_congr rfl
       intro t _ht
       ring
     _ = (phaseCrossCollisionCount phi phi : Int) +
         phaseCrossCollisionCount chi chi -
           2 * phaseCrossCollisionCount phi chi := by
-      rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, ← h11, ← h22,
-        ← Finset.mul_sum, ← h12]
+      rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, ← h11, ← h22]
+      have htwo :
+          (∑ t : T, 2 * (phaseFiberCount phi t : Int) * phaseFiberCount chi t) =
+            2 * ∑ t : T, (phaseFiberCount phi t : Int) * phaseFiberCount chi t := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro t _ht
+        ring
+      rw [htwo, ← h12]
 
 end SignedFibres
 
@@ -228,9 +235,7 @@ theorem sum_nonzero_twoColourPeriod_mul_conj_eq
         (twoColourDC G r : Complex) ^ 2 := by
   rw [Finset.sum_erase_eq_sub (Finset.mem_univ 0),
     sum_twoColourPeriod_mul_conj_eq_collisionForm hpsi, twoColourPeriod_zero]
-  simp only [map_intCast, starRingEnd_apply]
-  rw [map_intCast]
-  ring
+  simp [pow_two]
 
 /-- Integer numerator of the centered dominant-pair energy. -/
 noncomputable def centeredTwoColourCollision (G : Finset F) (r : Nat) : Int :=
