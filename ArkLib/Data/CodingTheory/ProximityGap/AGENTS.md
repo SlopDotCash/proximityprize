@@ -74,10 +74,41 @@ interval shorter than `√(p/2)`), the cyclic-code few-weight dictionary provabl
 prize shape (G95F), and the bounded spread-excess law is refuted in evidence at every constant
 near the Johnson boundary (G92). Workbench §5 item (10) is the doctrine-v3 statement.
 
+## The rate-1/2 strip route (SYZ arc) — assembly, fixed point, and small-field discipline
+
+Parallel to the CORE Paley/BGK line above, the SYZ18–SYZ53 arc pursues δ*=1/3 through the rate-1/2
+proximity strip. As of SYZ54 (2026-07-11) it is **assembled** but **not closed**; production δ*
+remains OPEN / ON-BGK. What a next agent must know:
+
+- **The assembly.** `Frontier/_SYZ40FinalAssembly.lean` expresses the whole strip theorem as one
+  theorem on `StripMasterHypothesis`; `Frontier/_SYZ46CensusBridge.lean` wires the count bound to the
+  δ*-floor and states the **conditional bracket** `deltaStar_bracket_of_strip_master_hypothesis`
+  (`357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰`, ceiling unconditional, floor conditional). The merged branch
+  (`m ≤ 3`) is unconditional; the spread branch (`m ≥ 4`) consumes the hypotheses.
+- **The two-field fixed point (SYZ42/43).** The strip conclusion reduces to exactly two open fields:
+  `uniformSylvester` (SYZ38/39 generalized-Sylvester injectivity = BGK-type resultant non-vanishing at
+  `n=2³⁰`; the sole substantive input) and `realizabilityCore` (SYZ42, auto-instantiated by any
+  over-budget `mcaEvent` stack via the G87 syndrome bridge, leaving only the union-rank bound
+  `hrank`). The census bracket's full honest wire list is (i)–(iv) in the SYZ46 note. Do NOT report the
+  bracket or `31/64`-neighbourhood as a pin — no equality is claimed.
+- **The BGK unification (SYZ49).** The balanced-interior obstruction = max level set of
+  `R = W_BC/W_AC` on `μ_n` = the BGK additive-log-phase coincidence bound. The strip's non-BGK
+  residual and the CORE character-sum wall are the **same object**; the strip cannot be closed
+  BGK-free. SYZ44 + the swarm SYZ53 half-gap identity `ι = ⌊(δ₂−δ₁)/2⌋` reduce the non-BGK obligation
+  to the crisp Hilbert–Burch gap `δ₂−δ₁ ≤ 1` on the balanced interior — the object to target.
+- **Small-field discipline (G84 / SYZ53 — MANDATORY).** SYZ52 measured an over-budget `mca`-bad count
+  (`19 > n−1`) on band-realizable `ι=2` interior witnesses over `𝔽₂₉` that read as a δ*=1/3
+  refutation candidate; SYZ53's exact per-prime `p`-sweep showed it **collapses** to the generic
+  floor by `p* ∈ (197,1009)` and stays flat through `2³¹` — a small-characteristic artifact, δ*=1/3
+  survives. **NEVER trust a small-p verdict, in either direction** (over-budget or in-budget): always
+  run the p-sweep to `p ≫ p*` (`probe_syz53_p_scaling.py` exact-count tool). A small-field count is a
+  saturation-regime analogue artifact, not evidence about production.
+
 Start from:
 
 - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
-  (its §6 addendum dated 2026-07-10 is the latest frontier snapshot);
+  (its §6 addendum dated 2026-07-11 (SYZ54) is the latest frontier snapshot; the 2026-07-10 addendum
+  precedes it);
 - `DISPROOF_LOG.md` (tail first) for results after the dossier snapshot;
 - `docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` for the positive specification
   of any CORE closure (the single missing non-Fourier certificate);

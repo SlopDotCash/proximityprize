@@ -134,3 +134,42 @@ one-statement assembly of the conditional bracket with every residual named.
 - `SYZ6FinerGradingCeiling.firstPrime_rateHalf_mcaDeltaStar_le_exact` (the unconditional ceiling).
 - `SYZ42.StripMasterHypothesis''`, `SYZ43.realizabilityCore_of_mcaEvent_witnesses`,
   `SYZ40.merged_branch_unconditional`.
+
+## Addendum — post-SYZ53 empirical status (2026-07-11, SYZ54 consolidation)
+
+The conditional bracket above is now backed by decisive empirical evidence that the δ*=1/3 target
+it brackets **survives** — while remaining, honestly, conditional on the four named wires.
+
+- **The floor's non-BGK residual is fully calibrated.** SYZ44 removed the μ-basis degree-sum law
+  from the empirical column (Hilbert-function corollary of Bézout surjectivity + graded μ-basis),
+  collapsing the rate-1/2 `uniformSylvester` to the single imbalance bound `ι ≤ 1`. The concurrent
+  swarm SYZ53 (`_SYZ53GeneratorGapCalibration.lean`) proved the exact identity `ι = ⌊(δ₂−δ₁)/2⌋`, so
+  the sole remaining non-BGK obligation is the crisp Hilbert–Burch gap `δ₂−δ₁ ≤ 1` on the balanced
+  interior (referee-confirmed field-independently on 1080 triples). This does not close wire (i); it
+  makes it a standard commutative-algebra statement rather than an opaque resultant computation.
+
+- **The BGK wall is where the interior obstruction genuinely lives.** SYZ49 reduced the
+  balanced-interior obstruction exactly to the max level set of `R = W_BC/W_AC` on `μ_n`, and showed
+  it **is** the BGK additive-character wall (`L(R(ω)) = Σ_{S_BC}L(ω−s) − Σ_{S_AC}L(ω−s)`). So wire (i)
+  at the balanced interior = the CORE Paley/BGK object; the census bracket cannot be discharged
+  BGK-free.
+
+- **The apparent refutation candidate was a small-field artifact.** SYZ52 measured on `μ₁₄⊂𝔽₂₉` a
+  max `mca`-bad count `19` on band-realizable `ι=2` interior witnesses — above the pencil ceiling
+  `12`, the SYZ22 budget `13 = n−1`, and `n`. Taken at `𝔽₂₉` this reads as beating the very
+  `#bad ≤ n−1` census bound `StripCensusBound` asserts at production. **SYZ53 `p`-scaling**
+  (`probe_syz53_p_scaling.py`, exact per-subset RS-parity, rigorous at every prime) showed the excess
+  peaks `+9` near `p≈113..197`, then collapses through `p* ∈ (197,1009)` to the generic pencil floor
+  `3` and stays flat through `p=2³¹`, non-growing in `n`. At the production field `P ~ 2¹⁵⁸ ≫ p*`
+  the `ι=2` excess contributes **zero**: the per-stack bad count sits at `O(1) ≪ 2³⁰−1`, consistent
+  with `StripCensusBound`. **The `31/64`… correction stands and δ*=1/3 survives; no refutation.**
+
+- **Discipline note (G84/SYZ53).** The SYZ52 episode is why small-p verdicts are untrustworthy in
+  both directions. The census bound `StripCensusBound` must **never** be affirmed or refuted from a
+  small field; the honest test is the `p`-sweep to `≫ p*`. SYZ53's exact-count tool and first-moment
+  collapse law are the reusable method.
+
+Net: `StripCensusBound` and the bracket remain **conditional** on wires (i)–(iv); no unconditional
+δ* movement. But the empirical record after SYZ53 is that the bracketed δ*=1/3 conjecture **survives**
+every stack test at honest field size, and the sole non-BGK obligation feeding the floor is now a
+named Hilbert–Burch gap. **CORE remains OPEN / ON-BGK.**

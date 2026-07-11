@@ -12,28 +12,23 @@ the tree contains a concrete theorem of a negated residual instance.
 The named-residual convention is a modularity pattern, not an incompleteness marker:
 always check this census before treating a `*Residual` name as open proof debt.
 
-> **Campaign addendum — regenerated 2026-07-10.** The strict census now contains 108 residuals:
-> 62 open, 45 discharged, and one refuted. Relative to the 2026-07-01 snapshot (100 / 55 / 44 / 1),
-> eight campaign residuals were added: seven remain open and
-> `P1RateQuarterCommonFactorConstruction.CommonLocatorResidual` is discharged by its concrete
-> provider. The seven new open declarations are `CrossBandResidual`,
-> `ExceptionalDirectionResidual`, `PredecessorStructuredFloorResidual`,
-> `NonzeroQuarterMGFResidual`, `NonzeroNormalizedSqQuarterMGFResidual`,
-> `DeepShadowCollisionResidual`, and `MultiHoleTripleTradeResidual`. Residual-like near misses rose
-> from 50 to 75, principally from the rate-quarter predecessor and MGF-tail developments.
+> **Campaign addendum — regenerated 2026-07-11 (SYZ54).** The strict census contains 108 residuals:
+> 62 open, 45 discharged, and one refuted — **unchanged** from the 2026-07-10 (#506) snapshot. The
+> SYZ40–SYZ53 rate-1/2 strip arc added **no new strict `*Residual` declarations**: its open inputs
+> are carried as named `Prop`/`structure` hypotheses (`UniformSylvesterInjective`,
+> `StripMasterHypothesis`, `StripCensusBound`, `RankNullity`, `TwoRamp`, the μ-basis imbalance/gap
+> bound), which are the campaign's modular-hypothesis convention and do not match the strict
+> `def ...Residual : Prop` pattern. Residual-like near misses rose 75 → 76 (the sole addition is
+> `SYZ33.DisjointResidualSupports`, a `def` whose name does not end in `Residual`).
 >
-> This syntactic census is not the δ* completion ledger. In particular, G70, G73, G75, and the
-> 2026-07-10 evening arc G77–G86 (Fourier-gauge closure of the signed route, embedding rigidity,
-> factorial padding repair, deep-rung DC recovery, depth-two/three core-universe absorption,
-> endpoint assembly) plus the S2 punctured-Johnson discharge are axiom-clean theorems that narrow
-> attack routes without discharging the production core. The live open surfaces are tracked in
-> fork issue #505 and the dossier §6/§42; `DCEnergyBound` at production depth remains open
-> (G81 seals it unconditionally only for deep rungs with `(2r−1)!! ≥ |G|^r`, far above prize
-> depth; the G82 gate in `_PrizeShapeRateHalfBracket.lean` is a one-hypothesis-deep CONDITIONAL
-> pin `δ* = 31/64`, not a closure). Most campaign hypotheses do not end in `Residual` and
-> therefore appear only in the near-miss section or the canonical dossier. Regeneration was
-> re-verified 2026-07-10 evening (#506): counts and JSON unchanged since `c9baafbbec`. Preserve
-> this addendum when regenerating the file.
+> This syntactic census is not the δ* completion ledger. The production δ* conjecture remains
+> **OPEN / ON-BGK**. Two independent 2026-07-11 SYZ53 results: (a) the swarm's exact half-gap
+> identity `ι = ⌊(δ₂−δ₁)/2⌋` sharpens the SYZ44 imbalance residual to a crisp Hilbert–Burch gap
+> target (non-BGK spread branch), and (b) the codex `p`-scaling sweep shows the SYZ52 `ι=2`
+> interior anomaly is a small-characteristic artifact that collapses to the generic pencil floor by
+> `p* ∈ (197, 1009)` and stays flat through `2³¹`, so the δ*=1/3 conjecture SURVIVES. Neither closes
+> CORE. See the dossier §6 SYZ54 addendum and `deltastar-466-syz53-*-2026-07-11.md`. Preserve this
+> addendum when regenerating the file.
 
 ## Summary
 
@@ -41,7 +36,7 @@ always check this census before treating a `*Residual` name as open proof debt.
 - **Open:** 62
 - **Discharged:** 45
 - **Refuted:** 1
-- **Residual-like near misses:** 75 (listed below and in `scripts/residual_census.json`)
+- **Residual-like near misses:** 76 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | discharged | refuted |
 |---|---:|---:|---:|---:|
@@ -168,6 +163,7 @@ proof debt and naming drift.
 - `ArkLib.ProximityGap.Frontier.R26ResidualL2CrossIdentity.ResidualQuarticWickAt` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26ResidualL2CrossIdentity.lean:430` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.R393FourFiberPrimitiveDecomposition.swapResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R393FourFiberPrimitiveDecomposition.lean:40` — `def`; result type is `Equiv.Perm (Fin 4)`, not `Prop`
 - `ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean:211` — `def`; result type is `ℝ`, not `Prop`
+- `ArkLib.ProximityGap.Frontier.SYZ33.DisjointResidualSupports` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ33FinalTwoLemmas.lean:130` — `def`; name does not end in `Residual`
 - `CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.mcaLowerWitness_of_residuals` — `ArkLib/Data/CodingTheory/ProximityGap/Hab25Johnson.lean:429` — `def`; name does not end in `Residual`
 - `ProximityGap.GrandChallenges.CS25BreakdownLowerResidualUniversal` — `ArkLib/Data/CodingTheory/ProximityGap/MCAConjectureRefutation.lean:120` — `def`; name does not end in `Residual`
 - `ProximityGap.Ownership.residual` — `ArkLib/Data/CodingTheory/ProximityGap/OwnershipBound.lean:48` — `def`; name does not end in `Residual`

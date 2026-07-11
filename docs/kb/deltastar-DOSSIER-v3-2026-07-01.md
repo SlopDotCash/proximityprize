@@ -576,6 +576,106 @@ The production δ* conjecture remains **open**.
 - **OC tail ceilings.** Cross-prime stacking-census tail ceiling (commit `82637b6dd`) and
   cross-scale super-additivity no-go (commit `a7c580b97`).
 
+### §6 addendum — 2026-07-11 (SYZ54: the SYZ18–SYZ53 rate-1/2 strip endgame)
+
+All items below are axiom-clean and in-tree on `research/proximity-prize` (fork tip ≥ `d3b2ad631`).
+The production δ* conjecture remains **OPEN / ON-BGK**; nothing here is a closure. This addendum
+consolidates the SYZ arc's endgame — the rate-`1/2` strip route pursued in parallel with the CORE
+Paley/BGK line of §6/§42. It supersedes no earlier result; it packages them.
+
+- **The final assembly (SYZ40, `_SYZ40FinalAssembly.lean`).** The whole rate-`1/2` strip theorem is
+  now **one assembled theorem** (`strip_theorem_of_master_hypothesis`) whose only substantive open
+  input is a single named `Prop`, `UniformSylvesterInjective K n k` (SYZ38's `SylvesterInjective`
+  quantified over every rate-`1/2` band-degree profile; SYZ39 characterizes it as a bounded-height
+  resultant non-vanishing of **BGK type at `n = 2³⁰`**). Every input resisting a formal discharge is
+  folded **explicitly** into `StripMasterHypothesis` — no hidden assumptions — with exactly three
+  fields: `uniformSylvester` (THE open residual, spread branch `m ≥ 4`), `syzdimBridge` (SYZ36
+  `d = syzdim`, probe-verified identity), `realizability` (SYZ22 `SuperadditiveUnion` MDS-shortening
+  count). The **merged branch** (`m ≤ 3`) is fully **unconditional** (`merged_branch_unconditional`
+  ← SYZ32 routing). No unconditional δ* delivered; the value is the single-hypothesis dependency
+  structure.
+
+- **The two-field fixed point (SYZ42/SYZ43 → `StripMasterHypothesis''`).** The master hypothesis
+  reaches a **fixed point at two fields**: `uniformSylvester` and `realizabilityCore`. SYZ43
+  (`realizabilityCore_of_mcaEvent_witnesses`) proves the realizability existence residue is
+  **auto-instantiated** by any over-budget `mcaEvent` stack through the G87 syndrome bridge, leaving
+  only a union-rank lower bound `hrank` — a residual *separate* from `uniformSylvester`. This is the
+  hypothesis list a next agent must respect verbatim.
+
+- **The census bridge and the conditional pin (SYZ46, `_SYZ46CensusBridge.lean`).** Wire (iv) of the
+  SYZ33 header — `MCAThresholdLedger` count-bound ⇒ δ*-floor — is formalized at the **corrected**
+  strip radius `357913940/2³⁰ < 1/3` (`stripNumerator = (2³⁰−1)/3`). The capstone
+  `deltaStar_bracket_of_strip_master_hypothesis` gives the **conditional two-sided bracket**
+  `357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰` (both endpoints near `1/3`, width `≈ 6.5·10⁻⁴`); the ceiling
+  half is **unconditional** (SYZ6), only the floor consumes the hypotheses. Its complete honest
+  hypothesis list is: (i) `StripMasterHypothesis''.uniformSylvester` (the sole substantive open
+  input), (ii) the SYZ18/`twist_pair_indep` disjoint-support control, (iii)
+  `realizabilityCore` reduced to `hrank`, (iv) the abstract-to-concrete `transport` from SYZ40's
+  band-triple/union-budget conclusion through the G87 `mcaEvent`→syndrome bridge to the concrete
+  smooth-domain `mcaBadCount` cap. **No equality/pin is claimed.** SYZ46 also machine-checks the
+  **retraction** of its own vacuous first draft (`refutedPredecessorCensusBound_is_false`, driven by
+  the SYZ3 `31/64`-predecessor over-budget witness) — the model episode for the campaign's
+  no-laundering discipline.
+
+- **THE central structural result — the BGK unification (SYZ49, `_SYZ49CyclotomicGcd.lean`).** The
+  balanced-interior obstruction reduces **exactly** to the max level set of the cyclic rational
+  function `R(ω) = W_BC(ω)/W_AC(ω)` on `μ_n`, and the level-set constancy **is literally the BGK
+  additive-character wall**: over `𝔽_p` with `L` = discrete log,
+  `L(R(ω)) = Σ_{s∈S_BC} L(ω−s) − Σ_{s∈S_AC} L(ω−s) (mod p−1)`, verified on all trials. So `R`
+  constant on a set `A` ⟺ the additive discrete-log-sum phase is constant on `A`. **The μ-basis
+  imbalance residual (non-BGK strip route) and the BGK character-sum bound (CORE route) are the SAME
+  object** — max `R`-level = max additive-log-phase coincidence. This is the cleanest unification the
+  campaign has produced: the two walls meet as one level-set statement. SYZ49 also **corrects SYZ48**
+  — cyclotomic domain-membership is necessary but **not sufficient** (48 disjoint non-coset `(4,4,4)`
+  witnesses at `μ₁₂⊂𝔽₃₇` reach level set `= a`, one verified `ι=2` on-domain), relocating the true
+  gate to **band-realizability** (SYZ42 superadditive-union), not membership.
+
+- **The anomaly-and-collapse episode — the model for small-field discipline (SYZ50→SYZ52→SYZ53).**
+  SYZ50 found the balanced-interior region **meets** the band-realizable polytope (65 982 profiles;
+  smallest `n=14,(4,4,4),t=2`), so no pure counting/Venn overflow closes `ι ≤ 1`, and the SYZ49
+  `μ₁₂` witness is a whole-subgroup artifact (`n = 3d`, one domain point short of the band's
+  `n ≥ 3d+1`). SYZ52 then **lifted** the band-realizable `μ₁₄` interior witnesses and found max
+  `mca`-bad `= 19` — above the pencil ceiling `12`, the SYZ22 budget `13`, and `n=14` — with the
+  SYZ32 merge shield provably **unavailable** (`overlap = d+t < k`, `merge_unavailable_of_realizable`).
+  Read at face value over `𝔽₂₉` this "defeats the merge/yield accounting" and reads as a
+  refutation candidate for δ*=1/3. **SYZ51** independently closed the conjectured assembly-bypass
+  (pairwise directness ⇏ generation via the SYZ25 coplanar crack; block-scale profiles land in the
+  SYZ47-blind balanced interior) — `uniformSylvester` is NOT removable. **The resolution: SYZ53
+  `p`-scaling** ran the mandatory prime sweep with an exact big-int-safe per-subset RS-parity tool
+  (rigorous, not sampled) and found the excess **collapses**: it peaks at `+9` near `p ≈ 113..197`
+  (`~2⁷·⁶`), then falls through a threshold `p* ∈ (197, 1009)` to the generic pencil floor `3` and
+  stays **flat through `p = 2³¹`** — deep below both ceiling and budget, and non-growing in `n`. At
+  production field `P ~ 2¹⁵⁸ ≫ p*` the `ι=2` excess contributes **zero**. **δ*=1/3 SURVIVES**; the
+  SYZ52 anomaly is a small-characteristic artifact (the G84/G85 first-moment prediction). The lesson,
+  now doctrine: **never trust a small-p verdict — either way — always run the p-sweep**; a
+  small-field over-budget count is a saturation-regime analogue artifact, and a small-field
+  "in-budget" verdict is equally untrustworthy.
+
+- **The imbalance ladder is fully calibrated (SYZ44 + swarm SYZ53 half-gap).** SYZ44
+  (`_SYZ44MuBasisDegreeSum.lean`) removes the μ-basis **degree-sum law** `δ₁+δ₂ = a+b+c` from the
+  empirical column: it is a one-line Hilbert-function corollary of two standard graded-commutative-
+  algebra inputs (`RankNullity` = large-`D` triple-Bézout surjectivity; `TwoRamp` = existence of a
+  graded μ-basis over `K[X]`), collapsing the rate-`1/2` `SylvesterInjective` residual to the single
+  imbalance bound `ι ≤ 1`. The **concurrent swarm SYZ53 result** (`_SYZ53GeneratorGapCalibration.lean`,
+  Opus lane) proves the **exact functional identity** `ι = ⌊(δ₂−δ₁)/2⌋` (consuming only SYZ44's
+  degree-sum law), whence `ι ≤ 1 ↔ δ₂−δ₁ ≤ 3` and `ι = 0 ↔ δ₂−δ₁ ≤ 1`. **Integrated verdict on the
+  half-gap result:** it does **not** revise the SYZ44 chain — it consumes SYZ44's degree-sum law
+  unchanged and strictly *sharpens* the downstream target, replacing SYZ52's loose one-sided ceiling
+  `δ₂ ≤ ⌈S/2⌉+1` with the field-independently referee-measured near-balance gap `δ₂−δ₁ ≤ 1`, one full
+  unit tighter. The remaining non-BGK spread-branch residual is therefore the crisp **Hilbert–Burch**
+  statement: *the μ-basis of a balanced pairwise-coprime band triple has generator gap `δ₂−δ₁ ≤ 1`*
+  (coprimality leaves no common factor to unbalance the column-degree split). This is the object to
+  target — not the loose `δ₂` ceiling.
+
+- **Current live-frontier ranking (rate-1/2 strip route).** The wall is the **balance statement
+  `ι ≤ 1` at band-realizable interior profiles** — and SYZ49 shows this is **BGK-literal**: it is the
+  additive-log-phase coincidence bound `Σ_{S_BC}L(ω−s) − Σ_{S_AC}L(ω−s)` constant on a level, the
+  same character-sum wall as the CORE Paley/BGK object. Two provable-looking downstream targets, in
+  rank order: (1) the Hilbert–Burch generator-gap `δ₂−δ₁ ≤ 1` on the balanced interior (non-BGK,
+  standard commutative algebra, referee-confirmed) — closing it discharges `uniformSylvester` at rate
+  `1/2`; (2) the `hrank` union-rank lower bound (SYZ42 realizability residue). Both feed the SYZ46
+  conditional bracket. **CORE remains OPEN / ON-BGK**; no BGK-free strip and no unconditional δ*.
+
 ---
 
 ## 7. The synthesis essays (conceptual scaffolding)

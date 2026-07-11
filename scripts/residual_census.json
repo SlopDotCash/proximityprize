@@ -5081,6 +5081,14 @@
    "reason": "result type is `ℝ`, not `Prop`"
   },
   {
+   "name": "DisjointResidualSupports",
+   "fq_name": "ArkLib.ProximityGap.Frontier.SYZ33.DisjointResidualSupports",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ33FinalTwoLemmas.lean",
+   "line": 130,
+   "reason": "name does not end in `Residual`"
+  },
+  {
    "name": "mcaLowerWitness_of_residuals",
    "fq_name": "CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.mcaLowerWitness_of_residuals",
    "kind": "def",
