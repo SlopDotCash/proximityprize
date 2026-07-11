@@ -514,6 +514,26 @@ valid; note round 2 KILLED the positivity/Christoffel upgrade — any such propo
 beat the lone-spike countermodel, DISPROOF `466-r2-cmk-lonespike-refuted`). All are faces of the
 ONE open inequality `M(μ_n) ≤ C·√(n·log(p/n))` — dossier v3 §2 forms (A)–(D).
 
+**⇒ UPDATE 2026-07-10/11 (session `466` r=3 ladder + P1 D-charge cone + W15 close-out).** Full
+state change recorded in dossier v3 **§42** (`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`) —
+read it before attacking. One-paragraph summary: (A) the B-side r=3 rung is normal-formed
+(R297→R304) to the lossless graded ladder `OffDiagQuadrupleBound` (O(1)) ⟹ `FourthMomentBound`
+⟹ `DistStratumEnergyBound` within √m, lossless form `FullDFTFlat` (one pointwise quadratic
+bound on one exponential sum; `K = √m` unconditional; rungs m = 3, 6, 9 discharged; HD exact
+structure exhausted; fixed-variety Weil–Deligne proven insufficient — Möbius cancels the main
+terms; ALL three ladder Props OPEN, Katz family cancellation is the content). (B) the P1
+rate-quarter predecessor D-charge cone is COMPLETE: heavy window CLOSED
+(`three_heavy_riders_budget`), small-pool branch closed modulo the `SmallPoolClosure` counting
+glue (arithmetic kernel-pinned, greedy optimum probe-pinned), double-stall theorem; the pin is
+exactly `SmallPoolClosure ∧ StallResidual` with consumer
+`predecessor_budget_of_smallPool_and_stall`; three architectures kernel-refuted at literal P1;
+the two-cover window is REALIZED (cyclotomic Davenport triple), not excluded. (C) the W15
+line-list safe branch is bracketed and closed at UD-plus (2n+k ≤ 3a), trichotomy tight up to a
+width-k gap; window `LargeZeroSafeLineListBudgeted` open. (D) CONVERGENCE, machine-checked:
+`StallResidual`'s stall band = beyond-Johnson MDS agreement families; the B-side open inputs =
+the deep-cancellation class — both cones terminate at the SAME beyond-Johnson wall. Bracket
+UNCHANGED (`3/8 ≤ mcaDeltaStar ≤ 43/96 + 1/(3·2^30) < 1/2`). CORE OPEN, ON-BGK.
+
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim
 ##      every published route provably misses the prize regime (plain RS, s=1).

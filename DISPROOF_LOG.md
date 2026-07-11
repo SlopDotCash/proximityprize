@@ -15825,3 +15825,55 @@ SURVIVING TARGET.  The puncture correction itself is not useless: its
 aggregate nearly cancels the ordinary nonprincipal moment.  A live successor
 must bound that aggregate with its sign/phase retained; repartitioning by
 support size and applying cross-bucket cancellation cannot supply the gain.
+
+## [rate-quarter-smallpool-closure-discharged] `SmallPoolClosure` is PROVED — the small-pool branch is an unconditional kernel theorem; the P1 predecessor pin's open content is now `StallResidual` ALONE (2026-07-11)
+
+CLAIM TESTED.  The assembly file's honest residual: the marginal-partition
+counting-glue welding the fiber ledger over the per-m Z-relative Johnson caps,
+uniformly in the pool size F <= F0 = 75018133 (`SmallPoolClosure`).
+
+VERDICT: DISCHARGED IN FULL.  New file
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSmallPoolClosureDischarged.lean`
+proves `smallPoolClosure_holds : ∀ dom, SmallPoolClosure dom` axiom-clean.
+The pipeline:
+
+* fiber partition through the base scalar: #bad = 1 + sum_pi fib(pi)
+  (`card_eq_sum_card_fiberwise`); every fiber rides its through-base pencil
+  (`pencil_reproduces_first/second`), so `riders_card_le_pool` gives
+  fib(pi) <= F and `riders_mul_le_Dsupport` gives fib(pi)*(T - A_pi) <= F;
+* layer cake (`sum_layer_cake`, generic): sum_pi fib(pi)
+  = sum_{m=1}^{F0} #{pi : fib(pi) >= m}, since fib <= F <= F0;
+* each level set is a through-base pencil family in {D=0} at alignment
+  A >= T - floor(F/m) (nat-division extraction from m*(T-A) <= F), Johnson-
+  counted by `dirFamily_johnson_on_Dzero` + `johnson_core_to_subtracted`
+  (`level_card_le_of_arith`);
+* UNIFORM per-level caps for ALL F <= F0 (the probe-swept numbers, now
+  kernel): m=1 <= 657668325 (`cap_arith_m1`, additive substitution
+  x := F0 - F; constant term = the pinned boundary division
+  657668326*378645484 > 998723691*249341378; x- and x^2-coefficients strictly
+  dominated); m=2 <= 7 (`cap_arith_m2`, monotonised n' = N - 2*floor(F/2));
+  m>=3 <= 5 each (`cap_arith_m3`, n' = N - 3*floor(F/3)) — all three are
+  one-variable coefficientwise polynomial dominations, no nlinarith;
+* ledger: #bad <= 1 + 657668325 + 7 + 5*(F0 - 2) = 1032758988 <= N
+  (`smallPool_budget`), the uniform-cap closed bound of
+  `ledger_uniform_caps_le_N`, now a theorem about bad families.
+
+CONSUMER UPGRADED (`predecessor_budget_of_stall`): StallResidual dom ->
+every bad family respects G.card <= N — composing with the assembly file's
+`predecessor_budget_of_smallPool_and_stall`.  The P1 predecessor pin through
+the counting branch has a SINGLE open residual: `StallResidual` (pools
+F >= F0 + 1, the sub-Johnson-on-Z stall band; two pool-code regimes split at
+F = k).  No delta-star movement; the operational bracket is untouched.
+
+ENGINEERING NOTES (kernel traps on width-F0 intervals): (1) `ext`+`insert`
+splits of `Finset.Icc 1 75018133` and (2) `Finset.sum_const` rewrites over
+`Icc/Ico` at that width both send the KERNEL into deep recursion /
+deterministic timeout even when elaboration succeeds.  Kernel-safe idiom:
+peel with `Finset.sum_eq_sum_Ico_succ_bot` (after
+`← Finset.Ico_add_one_right_eq_Icc`), bound tails with
+`Finset.sum_le_card_nsmul` + `Nat.card_Ico`, and keep all cap arithmetic in
+additive one-variable form closed by `generalize`d products + `omega`.
+
+Files: `_P1RateQuarterSmallPoolClosureDischarged.lean` (pg-iterate OK 17s,
+9 audited theorems `[propext, Classical.choice, Quot.sound]`, no sorry/axiom),
+`docs/kb/deltastar-466-rate-quarter-smallpool-closure-2026-07-11.md`.

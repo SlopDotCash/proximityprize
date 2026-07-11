@@ -1804,3 +1804,148 @@ open object (`MixedMainResHalfCS(½)`, a Y×complement decoupling), and the rung
 once it lands (6.5% slack, machine-checked). Two unconditional faces (d=2,4); independence d ≤ 16;
 mirror arithmetic + general-k skeleton in place. Above the rung unchanged. **CORE OPEN, ON-BGK.
 No fabricated closure.**
+
+## §42. Session 2026-07-10/11 — the graded r=3 ladder; the P1 D-charge cone completes; W15 closes at UD-plus; TWO CONES, ONE WALL
+
+DISPROOF tags: `466-r3-hasse-davenport-coset-triple-collapse` →
+`466-r3-fermat-fiber-product-pervariety-nogo` (B-side, R297–R304);
+`rate-quarter-shared-fresh-coordinate-structure` →
+`rate-quarter-small-pool-assembly` (P1 predecessor, 10 rungs);
+`w15-lowprofile-mcaevent-support-ladder-floor` → `w15-multiblock-ladder`
+(W15 parts 1–5). ~24 landed Frontier bricks, all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`, no `sorryAx`) unless flagged.
+
+**(A) B-side r=3 rung — normal-formed to a graded ladder, lossless.**
+R297 `_R297HasseDavenportCosetTriple.lean`: Hasse–Davenport product relation
+collapses coset-diagonal triple products to depth-1
+(`sum_cosetTripleProduct_eq_shiftedSum`); off-coset extension REFUTED — HD is
+exactly coset-local. R298 `_R298MixedDepthCorrelation.lean`: mixed-depth
+orthogonality REFUTED (18/18 cells), but two-sided localization landed —
+`TripleConvEnergyBound` ⟺ `OffCosetRemainderEnergyBound` up to `2C+72`.
+R299 `_R299PatternStratification.lean`: the (I2) m/2 pair-twist stratum is
+r=2-REDUCIBLE (`pairTwistStratum_collapse`); with (I3) spent, every HD-type
+exact collapse on the ladder is EXHAUSTED; TWO/DIST is the irreducible
+carrier. R300 `_R300DistStratumAccounting.lean`: non-distinct strata priced
+UNCONDITIONALLY by counting (≤ 144·m³·q³); the calibrated open core ⟺
+`DistStratumEnergyBound` alone (two-sided, `2C+288`); rungs m=3, m=6
+discharged at C=0 by `decide`. R301 `_R301CubicCyclotomyM9.lean`: m=9 rung
+DISCHARGED unconditionally (`distStratumEnergyBound_rung_m9`, C=10, support
+collapse + counting); cubic-cyclotomy (L,M) closed forms REFUTED with
+mechanism (energy lives in ℚ(ζ₉), not the cubic subfield; Galois-averaged
+integrality is probe-only, NOT formalized). First genuinely open m is 12.
+R302 `_R302TraceFormulaPointCount.lean`: DIST DIAGONALIZES in the DFT
+(`D̂(a) = Ŝ(a)³ − 3ŜP₂ + 2P₃`); new minimal Prop `FullDFTFlat K`
+(∀a, ‖Ŝ(a)‖ ≤ K√(mq)); `FullDFTFlat K ⟹ DistStratumEnergyBound ((K³+9K+18)²)`
+— a sextic moment became ONE pointwise quadratic bound on ONE exponential
+sum. `K = √m` unconditional; probe sup ∈ [1.06, 4.7] flat in q. Fixed-variety
+route refuted: the point-count identity's Weil main terms cancel IDENTICALLY
+under Möbius (∑_{d∣m} μ(m/d) = 0). R303
+`_R303FourthMomentInterpolation.lean`: m²q² 4th-moment target REFUTED BY
+SCALE (floor m³q²); at corrected scale, named input `FourthMomentBound K₄`
+(probe K₄ ∈ [0.67, 3.2]) ⟹ `DistStratumEnergyBound ((3K₄√K₄+1215)·√m)`;
+diagonal Möbius weight φ(m) ≠ 0 (main term survives). R304
+`_R304FermatFiberProduct.lean`: per-variety Weil–Deligne route is a NO-GO
+(per-variety errors at q^{7/2} vs a q² signal — no main/error split, no
+prize-scale q-threshold; the Betti/Adolphson–Sperber ceiling reproduces
+exactly the unconditional K₄ = O(m)); exact diagonal extracted
+(diagR ≤ 2m²q²) and named input `OffDiagQuadrupleBound K` landed (probe
+K ≤ 1.21, median 0.25). **The final graded ladder, lossless:**
+`OffDiagQuadrupleBound K` (O(1)) ⟹ `FourthMomentBound (2+K)` ⟹
+`DistStratumEnergyBound` within √m; lossless form = `FullDFTFlat` (K=√m
+unconditional). ALL THREE remain OPEN (probe-calibrated only). The open
+content everywhere is the SAME object: cancellation across the Jacobi-angle
+family (Katz vertical equidistribution, route (i)) — invisible to
+fixed-variety point counting; no surrogate Prop named for it.
+
+**(B) P1 rate-quarter predecessor — the D-charge/counting cone is COMPLETE.**
+Structure arc: `_P1RateQuarterSharedFreshCoordinate.lean` (pencil transport,
+witness incomparability, absorption dichotomy, collinear two-cover boost
+≥ 352,321,537 ≥ k = 2^28) → `_P1RateQuarterNonCollinearTriple.lean`
+(`triple_pencil_rigidity`, `shared_triple_dichotomy`; collapse-to-collinear
+refuted by an explicit RS[32,8]/F₃₇ non-collinear triple) →
+`_P1RateQuarterSharedFreshTripleP1Refuted.lean`
+(`sharedFreshTripleFree_canonicalDomain_refuted`: the residual is FALSE at
+the literal canonical P1 domain, generator-symbolic μ₁₆-coset certificate)
+— per-coordinate escape charges DEAD. Counting arc:
+`_P1RateQuarterPencilCountCharge.lean` (exact rider caps, alignment ladder,
+ten-rider Johnson crossover at A ≥ 539,356,427) →
+`_P1RateQuarterThirdPencilExclusion.lean`
+(`basePencilImageCap_canonicalDomain_refuted`: three pencils through one base
+kernel-checked to EXIST — uniform base-pencil caps DEAD) →
+`_P1RateQuarterLayerCakeBudget.lean` (exact layer caps; counting ADMITS
+over-budget: `counting_admits_three_heavy_overBudget` — pure counting DEAD) →
+`_P1RateQuarterTwoCoverWindow.lean`: the two-cover window is REALIZED, not
+excluded (cyclotomic Davenport triple in ℤ[w]/(w⁸+1), weighted surplus
+713,031,680 ≥ 704,643,071; honest scope: WEIGHTED mass, plain ≥2-cover count
+662,700,032; NO bad scalars constructed — kills the exclusion route only) →
+`_P1RateQuarterGlobalConsistencyCharge.lean`: NEW counting surface, the
+global D-charge D := p₀ − u₀ − g₀·u1; **heavy window CLOSED**
+(`three_heavy_riders_budget`: #bad ≤ 301,989,883 ≤ N, factor 3.55 below
+budget) and the realized two-cover geometry is STERILE
+(`base_row_stack_carries_no_riders`) →
+`_P1RateQuarterDChargeDerecursion.lean`: exact dichotomy at pool boundary
+F0 = 75,018,133 (`derecursion_boundary`); small pool F ≤ F0 closed at the
+arithmetic level (greedy optimum 882,722,755 ≤ N — probe-pinned); stall band
+above F0 →
+`_P1RateQuarterMDSPoolSecondCharge.lean`: the second charge instantiates
+literally, shrinks once, then DOUBLE-STALLS (`second_level_threshold_cap`:
+level-2 threshold ≤ 193,887,475 < k−1; `threshold_collapse_stalls`:
+permanent) →
+`_P1RateQuarterSmallPoolAssembly.lean`: Z-relative Johnson landed
+(`johnson_core_rel`, `dirFamily_johnson_on_Dzero`); ledger arithmetic
+kernel-pinned (`ledger_histogram_le_N`: 882,722,755 ≤ N;
+`ledger_uniform_caps_le_N`: 1,032,758,988 ≤ N); glue theorem
+`predecessor_budget_of_smallPool_and_stall`. **The predecessor pin is now
+exactly `SmallPoolClosure ∧ StallResidual`** — both honest named Props,
+both OPEN: `SmallPoolClosure` is ONLY the marginal-partition counting glue
+(every number discharged; layer-cake-style engineering), `StallResidual` is
+the budget for bad families whose base pools all exceed F0. Also still open:
+`GlobalConsistencySwarmResidual` (superseded-into/refined by the
+derecursion). Kernel-refuted architectures this arc: per-coordinate charges,
+collinear freeness, uniform base-pencil caps, bare counting, heavy
+over-budget, flow contraction, pool-Johnson, iterated charges.
+
+**(C) W15 line-list safe branch — bracketed and closed at UD-plus.**
+Part 1 `_W15LargeZeroMcaEventFloor.lean`: pencil-scale budgets REFUTED —
+unconditional n−a floor (`weld_hlow_forces_n_sub_a`). Part 2
+`_W15SafeBranchLinearCeiling.lean`: unconditional ceiling
+count ≤ Λ·|supp| (`safe_mcaEvent_filter_card_le_lambda_mul_support`); new
+named residual `LargeZeroSafeLineListBudgeted` + upgraded weld consumer
+`mcaDeltaStar_ge_of_farLineList_and_nearCodeList`; sub-Johnson the count
+q-saturates (no unconditional linear ceiling exists there). Part 3
+`_W15NearCodeJohnsonBudget.lean`: the residual DISCHARGED at UD-plus
+2n+k ≤ 3a with L = 1 (`nearCodeList_one_of_two_n_add_k_le_three_a`) and at
+the doubled-Johnson margin with L = n²/((2a−n)²−n(k−1)); composed corollary
+`mcaDeltaStar_ge_with_safe_branch_discharged` (hfarL and hunsafe stay OPEN,
+not claimed). Part 4 `_W15WindowTwoReference.lean`: L = 1 REFUTED in the
+Johnson-to-doubled-Johnson window incl. the campaign shape (16,4,9)
+(`campaign_rateQuarter_L_one_refuted`); `three_a_trichotomy` shows the
+UD-plus discharge is tight up to a width-k gap. Part 5
+`_W15MultiBlockRefuter.lean`: L = 2 not universal
+(`not_largeZeroSafeLineListBudgeted_two`, Λ = 3 at (10,2,6)); campaign shape
+capped at M = 2 constant blocks (`campaign_constant_cap`) with EMPIRICAL
+ceiling Λ = 2 — measurement, not proof. Open content of the branch: the
+window value of `LargeZeroSafeLineListBudgeted` (prove Λ ≤ 2 at shapes with
+3(k−1) ≥ a, or refute non-constantly).
+
+**(D) THE CONVERGENCE — two cones, one wall (machine-checked, not
+conjecture).** The P1 counting cone's terminal branch (iii) — the
+`StallResidual` stall band — is, by `pool_code_regimes` +
+`threshold_collapse_stalls`, exactly agreement families of MDS/RS codes
+BEYOND the Johnson radius: the prize wall itself. The B-side r=3 cone's
+every open input (`OffDiagQuadrupleBound`/`FourthMomentBound`/`FullDFTFlat`)
+is the same deep-cancellation class (square-root cancellation across the
+Jacobi-angle family). Both independently-normal-formed cones terminate at
+the beyond-Johnson wall; neither is a lane artifact.
+
+**═══ STATE after this session ═══** Bracket UNCHANGED:
+`3/8 ≤ mcaDeltaStar ≤ 43/96 + 1/(3·2^30) < 1/2`. NO closure is claimed.
+Open named objects after this session: B-side — `OffDiagQuadrupleBound` /
+`FourthMomentBound` / `FullDFTFlat` (probe-calibrated, all open; Katz family
+cancellation is the content); P1 — `SmallPoolClosure` (glue only) ∧
+`StallResidual` (beyond-Johnson band), plus the structured-floor route
+(`PredecessorStructuredFloorResidual`); W15 — window
+`LargeZeroSafeLineListBudgeted`, weld slots hfarL/hunsafe. Probe-only items
+flagged as such above (small-pool greedy optimum, m=9 Galois-averaged
+integrality, campaign-shape Λ = 2). **CORE OPEN, ON-BGK. No fabricated
+closure.**
