@@ -13,12 +13,16 @@ Date: 2026-07-11 (UTC)
   `4·q·overhead ≤ n^220` — a quarter of the DC mass, leaving three quarters for the
   disjoint census in the G126 gate.
 
-## Tower step (part 2, open)
+## Tower step (part 2a, LANDED same file)
 
-DCEnergyBound at rung 110 ⟸ rung-110 disjoint census (vs 3/4 of the DC mass + Wick) + DC
-at the eight predecessor rungs 102..109. Iterating per rung and pinning the low-rung
-crossover would reduce the whole DC hierarchy at a certified prime to the disjoint-census
-family. The split point matters: with trivial energies the s = 102 term alone is ≈ 0.4·n^220
+`dcEnergyBound_110_of_census_and_predecessors` (axiom-clean): at production shape
+(#G = 2^30, q ≤ 2^160), `DCEnergyBound G 110` follows from (i) DC-shape bounds at rungs
+102..109 and (ii) the rung-110 fully-disjoint census fitting Wick + 3/4 of the DC mass:
+`4·q·depthFiber G 110 110 ≤ 4·q·Wick_110 + 3·n^220`. The production prize hypothesis at
+the top rung is now literally: eight predecessor DC bounds + one disjoint-census bound.
+
+Part 2b (open): per-rung generalization + strong induction to reduce the whole hierarchy
+to the census family; the low-rung crossover needs pinning. The split point matters: with trivial energies the s = 102 term alone is ≈ 0.4·n^220
 (4× version fails); with its DC value it is ≈ 10^-5·n^220.
 
 ## Honest scope

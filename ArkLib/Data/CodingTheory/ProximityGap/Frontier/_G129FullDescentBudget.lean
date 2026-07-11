@@ -204,6 +204,78 @@ theorem production_full_descent_budget (q : ℕ) (hq : q ≤ 2 ^ 160)
       gcongr
     _ ≤ (2 ^ 30 : ℕ) ^ 220 := production_gate_four
 
+/-! ## Part 2a: the explicit rung-110 tower step -/
+
+section TowerStep
+
+open ArkLib.ProximityGap.Frontier.G95CardinalityDeepCapNoGo
+open ArkLib.ProximityGap.Frontier.G126DisjointCensusGate
+open ArkLib.ProximityGap.DCEnergyCorrection
+
+variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+
+/-- **The rung-110 tower step.**  At production shape, `DCEnergyBound` at rung `110` follows
+from (i) DC-shape bounds at the eight predecessor rungs `102..109` and (ii) the rung-110
+fully-disjoint census fitting the Wick budget plus three quarters of the DC mass. -/
+theorem dcEnergyBound_110_of_census_and_predecessors
+    (G : Finset F) (hcard : G.card = 2 ^ 30)
+    (hq : Fintype.card F ≤ 2 ^ 160)
+    (hDC : ∀ s, 102 ≤ s → s < 110 →
+      Fintype.card F * Finset.addREnergy s G
+        ≤ Fintype.card F * (Nat.doubleFactorial (2 * s - 1) * (2 ^ 30) ^ s)
+          + (2 ^ 30) ^ (2 * s))
+    (hcensus : 4 * (Fintype.card F * depthFiber G 110 110)
+        ≤ 4 * (Fintype.card F *
+            (Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110))
+          + 3 * (2 ^ 30) ^ 220) :
+    DCEnergyBound G 110 := by
+  have hE0 : Finset.addREnergy 0 G ≤ 1 := by
+    rw [Finset.addREnergy_def]
+    simp
+  have hEs : ∀ s, 1 ≤ s → Finset.addREnergy s G ≤ (2 ^ 30 : ℕ) ^ (2 * s - 1) := by
+    intro s hs
+    have := Finset.addREnergy_le hs G
+    rwa [hcard] at this
+  have hbudget := production_full_descent_budget (Fintype.card F) hq
+    (fun s => Finset.addREnergy s G) hE0 hEs hDC
+  have hover : descentOverhead G 110
+      = ∑ s ∈ Finset.range 110,
+          (Nat.descFactorial 110 (110 - s)) ^ 2 *
+            ((2 ^ 30) ^ (110 - s) * Finset.addREnergy s G) := by
+    unfold descentOverhead
+    refine Finset.sum_congr rfl (fun s _ => ?_)
+    rw [hcard]
+  have hfour : 4 * (Fintype.card F *
+      (depthFiber G 110 110 + descentOverhead G 110))
+      ≤ 4 * (Fintype.card F *
+          (Nat.doubleFactorial (2 * 110 - 1) * G.card ^ 110)
+        + G.card ^ (2 * 110)) := by
+    have hcard220 : G.card ^ (2 * 110) = (2 ^ 30 : ℕ) ^ 220 := by
+      rw [hcard]
+    have hcard110 : G.card ^ 110 = (2 ^ 30 : ℕ) ^ 110 := by rw [hcard]
+    calc
+      4 * (Fintype.card F * (depthFiber G 110 110 + descentOverhead G 110))
+          = 4 * (Fintype.card F * depthFiber G 110 110)
+            + 4 * (Fintype.card F * descentOverhead G 110) := by ring
+      _ ≤ (4 * (Fintype.card F *
+              (Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110))
+            + 3 * (2 ^ 30) ^ 220) + (2 ^ 30) ^ 220 := by
+        refine Nat.add_le_add hcensus ?_
+        rw [hover]
+        exact hbudget
+      _ = 4 * (Fintype.card F *
+            (Nat.doubleFactorial (2 * 110 - 1) * G.card ^ 110)
+          + G.card ^ (2 * 110)) := by
+        rw [hcard220, hcard110]
+        ring
+  have hgate : Fintype.card F * (depthFiber G 110 110 + descentOverhead G 110)
+      ≤ Fintype.card F * (Nat.doubleFactorial (2 * 110 - 1) * G.card ^ 110)
+        + G.card ^ (2 * 110) :=
+    Nat.le_of_mul_le_mul_left hfour (by norm_num)
+  exact dcEnergyBound_of_disjoint_census G 110 hgate
+
+end TowerStep
+
 end ArkLib.ProximityGap.Frontier.G129FullDescentBudget
 
 /-! ## Axiom audit -/
@@ -211,3 +283,5 @@ end ArkLib.ProximityGap.Frontier.G129FullDescentBudget
 #print axioms ArkLib.ProximityGap.Frontier.G129FullDescentBudget.production_gate_four
 #print axioms
   ArkLib.ProximityGap.Frontier.G129FullDescentBudget.production_full_descent_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.G129FullDescentBudget.dcEnergyBound_110_of_census_and_predecessors
