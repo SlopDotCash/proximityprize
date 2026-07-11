@@ -2306,6 +2306,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86CoreOccurrenceEmbeddin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86HadamardSupportSix
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86MaximalSplitEmbeddingExtraction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86RankCollapseDichotomy
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87BHistogramFiberCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87CorrectedPaddingDecoder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87CoverageDivisibility
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G87DepthFiveTenfoldTarget
@@ -3352,6 +3353,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ28D3CoplanarCrack
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ29YieldLawD4Gluing
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ30LemmasOneThree
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ31SetGeometryFacts
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
