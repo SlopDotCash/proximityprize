@@ -25369,3 +25369,28 @@ content below depth log m. CORE stays OPEN; surviving shape = joint frequency st
 Honest scope: no-go/structure theorems about the invariant data, not about M; does NOT refute
 the prize. Tables are probe numerics; Lean theorems are exact constructions; irreducibility of
 the quintic probe-verified, not formalized. No axioms, no sorry.
+
+## [466-G102F-additive-lift-amplification] The ADDITIVE ℤ-lift crosses √p: per-z incident pairs amplify into the difference set H−H with exact multiplicity bookkeeping, giving sdp(W)² ≤ n·sdp(W) + 4ρWn² (ρ = max additive collision, probe: ρ ≤ 6 everywhere) on the window 4W < p — plus the hypothesis-free window-doubling relation sdp(W)² ≤ n·sdp(W) + n²·sdp(2W), whose bootstrap is PROVEN non-amplifying (axiom-clean) (2026-07-10)
+
+Lane: G102F Fable (`Frontier/_G102FAdditiveLiftAmplification.lean`, 15 theorems + 2 defs, all
+exactly `[propext, Classical.choice, Quot.sound]`; probe
+`scripts/probes/probe_466_g102f_additive_lift_amplification.py`, 7 cells n=16..128, β∈[2,3]).
+**Bricks.** `valMinAbs_sub_of_natAbs_le`/`pair_diff_mem_strip_double`: differences of lifted
+strip values lift faithfully at 4W < p — the additive counterpart of G100F's multiplicative
+lift, valid to p/4 instead of √(p/2); two ratios d,d' incident to the same z force
+(d−d')z ∈ Strip(2W). `incidentPairs_card_le_mul_ampCount` + `ampCount_le`:
+r_z(r_z−1) ≤ ρ·#{c≠0 : cz ∈ Strip(2W)} ≤ 4ρW, fibers injected into H∩(H+c) (probe: nearly
+tight at heavy z, 100% of measured z). CAPSTONE A `smallDiffPairs_sq_le_of_addCollisionBound`:
+sdp(W)² ≤ n·sdp(W) + 4ρWn², nontrivial vs min(n², 2Wn) on ρ < W < n²/(4ρ), CROSSING √p
+whenever ρ < n²/(4√p) (measured ρ ∈ {2,4,6}: μ_n near-difference-Sidon; window reaches ≈4√p
+at n=128/β=2). CAPSTONE B `smallDiffPairs_sq_le_double_window`:
+sdp(W)² ≤ n·sdp(W) + n²·sdp(2W), hypothesis-free; unconditional ρ=n form
+`smallDiffPairs_sq_le_unconditional`. **Fences.** `double_window_bootstrap_non_amplifying`:
+any Λ ≤ n² satisfies the B-relation (fixed point n²+n > n²) — the W→2W bootstrap provably
+cannot amplify; downward the C–S step loses exactly √K (the G80W-fatal loss); the additive
+analogue of G99's Esseen non-contraction. `collision_free_shape_absorbed_by_trivial_caps`: the
+ρ = n instantiation is absorbed by trivial caps — ALL content is ρ ≪ n, and no sub-trivial ρ
+bound is in-tree (classical Mit'kin/HBK ρ ≪ n^{2/3} shifted-subgroup technology UNFORMALIZED:
+the sharpest named residual this lane creates). **Honest scope.** Even granting small ρ, at
+the prize saddle W = p/K, β = 2 the A-bound sits a factor ≈ n^{1/4}√ρ above the uniform main
+term: crosses √p, does not reach certificate strength. No prize claim. CORE OPEN / ON-BGK.
