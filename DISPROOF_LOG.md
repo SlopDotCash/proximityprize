@@ -16079,3 +16079,51 @@ untouched.
 Files: `_P1RateQuarterPencilHarvestCap.lean`,
 `scripts/probes/probe_rate_quarter_p1_pencil_harvest_cap.py`,
 `docs/kb/deltastar-466-rate-quarter-pencil-harvest-cap-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: DIMENSION DEFICIT round — pure degree argument
+## REFUTED as universal (explicit Bezout toy escape); forced-coincidence theorem
+## + symmetric-escape exclusion + conditional three-pencil composition landed
+
+Executes the "formalize the dimension count" follow-up.  Probe
+`scripts/probes/probe_rate_quarter_p1_dimension_deficit.py` (exact):
+
+REFUTATION: the proposed kernel route "z12*rho + z23*sigma = z13*tau with
+3k − Σ|ov| < k forces rho=sigma=tau=0 by pure degree counting" is FALSE
+universally — explicit toy escape at k=3, q=17 (X=(0,1), Y=(2,3), Z=(7,14),
+lambda=3): solution dim 1 at Σ = 2k (generic count 0); mechanism = fiber
+coincidences of z_X/z_Y (evaluation-rank drop).  The dimension formula
+max(0, 2k−Σ) is generic-rank only.  Escape reconnaissance: the mu_256
+subgroup escape (order-64 cosets of F_257^*, x^64−s fully split, Bezout
+identity verified exactly) fails by an EXACT squeeze — degree 64 = k (one
+over the deg<k budget) while order-32 cosets undershoot coverage (96 < 167);
+exact dim 0 in every admissible configuration.  At the prize window
+[0,2^30) c F_P the escape nonexistence is BGK/Paley-type and OPEN — the wall,
+precisely localized.
+
+FORMALIZED (`_P1RateQuarterDimensionDeficit.lean`, imports the harvest-cap
+file whose olean was built once via lake-locked; FULL axiom lists read
+manually via `lake env lean`: 6 theorems exactly
+[propext, Classical.choice, Quot.sound], 1 [propext]; no sorryAx):
+* bonferroni_three; fullyAligned_triple_pairwise_overlap_ge — FORCED
+  COINCIDENCE: a pairwise-distinct fully-aligned pencil triple forces every
+  pairwise aligned-overlap >= 3(T−1) − N − 2(k−1) = 167772161 coordinates;
+* symmetric_escape_excluded — the all-overlaps-equal escape is IMPOSSIBLE
+  (3(T−1) = 1778384895 > N + 2(k−1) = 1610612734): first unconditional
+  exclusion inside the escape class;
+* FullyAlignedTripleFree (named residual, margin form of the deficit; NOT a
+  tautology per the toy escape) and
+  stall_budget_of_three_pencil_cover_of_tripleFree — the residual implies the
+  StallResidual budget for all three-pairwise-distinct-pencil covers;
+* generic_alignment_threshold (t = 55924054 exact), mu256_coset_squeeze,
+  forced_coincidence_ledger.
+
+HONESTY: coordinator's step (1) NOT landed as unconditional — refuted with an
+exact counterexample and delivered CONDITIONALLY on FullyAlignedTripleFree
+(which carries exactly the open Bezout-escape content over the prize window).
+Cover-by-few-pencils and m-pencil margin growth remain open; StallResidual
+remains open.  No delta-star movement; bracket 3/8 <= delta* <= 43/96 + eps
+untouched.
+
+Files: `_P1RateQuarterDimensionDeficit.lean`,
+`scripts/probes/probe_rate_quarter_p1_dimension_deficit.py`,
+`docs/kb/deltastar-466-rate-quarter-dimension-deficit-2026-07-11.md`.

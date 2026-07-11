@@ -1252,6 +1252,20 @@ correct algebraic charge for a two-cluster rank-or-large-overlap analysis;
 unlike the projected Hall ledger, it sees which exceptional labels belong to
 the same polynomial pencil.
 
+The resulting three-pencil root-only continuation is now formally refuted,
+not merely short numerically.  `_P1RateQuarterTriangleRootLinearNoGo.lean`
+constructs the homogeneous map imposing `f=0` on `R12`, `g=0` on `R23`, and
+`f+g=0` on `R13`, for two degree-`<k` difference polynomials.  Rank--nullity
+proves that for every evaluation domain and every three root blocks with total
+cardinality below `2k`, a nonzero pair `(f,g)` satisfying all constraints
+exists.  At the natural aligned-core floor each block has `111848106` points,
+so the system has only `335544318` constraints against `536870912`
+coefficients, leaving `201326594` dimensions.  Therefore pairwise mixed-root
+caps plus the triangle identity cannot eliminate three distinct pencils.  A
+surviving three-pencil argument must use more than their pairwise root sets:
+the full received-word incidence pattern, locator normalization, or another
+nonlinear compatibility condition.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;

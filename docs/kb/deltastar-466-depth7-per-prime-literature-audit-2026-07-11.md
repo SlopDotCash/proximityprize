@@ -226,12 +226,24 @@ Consequently the inverse is a useful coordinate only if a theorem couples adjace
 supplies the correct cyclotomic scaling.  At depth two, the exact conditional socket is now
 `kappa_(2^30)` difference-signature injectivity modulo inversion; no production proof of that
 condition is currently present.
+The generic correlated-sunflower alternative is now closed too.  The exact adjacent inequalities
+from total positivity point in the lower-growth direction, and the pure ray `D_7=T` has all lower
+rows zero while its generating polynomial `T z^7(1+z)^(n-14)` is already real-rooted/PF-infinity.
+Its Wick coefficient is `135135=126871+8264`, so even perfect removal of all proper depths leaves
+a `6.115...%` primitive arithmetic saving.  `_BGKSunflowerCorrelationNoGo.lean` also provides the
+surviving coefficientwise/additive-character transform and a modulo-29 label coordinate.
 `_ANT46KappaProductionReduction.lean` makes the size of that condition explicit.  A transversal
 discriminant certificate has degree `536870911` and Sylvester order `1073741821`, so literal
 resultant expansion is billion-scale.  Projecting away small cofactor components leaves
 prime-order separation problems of 59 and 67 bits for the two production primes.  The existing
 order certificates prove these target group shapes but not injectivity of the projected
 cyclotomic-unit values.
+`_ANT46ProjectedCharacterNoGo.lean` tests the natural character and cyclotomic-number follow-up.
+It proves exact Jacobi-mode, cyclotomic-intersection, and cyclotomic-unit/Kummer forms, but
+modewise Weil estimates miss the collision-injectivity floor by 127--129 bits.  The hypothesis in
+[Do Duc--Leung--Schmidt](https://arxiv.org/abs/1903.07314) would require
+`P>(sqrt(14))^k`; both production primes instead satisfy `P^2<14^k`.  The paper therefore does not
+certify the projected separation.
 
 ### The published subset-sum asymptotic is vacuous in the thin-subgroup cell
 
@@ -376,6 +388,23 @@ similarly obtains determinant/product identities, but only for a special quadrat
 matrix of dimension `(q-1)/2`. It neither matches the order-`2^30` subgroup nor gives an upper
 Schatten moment.
 
+The different 2026 determinant of [Wu, Wang, and Pan, *On p-th cyclotomic field and cyclotomic
+matrices involving Jacobi sums*](https://arxiv.org/abs/2506.14316) equals a signed power of the
+index times the linear coefficient of the Gaussian-period minimal polynomial.  This is a genuine
+new exact coordinate, but one cofactor symmetric function does not control the house.
+`_BGKPeriodProfileArithmeticAudit.lean` makes that failure formal: the irreducible monic family
+
+```text
+X^4 + X^3 + (1-A(A+1))X^2 + X + 1
+```
+
+has fixed norm, trace coefficient, and linear coefficient, yet has a real root in `[A/2,A]`.
+The same audit shows where actual period arithmetic begins to matter: Galois transitivity and a
+necessary moment congruence each kill the literal rational orbit spike.  Nevertheless a nonzero
+integral, trace-correct profile still passes the Wick ceilings through depth six and fails depth
+seven by 8--9 bits.  The missing theorem must quantitatively couple all totally-real ramified
+conjugates; determinant, integrality, and isolated residues do not suffice separately.
+
 ## 5. Sparse-polynomial estimates fail the production gcd gate
 
 [Bhakta and Shparlinski, *Exponential Sums with Sparse Polynomials and Distribution of the Power
@@ -408,6 +437,20 @@ The production monomial exponent satisfies `gcd(m,q-1)=m`, and the exact integer
 
 shows failure before any analytic estimate is invoked. Sparse-polynomial technology designed for
 small exponent gcds excludes precisely the subgroup quotient exponent.
+
+There is now an exact sparse-polynomial formulation of the primitive packet itself.
+`_BGKPrimitiveDepthSevenSparseCodeNoGo.lean` proves that every production primitive witness gives
+a nonzero integer polynomial of degree `<2^29`, support and `l1` mass at most `14`, coefficient
+height at most `14`, and a certified production root.  The ambient field-coefficient relaxation
+is only a one-check code of exact distance two, support-isometric for every nonzero root, so
+ordinary coding parameters are blind to the arithmetic.
+
+[Kelley, *Roots of Sparse Polynomials over a Finite Field*](https://arxiv.org/abs/1602.00208)
+bounds roots of a `t`-nomial by
+`2(q-1)^(1-1/(t-1)) C^(1/(t-1))`.  Even granting the best possible `C=1`, the `t=14` scale is
+`2^146--2^148` for the first prime and `2^147--2^149` for the second, over 116 bits above the
+entire order-`2^30` subgroup.  A useful sparse theorem must exploit the tiny signed integer
+alphabet/constant-weight slice, not only support size.
 
 ## 6. Current fourth-energy input is 145 bits short
 
@@ -470,19 +513,35 @@ spectrum is real, but the paper gives no generic nonprincipal eigenvalue magnitu
 thin, growing-index family. Its explicit families are special integral, semiprimitive, or Hamming
 regimes, not the production prime.
 
+The recent regular-graph trace identities of [Bašić, Smajlović, and
+Šabanac](https://arxiv.org/abs/2606.27075) make the Hashimoto polynomial explicit, but do not
+perform Wick/injective subtraction.  `_BGKHashimotoWickSeparationNoGo.lean` computes the exact
+degree-fourteen comparison: Hashimoto removes the 14 cyclically adjacent reversals, while the
+first Wick pairing can occupy any of `C(14,2)=91` pairs, leaving `77d+14`.  An explicit closed
+cyclically nonbacktracking word with repeated directions survives.  More fundamentally, two
+unit-phase families have the same first power sum (ordinary adjacency eigenvalue) and opposite
+ordered-injective transforms, so no univariate adjacency polynomial can recover the packet.
+[Bal's irregular edge-space invariants](https://arxiv.org/abs/2604.20578) explicitly collapse to
+adjacency-side data in the regular case.  A graph-theoretic survivor must therefore be a
+dilation-coloured operator theory retaining `b,2b,...,7b`, followed by the same primitive
+sunflower arithmetic; ordinary Ihara--Bass is not an independent source of the 6.115% saving.
+
 ## 9. Ranked research consequences
 
 1. **Exact dual coordinate, not a shortcut:** the annihilator-sensitive 13-variable Jacobi law
    is equivalent to the centered fourteenth moment after the principal-character shift. Attack
    its off-diagonal/Wick remainder only when the argument uses additional production-specific
    structure; generic Jacobi orthogonality alone has already been exhausted.
-2. **Best exact formal bridge:** formalize `A=VDV`, singular values `m|eta_j|`, and the
-   Schatten-14 equivalence. This does not close the lane but prevents determinant/geometric-mean
-   arguments from being mistaken for moment bounds.
+2. **Best exact arithmetic target:** couple the full ramified Galois orbit or the simultaneous
+   period-power residues strongly enough to exclude the remaining integral spike. One Jacobi
+   determinant, one congruence, norm, trace, and irreducibility are now formally insufficient.
 3. **Correct probabilistic formulation:** seek centered `L2` fixed-depth mixing at ambient scale
    `1/q`; generic inverse-LO `L-infinity` contraction at scale `1/n` is off by the entire density
    ratio.
-4. **Do not reopen:** arbitrary-set Chang, small-gcd sparse polynomial estimates, exact additive
+4. **Correct sparse formulation:** count the support-14, `l1<=14` integer kernel slice at the two
+   explicit roots. Ambient BCH/Singleton/Hamming invariants and generic fewnomial root counts have
+   been proved quantitatively blind.
+5. **Do not reopen:** arbitrary-set Chang, small-gcd sparse polynomial estimates, exact additive
    irreducibility, determinant-only cyclotomic identities, or fourth-energy interpolation. Their
    production failures above are numerical or structural, not a matter of optimizing constants.
 

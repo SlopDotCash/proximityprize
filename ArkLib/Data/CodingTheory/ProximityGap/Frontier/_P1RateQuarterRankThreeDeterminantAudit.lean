@@ -529,6 +529,27 @@ theorem three_pairHall_ledger_weighted_slack_eq :
       (N + 1 - 2) * 872415239 = 96076784937031003 := by
   norm_num [N, T]
 
+/-! ## Three-pencil pair-root dimension wall -/
+
+/-- Two `T-1` aligned cores force only this many pairwise common coordinates,
+the same dual-construction overlap already known to fit below `k`. -/
+theorem two_alignedCore_pairRoot_floor_eq :
+    2 * (T - 1) - N = 111848106 := by
+  norm_num [T, N]
+
+/-- For three pencil clusters, the three pair-root blocks impose
+`3*111848106` scalar vanishing constraints on two independent degree-`<k`
+difference polynomials, which have `2k` coefficients.  The raw linear system
+therefore retains this large dimension slack; root counts plus the triangle
+identity cannot close the three-pencil overflow. -/
+theorem threePencil_pairRoot_linearDimension_slack_eq :
+    2 * k - 3 * (2 * (T - 1) - N) = 201326594 := by
+  norm_num [k, T, N]
+
+theorem threePencil_pairRoot_constraints_below_twoPolynomial_dimension :
+    3 * (2 * (T - 1) - N) < 2 * k := by
+  norm_num [k, T, N]
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
@@ -595,3 +616,6 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 #print axioms threshold_twoBlock_crossCoverage_below_k
 #print axioms three_pairHall_obstruction_ledger_numerically_feasible
 #print axioms three_pairHall_ledger_weighted_slack_eq
+#print axioms two_alignedCore_pairRoot_floor_eq
+#print axioms threePencil_pairRoot_linearDimension_slack_eq
+#print axioms threePencil_pairRoot_constraints_below_twoPolynomial_dimension

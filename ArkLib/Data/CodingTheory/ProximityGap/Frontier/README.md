@@ -72,6 +72,14 @@ problem itself.  The actual autocorrelation has the extra nonlinear constraint
 multiplicity, the trivial pointwise cap, and even hypothetical Wick ceilings through the twelfth
 moment still allow a fourteenth moment between `2^15` and `2^16` times the target.  A survivor
 must control joint arithmetic of the complete period profile at depth seven.
+`_BGKPeriodProfileArithmeticAudit.lean` restores several pieces of genuine period arithmetic.
+Galois transitivity and the exact period-power congruence each exclude the literal rational
+spike, but a nonzero integral, trace-correct profile still passes the Wick ceilings through depth
+six and misses depth seven by 8--9 bits.  The 2026 Wu--Wang--Pan Jacobi determinant controls one
+linear coefficient of the period polynomial; an irreducible monic integral family with fixed
+trace, norm, and linear coefficient nevertheless has an arbitrarily large real root.  A useful
+period theorem must therefore couple all ramified conjugates quantitatively, not merely add
+integrality, one determinant, or one moment residue to the scalar cone.
 The updated research control plane is the
 [`10 x 10 centered attack matrix`](../../../../../docs/kb/deltastar-466-ten-by-ten-centered-attack-matrix-2026-07-11.md),
 with the focused 2026 theorem screen in
@@ -113,6 +121,12 @@ injective** packet defect at coefficient `126871`.
 `_BGKDepthSevenInjectiveVarianceEquivalence.lean` identifies that core exactly with seven-subset
 sum mixing:
 `(7!)^2*sum_y(q*a_y-C(n,7))^2 <= 126871*q^2*n^7`.
+`_BGKInjectiveFactorialCovarianceAudit.lean` records the normalization that every covariance
+transfer must preserve.  If `A` is the unordered subset histogram, then the ordered-injective
+profile is `J=7!*A`, so `V(J)=(7!)^2V(A)` with `(7!)^2=25401600`.  Its exact polarization gate
+pairs `J`, not `A`, with the repeated-coordinate defect.  A genuine two-point group-sum profile
+refutes the corresponding universal contraction, while leaving a production-specific signed
+covariance theorem open.
 This is a useful coordinate change, not a bypass. `_BGKSamplingWithoutReplacementNoGo.lean`
 proves generic exterior coupling misses by over `141` energy bits and would leave a period bound
 over `1835` times the Paley ceiling. `_BGKJohnsonKneserDepthSevenNoGo.lean` proves ordinary
@@ -144,12 +158,41 @@ self-class value; the literal production polynomial has degree `536870911` and S
 certified 59-bit and 67-bit prime-order groups, respectively.  Those projection adapters remove
 small cofactor components, but the projected injectivity itself remains an open power-residue
 separation problem.
+`_ANT46ProjectedCharacterNoGo.lean` audits that last projection.  It gives exact cyclic-code
+Parseval, Jacobi-mode, cyclotomic-intersection, and cyclotomic-unit/Kummer forms for a projected
+collision.  Generic modewise Weil ceilings miss the inversion floor by 127--129 bits, and the
+Do Duc--Leung--Schmidt cyclotomic-number hypothesis fails in the production direction
+(`P^2<14^k`).  Kummer reciprocity therefore reformulates, but does not certify, simultaneous
+Frobenius separation of the roughly `2^29` units.
 `_BGKMarkedSunflowerInverse.lean` supplies the exact Catalan--Lagrange inverse expressing `D_7`
 as an alternating combination of `W_2,...,W_7`.  It also proves that this inverse is equivalent
 to the original seventh triangular row once the lower rows are fixed.  At production its absolute
 coefficient mass lies between `2^143` and `2^144`; this is coefficient amplification, not an
 automatic 143-bit loss because depth-normalized estimates may compensate.  Inversion becomes
 useful only with the missing correlated or correctly scaled lower-depth cancellation.
+`_BGKSunflowerCorrelationNoGo.lean` closes the generic correlated-inequality variant.  Total
+positivity gives exact adjacent **lower** growth inequalities, but the extreme ray supported only
+at `D_7=T` has `W_2=...=W_6=0`, arbitrary `W_7`, and the real-rooted/PF-infinity generating
+polynomial `T*z^7*(1+z)^(n-14)`.  Even eliminating every proper depth leaves
+`13!!=135135=126871+8264`; the primitive sector needs a `6.115...%` arithmetic saving.  The file
+also supplies a coefficientwise and additive-character-valued sunflower transform, with a
+modulo-29 coefficient vector that reflects every depth-seven characteristic-zero label.
+`_BGKPrimitiveDepthSevenSparseCodeNoGo.lean` makes that arithmetic target literal at both
+production primes: a primitive witness yields a nonzero integer polynomial of degree `<2^29`,
+support and `l1` mass at most `14`, coefficient height at most `14`, and a production root.
+Forgetting the small alphabet turns this into a one-check field code of exact distance two, with
+all nonzero evaluation roots support-isometric.  Kelley's optimistic 14-nomial root cap is still
+at scale `2^146--2^149`, over 116 bits above the `2^30` subgroup.  The live code problem is thus
+restricted-alphabet/list recovery, not ordinary BCH, Hamming, Singleton, or uncertainty theory.
+`_BGKHashimotoWickSeparationNoGo.lean` closes the ordinary graph-normal-ordering variant.  The
+degree-fourteen Ihara--Bass polynomial removes only the 14 cyclically adjacent reversals, whereas
+Wick subtraction sees all `C(14,2)=91` first-pair placements; the residual coefficient is exactly
+`77d+14`.  An explicit closed cyclically nonbacktracking word with repeated directions survives,
+and two unit-phase families with the same adjacency eigenvalue have opposite ordered-injective
+transforms.  A univariate Hashimoto/Chebyshev polynomial therefore cannot recover the packet;
+one must retain the dilation-coloured operators at `b,2b,...,7b` and still solve the primitive
+arithmetic problem.  A genuinely new Ramanujan cap would suffice (coefficient `4096`), but Ihara
+theory on this regular graph only relabels the original Paley spectrum.
 
 **Dyadic two-scale recursion (2026-07-11).** `_DQR23TwoScaleCenteredRecursion.lean` proves the
 exact sibling law `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)`, the full signed binomial ledger at

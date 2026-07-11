@@ -421,3 +421,118 @@ between `2^15` and `2^16` times the repaired target.  Those Wick transfers are t
 known at the production primes, so the countermodel grants more than the current theory.  A
 closing CTR/entropy theorem must impose genuinely joint seventh-order arithmetic on the period
 profile rather than interpolate scalar energies.
+
+## Addendum 9: primitive-ray, restricted-code, and period-arithmetic boundary (2026-07-11)
+
+The marked-sunflower cone now has a complete generic-correlation audit.
+`_BGKSunflowerCorrelationNoGo.lean` proves the exact adjacent inequalities
+
+```text
+W4 >= (n-6)W3,
+2W5 >= (n-7)W4,
+3W6 >= (n-8)W5,
+4W7 >= (n-9)W6.
+```
+
+Their direction is lower growth, not an upper cap.  More decisively, the pure ray `D7=T`, with
+all other `D_r=0`, has `W2=...=W6=0` and arbitrary `W7=T`.  Its generating polynomial is
+`T*z^7*(1+z)^(n-14)`, with roots only at zero and minus one, so the obstruction survives
+real-rootedness, PF-infinity, total positivity, ultra-log-concavity, and every scalar shadow
+inequality valid for the whole sunflower cone.  At the Wick scale,
+
+```text
+13!! = 135135 = 126871 + 8264,
+938/1000 < 126871/135135 < 939/1000.
+```
+
+Thus even hypothetical vanishing of `D2,...,D6` leaves a primitive arithmetic saving of exactly
+`8264`, or `6.115...%`, to prove.  The same file retains the full label distribution: it proves
+the sunflower identity coefficientwise and after every additive character, and gives a finite
+coefficient-vector reduction modulo `29` that reflects zero for every depth-seven label of degree
+below `2^29` and coefficient height at most `14`.
+
+`_BGKPrimitiveDepthSevenSparseCodeNoGo.lean` turns the surviving primitive object into an exact
+small-alphabet code.  Folding an order-`2^30` root at its half-order relation `g^(2^29)=-1`, every
+globally disjoint seven-petal collision produces a nonzero integer vector `d` with
+
+```text
+eval_g(d)=0,   ||d||_1 <= 14,   |supp(d)| <= 14,
+```
+
+and therefore a nonzero integer polynomial of degree `<2^29`, support at most `14`, coefficient
+height at most `14`, and root `g`.  Both certified production roots instantiate this socket.
+If coefficients are relaxed to the full prime field, however, evaluation is only one parity
+check: its kernel has exact Hamming distance two, and diagonal coordinate rescaling makes the
+kernels for all nonzero roots support-isometric.  Ordinary BCH, Hamming, Singleton, or linear
+uncertainty bounds cannot see the production arithmetic.
+
+[Kelley's sparse-polynomial root theorem](https://arxiv.org/abs/1602.00208) does retain the number
+of monomials, but its optimistic `t=14`, `C=1` scale is between `2^146` and `2^148` at the first
+prime and between `2^147` and `2^149` at the second.  This is over 116 bits above the complete
+`2^30` root subgroup.  The live coding statement is therefore a restricted-alphabet/list-recovery
+bound on the `{-1,0,1}`-dominated weight-14 slice, not a theorem about the ambient linear code.
+
+The correct subset/tuple covariance normalization is also formal.  If `A` is the unordered
+`r`-subset histogram, then the ordered-injective histogram is `J=r!*A`, not `A`, and
+
+```text
+V(J) = (r!)^2 V(A),
+V(R) = V(J) + V(D_rep) + 2 Cov(J,D_rep).
+```
+
+`_BGKInjectiveFactorialCovarianceAudit.lean` proves the exact iff gate and the depth-seven factor
+`(7!)^2=25401600`.  A genuine two-point group-sum counterprofile has `V(J)=4>V(R)=0`, so a
+universal sampling-without-replacement contraction is false even with correct totals and a
+pointwise nonnegative repetition defect.  This agrees with the concurrent G178 multiplicative-
+subgroup counterexample on issue #466.  A production-specific signed covariance theorem remains
+possible, but the unscaled G176 deletion gate cannot discharge the BGK target.
+
+The depth-two `kappa` route has likewise reached its present literature boundary.
+`_ANT46ProjectedCharacterNoGo.lean` proves exact cyclic-code Parseval, shifted Jacobi-mode,
+cyclotomic-intersection, and cyclotomic-unit/Kummer formulas for projected signature collisions.
+Generic modewise Weil bounds miss the inversion-injectivity floor by 127--129 bits.  The
+[Do Duc--Leung--Schmidt cyclotomic-number theorem](https://arxiv.org/abs/1903.07314) would give a
+constant intersection cap under `p>(sqrt(14))^k`; the production arithmetic proves the reverse
+comparison `P^2<14^k` at both primes.  Kummer reciprocity consequently exposes a simultaneous
+Frobenius-separation problem for roughly `2^29` cyclotomic units, but does not supply its
+certificate.
+
+Finally, `_BGKPeriodProfileArithmeticAudit.lean` tests arithmetic omitted by the scalar orbit
+spike.  Galois transitivity excludes a single rational squared conjugate, and the necessary
+period-power congruence rejects the literal `2^53` spike already at depth two with a nonzero
+137-bit residue.  These are real constraints.  They are not quantitatively sufficient: a second
+nonzero integral signed profile has exactly `m` slots, trace `-1`, squared trace `q-n`, and Wick
+ceilings through depth six, yet exceeds the seventh target by 8--9 bits.  One seventh-moment
+congruence still leaves exactly `2^198` complete `q`-steps below the target.
+
+The 2026 [Wu--Wang--Pan Jacobi determinant](https://arxiv.org/abs/2506.14316) controls the linear
+coefficient of the period minimal polynomial.  The audit constructs an irreducible monic family
+
+```text
+X^4 + X^3 + (1-A(A+1))X^2 + X + 1
+```
+
+with fixed norm, trace coefficient, and linear coefficient, but a real root in `[A/2,A]` for
+every `A>=2`.  Thus one exact determinant, even with norm and irreducibility, does not upper-bound
+the house.  [Wu--Ji](https://arxiv.org/abs/2605.27169) concerns a quadratic-character product
+matrix rather than the growing-index production profile.  The surviving period target is a
+quantitative theorem coupling all totally-real ramified conjugates (or all moment residues) at
+seventh order.
+
+The ordinary graph-normal-ordering route does not bypass that target.
+`_BGKHashimotoWickSeparationNoGo.lean` computes
+
+```text
+H14(d-1,x)
+ = x^14 -14(d-1)x^12 +77(d-1)^2x^10 - ... -2(d-1)^7.
+```
+
+Its first subtraction coefficient counts only 14 cyclically adjacent reversals; Wick/injective
+normal ordering sees all `C(14,2)=91` first-pair placements, leaving exactly `77d+14`.  A concrete
+length-14 integer word is closed and cyclically nonbacktracking while repeating directions.  A
+second formal counterexample gives two unit-phase families with the same first power sum but
+ordered-injective transforms `-5040` and `5040`.  Hence no univariate adjacency/Hashimoto
+polynomial can isolate `D7`.  A dilation-coloured theory would need the full Newton inputs
+`eta_b,...,eta_(7b)` and would still face the primitive common-core subtraction.  A genuinely new
+Ramanujan cap would imply coefficient `4096<126871`; Ihara--Bass itself supplies no such cap on a
+regular generalized Paley graph.
