@@ -16715,3 +16715,65 @@ kernel-pinned).  No delta-star movement all session; bracket
 Files: `_P1RateQuarterJunkSliceLedger.lean`,
 `scripts/probes/probe_rate_quarter_p1_junk_slice.py`,
 `docs/kb/deltastar-466-rate-quarter-junk-slice-ledger-2026-07-11.md`.
+
+## [w15-widthk-gap-closed] the width-k trichotomy strip 2n < 3a < 2n+k is REFUTED for L_near = 1 via the secant-pair line (symmetric-function coincidence); at n=16,k=4 the L=1 question is now decided at every a ≥ 9 — sharp dichotomy (2026-07-11)
+
+CONTEXT (lane ll:low-profile-fiber, W15 part 6 — closing the gap left by
+part 4's trichotomy: L=1 PROVED at 2n+k ≤ 3a, REFUTED at 3a ≤ 2n, strip
+open).
+
+FAILURE ANATOMY (machine-pinned). In the strip: the two-block refuter
+fails exactly at its LARGE-ZERO gate (zero set 2(n−a) ≥ a ⟺ 3a ≤ 2n);
+the UD-plus discharge fails exactly at its INCLUSION-EXCLUSION gate
+(2a ≤ z + (k−1) + 2(n−z) contradictory for all z ≥ a only when
+3a ≥ 2n+k). Two appearing codewords are allowed in the strip only on a
+narrow z-band of width < k.
+
+THE STRIP REFUTER (secant pair). Pair the zero codeword with a monic
+degree-(k−1) codeword e with roots R ⊆ Z, sharing k−1 support votes on a
+set W where e is CONSTANT c* ≠ 0 — possible exactly when the symmetric
+functions match: e₁(R) = e₁(W), e₂(R) = e₂(W) (then e − ∏(x−w) ≡ c* =
+e₃(W) − e₃(R)). At (16,4,11) every budget is tight: Z = R⊔D₀⊔D₁
+(3+4+4 = 11 = a), support W⊔{i₀,i₁} (5); 0 appears at γ=0 (R∪D₀∪W∪{i₀},
+11 pts), e at γ=c* (R∪D₁∪W∪{i₁}, 11 pts); safety structural (0 scores 7,
+e scores ≤ 7, generic ≤ 2(k−1) = 6 < 11).
+
+PROBE (`scripts/probes/probe_466_w15_widthk_gap.py`, exit 0): coincidence
+R = {0,1,2}, W = {3,7,10} over F₁₇ (e₁ = 3, e₂ = 2, c* = 6); assembled
+line verified exactly: Λ = 2, safe, large-zero. Strip hill-climbs top out
+at Λ ∈ {0,1}: random search cannot find the configuration — the
+symmetric-function design is essential.
+
+PROVED (Lean, `_W15WidthKGapClosed.lean`):
+* `not_budget_one_of_two_appearing` (abstract), `directionZeroSet_secant`,
+  `secant_zeroDirectionSafeLine` (structural safety),
+  `secantPair_not_largeZeroSafeLineListBudgeted_one` (parametric refuter —
+  general in F, dom, n, k, a; appearance certificates as hypotheses).
+* `strip_shape_16_4_11_L_one_refuted` — CONCRETE: F = ZMod 17, standard
+  16-point domain, ¬ LargeZeroSafeLineListBudgeted dom17 4 11 1 (kernel
+  `decide` certificates; e = X(X−1)(X−2) ∈ rsCode via explicit monic
+  cubic).
+* `strip_gates_16_4_11`, `twoBlock_gate_fails_at_11`,
+  `udplus_gate_fails_at_11` — the failure anatomy as theorems.
+
+DICHOTOMY STATUS. At n = 16, k = 4 the L_near = 1 question is decided at
+EVERY a ≥ 9: refuted for a ∈ {9,10} (two-block, part 4) and a = 11
+(secant pair, here); proved for a ≥ 12 (UD-plus, part 3). Trichotomy →
+sharp dichotomy at this family.
+
+HONESTY. The concrete strip refutation is per-shape (ZMod 17, standard
+domain); the parametric theorem covers any field/domain admitting the
+symmetric coincidence (two equations in 2(k−1) domain unknowns —
+generically solvable; existence lemma NOT proved). A uniform all-fields
+strip refutation is the remaining (thin) open sliver of the L=1 question.
+Weld consequence: the safe branch cannot close at L = 1 anywhere below
+2n + k ≤ 3a.
+
+Formal kernel (axiom-clean; FULL manual audit: all 10 theorems exactly
+[propext, Classical.choice, Quot.sound]; no sorryAx, no ofReduceBool;
+pg-iterate 5s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15WidthKGapClosed.lean`.
+Probe: `scripts/probes/probe_466_w15_widthk_gap.py` (exit 0).
+Analysis:
+`docs/kb/deltastar-466-lowprofile-widthk-gap-closed-2026-07-11.md`.
+LANE STATUS: W15 parts 1-6 complete.
