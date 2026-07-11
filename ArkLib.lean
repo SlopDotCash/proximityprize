@@ -2225,6 +2225,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G133CensusTower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G134ProductionCrossoverPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G135CensusToSupBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136AnchorConstantSharp
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136UnitCircleMann
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
