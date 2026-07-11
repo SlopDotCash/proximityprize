@@ -534,6 +534,18 @@ width-k gap; window `LargeZeroSafeLineListBudgeted` open. (D) CONVERGENCE, machi
 the deep-cancellation class — both cones terminate at the SAME beyond-Johnson wall. Bracket
 UNCHANGED (`3/8 ≤ mcaDeltaStar ≤ 43/96 + 1/(3·2^30) < 1/2`). CORE OPEN, ON-BGK.
 
+**⇒ UPDATE 2026-07-11 (dossier §42's successor round — see dossier v3 §43).** `SmallPoolClosure`
+DISCHARGED (`smallPoolClosure_holds`); referee audit survived and the vocabulary gap closed
+(`predecessorDelta_le_mcaDeltaStar_of_stall` — StallResidual in full prize currency); the 8-round
+stall-band wall arc ends at the FINAL FORM `stallResidual_of_swarmResidual`: the P1 counting
+branch = single Prop `SwarmResidual` (Stepanov weld refutes StallResidual on adversarial
+non-dyadic coset domains, #bad = 614 > N = 613 probe-verified; the dyadic gap (2^27, 2^28)
+blocks every known escape on the literal μ_{2^30} — smoothness is load-bearing). B-side:
+`FullDFTFlat` absolute-K REFUTED (Gumbel ~0.79·log m to m = 1200); sixth moment machine-checked
+CIRCULAR; the r=3 rung is closed modulo `FullDFTFlatLog ∧ FourthMomentBound` at a (1+log m)
+loss; core truth ≈ absolute 15–20 (probe), open content = the sup→average de-correlation.
+Bracket unchanged. CORE OPEN, ON-BGK.
+
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim
 ##      every published route provably misses the prize regime (plain RS, s=1).

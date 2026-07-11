@@ -28,6 +28,13 @@ two-cover window REALIZED); W15 safe branch closed at UD-plus (window
 same beyond-Johnson wall. Bracket unchanged; core open. Full record:
 `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §42.
 
+**2026-07-11 follow-up — dossier v3 §43.** `SmallPoolClosure` DISCHARGED; P1 counting branch
+reduced to the single Prop `SwarmResidual` (via `stallResidual_of_swarmResidual` +
+`predecessorDelta_le_mcaDeltaStar_of_stall`; adversarial non-dyadic domains refute
+StallResidual, the dyadic gap (2^27, 2^28) protects the literal μ_{2^30}). B-side: absolute-K
+`FullDFTFlat` refuted (Gumbel log m); r=3 closed modulo `FullDFTFlatLog ∧ FourthMomentBound`
+at (1+log m) loss. Bracket unchanged; core open.
+
 ## The BGK depth-ladder lane (2026-07-10)
 
 **DC correction (2026-07-11).**  The later raw endpoint
@@ -164,6 +171,15 @@ collision.  Generic modewise Weil ceilings miss the inversion floor by 127--129 
 Do Duc--Leung--Schmidt cyclotomic-number hypothesis fails in the production direction
 (`P^2<14^k`).  Kummer reciprocity therefore reformulates, but does not certify, simultaneous
 Frobenius separation of the roughly `2^29` units.
+`_ANT46ProjectedKappaBucketCertificate.lean` turns that separation problem into a checkable exact
+finite certificate **format**.  Per-bucket `Nodup` plus disjoint value ranges implies global injectivity, and
+a keyed-bucket form makes cross-bucket separation automatic; natural square-and-multiply tables
+are proved equal to both production projected maps and feed the inversion-transversal consumer.
+This is operational but not compressed: every exact cover has at least `536870912` evaluated
+rows, raw 20-byte representatives take 10 GiB, and `2^20` buckets merely give 512 rows per bucket.
+The 59/67-bit target groups and 100/93-bit exponents are exact.  A scalar product fingerprint is
+formally refuted as a `Nodup` certificate, so the remaining task is to produce and independently
+check the full table or discover additional arithmetic compression.
 `_BGKMarkedSunflowerInverse.lean` supplies the exact Catalan--Lagrange inverse expressing `D_7`
 as an alternating combination of `W_2,...,W_7`.  It also proves that this inverse is equivalent
 to the original seventh triangular row once the lower rows are fixed.  At production its absolute
@@ -191,8 +207,50 @@ Wick subtraction sees all `C(14,2)=91` first-pair placements; the residual coeff
 and two unit-phase families with the same adjacency eigenvalue have opposite ordered-injective
 transforms.  A univariate Hashimoto/Chebyshev polynomial therefore cannot recover the packet;
 one must retain the dilation-coloured operators at `b,2b,...,7b` and still solve the primitive
-arithmetic problem.  A genuinely new Ramanujan cap would suffice (coefficient `4096`), but Ihara
-theory on this regular graph only relabels the original Paley spectrum.
+arithmetic problem.  A genuinely new Ramanujan cap would close the public raw-moment route
+(coefficient `4096`), though it is not by itself a direct extraction of `D_7`; Ihara theory on this
+regular graph only relabels the original Paley spectrum.
+`_BGKDilationColoredNewtonOperatorNoGo.lean` constructs that missing graph object exactly.  The
+seven convolution operators commute and share the additive-character basis; substituting them in
+the full Newton polynomial gives eigenvalue `7!*e_7`, the ordered-injective transform.  This is a
+real coordinate advance, but not a norm bound: all seven colours have identical complete marginal
+Schatten profiles, while a two-frequency coefficient-scale model with the same marginals has
+Newton energies `66816<126871<25401600`.  The Newton scalar is also sign-indefinite on commuting
+contractions.  The surviving operator theorem must therefore control the mixed arithmetic joint
+law `(eta_b,...,eta_(7b))`; commutativity, marginal norms, and generic Schur/SOS positivity cannot
+provide the `8264` saving.
+`_BGKDilationPermutationCopulaNoGo.lean` strengthens the blindness result to one genuine common
+dilation action.  On `ZMod 13`, two equimeasurable sign profiles generate colours by
+`P_f(j,b)=f(jb)` and hence have identical marginal moments for every colour and exponent, but
+their normalized Newton energies satisfy `953600<13*126871<64641152`.  These profiles are not
+claimed to be subgroup periods; the theorem isolates the extra missing datum precisely as
+Fourier-of-a-multiplicative-subgroup arithmetic, beyond dilation compatibility itself.
+`_BGKSevenStepFlatteningProductionNoGo.lean` gives the entropy route an exact positive socket.
+The normalized injective chi-square allowance lies between `2^-36` and `2^-35`.  Across the six
+transitions after the first step, uniform contraction numerators must have product at most
+`126871`: `7^6=117649` fits, while `8^6=262144` does not, so each step needs more than 27 L2
+bits.  Ordinary positive BSG loses 98--99 bits before extracting one point; even granting the
+classical shifted-intersection cap `4*n^(2/3)=2^22` supplies only eight bits, exactly 19 short per
+step; Hart's sixfold-covering density gate is reversed by over 1048 cleared bits.  The viable
+entropy theorem must be centered and trajectory-weighted, not a raw-energy inverse theorem or a
+support-growth statement.
+`_BGKCyclotomicKreinSchurNoGo.lean` closes the positivity-only association-scheme variant.
+Pointwise multiplication of translation kernels is additive convolution of their Fourier
+profiles, and every nonnegative multiplicative-orbit profile remains nonnegative and
+orbit-invariant under every convolution power.  Consequently the complete Schur/Krein hierarchy
+leaves the centered unit-mass LP exactly equivalent to the worst Gaussian-period square.  With
+only the valency bound the production relaxation misses by 191--192 bits and supplies none of the
+exact `8264/135135` primitive saving.  Any surviving association-scheme proof must use the
+arithmetic values, integrality, or nonlinear coupling of intersection numbers, not their
+positivity alone.
+`_BGKCyclotomicIntersectionIntegralityAudit.lean` then retains the literal integer structure
+constants.  Their character transform is exactly the product of relation periods, total mass and
+multiplier-orbit invariance are formal, and Cauchy--Davenport excludes support on one cyclotomic
+class at both production primes.  But the standard integral relaxation still admits the row
+`(2^30-1,1)`.  It forces one leaked unit, whereas the `8264` coefficient gap requires exactly
+`ceil(8264*2^30/135135)=65663244`, between `2^25` and `2^26`.  A surviving scheme theorem must
+control the correlated placement and values of many intersection numbers, not row integrality,
+mass, or support alone.
 
 **Dyadic two-scale recursion (2026-07-11).** `_DQR23TwoScaleCenteredRecursion.lean` proves the
 exact sibling law `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)`, the full signed binomial ledger at

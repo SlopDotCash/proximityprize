@@ -1949,3 +1949,150 @@ cancellation is the content); P1 — `SmallPoolClosure` (glue only) ∧
 flagged as such above (small-pool greedy optimum, m=9 Galois-averaged
 integrality, campaign-shape Λ = 2). **CORE OPEN, ON-BGK. No fabricated
 closure.**
+
+## §43. Session 2026-07-11 — SmallPoolClosure falls; the 8-round stall-band wall arc ends at SwarmResidual; FullDFTFlat absolute-K refuted; the r=3 log-only rung
+
+DISPROOF tags: `rate-quarter-smallpool-closure-discharged` →
+`rate-quarter-cluster-confinement` entries (P1, 8 rounds + referee audit);
+`466-r3-fulldftflat-absolute-k-refuted`, `466-r3-sixth-moment-log-only-rung`
+(B-side, R305–R306). All kernel results axiom-clean
+(`[propext, Classical.choice, Quot.sound]`, no `sorryAx`; axiom lists read
+manually per file) unless flagged probe-only.
+
+**(P1-1) `SmallPoolClosure` DISCHARGED IN FULL.**
+`_P1RateQuarterSmallPoolClosureDischarged.lean` proves
+`smallPoolClosure_holds : ∀ dom, SmallPoolClosure dom` (9 theorems): fiber
+partition + layer cake (`sum_layer_cake`) + Z-relative Johnson per level,
+with the probe-swept caps now KERNEL for all F ≤ F0 = 75,018,133
+(`cap_arith_m1` ≤ 657,668,325; `cap_arith_m2` ≤ 7; `cap_arith_m3` ≤ 5;
+one-variable coefficientwise dominations, no nlinarith); ledger
+`smallPool_budget`: #bad ≤ 1 + 657,668,325 + 7 + 5·(F0−2) = 1,032,758,988
+≤ N. Upgraded consumer `predecessor_budget_of_stall`: the counting-branch
+pin's open content is `StallResidual` ALONE.
+
+**(P1-2) Adversarial referee audit — chain SURVIVES.** Independent
+re-verification (`lake env lean`, full axiom lists) of both files; dichotomy
+coverage, quantifier order, marginal partition, and every constant
+independently recomputed exact (Johnson boundary TRUE at F0, FALSE at F0+1;
+pinned products 657668326·378645484 = 249,023,141,609,739,784 >
+998723691·249341378 = 249,023,141,355,186,198). ONE finding (vocabulary gap,
+not a math hole), then CLOSED same day:
+`_P1RateQuarterStallBadCountBridge.lean` (5 theorems) lands
+`badFamilyData_of_mcaEvents` (choice Skolemization),
+`badCount_le_N_of_stall`, `epsMCA_predecessor_le_prizeEpsilon_of_stall`, and
+`predecessorDelta_le_mcaDeltaStar_of_stall` — StallResidual now implies the
+counting branch literally in the `mcaDeltaStar` currency, per evaluation
+domain. NOT claimed: any discharge of StallResidual itself.
+
+**(P1-3) Stall-band CENSUS.** `_P1RateQuarterStallBandCensus.lean`
+(15+1 theorems) + exhaustive probe: extremal stall families are TWO-PENCIL
+COVERS at capacity 2(N−T+1) = 961,893,718 ≈ 0.898·N (μ₁₆ = 16 = N EXACTLY —
+zero slack, so any StallResidual discharge MUST use the real-ratio
+inequality 2(T−1) > N; scale-free counting cannot work).
+`stall_budget_of_single_pencil` (#bad ≤ N−T+1 = 480,946,859) and
+`stall_budget_of_two_pencil_cover` / `stallResidual_of_pencil_pair_cover`
+are unconditional theorems on those subclasses; `threePencil_cap_overflows`.
+
+**(P1-4) Harvest cap.** `_P1RateQuarterPencilHarvestCap.lean` (11 theorems):
+ratio collision = an exact DIMENSION COUNT (probe: solution dim
+= max(0, 2k − Σ|ov|) exactly); kernel rung 3(T−1) − N = 704,643,071 > 2k =
+536,870,912; `stall_budget_of_three_pencil_cover` (third margin ≥ 5:
+1,058,083,090 ≤ N; `margin_four_fails` — 5 is sharp; probe-forced margin is
+T−k = 324,359,510) and `stall_budget_of_four_pencil_cover` (1,068,770,798
+≤ N). Margins are HYPOTHESES here, probe-forced only.
+
+**(P1-5) Dimension deficit.** `_P1RateQuarterDimensionDeficit.lean`
+(6+1 theorems): the universal pure-degree argument is REFUTED (explicit
+Bezout toy escape at k=3, q=17 — the dimension formula is generic-rank
+only); landed instead: forced coincidence
+`fullyAligned_triple_pairwise_overlap_ge` (every overlap ≥ 3(T−1)−N−2(k−1)
+= 167,772,161), `symmetric_escape_excluded` (first unconditional exclusion
+inside the escape class), and the conditional route via the named residual
+`FullyAlignedTripleFree` (NOT a tautology, per the toy escape).
+
+**(P1-6) Stepanov weld → ADVERSARIAL-DOMAIN REFUTATION.**
+`_P1RateQuarterStepanovWeld.lean` (8+1 theorems:
+`P_sub_one_factorization`, `escape_modulus_divides`,
+`escape_window_exact_fit`, `coset_pencil_identity`, …): P−1 = 2³⁶·(2¹²²+3)
+with 7 | 2¹²²+3, so the escape modulus n = 7·2²⁵ = 234,881,024 divides P−1
+with the EXACT fit 3n = M+1 (M = 704,643,071). End-to-end synthetic census
+(q=1009, n=144, N=613, T=349, k=150): #bad = 614 > N = 613 — StallResidual
+and FullyAlignedTripleFree are FALSE for evaluation domains containing
+three cosets of the order-n subgroup. The counting branch CANNOT close
+domain-uniformly; the open content is a DOMAIN condition. HONESTY: the F_P
+refuting construction is probe-verified, NOT Lean-formalized (flagged
+engineering).
+
+**(P1-7) DYADIC RESTORATION.** `_P1RateQuarterDyadicDomainEscape.lean`
+(5+2 theorems: `dyadic_window_empty`, `no_dyadic_binomial_escape`,
+`two_level_blocked`, …): a binomial escape needs subgroup order in
+[234,881,024, 268,435,455] ⊂ (2²⁷, 2²⁸) strictly — NO 2-power qualifies:
+the refutation does not transport to the literal prize domain μ_{2^30};
+smoothness is load-bearing. Two-level variants blocked by triple-point
+counting (deficit 2²⁴+1); literal-dyadic census (μ₂₅₆ ⊂ F₆₅₅₃₇) found no
+over-budget family. StallResidual(μ_{2^30}) UNREFUTED and open;
+FullyAlignedTripleFree for μ_{2^30} NOT proven (probe-supported negative).
+
+**(P1-8) Pencil-cover theorem + pair-cloud second moment + cluster
+confinement.** `_P1RateQuarterPencilCoverTheorem.lean` (5+1 theorems):
+pair-pencil cover EXISTENCE with alignment floor 2T−N = 111,848,108
+(`pair_pencil_aligned_floor`); MARGIN-FREE
+`stall_budget_of_four_pair_pencil_cover` (B² ≤ P·c², P=4 ⟹ B ≤ 2c ≤ N;
+`five_cover_insufficient`). `_P1RateQuarterPairCloudSecondMoment.lean`
+(6+1 theorems): the counting jaws DO NOT close — `packing_jaw_never_binds`
+(2P(T−1) ≤ 2N + P(P−1)(k−1) for EVERY P: the sub-Johnson pair-cloud swarm
+is counting-immune, permanently); GEM: `six_near_full_pencils_impossible` —
+any stack admits ≤ FIVE pairwise-distinct pencils aligned ≥ T−5,
+unconditional full kernel proof (Cauchy–Schwarz,
+S0(S0−N) = 8,831,558,712,238,801,572 > 30N(k−1)).
+`_P1RateQuarterClusterConfinement.lean` (9+2 theorems): compounded
+rank-drop floors X₃/X₄/X₅ = 167,772,147 / 492,131,652 / 816,491,157
+(growth (T−5)−k = 324,359,505 per pencil); ALL binomial-constructor windows
+for m = 3,4,5 sit inside the dyadic gap (2²⁷, 2²⁸)
+(`cluster_windows_dyadic_free`); five-pencil master budget
+`stall_budget_of_five_pencil_cover` (1,072,881,457 ≤ N, slack 860,367); and
+THE FINAL FORM `stallResidual_of_swarmResidual`: **the P1 counting branch is
+reduced to the single named Prop `SwarmResidual`** = (i) 3-to-5 near-full
+pencil clusters (rank drops ≥ X_m, constructors dyadically blocked) + (ii)
+the sub-Johnson swarm (counting-immune; needs beyond-Johnson list input =
+the global wall). Arc total: eight files, 68 kernel theorems, six probes,
+one refutation, two no-go theorems.
+
+**(B-side R305) FullDFTFlat with an ABSOLUTE constant is REFUTED at
+scale.** `_R305FullDFTFlatCalibration.lean` (5 theorems) + probe m = 9 →
+1200: K_sup = sup_a‖Ŝ(a)‖²/(mq) grows ~0.79·log m (Gumbel over the m modes;
+q-independent) — the R302-era range m ≤ 18 could not see it. Landed
+growth-tolerant recalibration: `FullDFTFlatSq B`, cubed-loss law
+`distStratumEnergyBound_of_flatSq_cubed` (B ≥ 9 ⟹ C = 9B³), corrected input
+`FullDFTFlatLog A` (E ≤ 9(A(1+log m))³·m³q³; probe A ≈ 0.9 median / ≈ 2
+max). The strict absolute-C rung provably cannot come from pointwise
+flatness; the a-average moments (R303/R304) remain O(1)-consistent.
+
+**(B-side R306) The log-only rung.** `_R306SixthMomentInterpolation.lean`
+(4 theorems + interface): the direct sixth-moment route is machine-checked
+CIRCULAR (`sixthMoment_eq_tripleConv_energy`: ∑_a‖Ŝ‖⁶ = m·triple-conv
+energy = the r=3 core itself — `SixthMomentBound` kept only as a flagged
+INTERFACE Prop); the two-input Hölder composition lands the arc's best
+rung, `distStratumEnergyBound_of_flatLog_and_fourthMoment`:
+**FullDFTFlatLog A ∧ FourthMomentBound K₄ ⟹
+E_DIST ≤ (3·A·K₄·(1+log m) + 1215)·m³·q³** — log-only loss, beating both
+the R303 √m and the R305 log³ routes (at the prize modulus, 1+log m ≈ 20.8,
+composed constant O(10³)). Measurement (m ≤ 1200, probe-only): K₆ saturates
+FLAT at 4.7–5.4, tracking the Gaussian value 6((m−2)/m)³ → 6; K₄ → 1.85 vs
+Gaussian 2 — the core truth is an absolute constant ≈ 3K₆ ≈ 15–20. The
+absolute-constant form is now exactly located: de-correlate the sup from
+the average in the Hölder step (heavy-mode correlation of ‖Ŝ‖² with ‖Ŝ‖⁴)
+— the sharpest remaining open question of the lane.
+
+**═══ STATE after this session ═══** Bracket UNCHANGED:
+`3/8 ≤ mcaDeltaStar ≤ 43/96 + 1/(3·2^30) < 1/2`; no δ* movement anywhere.
+The two named residuals now carrying the whole frontier:
+**P1 side — `SwarmResidual`** (⟹ `StallResidual` ⟹
+`predecessorDelta_le_mcaDeltaStar_of_stall`, full prize vocabulary;
+adversarial-domain refutation confined to non-dyadic domains, μ_{2^30}
+unrefuted); **B side — `FullDFTFlatLog ∧ FourthMomentBound`** (r=3 rung
+closed modulo these at a (1+log m) loss; absolute-K flatness refuted;
+absolute-C located at the sup→average de-correlation). Probe-only items
+flagged above (F_P Stepanov refuting construction; census extremal values;
+Gumbel/Gaussian calibrations). **CORE OPEN, ON-BGK. No fabricated
+closure.**
