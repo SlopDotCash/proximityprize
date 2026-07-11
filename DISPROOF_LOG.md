@@ -16523,3 +16523,59 @@ Executable certificate:
 (`scripts/probes/_out_466_r3_weil_weld.txt`).
 Analysis:
 `docs/kb/deltastar-466-r3-weil-weld-2026-07-11.md`.
+
+## [466-r3-tower-rung-four-lag-endgame] the r=4 curve-Weil lag extension is REFUTED (depth-2 lags are Gaussian-random, q-exponent 2.0 — no free F_q variable) AND the uniform TwoCharacterWeilInput is CONTRADICTED at depth 1 (degenerate members ⇒ Θ(q) lags, implied C ~ √q); the diagonal-separated lag ENDGAME lands anyway: two lag-sup inputs at measured scales ⟹ absolute-C DIST rung (2026-07-11)
+
+**Claim tested.** Extend R144's split-budget machinery r ≤ 3 → r = 4 mod a
+four-character classical Weil input.
+
+**Verdict.** Extension REFUTED with mechanism (twice over); the corrected
+diagonal-separated endgame LANDED.
+
+**Refutations (probe, q-ladders to 36000 at m = 9, 12).**
+1. Depth-1 off-zero lags: q-exponent 1.02–1.05, sup ≈ √m·q — NOT the
+   curve-Weil √q.  Mechanism: |J_j|² = q ⇒ lag₁ = q·(m-term phase sum), and
+   the R30/R31 two-character family has DEGENERATE members (rational
+   function = m-th power) at Θ(q) each ⇒ uniform `TwoCharacterWeilInput`
+   with absolute C is FALSE for this family (implied C grows like √q).
+   Also: R35/R144 budgets lump lag-0 (≈ mq) into L, forcing tower C ~ m —
+   their hypotheses are unmeetable at absolute constants; the sharp form
+   requires the diagonal separated.  H-coset lags are the SMALLEST (no HD
+   spike).
+2. Depth-2 off-zero lags (of W = S⋆S): q-exponent 2.0–2.1 — pure
+   Gaussian-random m^{3/2}q²; no curve (1/2) or surface-Deligne (1)
+   rigidity.  Mechanism: quartic in J, two free variables needed, family
+   degenerates — each depth doubles the character degree; only depth 1
+   collapses to one-variable sums.  No FourCharacterWeilInput is named (it
+   would be false at any sub-random scale).
+3. Bonus rigidity: at fixed m, q ≫ m³, K₄ ↓ (1−2/m)², K₈ ↓ ~1 — Gaussian
+   2/24 are small-q artifacts; prize-scale moment constants are SMALLER
+   than Gaussian.
+
+**Landed (axiom-clean).** Generic lag Parseval (`hatF_autocorr`,
+`fourthMoment_eq_lag_energy`; at f = S and f = S⋆S it gives the 4th and 8th
+moments — probe-exact); named inputs `OffZeroLagBound` (needs √m·q, a
+√m-saving over trivial mq; measured c ∈ [1, 3.2]) and `OffZeroQuadLagBound`
+(needs m^{3/2}q², a √m-saving over trivial 2m²q²; measured c' = O(1));
+consumers `fourthMomentBound_of_offZeroLag` (K₄ = 1+K),
+`eighthMomentBound_of_offZeroLags` (K₈ = (1+K)²+K'); **ENDGAME**
+`distStratum_absoluteC_of_offZeroLags`:
+`E_DIST ≤ (3√((1+K)((1+K)²+K')) + 1215)·m³·q³`.
+
+**Final dependency graph (arc R297 → R309 close-out).** Three equivalent
+two-input routes: {OffZeroLag, OffZeroQuadLag} ⟺ {FourthMoment,
+EighthMoment} ⟺ {IterConvWick@2, @4}; downstream
+`TripleConvEnergyBound (2C+288)` via R300.  Refuted sources: absolute
+flatness (Gumbel), per-variety Weil–Deligne, uniform TwoCharacterWeil,
+depth-2 lag rigidity, cyclotomic closed forms, m²q² scale.  Every remaining
+open input = one √m-saving cancellation statement about the Jacobi angle
+family.
+
+Formal kernel (6 theorems + 2 named inputs, `[propext, Classical.choice,
+Quot.sound]`, manual axiom reads, pg-iterate 6s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R309TowerRungFour.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_tower_rung_four.py`
+(`scripts/probes/_out_466_r3_tower_rung_four.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-tower-rung-four-2026-07-11.md`.
