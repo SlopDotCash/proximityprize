@@ -751,6 +751,19 @@ and sparse pair-overlap arguments cannot solve that layer.  For `N+1` partners (
 more than the exact rebased prize family), the load improves to `60118358`;
 the formal kernel keeps this stronger but non-prize-scale variant separate.
 
+### One-line petal recursion no-go (2026-07-11)
+
+An exact recursion audit rules out repeatedly applying the reduced Plotkin
+step as the missing amplifier.  With fresh size
+`A = T-(k-1) = 324359511`, the guaranteed next-core map is
+`P(c) = floor((A^2-1)/(N-c))+1`.  Machine-checked arithmetic gives
+`P(145836060)=113383381` and the exact integer fixed point
+`P(109061044)=109061044`; this is below the universal pair-intersection floor
+`2T-N=111848108`.  Thus independent petal recursion loses the high-core gain
+and returns below information already supplied by inclusion--exclusion.  The
+missing input must be genuinely cross-line: weighted overlap, determinant
+multiplicity, or common-coordinate charge.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;

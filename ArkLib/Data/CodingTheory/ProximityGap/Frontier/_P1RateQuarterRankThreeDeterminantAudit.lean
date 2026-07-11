@@ -91,6 +91,35 @@ theorem pinnedAnchor_sum_below_onset_of_other_cores_le
   have hOnset := determinantCoreSumOnset_eq
   omega
 
+/-! ## One-line petal recursion no-go -/
+
+/-- Fresh agreement size available after deleting one line core. -/
+abbrev freshAgreementFloor : Nat := T - (k - 1)
+
+/-- Integer Rankin/Plotkin update forced from a source core lower bound `c`.
+The `+1` encodes the strict intersection conclusion. -/
+abbrev petalUpdate (c : Nat) : Nat :=
+  (freshAgreementFloor ^ 2 - 1) / (N - c) + 1
+
+theorem freshAgreementFloor_eq : freshAgreementFloor = 324359511 := by
+  norm_num [freshAgreementFloor, T, k]
+
+/-- The optimized high-core petal does not bootstrap: its next isolated-line
+iterate drops by more than thirty-two million coordinates. -/
+theorem petalUpdate_145836060_eq : petalUpdate 145836060 = 113383381 := by
+  norm_num [petalUpdate, freshAgreementFloor, T, k, N]
+
+/-- Exact attracting integer fixed point of the one-line reduced Plotkin map. -/
+theorem petalUpdate_fixedPoint_eq : petalUpdate 109061044 = 109061044 := by
+  norm_num [petalUpdate, freshAgreementFloor, T, k, N]
+
+/-- The fixed point is strictly weaker than the universal inclusion--exclusion
+pair-core floor.  Therefore independent one-line petal iteration cannot create
+the new mass needed by determinant collapse. -/
+theorem petalUpdate_fixedPoint_below_universal_pair_floor :
+    petalUpdate 109061044 < 2 * T - N := by
+  norm_num [petalUpdate, freshAgreementFloor, T, k, N]
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
@@ -104,3 +133,7 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 #print axioms remaining_twoCore_mass_needed_eq
 #print axioms one_other_core_ge_641670257_of_onset
 #print axioms pinnedAnchor_sum_below_onset_of_other_cores_le
+#print axioms freshAgreementFloor_eq
+#print axioms petalUpdate_145836060_eq
+#print axioms petalUpdate_fixedPoint_eq
+#print axioms petalUpdate_fixedPoint_below_universal_pair_floor

@@ -114,8 +114,59 @@ theorem centeredStratum_identity (G : Finset F) (k j : ℕ) {a : F} (ha : a ≠ 
     rw [hexp, pow_add]
     ring
 
+/-- **One-sided centering / the weighted-sample form.** Because the centered deviation field
+has exact mean zero, centering ONE factor suffices:
+
+  `∑_c (q·f_j(c) − n^j)·f_k(−a·c) = q·N_{k,j}(a) − n^{j+k}  (= the ledger stratum T)`.
+
+Interpretation: every ledger stratum is a weighted SAMPLE of the depth-`j` deviation field
+`q·f_j − n^j` at the dilated support points of `f_k` (nonnegative integer weights summing to
+`n^k`, supported on ≤ `n^k` points). The `(k,j) = (13,1)` case recovers
+`crossMoment_eq_rep` (sampling at the single coset `−a·G`); the small-`k` strata sample the
+near-saturated depth-`j` field on a genuinely sparse dilated coset system — the exact object
+of the twist-point support-geometry question. -/
+theorem oneSidedCenteredStratum (G : Finset F) (k j : ℕ) {a : F} (ha : a ≠ 0) :
+    ∑ c : F, ((Fintype.card F : ℂ) * (repCount G j c : ℂ) - (G.card : ℂ) ^ j)
+        * (repCount G k (-(a * c)) : ℂ)
+      = (Fintype.card F : ℂ) * (mixedSolutionCount G k j a : ℂ)
+        - (G.card : ℂ) ^ (k + j) := by
+  have hcorr : ∑ c : F, (repCount G j c : ℂ) * (repCount G k (-(a * c)) : ℂ)
+      = (mixedSolutionCount G k j a : ℂ) := by
+    rw [mixedSolutionCount_eq_repCorrelation G k j a]
+    push_cast
+    rfl
+  have hmassk : ∑ c : F, (repCount G k (-(a * c)) : ℂ) = (G.card : ℂ) ^ k := by
+    rw [← Nat.cast_pow, ← sum_repCount G k]
+    push_cast
+    have hbij : Function.Bijective (fun c : F => -(a * c)) := by
+      constructor
+      · intro x y h
+        exact mul_left_cancel₀ ha (neg_injective h)
+      · intro y
+        refine ⟨-(a⁻¹ * y), ?_⟩
+        field_simp
+    exact Fintype.sum_bijective _ hbij _ _ (fun c => rfl)
+  calc ∑ c : F, ((Fintype.card F : ℂ) * (repCount G j c : ℂ) - (G.card : ℂ) ^ j)
+        * (repCount G k (-(a * c)) : ℂ)
+      = (Fintype.card F : ℂ) *
+          ∑ c : F, (repCount G j c : ℂ) * (repCount G k (-(a * c)) : ℂ)
+        - (G.card : ℂ) ^ j * ∑ c : F, (repCount G k (-(a * c)) : ℂ) := by
+        rw [show (∑ c : F, ((Fintype.card F : ℂ) * (repCount G j c : ℂ)
+              - (G.card : ℂ) ^ j) * (repCount G k (-(a * c)) : ℂ))
+          = ∑ c : F, ((Fintype.card F : ℂ) *
+                ((repCount G j c : ℂ) * (repCount G k (-(a * c)) : ℂ))
+              - (G.card : ℂ) ^ j * (repCount G k (-(a * c)) : ℂ))
+          from Finset.sum_congr rfl (fun c _ => by ring)]
+        rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+    _ = (Fintype.card F : ℂ) * (mixedSolutionCount G k j a : ℂ)
+        - (G.card : ℂ) ^ (k + j) := by
+        rw [hcorr, hmassk, pow_add]
+        ring
+
 end ArkLib.ProximityGap.Frontier.DQR4CenteredStratumInner
 
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only) -/
 #print axioms
   ArkLib.ProximityGap.Frontier.DQR4CenteredStratumInner.centeredStratum_identity
+#print axioms
+  ArkLib.ProximityGap.Frontier.DQR4CenteredStratumInner.oneSidedCenteredStratum
