@@ -25,6 +25,7 @@ open scoped NNReal Polynomial
 namespace ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 open HalfPredecessorBadEventRichPointBridge
+open HalfPredecessorLineCoreGeometry
 open HalfPredecessorSecantLines
 open HalfPredecessorRateQuarterDeterminantCollapse
 
@@ -83,6 +84,103 @@ theorem commonBase_secants_form_collapsed_cluster
   exact three_commonBase_secants_lineDeterminant_eq_zero
     family gamma0 beta0 beta1 beta
 
+/-! ## Pointwise transversality -/
+
+/-- **Common-base secant slopes separate at a base mismatch.**  If two
+partner polynomials agree with their respective received affine combinations
+at `x`, while the shared base polynomial misses there, then their canonical
+common-base secant slopes have different evaluations at `x`. -/
+theorem commonBase_secantSlope_eval_ne_of_baseMismatch
+    {F : Type} [Field F]
+    {gamma0 beta beta' : F}
+    (hbeta : gamma0 ≠ beta) (hbeta' : gamma0 ≠ beta')
+    (hbb' : beta ≠ beta')
+    (q0 q q' : F[X]) (u0 u1 x : F)
+    (hq : q.eval x = u0 + beta * u1)
+    (hq' : q'.eval x = u0 + beta' * u1)
+    (hmiss : q0.eval x ≠ u0 + gamma0 * u1) :
+    (slopePolynomial gamma0 beta q0 q).eval x ≠
+      (slopePolynomial gamma0 beta' q0 q').eval x := by
+  intro heq
+  simp only [slopePolynomial, eval_mul, eval_C, eval_sub] at heq
+  rw [hq, hq'] at heq
+  have hd : q0.eval x - (u0 + gamma0 * u1) ≠ 0 :=
+    sub_ne_zero.mpr hmiss
+  have hb : gamma0 - beta ≠ 0 := sub_ne_zero.mpr hbeta
+  have hb' : gamma0 - beta' ≠ 0 := sub_ne_zero.mpr hbeta'
+  have hfactor :
+      (beta - beta') * (q0.eval x - (u0 + gamma0 * u1)) = 0 := by
+    field_simp [hb, hb'] at heq
+    linear_combination heq
+  exact (mul_ne_zero (sub_ne_zero.mpr hbb') hd) hfactor
+
+/-- Family-facing `href` adapter for the collapsed-cluster injection.  Two
+distinct common-base canonical secants are pointwise transverse at every
+coordinate where both partner codewords agree and the base codeword misses. -/
+theorem commonBase_secantDirection_sub_eval_ne_zero
+    {iota F : Type} [Fintype iota] [Nonempty iota] [DecidableEq iota]
+    [Field F] [Fintype F] [DecidableEq F]
+    {dom : iota ↪ F} {k : Nat} {delta : NNReal}
+    {u : WordStack F (Fin 2) iota}
+    (family : BadScalarRichPointFamily dom k delta u)
+    {gamma0 beta beta' : F}
+    (hbeta : gamma0 ≠ beta) (hbeta' : gamma0 ≠ beta')
+    (hbb' : beta ≠ beta') (i : iota)
+    (hagree : (family.q beta).eval (dom i) = u 0 i + beta * u 1 i)
+    (hagree' : (family.q beta').eval (dom i) = u 0 i + beta' * u 1 i)
+    (hmiss : (family.q gamma0).eval (dom i) ≠
+      u 0 i + gamma0 * u 1 i) :
+    (((secantParameter family gamma0 beta).2 -
+        (secantParameter family gamma0 beta').2).eval (dom i)) ≠ 0 := by
+  rw [eval_sub, sub_ne_zero]
+  simpa only [secantParameter] using
+    commonBase_secantSlope_eval_ne_of_baseMismatch
+      hbeta hbeta' hbb' (family.q gamma0) (family.q beta)
+        (family.q beta') (u 0 i) (u 1 i) (dom i) hagree hagree' hmiss
+
+/-! ## Degenerate-cluster injection no-go -/
+
+/-- In a common-lift cluster, a pair equation for a scalar different from the
+common base forces the two line directions to agree at that coordinate.  Thus
+the transverse-petal premise of the generic collapsed-cluster injection is
+incompatible with using two common-base lines as source and target for a
+nonbase scalar. -/
+theorem commonLift_pairEquation_forces_direction_eval_eq
+    {F : Type} [Field F]
+    (gamma0 gamma x : F) (q0 : F[X])
+    (source target : PolynomialLine F)
+    (hgamma : gamma ≠ gamma0)
+    (hsource : q0 = source.1 + C gamma0 * source.2)
+    (htarget : q0 = target.1 + C gamma0 * target.2)
+    (hequation :
+      (source.1 - target.1).eval x +
+        gamma * (source.2 - target.2).eval x = 0) :
+    (source.2 - target.2).eval x = 0 := by
+  have ha : source.1 - target.1 =
+      -C gamma0 * (source.2 - target.2) := by
+    linear_combination -hsource + htarget
+  rw [ha, eval_mul, eval_neg, eval_C] at hequation
+  have hfactor : (gamma - gamma0) *
+      (source.2 - target.2).eval x = 0 := by
+    linear_combination hequation
+  exact (mul_eq_zero.mp hfactor).resolve_left (sub_ne_zero.mpr hgamma)
+
+/-- Explicit contradiction form: no nonbase scalar can have a transverse pair
+equation between two members of one common-base collapsed cluster. -/
+theorem commonLift_no_transverse_pairEquation
+    {F : Type} [Field F]
+    (gamma0 gamma x : F) (q0 : F[X])
+    (source target : PolynomialLine F)
+    (hgamma : gamma ≠ gamma0)
+    (hsource : q0 = source.1 + C gamma0 * source.2)
+    (htarget : q0 = target.1 + C gamma0 * target.2)
+    (htrans : (source.2 - target.2).eval x ≠ 0) :
+    (source.1 - target.1).eval x +
+        gamma * (source.2 - target.2).eval x ≠ 0 := by
+  intro hequation
+  exact htrans (commonLift_pairEquation_forces_direction_eval_eq
+    gamma0 gamma x q0 source target hgamma hsource htarget hequation)
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
@@ -90,3 +188,7 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 #print axioms lineDeterminant_eq_zero_of_common_lift
 #print axioms three_commonBase_secants_lineDeterminant_eq_zero
 #print axioms commonBase_secants_form_collapsed_cluster
+#print axioms commonBase_secantSlope_eval_ne_of_baseMismatch
+#print axioms commonBase_secantDirection_sub_eval_ne_zero
+#print axioms commonLift_pairEquation_forces_direction_eval_eq
+#print axioms commonLift_no_transverse_pairEquation

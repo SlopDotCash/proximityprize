@@ -800,9 +800,26 @@ coordinates, and maximum load `L` gives `M<=vL`, then necessarily `s<L`.
 Specializing `s=55924056` proves a load of at least `55924057`.  Thus Hall
 failure recreates, inside the obstructing subfamily itself, a prize-scale
 common-base load spike.  At that coordinate the existing Möbius formula
-separates every pair of distinct common-base pencil directions; the next weld
-is to package those two facts into the `href` field of
-`card_le_domain_of_collapsed_fresh_petals`.
+separates every pair of distinct common-base pencil directions.  The natural
+candidate was to package those two facts into the `href` field of
+`card_le_domain_of_collapsed_fresh_petals`; the following audit rules out that
+direct composition.
+
+That proposed weld is now **refuted in its direct form**.  The same affine
+identity responsible for threshold-free collapse also makes the cluster
+degenerate for injection: every common-base line satisfies
+`a=q(gamma0)-gamma0*r`.  Hence a pair equation for a nonbase scalar `gamma`
+between two cluster lines reduces exactly to
+`(gamma-gamma0)*(r_source-r_target)=0`.  Since `gamma!=gamma0`, the direction
+difference must vanish at that coordinate.  The axiom-clean theorems
+`commonLift_pairEquation_forces_direction_eval_eq` and
+`commonLift_no_transverse_pairEquation` prove that the `htrans` premise of
+`card_le_domain_of_collapsed_fresh_petals` is incompatible with such a
+source/target pair.  Thus the large Hall load remains useful concentration,
+but it cannot be fed to the generic collapsed-cluster injection using only
+common-base lines.  A successful charge must introduce a transverse line from
+outside the common-base cluster, or use the Möbius labels directly rather than
+the collapsed-cluster ratio.
 
 ## 6. Lean pitfalls recorded
 
