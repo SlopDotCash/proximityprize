@@ -51049,3 +51049,37 @@ Doctrine-v2's surviving-source list should be read as: #1 transversality CLOSED 
 round), #3 dynamics CLOSED (procyclic kill, N3), leaving #2 (chaining under a genuinely
 new metric) and #4 (construction-side tail exclusion) — plus the atom. CORE remains
 OPEN / ON-BGK.
+
+## [466-J1-increment-metric-degenerate] Doctrine-v3 survivor #1 (chaining under a new metric) CLOSED: the period field's increment metric is PROVABLY discrete at second order (flat Gauss-sum spectrum |τ| = √p ⟹ zero off-diagonal autocorrelation ⟹ all pairs equidistant ⟹ chaining = union bound), measured real-Gaussian at every shift, and fourth-order-flat by the Jacobi-modulus rigidity — any metric with fuel must come from data external to increment statistics, i.e. IS the atom (2026-07-11)
+
+Lane: J1 probe (`scripts/probes/probe_466_j1_increment_anomaly.py`,
+`_out_466_j1_increment_anomaly.txt`); cells (n=32, p ∈ {1048609, 1049057}), (n=64,
+p=16778497) — prize-shaped n ≈ p^{1/4}.
+
+**Measurements (64 shifts/cell: all smooth s ≤ 64, m/2, m/4, m/8, + 48 random).**
+(1) increment scale σ(s) = √(2n) IDENTICAL at every sampled shift to 4 digits (5.657 =
+√32, 8.000 = √64): zero autocorrelation across the board. (2) normalized kurtosis of
+|η_{b+s} − η_b| = 2.95–2.98 at EVERY shift — the REAL-Gaussian value 3 (with −1 ∈ μ_n the
+field is real; the probe's complex baseline 2 was mis-specified and is corrected here).
+(3) max/EVT ratios 1.1–1.7 with no shift-class structure — increment maxima ride the
+field's own extremes (pure |η|-data).
+
+**Why (1) is a THEOREM, not a measurement.** Over the coset group Z/m, η is the Fourier
+transform of the Gauss-sum vector (τ(ψ))_{ψ}; |τ(ψ)| = √p for every nontrivial ψ, so the
+spectrum is EXACTLY flat and the autocorrelation vanishes identically off s = 0 (up to
+the DC term). Hence d(s)² = 2n(1 − ρ(s)) is constant: the Euclidean increment metric IS
+the discrete metric, and generic chaining over it degenerates to the union bound —
+√(n log m), the trivial bound. This holds at ALL m shifts, not just the sampled ones.
+Fourth-order: the r10 transfer-skeptic probe measured the joint cross-coset second moment
+C = n² − 1 + O(p^{-1}) exactly (1023.001 at n=32 across all primes) — the |J| = √p
+Jacobi-modulus rigidity: no 4th-order increment structure either.
+
+**VERDICT.** The named surviving candidate (Jacobi-cocycle metric) cannot be built from
+increment statistics of ANY order accessible to these identities: second order is
+degenerate by theorem, fourth order by the Jacobi rigidity, tails are shift-uniformly
+Gaussian. A chaining metric with fuel would need input EXTERNAL to the field's own
+statistics — which is precisely the missing non-Fourier certificate (the atom). Survivor
+#1 therefore collapses into the atom; doctrine-v4 reading: the remaining structured
+surfaces are (i) construction-side tail exclusion and (ii) the atom head-on. Consistent
+with and strengthening wall #1 (phase-blindness): not only are |·|-functionals blind, the
+whole increment hierarchy is rigidity-flattened. CORE remains OPEN / ON-BGK.

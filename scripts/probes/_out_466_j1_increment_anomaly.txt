@@ -1,0 +1,22 @@
+cell (n=32, p=1048609, m=32769): M = max|eta| = 22.983, M/sqrt(n) = 4.063, sqrt(2 ln m) = 4.560
+  shifts scanned = 64; max/EVTpred: min=1.182 med=1.268 max=1.533; kurtosis(|D|²-normalized, Gaussian=2): min=2.9531 med=2.9531 max=3.1406
+   anomaly-ranked shift s=32567: sigma=5.657 max/pred=1.433 kurt=3.1406
+   anomaly-ranked shift s=13002: sigma=5.657 max/pred=1.342 kurt=2.9531
+   anomaly-ranked shift s=10923: sigma=5.657 max/pred=1.320 kurt=2.9531
+   anomaly-ranked shift s=16384: sigma=5.657 max/pred=1.252 kurt=2.9531
+   anomaly-ranked shift s=8: sigma=5.657 max/pred=1.207 kurt=2.9531
+cell (n=32, p=1049057, m=32783): M = max|eta| = 21.842, M/sqrt(n) = 3.861, sqrt(2 ln m) = 4.560
+  shifts scanned = 63; max/EVTpred: min=1.114 med=1.279 max=1.449; kurtosis(|D|²-normalized, Gaussian=2): min=2.7656 med=2.9531 max=2.9531
+   anomaly-ranked shift s=6141: sigma=5.657 max/pred=1.238 kurt=2.9531
+   anomaly-ranked shift s=11014: sigma=5.657 max/pred=1.180 kurt=2.9531
+   anomaly-ranked shift s=27060: sigma=5.657 max/pred=1.295 kurt=2.9531
+   anomaly-ranked shift s=24829: sigma=5.657 max/pred=1.280 kurt=2.9531
+   anomaly-ranked shift s=23012: sigma=5.657 max/pred=1.379 kurt=2.9531
+cell (n=64, p=16778497, m=262164): M = max|eta| = 42.016, M/sqrt(n) = 5.252, sqrt(2 ln m) = 4.995
+  shifts scanned = 64; max/EVTpred: min=1.224 med=1.329 max=1.689; kurtosis(|D|²-normalized, Gaussian=2): min=2.9766 med=2.9766 max=2.9766
+   anomaly-ranked shift s=249780: sigma=8.000 max/pred=1.689 kurt=2.9766
+   anomaly-ranked shift s=6519: sigma=8.000 max/pred=1.574 kurt=2.9766
+   anomaly-ranked shift s=183010: sigma=8.000 max/pred=1.542 kurt=2.9766
+   anomaly-ranked shift s=12: sigma=8.000 max/pred=1.517 kurt=2.9766
+   anomaly-ranked shift s=63243: sigma=8.000 max/pred=1.469 kurt=2.9766
+READ: kurt ≈ 2 and max/pred in [0.9, 1.25] across ALL shift classes (incl. smooth/structured s) = increment field is Euclidean-complete, cocycle candidate DEAD. Any shift with kurt far from 2 or max/pred outlier = first non-|eta| signal; investigate its arithmetic (s vs subgroup/index structure).
