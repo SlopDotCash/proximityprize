@@ -16480,3 +16480,46 @@ Executable certificate:
 (`scripts/probes/_out_466_r3_moment_sandwich.txt`).
 Analysis:
 `docs/kb/deltastar-466-r3-moment-sandwich-2026-07-11.md`.
+
+## [466-r3-weil-weld-fourth-moment-classical] YES: the proven-mod-Weil r=2 machinery discharges FourthMomentBound — master identity ∑_a‖Ŝ‖^{2r} = m·∑_c‖J^{∗r}‖² (all r) welds the R302–R307 moment stack to the R27 tower; absolute-C r=3 now reduces to TwoCharacterWeilInput (classical, R144-capped) ∧ IterConvEnergyWick@4 alone (2026-07-11)
+
+**Claim tested.** Is ∑_c‖(S⋆S)(c)‖² the ladder's r=2 object, and does the
+in-tree proven-mod-Weil r=2 rung discharge FourthMomentBound?
+
+**Verdict.** YES, exactly (up to the Wick bookkeeping 2! and 4!), and LANDED.
+
+**Landed (axiom-clean).** `iterConv J 1 = Sfun J`;
+`iterConv (r+1) = conv2 (Sfun J) (iterConv r)`; `hatF_iterConv`
+((J^{∗r})^ = Ŝ^r); **master identity** `evenMoment_eq_iterConv_energy`
+(probe-exact r = 1..4): the even DFT moments ARE the R27 tower energies,
+Wick r! = Gaussian E‖G‖^{2r}.  Welds:
+`IterConvEnergyWick@2 C₂ ⟹ FourthMomentBound (2C₂²)`;
+`IterConvEnergyWick@4 C₄ ⟹ EighthMomentBound (24C₄⁴)`; headline
+`distStratum_absoluteC_of_towerRungs`: @2 ∧ @4 ⟹
+`DistStratumEnergyBound (3√(2C₂²·24C₄⁴) + 1215)`.  Composed with R144
+(`iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_splitBudget`):
+**TwoCharacterWeilInput (+ caps) ⟹ FourthMomentBound (2C²)** — the quartic
+input is classical-modulo-caps.
+
+**Reconciliation with R304 (mechanism).** The r=2 Weil discharges (incidence
+`wickAwayAt_two_of_weil` with √q ≥ 16n²; ladder R144 with split-budget caps)
+work through the t-variable expansion — a FREE F_q-variable gives a length-q
+Weil-boundable curve sum per tuple.  R304's refutation concerned the mode
+expansion (m modes, per-quadruple modulus exactly q², no free variable) — a
+different decomposition of the same object; both statements stand.  At r=4
+the two-character route has no in-tree discharge (R144 stops at r ≤ 3).
+
+**Final dependency graph of the absolute-C r=3 rung:**
+TwoCharacterWeilInput (classical, named) ∧ IterConvEnergyWick@4 (single
+remaining open average; probe-implied C₄: 0.52 → 0.89 over m = 9 → 1200,
+sub-Gaussian rising to 1 — "the 4-fold self-convolution of the Jacobi ladder
+is Wick-flat", the exact r=4 analogue of R144's r=2).
+
+Formal kernel (7 theorems, `[propext, Classical.choice, Quot.sound]`, manual
+axiom reads, pg-iterate 6s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R308FourthMomentWeilWeld.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_weil_weld.py`
+(`scripts/probes/_out_466_r3_weil_weld.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-weil-weld-2026-07-11.md`.
