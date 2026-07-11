@@ -119,6 +119,12 @@ def oneUnitImprovedWick (k i : Fin 6) : ℚ :=
 any one-unit Wick improvement. -/
 def robustWickScale : ℚ := 501 / 500
 
+/-- A distributed alternative: save half a unit at each of the two dense final transitions. -/
+def twoLateHalfUnitWick (i : Fin 6) : ℚ :=
+  if i = (4 : Fin 6) then 21 / 2
+  else if i = (5 : Fin 6) then 25 / 2
+  else wickStepNumerator i
+
 /-- The six Wick increments multiply to the primitive coefficient `13!! = 135135`. -/
 theorem wickStepNumerator_product :
     ∏ i : Fin 6, wickStepNumerator i = 135135 := by
@@ -181,6 +187,18 @@ theorem robustWickScale_six_margin :
     robustWickScale ^ 6 * 124740 < (126871 : ℚ) := by
   norm_num [robustWickScale]
 
+/-- The distributed late-step profile has exact product `124031.25`, smaller than every
+single-one-unit profile. -/
+theorem twoLateHalfUnitWick_product :
+    ∏ i : Fin 6, twoLateHalfUnitWick i = 496125 / 4 := by
+  norm_num [twoLateHalfUnitWick, wickStepNumerator, Fin.prod_univ_succ, Fin.ext_iff]
+
+/-- A `0.2%` overrun at every transition also fits around the distributed profile. -/
+theorem robustTwoLateHalfUnit_margin :
+    robustWickScale ^ 6 * (∏ i : Fin 6, twoLateHalfUnitWick i) < (126871 : ℚ) := by
+  rw [twoLateHalfUnitWick_product]
+  norm_num [robustWickScale]
+
 /-- Robust pointwise consumer: all six transition estimates may exceed the selected improved
 Wick profile by the factor `501/500`. -/
 theorem product_lt_injectiveCoefficient_of_robustOneUnit
@@ -199,6 +217,22 @@ theorem product_lt_injectiveCoefficient_of_robustOneUnit
     _ ≤ robustWickScale ^ 6 * 124740 := by
       exact mul_le_mul_of_nonneg_left hwick (by norm_num [robustWickScale])
     _ < 126871 := robustWickScale_six_margin
+    _ = injectiveCoefficient := by norm_num [injectiveCoefficient]
+
+/-- Robust distributed consumer: half-unit improvements at both final transitions suffice. -/
+theorem product_lt_injectiveCoefficient_of_robustTwoLateHalfUnit
+    (c : Fin 6 → ℚ)
+    (hc0 : ∀ i, 0 ≤ c i)
+    (hc : ∀ i, c i ≤ robustWickScale * twoLateHalfUnitWick i) :
+    ∏ i : Fin 6, c i < injectiveCoefficient := by
+  have hprod : (∏ i : Fin 6, c i) ≤
+      ∏ i : Fin 6, robustWickScale * twoLateHalfUnitWick i := by
+    exact Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
+  calc
+    (∏ i : Fin 6, c i) ≤
+        robustWickScale ^ 6 * ∏ i : Fin 6, twoLateHalfUnitWick i := by
+      simpa [Finset.prod_mul_distrib] using hprod
+    _ < 126871 := robustTwoLateHalfUnit_margin
     _ = injectiveCoefficient := by norm_num [injectiveCoefficient]
 
 /-- A pointwise transition bound by any one-unit-improved Wick profile closes the literal
@@ -232,6 +266,16 @@ theorem product_lt_productionTrajectoryAllowance_of_robustOneUnit
     ∏ i : Fin 6, c i < productionTrajectoryAllowance := by
   exact lt_trans
     (product_lt_injectiveCoefficient_of_robustOneUnit c k hc0 hc)
+    (by simpa [injectiveCoefficient] using productionTrajectoryAllowance_strict_window.1)
+
+/-- The robust distributed profile lies inside the exact production allowance. -/
+theorem product_lt_productionTrajectoryAllowance_of_robustTwoLateHalfUnit
+    (c : Fin 6 → ℚ)
+    (hc0 : ∀ i, 0 ≤ c i)
+    (hc : ∀ i, c i ≤ robustWickScale * twoLateHalfUnitWick i) :
+    ∏ i : Fin 6, c i < productionTrajectoryAllowance := by
+  exact lt_trans
+    (product_lt_injectiveCoefficient_of_robustTwoLateHalfUnit c hc0 hc)
     (by simpa [injectiveCoefficient] using productionTrajectoryAllowance_strict_window.1)
 
 /-! ## Abstract telescoping consumer -/
@@ -300,6 +344,32 @@ theorem final_discrepancy_lt_target_of_robustOneUnit
   have hn6 : (0 : ℚ) < (productionN : ℚ) ^ 6 := by norm_num [productionN]
   nlinarith
 
+/-- Distributed end-to-end consumer: robust half-unit savings at both final transitions prove the
+same depth-seven target. -/
+theorem final_discrepancy_lt_target_of_robustTwoLateHalfUnit
+    (D : Nat → ℚ)
+    (hD0 : D 0 = productionOneStepChiSquare)
+    (h0 : D 0 ≠ 0) (h1 : D 1 ≠ 0) (h2 : D 2 ≠ 0)
+    (h3 : D 3 ≠ 0) (h4 : D 4 ≠ 0) (h5 : D 5 ≠ 0)
+    (hratio0 : ∀ i : Fin 6,
+      0 ≤ (productionN : ℚ) * D (i.val + 1) / D i.val)
+    (hratio : ∀ i : Fin 6,
+      (productionN : ℚ) * D (i.val + 1) / D i.val ≤
+        robustWickScale * twoLateHalfUnitWick i) :
+    D 6 < productionDepthSevenChiSquareTarget := by
+  have hp := product_lt_productionTrajectoryAllowance_of_robustTwoLateHalfUnit
+    (fun i : Fin 6 => (productionN : ℚ) * D (i.val + 1) / D i.val)
+    hratio0 hratio
+  change sixStepRatioProduct productionN D < productionTrajectoryAllowance at hp
+  rw [sixStepRatioProduct_eq productionN D h0 h1 h2 h3 h4 h5,
+    productionTrajectoryAllowance_eq_endpointRatio, hD0] at hp
+  have hstep : 0 < productionOneStepChiSquare := productionOneStepChiSquare_pos
+  have hscaled : (productionN : ℚ) ^ 6 * D 6 <
+      (productionN : ℚ) ^ 6 * productionDepthSevenChiSquareTarget :=
+    (div_lt_div_iff_of_pos_right hstep).mp hp
+  have hn6 : (0 : ℚ) < (productionN : ℚ) ^ 6 := by norm_num [productionN]
+  nlinarith
+
 /-- Consolidated arithmetic target: the Wick path misses by `8264`, the exact production
 allowance is below the next integer, and any single one-unit Wick improvement fits. -/
 theorem wickTrajectory_oneUnit_boundary :
@@ -326,5 +396,7 @@ end ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget
   ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.final_discrepancy_lt_target_of_oneUnitImproved
 #print axioms
   ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.final_discrepancy_lt_target_of_robustOneUnit
+#print axioms
+  ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.final_discrepancy_lt_target_of_robustTwoLateHalfUnit
 #print axioms
   ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.wickTrajectory_oneUnit_boundary

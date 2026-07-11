@@ -35,6 +35,14 @@ StallResidual, the dyadic gap (2^27, 2^28) protects the literal μ_{2^30}). B-si
 `FullDFTFlat` refuted (Gumbel log m); r=3 closed modulo `FullDFTFlatLog ∧ FourthMomentBound`
 at (1+log m) loss. Bracket unchanged; core open.
 
+**2026-07-11 constant-width Hall kernel.**
+`_P1RateQuarterEightLabelHallKernel.lean` combines the sharp two-label singleton census with the
+six-label bad-pair vertex cover.  For exactly `N+1` threshold witnesses there is one exceptional
+set of cardinality at most eight such that every nonempty subset of its complement has projected
+divided-difference budget at least `K` times its cardinality.  Thus any remaining failure of a
+Hall-to-block-Vandermonde injectivity theorem is confined to eight labels; this is a localization,
+not yet a discharge of `SwarmResidual` or an exact delta-star pin.
+
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
 `distStratum_absoluteC_of_offZeroLags`); moment stack ⟺ R27 tower
@@ -277,8 +285,10 @@ allowance lies strictly between `126871` and `126872`.  Lowering any one numerat
 the product at most `124740<126871`; enough margin remains to multiply all six profile bounds by
 `501/500` (a `0.2%` per-step overrun).  Abstract six-ratio telescoping theorems then prove the
 end-to-end depth-seven target from either the exact or robust profile.  This is a sharp new socket,
-not a closure: the missing theorem must produce the one-unit Wick defect at some step while
-keeping all finite-population losses inside the certified robust margin.
+An exact distributed alternative lowers only the two final numerators by one half,
+`11 -> 10.5` and `13 -> 12.5`; its product is `124031.25`, and the same sixfold robust overhead
+still gives only `125527.08...<126871`.  This is not a closure: the missing theorem must produce
+either certified profile while keeping all finite-population losses inside the robust margin.
 `_BGKCenteredTrajectoryContraction.lean` installs this on the actual forward subset trajectory.
 Its six local bounds telescope to the coefficient-`126871` variance target, and its deleted-
 diagonal Newton identity retains all colours `eta_b,...,eta_(7b)`.  A genuine order-eight subgroup
