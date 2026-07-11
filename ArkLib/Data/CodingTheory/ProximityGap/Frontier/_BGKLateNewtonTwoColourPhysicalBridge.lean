@@ -222,6 +222,60 @@ abbrev RepeatedMarkedJoin (G : Finset F) (r : Nat) :=
 abbrev FreshMarkedJoin (G : Finset F) (r : Nat) :=
   {z : NewtonJoin G r // z.1 ∉ z.2.1}
 
+/-- A labelled subset together with one distinguished member. -/
+abbrev PointedLabelSubset (G : Finset F) (d : Nat) :=
+  {z : SubsetAt G d × {a : F // a ∈ G} // z.2 ∈ z.1.1}
+
+/-- Sum of a labelled subset. -/
+noncomputable def labelSubsetSum (G : Finset F) (d : Nat) (S : SubsetAt G d) : F :=
+  ∑ x ∈ S.1, x.1
+
+/-- A pointed subset has the sum of its underlying subset. -/
+noncomputable def pointedLabelSubsetSum (G : Finset F) (d : Nat)
+    (z : PointedLabelSubset G d) : F :=
+  labelSubsetSum G d z.1.1
+
+/-- Inserting the fresh marked point identifies fresh joins with pointed `(r+1)`-subsets. -/
+def freshPointedEquiv (G : Finset F) (r : Nat) :
+    FreshMarkedJoin G r ≃ PointedLabelSubset G (r + 1) where
+  toFun z := by
+    have hcard : z.1.2.1.card = r :=
+      (Finset.mem_powersetCard.mp z.1.2.2).2
+    have hinsertCard : (insert z.1.1 z.1.2.1).card = r + 1 := by
+      rw [Finset.card_insert_of_notMem z.2, hcard]
+    exact ⟨(⟨insert z.1.1 z.1.2.1,
+      Finset.mem_powersetCard.mpr ⟨Finset.subset_univ _, hinsertCard⟩⟩, z.1.1),
+        Finset.mem_insert_self _ _⟩
+  invFun z := by
+    have hcard : z.1.1.1.card = r + 1 :=
+      (Finset.mem_powersetCard.mp z.1.1.2).2
+    have heraseCard : (z.1.1.1.erase z.1.2).card = r := by
+      rw [Finset.card_erase_of_mem z.2, hcard]
+      simp
+    exact ⟨⟨z.1.2, ⟨z.1.1.1.erase z.1.2,
+      Finset.mem_powersetCard.mpr ⟨Finset.subset_univ _, heraseCard⟩⟩⟩, by simp⟩
+  left_inv z := by
+    apply Subtype.ext
+    apply Prod.ext
+    · rfl
+    · apply Subtype.ext
+      exact Finset.erase_insert z.2
+  right_inv z := by
+    apply Subtype.ext
+    apply Prod.ext
+    · apply Subtype.ext
+      exact Finset.insert_erase z.2
+    · rfl
+
+/-- The insert equivalence preserves the phase: a fresh join has the sum of its union subset. -/
+theorem freshPointedEquiv_phase (G : Finset F) (r : Nat) (z : FreshMarkedJoin G r) :
+    pointedLabelSubsetSum G (r + 1) (freshPointedEquiv G r z) =
+      newtonJoinPhase G 1 r z.1 := by
+  classical
+  dsimp only [pointedLabelSubsetSum, labelSubsetSum, freshPointedEquiv, newtonJoinPhase]
+  rw [Finset.sum_insert z.2]
+  ring
+
 /-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
 def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (_hr : 0 < r) :
     RepeatedMarkedJoin G r -> FreshMarkedJoin G (r - 1) := by

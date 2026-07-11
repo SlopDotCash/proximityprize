@@ -123,6 +123,11 @@ entire matching.  Hence every other matched secant has a cross-endpoint `K`-over
 four centres.  This is now strikingly parallel to the four-pencil endpoint; what remains is the
 algebraic propagation from an interaction with a centre to membership in a bounded family of
 polynomial lines.
+`exists_four_centres_with_oriented_routing` makes that residual deterministic: for every outside
+matched pair it chooses a centre, an endpoint on the outside pair, and an endpoint on the centre,
+and returns the literal `K`-overlap certificate for those witnesses.  The graph/existential layer
+is therefore closed.  A next producer can consume four fixed centres and one uniform routed
+cross-secant equation per outside pair, with no remaining choice or orientation bookkeeping.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

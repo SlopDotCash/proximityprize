@@ -254,6 +254,39 @@ theorem exists_four_interaction_centres
   obtain ⟨q, hq, hadj⟩ := hdom p hp
   exact ⟨q, hq, hadj.2⟩
 
+/-- Matched pairs outside a chosen centre set. -/
+abbrev OutsideCentres {J : Type} {M : Finset (J × J)} (I : Finset M) :=
+  {p : M // p ∉ I}
+
+/-- **Deterministic four-centre routing.**  In addition to the bounded centre set, choose for
+every outside matched pair one centre, one endpoint on the outside pair, and one endpoint on the
+centre, with the exact `K`-overlap certificate. -/
+theorem exists_four_centres_with_oriented_routing
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (hmatching : PairMatching M)
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
+    ∃ I : Finset M, I.card ≤ 4 ∧
+      ∃ centre : OutsideCentres I → I,
+      ∃ orient : OutsideCentres I → Fin 2 × Fin 2,
+      ∀ p : OutsideCentres I,
+        K ≤ (witness (endpointAt p.1.1 (orient p).1) ∩
+          witness (endpointAt (centre p).1.1 (orient p).2)).card := by
+  obtain ⟨I, hIcard, hdom⟩ :=
+    exists_four_interaction_centres witness M hmatching hsize
+  have hex : ∀ p : OutsideCentres I,
+      ∃ q : I, PairInteracts witness p.1.1 q.1.1 := by
+    intro p
+    obtain ⟨q, hq, hinteract⟩ := hdom p.1 p.2
+    exact ⟨⟨q, hq⟩, hinteract⟩
+  let centre : OutsideCentres I → I := fun p => Classical.choose (hex p)
+  have hcentre : ∀ p, PairInteracts witness p.1.1 (centre p).1.1 := fun p =>
+    Classical.choose_spec (hex p)
+  let orient : OutsideCentres I → Fin 2 × Fin 2 := fun p =>
+    interactionOrientation witness p.1.1 (centre p).1.1 (hcentre p)
+  refine ⟨I, hIcard, centre, orient, ?_⟩
+  intro p
+  exact interactionOrientation_spec witness p.1.1 (centre p).1.1 (hcentre p)
+
 end ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 
 open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
@@ -266,3 +299,4 @@ open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 #print axioms interactionGraph_compl_cliqueFree_five
 #print axioms exists_dominating_indep_card_le_four
 #print axioms exists_four_interaction_centres
+#print axioms exists_four_centres_with_oriented_routing

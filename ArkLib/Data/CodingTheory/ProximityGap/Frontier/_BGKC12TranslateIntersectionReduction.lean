@@ -39,6 +39,7 @@ actual rows is indispensable.  No production correlation estimate is asserted.  
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
+set_option exponentiation.threshold 1024
 
 open Finset BigOperators
 
@@ -93,6 +94,23 @@ theorem phaseCrossCollisionCount_eq_fiberInner
       apply Finset.sum_congr rfl
       intro t _ht
       rw [Finset.card_product]
+
+/-- Every phase family deposits exactly one unit of fibre mass per source point. -/
+theorem sum_phaseFiberCount {X : Type*} [Fintype X] [DecidableEq X]
+    (phi : X -> F) :
+    ∑ t : F, phaseFiberCount phi t = Fintype.card X := by
+  classical
+  unfold phaseFiberCount
+  calc
+    (∑ t : F, (Finset.univ.filter fun x : X => phi x = t).card) =
+        ∑ t : F, ∑ x : X, if phi x = t then 1 else 0 := by
+      apply Finset.sum_congr rfl
+      intro t _ht
+      rw [Finset.card_filter]
+    _ = ∑ x : X, ∑ t : F, if phi x = t then 1 else 0 := by
+      rw [Finset.sum_comm]
+    _ = ∑ _x : X, 1 := by simp
+    _ = Fintype.card X := by simp
 
 /-- The two marked subgroup points occurring in `C12`. -/
 abbrev MarkedPair (G : Finset F) := {x : F // x ∈ G} × {y : F // y ∈ G}
@@ -226,6 +244,158 @@ theorem newtonJoinCollisionCount_one_two_eq_intersectionCorrelation
   apply Finset.sum_congr rfl
   intro t _ht
   rw [markedDifferenceMultiplicity_eq_doubledTranslateIntersection]
+
+/-! ## Exact row masses and centered alignment -/
+
+/-- The shifted-intersection row has total mass `|G|^2`. -/
+theorem sum_markedDifferenceMultiplicity (G : Finset F) :
+    ∑ t : F, markedDifferenceMultiplicity G t = G.card ^ 2 := by
+  unfold markedDifferenceMultiplicity
+  rw [sum_phaseFiberCount]
+  simp only [MarkedPair, Fintype.card_prod, Fintype.card_coe]
+  ring
+
+/-- The adjacent subset-difference row has the product of the two binomial source masses. -/
+theorem sum_subsetDifferenceMultiplicity (G : Finset F) (r : Nat) :
+    ∑ t : F, subsetDifferenceMultiplicity G r t =
+      G.card.choose r * G.card.choose (r - 1) := by
+  unfold subsetDifferenceMultiplicity
+  rw [sum_phaseFiberCount]
+  simp only [AdjacentSubsetPair, SubsetAt, Fintype.card_prod, Fintype.card_coe,
+    Finset.card_powersetCard, Finset.card_univ]
+
+/-- The unnormalized centered alignment between the cyclotomic translate row and the adjacent
+subset-correlation row. -/
+noncomputable def c12CenteredAlignment (G : Finset F) (r : Nat) : Int :=
+  (Fintype.card F : Int) *
+      ∑ t : F, (markedDifferenceMultiplicity G t : Int) *
+        subsetDifferenceMultiplicity G r t -
+    (G.card : Int) ^ 2 *
+      ((G.card.choose r : Int) * G.card.choose (r - 1))
+
+/-- **Exact centered decomposition.**  The mean contribution is completely determined by the two
+row masses; every improvement beyond it is the single alignment term displayed above. -/
+theorem card_mul_newtonJoinCollisionCount_one_two_eq_massProduct_add_centeredAlignment
+    (G : Finset F) (r : Nat) :
+    (Fintype.card F : Int) *
+        (newtonJoinCollisionCount G 1 r 2 (r - 1) : Int) =
+      (G.card : Int) ^ 2 *
+          ((G.card.choose r : Int) * G.card.choose (r - 1)) +
+        c12CenteredAlignment G r := by
+  rw [newtonJoinCollisionCount_one_two_eq_translateCorrelation]
+  unfold c12CenteredAlignment
+  push_cast
+  ring
+
+/-- A scaled raw `C12` lower bound is exactly a lower bound on the centered alignment after
+subtracting the explicit mass product. -/
+theorem scaled_c12_lower_iff_centeredAlignment_lower
+    (G : Finset F) (r : Nat) (scale threshold : Int) :
+    scale * (Fintype.card F : Int) *
+        (newtonJoinCollisionCount G 1 r 2 (r - 1) : Int) >= threshold ↔
+      scale * c12CenteredAlignment G r >=
+        threshold - scale *
+          ((G.card : Int) ^ 2 *
+            ((G.card.choose r : Int) * G.card.choose (r - 1))) := by
+  have h := card_mul_newtonJoinCollisionCount_one_two_eq_massProduct_add_centeredAlignment G r
+  have hs :
+      scale * (Fintype.card F : Int) *
+          (newtonJoinCollisionCount G 1 r 2 (r - 1) : Int) =
+        scale * ((G.card : Int) ^ 2 *
+            ((G.card.choose r : Int) * G.card.choose (r - 1)) +
+          c12CenteredAlignment G r) := by
+    calc
+      scale * (Fintype.card F : Int) *
+          (newtonJoinCollisionCount G 1 r 2 (r - 1) : Int) =
+          scale * ((Fintype.card F : Int) *
+            (newtonJoinCollisionCount G 1 r 2 (r - 1) : Int)) := by ring
+      _ = _ := by rw [h]
+  rw [hs]
+  constructor <;> intro hgate <;> nlinarith
+
+/-- Production subgroup size, repeated locally for the two explicit gate statements. -/
+def productionN : Nat :=
+  ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers.productionN
+
+/-- The exact `r=5` cross-collision gate, now expressed solely as a centered-alignment target. -/
+theorem production_fifth_crossGate_iff_centeredAlignment
+    (G : Finset F) (previous C11 C22 dc : Int) :
+    2000 * (productionN : Int) * (Fintype.card F : Int) *
+        (newtonJoinCollisionCount G 1 5 2 4 : Int) >=
+          1000 * productionN *
+              ((Fintype.card F : Int) * (C11 + C22) - dc ^ 2) -
+            10500 * (productionN - 5 : Int) ^ 2 * previous ↔
+      2000 * (productionN : Int) * c12CenteredAlignment G 5 >=
+          1000 * productionN *
+              ((Fintype.card F : Int) * (C11 + C22) - dc ^ 2) -
+            10500 * (productionN - 5 : Int) ^ 2 * previous -
+            2000 * productionN *
+              ((G.card : Int) ^ 2 *
+                ((G.card.choose 5 : Int) * G.card.choose 4)) := by
+  have h := scaled_c12_lower_iff_centeredAlignment_lower G 5
+    (2000 * productionN)
+    (1000 * productionN * ((Fintype.card F : Int) * (C11 + C22) - dc ^ 2) -
+      10500 * (productionN - 5 : Int) ^ 2 * previous)
+  norm_num at h ⊢
+  convert h using 1 <;> ring
+
+/-- The exact `r=6` cross-collision gate in centered-alignment coordinates. -/
+theorem production_sixth_crossGate_iff_centeredAlignment
+    (G : Finset F) (previous C11 C22 dc : Int) :
+    2000 * (productionN : Int) * (Fintype.card F : Int) *
+        (newtonJoinCollisionCount G 1 6 2 5 : Int) >=
+          1000 * productionN *
+              ((Fintype.card F : Int) * (C11 + C22) - dc ^ 2) -
+            12500 * (productionN - 6 : Int) ^ 2 * previous ↔
+      2000 * (productionN : Int) * c12CenteredAlignment G 6 >=
+          1000 * productionN *
+              ((Fintype.card F : Int) * (C11 + C22) - dc ^ 2) -
+            12500 * (productionN - 6 : Int) ^ 2 * previous -
+            2000 * productionN *
+              ((G.card : Int) ^ 2 *
+                ((G.card.choose 6 : Int) * G.card.choose 5)) := by
+  have h := scaled_c12_lower_iff_centeredAlignment_lower G 6
+    (2000 * productionN)
+    (1000 * productionN * ((Fintype.card F : Int) * (C11 + C22) - dc ^ 2) -
+      12500 * (productionN - 6 : Int) ^ 2 * previous)
+  norm_num at h ⊢
+  convert h using 1 <;> ring
+
+/-! ## Production size of the forced mean term -/
+
+def productionMeanMassFive : Nat :=
+  productionN ^ 2 *
+    (productionN.descFactorial 5 / Nat.factorial 5) *
+      (productionN.descFactorial 4 / Nat.factorial 4)
+
+def productionMeanMassSix : Nat :=
+  productionN ^ 2 *
+    (productionN.descFactorial 6 / Nat.factorial 6) *
+      (productionN.descFactorial 5 / Nat.factorial 5)
+
+theorem productionMeanMassFive_eq :
+    productionMeanMassFive =
+      productionN ^ 2 * productionN.choose 5 * productionN.choose 4 := by
+  simp only [productionMeanMassFive, Nat.choose_eq_descFactorial_div_factorial]
+
+theorem productionMeanMassSix_eq :
+    productionMeanMassSix =
+      productionN ^ 2 * productionN.choose 6 * productionN.choose 5 := by
+  simp only [productionMeanMassSix, Nat.choose_eq_descFactorial_div_factorial]
+
+/-- The `r=5` mean row product has binary size exactly `319` bits. -/
+theorem productionMeanMassFive_binary_window :
+    2 ^ 318 < productionMeanMassFive ∧ productionMeanMassFive < 2 ^ 319 := by
+  norm_num [productionMeanMassFive, productionN,
+    ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers.productionN,
+    Nat.descFactorial_succ, Nat.descFactorial_zero]
+
+/-- The `r=6` mean row product has binary size exactly `374` bits. -/
+theorem productionMeanMassSix_binary_window :
+    2 ^ 373 < productionMeanMassSix ∧ productionMeanMassSix < 2 ^ 374 := by
+  norm_num [productionMeanMassSix, productionN,
+    ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers.productionN,
+    Nat.descFactorial_succ, Nat.descFactorial_zero]
 
 end ExactReduction
 
