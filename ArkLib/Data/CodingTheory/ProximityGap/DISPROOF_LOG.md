@@ -50796,3 +50796,22 @@ Scope: depth five remains excluded for this entire input class (G102 no-go); the
 is untouched.  With G89 (depth 3) and this weld (depth 4), the padded collision lane's
 unconditional coverage now reaches primitive depth four at production.  CORE remains OPEN.
 
+## [466-G87B-histogram-fiber-count] The histogram fiber count is a theorem: #{k-tuples with histogram x} = multinomial(x) — the keystone transferring the sharp envelope to the word level (axiom-clean) (2026-07-11)
+
+`_G87BHistogramFiberCount.lean` (pure Mathlib, self-contained) proves:
+
+- `sum_histogram`: a k-tuple's histogram has total mass k;
+- `multinomial_lower_recurrence`: the multinomial Pascal recurrence
+  `m(x) = sum_{a : x a > 0} m(x - delta_a)` (denominator-cleared proof; absent from Mathlib);
+- `card_histFiber` (KEYSTONE): for `sum x = k`,
+  `#{u : Fin k -> alpha | histogram u = x} = Nat.multinomial univ x`
+  (induction on k, fiberwise over `u 0`, `Fin.cons` bijection).
+
+Why it matters: G88's coarse tuple envelope loses `(s!)^2` relative to the G86S sharp
+envelope, and at depth four the G87W Stepanov margin (`2^3.68`) cannot repay `(4!)^2 = 2^9.17`
+— so the production depth-four closure genuinely needs the multiplicity-exact histogram/word
+correspondence. With `card_histFiber`, every histogram-weighted count (G86S `orderedCoreCount`,
+`sectorMass`) IS an ordered-word count, and the sharp envelope transfers verbatim. Remaining
+for end-to-end depth four: the mechanical weld G87B x G86S x G87W x G88 sector definitions.
+Three declarations `[propext, Classical.choice, Quot.sound]`. CORE remains OPEN / ON-BGK.
+
