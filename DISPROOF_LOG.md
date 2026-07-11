@@ -1,3 +1,23 @@
+## [SYZ5-rate-quarter-channel-no-sharpen] the SYZ degenerate channel does NOT beat 43/96 at rate 1/4 (2026-07-10)
+
+Lane: SYZ degenerate-subset channel, porting the SYZ4 rate-1/2 ceiling (`11/32 − 2^-30`) to rate 1/4.
+
+VERDICT: the predicted rate-1/4 analogue at the channel infimum `(1−ρ)/(2−ρ) = 3/7 ≈ 0.4286` is
+UNATTAINABLE. That infimum is a continuous-`D` optimum (realized only at non-integer `D = 7/3`);
+with a whole number of degenerate subsets the floor is `min_{D∈ℕ} max(1/D,(1−ρ)(1−1/D)) = 1/2` at
+`ρ = 1/4` (both `D=2` and `D=3` give `1/2`). Since `1/2 > 43/96`, the channel produces at best a
+ceiling STRICTLY WEAKER than the current unconditional in-tree rate-1/4 ceiling
+`480946859/2^30 = 43/96 + 1/(3·2^30) ≈ 0.44792`
+(`_P1RateQuarterAdjacentExactPin.canonical_mcaDeltaStar_le_common_delta`).
+
+Structural cause (kernel `Frontier/_SYZ5RateQuarterChannelCeiling.lean`, axiom-clean, only propext):
+for `D=3` the rate-1/4 degree cap `4·core ≤ n` plus region disjointness `core+Σaⱼ ≤ n` alone force
+`Σ cⱼ ≥ 3n/2`, hence some complement `cⱼ ≥ n/2` (radius `≥ 1/2`) with NO budget needed
+(`rateQuarter_channel_D3_radius_ge_half`); `D≤2` gives the same from the ε*-budget
+(`rateQuarter_channel_D2_radius_ge_half`). This does NOT touch the `3/8` good-floor or CORE.
+Landed as a barrier, not a pin — no `mcaDeltaStar` ceiling claimed, precisely because the channel
+does not sharpen. Issue #466/#507. SYZ4 (rate-1/2) → SYZ5 (rate-1/4 no-go).
+
 ## [doorIV-per-level-factor-bad-rung-compensation] a super-sqrt-two rung requires strict residual product slack (2026-06-23, g55)
 
 Lane: door-(iv) Lane-3, continuing the finite per-level-factor localization after `[doorIV-per-level-factor-super-sqrt2-localization]`.
