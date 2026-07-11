@@ -76,6 +76,12 @@ distinct nonzero scalar weights.  This closes the separate parameter-count objec
 constructions are not yet welded—the remaining exact question is whether one shared received
 stack can simultaneously make those distinct nodal parameters agree on the prescribed packed
 cores without creating the prize-forbidden structure.
+That weld is now complete in `core_subset_jointCore_nodalLine`: one shared received stack supports
+all `2K` distinct degree-`<K` nodal lines on their prescribed packed cores.  Consequently shared-
+stack polynomial-line compatibility, core size, pairwise root caps, and half-billion matching
+size together still do not consolidate the lines.  The surviving distinction from the prize
+family is narrower: these abstract lines have not been proved to arise as canonical secants of
+threshold-size decoded scalar witnesses satisfying the full MCA event clauses.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

@@ -104,6 +104,13 @@ theorem addedPoint_mem_core_iff {k : Nat} (p q : CoreIndex k) :
   · rintro rfl
     exact addedPoint_mem_core p
 
+theorem addedPoint_injective {k : Nat} : Function.Injective (@addedPoint k) := by
+  intro p q h
+  have hp : addedPoint p ∈ core q := by
+    rw [h]
+    exact addedPoint_mem_core q
+  exact (addedPoint_mem_core_iff p q).mp hp
+
 theorem core_injective {k : Nat} : Function.Injective (@core k) := by
   intro p q h
   have hp : addedPoint p ∈ core q := by rw [← h]; exact addedPoint_mem_core p
@@ -282,6 +289,94 @@ theorem nodalParameter_injective
     rw [mul_zero] at heval
     exact (hleft heval).elim
 
+/-! ## Simultaneous shared-stack realization -/
+
+/-- A shared received word: zero on the base block, and at each indexed spare point the value of
+its own nodal parameter.  The sum form avoids choosing a partial inverse to `addedPoint`. -/
+noncomputable def nodalReceived
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (x : Coord k) : F :=
+  ∑ p : CoreIndex k,
+    if addedPoint p = x then (nodalParameter domain weight p).eval (domain x) else 0
+
+@[simp]
+theorem nodalReceived_basePoint
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (i : Fin k) :
+    nodalReceived domain weight (basePoint i) = 0 := by
+  apply Finset.sum_eq_zero
+  intro p _hp
+  rw [if_neg]
+  intro h
+  have hfirst := congrArg (fun x : Coord k => x.1.val) h
+  simp [addedPoint, basePoint] at hfirst
+
+@[simp]
+theorem nodalReceived_addedPoint
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (p : CoreIndex k) :
+    nodalReceived domain weight (addedPoint p) =
+      (nodalParameter domain weight p).eval (domain (addedPoint p)) := by
+  rw [nodalReceived, Fintype.sum_eq_single p]
+  · simp
+  · intro q hpq
+    rw [if_neg]
+    exact fun h => hpq (addedPoint_injective h)
+
+/-- Every explicit nodal parameter agrees with the one shared received word on its packed core. -/
+theorem nodalParameter_agrees_on_core
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (p : CoreIndex k) :
+    ∀ x ∈ core p,
+      (nodalParameter domain weight p).eval (domain x) =
+        nodalReceived domain weight x := by
+  intro x hx
+  simp only [core, Finset.mem_insert, Finset.mem_erase] at hx
+  rcases hx with rfl | hx
+  · exact (nodalReceived_addedPoint domain weight p).symm
+  · obtain ⟨hxp, hxbase⟩ := hx
+    simp only [base, Finset.mem_map, Finset.mem_univ, true_and] at hxbase
+    obtain ⟨i, rfl⟩ := hxbase
+    change (nodalParameter domain weight p).eval (domain (basePoint i)) =
+      nodalReceived domain weight (basePoint i)
+    rw [nodalReceived_basePoint]
+    simp only [nodalParameter, eval_mul, eval_C, mul_eq_zero]
+    have hip : i ≠ p.2 := by
+      intro h
+      subst i
+      exact hxp rfl
+    exact Or.inr (erasedBaseNodal_eval_other_eq_zero domain hip)
+
+/-- The explicit polynomial line with nodal intercept and zero slope. -/
+noncomputable def nodalLine
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (p : CoreIndex k) : F[X] × F[X] :=
+  (nodalParameter domain weight p, 0)
+
+theorem nodalLine_injective
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (hdomain : Function.Injective domain)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0)
+    (hweightInj : Function.Injective weight) :
+    Function.Injective (nodalLine domain weight : CoreIndex k → F[X] × F[X]) := by
+  intro p q h
+  apply nodalParameter_injective domain hdomain weight hweight hweightInj
+  exact congrArg Prod.fst h
+
+/-- **Simultaneous polynomial-line realization.**  All `2k` distinct nodal lines use the same
+received stack `(nodalReceived,0)`, and the prescribed packed core is contained in the literal
+joint core of its line. -/
+theorem core_subset_jointCore_nodalLine
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] {k : Nat}
+    (domain : Coord k ↪ F) (weight : Fin 2 → F) (p : CoreIndex k) :
+    core p ⊆ jointCore domain (nodalReceived (fun x => domain x) weight) (fun _ => 0)
+      (nodalLine (fun x => domain x) weight p).1
+      (nodalLine (fun x => domain x) weight p).2 := by
+  intro x hx
+  simp only [jointCore, Finset.mem_filter, Finset.mem_univ, true_and,
+    nodalLine, eval_zero]
+  exact ⟨nodalParameter_agrees_on_core (fun x => domain x) weight p x hx, trivial⟩
+
 end ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 
 open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
@@ -297,3 +392,7 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms core_subset_jointCore_packedLine
 #print axioms nodalParameter_mem_degreeLT
 #print axioms nodalParameter_injective
+#print axioms nodalReceived_addedPoint
+#print axioms nodalParameter_agrees_on_core
+#print axioms nodalLine_injective
+#print axioms core_subset_jointCore_nodalLine

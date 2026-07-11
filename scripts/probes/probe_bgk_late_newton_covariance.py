@@ -30,7 +30,11 @@ checked against the directly computed next subset histogram.
 
 The default cells are the two favorable n=64 cells and the counterexample from
 ``probe_bgk_subset_trajectory_birthday.py``.  ``--extended`` adds several exact
-n=64 stress cells.  Decimals are only renderings of exact rational values.
+n=64 stress cells.  Product-unit effects are normalized separately by the live
+injective gap ``135135-126871=8264`` and by the hypothetical gap
+``135135-127009=8126`` if the repeated-sector reservation of 138 were returned;
+no internal repeated-coordinate covariance is credited.  Decimals are only
+renderings of exact rational values.
 """
 
 from __future__ import annotations

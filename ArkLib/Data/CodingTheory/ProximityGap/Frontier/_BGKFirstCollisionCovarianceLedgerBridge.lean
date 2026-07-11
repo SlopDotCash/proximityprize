@@ -113,8 +113,8 @@ theorem centeredInner_profileSum_left {I X : Type*} [DecidableEq I] [Fintype X]
         simp [profileSum, hi]]
       unfold centeredInner at ih ⊢
       simp_rw [add_mul, Finset.sum_add_distrib]
-      rw [ih]
-      simp [hi]
+      simp only [Finset.sum_insert, hi, not_false_eq_true]
+      rw [← ih]
       ring
 
 theorem centeredInner_profileSum_right {I X : Type*} [DecidableEq I] [Fintype X]
@@ -233,8 +233,8 @@ theorem centeredMass_add {X : Type*} [Fintype X] (f g : X -> Real) :
     centeredMass (fun x => f x + g x) =
       centeredMass f + centeredMass g + 2 * centeredInner f g := by
   unfold centeredMass centeredInner
-  simp_rw [add_pow_two, Finset.sum_add_distrib, mul_add, add_mul]
-  ring
+  simp_rw [add_sq, Finset.sum_add_distrib]
+  ring_nf
 
 /-- The complete signed correction between an all-tuples profile and its factorial-scaled
 injective part.  The first two terms are G190's internal polarization; the last is G176's
@@ -251,7 +251,8 @@ theorem centeredMass_allTuple_eq_injective_add_deletionCorrection
     centeredMass (fun x => J x + profileSum S p x) =
       centeredMass J + deletionCorrection J S p := by
   rw [centeredMass_add, centeredMass_profileSum]
-  rfl
+  simp [deletionCorrection]
+  ring
 
 /-- Correct scaled deletion consumer for the robust half-unit `5 -> 6` ledger.  `U` is any
 upper bound for the scaled all-tuples centered mass.  The second inequality says that the full
@@ -322,8 +323,10 @@ theorem oppositeStrata_stratumMass :
 /-- The ordered aggregate covariance is `-2`, exactly cancelling all individual mass. -/
 theorem oppositeStrata_aggregateCovariance :
     aggregateCovariance (Finset.univ : Finset (Fin 2)) oppositeStrata = -2 := by
-  norm_num [aggregateCovariance, centeredInner, oppositeStrata, Fin.sum_univ_two,
-    Finset.offDiag]
+  have h := centeredMass_profileSum (Finset.univ : Finset (Fin 2)) oppositeStrata
+  rw [oppositeStrata_profileSum_eq_one, oppositeStrata_stratumMass] at h
+  norm_num [centeredMass, Fin.sum_univ_two] at h
+  linarith
 
 theorem oppositeStrata_perfect_internal_cancellation :
     centeredMass (profileSum (Finset.univ : Finset (Fin 2)) oppositeStrata) = 0 ∧
