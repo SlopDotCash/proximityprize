@@ -50703,3 +50703,41 @@ concentration) becomes necessary.  (iii) This does not touch the ON-BGK core.  P
 exact, convolution identity + fiber bound exhaustive at `mu_4 ⊂ F_13` and `mu_6 ⊂ F_31`.
 CORE remains OPEN / ON-BGK.
 
+
+## [466-G88V-vanishing-rank-bound] The census rank/coverage LAW measured and its provable half PROVEN: common coverage costs mod-p dimension one-for-one (rank fence, axiom-clean); at accessible cells the census SATURATES the fence exactly, and coverage > 1 occurs ONLY at non-primitive embeddings — the G82 forcing direction has no fuel at prize-shaped cells (2026-07-10)
+
+Lane: fence follow-up (`Frontier/_G88VVanishingRankBound.lean` + probe
+`scripts/probes/probe_466_g87v_census_rank.py`, results
+`scripts/probes/_out_466_g87v_census_rank_n16.txt`; issue #466/#505).
+
+**Probe (n = 16; p ∈ {97, 193, 257}; every root t of x^n − 1 mod p; complete support-six
+census per cell).** Three exact empirical laws, no exceptions in 45 cells:
+1. common coverage of the census at an embedding of multiplicative order m is EXACTLY m/2
+   (primitive m = n ⟹ coverage 1 — extends the G82 addendum from per-relation to
+   full-census, with the mechanism identified: coverage is bought by periodicity);
+2. census rank mod p = n − coverage EXACTLY in every cell;
+3. rank over ℚ (two-prime proxy) = mod-p rank, +1 exactly at primitive embeddings, where
+   it reaches FULL RANK n.
+
+**Axiom-clean Lean kernel (LANDED, `[propext, Classical.choice, Quot.sound]`).**
+- `rank_le_of_rows_vanishing` (RANK FENCE): over any field, rows annihilated by the
+  Vandermonde functionals of s ≤ d pairwise-distinct nodes span rank ≤ d − s (stated
+  `M.rank + s ≤ d`). Kernel of a surjective node-evaluation map + rank–nullity; the
+  surjectivity witness is the invertible square Vandermonde on the first s powers.
+- `rank_zmod_le_of_int_rows_vanishing`: the census form over ℤ → ZMod p.
+
+**Consequences.** (1) The fence hypothesis (full-rank family) IS attainable — but per law 3
+only at coverage 1; a family with coverage ≥ 2 has mod-p rank ≤ n − 2 (theorem) and, at
+accessible cells, ℚ-rank n − coverage (measured), so full-rank + coverage ≥ 2 never
+coexist in the census. (2) Cells DO exhibit coverage above the G82 threshold (coverage 4 >
+s* ≈ 2.7 at (16,193) order-8 embeddings) — but only by shedding exactly that much rank,
+i.e. the escape the fence permits and the forcing direction cannot use. (3) At the prize
+cell the embedding has exact order n by construction, where measured coverage ≡ 1: the
+coverage-forcing route has no fuel where it matters. The transversality seam's live
+content remains the census-side asymptotic question (does the coverage = ord/2 /
+rank = n − coverage law persist at n = 2^30 primitive cells — plausibly yes by the
+periodicity mechanism), now with its finite-cell structure completely mapped.
+
+**HONEST SCOPE.** Laws 1–3 are measured (complete finite enumerations), the fence is a
+theorem; the asymptotic persistence is open. No bound on M; CORE remains OPEN / ON-BGK.
+No axioms, no sorry.
