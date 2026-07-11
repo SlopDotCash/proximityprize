@@ -717,12 +717,22 @@ C_12(r)=sum_t #{y in G:2*y-t in G}
 
 This is a joint alignment problem between a shifted cyclotomic intersection row and an adjacent
 subset-difference row.  The formal two-cell no-go shows that masses, square masses, Cauchy, and
-separate Gram information do not determine that alignment.  Published Johnson-slice
+separate Gram information do not determine that alignment.  The exact row masses define the
+single centered numerator `A_r=q*C_12-n^2*C(n,r)C(n,r-1)`; both production gates are lower bounds
+on `A_5,A_6`, with mean products of exactly 319 and 374 bits.  Published Johnson-slice
 hypercontractivity controls symmetric slice walks, while multilinear exponential-sum estimates
 require source/product entropy; neither directly supplies this arithmetic pushforward correlation
 at the exact production constants.  See the primary discussions of the Johnson/multislice setting
 in [Filmus--O'Donnell--Wu](https://arxiv.org/abs/1809.03546) and of weighted multilinear finite-
 field sums in [Kerr--Macourt](https://arxiv.org/abs/1901.00975).
+
+The formal Johnson audit pinpoints the mismatch with the first literature family.  Mark-forgetting
+on one pointed subset fibre is rank one, with the entire zero-sum mark space in its kernel; the
+exact `(1,-1)` witness defeats every finite pointed-energy bound based only on the unpointed
+projection.  Fresh weight one occupies the trivial mark direction, while the fresh weight-three
+residual keeps a `2*x` colour twist.  Thus a standard symmetric slice walk cannot see the needed
+phase-dependent component.  A viable representation-theoretic replacement would have to be a
+pointed, dilation-coloured Johnson scheme and would still face the `W_G`--`R_r` alignment theorem.
 
 The G189--G193 first-collision route does not transfer this saving from the repetition sector.
 Although the exact G190 polarization gives formal `29/30` and `41/42` cancellation gates, the

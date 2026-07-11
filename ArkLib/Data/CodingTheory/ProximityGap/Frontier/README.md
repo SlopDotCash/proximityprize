@@ -144,8 +144,15 @@ global decoded-family invariant coupling the unobserved partner.
 five-set theorem separately to endpoint zero and endpoint one: each fixed-endpoint interaction
 graph has four dominating centres, so their union has cardinality at most eight.  Outside this
 union, both endpoints of every matched pair have same-oriented `K`-overlaps with centre endpoints.
-The one-endpoint blindness is therefore removed at the cost of enlarging four centres to eight;
-the next algebraic target is a two-cross-equation reconstruction of the outside original secant.
+The one-endpoint blindness is therefore removed at the cost of enlarging four centres to eight.
+`_P1TwoEndpointCentreReconstruction.lean` closes the next algebraic target exactly.  Evaluating a
+cross-secant at its outside scalar recovers that endpoint's decoded polynomial.  Therefore the two
+same-oriented routed cross-secants (even when they use different centres) recover both outside
+decoded polynomials and factor the original matched secant; the ordered pair of cross-secants is
+injective in the outside lifted pair.  Reconstruction is no longer the residual.  The live P1
+socket is a bounded-multiplicity theorem for large-`K` cross-secants through the sixteen centre
+endpoints, or a global compatibility invariant that bounds the number of such reconstructed
+ordered pairs.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
@@ -445,7 +452,17 @@ Thus the live bound is a signed boundary-profile estimate, not a heuristic covar
 `C_12=sum_t W_G(t)*R_r(t)`, where `W_G(t)=#{y in G:2*y-t in G}` is a literal shifted cyclotomic
 intersection row and `R_r` is the adjacent subset-difference row.  A sharp two-cell no-go proves
 that masses, square masses, nonnegativity, Cauchy, and separate Gram diagonals cannot force this
-inner product: the missing theorem is joint arithmetic alignment of the two actual rows.
+inner product.  Their exact masses are `n^2` and `C(n,r)C(n,r-1)`; subtracting the mean product
+defines one centered alignment `A_r`, and both production gates are formal lower bounds on
+`A_5,A_6`.  The forced mean terms have 319 and 374 bits respectively.  The missing theorem is
+joint arithmetic alignment of the two actual rows.
+`_BGKLateNewtonJohnsonBoundaryNoGo.lean` audits the tempting slice-spectral shortcut.  On each
+pointed subset fibre, forgetting the mark is rank one: the constant direction has eigenvalue equal
+to the fibre size and every zero-sum direction lies in its kernel.  The exact variance identity and
+the witness `(1,-1)` rule out every finite full-energy bound from the unpointed projection,
+including the `10.5/12.5` constants.  The physical bridge explains the obstruction: fresh weight
+one is mark-independent, but fresh weight three retains the nontrivial `sum(T)+2*x` twist.  A
+surviving Johnson theory must be pointed and colour-sensitive, then still use subgroup arithmetic.
 `_BGKFirstCollisionCovarianceLedgerBridge.lean` audits the adjacent G189--G193 repetition route.
 It proves the exact `29/30` and `41/42` internal cancellation thresholds, but also the correct
 deletion identity

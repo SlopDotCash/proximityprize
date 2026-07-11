@@ -798,7 +798,31 @@ Thus `C_12` is the alignment of a shifted cyclotomic-intersection row with an ad
 subset-difference row.  A formal two-cell extremizer shows that identical masses and individual
 square masses allow the cross inner product to range from zero to the full product.  Consequently
 nonnegativity, Cauchy, separate Gram diagonals, and the regular-simplex pair law cannot prove the
-required lower bound without a joint placement theorem for these two actual rows.
+required lower bound without a joint placement theorem for these two actual rows.  Their exact
+masses are `n^2` and `C(n,r)C(n,r-1)`.  Defining
+
+```text
+A_r = q*C_12 - n^2*C(n,r)*C(n,r-1)
+```
+
+gives exact centered forms of both production gates.  At `n=2^30`, the two forced mean products
+lie in `(2^318,2^319)` and `(2^373,2^374)` respectively; these sizes do not control the sign or
+placement of `A_5,A_6`.
+
+The ordinary Johnson/slice spectrum is not that joint theorem.  In
+`_BGKLateNewtonJohnsonBoundaryNoGo.lean`, forgetting a mark on a fixed subset fibre is the rank-one
+up--down Gram map.  It obeys the exact variance identity
+
+```text
+2*k*sum_i f_i^2 = 2*(sum_i f_i)^2 + sum_(i,j)(f_i-f_j)^2.
+```
+
+The constant direction has eigenvalue `k`, while every zero-sum marked vector is killed; `(1,-1)`
+therefore refutes any finite comparison of pointed energy with mark-forgotten energy, in particular
+at `10.5` or `12.5`.  Under the actual physical equivalence, fresh weight one is mark-independent
+after insertion, whereas fresh weight three carries the twist `sum(T)+2*x`.  A useful slice theory
+must retain that pointed colour and exploit its production subgroup phase; unpointed Johnson
+hypercontractivity alone is structurally blind.
 
 The repetition covariance route has also been calibrated exactly.
 `_BGKFirstCollisionCovarianceLedgerBridge.lean` proves the abstract G190 polarization and shows

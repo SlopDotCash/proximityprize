@@ -2706,6 +2706,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterThirdPencilE
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterTransverseHallDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterTriangleRootLinearNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterTwoCoverWindow
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1TwoEndpointCentreReconstruction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P2NoExcessSoftCeilingDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P2SignedValueCumulantResum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P2ZqIrreducibilityNoGo

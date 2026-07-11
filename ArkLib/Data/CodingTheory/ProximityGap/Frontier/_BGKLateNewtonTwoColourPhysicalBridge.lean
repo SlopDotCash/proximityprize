@@ -48,6 +48,7 @@ open ArkLib.ProximityGap.Frontier.BGKLateNewtonDominantPairSocket
 open ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers
 open ArkLib.ProximityGap.Frontier.BGKCenteredTrajectoryContraction
 open ArkLib.ProximityGap.Frontier.BGKRepeatedSectorNewtonAbsorption
+open ArkLib.ProximityGap.Round4CharacterSum
 
 /-! ## Generic signed-fibre identity -/
 
@@ -330,7 +331,7 @@ theorem pointedLabelSigmaFiber_eq_mul_labelSubsetFiber
   intro S _hS
   have hScard : S.1.card = d := (Finset.mem_powersetCard.mp S.2).2
   by_cases hsum : labelSubsetSum G d S = y
-  · simp [pointedLabelSigmaSum, hsum, Fintype.card_coe, hScard]
+  · simp [pointedLabelSigmaSum, hsum, hScard]
   · simp [pointedLabelSigmaSum, hsum]
 
 /-! ### Removing the labels -/
@@ -378,13 +379,14 @@ theorem mem_valueSubsetToLabel (G : Finset F) (d : Nat) (A : ValueSubsetAt G d)
     x ∈ (valueSubsetToLabel G d A).1 ↔ x.1 ∈ A.1 := by
   classical
   unfold valueSubsetToLabel
-  simp only [Finset.mem_map, Finset.mem_attach, exists_const]
+  simp only [Finset.mem_map, Finset.mem_attach]
   constructor
-  · rintro ⟨a, ha, hax⟩
-    have haeq : a = x.1 := congrArg (fun z : {u : F // u ∈ G} => z.1) hax
-    simpa [haeq] using ha
+  · rintro ⟨a, _ha, hax⟩
+    have haeq : a.1 = x.1 := congrArg (fun z : {u : F // u ∈ G} => z.1) hax
+    simpa [haeq] using a.2
   · intro hx
-    refine ⟨x.1, hx, ?_⟩
+    let a : {u : F // u ∈ A.1} := ⟨x.1, hx⟩
+    refine ⟨a, by simp, ?_⟩
     apply Subtype.ext
     rfl
 
@@ -424,6 +426,26 @@ theorem labelValueSubsetEquiv_phase (G : Finset F) (d : Nat) (S : SubsetAt G d) 
       S.1.map (labelToValueEmbedding G) from rfl]
   rw [Finset.sum_map]
   rfl
+
+/-- Labelled and ordinary value-subset sum fibres have the same cardinality. -/
+theorem labelSubsetFiber_eq_valueSubsetFiber (G : Finset F) (d : Nat) (y : F) :
+    phaseFiberCount (labelSubsetSum G d) y =
+      phaseFiberCount (valueSubsetSum G d) y := by
+  classical
+  let e : {S : SubsetAt G d // labelSubsetSum G d S = y} ≃
+      {S : ValueSubsetAt G d // valueSubsetSum G d S = y} :=
+    (labelValueSubsetEquiv G d).subtypeEquiv fun S => by
+      rw [labelValueSubsetEquiv_phase G d S]
+  simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
+
+/-- The literal subset-sum phase fibre is the existing `subsetSumCount`. -/
+theorem valueSubsetFiber_eq_subsetSumCount (G : Finset F) (d : Nat) (y : F) :
+    phaseFiberCount (valueSubsetSum G d) y = subsetSumCount G d y := by
+  classical
+  unfold phaseFiberCount valueSubsetSum subsetSumCount
+  rw [Finset.card_filter]
+  rw [Finset.card_filter]
+  rw [Finset.sum_subtype (G.powersetCard d) (fun _ => Iff.rfl)]
 
 /-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
 def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (_hr : 0 < r) :
@@ -495,6 +517,24 @@ theorem freshOneFiber_eq_pointedLabelSubsetFiber (G : Finset F) (r : Nat) (y : F
       rw [freshPointedEquiv_phase G r z]
       rfl
   simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
+
+/-- **Fresh marked joins are pointed `(r+1)`-subsets.**  Every subset in the sum fibre has
+exactly `r+1` possible marked points. -/
+theorem freshOneFiber_eq_mul_subsetSumCount (G : Finset F) (r : Nat) (y : F) :
+    phaseFiberCount (freshOnePhase G r) y =
+      (r + 1) * subsetSumCount G (r + 1) y := by
+  calc
+    phaseFiberCount (freshOnePhase G r) y =
+        phaseFiberCount (pointedLabelSubsetSum G (r + 1)) y :=
+      freshOneFiber_eq_pointedLabelSubsetFiber G r y
+    _ = phaseFiberCount (pointedLabelSigmaSum G (r + 1)) y :=
+      pointedLabelSubsetFiber_eq_sigmaFiber G (r + 1) y
+    _ = (r + 1) * phaseFiberCount (labelSubsetSum G (r + 1)) y :=
+      pointedLabelSigmaFiber_eq_mul_labelSubsetFiber G (r + 1) y
+    _ = (r + 1) * phaseFiberCount (valueSubsetSum G (r + 1)) y := by
+      rw [labelSubsetFiber_eq_valueSubsetFiber]
+    _ = (r + 1) * subsetSumCount G (r + 1) y := by
+      rw [valueSubsetFiber_eq_subsetSumCount]
 
 /-- Restricted phase of the repeated part of `U2`. -/
 noncomputable def repeatedTwoPhase (G : Finset F) (r : Nat)
@@ -597,6 +637,18 @@ theorem twoColourPhysicalProfile_eq_freshOne_sub_freshThree
         phaseFiberCount (freshThreePhase G r) y := by
   rw [twoColourPhysicalProfile_eq_fresh_sub_repeated G (by omega) y,
     repeatedTwoFiber_eq_freshThreeFiber G hr y]
+
+/-- **Actionable physical form.**  The dominant two-colour packet is the pointed ordinary
+`(r+1)`-subset histogram minus the fresh weight-three diagonal residual. -/
+theorem twoColourPhysicalProfile_eq_subsetSum_sub_freshThree
+    (G : Finset F) {r : Nat} (hr : 1 < r) (y : F) :
+    twoColourPhysicalProfile G r y =
+      (r + 1 : Int) * (subsetSumCount G (r + 1) y : Int) -
+        phaseFiberCount (freshThreePhase G r) y := by
+  rw [twoColourPhysicalProfile_eq_freshOne_sub_freshThree G hr y,
+    freshOneFiber_eq_mul_subsetSumCount]
+  push_cast
+  rfl
 
 /-- Fourier-side product form `p1*e_r-p2*e_(r-1)`. -/
 theorem twoColourPeriod_eq_powerSum_esymm
