@@ -3396,6 +3396,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ57TransportWire
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ58RateQuarterCurveEventScope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ59EmptyMiddle
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ60Dictionary
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ60TwoRamp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ9ChannelRankWall
