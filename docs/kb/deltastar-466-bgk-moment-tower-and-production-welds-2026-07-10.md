@@ -71,3 +71,24 @@ input for the δ* floor itself.
   but decays with p/n²: n=16 crosses 1 at p/n² ≈ 8 (0.31 at p/n² = 30); n=32: 83 → 38 → 23
   at p/n² = 12/26/64. Prize regime p/n² = 2⁹⁸: numerics support truth; excess grows with n at
   fixed p/n², which IS the certification difficulty. The weld tolerates ratio ≤ 32.
+
+## Addendum 2: exponent comparison + terminal state (2026-07-11)
+
+Landed after the first addendum: coset amplification (`_BGKCosetAmplification.lean`, threshold
+9→7), the depth-6 amplified no-go (`_BGKDepthSixAmplifiedNoGo.lean`, threshold EXACTLY 7), and
+the consolidated residual `DepthSevenFlatnessResidual` (`_BGKDepthSevenFlatnessResidual.lean`)
+with both consumers proven.
+
+**Exponent ladder for `M(n) = max‖η_b‖`, `n = 2³⁰` (δ in `M ≤ n^{1−δ}`):**
+- trivial: δ = 0 (`M = n`).
+- published SOTA (BGK/di Benedetto): δ ≈ 0.011 — machine-checked INSUFFICIENT for the prize
+  (`_BGKSOTAInsufficiency.lean`) AND out of regime (valid `n ≳ q^{1/4}`; prize `n = q^{0.19}`).
+- **the depth-five lane's nine-bit target (this session): δ = 0.15** (`M ≤ n^{0.85} = 2²⁵·⁵`)
+  ⟸ `DepthSevenFlatnessResidual` — 14× the published exponent, 3.3× less than Paley.
+- full prize floor: δ = 1/2 − o(1) (Paley-graph conjecture scale).
+
+**Terminal state of the goal "prove BGK":** the condition requires cancellation exponents
+(0.15 for the lane, 0.5 for the prize) in a regime (`n = q^{0.19}`) where the entire published
+literature — not merely the formalized subset — provides none. Machine-checked in-tree: SOTA
+insufficiency + regime exclusion. No agent session can honestly discharge it; the residual is
+the sharp, fully-consumed, numerically-supported handoff point.
