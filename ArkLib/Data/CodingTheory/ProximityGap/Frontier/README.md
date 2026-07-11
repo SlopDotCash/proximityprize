@@ -13,7 +13,18 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 
 ## Live targets (2026-07-01)
 
-**The current campaign is #466.** The ranked live frontier is
+**The current campaign is #466.**
+
+> **PRIMARY ENTRY POINT (rate-1/2 strip route, 2026-07-11):**
+> `docs/kb/deltastar-466-one-question-map-2026-07-11.md` — THE one-question state. The whole SYZ arc
+> has converged: the conditional δ* bracket now depends on exactly **three open Props**
+> (`uniformSylvester` reduced to the Hilbert–Burch gap `δ₂−δ₁ ≤ 1`; `StripSyzygyControlledCeiling`;
+> `hrank`), each a face of the **syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**, which
+> SYZ49 identifies with the BGK level set. The entire μ-basis classical column beneath F1 is now
+> proved (SYZ61→SYZ65). Read that map first, then the SYZ54+SYZ67 addenda in
+> `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6.
+
+The ranked live frontier (CORE Paley/BGK line) is
 `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 (as re-ranked by the §14/§15 round logs) and
 `../PROXIMITY_PRIZE_WORKBENCH.lean` §5 — go there for what to attack; this README only records
 the status of the original #334-era lane files below.

@@ -678,6 +678,82 @@ Paley/BGK line of §6/§42. It supersedes no earlier result; it packages them.
 
 ---
 
+### §6 addendum — 2026-07-11 (SYZ67: **the one-question state** — canonical consolidation)
+
+> **Primary entry point:** `docs/kb/deltastar-466-one-question-map-2026-07-11.md` is now THE single
+> map of the open core (formal Lean name for every face, exact relations, proven surrounding theory,
+> empirical status, the unity argument). This addendum is the narrative; the map is the reference.
+
+All items in-tree on `research/proximity-prize` (fork tip `f71099aa6`, SYZ66). δ* remains **OPEN /
+ON-BGK**; nothing here is a closure. This addendum supersedes no earlier result — it records the
+point of **total convergence** the SYZ arc reached after SYZ54.
+
+- **The μ-basis classical chain is COMPLETE and unconditional (SYZ61→SYZ65, ~1000 Mathlib-worthy
+  lines).** The entire commutative-algebra column under the imbalance bound — once a stack of named
+  textbook Props — is now proved Lean theory, all axiom-clean:
+  - **SYZ61** (`9cca95f2a`, `_SYZ61MuBasisExistence.lean`) `syzygyKernel_free_rank_two`: the syzygy
+    kernel of a coprime triple is `Module.Free` of `finrank = 2` (rank–nullity over the domain
+    `K[X]`). UNCONDITIONAL.
+  - **SYZ62** (`623aaeb4b`, `_SYZ62GradedExchange.lean`): product-degree grading `pdeg` + leading
+    vector `lv`; reduces two-ramp generation to the single `GradedExchange` step (multi-step
+    generation `span_of_gradedExchange` machine-checked via well-founded recursion on `WithBot ℕ`).
+  - **SYZ63** (`6074262f8`, `_SYZ63ExchangeStep.lean`) `exists_gradedExchange` /
+    `syzygyKernel_muBasis_span`: `GradedExchange` **discharged** for every rank-2 submodule of
+    `K[X]³` (leading-vector exchange, `no_three_independent_lv` rank descent). The μ-basis
+    *generation* statement is now a theorem, not a `Prop`. UNCONDITIONAL.
+  - **SYZ64** (`d401c974e`, `_SYZ64WindowBookkeeping.lean`) `twoRamp_windowKD`: the μ-basis
+    **window isomorphism** `SYZ60.MuBasisWindowIso` — hence `SYZ44.TwoRamp` — **discharged**
+    (`pdeg_combo_eq` no-cancellation ⇒ injective windowed map). UNCONDITIONAL.
+  - **SYZ65** (`5c8782254`, `_SYZ65RankNullity.lean`) `rankNullity_windowKD`,
+    `degree_sum_unconditional`: `SYZ44.RankNullity` (degree-controlled Bézout surjectivity via
+    cofactor-reduction descent) **discharged** ⇒ the **degree-sum law `δ₁+δ₂ = a+b+c` is now
+    UNCONDITIONAL** (given only coprimality + generator degrees).
+  So `SYZ44.degree_sum_of_hilbert`, formerly conditional on `RankNullity ∧ TwoRamp`, is a theorem.
+  With the concurrent-swarm **SYZ53** exact identity `ι = ⌊(δ₂−δ₁)/2⌋`, the whole imbalance ladder
+  collapses to one crisp **Hilbert–Burch** statement: *the μ-basis of a balanced pairwise-coprime
+  band triple has generator gap `δ₂−δ₁ ≤ 1`.* That is the entire open content on the Sylvester side.
+
+- **The SYZ66 sharp cap — 5 free scalars at strip radius, 6 forces syzygy (`f71099aa6`,
+  `_SYZ66BadCountBridge.lean`).** SYZ60 collapsed the per-stack counting dictionary to one scalar
+  residual `BadCountCeiling` (pick the admissible band's upper edge `2³⁰`; equivalence
+  `countingDictionary_iff_badCountCeiling`). SYZ66 composes the G87 `mcaEvent`→syndrome→pencil
+  bridge with the G86 rank-collapse dichotomy **at the strip radius** and proves the **independent /
+  generic-position regime is capped at a constant 5** (`strip_independent_cap`,
+  `r·(715827884−k)+1 ≤ 2(2³⁰−k)`, `k ≤ 2²⁹` ⟹ `r ≤ 5`; **sharp** — `r=5` realizable, `r=6`
+  impossible for every `k`). Dually any `≥6` bad scalars **force a syzygy** among the bridge
+  functionals (`strip_count_ge_six_forces_syzygy`). So the **whole `2³⁰` budget lives in
+  syzygy-carrying stacks**; the residual is exactly `[6, 2³⁰]` and equals the single Prop
+  `StripSyzygyControlledCeiling` (`badCountCeiling_of_syzygyControlled` discharges `≤5` from the
+  cap). The independent bulk is closed unconditionally; the dependent bulk is the surviving gap.
+
+- **The total-convergence statement.** After SYZ61→SYZ66 the rate-`1/2` conditional δ* bracket
+  `357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰` depends on **exactly three open Props**, and each is a
+  **face of one object — the syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**:
+  1. **`uniformSylvester`** (F1) — reduced to the Hilbert–Burch gap `δ₂−δ₁ ≤ 1` on the balanced
+     band-realizable interior; the classical column beneath it is proved (SYZ61–65).
+  2. **`StripSyzygyControlledCeiling`** (F2, ≡ `BadCountCeiling` ≡ `CountingDictionary`) — the
+     dependent bulk `[6, 2³⁰]`; independent regime proved capped at 5 (SYZ66).
+  3. **`hrank`** (F3) — the union-rank realizability residue (SYZ22/SYZ42); cross-witness chaining
+     proved a NO-GO in the strip (SYZ56).
+  **These are one question.** SYZ49 (`_SYZ49CyclotomicGcd.lean`) proved the governing quantity of F1
+  — the max level set of `R(ω)=W_BC/W_AC` on `μ_n` — **is literally the BGK additive-log-phase
+  coincidence bound**, the same wall as the CORE Paley/BGK object; F2 (dependence-count) and F3
+  (span) are the independence and generation sides of the rank of the *same* family `{Sᵢ}`, with
+  their independent/chaining sides proved and their dependent/adversarial bulks open. This is the
+  **BGK wall in its final coordinates**: three combinatorial faces of one level-set statement.
+
+- **Honest production wire list (as it stands).** Conditional bracket (ceiling half unconditional
+  via SYZ6) depends on **exactly**: (F1) `StripMasterHypothesis''.uniformSylvester` [open content
+  `δ₂−δ₁ ≤ 1` = BGK level-set]; (F2) `StripSyzygyControlledCeiling` [open bulk `[6,2³⁰]`]; (F3)
+  `hrank` union-rank; (support) SYZ18 `twist_pair_indep` [landed substrate]. **Everything else is
+  proved theory** — merged branch, degree-sum law, TwoRamp, RankNullity, μ-basis
+  freeness/rank/span/window, SYZ46 census-bridge, the SYZ49 BGK identification, and the SYZ58
+  rate-`1/4` curve-event scope barrier (`epsMCACurve` ≠ prize object; a curve bound would
+  contradict the proven `3/8 ≤ mcaDeltaStar` — barrier, not a pin). **CORE remains OPEN / ON-BGK**;
+  no BGK-free strip and no unconditional δ*.
+
+---
+
 ## 7. The synthesis essays (conceptual scaffolding)
 
 - **Shaw value & the four doors** (`shaw-value-missing-mathematics-2026-06-18`) — prize ⟺
