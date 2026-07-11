@@ -95,6 +95,12 @@ P1.  Hence repeated-polynomial witness pairs cannot reach the predecessor thresh
 any genuine over-budget family must use pairs with different decoded polynomials whose canonical
 secant retains only the forced `K`-overlap, returning exactly to the live simultaneous-geometry
 problem.
+The pair-local side is now separated cleanly in `exists_threshold_pair_with_intersection_core`:
+every packed `K`-core extends to two `T`-element agreement sets with intersection exactly that
+core.  Their union has size `2T-K=917154476<N`, leaving `156587348` coordinates of slack.  Thus
+one differing-polynomial secant has ample room to support two predecessor witnesses; the
+obstruction is exclusively simultaneous compatibility across the half-billion matched pairs,
+not the geometry or counting of one pair.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

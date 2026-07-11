@@ -26,17 +26,19 @@ two gives the full `L2` energy of `J_6` and `J_7` as one signed quadratic form, 
 separate cross-term proofs.  Removing frequency zero subtracts the exact ordered-injective DC
 masses `(6! * C(n,6))^2` and `(7! * C(n,7))^2`.
 
-The sign ledger is alternating.  Thus the favorable covariances are exactly the opposite-parity
-join pairs: nine unordered pairs at depth six and twelve at depth seven.  Triangle inequality or
-Young discards all of this favorable mass.  Finally, factorial scaling cancels the `(r+1)^2`
-factor in the compact transition ledgers.  The distributed late obligations become exactly
+The sign ledger is alternating.  Thus opposite-parity join pairs carry the negative algebraic
+coefficient in the **full-frequency raw collision form**: nine unordered pairs at depth six and
+twelve at depth seven.  This is not a sign claim about an individual centered covariance; DC
+centering can make either parity class favorable or adverse.  Triangle inequality or Young drops
+the entire coefficient-sign separation.  Finally, factorial scaling cancels the `(r+1)^2` factor
+in the compact transition ledgers.  The distributed late obligations become exactly
 
 `1000*n*E_6 <= 10521*(n-5)^2*E_5`,
 
 `1000*n*E_7 <= 12525*(n-6)^2*E_6`,
 
 where `E_r=(r!)^2*Delta_r` is the ordered-injective nonzero energy ledger.  This is an exact
-socket, not an estimate of the open favorable covariances.  Issue #466.
+socket, not an estimate of the open signed cancellation.  Issue #466.
 -/
 
 set_option autoImplicit false
@@ -284,22 +286,24 @@ noncomputable def lateNewtonSignedCollisionForm (G : Finset F) (d : Nat) : Int :
   ∑ i : Fin d, ∑ j : Fin d,
     newtonSign i * newtonSign j * lateNewtonCollisionMatrix G d i j
 
-/-- Same-sign (unfavorable) collision mass. -/
-noncomputable def lateNewtonSameSignMass (G : Finset F) (d : Nat) : Int :=
+/-- Raw collision mass carrying a positive coefficient in the full-frequency quadratic form. -/
+noncomputable def lateNewtonSameCoefficientSignMass (G : Finset F) (d : Nat) : Int :=
   ∑ i : Fin d, ∑ j : Fin d,
     if newtonSign i = newtonSign j then lateNewtonCollisionMatrix G d i j else 0
 
-/-- Opposite-sign (favorable) collision mass. -/
-noncomputable def lateNewtonFavorableMass (G : Finset F) (d : Nat) : Int :=
+/-- Raw collision mass carrying a negative coefficient in the full-frequency quadratic form. -/
+noncomputable def lateNewtonOppositeCoefficientSignMass (G : Finset F) (d : Nat) : Int :=
   ∑ i : Fin d, ∑ j : Fin d,
     if newtonSign i ≠ newtonSign j then lateNewtonCollisionMatrix G d i j else 0
 
-/-- Exact signed split: triangle/Young keeps the first mass and discards the second. -/
-theorem lateNewtonSignedCollisionForm_eq_same_sub_favorable (G : Finset F) (d : Nat) :
+/-- Exact raw signed split.  It classifies algebraic coefficients, not signs of centered
+covariances. -/
+theorem lateNewtonSignedCollisionForm_eq_sameSign_sub_oppositeSign (G : Finset F) (d : Nat) :
     lateNewtonSignedCollisionForm G d =
-      lateNewtonSameSignMass G d - lateNewtonFavorableMass G d := by
+      lateNewtonSameCoefficientSignMass G d - lateNewtonOppositeCoefficientSignMass G d := by
   classical
-  unfold lateNewtonSignedCollisionForm lateNewtonSameSignMass lateNewtonFavorableMass
+  unfold lateNewtonSignedCollisionForm lateNewtonSameCoefficientSignMass
+    lateNewtonOppositeCoefficientSignMass
   rw [← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -309,8 +313,8 @@ theorem lateNewtonSignedCollisionForm_eq_same_sub_favorable (G : Finset F) (d : 
   unfold newtonSign
   by_cases hi : Even i.val <;> by_cases hj : Even j.val <;> simp [hi, hj]
 
-/-- Upper-triangular favorable pairs, used only to audit the sign ledger. -/
-def favorableUpperPairs (d : Nat) : Finset (Fin d × Fin d) :=
+/-- Upper-triangular negative-coefficient pairs, used only to audit the raw sign ledger. -/
+def oppositeSignUpperPairs (d : Nat) : Finset (Fin d × Fin d) :=
   (Finset.univ ×ˢ Finset.univ).filter
     fun ij => ij.1.val < ij.2.val ∧ newtonSign ij.1 ≠ newtonSign ij.2
 
@@ -324,11 +328,11 @@ theorem depthSeven_sign_vector :
   funext i
   fin_cases i <;> decide
 
-/-- There are nine favorable unordered covariances among the six Newton joins. -/
-theorem favorableUpperPairs_six_card : (favorableUpperPairs 6).card = 9 := by decide
+/-- There are nine unordered negative-coefficient pairs among the six Newton joins. -/
+theorem oppositeSignUpperPairs_six_card : (oppositeSignUpperPairs 6).card = 9 := by decide
 
-/-- There are twelve favorable unordered covariances among the seven Newton joins. -/
-theorem favorableUpperPairs_seven_card : (favorableUpperPairs 7).card = 12 := by decide
+/-- There are twelve unordered negative-coefficient pairs among the seven Newton joins. -/
+theorem oppositeSignUpperPairs_seven_card : (oppositeSignUpperPairs 7).card = 12 := by decide
 
 theorem lateNewtonPacket_six_explicit (psi : AddChar F Complex) (G : Finset F) (b : F) :
     lateNewtonPacket psi G 6 b =
@@ -588,7 +592,7 @@ end FactorialScaling
 #print axioms sum_phaseFamilyPeriod_mul_conj_eq_crossCollision
 #print axioms newtonJoinPeriod_eq_powerSum_mul_esymm
 #print axioms sum_linearCombination_mul_conj_eq_signedCovarianceForm
-#print axioms lateNewtonSignedCollisionForm_eq_same_sub_favorable
+#print axioms lateNewtonSignedCollisionForm_eq_sameSign_sub_oppositeSign
 #print axioms sum_lateNewtonPacket_mul_conj_eq_signedCollision
 #print axioms compactTransitionLedger_iff_factorialScaledEnergy
 #print axioms production_halfUnit_five_iff_orderedEnergy

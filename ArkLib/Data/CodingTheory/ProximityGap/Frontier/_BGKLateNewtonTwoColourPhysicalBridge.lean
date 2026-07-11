@@ -46,6 +46,8 @@ namespace ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge
 open ArkLib.ProximityGap.Frontier.BGKLateNewtonSignedCovariance
 open ArkLib.ProximityGap.Frontier.BGKLateNewtonDominantPairSocket
 open ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers
+open ArkLib.ProximityGap.Frontier.BGKCenteredTrajectoryContraction
+open ArkLib.ProximityGap.Frontier.BGKRepeatedSectorNewtonAbsorption
 
 /-! ## Generic signed-fibre identity -/
 
@@ -65,16 +67,15 @@ noncomputable def signedPhaseFiberProfile (phi : X -> T) (chi : Y -> T) (t : T) 
 /-- Cross collisions are the fibrewise inner product of the two physical histograms. -/
 theorem phaseCrossCollisionCount_eq_fiberInner (phi : X -> T) (chi : Y -> T) :
     phaseCrossCollisionCount phi chi =
-      sum t : T, phaseFiberCount phi t * phaseFiberCount chi t := by
+      ∑ t : T, phaseFiberCount phi t * phaseFiberCount chi t := by
   classical
   unfold phaseCrossCollisionCount phaseFiberCount
   calc
-    (sum x : X, sum y : Y, if phi x = chi y then 1 else 0) =
+    (∑ x : X, ∑ y : Y, if phi x = chi y then 1 else 0) =
         ((Finset.univ ×ˢ Finset.univ).filter
           (fun p : X × Y => phi p.1 = chi p.2)).card := by
       rw [Finset.card_filter, Finset.sum_product]
-      simp
-    _ = sum t : T,
+    _ = ∑ t : T,
         ((Finset.univ.filter fun x : X => phi x = t) ×ˢ
           (Finset.univ.filter fun y : Y => chi y = t)).card := by
       rw [← Finset.card_biUnion]
@@ -84,7 +85,7 @@ theorem phaseCrossCollisionCount_eq_fiberInner (phi : X -> T) (chi : Y -> T) :
           Finset.mem_biUnion]
         constructor
         · intro h
-          exact ⟨phi p.1, rfl, h⟩
+          exact ⟨phi p.1, rfl, h.symm⟩
         · rintro ⟨t, hphi, hchi⟩
           exact hphi.trans hchi.symm
       · intro a _ha b _hb hab
@@ -92,7 +93,7 @@ theorem phaseCrossCollisionCount_eq_fiberInner (phi : X -> T) (chi : Y -> T) :
         intro p hp hq
         simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and] at hp hq
         exact hab (hp.1.symm.trans hq.1)
-    _ = sum t : T,
+    _ = ∑ t : T,
         (Finset.univ.filter fun x : X => phi x = t).card *
           (Finset.univ.filter fun y : Y => chi y = t).card := by
       apply Finset.sum_congr rfl
@@ -102,29 +103,39 @@ theorem phaseCrossCollisionCount_eq_fiberInner (phi : X -> T) (chi : Y -> T) :
 /-- The signed collision form is exactly the square mass of the signed physical profile. -/
 theorem sum_signedPhaseFiberProfile_sq_eq_crossCollisionForm
     (phi : X -> T) (chi : Y -> T) :
-    sum t : T, signedPhaseFiberProfile phi chi t ^ 2 =
+    ∑ t : T, signedPhaseFiberProfile phi chi t ^ 2 =
       (phaseCrossCollisionCount phi phi : Int) +
         phaseCrossCollisionCount chi chi -
           2 * phaseCrossCollisionCount phi chi := by
   have h11 : (phaseCrossCollisionCount phi phi : Int) =
-      sum t : T, (phaseFiberCount phi t : Int) * phaseFiberCount phi t := by
+      ∑ t : T, (phaseFiberCount phi t : Int) * phaseFiberCount phi t := by
     rw [phaseCrossCollisionCount_eq_fiberInner]
     push_cast
     rfl
   have h22 : (phaseCrossCollisionCount chi chi : Int) =
-      sum t : T, (phaseFiberCount chi t : Int) * phaseFiberCount chi t := by
+      ∑ t : T, (phaseFiberCount chi t : Int) * phaseFiberCount chi t := by
     rw [phaseCrossCollisionCount_eq_fiberInner]
     push_cast
     rfl
   have h12 : (phaseCrossCollisionCount phi chi : Int) =
-      sum t : T, (phaseFiberCount phi t : Int) * phaseFiberCount chi t := by
+      ∑ t : T, (phaseFiberCount phi t : Int) * phaseFiberCount chi t := by
     rw [phaseCrossCollisionCount_eq_fiberInner]
     push_cast
     rfl
   unfold signedPhaseFiberProfile
-  simp_rw [sub_sq, Finset.sum_sub_distrib, Finset.sum_add_distrib]
-  rw [h11, h22, h12]
-  ring
+  calc
+    (∑ t : T, ((phaseFiberCount phi t : Int) - phaseFiberCount chi t) ^ 2) =
+        ∑ t : T, (phaseFiberCount phi t : Int) * phaseFiberCount phi t +
+          (phaseFiberCount chi t : Int) * phaseFiberCount chi t -
+            2 * (phaseFiberCount phi t : Int) * phaseFiberCount chi t := by
+      apply Finset.sum_congr rfl
+      intro t _ht
+      ring
+    _ = (phaseCrossCollisionCount phi phi : Int) +
+        phaseCrossCollisionCount chi chi -
+          2 * phaseCrossCollisionCount phi chi := by
+      rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, ← h11, ← h22,
+        ← Finset.mul_sum, ← h12]
 
 end SignedFibres
 
@@ -174,28 +185,25 @@ theorem card_newtonJoin (G : Finset F) (m : Nat) :
   classical
   simp only [NewtonJoin, SubsetAt, Fintype.card_prod, Fintype.card_coe,
     Finset.card_powersetCard, Finset.card_univ]
-  rw [Fintype.card_coe]
 
 /-- Exact zero-frequency source imbalance. -/
 theorem twoColourPeriod_zero (psi : AddChar F Complex) (G : Finset F) (r : Nat) :
     twoColourPeriod psi G r 0 = (twoColourDC G r : Complex) := by
   classical
-  unfold twoColourPeriod newtonJoinPeriod phaseFamilyPeriod twoColourDC
-  simp only [zero_mul, map_zero, Finset.sum_const, Finset.card_univ,
-    nsmul_eq_mul, mul_one, card_newtonJoin]
-  push_cast
-  ring
+  simp [twoColourPeriod, newtonJoinPeriod, phaseFamilyPeriod, twoColourDC,
+    card_newtonJoin]
 
 /-- The weighted collision form is the nonnegative physical square mass. -/
 theorem twoColourCollisionForm_eq_physicalSquare (G : Finset F) (r : Nat) :
-    twoColourCollisionForm G r = sum y : F, twoColourPhysicalProfile G r y ^ 2 := by
+    twoColourCollisionForm G r = ∑ y : F, twoColourPhysicalProfile G r y ^ 2 := by
   unfold twoColourCollisionForm twoColourPhysicalProfile
   rw [sum_signedPhaseFiberProfile_sq_eq_crossCollisionForm]
+  rfl
 
 /-- Full-frequency cross Parseval for the dominant pair. -/
 theorem sum_twoColourPeriod_mul_conj_eq_collisionForm
     {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) (r : Nat) :
-    (sum b : F, twoColourPeriod psi G r b *
+    (∑ b : F, twoColourPeriod psi G r b *
       (starRingEnd Complex) (twoColourPeriod psi G r b)) =
       (Fintype.card F : Complex) * (twoColourCollisionForm G r : Complex) := by
   classical
@@ -214,7 +222,7 @@ theorem sum_twoColourPeriod_mul_conj_eq_collisionForm
 source-cardinality imbalance and nothing else. -/
 theorem sum_nonzero_twoColourPeriod_mul_conj_eq
     {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) (r : Nat) :
-    (sum b in Finset.univ.erase (0 : F), twoColourPeriod psi G r b *
+    (∑ b ∈ Finset.univ.erase (0 : F), twoColourPeriod psi G r b *
       (starRingEnd Complex) (twoColourPeriod psi G r b)) =
       (Fintype.card F : Complex) * (twoColourCollisionForm G r : Complex) -
         (twoColourDC G r : Complex) ^ 2 := by
@@ -231,7 +239,7 @@ noncomputable def centeredTwoColourCollision (G : Finset F) (r : Nat) : Int :=
 /-- The complex Fourier identity is exactly the cast of the integer physical numerator. -/
 theorem sum_nonzero_twoColourPeriod_mul_conj_eq_centeredCollision
     {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) (r : Nat) :
-    (sum b in Finset.univ.erase (0 : F), twoColourPeriod psi G r b *
+    (∑ b ∈ Finset.univ.erase (0 : F), twoColourPeriod psi G r b *
       (starRingEnd Complex) (twoColourPeriod psi G r b)) =
       (centeredTwoColourCollision G r : Complex) := by
   rw [sum_nonzero_twoColourPeriod_mul_conj_eq hpsi]
@@ -254,31 +262,33 @@ theorem dominantPairBudget_iff_crossCollisionLowerBound
       2000 * n * q * C12 >=
         1000 * n * (q * (C11 + C22) - dc ^ 2) -
           cap * (n - 5) ^ 2 * previous := by
-  constructor <;> intro h <;> linarith
+  constructor <;> intro h <;> nlinarith
 
 /-- Exact `r=5` target selected by the dominant-pair socket. -/
 theorem fifthDominantPairBudget_iff_crossCollisionLowerBound
     (q previous C11 C22 C12 dc : Int) :
     FifthDominantPairBudget (fun r => if r = 5 then previous else 0)
         (q * (C11 + C22 - 2 * C12) - dc ^ 2) <->
-      2000 * productionN * q * C12 >=
-        1000 * productionN * (q * (C11 + C22) - dc ^ 2) -
-          10500 * (productionN - 5 : Int) ^ 2 * previous := by
+      2000 * BGKLaterTransitionDefectLedgers.productionN * q * C12 >=
+        1000 * BGKLaterTransitionDefectLedgers.productionN *
+            (q * (C11 + C22) - dc ^ 2) -
+          10500 * (BGKLaterTransitionDefectLedgers.productionN - 5 : Int) ^ 2 * previous := by
   unfold FifthDominantPairBudget
   simp only [if_pos]
-  constructor <;> intro h <;> linarith
+  constructor <;> intro h <;> nlinarith
 
 /-- Exact `r=6` target selected by the dominant-pair socket. -/
 theorem sixthDominantPairBudget_iff_crossCollisionLowerBound
     (q previous C11 C22 C12 dc : Int) :
     SixthDominantPairBudget (fun r => if r = 6 then previous else 0)
         (q * (C11 + C22 - 2 * C12) - dc ^ 2) <->
-      2000 * productionN * q * C12 >=
-        1000 * productionN * (q * (C11 + C22) - dc ^ 2) -
-          12500 * (productionN - 6 : Int) ^ 2 * previous := by
+      2000 * BGKLaterTransitionDefectLedgers.productionN * q * C12 >=
+        1000 * BGKLaterTransitionDefectLedgers.productionN *
+            (q * (C11 + C22) - dc ^ 2) -
+          12500 * (BGKLaterTransitionDefectLedgers.productionN - 6 : Int) ^ 2 * previous := by
   unfold SixthDominantPairBudget
   simp only [if_pos]
-  constructor <;> intro h <;> linarith
+  constructor <;> intro h <;> nlinarith
 
 end Gates
 

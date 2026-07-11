@@ -489,6 +489,78 @@ theorem not_five_nodalLines_all_threshold
   apply not_five_nodalLines_all_of_integralJohnson
     (k := K) (t := T) (by norm_num [K, T]) domain weight hweight hweightInj index hindex
 
+/-! ## Pair-local threshold amplification is combinatorially feasible -/
+
+/-- Two disjoint extensions of prescribed size exist outside `C` whenever the complement has
+twice that many points. -/
+theorem exists_two_disjoint_extensions
+    {X : Type} [Fintype X] [DecidableEq X]
+    (C : Finset X) (d : Nat) (hroom : 2 * d ≤ Fintype.card X - C.card) :
+    ∃ E₀ E₁ : Finset X,
+      E₀ ⊆ Finset.univ \ C ∧ E₁ ⊆ Finset.univ \ C ∧
+      Disjoint E₀ E₁ ∧ E₀.card = d ∧ E₁.card = d := by
+  let U := Finset.univ \ C
+  have hUcard : U.card = Fintype.card X - C.card := by
+    simp [U, Finset.card_sdiff]
+  have hdU : d ≤ U.card := by omega
+  obtain ⟨E₀, hE₀U, hE₀card⟩ := Finset.exists_subset_card_eq hdU
+  have hremain : d ≤ (U \ E₀).card := by
+    rw [Finset.card_sdiff_of_subset hE₀U, hE₀card, hUcard]
+    omega
+  obtain ⟨E₁, hE₁remain, hE₁card⟩ := Finset.exists_subset_card_eq hremain
+  refine ⟨E₀, E₁, hE₀U, hE₁remain.trans Finset.sdiff_subset, ?_, hE₀card, hE₁card⟩
+  exact Finset.disjoint_left.mpr fun x hx₀ hx₁ =>
+    (Finset.mem_sdiff.mp (hE₁remain hx₁)).2 hx₀
+
+/-- Adding disjoint outside extensions to a common core preserves exactly that intersection. -/
+theorem core_union_extensions_inter
+    {X : Type} [Fintype X] [DecidableEq X] (C E₀ E₁ : Finset X)
+    (hE₀ : E₀ ⊆ Finset.univ \ C) (hE₁ : E₁ ⊆ Finset.univ \ C)
+    (hdisj : Disjoint E₀ E₁) :
+    (C ∪ E₀) ∩ (C ∪ E₁) = C := by
+  ext x
+  simp only [Finset.mem_inter, Finset.mem_union]
+  constructor
+  · rintro ⟨hxC | hx₀, hxC' | hx₁⟩
+    · exact hxC
+    · exact hxC
+    · exact hxC'
+    · exact (Finset.disjoint_left.mp hdisj hx₀ hx₁).elim
+  · intro hx
+    exact ⟨Or.inl hx, Or.inl hx⟩
+
+/-- The exact number of coordinates used by two threshold witnesses meeting in a `K`-core. -/
+theorem production_two_threshold_union_size : 2 * T - K = 917154476 := by
+  norm_num [T, K]
+
+/-- Exact remaining ambient slack for one threshold pair. -/
+theorem production_two_threshold_union_slack : N - (2 * T - K) = 156587348 := by
+  norm_num [N, T, K]
+
+/-- **Pair-local amplification exists.**  Every packed `K`-core extends to two subsets of the
+`N=4K` domain, each of cardinality exactly `T`, whose intersection is exactly the original core.
+Thus the threshold obstruction is not local to one differing-polynomial secant; it is the
+simultaneous compatibility of many such pairs. -/
+theorem exists_threshold_pair_with_intersection_core (p : CoreIndex K) :
+    ∃ A B : Finset (Coord K), A.card = T ∧ B.card = T ∧ A ∩ B = core p := by
+  have hroom : 2 * (T - K) ≤ Fintype.card (Coord K) - (core p).card := by
+    rw [coord_card, core_card]
+    norm_num [T, K]
+  obtain ⟨E₀, E₁, hE₀, hE₁, hdisj, hE₀card, hE₁card⟩ :=
+    exists_two_disjoint_extensions (core p) (T - K) hroom
+  refine ⟨core p ∪ E₀, core p ∪ E₁, ?_, ?_,
+    core_union_extensions_inter (core p) E₀ E₁ hE₀ hE₁ hdisj⟩
+  · rw [Finset.card_union_of_disjoint]
+    · rw [core_card, hE₀card]
+      norm_num [T, K]
+    · exact Finset.disjoint_left.mpr fun x hxC hxE =>
+        (Finset.mem_sdiff.mp (hE₀ hxE)).2 hxC
+  · rw [Finset.card_union_of_disjoint]
+    · rw [core_card, hE₁card]
+      norm_num [T, K]
+    · exact Finset.disjoint_left.mpr fun x hxC hxE =>
+        (Finset.mem_sdiff.mp (hE₁ hxE)).2 hxC
+
 end ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 
 open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
@@ -513,3 +585,5 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms production_threshold_deficit
 #print axioms not_five_nodalLines_all_of_integralJohnson
 #print axioms not_five_nodalLines_all_threshold
+#print axioms exists_two_disjoint_extensions
+#print axioms exists_threshold_pair_with_intersection_core
