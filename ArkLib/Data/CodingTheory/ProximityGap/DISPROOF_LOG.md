@@ -25394,3 +25394,38 @@ bound is in-tree (classical Mit'kin/HBK ρ ≪ n^{2/3} shifted-subgroup technolo
 the sharpest named residual this lane creates). **Honest scope.** Even granting small ρ, at
 the prize saddle W = p/K, β = 2 the A-bound sits a factor ≈ n^{1/4}√ρ above the uniform main
 term: crosses √p, does not reach certificate strength. No prize claim. CORE OPEN / ON-BGK.
+
+## [466-G101F-monomial-baseline-grows-g92-kill-blocked] CORRECTION TO G92: the monomial baseline at Johnson-boundary cells GROWS (generalized pencil floor ⌊(n−z)/(a−z)⌋, θ ≈ 1/2 at fixed k, kernel-certified) — the C=3 refutation-in-evidence is RETRACTED (certified monoBaseline ≥ 8 > search 6 at the violation cell; best ratio 23/8 = 2.875) and the G92 kill route is formally blocked at C=3 at its own cell; NEW universal brick: every a-far direction has worstBad ≥ ⌊(n−k)/(a−k)⌋ (2026-07-10)
+
+Lane: G101F Fable (`Frontier/_G101FMonomialBaselineGrowth.lean`, 476 lines, 20 audited decls,
+all `[propext, Classical.choice, Quot.sound]` or subset; kernel `decide` on Fin-32/64 subgroup
+counts, NO native_decide; probe `scripts/probes/probe_g101f_monomial_baseline.py` + outputs
+`_out_g101f_s{1,2,2s,3}.txt`; G92 file docstring carries the correction pointer).
+
+**Mechanism (new).** Generalized pencil floor: a codeword h agreeing with a direction on
+exactly z < a points gives worstBad ≥ ⌊(n−z)/(a−z)⌋ (`worstBad_ge_pencil_div`; G92's
+`worstBad_ge_of_agree_pred` is z = a−1). On μ_n domains the constant codeword agrees with x^j
+on the subgroup of size gcd(j−d, n) (Lagrange, `exists_codeword_agree_card_ge`), so far
+monomials at a ≈ √(nk) carry baseline ≈ 2√(n/k). UNIVERSAL: every a-far direction has
+worstBad ≥ ⌊(n−k)/(a−k)⌋ (`worstBad_ge_div_of_far`); no fixed M survives window room
+(`monoBaseline_gt_of_window_room`).
+
+**The G92 correction (honest).** Certified at the G92 violation cell (n=32, k=4, a=11, μ₃₂):
+monoBaseline ≥ (32−8)/(11−8) = 8 (`monoBaseline_ge_eight_g92cell`, kernel-checked agreement
+count `card_agree_x8_mu32`), so: the planned "monoBaseline ≤ 7" certificate is IMPOSSIBLE
+(`no_le_seven_certificate_g92cell`); `not_spreadExcessLaw_of_floor_beats` can NEVER fire at
+C=3 there (floor ≤ 22 < 24 ≤ 3·baseline, `floor_socket_blocked_c3_g92cell`,
+`g92_kill_route_c3_impossible`); best-known ratio 23/8 = 2.875 < 3 — SpreadExcessLaw 3 is
+back to fully OPEN (the n=16 C=2 refutation also rests on an unproven mono upper bound —
+treat as evidence only).
+
+**Growth data.** Boundary-fit θ ≈ 0.43 (k=2), 0.58 (k=4), n = 16→256, two primes per stage-1
+cell; exact anchor n=8, k=2, q=17, a=4 (coset-exhaustive 17⁵ reps/direction): exact
+monoBaseline = 9, exact spread max = 12, exact boundary ratio 4/3. Winning witnesses at tight
+boundary cells are pure pencils; interior cells beat the pencil 2–8× via mixed-overlap page
+systems. floor/best ≤ 2.75 at every searched cell.
+
+**Honest scope.** Fixed-rate (prize-shape, k = Θ(n)) boundary growth unresolved — the pencil
+floor is O(1) there; no upper bound on monoBaseline exists beyond C(n,a), so every constant C
+is open in BOTH directions: a kill now needs an o(n) UPPER bound on the baseline, survival
+needs spread control against growing baselines. CORE OPEN.

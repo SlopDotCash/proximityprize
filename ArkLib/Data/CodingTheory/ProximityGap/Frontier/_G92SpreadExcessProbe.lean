@@ -32,6 +32,15 @@ directions are exactly the directions with elevated code agreement `agreemax = a
 Caveat: spread values are certified by explicit witnesses; monomial baselines are
 symmetric-effort search lower bounds, so the ratios are evidence, not theorems.
 
+**CORRECTION (2026-07-10, G101F — `_G101FMonomialBaselineGrowth.lean`):** the `n=32, a=11`
+baseline `6` above was a search artifact.  Kernel-checked: `monoBaseline ≥ 8` at that cell
+(`monoBaseline_ge_eight_g92cell`), so the best-known ratio there is `23/8 = 2.875 < 3` and
+the C = 3 refutation-in-evidence is RETRACTED; `SpreadExcessLaw 3` is OPEN.  Moreover the
+kill route below is formally blocked at C = 3 at this cell
+(`g92_kill_route_c3_impossible`), and the monomial baseline provably GROWS at boundary
+cells (generalized pencil floor, θ ≈ 1/2 at fixed k).  The C = 2 refutation (n = 16) also
+rests on an unproven mono upper bound and should be treated as evidence only.
+
 ## What is PROVEN here (axiom-clean, part B)
 
 1. **Invariances of the worst-offset bad-scalar functional** — `worstBad` is invariant under
