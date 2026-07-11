@@ -51329,3 +51329,51 @@ closes SYZ44 `uniformSylvester` only at rate 1/2; production δ* still needs SYZ
 realizability, strip transport, MCAThresholdLedger BGK floor. CORE remains OPEN / ON-BGK; BGK wall
 untouched. All six declarations axiom-clean; focused + locked builds green (8321 jobs). Consumes SYZ44
 `degree_sum_of_hilbert` + SYZ53 `imbalance_eq_gap_div_two`. Referee: `fable_syz54_truegap.{py,out}`.
+
+### [466-G182-dyadic-kernel-ceiling] The depth-`2` kernel-class mass is EXACTLY `n`, unconditionally and in every characteristic: `repRF g n 2 0 = n` — the two-sided dual of G181, removing the `p*` caveat at `r = 2` and isolating the cross-orbit tail as the sole open freedom (2026-07-11)
+
+G181 proved the thinness-forced LOWER bound `n ≤ repRF g n 2 0` (antipodal injection) and flagged,
+honestly, that only the `≥` direction was proved because char-`p` accidents below a saturation
+threshold `p*` inflate `S₀` at depth `≥ 4` (`A(n,4)=3n(n−1)` only stabilises for `p > p*`).
+**G182 removes that caveat at depth `2`** by proving the matching UPPER bound, hence the exact count.
+
+**The mechanism (uniqueness of the order-two element).** A depth-`2` tuple `t : Fin 2 → Fin n`
+lies in the zero-sum fiber iff `g^{t 0} + g^{t 1} = 0`, i.e. `g^{t 1} = -g^{t 0} = g^{t 0+m}`
+(using `g^m = -1`). Because `orderOf g = n`, the power map `i ↦ g^i` is INJECTIVE on `{0,…,n−1}`
+(`pow_injOn_Iio_orderOf`), and both `t 1` and `(t 0+m) mod n` lie there, so `t 1 = (t 0+m) mod n`
+is FORCED (`zeroSum_forces_antipodal`). The fiber is therefore EXACTLY the injective antipodal
+image `{(j, j+m) : j ∈ Fin n}`:
+
+  `repRF g n 2 0 = n`   (`repRF_two_zero_eq`), unconditional, **no `p*` threshold**.
+
+The crux: `-1 = g^m` has a UNIQUE preimage under `i ↦ g^i` on `Fin n` (the unique element of order
+`2` in `⟨g⟩`), so no accidental char-`p` coincidence can add a solution. This is what fails at
+depth `≥ 3` (multi-root zero-sums pick up genuine char-`p` accidents); depth `2` is the rigid
+boundary.
+
+**Consequence: the depth-`2` kernel side of the G88 wall is completely determined.** Substituting
+`S₀ = n` (exact) into G88's Parseval identity `n·centeredShadowMass = q·(n·S₀² + Σ_γ S_γ²) − n·n^{2r}`,
+the kernel-class contribution is the exact constant `q·n·n²`; ALL remaining freedom lives in the
+cross-orbit tail `Σ_γ S_γ²` — precisely the doctrine-v2/v3 object. G181's `1/3`-of-prize floor is now
+certified the EXACT kernel contribution, not a lower estimate (`dyadic_kernel_floor_two_exact`).
+
+**Thinness-essential.** For ODD `n`, `-1 ∉ ⟨g⟩`, so the depth-`2` fiber is EMPTY and the count is
+`0`, not `n` (probe: odd-`n` control rows). The dyadic `= n` is available ONLY to the 2-power smooth
+subgroup — a genuine thinness invariant.
+
+**Probe (verifies exactness, all fields).** `scripts/probes/probe_oc_kernel_depth2_upper.py`:
+1367 `(n,p)` rows — every even `n ∈ {2,…,32}` and every prime `p ≡ 1 (mod n)` up to bound — give
+`repRF g n 2 0 = n` with ZERO violations, including the smallest fields (no `p*` threshold at `r=2`).
+Odd-`n` control: `repRF g n 2 0 = 0`.
+
+**Scope (honest).** Exact count of the depth-`2` kernel-class mass only. Does NOT bound the
+cross-orbit tail `Σ_γ S_γ²` (the remaining open object), nor the higher-depth kernel masses
+`repRF g n r 0` for `r ≥ 3` (where char-`p` accidents genuinely appear). CORE remains OPEN / ON-BGK.
+Value: closes the depth-`2` kernel side of the G88 wall to an exact, unconditional, `p`-independent
+constant, upgrading G181's one-sided scope note to a two-sided exact count, and isolating the
+cross-orbit tail as the sole remaining freedom at depth `2`.
+
+All three declarations axiom-clean (`[propext, Classical.choice, Quot.sound]`); locked module build
+green (3354 jobs). Formal payload: `Frontier/_G182DyadicKernelCeiling.lean`; consumes G181
+`antipodalPair`/`gsumR_antipodalPair_eq_zero`/`antipodalPair_injective` + R308 `repRF`/`gsumR` +
+G88 `kernel_sq_le_centeredShadowMass`. Issue #509.
