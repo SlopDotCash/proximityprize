@@ -14542,3 +14542,45 @@ Formal kernel:
 Honest scope: the file formalizes the orbit-fiber arithmetic and calibrated consumer.  It does
 not prove the certified-prime divisibility or the squarefree/discriminant nondivisibility
 `P ∤ Disc(Q_(2^30))`; those remain the next G139 wall.  CORE remains OPEN.
+
+## [466-mobius-mann-connected-packet-no-go] uncentered partition cumulants amplify DC (2026-07-11)
+
+Lane: direct characteristic-`p` wraparound / connected-packet synthesis.
+
+The proposed ordinary Möbius inversion over position partitions does not produce a positive
+primitive-packet census.  If `M_m` counts ordered zero-sum `m`-words and
+
+```text
+M_m = sum_{pi partition [m]} product_{B in pi} K_|B|,
+```
+
+then at length four
+
+```text
+K_4 = M_4 - 3n^2 = primitive4 - 3n,
+primitive4 = M_4 - (3n^2 - 3n).
+```
+
+Exact witness: for `mu_8` in `F_257`, `primitive4=0` but `K_4=-24`.  Thus the connected
+coefficient is a signed inclusion-exclusion weight, not the ANT46/G136 packet cardinality.
+
+The production asymptotic is worse.  Substituting the uniform finite-field main term
+`M_m=n^m/q` makes `K_m/n^m` the Bernoulli(`1/q`) cumulant.  Exact rational arithmetic at
+`m=220`, `n=2^30`, `q=2^160` gives
+
+```text
+log2(|K_220| / DC) = 59.000000,
+log2(|K_220| / Wick) = 2501.247432,
+sign(K_220) = negative.
+```
+
+So uncentered partition Möbius inversion amplifies the DC bulk rather than removing it.
+Centering first returns the signed nonprincipal G133 anomaly, whose bound is the open wall.
+A viable Möbius-Mann calculus needs a positive canonical minimal-packet decomposition with
+controlled overlap; ordinary cumulants are not that object.
+
+Executable certificate:
+`scripts/probes/probe_466_mobius_mann_connected_packet.py`.
+Full synthesis:
+`docs/kb/deltastar-466-mobius-mann-connected-packet-no-go-2026-07-11.md`.
+CORE remains OPEN / ON-BGK.
