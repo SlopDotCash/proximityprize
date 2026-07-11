@@ -2216,6 +2216,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104AffineTripleSyzygyNoG
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104DepthSixStratifiedConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G105DepthLedgerLosslessNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G105ZeroTripleQuantizationFence
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G106PrimitiveRelationFreenessSkeleton
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G121DescentMatchingIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G123TriangularMomentLadder
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G124MomentLPDepthConstraints
@@ -3383,6 +3384,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeil
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ50WitnessRealizability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ51AssemblyBypass
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ52SecondSyzygyInteriorClosure
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ52WitnessLift
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
