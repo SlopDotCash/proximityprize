@@ -676,6 +676,46 @@ cap `2*(501/500)`.  The selected one-unit improvement must be sought at one of t
 `2 -> 3`, ..., `6 -> 7`.  The antipodal lower proxy is below the ordinary robust cap `3.006`, but
 that comparison is explicitly not an upper bound on the full first ratio.
 
+`_BGKLaterTransitionDefectLedgers.lean` makes every remaining obligation integral.  If
+`Delta_r=q*C_r-C(n,r)^2`, the rational cap `A/B` is exactly equivalent to
+
+```text
+B*n*(r+1)^2*Delta_(r+1) <= A*(n-r)^2*Delta_r.
+```
+
+All ordinary and selected `501/500` ledgers for `r=2,...,6` are instantiated.  The distributed
+late target is the concrete pair
+
+```text
+1000*n*36*Delta_6 <= 10521*(n-5)^2*Delta_5,
+1000*n*49*Delta_7 <= 12525*(n-6)^2*Delta_6.
+```
+
+The same file proves the production birthday windows
+`2^14*C(n,5)<q<2^15*C(n,5)` and `2^12*q<C(n,6)<2^13*q`.  Hence `5 -> 6` is the first load
+crossover, while `6 -> 7` has the cheapest relative full-unit saving `12/13`.
+
+`_BGKCubicSignedWeightedCollision.lean` exposes the first surviving transition without an
+unsigned loss.  Newton's `J_3=eta_1^3-3*eta_1*eta_2+2*eta_3` has exact full energy
+
+```text
+q*(C_111,111 + 9*C_12,12 + 4*n
+   - 6*C_111,12 + 4*C_111,3 - 12*C_12,3),
+```
+
+and frequency-zero deletion subtracts `(n*(n-1)*(n-2))^2`.  Both the exact and robust `2 -> 3`
+defect ledgers are iff lower thresholds on `6*C_111,12+12*C_12,3`.  The G185/G186 weighted Young
+route controls the positive `C_12,12` square but deletes precisely this favorable mass, proving
+why its unsigned `r^4` envelope cannot close the signed transition.
+
+Finally, `_BGKProductionBirthdayCrossover.lean` and the exact finite-cell probe separate structure
+from evidence.  Production loads jump from `C(n,5)/q=3.2552...e-5` to
+`C(n,6)/q=5825.422...`.  Some order-64 cells satisfy the distributed robust late profile, and
+empirical selected-cap success ranks `6 -> 7` ahead of `5 -> 6`.  But the direct crossover cell
+`(64,8001281)` still has `c_5=11.073...` and `c_6=13.137...`, both above ordinary Wick.  Thus
+birthday crossing alone is formally and computationally insufficient; production joint-period
+correlation is indispensable.
+
 `_BGKCyclotomicKreinSchurNoGo.lean` performs the all-orders positivity audit on the enlarged
 orbit-spectral cone.  For a translation kernel, Schur multiplication is additive convolution of
 its Fourier profile.

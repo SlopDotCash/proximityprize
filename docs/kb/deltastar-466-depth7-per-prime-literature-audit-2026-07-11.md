@@ -646,6 +646,32 @@ Consequently the first transition obeys neither Wick `3` nor the robust selected
 the production target.  The forced first-step lower proxy lies within the ordinary `3.006` robust
 allowance, but no matching upper bound is claimed.
 
+The later residuals now have exact integer ledgers.  `_BGKLaterTransitionDefectLedgers.lean`
+proves that a cap `A/B` at depth `r` is equivalent to
+`B*n*(r+1)^2*Delta_(r+1)<=A*(n-r)^2*Delta_r`, with no positivity assumption on the signed
+defects.  It instantiates the five robust caps and the distributed late coefficients `10521` and
+`12525`.  Production has `2^14*C(n,5)<q<2^15*C(n,5)` and
+`2^12*q<C(n,6)<2^13*q`: `5 -> 6` is the first birthday crossover, whereas `6 -> 7` is
+numerically cheapest.
+
+The `2 -> 3` ledger is also resolved into literal arithmetic correlations.
+`_BGKCubicSignedWeightedCollision.lean` gives the exact signed Newton census
+
+```text
+C_111,111 + 9*C_12,12 + 4*n
+- 6*C_111,12 + 4*C_111,3 - 12*C_12,3.
+```
+
+The wanted defect is exactly a lower bound on `6*C_111,12+12*C_12,3`.  The new G186 Young bound
+controls the positive weighted square `C_12,12` but removes those favorable mixed terms, so it is
+an honest unsigned envelope rather than a transition proof.
+
+Exact probes then refute a density-only repair.  Favorable order-64 cells realize the distributed
+late profile, but `(n,p)=(64,8001281)` crosses from `C(n,5)<p` to `C(n,6)>9p` while still having
+`c_5=11.073...` and `c_6=13.137...`, both above ordinary Wick.  These are probes, not production
+evidence; their rigorous lesson is only that the birthday crossover must be coupled to actual
+joint-period arithmetic.
+
 ## 10. Ranked research consequences
 
 1. **Exact dual coordinate, not a shortcut:** the annihilator-sensitive 13-variable Jacobi law
@@ -656,10 +682,10 @@ allowance, but no matching upper bound is claimed.
    period-power residues strongly enough to exclude the remaining integral spike. One Jacobi
    determinant, one congruence, norm, trace, and irreducibility are now formally insufficient.
 3. **Correct probabilistic formulation:** seek centered, trajectory-weighted `L2` fixed-depth
-   mixing at ambient scale `1/q`.  The first transition is excluded; it suffices to lower one of
-   the five later Wick numerators by one while keeping every step inside the `501/500` robust
-   envelope. Standard positive BSG, one-shift intersections, and support covering are
-   quantitatively excluded.
+   mixing at ambient scale `1/q`.  The first transition is excluded.  Either lower one later Wick
+   numerator by one, or prove the explicit `10521/12525` half-unit ledger pair at the last two
+   depths, while keeping every step inside the `501/500` robust envelope.  Birthday density,
+   positive BSG, one-shift intersections, unsigned Young, and support covering are excluded.
 4. **Correct sparse formulation:** count the five-letter, support-14, `l1<=14` integer kernel slice
    at the two explicit roots.  Its nine local profiles are formal, but the sharp `ZMod 17`
    collision rules out universal alphabet-only kernel-freeness; ambient coding invariants and

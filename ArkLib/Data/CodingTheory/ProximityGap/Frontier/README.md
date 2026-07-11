@@ -58,6 +58,12 @@ matching extractor: an over-budget family retains at least `2^29-6 = 536870906` 
 endpoints lie in the Hall-safe complement.  The live algebraic/geometric target is therefore
 simultaneous consolidation of this half-billion-secants matching, not recovery from bare Hall
 budgets.
+`_P1HalfBillionCorePackingNoGo.lean` proves that matching size and core cardinality still do not
+force consolidation: inside an `N=4K` coordinate domain it explicitly constructs `2K=2^29`
+distinct `K`-cores, while every two distinct cores intersect in fewer than `K` coordinates.  This
+is six more cores than the matching lower bound.  A successful consolidation theorem must use the
+joint arithmetic of secant parameters and core locations; a second Plotkin/pigeonhole step on the
+core set system is formally ruled out.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
@@ -301,7 +307,7 @@ allowance lies strictly between `126871` and `126872`.  Lowering any one numerat
 the product at most `124740<126871`; enough margin remains to multiply all six profile bounds by
 `501/500` (a `0.2%` per-step overrun).  Abstract six-ratio telescoping theorems then prove the
 end-to-end depth-seven target from either the exact or robust profile.  This is a sharp new socket,
-An exact distributed alternative lowers only the two final numerators by one half,
+not a closure.  An exact distributed alternative lowers only the two final numerators by one half,
 `11 -> 10.5` and `13 -> 12.5`; its product is `124031.25`, and the same sixfold robust overhead
 still gives only `125527.08...<126871`.  This is not a closure: the missing theorem must produce
 either certified profile while keeping all finite-population losses inside the robust margin.
@@ -314,6 +320,23 @@ first-ratio lower bound `n*Z_2/Z_1 > 3+2^-29`.  Thus neither Wick `3` nor the ro
 `2*(501/500)` is valid at the first transition: the one-unit defect must occur at one of the five
 later transitions.  The antipodal lower envelope lies below the ordinary robust cap `3.006`, but
 this is not an upper bound on the complete first ratio.
+`_BGKLaterTransitionDefectLedgers.lean` clears every remaining rational transition denominator.
+For collision defects `Delta_r=q*C_r-C(n,r)^2`, a cap `A/B` is exactly
+`B*n*(r+1)^2*Delta_(r+1) <= A*(n-r)^2*Delta_r`.  It records all five robust ledgers and the
+distributed final obligations with coefficients `10521` and `12525`.  Production crosses the
+ambient birthday scale violently between depths five and six:
+`2^14*C(n,5)<q<2^15*C(n,5)` but `2^12*q<C(n,6)<2^13*q`.  The final transition is relatively
+cheapest (`12/13`), while `5 -> 6` is the first structurally load-sensitive step.
+`_BGKCubicSignedWeightedCollision.lean` resolves the first surviving `2 -> 3` transition into an
+exact signed census.  For `J_3=eta_1^3-3*eta_1*eta_2+2*eta_3`, its full energy divided by `q` is
+`C_111,111+9*C_12,12+4*n-6*C_111,12+4*C_111,3-12*C_12,3`; deleting frequency zero subtracts
+`(n*(n-1)*(n-2))^2`.  The robust defect is equivalent to a lower bound on the favorable mass
+`6*C_111,12+12*C_12,3`.  G186's unsigned Young estimate controls the positive `C_12,12` term but
+drops exactly those favorable correlations, so it cannot certify the defect alone.
+`_BGKProductionBirthdayCrossover.lean` and its exact probe rank `6 -> 7` first empirically and
+`5 -> 6` second.  Favorable order-64 cells satisfy the distributed late profile, but the direct
+crossover cell `(n,p)=(64,8001281)` has both late ratios above ordinary Wick.  Birthday density
+alone is therefore refuted; the remaining theorem must use the actual joint-period arithmetic.
 `_BGKCyclotomicKreinSchurNoGo.lean` closes the positivity-only association-scheme variant.
 Pointwise multiplication of translation kernels is additive convolution of their Fourier
 profiles, and every nonnegative multiplicative-orbit profile remains nonnegative and

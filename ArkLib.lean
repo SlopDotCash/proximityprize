@@ -2622,6 +2622,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OverdispersionObstructsVa
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1EightLabelComplementForcedSecant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1EightLabelHallSafeSecantMatching
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1EightLabelHallToRigidityRefuted
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1HalfBillionCorePackingNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAdjacentExactPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAgreementOverlapGraph
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterBadLabelFamilyConnector
