@@ -16440,3 +16440,43 @@ Executable certificate:
 (`scripts/probes/_out_466_r3_sixth_moment.txt`).
 Analysis:
 `docs/kb/deltastar-466-r3-sixth-moment-interpolation-2026-07-11.md`.
+
+## [466-r3-moment-sandwich-absolute-c] the ABSOLUTE-C r=3 rung from two a-AVERAGE inputs: Cauchy–Schwarz sandwich ∑‖Ŝ‖⁶ ≤ √(∑‖Ŝ‖⁴)·√(∑‖Ŝ‖⁸) — no sup, no log; K₈ measured flat (sub-Gaussian, ceiling 24); sandwich tight to 3–12%; octic input = the r=4 rung of the R27 tower, machine-checked (2026-07-11)
+
+**Claim tested.** The sup→average de-correlation via the moment sandwich:
+`FourthMomentBound K₄ ∧ EighthMomentBound K₈ ⟹` absolute-C DIST rung.
+
+**Verdict.** CONFIRMED AND LANDED — the capstone of the R297→R307 arc.
+
+**Landed (axiom-clean, general m = 3u').**
+* `sixthMoment_sandwich` (pure Cauchy–Schwarz in the mode variable,
+  unconditional, generic ZMod N);
+* `eighthMoment_eq_quadConv_energy`: ∑_a‖f̂‖⁸ = N·∑_c‖f⋆f⋆f⋆f‖² — the octic
+  input IS the r=4 rung of the R27 IterConvEnergyWick ladder in DFT
+  coordinates (Wick 4! = 24 = the Gaussian prediction);
+* NEW named input `EighthMomentBound K₈` (∑‖Ŝ‖⁸ ≤ K₈m⁵q⁴), Gumbel-immune;
+* `sixthMomentBound_of_fourth_and_eighth` (interface at √(K₄K₈));
+* **headline** `distStratum_absoluteC_of_fourth_and_eighth`:
+  `E_DIST ≤ (3·√(K₄·K₈) + 1215)·m³·q³` — ABSOLUTE constant, no sup anywhere.
+
+**Measurement (m ≤ 1200).** K₈_med flat at 14–19 vs Gaussian ceiling
+24((m−2)/m)⁴ (max noisy ≤ 58, trendless); K₄ → 1.85 (Gaussian 2);
+sandwich tightness √(K₄K₈)/K₆ ∈ [1.03, 1.12] — Cauchy–Schwarz loses 3–12%;
+composed constant ≈ 1230 (dominated by the unconditional slice term 1215).
+
+**Honest positioning.** The sandwich SHIFTS the open content (r=3 pinched
+between r=2-class and the r=4 tower average) rather than closing it — but it
+replaces the REFUTED sup input (R305 Gumbel) with existing-tower averages,
+and the Gumbel mechanism provably inflates only sups, never averages.  Final
+ladder: ABSOLUTE-C from {K₄ ∧ K₈}; log-only from {FlatLog ∧ K₄}; √m from K₄;
+log³ from FlatLog.  The r=3 open content = two Wick-average statements about
+the Jacobi angle family, both Gaussian-exact in probes to m = 1200.
+
+Formal kernel (4 theorems + named input, `[propext, Classical.choice,
+Quot.sound]`, manual axiom reads, pg-iterate 5s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R307MomentSandwich.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_moment_sandwich.py`
+(`scripts/probes/_out_466_r3_moment_sandwich.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-moment-sandwich-2026-07-11.md`.
