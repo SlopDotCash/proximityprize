@@ -3336,6 +3336,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ15TLoadedInterfaceRepa
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ16Claim58Truncation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ17XDegreeBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ18PairJointSelfExclusion
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ20JointRankSuperadditive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
