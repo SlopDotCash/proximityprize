@@ -98,6 +98,65 @@ theorem originalSecant_eq_of_crossSecants_eq
   cases hpairs
   rfl
 
+/-! ## Exact centre-pencil audit -/
+
+/-- The polynomial line of slope `r` through the fixed lifted centre `(delta,qDelta)`. -/
+noncomputable def centrePencilLine
+    {F : Type} [Field F] (delta : F) (qDelta r : F[X]) : F[X] × F[X] :=
+  (qDelta - C delta * r, r)
+
+@[simp]
+theorem centrePencilLine_at_centre
+    {F : Type} [Field F] (delta : F) (qDelta r : F[X]) :
+    pointOnLine delta (centrePencilLine delta qDelta r) = qDelta := by
+  simp [pointOnLine, centrePencilLine]
+
+/-- **Every polynomial slope occurs through one fixed centre endpoint.**  Choose the outside
+decoded polynomial to be the value of the desired line at `gamma`; its canonical cross-secant
+with the centre is literally that line. -/
+theorem rawSecant_pointOn_centrePencil
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {gamma delta : F} (hne : gamma ≠ delta) (qDelta r : F[X]) :
+    rawSecant gamma delta
+      (pointOnLine gamma (centrePencilLine delta qDelta r)) qDelta =
+        centrePencilLine delta qDelta r := by
+  apply Prod.ext
+  · simp only [rawSecant, centrePencilLine, pointOnLine]
+    have hslope : slopePolynomial gamma delta
+        (qDelta - C delta * r + C gamma * r) qDelta = r := by
+      simp only [slopePolynomial, sub_sub]
+      rw [show qDelta - C delta * r + C gamma * r - qDelta =
+          C (gamma - delta) * r by rw [C_sub]; ring]
+      rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ (sub_ne_zero.mpr hne), C_1, one_mul]
+    rw [hslope]
+    ring
+  · simp only [rawSecant, centrePencilLine, pointOnLine]
+    simp only [slopePolynomial, sub_sub]
+    rw [show qDelta - C delta * r + C gamma * r - qDelta =
+        C (gamma - delta) * r by rw [C_sub]; ring]
+    rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ (sub_ne_zero.mpr hne), C_1, one_mul]
+
+/-- Distinct slopes give distinct lines in a fixed centre pencil. -/
+theorem centrePencilLine_injective
+    {F : Type} [Field F] (delta : F) (qDelta : F[X]) :
+    Function.Injective (centrePencilLine delta qDelta) := by
+  intro r s h
+  exact congrArg Prod.snd h
+
+/-- Hence a single fixed centre endpoint supports an injective copy of the entire polynomial
+space as canonical cross-secants.  Boundedly many centres alone give no algebraic multiplicity
+bound; any successful bound must use the large-core incidence condition. -/
+theorem fixedCentre_crossSecants_injective
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {gamma delta : F} (hne : gamma ≠ delta) (qDelta : F[X]) :
+    Function.Injective (fun r : F[X] => rawSecant gamma delta
+      (pointOnLine gamma (centrePencilLine delta qDelta r)) qDelta) := by
+  intro r s h
+  dsimp only at h
+  rw [rawSecant_pointOn_centrePencil hne,
+    rawSecant_pointOn_centrePencil hne] at h
+  exact centrePencilLine_injective delta qDelta h
+
 end ArkLib.ProximityGap.Frontier.P1TwoEndpointCentreReconstruction
 
 open ArkLib.ProximityGap.Frontier.P1TwoEndpointCentreReconstruction
@@ -107,3 +166,7 @@ open ArkLib.ProximityGap.Frontier.P1TwoEndpointCentreReconstruction
 #print axioms originalSecant_eq_of_two_crossSecants
 #print axioms two_crossSecants_injective
 #print axioms originalSecant_eq_of_crossSecants_eq
+#print axioms centrePencilLine_at_centre
+#print axioms rawSecant_pointOn_centrePencil
+#print axioms centrePencilLine_injective
+#print axioms fixedCentre_crossSecants_injective

@@ -842,6 +842,8 @@ end Gates
 #print axioms repeatedFreshEquiv_phase
 #print axioms twoColourPhysicalProfile_eq_fresh_sub_repeated
 #print axioms twoColourPhysicalProfile_eq_freshOne_sub_freshThree
+#print axioms freshOneFiber_eq_mul_subsetSumCount
+#print axioms twoColourPhysicalProfile_eq_subsetSum_sub_freshThree
 #print axioms twoColourPeriod_eq_powerSum_esymm
 #print axioms twoColourCollisionForm_eq_physicalSquare
 #print axioms sum_nonzero_twoColourPeriod_mul_conj_eq_centeredCollision

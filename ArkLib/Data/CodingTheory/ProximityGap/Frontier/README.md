@@ -152,7 +152,13 @@ decoded polynomials and factor the original matched secant; the ordered pair of 
 injective in the outside lifted pair.  Reconstruction is no longer the residual.  The live P1
 socket is a bounded-multiplicity theorem for large-`K` cross-secants through the sixteen centre
 endpoints, or a global compatibility invariant that bounds the number of such reconstructed
-ordered pairs.
+ordered pairs.  The same file now audits the purely algebraic version of that socket and refutes
+it sharply: for any fixed lifted centre and any polynomial slope `r`, evaluating the corresponding
+centre-pencil line at an outside scalar produces a decoded polynomial whose canonical cross-secant
+is literally that line.  Distinct slopes remain distinct, so one centre contains an injective copy
+of the entire polynomial space.  Any multiplicity bound must therefore use the `K`-core incidence
+condition (and likely simultaneous compatibility of those cores), not merely bounded centres,
+degree-free secant algebra, or two-endpoint reconstruction.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
