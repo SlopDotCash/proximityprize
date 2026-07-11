@@ -51025,3 +51025,27 @@ in the entry above); the no-accident gate theorem (p > W^{φ(m)} ⟹ census pure
 cyclotomic) is formalizable via Mathlib cyclotomic norms and is the natural next brick IF
 the seam needs it — but note the #407 height-gate no-go already caps its prize reach, so
 it is a small-cell rigidity tool, not a prize lever. CORE remains OPEN / ON-BGK.
+
+### [466-G88V-addendum2-vp1-is-height] The v_p(Norm) ≡ 1 census rigidity is PURE HEIGHT PROTECTION — max census |Norm| < p² at every accessible primitive cell; no anti-coincidence force beyond height exists in the data; the transversality seam is CLOSED as a non-Fourier certificate source (2026-07-11)
+
+Probe (Norm distribution over the complete support-six census at primitive cells):
+(16, 97): max |Norm| = 3298 < 9409 = p²; (16, 193): 6562 < 37249; (16, 257): 4112 < 66049;
+medians = 2p, 4p, 2p (Norms are small multiples of p, as forced). The naive random model
+predicts ~55 double-coincidences (v_p ≥ 2) at (16,97) alone; ZERO occur — but NOT because
+of any anti-coincidence structure: p² ∣ Norm is arithmetically impossible below the height
+ceiling. Every rigidity phenomenon observed at accessible cells across G56/G82/G88V
+(v_p ≡ 1, per-relation coverage ≡ 1, common coverage ≡ 1 at primitive cells, the φ(ord)
+coverage law with its ord-8/16 cutoff) is now HEIGHT-EXPLAINED, and the #407 height-gate
+no-go already proves the protection dies by n ≈ 128–256.
+
+**VERDICT (seam closure).** The Galois/ideal-transversality seam — doctrine-v2's ranked
+surviving source #1, "the only seam where the numbers are even close" — is CLOSED as a
+potential source of a non-Fourier certificate: its arithmetic is fully theorem-level
+(G82/G83/G86H/G87V/G88V), its finite-cell phenomenology is completely mapped and entirely
+height-driven, and height is provably powerless at the prize. What remains of r369 piece
+(b) is bare accident-statistics at n = 2^30 — i.e. the BGK atom itself, with no
+finite-cell signal available to extrapolate and no rigidity mechanism left in the seam.
+Doctrine-v2's surviving-source list should be read as: #1 transversality CLOSED (this
+round), #3 dynamics CLOSED (procyclic kill, N3), leaving #2 (chaining under a genuinely
+new metric) and #4 (construction-side tail exclusion) — plus the atom. CORE remains
+OPEN / ON-BGK.
