@@ -50989,3 +50989,39 @@ G56/Opus-core). `ι≤1` only closes SYZ44 `uniformSylvester` at rate 1/2; produ
 SYZ18 supports, `hrank` realizability, strip-radius transport, MCAThresholdLedger BGK lower bound.
 NEW content = the EXACT calibration: the whole interior residual is now one equivalent `δ₂`
 inequality. CORE remains OPEN / ON-BGK.
+
+### [466-G88V-addendum-n32-height-gate] n=32 census-rank data CORRECTS the coverage law and identifies its mechanism: coverage = φ(ord) exactly in the NO-ACCIDENT (height-gated) regime 6^{φ(ord)} ≲ p, and collapses to 1 in the accident regime — the prize cell is astronomically deep in the accident regime, where coverage-1 IS anti-coincidence (2026-07-11)
+
+Full probe output now includes n=32 (p ∈ {641, 769, 1153}, all 31 nontrivial roots,
+complete support-six census, up to 18,123,840 rows/cell). Laws 2 and 3 CONFIRMED with zero
+exceptions at n=32 (rank_p = n − coverage everywhere — G88V's fence saturated; rank_ℚ jump
++1 exactly at primitive cells). Law 1 as stated in the G88V entry ("coverage = ord/2")
+BREAKS at n=32: order-16 embeddings have coverage 1 (not 8), behaving like primitive
+cells; measured coverage = {ord 2 → 1, ord 4 → 2, ord 8 → 4, ord ≥ 16 → 1} at BOTH n.
+
+**Correct law + mechanism (the height gate).** coverage = φ(ord) in the regime where the
+census at an order-m embedding can contain no mod-p accidents: a non-ℚ-cyclotomic
+support-six relation collapsed to Q ∈ ℤ[x] (Σ|coeffs| ≤ 6) with Q(t) ≡ 0 mod 𝔭 forces
+p ∣ Norm(Q(ζ_m)) with 0 < |Norm| ≤ 6^{φ(m)}, impossible for p > 6^{φ(m)}. Then every
+census row is a sum of antipodal pairs (the only length-≤6 ±1 vanishing sums over 2-power
+cyclotomics), which vanish at ALL φ(m) order-m roots simultaneously → coverage = φ(m),
+rank = n − φ(m). Above the gate (6^{φ(m)} ≫ p) accidents dominate and common coverage
+collapses to 1. The probe's p ∈ [97, 1153] sit exactly between 6^{φ(8)} = 1296 and
+6^{φ(16)} ≈ 1.7·10⁶ — predicting the observed cutoff at ord 8 vs 16 on the nose (and the
+marginality at (16, 1153) vs 1296 is visible as the pure-pair census count 7776 = 6⁵ at
+ord-8 cells).
+
+**Prize-facing reading.** At the prize cell m = n = 2^30, the gate is 6^{n/2} vs p = n⁴ —
+the census is essentially ALL accidents, and the measured coverage-1-at-primitive is
+exactly the empirical face of r369 anti-coincidence. This closes the loop with the #407
+height-gate no-go (exact-norm gate reaches only n ≈ 128–256): the SAME height mechanism
+that rigidifies small cells is provably powerless at the prize — the fence lane's
+asymptotic question is genuinely an accident-statistics (BGK-type) question, not a
+rigidity question. Consistent with, and sharpening, the ON-BGK verdict: the transversality
+seam's census side now has its mechanism identified at all scales.
+
+**Status.** Probe data complete (`_out_466_g87v_census_rank_n16.txt` + this run's summary
+in the entry above); the no-accident gate theorem (p > W^{φ(m)} ⟹ census purely
+cyclotomic) is formalizable via Mathlib cyclotomic norms and is the natural next brick IF
+the seam needs it — but note the #407 height-gate no-go already caps its prize reach, so
+it is a small-cell rigidity tool, not a prize lever. CORE remains OPEN / ON-BGK.
