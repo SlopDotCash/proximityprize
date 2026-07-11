@@ -187,8 +187,9 @@ theorem card_constantThreeWords (G : Finset α) :
   classical
   refine Finset.card_nbij' (fun a => a 0) (fun x _ => x) ?_ ?_ ?_ ?_
   · intro a ha
-    simp only [Fin.isValue, SetLike.mem_coe] at ha
-    exact ha.1 0
+    have ha' : a ∈ constantThreeWords G := ha
+    rw [constantThreeWords, Finset.mem_filter] at ha'
+    exact Fintype.mem_piFinset.mp ha'.1 0
   · intro x hx
     simp [constantThreeWords, Fintype.mem_piFinset]
     simpa using hx
