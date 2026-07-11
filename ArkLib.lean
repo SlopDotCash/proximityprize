@@ -2228,6 +2228,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136AccidentTolerance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136AnchorConstantSharp
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136EnergySolutionBijection
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136LawfulCount
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136ProductionInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136UnitCircleMann
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
