@@ -1,0 +1,7 @@
+BGK_SAMPLING_WITHOUT_REPLACEMENT_PRODUCTION_AUDIT
+n=1073741824 depth=7 coefficient=126871
+sampling_error_bits=185 average_energy_budget_bits=227
+sampling_error_sq_over_budget_floor_log2=141 aligned_D7_sq_over_budget_floor_log2=193
+hypothetical_D7_amplitude_ceiling=14448764953860199458063090551701551 coupling_period_ceiling=85047155
+paley_period_ceiling=46341 coupling_to_paley_ratio=1835.246434043
+VERDICT=generic without-replacement coupling misses by >141 energy bits and yields a period ceiling >1835 times Paley; subgroup mixing is load-bearing

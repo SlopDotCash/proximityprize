@@ -1,0 +1,7 @@
+PRIMITIVE_DEPTH7_COUNTEREXAMPLE
+n=16 p=97 primitive_depth7_ordered_subset_pairs=0
+n=16 p=193 primitive_depth7_ordered_subset_pairs=0
+n=16 p=337 primitive_depth7_ordered_subset_pairs=48
+witness_left_exponents=[0, 4, 5, 6, 10, 11, 15]
+witness_right_exponents=[1, 3, 7, 8, 9, 12, 14]
+VERDICT=REFUTED: a depth-seven wraparound need not have a proper primitive leaf; lower-depth packet recursion leaves a genuine depth-seven primitive sector

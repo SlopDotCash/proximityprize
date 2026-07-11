@@ -15877,3 +15877,114 @@ additive one-variable form closed by `generalize`d products + `omega`.
 Files: `_P1RateQuarterSmallPoolClosureDischarged.lean` (pg-iterate OK 17s,
 9 audited theorems `[propext, Classical.choice, Quot.sound]`, no sorry/axiom),
 `docs/kb/deltastar-466-rate-quarter-smallpool-closure-2026-07-11.md`.
+
+## [rate-quarter-dcharge-referee-audit] 2026-07-11 — ADVERSARIAL REFEREE AUDIT of the P1 D-charge chain (SmallPoolClosure discharge): chain SURVIVES, one vocabulary gap flagged
+
+CLAIM AUDITED: "the P1 rate-quarter predecessor pin's open content is exactly
+`StallResidual` — `predecessor_budget_of_stall : StallResidual dom -> every bad
+family G has G.card <= N` — with `SmallPoolClosure` discharged unconditionally."
+
+VERDICT: the Lean chain is SOUND as stated in its own vocabulary.  I could not
+break the dichotomy, the quantifiers, the constants, or the Johnson wiring.
+Both new files re-verified independently (`lake env lean`, full output): all
+9 + 7 audited theorems, including `smallPoolClosure_holds` and
+`predecessor_budget_of_stall`, depend on exactly
+`[propext, Classical.choice, Quot.sound]` — no sorryAx, no custom axioms, no
+ofReduce*.
+
+WHAT I TRIED AND FAILED TO BREAK:
+1. DICHOTOMY COVERAGE: `predecessor_budget_of_smallPool_and_stall`
+   (_P1RateQuarterSmallPoolAssembly.lean:217) splits on
+   `by_cases (forall gamma0 in G, 75018134 <= pool)`; `push_neg` yields
+   `exists gamma0 in G, pool <= 75018133` — the two named Props use exact
+   complementary bounds (`<= 75018133` / `75018134 <=`), and the empty family
+   falls vacuously into the stall branch (0 <= N).  No third case; the base
+   scalar is EXISTENTIALLY chosen in SmallPoolClosure and UNIVERSALLY stalled
+   in StallResidual, which is the right quantifier pattern.  No hole.
+2. QUANTIFIER ORDER: both Props and both consumers quantify
+   `forall u0 u1 G Sf pf` inside, `dom` as the outer parameter — nothing fixes
+   the stack.  `smallPoolClosure_holds` is `forall dom`.  No hole.
+3. THE MARGINAL PARTITION (smallPool_budget): fiber partition via
+   `card_eq_sum_card_fiberwise` is exact; per-fiber pool cap
+   (`riders_card_le_pool`) and vote charge (`riders_mul_le_Dsupport`) are used
+   PER-FIBER only (no illegitimate cross-fiber vote disjointness is claimed);
+   layer cake (`sum_layer_cake`) is a clean generic identity; level-m alignment
+   extraction m*(T-A) <= F => A >= T - floor(F/m) is nat-division-correct; the
+   Z-relative Johnson (`johnson_core_rel` via subtype transport, cards
+   preserved by `card_attach_filter`) instantiates in-tree
+   `R15Bracket.johnson_core` with pairwise `< k` overlaps from
+   `predecessor_sep`.  The m=2/m=3 monotonisations go in the correct direction
+   (Z = N - F <= N - 2*floor(F/2) raises the numerator, lowers the subtracted
+   denominator term).  No hole.
+4. CONSTANT PROVENANCE (independently recomputed, Python, exact integers):
+   T = 592794966 = 8m + r + d + 2 (m=2^26, r=(m-1)/3=22369621,
+   d=(m-2)/2=33554431) — matches; N = 2^30, k = 2^28; Johnson boundary
+   (T-F)^2 > (N-F)(k-1) TRUE at F0 = 75018133, FALSE at F0+1 — the boundary is
+   exact; caps: m=1 division = 657668325 at F0 (attained), m=2 endpoint cap 7,
+   m>=3 endpoint cap 5 (Lean proves the full F <= F0 sweep coefficientwise, so
+   endpoint spot-checks suffice); pinned products
+   657668326*378645484 = 249023141609739784 and
+   998723691*249341378 = 249023141355186198 — both exact; ledger
+   1 + 657668325 + 7 + 5*(75018133-2) = 1032758988 <= 1073741824.  All match.
+5. HONESTY LABELS: `SmallPoolClosure` (assembly) was correctly labelled OPEN
+   there and is discharged only in the successor file (read-only,
+   `smallPoolClosure_holds`); `StallResidual` correctly labelled OPEN;
+   probe references are cross-checks only, all bounding content in the chain
+   is kernel.  kb notes match the formal statements.
+
+ONE REAL (LOW/MEDIUM) FINDING — VOCABULARY GAP, not a math hole:
+the chain's endpoint currency is the SKOLEMIZED `BadFamilyData`
+(_P1RateQuarterPencilCountCharge.lean:359: explicit `Sf : F -> Finset (Fin N)`,
+`pf : F -> Fin N -> F`), while the pin's prize-facing currency is
+`badCount`/`mcaEvent` (=> epsMCA <= 2^-128 => predecessorDelta <= mcaDeltaStar,
+_P1RateQuarterPredecessorGenericSplit.lean:115-190).  There is NO landed lemma
+`StallResidual dom -> badCount (predecessorCode dom) predecessorDelta u0 u1 <= N`,
+i.e. the choice-bridge "mcaEvent family => BadFamilyData" (Skolemize S,w per
+gamma; convert (1-delta)*N mass to `predecessorThreshold` via
+`agreement_mass_eq_predecessorThreshold`, exactly as already done inside
+`badFamily_card_le_N_of_sharedFreshTripleFree`,
+_P1RateQuarterSharedFreshCoordinate.lean:468-512) is unformalized.  It is
+routine classical choice — but until it lands, the precise claim is:
+"the pin's open content through the counting branch, IN BadFamilyData
+VOCABULARY, is exactly StallResidual."  Recommend a ~30-line
+`badCount_le_N_of_stall` glue file before the swarm quotes the single-residual
+form against mcaDeltaStar.
+
+Referee artifacts: full independent re-verification logs; kb note
+`docs/kb/deltastar-466-rate-quarter-dcharge-referee-2026-07-11.md`.
+
+## [rate-quarter-dcharge-referee-audit] 2026-07-11 (part 2) — vocabulary gap CLOSED: `badCount_le_N_of_stall` landed; StallResidual now implies the counting branch in FULL PRIZE VOCABULARY
+
+Follow-up to the referee audit above, at the coordinator's direction.  NEW file
+`_P1RateQuarterStallBadCountBridge.lean` (imports the discharged closure file +
+`_P1RateQuarterPredecessorGenericSplit`; closure olean built via lake-locked,
+8434 jobs OK; bridge verified with `lake env lean`, FULL axiom lists read
+manually — all 5 theorems exactly `[propext, Classical.choice, Quot.sound]`,
+no sorryAx):
+
+* `badFamilyData_of_mcaEvents`: classical-choice Skolemization — any finite
+  scalar set all of whose members satisfy `mcaEvent` at the predecessor radius
+  admits witness functions `(Sf, pf)` forming `BadFamilyData` (mass->threshold
+  via `agreement_mass_eq_predecessorThreshold`; dite-extension off `G` by
+  `(∅, 0)`; the inline pattern of `badFamily_card_le_N_of_sharedFreshTripleFree`
+  promoted to a reusable lemma).
+* `badCount_le_N_of_stall` (THE audit-named glue): `StallResidual dom ->
+  badCount (predecessorCode dom) predecessorDelta u0 u1 <= N`, composing the
+  bridge with `predecessor_budget_of_stall`.
+* `all_badCount_le_N_of_stall`: uniform per-WordStack form.
+* `epsMCA_predecessor_le_prizeEpsilon_of_stall`: `StallResidual dom ->
+  epsMCA (predecessorCode dom) predecessorDelta <= 2^-128` (via in-tree
+  `epsMCA_le_of_badCount_le` + `N_div_P_le_prizeEpsilon`).
+* `predecessorDelta_le_mcaDeltaStar_of_stall` (STRONGEST honest corollary):
+  `StallResidual dom -> predecessorDelta <= mcaDeltaStar (predecessorCode dom)
+  2^-128` — the P1 predecessor pin's counting-branch open content is now
+  EXACTLY `StallResidual`, literally in the `mcaDeltaStar` currency, per
+  evaluation domain.
+
+NOT claimed: any discharge of `StallResidual` itself (pools F >= 75018134 for
+every base scalar — still OPEN, still the prize wall); any delta-star movement
+(the corollary is conditional on the open residual).  The operational bracket
+3/8 <= delta* <= 43/96 + eps is untouched.
+
+Files: `_P1RateQuarterStallBadCountBridge.lean`,
+`docs/kb/deltastar-466-rate-quarter-stall-badcount-bridge-2026-07-11.md`.

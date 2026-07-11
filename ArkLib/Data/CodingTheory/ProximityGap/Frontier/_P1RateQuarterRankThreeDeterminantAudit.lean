@@ -142,6 +142,223 @@ theorem fourPointCore_externalDefect_deficit_eq :
     externalDefectCoreOnset - 432479347 = 316902967 := by
   norm_num [externalDefectCoreOnset, T, N, k]
 
+/-- Common-lift core-union size required to absorb an external line at the
+three-point core floor via the arbitrary-cluster overlap cap. -/
+theorem clusterUnion_needed_for_externalCore_352321537_eq :
+    N + k - 352321537 = 989855743 := by
+  norm_num [N, k]
+
+/-- The analogous cluster-union target at the four-point external-core floor. -/
+theorem clusterUnion_needed_for_externalCore_432479347_eq :
+    N + k - 432479347 = 909697933 := by
+  norm_num [N, k]
+
+/-- At the single-factor onset, the required cluster-union carrier drops
+exactly to the base threshold `T`. -/
+theorem clusterUnion_needed_at_externalDefectOnset_eq_threshold :
+    N + k - externalDefectCoreOnset = T := by
+  norm_num [externalDefectCoreOnset, T, N, k]
+
+/-! ## Two-heavy-reference plus four-point external closure -/
+
+/-- Two distinct common-base cores at `T-1`, after paying their `k-1`
+intersection budget, already have a `917,154,475`-coordinate union. -/
+theorem two_nearThreshold_coreUnion_floor_eq :
+    2 * (T - 1) - (k - 1) = 917154475 := by
+  norm_num [T, k]
+
+/-- Adding an external core at the exact four-point floor crosses the
+common-cluster closure threshold `N+k` by `7,456,542`. -/
+theorem two_nearThreshold_plus_fourPoint_crosses_clusterClosure :
+    N + k + 7456542 =
+      (2 * (T - 1) - (k - 1)) + 432479347 := by
+  norm_num [T, N, k]
+
+/-- Equivalent three-core mass form: the heavy-heavy-four-point triple exceeds
+the two degree budgets by `7,456,543` incidences. -/
+theorem two_nearThreshold_plus_fourPoint_coreMass_surplus_eq :
+    2 * (T - 1) + 432479347 - (N + 2 * (k - 1)) = 7456543 := by
+  norm_num [T, N, k]
+
+/-! ## Ten-point finite multiplicity cutoff -/
+
+/-- Literal packing arithmetic: any line carrying ten threshold points has
+core size at least `539,356,427`. -/
+theorem tenPoint_packing_forces_core_ge_539356427
+    (z : Nat) (hpack : 10 * (T - z) + z ≤ N) :
+    539356427 ≤ z := by
+  norm_num [T, N] at hpack ⊢
+  omega
+
+/-- Three ten-point core floors cross the determinant/common-lift closure
+onset by `7,456,546`. -/
+theorem three_tenPoint_coreFloors_surplus_eq :
+    3 * 539356427 - determinantCoreSumOnset = 7456546 := by
+  norm_num [determinantCoreSumOnset, N, k]
+
+/-- Direct comparison form consumed by the three-core mass closure. -/
+theorem determinantCoreSumOnset_le_three_tenPoint_coreFloors :
+    determinantCoreSumOnset ≤ 3 * 539356427 := by
+  norm_num [determinantCoreSumOnset, N, k]
+
+/-! ## Exact Johnson-heavy two-hole seam -/
+
+/-- Three nine-point packing floors remain `12,582,908` incidences below
+determinant collapse. -/
+theorem three_ninePoint_coreFloors_deficit_eq :
+    determinantCoreSumOnset - 3 * 532676609 = 12582908 := by
+  norm_num [determinantCoreSumOnset, N, k]
+
+/-- Three cores at the exact Johnson light/heavy boundary miss the onset by
+exactly two incidences. -/
+theorem three_johnsonHeavy_floors_add_two_eq_onset :
+    3 * 536870911 + 2 = determinantCoreSumOnset := by
+  norm_num [determinantCoreSumOnset, N, k]
+
+/-- **Two-hole trigger.**  If three cores are each Johnson-heavy and their
+union omits at least two domain coordinates, their core mass exceeds the
+union plus the determinant degree budget. -/
+theorem johnsonHeavy_threeCore_twoHole_trigger
+    (z₀ z₁ z₂ unionCard : Nat)
+    (hz₀ : 536870911 ≤ z₀) (hz₁ : 536870911 ≤ z₁)
+    (hz₂ : 536870911 ≤ z₂) (hholes : unionCard + 2 ≤ N) :
+    2 * (k - 1) + unionCard < z₀ + z₁ + z₂ := by
+  norm_num [N, k] at hholes ⊢
+  omega
+
+/-- One uncovered coordinate is arithmetically insufficient at the exact
+heavy floor; the two-hole condition is sharp for this mass argument. -/
+theorem oneHole_johnsonHeavy_floor_still_below_trigger :
+    3 * 536870911 ≤ 2 * (k - 1) + (N - 1) := by
+  norm_num [N, k]
+
+/-- Exact near-cover form: after paying the determinant degree budget, three
+Johnson-heavy floors leave `N-1` forced union coordinates. -/
+theorem three_johnsonHeavy_sub_determinantBudget_eq_N_sub_one :
+    3 * 536870911 - 2 * (k - 1) = N - 1 := by
+  norm_num [N, k]
+
+/-- **One-hole equality rigidity.**  For a noncollapsed heavy triple whose
+weighted overlap is bounded by `2(k-1)`, exact union size `N-1` forces all
+three cores to equal the heavy floor and saturates the overlap budget. -/
+theorem johnsonHeavy_oneHole_rigidity
+    (z₀ z₁ z₂ weightedOverlap : Nat)
+    (hz₀ : 536870911 ≤ z₀) (hz₁ : 536870911 ≤ z₁)
+    (hz₂ : 536870911 ≤ z₂)
+    (hcap : weightedOverlap ≤ 2 * (k - 1))
+    (hledger : weightedOverlap + (N - 1) = z₀ + z₁ + z₂) :
+    z₀ = 536870911 ∧ z₁ = 536870911 ∧ z₂ = 536870911 ∧
+      weightedOverlap = 2 * (k - 1) := by
+  norm_num [N, k] at hcap hledger ⊢
+  omega
+
+/-- **Zero-hole one-slack ledger.**  If a noncollapsed heavy triple covers the
+whole domain, its total core mass is at most one above the three heavy floors,
+and its weighted overlap is at least one below the full determinant budget. -/
+theorem johnsonHeavy_zeroHole_oneSlack
+    (z₀ z₁ z₂ weightedOverlap : Nat)
+    (hz₀ : 536870911 ≤ z₀) (hz₁ : 536870911 ≤ z₁)
+    (hz₂ : 536870911 ≤ z₂)
+    (hcap : weightedOverlap ≤ 2 * (k - 1))
+    (hledger : weightedOverlap + N = z₀ + z₁ + z₂) :
+    z₀ + z₁ + z₂ ≤ 3 * 536870911 + 1 ∧
+      2 * (k - 1) - 1 ≤ weightedOverlap := by
+  norm_num [N, k] at hcap hledger ⊢
+  omega
+
+/-- In the zero-hole case every individual core is at most one above the
+heavy floor. -/
+theorem johnsonHeavy_zeroHole_each_core_le_floor_add_one
+    (z₀ z₁ z₂ weightedOverlap : Nat)
+    (hz₀ : 536870911 ≤ z₀) (hz₁ : 536870911 ≤ z₁)
+    (hz₂ : 536870911 ≤ z₂)
+    (hcap : weightedOverlap ≤ 2 * (k - 1))
+    (hledger : weightedOverlap + N = z₀ + z₁ + z₂) :
+    z₀ ≤ 536870912 ∧ z₁ ≤ 536870912 ∧ z₂ ≤ 536870912 := by
+  have hsum := johnsonHeavy_zeroHole_oneSlack
+    z₀ z₁ z₂ weightedOverlap hz₀ hz₁ hz₂ hcap hledger
+  omega
+
+/-- If the weighted overlap splits across two degree-`k-1` factors, one-hole
+saturation forces both factors to use their entire root budgets. -/
+theorem twoFactor_fullBudget_rigidity
+    (referenceRoots defectRoots : Nat)
+    (href : referenceRoots ≤ k - 1) (hdefect : defectRoots ≤ k - 1)
+    (hsum : referenceRoots + defectRoots = 2 * (k - 1)) :
+    referenceRoots = k - 1 ∧ defectRoots = k - 1 := by
+  omega
+
+/-- In the zero-hole one-slack case, each factor is within one root of
+saturation. -/
+theorem twoFactor_oneSlack_nearSaturation
+    (referenceRoots defectRoots : Nat)
+    (href : referenceRoots ≤ k - 1) (hdefect : defectRoots ≤ k - 1)
+    (hsum : 2 * (k - 1) - 1 ≤ referenceRoots + defectRoots) :
+    k - 2 ≤ referenceRoots ∧ k - 2 ≤ defectRoots := by
+  have hk : k = 268435456 := by norm_num [k]
+  omega
+
+/-! ## One-hole witness-distribution audit -/
+
+/-- A threshold witness loses at most one coordinate to the unique core-union
+hole, then three-way pigeonhole guarantees this many agreements in one core. -/
+theorem oneHole_threeCore_pigeonhole_floor_eq :
+    ((T - 1) + 2) / 3 = 197598322 := by
+  norm_num [T]
+
+/-- The one-core share guaranteed by the near-cover remains `70,837,134`
+coordinates below the polynomial identity threshold `k`. -/
+theorem oneHole_pigeonhole_to_rootThreshold_deficit_eq :
+    k - 197598322 = 70837134 := by
+  norm_num [k]
+
+/-- Abstract three-bin form consumed after assigning each covered witness
+coordinate to one of the three cores. -/
+theorem oneHole_threshold_assignment_forces_bin_ge_197598322
+    (b₀ b₁ b₂ : Nat) (hcover : T - 1 ≤ b₀ + b₁ + b₂) :
+    197598322 ≤ b₀ ∨ 197598322 ≤ b₁ ∨ 197598322 ≤ b₂ := by
+  norm_num [T] at hcover
+  omega
+
+/-- Exact no-go comparison: the guaranteed bin does not reach `k`. -/
+theorem oneHole_threeCore_pigeonhole_below_k : 197598322 < k := by
+  norm_num [k]
+
+/-- If the witness uses only two covering cores, the guaranteed share jumps
+above `k`. -/
+theorem oneHole_twoCore_pigeonhole_floor_eq :
+    ((T - 1) + 1) / 2 = 296397483 := by
+  norm_num [T]
+
+theorem oneHole_twoCore_pigeonhole_exceeds_k_by_27962027 :
+    296397483 - k = 27962027 := by
+  norm_num [k]
+
+theorem oneHole_twoCore_assignment_forces_rootThreshold
+    (b₀ b₁ : Nat) (hcover : T - 1 ≤ b₀ + b₁) :
+    k ≤ b₀ ∨ k ≤ b₁ := by
+  norm_num [T, k] at hcover ⊢
+  omega
+
+/-- **Balanced one-hole escape is arithmetically realized.**  All `T-1`
+covered witness agreements can be distributed across all three cores with
+every bin strictly below `k`. -/
+theorem oneHole_balanced_threeCore_distribution_realized :
+    197598322 + 197598322 + 197598321 = T - 1 ∧
+      197598322 < k ∧ 197598322 < k ∧ 197598321 < k := by
+  norm_num [T, k]
+
+/-- The zero-hole analogue is perfectly balanced: `T` splits into three equal
+subcritical bins. -/
+theorem zeroHole_balanced_threeCore_distribution_realized :
+    3 * 197598322 = T ∧ 197598322 < k := by
+  norm_num [T, k]
+
+/-- Total unused one-core root capacity in the balanced one-hole assignment. -/
+theorem oneHole_threeCore_rootCapacity_slack_eq :
+    3 * (k - 1) - (T - 1) = 212511400 := by
+  norm_num [T, k]
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
@@ -162,3 +379,32 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 #print axioms externalDefectCoreOnset_eq
 #print axioms threshold_add_externalDefectCoreOnset_sub_domain_eq_k
 #print axioms fourPointCore_externalDefect_deficit_eq
+#print axioms clusterUnion_needed_for_externalCore_352321537_eq
+#print axioms clusterUnion_needed_for_externalCore_432479347_eq
+#print axioms clusterUnion_needed_at_externalDefectOnset_eq_threshold
+#print axioms two_nearThreshold_coreUnion_floor_eq
+#print axioms two_nearThreshold_plus_fourPoint_crosses_clusterClosure
+#print axioms two_nearThreshold_plus_fourPoint_coreMass_surplus_eq
+#print axioms tenPoint_packing_forces_core_ge_539356427
+#print axioms three_tenPoint_coreFloors_surplus_eq
+#print axioms determinantCoreSumOnset_le_three_tenPoint_coreFloors
+#print axioms three_ninePoint_coreFloors_deficit_eq
+#print axioms three_johnsonHeavy_floors_add_two_eq_onset
+#print axioms johnsonHeavy_threeCore_twoHole_trigger
+#print axioms oneHole_johnsonHeavy_floor_still_below_trigger
+#print axioms three_johnsonHeavy_sub_determinantBudget_eq_N_sub_one
+#print axioms johnsonHeavy_oneHole_rigidity
+#print axioms johnsonHeavy_zeroHole_oneSlack
+#print axioms johnsonHeavy_zeroHole_each_core_le_floor_add_one
+#print axioms twoFactor_fullBudget_rigidity
+#print axioms twoFactor_oneSlack_nearSaturation
+#print axioms oneHole_threeCore_pigeonhole_floor_eq
+#print axioms oneHole_pigeonhole_to_rootThreshold_deficit_eq
+#print axioms oneHole_threshold_assignment_forces_bin_ge_197598322
+#print axioms oneHole_threeCore_pigeonhole_below_k
+#print axioms oneHole_twoCore_pigeonhole_floor_eq
+#print axioms oneHole_twoCore_pigeonhole_exceeds_k_by_27962027
+#print axioms oneHole_twoCore_assignment_forces_rootThreshold
+#print axioms oneHole_balanced_threeCore_distribution_realized
+#print axioms zeroHole_balanced_threeCore_distribution_realized
+#print axioms oneHole_threeCore_rootCapacity_slack_eq

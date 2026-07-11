@@ -858,6 +858,134 @@ the generic three-core onset, but the present four-point core floor
 needs substantial new core growth or a second source of certified defect
 roots; the factorization alone does not close P1.
 
+The single-defect budget is independent of the number of common-base lines.
+The union of *all* their joint cores remains inside the one base full-agreement
+set, so a genuinely external core meets that entire union in at most `k-1`
+coordinates.  Consequently, if `A` is the common-base core union and `E` an
+external core, `|A|+|E|>=N+k` forces `E` into the cluster.  Exact P1 targets
+are `|A|>=989855743` for an external core at `352321537`, and
+`|A|>=909697933` at the four-point floor `432479347`; at the external-defect
+onset `749382314`, the required carrier is exactly `T=592794966`.  This is a
+genuine many-line amplifier, but the current constructed cluster unions are
+not yet near the first two targets.
+
+One important heavy configuration does cross the target.  Two distinct
+common-base cores of size at least `T-1` have union at least
+`2(T-1)-(k-1)=917154475`.  Adding an external core at the four-point floor
+`432479347` exceeds `N+k` by `7456542`; equivalently, the three core sizes
+exceed `N+2(k-1)` by `7456543`.  The theorem
+`external_commonLift_of_twoReference_coreMass_gt` therefore forces that third
+line to pass through the same common lifted point.  Thus the branch “two
+distinct near-threshold common-base cores plus a genuinely external
+four-point core” is closed: the external line cannot remain external.  This
+is the first concrete P1 configuration discharged by the external-defect
+factorization rather than merely assigned a future threshold.
+
+The complementary multiplicity screen now has a clean finite cutoff.  The
+line-packing inequality for ten threshold points forces a core of at least
+`539356427`.  Three such floors exceed the determinant/common-lift onset by
+`7456546`.  Moreover the reference-core overlap hypothesis in the mass
+closure is now automatic: distinct degree-`<k` common-lift lines have core
+intersection at most `k-1`, witnessed by their nonzero direction difference.
+Consequently, relative to two distinct common-base references, any genuinely
+external third line in a nonclosed triple must have fewer than ten selected
+points (or one of the references must).  The surviving incidence analysis is
+therefore confined to the finite multiplicity range `2..9`, rather than an
+unbounded line-size branch.
+
+At the Johnson light/heavy boundary there is an even sharper exact seam.
+Three cores of size `536870911` miss the determinant onset by exactly two
+incidences.  Hence two uncovered domain coordinates force collapse, while one
+hole is arithmetically insufficient.  Conversely the new theorem
+`threeCoreUnion_card_ge_of_determinant_ne_zero` shows that any genuinely
+noncollapsed triple of Johnson-heavy cores must cover at least
+`3*536870911-2(k-1)=N-1` coordinates.  The heavy residual is therefore no
+longer a broad packing window: it is the exact zero-hole/one-hole near-cover
+boundary.  The realized cyclotomic two-cover example is consistent—it is
+already common-base/determinant-collapsed, not a noncollapsed near-cover.
+
+The near-cover ledger is now exact.  In the one-hole noncollapsed case, all
+three core sizes must equal `536870911` and the weighted determinant overlap
+must equal the full budget `2(k-1)=536870910`; every inequality used above is
+saturated.  In the zero-hole case there is only one incidence of total slack:
+the three core sizes sum to at most `3*536870911+1`, every individual core is
+at most `536870912`, and weighted overlap is at least `2(k-1)-1`.  Thus the
+remaining heavy configurations form a tiny equality classification, not a
+continuous range.  The next algebraic target is to split this saturated
+weighted overlap across the reference-direction factor and the external-defect
+factor; one-hole saturation should force both degree-`k-1` factors to exhaust
+their root budgets.
+
+That factor split is now exact in Lean:
+`weightedOverlap = |D0∩D1| + |(D0∩E)∪(D1∩E)|`.  The first support
+is carried by the reference-direction difference; the second by the external
+common-lift defect, with triple-core coordinates counted once in each.  In the
+one-hole case both supports therefore have exactly `k-1` coordinates.  The
+generic root-support equality consumer also proves that any nonzero
+degree-`<k` factor with such a support has degree exactly `k-1`.  Hence the
+one-hole residual forces two maximal-degree polynomials, each with a complete
+`k-1`-point domain root set; the remaining freedom is their root-set geometry,
+not any numerical slack.
+
+Maximal root support now has an explicit normal form.  For an injective domain
+and coordinate set `S`, define
+`domainLocator(S)=prod_(i in S)(X-C(dom i))`.  It is nonzero, monic up to its
+implicit leading coefficient `1`, and has degree `|S|`; any polynomial
+vanishing on `S` is divisible by it.  Therefore a nonzero polynomial of degree
+`|S|` vanishing on `S` equals `C(c)*domainLocator(S)` for some `c!=0`.  Applied
+to the one-hole factor supports, both the reference-direction difference and
+external defect are nonzero scalar multiples of explicit `k-1`-coordinate
+locators.  The residual can now be attacked through relations between these
+two coordinate sets and their locators, rather than through root counting.
+
+The concrete composition is now complete.  Under full support saturation,
+Lean produces nonzero scalars `c_ref,c_def` with
+`r1-r0=C(c_ref)*domainLocator(R)` and
+`q0-(a_E+C(gamma0)r_E)=C(c_def)*domainLocator(Q)`, where
+`R=D0∩D1` and `Q=(D0∩E)∪(D1∩E)`.  Consequently the whole determinant is
+`C(c_ref*c_def)*domainLocator(R)*domainLocator(Q)`.  This accounts for every
+root and every double root: coordinates in `R∩Q` occur in both locators.  The
+one-hole residual is therefore reduced to an explicit two-locator geometry;
+no further improvement is possible from degree or multiplicity counting
+alone.
+
+Locator inclusion--exclusion further canonicalizes the result:
+`locator(R)*locator(Q)=locator(R∪Q)*locator(R∩Q)`, with
+`R∪Q=pairOverlap` and `R∩Q=tripleOverlap`.  Hence the saturated determinant
+can equivalently be written
+`C(c)*domainLocator(pairOverlap)*domainLocator(tripleOverlap)`.  The first
+locator records every distinct determinant root once, while the second adds
+exactly the extra multiplicity at triple-core coordinates.  This is a complete
+normal form for the degree/multiplicity data of the one-hole residual.
+
+The direct witness-distribution test does **not** exclude this partition.  A
+threshold witness can lose one agreement to the unique hole; assigning its
+remaining agreements among the three covering cores guarantees only
+`ceil((T-1)/3)=197598322` agreements in one core.  This is
+`70837134` below `k=268435456`, so ordinary root forcing cannot place the
+witness polynomial on one of the three lines.  The one-hole locator normal
+form therefore needs a genuinely coupled use of overlap coordinates or many
+witnesses; single-witness three-bin pigeonhole stops far below the identity
+threshold.
+
+The corresponding two-bin test does fire.  If those `T-1` covered witness
+agreements use only two cores, one receives at least
+`ceil((T-1)/2)=296397483`, exceeding `k` by `27962027`; root counting then
+forces the witness polynomial onto one of the two lines.  Hence every witness
+that genuinely escapes line identity in the one-hole residual must use all
+three cores.  This converts the remaining witness problem into a mandatory
+three-color/cross-core coupling statement.
+
+That mandatory three-color condition is itself arithmetically feasible.  The
+one-hole witness mass has the exact subcritical split
+`197598322+197598322+197598321=T-1`, and the zero-hole mass splits perfectly as
+`3*197598322=T`; every bin is below `k`.  The one-hole split leaves
+`212511400` units of aggregate three-core root capacity unused.  Therefore
+single-witness core assignment plus independent root caps is fully exhausted:
+it cannot exclude the locator near-cover.  Any further progress must couple
+different witnesses, or constrain which three-color patterns are compatible
+with the two saturated locator polynomials.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;
