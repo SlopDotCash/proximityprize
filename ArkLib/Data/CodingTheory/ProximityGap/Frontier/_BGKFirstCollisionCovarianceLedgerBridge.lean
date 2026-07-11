@@ -101,6 +101,20 @@ theorem centeredInner_comm {X : Type*} [Fintype X] (f g : X -> Real) :
   unfold centeredInner
   simp_rw [mul_comm]
 
+theorem centeredInner_add_left {X : Type*} [Fintype X]
+    (f g h : X -> Real) :
+    centeredInner (fun x => f x + g x) h = centeredInner f h + centeredInner g h := by
+  unfold centeredInner
+  simp_rw [add_mul, Finset.sum_add_distrib]
+  ring
+
+theorem centeredInner_add_right {X : Type*} [Fintype X]
+    (f g h : X -> Real) :
+    centeredInner f (fun x => g x + h x) = centeredInner f g + centeredInner f h := by
+  unfold centeredInner
+  simp_rw [mul_add, Finset.sum_add_distrib]
+  ring
+
 theorem centeredInner_profileSum_left {I X : Type*} [DecidableEq I] [Fintype X]
     (S : Finset I) (p : I -> X -> Real) (g : X -> Real) :
     centeredInner (profileSum S p) g = ∑ i ∈ S, centeredInner (p i) g := by
@@ -232,9 +246,17 @@ theorem robust_halfUnit_six_of_directProfileCarrier
 theorem centeredMass_add {X : Type*} [Fintype X] (f g : X -> Real) :
     centeredMass (fun x => f x + g x) =
       centeredMass f + centeredMass g + 2 * centeredInner f g := by
-  unfold centeredMass centeredInner
-  simp_rw [add_sq, Finset.sum_add_distrib]
-  ring_nf
+  rw [centeredMass_eq_inner]
+  calc
+    centeredInner (fun x => f x + g x) (fun x => f x + g x) =
+        centeredInner f (fun x => f x + g x) +
+          centeredInner g (fun x => f x + g x) := centeredInner_add_left f g _
+    _ = (centeredInner f f + centeredInner f g) +
+        (centeredInner g f + centeredInner g g) := by
+      rw [centeredInner_add_right f f g, centeredInner_add_right g f g]
+    _ = centeredMass f + centeredMass g + 2 * centeredInner f g := by
+      rw [centeredInner_comm g f, centeredMass_eq_inner, centeredMass_eq_inner]
+      ring
 
 /-- The complete signed correction between an all-tuples profile and its factorial-scaled
 injective part.  The first two terms are G190's internal polarization; the last is G176's

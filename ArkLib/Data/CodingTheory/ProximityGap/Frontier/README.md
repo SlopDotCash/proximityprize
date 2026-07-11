@@ -82,6 +82,12 @@ stack polynomial-line compatibility, core size, pairwise root caps, and half-bil
 size together still do not consolidate the lines.  The surviving distinction from the prize
 family is narrower: these abstract lines have not been proved to arise as canonical secants of
 threshold-size decoded scalar witnesses satisfying the full MCA event clauses.
+The canonical-secant algebra is now also discharged: two arbitrary scalar labels decoded by the
+same nodal polynomial have canonical secant exactly `(nodalParameter,0)`.  Thus every packed line
+has a literal two-witness secant realization.  The remaining gap is quantitatively exact rather
+than structural: its guaranteed agreement is `K=2^28`, while a predecessor witness needs
+`T=592794966`, a deficit of `T-K=324359510` coordinates.  Threshold amplification subject to the
+five-set overlap forcing is the sole surviving obstruction for this construction.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

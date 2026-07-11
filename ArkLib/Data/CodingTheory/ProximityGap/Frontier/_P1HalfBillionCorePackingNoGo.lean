@@ -377,6 +377,43 @@ theorem core_subset_jointCore_nodalLine
     nodalLine, eval_zero]
   exact ⟨nodalParameter_agrees_on_core (fun x => domain x) weight p x hx, trivial⟩
 
+/-! ## Canonical secant realization and the exact threshold deficit -/
+
+/-- Family-free form of the canonical polynomial secant used by `secantParameter`. -/
+noncomputable def rawSecantParameter
+    {F : Type} [Field F] (gamma beta : F) (qGamma qBeta : F[X]) : F[X] × F[X] :=
+  let r := slopePolynomial gamma beta qGamma qBeta
+  (qGamma - C gamma * r, r)
+
+/-- Two distinct scalar witnesses decoded by the same polynomial have that polynomial as their
+canonical secant intercept and zero canonical slope. -/
+theorem rawSecantParameter_same_polynomial
+    {F : Type} [Field F] (gamma beta : F) (q : F[X]) :
+    rawSecantParameter gamma beta q q = (q, 0) := by
+  simp [rawSecantParameter, slopePolynomial]
+
+/-- Every explicit nodal line is therefore a literal canonical secant of any two scalar labels
+that are decoded by its common nodal polynomial. -/
+theorem rawSecantParameter_nodal
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (p : CoreIndex k) (gamma beta : F) :
+    rawSecantParameter gamma beta
+      (nodalParameter domain weight p) (nodalParameter domain weight p) =
+        nodalLine domain weight p := by
+  exact rawSecantParameter_same_polynomial gamma beta (nodalParameter domain weight p)
+
+/-- Literal P1 predecessor agreement threshold. -/
+abbrev T : Nat := 592794966
+
+/-- The construction's guaranteed `K`-core falls short of a threshold witness by exactly
+`324359510` coordinates.  This is the sole remaining quantitative gap in the abstract
+canonical-secant construction. -/
+theorem production_threshold_deficit : T - K = 324359510 := by
+  norm_num [T, K]
+
+theorem production_core_strictly_below_threshold : K < T := by
+  norm_num [T, K]
+
 end ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 
 open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
@@ -396,3 +433,6 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms nodalParameter_agrees_on_core
 #print axioms nodalLine_injective
 #print axioms core_subset_jointCore_nodalLine
+#print axioms rawSecantParameter_same_polynomial
+#print axioms rawSecantParameter_nodal
+#print axioms production_threshold_deficit

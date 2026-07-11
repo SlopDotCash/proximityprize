@@ -1712,6 +1712,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKInjectivePacketDefectC
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJacobiTensorProductionGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonKneserDepthSevenNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonPhaseGradeNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonDominantPairSocket
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonSignedCovariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLaterTransitionDefectLedgers
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLowerMomentOrbitSpikeNoGo

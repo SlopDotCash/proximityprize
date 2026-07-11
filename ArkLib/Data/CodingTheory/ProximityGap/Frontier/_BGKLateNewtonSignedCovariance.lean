@@ -54,6 +54,7 @@ open ArkLib.ProximityGap.MomentCollisionRigidity
 open ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw
 open ArkLib.ProximityGap.Frontier.BGKCenteredTrajectoryContraction
 open ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers
+open ArkLib.ProximityGap.Frontier.BGKRepeatedSectorNewtonAbsorption
 
 section StructuredCrossParseval
 
@@ -222,18 +223,39 @@ theorem sum_linearCombination_mul_conj_eq_signedCovarianceForm {d : Nat}
       signedCovarianceForm c
         (fun i j => ∑ b : F, u i b * (starRingEnd Complex) (u j b)) := by
   classical
-  unfold signedCovarianceForm
-  simp only [map_sum, map_mul, map_intCast]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro i _hi
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro j _hj
-  rw [← Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro b _hb
-  ring
+  calc
+    (∑ b : F, (∑ i : Fin d, (c i : Complex) * u i b) *
+        (starRingEnd Complex) (∑ j : Fin d, (c j : Complex) * u j b)) =
+        ∑ b : F, ∑ i : Fin d, ∑ j : Fin d,
+          (c i : Complex) * (c j : Complex) *
+            (u i b * (starRingEnd Complex) (u j b)) := by
+      apply Finset.sum_congr rfl
+      intro b _hb
+      simp only [map_sum, map_mul, map_intCast]
+      rw [Finset.sum_mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _hi
+      apply Finset.sum_congr rfl
+      intro j _hj
+      ring
+    _ = ∑ i : Fin d, ∑ j : Fin d, ∑ b : F,
+          (c i : Complex) * (c j : Complex) *
+            (u i b * (starRingEnd Complex) (u j b)) := by
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro i _hi
+      rw [Finset.sum_comm]
+    _ = signedCovarianceForm c
+        (fun i j => ∑ b : F, u i b * (starRingEnd Complex) (u j b)) := by
+      unfold signedCovarianceForm
+      apply Finset.sum_congr rfl
+      intro i _hi
+      apply Finset.sum_congr rfl
+      intro j _hj
+      rw [← Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro b _hb
+      ring
 
 end CoefficientVector
 
@@ -283,8 +305,10 @@ theorem lateNewtonSignedCollisionForm_eq_same_sub_favorable (G : Finset F) (d : 
       lateNewtonSameSignMass G d - lateNewtonFavorableMass G d := by
   classical
   unfold lateNewtonSignedCollisionForm lateNewtonSameSignMass lateNewtonFavorableMass
+  rw [← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro i _hi
+  rw [← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro j _hj
   unfold newtonSign
@@ -320,21 +344,42 @@ theorem sum_lateNewtonPacket_mul_conj_eq_signedCollision
         (Fintype.card F : Complex) * (lateNewtonSignedCollisionForm G d : Complex) := by
   classical
   unfold lateNewtonPacket
-  simp_rw [map_mul, map_natCast]
-  rw [← Finset.mul_sum]
+  simp only [map_mul, map_natCast]
   have hquad := sum_linearCombination_mul_conj_eq_signedCovarianceForm
     (F := F) (c := fun i : Fin d => newtonSign i)
     (u := fun i b => lateNewtonJoinPeriod psi G d i b)
-  rw [hquad]
-  unfold signedCovarianceForm lateNewtonSignedCollisionForm lateNewtonCollisionMatrix
-  push_cast
-  apply congrArg (fun z : Complex => (Nat.factorial (d - 1) : Complex) ^ 2 * z)
-  apply Finset.sum_congr rfl
-  intro i _hi
-  apply Finset.sum_congr rfl
-  intro j _hj
-  rw [sum_newtonJoinPeriod_mul_conj_eq_collision hpsi]
-  ring
+  calc
+    (∑ b : F,
+        ((Nat.factorial (d - 1) : Complex) *
+            ∑ i : Fin d, (newtonSign i : Complex) * lateNewtonJoinPeriod psi G d i b) *
+          ((Nat.factorial (d - 1) : Complex) *
+            (starRingEnd Complex)
+              (∑ i : Fin d, (newtonSign i : Complex) * lateNewtonJoinPeriod psi G d i b))) =
+        (Nat.factorial (d - 1) : Complex) ^ 2 *
+          ∑ b : F, (∑ i : Fin d,
+              (newtonSign i : Complex) * lateNewtonJoinPeriod psi G d i b) *
+            (starRingEnd Complex) (∑ i : Fin d,
+              (newtonSign i : Complex) * lateNewtonJoinPeriod psi G d i b) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro b _hb
+      ring
+    _ = (Nat.factorial (d - 1) : Complex) ^ 2 *
+        signedCovarianceForm (fun i : Fin d => newtonSign i)
+          (fun i j => ∑ b : F, lateNewtonJoinPeriod psi G d i b *
+            (starRingEnd Complex) (lateNewtonJoinPeriod psi G d j b)) := by
+      rw [hquad]
+    _ = (Nat.factorial (d - 1) : Complex) ^ 2 *
+        (Fintype.card F : Complex) * (lateNewtonSignedCollisionForm G d : Complex) := by
+      unfold signedCovarianceForm lateNewtonSignedCollisionForm lateNewtonCollisionMatrix
+      push_cast
+      apply congrArg (fun z : Complex => (Nat.factorial (d - 1) : Complex) ^ 2 * z)
+      apply Finset.sum_congr rfl
+      intro i _hi
+      apply Finset.sum_congr rfl
+      intro j _hj
+      rw [sum_newtonJoinPeriod_mul_conj_eq_collision hpsi]
+      ring
 
 end LatePackets
 
@@ -357,14 +402,22 @@ theorem compactTransitionLedger_iff_factorialScaledEnergy
   constructor
   · intro h
     have hs := mul_le_mul_of_nonneg_left h (le_of_lt hfac)
-    convert hs using 1 <;> rw [Nat.factorial_succ] <;> push_cast <;> ring
+    convert hs using 1
+    · rw [Nat.factorial_succ]
+      push_cast
+      ring
+    · ring
   · intro h
     have hs :
         (Nat.factorial r : Int) ^ 2 *
             ((capDenominator : Int) * n * (r + 1 : Int) ^ 2 * D (r + 1)) <=
           (Nat.factorial r : Int) ^ 2 *
             ((capNumerator : Int) * (n - r : Int) ^ 2 * D r) := by
-      convert h using 1 <;> rw [Nat.factorial_succ] <;> push_cast <;> ring
+      convert h using 1
+      · rw [Nat.factorial_succ]
+        push_cast
+        ring
+      · ring
     exact le_of_mul_le_mul_left hs hfac
 
 /-- Consolidated rational transition equivalence in ordered-injective energy coordinates. -/
@@ -379,20 +432,26 @@ theorem rationalTransitionAt_iff_factorialScaledEnergy
 
 /-- Exact `5 -> 6` distributed-half-unit obligation in ordered-injective energy coordinates. -/
 theorem production_halfUnit_five_iff_orderedEnergy (D : Nat -> Int) :
-    RationalTransitionAt productionN 5 (21 * 501) 1000 D <->
-      (1000 : Int) * productionN * factorialScaledEnergy D 6 <=
-        10521 * (productionN - 5 : Int) ^ 2 * factorialScaledEnergy D 5 := by
-  rw [rationalTransitionAt_iff_factorialScaledEnergy productionN D
-    (by norm_num [productionN]) (by norm_num)]
+    RationalTransitionAt BGKLaterTransitionDefectLedgers.productionN 5 (21 * 501) 1000 D <->
+      (1000 : Int) * BGKLaterTransitionDefectLedgers.productionN *
+          factorialScaledEnergy D 6 <=
+        10521 * (BGKLaterTransitionDefectLedgers.productionN - 5 : Int) ^ 2 *
+          factorialScaledEnergy D 5 := by
+  rw [rationalTransitionAt_iff_factorialScaledEnergy
+    BGKLaterTransitionDefectLedgers.productionN D
+    (by norm_num [BGKLaterTransitionDefectLedgers.productionN]) (by norm_num)]
   norm_num
 
 /-- Exact `6 -> 7` distributed-half-unit obligation in ordered-injective energy coordinates. -/
 theorem production_halfUnit_six_iff_orderedEnergy (D : Nat -> Int) :
-    RationalTransitionAt productionN 6 (25 * 501) 1000 D <->
-      (1000 : Int) * productionN * factorialScaledEnergy D 7 <=
-        12525 * (productionN - 6 : Int) ^ 2 * factorialScaledEnergy D 6 := by
-  rw [rationalTransitionAt_iff_factorialScaledEnergy productionN D
-    (by norm_num [productionN]) (by norm_num)]
+    RationalTransitionAt BGKLaterTransitionDefectLedgers.productionN 6 (25 * 501) 1000 D <->
+      (1000 : Int) * BGKLaterTransitionDefectLedgers.productionN *
+          factorialScaledEnergy D 7 <=
+        12525 * (BGKLaterTransitionDefectLedgers.productionN - 6 : Int) ^ 2 *
+          factorialScaledEnergy D 6 := by
+  rw [rationalTransitionAt_iff_factorialScaledEnergy
+    BGKLaterTransitionDefectLedgers.productionN D
+    (by norm_num [BGKLaterTransitionDefectLedgers.productionN]) (by norm_num)]
   norm_num
 
 end FactorialScaling
