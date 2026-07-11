@@ -3325,6 +3325,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ12BCIKS57Chunks56
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ13BCIKS57Chunk4
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ14BCIKS57Chunk2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ15TLoadedInterfaceRepair
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ16Claim58Truncation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
