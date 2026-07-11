@@ -50703,3 +50703,8 @@ concentration) becomes necessary.  (iii) This does not touch the ON-BGK core.  P
 exact, convolution identity + fiber bound exhaustive at `mu_4 ⊂ F_13` and `mu_6 ⊂ F_31`.
 CORE remains OPEN / ON-BGK.
 
+
+
+## [466-G104-primitive-concentration-factorial-no-go] Ordered primitive concentration `4 n^(2/3)` is false at the first prize prime; one zero-sum-free 11-support contributes `11!` tuples to a single fiber, exceeding the actual `s=13` G86 budget (2026-07-11)
+
+The G104 scoping probe proposed `max_a #primitive k-tuples summing to a <= 4 n^(2/3)` for every `3<=k<=108`, then used it in the `(2,s-2)` padded-collision chain. At the certified first prize modulus, the powers `g^0,...,g^10` of the explicit order-`2^30` generator have all 2048 subset sums distinct. Hence no nonempty submultiset sums to zero, and all `11!=39,916,800` permutations are primitive ordered 11-tuples in one sum-fiber. The actual sharp-envelope allowance at `s=13` is only `floor(219!!/(C(110,13)^2*97!*(2^30)^2))=14,207,588`; the proposed uniform cap is `4*2^20=4,194,304`. Thus the fiber exceeds the binding threshold by 2.8095x and the uniform cap by 9.5169x. Exact probe: `scripts/probes/probe_466_g104_primitive_concentration_factorial_no_go.py`; axiom-clean numeric Lean consumer: `Frontier/_G56PrimitiveConcentrationFactorialNoGo.lean`; full note: `docs/kb/deltastar-466-g104-primitive-concentration-factorial-no-go-2026-07-11.md`. Correct survivor: quotient by permutations / use unordered supports and pay `k!` explicitly. At `s=13`, that factorial already exhausts the claimed budget, so this split chain is closed. CORE remains open / on BGK.
