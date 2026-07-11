@@ -15988,3 +15988,94 @@ every base scalar — still OPEN, still the prize wall); any delta-star movement
 
 Files: `_P1RateQuarterStallBadCountBridge.lean`,
 `docs/kb/deltastar-466-rate-quarter-stall-badcount-bridge-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: stall-band CENSUS — extremal families are
+## two-pencil covers at capacity 2(N−T+1); single/double-pencil StallResidual
+## instances are now THEOREMS; budget is TIGHT (zero slack) at mu_16
+
+Probe-first calibration of the pin's sole open content, `StallResidual`
+(pools F in [75018134, 480946858] for every base scalar).  Probe
+`scripts/probes/probe_rate_quarter_p1_stall_band_census.py` (deterministic,
+exact; scaled shapes with the exact P1 ratios T = ceil(N*592794966/2^30),
+k = N/4; mu_16 layer EXHAUSTIVE over all 17^4 codewords per pair).
+
+CENSUS: maximal stall families exist at every scale, all pools at the TOP of
+the band (F = N−T).  Max #stall-bad found: mu_16 = 16 = N (TIGHT — zero
+slack; q=17), mu_128 = 116, mu_256 = 230, mu_512 = 460 — in every case
+EXACTLY 2(N−T+1) ~ 0.898*N at real ratios.  Extremal structure (discovered
+exhaustively at mu_16, then constructed at all scales): a TWO-PENCIL COVER at
+capacity — second pencil v^2 = v^1 + (x*d, d), d vanishing on the
+2T−2−N <= k−1 overlap, cancellation-ratio map gamma = −x injective.
+Three-pencil composites always harvested FEWER (ratio collision: a third
+pencil's ratios are values of a deg<k rational function on the other pencils'
+aligned regions).
+
+FORMALIZED (`_P1RateQuarterStallBandCensus.lean`, pg-iterate OK 14s; FULL
+axiom lists read manually via `lake env lean`: 15 theorems exactly
+[propext, Classical.choice, Quot.sound], 1 [propext]; no sorryAx):
+* stall_budget_of_single_pencil — bad families riding ONE pencil obey
+  #bad <= N−T+1 = 480946859 <= N: the StallResidual obligation holds
+  UNCONDITIONALLY on the single-pencil subclass (prize shape).  First
+  evidence-grade brick on the wall itself.
+* stall_budget_of_two_pencil_cover / stallResidual_of_pencil_pair_cover —
+  the census's extremal class (two-pencil covers) obeys the budget:
+  2(N−T+1) = 961893718 <= N, slack exactly 2T−N−2 = 111848106 ~ 0.104*N
+  (twoPencil_slack); dual_construction_fits (2(T−1)−N <= k−1) — the extremal
+  construction scales to the prize shape; threePencil_cap_overflows — the
+  pencil-cover counting route ends at two pencils.
+* Scaled rungs mu128/mu256/mu512_boundary, mu_thresholds_exact,
+  mu_singlePencil_caps, mu_twoPencil_caps (incl. mu_16 tightness 2(16−9+1)=16).
+
+STRUCTURAL FINDING (honesty-critical): at mu_16 the budget is attained
+EXACTLY (2(T−1) = N there), so any discharge of StallResidual MUST use the
+real-ratio inequality 2(T−1) > N (T > N/2 + 1); scale-free counting cannot
+work.  Open content after this round: families whose witnesses need >= 3
+distinct pencils (or none) — the 0.104*N corridor.  NOT claimed: discharge of
+StallResidual; any delta-star movement (bracket 3/8 <= delta* <= 43/96 + eps
+untouched).
+
+Files: `_P1RateQuarterStallBandCensus.lean`,
+`scripts/probes/probe_rate_quarter_p1_stall_band_census.py`,
+`docs/kb/deltastar-466-rate-quarter-stall-band-census-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: pencil HARVEST CAP — ratio-collision mechanism
+## identified as an exact DIMENSION COUNT; three- and four-pencil StallResidual
+## budgets are theorems under margin hypotheses (margin 5 sharp; forced margin
+## measured at T−k)
+
+Follow-up to the stall-band census (same day).  Probe
+`scripts/probes/probe_rate_quarter_p1_pencil_harvest_cap.py` (exact linear
+algebra mod q): pencil differences are codeword pairs vanishing on the pairwise
+aligned-overlaps and telescoping (d12 + d23 = d13); solution dimension of the
+three-pencil system = max(0, 2k − Σ|ov|) EXACTLY in every geometry probed,
+while coverage forces Σ|ov| >= 3(T−1−t) − N.  Measured: three nearly-full
+pencils linearly IMPOSSIBLE for shortfall t <= 13 at mu_256 (t <= 9 at
+mu_128); with two full pencils fixed, the third's aligned size caps at exactly
+k -> forced margin T−k, marginal harvest 2.  Prize ratios:
+3(T−1) − N = 704643071 > 2k = 536870912 (kernel rung).
+
+FORMALIZED (`_P1RateQuarterPencilHarvestCap.lean`; FULL axiom lists read
+manually via `lake env lean`: all 11 theorems exactly
+[propext, Classical.choice, Quot.sound]; no sorryAx):
+* underAligned_riders_mul_le — margin bound #riders·D <= N−T+D (A+D <= T);
+* stall_budget_of_three_pencil_cover — three-pencil covers with third margin
+  >= 5 obey the StallResidual budget: 2·480946859 + 96189372 = 1058083090 <= N
+  (probe-forced margin is T−k = 324359510 >> 5);
+* stall_budget_of_four_pencil_cover — two arbitrary + two margin-9 pencils:
+  1068770798 <= N (compounding);
+* margin_four_fails — margin 4 overflows (1082130433 > N): 5 is sharp;
+* fully_aligned_triple_dimension_deficit, forced_margin_arith, ledgers.
+
+HONESTY: StallResidual NOT discharged.  Open content is now: (i) kernel proof
+that geometry FORCES the margins (generic-rank fact; only imaginable escape =
+special point configurations creating low-degree Bezout identities — none
+found); (ii) growth of margins with pencil count (Σ 1/D_j <= ~0.2326 needed);
+(iii) that bad families are covered by FEW pencils at all.  StallResidual does
+NOT fall entirely by this route — coordinator's convergence scenario is NOT
+realized (marginal harvests compound but their sum is not automatically below
+the slack).  No delta-star movement; bracket 3/8 <= delta* <= 43/96 + eps
+untouched.
+
+Files: `_P1RateQuarterPencilHarvestCap.lean`,
+`scripts/probes/probe_rate_quarter_p1_pencil_harvest_cap.py`,
+`docs/kb/deltastar-466-rate-quarter-pencil-harvest-cap-2026-07-11.md`.

@@ -57,6 +57,21 @@ absolute-value or packet-positive envelopes destroy precisely the cancellation t
 exposes.  A primitive-character audit also proves that `|G|` times this signed sum is exactly
 `Σ_{b≠0}|η_b|^14`; in particular the total sum is nonnegative.  The collapse is therefore a
 structural one-dimensional rerouting of the off-zero moment, not a moment-method bypass.
+`_BGKCenteredTranslatePDNoGo.lean` now draws the exact boundary of that rerouting.  Global mean
+zero, additive positive semidefiniteness, and multiplicative invariance alone admit an unbounded
+centered-delta scaling ray.  In the exact proper-subgroup cell `(p,n)=(13313,256)`, the centered
+coefficient is `312012.706...>2^18`.  This does not touch the production prime; it proves that a
+successful restriction theorem must use extra arithmetic specific to the production subgroup,
+not only those three homogeneous properties.
+`_BGKCenteredTranslateConeDuality.lean` makes this sharper directly in Fourier coordinates.  For
+nonnegative zero-DC weights constant on multiplicative orbits, the restriction is exactly
+`|G|^-1*sum_b w_b*|eta_b|^2`; at unit spectral mass its optimum is the worst normalized period
+square, attained on one orbit.  Hence the universal Fourier-cone program is the Paley spectral
+problem itself.  The actual autocorrelation has the extra nonlinear constraint
+`w_b=|eta_b|^12`, but `_BGKLowerMomentOrbitSpikeNoGo.lean` proves that Parseval, orbit
+multiplicity, the trivial pointwise cap, and even hypothetical Wick ceilings through the twelfth
+moment still allow a fourteenth moment between `2^15` and `2^16` times the target.  A survivor
+must control joint arithmetic of the complete period profile at depth seven.
 The updated research control plane is the
 [`10 x 10 centered attack matrix`](../../../../../docs/kb/deltastar-466-ten-by-ten-centered-attack-matrix-2026-07-11.md),
 with the focused 2026 theorem screen in
@@ -80,10 +95,61 @@ Hölder envelope is `137.8488...<138`, and a formal sublinear barrier splits the
 `126871+138=127009`.  `_BGKFourteenFactorYoung.lean` supplies the kernel-checked 14-factor
 AM--GM and optimized-padding socket. `_BGKShiftedEtaPaddedHolder.lean` now closes the analytic
 adapter for every `k<=13` shifted eta monomial: unit dilation, coefficients `1,...,7`, the exact
-erased-frequency model, and the canonical padding scale are all formal.  The sole repeated-sector
-bookkeeping seam is to kernel-check the full Newton monomial list against the `B_k` envelope.  The
-live depth-seven core is consequently the **signed injective** packet defect at coefficient
-`126871` once that list adapter is connected.
+erased-frequency model, and the canonical padding scale are all formal.
+`_BGKRepeatedNewtonFullEnumeration.lean` closes the finite and fixed-target seams: all 88 nonzero
+monomials are checked by `ring`, their exact `B_2,...,B_13` masses are computed in the kernel,
+every shifted term reaches the Holder adapter, and fixed integer padding `R=79880` proves the
+whole repeated envelope at `F(T)` is below `138*q*n^7`.
+`_BGKRepeatedEnvelopeSecantClosure.lean` closes the rest of the repeated cone: it identifies the
+canonical root envelope with the literal real-power envelope, proves the above-target concave
+secant has slope below `1/1024`, and provides the end-to-end field consumer
+`productionSlackBarrier_of_actualEtaEnvelope`.  From the exact moment decomposition, the actual
+eta-envelope recurrence, and only the injective `126871` allocation, that theorem forces the
+public `127009` target.  No repeated-sector enumeration, dilation, scalar, monotonicity, secant,
+or wiring theorem remains.  The sole principal depth-seven core is therefore the **signed
+injective** packet defect at coefficient `126871`.
+
+**Injective/exterior audit (2026-07-11).**
+`_BGKDepthSevenInjectiveVarianceEquivalence.lean` identifies that core exactly with seven-subset
+sum mixing:
+`(7!)^2*sum_y(q*a_y-C(n,7))^2 <= 126871*q^2*n^7`.
+This is a useful coordinate change, not a bypass. `_BGKSamplingWithoutReplacementNoGo.lean`
+proves generic exterior coupling misses by over `141` energy bits and would leave a period bound
+over `1835` times the Paley ceiling. `_BGKJohnsonKneserDepthSevenNoGo.lean` proves ordinary
+one-sided Kneser mixing misses by `162--163` bits (two-sided mixing by `190--191`); even the
+Johnson local-injectivity/Hoffman route misses by `163--164` bits.  The survivor must therefore
+use subgroup-specific arithmetic cancellation, not phase norms or association-scheme expansion
+alone. `_BGKJohnsonPhaseGradeNoGo.lean` strengthens this: a primitive-fourteenth-root phase
+family has power sums `p_1,...,p_7=0` but still places three quarters of its norm in Johnson
+grades `1,...,6`, with grade six alone carrying `7/16`.  Newton/Wick subtraction does not
+universally isolate the top grade. `_BGKSevenSubsetOverlapDecomposition.lean` gives the exact
+wraparound-compatible sunflower split
+`W_7=sum_(r=0)^7 D_r*C(|G|-2r,7-r)`: cancelling a common core preserves the nonzero cyclotomic
+lift marker.  Hence all overlap configurations are a weighted depth-`<=6` term and the coefficient
+of the globally disjoint primitive depth-seven term is one.  Existing lower-depth packet results
+do not yet bound that weighted census, so this is an exact localization rather than a discharge.
+`_BGKSevenOverlapProductionBudget.lean` sharpens the boundary: `D_0=D_1=0`, but even an
+optimistic termwise Wick cap for `D_2` costs coefficient `158760>126871`; the five completed
+depths `2,...,6` total `2714355`, between 21 and 22 full injective allowances.  It also maps every
+marked depth-two pair to the existing projective-accident socket.  Thus lower-depth structure
+remains relevant, but positive completion counting cannot close the target without signed/DC
+cancellation or a genuinely smaller subgroup-arithmetic census.  The same file proves that
+accident-freeness, and hence the existing `kappa_n(x)=(x-1)^n` difference-signature injectivity
+condition modulo inversion, annihilates `D_2`; both production-prime consumers are formal, but
+their `n=2^30` injectivity hypothesis is still open.
+`_ANT46KappaProductionReduction.lean` gives that hypothesis two exact certificate forms.  On an
+inversion transversal it is equivalent to nonvanishing of one ordered discriminant times the
+self-class value; the literal production polynomial has degree `536870911` and Sylvester order
+`1073741821`.  Prime-factor projection reduces the first and second primes to separation in
+certified 59-bit and 67-bit prime-order groups, respectively.  Those projection adapters remove
+small cofactor components, but the projected injectivity itself remains an open power-residue
+separation problem.
+`_BGKMarkedSunflowerInverse.lean` supplies the exact Catalan--Lagrange inverse expressing `D_7`
+as an alternating combination of `W_2,...,W_7`.  It also proves that this inverse is equivalent
+to the original seventh triangular row once the lower rows are fixed.  At production its absolute
+coefficient mass lies between `2^143` and `2^144`; this is coefficient amplification, not an
+automatic 143-bit loss because depth-normalized estimates may compensate.  Inversion becomes
+useful only with the missing correlated or correctly scaled lower-depth cancellation.
 
 **Dyadic two-scale recursion (2026-07-11).** `_DQR23TwoScaleCenteredRecursion.lean` proves the
 exact sibling law `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)`, the full signed binomial ledger at
@@ -97,8 +163,13 @@ exactly `q*|G|*(f_k(a)-|G|^k/q)`, the centered `k`-fold representation count at 
 twist `a`.
 The subsequent general-stratum and twist-average files identify every mixed term with a centered
 dilated rep--rep correlation and factor its average over all twists.  Thus DQR-4 is now a precise
-29-point discrepancy problem: prove the production twists do not coherently oversample the
-deviation fields.  Stratum Cauchy--Schwarz reconnects to the original moment and gives no saving.
+29-point discrepancy problem at the distinguished quotient involutions.  The adjoining symmetry
+reduces the ledger to seven paired cross strata, but small cells refute uniform contraction:
+at `p=65537`, the moment-step ratio normalized by `2^7` is `23.70` for `n=16` and `28.41` for
+`n=32`, with every cross contribution aligned.  Mean-zero/inversion symmetry can concentrate
+arbitrarily close to all L2 mass at the involution, while exact level telescoping returns the
+endpoint Paley moment.  A surviving DQR route therefore needs new field-specific exceptional-level
+control; averaging, Cauchy--Schwarz, and recursion alone are closed.
 
 **Projective accident packets (2026-07-11).**  `_ANT46RungTwoAccidentOrbit.lean` now closes the
 full projective `S₄` classifier.  For an odd-characteristic accident the identity fibre has size

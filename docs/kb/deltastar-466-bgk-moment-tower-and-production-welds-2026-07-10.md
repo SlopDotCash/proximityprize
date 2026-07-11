@@ -249,9 +249,26 @@ secant barrier.  `_BGKFourteenFactorYoung.lean` proves the underlying fourteen-f
 optimized-padding lemma. `_BGKShiftedEtaPaddedHolder.lean` additionally proves the exact
 nonzero-frequency dilation law, handles all coefficient shifts `1,...,7`, constructs the
 canonical NNReal padding scale even when the moment vanishes, and supplies a witness-free Holder
-bound for every `k<=13` Newton monomial.  The only remaining repeated-sector seam is algebraic:
-kernel-check the full expanded monomial list and its grouping into the `B_k` envelope before
-feeding the already-formal `<138` tangent/bootstrap consumer.
+bound for every `k<=13` Newton monomial. `_BGKRepeatedNewtonFullEnumeration.lean` now checks all
+88 nonzero monomials by `ring`, computes the complete `B_k` table in the kernel, and wires every
+term to that Holder bound.  Fixed integer padding `R=79880` then proves the exact fixed-target
+estimate `F(T)<=138*q*n^7` using rational arithmetic.  The finite enumeration, dilation, Holder,
+and scalar seams are closed.  At that fixed-target stage, the only bootstrap interface was the
+already-isolated above-target concave secant inequality with slope `1/1024`.
+
+`_BGKRepeatedEnvelopeSecantClosure.lean` now closes that last interface and the actual-field
+wiring.  It proves the canonical padding envelope equals the literal twelve-stratum rpow
+envelope, derives the `1/1024` secant from concavity, transports the fixed `R=79880` certificate
+to `H(T)<=138*S`, and exposes one final consumer:
+
+```text
+productionSlackBarrier_of_actualEtaEnvelope
+```
+
+Given `M14=135135*S+total`, `total<=injective+repeatedEtaEnvelope`, and
+`injective<=126871*S`, it proves `total<=127009*S`.  These are exactly the intended moment
+decomposition, recurrence, and injective allocation inputs.  No repeated-sector enumeration,
+dilation, scalar, monotonicity, secant, or field-wiring residual remains.
 
 `_AJT13CenteredMomentEquivalence.lean` records a complementary no-shortcut result. If `K` is
 the annihilator of `G`, `m=|K|`, and `eta_c` are the quotient Gauss periods, complete character
@@ -274,3 +291,133 @@ natural Gaussian constant.  Weighted convexity proves
 translation error is at most one for `m>=21`, and the exact rational calculation
 `135135*(21/20)^13+1 < 2^18` leaves over 7,326 coefficient units.  Therefore a centered
 Wick-scale theorem is already a complete consumer for the original public moment target.
+
+## Addendum 7: dyadic recursion data layer and contraction falsifier (2026-07-11)
+
+The DQR files now prove the exact two-scale identity, all mixed-stratum rep--rep correlation laws,
+their centered form, the all-twist factorization, and the adjoining-involution palindrome.  The
+fourteenth-moment ledger reduces to seven paired cross strata per level.  This does not yield a
+uniform contraction theorem.  Exact small-field FFT cells at `p=65537` have
+
+```text
+moment step ratio / 2^7 = 23.70... at n=16,
+moment step ratio / 2^7 = 28.41... at n=32,
+```
+
+with all thirteen unpaired cross contributions of the same sign.  Abstract mean-zero,
+inversion-symmetric discrepancy can place `(m-1)/m` of its L2 mass at the quotient involution, so
+twist averaging and one-point Cauchy--Schwarz cannot fix this.  Finally, the product of exact level
+ratios telescopes to the endpoint moment ratio.  DQR remains a useful localization, but a closing
+tower theorem must add production-specific exceptional-level control; recursion by itself is an
+equivalent reformulation of the Paley endpoint.
+
+## Addendum 8: exact injective coordinate and three quantitative no-go theorems (2026-07-11)
+
+The coefficient-`126871` injective residual has an exact exterior coordinate.  If
+`a_y=#{S subset G: |S|=7, sum(S)=y}`, then
+
+```text
+sum_(b != 0) |D7(b)|^2 <= 126871*q*n^7
+  iff
+(7!)^2 * sum_y (q*a_y-C(n,7))^2 <= 126871*q^2*n^7.
+```
+
+`_BGKDepthSevenInjectiveVarianceEquivalence.lean` proves the identity by subset-product Fourier
+expansion and Parseval.  Three tempting routes are now quantitatively excluded:
+
+- generic sampling-without-replacement coupling loses over `141` energy bits and yields only
+  `|eta|<=85047155`, over `1835` times the Paley ceiling;
+- one-sided Kneser mixing loses `162--163` bits, while two-sided mixing loses `190--191` bits;
+- the Johnson local-injectivity/Hoffman cap loses `163--164` bits;
+- vanishing Newton power sums `p_1,...,p_7` still leaves exactly three quarters of a
+  primitive-root phase vector's norm in Johnson grades `1,...,6`; grade six alone carries `7/16`.
+
+The Zhu--Wan subgroup subset-sum asymptotic is also vacuous here: its thin-subgroup per-fibre
+error bar exceeds the complete seven-subset population by over `252` bits.  Finally, an exact
+small-cell census at `(n,p)=(16,337)` finds `48` nonzero primitive depth-seven disjoint pairs, so
+universal recursion through proper leaves of depth at most six is false.  The live input must
+control the centered, subgroup-specific primitive sector; exterior terminology, association
+schemes, and positive packet completion do not reduce its strength by themselves.
+
+The exact marked sunflower identity now separates that statement without losing the cyclotomic
+marker:
+
+```text
+W_7 = sum_(r=0)^6 D_r*C(n-2r,7-r) + D_7.
+```
+
+Here `D_r` counts globally disjoint, equal-sum, nonzero-lift petal pairs.  Existing depth-at-most-six
+packet theorems supply structural leaves but no cardinal bounds on the weighted `D_2,...,D_6`
+sum, so both the amplified lower-depth census and the primitive `D_7` term remain honest sockets.
+
+`_BGKSevenOverlapProductionBudget.lean` removes the two vacuous terms (`D_0=D_1=0`) and evaluates
+the exact production completion coefficients.  A deliberately optimistic positive Wick bound
+already charges `158760` units at depth two, more than the full `126871` injective allowance; the
+depths `2,...,6` total `2714355`, strictly between 21 and 22 allowances.  The same file maps every
+marked depth-two pair into the existing ANT46 projective-accident classifier, assuming the
+cyclotomic lift is odd.  This is a clean route to extra arithmetic, but it also proves that
+termwise positive completion is not the capstone: one needs signed/DC cancellation or marked
+strata far below their ambient Wick envelopes.
+
+The depth-two consumer is now exact.  `accidents H=empty`, or the stronger existing
+`DifferenceSignatureInjectiveModInversion H (2^30)` hypothesis for
+`kappa_n(x)=(x-1)^n`, forces the marked `D_2` Finset to be empty; there are conditional consumers
+for each production prime.  No in-tree theorem currently instantiates that injectivity or
+unconditional accident-freeness.  The existing production facts stop at 12-divisibility and the
+exclusion of triple-equal packets, so `kappa` injectivity is a genuine arithmetic residual rather
+than hidden bookkeeping.
+
+`_ANT46KappaProductionReduction.lean` compresses that residual as far as the current algebra
+allows.  Choosing one representative of each non-self inversion class turns injectivity into the
+nonvanishing of an ordered discriminant times the self-class value.  At production the canonical
+polynomial degree is `536870911`, its literal Sylvester order is `1073741821`, and it has
+`144115187270549505` unordered root pairs, so direct resultant expansion is not a small
+certificate.  A second reduction projects signatures through a certified large prime factor of
+the cofactor: order `462478642316479903` for the first prime and
+`90308905535905320959` for the second.  Projected injectivity is sufficient and discards all
+small cofactor components, but existing Lucas/order certificates establish only the group shapes,
+not separation.  The live `D_2` input is now a prime-specific power-residue separation theorem.
+
+`_BGKMarkedSunflowerInverse.lean` tests whether a signed triangular inversion supplies the missing
+cancellation.  Catalan--Lagrange inversion gives
+
+```text
+D7 = W7 -(n-12)W6 + ((n-10)(n-13)/2)W5 - ...
+     - ((n-4)(n-10)(n-11)(n-12)(n-13)/120)W2.
+```
+
+The file proves both this identity and its converse relative to the lower forward rows: inversion
+alone is exactly equivalent to the original seventh common-core equation.  At `n=2^30` the
+absolute inverse-coefficient mass is between `2^143` and `2^144`.  That is amplification rather
+than automatically a 143-bit loss, since a correctly normalized `W_j` bound can carry powers of
+`n` that compensate.  The honest new target is therefore a depth-correlated/cyclotomic estimate,
+not separate unscaled bounds followed by a triangle inequality.
+
+The centered-translate route has an analogous structural boundary.  In
+`_BGKCenteredTranslatePDNoGo.lean`, a five-point centered-delta kernel proves that global mean
+zero, additive positive semidefiniteness, and multiplicative invariance alone admit an unbounded
+restriction scaling ray.  The exact proper-subgroup autocorrelation cell `(p,n)=(13313,256)` has
+normalized coefficient `312012.706...>2^18`.  This is not a production counterexample; it rules
+out a universal three-hypothesis CTR theorem and forces any surviving restriction argument to use
+additional production-specific arithmetic.
+
+`_BGKCenteredTranslateConeDuality.lean` identifies the exact convex obstruction in Fourier
+coordinates.  For nonnegative zero-DC weights constant on `G`-orbits,
+
+```text
+sum_(u in G) D_w(1-u) = (1/|G|) * sum_b w_b*|eta_b|^2.
+```
+
+At unit spectral mass the optimum is `max_(b!=0)|eta_b|^2/|G|`, and a single-orbit weight attains
+it.  Thus the universal spectral-cone bound is precisely the worst-period/Paley problem, not a
+weaker relaxation.  The file works directly with spectral weights; it does not separately
+formalize the finite Bochner representation from arbitrary PSD kernels.
+
+The actual autocorrelation is more rigid, with `w_b=|eta_b|^12`, but scalar lower moments still do
+not exploit that rigidity.  `_BGKLowerMomentOrbitSpikeNoGo.lean` constructs an exact
+production-parameter orbit profile satisfying Parseval, orbit multiplicity, `|eta_b|^2<=n^2`,
+and even hypothetical Wick ceilings for powers `2,...,6`.  Its seventh power sum lies strictly
+between `2^15` and `2^16` times the repaired target.  Those Wick transfers are themselves not
+known at the production primes, so the countermodel grants more than the current theory.  A
+closing CTR/entropy theorem must impose genuinely joint seventh-order arithmetic on the period
+profile rather than interpolate scalar energies.

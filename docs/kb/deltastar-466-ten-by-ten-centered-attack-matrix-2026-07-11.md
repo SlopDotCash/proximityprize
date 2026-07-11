@@ -41,12 +41,12 @@ multiplicatively invariant function and prove restriction directly on the nonlin
 |---|---|---|
 | CTR-1 exact physical-space collapse | **THEOREM** | `_BGKCenteredConvolutionCollapse`: `qE_7-n^14 = n sum_(u in G)(qC_6(1-u)-n^12)`. |
 | CTR-2 Fourier audit | **THEOREM / EQUIVALENT** | The last expression equals `sum_(b!=0)|eta_b|^14`; this prevents mistaking dimension reduction for a moment bypass. |
-| CTR-3 zero-global-mean restriction | **ACTIVE** | Prove a restriction theorem for every subgroup-invariant positive-definite `D` with `sum_delta D(delta)=0`; win at `sum_(u in G)D(1-u)<=2^357`. Falsifier: an admissible `D` concentrated on `1-G`. |
+| CTR-3 zero-global-mean restriction | **STRUCTURAL FORM REFUTED / FOURIER CONE EQUIVALENT** | A centered-delta kernel gives an unbounded zero-mean, additive-PSD, invariant scaling ray. More sharply, `_BGKCenteredTranslateConeDuality` proves the unit-mass orbit-spectral cone optimum is exactly `max_(b!=0)|eta_b|^2/n`, attained on one orbit: the generic cone theorem is the Paley bound itself. |
 | CTR-4 positive/negative excursion pairing | **ACTIVE** | Construct an injection or transport from `u` with `D(1-u)>0` to ambient lags with compensating negative mass. It must retain weights, not merely supports. |
 | CTR-5 dyadic martingale differences | **ACTIVE** | Decompose along `G_1 < ... < G_30=G` and seek orthogonality of centered increments on `1-G_j`. Falsifier: coherent increments with the same sign at every level. |
 | CTR-6 polynomial restriction majorant | **EQUIVALENT risk** | Approximate `1_{1-G}` by an additive Fourier polynomial with small weighted coefficients. The coefficients are Gauss periods; any proof using their sup is circular. |
 | CTR-7 signed density increment | **ACTIVE** | If the translate sum is too large, force a multiplicative coset on which `f_6-n^6/q` has larger density, then iterate to a forbidden concentration. Quantify entropy loss per step. |
-| CTR-8 centered hypercontractivity | **ACTIVE** | Seek an `L^2 -> L^14` inequality for convolution by `1_G-n/q` whose constant is `2^18`; falsify first on subgroup characters and full-group endpoints. |
+| CTR-8 centered hypercontractivity | **UNIVERSAL FORM AND LOWER-MOMENT BOOTSTRAP REFUTED** | The exact `(13313,256)` cell exceeds `2^18`. At production, even granting Parseval, orbit size, the trivial cap, and Wick ceilings through moment 12 permits an explicit orbit profile whose moment 14 is `2^15`--`2^16` times the target. The survivor needs joint seventh-order arithmetic. |
 | CTR-9 additive uncertainty with invariance | **INSUFFICIENT unless strengthened** | Ordinary support uncertainty ignores signs and returns a `sqrt(q)` scale. A viable theorem must use simultaneous additive Fourier and multiplicative-orbit invariance. |
 | CTR-10 local-to-global discrepancy | **ACTIVE** | Bound the `1-G` restriction by a small family of affine images whose signed average is the global zero mean. Required covering weights must have total variation `O(1)`, not `q/n`. |
 
@@ -60,12 +60,12 @@ but measure signed completion multiplicity rather than positive packet existence
 | PPCT-1 FS11 generic/wraparound split | **THEOREM** | `E_7 = trivialCountG + wraparoundExcessG`. |
 | PPCT-2 Wick payment | **THEOREM** | Pairing induction gives `trivialCountG <= 13!! n^7 = 135135 n^7`. |
 | PPCT-3 corrected slack ledger | **THEOREM** | The remaining coefficient is exactly `2^18-13!!=127009`, with the mandatory `n^14` DC supply retained. |
-| PPCT-4 injective/repeated partition | **THEOREM on G152/G153 chain** | `wraparoundExcessG = injectiveWraparoundExcessG + repeatedWraparoundExcessG`. |
+| PPCT-4 injective/repeated partition | **THEOREM / signed inverse equivalent / positive completion refuted** | The marked sunflower law has `D_0=D_1=0`. Positive Wick completion costs `158760` already at `D_2` and `2714355` over depths 2--6. Its Catalan--Lagrange inverse is exact but equivalent to the forward row; production inverse coefficient mass is between `2^143` and `2^144`, so usefulness requires depth-normalized or correlated cancellation. |
 | PPCT-5 primitive nonzero leaf existence | **THEOREM on G153 chain** | Every injective depth-seven wraparound tuple reaches a primitive balanced leaf with nonzero cyclotomic label. |
 | PPCT-6 charge-mass sandwich | **THEOREM / INSUFFICIENT** | Primitive charge mass lies between one and three times the injective excess; this is only a factor-three re-encoding. |
-| PPCT-7 completion multiplicity | **NAIVE CAP REFUTED / exact threshold active** | Small cells have canonical fibres as large as `7242`, depth `2`, and one configuration can contain `44` bad packets. The production cap must satisfy the exact G154/G155 budget, not merely be finite. |
-| PPCT-8 signed leaf charge | **THEOREM socket on G154/G155 chain** | Centered completion defects telescope exactly; packet credits sum to the injective baseline. The remaining theorem must bound the signed packet defect together with the repeated-sector defect. |
-| PPCT-9 repeated-coordinate recursion | **THEOREM analytic adapter / envelope list active** | Newton--Mobius gives masses `B13=42`, `B12=791`, total `25401599`; eta dilation, canonical padding, and k-factor Hölder are formal. Kernel-check the full monomial list to connect it to the `<138` bootstrap and injective coefficient `126871`. |
+| PPCT-7 completion multiplicity | **NAIVE CAP AND PROPER-LEAF RECURSION REFUTED** | Small cells have fibres as large as `7242` and up to `44` packets per configuration. At `(n,p)=(16,337)` there are exactly `48` nonzero primitive depth-seven disjoint subset pairs, so recursion through leaves of depth at most six is false. |
+| PPCT-8 signed leaf charge | **THEOREM socket / exact L2 target** | Credits give an exact signed packet identity, but an arbitrary coboundary is equivalent to the original cycle bound. Independently, `_BGKDepthSevenInjectiveVarianceEquivalence` identifies the coefficient-`126871` target with seven-subset histogram variance exactly. |
+| PPCT-9 repeated-coordinate recursion | **THEOREM / FULLY CLOSED MODULO INJECTIVE INPUT** | All 88 Newton monomials, exact `B_k` masses, eta-to-rpow bridge, fixed `R=79880` target `<138`, `1/1024` secant, and end-to-end field consumer are formal. `productionSlackBarrier_of_actualEtaEnvelope` needs only the intended moment decomposition, recurrence, and injective `126871` allocation. |
 | PPCT-10 BSG inverse theorem | **EQUIVALENT risk** | Large centered `E_7` should produce an approximate additive subgroup inside `G`; quantify parameters. Generic BSG losses must be checked against all 18 coefficient bits. |
 
 ## Angle 3: Annihilator Jacobi Tensorization (AJT) -- character-sum theory
@@ -151,10 +151,10 @@ prove chi-square mixing at ambient, rather than support, scale.
 | ESM-2 fixed-depth inverse Littlewood--Offord | **INSUFFICIENT** | Costa's applicable bound is at scale `1/n`; its centered consequence misses by strictly `2^161` to `2^162`. |
 | ESM-3 entropic CLT | **ACTIVE** | Prove each convolution step gains a fixed fraction of the remaining Renyi-2 entropy deficit using multiplicative structure. Seven gains must reach ambient scale. |
 | ESM-4 log-Sobolev Cayley walk | **EQUIVALENT risk** | The log-Sobolev/spectral constant of the additive walk generated by `G` is governed by the same worst period. |
-| ESM-5 collision-entropy tensorization | **ACTIVE** | Seek tensorization after quotienting multiplicative dilations; ordinary independent-sum tensorization ignores modular wraparound. |
+| ESM-5 collision-entropy tensorization | **GENERIC DISTINCT-SAMPLING ROUTE REFUTED / subgroup-specific active** | Coupling misses by over `141` energy bits and leaves a period ceiling `1835x` too large. Even `p_1,...,p_7=0` can leave `75%` of phase mass in Johnson grades 1--6, so Newton subtraction does not isolate the top exterior grade. |
 | ESM-6 exchangeable Gaussian model | **PROBE only** | It explains the observed `sqrt(2n log m)` extreme scale but supplies no deterministic per-prime tail. |
 | ESM-7 Stein coupling on cosets | **ACTIVE** | Build an exchangeable pair by multiplying a random summand by a random subgroup element; bound the Stein remainder in fourteenth norm. |
-| ESM-8 mod-Gaussian correction | **ACTIVE** | Isolate the Wick cumulants and show the wraparound cumulant generating function is negative or small at the depth-seven saddle. |
+| ESM-8 mod-Gaussian correction | **SCALAR MOMENTS THROUGH SIX REFUTED / joint cumulant active** | `_BGKLowerMomentOrbitSpikeNoGo` passes even hypothetical Wick ceilings for powers `s^2,...,s^6` with `s=|eta|^2`, yet fails the `s^7` target by 15--16 bits. A viable correction must constrain the joint orbit profile at seventh order. |
 | ESM-9 concentration over frequency | **INSUFFICIENT for worst case** | Average tail bounds can tolerate a bad orbit; coset invariance reduces `q-1` frequencies to `m` but does not remove the maximum. |
 | ESM-10 entropy-production inverse theorem | **ACTIVE** | If Renyi-2 entropy fails to grow at one step, force an additive approximate subgroup compatible with multiplicative closure, then rule it out quantitatively. |
 
@@ -171,8 +171,8 @@ exactly, then charge geometric orbits rather than ordered tuples.
 | PAOR-4 orbit size `24/12` | **THEOREM at production** | Two-pair patterns are lawful and the certified `-3` test excludes `3+1`, so every production accident orbit has size 24 or 12 and the total count is divisible by 12. |
 | PAOR-5 depth-seven higher symmetric group | **ACTIVE** | Generalize from quadruple `S_4` to the signed 14-coordinate action relevant to `E_7`; classify stabilizers by set partition. |
 | PAOR-6 exact signature-fibre count | **THEOREM / production histogram open** | For fibre sizes `k_v` of `kappa_n(x)=(x-1)^n`, `#accidents=sum_v(k_v^2-2k_v+s_v)=sum_v k_v^2-2n+3`. This reduces `n^2` triples to an `n-1` histogram but is still too large directly. |
-| PAOR-7 cyclotomic-unit signature | **THEOREM exact quotient** | For the exact root support, `accidents H=empty` iff `kappa_n` is injective modulo `x~x^-1`; both directions and two production adapters are formalized. |
-| PAOR-8 canonical discriminant recurrence | **THEOREM recurrence / norm collapse open** | `K_(2n)=Sq(K_n)*J_(2n)` with `J` an explicit trace resultant; verified through `K_32`. The exact recurrence is logarithmic-depth but still width `2^28`; square-only and recycled-scalar recurrences are refuted. |
+| PAOR-7 cyclotomic-unit signature | **THEOREM exact quotient / production injectivity open** | For exact root support, `accidents H=empty` iff `kappa_n` is injective modulo `x~x^-1`. This now conditionally forces marked `D_2=0` for both production primes, but no in-tree theorem proves the required `n=2^30` injectivity. |
+| PAOR-8 canonical discriminant recurrence | **THEOREM reductions / prime-specific separation open** | `K_(2n)=Sq(K_n)*J_(2n)` is formal. DSI is now equivalent to one transversal discriminant certificate, but production degree `536870911` gives Sylvester order `1073741821`. Prime-factor projection reduces the two primes to certified 59/67-bit prime-order targets; projected power-residue injectivity remains open. |
 | PAOR-9 incidence theorem regime check | **INSUFFICIENT unless subgroup-sensitive** | Generic point-line/point-curve incidence bounds lose powers of `q` at `n=q^0.19`. |
 | PAOR-10 signed orbit census | **ACTIVE** | Attach a sign/centered weight to each projective orbit so orbit compression preserves DC cancellation instead of counting all accidents positively. |
 
@@ -185,14 +185,14 @@ that the bad component contracts when one adjoins square roots.
 |---|---|---|
 | DQR-1 subgroup tower | **THEOREM** | `G_j` is the square image of `G_{j+1}` and `G_{j+1}=G_j union aG_j`. |
 | DQR-2 period two-scale equation | **THEOREM** | `_DQR23TwoScaleCenteredRecursion` proves `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)` and realness under `-1 in G`. |
-| DQR-3 centered-energy recursion | **THEOREM ledger** | The same file expands the off-zero fourteenth moment into all 15 signed binomial cross moments, without absolute-value loss. |
-| DQR-4 contraction coefficient | **FULL DATA LAYER THEOREM / discrepancy open** | Every stratum is a centered dilated rep--rep correlation; its all-twist average factorizes into zero-sum power sums. The residual is deviation of the 29 production twists from that mean. Quadratic sign and stratum Cauchy--Schwarz are formally insufficient. |
+| DQR-3 centered-energy recursion | **THEOREM, symmetrized** | The exact binomial ledger is palindromic at an adjoining twist `a^2 in G`, reducing it to seven paired cross strata plus the within term, with no absolute-value loss. |
+| DQR-4 contraction coefficient | **UNIFORM CONTRACTION REFUTED / data layer theorem** | Every stratum is a centered rep--rep correlation at the quotient involution. At `p=65537`, the step ratio divided by `2^7` is `23.70` (`n=16`) and `28.41` (`n=32`), all cross terms aligned. Mean, inversion symmetry, and CS cannot control the distinguished point. |
 | DQR-5 Hasse--Davenport lift | **INSUFFICIENT as currently used** | Known product identities reduce some phase degrees of freedom but stop with a linear-size residual. |
 | DQR-6 renormalized Jacobi cocycle | **ACTIVE** | Track AJT normalized Jacobi phases under `K_j -> K_{j+1}` and look for a martingale-difference law. |
-| DQR-7 exceptional-level budget | **ACTIVE** | Permit finitely many expanding levels, provided the product of level constants through 30 stays below the exact coefficient budget. |
+| DQR-7 exceptional-level budget | **ACTIVE, mandatory** | Small levels can expand by more than `28*2^7`; any tower proof must compensate them quantitatively. Exact ratio products telescope, so compensation needs new endpoint arithmetic rather than formal recursion alone. |
 | DQR-8 production-index arithmetic | **THEOREM factorization / ACTIVE use** | `m=2^6*7^3*26407*279991*4533259*462478642316479903` is Lean-checked. Test CRT tensorization, but do not assume Jacobi phases factor with the abstract character group. |
 | DQR-9 semiprimitive/CM branch | **PROBE / likely absent** | Test whether the production prime satisfies any semiprimitive congruence giving explicit periods. If not, record an exact exclusion. |
-| DQR-10 tower transfer theorem | **ACTIVE** | A finite-scale proof becomes useful only with a theorem transferring a verified interval of levels to all later levels; no empirical extrapolation is allowed. |
+| DQR-10 tower transfer theorem | **EQUIVALENT endpoint risk** | The product of exact step ratios is the endpoint moment ratio. A transfer theorem is useful only if it injects new field-specific control; bare telescoping reconverges to the Paley wall. |
 
 ## Angle 10: Certificate-Carrying Per-Prime Descent (CPPD) -- computation and formal proof
 
@@ -214,11 +214,16 @@ so every numerical claim is independently checkable and every extrapolation has 
 
 ## Ranked live queue after all 100 cells
 
-1. **PPCT-8 injective capstone:** repeated coordinates now cost `<138` and bootstrap away, so
-   prove the signed injective packet defect with coefficient `126871`. Positive completion caps
-   are refuted; the proof must preserve centered packet cancellation.
-2. **CTR-3/4/5:** exploit the exact zero-mean restriction structure on `1-G` without taking
-   absolute values; this is the cleanest formulation not already proved equivalent to the target.
+1. **PPCT-8 injective capstone:** the repeated cone, including its `1/1024` noncircular
+   bootstrap and actual-field wiring, is closed.  The sole main analytic task is the signed
+   injective packet defect with coefficient `126871`. Equivalently, prove
+   `(7!)^2 sum_y(q*a_y-C(n,7))^2 <= 126871*q^2*n^7` for the seven-subset sum histogram.
+   Positive completion caps, proper-leaf recursion, and generic exterior coupling are refuted;
+   the proof must use subgroup-specific centered cancellation.
+2. **CTR-4/5/7:** exploit the exact zero-mean restriction structure on `1-G` without taking
+   absolute values and with genuinely production-specific arithmetic.  The orbit-spectral cone
+   is exactly dual to the worst-period problem, and scalar moments through order six admit a
+   15--16-bit spike, so the new input must couple the actual period profile at seventh order.
 3. **PAOR-8 norm-collapse invariant:** accident emptiness is exactly kappa-signature injectivity,
    and its dyadic polynomial recurrence is proved. Compress the exponentially wide norm state;
    the two tested scalar recurrences are known false, but no general impossibility is claimed.

@@ -185,6 +185,90 @@ that `2^18` is not a universal constant across arbitrary subgroup regimes: at
 not the additive Gauss phases; already at `(q,n,m)=(13,2,6)` a punctured CRT minor has magnitude
 `sqrt(48/13)`, ruling out rank-one tensor factorization.
 
+### Two structural theorem templates also fail before production arithmetic enters
+
+The exact centered-translate identity suggests bounding a zero-mean, additive-positive-definite,
+multiplicatively invariant kernel on `1-G`.  `_BGKCenteredTranslatePDNoGo.lean` proves those three
+properties alone are insufficient: a centered-delta kernel on `ZMod 5` has an unbounded positive
+scaling ray.  The actual centered autocorrelation in the exact proper-subgroup cell
+`(p,n)=(13313,256)` has normalized depth-seven coefficient
+
+```text
+584598921140164042747377 / 1873638182474481664
+  = 312012.706... > 2^18.
+```
+
+This is not a counterexample in the production regime.  It rules out a universal restriction or
+hypercontractive theorem whose only hypotheses are those homogeneous structural properties.
+In Fourier coordinates the boundary is exact: `_BGKCenteredTranslateConeDuality.lean` proves the
+unit-mass nonnegative orbit-spectral cone has optimum
+`max_(b!=0)|eta_b|^2/|G|`, attained on a single orbit.  Thus this cone relaxation is precisely
+the worst-period problem.  The actual weights `|eta_b|^12` are a genuine extra constraint, but
+`_BGKLowerMomentOrbitSpikeNoGo.lean` shows scalar information does not capture it: an explicit
+production-scale orbit profile satisfies exact Parseval mass, the trivial cap, and even
+hypothetical Wick ceilings through power six while its seventh power sum is between `2^15` and
+`2^16` times the target.  A useful theorem must couple the full period profile at seventh order.
+
+Likewise, the exact marked-sunflower decomposition does not license termwise positive bounds.
+After `D_0=D_1=0`, even the optimistic completed Wick coefficient at depth two is
+`158760>126871`; depths `2,...,6` total `2714355`, between 21 and 22 copies of the entire injective
+allowance.  `_BGKSevenOverlapProductionBudget.lean` kernel-checks these constants and maps marked
+depth-two pairs into the projective-accident classifier.  The viable literature target is
+therefore a centered joint-cancellation or production-arithmetic theorem, not an improvement of
+independent positive collision counts.
+
+The corresponding signed inversion is now audited as well.  The Catalan--Lagrange inverse writes
+`D_7` as an alternating combination of `W_2,...,W_7`, but
+`_BGKMarkedSunflowerInverse.lean` proves it is equivalent to the forward seventh row once the
+lower rows are fixed.  Its production coefficient mass lies between `2^143` and `2^144`; this is
+amplification rather than an automatic loss because depth-normalized bounds can compensate.
+Consequently the inverse is a useful coordinate only if a theorem couples adjacent depths or
+supplies the correct cyclotomic scaling.  At depth two, the exact conditional socket is now
+`kappa_(2^30)` difference-signature injectivity modulo inversion; no production proof of that
+condition is currently present.
+`_ANT46KappaProductionReduction.lean` makes the size of that condition explicit.  A transversal
+discriminant certificate has degree `536870911` and Sylvester order `1073741821`, so literal
+resultant expansion is billion-scale.  Projecting away small cofactor components leaves
+prime-order separation problems of 59 and 67 bits for the two production primes.  The existing
+order certificates prove these target group shapes but not injectivity of the projected
+cyclotomic-unit values.
+
+### The published subset-sum asymptotic is vacuous in the thin-subgroup cell
+
+The exterior-power reformulation makes one older theorem look almost tailor-made.  If
+`a_y` counts seven-subsets of `G` with sum `y`, then the remaining injective target is exactly
+
+\[
+  (7!)^2\sum_y(qa_y-\binom n7)^2\le 126871q^2n^7.
+\]
+
+[Zhu and Wan, *An asymptotic formula for counting subset sums over subgroups of finite fields*,
+Theorem 1.1](https://arxiv.org/abs/1101.0289) prove, for a subgroup of index `m` and nonzero `y`,
+
+\[
+ \left|a_y-q^{-1}\binom n7\right|
+ \le {2\sqrt q\over q}
+   \binom{\sqrt q+7+q/(mp)}7,
+\]
+
+where `p` is the field characteristic.  In the production prime field `p=q`, so `q/(mp)=1/m`,
+but the subgroup index is `m=2^128+192` while `sqrt(q)` is between `2^79` and `2^80`.
+Consequently the paper's later useful range `m<c sqrt(q)` is missed by more than 48 bits.
+More decisively, the displayed error term is at least
+
+\[
+ {2\over\sqrt q}{(\sqrt q)^7\over7!}
+ ={2q^3\over7!}>2^{462},
+\]
+
+whereas the entire seven-subset fibre population is
+`C(2^30,7)<2^210`.  Thus this theorem is not merely short of the centered variance constant: in
+the production thin-subgroup regime its per-fibre error exceeds the trivial total-population
+bound by over 252 bits.  The Li--Wan distinct-coordinate sieve supplies the exact combinatorial
+language used by the new injective bridge, but its termwise Weil estimate cannot prove the needed
+joint L2 cancellation.  The squared index comparison and the `462`/`252`-bit production gaps are
+kernel-checked in `Frontier/_BGKSubsetSumLiteratureProductionGap.lean`.
+
 ## 2. Fixed-depth inverse Littlewood--Offord does not center
 
 [Costa, *Anticoncentration of Random Sums in Z_p*, Theorems 3.3 and 3.5](https://arxiv.org/abs/2602.16595)

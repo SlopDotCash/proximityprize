@@ -986,6 +986,272 @@ it cannot exclude the locator near-cover.  Any further progress must couple
 different witnesses, or constrain which three-color patterns are compatible
 with the two saturated locator polynomials.
 
+A sequential CRT/Padé route survives this no-go.  For a witness residual
+polynomial `p` of degree `<k`, vanishing on its first color bin `S` gives the
+exact factorization `p=domainLocator(S)*q` with `q!=0` and
+`|S|+deg(q)<k`.  At the balanced size `|S|=197598322`, the remaining quotient
+degree budget is only `70837134`.  The second balanced bin has `197598322`
+coordinates, exceeding that budget by `126761188`.  Unlike independent root
+caps, these second-bin equations constrain the *same small quotient* and are
+genuinely overdetermined.  The live socket is now to rewrite the second-core
+agreement equation modulo the first-bin locator and show that the saturated
+reference/external locators cannot satisfy all of those evaluations except in
+the line-identity branch.
+
+The quotient evaluation bridge is also formal: `domainLocator(S)` is nonzero
+at every domain coordinate outside `S`, and if `p=domainLocator(S)*q`, then an
+outside constraint `p(dom i)=v` becomes
+`q(dom i)=v/domainLocator(S)(dom i)`.  Thus the second color bin supplies an
+explicit rational received word for a quotient of degree below `70837134`.
+The remaining theorem is a structured list-decoding/Padé statement for this
+locator-normalized word, now with `126761188` equations beyond the quotient
+degree budget.
+
+Important correction: this equation surplus is not by itself a contradiction,
+because the normalized second-bin values are a structured high-degree locator
+ratio, not arbitrary field data.  Cross-multiplication restores a polynomial
+of degree up to `k-1`, and `197598322<k`, so plain root counting still does not
+fire.  The exact compatibility equations are now formal instead.  For rider
+`gamma`, two common-lift lines differ by
+`C(gamma-gamma0)*(r1-r0)`, while an external line differs from the reference
+by `C(gamma-gamma0)*(rE-r0)-externalDefect`.  Substituting the saturated
+locator forms gives the genuine three-bin Padé system; any closure must use
+both locator numerators together, not merely count quotient evaluations.
+
+The Padé system is now a theorem, not just a proposed shape.  Three piecewise
+bins yield one shared quotient `q` and two auxiliary quotients `h1,h2` with
+`L0*q-L1*h1=g1`, `L0*q-L2*h2=g2`, and the coupled equation
+`L2*h2-L1*h1=g1-g2`.  Moreover each bin residual has an exact dichotomy: it is
+globally zero (the witness polynomial lies on that line), or its quotient is
+nonzero and satisfies `|Si|+deg(hi)<k`.  Thus a genuinely escaping balanced
+witness supplies three simultaneous quotients of degree below about `70.8M`
+obeying a coupled two-locator Bézout equation.  This is the sharp remaining
+algebraic socket.
+
+There is now a first rigidity theorem for that socket.  When the two locator
+supports are disjoint, a fixed right-hand side
+`L2*h2-L1*h1` determines the low-degree quotient pair uniquely, provided
+`deg(h2),deg(h2')<|S1|` (and symmetrically after swapping the bins).  Indeed,
+the difference equation evaluated on `S1` forces `h2-h2'` to vanish there,
+because `L2` is nonzero on the disjoint support; root counting then gives
+`h2=h2'`, and cancellation gives `h1=h1'`.  Thus repeated bin supports and a
+repeated Padé target force a quotient collision.  The remaining multiwitness
+problem is no longer uniqueness for a fixed pattern, but bounding the number
+of support-pattern/target pairs strongly enough to guarantee such a repeat.
+
+A more local, canonical-support constraint avoids asking for an entire pattern
+repeat.  In any two-bin Padé equation whose target vanishes on `R`, points of
+`S1∩R` are roots of the first quotient and points of `S0∩R` are roots of
+the second quotient.  For nonzero quotients this gives the strict cross
+budgets `|S1∩R|+|S0|<k` and `|S0∩R|+|S1|<k`.  Taking `R` to be the
+saturated `k-1` reference-direction support and both common-line bins to have
+the balanced size `197598322`, each intersection with `R` is at most
+`70837133`.  Hence at least `126761189` canonical reference roots lie outside
+the two common bins and must be assigned to the external color or omitted
+from that witness.  This is the first constraint that couples the saturated
+locator geometry directly to the witness coloring; the next consumer should
+combine this forced diversion with the analogous external-defect support `Q`
+and the one-hole Venn ledger.
+
+That combination is not formally symmetric in `R` and `Q`.  A common--common
+affine target is already a scalar multiple of the reference-direction locator,
+so `R` is its direct zero set.  A common--external target contains both an
+unknown direction term and the external defect.  The correct `Q` interface is
+now formal: for two riders `gamma,delta`, cross-multiplying their affine
+differences by `delta-gamma0` and `gamma-gamma0` cancels the direction and
+leaves `C(gamma-delta)` times the external defect.  The corresponding theorem
+on two Padé equations gives an exact four-locator identity, allowing all four
+bin supports to vary honestly with the rider.  Thus a `Q` root-transfer
+argument needs cross-rider support coupling; applying the single-rider `R`
+argument verbatim would be invalid.
+
+The saturated one-hole Venn ledger has also been classified further.  If
+`a,b,c` are the three exclusive atoms, `d` is reference--reference only,
+`e,f` are the two reference--external-only atoms, and `t` is triple, then the
+three core sizes `2k-1` together with `d+t=k-1` and `e+f+t=k-1` force
+`c=k`, `a+e=k`, and `b+f=k`.  In particular the external-only region has
+exactly `268435456` coordinates.  The live socket is now precise: combine the
+four-locator two-rider identity with enough stability or overlap of rider bin
+supports to transfer `Q` roots, then charge the resulting forced mass through
+these exact Venn atoms.
+
+Pure Venn cardinality does **not** provide that stability.  There is an exact
+integer countermodel with `t=e=0`, `d=f=k-1`, `a=c=k`, and `b=1`.  It satisfies
+all three core-size and both saturated-support equations.  Moreover the three
+one-hole balanced bins fit pairwise disjointly inside `a`, `f`, and `c`, and
+both common-bin choices avoid `R` completely.  Even two balanced rider bins
+fit disjointly inside a `536870911`-point heavy core; three exceed it by only
+`55924055`, below the `70837134` quotient budget.  Hence neither the exact
+Venn ledger nor pairwise bin cardinality can force the required cross-rider
+overlap.
+
+The positive conditional endpoint is formal as well.  If two riders reuse the
+same reference and external bins, their four-locator elimination collapses to
+two locators.  Provided the two cross-rider quotient differences are nonzero
+and retain their degree budgets, the `Q` roots transfer and yield the same two
+strict cross-bin inequalities as for `R`.  Thus repeated-bin stability is a
+sufficient bridge, but the countermodel proves it must come from polynomial
+consistency across riders rather than set sizes.  The surviving target is a
+cross-rider agreement-polynomial theorem that either forces such stability or
+extracts an equally strong common factor from the four varying locators.
+
+That common-factor extraction is now formal and removes exact bin reuse.  Each
+rider locator splits as the locator of the cross-rider bin intersection times
+the locator of its directed set difference.  Factoring the two shared
+intersection locators out of the four-locator identity absorbs the leftover
+locators into two combined quotients.  Their degree budgets are automatic:
+`|Sgamma∩Sdelta|+|Sgamma\Sdelta|=|Sgamma|`, so the original individual
+Padé bounds survive the gcd reduction without loss.  If both combined
+quotients are nonzero, `Q`-support root transfer applies directly to the
+shared reference-bin and shared external-bin supports.
+
+The cancellation branches are rigid too.  If either combined quotient is
+zero, the two opposite directed-difference locators force roots into the
+other rider's quotient, giving
+`|Sgamma\Sdelta|+|Sdelta|<k` and its reverse.  For two balanced bins this caps
+each directed difference by `70837133` and forces intersection at least
+`126761189`.  Thus two-rider elimination now has a complete useful
+dichotomy: noncancellation transfers canonical `Q` roots across the actual
+bin intersections, while cancellation makes those intersections large.  The
+next consumer must combine this per-pair dichotomy over three or more riders;
+no identical-support hypothesis remains.
+
+Cancellation has an even stronger polynomial meaning than the preceding
+overlap bound.  Restoring the common intersection locator shows that the
+leftover-locator combination vanishes iff the two *full* locator-factored
+residuals are proportional.  For reference-line residuals this proportionality
+expands exactly to
+`C(delta-gamma0)*pGamma-C(gamma-gamma0)*pDelta =
+ C(delta-gamma)*q0`.
+Thus the decoded polynomial points at `gamma` and `delta` are source-collinear
+with the lifted base point `(gamma0,q0)`.  The direct Padé-facing composition
+is now axiom-clean.  Consequently the cancellation branch already returns the
+two riders to one common-base polynomial pencil; only the noncancellation
+branch requires the `Q`-root/intersection charge.  This sharpens the intended
+multi-rider consumer to: either accumulate a common-base pencil cluster, or
+sum the canonical-support charges supplied by every noncollinear pair.
+
+The pairwise algebra is now packaged end to end as an axiom-clean trichotomy.
+For two decoded riders with the common-line and external-line locator
+factorizations, exactly the useful cases are exposed: (1) their common-line
+combined quotient cancels, so both decoded polynomials are collinear with
+`(gamma0,q0)`; (2) their external-line combined quotient cancels, so both are
+collinear with the external line's base lift
+`(gamma0,aE+C(gamma0)rE)`; or (3) neither cancels, and the two strict
+`Q`-support cross-root inequalities hold on the actual intersections of their
+reference and external bins.  All degree bounds in case (3) are inherited
+automatically.  This removes every local algebraic branch: the remaining
+work is a genuinely global graph/hypergraph count on pencil-colored edges
+versus `Q`-charged edges.
+
+The zero-charge graph is completely classified.  Away from `gamma0`, the
+denominator-cleared collinearity equation is equivalent to equality of the
+normalized polynomial slope
+`C((gamma-gamma0)^-1)*(pGamma-qBase)`.  Each pencil color is therefore an
+equivalence relation.  An abstract axiom-clean lemma proves that if every pair
+is covered by one of two equivalence relations, one relation is universal.
+Consequently, if a rider family has no `Q`-charged edge, the entire family
+lies in the reference-base pencil or the external-base pencil; arbitrary
+mixtures of the two cancellation colors are impossible.
+
+Three charged riders still do not close by cardinality.  Inside either exact
+`k`-point exclusive Venn atom (`a` or `c`), three balanced bins admit the
+symmetric atom design: three pair-only pieces of size `70837134` and one
+triple piece of size `55924054`.  Each bin has size `197598322`, their union
+has size exactly `k`, and each pair intersection is
+`126761188<k`.  Placing the reference-bin design in `a` and the external-bin
+design in `c` makes all pairwise `Q`-root inequalities feasible while every
+bin avoids `Q`.  Thus the pairwise trichotomy plus three-rider set arithmetic
+is exhausted.  A surviving global proof must either use at least a larger
+rider family with a quantitative equivalence-class/charged-edge count, or use
+the actual quotient polynomial identities jointly around a charged triangle.
+
+Both obvious versions of those continuations have now been audited.  A larger
+family does not strengthen the bare charge inequalities: arbitrarily many
+riders may reuse one balanced reference bin in `a` and one balanced external
+bin in `c`; the two charge left sides stay `197598322<k` and avoid `Q`.
+Meanwhile the weighted sum of the three denominator-cleared eliminants around
+any rider triangle is identically zero for completely arbitrary residual
+polynomials.  The locator-factored specialization is also formal, so summing
+three pairwise Padé equations cannot manufacture a common locator or a new
+root constraint.
+
+There is a matching linear-algebra explanation.  For fixed locator supports,
+two-locator Padé solutions are closed under scalar linear combinations.
+Consequently an affine rider-target family can be generated from endpoint
+solutions without producing independent equations merely by adding riders.
+The reduced Padé/trichotomy package is therefore locally complete but not by
+itself a prize proof.  A surviving approach must reintroduce structure lost
+when each decoded polynomial was treated independently—most plausibly the
+simultaneous agreement with the single received affine word `u0+gamma*u1`,
+or a distributed block-Vandermonde/GM-MDS rank constraint across the original
+witness supports.
+
+The received-word/rank reconnection is now explicit in
+`_P1RateQuarterReceivedWordRankConnector.lean`.  It transposes the campaign's
+label-indexed witness sets `S(j)` into the coordinate support hypergraph used
+by `supportDividedDifference`, proves exact preservation of every label
+degree, and turns the original agreements
+`q_j(dom x)=u0(x)+gamma_j*u1(x)` directly into divided-difference kernel
+membership.  At literal P1 size, the sharp weighted census transports through
+this connector: two gauge anchors cover every singleton Hall exception, and
+every other label has at least `k` projected singleton rows.
+
+The corrected degree-restricted endpoint is wired too.  Any
+coordinate-dependent two-zero bootstrap ordering on the transposed witness
+hypergraph forces the decoded family to equal the unique global polynomial
+pencil through the two anchors.  This avoids the refuted unrestricted kernel
+claim and does not rely on specializing a generic GM-MDS minor to the
+roots-of-unity domain.  The remaining certificate is now purely explicit:
+choose the two census anchors and rank every other label so that it has at
+least `k` witness coordinates containing two lower-rank labels.  Proving that
+certificate (or replacing it with a weaker structured-domain rank argument)
+is the live received-word route.
+
+The bootstrap certificate is not a consequence of witness cardinalities
+alone.  A general obstruction lemma now proves: if every lower-rank witness
+is contained in one block `A`, then all two-zero forcing coordinates for a
+current witness `B` lie in `A∩B`.  At P1, two threshold blocks may meet at the
+inclusion--exclusion floor `2T-N=111848108`, which misses `k` by
+`156587348`.  Thus a two-block family can stall the bootstrap even though
+every label has threshold degree and the singleton Hall census is satisfied.
+The coordinate-bootstrap connector remains a valid sufficient consumer, but
+the universal prize proof needs a genuinely stronger distributed-rank input
+than label degrees—precisely control of small two-to-six-label support
+patterns or a structured-domain replacement for the generic GM-MDS minor.
+
+There is an important rank-or-prize correction to that wall.  A repeated
+threshold support is not a harmful kernel obstruction: two distinct labels
+decoded on the same set immediately interpolate low-degree base and slope
+codewords, giving `pairJointAgreesOn` on that set—the desired proximity
+conclusion.  The connector now proves this directly, and more generally gives
+joint agreement on the intersection of any two decoded-label witnesses.
+Thus exact two-block repetitions escape through the prize branch rather than
+refuting it.  The genuinely difficult small-support patterns are those with
+cross intersections near `2T-N` (too small for the prize threshold and too
+small for bootstrap), while still supporting a nontrivial structured-domain
+kernel.  This is the precise rank-or-large-overlap dichotomy the remaining
+two-to-six-label analysis must establish.
+
+The existing exact-three/low-multiplicity ledger cannot shrink its
+six-label pair-obstruction cover by arithmetic alone.  A literal three-pair
+assignment with `lowMass=872415239`, `surplus=1073741821`, and
+`exactThree=N` satisfies every ledger inequality; the weighted low-mass bound
+still has slack `96076784937031003`.  Thus the already-proven exclusion of
+four disjoint bad pairs is numerically sharp for that collection of
+inequalities.  Any reduction from a six-vertex cover must use algebraic
+structure of the corresponding kernel rows.
+
+A first such structural bridge is now formal.  At a coordinate carrying two
+distinct labels from each of two polynomial-pencil clusters, both clusters
+match the same received affine line at two scalar points.  Local affine
+interpolation forces their base evaluations and slope evaluations to coincide
+there.  If the two degree-`<k` pencils are genuinely distinct, root counting
+therefore caps these `2+2` mixed coordinates by `k-1`.  This supplies the
+correct algebraic charge for a two-cluster rank-or-large-overlap analysis;
+unlike the projected Hall ledger, it sees which exceptional labels belong to
+the same polynomial pencil.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;

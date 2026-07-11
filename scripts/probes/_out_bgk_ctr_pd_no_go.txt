@@ -1,0 +1,25 @@
+BGK centered-translate positive-definite no-go certificate
+p=13313
+n=256
+primitive_root=3
+subgroup_generator=9968
+subgroup_step=52
+subgroup_order=256
+subgroup_weighted_checksum=226172480
+sum_f6=281474976710656
+sum_f7=72057594037927936
+E7=390017062859571490445015114240
+C6_zero=5951195976778139164813824
+D_zero=109524583029107622488576
+restriction_correlation=1523504151795201134550840290
+restriction_D=1169197842280328085494754
+centered_numerator=299314647623763989886657024
+normalizing_denominator=959302749426934611968
+reduced_coefficient=584598921140164042747377/1873638182474481664
+coefficient_decimal=312012.706940085045
+target_coefficient=262144
+positive_margin=47839187677989642966917632
+global_mean_D=0
+fourier_nonnegative=centered_autocorrelation_identity
+multiplicative_G_invariant=verified_on_all_3408128_pairs
+status=COUNTEREXAMPLE_TO_2^18_N7_STRUCTURAL_BOUND

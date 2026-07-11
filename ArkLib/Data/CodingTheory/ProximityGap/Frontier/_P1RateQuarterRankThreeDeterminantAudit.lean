@@ -359,6 +359,176 @@ theorem oneHole_threeCore_rootCapacity_slack_eq :
     3 * (k - 1) - (T - 1) = 212511400 := by
   norm_num [T, k]
 
+/-! ## Sequential CRT quotient budget -/
+
+/-- Factoring a balanced first-bin locator from a degree-`<k` witness residual
+leaves fewer than this many quotient coefficients. -/
+theorem balanced_firstBin_remaining_degree_budget_eq :
+    k - 197598322 = 70837134 := by
+  norm_num [k]
+
+/-- A second balanced bin supplies this many evaluations beyond the remaining
+quotient degree budget. -/
+theorem balanced_secondBin_overdetermination_eq :
+    197598322 - 70837134 = 126761188 := by
+  norm_num
+
+/-- The second bin is strictly larger than the full remaining degree budget. -/
+theorem balanced_secondBin_gt_remaining_degree_budget :
+    70837134 < 197598322 := by
+  norm_num
+
+/-! ## Canonical-support cross-root budget -/
+
+/-- With two balanced common-line bins, the Padé cross-root inequalities
+force at least this many points of the saturated `k-1` reference support to
+lie outside those two bins.  Such points must be assigned to the external
+color or omitted from the witness agreement set. -/
+theorem balanced_commonBins_leave_referenceSupport_mass
+    (r0 r1 : Nat)
+    (hr0 : r0 + 197598322 < k)
+    (hr1 : r1 + 197598322 < k) :
+    126761189 ≤ (k - 1) - (r0 + r1) := by
+  norm_num [k] at hr0 hr1 ⊢
+  omega
+
+/-- The exact endpoint behind the preceding forced-diversion bound. -/
+theorem balanced_commonBins_referenceSupport_diversion_eq :
+    (k - 1) - 2 * 70837133 = 126761189 := by
+  norm_num [k]
+
+/-! ## Saturated one-hole Venn classification -/
+
+/-- Write the seven nonempty Venn atoms of the two reference cores and the
+external core as `a,b,c,d,e,f,t`, where `c` is external-only, `d` is
+reference-reference only, `e,f` are the two reference-external-only atoms,
+and `t` is triple.  Saturation of the reference support and external-defect
+support already forces the external-only atom to have exactly `k` points and
+the two reference-only/external-overlap pairs to sum to `k`. -/
+theorem saturated_twoSupport_venn_rigidity
+    (a b c d e f t : Nat)
+    (hcore0 : a + d + e + t = 2 * k - 1)
+    (hcore1 : b + d + f + t = 2 * k - 1)
+    (hcoreE : c + e + f + t = 2 * k - 1)
+    (hR : d + t = k - 1)
+    (hQ : e + f + t = k - 1) :
+    c = k ∧ a + e = k ∧ b + f = k := by
+  norm_num [k] at hcore0 hcore1 hcoreE hR hQ ⊢
+  omega
+
+/-- **Extreme saturated Venn countermodel.**  The exact one-hole equations
+permit `t=e=0`, with the whole external-defect overlap concentrated in the
+second reference core.  All three balanced witness bins then fit in pairwise
+disjoint atoms (`a`, `f`, and `c`), while both common-bin choices avoid the
+reference support `R=d∪t` entirely.  Hence Venn cardinalities plus the
+single-witness `R` cross-root budget cannot by themselves force the
+cross-rider support stability needed for `Q` root transfer. -/
+theorem extreme_saturated_venn_balancedBins_countermodel :
+    let a := k
+    let b := 1
+    let c := k
+    let d := k - 1
+    let e := 0
+    let f := k - 1
+    let t := 0
+    a + d + e + t = 2 * k - 1 ∧
+      b + d + f + t = 2 * k - 1 ∧
+      c + e + f + t = 2 * k - 1 ∧
+      d + t = k - 1 ∧ e + f + t = k - 1 ∧
+      197598322 ≤ a ∧ 197598322 ≤ f ∧
+      197598321 ≤ c ∧
+      197598322 + 197598322 + 197598321 = T - 1 := by
+  norm_num [k, T]
+
+/-- Even two balanced rider bins fit disjointly inside one Johnson-heavy
+core, so pairwise cardinality alone gives no same-color support overlap. -/
+theorem two_balanced_riderBins_fit_disjointly_in_heavyCore :
+    2 * 197598322 ≤ 536870911 := by
+  norm_num
+
+/-- Three balanced bins only exceed one heavy core by this much, still below
+the quotient degree budget and far below a root-forcing threshold. -/
+theorem three_balanced_riderBins_heavyCore_excess_eq :
+    3 * 197598322 - 536870911 = 55924055 := by
+  norm_num
+
+/-- At balanced bin size, the cancellation branch of the cross-locator
+identity forces a shared-bin intersection of at least `126761189`. -/
+theorem balanced_crossLocator_cancellation_intersection_floor
+    (sdiff inter : Nat)
+    (hcard : sdiff + inter = 197598322)
+    (hbudget : sdiff + 197598322 < k) :
+    126761189 ≤ inter := by
+  norm_num [k] at hbudget ⊢
+  omega
+
+/-- Equivalently, cancellation permits at most this many directed bin
+differences. -/
+theorem balanced_crossLocator_cancellation_sdiff_cap
+    (sdiff : Nat) (hbudget : sdiff + 197598322 < k) :
+    sdiff ≤ 70837133 := by
+  norm_num [k] at hbudget ⊢
+  omega
+
+/-- **Three-rider exclusive-atom countermodel.**  Three balanced bins fit
+inside a `k`-point atom using three pair-only atoms of size `70837134` and one
+triple atom of size `55924054`.  Every bin has the balanced size, their union
+has size exactly `k`, and every pair intersection is only `126761188 < k`.
+Placed in the reference-only atom `a` or external-only atom `c`, this realizes
+all pairwise `Q`-charge inequalities while avoiding `Q` entirely. -/
+theorem three_balanced_bins_inside_k_atom_countermodel :
+    let pairOnly := 70837134
+    let triple := 55924054
+    2 * pairOnly + triple = 197598322 ∧
+      3 * pairOnly + triple = k ∧
+      pairOnly + triple = 126761188 ∧
+      pairOnly + triple < k := by
+  norm_num [k]
+
+/-- **Arbitrary-multiplicity reused-bin wall.**  If every rider reuses one
+balanced reference bin inside the reference-only `k`-atom and one balanced
+external bin inside the external-only `k`-atom, both shared-bin intersections
+have size `197598322` and both intersections with `Q` are zero.  The two
+`Q`-cross-root inequalities remain strictly feasible, independently of how
+many riders reuse the bins. -/
+theorem reused_balanced_exclusiveBins_QcrossRoot_feasible :
+    0 + 197598322 < k ∧ 0 + 197598322 < k := by
+  norm_num [k]
+
+/-! ## Received-word bootstrap two-block wall -/
+
+/-- Two threshold blocks can meet at their unavoidable inclusion--exclusion
+floor, which is far below the `k` coordinates needed to bootstrap a component
+whose lower-rank witnesses all lie in the other block. -/
+theorem threshold_twoBlock_bootstrap_crossCoverage_deficit_eq :
+    k - (2 * T - N) = 156587348 := by
+  norm_num [k, T, N]
+
+theorem threshold_twoBlock_crossCoverage_below_k :
+    2 * T - N < k := by
+  norm_num [k, T, N]
+
+/-! ## Three-pair Hall-ledger wall -/
+
+/-- The existing low-multiplicity/exact-three ledger cannot improve the
+four-disjoint-bad-pair theorem to three pairs.  This literal assignment
+saturates the exact-three universe and pair inequality while satisfying the
+weighted low-mass and six-endpoint surplus constraints with exact slack
+`96076784937031003`. -/
+theorem three_pairHall_obstruction_ledger_numerically_feasible :
+    let lowMass := 872415239
+    let surplus := 1073741821
+    let exactThree := N
+    (N + 1 - 2) * lowMass ≤ 2 * (N + 1) * (N - T) ∧
+      6 * (T - k) ≤ surplus + lowMass ∧
+      surplus + 3 ≤ exactThree ∧ exactThree ≤ N := by
+  norm_num [N, T, k]
+
+theorem three_pairHall_ledger_weighted_slack_eq :
+    2 * (N + 1) * (N - T) -
+      (N + 1 - 2) * 872415239 = 96076784937031003 := by
+  norm_num [N, T]
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
@@ -408,3 +578,20 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 #print axioms oneHole_balanced_threeCore_distribution_realized
 #print axioms zeroHole_balanced_threeCore_distribution_realized
 #print axioms oneHole_threeCore_rootCapacity_slack_eq
+#print axioms balanced_firstBin_remaining_degree_budget_eq
+#print axioms balanced_secondBin_overdetermination_eq
+#print axioms balanced_secondBin_gt_remaining_degree_budget
+#print axioms balanced_commonBins_leave_referenceSupport_mass
+#print axioms balanced_commonBins_referenceSupport_diversion_eq
+#print axioms saturated_twoSupport_venn_rigidity
+#print axioms extreme_saturated_venn_balancedBins_countermodel
+#print axioms two_balanced_riderBins_fit_disjointly_in_heavyCore
+#print axioms three_balanced_riderBins_heavyCore_excess_eq
+#print axioms balanced_crossLocator_cancellation_intersection_floor
+#print axioms balanced_crossLocator_cancellation_sdiff_cap
+#print axioms three_balanced_bins_inside_k_atom_countermodel
+#print axioms reused_balanced_exclusiveBins_QcrossRoot_feasible
+#print axioms threshold_twoBlock_bootstrap_crossCoverage_deficit_eq
+#print axioms threshold_twoBlock_crossCoverage_below_k
+#print axioms three_pairHall_obstruction_ledger_numerically_feasible
+#print axioms three_pairHall_ledger_weighted_slack_eq

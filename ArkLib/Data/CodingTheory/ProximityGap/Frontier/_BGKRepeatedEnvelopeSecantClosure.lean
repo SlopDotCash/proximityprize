@@ -27,6 +27,8 @@ set_option autoImplicit false
 open scoped BigOperators
 open ArkLib.ProximityGap.Frontier.BGKRepeatedSectorNewtonAbsorption
 open ArkLib.ProximityGap.Frontier.RepeatedPartitionHolderBudgetPin
+open ArkLib.ProximityGap.Frontier.BGKRepeatedNewtonFullEnumeration
+open ArkLib.ProximityGap.Frontier.BGKShiftedEtaPaddedHolder
 
 namespace ArkLib.ProximityGap.Frontier.BGKRepeatedEnvelopeSecantClosure
 
@@ -243,6 +245,234 @@ theorem repeatedHolderExponent_range (j : Fin 12) :
     norm_num only [Nat.cast_add, Nat.cast_ofNat]
     exact_mod_cast (show j.val + 2 ≤ 13 by omega)
 
+/-! ## Algebraic bridge from optimized padding to the rpow envelope -/
+
+/-- One optimized Holder term in root-padding coordinates equals its standard rpow form. -/
+theorem canonical_holder_term_eq_rpow
+    {m n : ℝ} {k : ℕ} (hm : 0 < m) (hn : 0 < n) (hk : k ≤ 14) :
+    let p := (k : ℝ) / 14
+    let R := (m / n) ^ ((14 : ℝ)⁻¹)
+    m / R ^ (14 - k) = n ^ (1 - p) * m ^ p := by
+  dsimp
+  have hq : 0 < m / n := div_pos hm hn
+  have hexp : ((14 : ℝ)⁻¹) * ((14 - k : ℕ) : ℝ) = 1 - (k : ℝ) / 14 := by
+    rw [Nat.cast_sub hk]
+    push_cast
+    ring
+  rw [← Real.rpow_natCast]
+  rw [← Real.rpow_mul hq.le]
+  rw [hexp]
+  have hm_eq : m = n * (m / n) := by field_simp [hn.ne']
+  rw [hm_eq, Real.mul_rpow hn.le hq.le]
+  have hnadd := Real.rpow_add hn (1 - (k : ℝ) / 14) ((k : ℝ) / 14)
+  have hqadd := Real.rpow_add hq (1 - (k : ℝ) / 14) ((k : ℝ) / 14)
+  have hqpow : 0 < (m / n) ^ (1 - (k : ℝ) / 14) := Real.rpow_pos_of_pos hq _
+  field_simp [hqpow.ne']
+  have hexp' : ((14 : ℝ) - k) / 14 = 1 - (k : ℝ) / 14 := by ring
+  rw [hexp']
+  calc
+    m = n * (m / n) := hm_eq
+    _ = (n ^ (1 - (k : ℝ) / 14) * n ^ ((k : ℝ) / 14)) *
+          ((m / n) ^ (1 - (k : ℝ) / 14) * (m / n) ^ ((k : ℝ) / 14)) := by
+      rw [← hnadd, ← hqadd]
+      norm_num
+    _ = (m / n) ^ (1 - (k : ℝ) / 14) * n ^ (1 - (k : ℝ) / 14) *
+        n ^ ((k : ℝ) / 14) * (m / n) ^ ((k : ℝ) / 14) := by ring
+
+/-- The grouped padding envelope in real coordinates. -/
+noncomputable def canonicalRealRepeatedEnvelope (R m : ℝ) : ℝ :=
+  ∑ j : Fin 12, (repeatedMobiusMass (j.val + 2) : ℝ) *
+    (m / R ^ (14 - (j.val + 2)))
+
+set_option maxHeartbeats 800000 in
+-- Expanding and normalizing the twelve symbolic NNReal rational terms exceeds the default budget.
+/-- Coercing the NNReal grouped scalar and multiplying by the moment gives the real grouped
+padding envelope term for term. -/
+theorem coe_canonicalScalarEnvelope_mul_eq_realEnvelope (R M : NNReal) :
+    ((canonicalScalarEnvelope R * M : NNReal) : ℝ) =
+      canonicalRealRepeatedEnvelope R M := by
+  rw [canonicalScalarEnvelope_eq_grouped]
+  unfold groupedScalarEnvelope canonicalRealRepeatedEnvelope
+  norm_num [repeatedMobiusMass, Fin.sum_univ_succ]
+  ring
+
+/-- At the canonical fourteenth-root scale, the padding envelope is exactly the twelve-stratum
+rpow envelope. -/
+theorem canonicalRealRepeatedEnvelope_eq_repeatedHolderEnvelope
+    {m n : ℝ} (hm : 0 < m) (hn : 0 < n) :
+    canonicalRealRepeatedEnvelope ((m / n) ^ ((14 : ℝ)⁻¹)) m =
+      repeatedHolderEnvelope n m := by
+  unfold canonicalRealRepeatedEnvelope repeatedHolderEnvelope gradedHolderEnvelope
+  apply Finset.sum_congr rfl
+  intro j hj
+  unfold repeatedHolderCoefficient repeatedHolderExponent
+  rw [canonical_holder_term_eq_rpow hm hn (show j.val + 2 ≤ 14 by omega)]
+  ring
+
+/-! ## Actual eta-envelope bridge -/
+
+variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+
+/-- **Actual field bridge.**  The positive eta envelope produced by the 88-term Newton expansion
+is bounded by the literal rpow Holder envelope with `N=#Fˣ` and `M=M14`. -/
+theorem repeatedEtaEnvelope_coe_le_repeatedHolderEnvelope
+    (psi : AddChar F ℂ) (G : Finset F) (hchar : 7 < ringChar F)
+    (hM : 0 < nonzeroFourteenthMoment psi G) :
+    ((repeatedEtaEnvelope psi G hchar : NNReal) : ℝ) ≤
+      repeatedHolderEnvelope (Fintype.card Fˣ : ℝ)
+        (nonzeroFourteenthMoment psi G : ℝ) := by
+  let M14 := nonzeroFourteenthMoment psi G
+  have hcard : (0 : NNReal) < (Fintype.card Fˣ : NNReal) := by
+    exact_mod_cast (Fintype.card_pos : 0 < Fintype.card Fˣ)
+  have hbase : 0 < M14 / (Fintype.card Fˣ : NNReal) := div_pos hM hcard
+  have hR : canonicalPaddingScale psi G ≠ 0 := by
+    unfold canonicalPaddingScale
+    exact ne_of_gt (NNReal.rpow_pos hbase)
+  have henv := repeatedEtaEnvelope_le_scalar_mul_moment psi G hchar hR
+  have henvR :
+      ((repeatedEtaEnvelope psi G hchar : NNReal) : ℝ) ≤
+        ((canonicalScalarEnvelope (canonicalPaddingScale psi G) * M14 : NNReal) : ℝ) := by
+    exact_mod_cast henv
+  have hm : 0 < (M14 : ℝ) := by exact_mod_cast hM
+  have hn : 0 < (Fintype.card Fˣ : ℝ) := by
+    exact_mod_cast (Fintype.card_pos : 0 < Fintype.card Fˣ)
+  have hscale :
+      (canonicalPaddingScale psi G : ℝ) =
+        ((M14 : ℝ) / (Fintype.card Fˣ : ℝ)) ^ ((14 : ℝ)⁻¹) := by
+    simp [canonicalPaddingScale, M14, NNReal.coe_rpow]
+  calc
+    ((repeatedEtaEnvelope psi G hchar : NNReal) : ℝ) ≤
+        ((canonicalScalarEnvelope (canonicalPaddingScale psi G) * M14 : NNReal) : ℝ) := henvR
+    _ = canonicalRealRepeatedEnvelope (canonicalPaddingScale psi G) M14 :=
+      coe_canonicalScalarEnvelope_mul_eq_realEnvelope _ _
+    _ = canonicalRealRepeatedEnvelope
+        (((M14 : ℝ) / (Fintype.card Fˣ : ℝ)) ^ ((14 : ℝ)⁻¹)) (M14 : ℝ) := by
+      rw [hscale]
+    _ = repeatedHolderEnvelope (Fintype.card Fˣ : ℝ) (M14 : ℝ) :=
+      canonicalRealRepeatedEnvelope_eq_repeatedHolderEnvelope hm hn
+
+/-- The grouped scalar decreases as the padding scale increases. -/
+theorem canonicalScalarEnvelope_antitone
+    {R Q : NNReal} (hR : 0 < R) (hRQ : R ≤ Q) :
+    canonicalScalarEnvelope Q ≤ canonicalScalarEnvelope R := by
+  rw [canonicalScalarEnvelope_eq_grouped, canonicalScalarEnvelope_eq_grouped]
+  unfold groupedScalarEnvelope
+  have hQ : 0 < Q := hR.trans_le hRQ
+  gcongr
+
+/-- The exact twelve-stratum rpow envelope at the production target is below `138*q*n^7`.
+This discharges the `hFT` input of the secant theorem using the fixed integer padding certificate
+`R=79880` from the full-enumeration file. -/
+theorem production_repeatedHolderEnvelope_target_le_138 (F : Type*)
+    [Field F] [Fintype F] [DecidableEq F] :
+    repeatedHolderEnvelope (Fintype.card Fˣ : ℝ) (productionMomentTarget F : ℝ) ≤
+      138 * (productionRepeatedScale F : ℝ) := by
+  let N : NNReal := Fintype.card Fˣ
+  let T : NNReal := productionMomentTarget F
+  let Rstar : NNReal := (T / N) ^ ((14 : ℝ)⁻¹)
+  have hN : 0 < N := by
+    dsimp [N]
+    exact_mod_cast (Fintype.card_pos : 0 < Fintype.card Fˣ)
+  have hT : 0 < T := by
+    unfold T productionMomentTarget productionMomentBase
+    positivity
+  have hfixed : 0 < productionFixedPaddingScale := by
+    norm_num [productionFixedPaddingScale]
+  have hpow : productionFixedPaddingScale ^ 14 ≤ T / N := by
+    apply (le_div_iff₀ hN).2
+    dsimp [T, N]
+    simpa [mul_comm] using production_fixed_padding_budget F
+  have hRle : productionFixedPaddingScale ≤ Rstar := by
+    apply (NNReal.le_rpow_inv_iff (by norm_num : (0 : ℝ) < 14)).2
+    simpa [Rstar, NNReal.rpow_natCast] using hpow
+  have hanti : canonicalScalarEnvelope Rstar ≤
+      canonicalScalarEnvelope productionFixedPaddingScale :=
+    canonicalScalarEnvelope_antitone hfixed hRle
+  have hboundNN : canonicalScalarEnvelope Rstar * T ≤
+      138 * productionRepeatedScale F := by
+    calc
+      canonicalScalarEnvelope Rstar * T ≤
+          canonicalScalarEnvelope productionFixedPaddingScale * T :=
+        mul_le_mul_left hanti T
+      _ = (canonicalScalarEnvelope productionFixedPaddingScale * (2 ^ 18 : NNReal)) *
+          productionRepeatedScale F := by
+        dsimp [T]
+        unfold productionMomentTarget productionMomentBase productionRepeatedScale
+        ring
+      _ ≤ 138 * productionRepeatedScale F :=
+        mul_le_mul_left production_fixed_scalar_lt_138.le _
+  have hm : 0 < (T : ℝ) := by exact_mod_cast hT
+  have hn : 0 < (N : ℝ) := by exact_mod_cast hN
+  have hscale :
+      (Rstar : ℝ) = ((T : ℝ) / (N : ℝ)) ^ ((14 : ℝ)⁻¹) := by
+    simp [Rstar, NNReal.coe_rpow]
+  have heq :
+      ((canonicalScalarEnvelope Rstar * T : NNReal) : ℝ) =
+        repeatedHolderEnvelope (N : ℝ) (T : ℝ) := by
+    calc
+      ((canonicalScalarEnvelope Rstar * T : NNReal) : ℝ) =
+          canonicalRealRepeatedEnvelope Rstar T :=
+        coe_canonicalScalarEnvelope_mul_eq_realEnvelope _ _
+      _ = canonicalRealRepeatedEnvelope
+          (((T : ℝ) / (N : ℝ)) ^ ((14 : ℝ)⁻¹)) (T : ℝ) := by rw [hscale]
+      _ = repeatedHolderEnvelope (N : ℝ) (T : ℝ) :=
+        canonicalRealRepeatedEnvelope_eq_repeatedHolderEnvelope hm hn
+  change repeatedHolderEnvelope (N : ℝ) (T : ℝ) ≤
+    138 * (productionRepeatedScale F : ℝ)
+  rw [← heq]
+  exact_mod_cast hboundNN
+
+/-- **End-to-end field consumer.**  Starting from the actual eta envelope, the exact moment
+decomposition `M14 = 13!!*S + total`, and the injective allocation, this theorem passes through
+the rpow bridge, the fixed-target `<138` certificate, the concave `1/1024` secant, and finally
+`productionSlackBarrier_of_slope1024`.  No repeated-sector monotonicity or wiring hypothesis
+remains. -/
+theorem productionSlackBarrier_of_actualEtaEnvelope
+    (psi : AddChar F ℂ) (G : Finset F) (hchar : 7 < ringChar F)
+    {total injective : ℝ}
+    (hMpos : 0 < nonzeroFourteenthMoment psi G)
+    (hmoment : (nonzeroFourteenthMoment psi G : ℝ) =
+      135135 * (productionRepeatedScale F : ℝ) + total)
+    (hrec : total ≤ injective + ((repeatedEtaEnvelope psi G hchar : NNReal) : ℝ))
+    (hinjective : injective ≤ 126871 * (productionRepeatedScale F : ℝ)) :
+    total ≤ 127009 * (productionRepeatedScale F : ℝ) := by
+  let S : ℝ := productionRepeatedScale F
+  let N : ℝ := Fintype.card Fˣ
+  have hN : 0 ≤ N := by positivity
+  have hS : 0 < S := by
+    dsimp [S]
+    unfold productionRepeatedScale
+    positivity
+  have hbridge := repeatedEtaEnvelope_coe_le_repeatedHolderEnvelope psi G hchar hMpos
+  have hrec' : total ≤ injective + repeatedHolderEnvelope N (135135 * S + total) := by
+    calc
+      total ≤ injective + ((repeatedEtaEnvelope psi G hchar : NNReal) : ℝ) := hrec
+      _ ≤ injective + repeatedHolderEnvelope N
+          (nonzeroFourteenthMoment psi G : ℝ) := add_le_add le_rfl hbridge
+      _ = injective + repeatedHolderEnvelope N (135135 * S + total) := by
+        rw [hmoment]
+  have htarget :
+      (productionMomentTarget F : ℝ) = (2 ^ 18 : ℝ) * S := by
+    dsimp [S]
+    unfold productionMomentTarget productionMomentBase productionRepeatedScale
+    norm_num
+    ring
+  have hFT : repeatedHolderEnvelope N ((2 ^ 18 : ℝ) * S) ≤ 138 * S := by
+    rw [← htarget]
+    exact production_repeatedHolderEnvelope_target_le_138 F
+  apply productionSlackBarrier_of_gradedHolderEnvelope Finset.univ
+    (repeatedHolderCoefficient N) repeatedHolderExponent
+  · intro j hj
+    exact repeatedHolderCoefficient_nonneg hN j
+  · intro j hj
+    exact (repeatedHolderExponent_range j).1
+  · intro j hj
+    exact (repeatedHolderExponent_range j).2
+  · exact hS
+  · exact hrec'
+  · exact hinjective
+  · exact hFT
+
 /-- Production secant theorem for the literal twelve-stratum Newton--Holder envelope. -/
 theorem production_repeatedHolderEnvelope_secant
     {N S x : ℝ} (hN : 0 ≤ N) (hS : 0 < S) (hx : 127009 * S < x)
@@ -291,5 +521,8 @@ theorem productionSlackBarrier_of_repeatedHolderEnvelope
 #print axioms productionSlackBarrier_of_gradedHolderEnvelope
 #print axioms production_repeatedHolderEnvelope_secant
 #print axioms productionSlackBarrier_of_repeatedHolderEnvelope
+#print axioms repeatedEtaEnvelope_coe_le_repeatedHolderEnvelope
+#print axioms production_repeatedHolderEnvelope_target_le_138
+#print axioms productionSlackBarrier_of_actualEtaEnvelope
 
 end ArkLib.ProximityGap.Frontier.BGKRepeatedEnvelopeSecantClosure
