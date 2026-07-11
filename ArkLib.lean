@@ -3389,6 +3389,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ52SecondSyzygyInterior
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ52WitnessLift
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ53GeneratorGapCalibration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ53PScaling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ56Hrank
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
