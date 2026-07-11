@@ -168,6 +168,11 @@ in-tree BCIKS "correlated-agreement at Johnson" theorem is currently discharged 
    `docs/kb/deltastar-466-syz8-cell-package-supply-2026-07-10.md`.
 
 2. **[CEILING, formalize the barrier] The degenerate-channel rank-budget wall `δ_channel ≥ (1−ρ)/(2−ρ)`.**
+   **DONE (SYZ9, 2026-07-10):** landed axiom-clean in
+   `Frontier/_SYZ9ChannelRankWall.lean` (`channel_master`, `channel_radius_gt_infimum`,
+   `production_channel_safe`: rate-1/2 safe radius `≤ 357913941/2^30 < 1/3`; channel reach
+   `(357913941/2^30, 358612991/2^30] ⊆ (1/3,1]` with SYZ6). See
+   `docs/kb/deltastar-466-syz9-channel-rank-wall-2026-07-10.md`. Original target text below.
    Precise: prove that any stack whose certified `mcaEvent`-bad count exceeds the budget through the
    syzygy channel (i.e. via the `G87McaEventSyndromeBridge` degenerate-subset structure) has radius
    `δ ≥ (1−ρ)/(2−ρ)`; equivalently `epsMCA C δ > ε*` witnessed by ≥ `D` degenerate subsets forces

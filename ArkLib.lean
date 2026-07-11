@@ -3324,6 +3324,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeil
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ9ChannelRankWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SampledOctaveUniformityGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondDescentParity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SecondMomentExact
