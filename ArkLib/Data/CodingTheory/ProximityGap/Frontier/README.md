@@ -35,6 +35,14 @@ StallResidual, the dyadic gap (2^27, 2^28) protects the literal μ_{2^30}). B-si
 `FullDFTFlat` refuted (Gumbel log m); r=3 closed modulo `FullDFTFlatLog ∧ FourthMomentBound`
 at (1+log m) loss. Bracket unchanged; core open.
 
+**2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
+a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
+`distStratum_absoluteC_of_offZeroLags`); moment stack ⟺ R27 tower
+(`evenMoment_eq_iterConv_energy`). ⚠️ Corrections: R35/R144 budgets lump lag-0 (vacuous at
+absolute constants); uniform `TwoCharacterWeilInput` contradicted at Θ(q). Remaining open
+B-side input = one √m-saving Jacobi-angle cancellation (three equivalent two-input routes).
+Bracket unchanged; core open.
+
 ## The BGK depth-ladder lane (2026-07-10)
 
 **DC correction (2026-07-11).**  The later raw endpoint

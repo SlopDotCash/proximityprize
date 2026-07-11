@@ -546,6 +546,18 @@ CIRCULAR; the r=3 rung is closed modulo `FullDFTFlatLog ∧ FourthMomentBound` a
 loss; core truth ≈ absolute 15–20 (probe), open content = the sup→average de-correlation.
 Bracket unchanged. CORE OPEN, ON-BGK.
 
+**⇒ UPDATE 2026-07-11 part 2 (R307–R309 B-side close-out — dossier v3 §44).** Absolute-C DIST
+rung landed from a-averages only: `sixthMoment_sandwich` (Cauchy–Schwarz, no sup/log) +
+`distStratum_absoluteC_of_fourth_and_eighth`; master identity `evenMoment_eq_iterConv_energy`
+welds the moment stack to the R27 tower; lag ENDGAME `distStratum_absoluteC_of_offZeroLags`.
+⚠️ CORRECTIONS: R35/R144 budget hypotheses lump lag-0 (formally correct, practically vacuous at
+absolute constants — the diagonal must be separated); uniform `TwoCharacterWeilInput`
+CONTRADICTED at Θ(q) (degenerate members; honest content √m·q); depth-2 lags Gaussian-random —
+no FourCharacterWeilInput named. Three equivalent two-input routes ({OffZeroLag, OffZeroQuadLag}
+⟺ {K₄, K₈} ⟺ {IterConvWick@2, @4}); every remaining open B-side input = one √m-saving
+Jacobi-angle cancellation, probe-measured at its conjectured scale (prize-scale K₄/K₈ fall below
+Gaussian at q ≫ m³). Bracket unchanged. CORE OPEN, ON-BGK.
+
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim
 ##      every published route provably misses the prize regime (plain RS, s=1).

@@ -2096,3 +2096,101 @@ absolute-C located at the sup→average de-correlation). Probe-only items
 flagged above (F_P Stepanov refuting construction; census extremal values;
 Gumbel/Gaussian calibrations). **CORE OPEN, ON-BGK. No fabricated
 closure.**
+
+## §44. Session 2026-07-11 (part 2) — R307–R309 B-side close-out: the moment sandwich, the Weil weld, the lag endgame; ⚠️ R35/R144 correction
+
+DISPROOF tags: `466-r3-moment-sandwich-absolute-c`,
+`466-r3-weil-weld-fourth-moment-classical`,
+`466-r3-tower-rung-four-lag-endgame`. All kernel results axiom-clean
+(`[propext, Classical.choice, Quot.sound]`, manual axiom reads, no
+`sorryAx`); measurements flagged probe-only.
+
+**(R307) The moment sandwich — absolute-C from two a-average inputs.**
+`_R307MomentSandwich.lean` (4 theorems + named input):
+`sixthMoment_sandwich` — pure Cauchy–Schwarz in the mode variable,
+∑‖Ŝ‖⁶ ≤ √(∑‖Ŝ‖⁴)·√(∑‖Ŝ‖⁸), unconditional, generic ZMod N — no sup, no log;
+`eighthMoment_eq_quadConv_energy` (∑_a‖f̂‖⁸ = N·∑_c‖f⋆f⋆f⋆f‖²: the octic
+input IS the r=4 rung of the R27 IterConvEnergyWick ladder in DFT
+coordinates, Wick 4! = 24); new named input `EighthMomentBound K₈`
+(Gumbel-immune); headline `distStratum_absoluteC_of_fourth_and_eighth`:
+`FourthMomentBound K₄ ∧ EighthMomentBound K₈ ⟹
+E_DIST ≤ (3·√(K₄·K₈) + 1215)·m³·q³` — ABSOLUTE constant. Probe (m ≤ 1200):
+K₈_med flat at 14–19 vs Gaussian ceiling 24((m−2)/m)⁴; K₄ → 1.85 (Gaussian
+2); sandwich tightness √(K₄K₈)/K₆ ∈ [1.03, 1.12] (3–12% loss); composed
+constant ≈ 1230. Honest positioning: the sandwich SHIFTS the open content
+(r=3 pinched between r=2-class and the r=4 tower average) rather than
+closing it — but it replaces the REFUTED sup input (R305 Gumbel) with
+tower averages, which the Gumbel mechanism provably never inflates.
+
+**(R308) The Weil weld — the quartic input is classical-modulo-caps.**
+`_R308FourthMomentWeilWeld.lean` (7 theorems): **master identity**
+`evenMoment_eq_iterConv_energy` (∑_a‖Ŝ‖^{2r} = m·∑_c‖J^{∗r}‖², all r,
+probe-exact r = 1..4) — the R302–R307 moment stack IS the R27 tower in DFT
+coordinates. Welds: `IterConvEnergyWick@2 C₂ ⟹ FourthMomentBound (2C₂²)`;
+`IterConvEnergyWick@4 C₄ ⟹ EighthMomentBound (24C₄⁴)`; headline
+`distStratum_absoluteC_of_towerRungs`. Composed with R144
+(`iterConvEnergyWick_two_of_twoCharacterWeilInput_and_coeffEnvelope_splitBudget`):
+TwoCharacterWeilInput (+ caps) ⟹ FourthMomentBound (2C²). Reconciliation
+with R304 (both statements stand): the r=2 Weil discharges work through the
+t-VARIABLE expansion (a free F_q variable per tuple, curve-Weil-boundable);
+R304's refutation concerned the MODE expansion (m modes, per-quadruple
+modulus exactly q², no free variable) — different decompositions of the
+same object. At r=4 the two-character route has no in-tree discharge (R144
+stops at r ≤ 3). Probe-implied C₄: 0.52 → 0.89 over m = 9 → 1200
+(sub-Gaussian, rising to 1).
+
+**⚠️ (R309 correction — READ THIS if you used R35/R144 or
+TwoCharacterWeilInput.)** Two prior-round objects are corrected by the
+tower-rung-four probes (q-ladders to 36000 at m = 9, 12), both with
+mechanism:
+* **R35/R144 budget hypotheses lump lag-0** (≈ mq) into the budget L,
+  forcing tower C ~ m: they are formally correct but PRACTICALLY VACUOUS at
+  absolute constants — the sharp form requires the diagonal (lag-0)
+  separated. The R308 weld composition inherits this caveat.
+* **Uniform `TwoCharacterWeilInput` with an absolute C is CONTRADICTED at
+  depth 1**: the R30/R31 two-character family has DEGENERATE members
+  (rational function = an m-th power) contributing Θ(q) each, so the
+  implied C grows like √q; the honest classical content of depth-1 lags is
+  sup ≈ √m·q (probe q-exponent 1.02–1.05), not curve-Weil √q.
+Additionally: depth-2 off-zero lags (of W = S⋆S) are GAUSSIAN-RANDOM
+(q-exponent 2.0–2.1, pure m^{3/2}q²; each depth doubles the character
+degree and only depth 1 collapses to one-variable sums) — the r=4
+curve-Weil lag extension is REFUTED and **no `FourCharacterWeilInput` is
+named** (it would be false at any sub-random scale; named-input refusal
+recorded).
+
+**(R309 endgame — landed anyway.)** `_R309TowerRungFour.lean` (6 theorems
++ 2 named inputs): generic lag Parseval (`hatF_autocorr`,
+`fourthMoment_eq_lag_energy`; at f = S and f = S⋆S it yields the 4th and
+8th moments, probe-exact); diagonal-separated named inputs
+`OffZeroLagBound` (needs √m·q — a √m-saving over the trivial mq; measured
+c ∈ [1, 3.2]) and `OffZeroQuadLagBound` (needs m^{3/2}q² — a √m-saving over
+the trivial 2m²q²; measured c' = O(1)); consumers
+`fourthMomentBound_of_offZeroLag` (K₄ = 1+K),
+`eighthMomentBound_of_offZeroLags` (K₈ = (1+K)²+K'); **ENDGAME**
+`distStratum_absoluteC_of_offZeroLags`:
+`E_DIST ≤ (3√((1+K)((1+K)²+K')) + 1215)·m³·q³`. Bonus rigidity
+(probe-only): at fixed m, q ≫ m³, K₄ ↓ (1−2/m)² and K₈ ↓ ~1 — the Gaussian
+values 2/24 are small-q artifacts; PRIZE-SCALE moment constants are SMALLER
+than Gaussian.
+
+**Final dependency graph (arc R297 → R309 close-out).** Three EQUIVALENT
+two-input routes to the absolute-C DIST rung:
+{`OffZeroLagBound`, `OffZeroQuadLagBound`} ⟺ {`FourthMomentBound`,
+`EighthMomentBound`} ⟺ {`IterConvEnergyWick@2`, `@4`}; downstream
+`TripleConvEnergyBound (2C+288)` via R300. Refuted sources along the arc:
+absolute flatness (Gumbel), per-variety Weil–Deligne, uniform
+TwoCharacterWeil, depth-2 lag rigidity, cyclotomic closed forms, the m²q²
+scale. **Every remaining open B-side input is ONE √m-saving cancellation
+statement about the Jacobi angle family**, probe-measured AT its
+conjectured scale (all Gaussian-exact or sub-Gaussian to m = 1200).
+
+**═══ STATE after this session (final) ═══** Bracket UNCHANGED:
+`3/8 ≤ mcaDeltaStar ≤ 43/96 + 1/(3·2^30) < 1/2`; no δ* movement. The named
+residual surfaces: **B side — one two-input pair from the equivalence class
+above** (canonical: `OffZeroLagBound ∧ OffZeroQuadLagBound`, equivalently
+`FourthMomentBound ∧ EighthMomentBound` — §43's `FullDFTFlatLog ∧
+FourthMomentBound` log-only rung remains valid as the fallback);
+**P1 side — `SwarmResidual`** (§43, unchanged). Probe-only items flagged
+above (all K₄/K₆/K₈/lag calibrations, prize-scale rigidity). **CORE OPEN,
+ON-BGK. No fabricated closure.**
