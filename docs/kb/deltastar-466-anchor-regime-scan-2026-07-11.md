@@ -35,3 +35,22 @@ lost on this face. The HBK-regime tools (n = q^{0.19} ≪ q^{1/3}) apply exactly
 ## Honest scope
 
 No failures found in this sample; small n; not a proof either way. CORE remains OPEN.
+
+## Addendum (same day): the n = 128 point — no monotone n-growth
+
+Dense-convolution exact energies at (n, p) = (128, 268437889), e = 4 (n^4/p = 0.99999):
+ρ₂ = 0.9922, ρ₃ = 0.9762, ρ₄ = 0.9533, ρ₅ = 0.9330 — ALL PASS, decreasing in rung.
+
+The e = 4, t = 5 sequence is now 0.51 (n=16) → 1.01 (n=64) → 0.93 (n=128): **not a
+monotone n-trend**. The (64, 16778497, 5) failure is prime-exceptional (it was the third
+prime in the original sweep; the first two passed), not the leading edge of growth in n.
+
+Corrected risk picture:
+1. Bump-adjacent anchors are razor-thin universally (ρ₂ ≈ 0.99 at e = 4 for every n
+   tested) — the margin is a few percent, and exceptional primes can cross it.
+2. Whether a given prime's anchors hold near the bump is an arithmetic property of that
+   prime, not of the shape (n, e) alone. For production this means: the certified primes'
+   rung-5/6 anchors are individual arithmetic facts about those primes — consistent with
+   the campaign's post-counterexample doctrine (per-prime, not uniform), and with the
+   sponsor's choice of structured primes (2^30·(2^128+192)+1) being load-bearing.
+3. The deep census family remains evidence-free of any failure and far from all bumps.
