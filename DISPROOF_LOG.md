@@ -14521,3 +14521,24 @@ The endpoints do not match, and the stronger common-factor endpoint
 Formal kernel:
 `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterScaleFinalConsumer.lean` and
 `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterOperationalBracket.lean`.
+
+## [466-G139-accident-quantization-consumer] modulus-four accidents collapse G136 tolerance to zero (2026-07-11)
+
+Lane: G139 rung-2 accident quantization, formalizer consumer.
+
+G136's production capstone reduced the rung-2 anchor to `#accidents <= 3`.  The fresh G139
+fiber analysis shows the remaining normalized accidents come in blocks of four after quotienting
+by the inversion symmetry `t ~ t^-1`: every regular inversion-fiber collision contributes
+`4c(c-1)`, and the distinguished `{1}` fiber contributes `4c^2`.  Therefore any concrete
+modulus-four theorem `4 | #accidents` sharpens the G136 tolerance to exact accident-freeness:
+
+```text
+q * E_2(mu_(2^30)) <= 3*q*(2^30)^2 + (2^30)^4   <=>   #accidents(mu_(2^30)) = 0.
+```
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G139AccidentQuantizationConsumer.lean`.
+
+Honest scope: the file formalizes the orbit-fiber arithmetic and calibrated consumer.  It does
+not prove the certified-prime divisibility or the squarefree/discriminant nondivisibility
+`P ∤ Disc(Q_(2^30))`; those remain the next G139 wall.  CORE remains OPEN.
