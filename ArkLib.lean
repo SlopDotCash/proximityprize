@@ -3359,6 +3359,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ32ClusterRouting
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ33FinalTwoLemmas
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ34StripInteriorGeneration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ35PairInteriorLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ36UnionGeneration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
