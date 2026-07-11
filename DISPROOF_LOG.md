@@ -15801,3 +15801,27 @@ over-budget, flow contraction, pool-Johnson, iterated charges.
 Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSmallPoolAssembly.lean`
 (pg-iterate OK 15s, 7 audited theorems `[propext, Classical.choice, Quot.sound]`),
 `docs/kb/deltastar-466-rate-quarter-small-pool-assembly-2026-07-10.md`.
+
+## [sac01-support-bucket-cancellation] signed puncture corrections do not cancel across support sizes in the first exact prize-shaped cells (2026-07-10)
+
+CLAIM TESTED.  Decompose the G133 signed puncture correction by left-word
+support size and seek a triangle-inequality saving from cancellation between
+the support buckets.
+
+VERDICT: REFUTED at the first exact cells.  The integer-only probe
+`scripts/probes/probe_sac_signed_puncture_support.py` finds cancellation ratio
+`|sum_s C_s| / sum_s |C_s|` equal or extremely close to one throughout the
+tested `r=3,4` cells.  At `(n,p,r)=(16,65537,4)` the four corrections are
+
+`[-810016, -1370037600, -49285005504, -232164369024]`,
+
+all negative, with exact sum `-282820222144`; hence the ratio is exactly one.
+The Lean theorem `n16_p65537_r4_no_crossSupportCancellation` kernel-checks the
+certificate, while `abs_sum_eq_sum_abs_of_nonpos` records the general same-sign
+no-go.  `scripts/pg-iterate.sh` passes (17s), standard axioms only/no
+`sorryAx`.
+
+SURVIVING TARGET.  The puncture correction itself is not useless: its
+aggregate nearly cancels the ordinary nonprincipal moment.  A live successor
+must bound that aggregate with its sign/phase retained; repartitioning by
+support size and applying cross-bucket cancellation cannot supply the gain.
