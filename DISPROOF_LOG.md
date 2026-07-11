@@ -16579,3 +16579,56 @@ Executable certificate:
 (`scripts/probes/_out_466_r3_tower_rung_four.txt`).
 Analysis:
 `docs/kb/deltastar-466-r3-tower-rung-four-2026-07-11.md`.
+
+## 2026-07-11 — CROSS-CONE BRIDGE (P1 x B-side): the swarm's moment layer IS
+## the lag machinery (formal identity bridge, first cross-cone import); the
+## OPEN layers are a calibrated NON-bridge (different walls, kernel-pinned)
+
+First formal bridge attempt between the two campaign cones.  Probe
+`scripts/probes/probe_rate_quarter_p1_cross_cone_bridge.py` (identities exact
+at M = 257; calibration exact at prize constants).
+
+ANALYSIS (exact): swarm riders on a direction w are FIBERS of the ratio map
+rho_w = (u1 − w)/D; the fiber-count function's DFT is the incomplete
+exponential sum Sum_{x in X} psi(a·rho(x)) — the exact BGK object.  B-side
+lags are Z/m-autocorrelations of COMPLETE character-sum families.
+
+PARTIAL BRIDGE (outcome ii, REAL and formal): both cones' second/fourth-moment
+layers are ONE generic identity family — kernel: hatF_fiberCount (the P1
+obstruction object in the B-side's DFT vocabulary), swarm_secondMoment_bridge
+(hatF_parseval at the swarm weight), swarm_fourthMoment_lag_bridge (LITERALLY
+the B-side's fourthMoment_eq_lag_energy at f = fiberCount),
+swarm_lag_bridge_at_prize (at F = ZMod P).  `_P1RateQuarterCrossConeBridge.lean`
+is the FIRST file importing both cones (_R309TowerRungFour +
+_P1RateQuarterPencilHarvestCap; R309 olean built once via lake-locked).
+
+CALIBRATED NON-BRIDGE (outcome iii, the honest core):
+* swarm_sub_burgess (kernel): N^4 < P < N^6 — the swarm's incomplete sums have
+  length exponent ~0.19 < 1/4 (BELOW Burgess; only subgroup/BGK methods);
+  B-side sums are COMPLETE (ratio 1, Weil sqrt-q each).
+* Depth: B-side open inputs are fixed-depth family averages (sqrt(m)q at depth
+  1; m^{3/2}q^2 at depth 2/r=4); the swarm needs LIST-level bounds — exact
+  second moment gives Chebyshev ~ P^{k−2}, astronomically above budget
+  (swarm_single_map_chebyshev_scale: the single-map scale (k−1)N/a^2 at
+  a = 2T−N is exactly 23-bracketed — it counts fibers of ONE map, not
+  directions).
+* VERDICT: a reduction would have to transport across completeness ratio
+  (2^-128 <-> 1) AND depth (list <-> r=4); character-sum technology does
+  neither.  The "one wall" convergence is CLASS-level, not reduction-level.
+
+BONUS (named, not landed): the fiber vocabulary exposes a per-direction
+fiber-Chebyshev refinement (k−1)F/b^2 of the stall ledger's vote bound F/b,
+effective when b = T−A > k−1 (low-alignment stall window) — future round.
+
+AUDIT (`_P1RateQuarterCrossConeBridge.lean`; FULL axiom lists read manually
+via `lake env lean`): all 6 theorems exactly [propext, Classical.choice,
+Quot.sound]; no sorryAx, no warnings.
+
+HONESTY: neither SwarmResidual nor the lag inputs discharged or transported;
+no delta-star movement; bracket 3/8 <= delta* <= 43/96 + eps untouched.
+Session: nine rounds, 74 kernel theorems, 7 probes; the two campaign walls
+now have their structural distinction kernel-pinned.
+
+Files: `_P1RateQuarterCrossConeBridge.lean`,
+`scripts/probes/probe_rate_quarter_p1_cross_cone_bridge.py`,
+`docs/kb/deltastar-466-rate-quarter-cross-cone-bridge-2026-07-11.md`.
