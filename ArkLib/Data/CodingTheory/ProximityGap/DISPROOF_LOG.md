@@ -50622,3 +50622,52 @@ coefficient-3 production anchor; it records that the remaining question is exact
 cyclotomic-accident/prime-individual upper bound at constant `3`, not a constant-improvement
 route.  The declaration is axiom-clean under the standard Lean axioms and adds no hypotheses
 or named residuals.
+## [466-G102-pair-concentration-depth5-nogo] The (cardinality, pair-sum concentration) input class is CLOSED at depth ≥ 5: interval×Sidon hybrids make the `(M+1)·n^{2s-2}` chain extremally tight, and the depth-5 `(n, M)` window is empty (axiom-clean + exact probe) (2026-07-10)
+
+G87 discharged depth four of the padded collision lane from the single input
+`M = max_c pairCount S c` (Stepanov: `M ≤ ~4n^{2/3}`).  The natural hope — close depth 5 by a
+smarter `(n, M)`-chain or a stronger concentration theorem — is now REFUTED:
+
+- **Witness.** `S = {5M·x + u : x ∈ ErdősTurán(509), u < 2^21}`: cardinality `509·2^21 ≈ 2^30`,
+  pair-sum concentration `≤ 2^22` (exactly the Stepanov level `4n^{2/3}`), and by Cauchy–Schwarz
+  against its `O(Mb²)` sum support, depth-5 equal-sum mass
+  `J₅ ≥ (bM)^{10}/(50Mb²+5M+1) ≈ 2^{255}` — exceeding the production depth-5 Wick share
+  `219‼·(2^30)^5/(C(110,5)²·105!) ≈ 2^{236}` by `2^{16+}` (kernel-checked).
+- **The window is empty.** The exact probe measures that even perfect concentration `M = 2`
+  (Sidon-optimal — and the measured truth for real `μ_n` at every tested scale!) admits
+  witnesses at `J₅ ~ n^8/10`, still above budget; the witness family scales as
+  `J_s ≳ M·n^{2s-2}/(10s)` at every depth, so pair statistics are closed for ALL depths ≥ 5.
+- **Lean** (`Frontier/_G102PairConcentrationDepthFiveNoGo.lean`): depth-generic
+  Cauchy–Schwarz floor `(n^s)² ≤ |sumImage|·J_s`; Erdős–Turán four-point rigidity at every odd
+  prime (`2p`-digit split + `(i−k)(i−l) = 0` in `ZMod p`); hybrid witness cardinality /
+  concentration / support lemmas; production kernel inequality; headline witness-existence
+  theorem `depth5_pair_concentration_no_go`.
+- **Probe** `scripts/probes/probe_466_g102_pair_concentration_tightness.py` (exact integers).
+
+Tool-shape consequence: the depth-≥5 certificate must see triple-scale or genuinely
+multiplicative structure.  This refutes an input CLASS, not `FourthPowerSaddleDCEnergy` or δ*.
+
+## [466-G103-raw-triple-concentration-refuted] Raw triple-sum concentration is REFUTED as a depth-5 certificate (antipodal degeneracy `M₃ = 3n−3` exactly); the CENTERED triple statistic suffices and is measured at O(1) (2026-07-10)
+
+The minimal upgrade after G102 would be `M₃ = max_a N₃(a)`: the chain `J₅ ≤ M₃·n^7` closes at
+`M₃ ≤ 2^{25.8}`.  But raw `M₃` is degenerate at production: for even `n`, `−1 ∈ μ_n`, and every
+`a ∈ H` carries the antipodal family `a + (y + (−y))`.  The probe verifies
+`N₃^{deg}(a) = 3n − 3` EXACTLY with support exactly `H`, so raw `M₃ ≥ 3n ≈ 2^{31.6} > 2^{25.8}`:
+raw triple concentration can never close depth 5.
+
+Splitting off the degenerate mass rescues the route (`Frontier/
+_G103CenteredTripleDepthFiveConsumer.lean`, axiom-clean):
+
+```text
+J₅ ≤ (M₃ᶜ + 3M₂ + 3) · n^7,
+```
+
+with the degenerate total `≤ 3n²` absorbed by the KNOWN Stepanov pair bound.  Kernel-checked:
+`(M₃ᶜ, M₂) = (2^24, 2^22)` puts depth 5 inside one full Wick budget at `(2^30, 110)`
+(margin `2^{1.01}`).  The probe measures the centered concentration of real `μ_n` at
+`6..18 = O(1)` across all scales (`6 = 3!` = a single genuine unordered solution) — `2^{20}`
+headroom.  `CenteredTripleSumConcentration24` is the NEW named external hypothesis: the
+frontier object for the padded lane at depth 5 is pinned exactly (pair statistics provably
+insufficient, centered triple sufficient; no Stepanov analog recorded for it — that analog is
+now a well-posed open target).  Probe:
+`scripts/probes/probe_466_g103_centered_triple_concentration.py`.
