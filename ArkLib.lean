@@ -3373,6 +3373,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ41SyzdimBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ42Realizability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ43AutoInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ44MuBasisDegreeSum
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ45ImbalanceBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
