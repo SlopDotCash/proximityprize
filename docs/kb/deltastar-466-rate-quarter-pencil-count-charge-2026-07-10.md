@@ -764,6 +764,26 @@ and returns below information already supplied by inclusion--exclusion.  The
 missing input must be genuinely cross-line: weighted overlap, determinant
 multiplicity, or common-coordinate charge.
 
+### Threshold-free common-base determinant collapse (2026-07-11)
+
+The common-base pencil family has substantially more algebraic structure than
+the generic three-core determinant audit records.  Every canonical secant
+through the lifted point `(gamma0,q(gamma0))` has parameter
+`(q(gamma0)-gamma0*r,r)`.  Hence any three such parameters have identically
+zero Pluecker determinant, with no core-size, distinctness, or P1 arithmetic
+hypothesis.  The Lean theorem
+`commonBase_secants_form_collapsed_cluster` packages the entire common-base
+family as one determinant-collapsed cluster relative to any two reference
+secants.  This bypasses the generic `1610612735` core-sum onset completely.
+
+The remaining weld to the existing collapsed-cluster injection is now sharply
+localized: select, for each surviving scalar, a source-to-target petal
+coordinate at which the fixed reference directions are transverse.  The
+current individual petal floors are below the `k-1` root budget, so
+transversality does not follow from one petal alone; it must come from the
+already-proved many-pencil/common-coordinate load or from a multi-petal union
+argument.  Determinant collapse itself is no longer a residual on this branch.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;

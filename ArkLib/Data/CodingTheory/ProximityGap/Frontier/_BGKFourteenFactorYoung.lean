@@ -70,6 +70,47 @@ theorem fourteen_mul_sum_prod_le_sum_budget
   exact (summed_fourteen_factor_young z).trans
     (Finset.sum_le_sum fun i _ => hbudget i)
 
+/-- The dominant repeated stratum has thirteen shifted period factors.  Padding it by one
+constant scale `R` gives a root-free Hölder/Young estimate with thirteen fourteenth moments and
+one explicit cardinality term. -/
+theorem thirteen_factor_young
+    {B : Type*} [Fintype B] (R : NNReal) (f : B → Fin 13 → NNReal) :
+    14 * R * (∑ b, ∏ i, f b i) ≤
+      (Fintype.card B : NNReal) * R ^ 14 + ∑ i, ∑ b, f b i ^ 14 := by
+  let z : B → Fin 14 → NNReal := fun b => Fin.cases R (f b)
+  have h := summed_fourteen_factor_young z
+  simpa [z, Fin.prod_univ_succ, Fin.sum_univ_succ, Finset.mul_sum, mul_assoc] using h
+
+/-- Optimized-padding adapter for a `k`-factor monomial.  The caller supplies fourteen padded
+factors whose product is `R^(14-k)` times the monomial and whose individual fourteenth moments
+are bounded by the same `M`.  Equal-weight Young then cancels the factor fourteen exactly. -/
+theorem optimized_padded_holder
+    {B : Type*} [Fintype B] (k : ℕ) (R M : NNReal)
+    (mono : B → NNReal) (z : B → Fin 14 → NNReal)
+    (hprod : ∀ b, ∏ i, z b i = R ^ (14 - k) * mono b)
+    (hbudget : ∀ i, ∑ b, z b i ^ 14 ≤ M) :
+    R ^ (14 - k) * (∑ b, mono b) ≤ M := by
+  have h := fourteen_mul_sum_prod_le_sum_budget z (fun _ => M) hbudget
+  have hprodSum : ∑ b, ∏ i, z b i = R ^ (14 - k) * ∑ b, mono b := by
+    simp_rw [hprod]
+    rw [Finset.mul_sum]
+  rw [hprodSum] at h
+  have hconst : ∑ _i : Fin 14, M = 14 * M := by
+    simp
+  rw [hconst] at h
+  apply le_of_mul_le_mul_left (a := (14 : NNReal)) (by simpa [mul_assoc] using h)
+  norm_num
+
+/-- Division form of `optimized_padded_holder`, convenient once the padding scale is positive. -/
+theorem optimized_padded_holder_div
+    {B : Type*} [Fintype B] (k : ℕ) {R M : NNReal} (hR : R ≠ 0)
+    (mono : B → NNReal) (z : B → Fin 14 → NNReal)
+    (hprod : ∀ b, ∏ i, z b i = R ^ (14 - k) * mono b)
+    (hbudget : ∀ i, ∑ b, z b i ^ 14 ≤ M) :
+    (∑ b, mono b) ≤ M / R ^ (14 - k) := by
+  apply (le_div_iff₀ (pow_pos (pos_iff_ne_zero.mpr hR) _)).2
+  simpa [mul_comm] using optimized_padded_holder k R M mono z hprod hbudget
+
 end ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung
 
 /-! ## Axiom audit -/
@@ -79,3 +120,9 @@ end ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung
   ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung.summed_fourteen_factor_young
 #print axioms
   ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung.fourteen_mul_sum_prod_le_sum_budget
+#print axioms
+  ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung.thirteen_factor_young
+#print axioms
+  ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung.optimized_padded_holder
+#print axioms
+  ArkLib.ProximityGap.Frontier.BGKFourteenFactorYoung.optimized_padded_holder_div

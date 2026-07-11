@@ -18,6 +18,19 @@ The exact recurrence is
     J_{2n}(T) = Res_u(R_n(u), T^2 + A_n(u)*T + (u - 2)^n),
     R_4(u) = u,                 R_{2n}(u) = R_n(u^2 - 2).
 
+Writing C_n = Disc(K_n)*K_n(2^n), d=deg(K_n), A=Sq(K_n), and J=J_{2n},
+the corresponding sufficient-product recurrence is
+
+    C_{2n} = C_n
+      * Res(K_n(T),K_n(-T))/(2^d*K_n(0))
+      * Disc(J) * Res(A,J)^2
+      * (-1)^d*K_n(-2^n)*J(2^(2n)).
+
+Indeed Disc(A)=Disc(K_n)*Res(K_n(T),K_n(-T))/(2^d*K_n(0)) and
+A(2^(2n))=(-1)^d*K_n(2^n)*K_n(-2^n).  This is exact, but it exposes four
+new states (the plus-resultant, primitive discriminant, cross-resultant, and negative value),
+so C_n itself is not closed under doubling.
+
 The first factor contains the old classes and squares their signatures.  The resultant is
 the genuinely new primitive half-angle channel.  Pairing traces t and -t proves the formula:
 u=t^2-2, the two new signatures are -(t-2)^n and -(t+2)^n, their sum is -A_n(u),
@@ -168,6 +181,12 @@ def square_signature_transform(poly: list[int]) -> list[int]:
     assert all(in_sqrt[index] == 0 for index in range(1, len(in_sqrt), 2))
     ascending = [(-1) ** degree * in_sqrt[2 * index] for index in range(degree + 1)]
     return ascending[::-1]
+
+
+def negate_argument(poly: list[int]) -> list[int]:
+    """P(-T), in descending coefficient order."""
+    degree = len(poly) - 1
+    return [coefficient * (-1) ** (degree - index) for index, coefficient in enumerate(poly)]
 
 
 def primitive_trace_polynomial(n: int) -> list[int]:
@@ -346,6 +365,37 @@ def main() -> int:
             f"(degree {len(primitive)-1})"
         )
 
+        # Exact discriminant/self-value recurrence.  Its extra resultants are the state-growth
+        # obstruction to iterating only the single scalar C_n.
+        degree = len(canonical[n]) - 1
+        plus_resultant = resultant(canonical[n], negate_argument(canonical[n]))
+        square_disc = discriminant(old)
+        square_disc_from_old = (
+            discriminant(canonical[n])
+            * plus_resultant
+            // (2**degree * canonical[n][-1])
+        )
+        assert square_disc == square_disc_from_old
+        cross_resultant = resultant(old, primitive)
+        old_certificate = discriminant(canonical[n]) * poly_eval(canonical[n], 2**n)
+        target_certificate = discriminant(exact) * poly_eval(exact, 2 ** (2 * n))
+        recurrent_certificate = (
+            old_certificate
+            * (plus_resultant // (2**degree * canonical[n][-1]))
+            * discriminant(primitive)
+            * cross_resultant**2
+            * (-1) ** degree
+            * poly_eval(canonical[n], -(2**n))
+            * poly_eval(primitive, 2 ** (2 * n))
+        )
+        assert target_certificate == recurrent_certificate
+        print(
+            "  C-step exact; auxiliary bit sizes "
+            f"plus={abs(plus_resultant).bit_length()}, "
+            f"Disc(J)={abs(discriminant(primitive)).bit_length()}, "
+            f"cross={abs(cross_resultant).bit_length()}"
+        )
+
     print("\n## Discriminant-times-self certificate versus finite-field collisions")
     primes = prime_sieve(LIMIT)
     for n in ORDERS:
@@ -380,9 +430,10 @@ def main() -> int:
         f"paired-trace degree={PRODUCTION_ORDER//8}; dyadic levels={30-2}"
     )
     print(
-        "VERDICT: the exact two-channel recurrence survives, but no scalar K_n recurrence or "
-        "logarithmic production certificate does.  The succinct R/A circuits feed a resultant "
-        "whose state width reaches 2^28; a further norm-collapse invariant is still required."
+        "VERDICT: the exact two-channel recurrence survives, while both tested scalar K_n "
+        "recurrences fail.  This recurrence alone is not a logarithmic production certificate: "
+        "its succinct R/A circuits feed a resultant whose state width reaches 2^28, so a further "
+        "norm-collapse invariant is still required."
     )
     return 0
 

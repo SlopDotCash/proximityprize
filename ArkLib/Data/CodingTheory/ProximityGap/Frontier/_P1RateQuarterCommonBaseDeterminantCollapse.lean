@@ -65,9 +65,28 @@ theorem three_commonBase_secants_lineDeterminant_eq_zero
   all_goals simp only [secantParameter]
   all_goals ring
 
+/-- All canonical secants through one base endpoint form a collapsed cluster
+relative to any two fixed members of that common-base family. -/
+theorem commonBase_secants_form_collapsed_cluster
+    {iota F : Type} [Fintype iota] [Nonempty iota] [DecidableEq iota]
+    [Field F] [Fintype F] [DecidableEq F]
+    {dom : iota ↪ F} {k : Nat} {delta : NNReal}
+    {u : WordStack F (Fin 2) iota}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (gamma0 beta0 beta1 : F) :
+    ∀ beta : F,
+      lineDeterminant
+          (secantParameter family gamma0 beta0)
+          (secantParameter family gamma0 beta1)
+          (secantParameter family gamma0 beta) = 0 := by
+  intro beta
+  exact three_commonBase_secants_lineDeterminant_eq_zero
+    family gamma0 beta0 beta1 beta
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonBaseDeterminantCollapse
 
 #print axioms lineDeterminant_eq_zero_of_common_lift
 #print axioms three_commonBase_secants_lineDeterminant_eq_zero
+#print axioms commonBase_secants_form_collapsed_cluster

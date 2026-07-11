@@ -279,6 +279,62 @@ because `seventhRootTwoUpper` is a strict upper bound. -/
 theorem productionHolderCoefficientUpper_lt_138 : productionHolderCoefficientUpper < 138 := by
   norm_num [productionHolderCoefficientUpper, seventhRootTwoUpper]
 
+/-- The positive seventh root of two, the only irrational number in the exact production
+normalization. -/
+noncomputable def seventhRootTwo : ℝ := (2 : ℝ) ^ ((7 : ℝ)⁻¹)
+
+theorem seventhRootTwo_pow_seven : seventhRootTwo ^ 7 = 2 := by
+  exact Real.rpow_inv_natCast_pow (by norm_num) (by norm_num)
+
+/-- The rational certificate really is an upper bound for the positive seventh root. -/
+theorem seventhRootTwo_lt_upper : seventhRootTwo < (5521 : ℝ) / 5000 := by
+  have ht0 : (0 : ℝ) ≤ 5521 / 5000 := by norm_num
+  have hr0 : 0 ≤ seventhRootTwo := Real.rpow_nonneg (by norm_num) _
+  by_contra h
+  have hle : (5521 : ℝ) / 5000 ≤ seventhRootTwo := le_of_not_gt h
+  have hp := pow_le_pow_left₀ ht0 hle 7
+  rw [seventhRootTwo_pow_seven] at hp
+  norm_num at hp
+
+/-- Exact (irrational) production coefficient after retaining every `2^18` fractional Hölder
+power. -/
+noncomputable def productionHolderCoefficient : ℝ :=
+  42 * 2 * seventhRootTwo ^ 5 +
+    791 * seventhRootTwo ^ 3 / 2 ^ 15 +
+    8820 * seventhRootTwo / 2 ^ 31 +
+    64743 * seventhRootTwo ^ 6 / 2 ^ 48 +
+    328986 * seventhRootTwo ^ 4 / 2 ^ 64 +
+    1184153 * seventhRootTwo ^ 2 / 2 ^ 80 +
+    3034920 / 2 ^ 96 +
+    5482456 * seventhRootTwo ^ 5 / 2 ^ 113 +
+    6787872 * seventhRootTwo ^ 3 / 2 ^ 129 +
+    5450256 * seventhRootTwo / 2 ^ 145 +
+    2540160 * seventhRootTwo ^ 6 / 2 ^ 162 +
+    518400 * seventhRootTwo ^ 4 / 2 ^ 178
+
+/-- **Machine-checked true coefficient bound.**  This closes the numerical part of the repeated
+Hölder absorption without replacing the seventh root by an unverified decimal. -/
+theorem productionHolderCoefficient_lt_138 : productionHolderCoefficient < 138 := by
+  have hr0 : 0 ≤ seventhRootTwo := Real.rpow_nonneg (by norm_num) _
+  have hroot := seventhRootTwo_lt_upper.le
+  calc
+    productionHolderCoefficient ≤
+        42 * 2 * ((5521 : ℝ) / 5000) ^ 5 +
+          791 * ((5521 : ℝ) / 5000) ^ 3 / 2 ^ 15 +
+          8820 * ((5521 : ℝ) / 5000) / 2 ^ 31 +
+          64743 * ((5521 : ℝ) / 5000) ^ 6 / 2 ^ 48 +
+          328986 * ((5521 : ℝ) / 5000) ^ 4 / 2 ^ 64 +
+          1184153 * ((5521 : ℝ) / 5000) ^ 2 / 2 ^ 80 +
+          3034920 / 2 ^ 96 +
+          5482456 * ((5521 : ℝ) / 5000) ^ 5 / 2 ^ 113 +
+          6787872 * ((5521 : ℝ) / 5000) ^ 3 / 2 ^ 129 +
+          5450256 * ((5521 : ℝ) / 5000) / 2 ^ 145 +
+          2540160 * ((5521 : ℝ) / 5000) ^ 6 / 2 ^ 162 +
+          518400 * ((5521 : ℝ) / 5000) ^ 4 / 2 ^ 178 := by
+      unfold productionHolderCoefficient
+      gcongr
+    _ < 138 := by norm_num
+
 /-- Production repeated-coordinate population. -/
 def productionRepeatedPopulation : ℕ :=
   (2 ^ 30) ^ 14 - ((2 ^ 30).descFactorial 7) ^ 2
@@ -350,6 +406,7 @@ theorem productionSlackBarrier_of_slope1024 {M A S : ℝ} {F : ℝ → ℝ}
 #print axioms repeatedSevenTransform_leading_layers
 #print axioms production_repeatedCoefficientEnvelope_absorbs_779
 #print axioms productionHolderCoefficientUpper_lt_138
+#print axioms productionHolderCoefficient_lt_138
 #print axioms production_repeatedPopulation_raw_gap
 #print axioms production_beyondOneRepeat_population_tiny
 #print axioms repeatedWraparound_le_dcDefect
