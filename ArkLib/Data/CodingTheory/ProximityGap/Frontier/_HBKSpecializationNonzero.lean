@@ -110,7 +110,38 @@ theorem specializedAuxiliary_ne_zero
     · exact hzero
   exact hne (coeffs_eq_zero_of_blocks_eq_zero hinj hblocks)
 
+/-- HBK's original `deg < char` hypothesis supplies the Vandermonde condition automatically. -/
+theorem specializedVandermonde_ne_zero_of_charP
+    {p h A B : ℕ} [CharP F p] (hA : A ≤ h) (hdeg : A + h * B ≤ p) :
+    (Matrix.vandermonde (fun j : Fin (A * B) =>
+      (specializedExponent h A B j : F))).det ≠ 0 := by
+  rw [Matrix.det_vandermonde_ne_zero_iff]
+  intro i j hij
+  have hinj := specializedExponent_injective (B := B) hA
+  apply hinj
+  apply CharP.natCast_injOn_Iio F p
+  · have ha := (pairIndex A B i).1.isLt
+    have hb := (pairIndex A B i).2.isLt
+    have hh : 0 < h := lt_of_lt_of_le (pairIndex A B i).1.pos hA
+    dsimp [specializedExponent]
+    exact (Nat.add_lt_add ha ((Nat.mul_lt_mul_left hh).2 hb)).trans_le hdeg
+  · have ha := (pairIndex A B j).1.isLt
+    have hb := (pairIndex A B j).2.isLt
+    have hh : 0 < h := lt_of_lt_of_le (pairIndex A B j).1.pos hA
+    dsimp [specializedExponent]
+    exact (Nat.add_lt_add ha ((Nat.mul_lt_mul_left hh).2 hb)).trans_le hdeg
+  · exact hij
+
+/-- Characteristic-form specialization nonvanishing, matching the hypotheses of HBK Lemma 6. -/
+theorem specializedAuxiliary_ne_zero_of_charP
+    {p h A B : ℕ} [CharP F p] (hA : A ≤ h) (hAB : A * B ≤ h)
+    (hdeg : A + h * B ≤ p) {coeffs : CoeffSpace F A B} (hne : coeffs ≠ 0) :
+    specializedAuxiliary h A B coeffs ≠ 0 :=
+  specializedAuxiliary_ne_zero hA hAB
+    (specializedVandermonde_ne_zero_of_charP hA hdeg) hne
+
 end ArkLib.ProximityGap.Frontier.HBKSpecializationNonzero
 
 #print axioms ArkLib.ProximityGap.Frontier.HBKSpecializationNonzero.specializedExponent_injective
 #print axioms ArkLib.ProximityGap.Frontier.HBKSpecializationNonzero.specializedAuxiliary_ne_zero
+#print axioms ArkLib.ProximityGap.Frontier.HBKSpecializationNonzero.specializedAuxiliary_ne_zero_of_charP

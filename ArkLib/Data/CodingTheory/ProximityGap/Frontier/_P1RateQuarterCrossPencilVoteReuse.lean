@@ -2032,6 +2032,36 @@ theorem commonBase_sameFixedWitnessRider_directions_eq
   have hk : k = 268435456 := by norm_num [k]
   omega
 
+/-- Through a fixed base point `(gamma0,p0)`, equality of directions forces equality of pencil
+bases. -/
+theorem commonBase_pencilBase_eq_of_direction_eq
+    {gamma0 gamma1 gamma2 : F} (p0 p1 p2 : Fin N → F)
+    (hdir : pencilDir gamma0 gamma1 p0 p1 = pencilDir gamma0 gamma2 p0 p2) :
+    pencilBase gamma0 gamma1 p0 p1 = pencilBase gamma0 gamma2 p0 p2 := by
+  simp only [pencilBase]
+  rw [hdir]
+
+/-- **Complete fixed-witness pencil uniqueness.**  A shared non-base rider on its globally fixed
+threshold witness determines the entire common-base pencil pair `(base,direction)`. -/
+theorem commonBase_sameFixedWitnessRider_pencils_eq
+    (dom : Fin N ↪ F)
+    {gamma0 gamma1 gamma2 gamma : F} (hgamma : gamma ≠ gamma0)
+    (p0 p1 p2 u0 u1 : Fin N → F)
+    (R1 R2 : Finset F) (Sf : F → Finset (Fin N))
+    (hp0 : p0 ∈ predecessorCode dom)
+    (hp1 : p1 ∈ predecessorCode dom)
+    (hp2 : p2 ∈ predecessorCode dom)
+    (hrides1 : RidesAll dom u0 u1
+      (pencilBase gamma0 gamma1 p0 p1) (pencilDir gamma0 gamma1 p0 p1) R1 Sf)
+    (hrides2 : RidesAll dom u0 u1
+      (pencilBase gamma0 gamma2 p0 p2) (pencilDir gamma0 gamma2 p0 p2) R2 Sf)
+    (hgamma1 : gamma ∈ R1) (hgamma2 : gamma ∈ R2) :
+    (pencilBase gamma0 gamma1 p0 p1, pencilDir gamma0 gamma1 p0 p1) =
+      (pencilBase gamma0 gamma2 p0 p2, pencilDir gamma0 gamma2 p0 p2) := by
+  have hdir := commonBase_sameFixedWitnessRider_directions_eq dom hgamma
+    p0 p1 p2 u0 u1 R1 R2 Sf hp0 hp1 hp2 hrides1 hrides2 hgamma1 hgamma2
+  exact Prod.ext (commonBase_pencilBase_eq_of_direction_eq p0 p1 p2 hdir) hdir
+
 /-- A saturated full fiber containing the base scalar forces the base codeword's agreement
 set to have exactly threshold size. -/
 theorem saturatedFullFiber_commonBase_agreeSet_card_eq_threshold
@@ -2837,6 +2867,8 @@ theorem three_distinct_commonBase_nearThreshold_fibers_sum_le_N
 #print axioms commonBase_alignedAndSameRider_matching_card_le_k_sub_one
 #print axioms commonBase_alignedUnionSameRider_inter_card_le_k_sub_one
 #print axioms commonBase_sameFixedWitnessRider_directions_eq
+#print axioms commonBase_pencilBase_eq_of_direction_eq
+#print axioms commonBase_sameFixedWitnessRider_pencils_eq
 #print axioms commonBase_crossVote_directionDiff_identity
 #print axioms commonBase_reverseCrossVote_directionDiff_identity
 #print axioms commonBase_crossVote_directionDiff_square_identity

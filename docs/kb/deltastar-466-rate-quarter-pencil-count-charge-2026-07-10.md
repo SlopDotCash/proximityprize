@@ -472,7 +472,12 @@ reuse coordinates.  The new kernel isolates exactly what such reuse means.
   Thus charged-rider reuse is **exactly injective (multiplicity one)** in the
   fixed-witness campaign; the cap five remains a robust varying-witness
   fallback.  Together with forced base inclusion, this closes the complete
-  two-rider pencil channel structurally.
+  two-rider pencil channel structurally.  The object-level adapter
+  `commonBase_sameFixedWitnessRider_pencils_eq` packages equality of the full
+  `(pencilBase,pencilDir)` pair: through `(γ₀,p₀)`, equal directions force equal
+  bases by the defining formula `p₀−γ₀·direction`.  Downstream fiber arguments
+  can therefore consume literal pencil equality without reconstructing it
+  from the slope theorem.
   The cross-label information discarded by the binary abstraction is now
   retained explicitly.  Writing
   `E(x)=u₀(x)+γ₀u₁(x)−p₀(x)`, a coordinate labelled `γ` in one pencil and `δ`

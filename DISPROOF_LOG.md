@@ -15651,3 +15651,153 @@ Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterGlobalConsi
 Quot.sound]`), `scripts/probes/probe_rate_quarter_p1_global_consistency.py`
 (mu_256 vote-pool checks 0 violations; n=16 exhaustive bad-counts),
 `docs/kb/deltastar-466-rate-quarter-global-consistency-2026-07-10.md`.
+
+## [rate-quarter-dcharge-derecursion] the flow STALLS at exact boundary F0 = 75018133; small-pool branch closed (probe-pinned greedy 882722755 <= N); stall = sub-Johnson-on-Z direction swarm with two pool-code regimes (2026-07-10)
+
+Lane: P1 rate-quarter predecessor, successor of
+`[rate-quarter-global-consistency-charge]`.
+
+CLAIM TESTED. The D-charge derecursion closes the predecessor pin by iteration
+(the hoped-for prize-critical induction).
+
+VERDICT: STALL — the flow has a sharp dichotomy in the pool size F, closed
+below F0 = 75018133, stalled above. NOT a closure of the pin; the residual is
+pinned exactly.
+
+THE FLOW, made precise (all kernel-checked):
+* Level 0 (collapse): through-base pencils have determined first row
+  `w0 = p0 - g0*w1` and aligned region EXACTLY `{D=0} ∩ {w1 = u1}` — pencil
+  alignment IS direction agreement on Z (`alignedSet_eq_Dzero_inter_dirAgreement`).
+  Plus `riders <= F` unconditionally (`riders_card_le_pool`) and sterility for
+  `T - A > F` (`sterile_of_deep_subalignment`).
+* Level 1 (flow map): every rider `g != g0` maps injectively via
+  `s = (g-g0)^{-1}` to a scalar whose line `u1 - s*D` its direction matches on
+  `>= T` coords (`bad_maps_to_direction_agreement`) — the bad family maps into
+  a correlated-agreement family of the NEW stack `(u1, -D)` at the SAME
+  `(N, T, k)`. The ledger becomes `#bad <= 1 + sum_w F/(T - agrZ(w,u1))` over
+  directions with `agrZ >= T-F`, Johnson-packable on Z.
+* Level 2 (dichotomy): the contributing range `[T-F, T]` clears the Z-Johnson
+  radius iff `(T-F)^2 > (N-F)(k-1)` iff `F <= F0 = 75018133` — exact boundary
+  (`derecursion_boundary`, both sides pinned; monotone below via
+  `johnson_condition_of_le_boundary`).
+
+SMALL-POOL BRANCH (F <= F0): every contributing direction Johnson-counted on
+Z; exact greedy layer optimum (probe, exact integers, worst case at F = F0):
+882722755 <= N — CLOSED (Z-relative Johnson layer assembly in Lean is
+layer-cake-style engineering, arithmetic pinned).
+
+STALL (F >= F0+1): the window `[T-F, floor(sqrt((N-F)(k-1)))]` is nonempty —
+at the three-heavy pool F = 100663294 it is `[492131672, 511085881]`, width
+18954209 (`stall_window_at_heavy_pool`). Two pool-code regimes split at F = k
+(`pool_code_regimes`): F < k = 2^28 — punctured RS on the pool is the FULL
+space (free pool, all structure = the direction list on Z); k <= F <= N-T+1 =
+480946859 — the pool carries a nontrivial MDS code of dim k (fresh algebra
+available; candidate next attack). NOTE an initially-claimed conjunct
+"the whole stall range is below k" was FALSE (N-T+1 > k) and was corrected —
+the MDS sub-regime is real.
+
+MINIMAL RESIDUAL (`StallResidual`): budget for bad families ALL of whose base
+scalars have pools `F >= 75018134`; if any base has `F <= F0` the small-pool
+ledger closes it. Consistency check: the flow map lands at the SAME (N,T,k) —
+no parameter shrinkage; the "descent" is structural (pairs -> directions ->
+affine stack family), and terminates in one step either in Johnson (small
+pool) or in the stall window.
+
+Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterDChargeDerecursion.lean`
+(pg-iterate OK 20s, 9 audited theorems `[propext, Classical.choice, Quot.sound]`),
+`scripts/probes/probe_rate_quarter_p1_dcharge_derecursion.py` (exact boundary,
+greedy optimum for all F <= F0, stall widths, 100-instance mu_256 flow checks),
+`docs/kb/deltastar-466-rate-quarter-dcharge-derecursion-2026-07-10.md`.
+
+## [rate-quarter-mds-pool-second-charge] the second charge instantiates literally, shrinks once, then DOUBLE-STALLS: threshold collapse below k-1 ends the charge iteration at depth 2 (2026-07-10)
+
+Lane: P1 rate-quarter predecessor, successor of
+`[rate-quarter-dcharge-derecursion]` (ranked target 1: the MDS-pool regime).
+
+CLAIM TESTED. The pool-level second D-charge (F >= k, pool carries an MDS code
+of dim k) iterates the derecursion to a contraction that closes StallResidual.
+
+VERDICT: REFUTED — the iteration terminates at depth 2 in a PERMANENT stall.
+
+WHAT HOLDS (kernel-checked):
+* `pool_card_le_N_sub_T`: F <= N - T = 480946858 universally (base witness
+  sinks into {D=0}); sharpens the earlier stall-range end by one.
+* `pool_separation`: the pool code is MDS — distinct codewords collide on
+  <= k-1 POOL coordinates (restriction of predecessor_sep).
+* `second_charge_vote_source` + `second_pool_closed_form`: the second charge
+  is a LITERAL instantiation of the generic sink/source lemmas at the level-2
+  stack (u1, -D) with pool base (s0, q0): D2 = q0 - u1 + s0*D. One genuine
+  shrink (|{D2=0}| >= level-2 threshold).
+
+WHY IT DIES (the collapse principle, kernel-checked):
+* `second_level_threshold_cap`: for every pool F <= N-T the zero-set has
+  |Z| >= T, so J_Z >= floor(sqrt(T(k-1))) = 398907491 and the level-2
+  threshold t1 = T - J_Z <= 193887475 < k - 1 = 268435455.
+* `threshold_collapse_stalls`: once the running threshold t < k-1, NO Johnson
+  condition can fire at any later charge level: every level's zero-set holds a
+  base witness (Z >= t), so (t - F')^2 <= t^2 < t(k-1) <= Z(k-1) for every
+  pool choice — the sub-Johnson window is nonempty forever.
+* `double_stall`: the instantiation at t = 193887475. Probe sweep: the
+  combined two-Johnson band (T - J_pool(F), J_Z(F)] is nonempty for EVERY
+  F in [k, N-T] (narrowest width 140584336 at F = k) — even both Johnson
+  radii together miss T by >= 1.4e8.
+
+TERMINAL VERDICT FOR THE COUNTING/CHARGE CONE. Every branch of the P1
+predecessor pin is now: (i) heavy-window CLOSED (global charge), (ii)
+small-pool CLOSED (F <= F0 = 75018133; greedy 882722755 <= N, probe-pinned,
+Lean assembly = flagged engineering), or (iii) permanently sub-Johnson after
+at most two charge levels. Branch (iii) = agreement families of MDS/RS codes
+beyond the Johnson radius — the prize wall itself. No further Johnson/charge
+iteration can discharge `StallResidual`; new input must be beyond-Johnson list
+structure or the structured-floor route.
+
+Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterMDSPoolSecondCharge.lean`
+(pg-iterate OK 26s, 8 audited theorems `[propext, Classical.choice, Quot.sound]`),
+`scripts/probes/probe_rate_quarter_p1_dcharge_derecursion.py` (MDS section),
+`docs/kb/deltastar-466-rate-quarter-mds-pool-second-charge-2026-07-10.md`.
+
+## [rate-quarter-small-pool-assembly] Z-relative Johnson landed; ledger arithmetic kernel-pinned; the pin's open content = SmallPoolClosure AND StallResidual (2026-07-10)
+
+Lane: P1 rate-quarter predecessor — FINAL file of the charge arc (target 3).
+
+DELIVERED (staged, per plan; all kernel-checked, axiom-clean):
+* Stage (a): `johnson_core_rel` — the in-tree exact-diagonal Johnson
+  transported to families of sets contained in an ambient Finset Z (count
+  scales with Z.card, not N); `dirFamily_johnson_on_Dzero` instantiates it for
+  through-base pencil families packed by aligned regions inside {D=0}.
+  (Engineering note: `(x : α)` ascriptions inside subtype-filter binders
+  elaborate as a monadic Finset coercion — use `x.1` projections.)
+* Stage (b): `boundary_count_pinned` — at the worst pool F0 = 75018133 the
+  direction count at level T-F0 = 517776833 on Z is <= 657668325 (the m=1
+  ledger term; exact-diagonal division pinned). `ledger_histogram_le_N`: the
+  exact greedy value in closed histogram form
+  1 + 657668325 + 7 + 5 + 27*4 + 3*(75018133-30) = 882722755 <= N;
+  `ledger_uniform_caps_le_N`: with the probe-swept uniform per-m caps
+  (m=2 term <= 7, m>=3 terms <= 5, all F <= F0): 1032758988 <= N.
+* Stage (c): honest named Prop `SmallPoolClosure` (ONLY the marginal-partition
+  counting-glue remains open — every number is discharged) and the glue
+  theorem `predecessor_budget_of_smallPool_and_stall`:
+  SmallPoolClosure ∧ StallResidual -> every bad family respects G.card <= N.
+
+LEDGER IDENTITY used: #bad <= 1 + sum_{m=1}^{F} L_Z(T - floor(F/m)) (each
+direction w contributes floor(F/(T-A_w)) = #{m : T-A_w <= F/m}); at F0 the
+per-m histogram is {657668325 x1, 7 x1, 5 x1, 4 x27, 3 x(F0-30)} — sum
+882722755, matching the greedy probe exactly.
+
+LANE RETROSPECTIVE (the charge cone is COMPLETE — six landed files this
+session): two-cover window REALIZED -> heavy window CLOSED by the global
+D-charge (realized geometry sterile) -> derecursion boundary F0 = 75018133
+exact (small pool closed at arithmetic level, stall taxonomy) -> MDS-pool
+second charge literal but double-stalls (threshold collapse below k-1
+permanent) -> Z-relative Johnson + pinned ledger + dichotomy glue. THREE
+BRANCHES: (1) heavy CLOSED (kernel); (2) small-pool: arithmetic kernel-pinned,
+counting-glue = SmallPoolClosure (layer-cake-style engineering); (3) stall
+band = beyond-Johnson MDS agreement families = THE PRIZE WALL — the P1
+counting cone provably converges to the same wall as the B-side; no lane
+artifact. Dead architectures kernel-refuted along the way: per-coordinate
+charges, collinear freeness, base-pencil caps, bare counting, heavy
+over-budget, flow contraction, pool-Johnson, iterated charges.
+
+Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSmallPoolAssembly.lean`
+(pg-iterate OK 15s, 7 audited theorems `[propext, Classical.choice, Quot.sound]`),
+`docs/kb/deltastar-466-rate-quarter-small-pool-assembly-2026-07-10.md`.

@@ -1,0 +1,43 @@
+SYZYGY WITNESS-QUOTIENT PROBE: PASS
+F11_FULL_ENUMERATION
+  bad_scalars=7
+  distinct_codewords=7
+  matching=7
+  rich_lines=1
+  largest_line=3
+  syzygy_classes=5
+F97_DISPLAYED_COUNTEREXAMPLE
+  displayed_points=48
+  bad_scalar_labels=36
+  distinct_decoded_codewords=33
+  maximum_displayed_matching=29
+  zero_codeword_labels=16
+  zero_only_hall_labels=8
+  direction_zero_positions=16
+  rich_lines=3
+  line_sizes=16
+  syzygy_classes=3
+  bad_one_fresh_capacity_per_line=16
+  predecessor_two_fresh_capacity_per_line=8
+  three_line_predecessor_cap=24
+  four_line_predecessor_cap=32
+P1_COMMON_FACTOR_PREDECESSOR
+  n=1073741824
+  k=268435456
+  bad_threshold=592794965
+  predecessor_threshold=592794966
+  known_bad_scalars=1073741826
+  repeated_zero_codeword_labels=480946860
+  guarded_capacity_per_pencil=240473430
+  three_pencil_cap=721420290
+  four_pencil_cap=961893720
+  four_pencil_slack=111848104
+VERDICT_CODEWORD_QUOTIENT=REFUTED
+  F97 displayed scalar-to-codeword matching is 29 < 36;
+  at P1 one decoded zero polynomial carries 480946860 labels.
+VERDICT_ZERO_OVERLAP_GUARD=TOO_NARROW
+  F97 has |zero(u1)|=16 while 2T-n is only 2 (bad) or 4 (predecessor).
+VERDICT_FOUR_PENCIL_TWO_FRESH_GUARD=SURVIVES
+  exact P1 guarded cap is 961893720 < 1073741824 (slack 111848104).
+OPEN_EXTRACTION=prove every over-budget P1 predecessor family is covered
+  by at most four affine decoded-codeword pencils with the two-fresh guard.
