@@ -50955,3 +50955,37 @@ realizability, `MCAThresholdLedger` BGK lower bound. CORE OPEN / ON-BGK.
 ## [466-G173-primitive-transfer-threshold-refuted] `p > n^4` does not transfer primitive dyadic relations to characteristic zero (2026-07-11)
 
 The G105 primitive-depth probe's zero cells at `n=12,16,20` do not imply a field-size transfer theorem. At the exact dyadic cell `n=64`, `p=17318209>64^4`, the primitive 64-th root `omega=7937154` satisfies `omega^52+omega^57=omega^58+1`. The normalized point lies in G136's `accidents(mu_64)` and outside all lawful Mann families, kernel-checked in `_G173PrimitiveTransferThresholdRefuted.lean`. This is the existing wf-S7 signed weight-four resultant witness in literal G136 coordinates; its Galois closure has 1024 configurations in 32 full orbits. FS16 explains the binding scale: excluding every signed weight-L relation by size needs the exponential norm threshold `p>L^(n/2)`, not polynomial `p>n^4`; the production `p=n^(~5.27)` is far below it. The exact audit still finds zero primitive depth-four subgroup collisions at production-exponent toy cells n=16,32,64 (random controls 0,7,51), so that local suppression is real but rung-specific and nonbinding. Correct frontier: prime-specific accident/nondivisibility certificates at low rungs, weighted primitive kernel mass/BGK at depth. CORE open. Full note: `docs/kb/deltastar-466-g173-primitive-transfer-threshold-refuted-2026-07-11.md`.
+
+## [466-SYZ52-second-syzygy-interior-closure] The balanced-interior `ι≤1` residual is EXACTLY the second-syzygy bound `δ₂ ≤ ⌈S/2⌉+1` — calibrated consumer closing the 62.3% interior SYZ47's `max`-floor cannot reach (2026-07-11)
+
+`_SYZ52SecondSyzygyInteriorClosure.lean` (pure `ℕ`, axiom-clean, consumes only SYZ44's degree-sum
+law) closes the open balanced-interior half of `ι≤1` at rate 1/2 — CONDITIONAL on the second
+μ-basis generator degree bound.
+
+SYZ47's imbalance floor `δ₁ ≥ max(a,b,c)` discharges `ι≤1` only on the UNBALANCED strip
+(`imbalance_le_one_of_max_near_edge`, ≈37.7% of band triples). In the balanced interior
+(`a≈b≈c≈S/3`, ≈62.3%) it degrades to `ι ≤ ⌊S/2⌋−⌊S/3⌋ ≈ S/6` — vacuous. The referee probe
+(`fable_syz47_interior.py`, 4800 balanced triples, p∈{61,101,257}, budgets {5,7,9,11}) measured
+`ι>1` NEVER occurs: the interior obeys a SYMMETRIC floor the two-term collapse structurally cannot
+see (it discharges one slot then counts two degrees → `max`-type by construction).
+
+Landed theorems (`[propext, Quot.sound]`, iff adds `Classical.choice`):
+- `imbalance_le_one_of_second_le (a b c δ₁ δ₂) (hsum: δ₁+δ₂=a+b+c)(hle: δ₁≤δ₂)(hsecond: δ₂ ≤ (a+b+c+1)/2+1): SYZ45.imbalance a b c δ₁ ≤ 1`
+  — the calibrated consumer: `δ₂ ≤ ⌈S/2⌉+1` ⟹ `ι≤1` on the FULL interior, NO `max`-hypothesis.
+- `second_le_iff_imbalance_le_one` — EXACT calibration: under the degree-sum law with `δ₁≤δ₂`,
+  `δ₂ ≤ ⌈S/2⌉+1 ⟺ ι≤1`. So the second-syzygy bound is not lossy; it IS the target. The interior
+  residual is now pinned to one `δ₂` inequality provably equivalent to `ι≤1`.
+- `symmetric_floor_of_second_le` — the tight `ℕ` floor `δ₁ ≥ ⌊S/2⌋−1` (referee's `⌈S/2⌉−1` is loose
+  for odd S: there `⌊S/2⌋<⌈S/2⌉` so `ι=⌊S/2⌋−δ₁≤1` can hold below `⌈S/2⌉−1`; the tight floor uses
+  ⌊·⌋; verified by exhaustive `ℕ` check S≤120).
+- `imbalance_le_one_of_second_le_of_hilbert` — packaged from SYZ44 `RankNullity`+`TwoRamp`.
+
+Mechanism: `δ₁+δ₂=S` (SYZ44 `degree_sum_of_hilbert`) + `δ₂ ≤ ⌈S/2⌉+1` gives
+`δ₁ = S−δ₂ ≥ ⌊S/2⌋−1`, hence `ι = ⌊S/2⌋−δ₁ ≤ 1`.
+
+SCOPE HONESTY: this closes the COMBINATORIAL half — `ι≤1` conditional on `δ₂ ≤ ⌈S/2⌉+1`. It does NOT
+prove that `δ₂` bound (remaining Hilbert–Burch/commutative-algebra content, assigned by SYZ47 kb to
+G56/Opus-core). `ι≤1` only closes SYZ44 `uniformSylvester` at rate 1/2; production δ* still needs
+SYZ18 supports, `hrank` realizability, strip-radius transport, MCAThresholdLedger BGK lower bound.
+NEW content = the EXACT calibration: the whole interior residual is now one equivalent `δ₂`
+inequality. CORE remains OPEN / ON-BGK.

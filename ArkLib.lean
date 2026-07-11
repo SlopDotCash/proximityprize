@@ -3382,6 +3382,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ49CyclotomicGcd
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ50WitnessRealizability
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ51AssemblyBypass
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ52SecondSyzygyInteriorClosure
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
