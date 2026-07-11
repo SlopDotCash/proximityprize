@@ -1,0 +1,37 @@
+## ANT46 exact signature quotient: small-prime falsification census
+scan: dyadic n=(4, 8, 16, 32, 64, 128), primes p <= 500000, p == 1 (mod n)
+n=  4: eligible=20731, bad=  1, max_count=    4, primes=[5]
+  first witness p=5, count=4: kappa=1, (x,y,h;c)=(2,4,2;3)
+  last witness p=5, count=4: kappa=1, (x,y,h;c)=(2,4,2;3)
+n=  8: eligible=10334, bad=  2, max_count=   12, primes=[17, 41]
+  first witness p=17, count=12: kappa=1, (x,y,h;c)=(9,16,13;4)
+  last witness p=41, count=4: kappa=10, (x,y,h;c)=(3,40,40;1)
+n= 16: eligible=5169, bad=  6, max_count=  196, primes=[17, 97, 113, 193, 257, 337]
+  first witness p=17, count=196: kappa=1, (x,y,h;c)=(3,9,13;15)
+  last witness p=337, count=12: kappa=158, (x,y,h;c)=(297,336,189;148)
+n= 32: eligible=2594, bad= 36, max_count=  264, primes=[97, 193, 257, 353, 449, 577, 641, 673, 929, 1153, 1217, 1249] ... [51137, 65537, 68449, 156353, 194977]
+  first witness p=97, count=264: kappa=1, (x,y,h;c)=(28,64,42;69)
+  last witness p=194977, count=12: kappa=13940, (x,y,h;c)=(156796,194976,19091;175886)
+n= 64: eligible=1285, bad=114, max_count= 1216, primes=[193, 257, 449, 577, 641, 769, 1153, 1217, 1409, 1601, 2113, 2689] ... [421633, 449153, 455809, 475649, 499649]
+  first witness p=193, count=1216: kappa=1, (x,y,h;c)=(125,185,72;3)
+  last witness p=499649, count=24: kappa=66329, (x,y,h;c)=(495836,201835,490638;486824)
+n=128: eligible= 638, bad=250, max_count= 7812, primes=[257, 641, 769, 1153, 1409, 2689, 3329, 3457, 4481, 4993, 6529, 7297] ... [474497, 475649, 481409, 484609, 492673]
+  first witness p=257, count=7812: kappa=1, (x,y,h;c)=(9,136,21;29)
+  last witness p=492673, count=24: kappa=63684, (x,y,h;c)=(346132,337523,166899;20357)
+cross-check: direct O(n^2) enumeration matched fibre formula at 409 bad cells
+
+## Naive statements falsified
+'all dyadic root subgroups are clean': false; first bad primes={4: 5, 8: 17, 16: 17, 32: 97, 64: 193, 128: 257}
+'p > n^3 implies clean': false at n=32; witnesses=[(32993, 24), (37217, 12), (50177, 12), (51137, 12), (65537, 12), (68449, 12), (156353, 12), (194977, 12)]
+'every nonempty accident set has size divisible by 12' without the -3 exclusion: false; exceptional cells begin [(4, 5, 4), (8, 41, 4), (16, 17, 196), (16, 193, 4), (32, 193, 112), (64, 193, 1216)]
+all scanned cells with -3 outside H and an accident had count divisible by 12
+
+## n=8 canonical quotient polynomial
+K8(T)=T^3+120*T^2-2160*T-256 verified on every scanned order-8 subgroup
+Disc(K8)=110457520128, factorization=[(2, 19), (3, 6), (17, 2)]
+K8(2^8)=24088320, factorization=[(2, 8), (3, 3), (5, 1), (17, 1), (41, 1)]
+relevant factors ==1 mod 8 are exactly [17, 41], exactly the bad-prime census
+
+VERDICT: exact quotient and fibre-count identities pass; universal cleanliness and
+cubic-size shortcuts are refuted.  Production needs a prime-specific canonical
+K_n discriminant/evaluation certificate or genuinely stronger arithmetic input.

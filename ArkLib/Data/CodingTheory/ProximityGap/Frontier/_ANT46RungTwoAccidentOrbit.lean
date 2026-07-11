@@ -49,7 +49,7 @@ partition into 12- or 24-element packets and their total number is divisible by 
 
 set_option autoImplicit false
 set_option maxRecDepth 100000
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 2100
 
 namespace ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit
 
@@ -1502,6 +1502,21 @@ theorem twelve_dvd_card_accidents_of_no_triple
       (signed_ne_zero_of_mem_accidents h0 hx) h2 (mem_accidents_iff.mp hx).2.2.2
       (htriple x hx)
 
+/-- Under the same hypotheses, every nonempty supported accident set contains at least twelve
+elements.  Thus any independent upper bound `≤ 11` is already an accident-freeness certificate. -/
+theorem twelve_le_card_accidents_of_nonempty_of_no_triple
+    {H : Finset F}
+    (hneg : ∀ z ∈ H, -z ∈ H)
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H) (h2 : (2 : F) ≠ 0)
+    (htriple : ∀ x ∈ accidents H, ¬ HasTripleEqualSigned x)
+    (hne : (accidents H).Nonempty) : 12 ≤ (accidents H).card := by
+  have hdvd := twelve_dvd_card_accidents_of_no_triple hneg hmul hinv h0 h2 htriple
+  obtain ⟨k, hk⟩ := hdvd
+  have hpos : 0 < (accidents H).card := Finset.card_pos.mpr hne
+  omega
+
 /-- At the first certified production prime, every supported accident set has cardinality
 divisible by `12` as soon as all support elements are `2^30`-th roots of unity. -/
 theorem firstPrime_twelve_dvd_card_accidents {H : Finset (ZMod P)}
@@ -1535,6 +1550,294 @@ theorem secondPrime_twelve_dvd_card_accidents
     norm_num [ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] at hdvd
   · intro x hx
     exact secondPrime_no_tripleEqual_accident hneg hmul hinv h0 hpow hx
+
+/-! ## Exact quotient by a cyclotomic-unit signature
+
+For an `n`-th root of unity `x`, put `κ(x) = (x - 1)^n`.  Equality `κ(x) = κ(y)`
+means that `(x - 1) / (y - 1)` is again an `n`-th root.  The diagonal collision `y = x`
+and inversion collision `y = x⁻¹` are precisely the two lawful degeneracies.  Thus the
+remaining arithmetic residual is injectivity of `κ` on nontrivial roots modulo inversion.
+-/
+
+/-- The cyclotomic-unit signature used to quotient normalized additive-energy accidents. -/
+def differenceSignature (n : ℕ) (x : F) : F := (x - 1) ^ n
+
+/-- A nontrivial collision before taking `n`-th powers.  The multiplier `h` records
+`x - 1 = h * (y - 1)`; the two excluded values of `y` are exactly the lawful strata. -/
+def IsNontrivialDifferenceCollision (H : Finset F) (x y h : F) : Prop :=
+  x ∈ H ∧ y ∈ H ∧ h ∈ H ∧ x ≠ 1 ∧ y ≠ 1 ∧ y ≠ x ∧ y ≠ x⁻¹ ∧
+    x - 1 = h * (y - 1)
+
+/-- A nontrivial difference collision produces the normalized triple `(x,h,hy)`. -/
+theorem mem_accidents_of_nontrivialDifferenceCollision
+    {H : Finset F} {x y h : F}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hcol : IsNontrivialDifferenceCollision H x y h) :
+    (⟨x, h, h * y⟩ : Triple F) ∈ accidents H := by
+  rcases hcol with ⟨hxH, hyH, hhH, hx1, _hy1, hyx, hyinv, hrel⟩
+  rw [mem_accidents_iff]
+  refine ⟨hxH, hhH, hmul _ hhH _ hyH, ?_⟩
+  constructor
+  · unfold IsSolution
+    dsimp
+    linear_combination hrel
+  · intro hlaw
+    rcases hlaw with hxone | hhone | ⟨hhy, hhneg⟩
+    · exact hx1 (by simpa using hxone)
+    · change h = 1 at hhone
+      apply hyx
+      rw [hhone] at hrel
+      linear_combination -hrel
+    · apply hyinv
+      change h * y = -1 at hhy
+      change h = -x at hhneg
+      have hxy : x * y = 1 := by
+        rw [hhneg] at hhy
+        have := congrArg Neg.neg hhy
+        simpa using this
+      exact eq_inv_of_mul_eq_one_right hxy
+
+/-- Every supported accident gives a nontrivial difference collision, with
+`y = c / b` and collision multiplier `h = b`. -/
+theorem nontrivialDifferenceCollision_of_mem_accidents
+    {H : Finset F} {t : Triple F}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H)
+    (ht : t ∈ accidents H) :
+    IsNontrivialDifferenceCollision H t.a (t.c / t.b) t.b := by
+  rw [mem_accidents_iff] at ht
+  rcases ht with ⟨haH, hbH, hcH, hsol, hnlaw⟩
+  have ha1 : t.a ≠ 1 := fun h => hnlaw (Or.inl h)
+  have hb1 : t.b ≠ 1 := fun h => hnlaw (Or.inr (Or.inl h))
+  have ha0 : t.a ≠ 0 := fun h => h0 (h ▸ haH)
+  have hb0 : t.b ≠ 0 := fun h => h0 (h ▸ hbH)
+  refine ⟨haH, ?_, hbH, ha1, ?_, ?_, ?_, ?_⟩
+  · simpa [div_eq_mul_inv] using hmul _ hcH _ (hinv _ hbH)
+  · intro hy1
+    have hcb : t.c = t.b := by
+      have h := (div_eq_iff hb0).mp hy1
+      simpa using h
+    apply hnlaw
+    left
+    unfold IsSolution at hsol
+    rw [hcb] at hsol
+    linear_combination hsol
+  · intro hya
+    have hc : t.c = t.a * t.b := (div_eq_iff hb0).mp hya
+    have hprod : (t.a - 1) * (t.b - 1) = 0 := by
+      unfold IsSolution at hsol
+      rw [hc] at hsol
+      linear_combination -hsol
+    rcases mul_eq_zero.mp hprod with ha | hb
+    · exact ha1 (sub_eq_zero.mp ha)
+    · exact hb1 (sub_eq_zero.mp hb)
+  · intro hyinv
+    have hc : t.c = t.a⁻¹ * t.b := (div_eq_iff hb0).mp hyinv
+    have hprod : (t.a - 1) * (t.a + t.b) = 0 := by
+      unfold IsSolution at hsol
+      rw [hc] at hsol
+      field_simp [ha0] at hsol
+      linear_combination hsol
+    rcases mul_eq_zero.mp hprod with ha | hab
+    · exact ha1 (sub_eq_zero.mp ha)
+    · apply hnlaw
+      right; right
+      have hbneg : t.b = -t.a := by linear_combination hab
+      constructor
+      · rw [hc, hbneg]
+        field_simp [ha0]
+      · exact hbneg
+  · calc
+      t.a - 1 = t.c - t.b := by
+        unfold IsSolution at hsol
+        linear_combination hsol
+      _ = t.b * (t.c / t.b - 1) := by field_simp [hb0]
+
+/-- Taking `n`-th powers forgets the collision multiplier when every support element is an
+`n`-th root of unity. -/
+theorem differenceSignature_eq_of_nontrivialDifferenceCollision
+    {H : Finset F} {n : ℕ} {x y h : F}
+    (hpow : ∀ z ∈ H, z ^ n = 1)
+    (hcol : IsNontrivialDifferenceCollision H x y h) :
+    differenceSignature n x = differenceSignature n y := by
+  rcases hcol with ⟨_, _, hhH, _, _, _, _, hrel⟩
+  rw [differenceSignature, differenceSignature, hrel, mul_pow, hpow h hhH, one_mul]
+
+/-- The exact small residual: the signature is injective after identifying `x` with `x⁻¹`. -/
+def DifferenceSignatureInjectiveModInversion (H : Finset F) (n : ℕ) : Prop :=
+  ∀ x ∈ H, x ≠ 1 → ∀ y ∈ H, y ≠ 1 →
+    differenceSignature n x = differenceSignature n y → y = x ∨ y = x⁻¹
+
+/-- Signature injectivity modulo inversion is an accident-freeness certificate. -/
+theorem accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+    {H : Finset F} {n : ℕ}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ n = 1)
+    (hinjective : DifferenceSignatureInjectiveModInversion H n) :
+    accidents H = ∅ := by
+  apply Finset.eq_empty_iff_forall_notMem.mpr
+  intro t ht
+  let y := t.c / t.b
+  let h := t.b
+  have hcol : IsNontrivialDifferenceCollision H t.a y h :=
+    nontrivialDifferenceCollision_of_mem_accidents hmul hinv h0 ht
+  rcases hcol with ⟨haH, hyH, hhH, ha1, hy1, hyx, hyinv, hrel⟩
+  have hsig : differenceSignature n t.a = differenceSignature n y :=
+    differenceSignature_eq_of_nontrivialDifferenceCollision hpow
+      ⟨haH, hyH, hhH, ha1, hy1, hyx, hyinv, hrel⟩
+  rcases hinjective t.a haH ha1 y hyH hy1 hsig with h | h
+  · exact hyx h
+  · exact hyinv h
+
+/-- First-prime production socket: only signature injectivity modulo inversion remains. -/
+theorem firstPrime_accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+    {H : Finset (ZMod P)}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : ZMod P) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1)
+    (hinjective : DifferenceSignatureInjectiveModInversion H (2 ^ 30)) :
+    accidents H = ∅ :=
+  accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+    hmul hinv h0 hpow hinjective
+
+/-- Second-prime production socket: only signature injectivity modulo inversion remains. -/
+theorem secondPrime_accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+    {H : Finset (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ (2 ^ 30 : ℕ) = 1)
+    (hinjective : DifferenceSignatureInjectiveModInversion H (2 ^ 30)) :
+    accidents H = ∅ :=
+  accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+    hmul hinv h0 hpow hinjective
+
+/-- Conversely, if `H` contains every `n`-th root, then an exceptional signature collision
+would itself construct an accident. -/
+theorem differenceSignatureInjectiveModInversion_of_accidents_eq_empty
+    {H : Finset F} {n : ℕ}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hcomplete : ∀ z : F, z ^ n = 1 → z ∈ H)
+    (hempty : accidents H = ∅) :
+    DifferenceSignatureInjectiveModInversion H n := by
+  intro x hxH hx1 y hyH hy1 hsig
+  by_contra hnontrivial
+  push_neg at hnontrivial
+  rcases hnontrivial with ⟨hyx, hyinv⟩
+  have hySub : y - 1 ≠ 0 := sub_ne_zero.mpr hy1
+  let h : F := (x - 1) / (y - 1)
+  have hhpow : h ^ n = 1 := by
+    change (x - 1) ^ n = (y - 1) ^ n at hsig
+    dsimp [h]
+    rw [div_pow, hsig, div_self (pow_ne_zero n hySub)]
+  have hhH : h ∈ H := hcomplete h hhpow
+  have hrel : x - 1 = h * (y - 1) := by
+    dsimp [h]
+    exact (div_mul_cancel₀ _ hySub).symm
+  have hcol : IsNontrivialDifferenceCollision H x y h :=
+    ⟨hxH, hyH, hhH, hx1, hy1, hyx, hyinv, hrel⟩
+  have hacc := mem_accidents_of_nontrivialDifferenceCollision hmul hcol
+  rw [hempty] at hacc
+  simp at hacc
+
+/-- Exact quotient theorem for a support which is precisely the set of `n`-th roots. -/
+theorem accidents_eq_empty_iff_differenceSignatureInjectiveModInversion
+    {H : Finset F} {n : ℕ}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ n = 1)
+    (hcomplete : ∀ z : F, z ^ n = 1 → z ∈ H) :
+    accidents H = ∅ ↔ DifferenceSignatureInjectiveModInversion H n := by
+  constructor
+  · exact differenceSignatureInjectiveModInversion_of_accidents_eq_empty hmul hcomplete
+  · exact accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+      hmul hinv h0 hpow
+
+/-- Ordered exceptional signature collisions.  Removing the diagonal and inversion graph makes
+this Finset have exactly the same cardinality as the normalized accident Finset. -/
+noncomputable def differenceCollisionPairs (H : Finset F) (n : ℕ) : Finset (F × F) :=
+  ((H.erase 1) ×ˢ (H.erase 1)).filter fun q =>
+    differenceSignature n q.1 = differenceSignature n q.2 ∧
+      q.2 ≠ q.1 ∧ q.2 ≠ q.1⁻¹
+
+/-- Exact cardinality form of the signature quotient.  In a signature fibre of size `k`, the
+right-hand side contributes `k² - 2k + s`, where `s` records whether the fibre contains `-1`.
+This reduces accident counting from supported triples to ordered pairs in signature fibres. -/
+theorem card_accidents_eq_card_differenceCollisionPairs
+    {H : Finset F} {n : ℕ}
+    (hmul : ∀ z ∈ H, ∀ w ∈ H, z * w ∈ H)
+    (hinv : ∀ z ∈ H, z⁻¹ ∈ H)
+    (h0 : (0 : F) ∉ H)
+    (hpow : ∀ z ∈ H, z ^ n = 1)
+    (hcomplete : ∀ z : F, z ^ n = 1 → z ∈ H) :
+    (accidents H).card = (differenceCollisionPairs H n).card := by
+  classical
+  apply Finset.card_bij (fun t _ => (t.a, t.c / t.b))
+  · intro t ht
+    have hcol := nontrivialDifferenceCollision_of_mem_accidents hmul hinv h0 ht
+    rcases hcol with ⟨haH, hyH, hbH, ha1, hy1, hyx, hyinv, hrel⟩
+    rw [differenceCollisionPairs, Finset.mem_filter]
+    refine ⟨Finset.mem_product.mpr ⟨Finset.mem_erase.mpr ⟨ha1, haH⟩,
+      Finset.mem_erase.mpr ⟨hy1, hyH⟩⟩, ?_⟩
+    exact ⟨differenceSignature_eq_of_nontrivialDifferenceCollision hpow
+      ⟨haH, hyH, hbH, ha1, hy1, hyx, hyinv, hrel⟩, hyx, hyinv⟩
+  · intro t ht u hu hpair
+    have htcol := nontrivialDifferenceCollision_of_mem_accidents hmul hinv h0 ht
+    have hucol := nontrivialDifferenceCollision_of_mem_accidents hmul hinv h0 hu
+    rcases htcol with ⟨_, _, _, _, hty1, _, _, htrel⟩
+    rcases hucol with ⟨_, _, _, _, _huy1, _, _, hurel⟩
+    have ha : t.a = u.a := congrArg Prod.fst hpair
+    have hy : t.c / t.b = u.c / u.b := congrArg Prod.snd hpair
+    have hySub : t.c / t.b - 1 ≠ 0 := sub_ne_zero.mpr hty1
+    have hmulEq :
+        t.b * (t.c / t.b - 1) = u.b * (t.c / t.b - 1) := by
+      calc
+        t.b * (t.c / t.b - 1) = t.a - 1 := htrel.symm
+        _ = u.a - 1 := congrArg (fun z => z - 1) ha
+        _ = u.b * (u.c / u.b - 1) := hurel
+        _ = u.b * (t.c / t.b - 1) := by rw [hy]
+    have hb : t.b = u.b := mul_right_cancel₀ hySub hmulEq
+    have htSol : IsSolution t := (mem_accidents_iff.mp ht).2.2.2.1
+    have huSol : IsSolution u := (mem_accidents_iff.mp hu).2.2.2.1
+    have hc : t.c = u.c := by
+      unfold IsSolution at htSol huSol
+      calc
+        t.c = t.a + t.b - 1 := by linear_combination -htSol
+        _ = u.a + u.b - 1 := by rw [ha, hb]
+        _ = u.c := by linear_combination huSol
+    exact Triple.ext' ha hb hc
+  · rintro ⟨x, y⟩ hxy
+    rw [differenceCollisionPairs, Finset.mem_filter] at hxy
+    rcases hxy with ⟨hsupport, hsig, hyx, hyinv⟩
+    rcases Finset.mem_product.mp hsupport with ⟨hxErase, hyErase⟩
+    rcases Finset.mem_erase.mp hxErase with ⟨hx1, hxH⟩
+    rcases Finset.mem_erase.mp hyErase with ⟨hy1, hyH⟩
+    have hySub : y - 1 ≠ 0 := sub_ne_zero.mpr hy1
+    let h : F := (x - 1) / (y - 1)
+    have hhpow : h ^ n = 1 := by
+      change (x - 1) ^ n = (y - 1) ^ n at hsig
+      dsimp [h]
+      rw [div_pow, hsig, div_self (pow_ne_zero n hySub)]
+    have hhH : h ∈ H := hcomplete h hhpow
+    have hrel : x - 1 = h * (y - 1) := by
+      dsimp [h]
+      exact (div_mul_cancel₀ _ hySub).symm
+    have hcol : IsNontrivialDifferenceCollision H x y h :=
+      ⟨hxH, hyH, hhH, hx1, hy1, hyx, hyinv, hrel⟩
+    let t : Triple F := ⟨x, h, h * y⟩
+    have ht : t ∈ accidents H :=
+      mem_accidents_of_nontrivialDifferenceCollision hmul hcol
+    refine ⟨t, ht, ?_⟩
+    have hh0 : h ≠ 0 := fun hz => h0 (hz ▸ hhH)
+    apply Prod.ext
+    · rfl
+    · dsimp [t]
+      field_simp [hh0]
 
 /-! ## Product adapter for the G136 representation -/
 
@@ -1613,3 +1916,8 @@ end ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit
 #print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.twelve_dvd_card_of_projective_packets
 #print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.firstPrime_twelve_dvd_card_accidents
 #print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.secondPrime_twelve_dvd_card_accidents
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.twelve_le_card_accidents_of_nonempty_of_no_triple
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.accidents_eq_empty_iff_differenceSignatureInjectiveModInversion
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.firstPrime_accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.secondPrime_accidents_eq_empty_of_differenceSignatureInjectiveModInversion
+#print axioms ArkLib.ProximityGap.Frontier.ANT46RungTwoAccidentOrbit.card_accidents_eq_card_differenceCollisionPairs

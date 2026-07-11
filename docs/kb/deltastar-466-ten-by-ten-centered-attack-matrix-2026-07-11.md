@@ -184,9 +184,9 @@ that the bad component contracts when one adjoins square roots.
 | sub-angle | status | exact attack / falsifier |
 |---|---|---|
 | DQR-1 subgroup tower | **THEOREM** | `G_j` is the square image of `G_{j+1}` and `G_{j+1}=G_j union aG_j`. |
-| DQR-2 period two-scale equation | **ACTIVE** | Express each `G_{j+1}` period as the sum of two `G_j`-coset periods with an explicit relative phase. |
-| DQR-3 centered-energy recursion | **ACTIVE** | Derive an exact recursion for `qE_7(G_{j+1})-|G_{j+1}|^14`, splitting within- and cross-coset terms. |
-| DQR-4 contraction coefficient | **ACTIVE** | Prove cross-coset terms cancel a fixed fraction of the doubled within-coset excess. Any coefficient >=1 at a small prime falsifies uniform contraction. |
+| DQR-2 period two-scale equation | **THEOREM** | `_DQR23TwoScaleCenteredRecursion` proves `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)` and realness under `-1 in G`. |
+| DQR-3 centered-energy recursion | **THEOREM ledger** | The same file expands the off-zero fourteenth moment into all 15 signed binomial cross moments, without absolute-value loss. |
+| DQR-4 contraction coefficient | **ACTIVE / quadratic shortcut refuted** | Sibling cross-correlation is exactly `-n^2`, but `_DQRSecondMomentAnticorrelationNoGo` gives a mean-zero, negatively correlated paired array whose 14th moment expands far beyond `2^7`. Higher mixed structure is mandatory. |
 | DQR-5 Hasse--Davenport lift | **INSUFFICIENT as currently used** | Known product identities reduce some phase degrees of freedom but stop with a linear-size residual. |
 | DQR-6 renormalized Jacobi cocycle | **ACTIVE** | Track AJT normalized Jacobi phases under `K_j -> K_{j+1}` and look for a martingale-difference law. |
 | DQR-7 exceptional-level budget | **ACTIVE** | Permit finitely many expanding levels, provided the product of level constants through 30 stays below the exact coefficient budget. |

@@ -709,6 +709,15 @@ reuse coordinates.  The new kernel isolates exactly what such reuse means.
   new core petal.  The isolated-anchor branch therefore yields a certified
   three-line core-growth chain with disjoint increments
   `327272221`, `140942233`, and `5164920`.
+
+- Exact line packing has now been fused into this chain.  Each of the second
+  and third lines either reaches the three-point high-core floor `352321537`
+  or contains exactly two selected points.  Hence the isolated-anchor branch
+  terminates in a genuine high-core jump, or produces three pairwise-distinct
+  isolated secants with the certified disjoint increments above.  This is the
+  next recursion interface: high-core machinery handles the first outcome;
+  another reduced-universe pass can continue from the three-isolated-line
+  outcome.
   The cross-label information discarded by the binary abstraction is now
   retained explicitly.  Writing
   `E(x)=u₀(x)+γ₀u₁(x)−p₀(x)`, a coordinate labelled `γ` in one pencil and `δ`

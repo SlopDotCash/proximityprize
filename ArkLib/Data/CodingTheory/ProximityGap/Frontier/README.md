@@ -75,6 +75,14 @@ equivalent dual-coordinate target, not an independent orthogonality saving.
 (`13!!=135135`) absorbs the `1/m` translation inside the public coefficient `2^18` whenever
 `m>=21`; the principal-character boundary is no longer a separate Wick-scale residual.
 
+**Dyadic two-scale recursion (2026-07-11).** `_DQR23TwoScaleCenteredRecursion.lean` proves the
+exact sibling law `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)`, the full signed binomial ledger at
+moment 14, and the quadratic anticorrelation `sum_(b != 0) eta_G(b)eta_G(ba)=-|G|^2`.
+`_DQRSecondMomentAnticorrelationNoGo.lean` shows why the last identity is not yet a contraction:
+a rational mean-zero sibling array can have negative cross-correlation while its coarse
+fourteenth moment grows far beyond the Gaussian factor `2^7`. The live DQR residual is therefore
+a higher mixed-moment sign law, not a second-moment estimate.
+
 **Projective accident packets (2026-07-11).**  `_ANT46RungTwoAccidentOrbit.lean` now closes the
 full projective `S₄` classifier.  For an odd-characteristic accident the identity fibre has size
 `1`, `2`, or `6`; the two-pair pattern is lawful, and the certified production `-3` exclusion

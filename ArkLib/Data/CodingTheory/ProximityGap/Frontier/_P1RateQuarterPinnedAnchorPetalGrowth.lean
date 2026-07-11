@@ -451,21 +451,20 @@ theorem relevantLine_core_ge_352321537_or_card_eq_two
       (pointsOn family line).card = 2 := by
   by_cases hthree : 3 ≤ (pointsOn family line).card
   · left
-    let z := (jointCore dom (u 0) (u 1) line.1 line.2).card
-    let L := (pointsOn family line).card
     have hpack := pointsOn_card_mul_max_add_core_le family hline
     simp only [Fintype.card_fin] at hpack
-    change L * max 1
-        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) + z ≤ N at hpack
-    have hfactor : T - z ≤ max 1
-        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
-      (Nat.sub_le_sub_right hthreshold z).trans (le_max_right _ _)
-    have hmul : 3 * (T - z) ≤
-        L * max 1
-          (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+    have hfactor : T - (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ max 1
+        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+          (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
+      (Nat.sub_le_sub_right hthreshold _).trans (le_max_right _ _)
+    have hmul : 3 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) ≤
+        (pointsOn family line).card * max 1
+          (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+            (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
       Nat.mul_le_mul hthree hfactor
-    have hbase : 3 * (T - z) + z ≤ N :=
-      (Nat.add_le_add_right hmul z).trans hpack
+    have hbase : 3 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
+        (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N :=
+      (Nat.add_le_add_right hmul _).trans hpack
     norm_num [T, N] at hbase ⊢
     omega
   · right
@@ -508,6 +507,139 @@ theorem exists_thirdLine_with_highCore_or_isolated_branches
     relevantLine_core_ge_352321537_or_card_eq_two family hthreshold hline2,
     relevantLine_core_ge_352321537_or_card_eq_two family hthreshold hline3⟩
 
+/-! ## High-core branch increment and three-core barrier -/
+
+/-- Three independent line-core root caps exhaust the threshold before any
+positive fourth fresh floor is obtained by naive subtraction. -/
+theorem naive_threeCore_fresh_floor_eq_zero : T - 3 * (k - 1) = 0 := by
+  norm_num [T, k]
+
+/-- A line at the three-point core floor carrying at most three selected points
+forces a stronger P1 outsider petal of size `145,836,060`. -/
+theorem exists_highCore_outside_secantPetal_card_ge_145836060
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (hthreshold : T ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hcore : 352321537 ≤
+      (jointCore dom (u 0) (u 1) line.1 line.2).card)
+    (hthree : (pointsOn family line).card ≤ 3) :
+    ∃ gamma ∈ outsideLine family line,
+      ∃ beta ∈ outsideLine family line, gamma ≠ beta ∧
+        145836060 ≤ (secantPetal family line gamma beta).card := by
+  classical
+  let D := jointCore dom (u 0) (u 1) line.1 line.2
+  let V : Finset (Fin N) := Finset.univ \ D
+  let K := {gamma // gamma ∈ outsideLine family line}
+  let A : K → Finset (Fin N) := fun gamma =>
+    fullAgreement dom (u 0) (u 1) gamma.1 (family.q gamma.1) \ D
+  have hVcard : V.card = N - D.card := by
+    simp only [V, Finset.card_sdiff, Finset.inter_univ,
+      Finset.card_univ, Fintype.card_fin]
+  have hVle : V.card ≤ 721420287 := by
+    rw [hVcard]
+    change 352321537 ≤ D.card at hcore
+    have hN : N = 1073741824 := by norm_num [N]
+    omega
+  have hAsub : ∀ gamma : K, A gamma ⊆ V := by
+    intro gamma x hx
+    exact Finset.mem_sdiff.mpr
+      ⟨Finset.mem_univ _, (Finset.mem_sdiff.mp hx).2⟩
+  have hAsize : ∀ gamma : K, 324359511 ≤ (A gamma).card := by
+    intro gamma
+    have hfresh := threshold_sub_pred_le_fresh_card
+      family line (by norm_num [k]) hline gamma.2
+    have hmono : T - (k - 1) ≤
+        ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - (k - 1) :=
+      Nat.sub_le_sub_right hthreshold (k - 1)
+    have hTk : T - (k - 1) = 324359511 := by norm_num [T, k]
+    rw [hTk] at hmono
+    exact hmono.trans (by simpa only [A, D] using hfresh)
+  by_contra hnot
+  push_neg at hnot
+  have hpair : Pairwise fun gamma beta : K =>
+      (A gamma ∩ A beta).card ≤ 145836059 := by
+    intro gamma beta hne
+    have hvalue : gamma.1 ≠ beta.1 := fun heq => hne (Subtype.ext heq)
+    rw [show A gamma ∩ A beta = secantPetal family line gamma.1 beta.1 by
+      simpa only [A, D] using fresh_inter_eq_secantPetal
+        family line
+          ((mem_outsideLine_iff family line gamma.1).mp gamma.2).1
+          ((mem_outsideLine_iff family line beta.1).mp beta.2).1 hvalue]
+    have hlt := hnot gamma.1 gamma.2 beta.1 beta.2 hvalue
+    omega
+  have hbudget : V.card * 145836059 ≤ 324359511 ^ 2 - 1 := by
+    have harith : 721420287 * 145836059 ≤ 324359511 ^ 2 - 1 := by norm_num
+    exact (Nat.mul_le_mul_right 145836059 hVle).trans harith
+  have houtside := card_le_finset_of_card_ge_pair_inter_le
+    V A 324359511 145836059 (by norm_num) hAsub hAsize hpair hbudget
+  simp only [K, Fintype.card_coe] at houtside
+  have hpartition := pointsOn_card_add_outsideLine_card family line
+  rw [hVcard] at houtside
+  have hD : 352321537 ≤ D.card := hcore
+  have hN : N = 1073741824 := by norm_num [N]
+  omega
+
+/-- Four-point packing split, local to this independent lane. -/
+theorem relevantLine_core_ge_432479347_or_card_le_three
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hthreshold : T ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family) :
+    432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card ∨
+      (pointsOn family line).card ≤ 3 := by
+  by_cases hfour : 4 ≤ (pointsOn family line).card
+  · left
+    have hpack := pointsOn_card_mul_max_add_core_le family hline
+    simp only [Fintype.card_fin] at hpack
+    have hfactor : T - (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ max 1
+        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+          (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
+      (Nat.sub_le_sub_right hthreshold _).trans (le_max_right _ _)
+    have hmul : 4 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) ≤
+        (pointsOn family line).card * max 1
+          (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
+            (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
+      Nat.mul_le_mul hfour hfactor
+    have hbase : 4 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
+        (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N :=
+      (Nat.add_le_add_right hmul _).trans hpack
+    norm_num [T, N] at hbase ⊢
+    omega
+  · right
+    omega
+
+/-- **High-core continuation.**  A `352,321,537`-core in an over-budget P1
+family either jumps to the four-point floor `432,479,347`, or forces an
+outsider secant petal of size at least `145,836,060`. -/
+theorem core_ge_432479347_or_exists_petal_ge_145836060
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {dom : Fin N ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin N)}
+    (family : BadScalarRichPointFamily dom k delta u)
+    (hover : N < family.G.card)
+    (hthreshold : T ≤
+      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
+    {line : LineParameter F} (hline : line ∈ lineParameters family)
+    (hcore : 352321537 ≤
+      (jointCore dom (u 0) (u 1) line.1 line.2).card) :
+    432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card ∨
+      ∃ gamma ∈ outsideLine family line,
+        ∃ beta ∈ outsideLine family line, gamma ≠ beta ∧
+          145836060 ≤ (secantPetal family line gamma beta).card := by
+  rcases relevantLine_core_ge_432479347_or_card_le_three
+    family hthreshold hline with hhigh | hthree
+  · exact Or.inl hhigh
+  · exact Or.inr (exists_highCore_outside_secantPetal_card_ge_145836060
+      family hover hthreshold hline hcore hthree)
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterPinnedAnchorPetalGrowth
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPinnedAnchorPetalGrowth
@@ -523,3 +655,7 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterPinnedAnchorPetalGrowth
 #print axioms exists_third_distinctLine_with_newCorePetal_ge_5164920
 #print axioms relevantLine_core_ge_352321537_or_card_eq_two
 #print axioms exists_thirdLine_with_highCore_or_isolated_branches
+#print axioms naive_threeCore_fresh_floor_eq_zero
+#print axioms exists_highCore_outside_secantPetal_card_ge_145836060
+#print axioms relevantLine_core_ge_432479347_or_card_le_three
+#print axioms core_ge_432479347_or_exists_petal_ge_145836060
