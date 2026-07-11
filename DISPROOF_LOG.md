@@ -16395,3 +16395,48 @@ Executable certificate:
 (`scripts/probes/_out_466_r3_fulldftflat_scaling.txt`).
 Analysis:
 `docs/kb/deltastar-466-r3-fulldftflat-calibration-2026-07-11.md`.
+
+## [466-r3-sixth-moment-log-only-rung] the direct sixth-moment route is machine-checked CIRCULAR (∑‖Ŝ‖⁶ = m·triple-conv energy = the r=3 core); the two-input Hölder decomposition lands the LOG-ONLY rung: FullDFTFlatLog ∧ FourthMomentBound ⟹ E_DIST ≤ (3AK₄(1+log m) + 1215)·m³q³; K₆ measured FLAT at the Gaussian value ⇒ the core truth is an absolute constant ≈ 3·E|G|⁶ (2026-07-11)
+
+**Claim tested.** `SixthMomentBound K₆ : ∑_a‖Ŝ‖⁶ ≤ K₆m⁴q³` as a new input
+giving the absolute-C DIST rung outright; else the Hölder composition.
+
+**Verdict.** Direct route CIRCULAR (formalized:
+`sixthMoment_eq_tripleConv_energy`, generic: ∑_a‖f̂‖⁶ = N·∑_c‖f⋆f⋆f‖² — the
+"input" IS the core); composition LANDED as the best rung of the arc.
+
+**Landed (axiom-clean, general m = 3u').**
+* Circularity theorem + probe check (M3, machine precision).
+* `SixthMomentBound` as an explicitly-flagged INTERFACE Prop;
+  `sixthMomentBound_of_flatSq_and_fourth` (Hölder: sextic ≤ B·K₄ from
+  flatness budget B + quartic K₄); consumer
+  `distStratumEnergyBound_of_sixthMoment` (C = 3K₆ + 1215); headline
+  `distStratumEnergyBound_of_flatLog_and_fourthMoment`:
+  **E_DIST ≤ (3·A·K₄·(1+log m) + 1215)·m³·q³** — log-only loss, beating both
+  the R303 √m and the R305 log³ routes.
+* Downstream: R23→R27 consumers all take C as a free parameter (log-tolerant
+  formally); at fixed prize modulus (1+log m) is a concrete number
+  (log 2³⁰ ≈ 20.8) ⇒ composed constant O(10³).
+
+**Measurement (m ≤ 1200, decisive).** `K₆ = ∑‖Ŝ‖⁶/(m⁴q³)` saturates FLAT at
+4.7–5.4, tracking the complex-Gaussian value 6((m−2)/m)³ → 6 from below;
+simultaneously K₄ → 1.85 vs Gaussian 2 — the a-AVERAGES are Gumbel-immune and
+match equidistribution QUANTITATIVELY.  The r=3 core truth is an absolute
+constant ≈ 3K₆ ≈ 15–20 (explaining R23's "C = 40 comfortable").  Composed
+waste (B·K₄)/K₆ = 1.19 → 2.10 — exactly the sup's Gumbel log; the Hölder
+chain is otherwise tight.
+
+**Precise status.** The r=3 rung is CLOSED MODULO
+`FullDFTFlatLog A ∧ FourthMomentBound K₄` at a (1+log m) loss.  The
+absolute-constant form is now exactly located: remove the sup from the Hölder
+step (heavy-mode correlation between ‖Ŝ‖² and ‖Ŝ‖⁴) — the sharpest remaining
+open question of the lane.
+
+Formal kernel (4 theorems + interface, `[propext, Classical.choice,
+Quot.sound]`, manual axiom reads, pg-iterate 7s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R306SixthMomentInterpolation.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_sixth_moment.py`
+(`scripts/probes/_out_466_r3_sixth_moment.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-sixth-moment-interpolation-2026-07-11.md`.
