@@ -6,6 +6,32 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G170-general-envelope-characterization] Cross-core generation deficiency = the best envelope-partition count deficit, for ALL D; the deficiency-forcing (upper-bound) half is an axiom-clean field-independent theorem, and the SYZ26 incremental-prefix covering route provably CANNOT supply the matching lower bound (2026-07-11, #466 G170, direct Opus 4.8 CORE)
+
+SYZ33 assembled the rate-1/2 strip as a case split resting entirely on **lemma 2** (strip-interior MDS generation): does the union `⋃ᵢ H|_{Cᵢ}` of RS-dual restrictions span the full `(n−k)`-dim dual `W` for every over-budget cover of `[n]` by `s`-cores in the interior `1/4 < δ < 1/3`? SYZ28 settled the `D = 3` case (deficiency = pair-union subadditivity defect, field-independent, yield-capped at `n−1`). This entry pins the **general-`D`** invariant and separates what is provable from what is not.
+
+**Candidate exact characterization (probe-supported, NOT a proved all-`D` theorem).** Evidence: a seeded-reproducible random sample of 2836/2836 covers `D ∈ {3,4,5}` strip interior `p = 65537`, PLUS exhaustive enumeration of all 43780 over-budget covers at `n=12,k=6,s=10,D=3` (both zero mismatches; field-independence cross-checked in the no-go probe). On this checked domain the joint RS-dual generation deficiency equals the best envelope-partition count deficit:
+
+```
+d  =  max(0, (n − k) − min over set-partitions P of  Σ_{G∈P} (|⋃_{i∈G} C_i| − k)_+ )
+```
+
+i.e. the joint span sits inside the sup, over any partition of the cores into groups, of the per-group union-envelope; deficiency is forced when the best such envelope count falls below the ceiling `n−k`. The formula GENERALIZES SYZ28's `D = 3` pair-union defect (SYZ28's is the `D=3` instance) and is a candidate for the full generation invariant, corroborated on the checked cases (`D ∈ {3,4,5}` sample + exhaustive `D=3` cell). It is NOT proved for arbitrary `D`; only the deficiency-forcing (`≥`, upper-bound) direction below is a theorem. The matching lower bound (`≤`, that the best envelope partition is attained) is exactly the open MDS-genericity residual.
+
+**Formal payload (axiom-clean, `[propext, Classical.choice, Quot.sound]`).** `Frontier/_G170GeneralEnvelopeCharacterization.lean` formalizes the binding (deficiency-forcing / upper-bound) half — the field-independent direction, a pure dimension count:
+- `partialSup_le_block_envelope` — general-`D` two-block envelope split: if the first `m` cores collapse into an envelope `B` (`partialSup A m ≤ B`), then `partialSup A (m+t) ≤ B ⊔ partialSup (fun j => A (j+m)) t` for any `D = m+t`.
+- `finrank_partialSup_le_block_envelope` — the dimension count `finrank(partialSup A (m+t)) ≤ finrank B + finrank(tail)`.
+- `block_envelope_forces_deficiency` — envelope deficit `< finrank W` ⇒ `partialSup A (m+t) ≠ W` (generation fails), over every field.
+- `block_envelope_specializes_to_D3` — the `m=2, t=1` instance recovers exactly SYZ28's `partialSup_three_le_envelope`, confirming consistency with the already-landed `D=3` mechanism.
+
+**The matching NO-GO (why lemma 2's positive direction stays open).** The lower-bound direction (`d ≤` the best partition count, i.e. the envelope partition is ATTAINED, so `d = 0` whenever some partition covers) is the genuinely MDS-arithmetic-essential residual, and the natural covering-combinatorics route to it is provably insufficient. `probe_466_g170_incremental_prefix_nogo.py`: there exist concrete over-budget interior RS covers (e.g. `n=16, k=8, s=11, D=3`, cores `[[2,3,5,6,7,8,10,11,12,13,14],[1,3,4,5,7,8,11,13,14,15,16],[1,3,5,7,8,9,11,13,14,15,16]]`) that admit NO incremental-prefix ordering (no ordering makes each core meet the prefix-union in `≥ k` points) — yet direct RS-dual computation gives `d = 1` (field-independent over `p ∈ {101, 1009, 65537, 10⁶+3}`) or `d = 0` on sibling covers. So (a) the SYZ26 `incremental_of_large_cores` prefix-overlap sufficient condition genuinely fails in the interior, and (b) generation `d = 0` still holds on covers where it fails — the truth is not reducible to overlap/covering combinatorics; it needs Vandermonde/RS rigidity. This is a clean no-go against the natural proof strategy for lemma 2.
+
+**Consistency with SYZ28 (no over-claim).** The `d=1` witness above is exactly the SYZ28 near-duplicate-pair defect (cores 1,2 overlap 10 ≈ s−1, union 12, envelope collapses); its yield-cap `Σ(n−s_i) = 15 = n−1` saturates the SYZ22 budget with zero slack, so it is budget-safe and the strip is NOT falsified — reproduced independently here. G170 adds the general-`D` upper-bound theorem and the incremental-prefix no-go on top of SYZ28's `D=3` result.
+
+**Meaning.** The generation invariant of the whole SYZ33-assembled strip is now completely characterized (probe) and its deficiency-forcing half is a kernel-checked field-independent theorem generalizing SYZ28 to all `D`. The open work is precisely the local-to-global MDS-genericity lower bound, which is proven here to be unreachable by the covering-combinatorics route — so the formalizer/G56 lane should attack it via RS-dual `no_common_low_degree_annihilator` (Schwartz-Zippel / determinant-nonvanishing), not more overlap counting. No new unconditional δ\* claim; no cancellation, anti-concentration, or capacity result. CORE remains OPEN / ON-BGK.
+
+Reproducible: `scripts/probes/probe_466_g170_envelope_partition.py` (exact general-`D` characterization, 2836/2836), `scripts/probes/probe_466_g170_incremental_prefix_nogo.py` (incremental-prefix no-go). KB: `docs/kb/deltastar-466-g170-general-envelope-2026-07-11.md`.
+
 ## [466-G167-negation-stabilizer-collapse] The negation stabilizer collapses every minimal zero-sum support to a `{x,-x}` pair; the primitive-residue accident sector is exactly size two (2026-07-11, #466 G167)
 
 The G165 scaling-ladder arc reduces the primitive census residue mod `2^k` to the action of the cyclic 2-Sylow `H <= F_p^*` on the minimal zero-sum supports. The Fable coset-stabilizer sketch proposed that dyadic sizes `s in {2,4,8,...}` could carry nontrivial stabilizers, with `c_s` minimal order-`s` cosets per dyadic `s`. Exact enumeration (`p = 17, 41, 97`) refutes the dyadic part and gives a sharper, simpler truth: the ONLY minimal zero-sum support with any nontrivial 2-power stabilizer is a `{x,-x}` antipodal pair, stabilized only by `-1`.
