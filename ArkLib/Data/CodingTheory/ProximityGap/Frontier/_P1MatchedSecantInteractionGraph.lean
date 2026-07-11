@@ -207,6 +207,53 @@ theorem interactionGraph_compl_cliqueFree_five
   have hcompl := hG5.isClique hi hj hvij
   exact ((SimpleGraph.compl_adj _ _ _).mp hcompl).2 hadj
 
+/-- A complement-`K₅`-free finite graph has a dominating independent set of cardinality at most
+four.  This is the maximal-independent-set form of the density input and avoids edge counting. -/
+theorem exists_dominating_indep_card_le_four
+    {V : Type} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
+    (hfree : Gᶜ.CliqueFree 5) :
+    ∃ I : Finset V, I.card ≤ 4 ∧ G.IsIndepSet I ∧
+      ∀ v : V, v ∉ I → ∃ i ∈ I, G.Adj v i := by
+  classical
+  obtain ⟨I, hI⟩ := G.maximumIndepSet_exists
+  have hIcard : I.card ≤ 4 := by
+    by_contra hnot
+    have hfive : 5 ≤ I.card := by omega
+    obtain ⟨S, hSI, hScard⟩ := Finset.exists_subset_card_eq hfive
+    have hSindep : G.IsIndepSet S := hI.isIndepSet.mono hSI
+    exact hfree S ⟨(G.isClique_compl.mpr hSindep), hScard⟩
+  refine ⟨I, hIcard, hI.isIndepSet, ?_⟩
+  intro v hvI
+  by_contra hnone
+  push Not at hnone
+  have hInsertClique : Gᶜ.IsClique (insert v I) := by
+    apply (G.isClique_compl.mpr hI.isIndepSet).insert
+    intro b hb hvb
+    rw [SimpleGraph.compl_adj]
+    exact ⟨hvb, hnone b hb⟩
+  have hInsertIndep : G.IsIndepSet (↑(insert v I) : Set V) := by
+    rw [← G.isClique_compl]
+    simpa only [Finset.coe_insert] using hInsertClique
+  have hmax := hI.maximum (insert v I) hInsertIndep
+  rw [Finset.card_insert_of_notMem hvI] at hmax
+  omega
+
+/-- **Four-centre matched-secant domination.**  Every matched pair outside a set of at most four
+pair-vertices interacts with one of those centres. -/
+theorem exists_four_interaction_centres
+    {J : Type} [DecidableEq J] (witness : J → Finset (Fin N))
+    (M : Finset (J × J)) (hmatching : PairMatching M)
+    (hsize : ∀ p ∈ M, T ≤ (witness p.1).card ∧ T ≤ (witness p.2).card) :
+    ∃ I : Finset M, I.card ≤ 4 ∧
+      ∀ p : M, p ∉ I → ∃ q ∈ I, PairInteracts witness p.1 q.1 := by
+  obtain ⟨I, hIcard, _hIindep, hdom⟩ :=
+    exists_dominating_indep_card_le_four (interactionGraph witness M)
+      (interactionGraph_compl_cliqueFree_five witness M hmatching hsize)
+  refine ⟨I, hIcard, ?_⟩
+  intro p hp
+  obtain ⟨q, hq, hadj⟩ := hdom p hp
+  exact ⟨q, hq, hadj.2⟩
+
 end ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 
 open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
@@ -217,3 +264,5 @@ open ArkLib.ProximityGap.Frontier.P1MatchedSecantInteractionGraph
 #print axioms exists_interacting_pair_of_five
 #print axioms not_five_pairwise_noninteracting
 #print axioms interactionGraph_compl_cliqueFree_five
+#print axioms exists_dominating_indep_card_le_four
+#print axioms exists_four_interaction_centres

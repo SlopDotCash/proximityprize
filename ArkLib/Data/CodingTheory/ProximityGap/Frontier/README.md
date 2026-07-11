@@ -117,6 +117,12 @@ Every interaction is now given an exact four-colour orientation socket by
 pair and retains its `K`-overlap.  This removes disjunctive endpoint bookkeeping from the next
 algebraic layer.  A finite interaction supply can therefore be split into four uniform cross-
 secant formulas before applying determinant or polynomial-line propagation arguments.
+`exists_four_interaction_centres` strengthens density to a bounded-star statement without any
+edge enumeration: a maximum independent set has at most four pair-vertices and dominates the
+entire matching.  Hence every other matched secant has a cross-endpoint `K`-overlap with one of
+four centres.  This is now strikingly parallel to the four-pencil endpoint; what remains is the
+algebraic propagation from an interaction with a centre to membership in a bounded family of
+polynomial lines.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
@@ -406,6 +412,17 @@ two-sided: favorable cells pass the combined `U_1-U_2` cap with a nonpositive ta
 cells can still have ample negative `E_12`; covariance alone therefore does not distinguish
 success.  The new theorem-shaped target is a production bound on the centered energy of
 `U_1-U_2`, plus the displayed small signed-tail budgets.  The probe is not a production theorem.
+`_BGKLateNewtonTwoColourPhysicalBridge.lean` removes the abstract-leading-term seam.  It proves
+`C_11+C_22-2*C_12` is the physical square mass of `U_1-U_2`, subtracts the exact DC imbalance,
+defines literal complementary tails, and feeds the `10500/21` and `12500/25` sockets with actual
+field collision counts.  Erase/insert equivalences cancel the common repeated-`U_1`/fresh-`U_2`
+sector fibrewise; the surviving profile is exactly fresh weight one minus fresh weight three.
+Thus the live bound is a signed boundary-profile estimate, not a heuristic covariance split.
+`_BGKC12TranslateIntersectionReduction.lean` separates the actual favorable cross count as
+`C_12=sum_t W_G(t)*R_r(t)`, where `W_G(t)=#{y in G:2*y-t in G}` is a literal shifted cyclotomic
+intersection row and `R_r` is the adjacent subset-difference row.  A sharp two-cell no-go proves
+that masses, square masses, nonnegativity, Cauchy, and separate Gram diagonals cannot force this
+inner product: the missing theorem is joint arithmetic alignment of the two actual rows.
 `_BGKFirstCollisionCovarianceLedgerBridge.lean` audits the adjacent G189--G193 repetition route.
 It proves the exact `29/30` and `41/42` internal cancellation thresholds, but also the correct
 deletion identity

@@ -1714,6 +1714,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJacobiTensorProduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonKneserDepthSevenNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKJohnsonPhaseGradeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonDominantPairSocket
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonJohnsonBoundaryNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonSignedCovariance
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLateNewtonTwoColourPhysicalBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKLaterTransitionDefectLedgers

@@ -136,7 +136,7 @@ automatically subtracts tree/Wick excursions and isolates finite-field cycles.
 | NWS-5 nonbacktracking trace polynomial | **ORDINARY HASHIMOTO FORM REFUTED** | The exact degree-14 Ihara polynomial removes 14 cyclically adjacent reversals, versus all `C(14,2)=91` Wick first-pair placements, leaving coefficient `77d+14`. A closed nonbacktracking repeated-direction word survives, and equal adjacency eigenvalues can have opposite injective transforms. A univariate polynomial cannot isolate the packet. |
 | NWS-6 Ihara zeta quotient / coloured Newton operator | **EXACT LATE SIGNED MATRIX / higher mixed arithmetic open** | The coloured Newton operator and physical Newton joins are exact. Cross Parseval turns every matrix cell into a collision count; the packets equal `J6,J7`, raw signed forms are `36C6,49C7`, and DC subtraction yields `(6!)²Δ6,(7!)²Δ7`. Opposite parity is a coefficient sign, not a covariance-sign theorem. Production pair Gram data still miss by 123--124 bits. |
 | NWS-7 nonlinear period fixed point / Krein cone | **ALL-ORDERS POSITIVITY NO-GO / arithmetic active** | `|eta_b|^2=n+sum_(u!=1)eta_{b(u-1)}`. Schur multiplication is Fourier-profile convolution, and every nonnegative orbit profile survives all convolution powers. These positivity constraints leave the enlarged-cone LP at the worst-period square; fixed intersection values remain live. |
-| NWS-8 transition/intersection arithmetic | **EXACT COUPLING / standard integrality NO-GO; correlated values active** | Literal intersection rows transform to products of periods. Cauchy--Davenport forces two-class support, but `(2^30-1,1)` remains legal: one leaked unit versus the exact `65,663,244` required (`2^25`--`2^26`). Only correlated placement/values of many entries survives. |
+| NWS-8 transition/intersection arithmetic | **EXACT C12 ROW COUPLING / marginal NO-GO; alignment active** | The dominant cross count is exactly `C12=Σ_t W_G(t)R_r(t)`, with `W_G(t)=#{y∈G:2y−t∈G}` and `R_r` the adjacent subset-difference row. A two-cell theorem shows fixed masses and square masses permit inner product 0 or full, so Cauchy/Gram diagonals cannot force the gate. Joint cyclotomic-row placement is the live input. |
 | NWS-9 dyadic interlacing | **ACTIVE** | Compare spectra for nested order-`2^j` subgroups via equitable partitions. Falsifier: no deterministic interlacing after changing the Cayley connection set. |
 | NWS-10 deterministic lift theory | **ACTIVE** | Model `G_j -> G_{j+1}` as a signed graph lift and prove the new spectrum remains controlled. Random 2-lift theorems do not apply without pseudorandom signs. |
 
@@ -156,7 +156,7 @@ prove chi-square mixing at ambient, rather than support, scale.
 | ESM-7 Stein coupling on cosets | **ACTIVE** | Build an exchangeable pair by multiplying a random summand by a random subgroup element; bound the Stein remainder in fourteenth norm. |
 | ESM-8 mod-Gaussian correction | **SCALAR MOMENTS THROUGH SIX REFUTED / joint cumulant active** | `_BGKLowerMomentOrbitSpikeNoGo` passes even hypothetical Wick ceilings for powers `s^2,...,s^6` with `s=|eta|^2`, yet fails the `s^7` target by 15--16 bits. A viable correction must constrain the joint orbit profile at seventh order. |
 | ESM-9 concentration over frequency | **INSUFFICIENT for worst case** | Average tail bounds can tolerate a bad orbit; coset invariance reduces `q-1` frequencies to `m` but does not remove the maximum. |
-| ESM-10 entropy-production inverse theorem | **TWO-COLOUR SIGNED SOCKET / production estimate open** | At 2→3 the robust defect is iff a lower bound on `6C111,12+12C12,3`; Young drops it. At 5→6/6→7, cross Parseval gives the full signed Newton matrix. The precise target is `L=E11+E22-2E12=V(U1-U2)` under caps `10500/12500`, plus signed tails under `21/25`; adding proves the existing `10521/12525` ledgers. |
+| ESM-10 entropy-production inverse theorem | **PHYSICAL TWO-COLOUR SOCKET / production estimate open** | At 2→3 Young drops the required signed mass. At 5→6/6→7, `L=V(U1-U2)` is literal: `C11+C22−2C12` minus exact DC. Erase/insert cancels repeated-U1 with fresh-U2 and leaves fresh weight1 minus fresh weight3. Defined tails feed the `10500+21`/`12500+25` ledgers; only the production estimates remain. |
 
 ## Angle 8: Projective Accident Orbit Rigidity (PAOR) -- incidence geometry
 
@@ -224,7 +224,9 @@ so every numerical claim is independently checkable and every extrapolation has 
    sharpest current late coordinate is the centered energy of `U_1-U_2`, with exact numerator
    caps `10500` and `12500`, plus signed tail budgets `21` and `25`.  Internal repetition
    covariance cannot supply this: its correct deletion formula has an injective cross term and
-   even a free repeated sector leaves an `8126` gap.
+   even a free repeated sector leaves an `8126` gap.  The actual cross term is
+   `sum_t W_G(t)R_r(t)`; the next arithmetic theorem must align the shifted cyclotomic-intersection
+   row with the adjacent subset-difference row beyond what separate Gram data can see.
 2. **CTR-4/5/7:** exploit the exact zero-mean restriction structure on `1-G` without taking
    absolute values and with genuinely production-specific arithmetic.  The orbit-spectral cone
    is exactly dual to the worst-period problem. Galois rationality and moment congruences remove

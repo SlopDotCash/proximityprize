@@ -141,9 +141,9 @@ theorem newton_collision_iff_difference_collision (G : Finset F) (r : Nat)
     Nat.cast_one, one_mul, Nat.cast_ofNat]
   constructor
   · intro h
-    linear_combination -2 * h
+    linear_combination -h
   · intro h
-    linear_combination 2 * h
+    linear_combination -h
 
 /-- **Exact variable-separation identity.**  The late favourable collision count is a cross
 collision between the marked translate row and the adjacent subset-difference row. -/

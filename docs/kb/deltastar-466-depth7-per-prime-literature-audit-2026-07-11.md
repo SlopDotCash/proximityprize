@@ -697,6 +697,33 @@ the `U_1` diagonal is super-Wick.  Thus neither birthday density nor a covarianc
 the remaining theorem.  A useful analytic input must bound the combined centered two-colour
 energy and the small signed tail at the production subgroup.
 
+The leading profile is now exact in physical space.  Erasing a marked point gives a
+phase-preserving bijection from repeated `U_1` configurations to fresh `U_2` configurations, so
+that common sector cancels before any norm inequality.  A second erase identifies the residual
+repeated `U_2` sector with the fresh weight-three join.  Therefore
+
+```text
+U_1-U_2 = fresh(weight 1) - fresh(weight 3)
+```
+
+fibrewise, and its nonzero energy is the exact centered
+`q(C_11+C_22-2*C_12)-DC^2`.  Literal leading/tail definitions feed the robust late sockets; only
+their production arithmetic estimates remain open.  The cross count itself factors as
+
+```text
+C_12(r)=sum_t #{y in G:2*y-t in G}
+                * #{(S,T):sum S-sum T=t}.
+```
+
+This is a joint alignment problem between a shifted cyclotomic intersection row and an adjacent
+subset-difference row.  The formal two-cell no-go shows that masses, square masses, Cauchy, and
+separate Gram information do not determine that alignment.  Published Johnson-slice
+hypercontractivity controls symmetric slice walks, while multilinear exponential-sum estimates
+require source/product entropy; neither directly supplies this arithmetic pushforward correlation
+at the exact production constants.  See the primary discussions of the Johnson/multislice setting
+in [Filmus--O'Donnell--Wu](https://arxiv.org/abs/1809.03546) and of weighted multilinear finite-
+field sums in [Kerr--Macourt](https://arxiv.org/abs/1901.00975).
+
 The G189--G193 first-collision route does not transfer this saving from the repetition sector.
 Although the exact G190 polarization gives formal `29/30` and `41/42` cancellation gates, the
 actual deletion formula contains the additional injective--repetition term `2 Cov(J,P)`.  A formal

@@ -763,6 +763,43 @@ Hence a covariance-only lower bound is false as a discriminator.  The surviving 
 combined centered `U_1-U_2` energy, plus a controlled signed Newton tail.  Every finite cell is
 labelled PROBE and supplies no production extrapolation.
 
+`_BGKLateNewtonTwoColourPhysicalBridge.lean` makes this leading term literal.  It proves
+
+```text
+C_11+C_22-2*C_12 = sum_y (a_1(y)-a_2(y))^2,
+E_(U1-U2,nonzero)
+  = q*(C_11+C_22-2*C_12)
+    - [n*(C(n,r)-C(n,r-1))]^2.
+```
+
+The physical sources have an exact cancellation before squaring.  Repeated marked `U_1`
+configurations are phase-preservingly equivalent to fresh marked `U_2` configurations by erasing
+the marked point.  Repeating the operation identifies repeated `U_2` with a fresh weight-three
+join.  Fibrewise,
+
+```text
+U_1-U_2 = fresh(weight 1, depth r) - fresh(weight 3, depth r-2).
+```
+
+The file defines the complementary fifth and sixth tails, proves the exact Newton splits, and
+specializes the `10500/12500` budgets to the actual `C_11,C_22,C_12` field counts.  No sign of the
+tail or production lower bound for `C_12` is assumed.
+
+`_BGKC12TranslateIntersectionReduction.lean` gives the remaining cross count a two-row arithmetic
+form.  Reassociating `(x,S,y,T)` and rearranging its collision equation proves
+
+```text
+C_12(r) = sum_t W_G(t) * R_r(t),
+W_G(t) = #{y in G : 2*y-t in G},
+R_r(t) = #{(S,T) : |S|=r, |T|=r-1, sum S-sum T=t}.
+```
+
+Thus `C_12` is the alignment of a shifted cyclotomic-intersection row with an adjacent
+subset-difference row.  A formal two-cell extremizer shows that identical masses and individual
+square masses allow the cross inner product to range from zero to the full product.  Consequently
+nonnegativity, Cauchy, separate Gram diagonals, and the regular-simplex pair law cannot prove the
+required lower bound without a joint placement theorem for these two actual rows.
+
 The repetition covariance route has also been calibrated exactly.
 `_BGKFirstCollisionCovarianceLedgerBridge.lean` proves the abstract G190 polarization and shows
 that cancelling `29/30` of the depth-six stratum mass (respectively `41/42` at depth seven) would
