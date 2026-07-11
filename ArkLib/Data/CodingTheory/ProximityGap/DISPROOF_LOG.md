@@ -50671,3 +50671,35 @@ frontier object for the padded lane at depth 5 is pinned exactly (pair statistic
 insufficient, centered triple sufficient; no Stepanov analog recorded for it — that analog is
 now a well-posed open target).  Probe:
 `scripts/probes/probe_466_g103_centered_triple_concentration.py`.
+## [466-G87P-depth-four-pair-sum-reduction] Depth four reduces to factor-5 pair-sum concentration: the first honest cutoff of the padded lane no longer needs any Fourier or energy input (axiom-clean + kernel arithmetic) (2026-07-10)
+
+With the G86 sharp envelope, the production depth-four overshoot of the unrestricted equal-sum
+core universe drops from `2^11.26` (coarse envelope; the G82 cutoff) to `2^2.09`.
+`_G87DepthFourPairSumReduction.lean` closes the residual gap by an elementary convolution split
+over any finite ambient abelian group:
+
+```text
+quadCount a = sum_c pairCount c * pairCount (a-c) <= (M+1) * n^2,
+J_4 = sum_a quadCount(a)^2 <= (M+1) * n^6,       M = max_{c!=0} pairCount c,
+```
+
+(the `c=0` term pays `pairCount 0 <= n`), plus the kernel inequality: with `M <= n/5` at
+`(n,r,s) = (2^30,110,4)` the entire depth-four sharp envelope fits in one full Wick budget
+(margin `2^0.23`).  Headline `production_depth_four_sector_absorbed` composes with G86.
+
+**New sufficient condition (dramatically below the wall):** the depth-four sector needs only
+`PairSumConcentration5`: `max_{c!=0} |H ∩ (c-H)| <= n/5` — a factor-5 anti-concentration
+statement, recorded as a named external hypothesis.  For multiplicative subgroups with
+`n <= p^{2/3}` the classical Stepanov-method bound (Garcia–Voloch 1988; Heath-Brown–Konyagin
+2000) gives `~4 n^{2/3} ~ 2^22` versus the required `2^27.7` — far inside known territory,
+though not yet Lean-proved (a Stepanov formalization is a finite, elementary project).
+
+**Honest scope.** (i) The histogram-to-tuple bridge `orderedCoreCount <= equalSumQuadPairs`
+is consumed as a hypothesis; the concurrent G84 decoder lane owns that correspondence.
+(ii) Depth five stays genuinely open: even Stepanov strength `M ~ n^{2/3}` leaves the analogous
+chain `~2^26` over budget — the first depth where collective cancellation (not per-fiber
+concentration) becomes necessary.  (iii) This does not touch the ON-BGK core.  Probe
+`scripts/probes/probe_466_g87_depth_four_feasibility.py`: cutoff table exact, kernel inequality
+exact, convolution identity + fiber bound exhaustive at `mu_4 ⊂ F_13` and `mu_6 ⊂ F_31`.
+CORE remains OPEN / ON-BGK.
+
