@@ -16632,3 +16632,47 @@ now have their structural distinction kernel-pinned.
 Files: `_P1RateQuarterCrossConeBridge.lean`,
 `scripts/probes/probe_rate_quarter_p1_cross_cone_bridge.py`,
 `docs/kb/deltastar-466-rate-quarter-cross-cone-bridge-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: FIBER-CHEBYSHEV round — the (k−1) foreign-vote
+## cap is REAL and kernel-landed; the u-relative boundary-moving hope is
+## REFUTED (F0 does not move)
+
+Tenth round.  Probe `scripts/probes/probe_rate_quarter_p1_fiber_chebyshev.py`
+(exact) audited the mechanism: the (k−1) fiber cap requires BOTH ratio
+components to be codewords.
+
+REFUTATION (honesty-critical): the derecursion stall ledger's ratio map
+rho = (u1−w)/D has neither component a codeword; adversarial u1 = w + s0·D on
+200 coordinates realizes a fiber of size 200 >> k−1 = 63 at mu_256.  The
+stall boundary F0 = 75018133 does NOT move; the stall band and SwarmResidual
+are unchanged; the hoped-for ledger recomputation and residual shrink DO NOT
+EXIST as stated.  No fake recomputation attempted.
+
+REAL REFINEMENT (kernel, codeword-pair case): rider gamma of pencil a voting
+in pencil b's aligned region satisfies r0(i) + gamma·r1(i) = 0 with r = wb−wa
+rows BOTH codewords:
+* codeword_zero_set_le (nonzero codewords have <= k−1 zeros, via
+  predecessor_sep vs 0);
+* foreign_vote_fiber_le (<= k−1 foreign votes per non-exceptional rider; cap
+  TIGHT at mu_256: fiber = 63 realized);
+* exceptional_scalar_subsingleton (<= 1 proportionality scalar per pair);
+* foreign_region_rider_energy — the fiber-Chebyshev second moment:
+  S.card·m^2 <= (k−1)·|R|, refining disjointness S.card·m <= |R| exactly when
+  m > k−1;
+* no_fully_foreign_rider (k−1 = 268435455 < N−T = 480946858: no rider
+  collects (N−T)-scale votes inside one foreign region);
+* rungs refinement_crossover (effective iff A < T−k+1 = 324359511; pair-pencil
+  floor 2T−N = 111848108 deep inside; factor ~1.79), refinement_factor_floor,
+  no_fully_foreign_ledger ((k−1)(T−1) < (N−T)^2).
+
+AUDIT (`_P1RateQuarterFiberChebyshevRefinement.lean`; FULL axiom lists read
+manually via `lake env lean`): all 8 theorems exactly
+[propext, Classical.choice, Quot.sound]; no sorryAx, no warnings.
+
+HONESTY: F0, stall band, SwarmResidual, delta-star all unchanged (junk votes
+unconstrained — residual NOT redefined); bracket 3/8 <= delta* <= 43/96 + eps
+untouched.  Session: ten rounds, 82 kernel theorems, 8 probes.
+
+Files: `_P1RateQuarterFiberChebyshevRefinement.lean`,
+`scripts/probes/probe_rate_quarter_p1_fiber_chebyshev.py`,
+`docs/kb/deltastar-466-rate-quarter-fiber-chebyshev-2026-07-11.md`.
