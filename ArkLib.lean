@@ -2237,7 +2237,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136ProductionInstantiati
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136UnitCircleMann
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G139AccidentQuantizationConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G146CenteredCumulantPacketNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G167NegationStabilizerCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G168ScalingCosetConfinement
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58LowHeightPaddingObstruction
@@ -3334,6 +3337,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ14BCIKS57Chunk2
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ15TLoadedInterfaceRepair
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ16Claim58Truncation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ17XDegreeBudget
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ18PairJointSelfExclusion
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ20JointRankSuperadditive
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ21ShorteningAndCoverage
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ22StripBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ23DirectnessStrip
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ24CrossCoreCompatibility
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ25MDSGeneration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
