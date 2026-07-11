@@ -223,6 +223,270 @@ reuse coordinates.  The new kernel isolates exactly what such reuse means.
   minimal three-heavy obstruction must be three near-complete cores, each
   carrying a bijective scalar-to-complement-coordinate labeling.  This is a
   substantially sharper RS-algebraic target than the raw layer-cake ledger.
+  The labeling is explicit: every complement coordinate has nonzero
+  denominator `w₁−u₁` and its unique rider is
+  `γ=(u₀−w₀)/(w₁−u₁)` (`voteRatio`,
+  `saturatedFullFiber_existsUnique_rider_at_complement`,
+  `saturatedFullFiber_unique_rider_eq_voteRatio`).  Hence the three-heavy
+  obstruction is equivalently three rational functions inducing bijections
+  from their respective core complements onto their rider fibers—a concrete
+  cross-pencil algebraic comparison target.
+  The bijection claim is literal in Lean:
+  `saturatedFullFiber_voteRatio_image_eq` proves the complement image is
+  exactly the rider set, and `saturatedFullFiber_voteRatio_injOn` proves
+  injectivity on that complement.
+  For pencils through the same base, every vote further obeys the shared-
+  numerator identity
+  `(γ−γ₀)(w₁−u₁)=u₀+γ₀u₁−p₀`.  Therefore if the same non-base rider votes at
+  a coordinate on two pencils, their direction codewords agree there.  RS
+  root rigidity gives the first degree-sensitive comparison between the
+  three bijections: for distinct directions, the same-rider cross-vote
+  intersection has size at most `k−1`
+  (`commonBase_sameRider_crossVote_card_le_k_sub_one`).
+* More importantly, the shared **base** rider collapses the layer-cake's
+  minimal countermodel.  For every common-base pencil the base codeword's
+  agreement set is exactly `aligned core ∪ base-vote set`.  In a saturated
+  full fiber the latter is one point, so every `T−1` aligned core is the same
+  fixed threshold-size base agreement set with one point removed.  Any two
+  such cores therefore overlap on at least `T−2 = 592,794,964` coordinates,
+  far above the distinct-pencil cap `k−1 = 268,435,455`.  Consequently
+  `two_saturatedFullFiber_commonBase_pencils_eq` proves that two saturated
+  full fibers through one base are necessarily the **same pencil**.  The
+  probe's three-`T−1`/full-fiber over-budget configuration is thus
+  counting-admissible but RS-algebraically impossible.  This does not yet
+  close all layer profiles, but it removes the minimal extremal obstruction
+  identified by `_P1RateQuarterLayerCakeBudget.lean`.
+  In fact saturation is unnecessary.  For every common-base pencil,
+  disjoint nonempty votes imply the shared-base cap
+  `|R_π| ≤ N−|B|+1`, where `B` is the fixed base codeword agreement set.
+  Two distinct cores aligned on at least `T−1` coordinates force
+  `|B| ≥ 2(T−1)−(k−1) = 917,154,475`, so every such fiber has at most
+  `156,587,350` riders.  The packaged consumer
+  `three_distinct_commonBase_nearThreshold_fibers_sum_le_N` gives
+  `1+Σ_i(|R_i|−1) ≤ N` for three distinct near-threshold pencils; numerically
+  their maximum is only **469,762,048** slots.  Thus the entire three-heavy
+  `A≥T−1` channel—not only its full-fiber endpoint—is closed.  Remaining
+  layer-cake profiles must drop below `T−1` or mix more alignment levels.
+* Successor module `_P1RateQuarterSharedBaseLayerClosure.lean` begins the
+  full ten-rider-layer closure.  `johnson_inside_finset` proves the exact-
+  diagonal Johnson inequality using the shared base agreement set `B` as
+  the universe, rather than all `N` coordinates.  The literal arithmetic
+  consumer `heavy_sharedBase_arithmetic` proves that for every
+  `2 ≤ M ≤ 108`, this inside-`B` inequality plus the shared-base fiber cap
+  forces `1+M(N−|B|) ≤ N`.  `heavy_family_slots_le_N` now carries the generic
+  structural wiring too: any finite family of at most 108 heavy cores inside
+  `B`, with pair intersections at most `k−1` and fiber cap `N−|B|+1`, has
+  total scalar slots at most `N`.  The remaining work is only the concrete P1
+  adapter that forms this family from the ten-rider pencil fibers; the
+  combinatorics, arithmetic, and abstract slot consumer are all proved.
+  The optimized envelope is stronger:
+  `heavy_family_slots_le_893823171` leaves exactly `179,918,653` slots below
+  `N`.  Since a Johnson-light pencil has at most eight non-base riders, this
+  absorbs up to **22,489,831 light pencils**; one more crosses the budget.
+  `heavyEnvelope_add_lightSlots_le_N` packages the mixed-layer arithmetic.
+  The remaining light-side target in the presence of a nontrivial heavy
+  family is therefore an explicit pencil-count cap `≤22,489,831`, much
+  smaller than the earlier 55.9-million explosion threshold.
+  The inside-carrier audit also locates its hard floor exactly.  At the most
+  favorable carrier size `|B|=T`, the two- and three-rider alignment floors
+  remain below the Johnson square, while the four-rider floor crosses it
+  (`minimalCarrier_lowRider_johnson_boundary`).  In particular the
+  three-rider Johnson denominator is zero.  Therefore no refinement of this
+  positive Johnson packing can bound the 2–3-rider pencil population; that
+  population is the genuine remaining algebraic/light-explosion residue.
+  The new identity
+  `commonBase_alignedSet_eq_baseAgree_inter_directionAgree` sharpens this
+  diagnosis: for a common-base pencil its aligned core is exactly the shared
+  base agreement set intersected with the agreement set of the pencil's
+  direction codeword.  Thus the surviving 2–3-rider population is literally
+  a punctured Reed–Solomon list-decoding problem on the fixed carrier `B`,
+  below the range where the positive Johnson argument has any slack.
+  `_P1RateQuarterBelowJohnsonLocatorListRefuted.lean` shows that this is a
+  genuine no-go for any direction-only repair, not just a weakness of Johnson.
+  For every coordinate set `A` with `|A|<k`, the scalar multiples of its
+  locator polynomial give exactly `|F|` distinct dimension-`k` RS codewords,
+  all agreeing with zero throughout `A` (`fieldSized_locatorList`).  Since the
+  literal two-rider floor is `111,848,108 < k=268,435,456`, even a full
+  field-sized direction list can share the required aligned core.  A successful
+  light-layer argument must therefore retain the discarded rider/vote
+  equations or couple several alignment levels; punctured direction agreement
+  by itself cannot yield the required pencil-count cap.
+  Retaining the vote equations does recover a new positive band.  Every
+  non-base rider vote lies outside the fixed base agreement carrier `B`.
+  Hence, if two common-base pencils share a non-base rider and their two vote
+  sets have size at least `s`, inclusion--exclusion inside `Bᶜ` forces the
+  directions equal as soon as `|Bᶜ|+k ≤ 2s`
+  (`commonBase_sharedRider_directions_eq_of_complement_packing`).  At P1 scale,
+  `s=T-A` and `|B|≥T`, so this holds throughout the exact alignment band
+  `A≤218,103,809`.  This band contains the two-rider floor `111,848,108` but
+  ends before the three-rider floor `352,321,537`.  Thus low-alignment
+  two-rider pencils can be charged injectively to their non-base riders; the
+  genuinely hard light residue is narrowed to the upper two-rider band plus
+  the three-rider layer.
+  Complement Johnson extends this charging statement quantitatively.  For a
+  fixed non-base rider, its vote sets across distinct pencils all lie in
+  `Bᶜ`, have pair intersections at most `k−1`, and therefore form a constant-
+  weight packing on at most `N−T` coordinates.  At `A≤230,000,000`, the forced
+  vote size is at least `362,794,966`, and the exact arithmetic plus generic
+  packing consumer `sharedRider_family_card_le_18` bounds rider multiplicity
+  by **18**.  The positive complement-Johnson denominator has exact endpoint
+  `A=233,485,644` and vanishes at `233,485,645`; hence this method cannot reach
+  the three-rider floor.  This is both a useful extension of the injective
+  band and a sharp barrier: the remaining upper two-rider/three-rider channel
+  needs multi-rider coupling rather than another one-rider packing estimate.
+  The first genuine two-rider invariant is now formalized as
+  `commonBase_twoRider_matchingOverlap_card_le_k_sub_one`: for any two fixed
+  non-base labels, the **union** of their matching overlaps across two distinct
+  pencils has size at most `k−1`.  The two labels share one RS root budget; the
+  bound is not the weaker `2(k−1)`.  At the saturated three-rider endpoint the
+  two non-base vote sets partition `Bᶜ`, so pencils become balanced binary
+  labelings whose pairwise Hamming distance is at least
+  `(N−T)−(k−1)=212,511,403` (balance later rounds this to `212,511,404`).
+  Exact arithmetic also records the raw obstruction: twice the unrounded
+  distance is still `55,924,052` below the binary block length
+  `N−T=480,946,858`.  Therefore ordinary binary Plotkin remains subcritical.
+  The saturated residue is now sharply reframed as a structured binary-code
+  problem with an RS-realizability constraint; closing it requires exploiting
+  that constraint, not only the induced binary distance.
+  A weighted complement-capacity theorem further clarifies when this binary
+  model is forced.  `commonBase_nonbase_riders_mul_voteFloor_le_compl_agreeSet`
+  proves
+  `|R|(T−A) ≤ |Bᶜ|` whenever every rider is non-base.  The carrier premise is
+  now produced rather than assumed:
+  `commonBase_agreeSet_card_ge_threshold_of_baseWitness` embeds the global
+  threshold witness explained by `p₀` into `B`, proving `|B|≥T`.  Consequently
+  three non-base riders force
+  `A≥432,479,347`, exactly the four-rider alignment floor
+  (`threeNonbase_capacity_forces_fourRiderAlignment`).  The endpoint is sharp:
+  at `A=432,479,346` the three vote sets overflow `Bᶜ`, while at
+  `432,479,347` they fit arithmetically.  Consequently, throughout the lower
+  three-rider band, the global base witness forces the base scalar to be one
+  of the riders and hence reduces the complement to the two-label binary
+  model.  This full adapter is packaged as
+  `commonBase_threeRiders_lowerBand_base_mem`; the former conditional
+  `|B|≥T` gap is closed.
+  At the minimal three-rider alignment `A=352,321,537`, removing the now-forced
+  base rider leaves exactly two non-base riders.  Their combined forced demand
+  is
+  `2(T−A)=480,946,858=N−T`.  Applying weighted capacity to this erased rider
+  family gives `|B|≤T`, while the global base witness gives `|B|≥T`; hence
+  `commonBase_threeRider_minimal_agreeSet_card_eq_threshold` proves the exact
+  rigidity `|B|=T`.  The saturated binary reduction's block length `N−T` is
+  therefore derived from the actual pencil hypotheses, not a numerical model
+  assumption.
+  Finally, `rides_voteSet_card_ge_threshold_sub_aligned` packages the uniform
+  lower bound `|V_γ|≥T−A`, and
+  `commonBase_threeRider_minimal_nonbaseVotes_partition_complement` proves the
+  exact set identity
+  `(R.erase γ₀).biUnion V = Bᶜ`.  Since vote sets for distinct scalars are
+  disjoint and there are exactly two erased riders, the minimal three-rider
+  endpoint is now a literal two-color partition of `Bᶜ`, not merely an
+  analogy or cardinal estimate.  The remaining saturated question is exactly
+  the RS-realizability bound for this family of binary labelings.
+  The partition is exactly balanced:
+  `commonBase_threeRider_minimal_nonbaseVote_card_eq` proves that each of the
+  two non-base vote classes has `240,473,429=(N−T)/2` coordinates.  Hence the
+  final endpoint object is a constant-weight binary code of length
+  `480,946,858`, weight `240,473,429`, and minimum distance at least
+  `212,511,404`, subject to the additional RS direction-realizability law.
+  Balance also halves the matching budget exactly.  The generic identity
+  `balanced_binary_matching_card_eq_two_inter` proves that two half-carriers
+  have total matching agreement `2|S∩T|`; therefore the RS matching cap
+  `≤k−1` yields the sharp integer intersection bound
+  `|S∩T|≤134,217,727=k/2−1`.  This strengthening still does not activate
+  constant-weight Johnson: its natural denominator
+  `240473429²−480946858·134217727` truncates to zero.  Thus even the fully
+  balanced constant-weight abstraction is insufficient; the next theorem
+  must use the fact that each labeling is realized by a degree-`<k` direction
+  through the common mismatch quotient.
+  `_P1RateQuarterBinaryVandermondeDivisibility.lean` turns that realizability
+  into a direct polynomial constraint.  For any three binary-realizable
+  direction polynomials `p₁,p₂,p₃`, at every carrier coordinate two values
+  coincide, so the carrier locator divides
+  `(p₁−p₂)(p₁−p₃)(p₂−p₃)`
+  (`carrierLocator_dvd_vandermondeThree_of_binary`).  Consequently, whenever
+  the carrier has more than `3(k−1)` points, two of the three directions must
+  be equal (`two_eq_of_binary_of_three_mul_lt_card`).  Literal P1 does not meet
+  this raw cubic root threshold: `480,946,858 < 3·268,435,455`.  A follow-up
+  audit formally retires the naive polynomial-abc suggestion.  Mason--Stothers
+  would compare a difference degree at most `268,435,455` with a radical whose
+  carrier contribution alone has `480,946,858` roots, so its inequality is
+  already satisfied (`p1_mason_carrier_radical_inequality_already_satisfied`).
+  The cubic budget is also literally the sum of the three pairwise RS budgets
+  (`p1_vandermonde_budget_eq_three_pair_budgets`): locator divisibility by
+  itself merely repackages pairwise separation.  Any strengthening must retain
+  the common mismatch quotient on the cross-label coordinates, not only the
+  binary equality pattern or radical of the Vandermonde product.  The in-tree
+  search also confirms there is no general RS list-recovery primitive that can
+  be instantiated here; existing subspace-design results concern folded/design
+  codes and leave their own list-recovery inputs explicit.
+  Weighted capacity also resolves base inclusion for the *entire* two-rider
+  range.  If both riders were non-base, their demand would satisfy
+  `2(T−A)≤N−T`; exact arithmetic shows this first becomes possible at
+  `A=352,321,537`, the three-rider floor.  Therefore every two-rider pencil
+  with `A≤352,321,536` contains `γ₀`
+  (`commonBase_twoRiders_belowThreeFloor_base_mem`) and has exactly one
+  non-base rider.  The crossover is certified independently by
+  `twoNonbase_capacity_exact_crossover`.  Consequently all genuine two-rider
+  pencils admit a canonical charge to their unique non-base scalar; only the
+  multiplicity of that charge in the upper alignment band remains to bound.
+  The minimal two-rider endpoint is completely rigid as well.  At
+  `A=111,848,108`, the unique non-base rider requires
+  `T−A=480,946,858=N−T` votes.  The global base witness and weighted capacity
+  force `|B|=T`
+  (`commonBase_twoRider_minimal_agreeSet_card_eq_threshold`), and the unique
+  non-base vote set is exactly all of `Bᶜ`
+  (`commonBase_twoRider_minimal_nonbaseVotes_eq_complement`).  Hence at this
+  endpoint the common mismatch quotient determines the direction on every
+  off-carrier coordinate; the unresolved reuse phenomenon can occur only
+  after moving upward from the minimal two-rider alignment.
+  For two pencils reusing the same charged rider, the valid second matching
+  contribution comes from their aligned cores (not their base-vote sets).
+  `commonBase_alignedAndSameRider_matching_card_le_k_sub_one` proves that the
+  union of aligned-core overlap and same-rider vote overlap has one shared
+  `k−1` RS root budget.  The generic complementary-carrier calculation
+  `twoCarrier_matching_floor` gives its forced floor.  Since each pencil has
+  `A+(T−A)=T`, that floor is alignment-independent:
+  `2T−N=111,848,108`.  Unfortunately this remains `156,587,347` below `k−1`
+  (`twoRider_matching_floor_rootBudget_slack`).  Thus aligned-plus-vote
+  inclusion--exclusion is a genuine coupling improvement, but it cannot by
+  itself bound reuse in the upper band; the cross-label mismatch equations
+  remain necessary if one reasons only pairwise.  The family-level view is
+  much stronger.  For a fixed charged rider define
+  `W_π = alignedCore_π ∪ voteSet_{π,γ}`.  The witness inclusion theorem
+  `rides_alignedUnionVote_card_ge_threshold` gives `|W_π|≥T`.  Because aligned
+  cores lie in `B` and non-base votes in `Bᶜ`, cross terms in
+  `W_π∩W_π'` vanish; the full intersection is therefore capped by `k−1`
+  (`commonBase_alignedUnionSameRider_inter_card_le_k_sub_one`).  Johnson on
+  these full-`N` combined sets has positive denominator
+  `T²−N(k−1)=63,175,496,636,971,236`.  Exact arithmetic rules out six members,
+  and `combinedTwoRider_family_card_le_five` proves that **one non-base rider
+  can be reused by at most five two-rider pencils**, uniformly across the
+  entire alignment band.  This closes the upper-band multiplicity problem
+  left by the one-rider complement Johnson analysis even if witnesses are
+  allowed to vary.  The actual construction is sharper because `Sf γ` is
+  fixed globally.  If two common-base pencils carry the same non-base rider,
+  that same threshold set `Sf γ` lies inside both combined sets, making their
+  intersection at least `T>k−1`.  The overlap cap then forces equal directions
+  (`commonBase_sameFixedWitnessRider_directions_eq`), hence the same pencil.
+  Thus charged-rider reuse is **exactly injective (multiplicity one)** in the
+  fixed-witness campaign; the cap five remains a robust varying-witness
+  fallback.  Together with forced base inclusion, this closes the complete
+  two-rider pencil channel structurally.
+  The cross-label information discarded by the binary abstraction is now
+  retained explicitly.  Writing
+  `E(x)=u₀(x)+γ₀u₁(x)−p₀(x)`, a coordinate labelled `γ` in one pencil and `δ`
+  in another satisfies
+  `(γ−γ₀)(δ−γ₀)(d₁−d₂)=(δ−γ)E`; reversing the labels reverses the sign
+  (`commonBase_crossVote_directionDiff_identity` and its reverse).  Squaring
+  removes the orientation and gives one common mismatch-square law on both
+  cross classes (`commonBase_crossVote_directionDiff_square_identity`).  This
+  is strictly richer than the equality-pattern/Vandermonde reduction.  Its
+  current limitation is equally precise: `E` is an arbitrary received-word
+  mismatch, not a degree-bounded polynomial, so the square identity is not by
+  itself eligible for polynomial root counting.  A successful continuation
+  must eliminate `E²` across several pencils or derive a low-degree model for
+  it on a sufficiently large union of cross-label coordinates.
 
 This is not yet a contradiction.  It is the precise surviving residual for
 the sub-nine alignment layer: algebra must exclude or classify tens of

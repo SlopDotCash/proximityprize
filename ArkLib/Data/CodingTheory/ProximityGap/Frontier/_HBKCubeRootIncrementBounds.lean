@@ -246,6 +246,19 @@ theorem sum_productionCapIncrement_full :
   rw [sum_productionCapIncrement (le_refl 4096), natCubeRoot_4096]
   norm_num
 
+/-- Extending the cap past saturation preserves its total mass, since all later increments vanish. -/
+theorem sum_productionCapIncrement_eq_full_of_ge
+    {N : ℕ} (hN : 4096 ≤ N) :
+    ∑ i ∈ Finset.range N, productionCapIncrement i = 2 ^ 30 := by
+  rw [← sum_productionCapIncrement_full]
+  symm
+  apply Finset.sum_subset (Finset.range_mono hN)
+  intro i hiN hi
+  have hi4096 : 4096 ≤ i := by
+    by_contra h
+    exact hi (Finset.mem_range.mpr (by omega))
+  simp [productionCapIncrement, show ¬i < 4096 by omega]
+
 /-- The zero-padded cap itself satisfies the exact G120 squared-mass target. -/
 theorem productionCapIncrement_sq_budget :
     9 * (∑ i ∈ Finset.range 4096, productionCapIncrement i ^ 2) ≤
@@ -289,5 +302,7 @@ end ArkLib.ProximityGap.Frontier.HBKCubeRootIncrementBounds
   ArkLib.ProximityGap.Frontier.HBKCubeRootIncrementBounds.productionCapIncrement_antitone_succ
 #print axioms
   ArkLib.ProximityGap.Frontier.HBKCubeRootIncrementBounds.sum_productionCapIncrement_full
+#print axioms
+  ArkLib.ProximityGap.Frontier.HBKCubeRootIncrementBounds.sum_productionCapIncrement_eq_full_of_ge
 #print axioms
   ArkLib.ProximityGap.Frontier.HBKCubeRootIncrementBounds.productionCapIncrement_sq_budget

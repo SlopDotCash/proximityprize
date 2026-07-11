@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.List.GetD
 import Mathlib.Data.List.Pairwise
 import Mathlib.Data.Multiset.Sort
@@ -66,6 +67,13 @@ theorem orderedProfile_antitone_succ (s : Multiset ℕ) (i : ℕ) :
     rw [hz]
     exact Nat.zero_le _
 
+/-- The padded ordered profile is globally antitone. -/
+theorem orderedProfile_antitone (s : Multiset ℕ) : Antitone (orderedProfile s) := by
+  intro i j hij
+  induction j, hij using Nat.le_induction with
+  | base => exact le_rfl
+  | succ j hij ih => exact (orderedProfile_antitone_succ s j).trans ih
+
 /-- A profile padded to any `N` beyond the multiset cardinality has zero boundary. -/
 theorem orderedProfile_boundary
     (s : Multiset ℕ) {N : ℕ} (hN : s.card ≤ N) : orderedProfile s N = 0 :=
@@ -102,6 +110,28 @@ theorem sum_orderedProfile (s : Multiset ℕ) :
     simp [descendingList]
   exact congrArg Multiset.sum heq
 
+/-- If the total mass is strictly below `N`, then the `N`-th decreasing entry is already zero.
+This supplies a sharper zero boundary than the raw multiset cardinality when most entries vanish. -/
+theorem orderedProfile_eq_zero_of_sum_lt
+    (s : Multiset ℕ) {N : ℕ} (hN : N < s.card) (hsum : s.sum < N) :
+    orderedProfile s N = 0 := by
+  by_contra hne
+  have hpos : 0 < orderedProfile s N := Nat.pos_of_ne_zero hne
+  have hlower : N + 1 ≤ ∑ i ∈ Finset.range (N + 1), orderedProfile s i := by
+    calc
+      N + 1 = ∑ _i ∈ Finset.range (N + 1), 1 := by simp
+      _ ≤ ∑ i ∈ Finset.range (N + 1), orderedProfile s i := by
+        apply Finset.sum_le_sum
+        intro i hi
+        exact (Nat.succ_le_iff.mpr hpos).trans
+          (orderedProfile_antitone s (by
+            have := Finset.mem_range.mp hi
+            omega))
+  have hupper : (∑ i ∈ Finset.range (N + 1), orderedProfile s i) ≤ s.sum := by
+    rw [← sum_orderedProfile s]
+    exact Finset.sum_le_sum_of_subset (Finset.range_mono (by omega))
+  omega
+
 /-- Sorting and zero-padding preserve the squared mass of the multiset exactly. -/
 theorem sum_orderedProfile_sq (s : Multiset ℕ) :
     (∑ i ∈ Finset.range s.card, (orderedProfile s i) ^ 2) =
@@ -119,5 +149,6 @@ end ArkLib.ProximityGap.Frontier.HBKOrderedNatProfile
 
 #print axioms ArkLib.ProximityGap.Frontier.HBKOrderedNatProfile.orderedProfile_antitone_succ
 #print axioms ArkLib.ProximityGap.Frontier.HBKOrderedNatProfile.orderedProfile_boundary
+#print axioms ArkLib.ProximityGap.Frontier.HBKOrderedNatProfile.orderedProfile_eq_zero_of_sum_lt
 #print axioms ArkLib.ProximityGap.Frontier.HBKOrderedNatProfile.sum_orderedProfile_sq
 #print axioms ArkLib.ProximityGap.Frontier.HBKOrderedNatProfile.sum_orderedProfile

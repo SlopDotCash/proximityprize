@@ -15426,3 +15426,228 @@ Executable certificate:
 `scripts/probes/probe_rate_quarter_p1_layer_cake.py`.
 Analysis (with full retrospective):
 `docs/kb/deltastar-466-rate-quarter-layer-cake-2026-07-10.md`.
+
+## [466-r3-trace-formula-point-count-flatness-reduction] the DIST stratum DIAGONALIZES in the DFT: mode = Newton polynomial of 3-term coset slices; rung reduces to POINTWISE FLATNESS of the full Jacobi DFT; the m=9 integer phenomenon IS a Möbius-weighted Fermat point count, but its Weil main terms cancel identically (2026-07-10)
+
+**Claim tested.** (i) The R301 Galois-averaged-integrality observation is a
+clean point count; (ii) the trace-formula reformulation yields E ≤ C·m³·q³ via
+main term + Weil error at m = 12.
+
+**Verdict.** (i) CONFIRMED AND MADE EXACT; (ii) REFUTED WITH MECHANISM, but the
+reformulation lands a strict REDUCTION of the open core.
+
+**Landed (axiom-clean, general m = 3u').** With `label : ℤ/m → ℤ/u'` (H-cosets
+= label fibers, each of SIZE 3): `distStratum` = sum of `conv3` of coset slices
+over pairwise-distinct labels; in every DFT mode
+`D̂(a) = Ŝ(a)³ − 3ŜP₂ + 2P₃`; Parseval `m·E_DIST = ∑_a ‖D̂(a)‖²`; slices obey
+`‖Âc(a)‖ ≤ 3√q` UNCONDITIONALLY, so the entire open content collapses to the
+new minimal Prop `FullDFTFlat K : ∀ a, ‖Ŝ(a)‖ ≤ K√(mq)`, and
+`FullDFTFlat K ⟹ DistStratumEnergyBound ((K³+9K+18)²)`.  Calibration:
+`K = √m` unconditional; Parseval average = flat with K = 1; probe sup ∈
+[1.06, 4.7] flat in q at m = 9 AND m = 12.  A sextic moment became a pointwise
+quadratic bound.
+
+**Point-count identity (probe-exact, 63 primes, m = 9 and m = 12).**
+`Ŝ(a) = m·T₋ₐ + 1`;
+`∑_{k∈(ℤ/m)^*} ‖T_α⁽ᵏ⁾‖² = ∑_{d∣m} d·μ(m/d)·N_d(α)` with
+`m²·d·N_d(α) = #{(x,y,z) ∈ (F_q^*)³ : 1−g^αx^m = (1−g^αy^m)z^d}` (verified by
+direct enumeration).  Averaged energy integer at m = 12 too; C_D(12) ≤ 4.03
+averaged / 5.73 per character, flat in q.
+
+**Mechanism of the refutation.** `∑_{d∣m} μ(m/d) = 0`: the Weil main terms of
+the N_d cancel IDENTICALLY — the point count is pure error term, and per-mode
+Weil gives only `K = O(√m)` (the unconditional calibration).  The open content
+is square-root cancellation across the m Jacobi angles inside each mode
+(Katz vertical equidistribution) — no surrogate Prop named.
+
+Formal kernel (13 theorems, `[propext, Classical.choice, Quot.sound]`,
+pg-iterate 17s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R302TraceFormulaPointCount.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_trace_formula_point_count.py`
+(`scripts/probes/_out_466_r3_trace_formula_point_count.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-trace-formula-2026-07-10.md`.
+
+## [466-r3-fourth-moment-interpolation] the m²q² fourth-moment target is REFUTED BY SCALE (power-mean + exact diagonal force m³q²); at the CORRECT scale the moment is O(1)-calibrated, its Möbius weight on the diagonal is φ(m) ≠ 0 (main term SURVIVES, unlike the sextic), and it discharges the DIST rung within √m (2026-07-10)
+
+**Claim tested.** `∑_a‖Ŝ(a)‖⁴ ≤ K₄·m²·q²` with the diagonal as main term and
+Weil-boundable off-diagonal; interpolated rung `E ≤ C·m³·√m·q³`.
+
+**Verdict.** Scale REFUTED (mechanism: Parseval `∑‖Ŝ‖² ≈ m²q` + power-mean
+give the floor `m³q²`; the exact diagonal contributes `2(1−2/m)²·m³q²`);
+everything else CONFIRMED at the corrected scale `K₄·m³·q²` and LANDED.
+
+**Landed (axiom-clean, general m = 3u').**
+* F1 identity (formalized): `∑_a‖Ŝ‖⁴ = m·∑_c‖(Sfun⋆Sfun)(c)‖²` — the fourth
+  moment IS the r=2 additive-quadruple Jacobi energy.
+* Möbius question resolved: diagonal ratio = 1 is a d-th power for all d∣m,
+  weight `∑_{d∣m} d·μ(m/d) = φ(m) ≠ 0` — the main term SURVIVES (vs the
+  sextic's identically-cancelling `∑μ(m/d) = 0`).
+* New named input `FourthMomentBound K₄` (`≤ K₄·m³·q²`), probe-calibrated
+  `K₄ ∈ [0.67, 3.2]` at m = 9/12/15/18 (per character and Galois-max, flat in
+  q); hierarchy `FullDFTFlat K ⟹ K₄ = K⁴`; unconditional `K₄ = m`.
+* Main theorem: `FourthMomentBound K₄ ⟹
+  DistStratumEnergyBound ((3K₄√K₄ + 1215)·√m)` — the r=3 DIST rung within a
+  `√m` loss from one O(1)-calibrated moment bound (ℓ³-vs-ℓ² interpolation
+  inside the R302 mode identity).
+* No per-tuple-Weil input named: each off-diagonal quadruple has modulus
+  EXACTLY q² — no per-tuple saving exists; the open content is cancellation
+  across quadruples (strictly weaker than per-mode flatness).
+
+Input ladder now: 2nd moment CLOSED (Parseval) → 4th moment OPEN, O(1)
+calibrated, √m-lossy → FullDFTFlat OPEN, lossless.
+
+Formal kernel (6 theorems, `[propext, Classical.choice, Quot.sound]`,
+pg-iterate 16s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R303FourthMomentInterpolation.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_fourth_moment.py`
+(`scripts/probes/_out_466_r3_fourth_moment.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-fourth-moment-interpolation-2026-07-10.md`.
+
+## [rate-quarter-twocover-window-realized] the two-cover window is REALIZED, not excluded (2026-07-10)
+
+Lane: P1 rate-quarter predecessor, successor of `[rate-quarter-layer-cake-budget]`
+(the minimal open statement `three_heavy_twoCover_window`).
+
+CLAIM TESTED. Three distinct near-threshold-aligned pencil pairs through one
+base codeword cannot two-cover `3(T-1) - N = 704643071` coordinates with all
+pairwise aligned-region overlaps `< k = 2^28` (the hoped-for RS-rigidity
+exclusion that would have closed the predecessor counting gap).
+
+VERDICT: REFUTED — the window is REALIZED at the literal P1 canonical domain,
+kernel-checked (`_P1RateQuarterTwoCoverWindow.lean`, axiom-clean, pg-iterate OK).
+
+CONSTRUCTION (generator-symbolic, no numerals). A cyclotomic Davenport triple:
+with `w` a primitive 16th root of unity (`w^8 = -1`),
+
+  (y-1)(y-w)(y-w^8) + (-w^2)(y-w^2)(y-w^9)(y-w^10) = mu (y-w^3)(y-w^5)(y-w^7)
+
+is an exact identity in `Z[w]/(w^8+1)` (probe found it by exhaustive search over
+mu_16; `linear_combination` cofactors of `w^8+1` certify it). Substituting
+`y = X^(2^26)` and multiplying by the shared split factor
+`(X^(2^23)-z^15)(X^(2^24)-s^14)(X^(2^25)-v^12)` gives three codeword differences
+of degree `31*2^23 = 260046848 < k`, each vanishing on 31 residue classes mod
+128 of the power enumeration (7 common). With base row `u0 = w0 = 1`, second
+rows `P1 = Df, P2 = 0, P3 = -Dg`, and the mod-128-periodic stack row `u1`:
+
+* each aligned region contains 71 residue classes = `595591168 >= T-1` (indeed `>= T`);
+* pairs pairwise distinct, so overlaps `<= k-1 < k` (in-tree `alignedSet_inter_card_lt_k`);
+* weighted two-cover surplus `Sigma|A_i| - |union| >= 713031680 >= 704643071`.
+
+HONEST SCOPE. (i) The `704643071` two-cover figure is the WEIGHTED overlap mass
+`e2 + 2e3` (what union <= N actually forces); the plain >=2-covered coordinate
+count of this configuration is `662700032` — a plain-count-saturating triple
+would need a `t = 0` full-cap Davenport base on mu_32 (deg-7 `f, g, f+g` fully
+split disjoint in mu_32), left open and irrelevant to the exclusion question.
+(ii) NO bad scalars/riders are constructed: this does NOT refute `#bad <= N` or
+touch the MCA conjecture; it kills the last counting-side obstruction of the
+pencil arc. The predecessor pin now goes through the structured-floor route
+(`PredecessorStructuredFloorResidual`) or genuinely new algebra.
+
+Combinatorial side (probe, exact integers): the window was already satisfiable
+as a bare set system (explicit intervals, `t = 0`, per-pair overlap 234881024).
+Scaled searches: n=16 exhaustive max coincidence mass = cap 9 (realized); the
+lift chain `f -> (x-rho) f(x^2)` propagates full-cap triples with `t' = 2t+1`,
+verified brute-force in F_P at mu_32/mu_64/mu_128.
+
+Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterTwoCoverWindow.lean`
+(landed; 10 audited theorems `[propext, Classical.choice, Quot.sound]`),
+`scripts/probes/probe_rate_quarter_p1_twocover_frustration.py`,
+`scripts/probes/probe_rate_quarter_p1_twocover_realization.py`,
+`docs/kb/deltastar-466-rate-quarter-twocover-window-2026-07-10.md`.
+
+## [466-r3-fermat-fiber-product-pervariety-nogo] the per-variety Weil–Deligne route to the 4th moment is a NO-GO: Möbius kills the q⁴ strata, per-variety errors live at q^{7/2} vs a q² signal (NO main/error split, NO prize-scale q-threshold); the Betti/A–S ceiling is exactly the unconditional K₄ = O(m); exact diagonal extraction + O(1)-calibrated OffDiagQuadrupleBound LANDED (2026-07-10)
+
+**Claim tested.** Off-diagonal 4th moment = Möbius-weighted Fermat
+fiber-product counts with main + `B(m)·q^{3/2}` error; polynomial `B(m)` ⟹
+4th-moment rung UNCONDITIONAL at prize scale `q ≈ n·2¹²⁸`.
+
+**Verdict.** Identities CONFIRMED EXACTLY; the main/error split and the
+prize-scale unconditionality REFUTED WITH MECHANISM; the honest localization
+(diagonal extraction + off-diagonal named input) LANDED.
+
+**Mechanism.** V2 (probe-exact, m = 9/12, p ≤ 199):
+`∑_k∑_α‖T_α‖⁴ = ∑_{d∣m} d·μ(m/d)·N₄_d` with `m³dN₄_d = #V_d(F_q)`,
+`V_d ⊂ 𝔾_m⁵` a dim-4 hypersurface family.  Top strata `q⁴/(m³d)` cancel under
+Möbius; the surviving signal is `q²`-scale while each `N₄_d` fluctuates at the
+`q^{7/2}` middle-cohomology scale (measured O(1) in those units) — errors sit
+two √q-orders ABOVE the signal at every q, so no threshold exists.  V1
+(probe-exact, m = 9/12/15/18): per character the 4th moment is one complete
+χ-sum over a fixed 4-torus, PURE middle weight — no main term exists to split;
+its Betti/Adolphson–Sperber ceiling `~m³·q²` reproduces exactly the
+unconditional `K₄ = O(m)`.  Measured torus sum `≈ m²·q²` — one full factor m
+below Betti: the gap is family cancellation across the m³ character tuples
+(Katz vertical), invisible to fixed-variety point counting.  No
+`FermatFiberErrorBound` Prop is named (it would be false at the useful scale).
+
+**Landed (axiom-clean, general m = 3u').** Exact diagonal
+`diagR = 2(∑_{j≠0}‖J‖²)² − ∑‖J‖⁴` with `0 ≤ diagR ≤ 2m²q²`; NEW named input
+`OffDiagQuadrupleBound K` (off-diagonal quadruple sum ≤ `K·m²·q²`;
+probe `K ≤ 1.21`, median 0.25, at m = 9/12/15/18);
+`OffDiagQuadrupleBound K ⟹ FourthMomentBound (2+K)`; unconditional
+`K = m + 2` (= the fixed-variety ceiling).  Full ladder:
+off-diag quadruple (O(1)) ⟹ 4th moment ⟹ DIST rung within √m; lossless =
+FullDFTFlat.  The variety program for r=3 is CLOSED two-sidedly; every open
+input is the same Jacobi-angle family cancellation, weakest form =
+`OffDiagQuadrupleBound = O(1)`.
+
+Formal kernel (7 theorems, `[propext, Classical.choice, Quot.sound]`,
+pg-iterate 10s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R304FermatFiberProduct.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_fermat_fiber_product.py`
+(`scripts/probes/_out_466_r3_fermat_fiber_product.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-fermat-fiber-product-2026-07-10.md`.
+
+## [rate-quarter-global-consistency-charge] the heavy three-pencil over-budget is CLOSED by the shared D-pool; realized geometry carries no riders (2026-07-10)
+
+Lane: P1 rate-quarter predecessor, successor of
+`[rate-quarter-twocover-window-realized]` and `[rate-quarter-layer-cake-budget]`.
+
+CLAIM TESTED. The layer-cake verdict `counting_admits_three_heavy_overBudget`:
+three pencils at alignment `T-1` with full fibers `N-T` carry
+`1 + 3(N-T) > N` bad scalars, un-excludable by the per-pencil counting surface.
+
+VERDICT: REFUTED — a NEW counting surface (global u1-consistency) excludes it.
+
+THE CHARGE. For pencils through one base witness (`w0_j + g0*w1_j = p0`),
+define the single global function `D := p0 - u0 - g0*u1`. Then EXACTLY:
+* aligned_j = `{D = 0} ∩ {w1_j = u1}` — every aligned region of every pencil
+  through the base sinks into the one zero-set `{D=0}`;
+* every vote of every rider `g ≠ g0` lies in the support `{D ≠ 0}` (at a vote,
+  `D(i) + (g-g0)(w1(i)-u1(i)) = 0`, so `D(i)=0` forces alignment).
+So all pencils share ONE vote pool `F = N - |{D=0}|`, while their aligned
+regions jointly inflate `|{D=0}|`. The per-pencil ledger (supply `N - A_j`
+each) never saw this coupling.
+
+CLOSURE. Three heavy pencils (aligned = `T-1`, pairwise `< k` by the in-tree
+lemma): `|{D=0}| >= 3(T-1) - 3(k-1) = 973078530`, so `F <= 100663294`, each
+fiber `<= F`, total riders `<= 3F = 301989882`, `#bad <= 301989883 <= N`
+(factor 3.55 below budget). Lean: `three_heavy_riders_budget`, axiom-clean.
+
+DEGENERATE COROLLARY. The realized two-cover geometry (stack first row = base
+codeword, `g0 = 0`) has `D ≡ 0`: EMPTY pool, no riders at all
+(`base_row_stack_carries_no_riders`) — geometric realizability and
+rider-population realizability are formally separated; the two-cover triple is
+sterile as a bad-scalar carrier. Probe (n=16 exhaustive with the
+joint-explanation filter): #bad = 1 (the base scalar alone).
+
+WHAT REMAINS (the new minimal open statement). Sub-Johnson swarms: pencils
+with alignment in `[T-F, floor(sqrt(N(k-1)))]`, few riders each, all drawing
+from the shared pool. Forced structure: a single-rider pencil for rider g has
+`w1 = u1 - D/(g-g0)` on ALL of `{D≠0}` — interpolable at P1 since
+`F = 100663294 < k = 2^28 — an affine pencil of stacks `s ↦ u1 - s*D`: the
+SAME correlated-agreement shape one level down (`N' = N-F, T' = T-F`, same k,
+again just below the shrunken Johnson radius `T-F = 492131671 <
+sqrt((N-F)(k-1)) ≈ 5.11e8`). Named residual
+`GlobalConsistencySwarmResidual` (honest Prop).
+
+Files: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterGlobalConsistencyCharge.lean`
+(landed, pg-iterate OK 18s, 8 audited theorems `[propext, Classical.choice,
+Quot.sound]`), `scripts/probes/probe_rate_quarter_p1_global_consistency.py`
+(mu_256 vote-pool checks 0 violations; n=16 exhaustive bad-counts),
+`docs/kb/deltastar-466-rate-quarter-global-consistency-2026-07-10.md`.
