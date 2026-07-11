@@ -1,0 +1,27 @@
+BGK_REPEATED_NEWTON_ABSORPTION
+D7Terms=15; D7CoefficientL1=5040
+repeatedTerms=88; repeatedCoefficientL1=25401599
+blockCount:termCount:coefficientL1
+13:1:42
+12:2:791
+11:3:8820
+10:5:64743
+9:7:328986
+8:11:1184153
+7:13:3034920
+6:17:5482456
+5:15:6787872
+4:10:5450256
+3:3:2540160
+2:1:518400
+leading=42*p2*p1^12-651*p2^2*p1^10-140*p3*p1^11
+coarseProductionRatio=0.001282475208142
+coarseCertificate=<1/779 and not <1/780
+rootUpper=5521/5000; rootUpperPow7=2.001401401781915
+holderCoefficientUpper=137.917813591494536<138
+holderCoefficientActual=137.848833573235035
+holderTangentSlope=0.000488281887096<1/1024
+repeatedPopulationOverSlack=1386.994346149928560
+exactOneRepeatShare=0.999999984012296
+beyondOneRepeatSlackInverse=45096.122945693809015
+barrierSplit=126871+138=127009
