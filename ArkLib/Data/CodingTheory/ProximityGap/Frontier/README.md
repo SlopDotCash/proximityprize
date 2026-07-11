@@ -88,6 +88,13 @@ has a literal two-witness secant realization.  The remaining gap is quantitative
 than structural: its guaranteed agreement is `K=2^28`, while a predecessor witness needs
 `T=592794966`, a deficit of `T-K=324359510` coordinates.  Threshold amplification subject to the
 five-set overlap forcing is the sole surviving obstruction for this construction.
+`not_five_nodalLines_all_threshold` closes that amplification attempt end-to-end: among any five
+distinct nodal canonical lines on the shared stack, at least one has joint core below `T`.  The
+proof factors through a symbolic `(k,t)` integral-Johnson theorem and specializes axiom-cleanly at
+P1.  Hence repeated-polynomial witness pairs cannot reach the predecessor threshold at scale;
+any genuine over-budget family must use pairs with different decoded polynomials whose canonical
+secant retains only the forced `K`-overlap, returning exactly to the live simultaneous-geometry
+problem.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame
@@ -361,6 +368,29 @@ drops exactly those favorable correlations, so it cannot certify the defect alon
 `5 -> 6` second.  Favorable order-64 cells satisfy the distributed late profile, but the direct
 crossover cell `(n,p)=(64,8001281)` has both late ratios above ordinary Wick.  Birthday density
 alone is therefore refuted; the remaining theorem must use the actual joint-period arithmetic.
+`_BGKLateNewtonSignedCovariance.lean` now gives that arithmetic an exact signed coordinate system.
+The `j`th Newton join has physical phase `j*x + sum S`, its Fourier transform is
+`p_j*e_(d-j)`, and cross Parseval turns every entry of the depth-six or depth-seven covariance
+matrix into one structured collision count.  The alternating Newton signs leave nine
+favorable-sign unordered pairs at depth six and twelve at depth seven; this describes their
+algebraic coefficients, not the sign of each centered covariance.  Unsigned Young/triangle
+estimates erase them.  `_BGKLateNewtonDominantPairSocket.lean` isolates the empirically dominant two-colour
+energy `L=E_11+E_22-2*E_12` and a signed tail `R`.  Exact scalar consumers allocate
+`10500+21=10521` at `5 -> 6` and `12500+25=12525` at `6 -> 7`.  The accompanying exact probe is
+two-sided: favorable cells pass the combined `U_1-U_2` cap with a nonpositive tail, while adverse
+cells can still have ample negative `E_12`; covariance alone therefore does not distinguish
+success.  The new theorem-shaped target is a production bound on the centered energy of
+`U_1-U_2`, plus the displayed small signed-tail budgets.  The probe is not a production theorem.
+`_BGKFirstCollisionCovarianceLedgerBridge.lean` audits the adjacent G189--G192 repetition route.
+It proves the exact `29/30` and `41/42` internal cancellation thresholds, but also the correct
+deletion identity
+`V(J+P)=V(J)+sum_i V(P_i)+Cov_off(P)+2*Cov(J,P)`.  Thus internal repetition covariance is not the
+injective ledger carrier.  A formal counterprofile has perfect internal cancellation and still
+fails the late ledger; G191 proves positive covariance for a genuine lexicographic subgroup
+partition, while G192 reports the same sign empirically for its symmetric depth-three replacement.
+Even returning the full repeated-sector reservation changes `126871` only to
+`127009`, still `8126` below Wick's `135135`.  The principal saving must occur in the injective
+Newton trajectory, not in a generic repetition-sector sign claim.
 `_BGKCyclotomicKreinSchurNoGo.lean` closes the positivity-only association-scheme variant.
 Pointwise multiplication of translation kernels is additive convolution of their Fourier
 profiles, and every nonnegative multiplicative-orbit profile remains nonnegative and

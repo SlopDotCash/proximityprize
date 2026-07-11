@@ -51,6 +51,7 @@ namespace ArkLib.ProximityGap.Frontier.BGKLateNewtonSignedCovariance
 
 open ArkLib.ProximityGap.Round4CharacterSum
 open ArkLib.ProximityGap.MomentCollisionRigidity
+open ArkLib.ProximityGap.SubgroupGaussSumMoment
 open ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw
 open ArkLib.ProximityGap.Frontier.BGKCenteredTrajectoryContraction
 open ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers
@@ -141,15 +142,16 @@ section NewtonJoins
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- The finite type of `m`-subsets of `G`. -/
-abbrev SubsetAt (G : Finset F) (m : Nat) := {S : Finset F // S ∈ G.powersetCard m}
+/-- The finite type of `m`-subsets of the labelled copy of `G`. -/
+abbrev SubsetAt (G : Finset F) (m : Nat) :=
+  {S : Finset {x : F // x ∈ G} // S ∈ Finset.univ.powersetCard m}
 
 /-- One marked subgroup point together with an independent `m`-subset. -/
 abbrev NewtonJoin (G : Finset F) (m : Nat) := {x : F // x ∈ G} × SubsetAt G m
 
 /-- Physical phase of a Newton join: one point has weight `k`, while the subset has unit weight. -/
 noncomputable def newtonJoinPhase (G : Finset F) (k m : Nat) (z : NewtonJoin G m) : F :=
-  (k : F) * z.1.1 + ∑ y ∈ z.2.1, y
+  (k : F) * z.1.1 + ∑ y ∈ z.2.1, y.1
 
 /-- Fourier transform of the structured Newton join. -/
 noncomputable def newtonJoinPeriod (psi : AddChar F Complex) (G : Finset F)
@@ -170,25 +172,21 @@ theorem newtonJoinPeriod_eq_powerSum_mul_esymm
   unfold newtonJoinPeriod phaseFamilyPeriod newtonJoinPhase
   rw [Fintype.sum_prod_type]
   rw [Finset.esymm_map_val]
-  simp only [Finset.sum_subtype, Finset.mem_powersetCard, and_imp]
+  unfold phasePowerSum
   rw [Finset.sum_mul_sum]
   apply Finset.sum_congr rfl
-  intro x hx
+  intro x _hx
+  rw [Finset.sum_subtype (Finset.univ.powersetCard m) (fun _ => Iff.rfl)]
   apply Finset.sum_congr rfl
-  intro S hSG hScard
-  unfold subgroupPhase phasePowerSum
-  rw [Finset.univ_eq_attach, Finset.sum_attach]
-  -- The outer power sum is independent of `S`; expose its `x` summand.
-  simp only [eta]
+  intro S _hS
+  unfold subgroupPhase
+  rw [prod_addChar_eq]
+  rw [← AddChar.map_nsmul_eq_pow, ← Nat.cast_smul_eq_nsmul (R := F)]
   rw [← AddChar.map_add_eq_mul]
   congr 1
-  rw [map_mul_sum_eq_prod]
-  congr 1
-  · rw [← AddChar.map_nsmul_eq_pow, ← Nat.cast_smul_eq_nsmul (R := F)]
-    congr 1
-    simp only [smul_eq_mul]
-    ring
-  · ring
+  rw [mul_add, Finset.mul_sum]
+  simp only [smul_eq_mul]
+  ring
 
 /-- Every Newton-join covariance is one exact structured collision count. -/
 theorem sum_newtonJoinPeriod_mul_conj_eq_collision
@@ -253,9 +251,6 @@ theorem sum_linearCombination_mul_conj_eq_signedCovarianceForm {d : Nat}
       apply Finset.sum_congr rfl
       intro j _hj
       rw [← Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro b _hb
-      ring
 
 end CoefficientVector
 
@@ -335,6 +330,104 @@ theorem favorableUpperPairs_six_card : (favorableUpperPairs 6).card = 9 := by de
 /-- There are twelve favorable unordered covariances among the seven Newton joins. -/
 theorem favorableUpperPairs_seven_card : (favorableUpperPairs 7).card = 12 := by decide
 
+theorem lateNewtonPacket_six_explicit (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 6 b =
+      120 * (newtonJoinPeriod psi G 1 5 b - newtonJoinPeriod psi G 2 4 b +
+        newtonJoinPeriod psi G 3 3 b - newtonJoinPeriod psi G 4 2 b +
+        newtonJoinPeriod psi G 5 1 b - newtonJoinPeriod psi G 6 0 b) := by
+  norm_num [lateNewtonPacket, lateNewtonJoinPeriod, newtonSign, Fin.sum_univ_succ]
+  ring
+
+theorem lateNewtonPacket_seven_explicit (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 7 b =
+      720 * (newtonJoinPeriod psi G 1 6 b - newtonJoinPeriod psi G 2 5 b +
+        newtonJoinPeriod psi G 3 4 b - newtonJoinPeriod psi G 4 3 b +
+        newtonJoinPeriod psi G 5 2 b - newtonJoinPeriod psi G 6 1 b +
+        newtonJoinPeriod psi G 7 0 b) := by
+  norm_num [lateNewtonPacket, lateNewtonJoinPeriod, newtonSign, Fin.sum_univ_succ]
+  ring
+
+/-- The depth-six structured packet is the existing ordered-injective transform `J_6`. -/
+theorem lateNewtonPacket_six_eq_orderedInjectiveTransform
+    (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 6 b =
+      orderedInjectiveTransform (subgroupPhase psi G b) 6 := by
+  rw [lateNewtonPacket_six_explicit]
+  simp_rw [newtonJoinPeriod_eq_powerSum_mul_esymm]
+  let w := subgroupPhase psi G b
+  have h6 := multiset_newton w 6
+  have ha6 : (Finset.antidiagonal 6).filter (fun a => a.1 < 6) =
+      {(0, 6), (1, 5), (2, 4), (3, 3), (4, 2), (5, 1)} := by decide
+  rw [ha6] at h6
+  have he0 : (G.val.attach.map w).esymm 0 = (1 : Complex) := by
+    simp [Multiset.esymm]
+  norm_num [Finset.sum_insert, psumMs, phasePowerSum] at h6
+  dsimp [w] at h6 he0
+  unfold phasePowerSum orderedInjectiveTransform
+  simp only [Finset.univ_eq_attach, Finset.sum_eq_multiset_sum, Finset.attach_val] at h6 ⊢
+  rw [he0] at h6 ⊢
+  norm_num at h6
+  ring_nf at h6 ⊢
+  linear_combination -120 * h6
+
+/-- The depth-seven structured packet is the existing ordered-injective transform `J_7`. -/
+theorem lateNewtonPacket_seven_eq_orderedInjectiveTransform
+    (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 7 b =
+      orderedInjectiveTransform (subgroupPhase psi G b) 7 := by
+  rw [lateNewtonPacket_seven_explicit]
+  simp_rw [newtonJoinPeriod_eq_powerSum_mul_esymm]
+  let w := subgroupPhase psi G b
+  have h7 := multiset_newton w 7
+  have ha7 : (Finset.antidiagonal 7).filter (fun a => a.1 < 7) =
+      {(0, 7), (1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)} := by decide
+  rw [ha7] at h7
+  have he0 : (G.val.attach.map w).esymm 0 = (1 : Complex) := by
+    simp [Multiset.esymm]
+  norm_num [Finset.sum_insert, psumMs, phasePowerSum] at h7
+  dsimp [w] at h7 he0
+  unfold phasePowerSum orderedInjectiveTransform
+  simp only [Finset.univ_eq_attach, Finset.sum_eq_multiset_sum, Finset.attach_val] at h7 ⊢
+  rw [he0] at h7 ⊢
+  norm_num at h7
+  ring_nf at h7 ⊢
+  linear_combination -720 * h7
+
+/-- At depth seven the structured packet is also definitionally the project-wide
+`injectiveSevenTransform`. -/
+theorem lateNewtonPacket_seven_eq_injectiveSevenTransform
+    (psi : AddChar F Complex) (G : Finset F) (b : F) :
+    lateNewtonPacket psi G 7 b =
+      injectiveSevenTransform (subgroupPhase psi G b) := by
+  rw [lateNewtonPacket_seven_eq_orderedInjectiveTransform]
+  rfl
+
+/-- The zero-frequency ordered-injective transform is the falling-factorial source mass. -/
+theorem orderedInjectiveTransform_subgroupPhase_zero
+    (psi : AddChar F Complex) (G : Finset F) (d : Nat) :
+    orderedInjectiveTransform (subgroupPhase psi G 0) d =
+      (Nat.factorial d * G.card.choose d : Nat) := by
+  classical
+  unfold orderedInjectiveTransform subgroupPhase
+  rw [Finset.esymm_map_val]
+  simp [Finset.card_powersetCard]
+
+theorem lateNewtonPacket_six_zero (psi : AddChar F Complex) (G : Finset F) :
+    lateNewtonPacket psi G 6 0 = (Nat.factorial 6 * G.card.choose 6 : Nat) := by
+  rw [lateNewtonPacket_six_eq_orderedInjectiveTransform,
+    orderedInjectiveTransform_subgroupPhase_zero]
+
+theorem lateNewtonPacket_seven_zero (psi : AddChar F Complex) (G : Finset F) :
+    lateNewtonPacket psi G 7 0 = (Nat.factorial 7 * G.card.choose 7 : Nat) := by
+  rw [lateNewtonPacket_seven_eq_orderedInjectiveTransform,
+    orderedInjectiveTransform_subgroupPhase_zero]
+
+/-- Integer ledger of the nonzero-frequency late Newton energy. -/
+noncomputable def lateNewtonNonzeroEnergyLedger (G : Finset F) (d : Nat) : Int :=
+  (Nat.factorial (d - 1) : Int) ^ 2 *
+      (Fintype.card F : Int) * lateNewtonSignedCollisionForm G d -
+    ((Nat.factorial d : Int) * G.card.choose d) ^ 2
+
 /-- Generic full-frequency energy law for the alternating Newton packet. -/
 theorem sum_lateNewtonPacket_mul_conj_eq_signedCollision
     {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) (d : Nat) :
@@ -373,13 +466,47 @@ theorem sum_lateNewtonPacket_mul_conj_eq_signedCollision
         (Fintype.card F : Complex) * (lateNewtonSignedCollisionForm G d : Complex) := by
       unfold signedCovarianceForm lateNewtonSignedCollisionForm lateNewtonCollisionMatrix
       push_cast
+      rw [mul_assoc]
       apply congrArg (fun z : Complex => (Nat.factorial (d - 1) : Complex) ^ 2 * z)
+      rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro i _hi
+      rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro j _hj
+      unfold lateNewtonJoinPeriod
       rw [sum_newtonJoinPeriod_mul_conj_eq_collision hpsi]
       ring
+
+/-- Exact nonzero-frequency `J_6` energy, including its DC subtraction. -/
+theorem sum_nonzero_lateNewtonPacket_six_eq_ledger
+    {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) :
+    (∑ b ∈ Finset.univ.erase (0 : F), lateNewtonPacket psi G 6 b *
+      (starRingEnd Complex) (lateNewtonPacket psi G 6 b)) =
+      (lateNewtonNonzeroEnergyLedger G 6 : Complex) := by
+  rw [Finset.sum_erase_eq_sub (Finset.mem_univ 0),
+    sum_lateNewtonPacket_mul_conj_eq_signedCollision hpsi,
+    lateNewtonPacket_six_zero]
+  unfold lateNewtonNonzeroEnergyLedger
+  push_cast
+  norm_num [Nat.factorial]
+  simp [starRingEnd_apply]
+  ring
+
+/-- Exact nonzero-frequency `J_7` energy, including its DC subtraction. -/
+theorem sum_nonzero_lateNewtonPacket_seven_eq_ledger
+    {psi : AddChar F Complex} (hpsi : psi.IsPrimitive) (G : Finset F) :
+    (∑ b ∈ Finset.univ.erase (0 : F), lateNewtonPacket psi G 7 b *
+      (starRingEnd Complex) (lateNewtonPacket psi G 7 b)) =
+      (lateNewtonNonzeroEnergyLedger G 7 : Complex) := by
+  rw [Finset.sum_erase_eq_sub (Finset.mem_univ 0),
+    sum_lateNewtonPacket_mul_conj_eq_signedCollision hpsi,
+    lateNewtonPacket_seven_zero]
+  unfold lateNewtonNonzeroEnergyLedger
+  push_cast
+  norm_num [Nat.factorial]
+  simp [starRingEnd_apply]
+  ring
 
 end LatePackets
 

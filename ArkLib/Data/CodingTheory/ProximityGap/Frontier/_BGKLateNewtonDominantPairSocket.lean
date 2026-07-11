@@ -66,7 +66,9 @@ theorem robust_halfUnit_five_of_dominantPair_and_tail
     (htail : FifthTailBudget D tail) :
     RationalTransitionAt productionN 5 (21 * 501) 1000 D := by
   rw [robust_halfUnit_five_iff]
-  unfold FifthNewtonSplit FifthDominantPairBudget FifthTailBudget at hsplit hleading htail
+  simp only [FifthNewtonSplit] at hsplit
+  simp only [FifthDominantPairBudget] at hleading
+  simp only [FifthTailBudget] at htail
   calc
     (1000 : Int) * productionN * 36 * D 6 =
         1000 * productionN * (36 * D 6) := by ring
@@ -98,7 +100,9 @@ theorem robust_halfUnit_six_of_dominantPair_and_tail
     (htail : SixthTailBudget D tail) :
     RationalTransitionAt productionN 6 (25 * 501) 1000 D := by
   rw [robust_halfUnit_six_iff]
-  unfold SixthNewtonSplit SixthDominantPairBudget SixthTailBudget at hsplit hleading htail
+  simp only [SixthNewtonSplit] at hsplit
+  simp only [SixthDominantPairBudget] at hleading
+  simp only [SixthTailBudget] at htail
   calc
     (1000 : Int) * productionN * 49 * D 7 =
         1000 * productionN * (49 * D 7) := by ring

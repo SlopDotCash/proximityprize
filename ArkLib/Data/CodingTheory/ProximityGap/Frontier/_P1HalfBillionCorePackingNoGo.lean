@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLineCoreGeometry
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAgreementOverlapGraph
 import Mathlib.LinearAlgebra.Lagrange
 
 /-!
@@ -24,6 +24,8 @@ step must use correlations between secant parameters and their cores, not only t
 -/
 
 set_option autoImplicit false
+set_option maxRecDepth 1000000
+set_option maxHeartbeats 2000000
 
 open Finset
 
@@ -261,6 +263,16 @@ theorem nodalParameter_mem_degreeLT
   rw [nodalParameter, ← Polynomial.smul_eq_C_mul]
   exact (Polynomial.degreeLT F k).smul_mem (weight p.1) hnodal
 
+theorem nodalParameter_natDegree_lt
+    {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0) (p : CoreIndex k) :
+    (nodalParameter domain weight p).natDegree < k := by
+  rw [nodalParameter, Polynomial.natDegree_C_mul (hweight p.1),
+    erasedBaseNodal, Lagrange.natDegree_nodal,
+    Finset.card_erase_of_mem (Finset.mem_univ p.2), Finset.card_univ]
+  simp only [Fintype.card_fin]
+  exact Nat.sub_lt (lt_of_le_of_lt (Nat.zero_le _) p.2.isLt) one_pos
+
 /-- **The `2k` nodal polynomial parameters are genuinely distinct.** -/
 theorem nodalParameter_injective
     {F : Type} [Field F] {k : Nat} (domain : Coord k → F)
@@ -414,6 +426,69 @@ theorem production_threshold_deficit : T - K = 324359510 := by
 theorem production_core_strictly_below_threshold : K < T := by
   norm_num [T, K]
 
+/-! ## Threshold amplification of the repeated-polynomial pairs is impossible -/
+
+open P1RateQuarterAgreementOverlapGraph
+
+/-- Symbolic five-line obstruction.  The displayed arithmetic inequality is exactly the sharp
+five-set integral Johnson contradiction for a `4k`-point domain, weight `t`, and pair cap `k-1`. -/
+theorem not_five_nodalLines_all_of_integralJohnson
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {k t : Nat} (harith : 6 * (4 * k) + 20 * (k - 1) < 20 * t)
+    (domain : Coord k ↪ F)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0)
+    (hweightInj : Function.Injective weight)
+    (index : Fin 5 → CoreIndex k) (hindex : Function.Injective index) :
+    ¬ ∀ i : Fin 5, t ≤
+      (jointCore domain (nodalReceived (fun x => domain x) weight) (fun _ => 0)
+        (nodalLine (fun x => domain x) weight (index i)).1
+        (nodalLine (fun x => domain x) weight (index i)).2).card := by
+  intro hcore
+  let line : Fin 5 → F[X] × F[X] := fun i =>
+    nodalLine (fun x => domain x) weight (index i)
+  have hline : Function.Injective line :=
+    (nodalLine_injective (fun x => domain x) domain.injective weight hweight
+      hweightInj).comp hindex
+  have hdeg : ∀ i, (line i).1.natDegree < k ∧ (line i).2.natDegree < k := by
+    intro i
+    constructor
+    · change (nodalParameter (fun x => domain x) weight (index i)).natDegree < k
+      exact nodalParameter_natDegree_lt (fun x => domain x) weight hweight (index i)
+    · simp only [line, nodalLine, natDegree_zero]
+      exact lt_of_le_of_lt (Nat.zero_le _) (index i).2.isLt
+  let D : Fin 5 → Finset (Coord k) := fun i =>
+    jointCore domain (nodalReceived (fun x => domain x) weight) (fun _ => 0)
+      (line i).1 (line i).2
+  have hpair : ∀ i j : Fin 5, i ≠ j → (D i ∩ D j).card ≤ k - 1 := by
+    intro i j hij
+    have hne : (line i).1 ≠ (line j).1 ∨ (line i).2 ≠ (line j).2 := by
+      by_contra hnot
+      push Not at hnot
+      exact hline.ne hij (Prod.ext hnot.1 hnot.2)
+    exact jointCore_inter_card_le_of_line_ne domain
+      (nodalReceived (fun x => domain x) weight) (fun _ => 0)
+      (k := k) (lt_of_le_of_lt (by omega : 0 ≤ (index i).2.val) (index i).2.isLt)
+      (hdeg i).1 (hdeg i).2 (hdeg j).1 (hdeg j).2 hne
+  have hJ := fiveSet_integral_johnson D hcore hpair
+  simp only [Fintype.card_prod, Fintype.card_fin] at hJ
+  omega
+
+/-- **Five-line threshold-amplification no-go at literal P1.**  Choose any five distinct packed
+indices and the corresponding distinct nodal lines.  They cannot all have threshold-size joint
+cores against the shared received stack. -/
+theorem not_five_nodalLines_all_threshold
+    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    (domain : Coord K ↪ F)
+    (weight : Fin 2 → F) (hweight : ∀ b, weight b ≠ 0)
+    (hweightInj : Function.Injective weight)
+    (index : Fin 5 → CoreIndex K) (hindex : Function.Injective index) :
+    ¬ ∀ i : Fin 5, T ≤
+      (jointCore domain (nodalReceived (fun x => domain x) weight) (fun _ => 0)
+        (nodalLine (fun x => domain x) weight (index i)).1
+        (nodalLine (fun x => domain x) weight (index i)).2).card := by
+  apply not_five_nodalLines_all_of_integralJohnson
+    (k := K) (t := T) (by norm_num [K, T]) domain weight hweight hweightInj index hindex
+
 end ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 
 open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
@@ -436,3 +511,5 @@ open ArkLib.ProximityGap.Frontier.P1HalfBillionCorePackingNoGo
 #print axioms rawSecantParameter_same_polynomial
 #print axioms rawSecantParameter_nodal
 #print axioms production_threshold_deficit
+#print axioms not_five_nodalLines_all_of_integralJohnson
+#print axioms not_five_nodalLines_all_threshold

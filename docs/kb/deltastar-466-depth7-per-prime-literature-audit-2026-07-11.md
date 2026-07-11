@@ -672,6 +672,38 @@ late profile, but `(n,p)=(64,8001281)` crosses from `C(n,5)<p` to `C(n,6)>9p` wh
 evidence; their rigorous lesson is only that the birthday crossover must be coupled to actual
 joint-period arithmetic.
 
+That arithmetic can now be stated as a signed two-colour theorem.  The physical histogram of the
+`j`th Newton join is
+
+```text
+U_j(y) = sum_(x in G) a_(r+1-j)(y-j*x),
+```
+
+and `_BGKLateNewtonSignedCovariance.lean` gives cross Parseval for every pair `U_j,U_k`.  The full
+alternating packet has nine opposite-parity unordered pairs at depth six and twelve at depth
+seven; those are coefficient signs, not a theorem about covariance signs.  Exact reconnaissance
+shows that the stable leading object is not `Cov(U_1,U_2)` alone but
+
+```text
+L_r = V(U_1-U_2) = E_11+E_22-2E_12,
+```
+
+with a separate signed tail containing colours `j>=3`.  The formal consumer allocates the exact
+late numerators as `10500+21=10521` and `12500+25=12525`.  Favorable order-64 cells pass this
+two-term cap, but an adverse cell also has a large favorable `U_1,U_2` covariance; it fails because
+the `U_1` diagonal is super-Wick.  Thus neither birthday density nor a covariance-only sign law is
+the remaining theorem.  A useful analytic input must bound the combined centered two-colour
+energy and the small signed tail at the production subgroup.
+
+The G189--G192 first-collision route does not transfer this saving from the repetition sector.
+Although the exact G190 polarization gives formal `29/30` and `41/42` cancellation gates, the
+actual deletion formula contains the additional injective--repetition term `2 Cov(J,P)`.  A formal
+counterprofile has perfect internal repetition cancellation and still fails the injective ledger;
+G191 gives positive lexicographic covariance on a genuine subgroup, and G192 reports a positive
+empirical example for the symmetric depth-three partition.  Even making the entire repeated sector free recovers only
+`138`, leaving an `8126` coefficient gap to Wick.  These results close the generic internal-
+covariance shortcut while leaving production-specific signed injective arithmetic open.
+
 ## 10. Ranked research consequences
 
 1. **Exact dual coordinate, not a shortcut:** the annihilator-sensitive 13-variable Jacobi law

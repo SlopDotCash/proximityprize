@@ -716,6 +716,70 @@ empirical selected-cap success ranks `6 -> 7` ahead of `5 -> 6`.  But the direct
 birthday crossing alone is formally and computationally insufficient; production joint-period
 correlation is indispensable.
 
+The late Newton correlation is now an exact matrix rather than a slogan.
+`_BGKLateNewtonSignedCovariance.lean` realizes the `j`th recurrence term as the phase family
+
+```text
+(x,S) |-> j*x + sum S,
+Fourier transform = p_j(b)*e_(d-j)(b).
+```
+
+Generic cross Parseval identifies each matrix entry with a structured collision count, and one
+coefficient-vector identity expands the complete alternating packet.  The opposite-parity entries
+carry the favorable algebraic coefficient: nine unordered pairs for `d=6`, twelve for `d=7`.
+This does not assert that each centered covariance has a favorable sign.  Factorial
+scaling removes the adjacent `(r+1)^2` from the late ledgers exactly.  This is a signed collision
+coordinate system, not an estimate of its entries.
+
+Exact finite-cell decomposition then isolates a smaller target.  If `U_j` is the physical
+histogram of `p_j e_(r+1-j)`, write
+
+```text
+L_r = E_11 + E_22 - 2*E_12,
+(r+1)^2*Delta_(r+1) = L_r + R_r,
+```
+
+where `R_r` contains every cell touching `j>=3`.  `_BGKLateNewtonDominantPairSocket.lean` proves
+that the following four integer inequalities are sufficient for the robust distributed pair:
+
+```text
+1000*n*L_5 <= 10500*(n-5)^2*Delta_5,
+1000*n*R_5 <=    21*(n-5)^2*Delta_5,
+1000*n*L_6 <= 12500*(n-6)^2*Delta_6,
+1000*n*R_6 <=    25*(n-6)^2*Delta_6.
+```
+
+The sums `10500+21=10521` and `12500+25=12525` are exactly the existing caps; no extra slack is
+invented.  `probe_bgk_late_newton_covariance.py` verifies the Newton identity using exact subset
+histograms and rational arithmetic.  At `(64,1000193)`, for example,
+`c_5=10.001214...` splits into `diag1=10.739461...`, `cross12=-0.798115...`,
+`diag2=0.064950...`, and tail `-0.005081...`; at `6 -> 7` the corresponding dominant cross term
+is `-1.105089...`.  But the adverse `(64,750209)` cell also has enough negative `cross12` to cover
+the primitive `8264`-unit gap in isolation while its `diag1` excess makes the total ratio fail.
+Hence a covariance-only lower bound is false as a discriminator.  The surviving target is the
+combined centered `U_1-U_2` energy, plus a controlled signed Newton tail.  Every finite cell is
+labelled PROBE and supplies no production extrapolation.
+
+The repetition covariance route has also been calibrated exactly.
+`_BGKFirstCollisionCovarianceLedgerBridge.lean` proves the abstract G190 polarization and shows
+that cancelling `29/30` of the depth-six stratum mass (respectively `41/42` at depth seven) would
+remove the cardinal loss if the stratum sum were the desired injective carrier.  It is not.  If
+`J` is the factorial-scaled injective profile and `P` is the repetition profile, the exact identity
+is
+
+```text
+V(J+P) = V(J) + [sum_i V(P_i) + Cov_off(P) + 2*Cov(J,P)].
+```
+
+The bracket needs a lower bound to delete `P`; internal negative covariance alone gives the wrong
+quantity.  A two-target nonnegative counterprofile has perfect internal cancellation and still
+fails the `5 -> 6` ledger.  G191 separately gives a genuine subgroup with lexicographic
+`(sum V_i,Cov_off)=(36,64)`, and G192 reports positive covariance for the symmetric depth-three
+partition.  Finally, freeing the entire repeated-sector reservation only changes the allowance by
+`138`, from `126871` to `127009`; the Wick product still exceeds it by `8126`.  Consequently the
+main saving must be an injective/Newton transition theorem, not a generic internal repetition-sign
+theorem.
+
 `_BGKCyclotomicKreinSchurNoGo.lean` performs the all-orders positivity audit on the enlarged
 orbit-spectral cone.  For a translation kernel, Schur multiplication is additive convolution of
 its Fourier profile.

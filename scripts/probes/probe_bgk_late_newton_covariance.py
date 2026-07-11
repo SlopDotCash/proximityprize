@@ -21,12 +21,14 @@ pair is twice this quantity; their sum is the exact transition ratio
 
     c_r = n Z_(r+1)/Z_r.
 
-No complex FFT or floating approximation is used.  Histograms and convolution
-values are int64 after explicit size checks; all centered products and final
-ratios use Python's unbounded integers and ``fractions.Fraction``.  Multiplicative
-orbit compression reduces every exact inner product to the zero cell plus one
-representative of each ``G``-orbit.  The full Newton identity is independently
-checked against the directly computed next subset histogram.
+No complex FFT or floating approximation is used.  The shipped order-64 cells
+keep their histograms and convolution values inside int64; chunked inner products
+carry an explicit overflow check, while all centered products and final ratios use
+Python's unbounded integers and ``fractions.Fraction``.  Multiplicative orbit
+compression reduces every exact inner product to the zero cell plus one
+representative of each ``G``-orbit.  The centered-energy consequence of Newton's
+identity is independently checked against the directly computed next subset
+histogram.
 
 The default cells are the two favorable n=64 cells and the counterexample from
 ``probe_bgk_subset_trajectory_birthday.py``.  ``--extended`` adds several exact
@@ -199,8 +201,9 @@ def decompose_step(
             elif j < k:
                 cross[(j, k)] = Fraction(2 * order * signed, denominator)
 
-    # This verifies orbit compression, every sign, and the physical Newton
-    # expansion against the independently formed (r+1)-subset histogram.
+    # This verifies orbit compression, every sign, and the centered-energy
+    # consequence of the Newton expansion against the independently formed
+    # (r+1)-subset histogram.  It is not a pointwise profile check.
     assert signed_total == (r + 1) ** 2 * next_delta
     ratio = Fraction(order * signed_total, denominator)
     assert ratio == sum(diagonal, start=Fraction(0)) + sum(

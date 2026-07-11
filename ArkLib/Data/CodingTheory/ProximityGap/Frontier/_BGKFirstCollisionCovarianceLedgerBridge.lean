@@ -43,6 +43,13 @@ allocation from `126871` to `127009`, still `8126` below the Wick coefficient `1
 Consequently G190-type internal repeated-defect covariance cannot itself supply the main Wick
 saving; that saving must occur in the raw/injective transition or Newton covariance.
 
+The sign hypothesis is also not a plausible generic theorem.  G191 gives a genuine subgroup
+counterexample to even `Cov_off <= 0` for the lexicographic partition: at depth three in
+`F_5^times` its stratum-mass/covariance pair is `(36,64)`.  G192 replaces lexicographic colours by
+the permutation-symmetric `2+1` and `3` kernel types, but the order-three subgroup of `F_7^times`
+already has positive empirical covariance `9`.  Hence the `29/30` and `41/42` bounds below are
+calibrated sufficient sockets, not conjectured universal signs.
+
 Issue #466.
 -/
 
@@ -193,6 +200,13 @@ theorem depthSeven_oneColour_bound {I X : Type*} [DecidableEq I] [Fintype X]
 stronger relative cancellation. -/
 theorem required_cancellation_fractions :
     (29 : Rat) / 30 < 41 / 42 ∧ (41 : Rat) / 42 < 1 := by
+  norm_num
+
+/-- Even deleting the full reserved repeated-sector coefficient leaves an `8126` gap to Wick.
+This separates G190's internal repeated-defect covariance from the raw/injective transition
+covariance that still has to produce the principal saving. -/
+theorem free_repeatedSector_still_below_wick :
+    126871 + 138 = 127009 ∧ 127009 < 135135 ∧ 135135 - 127009 = 8126 := by
   norm_num
 
 /-! ## Direct-carrier consumers for the two exact compact ledgers -/
