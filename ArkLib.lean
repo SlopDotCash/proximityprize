@@ -2217,6 +2217,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G129FullDescentBudget
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G130UniformRungBudgets
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G131PerRungDescentSeries
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G132PerRungBudgetAssembly
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G133CensusTower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G58AllDepthLedgerReversal
