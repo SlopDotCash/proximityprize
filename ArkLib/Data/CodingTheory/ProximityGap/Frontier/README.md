@@ -134,6 +134,12 @@ core has cardinality at least `K`.  Thus the four-centre output is no longer mer
 graph; it is a routed supply of large-core canonical cross-secants.  The remaining propagation
 question is whether this star of cross-secants forces the outside pair's original secant into a
 bounded polynomial-line cluster around its centre.
+`_P1OneEndpointCentrePropagationRefuted.lean` proves that implication false at the algebraic
+interface: fixing the routed endpoint and centre leaves the cross-secant unchanged while varying
+the unseen partner changes the outside pair's original secant from `(0,0)` to `(0,1)`.  Hence the
+four-centre star cannot cluster original lines from one-endpoint routing alone.  A viable successor
+must route both endpoints to centres, force a second independent cross-equation, or exploit a
+global decoded-family invariant coupling the unobserved partner.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

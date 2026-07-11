@@ -310,6 +310,29 @@ theorem pointedLabelSubsetFiber_eq_sigmaFiber (G : Finset F) (d : Nat) (y : F) :
       rw [pointedLabelSigmaEquiv_phase G d z]
   simpa [phaseFiberCount, Fintype.card_subtype] using Fintype.card_congr e
 
+/-- Every labelled `d`-subset in one sum fibre has exactly `d` possible distinguished points. -/
+theorem pointedLabelSigmaFiber_eq_mul_labelSubsetFiber
+    (G : Finset F) (d : Nat) (y : F) :
+    phaseFiberCount (pointedLabelSigmaSum G d) y =
+      d * phaseFiberCount (labelSubsetSum G d) y := by
+  classical
+  have hleft : phaseFiberCount (pointedLabelSigmaSum G d) y =
+      ∑ z : PointedLabelSigma G d,
+        if pointedLabelSigmaSum G d z = y then 1 else 0 := by
+    unfold phaseFiberCount
+    rw [Finset.card_filter]
+  have hright : phaseFiberCount (labelSubsetSum G d) y =
+      ∑ S : SubsetAt G d, if labelSubsetSum G d S = y then 1 else 0 := by
+    unfold phaseFiberCount
+    rw [Finset.card_filter]
+  rw [hleft, hright, Fintype.sum_sigma, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro S _hS
+  have hScard : S.1.card = d := (Finset.mem_powersetCard.mp S.2).2
+  by_cases hsum : labelSubsetSum G d S = y
+  · simp [pointedLabelSigmaSum, hsum, Fintype.card_coe, hScard]
+  · simp [pointedLabelSigmaSum, hsum]
+
 /-- Erasing the repeated marked point lowers the subset depth by one and makes it fresh. -/
 def eraseRepeatedMarkedJoin (G : Finset F) {r : Nat} (_hr : 0 < r) :
     RepeatedMarkedJoin G r -> FreshMarkedJoin G (r - 1) := by
