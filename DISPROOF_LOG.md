@@ -16676,3 +16676,42 @@ untouched.  Session: ten rounds, 82 kernel theorems, 8 probes.
 Files: `_P1RateQuarterFiberChebyshevRefinement.lean`,
 `scripts/probes/probe_rate_quarter_p1_fiber_chebyshev.py`,
 `docs/kb/deltastar-466-rate-quarter-fiber-chebyshev-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: JUNK-SLICE LEDGER (session close) — vote
+## decomposition + junk-forced rider count landed; the fiber-Chebyshev x
+## FiveCoverForm composition does NOT improve the master (calibrated
+## no-improvement); 11-round arc retrospective in kb
+
+Eleventh and final round.  Probe
+`scripts/probes/probe_rate_quarter_p1_junk_slice.py` (exact): the fiber
+constraint forces a lower rider cap only when vote demand exceeds foreign
+fiber capacity — five-cover geometry: 4(k−1) = 1073741820 >= T (never
+forcing); two-capacity-region geometry: crossover A < T−2(k−1) = 55924056 is
+BELOW the pair-pencil floor 2T−N = 111848108 (empty range); master margin
+demand 13 is seven orders under the cap.  Extremal dual-family riders take
+exactly ONE foreign vote and ZERO junk votes.  VERDICT: the five-pencil
+master ledger is UNCHANGED — no margin weakens; honest content =
+vote_decomposition_two_regions (votes <= 2(k−1) + junk), junk_forced_riders
+(#riders·(b − 2(k−1)) <= |complement|, binding range empty for pair-pencil
+families), fiveCover_fiber_capacity, two_region_crossover_empty,
+master_margin_no_improvement.
+
+AUDIT (`_P1RateQuarterJunkSliceLedger.lean`; FULL axiom lists read manually
+via `lake env lean`): all 5 theorems exactly [propext, Classical.choice,
+Quot.sound]; no sorryAx, no warnings.
+
+SESSION TOTALS (11 rounds, 2026-07-11): 11 lane files, 93 kernel theorems
+(all axiom-clean, every axiom list read manually in full), 9 exact probes,
+2 refutations (adversarial-domain StallResidual via the 7·2^25 subgroup
+escape; u-relative fiber cap), 3 no-go theorems (packing jaw, second-moment
+jaw, junk-slice composition), 1 cross-cone identity bridge.  FINAL RESIDUAL:
+StallResidual(mu_{2^30}) <= SwarmResidual = 3-to-5 near-full clusters
+(rank-drop floors X_m, constructors dyadically blocked) + the sub-Johnson
+pair-cloud swarm (counting-immune, sub-Burgess incomplete-sum list problem —
+the campaign's global wall, its distinction from the B-side wall now
+kernel-pinned).  No delta-star movement all session; bracket
+3/8 <= delta* <= 43/96 + eps exactly where it started.  The lane rests.
+
+Files: `_P1RateQuarterJunkSliceLedger.lean`,
+`scripts/probes/probe_rate_quarter_p1_junk_slice.py`,
+`docs/kb/deltastar-466-rate-quarter-junk-slice-ledger-2026-07-11.md`.
