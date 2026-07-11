@@ -51284,3 +51284,48 @@ build green. Formal payload: `Frontier/_G181DyadicKernelFloor.lean`; consumes G8
 `kernel_sq_le_centeredShadowMass` + R308 `repRF`/`gsumR`. Probes:
 `scripts/probes/probe_oc_dyadic_profile_rigidity.py`,
 `scripts/probes/probe_oc_kernel_mass_dyadic.py`, `scripts/probes/probe_oc_kernel_formula.py`.
+
+## [466-SYZ68-generator-gap-parity] The μ-basis generator gap has FIXED parity `δ₂−δ₁ ≡ S (mod 2)`, correcting the SYZ54 interior target from the FALSE `gap ≤ 1` to the class-true `gap ≤ 2 ⟺ ι ≤ 1` (2026-07-11)
+
+**Object.** The Hilbert–Burch μ-basis of a balanced pairwise-coprime band triple `(a,b,c)`, degrees
+`δ₁ ≤ δ₂`, total `S = a+b+c`, imbalance `ι = SYZ45.imbalance a b c δ₁ = ⌊S/2⌋ − δ₁`.
+
+**Corrected claim (SYZ54 was wrong as worded).** The SYZ54 consolidation handed downstream the target
+"the μ-basis generator gap satisfies `δ₂−δ₁ ≤ 1`" (with `ι=0 ⟺ gap≤1`). A corrected exact GF(p)
+μ-basis referee sweep (`fable_syz54_truegap.py`, 1500 cells: 10 balanced/near-balanced shapes covering
+BOTH degree-sum parities `S=16..27`, `p∈{61,101,257}`, 50 pairwise-coprime distinct-root triples each)
+**refuted** it. The prior instrument measured `δ₂ = min{D : kerdim(D) ≥ 2}`, which is capped at `δ₁+1`
+by the poly-multiples `{g₁, x·g₁}` of the FIRST generator and cannot see `gap ≥ 2`. Corrected free-rank-2
+readout `δ₂ = min{D : kerdim(D) > D−δ₁+1}` measures `gap ≡ S (mod 2)` in all 1500 cells (odd `S`: `gap=1`
+always; even `S`: `gap∈{0,2}`), with genuine `gap=2` witnesses at even `S` (e.g. `p=61, a=b=c=6, S=18:
+(δ₁,δ₂)=(8,10)`, so `ι=1`). So the CLASS target `gap ≤ 1` (for all triples) is FALSE — the even-`S`
+gap=2 witnesses refute it; the honest class-true target is `gap ≤ 2`.
+
+**Formal payload (`Frontier/_SYZ68GeneratorGapParity.lean`, pure ℕ, axiom-clean).** The parity mechanism
+is ZERO field content — forced by SYZ44's degree-sum law `δ₁+δ₂=S` alone: `gap = δ₂−δ₁ = S−2δ₁ ≡ S (mod 2)`.
+- `gap_parity`: `(δ₂−δ₁) % 2 = (a+b+c) % 2` (`[propext, Quot.sound]`).
+- `gap_ne_three_of_even`: at even `S`, `gap ≠ 3` (parity), so SYZ53's `gap ≤ 3` collapses to `gap ≤ 2`.
+- `imbalance_le_one_iff_gap_le_two_of_even`: **`ι ≤ 1 ↔ δ₂−δ₁ ≤ 2` at even `S`** — the corrected,
+  class-true interior calibration replacing SYZ54's false `gap ≤ 1`; one unit tighter than SYZ53's
+  parity-free `gap ≤ 3`.
+- `imbalance_eq_zero_iff_gap_eq_zero_of_even`: **canonical exact-balance form** `ι=0 ⟺ gap=0` at even
+  `S`. (Even-`S` parity makes `gap≤1` vacuously equal `gap=0`, so `ι=0 ⟺ gap≤1` is also true here but
+  only degenerately; `gap=0` is the honest exact-balance criterion, not `gap≤1`.)
+- `imbalance_eq_one_iff_gap_eq_two_of_even`: `ι=1 ↔ gap=2` — pins the referee's gap=2 witnesses; `ι=1`
+  is ATTAINED on the class, so `ι=0` is not forced.
+- `imbalance_le_one_iff_gap_le_two_of_hilbert_even`: packaged from SYZ44 `RankNullity`+`TwoRamp`.
+
+**Why new (not a SYZ53 wrapper).** SYZ53 proves the parity-free `ι≤1 ⟺ gap≤3` and the odd-S-measured
+`gap≤1 ⟹ ι=0`. SYZ68 adds the parity INVARIANT `gap ≡ S (mod 2)` (a genuinely new structural fact,
+absent from SYZ53), uses it to sharpen the interior target to the class-true `ι≤1 ⟺ gap≤2` at even S,
+and exposes that the `ι=0 ⟺ gap≤1` phrasing degenerates to the honest `gap=0` on the even-S class.
+Load-bearing: it stops a downstream lane from formalizing the false CLASS target `gap≤1 for all
+triples` handed down by SYZ54 (refuted by the even-S gap=2 witnesses).
+
+**Scope (honest).** Combinatorial calibration only. Proves the parity constraint and the corrected
+`gap≤2 ⟺ ι≤1` equivalence; does NOT prove that a balanced coprime triple actually satisfies `gap≤2`
+(remaining Hilbert–Burch even-S codimension count excluding `gap≥4`, handed to G56/Opus-core). `ι≤1`
+closes SYZ44 `uniformSylvester` only at rate 1/2; production δ* still needs SYZ18 supports, `hrank`
+realizability, strip transport, MCAThresholdLedger BGK floor. CORE remains OPEN / ON-BGK; BGK wall
+untouched. All six declarations axiom-clean; focused + locked builds green (8321 jobs). Consumes SYZ44
+`degree_sum_of_hilbert` + SYZ53 `imbalance_eq_gap_div_two`. Referee: `fable_syz54_truegap.{py,out}`.
