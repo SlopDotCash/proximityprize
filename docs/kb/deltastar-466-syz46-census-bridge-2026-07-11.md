@@ -1,4 +1,4 @@
-# SYZ46 — the census bridge: strip per-stack bad-count ⇒ the δ* pin (2026-07-11)
+# SYZ46 — the census bridge: strip per-stack bad-count ⇒ the δ* bracket (2026-07-11, corrected)
 
 Issue #466 (Proximity Prize / proximity-gap). Rate `1/2`, `n = 2³⁰`, `k = 2²⁹`,
 `ε* = 2⁻¹²⁸`, first certified prize field `P = PrizeShapePrimeP30.P`,
@@ -7,16 +7,32 @@ smooth-domain code `evalCode g (2³⁰) (2²⁹ − 1)`.
 File: `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ46CensusBridge.lean`
 (axiom-clean: `[propext, Classical.choice, Quot.sound]`; no `sorry`, no `native_decide`).
 
-## What this file is
+## RETRACTION of the first draft (commit `1f12870b6`) — credit: the SYZ3 witness
 
-SYZ33's header names four "not-cheap" wires still needed to chain the strip theorem to a
-production δ* statement at `n = 2³⁰`. SYZ46 formalizes **wire (iv)**, verbatim from that header:
+The first SYZ46 draft placed the strip census hypothesis at the `31/64`-predecessor radius
+`predecessorRadius (2³⁰) (31·2²⁴)` and concluded a two-sided pin `δ* = 31/64`. **That hypothesis is
+unsatisfiable**: `_SYZ3OverBudgetStackWitness.lean` (`firstPrime_predecessor_cap_refuted`) exhibits
+an explicit degenerate stack with `3·31·2²⁴ = 1,560,281,088 > 2³⁰` bad scalars at exactly that
+radius. The draft's conditional theorem `deltaStar_pinned_of_strip_master_hypothesis` was therefore
+vacuously true — the laundering pattern the campaign forbids — and its conclusion `δ* = 31/64` even
+contradicted the unconditional SYZ4/SYZ6 ceiling `δ* ≤ 358612991/2³⁰ ≈ 0.334`. That theorem is
+**deleted**; the retraction is machine-checked in-file:
+
+- `RefutedPredecessorCensusBound` (the old hypothesis, kept only as a labelled tombstone), and
+- `refutedPredecessorCensusBound_is_false : ¬ RefutedPredecessorCensusBound`
+  (proved from the SYZ3 witness).
+
+Root cause: the strip machinery bounds bad counts at radii **inside the strip** (`δ < 1/3`), not at
+the `31/64` predecessor. Caught by the coordinator audit against SYZ3.
+
+## What this file is (corrected)
+
+SYZ33's header names four "not-cheap" wires still needed to chain the strip theorem to a production
+δ* statement at `n = 2³⁰`. SYZ46 formalizes **wire (iv)**, verbatim from that header:
 
 > "the `MCAThresholdLedger` bridge from the count bound `#bad ≤ n − 1` to the `δ*` floor."
 
-Nothing here is open math. It is a pure re-assembly of already-landed pieces that turns the
-strip's per-stack census budget into the two-sided δ* pin, and bundles the entire conditional
-chain into **one Lean statement**.
+Nothing here is open math — pure re-assembly of landed pieces, now at the correct strip radius.
 
 ## Deliverables
 
@@ -25,42 +41,61 @@ chain into **one Lean statement**.
    `(∀ u, mcaBadCount C δ (u 0) (u 1) ≤ B) → epsMCA C δ ≤ B / |F|`, straight from
    `epsMCA_eq_iSup_mcaBadCount` (the worst-case-uniform-probability definition of `epsMCA`).
 
-2. **`StripCensusBound`** — the single Lean hypothesis: the transported strip conclusion at the
-   concrete code,
-   `∀ u, mcaBadCount (evalCode g (2³⁰) (2²⁹−1)) (predecessorRadius (2³⁰) (31·2²⁴)) (u 0) (u 1) ≤ 2³⁰ − 1`.
+2. **`StripCensusBound`** — the single Lean hypothesis, at the corrected radius. With
+   `stripNumerator := 357913941 = (2³⁰ − 1)/3` (largest `a` with `a/2³⁰ ≤ 1/3`):
 
-3. **Two-sided pin** (`deltaStar_eq_thirtyOneSixtyFour_of_census`,
-   `deltaStar_ge_thirtyOneSixtyFour_of_census`). From `StripCensusBound` the threshold is pinned:
-   `mcaDeltaStar (evalCode g (2³⁰) (2²⁹−1)) ε* = 31/64`. Lower half clears the prize arithmetic
-   `(2³⁰−1)/P ≤ 2³⁰/P ≤ 2⁻¹²⁸` (the `hbudget` pattern) via `le_mcaDeltaStar_of_good`; upper half is
-   the unconditional quotient-spread bad witness at `31/64`
-   (`firstPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour`, SYZ6 shape). Implemented by feeding
-   `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count` (the strip's tighter
-   `n−1` budget subsumes that theorem's `n` budget).
+   ```
+   def StripCensusBound : Prop :=
+     ∀ u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)),
+       mcaBadCount (F := ZMod P)
+           (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+           (predecessorRadius (2 ^ 30) stripNumerator)
+           (u 0) (u 1) ≤ 2 ^ 30 - 1
+   ```
 
-4. **The final conditional** (`deltaStar_pinned_of_strip_master_hypothesis`) — the whole chain as
-   one statement (see below).
+   Census radius `= 357913940/2³⁰ < 1/3`, strictly inside the strip. No in-tree witness refutes it
+   (unlike the retracted variant).
 
-## THE conditional pin — verbatim statement
+3. **Conditional floor** (`deltaStar_ge_stripBoundary_of_census`), **floor only**:
+
+   ```
+   theorem deltaStar_ge_stripBoundary_of_census (h : StripCensusBound) :
+       ((stripNumerator : ℕ) : NNReal) / ((2 ^ 30 : ℕ) : NNReal) ≤
+         mcaDeltaStar (F := ZMod P) (A := ZMod P)
+           (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+           (ProximityGap.epsStar : ENNReal)
+   ```
+
+   i.e. `δ* ≥ 357913941/2³⁰ = 1/3 − 1/(3·2³⁰)`. Chain: census clears
+   `(2³⁰−1)/P ≤ 2³⁰/P ≤ 2⁻¹²⁸ = ε*` (the `hbudget` arithmetic) ⟹ `ε_mca ≤ ε*` at the predecessor
+   ⟹ `latticeBoundary_le_mcaDeltaStar_of_predecessor_good`.
+
+4. **Two-sided bracket** (`deltaStar_bracket_of_census`): floor + the **unconditional** SYZ6
+   ceiling (`firstPrime_rateHalf_mcaDeltaStar_le_exact`):
+   `357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰` — both endpoints near `1/3`, width
+   `699050/2³⁰ ≈ 6.5·10⁻⁴`. **No equality / pin is claimed.**
+
+## THE conditional bracket — verbatim statement
 
 ```
-theorem deltaStar_pinned_of_strip_master_hypothesis
+theorem deltaStar_bracket_of_strip_master_hypothesis
     (H : ArkLib.ProximityGap.SYZ42.StripMasterHypothesis'' (ZMod P) V (2 ^ 30) (2 ^ 29))
     (transport :
       ArkLib.ProximityGap.SYZ42.StripMasterHypothesis'' (ZMod P) V (2 ^ 30) (2 ^ 29) →
         StripCensusBound) :
-    mcaDeltaStar (F := ZMod P) (A := ZMod P)
-        (evalCode g (2 ^ 30) (2 ^ 29 - 1))
-        (ProximityGap.epsStar : ENNReal) = (31 / 64 : NNReal)
+    (357913941 : NNReal) / (2 ^ 30 : NNReal) ≤
+        mcaDeltaStar (F := ZMod P) (A := ZMod P)
+          (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+          (ProximityGap.epsStar : ENNReal) ∧
+      mcaDeltaStar (F := ZMod P) (A := ZMod P)
+          (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+          (ProximityGap.epsStar : ENNReal) ≤ (358612991 : NNReal) / (2 ^ 30 : NNReal)
 ```
 
 with `{V : Type*} [AddCommGroup V] [Module (ZMod P) V] [Module.Finite (ZMod P) V]`,
 `P = ArkLib.ProximityGap.PrizeShapePrimeP30.P`, `g = ...PrizeShapePrimeP30.g`.
-
-Proof: `deltaStar_eq_thirtyOneSixtyFour_of_census (transport H)`.
-
-Both hypotheses are load-bearing: `transport H : StripCensusBound` feeds the pin, and `transport`
-is typed to consume the master hypothesis so the provenance is explicit in the statement.
+Proof: `deltaStar_bracket_of_census (transport H)`. The ceiling half is unconditional (SYZ6);
+only the floor consumes the hypotheses.
 
 ## Complete, scrupulously honest hypothesis list
 
@@ -80,22 +115,22 @@ is typed to consume the master hypothesis so the provenance is explicit in the s
   (`realizabilityCore_of_overBudget_stack`'s sole hypothesis) — a residual **separate** from (i).
 - **(iv)** the abstract-to-concrete **transport** itself: routing SYZ40's abstract band-triple /
   union-budget strip conclusion, through the G87 `mcaEvent`→syndrome bridge, to the per-stack
-  `mcaBadCount` cap at the concrete smooth-domain `evalCode`. Not formalized; it is the `transport`
-  hypothesis of the capstone.
+  `mcaBadCount` cap at the concrete smooth-domain `evalCode` **at the strip radius**
+  `357913940/2³⁰`. Not formalized; it is the `transport` hypothesis of the capstone.
 
-None of (i)–(iv) is asserted; SYZ46 delivers **no** unconditional δ* and **no**
-conditional-on-`uniformSylvester`-alone δ*. Its gain is exactly wire (iv): the census-count ⇒
-δ*-pin bridge, plus the one-statement assembly of the full conditional chain with every residual
-named.
+None of (i)–(iv) is asserted; SYZ46 delivers **no** unconditional δ* movement and **no**
+conditional-on-`uniformSylvester`-alone δ*. Its gain is wire (iv): the census-count ⇒ δ*-floor
+bridge at the correct radius, the machine-checked retraction of the vacuous first draft, and the
+one-statement assembly of the conditional bracket with every residual named.
 
 ## Reused substrate (all pre-landed)
 
 - `ProximityGap.epsMCA_le_of_badCount_le`, `epsMCA_eq_iSup_mcaBadCount` (`MCABadCount.lean`,
   `MCALowerBound.lean`).
-- `MCAThresholdLedger.mcaDeltaStar`, `le_mcaDeltaStar_of_good`, `mcaDeltaStar_le_of_bad`.
-- `PrizeShapeRateHalfBracket.firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`,
-  `firstPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour`, `predecessorRadius`,
-  `latticeBoundary_le_mcaDeltaStar_of_predecessor_good`.
+- `MCAThresholdLedger.mcaDeltaStar`, `le_mcaDeltaStar_of_good`.
+- `PrizeShapeRateHalfBracket.latticeBoundary_le_mcaDeltaStar_of_predecessor_good`,
+  `predecessorRadius`, `natCast_div_le_inv_of_mul_le`, `epsStar_coe_eq_natCast_inv`.
+- `SYZ3OverBudgetStackWitness.firstPrime_predecessor_cap_refuted` (drives the retraction).
+- `SYZ6FinerGradingCeiling.firstPrime_rateHalf_mcaDeltaStar_le_exact` (the unconditional ceiling).
 - `SYZ42.StripMasterHypothesis''`, `SYZ43.realizabilityCore_of_mcaEvent_witnesses`,
   `SYZ40.merged_branch_unconditional`.
-```
