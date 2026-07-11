@@ -34,7 +34,6 @@ namespace ArkLib.ProximityGap.Frontier.G87WDepthFourStepanovWeld
 
 open Finset
 open scoped Nat
-open ArkLib.ProximityGap.Frontier.G86SharpReconstructionIdentity
 open ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction
 
 /-! ## Part 1 — `pairCount` as a one-variable collision count -/
@@ -112,26 +111,18 @@ theorem pairSumConcentration5_production (S : Finset (ZMod p))
           _ ≤ p := hp
     _ ≤ 2 ^ 30 / 5 := by norm_num
 
-/-- **Headline: the depth-four collision sector is absorbed with NO analytic hypothesis.**
-Every input is an in-tree theorem except the histogram-to-tuple bridge
-`orderedCoreCount ≤ equalSumQuadPairs` (the G84/G88 decoder correspondence). -/
-theorem production_depth_four_absorbed_of_bridge (S : Finset (ZMod p))
-    (hsym : ∀ x ∈ S, -x ∈ S)
-    (hpow : ∀ x ∈ S, x ^ (2 ^ 30) = 1)
-    (hcardS : S.card = 2 ^ 30)
-    (hp : 2 ^ 41 ≤ p)
-    {α : Type*} [DecidableEq α] (s : Finset α)
-    (hcards : s.card = 2 ^ 30)
-    {cores : Finset ((α → ℕ) × (α → ℕ))}
-    (hc : ∀ c ∈ cores, (∑ i ∈ s, c.1 i = 4) ∧ (∑ i ∈ s, c.2 i = 4))
-    (hbridge : orderedCoreCount s cores ≤ equalSumQuadPairs S) :
-    sectorMass s 106 cores ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
-  apply production_depth_four_sector_absorbed s hcards hc
-  calc
-    orderedCoreCount s cores ≤ equalSumQuadPairs S := hbridge
-    _ ≤ (2 ^ 30 / 5 + 1) * (2 ^ 30) ^ 6 :=
-      equalSumQuadPairs_le_of_concentration S
-        (pairSumConcentration5_production S hsym hpow hcardS hp) hcardS
+/-
+DEFERRED HEADLINE (G86 sharp-envelope weld).  `production_depth_four_absorbed_of_bridge`
+chained `pairSumConcentration5_production` → `equalSumQuadPairs_le_of_concentration` →
+G87P's `production_depth_four_sector_absorbed`, whose conclusion `sectorMass ≤ Wick budget`
+rests on G86's `sectorMass_le_sharpEnvelope`.  That G86 module
+(`_G86SharpReconstructionIdentity`) was never landed, so the sector weld and this headline
+are held out of the build.  What remains here, `pairCount_eq_collision` and the production
+Stepanov discharge `pairSumConcentration5_production` (`max_{c≠0} pairCount S c ≤ n/5` at
+production shape), is axiom-clean and stands on its own: `PairSumConcentration5` is a THEOREM
+at production shape.  Re-weld the headline once the G86 sharp envelope lands; see DISPROOF_LOG
+`[466-G87P-G87W-g86-deferral]`.
+-/
 
 end ArkLib.ProximityGap.Frontier.G87WDepthFourStepanovWeld
 
@@ -140,5 +131,3 @@ end ArkLib.ProximityGap.Frontier.G87WDepthFourStepanovWeld
   ArkLib.ProximityGap.Frontier.G87WDepthFourStepanovWeld.pairCount_eq_collision
 #print axioms
   ArkLib.ProximityGap.Frontier.G87WDepthFourStepanovWeld.pairSumConcentration5_production
-#print axioms
-  ArkLib.ProximityGap.Frontier.G87WDepthFourStepanovWeld.production_depth_four_absorbed_of_bridge

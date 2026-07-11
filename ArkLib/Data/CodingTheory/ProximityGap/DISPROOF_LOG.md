@@ -50841,3 +50841,57 @@ correspondence. With `card_histFiber`, every histogram-weighted count (G86S `ord
 for end-to-end depth four: the mechanical weld G87B x G86S x G87W x G88 sector definitions.
 Three declarations `[propext, Classical.choice, Quot.sound]`. CORE remains OPEN / ON-BGK.
 
+
+## [466-G169-stepanov-thickness-fence] The G169 double-deletion `|G|^(1/3)` Stepanov saving is EMPTY at production thickness: no `B` satisfies both Stepanov hypotheses at `p = 3|G|+1` (axiom-clean arithmetic fence) (2026-07-11)
+
+`_G169StepanovThicknessFence.lean` (pure `Nat`, self-contained) proves the formalizer-sized
+fence Fable requested (referee verdict 2026-07-11 07:25 UTC, mirror of the G104 factorial fence):
+
+- `no_stepanov_B_at_index_three_production (m B : ℕ) (hm : 32 ≤ m) (hB3 : 2*m ≤ B^3)
+  (hp : m*B ≤ 3*m+1) : False`
+- `no_stepanov_B_at_two_pow_thirty (B : ℕ) (hB3 : 2*2^30 ≤ B^3) (hp : 2^30*B ≤ 3*2^30+1) : False`
+
+Proof: `m*B ≤ 3m+1` with `m ≥ 32` forces `B ≤ 3` (else `4m ≤ mB ≤ 3m+1 < 4m`), so `B^3 ≤ 27`,
+contradicting `2m ≤ B^3` and `27 < 2m`.
+
+Meaning: G169 refined the G168 double-deletion code by placing the left mark in the nonzero
+shifted-intersection fiber and instantiating G103F Stepanov (`ρ = 4B²`), claiming an
+`|G|^(1/3)` saving. That saving lives ONLY in the thin-subgroup regime. At the prize instance
+`p = 3·|G|+1` (index-3 thick 2-Sylow), the two Stepanov hypotheses `2|G| ≤ B³` (needs `B ≥ 4`
+for `|G| ≥ 32`) and `|G|·B ≤ p` (forces `B ≤ 3`) are jointly UNSAT — Fable's exact fiber probe
+confirms `max_c |G ∩ (G+c)| = Θ(|G|²/p) = Θ(|G|)` at four production cells. The
+`subsetCorePairs_mul_sq_le_stepanov` weld therefore cannot be cited as production progress; the
+double-deletion arc degrades to a constant-factor sharpening of the `≈ |G|^{2t−1}` scale. Any
+further gain must come from CANCELLATION/averaging over reduced pairs, which is exactly the
+nonprincipal-moment object where BGK/Paley binds. Route class "double-deletion + uniform fiber
+bound" is CLOSED at production thickness. `no_stepanov_B_at_index_three_production` is
+`[propext, Quot.sound]`; the specialization adds `Classical.choice`. CORE remains OPEN / ON-BGK.
+
+## [466-G87P-G87W-g86-deferral] Build repair: the depth-four sharp-envelope weld was landed against a nonexistent `_G86SharpReconstructionIdentity` module, breaking the umbrella build; the two G86-dependent consumer theorems are deferred, all self-contained convolution/Stepanov content retained (2026-07-11)
+
+Branch-level defect found and repaired. G87P (`0d63e61c5`) and G87W (`4b4011f48`) both
+`import`/`open` `ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86SharpReconstructionIdentity`,
+which was NEVER committed on `research/proximity-prize`. Once `ArkLib.lean` imports G87P/G87W
+(it does, at remote HEAD), the umbrella `ArkLib` build fails for every lane:
+`object file '..._G86SharpReconstructionIdentity.olean' does not exist`. The prior G87W/G87B
+DISPROOF entries overclaimed: they narrate the "G86S sharp envelope" as in-tree, but the file
+providing `sectorMass`, `orderedCoreCount`, and `sectorMass_le_sharpEnvelope` does not exist.
+
+Surgical, honest fix (no axiom, no sorry, no goal-weakening — incomplete work REMOVED, not
+faked):
+
+- G87P: dropped the G86 import/open (now `import Mathlib`); deleted the single G86-dependent
+  theorem `production_depth_four_sector_absorbed`. Retained all 14 self-contained convolution
+  theorems + `PairSumConcentration5`, `equalSumQuadPairs_le_of_concentration`, and
+  `production_depth_four_kernel` (`[propext]`).
+- G87W: dropped the G86 open; deleted the G86-dependent headline
+  `production_depth_four_absorbed_of_bridge`. Retained `pairCount_eq_filter`,
+  `pairCount_eq_collision`, and the production Stepanov discharge
+  `pairSumConcentration5_production` (`max_{c≠0} pairCount S c ≤ n/5` at production shape — a
+  standalone theorem).
+
+Both files now build locked and clean (`[propext, Classical.choice, Quot.sound]`). The
+`sectorMass ≤ Wick budget` weld and the bridge headline are held out until a genuine G86
+`sectorMass_le_sharpEnvelope` identity is proved and landed; re-weld then. The surviving
+mathematical content is unchanged: depth-four pair-sum concentration is proved and discharged;
+only the (unproven) sharp-envelope-to-sector composition is deferred. CORE remains OPEN / ON-BGK.

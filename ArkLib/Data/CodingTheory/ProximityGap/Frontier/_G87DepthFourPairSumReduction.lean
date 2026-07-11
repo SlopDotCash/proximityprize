@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86SharpReconstructionIdentity
+import Mathlib
 
 /-!
 # G87: depth four reduces to factor-5 pair-sum concentration
@@ -40,7 +40,6 @@ namespace ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction
 
 open Finset
 open scoped Nat
-open ArkLib.ProximityGap.Frontier.G86SharpReconstructionIdentity
 
 variable {G : Type*} [AddCommGroup G] [Fintype G] [DecidableEq G]
 
@@ -207,21 +206,18 @@ theorem production_depth_four_kernel :
       ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
   decide +kernel
 
-set_option maxHeartbeats 1000000 in
-/-- **Headline: depth four is absorbed under factor-5 pair-sum concentration.**  Any depth-four
-histogram core family whose ordered core count is within the equal-sum universe bound has its
-entire padded sector inside one full Wick budget at production scale.  Together with
-`equalSumQuadPairs_le_of_concentration`, the depth-four cutoff of the padded collision lane
-is reduced to `PairSumConcentration5`. -/
-theorem production_depth_four_sector_absorbed {α : Type*} [DecidableEq α] (s : Finset α)
-    {cores : Finset ((α → ℕ) × (α → ℕ))}
-    (hcard : s.card = 2 ^ 30)
-    (hc : ∀ c ∈ cores, (∑ i ∈ s, c.1 i = 4) ∧ (∑ i ∈ s, c.2 i = 4))
-    (hJ : orderedCoreCount s cores ≤ (2 ^ 30 / 5 + 1) * (2 ^ 30) ^ 6) :
-    sectorMass s 106 cores ≤ Nat.doubleFactorial (2 * 110 - 1) * (2 ^ 30) ^ 110 := by
-  refine le_trans (le_trans (sectorMass_le_sharpEnvelope s hc) ?_) production_depth_four_kernel
-  rw [hcard]
-  exact Nat.mul_le_mul_right _ hJ
+/-
+DEFERRED CONSUMER (G86 sharp-envelope weld).  The headline
+`production_depth_four_sector_absorbed`, composing `equalSumQuadPairs_le_of_concentration`
+and `production_depth_four_kernel` through G86's `sectorMass_le_sharpEnvelope`, was drafted
+against `_G86SharpReconstructionIdentity`, which was never landed on this branch.  Importing
+that nonexistent module broke the umbrella `ArkLib` build for every lane.  The self-contained
+convolution machinery above (fiber count, `quadCount_le`, `equalSumQuadPairs_le`, the
+concentration specialization, and the kernel inequality) is axiom-clean and retained.  The
+final `sectorMass ≤ Wick budget` weld and G87W's bridge consumer are held out of the build
+until the G86 `sectorMass_le_sharpEnvelope` identity is genuinely proved and landed; see the
+DISPROOF_LOG entry `[466-G87P-G87W-g86-deferral]`.
+-/
 
 end ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction
 
@@ -236,5 +232,3 @@ end ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction
   ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.equalSumQuadPairs_le_of_concentration
 #print axioms
   ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.production_depth_four_kernel
-#print axioms
-  ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.production_depth_four_sector_absorbed
