@@ -263,6 +263,36 @@ theorem three_sq_sub_three_le_addREnergy (G : Finset F)
         _ = G.card ^ 2 := (sq G.card).symm
   omega
 
+/-- **Coefficient-two anchor budgets are impossible at production size.**  The zero-sum
+plane lower bound alone already forces the rung-2 energy strictly above a coefficient-`2`
+Wick budget plus the full `n^4` DC allowance, for every `q ≥ 2^158` and `#G = 2^30`. -/
+theorem coefficient_two_budget_fails_at_production (G : Finset F)
+    (hneg : ∀ x ∈ G, -x ∈ G) (h0 : (0 : F) ∉ G) (h2 : (2 : F) ≠ 0)
+    (hcard : G.card = 2 ^ 30) {q : ℕ} (hq : 2 ^ 158 ≤ q) :
+    q * (2 * G.card ^ 2) + G.card ^ 4 < q * Finset.addREnergy 2 G := by
+  have hlow := three_sq_sub_three_le_addREnergy G hneg h0 h2
+  have hmul : q * (3 * G.card ^ 2 - 3 * G.card) ≤ q * Finset.addREnergy 2 G :=
+    Nat.mul_le_mul_left q hlow
+  have hstrict : q * (2 * G.card ^ 2) + G.card ^ 4
+      < q * (3 * G.card ^ 2 - 3 * G.card) := by
+    rw [hcard]
+    have hgap : (2 ^ 30 : ℕ) ^ 4
+        < q * ((2 ^ 30 : ℕ) ^ 2 - 3 * (2 ^ 30 : ℕ)) := by
+      calc
+        (2 ^ 30 : ℕ) ^ 4 < 2 ^ 158 := by norm_num
+        _ ≤ q := hq
+        _ = q * 1 := by rw [Nat.mul_one]
+        _ ≤ q * ((2 ^ 30 : ℕ) ^ 2 - 3 * (2 ^ 30 : ℕ)) := by
+          exact Nat.mul_le_mul_left q (by norm_num)
+    calc
+      q * (2 * (2 ^ 30 : ℕ) ^ 2) + (2 ^ 30 : ℕ) ^ 4
+          < q * (2 * (2 ^ 30 : ℕ) ^ 2)
+              + q * ((2 ^ 30 : ℕ) ^ 2 - 3 * (2 ^ 30 : ℕ)) := by
+        exact Nat.add_lt_add_left hgap _
+      _ = q * (3 * (2 ^ 30 : ℕ) ^ 2 - 3 * (2 ^ 30 : ℕ)) := by
+        ring_nf
+  exact lt_of_lt_of_le hstrict hmul
+
 end ArkLib.ProximityGap.Frontier.G136AnchorConstantSharp
 
 /-! ## Axiom audit -/
@@ -271,3 +301,5 @@ end ArkLib.ProximityGap.Frontier.G136AnchorConstantSharp
 #print axioms ArkLib.ProximityGap.Frontier.G136AnchorConstantSharp.card_famZero
 #print axioms
   ArkLib.ProximityGap.Frontier.G136AnchorConstantSharp.three_sq_sub_three_le_addREnergy
+#print axioms
+  ArkLib.ProximityGap.Frontier.G136AnchorConstantSharp.coefficient_two_budget_fails_at_production

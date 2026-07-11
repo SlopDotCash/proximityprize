@@ -25478,3 +25478,19 @@ falls 0.63 → 0.02 — the classical exponent is far above the smooth-subgroup 
 (β ≲ 8/3) — a genuine unconditional tool below that, NOT a prize-band certificate (prize
 β ∈ [4,5]). The truth-vs-classical gap (ρ = 2 at β ≥ 3 vs t^{2/3} provable) is now the
 sharpest quantified statement of what a better collision bound would buy. CORE OPEN / ON-BGK.
+
+## [466-G136-coefficient-two-anchor-no-go] The zero-sum plane alone refutes any coefficient-2 rung-2 production anchor (2026-07-11)
+
+Follow-up to G136 part 0.  `Frontier/_G136AnchorConstantSharp.lean` now includes
+`coefficient_two_budget_fails_at_production`: for any negation-closed `G` with `0 ∉ G`,
+`2 ≠ 0`, `#G = 2^30`, and any `q ≥ 2^158`,
+
+`q·(2·#G²) + #G⁴ < q·E₂(G)`.
+
+This is the calibrated consumer of the sharp constant-3 lower bound: the zero-sum family
+`(x,-x;z,-z)` is large enough that dropping the rung-2 Wick coefficient from `3` to `2` is
+impossible even after spending the entire production DC allowance.  It does not prove the
+coefficient-3 production anchor; it records that the remaining question is exactly the
+cyclotomic-accident/prime-individual upper bound at constant `3`, not a constant-improvement
+route.  The declaration is axiom-clean under the standard Lean axioms and adds no hypotheses
+or named residuals.

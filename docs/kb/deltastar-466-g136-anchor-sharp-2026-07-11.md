@@ -12,6 +12,15 @@ by the three explicit pairwise-disjoint families: identity `(x,y;x,y)` (n²), sw
 `(x,y;y,x)`, x≠y (n²−n), and the zero-sum plane `(x,−x;z,−z)`, z ∉ {x,±x} (n²−2n), with
 exact cardinalities `card_famId`/`card_famSwap`/`card_famZero`.
 
+`coefficient_two_budget_fails_at_production`: at `#G = 2^30` and every `q ≥ 2^158`, the
+same lower bound already gives
+
+    q·(2·#G²) + #G⁴ < q·E₂(G),
+
+so any rung-2 production anchor with Wick coefficient `2` is impossible even after spending
+the full DC allowance. This is a calibrated consumer of the zero-sum-plane obstruction, not a
+new anchor proof.
+
 ## Significance
 
 First Lean piece of the cyclotomic accident programme: the production rung-2 anchor

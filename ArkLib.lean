@@ -2206,6 +2206,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101FMonomialBaselineGrow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G101OrbitClassVarianceNormalForm
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G102DepthZeroAnomalyFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G102FAdditiveLiftAmplification
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103FSubgroupCollisionBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G103SyzygyReplicationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G104AffineTripleSyzygyNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G105DepthLedgerLosslessNoGo
