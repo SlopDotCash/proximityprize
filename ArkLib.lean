@@ -3340,6 +3340,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ18PairJointSelfExclusi
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ20JointRankSuperadditive
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ21ShorteningAndCoverage
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ22StripBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ23DirectnessStrip
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ3OverBudgetStackWitness
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
