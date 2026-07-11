@@ -3394,6 +3394,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ56Hrank
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ57TextbookFacts
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ57TransportWire
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ58RateQuarterCurveEventScope
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ59EmptyMiddle
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ5RateQuarterChannelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
