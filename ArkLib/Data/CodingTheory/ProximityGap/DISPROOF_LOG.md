@@ -51185,3 +51185,51 @@ All declarations axiom-clean (`propext, Classical.choice, Quot.sound`); locked b
 green. Formal payload: `Frontier/_G180CentralSymmetryCovering.lean`; probes:
 `scripts/probes/probe_g180_central_symmetry.py`, `scripts/probes/probe_g180_hypothesis_necessity.py`,
 `scripts/probes/probe_g180_center_forcing.py`.
+
+### [466-SYZ53-generator-gap-calibration] The μ-basis imbalance is the EXACT half-gap of the two generator degrees: `ι = ⌊(δ₂−δ₁)/2⌋`. Hence `ι ≤ 1 ↔ δ₂−δ₁ ≤ 3` and the referee-measured near-balance `δ₂−δ₁ ≤ 1 ⟹ ι = 0` — a sharp, `S`-free replacement for SYZ52's punted one-sided ceiling `δ₂ ≤ ⌈S/2⌉+1` (2026-07-11)
+
+SYZ52 pinned the open balanced-interior residual to the second-generator upper bound
+`δ₂ ≤ ⌈S/2⌉+1`, proved it *equivalent* to `ι ≤ 1`, and punted that (loose) inequality downstream
+as "Hilbert–Burch content." The direct μ-basis referee probe `fable_syz52_delta2.py` (exact GF(p)
+BOTH generator degrees, 1080 balanced pairwise-coprime band triples, `p ∈ {61,101,257}`, budgets
+`{5,7,9}`) then measured the full μ-basis as `(δ₁,δ₂) = (⌈S/2⌉−1, ⌈S/2⌉)` field-independently at
+`a=b=c` — i.e. the generator GAP `δ₂−δ₁ ≤ 1`, strictly tighter than SYZ52's ceiling (slack by a
+full unit) and the natural column-degree-splitting object.
+
+**The identity (this lane).** Under SYZ44's degree-sum law `δ₁+δ₂ = a+b+c =: S` with the minimal
+generator `δ₁ ≤ δ₂`, the imbalance is *exactly* the floored half-gap:
+`ι = SYZ45.imbalance a b c δ₁ = ⌊S/2⌋ − δ₁ = ⌊(δ₂−δ₁)/2⌋` (`imbalance_eq_gap_div_two`), because
+`δ₂−δ₁ = S − 2δ₁`. Verified exhaustively in `ℕ` for all `δ₁ ≤ δ₂`, `S < 200`. This upgrades
+SYZ52's one-sided *threshold* calibration to the full *functional* one: imbalance is a
+deterministic function of the generator gap alone, so the entire balanced-interior residual is a
+statement about `δ₂−δ₁`.
+
+**Sharp gap-language calibration.** From the identity:
+- `imbalance_le_one_iff_gap_le_three`: `ι ≤ 1 ↔ δ₂−δ₁ ≤ 3` — the sharpest, `S`-free phrasing of
+  the interior spread-branch target.
+- `imbalance_eq_zero_of_gap_le_one` / `imbalance_le_one_of_gap_le_one`: the referee-measured
+  near-balance `δ₂−δ₁ ≤ 1 ⟹ ι = 0` (hence `≤ 1`) — a full unit stronger than SYZ52's target and
+  matching every one of the 1080 exact cells.
+- `imbalance_eq_zero_iff_gap_le_one`: converse `ι = 0 ↔ δ₂−δ₁ ≤ 1`, closing the calibration loop.
+- `imbalance_le_one_of_gap_le_one_of_hilbert`: packaged end-to-end from SYZ44's `RankNullity` +
+  `TwoRamp`.
+
+**Why new, not a SYZ52 wrapper.** SYZ52 calibrates a one-sided ceiling `δ₂ ≤ ⌈S/2⌉+1 ↔ ι ≤ 1`.
+This lane proves the exact functional identity `ι = ⌊(δ₂−δ₁)/2⌋`, a strictly stronger statement
+that pins the whole imbalance function (not just the `ι ≤ 1` threshold) and yields the
+referee-measured near-balance target `δ₂−δ₁ ≤ 1` (one unit tighter than SYZ52's ceiling). The gap
+is a different, field-independently-measured object than the `δ₂` ceiling.
+
+**Scope (honest).** Combinatorial calibration only. Reduces the balanced-interior residual to the
+single Hilbert–Burch near-balance statement `δ₂−δ₁ ≤ 1` (referee-measured, field-independent),
+proved equivalent-in-effect to `ι = 0` and sufficient for `ι ≤ 1`. Does NOT prove the μ-basis of a
+balanced coprime triple is near-balanced (remaining Hilbert–Burch column-degree-splitting content,
+assigned to G56/Opus-core). `ι ≤ 1` closes SYZ44's `uniformSylvester` only at rate `1/2`;
+production δ* still needs SYZ18 supports, `hrank` realizability, strip-radius transport, and the
+`MCAThresholdLedger` BGK lower bound. CORE remains OPEN / ON-BGK. What is new is the exact
+imbalance–gap identity and the resulting sharp near-balance calibration.
+
+All six declarations axiom-clean (`propext, Quot.sound`; iff-forms add `Classical.choice`);
+locked build 8320 jobs green. Formal payload: `Frontier/_SYZ53GeneratorGapCalibration.lean`.
+Consumes SYZ44 `degree_sum_of_hilbert` + SYZ45 `imbalance`; complementary to SYZ52 (which it
+supersedes as the downstream target phrasing). Referee source: `fable_syz52_delta2.py`.
