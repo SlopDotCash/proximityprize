@@ -16352,3 +16352,46 @@ SwarmResidual.
 
 Files: `_P1RateQuarterClusterConfinement.lean`,
 `docs/kb/deltastar-466-rate-quarter-cluster-confinement-2026-07-11.md`.
+
+## [466-r3-fulldftflat-absolute-k-refuted] FullDFTFlat with an ABSOLUTE constant is REFUTED at scale: K_sup = sup_a‖Ŝ(a)‖²/(mq) grows like ~0.8·log m (Gumbel over the m modes), measured m = 9 → 1200; q-independent; the corrected quasi-flat ladder and the cubed-loss consumer law E ≤ 9B³·m³q³ are LANDED (2026-07-11)
+
+**Claim tested.** `FullDFTFlat K = O(1)` (the lossless input of the R302
+reduction) — the R302-era probe range m ≤ 18 (K ∈ [1.06, 4.7]) could not
+distinguish O(1) from growth.
+
+**Verdict.** REFUTED with mechanism.  Theory: `Ŝ(a) = m·T₋ₐ+1` is a DFT over
+exactly m modes of the m Jacobi angles; under Katz vertical equidistribution
+the modes are asymptotically independent complex Gaussians of variance mq, so
+the sup is a max of m Exp(1)-like variables: K ~ log m + Gumbel, q-free (no
+log q — the sup is over m modes, not q/m residues).  Measurement (validated
+against R302 exact values; m ∈ {9..1200}, 5 primes × 3 characters each):
+K_med 1.61 → 5.40 monotone; K_med/log m ∈ [0.66, 0.91] flat (fit
+−0.11 + 0.79·log m; power fit 1.12·m^0.235 comparable — either is growth);
+fixed-m q-scans trendless; argmax mode generic (no structured resonance).
+
+**Landed (axiom-clean, growth-tolerant recalibration).**
+`FullDFTFlatSq B` (squared-budget input, arbitrary B);
+`fullDFTFlat_of_sq`; `distStratumEnergyBound_mono`;
+`distStratumEnergyBound_of_flatSq`; **cubed-loss law**
+`distStratumEnergyBound_of_flatSq_cubed`: B ≥ 9 →
+`FullDFTFlatSq B ⟹ DistStratumEnergyBound (9·B³)`; corrected input
+`FullDFTFlatLog A` with consumer `E ≤ 9(A(1+log m))³·m³q³` (probe: A ≈ 0.9
+medians / ≈ 2 maxima).  Tolerance arithmetic: absolute C ⟺ bounded B (false);
+K = m^{1/6} ⟹ C ~ 9m (outside the strict target).
+
+**Strategic consequence.** The strict absolute-C DIST rung provably cannot
+come from pointwise flatness — the sup is log-inflated.  The a-AVERAGE moment
+ladder (R303 FourthMomentBound / R304 OffDiagQuadrupleBound, both still
+O(1)-consistent and NOT contradicted by the Gumbel sup: one log-heavy mode
+adds only (log m)³·m²q³ ≪ m³q³ to the sextic sum) is now the ONLY candidate
+for the absolute-constant rung; the flatness route is settled as quasi-flat
+(log³ m loss).
+
+Formal kernel (5 theorems, `[propext, Classical.choice, Quot.sound]`, manual
+axiom reads, pg-iterate 5s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R305FullDFTFlatCalibration.lean`.
+Executable certificate:
+`scripts/probes/probe_466_r3_fulldftflat_scaling.py`
+(`scripts/probes/_out_466_r3_fulldftflat_scaling.txt`).
+Analysis:
+`docs/kb/deltastar-466-r3-fulldftflat-calibration-2026-07-11.md`.
