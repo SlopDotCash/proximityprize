@@ -74,6 +74,12 @@ equivalent dual-coordinate target, not an independent orthogonality saving.
 `_AJT13CenteredBoundaryBridge.lean` then proves that a centered Wick-coefficient bound
 (`13!!=135135`) absorbs the `1/m` translation inside the public coefficient `2^18` whenever
 `m>=21`; the principal-character boundary is no longer a separate Wick-scale residual.
+`_BGKRepeatedSectorNewtonAbsorption.lean` then expands the ordered-injective transform by Newton
+identities.  Its exact Möbius masses begin `42,791,8820,...`, total `25401599`; the production
+Hölder envelope is `137.8488...<138`, and a formal sublinear barrier splits the wrap allowance as
+`126871+138=127009`.  `_BGKFourteenFactorYoung.lean` supplies the kernel-checked 14-factor
+AM--GM and optimized-padding socket.  The live depth-seven core is consequently the **signed
+injective** packet defect at coefficient `126871`; the final eta/dilation adapter is being wired.
 
 **Dyadic two-scale recursion (2026-07-11).** `_DQR23TwoScaleCenteredRecursion.lean` proves the
 exact sibling law `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)`, the full signed binomial ledger at
@@ -85,6 +91,10 @@ a higher mixed-moment sign law, not a second-moment estimate.
 `_DQR4CrossMomentRepLocalization.lean` makes that law pointwise: every `(k,1)` cross moment is
 exactly `q*|G|*(f_k(a)-|G|^k/q)`, the centered `k`-fold representation count at the adjoining
 twist `a`.
+The subsequent general-stratum and twist-average files identify every mixed term with a centered
+dilated rep--rep correlation and factor its average over all twists.  Thus DQR-4 is now a precise
+29-point discrepancy problem: prove the production twists do not coherently oversample the
+deviation fields.  Stratum Cauchy--Schwarz reconnects to the original moment and gives no saving.
 
 **Projective accident packets (2026-07-11).**  `_ANT46RungTwoAccidentOrbit.lean` now closes the
 full projective `S₄` classifier.  For an odd-characteristic accident the identity fibre has size
@@ -98,6 +108,12 @@ file now gives that certificate an exact cyclotomic-unit form: for
 suffices to exclude `P_i | Disc(K_n) K_n(2^n)` for a canonical degree-`2^29-1` polynomial; the
 remaining algorithmic problem is a dyadic discriminant/resultant recurrence, not triple
 enumeration.
+`_ANT46KappaDyadicRecurrence.lean` proves that recurrence:
+`K_(2n)=Sq(K_n)*J_(2n)`, with `J_(2n)` an explicit resultant of the primitive trace polynomial.
+The recurrence and bad-prime criterion agree through `K_32`, while square-only and recycled-`K`
+scalar recurrences fail.  At production the trace circuit has only 28 levels but width `2^28`, so
+the sharp successor is a new norm-collapse invariant; this is not an impossibility result for all
+logarithmic certificates.
 
 The `_BGK*` files landed 2026-07-10 hang the ENTIRE depth ladder off the single named open
 Prop `WorstCaseIncompleteSumBound` (the BGK sup-bound), end to end at literal prize numbers:

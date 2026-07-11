@@ -65,7 +65,7 @@ but measure signed completion multiplicity rather than positive packet existence
 | PPCT-6 charge-mass sandwich | **THEOREM / INSUFFICIENT** | Primitive charge mass lies between one and three times the injective excess; this is only a factor-three re-encoding. |
 | PPCT-7 completion multiplicity | **NAIVE CAP REFUTED / exact threshold active** | Small cells have canonical fibres as large as `7242`, depth `2`, and one configuration can contain `44` bad packets. The production cap must satisfy the exact G154/G155 budget, not merely be finite. |
 | PPCT-8 signed leaf charge | **THEOREM socket on G154/G155 chain** | Centered completion defects telescope exactly; packet credits sum to the injective baseline. The remaining theorem must bound the signed packet defect together with the repeated-sector defect. |
-| PPCT-9 repeated-coordinate recursion | **ACTIVE, reranked** | The exact split is `(q W_inj-N_inj)+(q W_rep-N_rep)=qW-n^14`. Raw repeated DC is about 11 bits above the slack, so use set-partition/Mobius cancellation; the leading one-repeat term is a weighted mixed moment. |
+| PPCT-9 repeated-coordinate recursion | **THEOREM reduction / eta adapter active** | Newton--Mobius gives exact masses `B13=42`, `B12=791`, total `25401599`; production Young/Hölder cost is `<138`, leaving the exact injective coefficient `126871`. The noncircular `1/1024`-slope bootstrap is formalized. |
 | PPCT-10 BSG inverse theorem | **EQUIVALENT risk** | Large centered `E_7` should produce an approximate additive subgroup inside `G`; quantify parameters. Generic BSG losses must be checked against all 18 coefficient bits. |
 
 ## Angle 3: Annihilator Jacobi Tensorization (AJT) -- character-sum theory
@@ -172,7 +172,7 @@ exactly, then charge geometric orbits rather than ordered tuples.
 | PAOR-5 depth-seven higher symmetric group | **ACTIVE** | Generalize from quadruple `S_4` to the signed 14-coordinate action relevant to `E_7`; classify stabilizers by set partition. |
 | PAOR-6 exact signature-fibre count | **THEOREM / production histogram open** | For fibre sizes `k_v` of `kappa_n(x)=(x-1)^n`, `#accidents=sum_v(k_v^2-2k_v+s_v)=sum_v k_v^2-2n+3`. This reduces `n^2` triples to an `n-1` histogram but is still too large directly. |
 | PAOR-7 cyclotomic-unit signature | **THEOREM exact quotient** | For the exact root support, `accidents H=empty` iff `kappa_n` is injective modulo `x~x^-1`; both directions and two production adapters are formalized. |
-| PAOR-8 canonical discriminant recurrence | **ACTIVE, exact production socket** | It suffices to prove `P_i` does not divide `Disc(K_n)*K_n(2^n)`, `deg K_n=2^29-1`. Derive a dyadic recurrence; direct materialization is infeasible. |
+| PAOR-8 canonical discriminant recurrence | **THEOREM recurrence / norm collapse open** | `K_(2n)=Sq(K_n)*J_(2n)` with `J` an explicit trace resultant; verified through `K_32`. The exact recurrence is logarithmic-depth but still width `2^28`; square-only and recycled-scalar recurrences are refuted. |
 | PAOR-9 incidence theorem regime check | **INSUFFICIENT unless subgroup-sensitive** | Generic point-line/point-curve incidence bounds lose powers of `q` at `n=q^0.19`. |
 | PAOR-10 signed orbit census | **ACTIVE** | Attach a sign/centered weight to each projective orbit so orbit compression preserves DC cancellation instead of counting all accidents positively. |
 
@@ -186,7 +186,7 @@ that the bad component contracts when one adjoins square roots.
 | DQR-1 subgroup tower | **THEOREM** | `G_j` is the square image of `G_{j+1}` and `G_{j+1}=G_j union aG_j`. |
 | DQR-2 period two-scale equation | **THEOREM** | `_DQR23TwoScaleCenteredRecursion` proves `eta_(G union aG)(b)=eta_G(b)+eta_G(ba)` and realness under `-1 in G`. |
 | DQR-3 centered-energy recursion | **THEOREM ledger** | The same file expands the off-zero fourteenth moment into all 15 signed binomial cross moments, without absolute-value loss. |
-| DQR-4 contraction coefficient | **THEOREM localization / contraction open** | The `(k,1)` cross moment is exactly `q*n*(f_k(a)-n^k/q)` at the twist. Quadratic sibling correlation is `-n^2`, but `_DQRSecondMomentAnticorrelationNoGo` proves that sign alone cannot force the `2^7` factor; joint higher representation deficits are mandatory. |
+| DQR-4 contraction coefficient | **FULL DATA LAYER THEOREM / discrepancy open** | Every stratum is a centered dilated rep--rep correlation; its all-twist average factorizes into zero-sum power sums. The residual is deviation of the 29 production twists from that mean. Quadratic sign and stratum Cauchy--Schwarz are formally insufficient. |
 | DQR-5 Hasse--Davenport lift | **INSUFFICIENT as currently used** | Known product identities reduce some phase degrees of freedom but stop with a linear-size residual. |
 | DQR-6 renormalized Jacobi cocycle | **ACTIVE** | Track AJT normalized Jacobi phases under `K_j -> K_{j+1}` and look for a martingale-difference law. |
 | DQR-7 exceptional-level budget | **ACTIVE** | Permit finitely many expanding levels, provided the product of level constants through 30 stays below the exact coefficient budget. |
@@ -214,14 +214,14 @@ so every numerical claim is independently checkable and every extrapolation has 
 
 ## Ranked live queue after all 100 cells
 
-1. **PPCT-8/9 plus weighted mixed moments:** use the exact signed completion identity and
-   set-partition/Mobius decomposition of the repeated sector. `_BGKWeightedCollisionMoment`
-   already turns arbitrary coefficient patterns into exact DC collision excesses.
+1. **PPCT-8 injective capstone:** repeated coordinates now cost `<138` and bootstrap away, so
+   prove the signed injective packet defect with coefficient `126871`. Positive completion caps
+   are refuted; the proof must preserve centered packet cancellation.
 2. **CTR-3/4/5:** exploit the exact zero-mean restriction structure on `1-G` without taking
    absolute values; this is the cleanest formulation not already proved equivalent to the target.
-3. **PAOR-6/10 plus the new `<12` residual:** the `1/2/6` classifier and production
-   12-divisibility are proved.  It now suffices to prove accident count `<12` (or emptiness), then
-   turn orbit compression into a signed depth-seven completion bound.
+3. **PAOR-8 norm-collapse invariant:** accident emptiness is exactly kappa-signature injectivity,
+   and its dyadic polynomial recurrence is proved. Compress the exponentially wide norm state;
+   the two tested scalar recurrences are known false, but no general impossibility is claimed.
 4. **AJT-5/6/9:** retain only off-diagonal or production-specific phase structure. AJT-3 itself
    is now known to be the centered moment wall in dual coordinates.
 5. **FPTC-5/9/10:** compute monodromy only if it controls the off-diagonal remainder with an

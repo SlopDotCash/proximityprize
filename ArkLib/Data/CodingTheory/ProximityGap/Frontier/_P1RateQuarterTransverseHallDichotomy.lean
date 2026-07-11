@@ -42,8 +42,9 @@ theorem exists_injective_representatives_or_large_compressed_subfamily
     push_neg at hHall
     obtain ⟨B, hcompressed⟩ := hHall
     have hBne : B.Nonempty := by
+      rw [Finset.nonempty_iff_ne_empty]
       intro hB
-      rw [Finset.not_nonempty_iff_eq_empty.mp hB] at hcompressed
+      rw [hB] at hcompressed
       simp at hcompressed
     obtain ⟨j, hj⟩ := hBne
     have hsub : petal j ⊆ B.biUnion petal := by

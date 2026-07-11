@@ -199,6 +199,20 @@ refutes `p>n^3` as a cleanliness criterion.  For production, a sufficient exact 
 `P_i` not dividing `Disc(K_n)*K_n(2^n)`, with `deg K_n=2^29-1`; direct construction is infeasible,
 so the new live PAOR socket is a logarithmic dyadic resultant/discriminant recurrence.
 
+That recurrence is now exact.  `_ANT46KappaDyadicRecurrence.lean` proves
+
+```text
+K_(2n)(T) = Sq(K_n)(T) * J_(2n)(T),
+J_(2n)(T) = Res_u(R_n(u), T^2 + A_n(u)T + (u-2)^n),
+R_(2n)(u) = R_n(u^2-2).
+```
+
+The probe verifies the resultants and `Disc(K_n)K_n(2^n)` bad-prime criterion through `K_32`.
+It refutes square-only and recycled-`K_n` scalar recurrences.  The honest production boundary is
+that the exact 28-level trace circuit still feeds a norm of width `2^28`; a new norm-collapse
+invariant could still yield a succinct certificate, so this is a state-specific no-go rather than
+a general impossibility theorem.
+
 ## Addendum 6: weighted collision moments and Jacobi equivalence (2026-07-11)
 
 `_BGKWeightedCollisionMoment.lean` proves the coefficient-weighted master identity
@@ -218,6 +232,22 @@ sum_(b != 0) eta_(2b) * eta_b^5 * eta_(-b)^7
 
 This is the current signed socket for the repeated-coordinate part of the primitive-packet
 decomposition. It preserves the DC cancellation that a positive collision envelope loses.
+
+`_BGKRepeatedSectorNewtonAbsorption.lean` completes the exact partition ledger.  For
+`D_7=7!e_7`, Newton inversion gives
+
+```text
+p_1^14-D_7^2 = 42*p_2*p_1^12 - 651*p_2^2*p_1^10
+                 - 140*p_3*p_1^11 + lower-factor terms.
+```
+
+The absolute coefficient masses by factor count start `B_13=42`, `B_12=791` and total
+`25,401,599`.  At `n=2^30`, generalized 14-Hölder evaluates to `137.8488...<138`; the exact
+bootstrap reserves `138` units for repeated strata and leaves `126871` for the signed injective
+packet defect.  The file proves the arithmetic, Newton identity, DC bridge, and noncircular
+secant barrier.  `_BGKFourteenFactorYoung.lean` proves the underlying fourteen-factor AM--GM and
+optimized-padding lemma; a final eta/dilation adapter remains before the repeated envelope is a
+fully wired analytic consumer.
 
 `_AJT13CenteredMomentEquivalence.lean` records a complementary no-shortcut result. If `K` is
 the annihilator of `G`, `m=|K|`, and `eta_c` are the quotient Gauss periods, complete character

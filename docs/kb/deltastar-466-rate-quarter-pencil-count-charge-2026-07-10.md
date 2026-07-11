@@ -784,6 +784,16 @@ transversality does not follow from one petal alone; it must come from the
 already-proved many-pencil/common-coordinate load or from a multi-petal union
 argument.  Determinant collapse itself is no longer a residual on this branch.
 
+Hall's theorem makes the assignment residual quantitative.  For arbitrary
+finite petals of size at least `s`, either distinct representatives exist, or
+there is a subfamily `B` with `s < |B|` and
+`|union_(j in B) petal(j)| < |B|`.  At the exact Johnson-light P1 floor this
+means that matching failure produces at least `55924057` common-base pencils
+compressed into fewer coordinates than pencils.  The new theorem
+`p1_johnsonLight_matching_or_compressed_55924057` therefore splits the final
+weld into an immediate injection branch and one enormous, explicitly
+concentrated obstruction branch; small Hall obstructions are impossible.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;
