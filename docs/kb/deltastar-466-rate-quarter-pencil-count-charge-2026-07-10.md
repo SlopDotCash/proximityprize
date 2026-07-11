@@ -794,6 +794,16 @@ compressed into fewer coordinates than pencils.  The new theorem
 weld into an immediate injection branch and one enormous, explicitly
 concentrated obstruction branch; small Hall obstructions are impossible.
 
+The compressed branch also has an exact incidence amplifier.  If `n` petals
+of size at least `s` have total incidence `M`, are supported on `v<n`
+coordinates, and maximum load `L` gives `M<=vL`, then necessarily `s<L`.
+Specializing `s=55924056` proves a load of at least `55924057`.  Thus Hall
+failure recreates, inside the obstructing subfamily itself, a prize-scale
+common-base load spike.  At that coordinate the existing Möbius formula
+separates every pair of distinct common-base pencil directions; the next weld
+is to package those two facts into the `href` field of
+`card_le_domain_of_collapsed_fresh_petals`.
+
 ## 6. Lean pitfalls recorded
 
 * `set x := e with h` does **not** rewrite later `have`-obtained hypotheses;

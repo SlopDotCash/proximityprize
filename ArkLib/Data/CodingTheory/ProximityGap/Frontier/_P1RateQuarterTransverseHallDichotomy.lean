@@ -70,9 +70,40 @@ theorem p1_johnsonLight_matching_or_compressed_55924057
   · exact Or.inl hmatching
   · exact Or.inr ⟨B, by omega, hcompressed⟩
 
+/-! ## Compressed-family load amplification -/
+
+/-- **Incidence averaging behind the Hall obstruction.**  If `n` petals each
+contribute at least `s` incidences, all incidences are supported on only `v<n`
+coordinates, and every coordinate has load at most `L`, then necessarily
+`s<L`.  This arithmetic socket accepts the existing petal incidence identity
+and a maximum-load upper bound without duplicating their finite-set API. -/
+theorem load_gt_floor_of_compressed_incidence
+    (n v s total L : Nat)
+    (hs : 0 < s) (hcompressed : v < n)
+    (hlower : n * s ≤ total) (hupper : total ≤ v * L) :
+    s < L := by
+  by_contra hnot
+  have hL : L ≤ s := Nat.le_of_not_gt hnot
+  have hmul : v * L ≤ v * s := Nat.mul_le_mul_left v hL
+  have hstrict : v * s < n * s :=
+    Nat.mul_lt_mul_of_pos_right hcompressed hs
+  omega
+
+/-- Literal P1 consequence: any compressed Johnson-light petal family whose
+incidences are bounded by `v*L` has maximum load at least `55,924,057`. -/
+theorem p1_compressed_incidence_forces_load_55924057
+    (n v total L : Nat) (hcompressed : v < n)
+    (hlower : n * 55924056 ≤ total) (hupper : total ≤ v * L) :
+    55924057 ≤ L := by
+  have hload := load_gt_floor_of_compressed_incidence
+    n v 55924056 total L (by omega) hcompressed hlower hupper
+  omega
+
 end ArkLib.ProximityGap.Frontier.P1RateQuarterTransverseHallDichotomy
 
 open ArkLib.ProximityGap.Frontier.P1RateQuarterTransverseHallDichotomy
 
 #print axioms exists_injective_representatives_or_large_compressed_subfamily
 #print axioms p1_johnsonLight_matching_or_compressed_55924057
+#print axioms load_gt_floor_of_compressed_incidence
+#print axioms p1_compressed_incidence_forces_load_55924057
