@@ -151,7 +151,7 @@ theorem sum_orderedDistinctTriplePeriod_mul_conj_eq
       (Fintype.card F : Complex) * oneTwoSelfCollisionCount G := by
     have hBBRaw := sum_prod_dilated_eta_mul_conj_eq_collisionCount
       (I := Fin 2) (J := Fin 2) hpsi G oneTwoWeights oneTwoWeights
-    simp_rw only [prod_oneTwo_eta] at hBBRaw
+    simp_rw [prod_oneTwo_eta] at hBBRaw
     simpa only [oneTwoSelfCollisionCount] using hBBRaw
   have hCC := sum_dilated_eta_mul_conj_eq_dilationCoincidenceCount
     hpsi G (3 : F) 3
@@ -162,13 +162,13 @@ theorem sum_orderedDistinctTriplePeriod_mul_conj_eq
       (Fintype.card F : Complex) * tripleToOneTwoCollisionCount G := by
     have hABRaw := sum_prod_dilated_eta_mul_conj_eq_collisionCount
       (I := Fin 3) (J := Fin 2) hpsi G tripleUnitWeights oneTwoWeights
-    simp_rw only [prod_oneTwo_eta] at hABRaw
+    simp_rw [prod_oneTwo_eta] at hABRaw
     simpa [tripleUnitWeights, tripleToOneTwoCollisionCount,
       Finset.prod_const] using hABRaw
   have hBARaw := sum_prod_dilated_eta_mul_conj_eq_collisionCount
     (I := Fin 2) (J := Fin 3) hpsi G oneTwoWeights tripleUnitWeights
   rw [mixedDilationCollisionCount_swap G oneTwoWeights tripleUnitWeights] at hBARaw
-  simp_rw only [prod_oneTwo_eta] at hBARaw
+  simp_rw [prod_oneTwo_eta] at hBARaw
   have hBA : (∑ b : F,
       (eta psi G b * eta psi G ((2 : F) * b)) *
         (starRingEnd Complex) (eta psi G b ^ 3)) =
@@ -196,13 +196,13 @@ theorem sum_orderedDistinctTriplePeriod_mul_conj_eq
       (Fintype.card F : Complex) * oneTwoToTripleTargetCollisionCount G := by
     have hBCRaw := sum_prod_dilated_eta_mul_conj_eq_collisionCount
       (I := Fin 2) (J := Fin 1) hpsi G oneTwoWeights tripleTargetWeight
-    simp_rw only [prod_oneTwo_eta] at hBCRaw
+    simp_rw [prod_oneTwo_eta] at hBCRaw
     simpa [tripleTargetWeight, oneTwoToTripleTargetCollisionCount,
       Finset.prod_const] using hBCRaw
   have hCBRaw := sum_prod_dilated_eta_mul_conj_eq_collisionCount
     (I := Fin 1) (J := Fin 2) hpsi G tripleTargetWeight oneTwoWeights
   rw [mixedDilationCollisionCount_swap G tripleTargetWeight oneTwoWeights] at hCBRaw
-  simp_rw only [prod_oneTwo_eta] at hCBRaw
+  simp_rw [prod_oneTwo_eta] at hCBRaw
   have hCB : (∑ b : F, eta psi G ((3 : F) * b) *
       (starRingEnd Complex)
         (eta psi G b * eta psi G ((2 : F) * b))) =
@@ -272,8 +272,10 @@ theorem sum_nonzero_orderedDistinctTriplePeriod_mul_conj_eq
   rw [Finset.sum_erase_eq_sub (Finset.mem_univ 0),
     sum_orderedDistinctTriplePeriod_mul_conj_eq hpsi G h3]
   norm_num [orderedDistinctTriplePeriod, eta, AddChar.map_zero_eq_one]
-  have hstar2 : (starRingEnd Complex) (2 : Complex) = 2 := by norm_num
-  have hstar3 : (starRingEnd Complex) (3 : Complex) = 3 := by norm_num
+  have hstar2 : (starRingEnd Complex) (2 : Complex) = 2 := by
+    simp [starRingEnd_apply]
+  have hstar3 : (starRingEnd Complex) (3 : Complex) = 3 := by
+    simp [starRingEnd_apply]
   rw [hstar2, hstar3]
   ring
 
@@ -333,19 +335,11 @@ end CubicLaw
 
 /-- A distributed profile which leaves the first four Wick numerators unchanged and saves half
 a unit at each of the two densest transitions. -/
-def twoLateHalfUnitProfile : Fin 6 -> Rat
-  | 0 => 3
-  | 1 => 5
-  | 2 => 7
-  | 3 => 9
-  | 4 => 21 / 2
-  | 5 => 25 / 2
+def twoLateHalfUnitProfile : Fin 6 -> Rat := ![3, 5, 7, 9, 21 / 2, 25 / 2]
 
 theorem twoLateHalfUnitProfile_product :
     (∏ i : Fin 6, twoLateHalfUnitProfile i) = 496125 / 4 := by
-  have huniv : (Finset.univ : Finset (Fin 6)) = {0, 1, 2, 3, 4, 5} := by decide
-  rw [huniv]
-  norm_num [Finset.prod_insert, twoLateHalfUnitProfile]
+  norm_num [Fin.prod_univ_succ, twoLateHalfUnitProfile]
 
 /-- Even a uniform `501/500` overhead at every transition leaves this two-late half-unit profile
 strictly below the injective coefficient `126871`. -/

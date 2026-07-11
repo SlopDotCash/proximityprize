@@ -16777,3 +16777,53 @@ Probe: `scripts/probes/probe_466_w15_widthk_gap.py` (exit 0).
 Analysis:
 `docs/kb/deltastar-466-lowprofile-widthk-gap-closed-2026-07-11.md`.
 LANE STATUS: W15 parts 1-6 complete.
+
+## [w15-strip-existence-uniform] the uniform strip existence lemma LANDED via a Prouhet–Tarry–Escott pair: the width-k strip refutation is parametric over ALL finite fields of characteristic ≥ 17 (explicit Q₀ = 17, no counting needed); dichotomy at (16,4,·) now field-uniform (2026-07-11)
+
+CONTEXT (lane ll:low-profile-fiber, W15 part 7 — the thin sliver left by
+part 6: existence of the symmetric coincidence uniformly in the field).
+
+MECHANISM (explicit family, coordinator route (b) collapsed further). No
+fiber counting: the integer triples R = {0,5,7}, W = {1,3,8} are a degree-2
+Prouhet–Tarry–Escott pair — e₁ = 12 and e₂ = 35 hold as INTEGER identities
+(every characteristic), e₃ differs by 24. Equivalently the single ring
+identity
+    x(x−5)(x−7) − 24 = (x−1)(x−3)(x−8)     (`pte_vieta`, by `ring`)
+shows e = X(X−5)(X−7) is CONSTANT = 24 on W in every commutative ring.
+Field-dependent inputs are only: 0..15 distinct (char 0 or ≥ 17) and
+24 ≠ 0 (char ∉ {2,3}, implied). Disjointness of R, W is automatic
+(same-(e₁,e₂)-fiber cubics differ by the nonzero constant 24).
+
+PROBE (`scripts/probes/probe_466_w15_strip_uniform_pte.py`, exit 0): the
+assembled (16,4,11) line verified at EVERY prime 17 ≤ p < 200 (exactly —
+Λ = 2, safe, large-zero — for p ≤ 31; certificate-level beyond).
+
+PROVED (Lean, `_W15StripExistenceUniform.lean`):
+* `pte_vieta`, `pte_symmetric_coincidence` — the coincidence (char-free).
+* `strip_16_4_11_L_one_refuted_uniform` — for EVERY finite field F with
+  CharGe17 F (i.e. (m:F) ≠ 0 for 1 ≤ m ≤ 15; any q = p^e, p ≥ 17):
+  ¬ LargeZeroSafeLineListBudgeted (uniDom hchar) 4 11 1 on the standard
+  cast domain. Explicit bound Q₀ = 17 (trivially near-optimal: a 16-point
+  domain needs q ≥ 16).
+* `strip_16_4_11_L_one_refuted_zmod` — every prime p ≥ 17.
+
+DICHOTOMY STATUS (now field-uniform at the n=16, k=4 family, standard
+domains, char ≥ 17): L_near = 1 REFUTED at a ∈ {9,10} (two-block, part 4 —
+already field-general) and a = 11 (PTE secant pair, here); PROVED at
+a ≥ 12 (UD-plus, part 3). The width-k gap question is closed uniformly.
+
+HONESTY. (i) Uniformity is in the FIELD, for the STANDARD cast domain: for
+an ARBITRARY 16-point domain in a large field a symmetric coincidence is a
+codimension-2 condition and can genuinely fail — the dom-indexed residual
+cannot be closed uniformly in dom, and the campaign consumes standard
+domains. (ii) k − 1 = 3 (campaign case) is what this PTE pair covers;
+general k needs Prouhet's higher PTE pairs (exist over ℤ, not formalized).
+
+Formal kernel (axiom-clean; FULL manual audit: all 8 theorems exactly
+[propext, Classical.choice, Quot.sound]; no sorryAx, no ofReduceBool;
+pg-iterate 8s):
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_W15StripExistenceUniform.lean`.
+Probe: `scripts/probes/probe_466_w15_strip_uniform_pte.py` (exit 0).
+Analysis:
+`docs/kb/deltastar-466-lowprofile-strip-existence-uniform-2026-07-11.md`.
+LANE STATUS: W15 parts 1-7 complete; finishing round done.
