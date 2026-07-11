@@ -25337,3 +25337,35 @@ W = p/K ≫ √p — no prize claim. Bound exponent n^{3/2}W^{1/4} is far above 
 term; value is structural: the integer-lift mechanism provably counts (not merely refutes
 containment), and the surviving gap is exactly (a) crossing √p, (b) uniform-main-term strength.
 CORE remains OPEN / ON-BGK. No axioms, no sorry.
+
+## [466-G96F-capacity-house-extremal] The period invariants are worth exactly the moment ladder; integrality adds NOTHING — escape configurations at every depth below log m, ℤ[X]-realizable, formalized constructively; the Dimitrov/capacity toolbox is closed with a two-sided characterization (2026-07-10)
+
+Lane: G96 Fable, potential-theory/capacity on the house of Gauss periods, built on the G95F
+value-distribution substrate (`Frontier/_G96CapacityHouseExtremal.lean`, 7 theorems, all exactly
+`[propext, Classical.choice, Quot.sound]`; probes `scripts/probes/probe_g96_extremal.py`,
+`probe_g96_integrality.py`). Question: do the exactly-known invariants (P₁=−1, P₂=p−n, odd
+P_r=−n^{r−1}, ℤ[X] period polynomial, all-real, multiplicity-n, cap |v|≤n) pin M below the
+moment-ladder value at some finite depth D ≪ ln q?
+
+VERDICT: NO — escape configuration at every depth, and the escape is ℤ[X]-realizable.
+(1) Hankel-relaxation probe (n=8,16,32, β=4 primes): maxhouse(D) = n (trivial cap) through
+D≈6–8, tracks the ladder, pins to (1+o(1))·M only at D ≈ log₂ m (prize: ≈128). The θ(r,β)
+upper ladder is TIGHT from below. (2) Formalized constructively: `escape_depth_three` (exact
+P₁..P₃, house = n, all scales, closed-form: ⌊R/2n²⌋ antipodal pairs ±n + odd-fixer pair
+u+v=−1, u³+v³=−n² + tuner; teeth at (4,64,257)); `escape_depth_four` (+exact P₄, parametric;
+teeth at n=16, p=65537, TRUE P₄=2945069 from N₀(μ₁₆,4)=720 exact Wick, house = 16 > M = 13.84).
+(3) Integrality does NOT bite: `zx_escape_witness` — explicit irreducible monic ℤ[X] quintic
+x⁵+x⁴−16x³+5x²+3x−1 with the TRUE (41,8) depth-3 data, totally real in (−8,8) by exact
+rational IVT sign table, house > 23/5 > M = 4.529 and > √(8·log₂(41/8))
+(`zx_witness_exceeds_target_scale`); exhaustive tail scan (windows provably cover all
+admissible tails by AM–GM): 774 realizable witnesses, ℤ-max 4.662 vs relaxation 4.904 (<5%
+trim, and the ℤ-escape EXCEEDS the true house). (4) `escape_shadows_true_values` welds the
+escape to G95F's sum_values/sum_values_sq/sum_values_pow_of_vanishing: indistinguishable from
+truth at depth 3. Complements N3 (disc≥1 vacuous on the truth) and TT06–TT10/H1/T5 (sign
+reversals): the capacity levers fail because the data they consume provably has no house
+content below depth log m. CORE stays OPEN; surviving shape = joint frequency structure
+(which b carries which value — the signed cross-arc / #509 profile lane).
+
+Honest scope: no-go/structure theorems about the invariant data, not about M; does NOT refute
+the prize. Tables are probe numerics; Lean theorems are exact constructions; irreducibility of
+the quintic probe-verified, not formalized. No axioms, no sorry.
