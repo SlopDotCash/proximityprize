@@ -51083,3 +51083,29 @@ statistics — which is precisely the missing non-Fourier certificate (the atom)
 surfaces are (i) construction-side tail exclusion and (ii) the atom head-on. Consistent
 with and strengthening wall #1 (phase-blindness): not only are |·|-functionals blind, the
 whole increment hierarchy is rigidity-flattened. CORE remains OPEN / ON-BGK.
+
+### [466-J2-aor-violation-census] DIRECT MEASUREMENT against the G106 surrogate: AntipodalOnlyRelations is MASSIVELY FALSE over the full subgroup at every accessible primitive cell (pair-free length-6 vanishing sums = 35-94% of the census), and the counting heuristic extrapolates ~n²·2⁶/720 expected pair-free length-6 relations at production p = n⁴ — the G106 named hypothesis needs S = (small padded support), NOT S = μ_n, to be viable (2026-07-11)
+
+Probe (reusing the G87V census machinery; antipodal pair in a support-6 row = positions
+j, j+n/2 with EQUAL coefficients — the pair contributes (w_j − w_{j+n/2})·t^j):
+
+| cell (primitive t) | census | pair-containing | PAIR-FREE (AOR-violating) | rate |
+|---|---|---|---|---|
+| (16, 97)  | 5376   | 2496  | 2880  | 0.536 |
+| (16, 193) | 2624   | 448   | 2176  | 0.829 |
+| (16, 257) | 1664   | 1088  | 576   | 0.346 |
+| (32, 641) | 101120 | 44672 | 56448 | 0.558 |
+| (32, 769) | 76800  | 4480  | 72320 | 0.942 |
+| (32, 1153)| 54784  | 16768 | 38016 | 0.694 |
+
+**Reading.** `AntipodalOnlyRelations S L` with S = the FULL subgroup (±μ_n) and L ≥ 6 is
+refuted at every accessible cell — pair-free accidents are not rare, they are the
+MAJORITY of the census at most cells. Counting heuristic at production: expected
+pair-free length-6 vanishing sums ≈ C(n,6)·2⁶/p ≈ n²·2⁶/720 at p = n⁴, n = 2^30 —
+astronomically many; larger L only adds more. So the G106 reduction's terminal hypothesis
+is viable ONLY under the small-support reading (S = the padded core/window support set,
+where the same counting gives ≪ 1) — the cell parameters (|S|, L, p) decide, exactly the
+K_eff bookkeeping of the #444 window-interior campaign. Flagged to the G106 owner on #505
+for the S/L pin before further lane investment. If S = μ_n was intended, this entry is a
+REFUTATION of that form; if S = padded support, this entry calibrates the boundary the
+transfer must respect. CORE remains OPEN / ON-BGK.
