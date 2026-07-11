@@ -47,6 +47,11 @@ only two exceptional anchor labels and every complement subset satisfies the sam
 but its degree-two anchored kernel is nontrivial.  Therefore the eight-label theorem cannot feed
 a Hall-only local-to-global argument; a surviving producer must use the P1 event geometry or a
 genuine maximal-recoverability/determinantal input.
+`_P1EightLabelComplementForcedSecant.lean` supplies the first event-geometric successor: deleting
+any eight labels from an `N+1` predecessor family still leaves two Hall-safe-complement witnesses
+whose agreement sets overlap on at least `K` coordinates.  The constant-width kernel therefore
+cannot quarantine the large-core geometry; the next live bridge is to iterate or cluster these
+forced secants into the existing polynomial-pencil consumers.
 
 **2026-07-11 part 2 — dossier v3 §44 (R307–R309 B-side close-out).** Absolute-C DIST rung from
 a-averages (`distStratum_absoluteC_of_fourth_and_eighth`, lag endgame

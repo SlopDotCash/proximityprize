@@ -39,6 +39,7 @@ caps are included below.  No analytic collision estimate is asserted.  Issue #46
 set_option autoImplicit false
 set_option exponentiation.threshold 2048
 set_option maxRecDepth 1000000
+set_option maxHeartbeats 2000000
 
 open Finset BigOperators
 
@@ -67,189 +68,185 @@ def productionCollisionDefect (C : Nat → Nat) (r : Nat) : Int :=
 noncomputable def defectDensity (mass : Nat) (D : Int) : ℚ :=
   (D : ℚ) / (mass : ℚ) ^ 2
 
-/-- A rational cap `capNumerator / capDenominator` on the production `r -> r+1` transition. -/
-def RationalTransitionAt (r capNumerator capDenominator : Nat) (D : Nat → Int) : Prop :=
-  (productionN : ℚ) * defectDensity (productionN.choose (r + 1)) (D (r + 1)) ≤
+/-- A rational cap `capNumerator / capDenominator` on an `r -> r+1` transition. -/
+def RationalTransitionAt (n r capNumerator capDenominator : Nat) (D : Nat → Int) : Prop :=
+  (n : ℚ) * defectDensity (n.choose (r + 1)) (D (r + 1)) ≤
     ((capNumerator : ℚ) / capDenominator) *
-      defectDensity (productionN.choose r) (D r)
+      defectDensity (n.choose r) (D r)
 
 /-- The direct denominator-cleared ledger, before cancelling adjacent binomial masses. -/
-def ClearedTransitionAt (r capNumerator capDenominator : Nat) (D : Nat → Int) : Prop :=
-  (capDenominator : Int) * productionN * (productionN.choose r : Int) ^ 2 * D (r + 1) ≤
-    (capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r
+def ClearedTransitionAt (n r capNumerator capDenominator : Nat) (D : Nat → Int) : Prop :=
+  (capDenominator : Int) * n * (n.choose r : Int) ^ 2 * D (r + 1) ≤
+    (capNumerator : Int) * (n.choose (r + 1) : Int) ^ 2 * D r
 
 /-- Clearing rational denominators is exact for arbitrary signed defects.  Positivity is needed
 only for the explicit cap denominator and the two binomial denominators, never for `D r`. -/
 theorem rationalTransitionAt_iff_cleared
-    (D : Nat → Int) {r capNumerator capDenominator : Nat}
-    (hr : r + 1 ≤ productionN) (hcap : 0 < capDenominator) :
-    RationalTransitionAt r capNumerator capDenominator D ↔
-      ClearedTransitionAt r capNumerator capDenominator D := by
-  have hNrNat : 0 < productionN.choose r :=
+    (n : Nat) (D : Nat → Int) {r capNumerator capDenominator : Nat}
+    (hr : r + 1 ≤ n) (hcap : 0 < capDenominator) :
+    RationalTransitionAt n r capNumerator capDenominator D ↔
+      ClearedTransitionAt n r capNumerator capDenominator D := by
+  have hNrNat : 0 < n.choose r :=
     Nat.choose_pos (le_trans (Nat.le_add_right r 1) hr)
-  have hNsNat : 0 < productionN.choose (r + 1) := Nat.choose_pos hr
-  have hNrQ : (0 : ℚ) < productionN.choose r := by exact_mod_cast hNrNat
-  have hNsQ : (0 : ℚ) < productionN.choose (r + 1) := by exact_mod_cast hNsNat
-  have hNr : (0 : ℚ) < (productionN.choose r : ℚ) ^ 2 := pow_pos hNrQ 2
-  have hNs : (0 : ℚ) < (productionN.choose (r + 1) : ℚ) ^ 2 := pow_pos hNsQ 2
+  have hNsNat : 0 < n.choose (r + 1) := Nat.choose_pos hr
+  have hNrQ : (0 : ℚ) < n.choose r := by exact_mod_cast hNrNat
+  have hNsQ : (0 : ℚ) < n.choose (r + 1) := by exact_mod_cast hNsNat
+  have hNr : (0 : ℚ) < (n.choose r : ℚ) ^ 2 := pow_pos hNrQ 2
+  have hNs : (0 : ℚ) < (n.choose (r + 1) : ℚ) ^ 2 := pow_pos hNsQ 2
   have hcapQ : (0 : ℚ) < capDenominator := by exact_mod_cast hcap
   have hright : (0 : ℚ) <
-      (capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2 :=
+      (capDenominator : ℚ) * (n.choose r : ℚ) ^ 2 :=
     mul_pos hcapQ hNr
   unfold RationalTransitionAt defectDensity ClearedTransitionAt
   constructor
   · intro h
     have hfrac :
-        ((productionN : ℚ) * (D (r + 1) : ℚ)) /
-            (productionN.choose (r + 1) : ℚ) ^ 2 ≤
+        ((n : ℚ) * (D (r + 1) : ℚ)) /
+            (n.choose (r + 1) : ℚ) ^ 2 ≤
           ((capNumerator : ℚ) * (D r : ℚ)) /
-            ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) := by
+            ((capDenominator : ℚ) * (n.choose r : ℚ) ^ 2) := by
       calc
-        ((productionN : ℚ) * (D (r + 1) : ℚ)) /
-            (productionN.choose (r + 1) : ℚ) ^ 2 =
-            (productionN : ℚ) *
-              ((D (r + 1) : ℚ) / (productionN.choose (r + 1) : ℚ) ^ 2) := by ring
+        ((n : ℚ) * (D (r + 1) : ℚ)) /
+            (n.choose (r + 1) : ℚ) ^ 2 =
+            (n : ℚ) * ((D (r + 1) : ℚ) / (n.choose (r + 1) : ℚ) ^ 2) := by ring
         _ ≤ ((capNumerator : ℚ) / capDenominator) *
-              ((D r : ℚ) / (productionN.choose r : ℚ) ^ 2) := h
+              ((D r : ℚ) / (n.choose r : ℚ) ^ 2) := h
         _ = ((capNumerator : ℚ) * (D r : ℚ)) /
-            ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) := by ring
+            ((capDenominator : ℚ) * (n.choose r : ℚ) ^ 2) := by ring
     have hcross := (div_le_div_iff₀ hNs hright).mp hfrac
     have hcrossInt :
-        ((productionN : Int) * D (r + 1)) *
-            ((capDenominator : Int) * (productionN.choose r : Int) ^ 2) ≤
+        ((n : Int) * D (r + 1)) *
+            ((capDenominator : Int) * (n.choose r : Int) ^ 2) ≤
           ((capNumerator : Int) * D r) *
-            (productionN.choose (r + 1) : Int) ^ 2 := by
+            (n.choose (r + 1) : Int) ^ 2 := by
       exact_mod_cast hcross
     convert hcrossInt using 1 <;> ring
   · intro h
     have hcrossInt :
-        ((productionN : Int) * D (r + 1)) *
-            ((capDenominator : Int) * (productionN.choose r : Int) ^ 2) ≤
+        ((n : Int) * D (r + 1)) *
+            ((capDenominator : Int) * (n.choose r : Int) ^ 2) ≤
           ((capNumerator : Int) * D r) *
-            (productionN.choose (r + 1) : Int) ^ 2 := by
+            (n.choose (r + 1) : Int) ^ 2 := by
       convert h using 1 <;> ring
     have hcross :
-        ((productionN : ℚ) * (D (r + 1) : ℚ)) *
-            ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) ≤
+        ((n : ℚ) * (D (r + 1) : ℚ)) *
+            ((capDenominator : ℚ) * (n.choose r : ℚ) ^ 2) ≤
           ((capNumerator : ℚ) * (D r : ℚ)) *
-            (productionN.choose (r + 1) : ℚ) ^ 2 := by
+            (n.choose (r + 1) : ℚ) ^ 2 := by
       exact_mod_cast hcrossInt
     have hfrac := (div_le_div_iff₀ hNs hright).mpr hcross
     calc
-      (productionN : ℚ) *
-          ((D (r + 1) : ℚ) / (productionN.choose (r + 1) : ℚ) ^ 2) =
-          ((productionN : ℚ) * (D (r + 1) : ℚ)) /
-            (productionN.choose (r + 1) : ℚ) ^ 2 := by ring
+      (n : ℚ) * ((D (r + 1) : ℚ) / (n.choose (r + 1) : ℚ) ^ 2) =
+          ((n : ℚ) * (D (r + 1) : ℚ)) / (n.choose (r + 1) : ℚ) ^ 2 := by ring
       _ ≤ ((capNumerator : ℚ) * (D r : ℚ)) /
-          ((capDenominator : ℚ) * (productionN.choose r : ℚ) ^ 2) := hfrac
+          ((capDenominator : ℚ) * (n.choose r : ℚ) ^ 2) := hfrac
       _ = ((capNumerator : ℚ) / capDenominator) *
-          ((D r : ℚ) / (productionN.choose r : ℚ) ^ 2) := by ring
+          ((D r : ℚ) / (n.choose r : ℚ) ^ 2) := by ring
 
 /-- Adjacent binomial masses cancel, leaving the compact integer defect ledger. -/
-def CompactTransitionLedger (r capNumerator capDenominator : Nat)
+def CompactTransitionLedger (n r capNumerator capDenominator : Nat)
     (D : Nat → Int) : Prop :=
-  (capDenominator : Int) * productionN * (r + 1 : Int) ^ 2 * D (r + 1) ≤
-    (capNumerator : Int) * (productionN - r : Int) ^ 2 * D r
+  (capDenominator : Int) * n * (r + 1 : Int) ^ 2 * D (r + 1) ≤
+    (capNumerator : Int) * (n - r : Int) ^ 2 * D r
 
 /-- Exact equivalence between the choose-square and compact ledgers. -/
 theorem clearedTransitionAt_iff_compact
-    (D : Nat → Int) {r capNumerator capDenominator : Nat}
-    (hr : r + 1 ≤ productionN) :
-    ClearedTransitionAt r capNumerator capDenominator D ↔
-      CompactTransitionLedger r capNumerator capDenominator D := by
-  have hNrNat : 0 < productionN.choose r :=
+    (n : Nat) (D : Nat → Int) {r capNumerator capDenominator : Nat}
+    (hr : r + 1 ≤ n) :
+    ClearedTransitionAt n r capNumerator capDenominator D ↔
+      CompactTransitionLedger n r capNumerator capDenominator D := by
+  have hNrNat : 0 < n.choose r :=
     Nat.choose_pos (le_trans (Nat.le_add_right r 1) hr)
-  have hstepNat := Nat.choose_succ_right_eq productionN r
+  have hstepNat := Nat.choose_succ_right_eq n r
   have hstep :
-      (productionN.choose (r + 1) : Int) * (r + 1 : Int) =
-        (productionN.choose r : Int) * (productionN - r : Int) := by
+      (n.choose (r + 1) : Int) * (r + 1 : Int) =
+        (n.choose r : Int) * (n - r : Int) := by
     exact_mod_cast hstepNat
   have hstepSq :
-      (productionN.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2 =
-        (productionN.choose r : Int) ^ 2 * (productionN - r : Int) ^ 2 := by
+      (n.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2 =
+        (n.choose r : Int) ^ 2 * (n - r : Int) ^ 2 := by
     calc
-      (productionN.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2 =
-          ((productionN.choose (r + 1) : Int) * (r + 1 : Int)) ^ 2 := by ring
-      _ = ((productionN.choose r : Int) * (productionN - r : Int)) ^ 2 := by rw [hstep]
-      _ = (productionN.choose r : Int) ^ 2 * (productionN - r : Int) ^ 2 := by ring
-  have hNrSq : (0 : Int) < (productionN.choose r : Int) ^ 2 := by positivity
+      (n.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2 =
+          ((n.choose (r + 1) : Int) * (r + 1 : Int)) ^ 2 := by ring
+      _ = ((n.choose r : Int) * (n - r : Int)) ^ 2 := by rw [hstep]
+      _ = (n.choose r : Int) ^ 2 * (n - r : Int) ^ 2 := by ring
+  have hNrSq : (0 : Int) < (n.choose r : Int) ^ 2 := by
+    exact pow_pos (by exact_mod_cast hNrNat) 2
   have hrsq : (0 : Int) < (r + 1 : Int) ^ 2 := by positivity
   unfold ClearedTransitionAt CompactTransitionLedger
   constructor
   · intro h
     have hs := mul_le_mul_of_nonneg_right h (show (0 : Int) ≤ (r + 1 : Int) ^ 2 by positivity)
     have hs' :
-        (productionN.choose r : Int) ^ 2 *
-            ((capDenominator : Int) * productionN * (r + 1 : Int) ^ 2 * D (r + 1)) ≤
-          (productionN.choose r : Int) ^ 2 *
-            ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := by
+        (n.choose r : Int) ^ 2 *
+            ((capDenominator : Int) * n * (r + 1 : Int) ^ 2 * D (r + 1)) ≤
+          (n.choose r : Int) ^ 2 *
+            ((capNumerator : Int) * (n - r : Int) ^ 2 * D r) := by
       calc
-        (productionN.choose r : Int) ^ 2 *
-            ((capDenominator : Int) * productionN * (r + 1 : Int) ^ 2 * D (r + 1)) =
-            ((capDenominator : Int) * productionN *
-              (productionN.choose r : Int) ^ 2 * D (r + 1)) * (r + 1 : Int) ^ 2 := by ring
-        _ ≤ ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) *
+        (n.choose r : Int) ^ 2 *
+            ((capDenominator : Int) * n * (r + 1 : Int) ^ 2 * D (r + 1)) =
+            ((capDenominator : Int) * n * (n.choose r : Int) ^ 2 * D (r + 1)) *
+              (r + 1 : Int) ^ 2 := by ring
+        _ ≤ ((capNumerator : Int) * (n.choose (r + 1) : Int) ^ 2 * D r) *
               (r + 1 : Int) ^ 2 := hs
-        _ = (productionN.choose r : Int) ^ 2 *
-            ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := by
+        _ = (n.choose r : Int) ^ 2 *
+            ((capNumerator : Int) * (n - r : Int) ^ 2 * D r) := by
           calc
-            ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) *
+            ((capNumerator : Int) * (n.choose (r + 1) : Int) ^ 2 * D r) *
                 (r + 1 : Int) ^ 2 =
                 (capNumerator : Int) * D r *
-                  ((productionN.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2) := by ring
+                  ((n.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2) := by ring
             _ = (capNumerator : Int) * D r *
-                  ((productionN.choose r : Int) ^ 2 * (productionN - r : Int) ^ 2) := by
+                  ((n.choose r : Int) ^ 2 * (n - r : Int) ^ 2) := by
               rw [hstepSq]
-            _ = (productionN.choose r : Int) ^ 2 *
-                ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := by ring
+            _ = (n.choose r : Int) ^ 2 *
+                ((capNumerator : Int) * (n - r : Int) ^ 2 * D r) := by ring
     exact le_of_mul_le_mul_left hs' hNrSq
   · intro h
     have hs := mul_le_mul_of_nonneg_left h
-      (show (0 : Int) ≤ (productionN.choose r : Int) ^ 2 by positivity)
+      (show (0 : Int) ≤ (n.choose r : Int) ^ 2 by positivity)
     have hs' :
         (r + 1 : Int) ^ 2 *
-            ((capDenominator : Int) * productionN *
-              (productionN.choose r : Int) ^ 2 * D (r + 1)) ≤
+            ((capDenominator : Int) * n * (n.choose r : Int) ^ 2 * D (r + 1)) ≤
           (r + 1 : Int) ^ 2 *
-            ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) := by
+            ((capNumerator : Int) * (n.choose (r + 1) : Int) ^ 2 * D r) := by
       calc
         (r + 1 : Int) ^ 2 *
-            ((capDenominator : Int) * productionN *
-              (productionN.choose r : Int) ^ 2 * D (r + 1)) =
-            (productionN.choose r : Int) ^ 2 *
-              ((capDenominator : Int) * productionN * (r + 1 : Int) ^ 2 * D (r + 1)) := by ring
-        _ ≤ (productionN.choose r : Int) ^ 2 *
-              ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) := hs
+            ((capDenominator : Int) * n * (n.choose r : Int) ^ 2 * D (r + 1)) =
+            (n.choose r : Int) ^ 2 *
+              ((capDenominator : Int) * n * (r + 1 : Int) ^ 2 * D (r + 1)) := by ring
+        _ ≤ (n.choose r : Int) ^ 2 *
+              ((capNumerator : Int) * (n - r : Int) ^ 2 * D r) := hs
         _ = (r + 1 : Int) ^ 2 *
-            ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) := by
+            ((capNumerator : Int) * (n.choose (r + 1) : Int) ^ 2 * D r) := by
           calc
-            (productionN.choose r : Int) ^ 2 *
-                ((capNumerator : Int) * (productionN - r : Int) ^ 2 * D r) =
+            (n.choose r : Int) ^ 2 *
+                ((capNumerator : Int) * (n - r : Int) ^ 2 * D r) =
                 (capNumerator : Int) * D r *
-                  ((productionN.choose r : Int) ^ 2 * (productionN - r : Int) ^ 2) := by ring
+                  ((n.choose r : Int) ^ 2 * (n - r : Int) ^ 2) := by ring
             _ = (capNumerator : Int) * D r *
-                  ((productionN.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2) := by
+                  ((n.choose (r + 1) : Int) ^ 2 * (r + 1 : Int) ^ 2) := by
               rw [hstepSq]
             _ = (r + 1 : Int) ^ 2 *
-                ((capNumerator : Int) * (productionN.choose (r + 1) : Int) ^ 2 * D r) := by ring
+                ((capNumerator : Int) * (n.choose (r + 1) : Int) ^ 2 * D r) := by ring
     exact le_of_mul_le_mul_left hs' hrsq
 
 /-- Fully consolidated denominator-clearing theorem. -/
 theorem rationalTransitionAt_iff_compact
-    (D : Nat → Int) {r capNumerator capDenominator : Nat}
-    (hr : r + 1 ≤ productionN) (hcap : 0 < capDenominator) :
-    RationalTransitionAt r capNumerator capDenominator D ↔
-      CompactTransitionLedger r capNumerator capDenominator D :=
-  (rationalTransitionAt_iff_cleared D hr hcap).trans
-    (clearedTransitionAt_iff_compact D hr)
+    (n : Nat) (D : Nat → Int) {r capNumerator capDenominator : Nat}
+    (hr : r + 1 ≤ n) (hcap : 0 < capDenominator) :
+    RationalTransitionAt n r capNumerator capDenominator D ↔
+      CompactTransitionLedger n r capNumerator capDenominator D :=
+  (rationalTransitionAt_iff_cleared n D hr hcap).trans
+    (clearedTransitionAt_iff_compact n D hr)
 
 /-! ## The five surviving robust cap ledgers -/
 
 def RobustOrdinaryLedger (r : Nat) (D : Nat → Int) : Prop :=
-  CompactTransitionLedger r (501 * (2 * r + 1)) 500 D
+  CompactTransitionLedger productionN r (501 * (2 * r + 1)) 500 D
 
 def RobustSelectedLedger (r : Nat) (D : Nat → Int) : Prop :=
-  CompactTransitionLedger r (501 * (2 * r)) 500 D
+  CompactTransitionLedger productionN r (501 * (2 * r)) 500 D
 
 /-- The selected-defect cap at `2 -> 3` is `4 * 501/500`. -/
 theorem robustSelectedLedger_two_iff (D : Nat → Int) :
@@ -288,20 +285,20 @@ theorem robustSelectedLedger_six_iff (D : Nat → Int) :
 
 /-- Exact ordinary robust Wick numerators for `r=2,...,6`. -/
 theorem robustOrdinaryLedger_later_table (D : Nat → Int) :
-    RobustOrdinaryLedger 2 D = CompactTransitionLedger 2 2505 500 D ∧
-      RobustOrdinaryLedger 3 D = CompactTransitionLedger 3 3507 500 D ∧
-      RobustOrdinaryLedger 4 D = CompactTransitionLedger 4 4509 500 D ∧
-      RobustOrdinaryLedger 5 D = CompactTransitionLedger 5 5511 500 D ∧
-      RobustOrdinaryLedger 6 D = CompactTransitionLedger 6 6513 500 D := by
+    RobustOrdinaryLedger 2 D = CompactTransitionLedger productionN 2 2505 500 D ∧
+      RobustOrdinaryLedger 3 D = CompactTransitionLedger productionN 3 3507 500 D ∧
+      RobustOrdinaryLedger 4 D = CompactTransitionLedger productionN 4 4509 500 D ∧
+      RobustOrdinaryLedger 5 D = CompactTransitionLedger productionN 5 5511 500 D ∧
+      RobustOrdinaryLedger 6 D = CompactTransitionLedger productionN 6 6513 500 D := by
   norm_num [RobustOrdinaryLedger]
 
 /-- Exact selected robust Wick numerators for `r=2,...,6`. -/
 theorem robustSelectedLedger_later_table (D : Nat → Int) :
-    RobustSelectedLedger 2 D = CompactTransitionLedger 2 2004 500 D ∧
-      RobustSelectedLedger 3 D = CompactTransitionLedger 3 3006 500 D ∧
-      RobustSelectedLedger 4 D = CompactTransitionLedger 4 4008 500 D ∧
-      RobustSelectedLedger 5 D = CompactTransitionLedger 5 5010 500 D ∧
-      RobustSelectedLedger 6 D = CompactTransitionLedger 6 6012 500 D := by
+    RobustSelectedLedger 2 D = CompactTransitionLedger productionN 2 2004 500 D ∧
+      RobustSelectedLedger 3 D = CompactTransitionLedger productionN 3 3006 500 D ∧
+      RobustSelectedLedger 4 D = CompactTransitionLedger productionN 4 4008 500 D ∧
+      RobustSelectedLedger 5 D = CompactTransitionLedger productionN 5 5010 500 D ∧
+      RobustSelectedLedger 6 D = CompactTransitionLedger productionN 6 6012 500 D := by
   norm_num [RobustSelectedLedger]
 
 /-! ## Exact production birthday crossover -/
@@ -341,6 +338,8 @@ theorem production_choose_six_field_window :
 /-- Exact location of the first ambient birthday crossover. -/
 theorem production_birthday_crossover :
     productionN.choose 5 < productionQ ∧ productionQ < productionN.choose 6 := by
+  have h5 := production_choose_five_field_window.1
+  have h6 := production_choose_six_field_window.1
   omega
 
 /-! ## Ranking and the distributed late half-unit socket -/
@@ -382,18 +381,20 @@ theorem product_lt_injectiveCoefficient_of_distributedLateHalfUnit
 
 /-- Exact compact ledger for the robust `10.5` cap at `5 -> 6`. -/
 theorem robust_halfUnit_five_iff (D : Nat → Int) :
-    RationalTransitionAt 5 (21 * 501) 1000 D ↔
+    RationalTransitionAt productionN 5 (21 * 501) 1000 D ↔
       (1000 : Int) * productionN * 36 * D 6 ≤
         10521 * (productionN - 5 : Int) ^ 2 * D 5 := by
-  rw [rationalTransitionAt_iff_compact D (by norm_num [productionN]) (by norm_num)]
+  rw [rationalTransitionAt_iff_compact productionN D
+    (by norm_num [productionN]) (by norm_num)]
   norm_num [CompactTransitionLedger]
 
 /-- Exact compact ledger for the robust `12.5` cap at `6 -> 7`. -/
 theorem robust_halfUnit_six_iff (D : Nat → Int) :
-    RationalTransitionAt 6 (25 * 501) 1000 D ↔
+    RationalTransitionAt productionN 6 (25 * 501) 1000 D ↔
       (1000 : Int) * productionN * 49 * D 7 ≤
         12525 * (productionN - 6 : Int) ^ 2 * D 6 := by
-  rw [rationalTransitionAt_iff_compact D (by norm_num [productionN]) (by norm_num)]
+  rw [rationalTransitionAt_iff_compact productionN D
+    (by norm_num [productionN]) (by norm_num)]
   norm_num [CompactTransitionLedger]
 
 end ArkLib.ProximityGap.Frontier.BGKLaterTransitionDefectLedgers

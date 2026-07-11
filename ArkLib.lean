@@ -2619,6 +2619,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountGrowthLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitCountWallDichotomy
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OrbitSizeEqN
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OverdispersionObstructsVariance
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1EightLabelComplementForcedSecant
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1EightLabelHallToRigidityRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAdjacentExactPin
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAgreementOverlapGraph
