@@ -16260,3 +16260,47 @@ StallResidual(mu_{2^30}) remains OPEN.  No delta-star movement; bracket
 Files: `_P1RateQuarterPencilCoverTheorem.lean`,
 `scripts/probes/probe_rate_quarter_p1_pencil_cover.py`,
 `docs/kb/deltastar-466-rate-quarter-pencil-cover-theorem-2026-07-11.md`.
+
+## 2026-07-11 — P1 rate-quarter: PAIR-CLOUD SECOND MOMENT — the counting jaws do
+## NOT close (kernel no-go rungs); Cauchy–Schwarz caps near-full pencils at
+## FIVE, unconditionally (full kernel proof, not just arithmetic)
+
+Pair-cloud round.  Exact Python calculation first; W-lane checked (LineList*
+files are incidence/dimension-lift machinery — no in-tree below-Johnson
+second-moment lemma; built from scratch).
+
+JAWS VERDICT (kernel no-go rungs — this route is dead, permanently pinned):
+* secondMoment_floor_slack — at the pair-pencil floor a = 2T−N = 111848108 the
+  Cauchy–Schwarz packing jaw is open by a factor 23.04 (23a^2 <= N(k−1) < 24a^2);
+* packing_jaw_never_binds — 2·P(T−1) <= 2N + P(P−1)(k−1) for EVERY P (universal
+  theorem; min margin at P=3): the Bonferroni coverage demand never exceeds the
+  pairwise MDS budget — quadratic beats linear.  Pair-counting + second moment
+  CANNOT squeeze B <= N in the many-pencil regime.
+
+POSITIVE GEM (kernel, unconditional): at sizes >= T−5 Cauchy–Schwarz binds at
+P = 6: S0(S0−N) = 8831558712238801572 > 30N(k−1) = 8646911252339097600.
+* six_near_full_sets_impossible — six subsets of Fin N of size >= T−5 with
+  pairwise intersections <= k−1 cannot coexist (exact incidence double count +
+  Mathlib sq_sum_le_card_mul_sum_sq + pure-Nat finale);
+* six_near_full_pencils_impossible — ANY stack admits at most FIVE pairwise-
+  distinct pencils with aligned sets >= T−5;
+* sixPencil_margin_forced — among any six pairwise-distinct pencils, one
+  satisfies the margin-5 hypothesis of the harvest-cap theorems;
+* five_full_pencils_feasible — five full pencils stay counting-feasible: the
+  gap between unconditional <= 5 and generic-rank <= 2 is exactly the
+  Bezout-escape content.  Clusters of >= 6 near-full pencils are now
+  theorem-level impossible; the round-3 residual shrinks to 3-to-5 clusters.
+
+AUDIT (`_P1RateQuarterPairCloudSecondMoment.lean`; FULL axiom lists read
+manually via `lake env lean`): 6 theorems exactly
+[propext, Classical.choice, Quot.sound], 1 [propext, Quot.sound]; no sorryAx,
+no warnings.
+
+HONESTY: StallResidual(mu_{2^30}) remains OPEN — residual map now: (1) 3-to-5
+near-full clusters (Bezout/generic-rank), (2) the sub-Johnson pair-cloud swarm
+(counting-immune per this round's no-gos; needs beyond-Johnson list input =
+the global wall), (3) margin growth for >= 5 pencils.  No delta-star movement;
+bracket 3/8 <= delta* <= 43/96 + eps untouched.
+
+Files: `_P1RateQuarterPairCloudSecondMoment.lean`,
+`docs/kb/deltastar-466-rate-quarter-pair-cloud-second-moment-2026-07-11.md`.
