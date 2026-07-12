@@ -51890,3 +51890,54 @@ VERDICT: the Gauss/Jacobi rewrite is a necessary coordinate system, not a thinne
 low-order, bounded, or hand-picked few Jacobi terms inside `What` can carry the sponsor-prime signed
 covariance.  The analytic lane must retain a full high-conductor quotient-Jacobi average, exactly the
 BGK/Paley wall already isolated by G216-G227.  CORE remains OPEN / ON-BGK.
+
+### [466-G229-jacobi-fanout-sponsor-bounds] The G228 quotient-Jacobi fanout has production-scale constants: half-RMS recovery needs at least 2^63 inner Jacobi summands at P1 and 13043817825332782213 at P2 (2026-07-12)
+
+Lane: direct Opus-4.8 formalizer, calibrated consumer of the freshly landed G228 quotient-Jacobi fanout no-go.  Branch `research/proximity-prize`; no `main` work.
+
+G228 rewrote the shared Mellin factor
+
+```text
+S_chi = sum_{u in G} conj(chi)(2-u),    What(chi)=n*S_chi
+```
+
+as the quotient-Jacobi average
+
+```text
+S_chi = (1/m) * sum_{lambda|G=1} lambda(2) * conj(chi)(2) * J(lambda,conj(chi)).
+```
+
+The route-killing comparison is numeric and production-specific.  One inner Jacobi summand contributes at most `n*sqrt(p)/m`, while G228 Parseval gives the full RMS lower bound `n*sqrt(n*(m-n)/(m-1))` at the sponsor primes (`2 notin G`).  Therefore the squared one-term RMS fraction is bounded by
+
+```text
+p*(m-1) / (m^2*n*(m-n)).
+```
+
+Formal payload: `Frontier/_G229JacobiFanoutSponsorBounds.lean`.  It kernel-checks the exact sponsor constants
+
+```text
+n  = 2^30
+P1 = 2^30 * (2^128 + 192) + 1,  m1 = 2^128 + 192
+P2 = 2^30 * (2^129 + 13)  + 1,  m2 = 2^129 + 13
+```
+
+and proves, by closed Nat arithmetic:
+
+```text
+P1*(m1-1)*2^127 <= m1^2*n*(m1-n)   (one-term RMS < 2^-63.5)
+P2*(m2-1)*2^128 <= m2^2*n*(m2-n)   (one-term RMS < 2^-64)
+```
+
+The exact half-recovery floors are the sharper useful constants:
+
+```text
+4*(2^63 - 1)^2*P1*(m1-1) < m1^2*n*(m1-n)
+not (4*(2^63)^2*P1*(m1-1) < m1^2*n*(m1-n))
+
+4*(13043817825332782212)^2*P2*(m2-1) < m2^2*n*(m2-n)
+not (4*(13043817825332782213)^2*P2*(m2-1) < m2^2*n*(m2-n))
+```
+
+So strict half-RMS recovery under the G228 universal summand bound requires at least `2^63` selected inner Jacobi summands at `P1`, and at least `13043817825332782213` at `P2`; in particular `2^63` terms are still below half at `P2`.  Any analytic instantiation that hopes to carry a constant fraction of `What` must average a production-scale high-conductor Jacobi family, not a diagonal, bounded, low-order, or hand-picked few-term subfamily.
+
+Scope.  This is a calibrated numeric consumer of the G228 fanout identity, not a new character-sum estimate and not prize closure.  It makes the production fanout scale kernel-checked so future lanes cannot re-enter the bounded-inner-Jacobi shortcut.  CORE remains OPEN / ON-BGK.

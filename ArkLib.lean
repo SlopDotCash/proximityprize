@@ -2263,6 +2263,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G215SharpDyadicWallFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G217PhaseCoherenceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G220PhysicalCorrelationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G224NewtonParityPacketNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G229JacobiFanoutSponsorBounds
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
