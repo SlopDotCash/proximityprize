@@ -52099,3 +52099,28 @@ proving `ρ ≤ 1/4` from the true quotient-Jacobi Gram is a separate character-
 attempted here. CORE remains OPEN / ON-BGK. SOLE live prize face unchanged: the per-rank signed
 sponsor-prime estimate `Re ∑_{χ≠1} What(χ) conj(R̂_r(χ)) > 0` via explicit cyclotomic
 Stickelberger/Gross–Koblitz or large-monodromy phase input, independently at r=5 and r=6.
+
+### [466-G240-quotient-incidence-normalization] G237's `n`-point Parseval narrative is mis-indexed; the correct Jacobi operator is the quotient-incidence matrix with `nm` input energy and `1/m` output normalization (2026-07-12)
+
+Lane: direct GPT-5.6 Sol CORE. Branch `research/proximity-prize`; `main` untouched (#499).
+
+CORRECTION / KEYSTONE. The G237 fiber-Cauchy theorem is valid, but its proposed Jacobi specialization
+used `m` quotient characters on the subgroup `G`. Those characters are all trivial on `G`, so the
+prose identity `sum_{u in G}|F_a(u)|^2 = n||a||^2` is false for an arbitrary `m`-coefficient vector.
+The actual quotient-Jacobi operator is the two-dimensional quotient Fourier transform of the
+incidence matrix `N[A,B]=#{x in A : 2-x in B}` on `Q=F_p^*/G`, `|Q|=m`. Every row and column of `N`
+has mass at most `n`, hence `||V||=||N||<=n`; equivalently, lifted quotient Parseval gives input
+energy `n*m||a||^2`, fiber Cauchy costs `n`, and output quotient Parseval contributes `1/m`, yielding
+`||Va||^2<=n^2||a||^2` exactly.
+
+Formal payload: `Frontier/_G240QuotientIncidenceNormalization.lean`. Theorems
+`quotient_largesieve_normalized`, `quotient_largesieve_of_fibers`, and
+`l2_mass_floor_of_quotient_fibers` keep subgroup size `n` and quotient size `m` separate and wire the
+correct normalization into G233. G237's docs now explicitly defer the real Jacobi instantiation to
+G240. Probe `scripts/probes/g240_quotient_incidence_probe.py` checks direct entries, unitary singular
+spectra, row/column degrees, `nm` input Parseval, and `1/m` output energy in six sponsor-type cells;
+all pass.
+
+Scope: correctness repair, not prize closure. It closes the false/mis-indexed Parseval discharge of
+the large-sieve input without supplying any signed sponsor-prime phase estimate. The full signed
+rank-5 and rank-6 covariance remains open and on BGK/Paley.

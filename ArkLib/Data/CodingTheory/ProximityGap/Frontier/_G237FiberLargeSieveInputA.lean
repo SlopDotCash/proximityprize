@@ -42,9 +42,17 @@ which is the fiber-Cauchy heart of the G236-validated chain
 remaining Mathlib character-theory input, quarantined here as an explicit hypothesis rather than
 smuggled in as a false structural claim) into this bound yields `(A)` with the sharp constant `n²`.
 
-Scope.  Keystone correctness upgrade of the G228→G234 chain: it installs the sharp, phase-honest
-operator bound and closes G234's silent scope error (a premise valid only for small `m/n`).  It is
-not a new character-sum estimate and does not consume the target.  CORE remains OPEN / ON-BGK.
+**G240 normalization correction.** The fiber-Cauchy theorems in this file are valid. However, the
+actual quotient-Jacobi coefficient vector has length `m`, and its characters are trivial on the
+subgroup `G`; consequently the prose specialization `∑_{u∈G} ‖F_a(u)‖² = n‖a‖²` does not apply to
+that vector. G240 supplies the correctly typed instantiation on `F_p^*` / `F_p^*/G`, with lifted
+input energy `n*m‖a‖²`, output normalization `1/m`, and fiber ceiling `n`, again yielding `n²`.
+Thus `largesieve_inputA_of_fiber_parseval` remains a sound abstract implication, but G240, not the
+`n`-point narrative here, is the honest bridge to the Jacobi fanout.
+
+Scope. Keystone structural upgrade of the G228→G234 chain: it installs the valid fiber inequality
+and closes G234's false row-mass route. It is not a new character-sum estimate and does not consume
+the target. CORE remains OPEN / ON-BGK.
 -/
 
 set_option autoImplicit false
@@ -135,9 +143,11 @@ theorem fiber_card_le (G : Finset α) (cls : α → β) (d : β)
 /-- **Large-sieve input (A) from the fiber bound and multiplicative-character Parseval.**
 
 Chaining the structural fiber operator bound with constant `maxfiber ≤ n`
-(`fiber_largesieve_operator_bound` + `fiber_card_le`) and the multiplicative-character Parseval
-`∑_{u ∈ G} ‖F u‖² = n · ‖a‖²` (`hParseval`, the single remaining character-theory input, kept
-explicit) yields G233's input `(A)`:
+(`fiber_largesieve_operator_bound` + `fiber_card_le`) and an abstract Parseval identity
+`∑_{u ∈ G} ‖F u‖² = n · ‖a‖²` (`hParseval`, kept explicit) yields G233's input `(A)` for any carrier
+where that identity is correctly typed. For the actual `m`-dimensional quotient-Jacobi vector this
+specialization is not applicable: quotient characters are trivial on the subgroup. G240 replaces it
+with the correct `n*m` lifted input energy and `1/m` output normalization:
 
 ```text
 ∑_{d ∈ D} ‖T d‖²  ≤  n · ∑_{u ∈ G} ‖F u‖²  =  n · (n · ‖a‖²)  =  n² · ‖a‖².
