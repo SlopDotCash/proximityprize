@@ -2271,6 +2271,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G238IncoherenceDimensionF
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G240QuotientIncidenceNormalization
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G242CarrierCorrectQuotientLargeSieve
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G243CosetLiftCarrierParseval
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G246KrylovDegreeTwoCountermodel
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
