@@ -51741,3 +51741,51 @@ So no integer-computable Mellin sub-object determines `sign(A_r)`; the sign is c
 Formal payload: `Frontier/_G217PhaseCoherenceNoGo.lean` — an axiom-clean INTEGER CERTIFICATE of the recorded proxy sign-flips (`exists_integer_proxy_sign_flip`, `sign_flip_witnesses_are_multiple`, `wFlip1153/97r5/97r6_flips`, `wCtrl257_agrees`, and `proxy` value theorems), all auditing to `[propext]` or fewer.  The equidistribution half (`frac_half→1/2`, `R_coh→1/√N`) is a limiting statistical statement whose computation of record is the Python sweep; it is NOT dressed as a Lean theorem.  The Lean file certifies the arithmetic that the integer part of the Mellin decomposition points the wrong way, not a re-derivation of `A_r` inside Lean.
 
 CONSEQUENCE.  This closes the LAST untested truncation-free route to signing `A_r`.  G216 killed bounded-order truncation; Fable killed top-k conductor-shell truncation; G214 killed single-rank/ratio/DC cross-depth reductions; the magnitude tower (G206/G209/G210/G215) is sign-blind.  The phase route was the only remaining way to get a signed bound without controlling a positive fraction of the full high-conductor character family.  The phase equidistributes and no integer-computable sub-object carries the sign ⇒ the signed target is the full BGK phase-correlation wall in the strongest sense: no coordinate change, no shell truncation, and no phase gate thins the signed inequality.  Thinness-relevant (witnesses are 2-power subgroups, dyadic involution active).  It does NOT bound `A_5` or `A_6` at production primes.  CORE remains OPEN / ON-BGK.
+
+### [466-G220-physical-correlation-nogo] The covariance sign is UNFORCED in physical space too, and its dominant diagonal (the 2-power-subgroup translate support) carries no forced sign either: no diagonal-dominance shortcut past the BGK wall (2026-07-12)
+
+Every prior no-go on the surviving CORE target `A_r := p·Σ_t W_G(t)·R_r(t) − n²·C(n,r)`
+(`r ∈ {5,6}`) worked in MELLIN / character space, where the sign lives in equidistributing
+complex conjugate-pair phases: G216 (no bounded-order truncation), Fable (no top-k conductor
+shell), G217 (per-rank phase equidistributes, `frac_half→1/2`), the inter-rank phase lock
+(sign-blind), G56 (inter-rank magnitude ratio 8–12% nonconstant), G219 (shared-factor `Ŵ` phase
+equidistributes against the rank direction). Every character-space decomposition scrambles the sign.
+
+This lane takes the COMPLEMENTARY physical-space view no prior lane probed. By Parseval on `ℤ/p`
+(`R_r` real), `p·Σ_t W_G(t) R_r(t) = Σ_χ Ŵ(χ) conj(R̂_r(χ))`, and the trivial character contributes
+exactly `(Σ W_G)(Σ R_r) = n²·C(n,r)`. Hence the physical signed correlation
+`A_signed(n,p,r) := p·Σ_t W_G(t) R_r(t) − n²·C(n,r) = Σ_{χ≠1} Ŵ(χ) conj(R̂_r(χ))` EQUALS the CORE
+covariance (probe cross-checks `A_signed = char-space Re-sum` at rel-err ≈1e-14, `p=97,n=8,r=5`).
+In physical space `A_signed` is an EXACT INTEGER combinatorial correlation with NO phases, a count.
+
+**Two exact no-gos.** (1) SIGN NOT FORCED: at fixed rank the sign of `A_signed` realizes BOTH values
+across prize-faithful cells (`r=5`: 6 pos/10 neg; `r=6`: 8 pos/6 neg), and ALL FOUR joint quadrants
+`(sign A₅, sign A₆) ∈ {++,+−,−+,−−}` occur — the exact physical mirror of G214's Mellin joint-sign
+no-go. (2) NO DIAGONAL-DOMINANCE CERTIFICATE: the DC-removed decomposition
+`p·A_signed = Σ_t (p·W_G(t)−n²)(p·R_r(t)−C(n,r)) = D_on + D_off` splits on/off the structural support
+`S = {t : W_G(t) > 0} = 2G − G` (the 2-power-subgroup dyadic translate set). `D_on` DOMINATES
+`|D_off|` in 27/28 cells (the correlation IS concentrated on the dyadic translate support — diagonal
+dominance genuinely holds), yet the dominant `D_on` sign is itself NOT forced: `r=5` gives 5 pos/9
+neg, `r=6` gives 8 pos/6 neg. The dominant structural diagonal flips sign across cells just like the
+total. Witnesses at a single field `p=97,n=16`: `D_on(r=6) = +6 309 024`, `D_on(r=5) = −6 516 064`;
+fixed-order `n=32,r=5`: `A_signed(p=257) = +1 775 936`, `A_signed(p=1153) = −17 412 192`.
+
+MECHANISM: `A_signed` is exactly the CORE covariance (Parseval identity, no approximation), it is a
+phase-free exact integer, its correlation mass concentrates on the 2-power-subgroup translate support
+`S` (diagonal dominance holds), and the dominant diagonal term STILL flips sign. So the signed target
+is not thinned by leaving Mellin space: there is no combinatorial diagonal-dominance shortcut, exactly
+as there is no phase-coherence shortcut (G217) and no truncation shortcut (G216). Thinness-relevant
+(witnesses are 2-power subgroups; `S = 2G − G` is the dyadic translate set). Does NOT bound `A_5` or
+`A_6` at production primes, does NOT break BGK. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G220PhysicalCorrelationNoGo.lean` — axiom-clean INTEGER CERTIFICATE
+(`physical_correlation_sign_not_forced`, `physical_sign_flip_fixed_order`,
+`diagonal_dominance_sign_not_forced`, and the six witness-value theorems `wPosA_r5_pos`,
+`wNegA_r5_neg`, `wPosA_r5_n32_pos`, `wNegA_r5_n32_neg`, `wPosDon_pos`, `wNegDon_neg`); all 9 decls
+audit to ZERO axioms (`does not depend on any axioms`). The census fractions (6/10, 8/6, 5/9, …) and
+`|D_on| ≥ |D_off|` are limiting statistical statements whose computation of record is the Python sweep
+(NOT dressed as Lean theorems, per the G214/G217 lesson). Probes:
+`scripts/probes/oc_g220_physical_correlation_probe.py` (Parseval cross-check + full sign census, all
+4 quadrants), `scripts/probes/oc_g220_diagonal_dominance_probe.py` (on/off-support decomposition,
+domination + sign census), `scripts/probes/oc_g220_witness_exact.py` (recomputes every Lean constant
+float-free and asserts the match; PASS).

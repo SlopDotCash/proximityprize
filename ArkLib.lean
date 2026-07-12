@@ -2261,6 +2261,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G213TailFloorDefectIdenti
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G214JointSignDiscordanceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G215SharpDyadicWallFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G217PhaseCoherenceNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G220PhysicalCorrelationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
