@@ -51591,3 +51591,64 @@ The exact probe checks this against direct ordered-pair enumeration and reproduc
 **Consequence.** The unconditional support result is now sharp and honest: G209 supplies the floor; G210 supplies the unique equality histogram and a checkable per-prime collision-free criterion. It does not upper-bound the sponsor-prime tail and does not control the simultaneous signed `r=5,6` covariance. CORE remains OPEN / ON-BGK.
 
 Formal payload: `Frontier/_G210TailFloorEqualityRigidity.lean`; probe `scripts/probes/g210_tail_floor_flatness_certificate.py`; KB note `docs/kb/deltastar-466-g210-tail-floor-equality-rigidity-2026-07-11.md`.
+
+## [466-G206-dyadic-cross-orbit-class-cap] the depth-2 cross-orbit CLASS-COUNT CAP on the CORE object: at most `m = n/2` orbit classes carry any depth-2 mass — this DISCHARGES the `ks.card ≤ n/2` hypothesis that G209/G210 assumed (2026-07-12)
+
+Lane: #466 / #509, direct Opus-4.8 CORE (independent, non-overlapping). Deconflicted from the
+SYZ μ-basis arc and the G209/G210 pure-ℕ engine: this file proves the cap on the ACTUAL
+cyclic-subgroup CORE object (`orbitClassMass`), the structural fact G209's extremal engine
+took as an unproven hypothesis.
+
+CONTEXT. On the deep dyadic wall (G88 orbit-class Parseval, #505), the depth-2 kernel-class
+ℓ²-profile is `(S₀, (S_γ)_γ)`. G182 pinned `S₀ = repRF g n 2 0 = n` exactly. G209 proved the
+tail floor `Σ_γ S_γ² ≥ n²(2n−3)` — but ONLY under the hypothesis `ks.card ≤ n/2` (its
+`tail_sumSq_floor`/`tail_floor_scaled` take `(hcard : ks.card ≤ n/2)` as a GIVEN). G210's
+equality rigidity inherits the same assumption. Nothing on tip proved that cap holds on the
+real object; opus-core's own earlier probe conjectured it. This file closes that gap.
+
+RESULT (`Frontier/_G206DyadicCrossOrbitClassCap.lean`, all `[propext, Classical.choice,
+Quot.sound]`; no sorry/native_decide). The class-count cap, proved structurally on the CORE
+object:
+
+  `(occupiedDepth2Classes g n).card ≤ m`   (`occupiedDepth2Classes_card_le_half`),   `n = 2m`.
+
+Mechanism (three axiom-clean lemmas):
+- `class_eq_dClass` — difference reduction: a representable value `g^a + g^b` has orbit label
+  `(1 + g^{b−a})^n = dClass g n (b−a)`; only the difference `b−a (mod n)` matters (factor out
+  `g^a`, kill it by `(g^a)^n = 1`).
+- `dClass_reflect` — the THINNESS INVOLUTION `dClass g n (n−d) = dClass g n d`: the labels of
+  `d` and its negation `n−d` coincide (`1 + g^{n−d} = g^{n−d}(1 + g^d)`, and `(g^{n−d})^n = 1`).
+- `occupiedDepth2Classes_subset_image` — every occupied class is `dClass g n d` for some
+  `d ∈ {0,…,m−1}`: difference reduction lands `d ∈ Fin n`, the kernel value `d = m` is EXCLUDED
+  (`1 + g^m = 1 + (−1) = 0`, contributes to `S₀` not a cross class), and the `d ↦ n−d` folding
+  brings the representative below `m`. So the occupied set injects into `(range m).image (dClass)`.
+- HEADLINE `occupiedDepth2Classes_card_le_half`: `card ≤ (range m).image.card ≤ m`.
+
+CONSEQUENCE (self-contained, no G209 import):
+- `sum_occupied_orbitClassMass_two` — total occupied cross mass `= n² − S₀ = n² − n` (uses G182).
+- `crossOrbitTail_two_floor` — Cauchy–Schwarz `(Σ S_γ)² ≤ card · Σ S_γ²` with `card ≤ m = n/2`
+  gives the `p`-independent floor `Σ_γ S_γ² ≥ 2n(n−1)²`. (Slightly weaker than G209's sharp
+  integer-partition `n²(2n−3)` — the sharp constant needs the `S_γ = n·k_γ` quantisation; the
+  cap here is the strictly-larger-than-0 input that both need.)
+- `dyadic_wall_floor_two_with_tail` — substituting `S₀ = n` (G182) and the tail floor into G88's
+  Parseval upgrades the wall floor from the kernel-only `q·n² − n⁴ ≤ centeredShadowMass` (G182)
+  to `q·(n² + 2(n−1)²) − n⁴ ≤ centeredShadowMass`, a strictly positive `q·2(n−1)²` gain.
+
+WHY NEW / NOT A WRAPPER. This is the missing structural LINK, not another reformulation: G209 and
+G210 are only conditionally meaningful until the `card ≤ n/2` cap is proved on the real object,
+and it is exactly the `d ↦ n−d` dyadic involution plus the kernel exclusion at `d = m` that
+supplies it. Neither is a sum-product exponent, a generic moment, a line-list wrapper, nor a
+primitive-weighted census; it is the count-of-occupied-classes invariant.
+
+THINNESS-ESSENTIAL. For an ODD-order subgroup `−1 ∉ ⟨g⟩`: there is no half-shift `m` with
+`g^m = −1`, the depth-2 kernel is empty, and BOTH the folding `d ↦ n−d` and the kernel exclusion
+`d = m` fail. The `≤ m = n/2` cap is a 2-power-subgroup fact.
+
+**Consequence.** The G209/G210 tail-floor + equality-rigidity results are now unconditional on the
+CORE object: their `ks.card ≤ n/2` premise is discharged by `occupiedDepth2Classes_card_le_half`.
+This does NOT bound the sponsor-prime tail from above, does NOT control the signed simultaneous
+`r=5,6` covariance (the literal BGK object), and does NOT touch higher-depth `S₀` (r≥3 char-p
+accidents). CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G206DyadicCrossOrbitClassCap.lean`; all declarations
+`[propext, Classical.choice, Quot.sound]` only. CORE remains OPEN / ON-BGK.

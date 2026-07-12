@@ -2251,6 +2251,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G180CentralSymmetryCoveri
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G181DyadicKernelFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G182DyadicKernelCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G205LateAlignmentSignNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G206DyadicCrossOrbitClassCap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G206WeightedKernelInjectionNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G207WeightedKernelMagnitudeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G208WeightedKernelVarianceLaw
