@@ -51982,3 +51982,63 @@ MECHANISM (all real-object, no new axioms). `lambda_max` of the Hermitian PSD Gr
 Formal payload: `Frontier/_G234SchurOperatorBoundClosesG233.lean`. Theorems: `schur_operator_bound` (general `R`, real coefficients, elementary Schur test on any finite C-vector family), `largesieve_operator_bound_of_gram_rowmass_le_nsq` (the `R = n^2` corollary = derived input (A)), and `l2_mass_floor_of_gram_rowmass_parseval` (the G233 floor with (A) discharged: `m - n <= 4 n (sum_b a_b^2)` from Gram-row-mass + Parseval + half capture). Builds against the warm cache in 8s; all three headline theorems audit to `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
 
 SCOPE: keystone that closes G233's last assumption; not a new character-sum estimate, does not consume the target. The `lambda_max <= max-row-sum` step is exactly the elementary certificate the G231 probe measured numerically (`lambda_max(V^H V)/n^2 <= 1` in every cell). The remaining premise `gram-row-mass <= n^2` is the honest structural input that still needs the `|J| <= sqrt p` fiber count; formalizing THAT from Mathlib Gauss-sum magnitudes is the next-smaller residual, not attempted here. CORE remains OPEN / ON-BGK.
+
+### [466-G237-fiber-largesieve-input-a] The fiber large-sieve is the phase-honest source of G233 input (A): sharp operator constant is a FIBER COUNT `maxfiber ≤ n`, NOT the false-at-scale Gram-row-mass — replacing G234's silent scope error with a character-theory-free structural bound (2026-07-12)
+
+Lane: direct Opus-4.8 CORE cron. Branch `research/proximity-prize`; no `main` work.
+
+CORRECTNESS UPGRADE of the G228→G234 quotient-Jacobi fanout no-go chain. G233's basis-independent
+mass floor `l2_mass_floor_of_largesieve_parseval` takes input (A) `‖V a‖² ≤ n²‖a‖²` as a bare
+hypothesis. G234 tried to DERIVE (A) from the structural premise "every Gram row-mass ≤ n²" via the
+elementary Schur/Gershgorin surrogate `λ_max ≤ max-abs-row-sum`. Two independent referee probes
+(G56 G235 Result A, Fable G236) then showed that premise is FALSE at sponsor scale: the absolute
+Gram row-mass reaches `1.2–1.7·n²` as `m/n` grows, because the off-diagonal Gram entries are NOT
+phase-aligned and `max-abs-row-sum` over-counts the true top eigenvalue by up to `~8×`. G234's
+abstract `schur_operator_bound` is correct, but its `R = n²` specialization is a lemma that only
+holds for small `m/n` — a silent scope error that excludes exactly the sponsor asymptotic
+`m ≫ n²`.
+
+THE HONEST SOURCE (this lane). The sharp, phase-honest operator constant is the maximal FIBER COUNT
+`maxfiber` — the largest number of subgroup elements `u ∈ G` whose quotient class `cls u := class of
+(2−u)` coincides — and `maxfiber ≤ |G| = n` TRIVIALLY, because the fibers `{u ∈ G : cls u = d}` are
+pairwise-disjoint subsets of `G`. The character-theory-free structural invariant is a pure fiber
+Cauchy–Schwarz:
+
+```text
+∑_{d ∈ cls '' G} ‖∑_{u ∈ G, cls u = d} F u‖²  ≤  maxfiber · ∑_{u ∈ G} ‖F u‖²,   maxfiber ≤ |G| = n.
+```
+
+This is the fiber-Cauchy heart of the G236-validated chain
+`∑_{χ≠1}|Va(χ)|² = (1/m)∑_D|T_D|² − k₀ ≤ (maxfiber/m)∑_{u∈G}|F_a(u)|²`. Feeding `maxfiber ≤ n` and
+the one remaining Mathlib character input, multiplicative-character Parseval
+`∑_{u∈G}|F_a(u)|² = n‖a‖²` (QUARANTINED as an explicit hypothesis, NOT smuggled as a false
+structural claim), yields input (A) with the sharp constant `n²`: `n·(n‖a‖²) = n²‖a‖²`.
+
+Formal payload: `Frontier/_G237FiberLargeSieveInputA.lean`. Theorems: `fiber_cauchy` (single-fiber
+`‖∑F‖² ≤ #fib·∑‖F‖²`, triangle + real Cauchy–Schwarz `sq_sum_le_card_mul_sum_sq`);
+`fiber_largesieve_operator_bound` (abstract fiber operator bound `∑_d ‖T_d‖² ≤ R·∑_u‖F u‖²` from any
+fiber-card ceiling `R`, via per-fiber Cauchy recombined by `Finset.sum_fiberwise_of_maps_to`);
+`fiber_card_le` (`#fiber ≤ #G`, the honest replacement for the false row-mass ceiling, one line from
+`Finset.card_filter_le`); `largesieve_inputA_of_fiber_parseval` (input (A) `∑_d ‖T_d‖² ≤ n²·aNorm2`
+from `maxfiber ≤ n` + character Parseval); `l2_mass_floor_of_fiber_parseval` (the G233 floor
+`m − n ≤ 4·n·aNorm2` with (A) discharged by the SOUND fiber path, so the chain is correct in exactly
+the cells G234's premise excludes). All five audit to `[propext, Classical.choice, Quot.sound]`
+(`fiber_card_le`: `[propext, Quot.sound]`), no `sorryAx`. Locked build 3300 jobs green (4.0s);
+forbidden-tokens clean; sorry-census 0 holes.
+
+Probe: `scripts/probes/oc_g237_fiber_largesieve_input_a.py` (out `.out`). Builds the fiber map on
+sponsor-shaped cells and checks: (1) `maxfiber ≤ n` in every cell (1..4 measured); (2) the abstract
+fiber-Cauchy inequality `∑_D|T_D|² ≤ maxfiber·∑_u|F|²` holds for random complex `F` (independent of
+any Jacobi structure); (3) it is SHARP — worst ratio equals `maxfiber` exactly, achieved when a
+single fiber saturates. All checks pass.
+
+SCOPE (honest). Keystone correctness: installs the sharp, phase-honest operator bound and closes
+G234's silent scope error (a premise valid only for `m/n` small). NOT a new character-sum estimate,
+does NOT consume the target, does NOT weaken BGK/Paley. The single remaining Mathlib character-theory
+input (multiplicative Parseval `∑|F|² = n‖a‖²`) is kept as an explicit hypothesis rather than a false
+structural claim; formalizing it from quotient-character orthogonality is the next-smaller residual,
+not attempted here. G234's `schur_operator_bound` (general `R`) remains valid and is untouched; only
+its false `R = n²` narrative is superseded by the fiber-count path. CORE remains OPEN / ON-BGK. SOLE
+live prize face unchanged: the per-rank signed sponsor-prime estimate
+`Re ∑_{χ≠1} What(χ) conj(R̂_r(χ)) > 0` via explicit cyclotomic Stickelberger/Gross–Koblitz or
+large-monodromy phase input, independently at r=5 and r=6.
