@@ -2265,6 +2265,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G220PhysicalCorrelationNo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G224NewtonParityPacketNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G229JacobiFanoutSponsorBounds
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G233JacobiL2MassFloorNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G234SchurOperatorBoundClosesG233
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
