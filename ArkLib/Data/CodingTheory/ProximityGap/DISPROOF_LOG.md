@@ -51573,3 +51573,21 @@ prize; does NOT bound higher-depth `S₀` (r≥3 char-p accidents). CORE remains
 Formal payload: `Frontier/_G209TailFloorPartitionEngine.lean`. Probe:
 `scripts/probes/g209_tail_floor_partition_engine.py` (exact min-partition enumerator + tight-witness
 check + engine identity `3(n−1)−2m = 2n−3`, `n∈{4..256}`). CORE remains OPEN / ON-BGK.
+
+## [466-G210-tail-floor-equality-rigidity] Equality at the dyadic depth-two tail floor is a unique per-prime flatness certificate, not an eventual-large-prime theorem (2026-07-12)
+
+G209 proves `Σ_γ S_γ² ≥ n²(2n−3)` after writing `S_γ=n·k_γ`, with positive parts `k_γ`, total `n−1`, and at most `n/2` occupied classes. G210 proves the exact equality case:
+
+- `Σ k_γ² = 2n−3` iff the class-count cap is saturated and every `k_γ≤2`;
+- positivity then gives every part in `{1,2}`;
+- the total forces exactly one `1` and `n/2−1` twos.
+
+Thus `[2,…,2,1]` is the unique minimizing histogram up to permutation. On the actual even cyclic subgroup, the primitive depth-two labels are `(2^n, weight 1)` and `((1+g^d)^n, weight 2)` for `1≤d<n/2`; the realized partition is obtained by merging equal labels. Hence floor equality is equivalent to pairwise distinct labels. A failure is exactly a direct characteristic-`p` weighted relation
+
+`(1+g^d)^n=(1+g^e)^n ⇔ 1+g^d=a(1+g^e)` for some `a∈G`.
+
+The exact probe checks this against direct ordered-pair enumeration and reproduces large exceptions `n=32,p=50177` and `p=51137`, both with partition `[4,3,2,…,2]` and `Σk²=73>61`. This corrects the earlier empirical wording in G209: large-prime floor equality is typical in sampled bands but is not an unconditional eventual-threshold theorem. FS15-FS18 explain almost-all-prime fixed-depth control but cannot certify the sponsor prime or logarithmic-depth simultaneous gate.
+
+**Consequence.** The unconditional support result is now sharp and honest: G209 supplies the floor; G210 supplies the unique equality histogram and a checkable per-prime collision-free criterion. It does not upper-bound the sponsor-prime tail and does not control the simultaneous signed `r=5,6` covariance. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G210TailFloorEqualityRigidity.lean`; probe `scripts/probes/g210_tail_floor_flatness_certificate.py`; KB note `docs/kb/deltastar-466-g210-tail-floor-equality-rigidity-2026-07-11.md`.

@@ -33,9 +33,9 @@ Tightness: the flat partition `[2, …, 2, 1]` (`m - 1` twos and one `1`) satura
 pointwise inequality — every part lies in `{1, 2}`, exactly the equality set of
 `(k-1)(k-2) = 0` — AND the class-count cap `t = m`.  So the floor genuinely needs the cap:
 without it (`t ≤ n - 1`) the pointwise bound only yields `n - 1`, the non-realized naive
-floor.  This is the axiom-clean lower half of the depth-2 tail; Fable's `g208` tail-upper
-probe independently shows the tail collapses to this floor at production-scale primes, so
-`2 n - 3` is the realized value at scale, not merely a bound.
+floor.  This is the axiom-clean lower half of the depth-2 tail.  Large-prime probes show the floor
+is typical, but G210 records large exceptional primes and proves that equality is instead a
+checkable per-prime collision-free condition; no eventual-prime threshold is claimed.
 
 Thinness-essential: the whole object exists only for the 2-power smooth subgroup — an
 odd-order subgroup has `-1 ∉ ⟨g⟩`, empty depth-2 fiber, and no cross-orbit partition of
@@ -118,8 +118,8 @@ depth-2 cross-orbit tail floor
 
 `n² (2 n - 3) ≤ Σ_γ S_γ²`,   stated ℕ-safely as   `n² · (2 n) ≤ (Σ_γ S_γ²) + 3 · n²`,
 
-where `Σ_γ S_γ² = n² · (Σ ks²)`.  This is the exact constant Fable's `g208` tail-upper
-probe shows is realized at production-scale primes. -/
+where `Σ_γ S_γ² = n² · (Σ ks²)`.  G210 proves the exact equality case and corrects the
+empirical large-prime observation to a per-prime flatness certificate. -/
 theorem tail_floor_scaled
     (n : ℕ) (hn : 2 ≤ n) (heven : Even n)
     (ks : Multiset ℕ)

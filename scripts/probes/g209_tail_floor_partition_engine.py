@@ -26,10 +26,10 @@ lies in {1,2}, the exact equality set of (k−1)(k−2)=0 — AND the cap t = m.
 needs the class-count cap; without it (t ≤ n−1) the pointwise bound only gives n−1, which
 is exactly the non-realized naive floor.
 
-Fable's g208 tail-upper probe (2026-07-11 18:30 MDT, tip d869516e4a) independently showed the
-tail COLLAPSES to this floor at production-scale primes (frac_at_floor → 1.000 for n=8,16),
-so `2n−3` is not just a lower bound but the realized value at scale.  G209 supplies the
-axiom-clean pure-ℕ certificate of the lower half.
+Fable's g208 tail-upper probe (2026-07-11 18:30 MDT, tip d869516e4a) showed this floor is typical
+in sampled large-prime bands, but its G209 follow-up found large exceptional n=32 primes and
+retracted the stronger eventual-threshold interpretation. G209 supplies the axiom-clean pure-ℕ
+lower half; G210 proves the exact per-prime equality certificate.
 """
 
 def min_sumsq(total, tmax):
