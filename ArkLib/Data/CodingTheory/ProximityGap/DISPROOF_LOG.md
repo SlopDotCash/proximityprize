@@ -51941,3 +51941,32 @@ not (4*(13043817825332782213)^2*P2*(m2-1) < m2^2*n*(m2-n))
 So strict half-RMS recovery under the G228 universal summand bound requires at least `2^63` selected inner Jacobi summands at `P1`, and at least `13043817825332782213` at `P2`; in particular `2^63` terms are still below half at `P2`.  Any analytic instantiation that hopes to carry a constant fraction of `What` must average a production-scale high-conductor Jacobi family, not a diagonal, bounded, low-order, or hand-picked few-term subfamily.
 
 Scope.  This is a calibrated numeric consumer of the G228 fanout identity, not a new character-sum estimate and not prize closure.  It makes the production fanout scale kernel-checked so future lanes cannot re-enter the bounded-inner-Jacobi shortcut.  CORE remains OPEN / ON-BGK.
+
+### [466-G233-jacobi-l2-massfloor-no-go] The quotient-Jacobi fanout admits no bounded-L2-mass coefficient family: half recovery needs squared coefficient mass >= (m-n)/(4n), exactly 2^96 at P1 and 2^97 at P2, basis-independent (2026-07-12)
+
+Lane: direct Opus-4.8 CORE cron. Branch `research/proximity-prize`; no `main` work.
+
+G228 rewrote the shared Mellin factor `S_chi = sum_{u in G} conj(chi)(2-u)`, `What(chi)=n*S_chi`, as the quotient-Jacobi column decomposition `S = V*1` with
+
+```text
+V_lambda(chi) = (1/m) sum_{u in F_p*} lambda(u) conj(chi)(2-u)   (m x m over nontrivial chi).
+```
+
+The fanout no-go chain: G228/G229 gave the fixed few-term floor `K = Omega(sqrt m)`; G231 (G56, uncommitted) upgraded to the exact large-sieve operator bound `lambda_max(V^H V) <= n^2`, so any FIXED unit-weight COORDINATE subfamily needs `K >= ceil((m-n)/(4n)) ~ 2^96/2^97`, explicitly NOT covering an adaptive/coherent family; G232 (Fable) checked empirically that no coherent EIGEN-subfamily helps.
+
+G233 gives the single basis-INDEPENDENT inequality that subsumes all of these. Two exact inputs, sponsor regime `2 notin G`:
+
+```text
+(A) large-sieve:  ||V a||^2 <= n^2 * ||a||^2   for ALL coefficient vectors a
+(B) sponsor Parseval:  ||S||^2 = sum_{chi != 1} |S_chi|^2 >= n(m-n)
+```
+
+Then ANY a (sparse or dense, coordinate subset or coherent eigen-combination, adaptive or fixed) whose reconstruction `V a` captures a fraction `f` of `||S||` obeys `||a||^2 >= f^2 (m-n)/n`. For half capture `f=1/2`: `||a||^2 >= (m-n)/(4n)`, division-free `4 n ||a||^2 >= m-n`. Proof: `n(m-n) <= ||S||^2 <= 4||Va||^2 <= 4 n^2 ||a||^2`, divide by `n>0`.
+
+Why this is the HONEST incoherence statement: the pure K-dim subspace question degenerates (Eckart-Young: any line through `S` captures all of `S`), so no clean basis-free SUBSPACE theorem exists. The coefficient-L2 mass is the correct non-vacuous invariant -- it recovers G231's `K >= (m-n)/4n` as the special case `||a||^2 = K` (unit-weight sparse) AND bars unbounded-weight coherent/eigen combinations by the same closed floor, independent of any basis. This upgrades G231 from "no fixed coordinate subfamily" to "no bounded-mass coefficient family at all."
+
+Formal payload: `Frontier/_G233JacobiL2MassFloorNoGo.lean`. Kernel-checks the abstract mass floor `l2_mass_floor_of_largesieve_parseval` (division-free `m-n <= 4 n aNorm2`), the unit-weight sparse specialization `sparse_count_floor_of_mass_floor`, and the exact sponsor constants: for `n=2^30`, `P1=2^30*(2^128+192)+1`, `P2=2^30*(2^129+13)+1`, `p1_half_recovery_needs_two_pow_96` and `p2_half_recovery_needs_two_pow_97` prove the unit-weight-sparse half-recovery floors are exactly `2^96` and `2^97`. All headline theorems depend only on `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
+
+Probe: `scripts/probes/oc_g233_l2_massfloor_no_go.py` (out `oc_g233_l2_massfloor_no_go.out`). Verifies `lambda_max(V^H V) <= n^2` (0.22-0.78 <= 1 across cells), `||S||^2 >= n(m-n)` (equality-or-better in every `2 notin G` cell), the identity `S = V*1` (recon err ~1e-12), and the exact `2^96/2^97` sponsor floors. All checks pass.
+
+SCOPE: does not prove the production signed estimate and does not consume the target. Closes the basis-independent bounded-mass coefficient shortcut: no fixed coordinate subfamily (G228/G229/G231), no coherent eigen-subfamily (G232), no bounded-L2-mass adaptive combination (G233) below the sponsor floor can carry a constant fraction of `What`. The analytic lane must retain a full high-conductor quotient-Jacobi average feeding the independent 22/43 Newton packet per rank at r=5 and r=6 (G225). CORE remains OPEN / ON-BGK.
