@@ -2257,6 +2257,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G207WeightedKernelMagnitu
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G208WeightedKernelVarianceLaw
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G209TailFloorPartitionEngine
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G210TailFloorEqualityRigidity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G213TailFloorDefectIdentity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

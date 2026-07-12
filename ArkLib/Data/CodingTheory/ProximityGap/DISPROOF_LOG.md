@@ -51652,3 +51652,17 @@ accidents). CORE remains OPEN / ON-BGK.
 
 Formal payload: `Frontier/_G206DyadicCrossOrbitClassCap.lean`; all declarations
 `[propext, Classical.choice, Quot.sound]` only. CORE remains OPEN / ON-BGK.
+
+## [466-G213-tail-floor-defect-identity] exact decomposition of depth-two tail-floor excess into local collision defect plus unused dyadic class slots (2026-07-12)
+
+Lane: direct Opus-4.8 CORE, non-overlapping with G209's floor and G210's equality rigidity.  The new invariant is not another lower-bound reformulation: it identifies the two and only two arithmetic sources of excess above the G209 depth-two floor.
+
+For a positive multiplicity partition `ks` of `2m−1` with dyadic slot cap `ks.card≤m`, the floor excess has the exact identity
+
+```text
+Σ k² − (4m−3) = Σ_k (k−1)(k−2) + 2(m−#ks).
+```
+
+Thus any failure of floor equality is canonically charged either to a merged class of multiplicity at least `3` (`(k−1)(k−2)>0`) or to an unsaturated dyadic `d↦n−d` class slot (`m−#ks>0`).  This sharpens G210's zero-defect rigidity into a quantitative defect budget.  The large G210 exception shape `[4,3,2,…,2]` at `n=32` has `Σk²=73`, floor `61`, and excess `12 = 8 + 4` (local defect `8`, unused-slot defect `4`).
+
+Formal payload: `Frontier/_G213TailFloorDefectIdentity.lean`; probe `/tmp/arklib-reports/g213_tail_floor_defect_probe.py`; all declarations audit to `[propext, Classical.choice, Quot.sound]` or fewer.  Scope: this quantifies depth-two tail excess only.  It does not upper-bound the sponsor-prime tail, does not prove flatness at production primes, and does not touch the signed simultaneous `r=5,6` BGK covariance.  CORE remains OPEN / ON-BGK.
