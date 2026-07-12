@@ -52159,3 +52159,43 @@ Scope: correctness repair, not prize closure. Makes the input-(A) discharge carr
 remaining Mathlib obligation is the `(L)` Parseval on the size-`n*m` carrier plus the per-class size
 bound, both true. Supplies no signed sponsor-prime phase estimate. The full signed rank-5 and rank-6
 covariance remains open and on BGK/Paley. CORE OPEN / ON-BGK.
+
+### [466-G243-coset-lift-carrier-parseval] the carrier Parseval `(L)` G242 ASSERTED is now DERIVED from the primitive quotient Parseval `(Q)` via a kernel-checked coset lift; the whole G228→G242 mass-floor chain is hypothesis-clean down to roots-of-unity orthogonality on `Z/m` (2026-07-12)
+
+Lane: direct Opus 4.8 formalizer. Branch `research/proximity-prize`; `main` untouched (#499).
+
+CORRECTION / KEYSTONE. G242 fixed G240's carrier-vs-subgroup typing bug by running the fiber map on
+the carrier `C=F_p^*` (cardinality `n*m`), where `(L) sum_{x in C}|F x|^2 = n*m||a||^2` genuinely
+holds instead of the false subgroup sum. But G242 still ASSERTED `(L)` as an explicit hypothesis
+`hInputParseval`. Every referee pass (G236/G239/G241) validated `(L)` numerically and located its
+honest source, but nobody kernel-checked the reduction. This was the SOLE open formalization crumb
+(unanimous across G56/opus-core/Fable), non-prize-facing.
+
+Fix: reduce the asserted carrier `(L)` to the genuinely-primitive quotient Parseval
+`(Q) sum_{A in Q}|value A|^2 = m||a||^2` via a COSET LIFT. The carrier `C=F_p^*` is the disjoint
+union of the `m` cosets of `G` (class-fibers of `cls`), each of size exactly `n`; the lifted Fourier
+polynomial `F` is CONSTANT on each coset with value `value(cls x)`. Fiberwise summation then gives
+`sum_{x in C}|F x|^2 = sum_A n*|value A|^2 = n*sum_A|value A|^2 = n*(m||a||^2) = n*m||a||^2` = `(L)`,
+using only `Finset.sum_fiberwise_of_maps_to` and a constant-on-fiber collapse, NO character theory of
+its own. The carrier-vs-subgroup collapse that was ACTUALLY wrong (the `n*m`-vs-`n` rank-one collapse
+flagged by G241) is now kernel-checked as a reduction, not asserted.
+
+Formal payload: `Frontier/_G243CosetLiftCarrierParseval.lean`. Theorems `coset_lift_energy`
+(`sum_{x in C}|F x|^2 = n*sum_{A in D}|value A|^2` for `F` constant on each size-`n` class-fiber),
+`carrier_input_parseval_of_quotient` (coset lift + `(Q)` => honest `(L) = n*m||a||^2`),
+`class_size_le_of_eq` (exact size `= n` => ceiling `<= n`), `carrier_largesieve_of_coset_lift`
+(`outputEnergy <= n^2||a||^2` with `(L)` DISCHARGED from `(Q)`), and `main_mass_floor` (the G233 floor
+`m-n <= 4*n||a||^2` with the carrier input Parseval FULLY discharged from `(Q)` — no bare `(L)`
+assertion remains). All five axioms `[propext, Classical.choice, Quot.sound]` (`class_size_le_of_eq`
+only `[propext, Quot.sound]`), no `sorryAx`; locked build 3303 jobs, zero warnings.
+
+Scope: correctness repair, not prize closure. The G228→G242 chain is now hypothesis-clean down to a
+single finite-abelian quotient Parseval `(Q)` primitive. Does NOT consume the target, does NOT weaken
+BGK/Paley, supplies no signed phase estimate. Handoff / next-smaller residual: discharge `(Q)`
+`sum_{A in Q}|value A|^2 = m||a||^2` (`value A = sum_j a_j zeta_m^{j*A}`) from Mathlib roots-of-unity
+orthogonality on `Z/m` (`sum_{k<m} zeta_m^{(i-j)k} = m*[i=j]`), coefficient space `Fin m -> C`; feed as
+`hQuotParseval` into `main_mass_floor` to close the full input-(A) chain from primitives up. The SOLE
+live prize face is unchanged: per-rank signed sponsor-prime estimate
+`Re sum_{chi != 1} What(chi) conj(R_hat_r(chi)) > 0` via explicit cyclotomic
+Stickelberger/Gross-Koblitz or large-monodromy phase input, independently at r=5 and r=6. CORE OPEN /
+ON-BGK.
