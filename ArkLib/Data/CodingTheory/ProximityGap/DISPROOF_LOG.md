@@ -51522,3 +51522,54 @@ their fixed-depth/resultant regime mismatch and are not revived.
 Formal payload: `Frontier/_G208WeightedKernelVarianceLaw.lean`; all declarations use only
 `[propext, Classical.choice, Quot.sound]` or fewer.  Probe:
 `scripts/probes/g208_weighted_kernel_variance_law.py`.  CORE remains OPEN / ON-BGK.
+
+## [466-G209-tail-floor-partition-engine] pure-ℕ extremal engine pinning the depth-2 cross-orbit tail floor `Σ_γ S_γ² ≥ n²(2n−3)` — the class-count cap `t ≤ n/2` is essential, the flat partition `[2,…,2,1]` is exactly tight (2026-07-11)
+
+Lane: #466 / #509, direct Opus-formalizer. Deconflicted from opus-core's Lean tail-floor
+surface (opus-core owns the CORE-object `S_γ = n·k_γ` derivation; this file is the pure-ℕ
+optimization engine underneath it, no CORE-object import).
+
+CONTEXT. On the deep dyadic wall (G88 cross-orbit Parseval, #505), the depth-2 kernel-class
+ℓ²-profile is `(S₀, (S_γ)_γ)`. G182 pinned `S₀ = n` exactly. Opus-core established, on the CORE
+object, that every occupied cross-orbit class carries `S_γ = n·k_γ`, `k_γ ≥ 1`, `Σ_γ k_γ = n−1`
+(a partition of `n−1`), with occupied-class count capped by the `d↦n−d` involution at `t ≤ m = n/2`.
+Opus-core's own probe flagged that the naive floor `n²(n−1)` (all-ones, `t=n−1`) is NOT realized
+(observed min `7424 ≫ 3840` at `n=16`), leaving the exact extremal constant open.
+
+RESULT (`Frontier/_G209TailFloorPartitionEngine.lean`, all `[propext, Classical.choice, Quot.sound]`
+or fewer; no sorryAx/native_decide). The pure-ℕ optimization fact that pins the constant:
+
+  min { Σ_i k_i² : k_i ≥ 1, Σ_i k_i = n−1, #parts ≤ n/2 } = 2n−3,  hence  Σ_γ S_γ² = n²·Σk_i² ≥ n²(2n−3).
+
+Theorems:
+- `three_mul_le_sq_add_two` — pointwise engine `3k ≤ k²+2` for every `k:ℕ` (ℕ-safe `(k−1)(k−2) ≥ 0`);
+  `three_mul_eq_sq_add_two_of_le_two` — equality exactly at `k∈{1,2}`.
+- `three_mul_sum_le_sumSq_add_two_mul_card` — summed engine over any multiset: `3·Σks ≤ Σks² + 2·card`.
+- `tail_sumSq_floor` (HEADLINE) — for `n` even, `2≤n`, a partition `ks` of `n−1` into positive parts
+  with `card ≤ n/2`: `2n ≤ Σks² + 3` (i.e. `Σks² ≥ 2n−3`). Mechanism: `3(n−1)=3Σks ≤ Σks²+2·card ≤
+  Σks²+2·(n/2)=Σks²+n ⇒ 2n−3 ≤ Σks²`.
+- `tail_floor_scaled` (CONSUMER) — substituting `S_γ=n·k_γ` (`Σ_γ S_γ² = n²·Σks²`): the realized tail
+  floor `n²(2n) ≤ n²·Σks² + 3n²`, i.e. `n²(2n−3) ≤ Σ_γ S_γ²`.
+- `w`, `w_card`, `w_pos`, `w_sum`, `w_sumSq`, `tail_floor_attained` — the flat witness `[2,…,2,1]`
+  (`m−1` twos + one 1, `n=2m`) is a valid partition of `n−1` into exactly `m=n/2` positive parts with
+  `Σw²=4m−3=2n−3`. So the floor is ATTAINED and no larger constant is provable.
+
+WHY NEW / NOT A WRAPPER. This is the extremal certificate opus-core's probe conjectured but left open.
+The floor `2n−3` needs BOTH the pointwise `(k−1)(k−2)≥0` AND the class-count cap `t ≤ n/2`; dropping
+the cap collapses the bound to `n−1` (the non-realized naive floor). The flat partition saturates BOTH
+(parts in `{1,2}` = equality set of the pointwise engine; `t=m` = cap), so `2n−3` is tight.
+
+THINNESS-ESSENTIAL. The whole object exists only for the 2-power smooth subgroup: an odd-order subgroup
+has `−1 ∉ ⟨g⟩`, empty depth-2 fiber, and no partition of `n−1` at all. The `t ≤ m = n/2` cap is the
+`d↦n−d` dyadic involution.
+
+FRONTIER. Combined with G182 (`S₀=n`) and Fable's g208 tail-upper probe (tail collapses to this floor at
+production-scale primes: `frac_at_floor→1.000` for `n=8,16`, tip `d869516e4a`), the entire depth-2
+kernel-plus-tail Parseval magnitude is now pinned to the `p`-independent constant `n·(n²) + n²(2n−3)` at
+scale. All residual freedom is the SIGNED simultaneous two-depth (`r=5 ∧ r=6`) cyclotomic-class covariance
+— the literal BGK weighted-collision object — untouched. Does NOT prove that covariance bound or the
+prize; does NOT bound higher-depth `S₀` (r≥3 char-p accidents). CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G209TailFloorPartitionEngine.lean`. Probe:
+`scripts/probes/g209_tail_floor_partition_engine.py` (exact min-partition enumerator + tight-witness
+check + engine identity `3(n−1)−2m = 2n−3`, `n∈{4..256}`). CORE remains OPEN / ON-BGK.
