@@ -51848,3 +51848,45 @@ every Lean constant float-free incl. the exact `χ₂`-mode contributions and as
 Thinness-relevant (all Newton sectors are built from the 2-power-subgroup periods `η_j`; the `u ≠ 2`
 dyadic exclusion lives inside `Ŵ`). Does NOT bound `A_5` or `A_6` at production primes, does NOT
 break BGK. CORE remains OPEN / ON-BGK.
+
+### [466-G228-quotient-jacobi-fanout-no-go] the requested Gauss/Jacobi instantiation fans out: bounded inner Jacobi subfamilies are RMS-negligible at the sponsor primes (2026-07-12)
+
+Lane: direct Opus CORE after G226/G227 closed Newton packet rank, sponsor-coset, and coefficient-sparsity
+shortcuts.
+
+For `G=mu_n <= F_p^*`, `m=(p-1)/n`, and quotient characters `chi|G=1`, the shared Mellin factor
+
+```text
+S_chi = sum_{u in G} conj(chi)(2-u),    What(chi)=n*S_chi
+```
+
+has the exact quotient-Jacobi expansion
+
+```text
+S_chi = (1/m) * sum_{lambda|G=1} lambda(2) * conj(chi)(2) * J(lambda,conj(chi)).
+```
+
+This is the analytic instantiation the live lane asked for.  It does not compress.  Since each Jacobi
+summand has magnitude at most `sqrt(p)`, any `K` chosen summands contribute at most
+`n*K*sqrt(p)/m` to any `What(chi)`.  Meanwhile quotient Parseval gives
+
+```text
+sum_{chi != 1} |S_chi|^2 = m * sum_C c_C^2 - z^2,
+  c_C = #{u in G : 2-u in C},    z = sum_C c_C = #{u in G : 2-u != 0},
+```
+
+and at both sponsor primes `2 notin G`, so `z=n`.  In the sponsor regime `m >> n`,
+`sum_C c_C^2 >= n`, so the full RMS size is at least
+`n*sqrt(n*(m-n)/(m-1))` for `What`.  Thus one inner Jacobi summand has RMS fraction at most
+`2^-64` at P1 and `2^-64.5` at P2.  Constant-fraction recovery requires `K=Omega(sqrt(m))`, i.e.
+about `2^64` to `2^64.5` inner Jacobi summands.
+
+Executable certificate: `scripts/probes/oc_g228_jacobi_fanout_no_go.py` checks the identity directly
+on small cells and computes exact finite Parseval ratios.  Representative output: at `n=16,p=65537`
+`K_for_10/50/90=7/32/58`; at P1, even the lower bound forces
+`K_for_10/50/90 >= 1.844e18 / 9.223e18 / 1.660e19`.
+
+VERDICT: the Gauss/Jacobi rewrite is a necessary coordinate system, not a thinner route.  No diagonal,
+low-order, bounded, or hand-picked few Jacobi terms inside `What` can carry the sponsor-prime signed
+covariance.  The analytic lane must retain a full high-conductor quotient-Jacobi average, exactly the
+BGK/Paley wall already isolated by G216-G227.  CORE remains OPEN / ON-BGK.
