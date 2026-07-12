@@ -52124,3 +52124,38 @@ all pass.
 Scope: correctness repair, not prize closure. It closes the false/mis-indexed Parseval discharge of
 the large-sieve input without supplying any signed sponsor-prime phase estimate. The full signed
 rank-5 and rank-6 covariance remains open and on BGK/Paley.
+
+### [466-G242-carrier-correct-quotient-largesieve] G240's `hInputParseval` sums over the subgroup `G` but demands `nm||a||^2`, which lives on `F_p^*`; the fiber map must run on the size-`nm` carrier, not `G` (2026-07-12)
+
+Lane: direct Opus 4.8 CORE. Branch `research/proximity-prize`; `main` untouched (#499).
+
+CORRECTION / KEYSTONE. G240 correctly re-typed the operator onto `Q=F_p^*/G` and advertised the
+lifted input Parseval `sum_{x in F_p^*}|F_a(x)|^2 = n*m||a||^2`. But its Lean statements
+`quotient_largesieve_of_fibers` / `l2_mass_floor_of_quotient_fibers` run the fiber sum over the index
+set `G` while demanding `hInputParseval : sum_{u in G}|F u|^2 = n*m||a||^2`. For the order-`n`
+subgroup that is FALSE: every `u in G` has trivial quotient class, so `F_a` is constant on `G` and
+`sum_{u in G}|F_a(u)|^2 = n*|sum_A a_A|^2` (rank-one), measured `0.0005-0.019 * (n*m||a||^2)` across
+sponsor cells (G241 probe). The `n*m` energy lives on `F_p^*` (cardinality `n*m`), not `G`. The G240
+theorems are vacuously safe (hypothesis never discharged), but discharging as written would smuggle
+the same carrier error one level up.
+
+Fix: run the fiber map `x -> class(2-x)` on the CARRIER `C=F_p^*` (cardinality `n*m`), where (a) the
+input Parseval `sum_{x in C}|F x|^2 = n*m||a||^2` genuinely holds, and (b) the fiber ceiling is `<= n`
+because a carrier that is a disjoint union of `m` quotient classes each of size `<= n` has every
+class-fiber `<= n`. The `n*(n*m)/m = n^2` cancellation is unchanged; only the index set is corrected.
+
+Formal payload: `Frontier/_G242CarrierCorrectQuotientLargeSieve.lean`. Theorems
+`fiber_le_of_class_size_bound` (per-class size bound => real fiber ceiling `<= n`),
+`carrier_card_le` (`#C <= n*m` from `m` classes of size `<= n`, via `card_eq_sum_card_fiberwise`),
+`carrier_largesieve_of_fibers` (`outputEnergy <= n^2||a||^2` with the carrier fiber map + honest
+`n*m` input, delegating to G240's index-set-agnostic `quotient_largesieve_of_fibers`), and
+`l2_mass_floor_of_carrier_fibers` (the G233 floor `m-n <= 4*n||a||^2` on the carrier-correct path).
+All four axioms `[propext, Classical.choice, Quot.sound]`, no `sorryAx`; locked build 3302 jobs.
+Probe `scripts/probes/g242_carrier_correct_quotient_largesieve_probe.py`: on 5 sponsor cells
+(`2 notin G`), maxfiber `= n` exactly, `(L)` input Parseval exact, `outputEnergy <= n^2||a||^2`,
+`classEnergy <= n*inputEnergy`; all pass.
+
+Scope: correctness repair, not prize closure. Makes the input-(A) discharge carrier-honest; the
+remaining Mathlib obligation is the `(L)` Parseval on the size-`n*m` carrier plus the per-class size
+bound, both true. Supplies no signed sponsor-prime phase estimate. The full signed rank-5 and rank-6
+covariance remains open and on BGK/Paley. CORE OPEN / ON-BGK.

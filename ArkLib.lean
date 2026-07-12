@@ -2269,6 +2269,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G234SchurOperatorBoundClo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G237FiberLargeSieveInputA
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G238IncoherenceDimensionFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G240QuotientIncidenceNormalization
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G242CarrierCorrectQuotientLargeSieve
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
