@@ -6,6 +6,16 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G249-cartesian-row-selection-barrier] Cartesian Jacobi discrepancy cannot select fixed quotient rows unless it beats row density `1/m` (2026-07-12, #466 G249, direct Opus CORE)
+
+G248 audited the Lu--Zheng--Zheng Jacobi-distribution theorem as the strongest published full-family Archimedean phase input near the quotient-Jacobi covariance. The theorem is genuinely two-dimensional: it controls a Cartesian character cloud. The CORE object is row-selective: for each fixed quotient character `χ`, G228 pairs a weighted row of Jacobi sums against the highly nonconstant rank vector `Rhat_r(χ)`.
+
+G249 lands the sharp finite obstruction. In an `m × m` Cartesian family, one complete row has `m` points, density exactly `1/m`, and leaves that row totally uncontrolled. Therefore a global Cartesian discrepancy/error budget cannot imply uniform fixed-row control unless it is strictly below the one-row threshold `D < 1/m`. The sponsor audit gives `best log2 D ≈ -14.75` (P1) and `-14.92` (P2), while row selection requires `< -128` and `< -129`, a 113--114 bit quantifier gap.
+
+Formal payload: `Frontier/_G249CartesianRowSelectionBarrier.lean` proves `rowBad_card`, `rowBad_contains_full_row`, `rowBad_zero_fiber_card`, and `rowBad_card_mul_eq_grid_card` for the one-row exceptional set; axiom-clean (`[propext]`, no `sorryAx`). Probe: `scripts/probes/g249_cartesian_row_selection_barrier.py`. KB: `docs/kb/deltastar-466-g249-cartesian-row-selection-barrier-2026-07-12.md`.
+
+Verdict: unweighted Cartesian Jacobi equidistribution is dead as a CORE row-control mechanism. A real advance must prove a theorem uniform in the fixed second character and stable under the rank-specific weights, equivalently a sponsor-prime signed row/covariance estimate. CORE remains OPEN / ON-BGK.
+
 ## [466-G170-general-envelope-characterization] Cross-core generation deficiency = the best envelope-partition count deficit, for ALL D; the deficiency-forcing (upper-bound) half is an axiom-clean field-independent theorem, and the SYZ26 incremental-prefix covering route provably CANNOT supply the matching lower bound (2026-07-11, #466 G170, direct Opus 4.8 CORE)
 
 SYZ33 assembled the rate-1/2 strip as a case split resting entirely on **lemma 2** (strip-interior MDS generation): does the union `⋃ᵢ H|_{Cᵢ}` of RS-dual restrictions span the full `(n−k)`-dim dual `W` for every over-budget cover of `[n]` by `s`-cores in the interior `1/4 < δ < 1/3`? SYZ28 settled the `D = 3` case (deficiency = pair-union subadditivity defect, field-independent, yield-capped at `n−1`). This entry pins the **general-`D`** invariant and separates what is provable from what is not.

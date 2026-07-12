@@ -2273,6 +2273,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G242CarrierCorrectQuotien
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G243CosetLiftCarrierParseval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G246KrylovDegreeTwoCountermodel
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G247QuotientDFTParseval
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G249CartesianRowSelectionBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
