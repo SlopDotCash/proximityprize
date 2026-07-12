@@ -51487,3 +51487,38 @@ All declarations use only the standard `[propext, Classical.choice, Quot.sound]`
 Reproducible probe: `scripts/probes/g207_weighted_kernel_magnitude_nogo.py` (exact subgroup
 generation, exact integer subset-sum histograms, exact circular correlation with total-mass /
 nonnegativity checks, and the identity above). Referee source: `fable_g206_magnitude_probe.py`. Issue #466.
+
+---
+
+### [466-G208-weighted-kernel-variance-law] Collision-free weighted-kernel support has exact quotient variance `n(m−n)` and field variance `q n²(q−n²)`; its nonprincipal quotient energy grows with the prime instead of flattening (2026-07-12)
+
+For `W_G(t)=#{(y,z)∈G²:2y−z=t}`, the nonzero multiplicative-class profile is the fiber profile of
+`u↦(2−u)^n`.  If this map is injective, the profile `w` on the `m=(q−1)/n` quotient classes is
+`0/1` with `Σw=n`.  Therefore, exactly,
+
+`m Σw_i² − (Σw_i)² = n(m−n)`.
+
+This is the centered class mass, hence by quotient Fourier Parseval the total nonprincipal
+multiplicative-character energy.  It grows by exactly `n·d` when the quotient index grows from `m`
+to `m+d`; the average squared nonprincipal coefficient tends to `n`, not zero.  Collision-freeness
+also forces `n≤m`, equivalently the sharp field threshold `n²+1≤q`.  Thus no large-prime threshold
+can rescue the proposed mechanism “injective kernel support ⇒ spectral flattening.”
+
+The same one-line identity fixes G207's field-scaled variance:
+
+`Q_W=q² n Σw_i²−q n⁴=q n²(q−n²)`.
+
+It reproduces `Q_W=354368` at `(q,n)=(113,8)` and `Q_W=11063360` at `(449,8)` and predicts the larger
+G206 cells exactly.  The probe additionally shows the average nonprincipal quotient energy at fixed
+`n=8` rising `3.69,6.19,6.98,7.55,…→8` along increasing quotient sizes.
+
+**Consequence.** G205-G207 already refute sign and fixed-cell normalized-magnitude rules from kernel
+injectivity.  G208 closes the remaining asymptotic kernel-side reading structurally: injectivity is
+not Fourier-small and does not become so at production-sized primes.  The only surviving object is
+the signed joint placement of the phase-bearing kernel profile against `R₅,R₆`, the literal BGK
+covariance.  This does not prove that covariance bound or the prize.  FS15-FS18 remain closed by
+their fixed-depth/resultant regime mismatch and are not revived.
+
+Formal payload: `Frontier/_G208WeightedKernelVarianceLaw.lean`; all declarations use only
+`[propext, Classical.choice, Quot.sound]` or fewer.  Probe:
+`scripts/probes/g208_weighted_kernel_variance_law.py`.  CORE remains OPEN / ON-BGK.
