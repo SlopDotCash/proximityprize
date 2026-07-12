@@ -51789,3 +51789,62 @@ audit to ZERO axioms (`does not depend on any axioms`). The census fractions (6/
 4 quadrants), `scripts/probes/oc_g220_diagonal_dominance_probe.py` (on/off-support decomposition,
 domination + sign census), `scripts/probes/oc_g220_witness_exact.py` (recomputes every Lean constant
 float-free and asserts the match; PASS).
+
+### [466-G224-newton-parity-packet-nogo] The last unexplained Newton regularity (`PAR⁻` constantly negative) is near-definite but NOT sign-definite: a strictly positive exact-integer per-mode contribution exists inside the negative packet, so it carries no forced-sign structural theorem and cannot seed a one-sided estimate on A (2026-07-12)
+
+Fable's coarse-Newton-grouping referee (G223) closed every regrouping of the Newton cycle-index
+decomposition of the CORE covariance `A_r = p·Σ_t W_G(t)R_r(t) − n²·C(n,r)C(n,r−1)` (`r ∈ {5,6}`) as
+a sign-forecasting route, but flagged ONE surviving unexplained regularity: the negative-coefficient
+parity packet `PAR⁻ = Σ_{(λ,μ):(−1)^{(r−ℓ(λ))+(r−1−ℓ(μ))}=−1} coeff(λ)coeff(μ)S_{λ,μ}` (Newton
+sectors of ODD total co-length) is NEGATIVE in all 20 observed float cells, while `A_r` itself flips
+sign prime-to-prime. Fable called it "the single surviving unexplained regularity in the Newton
+coordinates" and left open whether it is a genuine sign-forced invariant (a candidate seed for a
+one-sided estimate on `A_r`) or a finite-size coincidence. This lane settles it.
+
+Method (non-overlapping with every prior lane). Write the parity split in PHYSICAL space via the
+even/odd Newton half-sums `E_r,O_r` of `R_r = E_r + O_r` (sub-sums over partitions of even/odd
+co-length). Grouping the CORE correlation by `(parity_r, parity_{r−1})` gives
+`PAR⁺ = p⟨W, E_r⋆E_{r−1}+O_r⋆O_{r−1}⟩−DC`, `PAR⁻ = p⟨W, E_r⋆O_{r−1}+O_r⋆E_{r−1}⟩−DC`, with
+`A_r = PAR⁺ + PAR⁻`. Per additive character χ the `PAR⁻` integrand is
+`k(χ) = conj(Ŵ(χ))·(Ê_r(χ)conj(Ô_{r−1}(χ))+Ô_r(χ)conj(Ê_{r−1}(χ)))`, `PAR⁻ = Σ_{χ≠1} Re k(χ)`.
+
+**Two exact facts.**
+1. `PAR⁻ < 0` is ROBUST and STRUCTURAL, not a coincidence: the exact-integer engine (Newton
+   coefficients cleared by `lcm` of the `z_λ`) gives `PAR⁻ < 0` in ALL 72 cells over
+   `n ∈ {8,16,32,64}`, `r ∈ {5,6}`, primes to 3617 — far beyond Fable's 20 float cells — while `A_r`
+   realises both signs. Cross-check `PAR⁺ + PAR⁻ = A_r` exact on every cell.
+2. `PAR⁻` is NOT sign-definite: the per-mode integrand `Re k(χ)` takes strictly positive values (the
+   negative mode mass dominates the positive by 5–8 orders of magnitude, so `PAR⁻` is a NEAR-definite
+   form, but strictly positive modes genuinely occur). Confirmed FLOAT-FREE at the only exactly
+   computable non-trivial real mode, the quadratic character `χ₂` (integer Legendre symbol): the
+   exact-integer `χ₂`-mode contribution `k₂` is POSITIVE at (n=16,r=5,p=257) `k₂=+12 734 300 160`
+   while `PAR⁻ < 0` there, and NEGATIVE at (n=16,r=5,p=97) `k₂=−2 477 260 800`, again with `PAR⁻ < 0`.
+
+CONSEQUENCE. Because the `PAR⁻` integrand realises BOTH exact-integer signs at the quadratic mode,
+`PAR⁻` is NOT a sum of negated squares / not a sign-definite quadratic form: there is no per-mode
+certificate for its negativity, so its constant sign is a near-definite DOMINANCE fact (a huge
+negative bulk with irreducible positive modes), not a structural invariant. The hope Fable left open
+— "if the analytic instantiation explains the `PAR⁻` negativity structurally, that mechanism is the
+first candidate for a one-sided estimate" — is foreclosed at the packet level: the negativity is not
+forced mode by mode, so no manifestly-signed sub-object of `A_r` lives inside `PAR⁻`. Together with
+G214/G217/G220 (sign unforced), G216/G219 (no truncation/phase), G222/G223 (no Newton sector or
+coarse grouping), this closes the Newton-parity regularity as a route. Additionally `PAR⁻ < 0`
+co-exists with an `A_r` sign flip (witness p=113: `A = +4 974 105 600 > 0`, `PAR⁻ < 0`), so the
+packet negativity forecasts nothing about the CORE sign.
+
+Formal payload: `Frontier/_G224NewtonParityPacketNoGo.lean` — axiom-clean INTEGER CERTIFICATE
+(`parity_packet_not_sign_definite`: the `χ₂`-mode integrand is `+` on `w1` and `−` on `w2`, both at
+n=16 r=5 ⇒ not sign-definite; `parity_packet_forecast_free`: `PAR⁻ < 0` on `w2` (A<0) and `w3` (A>0)
+⇒ forecasts nothing; `newton_parity_regularity_is_not_a_route`; plus the seven witness-value
+theorems `w1_k2_pos`, `w2_k2_neg`, `w{1,2,3}_parm_neg`, `w2_A_neg`, `w3_A_pos`). All 10 decls audit
+to ZERO axioms (`does not depend on any axioms`). The "72/72 cells negative" census and the 5–8-order
+magnitude domination of the negative mode mass are limiting statistical statements whose computation
+of record is the Python sweep (NOT dressed as Lean theorems, per the G214/G217/G220 lesson).
+Probes: `scripts/probes/oc_g224_parity_packet_exact.py` (exact-integer `PAR⁻` sweep, 72 cells,
+`PAR⁺+PAR⁻=A` cross-check all cells), `scripts/probes/oc_g224_mode_signs.py` (per-mode sign census,
+strict positive modes with negligible mass), `scripts/probes/oc_g224_witness_exact.py` (recomputes
+every Lean constant float-free incl. the exact `χ₂`-mode contributions and asserts the match; PASS).
+
+Thinness-relevant (all Newton sectors are built from the 2-power-subgroup periods `η_j`; the `u ≠ 2`
+dyadic exclusion lives inside `Ŵ`). Does NOT bound `A_5` or `A_6` at production primes, does NOT
+break BGK. CORE remains OPEN / ON-BGK.
