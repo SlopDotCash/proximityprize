@@ -51666,3 +51666,25 @@ For a positive multiplicity partition `ks` of `2m−1` with dyadic slot cap `ks.
 Thus any failure of floor equality is canonically charged either to a merged class of multiplicity at least `3` (`(k−1)(k−2)>0`) or to an unsaturated dyadic `d↦n−d` class slot (`m−#ks>0`).  This sharpens G210's zero-defect rigidity into a quantitative defect budget.  The large G210 exception shape `[4,3,2,…,2]` at `n=32` has `Σk²=73`, floor `61`, and excess `12 = 8 + 4` (local defect `8`, unused-slot defect `4`).
 
 Formal payload: `Frontier/_G213TailFloorDefectIdentity.lean`; probe `/tmp/arklib-reports/g213_tail_floor_defect_probe.py`; all declarations audit to `[propext, Classical.choice, Quot.sound]` or fewer.  Scope: this quantifies depth-two tail excess only.  It does not upper-bound the sponsor-prime tail, does not prove flatness at production primes, and does not touch the signed simultaneous `r=5,6` BGK covariance.  CORE remains OPEN / ON-BGK.
+
+## [466-G214-joint-sign-discordance-nogo] the simultaneous r=5,6 covariance sign is genuinely two-dimensional — no single-rank reduction, no correlation-threshold gate (2026-07-12)
+
+Lane: direct Opus-4.8 CORE, non-overlapping with the G209/G210/G213 depth-two support results and with G56's defect-vs-sign orthogonality sweep.
+
+The surviving CORE target is the SIGNED SIMULTANEOUS covariance `A_r = p·Σ_t W_G(t)R_r(t) − n²·C(n,r)·C(n,r−1)` for `r=5 ∧ r=6`.  Two reductions would collapse it to a scalar problem: (i) a **sign-lock** `sign(A_5)=sign(A_6)`, making simultaneity free; (ii) a **correlation-threshold gate**, confining discordance `A_5·A_6<0` to a near-null band on one rank.  This entry refutes BOTH with an exact-integer countermodel.
+
+Probe sweep (`oc_joint_sign_probe.py`, exact python-int subset histograms + exact circular correlation, `n∈{8,16,32}`, primes to ~4000): `sign(A_5)=sign(A_6)` in **212/218 = 97.25%** of primes but the anti-aligned quadrant is genuinely realised (6 discordant primes).  The threshold hypothesis (`oc_discordance_threshold_probe.py`) FAILS: discordance is NOT confined to low `|ρ|` — `n=16,p=113` has `ρ_5=+0.86, ρ_6=−0.74` (both strong, opposite sign), and concordant primes populate the low-`|ρ|` band down to `|ρ|=0.0002`.  Low-band (`|ρ|<0.1`) discordance rate is only 11.8%.
+
+Exact certificate (`oc_discord_witness_exact.py`, fully float-free recomputation):
+```text
+n=16, p=113:  A_5=+1 727 120  A_6=−77 440   centeredW=21 248
+              centeredR_5=189 977 152  centeredR_6=509 456
+  A_5·A_6 = −133 748 172 800 < 0                 (discordant)
+  A_5²·4 = 11 931 773 977 600 > centeredW·centeredR_5 = 4 036 634 525 696  (|ρ_5|>1/2)
+  A_6²·4 =     23 987 814 400 > centeredW·centeredR_6 =    10 824 921 088  (|ρ_6|>1/2)
+n=32, p=257:  A_5=+867 295 552  A_6=−204 107 712  (independent discordant witness)
+```
+
+Formal payload: `Frontier/_G214JointSignDiscordanceNoGo.lean` — an axiom-clean INTEGER CERTIFICATE of the recorded exact-computation constants (not a re-derivation of `A_r` inside Lean; the computation of record is `scripts/probes/oc_discord_witness_exact.py`).  Declarations `strong_discordant_witness_exists`, `w113_discordant/strong5/strong6`, `w113_denominators_pos`, `w257_discordant/strong5`, all auditing to `[propext]` or fewer (NO Classical.choice, NO sorry, NO native_decide).  The `ρ_r²>1/4` bound is encoded float-free as the integer inequality `A_r²·4 > centeredW·centeredR_r`; the arithmetic no-go conclusion (below) follows from the probe sweep, and the Lean file certifies the witness tuple is realised and internally consistent.
+
+CONSEQUENCE.  The joint sign of the simultaneous covariance is NOT determined by any per-rank magnitude information: two ranks can be simultaneously strongly correlated with `W_G` and still carry opposite signs.  Therefore no single-rank covariance bound implies the `r=5 ∧ r=6` sign, and no near-null correlation gate separates concordance from discordance.  The surviving CORE target is intrinsically two-dimensional and cannot be reduced to a scalar covariance problem.  This closes the "reduce simultaneity to one rank" / "threshold-gate the sign" branch.  It does NOT lower-bound `A_5` or `A_6` at production primes.  CORE remains OPEN / ON-BGK.
