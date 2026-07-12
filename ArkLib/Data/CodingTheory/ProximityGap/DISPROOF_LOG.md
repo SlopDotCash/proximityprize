@@ -52042,3 +52042,60 @@ its false `R = n²` narrative is superseded by the fiber-count path. CORE remain
 live prize face unchanged: the per-rank signed sponsor-prime estimate
 `Re ∑_{χ≠1} What(χ) conj(R̂_r(χ)) > 0` via explicit cyclotomic Stickelberger/Gross–Koblitz or
 large-monodromy phase input, independently at r=5 and r=6.
+
+### [466-G238-incoherence-dimension-floor] No bounded eigen-subfamily recovers the fanout: G232's measured per-direction cap `energy ≤ ρ·‖S‖²` (ρ ≈ 0.12–0.24) forces `#K ≥ f/ρ` directions for fraction-`f` recovery — the theorem-level calibrated consumer of G231/G232, basis-independent (2026-07-12)
+
+Lane: direct Opus-4.8 formalizer cron. Branch `research/proximity-prize`; no `main` work.
+
+GUARDRAIL / NO-GO UPGRADE, theorem-level. G228/G229/G231 close the quotient-Jacobi fanout to
+compression in the *coordinate* sense (no fixed arithmetic subfamily). G232 measured — numerically —
+the *spectral* closure: the covariance vector `S` is diffuse over `Ω(m)` Gram-eigen-directions and
+avoids the large-eigenvalue subspace, so recovering a constant fraction of `‖S‖²` needs a positive
+fraction of the full family (`≈ m/2` directions for 90% recovery in every sponsor cell), and the
+single largest `S`-energy direction never carries more than ~24% while the `λ_max` direction carries
+only 4–7%. G232 was an exact measurement with NO theorem. THIS entry is its calibrated consumer.
+
+THE INVARIANT (this lane). Pure finite-dimensional linear algebra, NO character theory and NO
+spectral hypothesis. Given per-direction energies `energy : ι → ℝ`, total `‖S‖²`, and the measured
+per-direction cap `energy i ≤ ρ·‖S‖²`:
+
+```text
+(recovery ceiling)   ∑_{i ∈ K} energy i ≤ #K · (ρ · ‖S‖²)          for any subfamily K
+(dimension floor)    f·‖S‖² ≤ ∑_{i ∈ K} energy i  ⟹  f/ρ ≤ #K      (ρ>0, ‖S‖²>0)
+```
+
+The dimension floor is the operative contrapositive: recovering a fraction `f` forces `≥ f/ρ`
+directions. TWO REGIMES, kept distinct (a Codex-review correction to an initial overclaim): a
+*constant* cap `ρ = 1/4` (G232's worst-single-direction measurement) gives only a *constant* floor
+`#K ≥ f/ρ` — it rules out every `O(1)` coherent eigen-combination below dimension `f/ρ` (no
+3-direction combination recovers 90%) but does NOT by itself force `Ω(m)`. The honest `Ω(m)` floor
+rests on G232's *global diffuseness*: an `m`-SCALED cap `ρ = c/m` (each direction carries an `O(1/m)`
+share), which feeds the SAME dimension floor to give `#K ≥ (f/c)·m = Ω(m)`, reproducing G232's
+`≈ m/2`-for-90% measurement. Only the decaying cap yields the linear growth. Together they upgrade
+G231 from "no fixed *coordinate* subfamily" to "no *coherent eigen-subfamily* either": the fanout is
+basis-independent, and no `O(1)`/`O(polylog)` coherent eigen-combination captures a constant fraction
+of `S`.
+
+Formal payload: `Frontier/_G238IncoherenceDimensionFloor.lean`. Theorems: `recovery_ceiling`
+(`∑_K energy ≤ #K·(ρ·total)`, `Finset.sum_le_sum` + constant sum); `dimension_floor` (`f/ρ ≤ #K`
+from the ceiling by cancelling the positive `total` then `rho`, `le_of_mul_le_mul_right` +
+`div_le_iff₀`); `g232_calibrated_floor` (constant cap `ρ = 1/4`, `f = 9/10` ⟹ `18/5 ≤ #K`, an
+`m`-INDEPENDENT constant floor); `g232_calibrated_card_ge_four` (`18/5 > 3` ⟹ strict `4 ≤ #K`: no
+three-direction coherent eigen-combination recovers 90% of `S`); `diffuse_dimension_floor` (the
+HONEST `Ω(m)` theorem: `m`-scaled cap `ρ = c/m` ⟹ `(f/c)·m ≤ #K`, the theorem-level shadow of G232's
+`~m/2`-for-90% measurement). All FIVE audit to `[propext, Classical.choice, Quot.sound]`, no
+`sorryAx`. Locked build 3300 jobs green (4.4s), zero warnings. Forbidden-token gate + sorry census
+(Frontier) clean; check-imports OK. Codex 5.5 review caught the initial constant-cap→Ω(m) overclaim
+(P2); fixed by splitting the two cap regimes and adding the decaying-cap `diffuse_dimension_floor`
+for the linear growth, so the `Ω(m)` claim now rests on the `1/m` cap it actually needs.
+
+Scope. It is a guardrail: it does NOT consume the prize target, does NOT weaken BGK/Paley, and
+formalizes no new character-sum estimate. Its worth is forecloses the last dimensional-reduction hope
+— replacing the full quotient-Jacobi family with a bounded coherent eigen-combination strictly weaker
+than the BGK packet — that the coordinate-subset fences G228/G229/G231 do not by themselves rule out.
+The per-direction cap `ρ` is taken as an explicit hypothesis (exactly the quantity a probe measures;
+G232 supplies `ρ ≤ 0.24` numerically), NOT smuggled as a proven bound on the actual Gram spectrum;
+proving `ρ ≤ 1/4` from the true quotient-Jacobi Gram is a separate character-theory residual, not
+attempted here. CORE remains OPEN / ON-BGK. SOLE live prize face unchanged: the per-rank signed
+sponsor-prime estimate `Re ∑_{χ≠1} What(χ) conj(R̂_r(χ)) > 0` via explicit cyclotomic
+Stickelberger/Gross–Koblitz or large-monodromy phase input, independently at r=5 and r=6.
