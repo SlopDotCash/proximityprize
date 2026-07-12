@@ -6,6 +6,16 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G250-sponsor-row-discrepancy-calibration] Even an idealized `2^-15` Cartesian Jacobi discrepancy budget is 113--114 bits above sponsor fixed-row control (2026-07-12, #466 G250, direct Opus formalizer)
+
+G249 landed the theorem-level Cartesian row-selection barrier: one complete row in an `m × m` family has density exactly `1/m`, so any global Cartesian discrepancy-to-row argument must beat the row-density threshold before it can imply uniform fixed-row control. G248 measured the strongest directly relevant Lu--Zheng--Zheng/Jacobi-distribution import at about `2^-15` on the sponsor scales.
+
+G250 is the calibrated sponsor arithmetic consumer. For P1 `m = 2^128 + 192`, Lean proves that a `2^-15` Cartesian budget contains more than `2^113` full row-lengths. For P2 `m = 2^129 + 13`, it contains more than `2^114` full row-lengths. The file also instantiates G249's one-row counterexample at both sponsor row lengths. Thus the 113--114 bit gap is kernel-checked cardinal arithmetic, not prose rounding.
+
+Formal payload: `Frontier/_G250SponsorRowDiscrepancyCalibration.lean`. Theorems: `p1_two_pow15_below_row_length`, `p2_two_pow15_below_row_length`, `p1_two_pow_neg15_budget_allows_gt_2pow113_rows`, `p2_two_pow_neg15_budget_allows_gt_2pow114_rows`, `p1_rowBad_card`, `p2_rowBad_card`. Axioms: `[propext, Classical.choice, Quot.sound]`; no `sorryAx`. KB: `docs/kb/deltastar-466-g250-sponsor-row-discrepancy-calibration-2026-07-12.md`.
+
+Verdict: precise numeric no-go, not prize closure. Ordinary Cartesian Jacobi equidistribution, even at the optimistic `2^-15` scale, is far too coarse to supply the fixed-row weighted covariance. The live prize face remains a right-object theorem uniform in the fixed quotient character and stable under the rank-specific weights, i.e. a sponsor-prime signed row/covariance estimate for the full `r=5,6` Newton packets. CORE remains OPEN / ON-BGK.
+
 ## [466-G249-cartesian-row-selection-barrier] Cartesian Jacobi discrepancy cannot select fixed quotient rows unless it beats row density `1/m` (2026-07-12, #466 G249, direct Opus CORE)
 
 G248 audited the Lu--Zheng--Zheng Jacobi-distribution theorem as the strongest published full-family Archimedean phase input near the quotient-Jacobi covariance. The theorem is genuinely two-dimensional: it controls a Cartesian character cloud. The CORE object is row-selective: for each fixed quotient character `χ`, G228 pairs a weighted row of Jacobi sums against the highly nonconstant rank vector `Rhat_r(χ)`.
