@@ -51708,3 +51708,36 @@ THINNESS-ESSENTIAL.  The `card ≤ n/2` cap is the dyadic `d↦n-d` involution (
 SCOPE / no prize claim.  This sharpens the depth-2 wall floor by exactly the G209/G210 partition constant.  It does NOT bound the signed simultaneous `r=5,6` cyclotomic-class covariance (the literal BGK object; G214 shows it is intrinsically two-dimensional), does NOT bound higher-depth `S₀`, and does NOT close the prize.
 
 Formal payload: `Frontier/_G215SharpDyadicWallFloor.lean`; probe `scripts/probes/g215_sharp_dyadic_wall_floor.py` (float-free constant/witness/gap checks, n=2m for m∈[2,199], flat partition attains the floor).  CORE remains OPEN / ON-BGK.
+
+## [466-G217-phase-coherence-nogo] the sign of the signed covariance lives in the equidistributing Mellin phases — the truncation-free phase-alignment route to a signed bound is dead (2026-07-12)
+
+Lane: direct Opus-4.8 CORE, no subagents.  Non-overlapping with G216 (G56, bounded-ORDER truncation) and Fable's top-k dyadic conductor-shell no-go: this attacks the ONE untested truncation-free signed route those two explicitly handed off — phase alignment.
+
+CONTEXT.  G216 restated `A_r = ((p·W_G(0)−n²)(p·R_r(0)−M_r))/(p−1) + p/(p−1)·Σ_{χ≠1,χ|G=1} Ŵ(χ)·conj(R̂_r(χ))` and killed bounded-ORDER truncation (>99.5% of Mellin L1 mass above order 8 at p=65537).  Fable (00:35 MDT) killed the top-k dyadic conductor-shell truncation on magnitude AND sign (top-2 band overshoots the signed total 2.007× ⇒ cancellation-controlled).  Both handed off the SAME remaining question: does `θ_r(χ)=arg(Ŵ(χ)·conj(R̂_r(χ)))` concentrate in a fixed half-plane uniformly across shells?  If yes, every mode of `Σ_χ |Ŵ||R̂_r| cos θ_r(χ)` adds coherently ⇒ a truncation-free signed lower bound.
+
+PROBES OF RECORD (float-free exact `A_r`, Mellin modes cross-checked to machine precision against exact `A_r`):
+- `scripts/probes/g217_phase_alignment_probe.py` — n∈{8,16,32,64}, r∈{5,6}, 16 exact cells.  Records per-mode signed real parts `s(χ)=Re(Ŵ(χ)conj(R̂_r(χ)))`, the coherence ratio `R_coh=|Σs|/Σ|s|`, aligned/anti-aligned mass, and per-conductor-shell coherence.  Full Mellin reconstruction matches exact-ℤ `A_r` on every cell.
+- `scripts/probes/g217_phase_scaling_probe.py` — n=16 fixed, primes to 1153 (m up to 72), isolates the m-scaling of `R_coh` and the half-plane mass fraction `frac_half`.
+- `scripts/probes/g217_proxy_witness_exact.py` — witness generator of record: recomputes float-free the exact `A`, `zcNum`, `s2`, `proxy` for ALL FOUR Lean witnesses (wFlip1153/97r5/97r6/wCtrl257) and asserts they match the hard-coded Lean constants (the quadratic character is the only integer-valued Mellin mode, so the certificate is genuinely float-free).  Resolves codex review [P2] (the earlier phase probes recorded only `prod.real` statistics at p=1153, not the certificate constants).
+
+VERDICT — phase alignment FALSE; `A_r` is a cancellation residual.  As `m=(p−1)/n` grows the half-plane fraction `frac_half` oscillates around `1/2` with NO drift toward `1`, and `R_coh` collapses toward the random-phase benchmark `1/√(#modes)`, dropping BELOW it at the largest cells (super-cancellation):
+```text
+n=16 p= 257 (15 modes): R_coh=0.2587  rand=0.2582  R/rand=1.002  frac_half=0.629
+n=16 p= 881 (54 modes): R_coh=0.0410  rand=0.1361  R/rand=0.301  frac_half=0.521
+n=16 p= 977 (60 modes): R_coh=0.0359  rand=0.1291  R/rand=0.278  frac_half=0.482
+n=16 p=1153 (71 modes): R_coh=0.0043  rand=0.1187  R/rand=0.037  frac_half=0.502
+```
+The high-`R_coh` values (0.87–0.97) appear ONLY at small/special `m` with 1–2 conductor shells (forced coherence, a finite-size artifact); they dissolve as the character family grows.  The aligned and anti-aligned per-mode masses are near-balanced (e.g. n=16 p=257 r=5: aligned 7.28e6 vs anti 4.29e6), so `A_r` is a small residual of near-total cancellation, not a coherent sum.
+
+EXACT-INTEGER SIGN-FLIP CERTIFICATE (float-free).  The only exact-integer-computable pieces of the Mellin decomposition are the zero cell and the UNIQUE real (quadratic) character `χ₂` (all others are complex-conjugate pairs with genuinely complex phase).  Define the `(p−1)`-scaled real-mode+DC proxy `proxy = zcNum + p·s2` where `zcNum=(p·W_G(0)−n²)(p·R_r(0)−M_r)` and `s2=Ŵ(χ₂)·R̂_r(χ₂)∈ℤ`.  For the recorded witnesses `sign(proxy) ≠ sign(A)`:
+```text
+(n=16,p=1153,r=5): A=+1 133 232   proxy=−4 702 956 544   FLIP
+(n=16,p=  97,r=5): A=−6 285 008    proxy=+227 170 304      FLIP
+(n=16,p=  97,r=6): A=−14 107 248   proxy=+530 949 632      FLIP
+(n=16,p= 257,r=5): A=−1 051 408    proxy=−1 035 505 664+…  control (agrees)
+```
+So no integer-computable Mellin sub-object determines `sign(A_r)`; the sign is carried by the complex conjugate-pair phases — exactly the equidistributing family the scaling probe shows is incoherent.
+
+Formal payload: `Frontier/_G217PhaseCoherenceNoGo.lean` — an axiom-clean INTEGER CERTIFICATE of the recorded proxy sign-flips (`exists_integer_proxy_sign_flip`, `sign_flip_witnesses_are_multiple`, `wFlip1153/97r5/97r6_flips`, `wCtrl257_agrees`, and `proxy` value theorems), all auditing to `[propext]` or fewer.  The equidistribution half (`frac_half→1/2`, `R_coh→1/√N`) is a limiting statistical statement whose computation of record is the Python sweep; it is NOT dressed as a Lean theorem.  The Lean file certifies the arithmetic that the integer part of the Mellin decomposition points the wrong way, not a re-derivation of `A_r` inside Lean.
+
+CONSEQUENCE.  This closes the LAST untested truncation-free route to signing `A_r`.  G216 killed bounded-order truncation; Fable killed top-k conductor-shell truncation; G214 killed single-rank/ratio/DC cross-depth reductions; the magnitude tower (G206/G209/G210/G215) is sign-blind.  The phase route was the only remaining way to get a signed bound without controlling a positive fraction of the full high-conductor character family.  The phase equidistributes and no integer-computable sub-object carries the sign ⇒ the signed target is the full BGK phase-correlation wall in the strongest sense: no coordinate change, no shell truncation, and no phase gate thins the signed inequality.  Thinness-relevant (witnesses are 2-power subgroups, dyadic involution active).  It does NOT bound `A_5` or `A_6` at production primes.  CORE remains OPEN / ON-BGK.
