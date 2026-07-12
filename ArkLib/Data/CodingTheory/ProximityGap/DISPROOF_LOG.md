@@ -52237,3 +52237,29 @@ shortcut: self-adjointness plus the first two incidence moments do not determine
 profile.  The self-adjoint quotient-incidence rewrite remains a lossless normal form, not a binding
 inequality.  CORE remains OPEN / ON-BGK; the sole live prize face is still the full per-rank signed
 sponsor-prime covariance at `r=5` and `r=6` via real Archimedean phase input.
+
+### [466-G247-quotient-dft-parseval] the final G243 quotient Parseval `(Q)` residual is discharged by the existing axiom-clean `ZMod` DFT Parseval, closing the carrier large-sieve input chain from primitives (2026-07-12)
+
+Lane: direct Opus 4.8 formalizer. Branch `research/proximity-prize`; `main` untouched (#499).
+
+G243 reduced the carrier Parseval `(L)` needed by the carrier-correct large-sieve/mass-floor chain to
+one correctly typed primitive quotient Parseval `(Q)` on `Q ≅ ZMod m`. Fable G244 validated the
+concrete typing: coefficient space `ZMod m -> ℂ`, `value = 𝓕 a`, and norm
+`∑_j ‖a j‖²`. G247 lands that terminal primitive by reusing the existing axiom-clean
+`_ZModDFTParseval.dft_parseval` theorem:
+
+```text
+∑_{A : ZMod m} ‖(𝓕 a) A‖² = m · ∑_{j : ZMod m} ‖a j‖².
+```
+
+Formal payload: `Frontier/_G247QuotientDFTParseval.lean`. The theorem
+`quotient_parseval_zmod_dft` is the concrete quotient `(Q)`; the consumer
+`main_mass_floor_of_zmod_dft` feeds it into G243's `main_mass_floor`, so the G228→G243 input-(A)
+path has neither a bare carrier `(L)` assertion nor a bare quotient `(Q)` hypothesis in this
+`ZMod`-indexed specialization. Axioms are the expected Fourier/Finset stack
+`[propext, Classical.choice, Quot.sound]`; no `sorryAx`.
+
+Scope: keystone correctness closure, not prize closure. It closes the large-sieve input plumbing from
+Mathlib/ArkLib Fourier primitives up. It supplies no signed sponsor-prime phase estimate, so the sole
+live prize face remains the rank-5/rank-6 signed covariance via genuinely new Archimedean phase input.
+CORE OPEN / ON-BGK.
