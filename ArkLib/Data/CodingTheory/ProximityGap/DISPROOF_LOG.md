@@ -52408,3 +52408,43 @@ both ranks. FS15-FS18 do not select that prime or reach logarithmic depth. CORE 
 Formal payload: `Frontier/_G254ConjugatePairedPhaseFreedom.lean`; probe:
 `scripts/probes/g254_conjugate_paired_reversal_probe.py`; KB note:
 `docs/kb/deltastar-466-g254-conjugate-paired-phase-freedom-2026-07-12.md`.
+
+### [466-G255-sign-imbalance-phase-decoupling] multiplier-sign imbalance does not bound the phase-measure discrepancy — the last marginal-phase histogram-admissibility rescue is refuted (2026-07-12)
+
+Lane: direct Opus 4.8 formalizer. Branch `research/proximity-prize`; `main` untouched (#499).
+
+G252/G253/G254 closed the histogram-budget repairs of the global phase-discrepancy route (a balanced
+`Σ s = 0` conjugation-preserving move annihilates then reverses the fixed-row covariance). The final
+rescue for a *marginal* Lu–Zheng–Zheng phase input claimed that such a balanced sign move is
+admissible because its **multiplier-sign histogram** is balanced to at most one atom (`|Σ s| ≤ 1`),
+hence the actual complex phase measure is perturbed by only `1/(m-1)`. The Fable G256 referee probe
+measured that this is false at sponsor scale: `(32,641,20,5)` gives phase-measure change `0.6842` vs
+one-atom `0.0526`; `(64,119297,1864,5)` gives `0.5641` vs `0.000537` — a three-order-of-magnitude gap.
+
+G255 formalizes the exact mechanism. A `s = -1` sign rotates a phase by `π` (`z ↦ -z`); a balanced
+move flips half the rows, moving half the phase atoms by `π`. Model: `2k` atoms as `Fin (2k)`, low
+half phase class `0`, high half class `1`; `phaseSign = +1` low, `-1` high; a `-1` sends class `c` to
+`c+2`. Proved in `ℤ`/`ℕ`, closed form:
+
+```text
+signImbalance_eq_zero :  Σ phaseSign = 0                    -- multiplier histogram exactly balanced
+phaseChanged_card_eq  :  (phaseChanged k).card = k          -- a full HALF of phases move
+phaseChanged_is_half  :  2 * changed = 2 * k                -- moved fraction = 1/2, imbalance-independent
+sign_imbalance_does_not_bound_phase_discrepancy : (Σ phaseSign = 0) ∧ (phaseChanged k).card = k
+phaseDiscrepancy_gt_imbalanceScale : 2 ≤ k → 1 < (phaseChanged k).card   -- k-uniform gap, not fixed-k
+```
+
+Formal payload: `Frontier/_G255SignImbalancePhaseDecoupling.lean` (namespace
+`ArkLib.ProximityGap.Frontier.G255SignImbalancePhaseDecoupling`, only Mathlib BigOperators/Finset).
+Probe `scripts/probes/g255_sign_imbalance_phase_decoupling_probe.py` reproduces the exact model
+(`sign_imbalance=0`, `phase_changed=k`, `frac=1/2`) and records the Fable G256 sponsor measurement.
+Axioms `[propext, Classical.choice, Quot.sound]` on all theorems; `not_prizeClosure` axiom-free; no
+`sorryAx`.
+
+Scope: route-hygiene no-go, not a Jacobi estimate and not a prize closure. It closes the last
+histogram-admissibility rescue of the marginal phase-discrepancy route: a balanced sign move changes
+the marginal phase measure by a constant fraction `1/2`, not `1/(m-1)`, so it is inadmissible under a
+marginal-phase input. The sole live prize face remains, at `r = 5, 6`, the full quotient-character
+signed covariance `Re Σ_{χ≠1} What(χ) conj(Rhat_r(χ)) > threshold` via a genuinely joint,
+row-labelled sponsor-prime estimate that does NOT factor through any marginal phase budget. CORE
+remains OPEN / ON-BGK.
