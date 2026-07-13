@@ -52986,3 +52986,42 @@ pointedness `0 ∉ conv(C)`. Formal payload `_G284AntipodeFreeSeparationNoGo.lea
 obstruction abstractly and certifies the exact countermodel. This closes only the inference from
 antipode-freeness to separation; an independently specified arithmetic normal with a proved margin
 on the actual sponsor family remains possible. CORE OPEN / ON-BGK.
+
+### [466-G286-even-cone-odd-separator-nogo] an odd linear normal cannot separate the even sponsor cone from zero (2026-07-13)
+
+G284 left open the arithmetic question its abstract countermodel raised: does the ACTUAL sponsor
+cone put `0` in its convex hull, and if not, can the surviving predeclared row-labelled ODD linear
+normal carry a positive margin? G286 decides both exactly. An exact rational LP over the realizable
+centered profiles `c^{(r,a)} = (p*R_r(x) - SR)_x` (r=1..n, a in G, exactly the G280 family) at eight
+sponsor-faithful cells (`n in {8,16}`, `p in {113,257,97,113,257,433,977,1153}`) shows `0` is
+strictly OUTSIDE the convex hull at every cell: six cells have `0` not even in the affine hull (an
+exact nontrivial separating functional with explicit positive margin is exhibited), and two cells
+(`16,97`; `16,113`) have `0` in the affine hull but out of the convex hull, so `0` is the min-norm
+affine point and NO nontrivial linear separator exists there (only the trivial affine constant).
+So contra a naive reading, `0` is NOT the barycenter here — and convexity alone does not even supply
+a linear separator; parity does the real work.
+
+But the surviving route asks specifically for an ODD normal, and that is impossible for a sharper
+structural reason. Every realizable centered profile is coordinate-EVEN (`c(-x)=c(x)`, G280 Fact 1,
+because `-1 in G` for the 2-power subgroup: thinness-essential). Hence for the reflection involution
+`sigma: x -> -x`, any coordinate-ODD linear functional `phi` (with `phi(sigma v) = -phi(v)`) satisfies
+`phi(c) = phi(sigma c) = -phi(c)`, so `phi(c) = 0` for EVERY realizable `c`: an odd normal annihilates
+the whole cone and can carry no positive margin (`odd_functional_margin_impossible`). Dually, the
+separation value of any functional depends only on its EVEN part on the even cone
+(`separation_depends_on_even_part`), so every positive-margin separator is forced to be coordinate-even
+(`positive_margin_normal_not_odd`) — and an even functional's pairing is exactly the G276/G280
+even inner product, polarity-invariant and carrying no binding beyond what is already analysed there.
+
+Net: the "predeclared row-labelled ODD arithmetic normal with positive margin" hatch (named in the
+G56/formalizer handoffs) is self-contradictory on the actual sponsor cone. Any surviving certificate
+must be genuinely NON-LINEAR (odd quadratic or higher). Formal payload
+`_G286EvenConeOddSeparatorNoGo.lean`: abstract even-cone/odd-functional dichotomy over any `ℚ`-module
+with a linear involution (`even_vector_odd_functional_zero`, `odd_functional_no_positive_margin`,
+`odd_functional_margin_impossible`, `separation_depends_on_even_part`, `positive_margin_normal_not_odd`;
+axioms `[propext, Classical.choice, Quot.sound]`) plus zero-axiom `decide` witnesses at the exact
+`n=8,p=113` cell (`c 1 = c 112 = 5911`; odd pairing `0`, even pairing `11822`). Probe
+`scripts/probes/g286_hull_zero_probe.py` (pure exact-rational LP): gates A-D (even cone,
+odd-annihilation, even-nonzero pairing, zero out of hull) all hard `SystemExit(1)`; PASS. This closes
+the odd-LINEAR separator route; it does NOT bound the covariance and does not exclude a non-linear
+odd certificate. Surviving object unchanged: the full row-labelled signed sponsor covariance, now
+pinned as requiring a strictly non-linear odd mechanism. CORE OPEN / ON-BGK.
