@@ -26,7 +26,7 @@ For a unit `a` of `Z/mZ`, define
 w_a(x) = w(a^{-1}x).
 ```
 
-This is an exact physical relabeling:
+This is an exact one-sided quotient relabeling:
 
 - if `w` is integer and nonnegative, so is `w_a`;
 - total mass and support cardinality are unchanged;
@@ -113,9 +113,11 @@ phi(m2) = 306733401168168365365525363013448844800 > 2^127.
 
 So the label-free Fourier/positivity data leave more than `2^126` or `2^127` exact cyclic
 relabelings at the two sponsors before quotienting by the stabilizer of the particular profile.
-This does not prove that a sponsor relabeling reverses the covariance, but it shows why a bounded
-local-move rigidity argument has the wrong asymptotic shape. The surviving theorem must control the
-actual labels across a production-scale automorphism orbit.
+G265 corrects the physical interpretation: a primitive-root coordinate change relabels `W` and
+`R_r` simultaneously and preserves their covariance exactly. The huge family is therefore a
+coordinate-choice family, not a family of alternative fixed-row subgroup profiles. It still proves
+that label-free data cannot recover the relative row placement, but it supplies zero physical sign
+freedom for the paired sponsor object.
 
 ## Why the local search looked rigid
 
@@ -136,9 +138,11 @@ The following label-free inputs do not determine the covariance sign, even joint
 - 0/1 structure and support cardinality;
 - both adjacent ranks considered simultaneously.
 
-This closes the positivity/sparse-support repair to G257. It does not preserve the exact labelled
-support set. A theorem using that labelled placement could still distinguish the two profiles, but
-that input is precisely the joint row-labelled shifted-subgroup/Jacobi object
+This closes the positivity/sparse-support repair to G257 **as a label-free black-box route**. It does
+not preserve the exact labelled support set, and G265 proves that an actual coordinate
+reparametrization must relabel the rank row too. A theorem using the labelled placement can therefore
+distinguish the profiles; that input is precisely the joint row-labelled shifted-subgroup/Jacobi
+object
 
 ```text
 Re sum_{chi != 1} What(chi) * conjugate(Rhat_r(chi)),  r=5,6,

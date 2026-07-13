@@ -38,14 +38,14 @@ Hence `sign <W,f> = s*sign D` and `sign <W,g> = t*sign D`, so ranging `(s, t)` o
 all four sign quadrants regardless of the sign of `D`. No `decide`, no fixed cell, no rank
 restriction.
 
-## Why it matters (r-uniform, thinness-relevant)
+## Why it matters (r-uniform on the relaxed cone)
 
-G263 was a single-cell countermodel. G264 shows the sign-freedom holds at *every* cell and *every*
-rank pair for which the two centered rank functionals are independent. G64 already forces exactly
-that independence at the two live sponsor ranks (`r = 5, 6`) at prize depth, so this is not a
-fixed-depth island: the joint gate carries no cross-rank sign-forcing leverage at the actual prize
-face. Combining the two ranks supplies zero additional structure over two independent single-rank
-gates.
+G263 was a single-cell countermodel. G264 shows sign-freedom for the full nonnegative-integer cone at
+every cell and rank pair with independent centered functionals, so the algebraic cone no-go is not a
+fixed-depth island. The G264 admissibility audit and G265 sharpen the scope: the Cramer witnesses need
+not be relation-count profiles of a multiplicative subgroup, and the proved quotient-unit coordinate
+freedom acts diagonally on `(W,R)` and preserves covariance. Thus G64's rank independence does not by
+itself transfer four-quadrant freedom into the actual sponsor-profile slice.
 
 ## What is proved (axiom-clean over Z, `[propext, Classical.choice, Quot.sound]`, no `sorry`, no `native_decide`)
 
@@ -63,11 +63,14 @@ gates.
   countermodel.
 - `not_prizeClosure`: route status marker (axiom-free).
 
-## Scope (honest)
+## Scope (corrected by G265)
 
-Route no-go, an r-uniform strengthening of G263, not a sponsor-prime estimate and not prize closure.
-The surviving admissible route is unchanged: a genuinely row-labelled sponsor Jacobi/cyclotomic
-covariance proved directly against the row label at each rank. CORE OPEN / ON-BGK.
+Route no-go on the relaxed nonnegative-integer cone, an r-uniform algebraic strengthening of G263,
+not a sponsor-prime estimate and not prize closure. It excludes arguments using only nonnegativity,
+centering, and functional independence. It does **not** prove that the fixed subgroup relation profile
+can move through all four quadrants. The surviving admissible route is unchanged: a genuinely
+row-labelled sponsor Jacobi/cyclotomic covariance proved directly against the row label at each rank.
+CORE OPEN / ON-BGK.
 
 ## Artifacts
 

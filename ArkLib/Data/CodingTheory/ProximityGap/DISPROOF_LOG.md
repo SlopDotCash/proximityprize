@@ -52681,10 +52681,12 @@ Zero-sum `f, g` kill the constant offset, and Cramer gives EXACTLY `<W,f> = s*D`
 `sign <W,f> = s*sign D` and `sign <W,g> = t*sign D`; ranging `(s, t)` hits every quadrant regardless
 of `sign D`, with `W >= 0` entrywise. No `decide`, no fixed cell, no rank restriction.
 
-**Why r-uniform (not an island).** G64 forces the two centered sponsor rank functionals independent
-at prize depth `r = 5, 6`, so the hypothesis holds at the actual prize face: the joint gate carries
-no cross-rank sign-forcing leverage at any live depth. Combining the two ranks supplies zero
-structure over two independent single-rank gates.
+**Why r-uniform (not an island).** The relaxed nonnegative-cone theorem applies at every depth where
+the two centered functionals are independent, so its algebraic mechanism is not tied to the G263
+cell. The G264 admissibility audit and G265 correct the sponsor interpretation: rank independence
+does not imply that Cramer's constant-plus-two-atom witnesses are subgroup relation profiles, and
+physical quotient-coordinate changes preserve the paired covariance exactly. Thus the theorem
+excludes cone-only arguments but does not prove four-quadrant freedom in the actual sponsor slice.
 
 **What is proved (axiom-clean over Z, `[propext, Classical.choice, Quot.sound]`, no `sorry`, no
 `native_decide`):** `covPairing_add_const` (constant-offset invariance vs any zero-sum functional),
@@ -52698,10 +52700,56 @@ structure over two independent single-rank gates.
 construction; 4968/4968 random `(m, rank-pair)` cells realize all four quadrants with exact Cramer
 identities; six `r=5/r=6` rank-weight cyclic-length surrogates all sign-free (depth-uniform).
 
-**Scope (honest).** Route no-go, r-uniform strengthening of G263, not a sponsor-prime estimate and
-not prize closure. The surviving admissible route is unchanged: a genuinely row-labelled sponsor
-Jacobi/cyclotomic covariance proved directly against the row label at EACH rank. CORE OPEN / ON-BGK.
+**Scope (corrected by G265).** Route no-go on the relaxed nonnegative-integer cone, r-uniform
+strengthening of G263, not a sponsor-prime estimate and not prize closure. The theorem excludes
+arguments using only nonnegativity, centering, and functional independence; it does not realize its
+witnesses as weighted subgroup-relation profiles. The surviving admissible route is unchanged: a
+genuinely row-labelled sponsor Jacobi/cyclotomic covariance proved directly against the row label at
+EACH rank. CORE OPEN / ON-BGK.
 
 Formal payload: `Frontier/_G264JointGateSignFreedomGeneral.lean`; probe:
 `scripts/probes/g264_joint_gate_sign_freedom_general_probe.py`; KB note:
 `docs/kb/deltastar-466-g264-joint-gate-sign-freedom-general-2026-07-13.md`.
+
+---
+
+### [466-G265-coordinate-reparametrization-nogo] quotient-unit freedom is diagonal coordinate gauge: physical reparametrization relabels W and R together and preserves the centered gate exactly (2026-07-13, direct GPT-5.6 Sol CORE)
+
+Fable's G264 admissibility audit exposed the gap between arbitrary nonnegative kernels and actual
+subgroup relation profiles. The only structured move previously treated as physical was G258's
+quotient-unit relabeling of `W_G`. G265 pins its exact status.
+
+Changing primitive root `g -> g^a` changes quotient label `j` to `a*j`, so it relabels **both** the
+weighted relation profile and every field-derived adjacent-rank row:
+
+```text
+w_a(j)=w(aj),   R_{r,a}(j)=R_r(aj).
+```
+
+For every quotient unit `u`, the Lean payload proves
+
+```text
+C_m(u.W,u.R)=C_m(W,R),
+C_m(u.W,R)=C_m(W,u^-1.R).
+```
+
+The first is diagonal coordinate-gauge invariance; the second says a one-sided move changes only
+relative labelled placement. At G258's exact `(16,1297,m=81)` cell, root exponent `53` produces
+exactly its moved support. One-sided relabeling gives `(-346283,-1161769)`, but simultaneous
+relabeling of the two rank rows restores `(+1261081,+3691265)`. All 432 primitive-root choices in
+the cell preserve both covariances; four further characteristic-p cells pass identically.
+
+The physical affine stabilizer is rigid too. Since `sum G=0`, `aG+b=G` forces `n*b=0`, hence `b=0`;
+then `aG=G iff a in G`. Its size is `n` and its quotient action is trivial. Thus no nontrivial affine
+subgroup symmetry realizes G264's missing quadrant.
+
+**Scope correction.** G258 remains a valid no-go for label-free summaries, and G264 remains a valid
+no-go on the relaxed nonnegative cone. Neither gives an admissible deformation of the fixed sponsor
+pair. The `phi(m)>2^126/2^127` unit families are huge coordinate-choice families with exactly zero
+physical sign freedom under the diagonal action. FS15-FS18 stay consumed: their resultant ladder
+cannot select the sponsor and rank six is forced exceptional. The live object remains the direct
+row-labelled sponsor covariance. CORE OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G265CoordinateReparametrizationNoGo.lean`; probe:
+`scripts/probes/g265_coordinate_reparametrization_nogo.py`; KB note:
+`docs/kb/deltastar-466-g265-coordinate-reparametrization-nogo-2026-07-13.md`.

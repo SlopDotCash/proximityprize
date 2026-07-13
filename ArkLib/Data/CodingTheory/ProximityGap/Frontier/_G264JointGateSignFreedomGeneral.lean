@@ -36,15 +36,18 @@ identity gives **exactly**
 
 Hence `sign ⟨W, f⟩ = s · sign D` and `sign ⟨W, g⟩ = t · sign D`, so ranging `(s, t)` over `{±1}²`
 hits all four sign quadrants regardless of the sign of `D`. No `decide`, no fixed cell, no rank
-restriction: whenever two centered rank functionals are independent — which G64 forces for the two
-live sponsor ranks at prize depth — the joint gate carries no cross-rank sign-forcing leverage.
+restriction: the **relaxed nonnegative-integer cone** carries no cross-rank sign-forcing leverage
+whenever the two centered functionals are independent.
 
 Two corollaries recover the landed G263 cell (`m = 5`, minor `15`) from the general theorem, tying
 the r-uniform statement back to the certified minimal countermodel.
 
-Scope (honest): route no-go, r-uniform strengthening of G263, not a sponsor-prime estimate and not
-prize closure. The surviving admissible route is unchanged: a genuinely row-labelled sponsor
-Jacobi/cyclotomic covariance proved directly against the row label at each rank.
+Scope (corrected by the G264 admissibility audit and G265): route no-go on the relaxed cone, not a
+sponsor-prime estimate and not prize closure. The Cramer profile need not be a weighted relation-count
+profile of a multiplicative subgroup. G265 additionally proves that quotient-unit coordinate changes
+act simultaneously on `W` and `R` and preserve the covariance, so they do not realize these Cramer
+moves at fixed sponsor labels. The surviving admissible route is unchanged: a genuinely row-labelled
+sponsor Jacobi/cyclotomic covariance proved directly against the row label at each rank.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.G264JointGateSignFreedomGeneral

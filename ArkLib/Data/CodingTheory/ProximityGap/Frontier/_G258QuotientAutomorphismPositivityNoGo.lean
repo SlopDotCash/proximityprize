@@ -13,7 +13,7 @@ G257 found conjugate-pair permutations of the quotient Fourier spectrum that rev
 rank-five and rank-six covariance, but most unconstrained optimizers invert to signed physical
 profiles. This left positivity, integrality, and sparse support as a possible repair.
 
-The repair fails for a structural reason. Multiplication by a unit on `ZMod N` relabels a physical
+The repair fails for a structural reason. Multiplication by a unit on `ZMod N` relabels a quotient
 profile. It preserves nonnegativity, integrality, total mass, and support cardinality. Mathlib's
 `dft_comp_unitMul` proves that its DFT is only permuted, so the complete complex Fourier-value
 multiset is preserved exactly, not merely its magnitudes or phase histogram.
@@ -28,15 +28,19 @@ rank five:       +1261081      -346283
 rank six:        +3691265      -1161769.
 ```
 
-Thus one and the same positivity-preserving, integral, support-size-preserving move reverses both
-ranks while preserving the full Fourier multiset and inverse-character pairing. The exact subgroup
-and adjacent-rank profiles producing the four integer correlations are recomputed by
+Thus one and the same positivity-preserving, integral, support-size-preserving one-sided relabeling
+reverses both ranks while preserving the full Fourier multiset and inverse-character pairing. The
+exact subgroup and adjacent-rank profiles producing the four integer correlations are recomputed by
 `scripts/probes/g258_quotient_automorphism_positivity_nogo.py`; the Lean file kernel-checks the
 structural DFT mechanism, the two supports, and the integer covariance certificates.
 
 This is a route no-go, not a production-prime estimate. It does not preserve the *labelled* support
-set. A surviving certificate must use that row-labelled placement, equivalently the actual joint
-sponsor-prime covariance, rather than positivity or sparse support as label-free marginal data.
+set. G265 records the essential admissibility correction: a physical primitive-root coordinate
+change relabels `W` and `R` simultaneously and therefore preserves the covariance exactly.
+G258's one-sided move is a countermodel to label-free marginal data, not an alternative profile of
+the fixed sponsor pair. A surviving certificate must use that row-labelled placement, equivalently
+the actual joint sponsor-prime covariance, rather than positivity or sparse support as label-free
+marginal data.
 -/
 
 open Finset ZMod
