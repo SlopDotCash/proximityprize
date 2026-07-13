@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6146 files, 65761 declarations
+- `ArkLib` — 6147 files, 65779 declarations
 
-## Same short-name across multiple files (2562 groups)
+## Same short-name across multiple files (2563 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -10938,6 +10938,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem GCXK25SecondMoment.sum_card_eq_sum_mult` [ArkLib/Data/CodingTheory/Connections/GCXK25SecondMoment.lean:118](../../../ArkLib/Data/CodingTheory/Connections/GCXK25SecondMoment.lean#L118) — **Double counting (rows = columns).** Total size of the family equals the sum of per-coordinate mult
 - `theorem ProximityGap.Frontier.PencilPairwiseBonferroni.sum_card_eq_sum_mult` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilPairwiseBonferroni.lean:125](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilPairwiseBonferroni.lean#L125) — `Σᵢ \|Cᵢ\| = Σ_{x ∈ U} mult x`, where `U = ⋃ᵢ Cᵢ`. Pair-counting `{(x,i) : x ∈ Cᵢ}` two ways.
+
+### `sum_centered` (2 declarations, 2 files)
+
+- `theorem ProximityGap.Frontier.DoorIVJointFieldWhite.sum_centered` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVJointFieldWhite.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVJointFieldWhite.lean#L56) — Centering is linear: `Σ (f i − μ) = (Σ f i) − card·μ`. The centered field is what carries the covari
+- `lemma ArkLib.ProximityGap.Frontier.G276TermwiseWeilCeilingNoGo.sum_centered` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G276TermwiseWeilCeilingNoGo.lean:114](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G276TermwiseWeilCeilingNoGo.lean#L114) — `∑ⱼ centered w j = 0` (the DC / principal character is removed).
 
 ### `sum_centered_eq_zero` (2 declarations, 2 files)
 
