@@ -2282,6 +2282,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G255SignImbalancePhaseDec
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G258QuotientAutomorphismPositivityNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G260OriginAnchorGaugeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G261WickCeilingExceedsDCFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G262SponsorRankCrossover
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

@@ -27,14 +27,14 @@ The measured ratio is **exactly**
 
 `Wick_r / DCfloor_r = (2r−1)‼·q / n^r`   (verified to 12 significant figures on all 30 probe rows).
 
-At a thin prime, where the subgroup is small relative to the field (`q ≳ n^r`), this ratio is
-`≥ (2r−1)‼ → ∞` and grows **super-exponentially in the depth `r`**. Consequently the Wick ceiling
-sits a factor `(2r−1)‼·q/n^r` **above** the DC floor it would need to certify: a moment-method
-argument that bounds the collision census by its own Gaussian/Wick ceiling is off from the target
-Parseval floor by a super-exponential factor at prize depth `r ≈ ln q`. This is a *calibrated*
-no-go quantifying **why** the Wick/moment route cannot beat Parseval on the thin subgroup — it does
-not restate G63 (`census ≥ floor`, a *lower* bound on the census); it bounds the *distance between
-the two ceilings the route sits between* and shows that distance diverges.
+At a thin prime and depth satisfying the explicit premise `q ≥ n^r`, this ratio is
+`≥ (2r−1)‼`. Consequently a Wick comparison on that side of the crossover is far above the DC
+floor. This is a calibrated conditional comparison, not a sponsor-uniform `r=5,6` conclusion:
+G262 proves that both certified sponsor fields satisfy `n^5 < q < n^6`, so this direction applies
+at rank five but reverses at rank six. There `DCfloor_6` is hundreds of times larger than Wick and,
+by G63, every actual characteristic-p census is necessarily super-Wick. Thus G261 does not restate
+G63 (`census ≥ floor`); it measures the gap on the `q ≥ n^r` side, while G262 records the opposite
+sponsor rank-six regime.
 
 ## What is proved (all axiom-clean over `ℕ`/`ℝ`, only Mathlib)
 
@@ -46,8 +46,8 @@ the two ceilings the route sits between* and shows that distance diverges.
   `Wick_r / DCfloor_r = (2r−1)‼ · q / n^r`   (`0 < n`, `0 < q`).
 * `wick_ge_dcFloor_mul_doubleFactorial` : in the **thin regime** `n^r ≤ q`,
   `Wick_r ≥ (2r−1)‼ · DCfloor_r` — the Wick ceiling is at least `(2r−1)‼` times the floor.
-* `wick_gt_dcFloor` : hence in the thin regime `Wick_r > DCfloor_r` for `r ≥ 1` (strict; the
-  ceiling strictly overshoots the target).
+* `wick_gt_dcFloor` : hence under the explicit thin-regime premise `n^r ≤ q`,
+  `Wick_r > DCfloor_r` for `r ≥ 2`.
 * `doubleFactorial_ratio_unbounded_step` : `(2(r+1)−1)‼ = (2r+1)·(2r−1)‼`, so the ratio's
   depth-`r` factor `(2r−1)‼` multiplies by `(2r+1) ≥ 3` at each step — the divergence is
   super-exponential, not a fixed-depth island.
@@ -57,12 +57,12 @@ the two ceilings the route sits between* and shows that distance diverges.
 
 ## Honest scope
 
-Route-hygiene no-go, not a Jacobi estimate and not prize closure. It calibrates the exact,
-`r`-uniform, thinness-essential gap between the moment route's own Wick ceiling and the target
-Parseval floor: the `q/n^r` factor is precisely the thin-subgroup ratio, and `(2r−1)‼` diverges at
-prize depth. Complements `_G63PrimitiveCensusPinnedAtDCFloor` (census pinned *at/above* the floor
-from below) by pinning the Wick ceiling *unboundedly above* it — so the moment method is squeezed
-out from both sides at the thin prime and cannot beat Parseval. CORE remains OPEN / ON-BGK.
+Route-hygiene comparison, not a Jacobi estimate and not prize closure. It calibrates the exact,
+`r`-uniform gap under the stated premise `n^r ≤ q`. G262 supplies the sponsor-rank scope correction:
+that premise holds at rank five and fails at rank six, where the comparison reverses and the DC mass
+forces the actual characteristic-p census above Wick. Complements
+`_G63PrimitiveCensusPinnedAtDCFloor` without changing the surviving direct row-labelled covariance
+target. CORE remains OPEN / ON-BGK.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.G261WickCeilingExceedsDCFloor
@@ -131,8 +131,8 @@ theorem wick_ge_dcFloor_mul_doubleFactorial {q n : ℕ} (r : ℕ)
     exact mul_le_mul_of_nonneg_left hthinR (le_of_lt hnr)
   exact mul_le_mul_of_nonneg_left hfrac hdfpos
 
-/-- **Strict overshoot in the operative prize regime.** In the thin regime `n^r ≤ q`, for depth
-`r ≥ 2` (the prize operates at `r = 5,6`) the Wick ceiling strictly exceeds the DC floor:
+/-- **Strict overshoot under the thin-regime premise.** If `n^r ≤ q` and `r ≥ 2`, the Wick
+term strictly exceeds the DC floor:
 `Wick_r > DCfloor_r`. The strictness comes from `(2r−1)‼ ≥ 3 > 1` for `r ≥ 2` together with the
 thin-regime bound `Wick_r ≥ (2r−1)‼·DCfloor_r` and the floor being positive. (At the boundary
 `r = 1, q = n` the two ceilings coincide, so `r ≥ 2` is the honest hypothesis.) -/

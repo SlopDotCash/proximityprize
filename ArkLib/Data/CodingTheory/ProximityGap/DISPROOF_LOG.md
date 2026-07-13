@@ -52552,3 +52552,46 @@ thin prime. CORE remains OPEN / ON-BGK.
 Formal payload: `Frontier/_G261WickCeilingExceedsDCFloor.lean`; probe:
 `scripts/probes/g261_wick_ceiling_exceeds_dc_floor_probe.py`; KB note:
 `docs/kb/deltastar-466-g261-wick-ceiling-exceeds-dc-floor-2026-07-13.md`.
+
+---
+
+### [466-G262-sponsor-rank-crossover] the sponsor moment regime flips between ranks five and six: Wick is far above DC at r=5 but hundreds of times below the forced characteristic-p census at r=6 (2026-07-13)
+
+Lane: direct GPT-5.6 Sol CORE. Branch `research/proximity-prize`; `main` untouched (#499).
+
+G261 proves the exact ratio `Wick_r/DCfloor_r = (2r-1)!! q/n^r` and derives overshoot under the
+explicit premise `n^r <= q`. That premise is not uniform over the live sponsor ranks. For
+`n=2^30` and both certified sponsor primes, exact arithmetic proves
+
+```text
+n^5 < P1,P2 < n^6.
+```
+
+The direction therefore flips across adjacent ranks. Division-free sponsor margins are:
+
+```text
+                  r=5                            r=6
+P1     Wick > 241920 * DC             DC > 400 * Wick
+P2     Wick > 483840 * DC             DC > 200 * Wick.
+```
+
+The general reverse-regime theorem is `((2r-1)!!)*q < n^r -> Wick_r < DCfloor_r`. Composing the
+rank-six inequalities with G63's unconditional `DCfloor_r <= primitive/wraparound census_r` gives
+`census_6 > 400*Wick_6` at P1 and `>200*Wick_6` at P2. Thus the characteristic-zero Wick value is
+not an upper ceiling for the rank-six sponsor census; it lies hundreds of times below the principal
+Fourier mass alone. This is the exact arithmetic mechanism behind G64's forced FS15-FS18 depth-six
+exception.
+
+FS15-FS18 are fully consumed: their Wick ladder holds only off resultant-defined fixed-depth bad
+sets; FS16 sharpens the resultant height but cannot select a sponsor prime; FS17's union remains
+fixed-depth; G64 forces rank six exceptional. G262 pins why selection is impossible at that rung:
+removing the sponsor from the exceptional set would assert a raw Wick bound below Parseval.
+
+Scope: sponsor-facing route correction/no-go, not prize closure. G261 remains valid as a conditional
+ratio theorem and rank-five calibration; its former unified r=5,6 sponsor interpretation is
+superseded. The sole live CORE face remains the direct row-labelled sponsor Jacobi/cyclotomic
+covariance at both ranks.
+
+Formal payload: `Frontier/_G262SponsorRankCrossover.lean`; probe:
+`scripts/probes/g262_sponsor_rank_crossover_probe.py`; KB note:
+`docs/kb/deltastar-466-g262-sponsor-rank-crossover-2026-07-13.md`.

@@ -15,8 +15,9 @@ The census / moment-method route to the prize collision moment lives between two
 
 G63 proves the census is pinned *at or above* the floor (`q·census ≥ n^{2r}`), and G65 rules out any
 nonnegative depth-reweighting yielding a strict weighted sub-floor. Those bound the census from
-below. The open quantitative question this note answers: **how far apart are the two ceilings the
-route sits between, and does that gap help or hurt at prize depth on a thin 2-power subgroup?**
+below. The quantitative question this note answers is conditional and exact: **how far apart are
+Wick and DC on the side of the rank crossover where `n^r ≤ q`?** G262 records the sponsor-facing
+scope correction across ranks five and six.
 
 ## Exact answer
 
@@ -30,17 +31,18 @@ Wick_r / DCfloor_r = (2r−1)‼ · q / n^r
 verified to 12 significant figures on all 30 probe rows and reproduced exactly by the self-contained
 integer probe `g261_wick_ceiling_exceeds_dc_floor_probe.py`.
 
-Interpretation. The factor splits as `(2r−1)‼` (the Gaussian double-factorial, super-exponential in
-depth) times `q/n^r` (exactly the thin-subgroup ratio: field size over the subgroup power). At a thin
-prime, where the 2-power subgroup is small relative to the field (`q ≳ n^r`), the ratio is
-`≥ (2r−1)‼`, which diverges super-exponentially at prize depth `r ≈ ln q`. The Wick ceiling therefore
-sits a factor `(2r−1)‼·q/n^r` **above** the DC floor it would need to certify.
+Interpretation. The factor splits as `(2r−1)‼` times `q/n^r`. Under the explicit premise
+`n^r ≤ q`, the ratio is at least `(2r−1)‼`; this is the exact content of G261's comparison.
+It is not uniform across the two live sponsor ranks. G262 proves
 
-Consequence for the route. A moment-method argument that bounds the collision census by its own
-Gaussian/Wick ceiling is off from the target Parseval floor by this super-exponential factor. G63
-pins the census from below at the floor; G261 pins the Wick ceiling unboundedly above it. The moment
-route is squeezed out from both sides at the thin prime and cannot beat Parseval by bounding through
-its Wick ceiling.
+```text
+n^5 < P1,P2 < n^6.
+```
+
+Thus the G261 direction applies at rank five, where Wick lies hundreds of thousands of times above
+DC. At rank six it reverses: DC is more than `400·Wick` at P1 and more than `200·Wick` at P2.
+Combining with G63 gives `census_6 > 400·Wick_6` / `> 200·Wick_6`, so Wick cannot be an upper census
+ceiling at rank six. See the G262 note for the exact division-free sponsor theorems.
 
 ## What is proved (Lean, axiom-clean over ℕ/ℝ, only Mathlib `Nat.doubleFactorial`)
 
@@ -64,10 +66,8 @@ build 3298 jobs green.
 
 ## Scope (honest)
 
-Route-hygiene no-go, not a Jacobi estimate and not prize closure. It calibrates the exact,
-`r`-uniform, thinness-essential gap between the moment route's own Wick ceiling and the target
-Parseval floor. It does not restate G63 (a lower bound on the census); it bounds the distance between
-the two ceilings and shows it diverges. The surviving admissible route remains a genuinely joint,
-row-labelled sponsor-prime / Jacobi estimate proved directly against the row label — NOT through any
-moment / Wick / census ceiling, which G261 shows is exponentially detached from the target at the
-thin prime. CORE remains OPEN / ON-BGK.
+Route-hygiene comparison, not a Jacobi estimate and not prize closure. It calibrates the exact gap
+under its stated premise `n^r ≤ q`. G262 is the authoritative sponsor-rank scope: the premise holds
+at rank five and fails at rank six, where characteristic-p DC/wraparound mass is provably super-Wick.
+The surviving admissible route remains a genuinely joint, row-labelled sponsor-prime / Jacobi
+estimate proved directly against the row label. CORE remains OPEN / ON-BGK.
