@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6145 files, 65737 declarations
+- `ArkLib` — 6146 files, 65761 declarations
 
 ## Same short-name across multiple files (2562 groups)
 
@@ -57,7 +57,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.WallBetaPlusOne.wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallBetaPlusOneLocalization.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallBetaPlusOneLocalization.lean#L53) — The Wick reference value `(2r−1)‼·n^r` as a real.
 - `def ArkLib.ProximityGap.Frontier.W5KStabilityTower.wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf7W5_kstability_tower.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf7W5_kstability_tower.lean#L68) — The Wick / Gaussian value `Wick(n,r) = (2r−1)‼·n^r`, packaged with `dfac r = (2r−1)‼` as an abstract
 
-### `isPrizeClosure` (22 declarations, 22 files)
+### `isPrizeClosure` (23 declarations, 23 files)
 
 - `def ProximityGap.Frontier.ARX1.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:219](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean#L219) — Honest scope marker: this file does NOT close the prize. The Stein/Poisson route is fully assembled
 - `def ArkLib.ProximityGap.UniformNoWraparoundTheory.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean:344](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean#L344) — The theory is NOT a prize closure: `isPrizeClosure = false`. The for-all-`q` prize needs the obligat
@@ -73,6 +73,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.G255SignImbalancePhaseDecoupling.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G255SignImbalancePhaseDecoupling.lean:198](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G255SignImbalancePhaseDecoupling.lean#L198) — Honest scope marker: a route-hygiene discriminator, not a prize closure.
 - `def ArkLib.ProximityGap.Frontier.G262SponsorRankCrossover.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G262SponsorRankCrossover.lean:174](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G262SponsorRankCrossover.lean#L174) — Honest scope marker: this is a sponsor-rank route correction, not prize closure.
 - `def ArkLib.ProximityGap.Frontier.G264JointGateSignFreedomGeneral.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G264JointGateSignFreedomGeneral.lean:223](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G264JointGateSignFreedomGeneral.lean#L223) — Route status marker: G264 is an r-uniform strengthening of the G263 no-go, not prize closure.
+- `def ArkLib.ProximityGap.Frontier.G268.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G268AntipodalFloorWraparoundGap.lean:193](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G268AntipodalFloorWraparoundGap.lean#L193) — Honest status marker.
 - `def ArkLib.ProximityGap.Frontier.G62BinaryNormFoldWeightNoGo.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean:120](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean#L120) — Honest scope marker: this is a norm-fold route no-go, not a prize closure.
 - `def ArkLib.ProximityGap.Frontier.G64FSDeepRungForcedExceptional.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean#L142) — Honest scope marker: G64 is a forced-exception theorem for the raw FS ladder, not a proof of the DC-
 - `def ArkLib.ProximityGap.Frontier.G66SupportTwoKernelRigidity.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean:137](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean#L137) — Honest scope marker: G66 removes the support-two/binomial sector from the prize-scale wraparound bud
@@ -82,7 +83,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.OcNegacyclicHeightNoGo.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean:177](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_OcNegacyclicHeightNoGo.lean#L177) — Honest scope marker: this file is a NO-GO. It does not bound the prize object `M(μ_n)` and does not
 - `def ArkLib.ProximityGap.Frontier.WallNewEnergyExhaustion.isPrizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallNewEnergyExhaustion.lean:233](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallNewEnergyExhaustion.lean#L233) — **NOT prize closure.** Every exponent here is `≥ 7/8 ≫ 1/2`; a fixed power law cannot move δ* (`delt
 
-### `not_prizeClosure` (19 declarations, 19 files)
+### `not_prizeClosure` (20 declarations, 20 files)
 
 - `theorem ProximityGap.Frontier.ARX1.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:221](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean#L221) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.CrtCharSumSubmult.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean:202](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean#L202) — (no docstring)
@@ -96,6 +97,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.G255SignImbalancePhaseDecoupling.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G255SignImbalancePhaseDecoupling.lean:200](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G255SignImbalancePhaseDecoupling.lean#L200) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.G262SponsorRankCrossover.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G262SponsorRankCrossover.lean:176](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G262SponsorRankCrossover.lean#L176) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.G264JointGateSignFreedomGeneral.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G264JointGateSignFreedomGeneral.lean:225](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G264JointGateSignFreedomGeneral.lean#L225) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G268.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G268AntipodalFloorWraparoundGap.lean:195](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G268AntipodalFloorWraparoundGap.lean#L195) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.G62BinaryNormFoldWeightNoGo.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean:122](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G62BinaryNormFoldWeightNoGo.lean#L122) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.G64FSDeepRungForcedExceptional.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean:144](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G64FSDeepRungForcedExceptional.lean#L144) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.G66SupportTwoKernelRigidity.not_prizeClosure` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G66SupportTwoKernelRigidity.lean#L139) — (no docstring)

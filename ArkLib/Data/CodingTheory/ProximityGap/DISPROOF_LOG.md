@@ -52899,3 +52899,15 @@ the minimal surviving object is the **full character-weighted quotient covarianc
 (square-root-cancellation scale), not in any one character. Surviving admissible route unchanged:
 direct row-labelled sponsor Jacobi/cyclotomic covariance proved against the row label at each rank.
 CORE remains OPEN / ON-BGK.
+### [466-G268-antipodal-floor-wraparound-gap] fixed-n thin-tail extrapolation fails; the complete characteristic-zero antipodal alignment floor is 512 to 2^36-fold too small at the sponsors (2026-07-13)
+
+For the adjacent-rank gate `A_r=p J_r-n² C(n,r)C(n,r-1)`, rewrite each relation as the positive dyadic-root sum `y+y+B+(-z)+(-A)=0`. The Lam--Leung 2-power classification makes the characteristic-zero length-`2r+2<n` contribution exactly antipodal. Enumerating one antipodal pair gives `P0=1+Y²+2XY+X²+X²Y²`, `P1=X+Y+XY²+X²Y`, `P2=XY`, and therefore
+
+```text
+J5^0=n(m-2)(m-1)(203m²-1099m+1536)/12,
+J6^0=n(m-2)(m-1)(287m³-2789m²+9174m-10160)/20,  m=n/2.
+```
+
+The exact probe derives the transfer polynomial, independently brute-forces `n=8`, and recomputes a genuine late-negative cell. At production, axiom-free Lean arithmetic proves `P1*2^10*J5^0<B5`, `P2*2^9*J5^0<B5`, `P1*2^36*J6^0<B6`, `P2*2^35*J6^0<B6`. Hence any nonnegative sponsor alignment needs wraparound relation count exceeding 1024/512 full antipodal baselines at rank five and `2^36/2^35` at rank six. The wraparound excess is load-bearing at BOTH ranks, not a perturbation.
+
+Cross-scale exact scans also refute G267's `n=8` cutoff as a uniform scale: `(n,p)=(32,70753)` has `tau=69.09375` and `(A5,A6)=(+132970510400,-1324791182208)`. FS15-FS18 explain the fixed-n positive tails but cannot select the sponsors; G268 quantifies why their good-prime pairing regime cannot carry the constrained production alignment. Formal payload `_G268AntipodalFloorWraparoundGap.lean`; probe `g268_antipodal_floor_wraparound_gap.py`; full note `docs/kb/deltastar-466-g268-antipodal-floor-wraparound-gap-2026-07-13.md`. Honest boundary: the tuple-to-coefficient bijection is computation-of-record, while the sponsor deficits and count consumers are kernel-checked. CORE OPEN / ON-BGK.
