@@ -6,6 +6,25 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G267-thinness-separation-census] Exact FINITE thinness-separation certificate for the adjacent-rank CORE covariance: on the n=8 census sign-negativity is confined to p−1 ≤ 112 (τ ≤ 1.75) with a verified (+,+) thin tail to τ = 41.5 — sharpens G266's OPEN thinness bias into a precise recorded separation, still not a production-prime bound (2026-07-13, #466 G267, direct Opus 4.8 formalizer)
+
+G266 realised all four sign quadrants of the adjacent-rank CORE covariance `A_r(n,p)=p·Σ_x W_G(x)R_r(x)−(Σ W_G)(Σ R_r)` (`R_r=dp_r ⋆ dp_{r-1}`, `W_G(x)=#{(y,z)∈G²:2y−z=x}`, `G` the order-`n` 2-power subgroup of `𝔽_p^*`) and closed the cross-rank sign lock and adjacent-rank forced-sign repairs. It left ONE repair OPEN and CORROBORATED, not refuted: the **thinness-positivity bias** (sign collapsing to `(+,+)` as `τ=(p−1)/n²→∞`). G266 deliberately declined to formalize this, because an unconditional sign law at production primes IS the open BGK-hard target. G267 formalizes the exact FINITE content instead.
+
+Over the 90 genuine `n=8` cells `17 ≤ p ≤ 2657`, `p ≡ 1 (mod 8)`, exact float-free covariance signs, the sign-negative set is **exactly** the four primes `{17, 73, 89, 113}`:
+
+```text
+p = 17  (p−1 = 16,   τ = 0.25 )   (−,−)
+p = 73  (p−1 = 72,   τ = 1.125)   (−,−)
+p = 89  (p−1 = 88,   τ = 1.375)   (−,+)
+p = 113 (p−1 = 112,  τ = 1.75 )   (−,−)
+```
+
+Hence **every sign-negative cell has `p−1 ≤ 112` (`τ ≤ 1.75`)** and **every cell with `p−1 ≥ 136` (`τ ≥ 2.125`) is `(+,+)`** — all 84 of them, up to `p−1 = 2656` (`τ = 41.5`). Strict separation gap `(112, 136)`; the verified thin `(+,+)` tail extends 23.7× beyond the last sign flip.
+
+Formal payload: `Frontier/_G267ThinnessSeparationCensus.lean`. `structure Cell` (prime + recorded signs) and `census` (90 cells); theorems `census_length`, `neg_cells_below_threshold` (`c.neg → p−1 ≤ 112`), `thin_tail_plusPlus` (`136 ≤ p−1 → (+,+)`), `neg_cells_are_exactly` (`= {17,73,89,113}`), `neg_cells_count` (`= 4`), `thin_tail_reaches_2656`, and packaged `thinness_separation_census`. All `by decide`; every theorem depends on **ZERO axioms** (not even `propext`), no `sorryAx`, no `native_decide`. Probe `scripts/probes/g267_thinness_separation_census.py` (pure int) recomputes the full census float-free, confirms it matches the Lean table exactly, and asserts every separation fact (SystemExit(1) on failure); PASS. KB: `docs/kb/deltastar-466-g267-thinness-separation-census-2026-07-13.md`.
+
+Scope (honest, matching G266): a FINITE separation certificate, NOT a bound at production primes and NOT a proof of the thinness repair. Proving the `(+,+)` collapse unconditionally at production thinness is exactly the open row-labelled sponsor covariance target. G267 adds over G266 a precise, kernel-checked, monotone, thinness-ordered invariant (calibrated consumer of G266's data), not a restatement of any open Prop and not a fixed-depth island (it jointly constrains both ranks `r=5,6` through the single thinness ordering). Non-overlap: G266 certified individual quadrant witnesses; G267 certifies the SEPARATION structure of the whole `n=8` census. The surviving object is the direct row-labelled sponsor covariance uniform in the fixed quotient character. CORE remains OPEN / ON-BGK.
+
 ## [466-G266-adjacent-rank-quadrant-nogo] The adjacent-rank CORE covariance realises ALL FOUR sign quadrants including the rare (-,+): no cross-rank sign lock and no adjacent-rank forced sign; the thinness-positivity bias is CORROBORATED and left OPEN (2026-07-13, #466 G266, direct Opus 4.8 CORE)
 
 G220 closed the physical-space route for the **single-subset-sum** row `R_r(x)=#{A⊆G:|A|=r, ΣA=x}` (sign unforced across cells, dominant diagonal flips). The actual current frontier object (G228–G265) is the **adjacent-rank correlation** `R_r=dp_r ⋆ dp_{r-1}` = `#{(A,B):A⊆G,|A|=r, B⊆G,|B|=r-1, (ΣA)−(ΣB)=x}`, with physical covariance `A_r(n,p)=p·Σ_x W_G(x)R_r(x)−(Σ W_G)(Σ R_r)`, `W_G(x)=#{(y,z)∈G²:2y−z=x}`, `G` the order-`n` 2-power subgroup of `𝔽_p^*`. Three physical-route repairs survived G220 for this object: a cross-rank sign lock (`A₆>0 ⟹ A₅>0`, transporting a rank-6 bound to rank 5), an adjacent-rank forced sign, and a thinness-forced sign (the sign collapsing to `(+)` as `τ=(p−1)/n²→∞`, the adversarial regime).

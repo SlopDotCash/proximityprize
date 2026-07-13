@@ -2287,6 +2287,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G263JointRankSignFreedom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G264JointGateSignFreedomGeneral
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G265CoordinateReparametrizationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G266AdjacentRankQuadrantNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G267ThinnessSeparationCensus
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
