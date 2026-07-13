@@ -52448,3 +52448,43 @@ marginal-phase input. The sole live prize face remains, at `r = 5, 6`, the full 
 signed covariance `Re Σ_{χ≠1} What(χ) conj(Rhat_r(χ)) > threshold` via a genuinely joint,
 row-labelled sponsor-prime estimate that does NOT factor through any marginal phase budget. CORE
 remains OPEN / ON-BGK.
+
+---
+
+### [466-G258-quotient-automorphism-positivity-nogo] Positivity, integrality, sparse support, and the complete Fourier multiset still do not pin the simultaneous rank-5/rank-6 covariance (2026-07-13)
+
+G257 found covariance-reversing permutations of conjugate Fourier pairs, but Fable's G258 audit
+showed that most unconstrained optima invert to signed physical profiles. At the sparse cell
+`(n,p,r,m)=(16,1297,5,81)`, every single pair swap/orientation move violated nonnegativity on the
+65-point zero set, suggesting positivity plus sparse support as the first surviving invariant.
+
+The local conclusion is false globally. For every unit `a mod m`, the physical relabeling
+`w_a(x)=w(a^{-1}x)` preserves integrality, nonnegativity, mass, and support cardinality, while
+Mathlib's exact `dft_comp_unitMul` identity gives `DFT(w_a)(k)=DFT(w)(a k)`. Thus it preserves the
+COMPLETE complex Fourier-value multiset and inverse-character pairing, not merely magnitudes or a
+phase histogram.
+
+At `(n,p,m)=(16,1297,81)`, the actual weighted-relation quotient profile is a 0/1 indicator on 16
+classes. The unit `a=26` (inverse `53`) maps it to another 0/1 profile on 16 classes and reverses BOTH
+exact physical-space centered covariances:
+
+```text
+             aligned       unit-relabeled
+r=5         +1261081          -346283
+r=6         +3691265         -1161769.
+```
+
+The values are exact integers from
+`m*sum_x w(x)R_r(x) - (sum w)(sum R_r)`, with no FFT or floating point. Four units
+`a in {14,26,44,56}` reverse both ranks simultaneously. The identity was only isolated at local move
+distance one; a coherent global automorphism jumps to a distant feasible 0/1 support.
+
+**Consequence.** No certificate factoring through complete Fourier multiset + conjugation + physical
+nonnegativity/integrality + mass + 0/1 support size can sign the covariance, even jointly at ranks 5
+and 6. Exact LABELLED support is not preserved; using it rejoins the actual row-labelled
+shifted-subgroup/Jacobi covariance, the BGK/Paley wall. This is a route no-go, not a sponsor-prime
+estimate and not prize closure.
+
+Formal payload: `Frontier/_G258QuotientAutomorphismPositivityNoGo.lean`; exact probe:
+`scripts/probes/g258_quotient_automorphism_positivity_nogo.py`; KB note:
+`docs/kb/deltastar-466-g258-quotient-automorphism-positivity-nogo-2026-07-13.md`.
