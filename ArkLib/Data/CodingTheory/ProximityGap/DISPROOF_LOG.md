@@ -52973,3 +52973,16 @@ identities plus axiom-clean calibrated two-rank consumers/no-gos. Probe
 `docs/kb/deltastar-466-g278-integer-lift-carry-nogo-2026-07-13.md`. This closes naive carry
 localization, not the prize. Surviving object remains the full row-labelled weighted kernel relation /
 signed sponsor covariance. CORE OPEN / ON-BGK.
+
+### [466-G284-antipode-free-separation-nogo] antipode-free does not imply a strict odd separator (2026-07-13)
+
+G280 correctly proves that the recorded sponsor-profile family is antipode-free, so the polarity
+involution does not algebraically forbid a sponsor-specific odd certificate. The stronger inference
+`C ∩ (-C) = ∅ => C` lies in a strict positive half-space is false. The exact set
+`C={(1,0),(0,1),(-1,-1)} ⊂ Q²` is antipode-free, but its three points sum to zero. Every linear
+functional therefore sums to zero on `C` and cannot be positive, let alone uniformly bounded below
+by `eta>0`, on all three points. Pairwise antipode exclusion is strictly weaker than the needed convex
+pointedness `0 ∉ conv(C)`. Formal payload `_G284AntipodeFreeSeparationNoGo.lean` proves the zero-sum
+obstruction abstractly and certifies the exact countermodel. This closes only the inference from
+antipode-freeness to separation; an independently specified arithmetic normal with a proved margin
+on the actual sponsor family remains possible. CORE OPEN / ON-BGK.

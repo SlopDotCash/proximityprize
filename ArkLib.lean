@@ -2297,6 +2297,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G278IntegerLiftCarryNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G280SponsorConeAntipodeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G281CarryShapeAmplificationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G282CarryFourierNormalNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G284AntipodeFreeSeparationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

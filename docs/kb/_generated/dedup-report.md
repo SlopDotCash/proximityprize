@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6151 files, 65849 declarations
+- `ArkLib` — 6152 files, 65861 declarations
 
 ## Same short-name across multiple files (2564 groups)
 
@@ -2611,6 +2611,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `structure Poseidon2.Params` [ArkLib/Data/Hash/Poseidon2.lean:412](../../../ArkLib/Data/Hash/Poseidon2.lean#L412) — The parameters determining a Poseidon2 permutation (over the KoalaBear field)
 - `structure StirIOP.Params` [ArkLib/ProofSystem/Stir/MainThm.lean:35](../../../ArkLib/ProofSystem/Stir/MainThm.lean#L35) — **Per‑round protocol parameters:** For a fixed depth `M`, the reduction runs `M + 1` rounds. In roun
 - `structure WhirIOP.Params` [ArkLib/ProofSystem/Whir/RBRSoundness.lean:54](../../../ArkLib/ProofSystem/Whir/RBRSoundness.lean#L54) — ** Per‑round protocol parameters. ** For a fixed depth `M`, the reduction runs `M + 1` rounds. In ro
+
+### `Point` (3 declarations, 3 files)
+
+- `abbrev Point` [ArkLib/Data/CodingTheory/ListDecoding/GuruswamiSudan/Basic.lean:14](../../../ArkLib/Data/CodingTheory/ListDecoding/GuruswamiSudan/Basic.lean#L14) — Represents an evaluation point (x, y)
+- `abbrev ArkLib.ProximityGap.Frontier.G284AntipodeFreeSeparationNoGo.Point` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G284AntipodeFreeSeparationNoGo.lean:66](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G284AntipodeFreeSeparationNoGo.lean#L66) — (no docstring)
+- `abbrev Rudnev.Point` [ArkLib/ToMathlib/Combinatorics/Additive/RudnevIncidence.lean:81](../../../ArkLib/ToMathlib/Combinatorics/Additive/RudnevIncidence.lean#L81) — A **point** of affine `3`-space is a triple of field elements.
 
 ### `PrizeFloor` (3 declarations, 3 files)
 
@@ -5977,11 +5983,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProximityGap.Frontier.G86RankCollapseDichotomy.Plantable` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G86RankCollapseDichotomy.lean#L98) — A planting configuration is *plantable* iff some **nonzero** syndrome vector is annihilated by every
 - `def ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.Plantable` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G87McaEventSyndromeBridge.lean#L111) — Restatement of `G86RankCollapseDichotomy.Plantable`: some **nonzero** syndrome vector is annihilated
-
-### `Point` (2 declarations, 2 files)
-
-- `abbrev Point` [ArkLib/Data/CodingTheory/ListDecoding/GuruswamiSudan/Basic.lean:14](../../../ArkLib/Data/CodingTheory/ListDecoding/GuruswamiSudan/Basic.lean#L14) — Represents an evaluation point (x, y)
-- `abbrev Rudnev.Point` [ArkLib/ToMathlib/Combinatorics/Additive/RudnevIncidence.lean:81](../../../ArkLib/ToMathlib/Combinatorics/Additive/RudnevIncidence.lean#L81) — A **point** of affine `3`-space is a triple of field elements.
 
 ### `Pr_badStack_eq_one` (2 declarations, 2 files)
 
