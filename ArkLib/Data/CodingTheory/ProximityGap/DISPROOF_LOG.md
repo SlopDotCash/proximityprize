@@ -52655,3 +52655,53 @@ rank five and rank six supplies no additional sign-forcing structure. CORE OPEN 
 Formal payload: `Frontier/_G263JointRankSignFreedom.lean`; probe:
 `scripts/probes/g263_joint_rank_sign_freedom_probe.py`; KB note:
 `docs/kb/deltastar-466-g263-joint-rank-sign-freedom-2026-07-13.md`.
+
+---
+
+### [466-G264-joint-gate-sign-freedom-general] the joint two-rank centered gate is sign-free at EVERY cell and rank pair with independent centered functionals: the G263 single-cell no-go is r-uniform, not a fixed-depth island (2026-07-13, #466 G264, direct Opus 4.8 formalizer)
+
+G263 certified joint-gate sign-freedom at one minimal cell (`m = 5`, four hand-picked
+nonnegative-integer kernels realizing all four `(sign Cov_5, sign Cov_6)` quadrants), with structural
+cause the linear independence of the two centered per-class functionals. Its general mechanism was
+asserted in prose but proved only by those witnesses at that single cell — a possible fixed-depth
+island.
+
+G264 closes that gap with a **general theorem**. For an arbitrary cyclic length `m`, arbitrary
+integer weight profiles whose centered functionals `f, g : Z/m -> Z` are zero-sum, and ANY coordinate
+pair `i != j` with nonzero minor `D = f i * g j - f j * g i`, the nonnegative-integer kernel cone
+realizes ALL FOUR open sign quadrants of `(<W,f>, <W,g>)`.
+
+**Closed-form Cramer witness.** For target sign pair `(s, t)` in `{+-1}^2`,
+
+```text
+a = s*g j - t*f j,  b = t*f i - s*g i,  W = c*1 + a*e_i + b*e_j   (c = max(0,-min(a,b,0)) >= 0)
+```
+
+Zero-sum `f, g` kill the constant offset, and Cramer gives EXACTLY `<W,f> = s*D`, `<W,g> = t*D`. So
+`sign <W,f> = s*sign D` and `sign <W,g> = t*sign D`; ranging `(s, t)` hits every quadrant regardless
+of `sign D`, with `W >= 0` entrywise. No `decide`, no fixed cell, no rank restriction.
+
+**Why r-uniform (not an island).** G64 forces the two centered sponsor rank functionals independent
+at prize depth `r = 5, 6`, so the hypothesis holds at the actual prize face: the joint gate carries
+no cross-rank sign-forcing leverage at any live depth. Combining the two ranks supplies zero
+structure over two independent single-rank gates.
+
+**What is proved (axiom-clean over Z, `[propext, Classical.choice, Quot.sound]`, no `sorry`, no
+`native_decide`):** `covPairing_add_const` (constant-offset invariance vs any zero-sum functional),
+`covPairing_indicator`, `covPairing_twoAtom`, `cramer_pairings` (the exact `(s*D, t*D)` identity),
+`joint_gate_sign_free_of_minor` (a nonnegative-integer kernel for every `(s, t)`),
+`joint_gate_all_quadrants` (all four open quadrants, sign normalized by `sign D`), plus
+`g263_functionals_zero_sum` and `g263_recovered_from_general` recovering the landed G263 minimal cell
+(`m = 5`, minor `15`) from the general theorem.
+
+**Numerical cross-check.** Self-contained probe: exact G263 cell reproduced from the general
+construction; 4968/4968 random `(m, rank-pair)` cells realize all four quadrants with exact Cramer
+identities; six `r=5/r=6` rank-weight cyclic-length surrogates all sign-free (depth-uniform).
+
+**Scope (honest).** Route no-go, r-uniform strengthening of G263, not a sponsor-prime estimate and
+not prize closure. The surviving admissible route is unchanged: a genuinely row-labelled sponsor
+Jacobi/cyclotomic covariance proved directly against the row label at EACH rank. CORE OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G264JointGateSignFreedomGeneral.lean`; probe:
+`scripts/probes/g264_joint_gate_sign_freedom_general_probe.py`; KB note:
+`docs/kb/deltastar-466-g264-joint-gate-sign-freedom-general-2026-07-13.md`.
