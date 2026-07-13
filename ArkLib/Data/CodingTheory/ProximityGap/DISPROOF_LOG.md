@@ -52500,3 +52500,55 @@ estimate and not prize closure.
 Formal payload: `Frontier/_G258QuotientAutomorphismPositivityNoGo.lean`; exact probe:
 `scripts/probes/g258_quotient_automorphism_positivity_nogo.py`; KB note:
 `docs/kb/deltastar-466-g258-quotient-automorphism-positivity-nogo-2026-07-13.md`.
+
+### [466-G261-wick-ceiling-exceeds-dc-floor] the Wick/Gaussian moment ceiling exceeds the DC/Parseval floor by the exact factor (2r-1)‼·q/n^r, which diverges super-exponentially at a thin 2-power subgroup (2026-07-13, #466 G261, direct Opus 4.8 formalizer)
+
+The census/moment route lives between two ceilings: the Wick/Gaussian main term `Wick_r = (2r−1)‼·n^r`
+(the natural upper bound a moment-method / Wick-pairing argument produces on `n` variables) and the
+DC/Parseval floor `DCfloor_r = n^{2r}/q` (the exact char-`p` moment the prize must lower-bound; the
+`b=0` DC mass the census reconstructs, cf. G63). The adversarial critic's fresh thin-prime family
+probe (`arklib-g56-frontier-resonant.json`, base-3 primitive census on `μ_n`, `n∈{8,16}`, thin regime
+`q=p`) exhibits the exact closed-form arithmetic law relating them:
+
+```text
+Wick_r / DCfloor_r = (2r−1)‼ · q / n^r
+```
+
+verified to 12 significant figures on all 30 probe rows and reproduced exactly by the self-contained
+integer probe `g261_wick_ceiling_exceeds_dc_floor_probe.py`.
+
+**Why new (not a G63/G65 wrapper).** G63 proves `q·census ≥ n^{2r}` — a *lower* bound pinning the
+census at/above the floor. G65 rules out any nonnegative depth-reweighting that yields a strict
+weighted sub-floor. G261 measures the orthogonal quantity: the *distance between the two ceilings the
+route sits between*, and proves it diverges. The `q/n^r` factor is exactly the thin-subgroup ratio;
+`(2r−1)‼` diverges super-exponentially at prize depth `r ≈ ln q`. So the Wick ceiling sits a factor
+`(2r−1)‼·q/n^r` **above** the DC floor it would need to certify — a moment-method argument that bounds
+the collision census by its own Gaussian/Wick ceiling is off from the target Parseval floor by a
+super-exponential factor. G63 pins the census *from below*; G261 pins the Wick ceiling *unboundedly
+above*: the moment route is squeezed out from both sides at the thin prime and cannot beat Parseval.
+
+**What is proved (axiom-clean over ℕ/ℝ, only Mathlib `Nat.doubleFactorial`):**
+- `wick_mul_pow_eq_doubleFactorial_mul_dcFloorNum`: division-free exact identity
+  `Wick_r · n^r = (2r−1)‼ · n^{2r}`.
+- `wick_dcFloor_ratio_eq`: exact real ratio `Wick_r / DCfloor_r = (2r−1)‼·q/n^r` (`0<n, 0<q`).
+- `wick_ge_dcFloor_mul_doubleFactorial`: thin regime `n^r ≤ q` ⇒ `Wick_r ≥ (2r−1)‼ · DCfloor_r`.
+- `wick_gt_dcFloor`: thin regime, `r ≥ 2` ⇒ `Wick_r > DCfloor_r` (strict overshoot; boundary
+  `r=1, q=n` gives equality, so `r ≥ 2` is the honest hypothesis).
+- `doubleFactorial_ratio_unbounded_step`: `(2(r+1)−1)‼ = (2r+1)·(2r−1)‼` (`r ≥ 1`) — the factor
+  multiplies by `≥ 3` each depth step, super-exponential divergence, not a fixed-depth island.
+- `not_wickCeiling_certifies_dcFloor`: packaged calibrated no-go.
+
+Axioms `[propext, Classical.choice, Quot.sound]` on all six; `doubleFactorial_ratio_unbounded_step`
+and the identity are even lighter (no `Classical.choice`). No `sorry`, no `native_decide`. Locked
+build 3298 jobs green.
+
+**Scope (honest).** Route-hygiene no-go, not a Jacobi estimate and not prize closure. It calibrates
+the exact, r-uniform, thinness-essential gap between the moment route's own Wick ceiling and the
+target Parseval floor. The surviving admissible route remains a genuinely joint, row-labelled
+sponsor-prime / Jacobi estimate proved directly against the row label — NOT through any
+moment/Wick/census ceiling, which G261 now shows is exponentially detached from the target at the
+thin prime. CORE remains OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G261WickCeilingExceedsDCFloor.lean`; probe:
+`scripts/probes/g261_wick_ceiling_exceeds_dc_floor_probe.py`; KB note:
+`docs/kb/deltastar-466-g261-wick-ceiling-exceeds-dc-floor-2026-07-13.md`.
