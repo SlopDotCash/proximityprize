@@ -2289,6 +2289,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G265CoordinateReparametri
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G266AdjacentRankQuadrantNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G267ThinnessSeparationCensus
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G269DCCoordinateSignDecoupling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G271OrbitConstantCenteredMass
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

@@ -52802,3 +52802,46 @@ row-labelled sponsor covariance. CORE OPEN / ON-BGK.
 Formal payload: `Frontier/_G265CoordinateReparametrizationNoGo.lean`; probe:
 `scripts/probes/g265_coordinate_reparametrization_nogo.py`; KB note:
 `docs/kb/deltastar-466-g265-coordinate-reparametrization-nogo-2026-07-13.md`.
+
+---
+
+### [466-G271-orbit-constant-centered-mass] the centered coordinate mass P(x) is constant on multiplicative quotient orbits; the coordinate description reduces exactly to m=(p-1)/n orbit masses (2026-07-13, direct Opus 4.8 formalizer)
+
+The G270 orbit-influence audit (Fable referee) discarded the G269 single-coordinate DC split for its
+correct invariant-theoretic resolution and flagged the `H_const` invariant as worth an axiom-clean
+Lean lemma. G271 supplies it.
+
+The weighted-relation profile `W_G` and every field-derived adjacent-rank row `R_r` are invariant
+under multiplication by the order-n 2-power subgroup `G ≤ F_p^*`: `W_G(g·x)=W_G(x)`, `R_r(g·x)=R_r(x)`
+for `g ∈ G`. Hence the exact per-coordinate centered mass
+
+```text
+SW = Σ W_G,  SR = Σ R_r,   P(x) = (p·W_G(x) − SW)(p·R_r(x) − SR)
+```
+
+is constant on every G-coset of F_p^*, and the covariance splits into `m=(p−1)/n` distinct orbit
+masses rather than `p−1` free coordinates:
+
+```text
+Σ_x P(x) = p·A_r,     p·A_r = P(0) + Σ_{j∈Z_m} Q(j),   Q(j) = n·P(g^j).
+```
+
+Lean payload proves, axiom-clean, the sum identity `Σ_x P = N·(N·Σ W·R − SW·SR)` (= p·A_r), the
+pointwise unit-relabel transport of P, invariance of P under G-invariant profiles, orbit constancy
+`P(u·x)=P(x)`, and relabel-invariance of the total. Built on the G265/G258 unit-relabel machinery, so
+the bookkeeping follows almost for free as G270 anticipated. Exact self-contained probe verifies
+orbit constancy, the sum identity, and the orbit decomposition on 30 real char-p cells with a
+non-degenerate (16-distinct-mass) witness.
+
+**Scope.** Structure lemma, not a sponsor estimate and not prize closure. It certifies that the
+coordinate description reduces exactly to the orbit description with no further sign structure gained.
+The G270 census already showed the strong negative: no coarse orbit family is even sign-correlated
+with the covariance, and family masses exceed the target by 10^4–10^5 and cancel. Any fixed-family
+lower bound at its complementary threshold is target-equivalent (`⇔ A_r > 0`). The minimal surviving
+object is the full character-weighted quotient covariance `Σ_{χ≠1} Ŵ(χ) conj(R̂_r(χ))`; the surviving
+admissible route is the direct row-labelled sponsor Jacobi/cyclotomic covariance proved directly
+against the row label at each rank. CORE OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G271OrbitConstantCenteredMass.lean`; probe:
+`scripts/probes/g271_orbit_constant_centered_mass.py`; KB note:
+`docs/kb/deltastar-466-g271-orbit-constant-centered-mass-2026-07-13.md`.
