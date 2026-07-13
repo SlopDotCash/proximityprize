@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 439,
+    "files_with_citations": 449,
     "keys_cited": 35,
-    "total_citation_edges": 499
+    "total_citation_edges": 509
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -407,6 +407,12 @@
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2ExplainingCurveList.lean": [
       "Jo26"
     ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2StackAgreementWeld.lean": [
+      "Jo26"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2StructuredCloseSetBudget.lean": [
+      "Jo26"
+    ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CollisionExcessPartition.lean": [
       "BCHKS25"
     ],
@@ -415,6 +421,30 @@
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean": [
       "Jo26"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ10BCIKS57Chunk1.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ11BCIKS57Chunk3.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ13BCIKS57Chunk4.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ14BCIKS57Chunk2.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ15TLoadedInterfaceRepair.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ16Claim58Truncation.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ8CellPackageSupply.lean": [
+      "BCIKS20"
     ],
     "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf2NG_partition_rank_vacuous.lean": [
       "BCHKS25"
@@ -1555,6 +1585,14 @@
       "ArkLib/Data/CodingTheory/ProximityGap/DeepQuotientTransfer.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Errors.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ10BCIKS57Chunk1.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ11BCIKS57Chunk3.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ13BCIKS57Chunk4.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ14BCIKS57Chunk2.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ15TLoadedInterfaceRepair.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ16Claim58Truncation.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ8CellPackageSupply.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25CellDichotomyWiring.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25CoordinateUpgradeWeld.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25Core.lean",
@@ -1821,6 +1859,8 @@
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_B2Curve.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2ExplainingCurveList.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2StackAgreementWeld.lean",
+      "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B2StructuredCloseSetBudget.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/GG25CurveDecodability.lean",
