@@ -52283,3 +52283,49 @@ Scope: keystone correctness closure, not prize closure. It closes the large-siev
 Mathlib/ArkLib Fourier primitives up. It supplies no signed sponsor-prime phase estimate, so the sole
 live prize face remains the rank-5/rank-6 signed covariance via genuinely new Archimedean phase input.
 CORE OPEN / ON-BGK.
+
+### [466-G252-joint-phase-row-freedom] global phase discrepancy does not pin the fixed-row weighted covariance — the joint-phase-lock repair to G251 is refuted (2026-07-12)
+
+Lane: direct Opus 4.8 CORE. Branch `research/proximity-prize`; `main` untouched (#499).
+
+G251 closed the aggregate Cartesian discrepancy route and named the sole surviving prize face as a
+theorem on **joint phase-row placement**:
+`Re Σ_{χ≠1} What(χ) conj(Rhat_r(χ)) > threshold` at `r=5,6`. The natural repair hopes the joint law
+of `(arg What(χ), arg Rhat_r(χ))` is rigid — that the phases co-rotate so no
+global-discrepancy-admissible rearrangement can break the covariance. G252 refutes that hope.
+
+Probes `scripts/probes/g252_joint_phase_lock_probe.py`, `scripts/probes/g252_signed_incidence_lock.py`,
+and the decisive `scripts/probes/g252_balanced_split_probe.py` sweep exact sponsor-type cells with the
+G245 signed incidence normal form (shift-2 additive incidence, DC-subtracted, with a
+cosine/Krawtchouk-style **surrogate** for the rank-parity sign — the result is structural, not a
+covariance estimate). Two facts hold, sharpening as `m → ∞` (even-N cells, where a strictly balanced
+`Σ s = 0` vector exists):
+
+```text
+n=16 p=1009 r=5 m=63   N=62   lock=0.1349  bal_frac=-0.5798 bal_zero=True
+n=8  p=3001 r=5 m=375  N=374  lock~0.003   bal_frac=-0.6457 bal_zero=True
+n=8  p=8009 r=5 m=1001 N=1000 lock=0.0002  bal_frac=-0.6559 bal_zero=True
+```
+
+(1) the magnitude-weighted phase-lock strength `|Σ|W||R|e^{i(argW-argR)}|/Σ|W||R|` collapses toward
+`0` (`0.36` at `m=63` down to `0.0002` at `m=1001`): `arg What` and `arg Rhat_r` **decorrelate**; and
+(2) the *exact minimum* real covariance over **balanced** (histogram-preserving, `Σ s = 0`) sign
+vectors — the only move a global discrepancy budget permits — is a large negative fraction of the
+triangle bound (`bal_frac ≈ -0.57 to -0.71`, bounded away from 0 in `m`). (An earlier `zeros` metric in
+the first two probes searched over unbalanced flips too and was tautological per codex review; the
+balanced-split probe is the corrected, non-tautological test.)
+
+Formal payload: `Frontier/_G252JointPhaseRowFreedom.lean`. A "global phase discrepancy budget" is at
+its strongest control of the phase histogram; the sharpest such control is a balanced sign vector
+(`Σ balancedSign k = 0`). For the extremal decorrelated weight `rowWeight k = 1` on `2k` cells:
+`alignedCov k = 2k > 0` (`alignedCov_pos`), yet `splitCov k = 0` (`splitCov_eq_zero`) under the
+balanced histogram-preserving vector, so `pinning_defect_eq_full`: `alignedCov k - splitCov k = 2k`.
+Histogram-level global phase control loses the entire fixed-row signal. Axioms: all arithmetic
+declarations `[propext, Classical.choice, Quot.sound]`; `not_prizeClosure` no axioms; no `sorryAx`.
+
+Scope: structural route no-go, not a Jacobi estimate and not a prize closure. It closes the
+joint-phase-lock repair G251 left open: the joint law provides no placement rigidity, so no fixed-row
+weighted covariance bound can be produced from any global phase-discrepancy input. The only admissible
+route to the `r=5,6` signed covariance is a genuinely joint phase-row placement theorem that does NOT
+factor through a phase-histogram budget — a per-row weighted shifted-subgroup/Jacobi bound proved
+directly against the row label. CORE remains OPEN / ON-BGK.
