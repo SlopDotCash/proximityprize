@@ -52377,3 +52377,34 @@ joint phase-row placement theorem proved directly against the row label. CORE re
 All declarations axiom-clean (`propext, Classical.choice, Quot.sound`); `not_prizeClosure` axiom-free;
 locked build 3297 jobs green. Formal payload: `Frontier/_G253AntisortedSignReversal.lean`. Consumes
 nothing beyond Mathlib BigOperators/Intervals; complementary sharpening of G252.
+
+### [466-G254-conjugate-paired-phase-freedom] inverse-character conjugation symmetry does not repair the global phase-histogram route: a pair-preserving balanced move still reverses the covariance, `pairedSplitCov = -2k²` (2026-07-12, #466 G254, direct GPT-5.6 Sol CORE)
+
+G252/G253 show that global Jacobi phase-histogram control cannot lower-bound the fixed-row weighted
+covariance. G253's sorted-cell model omitted one mandatory invariant of the actual quotient DFT:
+real physical profiles satisfy `hat f(χ⁻¹)=conj(hat f(χ))`, so an honest reassignment must preserve
+inverse-character pairs. G254 audits exactly that possible repair.
+
+The formal model has `2k` inverse-character pairs, each with two conjugate members carrying the same
+real rank weight and sign. Assign `+1` to the `k` low-weight pairs and `-1` to the `k` high-weight
+pairs. The full `4k`-row histogram remains exactly balanced (`pairedSign_histogram`), the aligned
+covariance is positive, and
+
+```text
+pairedSplitCov a k = 2 * splitCov a k = -2*k^2 < 0.
+```
+
+Thus conjugation symmetry doubles G253's reversal rather than obstructing it. The companion exact
+probe computes the actual `W_G,R_5,R_6` quotient profiles, verifies conjugacy and quotient Parseval,
+and restricts signs to inverse-character pairs. Every proper-subgroup cell reverses:
+`pairedFrac=-0.8435..-0.9644` across `(n,p,m)=(8,1801,225),(16,1297,81),(32,3617,113)` and both
+`r=5,6`; conjugacy/Parseval errors are below `6e-13`/`8e-14`.
+
+Scope: route no-go, not a Jacobi estimate and not prize closure. Global phase-histogram information
+remains insufficient even after adding the exact conjugation symmetry forced by the real profiles.
+The surviving input must control actual joint phase-row placement directly at the sponsor prime and
+both ranks. FS15-FS18 do not select that prime or reach logarithmic depth. CORE OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G254ConjugatePairedPhaseFreedom.lean`; probe:
+`scripts/probes/g254_conjugate_paired_reversal_probe.py`; KB note:
+`docs/kb/deltastar-466-g254-conjugate-paired-phase-freedom-2026-07-12.md`.
