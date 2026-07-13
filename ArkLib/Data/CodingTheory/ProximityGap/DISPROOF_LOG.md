@@ -52595,3 +52595,63 @@ covariance at both ranks.
 Formal payload: `Frontier/_G262SponsorRankCrossover.lean`; probe:
 `scripts/probes/g262_sponsor_rank_crossover_probe.py`; KB note:
 `docs/kb/deltastar-466-g262-sponsor-rank-crossover-2026-07-13.md`.
+
+---
+
+### [466-G263-joint-rank-sign-freedom] the joint two-rank centered covariance gate is sign-free: one nonnegative-integer weighted kernel independently realizes all four (sign Cov_5, sign Cov_6) quadrants, so combining ranks five and six gives no cross-rank coupling leverage (2026-07-13, #466 G263, direct Opus 4.8 CORE)
+
+After G252-G262 the single surviving CORE face is the DC-subtracted (centered) row-labelled
+covariance gate, required by G214/G225 to hold INDEPENDENTLY at rank five and rank six. For a
+weighted kernel `W` and rank weight `R_r` on `Z/m`,
+
+```text
+Cov_r(W) = m sum_x W[x] R_r[x] - (sum_x W[x])(sum_x R_r[x])
+         = Re sum_{chi != 1} What(chi) conj(Rhat_r(chi)) = <W, f_r>,
+```
+
+with the centered per-class functional `f_r[x] = m R_r[x] - sum_y R_r[y]`, `sum_x f_r[x] = 0`.
+
+The open hope after G262 + the Fable referee was that the JOINT constraint (one `W` at both ranks)
+could over-constrain the adversary and hand a sign/positivity/norm certificate the leverage it
+provably lacks at a single rank (G205 single-depth; G253/G258 single-rank centering). G263 closes
+it: `W |-> (Cov_5 W, Cov_6 W)` is `Z`-linear, and when `f5, f6` are rank-two independent the
+nonnegative-integer kernel cone maps ONTO all four open sign quadrants. The joint gate is exactly
+as unforced as two independent single-rank gates.
+
+**Exact minimal cell (`m=5`).** `R5=(0,1,0,1,2)`, `R6=(1,0,2,0,1)`; centered functionals
+`f5=(-4,1,-4,1,6)`, `f6=(1,-4,6,-4,1)`, both zero-sum, with nonzero `2x2` minor
+`f5_0 f6_1 - f5_1 f6_0 = 15` (rank two, and independent of the principal 1-mode). Four
+nonnegative-integer kernels, three of them single-class indicators, realize every sign pair:
+
+```text
+W++ = e_4        -> cov5 = +6, cov6 = +1
+W+- = e_3        -> cov5 = +1, cov6 = -4
+W-+ = e_2        -> cov5 = -4, cov6 = +6
+W-- = e_0 + e_3  -> cov5 = -3, cov6 = -3.
+```
+
+All entries in `{0,1}`. A bounded-support (`support <= 4`) stress at `m in {16,17}` still realizes
+all four quadrants: sparsity does not restore forcing.
+
+**Why new (not a G253/G258/G262 wrapper).** G205 is single-depth; G253-G258 are single-rank
+centering/positivity/support no-gos; none fences the JOINT gate. G262 (with Fable) is a total-mass
+no-go (super-Wick mass annihilated by centering). G263 is orthogonal and structural: the *centered*
+JOINT gate is sign-free because the two centered functionals are independent, so their joint image
+is the whole plane. The binding invariant — rank-two independence of the two centered per-class
+functionals — is genuinely new.
+
+**What is proved (axiom-clean over Z, `[propext, Classical.choice, Quot.sound]`, no `sorry`, no
+`native_decide`):** `centeredCov_eq_dot` (covariance = pairing with centered functional),
+`sum_centeredFunctional_eq_zero` (centering), `centeredCov_add_const` (constant-offset invariance:
+total mass carries zero gate information), the two centered functional vectors,
+`centeredFunctionals_independent` (`minor = 15`), `centeredFunctionals_lin_indep`, the four
+witnesses, `kernels_nonneg`, and the packaged `joint_rank_sign_freedom`.
+
+**Scope (honest).** Route no-go on the joint two-rank gate, not a sponsor-prime estimate and not
+prize closure. The surviving admissible route remains a genuinely row-labelled sponsor
+Jacobi/cyclotomic covariance estimate proved directly against the row label at EACH rank; combining
+rank five and rank six supplies no additional sign-forcing structure. CORE OPEN / ON-BGK.
+
+Formal payload: `Frontier/_G263JointRankSignFreedom.lean`; probe:
+`scripts/probes/g263_joint_rank_sign_freedom_probe.py`; KB note:
+`docs/kb/deltastar-466-g263-joint-rank-sign-freedom-2026-07-13.md`.
