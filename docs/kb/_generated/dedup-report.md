@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6150 files, 65834 declarations
+- `ArkLib` — 6151 files, 65849 declarations
 
-## Same short-name across multiple files (2563 groups)
+## Same short-name across multiple files (2564 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -2497,6 +2497,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.WindowTwoLayer.Balanced` [ArkLib/Data/CodingTheory/ProximityGap/BalancedFourLaw.lean:73](../../../ArkLib/Data/CodingTheory/ProximityGap/BalancedFourLaw.lean#L73) — A multiset is `h`-balanced when every fiber is matched by its `+h` translate.
 - `def ArkLib.ProximityGap.CollinearityMatchingFrame.Balanced` [ArkLib/Data/CodingTheory/ProximityGap/CollinearityMatchingFrame.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/CollinearityMatchingFrame.lean#L78) — Antipodal balance of an exponent family: every residue fiber `t < 2^(m−1)` is matched exactly by its
 - `def WitnessLayer.Balanced` [ArkLib/Data/CodingTheory/ProximityGap/WitnessLayerCount.lean:62](../../../ArkLib/Data/CodingTheory/ProximityGap/WitnessLayerCount.lean#L62) — Antipodal balance of the layer multiset at half-period `h`: the multiplicity at `e` equals the multi
+
+### `Cell` (3 declarations, 3 files)
+
+- `structure ArkLib.ProximityGap.G207.Cell` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G207WeightedKernelMagnitudeNoGo.lean:73](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G207WeightedKernelMagnitudeNoGo.lean#L73) — A recorded weighted-kernel cell at a fixed depth `r`: the field size `q`, the injectivity flag of `φ
+- `structure ArkLib.ProximityGap.Frontier.G267.Cell` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G267ThinnessSeparationCensus.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G267ThinnessSeparationCensus.lean#L68) — One `n = 8` census cell: the prime `p`, and the exact adjacent-rank covariance signs recorded as boo
+- `structure ArkLib.ProximityGap.Frontier.G282CarryFourierNormalNoGo.Cell` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G282CarryFourierNormalNoGo.lean:173](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G282CarryFourierNormalNoGo.lean#L173) — One exact weighted-kernel carry-Fourier cell.
 
 ### `CleanRegime` (3 declarations, 3 files)
 
@@ -5430,11 +5436,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProximityGap.Frontier.A1SOSLadderN16.Ceil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean:144](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean#L144) — The prize ceiling `(q−1)·Wick_r`.
 - `def ArkLib.ProximityGap.Frontier.Wall6.Ceil` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean:123](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean#L123) — The prize ceiling `Ceil_K = (q−1)·(2K−1)‼·n^K`.
-
-### `Cell` (2 declarations, 2 files)
-
-- `structure ArkLib.ProximityGap.G207.Cell` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G207WeightedKernelMagnitudeNoGo.lean:73](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G207WeightedKernelMagnitudeNoGo.lean#L73) — A recorded weighted-kernel cell at a fixed depth `r`: the field size `q`, the injectivity flag of `φ
-- `structure ArkLib.ProximityGap.Frontier.G267.Cell` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G267ThinnessSeparationCensus.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G267ThinnessSeparationCensus.lean#L68) — One `n = 8` census cell: the prime `p`, and the exact adjacent-rank covariance signs recorded as boo
 
 ### `ChallengeIdx` (2 declarations, 2 files)
 
@@ -9783,6 +9784,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapePrimeP30.lean:306](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapePrimeP30.lean#L306) — The explicit element `g` has exact smooth order `2^30`.
 - `theorem ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapePrimeP30Second.lean:314](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PrizeShapePrimeP30Second.lean#L314) — The explicit element `g` has exact smooth order `2^30`.
+
+### `p433r5` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G278IntegerLiftCarryNoGo.p433r5` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G278IntegerLiftCarryNoGo.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G278IntegerLiftCarryNoGo.lean#L138) — Exact positive rank-five cell `(n,p,r)=(16,433,5)`.
+- `def ArkLib.ProximityGap.Frontier.G282CarryFourierNormalNoGo.p433r5` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G282CarryFourierNormalNoGo.lean:190](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G282CarryFourierNormalNoGo.lean#L190) — `(16,433,5)`: positive gate and positive parity-carry normal.
 
 ### `p6_deg` (2 declarations, 2 files)
 
