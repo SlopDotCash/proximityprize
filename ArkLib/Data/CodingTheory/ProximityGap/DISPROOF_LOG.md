@@ -6,6 +6,24 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G266-adjacent-rank-quadrant-nogo] The adjacent-rank CORE covariance realises ALL FOUR sign quadrants including the rare (-,+): no cross-rank sign lock and no adjacent-rank forced sign; the thinness-positivity bias is CORROBORATED and left OPEN (2026-07-13, #466 G266, direct Opus 4.8 CORE)
+
+G220 closed the physical-space route for the **single-subset-sum** row `R_r(x)=#{A⊆G:|A|=r, ΣA=x}` (sign unforced across cells, dominant diagonal flips). The actual current frontier object (G228–G265) is the **adjacent-rank correlation** `R_r=dp_r ⋆ dp_{r-1}` = `#{(A,B):A⊆G,|A|=r, B⊆G,|B|=r-1, (ΣA)−(ΣB)=x}`, with physical covariance `A_r(n,p)=p·Σ_x W_G(x)R_r(x)−(Σ W_G)(Σ R_r)`, `W_G(x)=#{(y,z)∈G²:2y−z=x}`, `G` the order-`n` 2-power subgroup of `𝔽_p^*`. Three physical-route repairs survived G220 for this object: a cross-rank sign lock (`A₆>0 ⟹ A₅>0`, transporting a rank-6 bound to rank 5), an adjacent-rank forced sign, and a thinness-forced sign (the sign collapsing to `(+)` as `τ=(p−1)/n²→∞`, the adversarial regime).
+
+The first two are false; the thinness one is NOT (honest correction). Exact float-free census over genuine cells `n∈{8,16,32}`, `p` prime with `n|(p−1)`, realises all four joint quadrants of `(sign A₅, sign A₆)` — `{++:38, +−:4, −+:1, −−:24}` over 67 cells — **including the rare `(−,+)`**. Decisive integer witnesses (`decide`-checked, recomputed pure-int by the probe):
+
+```text
+(n,p)=(8, 89):    A₅ = −256,     A₆ = +40      → (−,+)   τ ≈ 1.4
+(n,p)=(8, 113):   A₅ = −13128,   A₆ = −7240    → (−,−)   τ ≈ 1.8
+(n,p)=(8, 2969):  A₅ = +4357008, A₆ = +1894816 → (+,+)   τ = 46.4 (very thin)
+```
+
+The `(8,89)` cell has `A₅<0<A₆`, refuting the cross-rank sign lock (`A₆>0 ⟹ A₅>0` false). Each rank is negative on `(8,113)` and positive on `(8,2969)`, refuting an adjacent-rank forced sign at both ranks. **The thinness repair is NOT refuted and is corroborated:** for `n=8` every genuine negative cell has `τ≤1.8`, while all scanned cells with `τ>1.8` up to `τ=56.5` are `(+,+)`. An earlier draft's `no_thinness_forced_sign` theorem was WRONG (the negative witness was thick, not thin) and has been removed; the `(+,+)`-with-thinness bias is a probe statistic left OPEN as a candidate one-sided handle, not a theorem.
+
+Formal payload: `Frontier/_G266AdjacentRankQuadrantNoGo.lean`. Witnesses `wMinusPlus=(8,89)`, `wMinusMinus=(8,113)`, `wThinPlusPlus=(8,2969)`; theorems `wMinusPlus_A5_neg`, `wMinusPlus_A6_pos`, `wMinusMinus_A5_neg`, `wMinusMinus_A6_neg`, `wThinPlusPlus_A5_pos`, `wThinPlusPlus_A6_pos`, `no_cross_rank_sign_lock`, `adjacent_rank_sign_not_forced`. All `by decide`; every theorem depends on ZERO axioms, no `sorryAx`, no `native_decide`. No thinness theorem is claimed. Probe `scripts/probes/g266_adjacent_rank_quadrant_nogo.py` (pure int) recomputes the three witnesses float-free, asserts all four quadrant keys nonzero, and records the thinness bias; PASS. KB: `docs/kb/deltastar-466-g266-adjacent-rank-quadrant-nogo-2026-07-13.md`.
+
+Non-overlap with G220: G220 used the single-subset-sum row and did not certify the adjacent-rank correlation object nor exclude a cross-rank lock specific to it. Non-overlap with G263/G264 (joint-gate sign-freedom in the relaxed nonnegative cone): G266 is about the FIXED field-derived profiles at genuine sponsor cells, not free kernels in a cone. Scope: computation of record is the float-free probe (G214/G217/G220 convention); the Lean file certifies the recorded constants' signs, not an in-Lean subset-sum re-derivation; the census fractions and thinness bias are statistics of record. Does not bound `A₅`/`A₆` at production primes. The surviving object is the direct row-labelled sponsor covariance uniform in the fixed quotient character. CORE remains OPEN / ON-BGK.
+
 ## [466-G260-origin-anchor-gauge-nogo] The quotient origin is a gauge: no `W`-intrinsic origin anchor pins the simultaneous rank-5/rank-6 covariance sign (2026-07-13, #466 G260, direct Opus CORE)
 
 G258 closed the complete-Fourier-multiset + positivity + support repair; G259 (Fable) closed the full-bispectrum / translation-invariant-moment repair because the target covariance is not translation invariant while those moments are. The single named open repair was a `W`-intrinsic, sponsor-uniform *origin anchor* that recovers the absolute quotient origin from `W` alone, independent of the rank rows `R_r`.
