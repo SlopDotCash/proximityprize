@@ -52845,3 +52845,57 @@ against the row label at each rank. CORE OPEN / ON-BGK.
 Formal payload: `Frontier/_G271OrbitConstantCenteredMass.lean`; probe:
 `scripts/probes/g271_orbit_constant_centered_mass.py`; KB note:
 `docs/kb/deltastar-466-g271-orbit-constant-centered-mass-2026-07-13.md`.
+
+---
+
+## [466-G272-single-character-dominance-nogo] 2026-07-13
+
+**Claim tested (Fable G270 rank-1 + G271 formalizer handoff).** With the centered coordinate mass
+constant on multiplicative `G`-cosets (G271), the sponsor gate factors through the cyclic quotient
+`Z_m`, `m=(p−1)/n`, as a Plancherel character sum
+`p·A_r = P(0) + Σ_{χ≠1} Ŵ(χ) conj(R̂_r(χ))`. The rank-1 open question: does the **single order-2**
+(quadratic / Legendre-type) character term `Ŵ(χ₂) conj(R̂_r(χ₂))` track `sign(A_r)` where the coarse
+even/odd families fail? If yes, the target factors through one Jacobi covariance (classically
+estimable); if no, the frontier is irreducibly multi-character.
+
+**Model (canonical CORE, identical to G269/G271):** `W_G(x)=#{(y,z)∈G²:2y−z=x}`,
+`R_r=dp_r⋆dp_{r-1}`, `A_r=p·Σ W_G R_r − SW·SR`, `SW=n²`, `SR=C(n,r)C(n,r-1)`.
+
+**Correct object (fixes a subtle bug):** the single order-2 term in the Plancherel decomposition is
+`Ŵ(χ₂)·conj(R̂_r(χ₂))`, the product of the SEPARATE transforms of the G-invariant profiles `W,R`
+restricted to `Z_m`, NOT the order-2 Fourier coefficient of the pointwise product `P=W·R` (which
+convolves every pair `χ·χ'=χ₂`). Since `χ₂(j)=(−1)^j` is real, `wchi2=Ŵ(χ₂)=Σ_j w(j)(−1)^j` and
+`rchi2=R̂(χ₂)=Σ_j r(j)(−1)^j` are exact integers and the term's sign is `sign(wchi2·rchi2)`.
+
+**Result: DEAD (single-character dominance refuted).** Exact integer census (`n=16, r=5`, every
+even-`m` prime `p<2600`, 22 non-degenerate cells) computes the correct term `wchi2·rchi2`. Orbit
+reconstruction `p·A = P(0) + n·Σ_j w(j)r(j)` holds exactly in 22/22 cells. But `sign(wchi2·rchi2) =
+sign(A)` in only **7/22** cells (below chance), realizing **all four sign combinations** of
+`(sign A, sign term)`:
+
+```text
+p=929:  A = +136655344 > 0   wchi2=3716   rchi2=-7746931   term = -28787595596 < 0   (+, -)
+p=97:   A = -6285008 < 0     wchi2=194    rchi2=244828     term = +47496632 > 0     (-, +)
+p=257:  A = -1051408 < 0     wchi2=-257   rchi2=650210     term = -167103970 < 0    (-, -)
+p=641:  A = +28460944 > 0    wchi2=1282   rchi2=2709507    term = +3473587974 > 0   (+, +)
+```
+
+Many cells even have `term=0` (the χ₂ factor vanishes). So the single order-2 Plancherel term carries
+no reliable sign information. The coarse even-family (of the product) is separately **target-consuming**
+(its complementary-threshold lower bound is algebraically `⇔ A_r>0`, formalized as
+`evenFamily_consumes_gate`), hence not a weaker route either.
+
+**Formal kernel:** `Frontier/_G272SingleCharacterDominanceNoGo.lean` — `charTwo`, `charTwoTerm`
+(`= charTwo w * charTwo r`, the correct product-of-transforms object), `charTwoTerm_neg_iff_opposite_sign`,
+`family_split`, `charTwo_eq_even_sub_odd`, `evenFamily_consumes_gate` (target-consuming equivalence),
+`term_sign_decouples_pos`/`_neg` + `term_sign_agrees_neg`/`_pos` (all four sign combinations,
+`decide`, axiom-free), `not_term_certifies_gate_sign`,
+`no_fixed_order2_sign_law_either_polarity` (no fixed sign law of EITHER polarity).
+**Executable certificate:** `scripts/probes/g272_single_character_dominance_probe.py`.
+
+**Scope.** Single-character no-go, not a sponsor estimate and not prize closure. Positively confirms
+the minimal surviving object is the **full character-weighted quotient covariance**
+`Σ_{χ≠1} Ŵ(χ) conj(R̂_r(χ))` — the sign lives in fine multi-character inter-orbit interference
+(square-root-cancellation scale), not in any one character. Surviving admissible route unchanged:
+direct row-labelled sponsor Jacobi/cyclotomic covariance proved against the row label at each rank.
+CORE remains OPEN / ON-BGK.
