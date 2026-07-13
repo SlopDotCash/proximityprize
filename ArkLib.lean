@@ -2280,6 +2280,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G253AntisortedSignReversa
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G254ConjugatePairedPhaseFreedom
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G255SignImbalancePhaseDecoupling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G258QuotientAutomorphismPositivityNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G260OriginAnchorGaugeNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
