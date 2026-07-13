@@ -53025,3 +53025,33 @@ odd-annihilation, even-nonzero pairing, zero out of hull) all hard `SystemExit(1
 the odd-LINEAR separator route; it does NOT bound the covariance and does not exclude a non-linear
 odd certificate. Surviving object unchanged: the full row-labelled signed sponsor covariance, now
 pinned as requiring a strictly non-linear odd mechanism. CORE OPEN / ON-BGK.
+## [466-G285-kernel-domain-character-nogo] canonical low-order input-character normals are row-labelled but sign-unreliable; Jacobi expansion fans out at full sponsor mass (2026-07-13)
+
+After G282 closed carry-histogram Ramanujan normals and G284 showed antipode-freeness does not supply
+a separator, the direct weighted-kernel input still offered a genuinely different odd normal. From
+`2y-z=y(2-u)` one has exactly `W_G=sum_{u in G} 1_{(2-u)G}`. Setting
+`H_j=sum_{t in (2-zeta^j)G}R_r(t)`, the CORE gate is
+`A_r=p*sum_j H_j-n^2*sum R_r`; the unique real order-two and real order-four input-character normals
+are `K_2=p*sum(-1)^j H_j` and `K_4=p*sum cos(pi*j/2)H_j`. These are row-labelled before the
+nonlinear kernel map and therefore survive the objections to carry-only weights.
+
+Exact subgroup cells kill both sign transfers: `(16,97,5)` has
+`(A,K_2,K_4)=(-6285008,+6125744,+6675152)`, while `(16,113,5)` has
+`(+1727120,-309168,-341712)`. Across 96 exact rank-cells, K2 agrees only 55/96 and realizes all four
+sign quadrants; K4 agrees 52/94 nonzero cells and has both mismatch polarities. At the
+injective-kernel cell `p=2593`, both normals stay positive while CORE changes from
+`A5=+24201296` to `A6=-13779712`, so they do not repair adjacent-rank simultaneity.
+
+The asymptotic obstruction is the G228/G233 fanout seen from a twisted character coset. Extending an
+input character `theta` to `Theta` on `F_p^*` and inserting the quotient-character projector writes
+`sum_{u in G}theta(u)conj(chi)(2-u)` as a full average of `m=(p-1)/n` Jacobi sums
+`J(Theta*lambda,conj(chi))`. Weil fixes each nonexceptional magnitude at `sqrt(p)` but gives no sign
+or comparison with the untwisted CORE coset. G233 independently proves that the actual untwisted
+factor needs `2^96`/`2^97` unit-weight mass for half recovery. The twist does not compress that
+factor; transferring its sign would require a new full-family cross-coset phase correlation. Thus low
+input conductor does not mean low Jacobi complexity and changes no binding inequality. Closed:
+canonical order-2/order-4 kernel-input normals. Survives: the full row-labelled sponsor phase
+correlation, still CORE OPEN / ON-BGK. Artifacts:
+`Frontier/_G285KernelDomainCharacterNoGo.lean`,
+`scripts/probes/g285_kernel_domain_character_probe.py`, and
+`docs/kb/deltastar-466-g285-kernel-domain-character-nogo-2026-07-13.md`.
