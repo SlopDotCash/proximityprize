@@ -52329,3 +52329,51 @@ weighted covariance bound can be produced from any global phase-discrepancy inpu
 route to the `r=5,6` signed covariance is a genuinely joint phase-row placement theorem that does NOT
 factor through a phase-histogram budget — a per-row weighted shifted-subgroup/Jacobi bound proved
 directly against the row label. CORE remains OPEN / ON-BGK.
+
+### [466-G253-antisorted-sign-reversal] the balanced histogram-preserving move does not merely annihilate the fixed-row weighted covariance — against a spread-carrying rank weight it REVERSES it, `splitCov = -k^2 < 0` (2026-07-12, #466 G253, direct Opus formalizer)
+
+G252 (`_G252JointPhaseRowFreedom.lean`) proved that on the *uniform* (all-ones) fixed-row weight the
+sharpest global-discrepancy-admissible move — a balanced histogram-preserving sign vector — drops the
+aligned covariance from `2k > 0` to exactly `0`. That refuted the "global phase discrepancy pins the
+fixed-row covariance" rigidity, but only at the annihilation level, and only for a weight with no
+spread. The actual CORE object `conj(Rhat_r(chi))` is a **nonuniform rank-`r` observable** that varies
+across the quotient cells. The Opus-core G252 probes measured, on exact sponsor-type cells with the
+true signed incidence weight, that the worst-case balanced split does not stop at `0`: it drives the
+real covariance **strictly negative**, `bal_frac ≈ -0.57 … -0.71`, bounded away from `0` uniformly in
+`m` (`n=16 p=1009 r=5 m=63 → -0.5798`, `n=8 p=8009 r=5 m=1001 → -0.6559`). G252's uniform weight is
+structurally blind to this (`splitCov ≡ 0` there).
+
+**This lane.** Model the rank observable as the extremal strictly-increasing integer weight
+`rankWeight a k i = a + i` on `2k` sorted cells (`a` = DC pedestal, `i` = rank-sorted spread). The
+worst-case balanced move is the **antisorted** sign `antiSign k = +1` on the low half, `-1` on the
+high half (`antiSign_histogram`: sums to `0`, so it is a legitimate global-discrepancy-preserving
+rearrangement). Proved in `ℤ`, in closed form:
+
+- `splitCov_eq_neg_sq`: `splitCov a k = -k^2` — the antisorted balanced covariance is exactly the
+  negative squared spread, **independent of the DC pedestal `a`** (the pedestal and the linear ramp
+  cancel between the two `range k` half-sums by the balanced histogram).
+- `splitCov_neg`: `splitCov a k < 0` for `k ≥ 1` — the sign reversal G252 could not see, matching the
+  measured `bal_frac < 0`.
+- `alignedCov_pos`: `alignedCov a k > 0` for `k ≥ 1`.
+- `reversal_defect_eq`: `alignedCov - splitCov = alignedCov + k^2`, strictly MORE than the full aligned
+  value. Contrast G252 `pinning_defect_eq_full` where the defect equals exactly the aligned value
+  (`splitCov = 0`); here the defect strictly exceeds it — the move overshoots into reversal.
+
+**Why new, not a G252 wrapper (and not a fixed-depth island).** G252 proves `splitCov = 0` on the
+uniform weight. This is a *strictly stronger, sign-aware* statement on a *strictly larger* class of
+weights (any spread-carrying rank observable), and the `= 0` case is exactly the `k`-independent DC
+limit `spread → 0`. The invariant `splitCov = -k^2` isolates the reversal magnitude as the **squared
+spread of the rank weight**, with the DC pedestal provably inert: a rank-`r` observable of larger
+spread yields a proportionally larger reversal. This is r-uniform content (a function of the weight
+geometry the rank parameter controls), not a fixed-depth toy — it holds for every `k` and every
+pedestal `a`, and the `-k^2` law is the exact finite fingerprint of the measured `bal_frac`.
+
+**Scope (honest).** Route no-go, not a Jacobi estimate and not a prize closure. It sharpens G252: not
+only does global phase-histogram control fail to *pin* the fixed-row weighted covariance, an admissible
+histogram-preserving move *reverses its sign* against any spread-carrying rank weight. So no
+global-phase-discrepancy input can lower-bound the covariance — the certificate must be a genuinely
+joint phase-row placement theorem proved directly against the row label. CORE remains OPEN / ON-BGK.
+
+All declarations axiom-clean (`propext, Classical.choice, Quot.sound`); `not_prizeClosure` axiom-free;
+locked build 3297 jobs green. Formal payload: `Frontier/_G253AntisortedSignReversal.lean`. Consumes
+nothing beyond Mathlib BigOperators/Intervals; complementary sharpening of G252.

@@ -2276,6 +2276,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G247QuotientDFTParseval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G249CartesianRowSelectionBarrier
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G250SponsorRowDiscrepancyCalibration
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G252JointPhaseRowFreedom
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G253AntisortedSignReversal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
