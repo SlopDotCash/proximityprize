@@ -2293,6 +2293,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G269DCCoordinateSignDecou
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G271OrbitConstantCenteredMass
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G272SingleCharacterDominanceNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G276TermwiseWeilCeilingNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G278IntegerLiftCarryNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

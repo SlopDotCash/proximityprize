@@ -52919,3 +52919,31 @@ Executes Fable G275's rank-1 target: the termwise-Weil sufficiency test. On `ℤ
 Exact-integer census (`n∈{16,32}`, `r∈{5,6}`) shows the slack ratio `(E_W E_R)/signed²` is NOT monotone (spikes at deep-cancellation cells, ~1 where `|A_r|` is large) and its worst case ESCALATES with no sponsor-uniform ceiling: `p=977` K≥3035, `p=70753` K≥6148, `p=2081` K≥65251, `p=2593` K≥176469, `p=1153` K≥244647. Equivalently the termwise L¹ ceiling `Σ_{χ≠1}|Ŵ||R̂_r|` overshoots `|signed|` by `κ≈403` at `p=1153`. So the signed gate is `≤1/√K` of the pointwise energy: NO termwise/pointwise-Weil bound with sponsor-uniform slack certifies `sign(A_r)` — phase cancellation between characters is load-bearing. This is the L²/Cauchy--Schwarz theorem-shape behind G217's statistical `R_coh→1/√N`, and with G272/G273/G274/G275 it retires the entire pointwise-estimate/conductor-stratification route class.
 
 Formal payload `_G276TermwiseWeilCeilingNoGo.lean`: `signedGate_sq_le_energy_mul` (Cauchy--Schwarz via `Finset.sum_mul_sq_le_sq_mul_sq` on the centered vectors), `termwise_slack` (calibrated consumer), and `decide`-checked exact-integer witnesses `w_977/w_70753/w_2081/w_2593/w_1153` with escalating `K` + the CS floor, `census_slack_escalates`, `not_termwise_weil_certifies`. Axioms: the analytic lemmas `[propext,Classical.choice,Quot.sound]`, the `decide` facts `[propext]`; no sorryAx, no native_decide. Probes `g276_termwise_weil_l1_probe.py`, `g276_energy_witnesses.py`; note `docs/kb/deltastar-466-g276-termwise-weil-ceiling-nogo-2026-07-13.md`. Honest boundary: the Parseval identification `(signed,E_W,E_R)↔(Σ_{χ≠1}Ŵconj R̂,Σ|Ŵ|²,Σ|R̂|²)` is computation-of-record; Lean kernel-checks the CS inequality, the escalating slack, and the consumer. Route-hygiene no-go, not a sponsor estimate, not prize closure. CORE OPEN / ON-BGK.
+
+### [466-G278-integer-lift-carry-nogo] nonzero integer carries do not localize the characteristic-p CORE residual; the hidden carry-zero residual is load-bearing at both live ranks (2026-07-13)
+
+Split the actual adjacent-rank alignment count by the exact integer lift
+`2y+sum(B)-z-sum(A)=k p`. Simultaneous negation sends `k` to `-k`, so carry shells are exactly
+symmetric. Every characteristic-zero antipodal packet has carry zero, hence `k!=0` is pure
+characteristic-p wraparound, but carry zero also contains finite-characteristic residual mass.
+
+An exact integer probe (subset-sum DP + exact UInt64 correlations, no FFT, independent modular
+cross-check) shows the naive route is dead. At the SAME genuine cell `(n,p)=(16,433)`, both live
+gates are positive, yet neither carry block suffices. Rank 5: `J0=2380856<need=4700090` and all
+nonzero carries total `2327144<residualNeed=4378874`. Rank 6: `J0=10052820<need=20680392` and all
+nonzero carries total `10627692<residualNeed=19615944`. Only their sums cross. The same two-block
+insufficiency holds in all eight recorded rank-5/rank-6 cells, including `(32,70753)`, where the
+nonzero block supplies only 69.96% of the rank-5 residual deficit despite `A5>0`.
+
+The random-lift asymptotic gives the same calibration: carry weights are
+`Eulerian(2r+1,r+k)/(2r+1)!`, predicting a constant 39.39% (r=5) / 36.54% (r=6) zero-carry share.
+Making this rigorous for the sponsor subgroup is an incomplete subgroup/interval exponential-sum
+problem. Existing explicit interval estimates such as arXiv:2003.06165 require `|G|>p^(1/4)`, while
+the sponsors have `|G| approximately p^(1/5.27)`. FS15-FS18 do not repair sponsor selection.
+
+Formal payload `_G278IntegerLiftCarryNoGo.lean`: structural carry-negation and antipodal-carry-zero
+identities plus axiom-clean calibrated two-rank consumers/no-gos. Probe
+`g278_integer_lift_carry_exact.py`; full note
+`docs/kb/deltastar-466-g278-integer-lift-carry-nogo-2026-07-13.md`. This closes naive carry
+localization, not the prize. Surviving object remains the full row-labelled weighted kernel relation /
+signed sponsor covariance. CORE OPEN / ON-BGK.
