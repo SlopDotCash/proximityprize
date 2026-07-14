@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6163 files, 66034 declarations
+- `ArkLib` — 6165 files, 66066 declarations
 
-## Same short-name across multiple files (2573 groups)
+## Same short-name across multiple files (2575 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -2940,6 +2940,18 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem Round14ConstantGap.choose_le_add_add` [ArkLib/Data/CodingTheory/ProximityGap/DeltaStarConstantGapBelowCapacity.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/DeltaStarConstantGapBelowCapacity.lean#L56) — **The Pascal shift.** `C(n, m) ≤ C(n + j, m + j)` for every `j` (iterate the one-step).
 - `theorem R15Bracket.choose_le_add_add` [ArkLib/Data/CodingTheory/ProximityGap/ScaleBracketFull.lean:283](../../../ArkLib/Data/CodingTheory/ProximityGap/ScaleBracketFull.lean#L283) — The Pascal shift: `C(n, m) ≤ C(n + j, m + j)`.
 - `theorem Round18Bracket.choose_le_add_add` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:205](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L205) — Pascal shift `C(n,m) ≤ C(n+j, m+j)`.
+
+### `circuitWeight` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:153](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L153) — Exact positive Farkas weights of the five-cell circuit.
+- `def ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:150](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L150) — Exact positive Farkas weights of the five-cell circuit.
+- `def ArkLib.ProximityGap.Frontier.G307SponsorTwoConductorFifteenSpanNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean#L87) — Strictly positive integer weights of the exact five-cell Farkas circuit.
+
+### `circuitWeight_pos` (3 declarations, 3 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L161) — Every circuit weight is strictly positive.
+- `theorem ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:158](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L158) — Every circuit weight is strictly positive.
+- `theorem ArkLib.ProximityGap.Frontier.G307SponsorTwoConductorFifteenSpanNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean#L95) — Every circuit coefficient is strictly positive.
 
 ### `cliqueLocator` (3 declarations, 3 files)
 
@@ -6943,16 +6955,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Char0LeadingLogConcave.choose_step` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingLogConcave.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingLogConcave.lean#L38) — **The cross-multiplied log-concavity for binomials (integer form):** `C(n,k−1)·C(n,k+1)·((k+1)·(n−k+
 - `lemma ProximityGap.PairRank.choose_step` [ArkLib/Data/CodingTheory/ProximityGap/TwoPowerFibreValue.lean:408](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoPowerFibreValue.lean#L408) — (no docstring)
 
-### `circuitWeight` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:153](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L153) — Exact positive Farkas weights of the five-cell circuit.
-- `def ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:150](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L150) — Exact positive Farkas weights of the five-cell circuit.
-
-### `circuitWeight_pos` (2 declarations, 2 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L161) — Every circuit weight is strictly positive.
-- `theorem ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:158](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L158) — Every circuit weight is strictly positive.
-
 ### `cliqueLocator_natDegree` (2 declarations, 2 files)
 
 - `theorem Round19Clique.cliqueLocator_natDegree` [ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueBeachhead.lean:124](../../../ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueBeachhead.lean#L124) — The clique locator has `natDegree = \|W\| − 1` (product of `\|W\|−1` monic linears).
@@ -8389,6 +8391,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthNumeric.gapQuadratic_mono_from_endpoint` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateEighthNumeric.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateEighthNumeric.lean#L76) — The gap quadratic is increasing throughout the counterexample range.
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenth.gapQuadratic_mono_from_endpoint` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenth.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenth.lean#L72) — The quadratic is strictly increasing on the whole counterexample range `N ≥ 2h+1`, for `h ≥ 8`.
+
+### `gateSign` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G287CanonicalQuadraticKernelNoGo.gateSign` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean:183](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean#L183) — Signs of the exact CORE gates on the eleven witness cells.
+- `def ArkLib.ProximityGap.Frontier.G307SponsorTwoConductorFifteenSpanNoGo.gateSign` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean:54](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean#L54) — Signs orienting every invariant feature toward its coefficient-two target.
 
 ### `gen` (2 declarations, 2 files)
 
@@ -10818,6 +10825,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProximityGap.Frontier.G229JacobiFanoutSponsorBounds.sponsorN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G229JacobiFanoutSponsorBounds.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G229JacobiFanoutSponsorBounds.lean#L51) — The production subgroup order used by the sponsor primes.
 - `def ArkLib.ProximityGap.Frontier.G233JacobiL2MassFloorNoGo.sponsorN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G233JacobiL2MassFloorNoGo.lean:114](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G233JacobiL2MassFloorNoGo.lean#L114) — The production subgroup order used by the sponsor primes.
+
+### `sponsorOrderTwo` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G302CommonOrderSevenNormalNoGo.sponsorOrderTwo` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G302CommonOrderSevenNormalNoGo.lean:73](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G302CommonOrderSevenNormalNoGo.lean#L73) — Quotient order at the second certified sponsor prime.
+- `def ArkLib.ProximityGap.Frontier.G307SponsorTwoConductorFifteenSpanNoGo.sponsorOrderTwo` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean:43](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean#L43) — Quotient order at the second certified sponsor prime.
 
 ### `sponsorP1` (2 declarations, 2 files)
 
@@ -14355,7 +14367,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 643 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 644 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 

@@ -2309,6 +2309,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G297DilationAnchorNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G298Depth1EnergyThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G299PrizeDepthInWindow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G300WindowSignOscillation
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G302CommonOrderSevenNormalNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G307SponsorTwoConductorFifteenSpanNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

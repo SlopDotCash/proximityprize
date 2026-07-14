@@ -53311,3 +53311,50 @@ difference form. Formal payload `_G297DilationAnchorNoGo.lean` uses only
 `[propext, Classical.choice, Quot.sound]`; pure-integer probe `g297_dilation_anchor_nogo.py`; KB note
 `deltastar-466-g297-dilation-anchor-nogo-2026-07-13.md`. FS15-FS18 remain fixed-depth/almost-all-prime
 magnitude inputs, and G64 forces the sponsor exceptional by depth six. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G302-common-order-seven-normal-nogo] the only common bounded-order sponsor normal is order seven, and it is sign-decoupled (2026-07-14)
+
+After G297 closes coefficient-anchor transport and G301 localizes the full quotient average to the
+zero coefficient, the remaining sponsor-uniform bounded-order proposal is arithmetically unique.
+For the two quotient orders `m1=2^128+192`, `m2=2^129+13`, Lean proves
+`gcd(m1,m2)=7`; hence every common nonprincipal fixed character order is exactly seven. Its canonical
+generator-independent primitive trace is the Ramanujan aggregate
+`L7(r)=sum_j c7(j)A_{g^j}(R_r)`, with `c7(j)=6` if `7|j` and `-1` otherwise. Lean also proves the
+weight is invariant under cyclic-generator changes coprime to seven.
+
+The direct integer probe scans 27 proper dyadic subgroup cells and ranks five/six, with exact subset
+histograms and weighted kernels, no FFT/floats. `sign(L7)=sign(A2)` in exactly `27/54` rank cells and
+all four sign quadrants occur. On the single subgroup `mu_16<=F_113^*`, the mismatch reverses:
+`r=5: (A2,L7)=(+1727120,-20424976)`; `r=6: (-77440,+1048640)`. Thus neither sign of the only common
+fixed-order normal implies the target sign.
+
+This closes only sponsor-uniform bounded-order, generator-independent normals. It does not exclude a
+sponsor-specific order or a full-family Gross--Koblitz normal fixed before evaluation. FS15--FS18
+remain fixed-depth/almost-all-prime magnitude inputs and do not select either sponsor or the
+row-labelled sign at `r*=89`. Formal payload `_G302CommonOrderSevenNormalNoGo.lean`; probe
+`g302_common_order7_normal_nogo.py`; full note
+`docs/kb/deltastar-466-g302-common-order-seven-normal-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G307-sponsor-two-conductor15-span-nogo] the complete sponsor-two generator-invariant conductor-15 span is non-separating (2026-07-14)
+
+At sponsor two, `m2=2^129+13` is divisible by `75`. The first mixed generator-invariant complex
+trace class has the four rational Ramanujan coordinates `(P,L3,L5,L15)`. An exact five-cell
+positive Farkas circuit in the target-oriented coordinate vectors proves that no fixed linear
+combination of these four traces has the coefficient-two weighted-kernel CORE sign with any strict
+uniform margin. The circuit uses both ranks five/six and an adjacent-rank pair at `(n,p)=(8,601)`.
+The exact integer probe recomputes every subset-sum row, weighted kernel, trace, generator-invariance
+check, and circuit coordinate; no FFT/floats or fitted coefficient enters the reproducibility path.
+
+This closes the primitive order-five trace and every repair mixing it with the principal,
+order-three, or order-fifteen traces. It is genuinely weaker than BGK/Paley and consumes no target.
+It does not exclude conductor 25/75, a non-invariant predeclared weight, or the full sponsor-specific
+Gross--Koblitz/Jacobi family at the in-window depth `r*=89`. FS15-FS18 remain fixed-depth /
+almost-all-prime magnitude inputs; their exceptional-set window does not select the explicit
+sponsor or provide this row-labelled sign. Formal payload
+`_G307SponsorTwoConductorFifteenSpanNoGo.lean`; exact probe
+`g307_sponsor_two_conductor15_span_nogo.py`; full note
+`docs/kb/deltastar-466-g307-sponsor-two-conductor15-span-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
