@@ -53136,3 +53136,37 @@ and does not exclude unbounded-dimension or non-polynomial certificates. Formal 
 `_G291MinimalRadonFloorNoGo.lean` (nine theorems, axioms exactly `[propext, Classical.choice,
 Quot.sound]`, no sorryAx); exact probe `g291_minimal_radon_floor_nogo.py`; full note
 `docs/kb/deltastar-466-g291-minimal-radon-floor-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.
+
+### [466-G295-rank-reflection-symmetry] the low-rank CORE covariance is a rank-palindrome `A_r = A_{n+1-r}`; the two prize ranks pin to complementary high ranks, and true prize depth escapes the palindrome (2026-07-13, direct Opus 4.8 CORE)
+
+With `W_G(x)=#{(y,z)∈G²:2y-z=x}`, `R_r=dp_r⋆dp_{r-1}`, `A_r=p·Σ_x W_G(x)R_r(x)-(ΣW_G)(ΣR_r)`, the
+CORE covariance sequence is an EXACT palindrome in the rank for `n` even (the sponsor 2-power regime):
+`A_r = A_{n+1-r}` for all `r∈[2,n-1]`. At the prize ranks: `A_5=A_{n-4}`, `A_6=A_{n-5}`. Verified
+exactly on production cells: `n=16 p=1297: A_5=A_12=324135568, A_6=A_11=949261584`; `n=32 p=193:
+A_5=A_28=-29432000, A_6=A_27=-100975808`; `n=16 p=97: A_5=A_12=-6285008, A_6=A_11=-14107248`.
+
+Mechanism (a genuine rank-COUPLING, not a rank-blind feature): `n` even ⇒ `-1∈G` and `σ=ΣG=0`, so
+subset complementation `dp_r(x)=dp_{n-r}(-x)` gives `R_{n+1-r}(x)=R_r(-x)`; `W_G` is even, and the
+bilinear centered pairing is invariant under reflecting the row while the gate is even, hence
+`A_{n+1-r}=A_r`. This is an exact identity between DIFFERENT ranks via the complementation involution,
+orthogonal to the rank-blind no-gos G289/G291 (dimension-forced canonical features) and G293
+(rank-blind ordered label list).
+
+Information: (i) the finite low-rank census program (G266/G267/G289/G291/G293, all at `r∈{5,6}`,
+`n∈{8,16,32}`) has HALF the degrees of freedom it appears to — its rank-5,6 covariances are
+identical to the rank `n-4,n-5` covariances, so observed sign-freedom/thinness-bias at the prize rank
+is literally the complementary-rank value; (ii) at TRUE prize depth `r≈log p` on a thin cell
+`n≈p^{1/5.27}` one has `r>n` so `n+1-r<2` — the palindrome is VACUOUS, the prize rank leaves the
+computable window entirely. Surviving object sharpened: the certificate must live at depth `r≳n`
+(beyond the palindrome), against the rank-labelled row directly (BGK/Paley wall), and cannot be
+extracted from any finite low-rank census whose prize ranks are pinned to their complementary
+partners.
+
+Scope: structural rank-coupling identity, NOT a Jacobi estimate and NOT a prize closure. Formal
+payload `_G295RankReflectionSymmetry.lean` (`neg_involutive_sum`, `centeredCov`,
+`centeredCov_reflect_of_even` = the mechanism, `W17_even`, `reflectR_3_6`, `A17_3_eq_A17_6` = exact
+`ZMod 17` prize-adjacent `A_3=A_6=-1344`); axioms `[propext,
+Classical.choice, Quot.sound]`, no sorryAx/custom/native_decide. Exact probe
+`g295_rank_reflection_symmetry.py` (even-n mechanism+palindrome on 8 cells, prize-rank pins, ZMod 17
+witness; PASS). Full note `docs/kb/deltastar-466-g295-rank-reflection-symmetry-2026-07-13.md`.
+CORE OPEN / ON-BGK.

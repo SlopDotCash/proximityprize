@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6157 files, 65934 declarations
+- `ArkLib` — 6158 files, 65943 declarations
 
 ## Same short-name across multiple files (2571 groups)
 
@@ -723,6 +723,14 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.SpecF7GoodPrimeCollisionCount.card_primeFactors_le_natLog` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpecF7_GoodPrimeCollisionCount.lean:152](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpecF7_GoodPrimeCollisionCount.lean#L152) — **(B.0) a positive integer has at most `log₂ N` distinct prime factors.** Each distinct prime factor
 - `theorem ArkLib.ProximityGap.Frontier.TPSDivisorEquidistribution.card_primeFactors_le_natLog` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TPSDivisorEquidistribution.lean:108](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TPSDivisorEquidistribution.lean#L108) — A positive integer has at most `log₂`-many distinct prime factors.
 
+### `centeredCov` (5 declarations, 5 files)
+
+- `def ArkLib.ProximityGap.Frontier.G258QuotientAutomorphismPositivityNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean#L151) — Integer centered covariance on a quotient of size `m`.
+- `def ArkLib.ProximityGap.Frontier.G260OriginAnchorGaugeNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean#L91) — Integer centered covariance on a quotient of size `m`.
+- `def ArkLib.ProximityGap.Frontier.G263JointRankSignFreedom.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean#L61) — Exact integer centered covariance `Cov(W,R) = m·∑ W·R − (∑ W)(∑ R)`; this is the DC-subtracted gate:
+- `def ArkLib.ProximityGap.Frontier.G265CoordinateReparametrizationNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean#L51) — Integer centered covariance on a cyclic quotient.
+- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L111) — The centered covariance pairing of a gate `W` against a row `R` on `ZMod p`: `centeredCov p W R = p
+
 ### `conv` (5 declarations, 5 files)
 
 - `def ArkLib.ProximityGap.Frontier.AvNTCumulantEngine.conv` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvNT_CumulantAdditivityEngine.lean:130](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvNT_CumulantAdditivityEngine.lean#L130) — The convolution (Cauchy product) of two coefficient sequences: `(u ⋆ v) r = Σ_{i≤r} u_i·v_{r−i}`. Th
@@ -1061,13 +1069,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ProximityGap.MCADeltaStarExactPoint.card_clause` [ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarExactPoint.lean:222](../../../ArkLib/Data/CodingTheory/ProximityGap/MCADeltaStarExactPoint.lean#L222) — The membership clause of `mcaEvent`'s witness sets at `δ = 1/4`, `n = 4`: card `3` suffices (`(1 − 1
 - `theorem ProximityGap.MCAMDSStaircaseRefuted.card_clause` [ArkLib/Data/CodingTheory/ProximityGap/MCAMDSStaircaseRefuted.lean:155](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAMDSStaircaseRefuted.lean#L155) — The size clause at `δ = 1/6`, `n = 18`: a 15-element witness suffices (`(1 − 1/6)·18 = 15`).
 - `theorem ProximityGap.MCAWindowInteriorExact.card_clause` [ArkLib/Data/CodingTheory/ProximityGap/MCAWindowInteriorExact.lean:115](../../../ArkLib/Data/CodingTheory/ProximityGap/MCAWindowInteriorExact.lean#L115) — The witness-size clause at `δ = 2/5`, `n = 5`: a 3-set qualifies.
-
-### `centeredCov` (4 declarations, 4 files)
-
-- `def ArkLib.ProximityGap.Frontier.G258QuotientAutomorphismPositivityNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean#L151) — Integer centered covariance on a quotient of size `m`.
-- `def ArkLib.ProximityGap.Frontier.G260OriginAnchorGaugeNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean#L91) — Integer centered covariance on a quotient of size `m`.
-- `def ArkLib.ProximityGap.Frontier.G263JointRankSignFreedom.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean#L61) — Exact integer centered covariance `Cov(W,R) = m·∑ W·R − (∑ W)(∑ R)`; this is the DC-subtracted gate:
-- `def ArkLib.ProximityGap.Frontier.G265CoordinateReparametrizationNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean#L51) — Integer centered covariance on a cyclic quotient.
 
 ### `cert_main` (4 declarations, 4 files)
 
