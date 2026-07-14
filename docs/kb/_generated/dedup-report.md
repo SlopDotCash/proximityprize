@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6160 files, 65981 declarations
+- `ArkLib` — 6161 files, 65994 declarations
 
 ## Same short-name across multiple files (2573 groups)
 
@@ -553,6 +553,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.CoreA3.mStar_le_of_binds` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA3_BackwardProof.lean:126](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA3_BackwardProof.lean#L126) — `mStar` is the least binder.
 - `theorem ArkLib.ProximityGap.CoreReductionComplete.mStar_le_of_binds` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreReductionComplete.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreReductionComplete.lean#L83) — `mStar` is the **least** binder: any depth `m` that binds is at least `mStar n`.
 
+### `prizeScale` (7 declarations, 7 files)
+
+- `def ArkLib.ProximityGap.Frontier.ShawValueBracketCenter.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueBracketCenter.lean:37](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueBracketCenter.lean#L37) — The square-root target scale in the prize normalization (same object as `ShawValueCapstone.prizeScal
+- `def ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueCapstone.lean:36](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueCapstone.lean#L36) — The square-root target scale in the prize normalization.  In applications `n` is the subgroup size a
+- `def ArkLib.ProximityGap.Frontier.AvERG.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean:108](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean#L108) — The prize/BGK target scale `√(n · log p)` at the prize prime size `p = n^4`, i.e. `√(n · 4 log n) =
+- `abbrev ArkLib.ProximityGap.Frontier.G299PrizeDepthInWindow.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G299PrizeDepthInWindow.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G299PrizeDepthInWindow.lean#L80) — The production field scale `q = 2^158` (`= n · 2^128`).
+- `def ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean#L55) — The prize target scale `√n` (square-root cancellation over the thin subgroup).
+- `def ProximityGap.ThinnessSmooth.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TH_SMOOTH_PRIMITIVE_DIVISOR.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TH_SMOOTH_PRIMITIVE_DIVISOR.lean#L79) — The prize scale: a thin prize prime is `p ~ n^4` (`β = 4`, `n = p^{1/4}`).
+- `def ArkLib.ProximityGap.Frontier.WF9G3.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf9G3_periodpoly_coeff_nogo.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf9G3_periodpoly_coeff_nogo.lean#L83) — The prize target scale: `C · √(n · log m)` with `m = (p-1)/n = p/n` to leading order. We use `√(n ·
+
 ### `totient_two_pow` (7 declarations, 7 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.DeterminantMethodHeightCollapse.totient_two_pow` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/DeterminantMethodHeightCollapse.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/DeterminantMethodHeightCollapse.lean#L80) — `φ(2^a) = 2^{a-1}` (Mathlib `Nat.totient_prime_pow`). The number of archimedean conjugates, = the nu
@@ -645,15 +655,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.LiteralBudgetPin.prime_P` [ArkLib/Data/CodingTheory/ProximityGap/LiteralBudgetPin.lean:1114](../../../ArkLib/Data/CodingTheory/ProximityGap/LiteralBudgetPin.lean#L1114) — **`P` is prime** — Lucas certificate with witness `3`, cofactors `{2, 1314883}`.
 - `theorem ArkLib.ProximityGap.Mu6ConditionalPin.prime_P` [ArkLib/Data/CodingTheory/ProximityGap/Mu6ConditionalPin.lean:1160](../../../ArkLib/Data/CodingTheory/ProximityGap/Mu6ConditionalPin.lean#L1160) — (no docstring)
 - `theorem ArkLib.ProximityGap.Mu6DeepRung.prime_P` [ArkLib/Data/CodingTheory/ProximityGap/Mu6DeepRung.lean:1102](../../../ArkLib/Data/CodingTheory/ProximityGap/Mu6DeepRung.lean#L1102) — (no docstring)
-
-### `prizeScale` (6 declarations, 6 files)
-
-- `def ArkLib.ProximityGap.Frontier.ShawValueBracketCenter.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueBracketCenter.lean:37](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueBracketCenter.lean#L37) — The square-root target scale in the prize normalization (same object as `ShawValueCapstone.prizeScal
-- `def ArkLib.ProximityGap.Frontier.ShawValueCapstone.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueCapstone.lean:36](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/ShawValueCapstone.lean#L36) — The square-root target scale in the prize normalization.  In applications `n` is the subgroup size a
-- `def ArkLib.ProximityGap.Frontier.AvERG.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean:108](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean#L108) — The prize/BGK target scale `√(n · log p)` at the prize prime size `p = n^4`, i.e. `√(n · 4 log n) =
-- `def ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoFifthDoorTetrachotomy.lean#L55) — The prize target scale `√n` (square-root cancellation over the thin subgroup).
-- `def ProximityGap.ThinnessSmooth.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TH_SMOOTH_PRIMITIVE_DIVISOR.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TH_SMOOTH_PRIMITIVE_DIVISOR.lean#L79) — The prize scale: a thin prize prime is `p ~ n^4` (`β = 4`, `n = p^{1/4}`).
-- `def ArkLib.ProximityGap.Frontier.WF9G3.prizeScale` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf9G3_periodpoly_coeff_nogo.lean:83](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf9G3_periodpoly_coeff_nogo.lean#L83) — The prize target scale: `C · √(n · log m)` with `m = (p-1)/n = p/n` to leading order. We use `√(n ·
 
 ### `rung_n16` (6 declarations, 6 files)
 
