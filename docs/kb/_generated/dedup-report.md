@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6165 files, 66066 declarations
+- `ArkLib` — 6166 files, 66084 declarations
 
 ## Same short-name across multiple files (2575 groups)
 

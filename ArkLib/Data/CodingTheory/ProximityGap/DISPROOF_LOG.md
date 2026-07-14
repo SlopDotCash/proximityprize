@@ -53358,3 +53358,25 @@ sponsor or provide this row-labelled sign. Formal payload
 `_G307SponsorTwoConductorFifteenSpanNoGo.lean`; exact probe
 `g307_sponsor_two_conductor15_span_nogo.py`; full note
 `docs/kb/deltastar-466-g307-sponsor-two-conductor15-span-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G309-target-oriented-cubic-generic-row-nogo] the odd cubic survivor cannot transfer from row nonnegativity alone (2026-07-14)
+
+The target-oriented odd cubic normal at sponsor two is the inversion-odd weight
+`s3(j)=(0,+1,-1)` on quotient classes labelled by `[2]^j`. Fresh exact censuses leave the one-sided
+implication `L3odd(R_r)>0 => A_2(R_r)>0` unrefuted for actual adjacent-rank subset-sum rows. G309
+pins the required scope: the implication is false for arbitrary nonnegative rows.
+
+On the proper dyadic subgroup `mu_8<=F_73^*`, `[2]` generates the nine-element quotient. For the
+nonnegative delta row `R=1_{4}`, the exact quotient alignment profile is
+`(-64,-64,-64,9,82,9,-64,82,82)`. Therefore the target is `A_2=-64`, while the odd cubic normal is
+`L3odd=73`. Lean evaluates the finite-field kernel sums and proves the generic transfer proposition
+false; the reproducibility probe finds eight delta-row counterexamples.
+
+This is depth-independent and closes every proof using only row nonnegativity plus the odd cubic
+weights. It does not refute the observed subset-sum-row survivor. Any valid production argument must
+prove both a positive sponsor-two odd-cubic value and a transfer theorem using additional
+adjacent-rank row structure. Formal payload `_G309TargetOrientedCubicGenericRowNoGo.lean`; exact
+probe `g309_target_oriented_cubic_generic_row_nogo.py`; full note
+`docs/kb/deltastar-466-g309-target-oriented-cubic-generic-row-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
