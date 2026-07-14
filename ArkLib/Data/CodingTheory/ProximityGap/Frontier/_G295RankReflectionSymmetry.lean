@@ -8,8 +8,7 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 
 /-!
-# G295: the low-rank CORE covariance is palindromic — `A_r = A_{n+1-r}` — and the prize depth lies
-outside the palindrome
+# G295: the CORE covariance is palindromic on the rank window — `A_r = A_{n+1-r}`
 
 ## Statement of record
 
@@ -28,7 +27,7 @@ Then, EXACTLY and for every cell, the covariance sequence is a **palindrome in t
 A_r = A_{n+1-r}      for all r ∈ [2, n-1].
 ```
 
-At the two live prize ranks this reads `A_5 = A_{n-4}` and `A_6 = A_{n-5}`: the low prize rank is
+At the two late-Newton ranks this reads `A_5 = A_{n-4}` and `A_6 = A_{n-5}`: each low rank is
 pinned to a HIGH near-complementary rank.
 
 ## The mechanism (why it is a genuine rank-coupling, not a rank-blind feature)
@@ -60,20 +59,19 @@ Every exact finite-cell census the campaign runs (the four-quadrant probes G266,
 separation G267, the counting-mirage floor G289/G291, the rank-blind label list G293) lives at fixed
 low ranks `r ∈ {5,6}` on cells `n ∈ {8,16,32}`. This theorem shows those rank-`5,6` covariances are
 NOT independent data points: they are *identical* to the rank `n-4, n-5` covariances. The census
-degrees of freedom collapse by the reflection; any "sign freedom" or "thinness bias" observed at the
-prize rank is literally the same number as at the near-full complementary rank.
+degrees of freedom collapse by the reflection; any sign freedom observed at a low rank is literally
+the same number as at the near-full complementary rank.
 
-Crucially, at the TRUE prize depth `r ≈ log p`, on a thin sponsor cell `n ≈ p^{1/5.27}` one has
-`r > n`, so `n+1-r < 2` and the reflection is VACUOUS: the palindrome governs exactly the low-rank
-window `[2, n-1]` where all exact computation lives, and says nothing at prize depth. Hence no
-low-rank (`r < n`) exact-census argument can even reach the prize rank as an independent object —
-it is reflected onto a high rank, and the genuine prize rank escapes the window entirely.
+The production depth does **not** escape this window. The campaign parameters are `n = 2^30` and
+`r* = 89`, so `2 ≤ r* ≤ n-1`, and the reflected partner is `n+1-r* = 2^30-88`. More generally,
+for fixed `β = 5.27`, `log p = o(p^(1/β))`, hence `r = O(log p)` is eventually much smaller than
+`n ≍ p^(1/β)`. The palindrome therefore remains applicable at production depth, but by itself gives
+only an equality with a near-full complementary rank. It supplies no sign or magnitude bound for
+either member of the pair.
 
 This is a structural theorem (an exact rank-coupling identity), not a Jacobi covariance estimate and
-not a prize closure. It sharpens the surviving-object statement: the missing certificate must
-live at depth `r ≳ n` (beyond the palindrome), against the rank-labelled row — the BGK/Paley wall —
-and cannot be extracted from any finite low-rank census, whose two prize ranks are pinned to their
-complementary partners.
+not a prize closure. The missing certificate remains a direct rank-labelled estimate at the actual
+production depth (equivalently at its complementary rank), on the BGK/Paley wall.
 
 ## Formal payload
 

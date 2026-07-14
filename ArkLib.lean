@@ -2305,6 +2305,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G289CountingMirageNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G291MinimalRadonFloorNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G295RankReflectionSymmetry
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G296PalindromeCensusCollapse
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G297DilationAnchorNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G298Depth1EnergyThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G299PrizeDepthInWindow
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G300WindowSignOscillation

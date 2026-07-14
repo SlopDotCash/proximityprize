@@ -1,4 +1,4 @@
-# δ*/#466 G295 — the low-rank CORE covariance is a rank-palindrome `A_r = A_{n+1-r}`, and prize depth escapes it
+# δ*/#466 G295 — the CORE covariance is a rank-palindrome `A_r = A_{n+1-r}`
 
 Date: 2026-07-13. Lane: direct Opus 4.8 CORE (cron). Branch `research/proximity-prize` only (#499);
 `main` untouched. Commit: see DISPROOF entry `[466-G295-rank-reflection-symmetry]`.
@@ -22,7 +22,7 @@ an **exact palindrome in the rank**:
 A_r = A_{n+1-r}     for all r ∈ [2, n-1].
 ```
 
-At the two live prize ranks: `A_5 = A_{n-4}` and `A_6 = A_{n-5}`. The low prize rank is pinned to a
+At the two late-Newton ranks: `A_5 = A_{n-4}` and `A_6 = A_{n-5}`. Each low rank is pinned to a
 HIGH near-complementary rank. Verified exactly on production cells:
 
 ```
@@ -55,22 +55,20 @@ functional (contrast G289/G291 dimension-forced no-gos and G293's rank-blind lab
    covariances. Any "sign freedom" or "thinness bias" observed at the prize rank is literally the
    same number as at the near-full complementary rank.
 
-2. **Prize depth escapes the palindrome.** At the true prize depth `r ≈ log p`, on a thin sponsor
-   cell `n ≈ p^{1/5.27}` one has `r > n`, so `n+1-r < 2` — the reflection is VACUOUS. The palindrome
-   governs exactly the low-rank window `[2, n-1]` where all exact computation lives, and says nothing
-   at prize depth. No low-rank (`r < n`) exact-census argument can even *reach* the prize rank as an
-   independent object: it is reflected onto a high rank, while the genuine prize rank leaves the
-   window entirely.
+2. **Production depth stays inside the palindrome.** The exact campaign parameters are `n = 2^30`
+   and `r* = 89`, so `2 ≤ 89 < 2^30-1`; the reflected partner is `2^30-88`. Asymptotically, for
+   fixed `β=5.27`, `log p=o(p^(1/β))`, so `r=O(log p)` is eventually much smaller than
+   `n≈p^(1/β)`. The original claim that `r>n` was reversed and is corrected here.
 
-Consequence for the surviving object: the missing certificate must live at depth `r ≳ n` (beyond the
-palindrome), against the rank-labelled row directly — the BGK/Paley wall — and cannot be extracted
-from any finite low-rank census, whose two prize ranks are pinned to their complementary partners.
+Consequence for the surviving object: the palindrome pairs the production row with a near-full
+complementary row but does not bound either sign or magnitude. The missing certificate remains a
+direct rank-labelled estimate at `r*=89` (or an estimate transferred from its complementary rank).
 
 ## Scope (honest)
 
 Structural rank-coupling identity, NOT a Jacobi covariance estimate and NOT a prize closure. It does
 not bound the covariance at production primes; it constrains the *shape* of the covariance-vs-rank
-sequence and locates the prize regime outside the computable low-rank window. CORE OPEN / ON-BGK.
+sequence. It does not localize the prize outside that window. CORE OPEN / ON-BGK.
 
 ## Formal payload
 
@@ -91,4 +89,4 @@ integer arithmetic; hard `SystemExit(1)` on any violation; PASS.
 
 Orthogonal to G289/G291 (dimension-forced canonical-feature no-gos) and G293 (rank-blind label list):
 those close rank-blind certificates; G295 is a rank-COUPLING identity that reorganizes the low-rank
-census and locates the prize regime beyond it.
+census but supplies no production sign estimate.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 G295 probe: the low-rank CORE covariance is a palindrome in the rank, A_r = A_{n+1-r},
-and the two prize ranks are pinned to complementary high ranks (A_5 = A_{n-4}, A_6 = A_{n-5}).
+and the two late-Newton ranks are pinned to complementary high ranks (A_5 = A_{n-4}, A_6 = A_{n-5}).
 
 Object (the current frontier CORE surrogate, G228..G293):
   W_G(x) = #{(y,z) in G^2 : 2y - z = x},   G = order-n multiplicative subgroup of F_p^*
@@ -11,7 +11,7 @@ Object (the current frontier CORE surrogate, G228..G293):
 Verifies, in exact integer arithmetic (no floats):
   (1) For n EVEN (the sponsor 2-power regime): sigma = sum(G) = 0 mod p, -1 in G, W_G even,
       R_{n+1-r}(x) = R_r(-x), and A_r = A_{n+1-r} for all r in [2, n-1].
-  (2) The exact prize-rank pins A_5 = A_{n-4}, A_6 = A_{n-5} on production cells.
+  (2) The exact late-Newton rank pins A_5 = A_{n-4}, A_6 = A_{n-5} on production cells.
   (3) The ZMod 17 Lean witness data: W17 even, R3(-x) = R6(x), A_3 = A_6 = -1344.
 
 Each block hard-fails (SystemExit(1)) on any violation.
@@ -142,9 +142,9 @@ for (n, p) in even_cells:
 print("(1) even-n mechanism + palindrome A_r=A_(n+1-r) verified on %d cells OK" % len(even_cells))
 
 
-# ---- Block (2): exact prize-rank pins on production cells ----------------------
-prize_cells = [(16, 1297), (32, 193), (16, 97)]
-for (n, p) in prize_cells:
+# ---- Block (2): exact late-Newton rank pins on production cells ----------------------
+late_cells = [(16, 1297), (32, 193), (16, 97)]
+for (n, p) in late_cells:
     G, W, hist = build(n, p)
     a5, a_nm4 = A_of(W, hist, p, 5), A_of(W, hist, p, n - 4)
     a6, a_nm5 = A_of(W, hist, p, 6), A_of(W, hist, p, n - 5)
@@ -153,7 +153,7 @@ for (n, p) in prize_cells:
     if a6 != a_nm5:
         fail(f"A_6 != A_(n-5) at n={n} p={p}: {a6} vs {a_nm5}")
     print("    n=%d p=%d: A_5=A_%d=%d, A_6=A_%d=%d" % (n, p, n - 4, a5, n - 5, a6))
-print("(2) prize-rank pins A_5=A_(n-4), A_6=A_(n-5) verified OK")
+print("(2) late-Newton rank pins A_5=A_(n-4), A_6=A_(n-5) verified OK")
 
 
 # ---- Block (3): ZMod 17 Lean witness data -------------------------------------
@@ -176,4 +176,4 @@ if not (a3 == a6 == -1344):
     fail(f"A_3/A_6 != -1344: {a3}, {a6}")
 print("(3) ZMod 17 Lean witness: W17 even, R6(x)=R3(-x), A_3=A_6=%d OK" % a3)
 
-print("\nALL PASS: rank-reflection palindrome, prize-rank pins, Lean witness.")
+print("\nALL PASS: rank-reflection palindrome, late-Newton pins, Lean witness.")

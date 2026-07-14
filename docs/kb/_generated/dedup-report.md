@@ -4,7 +4,7 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6161 files, 65994 declarations
+- `ArkLib` — 6163 files, 66034 declarations
 
 ## Same short-name across multiple files (2573 groups)
 
@@ -523,6 +523,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.SYZ4DegenerateChannelCeiling.binaryPow_eq_pow` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ4DegenerateChannelCeiling.lean:201](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ4DegenerateChannelCeiling.lean#L201) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.SYZ6FinerGradingCeiling.binaryPow_eq_pow` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ6FinerGradingCeiling.lean:196](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ6FinerGradingCeiling.lean#L196) — (no docstring)
 
+### `centeredCov` (7 declarations, 7 files)
+
+- `def ArkLib.ProximityGap.Frontier.G258QuotientAutomorphismPositivityNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean#L151) — Integer centered covariance on a quotient of size `m`.
+- `def ArkLib.ProximityGap.Frontier.G260OriginAnchorGaugeNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean#L91) — Integer centered covariance on a quotient of size `m`.
+- `def ArkLib.ProximityGap.Frontier.G263JointRankSignFreedom.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean#L61) — Exact integer centered covariance `Cov(W,R) = m·∑ W·R − (∑ W)(∑ R)`; this is the DC-subtracted gate:
+- `def ArkLib.ProximityGap.Frontier.G265CoordinateReparametrizationNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean#L51) — Integer centered covariance on a cyclic quotient.
+- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:109](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L109) — The centered covariance pairing of a gate `W` against a row `R` on `ZMod p`: `centeredCov p W R = p
+- `def ArkLib.ProximityGap.G298.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean#L76) — The centered covariance pairing of a gate `W` against a row `R` over `ZMod p` (matching the G295 `ce
+- `def ArkLib.ProximityGap.G300.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G300WindowSignOscillation.lean:88](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G300WindowSignOscillation.lean#L88) — The centered covariance pairing of a gate `W` against a row `R` over `ZMod p` (matching the G295/G29
+
 ### `energy` (7 declarations, 7 files)
 
 - `def ArkLib.ProximityGap.AutocorrelationRecursion.energy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean:106](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean#L106) — The `L²`-energy (full additive energy of the weight) `E(f) = ∑_z f(z)²`. With `f = f_r` this is the
@@ -592,15 +602,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma DuplexSpongeFS.Sponge316.getElem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512PaperCascade.lean:88](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512PaperCascade.lean#L88) — Shifting a tracked slot through `eraseIdx` of a different index.
 - `lemma DuplexSpongeFS.Sponge316.getElem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514PaperFork.lean:137](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514PaperFork.lean#L137) — Shifting a tracked slot through `eraseIdx` of a different index.
 - `theorem DuplexSpongeFS.EagerLazyDS.getElem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean:959](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean#L959) — The `getElem?` position map of `eraseIdx`: deleting index `i` shifts later positions by one, for all
-
-### `centeredCov` (6 declarations, 6 files)
-
-- `def ArkLib.ProximityGap.Frontier.G258QuotientAutomorphismPositivityNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean#L151) — Integer centered covariance on a quotient of size `m`.
-- `def ArkLib.ProximityGap.Frontier.G260OriginAnchorGaugeNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean#L91) — Integer centered covariance on a quotient of size `m`.
-- `def ArkLib.ProximityGap.Frontier.G263JointRankSignFreedom.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean#L61) — Exact integer centered covariance `Cov(W,R) = m·∑ W·R − (∑ W)(∑ R)`; this is the DC-subtracted gate:
-- `def ArkLib.ProximityGap.Frontier.G265CoordinateReparametrizationNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean#L51) — Integer centered covariance on a cyclic quotient.
-- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L111) — The centered covariance pairing of a gate `W` against a row `R` on `ZMod p`: `centeredCov p W R = p
-- `def ArkLib.ProximityGap.G298.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean#L76) — The centered covariance pairing of a gate `W` against a row `R` over `ZMod p` (matching the G295 `ce
 
 ### `coeffVec` (6 declarations, 6 files)
 
@@ -4887,7 +4888,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 ### `window` (3 declarations, 3 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.A1SOSLadderN16.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean:149](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean#L149) — `p = 65537` is in the β=4 window for `n = 16`: `n^4 ≤ q` and `n ∣ q−1`.
-- `def ArkLib.ProximityGap.Frontier.G296PalindromeCensusCollapse.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean#L92) — The low-rank census window `[2, n-1]`.
+- `def ArkLib.ProximityGap.Frontier.G296PalindromeCensusCollapse.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean#L91) — The low-rank census window `[2, n-1]`.
 - `theorem ArkLib.ProximityGap.Frontier.Wall6.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean:260](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean#L260) — `p = 65537` is in the β=4 window for `n = 16`.
 
 ### `window_step` (3 declarations, 3 files)
@@ -6148,7 +6149,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `W17` (2 declarations, 2 files)
 
-- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.W17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:155](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L155) — Sponsor gate `W_G(x) = #{(y,z) ∈ G² : 2y - z = x}` on the `n = 8, p = 17` cell. Even.
+- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.W17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:153](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L153) — Sponsor gate `W_G(x) = #{(y,z) ∈ G² : 2y - z = x}` on the `n = 8, p = 17` cell. Even.
 - `def ArkLib.ProximityGap.G298.W17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean#L98) — `W_G` for `G = ⟨9⟩ ≤ F₁₇^*` (order 8), `W_G(x) = #{(y,z) ∈ G² : 2y - z = x}`, tabulated over `ZMod 1
 
 ### `WallHolds` (2 declarations, 2 files)
@@ -10680,7 +10681,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 ### `sigma` (2 declarations, 2 files)
 
-- `def ArkLib.ProximityGap.Frontier.G296PalindromeCensusCollapse.sigma` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean:89](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean#L89) — The rank-reflection `σ r = n + 1 - r`. On the window `Icc 2 (n-1)` it is the complementation involut
+- `def ArkLib.ProximityGap.Frontier.G296PalindromeCensusCollapse.sigma` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean:88](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean#L88) — The rank-reflection `σ r = n + 1 - r`. On the window `Icc 2 (n-1)` it is the complementation involut
 - `def ProximityGap.Q1ClaimB.sigma` [ArkLib/Data/CodingTheory/ProximityGap/Q1ClaimBDegH.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Q1ClaimBDegH.lean#L60) — `σ_S(z) = ∏_{x ∈ S} (z − x)`, the monic vanishing polynomial of `S`.
 
 ### `sigmaCount` (2 declarations, 2 files)
@@ -14354,7 +14355,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 642 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 643 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 

@@ -100,7 +100,18 @@ for n in [8,16,32,6,10]:
         orbits = set(frozenset({r,sigma[r]}) for r in window)
         check(len(orbits)==(n-2)//2, f"n={n}: #orbits==(n-2)/2=={(n-2)//2}")
 
-# (2)+(3) exact covariance palindrome + distinct-value collapse on real cells
+# (2) exact production-parameter correction: r*=89 is inside n=2^30 window.
+production_n = 2**30
+production_r = 89
+production_reflection = production_n + 1 - production_r
+check(2 <= production_r <= production_n - 1,
+      "production r*=89 lies in [2,2^30-1]")
+check(production_reflection == 2**30 - 88,
+      "production reflected rank is 2^30-88")
+check(2 <= production_reflection <= production_n - 1,
+      "production reflected rank lies in [2,2^30-1]")
+
+# (3)+(4) exact covariance palindrome + distinct-value collapse on real cells
 cells = [(17,8),(97,16),(193,16)]
 for p,n in cells:
     G = subgroup(p,n)

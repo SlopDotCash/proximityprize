@@ -53145,7 +53145,7 @@ and does not exclude unbounded-dimension or non-polynomial certificates. Formal 
 Quot.sound]`, no sorryAx); exact probe `g291_minimal_radon_floor_nogo.py`; full note
 `docs/kb/deltastar-466-g291-minimal-radon-floor-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.
 
-### [466-G295-rank-reflection-symmetry] the low-rank CORE covariance is a rank-palindrome `A_r = A_{n+1-r}`; the two prize ranks pin to complementary high ranks, and true prize depth escapes the palindrome (2026-07-13, direct Opus 4.8 CORE)
+### [466-G295-rank-reflection-symmetry] the CORE covariance is a rank-palindrome `A_r = A_{n+1-r}`; production depth remains inside the window (2026-07-13, corrected 2026-07-14)
 
 With `W_G(x)=#{(y,z)∈G²:2y-z=x}`, `R_r=dp_r⋆dp_{r-1}`, `A_r=p·Σ_x W_G(x)R_r(x)-(ΣW_G)(ΣR_r)`, the
 CORE covariance sequence is an EXACT palindrome in the rank for `n` even (the sponsor 2-power regime):
@@ -53160,15 +53160,12 @@ bilinear centered pairing is invariant under reflecting the row while the gate i
 orthogonal to the rank-blind no-gos G289/G291 (dimension-forced canonical features) and G293
 (rank-blind ordered label list).
 
-Information: (i) the finite low-rank census program (G266/G267/G289/G291/G293, all at `r∈{5,6}`,
+Information: the finite low-rank census program (G266/G267/G289/G291/G293, all at `r∈{5,6}`,
 `n∈{8,16,32}`) has HALF the degrees of freedom it appears to — its rank-5,6 covariances are
-identical to the rank `n-4,n-5` covariances, so observed sign-freedom/thinness-bias at the prize rank
-is literally the complementary-rank value; (ii) at TRUE prize depth `r≈log p` on a thin cell
-`n≈p^{1/5.27}` one has `r>n` so `n+1-r<2` — the palindrome is VACUOUS, the prize rank leaves the
-computable window entirely. Surviving object sharpened: the certificate must live at depth `r≳n`
-(beyond the palindrome), against the rank-labelled row directly (BGK/Paley wall), and cannot be
-extracted from any finite low-rank census whose prize ranks are pinned to their complementary
-partners.
+identical to the rank `n-4,n-5` covariances. **Correction:** production is `n=2^30`, `r*=89`, hence
+`2≤89<2^30-1`; asymptotically `log p=o(p^(1/5.27))`. The original `r>n` interpretation was false.
+The palindrome applies at production depth and pairs it with `2^30-88`, but supplies no sign or
+magnitude bound. The live object remains the direct rank-labelled covariance at `r*=89`.
 
 Scope: structural rank-coupling identity, NOT a Jacobi estimate and NOT a prize closure. Formal
 payload `_G295RankReflectionSymmetry.lean` (`neg_involutive_sum`, `centeredCov`,
@@ -53194,11 +53191,10 @@ window (`p = 17`, exact orbit values `A_2=A_7=-600`, `A_3=A_6=-1344`, `A_4=A_5=-
 **Consequence.** Every finite low-rank census the campaign runs carries at most `(n-2)/2` — and
 empirically exactly `(n-2)/2` — independent data points, half its apparent `n-2` slots. This is
 r-uniform: the collapse is one involution acting on the whole window, and the bound grows with the
-cell. Combined with G295's prize-depth escape (at `r ≈ log p`, `n ≈ p^{1/5.27}` one has `r > n`, so
-`n+1-r < 2` lies outside the window), no low-rank census argument can even furnish an independent
-value at the prize rank; the certificate must live at depth `r ≳ n` against the rank-labelled row,
-the BGK/Paley wall. This is a structural census-information bound, not a sponsor-prime estimate and
-not prize closure.
+cell. **Corrected production interpretation:** `r*=89` lies inside the `n=2^30` window and is paired
+with `2^30-88`; in general `O(log p)=o(p^(1/5.27))`. The orbit count is valid, but it does not move
+the prize rank outside the window or furnish a sign. This is a structural census-information bound,
+not a sponsor-prime estimate and not prize closure.
 
 Formal payload: `Frontier/_G296PalindromeCensusCollapse.lean` (15 theorems; load-bearing new lemmas
 `sigma_no_fixed_point`, `window_eq_reps_union_image`, `palindrome_image_card_le`, the general orbit
@@ -53289,3 +53285,29 @@ Jacobi estimate, NOT a prize-depth bound, NOT a closure. Formal payload
 exact `(113,8)` witness + marginals + reflection-row equality; `(257,32)` ≥ 8 interior sign changes;
 mixed-sign window existence; hard SystemExit(1); PASS). Full note
 `docs/kb/deltastar-466-g300-window-sign-oscillation-2026-07-14.md`. CORE OPEN / ON-BGK.
+---
+
+### [466-G297-dilation-anchor-nogo] Dilation anchors form a coset-constant zero-sum family; the canonical difference anchor does not transport to the coefficient-two CORE kernel (2026-07-13, strengthened 2026-07-14, direct GPT-5.6 Sol CORE)
+
+For `W_a(t)=#{(y,z)∈G²:a y-z=t}` and `A_a(R)=pΣW_aR-n²ΣR`, Lean proves the unconditional structure:
+`W_{au}=W_a` and `A_{au}=A_a` for every `u∈G`; `Σ_{a∈F_p}W_a(t)=n²` pointwise because each pair
+`(y,z)` determines the unique `a=(t+z)/y`; therefore `Σ_a A_a(R)=0` for every integer row. Any
+nonzero full coefficient family has both signs, where the separate `a=0` anchor may carry one sign.
+The nonzero coefficients factor through `F_p^*/G` and satisfy the exact corrected ledger
+`Σ_{a≠0}A_a=-A_0`; they are not claimed to be zero-sum alone. Choosing between the distinguished
+`a=1,2` cosets still requires the missing signed placement.
+
+For the distinguished coefficients, pure-integer computation on the proper subgroup
+`μ_16⊂F_113^*` gives `r=5: (A_1,A_2,Δ)=(-2977296,+1727120,+4704416)` and
+`r=6: (+152176,-77440,-229616)`. The deformation reverses sign in both directions at adjacent ranks
+and exceeds the anchor margin each time. The complete coefficient probe verifies pointwise
+conservation, coset constancy, zero family sum, and both signs; a broader 96-cell census realizes all
+four `(sign A_1,sign A_2)` pairs with only 44/96 agreement.
+
+Uniform cyclotomic/shifted-subgroup intersection estimates, including Shkredov-Vyugin, control
+individual nonnegative profiles but cannot select the sign of the `a=2` quotient coset against the
+rank-labelled row. A transport theorem must control `pΣ(W_2-W_1)R`, which is the BGK covariance in
+difference form. Formal payload `_G297DilationAnchorNoGo.lean` uses only
+`[propext, Classical.choice, Quot.sound]`; pure-integer probe `g297_dilation_anchor_nogo.py`; KB note
+`deltastar-466-g297-dilation-anchor-nogo-2026-07-13.md`. FS15-FS18 remain fixed-depth/almost-all-prime
+magnitude inputs, and G64 forces the sponsor exceptional by depth six. CORE OPEN / ON-BGK.

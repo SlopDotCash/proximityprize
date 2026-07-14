@@ -26,12 +26,10 @@ numbers the campaign computes at every sponsor cell carry at most `(n-2)/2` — 
   `A_r = A_{n+1-r}` and one witness. G296's load-bearing new lemmas — the fixed-point-free involution
   (`sigma_no_fixed_point`), the orbit-representative decomposition (`window_eq_reps_union_image`),
   and the cardinality collapse (`palindrome_image_card_le`) — do not appear in G295.
-- **Quantitative sharpening of the surviving object**: the census on `[2, n-1]` has only `(n-2)/2`
-  degrees of freedom. Per G295, the genuine prize rank `r ≈ log p` on a thin cell `n ≈ p^{1/5.27}`
-  has `r > n`, so `n+1-r < 2` lies OUTSIDE the window. Thus no low-rank census argument can supply an
-  independent value at the prize rank: it is either reflected onto a complementary in-window rank or
-  escapes the window entirely. The certificate must live at depth `r ≳ n` against the rank-labelled
-  row — the BGK/Paley wall.
+- **Production correction**: the census on `[2, n-1]` has only `(n-2)/2` degrees of freedom, but the
+  production rank is inside this window. Exactly `r*=89 < 2^30-1`, with reflected partner
+  `2^30-88`; asymptotically `O(log p)=o(p^(1/5.27))`. The palindrome pairs those two ranks but does
+  not bound their common covariance. The certificate still needs a direct rank-labelled estimate.
 
 ## Formal payload
 
@@ -48,6 +46,8 @@ numbers the campaign computes at every sponsor cell carry at most `(n-2)/2` — 
   sequence on `[2, n-1]` has `((window n).image A).card ≤ (n - 2) / 2`.
 - `reps_card_8 = 3`, `reps_card_16 = 7`, `palindrome_image_card_le_8` — production window sizes
   (corollaries).
+- `production_rank_in_palindrome_window` — exact correction pin: `89` and `2^30-88` both lie in the
+  production palindrome window.
 - `census17` + `census17_palindromic`, `census17_card_le`, `census17_card_eq` — the exact
   `ZMod 17`, `n = 8` sponsor cell (`A_2=A_7=-600`, `A_3=A_6=-1344`, `A_4=A_5=-1728`) has census image
   of cardinality exactly `3 = (8-2)/2`, so the bound is SATURATED (tight, not slack).
@@ -70,6 +70,6 @@ Axioms for all twelve theorems: exactly `[propext, Classical.choice, Quot.sound]
 
 ## Honest scope
 
-Structural census-information bound. Does NOT bound the covariance at production primes, does NOT
-exclude a depth-`r ≳ n` certificate. Orthogonal to G289/G291/G293 (rank-blind no-gos) and a
+Structural census-information bound. Does NOT bound the covariance at production primes and does
+not imply production depth exceeds `n`. Orthogonal to G289/G291/G293 (rank-blind no-gos) and a
 quantitative sharpening of G295. CORE OPEN / ON-BGK (issue #466).

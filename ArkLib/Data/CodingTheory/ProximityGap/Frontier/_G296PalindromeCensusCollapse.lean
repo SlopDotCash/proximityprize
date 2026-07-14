@@ -49,12 +49,11 @@ MOST `(n-2)/2` independent bits of data, and empirically exactly that many.
   bound the cardinality of the census image. The load-bearing new lemmas are the involution / orbit
   count (`sigma_involutive_on`, `sigma_no_fixed_point`, `reps_card`) and the cardinality collapse
   (`palindrome_image_card_le`), none of which appear in G295.
-* It sharpens the surviving-object statement quantitatively. Because the census on `[2, n-1]` has
-  only `(n-2)/2` degrees of freedom, and (per G295) the genuine prize rank `r ≈ log p` on a thin
-  cell `n ≈ p^{1/5.27}` satisfies `r > n` so `n+1-r < 2` (outside the window), no low-rank census
-  argument can even furnish an independent value at the prize rank: it is either reflected onto a
-  complementary in-window rank, or escapes the window entirely. The certificate must live at depth
-  `r ≳ n` against the rank-labelled row — the BGK/Paley wall. CORE OPEN / ON-BGK (issue #466).
+* It sharpens the census bookkeeping quantitatively. The census on `[2, n-1]` has only `(n-2)/2`
+  degrees of freedom. The production rank remains inside this window: exactly `r* = 89 < 2^30-1`,
+  and asymptotically `O(log p) = o(p^(1/5.27))`. Thus the palindrome pairs the production value
+  with the near-full rank `2^30-88`; it does not remove the production value or bound its sign.
+  The certificate must still estimate the rank-labelled row directly. CORE OPEN / ON-BGK (#466).
 
 ## Formal payload
 
@@ -199,6 +198,14 @@ census, as a corollary of `reps_card_eq` (also directly `decide`-checkable). -/
 theorem reps_card_8 : (reps 8).card = 3 := by decide
 
 theorem reps_card_16 : (reps 16).card = 7 := by decide
+
+/-- **Production-parameter correction.** The campaign depth `r* = 89` lies inside the palindrome
+window for `n = 2^30`; its reflected partner is `2^30 - 88`, also inside the window. This prevents
+misreading the census collapse as a claim that production depth exceeds the subgroup order. -/
+theorem production_rank_in_palindrome_window :
+    89 ∈ window (2 ^ 30) ∧ sigma (2 ^ 30) 89 = 2 ^ 30 - 88 ∧
+      sigma (2 ^ 30) 89 ∈ window (2 ^ 30) := by
+  norm_num [window, sigma, Finset.mem_Icc]
 
 /-- The census information bound instantiated at the `n = 8` sponsor cell: any palindromic sequence
 on `Icc 2 7` has at most `3` distinct values. -/
