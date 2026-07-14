@@ -53170,3 +53170,35 @@ Classical.choice, Quot.sound]`, no sorryAx/custom/native_decide. Exact probe
 `g295_rank_reflection_symmetry.py` (even-n mechanism+palindrome on 8 cells, prize-rank pins, ZMod 17
 witness; PASS). Full note `docs/kb/deltastar-466-g295-rank-reflection-symmetry-2026-07-13.md`.
 CORE OPEN / ON-BGK.
+
+---
+
+### [466-G296-palindrome-census-collapse] The rank palindrome collapses the low-rank CORE census to at most `(n-2)/2` distinct values, saturated on production cells (2026-07-13)
+
+G295 gives the exact per-cell rank palindrome `A_r = A_{n+1-r}` on `[2, n-1]` for `n` even. G296
+turns this into a census information bound. The reflection `σ r = n + 1 - r` is a fixed-point-free
+involution of the low-rank window `W = Icc 2 (n-1)`, partitioning its `n-2` slots into exactly
+`(n-2)/2` two-element orbits. A palindromic sequence is constant on each orbit, so its census image
+obeys `(W.image A).card ≤ (n-2)/2`. This is saturated on the production cells: `n = 16` gives 7
+distinct covariance values over the 14-slot window (`p ∈ {97,193}`), `n = 8` gives 3 over the 6-slot
+window (`p = 17`, exact orbit values `A_2=A_7=-600`, `A_3=A_6=-1344`, `A_4=A_5=-1728`).
+
+**Consequence.** Every finite low-rank census the campaign runs carries at most `(n-2)/2` — and
+empirically exactly `(n-2)/2` — independent data points, half its apparent `n-2` slots. This is
+r-uniform: the collapse is one involution acting on the whole window, and the bound grows with the
+cell. Combined with G295's prize-depth escape (at `r ≈ log p`, `n ≈ p^{1/5.27}` one has `r > n`, so
+`n+1-r < 2` lies outside the window), no low-rank census argument can even furnish an independent
+value at the prize rank; the certificate must live at depth `r ≳ n` against the rank-labelled row,
+the BGK/Paley wall. This is a structural census-information bound, not a sponsor-prime estimate and
+not prize closure.
+
+Formal payload: `Frontier/_G296PalindromeCensusCollapse.lean` (15 theorems; load-bearing new lemmas
+`sigma_no_fixed_point`, `window_eq_reps_union_image`, `palindrome_image_card_le`, the general orbit
+count `reps_card_eq : (reps n).card = (n-2)/2` for even `n ≥ 4`, and the headline bound
+`palindrome_census_card_le_half : ((window n).image A).card ≤ (n-2)/2`; exact `ZMod 17` consumer
+`census17_card_eq = 3`). Axioms exactly `[propext, Classical.choice, Quot.sound]`; no
+sorryAx/native_decide/custom axioms. Exact probe:
+`scripts/probes/g296_palindrome_census_collapse.py` (involution/orbit count for `n ∈ {6,8,10,16,32}`,
+float-free palindrome recompute on `(p,n) ∈ {(17,8),(97,16),(193,16)}`, census image = `(n-2)/2`
+distinct values; PASS). Full note
+`docs/kb/deltastar-466-g296-palindrome-census-collapse-2026-07-13.md`. CORE OPEN / ON-BGK.

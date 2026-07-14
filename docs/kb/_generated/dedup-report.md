@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6158 files, 65943 declarations
+- `ArkLib` — 6159 files, 65962 declarations
 
-## Same short-name across multiple files (2571 groups)
+## Same short-name across multiple files (2572 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -4875,6 +4875,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ProximityGap.Frontier.CharZeroWickBoundLadder.wick_four` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_CharZeroWickBoundLadder.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_CharZeroWickBoundLadder.lean#L60) — (no docstring)
 - `theorem ProximityGap.Frontier.CharZeroEnergy.wick_four` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroEnergyClosedForm.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroEnergyClosedForm.lean#L72) — (no docstring)
 - `theorem ArkLib.ProximityGap.Frontier.CMKDepthIrreducibility.wick_four` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R2B_CMKDepthIrreducibility.lean:121](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R2B_CMKDepthIrreducibility.lean#L121) — (no docstring)
+
+### `window` (3 declarations, 3 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.A1SOSLadderN16.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean:149](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean#L149) — `p = 65537` is in the β=4 window for `n = 16`: `n^4 ≤ q` and `n ∣ q−1`.
+- `def ArkLib.ProximityGap.Frontier.G296PalindromeCensusCollapse.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean:92](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean#L92) — The low-rank census window `[2, n-1]`.
+- `theorem ArkLib.ProximityGap.Frontier.Wall6.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean:260](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean#L260) — `p = 65537` is in the β=4 window for `n = 16`.
 
 ### `window_step` (3 declarations, 3 files)
 
@@ -10664,6 +10670,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.R69ShiftedLegendreTowerBudget.shiftedLegendreTowerBudget_mono_const` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R69ShiftedLegendreTowerBudget.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R69ShiftedLegendreTowerBudget.lean#L59) — The normalized shifted-Legendre tower budget is monotone in the tower constant.
 - `theorem ArkLib.ProximityGap.Frontier.R71ShiftedLegendreBudgetMonotonicity.shiftedLegendreTowerBudget_mono_const` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R71ShiftedLegendreBudgetMonotonicity.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R71ShiftedLegendreBudgetMonotonicity.lean#L46) — Shifted-Legendre tower budgets are monotone upward in the tower constant.
 
+### `sigma` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G296PalindromeCensusCollapse.sigma` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean:89](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G296PalindromeCensusCollapse.lean#L89) — The rank-reflection `σ r = n + 1 - r`. On the window `Icc 2 (n-1)` it is the complementation involut
+- `def ProximityGap.Q1ClaimB.sigma` [ArkLib/Data/CodingTheory/ProximityGap/Q1ClaimBDegH.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Q1ClaimBDegH.lean#L60) — `σ_S(z) = ∏_{x ∈ S} (z − x)`, the monic vanishing polynomial of `S`.
+
 ### `sigmaCount` (2 declarations, 2 files)
 
 - `def ProximityGap.DedupSlackStrictVanishing.sigmaCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DedupSlackStrictButVanishing.lean:70](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DedupSlackStrictButVanishing.lean#L70) — The un-deduplicated `r`-subset count `Sigma_r = C(n, r)`.
@@ -11603,11 +11614,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProximityGap.Frontier.SOSCorrectObject.wickℝ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean:87](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean#L87) — The Wick ceiling as a real number, `Wick_K = (2K−1)‼·n^K` with `n = 2m`.
 - `def ArkLib.ProximityGap.Frontier.DCSubtractedDeep.wickℝ` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DE_DCSubtractedDeep.lean:86](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DE_DCSubtractedDeep.lean#L86) — The Wick ceiling as a real number, `Wick_K = (2K−1)‼·n^K` with `n = 2m`.
-
-### `window` (2 declarations, 2 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.A1SOSLadderN16.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean:149](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A1SOSLadderN16.lean#L149) — `p = 65537` is in the β=4 window for `n = 16`: `n^4 ≤ q` and `n ∣ q−1`.
-- `theorem ArkLib.ProximityGap.Frontier.Wall6.window` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean:260](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallSOSPositivityPerK.lean#L260) — `p = 65537` is in the β=4 window for `n = 16`.
 
 ### `window_halving_step` (2 declarations, 2 files)
 
