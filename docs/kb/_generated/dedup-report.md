@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6155 files, 65906 declarations
+- `ArkLib` — 6156 files, 65917 declarations
 
-## Same short-name across multiple files (2564 groups)
+## Same short-name across multiple files (2566 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -8347,6 +8347,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthNumeric.gapQuadratic_mono_from_endpoint` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateEighthNumeric.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateEighthNumeric.lean#L76) — The gap quadratic is increasing throughout the counterexample range.
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenth.gapQuadratic_mono_from_endpoint` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenth.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenth.lean#L72) — The quadratic is strictly increasing on the whole counterexample range `N ≥ 2h+1`, for `h ≥ 8`.
 
+### `gate` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G272SingleCharacterDominanceNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean#L139) — The reconstructed sponsor gate scalar `p · A = P0 + ∑ Q` (G271 orbit reconstruction). Here `Q` is th
+- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:150](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L150) — CORE gate sign of each cell (`+1`/`-1`).
+
 ### `gen` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.G103FSubgroupCollisionBound.gen` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G103FSubgroupCollisionBound.lean:184](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G103FSubgroupCollisionBound.lean#L184) — The two-relation Stepanov generator family: `X^{a+tb}·(X−c)^{tb'}` for `(a, b, b') ∈ Fin D × Fin B ×
@@ -9530,6 +9535,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ProximityGap.FoldedPinWeld.no_direction_codeword_on_witness_of_mcaEvent` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean:102](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean#L102) — **Witness farness is free (generic alphabet).** If the line `u₀ + γ·u₁` agrees with a codeword on `S
 - `theorem ProximityGap.LineListMCAWeld.no_direction_codeword_on_witness_of_mcaEvent` [ArkLib/Data/CodingTheory/ProximityGap/LineListMCAWeld.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/LineListMCAWeld.lean#L79) — **Witness farness is free.** If the line `u₀ + γ·u₁` agrees with a codeword on `S` and no joint pair
+
+### `no_strict_separator_of_positive_relation` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G287CanonicalQuadraticKernelNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean#L79) — A positive linear dependence among signed feature vectors rules out a strict linear separator. Appli
+- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L60) — A strictly-positive linear dependence among signed feature vectors forbids a strict linear separator
 
 ### `no_wraparound_below_onset` (2 declarations, 2 files)
 

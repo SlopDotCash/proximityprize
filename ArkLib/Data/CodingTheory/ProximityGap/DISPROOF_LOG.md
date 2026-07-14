@@ -53081,3 +53081,31 @@ kernel-feature surfaces, not cubic/non-polynomial even statistics and not the sp
 Formal payload `_G287CanonicalQuadraticKernelNoGo.lean`; exact probe
 `g287_canonical_quadratic_kernel_nogo.py`; full note
 `docs/kb/deltastar-466-g287-canonical-quadratic-kernel-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.
+
+### [466-G289-counting-mirage-nogo] the bounded-degree canonical-feature no-gos are a dimension-counting mirage, and the linear no-go is gate-independent (2026-07-13)
+
+G286 (odd linear) and G287 (canonical quadratic) close the weighted-kernel separation route one
+polynomial degree at a time by exhibiting an exact positive Farkas circuit among the gate-signed
+feature vectors of the `n=16`, `p=1 mod 16`, `r in {5,6}` sponsor census. G289 records the structural
+reason those no-gos exist and shows they carry no arithmetic content about the CORE gate. The census
+has `N=84` cells; the generator-independent Ramanujan vector `(T2,T4,T8,T16)` has only four base
+coordinates because the admissible kernel index lives in the thin 2-power tower `<2> <= (Z/n)^*`, so
+every bounded-degree span has dimension `d = binom(4+D,D)` (`D=1:5`, `D=2:15`, `D=3:35`), far below
+`N/2 = 42`. By Cover's function-counting theorem the fraction of the `2^N` sign dichotomies a
+`d`-dimensional map can separate is `2*sum_{k<d} binom(N-1,k)/2^N`, which is `2e-19` at `d=5`,
+`3e-10` at `d=15`, `6e-2` at `d=35`: a separator is astronomically non-generic, so a no-go is forced
+by dimension counting, not arithmetic. The sharp certificate of "no arithmetic content" is gate
+independence: the same strictly-positive weights that annihilate the real gate-signed features also
+annihilate the exactly-flipped gate (negate the relation), so one positive circuit forbids a strict
+separator for a gate and its opposite alike. An exact five-cell circuit (`p in {113,337,401,433}`,
+avoiding the degenerate `p=17` cell) with positive integer weights realizes this: Lean checks all
+four gate-signed coordinate identities for the true gate and, via `flip_gate_relation`, for the
+negated gate. An exact-LP control confirms random gate signs are exactly as non-separable as the true
+gate for `d <= N/2` and separation is generic for `d > N/2`; the two apparent `d=35` LP hits are
+boundary noise (exact re-evaluation gives a strictly negative minimum). Verdict: bounded-degree
+canonical features can never certify the CORE covariance sign; a surviving certificate needs unbounded
+dimension, non-polynomial structure, or new row-labelled arithmetic beyond the 2-power Ramanujan
+tower. This is a route-level no-go, orthogonal to the degree-specific G286/G287; it does not bound the
+covariance at production primes and does not exclude unbounded-dimension certificates. Formal payload
+`_G289CountingMirageNoGo.lean`; exact probe `g289_counting_mirage_nogo.py`; full note
+`docs/kb/deltastar-466-g289-counting-mirage-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.
