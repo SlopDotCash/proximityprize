@@ -53109,3 +53109,30 @@ tower. This is a route-level no-go, orthogonal to the degree-specific G286/G287;
 covariance at production primes and does not exclude unbounded-dimension certificates. Formal payload
 `_G289CountingMirageNoGo.lean`; exact probe `g289_counting_mirage_nogo.py`; full note
 `docs/kb/deltastar-466-g289-counting-mirage-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.
+
+### [466-G291-minimal-radon-floor-nogo] the canonical-feature CORE no-go is a minimal, r-uniform positive Radon circuit pinned at the pigeonhole floor d+1=5 (2026-07-13)
+
+G289 shows the bounded-degree canonical-feature no-gos are dimension-forced and gate-independent, but
+its only kernel-checked witness is a *specific* five-cell positive circuit plus the gate-flip
+transfer; it never proves that circuit is minimal. G291 supplies the missing deep-floor content: the
+census positive circuit is a **minimal positive Radon circuit**, sitting exactly at the pigeonhole
+floor `N = d + 1` for the canonical linear feature dimension `d = log2 n = 4`, and it is **r-uniform**.
+Abstract layer (general `Fin n -> Fin m -> Q`): `DeleteOneIndependent v` says every one-deleted
+subfamily is linearly independent; `minimal_support_of_deleteOne_independent` then forces any
+dependence omitting an index to be zero, and `full_support_of_nonzero_dependence` packages the
+contrapositive: any nonzero dependence uses every cell. Concrete consumer on the exact G289 census
+data (`p in {113,337,401,433}`, ranks `{5,6}`, canonical features `(T2,T4,T8,T16)`):
+`census_deleteOne_independent` proves every `4`-subset of the five signed feature vectors is
+independent via explicit exact integer Cramer certificates (for each deleted `k` and target `t != k`,
+an integer combination of the four coordinate identities equals `det_k * c_t` with `det_k != 0` the
+nonzero 4x4 minor), so `census_circuit_full_support` shows the positive Farkas circuit uses all five
+cells and is minimal. `circuit_r_uniform` witnesses that the support spans both ranks `r in {5,6}`, so
+the obstruction is not a per-rank artifact. `census_minimal_r_uniform_no_go` bundles: no fixed linear
+functional of `(T2,T4,T8,T16)` signs the CORE gate on all five cells, the circuit is full-support
+(minimal), and it is r-uniform. This sharpens G289: with only `d = 4` canonical Ramanujan coordinates,
+`d + 1 = 5` sponsor-faithful cells force a positive circuit and not one cell fewer, and the pigeonhole
+certificate carries no arithmetic gate content. It does not bound the covariance at production primes
+and does not exclude unbounded-dimension or non-polynomial certificates. Formal payload
+`_G291MinimalRadonFloorNoGo.lean` (nine theorems, axioms exactly `[propext, Classical.choice,
+Quot.sound]`, no sorryAx); exact probe `g291_minimal_radon_floor_nogo.py`; full note
+`docs/kb/deltastar-466-g291-minimal-radon-floor-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.

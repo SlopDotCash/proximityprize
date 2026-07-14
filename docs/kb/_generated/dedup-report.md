@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6156 files, 65917 declarations
+- `ArkLib` — 6157 files, 65934 declarations
 
-## Same short-name across multiple files (2566 groups)
+## Same short-name across multiple files (2571 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -3363,6 +3363,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.gapPoly` [ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCapture.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Hab25CurveCapture.lean#L60) — The per-coordinate gap polynomial `∑ⱼ C(dⱼ(x))·Xʲ`.
 - `def ArkLib.ProximityGap.KKH26.gapPoly` [ArkLib/Data/CodingTheory/ProximityGap/KKH26GapCensusLaw.lean:48](../../../ArkLib/Data/CodingTheory/ProximityGap/KKH26GapCensusLaw.lean#L48) — The line-minus-explanation polynomial `X^A + λ·X^B − q`.
 
+### `gate` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.Frontier.G272SingleCharacterDominanceNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean#L139) — The reconstructed sponsor gate scalar `p · A = P0 + ∑ Q` (G271 orbit reconstruction). Here `Q` is th
+- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:150](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L150) — CORE gate sign of each cell (`+1`/`-1`).
+- `def ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:141](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L141) — CORE gate sign of each cell (`+1`/`-1`).
+
 ### `gaussSum_mulShift_twist` (3 declarations, 3 files)
 
 - `theorem ArkLib.ProximityGap.R339GaussPhaseMellinTwist.gaussSum_mulShift_twist` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R339GaussPhaseMellinTwist.lean:48](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R339GaussPhaseMellinTwist.lean#L48) — Extracting a nonzero shift from a Gauss sum as a multiplicative twist: `τ(χ', ψ_b) = χ'⁻¹(b) · τ(χ',
@@ -3656,6 +3662,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.LadderSaddle.noWraparound_imp_energy_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean#L151) — (no docstring)
 - `theorem ArkLib.ProximityGap.UniformNoWraparoundObligation.noWraparound_imp_energy_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean:136](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean#L136) — (no docstring)
 - `theorem ArkLib.ProximityGap.NoExcessOnset.noWraparound_imp_energy_eq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean:184](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean#L184) — **HEADLINE: no `r`-fold wraparound ⟹ `E_r = E_r^{char0}`.** The exact transfer: when there is no gen
+
+### `no_strict_separator_of_positive_relation` (3 declarations, 3 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G287CanonicalQuadraticKernelNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean#L79) — A positive linear dependence among signed feature vectors rules out a strict linear separator. Appli
+- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L60) — A strictly-positive linear dependence among signed feature vectors forbids a strict linear separator
+- `theorem ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:94](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L94) — A strictly-positive linear dependence among signed feature vectors forbids a strict linear separator
 
 ### `nodal` (3 declarations, 3 files)
 
@@ -6800,6 +6812,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.G267.census` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G267ThinnessSeparationCensus.lean:86](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G267ThinnessSeparationCensus.lean#L86) — The exact `n = 8` census: 90 genuine cells `17 ≤ p ≤ 2657`, `p ≡ 1 (mod 8)`, with the exact adjacent
 - `def ArkLib.ProximityGap.Frontier.G63PrimitiveCensusPinnedAtDCFloor.census` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G63PrimitiveCensusPinnedAtDCFloor.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G63PrimitiveCensusPinnedAtDCFloor.lean#L85) — The **primitive-depth weighted collision census** at depth `r`: the antipodally balanced count `negS
 
+### `census_farkas_relation` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.census_farkas_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:165](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L165) — Exact positive dependence: each of the four gate-signed feature coordinates sums to zero.
+- `theorem ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.census_farkas_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:162](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L162) — Exact positive dependence: each of the four gate-signed feature coordinates sums to zero.
+
 ### `centeredProductMean` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.R192HalfTurnAutocorrelationConsumer.centeredProductMean` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R192HalfTurnAutocorrelationConsumer.lean:34](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R192HalfTurnAutocorrelationConsumer.lean#L34) — Centered covariance-style average over a finite set.
@@ -6909,6 +6926,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Char0LeadingLogConcave.choose_step` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingLogConcave.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingLogConcave.lean#L38) — **The cross-multiplied log-concavity for binomials (integer form):** `C(n,k−1)·C(n,k+1)·((k+1)·(n−k+
 - `lemma ProximityGap.PairRank.choose_step` [ArkLib/Data/CodingTheory/ProximityGap/TwoPowerFibreValue.lean:408](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoPowerFibreValue.lean#L408) — (no docstring)
+
+### `circuitWeight` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:153](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L153) — Exact positive Farkas weights of the five-cell circuit.
+- `def ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.circuitWeight` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:150](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L150) — Exact positive Farkas weights of the five-cell circuit.
+
+### `circuitWeight_pos` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:161](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L161) — Every circuit weight is strictly positive.
+- `theorem ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.circuitWeight_pos` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:158](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L158) — Every circuit weight is strictly positive.
 
 ### `cliqueLocator_natDegree` (2 declarations, 2 files)
 
@@ -8347,11 +8374,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthNumeric.gapQuadratic_mono_from_endpoint` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateEighthNumeric.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateEighthNumeric.lean#L76) — The gap quadratic is increasing throughout the counterexample range.
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenth.gapQuadratic_mono_from_endpoint` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenth.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateSixteenth.lean#L72) — The quadratic is strictly increasing on the whole counterexample range `N ≥ 2h+1`, for `h ≥ 8`.
 
-### `gate` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.G272SingleCharacterDominanceNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean:139](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G272SingleCharacterDominanceNoGo.lean#L139) — The reconstructed sponsor gate scalar `p · A = P0 + ∑ Q` (G271 orbit reconstruction). Here `Q` is th
-- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.gate` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:150](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L150) — CORE gate sign of each cell (`+1`/`-1`).
-
 ### `gen` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.G103FSubgroupCollisionBound.gen` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G103FSubgroupCollisionBound.lean:184](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G103FSubgroupCollisionBound.lean#L184) — The two-relation Stepanov generator family: `X^{a+tb}·(X−c)^{tb'}` for `(a, b, b') ∈ Fin D × Fin B ×
@@ -9536,11 +9558,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ProximityGap.FoldedPinWeld.no_direction_codeword_on_witness_of_mcaEvent` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean:102](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick3.lean#L102) — **Witness farness is free (generic alphabet).** If the line `u₀ + γ·u₁` agrees with a codeword on `S
 - `theorem ProximityGap.LineListMCAWeld.no_direction_codeword_on_witness_of_mcaEvent` [ArkLib/Data/CodingTheory/ProximityGap/LineListMCAWeld.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/LineListMCAWeld.lean#L79) — **Witness farness is free.** If the line `u₀ + γ·u₁` agrees with a codeword on `S` and no joint pair
 
-### `no_strict_separator_of_positive_relation` (2 declarations, 2 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.G287CanonicalQuadraticKernelNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G287CanonicalQuadraticKernelNoGo.lean#L79) — A positive linear dependence among signed feature vectors rules out a strict linear separator. Appli
-- `theorem ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.no_strict_separator_of_positive_relation` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L60) — A strictly-positive linear dependence among signed feature vectors forbids a strict linear separator
-
 ### `no_wraparound_below_onset` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.OnsetGrowth.no_wraparound_below_onset` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_OnsetGrowthLaw.lean:144](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_OnsetGrowthLaw.lean#L144) — **No wraparound below the onset (consumer wrapper).** For the cyclotomic field `K = ℚ(ζ_n)` of degre
@@ -10301,6 +10318,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.AvW6.rate_lt_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW6_ConditionalPaleyChain.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW6_ConditionalPaleyChain.lean#L46) — **Rate < 1 at the Paley threshold (proven).** If `(c/n)·T² = 2 ln(card s) + 1`, then `card s · exp(-
 - `theorem ArkLib.ProximityGap.Frontier.AvW7.rate_lt_one` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW7_TailToMCAObject.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW7_TailToMCAObject.lean#L56) — **Rate < 1 at the Paley threshold (proven).** Mirrors `_AvW6.rate_lt_one` for the `nzFreq` family: w
 
+### `rawFeat` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.rawFeat` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L142) — Raw feature vectors `(T₂,T₄,T₈,T₁₆)` of the five census cells.
+- `def ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.rawFeat` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:133](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L133) — Raw feature vectors `(T₂,T₄,T₈,T₁₆)` of the five census cells.
+
 ### `rawShadowOffDiag` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.G89RawWordRelationAnomalyBridge.rawShadowOffDiag` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89RawWordRelationAnomalyBridge.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G89RawWordRelationAnomalyBridge.lean#L35) — Ordered raw word pairs whose characteristic-zero shadows are genuinely distinct.
@@ -10665,6 +10687,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSignatureRefuted.signature_pair_condition` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightSignatureRefuted.lean:74](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightSignatureRefuted.lean#L74) — All 24 signatures satisfy the exact pair inequality inherited from the global core cap seven.
 - `theorem ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSixSignatureRefuted.signature_pair_condition` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightSixSignatureRefuted.lean:73](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourNoEightSixSignatureRefuted.lean#L73) — All 24 signatures satisfy the exact pair inequality inherited from the global core cap seven.
+
+### `signedFeat` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G289CountingMirageNoGo.signedFeat` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G289CountingMirageNoGo.lean#L101) — The signed feature vectors of a census.
+- `def ArkLib.ProximityGap.Frontier.G291MinimalRadonFloorNoGo.signedFeat` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean:144](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G291MinimalRadonFloorNoGo.lean#L144) — Signed feature vectors `v i j = gate i * rawFeat i j`.
 
 ### `simulateQ_askInput` (2 declarations, 2 files)
 
@@ -14312,7 +14339,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 637 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 642 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 

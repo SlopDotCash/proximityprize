@@ -2302,6 +2302,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G285KernelDomainCharacter
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G286EvenConeOddSeparatorNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G287CanonicalQuadraticKernelNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G289CountingMirageNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G291MinimalRadonFloorNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
