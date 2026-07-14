@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6159 files, 65962 declarations
+- `ArkLib` — 6160 files, 65981 declarations
 
-## Same short-name across multiple files (2572 groups)
+## Same short-name across multiple files (2573 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -583,6 +583,15 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `lemma DuplexSpongeFS.Sponge316.getElem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514PaperFork.lean:137](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514PaperFork.lean#L137) — Shifting a tracked slot through `eraseIdx` of a different index.
 - `theorem DuplexSpongeFS.EagerLazyDS.getElem` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean:959](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma58Correspondence.lean#L959) — The `getElem?` position map of `eraseIdx`: deleting index `i` shifts later positions by one, for all
 
+### `centeredCov` (6 declarations, 6 files)
+
+- `def ArkLib.ProximityGap.Frontier.G258QuotientAutomorphismPositivityNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean#L151) — Integer centered covariance on a quotient of size `m`.
+- `def ArkLib.ProximityGap.Frontier.G260OriginAnchorGaugeNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean#L91) — Integer centered covariance on a quotient of size `m`.
+- `def ArkLib.ProximityGap.Frontier.G263JointRankSignFreedom.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean#L61) — Exact integer centered covariance `Cov(W,R) = m·∑ W·R − (∑ W)(∑ R)`; this is the DC-subtracted gate:
+- `def ArkLib.ProximityGap.Frontier.G265CoordinateReparametrizationNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean#L51) — Integer centered covariance on a cyclic quotient.
+- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L111) — The centered covariance pairing of a gate `W` against a row `R` on `ZMod p`: `centeredCov p W R = p
+- `def ArkLib.ProximityGap.G298.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean#L76) — The centered covariance pairing of a gate `W` against a row `R` over `ZMod p` (matching the G295 `ce
+
 ### `coeffVec` (6 declarations, 6 files)
 
 - `def Round19Clique.coeffVec` [ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueBeachhead.lean:121](../../../ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueBeachhead.lean#L121) — The coefficient vector of a polynomial, truncated to `Fin N`.
@@ -722,14 +731,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.GoodPrimeFamilyDensity.card_primeFactors_le_natLog` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GoodPrimeFamilyDensity.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GoodPrimeFamilyDensity.lean#L112) — The distinct-prime-factor count of a positive integer is `≤ log₂` of it.
 - `theorem ArkLib.ProximityGap.Frontier.SpecF7GoodPrimeCollisionCount.card_primeFactors_le_natLog` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpecF7_GoodPrimeCollisionCount.lean:152](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SpecF7_GoodPrimeCollisionCount.lean#L152) — **(B.0) a positive integer has at most `log₂ N` distinct prime factors.** Each distinct prime factor
 - `theorem ArkLib.ProximityGap.Frontier.TPSDivisorEquidistribution.card_primeFactors_le_natLog` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TPSDivisorEquidistribution.lean:108](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_TPSDivisorEquidistribution.lean#L108) — A positive integer has at most `log₂`-many distinct prime factors.
-
-### `centeredCov` (5 declarations, 5 files)
-
-- `def ArkLib.ProximityGap.Frontier.G258QuotientAutomorphismPositivityNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivityNoGo.lean#L151) — Integer centered covariance on a quotient of size `m`.
-- `def ArkLib.ProximityGap.Frontier.G260OriginAnchorGaugeNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean:91](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean#L91) — Integer centered covariance on a quotient of size `m`.
-- `def ArkLib.ProximityGap.Frontier.G263JointRankSignFreedom.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean#L61) — Exact integer centered covariance `Cov(W,R) = m·∑ W·R − (∑ W)(∑ R)`; this is the DC-subtracted gate:
-- `def ArkLib.ProximityGap.Frontier.G265CoordinateReparametrizationNoGo.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G265CoordinateReparametrizationNoGo.lean#L51) — Integer centered covariance on a cyclic quotient.
-- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.centeredCov` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L111) — The centered covariance pairing of a gate `W` against a row `R` on `ZMod p`: `centeredCov p W R = p
 
 ### `conv` (5 declarations, 5 files)
 
@@ -2534,6 +2535,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.Kappa8Kappa10.E4_le_wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/Kappa8Kappa10DCWickRungs.lean:206](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/Kappa8Kappa10DCWickRungs.lean#L206) — **The r=4 energy Wick-budget rung: `E₄ ≤ 105 n⁴`** for `n ≥ 1** (`105 = 7‼`).  The slack `105n⁴ − E₄
 - `theorem ProximityGap.Frontier.CharZeroEnergy.E4_le_wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroEnergyClosedForm.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CharZeroEnergyClosedForm.lean#L104) — (no docstring)
 - `theorem ProximityGap.Frontier.ShawFallingCoeffLaw.E4_le_wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawFallingCoeffLaw.lean:280](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawFallingCoeffLaw.lean#L280) — **Clean Gaussian bound, `r = 4`**: `E_4(m) ≤ 105·(2m)⁴` for `m ≥ 1`.
+
+### `G17` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.G298.G17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean:102](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean#L102) — The order-8 subgroup `G = ⟨9⟩ = {1,2,4,8,9,13,15,16} ≤ F₁₇^*`.
+- `def ArkLib.ProximityGap.G95CyclicCodeWeightDictionary.G17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean:530](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean#L530) — `μ₄ ⊂ F₁₇^×` as an explicit finset.
+- `def ArkLib.ProximityGap.MomentCollisionSubgroupData.G17` [ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean:100](../../../ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean#L100) — The order-`8` multiplicative subgroup `⟨2⟩ = {x : x⁸ = 1}` of `F₁₇` — a genuine smooth (power-of-two
 
 ### `Gbad` (3 declarations, 3 files)
 
@@ -5707,11 +5714,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `abbrev ProximityGap.UncertaintyTwoPower.FreqSupport` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerBounds.lean:51](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerBounds.lean#L51) — A finite "frequency" support `T ⊆ ZMod n` — the Fourier support of the far-line function.
 - `abbrev ProximityGap.UncertaintyTwoPowerExtremal.FreqSupport` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerExtremal.lean:79](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/UncertaintyTwoPowerExtremal.lean#L79) — A finite "frequency" support `T ⊆ ZMod n` — the Fourier support of the far-line function.
 
-### `G17` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.G95CyclicCodeWeightDictionary.G17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean:530](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean#L530) — `μ₄ ⊂ F₁₇^×` as an explicit finset.
-- `def ArkLib.ProximityGap.MomentCollisionSubgroupData.G17` [ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean:100](../../../ArkLib/Data/CodingTheory/ProximityGap/MomentCollisionSubgroupData.lean#L100) — The order-`8` multiplicative subgroup `⟨2⟩ = {x : x⁸ = 1}` of `F₁₇` — a genuine smooth (power-of-two
-
 ### `G17_card` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.G95CyclicCodeWeightDictionary.G17_card` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean:536](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CyclicCodeWeightDictionary.lean#L536) — (no docstring)
@@ -6142,6 +6144,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def Interaction.Verifier.run` [ArkLib/Interaction/Reduction.lean:262](../../../ArkLib/Interaction/Reduction.lean#L262) — (no docstring)
 - `def Verifier.run` [ArkLib/OracleReduction/Execution.lean:137](../../../ArkLib/OracleReduction/Execution.lean#L137) — Run the (non-oracle) verifier in an interactive reduction. It takes in the input statement and the t
+
+### `W17` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G295RankReflectionSymmetry.W17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean:155](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G295RankReflectionSymmetry.lean#L155) — Sponsor gate `W_G(x) = #{(y,z) ∈ G² : 2y - z = x}` on the `n = 8, p = 17` cell. Even.
+- `def ArkLib.ProximityGap.G298.W17` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G298Depth1EnergyThreshold.lean#L98) — `W_G` for `G = ⟨9⟩ ≤ F₁₇^*` (order 8), `W_G(x) = #{(y,z) ∈ G² : 2y - z = x}`, tabulated over `ZMod 1
 
 ### `WallHolds` (2 declarations, 2 files)
 

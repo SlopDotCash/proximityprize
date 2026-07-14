@@ -53202,3 +53202,37 @@ sorryAx/native_decide/custom axioms. Exact probe:
 float-free palindrome recompute on `(p,n) ∈ {(17,8),(97,16),(193,16)}`, census image = `(n-2)/2`
 distinct values; PASS). Full note
 `docs/kb/deltastar-466-g296-palindrome-census-collapse-2026-07-13.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G298-depth1-energy-threshold] the depth-1 CORE covariance is a subgroup additive-energy threshold `A_1 = p·T₃ - n³`, and its sign is not fixed by thinness (2026-07-13, direct Opus 4.8 CORE)
+
+G295/G296 studied `A_r` in the rank variable (palindrome `A_r=A_{n+1-r}`, vacuous at prize depth).
+G298 turns to the depth-1 endpoint. At `r=1` the row degenerates (`dp_1=1_G`, `dp_0=1_{0}`, so
+`R_1=1_G`), giving the EXACT closed form `A_1 = p·T₃(G) - n³`, where `T₃(G)=∑_{x∈G}W_G(x)=
+#{(y,z)∈G²:2y-z∈G}=#{(y,z,w)∈G³:2y=z+w}` is the number of 3-term APs with midpoint in the
+multiplicative subgroup (the additive-energy-adjacent count), `∑W_G=n²`, `∑1_G=n`. Equivalently
+`A_1=n²(p·T₃/n² - n)`, so `sign A_1 = sign(T₃/n² - n/p)`: the depth-1 CORE covariance is exactly the
+subgroup's additive-3AP density measured against the random density `n/p` — the Paley/BGK object at
+depth one, as a single scalar.
+
+No-go: `sign A_1` is NOT a function of thinness `n`. The sharpest witness fixes `n` AND `T₃` and
+flips the sign purely by the prime crossing `n³/T₃ = 512/24 ≈ 21.33`: `p=17`, `G=⟨9⟩≤F₁₇^*`, `T₃=24`
+=> `A_1=17·24-512=-104<0`; `p=41`, `G=⟨3⟩≤F₄₁^*`, `T₃=24` => `A_1=41·24-512=+472>0`. Same order-8
+subgroup structure (identical `T₃`), opposite sign from scale alone. So no depth-1 energy functional
+of the fixed shape `p·T₃-n³` can certify a fixed CORE covariance sign across sponsor primes; the
+simplest possible certificate (the depth-1 boundary covariance) is sign-indeterminate. A surviving
+certificate must use the rank-labelled row at genuine depth, not the depth-1 boundary energy.
+
+Orthogonal to G289/G291 (rank-blind canonical-feature Radon no-gos), G293 (rank-blind label list),
+and G295/G296 (rank palindrome): those constrain rank structure; G298 pins the depth-1 boundary
+VALUE to a named subgroup additive energy and gives its sign no-go. Thinness-essential.
+
+Scope: exact identity + depth-1 sign no-go. NOT a Jacobi estimate, NOT a prize-depth bound, NOT a
+closure. Formal payload `_G298Depth1EnergyThreshold.lean` (`centeredCov`, `centeredCov_indicator`,
+`A17_neg=-104`/`A17_lt_zero`, `A41_pos=472`/`A41_gt_zero`, `T3_17=T3_41=24`, headline
+`depth1_sign_indeterminate`); axioms exactly `[propext, Classical.choice, Quot.sound]`, no
+sorryAx/custom/native_decide. Exact probe `scripts/probes/g298_depth1_energy_threshold.py` (closed
+form on all sponsor cells n∈{8,16} p<500, both-signs, identical-`T₃` witness pair, threshold
+placement; hard SystemExit(1); PASS). Full note
+`docs/kb/deltastar-466-g298-depth1-energy-threshold-2026-07-13.md`. CORE OPEN / ON-BGK.
