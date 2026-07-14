@@ -2298,7 +2298,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G280SponsorConeAntipodeNo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G281CarryShapeAmplificationNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G282CarryFourierNormalNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G284AntipodeFreeSeparationNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G285KernelDomainCharacterNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G286EvenConeOddSeparatorNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G287CanonicalQuadraticKernelNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

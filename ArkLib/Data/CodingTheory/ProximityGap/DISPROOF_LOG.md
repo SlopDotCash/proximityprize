@@ -53055,3 +53055,29 @@ correlation, still CORE OPEN / ON-BGK. Artifacts:
 `Frontier/_G285KernelDomainCharacterNoGo.lean`,
 `scripts/probes/g285_kernel_domain_character_probe.py`, and
 `docs/kb/deltastar-466-g285-kernel-domain-character-nogo-2026-07-13.md`.
+
+### [466-G287-canonical-quadratic-kernel-nogo] reflection-odd statistics vanish at every degree, and the complete generator-independent kernel feature span is sign-infeasible through homogeneous degree two (2026-07-13)
+
+G286's fixed-point proof does not use linearity: if every realizable sponsor profile satisfies
+`sigma(c)=c`, then every reflection-odd function satisfies `F(c)=F(sigma(c))=-F(c)`, hence
+`F(c)=0`. Thus the proposed "odd quadratic or higher" escape is self-contradictory. The first
+corrected nonlinear class is reflection-even and quadratic.
+
+At `n=16`, generator independence makes the complete nonprincipal kernel-input linear basis the
+Ramanujan vector `(T2,T4,T8,T16)`. Five genuine cells form an exact positive Farkas circuit in its
+four gate-signed coordinates, closing every fixed linear combination, not only G285's `K2,K4`.
+The ten homogeneous quadratic monomials are also nonseparable: on all 84 exact `p<2600`,
+`p=1 mod 16`, `r in {5,6}` cells, the normalized max margin is zero; eleven cells with `p>=113`
+give a rank-ten signed feature matrix and a one-dimensional exact nullspace with all weights
+strictly positive. Lean checks all ten coordinate identities and the reusable Farkas implication,
+so no fixed homogeneous quadratic has the CORE sign on those cells.
+
+The Jacobi interpretation worsens rather than improves the fanout: each `T_d` is a full
+`m=(p-1)/n`-term twisted Jacobi average, so `T_d T_e` is an `m^2`-term product family. Weil purity
+controls magnitudes but supplies no relative sign, while G228-G247 already rule out bounded-mass
+or coherent compression of the untwisted factor. FS15-FS18 remain fixed-depth/almost-all-prime and
+cannot select either sponsor. This closes the complete canonical linear and homogeneous-quadratic
+kernel-feature surfaces, not cubic/non-polynomial even statistics and not the sponsor covariance.
+Formal payload `_G287CanonicalQuadraticKernelNoGo.lean`; exact probe
+`g287_canonical_quadratic_kernel_nogo.py`; full note
+`docs/kb/deltastar-466-g287-canonical-quadratic-kernel-nogo-2026-07-13.md`. CORE OPEN / ON-BGK.
