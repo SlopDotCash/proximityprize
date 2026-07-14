@@ -53244,3 +53244,48 @@ sorryAx/custom/native_decide. Exact probe `scripts/probes/g298_depth1_energy_thr
 form on all sponsor cells n∈{8,16} p<500, both-signs, identical-`T₃` witness pair, threshold
 placement; hard SystemExit(1); PASS). Full note
 `docs/kb/deltastar-466-g298-depth1-energy-threshold-2026-07-13.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G300-window-sign-oscillation] the in-window CORE covariance sign genuinely oscillates — an interior sign change forbids any monotone / single-band certificate at the in-window prize depth (2026-07-14, direct Opus 4.8 CORE)
+
+G299 proved (kernel-checked) that at production (`q = 2^158`, `n = 2^30`, ledger depth `r* ≈ 89`) the
+prize rank and its palindromic reflection `n+1-r*` both lie INSIDE the low-rank window `[2, n-1]`.
+That reopens a shortcut hope: if `A_r` were sign-definite / rank-monotone / a single central sign
+band on the window, the in-window placement of `r*` would sign the CORE covariance at the prize depth
+from cheap boundary data, no deep-row arithmetic needed.
+
+G300 kills that hope. The centered covariance `A_r = p·∑ₓ W_G(x)R_r(x) - (∑W_G)(∑R_r)`,
+`R_r = dp_r ⋆ dp_{r-1}`, is NOT sign-constant on the window. On the exact sponsor cell
+`(p,n) = (113,8)`, `G = ⟨15⟩ ≤ F₁₁₃^*` (order 8):
+`A = [A_1..A_7] = [392, 128, -7240, -13128, -13128, -7240, 128]`, signs `[+,+,-,-,-,-,+]`. So
+`A_2 = 128 > 0` (shallow), `A_4 = -13128 < 0` (deeper), `A_7 = 128 > 0` (deepest in-window rank
+`n-1`): the sign flips `+ → - → +` strictly inside `[2, n-1] = [2, 7]`. The covariance is not
+sign-definite, not rank-monotone on the reps half (`A_2 > 0 > A_4` with `2,4 ∈ reps 8`,
+`|A_2| < |A_4|`), and not a single-sign band.
+
+Consequence: because the covariance sign changes with the rank inside the window, its value at the
+in-window prize depth `r*` cannot be read off from a boundary datum or a monotonicity/unimodality
+assumption. A signing certificate must consult the arithmetic of the specific row `R_{r*}` at genuine
+depth — the BGK/Paley wall. This is the precise reason G299's "in-window" placement is not a shortcut
+to closure: in-window does not mean sign-readable.
+
+Not a small-cell artifact: on `(p,n) = (257,32)` the sign sequence is the period-4 profile
+`+ + + + + - - + + - - + + - - + + - - + + - - + + - - + + + +` with eleven strictly-interior sign
+changes at `r ∈ {5,7,9,…,25}`, governed by the sponsor prime's arithmetic, not by depth alone.
+
+Orthogonal to G289/G291/G293 (rank-blind), G295 (the palindrome identity itself — G300 shows the sign
+is not fixed by rank even within the symmetry-reduced half), G296 (census cardinality collapse), G298
+(depth-1 endpoint sign no-go — G300 is the in-window interior analogue), and G299 (in-window
+placement — G300 is its load-bearing follow-up).
+
+Scope: exact interior-sign-change no-go closing the "in-window ⇒ sign-readable" shortcut. NOT a
+Jacobi estimate, NOT a prize-depth bound, NOT a closure. Formal payload
+`_G300WindowSignOscillation.lean` (`centeredCov`, `sum_zmod_eq_range`, marginals
+`sumW113=64`/`sumR2_113=224`/`sumR4_113=3920`/`dotW_R2=128`/`dotW_R4=2104`, `A2_113=128`/`A2_pos`,
+`A4_113=-13128`/`A4_neg`, `R7_eq_R2`/`A7_eq_A2`, headline `window_sign_oscillates`); axioms exactly
+`[propext, Classical.choice, Quot.sound]`, no sorryAx/custom/native_decide. Exact probe
+`scripts/probes/g300_window_sign_oscillation.py` (palindrome on all sponsor cells n∈{8,16,32} p<400;
+exact `(113,8)` witness + marginals + reflection-row equality; `(257,32)` ≥ 8 interior sign changes;
+mixed-sign window existence; hard SystemExit(1); PASS). Full note
+`docs/kb/deltastar-466-g300-window-sign-oscillation-2026-07-14.md`. CORE OPEN / ON-BGK.

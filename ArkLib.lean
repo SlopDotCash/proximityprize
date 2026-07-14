@@ -2307,6 +2307,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G295RankReflectionSymmetr
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G296PalindromeCensusCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G298Depth1EnergyThreshold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G299PrizeDepthInWindow
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G300WindowSignOscillation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
