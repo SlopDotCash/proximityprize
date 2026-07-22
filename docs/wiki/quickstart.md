@@ -131,6 +131,15 @@ with lint disabled, so treat this as opt-in for now.
 If the task is specifically Lean warning cleanup, follow
 [`../skills/fix-lean-warnings.md`](../skills/fix-lean-warnings.md).
 
+To enforce a zero-warning budget under `ArkLib/Data/`, add the explicit strict check:
+
+```bash
+./scripts/validate.sh --strict-warnings
+```
+
+The repository currently has inherited linter warnings, so this is a cleanup/ratchet tool rather
+than a merge gate. Ordinary validation still treats every Lean error as a failure.
+
 ### Docstrings, blueprint, or website changes
 
 ```bash
@@ -214,10 +223,12 @@ python3 -m pip install leanblueprint
 ## CI Mapping
 
 - [`../../.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
-  runs the timing-enabled main build on PRs and pushes to `main`, measures a
-  clean build, a warm rebuild, and the `./scripts/validate.sh` path, then
-  uploads timing artifacts and posts a comparison report on same-repo PRs.
-  It also enforces the issue #47 verification gates: a fast precheck rejecting
+  compiles every module imported by generated `ArkLib.lean` in eight cumulative topological stages.
+  Each stage restores the preceding stage's ArkLib oleans, compiles the next contiguous portion of
+  the import DAG, and uploads the cumulative result. This preserves full-project coverage without
+  relying on one hosted runner surviving a multi-hour cold build. The final artifact is also the
+  input to the Pages documentation workflow.
+  A parallel policy job enforces the issue #47 verification gates: a fast precheck rejecting
   `native_decide`/`bv_decide`/custom `axiom` declarations in live source
   (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring
   zero live holes (`scripts/sorry_census.py --fail-on-holes`), and a

@@ -1,0 +1,77 @@
+name: Lean build stage
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        required: true
+        type: number
+      stage-count:
+        required: true
+        type: number
+
+jobs:
+  build:
+    name: compile
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Reclaim runner disk for Lean artifacts
+        run: |
+          echo "Disk before cleanup:"
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          echo "Disk after cleanup:"
+          df -h /
+
+      - name: Set up Lean environment
+        uses: leanprover/lean-action@v1.5.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+
+      - name: Fetch dependency cache
+        run: lake exe cache get
+
+      - name: Select preceding build stage
+        if: inputs.stage > 0
+        id: prior
+        env:
+          STAGE: ${{ inputs.stage }}
+        run: echo "artifact=arklib-build-stage-$((STAGE - 1))" >> "$GITHUB_OUTPUT"
+
+      - name: Download preceding build stage
+        if: inputs.stage > 0
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ steps.prior.outputs.artifact }}
+          path: ${{ runner.temp }}/arklib-prior-stage
+
+      - name: Restore preceding build stage
+        if: inputs.stage > 0
+        run: |
+          mkdir -p .lake/build/lib/lean
+          tar -C .lake/build/lib/lean -xzf \
+            "$RUNNER_TEMP/arklib-prior-stage/arklib-build.tar.gz"
+
+      - name: Compile assigned topological stage
+        run: bash scripts/ci-build-stage.sh ${{ inputs.stage }} ${{ inputs.stage-count }}
+
+      - name: Package cumulative ArkLib build
+        run: tar -C .lake/build/lib/lean -czf "$RUNNER_TEMP/arklib-build.tar.gz" ArkLib
+
+      - name: Upload cumulative ArkLib build
+        uses: actions/upload-artifact@v7
+        with:
+          name: arklib-build-stage-${{ inputs.stage }}
+          path: ${{ runner.temp }}/arklib-build.tar.gz
+          retention-days: 1

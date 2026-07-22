@@ -92,21 +92,18 @@ jobs:
       - name: Fetch dependency cache
         run: lake exe cache get
 
-      - name: Download compiled ArkLib shards
+      - name: Download validated ArkLib build
         uses: actions/download-artifact@v8
         with:
-          pattern: arklib-lean-shard-*
-          path: ${{ runner.temp }}/arklib-shards
-          merge-multiple: true
+          name: arklib-build-stage-7
+          path: ${{ runner.temp }}/arklib-build
           github-token: ${{ github.token }}
           run-id: ${{ steps.source.outputs.run-id }}
 
       - name: Assemble and verify compiled project
         run: |
           mkdir -p .lake/build/lib/lean
-          for archive in "$RUNNER_TEMP"/arklib-shards/*.tar.gz; do
-            tar -C .lake/build/lib/lean -xzf "$archive"
-          done
+          tar -C .lake/build/lib/lean -xzf "$RUNNER_TEMP/arklib-build/arklib-build.tar.gz"
           ./scripts/lake-locked.sh build
 
       - name: Build project documentation

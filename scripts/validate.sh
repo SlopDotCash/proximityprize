@@ -10,10 +10,11 @@ cd "$REPO_ROOT"
 run_lint=0
 run_docs=0
 run_site=0
+strict_warnings=0
 
 usage() {
   cat <<'EOF'
-Usage: ./scripts/validate.sh [--lint] [--docs] [--site]
+Usage: ./scripts/validate.sh [--lint] [--docs] [--site] [--strict-warnings]
 
 Default checks (mirrors the CI gates so local == CI):
   - python3 ./scripts/forbidden_tokens.py          (CI gate 1, precheck)
@@ -29,6 +30,7 @@ Optional checks:
   --lint   Run ./scripts/lint-style.sh
   --docs   Run DISABLE_EQUATIONS=1 lake build ArkLib:docs
   --site   Run ./scripts/build-web.sh (implies --docs)
+  --strict-warnings  Fail on any non-`sorry` warning under ArkLib/Data/
 EOF
 }
 
@@ -43,6 +45,9 @@ for arg in "$@"; do
     --site)
       run_docs=1
       run_site=1
+      ;;
+    --strict-warnings)
+      strict_warnings=1
       ;;
     -h|--help)
       usage
