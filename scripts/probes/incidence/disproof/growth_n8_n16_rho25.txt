@@ -1,6 +1,0 @@
-### GROWTH via n32smart (same engine) ###
-RESULT n8a3 q=4129 n=8 k=2 a=3 : MAX_LIST=7 ceiling=9 budget_n=8
-RESULT n8a5 q=4129 n=8 k=4 a=5 : MAX_LIST=7 ceiling=14 budget_n=8
-RESULT n16a5 q=65617 n=16 k=4 a=5 : MAX_LIST=273 ceiling=364 budget_n=16
-RESULT n16a6 q=65617 n=16 k=4 a=6 : MAX_LIST=2 ceiling=121 budget_n=16
-RESULT n16a7 q=65617 n=16 k=4 a=7 : MAX_LIST=1 ceiling=52 budget_n=16

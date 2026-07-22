@@ -1,9 +1,0 @@
-DIAG s 64 r 5 b 30 NW 1 WID 0
-DIAG total 121992192 pure 6444032 mixed 115548160
-DIAG die_odd_mixed 115548160 die_odd_pure 0 pass_odd_mixed 0
-DIAG die_d2 4050164 die_blocked 181868 die_hgtb 0 die_par 0 die_v 0
-DIAG feas 2212000 feas_mixed 0 waysum 141450979280
-DIAG minD_oddpass 4 minD_clean 6
-DIAG nearmiss_h_minus_b_1to8 0 0 0 0 0 0 0 0
-DIAG dhist 4:76 6:3536 8:60848 10:483220 12:1678052 14:2684508 16:1533792
-DIAG hhist 6:504 8:16920 10:188640 12:769264 14:1001664 16:235008

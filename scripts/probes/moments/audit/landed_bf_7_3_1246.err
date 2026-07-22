@@ -1,6 +1,0 @@
-[assert ok] M1[j] == q^k * C(n,j) * (q-1)^(n-j) for all j
-[assert ok] sum_j M1[j] == q^(n+k)
-[assert ok] sum_j3 M3[j1][j2][j3] == q^k * M2[j1][j2] for all (j1,j2)
-[assert ok] sum_{j2,j3} M3[j1][j2][j3] == q^(2k) * M1[j1] for all j1
-[assert ok] sum over all (j1,j2,j3) of M3 == q^(n+3k)
-[assert ok] M3 tensor is S3-symmetric

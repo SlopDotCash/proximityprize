@@ -1,1 +1,0 @@
-STRUCT s=64 r=7 (b=29): classes pi0 1643712 pi1 1656384 total 3300096 | ways pi0 811877344 pi1 774963136 total 1586840480

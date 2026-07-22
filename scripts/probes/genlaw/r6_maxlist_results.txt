@@ -1,7 +1,0 @@
-r=6 deep-band #bad census (line-cut bad-scalar count = |image(Phi)|), maximizer line (n/2, n/2+2):
-  n=16  g=4   max#bad6=113     K=2^6*C(8,6)=1792       K/#bad=15.9   #bad=1+8*14
-  n=32  g=8   max#bad6=3249    K=2^6*C(16,6)=512512    K/#bad=157.7  #bad=1+16*203
-  n=64  g=16  max#bad6=66209   K=2^6*C(32,6)=57996288  K/#bad=876.0  #bad=1+32*2069
-All satisfy #bad6 <= K/2 with DIVERGING headroom; all fit O183's orbit law #bad=1+(n/2)*orbits exactly.
-Bonus r=7: n=16 max#bad7=225 (line 10,15); n=32 ~913 (searched) -- both <= K/2=2^6*C(n/2,7)/2.
-Tool: fast_bad_gen.c (general-r, calibrated vs proven r=5: 89@n16, 1441@n32). Confirms O183 reduces-to-wall.

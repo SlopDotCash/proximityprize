@@ -1,8 +1,0 @@
-== BabyBear: 238 explicit spurious configs, 25 sampled classes, 0 classes with >1 distinct alpha ==
-   distinct alpha vectors: 25; L1 norms: [12, 14, 14, 14, 14, 14, 14, 14, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 18, 18, 18, 18, 18, 20]
-   alpha class-multiplicity (how many sampled classes share each): [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-   all alpha(zeta->H[1]) == 0 mod p VERIFIED
-== p2: 209 explicit spurious configs, 25 sampled classes, 0 classes with >1 distinct alpha ==
-   distinct alpha vectors: 25; L1 norms: [14, 14, 14, 14, 16, 16, 16, 16, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 20]
-   alpha class-multiplicity (how many sampled classes share each): [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-   all alpha(zeta->H[1]) == 0 mod p VERIFIED

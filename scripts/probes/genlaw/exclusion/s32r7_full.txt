@@ -1,7 +1,0 @@
-DEATH s=32 r=7 b=13 pureonly=0
-configs 215414784 | mixed 213950464 (oddpass 0) | pure 1464320 (oddfail 0)
-pure causes: D2 1463840 BLOCK 480 HGB 0 PAR 0 VCAP 0 FEAS 0
-feas classes 0 waysum 0
-hist max|d| (pure): 1:480 2:806816 3:628256 4:28488 5:280
-hist h-b (pure, |d|<=1, noblock):
-flag census [D2|BLOCK|HGB|PAR|VCAP]: 01:111336 02:480 03:535144 09:156512 11:382928 17:111488 19:166432

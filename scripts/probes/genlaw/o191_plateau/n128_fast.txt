@@ -1,1 +1,0 @@
-n=128 r=5 (e=65,f=127) a=6: #bad=356865 0in=1 d=64 orbits=5577 (size-d:5576 other:1) full_orb=5576 1+d*full_orb=356865
