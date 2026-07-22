@@ -4,7 +4,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges
 
 /-!
 # Brute Force Parameter Search for the MCA Conjecture
-This script programmatically searches small finite field parameters (ZMod 2, ZMod 3, ZMod 5) 
+This script programmatically searches small finite field parameters (ZMod 2, ZMod 3, ZMod 5)
 to test the open `mcaConjecture` and identify boundaries of the Johnson-Radius limits natively.
 -/
 

@@ -16,7 +16,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightRefutation
 The rigorous axiom-clean status of the proximity gap mathematical constraints.
 
 * `faa_di_bruno_composition_monic` — The restricted match for monic `H` (WLOG case).
-* `faa_di_bruno_global_cleared_match` (#139) — The global cleared-representative resummation 
+* `faa_di_bruno_global_cleared_match` (#139) — The global cleared-representative resummation
   bridge theorem, completely discharging the non-monic root evaluation mismatch.
 * `alpha_weight_bound_refuted` (#138) — The proposed weight-1 invariant is false under the
   current two-field `ClaimA2.Hypotheses`; a valid separable monic counterexample is verified in

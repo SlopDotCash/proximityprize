@@ -10,8 +10,8 @@ set_option maxRecDepth 4096
 /-!
 # Refutations of Interdisciplinary Candidate Hypotheses
 
-We use the generic GF(3) counterexample (n=4, k=2) to formally refute 
-the candidate bounds from statistical mechanics, quantum information, 
+We use the generic GF(3) counterexample (n=4, k=2) to formally refute
+the candidate bounds from statistical mechanics, quantum information,
 and additive combinatorics.
 -/
 
@@ -54,7 +54,7 @@ theorem survives_SpinGlass_shattering :
 --------------------------------------------------------------------------------
 -- Refuting Hypothesis 2: Quantum Information (QLDPC Degeneracy)
 -- The intersection of the supports of any large bundle (>2) is empty.
--- But the support of w0 is empty! Wait, if w0 is in U, then the intersection 
+-- But the support of w0 is empty! Wait, if w0 is in U, then the intersection
 -- is indeed empty. Let's shift the bundle so 0 is not in it.
 --------------------------------------------------------------------------------
 def v0 : Fin 4 → F := ![1, 1, 2, 0]
@@ -72,7 +72,7 @@ theorem refute_QLDPC_degeneracy :
 -- Refuting Hypothesis 4: Additive Combinatorics (Sum-Product Escape)
 -- The weight of the pointwise product is bounded by n - 1.
 -- Let's take w1 * w1 (pointwise). Wait, w1 = [1, 1, 2, 0], w1*w1 = [1, 1, 1, 0].
--- Weight is 3. But n - 1 = 3, so it's bounded. 
+-- Weight is 3. But n - 1 = 3, so it's bounded.
 -- What if we use a different code? Actually, we just need the weight of u1 * u2.
 -- If u1 = [1, 1, 2, 0] and u2 = [2, 1, 0, 1], u1*u2 = [2, 1, 0, 0]. Weight is 2.
 -- Let's find u1, u2 where weight is n = 4.
@@ -86,7 +86,7 @@ def c4 : Fin 3 → F := ![2, 2, 2]
 -- pointwise: c3 * c4 = [2, 2, 2]. weight is 3.
 -- So over n=3, weight is 3, which is not <= 2.
 theorem refute_SumProduct_escape :
-    ¬ (∀ (u1 u2 : Fin 3 → F), C H_MDS u1 → C H_MDS u2 → u1 ≠ u2 → 
+    ¬ (∀ (u1 u2 : Fin 3 → F), C H_MDS u1 → C H_MDS u2 → u1 ≠ u2 →
       weight (fun i => u1 i * u2 i) ≤ 2) := by
   intro h
   have h_bound : weight (fun i => c3 i * c4 i) ≤ 2 := h c3 c4 (by decide) (by decide) (by decide)

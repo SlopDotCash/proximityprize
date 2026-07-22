@@ -162,11 +162,11 @@ double-counting). Importing it here would require `a` to carry the GS degree str
 present statement abstracts `a` as a *free* `ℝ≥0`, severing that link. Closing this `sorry`
 faithfully therefore requires **strengthening the statement** to expose the GS interpolation
 (an `a := ℓ⁷(ρn)²/3`-shaped hypothesis with a `ReedSolomon.code`/Johnson-bound side condition),
-i.e. a documented statement REPAIR, *not* a leaf proof of the present black-box form. 
+i.e. a documented statement REPAIR, *not* a leaf proof of the present black-box form.
 
-This repair has now landed: `LineDecodingCoverage.lean` provides the faithful 
-repaired theorem `lineDecodable_imp_epsMCA_le_target` which explicitly consumes the 
-`MCAForallDoubleCover` overlap-coverage data rather than the refuted black-box 
+This repair has now landed: `LineDecodingCoverage.lean` provides the faithful
+repaired theorem `lineDecodable_imp_epsMCA_le_target` which explicitly consumes the
+`MCAForallDoubleCover` overlap-coverage data rather than the refuted black-box
 line-decodability implication.
 
 -/

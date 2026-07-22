@@ -48,7 +48,7 @@ theorem h30_agreement_lower_bound (f : F → F) (S : Finset F) :
 include hk in
 open Classical in
 theorem hyp30_max_agreement_not_k_minus_one (v : ι → F) :
-    ∃ c ∈ (ReedSolomon.code domain k : Set (ι → F)), 
+    ∃ c ∈ (ReedSolomon.code domain k : Set (ι → F)),
       (Finset.univ.filter (fun i => c i = v i)).card ≥ k := by
   have hk' : k ≤ Finset.card (Finset.univ : Finset ι) := by rw [Finset.card_univ]; exact hk
   have h_exists : ∃ S : Finset ι, S.card = k := by
@@ -93,7 +93,7 @@ theorem hyp8_translation_invariance (x y c : ι → F) :
   · intro h heq; apply h; exact add_right_cancel heq
 
 open Classical in
-theorem hyp7_barycentric_center (c_map : F → (ι → F)) 
+theorem hyp7_barycentric_center (c_map : F → (ι → F))
     (h_valid : ∀ γ : F, c_map γ ∈ (ReedSolomon.code domain k : Set (ι → F))) :
     (∑ γ : F, c_map γ) ∈ (ReedSolomon.code domain k : Set (ι → F)) := by
   exact Submodule.sum_mem (ReedSolomon.code domain k) fun γ _ => h_valid γ

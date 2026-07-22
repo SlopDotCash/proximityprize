@@ -6,21 +6,21 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 # Subspace Designs
 
 This file provides the basic definitions and geometric properties of subspace designs.
-A collection of subspaces `H` is called an `(s, τ)`-strong subspace design if every 
-subspace `W` of dimension at most `s` intersects the subspaces in `H` with total 
-dimension bounded by `τ`. These structures are fundamental in the construction of 
+A collection of subspaces `H` is called an `(s, τ)`-strong subspace design if every
+subspace `W` of dimension at most `s` intersects the subspaces in `H` with total
+dimension bounded by `τ`. These structures are fundamental in the construction of
 list-decodable codes, such as in the Guruswami-Guo 2025 bounds for Reed-Solomon codes.
 
 ## Main definitions
-* `intersectionMultiplicity`: The sum of dimensions of the intersections of a subspace `W` 
+* `intersectionMultiplicity`: The sum of dimensions of the intersections of a subspace `W`
   with a family of subspaces `H`.
-* `IsTauSubspaceDesign`: The property that a family `H` forms a `τ`-subspace design 
+* `IsTauSubspaceDesign`: The property that a family `H` forms a `τ`-subspace design
   for a given dimension bound `s`.
 
 ## Main theorems
-* `intersectionMultiplicity_mono`: The intersection multiplicity is monotonically 
+* `intersectionMultiplicity_mono`: The intersection multiplicity is monotonically
   increasing with respect to subspace inclusion.
-* `intersectionMultiplicity_bound`: A geometric lemma bounding the intersection 
+* `intersectionMultiplicity_bound`: A geometric lemma bounding the intersection
   multiplicity of a larger subspace `W` based on a smaller subspace `W'`.
 -/
 
@@ -34,9 +34,9 @@ variable {ι : Type*} [Fintype ι] (H : ι → Submodule F V)
 noncomputable def intersectionMultiplicity (W : Submodule F V) : ℕ :=
   ∑ i, Module.finrank F ↥(H i ⊓ W)
 
-/-- The definition of a strong `τ`-subspace design. 
-A family `H` of subspaces is an `(s, τ)`-strong subspace design if for every 
-subspace `W` of dimension at most `s`, its intersection multiplicity with `H` 
+/-- The definition of a strong `τ`-subspace design.
+A family `H` of subspaces is an `(s, τ)`-strong subspace design if for every
+subspace `W` of dimension at most `s`, its intersection multiplicity with `H`
 is bounded by `τ`. -/
 def IsTauSubspaceDesign (s τ : ℕ) : Prop :=
   ∀ W : Submodule F V, Module.finrank F W ≤ s → intersectionMultiplicity H W ≤ τ

@@ -48,13 +48,13 @@ theorem anti_clustering_explosion (hs_pos : 0 < s) (hdiv : s ∣ N)
   · field_simp [hN]
 
 /--
-If the FRS decoder achieves capacity `1 - R`, it can list-decode when the 
-FRS block-error rate is strictly less than `1 - R`. However, because of the worst-case 
-anti-clustering adversary, the effective FRS block-error rate is `s * δ`. 
+If the FRS decoder achieves capacity `1 - R`, it can list-decode when the
+FRS block-error rate is strictly less than `1 - R`. However, because of the worst-case
+anti-clustering adversary, the effective FRS block-error rate is `s * δ`.
 
 Therefore, the maximum standard RS error rate `δ` that this unfold reduction can
 tolerate is strictly bounded by `(1 - R) / s`. Since `s ≥ 2`, this bound is at best
-`(1 - R) / 2`, which is drastically worse than true capacity `1 - R` and 
+`(1 - R) / 2`, which is drastically worse than true capacity `1 - R` and
 algebraically obliterates the reduction.
 -/
 theorem unfolded_capacity_bound (hs_pos : 0 < s) (R : ℝ) (δ : ℝ)

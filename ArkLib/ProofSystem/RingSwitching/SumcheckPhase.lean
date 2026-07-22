@@ -804,7 +804,7 @@ def iteratedSumcheckKStateProp (i : Fin ℓ') (m : Fin (2 + 1))
       (localChecks :=
         let explicitVCheck :=
           (∑ b ∈ (boolDomain L ℓ').points i, h_i.val.eval b) = stmt.sumcheck_target
-        
+
         explicitVCheck
       )
 
