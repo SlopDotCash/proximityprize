@@ -223,7 +223,7 @@ python3 -m pip install leanblueprint
 ## CI Mapping
 
 - [`../../.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
-  compiles every module imported by generated `ArkLib.lean` in eight cumulative topological stages.
+  compiles every module imported by generated `ArkLib.lean` in sixteen cumulative topological stages.
   Each stage restores the preceding stage's ArkLib oleans, compiles the next contiguous portion of
   the import DAG, and uploads the cumulative result. This preserves full-project coverage without
   relying on one hosted runner surviving a multi-hour cold build. The final artifact is also the

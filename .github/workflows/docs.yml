@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       ci_run_id:
-        description: Successful main CI run containing the build-shard artifacts (latest when empty)
+        description: Successful main CI run containing the staged build artifacts (latest when empty)
         required: false
         type: string
 
@@ -95,7 +95,7 @@ jobs:
       - name: Download validated ArkLib build
         uses: actions/download-artifact@v8
         with:
-          name: arklib-build-stage-7
+          name: arklib-build-stage-15
           path: ${{ runner.temp }}/arklib-build
           github-token: ${{ github.token }}
           run-id: ${{ steps.source.outputs.run-id }}

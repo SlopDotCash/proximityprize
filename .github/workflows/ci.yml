@@ -63,53 +63,109 @@ jobs:
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 0
-      stage-count: 8
+      stage-count: 16
 
   stage-1:
     needs: stage-0
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 1
-      stage-count: 8
+      stage-count: 16
 
   stage-2:
     needs: stage-1
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 2
-      stage-count: 8
+      stage-count: 16
 
   stage-3:
     needs: stage-2
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 3
-      stage-count: 8
+      stage-count: 16
 
   stage-4:
     needs: stage-3
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 4
-      stage-count: 8
+      stage-count: 16
 
   stage-5:
     needs: stage-4
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 5
-      stage-count: 8
+      stage-count: 16
 
   stage-6:
     needs: stage-5
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 6
-      stage-count: 8
+      stage-count: 16
 
   stage-7:
     needs: stage-6
     uses: ./.github/workflows/lean-build-stage.yml
     with:
       stage: 7
-      stage-count: 8
+      stage-count: 16
+
+  stage-8:
+    needs: stage-7
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 8
+      stage-count: 16
+
+  stage-9:
+    needs: stage-8
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 9
+      stage-count: 16
+
+  stage-10:
+    needs: stage-9
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 10
+      stage-count: 16
+
+  stage-11:
+    needs: stage-10
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 11
+      stage-count: 16
+
+  stage-12:
+    needs: stage-11
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 12
+      stage-count: 16
+
+  stage-13:
+    needs: stage-12
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 13
+      stage-count: 16
+
+  stage-14:
+    needs: stage-13
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 14
+      stage-count: 16
+
+  stage-15:
+    needs: stage-14
+    uses: ./.github/workflows/lean-build-stage.yml
+    with:
+      stage: 15
+      stage-count: 16
