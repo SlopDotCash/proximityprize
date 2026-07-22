@@ -1,9 +1,21 @@
 name: Update Dependencies
 
 on:
-  schedule:               # Sets a schedule to trigger the workflow
-    - cron: "0 8 */7 * *" # Every 7 days at 08:00 AM UTC
-  workflow_dispatch:      # Allows the workflow to be triggered manually via the GitHub interface
+  # ArkLib pins VCVio and CompPoly forks to exact commits. A generic scheduled
+  # Mathlib/Lean bump cannot update that dependency stack in lockstep, so it
+  # produces known-incompatible toolchains and false-red weekly runs. Keep the
+  # compatibility probe explicit until those dependencies track release tags.
+  workflow_dispatch:
+    inputs:
+      releases:
+        description: "Mathlib releases to test"
+        required: true
+        type: choice
+        default: latest
+        options:
+          - latest
+          - all
+          - master
 
 jobs:
   check-for-updates: # Determines which updates to apply.
@@ -16,7 +28,7 @@ jobs:
         id: check-for-updates
         uses: leanprover-community/mathlib-update-action@main
         with:
-          intermediate_releases: all
+          intermediate_releases: ${{ inputs.releases }}
 
   do-update: # Runs the upgrade, tests it, and makes a PR/issue/commit.
     runs-on: ubuntu-latest

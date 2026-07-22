@@ -25,6 +25,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Reclaim runner disk for Lean artifacts
+        run: |
+          echo "Disk before cleanup:"
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          echo "Disk after cleanup:"
+          df -h /
+
       - name: Initialize timing paths
         env:
           BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
@@ -62,9 +70,10 @@ jobs:
         id: lake-cache
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
+          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-lean-ci-
+            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
+            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
             ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
             ${{ runner.os }}-lean-docs-
 
@@ -100,29 +109,33 @@ jobs:
           bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
             bash -eo pipefail -c './scripts/validate.sh'
 
-      # Benchmarks only (NON-GATING), run LAST so they never block the gate above.
-      # A from-scratch clean build is a TIMING measurement, not a correctness
-      # check. At the current library scale (~4.3k modules) it exceeds the runner
-      # budget (~70min) and gets killed; a slow/OOM clean build must NOT red CI
-      # (the gate already verified correctness + honesty on the warm cache).
+      # A late runner termination still leaves valid completed oleans. Saving
+      # that coherent partial cache lets a rerun finish the remaining modules
+      # instead of restarting an 80+ minute cold build. The commit suffix avoids
+      # making an incomplete cache immutable across attempts on future commits.
+      - name: Save Lean cache
+        if: always() && steps.lake-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ./.lake
+          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+
+      # Benchmarks are manual-only. They delete the validated build tree and can
+      # exceed the hosted-runner budget, so ordinary push/PR correctness runs
+      # must not spend another two full builds on timing data.
       - name: Time clean build (benchmark, non-gating)
+        if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
           bash scripts/build_timing_report.sh run clean_build "$BUILD_TIMING_RESULTS" -- \
             bash -eo pipefail -c 'rm -rf .lake/build && lake build'
 
       - name: Time warm rebuild (benchmark, non-gating)
+        if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
           bash scripts/build_timing_report.sh run warm_rebuild "$BUILD_TIMING_RESULTS" -- \
             bash -eo pipefail -c 'lake build'
-
-      - name: Save Lean cache
-        if: success() && steps.lake-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v6
-        with:
-          path: ./.lake
-          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
 
       - name: Prepare timing artifact
         if: always()
