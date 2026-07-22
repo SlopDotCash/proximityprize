@@ -1,27 +1,77 @@
 name: Build and Deploy Website to GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      ci_run_id:
+        description: Successful main CI run containing the build-shard artifacts (latest when empty)
+        required: false
+        type: string
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: pages-main
   cancel-in-progress: true
 
 jobs:
   build:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v7
+    outputs:
+      source-sha: ${{ steps.source.outputs.sha }}
 
-      - name: Reclaim runner disk for Lean artifacts
+    steps:
+      - name: Select successful CI run
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
+          EVENT_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          REQUESTED_RUN_ID: ${{ inputs.ci_run_id }}
+        run: |
+          if [ "$EVENT_NAME" = workflow_run ]; then
+            run_id="$EVENT_RUN_ID"
+            sha="$EVENT_HEAD_SHA"
+          else
+            run_id="$REQUESTED_RUN_ID"
+            if [ -z "$run_id" ]; then
+              run_id="$(gh api --method GET \
+                "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs" \
+                -f branch=main -f status=success -f per_page=1 \
+                --jq '.workflow_runs[0].id')"
+            fi
+            run="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id")"
+            conclusion="$(jq -r .conclusion <<<"$run")"
+            branch="$(jq -r .head_branch <<<"$run")"
+            if [ "$conclusion" != success ] || [ "$branch" != main ]; then
+              echo "CI run $run_id must be a successful main-branch run" >&2
+              exit 1
+            fi
+            sha="$(jq -r .head_sha <<<"$run")"
+          fi
+          echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout validated source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.source.outputs.sha }}
+
+      - name: Reclaim runner disk for documentation artifacts
         run: |
           echo "Disk before cleanup:"
           df -h /
@@ -29,36 +79,38 @@ jobs:
           echo "Disk after cleanup:"
           df -h /
 
-      # --- Lean and Blueprint Build ---
-      - name: Restore Lean cache
-        id: lake-cache
-        uses: actions/cache/restore@v6
-        with:
-          path: ./.lake
-          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-
-            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
-            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
-            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
-
-      - name: Build the project
+      - name: Set up Lean environment
         uses: leanprover/lean-action@v1.5.0
         with:
+          auto-config: false
+          build: false
+          test: false
           lint: false
           use-github-cache: false
+          use-mathlib-cache: false
 
-      - name: Save Lean cache
-        if: always() && steps.lake-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v6
+      - name: Fetch dependency cache
+        run: lake exe cache get
+
+      - name: Download compiled ArkLib shards
+        uses: actions/download-artifact@v8
         with:
-          path: ./.lake
-          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          pattern: arklib-lean-shard-*
+          path: ${{ runner.temp }}/arklib-shards
+          merge-multiple: true
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.source.outputs.run-id }}
+
+      - name: Assemble and verify compiled project
+        run: |
+          mkdir -p .lake/build/lib/lean
+          for archive in "$RUNNER_TEMP"/arklib-shards/*.tar.gz; do
+            tar -C .lake/build/lib/lean -xzf "$archive"
+          done
+          ./scripts/lake-locked.sh build
 
       - name: Build project documentation
-        run: lake build ArkLib:docs
-        env:
-          DISABLE_EQUATIONS: 1
+        run: DISABLE_EQUATIONS=1 ./scripts/lake-locked.sh build ArkLib:docs
 
       - name: Build blueprint
         uses: xu-cheng/texlive-action@v3
@@ -76,22 +128,17 @@ jobs:
             leanblueprint pdf
             leanblueprint web
 
-      # --- Combine and Deploy ---
       - name: Prepare deployment directory
         run: |
           mkdir _deploy
-          # Copy landing page and assets
           cp -r home_page/* _deploy/
-          # Create docs directory and copy Lean docs
           mkdir -p _deploy/docs
-          cp -r ./.lake/build/doc/* _deploy/docs/
-          # Copy blueprint
+          cp -r .lake/build/doc/* _deploy/docs/
           cp blueprint/print/print.pdf _deploy/blueprint.pdf
-          # Copy blueprint HTML
           mkdir -p _deploy/blueprint
           cp -r blueprint/web/* _deploy/blueprint/
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./_deploy

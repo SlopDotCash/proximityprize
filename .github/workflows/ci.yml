@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -12,18 +12,18 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  build:
+  build-shard:
+    name: build (${{ matrix.shard }}/8)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     permissions:
-      actions: read
       contents: read
-      issues: write
-      pull-requests: write
 
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - name: Reclaim runner disk for Lean artifacts
         run: |
@@ -33,59 +33,17 @@ jobs:
           echo "Disk after cleanup:"
           df -h /
 
-      - name: Initialize timing paths
-        env:
-          BUILD_SOURCE_BRANCH: ${{ github.head_ref || github.ref_name }}
-        run: |
-          {
-            echo "BUILD_TIMING_RESULTS=$RUNNER_TEMP/build-timing.jsonl"
-            echo "BUILD_TIMING_LOG_DIR=$RUNNER_TEMP/build-timing-logs"
-            echo "BUILD_TIMING_ARTIFACT_DIR=$RUNNER_TEMP/build-timing-artifact"
-            echo "BUILD_TIMING_ARTIFACT_NAME=arklib-build-timing-data"
-            echo "BUILD_TIMING_BASELINE_DIR=$RUNNER_TEMP/build-timing-baseline"
-            echo "BUILD_TIMING_REPORT=$RUNNER_TEMP/build-timing.md"
-            echo "BUILD_TIMING_COMMENT=$RUNNER_TEMP/build-timing-comment.md"
-            echo "BUILD_TIMING_SOURCE_SHA=$GITHUB_SHA"
-            echo "BUILD_TIMING_SOURCE_BRANCH=$BUILD_SOURCE_BRANCH"
-            echo "BUILD_TIMING_BASE_REF="
-            echo "BUILD_TIMING_MERGE_BASE_SHA="
-            echo "BUILD_TIMING_TEST_NAME=Validation wrapper"
-            echo "BUILD_TIMING_TEST_COMMAND=./scripts/validate.sh"
-            echo "BUILD_TIMING_SOURCE_SUBJECT<<EOF"
-            git log -1 --format=%s
-            echo "EOF"
-          } >> "$GITHUB_ENV"
-
-      - name: Determine PR timing merge base
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "BUILD_TIMING_BASE_REF=${{ github.event.pull_request.base.ref }}" >> "$GITHUB_ENV"
-          merge_base_sha="$(git merge-base "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" || true)"
-          if [ -n "$merge_base_sha" ]; then
-            echo "BUILD_TIMING_MERGE_BASE_SHA=$merge_base_sha" >> "$GITHUB_ENV"
-          fi
-
       - name: Restore Lean cache
-        uses: actions/cache/restore@v6
-        id: lake-cache
+        uses: actions/cache@v6
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-lean-shard-${{ matrix.shard }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
-            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
-            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
-            ${{ runner.os }}-lean-docs-
+            ${{ runner.os }}-lean-shard-${{ matrix.shard }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
 
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
-      # ── Issue #47 gate 1: fast precheck (no Lean needed) ───────────
-      # validate.sh repeats this gate so the local wrapper mirrors CI; this
-      # dedicated step keeps laundering failures fast before Lean setup.
-      - name: Reject native_decide / bv_decide / custom axioms (precheck)
-        run: python3 scripts/forbidden_tokens.py
 
       - name: Set up Lean environment
         uses: leanprover/lean-action@v1.5.0
@@ -100,191 +58,59 @@ jobs:
       - name: Fetch dependency cache
         run: lake exe cache get
 
-      # THE REAL GATE (merge-blocking), runs FIRST on the warm restored cache so
-      # it is fast: validate.sh = lake build + forbidden_tokens + sorry_census
-      # --fail-on-holes + axiom_audit + check-imports + docs-integrity. This
-      # compiles every module AND enforces the honesty contract.
-      - name: Time validation wrapper
-        run: |
-          bash scripts/build_timing_report.sh run test_path "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c './scripts/validate.sh'
+      - name: Build assigned modules
+        run: bash scripts/ci-build-shard.sh ${{ matrix.shard }} 8
 
-      # A late runner termination still leaves valid completed oleans. Saving
-      # that coherent partial cache lets a rerun finish the remaining modules
-      # instead of restarting an 80+ minute cold build. The commit suffix avoids
-      # making an incomplete cache immutable across attempts on future commits.
-      - name: Save Lean cache
-        if: always() && steps.lake-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v6
-        with:
-          path: ./.lake
-          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+      # Pages consumes these on main instead of recompiling the whole project
+      # in one runner. PR runs do not need to pay the upload cost.
+      - name: Package compiled ArkLib modules
+        if: github.event_name == 'push'
+        run: tar -C .lake/build/lib/lean -czf "$RUNNER_TEMP/arklib-shard-${{ matrix.shard }}.tar.gz" ArkLib
 
-      # Benchmarks are manual-only. They delete the validated build tree and can
-      # exceed the hosted-runner budget, so ordinary push/PR correctness runs
-      # must not spend another two full builds on timing data.
-      - name: Time clean build (benchmark, non-gating)
-        if: github.event_name == 'workflow_dispatch'
-        continue-on-error: true
-        run: |
-          bash scripts/build_timing_report.sh run clean_build "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'rm -rf .lake/build && lake build'
-
-      - name: Time warm rebuild (benchmark, non-gating)
-        if: github.event_name == 'workflow_dispatch'
-        continue-on-error: true
-        run: |
-          bash scripts/build_timing_report.sh run warm_rebuild "$BUILD_TIMING_RESULTS" -- \
-            bash -eo pipefail -c 'lake build'
-
-      - name: Prepare timing artifact
-        if: always()
-        run: |
-          rm -rf "$BUILD_TIMING_ARTIFACT_DIR"
-          mkdir -p "$BUILD_TIMING_ARTIFACT_DIR"
-          if [ -f "$BUILD_TIMING_RESULTS" ]; then
-            cp "$BUILD_TIMING_RESULTS" "$BUILD_TIMING_ARTIFACT_DIR/results.jsonl"
-          fi
-          if [ -f "$BUILD_TIMING_LOG_DIR/clean_build.log" ]; then
-            cp "$BUILD_TIMING_LOG_DIR/clean_build.log" "$BUILD_TIMING_ARTIFACT_DIR/clean_build.log"
-          fi
-
-      - name: Upload timing artifact
-        if: always()
+      - name: Upload compiled ArkLib modules
+        if: github.event_name == 'push'
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.BUILD_TIMING_ARTIFACT_NAME }}
-          path: ${{ env.BUILD_TIMING_ARTIFACT_DIR }}
-          if-no-files-found: warn
-          retention-days: 30
+          name: arklib-lean-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/arklib-shard-${{ matrix.shard }}.tar.gz
+          retention-days: 1
 
-      - name: Determine comparison baseline artifact
-        if: always() && github.event_name == 'pull_request'
-        id: timing-baseline
-        uses: actions/github-script@v9
+  policy:
+    name: source and axiom policy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
         with:
-          script: |
-            const { owner, repo } = context.repo;
-            const artifactName = process.env.BUILD_TIMING_ARTIFACT_NAME;
-            const workflowName = process.env.GITHUB_WORKFLOW;
-            const currentRunId = Number(process.env.GITHUB_RUN_ID);
-            const currentSha = process.env.GITHUB_SHA;
-            const pullRequest = context.payload.pull_request;
-            const headRef = pullRequest.head.ref;
-            const baseRef = process.env.BUILD_TIMING_BASE_REF;
-            const mergeBaseSha = process.env.BUILD_TIMING_MERGE_BASE_SHA;
+          python-version: "3.12"
 
-            async function firstRunWithArtifact(runs) {
-              for (const run of runs) {
-                if (run.id === currentRunId) {
-                  continue;
-                }
-                if (run.name !== workflowName || run.conclusion !== 'success') {
-                  continue;
-                }
-                const artifactsResponse = await github.rest.actions.listWorkflowRunArtifacts({
-                  owner,
-                  repo,
-                  run_id: run.id,
-                  per_page: 100,
-                });
-                const artifact = artifactsResponse.data.artifacts.find(candidate =>
-                  candidate.name === artifactName && !candidate.expired
-                );
-                if (artifact) {
-                  return run;
-                }
-              }
-              return null;
-            }
+      - name: Reject native_decide / bv_decide / custom axioms
+        run: python3 scripts/forbidden_tokens.py
 
-            const prRunsResponse = await github.rest.actions.listWorkflowRunsForRepo({
-              owner,
-              repo,
-              event: 'pull_request',
-              branch: headRef,
-              status: 'completed',
-              per_page: 100,
-            });
-            const previousPrCandidates = prRunsResponse.data.workflow_runs.filter(run => {
-              if (run.head_sha === currentSha) {
-                return false;
-              }
-              const prs = run.pull_requests || [];
-              return prs.length === 0 || prs.some(pr => pr.number === pullRequest.number);
-            });
-            const previousPrRun = await firstRunWithArtifact(previousPrCandidates);
-            if (previousPrRun) {
-              core.setOutput('run-id', String(previousPrRun.id));
-              core.setOutput('sha', previousPrRun.head_sha);
-              core.setOutput('label', 'the previous successful PR update');
-              return;
-            }
-
-            const baseRunsResponse = await github.rest.actions.listWorkflowRunsForRepo({
-              owner,
-              repo,
-              event: 'push',
-              branch: baseRef,
-              status: 'completed',
-              per_page: 100,
-            });
-            const baseCandidates = baseRunsResponse.data.workflow_runs.filter(run =>
-              run.name === workflowName && run.conclusion === 'success'
-            );
-            const exactMergeBaseCandidates = mergeBaseSha
-              ? baseCandidates.filter(run => run.head_sha === mergeBaseSha)
-              : [];
-            const exactMergeBaseRun =
-              exactMergeBaseCandidates.length > 0
-                ? await firstRunWithArtifact(exactMergeBaseCandidates)
-                : null;
-            const fallbackBaseCandidates = mergeBaseSha
-              ? baseCandidates.filter(run => run.head_sha !== mergeBaseSha)
-              : baseCandidates;
-            const baseRun =
-              exactMergeBaseRun ?? await firstRunWithArtifact(fallbackBaseCandidates);
-            if (baseRun) {
-              const isMergeBase = Boolean(mergeBaseSha) && baseRun.head_sha === mergeBaseSha;
-              core.setOutput('run-id', String(baseRun.id));
-              core.setOutput('sha', baseRun.head_sha);
-              core.setOutput(
-                'label',
-                isMergeBase
-                  ? `merge-base on \`${baseRef}\``
-                  : `the latest successful \`${baseRef}\` run`
-              );
-              return;
-            }
-
-            core.info('No comparison baseline artifact found.');
-            core.setOutput('run-id', '');
-            core.setOutput('sha', '');
-            core.setOutput('label', '');
-
-      - name: Download comparison baseline artifact
-        if: always() && steps.timing-baseline.outputs.run-id != ''
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ env.BUILD_TIMING_ARTIFACT_NAME }}
-          path: ${{ env.BUILD_TIMING_BASELINE_DIR }}
-          run-id: ${{ steps.timing-baseline.outputs.run-id }}
-          github-token: ${{ github.token }}
-
-      - name: Render build timing report
-        if: always()
-        env:
-          BUILD_TIMING_BASELINE_LABEL: ${{ steps.timing-baseline.outputs.label }}
-          BUILD_TIMING_BASELINE_SHA: ${{ steps.timing-baseline.outputs.sha }}
+      - name: Check source-only gates
         run: |
-          if [ -f "$BUILD_TIMING_BASELINE_DIR/results.jsonl" ]; then
-            bash scripts/build_timing_report.sh render "$BUILD_TIMING_RESULTS" "$BUILD_TIMING_BASELINE_DIR" > "$BUILD_TIMING_REPORT"
-          else
-            bash scripts/build_timing_report.sh render "$BUILD_TIMING_RESULTS" > "$BUILD_TIMING_REPORT"
-          fi
-          cat "$BUILD_TIMING_REPORT" >> "$GITHUB_STEP_SUMMARY"
-          {
-            echo '<!-- arklib-build-timing-report -->'
-            echo
-            cat "$BUILD_TIMING_REPORT"
-          } > "$BUILD_TIMING_COMMENT"
+          python3 scripts/sorry_census.py --fail-on-holes
+          bash scripts/check-imports.sh
+          python3 scripts/check-docs-integrity.py
+          python3 scripts/kb/check_generated.py
+          python3 scripts/kb/lint.py --strict-cited-pages
+
+      - name: Set up Lean environment
+        uses: leanprover/lean-action@v1.5.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+
+      - name: Fetch dependency cache
+        run: lake exe cache get
+
+      - name: Audit flagship theorem axioms
+        run: python3 scripts/axiom_audit.py
