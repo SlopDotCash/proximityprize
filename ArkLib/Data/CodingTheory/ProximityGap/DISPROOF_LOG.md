@@ -53380,3 +53380,28 @@ prove both a positive sponsor-two odd-cubic value and a transfer theorem using a
 adjacent-rank row structure. Formal payload `_G309TargetOrientedCubicGenericRowNoGo.lean`; exact
 probe `g309_target_oriented_cubic_generic_row_nogo.py`; full note
 `docs/kb/deltastar-466-g309-target-oriented-cubic-generic-row-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G316-antipodal-closed-formula] coefficient one vanishes by parity and coefficient two has a two-term formula in the antipodal model (2026-08-01)
+
+G316 turns the G314/G315 antipodal-pair model into a compact formula. Let `n=2h`, pair roots as
+`{e_j,-e_j}`, and let `u,v` mark the subset sizes on the adjacent-rank pair `(r,r-1)`. The local
+balanced-choice polynomials are
+`N=1+2uv+u^2+v^2+u^2v^2`, `U=u+v+u^2v+uv^2`, and `D=uv`.
+
+For coefficient 1, the possible global cases are `N^h`, `D*N^(h-1)`, and `U^2*N^(h-2)`. Each has
+even `deg_u-deg_v`, so the adjacent-rank coefficient is always zero. For coefficient 2, with
+`T_m(r)=[u^r v^(r-1)] U*N^m`, the antipodal-model dot is
+`D_2(h,r)=2h*T_{h-1}(r)+4h(h-1)*T_{h-2}(r-1)`, separating the same-pair `z=y` case from the
+different-pair case.
+
+The probe checks the formula against the brute antipodal model for `n=16` at every rank and for
+`n=32` at ranks `5,6`. At the live ranks this specializes to
+`D_2(h,5)=2h*(11*C(h-1,2)+161*C(h-1,3)+406*C(h-1,4))` and
+`D_2(h,6)=2h*(C(h-1,2)+81*C(h-1,3)+786*C(h-1,4)+1722*C(h-1,5))`. It then emits the
+rank-five/six predictions:
+`n=64: (864230400,20331698688)` and `n=128: (31776632832,1609610978304)`.
+This is a formula for the model, not a proof that finite-field cells have no extra modular
+relations. Exact probe `g316_antipodal_closed_formula.py`; full note
+`docs/kb/deltastar-466-g316-antipodal-closed-formula-2026-08-01.md`. CORE OPEN / ON-BGK.
