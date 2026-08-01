@@ -53380,3 +53380,23 @@ prove both a positive sponsor-two odd-cubic value and a transfer theorem using a
 adjacent-rank row structure. Formal payload `_G309TargetOrientedCubicGenericRowNoGo.lean`; exact
 probe `g309_target_oriented_cubic_generic_row_nogo.py`; full note
 `docs/kb/deltastar-466-g309-target-oriented-cubic-generic-row-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G317-n64-r5-targeted-audit] the certified finite-field count matches the antipodal model at `n=64`, rank five (2026-08-01)
+
+G316 predicts the antipodal-model dots for `n=64,r=5`: coefficient 1 has dot `0`, and coefficient 2
+has dot `864230400`. G317 checks the actual finite-field count at the certified Proth prime
+`p=111*2^128+1` (witness `5`) using the quotient identity
+`sum_t W_a(t)R(t)=n*sum_{u in G} R(a-u)`, where `u=z/y`. This evaluates only `64` quotient shifts
+instead of materializing all `4096` ordered kernel pairs.
+
+The exact sparse subset histograms through rank five have support sizes
+`1,64,1985,39744,577345,6483776`. The finite-field dots match the antipodal model exactly:
+coefficient 1 has `A=-19842793211953152, dot=0`; coefficient 2 has
+`A=+32643142634550265248631476078696581721630936603648, dot=864230400`.
+
+This is still a finite toy-order audit and checks only rank five. Rank six at `n=64` is expected to
+need about `58573633` support states, so the safe next version should use a lower-level or disk-backed
+counter. Exact probe `g317_n64_r5_targeted_audit.py`; full note
+`docs/kb/deltastar-466-g317-n64-r5-targeted-audit-2026-08-01.md`. CORE OPEN / ON-BGK.
