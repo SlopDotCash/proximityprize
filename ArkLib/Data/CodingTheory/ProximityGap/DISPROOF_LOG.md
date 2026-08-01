@@ -53380,3 +53380,25 @@ prove both a positive sponsor-two odd-cubic value and a transfer theorem using a
 adjacent-rank row structure. Formal payload `_G309TargetOrientedCubicGenericRowNoGo.lean`; exact
 probe `g309_target_oriented_cubic_generic_row_nogo.py`; full note
 `docs/kb/deltastar-466-g309-target-oriented-cubic-generic-row-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G318-n64-r6-norm-guard] a cyclotomic norm bound certifies the `n=64`, rank-six antipodal count without the huge histogram (2026-08-01)
+
+G317 checked `n=64,r=5` directly, but `n=64,r=6` is expected to need about `58573633` sparse support
+states. G318 replaces that brute-force histogram with a cyclotomic norm guard. A coefficient-`a`
+relation counted at adjacent rank six has the form
+`zeta^u + sum_{i in A} zeta^i - sum_{j in B} zeta^j - a = 0 mod p`, with `|A|=6`, `|B|=5`, and
+`a in {1,2}`. Its coefficient `l1` norm is at most `14`, so if the corresponding 64th-cyclotomic
+integer is nonzero, its algebraic norm has absolute value at most `14^phi(64)=14^32`.
+
+The certified Proth prime `p=111*2^128+1` (witness `5`) satisfies `p > 14^32`. Thus a nonzero
+relation cannot vanish modulo `p`; every finite-field relation in this audit is already a complex
+cyclotomic relation, and for 64th roots those are exactly the antipodal-pair cancellations. Combining
+this guard with the G316 formula gives
+coefficient 1 `dot=0, A=-2341449599010471936` and coefficient 2
+`dot=20331698688, A=+767955559391433686463300268059000302726608177666560`.
+
+This is finite `n=64,r=6` evidence only: the simple norm inequality does not reach the production
+degree. Exact probe `g318_n64_r6_norm_guard.py`; full note
+`docs/kb/deltastar-466-g318-n64-r6-norm-guard-2026-08-01.md`. CORE OPEN / ON-BGK.
