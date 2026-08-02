@@ -32,13 +32,16 @@ simultaneous cyclotomic-class covariance, does NOT bound higher-depth
 partitions, and does NOT close the prize. CORE remains OPEN / ON-BGK.
 
 KERNEL SCOPE. This file pins the closed form at specific m values via
-`native_decide` (axiom-clean, no `sorry`). The general statement
-(closed form holds for all m) is proven computationally in
-`scripts/probes/g316_dyadic_wall_floor_depth3.py` (brute force + closed
-form, 198 m values, no `float`, stdlib only). A general Lean theorem
-that the closed form holds for all m is a one-line case split on
-`m % 3 ∈ {0, 1, 2}` once the right tactic chain is settled; the case
-split is a kernel-side upgrade, not a research advance.
+`decide` (a kernel-blessed tactic for `ℕ`/`ℤ` literal equality — NOT
+`native_decide`/`bv_decide`, which the campaign's
+`scripts/forbidden_tokens.py` precheck rejects as kernel-bypassing).
+The general statement (closed form holds for all m) is proven
+computationally in `scripts/probes/g316_dyadic_wall_floor_depth3.py`
+(brute force + closed form, 198 m values, no `float`, stdlib only). A
+general Lean theorem that the closed form holds for all m is a one-line
+case split on `m % 3 ∈ {0, 1, 2}` once the right tactic chain is
+settled; the case split is a kernel-side upgrade, not a research
+advance.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.G316
@@ -52,27 +55,30 @@ def depth2Floor (m : ℕ) : ℕ := 4 * m - 3
 
 /-- Specific-m sanity checks. The probe proves the general claim; this
 file pins the closed form at the small and large endpoints. All proofs
-are `native_decide` (decidable, axiom-clean, no `sorry`). -/
-example : depth3Floor 2   = 9    := by native_decide
-example : depth3Floor 3   = 13   := by native_decide
-example : depth3Floor 4   = 19   := by native_decide
-example : depth3Floor 5   = 27   := by native_decide
-example : depth3Floor 6   = 31   := by native_decide
-example : depth3Floor 7   = 37   := by native_decide
-example : depth3Floor 8   = 45   := by native_decide
-example : depth3Floor 16  = 91   := by native_decide
-example : depth3Floor 32  = 189  := by native_decide
-example : depth3Floor 64  = 379  := by native_decide
-example : depth3Floor 160 = 955  := by native_decide
-example : depth3Floor 199 = 1189 := by native_decide
+are `decide` (kernel-blessed, no `native_decide`, no `bv_decide`,
+no `sorry`). -/
+theorem depth3Floor_2_eq_9    : depth3Floor 2   = 9    := by decide
+theorem depth3Floor_3_eq_13   : depth3Floor 3   = 13   := by decide
+theorem depth3Floor_4_eq_19   : depth3Floor 4   = 19   := by decide
+theorem depth3Floor_5_eq_27   : depth3Floor 5   = 27   := by decide
+theorem depth3Floor_6_eq_31   : depth3Floor 6   = 31   := by decide
+theorem depth3Floor_7_eq_37   : depth3Floor 7   = 37   := by decide
+theorem depth3Floor_8_eq_45   : depth3Floor 8   = 45   := by decide
+theorem depth3Floor_16_eq_91  : depth3Floor 16  = 91   := by decide
+theorem depth3Floor_32_eq_189 : depth3Floor 32  = 189  := by decide
+theorem depth3Floor_64_eq_379 : depth3Floor 64  = 379  := by decide
+theorem depth3Floor_160_eq_955  : depth3Floor 160 = 955  := by decide
+theorem depth3Floor_199_eq_1189 : depth3Floor 199 = 1189 := by decide
 
-example : depth2Floor 2   = 5   := by native_decide
-example : depth2Floor 3   = 9   := by native_decide
-example : depth2Floor 160 = 637 := by native_decide
+theorem depth2Floor_2_eq_5     : depth2Floor 2   = 5   := by decide
+theorem depth2Floor_3_eq_9     : depth2Floor 3   = 9   := by decide
+theorem depth2Floor_160_eq_637 : depth2Floor 160 = 637 := by decide
 
-example : depth2Floor 2   < depth3Floor 2   := by native_decide
-example : depth2Floor 3   < depth3Floor 3   := by native_decide
-example : depth2Floor 160 < depth3Floor 160 := by native_decide
-example : depth2Floor 199 < depth3Floor 199 := by native_decide
+/-- Cross-floor comparisons. depth2Floor < depth3Floor at every m ≥ 2
+covered by the probe; these are the closed-form witnesses. -/
+theorem depth2_lt_depth3_at_2   : depth2Floor 2   < depth3Floor 2   := by decide
+theorem depth2_lt_depth3_at_3   : depth2Floor 3   < depth3Floor 3   := by decide
+theorem depth2_lt_depth3_at_160 : depth2Floor 160 < depth3Floor 160 := by decide
+theorem depth2_lt_depth3_at_199 : depth2Floor 199 < depth3Floor 199 := by decide
 
 end ArkLib.ProximityGap.Frontier.G316

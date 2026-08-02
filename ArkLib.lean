@@ -2312,6 +2312,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G300WindowSignOscillation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G302CommonOrderSevenNormalNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G307SponsorTwoConductorFifteenSpanNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G309TargetOrientedCubicGenericRowNoGo
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G316DyadicWallFloorDepth3
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G320KrylovD2CountermodelStdlib
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer
