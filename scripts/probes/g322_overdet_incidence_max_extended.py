@@ -84,8 +84,13 @@ EXTENDED_SEQUENCE = {
     16: 7681, 17: 9249, 18: 11017, 19: 12997, 20: 15201,
 }
 
+# Further extended sequence for the G323 brick (m = 21 .. 25)
+FURTHER_EXTENDED_SEQUENCE = {
+    21: 17641, 22: 20329, 23: 23277, 24: 26497, 25: 30001,
+}
+
 # Combined for the full sweep
-ALL_CELLS = {**PUBLISHED_SEQUENCE, **EXTENDED_SEQUENCE}
+ALL_CELLS = {**PUBLISHED_SEQUENCE, **EXTENDED_SEQUENCE, **FURTHER_EXTENDED_SEQUENCE}
 
 
 def main() -> int:
@@ -93,7 +98,7 @@ def main() -> int:
 
     # --- (1) two-implementation agreement over the full m range ------------
     print("[1] two-implementation agreement (A = 2m^3 - 2m^2 + 1, B = 4m * C(m,2) + 1):")
-    for m in range(2, 21):
+    for m in range(2, 26):
         a = I_max_direct(m)
         b = I_max_binomial(m)
         if a != b:
@@ -102,7 +107,7 @@ def main() -> int:
         else:
             print(f"  m={m:2d}  n={4*m:2d}  I_max={a:6d}  (A == B)")
     if rc == 0:
-        print("  -> 19/19 cells: A == B exactly")
+        print("  -> 24/24 cells: A == B exactly")
 
     # --- (2) published sequence pin (m = 2 .. 10) --------------------------
     print()
@@ -127,7 +132,7 @@ def main() -> int:
     # --- (4) bulk identity: 2m^3 - 2m^2 = 2m^2 * (m-1) ----------------------
     print()
     print("[4] bulk identity 2m^3 - 2m^2 = 2m^2 * (m - 1):")
-    for m in range(2, 21):
+    for m in range(2, 26):
         a = bulk(m)
         b = bulk_factored(m)
         ok = "OK " if a == b else "BAD"
@@ -135,12 +140,12 @@ def main() -> int:
             rc = 1
         print(f"  [{ok}] m={m:2d}  bulk={a:6d}  bulk_factored={b:6d}")
     if rc == 0:
-        print("  -> 19/19 cells: bulk identity holds")
+        print("  -> 24/24 cells: bulk identity holds")
 
     # --- (5) existing decoupling inequality: I_max(m) > 4*m for m >= 2 -----
     print()
     print("[5] existing decoupling: I_max(m) > 4*m (= `overdetIncidenceMax_gt_budget`):")
-    for m in range(2, 21):
+    for m in range(2, 26):
         v = I_max_direct(m)
         b = 4 * m
         ok = "OK " if v > b else "BAD"
@@ -153,7 +158,7 @@ def main() -> int:
     # is therefore not just over budget, it's over double budget)
     print()
     print("[6] STRONGER decoupling: I_max(m) > 8*m for m >= 3:")
-    for m in range(3, 21):
+    for m in range(3, 26):
         v = I_max_direct(m)
         b = 8 * m
         ok = "OK " if v > b else "BAD"
@@ -161,13 +166,13 @@ def main() -> int:
             rc = 1
         print(f"  [{ok}] m={m:2d}  I_max={v:6d} > 8m={b:4d}")
     if rc == 0:
-        print("  -> 18/18 cells (m=3..20): overdet MAX > double budget")
+        print("  -> 23/23 cells (m=3..25): overdet MAX > double budget")
 
     # --- (7) strict monotonicity: I_max(m) < I_max(m + 1) for m >= 1 -------
     # (the discrete derivative is 2m*(3m+1), positive for m >= 1)
     print()
     print("[7] strict monotonicity: I_max(m) < I_max(m+1) for m >= 1:")
-    for m in range(1, 20):
+    for m in range(1, 25):
         v = I_max_direct(m)
         vnext = I_max_direct(m + 1)
         diff = vnext - v
@@ -180,19 +185,19 @@ def main() -> int:
             f"diff={diff:6d}  (= 2m(3m+1)={expected_diff})"
         )
     if rc == 0:
-        print("  -> 19/19 cells: strictly increasing; diff = 2m(3m+1) verified")
+        print("  -> 24/24 cells: strictly increasing; diff = 2m(3m+1) verified")
 
     # --- summary -----------------------------------------------------------
     print()
     if rc == 0:
         print("=" * 70)
         print("ALL CHECKS PASSED.")
-        print(f"Closed form I_max(m) = 2m^3 - 2m^2 + 1 verified at m = 2 .. 20")
-        print(f"Alternative form I_max(m) = 4m * C(m, 2) + 1 verified (m = 2 .. 20)")
-        print(f"Existing decoupling I_max(m) > 4m verified (m = 2 .. 20)")
-        print(f"Stronger decoupling I_max(m) > 8m verified (m = 3 .. 20)")
-        print(f"Strict monotonicity I_max(m) < I_max(m+1) verified (m = 1 .. 20)")
-        print(f"Bulk identity 2m^3 - 2m^2 = 2m^2 * (m-1) verified (m = 2 .. 20)")
+        print(f"Closed form I_max(m) = 2m^3 - 2m^2 + 1 verified at m = 2 .. 25")
+        print(f"Alternative form I_max(m) = 4m * C(m, 2) + 1 verified (m = 2 .. 25)")
+        print(f"Existing decoupling I_max(m) > 4m verified (m = 2 .. 25)")
+        print(f"Stronger decoupling I_max(m) > 8m verified (m = 3 .. 25)")
+        print(f"Strict monotonicity I_max(m) < I_max(m+1) verified (m = 1 .. 24)")
+        print(f"Bulk identity 2m^3 - 2m^2 = 2m^2 * (m-1) verified (m = 2 .. 25)")
         print("=" * 70)
     return rc
 

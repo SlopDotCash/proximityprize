@@ -90,6 +90,24 @@ theorem overdetIncidenceMax_values_extended :
     overdetIncidenceMax 15 = 6301 := by
   decide
 
+/-! ## Further extended value pin (m = 16 … 25) -/
+
+/-- Further extended pin of the over-determined incidence MAX at `m = 16 … 25`
+(`n = 64 … 100`). Continues the `overdetIncidenceMax_values_extended` pin
+(`m = 11 … 15`) by 10 more cells, confirming the closed form
+`I_max(m) = 2·m³ − 2·m² + 1` holds at `n = 64, 68, 72, 76, 80, 84, 88, 92, 96,
+100`. Probe-confirmed via two independent implementations
+(`g322_overdet_incidence_max_extended.py`). Combined with
+`overdetIncidenceMax_values` and `overdetIncidenceMax_values_extended`, the
+in-tree pin now covers `m = 2 … 25` (24 contiguous cells, `n = 8 … 100`). -/
+theorem overdetIncidenceMax_values_m16_25 :
+    overdetIncidenceMax 16 = 7681 ∧ overdetIncidenceMax 17 = 9249 ∧
+    overdetIncidenceMax 18 = 11017 ∧ overdetIncidenceMax 19 = 12997 ∧
+    overdetIncidenceMax 20 = 15201 ∧ overdetIncidenceMax 21 = 17641 ∧
+    overdetIncidenceMax 22 = 20329 ∧ overdetIncidenceMax 23 = 23277 ∧
+    overdetIncidenceMax 24 = 26497 ∧ overdetIncidenceMax 25 = 30001 := by
+  decide
+
 /-! ## Alternative form: 2·m²·(m − 1) + 1 -/
 
 /-- The over-det MAX equals the bulk plus 1 in factored form: `2·m³ − 2·m² + 1 =
@@ -148,6 +166,7 @@ end ArkLib.ProximityGap.OverdetIncidence
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_values_extended
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_values_m16_25
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_eq_bulk_plus_one
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_strict_mono
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_double_budget

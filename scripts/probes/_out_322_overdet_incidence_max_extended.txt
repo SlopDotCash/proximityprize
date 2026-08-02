@@ -18,7 +18,12 @@
   m=18  n=72  I_max= 11017  (A == B)
   m=19  n=76  I_max= 12997  (A == B)
   m=20  n=80  I_max= 15201  (A == B)
-  -> 19/19 cells: A == B exactly
+  m=21  n=84  I_max= 17641  (A == B)
+  m=22  n=88  I_max= 20329  (A == B)
+  m=23  n=92  I_max= 23277  (A == B)
+  m=24  n=96  I_max= 26497  (A == B)
+  m=25  n=100  I_max= 30001  (A == B)
+  -> 24/24 cells: A == B exactly
 
 [2] published sequence pin (m = 2 .. 10):
   [OK ] m= 2  I_max=     9  (expected      9)
@@ -63,7 +68,12 @@
   [OK ] m=18  bulk= 11016  bulk_factored= 11016
   [OK ] m=19  bulk= 12996  bulk_factored= 12996
   [OK ] m=20  bulk= 15200  bulk_factored= 15200
-  -> 19/19 cells: bulk identity holds
+  [OK ] m=21  bulk= 17640  bulk_factored= 17640
+  [OK ] m=22  bulk= 20328  bulk_factored= 20328
+  [OK ] m=23  bulk= 23276  bulk_factored= 23276
+  [OK ] m=24  bulk= 26496  bulk_factored= 26496
+  [OK ] m=25  bulk= 30000  bulk_factored= 30000
+  -> 24/24 cells: bulk identity holds
 
 [5] existing decoupling: I_max(m) > 4*m (= `overdetIncidenceMax_gt_budget`):
   [OK ] m= 2  I_max=     9 > 4m=   8
@@ -85,6 +95,11 @@
   [OK ] m=18  I_max= 11017 > 4m=  72
   [OK ] m=19  I_max= 12997 > 4m=  76
   [OK ] m=20  I_max= 15201 > 4m=  80
+  [OK ] m=21  I_max= 17641 > 4m=  84
+  [OK ] m=22  I_max= 20329 > 4m=  88
+  [OK ] m=23  I_max= 23277 > 4m=  92
+  [OK ] m=24  I_max= 26497 > 4m=  96
+  [OK ] m=25  I_max= 30001 > 4m= 100
 
 [6] STRONGER decoupling: I_max(m) > 8*m for m >= 3:
   [OK ] m= 3  I_max=    37 > 8m=  24
@@ -105,7 +120,12 @@
   [OK ] m=18  I_max= 11017 > 8m= 144
   [OK ] m=19  I_max= 12997 > 8m= 152
   [OK ] m=20  I_max= 15201 > 8m= 160
-  -> 18/18 cells (m=3..20): overdet MAX > double budget
+  [OK ] m=21  I_max= 17641 > 8m= 168
+  [OK ] m=22  I_max= 20329 > 8m= 176
+  [OK ] m=23  I_max= 23277 > 8m= 184
+  [OK ] m=24  I_max= 26497 > 8m= 192
+  [OK ] m=25  I_max= 30001 > 8m= 200
+  -> 23/23 cells (m=3..25): overdet MAX > double budget
 
 [7] strict monotonicity: I_max(m) < I_max(m+1) for m >= 1:
   [OK ] m= 1  I_max(m)=     1  I_max(m+1)=     9  diff=     8  (= 2m(3m+1)=8)
@@ -127,14 +147,19 @@
   [OK ] m=17  I_max(m)=  9249  I_max(m+1)= 11017  diff=  1768  (= 2m(3m+1)=1768)
   [OK ] m=18  I_max(m)= 11017  I_max(m+1)= 12997  diff=  1980  (= 2m(3m+1)=1980)
   [OK ] m=19  I_max(m)= 12997  I_max(m+1)= 15201  diff=  2204  (= 2m(3m+1)=2204)
-  -> 19/19 cells: strictly increasing; diff = 2m(3m+1) verified
+  [OK ] m=20  I_max(m)= 15201  I_max(m+1)= 17641  diff=  2440  (= 2m(3m+1)=2440)
+  [OK ] m=21  I_max(m)= 17641  I_max(m+1)= 20329  diff=  2688  (= 2m(3m+1)=2688)
+  [OK ] m=22  I_max(m)= 20329  I_max(m+1)= 23277  diff=  2948  (= 2m(3m+1)=2948)
+  [OK ] m=23  I_max(m)= 23277  I_max(m+1)= 26497  diff=  3220  (= 2m(3m+1)=3220)
+  [OK ] m=24  I_max(m)= 26497  I_max(m+1)= 30001  diff=  3504  (= 2m(3m+1)=3504)
+  -> 24/24 cells: strictly increasing; diff = 2m(3m+1) verified
 
 ======================================================================
 ALL CHECKS PASSED.
-Closed form I_max(m) = 2m^3 - 2m^2 + 1 verified at m = 2 .. 20
-Alternative form I_max(m) = 4m * C(m, 2) + 1 verified (m = 2 .. 20)
-Existing decoupling I_max(m) > 4m verified (m = 2 .. 20)
-Stronger decoupling I_max(m) > 8m verified (m = 3 .. 20)
-Strict monotonicity I_max(m) < I_max(m+1) verified (m = 1 .. 20)
-Bulk identity 2m^3 - 2m^2 = 2m^2 * (m-1) verified (m = 2 .. 20)
+Closed form I_max(m) = 2m^3 - 2m^2 + 1 verified at m = 2 .. 25
+Alternative form I_max(m) = 4m * C(m, 2) + 1 verified (m = 2 .. 25)
+Existing decoupling I_max(m) > 4m verified (m = 2 .. 25)
+Stronger decoupling I_max(m) > 8m verified (m = 3 .. 25)
+Strict monotonicity I_max(m) < I_max(m+1) verified (m = 1 .. 24)
+Bulk identity 2m^3 - 2m^2 = 2m^2 * (m-1) verified (m = 2 .. 25)
 ======================================================================
