@@ -4414,6 +4414,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.OrbitCountPinNecessity
 import ArkLib.Data.CodingTheory.ProximityGap.OrbitSpectrumBound
 import ArkLib.Data.CodingTheory.ProximityGap.OrderStatResort
 import ArkLib.Data.CodingTheory.ProximityGap.OverdetIncidenceMaxClosedForm
+import ArkLib.Data.CodingTheory.ProximityGap.OverdetIncidenceMaxClosedFormExt
 import ArkLib.Data.CodingTheory.ProximityGap.Overreach
 import ArkLib.Data.CodingTheory.ProximityGap.OwnershipBound
 import ArkLib.Data.CodingTheory.ProximityGap.OwnershipCensusSharpened
