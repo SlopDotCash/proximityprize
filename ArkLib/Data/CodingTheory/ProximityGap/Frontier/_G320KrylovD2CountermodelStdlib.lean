@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 Contributor: Shane Coy - github.com/shane9coy - shanec.dev@gmail.com
 -/
+import Mathlib
 
 /-! # G320: stdlib port + extension of the G246 Krylov degree-2 countermodel
 
