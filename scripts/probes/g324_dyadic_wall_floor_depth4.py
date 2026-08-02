@@ -62,26 +62,40 @@ def brute_force_depth4(m: int) -> tuple[int, tuple[int, int, int, int]]:
     """Brute-force max of a + 4b + 9c + 16d over (a,b,c,d) with
     a+2b+3c+4d = 2m-1, a+b+c+d <= m, all >= 0.
 
-    Loops over d, c, b, a in valid ranges; returns (max_value, witness).
+    Loops over d, c, b and COMPUTES a = (2m-1) - 2b - 3c - 4d directly
+    (a is uniquely determined by the sum constraint; no a loop needed).
+    Uses the per-d c_max bound (target - 4*d) // 3 and per-(c,d) b_max
+    bound (m - c - d) AND (target - 3c - 4d) // 2 (intersection of the
+    count and sum constraints). Keeps the enumeration fast (O(m^2)
+    instead of O(m^4)). Returns (max_value, witness).
     """
     n = 2 * m
     target = n - 1
     d_max = target // 4
-    c_max = (target - 4 * d_max) // 3  # crude upper bound, refines below
     best = -1
     best_partition = None
     for d in range(0, d_max + 1):
+        # c_max depends on d: 3c <= target - 4d, so c <= (target - 4d) // 3.
+        c_max = (target - 4 * d) // 3
         for c in range(0, c_max + 1):
-            for b in range(0, m + 1):
-                for a in range(0, m + 1):
-                    if a + b + c + d > m:
-                        continue
-                    if a + 2 * b + 3 * c + 4 * d != target:
-                        continue
-                    val = a + 4 * b + 9 * c + 16 * d
-                    if val > best:
-                        best = val
-                        best_partition = (a, b, c, d)
+            # b_max: count constraint b <= m - c - d; sum constraint
+            # 2b <= target - 3c - 4d, so b <= (target - 3c - 4d) // 2.
+            b_max = min(m - c - d, (target - 3 * c - 4 * d) // 2)
+            if b_max < 0:
+                continue
+            for b in range(0, b_max + 1):
+                # a is uniquely determined by the sum constraint.
+                a = target - 2 * b - 3 * c - 4 * d
+                if a < 0:
+                    continue
+                # a + b + c + d <= m is the only remaining constraint
+                # (a >= 0, b >= 0, c >= 0, d >= 0 already ensured above).
+                if a + b + c + d > m:
+                    continue
+                val = a + 4 * b + 9 * c + 16 * d
+                if val > best:
+                    best = val
+                    best_partition = (a, b, c, d)
     return best, best_partition
 
 
