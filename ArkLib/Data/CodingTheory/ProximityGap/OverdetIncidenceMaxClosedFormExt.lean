@@ -45,6 +45,16 @@ antipodal direction `(n/2, n/2 − 1)`):
     Proved by `nlinarith` on the non-strict `≥ 8m` form
     `2*m^2*(m-1) ≥ 8*m` for the bulk, then `omega` lifts the `+1` on the
     LHS to strict `>` (mirroring `overdetIncidenceMax_gt_budget`).
+  * **G326 stronger-decoupling chain** `overdetIncidenceMax m > 12·m` for
+    `m ≥ 3`, `> 24·m` for `m ≥ 4`, `> 40·m` for `m ≥ 5` — three new tight
+    rungs of the chain (`2m³ − 2m² + 1 > 2d(d+1)·m` for `m ≥ d+1`, `d ∈
+    {2, 3, 4}`). At each boundary `m = d+1` the margin is exactly 1
+    (e.g. `I_max(3) = 37 > 36 = 12·3`; `I_max(4) = 97 > 96 = 24·4`;
+    `I_max(5) = 201 > 200 = 40·5`). The bulk `2m²·(m − 1) − 2d(d+1)·m =
+    2m·(m − 1 − d)·(m + d)` is nonneg for `m ≥ d + 1`; `nlinarith`
+    proves the non-strict form, `omega` lifts the `+1` to strict.
+    Strengthens `overdetIncidenceMax_gt_double_budget` by a factor of 1.5,
+    3, 5 respectively at the new rungs.
 
 ## Honest scope
 
@@ -211,6 +221,94 @@ theorem overdetIncidenceMax_gt_double_budget {m : ℕ} (hm : 3 ≤ m) :
     nlinarith [sq_nonneg m, sq_nonneg (m - 2)]
   omega
 
+/-! ## G326: stronger-decoupling chain (12m, 24m, 40m) -/
+
+/-- **G326 stronger decoupling #1.**  For `m ≥ 3` (i.e. `n = 4m ≥ 12`),
+the over-determined incidence MAX exceeds `12·m` (i.e. TRIPLE the budget
+`n = 4m`):
+
+  `overdetIncidenceMax m > 12·m`.
+
+Strengthens `overdetIncidenceMax_gt_double_budget` (which gives `> 8m` for
+`m ≥ 3`) by a factor of 1.5 from `m = 3` onwards (margin 1 at the boundary
+`m = 3`: `I_max(3) = 37 > 36 = 12·3`).  The arithmetic: `2m³ − 2m² + 1 − 12m =
+2m·(m² − m − 6) + 1 = 2m·(m − 3)·(m + 2) + 1 > 0` for `m ≥ 3` (each factor
+nonneg for `m ≥ 3`, and the `+1` on the LHS makes it strict).  Proved by
+`nlinarith` on the non-strict bulk `2m²·(m − 1) ≥ 12m`, then `omega` lifts
+the `+1` (same pattern as `overdetIncidenceMax_gt_double_budget` above). -/
+theorem overdetIncidenceMax_gt_12m {m : ℕ} (hm : 3 ≤ m) :
+    overdetIncidenceMax m > 12 * m := by
+  rw [overdetIncidenceMax_eq_bulk_plus_one]
+  -- Non-strict bulk: 2*m^2*(m-1) ≥ 12*m for m ≥ 3 (2m(m²-m-6) = 2m(m-3)(m+2) ≥ 0).
+  have h : 2 * m ^ 2 * (m - 1) ≥ 12 * m := by
+    nlinarith [sq_nonneg m, sq_nonneg (m - 3)]
+  omega
+
+/-- **G326 stronger decoupling #2.**  For `m ≥ 4` (i.e. `n = 4m ≥ 16`),
+the over-determined incidence MAX exceeds `24·m` (i.e. SIX TIMES the budget
+`n = 4m`):
+
+  `overdetIncidenceMax m > 24·m`.
+
+Strengthens `overdetIncidenceMax_gt_double_budget` (which gives `> 8m` for
+`m ≥ 3`) by a factor of 3 from `m = 4` onwards (margin 1 at the boundary
+`m = 4`: `I_max(4) = 97 > 96 = 24·4`).  The arithmetic:
+`2m³ − 2m² + 1 − 24m = 2m·(m² − m − 12) + 1 = 2m·(m − 4)·(m + 3) + 1 > 0`
+for `m ≥ 4`.  Same proof pattern. -/
+theorem overdetIncidenceMax_gt_24m {m : ℕ} (hm : 4 ≤ m) :
+    overdetIncidenceMax m > 24 * m := by
+  rw [overdetIncidenceMax_eq_bulk_plus_one]
+  -- Non-strict bulk: 2*m^2*(m-1) ≥ 24*m for m ≥ 4 (2m(m²-m-12) = 2m(m-4)(m+3) ≥ 0).
+  have h : 2 * m ^ 2 * (m - 1) ≥ 24 * m := by
+    nlinarith [sq_nonneg m, sq_nonneg (m - 4)]
+  omega
+
+/-- **G326 stronger decoupling #3.**  For `m ≥ 5` (i.e. `n = 4m ≥ 20`),
+the over-determined incidence MAX exceeds `40·m` (i.e. TEN TIMES the budget
+`n = 4m`):
+
+  `overdetIncidenceMax m > 40·m`.
+
+Strengthens `overdetIncidenceMax_gt_double_budget` (which gives `> 8m` for
+`m ≥ 3`) by a factor of 5 from `m = 5` onwards (margin 1 at the boundary
+`m = 5`: `I_max(5) = 201 > 200 = 40·5`).  The arithmetic:
+`2m³ − 2m² + 1 − 40m = 2m·(m² − m − 20) + 1 = 2m·(m − 5)·(m + 4) + 1 > 0`
+for `m ≥ 5`.  Same proof pattern. -/
+theorem overdetIncidenceMax_gt_40m {m : ℕ} (hm : 5 ≤ m) :
+    overdetIncidenceMax m > 40 * m := by
+  rw [overdetIncidenceMax_eq_bulk_plus_one]
+  -- Non-strict bulk: 2*m^2*(m-1) ≥ 40*m for m ≥ 5 (2m(m²-m-20) = 2m(m-5)(m+4) ≥ 0).
+  have h : 2 * m ^ 2 * (m - 1) ≥ 40 * m := by
+    nlinarith [sq_nonneg m, sq_nonneg (m - 5)]
+  omega
+
+/-! ## The tight-inequality chain (summary)
+
+The G322 (one theorem) and G326 (three theorems) decoupling results form
+a chain of TIGHT inequalities (margin exactly 1 at the boundary
+`m = m_lo`), parameterized by `c = 2d(d+1)`, `m_lo = d+1` (any `d ≥ 1`):
+
+  `overdetIncidenceMax m > 4m`   for `m ≥ 2`  (d=1, original `overdetIncidenceMax_gt_budget`
+                                              in `OverdetIncidenceMaxClosedForm.lean`,
+                                              margin 1 at m=2: 9 > 8)
+  `overdetIncidenceMax m > 12m`  for `m ≥ 3`  (d=2, G326 #1, margin 1 at m=3: 37 > 36)
+  `overdetIncidenceMax m > 24m`  for `m ≥ 4`  (d=3, G326 #2, margin 1 at m=4: 97 > 96)
+  `overdetIncidenceMax m > 40m`  for `m ≥ 5`  (d=4, G326 #3, margin 1 at m=5: 201 > 200)
+
+In general `overdetIncidenceMax m > 2d(d+1)·m` for `m ≥ d+1` (any `d ≥ 1`),
+all proved the same way: the bulk `2m²(m − 1) − 2d(d+1)·m = 2m(m − d − 1)(m + d)`
+is nonneg for `m ≥ d+1`; `nlinarith` proves the non-strict form,
+`omega` lifts the `+1` on the LHS to strict.  The G326 brick ships
+`d ∈ {2, 3, 4}`; `d = 1` is the original theorem in the parent file.
+The `d ∈ {5, 6, 7, ...}` rungs (c = 60m, 84m, 112m, ...) are mechanical
+extensions of the same pattern (not formalized here, no new structural content).
+
+**Note: the G322 `overdetIncidenceMax_gt_double_budget` (`> 8m` for `m ≥ 3`) is a
+SEPARATE non-tight decoupling — the "double budget" rung.  Margin at `m = 3` is
+`I_max(3) − 8·3 = 37 − 24 = 13`, NOT 1 (the `m = 3` tight rung is `> 12m`).
+It is proved with the same `nlinarith` + `omega` pattern and is included
+for narrative completeness; it does NOT lie on the tight chain. -/
+
 end ArkLib.ProximityGap.OverdetIncidence
 
 /-! ## Axiom audit -/
@@ -220,3 +318,6 @@ end ArkLib.ProximityGap.OverdetIncidence
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_eq_bulk_plus_one
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_strict_mono
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_double_budget
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_12m
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_24m
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_40m
