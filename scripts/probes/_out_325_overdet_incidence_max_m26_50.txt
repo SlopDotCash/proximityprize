@@ -1,0 +1,129 @@
+[1] two-implementation agreement (A = 2m^3 - 2m^2 + 1, B = 4m * C(m,2) + 1):
+  m= 2  n=  8  I_max=      9  (A == B)
+  m= 3  n= 12  I_max=     37  (A == B)
+  m= 4  n= 16  I_max=     97  (A == B)
+  m= 5  n= 20  I_max=    201  (A == B)
+  m= 6  n= 24  I_max=    361  (A == B)
+  m= 7  n= 28  I_max=    589  (A == B)
+  m= 8  n= 32  I_max=    897  (A == B)
+  m= 9  n= 36  I_max=   1297  (A == B)
+  m=10  n= 40  I_max=   1801  (A == B)
+  m=11  n= 44  I_max=   2421  (A == B)
+  m=12  n= 48  I_max=   3169  (A == B)
+  m=13  n= 52  I_max=   4057  (A == B)
+  m=14  n= 56  I_max=   5097  (A == B)
+  m=15  n= 60  I_max=   6301  (A == B)
+  m=16  n= 64  I_max=   7681  (A == B)
+  m=17  n= 68  I_max=   9249  (A == B)
+  m=18  n= 72  I_max=  11017  (A == B)
+  m=19  n= 76  I_max=  12997  (A == B)
+  m=20  n= 80  I_max=  15201  (A == B)
+  m=21  n= 84  I_max=  17641  (A == B)
+  m=22  n= 88  I_max=  20329  (A == B)
+  m=23  n= 92  I_max=  23277  (A == B)
+  m=24  n= 96  I_max=  26497  (A == B)
+  m=25  n=100  I_max=  30001  (A == B)
+  m=26  n=104  I_max=  33801  (A == B)
+  m=27  n=108  I_max=  37909  (A == B)
+  m=28  n=112  I_max=  42337  (A == B)
+  m=29  n=116  I_max=  47097  (A == B)
+  m=30  n=120  I_max=  52201  (A == B)
+  m=31  n=124  I_max=  57661  (A == B)
+  m=32  n=128  I_max=  63489  (A == B)
+  m=33  n=132  I_max=  69697  (A == B)
+  m=34  n=136  I_max=  76297  (A == B)
+  m=35  n=140  I_max=  83301  (A == B)
+  m=36  n=144  I_max=  90721  (A == B)
+  m=37  n=148  I_max=  98569  (A == B)
+  m=38  n=152  I_max= 106857  (A == B)
+  m=39  n=156  I_max= 115597  (A == B)
+  m=40  n=160  I_max= 124801  (A == B)
+  m=41  n=164  I_max= 134481  (A == B)
+  m=42  n=168  I_max= 144649  (A == B)
+  m=43  n=172  I_max= 155317  (A == B)
+  m=44  n=176  I_max= 166497  (A == B)
+  m=45  n=180  I_max= 178201  (A == B)
+  m=46  n=184  I_max= 190441  (A == B)
+  m=47  n=188  I_max= 203229  (A == B)
+  m=48  n=192  I_max= 216577  (A == B)
+  m=49  n=196  I_max= 230497  (A == B)
+  m=50  n=200  I_max= 245001  (A == B)
+  -> 49/49 cells: A == B exactly
+
+[2] published sequence pin (m = 2 .. 10):
+  [OK ] m= 2  I_max=     9  (expected      9)
+  [OK ] m= 3  I_max=    37  (expected     37)
+  [OK ] m= 4  I_max=    97  (expected     97)
+  [OK ] m= 5  I_max=   201  (expected    201)
+  [OK ] m= 6  I_max=   361  (expected    361)
+  [OK ] m= 7  I_max=   589  (expected    589)
+  [OK ] m= 8  I_max=   897  (expected    897)
+  [OK ] m= 9  I_max=  1297  (expected   1297)
+  [OK ] m=10  I_max=  1801  (expected   1801)
+
+[3] G322 extension (m = 11 .. 15):
+  [OK ] m=11  n=44  I_max=  2421  (expected   2421)
+  [OK ] m=12  n=48  I_max=  3169  (expected   3169)
+  [OK ] m=13  n=52  I_max=  4057  (expected   4057)
+  [OK ] m=14  n=56  I_max=  5097  (expected   5097)
+  [OK ] m=15  n=60  I_max=  6301  (expected   6301)
+
+[4] G323 extension (m = 16 .. 25):
+  [OK ] m=16  n=64  I_max=  7681  (expected   7681)
+  [OK ] m=17  n=68  I_max=  9249  (expected   9249)
+  [OK ] m=18  n=72  I_max= 11017  (expected  11017)
+  [OK ] m=19  n=76  I_max= 12997  (expected  12997)
+  [OK ] m=20  n=80  I_max= 15201  (expected  15201)
+  [OK ] m=21  n=84  I_max= 17641  (expected  17641)
+  [OK ] m=22  n=88  I_max= 20329  (expected  20329)
+  [OK ] m=23  n=92  I_max= 23277  (expected  23277)
+  [OK ] m=24  n=96  I_max= 26497  (expected  26497)
+  [OK ] m=25  n=100  I_max= 30001  (expected  30001)
+
+[5] G325 NEW extension (m = 26 .. 50):
+  [OK ] m=26  n=104  I_max=  33801  (expected   33801)
+  [OK ] m=27  n=108  I_max=  37909  (expected   37909)
+  [OK ] m=28  n=112  I_max=  42337  (expected   42337)
+  [OK ] m=29  n=116  I_max=  47097  (expected   47097)
+  [OK ] m=30  n=120  I_max=  52201  (expected   52201)
+  [OK ] m=31  n=124  I_max=  57661  (expected   57661)
+  [OK ] m=32  n=128  I_max=  63489  (expected   63489)
+  [OK ] m=33  n=132  I_max=  69697  (expected   69697)
+  [OK ] m=34  n=136  I_max=  76297  (expected   76297)
+  [OK ] m=35  n=140  I_max=  83301  (expected   83301)
+  [OK ] m=36  n=144  I_max=  90721  (expected   90721)
+  [OK ] m=37  n=148  I_max=  98569  (expected   98569)
+  [OK ] m=38  n=152  I_max= 106857  (expected  106857)
+  [OK ] m=39  n=156  I_max= 115597  (expected  115597)
+  [OK ] m=40  n=160  I_max= 124801  (expected  124801)
+  [OK ] m=41  n=164  I_max= 134481  (expected  134481)
+  [OK ] m=42  n=168  I_max= 144649  (expected  144649)
+  [OK ] m=43  n=172  I_max= 155317  (expected  155317)
+  [OK ] m=44  n=176  I_max= 166497  (expected  166497)
+  [OK ] m=45  n=180  I_max= 178201  (expected  178201)
+  [OK ] m=46  n=184  I_max= 190441  (expected  190441)
+  [OK ] m=47  n=188  I_max= 203229  (expected  203229)
+  [OK ] m=48  n=192  I_max= 216577  (expected  216577)
+  [OK ] m=49  n=196  I_max= 230497  (expected  230497)
+  [OK ] m=50  n=200  I_max= 245001  (expected  245001)
+  -> 25/25 G325 cells verified exactly
+
+[6] bulk identity 2m^3 - 2m^2 = 2m^2 * (m - 1) [overdetIncidenceMax_bulk]:
+  -> 49/49 cells: bulk(m) == bulk_factored(m) exactly
+
+[7] decoupling I_max(m) > 4m for m >= 2 [overdetIncidenceMax_gt_budget]:
+  -> 49/49 cells: I_max(m) > 4m strictly
+
+[8] stronger decoupling I_max(m) > 8m for m >= 3 [overdetIncidenceMax_gt_double_budget]:
+  -> 48/48 cells: I_max(m) > 8m strictly
+
+[9] strict monotonicity: I_max(m) < I_max(m + 1) for m >= 1 [overdetIncidenceMax_strict_mono]:
+  -> 49/49 cells: I_max(m) < I_max(m + 1) strictly
+
+[10] discrete derivative: I_max(m+1) - I_max(m) = 2m(3m+1):
+  -> 49/49 cells: discrete derivative equals 2m(3m+1) exactly
+
+======================================================================
+G325 SUMMARY: 49 cells pinned (m = 2 .. 50).
+All checks PASS. Closed form 2m^3 - 2m^2 + 1 verified at m = 2 .. 50.
+======================================================================

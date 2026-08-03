@@ -19,6 +19,15 @@ antipodal direction `(n/2, n/2 − 1)`):
     sequence `9, 37, 97, 201, 361, 589, 897, 1297, 1801` to
     `…, 2421, 3169, 4057, 5097, 6301` (`overdetIncidenceMax_values_extended`,
     all `decide`). The original pin stops at `m = 10` (`n = 40`).
+  * **Further extended value pin** at `m = 16 … 25` (`n = 64 … 100`), pushing
+    the pin to `…, 7681, 9249, 11017, 12997, 15201, 17641, 20329, 23277, 26497,
+    30001` (`overdetIncidenceMax_values_m16_25`, all `decide`).
+  * **G325: even further extended value pin** at `m = 26 … 50` (`n = 104 … 200`),
+    pushing the pin to `…, 33801, 37909, 42337, 47097, 52201, 57661, 63489, 69697,
+    76297, 83301, 90721, 98569, 106857, 115597, 124801, 134481, 144649, 155317,
+    166497, 178201, 190441, 203229, 216577, 230497, 245001`
+    (`overdetIncidenceMax_values_m26_50`, all `decide`). The in-tree pin now
+    covers `m = 2 … 50` (49 contiguous cells, `n = 8 … 200`).
   * **Alternative form** `overdetIncidenceMax m = 2·m²·(m − 1) + 1` — the bulk
     factored form, equivalent to `n·C(m, 2) + 1` (since `2·m²·(m − 1) = 4m ·
     m(m − 1)/2 = n · C(m, 2)`, and `m·(m − 1)` is always even for `m ≥ 1`).
@@ -43,14 +52,15 @@ This is a (P) extension: every new `theorem` is `decide`/`omega`/`nlinarith`-clo
 with no `sorry`/`native_decide`/`bv_decide`/undocumented `axiom`/bodyless `opaque`.
 The EXTENDED values are pinned by `decide` (kernel-blessed for `ℕ` literal
 equality at these sizes, `Lean.version >= v4.30.0-rc2`) and confirmed by an
-exact-stdlib-integer probe (`scripts/probes/g322_overdet_incidence_max_extended.py`,
-two independent implementations: direct `2m³ − 2m² + 1` and the binomial
-`4m · C(m, 2) + 1`).
+exact-stdlib-integer probe (`scripts/probes/g322_overdet_incidence_max_extended.py`
+for `m = 2 … 25` and `scripts/probes/g325_overdet_incidence_max_m26_50.py`
+for `m = 2 … 50`, two independent implementations: direct `2m³ − 2m² + 1` and
+the binomial `4m · C(m, 2) + 1`).
 
 What this does NOT do (honest):
-  * It does NOT extend the closed form to all `m` (the empirical fit stops at
-    `m = 20` in the probe); the formal pin here is `m = 2 … 15` (extending the
-    existing `m = 2 … 10` pin by 5 cells).
+  * It does NOT extend the closed form to all `m` (the empirical fit is
+    verified through `m = 50` in the probe); the formal pin here is
+    `m = 2 … 50` (extending the existing `m = 2 … 10` pin by 40 cells).
   * It does NOT prove the cyclotomic mechanism of the closed form
     (why `2m³ − 2m² + 1` is the count at the antipodal direction); only that
     the empirical pattern extends and the algebraic identities hold.
@@ -106,6 +116,45 @@ theorem overdetIncidenceMax_values_m16_25 :
     overdetIncidenceMax 20 = 15201 ∧ overdetIncidenceMax 21 = 17641 ∧
     overdetIncidenceMax 22 = 20329 ∧ overdetIncidenceMax 23 = 23277 ∧
     overdetIncidenceMax 24 = 26497 ∧ overdetIncidenceMax 25 = 30001 := by
+  decide
+
+/-! ## G325: even further extended value pin (m = 26 … 50) -/
+
+/-- G325: even further extended pin of the over-determined incidence MAX at
+`m = 26 … 50` (`n = 104 … 200`).  Continues the
+`overdetIncidenceMax_values_m16_25` pin (`m = 16 … 25`) by 25 more cells,
+confirming the closed form `I_max(m) = 2·m³ − 2·m² + 1` holds at every
+`n = 4·m` for `m = 26 … 50`.  All 25 cells proved by `decide`
+(kernel-blessed for `ℕ` literal equality).  Values: 33801, 37909, 42337,
+47097, 52201, 57661, 63489, 69697, 76297, 83301, 90721, 98569, 106857,
+115597, 124801, 134481, 144649, 155317, 166497, 178201, 190441, 203229,
+216577, 230497, 245001.
+
+Probe-confirmed via two independent implementations
+(`g325_overdet_incidence_max_m26_50.py`): direct `2·m³ − 2·m² + 1` and
+the binomial `4·m · C(m, 2) + 1`.  Combined with `overdetIncidenceMax_values`
+(`m = 2 … 10`), `overdetIncidenceMax_values_extended` (`m = 11 … 15`), and
+`overdetIncidenceMax_values_m16_25` (`m = 16 … 25`), the in-tree pin now
+covers `m = 2 … 50` (49 contiguous cells, `n = 8 … 200`).
+
+Honest scope: (P) extension.  The closed form continues to hold at every
+probed cell, consistent with the campaign's published sequence.  No new
+proof techniques; just more cells of the same pin.  Does NOT close CORE
+(`s*(n, k)` budget-crossing asymptotic remains OPEN / ON-BGK). -/
+theorem overdetIncidenceMax_values_m26_50 :
+    overdetIncidenceMax 26 = 33801 ∧ overdetIncidenceMax 27 = 37909 ∧
+    overdetIncidenceMax 28 = 42337 ∧ overdetIncidenceMax 29 = 47097 ∧
+    overdetIncidenceMax 30 = 52201 ∧ overdetIncidenceMax 31 = 57661 ∧
+    overdetIncidenceMax 32 = 63489 ∧ overdetIncidenceMax 33 = 69697 ∧
+    overdetIncidenceMax 34 = 76297 ∧ overdetIncidenceMax 35 = 83301 ∧
+    overdetIncidenceMax 36 = 90721 ∧ overdetIncidenceMax 37 = 98569 ∧
+    overdetIncidenceMax 38 = 106857 ∧ overdetIncidenceMax 39 = 115597 ∧
+    overdetIncidenceMax 40 = 124801 ∧ overdetIncidenceMax 41 = 134481 ∧
+    overdetIncidenceMax 42 = 144649 ∧ overdetIncidenceMax 43 = 155317 ∧
+    overdetIncidenceMax 44 = 166497 ∧ overdetIncidenceMax 45 = 178201 ∧
+    overdetIncidenceMax 46 = 190441 ∧ overdetIncidenceMax 47 = 203229 ∧
+    overdetIncidenceMax 48 = 216577 ∧ overdetIncidenceMax 49 = 230497 ∧
+    overdetIncidenceMax 50 = 245001 := by
   decide
 
 /-! ## Alternative form: 2·m²·(m − 1) + 1 -/
@@ -167,6 +216,7 @@ end ArkLib.ProximityGap.OverdetIncidence
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_values_extended
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_values_m16_25
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_values_m26_50
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_eq_bulk_plus_one
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_strict_mono
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_double_budget
