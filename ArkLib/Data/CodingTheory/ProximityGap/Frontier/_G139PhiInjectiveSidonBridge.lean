@@ -679,6 +679,21 @@ theorem accidents_card_eq_zero_rootsFinset_of_distinctAntipodalResidues
       hn0 hgn heven hDistinct) hPhi
 
 set_option linter.unusedFintypeInType false in
+/-- Closed Sidon bridge for roots of unity: exact order plus finite `Phi`
+injectivity certifies `SidonModNeg` for the generated root set. -/
+theorem sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective
+    {g : F} {n : ℕ} (hgn : g ^ n = 1) (hn0 : n ≠ 0) (heven : Even n)
+    (hExact : HasExactOrder g n) (hPhi : PhiWindowInjective g n) :
+    SidonModNeg (rootsFinset g n) :=
+  sidonModNeg_of_phiWindowInjective
+    (additiveRelationProducesPhiCollision_rootsFinset
+      (powerRelationProducesPhiCollision_of_pow_eq_one_and_distinctAntipodalResidues
+        hn0 hgn heven
+        (rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder hn0 hgn
+          hExact)))
+    hPhi
+
+set_option linter.unusedFintypeInType false in
 /-- Closed upstream bridge: exact order plus finite `Phi` injectivity certifies
 zero normalized G139 accidents for the generated root set. -/
 theorem accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
@@ -686,10 +701,11 @@ theorem accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
     (hn0 : n ≠ 0) (heven : Even n) (hExact : HasExactOrder g n)
     (hPhi : PhiWindowInjective g n) :
     (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_rootsFinset_of_distinctAntipodalResidues h1 hgn hn0 heven
-    (rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder hn0 hgn hExact) hPhi
+  accidents_card_eq_zero_of_sidonModNeg h1
+    (sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective hgn hn0 heven hExact hPhi)
 
 /-! ## Axiom audit -/
+#print axioms sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective
 #print axioms accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
 
 end ArkLib.ProximityGap.Frontier.G139PhiInjectiveSidonBridge
