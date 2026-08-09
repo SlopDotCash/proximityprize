@@ -704,8 +704,132 @@ theorem accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
   accidents_card_eq_zero_of_sidonModNeg h1
     (sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective hgn hn0 heven hExact hPhi)
 
+set_option linter.unusedFintypeInType false in
+/-- A `Phi` collision produces a root-of-unity additive relation.  This is the
+reverse algebraic direction: equality of `n`th powers says the quotient
+`(g^r - 1)/(g^s - 1)` is itself an `n`th root of unity. -/
+theorem exists_root_relation_of_phi_collision
+    {g : F} {n r s : ℕ} (hn0 : n ≠ 0) (hprim : IsPrimitiveRoot g n)
+    (hs1 : 1 ≤ s) (hsh : s ≤ n / 2)
+    (hphi : (g ^ r - 1) ^ n = (g ^ s - 1) ^ n) :
+    ∃ u ∈ rootsFinset g n, g ^ r + u = 1 + u * g ^ s := by
+  haveI : NeZero n := ⟨hn0⟩
+  let u : F := (g ^ r - 1) / (g ^ s - 1)
+  have hslt : s < n := lt_of_le_of_lt hsh
+    (Nat.div_lt_self (Nat.pos_of_ne_zero hn0) (by norm_num : 1 < 2))
+  have hgs_ne : g ^ s - 1 ≠ 0 := by
+    rw [sub_ne_zero]
+    intro hgs
+    have hsdvd : n ∣ s := (hprim.pow_eq_one_iff_dvd s).mp (by simpa using hgs)
+    rcases hsdvd with ⟨k, rfl⟩
+    rcases k with _ | k
+    · omega
+    · have hle : n ≤ n * (k + 1) := Nat.le_mul_of_pos_right n (Nat.succ_pos k)
+      exact (not_le_of_gt hslt) hle
+  have hu_pow : u ^ n = 1 := by
+    unfold u
+    rw [div_pow, hphi, div_self]
+    exact pow_ne_zero n hgs_ne
+  obtain ⟨k, hklt, hku⟩ := hprim.eq_pow_of_pow_eq_one hu_pow
+  refine ⟨u, ?_, ?_⟩
+  · exact mem_rootsFinset_iff.mpr ⟨k, hklt, hku⟩
+  · have hmul : u * (g ^ s - 1) = g ^ r - 1 := by
+      unfold u
+      field_simp [hgs_ne]
+    rw [mul_sub] at hmul
+    have hmul' : u * g ^ s - u = g ^ r - 1 := by simpa using hmul
+    calc
+      g ^ r + u = (u * g ^ s - u + 1) + u := by rw [hmul']; ring
+      _ = 1 + u * g ^ s := by ring
+
+set_option linter.unusedFintypeInType false in
+/-- Reverse bridge for primitive cyclic root sets: `SidonModNeg` forces
+`Phi` injectivity on the certified half-window. -/
+theorem phiWindowInjective_of_sidonModNeg_rootsFinset
+    {g : F} {n : ℕ} (hn0 : n ≠ 0) (heven : Even n)
+    (hprim : IsPrimitiveRoot g n)
+    (hS : SidonModNeg (rootsFinset g n)) :
+    PhiWindowInjective g n := by
+  intro r s hr1 hrh hs1 hsh hphi
+  have hrlt : r < n := lt_of_le_of_lt hrh
+    (Nat.div_lt_self (Nat.pos_of_ne_zero hn0) (by norm_num : 1 < 2))
+  have hslt : s < n := lt_of_le_of_lt hsh
+    (Nat.div_lt_self (Nat.pos_of_ne_zero hn0) (by norm_num : 1 < 2))
+  rcases exists_root_relation_of_phi_collision hn0 hprim hs1 hsh hphi with
+    ⟨u, hu, hrel⟩
+  have hgr : g ^ r ∈ rootsFinset g n := pow_mem_rootsFinset hn0 hprim r
+  have hone : (1 : F) ∈ rootsFinset g n := one_mem_rootsFinset hn0 hprim
+  have hgs : g ^ s ∈ rootsFinset g n := pow_mem_rootsFinset hn0 hprim s
+  have hugs : u * g ^ s ∈ rootsFinset g n := mul_mem_rootsFinset hn0 hprim hu hgs
+  rcases hS (g ^ r) hgr u hu 1 hone (u * g ^ s) hugs hrel with
+    ⟨hgr1, _hu_eq⟩ | ⟨hgr_us, hu1⟩ | hzero
+  · have hr_ne0 : r ≠ 0 := by omega
+    exact False.elim (hprim.pow_ne_one_of_pos_of_lt hr_ne0 hrlt (by simpa using hgr1))
+  · have hpow : g ^ r = g ^ s := by simpa [hu1] using hgr_us
+    exact hprim.pow_inj hrlt hslt hpow
+  · have hright_zero : 1 + u * g ^ s = 0 := by
+      rw [← hrel]
+      exact hzero
+    have hu_eq : u = -g ^ r := by linear_combination hzero
+    have hprod_neg : -(g ^ (r + s)) = -1 := by
+      have humul : u * g ^ s = -1 := by linear_combination hright_zero
+      rw [pow_add]
+      rw [hu_eq] at humul
+      simpa [neg_mul] using humul
+    have hprod : g ^ (r + s) = 1 := neg_injective hprod_neg
+    have hsumdvd : n ∣ r + s := (hprim.pow_eq_one_iff_dvd (r + s)).mp hprod
+    rcases heven with ⟨t, rfl⟩
+    have hsum_le : r + s ≤ 2 * t := by omega
+    rcases hsumdvd with ⟨k, hk⟩
+    have hsum_pos : 0 < r + s := by omega
+    have hsum_eq : r + s = 2 * t := by
+      have htpos : 0 < t := by omega
+      rcases k with _ | k
+      · omega
+      · rcases k with _ | k
+        · simpa [two_mul] using hk
+        · have hgt : 2 * t < 2 * t * (k + 2) := by
+            simpa using
+              (Nat.mul_lt_mul_of_pos_left (by omega : 1 < k + 2)
+                (by omega : 0 < 2 * t))
+          have hlarge : 2 * t < r + s := by
+            calc
+              2 * t < 2 * t * (k + 2) := hgt
+              _ = r + s := by
+                rw [hk]
+                ring
+          exact False.elim ((not_lt_of_ge hsum_le) hlarge)
+    omega
+
+omit [Fintype F] [DecidableEq F] in
+/-- A primitive root has exact order in the lightweight predicate used by the
+closed G139 bridge. -/
+theorem hasExactOrder_of_isPrimitiveRoot
+    {g : F} {n : ℕ} (hprim : IsPrimitiveRoot g n) :
+    HasExactOrder g n := by
+  intro m hm hpow
+  by_cases hm0 : m = 0
+  · exact hm0
+  · exact False.elim (hprim.pow_ne_one_of_pos_of_lt hm0 hm hpow)
+
+set_option linter.unusedFintypeInType false in
+/-- Primitive cyclic root-set equivalence: the finite `Phi` half-window
+certificate is exactly the `SidonModNeg` obstruction for the generated roots of
+unity. -/
+theorem phiWindowInjective_iff_sidonModNeg_rootsFinset
+    {g : F} {n : ℕ} (hn0 : n ≠ 0) (heven : Even n)
+    (hprim : IsPrimitiveRoot g n) :
+    PhiWindowInjective g n ↔ SidonModNeg (rootsFinset g n) := by
+  constructor
+  · intro hPhi
+    exact sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective
+      hprim.pow_eq_one hn0 heven (hasExactOrder_of_isPrimitiveRoot hprim) hPhi
+  · intro hS
+    exact phiWindowInjective_of_sidonModNeg_rootsFinset hn0 heven hprim hS
+
 /-! ## Axiom audit -/
 #print axioms sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective
 #print axioms accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
+#print axioms phiWindowInjective_iff_sidonModNeg_rootsFinset
 
 end ArkLib.ProximityGap.Frontier.G139PhiInjectiveSidonBridge
