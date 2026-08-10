@@ -9,6 +9,7 @@
     "p": 17318209,
     "phi_collision_holds": true,
     "phi_value": 11286730,
+    "prime_modulus_assumed": true,
     "quotient_matches": true,
     "r": 4,
     "relation_exponents": {
@@ -45,6 +46,7 @@
     "p": 17318209,
     "phi_collision_holds": true,
     "phi_value": 7847841,
+    "prime_modulus_assumed": true,
     "quotient_matches": true,
     "r": 2,
     "relation_exponents": {
@@ -81,6 +83,7 @@
     "p": 17318209,
     "phi_collision_holds": true,
     "phi_value": 2644542,
+    "prime_modulus_assumed": true,
     "quotient_matches": true,
     "r": 23,
     "relation_exponents": {
@@ -117,6 +120,7 @@
     "p": 138027521,
     "phi_collision_holds": true,
     "phi_value": 125503081,
+    "prime_modulus_assumed": true,
     "quotient_matches": true,
     "r": 216,
     "relation_exponents": {
@@ -153,6 +157,7 @@
     "p": 138027521,
     "phi_collision_holds": true,
     "phi_value": 35081662,
+    "prime_modulus_assumed": true,
     "quotient_matches": true,
     "r": 228,
     "relation_exponents": {
@@ -189,6 +194,7 @@
     "p": 138027521,
     "phi_collision_holds": true,
     "phi_value": 100736463,
+    "prime_modulus_assumed": true,
     "quotient_matches": true,
     "r": 197,
     "relation_exponents": {

@@ -12,7 +12,9 @@ it checks the exact finite-field identities
 
 For power-of-two orders, it also verifies the lightweight exact-order contract
 `g^n = 1` and `g^(n/2) = -1`.  The verifier never constructs the full subgroup,
-so the same code path is suitable for proposed production-scale witnesses.
+so the same code path is suitable for proposed production-scale witnesses.  It
+assumes the supplied modulus is prime; for the retained production row, pair it
+with `verify_g139_n2e30_arithmetic_contract.py`, which verifies primality.
 """
 
 from __future__ import annotations
@@ -53,6 +55,7 @@ class WitnessVerification:
     u: int
     u_exponent: int | None
     phi_value: int
+    prime_modulus_assumed: bool
     exact_order_power2: bool
     window_bounds: bool
     denominator_nonzero: bool
@@ -162,6 +165,7 @@ def verify_witness(
         u=u,
         u_exponent=None if u_exponent is None else u_exponent % n,
         phi_value=left_phi,
+        prime_modulus_assumed=True,
         exact_order_power2=exact_order,
         window_bounds=window_bounds,
         denominator_nonzero=denominator_nonzero,
