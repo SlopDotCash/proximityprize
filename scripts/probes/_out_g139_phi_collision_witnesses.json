@@ -1,0 +1,182 @@
+[
+  {
+    "generator": 9133071,
+    "label": "G173-accident",
+    "n": 64,
+    "normalized_g139_lawful": false,
+    "p": 17318209,
+    "phi_collision_holds": true,
+    "phi_value": 11286730,
+    "r": 4,
+    "relation_exponents": {
+      "a": 4,
+      "b": 34,
+      "c": 0,
+      "d": 45
+    },
+    "relation_holds": true,
+    "relation_values": {
+      "a": 5663213,
+      "b": 11893578,
+      "c": 1,
+      "d": 238581
+    },
+    "s": 11,
+    "sidon_same_branch": false,
+    "sidon_swap_branch": false,
+    "sidon_zero_branch": false,
+    "u": 11893578,
+    "u_exponent": 34,
+    "u_is_root": true
+  },
+  {
+    "generator": 9133071,
+    "label": "G173-accident",
+    "n": 64,
+    "normalized_g139_lawful": false,
+    "p": 17318209,
+    "phi_collision_holds": true,
+    "phi_value": 7847841,
+    "r": 2,
+    "relation_exponents": {
+      "a": 2,
+      "b": 30,
+      "c": 0,
+      "d": 43
+    },
+    "relation_holds": true,
+    "relation_values": {
+      "a": 5424631,
+      "b": 14140135,
+      "c": 1,
+      "d": 2246556
+    },
+    "s": 13,
+    "sidon_same_branch": false,
+    "sidon_swap_branch": false,
+    "sidon_zero_branch": false,
+    "u": 14140135,
+    "u_exponent": 30,
+    "u_is_root": true
+  },
+  {
+    "generator": 9133071,
+    "label": "G173-accident",
+    "n": 64,
+    "normalized_g139_lawful": false,
+    "p": 17318209,
+    "phi_collision_holds": true,
+    "phi_value": 2644542,
+    "r": 23,
+    "relation_exponents": {
+      "a": 23,
+      "b": 53,
+      "c": 0,
+      "d": 19
+    },
+    "relation_holds": true,
+    "relation_values": {
+      "a": 1256819,
+      "b": 7937154,
+      "c": 1,
+      "d": 9193972
+    },
+    "s": 30,
+    "sidon_same_branch": false,
+    "sidon_swap_branch": false,
+    "sidon_zero_branch": false,
+    "u": 7937154,
+    "u_exponent": 53,
+    "u_is_root": true
+  },
+  {
+    "generator": 48322652,
+    "label": "n512-offdiag-accident",
+    "n": 512,
+    "normalized_g139_lawful": false,
+    "p": 138027521,
+    "phi_collision_holds": true,
+    "phi_value": 125503081,
+    "r": 216,
+    "relation_exponents": {
+      "a": 216,
+      "b": 275,
+      "c": 0,
+      "d": 500
+    },
+    "relation_holds": true,
+    "relation_values": {
+      "a": 115650866,
+      "b": 3226942,
+      "c": 1,
+      "d": 118877807
+    },
+    "s": 225,
+    "sidon_same_branch": false,
+    "sidon_swap_branch": false,
+    "sidon_zero_branch": false,
+    "u": 3226942,
+    "u_exponent": 275,
+    "u_is_root": true
+  },
+  {
+    "generator": 48322652,
+    "label": "n512-offdiag-accident",
+    "n": 512,
+    "normalized_g139_lawful": false,
+    "p": 138027521,
+    "phi_collision_holds": true,
+    "phi_value": 35081662,
+    "r": 228,
+    "relation_exponents": {
+      "a": 228,
+      "b": 287,
+      "c": 0,
+      "d": 12
+    },
+    "relation_holds": true,
+    "relation_values": {
+      "a": 117556726,
+      "b": 106007512,
+      "c": 1,
+      "d": 85536716
+    },
+    "s": 237,
+    "sidon_same_branch": false,
+    "sidon_swap_branch": false,
+    "sidon_zero_branch": false,
+    "u": 106007512,
+    "u_exponent": 287,
+    "u_is_root": true
+  },
+  {
+    "generator": 48322652,
+    "label": "n512-offdiag-accident",
+    "n": 512,
+    "normalized_g139_lawful": false,
+    "p": 138027521,
+    "phi_collision_holds": true,
+    "phi_value": 100736463,
+    "r": 197,
+    "relation_exponents": {
+      "a": 197,
+      "b": 237,
+      "c": 0,
+      "d": 481
+    },
+    "relation_holds": true,
+    "relation_values": {
+      "a": 35085762,
+      "b": 69484782,
+      "c": 1,
+      "d": 104570543
+    },
+    "s": 244,
+    "sidon_same_branch": false,
+    "sidon_swap_branch": false,
+    "sidon_zero_branch": false,
+    "u": 69484782,
+    "u_exponent": 237,
+    "u_is_root": true
+  }
+]
