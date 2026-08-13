@@ -53407,3 +53407,30 @@ not address `n=2^30`, logarithmic depth, or the signed late-Newton/BGK covarianc
 
 Probe: `scripts/probes/g310_tail_floor_scale_audit.py`; note:
 `docs/kb/deltastar-466-g310-tail-floor-scale-audit-2026-08-01.md`.
+### [466-G311-dilation-anchor-scale-audit] the coefficient-1 dilation anchor still has the wrong sign for the coefficient-2 target at certified field scale `p=111*2^128+1` in the toy order `n=16` (2026-08-01)
+
+G297 killed coefficient-anchor sign transport on the small cell `mu_16 <= F_113^*`: `r=5` has
+`A1=-2977296 < 0 < A2=1727120`, while `r=6` reverses direction with
+`A1=152176 > 0 > A2=-77440`. G311 asks only whether this sign-transport obstruction is a small-field
+artifact for the same toy order.
+
+Proth theorem certifies `p=111*2^128+1` prime with witness `5`, and `p > 16*2^128`. For
+`mu_16 <= F_p^*`, two independent exact implementations (sparse row/kernel querying and direct
+subset-pair enumeration) give:
+
+```text
+r=5: A1=-2035138560, A2=+12132759625789254812263498506989117214991787712
+r=6: A1=-8954609664, A2=+40205630224372760716789501328599919806465162752
+```
+
+So the sign-transport verdict persists at the required field-size scale in this toy order:
+coefficient one is negative while the coefficient-two target is positive at both adjacent ranks
+checked. Equivalently, the canonical `a=1` anchor still cannot select the `a=2` quotient coset even
+after leaving the small-characteristic regime.
+
+Scope: finite scale audit only. This is `n=16`, not production `n=2^30`, and it proves no
+logarithmic-depth or worst-case-over-frequency estimate. It reinforces G297's obstruction under
+large-field discipline, but CORE remains OPEN / ON-BGK.
+
+Probe: `scripts/probes/g311_dilation_anchor_scale_audit.py`; note:
+`docs/kb/deltastar-466-g311-dilation-anchor-scale-audit-2026-08-01.md`.
