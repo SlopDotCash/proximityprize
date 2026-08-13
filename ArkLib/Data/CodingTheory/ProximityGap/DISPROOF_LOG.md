@@ -53407,6 +53407,9 @@ not address `n=2^30`, logarithmic depth, or the signed late-Newton/BGK covarianc
 
 Probe: `scripts/probes/g310_tail_floor_scale_audit.py`; note:
 `docs/kb/deltastar-466-g310-tail-floor-scale-audit-2026-08-01.md`.
+
+---
+
 ### [466-G311-dilation-anchor-scale-audit] the coefficient-1 dilation anchor still has the wrong sign for the coefficient-2 target at certified field scale `p=111*2^128+1` in the toy order `n=16` (2026-08-01)
 
 G297 killed coefficient-anchor sign transport on the small cell `mu_16 <= F_113^*`: `r=5` has
@@ -53434,6 +53437,9 @@ large-field discipline, but CORE remains OPEN / ON-BGK.
 
 Probe: `scripts/probes/g311_dilation_anchor_scale_audit.py`; note:
 `docs/kb/deltastar-466-g311-dilation-anchor-scale-audit-2026-08-01.md`.
+
+---
+
 ### [466-G312-carry-scale-audit] the G278 small-field spread-carry obstruction flips at certified field scale: for `p=111*2^128+1`, `n=16`, ranks five/six have all mass in carry zero (2026-08-01)
 
 G278 showed that on its small/medium checked cells the adjacent-rank CORE alignment does not localize
@@ -53463,6 +53469,9 @@ CORE closure. CORE OPEN / ON-BGK.
 
 Probe: `scripts/probes/g312_carry_scale_audit.py`; note:
 `docs/kb/deltastar-466-g312-carry-scale-audit-2026-08-01.md`.
+
+---
+
 ### [466-G313-all-rank-window-scale-audit] the coefficient-2 CORE target is positive on every adjacent rank at certified toy field scale (2026-08-01)
 
 G300 shows that the coefficient-2 adjacent-rank CORE covariance can oscillate inside the small
@@ -53485,6 +53494,9 @@ the small-cell sign pathologies do not persist uniformly under this `n=16` large
 that the coefficient-2 target is all-rank positive at the certified checked scale. Exact probe
 `g313_all_rank_window_scale_audit.py`; full note
 `docs/kb/deltastar-466-g313-all-rank-window-scale-audit-2026-08-01.md`. CORE OPEN / ON-BGK.
+
+---
+
 ### [466-G314-antipodal-relation-model] the certified `n=16` all-rank table is exactly the antipodal-pair relation model (2026-08-01)
 
 At certified Proth-prime scale `p=111*2^128+1`, the `n=16` coefficient-1 / coefficient-2
@@ -53505,6 +53517,9 @@ include extra finite-field relations, while the certified large-scale toy table 
 by the antipodal-pair relation model. This is still a finite `n=16` audit, not the production
 `n=2^30` theorem. Exact probe `g314_antipodal_relation_model.py`; full note
 `docs/kb/deltastar-466-g314-antipodal-relation-model-2026-08-01.md`. CORE OPEN / ON-BGK.
+
+---
+
 ### [466-G315-n32-antipodal-live-ranks] the certified antipodal model persists one toy order higher at ranks five/six (2026-08-01)
 
 After the `n=16` all-rank audit suggested an antipodal-pair normal form, G315 tests the same mechanism
@@ -53523,6 +53538,9 @@ This does not prove production `n=2^30`, but it shows the certified-scale antipo
 not merely an `n=16` artifact: it survives the first larger-order live-rank stress test. Exact probe
 `g315_n32_antipodal_live_ranks.py`; full note
 `docs/kb/deltastar-466-g315-n32-antipodal-live-ranks-2026-08-01.md`. CORE OPEN / ON-BGK.
+
+---
+
 ### [466-G316-antipodal-closed-formula] coefficient one vanishes by parity and coefficient two has a two-term formula in the antipodal model (2026-08-01)
 
 G316 turns the G314/G315 antipodal-pair model into a compact formula. Let `n=2h`, pair roots as
@@ -53545,6 +53563,9 @@ rank-five/six predictions:
 This is a formula for the model, not a proof that finite-field cells have no extra modular
 relations. Exact probe `g316_antipodal_closed_formula.py`; full note
 `docs/kb/deltastar-466-g316-antipodal-closed-formula-2026-08-01.md`. CORE OPEN / ON-BGK.
+
+---
+
 ### [466-G317-n64-r5-targeted-audit] the certified finite-field count matches the antipodal model at `n=64`, rank five (2026-08-01)
 
 G316 predicts the antipodal-model dots for `n=64,r=5`: coefficient 1 has dot `0`, and coefficient 2
@@ -53562,6 +53583,9 @@ This is still a finite toy-order audit and checks only rank five. Rank six at `n
 need about `58573633` support states, so the safe next version should use a lower-level or disk-backed
 counter. Exact probe `g317_n64_r5_targeted_audit.py`; full note
 `docs/kb/deltastar-466-g317-n64-r5-targeted-audit-2026-08-01.md`. CORE OPEN / ON-BGK.
+
+---
+
 ### [466-G318-n64-r6-norm-guard] a cyclotomic norm bound certifies the `n=64`, rank-six antipodal count without the huge histogram (2026-08-01)
 
 G317 checked `n=64,r=5` directly, but `n=64,r=6` is expected to need about `58573633` sparse support
