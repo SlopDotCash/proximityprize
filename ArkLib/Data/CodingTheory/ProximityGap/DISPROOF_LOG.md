@@ -53485,3 +53485,23 @@ the small-cell sign pathologies do not persist uniformly under this `n=16` large
 that the coefficient-2 target is all-rank positive at the certified checked scale. Exact probe
 `g313_all_rank_window_scale_audit.py`; full note
 `docs/kb/deltastar-466-g313-all-rank-window-scale-audit-2026-08-01.md`. CORE OPEN / ON-BGK.
+### [466-G314-antipodal-relation-model] the certified `n=16` all-rank table is exactly the antipodal-pair relation model (2026-08-01)
+
+At certified Proth-prime scale `p=111*2^128+1`, the `n=16` coefficient-1 / coefficient-2
+adjacent-rank table has a finite structural explanation. Write the 16th roots as eight pairs
+`{e_j,-e_j}`. For each ordered kernel pair `(y,z)` and each root pair, count only selections of the
+`r`-subset `A` and `(r-1)`-subset `B` that balance the signed coordinate in
+`coefficient*y - z - sum(A) + sum(B)=0`.
+
+This pure antipodal-pair model gives coefficient-1 dot values
+`[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]` and coefficient-2 dot values
+`[16,576,8064,64064,321216,1064448,2369472,3544608,3544608,2369472,1064448,321216,64064,8064,576]`.
+Exact finite-field computation at `p=111*2^128+1,n=16` matches these dots at every rank `r=1..15`;
+direct subset-pair enumeration agrees for ranks `5,6`.
+
+The same model does not match the small G297 cell `p=113,n=16`: the field dots at ranks `5,6` are
+much larger and even reverse signs relative to the large-scale behavior. Thus those small signs
+include extra finite-field relations, while the certified large-scale toy table is exactly governed
+by the antipodal-pair relation model. This is still a finite `n=16` audit, not the production
+`n=2^30` theorem. Exact probe `g314_antipodal_relation_model.py`; full note
+`docs/kb/deltastar-466-g314-antipodal-relation-model-2026-08-01.md`. CORE OPEN / ON-BGK.
