@@ -6,6 +6,15 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
+## [466-G310-k2-interior-ceiling-prize-scale] A07 r=3 / k=2 interior-ceiling counts survive at a prize-scale Proth prime: the ceiling #bad is 40 and the below-ceiling monomial-pencil maximum is 9, q-independent at q ≈ 21·2^128 (2026-08-14)
+
+Extends sweep A07 (`docs/kb/deltastar-sweep-A07-k2-interior-2026-06-14.md`) from the small primes 257 / 12289 / 65537 to the prize-scale prime `p = 21·2^128 + 1` (Proth certificate with witness `a = 5`).  On the smooth 8-point domain `μ_8 = ⟨ω⟩` with `ω = 5^((p-1)/8)` (`ω^4 = -1`), the dimension-two (rate 1/4) Reed-Solomon code has the same exact integers as at the small primes:
+
+- Ceiling stack `(u₀,u₁) = (x³, x²)` at threshold `t = 3`: `#bad = 40` = the KKH26 `TwoPowerSubsetSumSpectrum` value `N(3,3) = 2³·C(4,3) + 2·C(4,1) = 32 + 8`.
+- Below-ceiling maximum over the 64 monomial pencils `(x^a, x^b)`, `0 ≤ a,b < 8`, at threshold `t = 4`: `max #bad = 9`, attained at `(a,b) = (4,3)`.
+
+Both numbers were produced by two independent stdlib-only exact-arithmetic probes (`scripts/probes/probe_k2_interior_ceiling_prize_scale.py` and `..._crosscheck.py`); the second uses a direct 2×2 elimination / `mcaEventNat` implementation rather than the first's collinearity/slope method.  The results are field-size independent at this scale, which corroborates the q-independence of the in-tree `KKH26DimTwoPin.lean` pin `deltaStar_dimTwo_pin_F12289`.  No δ* closure is claimed: `n = 8` is a fixed small rung, not the production `n = 2^32`; the full-window / production-dimension question remains open.
+
 ## [466-G299-prize-depth-in-window] The production prize depth lies INSIDE the palindrome census window, refuting G296's "prize rank escapes the window / certificate at depth `r ≳ n`" prose (2026-07-13, direct Opus 4.8 formalizer)
 
 Kernel-checked correction of a FALSE frontier inference carried by the G295/G296 files, their KB notes, and DISPROOF entries. G296's docstring claimed: "the genuine prize rank `r ≈ log p` on a thin cell `n ≈ p^{1/5.27}` satisfies `r > n` so `n+1-r < 2` (outside the window) … it escapes the window entirely. The certificate must live at depth `r ≳ n`." This is false at the campaign's own production parameters (`q = 2^158`, `n = 2^30`, ledger deep sup-control depth `r* ≈ 89`; see `CumulantOrderThreshold.lean` `log_n q ≈ 5.27`, `BadPrimeNormBound.lean` `q = n·2^128 = 2^158`). Concretely `2 ≤ 89 < 2^30`, and asymptotically for a fixed base `log_n q` grows far slower than `n`, so the prize rank never exceeds `n`; it lies deep inside the window `[2, n-1]`, and so does its reflection `σ(2^30) 89 = 2^30 - 88`.
