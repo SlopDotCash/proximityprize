@@ -79,4 +79,8 @@ fi
 
 echo "Building stage $stage_index/$stage_count (${#modules[@]} root modules)"
 printf '  %s\n' "${modules[@]}"
-./scripts/lake-locked.sh build "${modules[@]}"
+# Cap lean worker concurrency: hosted runners have 16GB RAM and the heaviest
+# modules (Binius soundness, late ToMathlib) exceed it at 4 concurrent
+# workers — stage jobs died with runner-shutdown exit 143 (OOM) at full
+# parallelism. Override with ARKLIB_STAGE_JOBS if the runner is larger.
+./scripts/lake-locked.sh build -j "${ARKLIB_STAGE_JOBS:-2}" "${modules[@]}"

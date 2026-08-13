@@ -74,4 +74,7 @@ jobs:
         with:
           name: arklib-build-stage-${{ inputs.stage }}
           path: ${{ runner.temp }}/arklib-build.tar.gz
-          retention-days: 1
+          # 7 days so `gh run rerun --failed` still finds the prior-stage
+          # artifact; at 1 day any next-day rerun of a failed stage was
+          # impossible (artifact expired -> immediate download failure).
+          retention-days: 7
