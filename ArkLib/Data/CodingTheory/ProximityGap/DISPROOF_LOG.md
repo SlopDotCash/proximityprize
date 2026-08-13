@@ -53505,3 +53505,21 @@ include extra finite-field relations, while the certified large-scale toy table 
 by the antipodal-pair relation model. This is still a finite `n=16` audit, not the production
 `n=2^30` theorem. Exact probe `g314_antipodal_relation_model.py`; full note
 `docs/kb/deltastar-466-g314-antipodal-relation-model-2026-08-01.md`. CORE OPEN / ON-BGK.
+### [466-G315-n32-antipodal-live-ranks] the certified antipodal model persists one toy order higher at ranks five/six (2026-08-01)
+
+After the `n=16` all-rank audit suggested an antipodal-pair normal form, G315 tests the same mechanism
+at `n=32` for the live ranks `r=5,6`. At the certified Proth prime `p=111*2^128+1` (witness `5`),
+the pure antipodal-pair model gives coefficient-1 dots `0,0` and coefficient-2 dots
+`20115200,200992512`.
+
+The exact finite-field sparse subset-histogram computation matches those model dots. Coefficient 1
+has
+`r=5: A=-7415276503040, dot=0`; `r=6: A=-186864967876608, dot=0`.
+Coefficient 2 has
+`r=5: A=+759778113246774813208690492278676928490593775360, dot=20115200` and
+`r=6: A=+7591757056558709115750550940264470531009269655296, dot=200992512`.
+
+This does not prove production `n=2^30`, but it shows the certified-scale antipodal relation model is
+not merely an `n=16` artifact: it survives the first larger-order live-rank stress test. Exact probe
+`g315_n32_antipodal_live_ranks.py`; full note
+`docs/kb/deltastar-466-g315-n32-antipodal-live-ranks-2026-08-01.md`. CORE OPEN / ON-BGK.
