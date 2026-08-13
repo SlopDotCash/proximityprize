@@ -82,5 +82,7 @@ printf '  %s\n' "${modules[@]}"
 # Cap lean worker concurrency: hosted runners have 16GB RAM and the heaviest
 # modules (Binius soundness, late ToMathlib) exceed it at 4 concurrent
 # workers — stage jobs died with runner-shutdown exit 143 (OOM) at full
-# parallelism. Override with ARKLIB_STAGE_JOBS if the runner is larger.
-./scripts/lake-locked.sh build -j "${ARKLIB_STAGE_JOBS:-2}" "${modules[@]}"
+# parallelism. Lake 5 has no --jobs flag; its build jobs run on the Lean
+# runtime task pool, sized by LEAN_NUM_THREADS, so that is the concurrency
+# knob. Override with ARKLIB_STAGE_JOBS if the runner is larger.
+LEAN_NUM_THREADS="${ARKLIB_STAGE_JOBS:-2}" ./scripts/lake-locked.sh build "${modules[@]}"
