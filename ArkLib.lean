@@ -2133,6 +2133,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaFrequencyParity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaRealNegClosed
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaSignNonMultiplicative
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ExpanderMixingBound
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._F1PolytopeMiddleCountermodel
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FAKatzPerCosetFloorVerdict
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FCPhaseAwareChainingMetric
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FErightedgeLDPRateFloor
@@ -2239,6 +2240,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136LawfulCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136ProductionInstantiation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G136UnitCircleMann
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G139AccidentQuantizationConsumer
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G139PhiInjectiveSidonBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G139SidonModNegClean
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G146CenteredCumulantPacketNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G167NegationStabilizerCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G168ScalingCosetConfinement
