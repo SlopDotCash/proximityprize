@@ -189,12 +189,14 @@ overdetIncidenceMax (m + 1)` for `m ≥ 1`.  The discrete derivative is exactly
 2·(3m² + 3m + 1) − 2·(2m + 1) = 6m² + 2m = 2m·(3m + 1)`). -/
 theorem overdetIncidenceMax_strict_mono {m : ℕ} (hm : 1 ≤ m) :
     overdetIncidenceMax m < overdetIncidenceMax (m + 1) := by
-  unfold overdetIncidenceMax
-  -- Difference = 2m(3m+1) ≥ 8 for m ≥ 1; the +1 cancels from both sides of the
-  -- strict `<` (via `Nat.lt_succ_iff`), so the non-strict `≥ 1` form suffices.
-  have h : 2 * (m + 1) ^ 3 - 2 * (m + 1) ^ 2 ≥ 2 * m ^ 3 - 2 * m ^ 2 + 1 := by
-    nlinarith [sq_nonneg m, sq_nonneg (m + 1)]
-  exact Nat.lt_succ_iff.mpr h
+  -- Rewrite both sides subtraction-free via the bulk-plus-one form, then
+  -- substitute `m = 1 + k` so ℕ-subtraction disappears and `nlinarith` closes.
+  rw [overdetIncidenceMax_eq_bulk_plus_one, overdetIncidenceMax_eq_bulk_plus_one]
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  have h1 : 1 + k - 1 = k := by omega
+  have h2 : 1 + k + 1 - 1 = 1 + k := by omega
+  rw [h1, h2]
+  nlinarith [sq_nonneg k]
 
 /-! ## Stronger decoupling: I_max(m) > 8·m for m ≥ 3 -/
 
@@ -217,9 +219,12 @@ theorem overdetIncidenceMax_gt_double_budget {m : ℕ} (hm : 3 ≤ m) :
   -- Non-strict bulk: 2*m^2*(m-1) ≥ 8*m for m ≥ 3. Then `omega` lifts the
   -- +1 on the LHS to the strict `>` (same pattern as
   -- `overdetIncidenceMax_gt_budget` in the original file).
-  have h : 2 * m ^ 2 * (m - 1) ≥ 8 * m := by
-    nlinarith [sq_nonneg m, sq_nonneg (m - 2)]
-  omega
+  -- Substitute `m = 3 + k` so the ℕ-subtraction `m - 1` becomes `2 + k` and
+  -- `nlinarith` sees a subtraction-free cubic.
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  have h1 : 3 + k - 1 = 2 + k := by omega
+  rw [h1]
+  nlinarith [sq_nonneg k]
 
 /-! ## G326: stronger-decoupling chain (12m, 24m, 40m) -/
 
@@ -240,9 +245,11 @@ theorem overdetIncidenceMax_gt_12m {m : ℕ} (hm : 3 ≤ m) :
     overdetIncidenceMax m > 12 * m := by
   rw [overdetIncidenceMax_eq_bulk_plus_one]
   -- Non-strict bulk: 2*m^2*(m-1) ≥ 12*m for m ≥ 3 (2m(m²-m-6) = 2m(m-3)(m+2) ≥ 0).
-  have h : 2 * m ^ 2 * (m - 1) ≥ 12 * m := by
-    nlinarith [sq_nonneg m, sq_nonneg (m - 3)]
-  omega
+  -- Substitute `m = 3 + k` (subtraction-free form for `nlinarith`).
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  have h1 : 3 + k - 1 = 2 + k := by omega
+  rw [h1]
+  nlinarith [sq_nonneg k]
 
 /-- **G326 stronger decoupling #2.**  For `m ≥ 4` (i.e. `n = 4m ≥ 16`),
 the over-determined incidence MAX exceeds `24·m` (i.e. SIX TIMES the budget
@@ -259,9 +266,11 @@ theorem overdetIncidenceMax_gt_24m {m : ℕ} (hm : 4 ≤ m) :
     overdetIncidenceMax m > 24 * m := by
   rw [overdetIncidenceMax_eq_bulk_plus_one]
   -- Non-strict bulk: 2*m^2*(m-1) ≥ 24*m for m ≥ 4 (2m(m²-m-12) = 2m(m-4)(m+3) ≥ 0).
-  have h : 2 * m ^ 2 * (m - 1) ≥ 24 * m := by
-    nlinarith [sq_nonneg m, sq_nonneg (m - 4)]
-  omega
+  -- Substitute `m = 4 + k` (subtraction-free form for `nlinarith`).
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  have h1 : 4 + k - 1 = 3 + k := by omega
+  rw [h1]
+  nlinarith [sq_nonneg k]
 
 /-- **G326 stronger decoupling #3.**  For `m ≥ 5` (i.e. `n = 4m ≥ 20`),
 the over-determined incidence MAX exceeds `40·m` (i.e. TEN TIMES the budget
@@ -278,9 +287,11 @@ theorem overdetIncidenceMax_gt_40m {m : ℕ} (hm : 5 ≤ m) :
     overdetIncidenceMax m > 40 * m := by
   rw [overdetIncidenceMax_eq_bulk_plus_one]
   -- Non-strict bulk: 2*m^2*(m-1) ≥ 40*m for m ≥ 5 (2m(m²-m-20) = 2m(m-5)(m+4) ≥ 0).
-  have h : 2 * m ^ 2 * (m - 1) ≥ 40 * m := by
-    nlinarith [sq_nonneg m, sq_nonneg (m - 5)]
-  omega
+  -- Substitute `m = 5 + k` (subtraction-free form for `nlinarith`).
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  have h1 : 5 + k - 1 = 4 + k := by omega
+  rw [h1]
+  nlinarith [sq_nonneg k]
 
 /-! ## The tight-inequality chain (summary)
 

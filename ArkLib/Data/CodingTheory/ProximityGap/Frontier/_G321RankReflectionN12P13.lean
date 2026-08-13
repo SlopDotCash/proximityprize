@@ -138,7 +138,7 @@ by the reflection mechanism (`W13` even, `R_5(x) = R_8(-x)`). Both equal `-12`. 
 theorem A13_5_eq_A13_8 :
     centeredCov (p := 13) W13 R5 = centeredCov (p := 13) W13 R8 := by
   refine (centeredCov_reflect_of_even (p := 13) W13 R5 R8 W13_even ?_).symm
-  intro x; exact (reflectR_5_8 x).symm
+  intro x; have h := (reflectR_5_8 (-x)).symm; rwa [neg_neg] at h
 
 /-- The shared value, pinned: `A_5 = A_8 = -12` at the `(n=12, p=13)` sponsor cell.
 
