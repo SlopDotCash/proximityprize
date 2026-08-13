@@ -53380,3 +53380,30 @@ prove both a positive sponsor-two odd-cubic value and a transfer theorem using a
 adjacent-rank row structure. Formal payload `_G309TargetOrientedCubicGenericRowNoGo.lean`; exact
 probe `g309_target_oriented_cubic_generic_row_nogo.py`; full note
 `docs/kb/deltastar-466-g309-target-oriented-cubic-generic-row-nogo-2026-07-14.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G310-tail-floor-scale-audit] extra `n=32` tail-floor collisions persist past the recorded G210 cells, but the same certificate is clean at the certified Proth-prime scale `p=111*2^128+1` for `n=32,64` (2026-08-01)
+
+G210 proved that the depth-two tail floor is attained exactly when the primitive labels
+`2^n, (1+g^d)^n` for `1 <= d < n/2` are pairwise distinct. G310 is a finite exact-arithmetic scale
+audit of that per-prime certificate, not a theorem about eventual flatness and not a production
+claim.
+
+The probe first reproduces the recorded `n=32` exceptions `p=50177` and `p=51137`, both with
+`sumsq/floor = 73/61`. It then sweeps every prime `p == 1 mod 32` in `(51137, 10^6]` and checks
+4,578 primes. The only additional exceptions are `65537, 68449, 156353, 194977`; each is certified by
+both the label-collision implementation and an independent direct relation scan
+`1 + g^d = a(1 + g^e)` with `a in G`.
+
+The same test is clean at mission-scale field size for toy orders. Proth theorem certifies
+`p = 111*2^128 + 1` prime with witness `5`; using the witness to construct primitive roots, the probe
+finds no label collisions for `n=32` or `n=64`, with exact floor equalities `61/61` and `125/125`.
+
+Scope: finite per-prime audit. The new medium-prime exceptions reinforce G210's warning that
+"large" is not the same as collision-free; the certified Proth-prime clean cells show that this
+exception species does not automatically persist at `q >= n*2^128` for these toy orders. This does
+not address `n=2^30`, logarithmic depth, or the signed late-Newton/BGK covariance. CORE OPEN / ON-BGK.
+
+Probe: `scripts/probes/g310_tail_floor_scale_audit.py`; note:
+`docs/kb/deltastar-466-g310-tail-floor-scale-audit-2026-08-01.md`.
