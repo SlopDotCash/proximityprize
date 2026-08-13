@@ -53463,3 +53463,25 @@ CORE closure. CORE OPEN / ON-BGK.
 
 Probe: `scripts/probes/g312_carry_scale_audit.py`; note:
 `docs/kb/deltastar-466-g312-carry-scale-audit-2026-08-01.md`.
+### [466-G313-all-rank-window-scale-audit] the coefficient-2 CORE target is positive on every adjacent rank at certified toy field scale (2026-08-01)
+
+G300 shows that the coefficient-2 adjacent-rank CORE covariance can oscillate inside the small
+window: on `mu_8 <= F_113^*`, the exact sequence is
+`[392, 128, -7240, -13128, -13128, -7240, 128]`. G297 shows that the coefficient-1
+dilation anchor does not reliably transport its sign to coefficient 2 on `mu_16 <= F_113^*`:
+`r=5: A1=-2977296, A2=+1727120`; `r=6: A1=+152176, A2=-77440`.
+
+G313 repeats the exact adjacent-rank weighted-kernel audit at certified Proth-prime scale
+`p=111*2^128+1` (Proth witness `5`). For `n=16`, sparse subset histograms show that coefficient 1
+has zero exact alignment at every rank `r=1..15`, hence
+`A1=-256*C(16,r)*C(16,r-1)<0`, while coefficient 2 has dot values
+`[16,576,8064,64064,321216,1064448,2369472,3544608,3544608,2369472,1064448,321216,64064,8064,576]`
+and therefore `A2>0` at every adjacent rank. The probe also checks the expected reflection
+palindrome on `r=2..15` and direct-enumerates subset pairs for `r=5,6`.
+
+This is a finite toy-order scale audit, not a production theorem: it uses `n=16`, does not touch
+`n=2^30`, and proves no logarithmic-depth or worst-case-over-frequency estimate. It records that
+the small-cell sign pathologies do not persist uniformly under this `n=16` large-field audit, and
+that the coefficient-2 target is all-rank positive at the certified checked scale. Exact probe
+`g313_all_rank_window_scale_audit.py`; full note
+`docs/kb/deltastar-466-g313-all-rank-window-scale-audit-2026-08-01.md`. CORE OPEN / ON-BGK.
