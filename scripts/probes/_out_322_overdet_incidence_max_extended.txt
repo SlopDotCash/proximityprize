@@ -1,0 +1,165 @@
+[1] two-implementation agreement (A = 2m^3 - 2m^2 + 1, B = 4m * C(m,2) + 1):
+  m= 2  n= 8  I_max=     9  (A == B)
+  m= 3  n=12  I_max=    37  (A == B)
+  m= 4  n=16  I_max=    97  (A == B)
+  m= 5  n=20  I_max=   201  (A == B)
+  m= 6  n=24  I_max=   361  (A == B)
+  m= 7  n=28  I_max=   589  (A == B)
+  m= 8  n=32  I_max=   897  (A == B)
+  m= 9  n=36  I_max=  1297  (A == B)
+  m=10  n=40  I_max=  1801  (A == B)
+  m=11  n=44  I_max=  2421  (A == B)
+  m=12  n=48  I_max=  3169  (A == B)
+  m=13  n=52  I_max=  4057  (A == B)
+  m=14  n=56  I_max=  5097  (A == B)
+  m=15  n=60  I_max=  6301  (A == B)
+  m=16  n=64  I_max=  7681  (A == B)
+  m=17  n=68  I_max=  9249  (A == B)
+  m=18  n=72  I_max= 11017  (A == B)
+  m=19  n=76  I_max= 12997  (A == B)
+  m=20  n=80  I_max= 15201  (A == B)
+  m=21  n=84  I_max= 17641  (A == B)
+  m=22  n=88  I_max= 20329  (A == B)
+  m=23  n=92  I_max= 23277  (A == B)
+  m=24  n=96  I_max= 26497  (A == B)
+  m=25  n=100  I_max= 30001  (A == B)
+  -> 24/24 cells: A == B exactly
+
+[2] published sequence pin (m = 2 .. 10):
+  [OK ] m= 2  I_max=     9  (expected      9)
+  [OK ] m= 3  I_max=    37  (expected     37)
+  [OK ] m= 4  I_max=    97  (expected     97)
+  [OK ] m= 5  I_max=   201  (expected    201)
+  [OK ] m= 6  I_max=   361  (expected    361)
+  [OK ] m= 7  I_max=   589  (expected    589)
+  [OK ] m= 8  I_max=   897  (expected    897)
+  [OK ] m= 9  I_max=  1297  (expected   1297)
+  [OK ] m=10  I_max=  1801  (expected   1801)
+
+[3] extended sequence (m = 11 .. 20):
+  [OK ] m=11  n=44  I_max=  2421  (expected   2421)
+  [OK ] m=12  n=48  I_max=  3169  (expected   3169)
+  [OK ] m=13  n=52  I_max=  4057  (expected   4057)
+  [OK ] m=14  n=56  I_max=  5097  (expected   5097)
+  [OK ] m=15  n=60  I_max=  6301  (expected   6301)
+  [OK ] m=16  n=64  I_max=  7681  (expected   7681)
+  [OK ] m=17  n=68  I_max=  9249  (expected   9249)
+  [OK ] m=18  n=72  I_max= 11017  (expected  11017)
+  [OK ] m=19  n=76  I_max= 12997  (expected  12997)
+  [OK ] m=20  n=80  I_max= 15201  (expected  15201)
+
+[4] bulk identity 2m^3 - 2m^2 = 2m^2 * (m - 1):
+  [OK ] m= 2  bulk=     8  bulk_factored=     8
+  [OK ] m= 3  bulk=    36  bulk_factored=    36
+  [OK ] m= 4  bulk=    96  bulk_factored=    96
+  [OK ] m= 5  bulk=   200  bulk_factored=   200
+  [OK ] m= 6  bulk=   360  bulk_factored=   360
+  [OK ] m= 7  bulk=   588  bulk_factored=   588
+  [OK ] m= 8  bulk=   896  bulk_factored=   896
+  [OK ] m= 9  bulk=  1296  bulk_factored=  1296
+  [OK ] m=10  bulk=  1800  bulk_factored=  1800
+  [OK ] m=11  bulk=  2420  bulk_factored=  2420
+  [OK ] m=12  bulk=  3168  bulk_factored=  3168
+  [OK ] m=13  bulk=  4056  bulk_factored=  4056
+  [OK ] m=14  bulk=  5096  bulk_factored=  5096
+  [OK ] m=15  bulk=  6300  bulk_factored=  6300
+  [OK ] m=16  bulk=  7680  bulk_factored=  7680
+  [OK ] m=17  bulk=  9248  bulk_factored=  9248
+  [OK ] m=18  bulk= 11016  bulk_factored= 11016
+  [OK ] m=19  bulk= 12996  bulk_factored= 12996
+  [OK ] m=20  bulk= 15200  bulk_factored= 15200
+  [OK ] m=21  bulk= 17640  bulk_factored= 17640
+  [OK ] m=22  bulk= 20328  bulk_factored= 20328
+  [OK ] m=23  bulk= 23276  bulk_factored= 23276
+  [OK ] m=24  bulk= 26496  bulk_factored= 26496
+  [OK ] m=25  bulk= 30000  bulk_factored= 30000
+  -> 24/24 cells: bulk identity holds
+
+[5] existing decoupling: I_max(m) > 4*m (= `overdetIncidenceMax_gt_budget`):
+  [OK ] m= 2  I_max=     9 > 4m=   8
+  [OK ] m= 3  I_max=    37 > 4m=  12
+  [OK ] m= 4  I_max=    97 > 4m=  16
+  [OK ] m= 5  I_max=   201 > 4m=  20
+  [OK ] m= 6  I_max=   361 > 4m=  24
+  [OK ] m= 7  I_max=   589 > 4m=  28
+  [OK ] m= 8  I_max=   897 > 4m=  32
+  [OK ] m= 9  I_max=  1297 > 4m=  36
+  [OK ] m=10  I_max=  1801 > 4m=  40
+  [OK ] m=11  I_max=  2421 > 4m=  44
+  [OK ] m=12  I_max=  3169 > 4m=  48
+  [OK ] m=13  I_max=  4057 > 4m=  52
+  [OK ] m=14  I_max=  5097 > 4m=  56
+  [OK ] m=15  I_max=  6301 > 4m=  60
+  [OK ] m=16  I_max=  7681 > 4m=  64
+  [OK ] m=17  I_max=  9249 > 4m=  68
+  [OK ] m=18  I_max= 11017 > 4m=  72
+  [OK ] m=19  I_max= 12997 > 4m=  76
+  [OK ] m=20  I_max= 15201 > 4m=  80
+  [OK ] m=21  I_max= 17641 > 4m=  84
+  [OK ] m=22  I_max= 20329 > 4m=  88
+  [OK ] m=23  I_max= 23277 > 4m=  92
+  [OK ] m=24  I_max= 26497 > 4m=  96
+  [OK ] m=25  I_max= 30001 > 4m= 100
+
+[6] STRONGER decoupling: I_max(m) > 8*m for m >= 3:
+  [OK ] m= 3  I_max=    37 > 8m=  24
+  [OK ] m= 4  I_max=    97 > 8m=  32
+  [OK ] m= 5  I_max=   201 > 8m=  40
+  [OK ] m= 6  I_max=   361 > 8m=  48
+  [OK ] m= 7  I_max=   589 > 8m=  56
+  [OK ] m= 8  I_max=   897 > 8m=  64
+  [OK ] m= 9  I_max=  1297 > 8m=  72
+  [OK ] m=10  I_max=  1801 > 8m=  80
+  [OK ] m=11  I_max=  2421 > 8m=  88
+  [OK ] m=12  I_max=  3169 > 8m=  96
+  [OK ] m=13  I_max=  4057 > 8m= 104
+  [OK ] m=14  I_max=  5097 > 8m= 112
+  [OK ] m=15  I_max=  6301 > 8m= 120
+  [OK ] m=16  I_max=  7681 > 8m= 128
+  [OK ] m=17  I_max=  9249 > 8m= 136
+  [OK ] m=18  I_max= 11017 > 8m= 144
+  [OK ] m=19  I_max= 12997 > 8m= 152
+  [OK ] m=20  I_max= 15201 > 8m= 160
+  [OK ] m=21  I_max= 17641 > 8m= 168
+  [OK ] m=22  I_max= 20329 > 8m= 176
+  [OK ] m=23  I_max= 23277 > 8m= 184
+  [OK ] m=24  I_max= 26497 > 8m= 192
+  [OK ] m=25  I_max= 30001 > 8m= 200
+  -> 23/23 cells (m=3..25): overdet MAX > double budget
+
+[7] strict monotonicity: I_max(m) < I_max(m+1) for m >= 1:
+  [OK ] m= 1  I_max(m)=     1  I_max(m+1)=     9  diff=     8  (= 2m(3m+1)=8)
+  [OK ] m= 2  I_max(m)=     9  I_max(m+1)=    37  diff=    28  (= 2m(3m+1)=28)
+  [OK ] m= 3  I_max(m)=    37  I_max(m+1)=    97  diff=    60  (= 2m(3m+1)=60)
+  [OK ] m= 4  I_max(m)=    97  I_max(m+1)=   201  diff=   104  (= 2m(3m+1)=104)
+  [OK ] m= 5  I_max(m)=   201  I_max(m+1)=   361  diff=   160  (= 2m(3m+1)=160)
+  [OK ] m= 6  I_max(m)=   361  I_max(m+1)=   589  diff=   228  (= 2m(3m+1)=228)
+  [OK ] m= 7  I_max(m)=   589  I_max(m+1)=   897  diff=   308  (= 2m(3m+1)=308)
+  [OK ] m= 8  I_max(m)=   897  I_max(m+1)=  1297  diff=   400  (= 2m(3m+1)=400)
+  [OK ] m= 9  I_max(m)=  1297  I_max(m+1)=  1801  diff=   504  (= 2m(3m+1)=504)
+  [OK ] m=10  I_max(m)=  1801  I_max(m+1)=  2421  diff=   620  (= 2m(3m+1)=620)
+  [OK ] m=11  I_max(m)=  2421  I_max(m+1)=  3169  diff=   748  (= 2m(3m+1)=748)
+  [OK ] m=12  I_max(m)=  3169  I_max(m+1)=  4057  diff=   888  (= 2m(3m+1)=888)
+  [OK ] m=13  I_max(m)=  4057  I_max(m+1)=  5097  diff=  1040  (= 2m(3m+1)=1040)
+  [OK ] m=14  I_max(m)=  5097  I_max(m+1)=  6301  diff=  1204  (= 2m(3m+1)=1204)
+  [OK ] m=15  I_max(m)=  6301  I_max(m+1)=  7681  diff=  1380  (= 2m(3m+1)=1380)
+  [OK ] m=16  I_max(m)=  7681  I_max(m+1)=  9249  diff=  1568  (= 2m(3m+1)=1568)
+  [OK ] m=17  I_max(m)=  9249  I_max(m+1)= 11017  diff=  1768  (= 2m(3m+1)=1768)
+  [OK ] m=18  I_max(m)= 11017  I_max(m+1)= 12997  diff=  1980  (= 2m(3m+1)=1980)
+  [OK ] m=19  I_max(m)= 12997  I_max(m+1)= 15201  diff=  2204  (= 2m(3m+1)=2204)
+  [OK ] m=20  I_max(m)= 15201  I_max(m+1)= 17641  diff=  2440  (= 2m(3m+1)=2440)
+  [OK ] m=21  I_max(m)= 17641  I_max(m+1)= 20329  diff=  2688  (= 2m(3m+1)=2688)
+  [OK ] m=22  I_max(m)= 20329  I_max(m+1)= 23277  diff=  2948  (= 2m(3m+1)=2948)
+  [OK ] m=23  I_max(m)= 23277  I_max(m+1)= 26497  diff=  3220  (= 2m(3m+1)=3220)
+  [OK ] m=24  I_max(m)= 26497  I_max(m+1)= 30001  diff=  3504  (= 2m(3m+1)=3504)
+  -> 24/24 cells: strictly increasing; diff = 2m(3m+1) verified
+
+======================================================================
+ALL CHECKS PASSED.
+Closed form I_max(m) = 2m^3 - 2m^2 + 1 verified at m = 2 .. 25
+Alternative form I_max(m) = 4m * C(m, 2) + 1 verified (m = 2 .. 25)
+Existing decoupling I_max(m) > 4m verified (m = 2 .. 25)
+Stronger decoupling I_max(m) > 8m verified (m = 3 .. 25)
+Strict monotonicity I_max(m) < I_max(m+1) verified (m = 1 .. 24)
+Bulk identity 2m^3 - 2m^2 = 2m^2 * (m-1) verified (m = 2 .. 25)
+======================================================================

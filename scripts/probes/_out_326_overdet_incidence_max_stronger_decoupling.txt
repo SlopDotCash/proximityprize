@@ -1,0 +1,61 @@
+[0] two-implementation agreement (A = direct cubic, B = bulk+1):
+  -> 49/49 cells: A == B exactly
+
+[1] I_max(m) > 4m for m >= 2  (d = 1, c = 2*d*(d+1) = 4, TIGHT):
+  [OK ] boundary m=2: I_max=     9, 4*2=   8, margin = 1 (= 1, tight)
+  [OK ] open range: 49/49 cells m in [2, 50] satisfy I_max(m) > 4*m
+  [OK ] non-strict bulk: 49/49 cells m in [2, 50] satisfy 2m^2(m-1) >= 4*m
+  [OK ] margin closed form: 49/49 cells match 2m(m-d-1)(m+d) + 1 exactly
+
+[2] I_max(m) > 12m for m >= 3  (d = 2, c = 2*d*(d+1) = 12, TIGHT):
+  [OK ] boundary m=3: I_max=    37, 12*3=  36, margin = 1 (= 1, tight)
+  [OK ] open range: 48/48 cells m in [3, 50] satisfy I_max(m) > 12*m
+  [OK ] non-strict bulk: 48/48 cells m in [3, 50] satisfy 2m^2(m-1) >= 12*m
+  [OK ] margin closed form: 48/48 cells match 2m(m-d-1)(m+d) + 1 exactly
+
+[3] I_max(m) > 24m for m >= 4  (d = 3, c = 2*d*(d+1) = 24, TIGHT):
+  [OK ] boundary m=4: I_max=    97, 24*4=  96, margin = 1 (= 1, tight)
+  [OK ] open range: 47/47 cells m in [4, 50] satisfy I_max(m) > 24*m
+  [OK ] non-strict bulk: 47/47 cells m in [4, 50] satisfy 2m^2(m-1) >= 24*m
+  [OK ] margin closed form: 47/47 cells match 2m(m-d-1)(m+d) + 1 exactly
+
+[4] I_max(m) > 40m for m >= 5  (d = 4, c = 2*d*(d+1) = 40, TIGHT):
+  [OK ] boundary m=5: I_max=   201, 40*5= 200, margin = 1 (= 1, tight)
+  [OK ] open range: 46/46 cells m in [5, 50] satisfy I_max(m) > 40*m
+  [OK ] non-strict bulk: 46/46 cells m in [5, 50] satisfy 2m^2(m-1) >= 40*m
+  [OK ] margin closed form: 46/46 cells match 2m(m-d-1)(m+d) + 1 exactly
+
+[5] I_max(m) > 8m for m >= 3  (DOUBLE BUDGET, not on tight chain):
+  [OK ] open range: 48/48 cells m in [3, 50] satisfy I_max(m) > 8*m
+  [OK ] non-strict bulk: 48/48 cells m in [3, 50] satisfy 2m^2(m-1) >= 8*m
+  [INFO] boundary m=3: I_max=37, 8*3=24, margin = 13 (not 1; the tight rung at m=3 is the 12m one above)
+
+[6] margin growth from boundary (margin at m = m_lo+k for k=0..5):
+           I_max(m) > 4m:       1      25      81     181     337     561
+          I_max(m) > 12m:       1      49     141     289     505     801
+          I_max(m) > 24m:       1      81     217     421     705    1081
+          I_max(m) > 40m:       1     121     309     577     937    1401
+           I_max(m) > 8m:      13      65     161     313     533     833   (double-budget rung)
+
+[7] chain consistency at every m (which tight rung gives the tightest bound?):
+  m= 2: tightest tight-rung =          I_max(m) > 4m  (margin =     1)*
+  m= 3: tightest tight-rung =         I_max(m) > 12m  (margin =     1)*
+  m= 4: tightest tight-rung =         I_max(m) > 24m  (margin =     1)*
+  m= 5: tightest tight-rung =         I_max(m) > 40m  (margin =     1)*
+  m= 6: tightest tight-rung =         I_max(m) > 40m  (margin =   121) 
+  m= 7: tightest tight-rung =         I_max(m) > 40m  (margin =   309) 
+  m= 8: tightest tight-rung =         I_max(m) > 40m  (margin =   577) 
+  m= 9: tightest tight-rung =         I_max(m) > 40m  (margin =   937) 
+  m=10: tightest tight-rung =         I_max(m) > 40m  (margin =  1401) 
+
+======================================================================
+G326 SUMMARY: stronger-decoupling chain verified at m=2..50.
+  TIGHT chain (margin = 1 at boundary):
+    > 4m  for m >= 2   (original `overdetIncidenceMax_gt_budget`)
+    > 12m for m >= 3   (G326 #1, NEW)
+    > 24m for m >= 4   (G326 #2, NEW)
+    > 40m for m >= 5   (G326 #3, NEW)
+  Double-budget rung (NOT on the tight chain):
+    > 8m  for m >= 3   (G322 `overdetIncidenceMax_gt_double_budget`, margin 13 at m=3)
+All rungs pass. The tight-chain margins grow quadratically from the boundary.
+======================================================================
