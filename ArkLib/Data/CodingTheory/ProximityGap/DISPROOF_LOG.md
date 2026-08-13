@@ -53434,3 +53434,32 @@ large-field discipline, but CORE remains OPEN / ON-BGK.
 
 Probe: `scripts/probes/g311_dilation_anchor_scale_audit.py`; note:
 `docs/kb/deltastar-466-g311-dilation-anchor-scale-audit-2026-08-01.md`.
+### [466-G312-carry-scale-audit] the G278 small-field spread-carry obstruction flips at certified field scale: for `p=111*2^128+1`, `n=16`, ranks five/six have all mass in carry zero (2026-08-01)
+
+G278 showed that on its small/medium checked cells the adjacent-rank CORE alignment does not localize
+cleanly into carry zero or nonzero carry buckets. G312 tests whether that obstruction is stable under
+the mission's large-field discipline in the toy order `n=16`.
+
+The probe first reproduces the published G278 cell `p=433,n=16`: at `r=5`,
+`A=+3425440`, `J=4708000`, `need=4700090`, with carry profile
+`{-3:1185,-2:105117,-1:1057270,0:2380856,1:1057270,2:105117,3:1185}`; at `r=6`,
+`A=+52032`, `J=20680512`, `need=20680392`, with carry profile
+`{-3:8741,-2:531582,-1:4773523,0:10052820,1:4773523,2:531582,3:8741}`. In both, carry zero alone is
+below the gate and nonzero carries are genuinely present.
+
+At certified large field size, Proth theorem proves `p=111*2^128+1` prime with witness `5`, and
+`p > 16*2^128`. For `mu_16 <= F_p^*`, the integer-carry census and an independent direct modular
+subset-pair enumeration agree exactly:
+
+```text
+r=5: A=+12132759625789254812263498506989117214991787712, J=321216,  carries={0:321216}
+r=6: A=+40205630224372760716789501328599919806465162752, J=1064448, carries={0:1064448}
+```
+
+Thus the small-field spread-carry obstruction is scale-sensitive in this toy order: at the checked
+large field, all counted mass lies in carry zero and the small-field nonzero-carry phenomenon vanishes.
+This is a finite scale audit only, not a production `n=2^30` or logarithmic-depth theorem, and not a
+CORE closure. CORE OPEN / ON-BGK.
+
+Probe: `scripts/probes/g312_carry_scale_audit.py`; note:
+`docs/kb/deltastar-466-g312-carry-scale-audit-2026-08-01.md`.
