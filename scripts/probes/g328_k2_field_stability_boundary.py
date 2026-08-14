@@ -132,7 +132,7 @@ def main() -> None:
     assert stable_primes[0] == 41
     assert all(results[p] == (40, 9, EXPECTED_MAXIMIZERS) for p in stable_primes)
 
-    print("G311 exact order-eight dimension-two scan")
+    print("G328 exact order-eight dimension-two scan")
     print(f"tested_primes={len(primes)} range={primes[0]}..{primes[-1]}")
     print(f"exception p=17 ceiling={results[17][0]} below_max={results[17][1]}")
     print(

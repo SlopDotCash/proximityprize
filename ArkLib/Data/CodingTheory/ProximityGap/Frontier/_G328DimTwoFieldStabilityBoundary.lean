@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.TwoPowerSubsetSumSpectrum
 
 /-!
-# G311: the dimension-two spectrum is not field-uniform without a field-size guard
+# G328: the dimension-two spectrum is not field-uniform without a field-size guard
 
 The dimension-two KKH26 ceiling stack on an order-eight subgroup has `40` distinct bad scalars
 at the large primes used by the campaign.  That number comes from injectivity of the signed-sum
@@ -16,7 +16,7 @@ an exact counterexample to an unguarded field-uniform statement.
 In `ZMod 17`, the element `2` has exact order eight, but the weight-one datum `+1` collides with
 the weight-three datum `-1 - g + g^2`, because `g = 2`.  Consequently the injectivity hypothesis
 needed by `subsetSumSpectrum_card` fails.  The companion executable probe
-`scripts/probes/g311_k2_field_stability_boundary.py` computes the exact ceiling count `16` at
+`scripts/probes/g328_k2_field_stability_boundary.py` computes the exact ceiling count `16` at
 `p = 17` and `40` for every tested prime `p = 1 mod 8` in `[41, 10000]`.
 
 This does not affect the landed large-field dimension-two pin or the production Delta Star
@@ -25,7 +25,7 @@ problem.  It only makes the field-size guard explicit and refutes universal `q`-
 
 open Finset
 
-namespace ArkLib.ProximityGap.Frontier.G311DimTwoFieldStabilityBoundary
+namespace ArkLib.ProximityGap.Frontier.G328DimTwoFieldStabilityBoundary
 
 open ArkLib.ProximityGap.KKH26
 
@@ -86,13 +86,13 @@ theorem not_injOn_spectrumVal_g17 :
   have : (1 : ℕ) = 3 := congrArg Sigma.fst hEq
   omega
 
-end ArkLib.ProximityGap.Frontier.G311DimTwoFieldStabilityBoundary
+end ArkLib.ProximityGap.Frontier.G328DimTwoFieldStabilityBoundary
 
 /-! ## Axiom audit -/
 
 #print axioms
-  ArkLib.ProximityGap.Frontier.G311DimTwoFieldStabilityBoundary.g17_isPrimitiveRoot
+  ArkLib.ProximityGap.Frontier.G328DimTwoFieldStabilityBoundary.g17_isPrimitiveRoot
 #print axioms
-  ArkLib.ProximityGap.Frontier.G311DimTwoFieldStabilityBoundary.signedSpectrum_collision
+  ArkLib.ProximityGap.Frontier.G328DimTwoFieldStabilityBoundary.signedSpectrum_collision
 #print axioms
-  ArkLib.ProximityGap.Frontier.G311DimTwoFieldStabilityBoundary.not_injOn_spectrumVal_g17
+  ArkLib.ProximityGap.Frontier.G328DimTwoFieldStabilityBoundary.not_injOn_spectrumVal_g17

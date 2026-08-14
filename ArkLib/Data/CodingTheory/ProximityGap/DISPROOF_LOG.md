@@ -6,16 +6,16 @@ so we zero in. Keep lemmas that *constrain* even if they don't fully disprove.
 Default assumption: my disproof is wrong — find the precise reason it fails and
 make that reason a sorry-free Lean lemma.
 
-## [466-G311-k2-field-stability-boundary] Universal q-independence of the order-eight dimension-two ceiling count is FALSE: the proper subgroup in F17 has 16 values, not 40 (2026-08-14)
+## [466-G328-k2-field-stability-boundary] Universal q-independence of the order-eight dimension-two ceiling count is FALSE: the proper subgroup in F17 has 16 values, not 40 (2026-08-14)
 
 The unguarded statement that the `(x³,x²)` threshold-three ceiling count is `40` in every prime
 field containing an order-eight subgroup is false.  In `ZMod 17`, `g = 2` has exact order eight,
 but the signed weight-one datum `+1` collides with the signed weight-three datum
 `-1 - g + g²`, since `1 = -1 - 2 + 4`.  The axiom-clean Lean theorem
-`not_injOn_spectrumVal_g17` in `Frontier/_G311DimTwoFieldStabilityBoundary.lean` records the exact
+`not_injOn_spectrumVal_g17` in `Frontier/_G328DimTwoFieldStabilityBoundary.lean` records the exact
 failure of the injectivity hypothesis consumed by `subsetSumSpectrum_card`.
 
-The independent exact scanner `scripts/probes/g311_k2_field_stability_boundary.py` implements the
+The independent exact scanner `scripts/probes/g328_k2_field_stability_boundary.py` implements the
 integer-threshold MCA event, including the `pairJointAgreesOn` exclusion.  Across all 295 primes
 `p ≡ 1 (mod 8)` in `[17, 10000]`, it finds one count profile at the exceptional field and one
 stable profile above it: `p=17` gives ceiling count `16` and below-ceiling monomial maximum `9`;
