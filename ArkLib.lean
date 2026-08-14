@@ -2436,6 +2436,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G320KrylovD2CountermodelS
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G321RankReflectionN12P13
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G324DyadicWallFloorDepth4
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G328DimTwoFieldStabilityBoundary
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G330SpectrumExactBoundary
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G57AllDepthWraparoundDCConsumer

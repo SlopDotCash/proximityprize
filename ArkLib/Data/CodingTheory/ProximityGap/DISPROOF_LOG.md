@@ -53677,3 +53677,33 @@ coefficient 1 `dot=0, A=-2341449599010471936` and coefficient 2
 This is finite `n=64,r=6` evidence only: the simple norm inequality does not reach the production
 degree. Exact probe `g318_n64_r6_norm_guard.py`; full note
 `docs/kb/deltastar-466-g318-n64-r6-norm-guard-2026-08-01.md`. CORE OPEN / ON-BGK.
+
+---
+
+### [466-G330-spectrum-exact-boundary] the order-eight weight-{1,3} spectrum collision boundary is EXACTLY p=17: axiom-clean injectivity for every prime p ≡ 1 (mod 8), p ≠ 17 (2026-08-14)
+
+G328 (PR #531) refuted unguarded field-uniformity of the dimension-two 40-value spectrum with an
+explicit collision in `ZMod 17` and an exact scan over the 295 primes `p ≡ 1 (mod 8)` up to
+`10000`.  The scan bound left the stable profile empirical above `10000`.  G330 removes that
+cutoff for the collision half: `spectrumVal_injOn_of_ne17` proves that for EVERY prime
+`p ≡ 1 (mod 8)` with `p ≠ 17` and any `g` with `g⁴ = -1`, the signed weight-{1,3} spectrum map
+on `h = 4` is injective, and `spectrum_card_eq_forty` pins the image size to exactly `40`.
+With G328's collision the exceptional set is exactly `{17}`.
+
+The proof is resultant-free.  The algebraic norm of `c₀ + c₁g + c₂g² + c₃g³` under `g⁴ = -1`
+factors through two antipodal-squaring steps (`R(x)·R(-x)` keeps the cubic shape in `x²`), each a
+pure ring identity, so each pairwise difference norm is a concrete integer.  A kernel `decide`
+certifies that all 780 difference norms of the 40 signed data land in the explicit 13-element set
+`{2,4,8,16,18,32,34,36,50,64,68,98,144}`, whose only divisors `≡ 1 (mod 8)` are
+`{1, 9, 17, 25, 49}` — of these only `17` is prime.  A collision at `p` forces `p` to divide one
+of the norms; for a prime `p ≡ 1 (mod 8)`, `p ≠ 17`, that is impossible.  The Lean collision
+pair of G328 has difference norm `34 = 2·17`, locating its exceptionality exactly.
+
+Honest scope: this certifies the SPECTRUM-COLLISION half of the field-stability boundary at every
+prime.  The full MCA census profile (bad-scalar set = negated triple sums; below-ceiling maximum
+`9`) remains per-prime executable evidence (G328 probe: 295 primes; the G330 probe rescans to
+`20000` — 556 primes — as a redundant witness).  A field-uniform witness/exclusion statement is a
+separate open brick.  No production-scale δ* conclusion follows; the prize remains open.
+
+Formal payload `Frontier/_G330SpectrumExactBoundary.lean` (all audited declarations depend only on
+`propext`, `Classical.choice`, `Quot.sound`); exact probe `g330_spectrum_exact_boundary.py`.
