@@ -1266,6 +1266,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ProfileMaximizerCarryingIn
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.R2UnfoldedDesignFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyCyclicFloorAllDepth
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyDiagonalFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergyGeneralCharPLowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.REnergySwapFloor
