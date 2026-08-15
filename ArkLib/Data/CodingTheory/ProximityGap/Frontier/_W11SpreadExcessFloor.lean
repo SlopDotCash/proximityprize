@@ -171,9 +171,9 @@ theorem exists_disjoint_blocks {α : Type} [DecidableEq α] :
   | m + 1, R, w, hle => by
     have hsm : (m + 1) * w = m * w + w := by ring
     have hw : w ≤ R.card := le_trans (by rw [hsm]; exact Nat.le_add_left w (m * w)) hle
-    obtain ⟨T₀, hT₀R, hT₀c⟩ := R.exists_smaller_set w hw
+    obtain ⟨T₀, hT₀R, hT₀c⟩ := exists_subset_card_eq hw
     have h2 : m * w ≤ (R \ T₀).card := by
-      rw [Finset.card_sdiff hT₀R, hT₀c]
+      rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hT₀R, hT₀c]
       have : m * w + w ≤ R.card := by rw [← hsm]; exact hle
       omega
     obtain ⟨T', hsub, hcards, hdisj⟩ := exists_disjoint_blocks m (R \ T₀) w h2
@@ -181,7 +181,7 @@ theorem exists_disjoint_blocks {α : Type} [DecidableEq α] :
     · intro b
       induction b using Fin.cases with
       | zero => simpa using hT₀R
-      | succ i => simpa using le_trans (hsub i) Finset.sdiff_subset
+      | succ i => simpa using fun x hx => Finset.sdiff_subset (hsub i hx)
     · intro b
       induction b using Fin.cases with
       | zero => simpa using hT₀c
@@ -245,7 +245,9 @@ theorem worstBad_ge_agreement_floor (dom : Fin n ↪ F) (k a : ℕ)
     _ ≤ (lineBadScalars dom k a (plantWord h u₁ γ T) u₁).card := hplant
     _ ≤ worstBad dom k a u₁ := by
         unfold worstBad
-        exact Finset.le_sup (Finset.mem_univ (plantWord h u₁ γ T))
+        exact Finset.le_sup
+          (f := fun u₀ => (lineBadScalars dom k a u₀ u₁).card)
+          (Finset.mem_univ (plantWord h u₁ γ T))
 
 /-! ## The growth family `u₁ = x⁶ + c·x⁴` -/
 
@@ -278,9 +280,7 @@ theorem spread64_poly_facts (c : F) (Q : Polynomial F) (hQ : Q.degree < 6) :
       (Polynomial.X ^ 6 + Polynomial.C c * Polynomial.X ^ 4 - Q) ≠ 0 := by
   have hlow : (Polynomial.C c * Polynomial.X ^ 4 - Q).degree < 6 := by
     refine lt_of_le_of_lt (Polynomial.degree_sub_le _ _) (max_lt ?_ hQ)
-    refine lt_of_le_of_lt (Polynomial.degree_C_mul_le _ _) ?_
-    rw [Polynomial.degree_X_pow]
-    exact_mod_cast Nat.lt_of_sub_eq_succ rfl
+    exact lt_of_le_of_lt (Polynomial.degree_C_mul_X_pow_le 4 c) (by norm_num)
   have hdeg : (Polynomial.X ^ 6 + Polynomial.C c * Polynomial.X ^ 4 - Q).degree = 6 := by
     rw [add_sub_assoc]
     rw [Polynomial.degree_add_eq_left_of_degree_lt
@@ -329,11 +329,8 @@ theorem elevatedCodeword_mem (dom : Fin n ↪ F) {k : ℕ} (hk : 3 ≤ k)
     - Polynomial.C (r₁ ^ 2 * r₂ ^ 2 + r₁ ^ 2 * r₃ ^ 2 + r₂ ^ 2 * r₃ ^ 2)
       * Polynomial.X ^ 2, ?_, ?_⟩
   · refine lt_of_le_of_lt (Polynomial.degree_sub_le _ _) (max_lt ?_ ?_)
-    · exact lt_of_le_of_lt Polynomial.degree_C_le
-        (by exact_mod_cast Nat.pos_of_lt_add_one (by omega))
-    · refine lt_of_le_of_lt (Polynomial.degree_C_mul_le _ _) ?_
-      rw [Polynomial.degree_X_pow]
-      exact_mod_cast by omega
+    · exact lt_of_le_of_lt Polynomial.degree_C_le (by exact_mod_cast (show 0 < k by omega))
+    · exact lt_of_le_of_lt (Polynomial.degree_C_mul_X_pow_le 2 _) (by exact_mod_cast hk)
   · funext i
     simp only [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_pow,
       Polynomial.eval_X, Polynomial.eval_C]
@@ -370,7 +367,31 @@ theorem spread64_agreeSet_card_eq_six (dom : Fin n ↪ F) (r₁ r₂ r₃ : F)
     have hz : spread2Dir dom 6 4 (-(r₁ ^ 2 + r₂ ^ 2 + r₃ ^ 2)) (e j)
         - elevatedCodeword dom r₁ r₂ r₃ (e j) = 0 := by
       rw [spread64_sub_elevated]
-      fin_cases j <;> simp only [h0, h1, h2, h3, h4, h5] <;> ring
+      fin_cases j
+      · change (dom (e 0) ^ 2 - r₁ ^ 2) * (dom (e 0) ^ 2 - r₂ ^ 2) *
+          (dom (e 0) ^ 2 - r₃ ^ 2) = 0
+        rw [h0]
+        ring
+      · change (dom (e 1) ^ 2 - r₁ ^ 2) * (dom (e 1) ^ 2 - r₂ ^ 2) *
+          (dom (e 1) ^ 2 - r₃ ^ 2) = 0
+        rw [h1]
+        ring
+      · change (dom (e 2) ^ 2 - r₁ ^ 2) * (dom (e 2) ^ 2 - r₂ ^ 2) *
+          (dom (e 2) ^ 2 - r₃ ^ 2) = 0
+        rw [h2]
+        ring
+      · change (dom (e 3) ^ 2 - r₁ ^ 2) * (dom (e 3) ^ 2 - r₂ ^ 2) *
+          (dom (e 3) ^ 2 - r₃ ^ 2) = 0
+        rw [h3]
+        ring
+      · change (dom (e 4) ^ 2 - r₁ ^ 2) * (dom (e 4) ^ 2 - r₂ ^ 2) *
+          (dom (e 4) ^ 2 - r₃ ^ 2) = 0
+        rw [h4]
+        ring
+      · change (dom (e 5) ^ 2 - r₁ ^ 2) * (dom (e 5) ^ 2 - r₂ ^ 2) *
+          (dom (e 5) ^ 2 - r₃ ^ 2) = 0
+        rw [h5]
+        ring
     exact (sub_eq_zero.mp hz).symm
   have hge : 6 ≤ (agreeSet (elevatedCodeword dom r₁ r₂ r₃)
       (spread2Dir dom 6 4 (-(r₁ ^ 2 + r₂ ^ 2 + r₃ ^ 2)))).card := by
@@ -424,7 +445,13 @@ theorem spreadExcessLaw_forces_monoBaseline_growth {C : ℕ}
     (elevatedCodeword_mem dom (by norm_num) r₁ r₂ r₃) (by rw [hcard]; norm_num)
   rw [hcard] at hfloor
   norm_num at hfloor
-  exact le_trans hfloor hlaw'
+  have hdir : -(r₁ ^ 2 + r₂ ^ 2 + r₃ ^ 2) = -r₃ ^ 2 + (-r₂ ^ 2 + -r₁ ^ 2) := by
+    ring
+  rw [← hdir] at hfloor
+  have hfloor' : n - 6 ≤
+      worstBad dom 4 7 (spread2Dir dom 6 4 (-(r₁ ^ 2 + r₂ ^ 2 + r₃ ^ 2))) := by
+    omega
+  exact le_trans hfloor' hlaw'
 
 /-! ## Instantiability certificate (non-vacuity)
 
@@ -436,6 +463,8 @@ def dom97 : Fin 13 → ZMod 97 :=
   ![2, 95, 5, 92, 3, 94, 0, 1, 4, 6, 7, 8, 9]
 
 theorem dom97_injective : Function.Injective dom97 := by decide
+
+local instance fact97 : Fact (Nat.Prime 97) := ⟨by decide⟩
 
 /-- The growth obstruction is NON-VACUOUS: a concrete instance over `ZMod 97`
 (`n = 13` is the smallest window scale `49 ≤ 4n`). -/
