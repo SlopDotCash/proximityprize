@@ -72,6 +72,8 @@ open MulAction
 
 variable {G : Type*} [Group G] [Fintype G]
 
+attribute [local instance] Classical.propDecidable
+
 /-- **The `⟨z⟩`-stabilizer of any point under left multiplication is trivial (free action).**
 Left multiplication by `h ∈ ⟨z⟩` fixes `x` iff `h = 1`; this is the freeness that forces every
 orbit to have full size `orderOf z`. -/
@@ -80,7 +82,9 @@ theorem stabilizer_eq_bot (z : G) (x : G) :
   rw [eq_bot_iff]
   intro h hh
   have hx : (h : G) * x = x := hh
-  have h1 : (h : G) = 1 := mul_right_cancel (by simpa using hx)
+  have h1 : (h : G) = 1 := by
+    apply mul_right_cancel (b := x)
+    simpa using hx
   exact Subgroup.mem_bot.mpr (Subtype.ext h1)
 
 /-- **Every orbit of the `⟨z⟩`-action by left multiplication has size `orderOf z`.**
@@ -95,7 +99,9 @@ theorem card_orbit_eq_orderOf (z : G) (x : G) :
   -- Orbit-stabilizer: |orbit| * |stab| = |H|, with |stab| = 1.
   have hos := MulAction.card_orbit_mul_card_stabilizer_eq_card_group (Subgroup.zpowers z) x
   have hsub : Fintype.card (stabilizer (Subgroup.zpowers z) x) = 1 := by
-    rw [hstab]; exact Fintype.card_eq_one_iff.mpr ⟨1, fun y => Subsingleton.elim _ _⟩
+    simpa only [hstab] using
+      (Fintype.card_eq_one_iff.mpr
+        ⟨(1 : (⊥ : Subgroup (Subgroup.zpowers z))), fun y => Subsingleton.elim _ _⟩)
   rw [hsub, mul_one] at hos
   rw [hos, Fintype.card_zpowers]
 
