@@ -1,2 +1,0 @@
-N=8 a<=8: gap>=2 sets=15 | NOT-pow2=0 | NOT-shift-closed=0 | NOT-strong-vanish=0
-N=16 a<=16: gap>=2 sets=255 | NOT-pow2=0 | NOT-shift-closed=0 | NOT-strong-vanish=0

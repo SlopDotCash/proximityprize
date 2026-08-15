@@ -588,6 +588,246 @@ Talagrand γ₂/generic chaining is the canonical candidate shape (L∞-native; 
 increments under SOME metric — the needed increment sub-Gaussianity is currently exactly the open
 Wick atom, but the Jacobi cocycle could conceivably supply a different metric).
 
+### §6 addendum — 2026-07-10 evening (#506 refresh; landings after `fe7d48c6c`)
+
+All items below are axiom-clean and in-tree on `research/proximity-prize`; none closes CORE.
+The production δ* conjecture remains **open**.
+
+- **Line-list lane (item 2) — within-Johnson side DISCHARGED.**
+  `Frontier/_S2PuncturedJohnsonDischarge.lean` (commit `981b38e62`) proves
+  `puncturedListBudget_of_johnson`: the `hlow`/low-profile obligation holds unconditionally
+  whenever the punctured parameters sit inside the squared Johnson region (essentially
+  `(a−s)² ≳ z(k−1)` up to `1/q` terms). The window probe
+  `scripts/probes/probe_s2_punctured_johnson_window.py` (commit `dcf7ca728`, kb
+  `deltastar-466-s2-johnson-window-probe-2026-07-10.md`) quantifies the discharged region at
+  prize shapes: the surviving open region is a single beyond-Johnson `z`-band per line
+  family. The open part of this lane is therefore pinned to exactly beyond-Johnson
+  (Johnson-equivalent-hard per the hlow map); do not re-attack the within-Johnson side.
+- **CORE lane — G75→G78→G81 localization; the open rung window is now FINITE in depth.**
+  Shallow rungs were already sealed (r=2 unconditional via the Stepanov weld, §29/§41);
+  `Frontier/_G81DeepRungDCRecovery.lean` (commit `2ee6e69f7`) seals the deep end
+  unconditionally: `DCEnergyBound G r` holds outright once `(2r−1)!! ≥ |G|^r` (the crude
+  ceiling `E_r ≤ |G|^{2r}` sits inside the Wick budget). Honest scope: prize depth
+  `r ≈ log p ≪ n` remains far inside the still-open middle window — no prize contact.
+  Along the way: G77+G78 (commits `e78e41383`, `1c7b20205`, `dc39c89e3`) close the signed
+  `relationAnomaly` route as a Fourier gauge, and prove the #505 single-embedding qualifier
+  has zero slack (`_G78WeightedRelationEmbeddingRigidity.lean`: the weighted signed
+  structure is invariant under every primitive embedding `g ↦ g^a`, gcd(a,n)=1); the
+  Kelley–Meka spread walk is loss-class-compatible but rank-one circular
+  (`_G78KMSpreadCircularity.lean`). Synthesis:
+  `deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` (the single missing certificate is
+  NON-Fourier anti-concentration) and workbench §5.9 doctrine addendum (commit `a87271b8b`).
+- **Factorial padding repair arc (G79S/G80R → G81C → G83M/G84S/G84A/G85/G86).**
+  `_G80RPrimitivePaddingEnvelopeRefuted.lean` (commit `c2cf969b2`) refutes the naive padding
+  envelope exactly; the corrected reconstruction code and its exact cardinality
+  `|Core|·(r desc s)²·(r−s)!·|A|^(r−s)` land in `_G81CRelativePaddingOrderCeiling.lean`,
+  with saddle localization `_G79SPrimitivePaddingSaddleLocalization.lean` (landed in commit
+  `b849784ce`) and the decoder chain completed through slot partition and endpoint
+  assembly (`_G84SCorePaddingSlotPartition.lean`, `_G84AEndpointAssembly.lean`,
+  `_G85EndpointAssemblyEquiv.lean` commits `cfa506a38`/`65893d439`,
+  `_G86CoreOccurrenceEmbedding.lean` commit `03e7e895a`).
+- **G80 arc-model arc.** `_G80SignedL1CertificatePinnedToWall.lean` (commit `4fc4db2e6`):
+  the signed ℓ¹ certificate is pinned to the wall M (r-uniform, last-door closure).
+  `_G80ArcOscillationWeld.lean` (commit `227597af5`) pays G78's owed arc model;
+  `_G80ZArcArithmeticInstantiation.lean` (commit `f8323ecb4`) instantiates it end-to-end on
+  `ZMod p`; converse direction `_G80YArcEquivalenceConverse.lean` (commit `486790cb6`);
+  decoupling parallel-cap collapse `_G80DDecouplingParallelCapCollapse.lean` (`84aa3e0fc`).
+- **G82/#507 production gate — CONDITIONAL pin, one hypothesis deep.** Audit note
+  `deltastar-466-g82-production-gate-audit-2026-07-10.md` (commit `203395261`): the
+  end-to-end gate already exists in `Frontier/_PrizeShapeRateHalfBracket.lean` —
+  `firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count` gives
+  `mcaDeltaStar = 31/64` EXACTLY at production parameters (n = 2^30, rate 1/2,
+  ε* = 2^-128) from ONE open hypothesis (the n-scalar bad-count cap at radius
+  `31/64 − 2^-30`), with the unconditional bracket `178956971/2^30 ≤ δ* ≤ 31/64` around it.
+  This is a conditional reduction, NOT a closure. G82 also lands the depth-two/three
+  core-universe absorption + CRT transversality threshold
+  (`_G82DepthTwoEnergySaddleBridge.lean`, `_G82TransversalityCRTThreshold.lean`, commits
+  `74d694d8e`/`fc5989b0c`/`e80dabc8f`/`59b59f5d9`/`2cdde513a`/`cdca83b80`), and G83 the
+  determinant coverage fence + free-orbit energy bridge
+  (`_G83DeterminantCoverageFence.lean`, `_G83FreeOrbitEnergyBridge.lean`, commit
+  `a0b363326`; maximal common cancellation `_G83MMaximalCommonCancellation.lean`).
+- **Lane B2 re-pointed.** Literature sweep 2026-07-10 (commits `ddeed917f`/`9936ff7bb`, kb
+  `deltastar-466-litsweep-2026-07-10.md`): analytic core unchanged; B2 curve-decodability
+  now pointed at the GGSW 2607.08516 row-span LCL formulation; JLR withdrawal flagged.
+- **OC tail ceilings.** Cross-prime stacking-census tail ceiling (commit `82637b6dd`) and
+  cross-scale super-additivity no-go (commit `a7c580b97`).
+
+### §6 addendum — 2026-07-11 (SYZ54: the SYZ18–SYZ53 rate-1/2 strip endgame)
+
+All items below are axiom-clean and in-tree on `research/proximity-prize` (fork tip ≥ `d3b2ad631`).
+The production δ* conjecture remains **OPEN / ON-BGK**; nothing here is a closure. This addendum
+consolidates the SYZ arc's endgame — the rate-`1/2` strip route pursued in parallel with the CORE
+Paley/BGK line of §6/§42. It supersedes no earlier result; it packages them.
+
+- **The final assembly (SYZ40, `_SYZ40FinalAssembly.lean`).** The whole rate-`1/2` strip theorem is
+  now **one assembled theorem** (`strip_theorem_of_master_hypothesis`) whose only substantive open
+  input is a single named `Prop`, `UniformSylvesterInjective K n k` (SYZ38's `SylvesterInjective`
+  quantified over every rate-`1/2` band-degree profile; SYZ39 characterizes it as a bounded-height
+  resultant non-vanishing of **BGK type at `n = 2³⁰`**). Every input resisting a formal discharge is
+  folded **explicitly** into `StripMasterHypothesis` — no hidden assumptions — with exactly three
+  fields: `uniformSylvester` (THE open residual, spread branch `m ≥ 4`), `syzdimBridge` (SYZ36
+  `d = syzdim`, probe-verified identity), `realizability` (SYZ22 `SuperadditiveUnion` MDS-shortening
+  count). The **merged branch** (`m ≤ 3`) is fully **unconditional** (`merged_branch_unconditional`
+  ← SYZ32 routing). No unconditional δ* delivered; the value is the single-hypothesis dependency
+  structure.
+
+- **The two-field fixed point (SYZ42/SYZ43 → `StripMasterHypothesis''`).** The master hypothesis
+  reaches a **fixed point at two fields**: `uniformSylvester` and `realizabilityCore`. SYZ43
+  (`realizabilityCore_of_mcaEvent_witnesses`) proves the realizability existence residue is
+  **auto-instantiated** by any over-budget `mcaEvent` stack through the G87 syndrome bridge, leaving
+  only a union-rank lower bound `hrank` — a residual *separate* from `uniformSylvester`. This is the
+  hypothesis list a next agent must respect verbatim.
+
+- **The census bridge and the conditional pin (SYZ46, `_SYZ46CensusBridge.lean`).** Wire (iv) of the
+  SYZ33 header — `MCAThresholdLedger` count-bound ⇒ δ*-floor — is formalized at the **corrected**
+  strip radius `357913940/2³⁰ < 1/3` (`stripNumerator = (2³⁰−1)/3`). The capstone
+  `deltaStar_bracket_of_strip_master_hypothesis` gives the **conditional two-sided bracket**
+  `357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰` (both endpoints near `1/3`, width `≈ 6.5·10⁻⁴`); the ceiling
+  half is **unconditional** (SYZ6), only the floor consumes the hypotheses. Its complete honest
+  hypothesis list is: (i) `StripMasterHypothesis''.uniformSylvester` (the sole substantive open
+  input), (ii) the SYZ18/`twist_pair_indep` disjoint-support control, (iii)
+  `realizabilityCore` reduced to `hrank`, (iv) the abstract-to-concrete `transport` from SYZ40's
+  band-triple/union-budget conclusion through the G87 `mcaEvent`→syndrome bridge to the concrete
+  smooth-domain `mcaBadCount` cap. **No equality/pin is claimed.** SYZ46 also machine-checks the
+  **retraction** of its own vacuous first draft (`refutedPredecessorCensusBound_is_false`, driven by
+  the SYZ3 `31/64`-predecessor over-budget witness) — the model episode for the campaign's
+  no-laundering discipline.
+
+- **THE central structural result — the BGK unification (SYZ49, `_SYZ49CyclotomicGcd.lean`).** The
+  balanced-interior obstruction reduces **exactly** to the max level set of the cyclic rational
+  function `R(ω) = W_BC(ω)/W_AC(ω)` on `μ_n`, and the level-set constancy **is literally the BGK
+  additive-character wall**: over `𝔽_p` with `L` = discrete log,
+  `L(R(ω)) = Σ_{s∈S_BC} L(ω−s) − Σ_{s∈S_AC} L(ω−s) (mod p−1)`, verified on all trials. So `R`
+  constant on a set `A` ⟺ the additive discrete-log-sum phase is constant on `A`. **The μ-basis
+  imbalance residual (non-BGK strip route) and the BGK character-sum bound (CORE route) are the SAME
+  object** — max `R`-level = max additive-log-phase coincidence. This is the cleanest unification the
+  campaign has produced: the two walls meet as one level-set statement. SYZ49 also **corrects SYZ48**
+  — cyclotomic domain-membership is necessary but **not sufficient** (48 disjoint non-coset `(4,4,4)`
+  witnesses at `μ₁₂⊂𝔽₃₇` reach level set `= a`, one verified `ι=2` on-domain), relocating the true
+  gate to **band-realizability** (SYZ42 superadditive-union), not membership.
+
+- **The anomaly-and-collapse episode — the model for small-field discipline (SYZ50→SYZ52→SYZ53).**
+  SYZ50 found the balanced-interior region **meets** the band-realizable polytope (65 982 profiles;
+  smallest `n=14,(4,4,4),t=2`), so no pure counting/Venn overflow closes `ι ≤ 1`, and the SYZ49
+  `μ₁₂` witness is a whole-subgroup artifact (`n = 3d`, one domain point short of the band's
+  `n ≥ 3d+1`). SYZ52 then **lifted** the band-realizable `μ₁₄` interior witnesses and found max
+  `mca`-bad `= 19` — above the pencil ceiling `12`, the SYZ22 budget `13`, and `n=14` — with the
+  SYZ32 merge shield provably **unavailable** (`overlap = d+t < k`, `merge_unavailable_of_realizable`).
+  Read at face value over `𝔽₂₉` this "defeats the merge/yield accounting" and reads as a
+  refutation candidate for δ*=1/3. **SYZ51** independently closed the conjectured assembly-bypass
+  (pairwise directness ⇏ generation via the SYZ25 coplanar crack; block-scale profiles land in the
+  SYZ47-blind balanced interior) — `uniformSylvester` is NOT removable. **The resolution: SYZ53
+  `p`-scaling** ran the mandatory prime sweep with an exact big-int-safe per-subset RS-parity tool
+  (rigorous, not sampled) and found the excess **collapses**: it peaks at `+9` near `p ≈ 113..197`
+  (`~2⁷·⁶`), then falls through a threshold `p* ∈ (197, 1009)` to the generic pencil floor `3` and
+  stays **flat through `p = 2³¹`** — deep below both ceiling and budget, and non-growing in `n`. At
+  production field `P ~ 2¹⁵⁸ ≫ p*` the `ι=2` excess contributes **zero**. **δ*=1/3 SURVIVES**; the
+  SYZ52 anomaly is a small-characteristic artifact (the G84/G85 first-moment prediction). The lesson,
+  now doctrine: **never trust a small-p verdict — either way — always run the p-sweep**; a
+  small-field over-budget count is a saturation-regime analogue artifact, and a small-field
+  "in-budget" verdict is equally untrustworthy.
+
+- **The imbalance ladder is fully calibrated (SYZ44 + swarm SYZ53 half-gap).** SYZ44
+  (`_SYZ44MuBasisDegreeSum.lean`) removes the μ-basis **degree-sum law** `δ₁+δ₂ = a+b+c` from the
+  empirical column: it is a one-line Hilbert-function corollary of two standard graded-commutative-
+  algebra inputs (`RankNullity` = large-`D` triple-Bézout surjectivity; `TwoRamp` = existence of a
+  graded μ-basis over `K[X]`), collapsing the rate-`1/2` `SylvesterInjective` residual to the single
+  imbalance bound `ι ≤ 1`. The **concurrent swarm SYZ53 result** (`_SYZ53GeneratorGapCalibration.lean`,
+  Opus lane) proves the **exact functional identity** `ι = ⌊(δ₂−δ₁)/2⌋` (consuming only SYZ44's
+  degree-sum law), whence `ι ≤ 1 ↔ δ₂−δ₁ ≤ 3` and `ι = 0 ↔ δ₂−δ₁ ≤ 1`. **Integrated verdict on the
+  half-gap result:** it does **not** revise the SYZ44 chain — it consumes SYZ44's degree-sum law
+  unchanged and strictly *sharpens* the downstream target, replacing SYZ52's loose one-sided ceiling
+  `δ₂ ≤ ⌈S/2⌉+1` with the field-independently referee-measured near-balance gap `δ₂−δ₁ ≤ 1`, one full
+  unit tighter. The remaining non-BGK spread-branch residual is therefore the crisp **Hilbert–Burch**
+  statement: *the μ-basis of a balanced pairwise-coprime band triple has generator gap `δ₂−δ₁ ≤ 1`*
+  (coprimality leaves no common factor to unbalance the column-degree split). This is the object to
+  target — not the loose `δ₂` ceiling.
+
+- **Current live-frontier ranking (rate-1/2 strip route).** The wall is the **balance statement
+  `ι ≤ 1` at band-realizable interior profiles** — and SYZ49 shows this is **BGK-literal**: it is the
+  additive-log-phase coincidence bound `Σ_{S_BC}L(ω−s) − Σ_{S_AC}L(ω−s)` constant on a level, the
+  same character-sum wall as the CORE Paley/BGK object. Two provable-looking downstream targets, in
+  rank order: (1) the Hilbert–Burch generator-gap `δ₂−δ₁ ≤ 1` on the balanced interior (non-BGK,
+  standard commutative algebra, referee-confirmed) — closing it discharges `uniformSylvester` at rate
+  `1/2`; (2) the `hrank` union-rank lower bound (SYZ42 realizability residue). Both feed the SYZ46
+  conditional bracket. **CORE remains OPEN / ON-BGK**; no BGK-free strip and no unconditional δ*.
+
+---
+
+### §6 addendum — 2026-07-11 (SYZ67: **the one-question state** — canonical consolidation)
+
+> **Primary entry point:** `docs/kb/deltastar-466-one-question-map-2026-07-11.md` is now THE single
+> map of the open core (formal Lean name for every face, exact relations, proven surrounding theory,
+> empirical status, the unity argument). This addendum is the narrative; the map is the reference.
+
+All items in-tree on `research/proximity-prize` (fork tip `f71099aa6`, SYZ66). δ* remains **OPEN /
+ON-BGK**; nothing here is a closure. This addendum supersedes no earlier result — it records the
+point of **total convergence** the SYZ arc reached after SYZ54.
+
+- **The μ-basis classical chain is COMPLETE and unconditional (SYZ61→SYZ65, ~1000 Mathlib-worthy
+  lines).** The entire commutative-algebra column under the imbalance bound — once a stack of named
+  textbook Props — is now proved Lean theory, all axiom-clean:
+  - **SYZ61** (`9cca95f2a`, `_SYZ61MuBasisExistence.lean`) `syzygyKernel_free_rank_two`: the syzygy
+    kernel of a coprime triple is `Module.Free` of `finrank = 2` (rank–nullity over the domain
+    `K[X]`). UNCONDITIONAL.
+  - **SYZ62** (`623aaeb4b`, `_SYZ62GradedExchange.lean`): product-degree grading `pdeg` + leading
+    vector `lv`; reduces two-ramp generation to the single `GradedExchange` step (multi-step
+    generation `span_of_gradedExchange` machine-checked via well-founded recursion on `WithBot ℕ`).
+  - **SYZ63** (`6074262f8`, `_SYZ63ExchangeStep.lean`) `exists_gradedExchange` /
+    `syzygyKernel_muBasis_span`: `GradedExchange` **discharged** for every rank-2 submodule of
+    `K[X]³` (leading-vector exchange, `no_three_independent_lv` rank descent). The μ-basis
+    *generation* statement is now a theorem, not a `Prop`. UNCONDITIONAL.
+  - **SYZ64** (`d401c974e`, `_SYZ64WindowBookkeeping.lean`) `twoRamp_windowKD`: the μ-basis
+    **window isomorphism** `SYZ60.MuBasisWindowIso` — hence `SYZ44.TwoRamp` — **discharged**
+    (`pdeg_combo_eq` no-cancellation ⇒ injective windowed map). UNCONDITIONAL.
+  - **SYZ65** (`5c8782254`, `_SYZ65RankNullity.lean`) `rankNullity_windowKD`,
+    `degree_sum_unconditional`: `SYZ44.RankNullity` (degree-controlled Bézout surjectivity via
+    cofactor-reduction descent) **discharged** ⇒ the **degree-sum law `δ₁+δ₂ = a+b+c` is now
+    UNCONDITIONAL** (given only coprimality + generator degrees).
+  So `SYZ44.degree_sum_of_hilbert`, formerly conditional on `RankNullity ∧ TwoRamp`, is a theorem.
+  With the concurrent-swarm **SYZ53** exact identity `ι = ⌊(δ₂−δ₁)/2⌋`, the whole imbalance ladder
+  collapses to one crisp **Hilbert–Burch** statement: *the μ-basis of a balanced pairwise-coprime
+  band triple has generator gap `δ₂−δ₁ ≤ 1`.* That is the entire open content on the Sylvester side.
+
+- **The SYZ66 sharp cap — 5 free scalars at strip radius, 6 forces syzygy (`f71099aa6`,
+  `_SYZ66BadCountBridge.lean`).** SYZ60 collapsed the per-stack counting dictionary to one scalar
+  residual `BadCountCeiling` (pick the admissible band's upper edge `2³⁰`; equivalence
+  `countingDictionary_iff_badCountCeiling`). SYZ66 composes the G87 `mcaEvent`→syndrome→pencil
+  bridge with the G86 rank-collapse dichotomy **at the strip radius** and proves the **independent /
+  generic-position regime is capped at a constant 5** (`strip_independent_cap`,
+  `r·(715827884−k)+1 ≤ 2(2³⁰−k)`, `k ≤ 2²⁹` ⟹ `r ≤ 5`; **sharp** — `r=5` realizable, `r=6`
+  impossible for every `k`). Dually any `≥6` bad scalars **force a syzygy** among the bridge
+  functionals (`strip_count_ge_six_forces_syzygy`). So the **whole `2³⁰` budget lives in
+  syzygy-carrying stacks**; the residual is exactly `[6, 2³⁰]` and equals the single Prop
+  `StripSyzygyControlledCeiling` (`badCountCeiling_of_syzygyControlled` discharges `≤5` from the
+  cap). The independent bulk is closed unconditionally; the dependent bulk is the surviving gap.
+
+- **The total-convergence statement.** After SYZ61→SYZ66 the rate-`1/2` conditional δ* bracket
+  `357913941/2³⁰ ≤ δ* ≤ 358612991/2³⁰` depends on **exactly three open Props**, and each is a
+  **face of one object — the syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**:
+  1. **`uniformSylvester`** (F1) — reduced to the Hilbert–Burch gap `δ₂−δ₁ ≤ 1` on the balanced
+     band-realizable interior; the classical column beneath it is proved (SYZ61–65).
+  2. **`StripSyzygyControlledCeiling`** (F2, ≡ `BadCountCeiling` ≡ `CountingDictionary`) — the
+     dependent bulk `[6, 2³⁰]`; independent regime proved capped at 5 (SYZ66).
+  3. **`hrank`** (F3) — the union-rank realizability residue (SYZ22/SYZ42); cross-witness chaining
+     proved a NO-GO in the strip (SYZ56).
+  **These are one question.** SYZ49 (`_SYZ49CyclotomicGcd.lean`) proved the governing quantity of F1
+  — the max level set of `R(ω)=W_BC/W_AC` on `μ_n` — **is literally the BGK additive-log-phase
+  coincidence bound**, the same wall as the CORE Paley/BGK object; F2 (dependence-count) and F3
+  (span) are the independence and generation sides of the rank of the *same* family `{Sᵢ}`, with
+  their independent/chaining sides proved and their dependent/adversarial bulks open. This is the
+  **BGK wall in its final coordinates**: three combinatorial faces of one level-set statement.
+
+- **Honest production wire list (as it stands).** Conditional bracket (ceiling half unconditional
+  via SYZ6) depends on **exactly**: (F1) `StripMasterHypothesis''.uniformSylvester` [open content
+  `δ₂−δ₁ ≤ 1` = BGK level-set]; (F2) `StripSyzygyControlledCeiling` [open bulk `[6,2³⁰]`]; (F3)
+  `hrank` union-rank; (support) SYZ18 `twist_pair_indep` [landed substrate]. **Everything else is
+  proved theory** — merged branch, degree-sum law, TwoRamp, RankNullity, μ-basis
+  freeness/rank/span/window, SYZ46 census-bridge, the SYZ49 BGK identification, and the SYZ58
+  rate-`1/4` curve-event scope barrier (`epsMCACurve` ≠ prize object; a curve bound would
+  contradict the proven `3/8 ≤ mcaDeltaStar` — barrier, not a pin). **CORE remains OPEN / ON-BGK**;
+  no BGK-free strip and no unconditional δ*.
+
 ---
 
 ## 7. The synthesis essays (conceptual scaffolding)

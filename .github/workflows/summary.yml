@@ -17,8 +17,11 @@ jobs:
   summarize:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
     steps:
       - name: Generate PR Summary
+        if: env.OPENROUTER_KEY != ''
         uses: alexanderlhicks/lean-summary-workflow@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,3 +34,8 @@ jobs:
           validate_title: 'true'
           upstream_path: 'ArkLib/ToMathlib/'
           # Other optional knobs (reasoning_effort, max_*_diff_chars): see the action README.
+
+      - name: Report unavailable optional summary
+        if: env.OPENROUTER_KEY == ''
+        run: |
+          echo "OPENROUTER_KEY is not configured; skipping the optional AI summary."

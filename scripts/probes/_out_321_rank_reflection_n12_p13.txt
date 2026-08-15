@@ -1,0 +1,10 @@
+(1) even-n mechanism + palindrome A_r=A_(n+1-r) verified on (n=12, p=13) OK; |G|=12 sum(G) mod p = 0
+(2) late-Newton rank pin A_5 = A_8 = -12 (n+1-5 = 8) verified on (n=12, p=13) OK
+(3) ZMod 13 Lean witness: W13 = [12, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]
+    R5  = [30156, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157]
+    R8  = [30156, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157, 30157]
+    R8(x) = R5(-x)  ✓
+    A_5 = A_8 = -12 ✓
+(4) G295 (n=8, p=17) reproduction: A_3 = A_6 = -1344 ✓ (algorithm matches)
+
+ALL PASS: G321 (n=12, p=13) cell — palindrome A_r = A_{n+1-r}, late-Newton pin A_5 = A_8 = -12, G295 algorithm matches.

@@ -25,7 +25,7 @@ interpolation normal `(X−a)(X−b) = X² − (a+b)X + ab`, i.e. to the point `
 sums make the three normals lie in a common plane (their `(sum, product)` points are collinear), so
 they are linearly dependent and the three pair-spans share the unexpected common vector
 `w = (0,1,10)` — even though generic position would force their intersection to be `{0}`.
- 
+
 
 `reedSolomonFrame_not_isHigherMDS_three_of_sumZeroPairs` records the unconditional special case
 `σ = 0` (antipodal pairs `{x, −x}`): this is the `a+b=0` relation that Sidon/`SidonModNeg` does NOT

@@ -101,7 +101,7 @@ theorem aligned_inter_tuple_degenerate
 
 omit [Fintype F] [DecidableEq F] in
 /-- **DISTINCT-SCALAR SHARING ⟹ DEGENERATE CORE.** Contrapositive packing form: if two aligned sets
-`S` (for `γ`) and `S'` (for `γ'`) share a NON-degenerate `(k+1)`-tuple, then `γ = γ'`. 
+`S` (for `γ`) and `S'` (for `γ'`) share a NON-degenerate `(k+1)`-tuple, then `γ = γ'`.
 Equivalently:
 distinct pinned scalars' aligned sets cannot share a non-degenerate `(k+1)`-subset — their
 non-degenerate cores are disjoint at the tuple level (the packing prerequisite for bounding

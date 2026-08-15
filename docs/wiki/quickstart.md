@@ -29,6 +29,11 @@ When several agents share a machine (even in different checkouts/worktrees), nev
 ./scripts/lake-locked.sh exe cache get
 ```
 
+This applies to helper scripts too: `scripts/pg-warm.sh` originally called bare `lake build`
+and bypassed the lock (observed 2026-07-10: two warm builds plus a locked build ran three
+simultaneous lake drivers compiling the same files); it now routes through `lake-locked.sh`.
+If you write a script that builds, call the wrapper, never bare `lake`.
+
 What it does (observed failure mode 2026-06-11: 7 concurrent lake builds plus a racing
 `cache get` in shared checkouts produced 60+ lean workers on 12 cores, corrupted oleans, and
 four builds silently recompiling all of Mathlib from source):

@@ -1,0 +1,11 @@
+[SELF-TEST] engine vs brute, n=8 k=2 q=4129: 20 random + 4 chains
+[SELF-TEST] PASS (counts and bad-lists)
+==============================================================================
+[STAGE 2s] spread re-search at n=32 k=4 a=11 (target >= 25)
+  x^8+x^10 (agreemax 10): 22
+  x^8+x^26 (agreemax 10): 22
+  x^9+x^11 (agreemax 10): 22
+  x^10+x^24 (agreemax 10): 22
+  [spread re-search] best = 22 at (8, 10) (3*8 = 24 is the new bar; floor = 22)
+
+[G101F total 269s]

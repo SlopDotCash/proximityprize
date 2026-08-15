@@ -1,0 +1,138 @@
+/-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors (#466)
+-/
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ44MuBasisDegreeSum
+import Mathlib.RingTheory.Coprime.Basic
+import Mathlib.RingTheory.Ideal.Span
+import Mathlib.Algebra.Polynomial.Basic
+
+/-!
+# SYZ57 — the two textbook facts behind SYZ44's degree-sum law (honest partial)
+
+SYZ44 proved the μ-basis **degree-sum law** `δ₁ + δ₂ = a + b + c` axiom-clean *given* two named
+structural hypotheses about the windowed-kernel Hilbert function `hilb : ℕ → ℕ` of a pairwise-coprime
+univariate triple `(W_AB, W_AC, W_BC)`:
+
+* `RankNullity hilb a b c D₀` — for `D ≥ D₀`, the balanced-window map is **surjective** onto
+  `{p : deg p ≤ D}`, so `hilb D + (D+1) = (D+1−a)+(D+1−b)+(D+1−c)` (Bézout + rank–nullity);
+* `TwoRamp hilb δ₁ δ₂` — the kernel is a rank-`2` **graded free** `K[X]`-module (the μ-basis), so
+  `hilb D = (D+1−δ₁) + (D+1−δ₂)` (the two ramps).
+
+This file discharges the **Bézout seed** that underlies `RankNullity` — the ungraded content —
+axiom-clean and honestly:
+
+> pairwise-coprime `(f,g,h)` generate the unit ideal, hence the evaluation map
+> `(r₁,r₂,r₃) ↦ f r₁ + g r₂ + h r₃` is surjective onto **all** of `K[X]`
+> (`exists_triple_repr`): every target `p` is `f (p r₁) + g (p r₂) + h (p r₃)`.
+
+That is the classical "`1 = uf + vg + wh`, then scale by `p`" step — the reason the *image* of the
+window map is eventually everything of degree `≤ D`.  It is proved here from Mathlib's `IsCoprime`
+API by chaining two-element coprimality (`IsCoprime.mul_right`), with **no** `sorry` and **no** new
+axiom.
+
+## Scrupulous honesty — what this does and does NOT close
+
+**Does NOT** make `degree_sum_of_hilbert` unconditional.  `RankNullity` and `TwoRamp` are statements
+about a *concrete* `hilb D = dim_K (ker φ ∩ balancedWindow D)` — a graded-module **finrank**.  Two
+genuinely-classical-but-unformalised pieces still stand between this seed and those Props:
+
+1. **The degree-controlled surjectivity + dimension count** (`RankNullity`): from ungraded
+   surjectivity onto `K[X]` one must extract that the *balanced-window* restriction already surjects
+   onto `deg ≤ D` for `D ≥ D₀` (the extended-Euclid degree bounds `deg u ≤ deg g + deg h`, then
+   reduce cofactors mod pairwise products) **and** turn the three window dimensions and the image
+   dimension into the rank–nullity equation over `hilb D = finrank …`.  Mathlib has neither the
+   windowed finrank bookkeeping nor triple-Bézout degree control.
+2. **The graded μ-basis** (`TwoRamp`): submodules of a free module over the PID `K[X]` are free
+   (`Submodule` structure theorem), but the *graded* two-ramp shape needs the leading-coefficient
+   filtration / degree-jump argument (`dim K_D − dim K_{D−1} ∈ {0,1,2}` monotone).  Not in Mathlib.
+
+So SYZ57 lands the **ungraded Bézout fact** (the honest "the image contains `1`, hence everything")
+and records precisely the two remaining textbook obligations.  The degree-sum law therefore stays
+**conditional on `RankNullity ∧ TwoRamp`**, now with (1)'s ungraded core discharged.
+
+Axiom-clean; `#print axioms` at the bottom.  No `sorry`, no `native_decide`.
+-/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
+namespace ArkLib.ProximityGap.SYZ57
+
+open Polynomial
+
+variable {R : Type*} [CommRing R]
+
+/-! ## 1. Triple Bézout: pairwise coprime ⟹ the unit is in the image -/
+
+/-- **Triple Bézout (the unit).**  If `f,g,h` are pairwise coprime (here only `f`-vs-`g` and
+`f`-vs-`h` are needed, matching the reduction below), there exist cofactors `r₁ r₂ r₃` with
+`f r₁ + g r₂ + h r₃ = 1`.  Proof: `IsCoprime f g` and `IsCoprime f h` give `IsCoprime f (g*h)`
+(`IsCoprime.mul_right`); unfolding the two-element Bézout of `f` and `g*h` produces
+`a·f + b·(g*h) = 1`, i.e. `f·a + g·(b*h) + h·0 = 1`. -/
+theorem exists_triple_bezout_of_coprime {f g h : R}
+    (hfg : IsCoprime f g) (hfh : IsCoprime f h) :
+    ∃ r₁ r₂ r₃ : R, f * r₁ + g * r₂ + h * r₃ = 1 := by
+  obtain ⟨a, b, hab⟩ := (hfg.mul_right hfh)
+  -- hab : a * f + b * (g * h) = 1
+  refine ⟨a, b * h, 0, ?_⟩
+  ring_nf
+  ring_nf at hab
+  linear_combination hab
+
+/-- **Triple surjectivity onto `R`.**  From the unit representation, *every* target `p` is in the
+image of `(r₁,r₂,r₃) ↦ f r₁ + g r₂ + h r₃`: scale the Bézout identity by `p`.  This is the ungraded
+core of SYZ44's `RankNullity` surjectivity input (the eventual `image = deg ≤ D`). -/
+theorem exists_triple_repr {f g h : R}
+    (hfg : IsCoprime f g) (hfh : IsCoprime f h) (p : R) :
+    ∃ r₁ r₂ r₃ : R, f * r₁ + g * r₂ + h * r₃ = p := by
+  obtain ⟨r₁, r₂, r₃, h1⟩ := exists_triple_bezout_of_coprime hfg hfh
+  refine ⟨p * r₁, p * r₂, p * r₃, ?_⟩
+  have : f * (p * r₁) + g * (p * r₂) + h * (p * r₃)
+      = p * (f * r₁ + g * r₂ + h * r₃) := by ring
+  rw [this, h1, mul_one]
+
+/-- **The ideal generated by a pairwise-coprime triple is `⊤`.**  Equivalent packaging of
+`exists_triple_repr`: `Ideal.span {f, g, h} = ⊤`, since it contains `1`.  This is the ideal-theoretic
+statement that the map's image is all of `R`. -/
+theorem span_triple_eq_top {f g h : R}
+    (hfg : IsCoprime f g) (hfh : IsCoprime f h) :
+    Ideal.span ({f, g, h} : Set R) = ⊤ := by
+  rw [Ideal.eq_top_iff_one]
+  obtain ⟨r₁, r₂, r₃, h1⟩ := exists_triple_bezout_of_coprime hfg hfh
+  rw [← h1]
+  have hf : f ∈ Ideal.span ({f, g, h} : Set R) :=
+    Ideal.subset_span (by simp)
+  have hg : g ∈ Ideal.span ({f, g, h} : Set R) :=
+    Ideal.subset_span (by simp)
+  have hh : h ∈ Ideal.span ({f, g, h} : Set R) :=
+    Ideal.subset_span (by simp)
+  exact Ideal.add_mem _ (Ideal.add_mem _ (Ideal.mul_mem_right _ _ hf)
+    (Ideal.mul_mem_right _ _ hg)) (Ideal.mul_mem_right _ _ hh)
+
+/-! ## 2. Restatement of SYZ44's conditional law, with the seed folded in
+
+We re-export SYZ44's `degree_sum_of_hilbert` unchanged (it is already axiom-clean), recording that
+its `RankNullity` hypothesis is exactly the *degree-controlled + dimension-counted* strengthening of
+the ungraded seed proved above.  No new content in the statement — the value is the honest ledger. -/
+
+/-- **The degree-sum law, conditional (unchanged from SYZ44).**  Kept here so downstream readers see
+the seed (`exists_triple_repr`) and the still-open Props side by side.  See the module docstring for
+the precise two remaining textbook obligations. -/
+theorem degree_sum_of_hilbert
+    (hilb : ℕ → ℕ) (a b c δ₁ δ₂ D₀ : ℕ)
+    (hRankNull : ArkLib.ProximityGap.SYZ44.RankNullity hilb a b c D₀)
+    (hTwoRamp : ArkLib.ProximityGap.SYZ44.TwoRamp hilb δ₁ δ₂) :
+    δ₁ + δ₂ = a + b + c :=
+  ArkLib.ProximityGap.SYZ44.degree_sum_of_hilbert hilb a b c δ₁ δ₂ D₀ hRankNull hTwoRamp
+
+end ArkLib.ProximityGap.SYZ57
+
+/-! ## Axiom audit -/
+
+#print axioms ArkLib.ProximityGap.SYZ57.exists_triple_bezout_of_coprime
+#print axioms ArkLib.ProximityGap.SYZ57.exists_triple_repr
+#print axioms ArkLib.ProximityGap.SYZ57.span_triple_eq_top
+#print axioms ArkLib.ProximityGap.SYZ57.degree_sum_of_hilbert

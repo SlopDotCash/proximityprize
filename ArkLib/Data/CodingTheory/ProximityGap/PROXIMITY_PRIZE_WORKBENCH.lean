@@ -501,6 +501,48 @@ independent-Gaussian behaviour of the period field: sub-Gaussian tail `P(|η_b| 
 to depth `r ≈ log p`, equivalently `E_r⁺(μ_n) − n^{2r}/p ≤ C^r·r!·n^r` at logarithmic depth.
 Difficulty is certification, not distribution shape.
 
+**(9) DOCTRINE v2 UPDATE (2026-07-10, G77–G82 round — supersedes the ranking in (7); full text
+`docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md`).**
+* **The off-BGK route list is EMPTY.** The signed relation route (R366/R367, "Sol route 3") is
+  gauge: `relationAnomaly = Σ_{b≠0}|η_b|^{2r} − (q−1)·shadowEnergy` exactly, zero-slack iff
+  transport (`_G77FRelationAnomalyFourierGauge.lean`).
+* **Constant-base `K^r` losses are FREE** (`M ≤ √(2eK)·√(n ln q)` at `r ≈ ln q`) — and BOTH
+  modern constant-loss engines are now walked: Kelley–Meka sifting (`_G78KMSpreadCircularity`,
+  rank-one spreadness ⟺ the sup bound, two-sided constants ∈ [3.1, 6.9]) and Bourgain–Demeter
+  decoupling (`_G80DDecouplingParallelCapCollapse`, gain ≡ lag-decorrelation mass, exact defect
+  identity). The wall is NOT strength; it is a single circular hypothesis. **The whole prize =
+  ONE non-Fourier anti-concentration certificate for a geometric progression in arcs.** The (7)
+  tool-shape line ("γ₂ canonical") is superseded: chaining on the Euclidean metric is BGK-tight
+  (G69/G70); any survivor supplies the certificate, in any gauge, then rides KM- or BD-shaped
+  machinery at tolerable loss.
+* **p-adic separation with exact depth:** `v_π(η_b − n) = n` for every `b ≠ 0`; the first
+  b-sensitive digit is the pure coset character `n·bⁿ/n!` (`_G79PPiAdicDigitClustering`).
+  Valuation functionals cannot see `M` below depth n; the discriminant is already saturated.
+* **The ON-BGK transversality seam is quantified:** CRT amplification `p^s ≤ H` with the
+  contradiction threshold `s* = (n/4)log6/log p` = HALF the height allowance
+  (`_G82TransversalityCRTThreshold`) — but the census coverage probe measures EXACTLY one
+  embedding per relation at every accessible cell, so the live half is the FENCE direction
+  (`_G83DeterminantCoverageFence`, in progress).
+* **Protocol layer (Tier 3):** the determination's LOWER half is closed per-prime (O44 Thm Q via
+  KKH 2026/782, superseded in-tree by O38 E1/E2); the open content is purely the UPPER half =
+  CORE. Lane B2 re-plan target: GGSW arXiv:2607.08516 (row-span-constrained LCL form of
+  curve-decodability, degree-independent, black-box transference from subspace designs).
+  Litsweep 2026-07-10: the analytic-core literature is unchanged — no non-Fourier certificate
+  exists or is attempted anywhere.
+* **§33 ROUTE (ii) IS CLOSED WITH AN EXACT LAW (2026-07-10 late, HD arc, ledger 466-HD1…HD8).**
+  The complete multiplicative-identity web of Gauss phases (conjugation + ALL m′-fold
+  Hasse–Davenport product relations) was computed EXACTLY: nullity = φ(N)/2 (= Kubert–Lang
+  universal odd-distribution rank — the web is COMPLETE, no relations missing), and its power on
+  the ladder angles is PURE DIMENSION COUNTING: `pinned = max(0, dim θ − φ(N)/2)`. Classical
+  index-2/semiprimitive solvability = the saturated case; **index ≥ 4 (prize = 2^30) receives
+  ZERO algebraic constraint**. The missing certificate is archimedean/analytic with a
+  machine-checked reason: the algebraic side is provably empty. Do NOT re-attempt exact-identity/
+  distribution-relation routes on the ladder angles. Brick: `_HD8IdentityWebDimensionLaw.lean`
+  (saturation ⟹ exact evaluations exist — the abstract cause of all classical Gauss-sum
+  evaluations); probes `/tmp/arklib-reports/hd{5,7,8}_*.py`. Remaining §33 live routes: (i)
+  Katz vertical equidistribution along linear conditions (NB: must clear the r18 per-tuple-Weil
+  closure), (iii) genuinely new ideas vs `IterConvEnergyWick`.
+
 ⇒ **The `▼ YOUR CONJECTURE HERE ▼` slot's current best targets (post rounds 1–2, 2026-07-01;
 see dossier §14/§15):** (a) the low-profile fiber bound `D(t)`, `t < k`, feeding
 `mcaDeltaStar_ge_of_farLineListBudgeted` (the PRIMARY surface; `_LowProfileFiberBound` +
@@ -571,6 +613,43 @@ theorems. W15 part 6: width-k strip closed by the secant-pair refuter
 inventory: B-side one two-input lag⟺moment⟺tower pair (+ DIST rungs m ≥ 12); P1 `SwarmResidual`;
 W15 uniform-fields strip sliver, Λ ≤ 2 campaign bound (empirical), `hunsafe`, `hfarL`. Bracket
 unchanged. CORE OPEN, ON-BGK.
+**(10) DOCTRINE v3 UPDATE (2026-07-10 evening, Fable G88–G99 wave + codex G80Q/S — supersedes
+(9)'s certificate shape and (7)/(9)'s survivor list; log entries `466-G88…` through
+`466-G99…`).**
+* **#505 CLOSED (→ #509).** The signed relation route is pinned to the wall in every recorded
+  formulation: G89 first-incidence ≡ relationAnomaly (constant exactly 1, transversal-free);
+  G88 orbit-class Parseval `n·centeredShadowMass = q·(n·S₀² + Σ_γ S_γ²) − n·n^{2r}` — PSD over
+  distinct orbit classes, ZERO cross terms, collision trichotomy {0,n,n²}, equidistribution is
+  the minimizer, and `DCEnergyBound` ⟺ a bound on this quadratic form. The open content is
+  exactly the class-mass ℓ²-profile `(S₀, (S_γ)_γ)` (#509).
+* **The certificate target is RESHAPED (G90 + G97 + codex G80Q).** Unsigned sup-arc occupancy
+  is FALSE at needed strength (n^{2/3} cost floor, `466-G90…`); hereditary-discrepancy
+  transference is a structural no-go but arcs reduce losslessly to K+1 PREFIX counts
+  (`466-G97…`); the codex arc program terminates at the Cilleruelo–Garaev small-difference
+  form (G80Q). Current sharpest statement of the missing object: **signed control of K+1
+  prefix deviations of `b·μ_n`, equivalently near-uniform small-difference pair statistics of
+  every dilate** — CG/BGK proves it only for β < 3; prize β ≫ 3.
+* **More doors closed as theorems:** chaining dies METRIC-UNIVERSALLY (G94: deterministic
+  sub-Gaussian increments collapse to domination; any legal γ₂ certificate contains the
+  conclusion; every Jacobi-cocycle metric strictly worse than the G70-closed Euclidean one);
+  Guth–Maynard/Halász–Montgomery Gram bootstrap is count-vs-sup-fenced and vacuous at prize
+  (G98 — the large-values Gram IS the field: `G_{b,b'} = η_{b−b'}`); the Esseen/Erdős–Turán
+  ladder with the exact l² input is non-contracting, nontrivial only dense n ≳ 3√2·√p (G99);
+  the cyclic-code few-weight/quantization dictionary can never apply at prime-field prize
+  shape (G95: values maximally many-valued, irrational); the spread-excess law is dead at
+  EVERY constant near the Johnson boundary (G92: C=3 refuted in evidence at n=32, ratio
+  3.833, two primes; floor mechanism formalized).
+* **New POSITIVE substrate:** the additive/Binius model theorem (G93: production-shaped bound
+  with C = 1, exact index law, lossless S^⊥ relocation — hardness = additive non-closure of
+  μ_n, not thinness); the q-free low-profile fiber bound D(S) ≤ C(s, a−t) with census
+  dichotomy both ways (G91F); the r-uniform finite HM/Gram inequality set (G98); the
+  integer-lift rigidity `dilated_orbit_short_interval_rigidity` — **the first unconditional
+  non-Fourier certificate on the small-difference object**: no dilate of μ_n fits in any
+  interval shorter than √(p/2) (G99, containment scale).
+* **Live lanes:** #509 (orbit-class profile); G100F — push the integer-lift mechanism from
+  containment to COUNTING scale on the G80Q terminal object (the sharpest current attack);
+  G96 capacity/house extremal (relaunch pending); monomial-baseline growth law at Johnson
+  boundary cells (the G92 successor question).
 
 ────────────────────────────────────────────────────────────────────────────────
 ## §R.  HISTORICAL RESEARCH SYNTHESIS 2026-06-13 — superseded target claim

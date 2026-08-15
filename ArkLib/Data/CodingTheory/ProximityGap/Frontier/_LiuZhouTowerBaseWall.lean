@@ -8,7 +8,7 @@ Liu-Zhou dyadic tower base-non-cancellation wall (#444).
 `levelWorst k` = M(mu_{2^k}). The recursion (triangle ineq on the index-2 split
 eta_b(mu_{2n}) = eta_b(mu_n)+eta_b(zeta mu_n)) gives ONLY `levelWorst (k+1) <= 2*levelWorst k`
 per level (the abelian/character-diagonal Liu-Zhou eigenvalue bound = this triangle ineq,
-no genuine eigenvalue saving). The sqrt2 'cancelling' bound is OPEN (the gate). 
+no genuine eigenvalue saving). The sqrt2 'cancelling' bound is OPEN (the gate).
 
 CORE STRUCTURAL FACT: at beta=4, q ~ n^4, the tower from level 0 up to level mu=log2 n
 lies ENTIRELY in the THIN regime (beta_local = 4 mu/k >= 4). The sqrt2 gate is only

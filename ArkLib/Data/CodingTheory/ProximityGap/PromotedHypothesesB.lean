@@ -86,7 +86,7 @@ theorem refutation_H14 : ¬(∀ γ1 γ2 : F, support (e γ1) ⊆ support (e γ2)
 --------------------------------------------------------------------------------
 -- H16 (Punctured Code Clustering): Removing the common error support from the
 -- code preserves the clustering property (i.e. makes all w_γ equal).
--- The common support is empty, so punctured code is unchanged. 
+-- The common support is empty, so punctured code is unchanged.
 -- We show they still don't cluster.
 --------------------------------------------------------------------------------
 def common_support : Finset (Fin 4) :=

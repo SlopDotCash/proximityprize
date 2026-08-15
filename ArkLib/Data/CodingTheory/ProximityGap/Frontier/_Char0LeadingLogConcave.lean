@@ -91,7 +91,7 @@ theorem choose_logConcave (n k : ℕ) (hk : 1 ≤ k) :
             -- (j+1)*(n-(j+1)) ≤ (n-j)*(j+2)
             have h1 : n - (j + 1) ≤ n - j := by omega
             -- expand: (j+1)*(n-j-1) ≤ (n-j)*(j+2). Since n>j, set m=n-j≥1.
-            -- (j+1)(m-1) ≤ m(j+2) ⟺ (j+1)m - (j+1) ≤ m j + 2m ⟺ -(j+1) ≤ m j + 2m - (j+1)m = m(1) ... 
+            -- (j+1)(m-1) ≤ m(j+2) ⟺ (j+1)m - (j+1) ≤ m j + 2m ⟺ -(j+1) ≤ m j + 2m - (j+1)m = m(1) ...
             -- ⟺ -(j+1) ≤ m, true since m≥1>0>-(j+1).
             nlinarith [Nat.sub_add_cancel (le_of_lt hnj), Nat.one_le_iff_ne_zero.mpr (by omega : n - j ≠ 0)]
     exact Nat.le_of_mul_le_mul_right hcross hpos

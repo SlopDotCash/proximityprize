@@ -13,7 +13,18 @@ Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching an
 
 ## Live targets (2026-07-01)
 
-**The current campaign is #466.** The ranked live frontier is
+**The current campaign is #466.**
+
+> **PRIMARY ENTRY POINT (rate-1/2 strip route, 2026-07-11):**
+> `docs/kb/deltastar-466-one-question-map-2026-07-11.md` — THE one-question state. The whole SYZ arc
+> has converged: the conditional δ* bracket now depends on exactly **three open Props**
+> (`uniformSylvester` reduced to the Hilbert–Burch gap `δ₂−δ₁ ≤ 1`; `StripSyzygyControlledCeiling`;
+> `hrank`), each a face of the **syzygy structure of the witness-support family `{Sᵢ} ⊂ μ_n`**, which
+> SYZ49 identifies with the BGK level set. The entire μ-basis classical column beneath F1 is now
+> proved (SYZ61→SYZ65). Read that map first, then the SYZ54+SYZ67 addenda in
+> `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6.
+
+The ranked live frontier (CORE Paley/BGK line) is
 `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` §6 (as re-ranked by the §14/§15 round logs) and
 `../PROXIMITY_PRIZE_WORKBENCH.lean` §5 — go there for what to attack; this README only records
 the status of the original #334-era lane files below.
@@ -589,7 +600,7 @@ depth-five lane = a 2⁹ sup-bound saving over trivial, i.e. `‖η_b‖ ≤ |G|
 | file | target | status (2026-07-01) |
 |------|--------|---------------------|
 | `ThornerZamanS128.lean` + `ThornerZamanInstance.lean` | discharge `TZPrimeSupply` (window `[n^β, 2n^β]` has ≥ supply primes `≡ 1 mod n`) | **Concrete ladder LANDED** (axiom-clean, explicit-prime certificates): β=2 through `n = 32768` (`tzPrimeSupply_{8,16,…,32768}_two`), β=3 through `n = 64`, β=4 through `n = 64`, β=5 at `n = 8` — all in `ThornerZamanInstance.lean` (+ `CanonicalWidthFourConcreteTZ.lean`). The *general/asymptotic* Thorner–Zaman PNT-in-APs form remains a named open hypothesis (dossier v3 §6 Tier 3, "largely dischargeable"). |
-| `CurveDecodability.lean` | [GG25] Def 3.1 curve decodability → [Jo26] half | OPEN, multi-brick (dossier v3 §6 Tier 3; folded-RS capacity pin via `curveDecodable_of_structured_close_set_budget` is the live adjacent lane) |
+| `CurveDecodability.lean` | [GG25] Def 3.1 curve decodability → [Jo26] half | OPEN, multi-brick (dossier v3 §6 Tier 3; folded-RS capacity pin via `curveDecodable_of_structured_close_set_budget` is the live adjacent lane). **RE-PLAN TARGET (2026-07-10):** GGSW arXiv:2607.08516 (Jul 9) casts curve-decodability directly as a row-span-constrained LCL property with black-box transference from subspace designs — formalize against THAT formulation, not the [Jo26] proxy; see `docs/kb/deltastar-466-litsweep-2026-07-10.md`. ([JLR 2601.10047] is withdrawn, subsumed by GG25 — update stale citations.) |
 | `EquivariancePin.lean` | Lean equivariance pin for the n=12 orbit reduction | LANDED → `../MCAEquivariance.lean` (engine) + `../MCAEigenstackOrbitLaw.lean` (orbit law, counting) |
 
 Historical note: predecessors #334/#357/#444/#464 are CLOSED, each distilled into its

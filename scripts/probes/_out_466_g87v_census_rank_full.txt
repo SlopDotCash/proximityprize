@@ -1,0 +1,17 @@
+# G87V census-rank probe — is the fence hypothesis (full rank) attainable?
+cell (n=16, p=97): #census per nontrivial root: min=5376 max=160160; ranks (q1,q2,mod p): [(14, 14, 14), (15, 15, 15), (16, 16, 15)]; full-census common coverage per root: [1, 2]
+   -> full rank n=16 attainable at 12/15 roots (fence threshold s* = (n/2)*log6/(2*log p) = 1.57)
+cell (n=16, p=193): #census per nontrivial root: min=2624 max=160160; ranks (q1,q2,mod p): [(12, 12, 12), (14, 14, 14), (15, 15, 15), (16, 16, 15)]; full-census common coverage per root: [1, 2, 4]
+   -> full rank n=16 attainable at 8/15 roots (fence threshold s* = (n/2)*log6/(2*log p) = 1.36)
+cell (n=16, p=257): #census per nontrivial root: min=1664 max=160160; ranks (q1,q2,mod p): [(12, 12, 12), (14, 14, 14), (15, 15, 15), (16, 16, 15)]; full-census common coverage per root: [1, 2, 4]
+   -> full rank n=16 attainable at 8/15 roots (fence threshold s* = (n/2)*log6/(2*log p) = 1.29)
+cell (n=32, p=641): #census per nontrivial root: min=101120 max=18123840; ranks (q1,q2,mod p): [(28, 28, 28), (30, 30, 30), (31, 31, 31), (32, 32, 31)]; full-census common coverage per root: [1, 2, 4]
+   -> full rank n=32 attainable at 24/31 roots (fence threshold s* = (n/2)*log6/(2*log p) = 2.22)
+cell (n=32, p=769): #census per nontrivial root: min=76800 max=18123840; ranks (q1,q2,mod p): [(28, 28, 28), (30, 30, 30), (31, 31, 31), (32, 32, 31)]; full-census common coverage per root: [1, 2, 4]
+   -> full rank n=32 attainable at 24/31 roots (fence threshold s* = (n/2)*log6/(2*log p) = 2.16)
+cell (n=32, p=1153): #census per nontrivial root: min=54784 max=18123840; ranks (q1,q2,mod p): [(28, 28, 28), (30, 30, 30), (31, 31, 31), (32, 32, 31)]; full-census common coverage per root: [1, 2, 4]
+   -> full rank n=32 attainable at 24/31 roots (fence threshold s* = (n/2)*log6/(2*log p) = 2.03)
+READ: rank == n at some root => forcing direction has a live hypothesis (then the
+fence caps its coverage); rank << n everywhere => piece-(3) forcing VACUOUS at
+accessible cells; rank == n-1 with rank mod p == n-1 => census sits exactly on
+the eval-at-t hyperplane mod p but spans it — the sharp intermediate case.

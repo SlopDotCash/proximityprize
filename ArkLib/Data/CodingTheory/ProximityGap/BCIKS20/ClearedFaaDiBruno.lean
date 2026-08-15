@@ -12,9 +12,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.HasseMonomial
 This module introduces the `ClearedFaaDiBrunoMatch`, which is the nominal, mathematically
 sound version of the `RestrictedFaaDiBrunoMatch`. The original `RestrictedFaaDiBrunoMatch`
 was shown to be false for non-monic polynomials `H` due to a missing scale factor of
-`H.leadingCoeff`. 
+`H.leadingCoeff`.
 
-By multiplying through by the appropriate leading coefficient powers, we restore the 
+By multiplying through by the appropriate leading coefficient powers, we restore the
 identity and open the path for a complete proof using Hasse derivatives.
 -/
 
@@ -36,7 +36,7 @@ variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 We inject the necessary leading coefficient power to counteract the non-monic obstruction. -/
 def ClearedRestrictedFaaDiBrunoSum (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) : 𝕃 H :=
-  (liftToFunctionField (H := H) H.leadingCoeff) ^ (t + 1) * 
+  (liftToFunctionField (H := H) H.leadingCoeff) ^ (t + 1) *
   restrictedFaaDiBrunoSum H x₀ R hHyp t
 
 /-- **The Cleared P2 Combinatorial Core**

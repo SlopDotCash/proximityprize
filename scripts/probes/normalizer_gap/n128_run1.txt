@@ -1,6 +1,0 @@
-== n=128 p=268437889 z=262205760: reciprocal-family census (reciprocity automatic for spanned planes)
-   spanning identity rev(v) = z^Sigma*conj(v) mod p: 0 failures (~2000 samples)
-   pass1: 134193153 pairs in 61s; rank2 16002 (= predicted), normalizer 16002, singular 6145149; gz 1.95 GB
-   dedupe: 123518480 distinct planes, 2102408 with mult>=2 (248s)
-   histogram {'3': 121416072, '4': 2059896, '5': 1220, '6': 41292}  M_p=6  count6=41292  over6=0  total 331.8s
-done.

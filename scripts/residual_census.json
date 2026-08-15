@@ -1,8 +1,8 @@
 {
  "summary": {
-  "total": 100,
-  "open": 55,
-  "discharged": 44,
+  "total": 108,
+  "open": 62,
+  "discharged": 45,
   "refuted": 1,
   "by_top_dir": {
    "(root)": {
@@ -12,9 +12,9 @@
     "refuted": 0
    },
    "Data": {
-    "total": 33,
-    "open": 25,
-    "discharged": 8,
+    "total": 41,
+    "open": 32,
+    "discharged": 9,
     "refuted": 0
    },
    "OracleReduction": {
@@ -1713,6 +1713,14 @@
    "status": "open"
   },
   {
+   "name": "CrossBandResidual",
+   "fq_name": "ArkLib.ProximityGap.AutocorrelationRecursion.CrossBandResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean",
+   "line": 355,
+   "providers": [],
+   "status": "open"
+  },
+  {
    "name": "IsolatedCountResidual",
    "fq_name": "ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalEvenOddDescent.lean",
@@ -1741,6 +1749,14 @@
    "fq_name": "ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean",
    "line": 208,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "ExceptionalDirectionResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDirectionCapGlobalConsumer.ExceptionalDirectionResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterDirectionCapGlobalConsumer.lean",
+   "line": 58,
    "providers": [],
    "status": "open"
   },
@@ -1781,6 +1797,384 @@
      "ambiguous_name_match": false
     }
    ],
+   "status": "open"
+  },
+  {
+   "name": "CommonLocatorResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.CommonLocatorResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConstruction.lean",
+   "line": 165,
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.commonLocatorResidual",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean",
+     "line": 57,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.commonLocatorResidual",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConstruction.lean",
+     "line": 195,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "discharged"
+  },
+  {
+   "name": "PredecessorStructuredFloorResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorGenericSplit.PredecessorStructuredFloorResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorGenericSplit.lean",
+   "line": 111,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "NonzeroQuarterMGFResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R209NonzeroQuarterMGFResidualConsumer.NonzeroQuarterMGFResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean",
+   "line": 44,
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R210NonzeroBulkPlusSpikesMGFConsumer.nonzeroQuarterMGFResidual_of_bulkPlusSpikesGridTail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R210NonzeroBulkPlusSpikesMGFConsumer.lean",
+     "line": 40,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R210NonzeroBulkPlusSpikesMGFConsumer.nonzeroQuarterMGFResidual_of_threeFifths_plus_two_gridTail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R210NonzeroBulkPlusSpikesMGFConsumer.lean",
+     "line": 61,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "name": "NonzeroNormalizedSqQuarterMGFResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R213NonzeroNormalizedSqQuarterMGFResidualConsumer.NonzeroNormalizedSqQuarterMGFResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R213NonzeroNormalizedSqQuarterMGFResidualConsumer.lean",
+   "line": 49,
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_survival_count_ceiling",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R216NonzeroNormalizedSqSurvivalConsumer.lean",
+     "line": 59,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_halfRate_bulkPlusSpikes_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R216NonzeroNormalizedSqSurvivalConsumer.lean",
+     "line": 80,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R216NonzeroNormalizedSqSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_threeFifths_plus_two_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R216NonzeroNormalizedSqSurvivalConsumer.lean",
+     "line": 106,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R217NonzeroNormalizedSqCutoffMGF.nonzeroNormalizedSqQuarterMGFResidual_of_cutoff_four_log_two",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R217NonzeroNormalizedSqCutoffMGF.lean",
+     "line": 49,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hcut"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R218DCOptimizedToNormalizedSqMGF.nonzeroNormalizedSqQuarterMGFResidual_of_dcOptimized_scale",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R218DCOptimizedToNormalizedSqMGF.lean",
+     "line": 57,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hDC",
+      "hr",
+      "hrq",
+      "hscale",
+      "hψ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R218MarkovMomentTailConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_markov_moment_grid",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R218MarkovMomentTailConsumer.lean",
+     "line": 100,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hmoment",
+      "hr",
+      "hstair",
+      "hweighted",
+      "hδ",
+      "hθpos"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R222ZeroSplitSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_zeroSplit_bulkPlusSpikes_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R222ZeroSplitSurvivalConsumer.lean",
+     "line": 71,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hPosTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R222ZeroSplitSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_zeroSplit_threeFifths_plus_two_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R222ZeroSplitSurvivalConsumer.lean",
+     "line": 95,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hPosTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R223LowBandSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_lowBand_bulkPlusSpikes_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R223LowBandSurvivalConsumer.lean",
+     "line": 69,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hAboveTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R223LowBandSurvivalConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_lowBand_threeFifths_plus_two_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R223LowBandSurvivalConsumer.lean",
+     "line": 92,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hAboveTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R224HalfBandTailConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_halfBand_threeFifths_plus_two_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R224HalfBandTailConsumer.lean",
+     "line": 40,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hAboveHalfTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R225HalfBandQuotientTailConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_quotient_halfBand_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R225HalfBandQuotientTailConsumer.lean",
+     "line": 87,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hLift",
+      "hQTailAbove",
+      "hScaleAbove",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R225HalfBandScaledSpikeConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_halfBand_threeFifths_plus_scaledTwo_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R225HalfBandScaledSpikeConsumer.lean",
+     "line": 43,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hAboveHalfTail",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R226OneBandTwelveSpikeQuotientConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_quotient_oneBand_twelveSpikes",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R226OneBandTwelveSpikeQuotientConsumer.lean",
+     "line": 92,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hLift",
+      "hQTailAbove",
+      "hScaleAbove",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R230ParamLowBandQuotientMGFEndpoint.nonzeroNormalizedSqQuarterMGFResidual_of_quotient_param_lowBand_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R230ParamLowBandQuotientMGFEndpoint.lean",
+     "line": 84,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hLift",
+      "hQTailAbove",
+      "hScaleAbove",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R230ParamLowBandQuotientMGFEndpoint.nonzeroNormalizedSqQuarterMGFResidual_of_gauss_natural_param_lowBand_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R230ParamLowBandQuotientMGFEndpoint.lean",
+     "line": 110,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hG",
+      "hQTailAbove",
+      "hqSq",
+      "hstair",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R234RankSumResidualMGFConsumer.nonzeroNormalizedSqQuarterMGFResidual_of_topRank_residual_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean",
+     "line": 58,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hTail",
+      "hTop",
+      "hstairResidual",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.nonzeroNormalizedSqQuarterMGFResidual_of_topRank_quotient_residual_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
+     "line": 152,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hLift",
+      "hQTail",
+      "hTop",
+      "hstairResidual",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.nonzeroNormalizedSqQuarterMGFResidual_of_topRank_natural_quotient_residual_tail",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
+     "line": 179,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hG",
+      "hQTail",
+      "hResidualStable",
+      "hTop",
+      "hqSq",
+      "hstairResidual",
+      "hweighted",
+      "hδ"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "name": "DeepShadowCollisionResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R317DeepShadowCollisionHeadroom.DeepShadowCollisionResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R317DeepShadowCollisionHeadroom.lean",
+   "line": 104,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "MultiHoleTripleTradeResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.RateQuarterNextLatticeOwnershipLedger.MultiHoleTripleTradeResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RateQuarterNextLatticeOwnershipLedger.lean",
+   "line": 142,
+   "providers": [],
    "status": "open"
   },
   {
@@ -1862,7 +2256,7 @@
    "name": "reductionAppendCompletenessResidual",
    "fq_name": "Reduction.reductionAppendCompletenessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 901,
+   "line": 844,
    "providers": [
     {
      "name": "Reduction.reductionAppendCompletenessResidual_holds",
@@ -1916,7 +2310,7 @@
    "name": "reductionAppendPerfectCompletenessResidual",
    "fq_name": "Reduction.reductionAppendPerfectCompletenessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 920,
+   "line": 863,
    "providers": [
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_of_message",
@@ -2000,7 +2394,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "Verifier.appendSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 957,
+   "line": 900,
    "providers": [
     {
      "name": "Verifier.append_soundness_challenge_residual",
@@ -2055,7 +2449,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendKnowledgeSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 996,
+   "line": 927,
    "providers": [],
    "status": "open"
   },
@@ -2063,7 +2457,7 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "Verifier.appendRbrSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1020,
+   "line": 951,
    "providers": [
     {
      "name": "Verifier.appendRbrSoundnessResidual_of_message_collapse",
@@ -2105,7 +2499,7 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1059,
+   "line": 990,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_of_message_collapse",
@@ -2195,7 +2589,7 @@
    "name": "appendCompletenessResidual",
    "fq_name": "OracleReduction.appendCompletenessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1107,
+   "line": 1038,
    "providers": [
     {
      "name": "OracleReduction.appendCompletenessResidual_holds",
@@ -2234,7 +2628,7 @@
    "name": "appendPerfectCompletenessResidual",
    "fq_name": "OracleReduction.appendPerfectCompletenessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1128,
+   "line": 1059,
    "providers": [
     {
      "name": "OracleReduction.appendPerfectCompletenessResidual_holds",
@@ -2272,7 +2666,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "OracleVerifier.appendSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1154,
+   "line": 1085,
    "providers": [
     {
      "name": "OracleVerifier.appendSoundnessResidual_msg",
@@ -2349,7 +2743,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendKnowledgeSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1184,
+   "line": 1105,
    "providers": [
     {
      "name": "OracleVerifier.appendKnowledgeSoundnessResidual_of_plain",
@@ -2371,7 +2765,7 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1205,
+   "line": 1126,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrSoundnessResidual_msg_subsingleton",
@@ -2397,7 +2791,7 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 1227,
+   "line": 1148,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual_msg_subsingleton",
@@ -2424,19 +2818,39 @@
    "name": "appendRunRightResidual",
    "fq_name": "Prover.appendRunRightResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 4134,
+   "line": 3933,
    "providers": [
     {
      "name": "Prover.appendRunRightResidual_holds_msg",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 4160,
+     "line": 3959,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
       "hDir₂",
       "hn"
      ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "Prover.appendRunRightResidual_of_append_run",
+     "kind": "theorem",
+     "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
+     "line": 4041,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hRun"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "Prover.appendRunRightResidual_iff_append_run",
+     "kind": "theorem",
+     "file": "ArkLib/OracleReduction/Composition/Sequential/Append.lean",
+     "line": 4057,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
      "ambiguous_name_match": false
     },
     {
@@ -2847,7 +3261,7 @@
      "name": "Reduction.fiatShamir_hvzkTransferResidual_canonical",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/HVZKTransferReduction.lean",
-     "line": 315,
+     "line": 316,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hKernel"
@@ -2858,7 +3272,7 @@
      "name": "Reduction.fiatShamir_hvzkTransferResidual_canonical_of_perStateCoupling",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/HVZKTransferReduction.lean",
-     "line": 343,
+     "line": 344,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hCoupling"
@@ -3009,15 +3423,6 @@
      "name": "DuplexSpongeFS.Sponge316.lemma5_12_honest",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/HonestConsistency.lean",
-     "line": 1870,
-     "conditional_on_residuals": [],
-     "extra_explicit_binders": [],
-     "ambiguous_name_match": false
-    },
-    {
-     "name": "DuplexSpongeFS.Sponge316.lemma5_12_honest",
-     "kind": "theorem",
-     "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512Honest.lean",
      "line": 1870,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
@@ -4452,6 +4857,134 @@
    "reason": "name does not end in `Residual`"
   },
   {
+   "name": "threeHoleCrossResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourCrossTripleThreeHoleConsumer.threeHoleCrossResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourCrossTripleThreeHoleConsumer.lean",
+   "line": 112,
+   "reason": "result type is `UniqueEightCoreResidual family where source`, not `Prop`"
+  },
+  {
+   "name": "crossResidualHoles",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourFourHoleClasses.crossResidualHoles",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourFourHoleClasses.lean",
+   "line": 59,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualHoles",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.residualHoles",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.lean",
+   "line": 159,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualSourcePetal",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.residualSourcePetal",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.lean",
+   "line": 169,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualSecantPetalAgreement",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.residualSecantPetalAgreement",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.lean",
+   "line": 179,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualPetalCoordinateFiber",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.residualPetalCoordinateFiber",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.lean",
+   "line": 818,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualHoles",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSharedHolePrimitive.residualHoles",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSharedHolePrimitive.lean",
+   "line": 59,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "puncturedResidualDirection",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSyndromeDegeneracy.puncturedResidualDirection",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSyndromeDegeneracy.lean",
+   "line": 497,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "puncturedResidualBase",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSyndromeDegeneracy.puncturedResidualBase",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSyndromeDegeneracy.lean",
+   "line": 504,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualMissedEdgeClass",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourThreeHoleSaturation.residualMissedEdgeClass",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourThreeHoleSaturation.lean",
+   "line": 342,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "threeHoleExactCountResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourThreeHoleSaturation.threeHoleExactCountResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourThreeHoleSaturation.lean",
+   "line": 603,
+   "reason": "result type is `ThreeHoleExactCountResidual family`, not `Prop`"
+  },
+  {
+   "name": "residualSecantLine",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSignatures.residualSecantLine",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourUniqueCoreSignatures.lean",
+   "line": 338,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "regularOffResidualSecant",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSignatures.regularOffResidualSecant",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourUniqueCoreSignatures.lean",
+   "line": 345,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "lineResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeFactorization.lineResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterOverlapThreeFactorization.lean",
+   "line": 132,
+   "reason": "result type is `F[X]`, not `Prop`"
+  },
+  {
+   "name": "threeOfFourSixResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterSupportFourSafeLine.threeOfFourSixResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSupportFourSafeLine.lean",
+   "line": 609,
+   "reason": "result type is `Finset (Fin 16 → F)`, not `Prop`"
+  },
+  {
+   "name": "sixResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterSupportThreeSafeLine.sixResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterSupportThreeSafeLine.lean",
+   "line": 243,
+   "reason": "result type is `F[X]`, not `Prop`"
+  },
+  {
    "name": "residualNote",
    "fq_name": "ProximityGap.Frontier.IsolatedCountKelley.residualNote",
    "kind": "def",
@@ -4468,12 +5001,92 @@
    "reason": "name does not end in `Residual`"
   },
   {
+   "name": "chiSubfamilyResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung.chiSubfamilyResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean",
+   "line": 123,
+   "reason": "result type is `ℂ`, not `Prop`"
+  },
+  {
+   "name": "ChiSubfamilyResidualVanishesOff",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung.ChiSubfamilyResidualVanishesOff",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean",
+   "line": 128,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualNonzeroFreqs",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R234RankSumResidualMGFConsumer.residualNonzeroFreqs",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean",
+   "line": 41,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "ResidualNormalizedSqGridTail",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R234RankSumResidualMGFConsumer.ResidualNormalizedSqGridTail",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean",
+   "line": 49,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualOrbitCarrier",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.residualOrbitCarrier",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
+   "line": 48,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "QuotientResidualGridTail",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.QuotientResidualGridTail",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
+   "line": 55,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "RawResidualTailLeCosetScale",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.RawResidualTailLeCosetScale",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
+   "line": 62,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "ResidualQuarticWickAt",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R26ResidualL2CrossIdentity.ResidualQuarticWickAt",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26ResidualL2CrossIdentity.lean",
+   "line": 430,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "swapResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.R393FourFiberPrimitiveDecomposition.swapResidual",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R393FourFiberPrimitiveDecomposition.lean",
+   "line": 40,
+   "reason": "result type is `Equiv.Perm (Fin 4)`, not `Prop`"
+  },
+  {
    "name": "stallResidual",
    "fq_name": "ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean",
    "line": 211,
    "reason": "result type is `ℝ`, not `Prop`"
+  },
+  {
+   "name": "DisjointResidualSupports",
+   "fq_name": "ArkLib.ProximityGap.Frontier.SYZ33.DisjointResidualSupports",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SYZ33FinalTwoLemmas.lean",
+   "line": 130,
+   "reason": "name does not end in `Residual`"
   },
   {
    "name": "mcaLowerWitness_of_residuals",

@@ -6,7 +6,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 /-!
 # Interdisciplinary Candidate Hypotheses for the Proximity Gap
 
-This file formalizes 4 candidate bounds drawn from cross-disciplinary 
+This file formalizes 4 candidate bounds drawn from cross-disciplinary
 theoretical frameworks, aiming to bound the capacity limit of Reed-Solomon codes.
 -/
 
@@ -25,8 +25,8 @@ variable (U : Finset (Fin n → F))
 
 --------------------------------------------------------------------------------
 -- Hypothesis 1: Statistical Mechanics (Spin-Glass Phase Transition)
--- Inspired by the clustering phase transition in random CSPs (like XORSAT), 
--- if the bundle size exceeds the Johnson radius, the code words must "shatter" 
+-- Inspired by the clustering phase transition in random CSPs (like XORSAT),
+-- if the bundle size exceeds the Johnson radius, the code words must "shatter"
 -- into disconnected components separated by distance > 2.
 --------------------------------------------------------------------------------
 @[reducible] def ShatteredBundle (U : Finset (Fin n → F)) : Prop :=
@@ -40,7 +40,7 @@ def hyp_SpinGlass_shattering (e : ℕ) (center : Fin n → F)
 --------------------------------------------------------------------------------
 -- Hypothesis 2: Quantum Information (QLDPC Algebraic Adaptation)
 -- In QLDPC codes, low-weight stabilizers force errors to be highly degenerate.
--- Adapted here: The intersection of the supports of any large bundle of close codewords 
+-- Adapted here: The intersection of the supports of any large bundle of close codewords
 -- must be empty to prevent trivial decoding collapse.
 --------------------------------------------------------------------------------
 def hyp_QLDPC_degeneracy (e : ℕ) (center : Fin n → F)
@@ -51,7 +51,7 @@ def hyp_QLDPC_degeneracy (e : ℕ) (center : Fin n → F)
 --------------------------------------------------------------------------------
 -- Hypothesis 3: Algebraic Geometry (Hasse-Weil Polynomial Adaptation)
 -- The number of points on a curve over a finite field is bounded by the Hasse-Weil theorem.
--- Translated to RS codes: The number of codewords agreeing on exactly `t` coordinates 
+-- Translated to RS codes: The number of codewords agreeing on exactly `t` coordinates
 -- is polynomially bounded.
 --------------------------------------------------------------------------------
 def hyp_HasseWeil_agreement_bound (t : ℕ) (x : Fin n → F) : Prop :=
@@ -61,9 +61,9 @@ def hyp_HasseWeil_agreement_bound (t : ℕ) (x : Fin n → F) : Prop :=
 
 --------------------------------------------------------------------------------
 -- Hypothesis 4: Additive Combinatorics (Sum-Product Correlation Limits)
--- By the sum-product phenomenon over finite fields, highly correlated errors 
+-- By the sum-product phenomenon over finite fields, highly correlated errors
 -- cannot grow multiplicatively without escaping the code space.
--- If we take the pointwise product of two distinct words in the code, their weight 
+-- If we take the pointwise product of two distinct words in the code, their weight
 -- is bounded away from zero.
 --------------------------------------------------------------------------------
 def hyp_SumProduct_escape (u1 u2 : Fin n → F) (h1 : C H_matrix u1)

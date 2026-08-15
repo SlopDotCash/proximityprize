@@ -1,0 +1,16 @@
+G320 stdlib port of G246: rank structure CHECKED at both cells.
+  cell n=8 p=1009 m=126  [G246-cell (reproduction)]
+    rank_seed=3  rank_aug=4
+    pinned minor rows=(0, 1, 2, 4)  det=-285768
+    VERDICT: countermodel HOLDS (rank_aug > rank_seed: R_6^c not in degree-2 Krylov span)
+    (and the G246-pinned 4x4 minor is nonzero at this cell, as expected)
+    A5=20632
+    A6=-1792
+  cell n=10 p=2011 m=201  [G320-new-cell (extension)]
+    rank_seed=3  rank_aug=4
+    pinned minor rows=(0, 1, 2, 4)  det=0
+    VERDICT: countermodel HOLDS (rank_aug > rank_seed: R_6^c not in degree-2 Krylov span)
+    (and the G246-pinned 4x4 minor is 0 at this cell, but the rank check still holds;
+     a different 4-row subset would give a nonzero minor)
+    A5=95460
+    A6=79550

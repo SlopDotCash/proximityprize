@@ -1,3 +1,23 @@
+## [SYZ5-rate-quarter-channel-no-sharpen] the SYZ degenerate channel does NOT beat 43/96 at rate 1/4 (2026-07-10)
+
+Lane: SYZ degenerate-subset channel, porting the SYZ4 rate-1/2 ceiling (`11/32 − 2^-30`) to rate 1/4.
+
+VERDICT: the predicted rate-1/4 analogue at the channel infimum `(1−ρ)/(2−ρ) = 3/7 ≈ 0.4286` is
+UNATTAINABLE. That infimum is a continuous-`D` optimum (realized only at non-integer `D = 7/3`);
+with a whole number of degenerate subsets the floor is `min_{D∈ℕ} max(1/D,(1−ρ)(1−1/D)) = 1/2` at
+`ρ = 1/4` (both `D=2` and `D=3` give `1/2`). Since `1/2 > 43/96`, the channel produces at best a
+ceiling STRICTLY WEAKER than the current unconditional in-tree rate-1/4 ceiling
+`480946859/2^30 = 43/96 + 1/(3·2^30) ≈ 0.44792`
+(`_P1RateQuarterAdjacentExactPin.canonical_mcaDeltaStar_le_common_delta`).
+
+Structural cause (kernel `Frontier/_SYZ5RateQuarterChannelCeiling.lean`, axiom-clean, only propext):
+for `D=3` the rate-1/4 degree cap `4·core ≤ n` plus region disjointness `core+Σaⱼ ≤ n` alone force
+`Σ cⱼ ≥ 3n/2`, hence some complement `cⱼ ≥ n/2` (radius `≥ 1/2`) with NO budget needed
+(`rateQuarter_channel_D3_radius_ge_half`); `D≤2` gives the same from the ε*-budget
+(`rateQuarter_channel_D2_radius_ge_half`). This does NOT touch the `3/8` good-floor or CORE.
+Landed as a barrier, not a pin — no `mcaDeltaStar` ceiling claimed, precisely because the channel
+does not sharpen. Issue #466/#507. SYZ4 (rate-1/2) → SYZ5 (rate-1/4 no-go).
+
 ## [doorIV-per-level-factor-bad-rung-compensation] a super-sqrt-two rung requires strict residual product slack (2026-06-23, g55)
 
 Lane: door-(iv) Lane-3, continuing the finite per-level-factor localization after `[doorIV-per-level-factor-super-sqrt2-localization]`.
@@ -16827,3 +16847,138 @@ Probe: `scripts/probes/probe_466_w15_strip_uniform_pte.py` (exit 0).
 Analysis:
 `docs/kb/deltastar-466-lowprofile-strip-existence-uniform-2026-07-11.md`.
 LANE STATUS: W15 parts 1-7 complete; finishing round done.
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterScaleFinalConsumer.lean` and
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterOperationalBracket.lean`.
+
+## [466-G139-accident-quantization-consumer] modulus-four accidents collapse G136 tolerance to zero (2026-07-11)
+
+Lane: G139 rung-2 accident quantization, formalizer consumer.
+
+G136's production capstone reduced the rung-2 anchor to `#accidents <= 3`.  The fresh G139
+fiber analysis shows the remaining normalized accidents come in blocks of four after quotienting
+by the inversion symmetry `t ~ t^-1`: every regular inversion-fiber collision contributes
+`4c(c-1)`, and the distinguished `{1}` fiber contributes `4c^2`.  Therefore any concrete
+modulus-four theorem `4 | #accidents` sharpens the G136 tolerance to exact accident-freeness:
+
+```text
+q * E_2(mu_(2^30)) <= 3*q*(2^30)^2 + (2^30)^4   <=>   #accidents(mu_(2^30)) = 0.
+```
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G139AccidentQuantizationConsumer.lean`.
+
+Honest scope: the file formalizes the orbit-fiber arithmetic and calibrated consumer.  It does
+not prove the certified-prime divisibility or the squarefree/discriminant nondivisibility
+`P ∤ Disc(Q_(2^30))`; those remain the next G139 wall.  CORE remains OPEN.
+
+## [466-mobius-mann-connected-packet-no-go] uncentered partition cumulants amplify DC (2026-07-11)
+
+Lane: direct characteristic-`p` wraparound / connected-packet synthesis.
+
+The proposed ordinary Möbius inversion over position partitions does not produce a positive
+primitive-packet census.  If `M_m` counts ordered zero-sum `m`-words and
+
+```text
+M_m = sum_{pi partition [m]} product_{B in pi} K_|B|,
+```
+
+then at length four
+
+```text
+K_4 = M_4 - 3n^2 = primitive4 - 3n,
+primitive4 = M_4 - (3n^2 - 3n).
+```
+
+Exact witness: for `mu_8` in `F_257`, `primitive4=0` but `K_4=-24`.  Thus the connected
+coefficient is a signed inclusion-exclusion weight, not the ANT46/G136 packet cardinality.
+
+The production asymptotic is worse.  Substituting the uniform finite-field main term
+`M_m=n^m/q` makes `K_m/n^m` the Bernoulli(`1/q`) cumulant.  Exact rational arithmetic at
+`m=220`, `n=2^30`, `q=2^160` gives
+
+```text
+log2(|K_220| / DC) = 59.000000,
+log2(|K_220| / Wick) = 2501.247432,
+sign(K_220) = negative.
+```
+
+So uncentered partition Möbius inversion amplifies the DC bulk rather than removing it.
+Centering first returns the signed nonprincipal G133 anomaly, whose bound is the open wall.
+A viable Möbius-Mann calculus needs a positive canonical minimal-packet decomposition with
+controlled overlap; ordinary cumulants are not that object.
+
+Executable certificate:
+`scripts/probes/probe_466_mobius_mann_connected_packet.py`.
+Full synthesis:
+`docs/kb/deltastar-466-mobius-mann-connected-packet-no-go-2026-07-11.md`.
+CORE remains OPEN / ON-BGK.
+
+## [466-centered-cumulant-packet-no-go] centering first still gives signed partition cumulants (2026-07-11)
+
+Lane: direct characteristic-`p` packet/cumulant repair.
+
+After the uncentered Möbius-Mann packet route failed by amplifying the DC bulk, the natural repair
+was to subtract the uniform finite-field main term first and then apply the same ordinary
+partition-connected recurrence.  The repair is also not a positive packet census.  In the exact
+cell `μ_8 ⊂ F_41`, raw ordered zero-sum counts through depth four are
+
+```text
+M_1=0, M_2=8, M_3=0, M_4=200.
+```
+
+Centering gives
+
+```text
+M^c_1=-8/41, M^c_2=264/41, M^c_3=-512/41, M^c_4=4104/41,
+```
+
+and the ordinary fourth connected coefficient is
+
+```text
+K^c_4 = -87878392 / 2825761 < 0.
+```
+
+Therefore center-first partition connectedness is a signed Ursell/fluctuation transform, not a
+literal nonnegative packet-counting invariant.  A viable packet calculus must introduce a new
+positive canonical minimal-zero-sum packetization with controlled overlap; ordinary partition
+cumulants, centered or uncentered, are not that object.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G146CenteredCumulantPacketNoGo.lean`.
+Executable certificate:
+`scripts/probes/probe_466_centered_cumulant_packet_no_go.py`.
+CORE remains OPEN / ON-BGK.
+
+## [466-G206-weighted-kernel-injection-no-go] collision-free quotient support does not control late alignment (2026-07-11)
+
+Lane: direct characteristic-`p` weighted kernel-relation structure.
+
+For `W_G(t)=#{y in G : 2y-t in G}`, writing `u=(2y-t)/y` identifies its nonzero orbit-class
+weights with the fiber multiplicities of the quotient map
+
+```text
+phi_2 : u in G |-> (2-u)^n in F_p.
+```
+
+A collision is exactly the weighted relation `(2-u)/(2-v)=a in G`, equivalently
+`u-a*v=2*(1-a)`.  The strongest cheap structural case is injectivity of `phi_2`, when every
+class weight is `0` or `1` and the support has exactly `n` classes.
+
+Exact probes refute this as an alignment certificate:
+
+```text
+n=8,  p=113:  phi_2 injective, A5=-13128,       A6=-7240
+n=16, p=2593: phi_2 injective, A5=+24201296,    A6=-13779712
+n=32, p=3617: phi_2 injective, A5=-17378716512, A6=-132640776608
+```
+
+Thus even collision-free weighted-kernel support allows both `(-,-)` and `(+,-)` signs.  The
+remaining production input is the placement of this sparse support against both adjacent-rank
+profiles `R_5,R_6`, not the kernel collision count or support size.  This sharpens G205 by showing
+its sign no-go survives under maximal direct-kernel sparsity.
+
+Formal kernel:
+`ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G206WeightedKernelInjectionNoGo.lean`.
+Executable certificate:
+`scripts/probes/g206_weighted_kernel_injective_nogo.py`.
+CORE remains OPEN / ON-BGK.

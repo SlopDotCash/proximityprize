@@ -60,7 +60,7 @@ theorem not_DivWeightLe_zero_of_not_dvd_X (x₀ : F) (R : F[X][X][Y])
   exact dvd_trans h_div_one (one_dvd Polynomial.X)
 
 /-! # Positive Case: The Corrected Non-Monic Resummation Target
-While `DivWeightLe_zero` is mathematically false because `W𝒪` does not unconditionally divide `βHensel 0`, 
+While `DivWeightLe_zero` is mathematically false because `W𝒪` does not unconditionally divide `βHensel 0`,
 we can correctly clear the monic obstruction by universally multiplying the target by `W𝒪 H`.
 This provides the corrected base case for the weight induction.
 -/

@@ -28,10 +28,10 @@ namespace FiatShamirCollapse
 open scoped NNReal ProbabilityTheory
 open ProtocolSpec
 
-/-- **Issue #116 Resolution:** The Fiat-Shamir Collapse Kernel. 
-This theorem reduces the unproven residual to the State-Separation probability bounds 
+/-- **Issue #116 Resolution:** The Fiat-Shamir Collapse Kernel.
+This theorem reduces the unproven residual to the State-Separation probability bounds
 over the Random Oracle queries. -/
-theorem fiat_shamir_collapse_breakthrough 
+theorem fiat_shamir_collapse_breakthrough
     {ι : Type} {oSpec : OracleSpec ι}
     {StmtIn : Type} {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} {WitIn : Type}
     {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type} {WitOut : Type}

@@ -1561,7 +1561,7 @@ theorem anchored_of_E_pinv
         hbj.symm.trans (heq ▸ hb')
       have hq : sO = q := Sum.inr.inj (Sum.inr.inj (congrArg Sigma.fst hbeq))
       exact Or.inr (by rw [hcapseg, ← hc5, hq])
-  
+
 open DuplexSpongeFS.Paper in
 /-- **E_func arm.** A function violation among dedup entries is impossible in a non-anchored
 consistent log: the earlier entry caches the forward key, contradicting the freshness of the

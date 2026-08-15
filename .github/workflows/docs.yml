@@ -21,20 +21,39 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v7
 
+      - name: Reclaim runner disk for Lean artifacts
+        run: |
+          echo "Disk before cleanup:"
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          echo "Disk after cleanup:"
+          df -h /
+
       # --- Lean and Blueprint Build ---
-      - name: Cache Lean dependencies
-        uses: actions/cache@v6
+      - name: Restore Lean cache
+        id: lake-cache
+        uses: actions/cache/restore@v6
         with:
           path: ./.lake
-          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
+          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-lean-docs-
+            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-
+            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
+            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}-
+            ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
 
       - name: Build the project
         uses: leanprover/lean-action@v1.5.0
         with:
           lint: false
           use-github-cache: false
+
+      - name: Save Lean cache
+        if: always() && steps.lake-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ./.lake
+          key: ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
 
       - name: Build project documentation
         run: lake build ArkLib:docs
