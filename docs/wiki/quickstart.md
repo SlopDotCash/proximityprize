@@ -131,15 +131,6 @@ with lint disabled, so treat this as opt-in for now.
 If the task is specifically Lean warning cleanup, follow
 [`../skills/fix-lean-warnings.md`](../skills/fix-lean-warnings.md).
 
-To enforce a zero-warning budget under `ArkLib/Data/`, add the explicit strict check:
-
-```bash
-./scripts/validate.sh --strict-warnings
-```
-
-The repository currently has inherited linter warnings, so this is a cleanup/ratchet tool rather
-than a merge gate. Ordinary validation still treats every Lean error as a failure.
-
 ### Docstrings, blueprint, or website changes
 
 ```bash
