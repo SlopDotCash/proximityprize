@@ -14,6 +14,7 @@ namespace ArkLib.ProximityGap.Frontier.R332NoJohnsonLargeChar
 
 open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm
 open ArkLib.ProximityGap.Frontier.R330Depth3WickLargeChar
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.SubgroupGaussSumSixthMoment
 
 theorem no_johnson_scale_frequency_of_large_characteristic
@@ -26,13 +27,12 @@ theorem no_johnson_scale_frequency_of_large_characteristic
       (Fintype.card F : ℝ) ^ 2) [CharP F prime] :
     (Finset.univ.filter (fun b : F => (Fintype.card F : ℝ) ≤
       ‖eta ψ (Gset ζ (2 ^ k)) b‖ ^ 2)) = ∅ := by
-  apply no_johnson_scale_frequency_of_wick_lt hψ (Gset ζ (2 ^ k))
-    (by exact Fintype.card_pos) hscale
-  exact gaussianEnergyBound_three_of_characteristic_above_height
-    hψ hm hprim hhalfTurn hprime
+  exact no_johnson_scale_frequency_of_wick_lt hψ (Gset ζ (2 ^ k))
+    Fintype.card_pos
+    (gaussianEnergyBound_three_of_characteristic_above_height
+      hψ hm hprim hhalfTurn hprime)
+    hscale
 
 end ArkLib.ProximityGap.Frontier.R332NoJohnsonLargeChar
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R332NoJohnsonLargeChar
-    .no_johnson_scale_frequency_of_large_characteristic
+#print axioms ArkLib.ProximityGap.Frontier.R332NoJohnsonLargeChar.no_johnson_scale_frequency_of_large_characteristic
