@@ -1,0 +1,76 @@
+PROBE ONLY: exact small fields do not prove a production inequality.
+A=p*C12-n^2*C(n,r)C(n,r-1); rho2 is signed exact rho^2.
+gate columns test d5<=10.5 and d6<=12.5; decimals render Fractions.
+
+label          n     p index  2inG        A5/mean      rho2_5       d5   gate        A6/mean      rho2_6       d6   gate
+nested-8        8   193    24   -   +3.908801e-01   +0.091424  19.6819  -   +4.308833e-01   +0.070529  44.2999  -
+nested-16      16   193    12   -   +1.888390e-03   +0.233740   3.6238  Y   +6.525158e-04   +0.188485   4.6715  Y
+nested-32      32   193     6   -   -3.969104e-06   -0.075118   2.8941  Y   -5.403678e-07   -0.096898   3.3068  Y
+nested-64      64   193     3   -   +5.427075e-09   +0.024693   1.3596  Y   +8.595805e-11   +0.008897   1.4603  Y
+fermat-8        8    17     2   Y   -6.887755e-03   -0.814511  24.1616  -   -1.339286e-02   -0.894410  64.8571  -
+fermat-16      16   257    16   Y   -5.166272e-04   -0.000541  11.3046  -   -4.880175e-03   -0.225254  20.5046  -
+fermat-32      32   257     8   Y   +1.169606e-04   +0.761050   1.1500  Y   -1.092274e-06   -0.082557  10.4670  Y
+dense-8         8    41     5   -   +4.199617e-02   +0.727738   5.8818  Y   +9.494579e-02   +0.753387  10.7477  Y
+mid-8           8   233    29   -   +5.008291e-01   +0.075818  19.1851  -   +5.974171e-01   +0.074875  39.7788  -
+thin-8          8   409    51   -   +1.543208e+00   +0.165219  17.0643  -   +1.738839e+00   +0.148686  37.2512  -
+dense-16       16    97     6   -   -3.088246e-03   -0.245112   8.9443  Y   -1.575417e-03   -0.233526  11.3715  Y
+mid-16         16   401    25   -   -9.036664e-03   -0.066379  10.2318  Y   -6.051285e-03   -0.094977  14.0394  -
+thin-16        16  1009    63   -   -2.967284e-02   -0.049095  10.3431  Y   -2.201497e-02   -0.077745  14.0887  -
+dense-32       32    97     3   -   -1.603375e-06   -0.589693   3.3844  Y   -1.244117e-07   -0.578700   4.0548  Y
+mid-32         32   673    21   -   +1.483688e-04   +0.007557   7.2214  Y   +4.963921e-05   +0.013765   7.8252  Y
+thin-32        32  2017    63   -   +2.787679e-03   +0.159718   5.8984  Y   +5.426075e-04   +0.150935   6.0452  Y
+dense-64       64   257     4   Y   -3.815279e-07   -0.581864   3.6309  Y   -1.827855e-08   -0.588094   4.1016  Y
+mid-64         64  1601    25   -   +3.797900e-06   +0.006536   5.0050  Y   +3.182531e-07   +0.006845   5.2601  Y
+thin-64        64  6529   102   -   -1.495833e-04   -0.079597   7.6956  Y   -1.820786e-05   -0.070734   8.6422  Y
+
+ORBIT/ORDERING FALSIFICATION SUMMARY
+  nested-8      n= 8 p= 193: r5:local-/+=8/17,discord/concord=28/99,R=[0,86]; r6:local-/+=10/15,discord/concord=28/99,R=[0,42]
+  nested-16     n=16 p= 193: r5:local-/+=5/8,discord/concord=15/38,R=[40464,41689]; r6:local-/+=5/8,discord/concord=17/36,R=[180000,182091]
+  nested-32     n=32 p= 193: r5:local-/+=5/2,discord/concord=7/5,R=[37518931,37523909]; r6:local-/+=5/2,discord/concord=7/5,R=[945514611,945529649]
+  nested-64     n=64 p= 193: r5:local-/+=2/2,discord/concord=2/1,R=[25100643008,25100693131]; r6:local-/+=2/2,discord/concord=2/1,R=[2961880554048,2961880696008]
+  fermat-8      n= 8 p=  17: r5:local-/+=3/0,discord/concord=1/0,R=[216,236]; r6:local-/+=3/0,discord/concord=1/0,R=[80,96]
+  fermat-16     n=16 p= 257: r5:local-/+=9/8,discord/concord=31/38,R=[29888,32049]; r6:local-/+=11/6,discord/concord=45/24,R=[131920,137506]
+  fermat-32     n=32 p= 257: r5:local-/+=1/8,discord/concord=1/23,R=[28172530,28196992]; r6:local-/+=5/4,discord/concord=14/10,R=[710040256,710063330]
+  dense-8       n= 8 p=  41: r5:local-/+=2/4,discord/concord=0/9,R=[80,109]; r6:local-/+=2/4,discord/concord=0/9,R=[24,50]
+  mid-8         n= 8 p= 233: r5:local-/+=7/23,discord/concord=41/115,R=[0,86]; r6:local-/+=5/25,discord/concord=41/123,R=[0,42]
+  thin-8        n= 8 p= 409: r5:local-/+=5/47,discord/concord=49/291,R=[0,86]; r6:local-/+=5/47,discord/concord=48/277,R=[0,42]
+  dense-16      n=16 p=  97: r5:local-/+=5/2,discord/concord=9/3,R=[77856,83828]; r6:local-/+=5/2,discord/concord=9/3,R=[351024,364882]
+  mid-16        n=16 p= 401: r5:local-/+=18/8,discord/concord=119/59,R=[18465,21712]; r6:local-/+=18/8,discord/concord=124/54,R=[83723,93264]
+  thin-16       n=16 p=1009: r5:local-/+=40/24,discord/concord=561/173,R=[6819,10511]; r6:local-/+=41/23,discord/concord=567/167,R=[31673,40849]
+  dense-32      n=32 p=  97: r5:local-/+=3/1,discord/concord=2/1,R=[74653883,74658720]; r6:local-/+=3/1,discord/concord=2/1,R=[1881290834,1881300608]
+  mid-32        n=32 p= 673: r5:local-/+=8/14,discord/concord=52/70,R=[10587840,10877820]; r6:local-/+=7/15,discord/concord=48/74,R=[269958016,271857444]
+  thin-32       n=32 p=2017: r5:local-/+=29/35,discord/concord=423/646,R=[3530848,3662125]; r6:local-/+=30/34,discord/concord=424/645,R=[90139520,90816410]
+  dense-64      n=64 p= 257: r5:local-/+=5/0,discord/concord=5/1,R=[18849641152,18849975698]; r6:local-/+=5/0,discord/concord=5/1,R=[2224290073344,2224291963346]
+  mid-64        n=64 p=1601: r5:local-/+=11/15,discord/concord=109/137,R=[3024069760,3026581955]; r6:local-/+=11/15,discord/concord=110/136,R=[357035861184,357060116199]
+  thin-64       n=64 p=6529: r5:local-/+=65/38,discord/concord=1976/1083,R=[739431744,743215327]; r6:local-/+=61/42,discord/concord=1950/1109,R=[87513647104,87570984611]
+
+EXACT NO-GO / EXTREMAL WITNESSES
+  A_r>=0: negatives=19/38, nonnegative=19/38
+    negative nested-32 r=5: n=32,p=193,2inG=False, A=-29432000, A/mean=-91975/23172739072
+    negative nested-32 r=6: n=32,p=193,2inG=False, A=-100975808, A/mean=-1577747/2919765123072
+    negative fermat-8 r=5: n=8,p=17,2inG=True, A=-1728, A/mean=-27/3920
+    negative fermat-8 r=6: n=8,p=17,2inG=True, A=-1344, A/mean=-3/224
+  alignment-sign/gate quadrants: A+/gate+=13, A+/gate-=6, A-/gate+=13, A-/gate-=6
+  2inG (equivalently W(0)=n) does not fix sign: negative=7/8
+  production-shaped gate failures=12/38
+    fail nested-8 r=5: d=125000/6351, threshold=21/2
+    fail nested-8 r=6: d=38408/867, threshold=25/2
+    fail fermat-8 r=5: d=2392/99, threshold=21/2
+    fail fermat-8 r=6: d=454/7, threshold=25/2
+  strict comonotonicity: inversion witnesses=36/38
+    inversion nested-8 r=5: orbit#1/#3, W=1/0, R=27/42
+    inversion nested-8 r=6: orbit#1/#3, W=1/0, R=10/19
+    inversion nested-16 r=5: orbit#1/#3, W=3/2, R=41262/41323
+    inversion nested-16 r=6: orbit#1/#3, W=3/2, R=181305/181438
+  pointwise centered-product positivity: negative orbit present=38/38
+
+EXTREMA (exact fingerprints)
+  minimum: thin-16 r=5, n=16, p=1009, 2inG=False, A=-60388336, A/mean=-3774271/127196160, rho2=-14245121581441/290155515659802, d=143748400/13897939, gate_slack=4359919/27795878
+    nonzero-orbit W distribution=0:48,1:14,2:1
+  maximum: thin-8 r=6, n=8, p=409, 2inG=False, A=174496, A/mean=779/448, rho2=29735209/199987185, d=24176/649, gate_slack=-32127/1298
+    nonzero-orbit W distribution=0:43,1:8
+
+CHECKS
+  every cell: subgroup/primality, subset masses, W/R orbit masses, C12 direct=factorized, centered gate equivalence
+  p<=257 cells: complete R row, full orbit invariance, full dot=factorized
+  conclusion: finite reconnaissance only; no production extrapolation

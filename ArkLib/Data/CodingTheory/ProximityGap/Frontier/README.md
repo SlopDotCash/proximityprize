@@ -479,6 +479,27 @@ inner product.  Their exact masses are `n^2` and `C(n,r)C(n,r-1)`; subtracting t
 defines one centered alignment `A_r`, and both production gates are formal lower bounds on
 `A_5,A_6`.  The forced mean terms have 319 and 374 bits respectively.  The missing theorem is
 joint arithmetic alignment of the two actual rows.
+`_BGKC12CyclotomicHalfCapNoGo.lean` makes the literature connection exact: for `t != 0` in odd
+characteristic, `W_G(t)` is the plus-one intersection of the two dilates `(-2/t)G` and
+`(-1/t)G`.  The [Betsumiya--Hirasaka--Komatsu--Munemasa half-cap
+theorem](https://arxiv.org/abs/1109.6539) therefore applies at both production primes, whose
+characteristics satisfy `p > 3*n/2-1`.  Its conclusion still has the wrong information direction:
+an exact four-class witness obeys the half cap, mass, and complete marginal square-mass data while
+its cross alignment ranges from zero to the aligned value.  The exact 38-cell
+`probe_bgk_c12_alignment.py` audit is stronger evidence against a sign shortcut: `A_r<0` in
+19 cells, all four alignment-sign/gate quadrants occur, strict `W/R` comonotonicity fails in
+36 cells, and every cell has a negative pointwise centered product.  The production target is the
+relative gate `A_r >= A_required(C_11,C_22,Delta_r)`, not `A_r >= 0`; the probe makes no production
+extrapolation.
+`_BGKC12AdditiveSpectralBridge.lean` supplies the exact dual coordinate:
+`R_r(t)=sum_s a_r(t+s)a_(r-1)(s)`, `W_hat(b)=eta(2b)*conj(eta(b))`, and
+`R_hat(b)=e_r(b)*conj(e_(r-1)(b))`.  Consequently `A_r` is exactly the nonzero-frequency signed
+inner product `sum eta(2b)conj(eta(b))conj(e_r(b))e_(r-1)(b)`.  A two-frequency theorem shows that
+identical pointwise and total spectral magnitudes still permit opposite inner-product signs, so
+separate eigenvalue/norm estimates cannot close the gate.  `_BGKC12DilationOrbitCompression.lean`
+compresses both rows to multiplicative-orbit representatives, proves the zero-orbit dichotomy,
+and factors both `C_12` and `A_r` by `|G|`.  This yields exact divisibility and a quotient-level
+gate, but no sign: the missing datum is relative phase/placement on those representatives.
 `_BGKLateNewtonJohnsonBoundaryNoGo.lean` audits the tempting slice-spectral shortcut.  On each
 pointed subset fibre, forgetting the mark is rank one: the constant direction has eigenvalue equal
 to the fibre size and every zero-sum direction lies in its kernel.  The exact variance identity and

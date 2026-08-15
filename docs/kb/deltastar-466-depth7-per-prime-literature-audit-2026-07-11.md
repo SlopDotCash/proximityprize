@@ -727,6 +727,38 @@ at the exact production constants.  See the primary discussions of the Johnson/m
 in [Filmus--O'Donnell--Wu](https://arxiv.org/abs/1809.03546) and of weighted multilinear finite-
 field sums in [Kerr--Macourt](https://arxiv.org/abs/1901.00975).
 
+One cyclotomic theorem does apply sharply to the first row, but still cannot determine the joint
+correlation.  For nonzero `t`, `_BGKC12CyclotomicHalfCapNoGo.lean` proves exactly
+
+```text
+W_G(t)=#{z in (-2/t)G : z+1 in (-1/t)G}.
+```
+
+The production characteristics lie in the range `p>3*n/2-1`, so the pointwise
+`ceil(n/2)` cyclotomic-number bound of
+[Betsumiya--Hirasaka--Komatsu--Munemasa](https://arxiv.org/abs/1109.6539) is available.  A formal
+half-capped four-class witness nevertheless has either zero or maximal alignment under identical
+mass and marginal `L2` data.  Exact finite-field reconnaissance likewise refutes the more
+optimistic sign theorem: `A_r` is negative in 19 of 38 genuine `r=5,6` dyadic-subgroup cells,
+strict `W/R` comonotonicity fails in 36, and all four sign/gate quadrants occur.  The literature
+cap constrains concentration of `W_G`; it does not align `W_G` with `R_r`.
+
+Fourier diagonalization makes the precise literature mismatch visible.  The exact identity is
+
+```text
+A_r = sum_(b!=0) eta(2b)conj(eta(b))conj(e_r(b))e_(r-1)(b).
+```
+
+`_BGKC12AdditiveSpectralBridge.lean` proves this together with the physical convolution formula
+for `R_r`.  A formal magnitude-only witness changes the sign while preserving every separate
+square magnitude.  [Zhu--Wan](https://arxiv.org/abs/1101.0289) treats subset sums in a small-index
+or logarithmic-depth regime far from the production cell; the multilinear bounds of
+[Kerr--Macourt](https://arxiv.org/abs/1901.00975) and
+[Macourt--Petridis--Shkredov--Shparlinski](https://arxiv.org/abs/2003.03493) are absolute-value
+upper estimates rather than a lower bound for this signed relative phase.  Orbit compression
+reduces the sum to one term per multiplicative coset and proves `|G|`-divisibility of `A_r`, but
+does not alter that sign requirement.
+
 The formal Johnson audit pinpoints the mismatch with the first literature family.  Mark-forgetting
 on one pointed subset fibre is rank one, with the entire zero-sum mark space in its kernel; the
 exact `(1,-1)` witness defeats every finite pointed-energy bound based only on the unpointed

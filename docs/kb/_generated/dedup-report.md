@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6116 files, 67950 declarations
+- `ArkLib` — 6120 files, 68126 declarations
 
-## Same short-name across multiple files (2570 groups)
+## Same short-name across multiple files (2582 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -57,11 +57,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.WallBetaPlusOne.wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallBetaPlusOneLocalization.lean:53](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WallBetaPlusOneLocalization.lean#L53) — The Wick reference value `(2r−1)‼·n^r` as a real.
 - `def ArkLib.ProximityGap.Frontier.W5KStabilityTower.wick` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf7W5_kstability_tower.lean:68](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf7W5_kstability_tower.lean#L68) — The Wick / Gaussian value `Wick(n,r) = (2r−1)‼·n^r`, packaged with `dfac r = (2r−1)‼` as an abstract
 
-### `productionN` (22 declarations, 22 files)
+### `productionN` (23 declarations, 23 files)
 
 - `abbrev ArkLib.ProximityGap.Frontier.ANT46KappaProductionReduction.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ANT46KappaProductionReduction.lean:203](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ANT46KappaProductionReduction.lean#L203) — (no docstring)
 - `def ArkLib.ProximityGap.Frontier.ANT46ProjectedCharacterNoGo.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ANT46ProjectedCharacterNoGo.lean:239](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ANT46ProjectedCharacterNoGo.lean#L239) — (no docstring)
 - `def ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean:56](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean#L56) — Production subgroup order.
+- `def ArkLib.ProximityGap.Frontier.BGKC12CyclotomicHalfCapNoGo.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CyclotomicHalfCapNoGo.lean:98](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CyclotomicHalfCapNoGo.lean#L98) — Production subgroup order, repeated locally to keep this scratch lane olean-independent.
 - `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:320](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L320) — Production subgroup size, repeated locally for the two explicit gate statements.
 - `def ArkLib.ProximityGap.Frontier.BGKCenteredTrajectoryContraction.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCenteredTrajectoryContraction.lean:650](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCenteredTrajectoryContraction.lean#L650) — (no docstring)
 - `def ArkLib.ProximityGap.Frontier.BGKCyclotomicIntersectionIntegralityAudit.productionN` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean:291](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean#L291) — Production subgroup order.
@@ -593,6 +594,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.NoExcessOnset.energy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean:118](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean#L118) — The depth-`r` additive energy over the carrier reached by `ψ`: the collision count.
 - `def ProximityGap.SupBoundCapstone.energy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupBoundCapstone.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupBoundCapstone.lean#L33) — Per-prime char-`p` energy of `μ_n` = char-0 energy `E0` plus the wraparound surplus `W i` at the `i`
 
+### `fiberCount` (7 declarations, 7 files)
+
+- `def AveragingCrossover.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean#L85) — The fiber count over a target.
+- `def ArkLib.ProximityGap.FiberEnergyListBound.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean#L46) — The fibre of the census map `f` over a value `v`: `#{i ∈ S : f i = v}`.
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L151) — Number of points in a phase fibre.
+- `abbrev ArkLib.ProximityGap.Frontier.G112FiberCollisionVarianceIdentity.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean#L35) — Cardinality of the fiber of a finite map.
+- `def ArkLib.ProximityGap.Frontier.P1RateQuarterCrossConeBridge.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean#L95) — The fiber-count function of a map `ρ` on a point set `X` — the P1 swarm's arithmetic weight: `h(s) =
+- `def ArkLib.ProximityGap.WF2SignedWalkMoment.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean#L60) — The **fiber count**: the number of `r`-tuples from `S` summing to a fixed value `v`.
+- `def Round18Bracket.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L47) — The fiber count `m x = #{c : x ∈ A c}`.
+
 ### `incidenceSum` (7 declarations, 7 files)
 
 - `def ArkLib.ProximityGap.Frontier.R13HyperplaneSecondMoment.incidenceSum` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R13HyperplaneSecondMoment.lean:76](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R13HyperplaneSecondMoment.lean#L76) — **The signed incidence sum over a frequency set `H`.**  `I_H(s₀) = ∑_{b∈H} conj(η_b) ψ(b·s₀)`. For `
@@ -705,15 +716,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.SubgroupGaussSumMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean:36](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean#L36) — The energy fiber over `v : Fin 2 → F` (the tuples `w` with `∑ w = ∑ v`), as a finset.
 - `def Round25General.fiber` [ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean#L60) — The index fiber of `A` at `j`.
 - `def ArkLib.ProximityGap.Round5SecondMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeManyTargets.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeManyTargets.lean#L96) — The `target`-fiber `A_target = { S ∈ powersetCard a G : ∑_{x∈S} x = target }`, whose card is `subset
-
-### `fiberCount` (6 declarations, 6 files)
-
-- `def AveragingCrossover.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean#L85) — The fiber count over a target.
-- `def ArkLib.ProximityGap.FiberEnergyListBound.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean#L46) — The fibre of the census map `f` over a value `v`: `#{i ∈ S : f i = v}`.
-- `abbrev ArkLib.ProximityGap.Frontier.G112FiberCollisionVarianceIdentity.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean#L35) — Cardinality of the fiber of a finite map.
-- `def ArkLib.ProximityGap.Frontier.P1RateQuarterCrossConeBridge.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean#L95) — The fiber-count function of a map `ρ` on a point set `X` — the P1 swarm's arithmetic weight: `h(s) =
-- `def ArkLib.ProximityGap.WF2SignedWalkMoment.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean#L60) — The **fiber count**: the number of `r`-tuples from `S` summing to a fixed value `v`.
-- `def Round18Bracket.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L47) — The fiber count `m x = #{c : x ∈ A c}`.
 
 ### `gamma` (6 declarations, 6 files)
 
@@ -3835,6 +3837,18 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.Frontier.N32DensityGrows.prize_bound_holds` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_N32DensityGrows.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_N32DensityGrows.lean#L81) — **The prize bound still holds:** `A_K < Wick_K` at the same witness (ratio `≈ 0.930`).
 - `theorem ArkLib.ProximityGap.Frontier.WKSlackBudget.prize_bound_holds` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvWK_SlackBudget.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvWK_SlackBudget.lean#L112) — **The prize bound STILL holds:** `A_K ≤ Wick_K` (cleared of division: `A_num ≤ Wick·p`). The deficit
 
+### `productionP1` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionP1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean#L59) — First certified production prime.
+- `def ArkLib.ProximityGap.Frontier.BGKC12CyclotomicHalfCapNoGo.productionP1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CyclotomicHalfCapNoGo.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CyclotomicHalfCapNoGo.lean#L101) — First certified production prime, repeated as an integer for the applicability audit.
+- `def ArkLib.ProximityGap.Frontier.BGKCyclotomicIntersectionIntegralityAudit.productionP1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean:294](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean#L294) — First certified production prime.
+
+### `productionP2` (3 declarations, 3 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionP2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean:62](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean#L62) — Second certified production prime.
+- `def ArkLib.ProximityGap.Frontier.BGKC12CyclotomicHalfCapNoGo.productionP2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CyclotomicHalfCapNoGo.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CyclotomicHalfCapNoGo.lean#L104) — Second certified production prime.
+- `def ArkLib.ProximityGap.Frontier.BGKCyclotomicIntersectionIntegralityAudit.productionP2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean:297](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean#L297) — Second certified production prime.
+
 ### `rbrExtractionFailureEvent` (3 declarations, 3 files)
 
 - `def Binius.BinaryBasefold.CoreInteraction.rbrExtractionFailureEvent` [ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean:320](../../../ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean#L320) — **RBR Extraction Failure Event**: Generic predicate for round-by-round knowledge soundness. This cap
@@ -5251,6 +5265,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.AAPKernelCountermodel.A_num` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_AAPKernelCountermodel.lean:78](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_AAPKernelCountermodel.lean#L78) — `A_K = E_Fp − n^{2K}/p`, represented by its numerator over `p`: `A_num = E_Fp·p − n^{2K}`.
 - `def ArkLib.ProximityGap.Frontier.N32DensityGrows.A_num` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_N32DensityGrows.lean:72](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCP_N32DensityGrows.lean#L72) — `A_K = E_Fp − n^{2K}/p`, numerator `A_num = E_Fp·p − n^{2K}`.
 
+### `AdjacentSubsetPair` (2 declarations, 2 files)
+
+- `abbrev ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.AdjacentSubsetPair` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L104) — Adjacent subset source for the physical row `R_r`.
+- `abbrev ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.AdjacentSubsetPair` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:122](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L122) — The adjacent pair of subset indices occurring in `C12`.
+
 ### `AntipodalClosed` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Close07b.AntipodalClosed` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Close07b_DoublingInduction.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Close07b_DoublingInduction.lean#L104) — **Antipodal closure.** `A ⊆ ℤ/2nn` is *antipodal-closed* when `i` and its antipode `i + nn` (the ord
@@ -5700,6 +5719,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ProximityGap.CurveDec.MarkedCurveDecodable` [ArkLib/Data/CodingTheory/ProximityGap/CurveDecodability.lean:121](../../../ArkLib/Data/CodingTheory/ProximityGap/CurveDecodability.lean#L121) — **[Jo26] Definition 5.1: marked curve decodability.**  Same data, but quantified over an arbitrary *
 - `def ProximityGap.MarkedCurveDecodable` [ArkLib/Data/CodingTheory/ProximityGap/GG25MarkedCurve.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/GG25MarkedCurve.lean#L59) — **[Jo26] Definition 5.1 (marked curve decodability).** For every stack, every codeword-valued `f`, a
+
+### `MarkedPair` (2 declarations, 2 files)
+
+- `abbrev ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.MarkedPair` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:101](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L101) — Marked-pair source for the physical row `W_G`.
+- `abbrev ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.MarkedPair` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:119](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L119) — The two marked subgroup points occurring in `C12`.
 
 ### `MessageIdx` (2 declarations, 2 files)
 
@@ -6522,6 +6546,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem JohnsonBound.FamilyRefutation.c0_ne_c2` [ArkLib/Data/CodingTheory/JohnsonBound/FamilyRefutation.lean:40](../../../ArkLib/Data/CodingTheory/JohnsonBound/FamilyRefutation.lean#L40) — (no docstring)
 - `theorem JohnsonBound.JqlRefutation.c0_ne_c2` [ArkLib/Data/CodingTheory/JohnsonBound/FamilyRefutationComplete.lean:80](../../../ArkLib/Data/CodingTheory/JohnsonBound/FamilyRefutationComplete.lean#L80) — (no docstring)
+
+### `c12CenteredAlignment` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.c12CenteredAlignment` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:431](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L431) — The local copy of the denominator-cleared centered `C12` alignment.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.c12CenteredAlignment` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:272](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L272) — The unnormalized centered alignment between the cyclotomic translate row and the adjacent subset-cor
 
 ### `c1_ne_c2` (2 declarations, 2 files)
 
@@ -7518,6 +7547,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.B1WeilTransferVacuous.doubleFactorial_succ_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean:112](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvB1_WeilTransferVacuous.lean#L112) — The product form of the double factorial: `(2r−1)‼ = ∏_{j<r}(2j+1)`. We prove the non-truncating shi
 - `theorem ArkLib.ProximityGap.Frontier.CensusF115b.doubleFactorial_succ_eq_prod` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvCensusF115b.lean#L95) — `(2r−1)‼ = ∏_{j<r}(2j+1)` (shifted non-truncating form by induction, then specialize).
+
+### `doubledTranslateIntersection` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.doubledTranslateIntersection` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:198](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L198) — Literal shifted-intersection row `#{y in G : 2*y-t in G}`.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.doubledTranslateIntersection` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:203](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L203) — Literal shifted-intersection row `#{y in G : 2*y-t in G}`.
 
 ### `duplexSpongeTraceEntry` (2 declarations, 2 files)
 
@@ -9144,6 +9178,21 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ProximityGap.CurveDec.markedCurveDecodable_of_curveDecodable` [ArkLib/Data/CodingTheory/ProximityGap/CurveDecodability.lean:423](../../../ArkLib/Data/CodingTheory/ProximityGap/CurveDecodability.lean#L423) — **Original ⟹ marked ([Jo26] Lemma 5.4 / Theorem 5.5, substantive half), conditional on `FarWordSuppl
 - `theorem ProximityGap.markedCurveDecodable_of_curveDecodable` [ArkLib/Data/CodingTheory/ProximityGap/GG25MarkedEquivalence.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/GG25MarkedEquivalence.lean#L45) — **[Jo26] Theorem 5.5, original → marked.** For an additive code with `b ≤ a ≤ q`, [GG25] curve decod
 
+### `markedDifferenceMultiplicity` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.markedDifferenceMultiplicity` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:168](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L168) — The marked-difference row `W_G`.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.markedDifferenceMultiplicity` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:134](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L134) — Multiplicity of one marked difference.
+
+### `markedDifferenceMultiplicity_eq_doubledTranslateIntersection` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.markedDifferenceMultiplicity_eq_doubledTranslateIntersection` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:202](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L202) — The marked phase fibre is exactly the literal shifted-intersection row.
+- `theorem ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.markedDifferenceMultiplicity_eq_doubledTranslateIntersection` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:207](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L207) — The marked-difference multiplicity is exactly the shifted subgroup intersection row.
+
+### `markedDifferencePhase` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.markedDifferencePhase` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:107](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L107) — Marked difference phase `2*y-x`.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.markedDifferencePhase` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:125](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L125) — Marked-point difference `2*y-x`.
+
 ### `masterKStateCore` (2 declarations, 2 files)
 
 - `def Binius.BinaryBasefold.masterKStateCore` [ArkLib/ProofSystem/Binius/BinaryBasefold/Basic.lean:1706](../../../ArkLib/ProofSystem/Binius/BinaryBasefold/Basic.lean#L1706) — Before V's challenge of the `i-th` foldStep, we ignore the bad-folding-event of the `i-th` oracle if
@@ -9463,6 +9512,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.E2VanishWidthFourFullCount.negx_notMem` [ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean:104](../../../ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean#L104) — `−x ∉ {a, −a}` (the second insert obligation).
 - `theorem ArkLib.ProximityGap.E2VanishWidthFourLaw.negx_notMem` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2VanishWidthFourLaw.lean:93](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2VanishWidthFourLaw.lean#L93) — `-x ∉ {a, b}` (the second insert obligation).
+
+### `newtonJoinCollisionCount_one_two_eq_differenceCrossCollision` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.newtonJoinCollisionCount_one_two_eq_differenceCrossCollision` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:299](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L299) — Actual `C12` is the cross collision of the two separated physical rows.
+- `theorem ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.newtonJoinCollisionCount_one_two_eq_differenceCrossCollision` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:171](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L171) — **Exact variable-separation identity.**  The late favourable collision count is a cross collision be
+
+### `newton_collision_iff_difference_collision` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.newton_collision_iff_difference_collision` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:289](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L289) — The Newton collision equation is equality of the two separated difference phases.
+- `theorem ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.newton_collision_iff_difference_collision` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:155](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L155) — The original `U1/U2` collision equation is exactly equality of the two difference phases.
 
 ### `nnnorm_multiset_prod_le_ring` (2 declarations, 2 files)
 
@@ -10154,16 +10213,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.BGKSevenStepFlatteningProductionNoGo.productionInjectiveMass` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSevenStepFlatteningProductionNoGo.lean:118](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSevenStepFlatteningProductionNoGo.lean#L118) — Total mass of ordered injective seven-tuples.
 - `def ArkLib.ProximityGap.Frontier.BGKWickTrajectoryDefectBudget.productionInjectiveMass` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKWickTrajectoryDefectBudget.lean:58](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKWickTrajectoryDefectBudget.lean#L58) — Total mass of ordered injective seven-tuples.
 
-### `productionP1` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionP1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean:59](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean#L59) — First certified production prime.
-- `def ArkLib.ProximityGap.Frontier.BGKCyclotomicIntersectionIntegralityAudit.productionP1` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean:294](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean#L294) — First certified production prime.
-
-### `productionP2` (2 declarations, 2 files)
-
-- `def ArkLib.ProximityGap.Frontier.BGKActualJointPeriodLaw.productionP2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean:62](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean#L62) — Second certified production prime.
-- `def ArkLib.ProximityGap.Frontier.BGKCyclotomicIntersectionIntegralityAudit.productionP2` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean:297](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicIntersectionIntegralityAudit.lean#L297) — Second certified production prime.
-
 ### `productionSpike` (2 declarations, 2 files)
 
 - `def ArkLib.ProximityGap.Frontier.BGKLowerMomentOrbitSpikeNoGo.productionSpike` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKLowerMomentOrbitSpikeNoGo.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKLowerMomentOrbitSpikeNoGo.lean#L57) — The single exceptional squared-amplitude orbit in the countermodel.
@@ -10393,6 +10442,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def ArkLib.ProximityGap.Frontier.R17QuadCharInstance.realQuadChar` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R17QuadCharInstance.lean:30](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R17QuadCharInstance.lean#L30) — The real-valued quadratic character `a ↦ (quadraticChar F a : ℝ)`.
 - `def ArkLib.ProximityGap.Frontier.R51UnconditionalQuarticInput.realQuadChar` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R51UnconditionalQuarticInput.lean:49](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R51UnconditionalQuarticInput.lean#L49) — The concrete real-valued quadratic character.
+
+### `reassociateNewtonPairs` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.reassociateNewtonPairs` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:280](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L280) — Reassociate the two Newton joins into marked variables and adjacent subset variables.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.reassociateNewtonPairs` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:142](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L142) — The reassociation which separates marked variables from subset variables.
 
 ### `reduction_isHVZK` (2 declarations, 2 files)
 
@@ -11088,6 +11142,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Round8CompleteSquare.subgroup_mixed_sum_is_partial` [ArkLib/Data/CodingTheory/ProximityGap/MixedGaussSumCompleteSquare.lean:192](../../../ArkLib/Data/CodingTheory/ProximityGap/MixedGaussSumCompleteSquare.lean#L192) — **The subgroup mixed sum is a PARTIAL sum — the open delimiter.** The complete-the-square reduction
 - `theorem ArkLib.ProximityGap.Round8MixedGauss.subgroup_mixed_sum_is_partial` [ArkLib/Data/CodingTheory/ProximityGap/MixedGaussSumDiagonal.lean:206](../../../ArkLib/Data/CodingTheory/ProximityGap/MixedGaussSumDiagonal.lean#L206) — **The subgroup mixed sum is a PARTIAL Gauss sum — the open delimiter.** The collision count `M2` ove
+
+### `subsetDifferenceMultiplicity` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.subsetDifferenceMultiplicity` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:172](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L172) — The adjacent subset-difference row `R_r`.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.subsetDifferenceMultiplicity` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L138) — Multiplicity of one adjacent subset-sum difference.
+
+### `subsetDifferencePhase` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.subsetDifferencePhase` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:111](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L111) — Adjacent subset-sum difference phase.
+- `def ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.subsetDifferencePhase` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean:129](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12TranslateIntersectionReduction.lean#L129) — Difference of the two adjacent subset sums.
 
 ### `sum_basis_eval_mul_pow` (2 declarations, 2 files)
 
@@ -14385,7 +14449,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 852 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 851 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 

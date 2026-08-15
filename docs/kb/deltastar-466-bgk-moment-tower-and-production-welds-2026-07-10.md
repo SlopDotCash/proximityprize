@@ -813,6 +813,68 @@ gives exact centered forms of both production gates.  At `n=2^30`, the two force
 lie in `(2^318,2^319)` and `(2^373,2^374)` respectively; these sizes do not control the sign or
 placement of `A_5,A_6`.
 
+The strongest directly applicable cyclotomic-number cap still does not supply that placement.
+`_BGKC12CyclotomicHalfCapNoGo.lean` proves the exact change of variables
+
+```text
+W_G(t)
+ = #{z in (-2/t)G : z+1 in (-1/t)G},       t != 0,
+```
+
+in odd characteristic.  Hence the theorem of
+[Betsumiya--Hirasaka--Komatsu--Munemasa](https://arxiv.org/abs/1109.6539), which bounds every
+cyclotomic number by `ceil(n/2)` when `p>3*n/2-1`, is genuinely applicable at both certified
+production primes.  A formal four-class countermodel then grants exact mass, the half cap on every
+entry, and identical complete marginal square masses, yet changes the cross inner product from the
+aligned value to zero merely by moving the second row to the other two classes.  Thus even the
+published pointwise half cap is not a lower-alignment theorem.
+
+The exact `probe_bgk_c12_alignment.py` survey tests the stronger sign and rearrangement guesses on
+19 genuine dyadic subgroups, at both `r=5` and `r=6`.  Among the resulting 38 cells:
+
+```text
+A_r < 0                                      in 19/38,
+strict W/R comonotonicity fails              in 36/38,
+a negative pointwise centered product occurs in 38/38,
+the 10.5/12.5 dominant gate fails            in 12/38.
+```
+
+All four `(sign(A_r), gate pass/fail)` quadrants occur.  Even `2 in G`, equivalently
+`W_G(0)=n`, does not determine the sign.  Each cell verifies the direct and factorized `C_12`
+counts and the equivalent centered gate with exact integers.  These are falsification cells, not
+production extrapolation.  The surviving statement is relative and diagonal-dependent:
+`A_r >= A_required(C_11,C_22,Delta_r)`, or directly the prescribed upper bound on the centered
+`U_1-U_2` energy; absolute positivity of `A_r` is false.
+
+Two exact coordinate systems now isolate what a relative theorem must control.
+`_BGKC12AdditiveSpectralBridge.lean` proves
+
+```text
+R_r(t) = sum_s a_r(t+s)*a_(r-1)(s),
+W_hat(b) = eta(2b)*conj(eta(b)),
+R_hat(b) = e_r(b)*conj(e_(r-1)(b)),
+A_r = sum_(b!=0) eta(2b)conj(eta(b))conj(e_r(b))e_(r-1)(b).
+```
+
+The final line is an equality in `Complex` with right side the cast of the integer alignment.
+A formal two-frequency witness keeps every pointwise spectral square magnitude and total square
+mass fixed while changing the inner product from `+2` to `-2`.  Hence separate period bounds,
+eigenvalue envelopes, or absolute-value multilinear estimates cannot prove the signed lower gate;
+one needs a relative-phase theorem for these actual four factors.
+
+`_BGKC12DilationOrbitCompression.lean` gives the complementary quotient coordinate.  Both `W_G`
+and `R_r` are constant on multiplication by `G`.  For any exact nonzero-orbit transversal `T`,
+
+```text
+C_12 = |G| * ((if 2 in G then R_r(0) else 0) + sum_(c in T) W(c)R_r(c)),
+A_r  = |G| * A_r^orbit.
+```
+
+Thus both the actual cross count and its centered numerator are divisible by `|G|`, and every
+scaled production gate has an exact representative-level form.  When `2` is outside `G`, the
+zero orbit vanishes.  The probe's negative cells show why this is compression/integrality rather
+than positivity: the signed orbit bracket still requires a quantitative lower bound.
+
 The ordinary Johnson/slice spectrum is not that joint theorem.  In
 `_BGKLateNewtonJohnsonBoundaryNoGo.lean`, forgetting a mark on a fixed subset fibre is the rank-one
 up--down Gram map.  It obeys the exact variance identity

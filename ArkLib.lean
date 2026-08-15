@@ -1683,6 +1683,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._B2ExplainingCurveList
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._B6ConnectAll
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BCHKSTrilinearConditional
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKActualJointPeriodLaw
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKC12AdditiveSpectralBridge
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKC12CanonicalEmbeddingFloor
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKC12CyclotomicHalfCapNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKC12DilationOrbitCompression
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKC12TranslateIntersectionReduction
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BGKCenteredConvolutionCollapse
