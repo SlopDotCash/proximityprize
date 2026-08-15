@@ -80,8 +80,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDimensionDeficit
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterStepanovWeld_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterStepanovWeld_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The escape modulus over the prize prime -/

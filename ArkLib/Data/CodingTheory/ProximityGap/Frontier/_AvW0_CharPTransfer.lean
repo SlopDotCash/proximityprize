@@ -59,6 +59,7 @@ Issue #444.
 namespace ArkLib.ProximityGap.Frontier.AvW0
 
 open Nat
+open WickDomination
 
 /-- **No-Excess decomposition** (named in-tree fact): over `𝔽_p` the `r`-fold additive energy of
 `μ_n` splits as the char-0 energy plus the wraparound excess `W_r`. -/

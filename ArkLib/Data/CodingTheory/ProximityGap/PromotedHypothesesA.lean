@@ -1,5 +1,7 @@
 -- Formalization and Proofs/Refutations of Promoted Hypotheses (Group A)
 
+namespace ProximityGap.PromotedHypothesesA
+
 class Field (F : Type) where
   add : F → F → F
   zero : F
@@ -52,3 +54,4 @@ def H8_TranslationInvariance (dist : (ι → F) → (ι → F) → Nat) (c' : ι
 def H9_AffineShiftRadius (dist : (ι → F) → (ι → F) → Nat) : Prop :=
   ∃ w₁ w₂ : ι → F, ∀ z, ∃ t, dist (c z) (vector_add w₁ (vector_smul t w₂)) ≤ e - 1
 
+end ProximityGap.PromotedHypothesesA

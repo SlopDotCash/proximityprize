@@ -122,7 +122,7 @@ theorem ladder_m4 : 50 * (4 + 1).choose 2 < (gsSupport 32 2).card ∧ 32 ≤ 4 *
 `0,…,49`): at the Johnson-floor agreement `t = 8` with multiplicity `m = 4`, every finite list of
 lines-or-constants (`deg ≤ 1`) with `≥ 8` agreements has size `≤ 31`.  (The hypotheses are inhabited:
 `ladder_m4` + the injectivity of `Fin 50 → ZMod 53`.) -/
-instance : Fact (Nat.Prime 53) := ⟨by norm_num⟩
+instance primeFact_GSFullListBound_1 : Fact (Nat.Prime 53) := ⟨by norm_num⟩
 
 theorem ladder_m4_instance (w : Fin 50 → ZMod 53) (L : Finset (Polynomial (ZMod 53)))
     (hdeg : ∀ f ∈ L, f.natDegree ≤ 1)

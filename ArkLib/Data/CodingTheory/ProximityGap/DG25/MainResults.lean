@@ -31,7 +31,7 @@ variable {F : Type} [CommRing F] [Fintype F] [NoZeroDivisors F] [DecidableEq F]
 variable (MC : ModuleCode ι F A) [Nontrivial MC]
   (C : Set (Word A ι)) [Nonempty C] -- note: change to Nontrivial if needed
 
-instance : Nonempty MC := by exact instNonemptyOfInhabited
+instance moduleInstance_MainResults_1 : Nonempty MC := by exact instNonemptyOfInhabited
 
 -- instance : ∀ (κ : Type*) [Fintype κ] [DecidableEq κ], Nonempty (C ^⋈ κ) := by
 --   intro κ hκ hκ_dec

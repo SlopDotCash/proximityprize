@@ -69,8 +69,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ProximityGap.SharedFreshPencil
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterLayerCakeBudget_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterLayerCakeBudget_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-- Subtraction-free exact-diagonal Johnson rearranges to the sharp natural-number

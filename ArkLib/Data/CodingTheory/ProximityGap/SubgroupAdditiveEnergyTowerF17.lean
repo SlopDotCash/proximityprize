@@ -35,7 +35,7 @@ open ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 namespace ArkLib.ProximityGap.SubgroupAdditiveEnergyTowerF17
 
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+local instance localInstance_SubgroupAdditiveEnergyTowerF17_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- Order-2 subgroup `⟨16⟩ = {±1}`. -/
 def G2 : Finset (ZMod 17) := {1, 16}

@@ -21,7 +21,8 @@ This file supplies the structural **tightening** of that ceiling by a factor of 
 by the tuple positions: `borderedMatrix dom k (t ∘ σ) y = (borderedMatrix dom k t y).submatrix σ id`
 By `Matrix.det_permute`, permuting the rows scales the determinant by `Perm.sign σ` (a `±1` unit):
 
-  **`residual dom k (t ∘ σ) y = Perm.sign σ • residual dom k t y`**     (`residual_comp_perm`).
+  **`residual dom k (t ∘ σ) y = Perm.sign σ • residual dom k t y`**
+  (`residual_comp_perm_ratioImage`).
 
 The residual is therefore permutation-EQUIVARIANT (it picks up the sign), NOT invariant.  But the
 ratio `γ = − R₀ · R₁⁻¹` has the SAME sign appear in numerator and denominator, and the unit `±1`
@@ -86,7 +87,7 @@ theorem borderedMatrix_comp_perm (dom : Fin n ↪ F) (k : ℕ) (t : Fin (k + 1) 
 /-- **The residual is permutation-EQUIVARIANT in the tuple.** Permuting the tuple by `σ` scales the
 residual by the sign `Perm.sign σ` (a `±1` unit), since the residual is the determinant of the
 bordered matrix and permuting the tuple permutes its rows (`Matrix.det_permute`). -/
-theorem residual_comp_perm (dom : Fin n ↪ F) (k : ℕ) (t : Fin (k + 1) → Fin n)
+theorem residual_comp_perm_ratioImage (dom : Fin n ↪ F) (k : ℕ) (t : Fin (k + 1) → Fin n)
     (σ : Equiv.Perm (Fin (k + 1))) (y : Fin n → F) :
     residual dom k (t ∘ σ) y
       = ((Equiv.Perm.sign σ : ℤ) : F) * residual dom k t y := by
@@ -100,7 +101,8 @@ theorem residualRatio_comp_perm (dom : Fin n ↪ F) (k : ℕ) (u₀ u₁ : Fin n
     (t : Fin (k + 1) → Fin n) (σ : Equiv.Perm (Fin (k + 1))) :
     residualRatio dom k u₀ u₁ (t ∘ σ) = residualRatio dom k u₀ u₁ t := by
   unfold residualRatio
-  rw [residual_comp_perm dom k t σ u₀, residual_comp_perm dom k t σ u₁]
+  rw [residual_comp_perm_ratioImage dom k t σ u₀,
+    residual_comp_perm_ratioImage dom k t σ u₁]
   -- `s * R₀` and `(s * R₁)⁻¹`, with `s = ±1` the sign: the sign squares to `1` and cancels.
   rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
     simp [h, mul_inv, mul_comm, mul_left_comm, mul_assoc]
@@ -195,7 +197,7 @@ end ProximityGap.Ownership
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ProximityGap.Ownership.borderedMatrix_comp_perm
-#print axioms ProximityGap.Ownership.residual_comp_perm
+#print axioms ProximityGap.Ownership.residual_comp_perm_ratioImage
 #print axioms ProximityGap.Ownership.residualRatio_comp_perm
 #print axioms ProximityGap.Ownership.residualRatio_eq_orderEmb
 #print axioms ProximityGap.Ownership.ratioImage_subset_subsetImage

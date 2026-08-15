@@ -35,7 +35,7 @@ abbrev NormalCoordinate := Fin 7
 abbrev Edge := {e : Vertex × Vertex // e.1 < e.2}
 abbrev F := ZMod 59
 
-instance : Fact (Nat.Prime 59) := ⟨by norm_num⟩
+instance primeFact_HalfPredecessorRateQuarterAbstractCocircuitRefuted_1 : Fact (Nat.Prime 59) := ⟨by norm_num⟩
 
 /-- Left endpoints for the eight singleton shores followed by the 28
 lexicographically ordered two-vertex shores. -/

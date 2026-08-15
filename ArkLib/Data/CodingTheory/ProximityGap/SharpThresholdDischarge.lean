@@ -148,7 +148,7 @@ theorem not_dvd_collisionResultant_of_sq_lt {p : ℕ} [Fact p.Prime] {m r : ℕ}
 
 /-! ## THE PAYOFF: the μ = 6 literal-budget pin, unconditional -/
 
-local instance : Fact (Nat.Prime ArkLib.ProximityGap.Mu6ConditionalPin.P) :=
+local instance localInstance_SharpThresholdDischarge_1 : Fact (Nat.Prime ArkLib.ProximityGap.Mu6ConditionalPin.P) :=
   ⟨ArkLib.ProximityGap.Mu6ConditionalPin.prime_P⟩
 
 /-- **THE UNCONDITIONAL μ = 6 LITERAL-BUDGET PIN**: `δ* = 59/64` exactly at

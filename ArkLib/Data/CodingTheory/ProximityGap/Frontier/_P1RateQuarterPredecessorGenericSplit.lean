@@ -39,9 +39,9 @@ open P1RateQuarterScaleArithmetic
 open P1RateQuarterCommonFactorArithmetic
 open ArkLib.ProximityGap.MCAFloorFactorization
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
-local instance : NeZero k := ⟨by norm_num [k]⟩
+local instance localInstance_P1RateQuarterPredecessorGenericSplit_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterPredecessorGenericSplit_2 : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterPredecessorGenericSplit_3 : NeZero k := ⟨by norm_num [k]⟩
 
 /-- One lattice step below the common-factor bad construction. -/
 abbrev predecessorThreshold : ℕ := amplifiedThreshold + 1

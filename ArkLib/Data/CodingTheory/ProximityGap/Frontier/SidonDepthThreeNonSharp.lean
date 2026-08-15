@@ -27,7 +27,7 @@ open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy IsSidonSet)
 
 namespace ArkLib.ProximityGap.Frontier.SidonDepthThreeNonSharp
 
-local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+local instance localInstance_SidonDepthThreeNonSharp_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- The concrete two-point Sidon witness in `ZMod 5`. -/
 def twoPoint : Finset (ZMod 5) := {0, 1}

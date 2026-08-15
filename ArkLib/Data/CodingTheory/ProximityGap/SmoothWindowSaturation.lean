@@ -49,7 +49,7 @@ open ProximityGap.MCAThresholdLedger
 open ProximityGap.CensusConditionalPin
 open ProximityGap.CensusLowerBound
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_SmoothWindowSaturation_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 abbrev F17 := ZMod 17
 

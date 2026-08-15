@@ -8,7 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAGS
 open scoped NNReal
 
 namespace ArkLib.JohnsonBound
-def johnsonDenom (n d e : ℕ) : ℤ := (d : ℤ) * n - 2 * e * n
+def johnsonDenomInt (n d e : ℕ) : ℤ := (d : ℤ) * n - 2 * e * n
 end ArkLib.JohnsonBound
 
 def hwitAll_common_center_false_above_half_johnson : Prop :=
@@ -18,7 +18,8 @@ def hwitAll_common_center_false_above_half_johnson : Prop :=
       ((1 - Real.sqrt ((k:ℝ)/Fintype.card ι))/2 < (δ:ℝ)) ∧
       ((δ:ℝ) < 1 - Real.sqrt ((k:ℝ)/Fintype.card ι)) ∧
       ¬ (∃ x : ι, u 1 x ≠ 0 ∧ ∃ w : ι → F, ∃ e : ℕ,
-          0 < ArkLib.JohnsonBound.johnsonDenom (Fintype.card ι) (Fintype.card ι - k + 1) e ∧
+          0 < ArkLib.JohnsonBound.johnsonDenomInt
+            (Fintype.card ι) (Fintype.card ι - k + 1) e ∧
           ∀ γ : F, δᵣ(u 0 + γ • u 1, (ReedSolomon.code domain k : Set (ι → F))) ≤ δ →
             ∃ c ∈ (ReedSolomon.code domain k : Set (ι → F)),
               Δ₀(c, w) ≤ e ∧ c x = u 0 x + γ * u 1 x)

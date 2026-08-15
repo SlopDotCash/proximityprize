@@ -38,7 +38,7 @@ namespace ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorArithmetic
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleArithmetic
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCommonFactorArithmetic_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 
 abbrev d : ℕ := (m - 2) / 2
 abbrev amplifiedCore : ℕ := 8 * m + r + d

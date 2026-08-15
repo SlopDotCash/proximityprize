@@ -13,8 +13,11 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.R336DirectHeadroomExtraction
 
 open ArkLib.ProximityGap.Frontier.FS6AlmostAllPrimesWickRung
+open ArkLib.ProximityGap.Frontier.FS1Depth3AnnihilatorLedger
+open ArkLib.ProximityGap.Frontier.FS4Depth3PatternDecomposition
 open ArkLib.ProximityGap.Frontier.R335HeadroomPrimeDeployment
 
+open Classical in
 theorem exists_prime_with_strict_depth3_headroom
     {k s : ℕ} (hs : 0 < s)
     (P : Finset ℕ) (hP : ∀ p ∈ P, Nat.Prime p ∧ 2 ^ s ≤ p)
@@ -33,6 +36,4 @@ theorem exists_prime_with_strict_depth3_headroom
 
 end ArkLib.ProximityGap.Frontier.R336DirectHeadroomExtraction
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R336DirectHeadroomExtraction
-    .exists_prime_with_strict_depth3_headroom
+#print axioms ArkLib.ProximityGap.Frontier.R336DirectHeadroomExtraction.exists_prime_with_strict_depth3_headroom

@@ -74,8 +74,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterGlobalConsistencyCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterPencilHarvestCap_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterPencilHarvestCap_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The under-aligned harvest bound -/

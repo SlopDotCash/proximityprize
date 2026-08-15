@@ -280,7 +280,7 @@ theorem smallDistCollisions_card (h2 : (2 : F) ≠ 0) (G : Finset F) (a : ℕ) :
 /-! ## 6. Non-vacuity: the rigidity is realized; the diagonal is positive. -/
 
 /-- `13` is prime, so `ZMod 13` is a field. -/
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_CollisionRigidityThreeSwap_1 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- **Non-vacuity of `pair_rigidity`.** Over `ZMod 13` (`2 ≠ 0`), the pair `{1, 4}` is *uniquely*
 determined by its power sums `p₁ = 5`, `p₂ = 17 = 4`: no other unordered pair `{y₁,y₂}` with

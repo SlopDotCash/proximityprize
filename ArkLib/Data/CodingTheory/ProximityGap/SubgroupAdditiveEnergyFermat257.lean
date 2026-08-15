@@ -49,7 +49,7 @@ open ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 namespace ArkLib.ProximityGap.SubgroupAdditiveEnergyFermat257
 
-local instance : Fact (Nat.Prime 257) := ⟨by norm_num⟩
+local instance localInstance_SubgroupAdditiveEnergyFermat257_1 : Fact (Nat.Prime 257) := ⟨by norm_num⟩
 
 /-- Order-2 subgroup `{±1}` of `F₂₅₇^×`. -/
 def H2 : Finset (ZMod 257) := {1, 256}

@@ -35,7 +35,7 @@ namespace ProximityGap.PairRank
 
 open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership Code
 
-local instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+local instance localInstance_CubicSupplyDichotomy_1 : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-- `μ_6 = F₇^× ⊂ F₇` (the full multiplicative group, cyclic of order 6). -/
 def dom6vals : Fin 6 → ZMod 7 := ![1, 2, 3, 4, 5, 6]

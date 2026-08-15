@@ -51,8 +51,8 @@ open P1RateQuarterCanonicalCodeBridge
 open P1RateQuarterPredecessorGenericSplit
 open P1RateQuarterFourPencilExactPin
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterPredecessorResidualEquiv_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterPredecessorResidualEquiv_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 local notation "deltaPredecessor" =>

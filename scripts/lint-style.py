@@ -58,6 +58,26 @@ ERR_ADN = 25 # the string "Adaptation note"
 
 exceptions = []
 
+ERROR_CODES = {
+    "ERR_COP": ERR_COP,
+    "ERR_MOD": ERR_MOD,
+    "ERR_LIN": ERR_LIN,
+    "ERR_OPT": ERR_OPT,
+    "ERR_AUT": ERR_AUT,
+    "ERR_TAC": ERR_TAC,
+    "ERR_TAC2": ERR_TAC2,
+    "ERR_IBY": ERR_IBY,
+    "ERR_DOT": ERR_DOT,
+    "ERR_SEM": ERR_SEM,
+    "ERR_WIN": ERR_WIN,
+    "ERR_TWS": ERR_TWS,
+    "ERR_CLN": ERR_CLN,
+    "ERR_IND": ERR_IND,
+    "ERR_ARR": ERR_ARR,
+    "ERR_NSP": ERR_NSP,
+    "ERR_ADN": ERR_ADN,
+}
+
 SCRIPTS_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = SCRIPTS_DIR.parent
 
@@ -66,24 +86,10 @@ with SCRIPTS_DIR.joinpath("style-exceptions.txt").open(encoding="utf-8") as f:
     for exline in f:
         filename, _, _, _, _, errno, *extra = exline.split()
         path = ROOT_DIR / filename
-        if errno == "ERR_COP":
-            exceptions += [(ERR_COP, path, None)]
-        elif errno == "ERR_MOD":
-            exceptions += [(ERR_MOD, path, None)]
-        elif errno == "ERR_LIN":
-            exceptions += [(ERR_LIN, path, None)]
-        elif errno == "ERR_OPT":
-            exceptions += [(ERR_OPT, path, None)]
-        elif errno == "ERR_AUT":
-            exceptions += [(ERR_AUT, path, None)]
-        elif errno == "ERR_ADN":
-            exceptions += [(ERR_ADN, path, None)]
-        elif errno == "ERR_TAC":
-            exceptions += [(ERR_TAC, path, None)]
-        elif errno == "ERR_TAC2":
-            exceptions += [(ERR_TAC2, path, None)]
-        elif errno == "ERR_NUM_LIN":
+        if errno == "ERR_NUM_LIN":
             exceptions += [(ERR_NUM_LIN, path, extra[1])]
+        elif errno in ERROR_CODES:
+            exceptions += [(ERROR_CODES[errno], path, None)]
         else:
             print(f"Error: unexpected errno in style-exceptions.txt: {errno}")
             sys.exit(1)
@@ -440,7 +446,7 @@ def lint(path, fix=False):
             # Check for too long files: either longer than 1500 lines, or not covered by an exception.
             # Each exception contains a "watermark". If the file is longer than that, we also complain.
             if len(lines) > 1500:
-                ex = [e for e in exceptions if e[1] == path.resolve()]
+                ex = [e for e in exceptions if e[0] == ERR_NUM_LIN and e[1] == path.resolve()]
                 if ex:
                     (_ERR_NUM, _path, watermark) = list(ex)[0]
                     assert int(watermark) > 500 # protect against parse error

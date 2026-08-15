@@ -207,8 +207,8 @@ end Generic
 
 section P1
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero P := ⟨prime_P.ne_zero⟩
+local instance localInstance_FSME_BivariateJohnsonErrorFloor_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_FSME_BivariateJohnsonErrorFloor_2 : NeZero P := ⟨prime_P.ne_zero⟩
 
 /-- Over the literal P1 prize field, the error bound is exactly `2^63·10^7 / P`. -/
 theorem errorBound_eval_P1 (domain : Fin N ↪ F) :

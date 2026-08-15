@@ -300,7 +300,7 @@ theorem negSymm_bound_q_independent (h2 : (2 : F) ≠ 0) {H : Finset F}
 /-! ## 7. Non-vacuity: a concrete transversal with a genuinely large concentrated count. -/
 
 /-- `13` is prime, so `ZMod 13` is a field (needed for the concrete `negClosure` witness). -/
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_SubsetSumNegSymmConcentration_1 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- **Non-vacuity (the bound is genuine, not `0 ≤ …`).** Over `F = ZMod 13` (`13` prime, `(2:ZMod 13)
 ≠ 0`), take `H = {1, 2, 3}` — three nonzero elements no two of which are negatives of each other

@@ -29,7 +29,7 @@ open P1RateQuarterScaleArithmetic
 open P1RateQuarterScaleConstruction
 open P1RateQuarterScaleOperationalCountConnector
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterScaleFinalConsumer_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 /-- The concrete rate-quarter Reed--Solomon code as a set. -/

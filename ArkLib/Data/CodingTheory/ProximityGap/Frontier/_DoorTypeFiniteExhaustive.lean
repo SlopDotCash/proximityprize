@@ -45,12 +45,12 @@ open ArkLib.ProximityGap.Frontier.NoFifthDoorTetrachotomy
 
 /-- `DoorType.isClassical` is decidable: it is `True` on the three classical doors and `False` on
 `newEvaluation`, so the classical/live split is computable (needed for the `Finset.filter`s below). -/
-instance : DecidablePred (fun d : DoorType => d.isClassical) := fun d => by
+instance moduleInstance_DoorTypeFiniteExhaustive_1 : DecidablePred (fun d : DoorType => d.isClassical) := fun d => by
   cases d <;> unfold DoorType.isClassical <;> infer_instance
 
 /-- `DoorType` is a finite type: the four-door enumeration is total.  Derived from the explicit
 universe list, this is the kernel witness that there is no fifth constructor. -/
-instance : Fintype DoorType where
+instance moduleInstance_DoorTypeFiniteExhaustive_2 : Fintype DoorType where
   elems := {DoorType.moment, DoorType.completion, DoorType.extremeValue, DoorType.newEvaluation}
   complete := by intro d; cases d <;> decide
 

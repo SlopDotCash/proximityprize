@@ -72,7 +72,7 @@ end PowEmb
 
 section InstanceF12289
 
-instance : Fact (Nat.Prime 12289) := ⟨by norm_num⟩
+instance primeFact_RungInstanceF12289_1 : Fact (Nat.Prime 12289) := ⟨by norm_num⟩
 
 /-- `4134⁸ = −1` in `ZMod 12289` (fast route: the congruence is checked on
 `ℕ` where the kernel computes with binary arithmetic). -/

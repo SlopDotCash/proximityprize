@@ -28,7 +28,7 @@ open Finset Polynomial
 open _root_.ProximityGap Code
 open scoped NNReal Polynomial
 
-namespace ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+namespace ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open P1RateQuarterScaleArithmetic
@@ -37,7 +37,7 @@ open P1RateQuarterCommonFactorArithmetic
 open P1RateQuarterCommonFactorConstruction
 open HalfPredecessorCoreFreshDecode
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSaturatedConstruction_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 local notation "δsat" => P1RateQuarterCommonFactorArithmetic.delta
@@ -288,10 +288,10 @@ theorem amplifiedCoreSet_size_condition (i : Fin 3) :
       (1 - δsat) * (Fintype.card Coord : ℝ≥0) := by
   rw [amplifiedCoreSet_card, card_coord, agreement_mass_eq_amplifiedThreshold]
 
-end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 
 /-! ## Axiom audit -/
 
-open ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+open ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 #print axioms amplifiedCoreSet_card
 #print axioms amplifiedCoreSet_size_condition

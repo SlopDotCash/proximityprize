@@ -72,8 +72,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDimensionDeficit
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterDyadicDomainEscape_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterDyadicDomainEscape_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The domain's multiplicative substructure is purely dyadic -/

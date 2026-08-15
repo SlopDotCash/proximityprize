@@ -28,7 +28,7 @@ namespace ArkLib.ProximityGap.Frontier.P1RateQuarterScaleOperationalCountConnect
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open P1RateQuarterScaleArithmetic
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterScaleOperationalCountConnector_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 variable {I : Type} [Fintype I] [Nonempty I]

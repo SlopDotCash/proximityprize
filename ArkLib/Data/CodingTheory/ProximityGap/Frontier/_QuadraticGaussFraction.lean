@@ -80,7 +80,7 @@ variable (F : Type*) [Field F] [Fintype F]
 
 /-- The group of `ℂ`-valued multiplicative characters of a finite field is cyclic: it is
 (noncanonically) isomorphic to the cyclic unit group `Fˣ`. -/
-instance : IsCyclic (MulChar F ℂ) :=
+instance moduleInstance_QuadraticGaussFraction_1 : IsCyclic (MulChar F ℂ) :=
   isCyclic_of_surjective _ (MulChar.mulEquiv_units F ℂ).some.symm.surjective
 
 /-- The number of multiplicative characters `ψ : MulChar F ℂ` with `ψ² = 1` equals

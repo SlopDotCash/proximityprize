@@ -212,7 +212,7 @@ theorem kkh26_deltaStar_pin_lowdegree
     (ENNReal.inv_ne_top.mpr (by exact_mod_cast hpne)) (by exact_mod_cast hbud_lt)
 
 /-- Statement-level primality so `ZMod 4129` is a field in the type below. -/
-instance : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
+instance primeFact_KKH26DeltaStarPinAllWitness_1 : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
 
 /-- **A concrete, FULLY-DISCHARGED unconditional δ* pin — zero hypotheses.** Every side condition
 of `kkh26_deltaStar_pin_allWitness` is closed by `decide`/`norm_num` for the explicit Reed–Solomon

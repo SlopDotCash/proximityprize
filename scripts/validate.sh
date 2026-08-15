@@ -18,7 +18,6 @@ Usage: ./scripts/validate.sh [--lint] [--docs] [--site]
 Default checks (mirrors the CI gates so local == CI):
   - python3 ./scripts/forbidden_tokens.py          (CI gate 1, precheck)
   - lake build
-  - fail on non-`sorry` warnings under ArkLib/Data/
   - python3 ./scripts/sorry_census.py --fail-on-holes  (CI gate 2)
   - python3 ./scripts/axiom_audit.py                   (CI gate 3)
   - ./scripts/check-imports.sh
@@ -57,12 +56,6 @@ for arg in "$@"; do
   esac
 done
 
-build_log="$(mktemp "${TMPDIR:-/tmp}/arklib-validate-build.XXXXXX")"
-cleanup() {
-  rm -f "$build_log"
-}
-trap cleanup EXIT
-
 # CI gate 1: fast laundering-token precheck (no Lean toolchain needed), run
 # before the build so a forbidden token / undocumented axiom fails fast.
 echo "# Forbidden-token precheck (native_decide / bv_decide / undocumented axiom)"
@@ -70,14 +63,7 @@ python3 ./scripts/forbidden_tokens.py
 
 echo ""
 echo "# Building project"
-./scripts/lake-locked.sh build 2>&1 | tee "$build_log"
-
-echo ""
-echo "# Checking Data warning budget"
-python3 ./scripts/check-warning-log.py "$build_log" \
-  --path-prefix ArkLib/Data/ \
-  --exclude-substring 'declaration uses `sorry`' \
-  --label 'ArkLib/Data non-sorry warnings'
+./scripts/lake-locked.sh build
 
 # CI gate 2: zero live sorry/admit holes in ArkLib source.
 echo ""

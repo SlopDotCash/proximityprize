@@ -334,8 +334,8 @@ open ProximityGap.SharedFreshPencil
 open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleArithmetic
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorArithmetic
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterSharedFreshCoordinate_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSharedFreshCoordinate_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! Local mirrors of the predecessor definitions of
@@ -525,7 +525,7 @@ open ProximityGap.SharedFreshPencil
 
 abbrev F11 := ZMod 11
 
-local instance : Fact (Nat.Prime 11) := ⟨by decide⟩
+local instance localInstance_P1RateQuarterSharedFreshCoordinate_3 : Fact (Nat.Prime 11) := ⟨by decide⟩
 
 /-- The eight-point evaluation domain `0,…,7` in `F_11`. -/
 def domainValues : Fin 8 → F11 := ![0, 1, 2, 3, 4, 5, 6, 7]

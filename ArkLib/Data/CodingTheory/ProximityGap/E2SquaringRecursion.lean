@@ -168,7 +168,7 @@ theorem recursion_base_empty_doubles
 /-! ## 5. Non-vacuity: a concrete recursion instance over `μ_8 ⊆ F_q`. -/
 
 /-- `41` is prime (host field for a concrete `μ_8`; `8 ∣ 40`). -/
-instance : Fact (Nat.Prime 41) := ⟨by norm_num⟩
+instance primeFact_E2SquaringRecursion_1 : Fact (Nat.Prime 41) := ⟨by norm_num⟩
 
 /-- **Non-vacuity (concrete `ZMod 41`).** In `ZMod 41`, `9 = 3²` is a primitive 8-th root of unity
 (`μ_8`). Take singletons with bases `za = 9, zb = 40·9 = ...` — we just exhibit a concrete sign/root

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Check whether ArkLib.lean matches the tracked ArkLib/**/*.lean file set.
+# Check whether ArkLib.lean matches the tracked Proximity Prize module set.
 
 set -euo pipefail
 

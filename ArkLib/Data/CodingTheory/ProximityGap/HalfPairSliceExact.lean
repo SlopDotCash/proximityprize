@@ -49,7 +49,7 @@ namespace ProximityGap.HalfPairSliceExact
 open Polynomial Finset
 open ArkLib.ProximityGap.GeneralGapCensus
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_HalfPairSliceExact_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 abbrev F17 := ZMod 17
 

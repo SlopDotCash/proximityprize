@@ -51,7 +51,7 @@ variable {F : Type} [Field F]
 variable {p : ℕ} [hp : Fact p.Prime] [CharP F p]
 variable {n : ℕ} {dom : Fin n ↪ F}
 
-instance : NeZero p := ⟨hp.out.ne_zero⟩
+instance moduleInstance_FrobeniusSubfieldBlowup_1 : NeZero p := ⟨hp.out.ne_zero⟩
 
 /-- The canonical embedding `𝔽_p → F` in characteristic `p`. -/
 noncomputable abbrev fpCast : ZMod p →+* F := ZMod.castHom (dvd_refl p) F

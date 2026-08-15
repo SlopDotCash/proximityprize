@@ -40,7 +40,7 @@ open P1RateQuarterCommonFactorArithmetic
 open RateQuarterCommonFactorOwnershipAmplifier
 open HalfPredecessorRateQuarterOverlapThreeFactorization
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCommonFactorConstruction_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## Structural saturated selector -/

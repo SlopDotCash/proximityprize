@@ -36,7 +36,7 @@ open P1RateQuarterScaleArithmetic
 open HalfPredecessorRateQuarterMu16Locator
 open HalfPredecessorCoreFreshDecode
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterScaleConstruction_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 /-- Three private branches of size `r`, followed by the singleton affine hole. -/

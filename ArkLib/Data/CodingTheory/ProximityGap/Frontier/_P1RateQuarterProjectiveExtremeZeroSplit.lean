@@ -49,8 +49,8 @@ open P1RateQuarterPredecessorGenericSplit
 open P1RateQuarterProjectiveStructuredSplit
 open P1RateQuarterExtremeZeroJohnsonBand
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterProjectiveExtremeZeroSplit_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterProjectiveExtremeZeroSplit_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The unrounded two-tier budget -/

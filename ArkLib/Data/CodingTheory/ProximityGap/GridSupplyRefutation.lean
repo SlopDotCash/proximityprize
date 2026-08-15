@@ -49,9 +49,9 @@ namespace ProximityGap.Ownership
 
 open ProximityGap.SpikeFloor
 
-instance : Fact (Nat.Prime 41) := ⟨by decide⟩
+instance primeFact_GridSupplyRefutation_1 : Fact (Nat.Prime 41) := ⟨by decide⟩
 
-instance : NeZero (36 : ℕ) := ⟨by norm_num⟩
+instance moduleInstance_GridSupplyRefutation_1 : NeZero (36 : ℕ) := ⟨by norm_num⟩
 
 /-- The sheared `6 × 6` grid evaluation domain in `ZMod 41`: index `i = col + 6·row`
 maps to the abscissa `col + 7·row` (base-7 digits, hence injective). -/

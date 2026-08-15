@@ -25,7 +25,7 @@ Every hypothesis (including the energy `E = 270`) is discharged by `decide`; axi
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 101) := ⟨by norm_num⟩
+instance prime101FactMu10 : Fact (Nat.Prime 101) := ⟨by norm_num⟩
 
 /-- `μ_10 ⊆ F_101`, the 10th roots of unity `{1, 6, 14, 17, 36, 65, 84, 87, 95, 100}`
 (`6` is a primitive 10th root). -/

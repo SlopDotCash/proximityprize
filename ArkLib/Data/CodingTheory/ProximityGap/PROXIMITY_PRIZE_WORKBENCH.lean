@@ -60,7 +60,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterProjectiveEx
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterJointWitnessCharge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._RateQuarterSharedFreshCoordinateCounterexampleF11
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSharedFreshCoordinate
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSharedFreshTripleRefuted
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterCollinearMismatchCharge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterInterleavedCollapseNoGo
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SupportDividedDifferenceOperator
@@ -916,7 +915,7 @@ conjecture (same law, same beyond-Johnson placement), differing only in needing 
 supply (provable here; asymptotically the open core in the `n = 2³²` prize regime). -/
 
 /-- `4129` is prime (instance for `Field (ZMod 4129)`). -/
-instance : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
+instance primeFact_PROXIMITY_PRIZE_WORKBENCH_1 : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
 
 /-- `g = 2386` has order exactly `8 = 2³` in `F_4129ˣ`, so `⟨g⟩ = μ_8`
 (`g^4 = −1 ≠ 1`, `g^8 = 1`, by `orderOf_eq_prime_pow`). -/
@@ -1181,8 +1180,6 @@ theorem deltaStar_pin_mu8_F4129_witness :
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate.SharedFreshTripleFree
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate.badFamily_card_le_N_of_sharedFreshTripleFree
 #check ArkLib.ProximityGap.Frontier.SharedFreshRealizabilityF11.sharedFreshTriple_realizable
-#check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshTripleRefuted.sharedFresh_family_card
-#check ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshTripleRefuted.not_sharedFreshTripleFree
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterCollinearMismatchCharge.card_le_domain_of_collinear_witnesses
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterInterleavedCollapseNoGo.collapseNumerator_le_N_iff
 #check ArkLib.ProximityGap.Frontier.P1RateQuarterInterleavedCollapseNoGo.not_uniform_interleavedList_card_le_one

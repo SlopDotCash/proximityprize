@@ -51,7 +51,7 @@ namespace ArkLib.ProximityGap.Frontier.R25SubfamilyBoundedResidualNoGo
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R25SubfamilyBoundedResidualNoGo_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-- **The bounded-residual incidence bound for the coarse-power subfamily `Y = chiFamily (χ^d)`.**
 Given a uniform pointwise cap `T` on `‖T_{χ'}(s₀)‖` over the *whole* explicit family, the

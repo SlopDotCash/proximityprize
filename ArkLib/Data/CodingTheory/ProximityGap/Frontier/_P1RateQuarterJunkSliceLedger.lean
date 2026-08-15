@@ -71,8 +71,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilHarvestCap
 open ArkLib.ProximityGap.Frontier.P1RateQuarterFiberChebyshevRefinement
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterJunkSliceLedger_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterJunkSliceLedger_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The vote decomposition -/

@@ -27,7 +27,7 @@ difference lies in `A - A` (`Finset.sub_mem_sub`), so the resulting filter is th
 `A ×ˢ A`, of cardinality `|A| · |A| = |A|²`.
 -/
 
-namespace ArkLib.BSG
+namespace ArkLib.BSG.L1a
 
 open Finset
 open scoped Pointwise
@@ -57,4 +57,4 @@ theorem repCount_sum_eq_card_sq (A : Finset α) :
     exact Finset.sub_mem_sub hp.1 hp.2
   rw [hfilter, Finset.card_product, sq]
 
-end ArkLib.BSG
+end ArkLib.BSG.L1a

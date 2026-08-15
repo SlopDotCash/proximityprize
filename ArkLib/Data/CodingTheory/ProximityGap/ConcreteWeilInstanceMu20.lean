@@ -26,7 +26,7 @@ phenomenon: a *large* field makes `μ_n` exactly Sidon (`C=0`), a *small* one ma
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 41) := ⟨by norm_num⟩
+instance prime41FactMu20 : Fact (Nat.Prime 41) := ⟨by norm_num⟩
 
 /-- `μ_20 ⊆ F_41`, the 20th roots of unity (`⟨8⟩`). -/
 def mu20_F41 : Finset (ZMod 41) :=

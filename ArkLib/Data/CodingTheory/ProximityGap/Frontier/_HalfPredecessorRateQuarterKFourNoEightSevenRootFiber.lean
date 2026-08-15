@@ -1117,7 +1117,7 @@ theorem sourceSeven_outside_regularFiberCapped_or_missed_card_le_two
     refine ⟨T, ?_, regularRootFiber_card_le_three_of_noEight_source_seven
       family hn hthreshold residual hsource T⟩
     simp only [regularRootFiber, Finset.mem_filter, T]
-    exact ⟨hregular, rfl⟩
+    exact ⟨hregular, trivial⟩
   · exact Or.inr hsmall
 
 end ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourNoEightSevenRootFiber

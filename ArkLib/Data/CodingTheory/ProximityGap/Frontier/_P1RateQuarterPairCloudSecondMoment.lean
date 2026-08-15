@@ -72,8 +72,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilHarvestCap
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterPairCloudSecondMoment_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterPairCloudSecondMoment_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The incidence second moment: six near-full sets are impossible -/

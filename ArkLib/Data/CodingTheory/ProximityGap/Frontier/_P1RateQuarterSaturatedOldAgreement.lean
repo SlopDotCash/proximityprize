@@ -15,13 +15,13 @@ open Finset Polynomial
 open _root_.ProximityGap Code
 open scoped NNReal Polynomial
 
-namespace ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+namespace ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open P1RateQuarterScaleArithmetic
 open P1RateQuarterScaleConstruction
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSaturatedOldAgreement_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 /-- Kernel-cheap reconstruction of old-core agreement, isolated from the
@@ -54,7 +54,7 @@ theorem old_core_pair_agreement_fast (i : Fin 3) (e : Coord)
     · simp only [intercept, eval_mul, eval_X, u0, lineAt_transfer]
     · simp only [u1, lineAt_transfer]
 
-end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 
-open ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+open ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 #print axioms old_core_pair_agreement_fast

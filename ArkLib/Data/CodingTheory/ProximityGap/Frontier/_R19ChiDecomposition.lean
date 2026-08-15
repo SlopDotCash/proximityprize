@@ -66,7 +66,7 @@ local notation "conj'" => starRingEnd ℂ
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- `MulChar F ℂ` needs a (classical) `DecidableEq` for the explicit `Finset.image` family. -/
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R19ChiDecomposition_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-! ### (0) The explicit character family -/
 

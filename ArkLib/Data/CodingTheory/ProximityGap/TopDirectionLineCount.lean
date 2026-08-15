@@ -231,7 +231,7 @@ lemma loc_coeff_esymm (E : Finset F) {k : ℕ} (hk : k ≤ E.card) :
 
 section Witness
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_TopDirectionLineCount_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 open Classical in
 /-- **The fully formal O43-style witness**: over `F = ZMod 17` with window `D = 9`,
@@ -345,7 +345,7 @@ theorem zero_fiber_filter_eq [DecidableEq F] {N c w : ℕ}
   rw [← hcard] at hw hcw ⊢
   exact point_compat_iff_esymm_zero hw hc hcw
 
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_TopDirectionLineCount_2 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- Kernel-checked non-vacuity: the zero fiber over `ZMod 13` at `w = 3, c = 2` has
 exactly 4 supports — strictly above the `C(13,3)/13² ≈ 1.69` pigeonhole average. The

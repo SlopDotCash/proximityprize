@@ -21,7 +21,7 @@ open ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 namespace ArkLib.ProximityGap.SubgroupAdditiveEnergyFermat257
 
-instance : Fact (Nat.Prime 257) := ⟨by norm_num⟩
+instance primeFact_Fermat257EnergyCrossover_1 : Fact (Nat.Prime 257) := ⟨by norm_num⟩
 
 /-- **The char-0 energy-bound crossover at `μ_8 ⊂ F_257`.**  `μ_8` realizes the Sidon-mod-neg
 energy `E = 3·8² − 3·8 = 168` and satisfies the char-0 bound `E ≤ 3·|μ_8|²`, while the next

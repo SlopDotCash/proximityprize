@@ -129,7 +129,7 @@ def IsDegenerate (z : (F × F) × (F × F)) : Prop :=
   (z.1.1 = z.2.1 ∧ z.1.2 = z.2.2) ∨ (z.1.1 = z.2.2 ∧ z.1.2 = z.2.1)
     ∨ (z.1.1 = z.1.2 ∧ z.2.1 = z.2.2)
 
-instance : DecidablePred (IsDegenerate (F := F)) := fun z => by
+instance moduleInstance_R18FourthMomentTwist_1 : DecidablePred (IsDegenerate (F := F)) := fun z => by
   unfold IsDegenerate; infer_instance
 
 /-- **THE NAMED OPEN INPUT (Weil/Hasse for genus ≤ 1; absent from Mathlib, docstring (b))**:

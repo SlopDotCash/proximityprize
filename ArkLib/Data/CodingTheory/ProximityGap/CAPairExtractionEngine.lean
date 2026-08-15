@@ -208,7 +208,7 @@ theorem bad_card_le_choose (C : Finset (ι → F)) (hC : PairClosed C) (f₁ f�
 /-! ## Non-vacuity -/
 
 /-- `5` is prime (for the `ZMod 5` field instance). -/
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_CAPairExtractionEngine_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- Non-vacuity of the closure hypothesis: the zero code over `ZMod 5` is `PairClosed`, so both
 theorems instantiate with concrete inhabitants. -/

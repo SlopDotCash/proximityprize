@@ -87,7 +87,7 @@ open ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge
 local instance primeFactP30 : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
   ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩
 
-local instance : NeZero ArkLib.ProximityGap.PrizeShapePrimeP30.P :=
+local instance localInstance_SYZ66BadCountBridge_1 : NeZero ArkLib.ProximityGap.PrizeShapePrimeP30.P :=
   ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.ne_zero⟩
 
 /-! ## 1. The strip witness threshold -/

@@ -46,7 +46,7 @@ namespace ProximityGap.PairRank
 
 open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership Code
 
-local instance : Fact (Nat.Prime 257) := ⟨by norm_num⟩
+local instance localInstance_CubicSupplyZeroNTT_1 : Fact (Nat.Prime 257) := ⟨by norm_num⟩
 
 /-- The 16 elements of the order-16 multiplicative subgroup `μ_16 ⊆ F₂₅₇^×`. -/
 def mu16vals : Fin 16 → ZMod 257 :=

@@ -43,7 +43,7 @@ open ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 namespace ArkLib.ProximityGap.SubgroupAdditiveEnergyFermat65537
 
-local instance : Fact (Nat.Prime 65537) := ⟨by norm_num⟩
+local instance localInstance_SubgroupAdditiveEnergyFermat65537_1 : Fact (Nat.Prime 65537) := ⟨by norm_num⟩
 
 /-- Order-8 subgroup of `F₆₅₅₃₇^×` (prize regime `|G| = 8 ≪ q = 65537`). -/
 def H8 : Finset (ZMod 65537) := {1, 16, 256, 4096, 61441, 65281, 65521, 65536}

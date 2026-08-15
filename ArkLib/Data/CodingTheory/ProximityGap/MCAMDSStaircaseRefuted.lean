@@ -51,7 +51,7 @@ open ProximityGap.MCAHalfDistanceStaircase (LinearStaircaseUpper)
 
 abbrev F19 := ZMod 19
 
-instance : Fact (Nat.Prime 19) := ⟨by decide⟩
+instance primeFact_MCAMDSStaircaseRefuted_1 : Fact (Nat.Prime 19) := ⟨by decide⟩
 
 /-- The smooth domain `μ₁₈ = F₁₉ˣ`, enumerated as powers of the generator 2. -/
 def dom : Fin 18 → F19 :=

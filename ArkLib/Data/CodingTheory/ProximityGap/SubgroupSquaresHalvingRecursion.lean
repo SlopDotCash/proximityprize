@@ -250,7 +250,7 @@ theorem pairSquares_value_sum_eq_zero {ζ : R} {m : ℕ} (hm2 : 2 ≤ m)
 /-! ## 7. Non-vacuity: the recursion identity is realized over a genuine smooth domain. -/
 
 /-- `5` is prime, so `ZMod 5` is a field hosting a smooth `2²`-subgroup (`n = 4 = 2·2`). -/
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_SubgroupSquaresHalvingRecursion_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- **Non-vacuity: a concrete order-`4` smooth subgroup whose squares are the order-`2` subgroup.**
 Over `F = ZMod 5`, `2` is a primitive `4`-th root of unity (`2¹=2, 2²=4, 2³=3, 2⁴=1`), so

@@ -243,7 +243,7 @@ section Labels
 
 variable {u' : ℕ} [NeZero u']
 
-instance : NeZero (3 * u') := ⟨by have := NeZero.ne u'; omega⟩
+instance moduleInstance_R302TraceFormulaPointCount_1 : NeZero (3 * u') := ⟨by have := NeZero.ne u'; omega⟩
 
 /-- The coset label: reduction `ℤ/3u' → ℤ/u'`.  Its fibers are exactly the
 `H = {0, u', 2u'}`-cosets, each of size 3. -/

@@ -30,7 +30,7 @@ Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 37) := ⟨by norm_num⟩
+instance prime37Fact : Fact (Nat.Prime 37) := ⟨by norm_num⟩
 
 /-- `μ_6 ⊆ F_37`, the 6th roots of unity. -/
 def mu6 : Finset (ZMod 37) := {1, 10, 11, 26, 27, 36}
@@ -42,7 +42,7 @@ theorem mu6_F37_gvRepBound : GVRepBound mu6 5 :=
     (by decide) (by decide) (by decide) (by decide) (by decide) (by decide)
     (by decide) (by decide) (by decide)
 
-instance : Fact (Nat.Prime 239) := ⟨by norm_num⟩
+instance prime239Fact : Fact (Nat.Prime 239) := ⟨by norm_num⟩
 
 /-- `μ_14 ⊆ F_239`, the 14th roots of unity. -/
 def mu14 : Finset (ZMod 239) :=

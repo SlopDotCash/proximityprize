@@ -131,7 +131,7 @@ def fingerprint : Fin 93 -> ZMod P := fun i => fingerprintNat i
 theorem fingerprint_injective : Function.Injective fingerprint := by
   decide
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_RateHalfBaseFingerprintTable_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 
 /-- Identifying the two chart coordinates with the table is sufficient to
 prove full projective separation of the 93 base directions. -/

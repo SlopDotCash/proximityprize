@@ -38,7 +38,7 @@ fiberwise-card identity `Finset.sum_card_fiberwise_eq_card_filter`.
 open Finset
 open scoped BigOperators Pointwise
 
-namespace ArkLib.BSG
+namespace ArkLib.BSG.L3
 
 variable {α : Type*} [AddCommGroup α] [DecidableEq α]
 
@@ -118,8 +118,8 @@ theorem popularGraph_edge_count_ge (A : Finset α) (θ : ℕ) :
   exact (Finset.sum_card_fiberwise_eq_card_filter (A ×ˢ A)
         {c ∈ A + A | θ ≤ #{p ∈ A ×ˢ A | p.1 + p.2 = c}} (fun p : α × α => p.1 + p.2)).symm
 
-end ArkLib.BSG
+end ArkLib.BSG.L3
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound)
-#print axioms ArkLib.BSG.popularGraph_card_eq_sum_popular_repCount
-#print axioms ArkLib.BSG.popularGraph_edge_count_ge
+#print axioms ArkLib.BSG.L3.popularGraph_card_eq_sum_popular_repCount
+#print axioms ArkLib.BSG.L3.popularGraph_edge_count_ge

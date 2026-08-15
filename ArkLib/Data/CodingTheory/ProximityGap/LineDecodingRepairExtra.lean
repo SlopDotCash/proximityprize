@@ -307,7 +307,7 @@ section Bridge
 open CodingTheory.LineDecodingRefutation
 
 /-- The in-tree refutation index `Fin 1` is a `Subsingleton`. -/
-instance : Subsingleton (Fin 1) := inferInstance
+instance moduleInstance_LineDecodingRepairExtra_1 : Subsingleton (Fin 1) := inferInstance
 
 /-- **The in-tree refutation's bad-scalar count is `≤ 1`** — re-derived as an instance of the
 general field-generic `mcaBadCount_zeroCode_le_one`. The in-tree `not_mcaEvent_both` is the

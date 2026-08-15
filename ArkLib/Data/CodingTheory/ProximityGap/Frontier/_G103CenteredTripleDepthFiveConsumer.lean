@@ -61,7 +61,7 @@ def tripleCount (S : Finset G) (a : G) : ℕ :=
 def IsDeg (t : G × G × G) : Prop :=
   t.1 + t.2.1 = 0 ∨ t.1 + t.2.2 = 0 ∨ t.2.1 + t.2.2 = 0
 
-instance : DecidablePred (IsDeg (G := G)) := fun t => by
+instance moduleInstance_G103CenteredTripleDepthFiveConsumer_1 : DecidablePred (IsDeg (G := G)) := fun t => by
   unfold IsDeg
   infer_instance
 

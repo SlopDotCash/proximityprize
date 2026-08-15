@@ -292,10 +292,10 @@ section Production
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket
 
-local instance : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
+local instance localInstance_SYZ2PredecessorCapRefutationCore_1 : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
   ⟨prime_P⟩
 
-local instance : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
+local instance localInstance_SYZ2PredecessorCapRefutationCore_2 : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
 
 /-- The degenerate subset: the initial segment of size `t = 553648129 = 2^30 − (31·2^24 − 1)`,
 which is `≥ k = 2^29`, so RS interpolation uniqueness holds on it. -/

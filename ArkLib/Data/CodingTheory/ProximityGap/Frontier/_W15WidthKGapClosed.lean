@@ -238,7 +238,7 @@ Probe certificate: `R = {0,1,2}` (so `e = X(X−1)(X−2)`), `W = {3,7,10}`
 (`e₁ = 3, e₂ = 2` match; `c* = e(3) = 6`), `D₀ = {4,5,6,8}`, `D₁ = {9,11,12,13}`,
 `i₀ = 14`, `i₁ = 15`; `u₀(15) = e(15) − c* = 10 − 6 = 4`. -/
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_W15WidthKGapClosed_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The standard 16-point domain in `F₁₇`. -/
 def dom17 : Fin 16 ↪ ZMod 17 where

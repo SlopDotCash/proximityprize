@@ -27,7 +27,7 @@ open ProximityGap Code ProximityGap.CensusLowerBound ProximityGap.SmoothLadderIn
 
 namespace ProximityGap.BoundaryExactEpsF37
 
-instance : Fact (Nat.Prime 37) := ⟨by norm_num⟩
+instance primeFact_BoundaryExactEpsF37_1 : Fact (Nat.Prime 37) := ⟨by norm_num⟩
 
 /-- **Exact boundary MCA value over `F_37`** (`n = 18`).  For `RS[F_37, μ_18, 14]`
 (`μ_18 = ⟨4⟩`, `orderOf 4 = 18`) at `δ = 1/9`, the boundary-band law gives `epsMCA = 18/37`. -/

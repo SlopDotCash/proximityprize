@@ -145,7 +145,7 @@ namespace P1
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open P1RateQuarterScaleArithmetic
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterBadLabelFamilyConnector_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 
 /-- The normalized mass of `N+2` labels is strictly larger than the prize
 error `2^-128`. -/

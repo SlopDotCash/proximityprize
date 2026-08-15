@@ -101,7 +101,7 @@ theorem branch_agreement_card_le {F : Type} [Field F] [DecidableEq F] {n : ℕ}
 
 /-! ## The concrete instance: `q = 101`, `n = 80`, `k = 2`, `m = 1` -/
 
-instance : Fact (Nat.Prime 101) := ⟨by decide⟩
+instance primeFact_TwoBranchSupplyCountermodel_1 : Fact (Nat.Prime 101) := ⟨by decide⟩
 
 /-- The field `F₁₀₁`. -/
 abbrev F101 : Type := ZMod 101

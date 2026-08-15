@@ -60,7 +60,7 @@ variable (c : SatCascade)
 /-- `budgetMet m ↔ D*(m) ≤ budget`. -/
 def budgetMet (m : ℕ) : Prop := c.Dstar m ≤ c.budget
 
-instance : DecidablePred (budgetMet c) := fun _ => Nat.decLe _ _
+instance moduleInstance_BridgeB03sat_1 : DecidablePred (budgetMet c) := fun _ => Nat.decLe _ _
 
 /-- The **binding depth** `m*`: the least over-determination depth meeting the budget. -/
 noncomputable def bindingDepth : ℕ := Nat.find c.bindingExists

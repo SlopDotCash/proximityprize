@@ -46,7 +46,7 @@ attribute [local instance] Classical.propDecidable
 
 abbrev F97 := ZMod 97
 
-local instance : Fact (Nat.Prime 97) := ⟨by decide⟩
+local instance localInstance_HalfPredecessorRateQuarterSmoothCounterexampleF97_1 : Fact (Nat.Prime 97) := ⟨by decide⟩
 
 /-- A generator of the order-`32` subgroup of `F_97^*`. -/
 def omega : F97 := 28

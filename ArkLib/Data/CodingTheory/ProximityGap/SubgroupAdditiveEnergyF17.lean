@@ -38,7 +38,7 @@ open ArkLib.ProximityGap.AdditiveEnergyRepBound
 namespace ArkLib.ProximityGap.SubgroupAdditiveEnergyF17
 
 /-- `17` is prime, so `ZMod 17` is a `Field` (required by `additiveEnergy`'s `[Field F]`). -/
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+local instance localInstance_SubgroupAdditiveEnergyF17_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The order-8 multiplicative subgroup of `F₁₇` (the 8-th roots of unity), the same explicit smooth
 instance used in `SubgroupRepCountFiniteFieldCounterexample`. -/

@@ -48,7 +48,7 @@ namespace ProximityGap.MCARSBoundaryArithmetic
 
 abbrev F101 := ZMod 101
 
-instance : Fact (Nat.Prime 101) := ⟨by decide⟩
+instance primeFact_MCARSBoundaryArithmetic_1 : Fact (Nat.Prime 101) := ⟨by decide⟩
 
 /-- The evaluation domain `(1, …, 8)`. -/
 def dom : Fin 8 ↪ F101 :=

@@ -199,7 +199,7 @@ theorem badSet_eq_empty (f g c c' : Fin n → F) (a : ℕ)
     exact mem_offSupp.mpr (mem_shared.mp hi).2
   omega
 
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_LinePairCooccurrenceBound_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- Non-vacuity: over `ZMod 5` with `n = 2`, `f = 0`, `g = (1,1)`, `c = (0,0)`, `c' = (0,1)`,
 `a = 1`: the bad set is nonempty (`γ = 0` agrees with both on coordinate 0) and the bound holds

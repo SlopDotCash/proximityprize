@@ -12,14 +12,15 @@ This directory contains various utility scripts for the ArkLib project.
   (`./scripts/lake-locked.sh build <targets>`)
 - **`build-project.sh`** - Compile-only helper (`lake build` via `lake-locked.sh`)
 - **`build_timing_report.sh`** - CI timing/report helper for clean builds, warm rebuilds, and the validation wrapper
-- **`update-lib.sh`** - Update ArkLib.lean with all imports from source files
-- **`check-imports.sh`** - Check if ArkLib.lean is up to date with all imports
+- **`update-lib.sh`** - Update ArkLib.lean with the standalone Proximity Prize import surface
+- **`check-imports.sh`** - Check if ArkLib.lean matches that import surface
 - **`check-warning-log.py`** - Fail on scoped warning classes found in a captured build log
 - **`check-docs-integrity.py`** - Check docs links and the `CLAUDE.md` symlink
 - **`proximity_prize_cleanroom_audit.py`** - Optional post-build clean-room audit for
   proximity-prize final declarations: checks blessed axioms and rejects residual or
   goal-equivalent `Prop` assumptions in active manifest targets
-- **`lint-style.py`** - Python-based style linting
+- **`lint-style.py`** - Python-based style linting with a maintained per-file exception baseline
+- **`update-style-exceptions.sh`** - Regenerate the Proximity Prize style exception baseline
 - **`lint-style.lean`** - Lean-based style linting
 - **`dedup_audit.py`** - Duplication / similarity audit across all Lean sources. Surfaces
   duplicate fully-qualified names, same-statement lemmas (identical or differing proofs),
@@ -88,11 +89,14 @@ python3 scripts/proximity_prize_cleanroom_audit.py --dry-run
 
 ### Update Library Imports
 ```bash
-# Update ArkLib.lean with all imports
+# Update ArkLib.lean with the standalone Proximity Prize imports
 ./scripts/update-lib.sh
 
 # Check if imports are up to date
 ./scripts/check-imports.sh
+
+# Refresh the scoped style baseline after intentionally accepting legacy findings
+./scripts/update-style-exceptions.sh
 ```
 
 ### Check Docs Integrity
@@ -131,7 +135,10 @@ baseline without rerunning that baseline in the same job. This supports
 - Some scripts may require specific Lean toolchain versions
 - `validate.sh` is the recommended local wrapper; use the lower-level scripts directly when you
   want to run or debug one piece in isolation
-- `validate.sh` mirrors the CI policy gates: forbidden-token precheck, full build, zero
-  non-`sorry` warning budget under `ArkLib/Data/**`, zero live proof holes, flagship axiom audit,
-  umbrella imports, docs integrity, and generated-KB checks
+- `validate.sh` mirrors the CI policy gates: forbidden-token precheck, full build, zero live proof
+  holes, flagship axiom audit, umbrella imports, docs integrity, and generated-KB checks. The
+  research corpus has a large legacy compiler-warning backlog; use `--lint` for the maintained
+  style baseline and `check-warning-log.py` for targeted warning-cleanup work.
+- In this standalone repository, `lint-style.sh` targets the Proximity Prize cone; unrelated
+  ArkLib sources are retained as substrate/history but are outside the maintained default target.
 - New `ArkLib/**/*.lean` files must be staged before `update-lib.sh` or `check-imports.sh`

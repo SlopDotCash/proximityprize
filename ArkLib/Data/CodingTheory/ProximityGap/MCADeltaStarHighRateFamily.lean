@@ -285,7 +285,7 @@ theorem mcaDeltaStar_rs_highRate_eq' (domain : ι ↪ F) (hn : 3 ≤ Fintype.car
 
 section Rung8
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_MCADeltaStarHighRateFamily_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The smooth order-8 subgroup of `F₁₇ˣ`: powers of `2`. -/
 def gdom8 : Fin 8 → ZMod 17 := ![1, 2, 4, 8, 16, 15, 13, 9]

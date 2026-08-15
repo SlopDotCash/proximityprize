@@ -98,8 +98,8 @@ theorem Hcm_irreducible : Irreducible Hcm := by
       rw [Polynomial.coeff_C_zero] at hc0
       exact IsUnit.of_mul_eq_one _ (by rw [mul_comm] at hc0; exact hc0)
 
-instance : Fact (Irreducible Hcm) := ⟨Hcm_irreducible⟩
-instance : Fact (0 < Hcm.natDegree) := ⟨Hcm_natDegree_pos⟩
+instance moduleInstance_Finding14Countermodel_1 : Fact (Irreducible Hcm) := ⟨Hcm_irreducible⟩
+instance moduleInstance_Finding14Countermodel_2 : Fact (0 < Hcm.natDegree) := ⟨Hcm_natDegree_pos⟩
 
 /-- `R = Z·Y² + Y + X` (outer `Y`, middle `X` the lift variable, inner `Z`):
 `R(0, Y, Z) = Z·Y² + Y = H·Y` (divisible by `H`, separable), and `Δ_X R = 1` supplies a

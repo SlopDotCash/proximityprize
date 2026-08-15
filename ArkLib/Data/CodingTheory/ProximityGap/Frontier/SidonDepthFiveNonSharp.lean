@@ -28,7 +28,7 @@ namespace ArkLib.ProximityGap.Frontier.SidonDepthFiveNonSharp
 
 open ArkLib.ProximityGap.Frontier.SidonDepthThreeNonSharp
 
-local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+local instance localInstance_SidonDepthFiveNonSharp_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- The depth-five relation energy of `{0,1} ⊂ ZMod 5` is `254`. -/
 theorem rEnergy_five_twoPoint : rEnergy twoPoint 5 = 254 := by decide

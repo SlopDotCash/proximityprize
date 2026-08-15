@@ -66,7 +66,7 @@ open ProximityGap.CensusConditionalPin
 open ProximityGap.CensusLowerBound
 open ProximityGap.CensusExtremalFloor
 
-instance : Fact (Nat.Prime 97) := ⟨by norm_num⟩
+instance primeFact_TakeoverCountermodel_1 : Fact (Nat.Prime 97) := ⟨by norm_num⟩
 
 /-- The base field `F₉₇` (`16 ∣ 96`, so `μ₁₆ ⊆ F₉₇ˣ`). -/
 abbrev F97 := ZMod 97

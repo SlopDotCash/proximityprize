@@ -86,8 +86,8 @@ theorem sum_le_sum_superlevel_caps {α : Type*} [DecidableEq α]
 
 /-! ## Specialization to the predecessor pencil partition -/
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterFiberLayerCake_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterFiberLayerCake_2 : NeZero N := ⟨by norm_num [N]⟩
 
 /-- The fiber over an image pencil is literally a family riding that pencil.  This
 packages the reconstruction repeated inside `fiber_card_le` as a reusable bridge. -/

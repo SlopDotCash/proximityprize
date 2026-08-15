@@ -34,7 +34,7 @@ namespace ArkLib.ProximityGap.Frontier.RateQuarterSharedFreshCoordinateCounterex
 abbrev F11 := ZMod 11
 abbrev I8 := Fin 8
 
-local instance : Fact (Nat.Prime 11) := ⟨by decide⟩
+local instance localInstance_RateQuarterSharedFreshCoordinateCounterexampleF11_1 : Fact (Nat.Prime 11) := ⟨by decide⟩
 
 /-- The eight distinct evaluation points `0,1,...,7` in `F_11`. -/
 def dom : I8 ↪ F11 := ⟨fun i ↦ (i : F11), by decide⟩

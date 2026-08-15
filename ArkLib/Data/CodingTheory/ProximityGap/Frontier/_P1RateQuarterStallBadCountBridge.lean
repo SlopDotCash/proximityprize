@@ -53,8 +53,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSmallPoolClosureDischarged
 open ArkLib.ProximityGap.MCAFloorFactorization
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterStallBadCountBridge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterStallBadCountBridge_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The Skolemization bridge: mcaEvent families are BadFamilyData -/

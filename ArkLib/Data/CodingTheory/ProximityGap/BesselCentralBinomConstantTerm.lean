@@ -145,7 +145,8 @@ product over the `d` coordinates is `1`.  Hence both the Bessel coefficient
 `besselCoeff d 0 = [x⁰] I₀(2√x)^d` and the Gaussian coefficient
 `gaussianCoeff d 0 = [x⁰] e^{d x²}` normalize to `1`.  This pins the base case of the
 even-moment recursion `E_r^{char0}(μ_n) = (2r)!·[x^r] I₀(2√x)^{n/2}`. -/
-theorem besselCoeff_zero (d : ℕ) : besselCoeff d 0 = 1 ∧ gaussianCoeff d 0 = 1 := by
+theorem besselCoeff_zero_and_gaussianCoeff_zero (d : ℕ) :
+    besselCoeff d 0 = 1 ∧ gaussianCoeff d 0 = 1 := by
   constructor
   · unfold besselCoeff
     rw [Finset.Nat.antidiagonalTuple_zero_right, Finset.sum_singleton]
@@ -182,7 +183,7 @@ terms (`besselCoeff_nonneg`); the witness tuple putting all mass on coordinate `
 coordinate-sum is `r`) and contributes a product of strictly positive factors `1/(mᵢ!)² > 0`.
 `Finset.sum_pos'` (nonnegativity + one strictly-positive member) upgrades the trivial
 `besselCoeff_nonneg` baseline to strict positivity whenever `d ≥ 1`. -/
-theorem besselCoeff_pos {d : ℕ} (hd : 0 < d) (r : ℕ) : 0 < besselCoeff d r := by
+theorem besselCoeff_pos_of_pos {d : ℕ} (hd : 0 < d) (r : ℕ) : 0 < besselCoeff d r := by
   unfold besselCoeff
   -- The witness tuple: all mass on coordinate ⟨0, hd⟩.
   set m₀ : Fin d → ℕ := fun i => if i = (⟨0, hd⟩ : Fin d) then r else 0 with hm₀
@@ -213,6 +214,6 @@ end ProximityGap.PrizeWorkbench
 #print axioms ProximityGap.PrizeWorkbench.one_div_sq_factorial_eq
 #print axioms ProximityGap.PrizeWorkbench.besselTerm_mul_eq_centralBinomTerm
 #print axioms ProximityGap.PrizeWorkbench.besselCoeff_eq_centralBinom_sum
-#print axioms ProximityGap.PrizeWorkbench.besselCoeff_zero
+#print axioms ProximityGap.PrizeWorkbench.besselCoeff_zero_and_gaussianCoeff_zero
 #print axioms ProximityGap.PrizeWorkbench.besselCoeff_nonneg
-#print axioms ProximityGap.PrizeWorkbench.besselCoeff_pos
+#print axioms ProximityGap.PrizeWorkbench.besselCoeff_pos_of_pos

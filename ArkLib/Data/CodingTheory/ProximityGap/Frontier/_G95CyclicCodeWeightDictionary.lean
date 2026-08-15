@@ -524,7 +524,7 @@ theorems then give exact non-vacuous outputs through the general machinery. -/
 
 section Teeth
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_G95CyclicCodeWeightDictionary_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- `μ₄ ⊂ F₁₇^×` as an explicit finset. -/
 def G17 : Finset (ZMod 17) := {1, 4, 13, 16}

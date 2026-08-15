@@ -35,7 +35,7 @@ open ArkLib.ProximityGap.SubgroupAdditiveEnergyFermat257
 
 namespace ArkLib.ProximityGap.SidonModNegValidationFermat257
 
-local instance : Fact (Nat.Prime 257) := ⟨by norm_num⟩
+local instance localInstance_SidonModNegValidationFermat257_1 : Fact (Nat.Prime 257) := ⟨by norm_num⟩
 
 /-- **The order-4 subgroup of `F₂₅₇` is Sidon-modulo-negation** (decided over `4⁴` quadruples). -/
 theorem sidonModNeg_H4 : SidonModNeg H4 := by

@@ -59,7 +59,7 @@ namespace WF407Conj41MunRefuted
 open TopLine Polynomial Finset
 open scoped Classical
 
-instance : Fact (Nat.Prime 73) := ⟨by norm_num⟩
+instance primeFact_WF407_Conj41IntendedFormMunRefuted_1 : Fact (Nat.Prime 73) := ⟨by norm_num⟩
 
 /-- The six witness supports: distinct weight-`6` subsets of the proper smooth subgroup
 `μ₃₆ ⊂ F₇₃^×` with `e₁ = e₂ = e₃ = 0`. Each is a union of three negation pairs of `μ₃₆`

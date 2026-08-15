@@ -475,7 +475,7 @@ theorem gs_decoder_pipeline [DecidableEq F] (k D m n : ℕ) (hD : 0 < D)
 
 /-! ### 8. (d) Concrete instances over `ZMod 5`, multiplicity `m = 2` -/
 
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_GSHasseMultiplicity_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 lemma gsSupport_card_four_two : (gsSupport 4 2).card = 10 := by
   rw [gsSupport_card]

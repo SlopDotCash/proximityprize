@@ -70,7 +70,7 @@ abbrev p : ℕ := 65537
 /-- The field `F_p = ZMod 65537`. -/
 abbrev Fp := ZMod p
 
-instance : Fact (Nat.Prime p) := ⟨by norm_num⟩
+instance primeFact_DeltaStarTableN16Fermat_1 : Fact (Nat.Prime p) := ⟨by norm_num⟩
 
 /-- The smooth evaluation domain `μ_16 = ⟨4⟩ ⊆ F_p^×`, enumerated as the successive powers
 `4^0, …, 4^15`.  `4` has multiplicative order `16` in `F_65537^×` (`4^8 = 65536 = −1 ≠ 1`,

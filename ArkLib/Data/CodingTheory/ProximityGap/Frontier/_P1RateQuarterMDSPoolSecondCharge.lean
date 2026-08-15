@@ -68,8 +68,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterGlobalConsistencyCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterMDSPoolSecondCharge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterMDSPoolSecondCharge_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The pool is universally bounded: `F ≤ N − T` -/

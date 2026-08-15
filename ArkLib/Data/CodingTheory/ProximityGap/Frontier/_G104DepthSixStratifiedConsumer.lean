@@ -67,7 +67,7 @@ def HasAntipodal (t : (G × G) × (G × G)) : Prop :=
   t.1.1 + t.1.2 = 0 ∨ t.1.1 + t.2.1 = 0 ∨ t.1.1 + t.2.2 = 0 ∨
     t.1.2 + t.2.1 = 0 ∨ t.1.2 + t.2.2 = 0 ∨ t.2.1 + t.2.2 = 0
 
-instance : DecidablePred (HasAntipodal (G := G)) := fun t => by
+instance moduleInstance_G104DepthSixStratifiedConsumer_1 : DecidablePred (HasAntipodal (G := G)) := fun t => by
   unfold HasAntipodal
   infer_instance
 
@@ -76,7 +76,7 @@ def HasZeroTriple (t : (G × G) × (G × G)) : Prop :=
   t.1.1 + t.1.2 + t.2.1 = 0 ∨ t.1.1 + t.1.2 + t.2.2 = 0 ∨
     t.1.1 + t.2.1 + t.2.2 = 0 ∨ t.1.2 + t.2.1 + t.2.2 = 0
 
-instance : DecidablePred (HasZeroTriple (G := G)) := fun t => by
+instance moduleInstance_G104DepthSixStratifiedConsumer_2 : DecidablePred (HasZeroTriple (G := G)) := fun t => by
   unfold HasZeroTriple
   infer_instance
 

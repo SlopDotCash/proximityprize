@@ -32,7 +32,7 @@ open Polynomial Polynomial.Bivariate BCIKS20AppendixA ProximityPrize.BCIKS20.Gam
 
 namespace BCIKS20.HenselNumerator.WeightWitness
 
-instance : Fact (Nat.Prime 3) := ⟨by norm_num⟩
+instance primeFact_P1MonicWeightRefutation_1 : Fact (Nat.Prime 3) := ⟨by norm_num⟩
 abbrev K := ZMod 3
 
 /-- Monic separable irreducible `H = Y² − 2` over `(ZMod 3)[X]`. -/

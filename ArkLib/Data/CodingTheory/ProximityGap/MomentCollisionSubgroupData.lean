@@ -93,7 +93,7 @@ theorem collisionCount_eq_of_image_card_eq (G : Finset F) (a : ℕ)
 
 /-! ## The verified data point: a real smooth domain. -/
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_MomentCollisionSubgroupData_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The order-`8` multiplicative subgroup `⟨2⟩ = {x : x⁸ = 1}` of `F₁₇` — a genuine smooth
 (power-of-two) FRI/STARK evaluation domain. -/

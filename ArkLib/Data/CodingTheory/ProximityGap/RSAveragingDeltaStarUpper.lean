@@ -268,7 +268,7 @@ has exactly `5` elements, hence is POSITIVE and STRICTLY EXCEEDS the averaging c
 namespace Concrete
 
 /-- `17` is prime, so `ZMod 17` is a field. -/
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_RSAveragingDeltaStarUpper_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The concrete field `ZMod 17`. -/
 abbrev K := ZMod 17
@@ -351,7 +351,7 @@ exactly and beaten by the budget comparison.) -/
 namespace ConcretePos
 
 /-- `11` is prime, so `ZMod 11` is a field. -/
-instance : Fact (Nat.Prime 11) := ⟨by norm_num⟩
+instance primeFact_RSAveragingDeltaStarUpper_2 : Fact (Nat.Prime 11) := ⟨by norm_num⟩
 
 /-- The concrete field `ZMod 11`. -/
 abbrev K := ZMod 11

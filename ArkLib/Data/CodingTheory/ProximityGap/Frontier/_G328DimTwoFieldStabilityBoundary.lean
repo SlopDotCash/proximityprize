@@ -38,7 +38,7 @@ def weightOneDatum : (_ : Finset ℕ) × Finset ℕ := ⟨{0}, {0}⟩
 /-- The signed datum `-1 - g + g^2`, of support weight three. -/
 def weightThreeDatum : (_ : Finset ℕ) × Finset ℕ := ⟨{0, 1, 2}, {2}⟩
 
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+local instance localInstance_G328DimTwoFieldStabilityBoundary_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The multiplicative order of `2` modulo `17` is eight. -/
 theorem orderOf_g17 : orderOf g17 = 8 := by

@@ -5,7 +5,7 @@ Edit the source of truth, not the output.
 | Path | What it is | Edit directly? | Source of truth / refresh path |
 | --- | --- | --- | --- |
 | `CLAUDE.md` | compatibility symlink | No | Edit `AGENTS.md` |
-| `ArkLib.lean` | generated umbrella imports | No | `./scripts/update-lib.sh` or `./scripts/check-imports.sh` |
+| `ArkLib.lean` | generated Proximity Prize umbrella imports | No | `./scripts/update-lib.sh` or `./scripts/check-imports.sh` |
 | `.lake/` | build artifacts and cache | No | `lake build`, `lake exe cache get` |
 | `blueprint/web/`, `blueprint/print/` | generated blueprint output | No | `leanblueprint web`, `leanblueprint pdf`, or `./scripts/build-web.sh` |
 | `blueprint/src/print.pdf` | generated blueprint PDF inside source tree | No | `leanblueprint pdf` |
@@ -18,7 +18,12 @@ Edit the source of truth, not the output.
 
 ## Important Notes
 
-- `./scripts/update-lib.sh` only uses tracked `ArkLib/**/*.lean` files and now fails fast if
-  untracked Lean files would be skipped.
+- `./scripts/update-lib.sh` imports the tracked modules under
+  `ArkLib/Data/CodingTheory/ProximityGap/` plus its root module. Their transitive imports retain
+  the required ArkLib substrate without making unrelated proof-system experiments default build
+  targets. Four explicitly documented performance-blocked frontier experiments (`_FSMA...`,
+  `_FSMC...`, `_P1RateQuarterSharedFreshTripleRefuted`, and
+  `_P1RateQuarterCommonFactorConcreteLocatorAttempt`) remain direct-check lanes rather than CI
+  umbrella imports. The script still fails fast if untracked Lean files would be skipped.
 - Generated site and blueprint output are for review and deployment, not authoring.
 - If a path looks derived, confirm its source of truth before editing it.

@@ -40,9 +40,9 @@ namespace ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorOneStepNoGo
 open P1RateQuarterScaleArithmetic
 open P1RateQuarterCommonFactorArithmetic
 
-local instance : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
+local instance localInstance_P1RateQuarterCommonFactorOneStepNoGo_1 : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
   ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterCommonFactorOneStepNoGo_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 section PrimitiveDirectionTax

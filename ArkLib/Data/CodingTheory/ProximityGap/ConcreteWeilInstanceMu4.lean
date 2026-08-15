@@ -24,7 +24,7 @@ energy) is discharged by `decide`; axiom-clean (`propext, Classical.choice, Quot
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance prime13FactMu4 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- `μ_4 ⊆ F_13`, the 4th roots of unity `{1, 5, 8, 12}` (`5` is a primitive 4th root). -/
 def mu4_F13 : Finset (ZMod 13) := {1, 5, 8, 12}

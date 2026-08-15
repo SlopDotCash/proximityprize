@@ -34,7 +34,7 @@ abbrev F7 := ZMod 7
 abbrev Coord := Fin 6
 abbrev Label := Fin 5
 
-local instance : Fact (Nat.Prime 7) := ⟨by decide⟩
+local instance localInstance_GaugedTensorSpanConcreteRefutedF7_1 : Fact (Nat.Prime 7) := ⟨by decide⟩
 
 def domain : Coord → F7 := fun x => x.val + 1
 def label : Label → F7 := fun j => j.val

@@ -66,7 +66,7 @@ open Polynomial
 /-- The field `F₁₁`. -/
 abbrev F11 := ZMod 11
 
-instance : Fact (Nat.Prime 11) := ⟨by decide⟩
+instance primeFact_DeltaStarPinF11H5_1 : Fact (Nat.Prime 11) := ⟨by decide⟩
 
 /-- `(2/5 : ℝ≥0) ≤ 1`, the recurring radius-sanity fact. -/
 theorem twoFifth_le_one : (2/5 : ℝ≥0) ≤ 1 := by

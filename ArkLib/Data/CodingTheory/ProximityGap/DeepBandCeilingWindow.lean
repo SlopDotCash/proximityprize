@@ -78,7 +78,7 @@ theorem mcaDeltaStar_le_of_ceiling_window (dom : Fin n ↪ F) {k m : ℕ}
         ENNReal.lt_add_right hfin one_ne_zero
     _ ≤ _ := hwin
 
-instance : Fact (Nat.Prime 31) := ⟨by decide⟩
+instance primeFact_DeepBandCeilingWindow_1 : Fact (Nat.Prime 31) := ⟨by decide⟩
 
 /-- **Non-vacuity, in-window.**  `RS[F₃₁, 10 pts, k=2]`, band `m = 1` (agreement `t = 4`,
 radius `δ = 3/5`): `P = C(10,4) = 210 ∈ [q^m, q^{m+1}) = [31, 961)`, so the window

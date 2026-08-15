@@ -248,7 +248,7 @@ theorem ceil_agreement_mass_eq_predecessorThreshold :
 
 variable {J : Type} [Fintype J] [Nonempty J] [DecidableEq J]
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_RateQuarterPredecessorFourPencilReduction_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 
 /-- The canonical selected rich-point family at the P1 predecessor. -/
 noncomputable def predecessorRichPointFamily

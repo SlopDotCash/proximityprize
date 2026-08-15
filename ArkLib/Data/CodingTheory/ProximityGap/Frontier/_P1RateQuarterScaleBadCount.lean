@@ -34,7 +34,7 @@ open P1RateQuarterScaleConstruction
 open P1RateQuarterScaleOperationalCountConnector
 open HalfPredecessorCoreFreshDecode
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterScaleBadCount_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 /-- A source line which misses each ordinary quotient residue and has a

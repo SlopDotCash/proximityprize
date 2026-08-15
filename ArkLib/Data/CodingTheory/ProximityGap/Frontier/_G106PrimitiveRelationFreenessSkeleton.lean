@@ -454,14 +454,14 @@ theorem no_disjoint_centered_equalSum_triple_pairs
 /-- Value-multiset disjointness of two 4-tuples. -/
 def ValueDisjoint (t u : (G × G) × (G × G)) : Prop := ∀ y ∈ quadMS t, y ∉ quadMS u
 
-instance : ∀ t u : (G × G) × (G × G), Decidable (ValueDisjoint t u) := fun t u => by
+instance moduleInstance_G106PrimitiveRelationFreenessSkeleton_1 : ∀ t u : (G × G) × (G × G), Decidable (ValueDisjoint t u) := fun t u => by
   unfold ValueDisjoint
   infer_instance
 
 /-- Value-multiset disjointness of two 3-tuples. -/
 def TripValueDisjoint (t u : G × G × G) : Prop := ∀ y ∈ tripMS t, y ∉ tripMS u
 
-instance : ∀ t u : G × G × G, Decidable (TripValueDisjoint t u) := fun t u => by
+instance moduleInstance_G106PrimitiveRelationFreenessSkeleton_2 : ∀ t u : G × G × G, Decidable (TripValueDisjoint t u) := fun t u => by
   unfold TripValueDisjoint
   infer_instance
 

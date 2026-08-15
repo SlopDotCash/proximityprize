@@ -41,7 +41,7 @@ set_option linter.style.longLine false
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R153OcticThinnedResidualTarget_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-- The R151 thinned-octic exact-rung consumer with the live decomposition hypothesis phrased
 as vanishing of the omitted-character residual. -/

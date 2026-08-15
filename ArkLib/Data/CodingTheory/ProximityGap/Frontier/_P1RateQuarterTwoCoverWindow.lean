@@ -74,8 +74,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open _root_.ProximityGap.KKH26RegimeSplit
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterTwoCoverWindow_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterTwoCoverWindow_2 : NeZero N := ⟨by norm_num [N]⟩
 
 /-! ## The window arithmetic (restated) -/
 

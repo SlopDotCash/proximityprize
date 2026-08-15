@@ -33,7 +33,7 @@ variable {F : Type} [Field F] [Finite F] [DecidableEq F]
          {κ : Type*} [Fintype κ]
          {ι : Type} [Fintype ι]
 
-local instance : Fintype F := Fintype.ofFinite F
+local instance localInstance_AHIV22_1 : Fintype F := Fintype.ofFinite F
 
 namespace ProximityToRS
 open ReedSolomon NNReal

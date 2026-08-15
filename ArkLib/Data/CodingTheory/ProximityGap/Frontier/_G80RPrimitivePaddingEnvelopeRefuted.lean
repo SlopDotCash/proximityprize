@@ -32,7 +32,7 @@ set_option autoImplicit false
 
 namespace ArkLib.ProximityGap.Frontier.G80RPrimitivePaddingEnvelopeRefuted
 
-local instance : Fact (Nat.Prime 3001) := ⟨by norm_num⟩
+local instance localInstance_G80RPrimitivePaddingEnvelopeRefuted_1 : Fact (Nat.Prime 3001) := ⟨by norm_num⟩
 
 /-- `1353` is a primitive fourth root modulo `3001`: its square is `-1`. -/
 theorem root_sq_eq_neg_one : (1353 : ZMod 3001) ^ 2 = -1 := by decide

@@ -75,7 +75,7 @@ def DRCKernelEnergy (C₁ C₂ c : ℕ) : Prop :=
       0 < K → A.Nonempty → 2 * K ≤ #A →
       #A ^ 3 ≤ K * E[A] →
       b ∈ A →
-      #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhd A (popGraph A (#A / (2 * K))) b)) ^ 2 →
+      #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhdDRC2 A (popGraph A (#A / (2 * K))) b)) ^ 2 →
       ∃ A' : Finset α, A' ⊆ A ∧ A'.Nonempty ∧
         C₁ * K * #A' ≥ #A ∧ #(A' - A') ≤ C₂ * K ^ c * #A'
 
@@ -113,8 +113,8 @@ theorem bsgCore_of_kernelEnergy {C₁ C₂ c : ℕ} (hC₁ : 2 ≤ C₁) (hC₂ 
       popGraph_cherry_rich A K G hGsub hdense
     obtain ⟨b, hbA, hb⟩ := exists_large_left_neighborhood A K G hA hcherry
     -- Translate the squared-degree bound to the left-neighbourhood card.
-    have hbig : #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhd A G b)) ^ 2 := by
-      rwa [card_leftNbhd]
+    have hbig : #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhdDRC2 A G b)) ^ 2 := by
+      rwa [card_leftNbhdDRC2]
     exact hker A K b hK hA hsmall hE hbA hbig
   · -- Small case `#A < 2K`: singleton refinement.
     push_neg at hsmall

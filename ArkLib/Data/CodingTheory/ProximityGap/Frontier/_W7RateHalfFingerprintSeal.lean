@@ -580,8 +580,8 @@ theorem natCast_powP (a n : Nat) :
     ((powP a n : Nat) : ZMod P) = (a : ZMod P) ^ n :=
   natCast_powAux a n (n + 1) (by omega)
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero P := ⟨P_pos.ne'⟩
+local instance localInstance_W7RateHalfFingerprintSeal_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_W7RateHalfFingerprintSeal_2 : NeZero P := ⟨P_pos.ne'⟩
 
 theorem natCast_ne_zero_of_ne_zero_of_lt {a : Nat} (h0 : a ≠ 0) (hlt : a < P) :
     (a : ZMod P) ≠ 0 := by

@@ -38,8 +38,8 @@ open P1RateQuarterScaleFinalConsumer
 open P1RateQuarterScaleOperationalCountConnector
 open MCAReindexEquiv
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterCanonicalCodeBridge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCanonicalCodeBridge_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-- The construction's injective enumeration is bijective because source and

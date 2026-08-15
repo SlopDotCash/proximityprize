@@ -60,7 +60,7 @@ noncomputable section AbstractDuality
 
 variable {M : Type*} [CommGroup M] [Finite M]
 
-instance : Fintype (MulChar M ℂ) := .ofFinite _
+instance moduleInstance_Round9SubgroupCharExpansion_1 : Fintype (MulChar M ℂ) := .ofFinite _
 
 /-- **Second orthogonality, vanishing half.** For a finite commutative group `M` and `a ≠ 1`,
 the sum of `χ a` over all ℂ-valued multiplicative characters of `M` vanishes. -/
@@ -91,7 +91,7 @@ noncomputable section SubgroupIndicator
 
 variable {Fu : Type*} [CommGroup Fu] [Finite Fu] (G : Subgroup Fu)
 
-instance : Fintype (MulChar (Fu ⧸ G) ℂ) := .ofFinite _
+instance moduleInstance_Round9SubgroupCharExpansion_2 : Fintype (MulChar (Fu ⧸ G) ℂ) := .ofFinite _
 
 /-- **Subgroup indicator via dual characters of the quotient.** `∑_{χ : (Fu⧸G)^} χ(π x)` equals the
 index `[Fu:G] = |Fu⧸G|` when `x ∈ G`, and `0` otherwise. -/

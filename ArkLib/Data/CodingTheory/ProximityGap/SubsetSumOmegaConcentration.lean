@@ -312,7 +312,7 @@ theorem card_ge_choose_two_zero (h2 : (2 : F) ≠ 0) (hω2 : ω ^ 2 = -1)
 /-! ## 7. Non-vacuity: a concrete `⟨ω⟩`-closed set over `ZMod 5` with `∑x = ∑x² = 0`. -/
 
 /-- `5` is prime, so `ZMod 5` is a field. -/
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_SubsetSumOmegaConcentration_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- **Non-vacuity of the coordinate vanishings.** Over `F = ZMod 5`, `ω = 2` is an order-4 root of
 unity (`2² = 4 = −1`). The orbit closure of `{1}` is `omega4Closure 2 {1} = {1, 2, 4, 3}` (`= ⟨2⟩`,

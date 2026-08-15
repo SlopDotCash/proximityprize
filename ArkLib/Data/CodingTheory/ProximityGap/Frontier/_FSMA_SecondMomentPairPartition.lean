@@ -120,7 +120,7 @@ saturated two-fresh core size `T - 2`. -/
 theorem fivePencilCoreFloor_le_saturated : fivePencilCoreFloor ≤ T - 2 := by
   norm_num [fivePencilCoreFloor, T]
 
-instance : Nonempty (Fin N) := ⟨⟨0, by norm_num [N]⟩⟩
+instance moduleInstance_FSMA_SecondMomentPairPartition_1 : Nonempty (Fin N) := ⟨⟨0, by norm_num [N]⟩⟩
 
 /-! ## Generic shrink-and-Plotkin impossibility -/
 

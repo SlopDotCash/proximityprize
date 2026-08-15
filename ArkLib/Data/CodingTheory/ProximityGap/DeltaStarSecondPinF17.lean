@@ -48,7 +48,7 @@ namespace ProximityGap.DeltaStarSecondPin
 
 abbrev F17 := ZMod 17
 
-instance : Fact (Nat.Prime 17) := ⟨by decide⟩
+instance primeFact_DeltaStarSecondPinF17_1 : Fact (Nat.Prime 17) := ⟨by decide⟩
 
 /-- The smooth domain: the order-8 subgroup `⟨2⟩ ≤ F₁₇ˣ`, enumerated as powers. -/
 def dom : Fin 8 → F17 := ![1, 2, 4, 8, 16, 15, 13, 9]

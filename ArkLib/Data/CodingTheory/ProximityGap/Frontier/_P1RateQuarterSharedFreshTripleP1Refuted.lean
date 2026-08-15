@@ -65,8 +65,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleConstruction
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open _root_.ProximityGap.KKH26RegimeSplit
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterSharedFreshTripleP1Refuted_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSharedFreshTripleP1Refuted_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## Residue-class cosets of the power enumeration and their cardinalities -/

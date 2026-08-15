@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Update ArkLib.lean with all imports.
-# This script only considers tracked files. New ArkLib/**/*.lean files must be staged first.
+# Update ArkLib.lean with the standalone Proximity Prize import surface.
+# The broader ArkLib substrate stays in-tree and is compiled transitively when the
+# prize modules depend on it; unrelated proof-system experiments are not default targets.
 
 set -euo pipefail
 
@@ -27,7 +28,7 @@ if (( ${#untracked_lean_files[@]} > 0 )); then
   exit 1
 fi
 
-echo "Updating ArkLib.lean with all tracked imports..."
+echo "Updating ArkLib.lean with tracked Proximity Prize imports..."
 
 tmp_file="$(mktemp "${TMPDIR:-/tmp}/arklib-imports.XXXXXX")"
 cleanup() {
@@ -35,11 +36,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Tracked but intentionally excluded from the umbrella import until its direct
-# compile terminates under the normal validation budget.
-readonly UMBRELLA_IMPORT_EXCLUDES_RE='^ArkLib/ToMathlib/GHSZ02LargeNProof\.lean$'
+# Tracked experimental lanes whose direct elaboration exceeds the normal CI
+# budget.  They remain available for explicit `pg-iterate.sh` checks.
+readonly UMBRELLA_IMPORT_EXCLUDES_RE='^(ArkLib/ToMathlib/GHSZ02LargeNProof\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FSMA_SecondMomentPairPartition\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FSMC_ForcedCoreSpread\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterSharedFreshTripleRefuted\.lean|ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt\.lean)$'
 
-git ls-files -- 'ArkLib/*.lean' \
+{
+  git ls-files -- 'ArkLib/Data/CodingTheory/ProximityGap.lean'
+  git ls-files -- 'ArkLib/Data/CodingTheory/ProximityGap/*.lean'
+} \
   | grep -Ev "$UMBRELLA_IMPORT_EXCLUDES_RE" \
   | LC_ALL=C sort \
   | sed 's/\.lean//;s,/,.,g;s/^/import /' \
@@ -52,4 +56,4 @@ fi
 mv "$tmp_file" ArkLib.lean
 trap - EXIT
 
-echo "✓ ArkLib.lean updated with $(wc -l < ArkLib.lean) imports"
+echo "✓ ArkLib.lean updated with $(grep -c '^import ' ArkLib.lean) imports"

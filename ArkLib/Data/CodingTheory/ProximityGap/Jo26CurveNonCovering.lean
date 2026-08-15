@@ -11,7 +11,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Jo26CurveInterpolationRegime
 
 The hard half of the marked/original equivalence:
 
-* `exists_far_codeword_of_curveDecodable` — **[Jo26] Lemma 5.4 (non-covering)**: a nonzero
+* `exists_far_codeword_of_curveDecodable_jo26` — **[Jo26] Lemma 5.4 (non-covering)**: a nonzero
   `F`-submodule code that is `(ℓ, δ, a, b)`-curve-decodable with `a ≤ |F|` and `b > ℓ + 1`
   cannot `δ`-cover the space: every word `y` has a codeword at distance `> δ`.  Proof: if `y`
   were `δ`-close to all of `C`, the stack `u₀ = y, u₁ = ⋯ = u_ℓ = 0` with `f α = α^{ℓ+1} • v`
@@ -50,7 +50,7 @@ theorem curveComb_constStack (ℓ : ℕ) (y : ι → A) (α : F) (i : ι) :
 /-- **[Jo26] Lemma 5.4 (curve decodability gives a non-covering condition).**  A nonzero
 `F`-submodule code that is `(ℓ, δ, a, b)`-curve-decodable with `a ≤ |F|` and `ℓ + 1 < b`
 cannot `δ`-cover the space. -/
-theorem exists_far_codeword_of_curveDecodable {M : Submodule F (ι → A)} (hM : M ≠ ⊥)
+theorem exists_far_codeword_of_curveDecodable_jo26 {M : Submodule F (ι → A)} (hM : M ≠ ⊥)
     {ℓ : ℕ} {δ : ℝ≥0} {a b : ℕ}
     (h : CurveDecodable (F := F) (M : Set (ι → A)) ℓ δ a b)
     (ha : a ≤ Fintype.card F) (hb : ℓ + 1 < b) (y : ι → A) :
@@ -179,7 +179,7 @@ theorem MarkedCurveDecodable.of_curveDecodable {M : Submodule F (ι → A)}
     exact hba
   -- The genuine regime: extend `f` off `A₀` by far codewords.
   intro u f hf A₀ hcard hdist
-  have h54 := exists_far_codeword_of_curveDecodable hM h ha hbl
+  have h54 := exists_far_codeword_of_curveDecodable_jo26 hM h ha hbl
   set f' : F → ι → A := fun α =>
     if α ∈ A₀ then f α
     else Classical.choose (h54 (fun i => ∑ j : Fin (ℓ + 1), α ^ (j : ℕ) • u j i)) with hf'
@@ -235,6 +235,6 @@ theorem markedCurveDecodable_iff {M : Submodule F (ι → A)} {ℓ : ℕ} {δ : 
 end ProximityGap
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
-#print axioms ProximityGap.exists_far_codeword_of_curveDecodable
+#print axioms ProximityGap.exists_far_codeword_of_curveDecodable_jo26
 #print axioms ProximityGap.MarkedCurveDecodable.of_curveDecodable
 #print axioms ProximityGap.markedCurveDecodable_iff

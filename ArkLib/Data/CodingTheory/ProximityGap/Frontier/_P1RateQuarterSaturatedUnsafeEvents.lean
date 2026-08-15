@@ -27,7 +27,7 @@ open P1RateQuarterCommonFactorArithmetic
 open P1RateQuarterCommonFactorConstruction
 open HalfPredecessorCoreFreshDecode
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSaturatedUnsafeEvents_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 local notation "δsat" => P1RateQuarterCommonFactorArithmetic.delta

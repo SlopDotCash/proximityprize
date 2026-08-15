@@ -61,6 +61,58 @@ omit [Fintype F] [DecidableEq F] in
 theorem eta_zero {ψ : AddChar F ℂ} (G : Finset F) : eta ψ G 0 = (G.card : ℂ) := by
   simp only [eta, zero_mul, AddChar.map_zero_eq_one, Finset.sum_const, nsmul_eq_mul, mul_one]
 
+omit [Fintype F] in
+/-- A finite multiplicatively closed subset avoiding zero is permuted by multiplication by any of
+its elements. -/
+theorem image_mul_self_of_mem (G : Finset F) {x : F} (hxG : x ∈ G)
+    (hmul : ∀ a ∈ G, ∀ c ∈ G, a * c ∈ G) (h0 : (0 : F) ∉ G) :
+    G.image (fun y => x * y) = G := by
+  have hx : x ≠ 0 := fun h => h0 (h ▸ hxG)
+  have hsub : G.image (fun y => x * y) ⊆ G := by
+    intro z hz
+    obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hz
+    exact hmul x hxG y hy
+  have hcard : G.card ≤ (G.image (fun y => x * y)).card :=
+    le_of_eq (Finset.card_image_of_injOn
+      (fun a _ c _ h => mul_left_cancel₀ hx h)).symm
+  exact Finset.eq_of_subset_of_card_le hsub hcard
+
+/-- The number of distinct nonzero-frequency Gauss periods, multiplied by the subgroup size, is at
+most the number of nonzero field elements. -/
+theorem eta_image_card_mul_le (ψ : AddChar F ℂ) (G : Finset F)
+    (hmul : ∀ a ∈ G, ∀ c ∈ G, a * c ∈ G) (h0 : (0 : F) ∉ G) :
+    ((Finset.univ.filter (fun b : F => b ≠ 0)).image (eta ψ G)).card * G.card
+      ≤ Fintype.card F - 1 := by
+  classical
+  set S : Finset F := Finset.univ.filter (fun b : F => b ≠ 0) with hS
+  set V : Finset ℂ := S.image (eta ψ G) with hV
+  have hScard : S.card = Fintype.card F - 1 := by
+    rw [hS, Finset.filter_ne', Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ]
+  have hfiber : ∀ v ∈ V, G.card ≤ (S.filter (fun b => eta ψ G b = v)).card := by
+    intro v hv
+    obtain ⟨b, hbS, hbv⟩ := Finset.mem_image.mp (hV ▸ hv)
+    have hb0 : b ≠ 0 := by simpa [hS] using hbS
+    have hsub : G.image (fun x => b * x) ⊆ S.filter (fun b' => eta ψ G b' = v) := by
+      intro z hz
+      obtain ⟨x, hxG, rfl⟩ := Finset.mem_image.mp hz
+      have hx0 : x ≠ 0 := fun h => h0 (h ▸ hxG)
+      refine Finset.mem_filter.mpr ⟨?_, ?_⟩
+      · simpa [hS] using mul_ne_zero hb0 hx0
+      · rw [mul_comm b x,
+          eta_mul_left (fun u hu => image_mul_self_of_mem G hu hmul h0) h0 hxG b, hbv]
+    calc
+      G.card = (G.image (fun x => b * x)).card :=
+        (Finset.card_image_of_injOn (fun a _ c _ h => mul_left_cancel₀ hb0 h)).symm
+      _ ≤ (S.filter (fun b' => eta ψ G b' = v)).card := Finset.card_le_card hsub
+  have hpart : S.card = ∑ v ∈ V, (S.filter (fun b => eta ψ G b = v)).card :=
+    Finset.card_eq_sum_card_fiberwise (fun b hb => Finset.mem_image_of_mem _ hb)
+  have hge : V.card * G.card ≤ S.card := by
+    rw [hpart]
+    calc
+      V.card * G.card = ∑ _v ∈ V, G.card := by rw [Finset.sum_const, smul_eq_mul]
+      _ ≤ ∑ v ∈ V, (S.filter (fun b => eta ψ G b = v)).card := Finset.sum_le_sum hfiber
+  rwa [hV, hS, hScard] at hge
+
 /-- **The coset lower bound:** the maximal-value orbit `G·b₀` (size `|G|` when `b₀ ≠ 0`) forces
 `|G| · ‖η_{b₀}‖^{2r} ≤ ∑_{b≠0} ‖η_b‖^{2r}`. -/
 theorem card_mul_eta_pow_le_sum_erase {ψ : AddChar F ℂ} {G : Finset F}
@@ -115,5 +167,7 @@ theorem cosetReduced_eta_pow_le {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G :
 end ArkLib.ProximityGap.GaussPeriodCosetReduction
 
 #print axioms ArkLib.ProximityGap.GaussPeriodCosetReduction.eta_mul_left
+#print axioms ArkLib.ProximityGap.GaussPeriodCosetReduction.image_mul_self_of_mem
+#print axioms ArkLib.ProximityGap.GaussPeriodCosetReduction.eta_image_card_mul_le
 #print axioms ArkLib.ProximityGap.GaussPeriodCosetReduction.card_mul_eta_pow_le_sum_erase
 #print axioms ArkLib.ProximityGap.GaussPeriodCosetReduction.cosetReduced_eta_pow_le

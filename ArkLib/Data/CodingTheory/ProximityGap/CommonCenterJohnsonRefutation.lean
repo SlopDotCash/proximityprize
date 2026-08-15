@@ -61,7 +61,7 @@ namespace ProximityGap.GrandChallenge244
 set_option linter.unusedSectionVars false
 
 /-- `GF(5)` is a field. -/
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_CommonCenterJohnsonRefutation_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- The evaluation domain `i ↦ i : Fin 4 ↪ ZMod 5`. Injective since `i.val < 4 < 5`. -/
 def domain₄ : Fin 4 ↪ ZMod 5 := ⟨fun i => (i.val : ZMod 5), by decide⟩

@@ -57,8 +57,8 @@ open P1RateQuarterCommonFactorCanonicalBridge
 open RateQuarterPredecessorFourPencilReduction
 open MCAAdjacentFloorExactPin
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterFourPencilExactPin_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterFourPencilExactPin_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 local notation "epsilonP1" =>

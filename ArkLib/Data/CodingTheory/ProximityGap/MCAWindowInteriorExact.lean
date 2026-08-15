@@ -54,7 +54,7 @@ open ProximityGap.MCAWitnessSpread ProximityGap.MCALYMCeiling
 
 namespace ProximityGap.MCAWindowInteriorExact
 
-instance : Fact (Nat.Prime 11) := ⟨by norm_num⟩
+instance primeFact_MCAWindowInteriorExact_1 : Fact (Nat.Prime 11) := ⟨by norm_num⟩
 
 /-- The base field `F₁₁`. -/
 abbrev F11 : Type := ZMod 11

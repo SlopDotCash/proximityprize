@@ -75,8 +75,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleArithmetic
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterGlobalConsistencyCharge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterGlobalConsistencyCharge_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The global function `D` and its support -/

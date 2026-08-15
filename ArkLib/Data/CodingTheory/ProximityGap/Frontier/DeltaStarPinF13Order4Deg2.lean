@@ -82,7 +82,7 @@ open ProximityGap Code
 /-- The field `F₁₃`. -/
 abbrev F13 := ZMod 13
 
-instance : Fact (Nat.Prime 13) := ⟨by decide⟩
+instance primeFact_DeltaStarPinF13Order4Deg2_1 : Fact (Nat.Prime 13) := ⟨by decide⟩
 
 /-- `(1/4 : ℝ≥0) ≤ 1`, the recurring radius-sanity fact. -/
 theorem quarter_le_one : (1/4 : ℝ≥0) ≤ 1 := by

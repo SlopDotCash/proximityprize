@@ -83,7 +83,7 @@ theorem unitRelabel_sum_eq {M : Type*} [AddCommMonoid M]
 
 abbrev Q := ZMod 81
 
-instance : NeZero 81 := ⟨by norm_num⟩
+instance moduleInstance_G258QuotientAutomorphismPositivityNoGo_1 : NeZero 81 := ⟨by norm_num⟩
 
 /-- The physical relabeling unit. Its inverse is `26 mod 81`. -/
 def u53 : (ZMod 81)ˣ :=

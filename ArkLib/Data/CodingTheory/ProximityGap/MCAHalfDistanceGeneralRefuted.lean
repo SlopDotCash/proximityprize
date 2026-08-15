@@ -55,7 +55,7 @@ open ProximityGap.MCAHalfDistanceStaircase
 
 abbrev F11 := ZMod 11
 
-instance : Fact (Nat.Prime 11) := ⟨by decide⟩
+instance primeFact_MCAHalfDistanceGeneralRefuted_1 : Fact (Nat.Prime 11) := ⟨by decide⟩
 
 /-- First generator row of the doubled-column code. -/
 def G0 : Fin 8 → F11 := ![1, 1, 0, 0, 1, 1, 1, 1]

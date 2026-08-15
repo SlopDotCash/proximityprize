@@ -192,7 +192,7 @@ d=2-specific third (diagonal) clause. -/
 def IsPairMatch (z : (F × F) × (F × F)) : Prop :=
   (z.1.1 = z.2.1 ∧ z.1.2 = z.2.2) ∨ (z.1.1 = z.2.2 ∧ z.1.2 = z.2.1)
 
-instance : DecidablePred (IsPairMatch (F := F)) := fun z => by
+instance moduleInstance_R21HigherDFaces_1 : DecidablePred (IsPairMatch (F := F)) := fun z => by
   unfold IsPairMatch; infer_instance
 
 /-- Pair-match tuples are degenerate in the R18 sense — quantifying the named Weil input

@@ -31,8 +31,8 @@ open P1RateQuarterScaleArithmetic
 open P1RateQuarterScaleConstruction
 open P1RateQuarterScaleFinalConsumer
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero k := ⟨by norm_num [k]⟩
+local instance localInstance_P1RateQuarterOperationalBracket_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterOperationalBracket_2 : NeZero k := ⟨by norm_num [k]⟩
 
 /-- A finite count budget `E * Q ≤ p` gives the normalized `ENNReal` budget
 `E / p ≤ Q⁻¹`. -/

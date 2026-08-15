@@ -56,7 +56,7 @@ open scoped NNReal ProbabilityTheory ENNReal
 open CodingTheory ProximityGap Code
 
 /-- `2` is prime, so `ZMod 2` is a field. -/
-instance : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
+instance primeFact_LineDecodingRefutation_1 : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
 
 /-- The concrete refuting data: `ι = Fin 1`, `F = A = ZMod 2`, `C = ⊥`, `δ = a = 0`. -/
 abbrev ι : Type := Fin 1

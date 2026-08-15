@@ -54,7 +54,7 @@ namespace ProximityGap.EquivariancePinN12
 /-- The base field `F₁₃`. -/
 abbrev F13 := ZMod 13
 
-instance : Fact (Nat.Prime 13) := ⟨by decide⟩
+instance primeFact_EquivariancePinN12_1 : Fact (Nat.Prime 13) := ⟨by decide⟩
 
 /-- The smooth evaluation domain: the full multiplicative group `F₁₃ˣ = ⟨2⟩` of size
 `n = 12`, enumerated as successive powers of the primitive root `2`. -/

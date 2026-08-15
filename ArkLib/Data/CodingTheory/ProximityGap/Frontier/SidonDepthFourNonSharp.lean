@@ -24,7 +24,7 @@ namespace ArkLib.ProximityGap.Frontier.SidonDepthFourNonSharp
 
 open ArkLib.ProximityGap.Frontier.SidonDepthThreeNonSharp
 
-local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+local instance localInstance_SidonDepthFourNonSharp_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- The depth-four relation energy of `{0,1} ⊂ ZMod 5` is the central binomial value `70`. -/
 theorem rEnergy_four_twoPoint : rEnergy twoPoint 4 = 70 := by decide

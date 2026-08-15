@@ -356,7 +356,7 @@ theorem negSymm_interior_list_q_independent [Fintype F] (h2 : (2 : F) ≠ 0) (D 
 /-! ## 8. Non-vacuity: a concrete smooth domain realizing all hypotheses with a genuine count. -/
 
 /-- `13` is prime, so `ZMod 13` is a field (the concrete smooth-domain witness host). -/
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_ListInteriorQIndependentNegSymm_1 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- **The negation involution on `ZMod 13` (as the identity domain `D = id`).** With `ι = ZMod 13`
 and `D = Function.Embedding.refl`, the index involution `ν = (− ·)` intertwines negation trivially:

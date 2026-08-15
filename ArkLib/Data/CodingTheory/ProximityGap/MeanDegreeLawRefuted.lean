@@ -53,7 +53,7 @@ namespace ProximityGap.PairRank
 
 open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership Code
 
-instance : Fact (Nat.Prime 19) := ⟨by decide⟩
+instance primeFact_MeanDegreeLawRefuted_1 : Fact (Nat.Prime 19) := ⟨by decide⟩
 
 /-- The identity evaluation domain `Fin 19 ↪ ZMod 19`. -/
 def dom19 : Fin 19 ↪ ZMod 19 :=

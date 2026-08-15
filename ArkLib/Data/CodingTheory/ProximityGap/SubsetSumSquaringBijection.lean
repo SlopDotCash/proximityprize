@@ -324,7 +324,7 @@ theorem sqSet_self_similar {H : Finset F}
 /-! ## 6. Non-vacuity: a concrete transversal with a genuine, non-degenerate square-set recursion. -/
 
 /-- `13` is prime, so `ZMod 13` is a field (the concrete witness host). -/
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_SubsetSumSquaringBijection_1 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- **Non-vacuity (concrete `F = ZMod 13`, `H = {1, 2, 3}`).** The transversal `H = {1,2,3}` of three
 `±`-pairs (`−1=12, −2=11, −3=10` all outside `H`) has square-set

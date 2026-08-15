@@ -582,7 +582,7 @@ theorem normalizedSubsetDeviation_compl
   rw [hchoose]
 
 /-- The quadratic-residue subgroup of order eight in `ZMod 17`. -/
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+local instance localInstance_BGKCenteredTrajectoryContraction_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 def H8 : Finset (ZMod 17) := {1, 2, 4, 8, 9, 13, 15, 16}
 

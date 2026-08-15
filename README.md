@@ -10,6 +10,9 @@ the [δ* programme guide](docs/wiki/deltastar-programme.md), the
 The campaign retains the broader ArkLib formal-verification substrate it builds
 on, including the original library overview below. Lean module and package names
 remain `ArkLib` for compatibility with the existing checked proof graph.
+The generated `ArkLib.lean` target imports the Proximity Gap campaign and compiles
+its transitive substrate; unrelated proof-system experiments remain available in
+the tree but are intentionally outside this standalone repository's default build.
 
 ## Formal verification library foundation
 

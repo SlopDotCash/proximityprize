@@ -58,7 +58,7 @@ namespace ArkLib.ProximityGap.Frontier.R25SubfamilyGate
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R25SubfamilyGate_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-! ### (0) The coarse power family is a subfamily -/
 

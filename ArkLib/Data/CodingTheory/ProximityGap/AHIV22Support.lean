@@ -32,7 +32,7 @@ variable {F : Type} [Field F] [Finite F] [DecidableEq F]
          {κ : Type*} [Fintype κ]
          {ι : Type} [Fintype ι]
 
-local instance : Fintype F := Fintype.ofFinite F
+local instance localInstance_AHIV22Support_1 : Fintype F := Fintype.ofFinite F
 
 /-- The finite support of a vector over `F`. -/
 private def vecSupport (u : ι → F) : Finset ι :=

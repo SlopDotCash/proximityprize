@@ -38,7 +38,7 @@ namespace MCAGS
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Finite F] [DecidableEq F]
 
-noncomputable local instance : Fintype F := Fintype.ofFinite F
+noncomputable local instance localInstance_MCAGSUniqueDecodingGap_1 : Fintype F := Fintype.ofFinite F
 
 open Classical in
 /-- The restricted GS-exposed MCA error for a Reed-Solomon code, zeroing jointly-close stacks. -/

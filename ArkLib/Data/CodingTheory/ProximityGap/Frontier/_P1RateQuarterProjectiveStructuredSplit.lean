@@ -64,8 +64,8 @@ open ProximityGap.WBPencil
 open P1RateQuarterScaleArithmetic
 open P1RateQuarterPredecessorGenericSplit
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterProjectiveStructuredSplit_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterProjectiveStructuredSplit_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## Exact row-nearness interface -/

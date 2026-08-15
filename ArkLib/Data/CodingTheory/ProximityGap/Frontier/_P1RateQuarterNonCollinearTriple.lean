@@ -112,8 +112,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleArithmetic
 open ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorArithmetic
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterNonCollinearTriple_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterNonCollinearTriple_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-- The rigidity premise is **not** forced at P1: even three full threshold witnesses need
@@ -258,7 +258,7 @@ open ProximityGap.SharedFreshPencil
 
 abbrev F37 := ZMod 37
 
-local instance : Fact (Nat.Prime 37) := ⟨by decide⟩
+local instance localInstance_P1RateQuarterNonCollinearTriple_3 : Fact (Nat.Prime 37) := ⟨by decide⟩
 
 /-- The 32-point evaluation domain `0,…,31` in `F_37`. -/
 def domainValues : Fin 32 → F37 := ![

@@ -33,7 +33,7 @@ open ProximityGap.KKH26DeltaStarReduction
 namespace ArkLib.ProximityGap.PrizeWorkbench
 
 /-- `4129` is prime (instance needed for `Field (ZMod 4129)`). -/
-instance : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
+instance primeFact_DeltaStarPinMu8F4129_1 : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
 
 /-- `g = 2386` generates `μ_8 ⊆ F_4129^×`: order exactly `8 = 2³`
 (`g^(2²) = g⁴ = 4128 = −1 ≠ 1`, `g^(2³) = g⁸ = 1`, so by `orderOf_eq_prime_pow`). -/

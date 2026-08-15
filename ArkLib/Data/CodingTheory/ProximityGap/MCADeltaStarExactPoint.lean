@@ -181,7 +181,7 @@ section Concrete
 
 abbrev F5 := ZMod 5
 
-instance : Fact (Nat.Prime 5) := ⟨by decide⟩
+instance primeFact_MCADeltaStarExactPoint_1 : Fact (Nat.Prime 5) := ⟨by decide⟩
 
 /-- The smooth evaluation domain: the full multiplicative group `F₅ˣ = ⟨2⟩` of size
 `n = 4 = 2²`, enumerated as successive powers of the generator `2`. -/

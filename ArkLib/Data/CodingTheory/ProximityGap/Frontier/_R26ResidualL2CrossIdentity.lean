@@ -73,7 +73,7 @@ local notation "conj'" => starRingEnd ℂ
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R26ResidualL2CrossIdentity_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-! ## 1. The Jacobi-type cross kernel and its exact `√q` modulus -/
 

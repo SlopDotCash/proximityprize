@@ -382,7 +382,7 @@ theorem sudan_list_bound_filter [DecidableEq F] (k D t n : ℕ) (hk : 2 ≤ k) (
 
 /-! ### 9. Concrete instantiation: `ZMod 13`, `n = 12`, `k = 2`, `D = t = 5` -/
 
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_SudanListBound_1 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- Injectivity of the evaluation points `0, 1, …, 11` in `ZMod 13`. -/
 lemma alpha12_injective :

@@ -54,8 +54,8 @@ open ArkLib.ProximityGap.Frontier.HalfPredecessorLineCoreGeometry
 open ArkLib.ProximityGap.Frontier.HalfPredecessorBadEventRichPointBridge
 open ArkLib.ProximityGap.Frontier.HalfPredecessorSecantLines
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterCrossPencilVoteReuse_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCrossPencilVoteReuse_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 variable {ι : Type*} [DecidableEq ι]

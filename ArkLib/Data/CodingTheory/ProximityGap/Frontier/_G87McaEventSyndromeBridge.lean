@@ -389,8 +389,8 @@ open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero P := ⟨prime_P.ne_zero⟩
+local instance localInstance_G87McaEventSyndromeBridge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_G87McaEventSyndromeBridge_2 : NeZero P := ⟨prime_P.ne_zero⟩
 
 /-- The gate code, presented as a `Submodule`: evaluations of polynomials of degree
 `< 2^29` on the smooth domain `i ↦ g^i`, `n = 2^30`. -/

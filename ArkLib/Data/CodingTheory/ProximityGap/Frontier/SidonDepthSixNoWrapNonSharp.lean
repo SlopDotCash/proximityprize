@@ -28,7 +28,7 @@ open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy IsSidonSet)
 
 namespace ArkLib.ProximityGap.Frontier.SidonDepthSixNoWrapNonSharp
 
-local instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+local instance localInstance_SidonDepthSixNoWrapNonSharp_1 : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-- The same no-wrap two-point witness used at depth five. -/
 def twoPoint7 : Finset (ZMod 7) := {0, 1}

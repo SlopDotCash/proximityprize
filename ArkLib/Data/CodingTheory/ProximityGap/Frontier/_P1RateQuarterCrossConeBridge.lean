@@ -81,7 +81,7 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleArithmetic
 open ArkLib.ProximityGap.Frontier.R302TraceFormulaPointCount
 open ArkLib.ProximityGap.Frontier.R309TowerRungFour
 
-local instance : NeZero P := ⟨by norm_num [P]⟩
+local instance localInstance_P1RateQuarterCrossConeBridge_1 : NeZero P := ⟨by norm_num [P]⟩
 
 /-! ## The fiber-count function and its DFT (the swarm's arithmetic weight) -/
 

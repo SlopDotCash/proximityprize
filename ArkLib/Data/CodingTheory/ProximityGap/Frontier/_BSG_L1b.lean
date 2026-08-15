@@ -19,7 +19,7 @@ energy fibers over the common difference `x` as `r(x) · r(x) = r(x)²`.
 open Finset
 open scoped Combinatorics.Additive Pointwise
 
-namespace ArkLib.BSG
+namespace ArkLib.BSG.L1b
 
 variable {α : Type*} [AddCommGroup α] [DecidableEq α]
 
@@ -77,5 +77,4 @@ theorem addEnergy_eq_sum_repCount_sq (A : Finset α) :
   · intro q _; simp
   · intro q _; simp
 
-end ArkLib.BSG
-
+end ArkLib.BSG.L1b

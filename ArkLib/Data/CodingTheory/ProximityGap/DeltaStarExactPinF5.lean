@@ -66,7 +66,7 @@ open ProximityGap Code
 /-- The field `F₅`. -/
 abbrev F5 := ZMod 5
 
-instance : Fact (Nat.Prime 5) := ⟨by decide⟩
+instance primeFact_DeltaStarExactPinF5_1 : Fact (Nat.Prime 5) := ⟨by decide⟩
 
 /-- `(1/4 : ℝ≥0) ≤ 1`, the recurring radius-sanity fact. -/
 theorem quarter_le_one : (1/4 : ℝ≥0) ≤ 1 := by

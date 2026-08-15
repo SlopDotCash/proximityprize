@@ -60,7 +60,7 @@ namespace ConcretePin
 /-- The base field `F = ZMod 17`. -/
 abbrev F := ZMod 17
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_DeltaStarConcretePinF17_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-! ## Smooth evaluation domain -/
 

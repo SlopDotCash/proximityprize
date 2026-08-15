@@ -76,7 +76,7 @@ open ArkLib.ProximityGap.Frontier.R325BinomialRecurrenceReturnBound
 /-- The algebraic closure of ℚ, the ambient field for the root products. -/
 abbrev K : Type := AlgebraicClosure ℚ
 
-noncomputable local instance : DecidableEq K := Classical.decEq K
+noncomputable local instance localInstance_W12BinomialBadPrimeRefuted_1 : DecidableEq K := Classical.decEq K
 
 theorem aroots_nodup (k : ℕ) : ((fq k).aroots K).Nodup := by
   rw [Polynomial.aroots_def]

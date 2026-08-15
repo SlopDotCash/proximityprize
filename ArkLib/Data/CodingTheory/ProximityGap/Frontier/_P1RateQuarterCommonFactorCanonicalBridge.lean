@@ -39,8 +39,8 @@ open P1RateQuarterCommonFactorBadCount
 open P1RateQuarterBadLabelFamilyConnector
 open MCAReindexEquiv
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterCommonFactorCanonicalBridge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCommonFactorCanonicalBridge_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 local notation "δsat" => P1RateQuarterCommonFactorArithmetic.delta

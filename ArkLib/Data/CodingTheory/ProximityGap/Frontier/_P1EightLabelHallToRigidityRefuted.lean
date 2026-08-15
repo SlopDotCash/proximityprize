@@ -31,7 +31,7 @@ open SupportDividedDifferenceUnrestrictedKernelRefuted
 open P1RateQuarterSmallSubsetRankLocalization
 open GaugedTensorSpanConcreteRefutedF7
 
-local instance : Fact (Nat.Prime 7) := ⟨by decide⟩
+local instance localInstance_P1EightLabelHallToRigidityRefuted_1 : Fact (Nat.Prime 7) := ⟨by decide⟩
 
 /-- The two anchors form an exceptional set outside which every subset satisfies the exact
 `projectedBudget` inequality used by the P1 localization lane. -/

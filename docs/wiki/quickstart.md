@@ -173,10 +173,11 @@ can be affected (`Mathlib.LinearAlgebra.Matrix.AbsoluteValue` was one instance).
 ## Important Notes
 
 - `./scripts/validate.sh` is the recommended convenience wrapper for routine local validation.
-- By default it runs the forbidden-token precheck, `lake build`, the `ArkLib/Data/**` warning
-  budget, the zero-hole sorry census, the flagship axiom audit, umbrella-import checks, docs
-  integrity checks, and knowledge-base checks, so a clean local `validate.sh` matches the CI gate set
-  (issue #111 parity).
+- By default it runs the forbidden-token precheck, `lake build`, the zero-hole sorry census, the
+  flagship axiom audit, umbrella-import checks, docs integrity checks, and knowledge-base checks,
+  so a clean local `validate.sh` matches the CI gate set (issue #111 parity). Compiler warnings in
+  the inherited research corpus remain visible but are not a zero-budget gate; `--lint` enforces
+  the maintained style-exception baseline, and `check-warning-log.py` supports targeted cleanup.
 - The lower-level scripts remain valid when you only want one specific check.
 - `scripts/build-project.sh` is now just a compile-only helper, not the convenience wrapper.
 - `scripts/README.md` is still useful as an inventory of helper scripts.

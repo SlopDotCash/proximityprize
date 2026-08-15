@@ -36,7 +36,7 @@ namespace ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- `MulChar F ℂ` needs classical decidable equality for thinned `Finset` operations. -/
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R19ExplicitCharacterRung_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-- The explicit nontrivial character family has size at most the character order. -/
 theorem chiFamily_card_le_order (χ : MulChar F ℂ) :

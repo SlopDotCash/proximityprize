@@ -69,6 +69,8 @@ namespace ArkLib.ProximityGap.Frontier.AvW0
 
 open Nat
 
+namespace WickDomination
+
 /-- Coefficient of `x^{2k}` in `I₀(2x) = ∑ x^{2k}/(k!)²`. -/
 noncomputable def besselCoeff (k : ℕ) : ℚ := 1 / (k ! : ℚ) ^ 2
 
@@ -222,5 +224,6 @@ theorem charZeroWickBoundAllR_of_bessel {E : ℕ → ℕ → ℚ} (hId : BesselI
 -- non-vacuity: the Bessel identity is satisfiable (by the canonical coefficient itself).
 example : BesselIdentity (fun m r => ((2 * r)! : ℚ) * cpow besselCoeff m r) := fun _ _ => rfl
 
-end ArkLib.ProximityGap.Frontier.AvW0
+end WickDomination
 
+end ArkLib.ProximityGap.Frontier.AvW0

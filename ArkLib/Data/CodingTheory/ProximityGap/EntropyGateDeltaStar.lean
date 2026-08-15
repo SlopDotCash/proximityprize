@@ -152,7 +152,7 @@ theorem mcaDeltaStar_le_of_entropy_gate (dom : Fin n ↪ F) {k m : ℕ}
   -- fire the in-tree window consumer
   exact mcaDeltaStar_le_of_ceiling_window dom hk hhi εstar hε hPhi hwin
 
-instance : Fact (Nat.Prime 31) := ⟨by decide⟩
+instance primeFact_EntropyGateDeltaStar_1 : Fact (Nat.Prime 31) := ⟨by decide⟩
 
 /-- **Non-vacuity of the entropy gate.**  `RS[F₃₁, 10 pts, k=2]`, band `m=1` (agreement
 `a = 4`, radius `δ = 3/5`).  The entropy gate is satisfied by exact integer arithmetic:

@@ -23,7 +23,6 @@ secant petal—has size at least `140942233`.
 
 set_option autoImplicit false
 set_option maxRecDepth 1000000
-set_option maxHeartbeats 1000000
 
 open Finset Polynomial
 open _root_.ProximityGap Code
@@ -462,9 +461,10 @@ theorem relevantLine_core_ge_352321537_or_card_eq_two
           (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
             (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
       Nat.mul_le_mul hthree hfactor
+    simp only [Fintype.card_fin] at hmul
     have hbase : 3 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
         (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N :=
-      (Nat.add_le_add_right hmul _).trans hpack
+      by omega
     norm_num [T, N] at hbase ⊢
     omega
   · right
@@ -608,9 +608,10 @@ theorem relevantLine_core_ge_432479347_or_card_le_three
           (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
             (jointCore dom (u 0) (u 1) line.1 line.2).card) :=
       Nat.mul_le_mul hfour hfactor
+    simp only [Fintype.card_fin] at hmul
     have hbase : 4 * (T - (jointCore dom (u 0) (u 1) line.1 line.2).card) +
         (jointCore dom (u 0) (u 1) line.1 line.2).card ≤ N :=
-      (Nat.add_le_add_right hmul _).trans hpack
+      by omega
     norm_num [T, N] at hbase ⊢
     omega
   · right

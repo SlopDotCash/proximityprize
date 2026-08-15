@@ -107,7 +107,7 @@ theorem shift_corr_eq (c : ZMod m) (W R : ZMod m → ℤ) :
 
 abbrev Q := ZMod 7
 
-instance : NeZero 7 := ⟨by norm_num⟩
+instance moduleInstance_G260OriginAnchorGaugeNoGo_1 : NeZero 7 := ⟨by norm_num⟩
 
 /-- The physical profile `W` on `ZMod 7`. -/
 def Wprof : Q → ℤ := ![2, 0, 1, 1, 1, 1, 0]

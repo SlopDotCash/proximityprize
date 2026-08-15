@@ -68,11 +68,11 @@ variable {α : Type*} [AddCommGroup α] [DecidableEq α]
 /-! ## Definitional bridge: the left-neighbourhood card is the right-degree -/
 
 /-- The **left-neighbourhood** of a right-vertex `b` in `G ⊆ A ×ˢ A`. Its cardinality is `rDeg`. -/
-noncomputable def leftNbhd (A : Finset α) (G : Finset (α × α)) (b : α) : Finset α :=
+noncomputable def leftNbhdDRC2 (A : Finset α) (G : Finset (α × α)) (b : α) : Finset α :=
   {a ∈ A | (a, b) ∈ G}
 
-@[simp] lemma card_leftNbhd (A : Finset α) (G : Finset (α × α)) (b : α) :
-    #(leftNbhd A G b) = rDeg A G b := rfl
+@[simp] lemma card_leftNbhdDRC2 (A : Finset α) (G : Finset (α × α)) (b : α) :
+    #(leftNbhdDRC2 A G b) = rDeg A G b := rfl
 
 /-! ## The DRC averaging core (PROVEN)
 
@@ -123,7 +123,7 @@ and must produce the small-doubling subset. Its hypothesis is strictly weaker bo
 /-- **The irreducible DRC kernel `DRCKernel` (refinement + Plünnecke, in isolation).**
 
 Hypothesis (post-averaging, energy-free *and* graph-sum-free): a graph `G ⊆ A ×ˢ A` and a single
-right-vertex `b ∈ A` whose left-neighbourhood `N(b) = leftNbhd A G b` is large
+right-vertex `b ∈ A` whose left-neighbourhood `N(b) = leftNbhdDRC2 A G b` is large
 (`#A² ≤ 16 K⁴ · #N(b)²`).
 
 Conclusion: the BSG output — a constant-fraction subset `A'` with a controlled difference set.
@@ -135,7 +135,7 @@ def DRCKernel (C₁ C₂ c : ℕ) : Prop :=
   ∀ {α : Type} [inst : AddCommGroup α] [inst2 : DecidableEq α],
     ∀ (A : Finset α) (K : ℕ) (G : Finset (α × α)) (b : α),
       0 < K → A.Nonempty → G ⊆ A ×ˢ A → b ∈ A →
-      #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhd A G b)) ^ 2 →
+      #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhdDRC2 A G b)) ^ 2 →
       ∃ A' : Finset α, A' ⊆ A ∧ A'.Nonempty ∧
         C₁ * K * #A' ≥ #A ∧ #(A' - A') ≤ C₂ * K ^ c * #A'
 
@@ -153,15 +153,15 @@ theorem bareDRC_of_kernel {C₁ C₂ c : ℕ} (hker : DRCKernel C₁ C₂ c) :
   classical
   -- Averaging core: extract the large-neighbourhood vertex `b`.
   obtain ⟨b, hbA, hb⟩ := exists_large_left_neighborhood A K G hA hcherry
-  -- Translate `rDeg A G b` to `#(leftNbhd A G b)` (definitionally equal).
-  have hb' : #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhd A G b)) ^ 2 := by
-    rwa [card_leftNbhd]
+  -- Translate `rDeg A G b` to `#(leftNbhdDRC2 A G b)` (definitionally equal).
+  have hb' : #A ^ 2 ≤ 16 * K ^ 4 * (#(leftNbhdDRC2 A G b)) ^ 2 := by
+    rwa [card_leftNbhdDRC2]
   -- Hand off to the kernel.
   exact hker A K G b hK hA hGsub hbA hb'
 
 end Finset.BSG
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound — and NO sorryAx).
-#print axioms Finset.BSG.card_leftNbhd
+#print axioms Finset.BSG.card_leftNbhdDRC2
 #print axioms Finset.BSG.exists_large_left_neighborhood
 #print axioms Finset.BSG.bareDRC_of_kernel

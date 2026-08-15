@@ -25,7 +25,7 @@ axiom-clean.
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 31) := ⟨by norm_num⟩
+instance prime31FactMu10 : Fact (Nat.Prime 31) := ⟨by norm_num⟩
 
 /-- `μ_10 ⊆ F_31`, the 10th roots of unity `{1, 2, 4, 8, 15, 16, 23, 27, 29, 30}`
 (`−2 = 29` is a primitive 10th root: `(−2)^5 = −1 = 30`). -/

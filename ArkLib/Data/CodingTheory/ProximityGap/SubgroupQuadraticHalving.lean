@@ -202,7 +202,7 @@ theorem secondMoment_gaussSum_sq_eq (ψ : AddChar F ℂ) {m : ℕ} (hm : 0 < m) 
 /-! ## 4. Non-vacuity: the halving is realized over a genuine smooth domain. -/
 
 /-- `5` is prime, so `ZMod 5` is a field hosting a smooth `2²`-subgroup (`2m = 4`, `m = 2`). -/
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_SubgroupQuadraticHalving_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- **Non-vacuity witness.** Over `F = ZMod 5`, `2` is a primitive `4`-th root of unity
 (`2¹=2, 2²=4, 2³=3, 2⁴=1`), so `μ_4 = {1,2,3,4}` and `μ_2 = {1,4}` (`4 = −1`). The halving hypotheses

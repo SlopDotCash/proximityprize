@@ -138,7 +138,7 @@ namespace Counterexample
 /-- The five-element field used by the countermodel. -/
 abbrev F5 := ZMod 5
 
-local instance : Fact (Nat.Prime 5) := ⟨by decide⟩
+local instance localInstance_HalfPredecessorRateQuarterDirectionCapDichotomy_1 : Fact (Nat.Prime 5) := ⟨by decide⟩
 
 /-- Four distinct evaluation points in `F_5`. -/
 def dom : Fin 4 ↪ F5 :=
@@ -273,7 +273,7 @@ open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 
 abbrev F11 := ZMod 11
 
-local instance : Fact (Nat.Prime 11) := ⟨by decide⟩
+local instance localInstance_HalfPredecessorRateQuarterDirectionCapDichotomy_2 : Fact (Nat.Prime 11) := ⟨by decide⟩
 
 /-- Eight distinct evaluation points in `F_11`. -/
 def dom : Fin 8 ↪ F11 :=

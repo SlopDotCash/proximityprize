@@ -202,7 +202,7 @@ theorem shortKernelFreeL1_elim (g : F) (m r : ℕ)
 
 /-! ## The first concrete instance: `(n, r, p) = (8, 3, 1409)`, `g = 72` (order 8) -/
 
-instance : Fact (Nat.Prime 1409) := ⟨by norm_num⟩
+instance primeFact_R394L1KernelCertificate_1 : Fact (Nat.Prime 1409) := ⟨by norm_num⟩
 
 theorem n8_p1409_g72_pow : (72 : ZMod 1409) ^ 4 = -1 := by decide
 

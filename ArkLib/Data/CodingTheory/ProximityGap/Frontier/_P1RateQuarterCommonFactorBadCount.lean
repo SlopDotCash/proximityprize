@@ -3,7 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedConstruction
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedSafeEvents
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterSaturatedUnsafeEvents
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterBadLabelFamilyConnector
 
 /-!
@@ -35,7 +36,7 @@ open P1RateQuarterCommonFactorConstruction
 open P1RateQuarterSaturatedConstruction
 open P1RateQuarterBadLabelFamilyConnector
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCommonFactorBadCount_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 local notation "δsat" => P1RateQuarterCommonFactorArithmetic.delta

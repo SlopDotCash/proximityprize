@@ -147,8 +147,8 @@ open P1RateQuarterScaleArithmetic
 open P1RateQuarterCommonFactorArithmetic
 open P1RateQuarterPredecessorGenericSplit
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterJointWitnessCharge_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterJointWitnessCharge_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-- The finite presentation of the predecessor Reed--Solomon code used by `interleavedList`. -/

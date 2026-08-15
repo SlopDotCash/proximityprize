@@ -41,7 +41,7 @@ attribute [local instance] Classical.propDecidable
 
 local notation "F7" => ZMod 7
 
-instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+instance primeFact_Hab25SlackWeldFence_1 : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-- The square-root table on the squares of `ZMod 7`. -/
 def sq7 : F7 → F7 := fun γ =>

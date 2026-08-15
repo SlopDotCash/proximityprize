@@ -130,10 +130,10 @@ theorem e2_zero_pairwiseProducts_antipodal {μ : ℕ} {r : Fin 4 → L}
     (k := μ) (quartetProducts_torsion hr) hsum
 
 /-- Specialization to the canonical quartet `{1, w, w², −w}` (the Sweep-A16 representative):
-its six pairwise products `{w, w², −w, w³, −w², −w³}` are antipodally balanced whenever `w`
-is a `2^μ`-th root — a fortiori, since here `e₂ ≡ 0` is the formal ring identity. -/
+for `μ > 0`, its six pairwise products `{w, w², −w, w³, −w², −w³}` are antipodally balanced
+whenever `w` is a `2^μ`-th root — a fortiori, since here `e₂ ≡ 0` is the formal ring identity. -/
 theorem canonical_quartet_products_antipodal {μ : ℕ} {w : L}
-    (hw : w ^ (2 ^ μ) = 1) :
+    (hμ : 0 < μ) (hw : w ^ (2 ^ μ) = 1) :
     ∀ z : L, (pairwiseProducts ![1, w, w ^ 2, -w]).count z
               = (pairwiseProducts ![1, w, w ^ 2, -w]).count (-z) := by
   refine e2_zero_pairwiseProducts_antipodal (μ := μ) (r := ![1, w, w ^ 2, -w]) ?_ ?_
@@ -145,13 +145,7 @@ theorem canonical_quartet_products_antipodal {μ : ℕ} {w : L}
       rw [← pow_mul, mul_comm, pow_mul, hw, one_pow]
     · change (-w) ^ (2 ^ μ) = 1
       rw [neg_pow, hw, mul_one]
-      rcases Nat.even_or_odd (2 ^ μ) with ⟨m, hm⟩ | ⟨m, hm⟩
-      · rw [hm]; ring_nf; rw [pow_mul]; simp
-      · exfalso
-        rcases Nat.eq_zero_or_pos μ with rfl | hμ
-        · simp at hm
-        · have : Even (2 ^ μ) := (Nat.even_pow.mpr ⟨even_two, by omega⟩)
-          rw [hm] at this; omega
+      exact (Nat.even_pow.mpr ⟨even_two, Nat.ne_of_gt hμ⟩).neg_one_pow
   · -- the e₂ = 0 ring identity for {1, w, w², −w}
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
       Matrix.cons_val_two, Matrix.tail_cons, Matrix.cons_val_three]

@@ -185,7 +185,7 @@ theorem orderTwoHigherMDS_not_linearMCA_of_choose_gt
 
 /-! ## Small explicit witness -/
 
-instance : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
+instance primeFact_ProjectiveDualWeightNoGo_1 : Fact (Nat.Prime 4129) := ⟨by norm_num⟩
 
 /-- The order-eight generator used by the closed `F_4129` smooth-domain pin. -/
 theorem orderOf_2386 : orderOf (2386 : ZMod 4129) = 8 := by

@@ -32,8 +32,8 @@ namespace ArkLib.ProximityGap.PackingPrizeP30Ceilings
 
 open PrizeShapePrimeP30
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
+local instance localInstance_PackingPrizeP30Ceilings_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_PackingPrizeP30Ceilings_2 : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
 
 /-- At rate `1/4` (`k = 2^28`), the faithful operational threshold is at most `1/2`,
 the Johnson radius. -/

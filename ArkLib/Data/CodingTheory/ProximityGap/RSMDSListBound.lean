@@ -290,7 +290,7 @@ theorem rs_list_leading_bound {n k : ℕ} {α : Fin n → F} (hα : Function.Inj
 section Concrete
 
 /-- `7` is prime, supplying the `Field (ZMod 7)` instance. -/
-instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+instance primeFact_RSMDSListBound_1 : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-- Evaluation points for the concrete `RS[ZMod 7, 5, 2]`: the first five field elements. -/
 def α₀ : Fin 5 → ZMod 7 := fun i => (i.val : ZMod 7)

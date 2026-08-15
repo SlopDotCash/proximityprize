@@ -237,7 +237,7 @@ and the resulting bound is the CONCRETE POSITIVE number
 so there really exist `≥ 2` distinct codewords agreeing with `X^2` on `2` of
 the `5` points — the averaging lower bound is non-vacuous. -/
 
-instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+instance primeFact_AveragingListLowerBoundRS_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 /-- The evaluation map for the witness instance. -/
 def vWit : Fin 5 → ZMod 5 := fun i => (i : ZMod 5)

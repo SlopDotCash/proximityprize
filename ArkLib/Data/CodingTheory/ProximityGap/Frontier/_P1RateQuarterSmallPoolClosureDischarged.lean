@@ -74,8 +74,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterLayerCakeBudget
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSmallPoolAssembly
 open ProximityGap.SharedFreshPencil
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterSmallPoolClosureDischarged_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSmallPoolClosureDischarged_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## The layer-cake identity -/

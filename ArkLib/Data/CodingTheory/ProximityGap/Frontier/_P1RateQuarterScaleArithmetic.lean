@@ -31,7 +31,7 @@ open ArkLib.ProximityGap.PrizeShapePrimeP30
 
 abbrev F := ZMod P
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterScaleArithmetic_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 
 abbrev N : ℕ := 2 ^ 30
 abbrev m : ℕ := 2 ^ 26

@@ -29,7 +29,7 @@ open ProximityGap Code ProximityGap.CensusLowerBound ProximityGap.SmoothLadderIn
 
 namespace ProximityGap.BoundaryExactEpsF13
 
-instance : Fact (Nat.Prime 13) := ⟨by norm_num⟩
+instance primeFact_BoundaryExactEpsF13_1 : Fact (Nat.Prime 13) := ⟨by norm_num⟩
 
 /-- **Exact boundary MCA value over `F_13`.**  For `RS[F_13, μ_12, 8]` (`μ_12 = ⟨2⟩`,
 `orderOf 2 = 12`) at the boundary radius `δ = 1/6` (so `δ·n = 2 ∈ [2, 3)`), the boundary-band law

@@ -16,7 +16,7 @@ map): the **additive energy at its floor** and the **Sidon-mod-negation** proper
 The forward direction `SidonModNeg G → E(G) = 3n²−3n` is `additiveEnergy_eq_of_sidonModNeg`. This
 file adds the **converse** and packages both as an iff:
 
-> **`sidonModNeg_of_additiveEnergy_eq`** — for negation-closed `G ∌ 0` over a field with `2 ≠ 0`,
+> **`sidonModNeg_of_additiveEnergy_eq_energyIff`** — for negation-closed `G ∌ 0` over a field with `2 ≠ 0`,
 > `E(G) = 3n²−3n  ⟹  SidonModNeg G`.
 > **`energyExcess_eq_zero_iff_sidonModNeg`** — `energyExcess G = 0 ↔ SidonModNeg G`.
 
@@ -38,7 +38,7 @@ variable {F : Type*} [Field F] [DecidableEq F]
 
 /-- **Converse of `additiveEnergy_eq_of_sidonModNeg`.** If the additive energy attains its
 negation-closed floor `3n²−3n`, then `G` is Sidon-mod-negation. -/
-theorem sidonModNeg_of_additiveEnergy_eq {G : Finset F}
+theorem sidonModNeg_of_additiveEnergy_eq_energyIff {G : Finset F}
     (h2 : (2 : F) ≠ 0) (h0 : (0 : F) ∉ G) (hneg : ∀ x ∈ G, -x ∈ G)
     (hE : additiveEnergy G = 3 * G.card ^ 2 - 3 * G.card) :
     SidonModNeg G := by
@@ -135,7 +135,7 @@ theorem energyExcess_eq_zero_iff_sidonModNeg {G : Finset F}
     have hE : additiveEnergy G = 3 * G.card ^ 2 - 3 * G.card := by
       have := additiveEnergy_eq_min_add_excess h2 h0 hneg
       rw [hz, add_zero] at this; exact this
-    exact sidonModNeg_of_additiveEnergy_eq h2 h0 hneg hE
+    exact sidonModNeg_of_additiveEnergy_eq_energyIff h2 h0 hneg hE
   · intro hS
     have hE := additiveEnergy_eq_of_sidonModNeg h2 h0 hneg hS
     unfold energyExcess; omega

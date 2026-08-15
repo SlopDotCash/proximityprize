@@ -15,7 +15,7 @@ open Finset Polynomial
 open _root_.ProximityGap Code
 open scoped NNReal Polynomial
 
-namespace ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+namespace ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open P1RateQuarterScaleArithmetic
@@ -23,7 +23,7 @@ open P1RateQuarterScaleConstruction
 open P1RateQuarterCommonFactorConstruction
 open RateQuarterCommonFactorOwnershipAmplifier
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSaturatedPairAgreement_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
 attribute [local instance] Classical.propDecidable
 
 theorem amplified_pair_agreement_of_old_values
@@ -93,9 +93,9 @@ theorem amplified_pair_agreement_of_common_root
     hzero]
   simp
 
-end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 
-open ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+open ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstructionLegacy
 #print axioms amplified_pair_agreement_of_old_values
 #print axioms amplified_pair_agreement_of_old_core
 #print axioms amplified_pair_agreement_of_common_root

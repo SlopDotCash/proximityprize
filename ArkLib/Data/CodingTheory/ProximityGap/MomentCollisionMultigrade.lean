@@ -80,7 +80,7 @@ theorem collisionCount_gt_choose_of_offDiagonal (G : Finset F) (a : ℕ)
 
 /-! ## The transition witness: the multigrade lives in the order-16 group, not the order-8 subgroup. -/
 
-instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+instance primeFact_MomentCollisionMultigrade_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The full order-`16` multiplicative group `F₁₇* = ⟨3⟩` (`= {1,…,16}`), a smooth `2⁴` domain. -/
 def F17star : Finset (ZMod 17) := {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}

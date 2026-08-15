@@ -25,7 +25,7 @@ heartbeats, ~26 s); axiom-clean.
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 379) := ⟨by norm_num⟩
+instance prime379FactMu18 : Fact (Nat.Prime 379) := ⟨by norm_num⟩
 
 /-- `μ_18 ⊆ F_379`, the 18th roots of unity. -/
 def mu18_F379 : Finset (ZMod 379) :=

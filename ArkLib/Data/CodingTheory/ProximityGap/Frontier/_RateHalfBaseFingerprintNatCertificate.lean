@@ -16,8 +16,7 @@ inverses, while retaining a small proved cast bridge in
 -/
 
 set_option autoImplicit false
-set_option maxRecDepth 100000
-set_option maxHeartbeats 4000000
+set_option maxRecDepth 10000000
 
 namespace ArkLib.ProximityGap.Frontier.RateHalfBaseFingerprintNatCertificate
 
@@ -29,7 +28,7 @@ abbrev modulus : Nat := P
 abbrev baseGeneratorNat : Nat :=
   321066668146402433440778728016715546214271526818
 
-local instance : Fact (Nat.Prime modulus) := ⟨prime_P⟩
+local instance localInstance_RateHalfBaseFingerprintNatCertificate_1 : Fact (Nat.Prime modulus) := ⟨prime_P⟩
 
 /-- Natural representative of the `i`-th point of `mu_64`. -/
 def domainNat (i : Nat) : Nat :=
@@ -330,12 +329,9 @@ theorem natCast_reducedNat
   change (((d + 3 * modulus - t0 - t1 - t2) % modulus : Nat) : ZMod modulus) = _
   rw [ZMod.natCast_mod, Nat.cast_sub hsub2, Nat.cast_sub hsub1,
     Nat.cast_sub hsub0]
-  simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, ZMod.natCast_self,
-    mul_zero, add_zero, ZMod.natCast_mod]
-  change (d : ZMod modulus) -
-      ((defectNat c outsideCoord 0 * r0 % modulus : Nat) : ZMod modulus) -
-      ((defectNat c outsideCoord 1 * r1 % modulus : Nat) : ZMod modulus) -
-      ((defectNat c outsideCoord 2 * r2 % modulus : Nat) : ZMod modulus) = _
+  have hmod : (modulus : ZMod modulus) = 0 := ZMod.natCast_self modulus
+  rw [Nat.cast_add, Nat.cast_mul, hmod, mul_zero, add_zero]
+  dsimp only [d, t0, t1, t2]
   rw [ZMod.natCast_mod, ZMod.natCast_mod, ZMod.natCast_mod,
     Nat.cast_mul, Nat.cast_mul, Nat.cast_mul]
 
@@ -348,11 +344,59 @@ def reduced15 (i : Fin 93) : Nat :=
 def chartNat (i : Fin 93) : Nat :=
   reduced15 i * inverseNat (reduced6 i) % modulus
 
+set_option maxHeartbeats 4000000 in
+-- Each block kernel-evaluates up to 31 large modular certificates.
+private theorem reduced6_ne_zero_block0 (i : Fin 93) (hi : i.val < 31) :
+    reduced6 i ≠ 0 := by
+  fin_cases i <;> first | omega | decide
+
+set_option maxHeartbeats 4000000 in
+-- Each block kernel-evaluates up to 31 large modular certificates.
+private theorem reduced6_ne_zero_block1 (i : Fin 93) (hlo : 31 ≤ i.val) (hi : i.val < 62) :
+    reduced6 i ≠ 0 := by
+  fin_cases i <;> first | omega | decide
+
+set_option maxHeartbeats 4000000 in
+-- Each block kernel-evaluates up to 31 large modular certificates.
+private theorem reduced6_ne_zero_block2 (i : Fin 93) (hlo : 62 ≤ i.val) :
+    reduced6 i ≠ 0 := by
+  fin_cases i <;> first | omega | decide
+
 /-- Every direction lies in the common coordinate-6 chart. -/
-theorem reduced6_ne_zero : forall i, reduced6 i ≠ 0 := by decide
+theorem reduced6_ne_zero : forall i, reduced6 i ≠ 0 := by
+  intro i
+  by_cases h0 : i.val < 31
+  · exact reduced6_ne_zero_block0 i h0
+  by_cases h1 : i.val < 62
+  · exact reduced6_ne_zero_block1 i (by omega) h1
+  · exact reduced6_ne_zero_block2 i (by omega)
+
+set_option maxHeartbeats 4000000 in
+-- Each block kernel-evaluates up to 31 large modular certificates.
+private theorem chartNat_eq_fingerprintNat_block0 (i : Fin 93) (hi : i.val < 31) :
+    chartNat i = fingerprintNat i := by
+  fin_cases i <;> first | omega | decide
+
+set_option maxHeartbeats 4000000 in
+-- Each block kernel-evaluates up to 31 large modular certificates.
+private theorem chartNat_eq_fingerprintNat_block1 (i : Fin 93) (hlo : 31 ≤ i.val)
+    (hi : i.val < 62) : chartNat i = fingerprintNat i := by
+  fin_cases i <;> first | omega | decide
+
+set_option maxHeartbeats 4000000 in
+-- Each block kernel-evaluates up to 31 large modular certificates.
+private theorem chartNat_eq_fingerprintNat_block2 (i : Fin 93) (hlo : 62 ≤ i.val) :
+    chartNat i = fingerprintNat i := by
+  fin_cases i <;> first | omega | decide
 
 /-- The natural evaluator reproduces the compact fingerprint table exactly. -/
-theorem chartNat_eq_fingerprintNat : forall i, chartNat i = fingerprintNat i := by decide
+theorem chartNat_eq_fingerprintNat : forall i, chartNat i = fingerprintNat i := by
+  intro i
+  by_cases h0 : i.val < 31
+  · exact chartNat_eq_fingerprintNat_block0 i h0
+  by_cases h1 : i.val < 62
+  · exact chartNat_eq_fingerprintNat_block1 i (by omega) h1
+  · exact chartNat_eq_fingerprintNat_block2 i (by omega)
 
 def reducedZ (c : Fin 3) (outsideCoord target r0 r1 r2 : Nat) : ZMod modulus :=
   defectZ c outsideCoord target - defectZ c outsideCoord 0 * r0 -
@@ -369,20 +413,42 @@ def chartZ (i : Fin 93) : ZMod modulus := reduced15Z i / reduced6Z i
 theorem natCast_reduced6 (i : Fin 93) :
     (reduced6 i : ZMod modulus) = reduced6Z i := by
   rw [reduced6, reduced6Z, reducedZ, natCast_reducedNat]
-  rw [natCast_defectNat_checked (coreOf i) (outsideOf i) (3 : Fin 5),
-    natCast_defectNat_checked (coreOf i) (outsideOf i) (0 : Fin 5),
-    natCast_defectNat_checked (coreOf i) (outsideOf i) (1 : Fin 5),
-    natCast_defectNat_checked (coreOf i) (outsideOf i) (2 : Fin 5)]
-  rfl
+  rw [show (defectNat (coreOf i) (outsideOf i) 6 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 6 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (3 : Fin 5),
+    show (defectNat (coreOf i) (outsideOf i) 0 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 0 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (0 : Fin 5),
+    show (defectNat (coreOf i) (outsideOf i) 1 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 1 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (1 : Fin 5),
+    show (defectNat (coreOf i) (outsideOf i) 2 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 2 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (2 : Fin 5)]
 
 theorem natCast_reduced15 (i : Fin 93) :
     (reduced15 i : ZMod modulus) = reduced15Z i := by
   rw [reduced15, reduced15Z, reducedZ, natCast_reducedNat]
-  rw [natCast_defectNat_checked (coreOf i) (outsideOf i) (4 : Fin 5),
-    natCast_defectNat_checked (coreOf i) (outsideOf i) (0 : Fin 5),
-    natCast_defectNat_checked (coreOf i) (outsideOf i) (1 : Fin 5),
-    natCast_defectNat_checked (coreOf i) (outsideOf i) (2 : Fin 5)]
-  rfl
+  rw [show (defectNat (coreOf i) (outsideOf i) 15 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 15 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (4 : Fin 5),
+    show (defectNat (coreOf i) (outsideOf i) 0 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 0 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (0 : Fin 5),
+    show (defectNat (coreOf i) (outsideOf i) 1 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 1 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (1 : Fin 5),
+    show (defectNat (coreOf i) (outsideOf i) 2 : ZMod modulus) =
+      defectZ (coreOf i) (outsideOf i) 2 by
+        simpa [checkedCoord] using
+          natCast_defectNat_checked (coreOf i) (outsideOf i) (2 : Fin 5)]
 
 theorem reduced6_lt_modulus (i : Fin 93) : reduced6 i < modulus :=
   Nat.mod_lt _ (by norm_num [modulus, P])
@@ -395,13 +461,18 @@ theorem reduced6Z_ne_zero (i : Fin 93) : reduced6Z i ≠ 0 := by
   simp only [ZMod.val_zero] at hval
   exact reduced6_ne_zero i hval
 
-theorem natCast_chartNat (i : Fin 93) :
+private theorem natCast_chartNat_of_ne_zero (i : Fin 93)
+    (h : (reduced6 i : ZMod modulus) ≠ 0) :
     (chartNat i : ZMod modulus) = chartZ i := by
   rw [chartNat, chartZ, ZMod.natCast_mod, Nat.cast_mul,
-    natCast_inverseNat, natCast_reduced15, natCast_reduced6]
-  · rfl
-  · rw [natCast_reduced6]
-    exact reduced6Z_ne_zero i
+    natCast_inverseNat _ h, natCast_reduced15, natCast_reduced6]
+  rw [div_eq_mul_inv]
+
+theorem natCast_chartNat (i : Fin 93) :
+    (chartNat i : ZMod modulus) = chartZ i := by
+  apply natCast_chartNat_of_ne_zero
+  rw [natCast_reduced6]
+  exact reduced6Z_ne_zero i
 
 theorem chartZ_eq_fingerprint (i : Fin 93) : chartZ i = fingerprint i := by
   rw [← natCast_chartNat, chartNat_eq_fingerprintNat i]

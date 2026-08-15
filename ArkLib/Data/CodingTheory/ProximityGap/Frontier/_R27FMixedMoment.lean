@@ -178,7 +178,7 @@ section ConjDictionary
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-noncomputable local instance : DecidableEq (MulChar F ℂ) := Classical.decEq _
+noncomputable local instance localInstance_R27FMixedMoment_1 : DecidableEq (MulChar F ℂ) := Classical.decEq _
 
 /-- Conjugation sends the thin twisted sum of `χ'` to that of `χ'⁻¹` (exactly — no
 regime hypothesis needed). -/

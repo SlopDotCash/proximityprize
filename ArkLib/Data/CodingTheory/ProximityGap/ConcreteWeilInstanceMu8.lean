@@ -25,7 +25,7 @@ exactly-Sidon `μ_4`/`μ_6` instances and the `C = 1` `μ_14 ⊆ F_239` instance
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 41) := ⟨by norm_num⟩
+instance prime41FactMu8 : Fact (Nat.Prime 41) := ⟨by norm_num⟩
 
 /-- `μ_8 ⊆ F_41`, the 8th roots of unity `{1, 3, 9, 14, 27, 32, 38, 40}` (`3` is a primitive
 8th root: `3^4 = 40 = −1`). -/

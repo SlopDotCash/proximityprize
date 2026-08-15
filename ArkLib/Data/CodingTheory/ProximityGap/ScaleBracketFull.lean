@@ -470,7 +470,7 @@ abbrev pW : ℕ := 1048583
 
 instance factW : Fact (Nat.Prime pW) := ⟨by norm_num⟩
 
-instance : NeZero pW := ⟨by norm_num⟩
+instance moduleInstance_ScaleBracketFull_1 : NeZero pW := ⟨by norm_num⟩
 
 /-- The `2^20` evaluation points, embedded in `𝔽_p`. -/
 def embW (x : Fin (2 ^ 20)) : ZMod pW := (x.val : ZMod pW)

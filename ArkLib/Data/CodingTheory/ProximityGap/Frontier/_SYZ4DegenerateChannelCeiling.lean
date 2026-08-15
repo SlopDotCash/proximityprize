@@ -211,12 +211,12 @@ section Production
 open ArkLib.ProximityGap.PrizeShapePrimeP30
 open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket
 
-local instance : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
+local instance localInstance_SYZ4DegenerateChannelCeiling_1 : Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=
   ⟨prime_P⟩
 
-local instance : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
+local instance localInstance_SYZ4DegenerateChannelCeiling_2 : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
 
-local instance : NeZero (64 : ℕ) := ⟨by norm_num⟩
+local instance localInstance_SYZ4DegenerateChannelCeiling_3 : NeZero (64 : ℕ) := ⟨by norm_num⟩
 
 /-- Small naturals are below the 158-bit modulus. -/
 private theorem lt_P_small {a : ℕ} (h : a ≤ 12) : a < P := by

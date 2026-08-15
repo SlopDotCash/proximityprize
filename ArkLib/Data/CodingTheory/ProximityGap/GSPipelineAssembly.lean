@@ -50,7 +50,7 @@ namespace R14GS
 
 universe u
 
-instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+instance primeFact_GSPipelineAssembly_1 : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-! ## Part 1: the generic GS endgame (Y-degree cap) -/
 

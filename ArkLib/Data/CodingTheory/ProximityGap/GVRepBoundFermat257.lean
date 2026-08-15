@@ -44,7 +44,7 @@ namespace ArkLib.ProximityGap.AdditiveEnergyRepBound
 
 open ArkLib.ProximityGap.SubgroupAdditiveEnergyFermat257
 
-local instance : Fact (Nat.Prime 257) := ⟨by norm_num⟩
+local instance localInstance_GVRepBoundFermat257_1 : Fact (Nat.Prime 257) := ⟨by norm_num⟩
 
 set_option maxHeartbeats 2000000 in
 set_option maxRecDepth 100000 in

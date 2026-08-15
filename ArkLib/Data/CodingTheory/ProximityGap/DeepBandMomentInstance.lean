@@ -39,7 +39,7 @@ open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership Code
 
 abbrev F131 := ZMod 131
 
-instance : Fact (Nat.Prime 131) := ⟨by decide⟩
+instance primeFact_DeepBandMomentInstance_1 : Fact (Nat.Prime 131) := ⟨by decide⟩
 
 /-- The 128-point evaluation domain `{0, 1, …, 127} ⊆ F₁₃₁`. -/
 def dom131 : Fin 128 ↪ F131 :=

@@ -51,7 +51,7 @@ attribute [local instance] Classical.propDecidable
 
 abbrev F17 := ZMod 17
 
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+local instance localInstance_HalfPredecessorRateQuarterSupportFourSixStratumRefuted_1 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- The canonical smooth length-sixteen domain `F_17^*`. -/
 def domainValues : Fin 16 → F17 := ![

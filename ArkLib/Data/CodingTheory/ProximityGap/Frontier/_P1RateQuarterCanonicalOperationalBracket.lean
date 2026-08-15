@@ -33,8 +33,8 @@ open P1RateQuarterScaleFinalConsumer
 open P1RateQuarterOperationalBracket
 open MCAReindexThresholdEquiv
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterCanonicalOperationalBracket_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterCanonicalOperationalBracket_2 : NeZero N := ⟨by norm_num [N]⟩
 
 local notation "epsilonP1" =>
   ((((2 : ℕ) ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)

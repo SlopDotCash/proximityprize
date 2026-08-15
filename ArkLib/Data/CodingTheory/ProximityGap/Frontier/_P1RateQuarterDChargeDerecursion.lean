@@ -75,8 +75,8 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ArkLib.ProximityGap.Frontier.P1RateQuarterGlobalConsistencyCharge
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterDChargeDerecursion_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterDChargeDerecursion_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## Level 0: the pair problem collapses to a direction problem on `Z` -/

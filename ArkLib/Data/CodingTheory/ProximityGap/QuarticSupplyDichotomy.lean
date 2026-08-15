@@ -54,7 +54,7 @@ open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership Code
 
 section MuFive
 
-local instance : Fact (Nat.Prime 11) := ⟨by norm_num⟩
+local instance localInstance_QuarticSupplyDichotomy_1 : Fact (Nat.Prime 11) := ⟨by norm_num⟩
 
 /-- `μ_5 = ⟨3⟩ ⊂ F₁₁` (the order-5 subgroup; `3` has order `5` mod `11`). -/
 def dom5vals : Fin 5 → ZMod 11 := ![1, 3, 9, 5, 4]
@@ -85,7 +85,7 @@ end MuFive
 
 section MuSix
 
-local instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+local instance localInstance_QuarticSupplyDichotomy_2 : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-- `μ_6 = F₇^× ⊂ F₇` (the full multiplicative group, cyclic of order 6). -/
 def dom6vals' : Fin 6 → ZMod 7 := ![1, 2, 3, 4, 5, 6]
@@ -118,7 +118,7 @@ end MuSix
 
 section MuEight
 
-local instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+local instance localInstance_QuarticSupplyDichotomy_3 : Fact (Nat.Prime 17) := ⟨by norm_num⟩
 
 /-- `μ_8 = ⟨2⟩ ⊂ F₁₇` (the order-8 subgroup; `2` has order `8` mod `17`) — the 2-power,
 FRI-shaped domain.  Antipodal pairs: `(1,16), (2,15), (4,13), (8,9)` (`−1 = 16`). -/

@@ -26,7 +26,7 @@ hypothesis (including the energy `E = 684`) is discharged by `decide`; axiom-cle
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
-instance : Fact (Nat.Prime 37) := ⟨by norm_num⟩
+instance prime37FactMu12 : Fact (Nat.Prime 37) := ⟨by norm_num⟩
 
 /-- `μ_12 ⊆ F_37`, the 12th roots of unity `{1, 6, 8, 10, 11, 14, 23, 26, 27, 29, 31, 36}`
 (`8` is a primitive 12th root: `8^6 = 36 = −1`). -/

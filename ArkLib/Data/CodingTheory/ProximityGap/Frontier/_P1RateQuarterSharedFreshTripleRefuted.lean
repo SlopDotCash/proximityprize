@@ -51,8 +51,8 @@ open ArkLib.ProximityGap.PrizeShapePrimeP30
 open ArkLib.ProximityGap.Frontier.P1RateQuarterScaleArithmetic
 open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 
-local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
-local instance : NeZero N := ⟨by norm_num [N]⟩
+local instance localInstance_P1RateQuarterSharedFreshTripleRefuted_1 : Fact (Nat.Prime P) := ⟨prime_P⟩
+local instance localInstance_P1RateQuarterSharedFreshTripleRefuted_2 : NeZero N := ⟨by norm_num [N]⟩
 attribute [local instance] Classical.propDecidable
 
 /-! ## Exact coordinate blocks -/

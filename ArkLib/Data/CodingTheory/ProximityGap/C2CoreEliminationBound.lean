@@ -380,7 +380,7 @@ theorem thm38_min_bound_fails {D₀ : Finset F} {w N : ℕ} {α β : F}
   rw [degenerate_line_full hE hN, Finset.card_univ]
   omega
 
-instance : Fact (Nat.Prime 11) := ⟨by norm_num⟩
+instance primeFact_C2CoreEliminationBound_1 : Fact (Nat.Prime 11) := ⟨by norm_num⟩
 
 open Classical in
 /-- Concrete witness over `ZMod 11`: domain `{0,1,2}`, `w = 2`, support `{0,1}`,
