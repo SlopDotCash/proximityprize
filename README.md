@@ -1,4 +1,17 @@
-# Formally Verified Arguments of Knowledge
+# Proximity Prize Formalization
+
+This repository is the standalone, canonical home of the machine-checked
+Reed–Solomon proximity-gap campaign for the
+[Ethereum Foundation Proximity Prize](https://proximityprize.org/). Start with
+the [δ* programme guide](docs/wiki/deltastar-programme.md), the
+[live issues](https://github.com/elizaOS/proximityprize/issues), and the
+[Proximity Gap agent guide](ArkLib/Data/CodingTheory/ProximityGap/AGENTS.md).
+
+The campaign retains the broader ArkLib formal-verification substrate it builds
+on, including the original library overview below. Lean module and package names
+remain `ArkLib` for compatibility with the existing checked proof graph.
+
+## Formal verification library foundation
 
 This library aims to provide a modular and composable framework for formally verifying **succinct non-interactive arguments of knowledge** (SNARKs). This is done as part of the [verified-zkevm effort](https://verified-zkevm.org/).
 
