@@ -76,9 +76,11 @@ open ArkLib.ProximityGap.Frontier.R325BinomialRecurrenceReturnBound
 /-- The algebraic closure of ℚ, the ambient field for the root products. -/
 abbrev K : Type := AlgebraicClosure ℚ
 
+noncomputable local instance : DecidableEq K := Classical.decEq K
+
 theorem aroots_nodup (k : ℕ) : ((fq k).aroots K).Nodup := by
   rw [Polynomial.aroots_def]
-  exact Polynomial.nodup_roots ((fq_irreducible k).separable.map _)
+  exact Polynomial.nodup_roots (fq_irreducible k).separable.map
 
 /-- The `2^k` distinct roots of `x^{2^k}+1` in `K`, as a `Finset`. -/
 noncomputable def rootFinset (k : ℕ) : Finset K := ((fq k).aroots K).toFinset
@@ -98,8 +100,8 @@ theorem mem_rootFinset {k : ℕ} {y : K} : y ∈ rootFinset k ↔ y ^ 2 ^ k = -1
 
 theorem card_rootFinset (k : ℕ) : (rootFinset k).card = 2 ^ k := by
   rw [rootFinset, Multiset.toFinset_card_of_nodup (aroots_nodup k), Polynomial.aroots_def]
-  have hsp : ((fq k).map (algebraMap ℚ K)).Splits (RingHom.id K) :=
-    IsAlgClosed.splits_codomain _
+  have hsp : ((fq k).map (algebraMap ℚ K)).Splits :=
+    IsAlgClosed.splits _
   rw [(Polynomial.splits_iff_card_roots).mp hsp, (fq_monic k).natDegree_map, fq_natDegree]
 
 /-- Convert the multiset product over `aroots` into a `Finset` product. -/
@@ -133,12 +135,12 @@ theorem prod_linear_eq (k : ℕ) (hk : 1 ≤ k) (a b : ℤ) (hb : b ≠ 0) :
   set c : K := -(a : K) / (b : K) with hc
   set q : K[X] := (fq k).map (algebraMap ℚ K) with hq
   have hqm : q.Monic := (fq_monic k).map _
-  have hqsp : q.Splits (RingHom.id K) := IsAlgClosed.splits_codomain _
+  have hqsp : q.Splits := IsAlgClosed.splits q
   -- evaluate q at c two ways
   have he1 : q.eval c = c ^ 2 ^ k + 1 := by
     rw [hq, Polynomial.eval_map, ← aeval_def, aeval_fq]
   have he2 : q.eval c = ∏ y ∈ rootFinset k, (c - y) := by
-    conv_lhs => rw [Polynomial.eq_prod_roots_of_monic_of_splits_id hqm hqsp]
+    conv_lhs => rw [hqsp.eq_prod_roots_of_monic hqm]
     rw [Polynomial.eval_multiset_prod, Multiset.map_map]
     have hmm : (q.roots.map fun y => Polynomial.eval c (X - Polynomial.C y))
         = (q.roots.map fun y => c - y) := Multiset.map_congr rfl fun y _ => by simp
@@ -149,6 +151,7 @@ theorem prod_linear_eq (k : ℕ) (hk : 1 ≤ k) (a b : ℤ) (hb : b ≠ 0) :
     intro y _
     rw [hc]
     field_simp
+    <;> ring
   rw [Finset.prod_congr rfl hpoint, Finset.prod_mul_distrib, Finset.prod_const,
     card_rootFinset, ← he2, he1, hc, neg_div, heven.neg_pow, heven.neg_pow, div_pow]
   field_simp
@@ -163,7 +166,7 @@ theorem prod_pow_odd_reindex (k : ℕ) {s : ℕ} (hs : Odd s) (a b : ℤ) :
   have hco : Nat.Coprime s (2 ^ (k + 1)) :=
     Nat.Coprime.pow_right _
       (Nat.coprime_comm.mp ((Nat.prime_two.coprime_iff_not_dvd).mpr hnd))
-  obtain ⟨s', hs'⟩ := Nat.exists_mul_emod_eq_one_of_coprime hco
+  obtain ⟨s', _, hs'⟩ := Nat.exists_mul_emod_eq_one_of_coprime hco
     (Nat.one_lt_pow (Nat.succ_ne_zero k) (by norm_num))
   have hss' : s * s' = 2 ^ (k + 1) * (s * s' / 2 ^ (k + 1)) + 1 := by
     conv_lhs => rw [← Nat.div_add_mod (s * s') (2 ^ (k + 1))]
@@ -218,7 +221,7 @@ theorem sq_mem_rootFinset {k : ℕ} {y : K} (hy : y ∈ rootFinset (k + 1)) :
 theorem card_sq_fiber (k : ℕ) {z : K} (hz : z ∈ rootFinset k) :
     (Finset.filter (fun y => y ^ 2 = z) (rootFinset (k + 1))).card = 2 := by
   obtain ⟨y₀, hy₀⟩ : ∃ y : K, y ^ 2 = z :=
-    IsAlgClosed.exists_pow_nat_eq z 2 (by norm_num)
+    IsAlgClosed.exists_pow_nat_eq z (by norm_num)
   have hz1 : z ^ 2 ^ k = -1 := mem_rootFinset.mp hz
   have hzne : z ≠ 0 := by
     intro h
@@ -277,7 +280,7 @@ theorem patternResultant_binomial_even_sq (k : ℕ) (a b : ℤ) (t : ℕ) :
         (a : K) + (b : K) * y ^ (2 * t) = (a : K) + (b : K) * z ^ t := by
       intro y hy
       rw [Finset.mem_filter] at hy
-      rw [mul_comm 2 t, pow_mul, hy.2]
+      rw [pow_mul, hy.2]
     rw [Finset.prod_congr rfl hcongr, Finset.prod_const, card_sq_fiber k hz]
   rw [Finset.prod_congr rfl hinner, ← Finset.prod_pow]
 
@@ -288,7 +291,7 @@ theorem prime_dvd_patternResultant_of_realized {p : ℕ} [Fact p.Prime] (k : ℕ
     (hroot : (a : ZMod p) + (b : ZMod p) * g ^ s = 0) :
     (p : ℤ) ∣ patternResultant (2 ^ k) (C a + C b * X ^ s) := by
   refine charP_dvd_patternResultant_of_common_root (by positivity) (ZMod p) p g hg ?_
-  simp only [map_add, map_mul, map_pow, aeval_C, aeval_X, algebraMap_int_eq, eq_intCast]
+  simp only [map_add, map_mul, map_pow, aeval_C, aeval_X, map_intCast]
   exact hroot
 
 /-! ## §6  The parametric unsatisfiability core -/
@@ -323,7 +326,7 @@ theorem no_realized_binomial_dyadic (k : ℕ) (hk : 1 ≤ k) {p : ℕ} (hp : p.P
     have hsq := patternResultant_binomial_even_sq k' a b t
     rw [hsq] at hpR hdvd
     set E := patternResultant (2 ^ k') (C a + C b * X ^ t) with hE
-    have hpE : (p : ℤ) ∣ E := hp.prime_int.dvd_of_dvd_pow hpR
+    have hpE : (p : ℤ) ∣ E := (Nat.prime_iff_prime_int.mp hp).dvd_of_dvd_pow hpR
     have hp2 : ((p ^ 2 : ℕ) : ℤ) ∣ E ^ 2 := by
       push_cast
       exact pow_dvd_pow_of_dvd hpE 2
@@ -436,7 +439,8 @@ theorem evalVec_binomialVec {F : Type*} [Field F] {m : ℕ} [NeZero m] (g : F)
     (a b : ℤ) (s : Fin m) :
     evalVec g m (binomialVec a b s) = (a : F) + (b : F) * g ^ (s : ℕ) := by
   rw [← aeval_relationPoly, relationPoly_binomialVec]
-  simp only [map_add, map_mul, map_pow, aeval_C, aeval_X, algebraMap_int_eq, eq_intCast]
+  simp only [map_add, map_mul, map_pow, aeval_C, aeval_X, map_intCast]
+  norm_num
 
 /-- **`BinomialBadPrimeLaw`** — the r329/r325 saturation route's single named open
 input, stated in the exact vocabulary the route consumes (`binomialVec`,
@@ -444,7 +448,9 @@ input, stated in the exact vocabulary the route consumes (`binomialVec`,
 and kb note r329): every in-window bad prime admits a realized binomial kernel
 relation with resultant dividing `8p`. -/
 def BinomialBadPrimeLaw (k lo hi : ℕ) (Bad : ℕ → Prop) : Prop :=
-  ∀ p : ℕ, p.Prime → lo ≤ p → p ≤ hi → Bad p →
+  ∀ p : ℕ, ∀ hp : p.Prime,
+    letI := Fact.mk hp
+    lo ≤ p → p ≤ hi → Bad p →
     ∃ (a b : ℤ) (s : Fin (2 ^ k)) (g : ZMod p),
       b ≠ 0 ∧ |b| < |a| ∧ g ^ (2 ^ k) = -1 ∧
       evalVec g (2 ^ k) (binomialVec a b s) = 0 ∧
@@ -458,6 +464,7 @@ theorem binomialBadPrimeLaw_n32_forces_no_bad_primes (Bad : ℕ → Prop)
     (hlaw : BinomialBadPrimeLaw 4 (2 ^ 20) (2 ^ 22) Bad) :
     ∀ p : ℕ, p.Prime → 2 ^ 20 ≤ p → p ≤ 2 ^ 22 → ¬ Bad p := by
   intro p hp hlo hhi hbad
+  letI := Fact.mk hp
   obtain ⟨a, b, s, g, hb, hab, hg, heval, hdvd⟩ := hlaw p hp hlo hhi hbad
   rw [relationPoly_binomialVec] at hdvd
   rw [evalVec_binomialVec] at heval
@@ -468,6 +475,7 @@ theorem binomialBadPrimeLaw_n64_forces_no_bad_primes (Bad : ℕ → Prop)
     (hlaw : BinomialBadPrimeLaw 5 (2 ^ 24) (2 ^ 26) Bad) :
     ∀ p : ℕ, p.Prime → 2 ^ 24 ≤ p → p ≤ 2 ^ 26 → ¬ Bad p := by
   intro p hp hlo hhi hbad
+  letI := Fact.mk hp
   obtain ⟨a, b, s, g, hb, hab, hg, heval, hdvd⟩ := hlaw p hp hlo hhi hbad
   rw [relationPoly_binomialVec] at hdvd
   rw [evalVec_binomialVec] at heval
