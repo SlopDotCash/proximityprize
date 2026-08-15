@@ -1,8 +1,8 @@
 # ArkLib Tier 1 Test Infrastructure Plan
 
-**Repository**: github.com/lalalune/arklib  
-**Branch**: `feat/test-infrastructure-tier1`  
-**Status**: Architecture & planning phase  
+**Repository**: github.com/elizaOS/proximityprize
+**Branch**: `codex/port-arklib-pr-537`
+**Status**: Ported proposal under review
 **Date**: 2026-08-15
 
 ---
@@ -211,7 +211,8 @@ Options:
 
 **Verification**:
 ```bash
-cd E:/eliza/arklib-delta-star
+git clone https://github.com/elizaOS/proximityprize.git
+cd proximityprize
 ./scripts/test-suite.sh gating --json > /tmp/metrics.json
 cat /tmp/metrics.json | jq '.metrics.sorry_count.total_holes'  # Should be 0
 ```
@@ -247,10 +248,10 @@ cat /tmp/metrics.json | jq '.metrics.sorry_count.total_holes'  # Should be 0
 
 ## Current Repository State
 
-**Repository Location**: `E:/eliza/arklib-delta-star/`  
-**Default Branch**: `main`  
-**Current Branch**: `research/proximity-prize` (33 commits ahead of origin)  
-**Feature Branch Created**: `feat/test-infrastructure-tier1` (ready for implementation)
+**Repository**: `elizaOS/proximityprize`
+**Default Branch**: `main`
+**Port Branch**: `codex/port-arklib-pr-537`
+**Original Feature Branch**: `feat/test-infrastructure-tier1`
 
 **Key Statistics**:
 - **Modules**: ~4,287 compiled
@@ -312,4 +313,4 @@ cat /tmp/metrics.json | jq '.metrics.sorry_count.total_holes'  # Should be 0
 
 ---
 
-**Status**: ✅ Architecture complete, ready for Phase 1 implementation on `feat/test-infrastructure-tier1` branch.
+**Status**: Architecture and implementation ported from ArkLib PR #537 for focused review.
