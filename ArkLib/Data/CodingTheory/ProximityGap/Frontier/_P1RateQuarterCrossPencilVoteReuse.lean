@@ -6,6 +6,8 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterPencilCountCharge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilPairwiseBonferroni
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._P1RateQuarterAgreementOverlapGraph
+import ArkLib.Data.CodingTheory.ProximityGap.ScaleBracketFull
+import ArkLib.Data.CodingTheory.ProximityGap.WindowCrossWitness
 
 /-!
 # Cross-pencil vote reuse is necessary at the P1 predecessor
@@ -31,12 +33,13 @@ is kept separate so it is not confused with the exact prize-scale count.)
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 4100
-set_option maxRecDepth 500000
+set_option linter.style.longFile 4300
+set_option maxRecDepth 2000000
 set_option maxHeartbeats 1000000
 
 open Finset
 open _root_.ProximityGap Code
+open Polynomial
 
 namespace ArkLib.ProximityGap.Frontier.P1RateQuarterCrossPencilVoteReuse
 
@@ -46,6 +49,10 @@ open ArkLib.ProximityGap.Frontier.P1RateQuarterSharedFreshCoordinate
 open ArkLib.ProximityGap.Frontier.P1RateQuarterPencilCountCharge
 open ProximityGap.SharedFreshPencil
 open ProximityGap.Frontier.PencilPairwiseBonferroni
+open R15Bracket
+open ArkLib.ProximityGap.Frontier.HalfPredecessorLineCoreGeometry
+open ArkLib.ProximityGap.Frontier.HalfPredecessorBadEventRichPointBridge
+open ArkLib.ProximityGap.Frontier.HalfPredecessorSecantLines
 
 local instance : Fact (Nat.Prime P) := ⟨prime_P⟩
 local instance : NeZero N := ⟨by norm_num [N]⟩
@@ -542,7 +549,7 @@ theorem commonBase_twoPartner_directionDeviation_proportional_on_inter
     commonBase_directionDeviation_on_witness hgamma' p0 p' u0 u1 S' hp' x hxS']
   have hne : gamma - gamma0 ≠ 0 := sub_ne_zero.mpr (Ne.symm hgamma)
   have hne' : gamma' - gamma0 ≠ 0 := sub_ne_zero.mpr (Ne.symm hgamma')
-  rw [mul_inv_cancel₀ hne, mul_inv_cancel₀ hne', one_mul]
+  simp only [← mul_assoc, mul_inv_cancel₀ hne, mul_inv_cancel₀ hne', one_mul]
 
 /-- Centered base/direction evaluation of a pencil at one coordinate. -/
 def centeredPencilEval
@@ -1175,6 +1182,81 @@ theorem johnsonLight_twoCoordinate_floor_pred_satisfiable :
   rw [Nat.choose_two_right, Nat.choose_two_right]
   norm_num [N]
 
+/-- Symbolic transpose second-moment extraction.  Keeping the cardinal parameters abstract
+prevents the elaborator from expanding production-scale numerals inside `Fin` types. -/
+private theorem exists_two_coordinates_commonPetalLoad
+    {r q load cap : ℕ} [Fintype ι]
+    (V : ι → Finset (Fin r))
+    (hcard : Fintype.card ι = r)
+    (hq : 1 ≤ q)
+    (hsize : ∀ j, q ≤ (V j).card)
+    (hcap : cap = load - 1)
+    (harith : r.choose 2 * cap < r * q.choose 2) :
+    ∃ x y : Fin r, x < y ∧
+      load ≤ (Finset.univ.filter fun j : ι => x ∈ V j ∧ y ∈ V j).card := by
+  classical
+  let C : Fin r → Finset ι := fun x => Finset.univ.filter fun j => x ∈ V j
+  let pairs : Finset (Fin r × Fin r) :=
+    Finset.univ.filter fun p => p.1 < p.2
+  by_contra hnone
+  push Not at hnone
+  have hinter : ∀ x y : Fin r, x < y →
+      (C x ∩ C y).card ≤ cap := by
+    intro x y hxy
+    have hlt := hnone x y hxy
+    have heq : C x ∩ C y = Finset.univ.filter fun j : ι => x ∈ V j ∧ y ∈ V j := by
+      ext j
+      simp [C]
+    rw [heq]
+    rw [hcap]
+    omega
+  have hupp : (∑ p ∈ pairs, (C p.1 ∩ C p.2).card) ≤
+      r.choose 2 * cap := by
+    calc
+      (∑ p ∈ pairs, (C p.1 ∩ C p.2).card) ≤ ∑ _p ∈ pairs, cap := by
+        exact Finset.sum_le_sum fun (p : Fin r × Fin r) hp => hinter p.1 p.2 (by
+          dsimp only [pairs] at hp
+          exact (Finset.mem_filter.mp hp).2)
+      _ = pairs.card * cap := by simp
+      _ = r.choose 2 * cap := by
+        have hoff := filter_lt_offDiag_card (Finset.univ : Finset (Fin r))
+        have hpairs : pairs =
+            (Finset.univ : Finset (Fin r)).offDiag.filter fun p => p.1 < p.2 := by
+          ext p
+          simp only [pairs, Finset.mem_filter, Finset.mem_univ, true_and,
+            Finset.mem_offDiag]
+          exact ⟨fun h => ⟨ne_of_lt h, h⟩,
+            fun h => h.2⟩
+        rw [hpairs, hoff, Finset.card_univ, Fintype.card_fin]
+  have hU : Finset.univ.biUnion C = (Finset.univ : Finset ι) := by
+    apply Finset.eq_univ_iff_forall.mpr
+    intro j
+    have hpos : (V j).Nonempty := Finset.card_pos.mp (lt_of_lt_of_le hq (hsize j))
+    obtain ⟨x, hx⟩ := hpos
+    rw [Finset.mem_biUnion]
+    exact ⟨x, Finset.mem_univ _, by simp [C, hx]⟩
+  have hid := sum_inter_eq_sum_choose_two r C
+  change (∑ p ∈ pairs, (C p.1 ∩ C p.2).card) = _ at hid
+  rw [hU] at hid
+  have hlow : r * q.choose 2 ≤ ∑ j : ι, (mult r C j).choose 2 := by
+    calc
+      r * q.choose 2 = ∑ _j : ι, q.choose 2 := by
+        simp [hcard]
+      _ ≤ ∑ j : ι, (mult r C j).choose 2 := by
+        apply Finset.sum_le_sum
+        intro j _hj
+        apply Nat.choose_le_choose 2
+        have heq : mult r C j = (V j).card := by
+          unfold mult
+          congr 1
+          ext x
+          simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+          simp [C]
+        rw [heq]
+        exact hsize j
+  rw [← hid] at hlow
+  exact (Nat.not_lt_of_ge (hlow.trans hupp)) harith
+
 /-- **Transpose second-moment extraction.**  `N` petals of Johnson-light size force two
 distinct coordinates jointly used by at least `2,912,712` petals. -/
 theorem exists_two_coordinates_commonPetalLoad_ge_2912712
@@ -1184,63 +1266,12 @@ theorem exists_two_coordinates_commonPetalLoad_ge_2912712
     (hsize : ∀ j, 55924056 ≤ (V j).card) :
     ∃ x y : Fin N, x < y ∧
       2912712 ≤ (Finset.univ.filter fun j : ι => x ∈ V j ∧ y ∈ V j).card := by
-  classical
-  let C : Fin N → Finset ι := fun x => Finset.univ.filter fun j => x ∈ V j
-  let pairs : Finset (Fin N × Fin N) :=
-    Finset.univ.filter fun p => p.1 < p.2
-  by_contra hnone
-  push Not at hnone
-  have hinter : ∀ x y : Fin N, x < y →
-      (C x ∩ C y).card ≤ 2912711 := by
-    intro x y hxy
-    have hlt := hnone x y hxy
-    have heq : C x ∩ C y = Finset.univ.filter fun j : ι => x ∈ V j ∧ y ∈ V j := by
-      ext j
-      simp [C]
-    rw [heq]
-    omega
-  have hupp : (∑ p ∈ pairs, (C p.1 ∩ C p.2).card) ≤
-      N.choose 2 * 2912711 := by
-    calc
-      (∑ p ∈ pairs, (C p.1 ∩ C p.2).card) ≤ ∑ _p ∈ pairs, 2912711 := by
-        exact Finset.sum_le_sum fun p hp => hinter p.1 p.2 (by
-          simpa only [pairs, Finset.mem_filter, Finset.mem_univ, true_and] using hp)
-      _ = pairs.card * 2912711 := by simp
-      _ = N.choose 2 * 2912711 := by
-        congr 1
-        have hoff := filter_lt_offDiag_card (Finset.univ : Finset (Fin N))
-        simpa only [pairs, Finset.card_univ, Fintype.card_fin] using hoff
-  have hU : Finset.univ.biUnion C = (Finset.univ : Finset ι) := by
-    apply Finset.eq_univ_iff_forall.mpr
-    intro j
-    have hpos : (V j).Nonempty := Finset.card_pos.mp (by
-      have := hsize j
-      omega)
-    obtain ⟨x, hx⟩ := hpos
-    rw [Finset.mem_biUnion]
-    exact ⟨x, Finset.mem_univ _, by simp [C, hx]⟩
-  have hid := sum_inter_eq_sum_choose_two N C
-  change (∑ p ∈ pairs, (C p.1 ∩ C p.2).card) = _ at hid
-  rw [hU] at hid
-  have hlow : N * ((55924056).choose 2) ≤
-      ∑ j : ι, (mult N C j).choose 2 := by
-    calc
-      N * ((55924056).choose 2) = ∑ _j : ι, (55924056).choose 2 := by
-        simp [hcard]
-      _ ≤ ∑ j : ι, (mult N C j).choose 2 := by
-        apply Finset.sum_le_sum
-        intro j _hj
-        apply Nat.choose_le_choose 2
-        have heq : mult N C j = (V j).card := by
-          unfold mult
-          congr 1
-          ext x
-          simp [C]
-        rw [heq]
-        exact hsize j
-  rw [← hid] at hlow
-  exact (Nat.not_lt_of_ge (hlow.trans hupp))
-    johnsonLight_twoCoordinate_concentration_arithmetic
+  apply exists_two_coordinates_commonPetalLoad
+    (r := N) (q := 55924056) (load := 2912712) (cap := 2912711) V hcard
+  · norm_num
+  · exact hsize
+  · norm_num
+  · exact johnsonLight_twoCoordinate_concentration_arithmetic
 
 /-- **Common-base two-coordinate minor certificate.**  In the exact Johnson-light branch,
 two distinct coordinates are both missed by the base and both hit by at least `2,912,712`
@@ -1299,7 +1330,7 @@ theorem commonBase_johnsonLight_exists_twoCoordinateMinorClique_2912712
       Finset.univ.filter fun j : ι => x ∈ S j ∧ y ∈ S j := by
     ext j
     simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [hpetal j, hpetal j, Finset.mem_inter, Finset.mem_inter]
+    rw [hpetal j, Finset.mem_inter, Finset.mem_inter]
     simp only [hxmis, hymis, and_true]
   refine ⟨x, y, hxy, hxmis, hymis, ?_, ?_⟩
   · rw [← hsets]
@@ -1339,11 +1370,10 @@ theorem saturatedFullFiber_voteSet_card_eq_one
   have hsum : (∑ eta ∈ R, (voteSet u0 u1 w0 w1 eta).card) ≤ R.card := by
     rw [← card_biUnion_votes u0 u1 w0 w1 R]
     have hbound := votes_biUnion_card_le u0 u1 w0 w1 R
-    rw [hA, hR]
     have hT := predecessorThreshold_eq
     have hN : N = 1073741824 := by norm_num [N]
     omega
-  have hrest : R.erase gamma |>.card ≤
+  have hrest : (R.erase gamma).card ≤
       ∑ eta ∈ R.erase gamma, (voteSet u0 u1 w0 w1 eta).card := by
     calc
       (R.erase gamma).card = ∑ _eta ∈ R.erase gamma, 1 := by simp
@@ -1382,8 +1412,7 @@ theorem saturatedFullFiber_witness_eq_aligned_union_vote
     rw [Finset.card_union_of_disjoint hdisj, hA, hvote]
     have hT := predecessorThreshold_eq
     omega
-  apply Finset.Subset.antisymm hsub
-  apply Finset.card_le_card_iff.mp
+  apply Finset.eq_of_subset_of_card_le hsub
   rw [hunion]
   exact hScard
 
@@ -1404,18 +1433,20 @@ theorem saturatedFullFiber_votes_partition_complement
     obtain ⟨gamma, _hgamma, hxvote⟩ := hx
     rw [Finset.mem_sdiff]
     exact ⟨Finset.mem_univ _, (mem_voteSet_iff u0 u1 w0 w1 gamma x).mp hxvote |>.1⟩
-  apply Finset.Subset.antisymm hsub
-  apply Finset.card_le_card_iff.mp
-  rw [Finset.card_sdiff, Finset.inter_univ, Finset.card_univ, Fintype.card_fin,
-    hA, ← card_biUnion_votes u0 u1 w0 w1 R]
-  have hvote : ∀ gamma ∈ R, (voteSet u0 u1 w0 w1 gamma).card = 1 :=
-    saturatedFullFiber_voteSet_card_eq_one dom u0 u1 w0 w1 R Sf
-      hw0 hw1 hrides hA hR
-  rw [Finset.sum_congr rfl hvote]
-  simp only [Finset.sum_const, nsmul_eq_mul, mul_one, hR]
-  have hT := predecessorThreshold_eq
-  have hN : N = 1073741824 := by norm_num [N]
-  omega
+  apply Finset.eq_of_subset_of_card_le hsub
+  calc
+    (Finset.univ \ alignedSet u0 u1 w0 w1).card =
+        N - (predecessorThreshold - 1) := by
+      rw [Finset.card_sdiff_of_subset (Finset.subset_univ _), Finset.card_univ,
+        Fintype.card_fin, hA]
+    _ ≤ (R.biUnion (fun gamma => voteSet u0 u1 w0 w1 gamma)).card := by
+      rw [card_biUnion_votes u0 u1 w0 w1 R]
+      have hvote : ∀ gamma ∈ R, (voteSet u0 u1 w0 w1 gamma).card = 1 :=
+        saturatedFullFiber_voteSet_card_eq_one dom u0 u1 w0 w1 R Sf
+          hw0 hw1 hrides hA hR
+      rw [Finset.sum_congr rfl hvote]
+      simp only [Finset.sum_const, nsmul_eq_mul, mul_one, hR]
+      norm_num [N, predecessorThreshold]
 
 /-- Rational scalar label attached to a non-aligned coordinate of a pencil. -/
 noncomputable def voteRatio
@@ -1444,7 +1475,7 @@ theorem gamma_eq_voteRatio_of_mem
     gamma = voteRatio u0 u1 w0 w1 x := by
   have hden := vote_denominator_ne_zero_of_mem u0 u1 w0 w1 hx
   rw [mem_voteSet_iff] at hx
-  rw [voteRatio, div_eq_iff hden]
+  rw [voteRatio, eq_div_iff hden]
   linear_combination hx.2
 
 /-- Under full saturation, every complement coordinate has a unique rider whose vote it is. -/
@@ -1465,8 +1496,8 @@ theorem saturatedFullFiber_existsUnique_rider_at_complement
   refine ⟨gamma, ⟨hgamma, hxvote⟩, ?_⟩
   intro gamma' hgamma'
   by_contra hne
-  exact Finset.disjoint_left.mp (voteSet_disjoint u0 u1 w0 w1 hne)
-    hxvote hgamma'.2
+  have hd := Finset.disjoint_left.mp (voteSet_disjoint u0 u1 w0 w1 (Ne.symm hne))
+  exact hd hxvote hgamma'.2
 
 /-- Consequently the unique rider is exactly the coordinate's rational vote label. -/
 theorem saturatedFullFiber_unique_rider_eq_voteRatio
@@ -1548,7 +1579,7 @@ theorem saturatedFullFiber_voteRatio_injOn
   rw [hlabel] at hxvote
   have hcard := saturatedFullFiber_voteSet_card_eq_one dom u0 u1 w0 w1 R Sf
     hw0 hw1 hrides hA hR (Classical.choose ey) (Classical.choose_spec ey).1.1
-  exact Finset.card_le_one.mp hcard.le hxvote hyvoteraw
+  exact Finset.card_le_one.mp hcard.le _ hxvote _ hyvoteraw
 
 /-- A vote on a pencil through `(gamma0,p0)` obeys a common-numerator equation. -/
 theorem commonBase_vote_equation
@@ -1813,9 +1844,8 @@ theorem commonBase_nonbase_vote_subset_baseAgree_compl
   rw [agreeSet, Finset.mem_filter] at hxB
   have heq := commonBase_vote_equation p0 p1 u0 u1 hx
   have hmul : (gamma - gamma0) *
-      (pencilDir gamma0 gamma1 p0 p1 x - u1 x) = 0 := by
-    rw [hxB.2]
-    ring
+      (pencilDir gamma0 gamma1 p0 p1 x - u1 x) = 0 :=
+    heq.trans (sub_eq_zero.mpr hxB.2.symm)
   have hdir : pencilDir gamma0 gamma1 p0 p1 x = u1 x := by
     rcases mul_eq_zero.mp hmul with hg | hd
     · exact absurd (sub_eq_zero.mp hg) hgamma
@@ -1825,7 +1855,7 @@ theorem commonBase_nonbase_vote_subset_baseAgree_compl
       have hrepro := congrFun (pencil_reproduces_first gamma0 gamma1 p0 p1) x
       simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hrepro
       rw [hdir] at hrepro
-      linear_combination hxB.2 - hrepro, hdir⟩)
+      exact add_right_cancel (hrepro.trans hxB.2), hdir⟩)
 
 /-- **Shared-rider uniqueness from complement packing.**  Two common-base pencils cannot carry
 the same non-base rider with two vote sets of size at least `s` once inclusion--exclusion inside
@@ -1858,7 +1888,7 @@ theorem commonBase_sharedRider_directions_eq_of_complement_packing
     Finset.card_le_card (Finset.union_subset hV1C hV2C)
   have hsum := Finset.card_union_add_card_inter V1 V2
   have hinter : k ≤ (V1 ∩ V2).card := by
-    dsimp [V1, V2, C] at hV1 hV2 hpack ⊢
+    dsimp [V1, V2, C] at hV1 hV2 hpack hunion hsum ⊢
     omega
   apply predecessor_sep dom
   · exact pencilDir_mem _ hp0 hp1
@@ -1927,7 +1957,7 @@ theorem commonBase_alignedSet_eq_baseAgree_inter_directionAgree
     have hrepro := congrFun (pencil_reproduces_first gamma0 gamma1 p0 p1) x
     simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hrepro
     rw [hdir] at hrepro
-    linear_combination hbase - hrepro
+    exact add_right_cancel (hrepro.trans hbase)
 
 /-- The intersection of two fixed scalar witnesses forces their divided-difference direction to
 agree with the received direction `u1`.  This is the global cross-fiber bridge used by moment
@@ -1968,6 +1998,7 @@ theorem fixedWitness_pencilDir_agreeSet_card_ge_111848108
     simpa only [Fintype.card_fin] using Finset.card_le_univ (Sgamma ∪ Sdelta)
   have hinc := Finset.card_union_add_card_inter Sgamma Sdelta
   have hT := predecessorThreshold_eq
+  have hN : N = 1073741824 := by norm_num [N]
   omega
 
 /-- **Five-witness secant extraction.**  Among any five distinct fixed scalars with threshold
@@ -2048,9 +2079,9 @@ theorem commonBase_alignedUnionSameRider_inter_card_le_k_sub_one
       (pencilBase gamma0 gamma2 p0 p2) (pencilDir gamma0 gamma2 p0 p2) ⊆ B := by
     rw [commonBase_alignedSet_eq_baseAgree_inter_directionAgree]
     exact Finset.inter_subset_left
-  have hV1C := commonBase_nonbase_vote_subset_baseAgree_compl
+  have hV1C := commonBase_nonbase_vote_subset_baseAgree_compl (gamma1 := gamma1)
     hgamma p0 p1 u0 u1
-  have hV2C := commonBase_nonbase_vote_subset_baseAgree_compl
+  have hV2C := commonBase_nonbase_vote_subset_baseAgree_compl (gamma1 := gamma2)
     hgamma p0 p2 u0 u1
   by_contra hcard
   have hk : k ≤ ((alignedSet u0 u1
@@ -2245,10 +2276,12 @@ theorem two_saturatedFullFiber_commonBase_aligned_inter_card_ge_threshold_sub_tw
     saturatedFullFiber_commonBase_agreeSet_card_eq_threshold dom gamma0 gamma1
       p0 p1 u0 u1 R1 Sf1 hp0 hp1 hrides1 hA1 hR1 hgamma01
   have hA1sub : A1 ⊆ B := by
-    rw [B, commonBase_agreeSet_eq_aligned_union_baseVote]
+    dsimp only [A1, B]
+    rw [commonBase_agreeSet_eq_aligned_union_baseVote]
     exact Finset.subset_union_left
   have hA2sub : A2 ⊆ B := by
-    rw [B, commonBase_agreeSet_eq_aligned_union_baseVote]
+    dsimp only [A2, B]
+    rw [commonBase_agreeSet_eq_aligned_union_baseVote]
     exact Finset.subset_union_left
   have hunion : (A1 ∪ A2).card ≤ predecessorThreshold := by
     rw [← hB]
@@ -2341,6 +2374,8 @@ theorem commonBase_riders_card_le_compl_agreeSet_add_one
     simpa only [Fintype.card_fin] using Finset.card_le_univ A
   have hBN : B.card ≤ N := by
     simpa only [Fintype.card_fin] using Finset.card_le_univ B
+  have hRpos : 1 ≤ R.card := Finset.card_pos.mpr ⟨gamma0, hgamma0⟩
+  rw [hBcard]
   omega
 
 /-- Every threshold rider witness forces at least `T-|A|` coordinates in its private vote set. -/
@@ -2665,10 +2700,9 @@ theorem commonBase_twoRider_minimal_nonbaseVotes_eq_complement
           have hT := predecessorThreshold_eq
           omega
   have hcardLower : C.card ≤ (R'.biUnion V).card := by
-    rw [← card_biUnion_votes u0 u1 _ _ R', hC]
+    rw [card_biUnion_votes u0 u1 _ _ R', hC]
     exact hlower
-  apply Finset.Subset.antisymm hsub
-  exact Finset.card_le_card_iff.mp hcardLower
+  exact Finset.eq_of_subset_of_card_le hsub hcardLower
 
 /-- **Exact two-label complement partition.**  At the minimal three-rider endpoint, erase the
 forced base rider.  The remaining two non-base vote sets exactly partition the complement of the
@@ -2729,18 +2763,17 @@ theorem commonBase_threeRider_minimal_nonbaseVotes_partition_complement
     omega
   have hlower : 480946858 ≤ ∑ gamma ∈ R', (V gamma).card := by
     calc
-      480946858 = R'.card * 240473429 := by rw [hR']; norm_num
+      480946858 = R'.card * 240473429 := by rw [hR']
       _ = ∑ _gamma ∈ R', 240473429 := by simp
       _ ≤ ∑ gamma ∈ R', (V gamma).card :=
         Finset.sum_le_sum fun gamma hgamma => hper gamma hgamma
   have hcardLower : C.card ≤ (R'.biUnion V).card := by
-    rw [← card_biUnion_votes u0 u1 _ _ R']
+    rw [card_biUnion_votes u0 u1 _ _ R']
     rw [hC]
     have hN : N = 1073741824 := by norm_num [N]
     have hT := predecessorThreshold_eq
     omega
-  apply Finset.Subset.antisymm hsub
-  exact Finset.card_le_card_iff.mp hcardLower
+  exact Finset.eq_of_subset_of_card_le hsub hcardLower
 
 /-- At the minimal three-rider endpoint, each of the two non-base color classes has exactly
 `240473429` coordinates.  Thus the complement partition is balanced up to the unavoidable even
@@ -2777,8 +2810,8 @@ theorem commonBase_threeRider_minimal_nonbaseVote_card_eq
     dom gamma0 gamma1 p0 p1 u0 u1 R Sf S0 hp0 hp1 hrides hR hA hS0 hagree0
   have hsum : (∑ gamma ∈ R', (V gamma).card) = 480946858 := by
     rw [← card_biUnion_votes u0 u1 _ _ R']
-    change (R.erase gamma0).biUnion (fun gamma => voteSet u0 u1
-        (pencilBase gamma0 gamma1 p0 p1) (pencilDir gamma0 gamma1 p0 p1) gamma) |>.card = _
+    change ((R.erase gamma0).biUnion (fun gamma => voteSet u0 u1
+        (pencilBase gamma0 gamma1 p0 p1) (pencilDir gamma0 gamma1 p0 p1) gamma)).card = _
     rw [hpart, Finset.card_sdiff_of_subset (Finset.subset_univ _),
       Finset.card_univ, Fintype.card_fin, hB]
     norm_num [N, predecessorThreshold]
@@ -2796,7 +2829,8 @@ theorem commonBase_threeRider_minimal_nonbaseVote_card_eq
     have hT := predecessorThreshold_eq
     omega
   intro gamma hgamma
-  have hrestCard : (R'.erase gamma).card = 1 := by simp [hgamma, hR']
+  have hrestCard : (R'.erase gamma).card = 1 := by
+    rw [Finset.card_erase_of_mem hgamma, hR']
   have hrest : 240473429 ≤ ∑ eta ∈ R'.erase gamma, (V eta).card := by
     calc
       240473429 = ∑ _eta ∈ R'.erase gamma, 240473429 := by
@@ -2807,6 +2841,8 @@ theorem commonBase_threeRider_minimal_nonbaseVote_card_eq
       (∑ eta ∈ R'.erase gamma, (V eta).card) + (V gamma).card :=
     (Finset.sum_erase_add _ _ hgamma).symm
   have hthis := hper gamma hgamma
+  rw [hsum] at hsplit
+  dsimp only [V] at hrest hsplit hthis ⊢
   omega
 
 /-- Distinct common-base pencils force the fixed base agreement set to contain the union of
@@ -2829,10 +2865,12 @@ theorem commonBase_agreeSet_card_ge_two_alignments_sub_k_pred
     (pencilBase gamma0 gamma2 p0 p2) (pencilDir gamma0 gamma2 p0 p2)
   let B := agreeSet p0 (fun x => u0 x + gamma0 * u1 x)
   have hA1sub : A1 ⊆ B := by
-    rw [B, commonBase_agreeSet_eq_aligned_union_baseVote]
+    dsimp only [A1, B]
+    rw [commonBase_agreeSet_eq_aligned_union_baseVote]
     exact Finset.subset_union_left
   have hA2sub : A2 ⊆ B := by
-    rw [B, commonBase_agreeSet_eq_aligned_union_baseVote]
+    dsimp only [A2, B]
+    rw [commonBase_agreeSet_eq_aligned_union_baseVote]
     exact Finset.subset_union_left
   have hunion : (A1 ∪ A2).card ≤ B.card :=
     Finset.card_le_card (Finset.union_subset hA1sub hA2sub)
@@ -2840,6 +2878,7 @@ theorem commonBase_agreeSet_card_ge_two_alignments_sub_k_pred
     (pencilBase_mem _ hp0 hp1) (pencilDir_mem _ hp0 hp1)
     (pencilBase_mem _ hp0 hp2) (pencilDir_mem _ hp0 hp2) hne
   have hbook := Finset.card_union_add_card_inter A1 A2
+  dsimp only [A1, A2, B] at hunion hinter hbook ⊢
   omega
 
 /-- In the presence of a second distinct near-threshold pencil through the same base, every
@@ -2924,6 +2963,8 @@ theorem overBudget_fourPart_edgeFloor_twice_gt_vertices_mul_k_pred :
     let e := m.choose 2 -
       ((m ^ 2 - (m % 4) ^ 2) * 3 / 8 + (m % 4).choose 2)
     m * (k - 1) < 2 * e := by
+  dsimp only
+  rw [Nat.choose_two_right]
   norm_num [N, k]
 
 /-- A graph with the exact over-budget four-part Turán edge floor has a vertex of
@@ -2940,9 +2981,10 @@ theorem exists_degree_ge_k_of_overBudget_fourPart_edgeFloor
   classical
   by_contra hnot
   push_neg at hnot
+  have hkpos : 0 < k := by norm_num [k]
   have hdegree : ∀ v, G.degree v ≤ k - 1 := by
     intro v
-    omega
+    exact Nat.le_pred_of_lt (hnot v)
   have hsum : (∑ v, G.degree v) ≤ Fintype.card V * (k - 1) := by
     calc
       (∑ v, G.degree v) ≤ ∑ _v : V, (k - 1) :=
@@ -3012,6 +3054,8 @@ theorem degreeKStarCore_injective : Function.Injective degreeKStarCore := by
   by_contra hij
   have hinter := congrArg Finset.card
     (congrArg (fun S => S ∩ degreeKStarCore j) heq)
+  change (degreeKStarCore i ∩ degreeKStarCore j).card =
+    (degreeKStarCore j ∩ degreeKStarCore j).card at hinter
   rw [degreeKStarCore_inter_card i j hij, Finset.inter_self,
     degreeKStarCore_card] at hinter
   have hkpos : 0 < k := by norm_num [k]
@@ -3029,9 +3073,10 @@ theorem direction_sub_eq_locator_mul_C_of_commonCore
     r - r₀ = (Cset.prod fun x => X - C (dom x)) * C (r - r₀).leadingCoeff := by
   let L : F[X] := Cset.prod fun x => X - C (dom x)
   have hLmonic : L.Monic := by
-    exact Finset.monic_prod_of_monic _ fun x _ => monic_X_sub_C (dom x)
+    exact monic_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)
   have hLdeg : L.natDegree = k - 1 := by
-    rw [L, natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
+    change (Cset.prod fun x => X - C (dom x)).natDegree = k - 1
+    rw [natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
     simpa using hcard
   have hdiffdeg : (r - r₀).natDegree ≤ k - 1 := by
     exact (natDegree_sub_le r r₀).trans (max_le (by omega) (by omega))
@@ -3056,9 +3101,9 @@ theorem exists_direction_eq_base_add_locator_mul_C_of_commonCore
     ∃ c : F, r = r₀ + (Cset.prod fun x => X - C (dom x)) * C c := by
   let c := (r - r₀).leadingCoeff
   refine ⟨c, ?_⟩
-  exact sub_eq_iff_eq_add.mp
+  simpa only [c, add_comm] using (sub_eq_iff_eq_add.mp
     (direction_sub_eq_locator_mul_C_of_commonCore
-      dom Cset r₀ r hcard hr₀ hr hagree)
+      dom Cset r₀ r hcard hr₀ hr hagree))
 
 /-! ## Locator-coefficient incidence geometry -/
 
@@ -3100,9 +3145,11 @@ theorem endpoint_crossProduct_eq_of_parameter_collinear
       C (a₁ - a₂) *
         (affineLocatorEndpoint q₀ r₀ L a₁ c₁ -
           affineLocatorEndpoint q₀ r₀ L a₃ c₃) := by
-  have hC := congrArg C hcol
+  have hC := congrArg C hcol.symm
   simp only [map_mul, map_sub] at hC
   unfold affineLocatorEndpoint
+  simp only [map_sub]
+  ring_nf at hC ⊢
   linear_combination hC * L
 
 /-! ## Exact star-charge closure arithmetic -/
@@ -3142,9 +3189,17 @@ theorem sum_petal_card_le_215_mul_complement
         · simp [hzero x hx]
         · exact hload x
     _ = 215 * (N - A.card) := by
-      simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_const,
-        nsmul_eq_mul, Fintype.card_fin]
-      omega
+      have hcard : (Aᶜ : Finset (Fin N)).card = N - A.card := by
+        rw [Finset.card_compl, Fintype.card_fin]
+      rw [← hcard]
+      calc
+        (∑ x : Fin N, if x ∈ A then 0 else 215) =
+            ∑ x : Fin N, if x ∈ Aᶜ then 215 else 0 := by
+          apply Finset.sum_congr rfl
+          intro x _hx
+          by_cases hx : x ∈ A <;> simp [hx]
+        _ = ∑ x ∈ Aᶜ, 215 := Finset.sum_ite_mem_eq _ _
+        _ = 215 * (Aᶜ : Finset (Fin N)).card := by simp [mul_comm]
 
 /-- Abstract counting closure for the concentrated star.  Once at most `4*215` exceptional
 neighbors are removed, low-core petals of the exact forced size cannot all have total
@@ -3164,7 +3219,7 @@ theorem lowCoreStar_charge_contradiction
   let s := predecessorThreshold -
     (P1RateQuarterAgreementOverlapGraph.FourLineCoreFloor - 1)
   have hregular : k - 4 * 215 ≤ (B \ E).card := by
-    rw [Finset.card_sdiff hEsub]
+    rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hEsub]
     omega
   have hlower : (B \ E).card * s ≤ ∑ j ∈ B \ E, (petal j).card := by
     calc
@@ -3194,10 +3249,9 @@ theorem lowCoreStar_load_216_forced
         (petal j).card) :
     ∃ x, 216 ≤ petalLoad (B \ E) petal x := by
   by_contra hnot
-  push_neg at hnot
   have hload : ∀ x, petalLoad (B \ E) petal x ≤ 215 := by
     intro x
-    omega
+    exact Nat.le_pred_of_lt (Nat.lt_of_not_ge fun hx => hnot ⟨x, hx⟩)
   have hcapA := sum_petal_card_le_215_mul_complement
     (B \ E) A petal hsub hload
   have hcap : (∑ j ∈ B \ E, (petal j).card) ≤
@@ -3230,8 +3284,8 @@ theorem parabolaEndpoint_three_not_source_collinear
       C (gamma₀ - gamma₁) *
         (parabolaEndpoint gamma₀ - parabolaEndpoint gamma₂) := by
   intro hcol
-  have hc := congrArg (fun p : F[X] => p.coeff 1) hcol
-  simp only [parabolaEndpoint, coeff_mul_X, coeff_C, if_pos, map_sub] at hc
+  have hc := congrArg (fun p : F[X] => p.eval 1) hcol
+  simp [parabolaEndpoint] at hc
   have hprod : (gamma₀ - gamma₁) * (gamma₀ - gamma₂) *
       (gamma₁ - gamma₂) = 0 := by
     linear_combination hc
@@ -3260,8 +3314,20 @@ theorem source_collinear_of_eval_collinear_on_k
   have hMdeg : M.natDegree < k := by
     apply lt_of_le_of_lt (natDegree_sub_le _ _)
     apply max_lt
-    · exact (natDegree_mul_le.trans (Nat.add_lt_of_left_lt hq₀.max hq₁))
-    · exact (natDegree_mul_le.trans (Nat.add_lt_of_left_lt hq₀.max hq₂))
+    · calc
+        (C (gamma₀ - gamma₂) * (q₀ - q₁)).natDegree ≤
+            (C (gamma₀ - gamma₂)).natDegree + (q₀ - q₁).natDegree := natDegree_mul_le
+        _ ≤ 0 + max q₀.natDegree q₁.natDegree :=
+          Nat.add_le_add (le_of_eq (natDegree_C _)) (natDegree_sub_le _ _)
+        _ < 0 + k := Nat.add_lt_add_left (max_lt hq₀ hq₁) 0
+        _ = k := Nat.zero_add k
+    · calc
+        (C (gamma₀ - gamma₁) * (q₀ - q₂)).natDegree ≤
+            (C (gamma₀ - gamma₁)).natDegree + (q₀ - q₂).natDegree := natDegree_mul_le
+        _ ≤ 0 + max q₀.natDegree q₂.natDegree :=
+          Nat.add_le_add (le_of_eq (natDegree_C _)) (natDegree_sub_le _ _)
+        _ < 0 + k := Nat.add_lt_add_left (max_lt hq₀ hq₂) 0
+        _ = k := Nat.zero_add k
   have hMzero : M = 0 := by
     by_contra hne
     have hdvd : (S.prod fun x => X - C (dom x)) ∣ M := by
@@ -3284,7 +3350,8 @@ unstructured triple-incidence moment. -/
 theorem uniformTripleMoment_below_crossCoordinate_budget :
     (N - predecessorThreshold) * Nat.choose 1248534 3 <
       (k - 1) * Nat.choose (k - 4 * 215) 3 := by
-  norm_num [N, k, predecessorThreshold, Nat.choose]
+  norm_num [N, k, predecessorThreshold, Nat.choose_eq_descFactorial_div_factorial,
+    Nat.descFactorial]
 
 /-! ## Global triple-incidence census -/
 
@@ -3303,17 +3370,32 @@ theorem sum_choose_three_support_eq_sum_tripleContainment
       ∑ U ∈ (Finset.univ : Finset J).powersetCard 3,
         (tripleContainmentCoords support U).card := by
   classical
-  simp only [tripleContainmentCoords, Finset.card_eq_sum_ones, Finset.sum_filter]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro x _hx
-  let triplesAtX := ((Finset.univ : Finset J).powersetCard 3).filter
-    (fun U => U ⊆ support x)
-  have htriples : triplesAtX = (support x).powersetCard 3 := by
-    ext U
-    simp [triplesAtX, and_left_comm, and_assoc]
-  change (support x).card.choose 3 = triplesAtX.card
-  rw [htriples, Finset.card_powersetCard]
+  calc
+    (∑ x : X, (support x).card.choose 3) =
+        ∑ x : X, ((support x).powersetCard 3).card := by
+      apply Finset.sum_congr rfl
+      intro x _hx
+      exact (Finset.card_powersetCard 3 (support x)).symm
+    _ = ∑ x : X, ∑ U ∈ (Finset.univ : Finset J).powersetCard 3,
+          if U ⊆ support x then 1 else 0 := by
+      apply Finset.sum_congr rfl
+      intro x _hx
+      rw [← Finset.card_filter]
+      congr 1
+      ext U
+      simp only [Finset.mem_filter, Finset.mem_powersetCard]
+      constructor
+      · rintro ⟨hsub, hcard⟩
+        exact ⟨⟨Finset.subset_univ _, hcard⟩, hsub⟩
+      · rintro ⟨⟨_huniv, hcard⟩, hsub⟩
+        exact ⟨hsub, hcard⟩
+    _ = ∑ U ∈ (Finset.univ : Finset J).powersetCard 3,
+          ∑ x : X, if U ⊆ support x then 1 else 0 := Finset.sum_comm
+    _ = ∑ U ∈ (Finset.univ : Finset J).powersetCard 3,
+          (tripleContainmentCoords support U).card := by
+      apply Finset.sum_congr rfl
+      intro U _hU
+      rw [tripleContainmentCoords, Finset.card_filter]
 
 /-- If every three-label set occurs on at most `k-1` coordinates, the whole support design
 obeys the corresponding global third-incidence cap. -/
@@ -3359,11 +3441,21 @@ theorem tripleContainmentCoords_richFamilySupport
     tripleContainmentCoords (richFamilySupport family) {gamma₀, gamma₁, gamma₂} =
       richFamilyTripleCoords family gamma₀ gamma₁ gamma₂ := by
   ext x
-  simp only [tripleContainmentCoords, richFamilySupport, richFamilyTripleCoords,
-    Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert,
-    Finset.mem_singleton, Finset.insert_subset_iff, Finset.singleton_subset_iff,
-    Finset.mem_inter]
-  tauto
+  rw [richFamilyTripleCoords, Finset.mem_inter, Finset.mem_inter]
+  simp only [tripleContainmentCoords, Finset.mem_filter, Finset.mem_univ, true_and]
+  constructor
+  · intro hsub
+    have h₀ := hsub (show gamma₀ ∈ ({gamma₀, gamma₁, gamma₂} : Finset family.G) by simp)
+    have h₁ := hsub (show gamma₁ ∈ ({gamma₀, gamma₁, gamma₂} : Finset family.G) by simp)
+    have h₂ := hsub (show gamma₂ ∈ ({gamma₀, gamma₁, gamma₂} : Finset family.G) by simp)
+    simpa only [richFamilySupport, Finset.mem_filter, Finset.mem_univ, true_and] using
+      And.intro (And.intro h₀ h₁) h₂
+  · rintro ⟨⟨h₀, h₁⟩, h₂⟩ gamma hgamma
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hgamma
+    rcases hgamma with rfl | rfl | rfl
+    · simpa only [richFamilySupport, Finset.mem_filter, Finset.mem_univ, true_and]
+    · simpa only [richFamilySupport, Finset.mem_filter, Finset.mem_univ, true_and]
+    · simpa only [richFamilySupport, Finset.mem_filter, Finset.mem_univ, true_and]
 
 /-- In an actual rich-point family, every triple that is not polynomial-source-collinear
 has at most `k-1` common support coordinates.  This discharges the abstract cap hypothesis
@@ -3452,7 +3544,8 @@ theorem uniformFullFamily_thirdMoment_below_sourceCollinear_capacity :
     predecessorThreshold * Nat.choose (predecessorThreshold + 1) 3 +
       (N - predecessorThreshold) * Nat.choose predecessorThreshold 3 <
         Nat.choose (N + 1) 3 * (k - 1) := by
-  norm_num [N, k, predecessorThreshold, Nat.choose]
+  norm_num [N, k, predecessorThreshold, Nat.choose_eq_descFactorial_div_factorial,
+    Nat.descFactorial]
 
 /-! ## Fixed-anchor rank-two consolidation -/
 
@@ -3476,11 +3569,24 @@ theorem mem_pointsOn_anchorSecant_of_crossProduct_eq
     simp only [slopePolynomial]
     have h₀gamma' : gamma₀ - gamma ≠ 0 := sub_ne_zero.mpr h₀gamma
     have h₀₁' : gamma₀ - gamma₁ ≠ 0 := sub_ne_zero.mpr h₀₁
-    rw [← C_inv, ← C_inv]
-    apply (mul_left_cancel₀ (C (gamma₀ - gamma) * C (gamma₀ - gamma₁)))
-    rw [mul_assoc, mul_assoc, C_mul, mul_inv_cancel₀ h₀gamma', C_1, one_mul,
-      mul_left_comm, C_mul, mul_inv_cancel₀ h₀₁', C_1, one_mul]
-    exact hcol.symm
+    have ha : C (gamma₀ - gamma) * C (gamma₀ - gamma)⁻¹ = (1 : F[X]) := by
+      rw [← C_mul, mul_inv_cancel₀ h₀gamma', C_1]
+    have hb : C (gamma₀ - gamma₁) * C (gamma₀ - gamma₁)⁻¹ = (1 : F[X]) := by
+      rw [← C_mul, mul_inv_cancel₀ h₀₁', C_1]
+    have hab : C (gamma₀ - gamma) * C (gamma₀ - gamma₁) ≠ (0 : F[X]) :=
+      mul_ne_zero (C_ne_zero.mpr h₀gamma') (C_ne_zero.mpr h₀₁')
+    apply mul_left_cancel₀ hab
+    calc
+      (C (gamma₀ - gamma) * C (gamma₀ - gamma₁)) *
+          (C (gamma₀ - gamma)⁻¹ * (family.q gamma₀ - family.q gamma)) =
+          (C (gamma₀ - gamma) * C (gamma₀ - gamma)⁻¹) *
+            (C (gamma₀ - gamma₁) * (family.q gamma₀ - family.q gamma)) := by ring
+      _ = C (gamma₀ - gamma₁) * (family.q gamma₀ - family.q gamma) := by rw [ha, one_mul]
+      _ = C (gamma₀ - gamma) * (family.q gamma₀ - family.q gamma₁) := hcol.symm
+      _ = (C (gamma₀ - gamma₁) * C (gamma₀ - gamma₁)⁻¹) *
+          (C (gamma₀ - gamma) * (family.q gamma₀ - family.q gamma₁)) := by rw [hb, one_mul]
+      _ = (C (gamma₀ - gamma) * C (gamma₀ - gamma₁)) *
+          (C (gamma₀ - gamma₁)⁻¹ * (family.q gamma₀ - family.q gamma₁)) := by ring
   simpa only [secantParameter] using
     (third_point_on_secant_line_of_slope_eq h₀gamma hslope)
 
@@ -3500,7 +3606,7 @@ theorem pointsOn_anchorSecant_eq_G_of_all_crossProducts
   · subst gamma
     exact first_point_mem_pointsOn_secant family hgamma
   · exact mem_pointsOn_anchorSecant_of_crossProduct_eq family hgamma h₀₁
-      hgamma₀ (hall gamma hgamma hgamma₀)
+      (Ne.symm hgamma₀) (hall gamma hgamma (Ne.symm hgamma₀))
 
 /-- **Rank-two branch closed.**  If one selected distinct anchor pair is source-collinear
 with every selected decoded point, the bad rich family has cardinality at most the coordinate
@@ -3530,6 +3636,7 @@ theorem richFamily_card_le_N_of_anchorCrossProducts
       (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ -
         (jointCore dom (u 0) (u 1) line.1 line.2).card) := by
     simpa only [Nat.mul_one] using Nat.mul_le_mul_left family.G.card hone
+  simp only [Fintype.card_fin] at hmul
   omega
 
 /-- Family-wide rank-two form: if every three distinct selected decoded points are
@@ -3572,6 +3679,7 @@ theorem exists_nonSourceCollinearTriple_of_N_lt_richFamily_card
           (family.q gamma₀.1 - family.q gamma₂.1) := by
   by_contra hnot
   push_neg at hnot
+  have hNtwo : 2 ≤ N := by norm_num [N]
   have hle := richFamily_card_le_N_of_allTriplesSourceCollinear family (by omega)
     (fun gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂ =>
       hnot gamma₀ gamma₁ gamma₂ h₀₁ h₀₂ h₁₂)
@@ -3594,20 +3702,57 @@ theorem richFamily_three_pairIntersections_one_ge_234881025
       234881025 ≤
         (fullAgreement dom (u 0) (u 1) gamma₁.1 (family.q gamma₁.1) ∩
           fullAgreement dom (u 0) (u 1) gamma₂.1 (family.q gamma₂.1)).card := by
-  let A i := fullAgreement dom (u 0) (u 1) i.1 (family.q i.1)
+  let A (i : family.G) := fullAgreement dom (u 0) (u 1) i.1 (family.q i.1)
   have hsize : ∀ i : family.G, predecessorThreshold ≤ (A i).card := fun i =>
     hthreshold.trans (family.threshold_le i.1 i.2)
   have hbon := biUnion_card_ge_sub_pairwise (r := 3)
     (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i)
   simp only [Fin.sum_univ_three, Matrix.cons_val_zero, Matrix.cons_val_one,
     Matrix.cons_val_two, Fin.isValue] at hbon
+  have hpairs : (∑ p ∈ (Finset.univ : Finset (Fin 3 × Fin 3)).filter
+      (fun p => p.1 < p.2),
+      (![A gamma₀, A gamma₁, A gamma₂] p.1 ∩
+        ![A gamma₀, A gamma₁, A gamma₂] p.2).card) =
+      (A gamma₀ ∩ A gamma₁).card + (A gamma₀ ∩ A gamma₂).card +
+        (A gamma₁ ∩ A gamma₂).card := by
+    have hindices : (Finset.univ : Finset (Fin 3 × Fin 3)).filter
+        (fun p => p.1 < p.2) =
+        {((0 : Fin 3), (1 : Fin 3)), ((0 : Fin 3), (2 : Fin 3)),
+          ((1 : Fin 3), (2 : Fin 3))} := by decide
+    rw [hindices]
+    rw [Finset.sum_insert (by decide), Finset.sum_insert (by decide),
+      Finset.sum_singleton]
+    norm_num [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two]
+    omega
+  rw [hpairs] at hbon
+  change (A gamma₀).card + (A gamma₁).card + (A gamma₂).card ≤
+    (A gamma₀ ∩ A gamma₁).card + (A gamma₀ ∩ A gamma₂).card +
+      (A gamma₁ ∩ A gamma₂).card +
+        (Finset.univ.biUnion
+          (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i)).card at hbon
+  have hbonA : (A gamma₀).card + (A gamma₁).card + (A gamma₂).card ≤
+      (A gamma₀ ∩ A gamma₁).card + (A gamma₀ ∩ A gamma₂).card +
+        (A gamma₁ ∩ A gamma₂).card +
+          (Finset.univ.biUnion
+            (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i)).card := hbon
+  clear hbon
   have hunion : (Finset.univ.biUnion
       (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i)).card ≤ N := by
     simpa only [Fintype.card_fin] using Finset.card_le_univ
       (Finset.univ.biUnion (fun i : Fin 3 => ![A gamma₀, A gamma₁, A gamma₂] i))
   by_contra hnot
+  change ¬(234881025 ≤ (A gamma₀ ∩ A gamma₁).card ∨
+      234881025 ≤ (A gamma₀ ∩ A gamma₂).card ∨
+      234881025 ≤ (A gamma₁ ∩ A gamma₂).card) at hnot
   push_neg at hnot
+  have hs₀ := hsize gamma₀
+  have hs₁ := hsize gamma₁
+  have hs₂ := hsize gamma₂
+  have hn₀₁ : (A gamma₀ ∩ A gamma₁).card ≤ 234881024 := by omega
+  have hn₀₂ : (A gamma₀ ∩ A gamma₂).card ≤ 234881024 := by omega
+  have hn₁₂ : (A gamma₁ ∩ A gamma₂).card ≤ 234881024 := by omega
   have hT := predecessorThreshold_eq
+  have hN : N = 1073741824 := by norm_num [N]
   omega
 
 /-- Combined rank-three seed: an over-budget threshold family contains a non-source-collinear
@@ -3672,6 +3817,7 @@ theorem exists_richFamily_pair_inter_card_ge_327272221
     have hle := Finset.card_le_card
       (Finset.inter_subset_inter (hA'sub gamma₀) (hA'sub gamma₁))
     have hlt := hnot gamma₀ gamma₁ hne
+    dsimp only [A] at hle
     omega
   have hplot := ConstantWeightPlotkinBound.constantWeight_plotkin
     A' predecessorThreshold 327272220 hA'card hpair
@@ -3748,17 +3894,22 @@ theorem three_pointsOn_force_core_ge_352321537
   let L := (pointsOn family line).card
   have hpack := pointsOn_card_mul_max_add_core_le family hline
   simp only [Fintype.card_fin] at hpack
-  change L * max 1
-      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) + z ≤ N at hpack
+  rw [show (pointsOn family line).card = L from rfl,
+    show (jointCore dom (u 0) (u 1) line.1 line.2).card = z from rfl] at hpack
+  have hpack' : L * max 1
+      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) + z ≤ N := by
+    exact hpack
+  have hthreshold' : predecessorThreshold ≤ ⌈(1 - delta) * (N : NNReal)⌉₊ := by
+    simpa only [Fintype.card_fin] using hthreshold
   have hfactor : predecessorThreshold - z ≤ max 1
-      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
-    (Nat.sub_le_sub_right hthreshold z).trans (le_max_right _ _)
+      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
+    (Nat.sub_le_sub_right hthreshold' z).trans (le_max_right _ _)
   have hmul : 3 * (predecessorThreshold - z) ≤
       L * max 1
-        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+        (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
     Nat.mul_le_mul hthree hfactor
   have hbase : 3 * (predecessorThreshold - z) + z ≤ N :=
-    (Nat.add_le_add_right hmul z).trans hpack
+    (Nat.add_le_add_right hmul z).trans hpack'
   have hT := predecessorThreshold_eq
   norm_num [N] at hbase ⊢
   omega
@@ -3793,17 +3944,22 @@ theorem four_pointsOn_force_core_ge_432479347
   let L := (pointsOn family line).card
   have hpack := pointsOn_card_mul_max_add_core_le family hline
   simp only [Fintype.card_fin] at hpack
-  change L * max 1
-      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) + z ≤ N at hpack
+  rw [show (pointsOn family line).card = L from rfl,
+    show (jointCore dom (u 0) (u 1) line.1 line.2).card = z from rfl] at hpack
+  have hpack' : L * max 1
+      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) + z ≤ N := by
+    exact hpack
+  have hthreshold' : predecessorThreshold ≤ ⌈(1 - delta) * (N : NNReal)⌉₊ := by
+    simpa only [Fintype.card_fin] using hthreshold
   have hfactor : predecessorThreshold - z ≤ max 1
-      (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
-    (Nat.sub_le_sub_right hthreshold z).trans (le_max_right _ _)
+      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
+    (Nat.sub_le_sub_right hthreshold' z).trans (le_max_right _ _)
   have hmul : 4 * (predecessorThreshold - z) ≤
       L * max 1
-        (⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊ - z) :=
+        (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
     Nat.mul_le_mul hfour hfactor
   have hbase : 4 * (predecessorThreshold - z) + z ≤ N :=
-    (Nat.add_le_add_right hmul z).trans hpack
+    (Nat.add_le_add_right hmul z).trans hpack'
   have hT := predecessorThreshold_eq
   norm_num [N] at hbase ⊢
   omega
