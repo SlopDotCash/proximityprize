@@ -30,13 +30,25 @@ theorem gaussianEnergyBound_three_of_characteristic_above_height
   have hcard : ((Gset ζ (2 ^ k)).card : ℝ) = (2 * (2 ^ k : ℕ) : ℝ) := by
     exact_mod_cast Gset_card hm hprim
   rw [hcard]
-  have hx : 0 ≤ (2 * (2 ^ k : ℝ)) := by positivity
-  have hx2 : 2 ≤ (2 * (2 ^ k : ℝ)) := by
+  have hx : 0 ≤ (2 * (((2 ^ k : ℕ) : ℝ))) := by positivity
+  have hx2 : 2 ≤ (2 * (((2 ^ k : ℕ) : ℝ))) := by
     have hk : (1 : ℝ) ≤ ((2 ^ k : ℕ) : ℝ) := by
       exact_mod_cast (Nat.one_le_two_pow : 1 ≤ 2 ^ k)
-    norm_num [Nat.cast_pow] at hk
-    nlinarith
-  nlinarith
+    calc
+      (2 : ℝ) = 2 * 1 := by ring
+      _ ≤ 2 * ((2 ^ k : ℕ) : ℝ) := mul_le_mul_of_nonneg_left hk (by norm_num)
+  have hlin : 0 ≤ 45 * (2 * (((2 ^ k : ℕ) : ℝ))) - 40 := by
+    rw [sub_nonneg]
+    calc
+      (40 : ℝ) ≤ 45 * 2 := by norm_num
+      _ ≤ 45 * (2 * (((2 ^ k : ℕ) : ℝ))) :=
+        mul_le_mul_of_nonneg_left hx2 (by norm_num)
+  calc
+    ((0 : ℤ) : ℝ) ≤ (2 * (((2 ^ k : ℕ) : ℝ))) *
+        (45 * (2 * (((2 ^ k : ℕ) : ℝ))) - 40) :=
+      by simpa only [Int.cast_zero] using mul_nonneg hx hlin
+    _ = 45 * (2 * (((2 ^ k : ℕ) : ℝ))) ^ 2 -
+        40 * (2 * (((2 ^ k : ℕ) : ℝ))) := by ring
 
 end ArkLib.ProximityGap.Frontier.R330Depth3WickLargeChar
 

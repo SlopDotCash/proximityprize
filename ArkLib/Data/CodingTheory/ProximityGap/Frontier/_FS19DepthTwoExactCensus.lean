@@ -106,22 +106,25 @@ theorem zero_sum_iff_pairings (hm : 0 < m) (c : Fin 4 → ℕ) (hc : ∀ i, c i 
     · exact absurd rfl hj0
     · left
       refine ⟨hjval, ?_⟩
+      have hjval' : c 1 = mshift m (c 0) := by simpa using hjval
       have h01 : monomF m (c 1) = -(monomF m (c 0)) := by
-        rw [hjval, monomF_mshift (hc 0)]
+        rw [hjval', monomF_mshift (hc 0)]
       have hpair : monomF m (c 2) + monomF m (c 3) = 0 := by
         linear_combination hsum - h01
       exact eq_mshift_of_add_eq_zero (hc 2) (hc 3) hpair
     · right; left
       refine ⟨hjval, ?_⟩
+      have hjval' : c 2 = mshift m (c 0) := by simpa using hjval
       have h02 : monomF m (c 2) = -(monomF m (c 0)) := by
-        rw [hjval, monomF_mshift (hc 0)]
+        rw [hjval', monomF_mshift (hc 0)]
       have hpair : monomF m (c 1) + monomF m (c 3) = 0 := by
         linear_combination hsum - h02
       exact eq_mshift_of_add_eq_zero (hc 1) (hc 3) hpair
     · right; right
       refine ⟨hjval, ?_⟩
+      have hjval' : c 3 = mshift m (c 0) := by simpa using hjval
       have h03 : monomF m (c 3) = -(monomF m (c 0)) := by
-        rw [hjval, monomF_mshift (hc 0)]
+        rw [hjval', monomF_mshift (hc 0)]
       have hpair : monomF m (c 1) + monomF m (c 2) = 0 := by
         linear_combination hsum - h03
       exact eq_mshift_of_add_eq_zero (hc 1) (hc 2) hpair
