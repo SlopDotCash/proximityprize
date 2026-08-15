@@ -22,11 +22,6 @@ This directory contains various utility scripts for the ArkLib project.
 - **`lint-style.py`** - Python-based style linting with a maintained per-file exception baseline
 - **`update-style-exceptions.sh`** - Regenerate the Proximity Prize style exception baseline
 - **`lint-style.lean`** - Lean-based style linting
-- **`dedup_audit.py`** - Duplication / similarity audit across all Lean sources. Surfaces
-  duplicate fully-qualified names, same-statement lemmas (identical or differing proofs),
-  byte-identical proof bodies, recurring proof-line patterns, and duplicate file basenames.
-  Read-only worklist for DRYing/unifying. Run `python3 scripts/dedup_audit.py`
-  (`--json out.json` for machine-readable output, `--top N` to widen each section).
 
 ### Dependency Analysis
 - **`dependency_analysis/`** - Complete dependency analysis toolkit
