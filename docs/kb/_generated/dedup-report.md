@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6425 files, 71827 declarations
+- `ArkLib` — 6441 files, 71999 declarations
 
-## Same short-name across multiple files (2751 groups)
+## Same short-name across multiple files (2753 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -604,6 +604,17 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Wf407Tower.eta` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf407_tower.lean:84](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf407_tower.lean#L84) — The Gaussian period / incomplete subgroup Gauss sum at frequency `b`: `η_b(G) = ∑_{x∈G} ψ(b·x)`. (Re
 - `def ArkLib.ProximityGap.SubgroupGaussSumSecondMoment.eta` [ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean:48](../../../ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSecondMoment.lean#L48) — The subgroup Gauss sum at frequency `b`: `η_b = ∑_{y∈G} ψ(b·y)`.
 
+### `fiberCount` (8 declarations, 8 files)
+
+- `def AveragingCrossover.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean#L85) — The fiber count over a target.
+- `def ArkLib.ProximityGap.FiberEnergyListBound.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean#L46) — The fibre of the census map `f` over a value `v`: `#{i ∈ S : f i = v}`.
+- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L151) — Number of points in a phase fibre.
+- `abbrev ArkLib.ProximityGap.Frontier.G112FiberCollisionVarianceIdentity.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean#L35) — Cardinality of the fiber of a finite map.
+- `abbrev ArkLib.ProximityGap.Frontier.G140QuantitativeAccidentDCFloor.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G140QuantitativeAccidentDCFloor.lean:40](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G140QuantitativeAccidentDCFloor.lean#L40) — Cardinality of a fiber of a finite map.
+- `def ArkLib.ProximityGap.Frontier.P1RateQuarterCrossConeBridge.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean#L95) — The fiber-count function of a map `ρ` on a point set `X` — the P1 swarm's arithmetic weight: `h(s) =
+- `def ArkLib.ProximityGap.WF2SignedWalkMoment.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean#L60) — The **fiber count**: the number of `r`-tuples from `S` summing to a fixed value `v`.
+- `def Round18Bracket.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L47) — The fiber count `m x = #{c : x ∈ A c}`.
+
 ### `productionM` (8 declarations, 8 files)
 
 - `def ArkLib.ProximityGap.Frontier.BGKCyclotomicKreinSchurNoGo.productionM` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicKreinSchurNoGo.lean:229](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCyclotomicKreinSchurNoGo.lean#L229) — Number of nonzero multiplicative orbits.
@@ -678,16 +689,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.H7.energy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_H7_ConvSupNormCentralEnergy.lean:61](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_H7_ConvSupNormCentralEnergy.lean#L61) — The `r`-fold additive energy: number of pairs `(u, v) ∈ Sᵣ × Sᵣ` with `∑ u = ∑ v`, i.e. `‖1_S^{*r}‖₂
 - `def ArkLib.ProximityGap.NoExcessOnset.energy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean:118](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean#L118) — The depth-`r` additive energy over the carrier reached by `ψ`: the collision count.
 - `def ProximityGap.SupBoundCapstone.energy` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupBoundCapstone.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupBoundCapstone.lean#L33) — Per-prime char-`p` energy of `μ_n` = char-0 energy `E0` plus the wraparound surplus `W i` at the `i`
-
-### `fiberCount` (7 declarations, 7 files)
-
-- `def AveragingCrossover.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean:85](../../../ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean#L85) — The fiber count over a target.
-- `def ArkLib.ProximityGap.FiberEnergyListBound.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean:46](../../../ArkLib/Data/CodingTheory/ProximityGap/FiberEnergyListBound.lean#L46) — The fibre of the census map `f` over a value `v`: `#{i ∈ S : f i = v}`.
-- `def ArkLib.ProximityGap.Frontier.BGKC12DilationOrbitCompression.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean:151](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12DilationOrbitCompression.lean#L151) — Number of points in a phase fibre.
-- `abbrev ArkLib.ProximityGap.Frontier.G112FiberCollisionVarianceIdentity.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean:35](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean#L35) — Cardinality of the fiber of a finite map.
-- `def ArkLib.ProximityGap.Frontier.P1RateQuarterCrossConeBridge.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean:95](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCrossConeBridge.lean#L95) — The fiber-count function of a map `ρ` on a point set `X` — the P1 swarm's arithmetic weight: `h(s) =
-- `def ArkLib.ProximityGap.WF2SignedWalkMoment.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/SignedWalkMoment.lean#L60) — The **fiber count**: the number of `r`-tuples from `S` summing to a fixed value `v`.
-- `def Round18Bracket.fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L47) — The fiber count `m x = #{c : x ∈ A c}`.
 
 ### `incidenceSum` (7 declarations, 7 files)
 
@@ -4341,6 +4342,12 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Round4PairingRecursion.subsetSumCount` [ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPairingInflate.lean:238](../../../ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPairingInflate.lean#L238) — **The subset-sum count.** `N(g, c, target)` is the number of subsets `S ⊆ G` (modelled as `Finset (F
 - `def ArkLib.ProximityGap.Round4NewtonVietaUpper.subsetSumCount` [ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeFiber.lean:88](../../../ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeFiber.lean#L88) — The §7 **subgroup subset-sum fiber count** `N(a, target)`: the number of size-`a` subsets of the gro
 
+### `sum_fiberCount` (3 declarations, 3 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G112FiberCollisionVarianceIdentity.sum_fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean:40](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean#L40) — Fiber counts sum to the cardinality of the source.
+- `theorem ArkLib.ProximityGap.Frontier.G140QuantitativeAccidentDCFloor.sum_fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G140QuantitativeAccidentDCFloor.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G140QuantitativeAccidentDCFloor.lean#L45) — Fiber conservation.
+- `theorem Round18Bracket.sum_fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L57) — **Double count (first moment):** `∑_x m x = ∑_c \|A c\|`.
+
 ### `sum_nonzero_sq` (3 declarations, 3 files)
 
 - `theorem ProximityGap.Frontier.SecondMomentExact.sum_nonzero_sq` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SecondMomentExact.lean:67](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SecondMomentExact.lean#L67) — **The exact `r = 1` DC-subtracted second moment.** Specializing `sum_nonzero_moment` at `r = 1` with
@@ -7587,6 +7594,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def OracleSpec.QueryLog.BadEventDS.collisionFwdFwd` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEvents.lean:254](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEvents.lean#L254) — (no docstring)
 - `def OracleSpec.QueryLog.BadEventDSPaper.collisionFwdFwd` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEventsPaper.lean:230](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEventsPaper.lean#L230) — (no docstring)
 
+### `collisionPairs` (2 declarations, 2 files)
+
+- `def ArkLib.ProximityGap.Frontier.G141OffDiagonalAccidentIdentity.collisionPairs` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G141OffDiagonalAccidentIdentity.lean:31](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G141OffDiagonalAccidentIdentity.lean#L31) — Ordered collision pairs of a finite map.
+- `def ArkLib.ProximityGap.KKH26.collisionPairs` [ArkLib/Data/CodingTheory/ProximityGap/KKH26PolyFieldCeiling.lean:80](../../../ArkLib/Data/CodingTheory/ProximityGap/KKH26PolyFieldCeiling.lean#L80) — The index set of collision resultants: ordered pairs of **distinct** signed data from `sigData (2^{μ
+
 ### `collisionPerm` (2 declarations, 2 files)
 
 - `def OracleSpec.QueryLog.BadEventDS.collisionPerm` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEvents.lean:290](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEvents.lean#L290) — (no docstring)
@@ -7766,6 +7778,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `theorem ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.countPerms_erase_eq_multinomial` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R322SignedWalkEndpointEnvelope.lean:41](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R322SignedWalkEndpointEnvelope.lean#L41) — (no docstring)
 - `theorem ArkLib.PowerSeriesComposition.countPerms_erase_eq_multinomial` [ArkLib/Data/Polynomial/PowerSeriesComposition.lean:203](../../../ArkLib/Data/Polynomial/PowerSeriesComposition.lean#L203) — `countPerms (m.erase v)` as a `Nat.multinomial` over the **larger** finset `m.toFinset` (any index d
+
+### `count_map_neg` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.Frontier.G137MannPairingCensusConsumer.count_map_neg` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G137MannPairingCensusConsumer.lean:42](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G137MannPairingCensusConsumer.lean#L42) — (no docstring)
+- `theorem ArkLib.ProximityGap.Frontier.G138CyclotomicLiftHandoff.count_map_neg` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G138CyclotomicLiftHandoff.lean:58](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G138CyclotomicLiftHandoff.lean#L58) — (no docstring)
 
 ### `count_mul_countPerms` (2 declarations, 2 files)
 
@@ -12043,11 +12060,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.CyclotomicConcentration.sum_eq_zero_of_neg_invariant` [ArkLib/Data/CodingTheory/ProximityGap/CyclotomicConcentration.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/CyclotomicConcentration.lean#L69) — **Negation specialization (`s = 1`).** A subset closed under negation has vanishing first power sum
 - `theorem ProximityGap.Frontier.CyclotomicConcentration.sum_eq_zero_of_neg_invariant` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CyclotomicConcentration.lean:69](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CyclotomicConcentration.lean#L69) — **Negation specialization (`s = 1`).** A subset closed under negation has vanishing first power sum
 
-### `sum_fiberCount` (2 declarations, 2 files)
-
-- `theorem ArkLib.ProximityGap.Frontier.G112FiberCollisionVarianceIdentity.sum_fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean:40](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G112FiberCollisionVarianceIdentity.lean#L40) — Fiber counts sum to the cardinality of the source.
-- `theorem Round18Bracket.sum_fiberCount` [ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean:57](../../../ArkLib/Data/CodingTheory/ProximityGap/TwoSidedBracketScale.lean#L57) — **Double count (first moment):** `∑_x m x = ∑_c \|A c\|`.
-
 ### `sum_incidenceSum_over_G` (2 declarations, 2 files)
 
 - `theorem ArkLib.ProximityGap.Frontier.R16DiagonalExactValue.sum_incidenceSum_over_G` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R16DiagonalExactValue.lean:138](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R16DiagonalExactValue.lean#L138) — Summing the incidence field over the diagonal `G` telescopes to the total spectral weight: `∑_{s∈G}
@@ -15429,7 +15441,7 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 - `theorem ArkLib.ProximityGap.E2DilationDirectCount.zero_notMem_e2BadScalarSet` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean:398](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2DilationDirectCount.lean#L398) — The `e₂ = 0` bad-scalar image never contains zero, because every eligible subset has `e₁(S) ≠ 0`.
 
-## Near-duplicate docstrings (Jaccard ≥ 0.85, 922 cross-file pairs)
+## Near-duplicate docstrings (Jaccard ≥ 0.85, 923 cross-file pairs)
 
 Each pair has docstrings sharing a high fraction of (4+-letter) words, in different files. Most are unrelated coincidences in boilerplate; look for pairs where the *concept* matches.
 
