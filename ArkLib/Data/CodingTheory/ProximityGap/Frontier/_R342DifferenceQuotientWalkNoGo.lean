@@ -36,9 +36,5 @@ theorem neg_inv_mem_subgroup {F : Type*} [Field F]
 
 end ArkLib.ProximityGap.Frontier.R342DifferenceQuotientWalkNoGo
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R342DifferenceQuotientWalkNoGo
-    .inv_sub_one_eq_neg_inv_mul_sub_one
-#print axioms
-  ArkLib.ProximityGap.Frontier.R342DifferenceQuotientWalkNoGo
-    .neg_inv_mem_subgroup
+#print axioms ArkLib.ProximityGap.Frontier.R342DifferenceQuotientWalkNoGo.inv_sub_one_eq_neg_inv_mul_sub_one
+#print axioms ArkLib.ProximityGap.Frontier.R342DifferenceQuotientWalkNoGo.neg_inv_mem_subgroup

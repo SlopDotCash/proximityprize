@@ -20,14 +20,14 @@ namespace ProximityGap.R327
 theorem dyadic_support_separation_half_cs_countermodel :
     let A : Fin 4 -> Real := fun i => ![1, -1, 1, -1] i
     let B : Fin 4 -> Real := fun i => ![1, 1, -1, -1] i
-    (sum i, A i) = 0 /\
-      (sum i, B i) = 0 /\
-      (sum i, (A i) ^ 2 * (B i) ^ 2) = 4 /\
-      (sum i, (A i) ^ 4) = 4 /\
-      (sum i, (B i) ^ 4) = 4 /\
-      (1 / 2 : Real) * Real.sqrt (sum i, (A i) ^ 4) *
-          Real.sqrt (sum i, (B i) ^ 4) <
-        sum i, (A i) ^ 2 * (B i) ^ 2 := by
-  norm_num [Fin.sum_univ_four]
+    (∑ i, A i) = 0 /\
+      (∑ i, B i) = 0 /\
+      (∑ i, (A i) ^ 2 * (B i) ^ 2) = 4 /\
+      (∑ i, (A i) ^ 4) = 4 /\
+      (∑ i, (B i) ^ 4) = 4 /\
+      (1 / 2 : Real) * Real.sqrt (∑ i, (A i) ^ 4) *
+          Real.sqrt (∑ i, (B i) ^ 4) <
+        ∑ i, (A i) ^ 2 * (B i) ^ 2 := by
+  norm_num [Fin.sum_univ_succ, Matrix.cons_val_zero, Matrix.cons_val_succ]
 
 end ProximityGap.R327

@@ -34,14 +34,12 @@ theorem prize_scale_propagation_requires_sqrt_le_log
   have hsqrt : 0 ≤ Real.sqrt n := Real.sqrt_nonneg n
   have hn0 : 0 ≤ n := le_trans (by norm_num) (le_of_lt hn)
   have hsqrt_sq : (Real.sqrt n) ^ 2 = n := Real.sq_sqrt hn0
+  have hsqrt_one : 1 ≤ Real.sqrt n := by nlinarith
   rw [hM] at hprop
   rw [le_div_iff₀ (sub_pos.mpr hn)] at hprop
   nlinarith
 
 end ArkLib.ProximityGap.Frontier.R345PropagationThresholdNoGo
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R345PropagationThresholdNoGo.neighbor_mean_ge_sqrt_threshold
-#print axioms
-  ArkLib.ProximityGap.Frontier.R345PropagationThresholdNoGo
-    .prize_scale_propagation_requires_sqrt_le_log
+#print axioms ArkLib.ProximityGap.Frontier.R345PropagationThresholdNoGo.neighbor_mean_ge_sqrt_threshold
+#print axioms ArkLib.ProximityGap.Frontier.R345PropagationThresholdNoGo.prize_scale_propagation_requires_sqrt_le_log
