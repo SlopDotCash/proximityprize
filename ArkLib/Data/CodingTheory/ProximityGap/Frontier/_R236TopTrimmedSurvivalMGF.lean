@@ -37,13 +37,11 @@ noncomputable section
 def TopTrimmedBound (s T : Finset ι) (t : ι → ℝ) (Bres : ℝ → ℝ) (θ : ℝ) : ℝ :=
   (((T ∩ s).filter (fun b => θ ≤ t b)).card : ℝ) + Bres θ
 
-/-- If `T` pays its own survivors exactly and `Bres` bounds the residual
-survivors on `s \ T`, then `TopTrimmedBound` bounds all survivors on `s`. -/
-theorem survival_count_le_topTrimmedBound
+/-- Pointwise form of the top-trimmed survival-count bound. -/
+theorem survival_count_le_topTrimmedBound_at
     (s T : Finset ι) (t : ι → ℝ) (Bres : ℝ → ℝ)
-    (hres : ∀ θ,
-      (((s \ T).filter (fun b => θ ≤ t b)).card : ℝ) ≤ Bres θ)
-    (θ : ℝ) :
+    (θ : ℝ)
+    (hres : (((s \ T).filter (fun b => θ ≤ t b)).card : ℝ) ≤ Bres θ) :
     (((s.filter (fun b => θ ≤ t b)).card : ℝ) ≤
       TopTrimmedBound s T t Bres θ) := by
   let A : Finset ι := s.filter (fun b => θ ≤ t b)
@@ -66,9 +64,20 @@ theorem survival_count_le_topTrimmedBound
     (((s.filter (fun b => θ ≤ t b)).card : ℝ) = (A.card : ℝ)) := rfl
     _ ≤ (AT.card : ℝ) + (AR.card : ℝ) := hreal
     _ ≤ (AT.card : ℝ) + Bres θ := by
-      exact add_le_add_left (hres θ) _
+      simpa [AR] using add_le_add_left hres (AT.card : ℝ)
     _ = TopTrimmedBound s T t Bres θ := by
       rfl
+
+/-- If `T` pays its own survivors exactly and `Bres` bounds the residual
+survivors on `s \ T`, then `TopTrimmedBound` bounds all survivors on `s`. -/
+theorem survival_count_le_topTrimmedBound
+    (s T : Finset ι) (t : ι → ℝ) (Bres : ℝ → ℝ)
+    (hres : ∀ θ,
+      (((s \ T).filter (fun b => θ ≤ t b)).card : ℝ) ≤ Bres θ)
+    (θ : ℝ) :
+    (((s.filter (fun b => θ ≤ t b)).card : ℝ) ≤
+      TopTrimmedBound s T t Bres θ) :=
+  survival_count_le_topTrimmedBound_at s T t Bres θ (hres θ)
 
 /-- Top-trimmed survival-count ceilings imply an abstract MGF bound. -/
 theorem mgfBound_of_topTrimmed_survival_count_ceiling
@@ -83,7 +92,7 @@ theorem mgfBound_of_topTrimmed_survival_count_ceiling
     MGFBound s t A c := by
   refine mgfBound_of_survival_count_ceiling s t Θ δ (TopTrimmedBound s T t Bres) hδ hstair ?_ hweighted
   intro θ hθ
-  exact survival_count_le_topTrimmedBound s T t Bres (fun θ => hres θ ?_) θ
+  exact survival_count_le_topTrimmedBound_at s T t Bres θ (hres θ hθ)
 
 /-- Quarter-MGF specialization used by the top-five route. -/
 theorem two_mgfBound_of_topTrimmed_survival_count_ceiling
