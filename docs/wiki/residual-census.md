@@ -30,18 +30,26 @@ always check this census before treating a `*Residual` name as open proof debt.
 > CORE. See the dossier §6 SYZ54 addendum and `deltastar-466-syz53-*-2026-07-11.md`. Preserve this
 > addendum when regenerating the file.
 
+> **Regeneration note — 2026-08-15 (at `a768c10bb`).** Relative to the previously committed
+> 2026-07-11 ledger: strict residuals 108 → 117 (open 62 → 69, discharged 45 → 47, refuted
+> 1 → 1); residual-like near misses 76 → 79. The additions land with the frontier work merged
+> since that snapshot (including the 2026-08-15 `_BGK*` batch) and are enumerated in the ledger
+> body and `scripts/residual_census.json`. Mechanical script output only; the campaign addendum
+> above is preserved verbatim per its own instruction, and its figures describe the 2026-07-11
+> tree as written.
+
 ## Summary
 
-- **Total strict residuals:** 108
-- **Open:** 62
-- **Discharged:** 45
+- **Total strict residuals:** 117
+- **Open:** 69
+- **Discharged:** 47
 - **Refuted:** 1
-- **Residual-like near misses:** 76 (listed below and in `scripts/residual_census.json`)
+- **Residual-like near misses:** 79 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | discharged | refuted |
 |---|---:|---:|---:|---:|
 | `(root)` | 1 | 0 | 1 | 0 |
-| `Data` | 41 | 32 | 9 | 0 |
+| `Data` | 50 | 39 | 11 | 0 |
 | `OracleReduction` | 39 | 22 | 17 | 0 |
 | `ProofSystem` | 16 | 8 | 8 | 0 |
 | `ToMathlib` | 11 | 0 | 10 | 1 |
@@ -68,12 +76,19 @@ always check this census before treating a `*Residual` name as open proof debt.
 - `ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalEvenOddDescent.lean:165`
 - `ProximityGap.Frontier.ARX1.SteinWickResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ArxSteinWraparoundNoGo.lean:198`
 - `ArkLib.ProximityGap.GaloisStickelberger.GaloisPhaseSpreadResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGalois_StickelbergerPhaseDescent.lean:119`
+- `ArkLib.ProximityGap.Frontier.BGKCenteredConvolutionCollapse.DepthSixTranslateAverageResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCenteredConvolutionCollapse.lean:298`
+- `ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidual.DepthSevenFlatnessResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidual.lean:68`
+- `ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.RawDepthSevenFlatnessResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean:65`
+- `ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.DepthSevenOffZeroFlatnessResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean:108`
+- `ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.DepthSevenCosetBudgetResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean:113` — conditional providers only (residual deps: `DepthSevenOffZeroFlatnessResidual`; extra assumptions: `hcard`, `hflat`, `hqu`)
 - `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean:208`
 - `ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDirectionCapGlobalConsumer.ExceptionalDirectionResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterDirectionCapGlobalConsumer.lean:58`
 - `ProximityGap.Frontier.IsoSparsityMasonStothers.IsolatedNonCosetCountResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IsoSparsityMasonStothers.lean:145`
 - `ArkLib.ProximityGap.Frontier.JacKatz.EffectiveEquidistResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacKatzBoundedConductorFamily.lean:234`
 - `ArkLib.ProximityGap.Frontier.JacobiKatzEquidist.JacobiEquidistributionRateResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_JacobiKatzEquidist.lean:202`
-- `ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorGenericSplit.PredecessorStructuredFloorResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorGenericSplit.lean:111`
+- `ArkLib.ProximityGap.Frontier.P1RateQuarterClusterConfinement.SwarmResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterClusterConfinement.lean:430`
+- `ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion.StallResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterDChargeDerecursion.lean:274` — conditional providers only (residual deps: `SwarmResidual`; extra assumptions: `hswarm`)
+- `ArkLib.ProximityGap.Frontier.P1RateQuarterGlobalConsistencyCharge.GlobalConsistencySwarmResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterGlobalConsistencyCharge.lean:348`
 - `ArkLib.ProximityGap.Frontier.R209NonzeroQuarterMGFResidualConsumer.NonzeroQuarterMGFResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean:44` — conditional providers only (extra assumptions: `hTail`, `hstair`, `hweighted`, `hδ`)
 - `ArkLib.ProximityGap.Frontier.R213NonzeroNormalizedSqQuarterMGFResidualConsumer.NonzeroNormalizedSqQuarterMGFResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R213NonzeroNormalizedSqQuarterMGFResidualConsumer.lean:49` — conditional providers only (extra assumptions: `hAboveHalfTail`, `hAboveTail`, `hDC`, `hG`, `hLift`, `hPosTail`, `hQTail`, `hQTailAbove`, `hResidualStable`, `hScaleAbove`, `hTail`, `hTop`, `hcut`, `hmoment`, `hqSq`, `hr`, `hrq`, `hscale`, `hstair`, `hstairResidual`, `hweighted`, `hδ`, `hθpos`, `hψ`)
 - `ArkLib.ProximityGap.Frontier.R317DeepShadowCollisionHeadroom.DeepShadowCollisionResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R317DeepShadowCollisionHeadroom.lean:104`
@@ -135,6 +150,9 @@ proof debt and naming drift.
 - `CodingTheory.gg25_subspaceDesign_epsMCA_residual` — `ArkLib/Data/CodingTheory/ProximityGap/CapacityBoundsProofs.lean:193` — `def`; name does not end in `Residual`
 - `ProximityGap.diffStackMCAResidualBelowUDR` — `ArkLib/Data/CodingTheory/ProximityGap/Errors.lean:1597` — `def`; name does not end in `Residual`
 - `ProximityGap.Ownership.residualRatio` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/PinnedScalarRatioImage.lean:70` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.BGKSevenSubsetOverlapDecomposition.residualPair` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSevenSubsetOverlapDecomposition.lean:58` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.G278IntegerLiftCarryNoGo.CarryCell.residualNeed` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G278IntegerLiftCarryNoGo.lean:127` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.HBKClearedDerivativeRecurrence.residualPolynomial` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HBKClearedDerivativeRecurrence.lean:31` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourCrossTripleThreeHoleConsumer.threeHoleCrossResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourCrossTripleThreeHoleConsumer.lean:112` — `def`; result type is `UniqueEightCoreResidual family where source`, not `Prop`
 - `ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourFourHoleClasses.crossResidualHoles` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourFourHoleClasses.lean:59` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.residualHoles` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfPredecessorRateQuarterKFourSevenCoreOverlapTwo.lean:159` — `def`; name does not end in `Residual`
@@ -209,6 +227,8 @@ proof debt and naming drift.
 - `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2510`
 - `ArkLib.BoundaryCardResidual.BoundaryCardLatticeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidual.lean:271`
 - `ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.CommonLocatorResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConstruction.lean:165`
+- `ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorGenericSplit.PredecessorStructuredFloorResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorGenericSplit.lean:111`
+- `ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.ProjectivelyStructuredFloorResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterProjectiveStructuredSplit.lean:318`
 - `ProximityGap.Ownership.SubJohnsonSupplyResidual` — `ArkLib/Data/CodingTheory/ProximityGap/JohnsonSplitSupply.lean:258`
 - `Prover.appendRunRightResidual` — `ArkLib/OracleReduction/Composition/Sequential/Append.lean:3933`
 - `OracleReduction.appendToReductionResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessOracle.lean:67`
