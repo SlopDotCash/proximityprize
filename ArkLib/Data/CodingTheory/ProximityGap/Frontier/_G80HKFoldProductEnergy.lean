@@ -104,7 +104,7 @@ extends this method to the prize saddle `W ≫ √p`; it only shrinks its admiss
 theorem sq_lt_of_pow_lt {W k p : ℕ} (hk : 2 ≤ k) (hW : W ^ k < p) :
     W ^ 2 < p := by
   cases W with
-  | zero => simpa using hW
+  | zero => simpa [zero_pow (by omega : k ≠ 0)] using hW
   | succ W =>
       exact (pow_le_pow_right' (Nat.succ_le_succ (Nat.zero_le W)) hk).trans_lt hW
 
@@ -117,7 +117,7 @@ theorem tupleProduct_le_pow {A : Finset ℕ} {W k : ℕ}
   unfold tupleProduct
   calc
     ∏ i, x i ≤ ∏ _i : Fin k, W :=
-      Finset.prod_le_prod' fun i _ => hA _ (by simpa using (Finset.mem_piFinset.mp hx i))
+      Finset.prod_le_prod' fun i _ => hA _ (by simpa using (Fintype.mem_piFinset.mp hx i))
     _ = W ^ k := by simp
 
 /-- Multiplicative closure puts every tuple product back in `H` (including the empty product,
@@ -135,7 +135,7 @@ theorem natCast_tupleProduct_mem
   | empty => simpa using hone
   | @insert i s hi ih =>
       rw [Finset.prod_insert hi]
-      exact hmul _ (hA _ (by simpa using (Finset.mem_piFinset.mp hx i))) _ ih
+      exact hmul _ (hA _ (by simpa using (Fintype.mem_piFinset.mp hx i))) _ ih
 
 /-- **Uniform no-wrap image cap.** If `A ⊆ [0,W]`, `W^k < p`, and its residues lie in a
 multiplicatively closed set `H` containing one, then the integer k-fold product image injects
