@@ -24,6 +24,125 @@ For substantial contributions, such as a new proof system, we strongly encourage
 * **Why a Blueprint?** This helps align the contribution with the project's structure and goals *before* significant coding and proving effort is invested. It facilitates discussion and feedback from maintainers and the community. It also makes it easier to manage large efforts in a distributed way.
 * **Process:** Please open a new discussion or issue to propose your planned contribution and discuss the blueprint before starting implementation.
 
+## Test Infrastructure & Proof Metrics
+
+ArkLib enforces deterministic test infrastructure that tracks proof quality metrics: **sorry count** (proof holes), **axiom efficiency** (minimal axiom dependencies), and **proof completion metrics**.
+
+### Running Tests Locally
+
+Before pushing, validate your changes with the Tier 1 test suite:
+
+```bash
+# Run merge-blocking gates (preferred for local development)
+./scripts/test-suite.sh gating
+
+# Run full validation (gating + metrics + benchmarks)
+./scripts/test-suite.sh full
+
+# Collect proof metrics only (no build)
+./scripts/test-suite.sh metrics --json
+
+# Generate a summary report
+./scripts/test-suite.sh report
+```
+
+### Test Suite Modes
+
+**Gating** (merge-blocking):
+- Forbidden tokens precheck: Rejects `native_decide`, `bv_decide`, undocumented axioms
+- Lake build: Full compilation with cached dependencies
+- Sorry census: Zero live proof holes required
+- Axiom audit: Only approved axioms ({propext, Classical.choice, Quot.sound})
+- Import integrity: Umbrella imports validated
+
+**Metrics** (non-blocking):
+- Collects proof metrics into JSON format
+- Tracks: sorry count, axiom violations, build time, module count
+- Used for PR comparisons and regression detection
+
+**Benchmarks** (non-blocking):
+- Warm rebuild timing
+- Clean build timing (skipped to respect runner budget)
+
+### Proof Quality Expectations
+
+#### Zero-Hole Policy
+
+All proofs must be complete. Live `sorry` or `admit` tokens in proof bodies are merge-blocking. Comments and docstrings mentioning "sorry" are allowed but do not count as holes.
+
+#### Axiom Efficiency
+
+Flagship theorems (43 pinned declarations in `scripts/flagship_axioms.txt`) must use only these axioms:
+- `propext`: Proof irrelevance
+- `Classical.choice`: Choice axiom
+- `Quot.sound`: Quotient soundness
+
+Custom axioms, `sorryAx`, and `Lean.ofReduceBool` are rejected. All violations cause CI failure.
+
+#### Proof Metrics
+
+Each commit's proof metrics are tracked:
+
+```json
+{
+  "sorry_count": { "total_holes": 0 },
+  "axiom_efficiency": { "violations": 0 },
+  "build_metrics": { "warm_build_sec": 245.3 }
+}
+```
+
+Pull requests must not increase sorry count or axiom violations relative to main. Build time regressions > 10% trigger warnings but do not block merge.
+
+### CI Workflow
+
+When you push or open a PR, the `.github/workflows/test.yml` workflow runs automatically:
+
+1. **Run test suite (gating)** — Lake build + all gates
+2. **Collect metrics** — Sorry count, axiom audit, build timing
+3. **Compare vs baseline** — Detects regressions vs main or previous PR update
+4. **Post PR comment** — Displays metrics summary and deltas
+5. **Fail on regression** — If sorry count or axioms increased
+
+Example PR comment:
+```
+## Proof Metrics Summary
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| Sorry Count (live holes) | 0 (+0) | ✅ |
+| Axiom Violations | 0 | ✅ |
+| Build Time (warm) | 245.3s | ⏱️  |
+| Modules Compiled | 4287 | 📦 |
+
+Status: PASS
+```
+
+### Troubleshooting
+
+**Sorry census finds holes:**
+```bash
+python3 scripts/sorry_census.py --root .
+```
+Review output for file, line, and declaration. Complete the proof or consult maintainers if it's a known limitation.
+
+**Axiom audit fails:**
+```bash
+python3 scripts/axiom_audit.py --root .
+```
+Verify flagship theorems use only approved axioms. Use `#print_axioms` in Lean to inspect proof dependencies.
+
+**Forbidden tokens rejected:**
+```bash
+python3 scripts/forbidden_tokens.py
+```
+Avoid decision procedures (`native_decide`, `bv_decide`) and undocumented axioms. Use tactics like `decide`, `omega`, or `norm_num` instead.
+
+**Build cache stale:**
+```bash
+rm -rf .lake/build
+lake build
+```
+
 ## Pull Request Guidelines
 
 We follow the specific convention for pull request titles and descriptions used by the Lean community.

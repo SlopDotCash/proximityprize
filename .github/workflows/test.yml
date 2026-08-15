@@ -1,0 +1,250 @@
+name: Test Infrastructure (Tier 1)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  test-suite:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up environment variables
+        run: |
+          echo "METRICS_DIR=$RUNNER_TEMP/arklib-metrics" >> "$GITHUB_ENV"
+          echo "METRICS_FILE=$RUNNER_TEMP/arklib-metrics/proof-metrics.json" >> "$GITHUB_ENV"
+          echo "METRICS_ARTIFACT=arklib-proof-metrics" >> "$GITHUB_ENV"
+
+      - name: Make test-suite.sh executable
+        run: chmod +x scripts/test-suite.sh
+
+      - name: Restore Lean cache
+        uses: actions/cache/restore@v6
+        id: lake-cache
+        with:
+          path: ./.lake
+          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
+          restore-keys: |
+            ${{ runner.os }}-lean-ci-
+            ${{ runner.os }}-lean-docs-${{ hashFiles('lake-manifest.json') }}
+            ${{ runner.os }}-lean-docs-
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up Lean environment
+        uses: leanprover/lean-action@v1.5.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+
+      - name: Fetch dependency cache
+        run: lake exe cache get
+
+      - name: Run test suite (gating gates)
+        run: |
+          mkdir -p "$METRICS_DIR"
+          bash scripts/test-suite.sh gating --json > "$METRICS_FILE" || EXIT_CODE=$?
+          exit "${EXIT_CODE:-0}"
+
+      - name: Save Lean cache
+        if: success() && steps.lake-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ./.lake
+          key: ${{ runner.os }}-lean-ci-${{ hashFiles('lake-manifest.json') }}
+
+      - name: Upload metrics artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.METRICS_ARTIFACT }}
+          path: ${{ env.METRICS_DIR }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Fetch baseline metrics (for PR comparison)
+        if: always() && github.event_name == 'pull_request'
+        id: baseline
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const artifactName = process.env.METRICS_ARTIFACT;
+            const workflowName = process.env.GITHUB_WORKFLOW;
+            const currentRunId = Number(process.env.GITHUB_RUN_ID);
+            const pullRequest = context.payload.pull_request;
+            const baseRef = pullRequest.base.ref;
+            const headRef = pullRequest.head.ref;
+
+            async function findArtifact(runs) {
+              for (const run of runs) {
+                if (run.id === currentRunId) continue;
+                if (run.name !== workflowName || run.conclusion !== 'success') continue;
+                const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+                  owner, repo, run_id: run.id, per_page: 100
+                });
+                const artifact = artifacts.data.artifacts.find(
+                  a => a.name === artifactName && !a.expired
+                );
+                if (artifact) return run.id;
+              }
+              return null;
+            }
+
+            // First try: previous run on the same PR head
+            const prRuns = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, event: 'pull_request', branch: headRef,
+              status: 'completed', per_page: 100
+            });
+            const prCandidates = prRuns.data.workflow_runs.filter(r => r.id !== currentRunId);
+            const prRunId = await findArtifact(prCandidates);
+            if (prRunId) {
+              core.setOutput('run-id', String(prRunId));
+              core.setOutput('label', 'previous PR update');
+              return;
+            }
+
+            // Fallback: latest on base branch
+            const baseRuns = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, event: 'push', branch: baseRef,
+              status: 'completed', per_page: 100
+            });
+            const baseRunId = await findArtifact(baseRuns.data.workflow_runs);
+            if (baseRunId) {
+              core.setOutput('run-id', String(baseRunId));
+              core.setOutput('label', `\`${baseRef}\` branch`);
+              return;
+            }
+
+            core.info('No baseline metrics found for comparison');
+            core.setOutput('run-id', '');
+
+      - name: Download baseline metrics
+        if: always() && steps.baseline.outputs.run-id != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ env.METRICS_ARTIFACT }}
+          path: ${{ runner.temp }}/baseline-metrics
+          run-id: ${{ steps.baseline.outputs.run-id }}
+          github-token: ${{ github.token }}
+
+      - name: Parse and compare metrics
+        if: always()
+        id: metrics-report
+        run: |
+          if [ -f "$METRICS_FILE" ]; then
+            SORRY_COUNT=$(jq -r '.metrics.sorry_count.total_holes // 0' "$METRICS_FILE")
+            AXIOM_VIOLATIONS=$(jq -r '.metrics.axiom_efficiency.violations // 0' "$METRICS_FILE")
+            BUILD_TIME=$(jq -r '.metrics.build_metrics.warm_build_sec // "N/A"' "$METRICS_FILE")
+            MODULES=$(jq -r '.metrics.build_metrics.modules_compiled // "N/A"' "$METRICS_FILE")
+            STATUS=$(jq -r '.status // "unknown"' "$METRICS_FILE")
+
+            echo "SORRY_COUNT=$SORRY_COUNT" >> "$GITHUB_OUTPUT"
+            echo "AXIOM_VIOLATIONS=$AXIOM_VIOLATIONS" >> "$GITHUB_OUTPUT"
+            echo "BUILD_TIME=$BUILD_TIME" >> "$GITHUB_OUTPUT"
+            echo "MODULES=$MODULES" >> "$GITHUB_OUTPUT"
+            echo "STATUS=$STATUS" >> "$GITHUB_OUTPUT"
+
+            # Check baseline if exists
+            BASELINE_FILE="${RUNNER_TEMP}/baseline-metrics/proof-metrics.json"
+            if [ -f "$BASELINE_FILE" ]; then
+              BASELINE_SORRY=$(jq -r '.metrics.sorry_count.total_holes // 0' "$BASELINE_FILE")
+              BASELINE_AXIOM=$(jq -r '.metrics.axiom_efficiency.violations // 0' "$BASELINE_FILE")
+              SORRY_CHANGE=$((SORRY_COUNT - BASELINE_SORRY))
+              AXIOM_CHANGE=$((AXIOM_VIOLATIONS - BASELINE_AXIOM))
+
+              echo "BASELINE_AVAILABLE=true" >> "$GITHUB_OUTPUT"
+              echo "SORRY_CHANGE=$SORRY_CHANGE" >> "$GITHUB_OUTPUT"
+              echo "AXIOM_CHANGE=$AXIOM_CHANGE" >> "$GITHUB_OUTPUT"
+            else
+              echo "BASELINE_AVAILABLE=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Post metrics comment to PR
+        if: always() && github.event_name == 'pull_request' && env.METRICS_FILE != ''
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const sorry = '${{ steps.metrics-report.outputs.SORRY_COUNT }}';
+            const axiom = '${{ steps.metrics-report.outputs.AXIOM_VIOLATIONS }}';
+            const time = '${{ steps.metrics-report.outputs.BUILD_TIME }}';
+            const modules = '${{ steps.metrics-report.outputs.MODULES }}';
+            const status = '${{ steps.metrics-report.outputs.STATUS }}';
+            const baselineAvail = '${{ steps.metrics-report.outputs.BASELINE_AVAILABLE }}' === 'true';
+            const sorryChange = '${{ steps.metrics-report.outputs.SORRY_CHANGE }}';
+            const axiomChange = '${{ steps.metrics-report.outputs.AXIOM_CHANGE }}';
+
+            let sorryIcon = sorry === '0' ? '✅' : '❌';
+            let axiomIcon = axiom === '0' ? '✅' : '❌';
+            let changeText = '';
+
+            if (baselineAvail) {
+              const sorryDelta = parseInt(sorryChange) || 0;
+              const axiomDelta = parseInt(axiomChange) || 0;
+              changeText = ` (${sorryDelta >= 0 ? '+' : ''}${sorryDelta})`;
+              if (axiomDelta !== 0) {
+                axiomIcon = axiomDelta > 0 ? '⚠️' : '✅';
+              }
+            }
+
+            const comment = `## Proof Metrics Summary
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| Sorry Count (live holes) | ${sorry}${changeText} | ${sorryIcon} |
+| Axiom Violations | ${axiom} | ${axiomIcon} |
+| Build Time (warm) | ${time}s | ⏱️  |
+| Modules Compiled | ${modules} | 📦 |
+
+**Status**: ${status.toUpperCase()}
+
+---
+*Tier 1 Test Infrastructure: Proof metrics tracked and validated on each push.*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Fail if sorry count increased (gating)
+        if: always() && steps.metrics-report.outputs.BASELINE_AVAILABLE == 'true'
+        run: |
+          SORRY_CHANGE=${{ steps.metrics-report.outputs.SORRY_CHANGE }}
+          if [ "$SORRY_CHANGE" -gt 0 ]; then
+            echo "ERROR: Sorry count increased by $SORRY_CHANGE" >&2
+            exit 1
+          fi
+
+      - name: Fail if axiom violations increased (gating)
+        if: always() && steps.metrics-report.outputs.BASELINE_AVAILABLE == 'true'
+        run: |
+          AXIOM_CHANGE=${{ steps.metrics-report.outputs.AXIOM_CHANGE }}
+          if [ "$AXIOM_CHANGE" -gt 0 ]; then
+            echo "ERROR: Axiom violations increased by $AXIOM_CHANGE" >&2
+            exit 1
+          fi
