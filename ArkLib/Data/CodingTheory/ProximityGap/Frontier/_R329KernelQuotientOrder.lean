@@ -68,7 +68,7 @@ theorem evalHom_mk {F : Type} [CommRing F] (m : ℕ) (g : F) (hg : g ^ m = -1)
   rw [evalHom, AdjoinRoot.lift_mk]
 
 /-- Over `ZMod p`, the evaluation kernel has index exactly `p`. -/
-theorem nat_card_quot_ker_evalHom (m p : ℕ) [Fact (1 < p)] (g : ZMod p)
+theorem nat_card_quot_ker_evalHom (m p : ℕ) [Fact p.Prime] (g : ZMod p)
     (hg : g ^ m = -1) :
     Nat.card ((AdjoinRoot (fpoly m)) ⧸ RingHom.ker (evalHom m g hg)) = p := by
   have hsurj : Function.Surjective (evalHom m g hg) := by
@@ -76,7 +76,7 @@ theorem nat_card_quot_ker_evalHom (m p : ℕ) [Fact (1 < p)] (g : ZMod p)
     obtain ⟨z, rfl⟩ := ZMod.intCast_surjective y
     refine ⟨algebraMap ℤ _ z, ?_⟩
     rw [← RingHom.comp_apply]
-    exact RingHom.eq_intCast _ z
+    simp
   have := RingHom.quotientKerEquivOfSurjective hsurj
   rw [Nat.card_congr this.toEquiv]
   simp [Nat.card_eq_fintype_card, ZMod.card]
@@ -110,7 +110,7 @@ theorem not_fpoly_dvd_relationPoly {k : ℕ} {d : Fin (2 ^ k) → ℤ} (hd : d �
 /-- **The index tower.**  For a nonzero relation `d` realized at the prime `p`
 (`evalVec g d = 0` over `ZMod p`), the additive index of the recurrence lattice inside
 the evaluation kernel satisfies `[K_p : L_{P_d}] · p = |Res(x^{2^k}+1, P_d)|`. -/
-theorem relindex_mul_p_eq_patternResultant (k p : ℕ) [Fact (1 < p)]
+theorem relindex_mul_p_eq_patternResultant (k p : ℕ) [Fact p.Prime]
     (g : ZMod p) (hg : g ^ (2 ^ k) = -1)
     {d : Fin (2 ^ k) → ℤ} (hd : d ≠ 0)
     (hzero : evalVec g (2 ^ k) d = 0) :
@@ -140,7 +140,7 @@ theorem relindex_mul_p_eq_patternResultant (k p : ℕ) [Fact (1 < p)]
 `|Res(x^{2^k}+1, P_d)|.natAbs ∣ 2^u · p` (with `p` prime, not a power of two beyond...
 any prime `p > 2^u`'s contribution cancels), then the kernel/lattice quotient order
 divides `2^u` — exactly the hypothesis of R321's dyadic saturation bridge. -/
-theorem card_quotient_dvd_of_patternResultant_dvd (k p u : ℕ) [Fact (1 < p)]
+theorem card_quotient_dvd_of_patternResultant_dvd (k p u : ℕ) [Fact p.Prime]
     (g : ZMod p) (hg : g ^ (2 ^ k) = -1)
     {d : Fin (2 ^ k) → ℤ} (hd : d ≠ 0)
     (hzero : evalVec g (2 ^ k) d = 0)

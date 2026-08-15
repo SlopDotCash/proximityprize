@@ -16,6 +16,7 @@ namespace ArkLib.ProximityGap.Frontier.R331Depth3PeriodMomentLargeChar
 open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm
 open ArkLib.ProximityGap.Frontier.R330Depth3WickLargeChar
 open ArkLib.ProximityGap.DCMomentSupBound
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 
 theorem period_sixth_power_le_of_characteristic_above_height
     {k prime : ℕ} {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -35,6 +36,4 @@ theorem period_sixth_power_le_of_characteristic_above_height
 
 end ArkLib.ProximityGap.Frontier.R331Depth3PeriodMomentLargeChar
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R331Depth3PeriodMomentLargeChar
-    .period_sixth_power_le_of_characteristic_above_height
+#print axioms ArkLib.ProximityGap.Frontier.R331Depth3PeriodMomentLargeChar.period_sixth_power_le_of_characteristic_above_height
