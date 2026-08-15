@@ -451,10 +451,14 @@ theorem sum_erase_pairs_eq_sum_offDiag (G : Finset F) (f : F × F -> Nat) :
       exact ⟨⟨h1, h2⟩, hne⟩
     · rintro ⟨⟨h1, h2⟩, hne⟩
       exact ⟨h1, h2, hne⟩
-  simp_rw [herase]
-  rw [hoff]
-  simp only [Finset.sum_filter]
-  rw [Finset.sum_product']
+  calc
+    (∑ x ∈ G, ∑ y ∈ G.erase x, f (x, y)) =
+        ∑ x ∈ G, ∑ y ∈ G.filter (fun y => x ≠ y), f (x, y) :=
+      Finset.sum_congr rfl fun x hx => by rw [herase x hx]
+    _ = ∑ pair ∈ G.offDiag, f pair := by
+      rw [hoff]
+      simp only [Finset.sum_filter]
+      rw [← Finset.sum_product']
 
 /-- Witness intersections are pointwise bounded by the agreement weight of their
 secant slope. -/
@@ -468,8 +472,11 @@ theorem offDiagInterMass_subtype_le_offDiagSlopeMass
     offDiagInterMass (fun gamma : {x // x ∈ G} => S gamma.1) <=
       offDiagSlopeMass G c u1 := by
   classical
-  rw [offDiagInterMass_subtype_eq,
-    sum_erase_pairs_eq_sum_offDiag, offDiagSlopeMass]
+  rw [offDiagInterMass_subtype_eq]
+  change (∑ x ∈ G, ∑ y ∈ G.erase x,
+    (fun pair : F × F => (S pair.1 ∩ S pair.2).card) (x, y)) ≤ offDiagSlopeMass G c u1
+  rw [sum_erase_pairs_eq_sum_offDiag G
+    (fun pair : F × F => (S pair.1 ∩ S pair.2).card), offDiagSlopeMass]
   apply Finset.sum_le_sum
   intro pair hpair
   obtain ⟨hgamma, hgamma', hne⟩ := Finset.mem_offDiag.mp hpair
