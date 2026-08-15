@@ -16,6 +16,7 @@ namespace ArkLib.ProximityGap.Frontier.R338Depth3IncompleteSumLargeChar
 open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm
 open ArkLib.ProximityGap.Frontier.R330Depth3WickLargeChar
 open ArkLib.ProximityGap.GaussPeriodMomentBound
+open ArkLib.ProximityGap.InteriorWorstCaseIncompleteSum
 
 theorem worstCaseIncompleteSumBound_of_large_characteristic_depth3
     {k prime : ℕ} {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -33,6 +34,4 @@ theorem worstCaseIncompleteSumBound_of_large_characteristic_depth3
 
 end ArkLib.ProximityGap.Frontier.R338Depth3IncompleteSumLargeChar
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R338Depth3IncompleteSumLargeChar
-    .worstCaseIncompleteSumBound_of_large_characteristic_depth3
+#print axioms ArkLib.ProximityGap.Frontier.R338Depth3IncompleteSumLargeChar.worstCaseIncompleteSumBound_of_large_characteristic_depth3

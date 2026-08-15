@@ -47,7 +47,7 @@ theorem productImage_subset_Icc {A : Finset ℕ} {W k : ℕ}
   rw [Finset.mem_Icc]
   constructor
   · unfold tupleProduct
-    exact Finset.one_le_prod (fun i _ => (hA _ (Finset.mem_piFinset.mp hx i)).1)
+    exact Finset.one_le_prod (fun i _ => (hA _ (Fintype.mem_piFinset.mp hx i)).1)
   · exact tupleProduct_le_pow (fun a ha => (hA a ha).2) hx
 
 /-- A product fiber over `A^k` injects into the corresponding bounded factor fiber. -/
@@ -59,10 +59,10 @@ theorem card_productFiber_le_boundedFactorCount
   unfold boundedFactorCount
   refine Finset.card_le_card (Finset.filter_subset_filter _ ?_)
   intro x hx
-  rw [Finset.mem_piFinset]
+  rw [Fintype.mem_piFinset]
   intro i
   rw [Finset.mem_Icc]
-  exact hA _ (Finset.mem_piFinset.mp hx i)
+  exact hA _ (Fintype.mem_piFinset.mp hx i)
 
 /-- **Exact k-fold divisor-moment weld.** If `A ⊆ [1,W]`, its k-fold multiplicative energy
 is bounded by the full bounded factor second moment through `W^k`. -/
