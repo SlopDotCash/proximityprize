@@ -1,7 +1,7 @@
 # δ* control-plane correction: issue #509 is closed
 
-**Date:** 2026-08-14  
-**Branch:** `research/proximity-prize`  
+**Date:** 2026-08-14
+**Branch:** `research/proximity-prize`
 **Maintenance tracker:** #506
 
 The branch-local campaign guide still describes issue #509 as the live successor CORE issue. That

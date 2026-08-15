@@ -4,9 +4,9 @@ Generated from `docs/kb/_generated/declarations.json`. **Eyeball, do not auto-re
 
 ## Stats
 
-- `ArkLib` — 6424 files, 71803 declarations
+- `ArkLib` — 6425 files, 71827 declarations
 
-## Same short-name across multiple files (2750 groups)
+## Same short-name across multiple files (2751 groups)
 
 Each group lists declarations sharing a short name across ≥2 files. Most are legitimate (overloaded interface, paper-shape vs general form), but the list is the right anchor to look for duplicates.
 
@@ -729,6 +729,16 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `theorem R12.totient_two_pow` [ArkLib/Data/CodingTheory/ProximityGap/LamLeungUnconditionalGeneral.lean:140](../../../ArkLib/Data/CodingTheory/ProximityGap/LamLeungUnconditionalGeneral.lean#L140) — `φ(2^m) = 2^{m-1}` for `m ≥ 1`.
 - `theorem ArkLib.ProximityGap.SubsetSumLowerLoop50.totient_two_pow` [ArkLib/Data/CodingTheory/ProximityGap/SubsetSumLowerLoop50.lean:183](../../../ArkLib/Data/CodingTheory/ProximityGap/SubsetSumLowerLoop50.lean#L183) — `φ(2^m) = 2^{m-1}` for `m ≥ 1`.
 
+### `fiber` (7 declarations, 7 files)
+
+- `def AveragingCrossover.fiber` [ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean#L81) — The fiber of `Φ` over a target tuple `y`, restricted to `a`-subsets.
+- `def ArkLib.ProximityGap.Rigidity.fiber` [ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean#L45) — (no docstring)
+- `def ArkLib.ProximityGap.Frontier.DistinctPeriodMomentLaw.fiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/DistinctPeriodMomentLaw.lean:63](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/DistinctPeriodMomentLaw.lean#L63) — The fiber of the coset-label map over a representative `t`: the `μ_n`-coset `t•μ_n` realised as a su
+- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean:36](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean#L36) — The energy fiber over `v : Fin 2 → F` (the tuples `w` with `∑ w = ∑ v`), as a finset.
+- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorStrict.lean:38](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorStrict.lean#L38) — The additive-energy fiber over a tuple `v`.
+- `def Round25General.fiber` [ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean#L60) — The index fiber of `A` at `j`.
+- `def ArkLib.ProximityGap.Round5SecondMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeManyTargets.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeManyTargets.lean#L96) — The `target`-fiber `A_target = { S ∈ powersetCard a G : ∑_{x∈S} x = target }`, whose card is `subset
+
 ### `getElem` (7 declarations, 7 files)
 
 - `theorem Array.getElem` [ArkLib/Data/Array/Lemmas.lean:63](../../../ArkLib/Data/Array/Lemmas.lean#L63) — (no docstring)
@@ -784,15 +794,6 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 - `def ArkLib.ProximityGap.Frontier.R380HalfRadiusTwoEPlusOneRefuted.column` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R380HalfRadiusTwoEPlusOneRefuted.lean:33](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R380HalfRadiusTwoEPlusOneRefuted.lean#L33) — (no docstring)
 - `def ArkLib.ProximityGap.Frontier.R383HalfRadiusMDSLineRefuted.column` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R383HalfRadiusMDSLineRefuted.lean:55](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R383HalfRadiusMDSLineRefuted.lean#L55) — The projectively normalized parity-check column.  Nonzero GRS column weights do not change any suppo
 - `def ArkLib.ProximityGap.Frontier.R384GeneralMDSHalfLineBoundRefuted.column` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R384GeneralMDSHalfLineBoundRefuted.lean:26](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R384GeneralMDSHalfLineBoundRefuted.lean#L26) — (no docstring)
-
-### `fiber` (6 declarations, 6 files)
-
-- `def AveragingCrossover.fiber` [ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean:81](../../../ArkLib/Data/CodingTheory/ProximityGap/AveragingFiberConservation.lean#L81) — The fiber of `Φ` over a target tuple `y`, restricted to `a`-subsets.
-- `def ArkLib.ProximityGap.Rigidity.fiber` [ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean:45](../../../ArkLib/Data/CodingTheory/ProximityGap/CosetExactCount.lean#L45) — (no docstring)
-- `def ArkLib.ProximityGap.Frontier.DistinctPeriodMomentLaw.fiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/DistinctPeriodMomentLaw.lean:63](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/DistinctPeriodMomentLaw.lean#L63) — The fiber of the coset-label map over a representative `t`: the `μ_n`-coset `t•μ_n` realised as a su
-- `def ArkLib.ProximityGap.SubgroupGaussSumMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean:36](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean#L36) — The energy fiber over `v : Fin 2 → F` (the tuples `w` with `∑ w = ∑ v`), as a finset.
-- `def Round25General.fiber` [ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean:60](../../../ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean#L60) — The index fiber of `A` at `j`.
-- `def ArkLib.ProximityGap.Round5SecondMoment.fiber` [ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeManyTargets.lean:96](../../../ArkLib/Data/CodingTheory/ProximityGap/SubsetSumPigeonholeManyTargets.lean#L96) — The `target`-fiber `A_target = { S ∈ powersetCard a G : ∑_{x∈S} x = target }`, whose card is `subset
 
 ### `fiber_card_le` (6 declarations, 6 files)
 
@@ -13652,6 +13653,11 @@ Each group lists declarations sharing a short name across ≥2 files. Most are l
 
 - `def DuplexSpongeFS.Sponge316.ForkCounter.famF` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ForkFalse.lean:135](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ForkFalse.lean#L135) — The two-element backtrack family `{seqOne, seqTwo}`; maximality holds because neither chain's state
 - `def DuplexSpongeFS.Sponge316.ForkCounter.famF` [ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514ForkFalse.lean:135](../../../ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma514ForkFalse.lean#L135) — The two-element backtrack family `{seqOne, seqTwo}`; maximality holds because neither chain's state
+
+### `fiber_card_ge` (2 declarations, 2 files)
+
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.fiber_card_ge` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean:47](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorSidonIff.lean#L47) — Each fiber over `v` always contains `{v, swap01 v}`, so its card is `≥ if v0=v1 then 1 else 2`.
+- `theorem ArkLib.ProximityGap.SubgroupGaussSumMoment.fiber_card_ge` [ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorStrict.lean:50](../../../ArkLib/Data/CodingTheory/ProximityGap/Frontier/REnergySwapFloorStrict.lean#L50) — Every fiber contains the tuple and its swap of the first two coordinates.
 
 ### `fiber_ne_zero` (2 declarations, 2 files)
 
