@@ -250,7 +250,7 @@ noncomputable def overlapGraph
     rintro x y ⟨hne, hx, hy, hcard⟩
     exact ⟨hne.symm, hy, hx, by
       simpa only [Finset.inter_comm] using hcard⟩
-  loopless := fun x h => h.1 rfl
+  loopless := ⟨fun x h => h.1 rfl⟩
 
 /-- Six-point forcing holds inside the selected family: any six selected
 scalars contain an overlap-graph edge. -/
@@ -278,9 +278,11 @@ theorem overlapGraph_six_forcing
   obtain ⟨i, j, hij, hoverlap⟩ :=
     exists_pair_inter_card_ge_K_of_six A
       (fun i => hsize (label i) (hlabelG i))
-  refine ⟨label i, hlabelX i, label j, hlabelX j,
-    hinjective.ne hij, hlabelG i, hlabelG j, ?_⟩
-  simpa only [A] using hoverlap
+  refine ⟨label i, hlabelX i, label j, hlabelX j, ?_⟩
+  change label i ≠ label j ∧ label i ∈ family.G ∧ label j ∈ family.G ∧
+    K ≤ (fullAgreement dom (u 0) (u 1) (label i) (family.q (label i)) ∩
+      fullAgreement dom (u 0) (u 1) (label j) (family.q (label j))).card
+  exact ⟨hinjective.ne hij, hlabelG i, hlabelG j, by simpa only [A] using hoverlap⟩
 
 /-- **Ramsey clique extraction at the P1 predecessor.**  Every selected
 family with at least `(s+5).choose s` scalars contains an `(s+1)`-clique of
@@ -372,6 +374,9 @@ theorem secantCore_card_ge_K_of_adj
     {gamma beta : F}
     (hadj : (overlapGraph family).Adj gamma beta) :
     K ≤ (secantCore family gamma beta).card := by
+  change gamma ≠ beta ∧ gamma ∈ family.G ∧ beta ∈ family.G ∧
+    K ≤ (fullAgreement dom (u 0) (u 1) gamma (family.q gamma) ∩
+      fullAgreement dom (u 0) (u 1) beta (family.q beta)).card at hadj
   obtain ⟨hne, hg, hb, hoverlap⟩ := hadj
   let line := secantParameter family gamma beta
   have hgOn : gamma ∈ pointsOn family line :=
