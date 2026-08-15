@@ -14,6 +14,25 @@ Extends sweep A07 (`docs/kb/deltastar-sweep-A07-k2-interior-2026-06-14.md`) from
 - Below-ceiling maximum over the 64 monomial pencils `(x^a, x^b)`, `0 ≤ a,b < 8`, at threshold `t = 4`: `max #bad = 9`, attained at `(a,b) = (4,3)`.
 
 Both numbers were produced by two independent stdlib-only exact-arithmetic probes (`scripts/probes/probe_k2_interior_ceiling_prize_scale.py` and `..._crosscheck.py`); the second uses a direct 2×2 elimination / `mcaEventNat` implementation rather than the first's collinearity/slope method.  The results are field-size independent at this scale, which corroborates the q-independence of the in-tree `KKH26DimTwoPin.lean` pin `deltaStar_dimTwo_pin_F12289`.  No δ* closure is claimed: `n = 8` is a fixed small rung, not the production `n = 2^32`; the full-window / production-dimension question remains open.
+## [466-G328-k2-field-stability-boundary] Universal q-independence of the order-eight dimension-two ceiling count is FALSE: the proper subgroup in F17 has 16 values, not 40 (2026-08-14)
+
+The unguarded statement that the `(x³,x²)` threshold-three ceiling count is `40` in every prime
+field containing an order-eight subgroup is false.  In `ZMod 17`, `g = 2` has exact order eight,
+but the signed weight-one datum `+1` collides with the signed weight-three datum
+`-1 - g + g²`, since `1 = -1 - 2 + 4`.  The axiom-clean Lean theorem
+`not_injOn_spectrumVal_g17` in `Frontier/_G328DimTwoFieldStabilityBoundary.lean` records the exact
+failure of the injectivity hypothesis consumed by `subsetSumSpectrum_card`.
+
+The independent exact scanner `scripts/probes/g328_k2_field_stability_boundary.py` implements the
+integer-threshold MCA event, including the `pairJointAgreesOn` exclusion.  Across all 295 primes
+`p ≡ 1 (mod 8)` in `[17, 10000]`, it finds one count profile at the exceptional field and one
+stable profile above it: `p=17` gives ceiling count `16` and below-ceiling monomial maximum `9`;
+every tested prime from `41` through `9929` gives ceiling count `40` and maximum `9`.  In every
+cell the maximum is attained by exactly `(4,3), (4,7), (5,2), (5,6)`.
+
+Honest scope: this refutes only universal field-independence and makes the missing field-size guard
+explicit.  It does not refute the large-field KKH26 theorem, the landed `F12289` dimension-two pin,
+or the observed prize-scale count.  The production `n = 2^32` Delta Star problem remains open.
 
 ## [466-G299-prize-depth-in-window] The production prize depth lies INSIDE the palindrome census window, refuting G296's "prize rank escapes the window / certificate at depth `r ≳ n`" prose (2026-07-13, direct Opus 4.8 formalizer)
 
