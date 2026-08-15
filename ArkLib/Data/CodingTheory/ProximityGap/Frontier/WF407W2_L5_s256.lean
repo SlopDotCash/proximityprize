@@ -123,7 +123,7 @@ ceiling: the Parseval halving does *not* reach s = 512 inside `|F| < 2^256`.  He
 is exactly the largest dyadic fold scale with unconditional census coverage at `|F| < 2^256`**
 via the Parseval engine. -/
 theorem no_coverage_s512_parseval : (2 : ℕ) ^ 256 ≤ (2 : ℕ) ^ (3 * 2 ^ (9 - 1) / 2) := by
-  norm_num
+  exact Nat.pow_le_pow_right (by norm_num) (by norm_num)
 
 /-- **The headline s = 256 row, assembled.**  Under the named Parseval bound, the depth-1
 census of the s = 256 fold scale is halo-free at *any* prize-window prime field
