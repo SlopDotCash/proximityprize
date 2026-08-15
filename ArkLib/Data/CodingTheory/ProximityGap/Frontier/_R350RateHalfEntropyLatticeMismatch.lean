@@ -2,7 +2,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OperationalLatticeExactBr
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeEntropyDeltaStar
 
 /-!
-# R350: the unrounded entropy candidate misses the production Hamming lattice
+# R350: the base-consistent entropy candidate misses the production Hamming lattice
 
 At rate `1/2` and idealized list budget `B = n = 2^25`, the continuous entropy
 candidate is
@@ -14,7 +14,10 @@ point `j/2^25`.  Since `50` has an odd factor `25`, `23/50` is not such a
 point.  Thus the continuous formula cannot be an exact finite-code answer at
 this production-scale row; a rounded adjacent-cell statement is mandatory.
 
-This refutes only the unrounded equality, not the rounded prize conjecture.
+The historical `prizeDeltaStar` definition mixes natural-log entropy with a
+base-two denominator, so it instead evaluates to `1/2 - log 2 / 25`; this file
+records that distinction explicitly.  The lattice refutation applies to the
+base-consistent `23/50` candidate and does not refute a rounded prize conjecture.
 -/
 
 set_option autoImplicit false
@@ -33,18 +36,31 @@ theorem binEntropy_one_half_exact :
   norm_num [Real.log_inv]
   ring
 
-/-- The rate-half entropy candidate with `B = 2^25` is exactly `23/50`. -/
+/-- The historical mixed-base candidate at rate one half and `B = 2^25`. -/
 theorem prizeDeltaStar_half_two_pow_twenty_five :
-    prizeDeltaStar (1 / 2 : ℝ) (2 ^ 25 : ℝ) = 23 / 50 := by
+    prizeDeltaStar (1 / 2 : ℝ) (2 ^ 25 : ℝ) =
+      1 / 2 - Real.log 2 / 25 := by
   rw [prizeDeltaStar, binEntropy_one_half_exact]
   rw [Real.logb]
   change 1 - 1 / 2 - Real.log 2 /
-      (Real.log ((2 : ℝ) ^ 25) / Real.log 2) = 23 / 50
+      (Real.log ((2 : ℝ) ^ 25) / Real.log 2) =
+        1 / 2 - Real.log 2 / 25
   rw [Real.log_pow]
   have hlog : Real.log (2 : ℝ) ≠ 0 :=
     ne_of_gt (Real.log_pos (by norm_num))
   field_simp [hlog]
   ring
+
+/-- In particular, the historical mixed-base candidate is not the
+base-consistent value `23/50`. -/
+theorem prizeDeltaStar_half_two_pow_twenty_five_ne_base_consistent :
+    prizeDeltaStar (1 / 2 : ℝ) (2 ^ 25 : ℝ) ≠ 23 / 50 := by
+  rw [prizeDeltaStar_half_two_pow_twenty_five]
+  have hlog_lt : Real.log (2 : ℝ) < 1 := by
+    convert Real.log_lt_sub_one_of_pos (by norm_num : (0 : ℝ) < 2) (by norm_num) using 1 <;>
+      norm_num
+  intro h
+  nlinarith
 
 /-- No point of the `2^25` Hamming lattice equals `23/50`. -/
 theorem rateHalf_candidate_not_lattice
@@ -62,17 +78,15 @@ theorem rateHalf_candidate_not_lattice
 
 /-- **Production-scale lattice refutation.** For every length-`2^25` code whose
 good lattice set is nonempty, the operational MCA threshold differs from the
-unrounded rate-half entropy candidate at idealized budget `B=2^25`. -/
-theorem operational_deltaStar_ne_unrounded_entropy_half_two_pow_twenty_five
+base-consistent rate-half entropy candidate `23/50`. -/
+theorem operational_deltaStar_ne_base_consistent_entropy_half_two_pow_twenty_five
     {ι F : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     [Field F] [Fintype F] [DecidableEq F]
     (hn : Fintype.card ι = 2 ^ 25)
     (C : Set (ι → F)) (εstar : ℝ≥0)
     (hne : mcaThresholdExists C εstar) :
-    (mcaDeltaStar (F := F) (A := F) C (εstar : ENNReal) : ℝ) ≠
-      prizeDeltaStar (1 / 2 : ℝ) (2 ^ 25 : ℝ) := by
+    (mcaDeltaStar (F := F) (A := F) C (εstar : ENNReal) : ℝ) ≠ 23 / 50 := by
   obtain ⟨j, hj⟩ := exists_latticePoint_eq_mcaDeltaStar C εstar hne
-  rw [prizeDeltaStar_half_two_pow_twenty_five]
   intro h
   let j' : Fin (2 ^ 25 + 1) :=
     ⟨j.val, by rw [← hn]; exact j.isLt⟩
@@ -91,6 +105,7 @@ end ProximityGap.PrizeEntropy
 
 #print axioms ProximityGap.PrizeEntropy.binEntropy_one_half_exact
 #print axioms ProximityGap.PrizeEntropy.prizeDeltaStar_half_two_pow_twenty_five
+#print axioms ProximityGap.PrizeEntropy.prizeDeltaStar_half_two_pow_twenty_five_ne_base_consistent
 #print axioms ProximityGap.PrizeEntropy.rateHalf_candidate_not_lattice
 #print axioms
-  ProximityGap.PrizeEntropy.operational_deltaStar_ne_unrounded_entropy_half_two_pow_twenty_five
+  ProximityGap.PrizeEntropy.operational_deltaStar_ne_base_consistent_entropy_half_two_pow_twenty_five

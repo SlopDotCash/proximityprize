@@ -15,6 +15,7 @@ namespace ArkLib.ProximityGap.Frontier.R328Depth3EnergyCharIndependent
 
 open ArkLib.ProximityGap.Frontier.FS4Depth3PatternDecomposition
 open ArkLib.ProximityGap.Frontier.R327Depth3ExcessVanishing
+open ArkLib.ProximityGap.SubgroupGaussSumSixthMoment
 
 theorem addEnergy3_eq_trivialCount_of_characteristic_above_height
     {k prime : ℕ} {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -30,6 +31,4 @@ theorem addEnergy3_eq_trivialCount_of_characteristic_above_height
 
 end ArkLib.ProximityGap.Frontier.R328Depth3EnergyCharIndependent
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R328Depth3EnergyCharIndependent
-    .addEnergy3_eq_trivialCount_of_characteristic_above_height
+#print axioms ArkLib.ProximityGap.Frontier.R328Depth3EnergyCharIndependent.addEnergy3_eq_trivialCount_of_characteristic_above_height
