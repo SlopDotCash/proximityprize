@@ -12,6 +12,10 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.R337HeadroomToWickConsumer
 
 open ArkLib.ProximityGap.Frontier.FS6AlmostAllPrimesWickRung
+open ArkLib.ProximityGap.Frontier.FS1Depth3AnnihilatorLedger (excessCount)
+open ArkLib.ProximityGap.Frontier.FS4Depth3PatternDecomposition (tupleSet)
+open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm (Gset)
+open ArkLib.ProximityGap.GaussPeriodMomentBound (GaussianEnergyBound)
 open scoped Classical
 
 theorem gaussianEnergyBound_three_of_strict_headroom
@@ -33,6 +37,4 @@ theorem gaussianEnergyBound_three_of_strict_headroom
 
 end ArkLib.ProximityGap.Frontier.R337HeadroomToWickConsumer
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R337HeadroomToWickConsumer
-    .gaussianEnergyBound_three_of_strict_headroom
+#print axioms ArkLib.ProximityGap.Frontier.R337HeadroomToWickConsumer.gaussianEnergyBound_three_of_strict_headroom
