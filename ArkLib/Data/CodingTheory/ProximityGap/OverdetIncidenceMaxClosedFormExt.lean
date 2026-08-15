@@ -55,17 +55,24 @@ antipodal direction `(n/2, n/2 − 1)`):
     proves the non-strict form, `omega` lifts the `+1` to strict.
     Strengthens `overdetIncidenceMax_gt_double_budget` by a factor of 1.5,
     3, 5 respectively at the new rungs.
+  * **G329 universal tight-decoupling chain** formalizes the parameterized
+    statement behind G326 for every `d`: if `m ≥ d + 1`, then
+    `overdetIncidenceMax m > 2·d·(d+1)·m`.  Its exact-margin theorem identifies
+    the difference as `2·m·(m-d-1)·(m+d)+1`, while the boundary corollary proves
+    that every rung starts with margin exactly one.  This replaces the open-ended
+    list of mechanical later rungs with one kernel-checked theorem.
 
 ## Honest scope
 
-This is a (P) extension: every new `theorem` is `decide`/`omega`/`nlinarith`-closed
+This is a (P) extension: every new `theorem` is `decide`/`omega`/`nlinarith`/`ring`-closed
 with no `sorry`/`native_decide`/`bv_decide`/undocumented `axiom`/bodyless `opaque`.
 The EXTENDED values are pinned by `decide` (kernel-blessed for `ℕ` literal
 equality at these sizes, `Lean.version >= v4.30.0-rc2`) and confirmed by an
 exact-stdlib-integer probe (`scripts/probes/g322_overdet_incidence_max_extended.py`
 for `m = 2 … 25` and `scripts/probes/g325_overdet_incidence_max_m26_50.py`
 for `m = 2 … 50`, two independent implementations: direct `2m³ − 2m² + 1` and
-the binomial `4m · C(m, 2) + 1`).
+the binomial `4m · C(m, 2) + 1`).  G329 is symbolic rather than another finite
+pin: Lean proves its exact margin identity for arbitrary naturals `d,m`.
 
 What this does NOT do (honest):
   * It does NOT extend the closed form to all `m` (the empirical fit is
@@ -293,6 +300,47 @@ theorem overdetIncidenceMax_gt_40m {m : ℕ} (hm : 5 ≤ m) :
   rw [h1]
   nlinarith [sq_nonneg k]
 
+/-! ## G329: the universal tight-decoupling chain -/
+
+/-- **G329 exact margin formula.**  Every rung in the tight-decoupling chain
+has the same factorization.  If `m ≥ d + 1`, then the margin above the
+`2·d·(d+1)·m` threshold is
+
+`2·m·(m-d-1)·(m+d) + 1`.
+
+The hypothesis makes all truncated natural-number subtractions exact.  At the
+boundary `m = d + 1`, the product term vanishes, so the margin is exactly one.
+This is the parameterized statement described after G326 but not formalized
+there. -/
+theorem overdetIncidenceMax_margin_tight_chain {m d : ℕ} (hm : d + 1 ≤ m) :
+    overdetIncidenceMax m =
+      2 * d * (d + 1) * m + 2 * m * (m - d - 1) * (m + d) + 1 := by
+  rw [overdetIncidenceMax_eq_bulk_plus_one]
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  have hLeft : d + 1 + k - 1 = d + k := by omega
+  have hGap : d + 1 + k - d - 1 = k := by omega
+  rw [hLeft, hGap]
+  ring
+
+/-- **G329 universal tight-decoupling theorem.**  For every parameter `d`,
+the over-determined incidence maximum exceeds `2·d·(d+1)·m` throughout the
+sharp upper range `m ≥ d + 1`.
+
+This single theorem subsumes the G326 rungs `> 12m` (`d = 2`), `> 24m`
+(`d = 3`), and `> 40m` (`d = 4`), as well as every later mechanical rung.
+The result is strict because the exact G329 margin is a nonnegative product
+plus one. -/
+theorem overdetIncidenceMax_gt_tight_chain {m d : ℕ} (hm : d + 1 ≤ m) :
+    overdetIncidenceMax m > 2 * d * (d + 1) * m := by
+  rw [overdetIncidenceMax_margin_tight_chain hm]
+  omega
+
+/-- The G329 bound is tight at its first admissible cell: the margin at
+`m = d + 1` is exactly one for every `d`. -/
+theorem overdetIncidenceMax_tight_chain_boundary (d : ℕ) :
+    overdetIncidenceMax (d + 1) = 2 * d * (d + 1) * (d + 1) + 1 := by
+  simpa using overdetIncidenceMax_margin_tight_chain (m := d + 1) (d := d) (by omega)
+
 /-! ## The tight-inequality chain (summary)
 
 The G322 (one theorem) and G326 (three theorems) decoupling results form
@@ -306,13 +354,13 @@ a chain of TIGHT inequalities (margin exactly 1 at the boundary
   `overdetIncidenceMax m > 24m`  for `m ≥ 4`  (d=3, G326 #2, margin 1 at m=4: 97 > 96)
   `overdetIncidenceMax m > 40m`  for `m ≥ 5`  (d=4, G326 #3, margin 1 at m=5: 201 > 200)
 
-In general `overdetIncidenceMax m > 2d(d+1)·m` for `m ≥ d+1` (any `d ≥ 1`),
-all proved the same way: the bulk `2m²(m − 1) − 2d(d+1)·m = 2m(m − d − 1)(m + d)`
-is nonneg for `m ≥ d+1`; `nlinarith` proves the non-strict form,
-`omega` lifts the `+1` on the LHS to strict.  The G326 brick ships
-`d ∈ {2, 3, 4}`; `d = 1` is the original theorem in the parent file.
-The `d ∈ {5, 6, 7, ...}` rungs (c = 60m, 84m, 112m, ...) are mechanical
-extensions of the same pattern (not formalized here, no new structural content).
+In general `overdetIncidenceMax m > 2d(d+1)·m` for `m ≥ d+1` (every `d`).
+G329 proves this exact statement as `overdetIncidenceMax_gt_tight_chain`.
+Its companion `overdetIncidenceMax_margin_tight_chain` proves the stronger
+identity `I_max(m) = 2d(d+1)m + 2m(m-d-1)(m+d) + 1`, so every later rung
+(`60m`, `84m`, `112m`, ...) follows without another case-specific proof.
+`overdetIncidenceMax_tight_chain_boundary` certifies margin one at `m=d+1`.
+The G326 theorems remain as convenient named special cases.
 
 **Note: the G322 `overdetIncidenceMax_gt_double_budget` (`> 8m` for `m ≥ 3`) is a
 SEPARATE non-tight decoupling — the "double budget" rung.  Margin at `m = 3` is
@@ -332,3 +380,6 @@ end ArkLib.ProximityGap.OverdetIncidence
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_12m
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_24m
 #print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_40m
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_margin_tight_chain
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_gt_tight_chain
+#print axioms ArkLib.ProximityGap.OverdetIncidence.overdetIncidenceMax_tight_chain_boundary
