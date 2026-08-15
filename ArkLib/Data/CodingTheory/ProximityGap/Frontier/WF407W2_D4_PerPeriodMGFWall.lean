@@ -126,7 +126,6 @@ theorem aligned_direction_attains_energy (η : ℂ) (hη : η ≠ 0) (r : ℕ) :
     have hne : (‖η‖ : ℂ) ≠ 0 := by
       exact_mod_cast ne_of_gt hnorm_pos
     field_simp
-    ring
   rw [hval]
   -- Re(‖η‖ : ℂ) = ‖η‖, so the LHS = ‖η‖^{2r}.
   rw [Complex.ofReal_re]
