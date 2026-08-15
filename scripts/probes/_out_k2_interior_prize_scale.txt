@@ -1,0 +1,7 @@
+p = 21 * 2^128 + 1 = 7145929705339707732730866756067132440577
+Proth witness: 5^((p-1)/2) mod p = 7145929705339707732730866756067132440576
+order-8 generator omega = 4168797280098641218954933419033554052984
+[1] ceiling (x^3,x^2) t=3 #bad = 40 (expected 40)
+[1a] triple-sum crosscheck: 40 distinct gamma values
+[2] below-ceiling t=4 max #bad = 9 at (a,b) = (4, 3) (expected 9)
+[3] A07 integers reproduced exactly at prize-scale p; q-independent.

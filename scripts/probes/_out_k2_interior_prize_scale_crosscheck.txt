@@ -1,0 +1,4 @@
+crosscheck p = 21 * 2^128 + 1 = 7145929705339707732730866756067132440577
+[1] ceiling (x^3,x^2) t=3 #bad = 40 (expected 40)
+[2] below-ceiling t=4 max #bad = 9 at (a,b) = (4, 3) (expected 9)
+[3] crosscheck agrees with main probe; integers q-independent at prize scale.
