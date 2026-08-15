@@ -155,23 +155,31 @@ theorem code_codeSubset {N : ℕ} (c : Fin N → Fin 3) :
     constructor
     · rintro (⟨k, hk, hck⟩ | ⟨k, hk, hck⟩)
       · exact absurd hk.symm (castAdd_ne_natAdd k j)
-      · have : j = k := Fin.natAdd_injective hk
+      · have : j = k := Fin.natAdd_injective N N hk
         rw [this]; exact hck
     · intro h; exact Or.inr ⟨j, rfl, h⟩
   unfold code
-  by_cases hc1 : c j = 1
-  · simp [hmem_cast.mpr hc1, hmem_nat, hc1, show (1 : Fin 3) ≠ 2 by decide]
-  · by_cases hc2 : c j = 2
-    · have hcast_not : (Fin.castAdd N j) ∉ codeSubset c := fun h => hc1 (hmem_cast.mp h)
-      simp [hmem_nat.mpr hc2, hcast_not, hc2]
-    · have hcast_not : (Fin.castAdd N j) ∉ codeSubset c := fun h => hc1 (hmem_cast.mp h)
-      have hnat_not : (Fin.natAdd N j) ∉ codeSubset c := fun h => hc2 (hmem_nat.mp h)
-      have hc0 : c j = 0 := by fin_cases hcj : c j <;> simp_all
-      simp [hcast_not, hnat_not, hc0]
+  by_cases hcast : (Fin.castAdd N j) ∈ codeSubset c <;>
+    by_cases hnat : (Fin.natAdd N j) ∈ codeSubset c <;>
+    simp only [hcast, hnat, if_true, if_false]
+  · exact absurd (hmem_cast.mp hcast) (by rw [hmem_nat.mp hnat]; decide)
+  · exact (hmem_cast.mp hcast).symm
+  · exact (hmem_nat.mp hnat).symm
+  · have hc1 : c j ≠ 1 := fun h => hcast (hmem_cast.mpr h)
+    have hc2 : c j ≠ 2 := fun h => hnat (hmem_nat.mpr h)
+    apply Fin.ext
+    have hc1val : (c j).val ≠ 1 := fun h => hc1 (Fin.ext (by simpa using h))
+    have hc2val : (c j).val ≠ 2 := fun h => hc2 (Fin.ext (by simpa using h))
+    simp only [Fin.val_zero]
+    omega
 
 /-- **Code surjectivity.**  Every `c : Fin N → Fin 3` is the code of some subset. -/
 theorem code_surjective {N : ℕ} : Function.Surjective (code (N := N)) :=
   fun c => ⟨codeSubset c, code_codeSubset c⟩
+
+private theorem codeVal_injective [CharZero K] : Function.Injective (codeVal (K := K)) := by
+  intro a b h
+  fin_cases a <;> fin_cases b <;> simp_all [codeVal] <;> norm_num at *
 
 /-! ### The lower bound `3^h ≤ |subset-sum image|` in char 0, and the exact equality -/
 
@@ -200,17 +208,17 @@ theorem codeVal_sum_injective [CharZero K] {m : ℕ} (hm : 1 ≤ m) {ζ : K}
         = (∑ j, codeVal (c₁ j) * ζ ^ (j : ℕ)) - (∑ j, codeVal (c₂ j) * ζ ^ (j : ℕ)) := by
       rw [← Finset.sum_sub_distrib]
       exact Finset.sum_congr rfl fun j _ => by rw [hcast j]; ring
-    rw [this, hc, sub_self]
+    exact this.trans (sub_eq_zero.mpr hc)
   -- kill the relation: all `d j = 0`
   have htot : 2 ^ (m - 1) ≤ Nat.totient (2 ^ m) := le_of_eq (totient_two_pow hm).symm
   have hd0 : ∀ j, d j = 0 :=
     cyclo_noRelation (by positivity) hζ htot d hsum0
   -- `d j = 0` forces `c₁ j = c₂ j` (codes are determined by their `{−1,0,1}` value)
   funext j
-  have := hd0 j
-  simp only [hd, sub_eq_zero] at this
-  -- the map `Fin 3 → {−1,0,1}` (1↦1, 2↦−1, else 0) is injective on `Fin 3`
-  fin_cases hc1 : c₁ j <;> fin_cases hc2 : c₂ j <;> simp_all <;> omega
+  apply codeVal_injective (K := K)
+  apply sub_eq_zero.mp
+  rw [← hcast j, hd0 j]
+  simp
 
 /-- **The `≥ 3^h` lower bound (char 0).**  For a primitive `2^m`-th root `ζ` over a char-`0`
 field, the distinct-subset-sum image of the order-`2^m` subgroup has at least `3^{2^{m−1}}`
@@ -317,13 +325,11 @@ example : ∑ a ∈ Finset.range 5, 2 ^ a * Nat.choose 4 a = 3 ^ 4 := by decide
 /-- General stratum identity `∑_{a=0}^{h} 2^a · C(h,a) = 3^h` (binomial theorem). -/
 theorem sum_two_pow_choose_eq_three_pow (h : ℕ) :
     ∑ a ∈ Finset.range (h + 1), 2 ^ a * Nat.choose h a = 3 ^ h := by
-  have := (add_pow 1 2 h).symm
-  -- `(1+2)^h = ∑ 1^{h-a} 2^a C(h,a)`; specialize over ℕ
-  have hkey : (1 + 2 : ℕ) ^ h = ∑ a ∈ Finset.range (h + 1), 1 ^ (h - a) * 2 ^ a * Nat.choose h a :=
-    add_pow 1 2 h
-  rw [show (1 + 2 : ℕ) = 3 from rfl] at hkey
-  rw [hkey]
-  exact Finset.sum_congr rfl fun a _ => by rw [one_pow, one_mul]
+  calc
+    ∑ a ∈ Finset.range (h + 1), 2 ^ a * Nat.choose h a =
+        ∑ a ∈ Finset.range (h + 1), 2 ^ a * 1 ^ (h - a) * Nat.choose h a := by simp
+    _ = (2 + 1 : ℕ) ^ h := (add_pow 2 1 h).symm
+    _ = 3 ^ h := by norm_num
 
 end ArkLib.ProximityGap.WF407W2_L3_3pow
 
