@@ -3373,6 +3373,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ66BadCountBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ68GeneratorGapParity
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ69ParityClassification
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ6FinerGradingCeiling
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ70FirstOpenMiddleSlot
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ71LinearMiddleSlot
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ8CellPackageSupply
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZ9ChannelRankWall
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SYZGuardedKernelTwoCore
