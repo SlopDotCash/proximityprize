@@ -1,8 +1,8 @@
 {
  "summary": {
-  "total": 108,
-  "open": 62,
-  "discharged": 45,
+  "total": 117,
+  "open": 69,
+  "discharged": 47,
   "refuted": 1,
   "by_top_dir": {
    "(root)": {
@@ -12,9 +12,9 @@
     "refuted": 0
    },
    "Data": {
-    "total": 41,
-    "open": 32,
-    "discharged": 9,
+    "total": 50,
+    "open": 39,
+    "discharged": 11,
     "refuted": 0
    },
    "OracleReduction": {
@@ -1745,6 +1745,92 @@
    "status": "open"
   },
   {
+   "name": "DepthSixTranslateAverageResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.BGKCenteredConvolutionCollapse.DepthSixTranslateAverageResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKCenteredConvolutionCollapse.lean",
+   "line": 298,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "DepthSevenFlatnessResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidual.DepthSevenFlatnessResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidual.lean",
+   "line": 68,
+   "providers": [],
+   "refutations": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidual.production_depthSevenFlatnessResidual_false",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidual.lean",
+     "line": 92,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hcard",
+      "hqu",
+      "hψ"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "name": "RawDepthSevenFlatnessResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.RawDepthSevenFlatnessResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean",
+   "line": 65,
+   "providers": [],
+   "refutations": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.production_rawDepthSevenFlatnessResidual_false",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean",
+     "line": 70,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hcard",
+      "hpsi",
+      "hqu"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "name": "DepthSevenOffZeroFlatnessResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.DepthSevenOffZeroFlatnessResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean",
+   "line": 108,
+   "providers": [],
+   "status": "open"
+  },
+  {
+   "name": "DepthSevenCosetBudgetResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.DepthSevenCosetBudgetResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean",
+   "line": 113,
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.BGKDepthSevenFlatnessResidualRefuted.offZero_budget_of_depthSevenFlatness",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKDepthSevenFlatnessResidualRefuted.lean",
+     "line": 119,
+     "conditional_on_residuals": [
+      "DepthSevenOffZeroFlatnessResidual"
+     ],
+     "extra_explicit_binders": [
+      "hcard",
+      "hflat",
+      "hqu"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
    "name": "FiberCountResidual",
    "fq_name": "ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean",
@@ -1800,6 +1886,14 @@
    "status": "open"
   },
   {
+   "name": "SwarmResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterClusterConfinement.SwarmResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterClusterConfinement.lean",
+   "line": 430,
+   "providers": [],
+   "status": "open"
+  },
+  {
    "name": "CommonLocatorResidual",
    "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.CommonLocatorResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorConstruction.lean",
@@ -1827,12 +1921,114 @@
    "status": "discharged"
   },
   {
+   "name": "StallResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterDChargeDerecursion.StallResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterDChargeDerecursion.lean",
+   "line": 274,
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterClusterConfinement.stallResidual_of_swarmResidual",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterClusterConfinement.lean",
+     "line": 442,
+     "conditional_on_residuals": [
+      "SwarmResidual"
+     ],
+     "extra_explicit_binders": [
+      "hswarm"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "name": "GlobalConsistencySwarmResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterGlobalConsistencyCharge.GlobalConsistencySwarmResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterGlobalConsistencyCharge.lean",
+   "line": 348,
+   "providers": [],
+   "status": "open"
+  },
+  {
    "name": "PredecessorStructuredFloorResidual",
    "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorGenericSplit.PredecessorStructuredFloorResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorGenericSplit.lean",
    "line": 111,
-   "providers": [],
-   "status": "open"
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorOneStepNoGo.predecessorStructuredFloorResidual_of_projectiveSaturatedExtraction",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterCommonFactorOneStepNoGo.lean",
+     "line": 767,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hextract"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorResidualEquiv.predecessorStructuredFloorResidual_iff_uniform_badCount",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorResidualEquiv.lean",
+     "line": 71,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorResidualEquiv.predecessorStructuredFloorResidual_iff_largeBadFourPencilExtraction",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorResidualEquiv.lean",
+     "line": 100,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterPredecessorResidualEquiv.structuredFloor_of_largeBadFourPencilExtraction",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterPredecessorResidualEquiv.lean",
+     "line": 123,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hextract"
+     ],
+     "ambiguous_name_match": false
+    },
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.predecessorStructuredFloorResidual_of_projectivelyStructured",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterProjectiveStructuredSplit.lean",
+     "line": 336,
+     "conditional_on_residuals": [
+      "ProjectivelyStructuredFloorResidual"
+     ],
+     "extra_explicit_binders": [
+      "hres"
+     ],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "discharged"
+  },
+  {
+   "name": "ProjectivelyStructuredFloorResidual",
+   "fq_name": "ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.ProjectivelyStructuredFloorResidual",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterProjectiveStructuredSplit.lean",
+   "line": 318,
+   "providers": [
+    {
+     "name": "ArkLib.ProximityGap.Frontier.P1RateQuarterProjectiveStructuredSplit.projectivelyStructuredFloorResidual_iff_uniform_badCount",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_P1RateQuarterProjectiveStructuredSplit.lean",
+     "line": 345,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false
+    }
+   ],
+   "status": "discharged"
   },
   {
    "name": "NonzeroQuarterMGFResidual",
@@ -4854,6 +5050,30 @@
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/PinnedScalarRatioImage.lean",
    "line": 70,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualPair",
+   "fq_name": "ArkLib.ProximityGap.Frontier.BGKSevenSubsetOverlapDecomposition.residualPair",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKSevenSubsetOverlapDecomposition.lean",
+   "line": 58,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualNeed",
+   "fq_name": "ArkLib.ProximityGap.Frontier.G278IntegerLiftCarryNoGo.CarryCell.residualNeed",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G278IntegerLiftCarryNoGo.lean",
+   "line": 127,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualPolynomial",
+   "fq_name": "ArkLib.ProximityGap.Frontier.HBKClearedDerivativeRecurrence.residualPolynomial",
+   "kind": "def",
+   "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HBKClearedDerivativeRecurrence.lean",
+   "line": 31,
    "reason": "name does not end in `Residual`"
   },
   {
