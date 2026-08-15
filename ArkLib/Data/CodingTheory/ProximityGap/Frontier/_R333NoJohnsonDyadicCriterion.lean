@@ -15,6 +15,7 @@ namespace ArkLib.ProximityGap.Frontier.R333NoJohnsonDyadicCriterion
 open ArkLib.ProximityGap.Frontier.FS5TrivialCountClosedForm
 open ArkLib.ProximityGap.Frontier.R330Depth3WickLargeChar
 open ArkLib.ProximityGap.Frontier.R332NoJohnsonLargeChar
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 
 theorem no_johnson_scale_frequency_of_dyadic_field_size
     {k prime : ℕ} {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -33,6 +34,4 @@ theorem no_johnson_scale_frequency_of_dyadic_field_size
 
 end ArkLib.ProximityGap.Frontier.R333NoJohnsonDyadicCriterion
 
-#print axioms
-  ArkLib.ProximityGap.Frontier.R333NoJohnsonDyadicCriterion
-    .no_johnson_scale_frequency_of_dyadic_field_size
+#print axioms ArkLib.ProximityGap.Frontier.R333NoJohnsonDyadicCriterion.no_johnson_scale_frequency_of_dyadic_field_size
