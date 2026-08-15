@@ -39,6 +39,7 @@ open ArkLib.ProximityGap.Frontier.R213NonzeroNormalizedSqQuarterMGFResidualConsu
 open ArkLib.ProximityGap.Frontier.R223QuotientTailToScaledSpikePrize
 open ArkLib.ProximityGap.Frontier.R225GaussOrbitTailLift
 open ArkLib.ProximityGap.Frontier.R234RankSumResidualMGFConsumer
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
@@ -139,7 +140,7 @@ theorem residualNormalizedSqGridTail_of_quotient_residual
       (fun θ => (G.card : ℝ) * Bq θ) := by
   intro θ hθ
   calc
-    ((((residualNonzeroFreqs (F := F) T).filter
+    (((residualNonzeroFreqs (F := F) T).filter
       (fun b => θ ≤ ‖eta ψ G b‖ ^ 2 / σ ^ 2)).card : ℝ) ≤
         (G.card : ℝ) * ((Qres.filter (fun i => θ ≤ qSq i)).card : ℝ) :=
       hLift θ hθ
