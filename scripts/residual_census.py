@@ -80,6 +80,8 @@ CLOSE_BRACKETS = ")]}⟩⦄"
 
 PROVIDER_KINDS = {"theorem", "lemma", "def", "instance"}
 
+CAMPAIGN_ADDENDUM_PREFIX = "> **Campaign addendum"
+
 
 def strip_comments(text: str) -> str:
     """Blank out line comments, block comments, and docstrings (newlines kept)."""
@@ -665,6 +667,32 @@ def markdown_for_near_misses(near_misses: list[dict]) -> list[str]:
     return out
 
 
+def extract_campaign_addenda(path: Path) -> list[str]:
+    """Hand-maintained "Campaign addendum" blockquotes from the ledger currently
+    at `path`, carried forward so regeneration does not silently erase them.
+
+    A blockquote is a contiguous run of `>`-prefixed lines; only runs whose
+    first line starts with `CAMPAIGN_ADDENDUM_PREFIX` are kept, in file order.
+    Other blockquotes (for example a dated "Regeneration note") are specific
+    to the run that produced them and are correctly left to be dropped.
+    """
+    if not path.is_file():
+        return []
+    blocks: list[str] = []
+    current: list[str] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith(">"):
+            current.append(line)
+            continue
+        if current:
+            if current[0].startswith(CAMPAIGN_ADDENDUM_PREFIX):
+                blocks.append("\n".join(current))
+            current = []
+    if current and current[0].startswith(CAMPAIGN_ADDENDUM_PREFIX):
+        blocks.append("\n".join(current))
+    return blocks
+
+
 def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_misses: list[dict]) -> None:
     """Write the human-facing residual ledger from the same payload as JSON."""
     lines: list[str] = [
@@ -682,17 +710,24 @@ def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_m
         "The named-residual convention is a modularity pattern, not an incompleteness marker:",
         "always check this census before treating a `*Residual` name as open proof debt.",
         "",
-        "## Summary",
-        "",
-        f"- **Total strict residuals:** {summary['total']}",
-        f"- **Open:** {summary['open']}",
-        f"- **Discharged:** {summary['discharged']}",
-        f"- **Refuted:** {summary['refuted']}",
-        f"- **Residual-like near misses:** {len(near_misses)} (listed below and in `scripts/residual_census.json`)",
-        "",
-        "| top-level directory | total | open | discharged | refuted |",
-        "|---|---:|---:|---:|---:|",
     ]
+    for block in extract_campaign_addenda(path):
+        lines.extend(block.split("\n"))
+        lines.append("")
+    lines.extend(
+        [
+            "## Summary",
+            "",
+            f"- **Total strict residuals:** {summary['total']}",
+            f"- **Open:** {summary['open']}",
+            f"- **Discharged:** {summary['discharged']}",
+            f"- **Refuted:** {summary['refuted']}",
+            f"- **Residual-like near misses:** {len(near_misses)} (listed below and in `scripts/residual_census.json`)",
+            "",
+            "| top-level directory | total | open | discharged | refuted |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
     for name, c in summary["by_top_dir"].items():
         lines.append(
             f"| `{name}` | {c['total']} | {c['open']} | {c['discharged']} | {c['refuted']} |"
