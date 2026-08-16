@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # The char-p wraparound decomposition `W_r = anomaly + wrap` — exact, axiom-clean (#444)

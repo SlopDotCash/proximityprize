@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Ring
 
 /-!
 # The counting-variance reframing of the centered wraparound — and the SKEPTICAL VERDICT (#444)

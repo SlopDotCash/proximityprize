@@ -6,7 +6,10 @@ Authors: ArkLib Contributors (ANGLE U4 — explicit-Gauss-phase / Galois-module 
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.RCLike.Basic
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 set_option autoImplicit false
 set_option linter.style.longLine false

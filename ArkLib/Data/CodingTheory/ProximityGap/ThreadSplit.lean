@@ -7,7 +7,9 @@ import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.RingTheory.PowerBasis
 import Mathlib.RingTheory.RootsOfUnity.Complex
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — THREAD-SPLIT: vanishing sums of `n`-th roots of unity split into

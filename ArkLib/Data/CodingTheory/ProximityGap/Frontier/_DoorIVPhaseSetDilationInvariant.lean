@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Aesop
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 

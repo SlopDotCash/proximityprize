@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # SURFACE 5 — Geometry of numbers controls the wrap-around energy `Q4` (#407)

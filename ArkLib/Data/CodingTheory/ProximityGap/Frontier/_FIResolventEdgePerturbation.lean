@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 set_option autoImplicit false
 

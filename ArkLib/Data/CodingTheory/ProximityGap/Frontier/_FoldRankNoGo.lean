@@ -7,7 +7,6 @@ import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.LinearAlgebra.Vandermonde
 import Mathlib.LinearAlgebra.Matrix.Rank
-import Mathlib.Tactic
 
 /-!
 # The fold / joint-rank no-go for R-THIN (proximity-prize δ* core, #407)

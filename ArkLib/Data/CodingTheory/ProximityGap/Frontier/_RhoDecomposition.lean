@@ -25,7 +25,9 @@ names the open half (the wraparound) against an explicit, growing budget.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option linter.unusedVariables false

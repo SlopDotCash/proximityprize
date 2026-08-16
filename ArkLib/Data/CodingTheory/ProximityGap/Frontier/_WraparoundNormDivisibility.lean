@@ -29,7 +29,6 @@ new; it controls the *average*, not the *supremum*.  We record both.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 import Mathlib.NumberTheory.Divisors
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 

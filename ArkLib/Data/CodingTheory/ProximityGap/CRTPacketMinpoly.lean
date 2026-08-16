@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CRTDoubleSlice
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.RingTheory.RootsOfUnity.Complex
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — the packet minimal polynomial over the coprime cyclotomic extension

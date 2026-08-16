@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Expand
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The SECOND antipodal descent and the head-parity dichotomy (#407)

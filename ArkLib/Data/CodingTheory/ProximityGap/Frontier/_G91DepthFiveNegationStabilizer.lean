@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86DepthFiveConstantGap
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # G91: the exceptional depth-five scaling stabilizer is zero-sum

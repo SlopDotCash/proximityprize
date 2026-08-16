@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Far-line decoupling crossing depth is RATE-CONSTANT, NOT `Θ(n)` (#444 decoupling, §6 second-horn)

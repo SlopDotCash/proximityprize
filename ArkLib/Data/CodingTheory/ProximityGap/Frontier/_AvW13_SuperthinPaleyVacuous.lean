@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Log.Base
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 /-!
 # The super-thin floor pivot is refuted: no-wraparound ⟹ vacuous Paley bound (#444)

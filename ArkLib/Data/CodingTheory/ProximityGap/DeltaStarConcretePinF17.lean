@@ -7,7 +7,8 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.Field.ZMod
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
 
 /-!
 # A concrete two-sided pin of the list-decoding threshold `δ*` for a smooth-domain RS instance

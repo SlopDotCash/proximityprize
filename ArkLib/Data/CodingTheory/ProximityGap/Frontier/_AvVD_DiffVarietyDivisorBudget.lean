@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Log
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

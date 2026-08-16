@@ -8,7 +8,8 @@ import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-! # Multiplicative rigidity for product-coset codeword families
 

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors (lane Frontier-Wildcard-2)
 -/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

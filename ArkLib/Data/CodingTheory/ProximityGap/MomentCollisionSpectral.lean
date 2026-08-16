@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Powerset
-import Mathlib.Tactic
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 (ABF26) — the SPECTRAL HOME of the moment-collision scalar:

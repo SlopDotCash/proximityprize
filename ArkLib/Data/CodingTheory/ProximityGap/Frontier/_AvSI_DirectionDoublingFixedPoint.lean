@@ -11,7 +11,10 @@ import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Choose.Central
 import Mathlib.Data.Nat.Choose.Sum
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 

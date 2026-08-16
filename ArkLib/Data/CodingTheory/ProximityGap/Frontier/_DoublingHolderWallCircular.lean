@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
 
 /-!
 # The doubling Cauchy–Schwarz / Hölder moment recursion `S_{2r} ↔ S_r` is WALL-CIRCULAR (#444, ANGLE 3)

@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.RingTheory.RootsOfUnity.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # The char-`0` Mann rigidity for three roots of unity (#389)

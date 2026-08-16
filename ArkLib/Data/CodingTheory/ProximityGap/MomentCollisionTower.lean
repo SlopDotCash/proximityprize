@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Data.Finset.Powerset
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 (ABF26) — the second-moment / collision dichotomy is STATISTIC-AGNOSTIC, and the prize

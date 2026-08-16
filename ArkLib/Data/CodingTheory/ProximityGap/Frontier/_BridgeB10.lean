@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Field.GeomSum
-import Mathlib.Tactic
 
 /-!
 # Bridge B10 — even-τ-exactness / odd-graded vanishing (target E6, #444)

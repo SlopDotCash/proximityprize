@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Prod
-import Mathlib.Tactic
 
 /-!
 # Issue #232 — the folding-transfer NO-GO (§6 route 4, blocked in the naive direction)

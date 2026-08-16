@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86DepthFiveConstantGap
 
 /-!

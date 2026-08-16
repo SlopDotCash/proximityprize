@@ -5,7 +5,12 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # L9 — The trivial Hausdorff–Young / interpolation shortcut gives ONLY exponent `1−o(1)` = BGK (#444)

@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.PacketCombinationDivisibility
 import Mathlib.RingTheory.RootsOfUnity.Complex
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — de Bruijn at a single prime power: vanishing indicator sums of μ_{p^a}

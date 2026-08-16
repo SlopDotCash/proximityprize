@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodLowerBound
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

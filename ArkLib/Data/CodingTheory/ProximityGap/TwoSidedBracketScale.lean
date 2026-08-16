@@ -5,7 +5,11 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Data.Nat.Choose.Central
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 18 (Issue #232) — the PRIZE-SCALE TWO-SIDED BRACKET in one self-contained file

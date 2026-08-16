@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Mathlib.Tactic
+import Mathlib.Tactic.Push
 
 /-!
 # HD8: the identity-web dimension law — saturation forces exact evaluations; the thin

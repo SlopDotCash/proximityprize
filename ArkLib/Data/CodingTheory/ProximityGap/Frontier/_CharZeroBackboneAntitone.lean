@@ -3,7 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The char-0 backbone of `ρ`-antitone: `E_{r+1}(ℂ)/E_r(ℂ) ≤ (2r+1)·n` from the Bessel deficit (#444)

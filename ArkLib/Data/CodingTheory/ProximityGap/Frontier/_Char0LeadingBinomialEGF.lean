@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Sum
 import Mathlib.Data.Nat.Choose.Factorization
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # The char-0 LEADING term has generating function `(1+t)ⁿ` — exact (#444)

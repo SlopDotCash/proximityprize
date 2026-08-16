@@ -57,7 +57,10 @@ PARAMETER SYSTEM of that machine and where it provably stops: the Johnson radius
   not re-proved here; this file is the parameter-optimization half, which is where the
   `√((k-1)n)` barrier lives.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 namespace GSJohnson

@@ -12,7 +12,9 @@ Authors: ArkLib Contributors
   of verification. Do NOT treat as axiom-clean until then.
 ================================================================================
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # Loop 49 (CLAIM 6.2 core, DRAFT) — the rational-function bridge of BCHKS §6.

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # wf-A04 (S6 Weil-II): the toric/degree Weil ENVELOPE is VACUOUS at the prize regime (#444)

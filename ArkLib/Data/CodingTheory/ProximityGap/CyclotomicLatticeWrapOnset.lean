@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!

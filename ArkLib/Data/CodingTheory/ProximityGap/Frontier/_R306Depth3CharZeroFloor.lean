@@ -7,7 +7,7 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.Field.Defs
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # LANE B2 (#466 round 306): THE CHAR-0 SHADOW FLOOR — the r305 classification, formalized

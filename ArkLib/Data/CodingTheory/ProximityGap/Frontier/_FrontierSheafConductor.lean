@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # D-N7-CONDUCTOR — the DECISIVE √p-vacuity test of the explicit ℓ-adic period sheaf (#444)

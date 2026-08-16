@@ -1,7 +1,6 @@
 import Mathlib.LinearAlgebra.Vandermonde
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
 
 /-!
 Scratch: the genuinely-provable Prony/Hankel CORE for ESCAPE B1 hankel-rank angle.

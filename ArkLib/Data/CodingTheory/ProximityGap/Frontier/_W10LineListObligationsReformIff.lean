@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Push
 
 /-!
 # The complement-reformulation IFF, in full (#466, thread ll:topfit-witness-successor, lane _W10)

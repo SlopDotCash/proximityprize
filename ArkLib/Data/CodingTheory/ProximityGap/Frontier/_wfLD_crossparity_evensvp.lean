@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # wf-LD (#407, lane F11) — the cross-parity leak does NOT lower-bound the EVEN-sublattice SVP

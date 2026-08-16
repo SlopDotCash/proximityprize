@@ -28,7 +28,7 @@ claim is made.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 namespace ArkLib.ProximityGap.WraparoundMarkovVacuity

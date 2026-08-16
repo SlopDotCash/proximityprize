@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Round8CosetWall
 import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.NormNum
 
 set_option linter.style.longLine false
 

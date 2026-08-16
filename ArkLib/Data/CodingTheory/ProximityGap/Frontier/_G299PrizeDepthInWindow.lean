@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Log
 import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G296PalindromeCensusCollapse
 
 /-!

@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # APPROACH N8 — a FINITE-FREE-PROBABILITY edge cumulant for the period spectrum `M` (#444)

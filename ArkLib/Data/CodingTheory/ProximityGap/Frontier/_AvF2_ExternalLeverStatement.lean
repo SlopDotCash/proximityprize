@@ -3,7 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (#444)
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DiBenedettoBetaValidityWindow
 
 set_option autoImplicit false

@@ -2,7 +2,6 @@
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Mathlib.Tactic
 
 /-!
 # The single open obligation `UniformNoWraparoundUpTo` as a first-class named target (#444)

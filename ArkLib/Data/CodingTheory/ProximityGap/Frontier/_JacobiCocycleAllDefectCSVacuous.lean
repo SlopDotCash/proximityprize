@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleKDefectQuantDeficit
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 set_option autoImplicit false
 set_option linter.style.longLine false

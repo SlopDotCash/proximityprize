@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Monomial-pencil μ_d-quasi-homogeneity (#407 — coset-saturation piece (2) structural core)

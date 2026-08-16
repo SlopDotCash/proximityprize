@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.RingTheory.PowerBasis
 import Mathlib.Data.Nat.Totient
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.RigidityGeneralT1
 import ArkLib.Data.CodingTheory.ProximityGap.RigidityWindowHalving
 

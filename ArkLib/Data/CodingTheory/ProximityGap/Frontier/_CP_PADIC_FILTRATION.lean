@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Taylor
 import Mathlib.Algebra.Polynomial.HasseDeriv
 import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # P-adic graded filtration for the char-p wraparound (#444)

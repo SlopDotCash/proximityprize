@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Sum
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Ring
 
 /-!
 # Reconciling the GENERIC vs SUBGROUP char-0 energy + the falling-factorial conventions (#444)

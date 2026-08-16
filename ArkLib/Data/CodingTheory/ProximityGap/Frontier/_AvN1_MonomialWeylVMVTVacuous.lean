@@ -1,4 +1,5 @@
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-
 # Av N1: The monomial-Weyl / VMVT route to the prize sup-norm bound is VACUOUS at prize degree.

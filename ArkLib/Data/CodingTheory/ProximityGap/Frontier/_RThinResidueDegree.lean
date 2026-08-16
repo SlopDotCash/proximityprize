@@ -13,7 +13,6 @@ the in-tree root-product machinery shape.
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
 
 namespace ProximityGap.Frontier.RThinResidueDegree
 

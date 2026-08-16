@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G56AllDepthPatternDecomposition
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.NormNum
 
 /-!
 # G58: low-height wraparound persists under antipodal padding

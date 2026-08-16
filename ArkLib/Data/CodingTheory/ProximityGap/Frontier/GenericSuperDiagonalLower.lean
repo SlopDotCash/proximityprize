@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroWickEnergy
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

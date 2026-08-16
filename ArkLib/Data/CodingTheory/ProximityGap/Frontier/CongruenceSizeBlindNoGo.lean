@@ -2,7 +2,6 @@
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
 
 /-!
 # Residue-only congruence certificates cannot imply size bounds (#444 guardrail)

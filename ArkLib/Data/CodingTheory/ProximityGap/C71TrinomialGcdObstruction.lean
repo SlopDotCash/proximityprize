@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.C71TrinomialIncidence
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # C71 trinomial gcd obstruction (#444)

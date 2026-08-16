@@ -7,7 +7,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Positivity
 
 set_option autoImplicit false
 set_option linter.style.longLine false

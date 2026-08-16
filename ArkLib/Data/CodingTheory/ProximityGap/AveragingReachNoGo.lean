@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Round 14b (Issue #232) — the EXACT reach of the averaging method: the matching no-go

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # LEVER 3 — Ring-LWE / ideal-SVP is the WRONG direction & norm for the cross-surplus (#407)

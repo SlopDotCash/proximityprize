@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 

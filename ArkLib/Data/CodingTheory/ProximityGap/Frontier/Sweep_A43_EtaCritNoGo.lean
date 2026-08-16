@@ -22,7 +22,9 @@ This is a **no-go brick** (the route is structurally insufficient), not a δ\* r
 arithmetic over `ℝ`; no `sorry`, no extra axioms.
 -/
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 namespace ArkLib.ProximityGap.Sweep_A43
 

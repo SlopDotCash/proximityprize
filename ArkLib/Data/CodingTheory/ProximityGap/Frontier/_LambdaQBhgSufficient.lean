@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 /-!
 # A `B_h[g]` sufficient condition for the Λ(2h) face of the prize (#444)

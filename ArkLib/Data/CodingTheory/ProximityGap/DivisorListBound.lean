@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Degree.Domain
 import Mathlib.Algebra.EuclideanDomain.Basic
 import Mathlib.RingTheory.Polynomial.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The divisor-counting list bound (#389, the char-0-cyclotomic route)

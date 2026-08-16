@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_ResonatorRatioLowerBound
-import Mathlib.Tactic
+import Mathlib.Tactic.NormCast
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.style.longLine false

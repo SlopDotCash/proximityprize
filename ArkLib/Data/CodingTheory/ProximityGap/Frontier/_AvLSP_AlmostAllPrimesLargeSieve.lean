@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

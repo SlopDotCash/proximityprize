@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 /-!
 # The Λ(q)-constant growth law: `C(q) = ‖η‖_q/√(qn)` and the prize-true-vs-false discriminator (#444)

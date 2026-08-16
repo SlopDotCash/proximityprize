@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVRealSignMassSlack
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # Door IV multiplicative-coset refinement collinearity: real pieces have only a sign DOF

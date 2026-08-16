@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Int.GCD
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.style.longLine false

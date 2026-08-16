@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.Group.Subgroup.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Group
 
 /-!
 # Door IV worst-index multiplicative genericity: no power-coset restriction

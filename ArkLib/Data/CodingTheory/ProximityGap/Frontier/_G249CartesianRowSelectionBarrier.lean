@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # G249: Cartesian discrepancy does not select quotient-Jacobi rows (#466)

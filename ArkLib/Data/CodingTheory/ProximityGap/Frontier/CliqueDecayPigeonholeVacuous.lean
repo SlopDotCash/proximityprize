@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

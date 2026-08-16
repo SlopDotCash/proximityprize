@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Loop 32 — block grouping cannot hide multiplicative exponent growth

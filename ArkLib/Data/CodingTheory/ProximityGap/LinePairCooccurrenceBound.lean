@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.InformationTheory.Hamming
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232: the per-line pair co-occurrence bound (round 14)

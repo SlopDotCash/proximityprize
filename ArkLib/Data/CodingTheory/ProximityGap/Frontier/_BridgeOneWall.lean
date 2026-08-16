@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
 /-!

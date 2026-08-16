@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.RingTheory.RootsOfUnity.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # A4 cyclotomic-Galois antipodal: `e₂(S)=0 ⟹ σ(P(ζ)) = ±P(ζ)` (#407)

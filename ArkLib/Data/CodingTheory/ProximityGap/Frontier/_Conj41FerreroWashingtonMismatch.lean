@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Data.Nat.Log
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Lane B — DECISIVE resolution: Ferrero–Washington CANNOT close `μ_inv = 0` for the

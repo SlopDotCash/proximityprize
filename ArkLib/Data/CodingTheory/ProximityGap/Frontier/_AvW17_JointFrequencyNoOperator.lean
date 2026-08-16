@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The joint two-frequency object IS the wall — the frequency-migration obstruction has no

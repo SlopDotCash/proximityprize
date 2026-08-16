@@ -49,7 +49,10 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Fin.Basic
 import Mathlib.LinearAlgebra.LinearIndependent.Defs
-import Mathlib.Tactic
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 open scoped BigOperators
 open Finset

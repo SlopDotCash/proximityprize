@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 /-!
 # The STICKELBERGER CLUSTERING STRATIFICATION (#444, F3 — CREATION)

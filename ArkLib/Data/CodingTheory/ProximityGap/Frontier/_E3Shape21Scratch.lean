@@ -1,6 +1,7 @@
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3StrataCount
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
 
 open ArkLib.ProximityGap.Frontier.E3StrataCount (twoValue_count)
 

@@ -6,7 +6,6 @@ Authors: ArkLib Contributors (#466, Round 10, Lane B)
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Multiset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
 
 set_option autoImplicit false
 set_option linter.style.longLine false

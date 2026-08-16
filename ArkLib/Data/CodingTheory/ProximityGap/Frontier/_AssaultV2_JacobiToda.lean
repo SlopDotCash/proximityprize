@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Data.Matrix.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 

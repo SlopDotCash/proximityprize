@@ -5,7 +5,11 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.Convex.Slope
 import Mathlib.Analysis.Convex.SpecificFunctions.Pow
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Algebraic cube-root increment bounds for the HBK cap

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The discrete-Poisson histogram identity for the char-`p` wraparound energy (#444, avenue WP)

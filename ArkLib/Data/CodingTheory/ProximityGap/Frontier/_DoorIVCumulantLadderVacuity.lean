@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
 
 /-!
 # Door IV — the CUMULANT-LADDER vacuity lemma: vanishing connected cumulant at ANY order forecloses

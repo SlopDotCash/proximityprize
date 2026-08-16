@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.FLT.MasonStothers
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
 
 /-!
 # The isolated-count residual is the open Kelley general-position conjecture (#407)

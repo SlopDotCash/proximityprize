@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 /-!
 # Door IV: the period MARGINAL's 4th moment (kurtosis) collapses to the additive energy `E₂(μ_n)`

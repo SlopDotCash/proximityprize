@@ -8,7 +8,7 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Image
 import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G295RankReflectionSymmetry
 
 /-!

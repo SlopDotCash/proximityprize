@@ -9,7 +9,9 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Nat.Totient
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # THE EXACT SUBSET-SUM FIBRE VALUE AT 2-POWER TOWERS (#389)

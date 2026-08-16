@@ -7,7 +7,10 @@ import Mathlib.GroupTheory.Perm.Sign
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # F8 — The WREATH-PRODUCT representation realizing the energy as a character, with the Wick

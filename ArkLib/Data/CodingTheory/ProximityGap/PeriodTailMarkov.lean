@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
 
 /-!
 # The moment ⟹ tail bridge for the Gauss-period histogram (#407)

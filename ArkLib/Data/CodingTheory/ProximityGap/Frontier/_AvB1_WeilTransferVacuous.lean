@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.style.longLine false

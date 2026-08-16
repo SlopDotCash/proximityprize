@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
 
 /-!
 # Round 17 (Issue #232) — the CA pair-extraction engine: RVW13 half-threshold uniqueness and the

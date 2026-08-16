@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The dyadic tower moment recursion, expanded (#407)

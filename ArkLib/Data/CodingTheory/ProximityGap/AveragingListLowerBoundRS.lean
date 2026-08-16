@@ -72,7 +72,7 @@ Authors: ArkLib Contributors
   codewords — a concrete positive bound, all hypotheses satisfied by witnesses.
 -/
 
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Data.ZMod.Basic

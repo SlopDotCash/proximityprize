@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sol
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyEssential
 
 /-!

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
 
 /-!
 # The completed-sum / root-number form of the prize (#444)

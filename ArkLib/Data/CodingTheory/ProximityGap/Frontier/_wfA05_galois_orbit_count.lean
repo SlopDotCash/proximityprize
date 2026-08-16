@@ -5,7 +5,8 @@ Authors: ArkLib Contributors (wf-A05 frontier — Galois-orbit count of spurious
 -/
 import Mathlib.GroupTheory.GroupAction.Quotient
 import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

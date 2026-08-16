@@ -5,7 +5,7 @@ Authors: NubsCarson
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcrete
 

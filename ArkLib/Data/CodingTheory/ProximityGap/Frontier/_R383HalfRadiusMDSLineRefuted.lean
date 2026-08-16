@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Field.ZMod
 import Mathlib.LinearAlgebra.Vandermonde
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
 
 /-!
 # R383: the unrestricted half-radius MDS line conjecture is false

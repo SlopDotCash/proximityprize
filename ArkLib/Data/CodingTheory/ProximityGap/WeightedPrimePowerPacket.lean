@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnPrimePower
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — the WEIGHTED prime-power packet theorem (O95's named brick (i))

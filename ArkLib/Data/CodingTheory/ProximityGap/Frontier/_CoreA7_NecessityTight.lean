@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Find
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
 
 set_option autoImplicit false
 

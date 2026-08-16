@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Group.Subgroup.Basic
 import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.Tactic
+import Mathlib.Tactic.Group
+import Mathlib.Tactic.Push
 
 set_option linter.style.longLine false
 

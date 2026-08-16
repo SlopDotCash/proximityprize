@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PerPairingExactCount
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

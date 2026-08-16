@@ -5,7 +5,12 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # BCHKS F6 — the EXPLICIT δ* LOWER BOUND, assembled from F1–F5 (#444)

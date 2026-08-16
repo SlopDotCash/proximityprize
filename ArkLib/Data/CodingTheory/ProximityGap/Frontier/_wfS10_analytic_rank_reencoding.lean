@@ -7,7 +7,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
 
 /-!
 # wf-S10 — Analytic / partition rank of the SPURIOUS relation tensor is a RE-ENCODING, not an

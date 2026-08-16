@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Lane B (#407 / Chai–Fan 2026/861 Q2) — the Action–Orbit symmetry is SPARSITY-EXCLUSIVE

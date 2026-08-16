@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.CharP.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.NormCast
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 9 (Issue #232, ABF26) — the subgroup Gauss-sum SECOND MOMENT, exactly, with NO Weil bound.

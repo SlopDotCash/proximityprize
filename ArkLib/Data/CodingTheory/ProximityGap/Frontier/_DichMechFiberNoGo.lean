@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
 
 /-!
 # The fiber/genus reduction of the isolated count does NOT drop to `deg O` (#407)

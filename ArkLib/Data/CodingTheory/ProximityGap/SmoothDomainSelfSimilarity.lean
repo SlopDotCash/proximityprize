@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 16 (Issue #232) — SMOOTH-DOMAIN SELF-SIMILARITY: the list-size function is monotone along

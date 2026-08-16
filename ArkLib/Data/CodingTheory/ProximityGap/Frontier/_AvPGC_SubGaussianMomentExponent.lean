@@ -1,5 +1,5 @@
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # `_AvPGC_SubGaussianMomentExponent` — the sub-Gaussian-tail / moment route, measured exactly

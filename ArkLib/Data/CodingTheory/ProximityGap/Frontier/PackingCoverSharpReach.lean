@@ -7,7 +7,10 @@ import Mathlib.Data.Nat.Factorial.BigOperators
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.PackingDeepBandMiss
 
 /-!

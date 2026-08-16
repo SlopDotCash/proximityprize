@@ -6,7 +6,12 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # The BCHKS25 subgroup-sumset conjecture (Conj 1.12) and its Mersenne witness (Remark 7.3)

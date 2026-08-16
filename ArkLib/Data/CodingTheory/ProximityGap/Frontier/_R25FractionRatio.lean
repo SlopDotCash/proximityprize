@@ -4,7 +4,10 @@ import Mathlib.Algebra.Squarefree.Basic
 import Mathlib.FieldTheory.Perfect
 import Mathlib.RingTheory.Localization.FractionRing
 import Mathlib.RingTheory.UniqueFactorizationDomain.Multiplicity
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.Frontier.R25FractionRatio
 

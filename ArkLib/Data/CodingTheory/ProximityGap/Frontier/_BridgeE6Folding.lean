@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Fintype.Card
 import Mathlib.Logic.Equiv.Defs
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Bridge E6 — the folding bijection (even half of the FFT-graded tower recursion, #444)

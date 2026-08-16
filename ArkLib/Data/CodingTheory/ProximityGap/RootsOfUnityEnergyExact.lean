@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Combinatorics.Additive.Energy
 import Mathlib.Algebra.Algebra.Defs
 import Mathlib.Algebra.CharP.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # The EXACT additive energy of the roots of unity (#389, the sharp value)

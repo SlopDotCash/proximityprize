@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Round8CosetConcentration
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.NormCast
+import Mathlib.Tactic.Ring
 
 /-!
 # G79P: falling-factorial digit clustering underlying the π-adic depth claim

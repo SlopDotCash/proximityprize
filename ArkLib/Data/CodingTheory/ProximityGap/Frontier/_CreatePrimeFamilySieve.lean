@@ -7,7 +7,8 @@ import Mathlib.NumberTheory.Cyclotomic.Basic
 import Mathlib.NumberTheory.Divisors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
 
 /-!
 # CREATE F9 — the **prime-family wraparound sieve** and its divisor-bound dual (#444)

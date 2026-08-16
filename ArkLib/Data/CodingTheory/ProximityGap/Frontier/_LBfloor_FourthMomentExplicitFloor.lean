@@ -7,7 +7,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentAvgLower
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyNegClosedLower
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
 
 set_option autoImplicit false
 set_option linter.style.longLine false

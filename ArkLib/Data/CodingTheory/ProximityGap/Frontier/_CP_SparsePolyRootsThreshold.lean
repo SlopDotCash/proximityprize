@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.RootsOfUnity.Basic
 import Mathlib.Algebra.Polynomial.Eval.Degree
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # CHAR-P angle SPARSE_POLY_ROOTS — the `r = 2` wraparound onset-threshold norm law (#444)

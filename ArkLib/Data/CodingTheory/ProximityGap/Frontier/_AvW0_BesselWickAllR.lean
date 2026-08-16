@@ -9,7 +9,11 @@ import Mathlib.RingTheory.PowerSeries.Expand
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
 import Mathlib.Data.Nat.Choose.Central
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Char-0 Wick bound, r-UNIFORM, via the Bessel EGF identity (#444, avenue W0)

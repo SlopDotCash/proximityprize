@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
 
 /-!
 # Issue #232 — windowed folding is BELOW Johnson at every window size (route 4, fully closed)

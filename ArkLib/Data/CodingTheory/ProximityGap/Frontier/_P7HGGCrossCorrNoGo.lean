@@ -37,7 +37,7 @@ TWO STRUCTURAL OBSTRUCTIONS (numerically pinned in
 The lemmas below formalize the arithmetic facts that make the no-go rigorous.
 The analytic sqrt(N) facts are cited from HGG (above) and the two probes.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 namespace P7HGG
 

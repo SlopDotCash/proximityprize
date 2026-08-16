@@ -26,7 +26,9 @@ measured over-dispersion.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 namespace ProximityGap.OverdispersionObstruction

@@ -16,7 +16,7 @@ FINDINGS (axiom-clean abstract skeleton; substantive facts from exact probes):
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.Push
 
 namespace AtkR2
 open Finset

@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # G252: global phase discrepancy does not pin the fixed-row weighted covariance (#466)

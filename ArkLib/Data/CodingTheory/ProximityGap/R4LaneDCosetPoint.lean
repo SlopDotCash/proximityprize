@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2VanishEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.CosetExactCount
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # R4 lane D: the `e₂ = 0`, width-5 single-coset rigidity (#407, Approach C / `e₂=0` threshold)

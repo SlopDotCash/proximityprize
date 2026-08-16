@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Log
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # Core A3 — the BACKWARD PROOF of `m* = O(log n)` on the p-INDEPENDENT combinatorial object (#444)

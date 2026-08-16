@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
+import Mathlib.Tactic.Push
 
 /-!
 # Round 22 (Issue #232) — the CONSTRUCTIVE PTE FAMILY inside the smooth domain: `expand` lifts

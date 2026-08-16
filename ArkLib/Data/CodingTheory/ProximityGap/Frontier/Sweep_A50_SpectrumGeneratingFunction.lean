@@ -33,7 +33,7 @@ Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`
 -/
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

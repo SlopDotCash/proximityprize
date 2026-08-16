@@ -27,7 +27,6 @@ CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN.
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

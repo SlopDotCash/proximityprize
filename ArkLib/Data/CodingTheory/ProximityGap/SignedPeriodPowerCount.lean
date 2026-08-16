@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 set_option linter.unusedSectionVars false
 
 /-!

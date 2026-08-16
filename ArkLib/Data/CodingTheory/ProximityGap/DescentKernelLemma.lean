@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — the Descent Kernel Lemma (Lemma K) and pattern rigidity, machine-checked

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Fintype.Pi
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Issue #232 — the threshold `δ*` is WELL-DEFINED (the prize statement's presupposition)

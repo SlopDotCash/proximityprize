@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # The general-`k` orchard sum-zero law (#389)

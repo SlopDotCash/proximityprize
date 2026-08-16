@@ -21,7 +21,8 @@ headline corresponds to a *thick* `β ≈ 1.78`, not the prize.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
 
 namespace ProximityGap.DiBenedettoPrizeRegimeVacuous
 

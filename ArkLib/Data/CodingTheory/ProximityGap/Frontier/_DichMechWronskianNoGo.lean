@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # The DICH-mechanism Wronskian/transversality route does NOT cut the isolated locus (#407)

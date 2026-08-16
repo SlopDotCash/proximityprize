@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 25 (Issue #232) — GENERAL t=1 RIGIDITY AT ALL w: disjoint equal-sum sets of `2N`-th roots

@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 /-!
 # Mixing-time / canonical-paths no-go: the Poincaré spectral-gap ceiling is `Θ(n)`, never `√(2n ln p)`

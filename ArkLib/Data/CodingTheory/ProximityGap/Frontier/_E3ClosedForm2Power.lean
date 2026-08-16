@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Pi
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # E₃ closed form for 2-power roots of unity — the r=2 rung producer (#444)

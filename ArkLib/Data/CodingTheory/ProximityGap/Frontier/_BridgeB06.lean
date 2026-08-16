@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Bridge B06 — the doubling map preserves graded frequency vectors (target E6)

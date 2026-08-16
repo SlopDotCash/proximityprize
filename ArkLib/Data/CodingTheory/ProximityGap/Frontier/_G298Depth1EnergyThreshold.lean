@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # G298: the depth-1 CORE covariance is a subgroup additive-energy threshold, and its sign is

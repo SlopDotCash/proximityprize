@@ -36,7 +36,8 @@ but it is the cleanest *centered* exact reduction, isolating a nonnegative fluct
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
 
 namespace ProximityGap.FluctuationSharpening
 

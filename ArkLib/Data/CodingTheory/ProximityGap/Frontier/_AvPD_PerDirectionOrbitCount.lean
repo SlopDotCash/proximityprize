@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (Av-PD frontier — the PER-DIRECTION far-line bad count is the
 wall: bounded orbit SIZE but super-linear orbit COUNT)
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 set_option linter.style.longLine false
 set_option autoImplicit false

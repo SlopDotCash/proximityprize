@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Choose.Central
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Round 14 (Issue #232) — δ* is bounded away from capacity by an ABSOLUTE CONSTANT at prize scale

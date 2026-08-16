@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-import Mathlib.Tactic
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

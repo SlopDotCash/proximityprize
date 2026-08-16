@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.Tactic
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

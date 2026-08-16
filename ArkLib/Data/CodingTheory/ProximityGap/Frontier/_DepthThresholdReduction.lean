@@ -23,7 +23,7 @@ can.  This is the moment-necessity obstruction in geometric/lattice dress: a cou
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 namespace ProximityGap.DepthThresholdReduction
 

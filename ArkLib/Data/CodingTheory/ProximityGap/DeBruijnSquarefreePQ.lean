@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CRTPacketMinpoly
 import ArkLib.Data.CodingTheory.ProximityGap.CRTExponentGridSum
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — de Bruijn at squarefree `pq`: the two-sided IFF classification of

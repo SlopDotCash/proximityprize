@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.HigherOrderMDSReedSolomon
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # The half-radius MDS line bound fails with strict slack and low rate

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Data.Nat.Choose.Central
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
 
 /-!
 # The Witt ghost-collapse: why the entire p-adic-lift class is vacuous for the char-p transfer (#444)

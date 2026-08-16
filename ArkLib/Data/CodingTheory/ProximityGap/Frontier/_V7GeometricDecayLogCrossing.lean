@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MStarLognReduction
 import Mathlib.Data.Nat.Log
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 set_option autoImplicit false

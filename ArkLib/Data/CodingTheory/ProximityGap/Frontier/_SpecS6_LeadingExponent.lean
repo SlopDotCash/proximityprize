@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Spec S6 — the VACUOUS-REGIME record of the complete-homogeneous crossing (#444)

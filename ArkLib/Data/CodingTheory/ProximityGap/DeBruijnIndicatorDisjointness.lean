@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CRTPacketMinpoly
 import ArkLib.Data.CodingTheory.ProximityGap.CRTExponentGridSum
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — de Bruijn step (3), first disjointness brick: the squarefree two-prime case

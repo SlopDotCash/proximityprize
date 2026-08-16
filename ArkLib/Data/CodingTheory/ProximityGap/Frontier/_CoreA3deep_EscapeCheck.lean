@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Log
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # Core A3deep — the ESCAPE CHECK: does `WeakestSuff` need the full BCHKS 1.12 count? (#444)

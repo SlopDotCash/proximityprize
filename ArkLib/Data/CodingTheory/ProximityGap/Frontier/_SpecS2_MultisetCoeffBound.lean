@@ -7,7 +7,6 @@ import Mathlib.Data.Sym.Card
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BchksF1_CompleteHomogeneousFloor
 
 /-!

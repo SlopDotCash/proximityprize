@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.MomentCollisionSpectral
-import Mathlib.Tactic
 
 /-!
 # Issue #232 (ABF26) — the bridge from the Plancherel off-diagonal to the per-element Weil factors.

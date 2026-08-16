@@ -1,5 +1,6 @@
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Door-IV algebraic-floor cyclotomic wall

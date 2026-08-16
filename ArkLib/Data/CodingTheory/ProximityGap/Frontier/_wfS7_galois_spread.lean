@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.GroupTheory.GroupAction.Basic
 import Mathlib.GroupTheory.GroupAction.Quotient
 import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

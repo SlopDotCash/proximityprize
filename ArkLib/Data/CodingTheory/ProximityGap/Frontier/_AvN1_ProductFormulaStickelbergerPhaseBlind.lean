@@ -5,7 +5,9 @@ Authors: ArkLib Contributors (Av N1 frontier — product-formula + Stickelberger
 -/
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.RCLike.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

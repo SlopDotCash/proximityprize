@@ -6,7 +6,10 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

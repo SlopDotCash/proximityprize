@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Order.Bounds.Basic
-import Mathlib.Tactic
 
 /-!
 # δ* — determinability: it is DECIDABLE (not undecidable), and equivalent to BGK (#444)

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic
 
 set_option autoImplicit false
 set_option linter.style.longLine false

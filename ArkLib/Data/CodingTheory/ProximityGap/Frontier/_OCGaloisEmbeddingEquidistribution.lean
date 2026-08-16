@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.ZMod.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

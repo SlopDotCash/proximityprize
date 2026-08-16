@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 import Mathlib.RingTheory.Norm.Basic
 import Mathlib.Data.Nat.Factorization.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The uniform-in-`n` run-sum cyclotomic norm closed form (#407 — Half-Sum Lemma, lane C)

@@ -6,7 +6,7 @@ is phase-blind for `M`; it pins the Galois-orbit PRODUCT, not the individual Gau
 -/
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

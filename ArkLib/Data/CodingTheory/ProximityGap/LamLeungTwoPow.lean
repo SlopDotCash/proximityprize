@@ -5,7 +5,12 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.TopDirectionLineCount
 
 /-!

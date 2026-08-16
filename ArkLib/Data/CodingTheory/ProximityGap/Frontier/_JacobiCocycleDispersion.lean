@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The prize as a DISPERSION theorem for the Jacobi-sum cocycle (#444)

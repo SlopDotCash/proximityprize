@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Fintype.Pi
-import Mathlib.Tactic
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 

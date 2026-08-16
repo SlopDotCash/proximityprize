@@ -1,6 +1,6 @@
 import ArkLib.Data.CodingTheory.ProximityGap.InvolutionClosedCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3StrataCount
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

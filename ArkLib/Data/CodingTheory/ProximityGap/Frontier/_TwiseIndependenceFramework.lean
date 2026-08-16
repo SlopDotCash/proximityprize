@@ -5,7 +5,7 @@ Authors: ArkLib Contributors (THREAD T7-twise-independence)
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

@@ -8,7 +8,6 @@ Authors: ArkLib Contributors
 
   Self-contained, imports only Mathlib.
 -/
-import Mathlib.Tactic
 import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.RingTheory.Polynomial.Basic

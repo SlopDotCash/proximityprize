@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumSecondMomentCollision
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Issue #232 (ABF26) — the M2 anti-concentration → onset transition in the smooth hierarchy.

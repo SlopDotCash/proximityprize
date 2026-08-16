@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
 
 /-!
 # Expander mixing on `Cay(F_p, μ_n)` — the two-sided bound and the all-`(S,T)` wall (#444)

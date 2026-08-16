@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.Connections.GCXK25SecondMoment
 import Mathlib.Analysis.SpecialFunctions.Pochhammer
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 /-!
 # R387: Johnson pruning at the half-radius predecessor, rate at most `1/8`

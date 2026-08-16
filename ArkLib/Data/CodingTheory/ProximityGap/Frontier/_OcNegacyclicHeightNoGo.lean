@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Combinatorics.Pigeonhole
 import Mathlib.Data.Fintype.Pigeonhole
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

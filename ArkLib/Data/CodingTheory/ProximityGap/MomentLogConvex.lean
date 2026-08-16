@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Algebra.Order.Chebyshev
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Log-convexity of the Gauss-period moment ladder (#407)

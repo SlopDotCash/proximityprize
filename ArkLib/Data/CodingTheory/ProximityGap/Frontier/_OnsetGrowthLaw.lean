@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 /-!
 # The wraparound onset law `r_0 = Θ(p^{1/φ(n)})` — and why it is BELOW the saddle at prize scale (#444)

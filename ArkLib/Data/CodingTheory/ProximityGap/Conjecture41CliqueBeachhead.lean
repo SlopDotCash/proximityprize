@@ -8,7 +8,6 @@ import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-!
 # Round 19 (Issue #232) — the Conjecture-41 BEACHHEAD: the universal (clique) obstruction is the

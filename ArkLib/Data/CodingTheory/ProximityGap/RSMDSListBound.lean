@@ -33,7 +33,9 @@ import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.Fintype.Powerset
 import Mathlib.Algebra.Field.ZMod
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
 
 open Polynomial Finset
 

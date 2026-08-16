@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Ideal.Operations
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The depth-2 graded 2-adic gate on cyclotomic wraparound norms (#444)

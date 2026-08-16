@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.CRTDoubleSlice
 
 /-!

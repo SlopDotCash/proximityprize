@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-!
 # Bridge B43 — base cases of the `#bad` graded count over `ZMod 4` (target E6, #444)

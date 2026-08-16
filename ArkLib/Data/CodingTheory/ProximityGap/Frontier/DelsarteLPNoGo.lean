@@ -36,7 +36,6 @@ CORE `M(μ_n) ≤ C√(n log(p/n))` UNCHANGED/OPEN.
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.DelsarteLPNoGo
 

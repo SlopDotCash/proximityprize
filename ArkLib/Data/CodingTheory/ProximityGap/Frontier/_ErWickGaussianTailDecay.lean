@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 /-!
 # The Gaussian-tail energy decay law `A_r ≤ Wick·exp(−r²/2n)` ⟹ the prize (#444)

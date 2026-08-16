@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (lane cstarlin)
 -/
 import Mathlib.Data.Finset.Basic
-import Mathlib.Tactic
 
 /-!
 # The far-line crossing depth `c*(n)` TRACKS the LINEAR `n/4−1` law; the "`c*/n → 0`" capacity-approach

@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.Complex.Norm
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # G78: Kelley–Meka spread technology is loss-class-compatible but rank-one circular

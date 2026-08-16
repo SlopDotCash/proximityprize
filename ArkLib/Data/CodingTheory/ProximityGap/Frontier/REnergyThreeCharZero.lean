@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._REnergyThreeScratch
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3NegSymConverse
-import Mathlib.Tactic
 
 set_option autoImplicit false
 

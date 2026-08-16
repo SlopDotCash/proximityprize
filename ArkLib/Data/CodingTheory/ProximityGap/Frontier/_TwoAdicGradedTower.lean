@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Ideal.Operations
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The full depth-ℓ graded 2-adic tower on cyclotomic wraparound norms (#444)

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.Padics.PadicVal.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # B42 — `v₂(m)` controls the FFT-recursion descent depth (#444, target E6)

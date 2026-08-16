@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.EtaPointwiseAutocorr
 

@@ -1,6 +1,5 @@
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # Full-rank relation lattice `L_p` — Banaszczyk transference NO-GO (#444)

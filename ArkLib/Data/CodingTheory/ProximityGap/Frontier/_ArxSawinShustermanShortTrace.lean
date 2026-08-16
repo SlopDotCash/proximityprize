@@ -7,7 +7,9 @@ Authors: ArkLib Contributors (ARX-4 — Sawin–Shusterman short-trace cancellat
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormCast
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # ARX-4 — The Jacobi-phase autocorrelation `A(s) = Σ_j g_j conj(g_{j+s})` REDUCES to the wall:

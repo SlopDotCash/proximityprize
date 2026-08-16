@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The hypercontractive (Bonami–Beckner / (2,q)-norm) route for the phase function (#444, route A4)

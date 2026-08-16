@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # The floor-bad complement reformulation (#466, lane FS1)

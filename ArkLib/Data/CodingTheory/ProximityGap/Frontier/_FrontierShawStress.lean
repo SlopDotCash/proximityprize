@@ -6,7 +6,8 @@ Authors: ArkLib Contributors (adversarial stress of approach N10 — the Shaw in
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Int.GCD
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
 
 set_option linter.style.longLine false
 set_option autoImplicit false

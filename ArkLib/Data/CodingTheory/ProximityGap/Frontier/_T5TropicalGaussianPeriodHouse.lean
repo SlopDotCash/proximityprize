@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Ring
 
 /-!
 # SHAPE-TRANSFORM T5 (tropical / idempotent): `M` is the HOUSE of a Gaussian period, and its

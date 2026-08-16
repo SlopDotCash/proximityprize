@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 

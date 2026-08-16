@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
 
 /-!
 # Door IV capstone: the marginal moment ladder Wick-collapses — at any even order, a vanishing

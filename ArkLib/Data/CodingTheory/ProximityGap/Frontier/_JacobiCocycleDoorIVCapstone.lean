@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleCancellationGap
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleAlignmentMechanism
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleFermatCornerExclusion
-import Mathlib.Tactic
 
 set_option autoImplicit false
 set_option linter.style.longLine false

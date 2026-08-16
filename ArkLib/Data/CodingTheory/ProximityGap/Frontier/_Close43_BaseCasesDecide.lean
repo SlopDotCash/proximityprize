@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.List.Basic
-import Mathlib.Tactic
 
 /-!
 # Close43 / C43 [E6] — the FFT-graded obstruction count: decidable base cases + recursion step

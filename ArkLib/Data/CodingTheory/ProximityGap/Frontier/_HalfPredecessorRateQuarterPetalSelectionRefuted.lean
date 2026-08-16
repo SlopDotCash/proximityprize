@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fin.VecNotation
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
 
 /-!
 # Rate-quarter petal selection: a sharp abstract obstruction

@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.Connections.GCXK25SecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._HalfPredecessorLineCoreGeometry
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # P1 rate-quarter predecessor: exceptional-pair amplification

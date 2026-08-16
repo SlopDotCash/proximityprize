@@ -1,6 +1,8 @@
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

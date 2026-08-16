@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Nat.Log
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 set_option autoImplicit false
 set_option linter.style.longLine false

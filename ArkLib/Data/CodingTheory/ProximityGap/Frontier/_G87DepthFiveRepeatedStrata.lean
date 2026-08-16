@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86DepthFiveConstantGap
 import Mathlib.Data.Fintype.CardEmbedding
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # G87: repeated-coordinate depth-five strata lose a full power of n

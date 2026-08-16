@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2VanishEnergy
 import Mathlib.RingTheory.RootsOfUnity.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # R4 lane D: the `w = 5` single-coset rigidity for the `e₂ = 0` locus (#407 / #389)

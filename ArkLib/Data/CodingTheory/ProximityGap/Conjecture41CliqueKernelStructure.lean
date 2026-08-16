@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 20 (Issue #232) — the clique double-block KERNEL STRUCTURE THEOREM: the twisted

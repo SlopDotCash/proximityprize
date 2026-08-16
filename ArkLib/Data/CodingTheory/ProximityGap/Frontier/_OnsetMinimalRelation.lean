@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.Cyclotomic.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Push
 
 /-!
 # The minimal non-antipodal wrapping relation and the onset bound `r₀ ≥ ½·p^{1/φ(n)}` (#444)

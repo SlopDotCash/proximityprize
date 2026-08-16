@@ -1,7 +1,6 @@
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Data.Finset.Basic
-import Mathlib.Tactic
 
 /-!
 # Promoted Hypotheses Group B (Correlated Error Support)

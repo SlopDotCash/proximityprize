@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # wf-T05 — Veronese moment-curve primitive-cohomology sub-bound: REDUCES-TO-WALL (F2) (#444)

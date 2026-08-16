@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Ring.Basic
 import Mathlib.Data.Nat.Log
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # Lane B1 — the Iwasawa Λ-module skeleton behind the Conjecture-41 `m*` growth law

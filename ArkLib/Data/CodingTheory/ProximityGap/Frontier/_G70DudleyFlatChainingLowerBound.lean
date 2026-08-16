@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.Complex.Norm
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

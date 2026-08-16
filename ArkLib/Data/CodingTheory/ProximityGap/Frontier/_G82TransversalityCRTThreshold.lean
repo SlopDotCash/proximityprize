@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # G82: the transversality seam quantified — CRT amplification fires at HALF the height

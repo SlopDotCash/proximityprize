@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # wf-S5 — the THETA-COUNT side: bounding the spurious short-vector count of the index-`p`

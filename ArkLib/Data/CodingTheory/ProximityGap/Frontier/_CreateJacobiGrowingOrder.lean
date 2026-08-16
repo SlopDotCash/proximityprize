@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # CREATE — an EFFECTIVE GROWING-ORDER equidistribution framework for iterated Jacobi sums (#444,

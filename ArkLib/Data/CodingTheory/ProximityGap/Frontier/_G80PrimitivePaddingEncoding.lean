@@ -7,7 +7,9 @@ import Mathlib.Data.Fintype.CardEmbedding
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.Fintype.Perm
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # G80: the exact primitive-padding encoding space

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Door IV: the worst-`b` saturates the GAUSSIAN extreme-value prediction `M ≈ √(n·log(p/n))` with

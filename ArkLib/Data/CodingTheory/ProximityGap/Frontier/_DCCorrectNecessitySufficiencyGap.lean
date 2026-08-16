@@ -5,7 +5,8 @@ Authors: Sol
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DCCorrectMomentCeilingAtFloor
 
 /-!

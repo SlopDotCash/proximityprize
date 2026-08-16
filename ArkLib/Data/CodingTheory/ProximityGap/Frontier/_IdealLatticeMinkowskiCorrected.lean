@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # LEVER 3 CORRECTED — the ideal-lattice ℓ¹ shortest-vector IS prime-sensitive; Minkowski is the

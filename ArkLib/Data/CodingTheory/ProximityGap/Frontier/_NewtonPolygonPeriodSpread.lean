@@ -6,7 +6,7 @@ Authors: ArkLib Agent
 import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 /-!
 # The NEWTON-POLYGON / period-spread lens for the Gauss-period house (Issue #444, lens [newton-polygon])

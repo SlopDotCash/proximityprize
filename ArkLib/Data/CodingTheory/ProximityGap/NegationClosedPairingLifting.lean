@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

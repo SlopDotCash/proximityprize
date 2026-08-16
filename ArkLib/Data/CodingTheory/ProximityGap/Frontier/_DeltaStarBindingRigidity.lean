@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # δ* binding-radius rigidity — the interior is ALL-OR-NOTHING at the `√(n log m)` scale (#444)

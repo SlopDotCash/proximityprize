@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (#444, TASK Shaw-A)
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroEnergyClosedForm
 

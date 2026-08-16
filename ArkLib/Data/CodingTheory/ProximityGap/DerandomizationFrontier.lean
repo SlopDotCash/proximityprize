@@ -41,7 +41,7 @@ evaluation set implies the smooth subgroup domains are good).  That is the open 
 content; it is stated as a `def ... : Prop` only and never claimed.
 -/
 import ArkLib.Data.CodingTheory.CodeGeometry
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 set_option autoImplicit false
 set_option maxHeartbeats 1000000

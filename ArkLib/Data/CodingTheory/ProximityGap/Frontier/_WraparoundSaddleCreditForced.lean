@@ -3,7 +3,6 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors (#444)
 -/
-import Mathlib.Tactic
 
 /-!
 # The saddle forces a strictly-positive credit — `W_{r*}=0` is the wrong target (#444, Lane 3)

@@ -8,7 +8,10 @@ Round 15 (own grind) — the EXACT-COUNT GS wall: the upper bound on the weighte
 count, and the resulting necessary condition for exact-count GS feasibility.
 Self-contained, Mathlib-only.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 open Finset
 

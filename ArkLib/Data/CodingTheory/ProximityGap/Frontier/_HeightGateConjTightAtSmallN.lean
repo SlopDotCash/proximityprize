@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # The conjectured height `(n/2-1)^{n/4}` is the EXACT max field-norm at `n = 8, 16`  -  and it

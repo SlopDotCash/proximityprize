@@ -5,7 +5,8 @@ Authors: ArkLib Contributors (Av-CRT frontier — split-prime CRT-correlation no
 -/
 import Mathlib.RingTheory.Int.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Push
 
 set_option linter.style.longLine false
 set_option autoImplicit false

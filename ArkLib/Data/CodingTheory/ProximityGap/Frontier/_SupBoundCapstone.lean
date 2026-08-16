@@ -22,7 +22,7 @@ prime suffices* — is exposed cleanly and is manifestly independent of any seco
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 namespace ProximityGap.SupBoundCapstone
 

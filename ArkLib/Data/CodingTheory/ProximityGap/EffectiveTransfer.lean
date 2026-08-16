@@ -8,7 +8,7 @@ import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 /-!
 # Issue #232 — O49: the effective characteristic-zero → `F_p` transfer, machine-checked

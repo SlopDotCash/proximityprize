@@ -22,7 +22,10 @@ license the prize-scale extrapolation, which this brick blocks.)
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 namespace ProximityGap.Char0RatioScaling
 

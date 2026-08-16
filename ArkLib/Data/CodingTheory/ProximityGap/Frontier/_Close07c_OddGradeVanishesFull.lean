@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Pi
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Close C07c — target E6 (odd half): `#bad_{2n}(k, m) = 0` for ODD `m`, PROVED

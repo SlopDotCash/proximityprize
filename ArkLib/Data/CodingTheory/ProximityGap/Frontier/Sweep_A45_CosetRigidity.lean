@@ -16,7 +16,8 @@ Axiom-clean: field + polynomial algebra. No `sorry`.
 -/
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

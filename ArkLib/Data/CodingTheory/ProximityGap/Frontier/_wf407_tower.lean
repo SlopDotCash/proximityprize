@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.CharP.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

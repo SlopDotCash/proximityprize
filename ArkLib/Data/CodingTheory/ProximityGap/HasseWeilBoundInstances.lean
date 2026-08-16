@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-!
 # Concrete, computationally-proven instances of the Weil bound on curves (Issue #232 context)

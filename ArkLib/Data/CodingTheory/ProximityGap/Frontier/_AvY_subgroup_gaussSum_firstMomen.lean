@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Mathlib.RingTheory.RootsOfUnity.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 

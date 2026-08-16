@@ -10,7 +10,9 @@ import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.EquivFin
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The affine-plane sharpness witness: the pole at `t² = s·n` is real (#389)

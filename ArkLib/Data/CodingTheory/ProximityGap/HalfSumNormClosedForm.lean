@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 import Mathlib.RingTheory.Norm.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The half-sum cyclotomic norm closed form (#407 — Half-Sum Lemma, GRIND T5)

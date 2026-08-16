@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.RingTheory.Coprime.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

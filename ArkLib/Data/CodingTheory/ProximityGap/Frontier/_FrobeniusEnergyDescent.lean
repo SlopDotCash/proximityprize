@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.FieldTheory.Finite.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Push
 
 /-!
 # Frobenius / Galois descent on the energy solution set: an HONEST no-go + the tower pivot (#444)

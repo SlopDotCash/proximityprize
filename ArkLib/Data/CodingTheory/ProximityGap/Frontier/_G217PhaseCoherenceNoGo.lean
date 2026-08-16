@@ -3,7 +3,6 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import Mathlib.Tactic
 
 /-!
 # G217: the sign of the signed covariance lives in the equidistributing Mellin phases (#466)

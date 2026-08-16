@@ -1,5 +1,4 @@
 import ArkLib.Data.CodingTheory.ProximityGap.UnitCircleSidon
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 set_option autoImplicit false

@@ -5,7 +5,9 @@ Authors: ArkLib Contributors (#466, Round 11, Lane J)
 -/
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.style.longLine false

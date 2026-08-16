@@ -11,7 +11,7 @@ import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
 
 /-!
 # §6.5 — the PROVEN LOWER half of the Lam–Leung vanishing identity: `2^{n/2} ≤ V_1(μ_n)` (#444)

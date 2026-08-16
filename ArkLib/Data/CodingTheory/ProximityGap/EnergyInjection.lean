@@ -1,7 +1,6 @@
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Prod
-import Mathlib.Tactic
 
 /-!
 # The energy injection toward the proximity-prize core (#389)

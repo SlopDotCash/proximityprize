@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
 
 /-!
 # G295: the CORE covariance is palindromic on the rank window — `A_r = A_{n+1-r}`

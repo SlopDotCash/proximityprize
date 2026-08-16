@@ -23,7 +23,8 @@ It does NOT yet prove the `negSymCount` closed form `Fintype`-free (the strata-c
 CORE/cancellation/completion/moment-saving/capacity claim. It is a structural de-`Fintype` enabling
 lemma.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 import Mathlib.Order.WellFounded
 import Mathlib.SetTheory.Ordinal.Basic
 

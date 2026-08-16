@@ -7,7 +7,6 @@ Contributor: Shane Coy - github.com/shane9coy - shanec.dev@gmail.com
 import Mathlib
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-! # G321: the rank-reflection palindrome at the (n=12, p=13) sponsor cell
 

@@ -17,7 +17,8 @@ Axiom-clean: depends only on field arithmetic and `Finset.card`. No `sorry`, no 
 import Mathlib.Algebra.Field.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

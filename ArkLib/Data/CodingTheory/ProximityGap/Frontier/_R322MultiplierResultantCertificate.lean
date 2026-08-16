@@ -1,5 +1,6 @@
 import Mathlib.RingTheory.Polynomial.Resultant.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 

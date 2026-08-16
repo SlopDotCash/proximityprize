@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetThreePowUpper
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 /-!
 # ATTACK on PHANTOM-ThreePow — the `3^{n/2}` *exact* subset-sum count (#444)

@@ -5,7 +5,9 @@ Authors: ArkLib Contributors (lane wf-J3)
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

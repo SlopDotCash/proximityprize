@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
 
 /-!
 # Per-coset agreement dichotomy (#407 — R-THIN structural brick)

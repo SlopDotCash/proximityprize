@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.Complex.Norm
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Door IV: the `|·|`-LEAK — taking absolute values destroys the thinness-essential signed deep

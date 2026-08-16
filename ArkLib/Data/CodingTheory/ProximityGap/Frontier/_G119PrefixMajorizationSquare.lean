@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # G119: sharp prefix majorization for squared mass

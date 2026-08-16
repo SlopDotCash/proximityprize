@@ -1,4 +1,3 @@
-import Mathlib.Tactic
 
 /-! R320: algebraic bridge for the c=3 relation web. -/
 set_option autoImplicit false

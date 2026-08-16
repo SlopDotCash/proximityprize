@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-!
 # Antipodal INVARIANT-weight kernel (#444, AvX / Bridge05 companion)

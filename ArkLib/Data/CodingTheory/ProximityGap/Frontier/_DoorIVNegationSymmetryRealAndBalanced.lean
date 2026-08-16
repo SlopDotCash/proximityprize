@@ -7,7 +7,8 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Data.Complex.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.style.longLine false

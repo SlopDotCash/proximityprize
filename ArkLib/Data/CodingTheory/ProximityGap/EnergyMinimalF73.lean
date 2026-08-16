@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # A finite-field minimal-energy witness: `E(μ_8 ⊂ F₇₃) = 168` (#389)

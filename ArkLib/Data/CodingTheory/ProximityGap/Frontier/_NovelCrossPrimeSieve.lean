@@ -8,7 +8,7 @@ import Mathlib.NumberTheory.Divisors
 import Mathlib.Data.Nat.Prime.Infinite
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Order.Filter.Cofinite
-import Mathlib.Tactic
+import Mathlib.Tactic.Push
 
 /-!
 # APPROACH N9 — a CROSS-PRIME LARGE SIEVE for subgroup-sum wraparound excess (#444)

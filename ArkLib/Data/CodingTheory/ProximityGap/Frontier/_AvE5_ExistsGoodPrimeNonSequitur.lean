@@ -1,4 +1,3 @@
-import Mathlib.Tactic
 /-
 # AvE5 — The "choose a good prime" escape is a NON-SEQUITUR (quantifier audit)
 

@@ -5,7 +5,9 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Complex.Norm
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 
 /-!
 # Door IV sector-coherence constraint

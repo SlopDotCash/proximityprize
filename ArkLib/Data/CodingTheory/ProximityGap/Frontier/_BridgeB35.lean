@@ -5,7 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Bridge B35 — antipodal pairing kills odd graded moments over `μ_{2n}` (target E6, #444)

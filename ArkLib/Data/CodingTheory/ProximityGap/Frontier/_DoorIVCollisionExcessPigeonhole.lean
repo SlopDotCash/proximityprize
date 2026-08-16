@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic
 
 /-!
 # Door IV: the subset-sum collision excess `Ψ_p − Ψ_0` is a pure pigeonhole quantity, not an

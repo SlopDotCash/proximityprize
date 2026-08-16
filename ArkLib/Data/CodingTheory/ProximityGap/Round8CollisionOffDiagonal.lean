@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.LinearCombination
 import ArkLib.Data.CodingTheory.ProximityGap.SubsetSumSecondMomentCollision
 
 set_option linter.style.longLine false

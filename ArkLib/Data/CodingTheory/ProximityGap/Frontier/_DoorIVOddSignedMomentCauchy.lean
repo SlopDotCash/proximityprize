@@ -5,7 +5,7 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 set_option autoImplicit false
 set_option linter.style.longLine false

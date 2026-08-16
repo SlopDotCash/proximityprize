@@ -23,7 +23,7 @@ Axiom-clean: polynomial-coefficient algebra only. No `sorry`, no extra axioms.
 -/
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

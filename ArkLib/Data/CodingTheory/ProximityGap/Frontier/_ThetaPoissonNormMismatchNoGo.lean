@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # MECHANISM 3 (exact ideal-lattice theta/Poisson) is a NO-GO: it splits into the existing

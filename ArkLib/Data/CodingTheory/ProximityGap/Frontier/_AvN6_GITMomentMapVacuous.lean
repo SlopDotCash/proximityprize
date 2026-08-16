@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
 
 /-!
 # N6 — the GIT / stability / moment-map route REDUCES (symmetric-average) for the house (#444)

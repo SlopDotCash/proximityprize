@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # The p-adic Hasse filtration: the char-`p` wraparound is a sparse-polynomial root (#444)

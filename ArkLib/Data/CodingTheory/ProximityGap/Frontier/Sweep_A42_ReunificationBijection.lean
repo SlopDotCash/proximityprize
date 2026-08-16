@@ -29,7 +29,7 @@ Axiom-clean: field arithmetic only. No `sorry`, no extra axioms.
 -/
 import Mathlib.Algebra.Field.Basic
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

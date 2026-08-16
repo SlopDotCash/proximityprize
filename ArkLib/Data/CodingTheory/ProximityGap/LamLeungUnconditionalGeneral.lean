@@ -34,7 +34,9 @@ Authors: ArkLib Contributors
 
   Self-contained; imports only Mathlib.  Closes with `#print axioms`.
 -/
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 import Mathlib.RingTheory.PowerBasis
 import Mathlib.FieldTheory.Minpoly.Field
 import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed

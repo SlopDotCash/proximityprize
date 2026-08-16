@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Algebra.Ring.Parity
 import Mathlib.Data.Finset.Image
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Monomial domain-root spectrum

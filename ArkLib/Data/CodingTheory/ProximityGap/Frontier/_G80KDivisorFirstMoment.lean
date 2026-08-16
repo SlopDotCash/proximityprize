@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.NumberTheory.Divisors
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

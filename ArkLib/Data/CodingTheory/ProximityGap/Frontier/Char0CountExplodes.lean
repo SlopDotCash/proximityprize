@@ -46,7 +46,6 @@ All facts below are pure `Nat` arithmetic discharged by `decide` — the axiom a
 they depend on NO axioms at all (strictly cleaner than the required
 `[propext, Classical.choice, Quot.sound]`; verified by the `#print axioms` lines below).
 -/
-import Mathlib.Tactic
 
 namespace ProximityGap.Char0CountBound
 

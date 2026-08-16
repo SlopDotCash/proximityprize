@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.Int.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

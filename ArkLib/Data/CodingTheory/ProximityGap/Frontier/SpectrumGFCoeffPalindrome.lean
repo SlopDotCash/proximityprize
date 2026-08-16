@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
-import Mathlib.Tactic
 
 /-!
 # The char-0 subset-sum spectrum COEFFICIENT palindrome `N_r = N_{2m−r}` (#444)

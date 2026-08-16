@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # H5 (Schur–Siegel–Smyth trace / auxiliary-function LP): the power-sum trace LP bottoms out AT

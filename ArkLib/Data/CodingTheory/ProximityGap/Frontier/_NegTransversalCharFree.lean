@@ -1,4 +1,4 @@
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 
 set_option linter.style.longLine false
 set_option autoImplicit false

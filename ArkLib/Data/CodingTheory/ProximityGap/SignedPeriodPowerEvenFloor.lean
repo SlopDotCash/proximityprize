@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerCount
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 set_option linter.unusedSectionVars false
 
 /-!

@@ -6,7 +6,7 @@ distinct-gamma union)
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Lattice.Fold
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 set_option linter.style.longLine false
 set_option autoImplicit false

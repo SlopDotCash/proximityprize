@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Divisors
-import Mathlib.Tactic
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false

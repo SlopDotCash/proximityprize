@@ -5,7 +5,6 @@ Authors: Sol
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyEssential
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProveAssemblyConcreteDC
 

@@ -74,7 +74,9 @@ import Mathlib.RingTheory.RootsOfUnity.Complex
 import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 import Mathlib.LinearAlgebra.LinearIndependent.Defs
 import Mathlib.Data.Nat.Totient
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 open Polynomial
 

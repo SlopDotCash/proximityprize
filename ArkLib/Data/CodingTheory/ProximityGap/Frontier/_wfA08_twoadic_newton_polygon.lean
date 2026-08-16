@@ -5,7 +5,9 @@ Authors: ArkLib Contributors (wf-A08)
 -/
 import Mathlib.NumberTheory.Padics.PadicVal.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

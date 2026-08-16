@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 /-!
 # G76: every higher distinct-generator moment misses the unique-root stratum

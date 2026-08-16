@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Expand
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # The antipodal even/odd descent for the ragged residual (#407)

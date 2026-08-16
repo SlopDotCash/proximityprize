@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.List.Perm.Subperm
 import Mathlib.Data.Fin.Embedding
 import Mathlib.Data.Fin.Tuple.Basic
-import Mathlib.Tactic
 
 /-!
 # G84: sublist witnesses extract value-preserving tuple slots

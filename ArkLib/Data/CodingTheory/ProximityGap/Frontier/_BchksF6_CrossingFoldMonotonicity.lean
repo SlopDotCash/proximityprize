@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BchksF6_ExplicitDeltaStarLower
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
 
 /-!
 # BCHKS F6 — the crossing-fold MONOTONICITY constraint (#444)

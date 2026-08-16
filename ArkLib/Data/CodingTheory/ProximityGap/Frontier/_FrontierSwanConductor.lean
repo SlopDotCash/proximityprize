@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 /-!
 # D-N7 (Katz SWAN side) — the explicit Swan conductor of `[n]_*L_ψ` and the √n-vs-√p verdict (#444)

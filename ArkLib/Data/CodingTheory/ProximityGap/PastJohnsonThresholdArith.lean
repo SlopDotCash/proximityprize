@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Log.Base
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 set_option linter.style.longLine false
 

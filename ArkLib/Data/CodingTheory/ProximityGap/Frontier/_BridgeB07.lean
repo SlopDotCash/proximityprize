@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Pi
-import Mathlib.Tactic
 
 /-!
 # Bridge B07 — target E6: the EXACT FFT-graded dyadic recursion (#444)

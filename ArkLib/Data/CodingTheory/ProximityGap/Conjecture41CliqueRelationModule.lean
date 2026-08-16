@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 21 (Issue #232) — the clique RELATION MODULE characterized: every dependency factors

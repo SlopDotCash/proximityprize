@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # wf-S6 — Deligne/Weil-II on the CONFIGURATION variety: the `d`-FREE toric Betti envelope (#444)

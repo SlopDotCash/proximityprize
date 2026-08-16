@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Int.GCD
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # APPROACH N10 — the **Shaw invariant** `S_r`: a Galois-descent rank that exactly controls `W_r` (#444)

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Expand
-import Mathlib.Tactic
 
 /-!
 # The ragged residual's `P` is `O(k)`-sparse, and what Mason–Stothers can (and cannot) do (#407)

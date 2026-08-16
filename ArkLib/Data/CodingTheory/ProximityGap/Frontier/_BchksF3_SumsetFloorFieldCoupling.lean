@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BchksF3_RetargetedReduction
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # BCHKS F3 — the Sumset-Extremality floor's `|F|`-COUPLING constraint (#444)

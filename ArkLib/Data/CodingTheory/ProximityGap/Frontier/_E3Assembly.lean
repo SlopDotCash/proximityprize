@@ -1,7 +1,10 @@
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3StrataCount
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3Shape21Scratch
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3SubsetCount
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 set_option linter.style.longLine false
 set_option autoImplicit false

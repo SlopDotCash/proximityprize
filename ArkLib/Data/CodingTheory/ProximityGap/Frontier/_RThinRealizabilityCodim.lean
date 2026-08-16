@@ -23,7 +23,7 @@ NOT `k`-governed).  This file pins the realizability structure exactly and names
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 
 set_option autoImplicit false
 

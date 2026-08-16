@@ -5,7 +5,7 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 set_option linter.style.longLine false

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # Negative association ⟹ sub-Gaussian (Wick) moments ⟹ the open core (#444)

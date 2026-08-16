@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Complex.Basic
-import Mathlib.Tactic
 
 /-!
 # Door IV: the period field's SIGNED off-diagonal 4-point connected cumulant VANISHES — the field is

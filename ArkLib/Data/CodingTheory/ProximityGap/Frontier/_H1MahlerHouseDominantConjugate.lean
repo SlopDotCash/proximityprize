@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.MeanInequalities
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
 
 /-!
 # H1 (Mahler-exact / dominant-conjugate): the Mahler measure CANNOT recover the house (#444)

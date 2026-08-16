@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # T20 (G4-5) — Galois-equivariant covering of the large spectrum with a 2-power floor: REFUTED + REDUCES-TO-WALL (#444)

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # R319 (#466): small-center injectivity is a four-term relation exclusion

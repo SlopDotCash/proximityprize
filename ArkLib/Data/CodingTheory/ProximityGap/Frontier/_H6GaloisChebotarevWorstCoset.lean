@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # HOUSE-ATTACK H6 (Galois / Frobenius / Chebotarev worst-coset). The worst frequency `b*` is

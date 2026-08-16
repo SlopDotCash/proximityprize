@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Tactic
 
 /-!
 # The dyadic Gauss-period tower recursion and its parallelogram law (#407)

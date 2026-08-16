@@ -7,7 +7,8 @@ import Mathlib.Data.Fintype.Powerset
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.RingTheory.RootsOfUnity.Minpoly
 import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Loop 50 (O11, DISPROOF CORE) — a *proven* super-exponential lower bound on the subset-sumset of a

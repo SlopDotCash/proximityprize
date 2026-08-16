@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Multiset.UnionInter
-import Mathlib.Tactic
 
 /-!
 # G83M: canonical maximal common-multiset cancellation

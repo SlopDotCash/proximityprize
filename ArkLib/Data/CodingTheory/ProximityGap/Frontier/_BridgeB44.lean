@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Positivity
 
 /-!
 # Bridge B44 — `fhat` odd-vanishing as a character sum over `μ_{2n}` (target E6, #444)

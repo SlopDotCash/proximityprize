@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetConjecture
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupSumsetFactorWitness
 

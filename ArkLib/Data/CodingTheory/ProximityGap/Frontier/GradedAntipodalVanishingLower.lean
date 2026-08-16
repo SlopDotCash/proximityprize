@@ -10,7 +10,7 @@ import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.AntipodalVanishingCountLower
 
 /-!

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
 
 /-!
 # The Kambiré subset-sum construction is not extremal (#407)

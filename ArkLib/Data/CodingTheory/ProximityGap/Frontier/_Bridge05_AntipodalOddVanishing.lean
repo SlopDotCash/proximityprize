@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
 
 /-!
 # Bridge B05/B35 — the antipodal odd-vanishing mechanism (toward E6, #444)

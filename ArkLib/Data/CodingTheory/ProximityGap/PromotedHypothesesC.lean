@@ -1,5 +1,4 @@
 import Mathlib.LinearAlgebra.Lagrange
-import Mathlib.Tactic
 
 open Polynomial
 

@@ -6,7 +6,10 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The char-0 LEADING term obeys the Gaussian-tail bound — RIGOROUSLY (#444, conj #3 corrected)

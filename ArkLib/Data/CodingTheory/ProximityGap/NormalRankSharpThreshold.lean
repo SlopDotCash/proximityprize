@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.RingDivision
 import Mathlib.RingTheory.Coprime.Lemmas
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
 
 /-!
 # Issue #232 — the sharp rank threshold for error-locator normal spaces (2026/858 Thm 26 + Rem 27)

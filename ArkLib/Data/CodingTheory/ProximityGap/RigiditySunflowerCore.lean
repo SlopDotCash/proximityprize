@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Degree.Operations
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 
 /-!
 # Round 27 (Issue #232) — THE SUNFLOWER-CORE REDUCTION: shared vertices divide out, window intact

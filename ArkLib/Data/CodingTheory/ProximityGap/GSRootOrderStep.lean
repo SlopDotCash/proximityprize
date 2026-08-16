@@ -10,7 +10,7 @@ Self-contained, Mathlib-only.
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 open Polynomial
 

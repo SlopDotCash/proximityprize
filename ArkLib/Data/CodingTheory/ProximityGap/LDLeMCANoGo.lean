@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.InformationTheory.Hamming
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
 
 /-!
 # A structural NO-GO: the list-decoding face is WEAKER than the MCA face (#407)

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.InformationTheory.Hamming
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Tactic
 
 /-!
 Round 13b (issue #232): the LINEAR-CODE collapse of the ball-intersection second moment (the #82

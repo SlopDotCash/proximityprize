@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 import Mathlib.GroupTheory.Perm.Sign
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # F5 — The Fermat–Hodge isotypic decomposition of the correlation cohomology: the off-diagonal lives

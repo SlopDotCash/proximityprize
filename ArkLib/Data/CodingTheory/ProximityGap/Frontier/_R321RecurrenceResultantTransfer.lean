@@ -1,5 +1,4 @@
 import Mathlib.RingTheory.Polynomial.Resultant.Basic
-import Mathlib.Tactic
 
 /-! R321: resultant transport along recurrence-class multipliers.
 

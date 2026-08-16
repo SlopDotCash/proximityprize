@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.Chebyshev
-import Mathlib.Tactic
 
 set_option linter.style.longLine false
 

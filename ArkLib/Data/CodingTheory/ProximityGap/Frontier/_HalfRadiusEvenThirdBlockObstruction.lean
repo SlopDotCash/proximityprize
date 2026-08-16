@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.LinearAlgebra.LinearIndependent.Basic
-import Mathlib.Tactic
 
 /-!
 # Even half-radius third-block obstruction

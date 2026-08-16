@@ -5,7 +5,7 @@ Authors: ArkLib Contributors (TASK A1-pairwise)
 -/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false

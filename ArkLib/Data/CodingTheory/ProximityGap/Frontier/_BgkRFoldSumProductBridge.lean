@@ -6,7 +6,9 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # The r-fold sum-product bridge `|G|^{2r} ≤ |Σ^r G| · E_r(G)` (#444 attack: multiplicative-energy transfer)

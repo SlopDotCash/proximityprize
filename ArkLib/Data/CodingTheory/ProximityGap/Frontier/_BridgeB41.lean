@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Order.Group.Nat
-import Mathlib.Tactic
 
 /-!
 # Bridge B41 — `#bad` support max depth `m ≤ k` via the FFT 2-adic descent (toward E6, #444)

@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Field.ZMod
 import Mathlib.Data.Fin.VecNotation
-import Mathlib.Tactic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.NormNum
 
 /-!
 # A finite countermodel to the abstract rate-quarter cocircuit count

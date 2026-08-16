@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentAvgLower
 import Mathlib.Data.Fintype.CardEmbedding
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 set_option linter.style.longLine false
 set_option autoImplicit false

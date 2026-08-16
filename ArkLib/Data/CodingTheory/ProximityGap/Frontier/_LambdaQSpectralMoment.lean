@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Tactic
+import Mathlib.Tactic.Positivity
 
 /-!
 # The Λ(2k) face = SPECTRAL MOMENT of the generalized Paley graph (#444)

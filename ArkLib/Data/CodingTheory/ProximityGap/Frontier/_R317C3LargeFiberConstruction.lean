@@ -5,7 +5,8 @@ Authors: ArkLib Contributors
 -/
 
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # R317 (#466): constructive algebra for the large `c = 3` relation-web fibers

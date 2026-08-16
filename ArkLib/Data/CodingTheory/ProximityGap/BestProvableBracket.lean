@@ -37,7 +37,8 @@ comparison arithmetic* plus a checked non-vacuity witness.
 
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 open Nat
 
