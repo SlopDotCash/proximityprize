@@ -1,12 +1,14 @@
-# δ* / #466 — THE ONE-QUESTION MAP (SYZ67 canonical consolidation, 2026-07-11)
+# δ* — THE ONE-QUESTION MAP (historical #466 / standalone #1; SYZ67, 2026-07-11)
 
 **This is the single entry point** for a future prover (human or agent) picking up the rate-`1/2`
-strip route of the Proximity Prize (#466). It states, in final coordinates, the one question the
+strip route of the Proximity Prize (historical #466, now standalone issue #1). It states, in final
+coordinates, the one question the
 whole SYZ arc has converged to, names the Lean object for every face, gives their exact logical
 relations, records the classical surrounding theory that is now **proved** (not assumed), the
 empirical status of each face, and the precise sense in which the faces are **one** question.
 
-Everything below is in-tree on `research/proximity-prize` (fork tip `f71099aa6`, SYZ66). The
+Everything below is in-tree on canonical `elizaOS/proximityprize` `main`; `f71099aa6` is the
+historical SYZ66 snapshot recorded by this map. The
 production δ* conjecture (`mcaDeltaStar` at rate `1/2` equals the strip value ≈ `1/3`) remains
 **OPEN / ON-BGK**. Nothing here is a closure. Read the parent
 [`CLAUDE.md`](../../ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md) build/honesty rules and
@@ -184,7 +186,8 @@ All three faces are readings of **the syzygy / level-set structure of the witnes
 The unity, face by face:
 
 - **F1** is the *degree* structure of the rank-2 syzygy module of `(W_AB,W_AC,W_BC)` restricted to
-  its `μ_n` level sets. The whole classical column is proved (§2); the residual `δ₂−δ₁ ≤ 1` is,
+  its `μ_n` level sets. The whole classical column is proved (§2); the residual near-balance
+  `ι ≤ 1` (parity-corrected gap `≤ 2` for even total degree and `{1,3}` for odd total degree) is,
   via SYZ49, the additive-log-phase level-set coincidence bound — **BGK-literal**.
 - **F2** asks whether a *syzygy among the witness-support functionals `φ`* (forced once `≥6` bad
   scalars appear) keeps the count in budget. The functionals are the `Sᵢ`-anchored doubled
@@ -254,5 +257,5 @@ half, the SYZ49 BGK identification, the SYZ58 rate-`1/4` curve-event scope barri
 
 ---
 
-*Cite this map as the primary entry point; cite `deltastar-DOSSIER-v3-2026-07-01.md` §6 (SYZ54 +
-SYZ67 addenda) for the surrounding narrative and the CORE Paley/BGK line.*
+*For current standalone status, start with `deltastar-DOSSIER-v4-2026-08-16.md`; cite this map for
+the SYZ67 one-question consolidation and dossier v3 §6 for the surrounding historical narrative.*

@@ -2324,7 +2324,7 @@
      "name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.nonzeroNormalizedSqQuarterMGFResidual_of_topRank_quotient_residual_tail",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
-     "line": 152,
+     "line": 153,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hLift",
@@ -2340,7 +2340,7 @@
      "name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.nonzeroNormalizedSqQuarterMGFResidual_of_topRank_natural_quotient_residual_tail",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
-     "line": 179,
+     "line": 180,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hG",
@@ -5257,7 +5257,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.residualOrbitCarrier",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
-   "line": 48,
+   "line": 49,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5265,7 +5265,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.QuotientResidualGridTail",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
-   "line": 55,
+   "line": 56,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5273,7 +5273,7 @@
    "fq_name": "ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.RawResidualTailLeCosetScale",
    "kind": "def",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean",
-   "line": 62,
+   "line": 63,
    "reason": "name does not end in `Residual`"
   },
   {

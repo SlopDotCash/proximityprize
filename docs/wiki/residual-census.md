@@ -12,7 +12,8 @@ the tree contains a concrete theorem of a negated residual instance.
 The named-residual convention is a modularity pattern, not an incompleteness marker:
 always check this census before treating a `*Residual` name as open proof debt.
 
-> **Campaign addendum — regenerated 2026-07-11 (SYZ54).** The strict census contains 108 residuals:
+> **Campaign addendum — historical snapshot (2026-07-11, SYZ54).** At that commit, the strict
+> census contained 108 residuals:
 > 62 open, 45 discharged, and one refuted — **unchanged** from the 2026-07-10 (#506) snapshot. The
 > SYZ40–SYZ53 rate-1/2 strip arc added **no new strict `*Residual` declarations**: its open inputs
 > are carried as named `Prop`/`structure` hypotheses (`UniformSylvesterInjective`,
@@ -27,16 +28,19 @@ always check this census before treating a `*Residual` name as open proof debt.
 > target (non-BGK spread branch), and (b) the codex `p`-scaling sweep shows the SYZ52 `ι=2`
 > interior anomaly is a small-characteristic artifact that collapses to the generic pencil floor by
 > `p* ∈ (197, 1009)` and stays flat through `2³¹`, so the δ*=1/3 conjecture SURVIVES. Neither closes
-> CORE. See the dossier §6 SYZ54 addendum and `deltastar-466-syz53-*-2026-07-11.md`. Preserve this
-> addendum when regenerating the file.
+> CORE. See the dossier v3 §6 SYZ54 addendum and `deltastar-466-syz53-*-2026-07-11.md`. This block
+> is historical evidence, not the current total; preserve it when regenerating the file.
 
-> **Regeneration note — 2026-08-15 (at `a768c10bb`).** Relative to the previously committed
-> 2026-07-11 ledger: strict residuals 108 → 117 (open 62 → 69, discharged 45 → 47, refuted
-> 1 → 1); residual-like near misses 76 → 79. The additions land with the frontier work merged
-> since that snapshot (including the 2026-08-15 `_BGK*` batch) and are enumerated in the ledger
-> body and `scripts/residual_census.json`. Mechanical script output only; the campaign addendum
-> above is preserved verbatim per its own instruction, and its figures describe the 2026-07-11
-> tree as written.
+> **Campaign addendum — current audit (2026-08-16 at `b72890393`).** The regenerated strict
+> census contains **117 residuals: 69 open, 47 discharged, and one refuted**, plus 79 residual-like
+> near misses. Those are the current totals in the summary and JSON below. Relative to the
+> historical 2026-07-11 snapshot, the strict totals changed 108 → 117, open 62 → 69, discharged
+> 45 → 47, refuted 1 → 1, and near misses 76 → 79. The SYZ70/SYZ71 and all-depth cyclic-floor
+> additions introduce no new strict `*Residual` declaration. This syntactic census still does not
+> count every theorem-facing named `Prop` or structure field: in particular
+> `UniformSylvesterInjective`, `StripSyzygyControlledCeiling`, and `hrank` remain open production
+> obligations outside the strict suffix convention. The production δ* conjecture therefore
+> remains **OPEN / ON-BGK**. Both campaign addenda are deliberately preserved by regeneration.
 
 ## Summary
 
@@ -175,9 +179,9 @@ proof debt and naming drift.
 - `ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung.ChiSubfamilyResidualVanishesOff` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R19ExplicitCharacterRung.lean:128` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.R234RankSumResidualMGFConsumer.residualNonzeroFreqs` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean:41` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.R234RankSumResidualMGFConsumer.ResidualNormalizedSqGridTail` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean:49` — `def`; name does not end in `Residual`
-- `ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.residualOrbitCarrier` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean:48` — `def`; name does not end in `Residual`
-- `ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.QuotientResidualGridTail` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean:55` — `def`; name does not end in `Residual`
-- `ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.RawResidualTailLeCosetScale` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean:62` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.residualOrbitCarrier` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean:49` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.QuotientResidualGridTail` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean:56` — `def`; name does not end in `Residual`
+- `ArkLib.ProximityGap.Frontier.R235QuotientResidualTailLift.RawResidualTailLeCosetScale` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R235QuotientResidualTailLift.lean:63` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.R26ResidualL2CrossIdentity.ResidualQuarticWickAt` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R26ResidualL2CrossIdentity.lean:430` — `def`; name does not end in `Residual`
 - `ArkLib.ProximityGap.Frontier.R393FourFiberPrimitiveDecomposition.swapResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R393FourFiberPrimitiveDecomposition.lean:40` — `def`; result type is `Equiv.Perm (Fin 4)`, not `Prop`
 - `ArkLib.ProximityGap.Frontier.RudnevPointPlaneStall.stallResidual` — `ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RudnevDilutionFixedSavingStall.lean:211` — `def`; result type is `ℝ`, not `Prop`

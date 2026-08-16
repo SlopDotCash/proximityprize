@@ -1,10 +1,13 @@
 # The δ* Programme
 
-> **Branch notice (2026-07-10).** The complete research corpus lives on
-> `research/proximity-prize`, not `main` (see #499 and `RESEARCH_BRANCH.md`). Campaign changes must
-> land on that branch and must never be merged wholesale into `main`. Coordination uses fork issue
-> #466, focused issues #505–#507, discussion #508, and the
-> [δ* project board](https://github.com/users/lalalune/projects/1).
+> **Standalone repository notice (2026-08-16).** The complete research corpus now lives in
+> [`elizaOS/proximityprize`](https://github.com/elizaOS/proximityprize), with `main` as the
+> integration branch. Develop on a focused feature branch based on `origin/main`; do not route new
+> work to the retired `lalalune/ArkLib` `research/proximity-prize` branch. Current coordination is
+> issue [#1](https://github.com/elizaOS/proximityprize/issues/1) for the mathematical CORE,
+> [#2](https://github.com/elizaOS/proximityprize/issues/2) for cleanup/upstream carve-out,
+> [#3](https://github.com/elizaOS/proximityprize/issues/3) for state and census maintenance, and
+> [#4](https://github.com/elizaOS/proximityprize/issues/4) for the completion gate.
 
 The mutual-correlated-agreement threshold programme: pin
 `δ*(C, ε*) = sup{δ : ε_mca(C, δ) ≤ ε*}` for explicit smooth-domain Reed–Solomon
@@ -15,6 +18,8 @@ codes ([ABF26] Definition 4.3), with matching machine-checked bounds.
 | What | Where |
 |---|---|
 | Agent guide (build recipe, honesty rules, pitfalls, state of knowledge) | [`ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md`](../../ArkLib/Data/CodingTheory/ProximityGap/CLAUDE.md) |
+| Current standalone completion ledger and post-v3 results | [`docs/kb/deltastar-DOSSIER-v4-2026-08-16.md`](../kb/deltastar-DOSSIER-v4-2026-08-16.md) |
+| Historical full campaign dossier through 2026-07-11 | [`docs/kb/deltastar-DOSSIER-v3-2026-07-01.md`](../kb/deltastar-DOSSIER-v3-2026-07-01.md) |
 | Compiled campaign knowledge (#357, by theme) | [`docs/kb/deltastar-357-compiled-knowledge.md`](../kb/deltastar-357-compiled-knowledge.md) |
 | Research map (papers + adjacent math + ranked attack vectors) | [`docs/kb/deltastar-research-map.md`](../kb/deltastar-research-map.md) |
 | #444 no-larp companion map (25 directions/status tags) | [`ArkLib/Data/CodingTheory/ProximityGap/docs/kb/deltastar-444-complete-map-25x25-2026-06-17.md`](../../ArkLib/Data/CodingTheory/ProximityGap/docs/kb/deltastar-444-complete-map-25x25-2026-06-17.md) |
@@ -39,15 +44,20 @@ Develop in a detached `/tmp` worktree with `.lake` symlinked to the main checkou
 
 ## The state in one paragraph
 
-The production conjecture remains open. The granularity ladder gives δ* in closed form on every
-band with `3(j−1)+k ≤ n`; exact finite-instance and deep-rung pins, the threshold ledger, the first
-explosion-band value, and production brackets are machine checked. The remaining production core
-has been reduced to square-root-scale cancellation for the adversarial smooth multiplicative
-subgroup (equivalently the deep DC-subtracted-energy/Paley-BGK face). The post-dossier G70 and G73
-results close flat-Dudley chaining and Shkredov–Vyugin multi-shift escape routes respectively.
-The signed cross-cell `relationAnomaly`/transversality route is the sole recorded off-BGK route not
-yet closed; it is tracked in #505. None of the existing toy pins, brackets, equivalences, or no-go
-theorems constitutes the production prize theorem.
+The production conjecture remains **OPEN / ON-BGK**. Exact finite-instance and deep-rung pins,
+threshold ledgers, brackets, reductions, and no-go theorems are machine checked, but none is the
+production theorem. The analytic face still requires square-root-scale cancellation for the
+adversarial smooth multiplicative subgroup. The rate-`1/2` strip face is assembled conditionally
+and exposes three open surfaces: Hilbert–Burch near-balance `ι ≤ 1`, the dependent-stack bad-count
+ceiling, and the union-rank `hrank` obligation. PR #5 narrows the first surface by proving that the
+first balanced middle slot is linear-cofactor and by finding a reproducible on-domain occupant;
+it does not lift that occupant to an over-budget MCA stack. PR #7 proves an all-depth cyclic energy
+**lower** floor, and the G330 port proves an exact small spectrum-collision boundary away from
+`p = 17`; neither supplies the missing production upper/cancellation input. See dossier v4 for the
+claim-by-claim evidence ledger.
+
+Historical issue numbers in the sections below (#357, #371, #389, #444, #466, and #499–#509)
+identify the ArkLib campaign provenance. They are not current routing instructions.
 
 ## The boundary-band solution (2026-06-12, #371 rounds 64–75)
 

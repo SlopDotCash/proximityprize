@@ -1,13 +1,11 @@
 # ProximityGap / δ* campaign — agent guide
 
-This checkout is on the long-lived `research/proximity-prize` branch. It contains both the library
-formalization of the proximity-gap literature and the machine-checked δ* research campaign. The
-branch was split from `main` on 2026-07-09 (issue #499); never merge it into `main`. Sync library
-changes from `main` only with the corpus-preserving procedure in `RESEARCH_BRANCH.md`.
-
-On `main`, this directory must remain upstream-shaped: paper-keyed developments plus the
-protocol-facing API. Campaign work such as `Frontier/`, `DISPROOF_LOG.md`, the workbench, dossier,
-and KB notes belongs only on `research/proximity-prize`.
+The canonical repository is `elizaOS/proximityprize`, and its integration branch is `main`.
+The standalone repository contains both the library formalization of the proximity-gap literature
+and the machine-checked δ* research campaign. Historical references to the former
+`lalalune/ArkLib` fork and its `research/proximity-prize` branch are provenance, not current
+routing instructions. Develop on a focused feature branch based on `origin/main`; never push
+feature work directly to `main`.
 
 ## Mandatory fast iteration
 
@@ -32,7 +30,7 @@ to this checkout. Never run concurrent unserialized Lake builds: they can corrup
 - Put refuted approaches and their reusable obstruction lemmas in `DISPROOF_LOG.md`.
 - Distinguish an exact production pin from toy-instance pins, brackets, reductions, and no-go maps.
 
-## Current verified frontier (2026-07-10)
+## Current verified frontier (2026-08-16)
 
 The production δ* conjecture is **open**. Exact finite-instance and deep-rung pins, the threshold
 ledger, many equivalent reductions, and a large axiom-clean no-go map are in-tree. They do not prove
@@ -61,10 +59,11 @@ dilation-coincidence identity, but its pointwise maximum remains the wall. The s
 must therefore control a signed/correlated cross-arc or equivalent weighted single-embedding
 functional; no such square-root-scale estimate is currently proved.
 
-Issue #505 is CLOSED (2026-07-10 evening): G88's orbit-class Parseval makes the DC-centered
+Historical ArkLib issue #505 is closed: G88's orbit-class Parseval makes the DC-centered
 numerator an exact PSD sum over distinct orbit classes with zero cross terms, and with G89 the
 first-incidence formulation is pinned to the wall in two independent coordinate systems. The
-successor CORE issue is #509: bound the orbit-class mass profile `(S₀, (S_γ)_γ)`. Equivalent
+successor CORE is tracked by standalone issue #1: bound the orbit-class mass profile
+`(S₀, (S_γ)_γ)`. Equivalent
 current forms of the missing certificate: signed control of `K+1` prefix deviations of `b·μ_n`
 (G97 reduction into the G80Z consumer) = near-uniform small-difference pair statistics of every
 dilate (codex G80Q terminal form). Chaining is closed metric-universally (G94), the GM/HM Gram
@@ -95,7 +94,9 @@ remains OPEN / ON-BGK. What a next agent must know:
   `R = W_BC/W_AC` on `μ_n` = the BGK additive-log-phase coincidence bound. The strip's non-BGK
   residual and the CORE character-sum wall are the **same object**; the strip cannot be closed
   BGK-free. SYZ44 + the swarm SYZ53 half-gap identity `ι = ⌊(δ₂−δ₁)/2⌋` reduce the non-BGK obligation
-  to the crisp Hilbert–Burch gap `δ₂−δ₁ ≤ 1` on the balanced interior — the object to target.
+  to Hilbert–Burch near-balance `ι ≤ 1`. In generator-gap language the parity-corrected target is
+  `δ₂−δ₁ ≤ 2` for even total degree and `δ₂−δ₁ ∈ {1,3}` for odd total degree. The earlier
+  parity-free `δ₂−δ₁ ≤ 1` statement is false and must not be reused.
 - **Small-field discipline (G84 / SYZ53 — MANDATORY).** SYZ52 measured an over-budget `mca`-bad count
   (`19 > n−1`) on band-realizable `ι=2` interior witnesses over `𝔽₂₉` that read as a δ*=1/3
   refutation candidate; SYZ53's exact per-prime `p`-sweep showed it **collapses** to the generic
@@ -104,11 +105,32 @@ remains OPEN / ON-BGK. What a next agent must know:
   run the p-sweep to `p ≫ p*` (`probe_syz53_p_scaling.py` exact-count tool). A small-field count is a
   saturation-regime analogue artifact, not evidence about production.
 
+## Verified standalone additions after dossier v3
+
+- **SYZ70/SYZ71 (PR #5): narrowing/refutation evidence, not closure.** The first arithmetically
+  possible balanced middle slot is `(6,6,6)` at product degree `7`, equivalently a linear-cofactor
+  syzygy. A reproducible `F_41`, `μ_20` probe occupies that on-domain slot. The Lean interface is
+  axiom-clean, while the explicit finite-field witness remains computational evidence. The open
+  gate is the lift to a genuine over-budget MCA stack; `UniformSylvesterInjective`, `ι ≤ 1`, and
+  production δ* remain open.
+- **All-depth cyclic energy floor (PR #7): exact lower bound.**
+  `REnergyCyclicFloorAllDepth.lean` lifts the depth-three cyclic-orbit floor to every depth at least
+  three. It supplies a stronger reusable lower floor, not an upper energy bound, characteristic
+  transfer, capacity theorem, or CORE closure.
+- **G330 spectrum boundary (ported ArkLib PR #541): exact collision certificate.**
+  `_G330SpectrumExactBoundary.lean` proves the order-eight weight-{1,3} spectrum has `40` values at
+  every prime `p ≡ 1 (mod 8)`, `p ≠ 17`; the exceptional collision prime is exactly `17`. The full
+  MCA census profile and its below-ceiling maximum remain per-prime executable evidence, not a
+  field-uniform production theorem.
+
+These additions do not change the production verdict: **OPEN / ON-BGK**.
+
 Start from:
 
+- `docs/kb/deltastar-DOSSIER-v4-2026-08-16.md` for the standalone control plane, the current
+  completion ledger, and the verified post-v3 results;
 - `docs/kb/deltastar-DOSSIER-v3-2026-07-01.md` for the consolidated theorem and no-go map
-  (its §6 addendum dated 2026-07-11 (SYZ54) is the latest frontier snapshot; the 2026-07-10 addendum
-  precedes it);
+  through the 2026-07-11 session-final addenda;
 - `DISPROOF_LOG.md` (tail first) for results after the dossier snapshot;
 - `docs/kb/deltastar-466-tool-shape-doctrine-v2-2026-07-10.md` for the positive specification
   of any CORE closure (the single missing non-Fourier certificate);
@@ -117,10 +139,9 @@ Start from:
 - `Frontier/_DeltaStarDefinitive.lean` for the final threshold-facing reduction;
 - `docs/wiki/deltastar-programme.md` and `docs/wiki/residual-census.md` for programme state.
 
-GitHub control plane (fork `lalalune/ArkLib`): canonical tracker #466; live CORE issue #509
-(orbit-class mass profile; #505 closed 2026-07-10); state/census maintenance #506; completion
-audit #507; branch refactor #499; discussion #508;
-project `https://github.com/users/lalalune/projects/1`.
+GitHub control plane (`elizaOS/proximityprize`): production/core tracker #1; cleanup and
+upstream-carveout ledger #2; state/census maintenance #3; completion gate #4. Historical ArkLib
+issues #466/#499/#505–#509 and the former project board are provenance links only.
 
 Naming note (#506): both swarms minted G-numbers concurrently on 2026-07-10 — G89/G90/G91/G94/G95
 each denote two unrelated results. FILE NAMES are the primary key; cite files, not bare G-numbers.
