@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 Atk_R6 : Bezout-on-the-relation-variety conjecture (R6) — structural no-go.
 
 R6 CLAIM: W_r = #F_p-points of the weight-2r relation variety V_r

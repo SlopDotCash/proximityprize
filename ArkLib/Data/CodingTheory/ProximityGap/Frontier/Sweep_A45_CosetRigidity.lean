@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # Char-0 coset rigidity: lacunary ⟹ binomial ⟹ coset (#444, capstone of the char-0 half)
 
 `Sweep_A44` proved a vanishing-sum subset of `μ_{2^μ}` is negation-closed (`T = −T`). This file

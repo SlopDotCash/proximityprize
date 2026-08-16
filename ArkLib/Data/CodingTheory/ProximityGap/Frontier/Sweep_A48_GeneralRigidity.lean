@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The assembled general char-0 dyadic rigidity (#444, capstone)
 
 Chains the three proven pieces — `Sweep_A46.multiscale_dvd`, `Sweep_A47.dyadic_telescope`, and

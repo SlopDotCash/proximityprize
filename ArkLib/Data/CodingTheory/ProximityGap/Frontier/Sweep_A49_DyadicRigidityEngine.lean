@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The dyadic rigidity engine: divisibility by `Xᵐ + 1` forces ±-pairing (#444, char-0 half)
 
 The unified prize conjecture is `defect = 0`: the char-`p` count of *non-coset* lacunary subsets of

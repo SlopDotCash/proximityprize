@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 Scratch: R-thin ragged-excess sharpened by the RESIDUE-FACTOR degree (#407, ESCAPE B1).
 
 Goal: replace `ragged_excess_le_degree` (excess <= deg P - core, VACUOUS since deg P ~ n)

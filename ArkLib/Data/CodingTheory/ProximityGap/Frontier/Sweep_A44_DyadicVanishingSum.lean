@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # Char-0 dyadic vanishing-sum rigidity, FULLY PROVEN (#444, the provable half of `defect = 0`)
 
 This lifts the rigidity engine (`Sweep_A49`, `coeff_symm_of_dvd_X_pow_add_one`) to the genuine

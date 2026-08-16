@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # Even/odd non-symmetric dyadic descent — the per-fibre agreement identity (#444, SEAM A)
 
 The heart of the even/odd descent for explicit 2-power Reed–Solomon window list-decoding

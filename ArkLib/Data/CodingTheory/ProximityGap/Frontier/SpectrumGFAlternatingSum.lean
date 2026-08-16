@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The char-0 subset-sum spectrum generating function at `x = -1`: the alternating sum (#444)
 
 `Sweep_A50_SpectrumGeneratingFunction` proved the closed-form generating-function identity

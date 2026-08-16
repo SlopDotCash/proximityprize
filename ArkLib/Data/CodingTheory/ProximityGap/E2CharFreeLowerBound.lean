@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
   A2-energy-transfer-r2  (char-p additive-energy transfer for μ_n at r=2)
 
   GOAL of this draft: pin, in Lean, the EXACT char-free content of the r=2 energy bound

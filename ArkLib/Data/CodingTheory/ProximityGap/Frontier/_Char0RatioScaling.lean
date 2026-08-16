@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The char-0 moment ratio R_r: exact anchor and the prize-scale scaling correction (#444)
 
 Fresh angle (i): the asymptotics of `R_r = E_char0(μ_n, r) / Wick`, `Wick = (2r−1)‼·n^r`.  This brick records

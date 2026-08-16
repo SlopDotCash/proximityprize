@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # `DeltaStarOP1BindingN16` — the binding `O_P = 1` at `n = 16`, machine-checked (#444)
 
 The far-line MCA binding direction `x^{n/2+1} + γ·x^{n/2-1}` on `μ_n` (the

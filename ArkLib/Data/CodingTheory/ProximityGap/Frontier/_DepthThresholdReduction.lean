@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The below-saddle depth threshold: onset ceiling is unconditional but vacuous at prize scale (#444)
 
 Target (B) of the round: can the unconditional good region `W_r = 0` (the onset ceiling) be *provably*
