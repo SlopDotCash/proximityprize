@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentBound
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-
 /-!
 # The rooted moment-method sup-norm bound on the worst subgroup period (#389)
 
@@ -26,6 +24,9 @@ moment bound (Bourgain–Shkredov wall).
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

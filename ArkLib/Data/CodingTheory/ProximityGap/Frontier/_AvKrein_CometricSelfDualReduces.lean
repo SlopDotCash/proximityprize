@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-
 /-!
 # The Krein / Q-polynomial cometric DUAL LP reduces to the primal Delsarte LP (#444)
 
@@ -31,6 +29,9 @@ The Lean content below is the load-bearing linear-algebra fact that `Q = P` forc
 forms to coincide pointwise; the *self-duality witness* (`Q = P` for the cyclotomic scheme) is the
 exact computation in the probe. Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvKreinCometric
 

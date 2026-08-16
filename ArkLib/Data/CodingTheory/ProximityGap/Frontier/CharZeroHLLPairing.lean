@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444 / #389)
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingLifting
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A `hLL` discharge in char 0: every zero-sum `2r`-tuple of `2^k`-th roots is antipodally paired (#444 / #389)
 
@@ -46,6 +43,10 @@ is the strongest the char-0 Lam–Leung substrate can give.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.NegationClosedWalk
 

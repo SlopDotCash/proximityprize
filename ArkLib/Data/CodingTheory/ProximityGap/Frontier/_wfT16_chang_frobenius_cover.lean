@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T16 (#444): Frobenius-refined Chang cover of the H-invariant large spectrum — REDUCES-TO-WALL
 
@@ -69,6 +66,10 @@ only genuinely new lever, has no empirical support (squaring breaks the peak).
 This file records the load-bearing inequalities axiom-clean. The Frobenius/dimension measurements are
 in `scripts/probes/rust/probe_wfT16_*.rs`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WfT16
 

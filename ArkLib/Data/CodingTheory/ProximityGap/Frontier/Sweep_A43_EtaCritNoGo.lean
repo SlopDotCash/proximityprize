@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Tactic
+
+/-!
 # Sweep_A43 — the η_crit no-go: the Action–Orbit / norm-bound route is vacuous at δ* (#444)
 
 The even/odd descent (`Sweep_A40`) reduces the binding window list at radius `δ = 1−ρ−η` to a
@@ -26,8 +29,6 @@ exponent is `⌈c/2⌉` because only the odd residues mod `2^μ` are Galois auto
 This is a **no-go brick** (the route is structurally insufficient), not a δ\* result. Pure
 arithmetic over `ℝ`; no `sorry`, no extra axioms.
 -/
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.Sweep_A43
 

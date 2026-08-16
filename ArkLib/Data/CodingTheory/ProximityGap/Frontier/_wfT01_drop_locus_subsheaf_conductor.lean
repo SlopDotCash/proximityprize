@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # T01 (drop-locus partial-signal sub-sheaf) REDUCES-TO-WALL F10 (#444)
 
@@ -97,6 +94,10 @@ phases (the open BGK/Paley core), realized only on the rank-`n` whole object.  S
 C2/A07/P3, now shown stable under arbitrary sub-object splitting.  Not a refutation of the prize
 bound (the period IS `√`-controlled empirically); a precise no-go for the sub-sheaf-isolation method.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.T01DropLocusSubsheafConductor
 

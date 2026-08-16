@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.GWInterpolation
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Degree bookkeeping for the GW folded substitution — discharging BRICK-I's named residual (#93/#94)
 
@@ -27,6 +25,9 @@ computable inequality with no remaining open lemma.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial
 

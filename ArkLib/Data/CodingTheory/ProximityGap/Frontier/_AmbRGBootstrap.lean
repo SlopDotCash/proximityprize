@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A5-rg-bootstrap — a genuine (non-decoupling) RENORMALIZATION-GROUP flow on the period
 sup-norm over the self-similar 2-power tower `μ_2 ⊂ μ_4 ⊂ … ⊂ μ_n`, its exact joint
@@ -151,6 +147,11 @@ which the `Θ(n²)` ceiling forbids).
 * `moment_trap_no_strengthening` — the moment route's output exceeds `p·E_r` by *exactly* the slack in the
   `E_r` hypothesis (`≥ 0`) and nothing more: its entire strength IS the `rEnergy` bound it assumes.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Complex
 

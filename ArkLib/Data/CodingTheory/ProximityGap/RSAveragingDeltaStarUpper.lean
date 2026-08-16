@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 # Averaging crossover as an explicit `delta*` UPPER bound for a parameterized RS-like family
 
 Ethereum Proximity Prize attack (ABF26 / ArkLib #232), ANGLE 3.
@@ -53,7 +55,6 @@ The CONCRETE instance discharges the lower bound directly by exhaustive computat
 unconditional and non-vacuous. We do not connect `delta*` to a protocol soundness definition;
 "`delta* < 1 - (k+t)/n`" is the informal reading of "list exceeds the budget at that radius".
 -/
-import Mathlib
 
 open Finset Polynomial
 

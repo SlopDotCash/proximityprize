@@ -9,9 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvRem_BesselMfold
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvF1_BesselMfoldSymbolic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvX_LamLeungTwoPowerAntipodalBalan
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `MutuallyDecoupled` (R1) — char-0 Wick made self-contained (#444, avenue CR)
 
@@ -57,6 +54,10 @@ bad-prime set); the remaining R2 symbolic-`d` bridge is the only residual left i
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.NegationClosedWalk

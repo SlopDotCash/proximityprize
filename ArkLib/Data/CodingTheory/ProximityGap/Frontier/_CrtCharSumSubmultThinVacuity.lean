@@ -9,9 +9,6 @@ import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.RingTheory.Coprime.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE OC-CRT (#466, Opus core, 2026-07-10): the character-sum WALL is
   SUB-MULTIPLICATIVE under a coprime CRT product of subgroups, and this lever is
@@ -82,6 +79,10 @@ factors" route as thin-blind (vacuous at `2^k`) and prize-lossy (at composite `n
 the exact structural reason: prime-power subgroups are the unique irreducibles of the
 coprime-CRT decomposition, and the adversarial subgroup `μ_{2^k}` is one of them.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.CrtCharSumSubmult
 

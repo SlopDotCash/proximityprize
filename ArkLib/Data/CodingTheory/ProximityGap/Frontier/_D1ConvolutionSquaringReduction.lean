@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D1 convolution-squaring bootstrap reduces to the Paley input
 
@@ -32,6 +30,9 @@ The Lean content below is deliberately abstract.  It records the load-bearing ar
 route: the map `α ↦ α^(2^d)` is order-reflecting on nonnegative reals, and the normalized
 concentration inequality `M / n ≤ A` is the same as the house bound `M ≤ n * A`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D1ConvolutionSquaring
 

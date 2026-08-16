@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A46_MultiScaleRigidity
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A47_DyadicPeriodicity
+
+/-!
 # The assembled general char-0 dyadic rigidity (#444, capstone)
 
 Chains the three proven pieces — `Sweep_A46.multiscale_dvd`, `Sweep_A47.dyadic_telescope`, and
@@ -23,8 +26,6 @@ over `ℚ`, which splits mod `p ≡ 1 mod 2^μ` — the defect, the open core.
 
 Axiom-clean. No `sorry`.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A46_MultiScaleRigidity
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A47_DyadicPeriodicity
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

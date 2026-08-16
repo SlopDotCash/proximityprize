@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
   Empirical list-size data point for the Ethereum Proximity Prize (ABF26, eprint 2026/680).
 
   We instantiate an explicit smooth-domain Reed-Solomon code and compute, by kernel `decide`
@@ -32,7 +34,6 @@ Authors: ArkLib Contributors
   Every theorem below is closed by kernel `decide`; the file imports only Mathlib and is axiom-clean
   (`#print axioms` lists only the standard `propext / Classical.choice / Quot.sound`).
 -/
-import Mathlib
 
 open Finset
 

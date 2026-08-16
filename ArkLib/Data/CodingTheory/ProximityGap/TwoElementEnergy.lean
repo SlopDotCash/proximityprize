@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLadder
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Exact `r`-fold additive energy of the two-element subgroup `μ_2 = {1,−1}` (#389)
 
@@ -27,6 +25,9 @@ This is the `n=2` base case of the negation-closed walk bound: `C(2r,r) ≤ (2r�
 in leading order (`C(2r,r) ~ 4^r/√(πr)`, `(2r−1)!!·2^r = (2r)!/r!`). It is an exact, irrefutable
 identity; the smallest case of the energy/AVERAGE side, NOT a δ\*/W4 advance. Axiom-clean.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

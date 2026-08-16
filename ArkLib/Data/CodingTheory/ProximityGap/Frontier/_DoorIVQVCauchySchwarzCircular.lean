@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import Mathlib.Algebra.Order.Chebyshev
 
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3 constraint: the Freedman QV route is CIRCULAR (#444)
 
@@ -42,6 +40,9 @@ validated increment envelope `Δ_i ∈ [0, log 2]` (`rho_i ∈ [√2, 2]` on PRO
 `probe_rho_increment_bounded.py`, `probe_rho_excess_growth.py`), inherited from `logTower_sq_le_log2_mul`.
 The circularity proved here is a pure arithmetic identity on top of that input — no new empirical claim.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVQVCauchySchwarzCircular
 

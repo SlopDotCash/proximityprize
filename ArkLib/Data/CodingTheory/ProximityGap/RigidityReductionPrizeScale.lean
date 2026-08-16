@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BadPrimeNormBound
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The rigidity reduction: char-`p` far-line incidence = char-`0` incidence at prize scale (#407)
 
@@ -81,6 +78,10 @@ exactly the project's modularity convention.
   `OrbitCountCrossingLaw.lean`, `MCAThresholdLedger.lean` (governing law),
   `DISPROOF_LOG.md` 2026-06-14 (the n=32 single-readout excess prime; r=1 vs r=k/2 dichotomy).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

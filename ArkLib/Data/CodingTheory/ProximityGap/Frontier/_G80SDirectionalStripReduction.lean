@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80VArcDilationCoincidenceReduction
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80S (#466, 2026-07-10): the DIRECTIONAL STRIP reduction — same-arc coincidence
   forces `(d−1)·v` into a centered strip of width `p/K`, so the arc certificate reduces to
@@ -52,6 +49,10 @@ harmless at the certificate's `polylog` tolerance. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

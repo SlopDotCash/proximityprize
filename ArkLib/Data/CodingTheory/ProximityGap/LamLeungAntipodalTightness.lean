@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Linarith
+
+/-!
 # Lam-Leung tightness for the `e_1 = 0` fiber: antipodal invariance of vanishing subsets
 
 This file proves a *conditional* upper bound (tightness) statement of "Lam-Leung" type
@@ -34,10 +39,6 @@ This is **not** an unconditional theorem and does NOT prove the prize: it isolat
 content (`hindep`) that holds over `ℂ`/full extensions and fails in finite fields. The
 re-grouping of the vanishing sum is the load-bearing combinatorial step and is fully verified.
 -/
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Linarith
 
 open Finset
 

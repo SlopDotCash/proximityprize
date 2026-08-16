@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The √q-completion baseline does NOT close the prize: the normalized gap is real (#444)
 
@@ -36,6 +33,10 @@ quantifies the open gap, it does not narrow it. No cancellation, anti-concentrat
 completion-saving content. CORE `Sh(M(μ_n)) = O(1)` stays OPEN; this is the precise statement that
 the proven upper rung leaves it open.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ProximityGap.Frontier.ConcreteBaselineInsufficiency
 

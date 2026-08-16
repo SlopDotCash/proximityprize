@@ -8,9 +8,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Fintype.Card
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst-frequency SET is COSET-CLOSED — the b-selector is coset-blind (#444)
 
@@ -49,6 +46,10 @@ This is a **refutation with mechanism** (a precisely-mapped resolution limit on 
 **not** a CORE/cancellation/anti-concentration claim: it does not bound `M(n)`; it shows the worst-`b`
 set carries exactly the symmetries `f` already has (coset + sign) and the probe shows nothing finer.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBCosetClosed
 

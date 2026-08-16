@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 # The char-0 moment ratio R_r: exact anchor and the prize-scale scaling correction (#444)
 
 Fresh angle (i): the asymptotics of `R_r = E_char0(μ_n, r) / Wick`, `Wick = (2r−1)‼·n^r`.  This brick records
@@ -27,7 +29,6 @@ license the prize-scale extrapolation, which this brick blocks.)
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 
 namespace ProximityGap.Char0RatioScaling
 

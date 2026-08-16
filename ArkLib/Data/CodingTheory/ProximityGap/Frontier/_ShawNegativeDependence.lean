@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (TASK S3-negdep)
 import Mathlib.Algebra.Order.Chebyshev
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Negative dependence ⟹ sub-Gaussian (Wick) moments — the prize TRUE-direction attack (#444, S3-negdep)
 
@@ -79,6 +76,10 @@ REDUCED bridge, per the project modularity convention.
 
 Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

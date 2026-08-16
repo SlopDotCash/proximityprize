@@ -7,8 +7,6 @@ import Mathlib.Data.Nat.Find
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Core A7 — the reduction is TIGHT: BCHKS 1.12 is NECESSARY, not just sufficient (#444)
 
@@ -74,6 +72,9 @@ and the file self-contained.
 
 Issue #444. Core A7 (necessity / tightness of the BCHKS reduction).
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.CoreA7
 

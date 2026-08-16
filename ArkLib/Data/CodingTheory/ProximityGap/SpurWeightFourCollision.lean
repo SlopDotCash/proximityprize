@@ -8,9 +8,6 @@ import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 import Mathlib.Algebra.Polynomial.FieldDivision
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The weight-4 spurious char-`p` collision: `Spur_2(17) ≥ 1` at `m = 4` (Issue #444)
 
@@ -77,6 +74,10 @@ appears). Thinness-essential in the same mild sense as the lower rungs: `Φ_16` 
 - Probes: `scripts/probes/probe_spur_weight4_collision.py`, `probe_spur_w4_verify17.py`,
   `probe_spur_w4_cofactors.py`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

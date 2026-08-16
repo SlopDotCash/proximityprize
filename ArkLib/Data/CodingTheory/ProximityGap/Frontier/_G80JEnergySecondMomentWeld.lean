@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80JDivisorSecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80LEnergyRefinedConsumer
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # G80J weld: divisor second moment to multiplicative energy
 
@@ -16,6 +13,10 @@ This file turns the pure-Nat second-moment estimate into the input expected by G
 subgroup interval consumer.  The result remains below the square-root-modulus fence and does
 not close the production proximity prize.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

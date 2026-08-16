@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # NOT-RAMANUJAN: the prize Gauss-period graph `Cay(F_q, μ_n)` is not Ramanujan (#407)
 
@@ -51,6 +49,9 @@ The numeric energy lower bound `A_r ≥ 4^r n^r (q−1) + n^{2r}` at a fixed `r`
 inequality (the project's named-input convention); everything above it is unconditional and
 axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

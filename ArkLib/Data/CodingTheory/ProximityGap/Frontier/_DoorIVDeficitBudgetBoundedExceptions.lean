@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetSublinearFloor
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: BOUNDED-EXCEPTION sharpening of the deficit-budget √-floor (#444)
 
@@ -48,6 +45,10 @@ does not supply.
 It does **NOT** lower-bound the true `M(μ_n)` (the open CORE) and asserts nothing about achievability.
 Lane-3 constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDeficitBudgetBoundedExceptions
 

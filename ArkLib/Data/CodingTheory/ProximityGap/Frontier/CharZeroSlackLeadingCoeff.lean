@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BchksF5_CharPAnomalyExpZero
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The char-`0` Lam-Leung SLACK leading coefficient is `C(r,2)·(2r−1)‼` — uniformly in `r` (#444)
 
@@ -65,6 +62,10 @@ UNCHANGED/OPEN. Probe: `scripts/probes/probe_slack_leading_coeff_law.py` (the la
 INDEPENDENT exact char-`0` energy computation from roots-of-unity sign-reduction at `r = 2,3,4`,
 NOT from the in-tree polynomials: leading `n^{r-1}` coefficients `3,45,630` reproduced). #444, wf-P2.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroSlackLeadingCoeff
 

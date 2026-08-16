@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Parseval floor: `M ≥ √n` UNCONDITIONALLY (axiom-clean).
 
@@ -30,6 +27,10 @@ This is the lower-bound brick the `M ≥ √n` task asks for. The `log m` factor
 floor `c√(n log m)` needs the resonance method (a separate, harder construction) and is NOT
 claimed here.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

@@ -7,9 +7,6 @@ import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroEnergyClosedForm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The **Shaw Depletion Theorem** — additive energy is depleted below Gaussian (#444, Shaw-A)
 
@@ -114,6 +111,10 @@ char-0 instance** and **reduces** the prize input to the single char-`p` transfe
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.ShawDepletion
 

@@ -7,9 +7,6 @@ import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.NumberTheory.Divisors
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80K (#466, 2026-07-10): the DIVISOR FIRST MOMENT — exact hyperbola identity
   `Σ_{y ≤ M} d(y) = Σ_{a ≤ M} ⌊M/a⌋` and the dyadic harmonic bound
@@ -31,6 +28,10 @@ Pure Nat; no subgroup content. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

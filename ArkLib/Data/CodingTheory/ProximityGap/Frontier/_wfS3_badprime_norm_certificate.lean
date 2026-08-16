@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.RingTheory.Int.Basic
 import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
-set_option linter.style.longLine false
-
 /-!
 # S3: the bad-prime / effective-Chebotarev certificate (#444, lane wf-S3)
 
@@ -66,6 +64,9 @@ density decays as `β` grows. See `probe_wfS3_badprime_crossover.rs` and the #44
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFS3
 

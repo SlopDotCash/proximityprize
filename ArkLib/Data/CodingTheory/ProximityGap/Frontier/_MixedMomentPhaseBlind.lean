@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 
-set_option autoImplicit false
-
 /-!
 # The b-summation phase-blindness dichotomy (#444)
 
@@ -33,6 +31,9 @@ above.
 The proof is a direct generalization of `SubgroupGaussSumMoment.subgroup_gaussSum_moment` (the diagonal
 `a = c = r` case `∑_b ‖η_b‖^{2r} = q·E_r`) to general `(a,c)`. Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

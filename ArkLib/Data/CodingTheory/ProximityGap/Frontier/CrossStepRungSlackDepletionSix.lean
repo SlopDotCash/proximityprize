@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungSlackDepletion
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E7ClosedForm
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The rung-slack/depletion-defect bridge at `r = 6` (#444)
 
@@ -23,6 +20,10 @@ bridge one more rung.
 Honest scope: this is still a finite char-`0` identity/reformulation.  It does not prove the `∀ r`
 M3CrossStepBound, does not transfer to char `p` at prize depth, and does not touch CORE.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.ShawDepletionSix
 

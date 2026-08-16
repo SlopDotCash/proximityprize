@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungFour
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The exact `r = 4` cross-mass closed form + its explicit positive step-DEFICIT (Issue #444)
 
@@ -61,6 +57,11 @@ CORE (`M(μ_n) ≤ C·√(n·log(p/n))`, the BGK/Paley √-cancellation) stays *
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

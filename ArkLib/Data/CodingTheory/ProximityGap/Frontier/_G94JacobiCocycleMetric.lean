@@ -7,9 +7,6 @@ import Mathlib.Analysis.Complex.Norm
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G94 (#466, 2026-07-10): the Jacobi-cocycle chaining metric — DETERMINISTIC-GAUGE
   COLLAPSE. The tool-shape doctrine's one surviving chaining shape was "generic chaining
@@ -103,6 +100,10 @@ canonical/quotient increment metric; A10 = tower-index coherence obstruction;
 `_DoorIVCocycleNoRandomEdge` = no dispersion edge over random phases. This lane = the
 metric-universal deterministic-gauge collapse + the cocycle-metric probe map. All disjoint.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.CodingTheory.ProximityGap.Frontier.G94JacobiCocycleMetric
 

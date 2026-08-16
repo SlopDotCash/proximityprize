@@ -6,8 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # §9 floor-bad localization: the disc-ramification set is DISJOINT from the floor-bad prime
 
@@ -53,6 +51,9 @@ analytic hypothesis, no probe, no conjecture is consumed. Probe receipt:
 - #464 dossier v2 §9 (bad-prime localization, the off-BGK floor lever) and §10 (numerics).
 - `_AvD2_LinnikWindowCountRequired.lean` (Linnik existence ⊬ divisibility — the floor closure trap).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FloorBadRamif
 

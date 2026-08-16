@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 Round 15 — the END-TO-END Sudan (multiplicity-1) list-size bound, self-contained over
 Mathlib only (no ArkLib imports; the three round-14 pipeline bricks are re-proved inline).
 
@@ -38,7 +40,6 @@ exactly by the two arithmetic conditions `n < Σ_{j<D}(D-(k-1)j)` and `D ≤ t`
 `1 - √ρ`).  No claim is made past Johnson.  Also not proved: any tightness/optimality of
 the `(D-1)/(k-1)` cap.
 -/
-import Mathlib
 
 set_option maxHeartbeats 1000000
 

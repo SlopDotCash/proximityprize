@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.SumTwoSquares
 import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The sum-of-two-squares even-valuation law for char-`p` spurious-collision norms (Issue #444)
 
@@ -75,6 +72,10 @@ the arithmetic it powers, not the field-theoretic factorization itself. CORE
 - `ShortRelationNormBase.lean` (the weight-2 base rung `N(1 − ζ_{2^m}) = Φ_{2^m}(1) = 2`).
 - KB `direct-supnorm-data-beta4-2026-06-15.md`. Mathlib `Nat.eq_sq_add_sq_iff` (Fermat–Christmas).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.SpurEvenValuationTwoSquares
 

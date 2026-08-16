@@ -7,8 +7,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Tactic
 
-set_option linter.unusedVariables false
-
 /-!
 # Close07b — E6 even-fold via 2-adic descent (Approach B: induction / folding) (#444)
 
@@ -55,6 +53,9 @@ domain is antipodal-closed). The arithmetic that the fold preserves values
 
 Issue #444. Target E6, Approach B (induction / 2-adic descent).
 -/
+
+set_option linter.unusedVariables false
+
 
 open Finset
 

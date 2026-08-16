@@ -5,6 +5,13 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R324KernelRelationLengthStratification
 
+/-!
+# _R349EndpointLengthExclusion
+
+Module docstring for `_R349EndpointLengthExclusion.lean`.
+-/
+
+
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
 

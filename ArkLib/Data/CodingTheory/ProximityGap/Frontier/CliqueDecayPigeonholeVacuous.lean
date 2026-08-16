@@ -7,8 +7,6 @@ import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The clique/Turán pigeonhole bound on the decay rate, and its asymptotic VACUITY (#444)
 
@@ -41,6 +39,9 @@ the two facts lalalune stated about the *count-only* face:
 the OPPOSITE of over-claiming capacity from it. It is a NON-moment, prime-independent hypergraph-Turán
 brick + an honest no-go; it does NOT close CORE, which stays open in the cyclotomic level-set structure.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.CliqueDecayPigeonhole
 

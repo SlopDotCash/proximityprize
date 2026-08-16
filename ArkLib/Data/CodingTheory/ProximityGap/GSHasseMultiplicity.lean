@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 Round 15, Angle 2 — the multiplicity-`m ≥ 2` Guruswami–Sudan FRONT END
 (Hasse/shift constraint counting), self-contained over Mathlib only.
 
@@ -38,7 +40,6 @@ brick), parameter optimization of `(D, m)` against `n, k` (the Johnson-radius ar
 any claim past the Johnson radius.  This file is exactly the `m ≥ 2` linear-algebra front end
 plus its root-order/factor payoff, verified end to end.
 -/
-import Mathlib
 
 set_option maxHeartbeats 1600000
 

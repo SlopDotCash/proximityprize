@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergyThreeExact
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Grounding AVENUE A: the `BalancedCount` carrier is CONCRETE, not just an abstract hypothesis (#444)
 
@@ -72,6 +69,10 @@ Paley-wall residual lives at depth `r ~ log m`, untouched here. CORE
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.Frontier.CharZeroEnergyThree

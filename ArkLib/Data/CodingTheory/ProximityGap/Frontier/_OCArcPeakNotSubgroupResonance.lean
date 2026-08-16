@@ -8,10 +8,6 @@ import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-
 /-!
 # LANE OC-ARCPEAK (#466, 2026-07-10): the arc max-vs-mean wall is NOT an algebraic
   subgroup resonance — a structural no-go closing the "sub-2-power resonance amplifies the
@@ -66,6 +62,11 @@ ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+
 
 open Finset
 

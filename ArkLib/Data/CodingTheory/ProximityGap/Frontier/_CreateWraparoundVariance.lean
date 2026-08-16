@@ -8,10 +8,6 @@ import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CREATE F2 — the **wraparound variance** `WrapVariance` over the prime-randomization family,
 its pairs-of-relations expansion, and the SUB-POISSON theorem that closes the prize by
@@ -105,6 +101,11 @@ Honest status: builds the variance object, the pairs expansion with the diagonal
 sub-Poisson mechanism, and the Chebyshev prize selection — all axiom-clean.  Relocates the prize to
 `OffDiagonalPairCancellation` (pair-equidistribution of Jacobi sums).  NOT a closure.  Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WraparoundVariance
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL_DiBenedettoEnergyGrounded
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The di-Benedetto near-Sidon BEAT assembly, modular (#444, AvT3a)
 
@@ -65,6 +62,10 @@ This is a clean MODULAR SOTA brick: two external/open inputs named, the proven c
 consumed, the beat exponent assembled. Axiom-clean (`propext, Classical.choice, Quot.sound`);
 no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)
 

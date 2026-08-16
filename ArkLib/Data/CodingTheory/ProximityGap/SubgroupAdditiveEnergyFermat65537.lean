@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyRepBound
 
-set_option linter.style.longLine false
-set_option maxRecDepth 4096
-
 /-!
 # Round 12 (Issue #232, ABF26) — prize-scale additive energy on F₆₅₅₃₇, and the refutation of a
 # `√q` crossover law.
@@ -38,6 +35,10 @@ Crossover orders `~8, ~16, ~32` for `q = 2^4+1, 2^8+1, 2^16+1` grow far **slower
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
+set_option maxRecDepth 4096
+
 
 open ArkLib.ProximityGap.AdditiveEnergyRepBound
 

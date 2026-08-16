@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyParity
-set_option linter.unusedSectionVars false
 
 /-!
 # The zero-sum count of a negation-closed `0`-free set is EVEN — at ALL orders, incl. ODD (#444)
@@ -53,6 +52,8 @@ probed prime, and `q·W_r − n^r` is `< 0` for ODD `r`, `> 0` for EVEN `r` (the
 
 Issue #444.
 -/
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

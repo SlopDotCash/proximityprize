@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteShawValueThinFloor
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The campaign reduction `CORE ⇔ Sh(n)=O(1)`, instantiated on a CONCRETE worst-period family (#444)
 
@@ -53,6 +49,11 @@ existence of an absolute `C` with `Sh_i ≤ C` uniformly, at `L_i = log(p_i/n_i)
 member of the family is, by `shawValue_floor_uniform`, already pinned `≥ 1/√(2L_i)` from below, so the
 open content is exactly the UNIFORM upper constant — the `√(n/2)`-wide corridor CORE must collapse.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.I031DilationOrbitReduction

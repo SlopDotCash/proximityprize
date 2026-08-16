@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option linter.style.longLine false
-
 /-!
 # The TWISTED monomial-graph annihilator-line energy is a COLLISION COUNT — `B`-blind (#444)
 
@@ -57,6 +55,9 @@ directions (energy `= p·n` EXACTLY at every prime) and `≤ 2n` for the rare fo
 Axiom-clean; pure additive-character orthogonality over an arbitrary phase map.  No field-size or
 regime hypotheses, no `μ_n`-specific structure (holds for any index `Finset` and any `φ`).  Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

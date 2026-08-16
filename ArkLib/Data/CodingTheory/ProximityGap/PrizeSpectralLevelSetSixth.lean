@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkovWick
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeSpectralLevelSetSharp
 
-set_option linter.style.longLine false
-
 /-!
 # The sixth-moment (cube-level) sharp spectral level-set upper bound (#444)
 
@@ -49,6 +47,9 @@ side of the same sixth moment).
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

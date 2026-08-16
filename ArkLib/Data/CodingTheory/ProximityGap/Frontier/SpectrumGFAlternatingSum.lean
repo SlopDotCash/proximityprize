@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
+import Mathlib.Data.Nat.Choose.Sum
+import Mathlib.Tactic
+
+/-!
 # The char-0 subset-sum spectrum generating function at `x = -1`: the alternating sum (#444)
 
 `Sweep_A50_SpectrumGeneratingFunction` proved the closed-form generating-function identity
@@ -42,9 +46,6 @@ CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN.
 
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
-import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

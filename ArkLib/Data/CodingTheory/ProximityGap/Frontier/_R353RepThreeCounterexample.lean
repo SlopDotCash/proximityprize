@@ -5,6 +5,13 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GaussianEnergyThreeRepThree
 
+/-!
+# _R353RepThreeCounterexample
+
+Module docstring for `_R353RepThreeCounterexample.lean`.
+-/
+
+
 set_option autoImplicit false
 
 namespace ArkLib.ProximityGap.Frontier.R353RepThreeCounterexample

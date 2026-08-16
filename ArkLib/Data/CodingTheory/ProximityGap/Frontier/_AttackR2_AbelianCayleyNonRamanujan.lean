@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Tactic
+
+/-!
 Attack R2: Periods as eigenvalues of a Hecke/adjacency operator; the Ramanujan bound.
 
 CLAIM (R2): (eta_b)_b is an eigenvector of a Hecke-type operator at the torus mu_n
@@ -19,9 +23,6 @@ FINDINGS (axiom-clean abstract skeleton; substantive facts from exact probes):
      Abelian Cayley graph of growing degree is NOT Ramanujan; sup = sqrt(n log(p/n)) = BGK wall.
      R2 REDUCES TO THE WALL: requested bound = open BGK ceiling minus its sqrt(log).
 -/
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
 
 namespace AtkR2
 open Finset

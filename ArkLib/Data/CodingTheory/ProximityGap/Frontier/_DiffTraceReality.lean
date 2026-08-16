@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NextDifferenceVariety
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the difference-variety first moment `DiffTrace` is **REAL** (#444)
 
@@ -76,6 +72,11 @@ the bridge `firstMoment_modulus_to_re` below.
 NO CORE / cancellation / completion / moment-saving / capacity claim: `DiffTrace` is NOT bounded
 here.  This is a structural reality lemma plus the consumer bridge from a modulus estimate.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceReality
 

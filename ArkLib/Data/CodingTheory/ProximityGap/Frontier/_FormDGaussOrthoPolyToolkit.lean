@@ -6,11 +6,12 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option autoImplicit false
-
 /-!
 # Scratch: char-0 Hermite recurrence `b_k² = n·k` from the Wick moments (#444, form D)
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.HermiteRecurrence
 

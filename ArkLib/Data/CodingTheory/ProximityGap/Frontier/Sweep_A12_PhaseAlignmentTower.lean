@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Analysis.InnerProductSpace.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Sweep A12 — Tower-recursive phase alignment as a NAMED STRUCTURAL lemma (#407, merged 389-T03)
 
@@ -69,6 +66,10 @@ Put
   (split residual ~1e-15, parallelogram residual ~1e-14, alignment cos>0.999 in/out of regime,
   persistence one level down, proxy faithfulness tabulated).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

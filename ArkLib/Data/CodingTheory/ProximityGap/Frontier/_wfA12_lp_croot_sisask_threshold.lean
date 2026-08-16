@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-A12 (#444): the L^q Croot–Sisask almost-period guarantee dies at `q* = β/(β-1) < 2` (OBSTRUCTION)
 
@@ -77,6 +74,10 @@ exactly as A9 takes the KM implication as a hypothesis. All theorems are pure re
 * `cs_sup_unreachable`     : for any `β ≥ 2` and any `q ≥ 2`, `q > q*` strictly when `β > 2`; the
                              `q → ∞` sup regime is unreachable for all `β > 1` (since `q* < ∞`).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Real
 

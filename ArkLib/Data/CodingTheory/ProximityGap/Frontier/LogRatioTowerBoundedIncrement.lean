@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.LiuZhouSplitRecursion
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Algebra.BigOperators.Intervals
 
-set_option linter.style.longLine false
-
 /-!
 # The log-ratio tower has BOUNDED increments, the Azuma/Freedman prerequisite (#444)
 
@@ -70,6 +68,9 @@ C·√(n·log(p/n))` stays OPEN; logged to `DISPROOF_LOG.md` [LRTBI].
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

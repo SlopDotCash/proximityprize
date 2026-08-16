@@ -10,9 +10,6 @@ import Mathlib.Data.Real.Sqrt
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # WALL-5: fresh Stepanov / polynomial method DIRECTLY on the multiplicative-character
 descent target of the worst-case subgroup Gauss period (#444).
@@ -93,6 +90,10 @@ separability obstruction located on the multiplicative side); it is NOT a closur
 `< M·|S|` vanishing to order `M` on the *separable* shifted orbit — which the separability of
 `(X+1)ⁿ−1` forbids supplying via the relation.  Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Polynomial Finset
 

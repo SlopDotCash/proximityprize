@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.RingTheory.RootsOfUnity.Basic
 
-set_option autoImplicit false
-
 /-!
 # Tannakian non-torsion rank-pump: the multiplicative `θ`-twist CANNOT break cyclotomic vanishing
 (#444, frontier tool #5)
@@ -50,6 +48,9 @@ tool claimed to *break*). This is `coprime_order_trivial_on_mu` below (the group
 So tool #5 **reduces to the wall** (and a coprime twist is even vacuous). This file lands the exact
 structural reason.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.Tannakian
 

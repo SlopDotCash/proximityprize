@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CharPWickConditionalPin
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Sharpening the Wick pin: `c_r ≤ 1` from the WORST single off-diagonal autocorrelation (#444)
 
@@ -47,6 +44,10 @@ window and only conjectured at `β ≥ 4`; STATED, not proved.  The sharpening i
 ## References
 - Shaw, `docs/kb/direct-charp-supnorm-assault-2026-06-15.md` (#444).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped Nat

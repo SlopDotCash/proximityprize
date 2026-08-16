@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Vertical tail bounds consume only at atom scale
 
@@ -21,6 +18,10 @@ Thus a vertical Sato--Tate, Wasserstein, discrepancy, or empirical-tail theorem 
 if its upper tail at the prize threshold is below `1 / #atoms`.  Otherwise one bad frequency can
 survive the distributional estimate.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

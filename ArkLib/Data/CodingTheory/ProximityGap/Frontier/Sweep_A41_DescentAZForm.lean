@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Field.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Tactic
+
+/-!
 # The A+Z form of the even/odd descent identity (#444, SEAM A)
 
 A cleaner equivalent of the per-fibre agreement trichotomy
@@ -35,10 +40,6 @@ resolved here; this file isolates the exact closed identity those gaps sit on to
 
 Axiom-clean: depends only on field arithmetic and `Finset.card`. No `sorry`, no extra axioms.
 -/
-import Mathlib.Algebra.Field.Basic
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

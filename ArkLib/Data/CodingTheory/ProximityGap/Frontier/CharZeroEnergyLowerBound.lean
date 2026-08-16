@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroWickEnergy
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The char-0 energy LOWER companion for `μ_{2^k}` (#407): the antipodal injection, base case
 
@@ -43,6 +41,9 @@ super-diagonal `(2r−1)‼` constant (the part exceeding `4^r` that feeds `not_
 needs the multi-pairing disjointness, left as an honest `NOTE`. Axiom-clean
 (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLadder
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # General-`r` additive-energy bound under the no-relation hypothesis (#389)
 
@@ -29,6 +27,9 @@ not achieve it.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMomentLadder

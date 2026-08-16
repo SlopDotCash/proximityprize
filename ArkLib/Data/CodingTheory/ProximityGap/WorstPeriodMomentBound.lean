@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMomentLadder
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The moment-method sup-norm bound on the worst subgroup Gaussian period (#389)
 
@@ -26,6 +24,9 @@ square-root-cancellation bound; here we land the exact per-frequency inequality,
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

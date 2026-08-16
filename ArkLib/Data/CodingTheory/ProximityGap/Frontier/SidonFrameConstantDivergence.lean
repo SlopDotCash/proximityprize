@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodSidonBound
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodSpectralFrame
 
-set_option linter.style.longLine false
-
 /-!
 # The r=2 Sidon bound discharges the spectral frame only with a divergent constant (#444 / #407)
 
@@ -43,6 +41,9 @@ moment route), NOT a CORE closure. `CORE M(μ_n) ≤ C·√(n·log(p/n))` with a
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issues #444, #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

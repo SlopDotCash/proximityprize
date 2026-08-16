@@ -6,8 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._A2OnsetLatticeMinimum
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._WraparoundSaddleCreditForced
 
-set_option linter.style.longLine false
-
 /-!
 # Onset-pigeonhole ⟹ saddle-credit: the single citable chain (#444, Lane 2/3)
 
@@ -42,6 +40,9 @@ and `0 < W` → `0 < credit`); the single arithmetic-content rung (`¬OnsetSaves
 no cancellation, no completion, no anti-concentration, no capacity claim. The open budget inequality
 `p·W ≤ credit` (= `W_r ≤ SLACK_r`) at the saddle remains open.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.OnsetToSaddleCreditChain
 

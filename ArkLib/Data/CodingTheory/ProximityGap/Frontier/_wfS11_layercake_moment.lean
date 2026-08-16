@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (wf-S11 layer-cake)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_subexp_tail_to_slack
 
-set_option linter.style.longLine false
-
 /-!
 # S11 layer-cake — DERIVING the moment envelope from a sub-exponential MGF bound
 
@@ -71,6 +69,9 @@ which is the genuine point of the concentration lens.
 Tag: CONCENTRATION-REDUCED (layer-cake step closed). Residual `MGFBound` = OPEN = BGK.
 `#print axioms` is `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open Real

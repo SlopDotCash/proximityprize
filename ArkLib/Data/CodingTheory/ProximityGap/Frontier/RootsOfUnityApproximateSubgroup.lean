@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.RepCountCurve
 import Mathlib.Combinatorics.Additive.ApproximateSubgroup
 import Mathlib.RingTheory.RootsOfUnity.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The BGK multiplicative input, Mathlib-interoperable: `μ_n` is an `IsApproximateSubgroup 1` of `Fˣ` (#444)
 
@@ -62,6 +58,11 @@ contrast with additive Sidon-ness is the *configuration* of the wall, not a rout
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`/`axiom`/`native_decide`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+
 
 open Finset
 open scoped Pointwise

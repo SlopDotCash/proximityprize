@@ -6,10 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedTelescopeBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Door-(iv) Lane-2: the corrected `√2` gate lands exactly on the prize budget (#444)
 
@@ -26,6 +22,11 @@ This is not a proof of the gate.  It is the citable capstone saying precisely wh
 door-(iv) scalar buys once supplied: the usual prize-scale `√(n log)` budget, with `L` standing for the
 logarithmic factor.  No cancellation, completion, moment, capacity, or CORE claim is made here.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 open ArkLib.ProximityGap.Frontier.DoorIVXGatedTelescopeBridge

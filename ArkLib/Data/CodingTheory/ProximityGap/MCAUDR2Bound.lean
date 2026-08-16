@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.MCAUDRBound
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
 
-set_option linter.style.longLine false
-
 /-!
 # Factor-2 unique-decoding-radius MCA bound for Reed-Solomon (up to (1-ρ)/2)
 
@@ -37,6 +35,9 @@ single agreement set `S₀`), so each bad witness `w_γ` is forced equal to `v�
 - [BCIKS20] Ben-Sasson-Carmon-Ishai-Kopparty-Saraf, the correlated-agreement extractor.
 - [ABF26] Arnon-Boneh-Fenzi, the Grand MCA Challenge (§1, §4.5).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset ProximityGap
 open scoped NNReal ENNReal BigOperators

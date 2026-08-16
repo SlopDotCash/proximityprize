@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door IV index-factor overshoot: the naive incidence scale is `sqrt m` too large
 
@@ -21,6 +18,10 @@ not discharge `hfloor`, and does not assert any cancellation.  It only records, 
 arithmetic loss that makes an L-infinity `M(n)` estimate insufficient for the realized-incidence
 floor unless one also removes the index factor by a genuinely new door-(iv) argument.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVIndexFactorOvershoot
 

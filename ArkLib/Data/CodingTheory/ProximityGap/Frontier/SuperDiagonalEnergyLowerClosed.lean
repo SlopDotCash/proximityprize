@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ClassInjectiveCount
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-set_option autoImplicit false
-
 /-!
 # The fully-discharged super-diagonal energy lower bound (#407 lower, headline assembly)
 
@@ -56,6 +51,12 @@ This file performs the final composition.
   files) was assembled to produce, completing it as ONE composed, hypothesis-free theorem rather
   than a gated form plus a separate count. Issue #407 / #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option autoImplicit false
+
 
 open Finset Nat
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

@@ -206,8 +206,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVShawValueTwoSidedSh
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVPrizeConstantSuperDiagonalFloorFamily
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 
-set_option linter.style.longFile 9900
-
 /-!
 # Campaign-Proven Index — permanent named exports of the prize close-out (#444)
 
@@ -448,6 +446,9 @@ inequality); the open prize is *exactly* the demand to collapse this `√n`-wide
 absolute constant. These are normalization/consolidation only — no anti-concentration, completion,
 moment, or capacity claim is hidden, and CORE stays OPEN.
 -/
+
+set_option linter.style.longFile 9900
+
 
 open scoped Nat
 

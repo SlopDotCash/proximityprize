@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The char-`p` r=3 DC-Wick rung, fused with the explicit wraparound spur (#444 / #407)
 
@@ -76,6 +73,10 @@ full DC-Wick ladder `r ≤ log m`. CORE `M(μ_n) ≤ C√(n log(p/n))` stays OPE
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #407.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.Kappa6R3CharPSpur
 

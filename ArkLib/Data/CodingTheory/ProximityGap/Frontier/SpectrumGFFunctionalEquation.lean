@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
+import Mathlib.Tactic
+
+/-!
 # The char-0 subset-sum spectrum GF functional equation `x^{2m}·G(1/x) = G(x)` (#444)
 
 `Sweep_A50_SpectrumGeneratingFunction` proved `(x²−1)·G(x) = x^{m+2}(x+2)^m − (2x+1)^m` and its
@@ -31,8 +34,6 @@ CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN.
 
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

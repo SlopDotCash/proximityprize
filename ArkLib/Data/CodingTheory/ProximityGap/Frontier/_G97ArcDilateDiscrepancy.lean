@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80ZArcArithmeticInstantiation
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G97 (#466, 2026-07-10): combinatorial discrepancy of the arc x dilate incidence
   system — the prefix reduction of the G80Z consumer, and the transference NO-GO
@@ -76,6 +73,10 @@ gamma_2/detlb/coloring numerics recorded above. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

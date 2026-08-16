@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleAllDefectCSVacuous
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Near-all-defect CS floor is only complement-size
 
@@ -32,6 +27,12 @@ useful for sparse defects cannot survive the adversarial all/near-all-defect pha
 Door-IV crack still needs arithmetic anti-concentration of the monomial phases, not this L² budget. No CORE,
 cancellation, completion, moment-saving, anti-concentration, or capacity claim.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleNearAllDefectFloor
 

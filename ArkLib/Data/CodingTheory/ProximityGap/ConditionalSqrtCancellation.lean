@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.GeneralEnergyBound
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Conditional square-root cancellation: the dyadic conjecture under the no-relation hypothesis (#389)
 
@@ -30,6 +28,9 @@ for `μ_n` via `repCount ≤ 2` (Sidon *mod negation*) — see `WorstPeriodSidon
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

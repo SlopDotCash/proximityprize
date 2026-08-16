@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
+
+/-!
 B1 count-law core: the EXACT closed form for the top-direction readout over μ_n.
 
 Goal proven here (axiom-clean target):
@@ -21,7 +23,6 @@ Mechanism (NOT a single Z_n orbit): the readout is a *function of the product of
 `h_{n-1-k}(R) = (-1)^k (∏ v_i)^{-1}`. The Z_n-equivariance (multiply by ξ = w^{n-1-k}) is a
 COROLLARY, not the cause; the real cause is this closed form + subset-sum surjectivity mod n.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
 
 namespace ProximityGap.B1CountLaw
 

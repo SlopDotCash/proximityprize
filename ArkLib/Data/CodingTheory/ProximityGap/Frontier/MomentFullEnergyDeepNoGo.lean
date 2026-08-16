@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
+
+/-!
 # The FULL-energy moment hypothesis is PROVABLY FALSE at prize depth (#444)
 
 The moment-method route to the Gauss-period house bound `M(μ_n) ≤ √(2n log q)` is in-tree via
@@ -29,7 +31,6 @@ A no-go on a *formulation*, not on the prize: the house is well-behaved
 (`house/√(2n ln m) ∈ [0.85,0.96]`); only the full-energy hypothesis is dead — use reduced energy.
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
 namespace ArkLib.ProximityGap.MomentFullEnergyDeepNoGo
 

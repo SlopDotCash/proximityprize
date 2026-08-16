@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+
+/-!
 # Primitive 2-power root: the half-period power is `-1`
 
 For a commutative ring `R` with no zero divisors and `ζ : R` with
@@ -27,7 +29,6 @@ PROOF: let `s = ζ^(2^k)`. Then `s*s = ζ^(2^{k+1}) = 1`, so `mul_self_eq_one_if
 `s = 1 ∨ s = -1`. Rule out `s = 1`: `orderOf ζ = 2^(k+1)` (primitivity), but `s = 1`
 would give `orderOf ζ ∣ 2^k`, contradicting `2^k < 2^(k+1)` via `Nat.le_of_dvd`.
 -/
-import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
 namespace ArkLib.ProximityGap.Frontier
 

@@ -7,8 +7,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Door IV (Lane 1, the brief's verbatim small-ball target): the worst-b phase set `{b·x : x∈μ_n}` has
 # DILATION-INVARIANT additive structure — the worst `b` cannot tune it, so any small-ball / Halász
@@ -49,6 +47,9 @@ of the quadruple solution set inside `S⁴` and prove the dilate has the SAME co
 mul-by-`λ⁻¹` bijection on the index `Finset`. Consequence: any bound on `|η_b|` factoring through
 `E⁺(S_b)` is `b`-independent — the worst `b` inherits the typical (EVT) ceiling.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant
 

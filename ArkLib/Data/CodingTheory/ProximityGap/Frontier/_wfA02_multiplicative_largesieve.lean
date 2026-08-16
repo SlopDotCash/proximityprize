@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-A02 (#444): the MULTIPLICATIVE / dilation-action large sieve collapses (OBSTRUCTION)
 
@@ -67,6 +64,10 @@ the additive one, and the dilation spectrum's Ramanujan flatness blocks any `ℓ
 
 Issue #444, angle A02.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.A02MultiplicativeLargeSieve
 

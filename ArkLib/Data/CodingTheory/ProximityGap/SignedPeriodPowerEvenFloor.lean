@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerCount
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Tactic
-set_option linter.unusedSectionVars false
 
 /-!
 # The EVEN-order signed period-power DIAGONAL FLOOR (#444, #407)
@@ -56,6 +55,8 @@ reality, the floor `W_r ≥ n^r/q`, and the max lower bound for `r ∈ {2,4}`.
 
 Issues #444, #407.
 -/
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

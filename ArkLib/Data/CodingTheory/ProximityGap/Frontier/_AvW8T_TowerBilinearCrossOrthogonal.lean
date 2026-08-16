@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # W8-tower-bilinear — the cross-level large-sieve term VANISHES, so the tower
   bilinearization REDUCES-TO-WALL (#444)
@@ -67,6 +64,10 @@ This file is axiom-clean (`propext, Classical.choice, Quot.sound`; no `sorry`/`s
 identities are exact. It is NOT prize closure — it pinpoints the exact step at which the
 tower-bilinear angle reduces.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvW8T
 

@@ -5,10 +5,6 @@ Authors: ArkLib Contributors (#466)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Errors
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # SYZ18: pairJoint self-exclusion — the shared-witness mechanism (#466 / #507)
 
@@ -46,6 +42,11 @@ error support collapse to a joint pair — the subspace `S(E)` of syndromes supp
 common error support `E = Sᶜ` is closed under the difference `t_{γ₀} − t_{γ₁} =
 (γ₀−γ₁)·s₁`, pushing both `s₀` and `s₁` individually into `S(E)`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ProximityGap.SYZ18
 

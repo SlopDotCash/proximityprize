@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorClosureContract
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileRefinement
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Refined-profile scanners feed the floor closure contract
 
@@ -21,6 +18,10 @@ This file composes those APIs.  It is not a prize proof; it is the refined-profi
 profile/fiber floor bridge.  The remaining mathematical obligation is still to choose a useful fine
 profile and prove the scanner certificates.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open scoped NNReal ENNReal ProbabilityTheory
 open ProximityGap Code

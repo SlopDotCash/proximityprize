@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Index-involution lifting: count-balance ⟹ a fixed-point-free antipodal pairing (#389)
 
@@ -28,6 +26,9 @@ Proven by strong induction on the support finset (`exists_pairing_finset`): pick
 any negation-closed root set (composing with Lam–Leung), upgrading the conditional K1 bound to an
 unconditional one. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.NegationClosedWalk

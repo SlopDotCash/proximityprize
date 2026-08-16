@@ -7,9 +7,6 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T08 — Arakelov self-intersection lower bound on the period section (architect G2-3): REFUTED
 
@@ -105,6 +102,10 @@ No prize gain.
 - in-tree: `_ValuationClassBarrier.lean`, `_wfTT06_coupled_productformula_house.lean`,
   `L2MahlerNormBound.lean`, `BadPrimeNormBound.lean`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset Real
 

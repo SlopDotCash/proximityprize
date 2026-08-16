@@ -7,9 +7,6 @@ import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.Linarith
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-S4 — the Galois ORBIT-partition law: per-prime count is UNIFORM = (#orbits) (#444)
 
@@ -77,6 +74,10 @@ spread picture.
 - in-tree: `_wfS4_galois_perprime_spread.lean` (the Fubini incidence identity this sharpens),
   `_wf5M2_stickelberger_depth.lean` (the depth-R norm wall).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.GaloisOrbitPartition
 

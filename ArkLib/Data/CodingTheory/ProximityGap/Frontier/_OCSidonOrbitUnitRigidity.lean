@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.style.openClassical false
-
 /-!
 # LANE OC-ORBIT (#466, Opus core, 2026-07-10): the orbit-unit rigidity underneath the r369
   linear-coincidence law for the depth-3 Sidon (`s6h1`) sector — axiom-clean STRUCTURAL LEMMAS.
@@ -82,6 +78,11 @@ no `sorry`, no `native_decide`, no goal weakening.
 
 Issue #466.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.style.openClassical false
+
 
 namespace ArkLib.ProximityGap.Frontier.OCSidonOrbitUnitRigidity
 

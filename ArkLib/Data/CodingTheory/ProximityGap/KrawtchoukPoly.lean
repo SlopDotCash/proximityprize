@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
-set_option linter.style.longLine false
 
 /-!
 # Krawtchouk polynomials (machinery for the Shaw-operator / Proximity Prize, #389)
@@ -16,6 +15,8 @@ the Fourier transform of the Hamming weight-`k` shell evaluated at character-wei
 Shaw operator is a Krawtchouk-weighted dual-MDS character sum. Defined here with its closed
 generating form. Axiom-clean.
 -/
+set_option linter.style.longLine false
+
 
 open Polynomial Finset
 

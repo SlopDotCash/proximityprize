@@ -7,9 +7,6 @@ import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # F1-15b — Lam–Leung vanishing-sum structure theorem REDUCES to the BGK/Paley wall (#444)
 
@@ -68,6 +65,10 @@ pinned back to the BGK/Paley `√(#H^⊥)` character-cancellation.
 
 **Axiom target:** `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

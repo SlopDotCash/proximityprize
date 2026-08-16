@@ -9,9 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.AHIV22Support
 import ArkLib.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.UniqueDecoding
 
--- Slightly above the global cap because this paper module remains a single statement/proof ledger.
-set_option linter.style.longFile 1700
-
 /-!
 ## Main Definitions
 - Statements of proximity results for Reed Solomon codes (`Lemma 4.3`, `Lemma 4.4` and `Lemma 4.5`
@@ -23,6 +20,10 @@ set_option linter.style.longFile 1700
     arguments without a trusted setup*][AHIV22]
       * NB we use version 20221118:030830
 -/
+
+-- Slightly above the global cap because this paper module remains a single statement/proof ledger.
+set_option linter.style.longFile 1700
+
 
 noncomputable section
 

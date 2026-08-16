@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The antipodal-pairing UPPER bound on the deep-band subset-sum spectrum (#389)
 
@@ -32,6 +29,10 @@ cardinality)"; the matching lower bracket `2^r·C(2^{m-1}, r) ≤ |spectrum|` is
 * `signedSpectrum_card_le_choose_sum` — the closed-form ceiling `∑ C(|P|,ℓ)·2^ℓ`.
 * `deepband_spectrum_card_le_choose_sum` — the bound applied to the `-∑` deep-band spectrum.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

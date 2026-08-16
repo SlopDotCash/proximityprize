@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # DYN09: the dyadic sibling transfer has a norm-preserving right inverse
 
@@ -30,6 +27,10 @@ Gauss-period state* and prove that it avoids this norm-preserving range.  That r
 missing phase-correlation input; it is not supplied by the abstract dyadic dynamics.  This is a
 no-go for a generic Ruelle spectral-gap argument, not a Paley/proximity-gap closure.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 noncomputable section
 

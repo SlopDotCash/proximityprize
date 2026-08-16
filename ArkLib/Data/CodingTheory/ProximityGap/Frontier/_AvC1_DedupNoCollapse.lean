@@ -8,9 +8,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Av-C1 — the deduplicated distinct-γ UNION does NOT collapse to near-linear (#444)
 
@@ -55,6 +52,10 @@ overlap can collapse it. This brick formalizes that monotonicity backbone over `
 exact mechanism by which the C1 hypothesis is refuted: dedup is dominated below by `MAX`, and
 `MAX > budget` is the witnessed numeric input.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvC1
 

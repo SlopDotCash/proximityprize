@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingCount
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedPairingLifting
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 
-set_option linter.style.longLine false
-
 /-!
 # The dyadic K1 bound, UNCONDITIONAL: `zeroSumCount(μ_{2^k}) ≤ (2r−1)!!·n^r` (#389)
 
@@ -34,6 +32,9 @@ with **no residual** — the energy/AVERAGE side of the prize machinery (NOT the
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 open ArkLib.ProximityGap.NegationClosedWalk

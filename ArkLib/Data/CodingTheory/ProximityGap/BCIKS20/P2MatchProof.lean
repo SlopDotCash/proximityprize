@@ -7,6 +7,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Close
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchRoot
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MatchMonic
 
+/-!
+# P2MatchProof
+
+Module docstring for `P2MatchProof.lean`.
+-/
+
+
 noncomputable section
 
 open scoped BigOperators

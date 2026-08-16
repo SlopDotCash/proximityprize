@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.I031SubGaussianMaxBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031OrbitCountPartition
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # I031: landing the union bound at the PRIZE-TARGET log scale `log(q/n)` (#444)
 
@@ -68,6 +64,11 @@ capacity/beyond-Johnson/cliff-at-n/2 claim -- the residual is the tail Prop = th
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset AddChar
 

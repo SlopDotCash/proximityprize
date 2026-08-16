@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Period autocovariance — the spin-glass / Slepian self-comparison NO-GO (N1) (#407/#444)
 
@@ -64,6 +62,9 @@ dead for this problem. All theorems are `sorry`-free and axiom-clean (`propext`,
 - In-tree: `SubgroupGaussSumSecondMoment.subgroup_gaussSum_secondMoment` (the `d = 0` case).
 - #407, #444, the exotic-math sweep (spin-glass / Slepian self-comparison, N1).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

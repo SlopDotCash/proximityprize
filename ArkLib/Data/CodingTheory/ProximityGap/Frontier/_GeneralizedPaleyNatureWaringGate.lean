@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Generalized-Paley spectrum-nature / weak-Waring metadata gate
 
@@ -25,6 +23,9 @@ This file proves the small arithmetic guardrail: even perfect knowledge of "real
 "integral spectrum", and a bounded weak-Waring/diameter datum does not imply a Ramanujan-scale
 radius bound.  A separate analytic radius inequality is the missing input.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.GeneralizedPaleyNatureWaringGate
 

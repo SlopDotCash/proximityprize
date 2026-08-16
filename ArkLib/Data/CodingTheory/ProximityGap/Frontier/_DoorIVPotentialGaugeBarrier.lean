@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#464)
 -/
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): a potential/gauge barrier for dyadic descent
 
@@ -35,6 +32,10 @@ In particular, if probes put the floor above the prize `sqrt2` step, a `sqrt2` d
 rescued by a potential whose distortion `hi / lo` is already large enough to hide that excess.  This
 does not prove any core cancellation bound; it is a constraint on one possible proof architecture.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPotentialGaugeBarrier
 

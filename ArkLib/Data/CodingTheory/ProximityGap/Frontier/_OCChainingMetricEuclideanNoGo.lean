@@ -7,9 +7,6 @@ import Mathlib.Analysis.Complex.Norm
 import Mathlib.Algebra.Order.Floor.Ring
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE OC-CHAIN (#466, Opus core, 2026-07-10): the generic-chaining increment metric on the
   Gauss-period spectrum lives in the 2-DIMENSIONAL EUCLIDEAN plane and is (measurably)
@@ -99,6 +96,10 @@ does NOT close that hope in full, and does NOT close the core. No `axiom`, `sorr
 `native_decide`, `opaque`, or goal weakening. The `not_prizeClosure` marker records the honest
 scope.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.OCChaining
 

@@ -6,10 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatedTelescopeBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Door-(iv) Lane-3: the `XGatedRatio` open hypothesis reduces END-TO-END to the prize `√n` floor (#444)
 
@@ -30,6 +26,11 @@ It does NOT discharge `XGatedRatio` (which is OPEN = the prize), makes NO cancel
 moment / anti-concentration / capacity claim, and CORE stays OPEN.  Pure forward-chaining:
 `XGatedRatio` unfolds to `(gate) → LevelRatioBoundNZ … √2`; feed the gate, then the telescope bridge.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

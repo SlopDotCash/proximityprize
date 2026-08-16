@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 
-set_option autoImplicit false
-
 /-!
 # Height-gate no-go: the exact norm of the block witness (#407)
 
@@ -29,6 +27,9 @@ and `2^{2^{29}−1} ≫ p ~ 2^{158}` at the prize point `n = 2^{30}`.  Since the
 `|N| < p` for *every* non-antipodal `S`, NO norm bound (however structure-aware) rescues it
 at the prize: the worst-case `max_S |N|` is the √-cancellation/house-maximization wall itself.
 -/
+
+set_option autoImplicit false
+
 
 open Finset Polynomial Algebra Module
 

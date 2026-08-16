@@ -9,9 +9,6 @@ import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Tactic.NormNum.Prime
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The weight-4 spurious collision at the STRUCTURED Fermat prime `641`, `m = 5` (Issue #444)
 
@@ -63,6 +60,10 @@ the *count* `Spur_r(p)` at depth `r ≈ log q` over prize-regime primes — the 
 - `SpurWeightFourCollision.lean` (`m = 4`, `p = 17` base-field rung); `SpurWeightThreeCollision.lean`.
 - Probe: `scripts/probes/probe_spur_w4_fermat641.py`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Tactic.NormNum
 
-set_option autoImplicit false
-
 /-!
 # FLOOR_A1 (#464): off-BGK floor localization
 
@@ -62,6 +60,9 @@ This is the **characterization brick**, NOT a closure of the prize.
 open `Prop`. NO `sorry`/`native_decide`; axiom audit must show `[propext, Classical.choice,
 Quot.sound]`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.FloorLocalization
 

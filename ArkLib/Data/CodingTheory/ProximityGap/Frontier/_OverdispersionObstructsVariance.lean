@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+
+/-!
 # Over-dispersion obstructs the family-variance route (#444)
 
 This brick records, axiom-clean, a genuinely-new *negative* result discovered by continuing the
@@ -31,8 +34,6 @@ measured over-dispersion.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 namespace ProximityGap.OverdispersionObstruction
 

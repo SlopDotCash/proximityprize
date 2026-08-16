@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.ModEq
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Semiprimitive shortcut gate in the split prime-field regime
 
@@ -28,6 +25,10 @@ No analytic number theory is proved here.  This is only the modular arithmetic g
 the semiprimitive closed-form Gauss-period shortcut does not apply to the split prime-field
 delta-star floor problem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.SemiprimitiveSplitPrimeFieldGate
 

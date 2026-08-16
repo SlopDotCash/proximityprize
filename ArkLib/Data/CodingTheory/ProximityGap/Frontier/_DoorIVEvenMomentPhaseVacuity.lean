@@ -7,9 +7,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-1: the phase-carrying EVEN-order moment escape is VACUOUS (#444)
 
@@ -49,6 +46,10 @@ even orders to exploit. (Odd orders carry SIGN, not phase; that is the odd/signe
 This is a **Lane-1 / Lane-3 constraint lemma**. It does NOT discharge CORE; it forecloses the last
 explicitly-open higher-order escape route in the tetrachotomy. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVEvenMomentPhaseVacuity
 

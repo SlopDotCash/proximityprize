@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Gaussian supremum approximation has an additive-error slack gate
 
@@ -28,6 +25,10 @@ The file is deliberately abstract.  It does not assert independence, randomness,
 approximation for Gauss periods.  It only fixes the bookkeeping any proposed Gaussian-supremum
 transfer must satisfy before it can imply the dyadic-subgroup proximity-gap floor.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.GaussianSupCouplingErrorGate
 

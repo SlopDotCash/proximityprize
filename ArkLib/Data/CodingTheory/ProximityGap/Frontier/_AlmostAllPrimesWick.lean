@@ -9,9 +9,6 @@ import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.NormNum
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `AlmostAllPrimesWick`: the per-pair divisor-count ceiling helper
 
@@ -33,6 +30,10 @@ Each `p ∈ n.primeFactors` satisfies `2 ≤ p`, so
 `2 ^ (n.primeFactors.card) = ∏_{p ∈ n.primeFactors} 2 ≤ ∏_{p ∈ n.primeFactors} p ∣ n ≤ n`,
 hence the card is `≤ Nat.log 2 n` by `Nat.le_log_of_pow_le`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick
 

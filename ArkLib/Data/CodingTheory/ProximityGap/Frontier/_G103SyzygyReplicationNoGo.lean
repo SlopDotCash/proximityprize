@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#466)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G86RankCollapseDichotomy
 
-set_option autoImplicit false
-
 /-!
 # G103: replication no-go for the abstract syndrome-syzygy endpoint
 
@@ -21,6 +19,9 @@ the current abstract/per-block information alone cannot bound their number.  Any
 the syndrome route must retain cross-witness structure, such as the dependence of the GRS rows on
 the distinct scalar `γ`; merely producing a syzygy certificate is insufficient.  Issue #466/#507.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.G103SyzygyReplicationNoGo
 

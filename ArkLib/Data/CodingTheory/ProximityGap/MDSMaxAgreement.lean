@@ -6,6 +6,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.CodingTheory.ProximityGap.MCAGS
 
+/-!
+# MDSMaxAgreement
+
+Module docstring for `MDSMaxAgreement.lean`.
+-/
+
+
 open scoped NNReal
 open Polynomial
 

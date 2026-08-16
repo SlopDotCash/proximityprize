@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._VerticalTailSupConsumer
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Wasserstein smoothing still has an atom-scale gate
 
@@ -21,6 +18,10 @@ This file records the finite last-mile gate.  A smoothed certificate with budget
 pointwise bound only when `B < 1 / #α`, equivalently `#α * B < 1`.  At or above one-atom scale a
 single spike is compatible with the same style of smoothed certificate.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

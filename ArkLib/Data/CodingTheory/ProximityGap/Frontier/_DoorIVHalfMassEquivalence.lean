@@ -8,9 +8,6 @@ import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Tactic.GCongr
 import Mathlib.Tactic.Ring
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): the prize is equivalent to a worst-`b` half-mass `L¹` bound (#444)
 
@@ -31,6 +28,10 @@ can be **restated entirely in terms of the half-mass** `H(n)` — the citable re
 Scope: order arithmetic over `ℝ`.  No CORE/cancellation/capacity claim — this is the reduction wrapper,
 with the analytic content (the bound on `H` itself) left open exactly as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVHalfMassEquivalence
 

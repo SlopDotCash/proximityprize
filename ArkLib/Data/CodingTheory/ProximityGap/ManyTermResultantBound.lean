@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftAssembly
 
-set_option linter.style.longLine false
-
 /-!
 # General-`r` cyclotomic resultant bound: `|Res(Φ_n, manyTerm)| ≤ (2r)^{φ(n)}` (#389)
 
@@ -30,6 +28,9 @@ frontier `r ~ n/log n` still exceeds it, consistent with the open core.)
 This extends `AdditiveEnergyRepBound.abs_resultant_le` (the `r=2` Sidon case) to all moments.
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial Complex
 

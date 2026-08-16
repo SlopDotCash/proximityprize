@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.StepanovNonVanishing
 
-set_option linter.unusedSectionVars false
-
 /-!
 # A degree lower bound for the base-`q` substitution (#389, Stepanov-Weil substrate)
 
@@ -17,6 +15,9 @@ lower block can cancel under the digit condition `natDegree(A.coeff j) < q` (the
 separated: block `j` lives in degrees `[qj, qj+q)`).  Hence `natDegree(subq q A) ≥ q·natDegree A`.
 Together with the upper bound this pins `natDegree(subq q A)` to the block `[qm, qm+q)`.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Polynomial
 

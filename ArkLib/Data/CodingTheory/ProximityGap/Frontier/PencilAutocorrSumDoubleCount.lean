@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrelation
 
-set_option linter.style.longLine false
-
 /-!
 # The multiplicative-autocorrelation double-count: `∑_ρ |S ∩ ρ·S| = |S|²` (#407/#444)
 
@@ -48,6 +46,9 @@ beyond-Johnson saving. No capacity / beyond-Johnson / cliff-at-`n/2` claim.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

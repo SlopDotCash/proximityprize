@@ -7,9 +7,6 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Order.Bounds.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst frequency is NOT cross-scale nested — no recursive-ascent (#444)
 
@@ -43,6 +40,10 @@ thinner subgroup that the level-`n` worst frequency misses.  Equivalently, no `a
 This is a **refutation with mechanism** (a precisely-mapped dead lever), not a CORE/cancellation/capacity
 claim: it does not bound `M(n)`; it shows the worst-frequency-nesting recursive-ascent shape cannot.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBNonNested
 

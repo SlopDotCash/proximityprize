@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileDominationInterface
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.style.longFile 1800
-
 /-!
 # Slackened profile-fiber dominance
 
@@ -36,6 +32,11 @@ implies the slack-domination certificate while exposing a more diagnostic refuta
 the representative missed its fiber, a same-profile pair has too much bad-count oscillation, or a
 used representative-plus-slack allowance is above budget.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.style.longFile 1800
+
 
 open Finset
 open scoped NNReal ENNReal ProbabilityTheory

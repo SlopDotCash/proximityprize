@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Propagation is the only way distributional tails beat one-atom scale
 
@@ -26,6 +23,10 @@ The Lean content here is deliberately finite and method-agnostic.  It does **not
 periods, Paley spectra, or Door-IV incidences have such propagation; it states the gate any proposed
 anti-spike route must pass.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteMomentAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteParsevalLower
 
-set_option linter.style.longLine false
-
 /-!
 # The CONCRETE two-sided bracket on the worst period `M(μ_n)` (#444)
 
@@ -36,6 +34,9 @@ on the named residual `hNoWrap` (= `OnsetExceedsSaddle` / `NonprincipalWickBound
 BGK wall). CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN; this packages the two proven-modulo-the-residual
 ends into one in-tree bracket over the concrete worst period.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ProximityGap.Frontier.ConcreteMomentAssembly

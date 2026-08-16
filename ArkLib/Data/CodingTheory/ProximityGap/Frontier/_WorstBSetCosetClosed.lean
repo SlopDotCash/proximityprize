@@ -5,12 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaCosetInvariance
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # The near-max ("worst-`b`") set is exactly a union of multiplicative `μ_n`-cosets (#444, door-(iv))
 
@@ -76,6 +70,13 @@ Issue #444.
 - `scripts/probes/probe_444_worstcoset_quotient_structure{,_b}.py` (the `ℤ_m` quotient is flat).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawDepletionTheorem
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The cross-step rung SLACK is exactly the depletion-defect difference `δ̂_{r+1} − n·δ̂_r` (#444)
 
@@ -59,6 +56,10 @@ claim. Frontier-MOVEMENT (wires two clusters with an exact mechanism), not a poi
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.ShawDepletion
 

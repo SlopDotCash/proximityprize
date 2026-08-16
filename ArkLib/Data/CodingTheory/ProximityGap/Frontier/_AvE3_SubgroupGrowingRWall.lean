@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # E3 angle: the Konyagin–Shkredov subgroup-energy methods do NOT reach the thin growing-`r` regime
 
@@ -90,6 +87,10 @@ wall the whole campaign has reduced to. **This is a clean reduction-to-wall, not
 SANITY: with `n=16`, `c=1`, the bound gives `K(2) ≥ n^{9/4}/√3 = 2^9/√3 ≈ 295`, consistent with
 the measured `237` (the true set-energy constant `< 1`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvE3SubgroupGrowingRWall
 

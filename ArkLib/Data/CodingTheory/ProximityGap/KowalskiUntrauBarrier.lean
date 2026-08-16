@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # The Kowalski–Untrau barrier: the SOTA growing-subgroup bound is vacuous at prize scale (#407)
 
@@ -41,6 +39,9 @@ while the prefactor `d²` blows up.
 - [KU25]  Kowalski, Untrau. *Wasserstein metrics and quantitative equidistribution of exponential sums
   over finite fields*. arXiv:2505.22059, 2025. (Lemma 3.9, Theorem 3.8.)
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.KowalskiUntrauBarrier
 

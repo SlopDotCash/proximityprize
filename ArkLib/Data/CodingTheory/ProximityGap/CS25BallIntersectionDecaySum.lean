@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionWeightInvariant
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionBudget
 
-set_option linter.style.longLine false
-
 /-!
 # CS25 #82, deliverable 2: the dimension-explicit second-moment decay sum
 
@@ -38,6 +36,9 @@ sum is the remaining route to the CS25 covered-fraction / proximity-gap second m
 * `jointCoverCount_le_ballVol_dim` — the dimension-explicit decay bound for `I(e)`.
 * `sum_jointCoverCount_le_weightEnum_decay` — the off-diagonal second moment `≤ ∑_d A_d · g(d)`.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators ENNReal NNReal
 

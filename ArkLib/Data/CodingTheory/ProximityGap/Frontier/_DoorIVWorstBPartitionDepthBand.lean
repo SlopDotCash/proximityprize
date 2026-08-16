@@ -7,10 +7,6 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Door-(iv) constraint: the coherent worst-`b` reshuffle is PARTITION-DEPTH-INVARIANT — `k`-piece split is a bounded `O(1)` lever at every refinement depth (#444)
 
@@ -51,6 +47,11 @@ ends, at every `k = 2^j`. This is a precisely-mapped non-tightness — **not** a
 completion / moment / capacity claim: it does not bound `M(n)`; it certifies that the *coherent
 bounded-imbalance partition structure*, at any dyadic depth, cannot move the `√`-frontier.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBPartitionDepthBand
 

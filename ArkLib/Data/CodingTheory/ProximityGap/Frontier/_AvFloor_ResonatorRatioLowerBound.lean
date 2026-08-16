@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 
-set_option autoImplicit false
-
 /-!
 # The Montgomery–Soundararajan RESONATOR lower bound on `M` — and its exact CAP (issue #444)
 
@@ -75,6 +73,9 @@ to the moment ratio, pinpointing the **exact failing step** of the RESONANCE-mon
 target — the DC term `‖η_0‖² = n²` is the only large Fourier mass of `f = 1_G ⋆ 1_G`, and the
 resonator's denominator subtracts precisely the DC contribution.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

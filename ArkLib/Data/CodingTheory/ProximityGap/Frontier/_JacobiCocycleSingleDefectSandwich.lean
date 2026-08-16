@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleSingleDefectQuantDeficit
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Single-defect FIRST-POWER deficit sandwich
 
@@ -36,6 +31,12 @@ phase has no hidden superlinear first-power loss: its effect is exactly real-par
 constant factor. It does NOT prove many-defect dispersion, anti-concentration, CORE, completion,
 moment-saving, or capacity. Prize CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleSingleDefectSandwich
 

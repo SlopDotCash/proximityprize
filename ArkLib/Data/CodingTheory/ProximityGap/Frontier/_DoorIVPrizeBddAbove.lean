@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVHalfMassEquivalence
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): the prize-family bound is exactly `BddAbove` of the normalized ratios (#444)
 
@@ -42,6 +39,10 @@ This is a pure restatement bridge — it proves NO arithmetic inequality, no can
 It only identifies the existing door-(iv) predicate with the standard `BddAbove`, which is the object the
 worst-b probes empirically interrogate.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPrizeBddAbove
 

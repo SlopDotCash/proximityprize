@@ -7,9 +7,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.CurvesBridge
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.DescendedRset
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # §6 joint-agreement from the `hfactor`-free descended residual bundle (issue #8)
 
@@ -27,6 +24,10 @@ dependency in downstream consumers" acceptance criterion, carried all the way to
 
 Builds on the BCIKS20 cone (verified green under the rc2 toolchain).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open NNReal Finset Function ProbabilityTheory
 open scoped BigOperators LinearCode ProbabilityTheory ENNReal Polynomial

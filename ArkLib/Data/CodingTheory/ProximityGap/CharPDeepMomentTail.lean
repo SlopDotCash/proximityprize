@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CharPMomentRecursion
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The unconditional deep-moment tail of the subgroup Gauss sum (Issue #407, "L4")
 
@@ -58,6 +55,10 @@ neither needs nor establishes any square-root cancellation.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

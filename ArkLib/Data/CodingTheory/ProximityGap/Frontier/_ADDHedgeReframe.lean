@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Order.Archimedean.Basic
+import Mathlib.Tactic.Ring
+
+/-!
 # _ADDHedgeReframe — Function-field / Weil-RH reframe of the δ* wall: REDUCTION VERDICT
 
 Hedge lane (#466). DIRECTIVE: reframe δ* so the Paley/BGK wall dissolves; settle honestly.
@@ -41,8 +44,6 @@ depth and worse at deep `r`. Numerics (probe): the true `E_r` crosses `wallTarge
 joint cancellation across `b`, i.e. the same BGK wall. Consistent with dossier v3 line 908
 ("Function-field model = null") and the DISPROOF ledger, now with an exact in-tree identity.
 -/
-import Mathlib.Algebra.Order.Archimedean.Basic
-import Mathlib.Tactic.Ring
 
 namespace ArkLib.ProximityGap.HedgeReframe
 

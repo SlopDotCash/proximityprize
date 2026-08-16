@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MStarLognReduction
 import Mathlib.Data.Nat.Log
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Geometric decay ⟹ logarithmic crossing depth (#444, VECTOR 7 — entropy/counting upper bound)
 
@@ -96,6 +93,10 @@ Probe: `scripts/rust-pg/dstarvec`, `scripts/rust-pg/orbplat` (exact `n = 8, 16, 
 - `_OrbitCountGrowthLaw.lean` (`orbitCount3`/`orbitCount4` closed forms = the Phase-2 plateau floor).
 - `_OffBGK_DescentViaCrossingNotFold.lean` (the crossing `D ≤ z + S` = orbitCount ≤ 1 backbone).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.V7GeometricDecayLogCrossing
 

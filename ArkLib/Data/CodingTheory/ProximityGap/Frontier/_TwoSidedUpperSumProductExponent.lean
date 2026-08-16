@@ -11,10 +11,6 @@ import Mathlib.Order.Filter.AtTopBot.Field
 import Mathlib.Order.Filter.AtTopBot.Archimedean
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # [upper-sumproduct] — the sum-product moment engine for `M = max_{b≠0}‖η_b‖`, with the
   RIGOROUS EXPONENT pinned (and the honest verdict at the prize regime `β = 4`).
@@ -69,6 +65,11 @@ conditionality is in the hypothesis, never hidden.
 References: [BGK06], [diB20] (see `BGKExponentReduction.lean`); the moment spine is
 `SubgroupGaussSumMoment.subgroup_gaussSum_moment`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

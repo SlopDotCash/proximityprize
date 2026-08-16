@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031OrbitCountPartition
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # I031_B_chaining — is the dilation-quotient entropy reduction EXPLOITABLE or COSMETIC? (#444)
 
@@ -57,6 +53,11 @@ makes the relocation precise: the union-bound RHS at the reduced count is the SA
 up to the `1/n` that the outer root cancels. CORE (`M ≤ C√(n·log(p/n))`) stays OPEN on the
 `A_r ≤ Wick` BGK/Paley wall.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Polynomial
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

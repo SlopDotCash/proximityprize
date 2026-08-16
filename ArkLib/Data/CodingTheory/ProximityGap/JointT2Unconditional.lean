@@ -3,7 +3,16 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.NumberTheory.Cyclotomic.Basic
+import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
+import Mathlib.RingTheory.RootsOfUnity.Basic
+import Mathlib.RingTheory.RootsOfUnity.Complex
+import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
+import Mathlib.LinearAlgebra.LinearIndependent.Defs
+import Mathlib.Data.Nat.Totient
+import Mathlib.Tactic
+
+/-!
   Ethereum Proximity Prize (ABF26 / ArkLib #232) — Round 12, ANGLE 2.
 
   UNCONDITIONAL joint t = 2 Lam–Leung fiber tightness over ℚ.
@@ -67,14 +76,6 @@ Authors: ArkLib Contributors
   WHAT IS NOT PROVEN: the global cardinality count itself, nor the list-size
   bracket; this isolates the unconditional STRUCTURAL fiber keystone.
 -/
-import Mathlib.NumberTheory.Cyclotomic.Basic
-import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
-import Mathlib.RingTheory.RootsOfUnity.Basic
-import Mathlib.RingTheory.RootsOfUnity.Complex
-import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-import Mathlib.LinearAlgebra.LinearIndependent.Defs
-import Mathlib.Data.Nat.Totient
-import Mathlib.Tactic
 
 open Polynomial
 

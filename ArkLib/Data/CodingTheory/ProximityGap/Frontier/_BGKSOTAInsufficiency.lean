@@ -6,12 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ConvergenceHub
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The BGK / di Benedetto SOTA character-sum bound is INSUFFICIENT for the #407 prize
 
@@ -69,6 +63,13 @@ exponent (the open Paley-Graph-Conjecture `δ = 1/2`) would.
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+set_option linter.unusedDecidableInType false
+
 
 open scoped Real
 open Filter

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.MCALineReduction
 
-set_option linter.style.longLine false
-
 /-!
 # The sharp MCA reduction: `ε_mca ≤ N_accidental · M / q`
 
@@ -34,6 +32,9 @@ is the genuine BCIKS20 / GG25 object (Johnson up to `1 − √ρ`, capacity `1 �
 * `card_mcaEvent_le_Nacc` — `#{γ : mcaEvent} ≤ N_accidental · M`.
 * `mcaEvent_pr_le_Nacc` — `Pr_{γ}[mcaEvent] ≤ N_accidental · M / q`.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators NNReal ENNReal ProbabilityTheory
 open Finset Code

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Cayley / circulant spectral-gap NO-GO (N17) — the prize is the eigenvalue (#407/#444)
 
@@ -61,6 +59,9 @@ the size of `M(n)`. The `√(n log(p/n))` core is untouched and OPEN.
   `Cay(F_q, μ_n)`; `B ≤ 2√n ⟺ Ramanujan` = the (open) Paley Graph Conjecture.
 - In-tree substrate: `SubgroupGaussSumSecondMoment.eta`, `Frontier/_CoherenceIdentity` (`M`).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

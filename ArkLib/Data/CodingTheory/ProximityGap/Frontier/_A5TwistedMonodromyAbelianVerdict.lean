@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._MixedMomentPhaseBlind
 
-set_option autoImplicit false
-
 /-!
 # A5 verdict: the `{η_b}`-family monodromy is ABELIAN for ALL `r` — no growing non-abelian
   monodromy, no `√q` cancellation in any `b`-summed correlation (#444)
@@ -61,6 +59,9 @@ diagonal torus, so Weil II has no non-abelian sheaf to apply to. This corroborat
 restriction (`MixedMomentPhaseBlind`) and the rank-driven-conductor dichotomy
 (`_C5MonodromyMaxControlScissors`). Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

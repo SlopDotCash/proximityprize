@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleDispersion
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # The trivial-cocycle Fourier fiber is RIGID: full mass `n` forces the genuine-character ratio `r = 1`
 
@@ -44,6 +39,12 @@ ceiling `n` on a single fiber is the degenerate trivial-cocycle ratio. Probe-val
 n = 2,4,…,256: fiber modulus equals `n` iff `r = 1`, zero otherwise). Axiom-clean. No CORE, cancellation,
 completion, moment-saving, or capacity claim. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleFiberRigidity
 

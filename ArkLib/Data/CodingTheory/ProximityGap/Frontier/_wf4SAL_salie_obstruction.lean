@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # wf-SAL (Issue #444) — the Salié obstruction for the under-determined (s−k=1) δ\* floor.
 
@@ -47,6 +42,12 @@ with the obstruction pinned as a machine-checked collapse identity.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 open scoped BigOperators
 open Finset

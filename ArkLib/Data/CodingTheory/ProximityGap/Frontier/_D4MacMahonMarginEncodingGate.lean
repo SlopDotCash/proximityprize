@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D4 MacMahon/margin-encoding gate
 
@@ -20,6 +18,9 @@ budget for the sum of margin fiber masses, or sufficiently strong uniform fiber 
 information such as "few occupied margins" does not control total mass: one margin can carry an
 arbitrarily large fiber.
 -/
+
+set_option autoImplicit false
+
 
 open Finset
 

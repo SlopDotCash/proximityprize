@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Analysis.MeanInequalities
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-A01 (#444): the `κ`-equidistribution constant is NOT milder than BGK — a power-mean obstruction
 
@@ -53,6 +50,10 @@ What this file lands axiom-clean:
                                  so the reduction is *tight from below* and yields no slack.
 All are real `ℝ`-arithmetic on the Parseval/Jensen moments; no Weil / characteristic-`p` input.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

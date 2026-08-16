@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The conditional BGK-normalized Shaw-value bracket `[1/√L, 1]` (#444, Lane 2)
 
@@ -30,6 +27,10 @@ this `√L`-wide normalized bracket down to an absolute constant.  In this norma
 bound `M ≤ C·√n` reads `shawValue ≤ C/√L` (the lower endpoint up to the constant `C`), so the open
 job is to push `shawValue` from its BGK ceiling `1` down to the floor scale `1/√L`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueBGKBracket
 

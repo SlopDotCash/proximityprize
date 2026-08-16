@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import Mathlib.Analysis.InnerProductSpace.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # WF407 / T389-03 — Phase alignment is the WORST-CASE branch (structural inertness)
 
@@ -44,6 +41,10 @@ LEVER2), and the doubling ceiling `B(n)/B(n/2)<2` towers to `2^μ ≫ √(n log 
 - DISPROOF_LOG `[#407] 2026-06-13 (2)`: the descent USE of this alignment is refuted; this is the
   STRUCTURAL fact + the inertness statement, not a descent.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

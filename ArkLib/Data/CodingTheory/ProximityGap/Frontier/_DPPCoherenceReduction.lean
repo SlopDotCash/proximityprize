@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 
-set_option autoImplicit false
-
 /-!
 # DPP / Determinantal–Pfaffian reduction for the period family — #444 lane
 
@@ -38,6 +36,9 @@ arithmetic fact (`coherenceIsCharSum`) is the wall itself, left as a named hypot
 **Honesty:** REDUCES-to-wall. The DPP/projection structure is a genuine (true, computed)
 structure theorem, but its phase-FREE handle controls the count, not `M`. No closure claimed.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DPPCoherence
 

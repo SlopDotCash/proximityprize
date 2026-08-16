@@ -6,11 +6,6 @@ Authors: ArkLib Contributors (#466)
 import ArkLib.Data.CodingTheory.ProximityGap.CensusLowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PrizeShapeRateHalfBracket
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option maxRecDepth 100000
-
 /-!
 # G87: mcaEvent → syndrome-functional bridge — the G86 rank-collapse dichotomy applies
   to the concrete rate-half gate wall hypothesis (#466 / #507)
@@ -88,6 +83,12 @@ only shrinks the generic budget further).  CORE remains OPEN.
 
 Honesty: no `sorry`, no `axiom`, no `native_decide`; `#print axioms` at the bottom.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option maxRecDepth 100000
+
 
 namespace ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge
 

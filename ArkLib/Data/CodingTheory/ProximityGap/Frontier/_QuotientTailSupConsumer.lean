@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Quotient tail bounds and the correct union-bound atom count
 
@@ -25,6 +22,10 @@ quotient tail mass is below `1 / #Q`.  This is the formal reason the dilation qu
 The converse is also recorded: any quotient-tail budget at or above one quotient atom is compatible
 with a score spike on one quotient class, and hence with a bad full frequency in its preimage.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

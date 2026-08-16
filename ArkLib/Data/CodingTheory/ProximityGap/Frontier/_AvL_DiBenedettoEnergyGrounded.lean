@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroWickEnergy
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AvL di-Benedetto cubic energy grounded substrate (#444)
 
@@ -18,6 +15,10 @@ substrate: for `G ⊆ μ_{2^k}` in characteristic zero, `rEnergy G 3 ≤ 5‼ ·
 Honest scope: char-zero/dyadic energy only. The finite-field good-prime transfer remains the named
 open input in the AvT3a consumer; this does not close CORE.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)
 open ProximityGap.Frontier.CharZeroWickEnergy

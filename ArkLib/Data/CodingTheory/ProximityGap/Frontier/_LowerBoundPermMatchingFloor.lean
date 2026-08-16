@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentAvgLower
 import Mathlib.Data.Fintype.CardEmbedding
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # Lower-bound floor for the worst Gauss period `M = max_{b≠0} ‖η_b‖` (BGK floor side, #444)
 
@@ -55,6 +51,11 @@ residual.  No `sorry`, no fake QED.
 
 Issue #444 (floor side of the BGK two-sided `Θ(√(n log m))`).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

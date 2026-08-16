@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (wf-S11 MGF rate monotonicity)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_layercake_moment
 
-set_option linter.style.longLine false
-
 /-!
 # S11 MGF rate monotonicity — lower-rate concentration is automatic
 
@@ -26,6 +24,9 @@ Honest scope: this does **not** prove the MGF residual. It only removes a nuisan
 once a uniform MGF/survival estimate is available at some working rate, all lower rates are free, with
 constant degraded only by the explicit `1/c'` in the prize chain. No CORE closure, no capacity claim.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open Real

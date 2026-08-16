@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf5M3_crossstep_ceiling
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A constraint lemma: the loose Lam–Leung ceiling alone cannot discharge `M3CrossStepBound` for `r ≥ 2` (Issue #444)
 
@@ -67,6 +63,11 @@ loose-ceiling route) for `r ≥ 2`, with the exact slack. A walled lane mapped p
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

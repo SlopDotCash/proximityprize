@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteMomentAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The CONCRETE √q-completion ceiling on the worst period for torsion subgroups (#444)
 
@@ -35,6 +32,10 @@ file is pure consolidation: it states the well-known completion ceiling at the w
 the prize SAVING can be cited against a concrete in-tree quantity. CORE `M(μ_n) ≤ C·√(n·log(p/n))`
 stays OPEN — no cancellation/anti-concentration/saving is claimed here.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

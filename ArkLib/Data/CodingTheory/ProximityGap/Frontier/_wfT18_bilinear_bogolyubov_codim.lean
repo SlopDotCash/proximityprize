@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T18 (#444, localId G4-3): the bilinear-Bogolyubov codimension cover of the difference
   incidence `{(x,y) : x-y ∈ μ_n}` REDUCES-TO-WALL (F0; mass-vacuity = F6/A12)
@@ -92,6 +89,10 @@ and collapses back to a scalar 2nd-moment of `η`, landing on F1 as well.
 NONE of these prove the prize. They prove the candidate's machinery is vacuous at `β = 4`, i.e. it
 REDUCES-TO-WALL (F0; mass-vacuity = F6/A12). Honesty contract: no prize bound is asserted.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.T18BilinearBogolyubov
 

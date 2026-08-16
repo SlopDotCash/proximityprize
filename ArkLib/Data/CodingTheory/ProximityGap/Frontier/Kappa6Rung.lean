@@ -8,8 +8,6 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMoment
 
-set_option linter.style.longLine false
-
 /-!
 # The `r = 3` Wick / `κ₆` RUNG for the DC-subtracted Gauss-period moment (Issue #444, route [cumulant])
 
@@ -92,6 +90,9 @@ NOT proven (the honest open inputs, named as hypotheses, NOT discharged):
 - `scripts/probes/probe_kappa6_rung{,2,3}.py` — exact char-`p` energy sweeps, proper subgroups.
 - [ABF26] ePrint 2026/680 (the Proximity Prize). Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Kappa6Rung
 

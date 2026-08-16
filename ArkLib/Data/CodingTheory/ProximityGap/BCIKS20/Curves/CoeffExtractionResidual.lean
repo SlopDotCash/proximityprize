@@ -7,6 +7,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtraction
 
+/-!
+# CoeffExtractionResidual
+
+Module docstring for `CoeffExtractionResidual.lean`.
+-/
+
+
 namespace ProximityGap
 
 set_option linter.unusedSectionVars false

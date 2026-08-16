@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodLowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.SidonSubgroupClosed
 
-set_option maxHeartbeats 1000000
-
 /-!
 # The energy floor REFUTES "Shaw Flatness" — a novel, falsifiable, fully-proven theorem (#389/#371)
 
@@ -30,6 +28,9 @@ This is the closed mathematical content behind `probe_shaw_flatness_refute.py` (
 `B = Θ(√(n·log(q/n)))`): here the `√2` constant is refuted with a *proof*, in the prize regime.
 Axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
+
+set_option maxHeartbeats 1000000
+
 
 open Finset Polynomial
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

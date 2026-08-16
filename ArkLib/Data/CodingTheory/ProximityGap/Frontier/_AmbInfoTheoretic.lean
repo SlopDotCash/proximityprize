@@ -7,10 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A7-info — the INFORMATION-THEORETIC / COMPLEXITY bound on `M` (#444)
 
@@ -155,6 +151,11 @@ Parseval-frozen nonnegative counts).  We do NOT claim the escape; we prove the r
 * `InfoTheoreticReducesToMGF` — the named verdict Prop: the prize follows from (F3) given a
   sub-Gaussian MGF, the single missing input, which is outside both obstruction hypotheses.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

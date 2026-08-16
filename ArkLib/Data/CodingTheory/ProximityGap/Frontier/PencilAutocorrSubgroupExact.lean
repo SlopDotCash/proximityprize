@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrelation
 
-set_option linter.style.longLine false
-
 /-!
 # The EXACT subgroup autocorrelation: `|H ∩ ρ·H| = |H|·[ρ∈H]` (#444)
 
@@ -47,6 +45,9 @@ LEVER-K / Fisher double-count cannot beat Johnson. NON-MOMENT, field- and thickn
 EXTEND-proven (consumes `subgroup_subset_dilate_self` + `dilate`/`mem_dilate`). No
 capacity/beyond-Johnson/cliff-at-n/2 claim. `CORE M(μ_n) ≤ C·√(n·log(q/n))` OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

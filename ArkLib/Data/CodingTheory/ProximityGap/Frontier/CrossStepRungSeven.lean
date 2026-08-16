@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungSix
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E8ClosedForm
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The `r = 7` cross-step rung from the exact `E_7`, `E_8` closed forms (#444)
 
@@ -44,6 +40,11 @@ subtraction window `n ≥ 64`. This is a concrete frontier extension only: it do
 `∀ r` statement, does not transfer char-`0` closed forms to char `p` at prize depth, and does not
 touch CORE.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

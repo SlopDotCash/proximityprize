@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 import ArkLib.Data.CodingTheory.ProximityGap.IncidenceDeviationCharSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Both unconditional bounds on the BGK character sum, proven (#444/#334)
 
@@ -33,6 +30,10 @@ it to `√(n log q)` (the lower bound shows that target is within a `√log q` f
 prize bound is essentially the truth). Those refinements are NOT in this file; the elementary
 two-sided pin is.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvBGKPin
 

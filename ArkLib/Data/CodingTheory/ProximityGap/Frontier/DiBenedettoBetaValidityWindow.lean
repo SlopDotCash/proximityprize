@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BGKExponentReduction
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # di Benedetto Thm 3.1: the β-validity window and its nontriviality edge β = 191/40 (#444)
 
@@ -53,6 +50,10 @@ which it says nothing — both ≫ the prize `1/2`. It neither proves nor dispro
 pins the headline `31/2880` to `rawExponent 4`. ASYMPTOTIC-CLAIM GUARD: no capacity/beyond-Johnson
 claim, cliff untouched. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.DiBenedettoBetaValidityWindow
 

@@ -7,9 +7,6 @@ import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Data.Nat.Choose.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The vanishing second-leading falling-factorial coefficient `c_{r-1} = 0` (#444, lane S1)
 
@@ -90,6 +87,10 @@ slack the spurious char-`p` term must fit inside (`_CharZeroLamLeungSlackLower`)
 recursion on the coefficient ladder, not a closure of the prize. `CORE M(μ_n) ≤ C√(n log(p/n))`
 UNCHANGED/OPEN. Issue #444, lane S1-vanishcoeff.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.ShawVanishingCoefficient
 

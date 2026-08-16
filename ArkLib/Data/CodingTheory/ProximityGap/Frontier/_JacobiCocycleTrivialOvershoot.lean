@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleDispersion
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # The trivial-cocycle baseline OVERSHOOTS the prize target in the thin regime (constraint lemma)
 
@@ -38,6 +33,12 @@ prove the GENUINE cocycle satisfies it (that is the open `JacobiCocycleDispersio
 baseline/constraint identity: it pins the size of the gap the genuine cocycle must close, nothing more.
 NO CORE / cancellation / completion / anti-concentration / moment-saving / capacity claim. CORE OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleTrivialOvershoot
 

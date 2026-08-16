@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Johnson-range overhead vs the exact production budget
 
@@ -29,6 +26,10 @@ larger by the overhead factor, or one needs the genuinely above-Johnson/budget-s
 This is pure scale bookkeeping.  It does not assert or refute any MCA theorem, and it does not touch
 the BGK/Paley core.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.JohnsonOverheadTightBudgetGate
 

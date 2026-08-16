@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfL3_char0_prize_moment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS5_theta_count_wick
 
-set_option linter.style.longLine false
-
 /-!
 # wf-S5↔L3 weld: the UNCONDITIONAL below-girth char-`p` prize transfer (#444, lane wf-S5/L3)
 
@@ -55,6 +53,9 @@ the proven char-`0` shape, asserted ONLY on the spur-free corner.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 open ArkLib.ProximityGap.NegationClosedWalk

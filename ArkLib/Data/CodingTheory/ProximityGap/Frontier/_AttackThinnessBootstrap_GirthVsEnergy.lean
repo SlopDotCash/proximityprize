@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoExcessOnsetThreshold
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `_AttackThinnessBootstrap_GirthVsEnergy` — why the Sidon/`B_h`-girth route cannot bound the energy (#444)
 
@@ -101,6 +98,10 @@ prove it, and confirms the correct open kernel `A_K ≤ Wick_K` is the one still
   `_AvCP_AAPKernelCountermodel.lean` (the bad-prime `W_K>0` countermodel).
 - [ABF26] ePrint 2026/680 (issue #444).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AttackThinnessBootstrapGirthVsEnergy
 

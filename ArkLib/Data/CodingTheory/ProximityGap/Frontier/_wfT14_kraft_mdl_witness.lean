@@ -10,12 +10,6 @@ import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Real.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-set_option autoImplicit false
-
 /-!
 # wf-T14 (#444): Kolmogorov / MDL incompressibility of the worst-frequency witness — REDUCES-TO-WALL (F0/F1)
 
@@ -80,6 +74,13 @@ This file PROVES the abstract Kraft count (it is true) AND proves that the candi
 which is a structural in-tree fact, NOT an extra assumption about the prime.  Everything is
 axiom-clean (`propext, Classical.choice, Quot.sound`; no `sorryAx`).  Verdict: REDUCES-TO-WALL.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.WfT14
 

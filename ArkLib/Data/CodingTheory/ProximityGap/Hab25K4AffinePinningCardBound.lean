@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Hab25CaptureKernel
 import ArkLib.Data.CodingTheory.ProximityGap.Hab25AffineCapture
 import ArkLib.Data.CodingTheory.ProximityGap.Hab25Johnson
 
-set_option linter.unusedSectionVars false
-set_option maxHeartbeats 1000000
-
 /-!
 # K4 cell card bound from an *unconditional* affine-pinning family (#389, Johnson lane)
 
@@ -30,6 +27,10 @@ threshold dichotomy.
 This is the exact shape the K4 curve-capture consumers need; the deep content left is K4 itself
 (supplying the unconditional affine pinning), which stays the named open obligation.
 -/
+
+set_option linter.unusedSectionVars false
+set_option maxHeartbeats 1000000
+
 
 open Finset
 open CodingTheory.ProximityGap.Hab25Core

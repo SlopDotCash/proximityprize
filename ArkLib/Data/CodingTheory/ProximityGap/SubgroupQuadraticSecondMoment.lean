@@ -8,8 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.CharP.Lemmas
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Subgroup QUADRATIC Gauss-sum second moment, exactly, with NO Weil bound (Issue #232, ABF26).
 
@@ -43,6 +41,9 @@ case** (the deep-interior pin, which needs Weil's character-sum bound = RH for c
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 - A. Weil, *On some exponential sums*, PNAS 1948 (the per-frequency `√q` bound, NOT used here).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

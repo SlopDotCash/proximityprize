@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ResonanceStickelbergerCeilingDiagnostic
 
-set_option autoImplicit false
-
 /-!
 # Door-(ii) constraint: the phase-aligned resonator is NON-REALIZABLE (issue #444, Lane 3)
 
@@ -39,6 +37,9 @@ Honesty (§6 contract): this is a Lane-3 constraint lemma (a refuted-lever lock 
 no-fifth-door), not a CORE result. It proves the phase-aligned resonator is non-realizable; it does
 NOT prove any bound on `M` beyond the already-in-tree `‖η_b‖ ≤ √q`.
 -/
+
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

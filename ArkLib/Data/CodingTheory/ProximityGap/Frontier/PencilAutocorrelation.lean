@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # LEVER K: the dilation-pencil shared-root count IS the multiplicative autocorrelation (#407)
 
@@ -66,6 +64,9 @@ coset-saturation that blocks the general `t = k+2` pencil).
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

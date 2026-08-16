@@ -10,9 +10,6 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): the dyadic coherence tower telescopes EXACTLY to root = (∏ coherences)·leafMass (#444)
 
@@ -45,6 +42,10 @@ Scope: pure ordered-field telescope algebra.  No CORE / cancellation / anti-conc
 completion / capacity claim — this is the faithful algebraic bridge that makes "the prize is the
 coherence-tower product times the leaf mass" a kernel-checked identity rather than a prose assertion.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVCoherenceTowerTelescope
 

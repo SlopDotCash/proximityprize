@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Riemann–Hilbert / equilibrium-measure edge: a TWO-SIDED pin of `M` at the recurrence turnover (#444, form D)
 
@@ -77,6 +75,9 @@ of the `η`-measure's Jacobi matrix.  The deliverable is a **two-sided pin** tha
   the empirical near-symmetry of `Re η_b` (recorded as a hypothesis `hA0`/the `A = 0` idealization),
   NOT proven from the arithmetic.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.RHTurnover
 

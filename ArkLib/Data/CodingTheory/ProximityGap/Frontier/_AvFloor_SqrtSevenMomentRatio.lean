@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_SqrtFiveMomentRatio
 
-set_option autoImplicit false
-
 /-!
 # A sharper `√7·√n` moment-ratio LOWER bound on the Paley/BGK maximum `M` (issue #444 — floor)
 
@@ -58,6 +56,9 @@ This is the next rung of the LOWER half of the prize (the floor) made axiom-clea
 substrate. It does NOT close CORE (an UPPER bound): the floor only certifies that the honest value
 `M` is at least `√7·√n` asymptotically, sharpening the gap to the conjectured `√(n·log(p/n))`.
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KelleyOwenDilationPencil
 
-set_option linter.style.longLine false
-
 /-!
 # LEVER K, graded: the sunflower (common-`M`-core) dilation-pencil count (#407/#444)
 
@@ -60,6 +58,9 @@ sunflowers (`scripts/probes/probe_sunflower_pencil.py`): every common-`M`-core f
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

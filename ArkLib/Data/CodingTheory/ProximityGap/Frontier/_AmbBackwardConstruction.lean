@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A3-backward — the BACKWARD-DERIVED Gauss-sum constraint and the precise missing input (#444)
 
@@ -144,6 +140,11 @@ missing brick, both now machine-checked.
 * `BackwardReducesToGaussPhaseFlatness` — the named verdict Prop: the prize is equivalent to
   Gauss-phase flatness, the precise missing input, which is the √p-vacuity wall in phase form.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Complex
 

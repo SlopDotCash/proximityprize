@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DyadicJacobiCocycleNonContraction
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Single-defect strict DEFICIT: one off-aligned phase forces sub-saturation
 
@@ -34,6 +29,12 @@ sharp companion to the qualitative mechanism. It does NOT lower-bound the defici
 `JacobiCocycleDispersion`, untouched. NO CORE / cancellation / completion / anti-concentration /
 moment-saving / capacity claim. Prize CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleSingleDefectDeficit
 

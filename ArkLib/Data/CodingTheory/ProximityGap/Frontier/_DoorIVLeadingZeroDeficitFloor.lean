@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDeficitBudgetBoundedExceptions
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: the LEADING-ZERO-DEFICIT block confines the dilation saving to a thin tail (#444)
 
@@ -42,6 +39,10 @@ sub-`((log 2)/2)·a`) tail cannot reach the `√n` prize scale.
 It does **NOT** lower-bound the true `M(μ_n)` (the open CORE) and asserts nothing about achievability.
 Lane-3 constraint lemma; CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVLeadingZeroDeficitFloor
 

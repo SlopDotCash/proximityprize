@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
   Round 10 / Angle 4 — Ethereum Proximity Prize (ABF26 / ArkLib #232)
 
   THE LIST UPPER BOUND AND THE JOHNSON FRONTIER.
@@ -49,7 +51,6 @@ Authors: ArkLib Contributors
 
   Imports: ONLY Mathlib.  No `sorry`, no `native_decide`, no axioms beyond the standard three.
 -/
-import Mathlib
 
 open scoped BigOperators
 open Finset

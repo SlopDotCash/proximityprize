@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The 2-power tower spike: per-level cross-parity is EXACT, the blow-up is β-gated (#407)
 
@@ -81,6 +78,10 @@ along the worst trajectory, which this file leaves as the named hypothesis `Leve
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 - substrate: `SubgroupGaussSumDilationRecursion.lean` (the exact single-level recursion).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 

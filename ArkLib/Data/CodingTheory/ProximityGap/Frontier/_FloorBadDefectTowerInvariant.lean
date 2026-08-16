@@ -6,8 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # §9 floor-bad localization: the defect resultant's ramification locus is TOWER-INVARIANT
 
@@ -58,6 +56,9 @@ verified in-script via sympy).
 - `_FloorBadRamificationDisjoint.lean` (`c2235ea2b`) — floor-bad `97` ∉ ramification `{17,257}` (sibling).
 - `_AvD2_LinnikWindowCountRequired.lean` — Linnik existence ⊬ divisibility (floor closure → wall).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FloorBadTower
 

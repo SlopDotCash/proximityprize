@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DyadicJacobiCocycleNonContraction
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # The Jacobi-cocycle ALIGNMENT MECHANISM: cancellation forces phase non-alignment
 
@@ -41,6 +36,12 @@ anti-concentration / moment-saving / capacity claim. Prize CORE stays OPEN. The 
 kernel-checked, that the prize budget cannot be met by a configuration close to the trivial aligned
 worst case — any prize-meeting cocycle is necessarily phase-dispersed.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleAlignmentMechanism
 

@@ -5,12 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SymmetricEtaRealBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # `η_{−b} = conj(η_b)` always, and `η_{−b} = η_b` on symmetric `G` (frequency parity) (#444)
 
@@ -52,6 +46,13 @@ not bound any single one. Issue #444.
 - `SubgroupGaussSumFourthMoment` (internal `conj(η_b) = Σ ψ(−(b·y))` pattern, here exposed standalone).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

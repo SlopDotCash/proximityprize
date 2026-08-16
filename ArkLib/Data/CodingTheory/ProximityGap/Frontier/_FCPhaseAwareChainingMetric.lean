@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
-set_option autoImplicit false
-
 /-!
 # Phase-aware chaining metric: the sqrt n validity defect of the L2-embedding metric (#444, FC angle)
 
@@ -39,6 +37,9 @@ conjugate, that psi_c - psi_c' is NOT aligned with 1 (the n signed coordinates c
 per-conjugate sub-Gaussian right-tail (E_r <= Wick to depth r* ~ log p) = the wall. This file proves
 the defect axiom-clean; it does NOT close the prize.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.FCPhaseAwareChainingMetric
 

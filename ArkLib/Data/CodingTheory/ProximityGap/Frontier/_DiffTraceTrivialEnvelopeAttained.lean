@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceTrivialEnvelope
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the equality case of the variance-core trivial CEILING (#444)
 
@@ -44,6 +40,11 @@ NO CORE / cancellation / completion / moment-saving / capacity / sub-Poisson-upp
 equality CASE of the trivial CEILING side.  The prize needs the still-open improvement of the ceiling
 to a genuine anti-concentration bound; here we only characterise when the trivial ceiling is met.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceTrivialEnvelopeAttained
 

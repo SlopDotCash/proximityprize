@@ -8,8 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
 import ArkLib.Data.CodingTheory.ProximityGap.GSFactorExtract
 import ArkLib.ToMathlib.BivariateDegreeToolkit
 
-set_option linter.style.longLine false
-
 /-!
 # GAP-NZ: the `Z`-specialization of the GS interpolant is nonzero for all but few parameters
 
@@ -35,6 +33,9 @@ parameter set larger than that, a good `z` exists.
 
 These are the generic discharge of `hQz_ne`; the BCIKS20 §5 keystone consumes them directly.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial Trivariate Finset
 open scoped Polynomial

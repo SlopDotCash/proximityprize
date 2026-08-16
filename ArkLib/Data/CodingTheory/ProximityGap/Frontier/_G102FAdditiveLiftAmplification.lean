@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G100FIntegerLiftSmallDiffCounting
 import Mathlib.Algebra.Order.Chebyshev
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G102F (#466, 2026-07-10): the ADDITIVE lift across `√p` — per-`z` amplification of the
   G80Q terminal object into the difference set `H − H`, with exact multiplicity bookkeeping,
@@ -83,6 +80,10 @@ already fatal in the G80W consumer. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean; no `sorry`, no new axioms.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

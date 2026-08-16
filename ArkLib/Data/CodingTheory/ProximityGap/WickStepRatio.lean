@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Wick step-ratio telescoping (#444)
 
@@ -24,6 +22,9 @@ Honest scope: this is only a consumer bridge. It does not prove the char-`p` ste
 period energies, hence does not close CORE. It is the precise algebraic reduction target surfaced by the
 latest probes: prove the step ratio, and Wick follows; fail the step ratio, and this bridge gives no help.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.WickStepRatio
 

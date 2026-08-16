@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCocycleNoRandomEdge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVExcessIsMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) object moment-corridor: `realSup` is pinned to `[iidSup, iidSup + Δ]` (#444)
 
@@ -44,6 +41,10 @@ extreme-value floor.
 Probes: `scripts/probes/probe_dooriv_jacobi_cocycle_dispersion_magnitude.py`,
 `scripts/probes/probe_dooriv_cocycle_excess_structure.py`. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVObjectMomentCorridor
 

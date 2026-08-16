@@ -8,8 +8,6 @@ import Mathlib.Data.Nat.Totient
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 
-set_option linter.style.longLine false
-
 /-!
 # The determinant-method height collapse (Proximity Prize #444, lens [determinant-method])
 
@@ -65,6 +63,9 @@ identification is the in-tree `CyclotomicNormDefectThreshold` chain (cited, not 
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DeterminantMethodHeightCollapse
 

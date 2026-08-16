@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.NumberField.House
 import Mathlib.RingTheory.Norm.Basic
 import Mathlib.FieldTheory.PrimitiveElement
-set_option linter.style.longLine false
 
 /-!
 # Norm bound for sums of roots of unity (#407 — the deep-moment anomaly fragment)
@@ -21,6 +20,8 @@ Corollary (`prime_not_dvd_norm_sum_rootsOfUnity`): if `p` is a rational prime wi
 then `p ∤ N(α)` unless `N(α)=0` — so over `ℚ(ζ_n)` (`[K:ℚ]=φ(n)`) a nonzero sum of `≤ m` roots of unity
 is never `≡ 0 mod 𝔭` once `m^{φ(n)} < p`. Axiom-clean.
 -/
+set_option linter.style.longLine false
+
 
 open Finset NumberField Module
 

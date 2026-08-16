@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrSubgroupExact
 
-set_option linter.style.longLine false
-
 /-!
 # The UNIFORM r-th unsigned subgroup autocorrelation moment: `∑_ρ |H ∩ ρ·H|^r = |H|^{r+1}` (#444)
 
@@ -42,6 +40,9 @@ field- and thickness-universal, EXTEND-proven (consumes `subgroup_autocorr_exact
 `r = 1` (`|H|²`, double-count) and `r = 2` (`|H|³`, energy). No capacity / beyond-Johnson /
 cliff-at-n/2 claim. `CORE M(μ_n) ≤ C·√(n·log(q/n))` OPEN — the signed phase carries the wall.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

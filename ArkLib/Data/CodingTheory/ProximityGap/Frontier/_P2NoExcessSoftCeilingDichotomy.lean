@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # P2: the No-Excess soft-ceiling DICHOTOMY for the di Benedetto beat (#444)
 
@@ -73,6 +70,10 @@ open core; the best UNCONDITIONAL bound remains the MRSS `t₂ = 49/20`, i.e. th
 overwhelmingly likely TRUE, so the beat is morally correct — but a PROOF needs the cyclotomic count
 bound, not new here. CORE `M(μ_n) ≤ C√(n·log(p/n))` UNCHANGED. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.P2NoExcessSoftCeiling
 

@@ -8,9 +8,6 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.IntervalCases
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `A1_SOS_LadderN16` — the exact SOS / Positivstellensatz ledger for the saddle bound at `n = 16`
   (#444, angle **A1-SOS-positivstellensatz**)
@@ -91,6 +88,10 @@ sequence `(d_K)` to be a Hamburger moment sequence (PSD Hankel); it is not, alre
 That is the precise place the computational SOS route fails — not "phase-blind" hand-waving but a
 specific negative `2×2` Hankel determinant.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.A1SOSLadderN16
 

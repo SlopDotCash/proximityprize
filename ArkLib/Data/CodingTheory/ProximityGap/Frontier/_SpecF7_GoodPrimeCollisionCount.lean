@@ -8,9 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._SpecS3_GaloisReduction
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.NumberTheory.Divisors
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Spec F7 — the COMBINATORIAL half of the good-prime collision count (#444)
 
@@ -68,6 +65,10 @@ the BGK / good–bad-prime boundary. This is **NOT** a δ\* pin and does **NOT**
 - Lagarias, Odlyzko. *Effective versions of the Chebotarev density theorem*. 1977.
 - Thorner, Zaman, *A unified and improved Chebotarev density theorem* (effective PNT-in-AP).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

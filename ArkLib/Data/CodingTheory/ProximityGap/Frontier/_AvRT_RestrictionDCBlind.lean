@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The restriction / extension `L^q` angle reduces to the moment bridge, and its
 # **natural `L^∞` endpoint is DC-blind** (#444/#334)
@@ -54,6 +50,11 @@ phase-blind (`E_r` uses the additive arithmetic of `μ_n`), but its `L^∞` endp
 its DC-subtracted form is the moment bridge, which stalls at the same Wick-energy crossover the
 whole project hits. No new bound on the MAX conjugate; the route collapses to the energy average.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvRT
 

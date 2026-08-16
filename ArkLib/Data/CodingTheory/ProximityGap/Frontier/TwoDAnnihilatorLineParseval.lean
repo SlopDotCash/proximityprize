@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option linter.style.longLine false
-
 /-!
 # The ≥2-D annihilator-line incidence is L²/AVERAGE-measurable too — `B` stays quarantined (#444)
 
@@ -76,6 +74,9 @@ sub-question (the multi-D incidence energy is L²/average, `B` quarantined to L�
 Axiom-clean; pure reindexing of `subgroup_gaussSum_secondMoment` along a unit-multiplication
 bijection.  No new analytic input, no field-size or regime hypotheses.  Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

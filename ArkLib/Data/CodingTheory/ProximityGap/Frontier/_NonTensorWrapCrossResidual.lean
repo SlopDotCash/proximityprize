@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # NON-TENSOR depth-`r` energy ladder via the **wraparound-split of the cross term** (#444, candidate e6)
 
@@ -75,6 +71,11 @@ it at `r ≈ log p` where `W_r > 0` (the wall). NO `sorry`, NO `native_decide`, 
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.NT5WrapCrossSplit
 

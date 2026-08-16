@@ -9,9 +9,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane 1/3: the negation symmetry `-1 ∈ μ_n` forces the worst-b sum REAL and the
 # half-plane occupancy BALANCED — so the (dilation-NON-invariant) interval-occupancy feature is
@@ -59,6 +56,10 @@ Scope: a finite multiset (`Finset`) of `ℂ` closed under `conj`. Definitional /
 CORE / cancellation / completion / moment / anti-concentration / capacity claim** — a refutation of a
 concrete candidate selector with its mechanism, in the spirit of the campaign meta-theorem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVNegationSymmetryRealAndBalanced
 

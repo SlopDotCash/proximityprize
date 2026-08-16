@@ -7,9 +7,6 @@ import Mathlib.Combinatorics.Additive.Energy
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `BSG L1a`: representation-function normalization `∑ r(x) = |A|²`
 
@@ -26,6 +23,10 @@ The proof is pure double counting: `Finset.sum_card_fiberwise_eq_card_filter` pa
 difference lies in `A - A` (`Finset.sub_mem_sub`), so the resulting filter is the whole product
 `A ×ˢ A`, of cardinality `|A| · |A| = |A|²`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.BSG.L1a
 

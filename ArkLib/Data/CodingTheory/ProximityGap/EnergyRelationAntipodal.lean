@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Energy relations among 2-power roots are antipodally balanced (#389) — the structural core of K1
 
@@ -26,6 +24,9 @@ the moment ladder, gives the dyadic square-root-cancellation. (Char-0 statement;
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

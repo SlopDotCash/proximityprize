@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.style.openClassical false
-
 /-!
 # LANE OC-PIECE-B (#466, Opus core, 2026-07-10): the HEIGHT-NORM CEILING that caps the
   r369 piece-(b) ideal-stacking / rank-height route — axiom-clean STRUCTURAL no-go.
@@ -97,6 +93,11 @@ concrete instantiation `H = 6`, `φ = n/2`.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.style.openClassical false
+
 
 open scoped BigOperators
 

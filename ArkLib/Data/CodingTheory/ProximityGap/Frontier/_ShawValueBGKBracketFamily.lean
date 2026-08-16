@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueBGKBracket
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-2: the FAMILY-LEVEL conditional BGK sharp Shaw-value bracket `[1/√Lᵢ, 1]` (#444)
 
@@ -45,6 +42,10 @@ file proves NO prize inequality, gives NO anti-concentration / cancellation esti
 BGK ceiling holds at NO instance.  The open door-(iv) problem (push the Shaw value from the BGK ceiling
 `1` down to the genuine prize threshold `C/√Lᵢ`) is exactly as open as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueBGKBracket
 

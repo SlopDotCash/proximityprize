@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 # di Benedetto is worse-than-trivial at the prize thinness (#444)
 
 This brick pins the **di Benedetto retraction** (§5 of the thesis) to the *actual* prize parameter, machine-checked.
@@ -26,7 +28,6 @@ headline corresponds to a *thick* `β ≈ 1.78`, not the prize.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 
 namespace ProximityGap.DiBenedettoPrizeRegimeVacuous
 

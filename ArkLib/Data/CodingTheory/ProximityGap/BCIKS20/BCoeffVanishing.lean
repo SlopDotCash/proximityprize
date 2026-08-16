@@ -7,6 +7,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HenselNumerator
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightDivisibility
 import ArkLib.ToMathlib.WeightLambdaCalculus
 
+/-!
+# BCoeffVanishing
+
+Module docstring for `BCoeffVanishing.lean`.
+-/
+
+
 open scoped BigOperators
 open Finset Polynomial Polynomial.Bivariate
 open BCIKS20AppendixA

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CrossStepRungSlackDepletionSix
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E8ClosedForm
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The rung-slack/depletion-defect bridge at `r = 7` (#444)
 
@@ -22,6 +19,10 @@ It is an exact algebraic reformulation: the `r = 7` rung is equivalent to defect
 nonnegative polynomial certificate.  This is still finite char-`0` bookkeeping only; no `∀ r`, no
 char-`p` transfer at prize depth, and no CORE/capacity claim.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.ShawDepletionSeven
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (wf-S11)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS1_transfer_slack_prize
 
-set_option linter.style.longLine false
-
 /-!
 # S11 — FRESH/ALIEN angle: the SPECTRAL-DEFECT / sub-exponential-tail route to `K`-boundedness
 
@@ -64,6 +62,9 @@ Tag: CONCENTRATION-REDUCED. Status of the residual: OPEN (= BGK).
 
 `#print axioms` is `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.Frontier.WFS1

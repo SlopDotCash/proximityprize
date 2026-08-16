@@ -7,8 +7,6 @@ import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Data.Nat.Choose.Central
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Round 8 (Issue #232, ABF26) — the COSET WALL: why the algebraic concentration is super-polynomial
 # only near capacity, and merely polynomial in the deep interior.
@@ -38,6 +36,9 @@ All results are `sorry`-free and axiom-clean.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
   Tracking issue #232.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Round8CosetWall
 

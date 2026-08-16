@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteShawValueBridge
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.WorstPeriodSqrtNFloor
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The CLEAN thin-regime Shaw-value floor `1/√(2L) ≤ Sh(M(μ_n))` (#444)
 
@@ -47,6 +43,11 @@ NO completion, NO moment, NO cancellation, NO capacity claim.  CORE `M(μ_n) ≤
 (equivalently `Sh(M(μ_n)) = O(1)`) stays OPEN; it lives strictly inside the proven
 `1/√(2L) .. √(n/L)` corridor supplied here.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.I031DilationOrbitReduction

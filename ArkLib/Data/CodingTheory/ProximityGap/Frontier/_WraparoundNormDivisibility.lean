@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+import Mathlib.NumberTheory.Divisors
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+
+/-!
 # The wraparound as cyclotomic-norm divisibility (#444)
 
 Target (2) of the scheduled attack: reframe the wraparound `W_r(p)` as a divisibility count over short
@@ -34,9 +38,6 @@ new; it controls the *average*, not the *supremum*.  We record both.
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
-import Mathlib.NumberTheory.Divisors
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 namespace ProximityGap.WraparoundNormDivisibility
 

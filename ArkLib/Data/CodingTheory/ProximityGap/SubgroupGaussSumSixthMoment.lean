@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The subgroup Gauss-sum SIXTH MOMENT = `q · E₃(G)` (next rung of the moment ladder, #357/#389)
 
@@ -32,6 +30,9 @@ sharpens the regime in which the moment method already gives sub-Johnson behavio
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

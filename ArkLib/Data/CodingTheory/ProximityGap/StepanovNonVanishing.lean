@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Issue #232 — the Stepanov non-vanishing, PROVEN (squarefree / integrally-closed argument).
 
@@ -56,6 +54,9 @@ All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.
 - Stepanov; Schmidt, *Equations over Finite Fields*; Kopparty, *The Weil bounds*; Bombieri (1973);
   Kowalski, *Exponential sums over finite fields, an elementary approach*.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial
 

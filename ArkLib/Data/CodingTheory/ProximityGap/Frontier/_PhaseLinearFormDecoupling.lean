@@ -9,9 +9,6 @@ import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # A3 — Linear-form decoupling of the Gauss period (#444)
 
@@ -91,6 +88,10 @@ that the dilated `{b·(x_j±x_k)}` actually equidistribute uniformly over the `m
 looking but provably-equivalent surface. We do NOT discharge it; we name it and prove the decoupling
 machinery it feeds. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.PhaseLinearFormDecoupling
 

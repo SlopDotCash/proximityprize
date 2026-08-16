@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # G281: a perfect Eulerian carry-shape theorem cannot reach the CORE gate (#466)
 
@@ -90,6 +88,9 @@ remains **OPEN / ON-BGK**.
   `p·J ≥ B`.
 - Four `decide` certificates `L·p·den < B·num` at `(P1,P2) × (r=5,6)` from the exact probe.
 -/
+
+set_option linter.style.longLine false
+
 
 set_option autoImplicit false
 

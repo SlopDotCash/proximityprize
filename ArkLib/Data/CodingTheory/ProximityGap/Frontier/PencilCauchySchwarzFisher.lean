@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilPairwiseBonferroni
 
-set_option linter.style.longLine false
-
 /-!
 # The Cauchy-Schwarz / Fisher double-count for the dilation pencil (#407/#444)
 
@@ -67,6 +65,9 @@ strictly tighter than the Bonferroni RHS everywhere.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

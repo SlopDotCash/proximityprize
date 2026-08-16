@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CliqueDecayPigeonholeVacuous
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Off-BGK substrate — the binding-rung free-orbit COLLAPSE is agreement-DEPTH-driven, not v₂-driven (#444)
 
@@ -107,6 +104,10 @@ HOW FAST.  We prove the former, NAME the latter, and REFUTE the `v₂`-pin detou
   depth-`m` agreement constraint cuts back to one free orbit at the binder).
 - `_MStarLognReduction.logBudgetReached` (the OPEN rate `m* = O(log n)` = BCHKS, NOT discharged).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.OffBGKAgreementDepthMerge
 

@@ -6,6 +6,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.MCAGS
 import ArkLib.Data.CodingTheory.ProximityGap.MCAGSBounds
 
+/-!
+# SolutionDisproof
+
+Module docstring for `SolutionDisproof.lean`.
+-/
+
+
 open scoped BigOperators
 
 namespace ArkLib.CodingTheory.Research

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.WraparoundKToConvergenceHub
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-
 /-!
 # From ordinary energy slack to the explicit wraparound `K^r` gate
 
@@ -22,6 +19,10 @@ The newer wraparound route consumes the same information in excess form:
 This file is the adapter between those two equivalent normalizations, and then composes it with the
 hub-facing wraparound bridge.
 -/
+
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+
 
 open AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumMoment

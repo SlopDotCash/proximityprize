@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#464)
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # RMT-universality no-go: a BOUNDED-DEPTH moment input (4-moment theorem) is provably insufficient
 to reach the prize per-frequency target `√(2 n ln q)` (#464, target `radical-RMT-universality`)
@@ -61,6 +58,10 @@ complementary to `_DoorIVFractionalMomentNoMaxGain` (envelope antitone in depth)
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #464.
 - Tao, Vu. *Random matrices: Universality of local eigenvalue statistics*. (the 4-moment theorem.)
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.RMTBoundedDepthUniversalityNoGo
 

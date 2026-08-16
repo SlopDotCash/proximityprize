@@ -3,7 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Data.Nat.Choose.Bounds
+import Mathlib.Tactic
+
+/-!
 ANGLE 3 — best-provable delta* upper bracket (Ethereum Proximity Prize, ABF26 / ArkLib #232).
 
 We work with the two list-size LOWER bounds and turn them into delta*-UPPER brackets,
@@ -34,10 +39,6 @@ the Johnson radius (the actual open prize direction) is NOT proven here. The ave
 symmetric list lower bounds are taken as hypotheses; the contribution is the *crossover and
 comparison arithmetic* plus a checked non-vacuity witness.
 -/
-
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic
 
 open Nat
 

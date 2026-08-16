@@ -9,8 +9,6 @@ import Mathlib.RingTheory.Norm.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.HeightGateAMGM
 import ArkLib.Data.CodingTheory.ProximityGap.HeightGateNormBound
 import ArkLib.Data.CodingTheory.ProximityGap.FpReductionHom
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # amgm-gate-wire: the TIGHT AM-GM bound wired into an END-TO-END height gate (#407)
@@ -49,6 +47,9 @@ trace API) and, fundamentally, the fact that no fixed mean-inequality exponent r
 The prize needs the BGK/Paley character-sum lane, not this gate.  This file makes the AM-GM bound
 *usable* (end-to-end gate), which it was not before.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Module
 

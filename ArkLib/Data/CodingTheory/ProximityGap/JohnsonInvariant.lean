@@ -8,10 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAGSBounds
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.MvPolynomial
 
-open scoped BigOperators Matrix NNReal
-
-namespace ArkLib.CodingTheory.Research
-
 /-!
   The Einstein Invariants of Polynomial Intersections.
   We formalize the mathematical "speed of light" for 1D algebraic curve intersections.
@@ -19,6 +15,11 @@ namespace ArkLib.CodingTheory.Research
   subgroups MUST satisfy these invariant geometric constraints, or else symmetrically
   collapse or expand the error topology.
 -/
+
+open scoped BigOperators Matrix NNReal
+
+namespace ArkLib.CodingTheory.Research
+
 
 variable {F : Type} [Field F] [Fintype F]
 

@@ -9,9 +9,6 @@ import Mathlib.Data.Nat.Log
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.NormNum
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `GoodPrimeFamilyDensity`: bad-prime count and density in the prize family (#444, thread T9)
 
@@ -84,6 +81,10 @@ secretly equals the prize.
 * Honest verdict: DERIVED density skeleton + isolated `R` as the open quantity. Does NOT close the
   prize and does NOT claim free choice of `p` resolves it.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.GoodPrimeFamilyDensity
 

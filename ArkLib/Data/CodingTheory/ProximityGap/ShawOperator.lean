@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
-set_option linter.style.longLine false
 
 /-!
 # The Shaw operator: the unified unknown of the Proximity Prize (#389, #371)
@@ -25,6 +24,8 @@ So `incidence = average + (|F|/|V|)·𝒮`, exactly and unconditionally. Since
 `δ* = sup{δ : max-far-line-incidence(δ) ≤ q·ε*}` (`MCAThresholdLedger`), δ\* is determined by the
 worst-case value of `𝒮` over far lines — the one open input, now a single named object. Axiom-clean.
 -/
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.LineIncidenceSpectral

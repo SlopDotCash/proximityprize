@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # G98 (#466): Guth–Maynard large-values / Halász–Montgomery Gram bootstrap for the period sup
 
@@ -122,6 +119,10 @@ The `√log` excess remains the open BGK/Paley wall, untouched.
 
 Issue #466, lane G98 (Guth–Maynard large-values transfer).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.G98LargeValuesGramBootstrap
 

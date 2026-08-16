@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The ORBIT-REDUCTION of the subgroup Gauss period (I031 foundation, #334/#357/#407)
 
@@ -41,6 +37,11 @@ Built on `SubgroupGaussSumDilationRecursion` (`dilate`, `eta_dilate`, `card_dila
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset AddChar
 

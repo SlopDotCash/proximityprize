@@ -7,9 +7,6 @@ import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.Polynomial.FieldDivision
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The prize-regime (split) weight-3 spurious collision: `Spur_2(17) ≥ 1` in `F_17` (Issue #444)
 
@@ -72,6 +69,10 @@ essential in the same mild sense (it is the `16 ∣ 17−1`, `μ_16 ⊆ F_17` pr
   (`baacb5c69`, `≡ 3 mod 4` exclusion); `ShortRelationNormBase.lean` (`a823e4658`, weight-2 base).
 - Probe: `scripts/probes/probe_spur_split_prize_regime.py`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Polynomial
 

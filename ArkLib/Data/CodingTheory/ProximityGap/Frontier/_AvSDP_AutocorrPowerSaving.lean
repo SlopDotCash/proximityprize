@@ -8,9 +8,6 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `AvSDP_AutocorrPowerSaving` — the DEGREE-2 SDP-DUAL bound on the house, a Paley-INDEPENDENT
   power-saving over the `√p` completion wall (#464, target **radical-LP-SDP-duality**)
@@ -79,6 +76,10 @@ below), NOT discharged here.
 
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvSDPAutocorr
 

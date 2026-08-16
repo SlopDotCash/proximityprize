@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # I031 Step (b)-(i): the matched-Gaussian covariance and the chaining-metric identity (#389)
 
@@ -45,6 +42,10 @@ is the per-period sub-Gaussian tail at depth, which the probes find empirically 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 

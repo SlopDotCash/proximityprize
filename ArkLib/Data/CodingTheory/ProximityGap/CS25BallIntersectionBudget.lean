@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallIntersectionBound
 
-set_option linter.style.longLine false
-
 /-!
 # CS25 #82, deliverable 2 (b): the off-support weight budget for ball intersections
 
@@ -28,6 +26,9 @@ off-diagonal estimate (see `CS25BallIntersectionWeightInvariant` for the weight 
 * `jointCoverCount_le_offSupport_card` — the resulting `jointCoverCount` upper bound by the
   off-support–budgeted set, the entry point to the explicit `q^{wt e}·V_{n−wt e}` decay bound.
 -/
+
+set_option linter.style.longLine false
+
 
 open scoped BigOperators ENNReal NNReal
 

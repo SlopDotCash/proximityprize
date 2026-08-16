@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Dilation homogeneity of the monomial divided difference (#444 / #407)
 
@@ -36,6 +33,10 @@ algebraic mechanism BENEATH the orbit law.
 
 All theorems reference the REAL in-tree `dividedDifferencePow` (from `SchurLagrangeBridge`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

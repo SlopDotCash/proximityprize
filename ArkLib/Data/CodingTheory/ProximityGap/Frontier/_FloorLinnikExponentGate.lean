@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Floor route sanity check: a Linnik exponent `5` is not a prize-scale bound
 
@@ -27,6 +24,10 @@ which is why the later TZ bridge uses a `TZPrimeSupply` witness in a window
 No analytic number theory is proved here. These are just the arithmetic guardrails that
 keep the route's proof obligations honest.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FloorLinnikExponentGate
 

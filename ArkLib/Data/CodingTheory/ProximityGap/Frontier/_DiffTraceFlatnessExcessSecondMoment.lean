@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceFlatnessExcessRange
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CAPSTONE — flatness excess is the normalized off-diagonal second moment (#444)
 
@@ -32,6 +28,11 @@ not an estimate: proving `flatnessExcess = o(1)` is exactly proving the off-diag
 
 No CORE / cancellation / completion / moment-saving / capacity claim is made.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceFlatnessExcessSecondMoment
 

@@ -8,9 +8,6 @@ import Mathlib.Data.Multiset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane B (#466 R10): the dyadic-tower TRANSFER OPERATOR is GAUGE — its spectrum is a
 reparameterization of the moment ladder, adding no invariant beyond the raw energies.
@@ -62,6 +59,10 @@ functional factors through the power-sum (moment) data. We state this cleanly:
 
 This is a **gauge/no-go record**, not a wall bound. CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.BTransferGauge
 

@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.EnergySlackToWraparoundK
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wfS11_subexp_tail_to_slack
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # From the S11 sub-exponential moment envelope to the convergence hub
 
@@ -21,6 +17,11 @@ This file adds the final hub-facing packaging: once the actual in-tree energy `r
 dominated by `|G|^r * M r`, the S11 envelope feeds the ordinary energy-slack adapter and lands in
 `ConvergenceHub.PrizeFloor`.
 -/
+
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumMoment

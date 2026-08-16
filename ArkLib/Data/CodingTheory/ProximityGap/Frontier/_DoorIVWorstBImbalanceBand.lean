@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVWorstBCoherentImbal
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst-`b` half-split is a STATIONARY `O(1)` band — dead from BOTH ends (#444)
 
@@ -55,6 +52,10 @@ a precisely-mapped non-tightness, **not** a CORE / cancellation / completion / m
 it does not bound `M(n)`; it certifies that the *coherent imbalanced half-split structure*, by itself,
 cannot move the `√`-frontier in either direction.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBImbalanceBand
 

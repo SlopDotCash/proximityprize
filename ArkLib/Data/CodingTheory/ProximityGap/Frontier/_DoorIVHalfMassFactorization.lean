@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.Normed.Field.Basic
 import Mathlib.Analysis.Normed.Group.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv): the prize size factors as coherence times half-mass (#444)
 
@@ -31,6 +28,10 @@ factorization and its consequence.
 Scope: definitional norm algebra over a normed field.  No CORE/cancellation/capacity claim — this is a
 faithful **reformulation** of where the open burden sits, in the spirit of the campaign meta-theorem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVHalfMassFactorization
 

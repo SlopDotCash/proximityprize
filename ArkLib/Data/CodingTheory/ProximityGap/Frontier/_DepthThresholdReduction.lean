@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 # The below-saddle depth threshold: onset ceiling is unconditional but vacuous at prize scale (#444)
 
 Target (B) of the round: can the unconditional good region `W_r = 0` (the onset ceiling) be *provably*
@@ -28,7 +30,6 @@ can.  This is the moment-necessity obstruction in geometric/lattice dress: a cou
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 
 namespace ProximityGap.DepthThresholdReduction
 

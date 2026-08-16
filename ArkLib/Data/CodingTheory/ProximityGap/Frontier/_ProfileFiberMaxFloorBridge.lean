@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorClosureContract
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._StackProfileFiberMax
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Profile-fiber maximizers feed the floor closure contract
 
@@ -31,6 +28,10 @@ It is not a prize proof.  It packages the remaining obligation:
 * profile representatives are exact fiber maximizers;
 * the scaled MCA budget is small enough.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open scoped NNReal ENNReal ProbabilityTheory
 open ProximityGap Code

@@ -7,10 +7,6 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Door IV, Lane 1: the worst-frequency coset **index** is prime-independently DELOCALIZED — no
 # fixed-residue / fixed-position selection rule grips it across primes.
@@ -59,6 +55,11 @@ This proves **nothing** about CORE and uses no moment / completion / energy. It 
 worst frequency carries no prime-independent index structure for a targeted anti-concentration bound to
 grip. CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ProximityGap.Frontier.DoorIVWorstIndexDelocalized
 

@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerCount
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
-set_option linter.unusedSectionVars false
 
 /-!
 # The signed period-power sum, in the canonical `zeroSumCount` vocabulary (#444, #407)
@@ -31,6 +30,8 @@ at `r ≈ log q` is the open BGK wall. `CORE  M(μ_n) ≤ C·√(n·log(q/n))  O
 
 Issues #444, #407.
 -/
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

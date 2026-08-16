@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-
 /-!
 # The Cayley TRACE-ZERO (no-self-loop) identity and the sign-forcing of the Paley spectrum (#444)
 
@@ -82,6 +77,12 @@ bricks. Issue #444 / #407.
 - `Frontier/_PaleyCayleyEigenvalue`, `Frontier/_CirculantTraceEnergy` (the eigen-equation, `tr=energy`).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

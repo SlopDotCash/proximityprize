@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FixedParameterLimitTransferGate
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Polynomial threshold exponents for fixed-parameter diagonal transfer
 
@@ -25,6 +22,10 @@ offset base `(n+2)`, a threshold `(n+2)^theta` lies below a diagonal scale `(n+2
 Thus a vertical/equidistribution theorem with an effective threshold exponent above the prize field
 exponent still misses the prize diagonal, even though it is true for each fixed `n` eventually.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.PolynomialThresholdDiagonalGate
 

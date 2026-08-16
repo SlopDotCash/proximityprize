@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListSupply
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Monotonicity of the sub-Johnson list bound (#389)
 
@@ -15,6 +13,9 @@ list-size problem) is monotone in both numeric budgets: weakening `L → L'` and
 This lets downstream consumers quote a loose upper bracket `(L', A')` without re-proving tightness of
 the witnessed `(L, A)`.  It loosens the budget only — it does **not** discharge the open core.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

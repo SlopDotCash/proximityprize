@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80KDivisorFirstMoment
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80J (#466, 2026-07-10): the DIVISOR SECOND MOMENT —
   `Σ_{y ≤ M} d(y)² ≤ M·(log₂M + 1)³` (axiom-clean pure Nat; KB §6 target).
@@ -34,6 +31,10 @@ OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

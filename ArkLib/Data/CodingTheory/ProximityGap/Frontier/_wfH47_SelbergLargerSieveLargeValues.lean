@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # H47 (#444, lane L2): Selberg / Gallagher larger sieve on the large-value set — REDUCES + VACUOUS
 
@@ -86,6 +83,10 @@ be `√A` larger and "the L¹→L^∞ gap IS the entire open problem."
 
 Issue #444, lane L2 (Selberg / larger sieve / parity problem).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.H47SelbergLargerSieve
 

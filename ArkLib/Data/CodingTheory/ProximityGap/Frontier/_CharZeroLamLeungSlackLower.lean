@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergyThreeExact
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The char-`0` Lam-Leung SLACK is exact and strictly positive (#444, wf-P2 open residual)
 
@@ -69,6 +66,10 @@ cliff-at-`n/2`. `CORE M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED/OPEN. Probe
 `Spur = A_r − E_r^ℤ = 0` through the faithfulness edge in the prize regime (`p≫n³`, `p≡1 mod n`,
 PROPER `μ_n`, never `n=q-1`), so `0 ≤ Spur ≤ Slack` holds. Issue #444, wf-P2.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroLamLeungSlackLower
 

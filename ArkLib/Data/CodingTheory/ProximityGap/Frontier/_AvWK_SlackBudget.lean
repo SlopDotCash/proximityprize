@@ -7,9 +7,6 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `WK_SlackBudget` — the wraparound budget for `A_K ≤ Wick_K`, and the n=32 DC-essential witness (#444)
 
@@ -48,6 +45,10 @@ This is a **structural reduction + witness**, NOT a closure: it pins the open in
 `DEV = W_wrap − n^{2K}/p ≤ SLACK` (the wraparound *fluctuation* ≤ char-0 slack), and refutes the
 weaker hope "char-0 slack absorbs the wraparound count".
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WKSlackBudget
 

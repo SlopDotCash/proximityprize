@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 Round 14 — Angle D: the Guruswami–Sudan ASSEMBLY (ArkLib #232, proximity-prize GS route).
 
 CONTENT (all fully proved, no placeholders):
@@ -41,7 +43,6 @@ GS pipeline skeleton — conditional assembly + a fully discharged concrete inst
 which is the scaffold any past-Johnson refinement of the interpolation step would plug
 into (only the hypothesis `hvan` of `gs_list_bound` would change).
 -/
-import Mathlib
 
 open Polynomial
 open scoped Polynomial.Bivariate

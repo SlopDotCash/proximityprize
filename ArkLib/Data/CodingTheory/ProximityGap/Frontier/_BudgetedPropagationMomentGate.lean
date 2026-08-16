@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._BudgetedMomentTailCountGate
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PropagationTailGate
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Budgeted moment tails need propagation to become pointwise bounds
 
@@ -31,6 +28,10 @@ last mile:
 No Gauss-period propagation theorem is asserted here.  The new mathematical burden remains exactly
 the missing relation-level anti-spike input for the Paley spectrum / far-line incidence family.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.Frontier.BudgetedMomentTailCountGate

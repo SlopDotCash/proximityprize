@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SeedCensusDyadicChain
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Corollaries of the seed-census dyadic chain (#389)
 
@@ -15,6 +13,9 @@ per-rung power closure, monotonicity of `LevelSparse` in its bound, the two-rung
 the single-orbit census in the `LevelSparse` language.  They document the dyadic tower and feed
 downstream rung arithmetic; none touches the open `O(log n)` sparsity problem.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Polynomial Finset
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiFinitePrefixTurnoverGate
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Local slope bounds do not prove Jacobi turnover
 
@@ -26,6 +23,10 @@ from a prefix bound `b K <= B` and one-step rise bound `b (k+1) <= b k + s`.  Th
 delayed ramp `b k = B + s * (k-K)` after the prefix satisfies the local rule and exceeds the global
 ceiling as soon as `s > 0`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiLocalSlopeTurnoverGate
 

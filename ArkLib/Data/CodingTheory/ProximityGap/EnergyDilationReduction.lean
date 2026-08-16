@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 
-set_option linter.style.longLine false
-
 /-!
 # The multiplicative-dilation reduction of additive energy (Issue #389)
 
@@ -34,6 +32,9 @@ this is exactly the sub-Johnson wall).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #389.
 - [HBK00] Heath-Brown, Konyagin. *New bounds for Gauss sums derived from kth powers …*. 2000.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumFourthMoment (addEnergy)

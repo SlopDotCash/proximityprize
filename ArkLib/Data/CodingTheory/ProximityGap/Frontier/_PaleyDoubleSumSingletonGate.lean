@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Double-sum Paley inputs do not directly bound a singleton period
 
@@ -25,6 +22,10 @@ So a double-sum Paley theorem needs an additional deconvolution/anti-spike theor
 be used as a single-period sup bound.  This complements `_wf9B7_PrizeBGKReductionDirections.lean`,
 which records that ordinary BGK/Paley power saving is exponent-wise too weak for the prize.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.PaleyDoubleSumSingletonGate
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CRTPacketMinpoly
 import Mathlib
 
-set_option linter.style.longFile 3100
-
 /-!
 # Issue #232 — the two-prime de Bruijn structure: the CRT double-slice theorems (O67–O68)
 
@@ -66,6 +64,9 @@ Engine provenance: the packet coefficient calculation and weighted slice engine 
 `CRTPacketMinpoly`.  This file keeps the de Bruijn-facing theorem names as stable wrappers
 around those shared engines.
 -/
+
+set_option linter.style.longFile 3100
+
 
 namespace DeBruijnTwoPrime
 

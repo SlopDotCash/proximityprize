@@ -8,11 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Data.Nat.Log
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option autoImplicit false
-
 /-!
 # wf-T03 (#444): the Gauss–Manin / Picard–Fuchs ODE-rigidity sup bound REDUCES TO TWO WALLS
   — an OBSTRUCTION, axiom-clean, NOT a closure
@@ -81,6 +76,12 @@ The `√(log)` excess is the rare-event signal invisible to the connection's loc
 
 Axiom target: `[propext, Classical.choice, Quot.sound]` (no `sorryAx`, no custom axiom).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.WfT03GaussManinODE
 

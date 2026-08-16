@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80OProductDivisorInterval
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80NDivisorFourthPowerBound
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80M (#466, 2026-07-10): the UNCONDITIONAL Cilleruelo–Garaev-type interval bound —
   `T(W)⁸ ≤ 19680·W²·n⁴` for every multiplicative `H` and every `W` below `√p`
@@ -37,6 +34,10 @@ remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 import Mathlib.Data.ZMod.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # W6 (theta-modularity): the DUAL lattice `L*` already carries an `O(1)`, `p`-independent short
 vector, so the Jacobi/Poisson theta transform `θ_L(t) = covol⁻¹ t^{−m/2} θ_{L*}(1/t)` cannot bound
@@ -83,6 +80,10 @@ the worst-case prime. The surviving obligation is unchanged: the per-shell orbit
 
 Issue #444. Honesty: the open core (`A_r ≤ (q−1)Wick_r` at `r ≈ ln q`) is NOT discharged here.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.W6ThetaDualTransference
 

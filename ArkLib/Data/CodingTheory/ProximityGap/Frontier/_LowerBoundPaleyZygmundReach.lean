@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentAvgLower
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # [moment-lower-paley-zygmund]  The unconditional `√n` floor + Paley–Zygmund reach analysis (#444)
 
@@ -74,6 +71,10 @@ stalls at a finite `r`-window, never `log m`.  Pushing past requires a Paley–Z
 
 Issue #444; task `moment-lower-paley-zygmund`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

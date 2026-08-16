@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodPowerEvenFloor
 import ArkLib.Data.CodingTheory.ProximityGap.SignedPeriodZeroSumBridge
 
-set_option linter.unusedSectionVars false
-
 /-!
 # The ALL-ORDER (incl. ODD) signed period-power ABSOLUTE bound (#444, #407)
 
@@ -51,6 +49,9 @@ canonical bridge + even floor. `CORE  M(μ_n) ≤ C·√(n·log(q/n))  OPEN.`
 
 Issues #444, #407.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open scoped BigOperators
 

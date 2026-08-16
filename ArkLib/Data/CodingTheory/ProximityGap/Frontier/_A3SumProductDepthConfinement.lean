@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # ATTACK A3 — the sum-product / BSG / Plünnecke–Ruzsa cluster is DEPTH-2 CONFINED (#444)
 
@@ -89,6 +86,10 @@ References:
   (the HBK input), `_AvW14_BootstrapAntiContraction` (the `(β+2)/4` anti-contraction, sharpened here
   to the optimal Wick input), `CharZeroEnergyThreeExact` (`E_2 = 3n²−3n`, the proven Wick `E_2`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.A3DepthConfinement
 

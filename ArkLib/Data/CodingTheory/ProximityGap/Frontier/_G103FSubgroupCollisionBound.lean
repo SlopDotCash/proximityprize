@@ -9,9 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.StepanovVanisherExistence
 import ArkLib.Data.CodingTheory.ProximityGap.HasseMultiplicityBridge
 import ArkLib.Data.CodingTheory.ProximityGap.StepanovCountingLemma
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G103F (#466, 2026-07-10): the classical additive-collision bound for multiplicative
   subgroups — the two-relation Stepanov theorem `#(H ∩ (H+c)) ≤ 4B²` at `2B ≤ t ≤ B³/2`,
@@ -99,6 +96,10 @@ number of shifts, still far above truth). The formalized `4B²` bound goes sub-t
 
 Issue #466. Axiom-clean: no `sorry`, no new axioms, no named hypotheses.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Polynomial Finset
 

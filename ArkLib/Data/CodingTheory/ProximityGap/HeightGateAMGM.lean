@@ -7,8 +7,6 @@ import Mathlib.NumberTheory.NumberField.House
 import Mathlib.NumberTheory.NumberField.Norm
 import Mathlib.Analysis.MeanInequalities
 import ArkLib.Data.CodingTheory.ProximityGap.HeightGateNormBound
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # height-gate AM-GM: the STRUCTURE-AWARE norm bound that HALVES the house exponent (#407)
@@ -64,6 +62,9 @@ the prize needs the FULL `B_β → B_{log n}` Sidon bootstrap (Lever B / BCHKS 1
 inequality.  This file is the rigorous `32 → 64` push along Lever H, with the precise next obstruction
 named.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Module Real
 

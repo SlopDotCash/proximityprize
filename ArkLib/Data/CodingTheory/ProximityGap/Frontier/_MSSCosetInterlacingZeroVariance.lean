@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # MSS interlacing for `Cay(F_p, μ_n)` via the DILATION/GALOIS family — the
 **zero-variance no-go** (#444, LANE MSS_COSET_INTERLACING).
@@ -71,6 +68,10 @@ no `native_decide`.
 Marcus–Spielman–Srivastava, "Interlacing families I/IV"; in-tree prior:
 `_AssaultV5_InterlacingCayley` (random-signing no-go), `_NovelFiniteFreeEdge` (cumulant skeleton).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # A6 — HOLONOMIC / creative-telescoping (WZ) certificate for the energy ladder (#444)
 
@@ -107,6 +103,11 @@ factor).
 
 Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AmbHolonomicWZ
 

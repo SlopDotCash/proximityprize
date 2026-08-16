@@ -5,6 +5,14 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeight
 
+/-! # The Sharp Divisibility Obstruction for Non-Monic `H`
+
+The `AlphaGenuineRegularWeightLe` and `DivWeightLe` invariants assert that `W𝒪 ∣ βHensel 0`
+in `𝒪 H`. As `W𝒪 = mk (C (lc H))`, this divisibility requires `lc H ∣ X` in `F[X]`.
+We prove this impossibility outright, confirming the author's note that the unresummed
+invariant is provably false for general non-monic `H`.
+-/
+
 open Polynomial Polynomial.Bivariate
 open BCIKS20AppendixA
 open ProximityPrize.BCIKS20.GammaGenuine
@@ -14,13 +22,6 @@ namespace BCIKS20.HenselNumerator.AlphaWeight
 variable {F : Type} [Field F]
 variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 
-/-! # The Sharp Divisibility Obstruction for Non-Monic `H`
-
-The `AlphaGenuineRegularWeightLe` and `DivWeightLe` invariants assert that `W𝒪 ∣ βHensel 0`
-in `𝒪 H`. As `W𝒪 = mk (C (lc H))`, this divisibility requires `lc H ∣ X` in `F[X]`.
-We prove this impossibility outright, confirming the author's note that the unresummed
-invariant is provably false for general non-monic `H`.
--/
 
 theorem not_DivWeightLe_zero_of_not_dvd_X (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (hH : 0 < H.natDegree) (hd : 2 ≤ H.natDegree) {D : ℕ}

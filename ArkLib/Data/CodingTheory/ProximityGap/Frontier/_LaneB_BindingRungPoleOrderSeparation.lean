@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._OffBGK_UnionGrowthGeneratingFn
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane B binding-rung pole-order separation substrate (#444)
 
@@ -20,6 +17,10 @@ Off-BGK distinct-γ union growth law via the existing simple-pole theorem
 Honest scope: this proves only the conditional reduction. It does **not** prove the measured
 constant orbit-count persistence, and it does not touch the BGK/Paley signed-sum core.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Filter
 

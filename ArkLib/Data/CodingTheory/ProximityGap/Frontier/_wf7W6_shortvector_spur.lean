@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (wf-W6)
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # Geometry-of-numbers short-vector reduction of the char-`p` transfer (#444, lane wf-W6)
 
@@ -89,6 +85,11 @@ is below `λ₁`, which the pre-screen REFUTES at `r*` — so the open crux genu
 *counting* (second-moment-of-counts) version of transference, NOT just the first minimum.  Lane
 wf-W6 reduces the prize to `(S-W6)` and proves the surrounding implications axiom-clean.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset Nat
 

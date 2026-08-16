@@ -8,9 +8,6 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Finset.Card
 
-set_option linter.style.longLine false
-set_option linter.style.openClassical false
-
 /-!
 # A06: effective-Chebotarev / Lagarias-Odlyzko bad-prime count — the UNION-BOUND OBSTRUCTION (#444)
 
@@ -80,6 +77,10 @@ the true-density question pinned to the BGK wall.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.style.openClassical false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFA06
 

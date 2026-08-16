@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # T13 — "Rényi-α flatness factor of the dilation-pushforward at a super-critical order
         `α* = 2 + c/log m`" REDUCES TO F7 (Rényi-2 = energy), via the F1 moment ladder (#444)
@@ -89,6 +86,10 @@ to the thin multiplicative subgroup `μ_n ⊂ F_p` is what reduces here — to t
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AnomalyLocalization
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) lever refutation: the moment-to-max envelope multiplier is ANTITONE in moment depth,
 so the fractional-moment / Harper "better-than-√" regime cannot improve the worst-case max (#444)
@@ -47,6 +44,10 @@ moment-saving/capacity claim: it bounds nothing about `M(n)` itself.  It kernels
 Shaw's "average-vs-max" probe verdict — the formal reason Harper's better-than-√ average lever does
 not transfer to the worst-case max.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVFractionalMomentNoMaxGain
 

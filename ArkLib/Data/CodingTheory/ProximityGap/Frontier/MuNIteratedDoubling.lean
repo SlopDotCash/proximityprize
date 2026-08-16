@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.BGKMultiplicativeInput
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # All-orders multiplicative doubling of `μ_n`: `(μ_n)^k = μ_n` and `σₘ^{(k)} = 1` (#444)
 
@@ -49,6 +46,10 @@ capacity, no beyond-Johnson `√(log)` saving, no growth-law, nothing about the 
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`/`axiom`/`native_decide`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped Pointwise

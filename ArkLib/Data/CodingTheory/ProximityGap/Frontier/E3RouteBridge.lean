@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.BalancedCountConcrete
 
-set_option autoImplicit false
-
 /-!
 # The two independent char-0 `E₃` proofs agree (#444)
 
@@ -24,6 +22,9 @@ with `|G| = 2m` (i.e. `m` antipodal pairs), the field-tuple strata count equals 
 convolution count. Pure transitivity through the shared closed form — it consumes **no** open
 hypothesis (in particular none of the char-`p` √-cancellation core of #444).
 -/
+
+set_option autoImplicit false
+
 
 open ArkLib.ProximityGap.Frontier.E3StrataCount (negSymCount)
 open ArkLib.ProximityGap.Frontier.BalancedCountConcrete (balancedCount)

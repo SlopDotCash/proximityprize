@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.I031TailFromPointwise
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031LogTargetForm
 
-set_option linter.style.longLine false
-
 /-!
 # I031: the prize-target `M(μ_n)` bound from the POINTWISE per-period hypothesis (#444, #407)
 
@@ -41,6 +39,9 @@ prize-target M-bound is now derivable from the pointwise conjecture form, not ju
 tail Prop — closing the interface gap between the I031 capstone and the #407 file.
 NON-MOMENT, EXTEND-proven, ASYMPTOTIC-GUARD-COMPLIANT. CORE `M(μ_n) ≤ C·√(n·log(p/n))` OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

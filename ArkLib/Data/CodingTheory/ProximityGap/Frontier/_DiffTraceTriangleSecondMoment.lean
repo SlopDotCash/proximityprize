@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceTrivialEnvelope
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceVarianceRouteCapstone
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CONSTRAINT — the original off-diagonal second moment has only the triangle corridor (#444)
 
@@ -30,6 +26,11 @@ The upper end is exactly the trivial/square slack already formalized for `DiffTr
 packages it on the ORIGINAL off-diagonal second-moment expression so downstream variance code can cite
 one theorem without detouring through the named first-moment predicate.  No cancellation is proved.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceTriangleSecondMoment
 

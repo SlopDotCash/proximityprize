@@ -6,8 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ShawValueCapstone
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOrderedWalkMajorant
 
-set_option linter.style.longLine false
-
 /-!
 # Door-IV ordered-walk / Doob majorant transfer
 
@@ -17,6 +15,9 @@ then any prize-scale theorem for `R` transfers verbatim to the original endpoint
 van-der-Corput, cancellation, moment, completion, or CORE estimate is asserted here; the file only records
 exactly what a future ordered-walk maximal inequality would have to prove and how it would be consumed.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVOrderedWalkDoobMajorant
 

@@ -7,6 +7,13 @@ import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.SmallSubgroupSidon
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergySidonModNeg
 
+/-!
+# SmallSubgroupSidonModNeg
+
+Module docstring for `SmallSubgroupSidonModNeg.lean`.
+-/
+
+
 open Polynomial
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 

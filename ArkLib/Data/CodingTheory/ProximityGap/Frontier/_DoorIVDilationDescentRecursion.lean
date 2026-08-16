@@ -7,9 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteMomentAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVHalfMassDilationForm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-2/3: the TRIVIAL dilation-descent recursion `M(μ_n) ≤ 2·M(μ_{n/2})` (#444)
 
@@ -44,6 +41,10 @@ This is a real, certain, citable **Lane-2 capstone rung / Lane-3 constraint lemm
 trivial descent quantitatively and pins WHY it is trivial.  It does NOT bound `M(μ_n)` below `2·M(H)`,
 makes NO cancellation / completion / moment / anti-concentration / capacity claim, and CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import ArkLib.Data.CodingTheory.ProximityGap.Hab25JohnsonPackageSupply
+
+/-!
 #389 residual `cellpackage-supply`.
 
 Goal: shrink the surface of `CellPackage.ofSurfaceRoot` (the smart constructor of the
@@ -31,7 +33,6 @@ that drops `hbaseA, hsepA, hbase₀, hsep₀` in favour of two inclusion hypothe
 genuine reduction of the named residual `CellPackageSupply`: a single base/separability
 certificate over `truncSet` now feeds the entire package.
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Hab25JohnsonPackageSupply
 
 set_option linter.unusedSectionVars false
 set_option synthInstance.maxHeartbeats 800000

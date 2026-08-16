@@ -8,9 +8,6 @@ import Mathlib.Analysis.Fourier.AddCircle
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The Gross–Koblitz / `Γ_p` unit part is a DEAD handle on the floor phases — a NO-GO (#407)
 
@@ -82,6 +79,10 @@ relation can transmit to the archimedean side is a **discrete sign**, which pins
 
 Issue #407.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Complex
 

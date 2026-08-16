@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVDilationDescentRecursion
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-3: dyadic-descent telescoping — the recursion gives ONLY the trivial `n`-ceiling (#444)
 
@@ -30,6 +27,10 @@ factor `ρ < 2` whose product over the `a = log₂ n` levels is `≤ √(n·log)
 Lane-3 constraint lemma.  No CORE / cancellation / completion / moment / anti-concentration / capacity
 claim.  CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDilationDescentTelescope
 

@@ -10,8 +10,6 @@ import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Push
 
-set_option autoImplicit false
-
 /-!
 # The Gauss-sum energy step: the EXACT increment recursion (mechanism GROUP_RING_RECURSION)
 
@@ -68,6 +66,9 @@ analogue of `N_2 = 3n²` (`E_{tilt}(v²) ≤ (2n+⟨r_{K-1}⟩)⟨r_{K-1}⟩`), 
 dilation closed form is available only at `K = 1` (the tilt `v^{K-1}` is NOT a subgroup-supported
 weight for `K ≥ 2`). This file proves the unconditional rung and PINPOINTS the open rung.
 -/
+
+set_option autoImplicit false
+
 
 namespace Issue444.GaussSumEnergyStep
 

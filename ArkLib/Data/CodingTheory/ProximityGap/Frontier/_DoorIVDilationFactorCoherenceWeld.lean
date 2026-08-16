@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVCoherenceDeficitQuantitative
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) weld: the 2-dilation per-level factor is controlled by the coherence deficit
 
@@ -46,6 +43,10 @@ bookkeeping and the `max ≥ average` elementary fact.  This is a Lane-3 **const
 quantifies the cost the dilation route must pay, it does not pay it.  `M(μ_n) ≤ C·√(n·log(p/n))`
 stays exactly as OPEN as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVDilationFactorCoherenceWeld
 

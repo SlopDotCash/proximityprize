@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option maxHeartbeats 1200000
-
 /-!
 # Issue #389 — q-independence of the MCA bad-scalar count for a single-polynomial pencil.
 
@@ -50,6 +47,10 @@ All results `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.soun
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026
   (issue #389; the MCA threshold `δ*`).
 -/
+
+set_option linter.style.longLine false
+set_option maxHeartbeats 1200000
+
 
 open Polynomial Finset
 open scoped Classical

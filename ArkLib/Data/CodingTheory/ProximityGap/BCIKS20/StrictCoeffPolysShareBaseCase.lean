@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StrictCoeffPolysShare
 
-set_option linter.unusedSectionVars false
-
 /-!
 # The base case of the strict-coefficient share reduction (#389)
 
@@ -21,6 +19,9 @@ Together with the proven reverse implication
 share family to the base residual — confirming the share family is a genuine *generalization*
 (strictly weaker for `ℓ > 1` or `T > 0`) that degenerates exactly to the base at its trivial corner.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped NNReal

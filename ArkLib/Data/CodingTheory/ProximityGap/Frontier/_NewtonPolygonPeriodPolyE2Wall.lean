@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Newton polygon / tropical of the PERIOD POLYNOMIAL — the `√p` wall localizes to ONE coefficient
 # `e₂`, and the only spread-aware escape is the power-sum (Graeffe) bound = the Paley moment wall
@@ -80,6 +77,10 @@ quantitative wall `√(2(p−n−1)) ≥ √p` (so the bound is at least `√p`,
 `√(2n ln p)`), and (NP-3) the geometric Graeffe/power-sum identity `B^{2^j} ≤ Σ_b |η_b|^{2^j}` that
 relocates the bound onto the power sums.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.NewtonPolygonPeriodPolyE2Wall
 

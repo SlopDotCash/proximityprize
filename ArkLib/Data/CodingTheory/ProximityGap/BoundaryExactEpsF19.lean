@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BoundarySupExactness
 
-set_option maxHeartbeats 2000000
-
 /-!
 # An exact boundary-band MCA value over `F_19` (#389)
 
@@ -23,6 +21,9 @@ proven generic sandwich `rs_boundary_epsMCA_eq` — **not** by an explicit bad-s
 (the `C(9,5)² = 15876 > 19` regime makes the generic-far route inapplicable); the value is the MCA
 *equality*, not a witness count.  Axiom-clean.
 -/
+
+set_option maxHeartbeats 2000000
+
 
 open scoped NNReal ENNReal
 open ProximityGap Code ProximityGap.CensusLowerBound ProximityGap.SmoothLadderInstance

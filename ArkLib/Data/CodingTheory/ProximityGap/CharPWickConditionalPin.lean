@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The char-`p` Wick conditional pin: the prize sup-norm bound from the single inequality `c_r ≤ 1` (#444)
 
@@ -67,6 +64,10 @@ certifies `c_r ≤ 1`.
 - Shaw, `docs/kb/direct-charp-supnorm-assault-2026-06-15.md` (#444). The six-route convergence.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped Nat

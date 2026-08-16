@@ -8,9 +8,6 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Complex.ExponentialBounds
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `N4_SOS_For_Max_Identity` — the exact two-formula identity for the house, and why every
   SOS / exact-identity certificate for the MAX reduces (#444, avenue **N4-exact-identity-SOS**)
@@ -117,6 +114,10 @@ the verified cyclotomic counts; the proofs are pure real-algebra and so axiom-cl
 * `floor_too_weak_n16`     : `√(p − n) > 15 · √(2 n ln 2)` numerically separates the L²-floor `≈ 256`
                              from the prize scale, certifying the `15×` deficit (face (i)/(ii) loss).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.N4SOSForMaxIdentity
 

@@ -7,9 +7,6 @@ import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-1: the ODD signed moment routes back to the energy face (#444)
 
@@ -43,6 +40,10 @@ no new door-(iv) content.
 This is a STRUCTURAL constraint lemma (kernel-checked Cauchy-Schwarz), NOT a CORE / cancellation /
 completion / anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVOddSignedMomentCauchy
 

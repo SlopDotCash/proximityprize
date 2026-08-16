@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door (iv): the depth-4 rung of the char-0 tower-doubling ratio `Q₄` (#444)
 
@@ -33,6 +30,10 @@ This is still the SUP-blind char-0 / averaged base of the tower recursion. It do
 worst-`b` thin finite-field coherence and makes no CORE, cancellation, completion, anti-concentration,
 or capacity claim. Prize CORE remains open. Axiom-clean; no `sorry`. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.TowerEnergyDoublingRatioBaseR4
 

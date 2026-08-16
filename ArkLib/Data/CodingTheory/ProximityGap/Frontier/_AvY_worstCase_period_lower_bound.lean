@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodLowerBound
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Fourth-moment ratio lower bound on the worst-case subgroup period (#444)
 
@@ -34,6 +32,9 @@ ratio.) This is a LOWER-bound result only; it does not bound the open BGK/Paley 
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

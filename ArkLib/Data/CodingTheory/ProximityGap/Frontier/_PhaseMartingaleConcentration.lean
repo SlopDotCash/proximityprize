@@ -9,9 +9,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # A2 — Azuma / martingale concentration of the Gauss period (#444)
 
@@ -70,6 +67,10 @@ Establishing it for the rank-1 dilated phases is the same Gauss-phase-equidistri
 the iid framing's independence hypothesis (the BGK/BCHKS wall), but stated in the WEAKER
 bounded-difference form (pairwise / predictable, not joint). Issue #444, task A2-martingale.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.PhaseMartingaleConcentration
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteMomentAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.I031OrbitCountPartition
 
-set_option linter.style.longLine false
-
 /-!
 # The CONCRETE unconditional Parseval lower bound on the worst period (#444)
 
@@ -39,6 +37,9 @@ the prize: CORE asks for the UPPER bound `M(μ_n) ≤ C·√(n·log(p/n))`, whos
 (`√n` vs `√(n·log p)`) is exactly the prize. Pure consolidation: turns the abstract Parseval-floor
 hypotheses into in-tree theorems over the real periods. CORE stays OPEN.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvJB_JacobiEdgeBoundedSup
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvJB_HermiteTurnoverReduction
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The early-turnover GAP: free turnover depth is `O(n)`, the prize needs `O(log p)` (#444, form (D))
 
@@ -39,6 +37,9 @@ support radius).  It does NOT approach the prize target `k* ≤ log p`; the miss
 the fine sub-Gaussian decay of the `b_k` (the early turnover) = the wall.  No CORE/cancellation/
 completion/moment-saving/anti-concentration/capacity claim.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.HermiteTurnover
 

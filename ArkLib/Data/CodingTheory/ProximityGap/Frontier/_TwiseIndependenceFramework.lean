@@ -7,10 +7,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # `t`-wise ADDITIVE independence of the dilated phases ⟹ Wick energy (#444, T7)
 
@@ -83,6 +79,11 @@ fully proven. The single input `NoShortRelation (2·⌈log p⌉)` is the open co
 `_PhasePairwiseToSubGaussian`, now exhibited as ONE combinatorial Prop unifying the independence and
 energy faces. LANDED abstract framework + REDUCED bridge. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 

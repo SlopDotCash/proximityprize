@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvF2_ExternalLeverStatement
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Wiring di-Benedetto Theorem 3.1 into the conditional sup-norm beat (#444, AvCR)
 
@@ -71,6 +68,10 @@ Sidon-floor energy inputs holding for `μ_n` (proven in char 0; the prize case i
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvCRDiBenedettoWired
 

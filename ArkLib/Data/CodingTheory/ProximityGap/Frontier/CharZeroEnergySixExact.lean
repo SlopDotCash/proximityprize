@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergyFiveExact
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A continued: the exact char-0 depth-6 additive energy
 # `E₆(μ_n) = 10395n⁶ − 155925n⁵ + 1022175n⁴ − 3534300n³ + 6246471n² − 4370520n`
@@ -44,6 +41,10 @@ This completes the char-0 energy combinatorial-exactness ladder through the full
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroEnergySix
 

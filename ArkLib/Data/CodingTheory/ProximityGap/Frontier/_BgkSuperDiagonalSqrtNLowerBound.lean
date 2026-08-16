@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.WorstPeriodMomentAvgLower
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The sharpened TWO-SIDED floor on the worst Gauss period (#444, lower-bound-floor lane)
 
@@ -44,6 +40,11 @@ ratio → 1) open ceiling. This file makes the `c > 1` improvement axiom-clean a
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.  Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

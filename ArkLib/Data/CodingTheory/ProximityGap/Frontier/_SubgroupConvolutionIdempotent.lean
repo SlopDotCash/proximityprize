@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Subgroup multiplicative-convolution idempotent — the ℓ-adic/Katz–Mellin monodromy NO-GO (#407/#444)
 
@@ -49,6 +47,9 @@ count identities, `sorry`-free and axiom-clean (`propext`, `Classical.choice`, `
 - [BGK] Bourgain–Glibichuk–Konyagin — the best proven incomplete-character-sum bound (the wall).
 - #407, #444, the exotic-math sweep.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

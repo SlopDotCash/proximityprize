@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic.NormNum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # `_AvCP_AAPKernelCountermodel` — the ALMOST-ALL-PRIMES kernel `W_K ≤ 0` is FALSE worst-case (#444)
 
@@ -56,6 +53,10 @@ So this brick **corrects the empirical claim in `_DE_DCSubtractedDeep`** (and an
 asserting `W_K < 0` universally) and **re-points the open kernel** to the weaker bound that the
 data actually supports. It does NOT close the prize.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AAPKernelCountermodel
 

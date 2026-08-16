@@ -9,10 +9,6 @@ import Mathlib.Tactic
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The EXACT two-sided wraparound characterization of `M(μ_n)` at depth `k ≈ log m` (#444)
 
@@ -78,6 +74,11 @@ task asks for.  It does NOT bound `W_k` (that two-sided control at `k ≈ log m`
 Burgess/Paley/BGK wall — `Var(W_k)`); the value here is the exact reduction of both bounds to that
 one object, both directions from a single `A_k` bracket.  NOT prize closure.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.TwoSidedWraparound
 

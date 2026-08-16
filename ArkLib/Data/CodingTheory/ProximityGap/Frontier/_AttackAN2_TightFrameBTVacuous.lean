@@ -3,7 +3,14 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.FieldSimp
+
+/-!
 ATTACK AN2 -- Bourgain-Tzafriri restricted invertibility on the period frame.
 
 The claim routes max_b |eta_b| <= sqrt(2 n log(q/n)) through BT restricted invertibility:
@@ -21,12 +28,6 @@ We model the frame operator abstractly: S acts on (Fin n -> R) as S = c1 * I - J
 J v = (sum v) * ones.  We prove the two eigenvalues exactly. This is axiom-clean linear
 algebra; the numerics above (cond -> 1) are its quantitative shadow.
 -/
-
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.FieldSimp
 
 namespace AttackAN2
 

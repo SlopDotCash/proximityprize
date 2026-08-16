@@ -9,8 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.ManyTermResultantBound
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
-set_option linter.style.longLine false
-
 /-!
 # THE SHARP SIX-TERM CYCLOTOMIC RESULTANT BOUND — `|Res|² ≤ 12^{φ(n)}` (the `r = 3` RepThree lift, #407)
 
@@ -40,6 +38,9 @@ fixed-`r` threshold, consistent with the open core; this is the next uncondition
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Complex Finset Polynomial
 

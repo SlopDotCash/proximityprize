@@ -8,8 +8,6 @@ import Mathlib.RingTheory.Int.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # wf-S9b — the dyadic augmentation-parity certificate for the spurious mass (#444)
 
@@ -73,6 +71,9 @@ assumption — `p` does not appear).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFS9B
 

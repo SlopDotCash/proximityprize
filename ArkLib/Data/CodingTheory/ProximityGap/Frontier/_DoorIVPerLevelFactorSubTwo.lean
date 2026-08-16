@@ -7,10 +7,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVTwoDilateNoJointExtreme
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVXGatePrizeBudget
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Door-(iv) Lane-3: per-level factor bookkeeping for the two-dilate recursion (#444)
 
@@ -35,6 +31,11 @@ It records the real-algebra bookkeeping that makes that probe citable:
 No CORE upper bound, cancellation, completion, moment, anti-concentration, or capacity claim is made.
 The open content remains the arithmetic proof of the `√2` per-level gate.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVPerLevelFactorSubTwo
 

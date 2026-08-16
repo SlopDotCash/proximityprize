@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.CharP.Lemmas
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The Gauss-period FOLDING / dyadic-tower recursion for the proximity-prize floor (Issue #407)
 
@@ -72,6 +69,10 @@ equivalently a square-root-cancellation bound on the `m` Gauss-sum phases, the p
 - [LamLeung2000] vanishing sums of roots of unity (the census tower, `LamLeungTwoPow.lean`).
 - [ABF26] 2026/680; [BGK06]; [HBK00].
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 

@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Issue #444 — the pair-pinned scalar for the `r = 2` line, and the antipodal `γ = 0` fibre.
 
@@ -56,6 +54,9 @@ NOT from the pinning subsets being coset-structured.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026 (#444).
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial
 

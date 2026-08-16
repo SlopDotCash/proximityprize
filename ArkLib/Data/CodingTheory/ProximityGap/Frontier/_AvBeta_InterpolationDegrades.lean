@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-
 /-!
 # AvBeta — beta-INTERPOLATION of the di Benedetto sup-norm bound DEGRADES to trivial at beta = 4 (#444)
 
@@ -78,6 +76,9 @@ the same archimedean-phase wall (`C -> 1` iid extreme value, `alpha -> 1/2` asym
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 open Real
 

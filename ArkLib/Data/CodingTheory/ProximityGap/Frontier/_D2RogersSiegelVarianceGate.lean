@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D2 Rogers/Siegel variance gate: random-lattice moments need a prime coupling
 
@@ -25,6 +23,9 @@ This file records that gate axiom-cleanly.  The existing prime-indexed variance 
 handled by `_AvBV2_VarianceOverPrimesCertificationDeficit.lean`; this file only closes the
 Rogers/Siegel transplant ambiguity.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D2RogersSiegelVarianceGate
 

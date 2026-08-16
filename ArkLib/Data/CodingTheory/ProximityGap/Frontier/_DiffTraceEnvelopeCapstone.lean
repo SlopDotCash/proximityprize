@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTracePlancherelFloorAttained
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceTrivialEnvelopeAttained
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # CAPSTONE — the variance-core trace is an exact affine image of aggregate phase coherence (#444)
 
@@ -55,6 +51,11 @@ NO CORE / cancellation / completion / moment-saving / capacity / sub-Poisson-upp
 closed envelope and the fixed-piece-count order-isomorphism to aggregate coherence.  The open prize content stays exactly
 the upper coherence saving on `‖Σ Jphase‖`.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceEnvelopeCapstone
 

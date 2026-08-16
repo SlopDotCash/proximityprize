@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444 STEPANOV_AT_BSTAR)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.StepanovCountingLemma
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Per-`b*` Stepanov at the worst frequency: HOUSE = COUNT (the half-power wall, located) (#444)
 
@@ -83,6 +80,10 @@ above by nothing better than the trivial `n`.  Issue #444.
 - `Frontier/_wf5G2_stepanov_supnorm` — the prior generic-budget lane (full-rank phase-bad set).
 - `EvenOddAntipodalCharFree`, `LamLeungUnconditionalQ` — the antipodal substrate (factor-2 only).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Polynomial
 

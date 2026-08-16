@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSpectralSpread
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodParsevalFloor
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The spectral-support AVERAGE squared-period ceiling for the thin `μ_n` (#444)
 
@@ -48,6 +45,10 @@ typical ceiling.  The `≈ 3n` average ceiling is the thin-subgroup Sidon phenom
 See `SubgroupGaussSumSpectralSpread.lean` (the support lower bound) and
 `GaussPeriodParsevalFloor.lean` (the matching `√n` floor — the lower half of the spectral frame).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar Polynomial
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

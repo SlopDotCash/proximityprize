@@ -9,10 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroWickEnergy
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The GENERAL-`r` char-`p` energy LOWER bound `rEnergy G r >= negSymCount G (2r)` (#444)
 
@@ -69,6 +65,11 @@ extra-collision surplus). The lower bound is UNCONDITIONAL.
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

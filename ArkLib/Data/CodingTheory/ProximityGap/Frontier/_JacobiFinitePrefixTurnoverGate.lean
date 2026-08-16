@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Finite-prefix Jacobi turnover gate
 
@@ -26,6 +23,10 @@ Hankel arithmetic by itself.  It is a tail/turnover theorem saying no coefficien
 checked prefix can re-enter above the prize ceiling.  This is the form-D version of the same
 L²-to-L∞ / deep-moment wall.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiFinitePrefixTurnoverGate
 

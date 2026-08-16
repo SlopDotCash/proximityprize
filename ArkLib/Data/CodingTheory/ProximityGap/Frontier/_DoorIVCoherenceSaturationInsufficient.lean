@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: under coherence saturation the prize burden transfers ENTIRELY to a
 strict-sub-trivial half-mass bound (#444)
@@ -62,6 +59,10 @@ and pins the prize burden on the half-mass descent), NOT a CORE/cancellation/com
 capacity claim: it does not bound `M(n)`.  It sharpens `_DoorIVWorstBHalfMassCarriesAll` from the
 qualitative `M = H` into the quantitative prize-regime insufficiency the probe exhibits.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVCoherenceSaturationInsufficient
 

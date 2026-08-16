@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSixthMarkov
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
-set_option linter.style.longLine false
-
 /-!
 # Sixth-moment no-Johnson threshold sharpened by the char-0 Wick bound: `q^{2/5} → q^{2/3}` (#444)
 
@@ -56,6 +54,9 @@ cases where the surplus makes the guard inert).
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

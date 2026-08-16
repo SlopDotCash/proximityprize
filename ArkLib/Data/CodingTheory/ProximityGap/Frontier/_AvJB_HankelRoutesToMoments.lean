@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The Hankel/Toda structure of `b_k` routes back to the deep moments (form (D) → form (A)) (#444)
 
@@ -44,6 +42,9 @@ taken here as an explicit hypothesis; we do NOT assert a specific closed form.  
 estimate, and does NOT claim the moment route works (form (A) is the proven-non-proving / BGK door).
 It records that the new Jacobi handle is not an *independent* door.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.HankelRoutes
 

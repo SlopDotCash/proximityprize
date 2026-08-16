@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (wf-L6, #444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharZeroEnergyClosedForm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Discharging the char-`0` Lam–Leung ceiling hypothesis at `r ∈ {4,5,6}` (residual census, #444, wf-L6)
 
@@ -58,6 +55,10 @@ UNCHANGED/OPEN.
 
 Issue #444, wf-L6.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFL6Mid
 

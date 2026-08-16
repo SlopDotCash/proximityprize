@@ -7,9 +7,6 @@ import Mathlib.GroupTheory.GroupAction.Quotient
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-A05 — the GALOIS-ORBIT-COUNT residual of the spurious energy (S7 reframe) (#444)
 
@@ -77,6 +74,10 @@ Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom.
   `_wfS7_spur_minweight.lean` (Mann-analogue weight floor `p ≤ w^{φ}`).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. #444.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WFA05
 

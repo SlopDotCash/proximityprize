@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NextDifferenceVariety
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the diagonal-extraction bridge `FullTrace = #Rel + DiffTrace` (#444)
 
@@ -88,6 +84,11 @@ NO CORE / cancellation / completion / moment-saving / capacity claim: `FullTrace
 here.  This is a structural diagonal-extraction identity plus the consumer bridge that tells an
 third-party Katz/Lang–Weil estimate the explicit `#Rel` main term to subtract.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceDiagonalExtraction
 

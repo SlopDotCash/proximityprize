@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
-open scoped Classical
-
 /-! # The deep-band subset-sum spectrum is complement-symmetric (#444)
 
 `DeepBandSubsetSumSpectrum.lean` pins each deep-band bad scalar at depth `k+1` to a subset sum
@@ -37,6 +32,12 @@ the prize-critical open quantity = BCHKS 1.12). Field-universal finite combinato
 enters only via WHICH `r` is the binding deep band. Makes NO capacity / beyond-Johnson /
 growth-law claim; the cliff-at-n/2 is untouched. CORE `M(mu_n) <= C sqrt(n log(p/n))` UNCHANGED.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
+open scoped Classical
+
 
 namespace ArkLib.ProximityGap.SpectrumComplementSymmetry
 

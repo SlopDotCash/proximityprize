@@ -6,10 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteShawCompletionCorridor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteShawValueThinFloor
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The COMPLETE concrete Shaw completion corridor `1/√(2L) ≤ Sh(M(μ_d)) ≤ √(q/(d·L))` (#444)
 
@@ -51,6 +47,11 @@ NO anti-concentration, NO new cancellation, NO moment, NO capacity claim.  CORE 
 stays OPEN; this records the tightest concrete normalized starting line, both endpoints, on the real
 character sum.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumWorstCase

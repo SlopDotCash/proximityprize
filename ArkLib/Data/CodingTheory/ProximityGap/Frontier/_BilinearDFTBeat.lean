@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#466, lane R3)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiBenedettoNearSidonImprovement
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The bilinear (3,3) + √p-DFT beat: `M ≤ n^{8/9+o(1)}` at β = 4 (#466, lane R3)
 
@@ -61,6 +58,10 @@ statement lives outside this real-arithmetic file). The good-prime energy input
 Issue #466, dossier v3 §"SIDE-DISCOVERY (live)". Axiom-clean
 (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real
 

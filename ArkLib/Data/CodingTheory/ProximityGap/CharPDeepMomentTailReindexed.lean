@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CharPDeepMomentTail
 
-set_option linter.style.longLine false
-set_option linter.unusedFintypeInType false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Reindexed consumer forms for the char-p deep moment tail
 
@@ -18,6 +14,11 @@ an explicit positivity hypothesis `1 ≤ r`; downstream recursions usually index
 preserving the same honest scope: the bound is the trivial moment tail, not a square-root-cancellation
 or CORE claim.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
+
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

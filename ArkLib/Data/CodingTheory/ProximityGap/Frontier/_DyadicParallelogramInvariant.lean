@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # HANDLE A5 — the dyadic parallelogram CONSERVED GLOBAL INVARIANT (#407)
 
@@ -77,6 +74,10 @@ the same open statement.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #407, Handle A5.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 

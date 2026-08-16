@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic.Positivity
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The THIN / AMPLIFIED large sieve provably saturates (#444) — IRREDUCIBILITY brick
 
@@ -66,6 +63,10 @@ VERDICT: `reduces-back-to-wall` (the amplified/thin large sieve has no resolving
 two saturating majorants; the gap between them IS the BGK/Paley wall). NO `sorry`, NO fabricated
 axiom. Issue #444, thin-large-sieve angle.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.AmplifiedLargeSieveSaturates
 

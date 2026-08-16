@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (wf-P3)
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._wf5M3_crossstep_ceiling
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The NONPRINCIPAL cross-step recursion and its closure (Issue #444, lane wf-P3)
 
@@ -83,6 +79,11 @@ this file does NOT close it.
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 - Lam, Leung. *On vanishing sums of roots of unity.* (char-0 antipodal structure of `2^μ`-th roots.)
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumMoment (rEnergy)

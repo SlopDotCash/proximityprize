@@ -7,11 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # T09 — Quantitative Bilu equidistribution + non-arch local-mass coupling: REDUCES-TO-WALL (F0)
 
@@ -95,6 +90,12 @@ the wall.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 open scoped Real
 

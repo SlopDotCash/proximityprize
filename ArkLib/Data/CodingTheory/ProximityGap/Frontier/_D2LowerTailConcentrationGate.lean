@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # D2 lower-tail concentration gate: the ∃-form gains nothing under a concentration floor
 
@@ -40,6 +38,9 @@ proven), and its consumers show the ∃-form collapses to the ∀-form up to the
 band-width constant.  Complements (does not touch) the coupling gate in
 `_D2RogersSiegelVarianceGate.lean`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.D2LowerTailConcentrationGate
 

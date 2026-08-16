@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvGK_GrossKoblitzPhaseCochain
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The Gross-Koblitz phase cochain coboundary is exactly `arg J` — and a nonzero coboundary forbids
 # linearizing the phase (so no free `√m` cancellation) (#444)
@@ -52,6 +49,10 @@ the prize regime (that is the open archimedean residual — `arg J` is itself a 
 is the constraint-lemma backing of GK2: IF the cochain is nontrivial (which the `√p` Jacobi modulus
 makes generic) THEN no linear-phase `√m` shortcut exists. CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.GKPhaseCoboundaryNonLinear
 

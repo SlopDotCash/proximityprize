@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 import ArkLib.Data.CodingTheory.ProximityGap.REnergyTwoExact
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The `r = 2` rung of the open energy ladder is UNCONDITIONAL for `μ_n` — and THINNESS-ESSENTIAL (#444)
 
@@ -59,6 +56,10 @@ untouched. EXTEND-proven on `REnergyTwoExact.mu_n_rEnergy_two_eq` + `GaussianEne
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.GaussPeriodMomentBound
 open ArkLib.ProximityGap.REnergyTwoExact

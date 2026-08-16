@@ -7,8 +7,6 @@ import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilCauchySchwarzFisher
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrelation
 
-set_option linter.style.longLine false
-
 /-!
 # The Cauchy-Schwarz / Fisher pencil bound, discharged to multiplicative autocorrelation (#407/#444)
 
@@ -45,6 +43,9 @@ exactly as the cliff-at-n/2 guard demands. The prize CORE `M(μ_n) ≤ C·√(n�
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

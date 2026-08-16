@@ -7,9 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMarkov
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
 import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegEnergyEquality
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # Exact-energy fourth-moment count for the thin `2`-power subgroup `μ_n` (#444)
 
@@ -49,6 +46,10 @@ See `SubgroupGaussSumFourthMarkov.lean` (the generic count bound), `AdditiveEner
 (`addEnergy = additiveEnergy`, exact `μ_n` energy) and `ShawFlatnessRefuted.lean` (the lower-bound
 companion using the same energy).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar Polynomial
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

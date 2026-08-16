@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._QuotientTailSupConsumer
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Quotient tail bounds need a pullback/fiber-constancy hypothesis
 
@@ -27,6 +24,10 @@ tail mass while the original score has a hidden spike inside the fiber.  Thus a 
 tail estimate is not a full-frequency sup estimate until the pullback/fiber-control hypothesis is
 part of the theorem.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open ArkLib.ProximityGap.Frontier.QuotientTailSupConsumer
 

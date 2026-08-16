@@ -3,7 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+
+/-!
 RT6 attack: Drinfeld-twist / quantum-group deformation of the dilation circulant.
 
 CLAIM (machine): deform the dilation circulant T_b by a Drinfeld/Jimbo twist
@@ -23,8 +26,6 @@ wall), so it can only reproduce the trivial bound n or the average sqrt(n), neve
 sqrt(n log). Frobenius-Perron is moreover inapplicable: T_b has complex unit-modulus
 entries e_p(b x), not non-negative integers.
 -/
-
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 open Matrix Polynomial
 

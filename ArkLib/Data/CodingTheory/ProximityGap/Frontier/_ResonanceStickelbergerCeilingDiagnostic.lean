@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvFloor_ResonatorRatioLowerBound
 
-set_option autoImplicit false
-
 /-!
 # RESONATOR CANDIDATE 3 — the Stickelberger-phase-aligned resonator as a DIAGNOSTIC (issue #444)
 
@@ -63,6 +61,9 @@ file.** The lower bound proven here on `M` is exactly the bracket-implied `‖η
 "lower bound" `√q` is shown to be the *non-attained* triangle extreme. This file's value is to pin
 the obstruction, NOT to claim Ω(√n log).
 -/
+
+set_option autoImplicit false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

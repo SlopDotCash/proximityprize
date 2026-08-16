@@ -6,10 +6,6 @@ Authors: ArkLib Contributors (wf-P2)
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The char-`p` Lam–Leung slack route to `(S-M1)` (#444, lane wf-P2)
 
@@ -72,6 +68,11 @@ The char-`0` ceiling hypothesis is discharged in tree by
 not divide so many small cyclotomic norms `N(σ_T)` as to overflow the Lam–Leung slack; BGK-adjacent,
 numerically robust at `Spur/Slack ≤ 0.11`).
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.WF6P2
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door refutation: the geometric mean (Mahler-measure / log-average) of the spectrum lies BELOW the
 max, so the Mahler / murmuration "average" levers are on the wrong side of the prize max (#444)
@@ -41,6 +38,10 @@ NOT a CORE / cancellation / completion / moment-saving / anti-concentration / ca
 bounds nothing about `M(n)` itself.  It records why a geometric-mean / density lever cannot be the
 prize lever — it lives strictly below the max it would need to control.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVGeomMeanBelowMax
 

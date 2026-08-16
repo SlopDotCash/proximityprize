@@ -7,8 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import Mathlib.GroupTheory.Perm.Centralizer
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-
 /-!
 # The pairing census: `#{perfect matchings of Fin (2r)} = (2r−1)!!` — closing the K1 counting core (#389)
 
@@ -30,6 +28,9 @@ combinatorial (counting) half of the energy bound `E_r(μ_n) ≤ (2r−1)!!·n^r
 advance (the avg→max gap remains the wall), but it is a genuine, novel, axiom-clean closure of a
 named in-tree residual. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 

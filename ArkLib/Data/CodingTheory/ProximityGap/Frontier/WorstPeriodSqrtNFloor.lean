@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteParsevalLower
 
-set_option linter.style.longLine false
-
 /-!
 # The clean `Ω(√n)` floor on the worst period in the thin regime (#444)
 
@@ -28,6 +26,9 @@ bracket — the prize is the UPPER bound `M(μ_n) ≤ C·√(n·log(p/n))`, and 
 is exactly what remains open. CORE stays OPEN; this is a clean closed-form restatement of the proven
 floor.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ProximityGap.Frontier.ConcreteMomentAssembly

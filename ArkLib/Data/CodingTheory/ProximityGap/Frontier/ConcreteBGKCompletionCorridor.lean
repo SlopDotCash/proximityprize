@@ -7,10 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ConcreteCompletionCeiling
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.WorstPeriodSqrtNFloor
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._NoFifthDoorTetrachotomy
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # The CONCRETE completion corridor `√(d/2) ≤ M(μ_d) ≤ √q` on the real worst period (#444)
 
@@ -52,6 +48,11 @@ capacity claim.  CORE `M(μ_d) ≤ C·√(d·log(p/d))` stays OPEN — door (iv)
 proven `√q` ceiling, is the open problem; this file states the obligation on the real object, it does
 not discharge it.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumWorstCase

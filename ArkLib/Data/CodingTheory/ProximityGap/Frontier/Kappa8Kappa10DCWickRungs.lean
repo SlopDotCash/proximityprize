@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The r=4 and r=5 DC-Wick rungs: `E₄, E₅` closed forms, `κ₈ = −1155 n`, `κ₁₀ = 57456 n` (#444)
 
@@ -74,6 +71,10 @@ OPEN.  These rungs FORMALIZE more of the char-0 ladder, matching the closed-form
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.Kappa8Kappa10
 

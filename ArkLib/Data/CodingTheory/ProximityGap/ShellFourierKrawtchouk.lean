@@ -8,8 +8,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.KrawtchoukPoly
 import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
 import Mathlib.InformationTheory.Hamming
 import Mathlib.Algebra.BigOperators.Ring.Finset
-set_option linter.style.longLine false
-set_option maxHeartbeats 800000
 
 /-!
 # The Hamming-shell Fourier transform IS the Krawtchouk polynomial (#389)
@@ -23,6 +21,9 @@ Krawtchouk generating function:
 This is the bridge that turns the Shaw operator (the unified prize unknown) into a Krawtchouk-weighted
 dual-MDS character sum. Axiom-clean.
 -/
+set_option linter.style.longLine false
+set_option maxHeartbeats 800000
+
 
 open Finset Polynomial
 open ArkLib.ProximityGap.CharFactor ArkLib.ProximityGap.Krawtchouk

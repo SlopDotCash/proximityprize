@@ -8,10 +8,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Card
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Door-(iv) constraint: the worst-frequency GAP-SEQUENCE SPECTRUM is FULL-RANK —
   the spectral / quasi-periodic gap lever is a DEAD lever (#464)
@@ -56,6 +52,11 @@ ASYMPTOTIC-GUARD-COMPLIANT (a *negative* / refutation result: a low-rank spectra
 OUT at `b*`; no capacity / beyond-Johnson / `δ*` claim).  It does NOT bound CORE; it removes one
 named non-energy lever (gap spectral rank) from door (iv).  CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedDecidableInType false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVGapSpectrumFullRank
 

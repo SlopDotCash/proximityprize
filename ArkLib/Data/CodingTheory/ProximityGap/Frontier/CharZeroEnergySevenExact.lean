@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergySixExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E7ClosedForm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A continued: the exact char-0 depth-7 additive energy `E₇(μ_n)` from the recursion
 
@@ -46,6 +43,10 @@ OPEN. The `rec14` field is a named `Prop` field, NOT discharged.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroEnergySeven
 

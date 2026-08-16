@@ -8,13 +8,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3Shape21Scratch
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3SubsetCount
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-! Scratch: the final E₃ strata assembly. Combines the three per-image-size multiplicities
 (`image_count_two`=20, `image_count_four`=360, `image_count_six`=720) with the neg-closed subset
 count (`negClosed_subset_count`=C(h,i)) over `negSymCount_partition_negClosed`, then closes via
 `strata_sum_eq_closed`, yielding `negSymCount G 6 = 15·|G|³ − 45·|G|² + 40·|G|`. -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

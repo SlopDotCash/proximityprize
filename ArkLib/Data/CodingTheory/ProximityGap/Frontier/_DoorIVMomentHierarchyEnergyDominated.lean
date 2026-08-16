@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVMixedConjugateMomentCollapse
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DoorIVOddSignedMomentCauchy
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-1 CAPSTONE: the WHOLE mixed-conjugate moment hierarchy is energy-dominated (#444)
 
@@ -32,6 +29,10 @@ backbone of "the phase the modulus discards is identically zero on the real axis
 This is a STRUCTURAL consolidation capstone (composition of proven facts), NOT a CORE / cancellation /
 completion / anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVMomentHierarchyEnergyDominated
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergySevenExact
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvL2_E8ClosedForm
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A continued: the exact char-0 depth-8 additive energy `E₈(μ_n)` from the recursion
 
@@ -43,6 +40,10 @@ moment-saving/anti-concentration/capacity claim; prize CORE stays OPEN. The `rec
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroEnergyEight
 

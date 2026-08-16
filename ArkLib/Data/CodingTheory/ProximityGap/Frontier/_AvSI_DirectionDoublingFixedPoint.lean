@@ -13,8 +13,6 @@ import Mathlib.Data.Nat.Choose.Sum
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # Self-improving char-0 Wick bound via the direction-doubling fixed point (#444, SELF_IMPROVING)
 
@@ -58,6 +56,9 @@ The depth-halving `E_{2K} ≤ p·E_K²` loses a factor `p` per step (`p^{K-1}n^K
 (the open kernel). What lands here is the char-0 fixed point: the Gaussian envelope is
 convolution-stable with equality.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.SelfImproving
 

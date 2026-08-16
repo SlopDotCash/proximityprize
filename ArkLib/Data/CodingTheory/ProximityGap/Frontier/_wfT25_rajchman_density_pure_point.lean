@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Algebra.Order.Field.Basic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # wf-T25 (#444): the "Rajchman a.c.-density of the dilation Koopman flow" is REFUTED
 (the spectral measure is PURE-POINT, the a.c. density does not exist) and its only well-posed
@@ -76,6 +73,10 @@ candidate's own objects):
 
 **Verdict: REFUTED (finite-dim ⇒ pure-point ⇒ no a.c. density) + the surrogate REDUCES-TO-WALL F1.**
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Real
 

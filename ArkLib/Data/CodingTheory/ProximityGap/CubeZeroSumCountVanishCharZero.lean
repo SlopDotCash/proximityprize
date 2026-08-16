@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.ThreeRootsSumZeroCharZero
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 
-set_option linter.unusedDecidableInType false
-
 /-!
 # The order-3 zero-sum count of `μ_n ⊆ ℂ` VANISHES in char 0 when `3 ∤ n` (#444, #407)
 
@@ -46,6 +44,9 @@ triples with repeats).
 
 Issues #444, #407.
 -/
+
+set_option linter.unusedDecidableInType false
+
 
 open scoped BigOperators
 

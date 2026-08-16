@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.RSDistinctness
 
-set_option linter.style.longLine false
-
 /-!
 # Per-parameter interpolant uniqueness above the unique-decoding radius
 
@@ -29,6 +27,9 @@ regime.  The matching-domain construction (`P = g` on a large `D`) is the curve/
 supplied by the GS machinery (`Q_graph_factor_dvd_of_radius` + the §5 counting), discharging the
 `hQz_ne` non-degeneracy by `EvalOnZNonzero.card_badZ_le`.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace RSDistinct
 

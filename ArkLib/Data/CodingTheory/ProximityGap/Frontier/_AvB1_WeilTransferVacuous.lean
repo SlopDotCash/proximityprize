@@ -7,9 +7,6 @@ import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # B1 (Weil-transfer): the per-Gauss-sum Weil bound is VACUOUS for the prize (#444)
 
@@ -77,6 +74,10 @@ same structural reason — the weight `p^{·}` overwhelms the char-0 `n^r` shape
 
 **Axiom target:** `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

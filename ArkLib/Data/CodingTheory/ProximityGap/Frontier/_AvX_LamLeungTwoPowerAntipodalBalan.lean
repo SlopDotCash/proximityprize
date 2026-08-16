@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Lam–Leung (prime-power 2 case): zero-sum tuples of `2^μ`-th roots are antipodally balanced
 
@@ -34,6 +31,10 @@ multiset engine `LamLeungMultisetAntipodal.count_antipodal_of_sum_eq_zero`.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset
 

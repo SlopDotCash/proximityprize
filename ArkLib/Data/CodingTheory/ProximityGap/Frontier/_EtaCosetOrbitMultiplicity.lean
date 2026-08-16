@@ -5,12 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._EtaCosetInvariance
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # Frequency-coset orbit multiplicity for the door-IV Gauss period (#444)
 
@@ -34,6 +28,13 @@ CORE.  It says a worst `b` is never isolated: it comes with a full thin-subgroup
 frequencies.  The missing prize theorem remains the anti-concentration / coherence bound on the value
 shared by such a coset.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

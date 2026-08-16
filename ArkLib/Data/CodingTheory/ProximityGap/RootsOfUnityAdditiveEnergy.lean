@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Round 9 (Issue #232, ABF26) — roots of unity have MINIMAL additive energy (characteristic 0).
 
@@ -37,6 +35,9 @@ a sum-product/additive-energy bound. All `sorry`-free and axiom-clean.
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
 -/
+
+set_option linter.style.longLine false
+
 
 open Polynomial Finset
 open Complex (I)

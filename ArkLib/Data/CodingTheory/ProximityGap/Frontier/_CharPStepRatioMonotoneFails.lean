@@ -5,8 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._CharPTransferDecomposition
 
-set_option autoImplicit false
-
 /-!
 # REFUTATION: the char-`p` step-ratio monotonicity FAILS in the prize regime (#444)
 
@@ -55,6 +53,9 @@ capacity claim. It REFUTES one assumed route. CORE stays OPEN.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`/`axiom`/`opaque`/`native_decide`.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.CharPStepRatioFails
 

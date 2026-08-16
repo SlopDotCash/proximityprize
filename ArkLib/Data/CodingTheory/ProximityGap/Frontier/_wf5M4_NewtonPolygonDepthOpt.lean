@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodMomentBound
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The Newton-polygon depth optimization of the char-`p` moment bound (#444, lane wf-M4)
 
@@ -60,6 +57,10 @@ arrow to the prize shape.  This file does NOT prove the prize — it proves that
 hypothesis, at the depth the Newton polygon supports, yields the prize square-root form (the
 arithmetic the substrate left implicit).  Issues #444, #389, #407.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

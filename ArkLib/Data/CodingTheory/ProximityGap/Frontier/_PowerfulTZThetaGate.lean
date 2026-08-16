@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#464)
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The exponent gate behind the powerful-modulus Thorner-Zaman line
 
@@ -35,6 +32,10 @@ This file proves only that exponent bookkeeping.  It does not prove a Thorner-Za
 theorem, does not assert that the paper supplies the fixed-polynomial-window count needed by the
 coding-theory consumer, and does not prove any floor or delta-star result.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.PowerfulTZThetaGate
 

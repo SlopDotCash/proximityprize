@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # Lane K1 (#444): the QUE / Lindenstrauss–Soundararajan sup-norm route reduces to the
   L²-quantum-variance (= second moment / additive energy), invisible to the L∞ prize excess.
@@ -76,6 +74,9 @@ All results `#print axioms ⊆ {propext, Classical.choice, Quot.sound}`; no `sor
 Issue #444 (lane K1, QUE / Lindenstrauss–Soundararajan).
 Probe: `scripts/probes/rust/probe_wfK1_que_hecke_flatness.rs` (exact integer arithmetic, β=4).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.QUEQuantumVariance
 

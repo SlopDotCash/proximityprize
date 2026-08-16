@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Sharp lower bound on the worst subgroup Gaussian period (#389)
 
@@ -23,6 +21,9 @@ period is genuinely `Ω(√n)`). With the completion bound `√q` this brackets 
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80P (#466, 2026-07-10): REDUCED-FRACTION RIGIDITY below √p — congruent cross-products
   of sub-√p integers are EQUAL, so coset-interval intersections inject into small subgroup
@@ -55,6 +52,10 @@ impossibility theorem. No certificate is produced. CORE remains OPEN / ON-BGK.
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

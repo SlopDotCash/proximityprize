@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Fixed-parameter limits do not transfer to the prize diagonal without an effective threshold
 
@@ -26,6 +23,10 @@ transfers to the diagonal only after choosing effective thresholds `P0 n` and pr
 miss each other: the property may be eventually true above `scale n + 1` for every fixed `n`, while
 being false at the prize point `p = scale n`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.FixedParameterLimitTransferGate
 

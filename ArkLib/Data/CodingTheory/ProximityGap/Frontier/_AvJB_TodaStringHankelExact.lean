@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.RingTheory.Polynomial.Hermite.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The Toda / discrete-string + Hankel structure of the char-0 Jacobi recurrence (#444, form D)
 
@@ -54,6 +52,9 @@ This file is the integrable-systems *backbone*: it makes the form-(D)→form-(A)
 *precisely* as a Hankel-determinant / string-equation departure.  NO cancellation / completion /
 moment-saving / anti-concentration / capacity claim.  CORE remains OPEN.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.TodaStringHankel
 

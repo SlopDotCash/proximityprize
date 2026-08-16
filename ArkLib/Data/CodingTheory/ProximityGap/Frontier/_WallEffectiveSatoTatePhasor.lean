@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # WALL ATTACK [effective-Sato-Tate]: the prize is a UNIFORM-IN-`b` cancellation bound on the
 # Gauss-sum phasor sum of growing length `t = (q-1)/d` (#444/#334)
@@ -77,6 +74,10 @@ EVT logarithm, the triangle ceiling is `t-1` and the target is `√t·√(2 ln q
 deficit is named and quantified. No `δ*`/capacity/beyond-Johnson claim. No Weil/étale input used
 (only the elementary completion identity + `‖g(χ)‖ = √q`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.WraparoundThreshold
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option autoImplicit false
-
 /-!
 # The char-`p` onset growth law for the wraparound excess `W_r` (#464 — Dossier §6.1)
 
@@ -69,6 +67,9 @@ Axiom target: `[propext, Classical.choice, Quot.sound]`.
 - In-tree: `WraparoundThreshold.lean` (`no_wraparound_depth`, the norm obstruction).
 - Probes: `/tmp/onset_growth.py`, `/tmp/leading.py` (exact integer evidence).
 -/
+
+set_option autoImplicit false
+
 
 open Finset NumberField Module
 

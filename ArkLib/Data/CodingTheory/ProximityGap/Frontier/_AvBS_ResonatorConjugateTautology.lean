@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
-set_option autoImplicit false
-
 /-!
 # Bondarenko–Seip resonator on the GALOIS CONJUGATES `{η_c}` — the exact CAP (issue #444)
 
@@ -57,6 +55,9 @@ detector that reproduces but cannot exceed nor invert the house* — is the **ri
 flatness `|η̂(j)| = √p` is a Gauss-sum fact; the consequence is that BS adds nothing to the
 second-moment floor). No prize upper bound is produced; the wall is unmoved.
 -/
+
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvBSResonator
 

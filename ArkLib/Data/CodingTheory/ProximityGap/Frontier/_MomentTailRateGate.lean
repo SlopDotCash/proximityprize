@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Moment tail rate gate
 
@@ -27,6 +24,10 @@ then a one-spike score vector satisfies the moment budget while violating the de
 bound.  Thus high moments become a worst-case floor proof only at the rate where Markov plus the
 finite atom count beats one possible bad atom.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._G80YArcEquivalenceConverse
 import Mathlib.Algebra.Order.Chebyshev
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G80W (#466, 2026-07-10): the SAME-ARC PAIR-COUNT identity — the arc-occupancy ℓ²
   discrepancy EQUALS the same-arc pair excess, welding the KM-arc certificate (G78/G80) and
@@ -47,6 +44,10 @@ the one missing non-Fourier input. No claim of producing either. CORE remains OP
 
 Issue #466. Axiom-clean.
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 # The corrected central conditional: prize ⟸ a SUP/existence wraparound bound (#444)
 
 The thesis's first capstone (`_ThesisCapstone.subPoisson_variance_implies_prizeFloor`) reduced the
@@ -27,7 +29,6 @@ prime suffices* — is exposed cleanly and is manifestly independent of any seco
 
 `#print axioms` ⊆ {propext, Classical.choice, Quot.sound}.
 -/
-import Mathlib.Tactic
 
 namespace ProximityGap.SupBoundCapstone
 

@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # LANE G99 (#466, 2026-07-10): the Erdős–Turán / Esseen harmonic-ladder certificate with the
   EXACT in-tree second moment, and a NON-FOURIER small-ball rigidity theorem for dilated orbits
@@ -96,6 +92,11 @@ impossible below scale `√(p/2)`) obtained purely from the multiplicative struc
 
 Issue #466. Axiom-clean; no `sorry`, no new axioms.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

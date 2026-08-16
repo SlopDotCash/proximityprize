@@ -9,9 +9,6 @@ import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Linarith
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # B2-stickelberger-deep — the algebraic (Stickelberger / house-norm) `W_r = 0` onset is
   VACUOUS at the saddle, by an ever-widening margin (#444)
@@ -77,6 +74,10 @@ NOT close the prize — it CONFIRMS the reduction `r_0 ≪ ln q`. No `sorry`, no
 
 **Axiom target:** `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.StickelbergerOnsetVacuous
 

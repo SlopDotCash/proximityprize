@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CharPMomentRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.WickStepRatio
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The convolution / doubling-tower energy bootstrap is SAVING-DESTROYING (#444, ANGLE BOOTSTRAP)
 
@@ -57,6 +54,10 @@ Lam–Leung / di Benedetto) stays OPEN. Issues #444, #407.
 
 Axiom-clean target: `[propext, Classical.choice, Quot.sound]`.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open ArkLib.ProximityGap.CharPMomentRecursion
 open ArkLib.ProximityGap.WickStepRatio

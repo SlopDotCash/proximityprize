@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DilationRealSignCocycle
 import Mathlib.Tactic.Linarith
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.unusedDecidableInType false
-
 /-!
 # Door-IV sign-cocycle mass balance (#444)
 
@@ -23,6 +18,12 @@ This file packages the exact finite consequence the proof narrative uses: the po
 argument cannot keep only the doubling side: every positive-weight same-sign budget must be paid for by
 an equal opposite-sign budget. This is a constraint lemma, not a CORE bound.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+set_option linter.unusedDecidableInType false
+
 
 namespace ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 

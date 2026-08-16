@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import Mathlib.Data.Fin.Tuple.Finset
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # The char-`p` additive-moment recursion `E_{r+1} = n·E_r + cross_r` (Issue #407, "T4")
 
@@ -40,6 +37,10 @@ character-orthogonality (the latter only via the cited substrate moment):
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

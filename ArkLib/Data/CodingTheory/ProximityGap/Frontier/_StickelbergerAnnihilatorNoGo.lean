@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (Mechanism 4 — Stickelberger ideal annihilator no
 import Mathlib.RingTheory.Ideal.Basic
 import Mathlib.Algebra.Group.Defs
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The Stickelberger-annihilator no-go for the wraparound excess `W_r` (#444, Mechanism 4)
 
@@ -82,6 +79,10 @@ foreclosed in one statement: the prize object is invariant under the class-group
 - in-tree: `_ValuationClassBarrier.lean`, `_wf5M2_stickelberger_depth.lean`,
   `_StickelbergerGeoMeanThreshold.lean`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.StickelbergerAnnihilatorNoGo
 

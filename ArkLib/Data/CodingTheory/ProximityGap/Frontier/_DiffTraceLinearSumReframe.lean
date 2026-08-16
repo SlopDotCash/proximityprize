@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTracePlancherelFloor
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the variance-core open bound reframed as an L² mass bound on `Σ_T Jphase θ T` (#444)
 
@@ -63,6 +59,11 @@ NO CORE / cancellation / completion / moment-saving / capacity claim: the inequa
 core onto the L² mass of the aggregate linear phase sum — a citable capstone of the variance route,
 not a closure.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceLinearSumReframe
 

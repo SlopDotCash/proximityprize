@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # T24 — "Sarnak–Xue DENSITY of the affine Koopman operator caps the non-tempered count" REDUCES TO
         the wall (primary **F1** via the Parseval/Markov level-set duality; terminal **F0**); and its
@@ -102,6 +99,10 @@ duality; terminal **F0** the conservation law), and its prize-closing sharp form
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real Finset
 

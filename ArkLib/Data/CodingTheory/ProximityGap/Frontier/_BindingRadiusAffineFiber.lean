@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Binding-radius affine fibres (#407)
 
@@ -29,6 +27,9 @@ the Lean-side gate needed by the binding-radius path:
 The last theorem is the formal version of "count consistent binding witnesses,
 not a p-dependent BGK proxy" at the purely affine layer.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset
 

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorClosureContract
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ProfileFiberSlackDominance
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Slack-profile certificates feed the floor closure contract
 
@@ -31,6 +28,10 @@ Together with slack domination, that is enough for `WorstCaseIncidenceBounded` a
 delta-star pin.  The refutation surface is explicit: floor still bad, a stack exceeds its
 representative-plus-slack allowance, or a used profile's allowance is above budget.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open scoped NNReal ENNReal ProbabilityTheory
 open ProximityGap Code

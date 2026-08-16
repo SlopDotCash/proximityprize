@@ -8,9 +8,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `_AvBV2` — the **second-moment-over-primes** (variance) Bombieri–Vinogradov route, and the
 exact **certification deficit** that defeats it (#444)
@@ -107,6 +104,10 @@ not one — it is the sharp reason the variance/BV-over-primes route reduces.
 * `moment_ladder_exceeds_prize`, `_AvFrontier_KMomentBarrier` (the K-moment barrier `α(K)>½`).
 * [BGK] Bourgain–Glibichuk–Konyagin; [ABF26] ePrint 2026/680 (issue #444).
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvBV2
 

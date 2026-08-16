@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option linter.style.longLine false
-
 /-!
 # `_DstarGrowthLaw` — the p-independent distinct-γ count exceeds budget (#444, ATTACK D*-growth-law)
 
@@ -66,6 +64,9 @@ matching numerics (`scripts/probes/_probe_444_dstar_growth.py`, `_probe_444_dsta
 
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.DstarGrowthLaw
 

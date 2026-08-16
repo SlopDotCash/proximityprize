@@ -3,7 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib
+
+/-!
 # `_OPSingleOrbit` — the `O_P = 1` single-orbit persistence is REFUTED (#444)
 
 ## Attack [OP-single-orbit] — verdict: REFUTED (O_P grows as `n/8 − 1`).
@@ -48,7 +50,6 @@ sufficient refuting witness `O_P ≥ 3` at `n = 32`. The demand-floor reduction
 vast slack — only the strictly stronger `O_P = 1` single-orbit claim dies.
 See `docs/kb/deltastar-444-OP-single-orbit-refuted.md`.
 -/
-import Mathlib
 
 namespace ArkLib.ProximityGap.OPSingleOrbit
 

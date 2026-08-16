@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The char-0 Jacobi spectral-edge operator is UNBOUNDED (#444, JACOBI_DEEPEN)
 
@@ -57,6 +55,9 @@ low-order coefficients; `sup_k αₖ` genuinely requires the kernel. This brick 
 obstruction exactly* (the unboundedness is not a numeric guess — it is the exact closed form), which
 is the honest deliverable for this angle. Issue #444.
 -/
+
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.JacobiDeepen
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Shaw-value `O(1)` ⇔ bounded-range rung (#444, door-(iv) Lane-2)
 
@@ -43,6 +40,10 @@ Main statements:
   (a finite head is always bounded), so the prize `O(1)` existence follows.  This is the exact
   logical step "measured saturation ⟹ a finite uniform constant exists".
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueSaturationBdd
 

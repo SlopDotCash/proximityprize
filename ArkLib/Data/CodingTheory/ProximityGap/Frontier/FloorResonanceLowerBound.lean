@@ -7,8 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
-set_option linter.style.longLine false
-
 /-!
 # The floor LOWER bound via the resonance method — reduces to the energy-ratio wall (#444)
 
@@ -60,6 +58,9 @@ This is a *reduces-to-wall* result — half of a two-sided barrier, with the ope
 
 This file is axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; no `sorry`).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.FloorResonance
 

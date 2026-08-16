@@ -7,11 +7,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleSingleDefect
 import Mathlib.Tactic
 import Mathlib.Analysis.MeanInequalities
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # k-defect QUANTITATIVE deficit: additive-in-defect first-power floor
 
@@ -45,6 +40,12 @@ EVERY phase off-aligned with `D = Θ(n)`, where `(M − k)D/M` degenerates (the 
 the open `JacobiCocycleDispersion`, untouched. NO CORE / cancellation / completion / anti-concentration
 / moment-saving / capacity claim. Prize CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleKDefectQuantDeficit
 

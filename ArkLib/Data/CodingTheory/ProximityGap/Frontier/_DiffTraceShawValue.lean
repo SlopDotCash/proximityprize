@@ -5,11 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTraceFlatnessRatio
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the Shaw value attached to the variance-route flatness ratio (#444)
 
@@ -29,6 +24,12 @@ NO CORE / cancellation / completion / moment-saving / capacity claim: this is on
 an iff with the already-open variance-core bound.  The missing analytic content remains the flatness
 inequality itself.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTraceShawValue
 

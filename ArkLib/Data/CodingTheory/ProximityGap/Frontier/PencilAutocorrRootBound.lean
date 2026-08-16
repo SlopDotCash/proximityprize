@@ -7,8 +7,6 @@ import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.PencilAutocorrelation
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._KelleyOwenDilationPencil
 
-set_option linter.style.longLine false
-
 /-!
 # LEVER K, completed: the M=1 autocorrelation hypothesis YIELDS the Stepanov √N root bound (#407/#444)
 
@@ -60,6 +58,9 @@ the proven `t=3` rung in autocorrelation form, NOT the wall. The prize CORE
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

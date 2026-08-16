@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Tactic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE N4 — p-adic / Lam–Leung vanishing-sum rigidity gives NO leverage at saddle depth (#444)
 
@@ -55,6 +52,10 @@ Conclusion: the p-adic / Mahler / Lam–Leung angle is a **reduces-to-wall** —
 but confined to a constant initial band of weights `≤ 7`, while the prize needs control at depth
 `Θ(μ)`. No `μ`-uniform leverage.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvN4
 

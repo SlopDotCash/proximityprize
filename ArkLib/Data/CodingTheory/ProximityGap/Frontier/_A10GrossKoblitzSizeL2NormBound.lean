@@ -7,9 +7,6 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # A10 — Gross–Koblitz attacks the SIZE: the archimedean relation-norm has an EXACT `L²`
 # (Mahler/Ramanujan) bound, quadratically tighter than the house bound, but the `|Norm|` itself
@@ -79,6 +76,10 @@ AM–GM), which no `L²`/digit/Stickelberger datum supplies — the saddle `r* =
 This file formalizes (i) the AM–GM `L²` norm bound, (ii) `2√r ≤ 2r` base-quadratic-improvement,
 (iii) saddle vacuity of the improved threshold, (iv) the strictness/free-spread witness.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.A10GrossKoblitzSize
 

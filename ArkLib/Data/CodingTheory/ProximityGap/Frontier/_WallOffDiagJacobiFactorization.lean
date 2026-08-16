@@ -8,10 +8,6 @@ import Mathlib.NumberTheory.JacobiSum.Basic
 import Mathlib.Data.ZMod.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexGaussSumBound
 
-set_option autoImplicit false
-set_option linter.unusedSectionVars false
-set_option linter.style.longLine false
-
 /-!
 # WALL ATTACK `[offdiag-gauss-phase]` — the Jacobi factorization of the off-diagonal
   Gauss-sum-phase autocorrelation `Γ(δ)`, with NO Euler product (#444)
@@ -92,6 +88,11 @@ strictly-more-tractable, phase-aware, non-tensor equivalent + the trivial-ceilin
 
 Build: `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/_WALL_1_scratch.lean`
 -/
+
+set_option autoImplicit false
+set_option linter.unusedSectionVars false
+set_option linter.style.longLine false
+
 
 open Finset
 open scoped ComplexConjugate

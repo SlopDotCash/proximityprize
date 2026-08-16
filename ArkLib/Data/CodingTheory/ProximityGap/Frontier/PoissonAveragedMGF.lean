@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CoshMGFIdentity
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 
-set_option linter.style.longLine false
-
 /-!
 # The cosh-MGF as a Poisson-weighted average of `A_r / Wick_r` (Issue #444, the sharpened prize)
 
@@ -85,6 +83,9 @@ the Bessel envelope `I₀(2y)^{n/2}` the section title names) and bounding the *
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open scoped Nat  -- the `‼` (double factorial) notation is `scoped` under `Nat`

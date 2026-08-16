@@ -3,7 +3,18 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+
+import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Fintype.BigOperators
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Linarith
+
+/-!
 ANGLE F — Averaging-crossover hypothesis for the Ethereum Proximity Prize (ABF26, ArkLib #232).
 
 We attack the question of where the list-size threshold δ* lies for smooth-domain
@@ -47,16 +58,6 @@ anti-concentration hypothesis holds. Those are the open content of the prize. Th
 delivers the *exact algebraic backbone* of the averaging lower bound and the precise
 hypothesis whose truth would pin δ* = δ_avg.
 -/
-
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Fintype.Card
-import Mathlib.Data.Fintype.Pi
-import Mathlib.Data.Fintype.BigOperators
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.GCongr
-import Mathlib.Tactic.Linarith
 
 open Finset BigOperators
 

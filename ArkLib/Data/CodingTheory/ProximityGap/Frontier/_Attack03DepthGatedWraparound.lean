@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Attack 03 — the char-`p` wraparound is DEPTH-GATED: why the finite-bad-set escape fails at
   prize depth `r ≈ ln q` (#464, angle: DC-subtracted moment `E_r ≤ Wick` at `r ≈ log p`)
@@ -75,6 +72,10 @@ relation. Does NOT bypass Paley.
 
 Issue #464.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.Attack03
 

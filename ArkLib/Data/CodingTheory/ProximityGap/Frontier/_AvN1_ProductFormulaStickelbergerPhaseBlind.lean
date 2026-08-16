@@ -7,9 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.RCLike.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # Av N1 — Product formula + Stickelberger + F2 is PHASE-BLIND (reduces, trichotomy (i)). (#444)
 
@@ -69,6 +66,10 @@ This complements `_wfTT06` (product formula gives a LOWER bound, trichotomy (ii)
 `_AvN1_MonomialWeyl…` (the monomial route is Weil-vacuous): the N1 lever, taken via its sharpest
 exact form (Gauss-sum DFT + Stickelberger + F2), is phase-blind.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.AvN1PhaseBlind
 

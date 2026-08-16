@@ -6,11 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._JacobiCocycleSingleDefectDeficit
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Single-defect QUANTITATIVE deficit: the FIRST-POWER drop, lower-bounded explicitly
 
@@ -37,6 +32,12 @@ phase's real-part defect. It does NOT lower-bound the FULL dispersion at the `âˆ
 single-defect linear-in-`d` floor cannot by itself reach the prize scale. NO CORE / cancellation /
 completion / anti-concentration / moment-saving / capacity claim. Prize CORE stays OPEN.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 
 namespace ArkLib.ProximityGap.Frontier.JacobiCocycleSingleDefectQuantDeficit
 

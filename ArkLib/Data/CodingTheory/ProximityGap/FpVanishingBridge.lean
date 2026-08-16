@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.RingTheory.IntegralClosure.IntegralRestrict
 import Mathlib.NumberTheory.NumberField.Basic
 import ArkLib.Data.CodingTheory.ProximityGap.HeightGateNormBound
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # Fp-vanishing → norm-divisibility bridge (#407)
@@ -38,6 +36,9 @@ The construction of `r` from the splitting (picking `𝔭 ∣ p`) is the one hea
 project's modularity convention it is kept as the EXPLICIT hypothesis `(r) (hr : r ζ = ω)`.
 Everything else (and the whole gate downstream) is proved unconditionally from it.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField
 

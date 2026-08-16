@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SchurLagrangeBridge
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Divided-difference deflation: the j>=2 Schur-minor CONVERSE (#407)
 
@@ -27,6 +24,10 @@ degree `< k`, hence IS the agreeing codeword.
 All theorems reference the REAL in-tree `dividedDifferencePow` (from `SchurLagrangeBridge`) and
 `Lagrange.interpolate`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset Polynomial
 

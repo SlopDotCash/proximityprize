@@ -8,8 +8,6 @@ import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.NormNum
 
-set_option linter.style.longLine false
-
 /-!
 # The Burgess/Stepanov magnitude-bound index overshoot (Proximity Prize #407)
 
@@ -64,6 +62,9 @@ The numeric companion `scripts/probes/_wf407_stepanov_burgess.py` measures the t
 - In-tree: `SubgroupGaussSumWorstCase.lean` (`B ≤ √p`), `KowalskiUntrauBarrier.lean` (equidistribution
   SOTA vacuous), `CharSumMomentDeepWall.lean` (the orthogonal moment route).
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.BurgessIndexOvershoot
 

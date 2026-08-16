@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._TZSubquarticBookkeeping
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._FloorLinnikTZClosure
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The floor-successor ⇒ off-BGK floor closure, on ONE named arithmetic conjecture (#466, lane FS3)
 
@@ -83,6 +80,10 @@ FLOOR, off the BGK/Paley sup-norm wall; the δ* prize CORE stays OPEN.
 ## References
 * [TZ24] Thorner–Zaman, arXiv:2108.10878, Thm 1.1, §3.1.  Issues #334/#464/#466.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open ArkLib.ProximityGap.KKH26
 open ArkLib.ProximityGap.Frontier.FloorLocalization

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._E3Assembly
 import Mathlib.Tactic
 
-set_option autoImplicit false
-
 /-!
 # The char-0 `E₃`-exact strata producer (#444)
 
@@ -41,6 +39,9 @@ open `RepThree` obstruction, i.e. the BGK/Burgess `√`-cancellation wall
 `M(μ_n) ≤ C√(n·log(p/n))`. That wall is the genuine open research of issue #444 and is **not**
 crossed here.
 -/
+
+set_option autoImplicit false
+
 
 open ArkLib.ProximityGap.Frontier.E3StrataCount (negSymCount)
 

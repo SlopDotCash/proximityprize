@@ -8,8 +8,6 @@ import Mathlib.NumberTheory.NumberField.Norm
 import Mathlib.RingTheory.Norm.Basic
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.FieldTheory.PrimitiveElement
-set_option linter.style.longLine false
-set_option autoImplicit false
 
 /-!
 # l2-mahler-norm-bound: a structure-aware (Parseval/AM-GM) improvement of the height gate (#407)
@@ -74,6 +72,9 @@ n-th roots z] z^{i-j} = Σ_{i,j∈S} n·[i≡j] = n·#S`, using that embeddings 
 This is the structure-aware refinement of `house_rootOfUnity_le_one` — the same Mathlib gap the
 height-gate file flags, now used as an `L²` mass bound rather than an `L∞` (house) bound.
 -/
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 open Finset NumberField Module
 

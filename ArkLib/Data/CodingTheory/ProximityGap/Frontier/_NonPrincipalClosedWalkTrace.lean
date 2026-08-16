@@ -5,12 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._ClosedWalkPowerSum
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option linter.unusedDecidableInType false
-set_option linter.unusedFintypeInType false
-
 /-!
 # The non-principal closed-walk trace `Σ_{b≠0} η_b^k = q·W_k − n^k` (#444)
 
@@ -57,6 +51,13 @@ meta-theorem records as the wall. The odd-aware DC-subtracted companion of `DCSu
 - `DCSubtractedMoment.sum_nonzero_moment` (even/conjugated `Σ_{b≠0}‖η_b‖^{2r} = tr(A^{2r}) − n^{2r}`).
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option linter.unusedDecidableInType false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

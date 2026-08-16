@@ -3,7 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Algebra.Ring.GeomSum
+import Mathlib.Data.Nat.Choose.Sum
+import Mathlib.Tactic
+
+/-!
 # The char-0 subset-sum spectrum generating function, closed form (#444)
 
 A single closed-form generating function that **unifies** the three landed char-0
@@ -36,9 +40,6 @@ growth-law claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED / OPEN.
 
 Axiom-clean: `⊆ {propext, Classical.choice, Quot.sound}`. No `sorry`/`axiom`/`native_decide`.
 -/
-import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Tactic
 
 namespace ArkLib.ProximityGap.EvenOddDescent
 

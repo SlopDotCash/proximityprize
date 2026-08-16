@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.S5Genuine
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightDivisibility
 
-set_option linter.style.longLine false
-
 /-!
 # BCIKS20 §5.2.7 — Claim 5.9 (Z-linearity): the order-0 face dissolves for monic `H` (issue #232)
 
@@ -43,6 +41,9 @@ is Johnson-regime known math, not the genuinely-open capacity prize.
 * `gammaGenuine_Z_linear_target_of_succ_of_monic` — Claim 5.9 reduced to the successor residual
   (the order-0 base case discharged) for monic `H`.
 -/
+
+set_option linter.style.longLine false
+
 
 noncomputable section
 

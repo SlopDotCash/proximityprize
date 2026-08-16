@@ -5,10 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumCosetInv
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option linter.unusedFintypeInType false
-
 /-!
 # Door-(iv) Lane-2 capstone: the half-mass is an EXACT two-dilate sub-period sum (#444)
 
@@ -37,6 +33,11 @@ The headline consequences:
 Scope: an exact reindexing identity over a field, on the in-tree `eta` primitive.  No CORE/cancellation/
 completion/capacity claim — it kernel-anchors WHERE the open half-mass burden sits.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedFintypeInType false
+
 
 open Finset AddChar
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment (eta)

@@ -8,10 +8,6 @@ import Mathlib.Analysis.Normed.Ring.Finite
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-set_option maxHeartbeats 800000
-
 /-!
 # The best EFFECTIVE for-all-q sup-norm exponent is the TRIVIAL exponent `1` (#444, UNIF)
 
@@ -74,6 +70,11 @@ is `isPrizeClosure = false`.
 * [ABF26] Arnon, Boneh, Fenzi, *Open Problems in List Decoding and Correlated Agreement*,
   ePrint 2026/680 (the prize; floor `M(n) ≤ C·√(n·log(q/n))`, exponent `1/2`).
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option maxHeartbeats 800000
+
 
 open scoped Real
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

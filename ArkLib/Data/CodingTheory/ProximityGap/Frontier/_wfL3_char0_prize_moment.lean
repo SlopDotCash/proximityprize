@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DyadicEnergyK1
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodOptimizedBound
 
-set_option linter.style.longLine false
-
 /-!
 # L3: the FULL char-0 prize moment bound as ONE unconditional theorem (#444, lane wf-L3)
 
@@ -54,6 +52,9 @@ other ingredient of the per-frequency prize is proven here in char 0.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`, no new axiom. Issue #444.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset Nat
 open ArkLib.ProximityGap.NegationClosedWalk

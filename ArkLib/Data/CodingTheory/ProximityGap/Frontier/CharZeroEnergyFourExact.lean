@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.CharZeroEnergyThreeExact
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # AVENUE A continued: the exact char-0 depth-4 additive energy `E₄(μ_n) = 105n⁴−630n³+1435n²−1155n`
 
@@ -58,6 +55,10 @@ OPEN. The `rec8` field is a named `Prop` field, not silently discharged.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`. Issue #444 / #389.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.CharZeroEnergyFour
 

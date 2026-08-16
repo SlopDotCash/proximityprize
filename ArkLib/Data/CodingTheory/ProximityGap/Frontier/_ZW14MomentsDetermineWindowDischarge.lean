@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import Mathlib
 
-set_option autoImplicit false
-set_option maxHeartbeats 1000000
-
 /-!
 # ZW14 — DISCHARGE of the named open input `MomentsDetermineWindow` (#466)
 
@@ -60,6 +57,10 @@ This discharges the single named classical-OP input of the W14 seam-collapse ver
 BGK/Paley wall (`M ≤ C√(n log p)`) remains OPEN and is not touched.  Axiom audit at the
 bottom of the file; expected: `[propext, Classical.choice, Quot.sound]` throughout.
 -/
+
+set_option autoImplicit false
+set_option maxHeartbeats 1000000
+
 
 namespace ArkLib.ProximityGap.Frontier.ZW14MomentsDischarge
 

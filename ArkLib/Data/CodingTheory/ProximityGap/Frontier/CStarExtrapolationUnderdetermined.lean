@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # The far-line `c*(n)` 6-point table is asymptotically UNDER-DETERMINED (#444 ASYMPTOTIC-CLAIM GUARD)
 
@@ -58,6 +55,10 @@ residual `≤ 1`; the pure cliff `⌊n/4⌋` does not fit — overshoots).
 
 All results `#print axioms ⊆ {propext, Classical.choice, Quot.sound}`.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.CStarExtrapolationUnderdetermined
 

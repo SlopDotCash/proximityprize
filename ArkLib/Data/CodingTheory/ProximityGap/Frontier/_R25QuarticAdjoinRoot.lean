@@ -7,6 +7,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.Frontier._R24DBlockIndependence
 import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
 import Mathlib.RingTheory.AdjoinRoot
 
+/-!
+#  R25QuarticAdjoinRoot
+
+Module docstring for `_R25QuarticAdjoinRoot.lean`.
+-/
+
+
 namespace ArkLib.ProximityGap.Frontier.R25QuarticAdjoinRoot
 
 open Polynomial

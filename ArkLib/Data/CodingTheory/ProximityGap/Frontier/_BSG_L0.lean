@@ -7,9 +7,6 @@ import Mathlib.Combinatorics.Additive.Energy
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Data.Rat.Cast.Defs
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # `BSG L0`: definitional scaffold for Balog–Szemerédi–Gowers (additive-energy form)
 
@@ -27,6 +24,10 @@ These are pure `def`s (no proof obligation); they only require `DecidableEq α` 
 artefacts. A couple of trivially-true sanity `example`s are included to lock the membership
 characterisations that downstream lemmas (L1a, L2, L3, …) unfold.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ArkLib.BSG
 

@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.NegationClosedWalkBound
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # The antipodal-pairing uniqueness ENGINE on the distinct-class locus (#407 lower companion)
 
@@ -49,6 +47,9 @@ unique-negative locus on the generic stratum). Negation-closed / no-2-torsion co
 thinness-essential, does NOT close CORE. Axiom-clean (`propext, Classical.choice, Quot.sound`).
 Issue #407.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 

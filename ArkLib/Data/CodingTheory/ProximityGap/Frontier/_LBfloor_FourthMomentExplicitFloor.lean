@@ -9,9 +9,6 @@ import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyNegClosedLower
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # B3-LOWER-FLOOR — the explicit, UNCONDITIONAL fourth-moment floor on the Paley eigenvalue `M` (#444)
 
@@ -76,6 +73,10 @@ Exact verification (`n = 16, 32, 64`, `p = n⁴`) is recorded in `floor_exact_n1
 
 Issue #444, B3 lower-floor. Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Finset
 

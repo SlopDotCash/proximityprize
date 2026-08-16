@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
 import ArkLib.Data.CodingTheory.ProximityGap.DyadicHalvingRecursion
 
-set_option linter.style.longLine false
-
 /-!
 # The aggregate cross-parity (butterfly cross-term) identity (#407, lane F / Pan–Xu split)
 
@@ -58,6 +56,9 @@ Everything here is `sorry`/`axiom`-free and axiom-clean (`propext, Classical.cho
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #407.
 - BGK: Bourgain–Glibichuk–Konyagin, character sums over subgroups (the open sup-norm wall).
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset AddChar
 

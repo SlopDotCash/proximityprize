@@ -8,9 +8,6 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) Lane-1/3: the two-dilate sub-period coupling is STRUCTURELESS (#444)
 
@@ -49,6 +46,10 @@ This file packages the structural algebra of the obstruction: `H ≤ 2·maxS` al
 `H ≤ c·maxS` with `c < 2` is exactly a no-co-peak certificate; and the probed `H ≤ I ≤ 2·maxS`
 (`I` = independent-pairing surrogate) localizes the burden onto the marginal envelope.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVTwoDilateNoJointExtreme
 

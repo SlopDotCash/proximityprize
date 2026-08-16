@@ -5,10 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._DiffTracePlancherelFloor
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-set_option autoImplicit false
-
 /-!
 # EXTEND — the equality case of the variance-core Plancherel floor (#444)
 
@@ -46,6 +42,11 @@ NO CORE / cancellation-of-the-prize / completion / moment-saving / capacity / up
 this is the equality CASE of the FLOOR side.  The prize needs the still-open UPPER bound on
 `‖Σ Jphase‖²`; here we only characterise when the closed lower end is met.  #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+set_option autoImplicit false
+
 
 namespace ArkLib.ProximityGap.Frontier.DiffTracePlancherelFloorAttained
 

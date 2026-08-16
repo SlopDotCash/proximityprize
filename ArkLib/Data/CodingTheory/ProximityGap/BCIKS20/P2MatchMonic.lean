@@ -9,6 +9,13 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.FaaDiBrunoBijectionPieces
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FilterDrop
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2MonicOrderZero
 
+/-!
+# P2MatchMonic
+
+Module docstring for `P2MatchMonic.lean`.
+-/
+
+
 noncomputable section
 open scoped BigOperators
 open Finset Polynomial Polynomial.Bivariate ArkLib.PowerSeriesComposition

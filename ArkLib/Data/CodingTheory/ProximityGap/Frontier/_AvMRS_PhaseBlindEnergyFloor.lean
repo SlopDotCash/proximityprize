@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Tactic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # The phase-blind energy floor: why every L²/moment/additive-energy method caps at exponent 1 (#444)
 
@@ -46,6 +43,10 @@ method/Burgess wall stated at its cleanest. A crossing would require a genuinely
 (not L², not energy, not completion) — which is exactly the Paley/BGK conjecture and does not exist in
 the literature (Burgess exponent is exactly 1 at β=4). NOT a closure; the cleanest map of the wall.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.PhaseBlindEnergyFloor
 

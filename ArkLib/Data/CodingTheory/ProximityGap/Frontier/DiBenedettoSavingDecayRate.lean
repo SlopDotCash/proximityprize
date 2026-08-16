@@ -6,9 +6,6 @@ Co-authored-by: wakesync <shadow@shad0w.xyz>
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.DiBenedettoSavingTendsto
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # di Benedetto near-Sidon saving: the EXACT `Theta(1/log n)` decay rate (#444, constant-factor lane)
 
@@ -47,6 +44,10 @@ incidence object. EXTEND-proven, it reuses `DiBenedettoSavingTendsto`'s `logDiff
 new analytic input). The char-`p` transfer at `p = n^4` is a separate open input. ONE sweep, ONE commit.
 CORE `M(mu_n) <= C*sqrt(n*log(p/n))` UNCHANGED / OPEN. Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Filter Topology Real
 

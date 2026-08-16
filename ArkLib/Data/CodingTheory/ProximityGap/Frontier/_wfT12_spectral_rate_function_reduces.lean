@@ -6,9 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # T12 — "Spectral large-deviation rate function (Cramér curvature at the Gaussian floor)" REDUCES
         TO F0 (the tail/rare-event conservation law), via the F1/F10 wall (#444)
@@ -93,6 +90,10 @@ the SAME single open object the whole campaign reduced to: `M(n) ≤ C√(n log(
 
 Issue #444.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 open Real
 

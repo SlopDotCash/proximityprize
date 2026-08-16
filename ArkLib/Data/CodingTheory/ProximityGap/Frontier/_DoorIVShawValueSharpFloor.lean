@@ -5,9 +5,6 @@ Authors: ArkLib Contributors (#444)
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier.ShawValueCapstone
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Lane-2: the SHARPENED Shaw-value floor `c/√L` (#444)
 
@@ -39,6 +36,10 @@ the constant; it does **not** prove the prize inequality, gives **no** anti-conc
 and does **not** change the *upper* bracket endpoint (still the trivial `√(n/L)`).  The open
 door-(iv) problem is exactly as open as before.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.ShawValueCapstone
 

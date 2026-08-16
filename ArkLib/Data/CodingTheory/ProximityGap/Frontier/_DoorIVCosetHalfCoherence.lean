@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Door IV coset-half coherence: the index-2 split has a sign-degeneracy
 
@@ -25,6 +23,9 @@ prove CORE and does not use moments/completion; it is a constraint lemma saying 
 index-2 coset-half coherence** is too degenerate to be the missing anti-concentration input unless
 one refines the decomposition beyond two negation-stable halves.
 -/
+
+set_option linter.style.longLine false
+
 
 namespace ProximityGap.Frontier.DoorIVCosetHalfCoherence
 

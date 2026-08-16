@@ -6,8 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyBridge
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-
 /-!
 # Sub-`√q` upper bound on the worst period in the Sidon regime (#389)
 
@@ -25,6 +23,9 @@ conjecture asserts the analogous bound at every moment `r`, giving `√(n log f)
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
+
+set_option linter.style.longLine false
+
 
 open Finset
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment

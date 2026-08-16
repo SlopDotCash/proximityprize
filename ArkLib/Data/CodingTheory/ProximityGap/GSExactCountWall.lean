@@ -3,12 +3,13 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+import Mathlib.Tactic
+
+/-!
 Round 15 (own grind) — the EXACT-COUNT GS wall: the upper bound on the weighted-degree monomial
 count, and the resulting necessary condition for exact-count GS feasibility.
 Self-contained, Mathlib-only.
 -/
-import Mathlib.Tactic
 
 open Finset
 

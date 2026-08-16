@@ -7,9 +7,6 @@ import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Analysis.MeanInequalities
 
-set_option linter.style.longLine false
-set_option autoImplicit false
-
 /-!
 # P2 martingale route — the irreducible `ℤ/Q` prime-fiber NO-GO (#444, [REFUTES])
 
@@ -63,6 +60,10 @@ The Burkholder no-gain: for an iid `±1` length-`Q` walk, `rms|S_Q| ≈ √Q` (9
 is tight and gives no sub-`√Q` control. The `√n` cancellation lives only in the full-fiber sum being
 forced `≈ 0`, the BGK statement.
 -/
+
+set_option linter.style.longLine false
+set_option autoImplicit false
+
 
 namespace ProximityGap.Frontier.P2ZqIrreducibilityNoGo
 

@@ -5,9 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._PaleyCayleyEigenvalue
 
-set_option linter.style.longLine false
-set_option linter.unusedSectionVars false
-
 /-!
 # `η_b` is REAL on a negation-closed connection set (the N13 phase-is-a-sign constraint, #444)
 
@@ -50,6 +47,10 @@ always holds there.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #444.
 -/
+
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
+
 
 open Finset AddChar
 open ProximityGap.Frontier.PaleyCayleyEigenvalue

@@ -6,9 +6,6 @@ Authors: ArkLib Contributors (#444)
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.Real.Basic
 
-set_option autoImplicit false
-set_option linter.style.longLine false
-
 /-!
 # Door-(iv) constraint: the worst-`b` halves are coherent but STRICTLY IMBALANCED — the symmetric "÷2" descent is non-tight (#444)
 
@@ -48,6 +45,10 @@ This is a **refutation with mechanism** (a precisely-mapped non-tightness of the
 a CORE/cancellation/completion/capacity claim: it does not bound `M(n)`; it forbids the balanced-descent
 shortcut by exhibiting the strict imbalance that holds at the worst frequency.
 -/
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+
 
 namespace ArkLib.ProximityGap.Frontier.DoorIVWorstBCoherentImbalance
 

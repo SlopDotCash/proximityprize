@@ -5,8 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GG25MarkedCurve
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Monotonicity of marked curve decodability in the marked-set size (#389, B2 lane)
 
@@ -17,6 +15,9 @@ restrict to an `a`-subset (`Finset.exists_subset_card_eq`), apply the hypothesis
 curve's `b` points of the subset lie in the larger set.  Mirrors the `curveDecodable_of_marked`
 restriction pattern in the same file.
 -/
+
+set_option linter.unusedSectionVars false
+
 
 open Finset
 open scoped NNReal

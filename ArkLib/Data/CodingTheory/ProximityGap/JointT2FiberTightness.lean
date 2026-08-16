@@ -3,7 +3,14 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-/-
+
+import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Data.Fin.Basic
+import Mathlib.LinearAlgebra.LinearIndependent.Defs
+import Mathlib.Tactic
+
+/-!
   Ethereum Proximity Prize (ABF26 / ArkLib #232) — Round 10, ANGLE 2.
 
   Lam–Leung JOINT t = 2 tightness: the exact (e₁, e₂) = (0,0) fiber.
@@ -44,12 +51,6 @@ Authors: ArkLib Contributors
   EQUALITY.  We reduce both levels to one clean structural lemma applied
   TWICE.  Non-vacuity is witnessed by S = ∅ and by a genuine ω-orbit.
 -/
-
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Data.Fin.Basic
-import Mathlib.LinearAlgebra.LinearIndependent.Defs
-import Mathlib.Tactic
 
 open scoped BigOperators
 open Finset
