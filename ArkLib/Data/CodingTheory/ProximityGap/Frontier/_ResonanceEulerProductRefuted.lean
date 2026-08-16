@@ -87,7 +87,7 @@ The single-character resonator provably recovers exactly the `√n` Parseval flo
 half of BGK is NOT proven here; the genuine, axiom-clean deliverables are the engine, the exact
 quadratic-form reduction (pinpointing the failing object `S(k)`), and the Parseval recovery.
 
-Issue #444 ; task `RES_1` (Candidate 2).
+Issue #444; task `RES_1` (Candidate 2).
 -/
 
 open Finset

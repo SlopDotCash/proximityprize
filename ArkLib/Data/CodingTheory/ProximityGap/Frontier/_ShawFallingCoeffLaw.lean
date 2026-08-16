@@ -301,7 +301,7 @@ theorem topTerm_le_wick_r4 (m : ℤ) (hm : 1 ≤ m) : T 4 4 * fallFac m 4 ≤ wi
   rw [wickM_four]
   have hT : T 4 4 = 1680 := by decide
   rw [hT]
-  -- 1680·(m)_4 = 105·2⁴·(m)_4 ≤ 105·(2m)⁴ = 105·16·m⁴ ; (m)_4 ≤ m⁴ for m ≥ 4; for 1≤m<4 the
+  -- 1680·(m)_4 = 105·2⁴·(m)_4 ≤ 105·(2m)⁴ = 105·16·m⁴; (m)_4 ≤ m⁴ for m ≥ 4; for 1≤m<4 the
   -- falling factorial (m)_4 = m(m-1)(m-2)(m-3) ≤ 0 ≤ 105·16·m⁴.
   rcases hm4 with h4 | h4
   · have hle : fallFac m 4 ≤ m ^ 4 := fallFac_le_pow (by exact_mod_cast h4) (by linarith)

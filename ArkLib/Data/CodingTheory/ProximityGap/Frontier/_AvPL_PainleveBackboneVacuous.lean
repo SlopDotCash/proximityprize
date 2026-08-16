@@ -108,7 +108,7 @@ theorem backbone_edge_eq_two_target (n p : ℝ) (hn : 0 ≤ n) (hp : 1 ≤ p) :
     2 * Real.sqrt (bsqBackbone n (peakDepth p))
       = 2 * ((1 / Real.sqrt 2) * Real.sqrt (n * Real.log p)) := by
   rw [edge_backbone_eq n p hn hp]
-  -- √(2·x) = √2·√x ; RHS = 2/√2·√x = √2·√x since √2·√2 = 2.
+  -- √(2·x) = √2·√x; RHS = 2/√2·√x = √2·√x since √2·√2 = 2.
   rw [Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)]
   have hs2 : Real.sqrt 2 ≠ 0 := by positivity
   have hsq : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)

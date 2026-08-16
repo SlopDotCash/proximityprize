@@ -77,7 +77,7 @@ theorem not_gaussianEnergyBound_of_dc_gt_wick {ψ : AddChar F ℂ} (hψ : ψ.IsP
   intro h
   have hge : (G.card : ℝ) ^ (2 * r) / (Fintype.card F : ℝ) ≤ (rEnergy G r : ℝ) :=
     energy_ge_dc hψ G r hq
-  -- h : E_r ≤ Wick ; hge : DC ≤ E_r ; hdc : Wick < DC — contradiction.
+  -- h : E_r ≤ Wick; hge : DC ≤ E_r; hdc : Wick < DC — contradiction.
   exact absurd (lt_of_lt_of_le hdc (le_trans hge h)) (lt_irrefl _)
 
 /-- **Cleared-denominator DC no-go.** If the full-field-scaled Wick ceiling is already below the

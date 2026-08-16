@@ -173,7 +173,7 @@ theorem prizeScale_threshold_holds :
     let p : ℕ := (2 ^ 30) ^ 4
     let r : ℕ := 5
     (p + 1) * Nat.doubleFactorial (2 * r - 1) ≤ n ^ r := by
-  -- n^5 = 2^150 ; (p+1)·945 = (2^120+1)·945 ≤ 2^120 · 1024 = 2^130 < 2^150.
+  -- n^5 = 2^150; (p+1)·945 = (2^120+1)·945 ≤ 2^120 · 1024 = 2^130 < 2^150.
   norm_num [Nat.doubleFactorial]
 
 end ArkLib.ProximityGap.Frontier.DeficitCreditDominatedByDCNoGo

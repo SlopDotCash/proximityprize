@@ -12,7 +12,7 @@ import Mathlib.Tactic.Positivity
 
 /-!
 # The char-`p` autocorrelation recursion `E_{r+1} = n·E_r + cross_r` and the FREE DEEP TAIL
-  (Actionable **A02**, merged `407-T28 ; 389-T28`)
+  (Actionable **A02**, merged `407-T28; 389-T28`)
 
 Let `H = μ_n ⊆ G = ℤ/p` (or any finite abelian group `G`). Write `1_H` for the indicator and
 `f_r := 1_H^{*r}` for the `r`-fold convolution, so
@@ -51,7 +51,7 @@ off-diagonal pairs this gives `cross_r ≤ n(n−1)·E_r`, hence the **crude rec
 
 and, iterating from `E_1 = n`, the **crude closed form**
 
-  `E_r ≤ n^{2r−1}`             (`energy_le_crude` ; here taken as a hypothesis-form on the chain).
+  `E_r ≤ n^{2r−1}`             (`energy_le_crude`; here taken as a hypothesis-form on the chain).
 
 ## The free deep tail (the A02 deliverable)
 

@@ -70,7 +70,7 @@ theorem sum_sq_centered_kernelSpectrum_eq (u : ZMod m → ℂ) (hu : ∀ l : ZMo
   rw [Finset.sum_congr rfl (fun k _ => hpoint k)]
   -- distribute the sum over the three terms
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  -- ∑ 2c·w_k = 2c·∑ w_k ;  ∑ c² = card·c²
+  -- ∑ 2c·w_k = 2c·∑ w_k;  ∑ c² = card·c²
   rw [← Finset.mul_sum, Finset.sum_const, Finset.card_univ, ZMod.card, nsmul_eq_mul]
   rw [hsq, hmean]
   ring

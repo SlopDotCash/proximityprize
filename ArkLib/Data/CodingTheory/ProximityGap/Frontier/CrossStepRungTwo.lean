@@ -217,7 +217,7 @@ theorem crossMass_two_exact_of_moments (G : Finset F) (hn : 4 ≤ G.card)
     (hE3 : rEnergy G 3 = 15 * G.card ^ 3 - 45 * G.card ^ 2 + 40 * G.card) :
     crossMass G 2 = 12 * G.card ^ 3 - 42 * G.card ^ 2 + 40 * G.card := by
   have hrec := rEnergy_three_eq G
-  -- hrec : E_3 = n·E_2 + crossMass G 2 ; n·E_2 = n·(3n²−3n) = 3n³−3n²
+  -- hrec : E_3 = n·E_2 + crossMass G 2; n·E_2 = n·(3n²−3n) = 3n³−3n²
   have hmul : G.card * rEnergy G 2 = 3 * G.card ^ 3 - 3 * G.card ^ 2 := by
     rw [hE2, Nat.mul_sub]; congr 1 <;> ring
   -- bounds for the ℕ truncated subtractions (n ≥ 4)

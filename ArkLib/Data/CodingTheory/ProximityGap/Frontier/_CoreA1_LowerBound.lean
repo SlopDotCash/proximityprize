@@ -106,7 +106,7 @@ This is the engine of the A1 lower bound: the depth-`2` cascade rung never drops
 `m*` cannot bind at depth `2`. Pure polynomial inequality — no field, regime, or analytic input. -/
 theorem dedge_gt_budget (m : ℕ) (hm : 2 ≤ m) : 4 * m < Dedge m := by
   unfold Dedge
-  -- m = 2 + t ; both sides polynomials in t over ℕ.
+  -- m = 2 + t; both sides polynomials in t over ℕ.
   obtain ⟨t, rfl⟩ := Nat.exists_eq_add_of_le hm
   have h2 : 2 + t - 1 = 1 + t := by omega
   rw [h2]

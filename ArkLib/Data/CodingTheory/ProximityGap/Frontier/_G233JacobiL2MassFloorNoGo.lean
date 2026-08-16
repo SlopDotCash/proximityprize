@@ -139,7 +139,7 @@ exactly `2⁹⁶`.  Equivalently, strict half recovery needs `K ≥ 2⁹⁶`. -/
 theorem p1_half_recovery_needs_two_pow_96 :
     ∀ K : ℕ, 4 * sponsorN * K ≥ sponsorM1 - sponsorN → K ≥ 2 ^ 96 := by
   intro K hK
-  -- sponsorM1 - sponsorN = 2^128 + 192 - 2^30 ;  4 * 2^30 = 2^32 ;  threshold = 2^96 (exact).
+  -- sponsorM1 - sponsorN = 2^128 + 192 - 2^30;  4 * 2^30 = 2^32;  threshold = 2^96 (exact).
   -- 4 * sponsorN * (2^96 - 1) < sponsorM1 - sponsorN ≤ 4 * sponsorN * K  ⇒  K ≥ 2^96.
   by_contra h
   simp only [not_le] at h

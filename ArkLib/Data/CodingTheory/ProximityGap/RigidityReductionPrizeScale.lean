@@ -201,7 +201,7 @@ at `n = 32` the single deg-3 readout `h_3` has a genuine prize-scale char-`p` ex
 `p = 206889121 = n^{5.525}`. The rigid (`r = k/2`) vs floppy (`r = 1`) dichotomy is real. -/
 theorem single_readout_threshold_not_prize :
     ((2 ^ 30) * 2 ^ 128 : ℕ) < (2 * (2 ^ 30 / 2)) ^ (2 * (2 ^ 30 / 2)) := by
-  -- q = 2^158 ; threshold = (2^30)^(2^30) = 2^(30·2^30) ≫ 2^158
+  -- q = 2^158; threshold = (2^30)^(2^30) = 2^(30·2^30) ≫ 2^158
   have hq : ((2 ^ 30) * 2 ^ 128 : ℕ) = 2 ^ 158 := by norm_num
   have hbase : (2 * (2 ^ 30 / 2)) = 2 ^ 30 := by norm_num
   rw [hq, hbase]

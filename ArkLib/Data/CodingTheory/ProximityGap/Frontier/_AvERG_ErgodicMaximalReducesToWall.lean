@@ -127,7 +127,7 @@ theorem rademacherMenshov_loses_at_prize_scale (n : ℕ) (hn : 2 ≤ n) :
     rw [show (4:ℝ) * Real.log n = (2^2) * Real.log n from by ring,
         Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num)]
   rw [h4]
-  -- LHS √n log n ; RHS (√(log n)/2)·(√n·2√(log n)) = √n·(√(log n))² = √n·log n
+  -- LHS √n log n; RHS (√(log n)/2)·(√n·2√(log n)) = √n·(√(log n))² = √n·log n
   have hsq : Real.sqrt (Real.log n) * Real.sqrt (Real.log n) = Real.log n :=
     Real.mul_self_sqrt hlognn
   have : (Real.sqrt (Real.log n) / 2) * (Real.sqrt n * (2 * Real.sqrt (Real.log n)))

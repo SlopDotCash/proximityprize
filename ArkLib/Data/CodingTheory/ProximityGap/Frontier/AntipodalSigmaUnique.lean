@@ -155,7 +155,7 @@ theorem genericBiUnion_card_le_zeroSumCount {r : ℕ} (G : Finset F)
   have hσ : IsPairing σ := hpair σ hσP
   -- reindex the sum by the involution-pairing; each lower slot + its partner = c i + (−c i) = 0
   have hinv : Function.Involutive σ := hσ.1
-  -- ∑ c = ∑_{i} c i ; split via the σ-orbit pairing using the existing transversal machinery
+  -- ∑ c = ∑_{i} c i; split via the σ-orbit pairing using the existing transversal machinery
   -- Use: ∑ over univ = ∑ over lowerHalf of (c i + c (σ i)) = ∑ over lowerHalf of 0
   set L := lowerHalf σ with hL
   set U := Finset.univ.filter (fun i => σ i < i) with hU

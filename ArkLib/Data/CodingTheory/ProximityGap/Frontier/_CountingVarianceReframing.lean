@@ -97,7 +97,7 @@ theorem counting_variance_eq (s : Finset ι) (N : ι → ℝ) (hs : s.Nonempty) 
   rw [Finset.sum_congr rfl hexp]
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
   rw [Finset.sum_const, ← Finset.mul_sum, nsmul_eq_mul]
-  -- Σ N² − 2μ·Σ N + card·μ² ; with Σ N = T = μ·card this is Σ N² − T²/card
+  -- Σ N² − 2μ·Σ N + card·μ²; with Σ N = T = μ·card this is Σ N² − T²/card
   rw [← hT]
   have : μ * (s.card : ℝ) * μ = T * μ := by rw [hμsum]
   field_simp

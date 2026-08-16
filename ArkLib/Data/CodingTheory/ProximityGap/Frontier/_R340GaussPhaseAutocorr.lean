@@ -182,7 +182,7 @@ theorem autocorr_identity {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 < d
     rw [Finset.sum_mul_sum]
   rw [Finset.sum_congr rfl fun j _ => hexpand j]
   rw [Finset.sum_comm]
-  -- now: ∑_x ∑_j ∑_y … ; swap once more to get ∑_x ∑_y ∑_j
+  -- now: ∑_x ∑_j ∑_y …; swap once more to get ∑_x ∑_y ∑_j
   have hswap2 : ∀ x : F, ∑ j ∈ Finset.range t, ∑ y : F,
       (χ ^ (d * (j + h))) x * ψ x * (((χ ^ (d * j))⁻¹) y * ψ⁻¹ y)
       = ∑ y : F, ∑ j ∈ Finset.range t,

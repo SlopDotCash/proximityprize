@@ -36,7 +36,7 @@ pair `a ≠ b ∈ W` with `γ a ≠ γ b` (a `2×2` Cramer solve), so the final
 `finrank_cliqueTwistInf_of_exists_ne` needs only the natural "γ non-constant" data.
 
 PROBE: `scripts/probes/probe_clique_inf_finrank.py` -- exact-ℚ / F_p Gaussian-elimination nullity of
-the `2 × |W|` matrix `[ones ; γ]` over `w = 2..7`, 40 trials each:
+the `2 × |W|` matrix `[ones; γ]` over `w = 2..7`, 40 trials each:
   * `γ` with ≥2 distinct values (independent): nullity `= w−1` EXACTLY (240/240).
   * `γ` constant (proportional): nullity `= w`     EXACTLY (240/240, collapses).
 Field-universal (ℚ and `F_101` agree). This is the char-independent rank backbone of the §6.1

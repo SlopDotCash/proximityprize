@@ -199,7 +199,7 @@ theorem escape_depth_three (n m p : ℕ) (hn : 3 ≤ n) (hp : 3 * n ^ 2 + n ≤ 
   have hcard : 2 * K + 4 ≤ m := by
     have hr : ((2 * K + 4 : ℕ) : ℝ) ≤ (m : ℝ) := by
       push_cast
-      -- 2K·n² ≤ R ≤ p−n ; need (2K+4)·n² ≤ m·n² = n(p−1)/1·n… ⟺ p−n+4n² ≤ n(p−1)
+      -- 2K·n² ≤ R ≤ p−n; need (2K+4)·n² ≤ m·n² = n(p−1)/1·n… ⟺ p−n+4n² ≤ n(p−1)
       nlinarith [hK_le, hR_lb, hmR, hpR, hnR, hn2pos]
     exact_mod_cast hr
   -- the escape multiset

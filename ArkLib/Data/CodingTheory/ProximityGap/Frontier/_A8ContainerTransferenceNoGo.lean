@@ -85,7 +85,7 @@ theorem linearForms_value_ge
   have hrhs : (q / n) ^ 3 * E₂ / n = (q ^ 3 * E₂) / n ^ 4 := by
     rw [div_pow]; field_simp
   rw [hrhs, div_le_iff₀ hn2, div_mul_eq_mul_div, le_div_iff₀ hn4]
-  -- goal: 2 * q^3 * n^4 ≤ q^3 * E₂ * n^2 ; from E₂ ≥ 2 n^2 and positivity
+  -- goal: 2 * q^3 * n^4 ≤ q^3 * E₂ * n^2; from E₂ ≥ 2 n^2 and positivity
   have hq3 : (0:ℝ) < q ^ 3 := by positivity
   nlinarith [hE, hq3, hn2, hn4, mul_pos hq3 hn2]
 

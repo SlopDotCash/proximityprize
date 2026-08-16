@@ -186,7 +186,7 @@ theorem norm_sum_sq_eq_l1Mass_sq_sub_two_totalPairDeficit (zs : List ℂ) :
       have hcross := two_mul_crossDeficit_eq z zs
       unfold l1Mass at hcross ih
       -- goal: ‖z‖² + ‖zs.sum‖² + 2*S = (‖z‖ + L1)² - 2*(crossDeficit z zs + totalPairDeficit zs)
-      -- ih: ‖zs.sum‖² = L1² - 2*totalPairDeficit zs ; hcross: 2*crossDeficit = 2*(‖z‖*L1) - 2*S
+      -- ih: ‖zs.sum‖² = L1² - 2*totalPairDeficit zs; hcross: 2*crossDeficit = 2*(‖z‖*L1) - 2*S
       have hsq : (‖z‖ + (zs.map norm).sum) ^ 2
           = ‖z‖ ^ 2 + (zs.map norm).sum ^ 2 + 2 * (‖z‖ * (zs.map norm).sum) := by ring
       rw [hsq]

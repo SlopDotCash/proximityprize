@@ -213,7 +213,7 @@ theorem exists_secondFibre_of_cherry (A : Finset α) (G : Finset (α × α)) (t 
   obtain ⟨b₁, hb₁A, hb₁⟩ := exists_secondFibre_largeNbhd A G t hA
   refine ⟨b₁, hb₁A, ?_⟩
   have hgood := sum_commonNeighbors_goodPairs_ge A G t
-  -- hgood : (∑_b rDeg^2) ≤ goodMass + #(A×A)·t ;  hb₁ : goodMass ≤ #A·#N₁^2
+  -- hgood : (∑_b rDeg^2) ≤ goodMass + #(A×A)·t;  hb₁ : goodMass ≤ #A·#N₁^2
   omega
 
 end Finset.BSG

@@ -120,7 +120,7 @@ theorem centeredFunctionals_lin_indep (a b : ℤ)
   have h1 := h (1 : Fin 5)
   rw [centeredFunctional_R5, centeredFunctional_R6] at h0 h1
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one] at h0 h1
-  -- h0 : a*(-4) + b*1 = 0 ; h1 : a*1 + b*(-4) = 0
+  -- h0 : a*(-4) + b*1 = 0; h1 : a*1 + b*(-4) = 0
   constructor <;> omega
 
 /-! ## The four explicit nonnegative-integer weighted kernels realizing every sign quadrant.

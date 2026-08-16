@@ -141,7 +141,7 @@ theorem betti_factorial_eq_wick_twopow (r : ℕ) :
       exact this
   -- (2r)‼ = 2^r * r!
   have heven : Nat.doubleFactorial (2 * r) = 2 ^ r * r ! := Nat.doubleFactorial_two_mul r
-  -- Now: C(2r,r)*r!*r! = (2r)! = 2^r * r! * (2r-1)!! ; cancel one r!.
+  -- Now: C(2r,r)*r!*r! = (2r)! = 2^r * r! * (2r-1)!!; cancel one r!.
   have hr0 : 0 < r ! := Nat.factorial_pos r
   have key2 : (Nat.choose (2 * r) r * r !) * r !
       = (Nat.doubleFactorial (2 * r - 1) * 2 ^ r) * r ! := by

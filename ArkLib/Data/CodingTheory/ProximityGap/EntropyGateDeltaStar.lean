@@ -127,7 +127,7 @@ theorem mcaDeltaStar_le_of_entropy_gate (dom : Fin n ↪ F) {k m : ℕ}
     exact Nat.le_of_mul_le_mul_left h1 (Nat.factorial_pos a)
   -- ⌊P·(C'+2)/q^m⌋ ≥ 2 : from 2·q^m ≤ P ≤ P·(C'+2)/2 (since C'+2 ≥ 2)... do it directly
   have hCc2 : 2 ≤ Cc + 2 := Nat.le_add_left 2 Cc
-  -- P·(C'+2) ≥ 2·q^m·(C'+2) ≥ 2·q^m·2 ≥ q^m·4 ; want ⌊P·(C'+2)/q^m⌋ ≥ 2 ⟺ 2·q^m ≤ P·(C'+2)
+  -- P·(C'+2) ≥ 2·q^m·(C'+2) ≥ 2·q^m·2 ≥ q^m·4; want ⌊P·(C'+2)/q^m⌋ ≥ 2 ⟺ 2·q^m ≤ P·(C'+2)
   have hqm_pos : 0 < q ^ m := Nat.pow_pos (by rw [hq]; exact Fintype.card_pos)
   have hnum_ge : 2 * q ^ m ≤ n.choose a * (Cc + 2) := by
     calc 2 * q ^ m ≤ n.choose a := hPlo

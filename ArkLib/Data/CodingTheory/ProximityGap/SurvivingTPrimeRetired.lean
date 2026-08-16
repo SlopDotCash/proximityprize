@@ -105,7 +105,7 @@ theorem deep_pair_rank_ge_m_succ_via_exact_count (dom : Fin n ↪ F) {k m : ℕ}
     · rintro ⟨⟨h1, h2⟩, h3⟩; exact ⟨h1, h2, h3⟩
     · rintro ⟨h1, h2, h3⟩; exact ⟨⟨h1, h2⟩, h3⟩
   rw [hKeq] at hexact
-  -- now hexact : K * q^d = q^M ; and m+1 ≤ d, so K * q^(m+1) ≤ K * q^d = q^M
+  -- now hexact : K * q^d = q^M; and m+1 ≤ d, so K * q^(m+1) ≤ K * q^d = q^M
   calc K * q ^ (m + 1)
       ≤ K * q ^ d := Nat.mul_le_mul_left _ (Nat.pow_le_pow_right hqpos hdge)
     _ = q ^ M := hexact

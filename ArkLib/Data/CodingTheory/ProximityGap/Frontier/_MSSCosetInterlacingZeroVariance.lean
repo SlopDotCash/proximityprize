@@ -162,7 +162,7 @@ theorem coset_quad_strictly_positive (a b x : ℝ) (hab : a ≠ b) :
     0 < 2 * x ^ 2 - 2 * (a + b) * x + (a ^ 2 + b ^ 2) := by
   have hd : quadDiscQuarter a b < 0 := coset_sum_not_real_rooted a b hab
   rw [quadDisc_eq_neg_sq] at hd
-  -- 2x² − 2(a+b)x + (a²+b²) = (x−a)² + (x−b)²  ; strictly positive unless x=a=b, impossible since a≠b.
+  -- 2x² − 2(a+b)x + (a²+b²) = (x−a)² + (x−b)²; strictly positive unless x=a=b, impossible since a≠b.
   have hrw : 2 * x ^ 2 - 2 * (a + b) * x + (a ^ 2 + b ^ 2) = (x - a) ^ 2 + (x - b) ^ 2 := by ring
   rw [hrw]
   rcases eq_or_ne x a with hxa | hxa

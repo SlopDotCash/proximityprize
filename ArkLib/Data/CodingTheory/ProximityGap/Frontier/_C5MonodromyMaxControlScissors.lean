@@ -214,7 +214,7 @@ theorem vacuityCriterion_step {n q : ℝ} (hn : 1 < n) (hq : 0 ≤ q) (r : ℕ) 
     rw [this, pow_succ]; ring
   rw [hLHS_step, hdf_step]
   -- want: n * n^(r-1) > (2r+1)*(2r-1)!! * sqrt q
-  -- have h: n^(r-1) > (2r-1)!! sqrt q ; and hstep: 2r+1 <= n.
+  -- have h: n^(r-1) > (2r-1)!! sqrt q; and hstep: 2r+1 <= n.
   set A : ℝ := (Nat.doubleFactorial (2 * r - 1) : ℝ) * Real.sqrt q with hA
   have hApos : 0 ≤ A := by
     apply mul_nonneg

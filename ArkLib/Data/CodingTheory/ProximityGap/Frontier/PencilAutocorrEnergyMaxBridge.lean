@@ -101,7 +101,7 @@ theorem subgroup_maxAutocorr_ge_card {H : Finset G} {M₀ : ℕ}
   have hpos : 0 < H.card ^ 2 := by
     have : 0 < H.card := Finset.card_pos.mpr hne
     positivity
-  -- |H|^3 = |H|^2 · |H| and M₀·|H|^2 = |H|^2 · M₀ ; cancel |H|^2 on the left
+  -- |H|^3 = |H|^2 · |H| and M₀·|H|^2 = |H|^2 · M₀; cancel |H|^2 on the left
   have hcube : H.card ^ 3 = H.card ^ 2 * H.card := by ring
   have hrhs : M₀ * H.card ^ 2 = H.card ^ 2 * M₀ := Nat.mul_comm _ _
   rw [hcube, hrhs] at hbound

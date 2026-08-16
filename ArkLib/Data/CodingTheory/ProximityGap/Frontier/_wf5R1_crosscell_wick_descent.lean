@@ -131,7 +131,7 @@ theorem gaussianEnergyBound_of_crossCell_le {ψ : AddChar F ℂ} (hψ : ψ.IsPri
   have hb := hbudget
   unfold CrossCellWickBudget at hb
   unfold GaussianEnergyBound
-  -- goal: ↑(rEnergy G s) ≤ (doubleFact)·(↑G.card)^s ; rewrite card and rEnergy G via the descent
+  -- goal: ↑(rEnergy G s) ≤ (doubleFact)·(↑G.card)^s; rewrite card and rEnergy G via the descent
   rw [hcardG, hreal]
   -- 2·↑(rEnergy H s) + ↑crossCell ≤ (doubleFact)·(↑(2·|H|))^s, from hb
   linarith [hb]

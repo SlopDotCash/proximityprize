@@ -147,7 +147,7 @@ theorem wick_conv_identity (r : ℕ) :
     rw [Finset.mem_range] at hj
     have hjr : j ≤ r := by omega
     -- Cast all the choose/double-factorial relations.
-    -- C(2r,2j)·(2j)!·(2r−2j)! = (2r)!  ;  C(r,j)·j!·(r−j)! = r!
+    -- C(2r,2j)·(2j)!·(2r−2j)! = (2r)!;  C(r,j)·j!·(r−j)! = r!
     have hc2 : (Nat.choose (2 * r) (2 * j) : ℝ) * ((2 * j).factorial : ℝ) * ((2 * r - 2 * j).factorial : ℝ)
         = ((2 * r).factorial : ℝ) := by
       have hle : 2 * j ≤ 2 * r := by omega

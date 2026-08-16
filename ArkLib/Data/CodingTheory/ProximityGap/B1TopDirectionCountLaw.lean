@@ -51,7 +51,7 @@ theorem eval_zero_basis_sign (s : Finset ι) (v : ι → F) (i : ι) (hi : i ∈
   rw [eval_zero_basis]
   -- ∏ ((v i - v j)⁻¹ * (- v j)) = (∏ (v i - v j)⁻¹) * (∏ (- v j))
   rw [Finset.prod_mul_distrib]
-  -- ∏ (- v j) = (-1)^(#erase) * ∏ v j ;  #erase = #s - 1
+  -- ∏ (- v j) = (-1)^(#erase) * ∏ v j;  #erase = #s - 1
   rw [Finset.prod_neg, ← Finset.prod_inv_distrib]
   have hcard : #(s.erase i) = #s - 1 := Finset.card_erase_of_mem hi
   rw [hcard]

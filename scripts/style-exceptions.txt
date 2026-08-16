@@ -2,7 +2,6 @@ ArkLib/Data/CodingTheory/ProximityGap/A4CyclotomicGaloisAntipodal.lean : line 8 
 ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean : line 1 : ERR_NUM_LIN : 1800 file contains 1632 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean : line 13 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean : line 1510 : ERR_IBY : Line is an isolated 'by'
-ArkLib/Data/CodingTheory/ProximityGap/AbacusNCore.lean : line 128 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/ActionOrbitGeneralF.lean : line 19 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AddEnergyGcdDegreeBound.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/AddEnergyMathlibBridge.lean : line 20 : ERR_LIN : Line has more than 100 characters
@@ -40,7 +39,6 @@ ArkLib/Data/CodingTheory/ProximityGap/B1IncidenceBridge.lean : line 33 : ERR_LIN
 ArkLib/Data/CodingTheory/ProximityGap/B1TopDirectionCountLaw.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/B1TopDirectionCountLaw.lean : line 21 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/B1TopDirectionCountLaw.lean : line 38 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/B1TopDirectionCountLaw.lean : line 54 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean : line 1 : ERR_NUM_LIN : 2000 file contains 1879 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean : line 849 : ERR_IBY : Line is an isolated 'by'
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean : line 1 : ERR_NUM_LIN : 2600 file contains 2498 lines, try to split it up
@@ -65,7 +63,6 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/SudanY2.lean : line 15 : ER
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/FaaDiBrunoBijectionPieces.lean : line 47 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Finding14Countermodel.lean : line 126 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HasseEvalConnectives.lean : line 99 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HasseEvalConnectives.lean : line 99 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean : line 1 : ERR_NUM_LIN : 3000 file contains 2863 lines, try to split it up
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean : line 908 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean : line 1 : ERR_NUM_LIN : 7800 file contains 7641 lines, try to split it up
@@ -125,7 +122,6 @@ ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Pigeonhole.lean : line 567 : ERR_L
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 1046 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoExtract.lean : line 782 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoXiTelescope.lean : line 206 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/RestrictedFaaDiBrunoXiTelescope.lean : line 248 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineMonic.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineMonic.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/S5GenuineZLinearMonic.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -169,7 +165,6 @@ ArkLib/Data/CodingTheory/ProximityGap/C1ConditionalBound.lean : line 12 : ERR_LI
 ArkLib/Data/CodingTheory/ProximityGap/C1ConditionalBound.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/C2CoreEliminationBound.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/C71BinomialBadScalarCount.lean : line 32 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/C71BinomialIncidenceGcd.lean : line 81 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/C71BinomialIncidenceSharp.lean : line 49 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/C71BinomialWindowAverage.lean : line 163 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/C71SparseStrataIncidence.lean : line 15 : ERR_LIN : Line has more than 100 characters
@@ -263,7 +258,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Conj41CliqueCounterexample.lean : line 8 :
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueBeachhead.lean : line 11 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueConstraintFinrank.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueInfFinrank.lean : line 1 : ERR_COP : Malformed or missing copyright header
-ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueInfFinrank.lean : line 39 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueKernelStructure.lean : line 77 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueKernelStructure.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Conjecture41CliqueRelationModule.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -282,7 +276,6 @@ ArkLib/Data/CodingTheory/ProximityGap/CountAntipodalBounded.lean : line 19 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/CoveringFromFarCount.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/CoveringTransfer.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean : line 13 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean : line 162 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/CrossParityAggregate.lean : line 58 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CrossParityAggregate.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/CrossParitySplitVacuity.lean : line 61 : ERR_LIN : Line has more than 100 characters
@@ -293,7 +286,6 @@ ArkLib/Data/CodingTheory/ProximityGap/CumulantDyadicDescent.lean : line 11 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/CumulantFermatObstruction.lean : line 22 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CumulantGaussPeriodBound.lean : line 184 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CumulantOrderThreshold.lean : line 105 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean : line 127 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean : line 24 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/CumulantTowerAzumaWall.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/CyclotomicConcentration.lean : line 15 : ERR_LIN : Line has more than 100 characters
@@ -303,7 +295,6 @@ ArkLib/Data/CodingTheory/ProximityGap/CyclotomicLatticeWrapOnset.lean : line 8 :
 ArkLib/Data/CodingTheory/ProximityGap/CyclotomicSidonLift.lean : line 62 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DCEnergyBaseCase.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DCEnergyCorrection.lean : line 11 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/DCEnergyEssential.lean : line 80 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/DCEnergyEssential.lean : line 85 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DCEnergyRungThree.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/DCEnergyRungTwo.lean : line 17 : ERR_LIN : Line has more than 100 characters
@@ -364,7 +355,6 @@ ArkLib/Data/CodingTheory/ProximityGap/E2SquaringRecursion.lean : line 16 : ERR_L
 ArkLib/Data/CodingTheory/ProximityGap/E2SquaringRecursion.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/E2VanishEnergy.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/E2VanishEnergy.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean : line 221 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean : line 61 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/E2W4CyclotomicNonCollision.lean : line 1 : ERR_NUM_LIN : 3100 file contains 2961 lines, try to split it up
@@ -382,7 +372,6 @@ ArkLib/Data/CodingTheory/ProximityGap/EnergyMinimalF73.lean : line 8 : ERR_TAC :
 ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/EnergyRelationAntipodal.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/EntropyGateDeltaStar.lean : line 130 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/EpsMCAInterleavedList.lean : line 198 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/EpsMCAInterleavedUD.lean : line 282 : ERR_CLN : Put : and := before line breaks, not after
 ArkLib/Data/CodingTheory/ProximityGap/Errors.lean : line 1 : ERR_NUM_LIN : 2100 file contains 1926 lines, try to split it up
@@ -419,7 +408,6 @@ ArkLib/Data/CodingTheory/ProximityGap/FpVanishingBridge.lean : line 1 : ERR_COP 
 ArkLib/Data/CodingTheory/ProximityGap/FpVanishingBridge.lean : line 4 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/AlignedAmalgamation.lean : line 18 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/AntipodalSigmaUnique.lean : line 135 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/AntipodalSigmaUnique.lean : line 158 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/AntipodalSigmaUnique.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/AntipodalSigmaUnique.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/AntipodalVanishingCountLower.lean : line 14 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -474,7 +462,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroHLLPairing.lean : line 9 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroHistogramShapeM31.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroHistogramShapeM31.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroHistogramShapeM31.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroSharpNewtonBase.lean : line 247 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroSharpNewtonBase.lean : line 28 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroSlackLeadingCoeff.lean : line 36 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CharZeroSlackLeadingCoeff.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -528,7 +515,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungFour.lean : line 17 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungFour.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungFourDeficit.lean : line 21 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungFourDeficit.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungOne.lean : line 108 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungOne.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungOne.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungOneDeficit.lean : line 38 : ERR_LIN : Line has more than 100 characters
@@ -545,10 +531,8 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungSlackDepletionSeven.
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungSlackDepletionSix.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungSlackDepletionSix.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungThree.lean : line 13 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungThree.lean : line 133 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungThree.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungTwo.lean : line 13 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungTwo.lean : line 220 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossStepRungTwo.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossingDepthLinearTracking.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/CrossingDepthLinearTracking.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -624,20 +608,17 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/GaussianEnergyBoundMuNDepthThree.
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GaussianEnergyBoundMuNDepthThree.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GaussianEnergyBoundMuNDepthTwo.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GaussianEnergyBoundMuNDepthTwo.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountSigmaUniform.lean : line 103 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountSigmaUniform.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountSigmaUniform.lean : line 71 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountSigmaUniform.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountTransversal.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountTransversal.lean : line 21 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountTransversal.lean : line 215 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericCountTransversal.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericSuperDiagonalLower.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericSuperDiagonalLower.lean : line 34 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GenericSuperDiagonalLower.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GradedAntipodalVanishingLower.lean : line 13 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/GradedAntipodalVanishingLower.lean : line 21 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/HeightGateNormBound.lean : line 270 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/I031ChainingBrick.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/I031DilationOrbitReduction.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/I031DistinctPeriodCount.lean : line 19 : ERR_LIN : Line has more than 100 characters
@@ -685,14 +666,11 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/NvIReconcile.lean : line 58 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/NvIReconcile.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/OddExcessLaw.lean : line 34 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/OptimizedSupFromNonprincipalWick.lean : line 14 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/OptimizedSupFromNonprincipalWick.lean : line 155 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/OverdetIncidenceUnionCount.lean : line 35 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/OverdetVanishingCosetCount.lean : line 185 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/OverdetVanishingCosetCount.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/PackingCoverSharpReach.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/PackingCoverSharpReach.lean : line 36 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/PackingDeflationBandAntitone.lean : line 62 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilAutocorrEnergyMaxBridge.lean : line 104 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilAutocorrEnergyMaxBridge.lean : line 32 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilAutocorrRootBound.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/PencilAutocorrRootBound.lean : line 13 : ERR_LIN : Line has more than 100 characters
@@ -762,16 +740,13 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/SpurSuccessiveMinimaCount.lean : 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SpurSuccessiveMinimaCount.lean : line 69 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/StepanovStructuredVacuous.lean : line 62 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/StructuredUncertaintySharpFloor.lean : line 11 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/StructuredUncertaintySharpFloor.lean : line 179 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SubexpMomentToConvergenceHub.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SubsetProductSpectrum.lean : line 26 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SumProductAsymmetrySubgroup.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SumProductAsymmetrySubgroup.lean : line 13 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/SumProductAsymmetrySubgroup.lean : line 156 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SuperDiagonalEnergyLowerClosed.lean : line 106 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SuperDiagonalEnergyLowerClosed.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/SupplyExceedsBudgetUnconditional.lean : line 22 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean : line 15 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean : line 65 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A04_ConstantIndexGaussSumBound.lean : line 1 : ERR_WIN : Windows line endings (\r\n) detected
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A06_PFreeInvariantBridge.lean : line 57 : ERR_LIN : Line has more than 100 characters
@@ -834,7 +809,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407W2_L5_s256.lean : line 50 : 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_AnchorsImport.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_DeepMomentDefectWall.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_DeepMomentDefectWall.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T01NormLandauCeiling.lean : line 181 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -863,7 +837,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A3SumProductDepthConfinement.lea
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A5TwistedMonodromyAbelianVerdict.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8ContainerTransferenceNoGo.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8ContainerTransferenceNoGo.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8ContainerTransferenceNoGo.lean : line 88 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8EffectiveVarianceMonotone.lean : line 46 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8EffectiveVarianceMonotone.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A9KelleyMekaPFRNoGo.lean : line 10 : ERR_LIN : Line has more than 100 characters
@@ -929,7 +902,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_CrossFormBridge.lean :
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_EffectiveSatoTate.lean : line 31 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_EffectiveSatoTate.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean : line 294 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean : line 328 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorResultantHeight.lean : line 12 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AssaultV2_FloorResultantHeight.lean : line 57 : ERR_LIN : Line has more than 100 characters
@@ -1046,7 +1018,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE5_ExistsGoodPrimeNonSequitur.
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE6_LargeSieveVacuous.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE6_LargeSieveVacuous.lean : line 37 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean : line 103 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean : line 130 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF1_BesselMfoldSymbolic.lean : line 260 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF1_BesselMfoldSymbolic.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvF2_ExternalLeverStatement.lean : line 181 : ERR_LIN : Line has more than 100 characters
@@ -1165,7 +1136,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_MonomialWeylVMVTVacuous.lea
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_ProductFormulaStickelbergerPhaseBlind.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_ProductFormulaStickelbergerPhaseBlind.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN3_GumbelTailRefuted.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN4_PadicMahlerSupplyGap.lean : line 107 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN4_PadicMahlerSupplyGap.lean : line 111 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN4_PadicMahlerSupplyGap.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN4_PadicMahlerSupplyGap.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -1184,7 +1154,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_SubGaussianMomentExponent.
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_SubGaussianMomentExponent.lean : line 106 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_SubGaussianMomentExponent.lean : line 2 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPL_PainleveBackboneVacuous.lean : line 10 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPL_PainleveBackboneVacuous.lean : line 111 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPL_PainleveBackboneVacuous.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvP_HasseWraparoundReformulation.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPrize_MomentToSupCapstone.lean : line 51 : ERR_LIN : Line has more than 100 characters
@@ -1200,7 +1169,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvRem_BesselMfold.lean : line 6 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvRem_Sidon0958Crystallized.lean : line 147 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvRem_Sidon0958Crystallized.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvRep_ZeroWeightMultiplicity.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvRep_ZeroWeightMultiplicity.lean : line 97 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDPPrizeGap.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDP_AutocorrPowerSaving.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSDP_AutocorrPowerSaving.lean : line 18 : ERR_LIN : Line has more than 100 characters
@@ -1233,7 +1201,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvVD_DiffVarietyDivisorBudget.le
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselIdentity.lean : line 39 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselIdentity.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselWickAllR.lean : line 12 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselWickAllR.lean : line 267 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselWickAllR.lean : line 41 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselWickDomination.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW0_BesselWickDomination.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1273,7 +1240,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW6_ConditionalPaleyChain.lean 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW6_ConditionalPaleyChain.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW7SkorokhodSignedCLT.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW7SkorokhodSignedCLT.lean : line 50 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW8T_TowerBilinearCrossOrthogonal.lean : line 158 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW8T_TowerBilinearCrossOrthogonal.lean : line 19 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW8T_TowerBilinearCrossOrthogonal.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvW8_CosetInvarianceTightening.lean : line 53 : ERR_LIN : Line has more than 100 characters
@@ -1326,7 +1292,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B6ConnectAll.lean : line 31 : ER
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B6ConnectAll.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BCHKSTrilinearConditional.lean : line 29 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BCHKSTrilinearConditional.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean : line 263 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKActualJointPeriodLaw.lean : line 329 : ERR_NSP : Non-terminal simp. Replace with `simp?` and use the suggested output
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12AdditiveSpectralBridge.lean : line 129 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BGKC12CanonicalEmbeddingFloor.lean : line 306 : ERR_IBY : Line is an isolated 'by'
@@ -1362,7 +1327,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4f_PathCalibrate.lean : 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_PerAPrune.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_SecondFibre.lean : line 124 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_SecondFibre.lean : line 176 : ERR_CLN : Put : and := before line breaks, not after
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_SecondFibre.lean : line 216 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_attempt0.lean : line 218 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L0.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L1a.lean : line 10 : ERR_MOD : Module docstring missing, or too late
@@ -1399,7 +1363,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkDepthExponentLawBootstrapNoGo
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkDepthExponentLawBootstrapNoGo.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkRFoldSumProductBridge.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkRFoldSumProductBridge.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkSuperDiagonalSqrtNLowerBound.lean : line 183 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkSuperDiagonalSqrtNLowerBound.lean : line 36 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BgkSuperDiagonalSqrtNLowerBound.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BilinearDFTBeat.lean : line 8 : ERR_MOD : Module docstring missing, or too late
@@ -1418,7 +1381,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB09.lean : line 8 : ERR_MO
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB10.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB18.lean : line 193 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB20.lean : line 40 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB27.lean : line 116 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB31.lean : line 21 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB35.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BridgeB41.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1448,7 +1410,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BurgessShiftHolderExponentGate.l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BurgessShiftHolderExponentGate.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BurgessShiftHolderExponentGate.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_C5MonodromyMaxControlScissors.lean : line 117 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_C5MonodromyMaxControlScissors.lean : line 217 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CL_GeomLamLeung.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CL_GeomLamLeung.lean : line 183 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CL_GeomLamLeung.lean : line 5 : ERR_MOD : Module docstring missing, or too late
@@ -1531,7 +1492,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Conj41IwasawaModule.lean : line 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ConstantWeightPlotkinBound.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ContiguousBandBenign.lean : line 45 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ConvergenceHub.lean : line 21 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA1_LowerBound.lean : line 109 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA1_LowerBound.lean : line 117 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA2_OrbitDecay.lean : line 65 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA3_BackwardProof.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1546,7 +1506,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreA7_NecessityTight.lean : lin
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreReductionComplete.lean : line 40 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoreReductionComplete.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CoshMGFSaddle.lean : line 20 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CountingVarianceReframing.lean : line 100 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CountingVarianceReframing.lean : line 42 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CountingVarianceReframing.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateCorrelationLFunction.lean : line 13 : ERR_LIN : Line has more than 100 characters
@@ -1564,13 +1523,11 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateStickelbergerClustering.le
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateThirdBasisInvariant.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateThirdBasisInvariant.lean : line 50 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateTowerVarianceBootstrap.lean : line 10 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateTowerVarianceBootstrap.lean : line 264 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateTowerVarianceBootstrap.lean : line 270 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateTowerVarianceBootstrap.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateWraparoundGenFn.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateWraparoundGenFn.lean : line 75 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateWraparoundVariance.lean : line 11 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateWraparoundVariance.lean : line 155 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateWraparoundVariance.lean : line 63 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CreateWraparoundVariance.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CrtCharSumSubmultThinVacuity.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1618,7 +1575,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DedupSlackStrictButVanishing.lea
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DedupSurvivalCeiling.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DefectOnsetOvershoot.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DefectOnsetOvershoot.lean : line 158 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeficitCreditDominatedByDCNoGo.lean : line 176 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeficitCreditDominatedByDCNoGo.lean : line 48 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeficitCreditDominatedByDCNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeficitCreditDominatedByDCNoGo.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -1699,7 +1655,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVAlgebraicFloorCyclotomicWa
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVAlgebraicFloorCyclotomicWall.lean : line 2 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean : line 18 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVC71MultiTermCoeffInterference.lean : line 102 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCanonicalHalfCoherenceQuantized.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCanonicalHalfCoherenceQuantized.lean : line 18 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCanonicalHalfCoherenceQuantized.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1736,7 +1691,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCrossHalfPhaseUnstructured
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCumulantLadderVacuity.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVCumulantLadderVacuity.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDecompositionInvariantCoherence.lean : line 46 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDecompositionInvariantCoherence.lean : line 96 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDeficitBudgetBoundedExceptions.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDeficitBudgetBoundedExceptions.lean : line 23 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDeficitBudgetSublinearFloor.lean : line 10 : ERR_MOD : Module docstring missing, or too late
@@ -1769,7 +1723,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVFractionalMomentNoMaxGain.
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVFractionalMomentNoMaxGain.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGapNoLongRun.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGapSpectrumFullRank.lean : line 11 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGapSpectrumFullRank.lean : line 34 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGapSpectrumFullRank.lean : line 73 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVGeomMeanBelowMax.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -1796,7 +1749,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMixedConjugateMomentCollap
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMixedConjugateMomentCollapse.lean : line 21 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMixedConjugateMomentCollapse.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentEnergyFloorOvershoot.lean : line 10 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentEnergyFloorOvershoot.lean : line 106 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentEnergyFloorOvershoot.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentEnergyFloorOvershoot.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVMomentFloorTetrachotomyBridge.lean : line 10 : ERR_LIN : Line has more than 100 characters
@@ -1831,7 +1783,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseBlindRadialStats.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseBlindRadialStats.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseCurvatureGeneric.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseCurvatureGeneric.lean : line 29 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseCurvatureGeneric.lean : line 36 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseSetDilationInvariant.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseSetDilationInvariant.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVPhaseSetDilationInvariant.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1879,7 +1830,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTripleCorrelationVanishes.
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTripleCorrelationVanishes.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoDilateNoJointExtreme.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoDilateNoJointExtreme.lean : line 21 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoPieceAngularDeficit.lean : line 189 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoPieceAngularDeficit.lean : line 68 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVTwoPieceAngularDeficit.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVUniformDeficitThreshold.lean : line 10 : ERR_MOD : Module docstring missing, or too late
@@ -1956,7 +1906,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3ClosedForm2Power.lean : line 9
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3NegSymConverse.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3NegSymConverse.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 1 : ERR_COP : Malformed or missing copyright header
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 198 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 3 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 5 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 83 : ERR_LIN : Line has more than 100 characters
@@ -2047,7 +1996,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FoldedPinBrick1.lean : line 178 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDExactSupHermiteRecurrence.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDExactSupHermiteRecurrence.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDExactSupHermiteRecurrence.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDGaussOrthoPolyToolkit.lean : line 152 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDGaussOrthoPolyToolkit.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDGaussOrthoPolyToolkit.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FormDHankelHermiteTurnover.lean : line 11 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -2122,14 +2070,12 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G170GeneralEnvelopeCharacterizat
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G172RateHalfSyzygyGapSlack.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G180CentralSymmetryCovering.lean : line 15 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G208WeightedKernelVarianceLaw.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G209TailFloorPartitionEngine.lean : line 110 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G209TailFloorPartitionEngine.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G214JointSignDiscordanceNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G217PhaseCoherenceNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G220PhysicalCorrelationNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G224NewtonParityPacketNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G229JacobiFanoutSponsorBounds.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G233JacobiL2MassFloorNoGo.lean : line 142 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G233JacobiL2MassFloorNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G246KrylovDegreeTwoCountermodel.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G249CartesianRowSelectionBarrier.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -2142,7 +2088,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G258QuotientAutomorphismPositivi
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G261WickCeilingExceedsDCFloor.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean : line 123 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G263JointRankSignFreedom.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G264JointGateSignFreedomGeneral.lean : line 46 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G266AdjacentRankQuadrantNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -2254,7 +2199,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G93DepthFiveExceptionalSlackWeld
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94JacobiCocycleMetric.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G94JacobiCocycleMetric.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G95CanonicalDepthFourAbsorption.lean : line 51 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G96CapacityHouseExtremal.lean : line 202 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G96CapacityHouseExtremal.lean : line 29 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G96ProductionDepthFourFixedEnergy.lean : line 101 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G97ArcDilateDiscrepancy.lean : line 450 : ERR_LIN : Line has more than 100 characters
@@ -2522,14 +2466,12 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowProfileFiberBound.lean : line
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowProfileFiberCoupled.lean : line 48 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPaleyZygmundReach.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPaleyZygmundReach.lean : line 257 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPaleyZygmundReach.lean : line 75 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPaleyZygmundReach.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPermMatchingFloor.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPermMatchingFloor.lean : line 35 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_LowerBoundPermMatchingFloor.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MCAHyperplaneVertex.lean : line 201 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MSSCosetInterlacingZeroVariance.lean : line 165 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MSSCosetInterlacingZeroVariance.lean : line 165 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MSSCosetInterlacingZeroVariance.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MStarLognReduction.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_MStarLognReduction.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -2742,11 +2684,9 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PeriodAutocovariance.lean : line
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseCorrelationOrbitCollapse.lean : line 13 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseCorrelationOrbitCollapse.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseHypercontractive.lean : line 52 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseHypercontractive.lean : line 82 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseHypercontractive.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseLinearFormDecoupling.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseLinearFormDecoupling.lean : line 12 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseLinearFormDecoupling.lean : line 356 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseLinearFormDecoupling.lean : line 56 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseMartingaleConcentration.lean : line 10 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_PhaseMartingaleConcentration.lean : line 106 : ERR_LIN : Line has more than 100 characters
@@ -2898,7 +2838,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18FourthMomentTwist.lean : line
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18OrderTwoCharacterBridge.lean : line 102 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18QuadraticCurveBridge.lean : line 128 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18RungThreeDecomposition.lean : line 181 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean : line 299 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaEquidistribution.lean : line 441 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R18SigmaGate.lean : line 144 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R190BulkPlusSpikesQuarterMGF.lean : line 86 : ERR_LIN : Line has more than 100 characters
@@ -3079,7 +3018,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R337HeadroomToWickConsumer.lean 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R337HeadroomToWickConsumer.lean : line 40 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R338Depth3IncompleteSumLargeChar.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R338Depth3IncompleteSumLargeChar.lean : line 37 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R340GaussPhaseAutocorr.lean : line 185 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R341CAZACCosetEquivalence.lean : line 382 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R342DifferenceQuotientWalkNoGo.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_R342DifferenceQuotientWalkNoGo.lean : line 39 : ERR_LIN : Line has more than 100 characters
@@ -3232,7 +3170,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RateQuarterSaturatedSixCoreBarri
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RateQuarterSharedFreshCoordinateCounterexampleF11.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RefinedProfileFloorBridge.lean : line 375 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_RefinedProfileFloorBridge.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceChebyshevLower.lean : line 100 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceChebyshevLower.lean : line 30 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceConjectureTrivialDischarge.lean : line 9 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceConstantVectorCeiling.lean : line 9 : ERR_LIN : Line has more than 100 characters
@@ -3240,7 +3177,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceDiagonalExtraction.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceEulerProductRefuted.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceEulerProductRefuted.lean : line 50 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceEulerProductRefuted.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceEulerProductRefuted.lean : line 90 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceFlatnessCriterion.lean : line 27 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceKernelSpectrumCeiling.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceLogLocalizedOffDiagonal.lean : line 21 : ERR_LIN : Line has more than 100 characters
@@ -3263,10 +3199,8 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpectralCapCorridor.lea
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpectralMaxVarianceFloor.lean : line 17 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpectralMean.lean : line 46 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpectralVariance.lean : line 50 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpectralVariance.lean : line 73 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpectrumModulusLaw.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpikeVarianceCost.lean : line 20 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceSpikeVarianceCost.lean : line 81 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceStickelbergerCeilingDiagnostic.lean : line 81 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceStickelbergerCeilingDiagnostic.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ResonanceTowerFloor.lean : line 21 : ERR_LIN : Line has more than 100 characters
@@ -3354,7 +3288,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawDepletionTheorem.lean : line
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawDepletionTheorem.lean : line 46 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawDepletionTheorem.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawFallingCoeffLaw.lean : line 282 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawFallingCoeffLaw.lean : line 304 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawFallingCoeffLaw.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawGapBddAboveNoGo.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ShawGapDriftContrapositive.lean : line 15 : ERR_LIN : Line has more than 100 characters
@@ -3426,7 +3359,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SubsetSumSpectrumClosedForm.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SubsetSumSpectrumClosedForm.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SubsetSumSpectrumPeak.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SubsetSumSpectrumTotalMass.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SumProductCensusStallBeta4.lean : line 223 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SumProductCensusStallBeta4.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SumProductCensusStallBeta4.lean : line 81 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_SupBoundCapstone.lean : line 1 : ERR_COP : Malformed or missing copyright header
@@ -3608,12 +3540,10 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5E1_WassersteinUnionNoGo.lean 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5G2_stepanov_supnorm.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M1_HeightCountRoute.lean : line 28 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M1_HeightCountRoute.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M3_crossstep_ceiling.lean : line 122 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M3_crossstep_ceiling.lean : line 80 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M3_crossstep_ceiling.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M4_NewtonPolygonDepthOpt.lean : line 52 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5M4_NewtonPolygonDepthOpt.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean : line 134 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean : line 21 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf6C1_chebotarev_badprime_count.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf6F1_gaussian_step_telescope.lean : line 21 : ERR_LIN : Line has more than 100 characters
@@ -3637,11 +3567,9 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B3_antitone_charp_obstruction
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B4_dcMGF_gaussian_obstruction.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B4_dcMGF_gaussian_obstruction.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B5_MomentProblemLogConvex.lean : line 13 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B5_MomentProblemLogConvex.lean : line 140 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B5_MomentProblemLogConvex.lean : line 5 : ERR_AUT : Authors line should look like: 'Authors: Jean Dupont, Иван Иванович Иванов'
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B6_cumulant_signs.lean : line 33 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B7_W3_BGK_Equivalence.lean : line 9 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B8_kstability_char0_closure.lean : line 150 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B8_kstability_char0_closure.lean : line 42 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf8B9_GaussianConvexOrderExtremal.lean : line 10 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf9B7_PrizeBGKReductionDirections.lean : line 80 : ERR_LIN : Line has more than 100 characters
@@ -3657,7 +3585,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wf9OT4_charzero_ceiling_discharg
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA01_galois_kappa_obstruction.lean : line 35 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA01_galois_kappa_obstruction.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA02_multiplicative_largesieve.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA03_keffnp_antitone_reconcile.lean : line 116 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA03_keffnp_antitone_reconcile.lean : line 18 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA04_weil_envelope_vacuity.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfA05_galois_orbit_count.lean : line 10 : ERR_MOD : Module docstring missing, or too late
@@ -3724,7 +3651,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS11_survival_to_mgf.lean : lin
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS1_transfer_slack_prize.lean : line 177 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS1_transfer_slack_prize.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS2_equidist_to_M.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS2_participation_floor.lean : line 87 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS2_participation_floor.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS3_badprime_density_finite.lean : line 54 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfS3_badprime_density_finite.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -3762,7 +3688,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT03_gauss_manin_ode_rigidity.l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT03_gauss_manin_ode_rigidity.lean : line 45 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT03_gauss_manin_ode_rigidity.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT04_leptokurtic_evt_reduces.lean : line 87 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT05_veronese_primitive_reduction.lean : line 144 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT05_veronese_primitive_reduction.lean : line 278 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT05_veronese_primitive_reduction.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_wfT11_min_entropy_levelset.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -4113,7 +4038,6 @@ ArkLib/Data/CodingTheory/ProximityGap/NotRamanujanLowerBound.lean : line 9 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/O11StructureLoop48.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/O11StructureLoop48.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/OddZeroSumCountVanishCharZero.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/OverdetIncidenceMaxClosedForm.lean : line 18 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/OverdetIncidenceMaxClosedForm.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/OverdetIncidenceMaxClosedFormExt.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/OwnershipCensusSharpened.lean : line 56 : ERR_LIN : Line has more than 100 characters
@@ -4137,7 +4061,6 @@ ArkLib/Data/CodingTheory/ProximityGap/PeriodMomentLaw.lean : line 12 : ERR_LIN :
 ArkLib/Data/CodingTheory/ProximityGap/PeriodTailMarkov.lean : line 22 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/PeriodTailMarkov.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/PinBeyondJohnson.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/PointwiseEnergyCeilingNoGo.lean : line 85 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/PrimitiveFactorCovering.lean : line 105 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/PrizeSpectralLevelSetSharp.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/PrizeSpectralLevelSetSharp.lean : line 4 : ERR_MOD : Module docstring missing, or too late
@@ -4212,7 +4135,6 @@ ArkLib/Data/CodingTheory/ProximityGap/RigidityBaseCasePairs.lean : line 98 : ERR
 ArkLib/Data/CodingTheory/ProximityGap/RigidityFullWindow.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/RigidityGeneralT1.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/RigidityIterated2kLift.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/RigidityReductionPrizeScale.lean : line 204 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/RigidityReductionPrizeScale.lean : line 30 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/RigidityReductionPrizeScale.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/RigiditySunflowerCore.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -4291,7 +4213,6 @@ ArkLib/Data/CodingTheory/ProximityGap/SidonResultantImproved.lean : line 42 : ER
 ArkLib/Data/CodingTheory/ProximityGap/SidonThresholdTight.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SignedPeriodPowerAllOrderAbs.lean : line 20 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SignedPeriodPowerAllOrderAbs.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/SignedPeriodPowerCount.lean : line 133 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/SignedPeriodPowerCount.lean : line 31 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SignedPeriodPowerCount.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/SignedPeriodPowerCount.lean : line 9 : ERR_MOD : Module docstring missing, or too late
@@ -4404,7 +4325,6 @@ ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSixthMoment.lean : line 7 
 ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSixthMoment.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSpectralSpread.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSpectralSpread.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSupportAvgCeiling.lean : line 169 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSupportAvgCeiling.lean : line 35 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumSupportAvgCeiling.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/SubgroupGaussSumTowerL2.lean : line 8 : ERR_MOD : Module docstring missing, or too late
@@ -4449,7 +4369,6 @@ ArkLib/Data/CodingTheory/ProximityGap/SumsetDistinctDissociation.lean : line 17 
 ArkLib/Data/CodingTheory/ProximityGap/SupNormBracket.lean : line 14 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SuperCodeListBridge.lean : line 35 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/SupplyProfileDiagnostic.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/SurvivingTPrimeRetired.lean : line 108 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/SurvivingTPrimeRetired.lean : line 6 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean : line 19 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/TangentSumJacobiAverage.lean : line 9 : ERR_MOD : Module docstring missing, or too late

@@ -155,7 +155,7 @@ theorem towerParseval_split (f h : F → ℂ)
   have horth2 : (∑ b : F, h b * (starRingEnd ℂ) (f b)) = 0 := by
     have hc := congrArg (starRingEnd ℂ) horth
     rw [map_sum, map_zero] at hc
-    -- hc : ∑ b, conj (f b * conj (h b)) = 0 ; rewrite the summand to h b * conj (f b)
+    -- hc : ∑ b, conj (f b * conj (h b)) = 0; rewrite the summand to h b * conj (f b)
     rw [show (∑ b : F, h b * (starRingEnd ℂ) (f b))
           = ∑ b : F, (starRingEnd ℂ) (f b * (starRingEnd ℂ) (h b)) from
         Finset.sum_congr rfl (fun b _ => by

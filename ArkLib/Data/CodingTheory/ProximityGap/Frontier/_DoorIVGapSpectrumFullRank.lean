@@ -31,8 +31,8 @@ PROBE (`scripts/probes/probe_dooriv_worstb_gap_autocorr_rank.py`; proper `μ_n`,
 mode-count of the mean-centred gap sequence at two tolerances; global worst-`b` scan; `n=16/32/64`,
 4–5 structured primes each):
 
-  tol 0.02 :  specRank(b*) = 15, 31, 63  ( = n−1 = FULL at every n) ;  generic = 15, 29, 59
-  tol 0.08 :  specRank(b*) = 15, 30, 54  (near-full, GROWING in n)   ;  generic = 14, 27.5, 50
+  tol 0.02 :  specRank(b*) = 15, 31, 63  ( = n−1 = FULL at every n);  generic = 15, 29, 59
+  tol 0.08 :  specRank(b*) = 15, 30, 54  (near-full, GROWING in n);  generic = 14, 27.5, 50
 
 The worst-`b` gap-sequence spectral rank is **consistently ≥ the generic-`b` rank and saturates at
 (near-)FULL `n − 1`**, GROWING with `n` (`15 → 30 → 54`).  The adversarial frequency is precisely

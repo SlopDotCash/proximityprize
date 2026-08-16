@@ -93,7 +93,7 @@ theorem multiPieceNormCoherence_block_eq_one_of_common_ray {ι κ : Type*} [Deci
     multiPieceNormCoherence s (fun k => ∑ i ∈ t.filter (fun i => g i = k), f i) = 1 := by
   -- The block-sum vector field: A k := Σ_{i∈t, g i = k} f i.
   set A : κ → E := fun k => ∑ i ∈ t.filter (fun i => g i = k), f i with hA
-  -- Block scalar field: d k := Σ_{i∈t, g i = k} c i ; each block lies on ray u with scalar d k.
+  -- Block scalar field: d k := Σ_{i∈t, g i = k} c i; each block lies on ray u with scalar d k.
   set d : κ → ℝ := fun k => ∑ i ∈ t.filter (fun i => g i = k), c i with hd
   have hAk : ∀ k ∈ s, A k = d k • u := by
     intro k _; exact (block_sum_common_ray t f u c hf hc g k).1

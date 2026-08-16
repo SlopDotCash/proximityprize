@@ -72,7 +72,7 @@ demands be landed.  The `√(n log m)` floor is NOT reached here: the diagonal m
 stalls at a finite `r`-window, never `log m`.  Pushing past requires a Paley–Zygmund SECOND-moment
 (variance of `W_r`) control — the open object.  Nothing here is conditional on it.
 
-Issue #444 ; task `moment-lower-paley-zygmund`.
+Issue #444; task `moment-lower-paley-zygmund`.
 -/
 
 open Finset

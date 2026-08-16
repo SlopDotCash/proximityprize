@@ -82,7 +82,7 @@ theorem satProfile_sumSq_ge (M S : ℕ) :
   rw [satProfile_sumSq]
   have hmod : S % M < M := Nat.mod_lt S hM
   have hdiv : (S / M) * M + S % M = S := by rw [Nat.mul_comm]; exact Nat.div_add_mod S M
-  -- (S/M)*M² = ((S/M)*M)*M ; from hdiv, (S/M)*M = S - S%M, and (S%M)*M ≤ M²
+  -- (S/M)*M² = ((S/M)*M)*M; from hdiv, (S/M)*M = S - S%M, and (S%M)*M ≤ M²
   have key : M * S ≤ (S / M) * M ^ 2 + (S % M) ^ 2 + M ^ 2 := by
     nlinarith [hdiv, hmod, Nat.mul_le_mul_right M (le_of_lt hmod), Nat.zero_le ((S % M) ^ 2)]
   omega

@@ -104,7 +104,7 @@ theorem supply_seven_ge_prize {μ : ℕ} (hμ : 4 ≤ μ) :
     have hn32 : 32 ≤ n := by
       calc (32 : ℕ) = 2 ^ 5 := by norm_num
         _ ≤ 2 ^ μ := Nat.pow_le_pow_right (by norm_num) h5
-    -- supply n 7 = choose (n+6) 7 ; the seven-fold descending-product lower bound.
+    -- supply n 7 = choose (n+6) 7; the seven-fold descending-product lower bound.
     have hchoose : (n + 2) * (n + 1) * n * ((n + 6) * (n + 5) * (n + 4) * (n + 3))
         ≤ supply n 7 * 5040 := by
       -- C(n+6,7) * 7! = (n+6)(n+5)(n+4)(n+3)(n+2)(n+1)(n)  exactly, and 7! = 5040.

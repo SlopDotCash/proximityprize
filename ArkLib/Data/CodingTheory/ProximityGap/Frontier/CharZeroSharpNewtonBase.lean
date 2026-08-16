@@ -244,7 +244,7 @@ theorem besselCoeff_two (d : ℕ) : besselCoeff d 2 = (d : ℚ) * (2 * d - 1) / 
   rw [hsum, ← Finset.sum_filter_add_sum_filter_not
       (Finset.Nat.antidiagonalTuple d 2) (fun m => ∃ i, m i = 2) bterm,
     sum_double, sum_split]
-  -- d/4 + C(d,2) = d(2d-1)/4 ; use 2·C(d,2) = d(d-1)
+  -- d/4 + C(d,2) = d(2d-1)/4; use 2·C(d,2) = d(d-1)
   have hchoose : ((d.choose 2 : ℕ) : ℚ) = (d : ℚ) * ((d : ℚ) - 1) / 2 :=
     Nat.cast_choose_two (K := ℚ) d
   rw [hchoose]

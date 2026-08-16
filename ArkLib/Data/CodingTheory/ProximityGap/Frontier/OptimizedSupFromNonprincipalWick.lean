@@ -152,7 +152,7 @@ theorem eta_sq_le_optimized_of_nonprincipalWick {ψ : AddChar F ℂ}
   have hpow : (‖eta ψ G b‖ ^ 2) ^ r ≤ q * (Nat.doubleFactorial (2 * r - 1) : ℝ) * nc ^ r := by
     rw [← pow_mul]
     have := eta_pow_le_of_nonprincipalWick h hb
-    -- `‖η_b‖^{2r} ≤ q·((2r−1)‼·n^r)` ; reassociate to `q·(2r−1)‼·n^r`
+    -- `‖η_b‖^{2r} ≤ q·((2r−1)‼·n^r)`; reassociate to `q·(2r−1)‼·n^r`
     calc ‖eta ψ G b‖ ^ (2 * r)
         ≤ q * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * nc ^ r) := this
       _ = q * (Nat.doubleFactorial (2 * r - 1) : ℝ) * nc ^ r := by ring

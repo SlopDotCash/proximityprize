@@ -178,7 +178,7 @@ theorem landau_no_go_ge_128 {a : ℕ} (ha : 7 ≤ a) :
     have : 2 ^ (a - 1) = 2 ^ (a - 2) * 2 := by rw [← pow_succ]; congr 1; omega
     rw [this]; exact Nat.mul_div_cancel _ (by norm_num)
   rw [hexp]
-  -- LHS = 2^a · 2^128 = 2^{a+128} ; RHS = (2^a)^{2^{a-2}} = 2^{a · 2^{a-2}}
+  -- LHS = 2^a · 2^128 = 2^{a+128}; RHS = (2^a)^{2^{a-2}} = 2^{a · 2^{a-2}}
   have hlhs : prizePrimeLB (2 ^ a) = 2 ^ (a + 128) := by
     simp only [prizePrimeLB]; rw [pow_add]
   have hrhs : ((2 : ℕ) ^ a) ^ (2 ^ (a - 2)) = 2 ^ (a * 2 ^ (a - 2)) := by

@@ -113,7 +113,7 @@ theorem primitive_no_extra_rung (μ S : ℕ) (hμ : 1 ≤ μ)
     ¬ S ∣ 2 ^ μ / 2 := by
   rw [Nat.mul_one] at hsupply
   subst hsupply
-  -- ¬ 2^μ ∣ 2^μ / 2 ; for μ ≥ 1, 2^μ / 2 = 2^(μ-1) < 2^μ and is positive
+  -- ¬ 2^μ ∣ 2^μ / 2; for μ ≥ 1, 2^μ / 2 = 2^(μ-1) < 2^μ and is positive
   intro hdvd
   have hpos : 0 < 2 ^ μ / 2 := by
     have : 2 ∣ 2 ^ μ := dvd_pow_self 2 (by omega : μ ≠ 0)

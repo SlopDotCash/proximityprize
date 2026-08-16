@@ -166,7 +166,7 @@ theorem exists_support_eta_sq_le (hn2 : n = 2 ^ m) (hm : 1 ≤ m) (hp : 2 ^ n < 
   have hsumgt : ∑ b ∈ S, (3 * ((n : ℝ) - 1)) < ∑ b ∈ S, ‖eta ψ G b‖ ^ 2 :=
     Finset.sum_lt_sum_of_nonempty hSne hlt
   rw [Finset.sum_const, nsmul_eq_mul] at hsumgt
-  -- hsumgt : (#S)·3(n−1) < ∑_S ‖η‖² ;  hmul : ∑_S ‖η‖² ≤ 3(n−1)·#S — contradiction
+  -- hsumgt : (#S)·3(n−1) < ∑_S ‖η‖²;  hmul : ∑_S ‖η‖² ≤ 3(n−1)·#S — contradiction
   have hcomm : ((S.card : ℝ)) * (3 * ((n : ℝ) - 1)) = 3 * ((n : ℝ) - 1) * (S.card : ℝ) := by ring
   rw [hcomm] at hsumgt
   linarith [hmul, hsumgt]

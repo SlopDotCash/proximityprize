@@ -137,7 +137,7 @@ theorem wick_ratio_doubleFactorial (n : ℕ) (r : ℕ) (hr : 1 ≤ r) :
       = (((2*r-1)‼ : ℝ) * (n:ℝ)^r)
         * (((2*r-1)‼ : ℝ) * (n:ℝ)^r) * (2*(r:ℝ)+1) := by
   obtain ⟨k, rfl⟩ : ∃ k, r = k + 1 := ⟨r - 1, by omega⟩
-  -- (2(k+1)-1)‼ = (2k+1)‼ = (2k+1)·(2k-1)‼ ;  (2(k+2)-1)‼ = (2k+3)‼ = (2k+3)(2k+1)·(2k-1)‼
+  -- (2(k+1)-1)‼ = (2k+1)‼ = (2k+1)·(2k-1)‼;  (2(k+2)-1)‼ = (2k+3)‼ = (2k+3)(2k+1)·(2k-1)‼
   -- so LHS/RHS reduce to a double-factorial recurrence times powers of n.
   have e0 : 2 * (k + 1) - 1 = 2 * k + 1 := by omega
   have e1 : 2 * (k + 1 - 1) - 1 = 2 * k - 1 := by omega
@@ -226,7 +226,7 @@ theorem ultraSubGaussian_not_free :
   · norm_num
   · -- UltraSubGaussianStep M W 1 unfolds to  M1·M1·(W0·W2) ≥ M0·M2·(W1·W1)
     -- M0=1, M1=1, M2=16/5;  W0=1, W1=3·64=192, W2=3·64²=12288, W1²=36864.
-    -- LHS = 1·1·(1·12288) = 12288 ;  RHS = 1·(16/5)·36864 = 117964.8.  12288 < 117964.8 ⇒ fails.
+    -- LHS = 1·1·(1·12288) = 12288;  RHS = 1·(16/5)·36864 = 117964.8.  12288 < 117964.8 ⇒ fails.
     simp only [UltraSubGaussianStep, ge_iff_le, not_le]
     norm_num [Nat.doubleFactorial]
 

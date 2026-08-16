@@ -130,7 +130,7 @@ theorem nonzeroSignedPeriodPow_eq (S : Finset F) (r : ℕ) :
     Finset.sum_erase_add (univ) (fun ψ : AddChar F ℂ => (∑ x ∈ S, ψ x) ^ r)
       (Finset.mem_univ (0 : AddChar F ℂ))
   rw [h0] at hsplit
-  -- hsplit : (∑_{ψ≠0} η^r) + |S|^r = ∑_ψ η^r ; subtract |S|^r and apply the count identity
+  -- hsplit : (∑_{ψ≠0} η^r) + |S|^r = ∑_ψ η^r; subtract |S|^r and apply the count identity
   have hfull := signedPeriodPow_eq_zeroSumCount S r
   rw [← hsplit] at hfull
   -- hfull : (∑_{ψ≠0} η^r) + |S|^r = q · #{...}
