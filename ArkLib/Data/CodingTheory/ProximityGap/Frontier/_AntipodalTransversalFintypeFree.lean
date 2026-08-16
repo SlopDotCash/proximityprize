@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # Fintype-free antipodal transversal for negation-closed sets (#444, de-Fintype rung)
 
 The strata count `negSymCount G 6 = 15|G|³ − 45|G|² + 40|G|`

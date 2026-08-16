@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 Attack R2: Periods as eigenvalues of a Hecke/adjacency operator; the Ramanujan bound.
 
 CLAIM (R2): (eta_b)_b is an eigenvector of a Hecke-type operator at the torus mu_n

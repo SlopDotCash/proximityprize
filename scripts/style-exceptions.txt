@@ -806,18 +806,14 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A45_CosetRigidity.lean : li
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A46_MultiScaleRigidity.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A46_MultiScaleRigidity.lean : line 22 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A46_MultiScaleRigidity.lean : line 39 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A47_DyadicPeriodicity.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A47_DyadicPeriodicity.lean : line 23 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A47_DyadicPeriodicity.lean : line 25 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A47_DyadicPeriodicity.lean : line 9 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A48_GeneralRigidity.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A48_GeneralRigidity.lean : line 24 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A48_GeneralRigidity.lean : line 5 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A49_DyadicRigidityEngine.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A49_DyadicRigidityEngine.lean : line 26 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A49_DyadicRigidityEngine.lean : line 28 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A49_DyadicRigidityEngine.lean : line 6 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A50_SpectrumGeneratingFunction.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A50_SpectrumGeneratingFunction.lean : line 36 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/Sweep_A50_SpectrumGeneratingFunction.lean : line 38 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/TwistedLineCollisionParseval.lean : line 22 : ERR_LIN : Line has more than 100 characters
@@ -867,7 +863,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8ContainerTransferenceNoGo.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8EffectiveVarianceMonotone.lean : line 46 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A8EffectiveVarianceMonotone.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_A9KelleyMekaPFRNoGo.lean : line 10 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ADDHedgeReframe.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ADDHedgeReframe.lean : line 42 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AJT13CenteredMomentEquivalence.lean : line 120 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_ANT46KappaDyadicRecurrence.lean : line 105 : ERR_IND : If the theorem/def statement requires multiple lines, indent it correctly (4 spaces or 2 for `|`)
@@ -910,7 +905,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalAgreementScope.lean : l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalEvenOddDescent.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalInvariantWeightKernel.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalPlotkinHalfCap.lean : line 12 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalTransversalFintypeFree.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalTransversalFintypeFree.lean : line 135 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalTransversalFintypeFree.lean : line 26 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AntipodalTransversalFintypeFree.lean : line 30 : ERR_MOD : Module docstring missing, or too late
@@ -952,21 +946,16 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack206WeilIICohomWeight.lean 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack206WeilIICohomWeight.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Attack209OptimalTransportWasserstein.lean : line 173 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackA4StepanovEnergyFrobeniusId.lean : line 153 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackAN2_TightFrameBTVacuous.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackAN2_TightFrameBTVacuous.lean : line 26 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackB1_BadSetCosetNonSidon.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackB1_BadSetCosetNonSidon.lean : line 42 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackD6_DistinctGammaNoClosedGF.lean : line 145 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackDefectOnset_EnergySandwich.lean : line 24 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackMarkoffCouplingNoGo.lean : line 108 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackMarkoffCouplingNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackMarkoffCouplingNoGo.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackR2_AbelianCayleyNonRamanujan.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackR2_AbelianCayleyNonRamanujan.lean : line 19 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackR2_AbelianCayleyNonRamanujan.lean : line 21 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackR6_RelationVarietyBezoutNoGo.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackR6_RelationVarietyBezoutNoGo.lean : line 20 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackRT6_CyclicSchurMultiplierNoGo.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackRT6_CyclicSchurMultiplierNoGo.lean : line 24 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackT1_BiluLinialTwistNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AttackThinnessBootstrap_GirthVsEnergy.lean : line 12 : ERR_LIN : Line has more than 100 characters
@@ -1040,10 +1029,8 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE2_PaleyRamanujanSubseqRefuted
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE2_PaleyRamanujanSubseqRefuted.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE3_SubgroupGrowingRWall.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE4_SidonOffSpikeFloor.lean : line 13 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE5_ExistsGoodPrimeNonSequitur.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE5_ExistsGoodPrimeNonSequitur.lean : line 1 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE5_ExistsGoodPrimeNonSequitur.lean : line 26 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE6_LargeSieveVacuous.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvE6_LargeSieveVacuous.lean : line 37 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean : line 103 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvERG_ErgodicMaximalReducesToWall.lean : line 130 : ERR_SEM : Line contains a space before a semicolon
@@ -1071,7 +1058,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGF_FiltrationIrrelevantWickBin
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGK_GrossKoblitzPhaseCochain.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGK_GrossKoblitzPhaseCochain.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGK_GrossKoblitzPhaseCochain.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGR_GaussSumEnergyStep.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGR_GaussSumEnergyStep.lean : line 12 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvGR_GaussSumEnergyStep.lean : line 62 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvJB_HankelRoutesToMoments.lean : line 20 : ERR_LIN : Line has more than 100 characters
@@ -1159,7 +1145,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMacWilliamsFloorCeilingDuality
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMotivicHalfWeightDeficit.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMotivicHalfWeightDeficit.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvMotivicHalfWeightDeficit.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_MonomialWeylVMVTVacuous.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_MonomialWeylVMVTVacuous.lean : line 1 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_MonomialWeylVMVTVacuous.lean : line 41 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvN1_ProductFormulaStickelbergerPhaseBlind.lean : line 10 : ERR_MOD : Module docstring missing, or too late
@@ -1180,7 +1165,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPD_PerDirectionOrbitCount.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPD_PerDirectionOrbitCount.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_FixedRExponentReduction.lean : line 18 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_FixedRExponentReduction.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_SubGaussianMomentExponent.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_SubGaussianMomentExponent.lean : line 106 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPGC_SubGaussianMomentExponent.lean : line 2 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvPL_PainleveBackboneVacuous.lean : line 10 : ERR_MOD : Module docstring missing, or too late
@@ -1212,7 +1196,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSI_DirectionDoublingFixedPoint
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSI_DirectionDoublingFixedPoint.lean : line 44 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSM_WrapSecondMomentSpreads.lean : line 134 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSM_WrapSecondMomentSpreads.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean : line 28 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSOS_CorrectObjectDCRescue.lean : line 4 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvSieve1_SplitPrimeSieveVacuous.lean : line 18 : ERR_LIN : Line has more than 100 characters
@@ -1290,13 +1273,9 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvWitt_GhostCollapseVacuous.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvWitt_GhostCollapseVacuous.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_AntipodalTransversalEvenCardLe.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_AntipodalTransversalEvenCardLe.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_CyclotomicTwoPowEqXPowAddOne.lean : line 1 : ERR_COP : Malformed or missing copyright header
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_LamLeungTwoPowerAntipodalBalan.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_LamLeungTwoPowerAntipodalBalan.lean : line 2 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_LamLeungTwoPowerAntipodalBalan.lean : line 4 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_PrimitiveTwoPowRootHalfPowerEq.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvX_PrimitiveTwoPowRootHalfPowerEq.lean : line 27 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvY_SidonNegRepCountLeTwo.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvY_SidonNegRepCountLeTwo.lean : line 2 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvY_SidonNegRepCountLeTwo.lean : line 4 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvY_negationClosed_double_count_.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1312,7 +1291,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_CharZeroWickBoundLadder.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_DepthDiracV2Circulant.lean : line 13 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_DepthDiracV2Circulant.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_DepthDiracV2Circulant.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean : line 123 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_AvZ_UniformNoWraparoundObligation.lean : line 5 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Avd14.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -1356,7 +1334,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BNonzeroMomentReduction.lean : l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BNonzeroMomentReduction.lean : line 9 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSGC_attempt1.lean : line 112 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSGC_attempt4.lean : line 35 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E2c.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4d_Ruzsa.lean : line 129 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4f_PathCalibrate.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_PerAPrune.lean : line 16 : ERR_LIN : Line has more than 100 characters
@@ -1366,7 +1343,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_SecondFibre.lean : li
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_EX_E4g_attempt0.lean : line 218 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L0.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L1a.lean : line 10 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L1b.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BSG_L2.lean : line 65 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B_TransferOperatorGauge.lean : line 11 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_B_TransferOperatorGauge.lean : line 49 : ERR_LIN : Line has more than 100 characters
@@ -1449,7 +1425,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BurgessShiftHolderExponentGate.l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_BurgessShiftHolderExponentGate.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_C5MonodromyMaxControlScissors.lean : line 117 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_C5MonodromyMaxControlScissors.lean : line 217 : ERR_SEM : Line contains a space before a semicolon
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CL_GeomLamLeung.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CL_GeomLamLeung.lean : line 183 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CL_GeomLamLeung.lean : line 5 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_CP_PADIC_FILTRATION.lean : line 119 : ERR_LIN : Line has more than 100 characters
@@ -1463,7 +1438,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingGaussianTailBound.le
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingGaussianTailBound.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingLogConcave.lean : line 15 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0LeadingLogConcave.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0RatioScaling.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0RatioScaling.lean : line 25 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0RatioScaling.lean : line 27 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_Char0RatioScaling.lean : line 4 : ERR_LIN : Line has more than 100 characters
@@ -1635,7 +1609,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeployedOnsetCertifications.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeployedOnsetCertifications.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeploymentLocalCertificateUniformityGate.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DeploymentLocalCertificateUniformityGate.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DepthThresholdReduction.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DepthThresholdReduction.lean : line 26 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DepthThresholdReduction.lean : line 28 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DepthThresholdReduction.lean : line 4 : ERR_LIN : Line has more than 100 characters
@@ -1645,7 +1618,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoBetaFourResolution.le
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoEnergyValueEnvelope.lean : line 16 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoEnergyValueEnvelope.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoNearSidonImprovement.lean : line 11 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoPrizeRegimeVacuous.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoPrizeRegimeVacuous.lean : line 24 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoPrizeRegimeVacuous.lean : line 26 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiBenedettoPrizeRegimeVacuous.lean : line 4 : ERR_LIN : Line has more than 100 characters
@@ -1693,9 +1665,7 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiffTraceVarianceRouteCapstone.l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DiffTraceVarianceRouteCapstone.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DilationZeroEntropyNoGo.lean : line 11 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DilationZeroEntropyNoGo.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DividedDifferenceDilation.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DividedDifferenceDilation.lean : line 3 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVAlgebraicFloorCyclotomicWall.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVAlgebraicFloorCyclotomicWall.lean : line 2 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVArgmaxDecouplingNoControl.lean : line 18 : ERR_LIN : Line has more than 100 characters
@@ -1756,7 +1726,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerConcrete.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerConcrete.lean : line 9 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerSaturates.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVDilationTowerSaturates.lean : line 24 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVEighthCumulantSignUnstable.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVEighthCumulantSignUnstable.lean : line 7 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVEvenMomentPhaseVacuity.lean : line 10 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_DoorIVEvenMomentPhaseVacuity.lean : line 16 : ERR_LIN : Line has more than 100 characters
@@ -1948,14 +1917,12 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2NegationStructure.lean : line 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2NegationStructure.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2VanishWidthFourLaw.lean : line 51 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E2VanishWidthFourLaw.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Assembly.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Assembly.lean : line 4 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Assembly.lean : line 43 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Assembly.lean : line 6 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3ClosedForm2Power.lean : line 9 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3NegSymConverse.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3NegSymConverse.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 198 : ERR_SEM : Line contains a space before a semicolon
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 3 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 5 : ERR_MOD : Module docstring missing, or too late
@@ -1963,7 +1930,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3Shape21Scratch.lean : line 83 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3StrataCount.lean : line 507 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3StrataCount.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3StrataCount.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3SubsetCount.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3SubsetCount.lean : line 3 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3SubsetCount.lean : line 5 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_E3SubsetCount.lean : line 59 : ERR_LIN : Line has more than 100 characters
@@ -2037,7 +2003,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorPackingDensityRefuted.lean 
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorSuccessorNorm.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorSuccessorTZBridge.lean : line 34 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FloorSuccessorTZBridge.lean : line 9 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean : line 39 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean : line 41 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FluctuationSharpening.lean : line 8 : ERR_LIN : Line has more than 100 characters
@@ -2081,7 +2046,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FullFieldNoisyCharacterTransferG
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FullLengthCharacterSumScaleGate.lean : line 47 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FullLengthCharacterSumScaleGate.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FullLengthCharacterSumScaleGate.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FullRankLatticeTransferenceNoGo.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FullRankLatticeTransferenceNoGo.lean : line 3 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_FunctionFieldModelSubfieldDegeneracy.lean : line 12 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G100FIntegerLiftSmallDiffCounting.lean : line 11 : ERR_MOD : Module docstring missing, or too late
@@ -2118,7 +2082,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G146CenteredCumulantPacketNoGo.l
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G149PrimitivePacketChargeTransfer.lean : line 107 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G167NegationStabilizerCollapse.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G168ScalingCosetConfinement.lean : line 28 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G170GeneralEnvelopeCharacterization.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G172RateHalfSyzygyGapSlack.lean : line 37 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G180CentralSymmetryCovering.lean : line 15 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G208WeightedKernelVarianceLaw.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
@@ -2263,12 +2226,10 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98LargeValuesGramBootstrap.lean
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G98LargeValuesGramBootstrap.lean : line 8 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G99ErdosTuranLadderCertificate.lean : line 624 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_G99ErdosTuranLadderCertificate.lean : line 8 : ERR_MOD : Module docstring missing, or too late
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GFCeilingInstance65537.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GFCeilingInstance65537.lean : line 57 : ERR_MOD : Module docstring missing, or too late
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25AffineFactorInstance.lean : line 25 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25AffineFactorInstance.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean : line 32 : ERR_LIN : Line has more than 100 characters
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25LineToAffine.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GG25LineToAffine.lean : line 12 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GKPhaseCoboundaryNonLinear.lean : line 36 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_GKPhaseCoboundaryNonLinear.lean : line 8 : ERR_MOD : Module docstring missing, or too late
@@ -2394,7 +2355,6 @@ ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfRadiusEvenThirdBlockObstruct
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfRadiusEvenThirdBlockObstruction.lean : line 7 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfRadiusStrictSlackLowRateRefuted.lean : line 446 : ERR_LIN : Line has more than 100 characters
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HalfRadiusStrictSlackLowRateRefuted.lean : line 8 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
-ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HankelPronyCore.lean : line 1 : ERR_COP : Malformed or missing copyright header
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HankelPronyCore.lean : line 4 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_HeightGateConjTightAtSmallN.lean : line 6 : ERR_TAC : Files in mathlib cannot import the whole tactic folder
 ArkLib/Data/CodingTheory/ProximityGap/Frontier/_IdealLatticeMinkowskiCorrected.lean : line 142 : ERR_LIN : Line has more than 100 characters

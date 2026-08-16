@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # di Benedetto is worse-than-trivial at the prize thinness (#444)
 
 This brick pins the **di Benedetto retraction** (§5 of the thesis) to the *actual* prize parameter, machine-checked.

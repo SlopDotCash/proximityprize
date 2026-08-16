@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # LANE S4 — the GF-ceiling brick at the generalized-Fermat prime p = 65537
 
 Issue #466 (Ethereum Proximity Prize). Dossier §15 survivor 7 (bankable ceiling tool).

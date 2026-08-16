@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The char-0 subset-sum spectrum generating function, closed form (#444)
 
 A single closed-form generating function that **unifies** the three landed char-0

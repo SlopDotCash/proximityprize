@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvW0c_BesselMfoldSymbolic
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvX_LamLeungTwoPowerAntipodalBalan
 import ArkLib.Data.CodingTheory.ProximityGap.Frontier._AvRem_BesselMfold

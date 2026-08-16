@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # _ADDHedgeReframe — Function-field / Weil-RH reframe of the δ* wall: REDUCTION VERDICT
 
 Hedge lane (#466). DIRECTIVE: reframe δ* so the Paley/BGK wall dissolves; settle honestly.
