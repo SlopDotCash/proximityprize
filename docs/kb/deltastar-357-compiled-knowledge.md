@@ -2,8 +2,9 @@
 
 > Provenance: full archive of issue #357 (lalalune/ArkLib, "Exact MCA/proximity-gap threshold
 > δ* for smooth-domain Reed–Solomon codes") — the issue body plus all 283 comments
-> (2026-06-11 → 2026-06-12), saved raw at
-> `docs/kb/audits/issue357-comments-archive-final.json`. This page reorganizes that history
+> (2026-06-11 → 2026-06-12), available from the
+> [public historical issue](https://github.com/lalalune/ArkLib/issues/357) and repository history.
+> This page reorganizes that history
 > by theme, not chronology. Every Lean file named below was existence-checked against
 > `ArkLib/Data/CodingTheory/ProximityGap/` at compile time of this document (exceptions
 > flagged inline). All "axiom-clean" claims mean `#print axioms` reports exactly

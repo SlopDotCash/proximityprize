@@ -8,7 +8,7 @@ Drop-in starting points for the actionable open targets. Each file:
 **Iterate:** `scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/Frontier/<File>.lean`
 **Land:** one real `lake build <Module>` (autoImplicit=false) + axiom audit, then the push loop.
 **Lane hygiene:** files starting `_` are scratch/lane files (most are git-tracked — treat them as
-lane state, not throwaway); copy `_TEMPLATE.lean` to start a new lane.
+lane state, not throwaway); start a new lane from a nearby minimal file with the same substrate.
 Read the parent `CLAUDE.md` (build/concurrency/honesty rules) before touching anything.
 
 ## Live targets (2026-07-01)
