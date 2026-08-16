@@ -59,8 +59,8 @@ ArkLib, missing, or present in a materially different form.
 | Theorem 3.4 list decoding for subspace-design codes | missing | none | Depends on missing subspace-design infrastructure. |
 | Corollary 3.5 folded RS up to capacity | missing | none | Depends on missing folded RS and subspace-design code infrastructure. |
 | Theorem 3.6 random Reed-Solomon domains near capacity | missing | none | No random-domain RS list-decoding result was found. |
-| Lemma 3.7 Elias lower bound | missing | none | No formalization of this lower bound was found. |
-| Corollary 3.8 volume-based lower bound | missing | none | Depends on missing Elias/Hamming-volume formalization. |
+| Lemma 3.7 Elias lower bound | present | `lambda_ge_elias_volume_eli57`, `linear_lambda_ge_elias_volume_eli57`, `sum_ncard_closeCodewordsRel_eq_of_set` in [ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean) | Proved at the source's arbitrary finite-alphabet generality from the explicit cardinality hypothesis `|C| = q^k`; the original field-linear API remains as a wrapper. |
+| Corollary 3.8 volume-based lower bound | present | `lambda_ge_entropy_volume`, `linear_lambda_ge_entropy_volume`, `ABF26C38.ms77_lattice` in [ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean](../../../ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean) | Proved for arbitrary codes over nontrivial finite alphabets at integer-radius lattice points, with the field-linear API retained as a wrapper. |
 | Theorem 3.9 generalized Singleton bound for list decoding | missing | related classical Singleton bounds in [ArkLib/Data/CodingTheory/Basic/LinearCode.lean](../../../ArkLib/Data/CodingTheory/Basic/LinearCode.lean) | ArkLib has only the classical Singleton bound. |
 | Theorem 3.10 large-alphabet lower bound near generalized Singleton | missing | none | No matching result was found. |
 | Theorem 3.11 random linear-code lower bound | missing | none | No matching result was found. |
