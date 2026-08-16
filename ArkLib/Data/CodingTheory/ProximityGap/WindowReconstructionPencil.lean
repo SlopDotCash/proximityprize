@@ -294,8 +294,7 @@ theorem recDetPoly_natDegree_le (j w : ℕ)
           C ((((domZ dom * X ^ (t : ℕ))) %ₘ (ℓ₀ * ℓ₁)).coeff (I a)))
         (fun s : Fin (w + 1) =>
           -(C ((((ℓ₁ * R₀) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I a))
-            + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I a)))) b
-        : F[X])).natDegree
+            + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I a)))) b : F[X])).natDegree
         ≤ Sum.elim (fun _ : Fin (j + 1) => 0) (fun _ : Fin (w + 1) => 1) b := by
     intro a b
     rcases b with t | s
@@ -314,16 +313,14 @@ theorem recDetPoly_natDegree_le (j w : ℕ)
           C ((((domZ dom * X ^ (t : ℕ))) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b))))
         (fun s : Fin (w + 1) =>
           -(C ((((ℓ₁ * R₀) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b)))
-            + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b))))) b
-        : F[X])).natDegree ≤ w + 1 := by
+            + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b))))) b : F[X])).natDegree ≤ w + 1 := by
     refine le_trans (natDegree_prod_le _ _) ?_
     calc ∑ b : Fin (j + 1) ⊕ Fin (w + 1), ((Sum.elim
           (fun t : Fin (j + 1) =>
             C ((((domZ dom * X ^ (t : ℕ))) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b))))
           (fun s : Fin (w + 1) =>
             -(C ((((ℓ₁ * R₀) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b)))
-              + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b))))) b
-          : F[X])).natDegree
+              + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I (σ b))))) b : F[X])).natDegree
         ≤ ∑ b : Fin (j + 1) ⊕ Fin (w + 1),
             Sum.elim (fun _ : Fin (j + 1) => 0) (fun _ : Fin (w + 1) => 1) b :=
           Finset.sum_le_sum fun b _ => hentry (σ b) b

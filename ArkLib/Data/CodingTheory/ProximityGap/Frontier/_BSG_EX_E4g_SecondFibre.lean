@@ -172,8 +172,7 @@ theorem exists_secondFibre_largeNbhd (A : Finset α) (G : Finset (α × α)) (t 
   refine ⟨b₁, hb₁A, ?_⟩
   -- goodFibre t b₁ ≤ #(N₁ ×ˢ N₁) = #N₁ ^ 2, by inclusion of the good-fibre pairs into N₁ × N₁.
   have hincl :
-      ({p ∈ A ×ˢ A | t ≤ commonNeighbors A G p.1 p.2 ∧ (p.1, b₁) ∈ G ∧ (p.2, b₁) ∈ G}
-        : Finset (α × α))
+      ({p ∈ A ×ˢ A | t ≤ commonNeighbors A G p.1 p.2 ∧ (p.1, b₁) ∈ G ∧ (p.2, b₁) ∈ G} : Finset (α × α))
         ⊆ (leftNbhd A G b₁) ×ˢ (leftNbhd A G b₁) := by
     intro p hp
     rw [mem_filter, Finset.mem_product] at hp

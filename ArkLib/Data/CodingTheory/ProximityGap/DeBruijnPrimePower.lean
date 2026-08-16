@@ -225,8 +225,7 @@ theorem closed_add_pow_of_vanishing {L : Type*} [Field L] [CharZero L]
             + (((m / q + 1) / p * (p * q) : ℕ) : ZMod (p ^ (a + 1)))
             + ((m % q : ℕ) : ZMod (p ^ (a + 1))) := by
           rw [hz, add_zero, Nat.cast_add]
-      _ = ((t2 * q + (m / q + 1) / p * (p * q) + m % q : ℕ)
-            : ZMod (p ^ (a + 1))) := by push_cast; ring
+      _ = ((t2 * q + (m / q + 1) / p * (p * q) + m % q : ℕ) : ZMod (p ^ (a + 1))) := by push_cast; ring
       _ = (((m / q + 1) * q + m % q : ℕ) : ZMod (p ^ (a + 1))) := by rw [hsplit]
       _ = ((m + q : ℕ) : ZMod (p ^ (a + 1))) := by rw [hnat]
       _ = e + ((q : ℕ) : ZMod (p ^ (a + 1))) := by

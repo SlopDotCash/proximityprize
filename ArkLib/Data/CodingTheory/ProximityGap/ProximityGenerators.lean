@@ -191,8 +191,7 @@ theorem poly_gen_is_zero_evading
   {S : Fin s → Set F} [∀ i, Nonempty ↥(S i)]
   {P : ℓ → MvPolynomial (Fin s) F}
   {G : Generator (∀ i, ↥(S i)) ℓ F} (hG : IsPolynomialGeneratorOf S G P)
-  (hdm : MvPolynomial.maxTotalDegree P ≤ minSeedCard S)
-  : IsZeroEvadingGenerator G ⟨(maxTotalDegree P : ℝ) / minSeedCard S,
+  (hdm : MvPolynomial.maxTotalDegree P ≤ minSeedCard S) : IsZeroEvadingGenerator G ⟨(maxTotalDegree P : ℝ) / minSeedCard S,
     error_in_unit_interval (maxTotalDegree P) (minSeedCard S) (minSeedCard_pos S) hdm⟩ := by
   classical
   unfold IsZeroEvadingGenerator

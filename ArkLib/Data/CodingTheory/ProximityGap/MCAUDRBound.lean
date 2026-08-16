@@ -88,8 +88,7 @@ theorem epsMCA_rs_udr_le (α : ι ↪ F) (k : ℕ) [NeZero k] (hk : k ≤ Fintyp
     (htn : ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊ < Fintype.card ι)
     (hreg : 3 * (Fintype.card ι - ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊) < Fintype.card ι - k + 1) :
     epsMCA (F := F) (A := F) (ReedSolomon.code α k : Set (ι → F)) δ
-      ≤ ((2 * (Fintype.card ι - ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊) : ℕ)
-          : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
+      ≤ ((2 * (Fintype.card ι - ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊) : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   set t : ℕ := ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊ with htdef
   have hmd := rs_min_dist α k hk
   apply epsMCA_le_of_badCount_le (F := F) (A := F) (ReedSolomon.code α k : Set (ι → F)) δ

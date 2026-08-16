@@ -160,8 +160,7 @@ theorem deltaStar_pin_mu6_dim4 :
     mcaDeltaStar (F := ZMod ArkLib.ProximityGap.Mu6ConditionalPin.P)
         (A := ZMod ArkLib.ProximityGap.Mu6ConditionalPin.P)
         (evalCode
-          (343681710474810194684472438365758239853939287
-            : ZMod ArkLib.ProximityGap.Mu6ConditionalPin.P) 64 3)
+          (343681710474810194684472438365758239853939287 : ZMod ArkLib.ProximityGap.Mu6ConditionalPin.P) 64 3)
         (1 / 2 ^ 128)
       = 59 / 64 := by
   refine ArkLib.ProximityGap.Mu6ConditionalPin.deltaStar_pin_mu6_dim4_of_not_dvd ?_

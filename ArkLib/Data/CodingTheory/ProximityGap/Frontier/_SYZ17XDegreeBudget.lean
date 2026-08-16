@@ -154,8 +154,7 @@ theorem alpha_preimage_weight_le_graded {x₀ : F} {R : F[X][X][Y]}
     {Wxi : ℕ} (hbw : weight_Λ_over_𝒪 hH b D ≤ (WithBot.some Wxi : WithBot ℕ))
     (t : ℕ) {a : 𝒪 H} (ha : embeddingOf𝒪Into𝕃 H a = αGenuine H x₀ R hHyp t) :
     weight_Λ_over_𝒪 hH a D
-      ≤ (WithBot.some (alphaGradedBudget (Bivariate.natDegreeY R) D H.natDegree t Wxi)
-          : WithBot ℕ) := by
+      ≤ (WithBot.some (alphaGradedBudget (Bivariate.natDegreeY R) D H.natDegree t Wxi) : WithBot ℕ) := by
   rw [alpha_preimage_eq_βHensel_mul_pow hHyp hH hmonic.leadingCoeff hb t ha]
   exact ArkLib.weight_Λ_over_𝒪_mul_le_of_le hD hH
     (ArkLib.GenuineTruncationFin.weight_βHensel_le_graded H hHyp hD hH hmonic hd2 hdHD

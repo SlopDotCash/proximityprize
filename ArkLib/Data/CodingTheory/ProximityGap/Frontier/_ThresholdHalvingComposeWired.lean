@@ -34,14 +34,11 @@ count `r`.
 
 * PROVEN (pure, `sorry`/`axiom`-free, real arithmetic + the two imported lemmas):
   - `perRoundClosedForm`            : the closed-form per-round bound `n·R + (1 − halfRadius)^q`.
-  - `total_error_le_rounds_mul_perRound`
-        : `εTot ≤ r · (n·R + (1 − halfRadius)^q)` from the **real** `PerRoundFRIError` + union bound.
-  - `total_error_le_rounds_perRoundClosedForm`
-        : the same, stated with the named `perRoundClosedForm` on the RHS (re-export).
+  - `total_error_le_rounds_mul_perRound` : `εTot ≤ r · (n·R + (1 − halfRadius)^q)` from the **real** `PerRoundFRIError` + union bound.
+  - `total_error_le_rounds_perRoundClosedForm` : the same, stated with the named `perRoundClosedForm` on the RHS (re-export).
   - `perRoundClosedForm_nonneg`     : the per-round closed form is `≥ 0` under the natural sign
         hypotheses (`0 ≤ R`, `halfRadius ≤ 1`), so the total bound is a genuine soundness error.
-  - `total_error_le_rounds_mul_perRoundClosedForm_nonneg`
-        : the total bound `r · (closed form)` is `≥ 0`, i.e. not vacuously satisfied by a negative
+  - `total_error_le_rounds_mul_perRoundClosedForm_nonneg` : the total bound `r · (closed form)` is `≥ 0`, i.e. not vacuously satisfied by a negative
           right-hand side.
 
 * NAMED (imported, NOT proven here — exactly the two carried obligations of the parent bricks):

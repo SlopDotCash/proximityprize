@@ -43,8 +43,7 @@ count of identically-zero coordinates.  This is the folded generalization of the
 theorem foldedCurveCloseSet_codewordCurve_card_le {s ℓ : ℕ}
     (u c : Fin (ℓ + 1) → ι → (Fin s → F)) (lam : Fin s → F) {b : ℕ}
     (hb : (univ.filter (fun i => (∑ j : Fin (ℓ + 1),
-        Polynomial.C (∑ m : Fin s, lam m * (u j i m - c j i m)) * Polynomial.X ^ (j : ℕ)
-          : Polynomial F) = 0)).card = b)
+        Polynomial.C (∑ m : Fin s, lam m * (u j i m - c j i m)) * Polynomial.X ^ (j : ℕ) : Polynomial F) = 0)).card = b)
     {δ : ℝ≥0} (hab : b < Fintype.card ι - ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊) :
     (curveCloseSet δ u (comb c : F → ι → (Fin s → F))).card
         * ((Fintype.card ι - ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊) - b)

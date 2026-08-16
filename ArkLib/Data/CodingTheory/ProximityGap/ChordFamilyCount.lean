@@ -399,8 +399,7 @@ theorem card_exclusionsEven (i : ZMod (2 ^ m)) :
     · refine ⟨d / 2 + 2 ^ (m - 2) + 2 ^ (m - 1) - 2 ^ m, by omega, ?_, by omega,
         by omega, by omega, by omega, by omega⟩
       have hr : ((d / 2 + 2 ^ (m - 2) + 2 ^ (m - 1) - 2 ^ m : ℕ) : ZMod (2 ^ m))
-          = ((d / 2 + 2 ^ (m - 2) + 2 ^ (m - 1) - 2 ^ m + 2 ^ m : ℕ)
-              : ZMod (2 ^ m)) := by
+          = ((d / 2 + 2 ^ (m - 2) + 2 ^ (m - 1) - 2 ^ m + 2 ^ m : ℕ) : ZMod (2 ^ m)) := by
         rw [Nat.cast_add, ZMod.natCast_self, add_zero]
       rw [hE, hH, ← Nat.cast_add, hr]
       congr 1

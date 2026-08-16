@@ -351,8 +351,7 @@ lemma irreducible_factorization_of_gs_solution
     (Q = (Polynomial.C C) *
         ∏ i ∈ Finset.range R.length,
           ((R.getD i 1).comp ((Polynomial.X : F[Z][X][Y]) ^ f.getD i 0)) ^ e.getD i 0) ∧
-    (∀ fᵢ ∈ f, 1 ≤ fᵢ)
-    := by
+    (∀ fᵢ ∈ f, 1 ≤ fᵢ) := by
   classical
   have hQ0 : Q ≠ 0 := h_gs.Q_ne_0
   set S : Multiset (F[Z][X][Y]) := UniqueFactorizationMonoid.normalizedFactors Q with hS
@@ -1296,8 +1295,7 @@ omit [DecidableEq (RatFunc F)] [Finite F] in
 theorem pg_card_candidatePairs_le_natDegreeY (x₀ : F) (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
     (hsep : ∀ R : F[Z][X][Y],
     R ∈ pg_Rset (m := m) (n := n) (k := k) (ωs := ωs) (Q := Q) (u₀ := u₀) (u₁ := u₁) h_gs →
-      (Bivariate.evalX (Polynomial.C x₀) R).Separable)
-    :
+      (Bivariate.evalX (Polynomial.C x₀) R).Separable) :
   #(pg_candidatePairs (m := m) (n := n) (k := k) (ωs := ωs) (Q := Q)
       (u₀ := u₀) (u₁ := u₁) x₀ h_gs) ≤ Bivariate.natDegreeY Q := by
   classical

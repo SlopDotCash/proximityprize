@@ -778,8 +778,7 @@ theorem embeddingCleared_mul_Wpow_eq_Wpow_mul_uncleared_of_wDivTarget
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H)
+              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
       * liftToFunctionField (H := H) H.leadingCoeff ^ e
       =
       liftToFunctionField (H := H) H.leadingCoeff
@@ -803,8 +802,7 @@ theorem embeddingCleared_eq_uncleared_of_wDivTarget_exactDegree
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H)
+              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
       =
       embeddingOf𝒪Into𝕃 H (hasseCoeffRepr𝒪 H x₀ R i1 m) := by
   have hscale :=
@@ -873,8 +871,7 @@ theorem embeddingCleared_eq_Wpow_mul_uncleared_of_target (x₀ : F) (R : F[X][X]
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
           (hasseCoeffRepr𝒪_cleared H x₀ R i1 m
             (Bivariate.natDegreeY
-              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))))
-          : 𝒪 H)
+              (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))))) : 𝒪 H)
       = liftToFunctionField (H := H) H.leadingCoeff
             ^ Bivariate.natDegreeY
                 (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))

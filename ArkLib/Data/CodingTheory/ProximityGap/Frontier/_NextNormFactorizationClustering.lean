@@ -33,8 +33,7 @@ clustering ⟹ the core HOLDS)?
 Model each relation by its norm's **prime-factor support** `Fac : ι → Finset ℕ` (the set of primes
 dividing `N(T)`, optionally restricted to primes above a threshold `B`).  The clustering statistic is
 ```
-        ClusterRate(Rel, Fac)
-          := (# ordered pairs (T, T') with T ≠ T' and a common prime factor) / #(ordered pairs).
+        ClusterRate(Rel, Fac) := (# ordered pairs (T, T') with T ≠ T' and a common prime factor) / #(ordered pairs).
 ```
 Two relations *share a prime* iff `Fac T ∩ Fac T' ≠ ∅` iff `𝔭 ∣ gcd(N(T), N(T'))` for some
 `𝔭`.  `ClusterRate` is the empirical pair-correlation of the *factorization events* — the

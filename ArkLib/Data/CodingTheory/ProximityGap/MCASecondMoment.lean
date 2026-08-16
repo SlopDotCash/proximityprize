@@ -307,8 +307,7 @@ theorem epsMCA_one_ge_second_moment (domain : ι ↪ F) {k M' : ℕ}
         apply ENNReal.div_le_div_right
         refine le_iSup
           (fun u : WordStack F (Fin 2) ι =>
-            (mcaBadCount (F := F) (ReedSolomon.code domain k : Set (ι → F)) 1 (u 0) (u 1)
-              : ℝ≥0∞))
+            (mcaBadCount (F := F) (ReedSolomon.code domain k : Set (ι → F)) 1 (u 0) (u 1) : ℝ≥0∞))
           (Code.finMapTwoWords u₀ (deepHole domain k))
 
 /-! ## (4) Decision corollaries -/

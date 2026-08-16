@@ -516,8 +516,7 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
     simpa [K0, Matrix.submatrix_sub, Matrix.submatrix_mul, Matrix.submatrix_submatrix,
       Matrix.mul_assoc, Function.comp, L, R] using hdetSchur
   have hg : ∀ i : ι,
-      ((∑ t : Fin (k + 1), Polynomial.C (u t i) * Polynomial.X ^ (t : ℕ) : F[X])).natDegree ≤ k
-        := by
+      ((∑ t : Fin (k + 1), Polynomial.C (u t i) * Polynomial.X ^ (t : ℕ) : F[X])).natDegree ≤ k := by
     intro i
     refine Polynomial.natDegree_sum_le_of_forall_le _ _ ?_
     intro t _
@@ -680,8 +679,7 @@ theorem card_RS_goodCoeffsCurve_gt_of_prob_gt_kn_div_q
       Pr_{ let z ← $ᵖ F}[δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, ReedSolomon.code domain deg)
         ≤ δ]
         > (k * Fintype.card ι : ℝ≥0) / (Fintype.card F : ℝ≥0)) :
-    (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ).card > k * Fintype.card ι
-      := by
+    (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ).card > k * Fintype.card ι := by
   classical
   -- predicate defining the good coefficients
   let P : F → Prop := fun z : F =>

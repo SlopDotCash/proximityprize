@@ -169,8 +169,7 @@ theorem foldedWronskian_monomial {s : ℕ} (m : Fin s → ℕ) (ω : F) :
   congr 1
   -- The residual scalar determinant is `C` of the transposed Vandermonde det.
   have hvand : (fun (a j : Fin s) => Polynomial.C (ω ^ ((a : ℕ) * m j)))
-      = (((Matrix.vandermonde (fun j => ω ^ m j)).map Polynomial.C)ᵀ
-          : Matrix (Fin s) (Fin s) F[X]) := by
+      = (((Matrix.vandermonde (fun j => ω ^ m j)).map Polynomial.C)ᵀ : Matrix (Fin s) (Fin s) F[X]) := by
     funext a j
     simp only [Matrix.transpose_apply, Matrix.map_apply,
       Matrix.vandermonde_apply, ← pow_mul, mul_comm (m j) (a : ℕ)]

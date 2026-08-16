@@ -203,8 +203,7 @@ theorem epsMCA_sharp_ge (hp : n * n ≤ p) (hk : 1 ≤ k) (hkn : k + 1 ≤ n) :
     (((k + 1) * (n - 1 - k) + 1 : ℕ) : ℝ≥0∞) / (Fintype.card (ZMod p) : ℝ≥0∞)
       ≤ epsMCA (F := ZMod p) (A := ZMod p)
           (ReedSolomon.code
-              (domain := dom (p := p) (n := n) (by have := NeZero.pos n; nlinarith [hp])) k
-            : Set (Fin n → ZMod p))
+              (domain := dom (p := p) (n := n) (by have := NeZero.pos n; nlinarith [hp])) k : Set (Fin n → ZMod p))
           (1 - ((k + 1 : ℕ) : ℝ≥0) / (n : ℝ≥0)) := by
   have hnp : n ≤ p := by have := NeZero.pos n; nlinarith [hp]
   -- dom-sum of a window = cast of its integer node-sum

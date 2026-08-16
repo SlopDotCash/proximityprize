@@ -171,8 +171,7 @@ theorem ff_composite_reduces_to_wall
     (n logf : ℝ) (hlog : 0 < logf)
     -- the chaining composite, supplied with proxy `V`, lands at-or-below the floor:
     (V : ℝ) (hbelow : 2 * V * logf ≤ n * logf)
-    -- exactly when V is at the RMS scale (proxy n/2); below-floor forces V ≤ RMS²:
-    : V ≤ n / 2 ∧ (2 * V * logf = n * logf ↔ V = n / 2) :=
+    -- exactly when V is at the RMS scale (proxy n/2); below-floor forces V ≤ RMS²: : V ≤ n / 2 ∧ (2 * V * logf = n * logf ↔ V = n / 2) :=
   ⟨composite_needs_prize_tail V n logf hlog hbelow,
    chaining_proxy_threshold V n logf hlog⟩
 
