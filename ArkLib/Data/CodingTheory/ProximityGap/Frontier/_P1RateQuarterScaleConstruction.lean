@@ -455,8 +455,7 @@ theorem core_pair_agreement (i : Fin 3) (e : Coord) (he : e ∈ core i) :
       (direction i).eval (domain e) = u1 e := by
   simp only [core, corePred, Finset.mem_filter, Finset.mem_univ, true_and] at he
   rcases he with hbase | heTransfer
-  ·
-    have hne15 : e.2 ≠ (15 : Fin 16) := by
+  · have hne15 : e.2 ≠ (15 : Fin 16) := by
       intro h
       rw [h] at hbase
       exact fifteen_not_mem_baseCore i hbase

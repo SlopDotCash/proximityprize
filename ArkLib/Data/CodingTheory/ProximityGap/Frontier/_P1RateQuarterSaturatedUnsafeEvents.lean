@@ -94,8 +94,7 @@ theorem saturatedHoleCoord_not_mem_amplifiedCore
     rcases h with q | a
     · apply hnotNew
       exact (mem_selectedCoords_iff 13 _).2 ⟨q, rfl⟩
-    ·
-      simp only [core, corePred, Finset.mem_filter, Finset.mem_univ,
+    · simp only [core, corePred, Finset.mem_filter, Finset.mem_univ,
         true_and] at hcore
       rcases hcore with hbase | htransfer
       · apply fifteen_not_mem_baseCore i

@@ -463,8 +463,7 @@ theorem eta_pow_le_of_dcEnergyBoundWithConstant
     (h : DCEnergyBoundWithConstant G r K) {b : F} (hb : b ≠ 0) :
     ‖eta ψ G b‖ ^ (2 * r)
       ≤ (Fintype.card F : ℝ)
-          * (K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)) :=
-by
+          * (K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)) := by
   classical
   have hbmem : b ∈ (Finset.univ : Finset F).erase (0 : F) := by simp [hb]
   have hterm :
