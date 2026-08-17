@@ -61,7 +61,8 @@ theorem list_bound_quarter {F : Type*} [Field F] [DecidableEq F]
   calc L.card ≤ (33855999 - 1) / (2 ^ 18 - 1) := h
     _ = 129 := by decide
 
-/-- Johnson position at rate `1/4`: `√(n(k−1)) ∈ (524286, 524287)`, and `529000` is within `0.9%`. -/
+/-- Johnson position at rate `1/4`: `√(n(k−1)) ∈ (524286, 524287)`, and
+`529000` is within `0.9%`. -/
 theorem johnson_position_quarter :
     524286 ^ 2 < 2 ^ 20 * (2 ^ 18 - 1) ∧ 2 ^ 20 * (2 ^ 18 - 1) < 524287 ^ 2 ∧
     529000 * 1000 < 524287 * 1009 := by
@@ -99,7 +100,8 @@ theorem list_bound_eighth {F : Type*} [Field F] [DecidableEq F]
   calc L.card ≤ (23935999 - 1) / (2 ^ 17 - 1) := h
     _ = 182 := by decide
 
-/-- Johnson position at rate `1/8`: `√(n(k−1)) ∈ (370726, 370727)`, and `374000` is within `0.9%`. -/
+/-- Johnson position at rate `1/8`: `√(n(k−1)) ∈ (370726, 370727)`, and
+`374000` is within `0.9%`. -/
 theorem johnson_position_eighth :
     370726 ^ 2 < 2 ^ 20 * (2 ^ 17 - 1) ∧ 2 ^ 20 * (2 ^ 17 - 1) < 370727 ^ 2 ∧
     374000 * 1000 < 370727 * 1009 := by

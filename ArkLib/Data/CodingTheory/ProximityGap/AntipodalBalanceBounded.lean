@@ -8,7 +8,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BoundedCyclotomicIndep
 /-!
 # Char-p weighted antipodal balance from bounded independence (#407)
 
-The abstract heart of the char-`p` `count_antipodal_of_sum_eq_zero` leaf. A vanishing weighted sum of
+The abstract heart of the char-`p` `count_antipodal_of_sum_eq_zero` leaf. A vanishing
+weighted sum of
 `2N`-th roots of unity — split into a lower half (`ζ^j`, weights `a`) and its antipodal upper half
 (`ζ^{j+N} = −ζ^j`, weights `b`) — forces the antipodal weights to coincide, **driven by the
 char-`p`-realizable `BoundedHalfBasisIndep`** rather than char-0 cyclotomic independence:
@@ -19,7 +20,8 @@ char-`p`-realizable `BoundedHalfBasisIndep`** rather than char-0 cyclotomic inde
 Mechanism: `ζ^{j+N} = −ζ^j` collapses the sum to `∑_j (a_j − b_j) ζ^j = 0` with coefficients bounded
 by `C`, so `BoundedHalfBasisIndep` kills each. This is the bounded swap for the one char-0 step
 (`debruijn_prime_power_weighted`) inside `count_antipodal`; the rest of that proof (transport to the
-weight surface) is characteristic-independent. With this, `BoundedHalfBasisIndep` ⟹ the char-`p` Wick
+weight surface) is characteristic-independent. With this,
+`BoundedHalfBasisIndep` ⟹ the char-`p` Wick
 ladder for all `r` — the prize reduces to that one named hypothesis at prize support (= BGK).
 
 Issue #407.
@@ -31,8 +33,10 @@ namespace ArkLib.ProximityGap.AntipodalBalanceBounded
 
 variable {F : Type*} [Field F]
 
-/-- **Char-p antipodal weight balance.** A vanishing weighted sum over a half-basis and its antipode
-forces equal antipodal weights, using only the bounded (char-`p`-realizable) cyclotomic independence. -/
+/-- **Char-p antipodal weight balance.** A vanishing weighted sum
+over a half-basis and its antipode
+forces equal antipodal weights, using only the bounded
+(char-`p`-realizable) cyclotomic independence. -/
 theorem antipodal_balance_of_boundedIndep {N C : ℕ} {ζ : F} (hhalf : ζ ^ N = -1)
     (hindep : BoundedHalfBasisIndep ζ N C)
     {a b : Fin N → ℕ} (ha : ∀ j, a j ≤ C) (hb : ∀ j, b j ≤ C)
