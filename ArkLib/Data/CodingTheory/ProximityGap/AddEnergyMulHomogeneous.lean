@@ -22,7 +22,8 @@ count `N := #{z₁+z₂ = z₃+1}` by `≪ |G|^{3/2}`. The reduction is **elemen
 reindexing bijection `y_i ↦ z_i·y₄`); the bound on `N` is the hard open sum-product input (dossier
 §24). Here we land only the exact reduction — the honest, completable bridge.
 
-**Honest scope:** an algebraic identity for the additive-energy API; it does not bound `N` (hence does
+**Honest scope:** an algebraic identity for the additive-energy API; it does not bound `N` (hence
+does
 not pin `δ*`). It is the formal entry point a future `N ≪ |G|^{3/2}` estimate plugs into to sharpen
 the anti-concentration ladder.
 

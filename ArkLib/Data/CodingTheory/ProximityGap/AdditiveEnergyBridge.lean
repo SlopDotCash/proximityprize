@@ -11,7 +11,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 # feeds the Gauss-sum fourth moment.
 
 Two `additiveEnergy` definitions live in the proximity-gap tree:
-* `AdditiveEnergyRepBound.additiveEnergy G = ∑_{a,b∈G} repCount(a+b)` (the representation-count form,
+* `AdditiveEnergyRepBound.additiveEnergy G = ∑_{a,b∈G} repCount(a+b)` (the representation-count
+form,
   carrying the sharp closed form `AdditiveEnergySidonModNeg.additiveEnergy_eq_of_sidonModNeg`);
 * `SubgroupGaussSumFourthMoment.addEnergy G = ∑_{y₁,y₂,y₃,y₄∈G} [y₁+y₂=y₃+y₄]` (the quadruple-count
   form, satisfying `subgroup_gaussSum_fourthMoment : ∑_b ‖η_b‖⁴ = q · addEnergy G`).
@@ -23,7 +24,8 @@ feeds **directly** into the Gauss-sum fourth-moment identity `∑_b ‖η_b‖�
 Sidon-modulo-negation subgroup. `sorry`-free, axiom-clean.
 
 ## References
-- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.
+- [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
+#232.
 -/
 
 set_option linter.style.longLine false
@@ -58,7 +60,8 @@ theorem additiveEnergy_eq_addEnergy (G : Finset F) :
     rw [if_neg (fun heq => h (by
       rw [show a + b - y3 = y4 from by linear_combination heq]; exact hy4))]
 
-/-- **The sharp energy in the Gauss-sum `addEnergy` notation.** For a Sidon-modulo-negation subgroup,
+/-- **The sharp energy in the Gauss-sum `addEnergy` notation.** For a Sidon-modulo-negation
+subgroup,
 `addEnergy G = 3|G|² − 3|G|`, so the fourth-moment identity reads
 `∑_b ‖η_b‖⁴ = q · (3|G|² − 3|G|)` — the sharp char-0 minimal energy fed directly into the Gauss-sum
 chain. -/

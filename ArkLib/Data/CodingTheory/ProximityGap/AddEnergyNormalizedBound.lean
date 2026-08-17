@@ -24,7 +24,8 @@ for the multiplicative subgroup, which is the hard open input (dossier §24) and
 in formalizable form. This file makes the gap between "what is elementary" (`|G|²`) and "what the
 prize needs" (`|G|^{3/2}`) an explicit, machine-checked boundary.
 
-**Honest scope:** elementary counting; does not bound `N` sub-quadratically, hence does not pin `δ*`.
+**Honest scope:** elementary counting; does not bound `N` sub-quadratically, hence does not pin
+`δ*`.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
