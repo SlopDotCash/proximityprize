@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 P7-HGG: Helleseth–Golomb–Gong cross-correlation vs the prize incomplete Gauss sum.
 
 CLAIM (P7, the named candidate non-CA route from ePrint 2026/858): the proximity-prize

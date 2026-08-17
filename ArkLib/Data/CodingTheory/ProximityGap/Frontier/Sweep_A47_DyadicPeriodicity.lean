@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # Completing the general char-0 dyadic rigidity: telescoping ⟹ periodicity ⟹ coset (#444)
 
 `Sweep_A46.multiscale_dvd` gives `∏_{i=0}^{r} (X^{2^{μ-1-i}}+1) ∣ g` when `g` vanishes at all dyadic

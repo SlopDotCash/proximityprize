@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 Scratch: the codim-`c` realizability constraint for the deployed far-line incidence (#407, B1).
 
 GOAL (b1-realizability-sharp, wave 3).  Extend `_RThinResidueDegree` (excess = residue degree)

@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # Over-dispersion obstructs the family-variance route (#444)
 
 This brick records, axiom-clean, a genuinely-new *negative* result discovered by continuing the

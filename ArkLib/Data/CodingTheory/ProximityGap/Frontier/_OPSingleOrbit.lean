@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # `_OPSingleOrbit` — the `O_P = 1` single-orbit persistence is REFUTED (#444)
 
 ## Attack [OP-single-orbit] — verdict: REFUTED (O_P grows as `n/8 − 1`).

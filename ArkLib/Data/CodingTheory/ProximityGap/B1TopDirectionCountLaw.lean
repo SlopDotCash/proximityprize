@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 B1 count-law core: the EXACT closed form for the top-direction readout over μ_n.
 
 Goal proven here (axiom-clean target):

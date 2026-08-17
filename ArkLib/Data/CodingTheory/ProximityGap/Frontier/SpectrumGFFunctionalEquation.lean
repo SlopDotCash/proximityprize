@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The char-0 subset-sum spectrum GF functional equation `x^{2m}·G(1/x) = G(x)` (#444)
 
 `Sweep_A50_SpectrumGeneratingFunction` proved `(x²−1)·G(x) = x^{m+2}(x+2)^m − (2x+1)^m` and its

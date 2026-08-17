@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # The reunification bijection: LD agreement sets = lacunary root sets (#444, SEAM A capstone)
 
 This file formalizes the *rigorous core* of the reunification that ties the two grand prize

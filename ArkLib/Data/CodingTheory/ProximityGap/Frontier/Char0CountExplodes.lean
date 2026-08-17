@@ -1,4 +1,9 @@
 /-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+/-
 # char0-count-bound (missing-avenue attack, issue #407)
 
 The "cap route" hope: since the deployed far-line incidence `I` (the EXACT
