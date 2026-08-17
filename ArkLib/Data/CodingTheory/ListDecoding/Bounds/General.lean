@@ -920,7 +920,7 @@ theorem linear_lambda_ge_entropy_volume
   rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card]
   exact Module.card_eq_pow_finrank (K := F) (V := ↥C)
 
-/-- **ST20 plurality-center averaging core (in-tree, fully proven).**
+/- **ST20 plurality-center averaging core (in-tree, fully proven).**
 Given `ℓ + 1` words `c₀, …, c_ℓ : ι → F`, the *plurality center* `z`, obtained by choosing at
 each coordinate a value attained by at least one of the `cⱼ` (e.g. the most frequent one),
 satisfies the aggregate-distance bound
