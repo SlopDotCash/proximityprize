@@ -170,7 +170,8 @@ theorem curveCommonAgreementResidual_of_card_le_e7 {k deg : ℕ} {domain : ι �
   have hconst := errorBound_ge_e7 (deg := deg) (domain := domain) (δ := δ) hdeg hJ hsqrt
   have hqpos : (0 : ℝ≥0) < (Fintype.card F : ℝ≥0) := by
     exact_mod_cast (Fintype.card_pos : 0 < Fintype.card F)
-  have hone : (1 : ℝ≥0) ≤ (k : ℝ≥0) * (((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0)) := by
+  have hone : (1 : ℝ≥0) ≤
+      (k : ℝ≥0) * (((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0)) := by
     rw [mul_div_assoc', le_div_iff₀ hqpos, one_mul]
     exact hq
   have hstep : (1 : ℝ≥0) ≤ (k : ℝ≥0) * errorBound δ deg domain :=

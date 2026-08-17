@@ -180,11 +180,13 @@ def DivWeightLe (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
 
 def DivWeightLe_zero (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (D : ℕ) : Prop :=
-  ∃ a : 𝒪 H, βHensel H x₀ R hHyp 0 = a * (W𝒪 H) ^ (0 + 1) * (ClaimA2.ξ x₀ R H hHyp) ^ (2 * 0 - 1) ∧ weight_Λ_over_𝒪 hH a D ≤ WithBot.some 1
+  ∃ a : 𝒪 H, βHensel H x₀ R hHyp 0 = a * (W𝒪 H) ^ (0 + 1) * (ClaimA2.ξ x₀ R H hHyp) ^ (2 * 0 - 1) ∧
+    weight_Λ_over_𝒪 hH a D ≤ WithBot.some 1
 
 def DivWeightLe_succ (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (D : ℕ) (t : ℕ) : Prop :=
-  ∃ a : 𝒪 H, βHensel H x₀ R hHyp (t + 1) = a * (W𝒪 H) ^ (t + 1 + 1) * (ClaimA2.ξ x₀ R H hHyp) ^ (2 * (t + 1) - 1) ∧ weight_Λ_over_𝒪 hH a D ≤ WithBot.some 1
+  ∃ a : 𝒪 H, βHensel H x₀ R hHyp (t + 1) = a * (W𝒪 H) ^ (t + 1 + 1) * (ClaimA2.ξ x₀ R H hHyp) ^ (2
+    * (t + 1) - 1) ∧ weight_Λ_over_𝒪 hH a D ≤ WithBot.some 1
 
 theorem DivWeightLe_of_cases (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (D : ℕ)
@@ -205,7 +207,8 @@ theorem DivWeightLe.of_cases (x₀ : F) (R : F[X][X][Y])
   DivWeightLe_of_cases H x₀ R hHyp hH D h0 hsucc
 
 /-- **Strong induction step for the DivWeightLe quotient witness (Issue 138)**
-The `(t+1) ∉ lam.parts` filter in the strict recursion isolates the sum to strictly positive previous
+The `(t+1) ∉ lam.parts` filter in the strict recursion isolates the sum to strictly positive
+  previous
 orders `l ≥ 1`. This completely bypasses the order-0 non-monic obstruction. The algebraic witness
 `a_{t+1}` is constructively factored out of the `βHensel` recursion using `hasseCoeffRepr𝒪_cleared`
 and the ξ-telescope. -/
@@ -535,8 +538,10 @@ sub-additivity remark, strictly stronger). -/
 /-- **(P1) the STRUCTURED INVARIANT, conditional.**  Given `hlift`, the carved link `hα`, and the
 `Λ(ξ)` bound `hξ` (`weight_ξ_bound`, automatic under its regime), the structured invariant
 `Λ_𝒪(βHensel l) ≤ 1 + (l+1)·Λ(W) + e_l·Λ(ξ)` holds, with `Λ(W) = (lc H).natDegree`,
-`Λ(ξ) ≤ (d−1)·(D−dH+1)`, `e_l = 2l−1` (ℕ-truncated).  Route: the link gives `β_l = a_l·W𝒪^{l+1}·ξ^{e_l}`
-(Task-1 `𝕃 → 𝒪`), then `weight_Λ_over_𝒪_mul_le`/`_pow_le`/`_W` + `nsmul_withBot_le` + `Λ(a_l) ≤ 1`. -/
+`Λ(ξ) ≤ (d−1)·(D−dH+1)`, `e_l = 2l−1` (ℕ-truncated).  Route: the link gives `β_l =
+  a_l·W𝒪^{l+1}·ξ^{e_l}`
+(Task-1 `𝕃 → 𝒪`), then `weight_Λ_over_𝒪_mul_le`/`_pow_le`/`_W` + `nsmul_withBot_le` + `Λ(a_l) ≤ 1`.
+  -/
 theorem βHensel_weight_structured (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ} (hDH : Bivariate.totalDegree H ≤ D)
     (hlift : ∀ t : ℕ,
@@ -1011,7 +1016,8 @@ theorem DivWeightLe_zero_cleared.of_betaWeight
     DivWeightLe_zero_cleared H x₀ R hHyp hH D :=
   ⟨βHensel H x₀ R hHyp 0, rfl, hwt⟩
 
-/-- Project the direct beta-side weight bound from the corrected cleared base div-weight predicate. -/
+/-- Project the direct beta-side weight bound from the corrected cleared base div-weight predicate.
+  -/
 theorem DivWeightLe_zero_cleared.betaWeight
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
@@ -1039,7 +1045,8 @@ theorem DivWeightLe_zero_cleared.of_alphaWeight_zero_cleared
   DivWeightLe_zero_cleared.of_betaWeight H x₀ R hHyp hH
     (AlphaGenuineRegularWeightLe_zero_cleared.betaWeight H x₀ R hHyp hH hα0)
 
-/-- Transport the corrected cleared div-weight base target back to the corrected alpha base target. -/
+/-- Transport the corrected cleared div-weight base target back to the corrected alpha base target.
+  -/
 theorem AlphaGenuineRegularWeightLe_zero_cleared.of_divWeight_zero_cleared
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
@@ -1660,24 +1667,34 @@ end BCIKS20.HenselNumerator
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_structured_of_divWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_divWeight
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_normalized_divWeight_cases
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_normalized_divWeight_cases
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_divWeight'
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_normalized_divWeight_cases'
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_succLift'
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_cases
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_cases_succLift
+open BCIKS20.HenselNumerator.AlphaWeight
+#print axioms
+  βHenselStructuredWeightInvariant_of_normalized_divWeight_cases'
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_succLift
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_succLift'
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_cases
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.βHenselStructuredWeightInvariant_of_alphaWeight_cases_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_alphaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_divWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_normalized_divWeight_cases
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_divWeight'
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_normalized_divWeight_cases'
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_normalized_divWeight_cases'
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_weight_bound_of_alphaWeight'
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.W𝒪_dvd_βHensel_zero_of_alpha
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.βHensel_zero_weight_le_one
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared.of_betaWeight
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared.betaWeight
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared.of_betaWeight
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared.betaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_zero_cleared_iff_betaWeight_zero
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_zero_cleared_fixed
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared.of_fixed
@@ -1685,31 +1702,45 @@ end BCIKS20.HenselNumerator
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_zero_cleared.of_betaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_zero_cleared.betaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.divWeight_zero_cleared_iff_betaWeight_zero
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_zero_cleared.of_alphaWeight_zero_cleared
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared.of_divWeight_zero_cleared
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_zero_cleared_iff_divWeight_zero_cleared
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_zero_cleared.of_alphaWeight_zero_cleared
+open BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero_cleared
+#print axioms
+  of_divWeight_zero_cleared
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_zero_cleared_iff_divWeight_zero_cleared
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_succ_cleared
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_succ_cleared.of_lift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_succ_cleared.of_betaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_succ_cleared.betaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.divWeight_succ_cleared_iff_betaWeight_succ
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_succ_cleared.of_divWeight_succ_cleared
+open BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_succ_cleared
+#print axioms
+  of_divWeight_succ_cleared
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.W𝒪_dvd_βHensel_zero_of_alphaWeight
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_zero.of_alphaWeight_zero
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_zero.of_divWeight_zero
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_zero_iff_divWeight_zero_base
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_succ_iff_divWeight_succ_of_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_iff_divWeight_cases_of_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.of_divWeight_cases_succLift
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.of_divWeight_cases_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe.of_alphaWeight_cases_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe.of_alphaWeight_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.of_divWeight_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.of_normalized_divWeight_cases_succLift
+open BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe
+#print axioms
+  of_normalized_divWeight_cases_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_iff_divWeight_of_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_iff_normalized_divWeight_cases_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.normalized_divWeight_cases_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.normalized_divWeight_zero_succLift
-#print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.normalized_divWeight_succ_succLift
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_iff_normalized_divWeight_cases_succLift
+open BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe
+#print axioms
+  normalized_divWeight_cases_succLift
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.normalized_divWeight_zero_succLift
+#print axioms
+  BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe.normalized_divWeight_succ_succLift
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.DivWeightLe_succ.of_alphaWeight_succ
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.AlphaGenuineRegularWeightLe_succ.of_divWeight_succ
 #print axioms BCIKS20.HenselNumerator.AlphaWeight.alphaWeight_succ_iff_divWeight_succ_at

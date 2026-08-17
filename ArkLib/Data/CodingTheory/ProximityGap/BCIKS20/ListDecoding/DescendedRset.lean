@@ -47,7 +47,8 @@ the existential bundle* of `irreducible_factorization_of_gs_solution`:
 * `pg_RsetDescended_separable_FF`    — every member is separable over `FractionRing (F[Z][X])`;
 * `pg_RsetDescended_natDegree_pos`   — every member has positive `Y`-degree;
 * `pg_RsetDescended_discr_y_ne_zero` — every member has `discr_y ≠ 0` (the Claim-5.6 substrate);
-* `pg_RsetDescended_comp_dvd_Q`      — every member `r` satisfies `r.comp (X^a) ∣ Q` for some `a ≥ 1`
+* `pg_RsetDescended_comp_dvd_Q`      — every member `r` satisfies `r.comp (X^a) ∣ Q` for some `a ≥
+  1`
                                        (the `expand`-shape divisibility read off the factorization
                                        equation);
 * `pg_RsetDescended_nonempty`        — nonemptiness, under the same `Q`-has-a-positive-degree-factor
@@ -57,7 +58,8 @@ The **descent correspondence** `∀ r ∈ pg_RsetDescended, ∃ g ∈ pg_Rset, �
 **coincidence** `pg_RsetDescended = pg_Rset` under separability are provided as the *honest bridges*
 (`pg_RsetDescended_descent_correspondence`, `pg_RsetDescended_eq_pg_Rset_of_*`): the per-member
 `g = C u · expand (qᵐ) r` descent datum lives *inside* the proof of
-`irreducible_factorization_of_gs_solution` and is **not** recoverable from its `.choose_spec`, so the
+`irreducible_factorization_of_gs_solution` and is **not** recoverable from its `.choose_spec`, so
+  the
 correspondence is taken as an input where it cannot be re-derived (this is the same honesty that
 forced `hfactor` to be a hypothesis in the first place).
 
@@ -77,7 +79,8 @@ consumers downstream of Claim 5.7 are the Hensel / Appendix-A.4 `ClaimA2` chain.
 So the chain consumes `R` purely as a polynomial through `evalX (C x₀) R` (its `x₀`-specialization
 divisibility-by-`H` and separability) — it **never** consults `R ∈ descended list`, nor any property
 of `R` beyond `irreducible + positive-degree + separable-at-x₀`.  Membership in a particular factor
-list is used *only* to land the existence statement `exists_factors_with_large_common_root_set`; once
+list is used *only* to land the existence statement `exists_factors_with_large_common_root_set`;
+  once
 `R` is extracted it is an opaque polynomial.  Every property the chain reads off `R`
 (`irreducible`, `positive Y-degree`, `evalX`-separability via `discr_y ≠ 0`) is one this file proves
 for the descended members.  Hence the descended set carries exactly the adequate API surface, and
@@ -130,7 +133,8 @@ noncomputable def pg_RsetDescended
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
 /-- **`hfactor`, definitionally true over the descended set.**  Membership in `pg_RsetDescended`
-*is* membership in the descended list `(irreducible_factorization_of_gs_solution h_gs).choose_spec.choose`.
+*is* membership in the descended list `(irreducible_factorization_of_gs_solution
+  h_gs).choose_spec.choose`.
 This is the `Claim57Residuals.hfactor` field, but landed *by construction* via `Finset.mem_toFinset`
 — the F10-unprovable bridge for `pg_Rset` is here a triviality. -/
 theorem mem_pg_RsetDescended_iff_mem_list
@@ -142,7 +146,8 @@ theorem mem_pg_RsetDescended_iff_mem_list
   exact List.mem_toFinset
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
-/-- **`hfactor` field, definitional form.**  Every member of `pg_RsetDescended` lies in the descended
+/-- **`hfactor` field, definitional form.**  Every member of `pg_RsetDescended` lies in the
+  descended
 list — the exact shape of `Claim57Residuals.hfactor`, now `Finset.mem_toFinset`-trivial. -/
 theorem pg_RsetDescended_hfactor
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) :
@@ -207,7 +212,8 @@ theorem pg_RsetDescended_natDegree_pos
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
 /-- Every descended factor has **nonvanishing `discr_y`** — the Claim-5.6 specialization substrate,
-derived from fraction-field separability + positive degree via `discr_y_ne_zero_of_sep`.  (Note: this
+derived from fraction-field separability + positive degree via `discr_y_ne_zero_of_sep`.  (Note:
+  this
 holds for *every* descended member, whereas over `pg_Rset` it needs the extra honest per-factor
 positive-degree + separability side conditions, precisely because `pg_Rset` includes the degree-`0`
 and inseparable normalized factors that the descent strips out.) -/
@@ -227,12 +233,14 @@ theorem pg_RsetDescended_discr_y_ne_zero
 The bundle's factorization equation `Q = C C * ∏ i ∈ range L.length, ((Rᵢ.comp X^fᵢ))^eᵢ` (with
 `eᵢ ≥ 1`) lets us read off, for each list index `i`, that `(Rᵢ.comp X^fᵢ) ∣ Q`.  Since the descended
 roots arise as `g = C u · expand nn r = C u · (r.comp X^nn)` for normalized factors `g ∣ Q`, this is
-the honest `expand`-shape divisibility — the descended analogue of `pg_Rset`'s `dvd_of_mem_normalizedFactors`. -/
+the honest `expand`-shape divisibility — the descended analogue of `pg_Rset`'s
+  `dvd_of_mem_normalizedFactors`. -/
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 /-- **Abstract `expand`-shape divisibility.**  Pure list/product fact, stated over *abstract* data
 `C₀, L, f, e` so its proof never reduces the giant `irreducible_factorization_of_gs_solution` choice
-term (which would blow up `whnf`).  If `Q = C C₀ · ∏ⱼ ((L.getD j 1).comp X^(f.getD j 0))^(e.getD j 0)`
+term (which would blow up `whnf`).  If `Q = C C₀ · ∏ⱼ ((L.getD j 1).comp X^(f.getD j 0))^(e.getD j
+  0)`
 with every exponent `≥ 1`, then for each index `i` the `i`-th factor divides `Q`. -/
 theorem comp_getD_dvd_of_factorization
     (Q' : F[Z][X][Y]) (C₀ : F[Z][X]) (L : List F[Z][X][Y]) (f e : List ℕ)
@@ -265,14 +273,16 @@ theorem comp_getD_dvd_of_factorization
 omit [DecidableEq (RatFunc F)] [Finite F] in
 /-- **`expand`-shape divisibility (indexed form).**  For each index `i` into the descended list, the
 `i`-th factor `(R.getD i 1).comp (X^(f.getD i 0))` divides `Q` (it appears, to a power `≥ 1`, in the
-factorization equation).  Proved by instantiating the abstract `comp_getD_dvd_of_factorization` at the
+factorization equation).  Proved by instantiating the abstract `comp_getD_dvd_of_factorization` at
+  the
 chosen data, so the giant choice term is only *substituted*, never reduced. -/
 theorem pg_RsetDescended_comp_getD_dvd_Q
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) (i : ℕ)
     (hi : i < (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose.length) :
     (((irreducible_factorization_of_gs_solution h_gs).choose_spec.choose.getD i 1).comp
         ((Polynomial.X : F[Z][X][Y]) ^
-          ((irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose.getD i 0)))
+          ((irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose.getD i
+            0)))
       ∣ Q := by
   classical
   obtain ⟨hlen1, hlen2, he, _hsep, _hirr, _hpos, hfact, _hfpos⟩ :=
@@ -288,7 +298,8 @@ omit [DecidableEq (RatFunc F)] [Finite F] in
 /-- **`expand`-shape divisibility (member form).**  Every descended factor `R` admits an exponent
 `a ≥ 1` with `R.comp (X^a) ∣ Q`.  This is the honest descended replacement of the `pg_Rset`
 divisibility `R ∣ Q` (`UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors`): in characteristic
-`p` the descended root `R` itself need not divide `Q`, but its `expand`-image `R.comp (X^a) = expand a R`
+`p` the descended root `R` itself need not divide `Q`, but its `expand`-image `R.comp (X^a) =
+  expand a R`
 does — exactly the inseparable `p`-power relation `g = C u · expand a R` for the normalized factor
 `g ∣ Q`. -/
 theorem pg_RsetDescended_comp_dvd_Q
@@ -314,7 +325,8 @@ theorem pg_RsetDescended_comp_dvd_Q
 
 `pg_Rset` is nonempty exactly when `Q` has a normalized factor.  `pg_RsetDescended` is the descended
 *positive-degree* factor set, so it is nonempty exactly when `Q` has a *positive-degree* normalized
-factor — equivalently when the descended list is nonempty.  We expose both the direct (list-nonempty)
+factor — equivalently when the descended list is nonempty.  We expose both the direct
+  (list-nonempty)
 form and the genuine §5 hypothesis form. -/
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
@@ -341,9 +353,11 @@ theorem pg_RsetDescended_nonempty
 /-! ## The descent correspondence and the coincidence bridge (honest)
 
 The per-member descent datum `g = C u · expand nn r` (relating a `pg_Rset` member `g` to its
-descended root `r`) lives *inside* the proof of `irreducible_factorization_of_gs_solution` and is not
+descended root `r`) lives *inside* the proof of `irreducible_factorization_of_gs_solution` and is
+  not
 exposed by its `.choose_spec`.  Recovering it from the bundle alone is exactly the obstruction that
-made `hfactor` unprovable.  We therefore take the correspondence as an honest input where it cannot be
+made `hfactor` unprovable.  We therefore take the correspondence as an honest input where it cannot
+  be
 re-derived, and prove the coincidence in the separable case from it. -/
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
@@ -352,7 +366,8 @@ descended root `r` a normalized factor `g ∈ pg_Rset` and exponent/unit data wi
 `g = C u · expand a r` — the correspondence `∀ r ∈ pg_RsetDescended, ∃ g ∈ pg_Rset, …` holds.
 
 The hypothesis `hcorr` is the descent datum produced by `eq512_factor_descent` internally; it is
-supplied here rather than re-derived because the `.choose_spec` of `irreducible_factorization_of_gs_solution`
+supplied here rather than re-derived because the `.choose_spec` of
+  `irreducible_factorization_of_gs_solution`
 does not expose the per-member `g`/`u`/`a`.  This is the honest record of the F10 divergence. -/
 theorem pg_RsetDescended_descent_correspondence
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
@@ -405,7 +420,8 @@ Identical to `ProximityGap.Claim57Residuals` except:
   (`pg_RsetDescended_hfactor`), so there is nothing left to assume;
 * the `hx0` / `hsep` fields range over `pg_RsetDescended` instead of `pg_Rset`.
 
-The Johnson / largeness fields (`hS_nonempty`, `A`, `hA`, `hcount`, `hlarge`) are unchanged — they do
+The Johnson / largeness fields (`hS_nonempty`, `A`, `hA`, `hcount`, `hlarge`) are unchanged — they
+  do
 not mention the factor set. -/
 class Claim57ResidualsDescended (k : ℕ) (δ : ℚ) (x₀ : F)
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) where
@@ -435,7 +451,8 @@ The `hfactor` argument that `ofInTree2` still carries is *dropped* here. -/
 
 omit [DecidableEq (RatFunc F)] in
 /-- **`hx0` over the descended set (avoidance, restated).**  The exact `exists_good_x₀_X_shape_ne`
-argument — count the `X`-specialization bad sets and avoid them with the field-size budget — run over
+argument — count the `X`-specialization bad sets and avoid them with the field-size budget — run
+  over
 `pg_RsetDescended.toList` instead of `pg_Rset.toList`.  Same proof structure; the only change is the
 finite set the sum/avoidance ranges over. -/
 theorem exists_good_x₀_X_shape_ne_descended [Fintype F]
@@ -582,7 +599,8 @@ noncomputable def Claim57ResidualsDescended.ofInTree [Fintype F] (δ : ℚ)
 /-! ## Incremental adoption bridge — `Claim57Residuals.ofDescended`
 
 Under the coincidence hypothesis `pg_RsetDescended = pg_Rset` (the separable / characteristic-`0`
-case), a `Claim57ResidualsDescended` bundle yields a full `Claim57Residuals` bundle: the `hx0`/`hsep`
+case), a `Claim57ResidualsDescended` bundle yields a full `Claim57Residuals` bundle: the
+  `hx0`/`hsep`
 fields transport along the set equality, the Johnson/largeness fields are identical, and `hfactor`
 becomes the now-trivial `pg_RsetDescended_hfactor` (rewritten along the coincidence).  This lets the
 issue-#8 owner adopt the descended bundle while still satisfying existing `Claim57Residuals`
@@ -675,7 +693,8 @@ noncomputable def GraphExtractionHypotheses.ofDescendedInTree
 omit [DecidableEq (RatFunc F)] [Finite F] in
 /-- **Incremental-adoption bridge.**  A `Claim57ResidualsDescended` instance produces a full
 `Claim57Residuals` instance under the coincidence `pg_RsetDescended = pg_Rset`.  All eight
-`Claim57Residuals` fields are discharged: `hx0`/`hsep` by transporting the descended fields along the
+`Claim57Residuals` fields are discharged: `hx0`/`hsep` by transporting the descended fields along
+  the
 set equality, the Johnson/largeness block verbatim, and `hfactor` by the definitionally-true
 `pg_RsetDescended_hfactor` rewritten through the coincidence. -/
 @[reducible]

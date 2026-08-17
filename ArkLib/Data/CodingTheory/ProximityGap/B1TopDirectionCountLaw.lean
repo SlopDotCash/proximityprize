@@ -35,7 +35,8 @@ theorem eval_zero_basis (s : Finset ι) (v : ι → F) (i : ι) :
   -- basisDivisor x y = C (x-y)⁻¹ * (X - C y); eval 0 = (x-y)⁻¹ * (0 - y)
   simp [Lagrange.basisDivisor]
 
-/-- Partition-of-unity at `0`: `∑_{i∈s} eval 0 (basis s v i) = 1` (for injective `v`, nonempty `s`). -/
+/-- Partition-of-unity at `0`: `∑_{i∈s} eval 0 (basis s v i) = 1` (for injective `v`, nonempty
+  `s`). -/
 theorem sum_eval_zero_basis (s : Finset ι) (v : ι → F)
     (hvs : Set.InjOn v s) (hs : s.Nonempty) :
     ∑ i ∈ s, (Lagrange.basis s v i).eval 0 = 1 := by
@@ -183,7 +184,8 @@ theorem readout_mem_image (R : Finset ι) (v : ι → F) (n k : ℕ) (hn : 0 < n
 noncomputable def subsetProducts (nodes : Finset ι) (v : ι → F) (k : ℕ) : Finset F :=
   (nodes.powersetCard (k + 1)).image (fun R => ∏ i ∈ R, v i)
 
-/-- The top-direction readout set (= `topRatioValues` of B1, written with `dividedDifferencePow`). -/
+/-- The top-direction readout set (= `topRatioValues` of B1, written with `dividedDifferencePow`).
+  -/
 noncomputable def topReadouts (nodes : Finset ι) (v : ι → F) (n k : ℕ) : Finset F :=
   (nodes.powersetCard (k + 1)).image (fun R => dividedDifferencePow R v (#R - 1 + (n - 1 - k)))
 

@@ -22,7 +22,8 @@ match is **logically equivalent to the restricted match for every `H`** (`cleare
 obstruction — it inherits the restricted match's truth value verbatim. The genuine non-monic repair
 remains the global cleared-representative resummation (the open content of #139).
 
-* `cleared_iff_restricted` — the cleared match ⟺ the restricted match, for all `H` (cancel the unit).
+* `cleared_iff_restricted` — the cleared match ⟺ the restricted match, for all `H` (cancel the
+  unit).
 * `clearedFaaDiBrunoMatch_of_monic` — the cleared match holds for monic `H` (the real, relevant
   case), via the equivalence and the proven `restrictedFaaDiBrunoMatch_of_monic`.
 -/
@@ -49,7 +50,8 @@ theorem cleared_iff_restricted (x₀ : F) (R : F[X][X][Y])
     ClearedFaaDiBrunoMatch H x₀ R hHyp ↔ RestrictedFaaDiBrunoMatch H x₀ R hHyp := by
   have hw : (liftToFunctionField (H := H) H.leadingCoeff) ≠ 0 :=
     liftToFunctionField_leadingCoeff_ne_zero (H := H)
-  -- `RestrictedFaaDiBrunoMatch` is defined directly via `restrictedFaaDiBrunoSum` (no longer through
+  -- `RestrictedFaaDiBrunoMatch` is defined directly via `restrictedFaaDiBrunoSum` (no longer
+    through
   -- `RestrictedFaaDiBrunoMatchAt`), so that name is not in the goal — dropped from the unfold list.
   unfold ClearedFaaDiBrunoMatch RestrictedFaaDiBrunoMatch
     ClearedFaaDiBrunoMatchAt ClearedRestrictedFaaDiBrunoSum

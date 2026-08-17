@@ -118,10 +118,12 @@ theorem exists_goodZ_in {Q : F[Z][X][Y]} {d : ℕ} (hQ : Q ≠ 0) (hZ : ZdegLE Q
 
 /-- **Per-parameter list-size bound (PATH 2 #2).** At a *good* parameter `z` (`eval_on_Z Q z ≠ 0`,
 ensured for all but `≤ d` parameters by `card_badZ_le`), any family `Ps` of candidate message
-polynomials whose linear factors `(Y - C p)` divide the `Z`-specialization `eval_on_Z Q z` numbers at
+polynomials whose linear factors `(Y - C p)` divide the `Z`-specialization `eval_on_Z Q z` numbers
+  at
 most `D_Y Q` (the trivariate `Y`-degree).  This is the Guruswami–Sudan list-size bound
 (`GSFactorExtract.gs_list_size_le`) transported through `natDegreeY_eval_on_Z_le`: at a good `z` the
-close codewords are distinct `Y`-roots of `eval_on_Z Q z`, hence number `≤ natDegreeY (eval_on_Z Q z)
+close codewords are distinct `Y`-roots of `eval_on_Z Q z`, hence number `≤ natDegreeY (eval_on_Z Q
+  z)
 ≤ D_Y Q ≤ gsDpg/k = poly(n)`.
 
 Each close codeword's linear factor is supplied by the BCIKS20 §5 keystone

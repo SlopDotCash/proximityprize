@@ -7,7 +7,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ClearingProduct
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeight
 
 /-!
-# The monic-`H` specialization of the `AlphaGenuineRegularWeightLe` weight invariant (BCIKS20 A.4, #138)
+# The monic-`H` specialization of the `AlphaGenuineRegularWeightLe` weight invariant (BCIKS20 A.4,
+  #138)
 
 `ClearingProduct.lean` reduces the genuine `(A.4)` weight invariant `AlphaGenuineRegularWeightLe`
 to the `𝒪`-level divisibility-with-weight `DivWeightLe`: at every order `t`, the clearing product

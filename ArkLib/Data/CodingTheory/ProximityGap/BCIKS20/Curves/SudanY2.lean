@@ -12,7 +12,8 @@ The multiplicity-1 curve Berlekamp–Welch is stuck at `δ ≤` the unique-decod
 square-determinant argument needs `2e < d`). This file provides the Sudan (`Y`-degree ≥ 2)
 replacement: `exists_nonzero_kernelVec_wide_natDegree_le` gives a degree-bounded nonzero kernel
 vector of a *wide* matrix over `F[X]` (`|ι| < N`) via a `findGreatest`/adjugate full-row-rank
-argument — with **no unique-decoding-radius hypothesis**. `exists_kernelVec_BW_homMatrixY2_curve_of_dim`
+argument — with **no unique-decoding-radius hypothesis**.
+  `exists_kernelVec_BW_homMatrixY2_curve_of_dim`
 instantiates it for the `Y`-degree-2 curve interpolation matrix (pure Sudan dimension count
 `N₂ > |ι|`). Infrastructure toward strict-Johnson curve list-decoding (`RSCurveListSizeResidual`).
 -/
@@ -96,7 +97,8 @@ theorem exists_nonzero_kernelVec_wide_natDegree_le {N d : ℕ}
       have hu_t : u t =
           (-1 : F[X]) ^ ((Fin.last r : ℕ) + (t : ℕ)) *
             Matrix.det (B.submatrix Fin.castSucc t.succAbove) := by
-        simpa [u] using RS_adjugate_fin_succ_eq_det_submatrix_last_castSucc (n := r) (B := B) (t := t)
+        simpa [u] using RS_adjugate_fin_succ_eq_det_submatrix_last_castSucc (n := r) (B := B) (t :=
+          t)
       have hdeg_det : (Matrix.det (B.submatrix Fin.castSucc t.succAbove)).natDegree ≤ d * r := by
         apply RS_natDegree_det_le_of_entry_natDegree_le (n := r) (d := d)
         intro i j; simpa [B] using hdeg (I' (Fin.castSucc i)) (J' (t.succAbove j))
@@ -215,7 +217,8 @@ theorem exists_nonzero_kernelVec_wide_natDegree_le {N d : ℕ}
       have hu_t : u t =
           (-1 : F[X]) ^ ((Fin.last r : ℕ) + (t : ℕ)) *
             Matrix.det (B.submatrix Fin.castSucc t.succAbove) := by
-        simpa [u] using RS_adjugate_fin_succ_eq_det_submatrix_last_castSucc (n := r) (B := B) (t := t)
+        simpa [u] using RS_adjugate_fin_succ_eq_det_submatrix_last_castSucc (n := r) (B := B) (t :=
+          t)
       have hdeg_det : (Matrix.det (B.submatrix Fin.castSucc t.succAbove)).natDegree ≤ d * r := by
         apply RS_natDegree_det_le_of_entry_natDegree_le (n := r) (d := d)
         intro i j; simpa [B] using hdeg (ρ (Fin.castSucc i)) (J' (t.succAbove j))
@@ -265,11 +268,13 @@ theorem exists_nonzero_kernelVec_wide_natDegree_le {N d : ℕ}
       funext i
       obtain ⟨t, rfl⟩ := hIsurj i
       have hrow : (Matrix.mulVec B u) (Fin.castSucc (Fin.cast hrEq.symm t)) = 0 := by
-        simpa using congrArg (fun v : Fin (r + 1) → F[X] => v (Fin.castSucc (Fin.cast hrEq.symm t))) hBu
+        simpa using congrArg (fun v : Fin (r + 1) → F[X] => v (Fin.castSucc (Fin.cast hrEq.symm
+          t))) hBu
       have hrow' : (∑ x : Fin (r + 1), K (I (Fin.cast hrEq.symm t)) (J' x) * u x) = 0 := by
         have h0 : (∑ x : Fin (r + 1), B (Fin.castSucc (Fin.cast hrEq.symm t)) x * u x) = 0 := by
           simpa [Matrix.mulVec, dotProduct] using hrow
-        have hBeq : ∀ x, B (Fin.castSucc (Fin.cast hrEq.symm t)) x = K (I (Fin.cast hrEq.symm t)) (J' x) := by
+        have hBeq : ∀ x, B (Fin.castSucc (Fin.cast hrEq.symm t)) x = K (I (Fin.cast hrEq.symm t))
+          (J' x) := by
           intro x; simp only [B, Matrix.of_apply, ρ]; rw [Fin.lastCases_castSucc]
         simpa [hBeq] using h0
       rw [hmul_formula (i := (I ∘ (Fin.cast hrEq.symm)) t)]
@@ -299,12 +304,14 @@ theorem BW_homMatrixY2_entry_natDegree_le
   · split
     · rw [← Polynomial.C_pow]
       calc (g i * Polynomial.C (ωs i ^ _)).natDegree
-          ≤ (g i).natDegree + (Polynomial.C (ωs i ^ _) : F[X]).natDegree := Polynomial.natDegree_mul_le
+          ≤ (g i).natDegree + (Polynomial.C (ωs i ^ _) : F[X]).natDegree :=
+            Polynomial.natDegree_mul_le
         _ ≤ k + 0 := by gcongr; exact hg i; simp
         _ ≤ 2 * k := by omega
     · rw [← Polynomial.C_pow]
       calc ((g i)^2 * Polynomial.C (ωs i ^ _)).natDegree
-          ≤ ((g i)^2).natDegree + (Polynomial.C (ωs i ^ _) : F[X]).natDegree := Polynomial.natDegree_mul_le
+          ≤ ((g i)^2).natDegree + (Polynomial.C (ωs i ^ _) : F[X]).natDegree :=
+            Polynomial.natDegree_mul_le
         _ ≤ 2 * k + 0 := by
               gcongr
               · calc ((g i)^2).natDegree ≤ 2 * (g i).natDegree := by

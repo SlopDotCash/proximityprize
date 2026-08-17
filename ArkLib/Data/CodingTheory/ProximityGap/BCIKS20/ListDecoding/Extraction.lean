@@ -503,7 +503,8 @@ lemma irreducible_factorization_of_gs_solution
           = (∏ g ∈ P, (uu g) ^ (S.count g)) * z₀ * wc by ring]
     rw [map_mul, map_mul]
     ring
-  · -- ∀ fᵢ ∈ f, 1 ≤ fᵢ : each `expand`-exponent `nn g ≥ 1` (else the positive-degree factor collapses)
+  · -- ∀ fᵢ ∈ f, 1 ≤ fᵢ : each `expand`-exponent `nn g ≥ 1` (else the positive-degree factor
+    collapses)
     intro fᵢ hmem
     rw [hL] at hmem
     simp only [List.map_map, List.mem_map, Finset.mem_toList] at hmem

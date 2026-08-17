@@ -36,7 +36,8 @@ inputs that those assemblers carry as raw hypotheses are exactly `hx0`, `hsep`, 
 
 * **`hfactor`** — *reduced to a named hypothesis with a structural impossibility note; the provable
   fragment is supplied.*  `pg_Rset h_gs = (normalizedFactors Q).toFinset`
-  (`Extraction.pg_Rset`), whereas `(irreducible_factorization_of_gs_solution h_gs).choose_spec.choose`
+  (`Extraction.pg_Rset`), whereas `(irreducible_factorization_of_gs_solution
+    h_gs).choose_spec.choose`
   is the list of **descended primitive separable** factors `r` produced by `eq512_factor_descent`,
   where each *positive-degree* normalized factor `g` satisfies `g = C u · expand nn r`.  These two
   factor families coincide only when every factor is separable with `nn = 1` (e.g. characteristic
@@ -47,7 +48,8 @@ inputs that those assemblers carry as raw hypotheses are exactly `hx0`, `hsep`, 
   irreducible) and keep `hfactor` itself as the documented bridge hypothesis.
 
 * **`hx0`** — *discharged outright, in the exact consumer (X) shape (Finding F12 resolved).*  The
-  earlier `exists_good_x₀_evalX_discr_y_ne` is **`Z`-shaped** (`evalX x₀ (discr_y R)` specializes the
+  earlier `exists_good_x₀_evalX_discr_y_ne` is **`Z`-shaped** (`evalX x₀ (discr_y R)` specializes
+    the
   *inner* `Z` variable of `discr_y R : F[Z][X]`), but the `hx0`/`hsep` consumer fields are
   **`X`-shaped** (`evalX (C x₀) R` specializes the *middle* `X` variable of `R : (F[Z][X])[Y]`).
   These specialize different variables, so the `Z`-producer does not feed the `X`-consumer.
@@ -61,13 +63,15 @@ inputs that those assemblers carry as raw hypotheses are exactly `hx0`, `hsep`, 
 
 * **`hsep`** — *reduced to the honest domain-level separability residual.*  Over the *domain* `F[Z]`
   (where `evalX (C x₀) R` lives), `Separable` (= `IsCoprime f f.derivative`) is **not** implied by
-  discriminant nonvanishing: by `resultant_deriv` the derivative-resultant is `±·leadingCoeff·discr`,
+  discriminant nonvanishing: by `resultant_deriv` the derivative-resultant is
+    `±·leadingCoeff·discr`,
   and a unit Bézout right-hand side needs the *whole* resultant to be a unit — i.e. both the
   `Y`-leading coefficient and the discriminant of `evalX (C x₀) R` must be units of `F[Z]` (nonzero
   `F`-constants in `Z`), strictly stronger than nonvanishing.  `separable_evalX_of_resultant_isUnit`
   (built on `Polynomial.separable_of_resultant_isUnit`, `DiscriminantSeparable`, Lemma 2′) exposes
   exactly that honest condition; `hsep` is therefore kept as the §5 good-point separability residual
-  `hsepPt` (separability of the *non-collapsing* specialized factors), matching the F8/F10 precedents
+  `hsepPt` (separability of the *non-collapsing* specialized factors), matching the F8/F10
+    precedents
   rather than faking domain separability from the discriminant.  The full `hx0 ∧ hsep` producer is
   `exists_good_x₀_X_shape`.
 
@@ -82,7 +86,8 @@ inputs that those assemblers carry as raw hypotheses are exactly `hx0`, `hsep`, 
 * **Assembly** — `Claim57Residuals.ofInTree` collects the minimal honest remaining hypotheses
   (`hx0`, `hsep`, the single Johnson budget `hJohnson`, `hlarge`, `hfactor`) into the full bundle
   via the proven upstream `claim57Residuals_of_gsInterpolant`.  `Claim57Residuals.ofInTree2` goes
-  further: it **produces `x₀` internally** and discharges the `hx0` field via `exists_good_x₀_X_shape`,
+  further: it **produces `x₀` internally** and discharges the `hx0` field via
+    `exists_good_x₀_X_shape`,
   so the residual §5 surface shrinks to `{hsepPt, hlarge, hfactor}` (plus the explicit Johnson and
   X-specialization-budget data), returning `Σ' x₀, Claim57Residuals … x₀ …`.
 
@@ -151,7 +156,8 @@ silently assuming separability of the GS solution. -/
 /-- *Bad specialization set for a single `pg_Rset` factor.*  The values of `x₀ : F` at which the
 inner-`Z`-specialized discriminant `evalX x₀ (discr_y R)` vanishes.
 
-The `[Fintype F]` instance is required for `Finset.univ`; it is always available wherever this set is
+The `[Fintype F]` instance is required for `Finset.univ`; it is always available wherever this set
+  is
 used (the avoidance lemmas all carry `[Fintype F]`, refining the ambient `[Finite F]`). -/
 noncomputable def claim57_badX [Fintype F] (R : F[Z][X][Y]) : Finset F :=
   Finset.univ.filter (fun x₀ : F => Bivariate.evalX x₀ (Bivariate.discr_y R) = 0)
@@ -249,7 +255,8 @@ omit [DecidableEq (RatFunc F)] [Finite F] in
 injects (via the commuting `Z`-evaluation `evalRingHom z₀`) into the roots of
 `p.map (evalRingHom z₀) : F[X]`, so it has at most `(p.map (evalRingHom z₀)).natDegree` elements.
 
-This is the `X`-shape analogue of `Extraction.c56_evalX_bad_set_card_le` (which counts the *inner-`Z`*
+This is the `X`-shape analogue of `Extraction.c56_evalX_bad_set_card_le` (which counts the
+  *inner-`Z`*
 evaluation `evalX`); here we count the *middle-`X`* evaluation `eval (C ·)` of `F[Z][X]`. -/
 theorem c56_evalC_bad_set_card_le [Fintype F] (p : F[Z][X]) (z₀ : F)
     (hz : p.map (Polynomial.evalRingHom z₀) ≠ 0) :
@@ -315,7 +322,8 @@ exact consumer shape*: under a per-factor `Z`-witness `z` not killing the `X`-le
 `evalX (Polynomial.C x₀) R ≠ 0` for **every** `R ∈ pg_Rset`.
 
 This is precisely the `hx0` field of `Claim57Residuals` (cf. `Agreement`/`Section5ConcreteJohnson`),
-now provable *outright* — the `X`-vs-`Z` mismatch (Finding F12) is reconciled by counting against the
+now provable *outright* — the `X`-vs-`Z` mismatch (Finding F12) is reconciled by counting against
+  the
 `X`-specialization rather than the `Z`-specialization of the discriminant. -/
 theorem exists_good_x₀_X_shape_ne [Fintype F]
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
@@ -387,7 +395,8 @@ produces a single `x₀ : F` such that for every `R ∈ pg_Rset` both `evalX (C 
 `(evalX (C x₀) R).Separable` hold — i.e. the **exact** `hx0`/`hsep` field pair.
 
 The separability conjunct is supplied by the honest per-point side condition `hsepPt` (the §5
-good-specialization separability assumption, cf. the F8/F10 precedents): wherever the `X`-specialized
+good-specialization separability assumption, cf. the F8/F10 precedents): wherever the
+  `X`-specialized
 factors do not collapse, they are separable over `F[Z]` — the genuine residual that
 `separable_evalX_of_resultant_isUnit` shows is equivalent to the specialized derivative-resultant
 being a unit, *not* derivable from discriminant nonvanishing alone over the non-field base. -/
@@ -442,7 +451,8 @@ Assembles `ProximityGap.Claim57Residuals k δ x₀ h_gs` from:
   `hcount`/`hS_nonempty` are discharged from it upstream);
 * `hlarge` — the close-set largeness / field-size-budget input (also discharges `hS_nonempty`);
 * `hfactor` — the documented `pg_Rset ⟹ descended-Eq-5.12-list` bridge, not provable outright (see
-  module docstring; the provable irreducibility fragment is `claim57_hfactor_irreducible_of_pg_Rset`).
+  module docstring; the provable irreducibility fragment is
+    `claim57_hfactor_irreducible_of_pg_Rset`).
 
 This is the honest minimal-hypothesis front door to the Claim-5.7 keystone. -/
 @[reducible]
@@ -477,11 +487,13 @@ good specialization point `x₀` and the `hx0`/`hsep` field pair are produced by
 argument `exists_good_x₀_X_shape`, so the caller no longer supplies `x₀`, `hx0`, or the raw `hsep`.
 What remains is exactly:
 
-* `z` / `hlead` / `hcard` — the honest X-specialization budget (per-factor `Z`-witness not killing the
+* `z` / `hlead` / `hcard` — the honest X-specialization budget (per-factor `Z`-witness not killing
+  the
   leading coefficient, and the [BCIKS20] large-field bound on the total `X`-degree) that powers the
   `hx0` discharge;
 * `hsepPt` — the honest §5 good-point separability residual (separability of the *non-collapsing*
-  `X`-specialized factors over the domain `F[Z]`; by `separable_evalX_of_resultant_isUnit` this is the
+  `X`-specialized factors over the domain `F[Z]`; by `separable_evalX_of_resultant_isUnit` this is
+    the
   unit-derivative-resultant condition, genuinely *not* derivable from discriminant nonvanishing over
   the non-field base — the honest residual matching the F8/F10 precedents);
 * `hJohnson` — the single Johnson budget (discharges `A`/`hA`/`hcount`/`hS_nonempty` upstream);

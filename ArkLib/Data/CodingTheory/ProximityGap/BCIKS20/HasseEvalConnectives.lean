@@ -96,7 +96,8 @@ theorem evalX_hasseDerivX_hasseDerivY_eq
     (hcoeff : ∀ i, Pshift.coeff i = (i + m).choose m • P.coeff (i + m)) :
     Pshift = hasseDeriv m P := by
   ext i
-  -- LHS: `(i+m).choose m • P.coeff (i+m)` ; RHS (`hasseDeriv_coeff`): `↑((i+m).choose m) * P.coeff (i+m)`.
+  -- LHS: `(i+m).choose m • P.coeff (i+m)` ; RHS (`hasseDeriv_coeff`): `↑((i+m).choose m) * P.coeff
+    (i+m)`.
   rw [hcoeff i, hasseDeriv_coeff, nsmul_eq_mul]
 
 /-! ## Part 2 — (B2) `hasseEvalAtRoot` as an ordinary `hasseDeriv` evaluation.
@@ -130,7 +131,8 @@ Composing (B2) with the landed core (★) `hasseDeriv_eval_eq_sum` (specialised 
 
 This is the `B_coeff`-side representative shape (un-shifted, full Y-degree index `i`), which the
 match-assembly re-keys against the partition LHS.  Stated abstractly; the BCIKS20 instantiation is
-`lift = liftToFunctionField`, `a = T/W = functionFieldT / lift(lc H)`, `P = evalX(C x₀)(Δ_X^{i₁} R)`,
+`lift = liftToFunctionField`, `a = T/W = functionFieldT / lift(lc H)`, `P = evalX(C x₀)(Δ_X^{i₁}
+  R)`,
 `m = Σλ`. -/
 
 theorem hasseEvalAtRoot_eq_unshifted_sum

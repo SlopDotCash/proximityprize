@@ -44,7 +44,8 @@ outer reindex here, both sums over `i₁ ∈ range (t+2)` and partitions `λ ⊢
 `lift((Δ_X^{i₁}R)|x₀).coeff i · (C(i,|λ|)·countPerms λ) · (α₀^{i-|λ|} · ∏ coeff)` summed over the
 `Y`-degree `i`, while the RHS carries `W^{…}·ξ^{…}·⟦B_coeff⟧·⟦partitionProd⟧ / den`. Equating these
 term-by-term still needs (a) the `i`-sum collapse to `hasseEvalAtRoot` (proven: `taylorCollapse`),
-(b) the `B_coeff = prefactor · hasseCoeffRepr𝒪` identification carrying the genuine Y-Hasse binomial,
+(b) the `B_coeff = prefactor · hasseCoeffRepr𝒪` identification carrying the genuine Y-Hasse
+  binomial,
 and (c) the `W`/`ξ`/`ζ` field-clearing telescope (`partitionPowerClear` lands the partition-power
 half). This file removes the outer-index mismatch and supplies the distinct-parts `countPerms`
 collapse; the surviving gap is the algebraic per-term `B_coeff`/`ξ`-telescope identification.
@@ -61,11 +62,13 @@ open ProximityPrize.BCIKS20.GammaGenuine
 
 /-- **Hasse-derivative evaluation = binomial zero-slot sum (novel bridge for BCIKS20 P2 #139,
 axiom-clean).**  The binomial-weighted "zero-slot" sum `∑ᵢ C(i,k)·xⁱ⁻ᵏ·(P.coeff i)` is exactly the
-evaluation of the `k`-th Hasse derivative of `P` at `x`.  This is the missing combinatorial→algebraic
+evaluation of the `k`-th Hasse derivative of `P` at `x`.  This is the missing
+  combinatorial→algebraic
 bridge that collapses the LHS partition form's `i`-sum (Y-degree index `i`, partition card
 `k = sigmaLambda λ`, zero-slot power `α₀^{i-k}`) into the `Δ_Y^k`-Hasse object underlying `B_coeff`
 (`= countPerms λ • hasseCoeffRepr𝒪 i₁ (sigmaLambda λ)`).  Evaluated at `x = α₀ = T/W` (the root,
-`βHenselAssembled_constantCoeff`) it is precisely `hasseEvalAtRoot`.  General over any `CommRing`. -/
+`βHenselAssembled_constantCoeff`) it is precisely `hasseEvalAtRoot`.  General over any `CommRing`.
+  -/
 theorem hasseDeriv_eval_eq_binom_zeroSlot_sum {R : Type*} [CommRing R]
     (P : R[X]) (x : R) (k : ℕ) :
     Polynomial.eval x (Polynomial.hasseDeriv k P)
@@ -164,7 +167,8 @@ LHS term weight `C(i,|λ|) · countPerms λ` and the RHS `B_coeff`'s combinatori
 `prefactor _ _ λ = countPerms λ`, so the LHS scalar weight is exactly
 `C(i,|λ|) · prefactor R.natDegree i₁ λ`.  This identifies the `countPerms`-part of the bijection
 weights on both sides — the genuine combinatorial half of the per-term match (the surviving
-discrepancy being the `Y`-Hasse binomial `C(i,|λ|)` and the `W`/`ξ`/`ζ` clearing, both algebraic). -/
+discrepancy being the `Y`-Hasse binomial `C(i,|λ|)` and the `W`/`ξ`/`ζ` clearing, both algebraic).
+  -/
 theorem lhs_weight_eq_choose_mul_prefactor {c : ℕ} (R : F[X][X][Y]) (i i1 : ℕ)
     (lam : Nat.Partition c) :
     (i.choose lam.parts.card) * lam.parts.countPerms

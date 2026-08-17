@@ -965,7 +965,9 @@ This factors the strict branch used by
 `correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff`
 into the exact canonical-coefficient front-door shape consumed by the §6 curve
 wrappers. -/
-theorem section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complement_counting
+theorem
+  section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complement_
+  counting
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1044,7 +1046,8 @@ language, with Claim-5.11 counting supplied in the complement-threshold
 arithmetic shape.  This is the same canonical-coefficient front door as
 `correlatedAgreement_affine_lines_of_strict_exists_natCeil_counting_canonical_coeff`,
 but the strict branch uses the natural slack `#S - threshold` directly. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff
+theorem
+  correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1120,7 +1123,9 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
 affine lines, with the strict branch supplied by the §5 complement-counting
 canonical-coefficient package and the boundary branch supplied by the
 Hensel-free [BCKHS25] restored-distance affine-line theorem. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_BCKHS25_boundary
+theorem
+  correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_BCKH
+  S25_boundary
     {m k e h DZ : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1189,7 +1194,9 @@ native §5 affine-line language, with Claim-5.11 counting supplied in the
 complement-threshold arithmetic shape. Unlike the closed-boundary wrapper, this
 version needs no boundary obligation because the global hypothesis is already
 `δ < 1 - sqrtRate`. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_strict
+theorem
+  correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_stri
+  ct
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1230,7 +1237,9 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
   refine correlatedAgreement_affine_curves_of_strict_canonical_coeff_polys
     (k := 1) (deg := k + 1) (domain := ωs) (δ := (δ : ℝ≥0)) hδ ?_
   intro _hk u hprob hJ
-  exact section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complement_counting
+  exact
+    section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complemen
+    t_counting
     (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hDx hYZ hcounting hunique
     u hprob hJ hδ
 
@@ -1243,7 +1252,9 @@ This is the complement-counting analogue of
 primitive GS-specialization, Johnson-budget, largeness, factor-list, and complement-counting data
 for the chosen interpolant; the raw `Claim57Residuals` instance is assembled internally by
 `claim57Residuals_of_gsInterpolant`. -/
-theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complement_counting_canonical_coeff
+theorem
+  correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complement_counting_canonical_coe
+  ff
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1306,7 +1317,9 @@ theorem correlatedAgreement_affine_lines_of_strict_gsInterpolant_johnson_complem
       (C := ReedSolomon.code ωs (k + 1)) (δ := (δ : ℝ≥0))
       (ε := errorBound (δ : ℝ≥0) (k + 1) ωs) := by
   classical
-  refine correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_strict
+  refine
+    correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_st
+    rict
     (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hδ hDx hYZ ?_ hunique
   intro u₀ u₁ Q h_gs
   obtain ⟨x₀, D, hx0, hsep, hJohnson, hlarge, hfactor, hcount⟩ :=
@@ -1328,7 +1341,9 @@ This is the same §5 affine-line input package as the sibling theorem
 `correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff`
 with the `_strict` suffix, but it consumes the public `Curves.Assembly` front door rather than the
 lower-level curve theorem directly. -/
-theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled
+theorem
+  correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_asse
+  mbled
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1370,7 +1385,8 @@ theorem correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_cou
     (k := 1) (deg := k + 1) (domain := ωs) (δ := (δ : ℝ≥0)) (le_of_lt hδ) ?_ ?_
   · intro _hk u hprob hJ hsqrt
     exact
-      section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complement_counting
+      section5_strict_canonical_coeff_polys_for_RS_goodCoeffsCurve_finMapTwoWords_of_natCeil_complem
+        ent_counting
         (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hDx hYZ hcounting
         hunique u hprob hJ hsqrt
   · intro _hk _u _hprob _hJ hnot
@@ -1384,7 +1400,9 @@ This is the top-level strict square-root-radius §5-to-§6 bridge in the native
 affine-line predicate: the concrete Claim-5.11 complement-counting package
 supplies the strict list-decoding branch, and the strict radius makes the closed
 boundary branch impossible. -/
-theorem RS_correlatedAgreement_affineLines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled
+theorem
+  RS_correlatedAgreement_affineLines_of_strict_exists_natCeil_complement_counting_canonical_coeff_as
+  sembled
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0)
@@ -1423,7 +1441,8 @@ theorem RS_correlatedAgreement_affineLines_of_strict_exists_natCeil_complement_c
       (ε := errorBound (δ : ℝ≥0) (k + 1) ωs) := by
   classical
   have hcurves :=
-    correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_assembled
+    correlatedAgreement_affine_lines_of_strict_exists_natCeil_complement_counting_canonical_coeff_as
+      sembled
       (F := F) (n := n) (m := m) (k := k) hk (ωs := ωs) δ hδ hDx hYZ
       hcounting hunique
   unfold δ_ε_correlatedAgreementAffineLines

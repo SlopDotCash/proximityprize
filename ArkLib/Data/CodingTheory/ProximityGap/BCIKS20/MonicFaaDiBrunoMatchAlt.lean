@@ -14,7 +14,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RestrictedFaaDiBrunoExtract
 This file is the **top-down companion** to `P2MatchMonic.lean`. The bottom-up file proves the
 carved P2 core `RestrictedFaaDiBrunoMatch` for monic `H` term-by-term, via the per-`(i₁,λ)`
 partition identity `lhs_inner_eq_rhs_term` (the genuine BCIKS20 A.4 Faà-di-Bruno bijection,
-discharged by `taylorCollapse` and the `W = 1` collapse). That match is `restrictedFaaDiBrunoMatch_of_monic`.
+discharged by `taylorCollapse` and the `W = 1` collapse). That match is
+  `restrictedFaaDiBrunoMatch_of_monic`.
 
 Here we read that proven match through the *root* side of the theory — the EQUIVALENT
 `FaaDiBrunoFullSumVanishes` statement (the FULL, unrestricted `countPerms` Faà-di-Bruno sum
@@ -167,7 +168,8 @@ match. This makes the per-order top-down derivation explicit and standalone. -/
 
 /-- **Per-order carved residual for monic `H`, derived top-down from the full-sum vanishing
 (axiom-clean).** From the single-order full-sum zero `faaDiBrunoFullSum (t+1) = 0` and the PROVEN
-Newton split `faaDiBrunoFullSum (t+1) = restrictedFaaDiBrunoSum t + ζ · coeff(t+1) βHenselAssembled`,
+Newton split `faaDiBrunoFullSum (t+1) = restrictedFaaDiBrunoSum t + ζ · coeff(t+1)
+  βHenselAssembled`,
 the carved residual `RestrictedFaaDiBrunoMatchAt t` (`restrictedFaaDiBrunoSum t = −ζ · coeff(t+1)
 βHenselAssembled`) follows by transposition. This is the per-order top-down derivation of the
 carved core, using only the proven split (no projection of the all-orders match). -/
@@ -180,7 +182,8 @@ theorem restrictedMatchAt_of_monic (x₀ : F) (R : F[X][X][Y])
   linear_combination hfull
 
 /-- **Per-order quantitative coefficient equation for monic `H`, top-down (axiom-clean).**
-The normalized-quotient coefficient equation `coeff (t+1) βHenselAssembled = −restrictedFaaDiBrunoSum
+The normalized-quotient coefficient equation `coeff (t+1) βHenselAssembled =
+  −restrictedFaaDiBrunoSum
 t / ζ`, recovered for monic `H` from the per-order carved residual through the PROVEN extraction iff
 `restrictedMatchAt_iff_coeff_succ_βHenselAssembled_eq` (which only uses `ζ ≠ 0`). -/
 theorem coeff_succ_βHenselAssembled_eq_of_monic (x₀ : F) (R : F[X][X][Y])

@@ -54,7 +54,8 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_divWeight_clea
 
 /-- Route repaired alpha-side cleared-base cases through the all-prefix structured endpoint,
 using only successor-order lift identities. -/
-theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
+theorem
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -141,7 +142,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_divWeight_
 
 /-- All-`t` P1 weight bound from repaired alpha-side cleared-base cases through the
 structured-invariant endpoint, using only successor-order lift identities. -/
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -183,7 +185,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_fullVanish
 
 /-- All-`t` P1 weight bound from restricted P2 match and repaired alpha-side cleared-base cases
 through the structured-invariant endpoint. -/
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_clearedBaseCases
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_clearedBaseCases
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -204,7 +207,9 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restricted
 
 /-- Route normalized divisibility targets and full P2 vanishing through the structured-invariant
 P1 endpoint. -/
-theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishes
+theorem
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishe
+  s
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -232,7 +237,9 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_div
 
 /-- Route normalized divisibility targets and restricted P2 matching through the
 structured-invariant P1 endpoint. -/
-theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
+theorem
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedM
+  atch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -254,13 +261,16 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_div
       ≤ WithBot.some ((2 * t + 1) * Bivariate.natDegreeY R * D) :=
   βHensel_weight_bound_of_structured_invariant H x₀ R hHyp hH hDH hdR2
     hdHR hW hRgraded hDRx0
-      (βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
+      (βHenselStructuredWeightInvariant_all_unlocked_of_normalized_divWeight_cases_of_restrictedMatc
+        h
         H x₀ R hHyp hH hDH hDRx0 hdR2 hmatch h0 hsucc)
       t
 
 /-- All-`t` P1 weight bound from full P2 vanishing and normalized divisibility targets through
 the structured-invariant endpoint. -/
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishes
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVan
+  ishes
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -280,12 +290,15 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized
     ∀ t, weight_Λ_over_𝒪 hH (βHensel H x₀ R hHyp t) D
       ≤ WithBot.some ((2 * t + 1) * Bivariate.natDegreeY R * D) :=
   fun t =>
-    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishes
+    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanis
+      hes
       H x₀ R hHyp hH hDH hdR2 hdHR hW hRgraded hDRx0 hvan h0 hsucc t
 
 /-- All-`t` P1 weight bound from restricted P2 matching and normalized divisibility targets
 through the structured-invariant endpoint. -/
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restric
+  tedMatch
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) {D : ℕ}
     (hDH : Bivariate.totalDegree H ≤ D)
@@ -305,7 +318,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized
     ∀ t, weight_Λ_over_𝒪 hH (βHensel H x₀ R hHyp t) D
       ≤ WithBot.some ((2 * t + 1) * Bivariate.natDegreeY R * D) :=
   fun t =>
-    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
+    βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restricte
+      dMatch
       H x₀ R hHyp hH hDH hdR2 hdHR hW hRgraded hDRx0 hmatch h0 hsucc t
 
 /-! ## Fixed-base successor endpoint wrappers -/
@@ -331,7 +345,8 @@ theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_divWeight_succ
 
 /-- With the corrected base case fixed, route alpha-side successor cases through the
 structured-invariant P1 endpoint using successor-order lift identities. -/
-theorem βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
+theorem
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (hd : 2 ≤ H.natDegree) {D : ℕ}
     (hD : D ≤ H.natDegree)
@@ -419,7 +434,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_divWeight_
 
 /-- All-`t` P1 weight bound from fixed corrected base and alpha-side successor cases, using
 successor-order lift identities. -/
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (hd : 2 ≤ H.natDegree) {D : ℕ}
     (hD : D ≤ H.natDegree)
@@ -463,7 +479,8 @@ theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_fullVanish
 
 /-- All-`t` P1 weight bound from fixed corrected base, alpha-side successor cases, and restricted
 P2 match. -/
-theorem βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_successors_fixed
+theorem
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_successors_fixed
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hH : 0 < H.natDegree) (hd : 2 ≤ H.natDegree) {D : ℕ}
     (hD : D ≤ H.natDegree)
@@ -486,31 +503,93 @@ end P1ConditionalAllCleared
 end BCIKS20.HenselNumerator
 
 -- Axiom audit: the new endpoint wrappers stay on the inherited standard axiom surface.
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_divWeight_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_fullVanishes_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_restrictedMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_divWeight_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_fullVanishes_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_clearedBaseCases
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishes
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishes
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedMatch
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_divWeight_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_alphaWeight_successors_fixed_succLift
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_fullVanishes_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_restrictedMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_divWeight_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_alphaWeight_successors_fixed_succLift
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_fullVanishes_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_all_unlocked_of_restrictedMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_divWeight_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_fullVanishes_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_of_structured_invariant_unlocked_of_restrictedMatch_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_divWeight_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_fullVanishes_successors_fixed
-#print axioms BCIKS20.HenselNumerator.βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_divWeight_clearedBaseCases
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_fullVanishes_clearedBaseCases
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_restrictedMatch_clearedBaseCases
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_divWeight_clearedBaseCases
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_clearedBaseCases_succLift
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_fullVanishes_clearedBaseCases
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_clearedBaseCases
+open BCIKS20.HenselNumerator
+#print axioms
+
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVanishe
+  s
+open BCIKS20.HenselNumerator
+#print axioms
+
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restrictedM
+  atch
+open BCIKS20.HenselNumerator
+#print axioms
+
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_fullVan
+  ishes
+open BCIKS20.HenselNumerator
+#print axioms
+
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_normalized_divWeight_cases_of_restric
+  tedMatch
+#print axioms
+  BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_divWeight_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHenselStructuredWeightInvariant_unlocked_of_alphaWeight_successors_fixed_succLift
+#print axioms
+  BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant_unlocked_of_fullVanishes_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHenselStructuredWeightInvariant_unlocked_of_restrictedMatch_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHenselStructuredWeightInvariant_all_unlocked_of_divWeight_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHenselStructuredWeightInvariant_all_unlocked_of_alphaWeight_successors_fixed_succLift
+open BCIKS20.HenselNumerator
+#print axioms
+  βHenselStructuredWeightInvariant_all_unlocked_of_fullVanishes_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHenselStructuredWeightInvariant_all_unlocked_of_restrictedMatch_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_divWeight_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_fullVanishes_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_of_structured_invariant_unlocked_of_restrictedMatch_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_divWeight_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_alphaWeight_successors_fixed_succLift
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_fullVanishes_successors_fixed
+open BCIKS20.HenselNumerator
+#print axioms
+  βHensel_weight_bound_all_of_structured_invariant_unlocked_of_restrictedMatch_successors_fixed

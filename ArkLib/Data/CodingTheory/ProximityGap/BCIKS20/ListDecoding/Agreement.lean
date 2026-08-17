@@ -391,13 +391,15 @@ theorem Q_vanishes_on_close_codeword_graph [DecidableEq (Polynomial F)]
 omit [DecidableEq (RatFunc F)] in
 /-- **Generalized graph-vanishing keystone for an arbitrary close interpolant.**
 
-Identical to `Q_vanishes_on_close_codeword_graph`, but for an *arbitrary* degree-`≤ k` polynomial `P`
+Identical to `Q_vanishes_on_close_codeword_graph`, but for an *arbitrary* degree-`≤ k` polynomial
+  `P`
 that agrees with the line `u₀ + z•u₁` on a set `A` with `natWeightedDegree < m·|A|` — not only the
 canonical `Pz hS`.  The proof is `P`-independent: `Q`'s multiplicity `m` is at the *line* graph
 points `(ωs i, (u₀+z•u₁) i)`, and only `hA`/`hdeg` mention `P`.
 
 This is the entry point to per-parameter interpolant **uniqueness** (the `hunique` obligation of the
-§6 wiring) above the unique-decoding radius: every `δ`-close degree-`≤ k` interpolant is a `Y`-root of
+§6 wiring) above the unique-decoding radius: every `δ`-close degree-`≤ k` interpolant is a `Y`-root
+  of
 `eval_on_Z Q z`, hence a linear factor of it, so any two such interpolants coincide on the
 Guruswami–Sudan matching domain (see `RSDistinct.degreeLT_eq_of_match_common_on_domain`).  The
 `hQz_ne` non-degeneracy is discharged generically by `ProximityGap.card_badZ_le`
@@ -2781,7 +2783,9 @@ omit [DecidableEq (RatFunc F)] in
 /-- Graph-clear Claim 5.8 front door from explicit graph-extraction data plus
 the factor-list bridge, without requiring an ambient `[Claim57Residuals]`
 instance. -/
-lemma approximate_solution_is_exact_solution_coeffs_graph_clear_of_beta_embedding_zero_of_graphExtraction
+lemma
+  approximate_solution_is_exact_solution_coeffs_graph_clear_of_beta_embedding_zero_of_graphExtractio
+  n
     [DecidableEq (Polynomial F)] (δ : ℚ) (x₀ : F)
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
     (hcond : GraphExtractionHypotheses (F := F) (m := m) (n := n) k δ x₀ h_gs)
@@ -7548,7 +7552,9 @@ set_option linter.style.longLine false in
 This is the direct consumer form for callers that have already chosen the natural
 slack `#S - threshold`: it packages Claim 5.11 coverage, the canonical `PzFamily`
 evaluation-polynomial witnesses, and uniqueness under one strict counting inequality. -/
-lemma exists_points_with_canonical_eval_polys_on_close_subset_of_natCeil_delta_nonmatching_bound_complement
+lemma
+  exists_points_with_canonical_eval_polys_on_close_subset_of_natCeil_delta_nonmatching_bound_complem
+  ent
     [NeZero n]
     {ωs : Fin n ↪ F}
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)

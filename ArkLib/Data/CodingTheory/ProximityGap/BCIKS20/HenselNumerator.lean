@@ -905,12 +905,14 @@ The `mk`/`Y↦T`-lift of the cleared representative equals the `Y↦T/W` evaluat
 scaled by `W^{natDegreeY p}` (clearing every `(T/W)`-denominator).  Mirrors the in-tree `ξ_pre/ζ`
 construction (`RationalFunctions.lean`:2380) and is fully P2-independent. -/
 lemma embeddingOf𝒪Into𝕃_hasseCoeffRepr𝒪_cleared (x₀ : F) (R : F[X][X][Y]) (i1 m k : ℕ)
-    (hk : Bivariate.natDegreeY (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R))) ≤ k) :
+    (hk : Bivariate.natDegreeY (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m
+      R))) ≤ k) :
     embeddingOf𝒪Into𝕃 H
         (Ideal.Quotient.mk (Ideal.span {H_tilde' H}) (hasseCoeffRepr𝒪_cleared H x₀ R i1 m k) : 𝒪 H)
       = liftToFunctionField (H := H) H.leadingCoeff ^ k
           * hasseEvalAtRoot H x₀ R i1 m := by
-  set p : F[X][Y] := Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)) with hp_def
+  set p : F[X][Y] := Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)) with
+    hp_def
   rw [embeddingOf𝒪Into𝕃_mk, hasseCoeffRepr𝒪_cleared, ← hp_def,
       liftBivariate_eq_eval₂_functionFieldT]
   rw [← liftBivariate_eq_eval₂_functionFieldT,
@@ -964,7 +966,8 @@ lemma weight_Λ_le_natDegreeY_mul_add_degreeX (f : F[X][Y]) (D : ℕ) :
       ≤ Bivariate.natDegreeY f * (D + 1 - Bivariate.natDegreeY H) + Bivariate.degreeX f :=
         Nat.add_le_add (Nat.mul_le_mul_right _ hn_le) hcoeff_le
 
-/-- **(STEP a, the full `B_coeff` weight bound) — PROVEN as a `theorem`, kernel-clean, P2-INDEPENDENT.**
+/-- **(STEP a, the full `B_coeff` weight bound) — PROVEN as a `theorem`, kernel-clean,
+  P2-INDEPENDENT.**
 `weight_Λ_over_𝒪 hH (B_coeff … i1 λ) D ≤ (natDegreeY R − Σλ)·(D+1−natDegreeY H) + degreeX p`, where
 `p = evalX (C x₀) (Δ_X^{i1} Δ_Y^{Σλ} R)` is the iterated-Hasse representative polynomial.
 
@@ -2755,7 +2758,8 @@ theorem βHenselSuccTermStructuredWeightResidual_holds
     (hStructured : βHenselStructuredWeightInvariant (D := D) H x₀ R hHyp hH k)
     (i1 : ℕ) (hi1 : i1 ∈ Finset.range (k + 2))
     (lam : Nat.Partition (k + 1 - i1)) (hlam : (k + 1) ∉ lam.parts) :
-    βHenselSuccTermStructuredWeightResidual H x₀ R hHyp hH hDH hdR2 k hStructured i1 hi1 lam hlam := by
+    βHenselSuccTermStructuredWeightResidual H x₀ R hHyp hH hDH hdR2 k hStructured
+      i1 hi1 lam hlam := by
   have hIH : ∀ l, l < k + 1 →
       weight_Λ_over_𝒪 hH (βHensel H x₀ R hHyp l) D
         ≤ WithBot.some (1 + (l + 1) * (H.leadingCoeff).natDegree
@@ -2770,7 +2774,8 @@ theorem βHenselSuccTermStructuredWeightResidual_holds
       weight_Λ_over_𝒪 hH ((ClaimA2.ξ x₀ R H hHyp) ^ (2 * i1 + sigmaLambda lam - 2)) D
         ≤ WithBot.some ((2 * i1 + sigmaLambda lam - 2)
             * ((Bivariate.natDegreeY R - 1) * (D - Bivariate.natDegreeY H + 1))) :=
-    le_trans (weight_Λ_over_𝒪_pow_le H hH hDH (ClaimA2.ξ x₀ R H hHyp) (2 * i1 + sigmaLambda lam - 2))
+    le_trans (weight_Λ_over_𝒪_pow_le H hH hDH (ClaimA2.ξ x₀ R H hHyp) (2 * i1 + sigmaLambda lam -
+      2))
       (nsmul_withBot_le _ _ (ClaimA2.weight_ξ_bound x₀ hH hHyp hdR2 hDH hDRx0))
   have hBfac := B_coeff_weight_le_graded H x₀ R i1 lam hH hDH hRgraded
   have hPfac := partitionProd_βHensel_weight_structured_le H x₀ R hHyp hH hDH k i1
@@ -2811,7 +2816,8 @@ theorem βHenselSuccTermStructuredWeightResidual_holds
     hdR2 (by have : Bivariate.natDegreeY H = H.natDegree := rfl; omega) hdHd hW hi1le hσ hσ0
 
 /-- **(P1) full weight bound from the structured invariant.**  Routing the per-term WALL
-(`βHenselSuccTermStructuredWeightResidual_holds`) through `βHenselSuccTermWeightResidual_of_structured`
+(`βHenselSuccTermStructuredWeightResidual_holds`) through
+  `βHenselSuccTermWeightResidual_of_structured`
 into `βHensel_weight_bound` reduces the entire `(P1)` bound `Λ_𝒪(β_t) ≤ (2t+1)·d_R·D` to the
 single named gap `βHenselStructuredWeightInvariant` (= `AlphaGenuineRegularWeightLe`/`DivWeightLe`)
 for all `k`, plus the genuine degree premises.  No loose-IH route, no `sorry`. -/

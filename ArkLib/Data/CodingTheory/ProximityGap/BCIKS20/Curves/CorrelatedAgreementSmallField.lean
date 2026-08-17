@@ -76,14 +76,17 @@ theorem correlatedAgreement_affine_curves_of_card_le {k deg : ℕ} {domain : ι 
     (k := k) (deg := deg) (domain := domain) (δ := δ) hδ
     (fun hk u hprob hJ P hP => hres hk u hprob hJ hδ P hP)
 
-/-- **Unconditional BCIKS20 affine-curves correlated agreement, sharp interior `q ≤ k·deg²·10⁷`.** -/
+/-- **Unconditional BCIKS20 affine-curves correlated agreement, sharp interior `q ≤ k·deg²·10⁷`.**
+  -/
 theorem correlatedAgreement_affine_curves_of_card_le_e7 {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hq : (Fintype.card F : ℝ≥0) ≤ (k : ℝ≥0) * ((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0)) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) := by
-  have hres := strictCoeffPolysResidual_of_card_le_e7 (k := k) (deg := deg) (domain := domain) (δ := δ) hq
+  have hres :=
+    strictCoeffPolysResidual_of_card_le_e7 (k := k) (deg := deg)
+      (domain := domain) (δ := δ) hq
   exact correlatedAgreement_affine_curves_of_strict_coeff_polys
     (k := k) (deg := deg) (domain := domain) (δ := δ) hδ
     (fun hk u hprob hJ P hP => hres hk u hprob hJ hδ P hP)

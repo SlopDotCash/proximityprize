@@ -20,14 +20,16 @@ This file lands two verified, axiom-clean facts about the order-1 Hensel coeffic
   in `𝒪`, then no `𝒪`-element embeds to `αGenuine 1` (via the proven lift identity
   `βHensel_lift_identity` and injectivity of `𝒪 ↪ 𝕃`).  An *integrality criterion*.
 
-**NOT a refutation.**  An earlier draft of this file claimed these refute `AlphaGenuineRegularWeightLe`
+**NOT a refutation.**  An earlier draft of this file claimed these refute
+  `AlphaGenuineRegularWeightLe`
 for monic `H` via `H = Y²−s`.  That is **wrong**: `Polynomial.Separable` is `IsCoprime f (derivative
 f)` over the coefficient ring `ℚ[X]`, and `Y²−s` has discriminant `4s`, a non-unit, so `Y²−s` is not
 `Separable` — it fails `ClaimA2.Hypotheses.separable_evalX`.  More structurally, for any *valid*
 (separable) `g = evalX(C x₀) R` one has `IsCoprime(g, g')`, so `mk(g')` is a **unit** in
 `𝒪 = F[X][Y]/(H̃')`; for monic `H`, `ξ = mk(g')`, hence **`ξ` is a unit and `ξ ∣ βHensel t` for all
 `t`** — so `αGenuine t` is always integral.  The hypothesis of
-`not_regular_alphaGenuine_one_of_not_dvd` is therefore unsatisfiable for genuine inputs; the criterion
+`not_regular_alphaGenuine_one_of_not_dvd` is therefore unsatisfiable for genuine inputs; the
+  criterion
 never fires.  Consequently the integrality half of #138 is *free* from separability, and the sole
 remaining open content is the weight bound `Λ_𝒪(αGenuine t) ≤ 1` (the Faà-di-Bruno
 cancellation-into-weight core).

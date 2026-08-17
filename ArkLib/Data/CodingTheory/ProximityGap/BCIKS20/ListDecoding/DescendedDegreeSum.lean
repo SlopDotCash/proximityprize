@@ -120,8 +120,10 @@ private theorem sum_toFinset_natDegree_le_natDegree_of_factorization
           _ ≤ e.getD j 0 * ((L.getD j 1).natDegree * f.getD j 0) :=
               le_mul_of_one_le_left (Nat.zero_le _) (he j hjl)
 
-/-- **Descended pigeonhole-denominator bound.**  The sum of `Y`-degrees over the *distinct* descended
-factor set is at most `natDegreeY Q` — the descended analogue of `pg_sum_natDegreeY_Rset_le_natDegreeY_Q`.
+/-- **Descended pigeonhole-denominator bound.**  The sum of `Y`-degrees over the *distinct*
+  descended
+factor set is at most `natDegreeY Q` — the descended analogue of
+  `pg_sum_natDegreeY_Rset_le_natDegreeY_Q`.
 
 The `hf` hypothesis (every descended `expand`-exponent `≥ 1`) is kept as a parameter for callers
 holding it abstractly; it is discharged outright by `factorization_fpos` below, now that the
@@ -141,31 +143,38 @@ theorem pg_sum_natDegreeY_RsetDescended_le_natDegreeY_Q
     Q _ _ _ _ ?_ hf h_gs.Q_ne_0 hfact
   intro j hj
   have hje : j <
-      (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose_spec.choose.length := by
+      (irreducible_factorization_of_gs_solution
+        h_gs).choose_spec.choose_spec.choose_spec.choose.length := by
     rw [← hlen2, ← hlen1]; exact hj
   have hmem :
-      (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose_spec.choose.getD j 0
-        ∈ (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose_spec.choose := by
+      (irreducible_factorization_of_gs_solution
+        h_gs).choose_spec.choose_spec.choose_spec.choose.getD j 0
+        ∈ (irreducible_factorization_of_gs_solution
+          h_gs).choose_spec.choose_spec.choose_spec.choose := by
     rw [List.getD_eq_getElem _ 0 hje]; exact List.getElem_mem hje
   exact he _ hmem
 
 /-! ## Descended candidate-pair count bound
 
-The descended analogue of `pg_card_candidatePairs_le_natDegreeY` — the pigeonhole *denominator* over the
+The descended analogue of `pg_card_candidatePairs_le_natDegreeY` — the pigeonhole *denominator*
+  over the
 descended factor set.  Mirrors the legacy proof with `pg_Rset` replaced by
 `pg_RsetDescended`, the impossible `pg_Rset`-wide `hsep` replaced by the *provable* descended `hsep`
 (`Claim57ResidualsDescended.hsep`), and the final degree-sum supplied by
-`pg_sum_natDegreeY_RsetDescended_le_natDegreeY_Q` above.  This is the assembly that lets the descended
+`pg_sum_natDegreeY_RsetDescended_le_natDegreeY_Q` above.  This is the assembly that lets the
+  descended
 Claim 5.7 run **without** the char-`p`-false `hcoincide`. -/
 
 /-- **Descended pigeonhole denominator (sum form, hcoincide-free).**  The total number of distinct
 `(r, H)` candidate pairs over the descended factor set is at most `natDegreeY Q`: summing, over each
-descended `r`, the number of distinct normalized factors of its `x₀`-specialization is `≤ natDegreeY Q`.
+descended `r`, the number of distinct normalized factors of its `x₀`-specialization is `≤
+  natDegreeY Q`.
 
 This is the descended analogue of `pg_card_candidatePairs_le_natDegreeY`, using the *provable*
 descended separability `hsep` (never the impossible `pg_Rset`-wide one) and the verified descended
 degree-sum.  No `hcoincide`.  Stated as the sum (rather than the `biUnion` cardinality) to keep the
-`pg_RsetDescended` choice term unreduced — `≤` to the `biUnion` card follows from `card_biUnion_le`. -/
+`pg_RsetDescended` choice term unreduced — `≤` to the `biUnion` card follows from
+  `card_biUnion_le`. -/
 theorem pg_sum_card_normalizedFactors_evalX_RsetDescended_le_natDegreeY
     (x₀ : F) (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
     (hf : ∀ j < (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose.length,
@@ -199,7 +208,8 @@ theorem pg_sum_card_normalizedFactors_evalX_RsetDescended_le_natDegreeY
 The legacy core attributes a root of the specialized `Q` to a *normalized factor* of `Q` (needs the
 `pg_Rset`-wide separability that is impossible in char `p`).  Here we attribute it to a *descended*
 factor instead, via the verified Frobenius-transfer bricks — landing the root at the twisted point
-`Pz^{fⱼ}` and requiring only that the content does not vanish at `z` (a finite exception set, bounded
+`Pz^{fⱼ}` and requiring only that the content does not vanish at `z` (a finite exception set,
+  bounded
 by `card_specialization_zero_le`).  No `hcoincide`. -/
 
 private theorem eval_map_comp_X_pow' {A B : Type*} [CommSemiring A] [CommSemiring B]
@@ -282,9 +292,12 @@ theorem pg_exists_R_descended_of_Q_eval_zero
 
 /-! ## P-generic H-extraction (for the Frobenius-twisted root)
 
-`pg_exists_H_of_R_eval_zero` fixes the evaluation point to `P = Pz`.  The descended factor vanishes at
-the *twisted* point `Pz^a`, so we need the same extraction at an arbitrary `P : F[X]`.  The cone proof
-is generic in `P` (only its `set P := Pz` line specializes); we reproduce it with `P` a parameter. -/
+`pg_exists_H_of_R_eval_zero` fixes the evaluation point to `P = Pz`.  The descended factor vanishes
+  at
+the *twisted* point `Pz^a`, so we need the same extraction at an arbitrary `P : F[X]`.  The cone
+  proof
+is generic in `P` (only its `set P := Pz` line specializes); we reproduce it with `P` a parameter.
+  -/
 theorem pg_exists_H_of_R_eval_zero_generic (x₀ : F)
     (z : coeffs_of_close_proximity (F := F) k ωs δ u₀ u₁)
     (R : F[Z][X][Y]) (P : F[X])
@@ -329,7 +342,8 @@ theorem pg_exists_H_of_R_eval_zero_generic (x₀ : F)
       simp [hb]
     have hfz_q : fZ (q.eval r) = P.eval x₀ := by simp [fZ, q, r]
     have hp_eval_as : fZ ((R.eval q).eval r) = (Bivariate.evalX z.1 p).eval (P.eval x₀) := by
-      have hbz : Bivariate.evalX z.1 p = p.map fZ := by simpa [fZ] using (evalX_eq_map (R' := F) z.1 p)
+      have hbz : Bivariate.evalX z.1 p = p.map fZ := by simpa [fZ] using (evalX_eq_map (R' := F)
+        z.1 p)
       calc fZ ((R.eval q).eval r) = (p.map fZ).eval (fZ (q.eval r)) := hfz_eq
         _ = (p.map fZ).eval (P.eval x₀) := by simp [hfz_q]
         _ = (Bivariate.evalX z.1 p).eval (P.eval x₀) := by simp [hbz]
@@ -359,8 +373,10 @@ theorem pg_exists_H_of_R_eval_zero_generic (x₀ : F)
 /-! ## Per-`z` descended candidate-pair extraction (hcoincide-free)
 
 The descended analogue of `pg_exists_pair_for_z`: for each close parameter `z` at which the content
-does not vanish, a *descended* factor `r` and a factor `H` of its `x₀`-specialization form a candidate
-pair witnessing the Frobenius-twisted common-root condition.  This is the per-`z` half of the descended
+does not vanish, a *descended* factor `r` and a factor `H` of its `x₀`-specialization form a
+  candidate
+pair witnessing the Frobenius-twisted common-root condition.  This is the per-`z` half of the
+  descended
 Claim 5.7 — assembled entirely from the verified descended bricks, with **no** `hcoincide`. -/
 theorem pg_exists_pair_for_z_descended (x₀ : F)
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
@@ -410,10 +426,13 @@ theorem pg_card_candidatePairsDescended_le_natDegreeY (x₀ : F)
 
 /-! ## Descended Claim 5.7 — the hcoincide-free common candidate pair
 
-End-to-end descended pigeonhole: over the close parameters `S` at which `Q` specializes to zero and the
+End-to-end descended pigeonhole: over the close parameters `S` at which `Q` specializes to zero and
+  the
 content does not vanish, a single descended factor `r` and a factor `H` of its `x₀`-specialization
-account for at least the average-sized fiber `#S / natDegreeY Q` of those parameters (at each, via the
-Frobenius-twisted root `Pz^a`).  This is the descended analogue of `pg_exists_common_candidate_pair`,
+account for at least the average-sized fiber `#S / natDegreeY Q` of those parameters (at each, via
+  the
+Frobenius-twisted root `Pz^a`).  This is the descended analogue of
+  `pg_exists_common_candidate_pair`,
 assembled from the verified descended bricks with **no** `hcoincide`. -/
 open Classical in
 theorem pg_exists_common_candidate_pair_descended (x₀ : F)
@@ -458,7 +477,8 @@ theorem pg_exists_common_candidate_pair_descended (x₀ : F)
       pg_exists_pair_for_z_descended (k := k) x₀ h_gs z hQ hC hsep
     refine ⟨(r, H), ?_, a, hr_v, hH_v⟩
     rw [hTdef]
-    exact Finset.mem_biUnion.mpr ⟨r, hr_mem, Finset.mem_image.mpr ⟨H, Multiset.mem_toFinset.mpr hH_mem, rfl⟩⟩
+    exact Finset.mem_biUnion.mpr ⟨r, hr_mem, Finset.mem_image.mpr ⟨H, Multiset.mem_toFinset.mpr
+      hH_mem, rfl⟩⟩
   choose! tag htagT ha hva hvb using hpair
   -- pigeonhole over `S` by the tag, into `T`
   have hmaps : ∀ z ∈ S, tag z ∈ T := fun z hz => htagT z hz
@@ -494,14 +514,19 @@ theorem pg_exists_common_candidate_pair_descended (x₀ : F)
 
 /-! ## Discharging the residuals: both are provably tractable
 
-The descended Claim 5.7 above rests on two honest residuals — `hf` (every `expand`-exponent `fⱼ ≥ 1`)
+The descended Claim 5.7 above rests on two honest residuals — `hf` (every `expand`-exponent `fⱼ ≥
+  1`)
 and content non-vanishing on `S`.  Here we prove each is *tractable*, not a black box:
-- **R1 (`f≥1`)** is genuinely *true and provable*: an `nn = 0` descent would make the factor constant,
-  contradicting positive degree.  `eq512_factor_descent_fpos` proves the strengthened descent; the only
+- **R1 (`f≥1`)** is genuinely *true and provable*: an `nn = 0` descent would make the factor
+  constant,
+  contradicting positive degree.  `eq512_factor_descent_fpos` proves the strengthened descent; the
+    only
   reason `hf` remains a hypothesis above is that `irreducible_factorization_of_gs_solution`'s
   `.choose_spec` does not *expose* it (a one-line addition would discharge it outright).
-- **R2 (content non-vanishing)** fails on at most `B`-many close parameters, where `B` is the degree of
-  any nonzero coefficient of the (necessarily nonzero) content — `content_bad_close_params_card_le`. -/
+- **R2 (content non-vanishing)** fails on at most `B`-many close parameters, where `B` is the
+  degree of
+  any nonzero coefficient of the (necessarily nonzero) content —
+    `content_bad_close_params_card_le`. -/
 
 /-- **R1, provable: the `expand`-exponent of a per-factor descent is `≥ 1`.** -/
 theorem eq512_factor_descent_fpos (g : F[Z][X][Y]) (hg : Irreducible g) (hdeg : g.natDegree ≠ 0) :
@@ -538,8 +563,10 @@ private theorem specialization_zero_mem_roots'
   rw [Polynomial.mem_roots']; exact ⟨hi, hcoeff⟩
 
 /-- **R2, tractable: the content-vanishing close parameters number at most a coefficient degree.**
-For every finite set `S'` of close parameters at which the content vanishes, `#S' ≤ B` for a fixed `B`
-(the degree of a nonzero content coefficient).  The exceptional set the descent must exclude is finite,
+For every finite set `S'` of close parameters at which the content vanishes, `#S' ≤ B` for a fixed
+  `B`
+(the degree of a nonzero content coefficient).  The exceptional set the descent must exclude is
+  finite,
 bounded independently of `S'`. -/
 theorem content_bad_close_params_card_le (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) :
     ∃ B : ℕ, ∀ (S' : Finset (coeffs_of_close_proximity (F := F) k ωs δ u₀ u₁)),
@@ -574,10 +601,12 @@ theorem content_bad_close_params_card_le (h_gs : ModifiedGuruswami m n k ωs Q u
 
 /-! ## Descended Claim 5.7 over the FULL close set (content correction quantified)
 
-The strongest, BCIKS-faithful form: no blanket content hypothesis.  Over the *entire* close-parameter
+The strongest, BCIKS-faithful form: no blanket content hypothesis.  Over the *entire*
+  close-parameter
 set `𝒮` (every member specializing `Q` to zero — the genuine §5 input), a single descended `(r, H)`
 accounts for `(#𝒮 − B) / natDegreeY Q` of them, where `B` bounds the finite content-exception set
-(supplied by `content_bad_close_params_card_le`).  This is the descended Claim 5.7 with R2 *discharged
+(supplied by `content_bad_close_params_card_le`).  This is the descended Claim 5.7 with R2
+  *discharged
 into the bound* rather than assumed — entirely `hcoincide`-free. -/
 open Classical in
 theorem pg_exists_common_candidate_pair_descended_full (x₀ : F)
@@ -635,15 +664,18 @@ theorem pg_exists_common_candidate_pair_descended_full (x₀ : F)
           (Bivariate.evalX z.1 H).eval
             (((Pz (k := k) (ωs := ωs) (δ := δ) (u₀ := u₀) (u₁ := u₁) z.2) ^ a).eval x₀) = 0)) :=
         hlarge
-    _ ≤ _ := Finset.card_le_card (Finset.filter_subset_filter _ (by rw [hSdef]; exact Finset.filter_subset _ _))
+    _ ≤ _ := Finset.card_le_card (Finset.filter_subset_filter _ (by rw [hSdef]; exact
+      Finset.filter_subset _ _))
 
 /-! ## R1 fully discharged via the strengthened factorization bundle
 
 With `irreducible_factorization_of_gs_solution` now exposing `∀ fᵢ ∈ f, 1 ≤ fᵢ` (proved in-tree from
-the positive-degree factors: an `nn = 0` descent would collapse the factor), `hf` is no longer needed —
+the positive-degree factors: an `nn = 0` descent would collapse the factor), `hf` is no longer
+  needed —
 it is a theorem. -/
 
-/-- **R1 discharged:** every descended `expand`-exponent is `≥ 1`, now a consequence of the bundle. -/
+/-- **R1 discharged:** every descended `expand`-exponent is `≥ 1`, now a consequence of the bundle.
+  -/
 theorem factorization_fpos (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) :
     ∀ j < (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose.length,
       1 ≤ (irreducible_factorization_of_gs_solution h_gs).choose_spec.choose_spec.choose.getD j 0 := by
@@ -658,7 +690,8 @@ theorem factorization_fpos (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) :
 open Classical in
 /-- **Descended Claim 5.7, R1-free.**  Identical to `…_full` but with `hf` removed — discharged
 internally by `factorization_fpos`.  The only remaining inputs are the genuine §5 data and the
-content-exception bound `B`/`hB` (from `content_bad_close_params_card_le`).  No `hcoincide`, no `hf`. -/
+content-exception bound `B`/`hB` (from `content_bad_close_params_card_le`).  No `hcoincide`, no
+  `hf`. -/
 theorem pg_exists_common_candidate_pair_descended_full_nohf (x₀ : F)
     (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
     (hsep : ∀ R : F[Z][X][Y],

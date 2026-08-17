@@ -15,13 +15,17 @@ set_option linter.unusedSectionVars false
 
 `CurvesBridge.lean` exposes the strict-Johnson §6 joint-agreement front door
 `RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_natCeil_counting`, whose
-per-solution counting package `hcounting` still supplies the **legacy** `Claim57Residuals` instance —
+per-solution counting package `hcounting` still supplies the **legacy** `Claim57Residuals` instance
+  —
 the bundle that carries the `hfactor` field (`pg_Rset ⟹ Eq-5.12 factor list`).
 
 This file completes the issue-#8 rewiring at the §6 level: it lets callers supply the
-**`hfactor`-free** `Claim57ResidualsDescended` bundle (`DescendedRset.lean`) plus the explicit legacy
-coincidence hypothesis `pg_RsetDescended = pg_Rset`, instead of a legacy `Claim57Residuals` instance.
-The full instance is reconstructed internally via `Claim57Residuals.ofDescended`, so the §6 conclusion
+**`hfactor`-free** `Claim57ResidualsDescended` bundle (`DescendedRset.lean`) plus the explicit
+  legacy
+coincidence hypothesis `pg_RsetDescended = pg_Rset`, instead of a legacy `Claim57Residuals`
+  instance.
+The full instance is reconstructed internally via `Claim57Residuals.ofDescended`, so the §6
+  conclusion
 no longer forces callers through the `hfactor` obligation — exactly the "replace the typeclass
 dependency in downstream consumers" acceptance criterion, carried all the way to the §6 keystone.
 
@@ -47,7 +51,8 @@ per-`ModifiedGuruswami`-solution counting package `hcounting` provides a
 `pg_RsetDescended = pg_Rset`; the legacy `Claim57Residuals` instance is rebuilt internally with
 `Claim57Residuals.ofDescended`.  This removes the legacy `hfactor` field from the §6 caller's
 obligation, leaving only the honest descended residuals plus the documented coincidence. -/
-theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_natCeil_counting_descended
+theorem
+  RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_natCeil_counting_descended
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]
     (δ : ℚ≥0) (u₀ u₁ : Fin n → F)
@@ -69,7 +74,8 @@ theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_na
           = pg_Rset (m := m) (n := n) (k := k) (ωs := ωs) (Q := Q)
             (u₀ := u₀) (u₁ := u₁) h_gs) (D t : ℕ),
         letI : Claim57Residuals (F := F) k (δ : ℚ) x₀ h_gs :=
-          Claim57Residuals.ofDescended (F := F) (m := m) (n := n) (k := k) (Q := Q) (ωs := ωs) (u₀ := u₀) (u₁ := u₁) (δ : ℚ) x₀ h_gs hres_d hcoincide
+          Claim57Residuals.ofDescended (F := F) (m := m) (n := n) (k := k) (Q := Q)
+            (ωs := ωs) (u₀ := u₀) (u₁ := u₁) (δ : ℚ) x₀ h_gs hres_d hcoincide
         (coeffs_of_close_proximity (F := F) k ωs (δ : ℚ) u₀ u₁).card - 1 ≤
             (2 * k + 1)
               * (Polynomial.Bivariate.natDegreeY <| H k (δ : ℚ) x₀ h_gs)
@@ -95,9 +101,12 @@ theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_na
     (F := F) (n := n) (m := m) (k := k) (ωs := ωs) hk δ u₀ u₁ hDx hYZ hprob hJ hδ
     (fun {Q} h_gs => ?_) hunique
   obtain ⟨x₀, hres_d, hcoincide, D, t, hcov, hthr, hsm⟩ := hcounting h_gs
-  exact ⟨x₀, Claim57Residuals.ofDescended (F := F) (m := m) (n := n) (k := k) (Q := Q) (ωs := ωs) (u₀ := u₀) (u₁ := u₁) (δ : ℚ) x₀ h_gs hres_d hcoincide, D, t, hcov, hthr, hsm⟩
+  exact ⟨x₀, Claim57Residuals.ofDescended (F := F) (m := m) (n := n) (k := k) (Q := Q) (ωs := ωs)
+    (u₀ := u₀) (u₁ := u₁) (δ : ℚ) x₀ h_gs hres_d hcoincide, D, t, hcov, hthr, hsm⟩
 
 end ProximityGap
 
 /-! ## Axiom audit (issue #8). -/
-#print axioms ProximityGap.RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_natCeil_counting_descended
+open ProximityGap
+#print axioms
+  RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_natCeil_counting_descended

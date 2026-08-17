@@ -12,17 +12,21 @@ set_option linter.style.longLine false
 /-!
 # The per-parameter list-size bound, fully discharged
 
-`EvalOnZNonzero.perZ_listSize_le` bounds the number of degree-`≤ k` interpolants close to the line at
+`EvalOnZNonzero.perZ_listSize_le` bounds the number of degree-`≤ k` interpolants close to the line
+  at
 a single parameter `z` by `D_Y Q` — *assuming* each interpolant's linear factor `(Y - C p)` divides
 the `Z`-specialization `eval_on_Z Q z`.  This file discharges that assumption.
 
 The divisibility is exactly the BCIKS20 §5 graph-vanishing keystone, generalized to an arbitrary
-close interpolant (`Agreement.Q_vanishes_on_close_codeword_graph_gen`): if `p` agrees with the line on
+close interpolant (`Agreement.Q_vanishes_on_close_codeword_graph_gen`): if `p` agrees with the line
+  on
 a set `A` with `natWeightedDegree(eval_on_Z Q z) 1 k < m·|A|`, then `eval_on_Z Q z` vanishes at `p`.
 The non-degeneracy `eval_on_Z Q z ≠ 0` is the generic GAP-NZ discharge (`card_badZ_le`).
 
-Composing the two gives `close_interpolants_card_le`: at a good `z`, the number of distinct degree-`≤ k`
-codewords close to the line is `≤ D_Y Q = poly(n)` — *unconditionally* (no divisibility input).  This
+Composing the two gives `close_interpolants_card_le`: at a good `z`, the number of distinct
+  degree-`≤ k`
+codewords close to the line is `≤ D_Y Q = poly(n)` — *unconditionally* (no divisibility input).
+  This
 is the per-`z` ingredient of the Guruswami–Sudan curve list size, the small-`L` content of the
 `RSCurveListSizeResidual`.
 -/
@@ -40,12 +44,15 @@ variable {m : ℕ} {u₀ u₁ : Fin n → F} {Q : F[Z][X][Y]} {ωs : Fin n ↪ F
 
 /-- **Per-parameter list-size bound, fully discharged.** At a good parameter `z`
 (`eval_on_Z Q z ≠ 0`, ensured for all but `≤ d` params by `card_badZ_le` with `ZdegLE Q d`), any
-finite family `Ps` of degree-`≤ k` interpolants, EACH agreeing with the line `u₀+z•u₁` on a set `A p`
+finite family `Ps` of degree-`≤ k` interpolants, EACH agreeing with the line `u₀+z•u₁` on a set `A
+  p`
 with `natWeightedDegree(eval_on_Z Q z) 1 k < m·|A p|`, has cardinality `≤ D_Y Q`.
 
 Every such interpolant is a `Y`-root of `eval_on_Z Q z` by the generalized graph-vanishing keystone
-(`Q_vanishes_on_close_codeword_graph_gen`), so `(Y - C p)` divides it, and distinct roots of a nonzero
-bivariate polynomial number `≤ natDegreeY ≤ D_Y Q`.  This bounds the number of distinct codewords close
+(`Q_vanishes_on_close_codeword_graph_gen`), so `(Y - C p)` divides it, and distinct roots of a
+  nonzero
+bivariate polynomial number `≤ natDegreeY ≤ D_Y Q`.  This bounds the number of distinct codewords
+  close
 to the line at a single parameter — unconditionally, with the divisibility discharged. -/
 theorem close_interpolants_card_le [DecidableEq (RatFunc F)] [DecidableEq (Polynomial F)]
     (k : ℕ) {z : F} (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
@@ -84,9 +91,11 @@ theorem close_interpolants_card_lt_explicit [DecidableEq (RatFunc F)] [Decidable
 
 /-- **Per-parameter list bound from the single Johnson budget.** At a good `z`, if every close
 interpolant `p ∈ Ps` agrees with the line on a set `A p` of size `≥ e₀`, and the *single* Johnson
-budget `natWeightedDegree Q 1 k < m·e₀` holds, then `Ps.card ≤ D_Y Q`.  The per-`p` count condition of
+budget `natWeightedDegree Q 1 k < m·e₀` holds, then `Ps.card ≤ D_Y Q`.  The per-`p` count condition
+  of
 `close_interpolants_card_le` is discharged from the single budget via
-`natWeightedDegree_one_k_eval_on_Z_le` (the `Z`-specialization does not increase the `(1,k)`-weighted
+`natWeightedDegree_one_k_eval_on_Z_le` (the `Z`-specialization does not increase the
+  `(1,k)`-weighted
 degree).  This is the directly-applicable form: the Johnson budget is a field of `ModifiedGuruswami`
 (`Q_deg`), and `e₀ = n − ⌈δ·n⌉` is the `δ`-closeness agreement floor. -/
 theorem close_interpolants_card_le_johnson [DecidableEq (RatFunc F)] [DecidableEq (Polynomial F)]
